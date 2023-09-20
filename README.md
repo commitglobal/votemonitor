@@ -1,4 +1,4 @@
 # votemonitor
 
 # Polling stations feature
-[Contribution guidelines for this project](documentation/polling-stations/README.md)
+[documentation](documentation/polling-stations/README.md)
