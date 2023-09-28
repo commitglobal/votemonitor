@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Vote.Monitor.Feature.PollingStation\Vote.Monitor.Feature.PollingStation.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Core\Vote.Monitor.Core.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Feature.Example\Vote.Monitor.Feature.Example.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Infra\Vote.Monitor.Infra.csproj" />
