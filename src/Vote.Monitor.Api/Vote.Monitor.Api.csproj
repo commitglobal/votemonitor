@@ -4,18 +4,22 @@
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>48ebef5f-7a6f-47b3-807c-8c5523342311</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerfileContext>..\..</DockerfileContext>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="FastEndpoints" Version="5.17.1.1" />
     <PackageReference Include="FastEndpoints.Security" Version="5.17.1.1" />
     <PackageReference Include="FastEndpoints.Swagger" Version="5.17.1.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.4" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Vote.Monitor.Feature.PollingStation\Vote.Monitor.Feature.PollingStation.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Core\Vote.Monitor.Core.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Feature.Example\Vote.Monitor.Feature.Example.csproj" />
+    <ProjectReference Include="..\Vote.Monitor.Feature.PollingStation\Vote.Monitor.Feature.PollingStation.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Infra\Vote.Monitor.Infra.csproj" />
   </ItemGroup>
 

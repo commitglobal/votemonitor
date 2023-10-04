@@ -25,7 +25,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Feature.Exampl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Feature.Example", "src\Vote.Monitor.Feature.Example\Vote.Monitor.Feature.Example.csproj", "{51D3D30A-DEC4-496B-AF68-95315555ACB9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vote.Monitor.Feature.PollingStation", "Vote.Monitor.Feature.PollingStation\Vote.Monitor.Feature.PollingStation.csproj", "{CBF02138-799B-4908-8324-0AC493C664E1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vote.Monitor.Feature.PollingStation", "src\Vote.Monitor.Feature.PollingStation\Vote.Monitor.Feature.PollingStation.csproj", "{CBF02138-799B-4908-8324-0AC493C664E1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
