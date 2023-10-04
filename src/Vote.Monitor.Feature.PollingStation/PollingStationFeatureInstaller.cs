@@ -10,11 +10,11 @@ using Vote.Monitor.Feature.PollingStation.Repositories;
 namespace Vote.Monitor.Feature.PollingStation;
 public static class PollingStationFeatureInstaller
 {
-    public const string SectionKey = "ExampleFeatures";
+    public const string SectionKey = "PollingStations";
     public static IServiceCollection AddPollingStationFeatures(this IServiceCollection services, IConfigurationSection config)
     {
         
-        services.AddSingleton<IPollingStationRepository , PollingStationRepository>();
+        services.AddScoped<IPollingStationRepository , PollingStationRepository>();
         return services;
     }
 }

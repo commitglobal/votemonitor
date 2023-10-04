@@ -20,7 +20,7 @@ services:
     restart: always
     container_name: pgadmin4
     environment:
-      PGADMIN_DEFAULT_EMAIL:  cosmin.buda@globant.com
+      PGADMIN_DEFAULT_EMAIL:  pgadmin@globant.com
       PGADMIN_DEFAULT_PASSWORD: pass 
     ports:  
       - "5050:80"

@@ -1,5 +1,5 @@
 ﻿using FastEndpoints;
-using Vote.Monitor.Feature.PollingStation.Models;
+using Vote.Monitor.Core.Models;
 
 namespace Vote.Monitor.Feature.PollingStation.GetPollingStation;
 
@@ -7,15 +7,16 @@ internal  class GetPollingStationMapper :IResponseMapper
 {
 
 
-    public  PollingStationReadDto FromEntity(PollingStationModel source)
+    public  PollingStationReadDto FromEntity(PollingStationEf source)
     {
         return new PollingStationReadDto()
         {
             Id = source.Id,
             Address = source.Address,
             DisplayOrder = source.DisplayOrder,
-            Tags = source.Tags
+            Tags = source.TagsDictionary()
 
         };
     }
 }
+

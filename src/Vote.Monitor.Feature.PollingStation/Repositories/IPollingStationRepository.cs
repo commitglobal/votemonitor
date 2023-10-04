@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Vote.Monitor.Feature.PollingStation.Models;
+using Vote.Monitor.Core.Models;
 
 namespace Vote.Monitor.Feature.PollingStation.Repositories;
-internal interface IPollingStationRepository:IRepository<PollingStationModel>
+internal interface IPollingStationRepository:IRepository<Core.Models.PollingStationEf>
 {
-    IEnumerable<PollingStationModel> GetByTags(Dictionary<string,string> tags);
+    IEnumerable<Core.Models.PollingStationEf> GetByTags(Dictionary<string,string> tags);
 }

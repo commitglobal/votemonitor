@@ -4,44 +4,61 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Vote.Monitor.Feature.PollingStation.Models;
+using Vote.Monitor.Core.Data;
+using Vote.Monitor.Core.Models;
 
 namespace Vote.Monitor.Feature.PollingStation.Repositories;
 internal class PollingStationRepository : IPollingStationRepository
 {
+    private readonly AppDbContext _context;
+
     //temp 
-
-    PollingStationModel _model=null; 
-
-    public void   Add(PollingStationModel entity)
+    public  PollingStationRepository(AppDbContext context)
     {
-        _model= entity;
-        _model.Id = 1;
+        _context=  context;
     }
 
-    public void Delete(PollingStationModel entity)
+
+
+
+    public void   Add(PollingStationEf entity)
+    {
+        List<TagEf> tags = new List<TagEf>();
+        foreach (var tag in entity.Tags)
+        {
+           var efTag=_context.Tags.FirstOrDefault(x => x.Key == tag.Key && x.Value == tag.Value);
+           if (efTag != null)
+            {
+                tags.Add(efTag);
+            }
+           else tags.Add(tag);
+        }
+        entity.Tags = tags;
+        _context.PollingStations.Add(entity);
+        _context.SaveChanges();
+    }
+
+    public void Delete(PollingStationEf entity)
     {
         throw new NotImplementedException();
     }
 
-    public IEnumerable<PollingStationModel> GetAll()
+    public IEnumerable<PollingStationEf> GetAll()
     {
         throw new NotImplementedException();
     }
 
-    public PollingStationModel GetById(int id)
+    public PollingStationEf GetById(int id)
     {
-        if (_model == null ) throw new Exception("Not found");
-        if (_model.Id != id) throw new Exception("Not found");  
-        return _model;
+        return _context?.PollingStations?.FirstOrDefault(x => x.Id == id);
     }
 
-    public IEnumerable<PollingStationModel> GetByTags(Dictionary<string, string> tags)
+    public IEnumerable<Core.Models.PollingStationEf> GetByTags(Dictionary<string, string> tags)
     {
         throw new NotImplementedException();
     }
 
-    public void Update(PollingStationModel entity)
+    public void Update(Core.Models.PollingStationEf entity)
     {
         throw new NotImplementedException();
     }
