@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FastEndpoints;
+﻿using FastEndpoints;
 using Vote.Monitor.Feature.PollingStation.GetPollingStation;
 using Vote.Monitor.Feature.PollingStation.Models;
 
@@ -28,7 +23,6 @@ internal class CreatePollingStationMapper : Mapper<PollingStationCreateRequestDt
             Address = source.Address,
             DisplayOrder = source.DisplayOrder,
             Tags = source.Tags
-
         };
     }
 }
