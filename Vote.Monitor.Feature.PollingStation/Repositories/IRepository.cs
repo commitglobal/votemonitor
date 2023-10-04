@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.EntityFrameworkCore;
+using Vote.Monitor.Feature.PollingStation.Models;
 
 namespace Vote.Monitor.Feature.PollingStation.Repositories;
 internal interface IRepository<TEntity> where TEntity : class
 {
-    void Add(TEntity entity);
-    void Update(TEntity entity);
-    void Delete(TEntity entity);
-    TEntity GetById(int id);
-    IEnumerable<TEntity> GetAll();
-
+    Task<TEntity> Add(TEntity entity);
+    Task<TEntity> GetById(int id);
+    Task<TEntity> Update(int id, TEntity entity);
+    Task Delete(int id);
+    Task DeleteAll();
+    Task<IEnumerable<TEntity>> GetAll();
+    Task<IEnumerable<Tag>> GetTags();
 }
