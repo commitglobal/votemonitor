@@ -2,7 +2,7 @@
 using CsvHelper;
 using CsvHelper.Configuration;
 using FastEndpoints;
-using Vote.Monitor.Feature.PollingStation.Models;
+using Vote.Monitor.Core.Models;
 using Vote.Monitor.Feature.PollingStation.Repositories;
 
 namespace Vote.Monitor.Feature.PollingStation.ImportPollingStations;
@@ -30,7 +30,7 @@ internal class ImportPollingStationsEndpoint : EndpointWithoutRequest
             using (var reader = new StringReader(tempCSVPath))
             using (var csv = new CsvReader(reader, configuration: new CsvConfiguration(CultureInfo.InvariantCulture) { HasHeaderRecord = true }))
             {
-                var records = csv.GetRecords<PollingStationImportModel>().ToList();
+                var records = csv.GetRecords<PollingStationImport>().ToList();
 
                 await _repository.DeleteAll();
 
@@ -40,7 +40,7 @@ internal class ImportPollingStationsEndpoint : EndpointWithoutRequest
                     {
                         DisplayOrder = record.DisplayOrder,
                         Address = record.Address,
-                        Tags = record.Tags.ToDictionary(tag => tag.Name, tag => tag.Value)
+                        Tags = record.Tags.ToTags()
                     };
 
                     await _repository.Add(pollingStation);

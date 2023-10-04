@@ -5,12 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Vote.Monitor.Core.Models;
-public class PollingStationEf
+public class PollingStationModel
 {
     public int Id { get; set; }
     public required string Address { get; set; }
     public int DisplayOrder { get; set; }
-    public List<TagEf> Tags { get; set; } = new List<TagEf>();
+    public List<TagModel> Tags { get; set; } = new List<TagModel>();
 
     
 }

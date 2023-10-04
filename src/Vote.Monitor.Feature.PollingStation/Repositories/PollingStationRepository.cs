@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Vote.Monitor.Feature.PollingStation.Context;
-using Vote.Monitor.Feature.PollingStation.Models;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,55 +15,37 @@ internal class PollingStationRepository : IPollingStationRepository
     private readonly AppDbContext _context;
 
     //temp 
-    public  PollingStationRepository(AppDbContext context)
+    public PollingStationRepository(AppDbContext context)
     {
-        _context=  context;
+        _context = context;
     }
 
 
 
 
-    public void   Add(PollingStationEf entity)
-    public PollingStationRepository(ApplicationContext context)
+    public async Task<PollingStationModel> Add(PollingStationModel entity)
+
     {
-        List<TagEf> tags = new List<TagEf>();
+        List<TagModel> tags = new List<TagModel>();
         foreach (var tag in entity.Tags)
         {
-           var efTag=_context.Tags.FirstOrDefault(x => x.Key == tag.Key && x.Value == tag.Value);
-           if (efTag != null)
+            var efTag = _context.Tags.FirstOrDefault(x => x.Key == tag.Key && x.Value == tag.Value);
+            if (efTag != null)
             {
                 tags.Add(efTag);
             }
-           else tags.Add(tag);
+            else tags.Add(tag);
         }
         entity.Tags = tags;
-        _context.PollingStations.Add(entity);
-        _context.SaveChanges();
-        _context = context;
-    }
-    public async Task<PollingStationModel> Add(PollingStationModel entity)
-    {
-        _model = entity;
-        _model.Id = 1;
-
-        var pollingStation = new PollingStationModel
-        {
-            DisplayOrder = entity.DisplayOrder,
-            Address = entity.Address,
-            Tags = entity.Tags
-        };
-
-        _context.PollingStation.Add(pollingStation);
-
+        await _context.PollingStations.AddAsync(entity);
         await _context.SaveChangesAsync();
-
-        return pollingStation;
+        return entity;
     }
+
 
     public async Task<PollingStationModel> GetById(int id)
     {
-        var pollingStation = await _context.PollingStation
-            .Include(ps => ps.Tags)
+        var pollingStation = await _context.PollingStations
             .FirstOrDefaultAsync(ps => ps.Id == id);
 
         if (pollingStation == null) throw new Exception("Not found");
@@ -74,14 +55,13 @@ internal class PollingStationRepository : IPollingStationRepository
 
     public async Task<IEnumerable<PollingStationModel>> GetAll()
     {
-        var result = await _context.PollingStation.Include(ps => ps.Tags).ToListAsync();
+        var result = await _context.PollingStations.ToListAsync();
         return result;
     }
 
     public async Task<PollingStationModel> Update(int id, PollingStationModel entity)
     {
-        var pollingStation = await _context.PollingStation
-           .Include(ps => ps.Tags)
+        var pollingStation = await _context.PollingStations
            .FirstOrDefaultAsync(ps => ps.Id == id);
 
         if (pollingStation == null) throw new Exception("Not found");
@@ -95,38 +75,35 @@ internal class PollingStationRepository : IPollingStationRepository
 
             foreach (var tag in entity.Tags)
             {
-                var tagToUpdate = await _context.Tag.FirstOrDefaultAsync(t => t.Name == tag.Key);
+                var tagToUpdate = await _context.Tags.FirstOrDefaultAsync(t => t.Key == tag.Key);
 
                 if (tagToUpdate == null)
                 {
-                    tagToUpdate = new Tag
+                    tagToUpdate = new TagModel
                     {
-                        Name = tag.Key,
+                        Key = tag.Key,
                         Value = tag.Value
                     };
-                    _context.Tag.Add(tagToUpdate);
+                    _context.Tags.Add(tagToUpdate);
                 };
 
                 //pollingStation.Tags.Add(tagToUpdate.Id.ToString() ,new PollingStationTag { Tag = tagToUpdate });
-                pollingStation.Tags.Add(tagToUpdate.Name, tagToUpdate.Value);
+                pollingStation.Tags.Add(tagToUpdate);
             }
         }
         await _context.SaveChangesAsync();
 
         return pollingStation;
-    public void Delete(PollingStationEf entity)
-    {
-        throw new NotImplementedException();
     }
 
-    public IEnumerable<PollingStationEf> GetAll()
+
     public async Task Delete(int id)
     {
-        var pollingStation = await _context.PollingStation.FirstOrDefaultAsync(ps => ps.Id == id);
+        var pollingStation = await _context.PollingStations.FirstOrDefaultAsync(ps => ps.Id == id);
 
         if (pollingStation == null) throw new Exception("Not found");
 
-        _context.PollingStation.Remove(pollingStation);
+        _context.PollingStations.Remove(pollingStation);
 
         await _context.SaveChangesAsync();
     }
@@ -134,7 +111,7 @@ internal class PollingStationRepository : IPollingStationRepository
 
     public async Task DeleteAll()
     {
-        _context.PollingStation.RemoveRange(_context.PollingStation);
+        _context.PollingStations.RemoveRange(_context.PollingStations);
 
         await _context.SaveChangesAsync();
     }
@@ -144,11 +121,13 @@ internal class PollingStationRepository : IPollingStationRepository
         throw new NotImplementedException();
     }
 
-    public async Task<IEnumerable<Tag>> GetTags()
+    public async Task<IEnumerable<TagModel>> GetTags()
     {
-        return await _context.Tag
-            .Select(tag => new Tag { Id = tag.Id, Name = tag.Name, Value = tag.Value })
+        return await _context.Tags
+            .Select(tag => new TagModel { Id = tag.Id, Key = tag.Key, Value = tag.Value })
             .Distinct()
             .ToListAsync();
     }
+
+
 }

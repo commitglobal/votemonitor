@@ -3,19 +3,19 @@ using Vote.Monitor.Feature.PollingStation.GetPollingStation;
 using Vote.Monitor.Core.Models;
 
 namespace Vote.Monitor.Feature.PollingStation.CreatePollingStation;
-internal class CreatePollingStationMapper : Mapper<PollingStationCreateRequestDto, PollingStationReadDto, Core.Models.PollingStationEf>
+internal class CreatePollingStationMapper : Mapper<PollingStationCreateRequestDto, PollingStationReadDto, Core.Models.PollingStationModel>
 {
 
-    public override PollingStationEf ToEntity(PollingStationCreateRequestDto source)
+    public override PollingStationModel ToEntity(PollingStationCreateRequestDto source)
     {
-        PollingStationEf st = new()
+        PollingStationModel st = new()
         {
             Address = source.Address,
             DisplayOrder = source.DisplayOrder
         };
         foreach (var tag in source.Tags)
         {
-            st.Tags.Add(new TagEf()
+            st.Tags.Add(new TagModel()
             {
                 Key = tag.Key,
                 Value = tag.Value
@@ -25,7 +25,7 @@ internal class CreatePollingStationMapper : Mapper<PollingStationCreateRequestDt
 
         return st;
     }
-    public override PollingStationReadDto FromEntity(PollingStationEf source)
+    public override PollingStationReadDto FromEntity(PollingStationModel source)
     {
         return new PollingStationReadDto()
         {

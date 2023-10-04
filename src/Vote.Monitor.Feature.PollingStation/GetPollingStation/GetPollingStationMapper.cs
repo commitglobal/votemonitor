@@ -5,9 +5,7 @@ namespace Vote.Monitor.Feature.PollingStation.GetPollingStation;
 
 internal  class GetPollingStationMapper :IResponseMapper
 {
-
-
-    public  PollingStationReadDto FromEntity(PollingStationEf source)
+    public  PollingStationReadDto FromEntity(PollingStationModel source)
     {
         return new PollingStationReadDto()
         {
@@ -15,7 +13,6 @@ internal  class GetPollingStationMapper :IResponseMapper
             Address = source.Address,
             DisplayOrder = source.DisplayOrder,
             Tags = source.TagsDictionary()
-
         };
     }
 }

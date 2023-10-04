@@ -10,8 +10,8 @@ using Vote.Monitor.Core.Models;
 namespace Vote.Monitor.Core.Data;
 public class AppDbContext: DbContext
 {
-    public DbSet<PollingStationEf> PollingStations { get; set; }
-    public DbSet<TagEf> Tags { get; set; }    
+    public DbSet<PollingStationModel> PollingStations { get; set; }
+    public DbSet<TagModel> Tags { get; set; }    
 
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
@@ -19,13 +19,13 @@ public class AppDbContext: DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<PollingStationEf>()
+        modelBuilder.Entity<PollingStationModel>()
             .HasMany(p => p.Tags)
             .WithMany(t => t.PollingStations)
             .UsingEntity(
             "PollingStationTag",
-            l => l.HasOne(typeof(TagEf)).WithMany().HasForeignKey("TagId").HasPrincipalKey(nameof(TagEf.Id)),
-            r => r.HasOne(typeof(PollingStationEf)).WithMany().HasForeignKey("PollingStationId").HasPrincipalKey(nameof(PollingStationEf.Id)),
+            l => l.HasOne(typeof(TagModel)).WithMany().HasForeignKey("TagId").HasPrincipalKey(nameof(TagModel.Id)),
+            r => r.HasOne(typeof(PollingStationModel)).WithMany().HasForeignKey("PollingStationId").HasPrincipalKey(nameof(PollingStationModel.Id)),
             j => j.HasKey("PollingStationId", "TagId"))
             .Navigation(e=>e.Tags).AutoInclude();
         

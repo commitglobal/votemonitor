@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 using FastEndpoints;
-using Vote.Monitor.Feature.PollingStation.Models;
+using Vote.Monitor.Core.Models;
 using Vote.Monitor.Feature.PollingStation.Repositories;
 
 namespace Vote.Monitor.Feature.PollingStation.GetAllPollingStations;

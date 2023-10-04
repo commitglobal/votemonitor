@@ -1,5 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Vote.Monitor.Feature.PollingStation.Models;
+﻿
+
+using Vote.Monitor.Core.Models;
 
 namespace Vote.Monitor.Feature.PollingStation.Repositories;
 internal interface IRepository<TEntity> where TEntity : class
@@ -10,5 +11,5 @@ internal interface IRepository<TEntity> where TEntity : class
     Task Delete(int id);
     Task DeleteAll();
     Task<IEnumerable<TEntity>> GetAll();
-    Task<IEnumerable<Tag>> GetTags();
+
 }
