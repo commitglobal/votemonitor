@@ -21,7 +21,7 @@ internal class GetAllPollingStationsEndpoint : Endpoint<GetAllPollingStationsReq
 
     public override async Task HandleAsync(GetAllPollingStationsRequest req, CancellationToken ct)
     {
-        var pollingStations = await _repository.GetAll();
+        var pollingStations = await _repository.GetAll(page: 1 , pagesize: 30);
 
         //var filterCriteria = JsonSerializer.Deserialize<Dictionary<string, string>>(req.Filter);
 
@@ -40,11 +40,11 @@ internal class GetAllPollingStationsEndpoint : Endpoint<GetAllPollingStationsReq
         var totalItems = pollingStations.Count();
         var totalPages = (int)Math.Ceiling((double)totalItems / req.PageSize);
 
-        var pollingStationsToShow = pollingStations
-            .OrderBy(ps => ps.Id)
-            .Skip((req.Page - 1) * req.PageSize)
-            .Take(req.PageSize)
-            .ToList();
+        var pollingStationsToShow = pollingStations.ToList();
+        //    .OrderBy(ps => ps.Id)
+        //    .Skip((req.Page - 1) * req.PageSize)
+        //    .Take(req.PageSize)
+        //    .ToList();
 
         var response = new PaginationResponse<PollingStationModel>
         {

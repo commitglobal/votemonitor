@@ -49,7 +49,7 @@ internal class PollingStationRepository : IPollingStationRepository
         return pollingStation;
     }
 
-    public async Task<IEnumerable<PollingStationModel>> GetAll()
+    public async Task<IEnumerable<PollingStationModel>> GetAll( int page = 0, int pagesize = 0)
     {
         var result = await _context.PollingStations.ToListAsync();
         return result;
@@ -127,5 +127,9 @@ internal class PollingStationRepository : IPollingStationRepository
             .ToListAsync();
     }
 
-
+    public async Task<IEnumerable<PollingStationModel>> GetAll(Dictionary<string, string> filterCriteria, int page = 0, int pagesize = 0)
+    {
+        if (filterCriteria == null) return await  GetAll(page, pagesize);
+        return await  _context.PollingStations.ToListAsync();
+    }
 }
