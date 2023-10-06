@@ -1,11 +1,8 @@
 ﻿global using FastEndpoints;
 using FastEndpoints.Swagger;
-using Microsoft.AspNetCore.Identity;
 using Vote.Monitor.Feature.Example;
 using Vote.Monitor.Feature.PollingStation;
 using Vote.Monitor.Core;
-using Vote.Monitor.Core.Data;
-using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder();
 
@@ -17,7 +14,7 @@ builder.Services.AddCoreStartup(builder.Configuration);
 //    options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresVoteApiConnctionString"));
 //});
 builder.Services.AddExampleFeatures(builder.Configuration.GetSection(ExampleFeaturesInstaller.SectionKey));
-builder.Services.AddPollingStationFeatures(builder.Configuration.GetSection(PollingStationFeatureInstaller.SectionKey));
+builder.Services.AddPollingStationFeatures(builder.Configuration);
 builder.Services.AddFastEndpoints();
 builder.Services.AddAuthorization();
 builder.Services.SwaggerDocument(o =>

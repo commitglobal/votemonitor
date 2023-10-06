@@ -1,4 +1,5 @@
-﻿using Vote.Monitor.Core.Models;
+﻿using Vote.Monitor.Feature.PollingStation.Models;
+using Vote.Monitor.Core;
 
 namespace Vote.Monitor.Feature.PollingStation.Repositories;
 internal interface IPollingStationRepository:IRepository<PollingStationModel>

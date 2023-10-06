@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace Vote.Monitor.Core.Models;
+namespace Vote.Monitor.Feature.PollingStation.Models;
 public  class TagModel
 {
     [Key] public int Id { get; set; }

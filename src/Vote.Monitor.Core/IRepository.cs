@@ -1,9 +1,6 @@
 ﻿
-
-using Vote.Monitor.Core.Models;
-
-namespace Vote.Monitor.Feature.PollingStation.Repositories;
-internal interface IRepository<TEntity> where TEntity : class
+namespace Vote.Monitor.Core;
+public  interface IRepository<TEntity> where TEntity : class
 {
     Task<TEntity> Add(TEntity entity);
     Task<TEntity> GetById(int id);

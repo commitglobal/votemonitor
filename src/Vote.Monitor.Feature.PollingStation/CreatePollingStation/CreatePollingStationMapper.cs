@@ -1,9 +1,9 @@
 ﻿using FastEndpoints;
 using Vote.Monitor.Feature.PollingStation.GetPollingStation;
-using Vote.Monitor.Core.Models;
+using Vote.Monitor.Feature.PollingStation.Models;
 
 namespace Vote.Monitor.Feature.PollingStation.CreatePollingStation;
-internal class CreatePollingStationMapper : Mapper<PollingStationCreateRequestDto, PollingStationReadDto, Core.Models.PollingStationModel>
+internal class CreatePollingStationMapper : Mapper<PollingStationCreateRequestDto, PollingStationReadDto, PollingStationModel>
 {
 
     public override PollingStationModel ToEntity(PollingStationCreateRequestDto source)

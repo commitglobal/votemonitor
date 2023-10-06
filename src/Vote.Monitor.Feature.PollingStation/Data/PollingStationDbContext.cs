@@ -1,19 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Hosting;
-using Vote.Monitor.Core.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using Vote.Monitor.Feature.PollingStation.Models;
 
-namespace Vote.Monitor.Core.Data;
-public class AppDbContext: DbContext
+namespace Vote.Monitor.Feature.PollingStation.Data;
+public class PollingStationDbContext: DbContext
 {
     public DbSet<PollingStationModel> PollingStations { get; set; }
     public DbSet<TagModel> Tags { get; set; }    
 
-    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+    public PollingStationDbContext(DbContextOptions<PollingStationDbContext> options) : base(options)
     {
     }   
 

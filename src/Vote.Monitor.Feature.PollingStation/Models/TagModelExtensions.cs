@@ -1,4 +1,4 @@
-﻿namespace Vote.Monitor.Core.Models;
+﻿namespace Vote.Monitor.Feature.PollingStation.Models;
 
 public static class TagModelExtensions
 {

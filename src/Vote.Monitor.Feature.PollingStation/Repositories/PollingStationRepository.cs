@@ -1,23 +1,19 @@
 ﻿using Microsoft.EntityFrameworkCore;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Vote.Monitor.Core.Data;
-using Vote.Monitor.Core.Models;
+using Vote.Monitor.Feature.PollingStation.Data;
+using Vote.Monitor.Feature.PollingStation.Models;
+using Microsoft.Extensions.Logging;
 
 namespace Vote.Monitor.Feature.PollingStation.Repositories;
 internal class PollingStationRepository : IPollingStationRepository
 {
-    private readonly AppDbContext _context;
+    private readonly PollingStationDbContext _context;
+    private readonly ILogger<PollingStationRepository> _logger;
 
     //temp 
-    public PollingStationRepository(AppDbContext context)
+    public PollingStationRepository(PollingStationDbContext context, ILogger<PollingStationRepository> logger)
     {
         _context = context;
+        _logger = logger;
     }
 
 
@@ -116,9 +112,11 @@ internal class PollingStationRepository : IPollingStationRepository
         await _context.SaveChangesAsync();
     }
 
-    public Task<IEnumerable<PollingStationModel>> GetByTags(Dictionary<string, string> tags)
+    public async Task<IEnumerable<PollingStationModel>> GetByTags(Dictionary<string, string> tags)
     {
-        throw new NotImplementedException();
+        return await _context.PollingStations
+                       .Where(ps => ps.Tags.All(t => tags.ContainsKey(t.Key) && tags[t.Key] == t.Value))
+                                  .ToListAsync();  
     }
 
     public async Task<IEnumerable<TagModel>> GetTags()

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Vote.Monitor.Core.Models;
+﻿namespace Vote.Monitor.Feature.PollingStation.Models;
 public class PollingStationModel
 {
     public int Id { get; set; }
