@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Vote.Monitor.Feature.PollingStation.Data;
-using Vote.Monitor.Feature.PollingStation.Models;
 using Microsoft.Extensions.Logging;
+using Vote.Monitor.Domain.DataContext;
+using Vote.Monitor.Domain.Models;
 
 namespace Vote.Monitor.Feature.PollingStation.Repositories;
 internal class PollingStationRepository : IPollingStationRepository

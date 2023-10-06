@@ -1,6 +1,6 @@
 ﻿using FastEndpoints;
+using Vote.Monitor.Domain.Models;
 using Vote.Monitor.Feature.PollingStation.GetPollingStation;
-using Vote.Monitor.Feature.PollingStation.Models;
 
 namespace Vote.Monitor.Feature.PollingStation.CreatePollingStation;
 internal class CreatePollingStationMapper : Mapper<PollingStationCreateRequestDto, PollingStationReadDto, PollingStationModel>
