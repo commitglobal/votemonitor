@@ -1,5 +1,4 @@
 ﻿using PollingStationsResolver.Api.Tests.TestsHelpers;
-using Greet = Vote.Monitor.Feature.Example.Greet;
 
 namespace Vote.Monitor.Feature.Example.UnitTests.Validators;
 

@@ -1,5 +1,5 @@
 ﻿using FastEndpoints;
-using Vote.Monitor.Core.Models;
+using Vote.Monitor.Feature.PollingStation.Models;
 
 namespace Vote.Monitor.Feature.PollingStation.GetPollingStation;
 
