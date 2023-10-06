@@ -9,7 +9,7 @@ public static  class DomainSetup
 {
     public static IServiceCollection DomainSetupStartup(this IServiceCollection services, IConfiguration config)
     {
-        services.AddDbContext<PollingStationDbContext>(options =>
+        services.AddDbContext<AppDbContext>(options =>
         {
 
             options.UseNpgsql(config.GetConnectionString("PostgresVoteApiConnctionString"));

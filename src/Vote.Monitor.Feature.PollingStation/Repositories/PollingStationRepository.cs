@@ -6,11 +6,11 @@ using Vote.Monitor.Domain.Models;
 namespace Vote.Monitor.Feature.PollingStation.Repositories;
 internal class PollingStationRepository : IPollingStationRepository
 {
-    private readonly PollingStationDbContext _context;
+    private readonly AppDbContext _context;
     private readonly ILogger<PollingStationRepository> _logger;
 
     //temp 
-    public PollingStationRepository(PollingStationDbContext context, ILogger<PollingStationRepository> logger)
+    public PollingStationRepository(AppDbContext context, ILogger<PollingStationRepository> logger)
     {
         _context = context;
         _logger = logger;

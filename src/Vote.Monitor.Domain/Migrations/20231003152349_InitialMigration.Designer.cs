@@ -10,7 +10,7 @@ using Vote.Monitor.Domain.DataContext;
 
 namespace Vote.Monitor.Domain.Migrations
 {
-    [DbContext(typeof(PollingStationDbContext))]
+    [DbContext(typeof(AppDbContext))]
     [Migration("20231003152349_InitialMigration")]
     partial class InitialMigration
     {

@@ -9,7 +9,7 @@ using Vote.Monitor.Domain.DataContext;
 
 namespace Vote.Monitor.Domain.Migrations
 {
-    [DbContext(typeof(PollingStationDbContext))]
+    [DbContext(typeof(AppDbContext))]
     partial class AppDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

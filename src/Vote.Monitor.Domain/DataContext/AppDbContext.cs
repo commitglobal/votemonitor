@@ -2,12 +2,12 @@
 using Vote.Monitor.Domain.Models;
 
 namespace Vote.Monitor.Domain.DataContext;
-public class PollingStationDbContext : DbContext
+public class AppDbContext : DbContext
 {
     public DbSet<PollingStationModel> PollingStations { get; set; }
     public DbSet<TagModel> Tags { get; set; }
 
-    public PollingStationDbContext(DbContextOptions<PollingStationDbContext> options) : base(options)
+    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
     }
 
