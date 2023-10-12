@@ -3,13 +3,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using Vote.Monitor.Feature.PollingStation.Data;
+using Vote.Monitor.Domain.DataContext;
 
 #nullable disable
 
-namespace Vote.Monitor.Feature.PollingStation.Migrations
+namespace Vote.Monitor.Domain.Migrations
 {
-    [DbContext(typeof(PollingStationDbContext))]
+    [DbContext(typeof(AppDbContext))]
     partial class AppDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

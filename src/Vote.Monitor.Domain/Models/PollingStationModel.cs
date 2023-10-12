@@ -1,4 +1,4 @@
-﻿namespace Vote.Monitor.Feature.PollingStation.Models;
+﻿namespace Vote.Monitor.Domain.Models;
 public class PollingStationModel
 {
     public int Id { get; set; }

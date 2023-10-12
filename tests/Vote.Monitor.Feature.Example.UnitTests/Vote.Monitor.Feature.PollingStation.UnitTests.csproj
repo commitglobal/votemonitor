@@ -22,8 +22,4 @@
     <Folder Include="Validators\" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\Vote.Monitor.Feature.Example\Vote.Monitor.Feature.Example.csproj" />
-  </ItemGroup>
-
 </Project>

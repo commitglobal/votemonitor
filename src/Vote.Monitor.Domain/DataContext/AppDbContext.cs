@@ -1,15 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Vote.Monitor.Feature.PollingStation.Models;
+using Vote.Monitor.Domain.Models;
 
-namespace Vote.Monitor.Feature.PollingStation.Data;
-public class PollingStationDbContext: DbContext
+namespace Vote.Monitor.Domain.DataContext;
+public class AppDbContext : DbContext
 {
     public DbSet<PollingStationModel> PollingStations { get; set; }
-    public DbSet<TagModel> Tags { get; set; }    
+    public DbSet<TagModel> Tags { get; set; }
 
-    public PollingStationDbContext(DbContextOptions<PollingStationDbContext> options) : base(options)
+    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
-    }   
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -21,8 +21,8 @@ public class PollingStationDbContext: DbContext
             l => l.HasOne(typeof(TagModel)).WithMany().HasForeignKey("TagId").HasPrincipalKey(nameof(TagModel.Id)),
             r => r.HasOne(typeof(PollingStationModel)).WithMany().HasForeignKey("PollingStationId").HasPrincipalKey(nameof(PollingStationModel.Id)),
             j => j.HasKey("PollingStationId", "TagId"))
-            .Navigation(e=>e.Tags).AutoInclude();
-        
+            .Navigation(e => e.Tags).AutoInclude();
+
     }
 
 }

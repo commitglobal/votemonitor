@@ -2,8 +2,8 @@
 using CsvHelper;
 using CsvHelper.Configuration;
 using FastEndpoints;
-using Vote.Monitor.Feature.PollingStation.Models;
 using Vote.Monitor.Feature.PollingStation.Repositories;
+using Vote.Monitor.Domain.Models;
 
 namespace Vote.Monitor.Feature.PollingStation.ImportPollingStations;
 internal class ImportPollingStationsEndpoint : EndpointWithoutRequest

@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using Vote.Monitor.Feature.PollingStation.Data;
+using Vote.Monitor.Domain.DataContext;
 
 #nullable disable
 
-namespace Vote.Monitor.Feature.PollingStation.Migrations
+namespace Vote.Monitor.Domain.Migrations
 {
-    [DbContext(typeof(PollingStationDbContext))]
+    [DbContext(typeof(AppDbContext))]
     [Migration("20231003152349_InitialMigration")]
     partial class InitialMigration
     {

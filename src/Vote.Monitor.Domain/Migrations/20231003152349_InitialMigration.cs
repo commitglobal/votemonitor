@@ -3,7 +3,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Vote.Monitor.Feature.PollingStation.Migrations
+namespace Vote.Monitor.Domain.Migrations
 {
     /// <inheritdoc />
     public partial class InitialMigration : Migration
