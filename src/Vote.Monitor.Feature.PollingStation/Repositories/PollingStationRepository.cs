@@ -43,9 +43,7 @@ internal class PollingStationRepository : IPollingStationRepository
     public async Task<PollingStationModel> GetByIdAsync(int id)
     {
         var pollingStation = await _context.PollingStations
-            .FirstOrDefaultAsync(ps => ps.Id == id);
-
-        if (pollingStation == null)
+            .FirstOrDefaultAsync(ps => ps.Id == id) ?? 
             throw new NotFoundException<PollingStationModel>($"Polling Station not found for ID: {id}");
 
         return pollingStation;
@@ -68,9 +66,7 @@ internal class PollingStationRepository : IPollingStationRepository
     public async Task<PollingStationModel> UpdateAsync(int id, PollingStationModel entity)
     {
         var pollingStation = await _context.PollingStations
-           .FirstOrDefaultAsync(ps => ps.Id == id);
-
-        if (pollingStation == null)
+           .FirstOrDefaultAsync(ps => ps.Id == id) ??
             throw new NotFoundException<PollingStationModel>($"Polling Station not found for ID: {id}");
 
         pollingStation.DisplayOrder = entity.DisplayOrder;
@@ -106,9 +102,7 @@ internal class PollingStationRepository : IPollingStationRepository
 
     public async Task DeleteAsync(int id)
     {
-        var pollingStation = await _context.PollingStations.FirstOrDefaultAsync(ps => ps.Id == id);
-
-        if (pollingStation == null)
+        var pollingStation = await _context.PollingStations.FirstOrDefaultAsync(ps => ps.Id == id) ??
             throw new NotFoundException<PollingStationModel>($"Polling Station not found for ID: {id}");
 
         _context.PollingStations.Remove(pollingStation);

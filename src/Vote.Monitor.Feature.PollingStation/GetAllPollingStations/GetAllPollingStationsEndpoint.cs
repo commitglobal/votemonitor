@@ -28,6 +28,7 @@ internal partial class GetAllPollingStationsEndpoint : Endpoint<GetAllPollingSta
 
     public override async Task HandleAsync(GetAllPollingStationsRequest request , CancellationToken ct)
     {
+        try { 
         Dictionary<string, string>? filterCriteria = null;
         if (request.Filter!=null) filterCriteria=FilterDecoder.DecodeFilter(request.Filter);
 
