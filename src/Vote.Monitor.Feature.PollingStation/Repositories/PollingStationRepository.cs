@@ -49,9 +49,9 @@ internal class PollingStationRepository : IPollingStationRepository
         return pollingStation;
     }
 
-    public async Task<IEnumerable<PollingStationModel>> GetAll( int page = 0, int pagesize = 0)
+    public async Task<IEnumerable<PollingStationModel>> GetAll( )
     {
-        var result = await _context.PollingStations.ToListAsync();
+        var result = await _context.PollingStations.OrderBy(st=>st.DisplayOrder).ToListAsync() ;
         return result;
     }
 
@@ -127,9 +127,14 @@ internal class PollingStationRepository : IPollingStationRepository
             .ToListAsync();
     }
 
-    public async Task<IEnumerable<PollingStationModel>> GetAll(Dictionary<string, string> filterCriteria, int page = 0, int pagesize = 0)
+    public async Task<IEnumerable<PollingStationModel>> GetAll(Dictionary<string, string> filterCriteria)
     {
-        if (filterCriteria == null) return await  GetAll(page, pagesize);
-        return await  _context.PollingStations.ToListAsync();
+        if (filterCriteria == null || filterCriteria.Count == 0 ) return await  GetAll();
+
+
+
+        return  _context.PollingStations.AsEnumerable().Where(
+            station =>  filterCriteria.Count(filter => filterCriteria.All(tag => station.Tags.Any(t => t.Key == tag.Key && t.Value == tag.Value))) == filterCriteria.Count() 
+              ).OrderBy(st=>st.DisplayOrder);    
     }
 }

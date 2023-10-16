@@ -26,7 +26,6 @@
     <ProjectReference Include="..\Vote.Monitor.Core\Vote.Monitor.Core.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Domain\Vote.Monitor.Domain.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Feature.PollingStation\Vote.Monitor.Feature.PollingStation.csproj" />
-    <ProjectReference Include="..\Vote.Monitor.Infra\Vote.Monitor.Domain.csproj" />
   </ItemGroup>
 
 </Project>
