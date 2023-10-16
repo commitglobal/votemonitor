@@ -25,7 +25,7 @@ internal class UpdatePollingStationEndpoint : Endpoint<PollingStationUpdateReque
 
         var model = Map.ToEntity(req);
 
-        await _repository.Update(id, model);
+        await _repository.UpdateAsync(id, model);
 
         await SendCreatedAtAsync<GetPollingStationEndpoint>(new { id = model.Id }, Map.FromEntity(model));
     }

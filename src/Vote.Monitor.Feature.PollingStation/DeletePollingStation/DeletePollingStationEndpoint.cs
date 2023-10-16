@@ -21,7 +21,7 @@ internal class DeletePollingStationEndpoint: EndpointWithoutRequest<PollingStati
     {
         int id = Route<int>("id");
 
-        await _repository.Delete(id);
+        await _repository.DeleteAsync(id);
 
         await SendNoContentAsync();
     }

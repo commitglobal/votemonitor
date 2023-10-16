@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Linq;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Vote.Monitor.Domain.DataContext;
 using Vote.Monitor.Domain.Models;
@@ -19,7 +21,7 @@ internal class PollingStationRepository : IPollingStationRepository
 
 
 
-    public async Task<PollingStationModel> Add(PollingStationModel entity)
+    public async Task<PollingStationModel> AddAsync(PollingStationModel entity)
 
     {
         List<TagModel> tags = new List<TagModel>();
@@ -39,28 +41,32 @@ internal class PollingStationRepository : IPollingStationRepository
     }
 
 
-    public async Task<PollingStationModel> GetById(int id)
+    public async Task<PollingStationModel> GetByIdAsync(int id)
     {
         var pollingStation = await _context.PollingStations
             .FirstOrDefaultAsync(ps => ps.Id == id);
 
-        if (pollingStation == null) throw new Exception("Not found");
-
-        return pollingStation;
+        return pollingStation ?? throw new Exception("Not found");
     }
 
-    public async Task<IEnumerable<PollingStationModel>> GetAll( )
+    public async Task<IEnumerable<PollingStationModel>> GetAllAsync(int pageSize = 0, int page = 1)
     {
-        var result = await _context.PollingStations.OrderBy(st=>st.DisplayOrder).ToListAsync() ;
-        return result;
+        if (pageSize< 0) throw new ArgumentOutOfRangeException(nameof(pageSize));
+        if (pageSize > 0 && page < 1) throw new ArgumentOutOfRangeException(nameof(page));
+        
+        if (pageSize == 0) return  await _context.PollingStations.OrderBy(st=>st.DisplayOrder).ToListAsync() ;
+        
+        return await _context.PollingStations.OrderBy(st => st.DisplayOrder)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
     }
 
-    public async Task<PollingStationModel> Update(int id, PollingStationModel entity)
+    public async Task<PollingStationModel> UpdateAsync(int id, PollingStationModel entity)
     {
         var pollingStation = await _context.PollingStations
-           .FirstOrDefaultAsync(ps => ps.Id == id);
-
-        if (pollingStation == null) throw new Exception("Not found");
+           .FirstOrDefaultAsync(ps => ps.Id == id) ?? throw new Exception("Not found");
 
         pollingStation.DisplayOrder = entity.DisplayOrder;
         pollingStation.Address = entity.Address;
@@ -93,11 +99,9 @@ internal class PollingStationRepository : IPollingStationRepository
     }
 
 
-    public async Task Delete(int id)
+    public async Task DeleteAsync(int id)
     {
-        var pollingStation = await _context.PollingStations.FirstOrDefaultAsync(ps => ps.Id == id);
-
-        if (pollingStation == null) throw new Exception("Not found");
+        var pollingStation = await _context.PollingStations.FirstOrDefaultAsync(ps => ps.Id == id) ??  throw new Exception("Not found");
 
         _context.PollingStations.Remove(pollingStation);
 
@@ -105,7 +109,7 @@ internal class PollingStationRepository : IPollingStationRepository
     }
 
 
-    public async Task DeleteAll()
+    public async Task DeleteAllAsync()
     {
         _context.PollingStations.RemoveRange(_context.PollingStations);
 
@@ -127,14 +131,31 @@ internal class PollingStationRepository : IPollingStationRepository
             .ToListAsync();
     }
 
-    public async Task<IEnumerable<PollingStationModel>> GetAll(Dictionary<string, string> filterCriteria)
+    public async Task<IEnumerable<PollingStationModel>> GetAllAsync(Dictionary<string, string>? filterCriteria, int pageSize = 0, int page = 1)
     {
-        if (filterCriteria == null || filterCriteria.Count == 0 ) return await  GetAll();
+        if (pageSize < 0) throw new ArgumentOutOfRangeException(nameof(pageSize));
+        if (pageSize > 0 && page < 1) throw new ArgumentOutOfRangeException(nameof(page));
 
+        if (filterCriteria == null || filterCriteria.Count == 0) return await GetAllAsync(pageSize, page);
 
+        if (pageSize == 0) return   _context.PollingStations.AsEnumerable().Where(
+            station => filterCriteria.Count(filter => filterCriteria.All(tag => station.Tags.Any(t => t.Key == tag.Key && t.Value == tag.Value))) == filterCriteria.Count
+              ).OrderBy(st => st.DisplayOrder);
 
-        return  _context.PollingStations.AsEnumerable().Where(
-            station =>  filterCriteria.Count(filter => filterCriteria.All(tag => station.Tags.Any(t => t.Key == tag.Key && t.Value == tag.Value))) == filterCriteria.Count() 
-              ).OrderBy(st=>st.DisplayOrder);    
+        return _context.PollingStations.AsEnumerable().Where(
+            station => filterCriteria.Count(filter => filterCriteria.All(tag => station.Tags.Any(t => t.Key == tag.Key && t.Value == tag.Value))) == filterCriteria.Count
+              ).OrderBy(st => st.DisplayOrder)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize);
+           
+    }
+
+    public async Task<int> CountAsync(Dictionary<string, string>? filterCriteria)
+    {
+        if (filterCriteria == null || filterCriteria.Count == 0) return await  _context.PollingStations.CountAsync();
+        
+        return _context.PollingStations.AsEnumerable().Where(
+            station => filterCriteria.Count(filter => filterCriteria.All(tag => station.Tags.Any(t => t.Key == tag.Key && t.Value == tag.Value))) == filterCriteria.Count
+              ).Count();
     }
 }

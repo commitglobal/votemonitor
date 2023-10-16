@@ -22,7 +22,7 @@ internal class GetPollingStationEndpoint : EndpointWithoutRequest<PollingStation
     {
         int id = Route<int>("id");
 
-        var model = _repository.GetById(id);
+        var model = _repository.GetByIdAsync(id);
         
         await SendAsync(Map.FromEntity(model.Result));
     }

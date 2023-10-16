@@ -1,12 +1,13 @@
 ﻿
 namespace Vote.Monitor.Core;
-public  interface IRepository<TEntity> where TEntity : class
+public interface IRepository<TEntity> where TEntity : class
 {
-    Task<TEntity> Add(TEntity entity);
-    Task<TEntity> GetById(int id);
-    Task<TEntity> Update(int id, TEntity entity);
-    Task Delete(int id);
-    Task DeleteAll();
-    Task<IEnumerable<TEntity>> GetAll(Dictionary<string,string> filterCriteria );
-    Task<IEnumerable<TEntity>> GetAll();
+    Task<TEntity> AddAsync(TEntity entity);
+    Task<TEntity> GetByIdAsync(int id);
+    Task<TEntity> UpdateAsync(int id, TEntity entity);
+    Task DeleteAsync(int id);
+    Task DeleteAllAsync();
+    Task<IEnumerable<TEntity>> GetAllAsync(Dictionary<string, string>? filterCriteria, int pageSize, int page);
+    Task<IEnumerable<TEntity>> GetAllAsync(int pageSize, int page);
+    Task<int> CountAsync(Dictionary<string, string>? filterCriteria);
 }

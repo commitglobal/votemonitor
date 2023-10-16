@@ -24,20 +24,15 @@ internal partial class GetAllPollingStationsEndpoint : Endpoint<GetAllPollingSta
 
     public override async Task HandleAsync(GetAllPollingStationsRequest request , CancellationToken ct)
     {
-        Dictionary<string, string> filterCriteria = null;
+        Dictionary<string, string>? filterCriteria = null;
         if (request.Filter!=null) filterCriteria=FilterDecoder.DecodeFilter(request.Filter);
-  
-        IEnumerable<PollingStationModel> pollingStations = await _repository.GetAll(filterCriteria: filterCriteria);      
 
-        var totalItems = pollingStations.Count();
-        var totalPages = (int)Math.Ceiling((double)totalItems / request.PageSize);
+        int totalItems = await _repository.CountAsync(filterCriteria: filterCriteria);
+        int totalPages = (int)Math.Ceiling((double)totalItems / request.PageSize);
 
-        List<PollingStationModel> pollingStationsToShow = pollingStations
-            .Skip((request.Page - 1) * request.PageSize)
-            .Take(request.PageSize)
-            .ToList();
-       
-        PaginationResponse<PollingStationReadDto> response = Map.FromEntity(pollingStationsToShow,request.Page, request.PageSize, totalItems,totalPages);
+        List<PollingStationModel> pollingStations = (await _repository.GetAllAsync(filterCriteria: filterCriteria, request.PageSize, request.Page)).ToList();      
+     
+        PaginationResponse<PollingStationReadDto> response = Map.FromEntity(pollingStations, request.Page, request.PageSize, totalItems,totalPages);
 
         await SendAsync(response);
     }
