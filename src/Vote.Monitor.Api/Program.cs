@@ -1,5 +1,10 @@
 ﻿global using FastEndpoints;
 using FastEndpoints.Swagger;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using Serilog;
+using Serilog.Events;
+using Vote.Monitor.Core;
 using Vote.Monitor.Feature.PollingStation;
 using Vote.Monitor.Core;
 using Vote.Monitor.Domain;
@@ -27,6 +32,12 @@ builder.Services.SwaggerDocument(o =>
     o.AutoTagPathSegmentIndex = 2;
     
 });
+
+var logger = new LoggerConfiguration()
+        .ReadFrom.Configuration(builder.Configuration)
+        .CreateLogger();
+
+builder.Logging.AddSerilog(logger);
 
 var app = builder.Build();
 

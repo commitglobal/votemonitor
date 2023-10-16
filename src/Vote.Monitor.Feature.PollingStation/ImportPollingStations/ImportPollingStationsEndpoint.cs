@@ -2,16 +2,20 @@
 using CsvHelper;
 using CsvHelper.Configuration;
 using FastEndpoints;
-using Vote.Monitor.Feature.PollingStation.Repositories;
+using Microsoft.Extensions.Logging;
 using Vote.Monitor.Domain.Models;
+using Vote.Monitor.Feature.PollingStation.Repositories;
 
 namespace Vote.Monitor.Feature.PollingStation.ImportPollingStations;
 internal class ImportPollingStationsEndpoint : EndpointWithoutRequest
 {
     private readonly IPollingStationRepository _repository;
-    public ImportPollingStationsEndpoint(IPollingStationRepository repository)
+    private readonly ILogger<ImportPollingStationsEndpoint> _logger;
+
+    public ImportPollingStationsEndpoint(IPollingStationRepository repository, ILogger<ImportPollingStationsEndpoint> logger)
     {
         _repository = repository;
+        _logger = logger;
     }
 
     public override void Configure()
@@ -50,7 +54,11 @@ internal class ImportPollingStationsEndpoint : EndpointWithoutRequest
         }
         catch (Exception ex)
         {
-            AddError("Failed to import polling stations." + ex.Message);
+            _logger.LogError(ex, "Failed to import Polling Stations ");
+
+            AddError(ex.Message);
         }
+
+        ThrowIfAnyErrors();
     }
 }

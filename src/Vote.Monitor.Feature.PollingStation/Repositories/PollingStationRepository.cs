@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Vote.Monitor.Core.Exceptions;
 using Vote.Monitor.Domain.DataContext;
 using Vote.Monitor.Domain.Models;
 
@@ -9,13 +10,11 @@ namespace Vote.Monitor.Feature.PollingStation.Repositories;
 internal class PollingStationRepository : IPollingStationRepository
 {
     private readonly AppDbContext _context;
-    private readonly ILogger<PollingStationRepository> _logger;
 
     //temp 
-    public PollingStationRepository(AppDbContext context, ILogger<PollingStationRepository> logger)
+    public PollingStationRepository(AppDbContext context)
     {
         _context = context;
-        _logger = logger;
     }
 
 
@@ -46,7 +45,10 @@ internal class PollingStationRepository : IPollingStationRepository
         var pollingStation = await _context.PollingStations
             .FirstOrDefaultAsync(ps => ps.Id == id);
 
-        return pollingStation ?? throw new Exception("Not found");
+        if (pollingStation == null)
+            throw new NotFoundException<PollingStationModel>($"Polling Station not found for ID: {id}");
+
+        return pollingStation;
     }
 
     public async Task<IEnumerable<PollingStationModel>> GetAllAsync(int pageSize = 0, int page = 1)
@@ -66,7 +68,10 @@ internal class PollingStationRepository : IPollingStationRepository
     public async Task<PollingStationModel> UpdateAsync(int id, PollingStationModel entity)
     {
         var pollingStation = await _context.PollingStations
-           .FirstOrDefaultAsync(ps => ps.Id == id) ?? throw new Exception("Not found");
+           .FirstOrDefaultAsync(ps => ps.Id == id);
+
+        if (pollingStation == null)
+            throw new NotFoundException<PollingStationModel>($"Polling Station not found for ID: {id}");
 
         pollingStation.DisplayOrder = entity.DisplayOrder;
         pollingStation.Address = entity.Address;
@@ -101,7 +106,10 @@ internal class PollingStationRepository : IPollingStationRepository
 
     public async Task DeleteAsync(int id)
     {
-        var pollingStation = await _context.PollingStations.FirstOrDefaultAsync(ps => ps.Id == id) ??  throw new Exception("Not found");
+        var pollingStation = await _context.PollingStations.FirstOrDefaultAsync(ps => ps.Id == id);
+
+        if (pollingStation == null)
+            throw new NotFoundException<PollingStationModel>($"Polling Station not found for ID: {id}");
 
         _context.PollingStations.Remove(pollingStation);
 
@@ -120,7 +128,7 @@ internal class PollingStationRepository : IPollingStationRepository
     {
         return await _context.PollingStations
                        .Where(ps => ps.Tags.All(t => tags.ContainsKey(t.Key) && tags[t.Key] == t.Value))
-                                  .ToListAsync();  
+                                  .ToListAsync();
     }
 
     public async Task<IEnumerable<TagModel>> GetTags()

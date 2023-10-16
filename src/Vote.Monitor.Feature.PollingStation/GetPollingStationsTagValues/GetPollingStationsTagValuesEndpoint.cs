@@ -1,13 +1,18 @@
 ﻿using FastEndpoints;
+using Microsoft.Extensions.Logging;
+using Vote.Monitor.Feature.PollingStation.CreatePollingStation;
 using Vote.Monitor.Feature.PollingStation.Repositories;
 
 namespace Vote.Monitor.Feature.PollingStation.GetPollingStationsTagValues;
 internal class GetPollingStationsTagValuesEndpoint : Endpoint<TagValuesRequest, TagValuesResponse>
 {
     private readonly IPollingStationRepository _repository;
-    public GetPollingStationsTagValuesEndpoint(IPollingStationRepository repository)
+    private readonly ILogger<GetPollingStationsTagValuesEndpoint> _logger;
+
+    public GetPollingStationsTagValuesEndpoint(IPollingStationRepository repository, ILogger<GetPollingStationsTagValuesEndpoint> logger)
     {
         _repository = repository;
+        _logger = logger;
     }
 
     public override void Configure()

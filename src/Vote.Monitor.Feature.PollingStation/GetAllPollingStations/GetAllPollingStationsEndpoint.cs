@@ -1,4 +1,5 @@
 ﻿using FastEndpoints;
+using Microsoft.Extensions.Logging;
 using Vote.Monitor.Domain.Models;
 using Vote.Monitor.Feature.PollingStation.GetPollingStation;
 using Vote.Monitor.Feature.PollingStation.Repositories;
@@ -8,9 +9,12 @@ namespace Vote.Monitor.Feature.PollingStation.GetAllPollingStations;
 internal partial class GetAllPollingStationsEndpoint : Endpoint<GetAllPollingStationsRequest, PaginationResponse<PollingStationReadDto>, GetAllPollingStationsMapper>
 {//GetAllPollingStationsRequest,
     private readonly IPollingStationRepository _repository;
-    public GetAllPollingStationsEndpoint(IPollingStationRepository repository)
+    private readonly ILogger<GetAllPollingStationsEndpoint> _logger;
+
+    public GetAllPollingStationsEndpoint(IPollingStationRepository repository, ILogger<GetAllPollingStationsEndpoint> logger)
     {
         _repository = repository;
+        _logger = logger;
     }
 
     public override void Configure()
@@ -34,6 +38,15 @@ internal partial class GetAllPollingStationsEndpoint : Endpoint<GetAllPollingSta
      
         PaginationResponse<PollingStationReadDto> response = Map.FromEntity(pollingStations, request.Page, request.PageSize, totalItems,totalPages);
 
-        await SendAsync(response);
+            await SendAsync(response, cancellation: ct);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error while retrieving Polling Stations ");
+
+            AddError(ex.Message);
+        }
+
+        ThrowIfAnyErrors();
     }
 }
