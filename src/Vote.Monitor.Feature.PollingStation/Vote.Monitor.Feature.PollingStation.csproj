@@ -19,6 +19,8 @@
   <ItemGroup>
     <ProjectReference Include="..\Vote.Monitor.Core\Vote.Monitor.Core.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Domain\Vote.Monitor.Domain.csproj" />
+    <InternalsVisibleTo Include="Vote.Monitor.Feature.PollingStation.UnitTests"/>
+    <InternalsVisibleTo Include="Vote.Monitor.Feature.PollingStation.IntegrationTests"/>
   </ItemGroup>
-
+  
 </Project>
