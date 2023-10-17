@@ -27,7 +27,7 @@ internal class GetPollingStationEndpoint : EndpointWithoutRequest<PollingStation
 
         try
         {
-            var model = await _repository.GetById(id);
+            var model = await _repository.GetByIdAsync(id);
 
             await SendAsync(Map.FromEntity(model), cancellation: ct);
         }

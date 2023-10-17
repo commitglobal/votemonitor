@@ -1,11 +1,13 @@
 ﻿using FastEndpoints;
 using Microsoft.Extensions.Logging;
 using Vote.Monitor.Domain.Models;
+using Vote.Monitor.Feature.PollingStation.GetPollingStation;
 using Vote.Monitor.Feature.PollingStation.Repositories;
+using Vote.Monitor.Core;
 
 namespace Vote.Monitor.Feature.PollingStation.GetAllPollingStations;
-internal class GetAllPollingStationsEndpoint : Endpoint<GetAllPollingStationsRequest, PaginationResponse<PollingStationModel>>
-{
+internal partial class GetAllPollingStationsEndpoint : Endpoint<GetAllPollingStationsRequest, PaginationResponse<PollingStationReadDto>, GetAllPollingStationsMapper>
+{//GetAllPollingStationsRequest,
     private readonly IPollingStationRepository _repository;
     private readonly ILogger<GetAllPollingStationsEndpoint> _logger;
 
@@ -17,48 +19,25 @@ internal class GetAllPollingStationsEndpoint : Endpoint<GetAllPollingStationsReq
 
     public override void Configure()
     {
-        Get("/api/polling-stations");
+
+
+        Get("/api/polling-stations");///{pagesize:int}{page:int}{filter:Dictionary<string,string>}");
 
         AllowAnonymous();
     }
 
-    public override async Task HandleAsync(GetAllPollingStationsRequest req, CancellationToken ct)
+    public override async Task HandleAsync(GetAllPollingStationsRequest request , CancellationToken ct)
     {
-        try
-        {
-            var pollingStations = await _repository.GetAll(page: 1, pagesize: 30);
+        try { 
+        Dictionary<string, string>? filterCriteria = null;
+        if (request.Filter!=null) filterCriteria=FilterDecoder.DecodeFilter(request.Filter);
 
-            //var filterCriteria = JsonSerializer.Deserialize<Dictionary<string, string>>(req.Filter);
+        int totalItems = await _repository.CountAsync(filterCriteria: filterCriteria);
+        int totalPages = (int)Math.Ceiling((double)totalItems / request.PageSize);
 
-            //if (!string.IsNullOrWhiteSpace(req.Filter) && filterCriteria != null)
-            //{
-            //    foreach (var criteria in filterCriteria)
-            //    {
-            //        pollingStations = pollingStations.Where(ps => ps.Tags.Any(tag =>
-            //            tag.Key.Equals(criteria.Key, StringComparison.OrdinalIgnoreCase) &&
-            //            tag.Value.Equals(criteria.Value, StringComparison.OrdinalIgnoreCase)));
-            //    }
-            //}
-
-            req.PageSize = Math.Min(req.PageSize, 100);
-
-            var totalItems = pollingStations.Count();
-            var totalPages = (int)Math.Ceiling((double)totalItems / req.PageSize);
-
-            var pollingStationsToShow = pollingStations.ToList();
-            //    .OrderBy(ps => ps.Id)
-            //    .Skip((req.Page - 1) * req.PageSize)
-            //    .Take(req.PageSize)
-            //    .ToList();
-
-            var response = new PaginationResponse<PollingStationModel>
-            {
-                Results = pollingStationsToShow,
-                CurrentPage = req.Page,
-                PageSize = req.PageSize,
-                TotalItems = totalItems,
-                TotalPges = totalPages
-            };
+        List<PollingStationModel> pollingStations = (await _repository.GetAllAsync(filterCriteria: filterCriteria, request.PageSize, request.Page)).ToList();      
+     
+        PaginationResponse<PollingStationReadDto> response = Map.FromEntity(pollingStations, request.Page, request.PageSize, totalItems,totalPages);
 
             await SendAsync(response, cancellation: ct);
         }

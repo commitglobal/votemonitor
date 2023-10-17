@@ -36,7 +36,7 @@ internal class ImportPollingStationsEndpoint : EndpointWithoutRequest
             {
                 var records = csv.GetRecords<PollingStationImport>().ToList();
 
-                await _repository.DeleteAll();
+                await _repository.DeleteAllAsync();
 
                 foreach (var record in records)
                 {
@@ -47,7 +47,7 @@ internal class ImportPollingStationsEndpoint : EndpointWithoutRequest
                         Tags = record.Tags.ToTags()
                     };
 
-                    await _repository.Add(pollingStation);
+                    await _repository.AddAsync(pollingStation);
                 }
                 await SendAsync(records.Count, cancellation: ct);
             }

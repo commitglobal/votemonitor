@@ -12,7 +12,9 @@ COPY ["src/Vote.Monitor.Feature.PollingStation/Vote.Monitor.Feature.PollingStati
 COPY ["src/Vote.Monitor.Core/Vote.Monitor.Core.csproj", "src/Vote.Monitor.Core/"]
 COPY ["src/Vote.Monitor.Feature.Example/Vote.Monitor.Feature.Example.csproj", "src/Vote.Monitor.Feature.Example/"]
 COPY ["src/Vote.Monitor.Infra/Vote.Monitor.Infra.csproj", "src/Vote.Monitor.Infra/"]
+COPY ["src/Vote.Monitor.Feature.Vote/Vote.Monitor.Feature.Vote.csproj", "src/Vote.Monitor.Feature.Vote/"]
 RUN dotnet restore "src/Vote.Monitor.Api/Vote.Monitor.Api.csproj"
+
 COPY . .
 WORKDIR "/src/src/Vote.Monitor.Api"
 RUN dotnet build "Vote.Monitor.Api.csproj" -c Release -o /app/build

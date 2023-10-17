@@ -27,7 +27,7 @@ internal class CreatePollingStationEndpoint : Endpoint<PollingStationCreateReque
         {
             var model = Map.ToEntity(req);
 
-            var result = await _repository.Add(model);
+        var result = await _repository.AddAsync(model);
 
             await SendCreatedAtAsync<GetPollingStationEndpoint>(result, Map.FromEntity(model));
         }

@@ -29,6 +29,8 @@ builder.Services.SwaggerDocument(o =>
         s.Title = "Vote Monitor API";
         s.Version = "v2";
     };
+    o.AutoTagPathSegmentIndex = 2;
+    
 });
 
 var logger = new LoggerConfiguration()
@@ -42,5 +44,7 @@ var app = builder.Build();
 app.UseAuthorization();
 app.UseFastEndpoints();
 app.UseSwaggerGen();
+
+
 app.Run();
 public partial class Program { };
