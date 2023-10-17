@@ -1,15 +1,16 @@
 ﻿using FastEndpoints;
 using Microsoft.Extensions.Logging;
+using Vote.Monitor.Domain.Models;
 using Vote.Monitor.Feature.PollingStation.CreatePollingStation;
 using Vote.Monitor.Feature.PollingStation.Repositories;
 
 namespace Vote.Monitor.Feature.PollingStation.GetPollingStationsTagValues;
 internal class GetPollingStationsTagValuesEndpoint : Endpoint<TagValuesRequest, TagValuesResponse>
 {
-    private readonly IPollingStationRepository _repository;
+    private readonly ITagRepository _repository;
     private readonly ILogger<GetPollingStationsTagValuesEndpoint> _logger;
 
-    public GetPollingStationsTagValuesEndpoint(IPollingStationRepository repository, ILogger<GetPollingStationsTagValuesEndpoint> logger)
+    public GetPollingStationsTagValuesEndpoint(ITagRepository repository, ILogger<GetPollingStationsTagValuesEndpoint> logger)
     {
         _repository = repository;
         _logger = logger;
@@ -24,11 +25,12 @@ internal class GetPollingStationsTagValuesEndpoint : Endpoint<TagValuesRequest, 
 
     public override async Task HandleAsync(TagValuesRequest req, CancellationToken ct)
     {
-        var tags = await _repository.GetTags();
 
         var filters = ConvertToDictionary(req);
 
-        var query = await _repository.GetByTags(filters);
+        IEnumerable<TagModel> tags = await _repository.GetAllAsync(filters,0, 0);
+        //TO DO : implement 
+        //var query = await _repository.GetByTags(filters);
     }
 
     private Dictionary<string, string> ConvertToDictionary(TagValuesRequest request)

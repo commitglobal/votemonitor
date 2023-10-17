@@ -1,7 +1,4 @@
-﻿using System.Linq;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.EntityFrameworkCore;
 using Vote.Monitor.Core.Exceptions;
 using Vote.Monitor.Domain.DataContext;
 using Vote.Monitor.Domain.Models;
@@ -23,6 +20,7 @@ internal class PollingStationRepository : IPollingStationRepository
     public async Task<PollingStationModel> AddAsync(PollingStationModel entity)
 
     {
+        if (entity.Tags == null || entity.Tags.Count == 0) throw new ArgumentException("At least 1 tag is required!");
         List<TagModel> tags = new List<TagModel>();
         foreach (var tag in entity.Tags)
         {
@@ -43,7 +41,7 @@ internal class PollingStationRepository : IPollingStationRepository
     public async Task<PollingStationModel> GetByIdAsync(int id)
     {
         var pollingStation = await _context.PollingStations
-            .FirstOrDefaultAsync(ps => ps.Id == id) ?? 
+            .FirstOrDefaultAsync(ps => ps.Id == id) ??
             throw new NotFoundException<PollingStationModel>($"Polling Station not found for ID: {id}");
 
         return pollingStation;
@@ -51,11 +49,11 @@ internal class PollingStationRepository : IPollingStationRepository
 
     public async Task<IEnumerable<PollingStationModel>> GetAllAsync(int pageSize = 0, int page = 1)
     {
-        if (pageSize< 0) throw new ArgumentOutOfRangeException(nameof(pageSize));
+        if (pageSize < 0) throw new ArgumentOutOfRangeException(nameof(pageSize));
         if (pageSize > 0 && page < 1) throw new ArgumentOutOfRangeException(nameof(page));
-        
-        if (pageSize == 0) return  await _context.PollingStations.OrderBy(st=>st.DisplayOrder).ToListAsync() ;
-        
+
+        if (pageSize == 0) return await _context.PollingStations.OrderBy(st => st.DisplayOrder).ToListAsync();
+
         return await _context.PollingStations.OrderBy(st => st.DisplayOrder)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
@@ -118,20 +116,8 @@ internal class PollingStationRepository : IPollingStationRepository
         await _context.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<PollingStationModel>> GetByTags(Dictionary<string, string> tags)
-    {
-        return await _context.PollingStations
-                       .Where(ps => ps.Tags.All(t => tags.ContainsKey(t.Key) && tags[t.Key] == t.Value))
-                                  .ToListAsync();
-    }
 
-    public async Task<IEnumerable<TagModel>> GetTags()
-    {
-        return await _context.Tags
-            .Select(tag => new TagModel { Id = tag.Id, Key = tag.Key, Value = tag.Value })
-            .Distinct()
-            .ToListAsync();
-    }
+
 
     public async Task<IEnumerable<PollingStationModel>> GetAllAsync(Dictionary<string, string>? filterCriteria, int pageSize = 0, int page = 1)
     {
@@ -140,7 +126,7 @@ internal class PollingStationRepository : IPollingStationRepository
 
         if (filterCriteria == null || filterCriteria.Count == 0) return await GetAllAsync(pageSize, page);
 
-        if (pageSize == 0) return   _context.PollingStations.AsEnumerable().Where(
+        if (pageSize == 0) return _context.PollingStations.AsEnumerable().Where(
             station => filterCriteria.Count(filter => filterCriteria.All(tag => station.Tags.Any(t => t.Key == tag.Key && t.Value == tag.Value))) == filterCriteria.Count
               ).OrderBy(st => st.DisplayOrder);
 
@@ -149,13 +135,13 @@ internal class PollingStationRepository : IPollingStationRepository
               ).OrderBy(st => st.DisplayOrder)
             .Skip((page - 1) * pageSize)
             .Take(pageSize);
-           
+
     }
 
     public async Task<int> CountAsync(Dictionary<string, string>? filterCriteria)
     {
-        if (filterCriteria == null || filterCriteria.Count == 0) return await  _context.PollingStations.CountAsync();
-        
+        if (filterCriteria == null || filterCriteria.Count == 0) return await _context.PollingStations.CountAsync();
+
         return _context.PollingStations.AsEnumerable().Where(
             station => filterCriteria.Count(filter => filterCriteria.All(tag => station.Tags.Any(t => t.Key == tag.Key && t.Value == tag.Value))) == filterCriteria.Count
               ).Count();

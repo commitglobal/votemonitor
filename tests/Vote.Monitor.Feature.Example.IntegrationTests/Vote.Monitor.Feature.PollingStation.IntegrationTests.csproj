@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
-    <RootNamespace>Vote.Monitor.Feature.Example.IntegrationTests</RootNamespace>
+    <RootNamespace>Vote.Monitor.Feature.PollingStation.IntegrationTests</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
