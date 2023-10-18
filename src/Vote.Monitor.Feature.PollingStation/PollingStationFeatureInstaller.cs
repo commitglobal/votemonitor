@@ -10,6 +10,7 @@ public static class PollingStationFeatureInstaller
     {
         
         services.AddScoped<IPollingStationRepository , PollingStationRepository>();
+        services.AddScoped<ITagRepository, TagRepository>();
         return services;
     }
 }

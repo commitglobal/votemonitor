@@ -20,7 +20,7 @@ public class PollingStationRepositoryUpdateTests
         //,out  DbContextOptionsBuilder<AppDbContext> optionsBuilder ,
         var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
         optionsBuilder.UseInMemoryDatabase(dbname);
-         context = new AppDbContext(optionsBuilder.Options);
+        context = new AppDbContext(optionsBuilder.Options);
         repository = new PollingStationRepository(context);
 
     }
@@ -63,7 +63,7 @@ public class PollingStationRepositoryUpdateTests
 
         Assert.Equal(entity.DisplayOrder, result.DisplayOrder);
         Assert.Equal(entity.Address, result.Address);
-        Assert.True(result.Tags.Any(t=>t.Key == entity.Tags[0].Key && t.Value == entity.Tags[0].Value), "tags not found");
+        Assert.True(result.Tags.Any(t => t.Key == entity.Tags[0].Key && t.Value == entity.Tags[0].Value), "tags not found");
         Assert.True(result.Tags.Any(t => t.Key == entity.Tags[1].Key && t.Value == entity.Tags[1].Value), "tags not found");
         //todo -check the tags count
         //Assert.True(context.Tags.Count() == 2, "tags count failed");    
@@ -83,5 +83,85 @@ public class PollingStationRepositoryUpdateTests
 
         // Act & Assert
         await Assert.ThrowsAsync<NotFoundException<PollingStationModel>>(() => repository.UpdateAsync(id, entity));
+    }
+
+    [Fact]
+    public async Task UpdateAsync_ShouldUpdateOnlySpecifiedProperties()
+    {
+        Init("TestDb8", out AppDbContext context, out PollingStationRepository repository);
+
+        // Arrange
+        var id = 1;
+        var existingPollingStation = new PollingStationModel
+        {
+            Id = id,
+            DisplayOrder = 1,
+            Address = "123 Main St",
+            Tags = new List<TagModel>
+        {
+            new TagModel {Key = "key1", Value = "value1"},
+            new TagModel {Key = "key2", Value = "value2"}
+        }
+        };
+
+        var updatedPollingStation = new PollingStationModel
+        {
+            Id = id,
+            DisplayOrder = 2,
+            Address = "456 Main St",
+            Tags = new List<TagModel>{
+                        new TagModel {Key = "key1", Value = "value1"},
+                        new TagModel {Key = "key2", Value = "value3"}
+                    }
+        };
+
+        await repository.AddAsync(existingPollingStation);
+
+        // Act
+        var result = await repository.UpdateAsync(id, updatedPollingStation);
+
+        // Assert
+        Assert.Equal(updatedPollingStation.DisplayOrder, result.DisplayOrder);
+        Assert.Equal(updatedPollingStation.Address, result.Address);
+        Assert.Equal(2, result.Tags.Count);
+        Assert.Contains(existingPollingStation.Tags[0], result.Tags);
+        Assert.Contains(existingPollingStation.Tags[1], result.Tags);
+    }
+
+    [Fact]
+    public async Task UpdateAsync_ShouldClearTags()
+    {
+        Init("TestDb9", out AppDbContext context, out PollingStationRepository repository);
+
+        // Arrange
+        var id = 1;
+        var existingPollingStation = new PollingStationModel
+        {
+            Id = id,
+            DisplayOrder = 1,
+            Address = "123 Main St",
+            Tags = new List<TagModel>
+        {
+            new TagModel { Key = "key1", Value = "value1" },
+            new TagModel { Key = "key2", Value = "value2" },
+        },
+        };
+        await repository.AddAsync(existingPollingStation);
+
+        var updatedPollingStation = new PollingStationModel
+        {
+            Id = id,
+            DisplayOrder = 2,
+            Address = "456 Main St",
+            Tags = new List<TagModel>(),
+        };
+
+        // Act
+        var result = await repository.UpdateAsync(id, updatedPollingStation);
+
+        // Assert
+        Assert.Equal(updatedPollingStation.DisplayOrder, result.DisplayOrder);
+        Assert.Equal(updatedPollingStation.Address, result.Address);
+        Assert.Empty(result.Tags);
     }
 }

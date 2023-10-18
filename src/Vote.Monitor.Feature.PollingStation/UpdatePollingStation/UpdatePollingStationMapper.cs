@@ -23,4 +23,15 @@ internal class UpdatePollingStationMapper : Mapper<PollingStationUpdateRequestDT
         }
         return model;
     }
+
+    public override PollingStationReadDto FromEntity(PollingStationModel source)
+    {
+        return new PollingStationReadDto()
+        {
+            Id = source.Id,
+            Address = source.Address,
+            DisplayOrder = source.DisplayOrder,
+            Tags = source.TagsDictionary()
+        };
+    }
 }
