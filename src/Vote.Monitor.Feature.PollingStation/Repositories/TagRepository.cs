@@ -14,7 +14,7 @@ internal class TagRepository : ITagRepository
             _context = context;
         }
 
-    public async Task<int> CountAsync(Dictionary<string, string>? filterCriteria)
+    public async Task<int> CountAsync(List<TagModel>? filterCriteria)
     {
         //TODO : implement filterCriteria
         return await _context.Tags.CountAsync();
@@ -35,7 +35,7 @@ internal class TagRepository : ITagRepository
     }
 
 
-    public async Task<IEnumerable<TagModel>> GetAllAsync(Dictionary<string, string>? filterCriteria, int pageSize = 0, int page = 1)
+    public async Task<IEnumerable<TagModel>> GetAllAsync(List<TagModel>? filterCriteria, int pageSize = 0, int page = 1)
     {
         if (pageSize < 0) throw new ArgumentOutOfRangeException(nameof(pageSize));
         if (pageSize > 0 && page < 1) throw new ArgumentOutOfRangeException(nameof(page));

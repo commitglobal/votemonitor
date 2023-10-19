@@ -26,27 +26,12 @@ internal class GetPollingStationsTagValuesEndpoint : Endpoint<TagValuesRequest, 
     public override async Task HandleAsync(TagValuesRequest req, CancellationToken ct)
     {
 
-        var filters = ConvertToDictionary(req);
+        var filters = TagModelExtensions.DecodeFilter(req.Filter);
 
         IEnumerable<TagModel> tags = await _repository.GetAllAsync(filters,0, 0);
         //TO DO : implement 
         //var query = await _repository.GetByTags(filters);
     }
 
-    private Dictionary<string, string> ConvertToDictionary(TagValuesRequest request)
-    {
-        var dictionary = new Dictionary<string, string>();
-
-        if (!string.IsNullOrEmpty(request.SelectTag))
-        {
-            dictionary["selectTag"] = request.SelectTag;
-        }
-
-        if (!string.IsNullOrEmpty(request.Filter))
-        {
-            dictionary["filter"] = request.Filter;
-        }
-
-        return dictionary;
-    }
+ 
 }

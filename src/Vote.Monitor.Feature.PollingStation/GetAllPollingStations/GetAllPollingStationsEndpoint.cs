@@ -29,8 +29,8 @@ internal partial class GetAllPollingStationsEndpoint : Endpoint<GetAllPollingSta
     public override async Task HandleAsync(GetAllPollingStationsRequest request , CancellationToken ct)
     {
         try { 
-        Dictionary<string, string>? filterCriteria = null;
-        if (request.Filter!=null) filterCriteria=FilterDecoder.DecodeFilter(request.Filter);
+        List<TagModel>? filterCriteria = null;
+        if (request.Filter!=null) filterCriteria=TagModelExtensions.DecodeFilter(request.Filter);
 
         int totalItems = await _repository.CountAsync(filterCriteria: filterCriteria);
         int totalPages = (int)Math.Ceiling((double)totalItems / request.PageSize);
