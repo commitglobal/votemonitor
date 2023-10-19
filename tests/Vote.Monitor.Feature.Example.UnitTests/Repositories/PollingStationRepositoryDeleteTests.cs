@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Vote.Monitor.Core.Exceptions;
 using Vote.Monitor.Domain.DataContext;
 using Vote.Monitor.Domain.Models;
@@ -43,7 +37,7 @@ public class PollingStationRepositoryDeleteTests
 
             };
 
-    private void Init(string dbname,out AppDbContext context,  out PollingStationRepository repository)
+    private void Init(string dbname, out AppDbContext context, out PollingStationRepository repository)
     {
         //,out  DbContextOptionsBuilder<AppDbContext> optionsBuilder ,out AppDbContext context
         var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
@@ -59,7 +53,7 @@ public class PollingStationRepositoryDeleteTests
     {
         // Arrange
         Init("delTest1", out AppDbContext context, out PollingStationRepository repository);
-        
+
         var id = 3;
 
         // Act & Assert
@@ -91,5 +85,69 @@ public class PollingStationRepositoryDeleteTests
         // Assert
 
         Assert.True(context.PollingStations.Count() == 1, "PollingStation not deleted");
+    }
+
+    [Fact]
+    public async Task DeleteAsync_ShouldDeletePollingStationAndOrphanedTags()
+    {
+        Init("delTest4", out AppDbContext context, out PollingStationRepository repository);
+
+        // Arrange
+        var pollingStationId = 3;
+        var pollingStation = new PollingStationModel
+        {
+            Id = pollingStationId,
+            DisplayOrder = 3,
+            Address = "123 Main St",
+            Tags = new List<TagModel>
+                    {
+                        new TagModel {Key = "key test", Value = "value test"},
+                    }
+        };
+        await repository.AddAsync(pollingStation);
+
+        // Act
+        await repository.DeleteAsync(pollingStationId);
+
+        // Assert
+        var deletedPollingStation = await context.PollingStations.FirstOrDefaultAsync(ps => ps.Id == pollingStationId);
+        Assert.Null(deletedPollingStation);
+
+        var deletedOrphanedTag = await context.Tags.FirstOrDefaultAsync(tag => tag.Key == "key test");
+        Assert.Null(deletedOrphanedTag);
+    }
+
+    [Fact]
+    public async Task DeleteAsync_ShouldNotDeletePollingStationWithTags()
+    {
+        // Arrange
+        Init("delTest5", out AppDbContext context, out PollingStationRepository repository);
+
+        var pollingStationId = 4;
+        var pollingStation = new PollingStationModel
+        {
+            Id = pollingStationId,
+            DisplayOrder = 1,
+            Address = "123 Main St",
+            Tags = new List<TagModel>
+        {
+            new TagModel { Key = "key1", Value = "value one" },
+            new TagModel { Key = "key2", Value = "value two" }
+        }
+        };
+        await repository.AddAsync(pollingStation);
+
+        // Act
+        await repository.DeleteAsync(pollingStationId);
+
+        // Assert
+        var deletedPollingStation = await context.PollingStations.FirstOrDefaultAsync(ps => ps.Id == pollingStationId);
+        Assert.Null(deletedPollingStation);
+
+        var existingTag1 = await context.Tags.FirstOrDefaultAsync(tag => tag.Key == "key1");
+        Assert.NotNull(existingTag1);
+
+        var existingTag2 = await context.Tags.FirstOrDefaultAsync(tag => tag.Key == "key2");
+        Assert.NotNull(existingTag2);
     }
 }

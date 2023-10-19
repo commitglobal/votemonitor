@@ -14,9 +14,6 @@ internal class PollingStationRepository : IPollingStationRepository
         _context = context;
     }
 
-
-
-
     public async Task<PollingStationModel> AddAsync(PollingStationModel entity)
 
     {
@@ -40,7 +37,6 @@ internal class PollingStationRepository : IPollingStationRepository
         await _context.SaveChangesAsync();
         return entity;
     }
-
 
     public async Task<PollingStationModel> GetByIdAsync(int id)
     {
@@ -109,7 +105,6 @@ internal class PollingStationRepository : IPollingStationRepository
         return pollingStation;
     }
 
-
     public async Task DeleteAsync(int id)
     {
         var pollingStation = await _context.PollingStations.FirstOrDefaultAsync(ps => ps.Id == id) ??
@@ -118,8 +113,9 @@ internal class PollingStationRepository : IPollingStationRepository
         _context.PollingStations.Remove(pollingStation);
 
         await _context.SaveChangesAsync();
-    }
 
+        await DeleteOrphanedTags();
+    }
 
     public async Task DeleteAllAsync()
     {
