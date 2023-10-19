@@ -6,7 +6,6 @@ using Serilog;
 using Serilog.Events;
 using Vote.Monitor.Core;
 using Vote.Monitor.Feature.PollingStation;
-using Vote.Monitor.Core;
 using Vote.Monitor.Domain;
 
 var builder = WebApplication.CreateBuilder();

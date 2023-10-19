@@ -1,6 +1,5 @@
 ﻿using FastEndpoints;
 using Microsoft.Extensions.Logging;
-using Vote.Monitor.Feature.PollingStation.CreatePollingStation;
 using Vote.Monitor.Feature.PollingStation.GetPollingStation;
 using Vote.Monitor.Feature.PollingStation.Repositories;
 
@@ -15,7 +14,7 @@ internal class UpdatePollingStationEndpoint : Endpoint<PollingStationUpdateReque
         _repository = repository;
         _logger = logger;
     }
-
+    
     public override void Configure()
     {
         Put("api/polling-stations/{id:int}");
@@ -31,7 +30,7 @@ internal class UpdatePollingStationEndpoint : Endpoint<PollingStationUpdateReque
 
             var model = Map.ToEntity(req);
 
-        await _repository.UpdateAsync(id, model);
+            await _repository.UpdateAsync(id, model);
 
             await SendCreatedAtAsync<GetPollingStationEndpoint>(new { id = model.Id }, Map.FromEntity(model));
         }

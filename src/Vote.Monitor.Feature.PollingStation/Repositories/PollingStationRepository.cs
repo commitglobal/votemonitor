@@ -78,6 +78,7 @@ internal class PollingStationRepository : IPollingStationRepository
             {
                 var tagToUpdate = await _context.Tags.FirstOrDefaultAsync(t => t.Key == tag.Key);
 
+
                 if (tagToUpdate == null)
                 {
                     tagToUpdate = new TagModel
@@ -85,14 +86,21 @@ internal class PollingStationRepository : IPollingStationRepository
                         Key = tag.Key,
                         Value = tag.Value
                     };
-                    _context.Tags.Add(tagToUpdate);
-                };
 
-                //pollingStation.Tags.Add(tagToUpdate.Id.ToString() ,new PollingStationTag { Tag = tagToUpdate });
+                    _context.Tags.Add(tagToUpdate);
+                }
+                else
+                {
+                    tagToUpdate.Value = tag.Value;
+                }
+
                 pollingStation.Tags.Add(tagToUpdate);
             }
         }
+
         await _context.SaveChangesAsync();
+
+        await DeleteOrphanedTags();
 
         return pollingStation;
     }
@@ -145,5 +153,17 @@ internal class PollingStationRepository : IPollingStationRepository
         return _context.PollingStations.AsEnumerable().Where(
             station => filterCriteria.Count(filter => filterCriteria.All(tag => station.Tags.Any(t => t.Key == tag.Key && t.Value == tag.Value))) == filterCriteria.Count
               ).Count();
+    }
+
+    private async Task DeleteOrphanedTags()
+    {
+        var orphanedTags = _context.Tags
+            .Where(tag => !tag.PollingStations.Any())
+            .ToList();
+
+        foreach (var tag in orphanedTags)
+            _context.Tags.Remove(tag);
+
+        await _context.SaveChangesAsync();
     }
 }
