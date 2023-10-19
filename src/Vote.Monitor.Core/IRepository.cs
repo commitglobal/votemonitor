@@ -9,9 +9,9 @@ public interface IRepositoryCommand<TEntity> where TEntity : class
     Task DeleteAllAsync();
  
 }
-public interface IRepositoryQuery<TEntity> where TEntity : class
+public interface IRepositoryQuery<TEntity,TTag> where TEntity : class
 {
-    Task<IEnumerable<TEntity>> GetAllAsync(Dictionary<string, string>? filterCriteria, int pageSize, int page);
+    Task<IEnumerable<TEntity>> GetAllAsync(List<TTag>? filterCriteria, int pageSize, int page);
     Task<IEnumerable<TEntity>> GetAllAsync(int pageSize, int page);
-    Task<int> CountAsync(Dictionary<string, string>? filterCriteria);
+    Task<int> CountAsync(List<TTag>? filterCriteria);
 }

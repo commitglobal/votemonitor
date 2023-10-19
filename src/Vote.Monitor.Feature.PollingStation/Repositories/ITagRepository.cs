@@ -3,7 +3,7 @@ using Vote.Monitor.Domain.Models;
 
 namespace Vote.Monitor.Feature.PollingStation.Repositories;
 
-internal interface ITagRepository : IRepositoryQuery<TagModel>
+internal interface ITagRepository : IRepositoryQuery<TagModel,TagModel>
 {
 
 }

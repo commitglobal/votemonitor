@@ -48,6 +48,34 @@ namespace Vote.Monitor.Feature.PollingStation.UnitTests.Repositories
             Assert.True(context.Tags.Count() == initTagCount + 2, $"Tags count failed {tagCount}, inittagcount {initTagCount}");
 
         }
+       
+
+        [Fact]
+        public async Task AddAsync_ShouldThrowExceptionDuplicateTagKey()
+        {
+            // Arrange
+            var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
+            optionsBuilder.UseInMemoryDatabase("addTestDb2");
+            var context = new AppDbContext(optionsBuilder.Options);
+            var repository = new PollingStationRepository(context);
+            var entity = new PollingStationModel
+            {
+                Id = 1,
+                DisplayOrder = 1,
+                Address = "123 Main St",
+                Tags = new List<TagModel>
+                {
+                    new TagModel {Key = "key1", Value = "value1"},
+                    new TagModel {Key = "key1", Value = "value2"}
+                }
+            };
+            
+            //act 
+            Func<Task> act = () => repository.AddAsync(entity);
+
+            //Assert
+            var exception = await Assert.ThrowsAsync<ArgumentException>(act);
+        }
 
         [Fact]
 
@@ -64,6 +92,29 @@ namespace Vote.Monitor.Feature.PollingStation.UnitTests.Repositories
                 {
 
                 }
+            };
+
+
+            Func<Task> act = () => repository.AddAsync(entity);
+
+            //Assert
+            var exception = await Assert.ThrowsAsync<ArgumentException>(act);
+
+            exception.Message.Contains("At least 1 tag is required!");
+
+        }
+
+        [Fact]
+        public async Task AddAsync_ShouldThrowExceptionNoTagNull()
+        {
+            // Arrange
+            var repository = new PollingStationRepository(null);
+            var entity = new PollingStationModel
+            {
+                Id = 1,
+                DisplayOrder = 1,
+                Address = "123 Main St",
+                Tags = null
             };
 
 

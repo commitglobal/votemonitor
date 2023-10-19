@@ -6,13 +6,13 @@ public static class TagModelExtensions
     {
         return pollingStation.Tags.Any(t => t.Key == key && t.Value == value);
     }
-    public static Dictionary<string,string> TagsDictionary(this PollingStationModel pollingStation)
+    public static Dictionary<string, string> TagsDictionary(this PollingStationModel pollingStation)
     {
         return pollingStation.Tags.ToDictionary(t => t.Key, t => t.Value);
     }
-    
 
-    public static List<TagModel> ToTags(this Dictionary<string,string> tags)
+
+    public static List<TagModel> ToTags(this Dictionary<string, string> tags)
     {
         return tags.Select(t => new TagModel()
         {
@@ -20,4 +20,23 @@ public static class TagModelExtensions
             Value = t.Value
         }).ToList();
     }
+
+
+    public static List<TagModel> DecodeFilter(string filterString, char separator= ',')
+    {
+        var filterDict = new List<TagModel>();
+
+        foreach (var filterPair in filterString.Split(separator))
+        {
+            var keyValue = filterPair.Split(':');
+            var key = keyValue[0];
+            var value = keyValue[1];
+
+            filterDict.Add(new TagModel{ Key = keyValue[0], Value = keyValue[1] });
+        }
+
+        return filterDict;
+    }
+
+
 }

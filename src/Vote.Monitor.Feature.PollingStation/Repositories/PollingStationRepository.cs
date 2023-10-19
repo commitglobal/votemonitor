@@ -21,6 +21,10 @@ internal class PollingStationRepository : IPollingStationRepository
 
     {
         if (entity.Tags == null || entity.Tags.Count == 0) throw new ArgumentException("At least 1 tag is required!");
+
+        var duplicateTag = entity.Tags.GroupBy(x => x.Key).Where(g => g.Count() > 1).Select(y => y.Key).FirstOrDefault();
+        if (duplicateTag != null) throw new ArgumentException($"Duplicate tag key: {duplicateTag}");
+        
         List<TagModel> tags = new List<TagModel>();
         foreach (var tag in entity.Tags)
         {
@@ -126,8 +130,8 @@ internal class PollingStationRepository : IPollingStationRepository
 
 
 
-
-    public async Task<IEnumerable<PollingStationModel>> GetAllAsync(Dictionary<string, string>? filterCriteria, int pageSize = 0, int page = 1)
+    
+    public async Task<IEnumerable<PollingStationModel>> GetAllAsync(List<TagModel>? filterCriteria, int pageSize = 0, int page = 1)
     {
         if (pageSize < 0) throw new ArgumentOutOfRangeException(nameof(pageSize));
         if (pageSize > 0 && page < 1) throw new ArgumentOutOfRangeException(nameof(page));
@@ -146,7 +150,7 @@ internal class PollingStationRepository : IPollingStationRepository
 
     }
 
-    public async Task<int> CountAsync(Dictionary<string, string>? filterCriteria)
+    public async Task<int> CountAsync(List<TagModel>? filterCriteria)
     {
         if (filterCriteria == null || filterCriteria.Count == 0) return await _context.PollingStations.CountAsync();
 
