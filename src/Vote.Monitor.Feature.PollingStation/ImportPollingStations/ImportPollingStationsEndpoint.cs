@@ -9,7 +9,7 @@ using Vote.Monitor.Domain.Models;
 using Vote.Monitor.Feature.PollingStation.Repositories;
 
 namespace Vote.Monitor.Feature.PollingStation.ImportPollingStations;
-internal class ImportPollingStationsEndpoint : EndpointWithoutRequest
+public class ImportPollingStationsEndpoint : EndpointWithoutRequest
 {
     private readonly IPollingStationRepository _repository;
     private readonly ILogger<ImportPollingStationsEndpoint> _logger;
@@ -28,7 +28,7 @@ internal class ImportPollingStationsEndpoint : EndpointWithoutRequest
         AllowAnonymous();
     }
 
-    public override async Task HandleAsync(CancellationToken ct)
+    public override async Task<int> HandleAsync(CancellationToken ct)
     {
         var csvFilePath = _configuration.GetSection("CSVFileToImport")["path"];
         int importedCount = 0;
@@ -76,6 +76,6 @@ internal class ImportPollingStationsEndpoint : EndpointWithoutRequest
 
         ThrowIfAnyErrors();
 
-        await SendAsync(importedCount, cancellation: ct);
+        return importedCount;
     }
 }

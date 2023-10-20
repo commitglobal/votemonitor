@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using FastEndpoints;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Vote.Monitor.Domain.Models;
@@ -9,51 +10,56 @@ using Xunit;
 namespace Vote.Monitor.Feature.PollingStation.UnitTests;
 public class ImportPollingStationTests
 {
-    //[Fact]
-    //public async Task HandleAsync_SuccessfulImport_ReturnsImportedCount()
-    //{
-    //    // Arrange
-    //    var repository = new Mock<IPollingStationRepository>();
-    //    var logger = new Mock<ILogger<ImportPollingStationsEndpoint>>();
-    //    var configuration = new Mock<IConfiguration>();
-    //    configuration.Setup(c => c.GetSection("CSVFileToImport")["path"])
-    //                 .Returns("test.csv");
+    [Fact]
+    public async Task HandleAsync_SuccessfulImport_ReturnsImportedCount()
+    {
+        // Arrange
+        var repository = new Mock<IPollingStationRepository>();
+        var logger = new Mock<ILogger<ImportPollingStationsEndpoint>>();
+        var configuration = new Mock<IConfiguration>();
+        configuration.Setup(c => c.GetSection("CSVFileToImport")["path"])
+                     .Returns("test.csv");
+        var csvData = "DisplayOrder,Address,Tag1,Tag2\n" +
+                     "1,Address1,TagA,TagB\n" +
+                     "2,Address2,TagC,TagD\n" +
+                     "3,Address3,TagE,TagF";
 
-    //    var endpoint = new ImportPollingStationsEndpoint(repository.Object, logger.Object, configuration.Object);
-    //    var cancellationToken = new CancellationToken();
+        var tempCsvPath = Path.Combine(Path.GetTempPath(), "test.csv");
+        File.WriteAllText(tempCsvPath, csvData);
 
-    //    // Act
-    //    await endpoint.HandleAsync(cancellationToken);
+        configuration.Setup(c => c.GetSection("CSVFileToImport")["path"]).Returns(tempCsvPath);
 
-    //    // Assert
-    //    repository.Verify(r => r.DeleteAllAsync(), Times.Once);
-    //    repository.Verify(r => r.AddAsync(It.IsAny<PollingStationModel>()), Times.Exactly(5));
-    //    logger.VerifyNoOtherCalls();
+        var endpoint = new ImportPollingStationsEndpoint(repository.Object, logger.Object, configuration.Object);
+        var cancellationToken = new CancellationToken();
 
-    //    // Assert.Equal(5, importResult); 
-    //    // Assert.Equal(0, importResult); 
-    //}
+        // Act
+        var importResult = await endpoint.HandleAsync(cancellationToken);
 
-    //[Fact]
-    //public async Task HandleAsync_ImportFailure_LogsErrorAndReturnsZero()
-    //{
-    //    // Arrange
-    //    var repository = new Mock<IPollingStationRepository>();
+        // Assert
+        repository.Verify(r => r.DeleteAllAsync(), Times.Once);
+        Assert.Equal(3, importResult);
+    }
 
-    //    var logger = new Mock<ILogger<ImportPollingStationsEndpoint>>();
-    //    var configuration = new Mock<IConfiguration>();
-    //    configuration.Setup(c => c.GetSection("CSVFileToImport")["path"])
-    //                 .Returns("test.csv");
+    [Fact]
+    public async Task HandleAsync_ImportFailure_ThrowError()
+    {
+        // Arrange
+        var repository = new Mock<IPollingStationRepository>();
+        var logger = new Mock<ILogger<ImportPollingStationsEndpoint>>();
+        var configuration = new Mock<IConfiguration>();
+        configuration.Setup(c => c.GetSection("CSVFileToImport")["path"])
+                     .Returns("test.csv");
 
-    //    var endpoint = new ImportPollingStationsEndpoint(repository.Object, logger.Object, configuration.Object);
-    //    var cancellationToken = new CancellationToken();
+        var endpoint = new ImportPollingStationsEndpoint(repository.Object, logger.Object, configuration.Object);
+        var cancellationToken = new CancellationToken();
 
-    //    // Act
-    //    await endpoint.HandleAsync(cancellationToken);
+        // Act
+        await Assert.ThrowsAsync<ValidationFailureException>(() => endpoint.HandleAsync(cancellationToken));
 
-    //    // Assert
-    //    repository.Verify(r => r.DeleteAllAsync(), Times.Never);
-    //    logger.Verify(l => l.LogError($"CSV file not found at path: test.csv"), Times.Once);
-    //    Assert.Contains("CSV file not found.", endpoint.Env.ToString());
-    //}
+        // Assert
+        repository.Verify(r => r.DeleteAllAsync(), Times.Never);
+        repository.Verify(r => r.AddAsync(It.IsAny<PollingStationModel>()), Times.Exactly(0));
+
+        Assert.Contains("CSV file not found at path: test.csv", endpoint.ValidationFailures[0].ToString());
+    }
 }
