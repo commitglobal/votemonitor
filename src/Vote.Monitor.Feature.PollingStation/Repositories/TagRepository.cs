@@ -1,58 +1,53 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
+using Microsoft.Extensions.Configuration.EnvironmentVariables;
+using Microsoft.Extensions.Logging;
 using Vote.Monitor.Domain.DataContext;
 using Vote.Monitor.Domain.Models;
 
 namespace Vote.Monitor.Feature.PollingStation.Repositories;
 
 internal class TagRepository : ITagRepository
+{
+    private readonly AppDbContext _context;
+
+    //temp 
+    public TagRepository(AppDbContext context)
     {
-        private readonly AppDbContext _context;
-
-        //temp 
-        public TagRepository(AppDbContext context)
-        {
-            _context = context;
-        }
-
-    public async Task<int> CountAsync(List<TagModel>? filterCriteria)
-    {
-        //TODO : implement filterCriteria
-        return await _context.Tags.CountAsync();
-
-        //if (filterCriteria == null || filterCriteria.Count == 0) return await _context.Tags.CountAsync();
-
-        //return _context.PollingStations.AsEnumerable().Where(
-        //    station => filterCriteria.Count(filter => filterCriteria.All(tag => station.Tags.Any(t => t.Key == tag.Key && t.Value == tag.Value))) == filterCriteria.Count
-        //      ).Count();
+        _context = context;
     }
 
-    public async Task<IEnumerable<TagModel>> GetAllAsync(int pageSize=0, int page=1)
+    public async Task<IEnumerable<string>> GetAllTagKeysAsync()
     {
-        return await _context.Tags
-            .Select(tag => new TagModel { Id = tag.Id, Key = tag.Key, Value = tag.Value })
+        var tagskey = await _context.Tags
+            .Select(tag => tag.Key).Distinct()
             .ToListAsync();
-           
+        return tagskey;
+
     }
 
 
-    public async Task<IEnumerable<TagModel>> GetAllAsync(List<TagModel>? filterCriteria, int pageSize = 0, int page = 1)
+    public async Task<IEnumerable<TagModel>> GetTagsAsync(string selectKey, List<TagModel>? filterCriteria)
     {
-        if (pageSize < 0) throw new ArgumentOutOfRangeException(nameof(pageSize));
-        if (pageSize > 0 && page < 1) throw new ArgumentOutOfRangeException(nameof(page));
 
-        return await GetAllAsync(pageSize, page);
+        // var st = _context.PollingStations.ToList();
+        IEnumerable<PollingStationModel> stationswithtags;
+        if (filterCriteria != null && filterCriteria.Count > 0)
+            stationswithtags = from station in _context.PollingStations.ToList()
+                               where
+                                (from tag in station.Tags
+                                 join filter in filterCriteria
+                                on new { tag.Key, tag.Value } equals new { filter.Key, filter.Value }
+                                 select tag)
+                                       .Count() == filterCriteria.Count()
 
-        //TODO: implement filterCriteria
-        //if (filterCriteria == null || filterCriteria.Count == 0)  return await GetAllAsync(pageSize, page);
+                               select station;
+        else
+            stationswithtags =  _context.PollingStations;
 
-        //if (pageSize == 0) return _context.PollingStations.AsEnumerable().Where(
-        //    station => filterCriteria.Count(filter => filterCriteria.All(tag => station.Tags.Any(t => t.Key == tag.Key && t.Value == tag.Value))) == filterCriteria.Count
-        //      ).OrderBy(st => st.DisplayOrder);
+        var tags = stationswithtags.Select(t => t.Tags).SelectMany(x => x).Where(c => c.Key == selectKey).Distinct().ToList();
+        return tags;
 
-        //return _context.PollingStations.AsEnumerable().Where(
-        //    station => filterCriteria.Count(filter => filterCriteria.All(tag => station.Tags.Any(t => t.Key == tag.Key && t.Value == tag.Value))) == filterCriteria.Count
-        //      ).OrderBy(st => st.DisplayOrder)
-        //    .Skip((page - 1) * pageSize)
-        //    .Take(pageSize);
     }
 }
