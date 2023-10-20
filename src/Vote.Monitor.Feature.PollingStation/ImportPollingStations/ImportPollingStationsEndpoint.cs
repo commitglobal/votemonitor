@@ -2,7 +2,9 @@
 using CsvHelper;
 using CsvHelper.Configuration;
 using FastEndpoints;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Vote.Monitor.Core.Exceptions;
 using Vote.Monitor.Domain.Models;
 using Vote.Monitor.Feature.PollingStation.Repositories;
 
@@ -11,11 +13,12 @@ internal class ImportPollingStationsEndpoint : EndpointWithoutRequest
 {
     private readonly IPollingStationRepository _repository;
     private readonly ILogger<ImportPollingStationsEndpoint> _logger;
-
-    public ImportPollingStationsEndpoint(IPollingStationRepository repository, ILogger<ImportPollingStationsEndpoint> logger)
+    private readonly IConfiguration _configuration;
+    public ImportPollingStationsEndpoint(IPollingStationRepository repository, ILogger<ImportPollingStationsEndpoint> logger, IConfiguration config)
     {
         _repository = repository;
         _logger = logger;
+        _configuration = config;
     }
 
     public override void Configure()
@@ -27,13 +30,24 @@ internal class ImportPollingStationsEndpoint : EndpointWithoutRequest
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        var tempCSVPath = "C://temp";
+        var csvFilePath = _configuration.GetSection("CSVFileToImport")["path"];
+        int importedCount = 0;
 
         try
         {
-            using (var reader = new StringReader(tempCSVPath))
-            using (var csv = new CsvReader(reader, configuration: new CsvConfiguration(CultureInfo.InvariantCulture) { HasHeaderRecord = true }))
+            if (!File.Exists(csvFilePath))
             {
+                throw new NotFoundException<ImportPollingStationsEndpoint>($"CSV file not found at path: {csvFilePath}");
+            }
+
+            using (var reader = new StreamReader(csvFilePath))
+            using (var csv = new CsvReader(reader, configuration: new CsvConfiguration(CultureInfo.InvariantCulture)
+            {
+                HasHeaderRecord = true,
+            }))
+            {
+                csv.Context.RegisterClassMap<PollingStationImportDTOMap>();
+
                 var records = csv.GetRecords<PollingStationImport>().ToList();
 
                 await _repository.DeleteAllAsync();
@@ -48,8 +62,9 @@ internal class ImportPollingStationsEndpoint : EndpointWithoutRequest
                     };
 
                     await _repository.AddAsync(pollingStation);
+
+                    importedCount++;
                 }
-                await SendAsync(records.Count, cancellation: ct);
             }
         }
         catch (Exception ex)
@@ -60,5 +75,7 @@ internal class ImportPollingStationsEndpoint : EndpointWithoutRequest
         }
 
         ThrowIfAnyErrors();
+
+        await SendAsync(importedCount, cancellation: ct);
     }
 }
