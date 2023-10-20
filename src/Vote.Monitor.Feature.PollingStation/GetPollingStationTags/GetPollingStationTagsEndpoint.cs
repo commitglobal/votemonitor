@@ -27,9 +27,11 @@ internal class GetPollingStationTagsEndpoint : EndpointWithoutRequest
     {
         try
         {
-            var tags = await _repository.GetAllAsync(0,1);
+            var tags = await _repository.GetAllTagKeysAsync();
+            //get distinct keys from tags
 
-            await SendAsync(tags, cancellation: ct);
+
+            await SendAsync(tags);
         }
         catch (Exception ex)
         {
