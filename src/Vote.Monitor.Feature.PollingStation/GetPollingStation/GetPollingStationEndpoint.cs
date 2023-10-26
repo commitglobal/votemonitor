@@ -24,20 +24,7 @@ internal class GetPollingStationEndpoint : EndpointWithoutRequest<PollingStation
     public override async Task HandleAsync(CancellationToken ct)
     {
         Guid id = Route<Guid>("id");
-
-        try
-        {
-            var model = await _repository.GetByIdAsync(id);
-
-            await SendAsync(Map.FromEntity(model), cancellation: ct);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error retrieving Polling Station by ID ");
-
-            AddError(ex.Message);
-        }
-
-        ThrowIfAnyErrors();
+        var model = await _repository.GetByIdAsync(id);
+        await SendAsync(Map.FromEntity(model), cancellation: ct);
     }
 }

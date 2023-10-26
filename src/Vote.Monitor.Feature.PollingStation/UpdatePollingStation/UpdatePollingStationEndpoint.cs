@@ -14,7 +14,7 @@ internal class UpdatePollingStationEndpoint : Endpoint<PollingStationUpdateReque
         _repository = repository;
         _logger = logger;
     }
-    
+
     public override void Configure()
     {
         Put("api/polling-stations/{id:Guid}");
@@ -24,23 +24,12 @@ internal class UpdatePollingStationEndpoint : Endpoint<PollingStationUpdateReque
 
     public override async Task HandleAsync(PollingStationUpdateRequestDTO req, CancellationToken ct)
     {
-        try
-        {
-            var id = Route<Guid>("id");
+        var id = Route<Guid>("id");
 
-            var model = Map.ToEntity(req);
+        var model = Map.ToEntity(req);
 
-            await _repository.UpdateAsync(id, model);
+        await _repository.UpdateAsync(id, model);
 
-            await SendCreatedAtAsync<GetPollingStationEndpoint>(new { id = model.Id }, Map.FromEntity(model));
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error updating Polling Station ");
-
-            AddError(ex.Message);
-        }
-
-        ThrowIfAnyErrors();
+        await SendCreatedAtAsync<GetPollingStationEndpoint>(new { id = model.Id }, Map.FromEntity(model));
     }
 }
