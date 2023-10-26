@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Conventions;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Moq;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Query.ExpressionTranslators.Internal;
+﻿using Microsoft.EntityFrameworkCore;
 using Vote.Monitor.Core.Exceptions;
 using Vote.Monitor.Domain.DataContext;
 using Vote.Monitor.Domain.Models;
@@ -20,14 +10,14 @@ public class PollingStationRepositoryGetTests
 {
 
 
-    private List<PollingStationModel> _pollingStations = new List<PollingStationModel>
+    private readonly List<PollingStationModel> _pollingStations = new()
             {
                 new PollingStationModel
                 {
-                    Id = 1,
+                    Id = Guid.Parse("613066f1-1d8e-4119-bd58-d2dcb53d52b8"),
                     Address ="addr1",
                     DisplayOrder =0,
-                    Tags = new List<TagModel>
+                    Tags = new ()
                     {
                         new TagModel {Key = "key1", Value = "value1"},
                         new TagModel {Key = "key2", Value = "value2"},
@@ -36,7 +26,7 @@ public class PollingStationRepositoryGetTests
                 },
                 new PollingStationModel
                 {
-                    Id = 2,
+                    Id =  Guid.Parse("bffab6bc-ab8f-4197-a5fe-3c559dfb8d72"),
                     Address ="addr2",
                     DisplayOrder =1,
                     Tags = new List<TagModel>
@@ -48,7 +38,7 @@ public class PollingStationRepositoryGetTests
                 },
                  new PollingStationModel
                 {
-                    Id = 3,
+                    Id = Guid.Parse("fed8db2e-c5a4-48e6-9eb1-58f899cd5f9f"),
                     Address ="addr3",
                     DisplayOrder =1,
                     Tags = new List<TagModel>
@@ -60,7 +50,7 @@ public class PollingStationRepositoryGetTests
                 },
                   new PollingStationModel
                 {
-                    Id = 4,
+                    Id = Guid.Parse("8067d8fb-4270-473f-94e6-fdac927e3557"),
                     Address ="addr2",
                     DisplayOrder =1,
                     Tags = new List<TagModel>
@@ -72,7 +62,7 @@ public class PollingStationRepositoryGetTests
                 },
                    new PollingStationModel
                 {
-                    Id = 5,
+                    Id = Guid.Parse("afb6e443-9e37-4c9f-b737-f38352ffbfec"),
                     Address ="addr2",
                     DisplayOrder =1,
                     Tags = new List<TagModel>
@@ -85,7 +75,7 @@ public class PollingStationRepositoryGetTests
 
             };
 
-    private void Init(out PollingStationRepository repository)
+    private static void Init(out PollingStationRepository repository)
     {
         //,out  DbContextOptionsBuilder<AppDbContext> optionsBuilder ,out AppDbContext context
         var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
@@ -95,7 +85,7 @@ public class PollingStationRepositoryGetTests
     }
 
 
-    private void Init(out PollingStationRepository repository, List<PollingStationModel> pollingStations)
+    private static void Init(out PollingStationRepository repository, List<PollingStationModel> pollingStations)
     {
         //,out  DbContextOptionsBuilder<AppDbContext> optionsBuilder ,out AppDbContext context
         Init(out repository);
@@ -115,7 +105,7 @@ public class PollingStationRepositoryGetTests
         // Arrange
         Init(out PollingStationRepository repository, _pollingStations);
 
-        var id = 1;
+        var id = Guid.Parse("613066f1-1d8e-4119-bd58-d2dcb53d52b8");
 
         // Act
         var result = await repository.GetByIdAsync(id);
@@ -130,7 +120,7 @@ public class PollingStationRepositoryGetTests
         // Arrange
         Init(out PollingStationRepository repository, _pollingStations);
 
-        var id = 6;
+        var id = Guid.Parse("613066f1-1d8e-4119-bd58-d2dcb53d5878");
 
         // Act & Assert
         await Assert.ThrowsAsync<NotFoundException<PollingStationModel>>(() => repository.GetByIdAsync(id));
@@ -144,9 +134,7 @@ public class PollingStationRepositoryGetTests
         // Arrange
         Init(out PollingStationRepository repository);
 
-        // Act
-         Func<Task> act = () => repository.GetAllAsync(-1, 1);
-        // Assert
+        // Act && Assert
         await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => repository.GetAllAsync(-1, 1));
     }
 
@@ -159,7 +147,7 @@ public class PollingStationRepositoryGetTests
         // Act
 
         // Assert
-        await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => repository.GetAllAsync(tags,1, 0));
+        await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => repository.GetAllAsync(tags, 1, 0));
     }
 
     [Fact]
@@ -170,7 +158,7 @@ public class PollingStationRepositoryGetTests
         var tags = new List<TagModel>() { new TagModel { Key = "key1", Value = "value1" } };
 
         // Act
-        
+
         // Assert
         await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => repository.GetAllAsync(-1, 1));
     }
@@ -233,7 +221,7 @@ public class PollingStationRepositoryGetTests
 
         // Assert
         Assert.Equal(_pollingStations[0], result[0]);
-        Assert.True(result.Count() == 1, "Should be 1 PS in the repo");
+        Assert.True(result.Count == 1, "Should be 1 PS in the repo");
     }
     [Fact]
     public async Task GetAllAsync_ShouldReturnNoPollingStationsNoFilterPagesizeeq10pageeq2()
@@ -249,7 +237,7 @@ public class PollingStationRepositoryGetTests
 
         // Assert
 
-        Assert.True(result.Count() == 0, "Should return NO PollingStation");
+        Assert.True(result.Count == 0, "Should return NO PollingStation");
     }
 
     [Fact]
@@ -266,7 +254,7 @@ public class PollingStationRepositoryGetTests
 
         // Assert
 
-        Assert.True(result.Count() == 0, "Should be no PS returned");
+        Assert.True(result.Count == 0, "Should be no PS returned");
     }
 
     [Fact]
@@ -281,39 +269,13 @@ public class PollingStationRepositoryGetTests
         };
 
 
-        List<PollingStationModel> expectedResult = new List<PollingStationModel>()
-        {
-  new PollingStationModel
-                {
-                    Id = 1,
-                    Address ="addr1",
-                    DisplayOrder =0,
-                    Tags = new List<TagModel>
-                    {
-                        new TagModel {Key = "key1", Value = "value1"},
-                        new TagModel {Key = "key2", Value = "value2"},
-                        new TagModel {Key = "ke3", Value = "value3"}
-                    }
-                },
-                  new PollingStationModel
-                {
-                    Id = 4,
-                    Address ="addr2",
-                    DisplayOrder =1,
-                    Tags = new List<TagModel>
-                    {
-                        new TagModel {Key = "key1", Value = "value1"},
-                        new TagModel {Key = "key2", Value = "value2"},
-                        new TagModel {Key = "ke3", Value = "value4"}
-                    }
-                }
-        };
+
 
         // Act
         var result = (await repository.GetAllAsync(tags)).ToList();
 
         // Assert
-        Assert.True(result.Count() == 2, "Should be 2 PS in the repo");
+        Assert.True(result.Count == 2, "Should be 2 PS in the repo");
 
         Assert.Equal(result[0], _pollingStations[0]);
         Assert.Equal(result[1], _pollingStations[3]);
@@ -325,42 +287,18 @@ public class PollingStationRepositoryGetTests
         // Arrange
         Init(out PollingStationRepository repository, _pollingStations);
 
-        var tags = new List<TagModel>();
-        tags.Add(new TagModel{ Key = "key1", Value = "value1" });
-            
-        List<PollingStationModel> expectedResult = new List<PollingStationModel>()
+        List<TagModel> tags = new()
         {
-  new PollingStationModel
-                {
-                    Id = 1,
-                    Address ="addr1",
-                    DisplayOrder =0,
-                    Tags = new List<TagModel>
-                    {
-                        new TagModel {Key = "key1", Value = "value1"},
-                        new TagModel {Key = "key2", Value = "value2"},
-                        new TagModel {Key = "ke3", Value = "value3"}
-                    }
-                },
-                  new PollingStationModel
-                {
-                    Id = 4,
-                    Address ="addr2",
-                    DisplayOrder =1,
-                    Tags = new List<TagModel>
-                    {
-                        new TagModel {Key = "key1", Value = "value1"},
-                        new TagModel {Key = "key2", Value = "value2"},
-                        new TagModel {Key = "ke3", Value = "value4"}
-                    }
-                }
+            new TagModel { Key = "key1", Value = "value1" }
         };
+
+
 
         // Act
         var result = (await repository.GetAllAsync(tags)).ToList();
 
         // Assert
-        Assert.True(result.Count() == 2, "Should be 2 PS in the repo");
+        Assert.True(result.Count == 2, "Should be 2 PS in the repo");
 
         Assert.Equal(result[0], _pollingStations[0]);
         Assert.Equal(result[1], _pollingStations[3]);
@@ -372,42 +310,15 @@ public class PollingStationRepositoryGetTests
         // Arrange
         Init(out PollingStationRepository repository, _pollingStations);
 
-        var tags = new List<TagModel>();
-        tags.Add(new TagModel { Key = "key1", Value = "value1" });
+        List<TagModel> tags = new() { new TagModel { Key = "key1", Value = "value1" } };
 
-        List<PollingStationModel> expectedResult = new List<PollingStationModel>()
-        {
-  new PollingStationModel
-                {
-                    Id = 1,
-                    Address ="addr1",
-                    DisplayOrder =0,
-                    Tags = new List<TagModel>
-                    {
-                        new TagModel {Key = "key1", Value = "value1"},
-                        new TagModel {Key = "key2", Value = "value2"},
-                        new TagModel {Key = "ke3", Value = "value3"}
-                    }
-                },
-                  new PollingStationModel
-                {
-                    Id = 4,
-                    Address ="addr2",
-                    DisplayOrder =1,
-                    Tags = new List<TagModel>
-                    {
-                        new TagModel {Key = "key1", Value = "value1"},
-                        new TagModel {Key = "key2", Value = "value2"},
-                        new TagModel {Key = "ke3", Value = "value4"}
-                    }
-                }
-        };
+
 
         // Act
-        var result = (await repository.GetAllAsync(tags,10,1)).ToList();
+        var result = (await repository.GetAllAsync(tags, 10, 1)).ToList();
 
         // Assert
-        Assert.True(result.Count() == 2, "Should be 2 PS in the repo");
+        Assert.True(result.Count == 2, "Should be 2 PS in the repo");
 
         Assert.Equal(result[0], _pollingStations[0]);
         Assert.Equal(result[1], _pollingStations[3]);
@@ -419,44 +330,17 @@ public class PollingStationRepositoryGetTests
         // Arrange
         Init(out PollingStationRepository repository, _pollingStations);
 
-        var tags = new List<TagModel>();
-        tags.Add(new TagModel { Key = "key1", Value = "value1" });
+        List<TagModel> tags = new() { new TagModel { Key = "key1", Value = "value1" } };
 
-        List<PollingStationModel> expectedResult = new List<PollingStationModel>()
-        {
-  new PollingStationModel
-                {
-                    Id = 1,
-                    Address ="addr1",
-                    DisplayOrder =0,
-                    Tags = new List<TagModel>
-                    {
-                        new TagModel {Key = "key1", Value = "value1"},
-                        new TagModel {Key = "key2", Value = "value2"},
-                        new TagModel {Key = "ke3", Value = "value3"}
-                    }
-                },
-                  new PollingStationModel
-                {
-                    Id = 4,
-                    Address ="addr2",
-                    DisplayOrder =1,
-                    Tags = new List<TagModel>
-                    {
-                        new TagModel {Key = "key1", Value = "value1"},
-                        new TagModel {Key = "key2", Value = "value2"},
-                        new TagModel {Key = "ke3", Value = "value4"}
-                    }
-                }
-        };
+
 
         // Act
         var result = (await repository.GetAllAsync(tags, 10, 2)).ToList();
 
         // Assert
-        Assert.True(result.Count() == 0, "Should return 0 PS from the repo");
+        Assert.True(result.Count == 0, "Should return 0 PS from the repo");
 
-       
+
     }
 
     [Fact]
@@ -465,31 +349,13 @@ public class PollingStationRepositoryGetTests
         // Arrange
         Init(out PollingStationRepository repository, _pollingStations);
 
-        var tags = new List<TagModel>();
-        tags.Add(new TagModel { Key = "key1", Value = "value1" });
-
-        List<PollingStationModel> expectedResult = new List<PollingStationModel>()
-        {
-
-                  new PollingStationModel
-                {
-                    Id = 4,
-                    Address ="addr2",
-                    DisplayOrder =1,
-                    Tags = new List<TagModel>
-                    {
-                        new TagModel {Key = "key1", Value = "value1"},
-                        new TagModel {Key = "key2", Value = "value2"},
-                        new TagModel {Key = "ke3", Value = "value4"}
-                    }
-                }
-        };
+        List<TagModel> tags = new() { new TagModel { Key = "key1", Value = "value1" } };
 
         // Act
         var result = (await repository.GetAllAsync(tags, 1, 2)).ToList();
 
         // Assert
-        Assert.True(result.Count() == 1, "Should return 0 PS from the repo");
+        Assert.True(result.Count == 1, "Should return 0 PS from the repo");
         Assert.Equal(result[0], _pollingStations[3]);
 
     }
@@ -511,7 +377,7 @@ public class PollingStationRepositoryGetTests
         var result = (await repository.GetAllAsync(tags)).ToList();
 
         // Assert
-        Assert.True(result.Count() == 0, "Should be no PS in the PollingStation");
+        Assert.True(result.Count == 0, "Should be no PS in the PollingStation");
     }
 
     [Fact]
@@ -534,7 +400,7 @@ public class PollingStationRepositoryGetTests
         var result = (await repository.GetAllAsync(tags)).ToList();
 
         // Assert
-        Assert.True(result.Count() == 0, "Should be no PS in the PollingStation");
+        Assert.True(result.Count == 0, "Should be no PS in the PollingStation");
     }
 
 
@@ -600,7 +466,7 @@ public class PollingStationRepositoryGetTests
         var result = await repository.CountAsync(filterCriteria);
 
         // Assert
-        Assert.True(result==0);
+        Assert.True(result == 0);
 
     }
 
@@ -610,7 +476,7 @@ public class PollingStationRepositoryGetTests
         // Arrange
         Init(out PollingStationRepository repository, _pollingStations);
 
-        
+
 
         // Act
         var result = await repository.CountAsync(null);

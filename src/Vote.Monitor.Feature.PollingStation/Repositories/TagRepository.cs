@@ -1,8 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Conventions;
-using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
-using Microsoft.Extensions.Configuration.EnvironmentVariables;
-using Microsoft.Extensions.Logging;
 using Vote.Monitor.Domain.DataContext;
 using Vote.Monitor.Domain.Models;
 
@@ -34,17 +30,17 @@ internal class TagRepository : ITagRepository
         // var st = _context.PollingStations.ToList();
         IEnumerable<PollingStationModel> stationswithtags;
         if (filterCriteria != null && filterCriteria.Count > 0)
-            stationswithtags = from station in _context.PollingStations.ToList()
+            stationswithtags = from station in await _context.PollingStations.Include(x => x.Tags).ToListAsync()
                                where
                                 (from tag in station.Tags
                                  join filter in filterCriteria
                                 on new { tag.Key, tag.Value } equals new { filter.Key, filter.Value }
                                  select tag)
-                                       .Count() == filterCriteria.Count()
+                                       .Count() == filterCriteria.Count
 
                                select station;
         else
-            stationswithtags =  _context.PollingStations;
+            stationswithtags = await _context.PollingStations.ToListAsync();
 
         var tags = stationswithtags.Select(t => t.Tags).SelectMany(x => x).Where(c => c.Key == selectKey).Distinct().ToList();
         return tags;

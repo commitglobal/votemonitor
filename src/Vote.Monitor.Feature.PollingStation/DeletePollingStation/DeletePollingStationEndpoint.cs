@@ -1,6 +1,5 @@
 ﻿using FastEndpoints;
 using Microsoft.Extensions.Logging;
-using Vote.Monitor.Feature.PollingStation.CreatePollingStation;
 using Vote.Monitor.Feature.PollingStation.GetPollingStation;
 using Vote.Monitor.Feature.PollingStation.Repositories;
 
@@ -18,7 +17,7 @@ internal class DeletePollingStationEndpoint : EndpointWithoutRequest<PollingStat
 
     public override void Configure()
     {
-        Delete("/api/polling-stations/{id:int}");
+        Delete("/api/polling-stations/{id:Guid}");
 
         AllowAnonymous();
     }
@@ -26,9 +25,9 @@ internal class DeletePollingStationEndpoint : EndpointWithoutRequest<PollingStat
     {
         try
         {
-            int id = Route<int>("id");
+            Guid id = Route<Guid>("id");
 
-        await _repository.DeleteAsync(id);
+            await _repository.DeleteAsync(id);
 
             await SendNoContentAsync();
         }

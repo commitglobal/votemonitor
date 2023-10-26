@@ -1,7 +1,7 @@
 ﻿namespace Vote.Monitor.Core.Exceptions;
 public class NotFoundException<T> : Exception
 {
-    public T Entity { get; set; }
+    public T? Entity { get; set; }
 
     public NotFoundException() { }
 

@@ -1,7 +1,6 @@
 ﻿using FastEndpoints;
 using Microsoft.Extensions.Logging;
 using Vote.Monitor.Domain.Models;
-using Vote.Monitor.Feature.PollingStation.CreatePollingStation;
 using Vote.Monitor.Feature.PollingStation.Repositories;
 
 namespace Vote.Monitor.Feature.PollingStation.GetPollingStationsTagValues;

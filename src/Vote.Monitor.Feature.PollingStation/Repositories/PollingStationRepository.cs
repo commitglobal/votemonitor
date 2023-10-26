@@ -21,7 +21,7 @@ internal class PollingStationRepository : IPollingStationRepository
 
         var duplicateTag = entity.Tags.GroupBy(x => x.Key).Where(g => g.Count() > 1).Select(y => y.Key).FirstOrDefault();
         if (duplicateTag != null) throw new ArgumentException($"Duplicate tag key: {duplicateTag}");
-        
+
         List<TagModel> tags = new List<TagModel>();
         foreach (var tag in entity.Tags)
         {
@@ -38,7 +38,7 @@ internal class PollingStationRepository : IPollingStationRepository
         return entity;
     }
 
-    public async Task<PollingStationModel> GetByIdAsync(int id)
+    public async Task<PollingStationModel> GetByIdAsync(Guid id)
     {
         var pollingStation = await _context.PollingStations
             .FirstOrDefaultAsync(ps => ps.Id == id) ??
@@ -61,7 +61,7 @@ internal class PollingStationRepository : IPollingStationRepository
 
     }
 
-    public async Task<PollingStationModel> UpdateAsync(int id, PollingStationModel entity)
+    public async Task<PollingStationModel> UpdateAsync(Guid id, PollingStationModel entity)
     {
         var pollingStation = await _context.PollingStations
            .FirstOrDefaultAsync(ps => ps.Id == id) ??
@@ -105,7 +105,7 @@ internal class PollingStationRepository : IPollingStationRepository
         return pollingStation;
     }
 
-    public async Task DeleteAsync(int id)
+    public async Task DeleteAsync(Guid id)
     {
         var pollingStation = await _context.PollingStations.FirstOrDefaultAsync(ps => ps.Id == id) ??
             throw new NotFoundException<PollingStationModel>($"Polling Station not found for ID: {id}");
@@ -126,7 +126,7 @@ internal class PollingStationRepository : IPollingStationRepository
 
 
 
-    
+
     public async Task<IEnumerable<PollingStationModel>> GetAllAsync(List<TagModel>? filterCriteria, int pageSize = 0, int page = 1)
     {
         if (pageSize < 0) throw new ArgumentOutOfRangeException(nameof(pageSize));
