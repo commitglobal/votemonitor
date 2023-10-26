@@ -17,7 +17,7 @@ internal class UpdatePollingStationEndpoint : Endpoint<PollingStationUpdateReque
     
     public override void Configure()
     {
-        Put("api/polling-stations/{id:int}");
+        Put("api/polling-stations/{id:Guid}");
 
         AllowAnonymous();
     }
@@ -26,7 +26,7 @@ internal class UpdatePollingStationEndpoint : Endpoint<PollingStationUpdateReque
     {
         try
         {
-            var id = Route<int>("id");
+            var id = Route<Guid>("id");
 
             var model = Map.ToEntity(req);
 

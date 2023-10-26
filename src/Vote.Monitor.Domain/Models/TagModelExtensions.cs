@@ -22,17 +22,14 @@ public static class TagModelExtensions
     }
 
 
-    public static List<TagModel> DecodeFilter(string filterString, char separator= ',')
+    public static List<TagModel> DecodeFilter(string filterString, char separator = ',')
     {
         var filterDict = new List<TagModel>();
 
         foreach (var filterPair in filterString.Split(separator))
         {
             var keyValue = filterPair.Split(':');
-            var key = keyValue[0];
-            var value = keyValue[1];
-
-            filterDict.Add(new TagModel{ Key = keyValue[0], Value = keyValue[1] });
+            filterDict.Add(new TagModel { Key = keyValue[0], Value = keyValue[1] });
         }
 
         return filterDict;

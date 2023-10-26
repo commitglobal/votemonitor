@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Vote.Monitor.Core.Exceptions;
 using Vote.Monitor.Domain.DataContext;
 using Vote.Monitor.Domain.Models;
@@ -15,7 +9,7 @@ namespace Vote.Monitor.Feature.PollingStation.UnitTests.Repositories;
 public class PollingStationRepositoryUpdateTests
 {
 
-    private void Init(string dbname, out AppDbContext context, out PollingStationRepository repository)
+    private static void Init(string dbname, out AppDbContext context, out PollingStationRepository repository)
     {
         //,out  DbContextOptionsBuilder<AppDbContext> optionsBuilder ,
         var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
@@ -30,7 +24,7 @@ public class PollingStationRepositoryUpdateTests
         Init("TestDb6", out AppDbContext context, out PollingStationRepository repository);
 
         // Arrange
-        var id = 1;
+        var id = Guid.Parse("56021543-fc3b-447d-a7cd-a533448bb9e1");
         var entity = new PollingStationModel
         {
             Id = id,
@@ -77,7 +71,7 @@ public class PollingStationRepositoryUpdateTests
         optionsBuilder.UseInMemoryDatabase("TestDb7");
         var context = new AppDbContext(optionsBuilder.Options);
         var repository = new PollingStationRepository(context);
-        var id = 1;
+        var id = Guid.Parse("56021543-fc3b-447d-a7cd-a533448bb9e1");
         var entity = new PollingStationModel { Id = id, Address = "addr1" };
 
 
@@ -88,10 +82,10 @@ public class PollingStationRepositoryUpdateTests
     [Fact]
     public async Task UpdateAsync_ShouldUpdateOnlySpecifiedProperties()
     {
-        Init("TestDb8", out AppDbContext context, out PollingStationRepository repository);
+        Init("TestDb8", out _, out PollingStationRepository repository);
 
         // Arrange
-        var id = 1;
+        var id = Guid.Parse("56021543-fc3b-447d-a7cd-a533448bb9e1");
         var existingPollingStation = new PollingStationModel
         {
             Id = id,
@@ -131,10 +125,10 @@ public class PollingStationRepositoryUpdateTests
     [Fact]
     public async Task UpdateAsync_ShouldClearTags()
     {
-        Init("TestDb9", out AppDbContext context, out PollingStationRepository repository);
+        Init("TestDb9", out _, out PollingStationRepository repository);
 
         // Arrange
-        var id = 1;
+        var id = Guid.Parse("56021543-fc3b-447d-a7cd-a533448bb9e1");
         var existingPollingStation = new PollingStationModel
         {
             Id = id,

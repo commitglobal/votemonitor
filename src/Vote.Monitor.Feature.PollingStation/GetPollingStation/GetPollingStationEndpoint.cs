@@ -16,14 +16,14 @@ internal class GetPollingStationEndpoint : EndpointWithoutRequest<PollingStation
 
     public override void Configure()
     {
-        Get("/api/polling-stations/{id:int}");
+        Get("/api/polling-stations/{id:Guid}");
 
         AllowAnonymous();
     }
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        int id = Route<int>("id");
+        Guid id = Route<Guid>("id");
 
         try
         {
