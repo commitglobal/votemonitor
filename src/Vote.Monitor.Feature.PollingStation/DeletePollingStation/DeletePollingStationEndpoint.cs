@@ -23,21 +23,10 @@ internal class DeletePollingStationEndpoint : EndpointWithoutRequest<PollingStat
     }
     public override async Task HandleAsync(CancellationToken ct)
     {
-        try
-        {
-            Guid id = Route<Guid>("id");
+        Guid id = Route<Guid>("id");
 
-            await _repository.DeleteAsync(id);
+        await _repository.DeleteAsync(id);
 
-            await SendNoContentAsync();
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error while removing Polling Station ");
-
-            AddError(ex.Message);
-        }
-
-        ThrowIfAnyErrors();
+        await SendNoContentAsync();
     }
 }

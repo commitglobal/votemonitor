@@ -7,7 +7,7 @@ using Vote.Monitor.Core;
 
 namespace Vote.Monitor.Feature.PollingStation.GetAllPollingStations;
 internal partial class GetAllPollingStationsEndpoint : Endpoint<GetAllPollingStationsRequest, PaginationResponse<PollingStationReadDto>, GetAllPollingStationsMapper>
-{//GetAllPollingStationsRequest,
+{
     private readonly IPollingStationRepository _repository;
     private readonly ILogger<GetAllPollingStationsEndpoint> _logger;
 
@@ -21,33 +21,24 @@ internal partial class GetAllPollingStationsEndpoint : Endpoint<GetAllPollingSta
     {
 
 
-        Get("/api/polling-stations");///{pagesize:int}{page:int}{filter:Dictionary<string,string>}");
+        Get("/api/polling-stations");
 
         AllowAnonymous();
     }
 
-    public override async Task HandleAsync(GetAllPollingStationsRequest request , CancellationToken ct)
+    public override async Task HandleAsync(GetAllPollingStationsRequest request, CancellationToken ct)
     {
-        try { 
         List<TagModel>? filterCriteria = null;
-        if (request.Filter!=null) filterCriteria=TagModelExtensions.DecodeFilter(request.Filter);
+        if (request.Filter != null) filterCriteria = TagModelExtensions.DecodeFilter(request.Filter);
 
         int totalItems = await _repository.CountAsync(filterCriteria: filterCriteria);
         int totalPages = (int)Math.Ceiling((double)totalItems / request.PageSize);
 
-        List<PollingStationModel> pollingStations = (await _repository.GetAllAsync(filterCriteria: filterCriteria, request.PageSize, request.Page)).ToList();      
-     
-        PaginationResponse<PollingStationReadDto> response = Map.FromEntity(pollingStations, request.Page, request.PageSize, totalItems,totalPages);
+        List<PollingStationModel> pollingStations = (await _repository.GetAllAsync(filterCriteria: filterCriteria, request.PageSize, request.Page)).ToList();
 
-            await SendAsync(response, cancellation: ct);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error while retrieving Polling Stations ");
+        PaginationResponse<PollingStationReadDto> response = Map.FromEntity(pollingStations, request.Page, request.PageSize, totalItems, totalPages);
 
-            AddError(ex.Message);
-        }
+        await SendAsync(response, cancellation: ct);
 
-        ThrowIfAnyErrors();
     }
 }
