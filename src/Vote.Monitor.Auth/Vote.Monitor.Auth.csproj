@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FastEndpoints" Version="5.18.0" />
+    <PackageReference Include="FastEndpoints.Security" Version="5.18.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="7.0.13" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Vote.Monitor.Domain\Vote.Monitor.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

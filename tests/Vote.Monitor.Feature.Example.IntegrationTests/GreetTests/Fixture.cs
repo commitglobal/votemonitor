@@ -1,6 +1,6 @@
-﻿using Greet = Vote.Monitor.Feature.Example.Greet;
+﻿using Vote.Monitor.Api;
 
-namespace Tests.GreetTests;
+namespace Vote.Monitor.Feature.Example.IntegrationTests.GreetTests;
 
 public class Fixture : TestFixture<Program>
 {

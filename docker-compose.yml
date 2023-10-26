@@ -1,0 +1,72 @@
+version: '3.4'
+
+services:
+  postgres:
+    image: postgres
+    container_name: vote_monitor_postgres
+    env_file:
+      .env
+    ports:
+      - 5432:5432
+
+  migrator:
+    build:
+      context: .
+      dockerfile: api/VotingIrregularities.Domain.Migrator/Dockerfile
+    container_name: vote_monitor_migrator
+    env_file:
+      .env
+    depends_on:
+      - "postgres"
+
+  seed:
+    build:
+      context: .
+      dockerfile: api/VotingIrregularities.Domain.Seed/Dockerfile
+    container_name: vote_monitor_seed
+    env_file:
+      .env
+    depends_on:
+      - "postgres"
+      - "migrator"
+
+  api:
+    container_name: vote_monitor_api
+    depends_on:
+      - "postgres"
+      - "migrator"
+    build:
+      context: .
+      dockerfile: api/VoteMonitor.Api/Dockerfile
+    env_file:
+      .env
+    ports:
+      - 53413:80
+    restart: unless-stopped
+    volumes:
+      - './.upload-location:/app/upload'
+      - './.firebase:/app/firebase'
+
+  local-stack:
+    container_name: vote_monitor_localstack_s3
+    image: localstack/localstack:1.0.3
+    ports:
+      - '4566-4583:4566-4583'
+    env_file:
+      .env
+
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite
+    container_name: vote_monitor_blob_storage
+    restart: always
+    ports:
+      - "10000:10000"
+      - "10001:10001"
+      
+  redis:
+    image: redis:7.2-alpine
+    container_name: vote_monitor_redis
+    restart: always
+    ports:
+      - '6379:6379'
+    command: redis-server --save 20 1 --loglevel warning

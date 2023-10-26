@@ -1,6 +1,4 @@
-﻿using Greet = Vote.Monitor.Feature.Example.Greet;
-
-namespace Tests.GreetTests;
+﻿namespace Vote.Monitor.Feature.Example.IntegrationTests.GreetTests;
 
 public class GreetShould : TestClass<Fixture>
 {

@@ -1,7 +1,4 @@
-﻿using PollingStationsResolver.Api.Tests.TestsHelpers;
-using Greet = Vote.Monitor.Feature.Example.Greet;
-
-namespace Vote.Monitor.Feature.Example.UnitTests.Validators;
+﻿namespace Vote.Monitor.Feature.Example.UnitTests.Validators;
 
 public class GreetValidatorShould
 {
