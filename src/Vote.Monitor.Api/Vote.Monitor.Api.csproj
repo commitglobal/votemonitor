@@ -20,6 +20,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Vote.Monitor.Auth\Vote.Monitor.Auth.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Core\Vote.Monitor.Core.csproj" />
+    <ProjectReference Include="..\Vote.Monitor.CSOAdmin\Vote.Monitor.CSOAdmin.csproj" />
     <ProjectReference Include="..\Vote.Monitor.CSO\Vote.Monitor.CSO.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Domain\Vote.Monitor.Domain.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Feature.Example\Vote.Monitor.Feature.Example.csproj" />

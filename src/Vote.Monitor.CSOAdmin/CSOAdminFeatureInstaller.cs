@@ -4,7 +4,7 @@ namespace Vote.Monitor.CSOAdmin;
 
 public static class CSOAdminFeatureInstaller
 {
-    public static IServiceCollection AddCSOFeature(this IServiceCollection services)
+    public static IServiceCollection AddCSOAdminFeature(this IServiceCollection services)
     {
         return services;
     }

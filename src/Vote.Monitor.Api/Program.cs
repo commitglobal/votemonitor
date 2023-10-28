@@ -2,6 +2,7 @@
 using FastEndpoints.Swagger;
 using Vote.Monitor.Auth;
 using Vote.Monitor.CSO;
+using Vote.Monitor.CSOAdmin;
 using Vote.Monitor.Domain;
 using Vote.Monitor.Feature.Example;
 
@@ -10,6 +11,7 @@ builder.Services.AddOptions();
 builder.Services.AddApplicationDomain(builder.Configuration.GetSection(DomainInstaller.SectionKey));
 builder.Services.AddAuthFeature(builder.Configuration.GetSection(AuthFeatureInstaller.SectionKey));
 builder.Services.AddCSOFeature();
+builder.Services.AddCSOAdminFeature();
 builder.Services.AddExampleFeatures(builder.Configuration.GetSection(ExampleFeaturesInstaller.SectionKey));
 builder.Services.AddFastEndpoints();
 builder.Services.SwaggerDocument(o =>
