@@ -8,13 +8,3 @@ services:
       .env
     ports:
       - 5432:5432
-
-  migrator:
-    build:
-      context: .
-      dockerfile: api/VotingIrregularities.Domain.Migrator/Dockerfile
-    container_name: vote_monitor_migrator
-    env_file:
-      .env
-    depends_on:
-      - "postgres"
