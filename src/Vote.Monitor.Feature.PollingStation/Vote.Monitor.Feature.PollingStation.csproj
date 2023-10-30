@@ -7,20 +7,22 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CsvHelper" Version="30.0.1" />
-    <PackageReference Include="FastEndpoints" Version="5.18.0" />
-    
+    <Compile Remove="Settings\**" />
+    <EmbeddedResource Remove="Settings\**" />
+    <None Remove="Settings\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Settings\" />
+    <PackageReference Include="CsvHelper" Version="30.0.1" />
+    <PackageReference Include="FastEndpoints" Version="5.18.0" />
+    <PackageReference Include="EFCore.BulkExtensions.PostgreSql" Version="7.1.6" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Vote.Monitor.Core\Vote.Monitor.Core.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Domain\Vote.Monitor.Domain.csproj" />
-    <InternalsVisibleTo Include="Vote.Monitor.Feature.PollingStation.UnitTests"/>
-    <InternalsVisibleTo Include="Vote.Monitor.Feature.PollingStation.IntegrationTests"/>
+    <InternalsVisibleTo Include="Vote.Monitor.Feature.PollingStation.UnitTests" />
+    <InternalsVisibleTo Include="Vote.Monitor.Feature.PollingStation.IntegrationTests" />
   </ItemGroup>
   
 </Project>

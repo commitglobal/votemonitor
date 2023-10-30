@@ -1,8 +1,6 @@
 ﻿using Vote.Monitor.Core;
-using Vote.Monitor.Domain.Models;
 
 namespace Vote.Monitor.Feature.PollingStation.Repositories;
-public interface IPollingStationRepository:IRepositoryCommand<PollingStationModel>, IRepositoryQuery<PollingStationModel, TagModel>
+public interface IPollingStationRepository : IRepositoryCommand<Domain.Models.PollingStation>, IRepositoryQuery<Domain.Models.PollingStation>
 {
-
 }

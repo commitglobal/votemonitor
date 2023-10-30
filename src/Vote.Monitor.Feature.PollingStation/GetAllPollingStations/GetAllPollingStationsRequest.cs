@@ -6,5 +6,5 @@ internal class GetAllPollingStationsRequest
 
     public int Page { get; set; } = 1;
 
-    public string? Filter { get; set; }
+    public Dictionary<string, string>? Filter { get; set; }
 }

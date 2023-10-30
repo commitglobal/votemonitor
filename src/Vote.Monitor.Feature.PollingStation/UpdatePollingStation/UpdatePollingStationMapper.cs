@@ -3,35 +3,28 @@ using Vote.Monitor.Domain.Models;
 using Vote.Monitor.Feature.PollingStation.GetPollingStation;
 
 namespace Vote.Monitor.Feature.PollingStation.UpdatePollingStation;
-internal class UpdatePollingStationMapper : Mapper<PollingStationUpdateRequestDTO, PollingStationReadDto, PollingStationModel>
+internal class UpdatePollingStationMapper : Mapper<PollingStationUpdateRequestDTO, PollingStationReadDto, Domain.Models.PollingStation>
 {
-    public override PollingStationModel ToEntity(PollingStationUpdateRequestDTO source)
+    public override Domain.Models.PollingStation ToEntity(PollingStationUpdateRequestDTO source)
     {
-        var model =  new PollingStationModel()
+        var model =  new Domain.Models.PollingStation()
         {
             Address = source.Address,
-            DisplayOrder = source.DisplayOrder
-           
+            DisplayOrder = source.DisplayOrder,
+            Tags = source.Tags.ToTags()           
         };
-        foreach(var tag in source.Tags)
-        {
-            model.Tags.Add(new TagModel()
-            {
-                Key = tag.Key,
-                Value = tag.Value
-            });
-        }
+        
         return model;
     }
 
-    public override PollingStationReadDto FromEntity(PollingStationModel source)
+    public override PollingStationReadDto FromEntity(Domain.Models.PollingStation source)
     {
         return new PollingStationReadDto()
         {
             Id = source.Id,
             Address = source.Address,
             DisplayOrder = source.DisplayOrder,
-            Tags = source.TagsDictionary()
+            Tags = source.Tags.ToDictionary()
         };
     }
 }

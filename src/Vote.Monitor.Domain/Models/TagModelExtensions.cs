@@ -1,39 +1,16 @@
-﻿namespace Vote.Monitor.Domain.Models;
+﻿using System.Text.Json;
+
+namespace Vote.Monitor.Domain.Models;
 
 public static class TagModelExtensions
 {
-    public static bool HasTag(this PollingStationModel pollingStation, string key, string value)
+    public static JsonDocument ToTags(this Dictionary<string, string> tags)
     {
-        return pollingStation.Tags.Any(t => t.Key == key && t.Value == value);
+        return JsonSerializer.SerializeToDocument(tags);
     }
-    public static Dictionary<string, string> TagsDictionary(this PollingStationModel pollingStation)
+    
+    public static Dictionary<string, string>? ToDictionary(this JsonDocument document)
     {
-        return pollingStation.Tags.ToDictionary(t => t.Key, t => t.Value);
+        return JsonSerializer.Deserialize<Dictionary<string, string>?>(document);
     }
-
-
-    public static List<TagModel> ToTags(this Dictionary<string, string> tags)
-    {
-        return tags.Select(t => new TagModel()
-        {
-            Key = t.Key,
-            Value = t.Value
-        }).ToList();
-    }
-
-
-    public static List<TagModel> DecodeFilter(string filterString, char separator = ',')
-    {
-        var filterDict = new List<TagModel>();
-
-        foreach (var filterPair in filterString.Split(separator))
-        {
-            var keyValue = filterPair.Split(':');
-            filterDict.Add(new TagModel { Key = keyValue[0], Value = keyValue[1] });
-        }
-
-        return filterDict;
-    }
-
-
 }

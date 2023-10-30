@@ -6,10 +6,10 @@ using Vote.Monitor.Feature.PollingStation.Repositories;
 namespace Vote.Monitor.Feature.PollingStation.GetPollingStationTags;
 internal class GetPollingStationTagsEndpoint : EndpointWithoutRequest
 {
-    private readonly ITagRepository _repository;
+    private readonly IPollingStationRepository _repository;
     private readonly ILogger<GetPollingStationTagsEndpoint> _logger;
 
-    public GetPollingStationTagsEndpoint(ITagRepository repository, ILogger<GetPollingStationTagsEndpoint> logger)
+    public GetPollingStationTagsEndpoint(IPollingStationRepository repository, ILogger<GetPollingStationTagsEndpoint> logger)
     {
         _repository = repository;
         _logger = logger;
@@ -18,7 +18,6 @@ internal class GetPollingStationTagsEndpoint : EndpointWithoutRequest
     public override void Configure()
     {
         Get("/api/polling-stations/tags");
-
         AllowAnonymous();
     }
 
@@ -26,7 +25,7 @@ internal class GetPollingStationTagsEndpoint : EndpointWithoutRequest
     {
         try
         {
-            var tags = await _repository.GetAllTagKeysAsync();
+            var tags = await _repository.GetTagKeys(null);
             //get distinct keys from tags
 
 

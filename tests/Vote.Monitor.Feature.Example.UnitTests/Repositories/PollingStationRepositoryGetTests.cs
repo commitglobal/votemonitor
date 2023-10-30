@@ -10,67 +10,67 @@ public class PollingStationRepositoryGetTests
 {
 
 
-    private readonly List<PollingStationModel> _pollingStations = new()
+    private readonly List<Domain.Models.PollingStation> _pollingStations = new()
             {
-                new PollingStationModel
+                new Domain.Models.PollingStation
                 {
                     Id = Guid.Parse("613066f1-1d8e-4119-bd58-d2dcb53d52b8"),
                     Address ="addr1",
                     DisplayOrder =0,
-                    Tags = new ()
+                    Tags = new Dictionary<string, string>()
                     {
-                        new TagModel {Key = "key1", Value = "value1"},
-                        new TagModel {Key = "key2", Value = "value2"},
-                        new TagModel {Key = "ke3", Value = "value3"}
-                    }
+                         {  "key1",  "value1"},
+                         {  "key2",  "value2"},
+                         {  "ke3",  "value3"}
+                    }.ToTags()
                 },
-                new PollingStationModel
+                new Domain.Models.PollingStation
                 {
                     Id =  Guid.Parse("bffab6bc-ab8f-4197-a5fe-3c559dfb8d72"),
                     Address ="addr2",
                     DisplayOrder =1,
-                    Tags = new List<TagModel>
+                    Tags = new Dictionary<string, string>()
                     {
-                        new TagModel {Key = "key1", Value = "value2"},
-                        new TagModel {Key = "key2", Value = "value3"},
-                        new TagModel {Key = "ke3", Value = "value3"}
-                    }
+                         {  "key1",  "value2"},
+                         {  "key2",  "value3"},
+                         {  "ke3",  "value3"}
+                    }.ToTags()
                 },
-                 new PollingStationModel
+                 new Domain.Models.PollingStation
                 {
                     Id = Guid.Parse("fed8db2e-c5a4-48e6-9eb1-58f899cd5f9f"),
                     Address ="addr3",
                     DisplayOrder =1,
-                    Tags = new List<TagModel>
+                    Tags = new Dictionary<string, string>()
                     {
-                        new TagModel {Key = "key13", Value = "value1"},
-                        new TagModel {Key = "key2", Value = "value2"},
-                        new TagModel {Key = "ke3", Value = "value4"}
-                    }
+                         {  "key13",  "value1"},
+                         {  "key2",  "value2"},
+                         {  "ke3",  "value4"}
+                    }.ToTags()
                 },
-                  new PollingStationModel
+                  new Domain.Models.PollingStation
                 {
                     Id = Guid.Parse("8067d8fb-4270-473f-94e6-fdac927e3557"),
                     Address ="addr2",
                     DisplayOrder =1,
-                    Tags = new List<TagModel>
+                    Tags = new Dictionary<string, string>()
                     {
-                        new TagModel {Key = "key1", Value = "value1"},
-                        new TagModel {Key = "key2", Value = "value2"},
-                        new TagModel {Key = "ke3", Value = "value4"}
-                    }
+                         {  "key1",  "value1"},
+                         {  "key2",  "value2"},
+                         {  "ke3",  "value4"}
+                    }.ToTags()
                 },
-                   new PollingStationModel
+                   new Domain.Models.PollingStation
                 {
                     Id = Guid.Parse("afb6e443-9e37-4c9f-b737-f38352ffbfec"),
                     Address ="addr2",
                     DisplayOrder =1,
-                    Tags = new List<TagModel>
+                    Tags = new Dictionary<string, string>()
                     {
-                        new TagModel {Key = "key13", Value = "value3"},
-                        new TagModel {Key = "key2", Value = "value5"},
-                        new TagModel {Key = "ke3", Value = "value5"}
-                    }
+                         {  "key13",  "value3"},
+                         {  "key2",  "value5"},
+                         {  "ke3",  "value5"}
+                    }.ToTags()
                 }
 
             };
@@ -85,7 +85,7 @@ public class PollingStationRepositoryGetTests
     }
 
 
-    private static void Init(out PollingStationRepository repository, List<PollingStationModel> pollingStations)
+    private static void Init(out PollingStationRepository repository, List<Domain.Models.PollingStation> pollingStations)
     {
         //,out  DbContextOptionsBuilder<AppDbContext> optionsBuilder ,out AppDbContext context
         Init(out repository);
@@ -123,7 +123,7 @@ public class PollingStationRepositoryGetTests
         var id = Guid.Parse("613066f1-1d8e-4119-bd58-d2dcb53d5878");
 
         // Act & Assert
-        await Assert.ThrowsAsync<NotFoundException<PollingStationModel>>(() => repository.GetByIdAsync(id));
+        await Assert.ThrowsAsync<NotFoundException<Domain.Models.PollingStation>>(() => repository.GetByIdAsync(id));
     }
 
 
@@ -143,7 +143,7 @@ public class PollingStationRepositoryGetTests
     {
         // Arrange
         Init(out PollingStationRepository repository);
-        var tags = new List<TagModel>() { new TagModel { Key = "key1", Value = "value1" } };
+        var tags = new Dictionary<string, string>() { { "key1", "value1" } };
         // Act
 
         // Assert
@@ -155,7 +155,7 @@ public class PollingStationRepositoryGetTests
     {
         // Arrange
         Init(out PollingStationRepository repository);
-        var tags = new List<TagModel>() { new TagModel { Key = "key1", Value = "value1" } };
+        var tags = new Dictionary<string, string>() { { "key1", "value1" } };
 
         // Act
 
@@ -262,10 +262,10 @@ public class PollingStationRepositoryGetTests
     {
         Init(out PollingStationRepository repository, _pollingStations);
 
-        var tags = new List<TagModel>
+        var tags = new Dictionary<string, string>()
         {
-            new TagModel{Key="key1", Value="value1" }   ,
-            new TagModel{Key="key2", Value="value2" }
+            {"key1", "value1" }   ,
+            {"key2", "value2" }
         };
 
 
@@ -287,9 +287,9 @@ public class PollingStationRepositoryGetTests
         // Arrange
         Init(out PollingStationRepository repository, _pollingStations);
 
-        List<TagModel> tags = new()
+        Dictionary<string, string> tags = new()
         {
-            new TagModel { Key = "key1", Value = "value1" }
+             {  "key1",  "value1" }
         };
 
 
@@ -310,7 +310,7 @@ public class PollingStationRepositoryGetTests
         // Arrange
         Init(out PollingStationRepository repository, _pollingStations);
 
-        List<TagModel> tags = new() { new TagModel { Key = "key1", Value = "value1" } };
+        Dictionary<string, string> tags = new() { { "key1", "value1" } };
 
 
 
@@ -330,7 +330,7 @@ public class PollingStationRepositoryGetTests
         // Arrange
         Init(out PollingStationRepository repository, _pollingStations);
 
-        List<TagModel> tags = new() { new TagModel { Key = "key1", Value = "value1" } };
+        Dictionary<string, string> tags = new() { { "key1", "value1" } };
 
 
 
@@ -349,7 +349,7 @@ public class PollingStationRepositoryGetTests
         // Arrange
         Init(out PollingStationRepository repository, _pollingStations);
 
-        List<TagModel> tags = new() { new TagModel { Key = "key1", Value = "value1" } };
+        Dictionary<string, string> tags = new() { { "key1", "value1" } };
 
         // Act
         var result = (await repository.GetAllAsync(tags, 1, 2)).ToList();
@@ -366,9 +366,9 @@ public class PollingStationRepositoryGetTests
         // Arrange
         Init(out PollingStationRepository repository, _pollingStations);
 
-        var tags = new List<TagModel>
+        var tags = new Dictionary<string, string>()
             {
-                    new TagModel{ Key = "key3321", Value = "value1" }
+                    {  "key3321",  "value1" }
             };
 
 
@@ -386,12 +386,12 @@ public class PollingStationRepositoryGetTests
         // Arrange
         Init(out PollingStationRepository repository, _pollingStations);
 
-        var tags = new List<TagModel>
+        var tags = new Dictionary<string, string>()
             {
-                new TagModel{ Key = "key1", Value = "value1" },
-                new TagModel{ Key = "key2", Value = "value2" },
-                new TagModel{ Key = "ke3", Value = "value3" },
-                new TagModel{ Key = "ke13", Value = "value3" }
+                {  "key1",  "value1" },
+                {  "key2",  "value2" },
+                {  "ke3",  "value3" },
+                {  "ke13",  "value3" }
             };
 
 
@@ -413,10 +413,10 @@ public class PollingStationRepositoryGetTests
         // Arrange
         Init(out PollingStationRepository repository, _pollingStations);
 
-        var filterCriteria = new List<TagModel>
+        var filterCriteria = new Dictionary<string, string>()
             {
-                new TagModel{ Key = "key1", Value = "value1" },
-                new TagModel{ Key = "key2", Value = "value2" }
+                {  "key1",  "value1" },
+                {  "key2",  "value2" }
             };
 
         // Act
@@ -433,10 +433,10 @@ public class PollingStationRepositoryGetTests
         // Arrange
         Init(out PollingStationRepository repository, _pollingStations);
 
-        var filterCriteria = new List<TagModel>
+        var filterCriteria = new Dictionary<string, string>()
             {
-                new TagModel{ Key = "key1", Value = "value1" },
-                new TagModel{ Key = "key2", Value = "value2" }
+                {  "key1",  "value1" },
+                {  "key2",  "value2" }
             };
 
         // Act
@@ -454,12 +454,12 @@ public class PollingStationRepositoryGetTests
         // Arrange
         Init(out PollingStationRepository repository, _pollingStations);
 
-        var filterCriteria = new List<TagModel>
+        var filterCriteria = new Dictionary<string, string>()
             {
-                new TagModel{ Key = "key1", Value = "value1" },
-                new TagModel{ Key = "key2", Value = "value2" },
-                new TagModel{ Key = "ke3", Value = "value3" },
-                new TagModel{ Key = "ke13", Value = "value3" }
+                {  "key1",  "value1" },
+                {  "key2",  "value2" },
+                {  "ke3",  "value3" },
+                {  "ke13",  "value3" }
             };
 
         // Act
@@ -495,13 +495,10 @@ public class PollingStationRepositoryGetTests
 
 
         // Act
-        var result = await repository.CountAsync(new List<TagModel>());
+        var result = await repository.CountAsync(null);
 
         // Assert
         Assert.True(result == 5);
 
     }
-
-
-
 }

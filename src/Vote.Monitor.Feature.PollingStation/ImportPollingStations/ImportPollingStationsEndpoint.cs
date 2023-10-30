@@ -51,20 +51,14 @@ public class ImportPollingStationsEndpoint : EndpointWithoutRequest
                 var records = csv.GetRecords<PollingStationImport>().ToList();
 
                 await _repository.DeleteAllAsync();
-
-                foreach (var record in records)
+                var builder = records.Select(record => new Domain.Models.PollingStation
                 {
-                    var pollingStation = new PollingStationModel
-                    {
-                        DisplayOrder = record.DisplayOrder,
-                        Address = record.Address,
-                        Tags = record.Tags.ToTags()
-                    };
+                    DisplayOrder = record.DisplayOrder,
+                    Address = record.Address,
+                    Tags = record.Tags.ToTags()
+                });
 
-                    await _repository.AddAsync(pollingStation);
-
-                    importedCount++;
-                }
+                await _repository.AddRangeAsync(builder);
             }
         }
         catch (Exception ex)

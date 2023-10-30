@@ -1,7 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Vote.Monitor.Core.Exceptions;
 using Vote.Monitor.Domain.DataContext;
-using Vote.Monitor.Domain.Models;
+using EFCore.BulkExtensions;
+using Vote.Monitor.Core;
 
 namespace Vote.Monitor.Feature.PollingStation.Repositories;
 internal class PollingStationRepository : IPollingStationRepository
@@ -14,40 +15,23 @@ internal class PollingStationRepository : IPollingStationRepository
         _context = context;
     }
 
-    public async Task<PollingStationModel> AddAsync(PollingStationModel entity)
-
+    public async Task<Domain.Models.PollingStation> AddAsync(Domain.Models.PollingStation entity)
     {
-        if (entity.Tags == null || entity.Tags.Count == 0) throw new ArgumentException("At least 1 tag is required!");
-
-        var duplicateTag = entity.Tags.GroupBy(x => x.Key).Where(g => g.Count() > 1).Select(y => y.Key).FirstOrDefault();
-        if (duplicateTag != null) throw new ArgumentException($"Duplicate tag key: {duplicateTag}");
-
-        List<TagModel> tags = new List<TagModel>();
-        foreach (var tag in entity.Tags)
-        {
-            var efTag = _context.Tags.FirstOrDefault(x => x.Key == tag.Key && x.Value == tag.Value);
-            if (efTag != null)
-            {
-                tags.Add(efTag);
-            }
-            else tags.Add(tag);
-        }
-        entity.Tags = tags;
         await _context.PollingStations.AddAsync(entity);
         await _context.SaveChangesAsync();
         return entity;
     }
 
-    public async Task<PollingStationModel> GetByIdAsync(Guid id)
+    public async Task<Domain.Models.PollingStation> GetByIdAsync(Guid id)
     {
         var pollingStation = await _context.PollingStations
             .FirstOrDefaultAsync(ps => ps.Id == id) ??
-            throw new NotFoundException<PollingStationModel>($"Polling Station not found for ID: {id}");
+            throw new NotFoundException<Domain.Models.PollingStation>($"Polling Station not found for ID: {id}");
 
         return pollingStation;
     }
 
-    public async Task<IEnumerable<PollingStationModel>> GetAllAsync(int pageSize = 0, int page = 1)
+    public async Task<IEnumerable<Domain.Models.PollingStation>> GetAllAsync(int pageSize = 0, int page = 1)
     {
         if (pageSize < 0) throw new ArgumentOutOfRangeException(nameof(pageSize));
         if (pageSize > 0 && page < 1) throw new ArgumentOutOfRangeException(nameof(page));
@@ -61,46 +45,17 @@ internal class PollingStationRepository : IPollingStationRepository
 
     }
 
-    public async Task<PollingStationModel> UpdateAsync(Guid id, PollingStationModel entity)
+    public async Task<Domain.Models.PollingStation> UpdateAsync(Guid id, Domain.Models.PollingStation entity)
     {
         var pollingStation = await _context.PollingStations
            .FirstOrDefaultAsync(ps => ps.Id == id) ??
-            throw new NotFoundException<PollingStationModel>($"Polling Station not found for ID: {id}");
+            throw new NotFoundException<Domain.Models.PollingStation>($"Polling Station not found for ID: {id}");
 
         pollingStation.DisplayOrder = entity.DisplayOrder;
         pollingStation.Address = entity.Address;
-
-        if (entity.Tags != null)
-        {
-            pollingStation.Tags.Clear();
-
-            foreach (var tag in entity.Tags)
-            {
-                var tagToUpdate = await _context.Tags.FirstOrDefaultAsync(t => t.Key == tag.Key);
-
-
-                if (tagToUpdate == null)
-                {
-                    tagToUpdate = new TagModel
-                    {
-                        Key = tag.Key,
-                        Value = tag.Value
-                    };
-
-                    _context.Tags.Add(tagToUpdate);
-                }
-                else
-                {
-                    tagToUpdate.Value = tag.Value;
-                }
-
-                pollingStation.Tags.Add(tagToUpdate);
-            }
-        }
+        pollingStation.Tags = entity.Tags;
 
         await _context.SaveChangesAsync();
-
-        await DeleteOrphanedTags();
 
         return pollingStation;
     }
@@ -108,62 +63,76 @@ internal class PollingStationRepository : IPollingStationRepository
     public async Task DeleteAsync(Guid id)
     {
         var pollingStation = await _context.PollingStations.FirstOrDefaultAsync(ps => ps.Id == id) ??
-            throw new NotFoundException<PollingStationModel>($"Polling Station not found for ID: {id}");
+            throw new NotFoundException<Domain.Models.PollingStation>($"Polling Station not found for ID: {id}");
 
         _context.PollingStations.Remove(pollingStation);
 
         await _context.SaveChangesAsync();
-
-        await DeleteOrphanedTags();
     }
 
     public async Task DeleteAllAsync()
     {
-        _context.PollingStations.RemoveRange(_context.PollingStations);
-
-        await _context.SaveChangesAsync();
+        await _context.PollingStations.BatchDeleteAsync();
     }
 
-
-
-
-    public async Task<IEnumerable<PollingStationModel>> GetAllAsync(List<TagModel>? filterCriteria, int pageSize = 0, int page = 1)
+    public async Task<IEnumerable<Domain.Models.PollingStation>> GetAllAsync(Dictionary<string, string>? filter, int pageSize = 0, int page = 1)
     {
         if (pageSize < 0) throw new ArgumentOutOfRangeException(nameof(pageSize));
         if (pageSize > 0 && page < 1) throw new ArgumentOutOfRangeException(nameof(page));
-
-        if (filterCriteria == null || filterCriteria.Count == 0) return await GetAllAsync(pageSize, page);
-
-        if (pageSize == 0) return _context.PollingStations.AsEnumerable().Where(
-            station => filterCriteria.Count(filter => filterCriteria.All(tag => station.Tags.Any(t => t.Key == tag.Key && t.Value == tag.Value))) == filterCriteria.Count
-              ).OrderBy(st => st.DisplayOrder);
-
-        return _context.PollingStations.AsEnumerable().Where(
-            station => filterCriteria.Count(filter => filterCriteria.All(tag => station.Tags.Any(t => t.Key == tag.Key && t.Value == tag.Value))) == filterCriteria.Count
-              ).OrderBy(st => st.DisplayOrder)
+        filter = filter ?? new Dictionary<string, string>();
+        return await _context.PollingStations
+            .Where(station => filter.Count == 0 || EF.Functions.JsonContains(station.Tags, filter))
+            .OrderBy(st => st.DisplayOrder)
             .Skip((page - 1) * pageSize)
-            .Take(pageSize);
+            .Take(pageSize)
+             .ToListAsync();
 
     }
 
-    public async Task<int> CountAsync(List<TagModel>? filterCriteria)
+    public async Task<int> CountAsync(Dictionary<string, string>? filter)
     {
-        if (filterCriteria == null || filterCriteria.Count == 0) return await _context.PollingStations.CountAsync();
-
-        return _context.PollingStations.AsEnumerable().Where(
-            station => filterCriteria.Count(filter => filterCriteria.All(tag => station.Tags.Any(t => t.Key == tag.Key && t.Value == tag.Value))) == filterCriteria.Count
-              ).Count();
+        filter = filter ?? new Dictionary<string, string>();
+        return await _context.PollingStations
+            .Where(station => filter.Count == 0 || EF.Functions.JsonContains(station.Tags, filter))
+            .CountAsync();
     }
 
-    private async Task DeleteOrphanedTags()
+    public async Task AddRangeAsync(IEnumerable<Domain.Models.PollingStation> entities)
     {
-        var orphanedTags = _context.Tags
-            .Where(tag => !tag.PollingStations.Any())
-            .ToList();
+        await _context.BulkInsertAsync(entities, new BulkConfig()
+        {
+            PropertiesToExclude = new List<string>() { nameof(Domain.Models.PollingStation.Id) }
+        });
+        await _context.BulkSaveChangesAsync();
+    }
 
-        foreach (var tag in orphanedTags)
-            _context.Tags.Remove(tag);
 
-        await _context.SaveChangesAsync();
+    public async Task<List<string>> GetTagKeys(Dictionary<string, string>? filter = null)
+    {
+        filter = filter ?? new Dictionary<string, string>();
+
+        return await _context
+            .PollingStations
+            .Where(station => filter.Count == 0 || EF.Functions.JsonContains(station.Tags, filter))
+            .Select(x => Domain.Postgres.Functions.ObjectKeys(x.Tags))
+            .Distinct()
+            .ToListAsync();
+    }
+
+    public async Task<List<TagModel>> GetTagValuesAsync(string selectTag, Dictionary<string, string>? filter)
+    {
+        filter = filter ?? new Dictionary<string, string>();
+
+        return await _context
+            .PollingStations
+            .Where(station => filter.Count == 0 || EF.Functions.JsonContains(station.Tags, filter))
+            .Where(station => EF.Functions.JsonExists(station.Tags, selectTag))
+            .Select(station => new TagModel
+            {
+                Key = selectTag,
+                Value = station.Tags.RootElement.GetProperty(selectTag).GetString()
+            })
+            .Distinct()
+            .ToListAsync();
     }
 }

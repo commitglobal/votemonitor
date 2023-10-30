@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Moq;
-using Vote.Monitor.Domain.Models;
 using Vote.Monitor.Feature.PollingStation.ImportPollingStations;
 using Vote.Monitor.Feature.PollingStation.Repositories;
 using Xunit;
@@ -58,7 +57,7 @@ public class ImportPollingStationTests
 
         // Assert
         repository.Verify(r => r.DeleteAllAsync(), Times.Never);
-        repository.Verify(r => r.AddAsync(It.IsAny<PollingStationModel>()), Times.Exactly(0));
+        repository.Verify(r => r.AddAsync(It.IsAny<Domain.Models.PollingStation>()), Times.Exactly(0));
 
         Assert.Contains("CSV file not found at path: test.csv", endpoint.ValidationFailures[0].ToString());
     }

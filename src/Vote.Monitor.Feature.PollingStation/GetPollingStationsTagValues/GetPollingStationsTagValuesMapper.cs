@@ -1,5 +1,5 @@
 ﻿using FastEndpoints;
-using Vote.Monitor.Domain.Models;
+using Vote.Monitor.Core;
 
 namespace Vote.Monitor.Feature.PollingStation.GetPollingStationsTagValues;
 internal class GetPollingStationsTagValuesMapper : Mapper<TagValuesRequest, List<TagReadDto>, List<TagModel>>
@@ -8,15 +8,11 @@ internal class GetPollingStationsTagValuesMapper : Mapper<TagValuesRequest, List
 
     public override List<TagReadDto> FromEntity(List<TagModel> source)
     {
-        List<TagReadDto> tagReadDtos = new();
-        foreach (TagModel tagReadDto in source)
+        return source.Select(x => new TagReadDto()
         {
-            tagReadDtos.Add(new TagReadDto()
-            {
-                Key = tagReadDto.Key,
-                Value = tagReadDto.Value
-            });
-        }
-        return tagReadDtos;
+            Key = x.Key,
+            Value = x.Value
+        })
+            .ToList();
     }
 }

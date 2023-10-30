@@ -1,9 +1,10 @@
 ﻿global using FastEndpoints;
 using FastEndpoints.Swagger;
 using Serilog;
-using Vote.Monitor.Core;
 using Vote.Monitor.Feature.PollingStation;
 using Vote.Monitor.Domain;
+using Vote.Monitor.Domain.DataContext;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder();
 
@@ -19,7 +20,7 @@ builder.Services.SwaggerDocument(o =>
         s.Title = "Vote Monitor API";
         s.Version = "v2";
     };
-    //o.AutoTagPathSegmentIndex = 2;
+    o.AutoTagPathSegmentIndex = 2;
 
 });
 
@@ -34,6 +35,11 @@ var app = builder.Build();
 app.UseAuthorization();
 app.UseDefaultExceptionHandler()
    .UseFastEndpoints();
+
+using var scope = app.Services.CreateScope();
+var context = scope.ServiceProvider.GetService<AppDbContext>()!;
+context!.Database.Migrate();
+app.UseSwaggerUi3(s => s.DocExpansion = "list");
 app.UseSwaggerGen();
 
 

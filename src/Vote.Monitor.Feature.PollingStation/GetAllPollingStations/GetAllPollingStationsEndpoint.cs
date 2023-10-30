@@ -1,9 +1,9 @@
 ﻿using FastEndpoints;
 using Microsoft.Extensions.Logging;
-using Vote.Monitor.Domain.Models;
 using Vote.Monitor.Feature.PollingStation.GetPollingStation;
 using Vote.Monitor.Feature.PollingStation.Repositories;
 using Vote.Monitor.Core;
+using Vote.Monitor.Feature.PollingStation.RequestBinders;
 
 namespace Vote.Monitor.Feature.PollingStation.GetAllPollingStations;
 internal partial class GetAllPollingStationsEndpoint : Endpoint<GetAllPollingStationsRequest, PaginationResponse<PollingStationReadDto>, GetAllPollingStationsMapper>
@@ -19,24 +19,19 @@ internal partial class GetAllPollingStationsEndpoint : Endpoint<GetAllPollingSta
 
     public override void Configure()
     {
-
-
         Get("/api/polling-stations");
-
+        RequestBinder(new GetAllPollingStationsRequestBinder());
         AllowAnonymous();
     }
 
     public override async Task HandleAsync(GetAllPollingStationsRequest request, CancellationToken ct)
     {
-        List<TagModel>? filterCriteria = null;
-        if (request.Filter != null) filterCriteria = TagModelExtensions.DecodeFilter(request.Filter);
-
-        int totalItems = await _repository.CountAsync(filterCriteria: filterCriteria);
+        int totalItems = await _repository.CountAsync(request.Filter);
         int totalPages = (int)Math.Ceiling((double)totalItems / request.PageSize);
 
-        List<PollingStationModel> pollingStations = (await _repository.GetAllAsync(filterCriteria: filterCriteria, request.PageSize, request.Page)).ToList();
+        var pollingStations = (await _repository.GetAllAsync(request.Filter, request.PageSize, request.Page)).ToList();
 
-        PaginationResponse<PollingStationReadDto> response = Map.FromEntity(pollingStations, request.Page, request.PageSize, totalItems, totalPages);
+        PaginationResponse<PollingStationReadDto> response = Map.FromEntity(pollingStations, request.PageSize, request.Page, totalItems, totalPages);
 
         await SendAsync(response, cancellation: ct);
 

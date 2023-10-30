@@ -1,73 +1,58 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Vote.Monitor.Domain.DataContext;
+﻿using Vote.Monitor.Core;
 using Vote.Monitor.Domain.Models;
 using Vote.Monitor.Feature.PollingStation.Repositories;
 using Xunit;
 
 namespace Vote.Monitor.Feature.PollingStation.UnitTests.Repositories;
 
-public class TagRepositoryGetTests
+public class PollingStationRepositoryTagGetTests
 {
-    private readonly List<PollingStationModel> _pollingStations = new()
+    private readonly List<Domain.Models.PollingStation> _pollingStations = new()
             {
-                new PollingStationModel
+                new Domain.Models.PollingStation
                 {
                     Id = Guid.Parse("56021543-fc3b-447d-a7cd-a533448bb9e1"),
                     Address ="addr1",
                     DisplayOrder =0,
-                    Tags = new ()
+                    Tags = new Dictionary<string, string>()
                     {
-                        new TagModel {Key = "key1", Value = "value1"},
-                        new TagModel {Key = "key2", Value = "value2"},
-                        new TagModel {Key = "ke3", Value = "value3"}
-                    }
+                         {  "key1",  "value1"},
+                         {  "key2",  "value2"},
+                         {  "ke3",  "value3"}
+                    }.ToTags()
                 },
-                new PollingStationModel
+                new Domain.Models.PollingStation
                 {
                     Id = Guid.Parse("7ea27240-0711-49de-98fb-1d3e9df2fffd"),
                     Address ="addr2",
                     DisplayOrder =1,
-                    Tags = new ()
+                    Tags = new Dictionary<string, string>()
                     {
-                        new TagModel {Key = "key1", Value = "value2"},
-                        new TagModel {Key = "key2", Value = "value3"},
-                        new TagModel {Key = "ke3", Value = "value3"}
-                    }
+                         {  "key1",  "value2"},
+                         {  "key2",  "value3"},
+                         {  "ke3",  "value3"}
+                    }.ToTags()
                 }
 
             };
 
-
-
-    private static void Init(out TagRepository repository, out PollingStationRepository pollingStationRepository)
+    private static void Init(out PollingStationRepository repository, List<Domain.Models.PollingStation>? models = null)
     {
-        //,out  DbContextOptionsBuilder<AppDbContext> optionsBuilder ,out AppDbContext context
-        var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
-        optionsBuilder.UseInMemoryDatabase(Guid.NewGuid().ToString());
-        var context = new AppDbContext(optionsBuilder.Options);
-        pollingStationRepository = new PollingStationRepository(context);
-        repository = new TagRepository(context);
-
-    }
-
-
-    private static void Init(out TagRepository repository, List<PollingStationModel>? models = null)
-    {
-        Init(out repository, out PollingStationRepository pollingStationRepository);
+        Init(out repository);
         if (models != null && models.Count > 0)
             foreach (var st in models)
             {
-                pollingStationRepository.AddAsync(st).Wait();
+                repository.AddAsync(st).Wait();
             }
     }
     [Fact]
     public async Task GetAllTags_NoFilter_ShouldReturnAllTags()
     {
         // Arrange
-        Init(out TagRepository repository, _pollingStations);
+        Init(out PollingStationRepository repository, _pollingStations);
 
         // Act
-        var result = await repository.GetAllTagKeysAsync();
+        var result = await repository.GetTagKeys();
 
         // Assert
         Assert.True(result.Count() == 3, "should be 3 tags keys");
@@ -78,13 +63,13 @@ public class TagRepositoryGetTests
     public async Task GetAllTags_NoFilterNoPollingStation_ShouldReturnNoTags()
     {
         // Arrange
-        Init(out TagRepository repository);
+        Init(out PollingStationRepository repository);
 
 
 
 
         // Act
-        var result = await repository.GetAllTagKeysAsync();
+        var result = await repository.GetTagKeys();
 
         // Assert
         Assert.True(!result.Any(), "should be 0 tags value");
@@ -96,11 +81,11 @@ public class TagRepositoryGetTests
     {
         // Arrange
 
-        Init(out TagRepository repository, _pollingStations);
+        Init(out PollingStationRepository repository, _pollingStations);
 
 
         // Act
-        var result = await repository.GetTagsAsync("nokey", null);
+        var result = await repository.GetTagValuesAsync("nokey", null);
 
         // Assert
         Assert.True(!result.Any(), "Should be no values");
@@ -110,17 +95,17 @@ public class TagRepositoryGetTests
     public async Task GetTagsAsync_NoFilter_SelectTagValid_ReturnsNoTags()
     {
         // Arrange
-        Init(out TagRepository repository, _pollingStations);
+        Init(out PollingStationRepository repository, _pollingStations);
         string selectKey = "key1";
-        var expectedTags = new List<TagModel>()
-            {
-                new TagModel(){Key = "key1", Value = "value1"},
-                new TagModel(){Key = "key1", Value = "value2"}
-                };
+        var expectedTags = new List<TagModel>
+                {
+           new() { Key = "key1",  Value = "value1"},
+             new()    {Key = "key1",  Value ="value2"}
+        };
 
 
         // Act
-        var result = (await repository.GetTagsAsync(selectKey, null)).ToList();
+        var result = (await repository.GetTagValuesAsync(selectKey, null)).ToList();
 
         // Assert
         Assert.True(result.Count == 2, "Should be 2 tags");
@@ -135,15 +120,15 @@ public class TagRepositoryGetTests
     {
         // Arrange
 
-        Init(out TagRepository repository, _pollingStations);
-        List<TagModel> filter = new List<TagModel>()
-        {
-                new TagModel(){Key = "key1", Value = "value1"},
+        Init(out PollingStationRepository repository, _pollingStations);
+        var filter = new Dictionary<string, string>()
+            {
+           { "key1",  "value1"},
 
         };
 
         // Act
-        var result = await repository.GetTagsAsync("nokey", filter);
+        var result = await repository.GetTagValuesAsync("nokey", filter);
 
         // Assert
         Assert.True(!result.Any(), "Should be no values");
@@ -154,19 +139,19 @@ public class TagRepositoryGetTests
     {
         // Arrange
 
-        Init(out TagRepository repository, _pollingStations);
-        List<TagModel> filter = new List<TagModel>()
-        {
-                new TagModel(){Key = "key1", Value = "value1"},
+        Init(out PollingStationRepository repository, _pollingStations);
+        var filter = new Dictionary<string, string>()
+            {
+            { "key1",  "value1"},
 
         };
         string selectTag = "key2";
-        var expectedTags = new List<TagModel>()
-            {
-                 new TagModel {Key = "key2", Value = "value2"},
+        var expectedTags = new List<TagModel>
+                {
+            new() {Key =  "key2",Value =  "value2"},
                 };
         // Act
-        var result = (await repository.GetTagsAsync(selectTag, filter)).ToList();
+        var result = (await repository.GetTagValuesAsync(selectTag, filter)).ToList();
 
         // Assert
         Assert.True(result.Count == 1, "Should be 1 tags");
@@ -182,17 +167,17 @@ public class TagRepositoryGetTests
     {
         // Arrange
 
-        Init(out TagRepository repository, _pollingStations);
-        List<TagModel> filter = new List<TagModel>()
-        {
-                new TagModel(){Key = "key1", Value = "value1"},
-                 new TagModel(){Key = "key3", Value = "value1"}
+        Init(out PollingStationRepository repository, _pollingStations);
+        var filter = new Dictionary<string, string>()
+            {
+            { "key1",  "value1"},
+                 { "key3",  "value1"}
 
         };
         string selectTag = "key2";
 
         // Act
-        var result = (await repository.GetTagsAsync(selectTag, filter)).ToList();
+        var result = (await repository.GetTagValuesAsync(selectTag, filter)).ToList();
 
         // Assert
         Assert.True(!result.Any(), "Should be no values");
