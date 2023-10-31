@@ -25,27 +25,27 @@ public class PollingStationRepositoryUpdateTests
 
         // Arrange
         var id = Guid.Parse("56021543-fc3b-447d-a7cd-a533448bb9e1");
-        var entity = new PollingStationModel
+        var entity = new Domain.Models.PollingStation
         {
             Id = id,
             DisplayOrder = 2,
             Address = "456 Main St",
-            Tags = new List<TagModel>
+            Tags = new Dictionary<string, string>()
                 {
-                    new TagModel {Key = "key3", Value = "value3"},
-                    new TagModel {Key = "key4", Value = "value4"}
-                }
+                     {  "key3",  "value3"},
+                     {  "key4",  "value4"}
+                }.ToTags()
         };
-        var pollingStation = new PollingStationModel
+        var pollingStation = new Domain.Models.PollingStation
         {
             Id = id,
             DisplayOrder = 1,
             Address = "123 Main St",
-            Tags = new List<TagModel>
+            Tags = new Dictionary<string, string>()
                 {
-                    new TagModel {Key = "key1", Value = "value1"},
-                    new TagModel {Key = "key2", Value = "value2"}
-                }
+                     {  "key1",  "value1"},
+                     {  "key2",  "value2"}
+                }.ToTags()
         };
         await repository.AddAsync(pollingStation);
 
@@ -57,8 +57,8 @@ public class PollingStationRepositoryUpdateTests
 
         Assert.Equal(entity.DisplayOrder, result.DisplayOrder);
         Assert.Equal(entity.Address, result.Address);
-        Assert.True(result.Tags.Any(t => t.Key == entity.Tags[0].Key && t.Value == entity.Tags[0].Value), "tags not found");
-        Assert.True(result.Tags.Any(t => t.Key == entity.Tags[1].Key && t.Value == entity.Tags[1].Value), "tags not found");
+        Assert.True(result.Tags.ToDictionary().Any(t => t.Key == entity.Tags.ToDictionary().First().Key && t.Value == entity.Tags.ToDictionary().First().Value), "tags not found");
+        Assert.True(result.Tags.ToDictionary().Any(t => t.Key == entity.Tags.ToDictionary().Last().Key && t.Value == entity.Tags.ToDictionary().Last().Value), "tags not found");
         //todo -check the tags count
         //Assert.True(context.Tags.Count() == 2, "tags count failed");    
     }
@@ -72,11 +72,11 @@ public class PollingStationRepositoryUpdateTests
         var context = new AppDbContext(optionsBuilder.Options);
         var repository = new PollingStationRepository(context);
         var id = Guid.Parse("56021543-fc3b-447d-a7cd-a533448bb9e1");
-        var entity = new PollingStationModel { Id = id, Address = "addr1" };
+        var entity = new Domain.Models.PollingStation { Id = id, Address = "addr1" };
 
 
         // Act & Assert
-        await Assert.ThrowsAsync<NotFoundException<PollingStationModel>>(() => repository.UpdateAsync(id, entity));
+        await Assert.ThrowsAsync<NotFoundException<Domain.Models.PollingStation>>(() => repository.UpdateAsync(id, entity));
     }
 
     [Fact]
@@ -86,27 +86,27 @@ public class PollingStationRepositoryUpdateTests
 
         // Arrange
         var id = Guid.Parse("56021543-fc3b-447d-a7cd-a533448bb9e1");
-        var existingPollingStation = new PollingStationModel
+        var existingPollingStation = new Domain.Models.PollingStation
         {
             Id = id,
             DisplayOrder = 1,
             Address = "123 Main St",
-            Tags = new List<TagModel>
+            Tags = new Dictionary<string, string>()
         {
-            new TagModel {Key = "key1", Value = "value1"},
-            new TagModel {Key = "key2", Value = "value2"}
-        }
+             {  "key1",  "value1"},
+             {  "key2",  "value2"}
+        }.ToTags()
         };
 
-        var updatedPollingStation = new PollingStationModel
+        var updatedPollingStation = new Domain.Models.PollingStation
         {
             Id = id,
             DisplayOrder = 2,
             Address = "456 Main St",
-            Tags = new List<TagModel>{
-                        new TagModel {Key = "key1", Value = "value1"},
-                        new TagModel {Key = "key2", Value = "value3"}
-                    }
+            Tags = new Dictionary<string, string>(){
+                         {  "key1",  "value1"},
+                         {  "key2",  "value3"}
+                    }.ToTags()
         };
 
         await repository.AddAsync(existingPollingStation);
@@ -117,9 +117,10 @@ public class PollingStationRepositoryUpdateTests
         // Assert
         Assert.Equal(updatedPollingStation.DisplayOrder, result.DisplayOrder);
         Assert.Equal(updatedPollingStation.Address, result.Address);
-        Assert.Equal(2, result.Tags.Count);
-        Assert.Contains(existingPollingStation.Tags[0], result.Tags);
-        Assert.Contains(existingPollingStation.Tags[1], result.Tags);
+        var resultedTags = result.Tags.ToDictionary();
+        Assert.Equal(2, resultedTags.Count);
+        Assert.Contains(existingPollingStation.Tags.ToDictionary().First(), resultedTags);
+        Assert.Contains(existingPollingStation.Tags.ToDictionary().Last(), resultedTags);
     }
 
     [Fact]
@@ -129,25 +130,25 @@ public class PollingStationRepositoryUpdateTests
 
         // Arrange
         var id = Guid.Parse("56021543-fc3b-447d-a7cd-a533448bb9e1");
-        var existingPollingStation = new PollingStationModel
+        var existingPollingStation = new Domain.Models.PollingStation
         {
             Id = id,
             DisplayOrder = 1,
             Address = "123 Main St",
-            Tags = new List<TagModel>
+            Tags = new Dictionary<string, string>()
         {
-            new TagModel { Key = "key1", Value = "value1" },
-            new TagModel { Key = "key2", Value = "value2" },
-        },
+             {  "key1",  "value1" },
+             {  "key2",  "value2" },
+        }.ToTags(),
         };
         await repository.AddAsync(existingPollingStation);
 
-        var updatedPollingStation = new PollingStationModel
+        var updatedPollingStation = new Domain.Models.PollingStation
         {
             Id = id,
             DisplayOrder = 2,
             Address = "456 Main St",
-            Tags = new List<TagModel>(),
+            Tags = new Dictionary<string, string>().ToTags(),
         };
 
         // Act
@@ -156,6 +157,6 @@ public class PollingStationRepositoryUpdateTests
         // Assert
         Assert.Equal(updatedPollingStation.DisplayOrder, result.DisplayOrder);
         Assert.Equal(updatedPollingStation.Address, result.Address);
-        Assert.Empty(result.Tags);
+        Assert.Empty(result.Tags.ToDictionary());
     }
 }

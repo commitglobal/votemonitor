@@ -1,28 +1,32 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Reflection;
+using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
 using Vote.Monitor.Domain.Models;
 
 namespace Vote.Monitor.Domain.DataContext;
 public class AppDbContext : DbContext
 {
-    public DbSet<PollingStationModel> PollingStations { get; set; }
-    public DbSet<TagModel> Tags { get; set; }
+    public DbSet<PollingStation> PollingStations { get; set; }
 
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
     }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    protected override void OnModelCreating(ModelBuilder builder)
     {
-        modelBuilder.Entity<PollingStationModel>()
-            .HasMany(p => p.Tags)
-            .WithMany(t => t.PollingStations)
-            .UsingEntity(
-            "PollingStationTag",
-            l => l.HasOne(typeof(TagModel)).WithMany().HasForeignKey("TagId").HasPrincipalKey(nameof(TagModel.Id)),
-            r => r.HasOne(typeof(PollingStationModel)).WithMany().HasForeignKey("PollingStationId").HasPrincipalKey(nameof(PollingStationModel.Id)),
-            j => j.HasKey("PollingStationId", "TagId"))
-            .Navigation(e => e.Tags).AutoInclude();
+        base.OnModelCreating(builder);
 
+        builder.HasPostgresExtension("uuid-ossp");
+
+        builder.Entity<PollingStation>()
+         .Property(e => e.Id)
+         .HasDefaultValueSql("uuid_generate_v4()");
+
+        var method = typeof(Postgres.Functions).GetRuntimeMethod(nameof(Postgres.Functions.ObjectKeys), new[] { typeof(JsonDocument) });
+
+        builder
+            .HasDbFunction(method!)
+            .HasName("jsonb_object_keys");
     }
 
 }

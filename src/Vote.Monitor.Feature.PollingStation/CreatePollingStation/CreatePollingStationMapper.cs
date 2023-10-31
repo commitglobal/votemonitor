@@ -3,15 +3,16 @@ using Vote.Monitor.Domain.Models;
 using Vote.Monitor.Feature.PollingStation.GetPollingStation;
 
 namespace Vote.Monitor.Feature.PollingStation.CreatePollingStation;
-internal class CreatePollingStationMapper : Mapper<PollingStationCreateRequestDto, PollingStationReadDto, PollingStationModel>
+internal class CreatePollingStationMapper : Mapper<PollingStationCreateRequestDto, PollingStationReadDto, Domain.Models.PollingStation>
 {
 
-    public override PollingStationModel ToEntity(PollingStationCreateRequestDto source)
+    public override Domain.Models.PollingStation ToEntity(PollingStationCreateRequestDto source)
     {
-        PollingStationModel st = new()
+        Domain.Models.PollingStation st = new()
         {
             Address = source.Address,
-            DisplayOrder = source.DisplayOrder
+            DisplayOrder = source.DisplayOrder,
+            Tags = source.Tags.ToTags()
         };
         foreach (var tag in source.Tags)
         {
@@ -25,14 +26,14 @@ internal class CreatePollingStationMapper : Mapper<PollingStationCreateRequestDt
 
         return st;
     }
-    public override PollingStationReadDto FromEntity(PollingStationModel source)
+    public override PollingStationReadDto FromEntity(Domain.Models.PollingStation source)
     {
         return new PollingStationReadDto()
         {
             Id = source.Id,
             Address = source.Address,
             DisplayOrder = source.DisplayOrder,
-            Tags = source.TagsDictionary()
+            Tags = source.Tags.ToDictionary()
 
         };
     }

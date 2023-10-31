@@ -6,10 +6,10 @@ using Vote.Monitor.Feature.PollingStation.Repositories;
 namespace Vote.Monitor.Feature.PollingStation.GetPollingStationTags;
 internal class GetPollingStationTagsEndpoint : EndpointWithoutRequest
 {
-    private readonly ITagRepository _repository;
+    private readonly IPollingStationRepository _repository;
     private readonly ILogger<GetPollingStationTagsEndpoint> _logger;
 
-    public GetPollingStationTagsEndpoint(ITagRepository repository, ILogger<GetPollingStationTagsEndpoint> logger)
+    public GetPollingStationTagsEndpoint(IPollingStationRepository repository, ILogger<GetPollingStationTagsEndpoint> logger)
     {
         _repository = repository;
         _logger = logger;
@@ -24,10 +24,21 @@ internal class GetPollingStationTagsEndpoint : EndpointWithoutRequest
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        var tags = await _repository.GetAllTagKeysAsync();
-        //get distinct keys from tags
+        try
+        {
+            var tags = await _repository.GetTagKeys(null);
+            //get distinct keys from tags
 
 
-        await SendAsync(tags);
+            await SendAsync(tags);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to retrieve Polling Stations Tags ");
+
+            AddError(ex.Message);
+        }
+
+        ThrowIfAnyErrors();
     }
 }

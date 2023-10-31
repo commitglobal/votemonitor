@@ -31,30 +31,31 @@ public class ImportPollingStationsEndpoint : EndpointWithoutRequest
     public override async Task<int> HandleAsync(CancellationToken ct)
     {
         var csvFilePath = _configuration.GetSection("CSVFileToImport")["path"];
+        int importedCount = 0;
 
         int rowsImported = 0;
 
-        if (!File.Exists(csvFilePath))
-        {
-            throw new NotFoundException<ImportPollingStationsEndpoint>($"CSV file not found at path: {csvFilePath}");
-        }
+            if (!File.Exists(csvFilePath))
+            {
+                throw new NotFoundException<ImportPollingStationsEndpoint>($"CSV file not found at path: {csvFilePath}");
+            }
 
-        using (var reader = new StreamReader(csvFilePath))
-        using (var csv = new CsvReader(reader, configuration: new CsvConfiguration(CultureInfo.InvariantCulture)
-        {
-            HasHeaderRecord = true,
-        }))
-        {
-            csv.Context.RegisterClassMap<PollingStationImportDTOMap>();
+            using (var reader = new StreamReader(csvFilePath))
+            using (var csv = new CsvReader(reader, configuration: new CsvConfiguration(CultureInfo.InvariantCulture)
+            {
+                HasHeaderRecord = true,
+            }))
+            {
+                csv.Context.RegisterClassMap<PollingStationImportDTOMap>();
 
-            var records = csv.GetRecords<PollingStationImport>().ToList();
+                var records = csv.GetRecords<PollingStationImport>().ToList();
 
-            await _repository.DeleteAllAsync();
+                await _repository.DeleteAllAsync();
 
             var validRecords = new List<PollingStationModel>();
 
             foreach (var record in records)
-            {
+                {
                 var pollingStation = new PollingStationModel
                 {
                     DisplayOrder = record.DisplayOrder,
@@ -69,12 +70,12 @@ public class ImportPollingStationsEndpoint : EndpointWithoutRequest
             rowsImported = await _repository.BulkInsertAsync(validRecords);
 
             if (rowsImported <= 0) throw new Exception("No polling station was inserted");
-        }
+            }
         return rowsImported;
-    }
+        }
 
     private bool IsValid(PollingStationModel pollingStation)
-    {
+        {
         if (pollingStation.DisplayOrder < 0)
             return false;
 

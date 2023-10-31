@@ -23,10 +23,10 @@ internal class CreatePollingStationEndpoint : Endpoint<PollingStationCreateReque
 
     public override async Task HandleAsync(PollingStationCreateRequestDto req, CancellationToken ct)
     {
-        var model = Map.ToEntity(req);
+            var model = Map.ToEntity(req);
 
         var result = await _repository.AddAsync(model);
 
-        await SendCreatedAtAsync<GetPollingStationEndpoint>(result, Map.FromEntity(model));
-    }
+            await SendCreatedAtAsync<GetPollingStationEndpoint>(result, Map.FromEntity(model));
+        }
 }

@@ -6,18 +6,18 @@ using Vote.Monitor.Feature.PollingStation.GetPollingStation;
 namespace Vote.Monitor.Feature.PollingStation.GetAllPollingStations;
 internal class GetAllPollingStationsMapper :IResponseMapper
 {
-    public PollingStationReadDto FromEntity(PollingStationModel source)
+    public PollingStationReadDto FromEntity(Domain.Models.PollingStation source)
     {
         return new PollingStationReadDto()
         {
             Id = source.Id,
             Address = source.Address,
             DisplayOrder = source.DisplayOrder,
-            Tags = source.TagsDictionary()
+            Tags = source.Tags.ToDictionary()
         };
     }
 
-    public PaginationResponse<PollingStationReadDto> FromEntity(List<PollingStationModel> source, int currentPage, int pagesize, int totalItems, int totalPages )
+    public PaginationResponse<PollingStationReadDto> FromEntity(List<Domain.Models.PollingStation> source, int currentPage, int pagesize, int totalItems, int totalPages )
     {
         return new PaginationResponse<PollingStationReadDto>()
         {

@@ -8,31 +8,32 @@ using Xunit;
 namespace Vote.Monitor.Feature.PollingStation.UnitTests.Repositories;
 public class PollingStationRepositoryDeleteTests
 {
-    private readonly List<PollingStationModel> _pollingStations = new()
+    private readonly List<Domain.Models.PollingStation> _pollingStations = new()
             {
-                new PollingStationModel
+                new Domain.Models.PollingStation
                 {
                     Id = Guid.Parse("56021543-fc3b-447d-a7cd-a533448bb9e1"),
                     Address ="addr1",
                     DisplayOrder =0,
-                    Tags = new ()
+                    Tags = new Dictionary<string, string>()
                     {
-                        new TagModel {Key = "key1", Value = "value1"},
-                        new TagModel {Key = "key2", Value = "value2"},
-                        new TagModel {Key = "ke3", Value = "value3"}
-                    }
+                         {  "key1",  "value1"},
+                         {  "key2",  "value2"},
+                         {  "ke3",  "value3"}
+                    }.ToTags()
                 },
-                new PollingStationModel
+                new Domain.Models.PollingStation
                 {
                     Id = Guid.Parse("7ea27240-0711-49de-98fb-1d3e9df2fffd"),
                     Address ="addr2",
                     DisplayOrder =1,
-                    Tags = new ()
+                    Tags = new Dictionary<string, string>()
                     {
-                        new TagModel {Key = "key1", Value = "value2"},
-                        new TagModel {Key = "key2", Value = "value3"},
-                        new TagModel {Key = "ke3", Value = "value3"}
-                    }
+                         {  "key1",  "value2"},
+                         {  "key2",  "value3"},
+                         {  "ke3",  "value3"}
+                    }.ToTags()
+                }
                 }
 
             };
@@ -56,7 +57,7 @@ public class PollingStationRepositoryDeleteTests
         var id = Guid.Parse("afb6e443-9e37-4c9f-b737-f38352ffbfec");
 
         // Act & Assert
-        await Assert.ThrowsAsync<NotFoundException<PollingStationModel>>(() => repository.DeleteAsync(id));
+        await Assert.ThrowsAsync<NotFoundException<Domain.Models.PollingStation>>(() => repository.DeleteAsync(id));
     }
 
     [Fact]
@@ -93,15 +94,15 @@ public class PollingStationRepositoryDeleteTests
 
         // Arrange
         var pollingStationId = Guid.Parse("0ff0ec80-bf09-4154-833c-6dd9f3c579cd");
-        var pollingStation = new PollingStationModel
+        var pollingStation = new Domain.Models.PollingStation
         {
             Id = pollingStationId,
             DisplayOrder = 3,
             Address = "123 Main St",
-            Tags = new List<TagModel>
+            Tags = new Dictionary<string, string>()
                     {
-                        new TagModel {Key = "key test", Value = "value test"},
-                    }
+                         {  "key test",  "value test"},
+                    }.ToTags()
         };
         await repository.AddAsync(pollingStation);
 
@@ -123,16 +124,16 @@ public class PollingStationRepositoryDeleteTests
         Init("delTest5", out AppDbContext context, out PollingStationRepository repository);
 
         var pollingStationId = Guid.Parse("0ff0ec80-bf09-4154-833c-6dd9f3c579cd"); ;
-        var pollingStation = new PollingStationModel
+        var pollingStation = new Domain.Models.PollingStation
         {
             Id = pollingStationId,
             DisplayOrder = 1,
             Address = "123 Main St",
-            Tags = new List<TagModel>
+            Tags = new Dictionary<string, string>()
         {
-            new TagModel { Key = "key1", Value = "value one" },
-            new TagModel { Key = "key2", Value = "value two" }
-        }
+             {  "key1",  "value one" },
+             {  "key2",  "value two" }
+        }.ToTags()
         };
         await repository.AddAsync(pollingStation);
 

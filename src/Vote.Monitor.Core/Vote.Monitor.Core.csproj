@@ -6,13 +6,5 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   
-    <ItemGroup>
-
-  </ItemGroup>
-  
-
-  <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
 
 </Project>

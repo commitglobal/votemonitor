@@ -45,6 +45,8 @@ builder.Services.SwaggerDocument(o =>
         s.Title = "Vote Monitor API";
         s.Version = "v2";
     };
+    o.AutoTagPathSegmentIndex = 2;
+
 });
 
 
