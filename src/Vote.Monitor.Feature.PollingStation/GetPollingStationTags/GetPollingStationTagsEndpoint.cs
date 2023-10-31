@@ -24,21 +24,10 @@ internal class GetPollingStationTagsEndpoint : EndpointWithoutRequest
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        try
-        {
-            var tags = await _repository.GetAllTagKeysAsync();
-            //get distinct keys from tags
+        var tags = await _repository.GetAllTagKeysAsync();
+        //get distinct keys from tags
 
 
-            await SendAsync(tags);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Failed to retrieve Polling Stations Tags ");
-
-            AddError(ex.Message);
-        }
-
-        ThrowIfAnyErrors();
+        await SendAsync(tags);
     }
 }
