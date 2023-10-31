@@ -1,16 +1,11 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Vote.Monitor.Feature.PollingStation.Repositories;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace Vote.Monitor.Feature.PollingStation;
 public static class PollingStationFeatureInstaller
 {
-    public const string SectionKey = "PollingStations";
-    public static IServiceCollection AddPollingStationFeatures(this IServiceCollection services, IConfiguration config)
+    public static IServiceCollection AddPollingStationFeature(this IServiceCollection services)
     {
         
-        services.AddScoped<IPollingStationRepository , PollingStationRepository>();
-        services.AddScoped<ITagRepository, TagRepository>();
         return services;
     }
 }

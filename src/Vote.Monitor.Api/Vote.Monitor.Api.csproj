@@ -21,6 +21,7 @@
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.5" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.11" />
     <PackageReference Include="Serilog" Version="3.0.1" />
+    <PackageReference Include="Serilog.Enrichers.Environment" Version="2.3.0" />
     <PackageReference Include="Serilog.Extensions.Logging" Version="7.0.0" />
     <PackageReference Include="Serilog.Settings.Configuration" Version="7.0.1" />
     <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
@@ -34,8 +35,7 @@
     <ProjectReference Include="..\Vote.Monitor.CSOAdmin\Vote.Monitor.CSOAdmin.csproj" />
     <ProjectReference Include="..\Vote.Monitor.CSO\Vote.Monitor.CSO.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Domain\Vote.Monitor.Domain.csproj" />
-    <ProjectReference Include="..\Vote.Monitor.Feature.Example\Vote.Monitor.Feature.Example.csproj" />
-    <ProjectReference Include="..\Vote.Monitor.Infra\Vote.Monitor.Infra.csproj" />
+    <ProjectReference Include="..\Vote.Monitor.Feature.PollingStation\Vote.Monitor.Feature.PollingStation.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Observer\Vote.Monitor.Observer.csproj" />
   </ItemGroup>
 

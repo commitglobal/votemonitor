@@ -6,10 +6,10 @@ namespace Vote.Monitor.CSOAdmin;
 
 public record CSOAdminModel
 {
-    public Guid Id { get; init; }
-    public string Login { get; init; }
-    public string Name { get; init; }
+    public required Guid Id { get; init; }
+    public required string Login { get; init; }
+    public required string Name { get; init; }
 
     [JsonConverter(typeof(SmartEnumNameConverter<UserStatus, int>))]
-    public UserStatus Status { get; init; }
+    public required UserStatus Status { get; init; }
 }

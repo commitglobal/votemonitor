@@ -7,8 +7,8 @@ namespace Vote.Monitor.CSO;
 public record CSOModel
 {
     public Guid Id { get; init; }
-    public string Name { get; init; }
+    public required string Name { get; init; }
 
     [JsonConverter(typeof(SmartEnumNameConverter<CSOStatus, int>))]
-    public CSOStatus Status { get; init; }
+    public required CSOStatus Status { get; init; }
 }

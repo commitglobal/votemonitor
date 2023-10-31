@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace Vote.Monitor.Feature.Example.UnitTests;
+namespace Vote.Monitor.Feature.PollingStation.UnitTests;
 
 public static class Utils
 {
