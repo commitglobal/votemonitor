@@ -7,9 +7,9 @@ public class DeterministicGuid
 {
     public static Guid Create(string text)
     {
-        var hash = SHA256
-            .Create()
-            .ComputeHash(Encoding.UTF8.GetBytes(text));
+        using var hasher = SHA256.Create();
+
+        var hash = hasher.ComputeHash(Encoding.UTF8.GetBytes(text));
 
         var guid = new Guid(hash.Take(16).ToArray());
 
