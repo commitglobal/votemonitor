@@ -17,14 +17,14 @@ public class ImportPollingStationTests
         var repository = new Mock<IPollingStationRepository>();
         var logger = new Mock<ILogger<ImportPollingStationsEndpoint>>();
         var configuration = new Mock<IConfiguration>();
-        configuration.Setup(c => c.GetSection("CSVFileToImport")["path"])
-                     .Returns("test.csv");
-        var csvData = "DisplayOrder,Address,Tag1,Tag2\n" +
-                     "1,Address1,TagA,TagB\n" +
-                     "2,Address2,TagC,TagD\n" +
-                     "3,Address3,TagE,TagF";
-
         var tempCsvPath = Path.Combine(Path.GetTempPath(), "test.csv");
+        configuration.Setup(c => c.GetSection("CSVFileToImport")["path"])
+                     .Returns(tempCsvPath);
+        var csvData = "DisplayOrder,Address,Tag1,Tag2\n" +
+                      "1,Address1,TagA,TagB\n" +
+                      "2,Address2,TagC,TagD\n" +
+                      "3,Address3,TagE,TagF";
+
         File.WriteAllText(tempCsvPath, csvData);
 
         configuration.Setup(c => c.GetSection("CSVFileToImport")["path"]).Returns(tempCsvPath);
