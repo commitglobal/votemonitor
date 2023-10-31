@@ -2,6 +2,7 @@
 using Vote.Monitor.Core.Exceptions;
 using Vote.Monitor.Domain.DataContext;
 using Vote.Monitor.Domain.Models;
+using EFCore.BulkExtensions;
 
 namespace Vote.Monitor.Feature.PollingStation.Repositories;
 internal class PollingStationRepository : IPollingStationRepository
@@ -70,32 +71,29 @@ internal class PollingStationRepository : IPollingStationRepository
         pollingStation.DisplayOrder = entity.DisplayOrder;
         pollingStation.Address = entity.Address;
 
-        if (entity.Tags != null)
+        pollingStation.Tags.Clear();
+
+        foreach (var tag in entity.Tags)
         {
-            pollingStation.Tags.Clear();
+            var tagToUpdate = await _context.Tags.FirstOrDefaultAsync(t => t.Key == tag.Key);
 
-            foreach (var tag in entity.Tags)
+
+            if (tagToUpdate == null)
             {
-                var tagToUpdate = await _context.Tags.FirstOrDefaultAsync(t => t.Key == tag.Key);
-
-
-                if (tagToUpdate == null)
+                tagToUpdate = new TagModel
                 {
-                    tagToUpdate = new TagModel
-                    {
-                        Key = tag.Key,
-                        Value = tag.Value
-                    };
+                    Key = tag.Key,
+                    Value = tag.Value
+                };
 
-                    _context.Tags.Add(tagToUpdate);
-                }
-                else
-                {
-                    tagToUpdate.Value = tag.Value;
-                }
-
-                pollingStation.Tags.Add(tagToUpdate);
+                _context.Tags.Add(tagToUpdate);
             }
+            else
+            {
+                tagToUpdate.Value = tag.Value;
+            }
+
+            pollingStation.Tags.Add(tagToUpdate);
         }
 
         await _context.SaveChangesAsync();
@@ -123,9 +121,6 @@ internal class PollingStationRepository : IPollingStationRepository
 
         await _context.SaveChangesAsync();
     }
-
-
-
 
     public async Task<IEnumerable<PollingStationModel>> GetAllAsync(List<TagModel>? filterCriteria, int pageSize = 0, int page = 1)
     {
@@ -155,6 +150,13 @@ internal class PollingStationRepository : IPollingStationRepository
               ).Count();
     }
 
+    public async Task<int> BulkInsertAsync(List<PollingStationModel> records)
+    {
+        await _context.BulkInsertAsync(records);
+
+        return records.Count;
+    }
+
     private async Task DeleteOrphanedTags()
     {
         var orphanedTags = _context.Tags
@@ -166,4 +168,6 @@ internal class PollingStationRepository : IPollingStationRepository
 
         await _context.SaveChangesAsync();
     }
+
+
 }

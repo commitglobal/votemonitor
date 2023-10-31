@@ -1,7 +1,6 @@
 ﻿global using FastEndpoints;
 using FastEndpoints.Swagger;
 using Serilog;
-using Vote.Monitor.Core;
 using Vote.Monitor.Feature.PollingStation;
 using Vote.Monitor.Domain;
 

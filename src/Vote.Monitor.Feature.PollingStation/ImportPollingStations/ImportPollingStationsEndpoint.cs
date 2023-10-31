@@ -31,51 +31,59 @@ public class ImportPollingStationsEndpoint : EndpointWithoutRequest
     public override async Task<int> HandleAsync(CancellationToken ct)
     {
         var csvFilePath = _configuration.GetSection("CSVFileToImport")["path"];
-        int importedCount = 0;
 
-        try
+        int rowsImported = 0;
+
+        if (!File.Exists(csvFilePath))
         {
-            if (!File.Exists(csvFilePath))
+            throw new NotFoundException<ImportPollingStationsEndpoint>($"CSV file not found at path: {csvFilePath}");
+        }
+
+        using (var reader = new StreamReader(csvFilePath))
+        using (var csv = new CsvReader(reader, configuration: new CsvConfiguration(CultureInfo.InvariantCulture)
+        {
+            HasHeaderRecord = true,
+        }))
+        {
+            csv.Context.RegisterClassMap<PollingStationImportDTOMap>();
+
+            var records = csv.GetRecords<PollingStationImport>().ToList();
+
+            await _repository.DeleteAllAsync();
+
+            var validRecords = new List<PollingStationModel>();
+
+            foreach (var record in records)
             {
-                throw new NotFoundException<ImportPollingStationsEndpoint>($"CSV file not found at path: {csvFilePath}");
-            }
-
-            using (var reader = new StreamReader(csvFilePath))
-            using (var csv = new CsvReader(reader, configuration: new CsvConfiguration(CultureInfo.InvariantCulture)
-            {
-                HasHeaderRecord = true,
-            }))
-            {
-                csv.Context.RegisterClassMap<PollingStationImportDTOMap>();
-
-                var records = csv.GetRecords<PollingStationImport>().ToList();
-
-                await _repository.DeleteAllAsync();
-
-                foreach (var record in records)
+                var pollingStation = new PollingStationModel
                 {
-                    var pollingStation = new PollingStationModel
-                    {
-                        DisplayOrder = record.DisplayOrder,
-                        Address = record.Address,
-                        Tags = record.Tags.ToTags()
-                    };
+                    DisplayOrder = record.DisplayOrder,
+                    Address = record.Address,
+                    Tags = record.Tags.ToTags()
+                };
 
-                    await _repository.AddAsync(pollingStation);
-
-                    importedCount++;
-                }
+                if (IsValid(pollingStation))
+                    validRecords.Add(pollingStation);
             }
+
+            rowsImported = await _repository.BulkInsertAsync(validRecords);
+
+            if (rowsImported <= 0) throw new Exception("No polling station was inserted");
         }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Failed to import Polling Stations ");
+        return rowsImported;
+    }
 
-            AddError(ex.Message);
-        }
+    private bool IsValid(PollingStationModel pollingStation)
+    {
+        if (pollingStation.DisplayOrder < 0)
+            return false;
 
-        ThrowIfAnyErrors();
+        if (string.IsNullOrWhiteSpace(pollingStation.Address))
+            return false;
 
-        return importedCount;
+        if (!pollingStation.Tags.Any())
+            return false;
+
+        return true;
     }
 }

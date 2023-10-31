@@ -8,4 +8,5 @@ public interface IRepositoryCommand<TEntity> where TEntity : class
     Task DeleteAsync(Guid id);
     Task DeleteAllAsync();
 
+    Task<int> BulkInsertAsync(List<TEntity> records);
 }
