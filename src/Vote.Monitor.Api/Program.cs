@@ -19,6 +19,7 @@ builder.Services.AddCSOAdminFeature();
 builder.Services.AddObserverFeature();
 builder.Services.AddExampleFeatures(builder.Configuration.GetSection(ExampleFeaturesInstaller.SectionKey));
 builder.Services.AddFastEndpoints();
+builder.Services.AddAuthorization();
 builder.Services.SwaggerDocument(o =>
 {
     o.AutoTagPathSegmentIndex = 2;
@@ -27,8 +28,16 @@ builder.Services.SwaggerDocument(o =>
         s.Title = "Vote Monitor API";
         s.Version = "v2";
     };
+    //o.AutoTagPathSegmentIndex = 2;
+
 });
 
+
+var logger = new LoggerConfiguration()
+        .ReadFrom.Configuration(builder.Configuration)
+        .CreateLogger();
+
+builder.Logging.AddSerilog(logger);
 
 var app = builder.Build();
 await app.Services.InitializeDatabasesAsync();

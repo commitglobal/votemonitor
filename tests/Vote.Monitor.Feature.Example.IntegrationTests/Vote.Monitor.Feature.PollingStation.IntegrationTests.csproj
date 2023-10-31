@@ -6,24 +6,20 @@
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
-    <RootNamespace>Vote.Monitor.Feature.Example.UnitTests</RootNamespace>
+    <RootNamespace>Vote.Monitor.Feature.PollingStation.IntegrationTests</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="6.12.0" />
+    <PackageReference Include="FastEndpoints.Testing" Version="5.19.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.7.2" />
+    <PackageReference Include="Testcontainers.PostgreSql" Version="3.5.0" />
     <PackageReference Include="xunit" Version="2.5.3" />
-    <PackageReference Include="Xunit.Priority" Version="1.1.6" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Services\" />
-    <Folder Include="Validators\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\Vote.Monitor.Feature.Example\Vote.Monitor.Feature.Example.csproj" />
+    <ProjectReference Include="..\..\src\Vote.Monitor.Api\Vote.Monitor.Api.csproj" />
   </ItemGroup>
 
 </Project>
