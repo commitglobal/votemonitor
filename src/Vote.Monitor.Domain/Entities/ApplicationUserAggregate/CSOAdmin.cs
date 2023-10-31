@@ -14,7 +14,7 @@ public class CSOAdmin : ApplicationUser
     public Guid CSOId { get; private set; }
     public CSO CSO{ get; set; }
 
-    public CSOAdmin(Guid csoId, string name, string login, string password, UserRole role) : base(name, login, password, role)
+    public CSOAdmin(Guid csoId, string name, string login, string password) : base(name, login, password, UserRole.CSOAdmin)
     {
         CSOId = csoId;
     }

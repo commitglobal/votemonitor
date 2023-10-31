@@ -5,7 +5,7 @@ using Vote.Monitor.Domain.Repository;
 
 namespace Vote.Monitor.CSO.Activate;
 
-public class Endpoint : Endpoint<Request, Results<NoContent, NotFound, Conflict<ProblemDetails>>>
+public class Endpoint : Endpoint<Request, Results<NoContent, NotFound>>
 {
     private readonly IRepository<Domain.Entities.CSOAggregate.CSO> _repository;
 
@@ -17,10 +17,9 @@ public class Endpoint : Endpoint<Request, Results<NoContent, NotFound, Conflict<
     public override void Configure()
     {
         Put("/api/csos/{id:guid}:activate");
-        AllowAnonymous();
     }
 
-    public override async Task<Results<NoContent, NotFound, Conflict<ProblemDetails>>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<Results<NoContent, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
         var CSO = await _repository.GetByIdAsync(req.Id, ct);
 
@@ -29,7 +28,7 @@ public class Endpoint : Endpoint<Request, Results<NoContent, NotFound, Conflict<
             return TypedResults.NotFound();
         }
 
-        CSO.MarkAsActive();
+        CSO.Activate();
 
         await _repository.SaveChangesAsync(ct);
         return TypedResults.NoContent();

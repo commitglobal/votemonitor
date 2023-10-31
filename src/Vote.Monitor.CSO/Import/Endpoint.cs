@@ -16,7 +16,6 @@ public class Endpoint : Endpoint<Request, Results<Ok<CSOModel>, NotFound>>
     public override void Configure()
     {
         Post("/api/csos:import");
-        AllowAnonymous();
     }
 
     public override async Task<Results<Ok<CSOModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)

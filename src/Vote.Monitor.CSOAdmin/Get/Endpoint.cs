@@ -18,25 +18,24 @@ public class Endpoint : Endpoint<Request, Results<Ok<CSOAdminModel>, NotFound>>
     public override void Configure()
     {
         Get("/api/csos/{CSOid:guid}/admins/{id:guid}");
-        AllowAnonymous();
     }
 
     public override async Task<Results<Ok<CSOAdminModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var specification = new GetCSOAdmin(req.CSOId,req.Id);
-        var CSO = await _repository.GetBySpecAsync(specification, ct);
+        var specification = new GetCSOAdminByIdSpecification(req.CSOId,req.Id);
+        var csoAdmin = await _repository.FirstOrDefaultAsync(specification, ct);
 
-        if (CSO is null)
+        if (csoAdmin is null)
         {
             return TypedResults.NotFound();
         }
 
         return TypedResults.Ok(new CSOAdminModel
         {
-            Name = CSO.Name,
-            Login = CSO.Login,
-            Password = CSO.Password,
-            Status = CSO.Status
+            Id = csoAdmin.Id,
+            Name = csoAdmin.Name,
+            Login = csoAdmin.Login,
+            Status = csoAdmin.Status
         });
 
     }

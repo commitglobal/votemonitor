@@ -34,23 +34,13 @@ public class Country : BaseEntity, IAggregateRoot
     /// Full English country name
     /// </summary>
     public string FullName { get; private set; }
-    
 
-    public Country(string iso2, string name, string iso3, string numericCode, string fullName)
+    public Country(string name, string fullName, string iso2, string iso3, string numericCode)
     {
         Id = iso2.ToGuid();
-        Iso2 = iso2;
         Name = name;
         FullName = fullName;
-        Iso3 = iso3;
-        NumericCode = numericCode;
-    }
-
-    public void UpdateDetails(string iso2, string name, string fullName, string iso3, string numericCode)
-    {
         Iso2 = iso2;
-        Name = name;
-        FullName = fullName;
         Iso3 = iso3;
         NumericCode = numericCode;
     }

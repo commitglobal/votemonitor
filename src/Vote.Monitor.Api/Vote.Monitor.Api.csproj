@@ -20,11 +20,25 @@
   <ItemGroup>
     <ProjectReference Include="..\Vote.Monitor.Auth\Vote.Monitor.Auth.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Core\Vote.Monitor.Core.csproj" />
+    <ProjectReference Include="..\Vote.Monitor.Country\Vote.Monitor.Country.csproj" />
     <ProjectReference Include="..\Vote.Monitor.CSOAdmin\Vote.Monitor.CSOAdmin.csproj" />
     <ProjectReference Include="..\Vote.Monitor.CSO\Vote.Monitor.CSO.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Domain\Vote.Monitor.Domain.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Feature.Example\Vote.Monitor.Feature.Example.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Infra\Vote.Monitor.Infra.csproj" />
+    <ProjectReference Include="..\Vote.Monitor.Observer\Vote.Monitor.Observer.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="appsettings.Development.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="appsettings.Testing.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

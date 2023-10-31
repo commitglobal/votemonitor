@@ -1,4 +1,6 @@
-﻿namespace Vote.Monitor.Core;
+﻿using Vote.Monitor.Core.Helpers;
+
+namespace Vote.Monitor.Core;
 
 public static class DeterministicGuidExtensions
 {

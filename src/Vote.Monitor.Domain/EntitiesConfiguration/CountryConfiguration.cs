@@ -19,6 +19,6 @@ internal class CountryConfiguration : IEntityTypeConfiguration<Country>
         builder.Property(e => e.Iso2).HasMaxLength(2).IsRequired();
         builder.Property(e => e.Iso3).HasMaxLength(3).IsRequired();
 
-        builder.HasData(Countries.GetAll().Select(x => x.ToEntity()));
+        builder.HasData(CountriesList.GetAll().Select(x => x.ToEntity()));
     }
 }

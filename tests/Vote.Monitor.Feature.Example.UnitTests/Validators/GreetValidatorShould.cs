@@ -14,7 +14,7 @@ public class GreetValidatorShould
 
     public void Invalidate_request_with_empty_name(string name)
     {
-        var request = new Greet.Request() { Name = name };
+        var request = new Greet.Request { Name = name };
         var result = _validator.TestValidate(request);
         result.ShouldHaveValidationErrorFor(x => x.Name);
     }
@@ -24,7 +24,7 @@ public class GreetValidatorShould
 
     public void Invalidate_request_with_invalid_name_length(string name)
     {
-        var request = new Greet.Request() { Name = name };
+        var request = new Greet.Request { Name = name };
         var result = _validator.TestValidate(request);
         result.ShouldHaveValidationErrorFor(x => x.Name);
     }

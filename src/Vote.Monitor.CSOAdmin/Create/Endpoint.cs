@@ -2,14 +2,13 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Vote.Monitor.CSOAdmin.Specifications;
-using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
 using Vote.Monitor.Domain.Repository;
 
 namespace Vote.Monitor.CSOAdmin.Create;
 
 public class Endpoint : Endpoint<Request, Results<Ok<CSOAdminModel>, Conflict<ProblemDetails>>>
 {
-     readonly IRepository<Domain.Entities.ApplicationUserAggregate.CSOAdmin> _repository;
+    readonly IRepository<Domain.Entities.ApplicationUserAggregate.CSOAdmin> _repository;
 
     public Endpoint(IRepository<Domain.Entities.ApplicationUserAggregate.CSOAdmin> repository)
     {
@@ -19,29 +18,28 @@ public class Endpoint : Endpoint<Request, Results<Ok<CSOAdminModel>, Conflict<Pr
     public override void Configure()
     {
         Post("/api/csos/{CSOid:guid}/admins");
-        AllowAnonymous();
     }
 
     public override async Task<Results<Ok<CSOAdminModel>, Conflict<ProblemDetails>>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var specification = new GetCSOAdminByName(req.CSOId, req.Name);
-        var hasCSOAdminWithSameName = await _repository.AnyAsync(specification, ct);
+        var specification = new GetCSOAdminByLoginSpecification(req.CSOId, req.Login);
+        var hasCSOAdminWithSameLogin = await _repository.AnyAsync(specification, ct);
 
-        if (hasCSOAdminWithSameName)
+        if (hasCSOAdminWithSameLogin)
         {
-            AddError(r => r.Name, "A CSOAdmin admin with same name already exists");
+            AddError(r => r.Name, "A CSO admin with same login already exists");
             return TypedResults.Conflict(new ProblemDetails(ValidationFailures));
         }
 
-        var CSOAdmin = new Domain.Entities.ApplicationUserAggregate.CSOAdmin(req.CSOId, req.Name, req.Login, req.Password, UserRole.CSOAdmin);
-        await _repository.AddAsync(CSOAdmin, ct);
+        var csoAdmin = new Domain.Entities.ApplicationUserAggregate.CSOAdmin(req.CSOId, req.Name, req.Login, req.Password);
+        await _repository.AddAsync(csoAdmin, ct);
 
         return TypedResults.Ok(new CSOAdminModel
         {
-            Name = CSOAdmin.Name,
-            Login = CSOAdmin.Login,
-            Password = CSOAdmin.Password,
-            Status = CSOAdmin.Status
+            Id = csoAdmin.Id,
+            Name = csoAdmin.Name,
+            Login = csoAdmin.Login,
+            Status = csoAdmin.Status
         });
 
     }

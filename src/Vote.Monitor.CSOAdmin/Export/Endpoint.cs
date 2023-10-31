@@ -16,7 +16,6 @@ public class Endpoint : EndpointWithoutRequest<Results<Ok<CSOAdminModel>, NotFou
     public override void Configure()
     {
         Get("/api/csos/{CSOid:guid}/admins:export");
-        AllowAnonymous();
     }
 
     public override async Task<Results<Ok<CSOAdminModel>, NotFound>> ExecuteAsync(CancellationToken ct)

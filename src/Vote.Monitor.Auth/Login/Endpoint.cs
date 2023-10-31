@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Vote.Monitor.Auth.Options;
+using Vote.Monitor.Auth.Specifications;
 using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
 using Vote.Monitor.Domain.Repository;
 
@@ -24,8 +25,6 @@ public class Endpoint : Endpoint<Request, Results<Ok<Response>, ProblemDetails>>
     public override void Configure()
     {
         Post("/api/auth");
-        DontAutoTag();
-        Description(x => x.WithTags("Auth"));
         AllowAnonymous();
     }
 
@@ -47,6 +46,6 @@ public class Endpoint : Endpoint<Request, Results<Ok<Response>, ProblemDetails>>
             claims: new (string claimType, string claimValue)[] { (JwtRegisteredClaimNames.Sub, user.Id.ToString()) }
         );
 
-        return TypedResults.Ok(new Response() { Token = jwtToken });
+        return TypedResults.Ok(new Response { Token = jwtToken });
     }
 }

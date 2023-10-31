@@ -22,7 +22,6 @@ public class Endpoint : Endpoint<Request, Response>
         Post("/api/something");
         DontAutoTag();
         Description(x => x.WithTags("Example"));
-        AllowAnonymous();
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
@@ -32,7 +31,7 @@ public class Endpoint : Endpoint<Request, Response>
         switch (result)
         {
             case SomethingResult.Ok r:
-                await SendAsync(new Response() { Message = r.Result }, cancellation: ct);
+                await SendAsync(new Response { Message = r.Result }, cancellation: ct);
                 break;
 
             case SomethingResult.Error e:

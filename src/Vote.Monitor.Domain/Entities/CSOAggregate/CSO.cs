@@ -17,7 +17,7 @@ public class CSO : BaseEntity, IAggregateRoot
     public CSO(string name)
     {
         Name = name;
-        Status = CSOStatus.Active;
+        Status = CSOStatus.Activated;
     }
 
     public void UpdateDetails(string name)
@@ -25,15 +25,15 @@ public class CSO : BaseEntity, IAggregateRoot
         Name = name;
     }
 
-    public void MarkAsActive()
+    public void Activate()
     {
         // TODO: handle invariants
-        Status = CSOStatus.Active;
+        Status = CSOStatus.Activated;
     }
 
-    public void MarkAsInactive()
+    public void Deactivate()
     {
         // TODO: handle invariants
-        Status = CSOStatus.Inactive;
+        Status = CSOStatus.Deactivated;
     }
 }

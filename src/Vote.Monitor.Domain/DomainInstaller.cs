@@ -37,7 +37,9 @@ public static class DomainInstaller
         using var scope = services.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<VoteMonitorContext>();
         var logger = scope.ServiceProvider.GetRequiredService<ILoggerFactory>();
-        if (dbContext.Database.GetPendingMigrations().Any())
+        var pendingMigrations = await dbContext.Database.GetPendingMigrationsAsync(cancellationToken);
+
+        if (pendingMigrations.Any())
         {
             logger.CreateLogger<ILogger>().LogInformation("Applying Root Migrations.");
             await dbContext.Database.MigrateAsync(cancellationToken);

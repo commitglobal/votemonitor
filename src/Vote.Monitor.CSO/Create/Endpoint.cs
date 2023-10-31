@@ -18,12 +18,11 @@ public class Endpoint : Endpoint<Request, Results<Ok<CSOModel>, Conflict<Problem
     public override void Configure()
     {
         Post("/api/csos");
-        AllowAnonymous();
     }
 
     public override async Task<Results<Ok<CSOModel>, Conflict<ProblemDetails>>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var specification = new GetCSOByName(req.Name);
+        var specification = new GetCSOByNameSpecification(req.Name);
         var hasCSOWithSameName = await _repository.AnyAsync(specification, ct);
 
         if (hasCSOWithSameName)
@@ -32,14 +31,14 @@ public class Endpoint : Endpoint<Request, Results<Ok<CSOModel>, Conflict<Problem
             return TypedResults.Conflict(new ProblemDetails(ValidationFailures));
         }
 
-        var CSO = new Domain.Entities.CSOAggregate.CSO(req.Name);
-        await _repository.AddAsync(CSO, ct);
+        var cso = new Domain.Entities.CSOAggregate.CSO(req.Name);
+        await _repository.AddAsync(cso, ct);
 
         return TypedResults.Ok(new CSOModel
         {
-            Id = CSO.Id,
-            Name = CSO.Name,
-            Status = CSO.Status
+            Id = cso.Id,
+            Name = cso.Name,
+            Status = cso.Status
         });
     }
 }

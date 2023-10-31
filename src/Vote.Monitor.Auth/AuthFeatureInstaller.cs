@@ -12,7 +12,7 @@ public static class AuthFeatureInstaller
     {
         services.Configure<JWTConfig>(config.GetSection(JWTConfig.Key));
 
-        services.AddJWTBearerAuth($"{JWTConfig.Key}:TokenSigningKey");
+        services.AddJWTBearerAuth(config[$"{JWTConfig.Key}:TokenSigningKey"]!);
         services.AddAuthorization();
 
         return services;

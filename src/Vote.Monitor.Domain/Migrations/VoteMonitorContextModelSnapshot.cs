@@ -145,6 +145,20 @@ namespace Vote.Monitor.Domain.Migrations
                     b.ToTable("CSOAdmins", (string)null);
                 });
 
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.ApplicationUserAggregate.Observer", b =>
+                {
+                    b.HasBaseType("Vote.Monitor.Domain.Entities.ApplicationUserAggregate.ApplicationUser");
+
+                    b.ToTable("Observers", (string)null);
+                });
+
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.ApplicationUserAggregate.PlatformAdmin", b =>
+                {
+                    b.HasBaseType("Vote.Monitor.Domain.Entities.ApplicationUserAggregate.ApplicationUser");
+
+                    b.ToTable("PlatformAdmins", (string)null);
+                });
+
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.ElectionRoundAggregate.ElectionRound", b =>
                 {
                     b.HasOne("Vote.Monitor.Domain.Entities.CountryAggregate.Country", "Country")
@@ -171,6 +185,24 @@ namespace Vote.Monitor.Domain.Migrations
                         .IsRequired();
 
                     b.Navigation("CSO");
+                });
+
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.ApplicationUserAggregate.Observer", b =>
+                {
+                    b.HasOne("Vote.Monitor.Domain.Entities.ApplicationUserAggregate.ApplicationUser", null)
+                        .WithOne()
+                        .HasForeignKey("Vote.Monitor.Domain.Entities.ApplicationUserAggregate.Observer", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.ApplicationUserAggregate.PlatformAdmin", b =>
+                {
+                    b.HasOne("Vote.Monitor.Domain.Entities.ApplicationUserAggregate.ApplicationUser", null)
+                        .WithOne()
+                        .HasForeignKey("Vote.Monitor.Domain.Entities.ApplicationUserAggregate.PlatformAdmin", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.CSOAggregate.CSO", b =>

@@ -16,7 +16,6 @@ public class Endpoint : EndpointWithoutRequest<Results<Ok<CSOModel>, NotFound>>
     public override void Configure()
     {
         Get("/api/csos:export");
-        AllowAnonymous();
     }
 
     public override async Task<Results<Ok<CSOModel>, NotFound>> ExecuteAsync(CancellationToken ct)

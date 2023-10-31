@@ -7,7 +7,7 @@ public class PlatformAdmin : ApplicationUser
     {
     }
 
-    public PlatformAdmin(string name, string login, string password, UserRole role) : base(name, login, password, role)
+    public PlatformAdmin(string name, string login, string password) : base(name, login, password, UserRole.PlatformAdmin)
     {
     }
 }

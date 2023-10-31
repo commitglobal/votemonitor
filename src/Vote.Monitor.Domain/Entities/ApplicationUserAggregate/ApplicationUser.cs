@@ -23,23 +23,20 @@ public abstract class ApplicationUser : BaseEntity, IAggregateRoot
         Status = UserStatus.Active;
     }
 
-    public void UpdateDetails(string name, string login, string password, UserRole role)
+    public void UpdateDetails(string name)
     {
         Name = name;
-        Login = login;
-        Password = password;
-        Role = role;
     }
 
-    public void MarkAsActive()
+    public void Activate()
     {
         // TODO: handle invariants
         Status = UserStatus.Active;
     }
 
-    public void MarkAsInactive()
+    public void Deactivate()
     {
         // TODO: handle invariants
-        Status = UserStatus.Inactive;
+        Status = UserStatus.Deactivated;
     }
 }

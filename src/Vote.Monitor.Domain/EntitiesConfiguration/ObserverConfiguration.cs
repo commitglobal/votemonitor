@@ -8,5 +8,6 @@ public class ObserverConfiguration : IEntityTypeConfiguration<Observer>
 {
     public void Configure(EntityTypeBuilder<Observer> builder)
     {
+        builder.ToTable("Observers");
     }
 }

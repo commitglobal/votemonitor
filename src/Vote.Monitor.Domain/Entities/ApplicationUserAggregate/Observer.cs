@@ -8,7 +8,7 @@ public class Observer : ApplicationUser
 
     }
 
-    public Observer(string name, string login, string password, UserRole role) : base(name, login, password, role)
+    public Observer(string name, string login, string password) : base(name, login, password, UserRole.Observer)
     {
     }
 }
