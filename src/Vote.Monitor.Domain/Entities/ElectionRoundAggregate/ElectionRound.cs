@@ -18,7 +18,7 @@ public class ElectionRound : BaseEntity, IAggregateRoot
     public ElectionRound(Guid countryId, string name)
     {
         Name = name;
-        CountryId = CountryId;
+        CountryId = countryId;
         Status = ElectionRoundStatus.NotStarted;
     }
 
