@@ -1,27 +1,24 @@
 ﻿using FastEndpoints;
 using FluentValidation;
 
-namespace Vote.Monitor.Feature.PollingStation.Create;
+namespace Vote.Monitor.Feature.PollingStation.GetTagValues;
 
 public class Validator : Validator<Request>
 {
     public Validator()
     {
-        RuleFor(x => x.DisplayOrder)
-            .GreaterThanOrEqualTo(0);
-
-        RuleFor(x => x.Address)
+        RuleFor(x => x.SelectTag)
             .NotEmpty();
 
-        RuleFor(x => x.Tags)
+        RuleFor(x => x.Filter)
             .NotEmpty()
-            .NotNull();
+            .When(x => x.Filter != null);
 
-        RuleFor(x => x.Tags)
+        RuleFor(x=>x.Filter)
             .Must(filter =>
             {
                 return filter.Keys.All(tag => !string.IsNullOrWhiteSpace(tag));
             })
-            .When(x => x.Tags != null && x.Tags.Any());
+            .When(x => x.Filter != null && x.Filter.Any());
     }
 }

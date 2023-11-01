@@ -19,6 +19,7 @@ internal sealed class ImportModelMapper : ClassMap<ImportModel>
         {
             var key = row.Row.HeaderRecord[i];
             var value = row.Row[i];
+
             if (!string.IsNullOrWhiteSpace(key) && !string.IsNullOrWhiteSpace(value))
             {
                 additionalColumns[key] = value;

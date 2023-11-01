@@ -10,5 +10,4 @@ public class GetPollingStationSpecification : Specification<Domain.Entities.Poll
         Query.Search(x => x.Address, address)
             .Where(pollingStation => EF.Functions.JsonContains(pollingStation.Tags, tags));
     }
-   
 }

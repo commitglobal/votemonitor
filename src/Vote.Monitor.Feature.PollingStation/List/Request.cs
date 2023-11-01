@@ -2,7 +2,7 @@
 using System.ComponentModel;
 
 namespace Vote.Monitor.Feature.PollingStation.List;
-internal class Request
+public class Request
 {
     [QueryParam]
     [DefaultValue(1)]
@@ -16,5 +16,5 @@ internal class Request
     public string? AddressFilter { get; set; }
 
     [QueryParam]
-    public Dictionary<string, string>? TagFilter { get; set; }
+    public Dictionary<string, string>? Filter { get; set; }
 }

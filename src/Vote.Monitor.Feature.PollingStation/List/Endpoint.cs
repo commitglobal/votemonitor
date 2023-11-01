@@ -23,7 +23,7 @@ internal class Endpoint : Endpoint<Request, Results<Ok<PagedResponse<PollingStat
 
     public override async Task<Results<Ok<PagedResponse<PollingStationModel>>, ProblemDetails>> ExecuteAsync(Request request, CancellationToken ct)
     {
-        var specification = new ListPollingStationsSpecification(request.AddressFilter, request.TagFilter, request.PageSize, request.PageNumber);
+        var specification = new ListPollingStationsSpecification(request.AddressFilter, request.Filter, request.PageSize, request.PageNumber);
         var csos = await _repository.ListAsync(specification, ct);
         var csosCount = await _repository.CountAsync(specification, ct);
         var result = csos.Select(x => new PollingStationModel

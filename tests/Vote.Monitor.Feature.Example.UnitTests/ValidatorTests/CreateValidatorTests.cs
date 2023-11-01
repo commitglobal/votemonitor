@@ -1,12 +1,10 @@
-﻿
-using FluentValidation.TestHelper;
-using Xunit;
+﻿using FluentValidation.TestHelper;
 
 namespace Vote.Monitor.Feature.PollingStation.UnitTests.ValidatorTests;
 
 public class CreateValidatorTests
 {
-    private readonly Create.Validator validator = new();
+    private readonly Create.Validator _validator = new();
     [Fact]
     public void Validate_DisplayOrder_GreaterThanOrEqualToZero_ShouldPass()
     {
@@ -16,7 +14,7 @@ public class CreateValidatorTests
             Address = string.Empty,
             Tags = new()
         };
-        var result = validator.TestValidate(request);
+        var result = _validator.TestValidate(request);
         result.ShouldNotHaveValidationErrorFor(x => x.DisplayOrder);
     }
 
@@ -29,7 +27,7 @@ public class CreateValidatorTests
             Address = string.Empty,
             Tags = new()
         };
-        var result = validator.TestValidate(request);
+        var result = _validator.TestValidate(request);
         result.ShouldHaveValidationErrorFor(x => x.DisplayOrder);
     }
 
@@ -42,7 +40,7 @@ public class CreateValidatorTests
             DisplayOrder = 1,
             Tags = new()
         };
-        var result = validator.TestValidate(request);
+        var result = _validator.TestValidate(request);
         result.ShouldNotHaveValidationErrorFor(x => x.Address);
     }
 
@@ -55,7 +53,7 @@ public class CreateValidatorTests
             DisplayOrder = 1,
             Tags = new()
         };
-        var result = validator.TestValidate(request);
+        var result = _validator.TestValidate(request);
         result.ShouldHaveValidationErrorFor(x => x.Address);
     }
 
@@ -72,7 +70,7 @@ public class CreateValidatorTests
             DisplayOrder = 0,
             Address = string.Empty
         };
-        var result = validator.TestValidate(request);
+        var result = _validator.TestValidate(request);
         result.ShouldNotHaveValidationErrorFor(x => x.Tags);
     }
 
@@ -85,7 +83,7 @@ public class CreateValidatorTests
             DisplayOrder = 0,
             Address = string.Empty
         };
-        var result = validator.TestValidate(request);
+        var result = _validator.TestValidate(request);
         result.ShouldHaveValidationErrorFor(x => x.Tags);
     }
 
@@ -98,7 +96,28 @@ public class CreateValidatorTests
             DisplayOrder = 0,
             Address = string.Empty
         };
-        var result = validator.TestValidate(request);
+        var result = _validator.TestValidate(request);
+        result.ShouldHaveValidationErrorFor(x => x.Tags);
+    }
+
+    [Fact]
+    public void Validate_Tags_InvalidTag_ShouldFail()
+    {
+        // Arrange
+        var request = new Create.Request
+        {
+            DisplayOrder = 5,
+            Address = "123 Main St",
+            Tags = new Dictionary<string, string>
+            {
+                { "", "Value" }
+            }
+        };
+
+        // Act
+        var result = _validator.TestValidate(request);
+
+        // Assert
         result.ShouldHaveValidationErrorFor(x => x.Tags);
     }
 }

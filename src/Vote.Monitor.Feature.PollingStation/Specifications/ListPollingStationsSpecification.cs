@@ -17,7 +17,7 @@ public class ListPollingStationsSpecification : Specification<Domain.Entities.Po
         if (tagFilters is not null && tagFilters.Count != 0)
         {
             Query
-                .Where(station => tagFilters.Count == 0 || EF.Functions.JsonContains(station.Tags, tagFilters));
+                .Where(station => EF.Functions.JsonContains(station.Tags, tagFilters), tagFilters.Count != 0);
         }
 
         Query

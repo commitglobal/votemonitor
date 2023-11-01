@@ -9,7 +9,7 @@ internal class RequestBinder : RequestBinder<Request>
         var request = await base.BindAsync(ctx, ct);
 
         // Special case to handle the Dictionary
-        request.TagFilter = ctx.HttpContext.Request.Query
+        request.Filter = ctx.HttpContext.Request.Query
              .Where(x => x.Key != nameof(request.PageNumber) && x.Key != nameof(request.PageSize))
              .ToDictionary(x => x.Key, x => x.Value.First()!);
 
