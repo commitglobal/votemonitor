@@ -1,5 +1,5 @@
 ﻿using System.Reflection;
-using Vote.Monitor.Core;
+using Vote.Monitor.Core.Extensions;
 using Vote.Monitor.Domain.Entities.CountryAggregate;
 
 namespace Vote.Monitor.Domain.Constants;

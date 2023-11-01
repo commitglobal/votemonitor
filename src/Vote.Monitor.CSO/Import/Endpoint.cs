@@ -1,8 +1,4 @@
-﻿using FastEndpoints;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Vote.Monitor.Domain.Repository;
-
-namespace Vote.Monitor.CSO.Import;
+﻿namespace Vote.Monitor.CSO.Import;
 
 public class Endpoint : Endpoint<Request, Results<Ok<CSOModel>, NotFound>>
 {

@@ -1,7 +1,4 @@
-﻿using FastEndpoints;
-using FluentValidation;
-
-namespace Vote.Monitor.CSO.Get;
+﻿namespace Vote.Monitor.CSO.Get;
 
 public class Validator : Validator<Request>
 {

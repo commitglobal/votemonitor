@@ -1,8 +1,4 @@
-﻿using FastEndpoints;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Vote.Monitor.Domain.Repository;
-
-namespace Vote.Monitor.CSO.Export;
+﻿namespace Vote.Monitor.CSO.Export;
 
 public class Endpoint : EndpointWithoutRequest<Results<Ok<CSOModel>, NotFound>>
 {

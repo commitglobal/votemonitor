@@ -24,7 +24,7 @@ public class Endpoint : Endpoint<Request, PagedResponse<ObserverModel>>
         var specification = new ListObserversSpecification(req.NameFilter, req.Status, req.PageSize, req.PageNumber);
         var observers = await _repository.ListAsync(specification, ct);
         var observersCount = await _repository.CountAsync(specification, ct);
-        var result = observers.Select(x => new ObserverModel()
+        var result = observers.Select(x => new ObserverModel
         {
             Id = x.Id,
             Name = x.Name,

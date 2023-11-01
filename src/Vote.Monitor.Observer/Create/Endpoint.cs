@@ -34,7 +34,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<ObserverModel>, Conflict<Pr
         var observer = new Domain.Entities.ApplicationUserAggregate.Observer(req.Name, req.Login, req.Password);
         await _repository.AddAsync(observer, ct);
 
-        return TypedResults.Ok(new ObserverModel()
+        return TypedResults.Ok(new ObserverModel
         {
             Id = observer.Id,
             Name = observer.Name,

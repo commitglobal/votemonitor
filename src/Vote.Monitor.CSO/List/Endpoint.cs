@@ -1,9 +1,4 @@
-﻿using FastEndpoints;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Vote.Monitor.Core.Models;
-using Vote.Monitor.CSO.Specifications;
-using Vote.Monitor.Domain.Repository;
+﻿using Vote.Monitor.Core.Models;
 
 namespace Vote.Monitor.CSO.List;
 

@@ -1,10 +1,4 @@
-﻿using FastEndpoints;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Vote.Monitor.CSO.Specifications;
-using Vote.Monitor.Domain.Repository;
-
-namespace Vote.Monitor.CSO.Update;
+﻿namespace Vote.Monitor.CSO.Update;
 
 public class Endpoint : Endpoint<Request, Results<NoContent, NotFound, Conflict<ProblemDetails>>>
 {

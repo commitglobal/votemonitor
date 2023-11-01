@@ -1,6 +1,4 @@
-﻿using FastEndpoints;
-
-namespace Vote.Monitor.CSO.Import;
+﻿namespace Vote.Monitor.CSO.Import;
 
 public class Validator : Validator<Request>
 {

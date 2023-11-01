@@ -1,9 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Reflection;
+using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
 using SmartEnum.EFCore;
 using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
 using Vote.Monitor.Domain.Entities.CountryAggregate;
 using Vote.Monitor.Domain.Entities.CSOAggregate;
 using Vote.Monitor.Domain.Entities.ElectionRoundAggregate;
+using Vote.Monitor.Domain.Entities.PollingStationAggregate;
 using Vote.Monitor.Domain.EntitiesConfiguration;
 
 namespace Vote.Monitor.Domain;
@@ -18,6 +21,8 @@ public class VoteMonitorContext : DbContext
     public DbSet<PlatformAdmin> PlatformAdmins { get; set; }
     public DbSet<CSOAdmin> CSOAdmins { get; set; }
     public DbSet<Observer> Observers { get; set; }
+    public DbSet<PollingStation> PollingStations { get; set; }
+
     public DbSet<ElectionRound> ElectionRounds { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -26,6 +31,13 @@ public class VoteMonitorContext : DbContext
 
         builder.HasPostgresExtension("uuid-ossp");
 
+        var method = typeof(Postgres.Functions)
+            .GetRuntimeMethod(nameof(Postgres.Functions.ObjectKeys), new[] { typeof(JsonDocument) });
+
+        builder
+            .HasDbFunction(method!)
+            .HasName("jsonb_object_keys");
+
         builder.ApplyConfiguration(new ApplicationUserConfiguration());
         builder.ApplyConfiguration(new CSOAdminConfiguration());
         builder.ApplyConfiguration(new ObserverConfiguration());
@@ -33,6 +45,7 @@ public class VoteMonitorContext : DbContext
         builder.ApplyConfiguration(new CountryConfiguration());
         builder.ApplyConfiguration(new CSOConfiguration());
         builder.ApplyConfiguration(new ElectionRoundConfiguration());
+        builder.ApplyConfiguration(new PollingStationConfiguration());
     }
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)

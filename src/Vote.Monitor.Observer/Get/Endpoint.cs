@@ -27,7 +27,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<ObserverModel>, NotFound>>
             return TypedResults.NotFound();
         }
 
-        return TypedResults.Ok(new ObserverModel()
+        return TypedResults.Ok(new ObserverModel
         {
             Id = observer.Id,
             Login = observer.Login,

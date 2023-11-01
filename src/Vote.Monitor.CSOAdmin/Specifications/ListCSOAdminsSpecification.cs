@@ -1,4 +1,5 @@
 ﻿using Ardalis.Specification;
+using Microsoft.EntityFrameworkCore;
 using Vote.Monitor.Core.Helpers;
 using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
 
@@ -11,7 +12,7 @@ public class ListCSOAdminsSpecification : Specification<Domain.Entities.Applicat
         if (!string.IsNullOrEmpty(nameFilter))
         {
             Query
-                .Where(x => x.Name.StartsWith(nameFilter));
+                .Where(x => EF.Functions.Like(x.Name, $"%{nameFilter}%"));
         }
 
         if (userStatus != null)

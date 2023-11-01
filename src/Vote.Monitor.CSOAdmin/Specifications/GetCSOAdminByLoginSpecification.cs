@@ -2,7 +2,7 @@
 
 namespace Vote.Monitor.CSOAdmin.Specifications;
 
-public class GetCSOAdminByLoginSpecification : Specification<Domain.Entities.ApplicationUserAggregate.CSOAdmin>, ISingleResultSpecification<Domain.Entities.ApplicationUserAggregate.CSOAdmin>
+public class GetCSOAdminByLoginSpecification : Specification<Domain.Entities.ApplicationUserAggregate.CSOAdmin>
 {
     public GetCSOAdminByLoginSpecification(Guid csoId, string login)
     {

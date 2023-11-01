@@ -1,4 +1,4 @@
-﻿using Vote.Monitor.Core;
+﻿using Vote.Monitor.Core.Extensions;
 
 namespace Vote.Monitor.Domain.Entities.CountryAggregate;
 

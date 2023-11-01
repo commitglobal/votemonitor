@@ -34,4 +34,8 @@
     <ProjectReference Include="..\..\src\Vote.Monitor.Feature.PollingStation\Vote.Monitor.Feature.PollingStation.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ValidatorTests\" />
+  </ItemGroup>
+
 </Project>

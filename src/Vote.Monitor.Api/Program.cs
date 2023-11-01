@@ -2,6 +2,7 @@
 using FastEndpoints.Swagger;
 using Serilog;
 using Vote.Monitor.Auth;
+using Vote.Monitor.Core;
 using Vote.Monitor.Country;
 using Vote.Monitor.CSO;
 using Vote.Monitor.CSOAdmin;
@@ -28,6 +29,7 @@ builder.Services.AddLogging(logging =>
         logging.AddSerilog(logger);
     });
 
+builder.Services.AddCoreServices();
 builder.Services.AddApplicationDomain(builder.Configuration.GetSection(DomainInstaller.SectionKey));
 builder.Services.AddAuthFeature(builder.Configuration.GetSection(AuthFeatureInstaller.SectionKey));
 builder.Services.AddPollingStationFeature();
@@ -46,7 +48,6 @@ builder.Services.SwaggerDocument(o =>
         s.Version = "v2";
     };
     o.AutoTagPathSegmentIndex = 2;
-
 });
 
 
