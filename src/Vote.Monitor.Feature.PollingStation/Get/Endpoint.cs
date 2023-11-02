@@ -1,15 +1,10 @@
-﻿using FastEndpoints;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Vote.Monitor.Domain.Repository;
-
-namespace Vote.Monitor.Feature.PollingStation.Get;
+﻿namespace Vote.Monitor.Feature.PollingStation.Get;
 
 public class Endpoint : Endpoint<Request, Results<Ok<PollingStationModel>, NotFound>>
 {
-    private readonly IReadRepository<Domain.Entities.PollingStationAggregate.PollingStation> _repository;
+    private readonly IReadRepository<PollingStationAggregate> _repository;
 
-    public Endpoint(IReadRepository<Domain.Entities.PollingStationAggregate.PollingStation> repository)
+    public Endpoint(IReadRepository<PollingStationAggregate> repository)
     {
         _repository = repository;
     }

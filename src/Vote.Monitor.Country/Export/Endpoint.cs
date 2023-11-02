@@ -1,8 +1,4 @@
-﻿using FastEndpoints;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Vote.Monitor.Domain.Repository;
-
-namespace Vote.Monitor.Country.Export;
+﻿namespace Vote.Monitor.Country.Export;
 
 public class Endpoint : EndpointWithoutRequest<Results<Ok<CountryModel>, NotFound>>
 {

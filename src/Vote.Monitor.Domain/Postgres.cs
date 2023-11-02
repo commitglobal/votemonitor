@@ -2,7 +2,7 @@
 
 namespace Vote.Monitor.Domain;
 
-public partial class Postgres
+public class Postgres
 {
     // DB Functions
     public static class Functions

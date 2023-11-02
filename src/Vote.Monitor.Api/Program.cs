@@ -32,7 +32,7 @@ builder.Services.AddLogging(logging =>
 builder.Services.AddCoreServices();
 builder.Services.AddApplicationDomain(builder.Configuration.GetSection(DomainInstaller.SectionKey));
 builder.Services.AddAuthFeature(builder.Configuration.GetSection(AuthFeatureInstaller.SectionKey));
-builder.Services.AddPollingStationFeature();
+builder.Services.AddPollingStationFeature(builder.Configuration.GetSection(PollingStationFeatureInstaller.SectionKey));
 builder.Services.AddCountryFeature();
 builder.Services.AddCSOFeature();
 builder.Services.AddCSOAdminFeature();

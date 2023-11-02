@@ -1,10 +1,4 @@
-﻿using FastEndpoints;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Vote.Monitor.Domain.Repository;
-using Vote.Monitor.Observer.Specifications;
-
-namespace Vote.Monitor.Observer.Create;
+﻿namespace Vote.Monitor.Observer.Create;
 
 public class Endpoint : Endpoint<Request, Results<Ok<ObserverModel>, Conflict<ProblemDetails>>>
 {

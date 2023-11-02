@@ -1,9 +1,7 @@
-﻿using Ardalis.Specification;
+﻿namespace Vote.Monitor.Feature.PollingStation.Specifications;
 
-namespace Vote.Monitor.Feature.PollingStation.Specifications;
-
-public class GetPollingStationByIdSpecification : Specification<Domain.Entities.PollingStationAggregate.PollingStation>,
-    ISingleResultSpecification<Domain.Entities.PollingStationAggregate.PollingStation>
+public class GetPollingStationByIdSpecification : Specification<PollingStationAggregate>,
+    ISingleResultSpecification<PollingStationAggregate>
 {
     public GetPollingStationByIdSpecification(Guid id)
     {

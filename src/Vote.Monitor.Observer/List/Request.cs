@@ -1,8 +1,4 @@
 ﻿using System.ComponentModel;
-using System.Text.Json.Serialization;
-using Ardalis.SmartEnum.SystemTextJson;
-using FastEndpoints;
-using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
 
 namespace Vote.Monitor.Observer.List;
 

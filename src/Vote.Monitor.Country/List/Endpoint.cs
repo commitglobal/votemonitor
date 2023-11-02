@@ -1,7 +1,4 @@
-﻿using FastEndpoints;
-using Vote.Monitor.Domain.Constants;
-
-namespace Vote.Monitor.Country.List;
+﻿namespace Vote.Monitor.Country.List;
 
 public class Endpoint : EndpointWithoutRequest<List<CountryModel>>
 {

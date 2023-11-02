@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Text.Json.Serialization;
 using Ardalis.SmartEnum.SystemTextJson;
-using FastEndpoints;
 using Vote.Monitor.Domain.Entities.ElectionRoundAggregate;
 
 namespace Vote.Monitor.ElectionRound.List;

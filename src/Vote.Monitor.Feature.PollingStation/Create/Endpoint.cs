@@ -1,14 +1,8 @@
-﻿using FastEndpoints;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Vote.Monitor.Domain.Repository;
-using Vote.Monitor.Feature.PollingStation.Specifications;
-
-namespace Vote.Monitor.Feature.PollingStation.Create;
-internal class Endpoint : Endpoint<Request, Results<Ok<PollingStationModel>, Conflict<ProblemDetails>>>
+﻿namespace Vote.Monitor.Feature.PollingStation.Create;
+public class Endpoint : Endpoint<Request, Results<Ok<PollingStationModel>, Conflict<ProblemDetails>>>
 {
-    private readonly IRepository<Domain.Entities.PollingStationAggregate.PollingStation> _repository;
-    public Endpoint(IRepository<Domain.Entities.PollingStationAggregate.PollingStation> repository)
+    private readonly IRepository<PollingStationAggregate> _repository;
+    public Endpoint(IRepository<PollingStationAggregate> repository)
     {
         _repository = repository;
     }
@@ -29,7 +23,7 @@ internal class Endpoint : Endpoint<Request, Results<Ok<PollingStationModel>, Con
             return TypedResults.Conflict(new ProblemDetails(ValidationFailures));
         }
 
-        var pollingStation = new Domain.Entities.PollingStationAggregate.PollingStation(req.Address, req.DisplayOrder, req.Tags.ToTagsObject());
+        var pollingStation = new PollingStationAggregate(req.Address, req.DisplayOrder, req.Tags.ToTagsObject());
         await _repository.AddAsync(pollingStation, ct);
 
         return TypedResults.Ok(new PollingStationModel

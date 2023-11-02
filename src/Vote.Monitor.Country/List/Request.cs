@@ -1,7 +1,4 @@
-﻿using System.ComponentModel;
-using FastEndpoints;
-
-namespace Vote.Monitor.Country.List;
+﻿namespace Vote.Monitor.Country.List;
 
 public class Request
 {

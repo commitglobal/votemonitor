@@ -2,9 +2,9 @@
 
 public class Endpoint : EndpointWithoutRequest<Results<Ok<CSOModel>, NotFound>>
 {
-    private readonly IReadRepository<Domain.Entities.CSOAggregate.CSO> _repository;
+    private readonly IReadRepository<CSOAggregate> _repository;
 
-    public Endpoint(IReadRepository<Domain.Entities.CSOAggregate.CSO> repository)
+    public Endpoint(IReadRepository<CSOAggregate> repository)
     {
         _repository = repository;
     }

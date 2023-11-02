@@ -1,14 +1,10 @@
-﻿using FastEndpoints;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Vote.Monitor.Domain.Repository;
-
-namespace Vote.Monitor.Observer.Import;
+﻿namespace Vote.Monitor.Observer.Import;
 
 public class Endpoint : Endpoint<Request, Results<Ok<ObserverModel>, NotFound>>
 {
-     readonly IReadRepository<Domain.Entities.ApplicationUserAggregate.Observer> _repository;
+     readonly IReadRepository<ObserverAggregate> _repository;
 
-    public Endpoint(IReadRepository<Domain.Entities.ApplicationUserAggregate.Observer> repository)
+    public Endpoint(IReadRepository<ObserverAggregate> repository)
     {
         _repository = repository;
     }

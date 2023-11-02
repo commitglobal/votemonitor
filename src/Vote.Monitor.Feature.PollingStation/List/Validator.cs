@@ -1,7 +1,4 @@
-﻿using FastEndpoints;
-using FluentValidation;
-
-namespace Vote.Monitor.Feature.PollingStation.List;
+﻿namespace Vote.Monitor.Feature.PollingStation.List;
 
 public class Validator : Validator<Request>
 {

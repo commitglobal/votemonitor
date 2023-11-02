@@ -1,16 +1,10 @@
-﻿using FastEndpoints;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Vote.Monitor.CSOAdmin.Specifications;
-using Vote.Monitor.Domain.Repository;
-
-namespace Vote.Monitor.CSOAdmin.Create;
+﻿namespace Vote.Monitor.CSOAdmin.Create;
 
 public class Endpoint : Endpoint<Request, Results<Ok<CSOAdminModel>, Conflict<ProblemDetails>>>
 {
-    readonly IRepository<Domain.Entities.ApplicationUserAggregate.CSOAdmin> _repository;
+    readonly IRepository<CSOAdminAggregate> _repository;
 
-    public Endpoint(IRepository<Domain.Entities.ApplicationUserAggregate.CSOAdmin> repository)
+    public Endpoint(IRepository<CSOAdminAggregate> repository)
     {
         _repository = repository;
     }
@@ -31,7 +25,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<CSOAdminModel>, Conflict<Pr
             return TypedResults.Conflict(new ProblemDetails(ValidationFailures));
         }
 
-        var csoAdmin = new Domain.Entities.ApplicationUserAggregate.CSOAdmin(req.CSOId, req.Name, req.Login, req.Password);
+        var csoAdmin = new CSOAdminAggregate(req.CSOId, req.Name, req.Login, req.Password);
         await _repository.AddAsync(csoAdmin, ct);
 
         return TypedResults.Ok(new CSOAdminModel

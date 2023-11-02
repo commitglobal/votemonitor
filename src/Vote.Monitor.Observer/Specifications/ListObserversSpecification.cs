@@ -1,6 +1,5 @@
 ﻿using Ardalis.Specification;
 using Vote.Monitor.Core.Helpers;
-using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
 
 namespace Vote.Monitor.Observer.Specifications;
 

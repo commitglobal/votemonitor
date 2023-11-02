@@ -1,7 +1,4 @@
-﻿using FastEndpoints;
-using FluentValidation;
-
-namespace Vote.Monitor.Observer.Import;
+﻿namespace Vote.Monitor.Observer.Import;
 
 public class Validator : Validator<Request>
 {

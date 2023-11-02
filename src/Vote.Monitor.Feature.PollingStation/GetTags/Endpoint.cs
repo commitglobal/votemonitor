@@ -1,9 +1,5 @@
-﻿using FastEndpoints;
-using Microsoft.EntityFrameworkCore;
-using Vote.Monitor.Domain;
-
-namespace Vote.Monitor.Feature.PollingStation.GetTags;
-internal class Endpoint : EndpointWithoutRequest<List<string>>
+﻿namespace Vote.Monitor.Feature.PollingStation.GetTags;
+public class Endpoint : EndpointWithoutRequest<List<string>>
 {
     private readonly VoteMonitorContext _context;
 
@@ -21,7 +17,7 @@ internal class Endpoint : EndpointWithoutRequest<List<string>>
     {
         var tags = await _context
               .PollingStations
-              .Select(x => Domain.Postgres.Functions.ObjectKeys(x.Tags))
+              .Select(x => Postgres.Functions.ObjectKeys(x.Tags))
               .Distinct()
               .ToListAsync(cancellationToken: ct);
 

@@ -1,7 +1,4 @@
-﻿using FastEndpoints;
-using Vote.Monitor.Core.Models;
-using Vote.Monitor.Domain.Repository;
-using Vote.Monitor.Observer.Specifications;
+﻿using Vote.Monitor.Core.Models;
 
 namespace Vote.Monitor.Observer.List;
 

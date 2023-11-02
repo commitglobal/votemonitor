@@ -1,8 +1,6 @@
-﻿using Ardalis.Specification;
+﻿namespace Vote.Monitor.CSOAdmin.Specifications;
 
-namespace Vote.Monitor.CSOAdmin.Specifications;
-
-public class GetCSOAdminByLoginSpecification : Specification<Domain.Entities.ApplicationUserAggregate.CSOAdmin>
+public class GetCSOAdminByLoginSpecification : Specification<CSOAdminAggregate>
 {
     public GetCSOAdminByLoginSpecification(Guid csoId, string login)
     {

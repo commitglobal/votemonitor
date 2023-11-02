@@ -1,10 +1,6 @@
-﻿using Ardalis.Specification;
-using Microsoft.EntityFrameworkCore;
-using Vote.Monitor.Core.Helpers;
+﻿namespace Vote.Monitor.Feature.PollingStation.Specifications;
 
-namespace Vote.Monitor.Feature.PollingStation.Specifications;
-
-public class ListPollingStationsSpecification : Specification<Domain.Entities.PollingStationAggregate.PollingStation>
+public class ListPollingStationsSpecification : Specification<PollingStationAggregate>
 {
     public ListPollingStationsSpecification(string? addressFilter, Dictionary<string, string>? tagFilters, int pageSize, int page)
     {

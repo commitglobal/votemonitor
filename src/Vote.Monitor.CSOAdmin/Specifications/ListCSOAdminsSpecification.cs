@@ -1,10 +1,6 @@
-﻿using Ardalis.Specification;
-using Vote.Monitor.Core.Helpers;
-using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
+﻿namespace Vote.Monitor.CSOAdmin.Specifications;
 
-namespace Vote.Monitor.CSOAdmin.Specifications;
-
-public class ListCSOAdminsSpecification : Specification<Domain.Entities.ApplicationUserAggregate.CSOAdmin>
+public class ListCSOAdminsSpecification : Specification<CSOAdminAggregate>
 {
     public ListCSOAdminsSpecification(string? nameFilter, UserStatus? userStatus, int pageSize, int page)
     {

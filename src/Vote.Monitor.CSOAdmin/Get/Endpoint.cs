@@ -1,16 +1,10 @@
-﻿using FastEndpoints;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Vote.Monitor.CSOAdmin.Specifications;
-using Vote.Monitor.Domain.Repository;
-
-namespace Vote.Monitor.CSOAdmin.Get;
+﻿namespace Vote.Monitor.CSOAdmin.Get;
 
 public class Endpoint : Endpoint<Request, Results<Ok<CSOAdminModel>, NotFound>>
 {
-     readonly IReadRepository<Domain.Entities.ApplicationUserAggregate.CSOAdmin> _repository;
+     readonly IReadRepository<CSOAdminAggregate> _repository;
 
-    public Endpoint(IReadRepository<Domain.Entities.ApplicationUserAggregate.CSOAdmin> repository)
+    public Endpoint(IReadRepository<CSOAdminAggregate> repository)
     {
         _repository = repository;
     }

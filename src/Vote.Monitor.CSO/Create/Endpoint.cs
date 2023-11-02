@@ -2,9 +2,9 @@
 
 public class Endpoint : Endpoint<Request, Results<Ok<CSOModel>, Conflict<ProblemDetails>>>
 {
-    private readonly IRepository<Domain.Entities.CSOAggregate.CSO> _repository;
+    private readonly IRepository<CSOAggregate> _repository;
 
-    public Endpoint(IRepository<Domain.Entities.CSOAggregate.CSO> repository)
+    public Endpoint(IRepository<CSOAggregate> repository)
     {
         _repository = repository;
     }
@@ -25,7 +25,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<CSOModel>, Conflict<Problem
             return TypedResults.Conflict(new ProblemDetails(ValidationFailures));
         }
 
-        var cso = new Domain.Entities.CSOAggregate.CSO(req.Name);
+        var cso = new CSOAggregate(req.Name);
         await _repository.AddAsync(cso, ct);
 
         return TypedResults.Ok(new CSOModel

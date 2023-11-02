@@ -1,8 +1,6 @@
-﻿using FastEndpoints;
+﻿namespace Vote.Monitor.Feature.PollingStation.List;
 
-namespace Vote.Monitor.Feature.PollingStation.List;
-
-internal class RequestBinder : RequestBinder<Request>
+public class RequestBinder : RequestBinder<Request>
 {
     public override async ValueTask<Request> BindAsync(BinderContext ctx, CancellationToken ct)
     {

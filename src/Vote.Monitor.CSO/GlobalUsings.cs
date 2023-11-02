@@ -6,3 +6,4 @@ global using Microsoft.AspNetCore.Http;
 global using Microsoft.AspNetCore.Http.HttpResults;
 global using Vote.Monitor.CSO.Specifications;
 global using Vote.Monitor.Domain.Repository;
+global using CSOAggregate = Vote.Monitor.Domain.Entities.CSOAggregate.CSO;

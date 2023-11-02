@@ -1,5 +1,4 @@
-﻿using FastEndpoints;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 
 namespace Vote.Monitor.Feature.PollingStation.List;
 public class Request

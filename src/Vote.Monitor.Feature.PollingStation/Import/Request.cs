@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-
-namespace Vote.Monitor.Feature.PollingStation.Import;
+﻿namespace Vote.Monitor.Feature.PollingStation.Import;
 
 public class Request
 {

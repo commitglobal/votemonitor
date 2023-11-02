@@ -1,9 +1,6 @@
-﻿using Ardalis.Specification;
-using Microsoft.EntityFrameworkCore;
+﻿namespace Vote.Monitor.Feature.PollingStation.Specifications;
 
-namespace Vote.Monitor.Feature.PollingStation.Specifications;
-
-public class GetPollingStationSpecification : Specification<Domain.Entities.PollingStationAggregate.PollingStation>
+public class GetPollingStationSpecification : Specification<PollingStationAggregate>
 {
     public GetPollingStationSpecification(string address, Dictionary<string, string> tags)
     {

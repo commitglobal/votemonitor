@@ -1,15 +1,12 @@
-﻿using FastEndpoints;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Vote.Monitor.Core.Models;
-using Vote.Monitor.Domain.Repository;
+﻿using Vote.Monitor.Core.Models;
 
 namespace Vote.Monitor.ElectionRound.List;
 
 public class Endpoint : Endpoint<Request, Results<Ok<PagedResponse<ElectionRoundModel>>, ProblemDetails>>
 {
-     readonly IReadRepository<Domain.Entities.ElectionRoundAggregate.ElectionRound> _repository;
+     readonly IReadRepository<ElectionRoundAggregate> _repository;
 
-    public Endpoint(IReadRepository<Domain.Entities.ElectionRoundAggregate.ElectionRound> repository)
+    public Endpoint(IReadRepository<ElectionRoundAggregate> repository)
     {
         _repository = repository;
     }

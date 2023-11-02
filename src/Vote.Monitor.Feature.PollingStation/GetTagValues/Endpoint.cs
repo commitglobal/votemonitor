@@ -1,11 +1,5 @@
-﻿using FastEndpoints;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.EntityFrameworkCore;
-using Vote.Monitor.Domain;
-
-namespace Vote.Monitor.Feature.PollingStation.GetTagValues;
-internal class Endpoint : Endpoint<Request, Results<Ok<List<TagModel>>, NotFound, ProblemDetails>>
+﻿namespace Vote.Monitor.Feature.PollingStation.GetTagValues;
+public class Endpoint : Endpoint<Request, Results<Ok<List<TagModel>>, NotFound, ProblemDetails>>
 {
     private readonly VoteMonitorContext _context;
 

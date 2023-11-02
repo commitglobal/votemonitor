@@ -1,8 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using Ardalis.SmartEnum.SystemTextJson;
-using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
-
-namespace Vote.Monitor.CSOAdmin;
+﻿namespace Vote.Monitor.CSOAdmin;
 
 public record CSOAdminModel
 {

@@ -1,9 +1,4 @@
-﻿using FastEndpoints;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Vote.Monitor.Domain.Constants;
-
-namespace Vote.Monitor.Country.Get;
+﻿namespace Vote.Monitor.Country.Get;
 
 public class Endpoint : Endpoint<Request, Results<Ok<CountryModel>, NotFound>>
 {

@@ -1,7 +1,4 @@
-﻿using FastEndpoints;
-using FluentValidation;
-
-namespace Vote.Monitor.Observer.Delete;
+﻿namespace Vote.Monitor.Observer.Delete;
 
 public class Validator : Validator<Request>
 {

@@ -8,8 +8,7 @@ public class PollingStation : IAggregateRoot, IDisposable
     {
 
     }
-
-
+    
     public PollingStation(string address, int displayOrder, JsonDocument tags)
     {
         Address = address;

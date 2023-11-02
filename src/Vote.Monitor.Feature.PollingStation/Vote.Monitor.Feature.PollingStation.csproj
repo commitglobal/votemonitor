@@ -26,5 +26,9 @@
     <InternalsVisibleTo Include="Vote.Monitor.Feature.PollingStation.UnitTests" />
     <InternalsVisibleTo Include="Vote.Monitor.Feature.PollingStation.IntegrationTests" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Options\" />
+  </ItemGroup>
   
 </Project>

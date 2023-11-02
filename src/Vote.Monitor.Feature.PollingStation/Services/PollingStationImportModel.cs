@@ -1,4 +1,4 @@
-﻿namespace Vote.Monitor.Feature.PollingStation.Import;
+﻿namespace Vote.Monitor.Feature.PollingStation.Services;
 public class PollingStationImportModel
 {
     public int DisplayOrder { get; set; }

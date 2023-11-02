@@ -1,14 +1,9 @@
-﻿using FastEndpoints;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Vote.Monitor.Domain.Repository;
-
-namespace Vote.Monitor.Feature.PollingStation.Delete;
-internal class Endpoint : Endpoint<Request, Results<NoContent, NotFound, ProblemDetails>>
+﻿namespace Vote.Monitor.Feature.PollingStation.Delete;
+public class Endpoint : Endpoint<Request, Results<NoContent, NotFound, ProblemDetails>>
 {
-    private readonly IRepository<Domain.Entities.PollingStationAggregate.PollingStation> _repository;
+    private readonly IRepository<PollingStationAggregate> _repository;
 
-    public Endpoint(IRepository<Domain.Entities.PollingStationAggregate.PollingStation> repository)
+    public Endpoint(IRepository<PollingStationAggregate> repository)
     {
         _repository = repository;
     }

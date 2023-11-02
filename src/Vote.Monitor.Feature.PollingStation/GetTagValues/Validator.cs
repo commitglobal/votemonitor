@@ -1,7 +1,4 @@
-﻿using FastEndpoints;
-using FluentValidation;
-
-namespace Vote.Monitor.Feature.PollingStation.GetTagValues;
+﻿namespace Vote.Monitor.Feature.PollingStation.GetTagValues;
 
 public class Validator : Validator<Request>
 {

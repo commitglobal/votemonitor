@@ -1,8 +1,4 @@
-﻿using FastEndpoints;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Vote.Monitor.Domain.Repository;
-
-namespace Vote.Monitor.Observer.Export;
+﻿namespace Vote.Monitor.Observer.Export;
 
 public class Endpoint : EndpointWithoutRequest<Results<Ok<ObserverModel>, NotFound>>
 {
