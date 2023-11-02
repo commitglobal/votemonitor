@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace Vote.Monitor.Feature.PollingStation.Import;
 
-public class ImportModelValidator : Validator<ImportModel>
+public class PollingStationImportModelValidator : Validator<PollingStationImportModel>
 {
-    public ImportModelValidator()
+    public PollingStationImportModelValidator()
     {
         RuleFor(x => x.DisplayOrder)
             .Must((_, displayOrder, context) =>
@@ -35,9 +35,25 @@ public class ImportModelValidator : Validator<ImportModel>
             .Must((_, tags, context) =>
             {
                 context.MessageFormatter.AppendArgument("RowIndex", context.RootContextData["RowIndex"]);
-                return tags.Keys.All(tag => !string.IsNullOrWhiteSpace(tag));
+                return tags.Select(x => x.Name).All(tag => !string.IsNullOrWhiteSpace(tag));
             })
-            .WithMessage("Polling station on row {RowIndex} has invalid {PropertyName}. Tag key is empty.")
+            .WithMessage("Polling station on row {RowIndex} has invalid {PropertyName}. Tag name is empty.")
+            .When(x => x.Tags != null && x.Tags.Any());
+
+        RuleFor(x => x.Tags)
+            .Must((_, tags, context) =>
+            {
+                context.MessageFormatter.AppendArgument("RowIndex", context.RootContextData["RowIndex"]);
+
+                var duplicatedTagName = tags
+                    .GroupBy(t => t.Name)
+                    .FirstOrDefault(group => group.Count() > 1)?.Key;
+
+                context.MessageFormatter.AppendArgument("DuplicatedTagName", duplicatedTagName);
+
+                return string.IsNullOrWhiteSpace(duplicatedTagName);
+            })
+            .WithMessage("Polling station on row {RowIndex} has invalid {PropertyName}. Duplicated tag name found '{DuplicatedTagName}'.")
             .When(x => x.Tags != null && x.Tags.Any());
     }
 }

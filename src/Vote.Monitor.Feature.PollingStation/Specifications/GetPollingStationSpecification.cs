@@ -8,6 +8,6 @@ public class GetPollingStationSpecification : Specification<Domain.Entities.Poll
     public GetPollingStationSpecification(string address, Dictionary<string, string> tags)
     {
         Query.Search(x => x.Address, address)
-            .Where(pollingStation => EF.Functions.JsonContains(pollingStation.Tags, tags));
+            .Where(pollingStation => EF.Functions.JsonContains(pollingStation.Tags, tags), tags.Any());
     }
 }

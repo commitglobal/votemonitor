@@ -2,12 +2,12 @@
 
 namespace Vote.Monitor.Feature.PollingStation.UnitTests.ValidatorTests;
 
-public class UpdateValidatorTests
+public class UpdateRequestValidatorTests
 {
     private readonly Update.Validator _validator = new();
 
     [Fact]
-    public void Validate_Id_NotEmpty_ShouldPass()
+    public void Validation_ShouldPass_When_Id_NotEmpty()
     {
         // Arrange
         var request = new Update.Request
@@ -29,7 +29,7 @@ public class UpdateValidatorTests
     }
 
     [Fact]
-    public void Validate_Id_Empty_ShouldFail()
+    public void Validation_ShouldFail_When_Id_Empty()
     {
         // Arrange
         var request = new Update.Request
@@ -50,14 +50,16 @@ public class UpdateValidatorTests
         result.ShouldHaveValidationErrorFor(x => x.Id);
     }
 
-    [Fact]
-    public void Validate_DisplayOrder_GreaterThanOrEqualToZero_ShouldPass()
+    [Theory]
+    [InlineData(0)]
+    [InlineData(10)]
+    public void Validation_ShouldPass_When_DisplayOrder_GreaterThanOrEqualToZero(int displayOrder)
     {
         // Arrange
         var request = new Update.Request
         {
             Id = Guid.NewGuid(),
-            DisplayOrder = 10,
+            DisplayOrder = displayOrder,
             Address = "123 Main St",
             Tags = new Dictionary<string, string>
             {
@@ -73,7 +75,7 @@ public class UpdateValidatorTests
     }
 
     [Fact]
-    public void Validate_Address_NotEmpty_ShouldPass()
+    public void Validation_ShouldPass_When_Address_NotEmpty()
     {
         // Arrange
         var request = new Update.Request
@@ -94,15 +96,16 @@ public class UpdateValidatorTests
         result.ShouldNotHaveValidationErrorFor(x => x.Address);
     }
 
-    [Fact]
-    public void Validate_Address_Empty_ShouldFail()
+    [Theory]
+    [MemberData(nameof(TestData.EmptyStringsTestCases), MemberType = typeof(TestData))]
+    public void Validation_ShouldFail_When_Address_Empty(string address)
     {
         // Arrange
         var request = new Update.Request
         {
             Id = Guid.NewGuid(),
             DisplayOrder = 5,
-            Address = "",
+            Address = address,
             Tags = new Dictionary<string, string>
             {
                 { "Tag1", "Value1" }
@@ -117,7 +120,7 @@ public class UpdateValidatorTests
     }
 
     [Fact]
-    public void Validate_Tags_NotEmpty_ShouldPass()
+    public void Validation_ShouldPass_When_Tags_NotEmpty()
     {
         // Arrange
         var request = new Update.Request
@@ -139,7 +142,7 @@ public class UpdateValidatorTests
     }
 
     [Fact]
-    public void Validate_Tags_InvalidTag_ShouldFail()
+    public void Validation_ShouldFail_When_Tags_HaveEmptyKey()
     {
         // Arrange
         var request = new Update.Request
@@ -161,7 +164,7 @@ public class UpdateValidatorTests
     }
 
     [Fact]
-    public void Validate_Tags_Null_ShouldFail()
+    public void Validation_ShouldFail_When_Tags_Null()
     {
         // Arrange
         var request = new Update.Request
@@ -170,6 +173,25 @@ public class UpdateValidatorTests
             DisplayOrder = 5,
             Address = "123 Main St",
             Tags = null
+        };
+
+        // Act
+        var result = _validator.TestValidate(request);
+
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.Tags);
+    }
+
+    [Fact]
+    public void Validation_ShouldFail_When_Tags_Empty()
+    {
+        // Arrange
+        var request = new Update.Request
+        {
+            Id = Guid.NewGuid(),
+            DisplayOrder = 5,
+            Address = "123 Main St",
+            Tags = new()
         };
 
         // Act

@@ -2,30 +2,30 @@
 using CsvHelper.Configuration;
 
 namespace Vote.Monitor.Feature.PollingStation.Import;
-internal sealed class ImportModelMapper : ClassMap<ImportModel>
+internal sealed class ImportModelMapper : ClassMap<PollingStationImportModel>
 {
     public ImportModelMapper()
     {
         Map(m => m.DisplayOrder).Name("DisplayOrder");
         Map(m => m.Address).Name("Address");
-        Map(m => m.Tags).Convert(ReadAdditionalColumns);
+        Map(m => m.Tags).Convert(ReadTags);
     }
 
-    private static Dictionary<string, string> ReadAdditionalColumns(ConvertFromStringArgs row)
+    private static List<TagImportModel> ReadTags(ConvertFromStringArgs row)
     {
-        var additionalColumns = new Dictionary<string, string>();
+        var tags = new List<TagImportModel>();
 
         for (var i = 2; i < row.Row?.HeaderRecord?.Length; i++)
         {
-            var key = row.Row.HeaderRecord[i];
+            var name = row.Row.HeaderRecord[i];
             var value = row.Row[i];
-
-            if (!string.IsNullOrWhiteSpace(key) && !string.IsNullOrWhiteSpace(value))
+            tags.Add(new()
             {
-                additionalColumns[key] = value;
-            }
+                Name = name,
+                Value = value
+            });
         }
 
-        return additionalColumns;
+        return tags;
     }
 }

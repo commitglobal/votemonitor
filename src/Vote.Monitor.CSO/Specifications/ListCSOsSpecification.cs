@@ -1,5 +1,4 @@
 ﻿using Ardalis.Specification;
-using Microsoft.EntityFrameworkCore;
 using Vote.Monitor.Core.Helpers;
 using Vote.Monitor.Domain.Entities.CSOAggregate;
 
@@ -9,19 +8,9 @@ public class ListCSOsSpecification : Specification<Domain.Entities.CSOAggregate.
 {
     public ListCSOsSpecification(string? nameFilter, CSOStatus? csoStatus, int pageSize, int page)
     {
-        if (!string.IsNullOrEmpty(nameFilter))
-        {
-            Query
-                .Where(x => EF.Functions.Like(x.Name, $"%{nameFilter}%"));
-        }
-
-        if (csoStatus != null)
-        {
-            Query
-                .Where(x => x.Status == csoStatus);
-        }
-
         Query
+            .Search(x => x.Name, nameFilter, !string.IsNullOrEmpty(nameFilter))
+            .Where(x => x.Status == csoStatus)
             .Skip(PaginationHelper.CalculateSkip(pageSize, page))
             .Take(PaginationHelper.CalculateTake(pageSize));
     }

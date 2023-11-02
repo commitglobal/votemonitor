@@ -8,22 +8,10 @@ public class ListPollingStationsSpecification : Specification<Domain.Entities.Po
 {
     public ListPollingStationsSpecification(string? addressFilter, Dictionary<string, string>? tagFilters, int pageSize, int page)
     {
-        if (!string.IsNullOrEmpty(addressFilter))
-        {
-            Query
-                .Where(x => EF.Functions.Like(x.Address, $"%{addressFilter}%"));
-        }
-
-        if (tagFilters is not null && tagFilters.Count != 0)
-        {
-            Query
-                .Where(station => EF.Functions.JsonContains(station.Tags, tagFilters), tagFilters.Count != 0);
-        }
-
         Query
-            .OrderBy(x => x.DisplayOrder);
-
-        Query
+            .Search(x => x.Address, addressFilter, !string.IsNullOrWhiteSpace(addressFilter))
+            .Where(station => EF.Functions.JsonContains(station.Tags, tagFilters), tagFilters is not null && tagFilters.Count != 0)
+            .OrderBy(x => x.DisplayOrder)
             .Skip(PaginationHelper.CalculateSkip(pageSize, page))
             .Take(PaginationHelper.CalculateTake(pageSize));
     }

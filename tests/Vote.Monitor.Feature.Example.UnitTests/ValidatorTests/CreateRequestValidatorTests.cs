@@ -2,15 +2,18 @@
 
 namespace Vote.Monitor.Feature.PollingStation.UnitTests.ValidatorTests;
 
-public class CreateValidatorTests
+public class CreateRequestValidatorTests
 {
     private readonly Create.Validator _validator = new();
-    [Fact]
-    public void Validate_DisplayOrder_GreaterThanOrEqualToZero_ShouldPass()
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(5)]
+    public void Validation_ShouldPass_When_DisplayOrder_GreaterThanOrEqualToZero(int displayOrder)
     {
         var request = new Create.Request
         {
-            DisplayOrder = 5,
+            DisplayOrder = displayOrder,
             Address = string.Empty,
             Tags = new()
         };
@@ -19,7 +22,7 @@ public class CreateValidatorTests
     }
 
     [Fact]
-    public void Validate_DisplayOrder_LessThanZero_ShouldFail()
+    public void Validation_ShouldFail_When_DisplayOrder_LessThanZero()
     {
         var request = new Create.Request
         {
@@ -32,7 +35,7 @@ public class CreateValidatorTests
     }
 
     [Fact]
-    public void Validate_Address_NotEmpty_ShouldPass()
+    public void Validation_ShouldPass_When_Address_NotEmpty()
     {
         var request = new Create.Request
         {
@@ -44,12 +47,13 @@ public class CreateValidatorTests
         result.ShouldNotHaveValidationErrorFor(x => x.Address);
     }
 
-    [Fact]
-    public void Validate_Address_Empty_ShouldFail()
+    [Theory]
+    [MemberData(nameof(TestData.EmptyStringsTestCases), MemberType = typeof(TestData))]
+    public void Validation_ShouldFail_When_Address_Empty(string address)
     {
         var request = new Create.Request
         {
-            Address = "",
+            Address = address,
             DisplayOrder = 1,
             Tags = new()
         };
@@ -58,11 +62,11 @@ public class CreateValidatorTests
     }
 
     [Fact]
-    public void Validate_Tags_NotEmpty_ShouldPass()
+    public void Validation_ShouldPass_When_Tags_NotEmpty()
     {
         var request = new Create.Request
         {
-            Tags = new Dictionary<string, string>()
+            Tags = new Dictionary<string, string>
             {
                 { "Tag1" ,"value1"},
                 { "Tag2" ,"value2"},
@@ -75,7 +79,7 @@ public class CreateValidatorTests
     }
 
     [Fact]
-    public void Validate_Tags_Empty_ShouldFail()
+    public void Validation_ShouldFail_When_Tags_Empty_ShouldFail()
     {
         var request = new Create.Request
         {
@@ -88,7 +92,7 @@ public class CreateValidatorTests
     }
 
     [Fact]
-    public void Validate_Tags_Null_ShouldFail()
+    public void Validation_ShouldFail_When_Tags_Null()
     {
         var request = new Create.Request
         {
@@ -101,7 +105,7 @@ public class CreateValidatorTests
     }
 
     [Fact]
-    public void Validate_Tags_InvalidTag_ShouldFail()
+    public void Validation_ShouldFail_When_Tags_HaveEmptyKey()
     {
         // Arrange
         var request = new Create.Request

@@ -3,7 +3,6 @@ using FastEndpoints;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.IdentityModel.Tokens;
 using Vote.Monitor.Core.Services.Csv;
 using Vote.Monitor.Domain;
 using PollingStationAggregate = Vote.Monitor.Domain.Entities.PollingStationAggregate.PollingStation;
@@ -12,10 +11,11 @@ namespace Vote.Monitor.Feature.PollingStation.Import;
 public class Endpoint : Endpoint<Request, Results<Ok<Response>, NotFound, ProblemDetails>>
 {
     private readonly VoteMonitorContext _context;
-    private readonly ICsvReader<ImportModel> _reader;
+    private readonly ICsvReader<PollingStationImportModel> _reader;
     private const int MAX_INVALID_ROWS = 100;
+    private readonly PollingStationImportModelValidator _pollingStationImportModelValidator = new();
 
-    public Endpoint(VoteMonitorContext context, ICsvReader<ImportModel> reader)
+    public Endpoint(VoteMonitorContext context, ICsvReader<PollingStationImportModel> reader)
     {
         _context = context;
         _reader = reader;
@@ -37,7 +37,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<Response>, NotFound, Proble
 
         await foreach (var pollingStation in pollingStations)
         {
-            var validationResult= Validate(pollingStation, rowCount);
+            var validationResult = Validate(pollingStation, rowCount);
             if (!validationResult.IsValid)
             {
                 validationResult.Errors.ForEach(AddError);
@@ -50,7 +50,8 @@ public class Endpoint : Endpoint<Request, Results<Ok<Response>, NotFound, Proble
                 }
             }
 
-            var entity = new PollingStationAggregate(pollingStation.Address, pollingStation.DisplayOrder, pollingStation.Tags.ToTagsObject());
+            var tags = pollingStation.Tags.ToDictionary(k => k.Name, v => v.Value).ToTagsObject();
+            var entity = new PollingStationAggregate(pollingStation.Address, pollingStation.DisplayOrder, tags);
             entities.Add(entity);
 
             rowCount++;
@@ -65,10 +66,9 @@ public class Endpoint : Endpoint<Request, Results<Ok<Response>, NotFound, Proble
         return TypedResults.Ok(new Response { RowsImported = rowCount });
     }
 
-    private static ValidationResult Validate(ImportModel pollingStation, int rowIndex)
+    private ValidationResult Validate(PollingStationImportModel pollingStation, int rowIndex)
     {
-        var validator = new ImportModelValidator();
-        var validationContext = new FluentValidation.ValidationContext<ImportModel>(pollingStation)
+        var validationContext = new FluentValidation.ValidationContext<PollingStationImportModel>(pollingStation)
         {
             RootContextData =
             {
@@ -76,6 +76,6 @@ public class Endpoint : Endpoint<Request, Results<Ok<Response>, NotFound, Proble
             }
         };
 
-        return validator.Validate(validationContext);
+        return _pollingStationImportModelValidator.Validate(validationContext);
     }
 }

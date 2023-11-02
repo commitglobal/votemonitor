@@ -10,10 +10,6 @@ public class Validator : Validator<Request>
         RuleFor(x => x.SelectTag)
             .NotEmpty();
 
-        RuleFor(x => x.Filter)
-            .NotEmpty()
-            .When(x => x.Filter != null);
-
         RuleFor(x=>x.Filter)
             .Must(filter =>
             {

@@ -23,7 +23,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<CSOAdminModel>, NotFound>>
     public override async Task<Results<Ok<CSOAdminModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
         var specification = new GetCSOAdminByIdSpecification(req.CSOId,req.Id);
-        var csoAdmin = await _repository.FirstOrDefaultAsync(specification, ct);
+        var csoAdmin = await _repository.SingleOrDefaultAsync(specification, ct);
 
         if (csoAdmin is null)
         {

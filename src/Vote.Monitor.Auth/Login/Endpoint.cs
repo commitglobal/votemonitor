@@ -31,7 +31,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<Response>, ProblemDetails>>
     public override async Task<Results<Ok<Response>, ProblemDetails>> ExecuteAsync(Request req, CancellationToken ct)
     {
         var specification = new GetApplicationUserSpecification(req.Username, req.Password);
-        var user = await _repository.FirstOrDefaultAsync(specification, ct);
+        var user = await _repository.SingleOrDefaultAsync(specification, ct);
 
         if (user is null)
         {

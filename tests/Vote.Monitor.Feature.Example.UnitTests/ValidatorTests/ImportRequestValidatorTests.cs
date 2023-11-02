@@ -4,9 +4,9 @@ using NSubstitute;
 
 namespace Vote.Monitor.Feature.PollingStation.UnitTests.ValidatorTests;
 
-public class ImportValidatorTests
+public class ImportRequestValidatorTests
 {
-    private readonly Import.Validator _validator = new ();
+    private readonly Import.Validator _validator = new();
     private static IFormFile CreateMockFormFile(string fileName, long fileSizeInBits)
     {
         var formFile = Substitute.For<IFormFile>();
@@ -18,10 +18,10 @@ public class ImportValidatorTests
     }
 
     [Fact]
-    public void Validate_File_NotEmpty_ShouldPass()
+    public void Validation_ShouldPass_When_File_NotEmpty()
     {
         // Arrange
-        var request = new Import.Request { File = CreateMockFormFile("file.csv", 0) };
+        var request = new Import.Request { File = CreateMockFormFile("file.csv", 123) };
 
         // Act
         var result = _validator.TestValidate(request);
@@ -31,7 +31,7 @@ public class ImportValidatorTests
     }
 
     [Fact]
-    public void Validate_File_Empty_ShouldFail()
+    public void Validation_ShouldFail_When_File_Empty()
     {
         // Arrange
         var request = new Import.Request { File = null };
@@ -44,11 +44,11 @@ public class ImportValidatorTests
     }
 
     [Fact]
-    public void Validate_FileSize_Valid_ShouldPass()
+    public void Validation_ShouldPass_When_FileSize_Valid()
     {
         // Arrange
-        
-        var request = new Import.Request { File = new FormFile(Stream.Null, 0, 25 * 1024 * 1024 - 1, "File", "file.csv") };
+
+        var request = new Import.Request { File = CreateMockFormFile("file.csv", 25 * 1024 * 1024 - 1) };
 
         // Act
         var result = _validator.TestValidate(request);
@@ -58,11 +58,11 @@ public class ImportValidatorTests
     }
 
     [Fact]
-    public void Validate_FileSize_ExceedsLimit_ShouldFail()
+    public void Validation_ShouldFail_When_FileSize_ExceedsLimit()
     {
         // Arrange
-        
-        var request = new Import.Request { File = new FormFile(Stream.Null, 0, 25 * 1024 * 1024 + 1, "File", "file.csv") };
+
+        var request = new Import.Request { File = CreateMockFormFile("file.csv", 25 * 1024 * 1024 + 1) };
 
         // Act
         var result = _validator.TestValidate(request);
@@ -73,11 +73,11 @@ public class ImportValidatorTests
     }
 
     [Fact]
-    public void Validate_FileExtension_Valid_ShouldPass()
+    public void Validation_ShouldPass_When_FileExtension_Valid()
     {
         // Arrange
-        
-        var request = new Import.Request { File = new FormFile(Stream.Null, 0, 0, "File", "file.csv") };
+
+        var request = new Import.Request { File = CreateMockFormFile("file.csv", 123) };
 
         // Act
         var result = _validator.TestValidate(request);
@@ -87,11 +87,11 @@ public class ImportValidatorTests
     }
 
     [Fact]
-    public void Validate_FileExtension_Invalid_ShouldFail()
+    public void Validation_ShouldFail_When_FileExtension_Invalid()
     {
         // Arrange
-        
-        var request = new Import.Request { File = new FormFile(Stream.Null, 0, 0, "File", "file.txt") };
+
+        var request = new Import.Request { File = CreateMockFormFile("file.txt", 123) };
 
         // Act
         var result = _validator.TestValidate(request);

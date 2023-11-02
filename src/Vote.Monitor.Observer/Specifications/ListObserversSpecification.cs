@@ -8,19 +8,10 @@ public class ListObserversSpecification : Specification<Domain.Entities.Applicat
 {
     public ListObserversSpecification(string? nameFilter, UserStatus? status, int pageSize, int page)
     {
-        if (!string.IsNullOrEmpty(nameFilter))
-        {
-            Query
-                .Where(x => x.Name.StartsWith(nameFilter));
-        }
-
-        if (status != null)
-        {
-            Query
-                .Where(x => x.Status == status);
-        }
 
         Query
+            .Search(x => x.Name, nameFilter, !string.IsNullOrEmpty(nameFilter))
+            .Where(x => x.Status == status, status != null)
             .Skip(PaginationHelper.CalculateSkip(pageSize, page))
             .Take(PaginationHelper.CalculateTake(pageSize));
     }

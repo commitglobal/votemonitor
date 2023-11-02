@@ -1,5 +1,4 @@
 ﻿using Ardalis.Specification;
-using Microsoft.EntityFrameworkCore;
 using Vote.Monitor.Core.Helpers;
 using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
 
@@ -9,20 +8,11 @@ public class ListCSOAdminsSpecification : Specification<Domain.Entities.Applicat
 {
     public ListCSOAdminsSpecification(string? nameFilter, UserStatus? userStatus, int pageSize, int page)
     {
-        if (!string.IsNullOrEmpty(nameFilter))
-        {
-            Query
-                .Where(x => EF.Functions.Like(x.Name, $"%{nameFilter}%"));
-        }
-
-        if (userStatus != null)
-        {
-            Query
-                .Where(x => x.Status == userStatus);
-        }
-
         Query
+            .Search(x => x.Name, nameFilter, !string.IsNullOrEmpty(nameFilter))
+            .Where(x => x.Status == userStatus)
             .Skip(PaginationHelper.CalculateSkip(pageSize, page))
             .Take(PaginationHelper.CalculateTake(pageSize));
+
     }
 }

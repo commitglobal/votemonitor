@@ -2,7 +2,7 @@
 
 namespace Vote.Monitor.Feature.PollingStation.UnitTests.ValidatorTests;
 
-public class ListValidatorTests
+public class ListRequestValidatorTests
 {
     private readonly List.Validator _validator = new();
 
@@ -10,10 +10,15 @@ public class ListValidatorTests
     [InlineData(1)]
     [InlineData(50)]
     [InlineData(100)]
-    public void Validate_PageSize_ValidValues_ShouldPass(int pageSize)
+    public void Validation_ShouldPass_When_PageSize_ValidValues(int pageSize)
     {
         // Arrange
-        var request = new List.Request { PageSize = pageSize, PageNumber = 1, Filter = null };
+        var request = new List.Request
+        {
+            PageSize = pageSize,
+            PageNumber = 1, 
+            Filter = null
+        };
 
         // Act
         var result = _validator.TestValidate(request);
@@ -26,10 +31,15 @@ public class ListValidatorTests
     [InlineData(0)]
     [InlineData(101)]
     [InlineData(-5)]
-    public void Validate_PageSize_InvalidValues_ShouldFail(int pageSize)
+    public void Validation_ShouldFail_When_PageSize_InvalidValues(int pageSize)
     {
         // Arrange
-        var request = new List.Request { PageSize = pageSize, PageNumber = 1, Filter = null };
+        var request = new List.Request
+        {
+            PageSize = pageSize, 
+            PageNumber = 1, 
+            Filter = null
+        };
 
         // Act
         var result = _validator.TestValidate(request);
@@ -42,10 +52,15 @@ public class ListValidatorTests
     [InlineData(1)]
     [InlineData(10)]
     [InlineData(100)]
-    public void Validate_PageNumber_ValidValues_ShouldPass(int pageNumber)
+    public void Validation_ShouldPass_When_PageNumber_ValidValues(int pageNumber)
     {
         // Arrange
-        var request = new List.Request { PageSize = 10, PageNumber = pageNumber, Filter = null };
+        var request = new List.Request
+        {
+            PageSize = 10, 
+            PageNumber = pageNumber, 
+            Filter = null
+        };
 
         // Act
         var result = _validator.TestValidate(request);
@@ -57,10 +72,15 @@ public class ListValidatorTests
     [Theory]
     [InlineData(0)]
     [InlineData(-5)]
-    public void Validate_PageNumber_InvalidValues_ShouldFail(int pageNumber)
+    public void Validation_ShouldFail_When_PageNumber_InvalidValues(int pageNumber)
     {
         // Arrange
-        var request = new List.Request { PageSize = 10, PageNumber = pageNumber, Filter = null };
+        var request = new List.Request
+        {
+            PageSize = 10, 
+            PageNumber = pageNumber,
+            Filter = null
+        };
 
         // Act
         var result = _validator.TestValidate(request);
@@ -70,10 +90,19 @@ public class ListValidatorTests
     }
 
     [Fact]
-    public void Validate_Filter_Valid_ShouldPass()
+    public void Validation_ShouldPass_When_Filter_Valid()
     {
         // Arrange
-        var request = new List.Request { PageSize = 10, PageNumber = 1, Filter = new Dictionary<string, string> { { "tag1", "value1" }, { "tag2", "value2" } } };
+        var request = new List.Request
+        {
+            PageSize = 10, 
+            PageNumber = 1,
+            Filter = new Dictionary<string, string>
+            {
+                { "tag1", "value1" }, 
+                { "tag2", "value2" }
+            }
+        };
 
         // Act
         var result = _validator.TestValidate(request);
@@ -83,7 +112,7 @@ public class ListValidatorTests
     }
 
     [Fact]
-    public void Validate_Filter_InvalidTag_ShouldFail()
+    public void Validation_ShouldFail_When_Filter_HasEmptyTag()
     {
         // Arrange
         var request = new List.Request
@@ -105,7 +134,7 @@ public class ListValidatorTests
     }
 
     [Fact]
-    public void Validate_Filter_Null_ShouldPass()
+    public void Validation_ShouldPass_When_Filter_Null()
     {
         // Arrange
         var request = new List.Request { PageSize = 10, PageNumber = 1, Filter = null };

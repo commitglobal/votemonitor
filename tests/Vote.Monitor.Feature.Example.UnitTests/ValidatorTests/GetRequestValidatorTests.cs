@@ -2,12 +2,12 @@
 
 namespace Vote.Monitor.Feature.PollingStation.UnitTests.ValidatorTests;
 
-public class GetValidatorTests
+public class GetRequestValidatorTests
 {
     private readonly Get.Validator _validator = new();
 
     [Fact]
-    public void Validate_Id_NotEmpty_ShouldPass()
+    public void Validation_ShouldPass_When_Id_NotEmpty()
     {
         // Arrange
         var request = new Get.Request { Id = Guid.NewGuid() };
@@ -20,7 +20,7 @@ public class GetValidatorTests
     }
 
     [Fact]
-    public void Validate_Id_Empty_ShouldFail()
+    public void Validation_ShouldFail_When_Id_Empty()
     {
         // Arrange
         var request = new Get.Request { Id = Guid.Empty };

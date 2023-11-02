@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
-using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain;
 
 namespace Vote.Monitor.Feature.PollingStation.GetTagValues;
