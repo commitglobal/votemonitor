@@ -1,6 +1,4 @@
-﻿using Vote.Monitor.Core.Models;
-
-namespace Vote.Monitor.Feature.PollingStation.List;
+﻿namespace Vote.Monitor.Feature.PollingStation.List;
 public class Endpoint : Endpoint<Request, Results<Ok<PagedResponse<PollingStationModel>>, ProblemDetails>>
 {
     private readonly IReadRepository<PollingStationAggregate> _repository;
@@ -12,16 +10,15 @@ public class Endpoint : Endpoint<Request, Results<Ok<PagedResponse<PollingStatio
 
     public override void Configure()
     {
-        Get("/api/polling-stations");
-        RequestBinder(new RequestBinder());
+        Post("/api/polling-stations/list");
     }
 
     public override async Task<Results<Ok<PagedResponse<PollingStationModel>>, ProblemDetails>> ExecuteAsync(Request request, CancellationToken ct)
     {
         var specification = new ListPollingStationsSpecification(request.AddressFilter, request.Filter, request.PageSize, request.PageNumber);
-        var csos = await _repository.ListAsync(specification, ct);
-        var csosCount = await _repository.CountAsync(specification, ct);
-        var result = csos.Select(x => new PollingStationModel
+        var pollingStations = await _repository.ListAsync(specification, ct);
+        var pollingStationsCount = await _repository.CountAsync(specification, ct);
+        var result = pollingStations.Select(x => new PollingStationModel
         {
             Id = x.Id,
             Address = x.Address,
@@ -29,6 +26,6 @@ public class Endpoint : Endpoint<Request, Results<Ok<PagedResponse<PollingStatio
             Tags = x.Tags.ToDictionary()
         }).ToList();
 
-        return TypedResults.Ok(new PagedResponse<PollingStationModel>(result, csosCount, request.PageNumber, request.PageSize));
+        return TypedResults.Ok(new PagedResponse<PollingStationModel>(result, pollingStationsCount, request.PageNumber, request.PageSize));
     }
 }

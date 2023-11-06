@@ -11,7 +11,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<PollingStationModel>, NotFo
 
     public override void Configure()
     {
-        Get("/api/polling-stations/{id:guid}");
+        Get("/api/polling-stations/{id}");
     }
 
     public override async Task<Results<Ok<PollingStationModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)

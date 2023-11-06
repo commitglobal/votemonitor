@@ -4,46 +4,68 @@ public class PollingStationParser : IPollingStationParser
 {
     private readonly PollingStationImportModelValidator _pollingStationImportModelValidator = new();
     private readonly ICsvReader<PollingStationImportModel> _reader;
+    private readonly ILogger<PollingStationParser> _logger;
     private readonly PollingStationParserConfig _parserConfig;
 
-    public PollingStationParser(ICsvReader<PollingStationImportModel> reader, IOptions<PollingStationParserConfig> options)
+    public PollingStationParser(ICsvReader<PollingStationImportModel> reader,
+        ILogger<PollingStationParser> logger,
+        IOptions<PollingStationParserConfig> options)
     {
         _reader = reader;
+        _logger = logger;
         _parserConfig = options.Value;
     }
 
-    public async Task<PollingStationParsingResult> ParseAsync(Stream stream, CancellationToken cancellationToken)
+    public PollingStationParsingResult Parse(Stream stream)
     {
-        var pollingStations = await _reader
-            .ReadAsync<ImportModelMapper>(stream, cancellationToken)
-            .ToListAsync(cancellationToken);
-
-        int numberOfInvalidRows = 0;
-        int rowIndex = 0;
-        var validationErrors = new List<ValidationResult>();
-
-        foreach (var pollingStation in pollingStations)
+        try
         {
-            var validationResult = Validate(pollingStation, rowIndex);
-            if (!validationResult.IsValid)
+            var pollingStations = _reader
+                .Read<PollingStationImportModelMapper>(stream)
+                .ToList();
+
+            int numberOfInvalidRows = 0;
+            int rowIndex = 1;
+            var validationErrors = new List<ValidationResult>();
+
+            foreach (var pollingStation in pollingStations)
             {
-                validationErrors.Add(validationResult);
-                ++numberOfInvalidRows;
-                if (numberOfInvalidRows > _parserConfig.MaxParserErrorsReturned)
+                var validationResult = Validate(pollingStation, rowIndex);
+                if (!validationResult.IsValid)
                 {
-                    break;
+                    validationErrors.Add(validationResult);
+                    ++numberOfInvalidRows;
+                    if (numberOfInvalidRows >= _parserConfig.MaxParserErrorsReturned)
+                    {
+                        break;
+                    }
                 }
+
+                rowIndex++;
             }
 
-            rowIndex++;
-        }
+            if (validationErrors.Any())
+            {
+                return new PollingStationParsingResult.Fail(validationErrors.ToArray());
+            }
 
-        if (validationErrors.Any())
+            return new PollingStationParsingResult.Success(pollingStations);
+        }
+        catch (HeaderValidationException e)
         {
-            return new PollingStationParsingResult.Fail(validationErrors);
+            _logger.LogError(e, "Cannot parse the header.");
+            return new PollingStationParsingResult.Fail(new ValidationFailure("Header", "Invalid header provided in import polling stations file."));
         }
-
-        return new PollingStationParsingResult.Success(pollingStations);
+        catch (CsvHelper.MissingFieldException e)
+        {
+            _logger.LogError(e, "Malformed csv provided.");
+            return new PollingStationParsingResult.Fail(new ValidationFailure("Csv File", "Malformed import polling stations file provided."));
+        }
+        catch (CsvHelper.TypeConversion.TypeConverterException e)
+        {
+            _logger.LogError(e, "Invalid data found in columns.");
+            return new PollingStationParsingResult.Fail(new ValidationFailure("Csv File", "Malformed import polling stations file provided."));
+        }
     }
 
     private ValidationResult Validate(PollingStationImportModel pollingStation, int rowIndex)

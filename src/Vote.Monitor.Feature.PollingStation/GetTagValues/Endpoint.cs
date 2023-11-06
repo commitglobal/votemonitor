@@ -1,5 +1,5 @@
 ﻿namespace Vote.Monitor.Feature.PollingStation.GetTagValues;
-public class Endpoint : Endpoint<Request, Results<Ok<List<TagModel>>, NotFound, ProblemDetails>>
+public class Endpoint : Endpoint<Request, Results<Ok<List<TagModel>>, ProblemDetails>>
 {
     private readonly VoteMonitorContext _context;
 
@@ -10,11 +10,10 @@ public class Endpoint : Endpoint<Request, Results<Ok<List<TagModel>>, NotFound, 
 
     public override void Configure()
     {
-        Get("/api/polling-stations/tags/values");
-        RequestBinder(new RequestBinder());
+        Post("/api/polling-stations/tags/values");
     }
 
-    public override async Task<Results<Ok<List<TagModel>>, NotFound, ProblemDetails>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<Results<Ok<List<TagModel>>, ProblemDetails>> ExecuteAsync(Request req, CancellationToken ct)
     {
         var filter = req.Filter ?? new();
 
@@ -24,17 +23,12 @@ public class Endpoint : Endpoint<Request, Results<Ok<List<TagModel>>, NotFound, 
                .Where(station => EF.Functions.JsonExists(station.Tags, req.SelectTag))
                .Select(station => new TagModel
                {
-                   Key = req.SelectTag,
+                   Name = req.SelectTag,
                    Value = station.Tags.RootElement.GetProperty(req.SelectTag).GetString()!
                })
                .Distinct()
                .ToListAsync(cancellationToken: ct);
 
-        if (result.Any())
-        {
-            return TypedResults.Ok(result);
-        }
-
-        return TypedResults.NotFound();
+        return TypedResults.Ok(result);
     }
 }

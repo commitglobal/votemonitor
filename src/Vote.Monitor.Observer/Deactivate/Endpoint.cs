@@ -2,16 +2,16 @@
 
 public class Endpoint : Endpoint<Request, Results<NoContent, NotFound>>
 {
-     readonly IRepository<Domain.Entities.ApplicationUserAggregate.Observer> _repository;
+     readonly IRepository<ObserverAggregate> _repository;
 
-    public Endpoint(IRepository<Domain.Entities.ApplicationUserAggregate.Observer> repository)
+    public Endpoint(IRepository<ObserverAggregate> repository)
     {
         _repository = repository;
     }
 
     public override void Configure()
     {
-        Put("/api/observers/{id:guid}:deactivate");
+        Put("/api/observers/{id}:deactivate");
     }
 
     public override async Task<Results<NoContent, NotFound>> ExecuteAsync(Request req, CancellationToken ct)

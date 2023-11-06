@@ -6,7 +6,7 @@ public class Request
     public string? NameFilter { get; set; }
 
     [QueryParam]
-    [JsonConverter(typeof(SmartEnumNameConverter<UserStatus, int>))]
+    [JsonConverter(typeof(SmartEnumNameConverter<UserStatus, string>))]
     public UserStatus? Status { get; set; }
 
     [QueryParam]

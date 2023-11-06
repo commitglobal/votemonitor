@@ -1,6 +1,4 @@
-﻿using FluentValidation.TestHelper;
-
-namespace Vote.Monitor.Feature.PollingStation.UnitTests.ValidatorTests;
+﻿namespace Vote.Monitor.Feature.PollingStation.UnitTests.ValidatorTests;
 
 public class UpdateRequestValidatorTests
 {
@@ -97,7 +95,7 @@ public class UpdateRequestValidatorTests
     }
 
     [Theory]
-    [MemberData(nameof(TestData.EmptyStringsTestCases), MemberType = typeof(TestData))]
+    [MemberData(nameof(TestData.EmptyAndNullStringsTestCases), MemberType = typeof(TestData))]
     public void Validation_ShouldFail_When_Address_Empty(string address)
     {
         // Arrange
@@ -141,8 +139,9 @@ public class UpdateRequestValidatorTests
         result.ShouldNotHaveValidationErrorFor(x => x.Tags);
     }
 
-    [Fact]
-    public void Validation_ShouldFail_When_Tags_HaveEmptyKey()
+    [Theory]
+    [MemberData(nameof(TestData.EmptyStringsTestCases), MemberType = typeof(TestData))]
+    public void Validation_ShouldFail_When_Tags_HaveEmptyKey(string key)
     {
         // Arrange
         var request = new Update.Request
@@ -151,9 +150,9 @@ public class UpdateRequestValidatorTests
             DisplayOrder = 5,
             Address = "123 Main St",
             Tags = new Dictionary<string, string>
-                {
-                    { "", "Value" }
-                }
+            {
+                { key, "Value" }
+            }
         };
 
         // Act

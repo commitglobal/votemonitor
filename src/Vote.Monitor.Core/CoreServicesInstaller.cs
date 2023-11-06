@@ -7,8 +7,8 @@ public static class CoreServicesInstaller
 {
     public static IServiceCollection AddCoreServices(this IServiceCollection services)
     {
-        services.AddScoped(typeof(ICsvReader<>), typeof(CsvReader<>));
-        services.AddScoped(typeof(ICsvWriter<>), typeof(CsvWriter<>));
+        services.AddSingleton(typeof(ICsvReader<>), typeof(CsvReader<>));
+        services.AddSingleton(typeof(ICsvWriter<>), typeof(CsvWriter<>));
 
         return services;
     }

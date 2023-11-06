@@ -12,6 +12,8 @@ public class Endpoint : Endpoint<Request, Results<Ok<ObserverModel>, NotFound>>
     public override void Configure()
     {
         Post("/api/observers:import");
+        DontAutoTag();
+        Options(x => x.WithTags("observers"));
     }
 
     public override async Task<Results<Ok<ObserverModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)

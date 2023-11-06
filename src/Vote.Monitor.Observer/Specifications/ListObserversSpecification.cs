@@ -1,15 +1,11 @@
-﻿using Ardalis.Specification;
-using Vote.Monitor.Core.Helpers;
+﻿namespace Vote.Monitor.Observer.Specifications;
 
-namespace Vote.Monitor.Observer.Specifications;
-
-public class ListObserversSpecification : Specification<Domain.Entities.ApplicationUserAggregate.Observer>
+public class ListObserversSpecification : Specification<ObserverAggregate>
 {
     public ListObserversSpecification(string? nameFilter, UserStatus? status, int pageSize, int page)
     {
-
         Query
-            .Search(x => x.Name, nameFilter, !string.IsNullOrEmpty(nameFilter))
+            .Search(x => x.Name, "%" + nameFilter + "%", !string.IsNullOrEmpty(nameFilter))
             .Where(x => x.Status == status, status != null)
             .Skip(PaginationHelper.CalculateSkip(pageSize, page))
             .Take(PaginationHelper.CalculateTake(pageSize));

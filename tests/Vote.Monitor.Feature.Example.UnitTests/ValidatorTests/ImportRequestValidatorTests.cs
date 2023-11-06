@@ -1,8 +1,4 @@
-﻿using FluentValidation.TestHelper;
-using Microsoft.AspNetCore.Http;
-using NSubstitute;
-
-namespace Vote.Monitor.Feature.PollingStation.UnitTests.ValidatorTests;
+﻿namespace Vote.Monitor.Feature.PollingStation.UnitTests.ValidatorTests;
 
 public class ImportRequestValidatorTests
 {

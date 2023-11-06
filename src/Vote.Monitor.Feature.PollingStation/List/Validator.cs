@@ -10,7 +10,7 @@ public class Validator : Validator<Request>
         RuleFor(x => x.Filter)
             .Must(filter =>
             {
-                return filter.Keys.All(tag => !string.IsNullOrWhiteSpace(tag));
+                return filter!.Keys.All(tag => !string.IsNullOrWhiteSpace(tag));
             })
             .When(x => x.Filter != null && x.Filter.Any());
     }

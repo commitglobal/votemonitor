@@ -13,7 +13,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<PagedResponse<CSOAdminModel
 
     public override void Configure()
     {
-        Get("/api/csos/{CSOid:guid}/admins");
+        Get("/api/csos/{CSOid}/admins");
     }
 
     public override async Task<Results<Ok<PagedResponse<CSOAdminModel>>, ProblemDetails>> ExecuteAsync(Request req, CancellationToken ct)

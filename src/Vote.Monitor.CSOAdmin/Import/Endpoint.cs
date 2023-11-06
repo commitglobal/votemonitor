@@ -11,7 +11,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<CSOAdminModel>, NotFound>>
 
     public override void Configure()
     {
-        Post("/api/csos/{CSOid:guid}/admins:import");
+        Post("/api/csos/{CSOid}/admins:import");
     }
 
     public override async Task<Results<Ok<CSOAdminModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)

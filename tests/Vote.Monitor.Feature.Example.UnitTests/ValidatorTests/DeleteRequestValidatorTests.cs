@@ -1,6 +1,4 @@
-﻿using FluentValidation.TestHelper;
-
-namespace Vote.Monitor.Feature.PollingStation.UnitTests.ValidatorTests;
+﻿namespace Vote.Monitor.Feature.PollingStation.UnitTests.ValidatorTests;
 
 public class DeleteRequestValidatorTests
 {

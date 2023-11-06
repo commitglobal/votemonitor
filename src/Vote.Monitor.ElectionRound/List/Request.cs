@@ -1,9 +1,4 @@
-﻿using System.ComponentModel;
-using System.Text.Json.Serialization;
-using Ardalis.SmartEnum.SystemTextJson;
-using Vote.Monitor.Domain.Entities.ElectionRoundAggregate;
-
-namespace Vote.Monitor.ElectionRound.List;
+﻿namespace Vote.Monitor.ElectionRound.List;
 
 public class Request
 {
@@ -14,7 +9,7 @@ public class Request
     public Guid? CountryId { get; set; }
 
     [QueryParam]
-    [JsonConverter(typeof(SmartEnumNameConverter<ElectionRoundStatus, int>))]
+    [JsonConverter(typeof(SmartEnumNameConverter<ElectionRoundStatus, string>))]
     public ElectionRoundStatus? Status { get; set; }
 
     [QueryParam]

@@ -13,4 +13,14 @@ public static class Utils
         }
         return result.ToString();
     }
+
+    public static IOptions<TOptions> AsIOption<TOptions>(this TOptions optionInstance) where TOptions : class, new()
+    {
+        return Microsoft.Extensions.Options.Options.Create(optionInstance);
+    }
+
+    public static IEnumerable<T> Repeat<T>(this T value, int times)
+    {
+        return Enumerable.Range(1, times).Select(_ => value);
+    }
 }

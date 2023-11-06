@@ -4,7 +4,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<CountryModel>, NotFound>>
 {
     public override void Configure()
     {
-        Get("/api/countries/{id:guid}");
+        Get("/api/countries/{id}");
     }
 
     public override Task<Results<Ok<CountryModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)

@@ -11,7 +11,7 @@ public class Endpoint : Endpoint<Request, Results<NoContent, NotFound>>
 
     public override void Configure()
     {
-        Put("/api/csos/{id:guid}:deactivate");
+        Put("/api/csos/{id}:deactivate");
     }
 
     public override async Task<Results<NoContent, NotFound>> ExecuteAsync(Request req, CancellationToken ct)

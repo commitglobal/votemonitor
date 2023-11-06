@@ -2,16 +2,16 @@
 
 public class Endpoint : Endpoint<Request, Results<Ok<ObserverModel>, NotFound>>
 {
-     readonly IReadRepository<Domain.Entities.ApplicationUserAggregate.Observer> _repository;
+     readonly IReadRepository<ObserverAggregate> _repository;
 
-    public Endpoint(IReadRepository<Domain.Entities.ApplicationUserAggregate.Observer> repository)
+    public Endpoint(IReadRepository<ObserverAggregate> repository)
     {
         _repository = repository;
     }
 
     public override void Configure()
     {
-        Get("/api/observers/{id:guid}");
+        Get("/api/observers/{id}");
     }
 
     public override async Task<Results<Ok<ObserverModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)

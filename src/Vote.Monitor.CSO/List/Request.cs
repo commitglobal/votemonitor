@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
 using Ardalis.SmartEnum.SystemTextJson;
 using System.Text.Json.Serialization;
-using Vote.Monitor.Domain.Entities.CSOAggregate;
 
 namespace Vote.Monitor.CSO.List;
 
@@ -11,7 +10,7 @@ public class Request
     public string? NameFilter { get; set; }
 
     [QueryParam]
-    [JsonConverter(typeof(SmartEnumNameConverter<CSOStatus, int>))]
+    [JsonConverter(typeof(SmartEnumNameConverter<CSOStatus, string>))]
     public CSOStatus? Status { get; set; }
 
     [QueryParam]

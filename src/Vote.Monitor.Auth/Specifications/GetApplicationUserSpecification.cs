@@ -1,5 +1,4 @@
 ﻿using Ardalis.Specification;
-using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
 
 namespace Vote.Monitor.Auth.Specifications;
 

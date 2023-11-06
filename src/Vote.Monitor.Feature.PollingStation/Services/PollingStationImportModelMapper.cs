@@ -1,10 +1,9 @@
-﻿using CsvHelper;
-using CsvHelper.Configuration;
+﻿using CsvHelper.Configuration;
 
-namespace Vote.Monitor.Feature.PollingStation.Import;
-internal sealed class ImportModelMapper : ClassMap<PollingStationImportModel>
+namespace Vote.Monitor.Feature.PollingStation.Services;
+internal sealed class PollingStationImportModelMapper : ClassMap<PollingStationImportModel>
 {
-    public ImportModelMapper()
+    public PollingStationImportModelMapper()
     {
         Map(m => m.DisplayOrder).Name("DisplayOrder");
         Map(m => m.Address).Name("Address");

@@ -4,9 +4,9 @@ namespace Vote.Monitor.Observer.List;
 
 public class Endpoint : Endpoint<Request, PagedResponse<ObserverModel>>
 {
-     readonly IReadRepository<Domain.Entities.ApplicationUserAggregate.Observer> _repository;
+     readonly IReadRepository<ObserverAggregate> _repository;
 
-    public Endpoint(IReadRepository<Domain.Entities.ApplicationUserAggregate.Observer> repository)
+    public Endpoint(IReadRepository<ObserverAggregate> repository)
     {
         _repository = repository;
     }

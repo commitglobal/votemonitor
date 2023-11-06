@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Npgsql;
 using Vote.Monitor.Domain.Repository;
 
@@ -36,14 +35,7 @@ public static class DomainInstaller
         // Create a new scope to retrieve scoped services
         using var scope = services.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<VoteMonitorContext>();
-        var logger = scope.ServiceProvider.GetRequiredService<ILoggerFactory>();
-        var pendingMigrations = await dbContext.Database.GetPendingMigrationsAsync(cancellationToken);
-
-        if (pendingMigrations.Any())
-        {
-            logger.CreateLogger<ILogger>().LogInformation("Applying Root Migrations.");
-            await dbContext.Database.MigrateAsync(cancellationToken);
-        }
+        await dbContext.Database.MigrateAsync(cancellationToken);
     }
 
     private static string GetConnectionString(IConfiguration config)

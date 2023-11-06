@@ -1,6 +1,4 @@
-﻿using Ardalis.Specification;
-
-namespace Vote.Monitor.CSO.Specifications;
+﻿namespace Vote.Monitor.CSO.Specifications;
 
 public class GetCSOByNameSpecification : Specification<Domain.Entities.CSOAggregate.CSO>
 {

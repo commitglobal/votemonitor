@@ -2,12 +2,12 @@
 
 namespace Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
 
-public sealed class UserStatus : SmartEnum<UserStatus>
+public sealed class UserStatus : SmartEnum<UserStatus, string>
 {
-    public static readonly UserStatus Active = new(nameof(Active), 1);
-    public static readonly UserStatus Deactivated = new(nameof(Deactivated), 2);
+    public static readonly UserStatus Active = new(nameof(Active), nameof(Active));
+    public static readonly UserStatus Deactivated = new(nameof(Deactivated), nameof(Deactivated));
 
-    private UserStatus(string name, int value) : base(name, value)
+    private UserStatus(string name, string value) : base(name, value)
     {
     }
 }

@@ -1,9 +1,4 @@
-﻿using FastEndpoints.Security;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Vote.Monitor.Auth.Options;
-
-namespace Vote.Monitor.Auth;
+﻿namespace Vote.Monitor.Auth;
 
 public static class AuthFeatureInstaller
 {

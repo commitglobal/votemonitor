@@ -1,6 +1,4 @@
-﻿using EFCore.BulkExtensions;
-
-namespace Vote.Monitor.Feature.PollingStation.Import;
+﻿namespace Vote.Monitor.Feature.PollingStation.Import;
 public class Endpoint : Endpoint<Request, Results<Ok<Response>, NotFound, ProblemDetails>>
 {
     private readonly VoteMonitorContext _context;
@@ -14,13 +12,15 @@ public class Endpoint : Endpoint<Request, Results<Ok<Response>, NotFound, Proble
 
     public override void Configure()
     {
-        Post("/api/polling-stations/import");
+        Post("/api/polling-stations:import");
+        DontAutoTag();
+        Options(x => x.WithTags("polling-stations"));
         AllowFileUploads();
     }
 
     public override async Task<Results<Ok<Response>, NotFound, ProblemDetails>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var parsingResult = await _parser.ParseAsync(req.File.OpenReadStream(), ct);
+        var parsingResult = _parser.Parse(req.File.OpenReadStream());
         if (parsingResult is PollingStationParsingResult.Fail failedResult)
         {
             foreach (var validationFailure in failedResult.ValidationErrors.SelectMany(x => x.Errors))
@@ -39,7 +39,10 @@ public class Endpoint : Endpoint<Request, Results<Ok<Response>, NotFound, Proble
             .ToList();
 
         await _context.PollingStations.BatchDeleteAsync(cancellationToken: ct);
-        await _context.BulkInsertAsync(entities, cancellationToken: ct);
+        await _context.BulkInsertAsync(entities, new BulkConfig
+        {
+            PropertiesToExclude = new List<string> { "Id" },
+        }, cancellationToken: ct);
         await _context.BulkSaveChangesAsync(cancellationToken: ct);
 
         return TypedResults.Ok(new Response { RowsImported = entities.Count });

@@ -11,7 +11,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<CSOModel>, NotFound>>
 
     public override void Configure()
     {
-        Get("/api/csos/{id:guid}");
+        Get("/api/csos/{id}");
     }
 
     public override async Task<Results<Ok<CSOModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)

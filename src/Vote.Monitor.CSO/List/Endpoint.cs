@@ -1,6 +1,4 @@
-﻿using Vote.Monitor.Core.Models;
-
-namespace Vote.Monitor.CSO.List;
+﻿namespace Vote.Monitor.CSO.List;
 
 public class Endpoint : Endpoint<Request, Results<Ok<PagedResponse<CSOModel>>, ProblemDetails>>
 {

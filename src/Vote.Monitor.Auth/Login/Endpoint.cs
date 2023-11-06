@@ -1,15 +1,4 @@
-﻿using FastEndpoints;
-using FastEndpoints.Security;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.JsonWebTokens;
-using Vote.Monitor.Auth.Options;
-using Vote.Monitor.Auth.Specifications;
-using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
-using Vote.Monitor.Domain.Repository;
-
-namespace Vote.Monitor.Auth.Login;
+﻿namespace Vote.Monitor.Auth.Login;
 
 public class Endpoint : Endpoint<Request, Results<Ok<Response>, ProblemDetails>>
 {

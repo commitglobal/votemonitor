@@ -1,6 +1,4 @@
-﻿using FluentValidation.TestHelper;
-
-namespace Vote.Monitor.Feature.PollingStation.UnitTests.ValidatorTests;
+﻿namespace Vote.Monitor.Feature.PollingStation.UnitTests.ValidatorTests;
 
 public class GetTagsRequestValidatorTests
 {
@@ -20,7 +18,7 @@ public class GetTagsRequestValidatorTests
     }
 
     [Theory]
-    [MemberData(nameof(TestData.EmptyStringsTestCases), MemberType = typeof(TestData))]
+    [MemberData(nameof(TestData.EmptyAndNullStringsTestCases), MemberType = typeof(TestData))]
     public void Validation_ShouldFail_When_SelectTag_Empty(string selectTag)
     {
         // Arrange
@@ -74,8 +72,9 @@ public class GetTagsRequestValidatorTests
         result.ShouldNotHaveValidationErrorFor(x => x.Filter.First().Key);
     }
 
-    [Fact]
-    public void Validation_ShouldFail_When_FilterKey_Empty()
+    [Theory]
+    [MemberData(nameof(TestData.EmptyStringsTestCases), MemberType = typeof(TestData))]
+    public void Validation_ShouldFail_When_FilterKey_Empty(string key)
     {
         // Arrange
         var request = new GetTagValues.Request
@@ -83,7 +82,7 @@ public class GetTagsRequestValidatorTests
             SelectTag = "SomeValue",
             Filter = new Dictionary<string, string>
             {
-                { string.Empty, "Value" }
+                { key, "Value" }
             }
         };
 

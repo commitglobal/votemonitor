@@ -1,8 +1,6 @@
-﻿using Ardalis.Specification;
+﻿namespace Vote.Monitor.Observer.Specifications;
 
-namespace Vote.Monitor.Observer.Specifications;
-
-public class GetObserverByLoginSpecification : Specification<Domain.Entities.ApplicationUserAggregate.Observer>, ISingleResultSpecification<Domain.Entities.ApplicationUserAggregate.Observer>
+public class GetObserverByLoginSpecification : Specification<ObserverAggregate>, ISingleResultSpecification<ObserverAggregate>
 {
     public GetObserverByLoginSpecification(string login)
     {

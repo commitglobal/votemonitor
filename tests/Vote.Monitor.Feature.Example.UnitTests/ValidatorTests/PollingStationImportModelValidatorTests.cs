@@ -1,9 +1,4 @@
-﻿using FluentValidation;
-using FluentValidation.TestHelper;
-using Vote.Monitor.Feature.PollingStation.Import;
-using Vote.Monitor.Feature.PollingStation.Services;
-
-namespace Vote.Monitor.Feature.PollingStation.UnitTests.ValidatorTests;
+﻿namespace Vote.Monitor.Feature.PollingStation.UnitTests.ValidatorTests;
 
 public class PollingStationImportModelValidatorTests
 {
@@ -87,7 +82,7 @@ public class PollingStationImportModelValidatorTests
     }
 
     [Theory]
-    [MemberData(nameof(TestData.EmptyStringsTestCases), MemberType = typeof(TestData))]
+    [MemberData(nameof(TestData.EmptyAndNullStringsTestCases), MemberType = typeof(TestData))]
     public void Validation_ShouldFail_When_Address_Empty(string address)
     {
         // Arrange
@@ -180,8 +175,9 @@ public class PollingStationImportModelValidatorTests
             .WithErrorMessage("Polling station on row 1 has invalid Tags. At least one value for Tags is required.");
     }
 
-    [Fact]
-    public void Validation_ShouldFail_When_Tags_WithEmptyKey()
+    [Theory]
+    [MemberData(nameof(TestData.EmptyAndNullStringsTestCases), MemberType = typeof(TestData))]
+    public void Validation_ShouldFail_When_Tags_WithEmptyKey(string key)
     {
         // Arrange
         var importModel = new PollingStationImportModel
@@ -190,7 +186,7 @@ public class PollingStationImportModelValidatorTests
             Address = "123 Main St",
             Tags = new List<TagImportModel>
             {
-                new () { Name = "", Value= "Value" }
+                new () { Name = key, Value= "Value" }
             }
         };
         var context = new ValidationContext<PollingStationImportModel>(importModel);

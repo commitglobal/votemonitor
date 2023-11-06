@@ -2,5 +2,5 @@
 
 public interface IPollingStationParser
 {
-    Task<PollingStationParsingResult> ParseAsync(Stream stream, CancellationToken cancellationToken);
+    PollingStationParsingResult Parse(Stream stream);
 }

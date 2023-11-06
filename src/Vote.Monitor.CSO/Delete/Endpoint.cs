@@ -11,7 +11,7 @@ public class Endpoint : Endpoint<Request, Results<NoContent, NotFound, ProblemDe
 
     public override void Configure()
     {
-        Delete("/api/csos/{id:guid}");
+        Delete("/api/csos/{id}");
     }
 
     public override async Task<Results<NoContent, NotFound, ProblemDetails>> ExecuteAsync(Request req, CancellationToken ct)

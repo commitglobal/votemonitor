@@ -10,7 +10,7 @@ public class Endpoint : Endpoint<Request, Results<NoContent, NotFound, ProblemDe
 
     public override void Configure()
     {
-        Delete("/api/polling-stations/{id:guid}");
+        Delete("/api/polling-stations/{id}");
     }
 
     public override async Task<Results<NoContent, NotFound, ProblemDetails>> ExecuteAsync(Request req, CancellationToken ct)

@@ -2,9 +2,9 @@
 
 public class Endpoint : Endpoint<Request, Results<Ok<ObserverModel>, Conflict<ProblemDetails>>>
 {
-     readonly IRepository<Domain.Entities.ApplicationUserAggregate.Observer> _repository;
+     readonly IRepository<ObserverAggregate> _repository;
 
-    public Endpoint(IRepository<Domain.Entities.ApplicationUserAggregate.Observer> repository)
+    public Endpoint(IRepository<ObserverAggregate> repository)
     {
         _repository = repository;
     }
@@ -25,7 +25,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<ObserverModel>, Conflict<Pr
             return TypedResults.Conflict(new ProblemDetails(ValidationFailures));
         }
 
-        var observer = new Domain.Entities.ApplicationUserAggregate.Observer(req.Name, req.Login, req.Password);
+        var observer = new ObserverAggregate(req.Name, req.Login, req.Password);
         await _repository.AddAsync(observer, ct);
 
         return TypedResults.Ok(new ObserverModel

@@ -1,16 +1,35 @@
-﻿using FastEndpoints;
+﻿using Ardalis.SmartEnum.SystemTextJson;
+using FastEndpoints;
 using FastEndpoints.Swagger;
 using Serilog;
+using Vote.Monitor.Api.Swagger;
 using Vote.Monitor.Auth;
 using Vote.Monitor.Core;
 using Vote.Monitor.Country;
 using Vote.Monitor.CSO;
 using Vote.Monitor.CSOAdmin;
 using Vote.Monitor.Domain;
+using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
+using Vote.Monitor.Domain.Entities.CSOAggregate;
+using Vote.Monitor.Domain.Entities.ElectionRoundAggregate;
 using Vote.Monitor.Feature.PollingStation;
 using Vote.Monitor.Observer;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddFastEndpoints();
+builder.Services.SwaggerDocument(o =>
+{
+    o.FlattenSchema = true;
+    o.AutoTagPathSegmentIndex = 2;
+    o.TagCase = TagCase.LowerCase;
+
+    o.DocumentSettings = s =>
+    {
+        s.Title = "Vote Monitor API";
+        s.Version = "v2";
+        s.SchemaProcessors.Add(new SmartEnumSchemaProcessor());
+    };
+});
 
 builder.Services.AddOptions();
 builder.Services.AddLogging(logging =>
@@ -37,18 +56,7 @@ builder.Services.AddCountryFeature();
 builder.Services.AddCSOFeature();
 builder.Services.AddCSOAdminFeature();
 builder.Services.AddObserverFeature();
-builder.Services.AddFastEndpoints();
 builder.Services.AddAuthorization();
-builder.Services.SwaggerDocument(o =>
-{
-    o.AutoTagPathSegmentIndex = 2;
-    o.DocumentSettings = s =>
-    {
-        s.Title = "Vote Monitor API";
-        s.Version = "v2";
-    };
-    o.AutoTagPathSegmentIndex = 2;
-});
 
 
 var app = builder.Build();
@@ -57,8 +65,20 @@ await app.Services.InitializeDatabasesAsync();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseFastEndpoints(x => x.Errors.ResponseBuilder = ProblemDetails.ResponseBuilder);
-app.UseSwaggerGen();
+app.UseFastEndpoints(x =>
+{
+    x.Errors.ResponseBuilder = ProblemDetails.ResponseBuilder;
+
+    x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<UserStatus, string>());
+    x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<UserRole, string>());
+    x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<CSOStatus, string>());
+    x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<ElectionRoundStatus, string>());
+});
+
+app.UseSwaggerGen(uiConfig: cfg =>
+{
+    cfg.DocExpansion = "list";
+});
 
 app.Run();
 

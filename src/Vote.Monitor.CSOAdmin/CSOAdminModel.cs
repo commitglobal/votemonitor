@@ -6,6 +6,6 @@ public record CSOAdminModel
     public required string Login { get; init; }
     public required string Name { get; init; }
 
-    [JsonConverter(typeof(SmartEnumNameConverter<UserStatus, int>))]
+    [JsonConverter(typeof(SmartEnumNameConverter<UserStatus, string>))]
     public required UserStatus Status { get; init; }
 }
