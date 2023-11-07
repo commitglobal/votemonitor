@@ -67,7 +67,7 @@ app.UseAuthorization();
 
 app.UseFastEndpoints(x =>
 {
-    x.Errors.ResponseBuilder = ProblemDetails.ResponseBuilder;
+    x.Errors.UseProblemDetails();
 
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<UserStatus, string>());
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<UserRole, string>());

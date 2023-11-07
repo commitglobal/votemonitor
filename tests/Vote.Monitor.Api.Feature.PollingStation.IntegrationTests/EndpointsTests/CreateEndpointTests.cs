@@ -46,10 +46,10 @@ public class CreateEndpointTests : IClassFixture<HttpServerFixture>
         };
 
         // Act
-        var (createResponse, errorResponse) = await Fixture.PlatformAdmin.POSTAsync<Create.Endpoint, Create.Request, ErrorResponse>(newPollingStation);
+        var (createResponse, errorResponse) = await Fixture.PlatformAdmin.POSTAsync<Create.Endpoint, Create.Request, FEProblemDetails>(newPollingStation);
 
         // Assert
         createResponse.IsSuccessStatusCode.Should().BeFalse();
-        errorResponse.Errors.Count.Should().Be(3);
+        errorResponse.Errors.Count().Should().Be(3);
     }
 }

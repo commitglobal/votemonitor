@@ -1,4 +1,6 @@
-﻿namespace Vote.Monitor.Api.Feature.PollingStation.IntegrationTests.EndpointsTests;
+﻿using Microsoft.AspNetCore.Http;
+
+namespace Vote.Monitor.Api.Feature.PollingStation.IntegrationTests.EndpointsTests;
 
 public class UpdateEndpointTests : IClassFixture<HttpServerFixture>
 {
@@ -79,11 +81,11 @@ public class UpdateEndpointTests : IClassFixture<HttpServerFixture>
         };
 
         // Act
-        var (updateResponse, errorResponse) = await Fixture.PlatformAdmin.PUTAsync<Update.Endpoint, Update.Request, ErrorResponse>(updateRequest);
+        var (updateResponse, errorResponse) = await Fixture.PlatformAdmin.PUTAsync<Update.Endpoint, Update.Request, FEProblemDetails>(updateRequest);
 
         // Assert
         updateResponse.IsSuccessStatusCode.Should().BeFalse();
-        errorResponse.Errors.Count.Should().Be(3);
+        errorResponse.Errors.Count().Should().Be(3);
 
         var (getResponse, pollingStation) = await Fixture.PlatformAdmin.GETAsync<Get.Endpoint, Get.Request, PollingStationModel>(new()
         {

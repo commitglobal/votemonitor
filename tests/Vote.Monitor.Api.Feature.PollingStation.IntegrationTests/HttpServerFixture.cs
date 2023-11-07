@@ -70,14 +70,7 @@ public class HttpServerFixture : WebApplicationFactory<Program>, IAsyncLifetime,
 
         PlatformAdmin = CreateClient();
         PlatformAdmin.DefaultRequestHeaders.Authorization = new("Bearer", tokenResponse?.Token);
-
-        await CommonTestsSetup();
     }
 
     public new async Task DisposeAsync() => await _postgresContainer.DisposeAsync().AsTask();
-
-    public virtual Task CommonTestsSetup()
-    {
-        return Task.CompletedTask;
-    }
 }

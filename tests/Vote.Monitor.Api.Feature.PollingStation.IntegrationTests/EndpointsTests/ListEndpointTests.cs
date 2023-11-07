@@ -25,7 +25,7 @@ public class ListEndpointTests : IClassFixture<HttpServerFixture>
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         result.TotalCount.Should().Be(176);
-        result.PageSize.Should().Be(10);
+        result.PageSize.Should().Be(100);
         result.CurrentPage.Should().Be(1);
         result.Items.Should().HaveCount(100);
     }
