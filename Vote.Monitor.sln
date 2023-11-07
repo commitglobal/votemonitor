@@ -38,7 +38,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Feature.Ob
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Feature.Country", "src\Vote.Monitor.Api.Feature.Country\Vote.Monitor.Api.Feature.Country.csproj", "{9D19DBEA-7447-4C46-AAFD-E25D64784469}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Feature.PollingStation.IntegrationTests", "tests\Vote.Monitor.Api.Feature.PollingStation.IntegrationTests\Vote.Monitor.Api.Feature.PollingStation.IntegrationTests.csproj", "{91738C86-9A9D-44D9-86C0-67C7CF43FB0D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.IntegrationTests", "tests\Vote.Monitor.Api.IntegrationTests\Vote.Monitor.Api.IntegrationTests.csproj", "{91738C86-9A9D-44D9-86C0-67C7CF43FB0D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Feature.PollingStation.UnitTests", "tests\Vote.Monitor.Api.Feature.PollingStation.UnitTests\Vote.Monitor.Api.Feature.PollingStation.UnitTests.csproj", "{272F6196-AB33-461D-8E12-FB1260D6D4C0}"
 EndProject

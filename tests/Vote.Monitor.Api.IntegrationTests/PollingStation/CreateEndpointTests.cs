@@ -1,4 +1,11 @@
-﻿namespace Vote.Monitor.Api.Feature.PollingStation.IntegrationTests.EndpointsTests;
+﻿using Vote.Monitor.Api.Feature.PollingStation;
+using CreateEndpoint = Vote.Monitor.Api.Feature.PollingStation.Create.Endpoint;
+using CreateRequest = Vote.Monitor.Api.Feature.PollingStation.Create.Request;
+
+using GetEndpoint = Vote.Monitor.Api.Feature.PollingStation.Get.Endpoint;
+using GetRequest = Vote.Monitor.Api.Feature.PollingStation.Get.Request;
+
+namespace Vote.Monitor.Api.IntegrationTests.PollingStation;
 
 public class CreateEndpointTests : IClassFixture<HttpServerFixture>
 {
@@ -17,17 +24,17 @@ public class CreateEndpointTests : IClassFixture<HttpServerFixture>
         var newPollingStation = Fixture.Fake.CreateRequest();
 
         // Act
-        var (createResponse, createResult) = await Fixture.PlatformAdmin.POSTAsync<Create.Endpoint, Create.Request, PollingStationModel>(newPollingStation);
+        var (createResponse, createResult) = await Fixture.PlatformAdmin.POSTAsync<CreateEndpoint, CreateRequest, PollingStationModel>(newPollingStation);
 
         // Assert
         createResponse.IsSuccessStatusCode.Should().BeTrue();
         createResult.Id.Should().NotBeEmpty();
 
-        var request = new Api.Feature.PollingStation.Get.Request
+        var request = new GetRequest
         {
             Id = createResult.Id
         };
-        var (getResponse, pollingStation) = await Fixture.PlatformAdmin.GETAsync<Get.Endpoint, Get.Request, PollingStationModel>(request);
+        var (getResponse, pollingStation) = await Fixture.PlatformAdmin.GETAsync<GetEndpoint, GetRequest, PollingStationModel>(request);
 
         getResponse.IsSuccessStatusCode.Should().BeTrue();
         pollingStation.Should().BeEquivalentTo(newPollingStation);
@@ -38,7 +45,7 @@ public class CreateEndpointTests : IClassFixture<HttpServerFixture>
     public async Task Should_NotCreatePollingStation_WhenInvalidRequestData()
     {
         // Arrange
-        var newPollingStation = new Create.Request
+        var newPollingStation = new CreateRequest
         {
             Address = "",
             DisplayOrder = -1,
@@ -46,7 +53,7 @@ public class CreateEndpointTests : IClassFixture<HttpServerFixture>
         };
 
         // Act
-        var (createResponse, errorResponse) = await Fixture.PlatformAdmin.POSTAsync<Create.Endpoint, Create.Request, FEProblemDetails>(newPollingStation);
+        var (createResponse, errorResponse) = await Fixture.PlatformAdmin.POSTAsync<CreateEndpoint, CreateRequest, FEProblemDetails>(newPollingStation);
 
         // Assert
         createResponse.IsSuccessStatusCode.Should().BeFalse();

@@ -1,4 +1,4 @@
-﻿namespace Vote.Monitor.Api.Feature.PollingStation.IntegrationTests.EndpointsTests;
+﻿namespace Vote.Monitor.Api.IntegrationTests.PollingStation;
 
 public class ImportEndpointTests : IClassFixture<HttpServerFixture>
 {

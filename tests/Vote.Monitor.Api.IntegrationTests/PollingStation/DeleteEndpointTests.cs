@@ -1,5 +1,14 @@
-﻿
-namespace Vote.Monitor.Api.Feature.PollingStation.IntegrationTests.EndpointsTests;
+﻿using Vote.Monitor.Api.Feature.PollingStation;
+using CreateEndpoint = Vote.Monitor.Api.Feature.PollingStation.Create.Endpoint;
+using CreateRequest = Vote.Monitor.Api.Feature.PollingStation.Create.Request;
+
+using GetEndpoint = Vote.Monitor.Api.Feature.PollingStation.Get.Endpoint;
+using GetRequest = Vote.Monitor.Api.Feature.PollingStation.Get.Request;
+
+using DeleteEndpoint = Vote.Monitor.Api.Feature.PollingStation.Delete.Endpoint;
+using DeleteRequest = Vote.Monitor.Api.Feature.PollingStation.Delete.Request;
+
+namespace Vote.Monitor.Api.IntegrationTests.PollingStation;
 
 public class DeleteEndpointTests : IClassFixture<HttpServerFixture>
 {
@@ -16,22 +25,22 @@ public class DeleteEndpointTests : IClassFixture<HttpServerFixture>
     {
         // Arrange
         var newPollingStation = Fixture.Fake.CreateRequest();
-        var (createResponse, createResult) = await Fixture.PlatformAdmin.POSTAsync<Create.Endpoint, Create.Request, PollingStationModel>(newPollingStation);
+        var (createResponse, createResult) = await Fixture.PlatformAdmin.POSTAsync<CreateEndpoint, CreateRequest, PollingStationModel>(newPollingStation);
 
         createResponse.IsSuccessStatusCode.Should().BeTrue();
 
-        var request = new Delete.Request
+        var request = new DeleteRequest
         {
             Id = createResult.Id
         };
 
         // Act
-        var deleteResponse = await Fixture.PlatformAdmin.DELETEAsync<Delete.Endpoint, Delete.Request>(request);
-        
+        var deleteResponse = await Fixture.PlatformAdmin.DELETEAsync<DeleteEndpoint, DeleteRequest>(request);
+
         // Assert
         deleteResponse.IsSuccessStatusCode.Should().BeTrue();
 
-        var getResponse = await Fixture.PlatformAdmin.GETAsync<Get.Endpoint, Get.Request>(new()
+        var getResponse = await Fixture.PlatformAdmin.GETAsync<GetEndpoint, GetRequest>(new()
         {
             Id = createResult.Id
         });
@@ -45,23 +54,23 @@ public class DeleteEndpointTests : IClassFixture<HttpServerFixture>
     {
         // Arrange
         var newPollingStation = Fixture.Fake.CreateRequest();
-        var (createResponse, createResult) = await Fixture.PlatformAdmin.POSTAsync<Create.Endpoint, Create.Request, PollingStationModel>(newPollingStation);
+        var (createResponse, createResult) = await Fixture.PlatformAdmin.POSTAsync<CreateEndpoint, CreateRequest, PollingStationModel>(newPollingStation);
 
         createResponse.IsSuccessStatusCode.Should().BeTrue();
 
-        var request = new Delete.Request
+        var request = new DeleteRequest
         {
             Id = Guid.NewGuid()
         };
 
         // Act
-        var deleteResponse = await Fixture.PlatformAdmin.DELETEAsync<Delete.Endpoint, Delete.Request>(request);
+        var deleteResponse = await Fixture.PlatformAdmin.DELETEAsync<DeleteEndpoint, DeleteRequest>(request);
 
         // Assert
         deleteResponse.IsSuccessStatusCode.Should().BeFalse();
         deleteResponse.StatusCode.Should().Be(HttpStatusCode.NotFound);
 
-        var (getResponse, pollingStation) = await Fixture.PlatformAdmin.GETAsync<Get.Endpoint, Get.Request, PollingStationModel>(new()
+        var (getResponse, pollingStation) = await Fixture.PlatformAdmin.GETAsync<GetEndpoint, GetRequest, PollingStationModel>(new()
         {
             Id = createResult.Id
         });

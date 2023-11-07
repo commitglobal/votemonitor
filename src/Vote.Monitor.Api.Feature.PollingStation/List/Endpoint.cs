@@ -13,7 +13,9 @@ public class Endpoint : Endpoint<Request, Results<Ok<PagedResponse<PollingStatio
 
     public override void Configure()
     {
-        Post("/api/polling-stations/list");
+        Post("/api/polling-stations:list");
+        DontAutoTag();
+        Options(x => x.WithTags("polling-stations"));
     }
 
     public override async Task<Results<Ok<PagedResponse<PollingStationModel>>, ProblemDetails>> ExecuteAsync(Request request, CancellationToken ct)

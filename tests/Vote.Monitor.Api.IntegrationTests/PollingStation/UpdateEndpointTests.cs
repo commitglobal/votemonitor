@@ -1,6 +1,14 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Vote.Monitor.Api.Feature.PollingStation;
+using CreateEndpoint = Vote.Monitor.Api.Feature.PollingStation.Create.Endpoint;
+using CreateRequest = Vote.Monitor.Api.Feature.PollingStation.Create.Request;
 
-namespace Vote.Monitor.Api.Feature.PollingStation.IntegrationTests.EndpointsTests;
+using GetEndpoint = Vote.Monitor.Api.Feature.PollingStation.Get.Endpoint;
+using GetRequest = Vote.Monitor.Api.Feature.PollingStation.Get.Request;
+
+using UpdateEndpoint = Vote.Monitor.Api.Feature.PollingStation.Update.Endpoint;
+using UpdateRequest = Vote.Monitor.Api.Feature.PollingStation.Update.Request;
+
+namespace Vote.Monitor.Api.IntegrationTests.PollingStation;
 
 public class UpdateEndpointTests : IClassFixture<HttpServerFixture>
 {
@@ -17,17 +25,17 @@ public class UpdateEndpointTests : IClassFixture<HttpServerFixture>
     {
         // Arrange
         var createRequest = Fixture.Fake.CreateRequest();
-        var (createResponse, createResult) = await Fixture.PlatformAdmin.POSTAsync<Create.Endpoint, Create.Request, PollingStationModel>(createRequest);
+        var (createResponse, createResult) = await Fixture.PlatformAdmin.POSTAsync<CreateEndpoint, CreateRequest, PollingStationModel>(createRequest);
         createResponse.IsSuccessStatusCode.Should().BeTrue();
 
         // Act
         var updateRequest = Fixture.Fake.UpdateRequest(createResult.Id);
-        var updateResponse = await Fixture.PlatformAdmin.PUTAsync<Update.Endpoint, Update.Request>(updateRequest);
+        var updateResponse = await Fixture.PlatformAdmin.PUTAsync<UpdateEndpoint, UpdateRequest>(updateRequest);
         
         // Assert
         updateResponse.IsSuccessStatusCode.Should().BeTrue();
 
-        var (getResponse, pollingStation) = await Fixture.PlatformAdmin.GETAsync<Get.Endpoint, Get.Request, PollingStationModel>(new()
+        var (getResponse, pollingStation) = await Fixture.PlatformAdmin.GETAsync<GetEndpoint, GetRequest, PollingStationModel>(new()
         {
             Id = createResult.Id
         });
@@ -41,19 +49,19 @@ public class UpdateEndpointTests : IClassFixture<HttpServerFixture>
     {
         // Arrange
         var newPollingStation = Fixture.Fake.CreateRequest();
-        var (createResponse, createResult) = await Fixture.PlatformAdmin.POSTAsync<Create.Endpoint, Create.Request, PollingStationModel>(newPollingStation);
+        var (createResponse, createResult) = await Fixture.PlatformAdmin.POSTAsync<Feature.PollingStation.Create.Endpoint, Feature.PollingStation.Create.Request, PollingStationModel>(newPollingStation);
 
         createResponse.IsSuccessStatusCode.Should().BeTrue();
 
         // Act
         var updateRequest = Fixture.Fake.UpdateRequest(Guid.NewGuid());
-        var updateResponse = await Fixture.PlatformAdmin.PUTAsync<Update.Endpoint, Update.Request>(updateRequest);
+        var updateResponse = await Fixture.PlatformAdmin.PUTAsync<UpdateEndpoint, UpdateRequest>(updateRequest);
 
         // Assert
         updateResponse.IsSuccessStatusCode.Should().BeFalse();
         updateResponse.StatusCode.Should().Be(HttpStatusCode.NotFound);
 
-        var (getResponse, pollingStation) = await Fixture.PlatformAdmin.GETAsync<Get.Endpoint, Get.Request, PollingStationModel>(new()
+        var (getResponse, pollingStation) = await Fixture.PlatformAdmin.GETAsync<GetEndpoint, GetRequest, PollingStationModel>(new()
         {
             Id = createResult.Id
         });
@@ -68,11 +76,11 @@ public class UpdateEndpointTests : IClassFixture<HttpServerFixture>
     {
         // Arrange
         var newPollingStation = Fixture.Fake.CreateRequest();
-        var (createResponse, createResult) = await Fixture.PlatformAdmin.POSTAsync<Create.Endpoint, Create.Request, PollingStationModel>(newPollingStation);
+        var (createResponse, createResult) = await Fixture.PlatformAdmin.POSTAsync<Feature.PollingStation.Create.Endpoint, Feature.PollingStation.Create.Request, PollingStationModel>(newPollingStation);
 
         createResponse.IsSuccessStatusCode.Should().BeTrue();
 
-        var updateRequest = new Update.Request
+        var updateRequest = new UpdateRequest
         {
             Id = createResult.Id,
             Address = "",
@@ -81,13 +89,13 @@ public class UpdateEndpointTests : IClassFixture<HttpServerFixture>
         };
 
         // Act
-        var (updateResponse, errorResponse) = await Fixture.PlatformAdmin.PUTAsync<Update.Endpoint, Update.Request, FEProblemDetails>(updateRequest);
+        var (updateResponse, errorResponse) = await Fixture.PlatformAdmin.PUTAsync<UpdateEndpoint, UpdateRequest, FEProblemDetails>(updateRequest);
 
         // Assert
         updateResponse.IsSuccessStatusCode.Should().BeFalse();
         errorResponse.Errors.Count().Should().Be(3);
 
-        var (getResponse, pollingStation) = await Fixture.PlatformAdmin.GETAsync<Get.Endpoint, Get.Request, PollingStationModel>(new()
+        var (getResponse, pollingStation) = await Fixture.PlatformAdmin.GETAsync<GetEndpoint, GetRequest, PollingStationModel>(new()
         {
             Id = createResult.Id
         });

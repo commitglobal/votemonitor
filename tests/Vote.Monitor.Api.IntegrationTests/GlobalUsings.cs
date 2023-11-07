@@ -11,12 +11,5 @@ global using Vote.Monitor.Domain;
 global using Xunit.Abstractions;
 global using FastEndpoints;
 global using FluentAssertions;
+global using Vote.Monitor.Core.Models;
 global using Xunit;
-
-using Create = Vote.Monitor.Api.Feature.PollingStation.Create;
-using Get = Vote.Monitor.Api.Feature.PollingStation.Get;
-using Delete = Vote.Monitor.Api.Feature.PollingStation.Delete;
-using Update = Vote.Monitor.Api.Feature.PollingStation.Update;
-using Import = Vote.Monitor.Api.Feature.PollingStation.Import;
-using GetTagValues = Vote.Monitor.Api.Feature.PollingStation.GetTagValues;
-using List = Vote.Monitor.Api.Feature.PollingStation.List;

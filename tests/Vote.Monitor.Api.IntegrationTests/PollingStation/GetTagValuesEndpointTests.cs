@@ -1,4 +1,8 @@
-﻿namespace Vote.Monitor.Api.Feature.PollingStation.IntegrationTests.EndpointsTests;
+﻿using Vote.Monitor.Api.Feature.PollingStation;
+using GetTagValuesEndpoint = Vote.Monitor.Api.Feature.PollingStation.GetTagValues.Endpoint;
+using GetTagValuesRequest = Vote.Monitor.Api.Feature.PollingStation.GetTagValues.Request;
+
+namespace Vote.Monitor.Api.IntegrationTests.PollingStation;
 
 public class GetTagValuesEndpointTests : IClassFixture<HttpServerFixture>
 {
@@ -16,13 +20,13 @@ public class GetTagValuesEndpointTests : IClassFixture<HttpServerFixture>
         // Arrange
         await Fixture.PlatformAdmin.ImportPollingStations();
 
-        var request = new GetTagValues.Request
+        var request = new GetTagValuesRequest
         {
             SelectTag = "Country"
         };
 
         // Act
-        var (response, result) = await Fixture.PlatformAdmin.POSTAsync<GetTagValues.Endpoint, GetTagValues.Request, List<TagModel>>(request);
+        var (response, result) = await Fixture.PlatformAdmin.POSTAsync<GetTagValuesEndpoint, GetTagValuesRequest, List<TagModel>>(request);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -36,7 +40,7 @@ public class GetTagValuesEndpointTests : IClassFixture<HttpServerFixture>
         // Arrange
         await Fixture.PlatformAdmin.ImportPollingStations();
 
-        var request = new GetTagValues.Request
+        var request = new GetTagValuesRequest
         {
             SelectTag = "UAT",
             Filter = new Dictionary<string, string>
@@ -46,7 +50,7 @@ public class GetTagValuesEndpointTests : IClassFixture<HttpServerFixture>
         };
 
         // Act
-        var (response, result) = await Fixture.PlatformAdmin.POSTAsync<GetTagValues.Endpoint, GetTagValues.Request, List<TagModel>>(request);
+        var (response, result) = await Fixture.PlatformAdmin.POSTAsync<GetTagValuesEndpoint, GetTagValuesRequest, List<TagModel>>(request);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -69,7 +73,7 @@ public class GetTagValuesEndpointTests : IClassFixture<HttpServerFixture>
         // Arrange
         await Fixture.PlatformAdmin.ImportPollingStations();
 
-        var request = new GetTagValues.Request
+        var request = new GetTagValuesRequest
         {
             SelectTag = "UAT",
             Filter = new Dictionary<string, string>
@@ -80,7 +84,7 @@ public class GetTagValuesEndpointTests : IClassFixture<HttpServerFixture>
         };
 
         // Act
-        var (response, result) = await Fixture.PlatformAdmin.POSTAsync<GetTagValues.Endpoint, GetTagValues.Request, List<TagModel>>(request);
+        var (response, result) = await Fixture.PlatformAdmin.POSTAsync<GetTagValuesEndpoint, GetTagValuesRequest, List<TagModel>>(request);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);

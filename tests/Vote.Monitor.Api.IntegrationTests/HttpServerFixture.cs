@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using Vote.Monitor.Api.Feature.Auth.Login;
 using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
 
-namespace Vote.Monitor.Api.Feature.PollingStation.IntegrationTests;
+namespace Vote.Monitor.Api.IntegrationTests;
 
 public class HttpServerFixture : WebApplicationFactory<Program>, IAsyncLifetime, ITestOutputHelperAccessor
 {
@@ -69,7 +69,7 @@ public class HttpServerFixture : WebApplicationFactory<Program>, IAsyncLifetime,
         });
 
         PlatformAdmin = CreateClient();
-        PlatformAdmin.DefaultRequestHeaders.Authorization = new("Bearer", tokenResponse?.Token);
+        PlatformAdmin.DefaultRequestHeaders.Authorization = new("Bearer", tokenResponse.Token);
     }
 
     public new async Task DisposeAsync() => await _postgresContainer.DisposeAsync().AsTask();

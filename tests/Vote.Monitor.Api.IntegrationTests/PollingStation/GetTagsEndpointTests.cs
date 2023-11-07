@@ -1,6 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http;
+using ImportEndpoint = Vote.Monitor.Api.Feature.PollingStation.Import.Endpoint;
+using ImportRequest = Vote.Monitor.Api.Feature.PollingStation.Import.Request;
+using ImportResponse = Vote.Monitor.Api.Feature.PollingStation.Import.Request;
 
-namespace Vote.Monitor.Api.Feature.PollingStation.IntegrationTests.EndpointsTests;
+using GetTagsEndpoint = Vote.Monitor.Api.Feature.PollingStation.GetTags.Endpoint;
+
+namespace Vote.Monitor.Api.IntegrationTests.PollingStation;
 
 public class GetTagsEndpointTests : IClassFixture<HttpServerFixture>
 {
@@ -17,14 +22,14 @@ public class GetTagsEndpointTests : IClassFixture<HttpServerFixture>
     {
         // Arrange
         using var testDataStream = File.OpenRead("test-data.csv");
-        var request = new Import.Request
+        var request = new ImportRequest
         {
             File = new FormFile(testDataStream, 0, testDataStream.Length, "test-data.csv", "test-data.csv"),
         };
-        _ = await Fixture.PlatformAdmin.POSTAsync<Import.Endpoint, Import.Request, Import.Response> (request, true);
+        _ = await Fixture.PlatformAdmin.POSTAsync<ImportEndpoint, ImportRequest, ImportResponse> (request, true);
        
         // Act
-        var (getTagsResult, tags) = await Fixture.PlatformAdmin.GETAsync<Api.Feature.PollingStation.GetTags.Endpoint, List<string>>();
+        var (getTagsResult, tags) = await Fixture.PlatformAdmin.GETAsync<GetTagsEndpoint, List<string>>();
 
         // Assert
         getTagsResult.IsSuccessStatusCode.Should().BeTrue();

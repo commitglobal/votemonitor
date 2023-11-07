@@ -1,7 +1,8 @@
-﻿using Vote.Monitor.Api.Feature.PollingStation.List;
-using Vote.Monitor.Core.Models;
+﻿using Vote.Monitor.Api.Feature.PollingStation;
+using ListEndpoint = Vote.Monitor.Api.Feature.PollingStation.List.Endpoint;
+using ListRequest = Vote.Monitor.Api.Feature.PollingStation.List.Request;
 
-namespace Vote.Monitor.Api.Feature.PollingStation.IntegrationTests.EndpointsTests;
+namespace Vote.Monitor.Api.IntegrationTests.PollingStation;
 
 public class ListEndpointTests : IClassFixture<HttpServerFixture>
 {
@@ -20,7 +21,7 @@ public class ListEndpointTests : IClassFixture<HttpServerFixture>
         await Fixture.PlatformAdmin.ImportPollingStations();
 
         // Act
-        var (response, result) = await Fixture.PlatformAdmin.POSTAsync<Endpoint, Request, PagedResponse<PollingStationModel>>(new Request());
+        var (response, result) = await Fixture.PlatformAdmin.POSTAsync<ListEndpoint, ListRequest, PagedResponse<PollingStationModel>>(new ListRequest());
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -36,7 +37,7 @@ public class ListEndpointTests : IClassFixture<HttpServerFixture>
         // Arrange
         await Fixture.PlatformAdmin.ImportPollingStations();
 
-        var request = new Request
+        var request = new ListRequest
         {
             PageSize = 15,
             AddressFilter = "ALBA IULIA",
@@ -47,7 +48,7 @@ public class ListEndpointTests : IClassFixture<HttpServerFixture>
         };
 
         // Act
-        var (response, result) = await Fixture.PlatformAdmin.POSTAsync<Endpoint, Request, PagedResponse<PollingStationModel>>(request);
+        var (response, result) = await Fixture.PlatformAdmin.POSTAsync<ListEndpoint, ListRequest, PagedResponse<PollingStationModel>>(request);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);

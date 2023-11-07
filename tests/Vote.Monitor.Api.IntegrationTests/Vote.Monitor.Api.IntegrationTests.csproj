@@ -6,7 +6,6 @@
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
-    <RootNamespace>Vote.Monitor.Api.Feature.PollingStation.IntegrationTests</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -23,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="test-data.csv">
+    <None Update="PollingStation\test-data.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
