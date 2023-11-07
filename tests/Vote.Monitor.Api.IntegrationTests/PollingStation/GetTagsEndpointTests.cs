@@ -1,9 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using ImportEndpoint = Vote.Monitor.Api.Feature.PollingStation.Import.Endpoint;
-using ImportRequest = Vote.Monitor.Api.Feature.PollingStation.Import.Request;
-using ImportResponse = Vote.Monitor.Api.Feature.PollingStation.Import.Request;
-
-using GetTagsEndpoint = Vote.Monitor.Api.Feature.PollingStation.GetTags.Endpoint;
+﻿using GetTagsEndpoint = Vote.Monitor.Api.Feature.PollingStation.GetTags.Endpoint;
 
 namespace Vote.Monitor.Api.IntegrationTests.PollingStation;
 
@@ -21,13 +16,7 @@ public class GetTagsEndpointTests : IClassFixture<HttpServerFixture>
     public async Task Should_Return_AllAvailableTags()
     {
         // Arrange
-        using var testDataStream = File.OpenRead("test-data.csv");
-        var request = new ImportRequest
-        {
-            File = new FormFile(testDataStream, 0, testDataStream.Length, "test-data.csv", "test-data.csv"),
-        };
-        _ = await Fixture.PlatformAdmin.POSTAsync<ImportEndpoint, ImportRequest, ImportResponse> (request, true);
-       
+        await Fixture.PlatformAdmin.ImportPollingStations();
         // Act
         var (getTagsResult, tags) = await Fixture.PlatformAdmin.GETAsync<GetTagsEndpoint, List<string>>();
 
