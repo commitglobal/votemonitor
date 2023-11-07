@@ -264,3 +264,7 @@ Packages.props
 
 #Local Log Files
 log*.txt
+
+#Local files
+*.env
+.~lock.*
