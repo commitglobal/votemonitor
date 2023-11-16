@@ -12,7 +12,7 @@
     <PackageReference Include="Ardalis.SmartEnum.EFCore" Version="7.0.0" />
     <PackageReference Include="Ardalis.Specification" Version="7.0.0" />
     <PackageReference Include="Ardalis.Specification.EntityFrameworkCore" Version="7.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.11" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="7.0.0" />
     <PackageReference Include="Npgsql" Version="7.0.6" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.11" />
