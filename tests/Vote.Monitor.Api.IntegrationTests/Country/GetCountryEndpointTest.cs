@@ -57,7 +57,7 @@ public class GetCountryEndpointTest : IClassFixture<HttpServerFixture>
         };
 
         // Act
-        var (response, result) = await Fixture.PlatformAdmin.GETAsync<Endpoint, Request, CountryModel>(request);
+        var (response, _) = await Fixture.PlatformAdmin.GETAsync<Endpoint, Request, CountryModel>(request);
 
 
         // var expected = result.FirstOrDefault(x => x.Iso2 == code && x.Name == name);
