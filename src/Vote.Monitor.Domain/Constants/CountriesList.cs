@@ -52,7 +52,7 @@ public record CountryDetails
 /// <summary>
 /// Courtesy of https://github.com/Svish/iso-3166-country-codes/blob/master/countries.sql
 /// </summary>
-public class CountriesList
+public static class CountriesList
 {
     public static readonly CountryDetails AF = new("Afghanistan", "Islamic Republic of Afghanistan", "AF", "AFG", "004");
     public static readonly CountryDetails AX = new("Åland Islands", "Åland Islands", "AX", "ALA", "248");
@@ -306,14 +306,14 @@ public class CountriesList
 
     public static IEnumerable<CountryDetails> GetAll()
     {
-        var properties = typeof(CountriesList)
-            .GetProperties(BindingFlags.Static |
+        var fields = typeof(CountriesList)
+            .GetFields(BindingFlags.Static |
                            BindingFlags.Public)
-            .Where(x => x.PropertyType == typeof(CountryDetails));
-
-        foreach (var property in properties)
+            .Where(x => x.FieldType == typeof(CountryDetails));
+        
+        foreach (var field in fields)
         {
-            yield return (CountryDetails)property.GetValue(null, null)!;
+            yield return (CountryDetails)field.GetValue(null)!;
         }
     }
 }
