@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Vote.Monitor.Api.Feature.Country;
+﻿using Vote.Monitor.Api.Feature.Country;
 using Vote.Monitor.Api.Feature.Country.Get;
 namespace Vote.Monitor.Api.IntegrationTests.Country;
 public class GetCountryEndpointTest : IClassFixture<HttpServerFixture>
@@ -18,12 +13,12 @@ public class GetCountryEndpointTest : IClassFixture<HttpServerFixture>
 
 
     [Theory]
-    [InlineData("b8b09512-ea4c-4a61-9331-304f55324ef7")]
-    [InlineData("6d0c77a7-a4aa-c2bd-2db6-0e2ad2d61f8a")]
-    [InlineData("47804b6a-e705-b925-f4fd-4adf6500180b")]
-    [InlineData("6984f722-6963-d067-d4d4-9fd3ef2edbf6")]
-    [InlineData("899c2a9f-f35d-5a49-a6cd-f92531bb2266")]
-    public async Task Should_ReturnCountry(Guid id)
+    [InlineData("b8b09512-ea4c-4a61-9331-304f55324ef7", "IO", "British Indian Ocean Territory (Chagos Archipelago)")]
+    [InlineData("6d0c77a7-a4aa-c2bd-2db6-0e2ad2d61f8a", "GH", "Ghana")]
+    [InlineData("47804b6a-e705-b925-f4fd-4adf6500180b", "NF", "Norfolk Island")]
+    [InlineData("6984f722-6963-d067-d4d4-9fd3ef2edbf6","ZW", "Zimbabwe")]
+    [InlineData("899c2a9f-f35d-5a49-a6cd-f92531bb2266", "MF", "Saint Martin")]
+    public async Task Shoul_ReturnCorrectCountry(Guid id, string code, string countryName)
     {
         // Arrange
        var request = new Request
@@ -40,6 +35,9 @@ public class GetCountryEndpointTest : IClassFixture<HttpServerFixture>
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         result.Should().NotBeNull();
+        result.Id.Should().Be(id);  
+        result.Iso2.Should().Be(code);
+        result.Name.Should().Be(countryName);
     }
 
     [Theory]

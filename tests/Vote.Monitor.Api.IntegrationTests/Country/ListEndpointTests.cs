@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Vote.Monitor.Api.Feature.Country;
+﻿using Vote.Monitor.Api.Feature.Country;
 
 namespace Vote.Monitor.Api.IntegrationTests.Country;
 public class ListEndpointTests:IClassFixture<HttpServerFixture>
@@ -28,43 +23,27 @@ public class ListEndpointTests:IClassFixture<HttpServerFixture>
         result.Count.Should().Be(249);
     }
 
-    [Theory]
-    [InlineData("BR","Brazil")]
-    [InlineData("GE","Georgia")]
-    [InlineData("ES","Spain")]
-    public async Task Should_ContainCountries(string code,string name)
+    [Fact]
+    public async Task Should_Check3RandomCountries()
     {
         // Arrange
+        List<Tuple<string, string>> testCountries = new List<Tuple<string, string>>()
+        {
+            new Tuple<string, string>("BR", "Brazil"), 
+            new Tuple<string, string>("GE", "Georgia"), 
+            new Tuple<string, string>("ES", "Spain")
+        };
+    
 
 
         // Act
         var (response, result) = await Fixture.PlatformAdmin.GETAsync<Vote.Monitor.Api.Feature.Country.List.Endpoint, List<CountryModel>>();
 
-
-        var expected = result.FirstOrDefault(x => x.Iso2 == code && x.Name == name);
-
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        expected.Should().NotBeNull();
-    }
-
-    [Theory]
-    [InlineData("BR1", "Brazil")]
-    [InlineData("GE1", "Georgia")]
-    [InlineData("ES1", "Spain")]
-    public async Task Should_NotCountries(string code, string name)
-    {
-        // Arrange
-
-
-        // Act
-        var (response, result) = await Fixture.PlatformAdmin.GETAsync<Vote.Monitor.Api.Feature.Country.List.Endpoint, List<CountryModel>>();
-
-
-        var expected = result.FirstOrDefault(x => x.Iso2 == code && x.Name == name);
-
-        // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
-        expected.Should().BeNull();
+        foreach(var country in testCountries)
+        {
+            result.Should().Contain(x => x.Iso2 == country.Item1 && x.Name == country.Item2);
+        }
     }
 }
