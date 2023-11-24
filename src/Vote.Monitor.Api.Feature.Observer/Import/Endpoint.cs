@@ -1,6 +1,6 @@
 ﻿namespace Vote.Monitor.Api.Feature.Observer.Import;
 
-public class Endpoint : Endpoint<Request, Results<Ok<ObserverModel>, NotFound>>
+public class Endpoint : Endpoint<Request, Results<Ok<Response>, NotFound, ProblemDetails>>
 {
      readonly IReadRepository<ObserverAggregate> _repository;
 
@@ -14,9 +14,10 @@ public class Endpoint : Endpoint<Request, Results<Ok<ObserverModel>, NotFound>>
         Post("/api/observers:import");
         DontAutoTag();
         Options(x => x.WithTags("observers"));
+        AllowFileUploads();
     }
 
-    public override async Task<Results<Ok<ObserverModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<Results<Ok<Response>, NotFound, ProblemDetails>> ExecuteAsync(Request req, CancellationToken ct)
     {
         throw new NotImplementedException();
     }
