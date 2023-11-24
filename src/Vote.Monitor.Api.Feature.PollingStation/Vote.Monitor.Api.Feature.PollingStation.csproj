@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
@@ -14,7 +14,7 @@
 
   <ItemGroup>
     <PackageReference Include="EFCore.BulkExtensions.PostgreSql" Version="7.1.6" />
-    <PackageReference Include="FastEndpoints" Version="5.19.1" />
+    <PackageReference Include="FastEndpoints" Version="5.19.2" />
   </ItemGroup>
 
   <ItemGroup>
