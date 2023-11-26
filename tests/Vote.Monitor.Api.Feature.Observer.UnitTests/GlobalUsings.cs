@@ -4,3 +4,4 @@ global using ObserverAggregate = Vote.Monitor.Domain.Entities.ApplicationUserAgg
 global using FluentAssertions;
 global using Vote.Monitor.Api.Feature.Observer.UnitTests.Specifications;
 global using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
+global using AutoBogus;

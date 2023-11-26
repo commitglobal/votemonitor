@@ -1,10 +1,4 @@
-﻿using System;
-using AutoBogus;
-using Bogus;
-using Bogus.DataSets;
-using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
-
-namespace Vote.Monitor.Api.Feature.Observer.UnitTests.Specifications;
+﻿namespace Vote.Monitor.Api.Feature.Observer.UnitTests.Specifications;
 
 public class ObserverAggregateFaker : AutoFaker<ObserverAggregate>
 {
