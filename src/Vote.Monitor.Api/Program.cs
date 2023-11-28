@@ -48,6 +48,18 @@ builder.Services.AddLogging(logging =>
         logging.AddSerilog(logger);
     });
 
+builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("AllowAll",
+            builder =>
+            {
+                builder
+                .AllowAnyOrigin()
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+            });
+    });
+
 builder.Services.AddCoreServices();
 builder.Services.AddApplicationDomain(builder.Configuration.GetSection(DomainInstaller.SectionKey));
 builder.Services.AddAuthFeature(builder.Configuration.GetSection(AuthFeatureInstaller.SectionKey));
@@ -62,6 +74,7 @@ builder.Services.AddAuthorization();
 var app = builder.Build();
 await app.Services.InitializeDatabasesAsync();
 
+app.UseCors("AllowAll");
 app.UseAuthentication();
 app.UseAuthorization();
 
