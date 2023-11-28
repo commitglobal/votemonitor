@@ -10,8 +10,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FastEndpoints" Version="5.19.2" />
-    <PackageReference Include="FastEndpoints.Security" Version="5.19.1" />
+    <PackageReference Include="FastEndpoints" Version="5.20.0" />
+    <PackageReference Include="FastEndpoints.Security" Version="5.20.0" />
     <PackageReference Include="FastEndpoints.Swagger" Version="5.19.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.11">
