@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
@@ -11,10 +11,12 @@
     <PackageReference Include="FastEndpoints" Version="5.19.2" />
     <PackageReference Include="FastEndpoints.Security" Version="5.19.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="7.0.13" />
+    <PackageReference Include="EFCore.BulkExtensions.PostgreSql" Version="7.1.6" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Vote.Monitor.Domain\Vote.Monitor.Domain.csproj" />
   </ItemGroup>
+
 
 </Project>
