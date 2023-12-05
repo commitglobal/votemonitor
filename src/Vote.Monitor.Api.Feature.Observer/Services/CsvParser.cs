@@ -35,7 +35,6 @@ public class CsvParser<T, TMapper> : ICsvParser<T> where T : class, IDuplicateCh
             int numberOfInvalidRows = 0;
             int rowIndex = 1;
             var validationErrors = new List<ValidationResult>();
-            List<T> items = new List<T>();
             List<CsvRowParsed<T>> rowsRead = new List<CsvRowParsed<T>>();
 
             using var reader = new StreamReader(stream);
@@ -83,7 +82,7 @@ public class CsvParser<T, TMapper> : ICsvParser<T> where T : class, IDuplicateCh
                         break;
                     }
                 }
-                items.Add(item);
+               
                 rowIndex++;
             }
 

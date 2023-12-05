@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Text;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Logging;
 using Vote.Monitor.Api.Feature.Observer.Services;
@@ -38,25 +39,25 @@ public class Endpoint : Endpoint<Request, Results<NoContent, BadRequest<ImportVa
         var parsingResult = _parser.Parse(req.File.OpenReadStream());
         if (parsingResult is ParsingResult2<ObserverImportModel>.Fail failedResult)
         {
-            string errors = "";
+            StringBuilder errors = new StringBuilder("");
             foreach (var validationFailure in failedResult.ValidationErrors.SelectMany(x => x.Errors))
             {
-                errors += validationFailure.ErrorMessage + Environment.NewLine;
+                errors.AppendLine(validationFailure.ErrorMessage);
             }
             string csv = CsvRowParsedHelpers<ObserverImportModel>.ConstructErrorFileContent(failedResult.Items);
             var errorSaved = await _errorRepo.AddAsync(new(ImportType.Observer, req.File.Name, csv, DateTime.Now), ct);
-            return TypedResults.BadRequest(new ImportValidationErrorModel { Id = errorSaved.Id, Message = errors });
+            return TypedResults.BadRequest(new ImportValidationErrorModel { Id = errorSaved.Id, Message = errors.ToString() });
 
         }
 
         var importedRows = parsingResult as ParsingResult2<ObserverImportModel>.Success;
-        if (importedRows == null)
+        if (importedRows == null) 
         {
             ThrowError("No rows imported");
         }
-
+        List<ObserverAggregate> observers = importedRows.Items.Select(x => new ObserverAggregate(x.Name, x.Email, x.Password, x.PhoneNumber)).ToList();
         List<ObserverAggregate> observersToAdd = new();
-        foreach (var obs in importedRows.Items.Select(x => new ObserverAggregate(x.Name, x.Email, x.Password, x.PhoneNumber)).ToList())
+        foreach (var obs in observers)
         {
             var specification = new GetObserverByLoginSpecification(obs.Login);
             var hasObserverWithSameLogin = await _repository.AnyAsync(specification, ct);
