@@ -58,7 +58,7 @@ public static class LanguagesList
 
         _languageDetailsList = new List<LanguageDetails>();
 
-        using (StreamReader reader = new StreamReader($"./Resources/languages-iso-639-3_20230123.tab"))
+        using (StreamReader reader = new StreamReader(Path.Combine("Resources", "languages-iso-639-3_20230123.tab")))
         {
             string? header = reader.ReadLine();
             Dictionary<string, int> headerMap = new Dictionary<string, int>();
