@@ -12,6 +12,10 @@ public abstract record ParsingResult2<T> where T : class, IDuplicateCheck
         {
         }
 
+        public Fail(ValidationFailure validationFailure) : this(new List<CsvRowParsed<T>>(), new ValidationResult(new[] { validationFailure }))
+        {
+        }
+
         public void Deconstruct(out ValidationResult[] validationErrors)
         {
             validationErrors = ValidationErrors;

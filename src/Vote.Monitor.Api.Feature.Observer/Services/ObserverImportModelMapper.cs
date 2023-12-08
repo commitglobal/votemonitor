@@ -1,7 +1,7 @@
 ﻿using CsvHelper.Configuration;
 
 namespace Vote.Monitor.Api.Feature.Observer.Services;
-internal class ObserverImportModelMapper : ClassMap<ObserverImportModel>
+internal sealed class ObserverImportModelMapper : ClassMap<ObserverImportModel>
 {
     public ObserverImportModelMapper()
     {
