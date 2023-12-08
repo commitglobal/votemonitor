@@ -51,11 +51,14 @@ public class Endpoint : Endpoint<Request, Results<NoContent, BadRequest<ImportVa
         }
 
         var importedRows = parsingResult as ParsingResult2<ObserverImportModel>.Success;
-        if (importedRows == null) 
-        {
-            ThrowError("No rows imported");
-        }
-        List<ObserverAggregate> observers = importedRows.Items.Select(x => new ObserverAggregate(x.Name, x.Email, x.Password, x.PhoneNumber)).ToList();
+        //if (importedRows == null) 
+        //{
+        //    ThrowError("No rows imported");
+        //}
+        List<ObserverAggregate> observers = importedRows!
+            .Items
+            .Select(x => new ObserverAggregate(x.Name, x.Email, x.Password, x.PhoneNumber))
+            .ToList();
         List<ObserverAggregate> observersToAdd = new();
         foreach (var obs in observers)
         {

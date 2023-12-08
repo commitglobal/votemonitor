@@ -93,22 +93,13 @@ public class CsvParser<T, TMapper> : ICsvParser<T> where T : class, IDuplicateCh
             {
                 return new ParsingResult2<T>.Fail(rowsRead, validationErrors.ToArray());
             }
-#pragma warning disable CS8620 
-            // ParsingResult2<T>.Success(rowsRead.Select(x => x.Value)) trigger validation CS8620 i wait to fix it
-            return new ParsingResult2<T>.Success(rowsRead.Select(x => x.Value));
-#pragma warning restore CS8620
+            return new ParsingResult2<T>.Success(rowsRead.Select(x => x.Value!));
         }
         catch (HeaderValidationException e)
         {
             _logger.LogError(e, "Cannot parse the header.");
             return new ParsingResult2<T>.Fail(new ValidationFailure("Header", "Invalid header provided."));
         }
-        catch (Exception e)
-        {
-            _logger.LogError(e, "Cannot parse the file.");
-            return new ParsingResult2<T>.Fail(new ValidationFailure("Other error", e.Message));
-        }
-
     }
 
     private static List<ValidationFailure> ContainsDuplicates(List<CsvRowParsed<T>> rows)
