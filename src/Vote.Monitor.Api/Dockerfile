@@ -13,6 +13,7 @@ COPY ["src/Vote.Monitor.Api.Feature.Auth/Vote.Monitor.Api.Feature.Auth.csproj", 
 COPY ["src/Vote.Monitor.Domain/Vote.Monitor.Domain.csproj", "src/Vote.Monitor.Domain/"]
 COPY ["src/Vote.Monitor.Core/Vote.Monitor.Core.csproj", "src/Vote.Monitor.Core/"]
 COPY ["src/Vote.Monitor.Api.Feature.Country/Vote.Monitor.Api.Feature.Country.csproj", "src/Vote.Monitor.Api.Feature.Country/"]
+COPY ["src/Vote.Monitor.Api.Feature.Language/Vote.Monitor.Api.Feature.Language.csproj", "src/Vote.Monitor.Api.Feature.Language/"]
 COPY ["src/Vote.Monitor.Api.Feature.CSOAdmin/Vote.Monitor.Api.Feature.CSOAdmin.csproj", "src/Vote.Monitor.Api.Feature.CSOAdmin/"]
 COPY ["src/Vote.Monitor.Api.Feature.CSO/Vote.Monitor.Api.Feature.CSO.csproj", "src/Vote.Monitor.Api.Feature.CSO/"]
 COPY ["src/Vote.Monitor.Api.Feature.ElectionRound.Domain/Vote.Monitor.Api.Feature.ElectionRound.Domain.csproj", "src/Vote.Monitor.Api.Feature.ElectionRound.Domain/"]

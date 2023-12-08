@@ -4,6 +4,7 @@ using FastEndpoints.Swagger;
 using Serilog;
 using Vote.Monitor.Api.Feature.Auth;
 using Vote.Monitor.Api.Feature.Country;
+using Vote.Monitor.Api.Feature.Language;
 using Vote.Monitor.Api.Feature.CSO;
 using Vote.Monitor.Api.Feature.CSOAdmin;
 using Vote.Monitor.Api.Feature.Observer;
@@ -65,6 +66,7 @@ builder.Services.AddApplicationDomain(builder.Configuration.GetSection(DomainIns
 builder.Services.AddAuthFeature(builder.Configuration.GetSection(AuthFeatureInstaller.SectionKey));
 builder.Services.AddPollingStationFeature(builder.Configuration.GetSection(PollingStationFeatureInstaller.SectionKey));
 builder.Services.AddCountryFeature();
+builder.Services.AddLanguageFeature();
 builder.Services.AddCSOFeature();
 builder.Services.AddCSOAdminFeature();
 builder.Services.AddObserverFeature();

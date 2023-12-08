@@ -32,6 +32,7 @@
     <ProjectReference Include="..\Vote.Monitor.Api.Authorization.Policies\Vote.Monitor.Api.Authorization.Policies.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Api.Feature.Auth\Vote.Monitor.Api.Feature.Auth.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Api.Feature.Country\Vote.Monitor.Api.Feature.Country.csproj" />
+    <ProjectReference Include="..\Vote.Monitor.Api.Feature.Language\Vote.Monitor.Api.Feature.Language.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Api.Feature.CSOAdmin\Vote.Monitor.Api.Feature.CSOAdmin.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Api.Feature.CSO\Vote.Monitor.Api.Feature.CSO.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Api.Feature.ElectionRound.Domain\Vote.Monitor.Api.Feature.ElectionRound.Domain.csproj" />
