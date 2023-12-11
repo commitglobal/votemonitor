@@ -6,6 +6,8 @@ using Vote.Monitor.Api.Feature.Auth;
 using Vote.Monitor.Api.Feature.Country;
 using Vote.Monitor.Api.Feature.CSO;
 using Vote.Monitor.Api.Feature.CSOAdmin;
+using Vote.Monitor.Api.Feature.ElectionRound;
+using Vote.Monitor.Api.Feature.Forms;
 using Vote.Monitor.Api.Feature.Observer;
 using Vote.Monitor.Api.Feature.PollingStation;
 using Vote.Monitor.Api.Swagger;
@@ -14,6 +16,7 @@ using Vote.Monitor.Domain;
 using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
 using Vote.Monitor.Domain.Entities.CSOAggregate;
 using Vote.Monitor.Domain.Entities.ElectionRoundAggregate;
+using Vote.Monitor.Domain.Entities.FormAggregate;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddFastEndpoints();
@@ -27,7 +30,7 @@ builder.Services.SwaggerDocument(o =>
     {
         s.Title = "Vote Monitor API";
         s.Version = "v2";
-        s.SchemaProcessors.Add(new SmartEnumSchemaProcessor());
+        s.SchemaSettings.SchemaProcessors.Add(new SmartEnumSchemaProcessor());
     };
 });
 
@@ -56,7 +59,17 @@ builder.Services.AddCountryFeature();
 builder.Services.AddCSOFeature();
 builder.Services.AddCSOAdminFeature();
 builder.Services.AddObserverFeature();
+builder.Services.AddElectionRoundFeature();
+builder.Services.AddFormFeature();
 builder.Services.AddAuthorization();
+
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy => policy.AllowAnyOrigin()
+        .AllowAnyHeader()
+        .AllowAnyMethod());
+});
+
 
 
 var app = builder.Build();
@@ -73,12 +86,14 @@ app.UseFastEndpoints(x =>
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<UserRole, string>());
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<CSOStatus, string>());
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<ElectionRoundStatus, string>());
+    x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<FormStatus, string>());
 });
 
 app.UseSwaggerGen(uiConfig: cfg =>
 {
     cfg.DocExpansion = "list";
 });
+app.UseCors();
 
 app.Run();
 

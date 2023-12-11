@@ -11,7 +11,7 @@ public class Endpoint : Endpoint<Request, Results<NoContent, NotFound, Conflict<
 
     public override void Configure()
     {
-        Put("/api/elections-round/{id}");
+        Put("/api/election-rounds/{id}");
     }
 
     public override async Task<Results<NoContent, NotFound, Conflict<ProblemDetails>>> ExecuteAsync(Request req, CancellationToken ct)

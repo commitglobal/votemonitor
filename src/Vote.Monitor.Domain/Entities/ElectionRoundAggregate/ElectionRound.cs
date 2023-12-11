@@ -12,8 +12,8 @@ public class ElectionRound : BaseEntity, IAggregateRoot
 
     public string Name { get; private set; }
     public ElectionRoundStatus Status { get; private set; } = ElectionRoundStatus.NotStarted;
-    public Guid CountryId { get; set; }
-    public Country Country{ get; set; }
+    public Guid CountryId { get; private set; }
+    public Country Country { get; private set; }
 
     public ElectionRound(Guid countryId, string name)
     {
@@ -21,7 +21,6 @@ public class ElectionRound : BaseEntity, IAggregateRoot
         CountryId = countryId;
         Status = ElectionRoundStatus.NotStarted;
     }
-
     public void UpdateDetails(string name)
     {
         Name = name;

@@ -6,6 +6,7 @@ using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
 using Vote.Monitor.Domain.Entities.CountryAggregate;
 using Vote.Monitor.Domain.Entities.CSOAggregate;
 using Vote.Monitor.Domain.Entities.ElectionRoundAggregate;
+using Vote.Monitor.Domain.Entities.FormAggregate;
 using Vote.Monitor.Domain.Entities.PollingStationAggregate;
 using Vote.Monitor.Domain.EntitiesConfiguration;
 
@@ -24,6 +25,7 @@ public class VoteMonitorContext : DbContext
     public DbSet<PollingStation> PollingStations { get; set; }
 
     public DbSet<ElectionRound> ElectionRounds { get; set; }
+    public DbSet<Form> Forms { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -46,6 +48,7 @@ public class VoteMonitorContext : DbContext
         builder.ApplyConfiguration(new CSOConfiguration());
         builder.ApplyConfiguration(new ElectionRoundConfiguration());
         builder.ApplyConfiguration(new PollingStationConfiguration());
+        builder.ApplyConfiguration(new FormConfiguration());
     }
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)

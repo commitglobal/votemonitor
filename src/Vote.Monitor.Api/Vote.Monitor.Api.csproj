@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>48ebef5f-7a6f-47b3-807c-8c5523342311</UserSecretsId>
@@ -10,21 +10,21 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FastEndpoints" Version="5.19.2" />
-    <PackageReference Include="FastEndpoints.Security" Version="5.19.1" />
-    <PackageReference Include="FastEndpoints.Swagger" Version="5.19.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.11" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.11">
+    <PackageReference Include="FastEndpoints" Version="5.20.1" />
+    <PackageReference Include="FastEndpoints.Security" Version="5.20.1" />
+    <PackageReference Include="FastEndpoints.Swagger" Version="5.20.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.5" />
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.11" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0" />
     <PackageReference Include="Serilog" Version="3.1.1" />
     <PackageReference Include="Serilog.Enrichers.Environment" Version="2.3.0" />
-    <PackageReference Include="Serilog.Extensions.Logging" Version="7.0.0" />
-    <PackageReference Include="Serilog.Settings.Configuration" Version="7.0.1" />
-    <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
+    <PackageReference Include="Serilog.Extensions.Logging" Version="8.0.0" />
+    <PackageReference Include="Serilog.Settings.Configuration" Version="8.0.0" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="5.0.1" />
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
   </ItemGroup>
 
@@ -36,6 +36,7 @@
     <ProjectReference Include="..\Vote.Monitor.Api.Feature.CSO\Vote.Monitor.Api.Feature.CSO.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Api.Feature.ElectionRound.Domain\Vote.Monitor.Api.Feature.ElectionRound.Domain.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Api.Feature.ElectionRound\Vote.Monitor.Api.Feature.ElectionRound.csproj" />
+    <ProjectReference Include="..\Vote.Monitor.Api.Feature.Forms\Vote.Monitor.Api.Feature.Forms.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Api.Feature.Observer\Vote.Monitor.Api.Feature.Observer.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Api.Feature.PollingStation\Vote.Monitor.Api.Feature.PollingStation.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Core\Vote.Monitor.Core.csproj" />

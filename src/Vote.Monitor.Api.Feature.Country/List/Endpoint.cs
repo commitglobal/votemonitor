@@ -6,6 +6,7 @@ public class Endpoint : EndpointWithoutRequest<List<CountryModel>>
     public override void Configure()
     {
         Get("/api/countries");
+        AllowAnonymous();
     }
 
     public override Task<List<CountryModel>> ExecuteAsync(CancellationToken ct)

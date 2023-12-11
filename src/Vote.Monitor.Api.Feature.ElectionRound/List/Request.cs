@@ -6,9 +6,6 @@ public class Request
     public string? NameFilter { get; set; }
 
     [QueryParam]
-    public Guid? CountryId { get; set; }
-
-    [QueryParam]
     [JsonConverter(typeof(SmartEnumNameConverter<ElectionRoundStatus, string>))]
     public ElectionRoundStatus? Status { get; set; }
 
