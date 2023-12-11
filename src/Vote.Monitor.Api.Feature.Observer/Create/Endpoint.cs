@@ -4,7 +4,7 @@ namespace Vote.Monitor.Api.Feature.Observer.Create;
 
 public class Endpoint : Endpoint<Request, Results<Ok<ObserverModel>, Conflict<ProblemDetails>>>
 {
-     readonly IRepository<ObserverAggregate> _repository;
+    readonly IRepository<ObserverAggregate> _repository;
 
     public Endpoint(IRepository<ObserverAggregate> repository)
     {
@@ -18,7 +18,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<ObserverModel>, Conflict<Pr
 
     public override async Task<Results<Ok<ObserverModel>, Conflict<ProblemDetails>>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var specification = new GetObserverByLoginSpecification(req.Login);
+        var specification = new GetObserverByLoginSpecification(req.Email);
         var hasObserverWithSameLogin = await _repository.AnyAsync(specification, ct);
 
         if (hasObserverWithSameLogin)
@@ -27,7 +27,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<ObserverModel>, Conflict<Pr
             return TypedResults.Conflict(new ProblemDetails(ValidationFailures));
         }
 
-        var observer = new ObserverAggregate(req.Name, req.Login, req.Password);
+        var observer = new ObserverAggregate(req.Name, req.Email, req.Password, req.PhoneNumber);
         await _repository.AddAsync(observer, ct);
 
         return TypedResults.Ok(new ObserverModel
@@ -35,6 +35,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<ObserverModel>, Conflict<Pr
             Id = observer.Id,
             Name = observer.Name,
             Login = observer.Login,
+            PhoneNumber = observer.PhoneNumber,
             Status = observer.Status
         });
     }

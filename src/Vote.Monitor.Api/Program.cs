@@ -55,7 +55,7 @@ builder.Services.AddPollingStationFeature(builder.Configuration.GetSection(Polli
 builder.Services.AddCountryFeature();
 builder.Services.AddCSOFeature();
 builder.Services.AddCSOAdminFeature();
-builder.Services.AddObserverFeature();
+builder.Services.AddObserverFeature(builder.Configuration.GetSection(ObserverFeatureInstaller.SectionKey));
 builder.Services.AddAuthorization();
 
 
