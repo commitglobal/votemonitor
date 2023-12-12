@@ -1,5 +1,5 @@
 ﻿namespace Vote.Monitor.Api.Feature.Observer.Services;
-public sealed class CsvRowParsed<T> where T : class, IDuplicateCheck
+public sealed class CsvRowParsed<T> where T : class
 {
     public bool IsSuccess { get; set; }
     public string? ErrorMessage { get; set; }

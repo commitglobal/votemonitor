@@ -3,7 +3,7 @@
 
 
 
-public abstract record ParsingResult2<T> where T : class, IDuplicateCheck
+public abstract record ParsingResult2<T> where T : class
 {
     public sealed record Success(IEnumerable<T> Items) : ParsingResult2<T>;
     public sealed record Fail(IEnumerable<CsvRowParsed<T>> Items, params ValidationResult[] ValidationErrors) : ParsingResult2<T>

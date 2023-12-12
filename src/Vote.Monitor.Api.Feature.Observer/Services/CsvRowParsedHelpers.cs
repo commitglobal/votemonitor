@@ -1,7 +1,7 @@
 ﻿using System.Text;
 namespace Vote.Monitor.Api.Feature.Observer.Services;
 
-public static class CsvRowParsedHelpers<T> where T : class, IDuplicateCheck
+public static class CsvRowParsedHelpers<T> where T : class
 {
 
     public static string ConstructErrorFileContent(IEnumerable<CsvRowParsed<T>> items, char sepator = ',')
