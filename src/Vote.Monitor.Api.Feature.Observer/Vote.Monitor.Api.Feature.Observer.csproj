@@ -10,7 +10,7 @@
     <PackageReference Include="Ardalis.SmartEnum.SystemTextJson" Version="7.0.0" />
     <PackageReference Include="FastEndpoints" Version="5.19.2" />
     <PackageReference Include="FastEndpoints.Security" Version="5.19.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="7.0.13" />
+    <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
