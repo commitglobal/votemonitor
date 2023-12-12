@@ -268,3 +268,4 @@ log*.txt
 #Local files
 *.env
 .~lock.*
+.vscode

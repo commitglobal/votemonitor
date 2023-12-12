@@ -43,6 +43,7 @@ public class VoteMonitorContext : DbContext
         builder.ApplyConfiguration(new ObserverConfiguration());
         builder.ApplyConfiguration(new PlatformAdminConfiguration());
         builder.ApplyConfiguration(new CountryConfiguration());
+        builder.ApplyConfiguration(new LanguageConfiguration());
         builder.ApplyConfiguration(new CSOConfiguration());
         builder.ApplyConfiguration(new ElectionRoundConfiguration());
         builder.ApplyConfiguration(new PollingStationConfiguration());

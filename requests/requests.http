@@ -1,0 +1,28 @@
+@url = https://localhost:7123
+
+# Auth endpoint requires a user to be created in the database. E.g.:
+# INSERT INTO public."Users" ("Id", "Name", "Login", "Password", "Role", "Status") VALUES ('1', 'John Doe', 'user', 'pass', 'PlatformAdmin', 'Active');
+# INSERT INTO public."PlatformAdmins" ("Id") VALUES ('1');
+#
+# @name adminJwtToken
+POST {{url}}/api/auth
+Content-Type: application/json
+
+{
+  "username": "user",
+  "password": "pass"
+}
+###
+
+###
+# @name getLanguages
+GET {{url}}/api/languages
+Content-Type: application/json
+Authorization: Bearer {{adminJwtToken.response.body.$.token}}
+###
+
+###
+# @name getLanguageById
+GET {{url}}/api/languages/b2a87091-32fb-ba34-a721-bf8b3de5935d
+Authorization: Bearer {{adminJwtToken.response.body.$.token}}
+###
