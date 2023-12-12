@@ -5,10 +5,7 @@ namespace Vote.Monitor.Domain.Entities.LanguageAggregate;
 public class Language : BaseEntity, IAggregateRoot
 {
 #pragma warning disable CS8618 // Required by Entity Framework
-    private Language()
-    {
-
-    }
+    private Language() {}
 
     /// <summary>
     /// English language name
@@ -16,26 +13,20 @@ public class Language : BaseEntity, IAggregateRoot
     public string Name { get; }
 
     /// <summary>
+    /// Native language name
+    /// </summary>
+    public string NativeName { get; }
+
+    /// <summary>
     /// Two-letter language code (ISO 639-1)
     /// </summary>
     public string Iso1 { get; }
 
-    /// <summary>
-    /// Three-letter language code (ISO 639-3)
-    /// </summary>
-    public string Iso3 { get; }
-
-    /// <summary>
-    /// Language type: Living, Extinct, Ancient, Historical, Constructed (only the initial character)
-    /// </summary>
-    public char LanguageType { get; }
-
-    public Language(string name, string iso1, string iso3, char languageType)
+    public Language(string name, string nativeName, string iso1)
     {
-        Id = iso3.ToGuid();
+        Id = iso1.ToGuid();
         Name = name;
+        NativeName = nativeName;
         Iso1 = iso1;
-        Iso3 = iso3;
-        LanguageType = languageType;
     }
 }

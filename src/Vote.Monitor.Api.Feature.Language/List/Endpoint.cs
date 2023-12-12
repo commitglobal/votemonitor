@@ -11,13 +11,13 @@ public class Endpoint : EndpointWithoutRequest<List<LanguageModel>>
     public override Task<List<LanguageModel>> ExecuteAsync(CancellationToken ct)
     {
         var languages = LanguagesList
-            .GetAllIso1()
+            .GetAll()
             .Select(language => new LanguageModel
             {
                 Id = language.Id,
+                Code = language.Iso1,
                 Name = language.Name,
-                Iso1 = language.Iso1,
-                Iso3 = language.Iso3
+                NativeName = language.NativeName
             }).ToList();
 
         return Task.FromResult(languages);

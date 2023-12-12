@@ -14,9 +14,9 @@ internal class LanguageConfiguration : IEntityTypeConfiguration<Language>
             .HasDefaultValueSql("uuid_generate_v4()");
 
         builder.Property(e => e.Name).IsRequired();
+        builder.Property(e => e.NativeName).IsRequired();
         builder.Property(e => e.Iso1).HasMaxLength(2).IsRequired();
-        builder.Property(e => e.Iso3).HasMaxLength(3).IsRequired();
 
-        builder.HasData(LanguagesList.GetAllIso1().Select(x => x.ToEntity()));
+        builder.HasData(LanguagesList.GetAll().Select(x => x.ToEntity()));
     }
 }

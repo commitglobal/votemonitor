@@ -15,8 +15,8 @@ public class GetEndpointTest : IClassFixture<HttpServerFixture>
 
 
     [Theory]
-    [InlineData("2b03fe82-33d9-5d7b-fb99-b28717cf8651", "eng", "English")]
-    [InlineData("68c51165-bb8b-7987-8128-695a283411a2", "fas", "Persian")]
+    [InlineData("094b3769-68b1-6211-ba2d-6bba92d6a167", "EN", "English")]
+    [InlineData("5f002f07-f2c3-9fa4-2e29-225d116c10a3", "SW", "Swahili")]
 
     public async Task Shoul_ReturnCorrectLanguage(Guid id, string code, string languageName)
     {
@@ -33,7 +33,7 @@ public class GetEndpointTest : IClassFixture<HttpServerFixture>
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         result.Should().NotBeNull();
         result.Id.Should().Be(id);
-        result.Iso3.Should().Be(code);
+        result.Code.Should().Be(code);
         result.Name.Should().Be(languageName);
     }
 

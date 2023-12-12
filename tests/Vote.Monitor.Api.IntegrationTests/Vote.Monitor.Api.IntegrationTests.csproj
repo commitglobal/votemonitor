@@ -25,9 +25,6 @@
     <None Update="PollingStation\test-data.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <Content Include="..\..\src\Vote.Monitor.Api\Resources\*.*" LinkBase="Resources\">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
 
 </Project>

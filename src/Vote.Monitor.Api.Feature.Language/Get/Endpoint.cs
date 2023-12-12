@@ -9,7 +9,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<LanguageModel>, NotFound>>
 
     public override Task<Results<Ok<LanguageModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var language = LanguagesList.GetAllIso1().FirstOrDefault(x => x.Id == req.Id);
+        var language = LanguagesList.GetAll().FirstOrDefault(x => x.Id == req.Id);
         if (language is null)
         {
             return Task.FromResult<Results<Ok<LanguageModel>, NotFound>>(TypedResults.NotFound());
@@ -18,9 +18,9 @@ public class Endpoint : Endpoint<Request, Results<Ok<LanguageModel>, NotFound>>
         var languageModel = new LanguageModel
         {
             Id = language.Id,
+            Code = language.Iso1,
             Name = language.Name,
-            Iso1 = language.Iso1,
-            Iso3 = language.Iso3
+            NativeName = language.NativeName
         };
 
         return Task.FromResult<Results<Ok<LanguageModel>, NotFound>>(TypedResults.Ok(languageModel));

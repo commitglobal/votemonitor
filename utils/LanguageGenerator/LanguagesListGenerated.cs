@@ -1,42 +1,3 @@
-﻿using System.Reflection;
-using Vote.Monitor.Core.Extensions;
-using Vote.Monitor.Domain.Entities.LanguageAggregate;
-
-namespace Vote.Monitor.Domain.Constants;
-
-public record LanguageDetails
-{
-    public LanguageDetails(string name, string nativeName, string iso1)
-    {
-        Id = iso1.ToGuid();
-        Name = name;
-        NativeName = nativeName;
-        Iso1 = iso1;
-    }
-
-    public Guid Id { get; }
-
-    /// <summary>
-    /// English language name
-    /// </summary>
-    public string Name { get; }
-
-    /// <summary>
-    /// Native language name
-    /// </summary>
-    public string NativeName { get; }
-
-    /// <summary>
-    /// Two-letter language code (ISO 639-1)
-    /// </summary>
-    public string Iso1 { get; }
-
-    public Language ToEntity()
-    {
-        return new Language(Name, NativeName, Iso1);
-    }
-}
-
 public static class LanguagesList
 {
     public static readonly LanguageDetails AA = new("Afar", "Afaraf", "AA");
@@ -222,17 +183,4 @@ public static class LanguagesList
     public static readonly LanguageDetails ZA = new("Zhuang", "Saɯ cueŋƅ", "ZA");
     public static readonly LanguageDetails ZH = new("Chinese", "中文", "ZH");
     public static readonly LanguageDetails ZU = new("Zulu", "isiZulu", "ZU");
-
-    public static IEnumerable<LanguageDetails> GetAll()
-    {
-        var fields = typeof(LanguagesList)
-            .GetFields(BindingFlags.Static |
-                           BindingFlags.Public)
-            .Where(x => x.FieldType == typeof(LanguageDetails));
-        
-        foreach (var field in fields)
-        {
-            yield return (LanguageDetails)field.GetValue(null)!;
-        }
-    }
 }

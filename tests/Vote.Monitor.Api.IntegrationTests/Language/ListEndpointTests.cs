@@ -20,7 +20,7 @@ public class ListEndpointTests:IClassFixture<HttpServerFixture>
         
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        result.Count.Should().Be(179);
+        result.Count.Should().Be(183);
     }
 
     [Fact]
@@ -29,8 +29,8 @@ public class ListEndpointTests:IClassFixture<HttpServerFixture>
         // Arrange
         List<Tuple<string, string>> testLanguages = new List<Tuple<string, string>>()
         {
-            new("eng", "English"), 
-            new("fas", "Persian"),
+            new("EN", "English"), 
+            new("FA", "Persian"),
         };
 
         // Act
@@ -40,7 +40,7 @@ public class ListEndpointTests:IClassFixture<HttpServerFixture>
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         foreach(var language in testLanguages)
         {
-            result.Should().Contain(x => x.Iso3 == language.Item1 && x.Name == language.Item2);
+            result.Should().Contain(x => x.Code == language.Item1 && x.Name == language.Item2);
         }
     }
 }
