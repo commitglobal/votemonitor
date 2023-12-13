@@ -10,6 +10,7 @@ import { useState, type ReactElement } from 'react';
 import type { PageParameters, PageResponse } from '@/common/types';
 import { DataTablePagination } from './DataTablePagination';
 import type { UseQueryResult } from '@tanstack/react-query';
+import { Skeleton } from '../skeleton';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -17,8 +18,8 @@ interface DataTableProps<TData, TValue> {
 }
 
 export function DataTable<TData, TValue>({ columns, pagedQuery }: DataTableProps<TData, TValue>): ReactElement {
-  const [pagination, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: 5 });
-  const { data } = pagedQuery({ pageNumber: pagination.pageIndex + 1, pageSize: pagination.pageSize });
+  const [pagination, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: 10 });
+  const { data, isFetching } = pagedQuery({ pageNumber: pagination.pageIndex + 1, pageSize: pagination.pageSize });
 
   const table = useReactTable({
     data: data?.items || [],
@@ -50,7 +51,17 @@ export function DataTable<TData, TValue>({ columns, pagedQuery }: DataTableProps
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
+            {isFetching ? (
+              Array.from({ length: 5 }).map((_, index) => 
+                <TableRow key={index}>
+                  {columns.map((_, index) =>
+                    <TableCell key={index}>
+                      <Skeleton className='w-[100px] h-[20px] rounded-full' />
+                    </TableCell>
+                  )}
+                </TableRow>
+              )
+            ) : table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
                   {row.getVisibleCells().map((cell) => (

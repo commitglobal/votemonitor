@@ -43,3 +43,44 @@ VALUES ('123e4567-e89b-12d3-a456-426614174012', 'Strada Mihail Kogalniceanu 12, 
 
 INSERT INTO "PollingStations" ("Id", "Address", "DisplayOrder", "Tags")
 VALUES ('123e4567-e89b-12d3-a456-426614174013', 'Strada Vasile Lupu 5, Iasi', 13, '{"county": "Iasi", "locality": "Iasi", "sectionNumber": "13", "sectionName": "Scoala nr. 1"}');
+
+
+-- Observers
+INSERT INTO "Users" ("Id", "Name", "Login", "Password", "Role", "Status")
+VALUES ('123e4567-e89b-12d3-a456-426614174001', 'Ion Popescu', 'ion.popescu', 'password1', 'Observer', 'Active');
+
+INSERT INTO "Users" ("Id", "Name", "Login", "Password", "Role", "Status")
+VALUES ('123e4567-e89b-12d3-a456-426614174002', 'Maria Ionescu', 'maria.ionescu', 'password2', 'Observer', 'Active');
+
+INSERT INTO "Users" ("Id", "Name", "Login", "Password", "Role", "Status")
+VALUES ('123e4567-e89b-12d3-a456-426614174003', 'John Smith', 'john.smith', 'password2', 'Observer', 'Active');
+
+INSERT INTO "Users" ("Id", "Name", "Login", "Password", "Role", "Status")
+VALUES ('123e4567-e89b-12d3-a456-426614174004', 'Jane Doe', 'jane.doe', 'password2', 'Observer', 'Active');
+
+INSERT INTO "Users" ("Id", "Name", "Login", "Password", "Role", "Status")
+VALUES ('123e4567-e89b-12d3-a456-426614174005', 'Michael Johnson', 'michael.johnson', 'password2', 'Observer', 'Active');
+
+INSERT INTO "Users" ("Id", "Name", "Login", "Password", "Role", "Status")
+VALUES ('123e4567-e89b-12d3-a456-426614174006', 'Emily Wilson', 'emily.wilson', 'password2', 'Observer', 'Active');
+
+INSERT INTO "Users" ("Id", "Name", "Login", "Password", "Role", "Status")
+VALUES ('123e4567-e89b-12d3-a456-426614174007', 'David Brown', 'david.brown', 'password2', 'Observer', 'Active');
+
+INSERT INTO "Users" ("Id", "Name", "Login", "Password", "Role", "Status")
+VALUES ('123e4567-e89b-12d3-a456-426614174008', 'Sarah Davis', 'sarah.davis', 'password2', 'Observer', 'Active');
+
+INSERT INTO "Users" ("Id", "Name", "Login", "Password", "Role", "Status")
+VALUES ('123e4567-e89b-12d3-a456-426614174009', 'Daniel Wilson', 'daniel.wilson', 'password2', 'Observer', 'Active');
+
+INSERT INTO "Users" ("Id", "Name", "Login", "Password", "Role", "Status")
+VALUES ('123e4567-e89b-12d3-a456-426614174010', 'Olivia Johnson', 'olivia.johnson', 'password2', 'Observer', 'Active');
+
+INSERT INTO "Users" ("Id", "Name", "Login", "Password", "Role", "Status")
+VALUES ('123e4567-e89b-12d3-a456-426614174011', 'James Smith', 'james.smith', 'password2', 'Observer', 'Active');
+
+INSERT INTO "Observers" ("Id")
+SELECT "Id"
+FROM "Users"
+WHERE "Role" = 'Observer';
+

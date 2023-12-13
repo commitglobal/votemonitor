@@ -13,10 +13,10 @@ const user = {
 }
 const navigation = [
   { name: 'Dashboard', to: '/' },
-  { name: 'Election Events', to: '/election-events' },
-  { name: 'NGOs', to: '/ngos' },
+  { name: 'Election Events', to: '#' },
+  { name: 'NGOs', to: '#' },
   { name: 'Observers', to: '/observers' },
-  { name: 'Forms', to: '/forms' },
+  { name: 'Forms', to: '#' },
 ];
 const userNavigation = [
   { name: 'Sign out', to: '#' },
