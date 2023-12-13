@@ -10,7 +10,7 @@ namespace Vote.Monitor.Api.Feature.PollingStation.Services;
 
 
 
-public class CsvParser<T, TMapper> : ICsvParser<T> where T : class, IDuplicateCheck where TMapper : ClassMap<T>
+public class CsvParser<T, TMapper> : ICsvParser<T> where T : class where TMapper : ClassMap<T>
 {
     private readonly Validator<T> _modelValidator;
     private readonly ILogger _logger;
@@ -104,12 +104,12 @@ public class CsvParser<T, TMapper> : ICsvParser<T> where T : class, IDuplicateCh
 
     private static List<ValidationFailure> ContainsDuplicates(List<CsvRowParsed<T>> rows)
     {
-        HashSet<string> set = new();
+        HashSet<int> set = new();
         List<ValidationFailure> validationFailures = new();
         for (int i = 0; i < rows.Count; i++)
         {
             var row = rows[i];
-            if (row.Value != null && !set.Add(row.Value.DuplicateCheckValue))
+            if (row.Value != null && !set.Add(row.Value.GetHashCode()))
             {
                 validationFailures.Add(new ValidationFailure("DuplicateCheckValue", $"Row {i} is duplicated"));
                 row.IsSuccess = false;
