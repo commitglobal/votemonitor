@@ -7,3 +7,15 @@ type IconProps = HeroIconSVGProps & {
 	titleId?: string;
 };
 export type Heroicon = React.FC<IconProps>;
+
+export type PageParameters = {
+	pageNumber: number;
+	pageSize: number;
+};
+
+export type PageResponse<T> = {
+	currentPage: number;
+	pageSize: number;
+	totalCount: number;
+	items: T[];
+};
