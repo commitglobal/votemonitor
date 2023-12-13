@@ -6,20 +6,26 @@ import {
   type PaginationState,
 } from '@tanstack/react-table';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { useState, type ReactElement } from 'react';
-import type { PageParameters, PageResponse } from '@/common/types';
+import type { ReactElement } from 'react';
+import type { PageResponse } from '@/common/types';
 import { DataTablePagination } from './DataTablePagination';
 import type { UseQueryResult } from '@tanstack/react-query';
 import { Skeleton } from '../skeleton';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
-  pagedQuery: (p: PageParameters) => UseQueryResult<PageResponse<TData>, Error>;
+  queryResult: UseQueryResult<PageResponse<TData>, Error>;
+  pagination: PaginationState;
+  updatePagination: (ps: PaginationState) => void;
 }
 
-export function DataTable<TData, TValue>({ columns, pagedQuery }: DataTableProps<TData, TValue>): ReactElement {
-  const [pagination, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: 10 });
-  const { data, isFetching } = pagedQuery({ pageNumber: pagination.pageIndex + 1, pageSize: pagination.pageSize });
+export function DataTable<TData, TValue>({
+  columns,
+  queryResult,
+  pagination,
+  updatePagination,
+}: DataTableProps<TData, TValue>): ReactElement {
+  const { data, isFetching } = queryResult;
 
   const table = useReactTable({
     data: data?.items || [],
@@ -28,7 +34,7 @@ export function DataTable<TData, TValue>({ columns, pagedQuery }: DataTableProps
     pageCount: data ? Math.ceil(data.totalCount / data.pageSize) : 0,
     getCoreRowModel: getCoreRowModel(),
     onPaginationChange: (updater) => {
-      setPagination((previous) => (updater instanceof Function ? updater(previous) : updater));
+      updatePagination(updater instanceof Function ? updater(pagination) : updater);
     },
     state: { pagination },
   });
@@ -52,15 +58,15 @@ export function DataTable<TData, TValue>({ columns, pagedQuery }: DataTableProps
           </TableHeader>
           <TableBody>
             {isFetching ? (
-              Array.from({ length: 5 }).map((_, index) => 
+              Array.from({ length: 5 }).map((_, index) => (
                 <TableRow key={index}>
-                  {columns.map((_, index) =>
+                  {columns.map((_, index) => (
                     <TableCell key={index}>
                       <Skeleton className='w-[100px] h-[20px] rounded-full' />
                     </TableCell>
-                  )}
+                  ))}
                 </TableRow>
-              )
+              ))
             ) : table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>

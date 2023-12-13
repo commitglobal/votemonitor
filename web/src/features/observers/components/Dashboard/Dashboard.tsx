@@ -1,21 +1,19 @@
-import { observerColDefs, type Observer } from '../../models/Observer';
+import { observerColDefs, type Observer, type ObserverSearch } from '../../models/Observer';
 import type { ReactElement } from 'react';
 import { DataTable } from '@/components/ui/DataTable/DataTable';
 import { type UseQueryResult, useQuery } from '@tanstack/react-query';
-import type { PageParameters, PageResponse } from '@/common/types';
+import type { PageResponse } from '@/common/types';
 import { authApi } from '@/common/auth-api';
 import { ObserverDashboardRoute } from '../../ObserverRoutes';
+import { useNavigate } from '@tanstack/router';
+import type { PaginationState } from '@tanstack/react-table';
 
-function useObservers({ pageNumber, pageSize }: PageParameters): UseQueryResult<PageResponse<Observer>, Error> {
+function useObservers(search: ObserverSearch): UseQueryResult<PageResponse<Observer>, Error> {
   return useQuery({
-    queryKey: ['observers', pageNumber, pageSize],
+    queryKey: ['observers', search.PageNumber, search.PageSize],
     queryFn: async () => {
       const response = await authApi.get<PageResponse<Observer>>('/observers', {
-        params: {
-          PageNumber: pageNumber,
-          PageSize: pageSize,
-          Status: 'Active',
-        },
+        params: search,
       });
 
       if (response.status !== 200) {
@@ -29,8 +27,21 @@ function useObservers({ pageNumber, pageSize }: PageParameters): UseQueryResult<
 
 export default function ObserversDashboard(): ReactElement {
   const searchParameters = ObserverDashboardRoute.useSearch();
-  // TODO - use search parameters to filter observers
-  // TODO - update search parameters when filters change
+  const pagination: PaginationState = {
+    pageIndex: searchParameters.PageNumber - 1,
+    pageSize: searchParameters.PageSize,
+  };
+  const navigate = useNavigate({ from: ObserverDashboardRoute.id });
+
+  const updatePagination = (ps: PaginationState): void => {
+    navigate({
+      search: {
+        PageNumber: ps.pageIndex + 1,
+        PageSize: ps.pageSize,
+      },
+    }).catch(() => {});
+  };
+  const queryResult = useObservers(searchParameters);
 
   return (
     <>
@@ -41,7 +52,12 @@ export default function ObserversDashboard(): ReactElement {
       </header>
       <main>
         <div className='bg-white mx-auto max-w-7xl py-6 sm:px-6 lg:px-8 '>
-          <DataTable columns={observerColDefs} pagedQuery={useObservers} />
+          <DataTable
+            columns={observerColDefs}
+            queryResult={queryResult}
+            pagination={pagination}
+            updatePagination={updatePagination}
+          />
         </div>
       </main>
     </>
