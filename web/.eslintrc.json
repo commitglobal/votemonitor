@@ -81,26 +81,6 @@
 				}
 			}
 		],
-		"unicorn/prevent-abbreviations": [
-			"error",
-			{
-				"replacements": {
-					"db": false,
-					"arg": false,
-					"args": false,
-					"env": false,
-					"fn": false,
-					"func": {
-						"fn": true,
-						"function": false
-					},
-					"prop": false,
-					"props": false,
-					"ref": false,
-					"refs": false
-				},
-				"ignore": ["semVer", "SemVer"]
-			}
-		]
+		"unicorn/prevent-abbreviations": "off"
 	}
 }

@@ -9,7 +9,7 @@ type IconProps = HeroIconSVGProps & {
 export type Heroicon = React.FC<IconProps>;
 
 export type PageParameters = {
-	pageNumber: number;
+	pageNumber: number; // 1-based (the first page is 1)
 	pageSize: number;
 };
 

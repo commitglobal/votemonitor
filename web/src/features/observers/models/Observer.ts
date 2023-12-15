@@ -9,14 +9,12 @@ export interface Observer {
   status: string;
 }
 
-export const observerSearchSchema = z.object({
-  NameFilter: z.string().catch(''),
-  PageNumber: z.number().catch(1),
-  PageSize: z.number().catch(10),
-  Status: z.enum(['Active', 'Inactive']).catch('Active'),
+export const observerRouteSearchSchema = z.object({
+  nameFilter: z.string().catch(''),
+  pageNumber: z.number().catch(1),
+  pageSize: z.number().catch(10),
+  status: z.enum(['Active', 'Inactive']).catch('Active'),
 })
-
-export type ObserverSearch = z.infer<typeof observerSearchSchema>;
 
 export const observerColDefs: ColumnDef<Observer>[] = [
   {
