@@ -3,6 +3,7 @@ import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import type { FunctionComponent } from '../../../common/types';
 import logoUrl from '../../../assets/icons/logo.svg';
+import { Link } from '@tanstack/router';
 
 const user = {
   name: 'Tom Cook',
@@ -11,19 +12,15 @@ const user = {
     'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
 }
 const navigation = [
-  { name: 'Dashboard', href: '#', current: true },
-  { name: 'Election Events', href: '#', current: false },
-  { name: 'NGOs', href: '#', current: false },
-  { name: 'Observers', href: '#', current: false },
-  { name: 'Forms', href: '#', current: false },
+  { name: 'Dashboard', to: '/' },
+  { name: 'Election Events', to: '#' },
+  { name: 'NGOs', to: '#' },
+  { name: 'Observers', to: '/observers' },
+  { name: 'Forms', to: '#' },
 ];
 const userNavigation = [
-  { name: 'Sign out', href: '#' },
+  { name: 'Sign out', to: '#' },
 ];
-
-function classNames(...classes: Array<string>): string {
-  return classes.filter(Boolean).join(' ');
-}
 
 const Header = (): FunctionComponent => {
   return (
@@ -43,16 +40,16 @@ const Header = (): FunctionComponent => {
                 <div className='hidden md:block'>
                   <div className='ml-10 flex items-baseline space-x-4'>
                     {navigation.map((item) => (
-                      <a
+                      <Link
+                        to={item.to}
+                        search={{}}
+                        params={{}}
                         key={item.name}
-                        href={item.href}
-                        className={classNames(
-                          item.current ? 'bg-gray-900 text-white' : 'text-gray-900 hover:bg-gray-700 hover:text-white',
-                          'rounded-md px-3 py-2 text-sm font-medium'
-                        )}
-                        aria-current={item.current ? 'page' : undefined}>
+                        className='rounded-md px-3 py-2 text-sm font-medium'
+                        activeProps={{className: 'bg-gray-900 text-white', "aria-current": 'page'}}
+                        inactiveProps={{className: 'text-gray-900 hover:bg-gray-700 hover:text-white'}}>
                         {item.name}
-                      </a>
+                      </Link>
                     ))}
                   </div>
                 </div>
@@ -79,16 +76,13 @@ const Header = (): FunctionComponent => {
                       <Menu.Items className='absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none'>
                         {userNavigation.map((item) => (
                           <Menu.Item key={item.name}>
-                            {({ active }) => (
-                              <a
-                                href={item.href}
-                                className={classNames(
-                                  active ? 'bg-gray-100' : '',
-                                  'block px-4 py-2 text-sm text-gray-700'
-                                )}>
-                                {item.name}
-                              </a>
-                            )}
+                            <Link
+                              to={item.to}
+                              search={{}}
+                              params={{}}
+                              className='block px-4 py-2 text-sm text-gray-700'>
+                              {item.name}
+                            </Link>
                           </Menu.Item>
                         ))}
                       </Menu.Items>
@@ -116,13 +110,13 @@ const Header = (): FunctionComponent => {
               {navigation.map((item) => (
                 <Disclosure.Button
                   key={item.name}
-                  as='a'
-                  href={item.href}
-                  className={classNames(
-                    item.current ? 'bg-gray-900 text-white' : 'text-gray-900 hover:bg-gray-700 hover:text-white',
-                    'block rounded-md px-3 py-2 text-base font-medium'
-                  )}
-                  aria-current={item.current ? 'page' : undefined}>
+                  as={Link}
+                  to={item.to}
+                  search={{}}
+                  params={{}}
+                  className='block rounded-md px-3 py-2 text-base font-medium'
+                  activeProps={{className: 'bg-gray-900 text-white', "aria-current": 'page'}}
+                  inactiveProps={{className: 'text-gray-900 hover:bg-gray-700 hover:text-white'}}>
                   {item.name}
                 </Disclosure.Button>
               ))}
@@ -141,8 +135,10 @@ const Header = (): FunctionComponent => {
                 {userNavigation.map((item) => (
                   <Disclosure.Button
                     key={item.name}
-                    as='a'
-                    href={item.href}
+                    as={Link}
+                    to={item.to}
+                    search={{}}
+                    params={{}}
                     className='block rounded-md px-3 py-2 text-base font-medium text-gray-900 hover:bg-gray-700 hover:text-white'>
                     {item.name}
                   </Disclosure.Button>
