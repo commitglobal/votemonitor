@@ -4,6 +4,6 @@ public class GetObserversByLoginsSpecification : Specification<ObserverAggregate
 {
     public GetObserversByLoginsSpecification(IEnumerable<string> logins)
     {
-        Query.Where(x => logins.Contains( x.Login ));
+        Query.Where(x => logins.Contains(x.Login));
     }
 }

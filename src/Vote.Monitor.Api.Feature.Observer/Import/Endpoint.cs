@@ -52,7 +52,6 @@ public class Endpoint : Endpoint<Request, Results<NoContent, BadRequest<ImportVa
             .Items
             .Select(x => new ObserverAggregate(x.Name, x.Email, x.Password, x.PhoneNumber))
             .ToList();
-        List<ObserverAggregate> observersToAdd = new();
 
         var logins = observers.Select(testc => testc.Login);
         var specification = new GetObserversByLoginsSpecification(logins);
@@ -64,7 +63,7 @@ public class Endpoint : Endpoint<Request, Results<NoContent, BadRequest<ImportVa
         {
             _logger.LogWarning("An Observer with email {obs.Login} already exists!", obs.Login);
         }
-        observersToAdd = observers.Where(x => !c.Any(y => y.Login == x.Login)).ToList();
+        List<ObserverAggregate>  observersToAdd = observers.Where(x => !c.Any(y => y.Login == x.Login)).ToList();
 
         if (observersToAdd.Count > 0) await _repository.AddRangeAsync(observersToAdd, ct);
 

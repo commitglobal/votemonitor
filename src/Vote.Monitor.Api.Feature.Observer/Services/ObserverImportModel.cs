@@ -16,12 +16,10 @@ public class ObserverImportModel
 
     public override bool Equals(object? obj)
     {
-        ObserverImportModel? observerImportModel = obj as ObserverImportModel;
-        if (observerImportModel == null)
-        {
-            return false;
-        }
+        if (obj == null || obj is not ObserverImportModel) return false;
         if (ReferenceEquals(this, obj)) return true;
+
+        ObserverImportModel observerImportModel = (ObserverImportModel)obj;
 
         return Email.Equals(observerImportModel.Email);
     }
