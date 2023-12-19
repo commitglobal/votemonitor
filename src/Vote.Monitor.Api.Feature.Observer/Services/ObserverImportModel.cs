@@ -1,9 +1,6 @@
-﻿using System;
+﻿namespace Vote.Monitor.Api.Feature.Observer.Services;
 
-namespace Vote.Monitor.Api.Feature.Observer.Services;
-//implement IEquatable interface
-
-public class ObserverImportModel 
+public class ObserverImportModel
 
 {
     public required string Name { get; set; }
@@ -11,10 +8,22 @@ public class ObserverImportModel
     public string Password { get => "string"; }
     public required string PhoneNumber { get; set; }
 
-   
+
     public override int GetHashCode()
     {
         return Email.GetHashCode();
+    }
+
+    public override bool Equals(object? obj)
+    {
+        ObserverImportModel? observerImportModel = obj as ObserverImportModel;
+        if (observerImportModel == null)
+        {
+            return false;
+        }
+        if (ReferenceEquals(this, obj)) return true;
+
+        return Email.Equals(observerImportModel.Email);
     }
 
 }
