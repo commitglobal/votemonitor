@@ -42,7 +42,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Integratio
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Feature.PollingStation.UnitTests", "tests\Vote.Monitor.Api.Feature.PollingStation.UnitTests\Vote.Monitor.Api.Feature.PollingStation.UnitTests.csproj", "{272F6196-AB33-461D-8E12-FB1260D6D4C0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Feature.Observer.UnitTests", "tests\Vote.Monitor.Api.Feature.Observer.UnitTests\Vote.Monitor.Api.Feature.Observer.UnitTests.csproj", "{F2F0F834-34D8-4609-8306-9C09AF9F773D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vote.Monitor.Api.Feature.Observer.UnitTests", "tests\Vote.Monitor.Api.Feature.Observer.UnitTests\Vote.Monitor.Api.Feature.Observer.UnitTests.csproj", "{D65C2019-13CC-472B-8AEB-CEDAD542C157}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vote.Monitor.Api.Feature.Language", "src\Vote.Monitor.Api.Feature.Language\Vote.Monitor.Api.Feature.Language.csproj", "{A8EF4D86-1D50-40DA-96EE-38DCB8BC1469}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -106,10 +108,14 @@ Global
 		{272F6196-AB33-461D-8E12-FB1260D6D4C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{272F6196-AB33-461D-8E12-FB1260D6D4C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{272F6196-AB33-461D-8E12-FB1260D6D4C0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F2F0F834-34D8-4609-8306-9C09AF9F773D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F2F0F834-34D8-4609-8306-9C09AF9F773D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F2F0F834-34D8-4609-8306-9C09AF9F773D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F2F0F834-34D8-4609-8306-9C09AF9F773D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D65C2019-13CC-472B-8AEB-CEDAD542C157}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D65C2019-13CC-472B-8AEB-CEDAD542C157}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D65C2019-13CC-472B-8AEB-CEDAD542C157}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D65C2019-13CC-472B-8AEB-CEDAD542C157}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A8EF4D86-1D50-40DA-96EE-38DCB8BC1469}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8EF4D86-1D50-40DA-96EE-38DCB8BC1469}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8EF4D86-1D50-40DA-96EE-38DCB8BC1469}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8EF4D86-1D50-40DA-96EE-38DCB8BC1469}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -129,7 +135,8 @@ Global
 		{9D19DBEA-7447-4C46-AAFD-E25D64784469} = {17945B3C-5A4C-4279-8022-65ABC606A510}
 		{91738C86-9A9D-44D9-86C0-67C7CF43FB0D} = {3441EE1D-E3C6-45BE-A020-553816015081}
 		{272F6196-AB33-461D-8E12-FB1260D6D4C0} = {3441EE1D-E3C6-45BE-A020-553816015081}
-		{F2F0F834-34D8-4609-8306-9C09AF9F773D} = {3441EE1D-E3C6-45BE-A020-553816015081}
+		{D65C2019-13CC-472B-8AEB-CEDAD542C157} = {3441EE1D-E3C6-45BE-A020-553816015081}
+		{A8EF4D86-1D50-40DA-96EE-38DCB8BC1469} = {17945B3C-5A4C-4279-8022-65ABC606A510}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {50C20C9F-F2AF-45D8-994A-06661772B31C}

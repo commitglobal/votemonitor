@@ -4,6 +4,7 @@ using FastEndpoints.Swagger;
 using Serilog;
 using Vote.Monitor.Api.Feature.Auth;
 using Vote.Monitor.Api.Feature.Country;
+using Vote.Monitor.Api.Feature.Language;
 using Vote.Monitor.Api.Feature.CSO;
 using Vote.Monitor.Api.Feature.CSOAdmin;
 using Vote.Monitor.Api.Feature.Observer;
@@ -48,11 +49,24 @@ builder.Services.AddLogging(logging =>
         logging.AddSerilog(logger);
     });
 
+builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("AllowAll",
+            builder =>
+            {
+                builder
+                .AllowAnyOrigin()
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+            });
+    });
+
 builder.Services.AddCoreServices();
 builder.Services.AddApplicationDomain(builder.Configuration.GetSection(DomainInstaller.SectionKey));
 builder.Services.AddAuthFeature(builder.Configuration.GetSection(AuthFeatureInstaller.SectionKey));
 builder.Services.AddPollingStationFeature(builder.Configuration.GetSection(PollingStationFeatureInstaller.SectionKey));
 builder.Services.AddCountryFeature();
+builder.Services.AddLanguageFeature();
 builder.Services.AddCSOFeature();
 builder.Services.AddCSOAdminFeature();
 builder.Services.AddObserverFeature(builder.Configuration.GetSection(ObserverFeatureInstaller.SectionKey));
@@ -62,6 +76,7 @@ builder.Services.AddAuthorization();
 var app = builder.Build();
 await app.Services.InitializeDatabasesAsync();
 
+app.UseCors("AllowAll");
 app.UseAuthentication();
 app.UseAuthorization();
 
