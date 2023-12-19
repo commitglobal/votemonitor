@@ -2,7 +2,7 @@
 
 public class Endpoint : Endpoint<Request, Results<Ok<ObserverModel>, NotFound>>
 {
-     readonly IReadRepository<ObserverAggregate> _repository;
+    readonly IReadRepository<ObserverAggregate> _repository;
 
     public Endpoint(IReadRepository<ObserverAggregate> repository)
     {
@@ -27,6 +27,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<ObserverModel>, NotFound>>
             Id = observer.Id,
             Login = observer.Login,
             Name = observer.Name,
+            PhoneNumber = observer.PhoneNumber,
             Status = observer.Status
         });
     }

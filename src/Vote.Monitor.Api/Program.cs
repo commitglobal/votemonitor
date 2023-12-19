@@ -69,7 +69,7 @@ builder.Services.AddCountryFeature();
 builder.Services.AddLanguageFeature();
 builder.Services.AddCSOFeature();
 builder.Services.AddCSOAdminFeature();
-builder.Services.AddObserverFeature();
+builder.Services.AddObserverFeature(builder.Configuration.GetSection(ObserverFeatureInstaller.SectionKey));
 builder.Services.AddAuthorization();
 
 
