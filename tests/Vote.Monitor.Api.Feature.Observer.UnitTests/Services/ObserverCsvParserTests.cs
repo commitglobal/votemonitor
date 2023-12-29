@@ -1,7 +1,6 @@
 ﻿using System.Text;
 using Microsoft.Extensions.Logging;
 using Vote.Monitor.Api.Feature.Observer.Services;
-using Vote.Monitor.Api.Feature.PollingStation.Services;
 
 namespace Vote.Monitor.Api.Feature.Observer.UnitTests.Services;
 public class ObserverCsvParserTests
@@ -30,8 +29,8 @@ public class ObserverCsvParserTests
     public void Parsing_ShouldFail_When_Malformed_Header()
     {
         // Arrange
-        string fileContent = "," +Environment.NewLine + 
-            "Obs1,obs1 @mail.com,2000000000" +Environment.NewLine + 
+        string fileContent = "," + Environment.NewLine +
+            "Obs1,obs1 @mail.com,2000000000" + Environment.NewLine +
             "Obs2,obs2 @mail.com,3000000000";
         using var fileStream = new MemoryStream(Encoding.UTF8.GetBytes(fileContent));
         var logger = Substitute.For<ILogger<CsvParser<ObserverImportModel, ObserverImportModelMapper>>>();
@@ -124,12 +123,13 @@ public class ObserverCsvParserTests
             "Obs1,obs1@mail.com,2000000000" + Environment.NewLine +
             "Obs2,obs1@mail.com,3000000000",
             3,
-            new List<int>{2},
+            new List<int>{1,2},
             new List<string>
             {
+                "Duplicated email found. Row(s) where you can find the duplicate email are 2",
                 "Duplicated email found. First row where you can find the duplicate email is 1"
             },
-            new List<int>{1}
+            new List<int>{}
          }
 
     };
