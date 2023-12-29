@@ -5,7 +5,7 @@ namespace Vote.Monitor.Api.Feature.Observer.List;
 
 public class Endpoint : Endpoint<Request, PagedResponse<ObserverModel>>
 {
-     readonly IReadRepository<ObserverAggregate> _repository;
+    readonly IReadRepository<ObserverAggregate> _repository;
 
     public Endpoint(IReadRepository<ObserverAggregate> repository)
     {
@@ -27,6 +27,7 @@ public class Endpoint : Endpoint<Request, PagedResponse<ObserverModel>>
             Id = x.Id,
             Name = x.Name,
             Login = x.Login,
+            PhoneNumber = x.PhoneNumber,
             Status = x.Status
         }).ToList();
 

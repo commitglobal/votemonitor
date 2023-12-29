@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
@@ -11,18 +11,20 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
-    <PackageReference Include="xunit" Version="2.4.2" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    <PackageReference Include="Bogus" Version="34.0.2" />
+    <PackageReference Include="FluentAssertions" Version="6.12.0" />
+    <PackageReference Include="NSubstitute" Version="5.1.0" />
+    <PackageReference Include="NSubstitute.Analyzers.CSharp" Version="1.0.16">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="coverlet.collector" Version="3.2.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="xunit" Version="2.6.1" />
+    <PackageReference Include="Xunit.Priority" Version="1.1.6" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
     <PackageReference Include="AutoBogus" Version="2.13.1" />
-    <PackageReference Include="Bogus" Version="34.0.2" />
-    <PackageReference Include="FluentAssertions" Version="6.12.0" />
     <PackageReference Include="FluentValidation" Version="11.8.1" />
   </ItemGroup>
 
@@ -37,4 +39,5 @@
     <ProjectReference Include="..\..\src\Vote.Monitor.Core\Vote.Monitor.Core.csproj" />
     <ProjectReference Include="..\..\src\Vote.Monitor.Api.Feature.Observer\Vote.Monitor.Api.Feature.Observer.csproj" />
   </ItemGroup>
+
 </Project>
