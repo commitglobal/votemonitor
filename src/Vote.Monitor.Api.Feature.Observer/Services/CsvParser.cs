@@ -2,13 +2,14 @@
 using CsvHelper;
 using CsvHelper.Configuration;
 using Microsoft.Extensions.Logging;
-using Vote.Monitor.Api.Feature.Observer.Services;
 
-namespace Vote.Monitor.Api.Feature.PollingStation.Services;
-
+namespace Vote.Monitor.Api.Feature.Observer.Services;
 
 
-public class CsvParser<T, TMapper> : ICsvParser<T> where T : class where TMapper : ClassMap<T>
+
+public class CsvParser<T, TMapper> : ICsvParser<T> where T : class
+                                                            where TMapper : ClassMap<T>
+
 {
     private readonly Validator<T> _modelValidator;
     private readonly ILogger _logger;
@@ -20,119 +21,111 @@ public class CsvParser<T, TMapper> : ICsvParser<T> where T : class where TMapper
     {
         _logger = logger;
         _modelValidator = modelValidator;
+
     }
 
     public ParsingResult<T> Parse(Stream stream)
     {
         List<CsvRowParsed<T>> rowsRead = new List<CsvRowParsed<T>>();
+
+        bool anyError = false;
+
+        using var reader = new StreamReader(stream);
+
+        var readerConfiguration = new CsvConfiguration(CultureInfo.InvariantCulture)
+        {
+            ExceptionMessagesContainRawData = false,
+            MissingFieldFound = null
+        };
+
+        using var csv = new CsvReader(reader, readerConfiguration);
+        csv.Context.RegisterClassMap<TMapper>();
+
+        if (CsvIsEmpty(csv)) return new ParsingResult<T>.Fail("Cannot parse the file or file empty.");
+
+
+        if (HeaderIsValid(csv, out CsvRowParsed<T> header, out ParsingResult<T> result))
+        {
+            rowsRead.Add(header);
+        }
+        else
+            return result;
+
+
+        while (csv.Read())
+        {
+
+            CsvRowParsed<T> row = ToCsvRowParsed(csv.GetRecord<T>()!, _modelValidator, csv.Parser.RawRecord);
+            anyError = anyError || !row.IsSuccess;
+            rowsRead.Add(row);
+        }
+
+        if (anyError || rowsRead.CheckAndSetDuplicatesLines())
+        {
+            return new ParsingResult<T>.Fail(rowsRead);
+        }
+        return new ParsingResult<T>.Success(rowsRead.Where(x => x.Value != null).Select(x => x.Value!));
+    }
+
+
+    private CsvRowParsed<T> HeaderToCsvRow(CsvReader csv) => new CsvRowParsed<T>()
+    {
+        IsSuccess = true,
+        OriginalRow = string.Join(",", csv.HeaderRecord!),
+        Value = null
+    };
+
+    private bool HeaderIsValid(CsvReader csv, out CsvRowParsed<T> header, out ParsingResult<T> result)
+    {
+        csv.ReadHeader();
+        header = HeaderToCsvRow(csv);
+
         try
         {
-            int rowIndex = 1;
-            bool anyError = false;
 
-            using var reader = new StreamReader(stream);
-
-            var readerConfiguration = new CsvConfiguration(CultureInfo.InvariantCulture)
-            {
-                ExceptionMessagesContainRawData = false,
-                MissingFieldFound = null
-            };
-
-            using var csv = new CsvHelper.CsvReader(reader, readerConfiguration);
-            csv.Context.RegisterClassMap<TMapper>();
-            csv.Read();
-            csv.ReadHeader();
             csv.ValidateHeader<T>();
-            rowsRead.Add(new CsvRowParsed<T>()
-            {
-                IsSuccess = true,
-                OriginalRow = string.Join(",", csv.HeaderRecord!),
-                Value = null
-            });
-            while (csv.Read())
-            {
-                T? item = csv.GetRecord<T>();
-                var currentRow = new CsvRowParsed<T>()
-                {
-                    IsSuccess = true,
-                    OriginalRow = csv.Parser.RawRecord,
-                    Value = item
-                };
-                rowsRead.Add(currentRow);
-
-
-                if (item == null)
-                {
-                    anyError = true;
-                    currentRow.IsSuccess = false;
-                    currentRow.ErrorMessage = $"Malformed row {rowIndex}";
-                    continue;
-                }
-                var validationResult = _modelValidator.Validate(item);
-                if (!validationResult.IsValid)
-                {
-                    anyError = true;
-                    currentRow.IsSuccess = false;
-                    currentRow.ErrorMessage = validationResult.ToString(",");
-                }
-
-                rowIndex++;
-            }
-
-
-            if (anyError || ContainsDuplicates(rowsRead))
-            {
-                return new ParsingResult<T>.Fail(rowsRead);
-            }
-            return new ParsingResult<T>.Success(rowsRead.Where(x => x.Value != null).Select(x => x.Value!));
-        }
-        catch (ReaderException ex)
-        {
-            _logger.LogError(ex, "Cannot parse the file or file empty.");
-            return new ParsingResult<T>.Fail(new CsvRowParsed<T>()
-            {
-                IsSuccess = false,
-                ErrorMessage = "Cannot parse the file or file empty.",
-                OriginalRow = string.Empty
-            });
+            result = new ParsingResult<T>.Success(new List<T>());
+            return true;
         }
         catch (HeaderValidationException ex)
         {
             _logger.LogError(ex, "Cannot parse the header!");
-            return new ParsingResult<T>.Fail(new CsvRowParsed<T>()
-            {
-                IsSuccess = false,
-                ErrorMessage = "Cannot parse the header!",
-                OriginalRow = string.Empty
-            });
+            header.IsSuccess = false;
+            header.ErrorMessage = "Cannot parse the header!";
+            result = new ParsingResult<T>.Fail(header);
+            return false;
         }
-
-
     }
 
-    private static bool ContainsDuplicates(List<CsvRowParsed<T>> rows)
+    private bool CsvIsEmpty(CsvReader? csv)
     {
-        Dictionary<int, int> set = new();
-        bool containsDuplicates = false;
-        for (int i = 1; i < rows.Count; i++)
+        if (csv == null || !csv.Read())
         {
-            var row = rows[i];
-            if (row.IsSuccess && row.Value == null) continue;
-            if (set.ContainsKey(row.Value!.GetHashCode()))
-            {
-                int firstRowIndex = set[row.Value.GetHashCode()];
-                containsDuplicates = true;
-                row.IsSuccess = false;
-                row.ErrorMessage += $"Duplicated email found. First row where you can find the duplicate email is {firstRowIndex}";
-            }
-            else
-            {
-                set.Add(row.Value!.GetHashCode(), i);
-            }
+            return true;
         }
-
-        return containsDuplicates;
+        return false;
     }
+
+
+    private static CsvRowParsed<T> ToCsvRowParsed(T item, Validator<T> validator, string originalString)
+    {
+        var validationResult = validator.Validate(item);
+
+        return new CsvRowParsed<T>()
+        {
+            IsSuccess = validationResult.IsValid,
+            OriginalRow = originalString,
+            Value = item,
+            ErrorMessage = validationResult.ToString(",")
+        };
+    }
+
+
+
 
 
 }
+
+
+
+

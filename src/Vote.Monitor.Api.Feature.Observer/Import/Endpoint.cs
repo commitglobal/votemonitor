@@ -40,7 +40,7 @@ public class Endpoint : Endpoint<Request, Results<NoContent, BadRequest<ImportVa
         if (parsingResult is ParsingResult<ObserverImportModel>.Fail failedResult)
         {
 
-            string csv = CsvRowParsedHelpers<ObserverImportModel>.ConstructErrorFileContent(failedResult.Items);
+            string csv = failedResult.Items.ConstructErrorFileContent();
             var errorSaved = await _errorRepo.AddAsync(new(ImportType.Observer, req.File.Name, csv, DateTime.Now), ct);
             return TypedResults.BadRequest(
                 new ImportValidationErrorModel { Id = errorSaved.Id, Message = "The file contains errors! Please use the ID to get the file with the errors described inside." });
@@ -63,7 +63,7 @@ public class Endpoint : Endpoint<Request, Results<NoContent, BadRequest<ImportVa
         {
             _logger.LogWarning("An Observer with email {obs.Login} already exists!", obs.Login);
         }
-        List<ObserverAggregate>  observersToAdd = observers.Where(x => !c.Any(y => y.Login == x.Login)).ToList();
+        List<ObserverAggregate> observersToAdd = observers.Where(x => !c.Any(y => y.Login == x.Login)).ToList();
 
         if (observersToAdd.Count > 0) await _repository.AddRangeAsync(observersToAdd, ct);
 

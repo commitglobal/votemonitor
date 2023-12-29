@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Vote.Monitor.Api.Feature.Observer.Services;
-using Vote.Monitor.Api.Feature.PollingStation.Services;
 
 namespace Vote.Monitor.Api.Feature.Observer;
 
