@@ -1,4 +1,5 @@
 import type { FunctionComponent } from '../common/types';
+import PollingStationsDashboard from '@/features/polling-stations/components/Dashboard/Dashboard';
 
 const Home = (): FunctionComponent => {
   return (
@@ -9,8 +10,8 @@ const Home = (): FunctionComponent => {
         </div>
       </header>
       <main>
-        <div className='bg-white shadow rounded-md mx-auto max-w-7xl py-6 sm:px-6 lg:px-8 '>
-          <p>Content of dashboard.</p>
+        <div className='bg-white mx-auto max-w-7xl py-6 sm:px-6 lg:px-8 '>
+          <PollingStationsDashboard />
         </div>
       </main>
     </>
