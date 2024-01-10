@@ -60,7 +60,6 @@ public class RatingQuestionRequestValidator : Validator<RatingQuestionRequest>
     public RatingQuestionRequestValidator()
     {
         Include(new BaseQuestionRequestValidator());
-
     }
 }
 
@@ -69,7 +68,6 @@ public class MultiResponseQuestionRequestValidator : Validator<MultiResponseQues
     public MultiResponseQuestionRequestValidator()
     {
         Include(new BaseQuestionRequestValidator());
-
     }
 }
 
