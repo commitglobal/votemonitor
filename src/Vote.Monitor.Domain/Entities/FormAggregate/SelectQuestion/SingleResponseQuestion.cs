@@ -8,10 +8,12 @@ public class SingleResponseQuestion : BaseQuestion
 
     }
 
-    public List<Option> Options { get; private set; }
+    public Guid Id { get; private set; }
+    public List<QuestionOption> Options { get; private set; }
 
-    public SingleResponseQuestion(string headline, string subheader, List<Option> options) : base(headline, subheader, QuetionType.SingleResponse)
+    public SingleResponseQuestion(Guid id, string headline, string subheader, List<QuestionOption> options) : base(headline, subheader, QuetionType.SingleResponse)
     {
+        Id = id;
         Options = options;
     }
 }

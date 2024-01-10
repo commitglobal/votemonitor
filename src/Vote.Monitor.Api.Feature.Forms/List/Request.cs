@@ -5,13 +5,13 @@ namespace Vote.Monitor.Api.Feature.Forms.List;
 
 public class Request
 {
-    //public Guid ElectionRoundId { get; set; }
+    public Guid ElectionRoundId { get; set; }
 
     [QueryParam]
     public string? CodeFilter { get; set; }
 
     [QueryParam]
-    public string? LanguageFilter { get; set; }
+    public Guid? LanguageId { get; set; }
 
     [QueryParam]
     [JsonConverter(typeof(SmartEnumNameConverter<FormStatus, string>))]

@@ -17,6 +17,7 @@ using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
 using Vote.Monitor.Domain.Entities.CSOAggregate;
 using Vote.Monitor.Domain.Entities.ElectionRoundAggregate;
 using Vote.Monitor.Domain.Entities.FormAggregate;
+using Vote.Monitor.Domain.Entities.FormAggregate.RatingQuestion;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddFastEndpoints();
@@ -87,6 +88,7 @@ app.UseFastEndpoints(x =>
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<CSOStatus, string>());
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<ElectionRoundStatus, string>());
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<FormStatus, string>());
+    x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<RatingScale, string>());
 });
 
 app.UseSwaggerGen(uiConfig: cfg =>

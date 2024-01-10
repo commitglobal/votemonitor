@@ -2,14 +2,14 @@
 
 namespace Vote.Monitor.Api.Feature.Forms.Models;
 
-public class MultipleChoiceQuestionModel : BaseQuestionModel
+public class SingleResponseQuestionModel : BaseQuestionModel
 {
     public List<QuestionOptionModel> Options { get; }
 
-    public MultipleChoiceQuestionModel(Guid id,
+    public SingleResponseQuestionModel(Guid id,
         string headline,
         string subheader,
-        List<QuestionOptionModel> options) : base(id, headline, subheader, QuetionType.MultiResponse)
+        List<QuestionOptionModel> options) : base(id, headline, subheader, QuetionType.SingleResponse)
     {
         Options = options;
     }

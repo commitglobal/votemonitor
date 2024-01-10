@@ -5,7 +5,6 @@ namespace Vote.Monitor.Api.Feature.Forms.Models;
 public record FormModel
 {
     public Guid Id { get; init; }
-
     public required string Code { get; init; }
     public required Guid LanguageId { get; init; }
     public required string Description { get; init; }

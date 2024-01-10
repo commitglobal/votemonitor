@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -10,15 +10,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FastEndpoints" Version="5.20.1" />
-    <PackageReference Include="FastEndpoints.Security" Version="5.20.1" />
-    <PackageReference Include="FastEndpoints.Swagger" Version="5.20.1" />
+    <PackageReference Include="FastEndpoints" Version="5.21.2" />
+    <PackageReference Include="FastEndpoints.Security" Version="5.21.2" />
+    <PackageReference Include="FastEndpoints.Swagger" Version="5.21.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.5" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.6" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0" />
     <PackageReference Include="Serilog" Version="3.1.1" />
     <PackageReference Include="Serilog.Enrichers.Environment" Version="2.3.0" />
@@ -34,7 +34,6 @@
     <ProjectReference Include="..\Vote.Monitor.Api.Feature.Country\Vote.Monitor.Api.Feature.Country.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Api.Feature.CSOAdmin\Vote.Monitor.Api.Feature.CSOAdmin.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Api.Feature.CSO\Vote.Monitor.Api.Feature.CSO.csproj" />
-    <ProjectReference Include="..\Vote.Monitor.Api.Feature.ElectionRound.Domain\Vote.Monitor.Api.Feature.ElectionRound.Domain.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Api.Feature.ElectionRound\Vote.Monitor.Api.Feature.ElectionRound.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Api.Feature.Forms\Vote.Monitor.Api.Feature.Forms.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Api.Feature.Observer\Vote.Monitor.Api.Feature.Observer.csproj" />

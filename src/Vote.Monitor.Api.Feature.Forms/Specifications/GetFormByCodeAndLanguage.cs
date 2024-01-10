@@ -4,7 +4,7 @@ public class GetFormByCodeAndLanguage : Specification<FormAggregate>, ISingleRes
 {
     public GetFormByCodeAndLanguage(string formCode, Guid languageId)
     {
-        Query.Where(x => x.Code == formCode 
+        Query.Where(x => x.Code == formCode
                          && x.LanguageId == languageId);
     }
 }

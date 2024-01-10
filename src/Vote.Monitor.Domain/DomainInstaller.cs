@@ -13,8 +13,9 @@ public static class DomainInstaller
     public static IServiceCollection AddApplicationDomain(this IServiceCollection services, IConfiguration config)
     {
         var connectionString = GetConnectionString(config);
+        services.AddScoped<IElectionRoundIdProvider, ElectionRoundIdProvider>();
 
-        services.AddDbContextPool<VoteMonitorContext>(options =>
+        services.AddDbContext<VoteMonitorContext>(options =>
             options.UseNpgsql(connectionString, sqlOptions =>
             {
                 sqlOptions.EnableRetryOnFailure(
@@ -33,7 +34,11 @@ public static class DomainInstaller
     public static async Task InitializeDatabasesAsync(this IServiceProvider services, CancellationToken cancellationToken = default)
     {
         // Create a new scope to retrieve scoped services
-        using var scope = services.CreateScope();
+        var scope = services.CreateScope();
+        var electionRoundIdProvider = scope.ServiceProvider.GetRequiredService<IElectionRoundIdProvider>();
+
+        // Temporary set the election round id to Guid.Empty in order to migrate the db
+        electionRoundIdProvider.SetElectionRound(Guid.Empty);
         var dbContext = scope.ServiceProvider.GetRequiredService<VoteMonitorContext>();
         await dbContext.Database.MigrateAsync(cancellationToken);
     }
@@ -48,6 +53,7 @@ public static class DomainInstaller
             Username = config["DbConnectionConfig:User Id"],
             Password = config["DbConnectionConfig:Password"]
         };
+
         return connectionStringBuilder.ToString();
     }
 }

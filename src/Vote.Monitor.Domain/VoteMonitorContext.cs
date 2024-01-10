@@ -14,7 +14,11 @@ namespace Vote.Monitor.Domain;
 
 public class VoteMonitorContext : DbContext
 {
-    public VoteMonitorContext(DbContextOptions<VoteMonitorContext> options) : base(options) { }
+    private readonly IElectionRoundIdProvider _electionRoundIdProvider;
+    public VoteMonitorContext(DbContextOptions<VoteMonitorContext> options, IElectionRoundIdProvider electionRoundIdProvider) : base(options)
+    {
+        _electionRoundIdProvider = electionRoundIdProvider;
+    }
 
     public DbSet<ApplicationUser> Users { get; set; }
     public DbSet<Country> Countries { get; set; }
@@ -48,7 +52,7 @@ public class VoteMonitorContext : DbContext
         builder.ApplyConfiguration(new CSOConfiguration());
         builder.ApplyConfiguration(new ElectionRoundConfiguration());
         builder.ApplyConfiguration(new PollingStationConfiguration());
-        builder.ApplyConfiguration(new FormConfiguration());
+        builder.ApplyConfiguration(new FormConfiguration(_electionRoundIdProvider.GetElectionRoundId()));
     }
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)

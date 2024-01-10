@@ -1,17 +1,20 @@
 ﻿using Vote.Monitor.Domain.Entities.FormAggregate;
-using Vote.Monitor.Domain.Entities.FormAggregate.OpenQuestion;
 
 namespace Vote.Monitor.Api.Feature.Forms.Models;
 
-public class OpenTextQuestionModel : BaseQuestionModel
+public class OpenQuestionModel : BaseQuestionModel
 {
     public string Placeholder { get; }
     public bool LongAnswer { get; }
 
     public OpenQuestionType OpenQuestionType { get; set; }
 
-
-    public OpenTextQuestionModel(string headline, string subheader, bool isOptional, bool isFlagged, string placeholder, bool longAnswer, OpenQuestionType openQuestionType) : base(headline, subheader, QuetionType.OpenText, isOptional, isFlagged)
+    public OpenQuestionModel(Guid id,
+        string headline,
+        string subheader,
+        string placeholder,
+        bool longAnswer,
+        OpenQuestionType openQuestionType) : base(id, headline, subheader, QuetionType.OpenText)
     {
         Placeholder = placeholder;
         LongAnswer = longAnswer;
