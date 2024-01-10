@@ -1,6 +1,5 @@
 ﻿// Global using directives
 
-global using System.Net;
 global using System.Text.Json.Serialization;
 global using Ardalis.SmartEnum.SystemTextJson;
 global using Ardalis.Specification;
@@ -12,3 +11,4 @@ global using Vote.Monitor.Core.Helpers;
 global using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
 global using Vote.Monitor.Domain.Repository;
 global using ObserverAggregate = Vote.Monitor.Domain.Entities.ApplicationUserAggregate.Observer;
+global using ImportValidationErrors = Vote.Monitor.Domain.Entities.ImportValidationErrorsAggregate.ImportValidationErrors;

@@ -2,5 +2,5 @@
 
 public class Request
 {
-    public Guid CSOId { get; set; }
+    public required IFormFile File { get; set; }
 }
