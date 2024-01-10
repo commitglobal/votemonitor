@@ -1,4 +1,6 @@
-﻿namespace Vote.Monitor.Api.Feature.Observer.Specifications;
+﻿using Vote.Monitor.Api.Feature.Observer.Specifications;
+
+namespace Vote.Monitor.Api.Feature.Observer.UnitTests.Specifications;
 
 public class GetObserverByLoginSpecificationTests
 {

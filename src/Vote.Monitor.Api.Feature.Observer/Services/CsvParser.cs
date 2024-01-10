@@ -5,23 +5,22 @@ using Microsoft.Extensions.Logging;
 
 namespace Vote.Monitor.Api.Feature.Observer.Services;
 
-
-
-public class CsvParser<T, TMapper> : ICsvParser<T> where T : class
-                                                            where TMapper : ClassMap<T>
-
+public class CsvParser<T, TMapper> : ICsvParser<T> where T : class where TMapper : ClassMap<T>
 {
     private readonly Validator<T> _modelValidator;
     private readonly ILogger _logger;
+    private readonly CsvConfiguration _readerConfiguration = new(CultureInfo.InvariantCulture)
+    {
+        ExceptionMessagesContainRawData = false,
+        MissingFieldFound = null
+    };
 
     public CsvParser(
         ILogger<CsvParser<T, TMapper>> logger,
-        Validator<T> modelValidator
-        )
+        Validator<T> modelValidator)
     {
         _logger = logger;
         _modelValidator = modelValidator;
-
     }
 
     public ParsingResult<T> Parse(Stream stream)
@@ -32,29 +31,25 @@ public class CsvParser<T, TMapper> : ICsvParser<T> where T : class
 
         using var reader = new StreamReader(stream);
 
-        var readerConfiguration = new CsvConfiguration(CultureInfo.InvariantCulture)
-        {
-            ExceptionMessagesContainRawData = false,
-            MissingFieldFound = null
-        };
-
-        using var csv = new CsvReader(reader, readerConfiguration);
+        using var csv = new CsvReader(reader, _readerConfiguration);
         csv.Context.RegisterClassMap<TMapper>();
 
-        if (CsvIsEmpty(csv)) return new ParsingResult<T>.Fail("Cannot parse the file or file empty.");
-
+        if (CsvIsEmpty(csv))
+        {
+            return new ParsingResult<T>.Fail("Cannot parse the file or file empty.");
+        }
 
         if (HeaderIsValid(csv, out CsvRowParsed<T> header, out ParsingResult<T> result))
         {
             rowsRead.Add(header);
         }
         else
+        {
             return result;
-
+        }
 
         while (csv.Read())
         {
-
             CsvRowParsed<T> row = ToCsvRowParsed(csv.GetRecord<T>()!, _modelValidator, csv.Parser.RawRecord);
             anyError = anyError || !row.IsSuccess;
             rowsRead.Add(row);
@@ -64,6 +59,7 @@ public class CsvParser<T, TMapper> : ICsvParser<T> where T : class
         {
             return new ParsingResult<T>.Fail(rowsRead);
         }
+
         return new ParsingResult<T>.Success(rowsRead.Where(x => x.Value != null).Select(x => x.Value!));
     }
 
@@ -82,7 +78,6 @@ public class CsvParser<T, TMapper> : ICsvParser<T> where T : class
 
         try
         {
-
             csv.ValidateHeader<T>();
             result = new ParsingResult<T>.Success(new List<T>());
             return true;
@@ -119,13 +114,4 @@ public class CsvParser<T, TMapper> : ICsvParser<T> where T : class
             ErrorMessage = validationResult.ToString(",")
         };
     }
-
-
-
-
-
 }
-
-
-
-

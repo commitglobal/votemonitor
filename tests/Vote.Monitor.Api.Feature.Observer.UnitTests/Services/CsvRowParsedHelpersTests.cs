@@ -16,7 +16,7 @@ public class CsvRowParsedHelpersTests
         var result = items.ConstructErrorFileContent();
 
         // Assert
-        Assert.Equal("SuccessRow1\nSuccessRow2\n", result);
+        Assert.Equal($"SuccessRow1{Environment.NewLine}SuccessRow2{Environment.NewLine}", result);
     }
 
     [Fact]
@@ -31,7 +31,7 @@ public class CsvRowParsedHelpersTests
         var result = items.ConstructErrorFileContent();
 
         // Assert
-        Assert.Equal("ErrorRow1,Error1\nErrorRow2,Error2\n", result);
+        Assert.Equal($"ErrorRow1,Error1{Environment.NewLine}ErrorRow2,Error2{Environment.NewLine}", result);
     }
 
     [Fact]
@@ -47,7 +47,7 @@ public class CsvRowParsedHelpersTests
         var result = items.ConstructErrorFileContent();
 
         // Assert
-        Assert.Equal("SuccessRow1\nErrorRow1,Error1\nSuccessRow2\n", result);
+        Assert.Equal($"SuccessRow1{Environment.NewLine}ErrorRow1,Error1{Environment.NewLine}SuccessRow2{Environment.NewLine}", result);
     }
     [Fact]
     public void CheckAndSetDuplicatesLines_WithoutDuplicates_ReturnsFalse()
@@ -112,8 +112,8 @@ public class CsvRowParsedHelpersTests
 
         // Assert
         Assert.True(result);
-        Assert.Equal("Duplicated email found. First row where you can find the duplicate email is 0", rows[2].ErrorMessage);
-        Assert.Equal("Duplicated email found. Row(s) where you can find the duplicate email are 2", rows[0].ErrorMessage);
+        Assert.Equal("Duplicated data found. First row where you can find the duplicate data is 1", rows[2].ErrorMessage);
+        Assert.Equal("Duplicated data found. Row(s) where you can find the duplicate data are 3", rows[0].ErrorMessage);
 
         Assert.All(rows, row =>
         {
@@ -146,9 +146,9 @@ public class CsvRowParsedHelpersTests
 
         // Assert
         Assert.True(result);
-        Assert.Equal("Duplicated email found. First row where you can find the duplicate email is 0", rows[2].ErrorMessage);
-        Assert.Equal("Duplicated email found. First row where you can find the duplicate email is 0", rows[4].ErrorMessage);
-        Assert.Equal("Duplicated email found. Row(s) where you can find the duplicate email are 2, 4", rows[0].ErrorMessage);
+        Assert.Equal("Duplicated data found. First row where you can find the duplicate data is 1", rows[2].ErrorMessage);
+        Assert.Equal("Duplicated data found. First row where you can find the duplicate data is 1", rows[4].ErrorMessage);
+        Assert.Equal("Duplicated data found. Row(s) where you can find the duplicate data are 3, 5", rows[0].ErrorMessage);
 
         Assert.All(rows, row =>
         {

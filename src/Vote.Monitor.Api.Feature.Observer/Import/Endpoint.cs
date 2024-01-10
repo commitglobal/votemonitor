@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Vote.Monitor.Api.Feature.Observer.Services;
 using Vote.Monitor.Api.Feature.Observer.Specifications;
-using Vote.Monitor.Domain;
 using Vote.Monitor.Domain.Entities.ImportValidationErrorsAggregate;
 
 namespace Vote.Monitor.Api.Feature.Observer.Import;
@@ -12,9 +11,7 @@ public class Endpoint : Endpoint<Request, Results<NoContent, BadRequest<ImportVa
     private readonly IRepository<ImportValidationErrors> _errorRepo;
     private readonly ICsvParser<ObserverImportModel> _parser;
     private readonly ILogger<Endpoint> _logger;
-    private readonly VoteMonitorContext _context;
-    public Endpoint(VoteMonitorContext context,
-        IRepository<ObserverAggregate> repository,
+    public Endpoint(IRepository<ObserverAggregate> repository,
         IRepository<ImportValidationErrors> errorRepo,
         ICsvParser<ObserverImportModel> parser,
         ILogger<Endpoint> logger)
@@ -23,7 +20,6 @@ public class Endpoint : Endpoint<Request, Results<NoContent, BadRequest<ImportVa
         _errorRepo = errorRepo;
         _parser = parser;
         _logger = logger;
-        _context = context;
     }
 
     public override void Configure()
@@ -53,17 +49,17 @@ public class Endpoint : Endpoint<Request, Results<NoContent, BadRequest<ImportVa
             .Select(x => new ObserverAggregate(x.Name, x.Email, x.Password, x.PhoneNumber))
             .ToList();
 
-        var logins = observers.Select(testc => testc.Login);
+        var logins = observers.Select(o => o.Login);
         var specification = new GetObserversByLoginsSpecification(logins);
-        var c = (await _repository.ListAsync(specification, ct)).ToList();
+        var existingObservers = await _repository.ListAsync(specification, ct);
 
-        var duplicates = observers.Where(x => c.Any(y => y.Login == x.Login)).ToList();
+        var duplicates = observers.Where(x => existingObservers.Any(y => y.Login == x.Login)).ToList();
 
         foreach (var obs in duplicates)
         {
             _logger.LogWarning("An Observer with email {obs.Login} already exists!", obs.Login);
         }
-        List<ObserverAggregate> observersToAdd = observers.Where(x => !c.Any(y => y.Login == x.Login)).ToList();
+        List<ObserverAggregate> observersToAdd = observers.Where(x => !existingObservers.Any(y => y.Login == x.Login)).ToList();
 
         if (observersToAdd.Count > 0) await _repository.AddRangeAsync(observersToAdd, ct);
 

@@ -3,9 +3,7 @@ namespace Vote.Monitor.Api.Feature.Observer.Services;
 
 public static class CsvRowParsedHelpers
 {
-
-
-    public static string ConstructErrorFileContent<T>(this IEnumerable<CsvRowParsed<T>> items, char sepator = ',') where T : class
+    public static string ConstructErrorFileContent<T>(this IEnumerable<CsvRowParsed<T>> items, char separator = ',') where T : class
     {
         var sb = new StringBuilder();
         foreach (var item in items)
@@ -13,11 +11,12 @@ public static class CsvRowParsedHelpers
             sb.Append(item.OriginalRow.ReplaceLineEndings(""));
             if (!item.IsSuccess)
             {
-                sb.Append(sepator).Append(item.ErrorMessage);
-
+                sb.Append(separator).Append(item.ErrorMessage);
             }
-            sb.Append('\n');
+
+            sb.Append(Environment.NewLine);
         }
+
         return sb.ToString();
     }
 
@@ -35,9 +34,9 @@ public static class CsvRowParsedHelpers
                 int firstRowIndex = set[row.Value.GetHashCode()];
                 containsDuplicates = true;
                 row.IsSuccess = false;
-                row.ErrorMessage += $"Duplicated email found. First row where you can find the duplicate email is {firstRowIndex}";
+                row.ErrorMessage += $"Duplicated data found. First row where you can find the duplicate data is {firstRowIndex + 1}";
                 rows[firstRowIndex].IsSuccess = false;
-                rows[firstRowIndex].ErrorMessage = string.IsNullOrEmpty(rows[firstRowIndex].ErrorMessage) ? $"Duplicated email found. Row(s) where you can find the duplicate email are {i}" : rows[firstRowIndex].ErrorMessage + $", {i}";
+                rows[firstRowIndex].ErrorMessage = string.IsNullOrEmpty(rows[firstRowIndex].ErrorMessage) ? $"Duplicated data found. Row(s) where you can find the duplicate data are {i + 1}" : rows[firstRowIndex].ErrorMessage + $", {i + 1}";
             }
             else
             {
