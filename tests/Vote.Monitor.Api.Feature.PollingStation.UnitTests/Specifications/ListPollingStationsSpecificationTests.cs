@@ -1,4 +1,6 @@
-﻿namespace Vote.Monitor.Api.Feature.PollingStation.UnitTests.Specifications;
+﻿using Vote.Monitor.Api.Feature.PollingStation.List;
+
+namespace Vote.Monitor.Api.Feature.PollingStation.UnitTests.Specifications;
 
 public class ListPollingStationsSpecificationTests
 {
@@ -16,8 +18,14 @@ public class ListPollingStationsSpecificationTests
             .Union(new[] { pollingStation1, pollingStation2 })
             .ToList();
 
-        var spec = new ListPollingStationsSpecification(null, null, 100, 2);
-      
+        var request = new Request
+        {
+            PageSize = 100,
+            PageNumber = 2
+        };
+
+        var spec = new ListPollingStationsSpecification(request);
+
         // Act
         var result = spec.Evaluate(testCollection).ToList();
 
@@ -25,23 +33,29 @@ public class ListPollingStationsSpecificationTests
         result.Should().HaveCount(2);
         result.Should().Contain(pollingStation1);
         result.Should().Contain(pollingStation2);
-    } 
-    
+    }
+
     [Fact]
     public void ListPollingStationsSpecification_AppliesCorrectFilters_WhenAddressFilterApplied()
     {
         // Arrange
         var pollingStation1 = new PollingStationAggregateFaker(displayOrder: 101, address: DefaultAddress).Generate();
         var pollingStation2 = new PollingStationAggregateFaker(displayOrder: 102, address: DefaultAddress).Generate();
-        
+
         var testCollection = Enumerable
             .Range(1, 100)
             .Select(displayOrder => new PollingStationAggregateFaker(displayOrder: displayOrder, address: DefaultAddress).Generate())
             .Union(new[] { pollingStation1, pollingStation2 })
             .ToList();
 
-        var spec = new ListPollingStationsSpecification(DefaultAddress, null, 100, 2);
-       
+        var request = new Request
+        {
+            AddressFilter = DefaultAddress,
+            PageSize = 100,
+            PageNumber = 2
+        };
+        var spec = new ListPollingStationsSpecification(request);
+
         // Act
         var result = spec.Evaluate(testCollection).ToList();
 
@@ -66,11 +80,18 @@ public class ListPollingStationsSpecificationTests
             .Union(new[] { pollingStation1, pollingStation2 })
             .ToList();
 
-        var spec = new ListPollingStationsSpecification(searchString, null, 100, 2);
-       
+        var request = new Request
+        {
+            AddressFilter = searchString,
+            PageSize = 100,
+            PageNumber = 2
+        };
+
+        var spec = new ListPollingStationsSpecification(request);
+
         // Act
         var result = spec.Evaluate(testCollection).ToList();
-       
+
         // Assert
         result.Should().HaveCount(2);
         result.Should().Contain(pollingStation1);

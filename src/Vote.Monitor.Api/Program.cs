@@ -11,6 +11,7 @@ using Vote.Monitor.Api.Feature.Observer;
 using Vote.Monitor.Api.Feature.PollingStation;
 using Vote.Monitor.Api.Swagger;
 using Vote.Monitor.Core;
+using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain;
 using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
 using Vote.Monitor.Domain.Entities.CSOAggregate;
@@ -88,6 +89,7 @@ app.UseFastEndpoints(x =>
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<UserRole, string>());
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<CSOStatus, string>());
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<ElectionRoundStatus, string>());
+    x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<SortOrder, string>());
 });
 
 app.UseSwaggerGen(uiConfig: cfg =>

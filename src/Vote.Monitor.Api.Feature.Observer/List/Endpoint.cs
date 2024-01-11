@@ -19,7 +19,7 @@ public class Endpoint : Endpoint<Request, PagedResponse<ObserverModel>>
 
     public override async Task<PagedResponse<ObserverModel>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var specification = new ListObserversSpecification(req.NameFilter, req.Status, req.PageSize, req.PageNumber);
+        var specification = new ListObserversSpecification(req);
         var observers = await _repository.ListAsync(specification, ct);
         var observersCount = await _repository.CountAsync(specification, ct);
         var result = observers.Select(x => new ObserverModel

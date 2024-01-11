@@ -1,4 +1,6 @@
-﻿namespace Vote.Monitor.Domain.Entities.ImportValidationErrorsAggregate;
+﻿using Vote.Monitor.Core.Entities;
+
+namespace Vote.Monitor.Domain.Entities.ImportValidationErrorsAggregate;
 public class ImportValidationErrors : BaseEntity, IAggregateRoot
 {
 

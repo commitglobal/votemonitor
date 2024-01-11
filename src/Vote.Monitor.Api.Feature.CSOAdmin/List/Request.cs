@@ -1,6 +1,6 @@
 ﻿namespace Vote.Monitor.Api.Feature.CSOAdmin.List;
 
-public class Request
+public class Request : BaseFilterRequest
 {
     [QueryParam]
     public string? NameFilter { get; set; }
@@ -8,12 +8,4 @@ public class Request
     [QueryParam]
     [JsonConverter(typeof(SmartEnumNameConverter<UserStatus, string>))]
     public UserStatus? Status { get; set; }
-
-    [QueryParam]
-    [DefaultValue(1)]
-    public int PageNumber { get; set; } = 1;
-
-    [QueryParam]
-    [DefaultValue(100)]
-    public int PageSize { get; set; } = 100;
 }

@@ -4,7 +4,7 @@ namespace Vote.Monitor.Api.Feature.Observer.UnitTests.Services;
 
 public class ObserverImportModelValidatorTests
 {
-    private ObserverImportModel model = new ObserverImportModel()
+    private ObserverImportModel model = new ObserverImportModel
     {
         Name = "jhon",
         Email = "test@code.com",

@@ -1,5 +1,4 @@
 ﻿using Vote.Monitor.Api.Feature.CSOAdmin.Specifications;
-using Vote.Monitor.Core.Models;
 
 namespace Vote.Monitor.Api.Feature.CSOAdmin.List;
 
@@ -19,7 +18,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<PagedResponse<CSOAdminModel
 
     public override async Task<Results<Ok<PagedResponse<CSOAdminModel>>, ProblemDetails>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var specification = new ListCSOAdminsSpecification(req.NameFilter, req.Status, req.PageSize, req.PageNumber);
+        var specification = new ListCSOAdminsSpecification(req);
         var csos = await _repository.ListAsync(specification, ct);
         var csosCount = await _repository.CountAsync(specification, ct);
         var result = csos.Select(x => new CSOAdminModel

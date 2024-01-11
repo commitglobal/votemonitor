@@ -1,4 +1,5 @@
 ﻿using Ardalis.Specification.EntityFrameworkCore;
+using Vote.Monitor.Core.Entities;
 using Vote.Monitor.Domain.Entities;
 
 namespace Vote.Monitor.Domain.Repository;

@@ -1,4 +1,5 @@
-﻿using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
+﻿using Vote.Monitor.Core.Entities;
+using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
 
 namespace Vote.Monitor.Domain.Entities.CSOAggregate;
 

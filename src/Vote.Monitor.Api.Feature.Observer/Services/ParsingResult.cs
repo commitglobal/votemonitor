@@ -5,7 +5,8 @@ public abstract record ParsingResult<T> where T : class
     public sealed record Success(IEnumerable<T> Items) : ParsingResult<T>;
     public sealed record Fail(IEnumerable<CsvRowParsed<T>> Items) : ParsingResult<T>
     {
-        public Fail(string errorMessage) : this(new List<CsvRowParsed<T>>() {
+        public Fail(string errorMessage) : this(new List<CsvRowParsed<T>>
+        {
             new()
             {
                 ErrorMessage = errorMessage,
@@ -16,7 +17,7 @@ public abstract record ParsingResult<T> where T : class
         {
         }
 
-        public Fail(CsvRowParsed<T> item) : this(new List<CsvRowParsed<T>>() { item })
+        public Fail(CsvRowParsed<T> item) : this(new List<CsvRowParsed<T>> { item })
         {
         }
     }

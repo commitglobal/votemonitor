@@ -20,7 +20,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<PagedResponse<PollingStatio
 
     public override async Task<Results<Ok<PagedResponse<PollingStationModel>>, ProblemDetails>> ExecuteAsync(Request request, CancellationToken ct)
     {
-        var specification = new ListPollingStationsSpecification(request.AddressFilter, request.Filter, request.PageSize, request.PageNumber);
+        var specification = new ListPollingStationsSpecification(request);
         var pollingStations = await _repository.ListAsync(specification, ct);
         var pollingStationsCount = await _repository.CountAsync(specification, ct);
         var result = pollingStations.Select(x => new PollingStationModel

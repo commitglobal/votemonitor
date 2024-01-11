@@ -1,4 +1,4 @@
-﻿namespace Vote.Monitor.Domain.Entities;
+﻿namespace Vote.Monitor.Core.Entities;
 
 public abstract class BaseEntity
 {

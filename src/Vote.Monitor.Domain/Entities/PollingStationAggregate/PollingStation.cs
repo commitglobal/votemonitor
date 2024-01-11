@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using Vote.Monitor.Core.Entities;
 
 namespace Vote.Monitor.Domain.Entities.PollingStationAggregate;
 public class PollingStation : IAggregateRoot, IDisposable

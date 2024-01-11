@@ -18,7 +18,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<PagedResponse<CSOModel>>, P
 
     public override async Task<Results<Ok<PagedResponse<CSOModel>>, ProblemDetails>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var specification = new ListCSOsSpecification(req.NameFilter, req.Status, req.PageSize, req.PageNumber);
+        var specification = new ListCSOsSpecification(req);
         var csos = await _repository.ListAsync(specification, ct);
         var csosCount = await _repository.CountAsync(specification, ct);
         var result = csos.Select(x => new CSOModel

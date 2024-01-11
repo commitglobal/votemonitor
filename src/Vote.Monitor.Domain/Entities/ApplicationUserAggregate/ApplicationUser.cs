@@ -1,4 +1,6 @@
-﻿namespace Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
+﻿using Vote.Monitor.Core.Entities;
+
+namespace Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
 
 public abstract class ApplicationUser : BaseEntity, IAggregateRoot
 {

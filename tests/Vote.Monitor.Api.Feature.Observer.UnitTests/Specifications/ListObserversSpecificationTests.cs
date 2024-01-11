@@ -1,6 +1,4 @@
-﻿
-
-using Vote.Monitor.Api.Feature.Observer.Specifications;
+﻿using Vote.Monitor.Api.Feature.Observer.Specifications;
 
 namespace Vote.Monitor.Api.Feature.Observer.UnitTests.Specifications;
 
@@ -13,15 +11,21 @@ public class ListObserversSpecificationTests
     public void ListObserversSpecification_AppliesCorrectFilters()
     {
         // Arrange
-        var observer1 = new ObserverAggregateFaker(status: DefaultStatus).Generate();
-        var observer2 = new ObserverAggregateFaker(status: DefaultStatus).Generate();
+        var observer1 = new ObserverAggregateFaker(index: 101, status: DefaultStatus).Generate();
+        var observer2 = new ObserverAggregateFaker(index: 102, status: DefaultStatus).Generate();
 
         var testCollection = Enumerable.Range(1, 100)
-            .Select(status => new ObserverAggregateFaker(status: DefaultStatus).Generate())
+            .Select(idx => new ObserverAggregateFaker(index: idx, status: DefaultStatus).Generate())
         .Union(new[] { observer1, observer2 })
         .ToList();
 
-        var spec = new ListObserversSpecification(null, null, 100, 2);
+        var request = new List.Request
+        {
+            PageSize = 100,
+            PageNumber = 2
+        };
+
+        var spec = new ListObserversSpecification(request);
 
         // Act
         var result = spec.Evaluate(testCollection).ToList();
@@ -36,16 +40,23 @@ public class ListObserversSpecificationTests
     public void ListObserversSpecification_AppliesCorrectFilters_WhenNameFilterApplied()
     {
         // Arrange
-        var observer1 = new ObserverAggregateFaker(name: DefaultName, status: DefaultStatus).Generate();
-        var observer2 = new ObserverAggregateFaker(name: DefaultName, status: DefaultStatus).Generate();
+        var observer1 = new ObserverAggregateFaker(index: 101, name: DefaultName, status: DefaultStatus).Generate();
+        var observer2 = new ObserverAggregateFaker(index: 102, name: DefaultName, status: DefaultStatus).Generate();
 
         var testCollection = Enumerable
-            .Range(1, 100)
-            .Select(statusArg => new ObserverAggregateFaker(name: DefaultName, status: DefaultStatus).Generate())
+        .Range(1, 100)
+            .Select(index => new ObserverAggregateFaker(index: index, name: DefaultName, status: DefaultStatus).Generate())
             .Union(new[] { observer1, observer2 })
             .ToList();
 
-        var spec = new ListObserversSpecification(DefaultName, null, 100, 2);
+        var request = new List.Request()
+        {
+            NameFilter = DefaultName,
+            PageSize = 100,
+            PageNumber = 2
+        };
+
+        var spec = new ListObserversSpecification(request);
 
         // Act
         var result = spec.Evaluate(testCollection).ToList();
@@ -62,16 +73,23 @@ public class ListObserversSpecificationTests
     public void ListObserversSpecification_AppliesCorrectFilters_WhenPartialFilterApplied(string searchString)
     {
         // Arrange
-        var observer1 = new ObserverAggregateFaker(name: searchString, status: DefaultStatus).Generate();
-        var observer2 = new ObserverAggregateFaker(name: searchString, status: DefaultStatus).Generate();
+        var observer1 = new ObserverAggregateFaker(index: 101, name: searchString, status: DefaultStatus).Generate();
+        var observer2 = new ObserverAggregateFaker(index: 102, name: searchString, status: DefaultStatus).Generate();
 
         var testCollection = Enumerable
             .Range(1, 100)
-            .Select(statusArg => new ObserverAggregateFaker(name: searchString, status: DefaultStatus).Generate())
+            .Select(idx => new ObserverAggregateFaker(index: idx, name: searchString, status: DefaultStatus).Generate())
             .Union(new[] { observer1, observer2 })
             .ToList();
 
-        var spec = new ListObserversSpecification(searchString, null, 100, 2);
+        var request = new List.Request()
+        {
+            NameFilter = searchString,
+            PageSize = 100,
+            PageNumber = 2
+        };
+
+        var spec = new ListObserversSpecification(request);
 
         // Act
         var result = spec.Evaluate(testCollection).ToList();

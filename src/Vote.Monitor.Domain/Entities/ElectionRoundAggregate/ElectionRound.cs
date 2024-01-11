@@ -1,4 +1,5 @@
-﻿using Vote.Monitor.Domain.Entities.CountryAggregate;
+﻿using Vote.Monitor.Core.Entities;
+using Vote.Monitor.Domain.Entities.CountryAggregate;
 
 namespace Vote.Monitor.Domain.Entities.ElectionRoundAggregate;
 
