@@ -1,15 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FastEndpoints" Version="5.19.2" />
-    <PackageReference Include="FastEndpoints.Security" Version="5.19.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="7.0.13" />
+    <PackageReference Include="FastEndpoints" Version="5.21.2" />
+    <PackageReference Include="FastEndpoints.Security" Version="5.21.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="8.0.1" />
   </ItemGroup>
 
   <ItemGroup>

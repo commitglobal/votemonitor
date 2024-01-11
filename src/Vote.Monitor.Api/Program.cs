@@ -29,7 +29,7 @@ builder.Services.SwaggerDocument(o =>
     {
         s.Title = "Vote Monitor API";
         s.Version = "v2";
-        s.SchemaProcessors.Add(new SmartEnumSchemaProcessor());
+        s.SchemaSettings.SchemaProcessors.Add(new SmartEnumSchemaProcessor());
     };
 });
 
