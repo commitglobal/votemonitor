@@ -1,12 +1,15 @@
-using Vote.Monitor.Core.Entities;
-using Vote.Monitor.Core.Extensions;
+﻿using Vote.Monitor.Core.Extensions;
+using Vote.Monitor.Core.Services.Time;
 
 namespace Vote.Monitor.Domain.Entities.LanguageAggregate;
 
 public class Language : BaseEntity, IAggregateRoot
 {
 #pragma warning disable CS8618 // Required by Entity Framework
-    private Language() {}
+    private Language()
+    {
+    }
+#pragma warning restore CS8618
 
     /// <summary>
     /// English language name
@@ -23,7 +26,10 @@ public class Language : BaseEntity, IAggregateRoot
     /// </summary>
     public string Iso1 { get; }
 
-    public Language(string name, string nativeName, string iso1)
+    public Language(string name,
+        string nativeName,
+        string iso1,
+        ITimeService timeService) : base(iso1.ToGuid(), timeService)
     {
         Id = iso1.ToGuid();
         Name = name;

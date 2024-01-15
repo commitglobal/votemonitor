@@ -1,4 +1,6 @@
-﻿namespace Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
+﻿using Vote.Monitor.Core.Services.Time;
+
+namespace Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
 
 public class PlatformAdmin : ApplicationUser
 {
@@ -6,8 +8,12 @@ public class PlatformAdmin : ApplicationUser
     private PlatformAdmin()
     {
     }
+#pragma warning restore CS8618
 
-    public PlatformAdmin(string name, string login, string password) : base(name, login, password, UserRole.PlatformAdmin)
+    public PlatformAdmin(string name,
+        string login,
+        string password,
+        ITimeService timeService) : base(name, login, password, UserRole.PlatformAdmin, timeService)
     {
     }
 }

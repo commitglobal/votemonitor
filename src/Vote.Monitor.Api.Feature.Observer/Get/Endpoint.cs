@@ -28,7 +28,9 @@ public class Endpoint : Endpoint<Request, Results<Ok<ObserverModel>, NotFound>>
             Login = observer.Login,
             Name = observer.Name,
             PhoneNumber = observer.PhoneNumber,
-            Status = observer.Status
+            Status = observer.Status,
+            CreatedOn = observer.CreatedOn,
+            LastModifiedOn = observer.LastModifiedOn
         });
     }
 }

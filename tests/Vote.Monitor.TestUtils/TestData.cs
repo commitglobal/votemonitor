@@ -1,4 +1,4 @@
-﻿namespace Vote.Monitor.Api.Feature.PollingStation.UnitTests;
+﻿namespace Vote.Monitor.TestUtils;
 
 public class TestData
 {

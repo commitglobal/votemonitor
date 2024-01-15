@@ -26,7 +26,9 @@ public class Endpoint : Endpoint<Request, Results<Ok<PagedResponse<CSOAdminModel
             Id = x.Id,
             Name = x.Name,
             Login = x.Login,
-            Status = x.Status
+            Status = x.Status,
+            CreatedOn = x.CreatedOn,
+            LastModifiedOn = x.LastModifiedOn
         }).ToList();
 
         return TypedResults.Ok(new PagedResponse<CSOAdminModel>(result, csosCount, req.PageNumber, req.PageSize));

@@ -1,9 +1,4 @@
-﻿using System.ComponentModel;
-using System.Text.Json.Serialization;
-using Ardalis.SmartEnum.SystemTextJson;
-using FastEndpoints;
-
-namespace Vote.Monitor.Core.Models;
+﻿namespace Vote.Monitor.Core.Models;
 
 public class BaseFilterRequest
 {

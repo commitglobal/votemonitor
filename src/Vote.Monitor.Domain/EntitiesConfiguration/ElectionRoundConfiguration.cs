@@ -8,12 +8,14 @@ internal class ElectionRoundConfiguration : IEntityTypeConfiguration<ElectionRou
 {
     public void Configure(EntityTypeBuilder<ElectionRound> builder)
     {
-        builder
-            .Property(e => e.Id)
-            .HasDefaultValueSql("uuid_generate_v4()");
+        builder.HasKey(e => e.Id);
 
-        builder.Property(e => e.Name).IsRequired();
+        builder.Property(e => e.Id).IsRequired();
+        builder.Property(e => e.Name).HasMaxLength(256).IsRequired();
         builder.Property(e => e.Status).IsRequired();
-        builder.HasOne(e => e.Country).WithMany();
+        builder
+            .HasOne(e => e.Country)
+            .WithMany()
+            .HasForeignKey(e => e.CountryId);
     }
 }

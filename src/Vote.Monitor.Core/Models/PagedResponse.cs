@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace Vote.Monitor.Core.Models;
+﻿namespace Vote.Monitor.Core.Models;
 
 public class PagedResponse<T>
 {

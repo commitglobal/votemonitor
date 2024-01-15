@@ -1,4 +1,4 @@
-﻿using Vote.Monitor.Core.Extensions;
+﻿using Vote.Monitor.Domain.Specifications;
 
 namespace Vote.Monitor.Api.Feature.PollingStation.Specifications;
 

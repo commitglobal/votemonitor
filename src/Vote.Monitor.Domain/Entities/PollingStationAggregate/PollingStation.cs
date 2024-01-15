@@ -1,23 +1,25 @@
 ﻿using System.Text.Json;
-using Vote.Monitor.Core.Entities;
+using Vote.Monitor.Core.Services.Time;
 
 namespace Vote.Monitor.Domain.Entities.PollingStationAggregate;
-public class PollingStation : IAggregateRoot, IDisposable
+public class PollingStation : AuditableBaseEntity, IAggregateRoot, IDisposable
 {
 #pragma warning disable CS8618 // Required by Entity Framework
     private PollingStation()
     {
-
     }
-    
-    public PollingStation(string address, int displayOrder, JsonDocument tags)
+#pragma warning restore CS8618
+
+    public PollingStation(string address,
+        int displayOrder,
+        JsonDocument tags,
+        ITimeService timeService) : base(Guid.NewGuid(), timeService)
     {
         Address = address;
         DisplayOrder = displayOrder;
         Tags = tags;
     }
 
-    public Guid Id { get; private set; }
     public string Address { get; private set; }
     public int DisplayOrder { get; private set; }
     public JsonDocument Tags { get; private set; }

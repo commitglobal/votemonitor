@@ -28,7 +28,9 @@ public class Endpoint : Endpoint<Request, PagedResponse<ObserverModel>>
             Name = x.Name,
             Login = x.Login,
             PhoneNumber = x.PhoneNumber,
-            Status = x.Status
+            Status = x.Status,
+            CreatedOn = x.CreatedOn,
+            LastModifiedOn = x.LastModifiedOn
         }).ToList();
 
         return new PagedResponse<ObserverModel>(result, observersCount, req.PageNumber, req.PageSize);

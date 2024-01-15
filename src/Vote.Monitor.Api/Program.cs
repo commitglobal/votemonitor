@@ -16,6 +16,7 @@ using Vote.Monitor.Domain;
 using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
 using Vote.Monitor.Domain.Entities.CSOAggregate;
 using Vote.Monitor.Domain.Entities.ElectionRoundAggregate;
+using Vote.Monitor.Core.Preprocessors;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddFastEndpoints();
@@ -84,6 +85,10 @@ app.UseAuthorization();
 app.UseFastEndpoints(x =>
 {
     x.Errors.UseProblemDetails();
+    x.Endpoints.Configurator = ep =>
+    {
+        ep.PreProcessor<CurrentUserInjector>(Order.Before);
+    };
 
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<UserStatus, string>());
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<UserRole, string>());

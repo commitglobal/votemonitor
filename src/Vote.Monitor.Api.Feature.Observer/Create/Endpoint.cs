@@ -1,14 +1,17 @@
 ﻿using Vote.Monitor.Api.Feature.Observer.Specifications;
+using Vote.Monitor.Core.Services.Time;
 
 namespace Vote.Monitor.Api.Feature.Observer.Create;
 
 public class Endpoint : Endpoint<Request, Results<Ok<ObserverModel>, Conflict<ProblemDetails>>>
 {
-    readonly IRepository<ObserverAggregate> _repository;
+    private readonly IRepository<ObserverAggregate> _repository;
+    private readonly ITimeService _timeService;
 
-    public Endpoint(IRepository<ObserverAggregate> repository)
+    public Endpoint(IRepository<ObserverAggregate> repository, ITimeService timeService)
     {
         _repository = repository;
+        _timeService = timeService;
     }
 
     public override void Configure()
@@ -27,7 +30,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<ObserverModel>, Conflict<Pr
             return TypedResults.Conflict(new ProblemDetails(ValidationFailures));
         }
 
-        var observer = new ObserverAggregate(req.Name, req.Email, req.Password, req.PhoneNumber);
+        var observer = new ObserverAggregate(req.Name, req.Email, req.Password, req.PhoneNumber, _timeService);
         await _repository.AddAsync(observer, ct);
 
         return TypedResults.Ok(new ObserverModel
@@ -36,7 +39,9 @@ public class Endpoint : Endpoint<Request, Results<Ok<ObserverModel>, Conflict<Pr
             Name = observer.Name,
             Login = observer.Login,
             PhoneNumber = observer.PhoneNumber,
-            Status = observer.Status
+            Status = observer.Status,
+            CreatedOn = observer.CreatedOn,
+            LastModifiedOn = observer.LastModifiedOn
         });
     }
 }

@@ -1,5 +1,5 @@
-﻿using Vote.Monitor.Core.Entities;
-using Vote.Monitor.Core.Extensions;
+﻿using Vote.Monitor.Core.Extensions;
+using Vote.Monitor.Core.Services.Time;
 
 namespace Vote.Monitor.Domain.Entities.CountryAggregate;
 
@@ -10,6 +10,7 @@ public class Country : BaseEntity, IAggregateRoot
     {
 
     }
+#pragma warning restore CS8618
 
     /// <summary>
     /// Two-letter country code (ISO 3166-1 alpha-2)
@@ -36,7 +37,12 @@ public class Country : BaseEntity, IAggregateRoot
     /// </summary>
     public string FullName { get; private set; }
 
-    public Country(string name, string fullName, string iso2, string iso3, string numericCode)
+    public Country(string name, 
+        string fullName, 
+        string iso2, 
+        string iso3, 
+        string numericCode,
+        ITimeService timeService) : base(iso2.ToGuid(), timeService)
     {
         Id = iso2.ToGuid();
         Name = name;

@@ -1,6 +1,7 @@
 ﻿using System.Text;
+using Microsoft.Extensions.Options;
 
-namespace Vote.Monitor.Api.Feature.PollingStation.UnitTests;
+namespace Vote.Monitor.TestUtils;
 
 public static class Utils
 {
@@ -16,7 +17,7 @@ public static class Utils
 
     public static IOptions<TOptions> AsIOption<TOptions>(this TOptions optionInstance) where TOptions : class, new()
     {
-        return Microsoft.Extensions.Options.Options.Create(optionInstance);
+        return Options.Create(optionInstance);
     }
 
     public static IEnumerable<T> Repeat<T>(this T value, int times)

@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using Vote.Monitor.Core.Models;
+﻿using Vote.Monitor.Core.Models;
 
 namespace Vote.Monitor.Api.Feature.Observer.List;
 

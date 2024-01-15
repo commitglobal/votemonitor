@@ -1,4 +1,6 @@
-﻿namespace Vote.Monitor.Api.Feature.CSOAdmin.Specifications;
+﻿using Vote.Monitor.Domain.Specifications;
+
+namespace Vote.Monitor.Api.Feature.CSOAdmin.Specifications;
 
 public static class SpecificationExtensions
 {
@@ -7,10 +9,11 @@ public static class SpecificationExtensions
         // We want the "asc" to be the default, that's why the condition is reverted.
         var isAscending = !(filter.SortOrder?.Equals(SortOrder.Asc) ?? false);
 
-        return filter.ColumnName switch
+        if (string.Equals(filter.ColumnName, nameof(CSOAdminAggregate.Name), StringComparison.InvariantCultureIgnoreCase))
         {
-            nameof(CSOAdminAggregate.Name) => isAscending ? builder.OrderBy(x => x.Name) : builder.OrderByDescending(x => x.Name),
-            _ => builder.OrderBy(x => x.Id)
-        };
+            return isAscending ? builder.OrderBy(x => x.Name) : builder.OrderByDescending(x => x.Name);
+        }
+
+        return builder.ApplyDefaultOrdering(filter);
     }
 }

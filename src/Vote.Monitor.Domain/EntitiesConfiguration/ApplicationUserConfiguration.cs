@@ -8,16 +8,16 @@ internal class ApplicationUserConfiguration : IEntityTypeConfiguration<Applicati
 {
     public void Configure(EntityTypeBuilder<ApplicationUser> builder)
     {
-        builder
-            .Property(e => e.Id)
-            .HasDefaultValueSql("uuid_generate_v4()");
+        builder.HasKey(u => u.Id);
+        builder.HasIndex(u => u.Login).IsUnique();
 
         builder.UseTptMappingStrategy();
 
-        builder.Property(e => e.Name).IsRequired();
-        builder.Property(e => e.Login).IsRequired();
-        builder.Property(e => e.Password).IsRequired();
-        builder.Property(e => e.Role).IsRequired();
-        builder.Property(e => e.Status).IsRequired();
+        builder.Property(u => u.Id).IsRequired();
+        builder.Property(u => u.Name).HasMaxLength(256).IsRequired();
+        builder.Property(u=> u.Login).HasMaxLength(256).IsRequired();
+        builder.Property(u => u.Password).HasMaxLength(256).IsRequired();
+        builder.Property(u => u.Role).IsRequired();
+        builder.Property(u => u.Status).IsRequired();
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace Vote.Monitor.Api.Feature.CSOAdmin.Specifications;
+﻿using Vote.Monitor.Domain.Specifications;
+
+namespace Vote.Monitor.Api.Feature.CSOAdmin.Specifications;
 
 public class ListCSOAdminsSpecification : Specification<CSOAdminAggregate>
 {

@@ -1,0 +1,10 @@
+﻿global using Ardalis.Specification;
+global using AutoBogus;
+global using AutoBogus.NSubstitute;
+global using FluentAssertions;
+global using NSubstitute;
+global using Vote.Monitor.Core.Services.Time;
+global using Vote.Monitor.Domain.Entities;
+global using Vote.Monitor.Domain.Specifications;
+global using Vote.Monitor.TestUtils;
+global using Xunit;

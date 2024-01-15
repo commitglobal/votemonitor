@@ -31,7 +31,9 @@ public class Endpoint : Endpoint<Request, Results<Ok<CSOAdminModel>, NotFound>>
             Id = csoAdmin.Id,
             Name = csoAdmin.Name,
             Login = csoAdmin.Login,
-            Status = csoAdmin.Status
+            Status = csoAdmin.Status,
+            CreatedOn = csoAdmin.CreatedOn,
+            LastModifiedOn = csoAdmin.LastModifiedOn
         });
 
     }

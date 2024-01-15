@@ -5,7 +5,6 @@ using Vote.Monitor.Api.Feature.Observer.Services;
 namespace Vote.Monitor.Api.Feature.Observer.UnitTests.Services;
 public class ObserverCsvParserTests
 {
-
     [Fact]
     public void Parsing_ShouldFail_When_EmptyFile()
     {
@@ -47,7 +46,6 @@ public class ObserverCsvParserTests
         var failItemResult = result.As<ParsingResult<ObserverImportModel>.Fail>().Items;
         Assert.Single(failItemResult);
         failItemResult.First().ErrorMessage.Should().Be("Cannot parse the header!");
-
     }
 
     [Theory]
@@ -55,7 +53,6 @@ public class ObserverCsvParserTests
     public void Parsing_ShouldFail_When_MalformedCsv(string fileContent, int numberOfRows, List<int> rowIndexWithErrors, List<string> errormessages, List<int> rowOk)
     {
         // Arrange
-
         using var fileStream = new MemoryStream(Encoding.UTF8.GetBytes(fileContent));
 
         var parser = new CsvParser<ObserverImportModel, ObserverImportModelMapper>(
@@ -81,16 +78,14 @@ public class ObserverCsvParserTests
             int rowIndex = rowOk[i];
             failItemResult[rowIndex].IsSuccess.Should().BeTrue();
         }
-
     }
 
 
     [Theory]
     [MemberData(nameof(ValidCsv))]
-    public void Parsing_ShouldSuccedd_When_ValidCSVs(string fileContent, List<ObserverImportModel> rows)
+    public void Parsing_ShouldSucceed_When_ValidCSVs(string fileContent, List<ObserverImportModel> rows)
     {
         // Arrange
-
         using var fileStream = new MemoryStream(Encoding.UTF8.GetBytes(fileContent));
 
         var parser = new CsvParser<ObserverImportModel, ObserverImportModelMapper>(
@@ -104,7 +99,7 @@ public class ObserverCsvParserTests
         result.Should().BeOfType<ParsingResult<ObserverImportModel>.Success>();
         var succesItemResult = result.As<ParsingResult<ObserverImportModel>.Success>().Items;
         succesItemResult.Count().Should().Be(rows.Count);
-        _ = succesItemResult.SequenceEqual(rows);
+        succesItemResult.Should().BeEquivalentTo(rows);
     }
 
     public static IEnumerable<object[]> ValidCsv => new List<object[]>
@@ -206,9 +201,8 @@ public class ObserverCsvParserTests
                 "Duplicated data found. Row(s) where you can find the duplicate data are 3",
                 "Duplicated data found. First row where you can find the duplicate data is 2"
             },
-            new List<int>{}
+            new List<int>()
         }
-
     };
 }
 
