@@ -21,6 +21,4 @@ public class ImportValidationErrors : AuditableBaseEntity, IAggregateRoot
     public ImportType ImportType { get; private set; }
     public string OriginalFileName { get; private set; }
     public string Data { get; private set; }
-
-
 }

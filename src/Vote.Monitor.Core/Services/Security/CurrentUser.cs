@@ -8,7 +8,7 @@ public class CurrentUser : ICurrentUser, ICurrentUserInitializer
 
     public string? Name => _user?.Identity?.Name;
 
-    private Guid _userId = Guid.Empty;
+    private readonly Guid _userId = Guid.Empty;
 
     public Guid GetUserId() =>
         IsAuthenticated()
