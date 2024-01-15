@@ -3,6 +3,7 @@ global using AutoBogus;
 global using AutoBogus.NSubstitute;
 global using FluentAssertions;
 global using NSubstitute;
+global using Vote.Monitor.Core.Models;
 global using Vote.Monitor.Core.Services.Time;
 global using Vote.Monitor.Domain.Entities;
 global using Vote.Monitor.Domain.Specifications;

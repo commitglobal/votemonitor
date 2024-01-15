@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using Vote.Monitor.Api.Feature.Observer.Services;
-using Vote.Monitor.Api.Feature.Observer.Specifications;
 using Vote.Monitor.Core.Services.Time;
 using Vote.Monitor.Domain.Entities.ImportValidationErrorsAggregate;
 

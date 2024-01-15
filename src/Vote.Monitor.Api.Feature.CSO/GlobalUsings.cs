@@ -1,6 +1,5 @@
 ﻿// Global using directives
 
-global using System.Net;
 global using Ardalis.Specification;
 global using FastEndpoints;
 global using FluentValidation;

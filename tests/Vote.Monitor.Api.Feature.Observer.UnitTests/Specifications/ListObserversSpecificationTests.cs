@@ -1,8 +1,4 @@
-﻿using Vote.Monitor.Api.Feature.Observer.Specifications;
-using Vote.Monitor.Core.Models;
-using Vote.Monitor.TestUtils;
-
-namespace Vote.Monitor.Api.Feature.Observer.UnitTests.Specifications;
+﻿namespace Vote.Monitor.Api.Feature.Observer.UnitTests.Specifications;
 
 public class ListObserversSpecificationTests
 {

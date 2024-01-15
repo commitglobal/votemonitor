@@ -1,24 +1,4 @@
-﻿using Ardalis.SmartEnum.SystemTextJson;
-using FastEndpoints;
-using FastEndpoints.Swagger;
-using Serilog;
-using Vote.Monitor.Api.Feature.Auth;
-using Vote.Monitor.Api.Feature.Country;
-using Vote.Monitor.Api.Feature.Language;
-using Vote.Monitor.Api.Feature.CSO;
-using Vote.Monitor.Api.Feature.CSOAdmin;
-using Vote.Monitor.Api.Feature.Observer;
-using Vote.Monitor.Api.Feature.PollingStation;
-using Vote.Monitor.Api.Swagger;
-using Vote.Monitor.Core;
-using Vote.Monitor.Core.Models;
-using Vote.Monitor.Domain;
-using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
-using Vote.Monitor.Domain.Entities.CSOAggregate;
-using Vote.Monitor.Domain.Entities.ElectionRoundAggregate;
-using Vote.Monitor.Core.Preprocessors;
-
-var builder = WebApplication.CreateBuilder(args);
+﻿var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddFastEndpoints();
 builder.Services.SwaggerDocument(o =>
 {

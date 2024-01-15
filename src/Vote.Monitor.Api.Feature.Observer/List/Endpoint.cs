@@ -1,7 +1,4 @@
-﻿using Vote.Monitor.Api.Feature.Observer.Specifications;
-using Vote.Monitor.Core.Models;
-
-namespace Vote.Monitor.Api.Feature.Observer.List;
+﻿namespace Vote.Monitor.Api.Feature.Observer.List;
 
 public class Endpoint : Endpoint<Request, PagedResponse<ObserverModel>>
 {

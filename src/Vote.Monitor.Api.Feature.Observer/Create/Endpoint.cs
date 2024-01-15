@@ -1,5 +1,4 @@
-﻿using Vote.Monitor.Api.Feature.Observer.Specifications;
-using Vote.Monitor.Core.Services.Time;
+﻿using Vote.Monitor.Core.Services.Time;
 
 namespace Vote.Monitor.Api.Feature.Observer.Create;
 

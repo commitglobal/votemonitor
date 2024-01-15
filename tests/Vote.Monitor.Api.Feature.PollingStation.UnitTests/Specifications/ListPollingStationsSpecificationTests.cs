@@ -1,7 +1,4 @@
-﻿using Vote.Monitor.Api.Feature.PollingStation.List;
-using Vote.Monitor.Core.Models;
-
-namespace Vote.Monitor.Api.Feature.PollingStation.UnitTests.Specifications;
+﻿namespace Vote.Monitor.Api.Feature.PollingStation.UnitTests.Specifications;
 
 public class ListPollingStationsSpecificationTests
 {

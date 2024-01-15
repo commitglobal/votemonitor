@@ -1,8 +1,4 @@
-﻿using Ardalis.Specification;
-using Vote.Monitor.Core.Models;
-using Vote.Monitor.Domain.Entities;
-
-namespace Vote.Monitor.Domain.Specifications;
+﻿namespace Vote.Monitor.Domain.Specifications;
 
 public static class SpecificationExtensions
 {

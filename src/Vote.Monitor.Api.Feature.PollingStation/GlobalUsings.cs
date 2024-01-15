@@ -12,7 +12,6 @@ global using Microsoft.AspNetCore.Http.HttpResults;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Logging;
 global using Microsoft.Extensions.Options;
-global using Vote.Monitor.Core.Helpers;
 global using Vote.Monitor.Core.Models;
 global using Vote.Monitor.Core.Services.Csv;
 global using Vote.Monitor.Domain;

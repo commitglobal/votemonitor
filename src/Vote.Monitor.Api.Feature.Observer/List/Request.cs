@@ -1,6 +1,4 @@
-﻿using Vote.Monitor.Core.Models;
-
-namespace Vote.Monitor.Api.Feature.Observer.List;
+﻿namespace Vote.Monitor.Api.Feature.Observer.List;
 
 public class Request: BaseFilterRequest
 {

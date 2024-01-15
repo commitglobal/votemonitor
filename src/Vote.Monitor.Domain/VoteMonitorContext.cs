@@ -5,7 +5,6 @@ using SmartEnum.EFCore;
 using Vote.Monitor.Core.Services.Security;
 using Vote.Monitor.Core.Services.Serialization;
 using Vote.Monitor.Core.Services.Time;
-using Vote.Monitor.Domain.Entities;
 using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
 using Vote.Monitor.Domain.Entities.Auditing;
 using Vote.Monitor.Domain.Entities.CountryAggregate;

@@ -1,6 +1,4 @@
-﻿using Vote.Monitor.Core.Models;
-
-namespace Vote.Monitor.Api.Feature.ElectionRound.Specifications;
+﻿namespace Vote.Monitor.Api.Feature.ElectionRound.Specifications;
 
 public static class SpecificationExtensions
 {
