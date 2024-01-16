@@ -16,5 +16,6 @@ global using Vote.Monitor.Api.Feature.PollingStation.Options;
 global using Vote.Monitor.Api.Feature.PollingStation.Services;
 global using Vote.Monitor.Api.Feature.PollingStation.Specifications;
 global using Vote.Monitor.Core.Models;
+global using Vote.Monitor.TestUtils;
 global using Xunit;
 global using PollingStationAggregate = Vote.Monitor.Domain.Entities.PollingStationAggregate.PollingStation;

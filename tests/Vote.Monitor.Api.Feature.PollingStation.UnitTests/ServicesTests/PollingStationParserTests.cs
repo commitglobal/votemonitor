@@ -1,6 +1,4 @@
-﻿using Vote.Monitor.Api.Feature.Observer.UnitTests;
-
-namespace Vote.Monitor.Api.Feature.PollingStation.UnitTests.ServicesTests;
+﻿namespace Vote.Monitor.Api.Feature.PollingStation.UnitTests.ServicesTests;
 
 public class PollingStationParserTests
 {

@@ -1,6 +1,4 @@
-﻿using Vote.Monitor.TestUtils;
-
-namespace Vote.Monitor.Api.Feature.PollingStation.UnitTests.ValidatorTests;
+﻿namespace Vote.Monitor.Api.Feature.PollingStation.UnitTests.ValidatorTests;
 
 public class GetTagsRequestValidatorTests
 {
