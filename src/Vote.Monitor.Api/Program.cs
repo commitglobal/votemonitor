@@ -34,9 +34,9 @@ builder.Services.AddLogging(logging =>
 builder.Services.AddCors(options =>
     {
         options.AddPolicy("AllowAll",
-            builder =>
+            policy =>
             {
-                builder
+                policy
                 .AllowAnyOrigin()
                 .AllowAnyHeader()
                 .AllowAnyMethod();

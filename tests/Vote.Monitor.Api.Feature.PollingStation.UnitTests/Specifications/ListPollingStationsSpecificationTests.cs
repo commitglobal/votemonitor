@@ -115,7 +115,7 @@ public class ListPollingStationsSpecificationTests
         var request = new Request
         {
             SortOrder = sortOrder,
-            ColumnName = columnName,
+            SortColumnName = columnName,
             PageSize = 100,
             PageNumber = 2
         };
@@ -148,7 +148,7 @@ public class ListPollingStationsSpecificationTests
         var request = new Request
         {
             SortOrder = SortOrder.Desc,
-            ColumnName = "DisplayOrder",
+            SortColumnName = "DisplayOrder",
             PageSize = 100,
             PageNumber = 2
         };

@@ -114,7 +114,7 @@ public class ListObserversSpecificationTests
 
         var request = new List.Request
         {
-            ColumnName = columnName,
+            SortColumnName = columnName,
             PageSize = 100,
             PageNumber = 2
         };
@@ -147,7 +147,7 @@ public class ListObserversSpecificationTests
 
         var request = new List.Request
         {
-            ColumnName = columnName,
+            SortColumnName = columnName,
             SortOrder = sortOrder,
             PageSize = 100,
             PageNumber = 2
@@ -180,7 +180,7 @@ public class ListObserversSpecificationTests
 
         var request = new List.Request
         {
-            ColumnName = "name",
+            SortColumnName = "name",
             SortOrder = SortOrder.Desc,
             PageSize = 100,
             PageNumber = 2

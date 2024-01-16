@@ -2,28 +2,45 @@
 
 public static class SpecificationExtensions
 {
-    public static ISpecificationBuilder<T> Paginate<T>(this ISpecificationBuilder<T> builder, BaseFilterRequest filter) where T : class
+    public static ISpecificationBuilder<T> Paginate<T>(this ISpecificationBuilder<T> builder, BasePaginatedRequest request) where T : class
     {
-        return builder.Skip(PaginationHelper.CalculateSkip(filter.PageSize, filter.PageNumber))
-            .Take(PaginationHelper.CalculateTake(filter.PageSize));
+        return builder.Skip(PaginationHelper.CalculateSkip(request.PageSize, request.PageNumber))
+            .Take(PaginationHelper.CalculateTake(request.PageSize));
+    }
+
+    public static ISpecificationBuilder<T> Paginate<T>(this ISpecificationBuilder<T> builder, BaseSortPaginatedRequest request) where T : class
+    {
+        return builder.Skip(PaginationHelper.CalculateSkip(request.PageSize, request.PageNumber))
+            .Take(PaginationHelper.CalculateTake(request.PageSize));
     }
 
     public static ISpecificationBuilder<T> ApplyDefaultOrdering<T>(this ISpecificationBuilder<T> builder,
-        BaseFilterRequest filter) where T : AuditableBaseEntity
+        BaseSortPaginatedRequest request) where T : AuditableBaseEntity
     {
-        // We want the "asc" to be the default, that's why the condition is reverted.
-        var isAscending = !(filter.SortOrder?.Equals(SortOrder.Asc) ?? false);
-
-        if (string.Equals(filter.ColumnName, nameof(AuditableBaseEntity.CreatedOn), StringComparison.InvariantCultureIgnoreCase))
+        if (string.Equals(request.SortColumnName, nameof(AuditableBaseEntity.CreatedOn), StringComparison.InvariantCultureIgnoreCase))
         {
-            return isAscending ? builder.OrderBy(x => x.CreatedOn) : builder.OrderByDescending(x => x.CreatedOn);
+            return request.IsAscendingSorting
+                ? builder
+                    .OrderBy(x => x.CreatedOn)
+                    .ThenBy(x => x.Id)
+                : builder
+                    .OrderByDescending(x => x.CreatedOn)
+                    .ThenBy(x => x.Id);
         }
 
-        if (string.Equals(filter.ColumnName, nameof(AuditableBaseEntity.LastModifiedOn), StringComparison.InvariantCultureIgnoreCase))
+        if (string.Equals(request.SortColumnName, nameof(AuditableBaseEntity.LastModifiedOn), StringComparison.InvariantCultureIgnoreCase))
         {
-            return isAscending ? builder.OrderBy(x => x.LastModifiedOn) : builder.OrderByDescending(x => x.LastModifiedOn);
+            return request.IsAscendingSorting
+                ? builder
+                    .OrderBy(x => x.LastModifiedOn)
+                    .ThenBy(x => x.Id)
+                : builder
+                    .OrderByDescending(x => x.LastModifiedOn)
+                    .ThenBy(x => x.Id);
         }
 
-        return builder.OrderBy(x => x.CreatedOn);
+        return builder
+            .OrderBy(x => x.CreatedOn)
+            .ThenBy(x => x.Id);
     }
 }

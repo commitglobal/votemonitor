@@ -3,7 +3,7 @@ using Ardalis.SmartEnum.SystemTextJson;
 
 namespace Vote.Monitor.Api.Feature.CSO.List;
 
-public class Request: BaseFilterRequest
+public class Request: BaseSortPaginatedRequest
 {
     [QueryParam]
     public string? NameFilter { get; set; }

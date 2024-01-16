@@ -2,5 +2,7 @@
 
 public class TestEntity : AuditableBaseEntity
 {
-
+    public TestEntity(ITimeService timeService) : base(Guid.NewGuid(), timeService)
+    {
+    }
 }

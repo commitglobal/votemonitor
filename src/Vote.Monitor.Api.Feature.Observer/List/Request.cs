@@ -1,6 +1,6 @@
 ﻿namespace Vote.Monitor.Api.Feature.Observer.List;
 
-public class Request: BaseFilterRequest
+public class Request: BaseSortPaginatedRequest
 {
     [QueryParam]
     public string? NameFilter { get; set; }

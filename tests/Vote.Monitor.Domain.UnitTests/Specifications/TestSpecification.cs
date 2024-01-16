@@ -2,8 +2,8 @@
 
 public class TestSpecification : Specification<TestEntity>
 {
-    public TestSpecification(BaseFilterRequest filter)
+    public TestSpecification(BaseSortPaginatedRequest request)
     {
-        Query.ApplyDefaultOrdering(filter);
+        Query.ApplyDefaultOrdering(request);
     }
 }

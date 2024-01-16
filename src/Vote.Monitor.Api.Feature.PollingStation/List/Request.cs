@@ -1,9 +1,9 @@
 ﻿namespace Vote.Monitor.Api.Feature.PollingStation.List;
-public class Request: BaseFilterRequest
+public class Request: BaseSortPaginatedRequest
 {
     [QueryParam]
     public string? AddressFilter { get; set; }
 
-    [QueryParam]
+    [FromBody]
     public Dictionary<string, string>? Filter { get; set; }
 }

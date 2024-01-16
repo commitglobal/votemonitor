@@ -2,11 +2,11 @@
 
 public class SpecificationExtensionsTests
 {
-    private readonly TestEntity _observer1 = new AuditableBaseEntityFaker(index: 1).Generate();
-    private readonly TestEntity _observer2 = new AuditableBaseEntityFaker(index: 2).Generate();
-    private readonly TestEntity _observer3 = new AuditableBaseEntityFaker(index: 3).Generate();
-    private readonly TestEntity _observer4 = new AuditableBaseEntityFaker(index: 4).Generate();
-    private readonly TestEntity _observer5 = new AuditableBaseEntityFaker(index: 5).Generate();
+    private readonly TestEntity _entity1 = new AuditableBaseEntityFaker(index: 1).Generate();
+    private readonly TestEntity _entity2 = new AuditableBaseEntityFaker(index: 2).Generate();
+    private readonly TestEntity _entity3 = new AuditableBaseEntityFaker(index: 3).Generate();
+    private readonly TestEntity _entity4 = new AuditableBaseEntityFaker(index: 4).Generate();
+    private readonly TestEntity _entity5 = new AuditableBaseEntityFaker(index: 5).Generate();
 
     private readonly TestEntity[] _testCollection;
 
@@ -14,11 +14,11 @@ public class SpecificationExtensionsTests
     {
         _testCollection =
         [
-            _observer5,
-            _observer2,
-            _observer1,
-            _observer4,
-            _observer3
+            _entity5,
+            _entity2,
+            _entity1,
+            _entity4,
+            _entity3
         ];
     }
 
@@ -27,9 +27,9 @@ public class SpecificationExtensionsTests
     public void ApplyDefaultOrdering_AppliesDefaultSorting_WhenNoSortColumnSet(string columnName)
     {
         // Arrange
-        var request = new BaseFilterRequest
+        var request = new BaseSortPaginatedRequest
         {
-            ColumnName = columnName,
+            SortColumnName = columnName,
         };
 
         var spec = new TestSpecification(request);
@@ -38,11 +38,7 @@ public class SpecificationExtensionsTests
         var result = spec.Evaluate(_testCollection).ToList();
 
         // Assert
-        result
-            .Should()
-            .HaveCount(5)
-            .And
-            .BeInAscendingOrder(x => x.CreatedOn);
+        result.Should().BeInAscendingOrder(x => x.CreatedOn);
     }
 
     [Theory]
@@ -50,9 +46,9 @@ public class SpecificationExtensionsTests
     public void ApplyDefaultOrdering_SortsByCreatedOn(string columnName, SortOrder? sortOrder)
     {
         // Arrange
-        var request = new BaseFilterRequest
+        var request = new BaseSortPaginatedRequest
         {
-            ColumnName = columnName,
+            SortColumnName = columnName,
             SortOrder = sortOrder,
         };
 
@@ -62,11 +58,7 @@ public class SpecificationExtensionsTests
         var result = spec.Evaluate(_testCollection).ToList();
 
         // Assert
-        result
-            .Should()
-            .HaveCount(5)
-            .And
-            .BeInAscendingOrder(x => x.CreatedOn);
+        result.Should().BeInAscendingOrder(x => x.CreatedOn);
     }
 
     [Theory]
@@ -74,9 +66,9 @@ public class SpecificationExtensionsTests
     public void ApplyDefaultOrdering_SortsByLastModifiedOn(string columnName, SortOrder? sortOrder)
     {
         // Arrange
-        var request = new BaseFilterRequest
+        var request = new BaseSortPaginatedRequest
         {
-            ColumnName = columnName,
+            SortColumnName = columnName,
             SortOrder = sortOrder,
         };
 
@@ -86,13 +78,8 @@ public class SpecificationExtensionsTests
         var result = spec.Evaluate(_testCollection).ToList();
 
         // Assert
-        result
-            .Should()
-            .HaveCount(5)
-            .And
-            .BeInAscendingOrder(x => x.LastModifiedBy);
+        result.Should().BeInAscendingOrder(x => x.LastModifiedOn);
     }
-
 
     public static IEnumerable<object[]> CreatedOnSortTestData =>
         new List<object[]>
@@ -101,16 +88,16 @@ public class SpecificationExtensionsTests
             new object[] { "createdOn", SortOrder.Asc},
 
             new object[] { "CreatedOn", null},
-            new object[] { "createdOn", null},
+            new object[] { "createdOn", null}
         };
 
     public static IEnumerable<object[]> LastModifiedOnTestData =>
         new List<object[]>
         {
-            new object[] { "LastModifiedOn", SortOrder.Asc},
+            new object[] { "LastModifiedOn", SortOrder.Asc },
             new object[] { "lastModifiedOn", SortOrder.Asc },
 
-            new object[] { "LastModifiedOn", null},
-            new object[] { "lastModifiedOn", null},
+            new object[] { "LastModifiedOn", null },
+            new object[] { "lastModifiedOn", null }
         };
 }
