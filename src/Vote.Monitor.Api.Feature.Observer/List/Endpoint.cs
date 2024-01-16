@@ -1,7 +1,4 @@
-﻿using Vote.Monitor.Api.Feature.Observer.Specifications;
-using Vote.Monitor.Core.Models;
-
-namespace Vote.Monitor.Api.Feature.Observer.List;
+﻿namespace Vote.Monitor.Api.Feature.Observer.List;
 
 public class Endpoint : Endpoint<Request, PagedResponse<ObserverModel>>
 {
@@ -19,7 +16,7 @@ public class Endpoint : Endpoint<Request, PagedResponse<ObserverModel>>
 
     public override async Task<PagedResponse<ObserverModel>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var specification = new ListObserversSpecification(req.NameFilter, req.Status, req.PageSize, req.PageNumber);
+        var specification = new ListObserversSpecification(req);
         var observers = await _repository.ListAsync(specification, ct);
         var observersCount = await _repository.CountAsync(specification, ct);
         var result = observers.Select(x => new ObserverModel
@@ -28,7 +25,9 @@ public class Endpoint : Endpoint<Request, PagedResponse<ObserverModel>>
             Name = x.Name,
             Login = x.Login,
             PhoneNumber = x.PhoneNumber,
-            Status = x.Status
+            Status = x.Status,
+            CreatedOn = x.CreatedOn,
+            LastModifiedOn = x.LastModifiedOn
         }).ToList();
 
         return new PagedResponse<ObserverModel>(result, observersCount, req.PageNumber, req.PageSize);

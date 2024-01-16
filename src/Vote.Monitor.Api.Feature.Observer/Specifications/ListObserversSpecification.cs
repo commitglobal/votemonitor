@@ -1,13 +1,15 @@
-﻿namespace Vote.Monitor.Api.Feature.Observer.Specifications;
+﻿using Vote.Monitor.Domain.Specifications;
+
+namespace Vote.Monitor.Api.Feature.Observer.Specifications;
 
 public class ListObserversSpecification : Specification<ObserverAggregate>
 {
-    public ListObserversSpecification(string? nameFilter, UserStatus? status, int pageSize, int page)
+    public ListObserversSpecification(List.Request request)
     {
         Query
-            .Search(x => x.Name, "%" + nameFilter + "%", !string.IsNullOrEmpty(nameFilter))
-            .Where(x => x.Status == status, status != null)
-            .Skip(PaginationHelper.CalculateSkip(pageSize, page))
-            .Take(PaginationHelper.CalculateTake(pageSize));
+            .Search(x => x.Name, "%" + request.NameFilter + "%", !string.IsNullOrEmpty(request.NameFilter))
+            .Where(x => x.Status == request.Status, request.Status != null)
+            .ApplyOrdering(request)
+            .Paginate(request);
     }
 }

@@ -8,11 +8,10 @@ internal class CSOConfiguration : IEntityTypeConfiguration<CSO>
 {
     public void Configure(EntityTypeBuilder<CSO> builder)
     {
-        builder
-            .Property(e => e.Id)
-            .HasDefaultValueSql("uuid_generate_v4()");
+        builder.HasKey(c => c.Id);
 
-        builder.Property(e => e.Name).IsRequired();
-        builder.Property(e => e.Status).IsRequired();
+        builder.Property(c => c.Id).IsRequired();
+        builder.Property(c => c.Name).HasMaxLength(256).IsRequired();
+        builder.Property(c => c.Status).IsRequired();
     }
 }

@@ -2,7 +2,7 @@
 
 public class Endpoint : Endpoint<Request, Results<NoContent, NotFound, ProblemDetails>>
 {
-     readonly IRepository<ElectionRoundAggregate> _repository;
+    private readonly IRepository<ElectionRoundAggregate> _repository;
 
     public Endpoint(IRepository<ElectionRoundAggregate> repository)
     {

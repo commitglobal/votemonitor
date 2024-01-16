@@ -1,6 +1,6 @@
 ﻿namespace Vote.Monitor.Api.Feature.CSO.Specifications;
 
-public class GetCSOByNameSpecification : Specification<Domain.Entities.CSOAggregate.CSO>
+public class GetCSOByNameSpecification : Specification<CSOAggregate>
 {
     public GetCSOByNameSpecification(string name)
     {

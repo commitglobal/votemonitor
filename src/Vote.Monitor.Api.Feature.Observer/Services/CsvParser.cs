@@ -64,7 +64,7 @@ public class CsvParser<T, TMapper> : ICsvParser<T> where T : class where TMapper
     }
 
 
-    private CsvRowParsed<T> HeaderToCsvRow(CsvReader csv) => new CsvRowParsed<T>()
+    private CsvRowParsed<T> HeaderToCsvRow(CsvReader csv) => new CsvRowParsed<T>
     {
         IsSuccess = true,
         OriginalRow = string.Join(",", csv.HeaderRecord!),
@@ -106,7 +106,7 @@ public class CsvParser<T, TMapper> : ICsvParser<T> where T : class where TMapper
     {
         var validationResult = validator.Validate(item);
 
-        return new CsvRowParsed<T>()
+        return new CsvRowParsed<T>
         {
             IsSuccess = validationResult.IsValid,
             OriginalRow = originalString,

@@ -1,8 +1,3 @@
-﻿using Ardalis.Specification;
-using Vote.Monitor.Domain.Entities;
+﻿namespace Vote.Monitor.Domain.Repository;
 
-namespace Vote.Monitor.Domain.Repository;
-
-public interface IReadRepository<T> : IReadRepositoryBase<T> where T : class, IAggregateRoot
-{
-}
+public interface IReadRepository<T> : IReadRepositoryBase<T> where T : class, IAggregateRoot;

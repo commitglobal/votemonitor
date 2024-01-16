@@ -9,5 +9,3 @@ public sealed class ImportType : SmartEnum<ImportType, string>
     {
     }
 }
-
-

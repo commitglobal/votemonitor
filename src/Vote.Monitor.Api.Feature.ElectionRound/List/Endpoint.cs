@@ -1,6 +1,4 @@
-﻿using Vote.Monitor.Core.Models;
-
-namespace Vote.Monitor.Api.Feature.ElectionRound.List;
+﻿namespace Vote.Monitor.Api.Feature.ElectionRound.List;
 
 public class Endpoint : Endpoint<Request, Results<Ok<PagedResponse<ElectionRoundModel>>, ProblemDetails>>
 {

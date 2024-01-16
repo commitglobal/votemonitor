@@ -1,12 +1,15 @@
-﻿namespace Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
+﻿using Vote.Monitor.Core.Services.Time;
 
-public abstract class ApplicationUser : BaseEntity, IAggregateRoot
+namespace Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
+
+public abstract class ApplicationUser : AuditableBaseEntity, IAggregateRoot
 {
 #pragma warning disable CS8618 // Required by Entity Framework
     protected ApplicationUser()
     {
 
     }
+#pragma warning restore CS8618
 
     public string Name { get; private set; }
     public string Login { get; private set; }
@@ -14,7 +17,11 @@ public abstract class ApplicationUser : BaseEntity, IAggregateRoot
     public UserRole Role { get; private set; }
     public UserStatus Status { get; private set; }
 
-    public ApplicationUser(string name, string login, string password, UserRole role)
+    public ApplicationUser(string name,
+        string login,
+        string password,
+        UserRole role,
+        ITimeService timeService) : base(Guid.NewGuid(), timeService)
     {
         Name = name;
         Login = login;

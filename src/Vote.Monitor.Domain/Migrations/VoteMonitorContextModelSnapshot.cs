@@ -28,20 +28,34 @@ namespace Vote.Monitor.Domain.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasDefaultValueSql("uuid_generate_v4()");
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("LastModifiedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("LastModifiedOn")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Login")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.Property<string>("Role")
                         .IsRequired()
@@ -53,21 +67,74 @@ namespace Vote.Monitor.Domain.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Login")
+                        .IsUnique();
+
                     b.ToTable("Users");
 
                     b.UseTptMappingStrategy();
+                });
+
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.Auditing.Trail", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("AffectedColumns")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("NewValues")
+                        .HasColumnType("text");
+
+                    b.Property<string>("OldValues")
+                        .HasColumnType("text");
+
+                    b.Property<string>("PrimaryKey")
+                        .HasColumnType("text");
+
+                    b.Property<string>("TableName")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Type")
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AuditTrails");
                 });
 
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.CSOAggregate.CSO", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasDefaultValueSql("uuid_generate_v4()");
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("LastModifiedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("LastModifiedOn")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -82,12 +149,15 @@ namespace Vote.Monitor.Domain.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasDefaultValueSql("uuid_generate_v4()");
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("FullName")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.Property<string>("Iso2")
                         .IsRequired()
@@ -101,7 +171,8 @@ namespace Vote.Monitor.Domain.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.Property<string>("NumericCode")
                         .IsRequired()
@@ -110,12 +181,22 @@ namespace Vote.Monitor.Domain.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Iso2")
+                        .IsUnique();
+
+                    b.HasIndex("Iso3")
+                        .IsUnique();
+
+                    b.HasIndex("NumericCode")
+                        .IsUnique();
+
                     b.ToTable("Countries");
 
                     b.HasData(
                         new
                         {
                             Id = new Guid("edd4319b-86f3-24cb-248c-71da624c02f7"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Islamic Republic of Afghanistan",
                             Iso2 = "AF",
                             Iso3 = "AFG",
@@ -125,6 +206,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("a96fe9bb-4ef4-fca0-f38b-0ec729822f37"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Åland Islands",
                             Iso2 = "AX",
                             Iso3 = "ALA",
@@ -134,6 +216,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("5aa0aeb7-4dc8-6a29-fc2f-35daec1541dd"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Albania",
                             Iso2 = "AL",
                             Iso3 = "ALB",
@@ -143,6 +226,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("fee6f04f-c4c1-e3e4-645d-bb6bb703aeb7"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "People's Democratic Republic of Algeria",
                             Iso2 = "DZ",
                             Iso3 = "DZA",
@@ -152,6 +236,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("538114de-7db0-9242-35e6-324fa7eff44d"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "American Samoa",
                             Iso2 = "AS",
                             Iso3 = "ASM",
@@ -161,6 +246,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("bd4bbfc7-d8bc-9d8d-7f7c-7b299c94e9e5"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Principality of Andorra",
                             Iso2 = "AD",
                             Iso3 = "AND",
@@ -170,6 +256,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("478786f7-1842-8c1e-921c-12e7ed5329c5"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Angola",
                             Iso2 = "AO",
                             Iso3 = "AGO",
@@ -179,6 +266,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("2b68fb11-a0e0-3d23-5fb8-99721ecfc182"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Anguilla",
                             Iso2 = "AI",
                             Iso3 = "AIA",
@@ -188,6 +276,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("a0098040-b7a0-59a1-e64b-0a9778b7f74c"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Antarctica (the territory South of 60 deg S)",
                             Iso2 = "AQ",
                             Iso3 = "ATA",
@@ -197,6 +286,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("f3eef99a-661e-2c68-7a4c-3053e2f28007"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Antigua and Barbuda",
                             Iso2 = "AG",
                             Iso3 = "ATG",
@@ -206,6 +296,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("a7afb7b1-b26d-4571-1a1f-3fff738ff21e"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Argentine Republic",
                             Iso2 = "AR",
                             Iso3 = "ARG",
@@ -215,6 +306,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("688af4c8-9d64-ae1c-147f-b8afd54801e3"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Armenia",
                             Iso2 = "AM",
                             Iso3 = "ARM",
@@ -224,6 +316,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("e6c7651f-182e-cf9c-1ef9-6293b95b500c"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Aruba",
                             Iso2 = "AW",
                             Iso3 = "ABW",
@@ -233,6 +326,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("15639386-e4fc-120c-6916-c0c980e24be1"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Commonwealth of Australia",
                             Iso2 = "AU",
                             Iso3 = "AUS",
@@ -242,6 +336,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("704254eb-6959-8ddc-a5df-ac8f9658dc68"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Austria",
                             Iso2 = "AT",
                             Iso3 = "AUT",
@@ -251,6 +346,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("008c3138-73d8-dbbc-f1dd-521e4c68bcf1"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Azerbaijan",
                             Iso2 = "AZ",
                             Iso3 = "AZE",
@@ -260,6 +356,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("46e88019-c521-57b2-d1c0-c0e2478d3b05"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Commonwealth of the Bahamas",
                             Iso2 = "BS",
                             Iso3 = "BHS",
@@ -269,6 +366,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("44caa0f4-1e78-d2fb-96be-d01b3224bdc1"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Kingdom of Bahrain",
                             Iso2 = "BH",
                             Iso3 = "BHR",
@@ -278,6 +376,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("809c3424-8654-b82c-cbd4-d857d096943e"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "People's Republic of Bangladesh",
                             Iso2 = "BD",
                             Iso3 = "BGD",
@@ -287,6 +386,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("316c68fc-9144-f6e1-8bf1-899fc54b2327"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Barbados",
                             Iso2 = "BB",
                             Iso3 = "BRB",
@@ -296,6 +396,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("d97b5460-11ab-45c5-9a6f-ffa441ed70d6"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Belarus",
                             Iso2 = "BY",
                             Iso3 = "BLR",
@@ -305,6 +406,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("0797a7d5-bbc0-2e52-0de8-14a42fc80baa"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Kingdom of Belgium",
                             Iso2 = "BE",
                             Iso3 = "BEL",
@@ -314,6 +416,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("c89e02a0-9506-90df-5545-b98a2453cd63"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Belize",
                             Iso2 = "BZ",
                             Iso3 = "BLZ",
@@ -323,6 +426,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("96a22cee-9af7-8f03-b483-b3e774a36d3b"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Benin",
                             Iso2 = "BJ",
                             Iso3 = "BEN",
@@ -332,6 +436,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("ca2a5560-d4c4-3c87-3090-6f5436310b55"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Bermuda",
                             Iso2 = "BM",
                             Iso3 = "BMU",
@@ -341,6 +446,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("8ed6a34e-8135-27fa-f86a-caa247b29768"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Kingdom of Bhutan",
                             Iso2 = "BT",
                             Iso3 = "BTN",
@@ -350,6 +456,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("f33ced84-eb43-fb39-ef79-b266e4d4cd94"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Plurinational State of Bolivia",
                             Iso2 = "BO",
                             Iso3 = "BOL",
@@ -359,6 +466,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("d8101f9d-8313-4054-c5f3-42c7a1c72862"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Bonaire, Sint Eustatius and Saba",
                             Iso2 = "BQ",
                             Iso3 = "BES",
@@ -368,6 +476,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("a7716d29-6ef6-b775-51c5-97094536329d"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Bosnia and Herzegovina",
                             Iso2 = "BA",
                             Iso3 = "BIH",
@@ -377,6 +486,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("14f190c6-97c9-3e12-2eba-db17c59d6a04"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Botswana",
                             Iso2 = "BW",
                             Iso3 = "BWA",
@@ -386,6 +496,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("32da0208-9048-1339-a8ee-6955cfff4c12"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Bouvet Island (Bouvetøya)",
                             Iso2 = "BV",
                             Iso3 = "BVT",
@@ -395,6 +506,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("5283afbb-2744-e930-2c16-c5ea6b0ff7cc"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Federative Republic of Brazil",
                             Iso2 = "BR",
                             Iso3 = "BRA",
@@ -404,6 +516,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("b8b09512-ea4c-4a61-9331-304f55324ef7"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "British Indian Ocean Territory (Chagos Archipelago)",
                             Iso2 = "IO",
                             Iso3 = "IOT",
@@ -413,6 +526,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("39be5e86-aea5-f64f-fd7e-1017fe24e543"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "British Virgin Islands",
                             Iso2 = "VG",
                             Iso3 = "VGB",
@@ -422,6 +536,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("ed6278e0-436c-9fd9-0b9e-44fd424cbd1b"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Brunei Darussalam",
                             Iso2 = "BN",
                             Iso3 = "BRN",
@@ -431,6 +546,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("46576b73-c05b-7498-5b07-9bbf59b7645d"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Bulgaria",
                             Iso2 = "BG",
                             Iso3 = "BGR",
@@ -440,6 +556,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("42697d56-52cf-b411-321e-c51929f02f90"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Burkina Faso",
                             Iso2 = "BF",
                             Iso3 = "BFA",
@@ -449,6 +566,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("75e4464b-a784-63b8-1ecc-69ee1f09f43f"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Burundi",
                             Iso2 = "BI",
                             Iso3 = "BDI",
@@ -458,6 +576,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("c9702851-1f67-f2a6-89d4-37b3fbb12044"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Kingdom of Cambodia",
                             Iso2 = "KH",
                             Iso3 = "KHM",
@@ -467,6 +586,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("c0b7e39e-223a-ebb0-b899-5404573bbdb7"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Cameroon",
                             Iso2 = "CM",
                             Iso3 = "CMR",
@@ -476,6 +596,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("5c0e654b-8547-5d02-ee7b-d65e3c5c5273"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Canada",
                             Iso2 = "CA",
                             Iso3 = "CAN",
@@ -485,6 +606,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("17ed5f0f-e091-94ff-0512-ad291bde94d7"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Cabo Verde",
                             Iso2 = "CV",
                             Iso3 = "CPV",
@@ -494,6 +616,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("3c5828e0-16a8-79ba-4e5c-9b45065df113"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Cayman Islands",
                             Iso2 = "KY",
                             Iso3 = "CYM",
@@ -503,6 +626,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("b4e0625c-7597-c185-b8ae-cfb35a731f2f"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Central African Republic",
                             Iso2 = "CF",
                             Iso3 = "CAF",
@@ -512,6 +636,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("2a1ca5b6-fba0-cfa8-9928-d7a2382bc4d7"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Chad",
                             Iso2 = "TD",
                             Iso3 = "TCD",
@@ -521,6 +646,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("ad4f938a-bf7b-684b-2c9e-e824d3fa3863"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Chile",
                             Iso2 = "CL",
                             Iso3 = "CHL",
@@ -530,6 +656,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("8250c49f-9438-7c2e-f403-54d962db0c18"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "People's Republic of China",
                             Iso2 = "CN",
                             Iso3 = "CHN",
@@ -539,6 +666,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("0f1ba59e-ade5-23e5-6fce-e2fd3282e114"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Christmas Island",
                             Iso2 = "CX",
                             Iso3 = "CXR",
@@ -548,6 +676,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("a16263a5-810c-bf6a-206d-72cb914e2d5c"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Cocos (Keeling) Islands",
                             Iso2 = "CC",
                             Iso3 = "CCK",
@@ -557,6 +686,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("c64288fc-d941-0615-47f9-28e6c294ce26"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Colombia",
                             Iso2 = "CO",
                             Iso3 = "COL",
@@ -566,6 +696,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("5e7a08f2-7d59-bcdb-7ddd-876b87181420"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Union of the Comoros",
                             Iso2 = "KM",
                             Iso3 = "COM",
@@ -575,6 +706,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("1258ec90-c47e-ff72-b7e3-f90c3ee320f8"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Democratic Republic of the Congo",
                             Iso2 = "CD",
                             Iso3 = "COD",
@@ -584,6 +716,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("1934954c-66c2-6226-c5b6-491065a3e4c0"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of the Congo",
                             Iso2 = "CG",
                             Iso3 = "COG",
@@ -593,6 +726,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("af79558d-51fb-b08d-185b-afeb983ab99b"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Cook Islands",
                             Iso2 = "CK",
                             Iso3 = "COK",
@@ -602,6 +736,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("d13935c1-8956-1399-7c4e-0354795cd37b"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Costa Rica",
                             Iso2 = "CR",
                             Iso3 = "CRI",
@@ -611,6 +746,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("5be18efe-6db8-a727-7f2a-62bd71bc6593"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Cote d'Ivoire",
                             Iso2 = "CI",
                             Iso3 = "CIV",
@@ -620,6 +756,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("1f8be615-5746-277e-d82b-47596b5bb922"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Croatia",
                             Iso2 = "HR",
                             Iso3 = "HRV",
@@ -629,6 +766,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("57765d87-2424-2c86-ad9c-1af58ef3127a"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Cuba",
                             Iso2 = "CU",
                             Iso3 = "CUB",
@@ -638,6 +776,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("3345e205-3e72-43ed-de1b-ac6e050543e5"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Curaçao",
                             Iso2 = "CW",
                             Iso3 = "CUW",
@@ -647,6 +786,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("df20d0d7-9fbe-e725-d966-4fdf9f5c9dfb"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Cyprus",
                             Iso2 = "CY",
                             Iso3 = "CYP",
@@ -656,6 +796,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("9d4ec95b-974a-f5bb-bb4b-ba6747440631"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Czech Republic",
                             Iso2 = "CZ",
                             Iso3 = "CZE",
@@ -665,6 +806,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("8a4fcb23-f3e6-fb5b-8cda-975872f600d5"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Kingdom of Denmark",
                             Iso2 = "DK",
                             Iso3 = "DNK",
@@ -674,6 +816,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("37a79267-d38a-aaef-577a-aa68a96880ae"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Djibouti",
                             Iso2 = "DJ",
                             Iso3 = "DJI",
@@ -683,6 +826,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("19ea3a6a-1a76-23c8-8e4e-1d298f15207f"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Commonwealth of Dominica",
                             Iso2 = "DM",
                             Iso3 = "DMA",
@@ -692,6 +836,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("b2c4d2d7-7ada-7864-426f-10a28d9f9eba"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Dominican Republic",
                             Iso2 = "DO",
                             Iso3 = "DOM",
@@ -701,6 +846,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("49c82f1b-968d-b5e7-8559-e39567d46787"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Ecuador",
                             Iso2 = "EC",
                             Iso3 = "ECU",
@@ -710,6 +856,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("ee5dfc29-80f1-86ae-cde7-02484a18907a"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Arab Republic of Egypt",
                             Iso2 = "EG",
                             Iso3 = "EGY",
@@ -719,6 +866,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("4d8bcda4-5598-16cd-b379-97eb7a5e1c29"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of El Salvador",
                             Iso2 = "SV",
                             Iso3 = "SLV",
@@ -728,6 +876,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("824392e8-a6cc-0cd4-af13-3067dad3258e"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Equatorial Guinea",
                             Iso2 = "GQ",
                             Iso3 = "GNQ",
@@ -737,6 +886,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("8b5a477a-070a-a84f-bd3b-f54dc2a172de"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "State of Eritrea",
                             Iso2 = "ER",
                             Iso3 = "ERI",
@@ -746,6 +896,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("2dc643bd-cc6c-eb0c-7314-44123576f0ee"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Estonia",
                             Iso2 = "EE",
                             Iso3 = "EST",
@@ -755,6 +906,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("e75515a6-63cf-3612-a3a2-befa0d7048a7"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Federal Democratic Republic of Ethiopia",
                             Iso2 = "ET",
                             Iso3 = "ETH",
@@ -764,6 +916,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("0d4fe6e6-ea1e-d1ce-5134-6c0c1a696a00"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Faroe Islands",
                             Iso2 = "FO",
                             Iso3 = "FRO",
@@ -773,6 +926,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("b86375dc-edbb-922c-9ed4-2f724094a5a2"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Falkland Islands (Malvinas)",
                             Iso2 = "FK",
                             Iso3 = "FLK",
@@ -782,6 +936,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("0e2a1681-d852-67ae-7387-0d04be9e7fd3"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Fiji",
                             Iso2 = "FJ",
                             Iso3 = "FJI",
@@ -791,6 +946,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("5a5d9168-081b-1e02-1fbb-cdfa910e526c"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Finland",
                             Iso2 = "FI",
                             Iso3 = "FIN",
@@ -800,6 +956,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("b2261c50-1a57-7f1f-d72d-f8c21593874f"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "French Republic",
                             Iso2 = "FR",
                             Iso3 = "FRA",
@@ -809,6 +966,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("ac6cde6e-f645-d04e-8afc-0391ecf38a70"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "French Guiana",
                             Iso2 = "GF",
                             Iso3 = "GUF",
@@ -818,6 +976,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("11dbce82-a154-7aee-7b5e-d5981f220572"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "French Polynesia",
                             Iso2 = "PF",
                             Iso3 = "PYF",
@@ -827,6 +986,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("903bee63-bcf0-0264-6eaf-a8cde95c5f41"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "French Southern Territories",
                             Iso2 = "TF",
                             Iso3 = "ATF",
@@ -836,6 +996,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("4826bc0f-235e-572f-2b1a-21f1c9e05f83"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Gabonese Republic",
                             Iso2 = "GA",
                             Iso3 = "GAB",
@@ -845,6 +1006,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("a40b91b3-cc13-2470-65f0-a0fdc946f2a2"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of the Gambia",
                             Iso2 = "GM",
                             Iso3 = "GMB",
@@ -854,6 +1016,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("980176e8-7d9d-9729-b3e9-ebc455fb8fc4"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Georgia",
                             Iso2 = "GE",
                             Iso3 = "GEO",
@@ -863,6 +1026,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("46ef1468-86f6-0c99-f4e9-46f966167b05"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Federal Republic of Germany",
                             Iso2 = "DE",
                             Iso3 = "DEU",
@@ -872,6 +1036,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("6d0c77a7-a4aa-c2bd-2db6-0e2ad2d61f8a"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Ghana",
                             Iso2 = "GH",
                             Iso3 = "GHA",
@@ -881,6 +1046,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("8e0de349-f9ab-2bca-3910-efd48bf1170a"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Gibraltar",
                             Iso2 = "GI",
                             Iso3 = "GIB",
@@ -890,6 +1056,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("4fc1a9dc-cc74-f6ce-5743-c5cee8d709ef"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Hellenic Republic of Greece",
                             Iso2 = "GR",
                             Iso3 = "GRC",
@@ -899,6 +1066,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("2f00fe86-a06b-dc95-0ea7-4520d1dec784"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Greenland",
                             Iso2 = "GL",
                             Iso3 = "GRL",
@@ -908,6 +1076,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("ff5b4d88-c179-ff0d-6285-cf46ba475d7d"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Grenada",
                             Iso2 = "GD",
                             Iso3 = "GRD",
@@ -917,6 +1086,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("3bcd2aad-fb69-09f4-1ad7-2c7f5fa23f9f"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Guadeloupe",
                             Iso2 = "GP",
                             Iso3 = "GLP",
@@ -926,6 +1096,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("096a8586-9702-6fec-5f6a-6eb3b7b7837f"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Guam",
                             Iso2 = "GU",
                             Iso3 = "GUM",
@@ -935,6 +1106,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("d24b46ba-8e9d-2a09-7995-e35e8ae54f6b"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Guatemala",
                             Iso2 = "GT",
                             Iso3 = "GTM",
@@ -944,6 +1116,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("5b0ee3be-596d-bdc1-f101-00ef33170655"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Bailiwick of Guernsey",
                             Iso2 = "GG",
                             Iso3 = "GGY",
@@ -953,6 +1126,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("3ffe68ca-7350-175b-4e95-0c34f54dc1f4"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Guinea",
                             Iso2 = "GN",
                             Iso3 = "GIN",
@@ -962,6 +1136,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("a9a5f440-a9bd-487d-e7f4-914df0d52fa6"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Guinea-Bissau",
                             Iso2 = "GW",
                             Iso3 = "GNB",
@@ -971,6 +1146,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("a9949ac7-8d2d-32b5-3f4f-e2a3ef291a67"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Co-operative Republic of Guyana",
                             Iso2 = "GY",
                             Iso3 = "GUY",
@@ -980,6 +1156,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("2bebebe4-edaa-9160-5a0c-4d99048bd8d5"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Haiti",
                             Iso2 = "HT",
                             Iso3 = "HTI",
@@ -989,6 +1166,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("592b4658-a210-ab0a-5660-3dcc673dc581"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Heard Island and McDonald Islands",
                             Iso2 = "HM",
                             Iso3 = "HMD",
@@ -998,6 +1176,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("d0e11a85-6623-69f5-bd95-3779dfeec297"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Holy See (Vatican City State)",
                             Iso2 = "VA",
                             Iso3 = "VAT",
@@ -1007,6 +1186,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("0aebadaa-91b2-8794-c153-4f903a2a1004"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Honduras",
                             Iso2 = "HN",
                             Iso3 = "HND",
@@ -1016,6 +1196,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("500bb0de-61f5-dc9b-0488-1c507456ea4d"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Hong Kong Special Administrative Region of China",
                             Iso2 = "HK",
                             Iso3 = "HKG",
@@ -1025,6 +1206,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("dcf19e1d-74a6-7b8b-a5ed-76b94a8ac2a7"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Hungary",
                             Iso2 = "HU",
                             Iso3 = "HUN",
@@ -1034,6 +1216,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("4ee6400d-5534-7c67-1521-870d6b732366"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Iceland",
                             Iso2 = "IS",
                             Iso3 = "ISL",
@@ -1043,6 +1226,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("72d8d1fe-d5f6-f440-1185-82ec69427027"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of India",
                             Iso2 = "IN",
                             Iso3 = "IND",
@@ -1052,6 +1236,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("1d974338-decf-08e5-3e62-89e1bbdbb003"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Indonesia",
                             Iso2 = "ID",
                             Iso3 = "IDN",
@@ -1061,6 +1246,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("b3460bab-2a35-57bc-17e2-4e117748bbb1"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Islamic Republic of Iran",
                             Iso2 = "IR",
                             Iso3 = "IRN",
@@ -1070,6 +1256,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("6c8be2e6-8c2e-cd80-68a6-d18c80d0eedc"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Iraq",
                             Iso2 = "IQ",
                             Iso3 = "IRQ",
@@ -1079,6 +1266,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("294978f0-2702-d35d-cfc4-e676148aea2e"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Ireland",
                             Iso2 = "IE",
                             Iso3 = "IRL",
@@ -1088,6 +1276,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("a1b83be0-6a9b-c8a9-2cce-531705a29664"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Isle of Man",
                             Iso2 = "IM",
                             Iso3 = "IMN",
@@ -1097,6 +1286,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("7ffa909b-8a6a-3028-9589-fcc3dfa530a8"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "State of Israel",
                             Iso2 = "IL",
                             Iso3 = "ISR",
@@ -1106,6 +1296,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("7bbf15f4-a907-c0b2-7029-144aafb3c59d"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Italy",
                             Iso2 = "IT",
                             Iso3 = "ITA",
@@ -1115,6 +1306,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("6699efd5-0939-7812-315e-21f37b279ee9"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Jamaica",
                             Iso2 = "JM",
                             Iso3 = "JAM",
@@ -1124,6 +1316,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("13c69e56-375d-8a7e-c326-be2be2fd4cd8"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Japan",
                             Iso2 = "JP",
                             Iso3 = "JPN",
@@ -1133,6 +1326,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("65d871be-4a1d-a632-9cdb-62e3ff04928d"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Bailiwick of Jersey",
                             Iso2 = "JE",
                             Iso3 = "JEY",
@@ -1142,6 +1336,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("9ae7ad80-9ce7-6657-75cf-28b4c0254238"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Hashemite Kingdom of Jordan",
                             Iso2 = "JO",
                             Iso3 = "JOR",
@@ -1151,6 +1346,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("b723594d-7800-0f37-db86-0f6b85bb6cf9"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Kazakhstan",
                             Iso2 = "KZ",
                             Iso3 = "KAZ",
@@ -1160,6 +1356,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("b32fe2b5-a06e-0d76-ffd2-f186c3e64b15"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Kenya",
                             Iso2 = "KE",
                             Iso3 = "KEN",
@@ -1169,6 +1366,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("914618fd-86f9-827a-91b8-826f0db9e02d"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Kiribati",
                             Iso2 = "KI",
                             Iso3 = "KIR",
@@ -1178,6 +1376,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("f70ae426-f130-5637-0383-a5b63a06c500"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Democratic People's Republic of Korea",
                             Iso2 = "KP",
                             Iso3 = "PRK",
@@ -1187,6 +1386,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("7bf934fa-bcf4-80b5-fd7d-ab4cca45c67b"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Korea",
                             Iso2 = "KR",
                             Iso3 = "KOR",
@@ -1196,6 +1396,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("b6f70436-9515-7ef8-af57-aad196503499"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "State of Kuwait",
                             Iso2 = "KW",
                             Iso3 = "KWT",
@@ -1205,6 +1406,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("0932ed88-c79f-591a-d684-9a77735f947e"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Kyrgyz Republic",
                             Iso2 = "KG",
                             Iso3 = "KGZ",
@@ -1214,6 +1416,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("c4754c00-cfa5-aa6f-a9c8-a200457de7a8"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Lao People's Democratic Republic",
                             Iso2 = "LA",
                             Iso3 = "LAO",
@@ -1223,6 +1426,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("9205dbfc-60cd-91d9-b0b8-8a18a3755286"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Latvia",
                             Iso2 = "LV",
                             Iso3 = "LVA",
@@ -1232,6 +1436,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("1e5c0dcc-83e9-f275-c81d-3bc49f88e70c"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Lebanese Republic",
                             Iso2 = "LB",
                             Iso3 = "LBN",
@@ -1241,6 +1446,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("bf210ee6-6c75-cf08-052e-5c3e608aed15"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Kingdom of Lesotho",
                             Iso2 = "LS",
                             Iso3 = "LSO",
@@ -1250,6 +1456,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("ee926d09-799c-7c6a-2419-a6ff814b2c03"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Liberia",
                             Iso2 = "LR",
                             Iso3 = "LBR",
@@ -1259,6 +1466,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("695c85b3-a6c6-c217-9be8-3baebc7719ce"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "State of Libya",
                             Iso2 = "LY",
                             Iso3 = "LBY",
@@ -1268,6 +1476,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("9d6e6446-185e-235e-8771-9eb2d19f22e7"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Principality of Liechtenstein",
                             Iso2 = "LI",
                             Iso3 = "LIE",
@@ -1277,6 +1486,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("52538361-bbdf-fafb-e434-5655fc7451e5"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Lithuania",
                             Iso2 = "LT",
                             Iso3 = "LTU",
@@ -1286,6 +1496,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("70673250-4cc3-3ba1-a42c-6b62ea8ab1d5"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Grand Duchy of Luxembourg",
                             Iso2 = "LU",
                             Iso3 = "LUX",
@@ -1295,6 +1506,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("8d32a12d-3230-1431-8fbb-72c789184345"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Macao Special Administrative Region of China",
                             Iso2 = "MO",
                             Iso3 = "MAC",
@@ -1304,6 +1516,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("976e496f-ca38-d113-1697-8af2d9a3b159"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Madagascar",
                             Iso2 = "MG",
                             Iso3 = "MDG",
@@ -1313,6 +1526,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("fbf4479d-d70d-c76e-b053-699362443a17"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Malawi",
                             Iso2 = "MW",
                             Iso3 = "MWI",
@@ -1322,6 +1536,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("d292ea2d-fbb6-7c1e-cb7d-23d552673776"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Malaysia",
                             Iso2 = "MY",
                             Iso3 = "MYS",
@@ -1331,6 +1546,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("1d2aa3ab-e1c3-8c76-9be6-7a3b3eca35da"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Maldives",
                             Iso2 = "MV",
                             Iso3 = "MDV",
@@ -1340,6 +1556,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("c03d71a5-b215-8672-ec0c-dd8fe5c20e05"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Mali",
                             Iso2 = "ML",
                             Iso3 = "MLI",
@@ -1349,6 +1566,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("f0219540-8b2c-bd29-4f76-b832de53a56f"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Malta",
                             Iso2 = "MT",
                             Iso3 = "MLT",
@@ -1358,6 +1576,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("943d2419-2ca6-95f8-9c3b-ed445aea0371"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of the Marshall Islands",
                             Iso2 = "MH",
                             Iso3 = "MHL",
@@ -1367,6 +1586,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("fc78fa89-b372-dcf7-7f1c-1e1bb14ecbe7"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Martinique",
                             Iso2 = "MQ",
                             Iso3 = "MTQ",
@@ -1376,6 +1596,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("74da982f-cf20-e1b4-517b-a040511af23c"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Islamic Republic of Mauritania",
                             Iso2 = "MR",
                             Iso3 = "MRT",
@@ -1385,6 +1606,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("1b634ca2-2b90-7e54-715a-74cee7e4d294"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Mauritius",
                             Iso2 = "MU",
                             Iso3 = "MUS",
@@ -1394,6 +1616,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("08a999e4-e420-b864-2864-bef78c138448"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Mayotte",
                             Iso2 = "YT",
                             Iso3 = "MYT",
@@ -1403,6 +1626,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("a9940e91-93ef-19f7-79c0-00d31c6a9f87"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "United Mexican States",
                             Iso2 = "MX",
                             Iso3 = "MEX",
@@ -1412,6 +1636,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("a2da72dc-5866-ba2f-6283-6575af00ade5"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Federated States of Micronesia",
                             Iso2 = "FM",
                             Iso3 = "FSM",
@@ -1421,6 +1646,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("daf6bc7a-92c4-ef47-3111-e13199b86b90"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Moldova",
                             Iso2 = "MD",
                             Iso3 = "MDA",
@@ -1430,6 +1656,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("5cab34ca-8c74-0766-c7ca-4a826b44c5bd"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Principality of Monaco",
                             Iso2 = "MC",
                             Iso3 = "MCO",
@@ -1439,6 +1666,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("c522b3d3-74cc-846f-0394-737dff4d2b1a"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Mongolia",
                             Iso2 = "MN",
                             Iso3 = "MNG",
@@ -1448,6 +1676,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("86db2170-be87-fd1d-bf57-05ff61ae83a7"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Montenegro",
                             Iso2 = "ME",
                             Iso3 = "MNE",
@@ -1457,6 +1686,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("50e5954d-7cb4-2201-b96c-f2a846ab3ae3"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Montserrat",
                             Iso2 = "MS",
                             Iso3 = "MSR",
@@ -1466,6 +1696,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("915805f0-9ff0-48ff-39b3-44a4af5e0482"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Kingdom of Morocco",
                             Iso2 = "MA",
                             Iso3 = "MAR",
@@ -1475,6 +1706,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("10b58d9b-42ef-edb8-54a3-712636fda55a"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Mozambique",
                             Iso2 = "MZ",
                             Iso3 = "MOZ",
@@ -1484,6 +1716,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("015a9f83-6e57-bc1e-8227-24a4e5248582"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of the Union of Myanmar",
                             Iso2 = "MM",
                             Iso3 = "MMR",
@@ -1493,6 +1726,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("0c0fef20-0e8d-98ea-7724-12cea9b3b926"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Namibia",
                             Iso2 = "NA",
                             Iso3 = "NAM",
@@ -1502,6 +1736,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("e3bacefb-d79b-1569-a91c-43d7e4f6f230"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Nauru",
                             Iso2 = "NR",
                             Iso3 = "NRU",
@@ -1511,6 +1746,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("e81c5db3-401a-e047-001e-045f39bef8ef"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Nepal",
                             Iso2 = "NP",
                             Iso3 = "NPL",
@@ -1520,6 +1756,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("cfff3443-1378-9c7d-9d58-66146d7f29a6"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Kingdom of the Netherlands",
                             Iso2 = "NL",
                             Iso3 = "NLD",
@@ -1529,6 +1766,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("4b0729b6-f698-5730-767c-88e2d36691bb"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "New Caledonia",
                             Iso2 = "NC",
                             Iso3 = "NCL",
@@ -1538,6 +1776,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("360e3c61-aaac-fa2f-d731-fc0824c05107"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "New Zealand",
                             Iso2 = "NZ",
                             Iso3 = "NZL",
@@ -1547,6 +1786,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("cd0e8275-3def-1de4-8858-61aab36851c4"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Nicaragua",
                             Iso2 = "NI",
                             Iso3 = "NIC",
@@ -1556,6 +1796,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("97cd39d5-1aca-8f10-9f5e-3f611d7606d8"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Niger",
                             Iso2 = "NE",
                             Iso3 = "NER",
@@ -1565,6 +1806,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("2e1bd9d8-df06-d773-0eb9-98e274b63b43"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Federal Republic of Nigeria",
                             Iso2 = "NG",
                             Iso3 = "NGA",
@@ -1574,6 +1816,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("3eea06f4-c085-f619-6d52-b76a5f6fd2b6"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Niue",
                             Iso2 = "NU",
                             Iso3 = "NIU",
@@ -1583,6 +1826,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("47804b6a-e705-b925-f4fd-4adf6500180b"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Norfolk Island",
                             Iso2 = "NF",
                             Iso3 = "NFK",
@@ -1592,6 +1836,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("aa0f69b2-93aa-ec51-b43b-60145db79e38"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of North Macedonia",
                             Iso2 = "MK",
                             Iso3 = "MKD",
@@ -1601,6 +1846,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("6ac64a20-5688-ccd0-4eca-88d8a2560079"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Commonwealth of the Northern Mariana Islands",
                             Iso2 = "MP",
                             Iso3 = "MNP",
@@ -1610,6 +1856,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("914d7923-3ac5-75e8-c8e2-47d72561e35d"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Kingdom of Norway",
                             Iso2 = "NO",
                             Iso3 = "NOR",
@@ -1619,6 +1866,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("6c366974-3672-3a2c-2345-0fda33942304"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Sultanate of Oman",
                             Iso2 = "OM",
                             Iso3 = "OMN",
@@ -1628,6 +1876,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("cc7fabfc-4c2b-d9ff-bb45-003bfc2e468a"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Islamic Republic of Pakistan",
                             Iso2 = "PK",
                             Iso3 = "PAK",
@@ -1637,6 +1886,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("057884bc-3c2e-dea9-6522-b003c9297f7a"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Palau",
                             Iso2 = "PW",
                             Iso3 = "PLW",
@@ -1646,6 +1896,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("d6d31cdd-280a-56bc-24a4-a414028d2b67"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "State of Palestine",
                             Iso2 = "PS",
                             Iso3 = "PSE",
@@ -1655,6 +1906,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("7bf4a786-3733-c670-e85f-03ee3caa6ef9"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Panama",
                             Iso2 = "PA",
                             Iso3 = "PAN",
@@ -1664,6 +1916,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("c926f091-fe96-35b3-56b5-d418d17e0159"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Independent State of Papua New Guinea",
                             Iso2 = "PG",
                             Iso3 = "PNG",
@@ -1673,6 +1926,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("db6ce903-ab43-3793-960c-659529bae6df"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Paraguay",
                             Iso2 = "PY",
                             Iso3 = "PRY",
@@ -1682,6 +1936,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("75634729-8e4a-4cfd-739d-9f679bfca3ab"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Peru",
                             Iso2 = "PE",
                             Iso3 = "PER",
@@ -1691,6 +1946,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("c93bccaf-1835-3c02-e2ee-c113ced19e43"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of the Philippines",
                             Iso2 = "PH",
                             Iso3 = "PHL",
@@ -1700,6 +1956,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("a5d0c9af-2022-2b43-9332-eb6a2ce4305d"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Pitcairn Islands",
                             Iso2 = "PN",
                             Iso3 = "PCN",
@@ -1709,6 +1966,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("de503629-2607-b948-e279-0509d8109d0f"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Poland",
                             Iso2 = "PL",
                             Iso3 = "POL",
@@ -1718,6 +1976,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("2a039b16-2adf-0fb8-3bdf-fbdf14358d9d"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Portuguese Republic",
                             Iso2 = "PT",
                             Iso3 = "PRT",
@@ -1727,6 +1986,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("cd2c97c3-5473-0719-3803-fcacedfe2ea2"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Commonwealth of Puerto Rico",
                             Iso2 = "PR",
                             Iso3 = "PRI",
@@ -1736,6 +1996,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("067c9448-9ad0-2c21-a1dc-fbdf5a63d18d"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "State of Qatar",
                             Iso2 = "QA",
                             Iso3 = "QAT",
@@ -1745,6 +2006,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("881b4bb8-b6da-c73e-55c0-c9f31c02aaef"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Réunion",
                             Iso2 = "RE",
                             Iso3 = "REU",
@@ -1754,6 +2016,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("51aa4900-30a6-91b7-2728-071542a064ff"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Romania",
                             Iso2 = "RO",
                             Iso3 = "ROU",
@@ -1763,6 +2026,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("58337ef3-3d24-43e9-a440-832306e7fc07"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Russian Federation",
                             Iso2 = "RU",
                             Iso3 = "RUS",
@@ -1772,6 +2036,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("f5b15ea6-133d-c2c9-7ef9-b0916ea96edb"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Rwanda",
                             Iso2 = "RW",
                             Iso3 = "RWA",
@@ -1781,6 +2046,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("77f6f69b-ec41-8818-9395-8d39bf09e653"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Saint Barthélemy",
                             Iso2 = "BL",
                             Iso3 = "BLM",
@@ -1790,6 +2056,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("6a76d068-49e1-da80-ddb4-9ef3d11191e6"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Saint Helena, Ascension and Tristan da Cunha",
                             Iso2 = "SH",
                             Iso3 = "SHN",
@@ -1799,6 +2066,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("fa633273-9866-840d-9739-c6c957901e46"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Federation of Saint Kitts and Nevis",
                             Iso2 = "KN",
                             Iso3 = "KNA",
@@ -1808,6 +2076,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("220e980a-7363-0150-c250-89e83b967fb4"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Saint Lucia",
                             Iso2 = "LC",
                             Iso3 = "LCA",
@@ -1817,6 +2086,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("899c2a9f-f35d-5a49-a6cd-f92531bb2266"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Saint Martin (French part)",
                             Iso2 = "MF",
                             Iso3 = "MAF",
@@ -1826,6 +2096,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("5476986b-11a4-8463-9bd7-0f7354ec7a20"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Saint Pierre and Miquelon",
                             Iso2 = "PM",
                             Iso3 = "SPM",
@@ -1835,6 +2106,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("2f49855b-ff93-c399-d72a-121f2bf28bc9"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Saint Vincent and the Grenadines",
                             Iso2 = "VC",
                             Iso3 = "VCT",
@@ -1844,6 +2116,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("a7c4c9db-8fe4-7d43-e830-1a70954970c3"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Independent State of Samoa",
                             Iso2 = "WS",
                             Iso3 = "WSM",
@@ -1853,6 +2126,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("0a25f96f-5173-2fff-a2f8-c6872393edf6"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of San Marino",
                             Iso2 = "SM",
                             Iso3 = "SMR",
@@ -1862,6 +2136,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("766c1ebb-78c1-bada-37fb-c45d1bd4baff"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Democratic Republic of Sao Tome and Principe",
                             Iso2 = "ST",
                             Iso3 = "STP",
@@ -1871,6 +2146,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("a8f30b36-4a25-3fb9-c69e-84ce6640d785"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Kingdom of Saudi Arabia",
                             Iso2 = "SA",
                             Iso3 = "SAU",
@@ -1880,6 +2156,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("3175ac19-c801-0b87-8e66-7480a40dcf1e"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Senegal",
                             Iso2 = "SN",
                             Iso3 = "SEN",
@@ -1889,6 +2166,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("971c7e66-c6e3-71f4-580a-5caf2852f9f4"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Serbia",
                             Iso2 = "RS",
                             Iso3 = "SRB",
@@ -1898,6 +2176,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("2167da32-4f80-d31d-226c-0551970304eb"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Seychelles",
                             Iso2 = "SC",
                             Iso3 = "SYC",
@@ -1907,6 +2186,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("b0f4bdfa-17dd-9714-4fe8-3c3b1f010ffa"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Sierra Leone",
                             Iso2 = "SL",
                             Iso3 = "SLE",
@@ -1916,6 +2196,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("3ce3d958-7341-bd79-f294-f2e6907c186c"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Singapore",
                             Iso2 = "SG",
                             Iso3 = "SGP",
@@ -1925,6 +2206,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("141e589a-7046-a265-d2f6-b2f85e6eeadd"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Sint Maarten (Dutch part)",
                             Iso2 = "SX",
                             Iso3 = "SXM",
@@ -1934,6 +2216,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("3252e51a-5bc1-f065-7101-5b34ba493dc4"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Slovakia (Slovak Republic)",
                             Iso2 = "SK",
                             Iso3 = "SVK",
@@ -1943,6 +2226,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("357c121b-e28d-1765-e699-cc4ec5ff86fc"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Slovenia",
                             Iso2 = "SI",
                             Iso3 = "SVN",
@@ -1952,6 +2236,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("7453c201-ecf1-d3dd-0409-e94d0733173b"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Solomon Islands",
                             Iso2 = "SB",
                             Iso3 = "SLB",
@@ -1961,6 +2246,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("802c05db-3866-545d-dc1a-a02c83ea6cf6"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Federal Republic of Somalia",
                             Iso2 = "SO",
                             Iso3 = "SOM",
@@ -1970,6 +2256,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("ebf38b9a-6fbe-6e82-3977-2c4763bea072"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of South Africa",
                             Iso2 = "ZA",
                             Iso3 = "ZAF",
@@ -1979,6 +2266,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("6af4d03e-edd0-d98a-bc7e-abc7df87d3dd"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "South Georgia and the South Sandwich Islands",
                             Iso2 = "GS",
                             Iso3 = "SGS",
@@ -1988,6 +2276,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("6aac6f0e-d13a-a629-4c2b-9d6eaf6680e4"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of South Sudan",
                             Iso2 = "SS",
                             Iso3 = "SSD",
@@ -1997,6 +2286,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("414a34ce-2781-8f96-2bd0-7ada86c8cf38"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Kingdom of Spain",
                             Iso2 = "ES",
                             Iso3 = "ESP",
@@ -2006,6 +2296,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("687320c8-e841-c911-6d30-b14eb998feb6"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Democratic Socialist Republic of Sri Lanka",
                             Iso2 = "LK",
                             Iso3 = "LKA",
@@ -2015,6 +2306,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("f0965449-6b15-6c1a-f5cb-ebd2d575c02c"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Sudan",
                             Iso2 = "SD",
                             Iso3 = "SDN",
@@ -2024,6 +2316,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("61ba1844-4d33-84b4-dbac-70718aa91d59"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Suriname",
                             Iso2 = "SR",
                             Iso3 = "SUR",
@@ -2033,6 +2326,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("d525de3a-aecc-07de-0426-68f32af2968e"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Svalbard & Jan Mayen Islands",
                             Iso2 = "SJ",
                             Iso3 = "SJM",
@@ -2042,6 +2336,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("a32a9fc2-677f-43e0-97aa-9e83943d785c"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Kingdom of Eswatini",
                             Iso2 = "SZ",
                             Iso3 = "SWZ",
@@ -2051,6 +2346,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("0ab731f0-5326-44be-af3a-20aa33ad0f35"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Kingdom of Sweden",
                             Iso2 = "SE",
                             Iso3 = "SWE",
@@ -2060,6 +2356,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("37c89068-a8e9-87e8-d651-f86fac63673a"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Swiss Confederation",
                             Iso2 = "CH",
                             Iso3 = "CHE",
@@ -2069,6 +2366,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("c1a923f6-b9ec-78f7-cc1c-7025e3d69d7d"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Syrian Arab Republic",
                             Iso2 = "SY",
                             Iso3 = "SYR",
@@ -2078,6 +2376,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("875060ca-73f6-af3b-d844-1b1416ce4583"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Taiwan, Province of China",
                             Iso2 = "TW",
                             Iso3 = "TWN",
@@ -2087,6 +2386,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("2a848549-9777-cf48-a0f2-b32c6f942096"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Tajikistan",
                             Iso2 = "TJ",
                             Iso3 = "TJK",
@@ -2096,6 +2396,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("4736c1ad-54bd-c8e8-d9ee-492a88268de8"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "United Republic of Tanzania",
                             Iso2 = "TZ",
                             Iso3 = "TZA",
@@ -2105,6 +2406,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("84d58b3d-d131-1506-0792-1b3228b6f71f"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Kingdom of Thailand",
                             Iso2 = "TH",
                             Iso3 = "THA",
@@ -2114,6 +2416,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("fb9a713c-2de1-882a-64b7-0e8fef5d2f7e"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Democratic Republic of Timor-Leste",
                             Iso2 = "TL",
                             Iso3 = "TLS",
@@ -2123,6 +2426,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("9dacf00b-7d0a-d744-cc60-e5fa66371e9d"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Togolese Republic",
                             Iso2 = "TG",
                             Iso3 = "TGO",
@@ -2132,6 +2436,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("11765ad0-30f2-bab8-b616-20f88b28b21e"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Tokelau",
                             Iso2 = "TK",
                             Iso3 = "TKL",
@@ -2141,6 +2446,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("9e7dbdc3-2c8b-e8ae-082b-e02695f8268e"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Kingdom of Tonga",
                             Iso2 = "TO",
                             Iso3 = "TON",
@@ -2150,6 +2456,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("95467997-f989-f456-34b7-0b578302dcba"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Trinidad and Tobago",
                             Iso2 = "TT",
                             Iso3 = "TTO",
@@ -2159,6 +2466,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("06f8ad57-7133-9a5e-5a83-53052012b014"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Tunisian Republic",
                             Iso2 = "TN",
                             Iso3 = "TUN",
@@ -2168,6 +2476,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("f39cca22-449e-9866-3a65-465a5510483e"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Türkiye",
                             Iso2 = "TR",
                             Iso3 = "TUR",
@@ -2177,6 +2486,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("550ca5df-3995-617c-c39d-437beb400a42"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Turkmenistan",
                             Iso2 = "TM",
                             Iso3 = "TKM",
@@ -2186,6 +2496,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("0e0fefd5-9a05-fde5-bee9-ef56db7748a1"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Turks and Caicos Islands",
                             Iso2 = "TC",
                             Iso3 = "TCA",
@@ -2195,6 +2506,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("e0d562ca-f573-3c2f-eb83-f72d4d70d4fc"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Tuvalu",
                             Iso2 = "TV",
                             Iso3 = "TUV",
@@ -2204,6 +2516,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("3e2cccbe-1615-c707-a97b-421a799b2559"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Uganda",
                             Iso2 = "UG",
                             Iso3 = "UGA",
@@ -2213,6 +2526,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("e087f51c-feba-19b6-5595-fcbdce170411"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Ukraine",
                             Iso2 = "UA",
                             Iso3 = "UKR",
@@ -2222,6 +2536,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("29201cbb-ca65-1924-75a9-0c4d4db43001"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "United Arab Emirates",
                             Iso2 = "AE",
                             Iso3 = "ARE",
@@ -2231,6 +2546,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("0b3b04b4-9782-79e3-bc55-9ab33b6ae9c7"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "United Kingdom of Great Britain & Northern Ireland",
                             Iso2 = "GB",
                             Iso3 = "GBR",
@@ -2240,6 +2556,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("cb2e209b-d4c6-6d5c-8901-d989a9188783"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "United States of America",
                             Iso2 = "US",
                             Iso3 = "USA",
@@ -2249,6 +2566,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("0868cdd3-7f50-5a25-88d6-98c45f9157e3"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "United States Minor Outlying Islands",
                             Iso2 = "UM",
                             Iso3 = "UMI",
@@ -2258,6 +2576,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("e1947bdc-ff2c-d2c1-3c55-f1f9bf778578"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "United States Virgin Islands",
                             Iso2 = "VI",
                             Iso3 = "VIR",
@@ -2267,6 +2586,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("8e787470-aae6-575a-fe0b-d65fc78b648a"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Eastern Republic of Uruguay",
                             Iso2 = "UY",
                             Iso3 = "URY",
@@ -2276,6 +2596,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("357369e3-85a8-86f7-91c7-349772ae7744"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Uzbekistan",
                             Iso2 = "UZ",
                             Iso3 = "UZB",
@@ -2285,6 +2606,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("c98174ef-8198-54ba-2ff1-b93f3c646db8"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Vanuatu",
                             Iso2 = "VU",
                             Iso3 = "VUT",
@@ -2294,6 +2616,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("52d9992c-19bd-82b4-9188-11dabcac6171"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Bolivarian Republic of Venezuela",
                             Iso2 = "VE",
                             Iso3 = "VEN",
@@ -2303,6 +2626,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("d7236157-d5a7-6b7a-3bc1-69802313fa30"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Socialist Republic of Vietnam",
                             Iso2 = "VN",
                             Iso3 = "VNM",
@@ -2312,6 +2636,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("e186a953-7ab3-c009-501c-a754267b770b"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Wallis and Futuna",
                             Iso2 = "WF",
                             Iso3 = "WLF",
@@ -2321,6 +2646,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("2f4cc994-53f1-1763-8220-5d89e063804f"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Western Sahara",
                             Iso2 = "EH",
                             Iso3 = "ESH",
@@ -2330,6 +2656,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("8c4441fd-8cd4-ff1e-928e-e46f9ca12552"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Yemen",
                             Iso2 = "YE",
                             Iso3 = "YEM",
@@ -2339,6 +2666,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("ab0b7e83-bf02-16e6-e5ae-46c4bd4c093b"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Zambia",
                             Iso2 = "ZM",
                             Iso3 = "ZMB",
@@ -2348,6 +2676,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("6984f722-6963-d067-d4d4-9fd3ef2edbf6"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             FullName = "Republic of Zimbabwe",
                             Iso2 = "ZW",
                             Iso3 = "ZWE",
@@ -2360,15 +2689,27 @@ namespace Vote.Monitor.Domain.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasDefaultValueSql("uuid_generate_v4()");
+                        .HasColumnType("uuid");
 
                     b.Property<Guid>("CountryId")
                         .HasColumnType("uuid");
 
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("LastModifiedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("LastModifiedOn")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -2385,25 +2726,36 @@ namespace Vote.Monitor.Domain.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasDefaultValueSql("uuid_generate_v4()");
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Data")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<string>("ImportType")
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<Guid>("LastModifiedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("LastModifiedOn")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("OriginalFileName")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Id");
 
                     b.ToTable("ImportValidationErrors");
                 });
@@ -2412,8 +2764,10 @@ namespace Vote.Monitor.Domain.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasDefaultValueSql("uuid_generate_v4()");
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Iso1")
                         .IsRequired()
@@ -2422,13 +2776,20 @@ namespace Vote.Monitor.Domain.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.Property<string>("NativeName")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Id");
+
+                    b.HasIndex("Iso1")
+                        .IsUnique();
 
                     b.ToTable("Language");
 
@@ -2436,6 +2797,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("9c11bb58-5135-453a-1d24-dc20ef0e9031"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "AA",
                             Name = "Afar",
                             NativeName = "Afaraf"
@@ -2443,6 +2805,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("bd4f1638-6017-733d-f696-b8b4d72664d7"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "AB",
                             Name = "Abkhaz",
                             NativeName = "аҧсуа бызшәа"
@@ -2450,6 +2813,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("29201cbb-ca65-1924-75a9-0c4d4db43001"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "AE",
                             Name = "Avestan",
                             NativeName = "avesta"
@@ -2457,6 +2821,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("edd4319b-86f3-24cb-248c-71da624c02f7"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "AF",
                             Name = "Afrikaans",
                             NativeName = "Afrikaans"
@@ -2464,6 +2829,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("ef584e3c-03f2-42b0-7139-69d15d21e5a8"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "AK",
                             Name = "Akan",
                             NativeName = "Akan"
@@ -2471,6 +2837,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("688af4c8-9d64-ae1c-147f-b8afd54801e3"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "AM",
                             Name = "Amharic",
                             NativeName = "አማርኛ"
@@ -2478,6 +2845,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("d4d5c45a-d3c2-891e-6d7d-75569c3386ac"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "AN",
                             Name = "Aragonese",
                             NativeName = "aragonés"
@@ -2485,6 +2853,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("a7afb7b1-b26d-4571-1a1f-3fff738ff21e"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "AR",
                             Name = "Arabic",
                             NativeName = "اَلْعَرَبِيَّةُ"
@@ -2492,6 +2861,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("538114de-7db0-9242-35e6-324fa7eff44d"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "AS",
                             Name = "Assamese",
                             NativeName = "অসমীয়া"
@@ -2499,6 +2869,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("e43a2010-14fc-63a9-f9d3-0ab2a1d0e52f"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "AV",
                             Name = "Avaric",
                             NativeName = "авар мацӀ"
@@ -2506,6 +2877,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("78c6e8af-fcb4-c783-987c-7e1aca3aed64"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "AY",
                             Name = "Aymara",
                             NativeName = "aymar aru"
@@ -2513,6 +2885,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("008c3138-73d8-dbbc-f1dd-521e4c68bcf1"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "AZ",
                             Name = "Azerbaijani",
                             NativeName = "azərbaycan dili"
@@ -2520,6 +2893,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("a7716d29-6ef6-b775-51c5-97094536329d"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "BA",
                             Name = "Bashkir",
                             NativeName = "башҡорт теле"
@@ -2527,6 +2901,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("0797a7d5-bbc0-2e52-0de8-14a42fc80baa"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "BE",
                             Name = "Belarusian",
                             NativeName = "беларуская мова"
@@ -2534,6 +2909,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("46576b73-c05b-7498-5b07-9bbf59b7645d"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "BG",
                             Name = "Bulgarian",
                             NativeName = "български език"
@@ -2541,6 +2917,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("75e4464b-a784-63b8-1ecc-69ee1f09f43f"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "BI",
                             Name = "Bislama",
                             NativeName = "Bislama"
@@ -2548,6 +2925,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("ca2a5560-d4c4-3c87-3090-6f5436310b55"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "BM",
                             Name = "Bambara",
                             NativeName = "bamanankan"
@@ -2555,6 +2933,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("ed6278e0-436c-9fd9-0b9e-44fd424cbd1b"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "BN",
                             Name = "Bengali",
                             NativeName = "বাংলা"
@@ -2562,6 +2941,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("f33ced84-eb43-fb39-ef79-b266e4d4cd94"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "BO",
                             Name = "Tibetan",
                             NativeName = "བོད་ཡིག"
@@ -2569,6 +2949,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("5283afbb-2744-e930-2c16-c5ea6b0ff7cc"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "BR",
                             Name = "Breton",
                             NativeName = "brezhoneg"
@@ -2576,6 +2957,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("46e88019-c521-57b2-d1c0-c0e2478d3b05"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "BS",
                             Name = "Bosnian",
                             NativeName = "bosanski jezik"
@@ -2583,6 +2965,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("5c0e654b-8547-5d02-ee7b-d65e3c5c5273"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "CA",
                             Name = "Catalan",
                             NativeName = "Català"
@@ -2590,6 +2973,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("cd5689d6-7a06-73c7-650e-f6f94387fd88"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "CE",
                             Name = "Chechen",
                             NativeName = "нохчийн мотт"
@@ -2597,6 +2981,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("37c89068-a8e9-87e8-d651-f86fac63673a"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "CH",
                             Name = "Chamorro",
                             NativeName = "Chamoru"
@@ -2604,6 +2989,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("c64288fc-d941-0615-47f9-28e6c294ce26"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "CO",
                             Name = "Corsican",
                             NativeName = "corsu"
@@ -2611,6 +2997,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("d13935c1-8956-1399-7c4e-0354795cd37b"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "CR",
                             Name = "Cree",
                             NativeName = "ᓀᐦᐃᔭᐍᐏᐣ"
@@ -2618,6 +3005,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("4def223a-9524-596d-cc29-ab7830c590de"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "CS",
                             Name = "Czech",
                             NativeName = "čeština"
@@ -2625,6 +3013,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("57765d87-2424-2c86-ad9c-1af58ef3127a"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "CU",
                             Name = "Old Church Slavonic",
                             NativeName = "ѩзыкъ словѣньскъ"
@@ -2632,6 +3021,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("17ed5f0f-e091-94ff-0512-ad291bde94d7"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "CV",
                             Name = "Chuvash",
                             NativeName = "чӑваш чӗлхи"
@@ -2639,6 +3029,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("df20d0d7-9fbe-e725-d966-4fdf9f5c9dfb"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "CY",
                             Name = "Welsh",
                             NativeName = "Cymraeg"
@@ -2646,6 +3037,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("b356a541-1383-3c0a-9afd-6aebae3753cb"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "DA",
                             Name = "Danish",
                             NativeName = "dansk"
@@ -2653,6 +3045,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("46ef1468-86f6-0c99-f4e9-46f966167b05"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "DE",
                             Name = "German",
                             NativeName = "Deutsch"
@@ -2660,6 +3053,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("d8d4f63d-fa65-63dd-a788-de2eec3d24ec"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "DV",
                             Name = "Divehi",
                             NativeName = "ދިވެހި"
@@ -2667,6 +3061,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("fee6f04f-c4c1-e3e4-645d-bb6bb703aeb7"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "DZ",
                             Name = "Dzongkha",
                             NativeName = "རྫོང་ཁ"
@@ -2674,6 +3069,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("2dc643bd-cc6c-eb0c-7314-44123576f0ee"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "EE",
                             Name = "Ewe",
                             NativeName = "Eʋegbe"
@@ -2681,6 +3077,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("b9da7f73-60cd-404c-18fb-1bc5bbfffb38"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "EL",
                             Name = "Greek",
                             NativeName = "Ελληνικά"
@@ -2688,6 +3085,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("094b3769-68b1-6211-ba2d-6bba92d6a167"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "EN",
                             Name = "English",
                             NativeName = "English"
@@ -2695,6 +3093,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("1da84244-fa39-125e-06dc-3c0cb2342ce9"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "EO",
                             Name = "Esperanto",
                             NativeName = "Esperanto"
@@ -2702,6 +3101,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("414a34ce-2781-8f96-2bd0-7ada86c8cf38"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "ES",
                             Name = "Spanish",
                             NativeName = "Español"
@@ -2709,6 +3109,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("e75515a6-63cf-3612-a3a2-befa0d7048a7"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "ET",
                             Name = "Estonian",
                             NativeName = "eesti"
@@ -2716,6 +3117,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("b2a87091-32fb-ba34-a721-bf8b3de5935d"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "EU",
                             Name = "Basque",
                             NativeName = "euskara"
@@ -2723,6 +3125,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("e9da8997-dee8-0c2d-79d3-05fafc45092e"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "FA",
                             Name = "Persian",
                             NativeName = "فارسی"
@@ -2730,6 +3133,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("51a86a09-0d0b-31c1-90f1-f237db8e29ad"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "FF",
                             Name = "Fula",
                             NativeName = "Fulfulde"
@@ -2737,6 +3141,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("5a5d9168-081b-1e02-1fbb-cdfa910e526c"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "FI",
                             Name = "Finnish",
                             NativeName = "suomi"
@@ -2744,6 +3149,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("0e2a1681-d852-67ae-7387-0d04be9e7fd3"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "FJ",
                             Name = "Fijian",
                             NativeName = "vosa Vakaviti"
@@ -2751,6 +3157,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("0d4fe6e6-ea1e-d1ce-5134-6c0c1a696a00"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "FO",
                             Name = "Faroese",
                             NativeName = "føroyskt"
@@ -2758,6 +3165,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("b2261c50-1a57-7f1f-d72d-f8c21593874f"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "FR",
                             Name = "French",
                             NativeName = "Français"
@@ -2765,6 +3173,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("fb429393-f994-0a16-37f9-edc0510fced5"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "FY",
                             Name = "Western Frisian",
                             NativeName = "Frysk"
@@ -2772,6 +3181,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("4826bc0f-235e-572f-2b1a-21f1c9e05f83"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "GA",
                             Name = "Irish",
                             NativeName = "Gaeilge"
@@ -2779,6 +3189,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("ff5b4d88-c179-ff0d-6285-cf46ba475d7d"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "GD",
                             Name = "Scottish Gaelic",
                             NativeName = "Gàidhlig"
@@ -2786,6 +3197,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("2f00fe86-a06b-dc95-0ea7-4520d1dec784"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "GL",
                             Name = "Galician",
                             NativeName = "galego"
@@ -2793,6 +3205,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("3ffe68ca-7350-175b-4e95-0c34f54dc1f4"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "GN",
                             Name = "Guaraní",
                             NativeName = "Avañe'ẽ"
@@ -2800,6 +3213,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("096a8586-9702-6fec-5f6a-6eb3b7b7837f"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "GU",
                             Name = "Gujarati",
                             NativeName = "ગુજરાતી"
@@ -2807,6 +3221,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("849b5e66-dc68-a1ed-6ed3-e315fbd0a0e5"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "GV",
                             Name = "Manx",
                             NativeName = "Gaelg"
@@ -2814,6 +3229,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("2e9cb133-68a7-2f3b-49d1-0921cf42dfae"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "HA",
                             Name = "Hausa",
                             NativeName = "هَوُسَ"
@@ -2821,6 +3237,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("d685aa26-aee7-716b-9433-1b3411209f4b"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "HE",
                             Name = "Hebrew",
                             NativeName = "עברית"
@@ -2828,6 +3245,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("54686fcd-3f35-f468-7c9c-93217c5084bc"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "HI",
                             Name = "Hindi",
                             NativeName = "हिन्दी"
@@ -2835,6 +3253,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("87813ec7-4830-e4dc-5ab1-bd599057ede0"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "HO",
                             Name = "Hiri Motu",
                             NativeName = "Hiri Motu"
@@ -2842,6 +3261,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("1f8be615-5746-277e-d82b-47596b5bb922"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "HR",
                             Name = "Croatian",
                             NativeName = "Hrvatski"
@@ -2849,6 +3269,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("2bebebe4-edaa-9160-5a0c-4d99048bd8d5"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "HT",
                             Name = "Haitian",
                             NativeName = "Kreyòl ayisyen"
@@ -2856,6 +3277,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("dcf19e1d-74a6-7b8b-a5ed-76b94a8ac2a7"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "HU",
                             Name = "Hungarian",
                             NativeName = "magyar"
@@ -2863,6 +3285,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("d832c50a-112e-4591-9432-4ada24bc85b2"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "HY",
                             Name = "Armenian",
                             NativeName = "Հայերեն"
@@ -2870,6 +3293,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("d5bffdfb-6a8e-6d9f-2e59-4ada912acdba"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "HZ",
                             Name = "Herero",
                             NativeName = "Otjiherero"
@@ -2877,6 +3301,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("7f065da7-4ba4-81ca-5126-dbf606a73907"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "IA",
                             Name = "Interlingua",
                             NativeName = "Interlingua"
@@ -2884,6 +3309,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("1d974338-decf-08e5-3e62-89e1bbdbb003"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "ID",
                             Name = "Indonesian",
                             NativeName = "Bahasa Indonesia"
@@ -2891,6 +3317,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("294978f0-2702-d35d-cfc4-e676148aea2e"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "IE",
                             Name = "Interlingue",
                             NativeName = "Interlingue"
@@ -2898,6 +3325,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("caddae27-283a-82b2-9365-76a3d6c49eee"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "IG",
                             Name = "Igbo",
                             NativeName = "Asụsụ Igbo"
@@ -2905,6 +3333,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("f21f562e-5c35-4806-4efc-416619b5b7f7"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "II",
                             Name = "Nuosu",
                             NativeName = "ꆈꌠ꒿ Nuosuhxop"
@@ -2912,6 +3341,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("23785991-fef4-e625-4d3b-b6ac364d0fa0"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "IK",
                             Name = "Inupiaq",
                             NativeName = "Iñupiaq"
@@ -2919,6 +3349,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("b8b09512-ea4c-4a61-9331-304f55324ef7"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "IO",
                             Name = "Ido",
                             NativeName = "Ido"
@@ -2926,6 +3357,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("4ee6400d-5534-7c67-1521-870d6b732366"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "IS",
                             Name = "Icelandic",
                             NativeName = "Íslenska"
@@ -2933,6 +3365,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("7bbf15f4-a907-c0b2-7029-144aafb3c59d"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "IT",
                             Name = "Italian",
                             NativeName = "Italiano"
@@ -2940,6 +3373,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("899392d7-d54f-a1c6-407a-1bada9b85fdd"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "IU",
                             Name = "Inuktitut",
                             NativeName = "ᐃᓄᒃᑎᑐᑦ"
@@ -2947,6 +3381,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("6857242c-f772-38b5-b5a2-c8e8b9db551f"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "JA",
                             Name = "Japanese",
                             NativeName = "日本語"
@@ -2954,6 +3389,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("e7532b00-3b1b-ff2c-b7c0-26bd7e91af55"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "JV",
                             Name = "Javanese",
                             NativeName = "basa Jawa"
@@ -2961,6 +3397,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("9204928b-c569-ef6a-446e-4853aee439b0"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "KA",
                             Name = "Georgian",
                             NativeName = "ქართული"
@@ -2968,6 +3405,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("0932ed88-c79f-591a-d684-9a77735f947e"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "KG",
                             Name = "Kongo",
                             NativeName = "Kikongo"
@@ -2975,6 +3413,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("914618fd-86f9-827a-91b8-826f0db9e02d"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "KI",
                             Name = "Kikuyu",
                             NativeName = "Gĩkũyũ"
@@ -2982,6 +3421,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("80ecea2c-8969-1929-0d4a-39ed2324abc6"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "KJ",
                             Name = "Kwanyama",
                             NativeName = "Kuanyama"
@@ -2989,6 +3429,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("b6b2351f-4f1e-c92f-0e9a-a915f4cc5fa6"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "KK",
                             Name = "Kazakh",
                             NativeName = "қазақ тілі"
@@ -2996,6 +3437,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("081a5fdb-445a-015a-1e36-f2e5014265ae"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "KL",
                             Name = "Kalaallisut",
                             NativeName = "kalaallisut"
@@ -3003,6 +3445,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("5e7a08f2-7d59-bcdb-7ddd-876b87181420"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "KM",
                             Name = "Khmer",
                             NativeName = "ខេមរភាសា"
@@ -3010,6 +3453,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("fa633273-9866-840d-9739-c6c957901e46"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "KN",
                             Name = "Kannada",
                             NativeName = "ಕನ್ನಡ"
@@ -3017,6 +3461,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("74f19a84-b1c5-fa2d-8818-2220b80a3056"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "KO",
                             Name = "Korean",
                             NativeName = "한국어"
@@ -3024,6 +3469,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("7bf934fa-bcf4-80b5-fd7d-ab4cca45c67b"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "KR",
                             Name = "Kanuri",
                             NativeName = "Kanuri"
@@ -3031,6 +3477,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("eace47f6-5499-f4f0-8f97-ed165b681d84"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "KS",
                             Name = "Kashmiri",
                             NativeName = "कश्मीरी"
@@ -3038,6 +3485,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("7451108d-ad49-940a-d479-4d868b62a7c6"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "KU",
                             Name = "Kurdish",
                             NativeName = "Kurdî"
@@ -3045,6 +3493,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("78b7020d-8b82-3fae-2049-30e490ae1faf"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "KV",
                             Name = "Komi",
                             NativeName = "коми кыв"
@@ -3052,6 +3501,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("b6f70436-9515-7ef8-af57-aad196503499"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "KW",
                             Name = "Cornish",
                             NativeName = "Kernewek"
@@ -3059,6 +3509,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("3c5828e0-16a8-79ba-4e5c-9b45065df113"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "KY",
                             Name = "Kyrgyz",
                             NativeName = "Кыргызча"
@@ -3066,6 +3517,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("c4754c00-cfa5-aa6f-a9c8-a200457de7a8"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "LA",
                             Name = "Latin",
                             NativeName = "latine"
@@ -3073,6 +3525,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("1e5c0dcc-83e9-f275-c81d-3bc49f88e70c"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "LB",
                             Name = "Luxembourgish",
                             NativeName = "Lëtzebuergesch"
@@ -3080,6 +3533,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("80b770b8-4797-3d62-ef66-1ded7b0da0e5"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "LG",
                             Name = "Ganda",
                             NativeName = "Luganda"
@@ -3087,6 +3541,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("9d6e6446-185e-235e-8771-9eb2d19f22e7"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "LI",
                             Name = "Limburgish",
                             NativeName = "Limburgs"
@@ -3094,6 +3549,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("ca44a869-d3b6-052d-1e1a-ad4e3682a2ed"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "LN",
                             Name = "Lingala",
                             NativeName = "Lingála"
@@ -3101,6 +3557,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("e9ad0bec-7dee-bd01-9528-1fc74d1d78dd"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "LO",
                             Name = "Lao",
                             NativeName = "ພາສາລາວ"
@@ -3108,6 +3565,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("52538361-bbdf-fafb-e434-5655fc7451e5"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "LT",
                             Name = "Lithuanian",
                             NativeName = "lietuvių kalba"
@@ -3115,6 +3573,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("70673250-4cc3-3ba1-a42c-6b62ea8ab1d5"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "LU",
                             Name = "Luba-Katanga",
                             NativeName = "Kiluba"
@@ -3122,6 +3581,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("9205dbfc-60cd-91d9-b0b8-8a18a3755286"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "LV",
                             Name = "Latvian",
                             NativeName = "latviešu valoda"
@@ -3129,6 +3589,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("976e496f-ca38-d113-1697-8af2d9a3b159"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "MG",
                             Name = "Malagasy",
                             NativeName = "fiteny malagasy"
@@ -3136,6 +3597,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("943d2419-2ca6-95f8-9c3b-ed445aea0371"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "MH",
                             Name = "Marshallese",
                             NativeName = "Kajin M̧ajeļ"
@@ -3143,6 +3605,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("54726f17-03b8-8af3-0359-c42d8fe8459d"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "MI",
                             Name = "Māori",
                             NativeName = "te reo Māori"
@@ -3150,6 +3613,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("aa0f69b2-93aa-ec51-b43b-60145db79e38"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "MK",
                             Name = "Macedonian",
                             NativeName = "македонски јазик"
@@ -3157,6 +3621,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("c03d71a5-b215-8672-ec0c-dd8fe5c20e05"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "ML",
                             Name = "Malayalam",
                             NativeName = "മലയാളം"
@@ -3164,6 +3629,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("c522b3d3-74cc-846f-0394-737dff4d2b1a"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "MN",
                             Name = "Mongolian",
                             NativeName = "Монгол хэл"
@@ -3171,6 +3637,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("74da982f-cf20-e1b4-517b-a040511af23c"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "MR",
                             Name = "Marathi",
                             NativeName = "मराठी"
@@ -3178,6 +3645,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("50e5954d-7cb4-2201-b96c-f2a846ab3ae3"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "MS",
                             Name = "Malay",
                             NativeName = "Bahasa Melayu"
@@ -3185,6 +3653,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("f0219540-8b2c-bd29-4f76-b832de53a56f"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "MT",
                             Name = "Maltese",
                             NativeName = "Malti"
@@ -3192,6 +3661,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("d292ea2d-fbb6-7c1e-cb7d-23d552673776"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "MY",
                             Name = "Burmese",
                             NativeName = "ဗမာစာ"
@@ -3199,6 +3669,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("0c0fef20-0e8d-98ea-7724-12cea9b3b926"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "NA",
                             Name = "Nauru",
                             NativeName = "Dorerin Naoero"
@@ -3206,6 +3677,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("4a3aa5a4-473f-45cd-f054-fa0465c476a4"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "NB",
                             Name = "Norwegian Bokmål",
                             NativeName = "Norsk bokmål"
@@ -3213,6 +3685,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("b4292ad3-3ca8-eea5-f3e0-d1983db8f61e"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "ND",
                             Name = "Northern Ndebele",
                             NativeName = "isiNdebele"
@@ -3220,6 +3693,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("97cd39d5-1aca-8f10-9f5e-3f611d7606d8"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "NE",
                             Name = "Nepali",
                             NativeName = "नेपाली"
@@ -3227,6 +3701,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("2e1bd9d8-df06-d773-0eb9-98e274b63b43"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "NG",
                             Name = "Ndonga",
                             NativeName = "Owambo"
@@ -3234,6 +3709,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("cfff3443-1378-9c7d-9d58-66146d7f29a6"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "NL",
                             Name = "Dutch",
                             NativeName = "Nederlands"
@@ -3241,6 +3717,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("df41c815-40f8-197a-7a8b-e456d43283d9"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "NN",
                             Name = "Norwegian Nynorsk",
                             NativeName = "Norsk nynorsk"
@@ -3248,6 +3725,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("914d7923-3ac5-75e8-c8e2-47d72561e35d"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "NO",
                             Name = "Norwegian",
                             NativeName = "Norsk"
@@ -3255,6 +3733,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("e3bacefb-d79b-1569-a91c-43d7e4f6f230"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "NR",
                             Name = "Southern Ndebele",
                             NativeName = "isiNdebele"
@@ -3262,6 +3741,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("67729f87-ef47-dd3f-65f7-b0f6df0d6384"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "NV",
                             Name = "Navajo",
                             NativeName = "Diné bizaad"
@@ -3269,6 +3749,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("720b4e12-b001-8d38-7c07-f43194b9645d"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "NY",
                             Name = "Chichewa",
                             NativeName = "chiCheŵa"
@@ -3276,6 +3757,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("2b6d383a-9ab6-fcdf-bcfe-a4538faca407"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "OC",
                             Name = "Occitan",
                             NativeName = "occitan"
@@ -3283,6 +3765,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("9ec46cb5-6c2b-0e22-07c5-eb2fe1b8d2ff"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "OJ",
                             Name = "Ojibwe",
                             NativeName = "ᐊᓂᔑᓈᐯᒧᐎᓐ"
@@ -3290,6 +3773,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("6c366974-3672-3a2c-2345-0fda33942304"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "OM",
                             Name = "Oromo",
                             NativeName = "Afaan Oromoo"
@@ -3297,6 +3781,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("285b9e82-38af-33ab-79fd-0b4f3fd4f2f1"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "OR",
                             Name = "Oriya",
                             NativeName = "ଓଡ଼ିଆ"
@@ -3304,6 +3789,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("2d013d34-b258-8fe9-ef52-dd34e82a4672"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "OS",
                             Name = "Ossetian",
                             NativeName = "ирон æвзаг"
@@ -3311,6 +3797,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("7bf4a786-3733-c670-e85f-03ee3caa6ef9"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "PA",
                             Name = "Panjabi",
                             NativeName = "ਪੰਜਾਬੀ"
@@ -3318,6 +3805,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("d8ef067c-1087-4ff5-8e1f-2291df7ac958"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "PI",
                             Name = "Pāli",
                             NativeName = "पाऴि"
@@ -3325,6 +3813,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("de503629-2607-b948-e279-0509d8109d0f"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "PL",
                             Name = "Polish",
                             NativeName = "Polski"
@@ -3332,6 +3821,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("d6d31cdd-280a-56bc-24a4-a414028d2b67"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "PS",
                             Name = "Pashto",
                             NativeName = "پښتو"
@@ -3339,6 +3829,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("2a039b16-2adf-0fb8-3bdf-fbdf14358d9d"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "PT",
                             Name = "Portuguese",
                             NativeName = "Português"
@@ -3346,6 +3837,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("93fb8ace-4156-12d5-218e-64b7d35129b1"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "QU",
                             Name = "Quechua",
                             NativeName = "Runa Simi"
@@ -3353,6 +3845,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("136610e1-8115-9cf1-d671-7950c6483495"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "RM",
                             Name = "Romansh",
                             NativeName = "rumantsch grischun"
@@ -3360,6 +3853,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("7a0725cf-311a-4f59-cff8-ad8b43dd226e"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "RN",
                             Name = "Kirundi",
                             NativeName = "Ikirundi"
@@ -3367,6 +3861,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("51aa4900-30a6-91b7-2728-071542a064ff"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "RO",
                             Name = "Romanian",
                             NativeName = "Română"
@@ -3374,6 +3869,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("58337ef3-3d24-43e9-a440-832306e7fc07"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "RU",
                             Name = "Russian",
                             NativeName = "Русский"
@@ -3381,6 +3877,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("f5b15ea6-133d-c2c9-7ef9-b0916ea96edb"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "RW",
                             Name = "Kinyarwanda",
                             NativeName = "Ikinyarwanda"
@@ -3388,6 +3885,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("a8f30b36-4a25-3fb9-c69e-84ce6640d785"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "SA",
                             Name = "Sanskrit",
                             NativeName = "संस्कृतम्"
@@ -3395,6 +3893,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("2167da32-4f80-d31d-226c-0551970304eb"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "SC",
                             Name = "Sardinian",
                             NativeName = "sardu"
@@ -3402,6 +3901,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("f0965449-6b15-6c1a-f5cb-ebd2d575c02c"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "SD",
                             Name = "Sindhi",
                             NativeName = "सिन्धी"
@@ -3409,6 +3909,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("0ab731f0-5326-44be-af3a-20aa33ad0f35"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "SE",
                             Name = "Northern Sami",
                             NativeName = "Davvisámegiella"
@@ -3416,6 +3917,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("3ce3d958-7341-bd79-f294-f2e6907c186c"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "SG",
                             Name = "Sango",
                             NativeName = "yângâ tî sängö"
@@ -3423,6 +3925,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("357c121b-e28d-1765-e699-cc4ec5ff86fc"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "SI",
                             Name = "Sinhala",
                             NativeName = "සිංහල"
@@ -3430,6 +3933,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("3252e51a-5bc1-f065-7101-5b34ba493dc4"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "SK",
                             Name = "Slovak",
                             NativeName = "slovenčina"
@@ -3437,6 +3941,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("b0f4bdfa-17dd-9714-4fe8-3c3b1f010ffa"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "SL",
                             Name = "Slovenian",
                             NativeName = "slovenščina"
@@ -3444,6 +3949,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("0a25f96f-5173-2fff-a2f8-c6872393edf6"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "SM",
                             Name = "Samoan",
                             NativeName = "gagana fa'a Samoa"
@@ -3451,6 +3957,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("3175ac19-c801-0b87-8e66-7480a40dcf1e"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "SN",
                             Name = "Shona",
                             NativeName = "chiShona"
@@ -3458,6 +3965,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("802c05db-3866-545d-dc1a-a02c83ea6cf6"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "SO",
                             Name = "Somali",
                             NativeName = "Soomaaliga"
@@ -3465,6 +3973,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("fb1cce84-4a6c-1834-0ff2-6df002e3d56f"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "SQ",
                             Name = "Albanian",
                             NativeName = "Shqip"
@@ -3472,6 +3981,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("61ba1844-4d33-84b4-dbac-70718aa91d59"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "SR",
                             Name = "Serbian",
                             NativeName = "српски језик"
@@ -3479,6 +3989,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("6aac6f0e-d13a-a629-4c2b-9d6eaf6680e4"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "SS",
                             Name = "Swati",
                             NativeName = "SiSwati"
@@ -3486,6 +3997,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("766c1ebb-78c1-bada-37fb-c45d1bd4baff"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "ST",
                             Name = "Southern Sotho",
                             NativeName = "Sesotho"
@@ -3493,6 +4005,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("ee1ace14-e945-4767-85ec-3d74be8b516b"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "SU",
                             Name = "Sundanese",
                             NativeName = "Basa Sunda"
@@ -3500,6 +4013,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("4d8bcda4-5598-16cd-b379-97eb7a5e1c29"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "SV",
                             Name = "Swedish",
                             NativeName = "Svenska"
@@ -3507,6 +4021,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("5f002f07-f2c3-9fa4-2e29-225d116c10a3"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "SW",
                             Name = "Swahili",
                             NativeName = "Kiswahili"
@@ -3514,6 +4029,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("8bc44f03-84a5-2afc-8b0b-40c727e4ce36"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "TA",
                             Name = "Tamil",
                             NativeName = "தமிழ்"
@@ -3521,6 +4037,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("3bf5a74a-6d12-e971-16bc-c75e487f2615"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "TE",
                             Name = "Telugu",
                             NativeName = "తెలుగు"
@@ -3528,6 +4045,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("9dacf00b-7d0a-d744-cc60-e5fa66371e9d"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "TG",
                             Name = "Tajik",
                             NativeName = "тоҷикӣ"
@@ -3535,6 +4053,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("84d58b3d-d131-1506-0792-1b3228b6f71f"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "TH",
                             Name = "Thai",
                             NativeName = "ไทย"
@@ -3542,6 +4061,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("596e8283-10ce-d81d-2e6f-400fa259d717"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "TI",
                             Name = "Tigrinya",
                             NativeName = "ትግርኛ"
@@ -3549,6 +4069,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("11765ad0-30f2-bab8-b616-20f88b28b21e"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "TK",
                             Name = "Turkmen",
                             NativeName = "Türkmençe"
@@ -3556,6 +4077,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("fb9a713c-2de1-882a-64b7-0e8fef5d2f7e"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "TL",
                             Name = "Tagalog",
                             NativeName = "Wikang Tagalog"
@@ -3563,6 +4085,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("06f8ad57-7133-9a5e-5a83-53052012b014"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "TN",
                             Name = "Tswana",
                             NativeName = "Setswana"
@@ -3570,6 +4093,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("9e7dbdc3-2c8b-e8ae-082b-e02695f8268e"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "TO",
                             Name = "Tonga",
                             NativeName = "faka Tonga"
@@ -3577,6 +4101,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("f39cca22-449e-9866-3a65-465a5510483e"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "TR",
                             Name = "Turkish",
                             NativeName = "Türkçe"
@@ -3584,6 +4109,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("6200b376-9eae-d01b-de52-8674aaf5b013"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "TS",
                             Name = "Tsonga",
                             NativeName = "Xitsonga"
@@ -3591,6 +4117,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("95467997-f989-f456-34b7-0b578302dcba"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "TT",
                             Name = "Tatar",
                             NativeName = "татар теле"
@@ -3598,6 +4125,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("875060ca-73f6-af3b-d844-1b1416ce4583"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "TW",
                             Name = "Twi",
                             NativeName = "Twi"
@@ -3605,6 +4133,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("2299a74f-3ebc-f022-da1a-44ae59335b3b"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "TY",
                             Name = "Tahitian",
                             NativeName = "Reo Tahiti"
@@ -3612,6 +4141,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("3e2cccbe-1615-c707-a97b-421a799b2559"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "UG",
                             Name = "Uyghur",
                             NativeName = "ئۇيغۇرچە‎"
@@ -3619,6 +4149,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("de29d5e7-2ecf-a4ff-5e40-5e83edd0d9b4"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "UK",
                             Name = "Ukrainian",
                             NativeName = "Українська"
@@ -3626,6 +4157,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("f1f09549-a9bb-da4a-9b98-8655a01235aa"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "UR",
                             Name = "Urdu",
                             NativeName = "اردو"
@@ -3633,6 +4165,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("357369e3-85a8-86f7-91c7-349772ae7744"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "UZ",
                             Name = "Uzbek",
                             NativeName = "Ўзбек"
@@ -3640,6 +4173,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("52d9992c-19bd-82b4-9188-11dabcac6171"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "VE",
                             Name = "Venda",
                             NativeName = "Tshivenḓa"
@@ -3647,6 +4181,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("e1947bdc-ff2c-d2c1-3c55-f1f9bf778578"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "VI",
                             Name = "Vietnamese",
                             NativeName = "Tiếng Việt"
@@ -3654,6 +4189,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("c2254fd9-159e-4064-0fbf-a7969cba06ec"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "VO",
                             Name = "Volapük",
                             NativeName = "Volapük"
@@ -3661,6 +4197,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("629b68d8-1d71-d3ce-f13e-45048ffff017"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "WA",
                             Name = "Walloon",
                             NativeName = "walon"
@@ -3668,6 +4205,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("ca6bfadf-4e87-0692-a6b3-20ea6a51555d"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "WO",
                             Name = "Wolof",
                             NativeName = "Wollof"
@@ -3675,6 +4213,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("0b9b4368-7ceb-e519-153d-2c58c983852b"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "XH",
                             Name = "Xhosa",
                             NativeName = "isiXhosa"
@@ -3682,6 +4221,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("13016d0c-fbf0-9503-12f2-e0f8d27394ae"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "YI",
                             Name = "Yiddish",
                             NativeName = "ייִדיש"
@@ -3689,6 +4229,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("d55a9eb2-48fc-2719-47bf-99e902c28e80"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "YO",
                             Name = "Yoruba",
                             NativeName = "Yorùbá"
@@ -3696,6 +4237,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("ebf38b9a-6fbe-6e82-3977-2c4763bea072"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "ZA",
                             Name = "Zhuang",
                             NativeName = "Saɯ cueŋƅ"
@@ -3703,6 +4245,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("0ce6f5e0-0789-fa0e-b4b5-23a5b1f5e257"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "ZH",
                             Name = "Chinese",
                             NativeName = "中文"
@@ -3710,6 +4253,7 @@ namespace Vote.Monitor.Domain.Migrations
                         new
                         {
                             Id = new Guid("2c7b808d-7786-2deb-5318-56f7c238520e"),
+                            CreatedOn = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Iso1 = "ZU",
                             Name = "Zulu",
                             NativeName = "isiZulu"
@@ -3720,15 +4264,27 @@ namespace Vote.Monitor.Domain.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasDefaultValueSql("uuid_generate_v4()");
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Address")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(2024)
+                        .HasColumnType("character varying(2024)");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("DisplayOrder")
                         .HasColumnType("integer");
+
+                    b.Property<Guid>("LastModifiedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("LastModifiedOn")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<JsonDocument>("Tags")
                         .IsRequired()

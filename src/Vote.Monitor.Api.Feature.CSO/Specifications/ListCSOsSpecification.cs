@@ -1,13 +1,15 @@
-﻿namespace Vote.Monitor.Api.Feature.CSO.Specifications;
+﻿using Vote.Monitor.Domain.Specifications;
+
+namespace Vote.Monitor.Api.Feature.CSO.Specifications;
 
 public class ListCSOsSpecification : Specification<CSOAggregate>
 {
-    public ListCSOsSpecification(string? nameFilter, CSOStatus? csoStatus, int pageSize, int page)
+    public ListCSOsSpecification(List.Request request)
     {
         Query
-            .Search(x => x.Name, "%" + nameFilter + "%", !string.IsNullOrEmpty(nameFilter))
-            .Where(x => x.Status == csoStatus)
-            .Skip(PaginationHelper.CalculateSkip(pageSize, page))
-            .Take(PaginationHelper.CalculateTake(pageSize));
+            .Search(x => x.Name, "%" + request.NameFilter + "%", !string.IsNullOrEmpty(request.NameFilter))
+            .Where(x => x.Status == request.Status, request.Status != null)
+            .ApplyOrdering(request)
+            .Paginate(request);
     }
 }

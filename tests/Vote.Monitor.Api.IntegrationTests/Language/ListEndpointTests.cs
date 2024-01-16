@@ -27,7 +27,7 @@ public class ListEndpointTests:IClassFixture<HttpServerFixture>
     public async Task Should_Check3RandomLanguages()
     {
         // Arrange
-        List<Tuple<string, string>> testLanguages = new List<Tuple<string, string>>()
+        List<Tuple<string, string>> testLanguages = new List<Tuple<string, string>>
         {
             new("EN", "English"), 
             new("FA", "Persian"),

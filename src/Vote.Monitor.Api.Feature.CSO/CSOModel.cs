@@ -10,4 +10,6 @@ public record CSOModel
 
     [JsonConverter(typeof(SmartEnumNameConverter<CSOStatus, string>))]
     public required CSOStatus Status { get; init; }
+    public required DateTime CreatedOn { get; init; }
+    public required DateTime? LastModifiedOn { get; init; }
 }

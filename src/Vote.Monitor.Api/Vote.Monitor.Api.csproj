@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -34,7 +34,6 @@
     <ProjectReference Include="..\Vote.Monitor.Api.Feature.Language\Vote.Monitor.Api.Feature.Language.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Api.Feature.CSOAdmin\Vote.Monitor.Api.Feature.CSOAdmin.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Api.Feature.CSO\Vote.Monitor.Api.Feature.CSO.csproj" />
-    <ProjectReference Include="..\Vote.Monitor.Api.Feature.ElectionRound.Domain\Vote.Monitor.Api.Feature.ElectionRound.Domain.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Api.Feature.ElectionRound\Vote.Monitor.Api.Feature.ElectionRound.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Api.Feature.Observer\Vote.Monitor.Api.Feature.Observer.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Api.Feature.PollingStation\Vote.Monitor.Api.Feature.PollingStation.csproj" />

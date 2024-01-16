@@ -8,12 +8,11 @@ public class PollingStationConfiguration : IEntityTypeConfiguration<PollingStati
 {
     public void Configure(EntityTypeBuilder<PollingStation> builder)
     {
-        builder
-            .Property(e => e.Id)
-            .HasDefaultValueSql("uuid_generate_v4()");
+        builder.HasKey(p => p.Id);
 
-        builder.Property(e => e.Address).IsRequired();
-        builder.Property(e => e.DisplayOrder).IsRequired();
-        builder.Property(e => e.Tags).IsRequired();
+        builder.Property(p => p.Id).IsRequired();
+        builder.Property(p => p.Address).HasMaxLength(2024).IsRequired();
+        builder.Property(p => p.DisplayOrder).IsRequired();
+        builder.Property(p => p.Tags).IsRequired();
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
+﻿using Vote.Monitor.Core.Services.Time;
+
+namespace Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
 
 public class Observer : ApplicationUser
 {
@@ -7,8 +9,14 @@ public class Observer : ApplicationUser
     {
 
     }
+#pragma warning restore CS8618
+
     public string PhoneNumber { get; private set; }
-    public Observer(string name, string login, string password, string phoneNumber) : base(name, login, password, UserRole.Observer)
+    public Observer(string name,
+        string login,
+        string password,
+        string phoneNumber,
+        ITimeService timeService) : base(name, login, password, UserRole.Observer, timeService)
     {
         PhoneNumber = phoneNumber;
     }

@@ -27,7 +27,7 @@ public class ListEndpointTests:IClassFixture<HttpServerFixture>
     public async Task Should_Check3RandomCountries()
     {
         // Arrange
-        List<Tuple<string, string>> testCountries = new List<Tuple<string, string>>()
+        List<Tuple<string, string>> testCountries = new List<Tuple<string, string>>
         {
             new Tuple<string, string>("BR", "Brazil"), 
             new Tuple<string, string>("GE", "Georgia"), 

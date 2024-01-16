@@ -9,13 +9,13 @@ internal class LanguageConfiguration : IEntityTypeConfiguration<Language>
 {
     public void Configure(EntityTypeBuilder<Language> builder)
     {
-        builder
-            .Property(e => e.Id)
-            .HasDefaultValueSql("uuid_generate_v4()");
+        builder.HasKey(l => l.Id);
+        builder.HasIndex(l => l.Id);
+        builder.HasIndex(l => l.Iso1).IsUnique();
 
-        builder.Property(e => e.Name).IsRequired();
-        builder.Property(e => e.NativeName).IsRequired();
-        builder.Property(e => e.Iso1).HasMaxLength(2).IsRequired();
+        builder.Property(l => l.Name).HasMaxLength(256).IsRequired();
+        builder.Property(l => l.NativeName).HasMaxLength(256).IsRequired();
+        builder.Property(l => l.Iso1).HasMaxLength(2).IsRequired();
 
         builder.HasData(LanguagesList.GetAll().Select(x => x.ToEntity()));
     }

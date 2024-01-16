@@ -1,19 +1,22 @@
 ﻿using Vote.Monitor.Api.Feature.CSOAdmin.Specifications;
+using Vote.Monitor.Core.Services.Time;
 
 namespace Vote.Monitor.Api.Feature.CSOAdmin.Create;
 
 public class Endpoint : Endpoint<Request, Results<Ok<CSOAdminModel>, Conflict<ProblemDetails>>>
 {
-    readonly IRepository<CSOAdminAggregate> _repository;
+    private readonly IRepository<CSOAdminAggregate> _repository;
+    private readonly ITimeService _timeService;
 
-    public Endpoint(IRepository<CSOAdminAggregate> repository)
+    public Endpoint(IRepository<CSOAdminAggregate> repository, ITimeService timeService)
     {
         _repository = repository;
+        _timeService = timeService;
     }
 
     public override void Configure()
     {
-        Post("/api/csos/{CSOid}/admins");
+        Post("/api/csos/{csoid}/admins");
     }
 
     public override async Task<Results<Ok<CSOAdminModel>, Conflict<ProblemDetails>>> ExecuteAsync(Request req, CancellationToken ct)
@@ -27,7 +30,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<CSOAdminModel>, Conflict<Pr
             return TypedResults.Conflict(new ProblemDetails(ValidationFailures));
         }
 
-        var csoAdmin = new CSOAdminAggregate(req.CSOId, req.Name, req.Login, req.Password);
+        var csoAdmin = new CSOAdminAggregate(req.CSOId, req.Name, req.Login, req.Password, _timeService);
         await _repository.AddAsync(csoAdmin, ct);
 
         return TypedResults.Ok(new CSOAdminModel
@@ -35,7 +38,9 @@ public class Endpoint : Endpoint<Request, Results<Ok<CSOAdminModel>, Conflict<Pr
             Id = csoAdmin.Id,
             Name = csoAdmin.Name,
             Login = csoAdmin.Login,
-            Status = csoAdmin.Status
+            Status = csoAdmin.Status,
+            CreatedOn = csoAdmin.CreatedOn,
+            LastModifiedOn = csoAdmin.LastModifiedOn
         });
 
     }

@@ -18,7 +18,7 @@ public class GetEndpointTest : IClassFixture<HttpServerFixture>
     [InlineData("47804b6a-e705-b925-f4fd-4adf6500180b", "NF", "Norfolk Island")]
     [InlineData("6984f722-6963-d067-d4d4-9fd3ef2edbf6","ZW", "Zimbabwe")]
     [InlineData("899c2a9f-f35d-5a49-a6cd-f92531bb2266", "MF", "Saint Martin")]
-    public async Task Shoul_ReturnCorrectCountry(Guid id, string code, string countryName)
+    public async Task Should_ReturnCorrectCountry(Guid id, string code, string countryName)
     {
         // Arrange
        var request = new Request

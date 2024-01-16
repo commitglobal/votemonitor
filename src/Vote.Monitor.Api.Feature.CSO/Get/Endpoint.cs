@@ -27,7 +27,9 @@ public class Endpoint : Endpoint<Request, Results<Ok<CSOModel>, NotFound>>
         {
             Id = CSO.Id,
             Name = CSO.Name,
-            Status = CSO.Status
+            Status = CSO.Status,
+            CreatedOn = CSO.CreatedOn,
+            LastModifiedOn = CSO.LastModifiedOn
         });
     }
 }

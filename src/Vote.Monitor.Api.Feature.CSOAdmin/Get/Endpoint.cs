@@ -13,7 +13,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<CSOAdminModel>, NotFound>>
 
     public override void Configure()
     {
-        Get("/api/csos/{CSOid}/admins/{id}");
+        Get("/api/csos/{csoid}/admins/{id}");
     }
 
     public override async Task<Results<Ok<CSOAdminModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
@@ -31,7 +31,9 @@ public class Endpoint : Endpoint<Request, Results<Ok<CSOAdminModel>, NotFound>>
             Id = csoAdmin.Id,
             Name = csoAdmin.Name,
             Login = csoAdmin.Login,
-            Status = csoAdmin.Status
+            Status = csoAdmin.Status,
+            CreatedOn = csoAdmin.CreatedOn,
+            LastModifiedOn = csoAdmin.LastModifiedOn
         });
 
     }

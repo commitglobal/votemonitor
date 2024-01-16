@@ -1,22 +1,4 @@
-﻿using Ardalis.SmartEnum.SystemTextJson;
-using FastEndpoints;
-using FastEndpoints.Swagger;
-using Serilog;
-using Vote.Monitor.Api.Feature.Auth;
-using Vote.Monitor.Api.Feature.Country;
-using Vote.Monitor.Api.Feature.Language;
-using Vote.Monitor.Api.Feature.CSO;
-using Vote.Monitor.Api.Feature.CSOAdmin;
-using Vote.Monitor.Api.Feature.Observer;
-using Vote.Monitor.Api.Feature.PollingStation;
-using Vote.Monitor.Api.Swagger;
-using Vote.Monitor.Core;
-using Vote.Monitor.Domain;
-using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
-using Vote.Monitor.Domain.Entities.CSOAggregate;
-using Vote.Monitor.Domain.Entities.ElectionRoundAggregate;
-
-var builder = WebApplication.CreateBuilder(args);
+﻿var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddFastEndpoints();
 builder.Services.SwaggerDocument(o =>
 {
@@ -52,9 +34,9 @@ builder.Services.AddLogging(logging =>
 builder.Services.AddCors(options =>
     {
         options.AddPolicy("AllowAll",
-            builder =>
+            policy =>
             {
-                builder
+                policy
                 .AllowAnyOrigin()
                 .AllowAnyHeader()
                 .AllowAnyMethod();
@@ -83,11 +65,16 @@ app.UseAuthorization();
 app.UseFastEndpoints(x =>
 {
     x.Errors.UseProblemDetails();
+    x.Endpoints.Configurator = ep =>
+    {
+        ep.PreProcessor<CurrentUserInjector>(Order.Before);
+    };
 
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<UserStatus, string>());
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<UserRole, string>());
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<CSOStatus, string>());
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<ElectionRoundStatus, string>());
+    x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<SortOrder, string>());
 });
 
 app.UseSwaggerGen(uiConfig: cfg =>

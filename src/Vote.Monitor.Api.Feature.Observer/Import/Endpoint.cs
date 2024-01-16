@@ -1,24 +1,27 @@
 ﻿using Microsoft.Extensions.Logging;
 using Vote.Monitor.Api.Feature.Observer.Services;
-using Vote.Monitor.Api.Feature.Observer.Specifications;
+using Vote.Monitor.Core.Services.Time;
 using Vote.Monitor.Domain.Entities.ImportValidationErrorsAggregate;
 
 namespace Vote.Monitor.Api.Feature.Observer.Import;
 
 public class Endpoint : Endpoint<Request, Results<NoContent, BadRequest<ImportValidationErrorModel>>>
 {
-    readonly IRepository<ObserverAggregate> _repository;
+    private readonly IRepository<ObserverAggregate> _repository;
     private readonly IRepository<ImportValidationErrors> _errorRepo;
     private readonly ICsvParser<ObserverImportModel> _parser;
+    private readonly ITimeService _timeService;
     private readonly ILogger<Endpoint> _logger;
     public Endpoint(IRepository<ObserverAggregate> repository,
         IRepository<ImportValidationErrors> errorRepo,
         ICsvParser<ObserverImportModel> parser,
+        ITimeService timeService,
         ILogger<Endpoint> logger)
     {
         _repository = repository;
         _errorRepo = errorRepo;
         _parser = parser;
+        _timeService = timeService;
         _logger = logger;
     }
 
@@ -37,7 +40,7 @@ public class Endpoint : Endpoint<Request, Results<NoContent, BadRequest<ImportVa
         {
 
             string csv = failedResult.Items.ConstructErrorFileContent();
-            var errorSaved = await _errorRepo.AddAsync(new(ImportType.Observer, req.File.Name, csv, DateTime.Now), ct);
+            var errorSaved = await _errorRepo.AddAsync(new(ImportType.Observer, req.File.Name, csv, _timeService), ct);
             return TypedResults.BadRequest(
                 new ImportValidationErrorModel { Id = errorSaved.Id, Message = "The file contains errors! Please use the ID to get the file with the errors described inside." });
 
@@ -46,7 +49,7 @@ public class Endpoint : Endpoint<Request, Results<NoContent, BadRequest<ImportVa
         var importedRows = parsingResult as ParsingResult<ObserverImportModel>.Success;
         List<ObserverAggregate> observers = importedRows!
             .Items
-            .Select(x => new ObserverAggregate(x.Name, x.Email, x.Password, x.PhoneNumber))
+            .Select(x => new ObserverAggregate(x.Name, x.Email, x.Password, x.PhoneNumber, _timeService))
             .ToList();
 
         var logins = observers.Select(o => o.Login);

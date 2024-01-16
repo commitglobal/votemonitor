@@ -13,8 +13,9 @@ public static class DomainInstaller
     public static IServiceCollection AddApplicationDomain(this IServiceCollection services, IConfiguration config)
     {
         var connectionString = GetConnectionString(config);
+        NpgsqlConnection.GlobalTypeMapper.EnableDynamicJson();
 
-        services.AddDbContextPool<VoteMonitorContext>(options =>
+        services.AddDbContext<VoteMonitorContext>(options =>
             options.UseNpgsql(connectionString, sqlOptions =>
             {
                 sqlOptions.EnableRetryOnFailure(
