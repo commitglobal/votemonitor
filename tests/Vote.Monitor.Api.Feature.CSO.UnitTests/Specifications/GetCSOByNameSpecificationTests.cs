@@ -6,7 +6,7 @@ public class GetCSOByNameSpecificationTests
     public void GetCSOByNameSpecification_UsesExactMatch()
     {
         // Arrange
-        var cso = new CSOAggregateFaker().Generate();
+        var cso = new CSOAggregateFaker(name: "My little CSO").Generate();
 
         var testCollection = new CSOAggregateFaker()
             .Generate(500)

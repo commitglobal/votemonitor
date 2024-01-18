@@ -11,7 +11,7 @@ public class CSOAggregateFaker : PrivateFaker<CSOAggregate>
         UsePrivateConstructor();
 
         RuleFor(fake => fake.Id, fake => fake.Random.Guid());
-        RuleFor(fake => fake.Name, fake => name ?? fake.Name.FirstName());
+        RuleFor(fake => fake.Name, fake => name ?? fake.Company.CompanyName());
         RuleFor(fake => fake.Status, fake => status ?? fake.PickRandom(_statuses));
         RuleFor(fake => fake.CreatedOn, _baseCreationDate.AddHours(index ?? 0));
         RuleFor(fake => fake.LastModifiedOn, _baseModifiedDate.AddHours(index ?? 0));
