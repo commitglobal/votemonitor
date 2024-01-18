@@ -16,7 +16,7 @@ public class ListPollingStationsSpecificationTests
             .Union(new[] { pollingStation1, pollingStation2 })
             .ToList();
 
-        var request = new Request
+        var request = new List.Request
         {
             PageSize = 100,
             PageNumber = 2
@@ -46,7 +46,7 @@ public class ListPollingStationsSpecificationTests
             .Union(new[] { pollingStation1, pollingStation2 })
             .ToList();
 
-        var request = new Request
+        var request = new List.Request
         {
             AddressFilter = DefaultAddress,
             PageSize = 100,
@@ -78,7 +78,7 @@ public class ListPollingStationsSpecificationTests
             .Union(new[] { pollingStation1, pollingStation2 })
             .ToList();
 
-        var request = new Request
+        var request = new List.Request
         {
             AddressFilter = searchString,
             PageSize = 100,
@@ -112,7 +112,7 @@ public class ListPollingStationsSpecificationTests
             .Reverse()
             .ToList();
 
-        var request = new Request
+        var request = new List.Request
         {
             SortOrder = sortOrder,
             SortColumnName = columnName,
@@ -145,7 +145,7 @@ public class ListPollingStationsSpecificationTests
             .Reverse()
             .ToList();
 
-        var request = new Request
+        var request = new List.Request
         {
             SortOrder = SortOrder.Desc,
             SortColumnName = "DisplayOrder",

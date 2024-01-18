@@ -6,6 +6,7 @@ public class Validator : Validator<Request>
     {
         RuleFor(x => x.Name)
             .MinimumLength(3)
+            .MaximumLength(256)
             .NotEmpty();
     }
 }

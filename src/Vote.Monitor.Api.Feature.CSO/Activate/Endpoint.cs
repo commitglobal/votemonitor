@@ -11,7 +11,8 @@ public class Endpoint : Endpoint<Request, Results<NoContent, NotFound>>
 
     public override void Configure()
     {
-        Put("/api/csos/{id}:activate");
+        Post("/api/csos/{id}:activate");
+        Description(x => x.Accepts<Request>());
     }
 
     public override async Task<Results<NoContent, NotFound>> ExecuteAsync(Request req, CancellationToken ct)

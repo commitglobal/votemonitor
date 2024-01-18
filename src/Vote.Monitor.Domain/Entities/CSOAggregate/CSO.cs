@@ -6,7 +6,7 @@ namespace Vote.Monitor.Domain.Entities.CSOAggregate;
 public class CSO : AuditableBaseEntity, IAggregateRoot
 {
 #pragma warning disable CS8618 // Required by Entity Framework
-    private CSO()
+    internal CSO()
     {
 
     }
@@ -22,18 +22,18 @@ public class CSO : AuditableBaseEntity, IAggregateRoot
         Status = CSOStatus.Activated;
     }
 
-    public void UpdateDetails(string name)
+    public virtual void UpdateDetails(string name)
     {
         Name = name;
     }
 
-    public void Activate()
+    public virtual void Activate()
     {
         // TODO: handle invariants
         Status = CSOStatus.Activated;
     }
 
-    public void Deactivate()
+    public virtual void Deactivate()
     {
         // TODO: handle invariants
         Status = CSOStatus.Deactivated;

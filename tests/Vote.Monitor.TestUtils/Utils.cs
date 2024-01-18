@@ -25,3 +25,4 @@ public static class Utils
         return Enumerable.Range(1, times).Select(_ => value);
     }
 }
+

@@ -4,9 +4,9 @@ namespace Vote.Monitor.Api.Feature.CSO.Update;
 
 public class Endpoint : Endpoint<Request, Results<NoContent, NotFound, Conflict<ProblemDetails>>>
 {
-    private readonly IRepository<Domain.Entities.CSOAggregate.CSO> _repository;
+    private readonly IRepository<CSOAggregate> _repository;
 
-    public Endpoint(IRepository<Domain.Entities.CSOAggregate.CSO> repository)
+    public Endpoint(IRepository<CSOAggregate> repository)
     {
         _repository = repository;
     }
