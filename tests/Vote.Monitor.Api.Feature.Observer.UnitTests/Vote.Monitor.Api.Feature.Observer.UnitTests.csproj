@@ -10,8 +10,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
     <PackageReference Include="Bogus" Version="35.4.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
     <PackageReference Include="FluentAssertions" Version="6.12.0" />
     <PackageReference Include="NSubstitute" Version="5.1.0" />
     <PackageReference Include="NSubstitute.Analyzers.CSharp" Version="1.0.16">
@@ -24,7 +24,6 @@
     <PackageReference Include="xunit" Version="2.6.6" />
     <PackageReference Include="Xunit.Priority" Version="1.1.6" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.5.6" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
-    <PackageReference Include="AutoBogus" Version="2.13.1" />
     <PackageReference Include="FluentValidation" Version="11.9.0" />
   </ItemGroup>
 
@@ -36,7 +35,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Vote.Monitor.Domain\Vote.Monitor.Domain.csproj" />
-    <ProjectReference Include="..\..\src\Vote.Monitor.Core\Vote.Monitor.Core.csproj" />
     <ProjectReference Include="..\..\src\Vote.Monitor.Api.Feature.Observer\Vote.Monitor.Api.Feature.Observer.csproj" />
     <ProjectReference Include="..\Vote.Monitor.TestUtils\Vote.Monitor.TestUtils.csproj" />
   </ItemGroup>

@@ -76,7 +76,7 @@ public class VoteMonitorContext : DbContext
     }
 
 
-    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         var auditEntries = HandleAuditingBeforeSaveChanges(_currentUser.GetUserId());
 

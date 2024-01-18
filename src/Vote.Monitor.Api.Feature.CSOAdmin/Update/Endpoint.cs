@@ -14,6 +14,8 @@ public class Endpoint : Endpoint<Request, Results<NoContent, NotFound>>
     public override void Configure()
     {
         Put("/api/csos/{csoid}/admins/{id}");
+        DontAutoTag();
+        Options(x => x.WithTags("cso-admins"));
     }
 
     public override async Task<Results<NoContent, NotFound>> ExecuteAsync(Request req, CancellationToken ct)

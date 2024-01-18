@@ -43,15 +43,13 @@ public class ListObserversSpecificationTests
 
         var testCollection = Enumerable
         .Range(1, 100)
-            .Select(index => new ObserverAggregateFaker(index: index, name: DefaultName, status: DefaultStatus).Generate())
+            .Select(index => new ObserverAggregateFaker(index: index, status: DefaultStatus).Generate())
             .Union(new[] { observer1, observer2 })
             .ToList();
 
         var request = new List.Request
         {
-            NameFilter = DefaultName,
-            PageSize = 100,
-            PageNumber = 2
+            NameFilter = DefaultName
         };
 
         var spec = new ListObserversSpecification(request);
@@ -76,15 +74,13 @@ public class ListObserversSpecificationTests
 
         var testCollection = Enumerable
             .Range(1, 100)
-            .Select(idx => new ObserverAggregateFaker(index: idx, name: searchString, status: DefaultStatus).Generate())
+            .Select(idx => new ObserverAggregateFaker(index: idx, status: DefaultStatus).Generate())
             .Union(new[] { observer1, observer2 })
             .ToList();
 
         var request = new List.Request
         {
-            NameFilter = searchString,
-            PageSize = 100,
-            PageNumber = 2
+            NameFilter = searchString
         };
 
         var spec = new ListObserversSpecification(request);
