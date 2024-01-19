@@ -2,15 +2,8 @@
 
 namespace Vote.Monitor.Api.Feature.CSO.Update;
 
-public class Endpoint : Endpoint<Request, Results<NoContent, NotFound, Conflict<ProblemDetails>>>
+public class Endpoint(IRepository<CSOAggregate> _repository) : Endpoint<Request, Results<NoContent, NotFound, Conflict<ProblemDetails>>>
 {
-    private readonly IRepository<Domain.Entities.CSOAggregate.CSO> _repository;
-
-    public Endpoint(IRepository<Domain.Entities.CSOAggregate.CSO> repository)
-    {
-        _repository = repository;
-    }
-
     public override void Configure()
     {
         Put("/api/csos/{id}");

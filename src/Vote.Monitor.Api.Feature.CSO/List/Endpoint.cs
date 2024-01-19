@@ -2,15 +2,8 @@
 
 namespace Vote.Monitor.Api.Feature.CSO.List;
 
-public class Endpoint : Endpoint<Request, Results<Ok<PagedResponse<CSOModel>>, ProblemDetails>>
+public class Endpoint(IRepository<CSOAggregate> _repository) : Endpoint<Request, Results<Ok<PagedResponse<CSOModel>>, ProblemDetails>>
 {
-    private readonly IReadRepository<Domain.Entities.CSOAggregate.CSO> _repository;
-
-    public Endpoint(IReadRepository<Domain.Entities.CSOAggregate.CSO> repository)
-    {
-        _repository = repository;
-    }
-
     public override void Configure()
     {
         Get("/api/csos");

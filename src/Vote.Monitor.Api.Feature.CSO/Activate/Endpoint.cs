@@ -1,13 +1,7 @@
 ﻿namespace Vote.Monitor.Api.Feature.CSO.Activate;
 
-public class Endpoint : Endpoint<Request, Results<NoContent, NotFound>>
+public class Endpoint(IRepository<CSOAggregate> _repository) : Endpoint<Request, Results<NoContent, NotFound>>
 {
-    private readonly IRepository<CSOAggregate> _repository;
-
-    public Endpoint(IRepository<CSOAggregate> repository)
-    {
-        _repository = repository;
-    }
 
     public override void Configure()
     {

@@ -1,13 +1,7 @@
 ﻿namespace Vote.Monitor.Api.Feature.CSO.Get;
 
-public class Endpoint : Endpoint<Request, Results<Ok<CSOModel>, NotFound>>
+public class Endpoint(IReadRepository<CSOAggregate> _repository) : Endpoint<Request, Results<Ok<CSOModel>, NotFound>>
 {
-    private readonly IReadRepository<Domain.Entities.CSOAggregate.CSO> _repository;
-
-    public Endpoint(IReadRepository<Domain.Entities.CSOAggregate.CSO> repository)
-    {
-        _repository = repository;
-    }
 
     public override void Configure()
     {

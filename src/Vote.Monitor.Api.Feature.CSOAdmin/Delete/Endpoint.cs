@@ -2,14 +2,8 @@
 
 namespace Vote.Monitor.Api.Feature.CSOAdmin.Delete;
 
-public class Endpoint : Endpoint<Request, Results<NoContent, NotFound, ProblemDetails>>
+public class Endpoint(IRepository<CSOAdminAggregate> _repository) : Endpoint<Request, Results<NoContent, NotFound, ProblemDetails>>
 {
-     readonly IRepository<CSOAdminAggregate> _repository;
-
-    public Endpoint(IRepository<CSOAdminAggregate> repository)
-    {
-        _repository = repository;
-    }
 
     public override void Configure()
     {
