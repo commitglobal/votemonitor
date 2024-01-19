@@ -7,6 +7,8 @@ public class Endpoint(IRepository<CSOAdminAggregate> _repository) : Endpoint<Req
     public override void Configure()
     {
         Get("/api/csos/{csoid}/admins/{id}");
+        DontAutoTag();
+        Options(x => x.WithTags("cso-admins"));
     }
 
     public override async Task<Results<Ok<CSOAdminModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)

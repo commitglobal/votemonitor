@@ -3,7 +3,7 @@
 public class GetObserverByLoginSpecificationTests
 {
     [Fact]
-    public void GetObserverByLoginSpecificationTests_AppliesCorrectFilters()
+    public void GetObserverByLoginSpecification_AppliesCorrectFilters()
     {
         // Arrange
         var observer = new ObserverAggregateFaker().Generate();

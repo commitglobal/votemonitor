@@ -8,6 +8,8 @@ public class Endpoint(IRepository<CSOAdminAggregate> _repository) : Endpoint<Req
     public override void Configure()
     {
         Delete("/api/csos/{csoid}/admins/{id}");
+        DontAutoTag();
+        Options(x => x.WithTags("cso-admins"));
     }
 
     public override async Task<Results<NoContent, NotFound, ProblemDetails>> ExecuteAsync(Request req, CancellationToken ct)

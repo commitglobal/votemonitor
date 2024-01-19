@@ -14,6 +14,8 @@ public class Endpoint : Endpoint<Request, Results<Ok<PagedResponse<CSOAdminModel
     public override void Configure()
     {
         Get("/api/csos/{csoid}/admins");
+        DontAutoTag();
+        Options(x => x.WithTags("cso-admins"));
     }
 
     public override async Task<Results<Ok<PagedResponse<CSOAdminModel>>, ProblemDetails>> ExecuteAsync(Request req, CancellationToken ct)

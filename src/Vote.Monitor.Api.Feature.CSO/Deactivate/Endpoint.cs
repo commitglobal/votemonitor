@@ -2,16 +2,17 @@
 
 public class Endpoint : Endpoint<Request, Results<NoContent, NotFound>>
 {
-    private readonly IRepository<Domain.Entities.CSOAggregate.CSO> _repository;
+    private readonly IRepository<CSOAggregate> _repository;
 
-    public Endpoint(IRepository<Domain.Entities.CSOAggregate.CSO> repository)
+    public Endpoint(IRepository<CSOAggregate> repository)
     {
         _repository = repository;
     }
 
     public override void Configure()
     {
-        Put("/api/csos/{id}:deactivate");
+        Post("/api/csos/{id}:deactivate");
+        Description(x => x.Accepts<Request>());
     }
 
     public override async Task<Results<NoContent, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
