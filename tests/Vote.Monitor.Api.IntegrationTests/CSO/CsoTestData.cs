@@ -53,7 +53,7 @@ public static class CsoTestData
             {
                 Id = createResult.Id
             };
-            await client.PUTAsync<DeactivateEndpoint, DeactivateRequest, CSOModel>(deactivateRequest);
+            await client.POSTAsync<DeactivateEndpoint, DeactivateRequest, CSOModel>(deactivateRequest);
 
 
         }

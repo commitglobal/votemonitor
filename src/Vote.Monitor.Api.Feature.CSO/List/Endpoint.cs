@@ -2,7 +2,7 @@
 
 namespace Vote.Monitor.Api.Feature.CSO.List;
 
-public class Endpoint(IRepository<CSOAggregate> _repository) : Endpoint<Request, Results<Ok<PagedResponse<CSOModel>>, ProblemDetails>>
+public class Endpoint(IReadRepository<CSOAggregate> _repository) : Endpoint<Request, Results<Ok<PagedResponse<CSOModel>>, ProblemDetails>>
 {
     public override void Configure()
     {
