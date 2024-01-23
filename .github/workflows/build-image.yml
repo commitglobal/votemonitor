@@ -13,7 +13,6 @@ jobs:
     with:
       images: commitglobal/votemonitor
       dockerfile: ./src/Vote.Monitor.Api/Dockerfile
-      context: ./src
     secrets:
       username: ${{ secrets.DOCKER_HUB_USERNAME }}
       token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
