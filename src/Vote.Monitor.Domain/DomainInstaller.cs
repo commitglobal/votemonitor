@@ -45,7 +45,7 @@ public static class DomainInstaller
             Host = config["DbConnectionConfig:Server"]!,
             Port = int.Parse(config["DbConnectionConfig:Port"]!),
             Database = config["DbConnectionConfig:Database"]!,
-            Username = config["DbConnectionConfig:User Id"],
+            Username = config["DbConnectionConfig:UserId"],
             Password = config["DbConnectionConfig:Password"]
         };
         return connectionStringBuilder.ToString();

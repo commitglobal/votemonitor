@@ -3,17 +3,9 @@ using Vote.Monitor.Core.Services.Time;
 
 namespace Vote.Monitor.Api.Feature.CSO.Create;
 
-public class Endpoint : Endpoint<Request, Results<Ok<CSOModel>, Conflict<ProblemDetails>>>
+public class Endpoint(IRepository<CSOAggregate> _repository, ITimeProvider _timeProvider) :
+        Endpoint<Request, Results<Ok<CSOModel>, Conflict<ProblemDetails>>>
 {
-    private readonly IRepository<CSOAggregate> _repository;
-    private readonly ITimeProvider _timeProvider;
-
-    public Endpoint(IRepository<CSOAggregate> repository,
-        ITimeProvider timeProvider)
-    {
-        _repository = repository;
-        _timeProvider = timeProvider;
-    }
 
     public override void Configure()
     {
