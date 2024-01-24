@@ -2,7 +2,7 @@
 
 namespace Vote.Monitor.Api.Feature.CSO.Update;
 
-public class Endpoint(IRepository<CSOAggregate> _repository) : Endpoint<Request, Results<NoContent, NotFound, Conflict<ProblemDetails>>>
+public class Endpoint(IRepository<CSOAggregate> repository) : Endpoint<Request, Results<NoContent, NotFound, Conflict<ProblemDetails>>>
 {
     public override void Configure()
     {
@@ -11,14 +11,14 @@ public class Endpoint(IRepository<CSOAggregate> _repository) : Endpoint<Request,
 
     public override async Task<Results<NoContent, NotFound, Conflict<ProblemDetails>>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var CSO = await _repository.GetByIdAsync(req.Id, ct);
+        var CSO = await repository.GetByIdAsync(req.Id, ct);
 
         if (CSO is null)
         {
             return TypedResults.NotFound();
         }
 
-        var hasCSOWithSameName = await _repository.AnyAsync(new GetCSOByNameSpecification(req.Name), ct);
+        var hasCSOWithSameName = await repository.AnyAsync(new GetCSOByNameSpecification(req.Name), ct);
 
         if (hasCSOWithSameName)
         {
@@ -27,7 +27,7 @@ public class Endpoint(IRepository<CSOAggregate> _repository) : Endpoint<Request,
         }
 
         CSO.UpdateDetails(req.Name);
-        await _repository.SaveChangesAsync(ct);
+        await repository.SaveChangesAsync(ct);
         return TypedResults.NoContent();
     }
 }
