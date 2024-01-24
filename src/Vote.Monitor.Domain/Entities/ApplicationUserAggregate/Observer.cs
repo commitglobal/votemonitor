@@ -1,6 +1,4 @@
-﻿using Vote.Monitor.Core.Services.Time;
-
-namespace Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
+﻿namespace Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
 
 public class Observer : ApplicationUser
 {
@@ -16,7 +14,7 @@ public class Observer : ApplicationUser
         string login,
         string password,
         string phoneNumber,
-        ITimeService timeService) : base(name, login, password, UserRole.Observer, timeService)
+        ITimeProvider timeProvider) : base(name, login, password, UserRole.Observer, timeProvider)
     {
         PhoneNumber = phoneNumber;
     }

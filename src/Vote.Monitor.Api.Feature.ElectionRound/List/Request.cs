@@ -3,7 +3,7 @@
 public class Request : BaseSortPaginatedRequest
 {
     [QueryParam]
-    public string? NameFilter { get; set; }
+    public string? TitleFilter { get; set; }
 
     [QueryParam]
     public Guid? CountryId { get; set; }

@@ -1,7 +1,4 @@
-﻿using Vote.Monitor.Core.Services.Time;
-using Vote.Monitor.Domain.Entities.CSOAggregate;
-
-namespace Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
+﻿namespace Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
 
 public class CSOAdmin : ApplicationUser
 {
@@ -14,9 +11,9 @@ public class CSOAdmin : ApplicationUser
 #pragma warning restore CS8618
 
     public Guid CSOId { get; private set; }
-    public CSO CSO{ get; set; }
+    public CSO CSO{ get; private set; }
 
-    public CSOAdmin(Guid csoId, string name, string login, string password, ITimeService timeService) : base(name, login, password, UserRole.CSOAdmin, timeService)
+    public CSOAdmin(Guid csoId, string name, string login, string password, ITimeProvider timeProvider) : base(name, login, password, UserRole.CSOAdmin, timeProvider)
     {
         CSOId = csoId;
     }

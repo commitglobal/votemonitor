@@ -1,21 +1,32 @@
 ﻿namespace Vote.Monitor.Api.Feature.ElectionRound.Update;
 
-public class Endpoint : Endpoint<Request, Results<NoContent, NotFound, Conflict<ProblemDetails>>>
+public class Endpoint(IRepository<ElectionRoundAggregate> repository)
+    : Endpoint<Request, Results<NoContent, NotFound, Conflict<ProblemDetails>>>
 {
-     readonly IRepository<ElectionRoundAggregate> _repository;
-
-    public Endpoint(IRepository<ElectionRoundAggregate> repository)
-    {
-        _repository = repository;
-    }
-
     public override void Configure()
     {
-        Put("/api/elections-round/{id}");
+        Put("/api/election-rounds/{id}");
     }
 
     public override async Task<Results<NoContent, NotFound, Conflict<ProblemDetails>>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        throw new NotImplementedException();
+        var electionRound = await repository.GetByIdAsync(req.Id, ct);
+
+        if (electionRound is null)
+        {
+            return TypedResults.NotFound();
+        }
+
+        var specification = new GetActiveElectionRoundSpecification(req.CountryId, req.Title);
+        var hasElectionRoundWithSameTitle = await repository.AnyAsync(specification, ct);
+        if (hasElectionRoundWithSameTitle)
+        {
+            AddError(r => r.Title, "An election round with same title already exists");
+            return TypedResults.Conflict(new ProblemDetails(ValidationFailures));
+        }
+
+        electionRound.UpdateDetails(req.CountryId, req.Title, req.EnglishTitle, req.StartDate);
+        await repository.SaveChangesAsync(ct);
+        return TypedResults.NoContent();
     }
 }

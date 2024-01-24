@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Vote.Monitor.Core.Services.Csv;
+using Vote.Monitor.Core.Services.ElectionRound;
 using Vote.Monitor.Core.Services.Security;
 using Vote.Monitor.Core.Services.Serialization;
 using Vote.Monitor.Core.Services.Time;
@@ -14,18 +15,19 @@ public static class CoreServicesInstaller
         services.AddSingleton(typeof(ICsvWriter<>), typeof(CsvWriter<>));
 
         services.AddSingleton<ISerializerService, SerializerService>();
+        services.AddScoped<IElectionRoundIdProvider, ElectionRoundIdProvider>();
 
-        services.AddSingleton<CurrentUtc>();
-        services.AddScoped<ITimeService>(sp =>
+        services.AddSingleton<CurrentUtcTimeProvider>();
+        services.AddScoped<ITimeProvider>(sp =>
         {
-            var currentUtc = sp.GetRequiredService<CurrentUtc>();
+            var currentUtc = sp.GetRequiredService<CurrentUtcTimeProvider>();
 
-            return new TimeFreeze(currentUtc);
+            return new FreezeTimeProvider(currentUtc);
         });
 
         services
-        .AddScoped<ICurrentUser, CurrentUser>()
-            .AddScoped(sp => (ICurrentUserInitializer)sp.GetRequiredService<ICurrentUser>());
+        .AddScoped<ICurrentUserProvider, CurrentUserProvider>()
+            .AddScoped(sp => (ICurrentUserInitializer)sp.GetRequiredService<ICurrentUserProvider>());
 
         return services;
     }

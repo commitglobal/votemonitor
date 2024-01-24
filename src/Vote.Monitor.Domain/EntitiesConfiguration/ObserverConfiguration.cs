@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Vote.Monitor.Domain.EntitiesConfiguration;
 

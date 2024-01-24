@@ -1,14 +1,8 @@
 ﻿namespace Vote.Monitor.Api.Feature.ElectionRound.Get;
 
-public class Endpoint : Endpoint<Request, Results<Ok<ElectionRoundModel>, NotFound>>
+public class Endpoint(IReadRepository<ElectionRoundAggregate> repository)
+    : Endpoint<Request, Results<Ok<ElectionRoundModel>, NotFound>>
 {
-     readonly IReadRepository<ElectionRoundAggregate> _repository;
-
-    public Endpoint(IReadRepository<ElectionRoundAggregate> repository)
-    {
-        _repository = repository;
-    }
-
     public override void Configure()
     {
         Get("/api/election-rounds/{id}");
@@ -16,6 +10,14 @@ public class Endpoint : Endpoint<Request, Results<Ok<ElectionRoundModel>, NotFou
 
     public override async Task<Results<Ok<ElectionRoundModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        throw new NotImplementedException();
+        var specification = new GetElectionRoundByIdSpecification(req.Id);
+        var electionRound = await repository.SingleOrDefaultAsync(specification, ct);
+
+        if (electionRound is null)
+        {
+            return TypedResults.NotFound();
+        }
+
+        return TypedResults.Ok(electionRound);
     }
 }

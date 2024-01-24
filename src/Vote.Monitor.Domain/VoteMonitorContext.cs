@@ -1,35 +1,22 @@
-﻿using System.Reflection;
-using System.Text.Json;
-using Microsoft.EntityFrameworkCore;
-using SmartEnum.EFCore;
-using Vote.Monitor.Core.Services.Security;
-using Vote.Monitor.Core.Services.Serialization;
-using Vote.Monitor.Core.Services.Time;
-using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
-using Vote.Monitor.Domain.Entities.Auditing;
-using Vote.Monitor.Domain.Entities.CountryAggregate;
-using Vote.Monitor.Domain.Entities.CSOAggregate;
-using Vote.Monitor.Domain.Entities.ElectionRoundAggregate;
-using Vote.Monitor.Domain.Entities.ImportValidationErrorsAggregate;
-using Vote.Monitor.Domain.Entities.PollingStationAggregate;
-using Vote.Monitor.Domain.EntitiesConfiguration;
-
-namespace Vote.Monitor.Domain;
+﻿namespace Vote.Monitor.Domain;
 
 public class VoteMonitorContext : DbContext
 {
     private readonly ISerializerService _serializerService;
-    private readonly ITimeService _timeService;
-    private readonly ICurrentUser _currentUser;
+    private readonly ITimeProvider _timeProvider;
+    private readonly ICurrentUserProvider _currentUserProvider;
+    private readonly IElectionRoundIdProvider _electionRoundIdProvider;
 
     public VoteMonitorContext(DbContextOptions<VoteMonitorContext> options,
         ISerializerService serializerService,
-        ITimeService timeService,
-        ICurrentUser currentUser) : base(options)
+        ITimeProvider timeProvider,
+        ICurrentUserProvider currentUserProvider,
+        IElectionRoundIdProvider electionRoundIdProvider) : base(options)
     {
         _serializerService = serializerService;
-        _timeService = timeService;
-        _currentUser = currentUser;
+        _timeProvider = timeProvider;
+        _currentUserProvider = currentUserProvider;
+        _electionRoundIdProvider = electionRoundIdProvider;
     }
 
     public DbSet<ApplicationUser> Users { get; set; }
@@ -39,11 +26,9 @@ public class VoteMonitorContext : DbContext
     public DbSet<CSOAdmin> CSOAdmins { get; set; }
     public DbSet<Observer> Observers { get; set; }
     public DbSet<PollingStation> PollingStations { get; set; }
-
     public DbSet<ElectionRound> ElectionRounds { get; set; }
+    public DbSet<ImportValidationErrors> ImportValidationErrors { set; get; }
     public DbSet<Trail> AuditTrails => Set<Trail>();
-
-    public DbSet<ImportValidationErrors> ImportValidationErrors { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -78,7 +63,7 @@ public class VoteMonitorContext : DbContext
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        var auditEntries = HandleAuditingBeforeSaveChanges(_currentUser.GetUserId());
+        var auditEntries = HandleAuditingBeforeSaveChanges(_currentUserProvider.GetUserId());
 
         int result = await base.SaveChangesAsync(cancellationToken);
 
@@ -112,7 +97,7 @@ public class VoteMonitorContext : DbContext
             .Where(e => e.State is EntityState.Added or EntityState.Deleted or EntityState.Modified)
             .ToList())
         {
-            var trailEntry = new AuditTrail(entry, _serializerService, _timeService)
+            var trailEntry = new AuditTrail(entry, _serializerService, _timeProvider)
             {
                 TableName = entry.Entity.GetType().Name,
                 UserId = userId

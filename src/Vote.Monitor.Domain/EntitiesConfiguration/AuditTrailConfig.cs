@@ -1,6 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.EntityFrameworkCore;
-using Vote.Monitor.Domain.Entities.Auditing;
 
 namespace Vote.Monitor.Domain.EntitiesConfiguration;
 

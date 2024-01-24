@@ -2700,20 +2700,28 @@ namespace Vote.Monitor.Domain.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("EnglishTitle")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
                     b.Property<Guid>("LastModifiedBy")
                         .HasColumnType("uuid");
 
                     b.Property<DateTime?>("LastModifiedOn")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                    b.Property<DateOnly>("StartDate")
+                        .HasColumnType("date");
 
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.HasKey("Id");
 
@@ -4333,7 +4341,92 @@ namespace Vote.Monitor.Domain.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.OwnsMany("Vote.Monitor.Domain.Entities.ElectionRoundAggregate.MonitoringNGO", "MonitoringNgos", b1 =>
+                        {
+                            b1.Property<int>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("integer");
+
+                            NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b1.Property<int>("Id"));
+
+                            b1.Property<Guid>("ElectionRoundId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<Guid>("NgoId")
+                                .HasColumnType("uuid");
+
+                            b1.HasKey("Id");
+
+                            b1.HasIndex("ElectionRoundId");
+
+                            b1.HasIndex("NgoId");
+
+                            b1.ToTable("MonitoringNGOs", (string)null);
+
+                            b1.WithOwner()
+                                .HasForeignKey("ElectionRoundId");
+
+                            b1.HasOne("Vote.Monitor.Domain.Entities.CSOAggregate.CSO", "Ngo")
+                                .WithMany()
+                                .HasForeignKey("NgoId")
+                                .OnDelete(DeleteBehavior.Cascade)
+                                .IsRequired();
+
+                            b1.Navigation("Ngo");
+                        });
+
+                    b.OwnsMany("Vote.Monitor.Domain.Entities.ElectionRoundAggregate.MonitoringObserver", "MonitoringObservers", b1 =>
+                        {
+                            b1.Property<int>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("integer");
+
+                            NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b1.Property<int>("Id"));
+
+                            b1.Property<Guid>("ElectionRoundId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<Guid>("InviterNgoId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<Guid>("ObserverId")
+                                .HasColumnType("uuid");
+
+                            b1.HasKey("Id");
+
+                            b1.HasIndex("ElectionRoundId");
+
+                            b1.HasIndex("InviterNgoId");
+
+                            b1.HasIndex("ObserverId");
+
+                            b1.ToTable("MonitoringObservers", (string)null);
+
+                            b1.WithOwner()
+                                .HasForeignKey("ElectionRoundId");
+
+                            b1.HasOne("Vote.Monitor.Domain.Entities.CSOAggregate.CSO", "InviterNgo")
+                                .WithMany()
+                                .HasForeignKey("InviterNgoId")
+                                .OnDelete(DeleteBehavior.Cascade)
+                                .IsRequired();
+
+                            b1.HasOne("Vote.Monitor.Domain.Entities.ApplicationUserAggregate.Observer", "Observer")
+                                .WithMany()
+                                .HasForeignKey("ObserverId")
+                                .OnDelete(DeleteBehavior.Cascade)
+                                .IsRequired();
+
+                            b1.Navigation("InviterNgo");
+
+                            b1.Navigation("Observer");
+                        });
+
                     b.Navigation("Country");
+
+                    b.Navigation("MonitoringNgos");
+
+                    b.Navigation("MonitoringObservers");
                 });
 
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.ApplicationUserAggregate.CSOAdmin", b =>

@@ -1,19 +1,17 @@
 ﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Vote.Monitor.Core.Services.Serialization;
-using Vote.Monitor.Core.Services.Time;
 
 namespace Vote.Monitor.Domain.Entities.Auditing;
 
 public class AuditTrail
 {
     private readonly ISerializerService _serializer;
-    private readonly ITimeService _timeService;
+    private readonly ITimeProvider _timeProvider;
 
-    public AuditTrail(EntityEntry entry, ISerializerService serializer, ITimeService timeService)
+    public AuditTrail(EntityEntry entry, ISerializerService serializer, ITimeProvider timeProvider)
     {
         Entry = entry;
         _serializer = serializer;
-        _timeService = timeService;
+        _timeProvider = timeProvider;
     }
 
     public EntityEntry Entry { get; }
@@ -33,7 +31,7 @@ public class AuditTrail
             UserId = UserId,
             Type = TrailType.ToString(),
             TableName = TableName,
-            Timestamp = _timeService.UtcNow,
+            Timestamp = _timeProvider.UtcNow,
             PrimaryKey = _serializer.Serialize(KeyValues),
             OldValues = OldValues.Count == 0 ? null : _serializer.Serialize(OldValues),
             NewValues = NewValues.Count == 0 ? null : _serializer.Serialize(NewValues),

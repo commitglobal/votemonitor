@@ -6,12 +6,12 @@ namespace Vote.Monitor.Api.Feature.CSOAdmin.Create;
 public class Endpoint : Endpoint<Request, Results<Ok<CSOAdminModel>, Conflict<ProblemDetails>>>
 {
     private readonly IRepository<CSOAdminAggregate> _repository;
-    private readonly ITimeService _timeService;
+    private readonly ITimeProvider _timeProvider;
 
-    public Endpoint(IRepository<CSOAdminAggregate> repository, ITimeService timeService)
+    public Endpoint(IRepository<CSOAdminAggregate> repository, ITimeProvider timeProvider)
     {
         _repository = repository;
-        _timeService = timeService;
+        _timeProvider = timeProvider;
     }
 
     public override void Configure()
@@ -32,7 +32,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<CSOAdminModel>, Conflict<Pr
             return TypedResults.Conflict(new ProblemDetails(ValidationFailures));
         }
 
-        var csoAdmin = new CSOAdminAggregate(req.CSOId, req.Name, req.Login, req.Password, _timeService);
+        var csoAdmin = new CSOAdminAggregate(req.CSOId, req.Name, req.Login, req.Password, _timeProvider);
         await _repository.AddAsync(csoAdmin, ct);
 
         return TypedResults.Ok(new CSOAdminModel

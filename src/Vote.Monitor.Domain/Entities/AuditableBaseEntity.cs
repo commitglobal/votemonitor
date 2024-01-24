@@ -1,15 +1,13 @@
-﻿using Vote.Monitor.Core.Services.Time;
-
-namespace Vote.Monitor.Domain.Entities;
+﻿namespace Vote.Monitor.Domain.Entities;
 
 public abstract class AuditableBaseEntity : BaseEntity
 {
     public Guid CreatedBy { get; internal set; }
     public DateTime? LastModifiedOn { get; internal set; }
     public Guid LastModifiedBy { get; internal set; }
-    protected AuditableBaseEntity(Guid id, ITimeService timeService) : base(id, timeService)
+    protected AuditableBaseEntity(Guid id, ITimeProvider timeProvider) : base(id, timeProvider)
     {
-        LastModifiedOn = timeService.UtcNow;
+        LastModifiedOn = timeProvider.UtcNow;
     }
 
 #pragma warning disable CS8618 // Required by Entity Framework

@@ -7,15 +7,15 @@ public class Endpoint : Endpoint<Request, Results<Ok<Response>, NotFound, Proble
 {
     private readonly VoteMonitorContext _context;
     private readonly IPollingStationParser _parser;
-    private readonly ITimeService _timeService;
+    private readonly ITimeProvider _timeProvider;
 
     public Endpoint(VoteMonitorContext context,
         IPollingStationParser parser,
-        ITimeService timeService)
+        ITimeProvider timeProvider)
     {
         _context = context;
         _parser = parser;
-        _timeService = timeService;
+        _timeProvider = timeProvider;
     }
 
     public override void Configure()
@@ -43,7 +43,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<Response>, NotFound, Proble
 
         var entities = successResult!
         .PollingStations
-            .Select(x => new PollingStationAggregate(x.Address, x.DisplayOrder, x.Tags.ToTagsObject(), _timeService))
+            .Select(x => new PollingStationAggregate(x.Address, x.DisplayOrder, x.Tags.ToTagsObject(), _timeProvider))
             .ToList();
 
         await _context.PollingStations.BatchDeleteAsync(cancellationToken: ct);

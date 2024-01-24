@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  votemonitorapi:
+    image: votemonitorapi
+    build:
+      context: .
+      dockerfile: src/Vote.Monitor.Api/Dockerfile
+      args:
+        - BUILD_CONFIGURATION=Development
+    container_name: votemonitorapi
+    env_file:
+      - .env
+    ports:
+      - "5000:8080"
+    depends_on:
+      db:
+        condition: service_started
+
+  posgress_ui:
+    image: dpage/pgadmin4
+    restart: always
+    container_name: pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: pgadmin@code.com
+      PGADMIN_DEFAULT_PASSWORD: pass
+    ports:  
+      - "5050:80"
+    depends_on:
+      db:
+        condition: service_started
+
+  db:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: docker
+      POSTGRES_DB: docker
+    ports:
+      - "5432:5432"
+    container_name: postgresql-local
+    volumes:
+      - db-data:/var/lib/postgresql/data:rw,size=200m
+
+
+volumes:
+  db-data:
+    driver: local
+
+
+
+
+# docker-compose up -d
+# docker-compose down
+# docker-compose ps
+# docker-compose logs
+# docker inspect <containerid>  - inspect postgress to get the ip address , la mine ii 172.20.0.2

@@ -1,4 +1,4 @@
-global using Ardalis.SmartEnum.SystemTextJson;
+﻿global using Ardalis.SmartEnum.SystemTextJson;
 global using FastEndpoints;
 global using FastEndpoints.Swagger;
 global using Serilog;
@@ -17,3 +17,5 @@ global using Vote.Monitor.Domain;
 global using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
 global using Vote.Monitor.Domain.Entities.CSOAggregate;
 global using Vote.Monitor.Domain.Entities.ElectionRoundAggregate;
+global using Vote.Monitor.Api.Feature.ElectionRound;
+global using Vote.Monitor.Api.Feature.Monitoring;

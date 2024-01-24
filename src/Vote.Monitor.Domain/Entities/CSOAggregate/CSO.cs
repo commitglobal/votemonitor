@@ -1,7 +1,4 @@
-﻿using Vote.Monitor.Core.Services.Time;
-using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
-
-namespace Vote.Monitor.Domain.Entities.CSOAggregate;
+﻿namespace Vote.Monitor.Domain.Entities.CSOAggregate;
 
 public class CSO : AuditableBaseEntity, IAggregateRoot
 {
@@ -14,9 +11,9 @@ public class CSO : AuditableBaseEntity, IAggregateRoot
 
     public string Name { get; private set; }
     public CSOStatus Status { get; private set; }
-    public HashSet<CSOAdmin> Admins { get; set; } = new();
+    public HashSet<CSOAdmin> Admins { get; private set; } = new();
 
-    public CSO(string name, ITimeService timeService) : base(Guid.NewGuid(), timeService)
+    public CSO(string name, ITimeProvider timeProvider) : base(Guid.NewGuid(), timeProvider)
     {
         Name = name;
         Status = CSOStatus.Activated;

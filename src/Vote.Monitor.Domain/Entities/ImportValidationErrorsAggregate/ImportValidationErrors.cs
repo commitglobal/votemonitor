@@ -1,6 +1,4 @@
-﻿using Vote.Monitor.Core.Services.Time;
-
-namespace Vote.Monitor.Domain.Entities.ImportValidationErrorsAggregate;
+﻿namespace Vote.Monitor.Domain.Entities.ImportValidationErrorsAggregate;
 public class ImportValidationErrors : AuditableBaseEntity, IAggregateRoot
 {
 
@@ -11,7 +9,7 @@ public class ImportValidationErrors : AuditableBaseEntity, IAggregateRoot
     }
 #pragma warning restore CS8618
 
-    public ImportValidationErrors(ImportType importType, string originalFileName, string data, ITimeService timeService) : base(Guid.NewGuid(), timeService)
+    public ImportValidationErrors(ImportType importType, string originalFileName, string data, ITimeProvider timeProvider) : base(Guid.NewGuid(), timeProvider)
     {
         ImportType = importType;
         OriginalFileName = originalFileName;

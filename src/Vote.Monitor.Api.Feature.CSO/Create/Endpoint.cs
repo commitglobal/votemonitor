@@ -3,7 +3,7 @@ using Vote.Monitor.Core.Services.Time;
 
 namespace Vote.Monitor.Api.Feature.CSO.Create;
 
-public class Endpoint(IRepository<CSOAggregate> _repository, ITimeService _timeService) :
+public class Endpoint(IRepository<CSOAggregate> repository, ITimeProvider timeProvider) :
         Endpoint<Request, Results<Ok<CSOModel>, Conflict<ProblemDetails>>>
 {
 
@@ -15,7 +15,7 @@ public class Endpoint(IRepository<CSOAggregate> _repository, ITimeService _timeS
     public override async Task<Results<Ok<CSOModel>, Conflict<ProblemDetails>>> ExecuteAsync(Request req, CancellationToken ct)
     {
         var specification = new GetCSOByNameSpecification(req.Name);
-        var hasCSOWithSameName = await _repository.AnyAsync(specification, ct);
+        var hasCSOWithSameName = await repository.AnyAsync(specification, ct);
 
         if (hasCSOWithSameName)
         {
@@ -23,8 +23,8 @@ public class Endpoint(IRepository<CSOAggregate> _repository, ITimeService _timeS
             return TypedResults.Conflict(new ProblemDetails(ValidationFailures));
         }
 
-        var cso = new CSOAggregate(req.Name, _timeService);
-        await _repository.AddAsync(cso, ct);
+        var cso = new CSOAggregate(req.Name, timeProvider);
+        await repository.AddAsync(cso, ct);
 
         return TypedResults.Ok(new CSOModel
         {

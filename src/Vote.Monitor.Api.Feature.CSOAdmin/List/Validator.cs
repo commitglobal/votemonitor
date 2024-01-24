@@ -7,8 +7,6 @@ public class Validator : Validator<Request>
         RuleFor(x => x.PageNumber)
             .GreaterThanOrEqualTo(1);
 
-        RuleFor(x => x.PageSize)
-            .GreaterThanOrEqualTo(10)
-            .LessThanOrEqualTo(100);
+        RuleFor(x => x.PageSize).InclusiveBetween(1, 100);
     }
 }

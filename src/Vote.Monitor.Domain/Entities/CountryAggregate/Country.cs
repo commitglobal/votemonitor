@@ -1,5 +1,4 @@
 ﻿using Vote.Monitor.Core.Extensions;
-using Vote.Monitor.Core.Services.Time;
 
 namespace Vote.Monitor.Domain.Entities.CountryAggregate;
 
@@ -42,7 +41,7 @@ public class Country : BaseEntity, IAggregateRoot
         string iso2, 
         string iso3, 
         string numericCode,
-        ITimeService timeService) : base(iso2.ToGuid(), timeService)
+        ITimeProvider timeProvider) : base(iso2.ToGuid(), timeProvider)
     {
         Id = iso2.ToGuid();
         Name = name;
