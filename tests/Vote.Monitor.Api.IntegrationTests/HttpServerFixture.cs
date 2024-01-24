@@ -58,7 +58,7 @@ public class HttpServerFixture : WebApplicationFactory<Program>, IAsyncLifetime,
         var password = Fake.Internet.Password();
 
         using var voteMonitorContext = Services.GetRequiredService<VoteMonitorContext>();
-        voteMonitorContext.PlatformAdmins.Add(new PlatformAdmin("Integration test platform admin", email, password, CurrentUtc.Instance));
+        voteMonitorContext.PlatformAdmins.Add(new PlatformAdmin("Integration test platform admin", email, password, CurrentUtcTimeProvider.Instance));
         await voteMonitorContext.SaveChangesAsync();
 
         Client = CreateClient();

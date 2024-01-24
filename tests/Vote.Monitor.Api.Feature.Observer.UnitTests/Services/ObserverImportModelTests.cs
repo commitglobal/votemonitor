@@ -1,6 +1,4 @@
-﻿using Vote.Monitor.Api.Feature.Observer.Services;
-
-namespace Vote.Monitor.Api.Feature.Observer.UnitTests.Services;
+﻿namespace Vote.Monitor.Api.Feature.Observer.UnitTests.Services;
 
 public class ObserverImportModelTests
 {

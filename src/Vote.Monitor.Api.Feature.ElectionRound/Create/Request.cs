@@ -2,8 +2,8 @@
 
 public class Request
 {
-    public Guid CSOId { get; set; }
-    public required string Name { get;  set; }
-    public required string Login { get;  set; }
-    public required string Password { get;  set; }
+    public Guid CountryId { get; set; }
+    public string Title { get;  set; }
+    public string EnglishTitle { get;  set; }
+    public DateOnly StartDate { get;  set; }
 }

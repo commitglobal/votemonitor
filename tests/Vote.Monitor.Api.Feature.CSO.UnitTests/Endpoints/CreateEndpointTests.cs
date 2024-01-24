@@ -7,7 +7,7 @@ public class CreateEndpointTests
     {
         // Arrange
         var csoName = "UniqueName";
-        var timeService = Substitute.For<ITimeService>();
+        var timeService = Substitute.For<ITimeProvider>();
         var repository = Substitute.For<IRepository<CSOAggregate>>();
 
         repository
@@ -26,17 +26,17 @@ public class CreateEndpointTests
             .AddAsync(Arg.Is<CSOAggregate>(x => x.Name == csoName));
 
         result
-            .Should().BeOfType<Results<Ok<CSOModel>, Conflict<ProblemDetails>>>()
-            .Which
-            .Result.Should().BeOfType<Ok<CSOModel>>()
-            .Which.Value.Name.Should().Be(csoName);
+            .Should().BeOfType<Results<Ok<CSOModel>, Conflict<ProblemDetails>>>()!
+            .Which!
+            .Result.Should().BeOfType<Ok<CSOModel>>()!
+            .Which!.Value!.Name.Should().Be(csoName);
     }
 
     [Fact]
     public async Task ShouldReturnConflict_WhenCSOWithSameNameExists()
     {
         // Arrange
-        var timeService = Substitute.For<ITimeService>();
+        var timeService = Substitute.For<ITimeProvider>();
         var repository = Substitute.For<IRepository<CSOAggregate>>();
 
         repository

@@ -6,13 +6,13 @@ namespace Vote.Monitor.Api.Feature.PollingStation.Create;
 public class Endpoint : Endpoint<Request, Results<Ok<PollingStationModel>, Conflict<ProblemDetails>>>
 {
     private readonly IRepository<PollingStationAggregate> _repository;
-    private readonly ITimeService _timeService;
+    private readonly ITimeProvider _timeProvider;
 
     public Endpoint(IRepository<PollingStationAggregate> repository,
-        ITimeService timeService)
+        ITimeProvider timeProvider)
     {
         _repository = repository;
-        _timeService = timeService;
+        _timeProvider = timeProvider;
     }
 
     public override void Configure()
@@ -31,7 +31,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<PollingStationModel>, Confl
             return TypedResults.Conflict(new ProblemDetails(ValidationFailures));
         }
 
-        var pollingStation = new PollingStationAggregate(req.Address, req.DisplayOrder, req.Tags.ToTagsObject(), _timeService);
+        var pollingStation = new PollingStationAggregate(req.Address, req.DisplayOrder, req.Tags.ToTagsObject(), _timeProvider);
         await _repository.AddAsync(pollingStation, ct);
 
         return TypedResults.Ok(new PollingStationModel

@@ -1,5 +1,4 @@
 ﻿using Vote.Monitor.Core.Extensions;
-using Vote.Monitor.Core.Services.Time;
 
 namespace Vote.Monitor.Domain.Entities.LanguageAggregate;
 
@@ -29,7 +28,7 @@ public class Language : BaseEntity, IAggregateRoot
     public Language(string name,
         string nativeName,
         string iso1,
-        ITimeService timeService) : base(iso1.ToGuid(), timeService)
+        ITimeProvider timeProvider) : base(iso1.ToGuid(), timeProvider)
     {
         Id = iso1.ToGuid();
         Name = name;

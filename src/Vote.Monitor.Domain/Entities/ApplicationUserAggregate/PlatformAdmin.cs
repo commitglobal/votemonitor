@@ -1,6 +1,4 @@
-﻿using Vote.Monitor.Core.Services.Time;
-
-namespace Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
+﻿namespace Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
 
 public class PlatformAdmin : ApplicationUser
 {
@@ -13,7 +11,7 @@ public class PlatformAdmin : ApplicationUser
     public PlatformAdmin(string name,
         string login,
         string password,
-        ITimeService timeService) : base(name, login, password, UserRole.PlatformAdmin, timeService)
+        ITimeProvider timeProvider) : base(name, login, password, UserRole.PlatformAdmin, timeProvider)
     {
     }
 }

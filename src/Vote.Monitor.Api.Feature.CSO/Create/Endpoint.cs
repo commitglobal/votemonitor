@@ -6,13 +6,13 @@ namespace Vote.Monitor.Api.Feature.CSO.Create;
 public class Endpoint : Endpoint<Request, Results<Ok<CSOModel>, Conflict<ProblemDetails>>>
 {
     private readonly IRepository<CSOAggregate> _repository;
-    private readonly ITimeService _timeService;
+    private readonly ITimeProvider _timeProvider;
 
     public Endpoint(IRepository<CSOAggregate> repository,
-        ITimeService timeService)
+        ITimeProvider timeProvider)
     {
         _repository = repository;
-        _timeService = timeService;
+        _timeProvider = timeProvider;
     }
 
     public override void Configure()
@@ -31,7 +31,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<CSOModel>, Conflict<Problem
             return TypedResults.Conflict(new ProblemDetails(ValidationFailures));
         }
 
-        var cso = new CSOAggregate(req.Name, _timeService);
+        var cso = new CSOAggregate(req.Name, _timeProvider);
         await _repository.AddAsync(cso, ct);
 
         return TypedResults.Ok(new CSOModel

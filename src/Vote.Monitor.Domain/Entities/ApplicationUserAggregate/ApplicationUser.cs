@@ -1,6 +1,4 @@
-﻿using Vote.Monitor.Core.Services.Time;
-
-namespace Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
+﻿namespace Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
 
 public abstract class ApplicationUser : AuditableBaseEntity, IAggregateRoot
 {
@@ -21,7 +19,7 @@ public abstract class ApplicationUser : AuditableBaseEntity, IAggregateRoot
         string login,
         string password,
         UserRole role,
-        ITimeService timeService) : base(Guid.NewGuid(), timeService)
+        ITimeProvider timeProvider) : base(Guid.NewGuid(), timeProvider)
     {
         Name = name;
         Login = login;

@@ -10,18 +10,18 @@ public class Endpoint : Endpoint<Request, Results<NoContent, BadRequest<ImportVa
     private readonly IRepository<ObserverAggregate> _repository;
     private readonly IRepository<ImportValidationErrors> _errorRepo;
     private readonly ICsvParser<ObserverImportModel> _parser;
-    private readonly ITimeService _timeService;
+    private readonly ITimeProvider _timeProvider;
     private readonly ILogger<Endpoint> _logger;
     public Endpoint(IRepository<ObserverAggregate> repository,
         IRepository<ImportValidationErrors> errorRepo,
         ICsvParser<ObserverImportModel> parser,
-        ITimeService timeService,
+        ITimeProvider timeProvider,
         ILogger<Endpoint> logger)
     {
         _repository = repository;
         _errorRepo = errorRepo;
         _parser = parser;
-        _timeService = timeService;
+        _timeProvider = timeProvider;
         _logger = logger;
     }
 
@@ -40,16 +40,15 @@ public class Endpoint : Endpoint<Request, Results<NoContent, BadRequest<ImportVa
         {
 
             string csv = failedResult.Items.ConstructErrorFileContent();
-            var errorSaved = await _errorRepo.AddAsync(new(ImportType.Observer, req.File.Name, csv, _timeService), ct);
+            var errorSaved = await _errorRepo.AddAsync(new(ImportType.Observer, req.File.Name, csv, _timeProvider), ct);
             return TypedResults.BadRequest(
                 new ImportValidationErrorModel { Id = errorSaved.Id, Message = "The file contains errors! Please use the ID to get the file with the errors described inside." });
-
         }
 
         var importedRows = parsingResult as ParsingResult<ObserverImportModel>.Success;
         List<ObserverAggregate> observers = importedRows!
             .Items
-            .Select(x => new ObserverAggregate(x.Name, x.Email, x.Password, x.PhoneNumber, _timeService))
+            .Select(x => new ObserverAggregate(x.Name, x.Email, x.Password, x.PhoneNumber, _timeProvider))
             .ToList();
 
         var logins = observers.Select(o => o.Login);

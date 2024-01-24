@@ -1,7 +1,4 @@
-﻿using System.Reflection;
-using Vote.Monitor.Core.Extensions;
-using Vote.Monitor.Core.Services.Time;
-using Vote.Monitor.Domain.Entities.CountryAggregate;
+﻿using Vote.Monitor.Core.Extensions;
 
 namespace Vote.Monitor.Domain.Constants;
 
@@ -47,7 +44,7 @@ public record CountryDetails
     public Country ToEntity()
     {
         // Set the time to first of January in order to not regenerate the migration every time.
-        var timeService = new TimeFreeze(new DateTime(2024, 01, 01, 00, 00, 00, DateTimeKind.Utc));
+        var timeService = new FreezeTimeProvider(new DateTime(2024, 01, 01, 00, 00, 00, DateTimeKind.Utc));
         return new Country(Name, FullName, Iso2, Iso3, NumericCode, timeService);
     }
 }
@@ -318,5 +315,15 @@ public static class CountriesList
         {
             yield return (CountryDetails)field.GetValue(null)!;
         }
+    }
+
+    public static bool IsKnownCountry(Guid countryId)
+    {
+        return GetAll().Any(x => x.Id == countryId);
+    }
+
+    public static CountryDetails? Get(Guid countryId)
+    {
+        return GetAll().FirstOrDefault(x => x.Id == countryId);
     }
 }

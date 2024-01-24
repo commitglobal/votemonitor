@@ -1,14 +1,8 @@
 ﻿namespace Vote.Monitor.Api.Feature.ElectionRound.Delete;
 
-public class Endpoint : Endpoint<Request, Results<NoContent, NotFound, ProblemDetails>>
+public class Endpoint(IRepository<ElectionRoundAggregate> repository)
+    : Endpoint<Request, Results<NoContent, NotFound, ProblemDetails>>
 {
-    private readonly IRepository<ElectionRoundAggregate> _repository;
-
-    public Endpoint(IRepository<ElectionRoundAggregate> repository)
-    {
-        _repository = repository;
-    }
-
     public override void Configure()
     {
         Delete("/api/election-rounds/{id}");
@@ -16,6 +10,15 @@ public class Endpoint : Endpoint<Request, Results<NoContent, NotFound, ProblemDe
 
     public override async Task<Results<NoContent, NotFound, ProblemDetails>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        throw new NotImplementedException();
+        var electionRound = await repository.GetByIdAsync(req.Id, ct);
+
+        if (electionRound is null)
+        {
+            return TypedResults.NotFound();
+        }
+
+        await repository.DeleteAsync(electionRound, ct);
+
+        return TypedResults.NoContent();
     }
 }

@@ -1,6 +1,4 @@
-﻿using System.Text.Json;
-
-namespace Vote.Monitor.Domain;
+﻿namespace Vote.Monitor.Domain;
 
 public class Postgres
 {
