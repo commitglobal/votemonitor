@@ -2,15 +2,8 @@
 
 namespace Vote.Monitor.Api.Feature.CSOAdmin.Get;
 
-public class Endpoint : Endpoint<Request, Results<Ok<CSOAdminModel>, NotFound>>
+public class Endpoint(IRepository<CSOAdminAggregate> _repository) : Endpoint<Request, Results<Ok<CSOAdminModel>, NotFound>>
 {
-     readonly IReadRepository<CSOAdminAggregate> _repository;
-
-    public Endpoint(IReadRepository<CSOAdminAggregate> repository)
-    {
-        _repository = repository;
-    }
-
     public override void Configure()
     {
         Get("/api/csos/{csoid}/admins/{id}");
@@ -20,7 +13,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<CSOAdminModel>, NotFound>>
 
     public override async Task<Results<Ok<CSOAdminModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var specification = new GetCSOAdminByIdSpecification(req.CSOId,req.Id);
+        var specification = new GetCSOAdminByIdSpecification(req.CSOId, req.Id);
         var csoAdmin = await _repository.SingleOrDefaultAsync(specification, ct);
 
         if (csoAdmin is null)
