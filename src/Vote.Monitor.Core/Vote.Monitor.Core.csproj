@@ -13,7 +13,7 @@
     <PackageReference Include="CsvHelper" Version="30.0.3" />
     <PackageReference Include="FastEndpoints" Version="5.21.2" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
-    <PackageReference Include="FastEndpoints.Attributes" Version="5.21.2" />
+    <PackageReference Include="FastEndpoints.Attributes" Version="5.22.0" />
   </ItemGroup>
 
   <ItemGroup>
