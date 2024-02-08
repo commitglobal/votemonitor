@@ -1,0 +1,54 @@
+﻿using Vote.Monitor.Api.Feature.UserPreferences.Get;
+
+namespace Vote.Monitor.Api.Feature.UserPreferences.UnitTests.Endpoints;
+public class GetEndpointTests
+{
+    [Fact]
+    public async Task ShouldCallServiceWhenValidationPasses()
+    {
+        //arrange
+        var repository = Substitute.For<IReadRepository<ApplicationUser>>();
+        var endpoint = Factory.Create<Get.Endpoint>(repository);
+        var appUser = new ApplicationUserFaker().Generate();
+        repository.GetByIdAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>()).Returns(appUser);
+
+        var request = new Request { Id = Guid.NewGuid() };
+
+        //act 
+
+        var response = await endpoint.ExecuteAsync(request, default);
+
+
+        //assert
+
+
+        response.Should().BeOfType<Results<Ok<Dictionary<string, string>>, NotFound<string>>>()
+            .Which.Result.Should().BeOfType<Ok<Dictionary<string, string>>>();
+
+    }
+
+    [Fact]
+    public async Task ShouldRetrunUserNotFoundWhenUserIdDoesnotExist()
+    {
+        //arrange
+        var repository = Substitute.For<IReadRepository<ApplicationUser>>();
+        var endpoint = Factory.Create<Endpoint>(repository);
+        ApplicationUser appUser = null;
+        repository.GetByIdAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>()).Returns(appUser);
+
+        var request = new Request { Id = Guid.NewGuid() };
+
+        //act 
+        var response = await endpoint.ExecuteAsync(request, default);
+
+        //assert
+        response.Should().BeOfType<Results<Ok<Dictionary<string, string>>, NotFound<string>>>()
+            .Which.Result.Should().BeOfType<NotFound<string>>();
+        response.Should().BeOfType<Results<Ok<Dictionary<string, string>>, NotFound<string>>>()
+            .Which
+            .Result.Should().BeOfType<NotFound<string>>()
+            .Which.Value.Should().Be("User not found");
+
+    }
+
+}

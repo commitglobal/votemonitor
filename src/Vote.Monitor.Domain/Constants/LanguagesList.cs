@@ -1,4 +1,5 @@
-﻿using Vote.Monitor.Core.Extensions;
+﻿using System.Runtime.CompilerServices;
+using Vote.Monitor.Core.Extensions;
 using Vote.Monitor.Domain.Entities.LanguageAggregate;
 
 namespace Vote.Monitor.Domain.Constants;
@@ -237,4 +238,11 @@ public static class LanguagesList
             yield return (LanguageDetails)field.GetValue(null)!;
         }
     }
+
+    public static LanguageDetails? GetByIso(string iso1)
+    {
+        return typeof(LanguagesList).GetField(iso1, BindingFlags.Static | 
+                                      BindingFlags.Public)?.GetValue(null) as LanguageDetails;     
+    }
+   
 }
