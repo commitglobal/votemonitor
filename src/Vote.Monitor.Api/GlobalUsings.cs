@@ -19,3 +19,4 @@ global using Vote.Monitor.Domain.Entities.CSOAggregate;
 global using Vote.Monitor.Domain.Entities.ElectionRoundAggregate;
 global using Vote.Monitor.Api.Feature.ElectionRound;
 global using Vote.Monitor.Api.Feature.Monitoring;
+global using Vote.Monitor.Api.Feature.UserPreferences;

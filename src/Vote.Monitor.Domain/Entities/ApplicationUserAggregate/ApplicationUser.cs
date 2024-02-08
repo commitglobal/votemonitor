@@ -1,6 +1,6 @@
 ﻿namespace Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
 
-public abstract class ApplicationUser : AuditableBaseEntity, IAggregateRoot
+public abstract class ApplicationUser : AuditableBaseEntity, IAggregateRoot, IDisposable
 {
 #pragma warning disable CS8618 // Required by Entity Framework
     protected ApplicationUser()
@@ -14,6 +14,7 @@ public abstract class ApplicationUser : AuditableBaseEntity, IAggregateRoot
     public string Password { get; private set; }
     public UserRole Role { get; private set; }
     public UserStatus Status { get; private set; }
+    public JsonDocument? Preferences { get; private set; }
 
     public ApplicationUser(string name,
         string login,
@@ -33,6 +34,11 @@ public abstract class ApplicationUser : AuditableBaseEntity, IAggregateRoot
         Name = name;
     }
 
+    public void UpdatePreferences(JsonDocument preferences)
+    {
+        Preferences = preferences;
+    }
+
     public void Activate()
     {
         // TODO: handle invariants
@@ -43,5 +49,10 @@ public abstract class ApplicationUser : AuditableBaseEntity, IAggregateRoot
     {
         // TODO: handle invariants
         Status = UserStatus.Deactivated;
+    }
+
+    public void Dispose()
+    {
+        if(Preferences != null) Preferences.Dispose();
     }
 }
