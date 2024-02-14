@@ -9,13 +9,17 @@ internal class ApplicationUserConfiguration : IEntityTypeConfiguration<Applicati
         builder.HasKey(u => u.Id);
         builder.HasIndex(u => u.Login).IsUnique();
         builder.UseTptMappingStrategy();
+
         builder.Property(u => u.Id).IsRequired();
         builder.Property(u => u.Name).HasMaxLength(256).IsRequired();
         builder.Property(u => u.Login).HasMaxLength(256).IsRequired();
         builder.Property(u => u.Password).HasMaxLength(256).IsRequired();
         builder.Property(u => u.Role).IsRequired();
         builder.Property(u => u.Status).IsRequired();
-        builder.Property(p => p.Preferences).HasMaxLength(2048);
 
+        builder.OwnsOne(u => u.Preferences, b =>
+        {
+            b.ToTable("UserPreferences");
+        });
     }
 }

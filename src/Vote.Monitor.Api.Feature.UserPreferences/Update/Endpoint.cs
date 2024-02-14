@@ -1,5 +1,4 @@
-﻿using Vote.Monitor.Api.Feature.UserPreferences.Helpers;
-using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
+﻿using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
 using Vote.Monitor.Domain.Repository;
 
 namespace Vote.Monitor.Api.Feature.UserPreferences.Update;
@@ -21,29 +20,10 @@ public class Endpoint(IRepository<ApplicationUser> repository) : Endpoint<Reques
             return TypedResults.NotFound("User not found");
         }
 
-        LanguageDetails? language = default;
-        if (req.LanguageIso != null) language = LanguagesList.GetByIso(req.LanguageIso.ToUpperInvariant());
-        else language = LanguagesList.GetAll().FirstOrDefault(x => x.Id == req.LanguageId);
+        var language = LanguagesList.Get(req.LanguageId)!;
 
-        if (language == null)
-        {
-            return TypedResults.NotFound("Language not found");
-        }
+        user.Preferences.Update(language.Id);
 
-        UserPreferencesModel userPreferencesModel = new UserPreferencesModel
-        {
-            Id = req.Id,
-            Preferences = new Dictionary<string, string>()
-        };
-        userPreferencesModel.Preferences.Add("LanguageId", language.Id.ToString());
-        userPreferencesModel.Preferences.Add("LanguageIso", language.Iso1);
-        if (req.Preferences != null)
-            foreach (var preference in req.Preferences)
-            {
-                userPreferencesModel.Preferences.Add(preference.Key, preference.Value);
-            }
-
-        user.UpdatePreferences(userPreferencesModel.Preferences.toPreferencesObject());
         await repository.SaveChangesAsync(ct);
 
         return TypedResults.NoContent();

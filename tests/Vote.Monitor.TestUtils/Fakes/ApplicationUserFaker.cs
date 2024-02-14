@@ -12,7 +12,7 @@ public class ApplicationUserFaker : PrivateFaker<ApplicationUserAggregate>
         string? login = null,
         string? password = null,
         UserStatus? status = null,
-        JsonDocument? preferences = null)
+        UserPreferences? preferences = null)
     {
         UsePrivateConstructor();
         RuleFor(fake => fake.Id, faker => id ?? faker.Random.Guid());

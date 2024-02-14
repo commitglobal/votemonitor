@@ -1,6 +1,9 @@
-﻿namespace Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
+﻿using Vote.Monitor.Domain.Constants;
+using Vote.Monitor.Domain.Migrations;
 
-public abstract class ApplicationUser : AuditableBaseEntity, IAggregateRoot, IDisposable
+namespace Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
+
+public abstract class ApplicationUser : AuditableBaseEntity, IAggregateRoot
 {
 #pragma warning disable CS8618 // Required by Entity Framework
     protected ApplicationUser()
@@ -14,7 +17,7 @@ public abstract class ApplicationUser : AuditableBaseEntity, IAggregateRoot, IDi
     public string Password { get; private set; }
     public UserRole Role { get; private set; }
     public UserStatus Status { get; private set; }
-    public JsonDocument? Preferences { get; private set; }
+    public UserPreferences Preferences { get; private set; }
 
     public ApplicationUser(string name,
         string login,
@@ -27,16 +30,12 @@ public abstract class ApplicationUser : AuditableBaseEntity, IAggregateRoot, IDi
         Password = password;
         Role = role;
         Status = UserStatus.Active;
+        Preferences = UserPreferences.Defaults;
     }
 
     public void UpdateDetails(string name)
     {
         Name = name;
-    }
-
-    public void UpdatePreferences(JsonDocument preferences)
-    {
-        Preferences = preferences;
     }
 
     public void Activate()
@@ -50,9 +49,26 @@ public abstract class ApplicationUser : AuditableBaseEntity, IAggregateRoot, IDi
         // TODO: handle invariants
         Status = UserStatus.Deactivated;
     }
+}
 
-    public void Dispose()
+public class UserPreferences
+{
+#pragma warning disable CS8618 // Required by Entity Framework
+    protected UserPreferences()
     {
-        if(Preferences != null) Preferences.Dispose();
+    }
+#pragma warning restore CS8618
+
+    protected UserPreferences(Guid languageId)
+    {
+        LanguageId = languageId;
+    }
+
+    public static UserPreferences Defaults => new (LanguagesList.EN.Id);
+    public Guid LanguageId { get; private set; }
+
+    public void Update(Guid languageId)
+    {
+        LanguageId = languageId
     }
 }
