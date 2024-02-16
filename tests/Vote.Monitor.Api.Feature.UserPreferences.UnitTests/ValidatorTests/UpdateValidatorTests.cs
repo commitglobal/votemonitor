@@ -27,70 +27,32 @@ public class UpdateValidatorTests
 
 
     [Fact]
-    public void ShouldHaveErrorWhenLanguageIsoIsEmptyAndLanguageIdIsNull()
+    public void ShouldHaveErrorWhenLanguageIdIsEmpty()
     {
         //arrange
-        var model = new Request { Id = Guid.NewGuid(), LanguageId = null, LanguageIso = string.Empty };
+        var model = new Request { Id = Guid.NewGuid(), LanguageId = Guid.Empty };
         //act
         var result = _validator.TestValidate(model);
         //assert
-        result.ShouldHaveValidationErrorFor(x => x.LanguageIso);
         result.ShouldHaveValidationErrorFor(x => x.LanguageId);
     }
 
     [Fact]
-    public void ShouldHaveErrorWhenLanguageIsoIsNullAndLanguageIdIsNull()
+    public void ShouldHaveErrorWhenLanguageIdIsSpecifiedButISNotFoundInLanguageList()
     {
         //arrange
-        var model = new Request { Id = Guid.NewGuid(), LanguageId = null, LanguageIso = null };
+        var model = new Request { Id = Guid.NewGuid(), LanguageId = Guid.NewGuid() };
         //act
         var result = _validator.TestValidate(model);
         //assert
-        result.ShouldHaveValidationErrorFor(x => x.LanguageIso);
         result.ShouldHaveValidationErrorFor(x => x.LanguageId);
     }
 
-
-
     [Fact]
-    public void ShouldNotHaveErrorWhenLanguageIdIsSpecifiedLanguageIsoIsEmpty()
+    public void ShouldNotHaveErrorWhenLanguageIdIsSpecifiedAndLanguageIdisFromList()
     {
-        //arrange
-        var model = new Request { Id = Guid.NewGuid(), LanguageId = Guid.NewGuid(), LanguageIso = string.Empty };
-        //act
-        var result = _validator.TestValidate(model);
-        //assert
-        result.ShouldNotHaveAnyValidationErrors();
-    }
-
-    [Fact]
-    public void ShouldNotHaveErrorWhenLanguageIdIsSpecifiedLanguageIsoIsNull()
-    {
-        var model = new Request { Id = Guid.NewGuid(), LanguageId = Guid.NewGuid(), LanguageIso = null };
-        //act
-        var result = _validator.TestValidate(model);
-        //assert
-        result.ShouldNotHaveAnyValidationErrors();
-    }
-
-
-    [Fact]
-    public void ShouldNotHaveErrorWhenLanguageIsoIsSpecifiedAndLanguageIdIsNull()
-    {
-        //arrange
-        var model = new Request { Id = Guid.NewGuid(), LanguageId = null, LanguageIso = "dd" };
-        //act
-        var result = _validator.TestValidate(model);
-        //assert
-        result.ShouldNotHaveAnyValidationErrors();
-    }
-
-
-    [Fact]
-    public void ShouldNotHaveErrorWhenLanguageIsoIsSpecifiedAndLanguageIdoIsSpecified()
-    {
-        //arrange
-        var model = new Request { Id = Guid.NewGuid(), LanguageId = Guid.NewGuid(), LanguageIso = "dd" };
+        Guid languageId = new Guid("094b3769-68b1-6211-ba2d-6bba92d6a167");
+        var model = new Request { Id = Guid.NewGuid(), LanguageId = languageId };
         //act
         var result = _validator.TestValidate(model);
         //assert

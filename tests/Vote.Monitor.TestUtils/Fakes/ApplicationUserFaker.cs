@@ -22,6 +22,7 @@ public class ApplicationUserFaker : PrivateFaker<ApplicationUserAggregate>
         RuleFor(fake => fake.Password, fake => password ?? fake.Random.String2(10));
         RuleFor(fake => fake.Status, fake => status ?? fake.PickRandom(_statuses));
         RuleFor(fake => fake.Role, UserRole.Observer);
+        RuleFor(fake => fake.Preferences, fake => preferences ?? UserPreferences.Defaults);
         RuleFor(o => o.CreatedOn, _baseCreationDate.AddHours(index ?? 0));
     }
 }

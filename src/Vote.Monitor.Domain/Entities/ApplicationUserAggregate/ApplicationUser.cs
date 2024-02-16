@@ -64,11 +64,11 @@ public class UserPreferences
         LanguageId = languageId;
     }
 
-    public static UserPreferences Defaults => new (LanguagesList.EN.Id);
+    public static UserPreferences Defaults => new(LanguagesList.EN.Id);
     public Guid LanguageId { get; private set; }
 
     public void Update(Guid languageId)
     {
-        LanguageId = languageId
+        LanguageId = languageId;
     }
 }

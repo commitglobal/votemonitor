@@ -1,11 +1,9 @@
 ﻿using Vote.Monitor.Api.Feature.UserPreferences.Update;
 
-
 namespace Vote.Monitor.Api.Feature.UserPreferences.UnitTests.Endpoints;
 
 public class UpdateEndpointTests
 {
-
     public UpdateEndpointTests()
     {
     }
@@ -19,7 +17,7 @@ public class UpdateEndpointTests
         var appUser = new ApplicationUserFaker().Generate();
         repository.GetByIdAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>()).Returns(appUser);
 
-        var request = new Request { Id = Guid.NewGuid(), LanguageIso = "RO" };
+        var request = new Request { Id = Guid.NewGuid(), LanguageId = new Guid("094b3769-68b1-6211-ba2d-6bba92d6a167") };
 
         //act 
 
@@ -41,12 +39,10 @@ public class UpdateEndpointTests
         ApplicationUser appUser = null;
         repository.GetByIdAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>()).Returns(appUser);
 
-        var request = new Request { Id = Guid.NewGuid(), LanguageIso = "RO" };
+        var request = new Request { Id = Guid.NewGuid(), LanguageId = new Guid("094b3769-68b1-6211-ba2d-6bba92d6a167") };
 
         //act 
-
         var response = await endpoint.ExecuteAsync(request, default);
-
 
         //assert
 
@@ -59,62 +55,4 @@ public class UpdateEndpointTests
             .Which.Value.Should().Be("User not found");
 
     }
-
-
-    [Fact]
-    public async Task ShouldRetrunLanguageNotFoundWhenLanguageISODoesnotExist()
-    {
-        //arrange
-        var repository = Substitute.For<IRepository<ApplicationUser>>();
-        var endpoint = Factory.Create<Endpoint>(repository);
-        ApplicationUser appUser = new ApplicationUserFaker().Generate(); ;
-        repository.GetByIdAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>()).Returns(appUser);
-
-        var request = new Request { Id = Guid.NewGuid(), LanguageIso = "yz" };
-
-        //act 
-
-        var response = await endpoint.ExecuteAsync(request, default);
-
-
-        //assert
-
-        await repository.DidNotReceive().SaveChangesAsync(Arg.Any<CancellationToken>());
-        response.Should().BeOfType<Results<NoContent, NotFound<string>>>()
-            .Which.Result.Should().BeOfType<NotFound<string>>();
-        response.Should().BeOfType<Results<NoContent, NotFound<string>>>()
-            .Which
-            .Result.Should().BeOfType<NotFound<string>>()
-            .Which.Value.Should().Be("Language not found");
-
-    }
-
-    [Fact]
-    public async Task ShouldRetrunLanguageNotFoundWhenLanguageIDDoesnotExist()
-    {
-        //arrange
-        var repository = Substitute.For<IRepository<ApplicationUser>>();
-        var endpoint = Factory.Create<Endpoint>(repository);
-        ApplicationUser appUser = new ApplicationUserFaker().Generate(); ;
-        repository.GetByIdAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>()).Returns(appUser);
-
-        var request = new Request { Id = Guid.NewGuid(), LanguageId = Guid.Empty };
-
-        //act 
-
-        var response = await endpoint.ExecuteAsync(request, default);
-
-
-        //assert
-
-        await repository.DidNotReceive().SaveChangesAsync(Arg.Any<CancellationToken>());
-        response.Should().BeOfType<Results<NoContent, NotFound<string>>>()
-            .Which.Result.Should().BeOfType<NotFound<string>>();
-        response.Should().BeOfType<Results<NoContent, NotFound<string>>>()
-            .Which
-            .Result.Should().BeOfType<NotFound<string>>()
-            .Which.Value.Should().Be("Language not found");
-
-    }
-
 }

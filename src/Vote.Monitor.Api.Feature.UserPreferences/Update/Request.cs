@@ -1,7 +1,9 @@
-﻿namespace Vote.Monitor.Api.Feature.UserPreferences.Update;
+﻿using Microsoft.IdentityModel.JsonWebTokens;
+
+namespace Vote.Monitor.Api.Feature.UserPreferences.Update;
 public class Request
 {
-    [FromClaim("Sub")]
+    [FromClaim(JwtRegisteredClaimNames.Sub)]
     public Guid Id { get; set; }
     public Guid LanguageId { get; set; }
 }
