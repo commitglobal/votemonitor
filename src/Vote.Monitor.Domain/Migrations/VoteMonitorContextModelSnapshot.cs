@@ -57,10 +57,6 @@ namespace Vote.Monitor.Domain.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
-                    b.Property<JsonDocument>("Preferences")
-                        .HasMaxLength(2048)
-                        .HasColumnType("jsonb");
-
                     b.Property<string>("Role")
                         .IsRequired()
                         .HasColumnType("text");
@@ -4335,6 +4331,28 @@ namespace Vote.Monitor.Domain.Migrations
                     b.HasBaseType("Vote.Monitor.Domain.Entities.ApplicationUserAggregate.ApplicationUser");
 
                     b.ToTable("PlatformAdmins", (string)null);
+                });
+
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.ApplicationUserAggregate.ApplicationUser", b =>
+                {
+                    b.OwnsOne("Vote.Monitor.Domain.Entities.ApplicationUserAggregate.UserPreferences", "Preferences", b1 =>
+                        {
+                            b1.Property<Guid>("ApplicationUserId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<Guid>("LanguageId")
+                                .HasColumnType("uuid");
+
+                            b1.HasKey("ApplicationUserId");
+
+                            b1.ToTable("UserPreferences", (string)null);
+
+                            b1.WithOwner()
+                                .HasForeignKey("ApplicationUserId");
+                        });
+
+                    b.Navigation("Preferences")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.ElectionRoundAggregate.ElectionRound", b =>

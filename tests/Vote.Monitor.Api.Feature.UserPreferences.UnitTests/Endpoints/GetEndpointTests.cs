@@ -22,8 +22,8 @@ public class GetEndpointTests
         //assert
 
 
-        response.Should().BeOfType<Results<Ok<Dictionary<string, string>>, NotFound<string>>>()
-            .Which.Result.Should().BeOfType<Ok<Dictionary<string, string>>>();
+        response.Should().BeOfType<Results<Ok<UserPreferencesModel>, NotFound<string>>>()
+            .Which.Result.Should().BeOfType<Ok<UserPreferencesModel>>();
 
     }
 
@@ -42,9 +42,9 @@ public class GetEndpointTests
         var response = await endpoint.ExecuteAsync(request, default);
 
         //assert
-        response.Should().BeOfType<Results<Ok<Dictionary<string, string>>, NotFound<string>>>()
+        response.Should().BeOfType<Results<Ok<UserPreferencesModel>, NotFound<string>>>()
             .Which.Result.Should().BeOfType<NotFound<string>>();
-        response.Should().BeOfType<Results<Ok<Dictionary<string, string>>, NotFound<string>>>()
+        response.Should().BeOfType<Results<Ok<UserPreferencesModel>, NotFound<string>>>()
             .Which
             .Result.Should().BeOfType<NotFound<string>>()
             .Which.Value.Should().Be("User not found");
