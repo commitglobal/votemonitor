@@ -1,5 +1,4 @@
 ﻿using Bogus;
-using Vote.Monitor.Domain.Entities.CountryAggregate;
 
 namespace Vote.Monitor.Api.Feature.ElectionRound.UnitTests;
 

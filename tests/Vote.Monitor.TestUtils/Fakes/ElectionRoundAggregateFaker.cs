@@ -1,9 +1,8 @@
-﻿using Bogus;
-using Vote.Monitor.Domain.Entities.CountryAggregate;
+﻿using Vote.Monitor.Domain.Entities.CountryAggregate;
 
 namespace Vote.Monitor.TestUtils.Fakes;
 
-public class ElectionRoundAggregateFaker : PrivateFaker<ElectionRoundAggregate>
+public sealed class ElectionRoundAggregateFaker : PrivateFaker<ElectionRoundAggregate>
 {
     private readonly ElectionRoundStatus[] _statuses = [ElectionRoundStatus.NotStarted, ElectionRoundStatus.Started, ElectionRoundStatus.Archived];
     private readonly DateTime _baseCreationDate = new(2024, 01, 01, 00, 00, 00, DateTimeKind.Utc);

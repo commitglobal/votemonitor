@@ -54,6 +54,7 @@ builder.Services.AddCSOAdminFeature();
 builder.Services.AddObserverFeature(builder.Configuration.GetSection(ObserverFeatureInstaller.SectionKey));
 builder.Services.AddElectionRoundFeature();
 builder.Services.AddMonitoringFeature();
+builder.Services.AddUserPreferencesFeature();
 builder.Services.AddAuthorization();
 
 

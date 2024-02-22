@@ -231,10 +231,26 @@ public static class LanguagesList
             .GetFields(BindingFlags.Static |
                            BindingFlags.Public)
             .Where(x => x.FieldType == typeof(LanguageDetails));
-        
+
         foreach (var field in fields)
         {
             yield return (LanguageDetails)field.GetValue(null)!;
         }
+    }
+
+    public static LanguageDetails? GetByIso(string iso1)
+    {
+        return typeof(LanguagesList).GetField(iso1, BindingFlags.Static |
+                                      BindingFlags.Public)?.GetValue(null) as LanguageDetails;
+    }
+
+    public static bool IsKnownLanguage(Guid languageId)
+    {
+        return GetAll().Any(x => x.Id == languageId);
+    }
+
+    public static LanguageDetails? Get(Guid languageId)
+    {
+        return GetAll().FirstOrDefault(x => x.Id == languageId);
     }
 }

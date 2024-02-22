@@ -5,7 +5,6 @@ using CreateEndpoint = Vote.Monitor.Api.Feature.CSO.Create.Endpoint;
 using CreateRequest = Vote.Monitor.Api.Feature.CSO.Create.Request;
 using GetEndpoint = Vote.Monitor.Api.Feature.CSO.Get.Endpoint;
 using GetRequest = Vote.Monitor.Api.Feature.CSO.Get.Request;
-using Microsoft.AspNetCore.Http;
 
 
 namespace Vote.Monitor.Api.IntegrationTests.CSO;
