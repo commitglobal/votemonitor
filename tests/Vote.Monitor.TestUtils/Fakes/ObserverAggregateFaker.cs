@@ -1,8 +1,6 @@
-﻿using System;
+﻿namespace Vote.Monitor.TestUtils.Fakes;
 
-namespace Vote.Monitor.TestUtils.Fakes;
-
-public class ObserverAggregateFaker : PrivateFaker<ObserverAggregate>
+public sealed class ObserverAggregateFaker : PrivateFaker<ObserverAggregate>
 {
     private readonly UserStatus[] _statuses = [UserStatus.Active, UserStatus.Deactivated];
     private readonly DateTime _baseCreationDate = new(2024, 01, 01, 00, 00, 00, DateTimeKind.Utc);

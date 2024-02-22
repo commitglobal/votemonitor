@@ -2,7 +2,7 @@
 
 namespace Vote.Monitor.TestUtils.Fakes;
 
-public class NgoAggregateFaker : PrivateFaker<NgoAggregate>
+public sealed class NgoAggregateFaker : PrivateFaker<NgoAggregate>
 {
     private readonly CSOStatus[] _statuses = [CSOStatus.Activated, CSOStatus.Deactivated];
     private readonly DateTime _baseCreationDate = new(2024, 01, 01, 00, 00, 00, DateTimeKind.Utc);

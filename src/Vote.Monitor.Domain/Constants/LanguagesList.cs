@@ -1,5 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using Vote.Monitor.Core.Extensions;
+﻿using Vote.Monitor.Core.Extensions;
 using Vote.Monitor.Domain.Entities.LanguageAggregate;
 
 namespace Vote.Monitor.Domain.Constants;

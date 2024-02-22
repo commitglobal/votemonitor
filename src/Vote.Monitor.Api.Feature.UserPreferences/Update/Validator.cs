@@ -5,6 +5,9 @@ public class Validator : Validator<Request>
     public Validator()
     {
         RuleFor(x => x.Id).NotEmpty();
-        RuleFor(x => x.LanguageId).NotEmpty().Must(LanguagesList.IsKnownLanguage);
+        RuleFor(x => x.LanguageId)
+            .NotEmpty()
+            .Must(LanguagesList.IsKnownLanguage)
+            .WithMessage("Unknown language id.");
     }
 }

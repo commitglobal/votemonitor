@@ -1,7 +1,5 @@
-﻿using System.Text.Json;
-
-namespace Vote.Monitor.TestUtils.Fakes;
-public class ApplicationUserFaker : PrivateFaker<ApplicationUserAggregate>
+﻿namespace Vote.Monitor.TestUtils.Fakes;
+public sealed class ApplicationUserFaker : PrivateFaker<ApplicationUserAggregate>
 {
     private readonly UserStatus[] _statuses = [UserStatus.Active, UserStatus.Deactivated];
     private readonly DateTime _baseCreationDate = new(2024, 01, 01, 00, 00, 00, DateTimeKind.Utc);

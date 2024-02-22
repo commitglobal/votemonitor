@@ -31,7 +31,7 @@ public class UpdateEndpointTests
     }
 
     [Fact]
-    public async Task ShouldRetrunUserNotFoundWhenUserIdDoesnotExist()
+    public async Task ShouldReturnUserNotFoundWhenUserIdDoesBotExist()
     {
         //arrange
         var repository = Substitute.For<IRepository<ApplicationUser>>();

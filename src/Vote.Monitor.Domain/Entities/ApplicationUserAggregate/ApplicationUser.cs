@@ -1,5 +1,4 @@
 ﻿using Vote.Monitor.Domain.Constants;
-using Vote.Monitor.Domain.Migrations;
 
 namespace Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
 

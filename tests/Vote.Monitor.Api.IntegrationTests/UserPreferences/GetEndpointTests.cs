@@ -1,4 +1,5 @@
-﻿using GetEndpoint = Vote.Monitor.Api.Feature.UserPreferences.Get.Endpoint;
+﻿using Vote.Monitor.Api.Feature.UserPreferences;
+using GetEndpoint = Vote.Monitor.Api.Feature.UserPreferences.Get.Endpoint;
 using GetRequest = Vote.Monitor.Api.Feature.UserPreferences.Get.Request;
 
 namespace Vote.Monitor.Api.IntegrationTests.UserPreferences;
@@ -12,17 +13,15 @@ public class GetEndpointTests : IClassFixture<HttpServerFixture>
         Fixture.OutputHelper = outputHelper;
     }
 
-
     [Fact]
     public async Task Should_ReturnsUserPreferences_WhenUserExists()
     {
         // Arrange
         GetRequest getRequest = new GetRequest();
 
-        var admin = Fixture.PlatformAdmin.DefaultRequestHeaders.Authorization;
-
         // Act
-        var (getResponse, userPreferences) = await Fixture.PlatformAdmin.GETAsync<GetEndpoint, GetRequest, Dictionary<string, string>>(getRequest);
+        var (getResponse, userPreferences) = await Fixture.PlatformAdmin.GETAsync<GetEndpoint, GetRequest, UserPreferencesModel>(getRequest);
+        
         // Assert
         getResponse.IsSuccessStatusCode.Should().BeTrue();
         userPreferences.Should().NotBeNull();

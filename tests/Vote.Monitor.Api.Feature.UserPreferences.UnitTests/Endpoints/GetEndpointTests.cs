@@ -1,6 +1,4 @@
-﻿using Vote.Monitor.Api.Feature.UserPreferences.Get;
-
-namespace Vote.Monitor.Api.Feature.UserPreferences.UnitTests.Endpoints;
+﻿namespace Vote.Monitor.Api.Feature.UserPreferences.UnitTests.Endpoints;
 public class GetEndpointTests
 {
     [Fact]
@@ -12,7 +10,7 @@ public class GetEndpointTests
         var appUser = new ApplicationUserFaker().Generate();
         repository.GetByIdAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>()).Returns(appUser);
 
-        var request = new Request { Id = Guid.NewGuid() };
+        var request = new Get.Request { Id = Guid.NewGuid() };
 
         //act 
 
@@ -28,15 +26,15 @@ public class GetEndpointTests
     }
 
     [Fact]
-    public async Task ShouldRetrunUserNotFoundWhenUserIdDoesnotExist()
+    public async Task ShouldReturnUserNotFoundWhenUserIdDoesNotExist()
     {
         //arrange
         var repository = Substitute.For<IReadRepository<ApplicationUser>>();
-        var endpoint = Factory.Create<Endpoint>(repository);
+        var endpoint = Factory.Create<Get.Endpoint>(repository);
         ApplicationUser appUser = null;
         repository.GetByIdAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>()).Returns(appUser);
 
-        var request = new Request { Id = Guid.NewGuid() };
+        var request = new Get.Request { Id = Guid.NewGuid() };
 
         //act 
         var response = await endpoint.ExecuteAsync(request, default);
