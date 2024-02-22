@@ -10,7 +10,7 @@
     <PackageReference Include="Ardalis.SmartEnum" Version="8.0.0" />
     <PackageReference Include="Ardalis.SmartEnum.SystemTextJson" Version="8.0.0" />
     <PackageReference Include="Ardalis.Specification" Version="8.0.0" />
-    <PackageReference Include="CsvHelper" Version="30.0.3" />
+    <PackageReference Include="CsvHelper" Version="30.1.0" />
     <PackageReference Include="FastEndpoints" Version="5.21.2" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
     <PackageReference Include="FastEndpoints.Attributes" Version="5.21.2" />
