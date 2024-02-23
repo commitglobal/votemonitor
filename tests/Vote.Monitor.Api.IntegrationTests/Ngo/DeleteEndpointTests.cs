@@ -36,8 +36,8 @@ public class DeleteEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeede
         };
 
         // Act
-        var deleteResponse = await Fixture.PlatformAdmin.DELETEAsync<DeleteEndpoint, DeleteRequest>(deleteCso);
-       
+        var deleteResponse = await Fixture.PlatformAdmin.DELETEAsync<DeleteEndpoint, DeleteRequest>(deleteRequest);
+
         // Assert
         deleteResponse.IsSuccessStatusCode.Should().BeTrue();
         deleteResponse.StatusCode.Should().Be(HttpStatusCode.NoContent);
@@ -60,7 +60,7 @@ public class DeleteEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeede
 
         // Act
         var deleteResponse = await Fixture.PlatformAdmin.DELETEAsync<DeleteEndpoint, DeleteRequest, NgoModel>(deleteRequest);
-        
+
         // Assert
         deleteResponse.Response.IsSuccessStatusCode.Should().BeFalse();
         deleteResponse.Response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
@@ -74,7 +74,7 @@ public class DeleteEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeede
 
         // Act
         var deleteResponse = await Fixture.PlatformAdmin.DELETEAsync<DeleteEndpoint, DeleteRequest, NgoModel>(deleteRequest);
-       
+
         // Assert
         deleteResponse.Response.IsSuccessStatusCode.Should().BeFalse();
         deleteResponse.Response.StatusCode.Should().Be(HttpStatusCode.NotFound);

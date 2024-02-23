@@ -79,7 +79,7 @@ public class CreateEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeede
         createResponse.IsSuccessStatusCode.Should().BeFalse();
         errorResponse.Errors.Count().Should().Be(1);
         createResponse.StatusCode.Should().Be(HttpStatusCode.Conflict);
-        errorResponse.Errors.First().Reason.Should().Be("A ngo with same name already exists");
+        errorResponse.Errors.First().Reason.Should().Be("A Ngo with same name already exists");
     }
 
 }

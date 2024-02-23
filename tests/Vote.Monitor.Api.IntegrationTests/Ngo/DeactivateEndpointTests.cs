@@ -11,11 +11,11 @@ using DeactivateRequest = Vote.Monitor.Api.Feature.Ngo.Deactivate.Request;
 
 
 namespace Vote.Monitor.Api.IntegrationTests.Ngo;
-public class DeactivateEndpointTests : IClassFixture<HttpServerFixture>
+public class DeactivateEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeeder>>
 {
-    public HttpServerFixture Fixture { get; }
+    public HttpServerFixture<NoopDataSeeder> Fixture { get; }
 
-    public DeactivateEndpointTests(HttpServerFixture fixture, ITestOutputHelper outputHelper)
+    public DeactivateEndpointTests(HttpServerFixture<NoopDataSeeder> fixture, ITestOutputHelper outputHelper)
     {
         Fixture = fixture;
         Fixture.OutputHelper = outputHelper;
@@ -38,10 +38,10 @@ public class DeactivateEndpointTests : IClassFixture<HttpServerFixture>
         };
 
         // Act
-        var deactivateResponse = await Fixture.PlatformAdmin.POSTAsync<DeactivateEndpoint, DeactivateRequest, NgoModel>(deactivateRequest);
+        var deactivateResponse = await Fixture.PlatformAdmin.POSTAsync<DeactivateEndpoint, DeactivateRequest>(deactivateRequest);
 
         // Assert
-        deactivateResponse.Response.IsSuccessStatusCode.Should().BeTrue();
+        deactivateResponse.IsSuccessStatusCode.Should().BeTrue();
 
         var request = new GetRequest
         {
@@ -67,7 +67,7 @@ public class DeactivateEndpointTests : IClassFixture<HttpServerFixture>
 
         var (_, createResult) = await Fixture.PlatformAdmin.POSTAsync<CreateEndpoint, CreateRequest, NgoModel>(newNgo);
 
-        _ = await Fixture.PlatformAdmin.POSTAsync<ActivateEndpoint, ActivateRequest, NgoModel>(
+        _ = await Fixture.PlatformAdmin.POSTAsync<ActivateEndpoint, ActivateRequest>(
             new ActivateRequest
             {
                 Id = createResult.Id
@@ -78,9 +78,10 @@ public class DeactivateEndpointTests : IClassFixture<HttpServerFixture>
             Id = createResult.Id
         };
         // Act
-        var activateResponse = await Fixture.PlatformAdmin.POSTAsync<DeactivateEndpoint, DeactivateRequest, NgoModel>(deactivateNgoRequest);
+        var activateResponse = await Fixture.PlatformAdmin.POSTAsync<DeactivateEndpoint, DeactivateRequest>(deactivateNgoRequest);
+
         // Assert
-        activateResponse.Response.IsSuccessStatusCode.Should().BeTrue();
+        activateResponse.IsSuccessStatusCode.Should().BeTrue();
 
         var (getResponse, ngoModel) = await Fixture.PlatformAdmin.GETAsync<GetEndpoint, GetRequest, NgoModel>(new GetRequest
         {
@@ -101,10 +102,11 @@ public class DeactivateEndpointTests : IClassFixture<HttpServerFixture>
         var deactivateRequest = new DeactivateRequest();
 
         // Act
-        var deactivateResponse = await Fixture.PlatformAdmin.POSTAsync<DeactivateEndpoint, DeactivateRequest, NgoModel>(deactivateRequest);
+        var deactivateResponse = await Fixture.PlatformAdmin.POSTAsync<DeactivateEndpoint, DeactivateRequest>(deactivateRequest);
+
         // Assert
-        deactivateResponse.Response.IsSuccessStatusCode.Should().BeFalse();
-        deactivateResponse.Response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        deactivateResponse.IsSuccessStatusCode.Should().BeFalse();
+        deactivateResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
 
     [Fact]
@@ -117,9 +119,10 @@ public class DeactivateEndpointTests : IClassFixture<HttpServerFixture>
         };
 
         // Act
-        var deactivateResponse = await Fixture.PlatformAdmin.POSTAsync<DeactivateEndpoint, DeactivateRequest, NgoModel>(deactivateRequest);
+        var deactivateResponse = await Fixture.PlatformAdmin.POSTAsync<DeactivateEndpoint, DeactivateRequest>(deactivateRequest);
+
         // Assert
-        deactivateResponse.Response.IsSuccessStatusCode.Should().BeFalse();
-        deactivateResponse.Response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        deactivateResponse.IsSuccessStatusCode.Should().BeFalse();
+        deactivateResponse.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 }
