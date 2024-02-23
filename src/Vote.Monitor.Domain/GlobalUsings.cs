@@ -1,4 +1,4 @@
-global using System.Reflection;
+﻿global using System.Reflection;
 global using System.Text.Json;
 global using Ardalis.Specification;
 global using Microsoft.EntityFrameworkCore;
@@ -12,7 +12,6 @@ global using Vote.Monitor.Domain.Entities;
 global using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
 global using Vote.Monitor.Domain.Entities.Auditing;
 global using Vote.Monitor.Domain.Entities.CountryAggregate;
-global using Vote.Monitor.Domain.Entities.CSOAggregate;
 global using Vote.Monitor.Domain.Entities.ElectionRoundAggregate;
 global using Vote.Monitor.Domain.Entities.ImportValidationErrorsAggregate;
 global using Vote.Monitor.Domain.Entities.PollingStationAggregate;

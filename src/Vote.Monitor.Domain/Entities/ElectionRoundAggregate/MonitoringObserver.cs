@@ -1,4 +1,6 @@
-﻿namespace Vote.Monitor.Domain.Entities.ElectionRoundAggregate;
+﻿using Vote.Monitor.Domain.Entities.NgoAggregate;
+
+namespace Vote.Monitor.Domain.Entities.ElectionRoundAggregate;
 
 public class MonitoringObserver : ValueObject
 {
@@ -7,7 +9,7 @@ public class MonitoringObserver : ValueObject
     public Guid ObserverId { get; private set; }
     public Observer Observer { get; private set; }
     public Guid InviterNgoId { get; private set; }
-    public CSO InviterNgo { get; private set; }
+    public Ngo InviterNgo { get; private set; }
 
 #pragma warning disable CS8618 // Required by Entity Framework
     private MonitoringObserver()

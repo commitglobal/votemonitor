@@ -1,4 +1,6 @@
-﻿namespace Vote.Monitor.Api.Feature.Monitoring.UnitTests.Endpoints;
+﻿using Vote.Monitor.Domain.Entities.NgoAggregate;
+
+namespace Vote.Monitor.Api.Feature.Monitoring.UnitTests.Endpoints;
 
 public class AddObserverEndpointTests
 {
@@ -61,7 +63,7 @@ public class AddObserverEndpointTests
         repository.GetByIdAsync(electionRoundId).Returns(new ElectionRoundAggregateFaker(id: electionRoundId).Generate());
 
         var ngoRepository = Substitute.For<IReadRepository<NgoAggregate>>();
-        ngoRepository.SingleOrDefaultAsync(Arg.Any<GetNgoStatusSpecification>()).Returns(CSOStatus.Activated);
+        ngoRepository.SingleOrDefaultAsync(Arg.Any<GetNgoStatusSpecification>()).Returns(NgoStatus.Activated);
 
         var observerRepository = Substitute.For<IReadRepository<ObserverAggregate>>();
 
@@ -90,7 +92,7 @@ public class AddObserverEndpointTests
         repository.GetByIdAsync(electionRoundId).Returns(new ElectionRoundAggregateFaker(id: electionRoundId).Generate());
 
         var ngoRepository = Substitute.For<IReadRepository<NgoAggregate>>();
-        ngoRepository.SingleOrDefaultAsync(Arg.Any<GetNgoStatusSpecification>()).Returns(CSOStatus.Deactivated);
+        ngoRepository.SingleOrDefaultAsync(Arg.Any<GetNgoStatusSpecification>()).Returns(NgoStatus.Deactivated);
 
         var observerRepository = Substitute.For<IReadRepository<ObserverAggregate>>();
 
@@ -122,7 +124,7 @@ public class AddObserverEndpointTests
         repository.GetByIdAsync(electionRoundId).Returns(new ElectionRoundAggregateFaker(id: electionRoundId).Generate());
 
         var ngoRepository = Substitute.For<IReadRepository<NgoAggregate>>();
-        ngoRepository.SingleOrDefaultAsync(Arg.Any<GetNgoStatusSpecification>()).Returns(CSOStatus.Activated);
+        ngoRepository.SingleOrDefaultAsync(Arg.Any<GetNgoStatusSpecification>()).Returns(NgoStatus.Activated);
 
         var observerRepository = Substitute.For<IReadRepository<ObserverAggregate>>();
         observerRepository.SingleOrDefaultAsync(Arg.Any<GetObserverStatusSpecification>()).Returns(UserStatus.Deactivated);
@@ -157,7 +159,7 @@ public class AddObserverEndpointTests
         repository.GetByIdAsync(electionRoundId).Returns(electionRound);
 
         var ngoRepository = Substitute.For<IReadRepository<NgoAggregate>>();
-        ngoRepository.SingleOrDefaultAsync(Arg.Any<GetNgoStatusSpecification>()).Returns(CSOStatus.Activated);
+        ngoRepository.SingleOrDefaultAsync(Arg.Any<GetNgoStatusSpecification>()).Returns(NgoStatus.Activated);
 
         var observerRepository = Substitute.For<IReadRepository<ObserverAggregate>>();
         observerRepository.SingleOrDefaultAsync(Arg.Any<GetObserverStatusSpecification>()).Returns(UserStatus.Active);

@@ -1,19 +1,23 @@
-﻿using Vote.Monitor.Domain.Entities.CSOAggregate;
+﻿using Vote.Monitor.Domain.Entities.NgoAggregate;
 
 namespace Vote.Monitor.TestUtils.Fakes;
 
-public sealed class NgoAggregateFaker : PrivateFaker<NgoAggregate>
+public sealed class NgoAggregateFaker : PrivateFaker<Ngo>
 {
-    private readonly CSOStatus[] _statuses = [CSOStatus.Activated, CSOStatus.Deactivated];
+    private readonly NgoStatus[] _statuses = [NgoStatus.Activated, NgoStatus.Deactivated];
     private readonly DateTime _baseCreationDate = new(2024, 01, 01, 00, 00, 00, DateTimeKind.Utc);
+    private readonly DateTime _baseModifiedDate = new(2024, 01, 02, 00, 00, 00, DateTimeKind.Utc);
 
-    public NgoAggregateFaker(Guid? id = null, int? index = null, string? name = null, CSOStatus? status = null)
+    public NgoAggregateFaker(Guid? ngoId = null, int? index = null, string? name = null, NgoStatus? status = null)
     {
         UsePrivateConstructor();
 
-        RuleFor(fake => fake.Id, fake => id ?? fake.Random.Guid());
-        RuleFor(fake => fake.Name, fake => name ?? fake.Name.FirstName());
+        RuleFor(fake => fake.Id, fake => ngoId ?? fake.Random.Guid());
+        RuleFor(fake => fake.Name, fake => name ?? fake.Company.CompanyName());
         RuleFor(fake => fake.Status, fake => status ?? fake.PickRandom(_statuses));
-        RuleFor(o => o.CreatedOn, _baseCreationDate.AddHours(index ?? 0));
+        RuleFor(fake => fake.CreatedOn, _baseCreationDate.AddHours(index ?? 0));
+        RuleFor(fake => fake.LastModifiedOn, _baseModifiedDate.AddHours(index ?? 0));
+        RuleFor(fake => fake.CreatedBy, fake => fake.Random.Guid());
+        RuleFor(fake => fake.LastModifiedBy, fake => fake.Random.Guid());
     }
 }

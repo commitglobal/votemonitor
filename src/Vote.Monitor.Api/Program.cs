@@ -1,4 +1,8 @@
-﻿var builder = WebApplication.CreateBuilder(args);
+﻿using Vote.Monitor.Api.Feature.Ngo;
+using Vote.Monitor.Api.Feature.NgoAdmin;
+using Vote.Monitor.Domain.Entities.NgoAggregate;
+
+var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddFastEndpoints();
 builder.Services.SwaggerDocument(o =>
 {
@@ -49,8 +53,8 @@ builder.Services.AddAuthFeature(builder.Configuration.GetSection(AuthFeatureInst
 builder.Services.AddPollingStationFeature(builder.Configuration.GetSection(PollingStationFeatureInstaller.SectionKey));
 builder.Services.AddCountryFeature();
 builder.Services.AddLanguageFeature();
-builder.Services.AddCSOFeature();
-builder.Services.AddCSOAdminFeature();
+builder.Services.AddNgoFeature();
+builder.Services.AddNgoAdminFeature();
 builder.Services.AddObserverFeature(builder.Configuration.GetSection(ObserverFeatureInstaller.SectionKey));
 builder.Services.AddElectionRoundFeature();
 builder.Services.AddMonitoringFeature();
@@ -75,7 +79,7 @@ app.UseFastEndpoints(x =>
 
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<UserStatus, string>());
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<UserRole, string>());
-    x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<CSOStatus, string>());
+    x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<NgoStatus, string>());
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<ElectionRoundStatus, string>());
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<SortOrder, string>());
 });

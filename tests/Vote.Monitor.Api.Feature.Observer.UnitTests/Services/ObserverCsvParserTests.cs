@@ -15,7 +15,7 @@ public class ObserverCsvParserTests
         // Assert
         result.Should().BeOfType<ParsingResult<ObserverImportModel>.Fail>();
         var failItemResult = result.As<ParsingResult<ObserverImportModel>.Fail>().Items;
-        Assert.Single(failItemResult);
+        failItemResult.Should().HaveCount(1);
         failItemResult.First().ErrorMessage.Should().Be("Cannot parse the file or file empty.");
 
     }
@@ -40,7 +40,7 @@ public class ObserverCsvParserTests
         // Assert
         result.Should().BeOfType<ParsingResult<ObserverImportModel>.Fail>();
         var failItemResult = result.As<ParsingResult<ObserverImportModel>.Fail>().Items;
-        Assert.Single(failItemResult);
+        failItemResult.Should().HaveCount(1);
         failItemResult.First().ErrorMessage.Should().Be("Cannot parse the header!");
     }
 
@@ -94,7 +94,7 @@ public class ObserverCsvParserTests
         // Assert
         result.Should().BeOfType<ParsingResult<ObserverImportModel>.Success>();
         var succesItemResult = result.As<ParsingResult<ObserverImportModel>.Success>().Items;
-        succesItemResult.Count().Should().Be(rows.Count);
+        succesItemResult.Should().HaveCount(rows.Count);
         succesItemResult.Should().BeEquivalentTo(rows);
     }
 

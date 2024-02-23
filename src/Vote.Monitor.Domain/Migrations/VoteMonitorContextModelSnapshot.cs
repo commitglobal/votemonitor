@@ -18,7 +18,7 @@ namespace Vote.Monitor.Domain.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.1")
+                .HasAnnotation("ProductVersion", "8.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.HasPostgresExtension(modelBuilder, "uuid-ossp");
@@ -111,38 +111,6 @@ namespace Vote.Monitor.Domain.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("AuditTrails");
-                });
-
-            modelBuilder.Entity("Vote.Monitor.Domain.Entities.CSOAggregate.CSO", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("LastModifiedBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime?>("LastModifiedOn")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("CSOs");
                 });
 
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.CountryAggregate.Country", b =>
@@ -4268,6 +4236,38 @@ namespace Vote.Monitor.Domain.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.NgoAggregate.Ngo", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("LastModifiedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("LastModifiedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Ngos");
+                });
+
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.PollingStationAggregate.PollingStation", b =>
                 {
                     b.Property<Guid>("Id")
@@ -4303,16 +4303,16 @@ namespace Vote.Monitor.Domain.Migrations
                     b.ToTable("PollingStations");
                 });
 
-            modelBuilder.Entity("Vote.Monitor.Domain.Entities.ApplicationUserAggregate.CSOAdmin", b =>
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.ApplicationUserAggregate.NgoAdmin", b =>
                 {
                     b.HasBaseType("Vote.Monitor.Domain.Entities.ApplicationUserAggregate.ApplicationUser");
 
-                    b.Property<Guid>("CSOId")
+                    b.Property<Guid>("NgoId")
                         .HasColumnType("uuid");
 
-                    b.HasIndex("CSOId");
+                    b.HasIndex("NgoId");
 
-                    b.ToTable("CSOAdmins", (string)null);
+                    b.ToTable("NgoAdmins", (string)null);
                 });
 
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.ApplicationUserAggregate.Observer", b =>
@@ -4388,7 +4388,7 @@ namespace Vote.Monitor.Domain.Migrations
                             b1.WithOwner()
                                 .HasForeignKey("ElectionRoundId");
 
-                            b1.HasOne("Vote.Monitor.Domain.Entities.CSOAggregate.CSO", "Ngo")
+                            b1.HasOne("Vote.Monitor.Domain.Entities.NgoAggregate.Ngo", "Ngo")
                                 .WithMany()
                                 .HasForeignKey("NgoId")
                                 .OnDelete(DeleteBehavior.Cascade)
@@ -4427,7 +4427,7 @@ namespace Vote.Monitor.Domain.Migrations
                             b1.WithOwner()
                                 .HasForeignKey("ElectionRoundId");
 
-                            b1.HasOne("Vote.Monitor.Domain.Entities.CSOAggregate.CSO", "InviterNgo")
+                            b1.HasOne("Vote.Monitor.Domain.Entities.NgoAggregate.Ngo", "InviterNgo")
                                 .WithMany()
                                 .HasForeignKey("InviterNgoId")
                                 .OnDelete(DeleteBehavior.Cascade)
@@ -4451,21 +4451,21 @@ namespace Vote.Monitor.Domain.Migrations
                     b.Navigation("MonitoringObservers");
                 });
 
-            modelBuilder.Entity("Vote.Monitor.Domain.Entities.ApplicationUserAggregate.CSOAdmin", b =>
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.ApplicationUserAggregate.NgoAdmin", b =>
                 {
-                    b.HasOne("Vote.Monitor.Domain.Entities.CSOAggregate.CSO", "CSO")
-                        .WithMany("Admins")
-                        .HasForeignKey("CSOId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Vote.Monitor.Domain.Entities.ApplicationUserAggregate.ApplicationUser", null)
                         .WithOne()
-                        .HasForeignKey("Vote.Monitor.Domain.Entities.ApplicationUserAggregate.CSOAdmin", "Id")
+                        .HasForeignKey("Vote.Monitor.Domain.Entities.ApplicationUserAggregate.NgoAdmin", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("CSO");
+                    b.HasOne("Vote.Monitor.Domain.Entities.NgoAggregate.Ngo", "Ngo")
+                        .WithMany("Admins")
+                        .HasForeignKey("NgoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Ngo");
                 });
 
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.ApplicationUserAggregate.Observer", b =>
@@ -4486,7 +4486,7 @@ namespace Vote.Monitor.Domain.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Vote.Monitor.Domain.Entities.CSOAggregate.CSO", b =>
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.NgoAggregate.Ngo", b =>
                 {
                     b.Navigation("Admins");
                 });

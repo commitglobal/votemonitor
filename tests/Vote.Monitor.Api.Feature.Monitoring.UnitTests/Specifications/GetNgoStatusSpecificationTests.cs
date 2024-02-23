@@ -1,10 +1,12 @@
-﻿namespace Vote.Monitor.Api.Feature.Monitoring.UnitTests.Specifications;
+﻿using Vote.Monitor.Domain.Entities.NgoAggregate;
+
+namespace Vote.Monitor.Api.Feature.Monitoring.UnitTests.Specifications;
 
 public class GetNgoStatusSpecificationTests
 {
     [Theory]
     [MemberData(nameof(NGOStatuses))]
-    public void ShouldMatch_NgoById(CSOStatus status)
+    public void ShouldMatch_NgoById(NgoStatus status)
     {
         // Arrange
         var ngoId = Guid.NewGuid();
@@ -46,7 +48,7 @@ public class GetNgoStatusSpecificationTests
     public static IEnumerable<object[]> NGOStatuses =>
         new List<object[]>
         {
-            new object[] { CSOStatus.Activated },
-            new object[] { CSOStatus.Deactivated }
+            new object[] { NgoStatus.Activated },
+            new object[] { NgoStatus.Deactivated }
         };
 }

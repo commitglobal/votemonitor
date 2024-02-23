@@ -26,9 +26,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Authorizat
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Feature.Auth", "src\Vote.Monitor.Api.Feature.Auth\Vote.Monitor.Api.Feature.Auth.csproj", "{C6871F49-3C12-4461-B4A0-598EFD51D75D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Feature.CSO", "src\Vote.Monitor.Api.Feature.CSO\Vote.Monitor.Api.Feature.CSO.csproj", "{5A17BFD7-C13C-48E6-A04C-D20B049268DD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Feature.Ngo", "src\Vote.Monitor.Api.Feature.Ngo\Vote.Monitor.Api.Feature.Ngo.csproj", "{5A17BFD7-C13C-48E6-A04C-D20B049268DD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Feature.CSOAdmin", "src\Vote.Monitor.Api.Feature.CSOAdmin\Vote.Monitor.Api.Feature.CSOAdmin.csproj", "{43821974-5992-471F-8374-6F68109FF6E3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Feature.NgoAdmin", "src\Vote.Monitor.Api.Feature.NgoAdmin\Vote.Monitor.Api.Feature.NgoAdmin.csproj", "{43821974-5992-471F-8374-6F68109FF6E3}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Feature.ElectionRound", "src\Vote.Monitor.Api.Feature.ElectionRound\Vote.Monitor.Api.Feature.ElectionRound.csproj", "{76C3755C-6509-4215-8520-6475A9250B4C}"
 EndProject
@@ -48,7 +48,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Domain.UnitTes
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.TestUtils", "tests\Vote.Monitor.TestUtils\Vote.Monitor.TestUtils.csproj", "{60704C93-C08E-448C-8179-45D075AD76E8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Feature.CSO.UnitTests", "tests\Vote.Monitor.Api.Feature.CSO.UnitTests\Vote.Monitor.Api.Feature.CSO.UnitTests.csproj", "{A8A81B88-EB7D-47F3-9D76-25DF1C3B9EA2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Feature.Ngo.UnitTests", "tests\Vote.Monitor.Api.Feature.Ngo.UnitTests\Vote.Monitor.Api.Feature.Ngo.UnitTests.csproj", "{A8A81B88-EB7D-47F3-9D76-25DF1C3B9EA2}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Feature.ElectionRound.UnitTests", "tests\Vote.Monitor.Api.Feature.ElectionRound.UnitTests\Vote.Monitor.Api.Feature.ElectionRound.UnitTests.csproj", "{ABECD575-6B9F-48DE-97CA-0E962259CA10}"
 EndProject
@@ -58,7 +58,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Feature.Mo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Feature.UserPreferences", "src\Vote.Monitor.Api.Feature.UserPreferences\Vote.Monitor.Api.Feature.UserPreferences.csproj", "{60EA51FE-1118-485E-9500-43B5A97B763B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vote.Monitor.Api.Feature.UserPreferences.UnitTests", "tests\Vote.Monitor.Api.Feature.UserPreferences.UnitTests\Vote.Monitor.Api.Feature.UserPreferences.UnitTests.csproj", "{D582065C-5A1F-4214-B3EF-94C83A84176C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Feature.UserPreferences.UnitTests", "tests\Vote.Monitor.Api.Feature.UserPreferences.UnitTests\Vote.Monitor.Api.Feature.UserPreferences.UnitTests.csproj", "{D582065C-5A1F-4214-B3EF-94C83A84176C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

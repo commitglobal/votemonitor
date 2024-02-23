@@ -13,5 +13,5 @@ global using Microsoft.AspNetCore.Http;
 global using Vote.Monitor.Core.Services.Time;
 global using Vote.Monitor.Domain.Constants;
 global using ElectionRoundAggregate = Vote.Monitor.Domain.Entities.ElectionRoundAggregate.ElectionRound;
-global using NgoAggregate = Vote.Monitor.Domain.Entities.CSOAggregate.CSO;
+global using NgoAggregate = Vote.Monitor.Domain.Entities.NgoAggregate.Ngo;
 global using ObserverAggregate = Vote.Monitor.Domain.Entities.ApplicationUserAggregate.Observer;

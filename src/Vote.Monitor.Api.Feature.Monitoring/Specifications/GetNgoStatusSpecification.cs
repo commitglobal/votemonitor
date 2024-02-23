@@ -1,8 +1,8 @@
-﻿using Vote.Monitor.Domain.Entities.CSOAggregate;
+﻿using Vote.Monitor.Domain.Entities.NgoAggregate;
 
 namespace Vote.Monitor.Api.Feature.Monitoring.Specifications;
 
-public class GetNgoStatusSpecification : SingleResultSpecification<NgoAggregate, CSOStatus>
+public class GetNgoStatusSpecification : SingleResultSpecification<NgoAggregate, NgoStatus>
 {
     public GetNgoStatusSpecification(Guid ngoId)
     {

@@ -19,13 +19,13 @@ internal class ElectionRoundConfiguration : IEntityTypeConfiguration<ElectionRou
         builder.Navigation(nameof(ElectionRound.MonitoringNgos))
             .UsePropertyAccessMode(PropertyAccessMode.Field);
 
-        builder.OwnsMany(e => e.MonitoringNgos, cso =>
+        builder.OwnsMany(e => e.MonitoringNgos, ngoBuilder =>
         {
-            cso.ToTable("MonitoringNGOs");
-            cso.WithOwner().HasForeignKey(nameof(MonitoringNGO.ElectionRoundId));
-            cso.HasKey("Id");
+            ngoBuilder.ToTable("MonitoringNGOs");
+            ngoBuilder.WithOwner().HasForeignKey(nameof(MonitoringNGO.ElectionRoundId));
+            ngoBuilder.HasKey("Id");
 
-            cso
+            ngoBuilder
                 .HasOne(x => x.Ngo)
                 .WithMany()
                 .HasForeignKey(x => x.NgoId)
