@@ -5,11 +5,11 @@ using ListRequest = Vote.Monitor.Api.Feature.Ngo.List.Request;
 using SortOrder = Vote.Monitor.Core.Models.SortOrder;
 
 namespace Vote.Monitor.Api.IntegrationTests.Ngo;
-public class ListEndpointTests : IClassFixture<HttpServerFixture>
+public class ListEndpointTests : IClassFixture<HttpServerFixture<NgoDataSeeder>>
 {
-    public HttpServerFixture Fixture { get; }
+    public HttpServerFixture<NgoDataSeeder> Fixture { get; }
 
-    public ListEndpointTests(HttpServerFixture fixture, ITestOutputHelper outputHelper)
+    public ListEndpointTests(HttpServerFixture<NgoDataSeeder> fixture, ITestOutputHelper outputHelper)
     {
         Fixture = fixture;
         Fixture.OutputHelper = outputHelper;
@@ -18,11 +18,7 @@ public class ListEndpointTests : IClassFixture<HttpServerFixture>
     [Fact]
     public async Task Should_ListNgo_WhenValidRequestDataNoFilteringNoSortingPageSize100Page1()
     {
-
         // Arrange
-        await Fixture.PlatformAdmin.GenerateNgoTestData(Fixture.OutputHelper!);
-
-
         var listRequest = new ListRequest
         {
             NameFilter = "",
@@ -49,10 +45,7 @@ public class ListEndpointTests : IClassFixture<HttpServerFixture>
     [Fact]
     public async Task Should_ListNgo_WhenValidRequestDataNoFilteringNoSortingPageSize10Page1()
     {
-
         // Arrange
-        await Fixture.PlatformAdmin.GenerateNgoTestData(Fixture.OutputHelper!);
-
         var listRequest = new ListRequest
         {
             NameFilter = "",
@@ -80,10 +73,7 @@ public class ListEndpointTests : IClassFixture<HttpServerFixture>
     [Fact]
     public async Task Should_ListNgo_WhenValidRequestDataNoFilteringNoSortingPageSize16Page3()
     {
-
         // Arrange
-        await Fixture.PlatformAdmin.GenerateNgoTestData(Fixture.OutputHelper!);
-
         var listRequest = new ListRequest
         {
             NameFilter = "",
@@ -109,10 +99,7 @@ public class ListEndpointTests : IClassFixture<HttpServerFixture>
     [Fact]
     public async Task Should_ListNgo_WhenValidRequestDataFiltering_Name_18_NoSortingPageSize10Page1()
     {
-
         // Arrange
-        await Fixture.PlatformAdmin.GenerateNgoTestData(Fixture.OutputHelper!);
-
         var listRequest = new ListRequest
         {
             NameFilter = "18",
@@ -139,8 +126,6 @@ public class ListEndpointTests : IClassFixture<HttpServerFixture>
     public async Task Should_ListNgo_WhenValidRequestDataFiltering_Name_Act_NoSortingPageSize10Page1()
     {
         // Arrange
-        await Fixture.PlatformAdmin.GenerateNgoTestData(Fixture.OutputHelper!);
-
         var listRequest = new ListRequest
         {
             NameFilter = "Act",
@@ -168,8 +153,6 @@ public class ListEndpointTests : IClassFixture<HttpServerFixture>
     public async Task Should_ListNgo_WhenValidRequestDataFiltering_Name_Act_Sorting_Name_Desc_PageSize10Page1()
     {
         // Arrange
-        await Fixture.PlatformAdmin.GenerateNgoTestData(Fixture.OutputHelper!);
-
         var listRequest = new ListRequest
         {
             NameFilter = "Act",
@@ -179,7 +162,6 @@ public class ListEndpointTests : IClassFixture<HttpServerFixture>
             SortColumnName = "Name",
             SortOrder = SortOrder.Desc
         };
-
 
         // Act
         var (lisResponse, result) = await Fixture.PlatformAdmin.GETAsync<ListEndpoint, ListRequest, PagedResponse<NgoModel>>(listRequest);
@@ -196,10 +178,7 @@ public class ListEndpointTests : IClassFixture<HttpServerFixture>
     [Fact]
     public async Task Should_ListNgo_WhenValidRequestDataFiltering_Name_Act_Sorting_Name_ASC_PageSize10Page1()
     {
-
         // Arrange
-        await Fixture.PlatformAdmin.GenerateNgoTestData(Fixture.OutputHelper!);
-
         var listRequest = new ListRequest
         {
             NameFilter = "Act",
@@ -227,10 +206,7 @@ public class ListEndpointTests : IClassFixture<HttpServerFixture>
     [Fact]
     public async Task Should_ListNgo_WhenValidRequestDataFiltering_Name_1_Sorting_Name_ASC_PageSize10Page1()
     {
-
         // Arrange
-        await Fixture.PlatformAdmin.GenerateNgoTestData(Fixture.OutputHelper!);
-
         var listRequest = new ListRequest
         {
             NameFilter = "1",
@@ -252,21 +228,17 @@ public class ListEndpointTests : IClassFixture<HttpServerFixture>
         result.TotalCount.Should().Be(22);
         result.Items.Count.Should().Be(10);
         // should be A1,  A10, A11, A12,A13
-        result.Items[0].Name.Should().Be($"Activated1");
-        result.Items[1].Name.Should().Be($"Activated10");
-        result.Items[2].Name.Should().Be($"Activated11");
-        result.Items[3].Name.Should().Be($"Activated12");
-        result.Items[4].Name.Should().Be($"Activated13");
-
+        result.Items[0].Name.Should().Be("Activated1");
+        result.Items[1].Name.Should().Be("Activated10");
+        result.Items[2].Name.Should().Be("Activated11");
+        result.Items[3].Name.Should().Be("Activated12");
+        result.Items[4].Name.Should().Be("Activated13");
     }
 
     [Fact]
     public async Task Should_ListNgo_WhenValidRequestDataFiltering_Name_1_Sorting_Name_Desc_PageSize10Page1()
     {
-
         // Arrange
-        await Fixture.PlatformAdmin.GenerateNgoTestData(Fixture.OutputHelper!);
-
         var listRequest = new ListRequest
         {
             NameFilter = "1",
@@ -276,7 +248,6 @@ public class ListEndpointTests : IClassFixture<HttpServerFixture>
             SortColumnName = "Name",
             SortOrder = SortOrder.Desc
         };
-
 
         // Act
         var (lisResponse, result) = await Fixture.PlatformAdmin.GETAsync<ListEndpoint, ListRequest, PagedResponse<NgoModel>>(listRequest);
@@ -301,9 +272,7 @@ public class ListEndpointTests : IClassFixture<HttpServerFixture>
     [Fact]
     public async Task Should_ListNgo_WhenValidRequestDataFiltering_Status_Activated_Sorting_Name_Desc_PageSize10Page1()
     {
-
         // Arrange
-        await Fixture.PlatformAdmin.GenerateNgoTestData(Fixture.OutputHelper!);
 
         var listRequest = new ListRequest
         {
@@ -337,10 +306,7 @@ public class ListEndpointTests : IClassFixture<HttpServerFixture>
     [Fact]
     public async Task Should_ListNgo_WhenValidRequestDataFiltering_Status_Asc_Sorting_Name_ASC_PageSize10Page1()
     {
-
         // Arrange
-        await Fixture.PlatformAdmin.GenerateNgoTestData(Fixture.OutputHelper!);
-
         var listRequest = new ListRequest
         {
             NameFilter = null,

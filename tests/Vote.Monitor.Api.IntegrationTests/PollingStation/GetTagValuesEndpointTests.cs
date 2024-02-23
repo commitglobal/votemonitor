@@ -4,11 +4,11 @@ using GetTagValuesRequest = Vote.Monitor.Api.Feature.PollingStation.GetTagValues
 
 namespace Vote.Monitor.Api.IntegrationTests.PollingStation;
 
-public class GetTagValuesEndpointTests : IClassFixture<HttpServerFixture>
+public class GetTagValuesEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeeder>>
 {
-    public HttpServerFixture Fixture { get; }
+    public HttpServerFixture<NoopDataSeeder> Fixture { get; }
 
-    public GetTagValuesEndpointTests(HttpServerFixture fixture, ITestOutputHelper outputHelper)
+    public GetTagValuesEndpointTests(HttpServerFixture<NoopDataSeeder> fixture, ITestOutputHelper outputHelper)
     {
         Fixture = fixture;
         Fixture.OutputHelper = outputHelper;

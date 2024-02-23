@@ -3,22 +3,21 @@ using Vote.Monitor.Api.Feature.Language.Get;
 
 namespace Vote.Monitor.Api.IntegrationTests.Language;
 
-public class GetEndpointTest : IClassFixture<HttpServerFixture>
+public class GetEndpointTest : IClassFixture<HttpServerFixture<NoopDataSeeder>>
 {
-    public HttpServerFixture Fixture { get; }
+    public HttpServerFixture<NoopDataSeeder> Fixture { get; }
 
-    public GetEndpointTest(HttpServerFixture fixture, ITestOutputHelper outputHelper)
+    public GetEndpointTest(HttpServerFixture<NoopDataSeeder> fixture, ITestOutputHelper outputHelper)
     {
         Fixture = fixture;
         Fixture.OutputHelper = outputHelper;
     }
 
-
     [Theory]
     [InlineData("094b3769-68b1-6211-ba2d-6bba92d6a167", "EN", "English")]
     [InlineData("5f002f07-f2c3-9fa4-2e29-225d116c10a3", "SW", "Swahili")]
 
-    public async Task Shoul_ReturnCorrectLanguage(Guid id, string code, string languageName)
+    public async Task Should_ReturnCorrectLanguage(Guid id, string code, string languageName)
     {
         // Arrange
         var request = new Request

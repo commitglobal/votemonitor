@@ -7,11 +7,11 @@ using GetEndpoint = Vote.Monitor.Api.Feature.Ngo.Get.Endpoint;
 using GetRequest = Vote.Monitor.Api.Feature.Ngo.Get.Request;
 
 namespace Vote.Monitor.Api.IntegrationTests.Ngo;
-public class UpdateEndpointTests : IClassFixture<HttpServerFixture>
+public class UpdateEndpointTests : IClassFixture<HttpServHttpServerFixture<NoopDataSeeder>erFixture>
 {
-    public HttpServerFixture Fixture { get; }
+    public HttpServerFixture<NoopDataSeeder> Fixture { get; }
 
-    public UpdateEndpointTests(HttpServerFixture fixture, ITestOutputHelper outputHelper)
+    public UpdateEndpointTests(HttpServerFixture<NoopDataSeeder> fixture, ITestOutputHelper outputHelper)
     {
         Fixture = fixture;
         Fixture.OutputHelper = outputHelper;
@@ -38,8 +38,8 @@ public class UpdateEndpointTests : IClassFixture<HttpServerFixture>
         var updateResponse = await Fixture.PlatformAdmin.PUTAsync<UpdateEndpoint, UpdateRequest, NgoModel>(updateNgoRequest);
       
         // Assert
-        updateResponse.Response.IsSuccessStatusCode.Should().BeTrue();
-        updateResponse.Response.StatusCode.Should().Be(HttpStatusCode.NoContent);
+        updateResponse.IsSuccessStatusCode.Should().BeTrue();
+        updateResponse.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
         var request = new GetRequest
         {
