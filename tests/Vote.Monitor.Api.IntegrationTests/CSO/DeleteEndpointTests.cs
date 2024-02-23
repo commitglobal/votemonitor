@@ -8,11 +8,11 @@ using GetRequest = Vote.Monitor.Api.Feature.CSO.Get.Request;
 
 
 namespace Vote.Monitor.Api.IntegrationTests.CSO;
-public class DeleteEndpointTests : IClassFixture<HttpServerFixture>
+public class DeleteEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeeder>>
 {
-    public HttpServerFixture Fixture { get; }
+    public HttpServerFixture<NoopDataSeeder> Fixture { get; }
 
-    public DeleteEndpointTests(HttpServerFixture fixture, ITestOutputHelper outputHelper)
+    public DeleteEndpointTests(HttpServerFixture<NoopDataSeeder> fixture, ITestOutputHelper outputHelper)
     {
         Fixture = fixture;
         Fixture.OutputHelper = outputHelper;
@@ -36,10 +36,11 @@ public class DeleteEndpointTests : IClassFixture<HttpServerFixture>
         };
 
         // Act
-        var deleteResponse = await Fixture.PlatformAdmin.DELETEAsync<DeleteEndpoint, DeleteRequest, CSOModel>(deleteCso);
+        var deleteResponse = await Fixture.PlatformAdmin.DELETEAsync<DeleteEndpoint, DeleteRequest>(deleteCso);
+       
         // Assert
-        deleteResponse.Response.IsSuccessStatusCode.Should().BeTrue();
-        deleteResponse.Response.StatusCode.Should().Be(HttpStatusCode.NoContent);
+        deleteResponse.IsSuccessStatusCode.Should().BeTrue();
+        deleteResponse.StatusCode.Should().Be(HttpStatusCode.NoContent);
         var request = new GetRequest
         {
             Id = createResult.Id

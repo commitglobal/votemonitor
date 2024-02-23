@@ -4,11 +4,11 @@ using ListRequest = Vote.Monitor.Api.Feature.PollingStation.List.Request;
 
 namespace Vote.Monitor.Api.IntegrationTests.PollingStation;
 
-public class ListEndpointTests : IClassFixture<HttpServerFixture>
+public class ListEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeeder>>
 {
-    public HttpServerFixture Fixture { get; }
+    public HttpServerFixture<NoopDataSeeder> Fixture { get; }
 
-    public ListEndpointTests(HttpServerFixture fixture, ITestOutputHelper outputHelper)
+    public ListEndpointTests(HttpServerFixture<NoopDataSeeder> fixture, ITestOutputHelper outputHelper)
     {
         Fixture = fixture;
         Fixture.OutputHelper = outputHelper;

@@ -1,10 +1,10 @@
 ﻿namespace Vote.Monitor.Api.IntegrationTests.PollingStation;
 
-public class ImportEndpointTests : IClassFixture<HttpServerFixture>
+public class ImportEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeeder>>
 {
-    public HttpServerFixture Fixture { get; }
+    public HttpServerFixture<NoopDataSeeder> Fixture { get; }
 
-    public ImportEndpointTests(HttpServerFixture fixture, ITestOutputHelper outputHelper)
+    public ImportEndpointTests(HttpServerFixture<NoopDataSeeder> fixture, ITestOutputHelper outputHelper)
     {
         Fixture = fixture;
         Fixture.OutputHelper = outputHelper;
