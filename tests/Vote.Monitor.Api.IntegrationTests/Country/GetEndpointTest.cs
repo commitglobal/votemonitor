@@ -1,11 +1,11 @@
 ﻿using Vote.Monitor.Api.Feature.Country;
 using Vote.Monitor.Api.Feature.Country.Get;
 namespace Vote.Monitor.Api.IntegrationTests.Country;
-public class GetEndpointTest : IClassFixture<HttpServerFixture>
+public class GetEndpointTest : IClassFixture<HttpServerFixture<NoopDataSeeder>>
 {
-    public HttpServerFixture Fixture { get; }
+    public HttpServerFixture<NoopDataSeeder> Fixture { get; }
 
-    public GetEndpointTest(HttpServerFixture fixture, ITestOutputHelper outputHelper)
+    public GetEndpointTest(HttpServerFixture<NoopDataSeeder> fixture, ITestOutputHelper outputHelper)
     {
         Fixture = fixture;
         Fixture.OutputHelper = outputHelper;

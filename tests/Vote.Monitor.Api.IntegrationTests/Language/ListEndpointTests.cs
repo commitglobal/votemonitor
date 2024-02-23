@@ -2,11 +2,11 @@
 
 namespace Vote.Monitor.Api.IntegrationTests.Language;
 
-public class ListEndpointTests:IClassFixture<HttpServerFixture>
+public class ListEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeeder>>
 {
-    public HttpServerFixture Fixture { get; }
+    public HttpServerFixture<NoopDataSeeder> Fixture { get; }
 
-    public ListEndpointTests(HttpServerFixture fixture, ITestOutputHelper outputHelper)
+    public ListEndpointTests(HttpServerFixture<NoopDataSeeder> fixture, ITestOutputHelper outputHelper)
     {
         Fixture = fixture;
         Fixture.OutputHelper = outputHelper;
@@ -17,7 +17,7 @@ public class ListEndpointTests:IClassFixture<HttpServerFixture>
     {
         // Arrange &c Act
         var (response, result) = await Fixture.PlatformAdmin.GETAsync<Api.Feature.Language.List.Endpoint, List<LanguageModel>>();
-        
+
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         result.Count.Should().Be(183);
@@ -29,7 +29,7 @@ public class ListEndpointTests:IClassFixture<HttpServerFixture>
         // Arrange
         List<Tuple<string, string>> testLanguages = new List<Tuple<string, string>>
         {
-            new("EN", "English"), 
+            new("EN", "English"),
             new("FA", "Persian"),
         };
 
@@ -38,7 +38,7 @@ public class ListEndpointTests:IClassFixture<HttpServerFixture>
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        foreach(var language in testLanguages)
+        foreach (var language in testLanguages)
         {
             result.Should().Contain(x => x.Code == language.Item1 && x.Name == language.Item2);
         }

@@ -10,11 +10,11 @@ using UpdateRequest = Vote.Monitor.Api.Feature.PollingStation.Update.Request;
 
 namespace Vote.Monitor.Api.IntegrationTests.PollingStation;
 
-public class UpdateEndpointTests : IClassFixture<HttpServerFixture>
+public class UpdateEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeeder>>
 {
-    public HttpServerFixture Fixture { get; }
+    public HttpServerFixture<NoopDataSeeder> Fixture { get; }
 
-    public UpdateEndpointTests(HttpServerFixture fixture, ITestOutputHelper outputHelper)
+    public UpdateEndpointTests(HttpServerFixture<NoopDataSeeder> fixture, ITestOutputHelper outputHelper)
     {
         Fixture = fixture;
         Fixture.OutputHelper = outputHelper;

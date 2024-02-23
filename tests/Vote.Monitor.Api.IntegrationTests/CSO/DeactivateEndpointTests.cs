@@ -11,11 +11,11 @@ using DeactivateRequest = Vote.Monitor.Api.Feature.CSO.Deactivate.Request;
 
 
 namespace Vote.Monitor.Api.IntegrationTests.CSO;
-public class DeactivateEndpointTests : IClassFixture<HttpServerFixture>
+public class DeactivateEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeeder>>
 {
-    public HttpServerFixture Fixture { get; }
+    public HttpServerFixture<NoopDataSeeder> Fixture { get; }
 
-    public DeactivateEndpointTests(HttpServerFixture fixture, ITestOutputHelper outputHelper)
+    public DeactivateEndpointTests(HttpServerFixture<NoopDataSeeder> fixture, ITestOutputHelper outputHelper)
     {
         Fixture = fixture;
         Fixture.OutputHelper = outputHelper;
@@ -30,7 +30,6 @@ public class DeactivateEndpointTests : IClassFixture<HttpServerFixture>
             Name = "test1"
         };
 
-
         var (_, createResult) = await Fixture.PlatformAdmin.POSTAsync<CreateEndpoint, CreateRequest, CSOModel>(newCso);
 
         var newCsoActivate = new DeactivateRequest
@@ -39,9 +38,10 @@ public class DeactivateEndpointTests : IClassFixture<HttpServerFixture>
         };
 
         // Act
-        var deactivateResponse = await Fixture.PlatformAdmin.POSTAsync<DeactivateEndpoint, DeactivateRequest, CSOModel>(newCsoActivate);
+        var deactivateResponse = await Fixture.PlatformAdmin.POSTAsync<DeactivateEndpoint, DeactivateRequest>(newCsoActivate);
+
         // Assert
-        deactivateResponse.Response.IsSuccessStatusCode.Should().BeTrue();
+        deactivateResponse.IsSuccessStatusCode.Should().BeTrue();
 
         var request = new GetRequest
         {
@@ -68,7 +68,7 @@ public class DeactivateEndpointTests : IClassFixture<HttpServerFixture>
 
         var (_, createResult) = await Fixture.PlatformAdmin.POSTAsync<CreateEndpoint, CreateRequest, CSOModel>(newCso);
 
-        _ = await Fixture.PlatformAdmin.POSTAsync<ActivateEndpoint, ActivateRequest, CSOModel>(
+        _ = await Fixture.PlatformAdmin.POSTAsync<ActivateEndpoint, ActivateRequest>(
             new ActivateRequest
             {
                 Id = createResult.Id
@@ -79,9 +79,9 @@ public class DeactivateEndpointTests : IClassFixture<HttpServerFixture>
             Id = createResult.Id
         };
         // Act
-        var activateResponse = await Fixture.PlatformAdmin.POSTAsync<DeactivateEndpoint, DeactivateRequest, CSOModel>(deactivateCso);
+        var activateResponse = await Fixture.PlatformAdmin.POSTAsync<DeactivateEndpoint, DeactivateRequest>(deactivateCso);
         // Assert
-        activateResponse.Response.IsSuccessStatusCode.Should().BeTrue();
+        activateResponse.IsSuccessStatusCode.Should().BeTrue();
 
 
         var (getResponse, csoModel) = await Fixture.PlatformAdmin.GETAsync<GetEndpoint, GetRequest, CSOModel>(new GetRequest
@@ -103,10 +103,10 @@ public class DeactivateEndpointTests : IClassFixture<HttpServerFixture>
         var csoRequest = new DeactivateRequest();
 
         // Act
-        var deaactivateResponse = await Fixture.PlatformAdmin.POSTAsync<DeactivateEndpoint, DeactivateRequest, CSOModel>(csoRequest);
+        var deaactivateResponse = await Fixture.PlatformAdmin.POSTAsync<DeactivateEndpoint, DeactivateRequest>(csoRequest);
         // Assert
-        deaactivateResponse.Response.IsSuccessStatusCode.Should().BeFalse();
-        deaactivateResponse.Response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        deaactivateResponse.IsSuccessStatusCode.Should().BeFalse();
+        deaactivateResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
 
     [Fact]
@@ -118,6 +118,7 @@ public class DeactivateEndpointTests : IClassFixture<HttpServerFixture>
 
         // Act
         var deactivateResponse = await Fixture.PlatformAdmin.POSTAsync<DeactivateEndpoint, DeactivateRequest, CSOModel>(csoRequest);
+        
         // Assert
         deactivateResponse.Response.IsSuccessStatusCode.Should().BeFalse();
         deactivateResponse.Response.StatusCode.Should().Be(HttpStatusCode.NotFound);

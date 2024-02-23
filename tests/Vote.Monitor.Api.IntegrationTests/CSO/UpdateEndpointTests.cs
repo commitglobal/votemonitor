@@ -7,11 +7,11 @@ using GetEndpoint = Vote.Monitor.Api.Feature.CSO.Get.Endpoint;
 using GetRequest = Vote.Monitor.Api.Feature.CSO.Get.Request;
 
 namespace Vote.Monitor.Api.IntegrationTests.CSO;
-public class UpdateEndpointTests : IClassFixture<HttpServerFixture>
+public class UpdateEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeeder>>
 {
-    public HttpServerFixture Fixture { get; }
+    public HttpServerFixture<NoopDataSeeder> Fixture { get; }
 
-    public UpdateEndpointTests(HttpServerFixture fixture, ITestOutputHelper outputHelper)
+    public UpdateEndpointTests(HttpServerFixture<NoopDataSeeder> fixture, ITestOutputHelper outputHelper)
     {
         Fixture = fixture;
         Fixture.OutputHelper = outputHelper;
@@ -36,10 +36,10 @@ public class UpdateEndpointTests : IClassFixture<HttpServerFixture>
         };
 
         // Act
-        var updateResponse = await Fixture.PlatformAdmin.PUTAsync<UpdateEndpoint, UpdateRequest, CSOModel>(updateCSO);
+        var updateResponse = await Fixture.PlatformAdmin.PUTAsync<UpdateEndpoint, UpdateRequest>(updateCSO);
         // Assert
-        updateResponse.Response.IsSuccessStatusCode.Should().BeTrue();
-        updateResponse.Response.StatusCode.Should().Be(HttpStatusCode.NoContent);
+        updateResponse.IsSuccessStatusCode.Should().BeTrue();
+        updateResponse.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
         var request = new GetRequest
         {

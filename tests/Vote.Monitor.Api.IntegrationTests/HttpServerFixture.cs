@@ -7,7 +7,7 @@ using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
 
 namespace Vote.Monitor.Api.IntegrationTests;
 
-public class HttpServerFixture : WebApplicationFactory<Program>, IAsyncLifetime, ITestOutputHelperAccessor
+public class HttpServerFixture<TDataSeeder> : WebApplicationFactory<Program>, IAsyncLifetime, ITestOutputHelperAccessor where TDataSeeder : class, IDataSeeder
 {
     private static readonly Faker _faker = new();
     private readonly PostgreSqlContainer _postgresContainer = new PostgreSqlBuilder()
@@ -45,6 +45,7 @@ public class HttpServerFixture : WebApplicationFactory<Program>, IAsyncLifetime,
             }
 
             services.AddDbContext<VoteMonitorContext>(options => options.UseNpgsql(_postgresContainer.GetConnectionString()));
+            services.AddScoped<IDataSeeder, TDataSeeder>();
         });
 
         builder.ConfigureLogging(l => l.ClearProviders().AddXUnit(this).SetMinimumLevel(LogLevel.Debug));
@@ -71,6 +72,10 @@ public class HttpServerFixture : WebApplicationFactory<Program>, IAsyncLifetime,
 
         PlatformAdmin = CreateClient();
         PlatformAdmin.DefaultRequestHeaders.Authorization = new("Bearer", tokenResponse.Token);
+
+        var seeder = Services.GetRequiredService<IDataSeeder>();
+        await seeder.SeedDataAsync();
+
     }
 
     public new async Task DisposeAsync() => await _postgresContainer.DisposeAsync().AsTask();

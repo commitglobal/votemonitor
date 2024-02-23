@@ -11,11 +11,11 @@ using DeactivateRequest = Vote.Monitor.Api.Feature.CSO.Deactivate.Request;
 
 
 namespace Vote.Monitor.Api.IntegrationTests.CSO;
-public class ActivateEndpointTests : IClassFixture<HttpServerFixture>
+public class ActivateEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeeder>>
 {
-    public HttpServerFixture Fixture { get; }
+    public HttpServerFixture<NoopDataSeeder> Fixture { get; }
 
-    public ActivateEndpointTests(HttpServerFixture fixture, ITestOutputHelper outputHelper)
+    public ActivateEndpointTests(HttpServerFixture<NoopDataSeeder> fixture, ITestOutputHelper outputHelper)
     {
         Fixture = fixture;
         Fixture.OutputHelper = outputHelper;
@@ -39,9 +39,10 @@ public class ActivateEndpointTests : IClassFixture<HttpServerFixture>
         };
 
         // Act
-        var activateResponse = await Fixture.PlatformAdmin.POSTAsync<ActivateEndpoint, ActivateRequest, CSOModel>(newCsoActivate);
+        var activateResponse = await Fixture.PlatformAdmin.POSTAsync<ActivateEndpoint, ActivateRequest>(newCsoActivate);
+       
         // Assert
-        activateResponse.Response.IsSuccessStatusCode.Should().BeTrue();
+        activateResponse.IsSuccessStatusCode.Should().BeTrue();
 
         var request = new GetRequest
         {
@@ -67,7 +68,7 @@ public class ActivateEndpointTests : IClassFixture<HttpServerFixture>
 
         var (_, createResult) = await Fixture.PlatformAdmin.POSTAsync<CreateEndpoint, CreateRequest, CSOModel>(newCso);
 
-        _ = await Fixture.PlatformAdmin.POSTAsync<DeactivateEndpoint, DeactivateRequest, CSOModel>(
+        _ = await Fixture.PlatformAdmin.POSTAsync<DeactivateEndpoint, DeactivateRequest>(
             new DeactivateRequest
             {
                 Id = createResult.Id
@@ -77,10 +78,12 @@ public class ActivateEndpointTests : IClassFixture<HttpServerFixture>
         {
             Id = createResult.Id
         };
+
         // Act
-        var activateResponse = await Fixture.PlatformAdmin.POSTAsync<ActivateEndpoint, ActivateRequest, CSOModel>(newCsoActivate);
+        var activateResponse = await Fixture.PlatformAdmin.POSTAsync<ActivateEndpoint, ActivateRequest>(newCsoActivate);
+
         // Assert
-        activateResponse.Response.IsSuccessStatusCode.Should().BeTrue();
+        activateResponse.IsSuccessStatusCode.Should().BeTrue();
 
 
         var (getResponse, csoModel) = await Fixture.PlatformAdmin.GETAsync<GetEndpoint, GetRequest, CSOModel>(new GetRequest

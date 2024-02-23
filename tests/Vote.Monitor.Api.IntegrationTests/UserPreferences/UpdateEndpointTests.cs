@@ -1,16 +1,16 @@
 ﻿using GetEndpoint = Vote.Monitor.Api.Feature.UserPreferences.Get.Endpoint;
 using GetRequest = Vote.Monitor.Api.Feature.UserPreferences.Get.Request;
-using UppdateEndpoint = Vote.Monitor.Api.Feature.UserPreferences.Update.Endpoint;
+using UpdateEndpoint = Vote.Monitor.Api.Feature.UserPreferences.Update.Endpoint;
 using UpdateRequest = Vote.Monitor.Api.Feature.UserPreferences.Update.Request;
 using UserPreferencesModel = Vote.Monitor.Api.Feature.UserPreferences.UserPreferencesModel;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Vote.Monitor.Api.IntegrationTests.UserPreferences;
-public class UpdateEndpointTests : IClassFixture<HttpServerFixture>
+public class UpdateEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeeder>>
 {
-    public HttpServerFixture Fixture { get; }
+    public HttpServerFixture<NoopDataSeeder> Fixture { get; }
 
-    public UpdateEndpointTests(HttpServerFixture fixture, ITestOutputHelper outputHelper)
+    public UpdateEndpointTests(HttpServerFixture<NoopDataSeeder> fixture, ITestOutputHelper outputHelper)
     {
         Fixture = fixture;
         Fixture.OutputHelper = outputHelper;
@@ -31,11 +31,11 @@ public class UpdateEndpointTests : IClassFixture<HttpServerFixture>
         UserPreferencesModel userPreferences = new (){LanguageId = languageId};
 
         // Act
-        var updateResponse = await Fixture.PlatformAdmin.POSTAsync<UppdateEndpoint, UpdateRequest, NoContent>(updateRequest);
+        var updateResponse = await Fixture.PlatformAdmin.POSTAsync<UpdateEndpoint, UpdateRequest>(updateRequest);
 
         // Assert
-        updateResponse.Response.EnsureSuccessStatusCode();
-        updateResponse.Response.StatusCode.Should().Be(HttpStatusCode.NoContent);
+        updateResponse.EnsureSuccessStatusCode();
+        updateResponse.StatusCode.Should().Be(HttpStatusCode.NoContent);
         var getResponse = await Fixture.PlatformAdmin.GETAsync<GetEndpoint, GetRequest, UserPreferencesModel>(new GetRequest { Id = updateRequest.Id });
         getResponse.Response.EnsureSuccessStatusCode();
         getResponse.Result.Should().BeEquivalentTo(userPreferences);
@@ -52,7 +52,7 @@ public class UpdateEndpointTests : IClassFixture<HttpServerFixture>
         };
 
         // Act
-        var updateResponse = await Fixture.PlatformAdmin.POSTAsync<UppdateEndpoint, UpdateRequest, UserPreferencesModel>(updateRequest);
+        var updateResponse = await Fixture.PlatformAdmin.POSTAsync<UpdateEndpoint, UpdateRequest, UserPreferencesModel>(updateRequest);
 
         // Assert
         updateResponse.Response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
@@ -65,7 +65,7 @@ public class UpdateEndpointTests : IClassFixture<HttpServerFixture>
         var updateRequest = new UpdateRequest();
 
         // Act
-        var (updateResponse, errors) = await Fixture.PlatformAdmin.POSTAsync<UppdateEndpoint, UpdateRequest, FEProblemDetails>(updateRequest);
+        var (updateResponse, errors) = await Fixture.PlatformAdmin.POSTAsync<UpdateEndpoint, UpdateRequest, FEProblemDetails>(updateRequest);
 
         // Assert
         updateResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
