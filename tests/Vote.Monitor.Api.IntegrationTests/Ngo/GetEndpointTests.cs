@@ -38,8 +38,6 @@ public class GetEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeeder>>
         ngoModel.Id.Should().Be(createResult.Id);
     }
 
-
-
     [Fact]
     public async Task Should_BadRequest_WhenNgoIdEmpty()
     {

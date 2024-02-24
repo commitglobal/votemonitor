@@ -18,12 +18,12 @@ public class UpdateEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeede
     }
 
     [Fact]
-    public async Task Should_ActivateNgo_WhenValidRequestData()
+    public async Task Should_UpdateNgo_WhenValidRequestData()
     {
         // Arrange
         var createRequest = new CreateRequest
         {
-            Name = "test21"
+            Name = Guid.NewGuid().ToString()
         };
 
         var (createResponse, createResult) = await Fixture.PlatformAdmin.POSTAsync<CreateEndpoint, CreateRequest, NgoModel>(createRequest);
@@ -33,7 +33,7 @@ public class UpdateEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeede
         var updateNgoRequest = new UpdateRequest
         {
             Id = createResult.Id,
-            Name = "UpdateTest"
+            Name = Guid.NewGuid().ToString()
         };
         var updateResponse = await Fixture.PlatformAdmin.PUTAsync<UpdateEndpoint, UpdateRequest>(updateNgoRequest);
       
@@ -108,12 +108,12 @@ public class UpdateEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeede
         // Arrange
         var createNgo1Request = new CreateRequest
         {
-            Name = "test21"
+            Name = Guid.NewGuid().ToString()
         };
 
         var createNgo2Request = new CreateRequest
         {
-            Name = "test22"
+            Name = Guid.NewGuid().ToString()
         };
 
         _ = await Fixture.PlatformAdmin.POSTAsync<CreateEndpoint, CreateRequest, NgoModel>(createNgo2Request);
@@ -123,11 +123,12 @@ public class UpdateEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeede
         var updateRequest = new UpdateRequest
         {
             Id = createResult.Id,
-            Name = "test22"
+            Name = createNgo1Request.Name
         };
 
         // Act
         var (updateResponse, updateErrors) = await Fixture.PlatformAdmin.PUTAsync<UpdateEndpoint, UpdateRequest, FEProblemDetails>(updateRequest);
+        
         // Assert
         updateResponse.IsSuccessStatusCode.Should().BeFalse();
         updateResponse.StatusCode.Should().Be(HttpStatusCode.Conflict);
