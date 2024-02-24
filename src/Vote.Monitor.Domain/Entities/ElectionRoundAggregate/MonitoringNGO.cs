@@ -1,11 +1,13 @@
-﻿namespace Vote.Monitor.Domain.Entities.ElectionRoundAggregate;
+﻿using Vote.Monitor.Domain.Entities.NgoAggregate;
+
+namespace Vote.Monitor.Domain.Entities.ElectionRoundAggregate;
 
 public class MonitoringNGO : ValueObject
 {
     public int Id { get; private set; }
     public Guid ElectionRoundId { get; private set; }
     public Guid NgoId { get; private set; }
-    public CSO Ngo { get; private set; }
+    public Ngo Ngo { get; private set; }
 
 #pragma warning disable CS8618 // Required by Entity Framework
     private MonitoringNGO()

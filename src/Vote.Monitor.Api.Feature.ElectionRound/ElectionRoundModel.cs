@@ -1,5 +1,5 @@
 ﻿using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
-using Vote.Monitor.Domain.Entities.CSOAggregate;
+using Vote.Monitor.Domain.Entities.NgoAggregate;
 
 namespace Vote.Monitor.Api.Feature.ElectionRound;
 
@@ -14,8 +14,8 @@ public class MonitoringNgoModel
     public required Guid NgoId { get; init; }
     public required string Name { get; init; }
 
-    [JsonConverter(typeof(SmartEnumNameConverter<CSOStatus, string>))]
-    public required CSOStatus Status { get; init; }
+    [JsonConverter(typeof(SmartEnumNameConverter<NgoStatus, string>))]
+    public required NgoStatus Status { get; init; }
 }
 
 public class MonitoringObserverModel

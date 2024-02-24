@@ -1,7 +1,7 @@
 ﻿using Vote.Monitor.Api.Feature.Monitoring.Specifications;
 using Vote.Monitor.Core.Extensions;
 using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
-using Vote.Monitor.Domain.Entities.CSOAggregate;
+using Vote.Monitor.Domain.Entities.NgoAggregate;
 
 namespace Vote.Monitor.Api.Feature.Monitoring.AddObserver;
 
@@ -30,7 +30,7 @@ public class Endpoint(IRepository<ElectionRoundAggregate> repository,
             return TypedResults.NotFound("NGO not found");
         }
 
-        if (ngoStatus == CSOStatus.Deactivated)
+        if (ngoStatus == NgoStatus.Deactivated)
         {
             AddError(x => x.InviterNgoId, "Only active ngos can add monitoring observers");
             return TypedResults.ValidationProblem(ValidationFailures.ToValidationErrorDictionary());

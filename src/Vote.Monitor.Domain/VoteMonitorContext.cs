@@ -1,4 +1,6 @@
-﻿namespace Vote.Monitor.Domain;
+﻿using Vote.Monitor.Domain.Entities.NgoAggregate;
+
+namespace Vote.Monitor.Domain;
 
 public class VoteMonitorContext : DbContext
 {
@@ -21,9 +23,9 @@ public class VoteMonitorContext : DbContext
 
     public DbSet<ApplicationUser> Users { get; set; }
     public DbSet<Country> Countries { get; set; }
-    public DbSet<CSO> CSOs { get; set; }
+    public DbSet<Ngo> Ngos { get; set; }
     public DbSet<PlatformAdmin> PlatformAdmins { get; set; }
-    public DbSet<CSOAdmin> CSOAdmins { get; set; }
+    public DbSet<NgoAdmin> NgoAdmins { get; set; }
     public DbSet<Observer> Observers { get; set; }
     public DbSet<PollingStation> PollingStations { get; set; }
     public DbSet<ElectionRound> ElectionRounds { get; set; }
@@ -44,12 +46,12 @@ public class VoteMonitorContext : DbContext
             .HasName("jsonb_object_keys");
 
         builder.ApplyConfiguration(new ApplicationUserConfiguration());
-        builder.ApplyConfiguration(new CSOAdminConfiguration());
+        builder.ApplyConfiguration(new NgoAdminConfiguration());
         builder.ApplyConfiguration(new ObserverConfiguration());
         builder.ApplyConfiguration(new PlatformAdminConfiguration());
         builder.ApplyConfiguration(new CountryConfiguration());
         builder.ApplyConfiguration(new LanguageConfiguration());
-        builder.ApplyConfiguration(new CSOConfiguration());
+        builder.ApplyConfiguration(new NgoConfiguration());
         builder.ApplyConfiguration(new ElectionRoundConfiguration());
         builder.ApplyConfiguration(new PollingStationConfiguration());
         builder.ApplyConfiguration(new ImportValidationErrorsConfiguration());

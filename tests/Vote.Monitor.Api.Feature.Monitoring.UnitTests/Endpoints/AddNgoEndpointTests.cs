@@ -1,4 +1,6 @@
-﻿namespace Vote.Monitor.Api.Feature.Monitoring.UnitTests.Endpoints;
+﻿using Vote.Monitor.Domain.Entities.NgoAggregate;
+
+namespace Vote.Monitor.Api.Feature.Monitoring.UnitTests.Endpoints;
 
 public class AddNgoEndpointTests
 {
@@ -59,7 +61,7 @@ public class AddNgoEndpointTests
         repository.GetByIdAsync(electionRoundId).Returns(new ElectionRoundAggregateFaker(id: electionRoundId).Generate());
 
         var ngoRepository = Substitute.For<IReadRepository<NgoAggregate>>();
-        ngoRepository.SingleOrDefaultAsync(Arg.Any<GetNgoStatusSpecification>()).Returns(CSOStatus.Deactivated);
+        ngoRepository.SingleOrDefaultAsync(Arg.Any<GetNgoStatusSpecification>()).Returns(NgoStatus.Deactivated);
 
         var endpoint = Factory.Create<AddNgo.Endpoint>(repository, ngoRepository);
 
@@ -90,7 +92,7 @@ public class AddNgoEndpointTests
         repository.GetByIdAsync(electionRoundId).Returns(electionRound);
 
         var ngoRepository = Substitute.For<IReadRepository<NgoAggregate>>();
-        ngoRepository.SingleOrDefaultAsync(Arg.Any<GetNgoStatusSpecification>()).Returns(CSOStatus.Activated);
+        ngoRepository.SingleOrDefaultAsync(Arg.Any<GetNgoStatusSpecification>()).Returns(NgoStatus.Activated);
 
         var endpoint = Factory.Create<AddNgo.Endpoint>(repository, ngoRepository);
 
