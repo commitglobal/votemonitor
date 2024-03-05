@@ -1,0 +1,13 @@
+@hostAddress=https://localhost:7123
+@jwtToken=eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3NzFiMGJiMC0zZjg3LTQ3YTAtYmM2NC0wODc4ZTIwNzAzNzQiLCJyb2xlIjoiUGxhdGZvcm1BZG1pbiIsImV4cCI6MTcwOTcxODQ4OCwiaWF0IjoxNzA5NjMyMDg4LCJuYmYiOjE3MDk2MzIwODh9.XQU4GgihqtGLWrSZn1XCh_E8GaUxZwVINnTTQM5Rsa4
+
+# List form templates
+POST {{hostAddress}}/api/auth
+Content-Type: application/json
+Authorization: Bearer {{jwtToken}}
+
+{
+  "username": "string",
+  "password": "string"
+}
+###

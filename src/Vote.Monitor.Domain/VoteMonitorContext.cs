@@ -1,4 +1,5 @@
-﻿using Vote.Monitor.Domain.Entities.NgoAggregate;
+﻿using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
+using Vote.Monitor.Domain.Entities.NgoAggregate;
 
 namespace Vote.Monitor.Domain;
 
@@ -31,6 +32,7 @@ public class VoteMonitorContext : DbContext
     public DbSet<ElectionRound> ElectionRounds { get; set; }
     public DbSet<ImportValidationErrors> ImportValidationErrors { set; get; }
     public DbSet<Trail> AuditTrails => Set<Trail>();
+    public DbSet<FormTemplate> FormTemplates { set; get; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -55,13 +57,13 @@ public class VoteMonitorContext : DbContext
         builder.ApplyConfiguration(new ElectionRoundConfiguration());
         builder.ApplyConfiguration(new PollingStationConfiguration());
         builder.ApplyConfiguration(new ImportValidationErrorsConfiguration());
+        builder.ApplyConfiguration(new FormTemplateConfiguration());
     }
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {
         configurationBuilder.ConfigureSmartEnum();
     }
-
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {

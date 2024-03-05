@@ -1,0 +1,304 @@
+@hostAddress=https://localhost:7123
+@jwtToken=eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3NzFiMGJiMC0zZjg3LTQ3YTAtYmM2NC0wODc4ZTIwNzAzNzQiLCJyb2xlIjoiUGxhdGZvcm1BZG1pbiIsImV4cCI6MTcwOTcxODQ4OCwiaWF0IjoxNzA5NjMyMDg4LCJuYmYiOjE3MDk2MzIwODh9.XQU4GgihqtGLWrSZn1XCh_E8GaUxZwVINnTTQM5Rsa4
+
+# List form templates
+GET {{hostAddress}}/api/form-templates
+      ?pageNumber=1
+      &pageSize=10
+Authorization: Bearer {{jwtToken}}
+
+###
+
+# Create a form template
+# @name newFormTemplate
+POST {{hostAddress}}/api/form-templates
+Content-Type: application/json
+Authorization: Bearer {{jwtToken}}
+
+{
+  "code": "A",
+  "languages": [
+    "RO"
+  ],
+  "name": {
+    "RO": "test form"
+  },
+  "formType": "ClosingAndCounting"
+}
+
+###
+
+# Update a form template
+PUT {{hostAddress}}/api/form-templates/{{newFormTemplate.response.body.$.id}}
+Content-Type: application/json
+Authorization: Bearer {{jwtToken}}
+
+{
+  "code": "A-Form",
+  "languages": [
+    "RO"
+  ],
+  "name": {
+    "RO": "test form"
+  },
+  "formType": "ClosingAndCounting",
+  "sections": [
+    {
+      "code": "A",
+      "title": {
+        "RO": "a section"
+      },
+      "questions": [
+        {
+          "$questionType": "numberInputQuestion",
+          "id": "{{$guid}}",
+          "code": "A1",
+          "text": {
+            "RO": "How many PEC members have been appointed"
+          },
+          "helptext": {
+            "RO": "Please enter your number"
+          },
+          "inputPlaceholder": {
+            "RO": "number"
+          }
+        },
+        {
+          "$questionType": "textInputQuestion",
+          "id": "{{$guid}}",
+          "code": "A2",
+          "text": {
+            "RO": "How are you today"
+          },
+          "helptext": {
+            "RO": "Please enter how are you"
+          },
+          "inputPlaceholder": {
+            "RO": "mood"
+          }
+        },
+        {
+          "$questionType": "dateInputQuestion",
+          "id": "{{$guid}}",
+          "code": "A3",
+          "text": {
+            "RO": "Time of arrival"
+          },
+          "helptext": {
+            "RO": "When did you arrive?"
+          }
+        }
+      ]
+    },
+    {
+      "code": "B",
+      "title": {
+        "RO": "another section"
+      },
+      "questions": [
+        {
+          "$questionType": "singleSelectQuestion",
+          "id": "{{$guid}}",
+          "code": "B1",
+          "text": {
+            "RO": "The overall conduct of the opening of this PS was"
+          },
+          "helptext": {
+            "RO": "Please select a single option"
+          },
+          "options": [
+            {
+              "id": "{{$guid}}",
+              "text": {
+                "RO": "Very good"
+              },
+              "isFreeText": false,
+              "isFlagged": false
+            },
+            {
+              "id": "{{$guid}}",
+              "text": {
+                "RO": "Good"
+              },
+              "isFreeText": false,
+              "isFlagged": false
+            },
+            {
+              "id": "{{$guid}}",
+              "text": {
+                "RO": "Bad"
+              },
+              "isFreeText": false,
+              "isFlagged": false
+            },
+            {
+              "id": "{{$guid}}",
+              "text": {
+                "RO": "Very bad"
+              },
+              "isFreeText": false,
+              "isFlagged": true
+            },
+            {
+              "id": "{{$guid}}",
+              "text": {
+                "RO": "Other"
+              },
+              "isFreeText": true,
+              "isFlagged": true
+            }
+          ]
+        },
+        {
+          "$questionType": "multiSelectQuestion",
+          "id": "{{$guid}}",
+          "code": "B2",
+          "text": {
+            "RO": "What party/bloc proxies were present at the opening of this PS"
+          },
+          "helptext": {
+            "RO": "Please select as many you want"
+          },
+          "options": [
+            {
+              "id": "{{$guid}}",
+              "text": {
+                "RO": "Bloc 1"
+              },
+              "isFreeText": false,
+              "isFlagged": false
+            },
+            {
+              "id": "{{$guid}}",
+              "text": {
+                "RO": "Bloc 2"
+              },
+              "isFreeText": false,
+              "isFlagged": false
+            },
+            {
+              "id": "{{$guid}}",
+              "text": {
+                "RO": "Bloc 3"
+              },
+              "isFreeText": false,
+              "isFlagged": false
+            },
+            {
+              "id": "{{$guid}}",
+              "text": {
+                "RO": "Party 1"
+              },
+              "isFreeText": false,
+              "isFlagged": true
+            },
+            {
+              "id": "{{$guid}}",
+              "text": {
+                "RO": "Other"
+              },
+              "isFreeText": true,
+              "isFlagged": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "C",
+      "title": {
+        "RO": "The last section"
+      },
+      "questions": [
+        {
+          "$questionType": "ratingQuestion",
+          "id": "{{$guid}}",
+          "code": "C1",
+          "text": {
+            "RO": "Please rate this form"
+          },
+          "helptext": {
+            "RO": "Please give us a rating"
+          },
+          "scale": "OneTo10"
+        },
+        {
+          "$questionType": "gridQuestion",
+          "id": "{{$guid}}",
+          "code": "C2",
+          "text": {
+            "RO": "The overall conduct of the count at this PS was"
+          },
+          "scalePlaceholder": {
+            "RO": "Please indicate an opinion from 5 (very good) to 1 (very bad)"
+          },
+          "scale": "OneTo5",
+          "hasNotKnownColumn": true,
+          "rows": [
+            {
+              "id": "{{$guid}}",
+              "code": "C2.1",
+              "text": {
+                "RO": "Procedures followed"
+              }
+            },
+            {
+              "id": "{{$guid}}",
+              "code": "C2.2",
+              "text": {
+                "RO": "PEC's understanding of counting procedures"
+              }
+            },
+            {
+              "id": "{{$guid}}",
+              "code": "C2.3",
+              "text": {
+                "RO": "Voters understanding of counting procedures"
+              }
+            },
+            {
+              "id": "{{$guid}}",
+              "code": "C2.4",
+              "text": {
+                "RO": "Performance of PEC"
+              }
+            },
+            {
+              "id": "{{$guid}}",
+              "code": "C2.5",
+              "text": {
+                "RO": "Transparency of the counting process"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+
+###
+
+# Get a form template
+GET {{hostAddress}}/api/form-templates/{{newFormTemplate.response.body.$.id}}
+Authorization: Bearer {{jwtToken}}
+
+###
+
+# Delete a form template
+DELETE {{hostAddress}}/api/form-templates/{{newFormTemplate.response.body.$.id}}
+Authorization: Bearer {{jwtToken}}
+
+###
+
+# Draft a form template
+POST {{hostAddress}}/api/form-templates/{{newFormTemplate.response.body.$.id}}:draft
+Authorization: Bearer {{jwtToken}}
+
+###
+
+# Publish a form template
+POST {{hostAddress}}/api/form-templates/{{newFormTemplate.response.body.$.id}}:publish
+Authorization: Bearer {{jwtToken}}
+
+###

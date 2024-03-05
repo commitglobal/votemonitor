@@ -23,6 +23,7 @@ COPY ["src/Vote.Monitor.Api.Feature.Monitoring/Vote.Monitor.Api.Feature.Monitori
 COPY ["src/Vote.Monitor.Api.Feature.Observer/Vote.Monitor.Api.Feature.Observer.csproj", "src/Vote.Monitor.Api.Feature.Observer/"]
 COPY ["src/Vote.Monitor.Api.Feature.PollingStation/Vote.Monitor.Api.Feature.PollingStation.csproj", "src/Vote.Monitor.Api.Feature.PollingStation/"]
 COPY ["src/Vote.Monitor.Api.Feature.UserPreferences/Vote.Monitor.Api.Feature.UserPreferences.csproj", "src/Vote.Monitor.Api.Feature.UserPreferences/"]
+COPY ["src/Vote.Monitor.Api.Feature.FormTemplate/Vote.Monitor.Api.Feature.FormTemplate.csproj", "src/Vote.Monitor.Api.Feature.FormTemplate/"]
 
 RUN dotnet restore "src/Vote.Monitor.Api/Vote.Monitor.Api.csproj"
 COPY . .
@@ -34,6 +35,10 @@ ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "Vote.Monitor.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
+ARG REVISION=UNKNOWN
 WORKDIR /app
 COPY --from=publish /app/publish .
+
+ENV COMMIT_HASH=$REVISION
+
 ENTRYPOINT ["dotnet", "Vote.Monitor.Api.dll"]

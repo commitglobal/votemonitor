@@ -24,6 +24,21 @@ namespace Vote.Monitor.Domain.Migrations
             NpgsqlModelBuilderExtensions.HasPostgresExtension(modelBuilder, "uuid-ossp");
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("FormTemplateLanguage", b =>
+                {
+                    b.Property<Guid>("FormTemplateId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("LanguagesId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("FormTemplateId", "LanguagesId");
+
+                    b.HasIndex("LanguagesId");
+
+                    b.ToTable("FormTemplateLanguage");
+                });
+
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.ApplicationUserAggregate.ApplicationUser", b =>
                 {
                     b.Property<Guid>("Id")
@@ -2698,6 +2713,49 @@ namespace Vote.Monitor.Domain.Migrations
                     b.ToTable("ElectionRounds");
                 });
 
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.FormTemplateAggregate.FormTemplate", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("FormType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("LastModifiedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("LastModifiedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("jsonb");
+
+                    b.Property<string>("Sections")
+                        .IsRequired()
+                        .HasColumnType("jsonb");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FormTemplates");
+                });
+
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.ImportValidationErrorsAggregate.ImportValidationErrors", b =>
                 {
                     b.Property<Guid>("Id")
@@ -4331,6 +4389,21 @@ namespace Vote.Monitor.Domain.Migrations
                     b.HasBaseType("Vote.Monitor.Domain.Entities.ApplicationUserAggregate.ApplicationUser");
 
                     b.ToTable("PlatformAdmins", (string)null);
+                });
+
+            modelBuilder.Entity("FormTemplateLanguage", b =>
+                {
+                    b.HasOne("Vote.Monitor.Domain.Entities.FormTemplateAggregate.FormTemplate", null)
+                        .WithMany()
+                        .HasForeignKey("FormTemplateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Vote.Monitor.Domain.Entities.LanguageAggregate.Language", null)
+                        .WithMany()
+                        .HasForeignKey("LanguagesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.ApplicationUserAggregate.ApplicationUser", b =>

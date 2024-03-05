@@ -14,13 +14,11 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{17080495-0185-48C4-B5C1-9010C9CF7735}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
-		src\Docker-compose\docker-compose.yaml = src\Docker-compose\docker-compose.yaml
+		docker-compose.yaml = docker-compose.yaml
 		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Domain", "src\Vote.Monitor.Domain\Vote.Monitor.Domain.csproj", "{1B98DBBD-72CC-4D23-BAEB-996D22E431A1}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Feature.PollingStation", "src\Vote.Monitor.Api.Feature.PollingStation\Vote.Monitor.Api.Feature.PollingStation.csproj", "{A8627198-E0AF-42F8-8486-19BD8861CF65}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Authorization.Policies", "src\Vote.Monitor.Api.Authorization.Policies\Vote.Monitor.Api.Authorization.Policies.csproj", "{C0D1C49C-8595-4698-854B-7A42EA69124D}"
 EndProject
@@ -60,6 +58,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Feature.Us
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Feature.UserPreferences.UnitTests", "tests\Vote.Monitor.Api.Feature.UserPreferences.UnitTests\Vote.Monitor.Api.Feature.UserPreferences.UnitTests.csproj", "{D582065C-5A1F-4214-B3EF-94C83A84176C}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Feature.PollingStation", "src\Vote.Monitor.Api.Feature.PollingStation\Vote.Monitor.Api.Feature.PollingStation.csproj", "{E80EA093-4BFC-4C89-A17F-A6ACB0A6C1D1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Feature.FormTemplate", "src\Vote.Monitor.Api.Feature.FormTemplate\Vote.Monitor.Api.Feature.FormTemplate.csproj", "{0321A760-1AD8-486E-A3B0-DC2F090C75A0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Feature.FormTemplate.UnitTests", "tests\Vote.Monitor.Api.Feature.FormTemplate.UnitTests\Vote.Monitor.Api.Feature.FormTemplate.UnitTests.csproj", "{E16183F8-7602-4995-AE99-24C19271A75B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -78,10 +82,6 @@ Global
 		{1B98DBBD-72CC-4D23-BAEB-996D22E431A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1B98DBBD-72CC-4D23-BAEB-996D22E431A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1B98DBBD-72CC-4D23-BAEB-996D22E431A1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A8627198-E0AF-42F8-8486-19BD8861CF65}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A8627198-E0AF-42F8-8486-19BD8861CF65}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A8627198-E0AF-42F8-8486-19BD8861CF65}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A8627198-E0AF-42F8-8486-19BD8861CF65}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C0D1C49C-8595-4698-854B-7A42EA69124D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C0D1C49C-8595-4698-854B-7A42EA69124D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C0D1C49C-8595-4698-854B-7A42EA69124D}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -158,6 +158,18 @@ Global
 		{D582065C-5A1F-4214-B3EF-94C83A84176C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D582065C-5A1F-4214-B3EF-94C83A84176C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D582065C-5A1F-4214-B3EF-94C83A84176C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E80EA093-4BFC-4C89-A17F-A6ACB0A6C1D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E80EA093-4BFC-4C89-A17F-A6ACB0A6C1D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E80EA093-4BFC-4C89-A17F-A6ACB0A6C1D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E80EA093-4BFC-4C89-A17F-A6ACB0A6C1D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0321A760-1AD8-486E-A3B0-DC2F090C75A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0321A760-1AD8-486E-A3B0-DC2F090C75A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0321A760-1AD8-486E-A3B0-DC2F090C75A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0321A760-1AD8-486E-A3B0-DC2F090C75A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E16183F8-7602-4995-AE99-24C19271A75B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E16183F8-7602-4995-AE99-24C19271A75B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E16183F8-7602-4995-AE99-24C19271A75B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E16183F8-7602-4995-AE99-24C19271A75B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -166,7 +178,6 @@ Global
 		{19D10640-1246-4453-8028-DF611ED778E8} = {17945B3C-5A4C-4279-8022-65ABC606A510}
 		{11EC9157-AF6A-45AD-B704-0D4BD5B400F9} = {17945B3C-5A4C-4279-8022-65ABC606A510}
 		{1B98DBBD-72CC-4D23-BAEB-996D22E431A1} = {17945B3C-5A4C-4279-8022-65ABC606A510}
-		{A8627198-E0AF-42F8-8486-19BD8861CF65} = {17945B3C-5A4C-4279-8022-65ABC606A510}
 		{C0D1C49C-8595-4698-854B-7A42EA69124D} = {17945B3C-5A4C-4279-8022-65ABC606A510}
 		{C6871F49-3C12-4461-B4A0-598EFD51D75D} = {17945B3C-5A4C-4279-8022-65ABC606A510}
 		{5A17BFD7-C13C-48E6-A04C-D20B049268DD} = {17945B3C-5A4C-4279-8022-65ABC606A510}
@@ -186,6 +197,9 @@ Global
 		{A1CD7BD9-A7A6-44D9-838F-210D437582A8} = {3441EE1D-E3C6-45BE-A020-553816015081}
 		{60EA51FE-1118-485E-9500-43B5A97B763B} = {17945B3C-5A4C-4279-8022-65ABC606A510}
 		{D582065C-5A1F-4214-B3EF-94C83A84176C} = {3441EE1D-E3C6-45BE-A020-553816015081}
+		{E80EA093-4BFC-4C89-A17F-A6ACB0A6C1D1} = {17945B3C-5A4C-4279-8022-65ABC606A510}
+		{0321A760-1AD8-486E-A3B0-DC2F090C75A0} = {17945B3C-5A4C-4279-8022-65ABC606A510}
+		{E16183F8-7602-4995-AE99-24C19271A75B} = {3441EE1D-E3C6-45BE-A020-553816015081}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {50C20C9F-F2AF-45D8-994A-06661772B31C}

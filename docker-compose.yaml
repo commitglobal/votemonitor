@@ -8,6 +8,7 @@ services:
       dockerfile: src/Vote.Monitor.Api/Dockerfile
       args:
         - BUILD_CONFIGURATION=Development
+        - REVISION=LocalBuild
     container_name: votemonitorapi
     env_file:
       - .env

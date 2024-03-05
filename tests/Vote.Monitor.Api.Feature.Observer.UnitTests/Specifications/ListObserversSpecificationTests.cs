@@ -2,7 +2,7 @@
 
 public class ListObserversSpecificationTests
 {
-    private const string DefaultName = "name";
+    private const string DefaultName = "An observer name";
     private readonly UserStatus DefaultStatus = UserStatus.Active;
 
     [Fact]
