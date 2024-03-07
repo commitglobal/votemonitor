@@ -93,8 +93,8 @@ public class ListFormTemplatesSpecificationTests
     }
 
     [Theory]
-    [InlineData("name1")]
-    [InlineData("name2")]
+    [InlineData("C1")]
+    [InlineData("C2")]
     public void ListFormTemplatesSpecification_AppliesCorrectFilters_WhenPartialFilterApplied(string searchString)
     {
         // Arrange
@@ -109,7 +109,7 @@ public class ListFormTemplatesSpecificationTests
 
         var request = new List.Request
         {
-            NameFilter = searchString,
+            CodeFilter = searchString,
             PageSize = 100,
             PageNumber = 2
         };

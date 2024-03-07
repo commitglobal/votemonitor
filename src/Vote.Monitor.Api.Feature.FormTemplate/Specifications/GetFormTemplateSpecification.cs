@@ -2,7 +2,7 @@
 
 namespace Vote.Monitor.Api.Feature.FormTemplate.Specifications;
 
-public class GetFormTemplateSpecification : Specification<FormTemplateAggregate>
+public sealed class GetFormTemplateSpecification : Specification<FormTemplateAggregate>
 {
     public GetFormTemplateSpecification(Guid id, string code, FormType formType)
     {

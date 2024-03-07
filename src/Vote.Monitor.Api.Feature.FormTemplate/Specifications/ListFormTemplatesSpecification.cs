@@ -3,7 +3,7 @@ using Vote.Monitor.Domain.Specifications;
 
 namespace Vote.Monitor.Api.Feature.FormTemplate.Specifications;
 
-public class ListFormTemplatesSpecification : Specification<FormTemplateAggregate, FormTemplateModel>
+public sealed class ListFormTemplatesSpecification : Specification<FormTemplateAggregate, FormTemplateModel>
 {
     public ListFormTemplatesSpecification(List.Request request)
     {

@@ -7,9 +7,6 @@ namespace Vote.Monitor.Api.Feature.FormTemplate.List;
 public class Request: BaseSortPaginatedRequest
 {
     [QueryParam]
-    public string? NameFilter { get; set; }
-
-    [QueryParam]
     public string? CodeFilter { get; set; }
 
     [QueryParam]
