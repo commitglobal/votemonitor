@@ -17,17 +17,13 @@ public class SingleSelectQuestion : BaseQuestion
     {
         Id = id;
         Code = code;
-        Options = options;
+        Options = options.ToList().AsReadOnly();
     }
 
-    public SelectOption AddOption(Guid id, TranslatedString text, bool isFreeText, bool isFlagged)
-    {
-        var option = SelectOption.Create(id, text, isFreeText, isFlagged);
-        Options = Options.Concat([option]).ToList().AsReadOnly();
-
-        return option;
-    }
-
-    public static SingleSelectQuestion Create(Guid id, string code, TranslatedString text, TranslatedString? helptext) =>
-        new(id, code, text, helptext, []);
+    public static SingleSelectQuestion Create(Guid id,
+        string code,
+        TranslatedString text,
+        TranslatedString? helptext,
+        IReadOnlyList<SelectOption> options) =>
+        new(id, code, text, helptext, options);
 }

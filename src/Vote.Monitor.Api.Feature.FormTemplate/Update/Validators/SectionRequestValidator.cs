@@ -26,7 +26,6 @@ public class SectionRequestValidator : Validator<SectionRequest>
             v.Add<SingleSelectQuestionRequest>(new SingleSelectQuestionRequestValidator(languages));
             v.Add<MultiSelectQuestionRequest>(new MultiSelectQuestionRequestValidator(languages));
             v.Add<RatingQuestionRequest>(new RatingQuestionRequestValidator(languages));
-            v.Add<GridQuestionRequest>(new GridQuestionRequestValidator(languages));
         });
     }
 }

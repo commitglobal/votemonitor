@@ -1,5 +1,4 @@
 ﻿using Vote.Monitor.Api.Feature.FormTemplate.Models;
-using Vote.Monitor.Api.Feature.FormTemplate.Specifications;
 
 namespace Vote.Monitor.Api.Feature.FormTemplate.Get;
 
@@ -12,7 +11,7 @@ public class Endpoint(IReadRepository<FormTemplateAggregate> repository) : Endpo
 
     public override async Task<Results<Ok<FormTemplateModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var formTemplate = await repository.FirstOrDefaultAsync(new GetByIdSpecification(req.Id), ct);
+        var formTemplate = await repository.GetByIdAsync(req.Id, ct);
 
         if (formTemplate is null)
         {
@@ -22,11 +21,12 @@ public class Endpoint(IReadRepository<FormTemplateAggregate> repository) : Endpo
         return TypedResults.Ok(new FormTemplateModel
         {
             Id = formTemplate.Id,
+            Code = formTemplate.Code,
             Name = formTemplate.Name,
             Status = formTemplate.Status,
             CreatedOn = formTemplate.CreatedOn,
             LastModifiedOn = formTemplate.LastModifiedOn,
-            Languages = formTemplate.Languages.Select(x => x.Iso1).ToList(),
+            Languages = formTemplate.Languages.ToList(),
             Sections = formTemplate.Sections.Select(section => new SectionModel
             {
                 Id = section.Id,

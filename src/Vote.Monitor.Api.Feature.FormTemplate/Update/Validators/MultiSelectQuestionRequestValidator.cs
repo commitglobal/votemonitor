@@ -23,5 +23,17 @@ public class MultiSelectQuestionRequestValidator : Validator<MultiSelectQuestion
 
         RuleForEach(x => x.Options)
             .SetValidator(new SelectOptionRequestValidator(languages));
+
+        RuleFor(x => x.Options)
+            .Must(x =>
+            {
+                var groupedOptionIds = x
+                    .GroupBy(o => o.Id,
+                        (id, group) => new { id, count = group.Count() });
+
+                return groupedOptionIds.All(g => g.count == 1);
+            })
+            .When(x => x.Options.Any())
+            .WithMessage("Duplicated id found");
     }
 }

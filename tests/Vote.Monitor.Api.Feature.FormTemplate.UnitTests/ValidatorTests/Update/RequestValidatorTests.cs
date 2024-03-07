@@ -1,4 +1,7 @@
-﻿namespace Vote.Monitor.Api.Feature.FormTemplate.UnitTests.ValidatorTests.Update;
+﻿using Vote.Monitor.Api.Feature.FormTemplate.Update.Requests;
+using Vote.Monitor.Api.Feature.FormTemplate.Update.Validators;
+
+namespace Vote.Monitor.Api.Feature.FormTemplate.UnitTests.ValidatorTests.Update;
 
 public class RequestValidatorTests
 {
@@ -37,7 +40,6 @@ public class RequestValidatorTests
         validationResult
             .ShouldNotHaveValidationErrorFor(x => x.Id);
     }
-
 
     [Theory]
     [MemberData(nameof(TestData.EmptyStringsTestCases), MemberType = typeof(TestData))]

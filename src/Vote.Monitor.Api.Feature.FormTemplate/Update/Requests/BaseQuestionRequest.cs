@@ -11,13 +11,14 @@ namespace Vote.Monitor.Api.Feature.FormTemplate.Update.Requests;
 [PolyJsonConverter.SubType(typeof(SingleSelectQuestionRequest), "singleSelectQuestion")]
 [PolyJsonConverter.SubType(typeof(MultiSelectQuestionRequest), "multiSelectQuestion")]
 [PolyJsonConverter.SubType(typeof(RatingQuestionRequest), "ratingQuestion")]
-[PolyJsonConverter.SubType(typeof(GridQuestionRequest), "gridQuestion")]
 public abstract class BaseQuestionRequest
 {
     [JsonPropertyName("$questionType")]
     public string QuestionType => DiscriminatorValue.Get(GetType())!;
 
     public Guid Id { get; set; }
+
+    public string Code { get; set; }
 
     public TranslatedString Text { get; set; }
 

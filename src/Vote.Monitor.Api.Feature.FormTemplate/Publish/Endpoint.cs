@@ -1,6 +1,8 @@
-﻿namespace Vote.Monitor.Api.Feature.FormTemplate.Publish;
+﻿using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
 
-public class Endpoint(IRepository<FormTemplateAggregate> repository) : Endpoint<Request, Results<NoContent, NotFound>>
+namespace Vote.Monitor.Api.Feature.FormTemplate.Publish;
+
+public class Endpoint(IRepository<FormTemplateAggregate> repository) : Endpoint<Request, Results<NoContent, NotFound, ProblemDetails>>
 {
     public override void Configure()
     {
@@ -8,7 +10,7 @@ public class Endpoint(IRepository<FormTemplateAggregate> repository) : Endpoint<
         Description(x => x.Accepts<Request>());
     }
 
-    public override async Task<Results<NoContent, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<Results<NoContent, NotFound, ProblemDetails>> ExecuteAsync(Request req, CancellationToken ct)
     {
         var formTemplate = await repository.GetByIdAsync(req.Id, ct);
 
@@ -17,9 +19,15 @@ public class Endpoint(IRepository<FormTemplateAggregate> repository) : Endpoint<
             return TypedResults.NotFound();
         }
 
-        formTemplate.Publish();
+        var result = formTemplate.Publish();
 
-        await repository.SaveChangesAsync(ct);
+        if (result is PublishResult.InvalidFormTemplate validationResult)
+        {
+            validationResult.Problems.Errors.ForEach(AddError);
+            return new ProblemDetails(ValidationFailures);
+        }
+
+        await repository.UpdateAsync(formTemplate, ct);
         return TypedResults.NoContent();
     }
 }

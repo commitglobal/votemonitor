@@ -1,4 +1,5 @@
-﻿using Vote.Monitor.Domain.Entities.LanguageAggregate;
+﻿using FluentValidation.Results;
+using Vote.Monitor.Domain.Entities.FormTemplateAggregate.Validation;
 
 namespace Vote.Monitor.Domain.Entities.FormTemplateAggregate;
 
@@ -9,42 +10,43 @@ public class FormTemplate : AuditableBaseEntity, IAggregateRoot
     public TranslatedString Name { get; private set; }
     public FormTemplateStatus Status { get; private set; }
 
-    public IReadOnlyCollection<Language> Languages { get; private set; }
+    public IReadOnlyList<string> Languages { get; private set; } = new List<string>().AsReadOnly();
 
-    private readonly List<FormSection> _sections = new();
-    public IReadOnlyList<FormSection> Sections => _sections.AsReadOnly();
+    public IReadOnlyList<FormSection> Sections { get; private set; } = new List<FormSection>().AsReadOnly();
 
-    private FormTemplate(FormType formType, string code, TranslatedString name, List<Language> languages, ITimeProvider timeProvider) : base(Guid.NewGuid(), timeProvider)
+    private FormTemplate(FormType formType,
+        string code,
+        TranslatedString name,
+        IEnumerable<string> languages,
+        ITimeProvider timeProvider) : base(Guid.NewGuid(), timeProvider)
     {
         FormType = formType;
         Code = code;
         Name = name;
-        Languages = languages;
+        Languages = languages.ToList().AsReadOnly();
         Status = FormTemplateStatus.Drafted;
     }
 
-    public static FormTemplate Create(FormType formType, string code, TranslatedString name, List<Language> languages, ITimeProvider timeProvider) =>
+    public static FormTemplate Create(FormType formType,
+        string code,
+        TranslatedString name,
+        IEnumerable<string> languages,
+        ITimeProvider timeProvider) =>
         new(formType, code, name, languages, timeProvider);
 
-    public FormSection AddFormSection(string code, TranslatedString title)
+    public PublishResult Publish()
     {
-        var formSection = FormSection.Create(code, title);
-        _sections.Add(formSection);
-        return formSection;
-    }
+        var validator = new FormTemplateValidator();
+        var validationResult = validator.Validate(this);
 
-#pragma warning disable CS8618 // Required by Entity Framework
+        if (!validationResult.IsValid)
+        {
+            return new PublishResult.InvalidFormTemplate(validationResult);
+        }
 
-    private FormTemplate()
-    {
-
-    }
-
-#pragma warning restore CS8618
-
-    public void Publish()
-    {
         Status = FormTemplateStatus.Published;
+
+        return new PublishResult.Published();
     }
 
     public void Draft()
@@ -52,16 +54,29 @@ public class FormTemplate : AuditableBaseEntity, IAggregateRoot
         Status = FormTemplateStatus.Drafted;
     }
 
-    public void UpdateDetails(string code, TranslatedString name, FormType formType, List<Language> languages)
+    public void UpdateDetails(string code, TranslatedString name,
+        FormType formType,
+        IEnumerable<string> languages,
+        IEnumerable<FormSection> sections)
     {
         Code = code;
         Name = name;
         FormType = formType;
         Languages = languages.ToList().AsReadOnly();
+        Sections = sections.ToList().AsReadOnly();
     }
 
-    public void ClearSections()
+#pragma warning disable CS8618 // Required by Entity Framework
+    private FormTemplate()
     {
-        _sections.Clear();
+
     }
+#pragma warning restore CS8618
+}
+
+
+public abstract record PublishResult
+{
+    public record Published : PublishResult;
+    public record InvalidFormTemplate(ValidationResult Problems) : PublishResult;
 }

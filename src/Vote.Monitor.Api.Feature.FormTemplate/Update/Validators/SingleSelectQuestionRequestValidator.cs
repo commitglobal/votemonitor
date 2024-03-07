@@ -15,7 +15,7 @@ public class SingleSelectQuestionRequestValidator : Validator<SingleSelectQuesti
 
         RuleFor(x => x.Helptext)
             .SetValidator(new PartiallyTranslatedStringValidator(languages, 3, 256))
-            .When(x=>x.Helptext != null);
+            .When(x => x.Helptext != null);
 
         RuleFor(x => x.Code)
             .NotEmpty()
@@ -23,5 +23,15 @@ public class SingleSelectQuestionRequestValidator : Validator<SingleSelectQuesti
 
         RuleForEach(x => x.Options)
             .SetValidator(new SelectOptionRequestValidator(languages));
+
+        RuleFor(x => x.Options)
+            .Must(options =>
+            {
+                var groupedOptionIds = options
+                    .GroupBy(o => o.Id, (id, group) => new { id, count = group.Count() });
+
+                return groupedOptionIds.All(g => g.count == 1);
+            })
+            .WithMessage("Duplicated id found");
     }
 }

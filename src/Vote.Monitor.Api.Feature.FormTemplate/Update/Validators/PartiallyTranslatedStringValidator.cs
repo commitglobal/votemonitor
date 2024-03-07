@@ -15,7 +15,24 @@ public class PartiallyTranslatedStringValidator : Validator<TranslatedString>
 
         RuleFor(x => x)
             .Must(ts => ts.Any(isValidTranslation))
-            .WithMessage("Provide at least one translation");
+            .WithMessage("Provide at least one translation")
+            .Must((ts, _, context) =>
+            {
+                foreach (var supportedLanguage in supportedLanguages)
+                {
+                    if (ts.Keys.Contains(supportedLanguage))
+                    {
+                        continue;
+                    }
+
+                    context.MessageFormatter.AppendArgument("LanguageCode", supportedLanguage);
+
+                    return false;
+                }
+
+                return true;
+            })
+            .WithMessage(@"Missing translation placeholder for ""{LanguageCode}""");
 
         RuleForEach(x => x)
             .OverrideIndexer((_, _, element, _) => $@"[""{element.Key}""]")

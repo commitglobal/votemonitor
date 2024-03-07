@@ -1,5 +1,5 @@
 @hostAddress=https://localhost:7123
-@jwtToken=eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3NzFiMGJiMC0zZjg3LTQ3YTAtYmM2NC0wODc4ZTIwNzAzNzQiLCJyb2xlIjoiUGxhdGZvcm1BZG1pbiIsImV4cCI6MTcwOTcxODQ4OCwiaWF0IjoxNzA5NjMyMDg4LCJuYmYiOjE3MDk2MzIwODh9.XQU4GgihqtGLWrSZn1XCh_E8GaUxZwVINnTTQM5Rsa4
+@jwtToken=your_token
 
 # List form templates
 GET {{hostAddress}}/api/form-templates
@@ -36,17 +36,20 @@ Authorization: Bearer {{jwtToken}}
 {
   "code": "A-Form",
   "languages": [
-    "RO"
+    "RO",
+    "EN"
   ],
   "name": {
-    "RO": "test form"
+    "EN": "test form",
+    "RO": "formular de test"
   },
   "formType": "ClosingAndCounting",
   "sections": [
     {
       "code": "A",
       "title": {
-        "RO": "a section"
+        "EN": "a section",
+        "RO": "o sectiune"
       },
       "questions": [
         {
@@ -54,13 +57,16 @@ Authorization: Bearer {{jwtToken}}
           "id": "{{$guid}}",
           "code": "A1",
           "text": {
-            "RO": "How many PEC members have been appointed"
+            "EN": "How many PEC members have been appointed",
+            "RO": "Câți membri PEC au fost numiți"
           },
           "helptext": {
-            "RO": "Please enter your number"
+            "EN": "Please enter a number",
+            "RO": "Vă rugăm să introduceți numărul dvs"
           },
           "inputPlaceholder": {
-            "RO": "number"
+            "EN": "number",
+            "RO": "numar"
           }
         },
         {
@@ -68,13 +74,16 @@ Authorization: Bearer {{jwtToken}}
           "id": "{{$guid}}",
           "code": "A2",
           "text": {
-            "RO": "How are you today"
+            "EN": "How are you today",
+            "RO": "Cum te simți azi"
           },
           "helptext": {
-            "RO": "Please enter how are you"
+            "EN": "Please enter how are you",
+            "RO": "Vă rugăm să introduceți cum sunteți"
           },
           "inputPlaceholder": {
-            "RO": "mood"
+            "EN": "mood",
+            "RO": "dispozitie"
           }
         },
         {
@@ -82,10 +91,12 @@ Authorization: Bearer {{jwtToken}}
           "id": "{{$guid}}",
           "code": "A3",
           "text": {
-            "RO": "Time of arrival"
+            "EN": "Time of arrival",
+            "RO": "Timpul sosirii"
           },
           "helptext": {
-            "RO": "When did you arrive?"
+            "EN": "Please enter exact hour when did you arrive",
+            "RO": "Vă rugăm să introduceți ora exactă când ați sosit"
           }
         }
       ]
@@ -93,7 +104,8 @@ Authorization: Bearer {{jwtToken}}
     {
       "code": "B",
       "title": {
-        "RO": "another section"
+        "EN": "another section",
+        "RO": "inca o sectiune"
       },
       "questions": [
         {
@@ -101,16 +113,19 @@ Authorization: Bearer {{jwtToken}}
           "id": "{{$guid}}",
           "code": "B1",
           "text": {
-            "RO": "The overall conduct of the opening of this PS was"
+            "EN": "The overall conduct of the opening of this PS was:",
+            "RO": "Conducerea generală a deschiderii acestui PS a fost:"
           },
           "helptext": {
-            "RO": "Please select a single option"
+            "EN": "Please select a single option",
+            "RO": "Vă rugăm să selectați o singură opțiune"
           },
           "options": [
             {
               "id": "{{$guid}}",
               "text": {
-                "RO": "Very good"
+                "EN": "Very good",
+                "RO": "Foarte bun"
               },
               "isFreeText": false,
               "isFlagged": false
@@ -118,7 +133,8 @@ Authorization: Bearer {{jwtToken}}
             {
               "id": "{{$guid}}",
               "text": {
-                "RO": "Good"
+                "EN": "Good",
+                "RO": "bun"
               },
               "isFreeText": false,
               "isFlagged": false
@@ -126,7 +142,8 @@ Authorization: Bearer {{jwtToken}}
             {
               "id": "{{$guid}}",
               "text": {
-                "RO": "Bad"
+                "EN": "Bad",
+                "RO": "Rea"
               },
               "isFreeText": false,
               "isFlagged": false
@@ -134,7 +151,8 @@ Authorization: Bearer {{jwtToken}}
             {
               "id": "{{$guid}}",
               "text": {
-                "RO": "Very bad"
+                "EN": "Very bad",
+                "RO": "Foarte rea"
               },
               "isFreeText": false,
               "isFlagged": true
@@ -142,7 +160,8 @@ Authorization: Bearer {{jwtToken}}
             {
               "id": "{{$guid}}",
               "text": {
-                "RO": "Other"
+                "EN": "Other",
+                "RO": "Alta"
               },
               "isFreeText": true,
               "isFlagged": true
@@ -154,15 +173,18 @@ Authorization: Bearer {{jwtToken}}
           "id": "{{$guid}}",
           "code": "B2",
           "text": {
-            "RO": "What party/bloc proxies were present at the opening of this PS"
+            "EN": "What party/bloc proxies were present at the opening of this PS",
+            "RO": "Ce împuterniciri de partid/bloc au fost prezenți la deschiderea acestui PS"
           },
           "helptext": {
-            "RO": "Please select as many you want"
+            "EN": "Please select as many you want",
+            "RO": "Vă rugăm să selectați câte doriți"
           },
           "options": [
             {
               "id": "{{$guid}}",
               "text": {
+                "EN": "Bloc 1",
                 "RO": "Bloc 1"
               },
               "isFreeText": false,
@@ -171,6 +193,7 @@ Authorization: Bearer {{jwtToken}}
             {
               "id": "{{$guid}}",
               "text": {
+                "EN": "Bloc 2",
                 "RO": "Bloc 2"
               },
               "isFreeText": false,
@@ -179,6 +202,7 @@ Authorization: Bearer {{jwtToken}}
             {
               "id": "{{$guid}}",
               "text": {
+                "EN": "Bloc 3",
                 "RO": "Bloc 3"
               },
               "isFreeText": false,
@@ -187,6 +211,7 @@ Authorization: Bearer {{jwtToken}}
             {
               "id": "{{$guid}}",
               "text": {
+                "EN": "Party 1",
                 "RO": "Party 1"
               },
               "isFreeText": false,
@@ -195,6 +220,7 @@ Authorization: Bearer {{jwtToken}}
             {
               "id": "{{$guid}}",
               "text": {
+                "EN": "Other",
                 "RO": "Other"
               },
               "isFreeText": true,
@@ -207,7 +233,8 @@ Authorization: Bearer {{jwtToken}}
     {
       "code": "C",
       "title": {
-        "RO": "The last section"
+        "EN": "The last section",
+        "RO": "Ultima sectiune"
       },
       "questions": [
         {
@@ -215,62 +242,14 @@ Authorization: Bearer {{jwtToken}}
           "id": "{{$guid}}",
           "code": "C1",
           "text": {
-            "RO": "Please rate this form"
+            "EN": "Please rate this form",
+            "RO": "Vă rugăm să evaluați acest formular"
           },
           "helptext": {
-            "RO": "Please give us a rating"
+            "EN": "Please give us a rating",
+            "RO": "Vă rugăm să ne dați o evaluare"
           },
           "scale": "OneTo10"
-        },
-        {
-          "$questionType": "gridQuestion",
-          "id": "{{$guid}}",
-          "code": "C2",
-          "text": {
-            "RO": "The overall conduct of the count at this PS was"
-          },
-          "scalePlaceholder": {
-            "RO": "Please indicate an opinion from 5 (very good) to 1 (very bad)"
-          },
-          "scale": "OneTo5",
-          "hasNotKnownColumn": true,
-          "rows": [
-            {
-              "id": "{{$guid}}",
-              "code": "C2.1",
-              "text": {
-                "RO": "Procedures followed"
-              }
-            },
-            {
-              "id": "{{$guid}}",
-              "code": "C2.2",
-              "text": {
-                "RO": "PEC's understanding of counting procedures"
-              }
-            },
-            {
-              "id": "{{$guid}}",
-              "code": "C2.3",
-              "text": {
-                "RO": "Voters understanding of counting procedures"
-              }
-            },
-            {
-              "id": "{{$guid}}",
-              "code": "C2.4",
-              "text": {
-                "RO": "Performance of PEC"
-              }
-            },
-            {
-              "id": "{{$guid}}",
-              "code": "C2.5",
-              "text": {
-                "RO": "Transparency of the counting process"
-              }
-            }
-          ]
         }
       ]
     }

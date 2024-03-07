@@ -7,9 +7,11 @@ public class Validator : Validator<Request>
 {
     public Validator()
     {
+        RuleFor(x => x.Languages).NotEmpty();
+
         RuleForEach(x => x.Languages)
             .NotEmpty()
-            .Must(iso => LanguagesList.GetByIso(iso) != null)
+            .Must(iso => !string.IsNullOrWhiteSpace(iso) && LanguagesList.GetByIso(iso) != null)
             .WithMessage("Unknown language iso.");
 
         RuleFor(x => x.Code)

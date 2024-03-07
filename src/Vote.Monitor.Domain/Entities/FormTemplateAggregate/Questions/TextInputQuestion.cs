@@ -13,7 +13,7 @@ public class TextInputQuestion : BaseQuestion
         string code,
         TranslatedString text,
         TranslatedString? helptext,
-        TranslatedString inputPlaceholder) : base(text, helptext)
+        TranslatedString? inputPlaceholder) : base(text, helptext)
     {
         Id = id;
         Code = code;
@@ -24,6 +24,6 @@ public class TextInputQuestion : BaseQuestion
         string code,
         TranslatedString text,
         TranslatedString? helptext,
-        TranslatedString inputPlaceholder)
+        TranslatedString? inputPlaceholder)
         => new(id, code, text, helptext, inputPlaceholder);
 }

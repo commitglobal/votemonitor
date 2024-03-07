@@ -9,8 +9,15 @@ public class ValidatorsTestData
 
     public static IEnumerable<TranslatedString> InvalidPartiallyTranslatedTestData =>
     [
-        new TranslatedString { [LanguagesList.IT.Iso1] = "an italian string" },
-        new TranslatedString { [LanguagesList.EN.Iso1] = "a long string".Repeat(257) },
+        new TranslatedString
+        {
+            [LanguagesList.IT.Iso1] = "an italian string"
+        },
+        new TranslatedString
+        {
+            [LanguagesList.RO.Iso1] = "a long string",
+            [LanguagesList.EN.Iso1] = "a long string".Repeat(257),
+        },
         new TranslatedString { [""] = "an empty" },
         new TranslatedString { ["aaa"] = "an invalid iso" },
         new TranslatedString { ["a"] = "an invalid iso" },
@@ -24,10 +31,6 @@ public class ValidatorsTestData
 
     public static IEnumerable<TranslatedString> ValidPartiallyTranslatedTestData =>
     [
-        new TranslatedString
-        {
-            [LanguagesList.EN.Iso1] = "english string"
-        },
         new TranslatedString
         {
             [LanguagesList.EN.Iso1] = "english string",

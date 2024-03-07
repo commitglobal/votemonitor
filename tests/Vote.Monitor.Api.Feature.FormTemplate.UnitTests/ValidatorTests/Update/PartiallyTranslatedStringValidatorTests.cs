@@ -1,8 +1,9 @@
-﻿namespace Vote.Monitor.Api.Feature.FormTemplate.UnitTests.ValidatorTests.Update;
+﻿using Vote.Monitor.Api.Feature.FormTemplate.Update.Validators;
+
+namespace Vote.Monitor.Api.Feature.FormTemplate.UnitTests.ValidatorTests.Update;
 
 public class PartiallyTranslatedStringValidatorTests
 {
-
     [Fact]
     public void Validation_ShouldFail_When_NoTranslations()
     {
@@ -103,6 +104,25 @@ public class PartiallyTranslatedStringValidatorTests
             .WithErrorMessage("Translation for 'EN' must be between 2 and 5 characters.");
     }
 
+    [Fact]
+    public void Validation_ShouldFail_When_MissingLanguageInTranslation()
+    {
+        // Arrange
+        var sut = new PartiallyTranslatedStringValidator([LanguagesList.EN.Iso1, LanguagesList.RO.Iso1], 2, 5);
+        var translatedString = new TranslatedString
+        {
+            [LanguagesList.RO.Iso1] = "valid"
+        };
+
+        // Act
+        var validationResult = sut.TestValidate(translatedString);
+
+        // Assert
+        validationResult
+            .ShouldHaveValidationErrorFor("")
+            .WithErrorMessage("Missing translation placeholder for \"EN\"");
+        
+    }
     [Fact]
     public void Validation_ShouldPass_When_PartiallyTranslated()
     {

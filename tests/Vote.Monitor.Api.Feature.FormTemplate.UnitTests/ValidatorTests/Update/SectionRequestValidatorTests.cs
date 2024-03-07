@@ -1,4 +1,7 @@
-﻿namespace Vote.Monitor.Api.Feature.FormTemplate.UnitTests.ValidatorTests.Update;
+﻿using Vote.Monitor.Api.Feature.FormTemplate.Update.Requests;
+using Vote.Monitor.Api.Feature.FormTemplate.Update.Validators;
+
+namespace Vote.Monitor.Api.Feature.FormTemplate.UnitTests.ValidatorTests.Update;
 
 public class SectionRequestValidatorTests
 {
@@ -97,9 +100,6 @@ public class SectionRequestValidatorTests
     {
         new object[] {
             new DateInputQuestionRequest()
-        },
-        new object[] {
-            new GridQuestionRequest()
         },
         new object[] {
             new MultiSelectQuestionRequest()

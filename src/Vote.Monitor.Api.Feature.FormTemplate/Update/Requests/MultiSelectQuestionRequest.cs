@@ -2,6 +2,5 @@
 
 public class MultiSelectQuestionRequest : BaseQuestionRequest
 {
-    public string Code { get; set; }
-    public List<SelectOptionRequest> Options { get; set; }
+    public List<SelectOptionRequest> Options { get; set; } = new();
 }

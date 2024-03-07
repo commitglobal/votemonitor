@@ -23,8 +23,11 @@
     ```
 4. Seed platform admin
 ```sql
-    INSERT INTO public."Users" VALUES ('771b0bb0-3f87-47a0-bc64-0878e2070374', 'PlatformAdmin', '<your-username>', '<your-password>', 'PlatformAdmin', 'Active', '00000000-0000-0000-0000-000000000000', '2024-01-23 00:00:00+00', '00000000-0000-0000-0000-000000000000', NULL);
-    INSERT INTO public."PlatformAdmins" VALUES ('771b0bb0-3f87-47a0-bc64-0878e2070374')
+INSERT INTO public."Users"("Id", "Name", "Login", "Password", "Role", "Status", "CreatedBy", "CreatedOn",  "LastModifiedBy", "LastModifiedOn") VALUES ('771b0bb0-3f87-47a0-bc64-0878e2070374', 'PlatformAdmin', '<your-username>', '<your-password>', 'PlatformAdmin', 'Active', '00000000-0000-0000-0000-000000000000', '2024-01-23 00:00:00+00', '00000000-0000-0000-0000-000000000000', NULL);
+
+INSERT INTO public."PlatformAdmins" VALUES ('771b0bb0-3f87-47a0-bc64-0878e2070374');
+
+INSERT INTO public."UserPreferences"("ApplicationUserId", "LanguageId") VALUES ('771b0bb0-3f87-47a0-bc64-0878e2070374','094b3769-68b1-6211-ba2d-6bba92d6a167');
 ```
 5. Navigate to http://localhost:5000/swagger/index.html
 6. Obtain token

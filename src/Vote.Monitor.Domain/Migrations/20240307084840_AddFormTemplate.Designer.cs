@@ -13,8 +13,8 @@ using Vote.Monitor.Domain;
 namespace Vote.Monitor.Domain.Migrations
 {
     [DbContext(typeof(VoteMonitorContext))]
-    [Migration("20240305101809_AddFormTemplateTable2")]
-    partial class AddFormTemplateTable2
+    [Migration("20240307084840_AddFormTemplate")]
+    partial class AddFormTemplate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -26,21 +26,6 @@ namespace Vote.Monitor.Domain.Migrations
 
             NpgsqlModelBuilderExtensions.HasPostgresExtension(modelBuilder, "uuid-ossp");
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("FormTemplateLanguage", b =>
-                {
-                    b.Property<Guid>("FormTemplateId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("LanguagesId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("FormTemplateId", "LanguagesId");
-
-                    b.HasIndex("LanguagesId");
-
-                    b.ToTable("FormTemplateLanguage");
-                });
 
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.ApplicationUserAggregate.ApplicationUser", b =>
                 {
@@ -2724,7 +2709,8 @@ namespace Vote.Monitor.Domain.Migrations
 
                     b.Property<string>("Code")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uuid");
@@ -2735,6 +2721,10 @@ namespace Vote.Monitor.Domain.Migrations
                     b.Property<string>("FormType")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<string>("Languages")
+                        .IsRequired()
+                        .HasColumnType("jsonb");
 
                     b.Property<Guid>("LastModifiedBy")
                         .HasColumnType("uuid");
@@ -4392,21 +4382,6 @@ namespace Vote.Monitor.Domain.Migrations
                     b.HasBaseType("Vote.Monitor.Domain.Entities.ApplicationUserAggregate.ApplicationUser");
 
                     b.ToTable("PlatformAdmins", (string)null);
-                });
-
-            modelBuilder.Entity("FormTemplateLanguage", b =>
-                {
-                    b.HasOne("Vote.Monitor.Domain.Entities.FormTemplateAggregate.FormTemplate", null)
-                        .WithMany()
-                        .HasForeignKey("FormTemplateId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Vote.Monitor.Domain.Entities.LanguageAggregate.Language", null)
-                        .WithMany()
-                        .HasForeignKey("LanguagesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.ApplicationUserAggregate.ApplicationUser", b =>

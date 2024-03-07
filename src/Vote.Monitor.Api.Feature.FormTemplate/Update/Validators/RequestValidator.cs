@@ -22,12 +22,16 @@ public class RequestValidator : Validator<Request>
             .NotEmpty()
             .MaximumLength(256);
 
-        RuleFor(x => x.Name).SetValidator(x => new PartiallyTranslatedStringValidator(x.Languages, 3, 256));
+        RuleFor(x => x.Name)
+            .SetValidator(x => new PartiallyTranslatedStringValidator(x.Languages, 3, 256));
 
         RuleFor(x => x.FormType)
             .NotEmpty();
 
         RuleForEach(x => x.Sections)
             .SetValidator(x => new SectionRequestValidator(x.Languages));
+
+        RuleForEach(x => x.Sections)
+            .SetValidator((req, section) => new SectionUniquenessRequestValidator(req.Sections.Except([section])));
     }
 }

@@ -2,6 +2,5 @@
 
 public class NumberInputQuestionRequest : BaseQuestionRequest
 {
-    public string Code { get; set; }
     public TranslatedString? InputPlaceholder { get; set; }
 }

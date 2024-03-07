@@ -17,21 +17,13 @@ public class MultiSelectQuestion : BaseQuestion
     {
         Id = id;
         Code = code;
-        Options = options;
+        Options = options.ToList().AsReadOnly();
     }
 
-    public SelectOption AddOption(Guid id, TranslatedString text, bool isFreeText, bool isFlagged)
-    {
-        var option = SelectOption.Create(id, text, isFreeText, isFlagged);
-        Options = Options.Concat([option]).ToList().AsReadOnly();
-
-        return option;
-    }
-
-    public static MultiSelectQuestion Create(
-        Guid id,
+    public static MultiSelectQuestion Create(Guid id,
         string code,
         TranslatedString text,
-        TranslatedString? helptext)
-        => new(id, code, text, helptext, []);
+        TranslatedString? helptext,
+        IReadOnlyList<SelectOption> options)
+        => new(id, code, text, helptext, options);
 }

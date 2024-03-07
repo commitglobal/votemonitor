@@ -13,7 +13,6 @@ namespace Vote.Monitor.Api.Feature.FormTemplate.Models;
 [PolyJsonConverter.SubType(typeof(SingleSelectQuestionModel), "singleSelectQuestion")]
 [PolyJsonConverter.SubType(typeof(MultiSelectQuestionModel), "multiSelectQuestion")]
 [PolyJsonConverter.SubType(typeof(RatingQuestionModel), "ratingQuestion")]
-[PolyJsonConverter.SubType(typeof(GridQuestionModel), "gridQuestion")]
 public abstract class BaseQuestionModel
 {
     [JsonPropertyName("$questionType")] 
@@ -44,9 +43,6 @@ public abstract class BaseQuestionModel
 
             case RatingQuestion ratingQuestionRequest:
                 return RatingQuestionModel.FromEntity(ratingQuestionRequest);
-
-            case GridQuestion gridQuestionRequest:
-                return GridQuestionModel.FromEntity(gridQuestionRequest);
 
             default: throw new ApplicationException("Unknown question type");
         }

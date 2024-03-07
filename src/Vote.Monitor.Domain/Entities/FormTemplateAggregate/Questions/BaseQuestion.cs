@@ -11,7 +11,6 @@ namespace Vote.Monitor.Domain.Entities.FormTemplateAggregate.Questions;
 [PolyJsonConverter.SubType(typeof(SingleSelectQuestion), "singleSelectQuestion")]
 [PolyJsonConverter.SubType(typeof(MultiSelectQuestion), "multiSelectQuestion")]
 [PolyJsonConverter.SubType(typeof(RatingQuestion), "ratingQuestion")]
-[PolyJsonConverter.SubType(typeof(GridQuestion), "gridQuestion")]
 public abstract class BaseQuestion
 {
     [JsonPropertyName("$questionType")]

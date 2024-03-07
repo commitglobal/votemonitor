@@ -1,12 +1,11 @@
-﻿using System;
-using Vote.Monitor.Api.Feature.FormTemplate.Specifications;
+﻿using Vote.Monitor.Api.Feature.FormTemplate.Specifications;
 using Vote.Monitor.Api.Feature.FormTemplate.Update.Requests;
-using Vote.Monitor.Domain.Entities.LanguageAggregate;
+using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
+using Vote.Monitor.Domain.Entities.FormTemplateAggregate.Questions;
 
 namespace Vote.Monitor.Api.Feature.FormTemplate.Update;
 
-public class Endpoint(IRepository<FormTemplateAggregate> repository,
-    IReadRepository<Language> languagesRepository) : Endpoint<Request, Results<NoContent, NotFound, Conflict<ProblemDetails>>>
+public class Endpoint(IRepository<FormTemplateAggregate> repository) : Endpoint<Request, Results<NoContent, NotFound, Conflict<ProblemDetails>>>
 {
     public override void Configure()
     {
@@ -15,14 +14,14 @@ public class Endpoint(IRepository<FormTemplateAggregate> repository,
 
     public override async Task<Results<NoContent, NotFound, Conflict<ProblemDetails>>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var formTemplate = await repository.FirstOrDefaultAsync(new GetByIdSpecification(req.Id), ct);
+        var formTemplate = await repository.GetByIdAsync(req.Id, ct);
 
         if (formTemplate is null)
         {
             return TypedResults.NotFound();
         }
 
-        var specification = new GetFormTemplate(req.Id, req.Code, req.FormType);
+        var specification = new GetFormTemplateSpecification(req.Id, req.Code, req.FormType);
         var duplicatedFormTemplate = await repository.AnyAsync(specification, ct);
 
         if (duplicatedFormTemplate)
@@ -31,99 +30,84 @@ public class Endpoint(IRepository<FormTemplateAggregate> repository,
             return TypedResults.Conflict(new ProblemDetails(ValidationFailures));
         }
 
-        var languages = await languagesRepository.ListAsync(new LanguagesByIsoCode(req.Languages), ct);
-        formTemplate.UpdateDetails(req.Code, req.Name, req.FormType, languages);
+        var sections = req.Sections.Select(section =>
+         {
+             var questions = section.Questions
+                 .Select(MapQuestions)
+                 .ToList()
+                 .AsReadOnly();
 
-        formTemplate.ClearSections();
+             return FormSection.Create(section.Code, section.Title, questions);
+         })
+         .ToList()
+         .AsReadOnly();
 
-        foreach (var section in req.Sections)
-        {
-            var formSection = formTemplate.AddFormSection(section.Code, section.Title);
-            foreach (var question in section.Questions)
-            {
-                switch (question)
-                {
-                    case TextInputQuestionRequest textInputQuestion:
-                        formSection.AddTextInputQuestion(textInputQuestion.Id,
-                            textInputQuestion.Code,
-                            textInputQuestion.Text,
-                            textInputQuestion.Helptext,
-                            textInputQuestion.InputPlaceholder);
-                        break;
-
-                    case NumberInputQuestionRequest numberInputQuestion:
-                        formSection.AddNumberInputQuestion(numberInputQuestion.Id,
-                            numberInputQuestion.Code,
-                            numberInputQuestion.Text,
-                            numberInputQuestion.Helptext,
-                            numberInputQuestion.InputPlaceholder);
-                        break;
-
-                    case DateInputQuestionRequest dateInputQuestion:
-                        formSection.AddDateInputQuestion(dateInputQuestion.Id, dateInputQuestion.Code, dateInputQuestion.Text,
-                            dateInputQuestion.Helptext);
-                        break;
-
-                    case SingleSelectQuestionRequest singleSelectQuestion:
-                        var singleSelectQuestionEntity = formSection.AddSingleSelectQuestion(singleSelectQuestion.Id,
-                            singleSelectQuestion.Code,
-                            singleSelectQuestion.Text,
-                            singleSelectQuestion.Helptext);
-
-                        foreach (var option in singleSelectQuestion.Options)
-                        {
-                            singleSelectQuestionEntity.AddOption(option.Id,
-                                option.Text,
-                                option.IsFreeText,
-                                option.IsFlagged);
-                        }
-                        break;
-
-                    case MultiSelectQuestionRequest multiSelectQuestion:
-                        var multiSelectQuestionEntity = formSection.AddMultiSelectQuestion(multiSelectQuestion.Id,
-                            multiSelectQuestion.Code,
-                            multiSelectQuestion.Text,
-                            multiSelectQuestion.Helptext);
-
-                        foreach (var option in multiSelectQuestion.Options)
-                        {
-                            multiSelectQuestionEntity.AddOption(option.Id,
-                                option.Text,
-                                option.IsFlagged,
-                                option.IsFreeText);
-                        }
-                        break;
-
-                    case RatingQuestionRequest ratingQuestion:
-                        formSection.AddRatingQuestion(ratingQuestion.Id,
-                            ratingQuestion.Code,
-                            ratingQuestion.Text,
-                            ratingQuestion.Helptext,
-                            ratingQuestion.Scale);
-                        break;
-
-                    case GridQuestionRequest gridQuestion:
-                        var gridQuestionEntity = formSection.AddGridQuestion(
-                            gridQuestion.Id,
-                            gridQuestion.Text,
-                            gridQuestion.Helptext,
-                            gridQuestion.ScalePlaceholder,
-                            gridQuestion.Scale,
-                            gridQuestion.HasNotKnownColumn);
-
-                        foreach (var row in gridQuestion.Rows)
-                        {
-                            gridQuestionEntity.AddRow(row.Id, row.Code, row.Text, row.Helptext);
-                        }
-
-                        break;
-
-                    default: throw new ApplicationException("Unknown question type received");
-                }
-            }
-        }
+        formTemplate.UpdateDetails(req.Code, req.Name, req.FormType, req.Languages, sections);
 
         await repository.UpdateAsync(formTemplate, ct);
         return TypedResults.NoContent();
+    }
+
+    private static BaseQuestion MapQuestions(BaseQuestionRequest question)
+    {
+        switch (question)
+        {
+            case TextInputQuestionRequest textInputQuestion:
+                return TextInputQuestion.Create(textInputQuestion.Id,
+                    textInputQuestion.Code,
+                    textInputQuestion.Text,
+                    textInputQuestion.Helptext,
+                    textInputQuestion.InputPlaceholder);
+
+            case NumberInputQuestionRequest numberInputQuestion:
+                return NumberInputQuestion.Create(numberInputQuestion.Id,
+                     numberInputQuestion.Code,
+                     numberInputQuestion.Text,
+                     numberInputQuestion.Helptext,
+                     numberInputQuestion.InputPlaceholder);
+
+            case DateInputQuestionRequest dateInputQuestion:
+                return DateInputQuestion.Create(dateInputQuestion.Id,
+                    dateInputQuestion.Code,
+                    dateInputQuestion.Text,
+                    dateInputQuestion.Helptext);
+
+            case SingleSelectQuestionRequest singleSelectQuestion:
+                var singleSelectQuestionOptions = MapOptions(singleSelectQuestion.Options);
+
+                return SingleSelectQuestion.Create(singleSelectQuestion.Id,
+                    singleSelectQuestion.Code,
+                    singleSelectQuestion.Text,
+                    singleSelectQuestion.Helptext,
+                    singleSelectQuestionOptions);
+
+            case MultiSelectQuestionRequest multiSelectQuestion:
+                var multiSelectQuestionOptions = MapOptions(multiSelectQuestion.Options);
+
+                var multiSelectQuestionEntity = MultiSelectQuestion.Create(multiSelectQuestion.Id,
+                    multiSelectQuestion.Code,
+                    multiSelectQuestion.Text,
+                    multiSelectQuestion.Helptext,
+                    multiSelectQuestionOptions);
+
+                return multiSelectQuestionEntity;
+
+            case RatingQuestionRequest ratingQuestion:
+                return RatingQuestion.Create(ratingQuestion.Id,
+                     ratingQuestion.Code,
+                     ratingQuestion.Text,
+                     ratingQuestion.Helptext,
+                     ratingQuestion.Scale);
+
+            default: throw new ApplicationException("Unknown question type received");
+        }
+    }
+
+    private static IReadOnlyList<SelectOption> MapOptions(IEnumerable<SelectOptionRequest> options)
+    {
+        return options
+            .Select(o => SelectOption.Create(o.Id, o.Text, o.IsFreeText, o.IsFlagged))
+            .ToList()
+            .AsReadOnly();
     }
 }
