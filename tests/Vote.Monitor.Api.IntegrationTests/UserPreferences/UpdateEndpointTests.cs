@@ -3,7 +3,6 @@ using GetRequest = Vote.Monitor.Api.Feature.UserPreferences.Get.Request;
 using UpdateEndpoint = Vote.Monitor.Api.Feature.UserPreferences.Update.Endpoint;
 using UpdateRequest = Vote.Monitor.Api.Feature.UserPreferences.Update.Request;
 using UserPreferencesModel = Vote.Monitor.Api.Feature.UserPreferences.UserPreferencesModel;
-using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Vote.Monitor.Api.IntegrationTests.UserPreferences;
 public class UpdateEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeeder>>

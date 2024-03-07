@@ -1,5 +1,8 @@
-﻿using Vote.Monitor.Api.Feature.Ngo;
+﻿using NSwag;
+using Vote.Monitor.Api.Feature.FormTemplate;
+using Vote.Monitor.Api.Feature.Ngo;
 using Vote.Monitor.Api.Feature.NgoAdmin;
+using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
 using Vote.Monitor.Domain.Entities.NgoAggregate;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -59,6 +62,7 @@ builder.Services.AddObserverFeature(builder.Configuration.GetSection(ObserverFea
 builder.Services.AddElectionRoundFeature();
 builder.Services.AddMonitoringFeature();
 builder.Services.AddUserPreferencesFeature();
+builder.Services.AddFormTemplateFeature();
 builder.Services.AddAuthorization();
 
 
@@ -82,9 +86,40 @@ app.UseFastEndpoints(x =>
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<NgoStatus, string>());
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<ElectionRoundStatus, string>());
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<SortOrder, string>());
+    x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<FormType, string>());
+    x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<FormTemplateStatus, string>());
 });
 
-app.UseSwaggerGen(uiConfig: cfg =>
+app.UseSwaggerGen(
+cfg =>
+{
+    cfg.PostProcess = (document, _) =>
+    {
+        var commitHash = Environment.GetEnvironmentVariable("COMMIT_HASH") ?? "Unknown";
+
+        document.Info = new OpenApiInfo
+        {
+            Version = "v2.0",
+            Title = $"Vote Monitor API({commitHash})",
+            Description = $"An ASP.NET Core Web API for monitoring elections.",
+            ExtensionData = new Dictionary<string, object?>
+            {
+                ["commit-hash"] = commitHash
+            },
+            Contact = new OpenApiContact
+            {
+                Name = "CommitGlobal",
+                Url = "https://www.commitglobal.org/en/contact-us"
+            },
+            License = new OpenApiLicense
+            {
+                Name = "MPL-2.0 license",
+                Url = "https://github.com/commitglobal/votemonitor/blob/main/LICENSE"
+            }
+        };
+    };
+},
+uiConfig: cfg =>
 {
     cfg.DocExpansion = "list";
 });

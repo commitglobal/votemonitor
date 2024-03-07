@@ -1,0 +1,11 @@
+@hostAddress=https://localhost:7123
+
+# List form templates
+POST {{hostAddress}}/api/auth
+Content-Type: application/json
+
+{
+  "username": "string",
+  "password": "string"
+}
+###
