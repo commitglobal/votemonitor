@@ -2,9 +2,9 @@
 using Vote.Monitor.Api.Feature.FormTemplate;
 using Vote.Monitor.Api.Feature.Ngo;
 using Vote.Monitor.Api.Feature.NgoAdmin;
+using Vote.Monitor.Api.Feature.Notifications;
 using Vote.Monitor.Api.Feature.PollingStation.Attachments;
 using Vote.Monitor.Api.Feature.PollingStation.Notes;
-using Vote.Monitor.Api.Feature.PushNotifications;
 using Vote.Monitor.Core.Services.FileStorage;
 using Vote.Monitor.Core.Services.PushNotification;
 using Vote.Monitor.Domain.Entities.FormTemplateAggregate;

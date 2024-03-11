@@ -1,6 +1,6 @@
 ﻿using Vote.Monitor.Domain.Entities.NotificationTokenAggregate;
 
-namespace Vote.Monitor.Api.Feature.PushNotifications.Specifications;
+namespace Vote.Monitor.Api.Feature.Notifications.Specifications;
 
 public sealed class GetNotificationTokenForObserverSpecification: Specification<NotificationToken>, ISingleResultSpecification<NotificationToken>
 {

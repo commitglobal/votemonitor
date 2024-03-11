@@ -25,7 +25,7 @@ COPY ["src/Vote.Monitor.Api.Feature.Observer/Vote.Monitor.Api.Feature.Observer.c
 COPY ["src/Vote.Monitor.Api.Feature.PollingStation.Attachments/Vote.Monitor.Api.Feature.PollingStation.Attachments.csproj", "src/Vote.Monitor.Api.Feature.PollingStation.Attachments/"]
 COPY ["src/Vote.Monitor.Api.Feature.PollingStation.Notes/Vote.Monitor.Api.Feature.PollingStation.Notes.csproj", "src/Vote.Monitor.Api.Feature.PollingStation.Notes/"]
 COPY ["src/Vote.Monitor.Api.Feature.PollingStation/Vote.Monitor.Api.Feature.PollingStation.csproj", "src/Vote.Monitor.Api.Feature.PollingStation/"]
-COPY ["src/Vote.Monitor.Api.Feature.PushNotifications/Vote.Monitor.Api.Feature.PushNotifications.csproj", "src/Vote.Monitor.Api.Feature.PushNotifications/"]
+COPY ["src/Vote.Monitor.Api.Feature.Notifications/Vote.Monitor.Api.Feature.Notifications.csproj", "src/Vote.Monitor.Api.Feature.Notifications/"]
 COPY ["src/Vote.Monitor.Api.Feature.UserPreferences/Vote.Monitor.Api.Feature.UserPreferences.csproj", "src/Vote.Monitor.Api.Feature.UserPreferences/"]
 RUN dotnet restore "./src/Vote.Monitor.Api/./Vote.Monitor.Api.csproj"
 COPY . .

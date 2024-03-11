@@ -1,12 +1,14 @@
 ﻿
-namespace Vote.Monitor.Api.Feature.PushNotifications.ListSent;
+using Vote.Monitor.Core.Services.PushNotification.Contracts;
 
-public class Endpoint(IRepository<NotificationAggregate> repository, ITimeProvider timeProvider) :
+namespace Vote.Monitor.Api.Feature.Notifications.Send;
+
+public class Endpoint(IRepository<NotificationAggregate> repository, IPushNotificationService notificationService, ITimeProvider timeProvider) :
         Endpoint<Request, Ok<Response>>
 {
     public override void Configure()
     {
-        Post("/api/election-rounds/{electionRoundId}/notifications:listSent");
+        Post("/api/election-rounds/{electionRoundId}/notifications:send");
         DontAutoTag();
         Options(x => x.WithTags("notifications"));
         AllowFileUploads();

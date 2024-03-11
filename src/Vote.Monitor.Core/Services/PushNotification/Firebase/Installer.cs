@@ -13,6 +13,10 @@ internal static class Installer
         var firebaseOptions = new FirebaseOptions();
         configuration.Bind(firebaseOptions);
 
+        services.AddSingleton(firebaseOptions);
+
+        services.Configure<FirebaseOptions>(configuration);
+
         FirebaseApp.Create(new AppOptions
         {
             Credential = GoogleCredential.FromJson(firebaseOptions.Token)

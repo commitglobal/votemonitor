@@ -1,5 +1,6 @@
 ﻿using FirebaseAdmin.Messaging;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Vote.Monitor.Core.Services.PushNotification.Contracts;
 
 namespace Vote.Monitor.Core.Services.PushNotification.Firebase;
@@ -7,10 +8,12 @@ namespace Vote.Monitor.Core.Services.PushNotification.Firebase;
 public class FirebasePushNotificationService : IPushNotificationService
 {
     private readonly ILogger<FirebasePushNotificationService> _logger;
+    private readonly FirebaseOptions _options;
 
-    public FirebasePushNotificationService(ILogger<FirebasePushNotificationService> logger)
+    public FirebasePushNotificationService(IOptions<FirebaseOptions> options, ILogger<FirebasePushNotificationService> logger)
     {
         _logger = logger;
+        _options = options.Value;
     }
 
     public async Task<SendNotificationResult> SendNotificationAsync(List<string> userIdentifiers, string title, string body, CancellationToken ct = default)
@@ -20,21 +23,24 @@ public class FirebasePushNotificationService : IPushNotificationService
             int successCount = 0;
             int failedCount = 0;
 
-            foreach (var batch in userIdentifiers.Chunk(500))
-            {
-                var messages = batch.Select(userIdentifier => new Message
+            var batchedMessages = userIdentifiers
+                .Select(identifier => new Message
                 {
                     Notification = new Notification
                     {
                         Title = title,
                         Body = body
                     },
-                    Token = userIdentifier
-                });
+                    Token = identifier
+                }).Chunk(_options.BatchSize);
 
-                var response = await FirebaseMessaging.DefaultInstance.SendEachAsync(messages, ct);
+            foreach (var batch in batchedMessages)
+            {
+                var response = await FirebaseMessaging.DefaultInstance.SendEachAsync(batch, ct);
+
                 successCount += response.SuccessCount;
                 failedCount += response.FailureCount;
+
                 _logger.LogInformation("Batch notifications sent. {@response}", response);
             }
 

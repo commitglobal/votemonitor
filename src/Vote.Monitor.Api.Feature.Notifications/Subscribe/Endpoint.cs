@@ -1,7 +1,7 @@
-﻿using Vote.Monitor.Api.Feature.PushNotifications.Specifications;
+﻿using Vote.Monitor.Api.Feature.Notifications.Specifications;
 using Vote.Monitor.Domain.Entities.NotificationTokenAggregate;
 
-namespace Vote.Monitor.Api.Feature.PushNotifications.Subscribe;
+namespace Vote.Monitor.Api.Feature.Notifications.Subscribe;
 
 public class Endpoint(IRepository<NotificationToken> repository, ITimeProvider timeProvider) :
         Endpoint<Request, NoContent>

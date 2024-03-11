@@ -1,4 +1,4 @@
-﻿namespace Vote.Monitor.Api.Feature.PushNotifications.Subscribe;
+﻿namespace Vote.Monitor.Api.Feature.Notifications.Subscribe;
 
 public class Validator : Validator<Request>
 {

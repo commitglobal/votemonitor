@@ -1,6 +1,6 @@
 ﻿namespace Vote.Monitor.Api.Feature.Monitoring.Specifications;
 
-public class GetElectionRoundByIdSpecification: SingleResultSpecification<ElectionRoundAggregate>
+public sealed class GetElectionRoundByIdSpecification: SingleResultSpecification<ElectionRoundAggregate>
 {
     public GetElectionRoundByIdSpecification(Guid electionRoundId)
     {

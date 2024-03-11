@@ -1,4 +1,4 @@
-﻿namespace Vote.Monitor.Api.Feature.PushNotifications.Send;
+﻿namespace Vote.Monitor.Api.Feature.Notifications.Send;
 
 public record Response
 {

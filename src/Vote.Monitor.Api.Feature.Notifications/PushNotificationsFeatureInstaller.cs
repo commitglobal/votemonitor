@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace Vote.Monitor.Api.Feature.PushNotifications;
+namespace Vote.Monitor.Api.Feature.Notifications;
 
 public static class PushNotificationsFeatureInstaller
 {

@@ -1,6 +1,6 @@
 ﻿using Vote.Monitor.Core.Validation;
 
-namespace Vote.Monitor.Api.Feature.PushNotifications.Send;
+namespace Vote.Monitor.Api.Feature.Notifications.Send;
 
 public class Validator : Validator<Request>
 {

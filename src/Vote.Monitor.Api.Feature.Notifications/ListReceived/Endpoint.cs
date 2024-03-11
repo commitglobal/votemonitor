@@ -1,4 +1,4 @@
-﻿namespace Vote.Monitor.Api.Feature.PushNotifications.ListReceived;
+﻿namespace Vote.Monitor.Api.Feature.Notifications.ListReceived;
 
 public class Endpoint(IRepository<NotificationAggregate> repository, ITimeProvider timeProvider) :
         Endpoint<Request, Ok<Response>>
