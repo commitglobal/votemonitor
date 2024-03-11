@@ -1,4 +1,5 @@
 ﻿using Vote.Monitor.Domain.Entities.CountryAggregate;
+using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
 
 namespace Vote.Monitor.TestUtils.Fakes;
 
@@ -15,24 +16,29 @@ public sealed class ElectionRoundAggregateFaker : PrivateFaker<ElectionRoundAggr
         string? title = null,
         string? englishTitle = null,
         DateOnly? startDate = null,
-        ElectionRoundStatus? status = null)
+        ElectionRoundStatus? status = null,
+        List<MonitoringNgo>? monitoringNgos = null)
     {
         UsePrivateConstructor();
 
+        var currentUtcTimeProvider = new CurrentUtcTimeProvider();
+
         Country country = countryId.HasValue
             ? CountriesList.Get(countryId.Value)!.ToEntity()
-            : new Country("Test country", "Fake test country", "FC", "FTC", "999", new CurrentUtcTimeProvider());
+            : new Country("Test country", "Fake test country", "FC", "FTC", "999", currentUtcTimeProvider);
 
-        RuleFor(fake => fake.Id, fake => id ?? fake.Random.Guid());
-        RuleFor(fake => fake.CountryId, country.Id);
-        RuleFor(fake => fake.Country, country);
-        RuleFor(fake => fake.Title, fake => title ?? fake.Company.CompanyName());
-        RuleFor(fake => fake.EnglishTitle, fake => englishTitle ?? fake.Company.CompanyName());
-        RuleFor(fake => fake.StartDate, fake => startDate ?? fake.Date.FutureDateOnly());
-        RuleFor(fake => fake.Status, fake => status ?? fake.PickRandom(_statuses));
-        RuleFor(fake => fake.CreatedOn, _baseCreationDate.AddHours(index ?? 0));
-        RuleFor(fake => fake.LastModifiedOn, _baseModifiedDate.AddHours(index ?? 0));
-        RuleFor(fake => fake.CreatedBy, fake => fake.Random.Guid());
-        RuleFor(fake => fake.LastModifiedBy, fake => fake.Random.Guid());
+        RuleFor(f => f.Status, f => status ?? f.PickRandom(_statuses));
+        RuleFor(f => f.CreatedOn, _baseCreationDate.AddHours(index ?? 0));
+        RuleFor(f => f.LastModifiedOn, _baseModifiedDate.AddHours(index ?? 0));
+        RuleFor(f => f.CreatedBy, f => f.Random.Guid());
+        RuleFor(f => f.LastModifiedBy, f => f.Random.Guid());
+
+        CustomInstantiator(f => new ElectionRoundAggregate(id ?? f.Random.Guid(),
+            title: title ?? f.Company.CompanyName(),
+            englishTitle: englishTitle ?? f.Company.CompanyName(),
+            startDate: startDate ?? f.Date.FutureDateOnly(),
+            country: country,
+            monitoringNgos: monitoringNgos ?? [],
+            timeProvider: currentUtcTimeProvider));
     }
 }

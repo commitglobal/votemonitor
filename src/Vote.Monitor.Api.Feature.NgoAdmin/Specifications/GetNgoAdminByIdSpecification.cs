@@ -1,6 +1,6 @@
 ﻿namespace Vote.Monitor.Api.Feature.NgoAdmin.Specifications;
 
-public class GetNgoAdminByIdSpecification : Specification<NgoAdminAggregate>, ISingleResultSpecification<NgoAdminAggregate>
+public sealed class GetNgoAdminByIdSpecification : Specification<NgoAdminAggregate>, ISingleResultSpecification<NgoAdminAggregate>
 {
     public GetNgoAdminByIdSpecification(Guid ngoId, Guid adminId)
     {

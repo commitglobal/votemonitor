@@ -18,8 +18,8 @@ public class PollingStationImportModelValidatorTests
             Tags = new List<TagImportModel>
             {
                new() { Name = "Tag1" ,Value = "value1"},
-               new() { Name = "Tag2" ,Value =  "value2"},
-            },
+               new() { Name = "Tag2" ,Value =  "value2"}
+            }
         };
 
         var context = new ValidationContext<PollingStationImportModel>(importModel);
@@ -43,8 +43,8 @@ public class PollingStationImportModelValidatorTests
             Tags = new List<TagImportModel>
             {
                 new() { Name = "Tag1" ,Value = "value1"},
-                new() { Name = "Tag2" ,Value =  "value2"},
-            },
+                new() { Name = "Tag2" ,Value =  "value2"}
+            }
         };
         var context = new ValidationContext<PollingStationImportModel>(importModel);
         context.RootContextData["RowIndex"] = 1;
@@ -68,8 +68,8 @@ public class PollingStationImportModelValidatorTests
             Tags = new List<TagImportModel>
             {
                 new() { Name = "Tag1" ,Value = "value1"},
-                new() { Name = "Tag2" ,Value =  "value2"},
-            },
+                new() { Name = "Tag2" ,Value =  "value2"}
+            }
         };
         var context = new ValidationContext<PollingStationImportModel>(importModel);
         context.RootContextData["RowIndex"] = 1;
@@ -93,8 +93,8 @@ public class PollingStationImportModelValidatorTests
             Tags = new List<TagImportModel>
             {
                 new() { Name = "Tag1" ,Value = "value1"},
-                new() { Name = "Tag2" ,Value =  "value2"},
-            },
+                new() { Name = "Tag2" ,Value =  "value2"}
+            }
         };
         var context = new ValidationContext<PollingStationImportModel>(importModel);
         context.RootContextData["RowIndex"] = 1;
@@ -118,8 +118,8 @@ public class PollingStationImportModelValidatorTests
             Tags = new List<TagImportModel>
             {
                 new() { Name = "Tag1" ,Value = "value1"},
-                new() { Name = "Tag2" ,Value =  "value2"},
-            },
+                new() { Name = "Tag2" ,Value =  "value2"}
+            }
         };
         var context = new ValidationContext<PollingStationImportModel>(importModel);
         context.RootContextData["RowIndex"] = 1;

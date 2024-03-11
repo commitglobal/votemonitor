@@ -3,7 +3,7 @@ using Vote.Monitor.Domain.Specifications;
 
 namespace Vote.Monitor.Api.Feature.FormTemplate.Specifications;
 
-public sealed class ListFormTemplatesSpecification : Specification<FormTemplateAggregate, FormTemplateModel>
+public sealed class ListFormTemplatesSpecification : Specification<FormTemplateAggregate, AttachmentModel>
 {
     public ListFormTemplatesSpecification(List.Request request)
     {
@@ -13,7 +13,7 @@ public sealed class ListFormTemplatesSpecification : Specification<FormTemplateA
             .ApplyOrdering(request)
             .Paginate(request);
 
-        Query.Select(x => new FormTemplateModel
+        Query.Select(x => new AttachmentModel
         {
             Id = x.Id,
             Code = x.Code,
@@ -21,7 +21,7 @@ public sealed class ListFormTemplatesSpecification : Specification<FormTemplateA
             Status = x.Status,
             Languages = x.Languages.ToList(),
             CreatedOn = x.CreatedOn,
-            LastModifiedOn = x.LastModifiedOn,
+            LastModifiedOn = x.LastModifiedOn
         });
     }
 }

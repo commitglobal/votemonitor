@@ -1,0 +1,34 @@
+@hostAddress=https://localhost:7123
+@jwtToken=your_token
+@electionRoundId=76c94291-6b84-4dfa-a6b0-380865bb0b9c
+@pollingStationId=68bbb272-fccf-4e95-b9a6-776390159932
+
+# Add note
+# @name newAttachment
+POST {{hostAddress}}/api/election-rounds/{{electionRoundId}}/polling-stations/{{pollingStationId}}/notes
+Content-Type: application/json
+Authorization: Bearer {{jwtToken}}
+
+{
+  "text": "some interesting and informative note"
+}
+###
+
+# List notes
+GET {{hostAddress}}/api/election-rounds/{{electionRoundId}}/polling-stations/{{pollingStationId}}/notes
+Authorization: Bearer {{jwtToken}}
+
+###
+
+# Get an note
+GET {{hostAddress}}/api/election-rounds/{{electionRoundId}}/polling-stations/{{pollingStationId}}/notes/{{newAttachment.response.body.$.id}}
+Authorization: Bearer {{jwtToken}}
+
+###
+
+# Delete an note
+DELETE  {{hostAddress}}/api/election-rounds/{{electionRoundId}}/polling-stations/{{pollingStationId}}/notes/{{newAttachment.response.body.$.id}}
+Authorization: Bearer {{jwtToken}}
+
+###
+

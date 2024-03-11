@@ -1,4 +1,5 @@
-﻿namespace Vote.Monitor.Api.Feature.Monitoring.UnitTests.Endpoints;
+﻿
+namespace Vote.Monitor.Api.Feature.Monitoring.UnitTests.Endpoints;
 
 public class RemoveObserverEndpointTests
 {
@@ -6,12 +7,13 @@ public class RemoveObserverEndpointTests
     public async Task ShouldReturnNotFound_WhenElectionRoundNotFound()
     {
         // Arrange
-        var repository = Substitute.For<IRepository<ElectionRoundAggregate>>();
+        var repository = Substitute.For<IRepository<MonitoringNgoAggregate>>();
+        var observersRepository = Substitute.For<IReadRepository<ObserverAggregate>>();
 
-        var endpoint = Factory.Create<RemoveObserver.Endpoint>(repository);
+        var endpoint = Factory.Create<RemoveObserver.Endpoint>(repository, observersRepository);
 
         // Act
-        var request = new RemoveObserver.Request { Id = Guid.NewGuid(), ObserverId = Guid.NewGuid() };
+        var request = new RemoveObserver.Request { ElectionRoundId = Guid.NewGuid(), ObserverId = Guid.NewGuid() };
         var result = await endpoint.ExecuteAsync(request, default);
 
         // Assert
@@ -19,7 +21,7 @@ public class RemoveObserverEndpointTests
             .Should().BeOfType<Results<NoContent, NotFound<string>>>()
             .Which
             .Result.Should().BeOfType<NotFound<string>>()
-            .Which.Value.Should().Be("Election round not found");
+            .Which.Value.Should().Be("Monitoring NGO not found");
     }
 
     [Fact]
@@ -27,15 +29,21 @@ public class RemoveObserverEndpointTests
     {
         // Arrange
         var electionRoundId = Guid.NewGuid();
+        var ngo = new NgoAggregateFaker().Generate();
+        var monitoringNgo = new MonitoringNgoAggregateFaker(ngo: ngo).Generate();
 
-        var repository = Substitute.For<IRepository<ElectionRoundAggregate>>();
-        repository.GetByIdAsync(electionRoundId).Returns(new ElectionRoundAggregateFaker(id: electionRoundId).Generate());
+        var repository = Substitute.For<IRepository<MonitoringNgoAggregate>>();
 
+        repository
+            .FirstOrDefaultAsync(Arg.Any<GetMonitoringNgoSpecification>())
+            .Returns(monitoringNgo);
 
-        var endpoint = Factory.Create<RemoveObserver.Endpoint>(repository);
+        var observersRepository = Substitute.For<IReadRepository<ObserverAggregate>>();
+
+        var endpoint = Factory.Create<RemoveObserver.Endpoint>(repository, observersRepository);
 
         // Act
-        var request = new RemoveObserver.Request { Id = electionRoundId, ObserverId = Guid.NewGuid() };
+        var request = new RemoveObserver.Request { ElectionRoundId = electionRoundId, ObserverId = Guid.NewGuid() };
         var result = await endpoint.ExecuteAsync(request, default);
 
         // Assert
@@ -43,7 +51,7 @@ public class RemoveObserverEndpointTests
             .Should().BeOfType<Results<NoContent, NotFound<string>>>()
             .Which
             .Result.Should().BeOfType<NotFound<string>>()
-            .Which.Value.Should().Be("Requested observer does not monitor requested election round");
+            .Which.Value.Should().Be("Observer not found");
     }
 
     [Fact]
@@ -52,16 +60,23 @@ public class RemoveObserverEndpointTests
         // Arrange
         var electionRoundId = Guid.NewGuid();
         var observerId = Guid.NewGuid();
+        var observer = new ObserverAggregateFaker(id: observerId).Generate();
+        var ngo = new NgoAggregateFaker().Generate();
+        var monitoringNgo = new MonitoringNgoAggregateFaker(ngo: ngo).Generate();
+        monitoringNgo.AddMonitoringObserver(observer, new CurrentUtcTimeProvider());
 
-        var repository = Substitute.For<IRepository<ElectionRoundAggregate>>();
-        var electionRound = Substitute.For<ElectionRoundAggregate>();
-        electionRound.MonitoringObservers.Returns([new MonitoringObserver(Guid.NewGuid(), Guid.NewGuid(), observerId)]);
-        repository.GetByIdAsync(electionRoundId).Returns(electionRound);
+        var repository = Substitute.For<IRepository<MonitoringNgoAggregate>>();
+        repository
+            .FirstOrDefaultAsync(Arg.Any<GetMonitoringNgoSpecification>())
+            .Returns(monitoringNgo);
 
-        var endpoint = Factory.Create<RemoveObserver.Endpoint>(repository);
+        var observersRepository = Substitute.For<IReadRepository<ObserverAggregate>>();
+        observersRepository.GetByIdAsync(observerId).Returns(observer);
+
+        var endpoint = Factory.Create<RemoveObserver.Endpoint>(repository, observersRepository);
 
         // Act
-        var request = new RemoveObserver.Request { Id = electionRoundId, ObserverId = observerId };
+        var request = new RemoveObserver.Request { ElectionRoundId = electionRoundId, ObserverId = observerId };
         var result = await endpoint.ExecuteAsync(request, default);
 
         // Assert
@@ -70,6 +85,8 @@ public class RemoveObserverEndpointTests
             .Which
             .Result.Should().BeOfType<NoContent>();
 
-        electionRound.Received(1).RemoveMonitoringObserver(observerId);
+       await repository
+           .Received(1)
+           .UpdateAsync(Arg.Is<MonitoringNgoAggregate>(x => x.MonitoringObservers.Count == 0));
     }
 }

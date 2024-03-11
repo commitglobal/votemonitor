@@ -20,7 +20,7 @@ public class ListEndpointTests
         // Assert
         result
             .Should()
-            .BeOfType<Results<Ok<PagedResponse<FormTemplateModel>>, ProblemDetails>>();
+            .BeOfType<Results<Ok<PagedResponse<AttachmentModel>>, ProblemDetails>>();
 
         await repository.Received(1).ListAsync(Arg.Any<ListFormTemplatesSpecification>());
         await repository.Received(1).CountAsync(Arg.Any<ListFormTemplatesSpecification>());
@@ -34,7 +34,7 @@ public class ListEndpointTests
         var totalCount = 154;
         var pageSize = 100;
 
-        var formTemplates = new FormTemplateModelFaker().Generate(numberOfFormTemplates);
+        var formTemplates = new AttachmentModelFaker().Generate(numberOfFormTemplates);
 
         var repository = Substitute.For<IReadRepository<FormTemplateAggregate>>();
         repository
@@ -57,12 +57,12 @@ public class ListEndpointTests
 
         // Assert
         result
-            .Should().BeOfType<Results<Ok<PagedResponse<FormTemplateModel>>, ProblemDetails>>()
+            .Should().BeOfType<Results<Ok<PagedResponse<AttachmentModel>>, ProblemDetails>>()
             .Which
-            .Result.Should().BeOfType<Ok<PagedResponse<FormTemplateModel>>>()
+            .Result.Should().BeOfType<Ok<PagedResponse<AttachmentModel>>>()
             .Which.Value.Should().NotBeNull();
 
-        var pagedResult = (result.Result as Ok<PagedResponse<FormTemplateModel>>);
+        var pagedResult = (result.Result as Ok<PagedResponse<AttachmentModel>>);
 
         pagedResult.Value.PageSize.Should().Be(pageSize);
         pagedResult.Value.CurrentPage.Should().Be(numberOfFormTemplates);

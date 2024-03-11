@@ -1,4 +1,7 @@
-﻿namespace Vote.Monitor.Domain.Entities.ElectionRoundAggregate;
+﻿using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
+using Vote.Monitor.Domain.Entities.NgoAggregate;
+
+namespace Vote.Monitor.Domain.Entities.ElectionRoundAggregate;
 
 public class ElectionRound : AuditableBaseEntity, IAggregateRoot
 {
@@ -9,8 +12,7 @@ public class ElectionRound : AuditableBaseEntity, IAggregateRoot
     }
 #pragma warning restore CS8618
 
-    private readonly List<MonitoringNGO> _monitoringNgos = new();
-    private readonly List<MonitoringObserver> _monitoringObservers = new();
+    private readonly List<MonitoringNgo> _monitoringNgos = new();
 
     public string Title { get; private set; }
     public string EnglishTitle { get; private set; }
@@ -19,8 +21,7 @@ public class ElectionRound : AuditableBaseEntity, IAggregateRoot
     public Guid CountryId { get; private set; }
     public Country Country { get; private set; }
 
-    public virtual IReadOnlyList<MonitoringNGO> MonitoringNgos => _monitoringNgos.ToList().AsReadOnly();
-    public virtual IReadOnlyList<MonitoringObserver> MonitoringObservers => _monitoringObservers.ToList().AsReadOnly();
+    public virtual IReadOnlyList<MonitoringNgo> MonitoringNgos => _monitoringNgos.ToList().AsReadOnly();
 
     public ElectionRound(Guid countryId,
         string title,
@@ -33,6 +34,21 @@ public class ElectionRound : AuditableBaseEntity, IAggregateRoot
         StartDate = startDate;
         CountryId = countryId;
         Status = ElectionRoundStatus.NotStarted;
+    }
+
+    internal ElectionRound(Guid id,
+        string title,
+        string englishTitle,
+        DateOnly startDate,
+        Country country,
+        List<MonitoringNgo> monitoringNgos,
+        ITimeProvider timeProvider) : base(id, timeProvider)
+    {
+        Title = title;
+        EnglishTitle = englishTitle;
+        StartDate = startDate;
+        Country = country;
+        _monitoringNgos = monitoringNgos;
     }
 
     public virtual void UpdateDetails(Guid countryId, string title, string englishTitle, DateOnly startDate)
@@ -67,32 +83,15 @@ public class ElectionRound : AuditableBaseEntity, IAggregateRoot
         Status = ElectionRoundStatus.NotStarted;
     }
 
-    public virtual void AddMonitoringNgo(Guid ngoId)
+    public MonitoringNgo AddMonitoringNgo(Ngo ngo, ITimeProvider timeProvider)
     {
-        var monitoringNgo = new MonitoringNGO(Id, ngoId);
-        if (!_monitoringNgos.Contains(monitoringNgo))
-        {
-            _monitoringNgos.Add(monitoringNgo);
-        }
-    }
-    public virtual void AddMonitoringObserver(Guid observerId, Guid invitingNgoId)
-    {
-        var monitoringObserver = new MonitoringObserver(Id, invitingNgoId, observerId);
-        if (!_monitoringObservers.Contains(monitoringObserver))
-        {
-            _monitoringObservers.Add(monitoringObserver);
-        }
+        var monitoringNgo = new MonitoringNgo(this, ngo, timeProvider);
+        return monitoringNgo;
     }
 
-    public virtual void RemoveMonitoringNgo(Guid ngoId)
+    public virtual void RemoveMonitoringNgo(MonitoringNgo monitoringNgo)
     {
-        var ngo = _monitoringNgos.First(x => x.NgoId == ngoId);
+        var ngo = _monitoringNgos.First(x => x.NgoId == monitoringNgo.NgoId);
         _monitoringNgos.Remove(ngo);
-    }
-
-    public virtual void RemoveMonitoringObserver(Guid observerId)
-    {
-        var monitoringObserver = _monitoringObservers.First(x => x.ObserverId == observerId);
-        _monitoringObservers.Remove(monitoringObserver);
     }
 }

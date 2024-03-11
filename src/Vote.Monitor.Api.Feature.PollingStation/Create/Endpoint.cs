@@ -39,7 +39,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<PollingStationModel>, Confl
             Id = pollingStation.Id,
             Address = pollingStation.Address,
             DisplayOrder = pollingStation.DisplayOrder,
-            Tags = pollingStation.Tags.ToDictionary(),
+            Tags = pollingStation.Tags.ToDictionary()
         });
     }
 }

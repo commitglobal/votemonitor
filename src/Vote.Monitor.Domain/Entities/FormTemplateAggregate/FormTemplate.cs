@@ -1,5 +1,4 @@
-﻿using FluentValidation.Results;
-using Vote.Monitor.Domain.Entities.FormTemplateAggregate.Validation;
+﻿using Vote.Monitor.Domain.Entities.FormTemplateAggregate.Validation;
 
 namespace Vote.Monitor.Domain.Entities.FormTemplateAggregate;
 
@@ -72,11 +71,4 @@ public class FormTemplate : AuditableBaseEntity, IAggregateRoot
 
     }
 #pragma warning restore CS8618
-}
-
-
-public abstract record PublishResult
-{
-    public record Published : PublishResult;
-    public record InvalidFormTemplate(ValidationResult Problems) : PublishResult;
 }

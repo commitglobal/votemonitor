@@ -24,6 +24,21 @@ namespace Vote.Monitor.Domain.Migrations
             NpgsqlModelBuilderExtensions.HasPostgresExtension(modelBuilder, "uuid-ossp");
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("MonitoringObserverNotification", b =>
+                {
+                    b.Property<Guid>("NotificationId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("TargetedObserversId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("NotificationId", "TargetedObserversId");
+
+                    b.HasIndex("TargetedObserversId");
+
+                    b.ToTable("MonitoringObserverNotification");
+                });
+
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.ApplicationUserAggregate.ApplicationUser", b =>
                 {
                     b.Property<Guid>("Id")
@@ -4284,6 +4299,80 @@ namespace Vote.Monitor.Domain.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.MonitoringNgoAggregate.MonitoringNgo", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("ElectionRoundId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("LastModifiedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("LastModifiedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("NgoId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ElectionRoundId");
+
+                    b.HasIndex("NgoId");
+
+                    b.ToTable("MonitoringNgo");
+                });
+
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.MonitoringObserverAggregate.MonitoringObserver", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("InviterNgoId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("LastModifiedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("LastModifiedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("ObserverId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InviterNgoId");
+
+                    b.HasIndex("ObserverId");
+
+                    b.ToTable("MonitoringObserver");
+                });
+
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.NgoAggregate.Ngo", b =>
                 {
                     b.Property<Guid>("Id")
@@ -4314,6 +4403,69 @@ namespace Vote.Monitor.Domain.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Ngos");
+                });
+
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.NotificationAggregate.Notification", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Body")
+                        .IsRequired()
+                        .HasMaxLength(1024)
+                        .HasColumnType("character varying(1024)");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("ElectionRoundId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("SenderId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ElectionRoundId");
+
+                    b.HasIndex("SenderId");
+
+                    b.ToTable("Notification");
+                });
+
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.NotificationTokenAggregate.NotificationToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("ObserverId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ObserverId");
+
+                    b.ToTable("NotificationToken");
                 });
 
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.PollingStationAggregate.PollingStation", b =>
@@ -4381,6 +4533,21 @@ namespace Vote.Monitor.Domain.Migrations
                     b.ToTable("PlatformAdmins", (string)null);
                 });
 
+            modelBuilder.Entity("MonitoringObserverNotification", b =>
+                {
+                    b.HasOne("Vote.Monitor.Domain.Entities.NotificationAggregate.Notification", null)
+                        .WithMany()
+                        .HasForeignKey("NotificationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Vote.Monitor.Domain.Entities.MonitoringObserverAggregate.MonitoringObserver", null)
+                        .WithMany()
+                        .HasForeignKey("TargetedObserversId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.ApplicationUserAggregate.ApplicationUser", b =>
                 {
                     b.OwnsOne("Vote.Monitor.Domain.Entities.ApplicationUserAggregate.UserPreferences", "Preferences", b1 =>
@@ -4411,92 +4578,73 @@ namespace Vote.Monitor.Domain.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsMany("Vote.Monitor.Domain.Entities.ElectionRoundAggregate.MonitoringNGO", "MonitoringNgos", b1 =>
-                        {
-                            b1.Property<int>("Id")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("integer");
-
-                            NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b1.Property<int>("Id"));
-
-                            b1.Property<Guid>("ElectionRoundId")
-                                .HasColumnType("uuid");
-
-                            b1.Property<Guid>("NgoId")
-                                .HasColumnType("uuid");
-
-                            b1.HasKey("Id");
-
-                            b1.HasIndex("ElectionRoundId");
-
-                            b1.HasIndex("NgoId");
-
-                            b1.ToTable("MonitoringNGOs", (string)null);
-
-                            b1.WithOwner()
-                                .HasForeignKey("ElectionRoundId");
-
-                            b1.HasOne("Vote.Monitor.Domain.Entities.NgoAggregate.Ngo", "Ngo")
-                                .WithMany()
-                                .HasForeignKey("NgoId")
-                                .OnDelete(DeleteBehavior.Cascade)
-                                .IsRequired();
-
-                            b1.Navigation("Ngo");
-                        });
-
-                    b.OwnsMany("Vote.Monitor.Domain.Entities.ElectionRoundAggregate.MonitoringObserver", "MonitoringObservers", b1 =>
-                        {
-                            b1.Property<int>("Id")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("integer");
-
-                            NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b1.Property<int>("Id"));
-
-                            b1.Property<Guid>("ElectionRoundId")
-                                .HasColumnType("uuid");
-
-                            b1.Property<Guid>("InviterNgoId")
-                                .HasColumnType("uuid");
-
-                            b1.Property<Guid>("ObserverId")
-                                .HasColumnType("uuid");
-
-                            b1.HasKey("Id");
-
-                            b1.HasIndex("ElectionRoundId");
-
-                            b1.HasIndex("InviterNgoId");
-
-                            b1.HasIndex("ObserverId");
-
-                            b1.ToTable("MonitoringObservers", (string)null);
-
-                            b1.WithOwner()
-                                .HasForeignKey("ElectionRoundId");
-
-                            b1.HasOne("Vote.Monitor.Domain.Entities.NgoAggregate.Ngo", "InviterNgo")
-                                .WithMany()
-                                .HasForeignKey("InviterNgoId")
-                                .OnDelete(DeleteBehavior.Cascade)
-                                .IsRequired();
-
-                            b1.HasOne("Vote.Monitor.Domain.Entities.ApplicationUserAggregate.Observer", "Observer")
-                                .WithMany()
-                                .HasForeignKey("ObserverId")
-                                .OnDelete(DeleteBehavior.Cascade)
-                                .IsRequired();
-
-                            b1.Navigation("InviterNgo");
-
-                            b1.Navigation("Observer");
-                        });
-
                     b.Navigation("Country");
+                });
 
-                    b.Navigation("MonitoringNgos");
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.MonitoringNgoAggregate.MonitoringNgo", b =>
+                {
+                    b.HasOne("Vote.Monitor.Domain.Entities.ElectionRoundAggregate.ElectionRound", "ElectionRound")
+                        .WithMany("MonitoringNgos")
+                        .HasForeignKey("ElectionRoundId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("MonitoringObservers");
+                    b.HasOne("Vote.Monitor.Domain.Entities.NgoAggregate.Ngo", "Ngo")
+                        .WithMany()
+                        .HasForeignKey("NgoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ElectionRound");
+
+                    b.Navigation("Ngo");
+                });
+
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.MonitoringObserverAggregate.MonitoringObserver", b =>
+                {
+                    b.HasOne("Vote.Monitor.Domain.Entities.MonitoringNgoAggregate.MonitoringNgo", "InviterNgo")
+                        .WithMany("MonitoringObservers")
+                        .HasForeignKey("InviterNgoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Vote.Monitor.Domain.Entities.ApplicationUserAggregate.Observer", "Observer")
+                        .WithMany()
+                        .HasForeignKey("ObserverId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("InviterNgo");
+
+                    b.Navigation("Observer");
+                });
+
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.NotificationAggregate.Notification", b =>
+                {
+                    b.HasOne("Vote.Monitor.Domain.Entities.ElectionRoundAggregate.ElectionRound", "ElectionRound")
+                        .WithMany()
+                        .HasForeignKey("ElectionRoundId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Vote.Monitor.Domain.Entities.ApplicationUserAggregate.NgoAdmin", "Sender")
+                        .WithMany()
+                        .HasForeignKey("SenderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ElectionRound");
+
+                    b.Navigation("Sender");
+                });
+
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.NotificationTokenAggregate.NotificationToken", b =>
+                {
+                    b.HasOne("Vote.Monitor.Domain.Entities.ApplicationUserAggregate.Observer", null)
+                        .WithMany()
+                        .HasForeignKey("ObserverId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.ApplicationUserAggregate.NgoAdmin", b =>
@@ -4532,6 +4680,16 @@ namespace Vote.Monitor.Domain.Migrations
                         .HasForeignKey("Vote.Monitor.Domain.Entities.ApplicationUserAggregate.PlatformAdmin", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.ElectionRoundAggregate.ElectionRound", b =>
+                {
+                    b.Navigation("MonitoringNgos");
+                });
+
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.MonitoringNgoAggregate.MonitoringNgo", b =>
+                {
+                    b.Navigation("MonitoringObservers");
                 });
 
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.NgoAggregate.Ngo", b =>

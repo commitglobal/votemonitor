@@ -29,7 +29,7 @@ public class SpecificationExtensionsTests
         // Arrange
         var request = new BaseSortPaginatedRequest
         {
-            SortColumnName = columnName,
+            SortColumnName = columnName
         };
 
         var spec = new TestSpecification(request);
@@ -49,7 +49,7 @@ public class SpecificationExtensionsTests
         var request = new BaseSortPaginatedRequest
         {
             SortColumnName = columnName,
-            SortOrder = sortOrder,
+            SortOrder = sortOrder
         };
 
         var spec = new TestSpecification(request);
@@ -69,7 +69,7 @@ public class SpecificationExtensionsTests
         var request = new BaseSortPaginatedRequest
         {
             SortColumnName = columnName,
-            SortOrder = sortOrder,
+            SortOrder = sortOrder
         };
 
         var spec = new TestSpecification(request);

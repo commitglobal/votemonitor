@@ -2,14 +2,14 @@
 
 namespace Vote.Monitor.Api.Feature.FormTemplate.Get;
 
-public class Endpoint(IReadRepository<FormTemplateAggregate> repository) : Endpoint<Request, Results<Ok<FormTemplateModel>, NotFound>>
+public class Endpoint(IReadRepository<FormTemplateAggregate> repository) : Endpoint<Request, Results<Ok<AttachmentModel>, NotFound>>
 {
     public override void Configure()
     {
         Get("/api/form-templates/{id}");
     }
 
-    public override async Task<Results<Ok<FormTemplateModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<Results<Ok<AttachmentModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
         var formTemplate = await repository.GetByIdAsync(req.Id, ct);
 
@@ -18,7 +18,7 @@ public class Endpoint(IReadRepository<FormTemplateAggregate> repository) : Endpo
             return TypedResults.NotFound();
         }
 
-        return TypedResults.Ok(new FormTemplateModel
+        return TypedResults.Ok(new AttachmentModel
         {
             Id = formTemplate.Id,
             Code = formTemplate.Code,

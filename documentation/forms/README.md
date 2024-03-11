@@ -34,7 +34,7 @@ Rating scale options:
 Each form states a list of ISO 639-1 code of supported languages.
 
 ```json
-  {
+{
   "id": "1d965966-8349-4d38-b2ab-9459c2ea1ded",
   "code": "A-Form",
   "languages": [

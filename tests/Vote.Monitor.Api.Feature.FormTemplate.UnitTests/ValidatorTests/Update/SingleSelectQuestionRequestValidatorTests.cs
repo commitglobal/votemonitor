@@ -128,7 +128,7 @@ public class SingleSelectQuestionRequestValidatorTests
                 new SelectOptionRequest
                 {
                     Text = ValidatorsTestData.InvalidPartiallyTranslatedTestData.Last()
-                },
+                }
             ]
         };
 
@@ -172,7 +172,7 @@ public class SingleSelectQuestionRequestValidatorTests
                 {
                     Id = Guid.NewGuid(),
                     Text = ValidatorsTestData.ValidPartiallyTranslatedTestData.Last()
-                },
+                }
             ]
         };
 

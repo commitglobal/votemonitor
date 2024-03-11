@@ -2,7 +2,7 @@
 
 namespace Vote.Monitor.Api.Feature.NgoAdmin.Specifications;
 
-public class ListNgoAdminsSpecification : Specification<NgoAdminAggregate>
+public sealed class ListNgoAdminsSpecification : Specification<NgoAdminAggregate>
 {
     public ListNgoAdminsSpecification(List.Request request)
     {

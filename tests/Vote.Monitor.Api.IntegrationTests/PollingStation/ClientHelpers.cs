@@ -12,7 +12,7 @@ static class ClientHelpers
         using var testDataStream = File.OpenRead(Path.Combine("PollingStation", file));
         var importRequest = new ImportRequest
         {
-            File = new FormFile(testDataStream, 0, testDataStream.Length, file, file),
+            File = new FormFile(testDataStream, 0, testDataStream.Length, file, file)
         };
         return await client.POSTAsync<ImportEndpoint, ImportRequest, ImportResponse>(importRequest, true);
 

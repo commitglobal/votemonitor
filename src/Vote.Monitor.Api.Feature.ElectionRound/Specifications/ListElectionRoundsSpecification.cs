@@ -2,7 +2,7 @@
 
 namespace Vote.Monitor.Api.Feature.ElectionRound.Specifications;
 
-public class ListElectionRoundsSpecification : Specification<ElectionRoundAggregate, ElectionRoundBaseModel>
+public sealed class ListElectionRoundsSpecification : Specification<ElectionRoundAggregate, ElectionRoundBaseModel>
 {
     public ListElectionRoundsSpecification(List.Request request)
     {

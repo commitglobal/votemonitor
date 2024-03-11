@@ -212,7 +212,7 @@ public class RequestValidatorTests
                 new SectionRequest
                 {
                     Title = ValidatorsTestData.InvalidPartiallyTranslatedTestData.First()
-                },
+                }
             ]
         };
 
@@ -242,7 +242,7 @@ public class RequestValidatorTests
                 new SectionRequest
                 {
                     Title = ValidatorsTestData.ValidPartiallyTranslatedTestData.First()
-                },
+                }
             ]
         };
 

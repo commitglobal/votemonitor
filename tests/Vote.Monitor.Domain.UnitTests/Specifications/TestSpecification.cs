@@ -1,6 +1,6 @@
 ﻿namespace Vote.Monitor.Domain.UnitTests.Specifications;
 
-public class TestSpecification : Specification<TestEntity>
+public sealed class TestSpecification : Specification<TestEntity>
 {
     public TestSpecification(BaseSortPaginatedRequest request)
     {

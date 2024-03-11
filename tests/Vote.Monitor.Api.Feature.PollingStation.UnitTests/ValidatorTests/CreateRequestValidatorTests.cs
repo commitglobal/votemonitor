@@ -86,7 +86,7 @@ public class CreateRequestValidatorTests
             Tags = new Dictionary<string, string>
             {
                 { "Tag1" ,"value1"},
-                { "Tag2" ,"value2"},
+                { "Tag2" ,"value2"}
             },
             DisplayOrder = 0,
             Address = string.Empty

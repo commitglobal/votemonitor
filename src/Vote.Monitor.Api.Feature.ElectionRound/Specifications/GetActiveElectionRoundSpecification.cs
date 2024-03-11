@@ -1,6 +1,6 @@
 ﻿namespace Vote.Monitor.Api.Feature.ElectionRound.Specifications;
 
-public class GetActiveElectionRoundSpecification : Specification<ElectionRoundAggregate>
+public sealed class GetActiveElectionRoundSpecification : Specification<ElectionRoundAggregate>
 {
     public GetActiveElectionRoundSpecification(Guid countryId, string title)
     {

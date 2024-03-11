@@ -16,7 +16,7 @@ public class ValidatorsTestData
         new TranslatedString
         {
             [LanguagesList.RO.Iso1] = "a long string",
-            [LanguagesList.EN.Iso1] = "a long string".Repeat(257),
+            [LanguagesList.EN.Iso1] = "a long string".Repeat(257)
         },
         new TranslatedString { [""] = "an empty" },
         new TranslatedString { ["aaa"] = "an invalid iso" },
@@ -51,6 +51,6 @@ public class ValidatorsTestData
     public static IEnumerable<object[]> InvalidCodeTestCases =>
         new List<object[]>
         {
-            new object[] { "a".Repeat(257) },
+            new object[] { "a".Repeat(257) }
         };
 }

@@ -15,6 +15,6 @@ public class TextInputQuestionModel : BaseQuestionModel
             Code = question.Code,
             Text = question.Text,
             InputPlaceholder = question.InputPlaceholder,
-            Helptext = question.Helptext,
+            Helptext = question.Helptext
         };
 }

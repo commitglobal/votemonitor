@@ -54,7 +54,7 @@ public class ListNgosSpecificationTests
 
         var request = new Request
         {
-            NameFilter = DefaultName,
+            NameFilter = DefaultName
         };
 
         var spec = new ListNgosSpecification(request);
@@ -83,7 +83,7 @@ public class ListNgosSpecificationTests
 
         var request = new Request
         {
-            Status = NgoStatus.Activated,
+            Status = NgoStatus.Activated
         };
 
         var spec = new ListNgosSpecification(request);

@@ -3,7 +3,7 @@
 public class CreateEndpointTests
 {
     [Fact]
-    public async Task ShouldReturnOkWithFormTemplateModel_WhenNoConflict()
+    public async Task ShouldReturnOkWithAttachmentModel_WhenNoConflict()
     {
         // Arrange
         var templateName = new TranslatedString { [LanguagesList.RO.Iso1] = "UniqueName" };
@@ -31,9 +31,9 @@ public class CreateEndpointTests
                .AddAsync(Arg.Is<FormTemplateAggregate>(x => x.Name == templateName));
 
         result
-            .Should().BeOfType<Results<Ok<FormTemplateModel>, Conflict<ProblemDetails>>>()!
+            .Should().BeOfType<Results<Ok<AttachmentModel>, Conflict<ProblemDetails>>>()!
             .Which!
-            .Result.Should().BeOfType<Ok<FormTemplateModel>>()!
+            .Result.Should().BeOfType<Ok<AttachmentModel>>()!
             .Which!.Value!.Name.Should().BeEquivalentTo(templateName);
     }
 
@@ -56,7 +56,7 @@ public class CreateEndpointTests
 
         // Assert
         result
-            .Should().BeOfType<Results<Ok<FormTemplateModel>, Conflict<ProblemDetails>>>()
+            .Should().BeOfType<Results<Ok<AttachmentModel>, Conflict<ProblemDetails>>>()
             .Which
             .Result.Should().BeOfType<Conflict<ProblemDetails>>();
     }
