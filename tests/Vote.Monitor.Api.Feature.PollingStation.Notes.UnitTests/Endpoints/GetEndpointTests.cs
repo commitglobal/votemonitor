@@ -1,4 +1,4 @@
-﻿namespace Vote.Monitor.Api.Feature.PollingStationNotes.UnitTests.Endpoints;
+﻿namespace Vote.Monitor.Api.Feature.PollingStation.Notes.UnitTests.Endpoints;
 
 public class GetEndpointTests
 {

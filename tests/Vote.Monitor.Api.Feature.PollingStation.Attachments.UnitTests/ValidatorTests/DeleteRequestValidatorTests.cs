@@ -1,7 +1,7 @@
 ﻿
 using Vote.Monitor.Api.Feature.PollingStation.Attachments.Delete;
 
-namespace Vote.Monitor.Api.Feature.PollingStationAttachments.UnitTests.ValidatorTests;
+namespace Vote.Monitor.Api.Feature.PollingStation.Attachments.UnitTests.ValidatorTests;
 
 public class DeleteRequestValidatorTests
 {

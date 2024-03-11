@@ -1,16 +1,14 @@
-﻿using Vote.Monitor.Api.Feature.PollingStation.Notes.Update;
-
-namespace Vote.Monitor.Api.Feature.PollingStationNotes.UnitTests.ValidatorTests;
+﻿namespace Vote.Monitor.Api.Feature.PollingStation.Notes.UnitTests.ValidatorTests;
 
 public class UpdateRequestValidatorTests
 {
-    private readonly Validator _validator = new();
+    private readonly Update.Validator _validator = new();
 
     [Fact]
     public void Validation_ShouldFail_When_Id_Empty()
     {
         // Arrange
-        var request = new Request { Id = Guid.Empty };
+        var request = new Update.Request { Id = Guid.Empty };
 
         // Act
         var result = _validator.TestValidate(request);
@@ -23,7 +21,7 @@ public class UpdateRequestValidatorTests
     public void Validation_ShouldFail_When_ObserverId_Empty()
     {
         // Arrange
-        var request = new Request { ObserverId = Guid.Empty };
+        var request = new Update.Request { ObserverId = Guid.Empty };
 
         // Act
         var result = _validator.TestValidate(request);
@@ -36,7 +34,7 @@ public class UpdateRequestValidatorTests
     public void Validation_ShouldFail_When_ElectionRoundId_Empty()
     {
         // Arrange
-        var request = new Request { ElectionRoundId = Guid.Empty };
+        var request = new Update.Request { ElectionRoundId = Guid.Empty };
 
         // Act
         var result = _validator.TestValidate(request);
@@ -49,7 +47,7 @@ public class UpdateRequestValidatorTests
     public void Validation_ShouldFail_When_PollingStationId_Empty()
     {
         // Arrange
-        var request = new Request { PollingStationId = Guid.Empty };
+        var request = new Update.Request { PollingStationId = Guid.Empty };
 
         // Act
         var result = _validator.TestValidate(request);
@@ -63,7 +61,7 @@ public class UpdateRequestValidatorTests
     public void Validation_ShouldFail_When_Text_Empty(string text)
     {
         // Arrange
-        var request = new Request { Text = text };
+        var request = new Update.Request { Text = text };
 
         // Act
         var result = _validator.TestValidate(request);
@@ -76,7 +74,7 @@ public class UpdateRequestValidatorTests
     public void Validation_ShouldFail_When_Text_ExceedsLimits()
     {
         // Arrange
-        var request = new Request { Text = "a".Repeat(1025) };
+        var request = new Update.Request { Text = "a".Repeat(1025) };
 
         // Act
         var result = _validator.TestValidate(request);
@@ -89,12 +87,13 @@ public class UpdateRequestValidatorTests
     public void Validation_ShouldPass_When_ValidRequest()
     {
         // Arrange
-        var request = new Request
+        var request = new Update.Request
         {
             ElectionRoundId = Guid.NewGuid(),
             PollingStationId = Guid.NewGuid(),
             ObserverId = Guid.NewGuid(),
-            Id = Guid.NewGuid()
+            Id = Guid.NewGuid(),
+            Text = "some text"
         };
 
         // Act

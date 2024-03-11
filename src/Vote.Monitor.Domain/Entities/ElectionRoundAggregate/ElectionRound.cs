@@ -48,6 +48,7 @@ public class ElectionRound : AuditableBaseEntity, IAggregateRoot
         EnglishTitle = englishTitle;
         StartDate = startDate;
         Country = country;
+        CountryId = country.Id;
         _monitoringNgos = monitoringNgos;
     }
 

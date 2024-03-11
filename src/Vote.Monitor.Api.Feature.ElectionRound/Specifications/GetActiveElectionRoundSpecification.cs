@@ -7,6 +7,6 @@ public sealed class GetActiveElectionRoundSpecification : Specification<Election
         Query
             .Where(x => x.Title == title)
             .Where(x => x.CountryId == countryId)
-            .Where(x=>x.Status != ElectionRoundStatus.Archived);
+            .Where(x => x.Status != ElectionRoundStatus.Archived);
     }
 }

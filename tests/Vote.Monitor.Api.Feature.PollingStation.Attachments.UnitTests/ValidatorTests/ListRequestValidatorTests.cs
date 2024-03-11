@@ -1,6 +1,6 @@
 ﻿using Vote.Monitor.Api.Feature.PollingStation.Attachments.List;
 
-namespace Vote.Monitor.Api.Feature.PollingStationAttachments.UnitTests.ValidatorTests;
+namespace Vote.Monitor.Api.Feature.PollingStation.Attachments.UnitTests.ValidatorTests;
 
 public class ListRequestValidatorTests
 {

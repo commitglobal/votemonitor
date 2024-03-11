@@ -1,4 +1,4 @@
-﻿namespace Vote.Monitor.Api.Feature.PollingStationAttachments.UnitTests.Endpoints;
+﻿namespace Vote.Monitor.Api.Feature.PollingStation.Attachments.UnitTests.Endpoints;
 
 public class DeleteEndpointTests
 {
