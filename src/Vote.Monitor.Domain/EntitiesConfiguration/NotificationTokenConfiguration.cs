@@ -10,6 +10,7 @@ internal class NotificationTokenConfiguration : IEntityTypeConfiguration<Notific
         builder.HasKey(e => e.Id);
         builder.Property(e => e.Id).IsRequired();
         builder.Property(x => x.Timestamp).IsRequired();
+        builder.Property(x => x.Token).IsRequired().HasMaxLength(1024);
 
         builder.HasOne<Observer>().WithMany().HasForeignKey(x => x.ObserverId);
     }

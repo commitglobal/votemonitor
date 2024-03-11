@@ -1,15 +1,15 @@
-﻿using Vote.Monitor.Core.Validation;
-
-namespace Vote.Monitor.Api.Feature.Notifications.Send;
+﻿namespace Vote.Monitor.Api.Feature.Notifications.Send;
 
 public class Validator : Validator<Request>
 {
     public Validator()
     {
         RuleFor(x => x.ElectionRoundId).NotEmpty();
-        RuleFor(x => x.PollingStationId).NotEmpty();
-        RuleFor(x => x.ObserverId).NotEmpty();
-        RuleFor(x => x.Attachment).FileSmallerThan(512 * 1024 * 1024); // 500 MB upload limit
+        RuleFor(x => x.NgoId).NotEmpty();
+        RuleFor(x => x.ObserverIds).NotEmpty();
+        RuleForEach(x => x.ObserverIds).NotEmpty();
+        RuleFor(x => x.Title).NotEmpty().MaximumLength(256);
+        RuleFor(x => x.Body).NotEmpty().MaximumLength(1024);
     }
 }
 

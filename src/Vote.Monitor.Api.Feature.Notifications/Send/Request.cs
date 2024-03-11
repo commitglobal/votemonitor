@@ -2,12 +2,13 @@
 
 public class Request
 {
-    public required Guid ElectionRoundId { get; set; }
+    public Guid ElectionRoundId { get; set; }
 
-    public required Guid PollingStationId { get; set; }
+    [FromClaim("NgoId")]
+    public Guid NgoId { get; set; }
 
-    [FromClaim("Sub")]
-    public Guid ObserverId { get; set; }
+    public List<Guid> ObserverIds { get; set; } = new();
 
-    public required IFormFile Attachment { get; set; }
+    public string Title { get; set; }
+    public string Body { get; set; }
 }
