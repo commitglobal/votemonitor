@@ -4,7 +4,7 @@ using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
 
 namespace Vote.Monitor.Api.Feature.FormTemplate.Models;
 
-public record AttachmentModel
+public record FormTemplateModel
 {
     public Guid Id { get; init; }
     public required string Code { get; init; }

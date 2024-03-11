@@ -1,6 +1,6 @@
 ﻿namespace Vote.Monitor.Api.Feature.FormTemplate.UnitTests;
 
-public sealed class AttachmentModelFaker : PrivateFaker<AttachmentModel>
+public sealed class AttachmentModelFaker : PrivateFaker<FormTemplateModel>
 {
     private readonly List<FormTemplateStatus> _statuses = [FormTemplateStatus.Drafted, FormTemplateStatus.Published];
     public AttachmentModelFaker(Guid? id = null, FormTemplateStatus? status = null)

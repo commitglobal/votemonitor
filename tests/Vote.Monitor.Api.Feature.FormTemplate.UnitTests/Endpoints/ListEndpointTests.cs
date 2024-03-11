@@ -20,7 +20,7 @@ public class ListEndpointTests
         // Assert
         result
             .Should()
-            .BeOfType<Results<Ok<PagedResponse<AttachmentModel>>, ProblemDetails>>();
+            .BeOfType<Results<Ok<PagedResponse<FormTemplateModel>>, ProblemDetails>>();
 
         await repository.Received(1).ListAsync(Arg.Any<ListFormTemplatesSpecification>());
         await repository.Received(1).CountAsync(Arg.Any<ListFormTemplatesSpecification>());
@@ -57,12 +57,12 @@ public class ListEndpointTests
 
         // Assert
         result
-            .Should().BeOfType<Results<Ok<PagedResponse<AttachmentModel>>, ProblemDetails>>()
+            .Should().BeOfType<Results<Ok<PagedResponse<FormTemplateModel>>, ProblemDetails>>()
             .Which
-            .Result.Should().BeOfType<Ok<PagedResponse<AttachmentModel>>>()
+            .Result.Should().BeOfType<Ok<PagedResponse<FormTemplateModel>>>()
             .Which.Value.Should().NotBeNull();
 
-        var pagedResult = (result.Result as Ok<PagedResponse<AttachmentModel>>);
+        var pagedResult = (result.Result as Ok<PagedResponse<FormTemplateModel>>);
 
         pagedResult.Value.PageSize.Should().Be(pageSize);
         pagedResult.Value.CurrentPage.Should().Be(numberOfFormTemplates);
