@@ -43,7 +43,6 @@ public class Country : BaseEntity, IAggregateRoot
         string numericCode,
         ITimeProvider timeProvider) : base(iso2.ToGuid(), timeProvider)
     {
-        Id = iso2.ToGuid();
         Name = name;
         FullName = fullName;
         Iso2 = iso2;

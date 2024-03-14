@@ -1,56 +1,58 @@
 ﻿using Vote.Monitor.Api.Feature.Monitoring.Specifications;
 using Vote.Monitor.Core.Extensions;
 using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
+using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
 using Vote.Monitor.Domain.Entities.NgoAggregate;
 
 namespace Vote.Monitor.Api.Feature.Monitoring.AddObserver;
 
 public class Endpoint(IRepository<ElectionRoundAggregate> repository,
-     IReadRepository<NgoAggregate> ngoRepository,
-     IReadRepository<ObserverAggregate> observerRepository) : Endpoint<Request, Results<NoContent, NotFound<string>, ValidationProblem>>
+    IRepository<MonitoringNgoAggregate> monitoringNgoRepository,
+    IReadRepository<ObserverAggregate> observerRepository,
+    ITimeProvider timeProvider) : Endpoint<Request, Results<NoContent, NotFound<string>, ValidationProblem>>
 {
     public override void Configure()
     {
-        Post("/api/election-rounds/{id}/monitoring-observers");
+        Post("/api/election-rounds/{electionRoundId}/monitoring-ngos/{ngoId}/monitoring-observers");
         DontAutoTag();
         Options(x => x.WithTags("monitoring"));
     }
 
     public override async Task<Results<NoContent, NotFound<string>, ValidationProblem>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var electionRound = await repository.GetByIdAsync(req.Id, ct);
+        var electionRound = await repository.GetByIdAsync(req.ElectionRoundId, ct);
         if (electionRound is null)
         {
             return TypedResults.NotFound("Election round not found");
         }
 
-        var ngoStatus = await ngoRepository.SingleOrDefaultAsync(new GetNgoStatusSpecification(req.InviterNgoId), ct);
-        if (ngoStatus is null)
+        var monitoringNgo = await monitoringNgoRepository.SingleOrDefaultAsync(new GetMonitoringNgoSpecification(req.ElectionRoundId, req.NgoId), ct);
+        if (monitoringNgo is null)
         {
             return TypedResults.NotFound("NGO not found");
         }
 
-        if (ngoStatus == NgoStatus.Deactivated)
+        if (monitoringNgo.Ngo.Status == NgoStatus.Deactivated || monitoringNgo.Status == MonitoringNgoStatus.Suspended)
         {
-            AddError(x => x.InviterNgoId, "Only active ngos can add monitoring observers");
+            AddError(x => x.NgoId, "Only active ngos can add monitoring observers");
             return TypedResults.ValidationProblem(ValidationFailures.ToValidationErrorDictionary());
         }
 
-        var observerStatus = await observerRepository.SingleOrDefaultAsync(new GetObserverStatusSpecification(req.ObserverId), ct);
-        if (observerStatus is null)
+        var observer = await observerRepository.GetByIdAsync(req.ObserverId, ct);
+        if (observer is null)
         {
             return TypedResults.NotFound("Observer not found");
         }
 
-        if (observerStatus == UserStatus.Deactivated)
+        if (observer.Status == UserStatus.Deactivated)
         {
             AddError(x => x.ObserverId, "Only active observers can monitor elections");
             return TypedResults.ValidationProblem(ValidationFailures.ToValidationErrorDictionary());
         }
 
-        electionRound.AddMonitoringObserver(req.ObserverId, req.InviterNgoId);
+        monitoringNgo.AddMonitoringObserver(observer, timeProvider);
 
-        await repository.SaveChangesAsync(ct);
+        await monitoringNgoRepository.UpdateAsync(monitoringNgo, ct);
         return TypedResults.NoContent();
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace Vote.Monitor.Api.Feature.FormTemplate.UnitTests.Specifications;
+﻿using Vote.Monitor.Core.Models;
+
+namespace Vote.Monitor.Api.Feature.FormTemplate.UnitTests.Specifications;
 
 public class ListFormTemplatesSpecificationTests
 {
@@ -49,7 +51,7 @@ public class ListFormTemplatesSpecificationTests
 
         var request = new List.Request
         {
-            CodeFilter = DefaultCode,
+            CodeFilter = DefaultCode
         };
 
         var spec = new ListFormTemplatesSpecification(request);
@@ -78,7 +80,7 @@ public class ListFormTemplatesSpecificationTests
 
         var request = new List.Request
         {
-            Status = FormTemplateStatus.Published,
+            Status = FormTemplateStatus.Published
         };
 
         var spec = new ListFormTemplatesSpecification(request);

@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Vote.Monitor.Core.Models;
+using Vote.Monitor.Domain.Entities.FormBase;
 using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
 
 namespace Vote.Monitor.Domain.EntitiesConfiguration;
@@ -9,7 +11,7 @@ public class FormTemplateConfiguration : IEntityTypeConfiguration<FormTemplate>
     public void Configure(EntityTypeBuilder<FormTemplate> builder)
     {
         builder.HasKey(e => e.Id);
-        builder.Property(x => x.FormType).IsRequired();
+        builder.Property(x => x.FormTemplateType).IsRequired();
         builder.Property(x => x.Code).HasMaxLength(256).IsRequired();
         builder.Property(x => x.Status).IsRequired();
 

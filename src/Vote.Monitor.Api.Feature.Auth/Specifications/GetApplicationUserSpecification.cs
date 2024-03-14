@@ -2,7 +2,7 @@
 
 namespace Vote.Monitor.Api.Feature.Auth.Specifications;
 
-public class GetApplicationUserSpecification : Specification<ApplicationUser>, ISingleResultSpecification<ApplicationUser>
+public sealed class GetApplicationUserSpecification : Specification<ApplicationUser>, ISingleResultSpecification<ApplicationUser>
 {
     public GetApplicationUserSpecification(string username, string password)
     {

@@ -1,4 +1,6 @@
-﻿namespace Vote.Monitor.Api.Feature.Observer.Specifications;
+﻿using Vote.Monitor.Core.Models;
+
+namespace Vote.Monitor.Api.Feature.Observer.Specifications;
 
 public static class SpecificationExtensions
 {

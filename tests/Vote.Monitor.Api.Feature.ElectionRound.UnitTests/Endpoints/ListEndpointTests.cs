@@ -1,4 +1,6 @@
-﻿namespace Vote.Monitor.Api.Feature.ElectionRound.UnitTests.Endpoints;
+﻿using Vote.Monitor.Core.Models;
+
+namespace Vote.Monitor.Api.Feature.ElectionRound.UnitTests.Endpoints;
 
 public class ListEndpointTests
 {

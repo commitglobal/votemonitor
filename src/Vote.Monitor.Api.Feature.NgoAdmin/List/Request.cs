@@ -1,4 +1,6 @@
-﻿namespace Vote.Monitor.Api.Feature.NgoAdmin.List;
+﻿using Vote.Monitor.Core.Models;
+
+namespace Vote.Monitor.Api.Feature.NgoAdmin.List;
 
 public class Request : BaseSortPaginatedRequest
 {

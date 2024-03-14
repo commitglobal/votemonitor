@@ -1,6 +1,6 @@
 ﻿namespace Vote.Monitor.Api.Feature.Ngo.Specifications;
 
-public class GetNgoByNameSpecification : Specification<NgoAggregate>
+public sealed class GetNgoByNameSpecification : Specification<NgoAggregate>
 {
     public GetNgoByNameSpecification(string name)
     {

@@ -14,7 +14,7 @@ public class ListRequestValidatorTests
         var request = new List.Request
         {
             PageSize = pageSize,
-            PageNumber = 1,
+            PageNumber = 1
         };
 
         // Act
@@ -34,7 +34,7 @@ public class ListRequestValidatorTests
         var request = new List.Request
         {
             PageSize = pageSize,
-            PageNumber = 1,
+            PageNumber = 1
         };
 
         // Act
@@ -54,7 +54,7 @@ public class ListRequestValidatorTests
         var request = new List.Request
         {
             PageSize = 10,
-            PageNumber = pageNumber,
+            PageNumber = pageNumber
         };
 
         // Act
@@ -73,7 +73,7 @@ public class ListRequestValidatorTests
         var request = new List.Request
         {
             PageSize = 10,
-            PageNumber = pageNumber,
+            PageNumber = pageNumber
         };
 
         // Act

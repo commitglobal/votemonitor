@@ -1,4 +1,6 @@
-﻿namespace Vote.Monitor.Api.Feature.PollingStation.UnitTests.ServicesTests;
+﻿using Vote.Monitor.TestUtils.Utils;
+
+namespace Vote.Monitor.Api.Feature.PollingStation.UnitTests.ServicesTests;
 
 public class PollingStationParserTests
 {
@@ -67,8 +69,8 @@ public class PollingStationParserTests
                 Tags = new List<TagImportModel>
                 {
                     new() { Name = "Tag1", Value = "value1" },
-                    new() { Name = "Tag2", Value = "value2" },
-                },
+                    new() { Name = "Tag2", Value = "value2" }
+                }
             }).ToList();
 
         reader

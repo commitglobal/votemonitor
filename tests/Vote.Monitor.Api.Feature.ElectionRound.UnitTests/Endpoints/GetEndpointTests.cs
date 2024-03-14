@@ -19,17 +19,25 @@ public class GetEndpointTests
             CountryId = CountriesList.MD.Id,
             MonitoringNgos =
             [
-                new MonitoringNgoModel { Name = "A big NGO", Status = NgoStatus.Activated, NgoId = Guid.NewGuid() }
-            ],
-            MonitoringObservers =
-            [
-                new MonitoringObserverModel
+                new MonitoringNgoModel
                 {
-                    Name = "Some observer", Status = UserStatus.Active, ObserverId = Guid.NewGuid()
+                    Name = "A big NGO",
+                    Status = NgoStatus.Activated,
+                    NgoId = Guid.NewGuid(),
+                    MonitoringObservers =
+                    [
+                        new MonitoringObserverModel
+                        {
+                            Name = "Some observer",
+                            Status = UserStatus.Active,
+                            ObserverId = Guid.NewGuid()
+                        }
+                    ],
                 }
             ],
+
             CreatedOn = DateTime.UtcNow.AddHours(-30),
-            LastModifiedOn = DateTime.UtcNow.AddHours(-15),
+            LastModifiedOn = DateTime.UtcNow.AddHours(-15)
         };
 
         var repository = Substitute.For<IReadRepository<ElectionRoundAggregate>>();

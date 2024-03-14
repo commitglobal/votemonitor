@@ -1,5 +1,5 @@
 ﻿using Vote.Monitor.Api.Feature.Ngo.Specifications;
-using Vote.Monitor.TestUtils.Fakes;
+using Vote.Monitor.TestUtils.Fakes.Aggregates;
 
 namespace Vote.Monitor.Api.Feature.Ngo.UnitTests.Specifications;
 

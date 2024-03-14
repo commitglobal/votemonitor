@@ -1,4 +1,6 @@
-﻿namespace Vote.Monitor.Api.Feature.FormTemplate.Specifications;
+﻿using Vote.Monitor.Core.Models;
+
+namespace Vote.Monitor.Api.Feature.FormTemplate.Specifications;
 
 public static class SpecificationExtensions
 {

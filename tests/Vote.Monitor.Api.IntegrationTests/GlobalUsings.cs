@@ -11,5 +11,4 @@ global using Vote.Monitor.Domain;
 global using Xunit.Abstractions;
 global using FastEndpoints;
 global using FluentAssertions;
-global using Vote.Monitor.Core.Models;
 global using Xunit;

@@ -1,6 +1,6 @@
 ﻿namespace Vote.Monitor.Api.Feature.Observer.Specifications;
 
-public class GetObserversByLoginsSpecification : Specification<ObserverAggregate>
+public sealed class GetObserversByLoginsSpecification : Specification<ObserverAggregate>
 {
     public GetObserversByLoginsSpecification(IEnumerable<string> logins)
     {

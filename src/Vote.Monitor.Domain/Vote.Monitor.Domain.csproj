@@ -31,4 +31,8 @@
     <ProjectReference Include="..\Vote.Monitor.Core\Vote.Monitor.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Entities\EmergencyAggregate\" />
+  </ItemGroup>
+
 </Project>

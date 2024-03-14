@@ -1,9 +1,11 @@
-﻿namespace Vote.Monitor.Api.Feature.FormTemplate.UnitTests.Endpoints;
+﻿using Vote.Monitor.Core.Models;
+
+namespace Vote.Monitor.Api.Feature.FormTemplate.UnitTests.Endpoints;
 
 public class CreateEndpointTests
 {
     [Fact]
-    public async Task ShouldReturnOkWithFormTemplateModel_WhenNoConflict()
+    public async Task ShouldReturnOkWithAttachmentModel_WhenNoConflict()
     {
         // Arrange
         var templateName = new TranslatedString { [LanguagesList.RO.Iso1] = "UniqueName" };

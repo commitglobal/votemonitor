@@ -2,7 +2,7 @@
 
 namespace Vote.Monitor.Api.Feature.Ngo.Specifications;
 
-public class ListNgosSpecification : Specification<NgoAggregate>
+public sealed class ListNgosSpecification : Specification<NgoAggregate>
 {
     public ListNgosSpecification(List.Request request)
     {

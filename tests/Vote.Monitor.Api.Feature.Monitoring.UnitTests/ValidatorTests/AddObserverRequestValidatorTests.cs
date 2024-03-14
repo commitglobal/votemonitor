@@ -5,29 +5,29 @@ public class AddObserverRequestValidatorTests
     private readonly AddObserver.Validator _validator = new();
 
     [Fact]
-    public void Validation_ShouldPass_When_Id_NotEmpty()
+    public void Validation_ShouldPass_When_ElectionRoundId_NotEmpty()
     {
         // Arrange
-        var request = new AddObserver.Request { Id = Guid.NewGuid() };
+        var request = new AddObserver.Request { ElectionRoundId = Guid.NewGuid() };
 
         // Act
         var result = _validator.TestValidate(request);
 
         // Assert
-        result.ShouldNotHaveValidationErrorFor(x => x.Id);
+        result.ShouldNotHaveValidationErrorFor(x => x.ElectionRoundId);
     }
 
     [Fact]
-    public void Validation_ShouldFail_When_Id_Empty()
+    public void Validation_ShouldFail_When_ElectionRoundId_Empty()
     {
         // Arrange
-        var request = new AddObserver.Request { Id = Guid.Empty };
+        var request = new AddObserver.Request { ElectionRoundId = Guid.Empty };
 
         // Act
         var result = _validator.TestValidate(request);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.Id);
+        result.ShouldHaveValidationErrorFor(x => x.ElectionRoundId);
     }
 
     [Fact]
@@ -57,28 +57,28 @@ public class AddObserverRequestValidatorTests
     }
 
     [Fact]
-    public void Validation_ShouldPass_When_InviterNgoId_NotEmpty()
+    public void Validation_ShouldPass_When_NgoId_NotEmpty()
     {
         // Arrange
-        var request = new AddObserver.Request { InviterNgoId = Guid.NewGuid() };
+        var request = new AddObserver.Request { NgoId = Guid.NewGuid() };
 
         // Act
         var result = _validator.TestValidate(request);
 
         // Assert
-        result.ShouldNotHaveValidationErrorFor(x => x.InviterNgoId);
+        result.ShouldNotHaveValidationErrorFor(x => x.NgoId);
     }
 
     [Fact]
-    public void Validation_ShouldFail_When_InviterNgoId_Empty()
+    public void Validation_ShouldFail_When_NgoId_Empty()
     {
         // Arrange
-        var request = new AddObserver.Request { InviterNgoId = Guid.Empty };
+        var request = new AddObserver.Request { NgoId = Guid.Empty };
 
         // Act
         var result = _validator.TestValidate(request);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.InviterNgoId);
+        result.ShouldHaveValidationErrorFor(x => x.NgoId);
     }
 }

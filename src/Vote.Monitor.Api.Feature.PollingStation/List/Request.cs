@@ -1,4 +1,6 @@
-﻿namespace Vote.Monitor.Api.Feature.PollingStation.List;
+﻿using Vote.Monitor.Core.Models;
+
+namespace Vote.Monitor.Api.Feature.PollingStation.List;
 public class Request: BaseSortPaginatedRequest
 {
     [QueryParam]

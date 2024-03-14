@@ -1,5 +1,5 @@
 ﻿using Vote.Monitor.Api.Feature.Ngo.Delete;
-using Vote.Monitor.TestUtils.Fakes;
+using Vote.Monitor.TestUtils.Fakes.Aggregates;
 using Endpoint = Vote.Monitor.Api.Feature.Ngo.Delete.Endpoint;
 
 namespace Vote.Monitor.Api.Feature.Ngo.UnitTests.Endpoints;

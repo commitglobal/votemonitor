@@ -1,6 +1,7 @@
 ﻿using Vote.Monitor.Api.Feature.Ngo.List;
 using Vote.Monitor.Api.Feature.Ngo.Specifications;
-using Vote.Monitor.TestUtils.Fakes;
+using Vote.Monitor.Core.Models;
+using Vote.Monitor.TestUtils.Fakes.Aggregates;
 using Endpoint = Vote.Monitor.Api.Feature.Ngo.List.Endpoint;
 
 namespace Vote.Monitor.Api.Feature.Ngo.UnitTests.Endpoints;

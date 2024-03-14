@@ -1,4 +1,5 @@
 ﻿using Vote.Monitor.Api.Feature.PollingStation;
+using Vote.Monitor.Core.Models;
 using ListEndpoint = Vote.Monitor.Api.Feature.PollingStation.List.Endpoint;
 using ListRequest = Vote.Monitor.Api.Feature.PollingStation.List.Request;
 

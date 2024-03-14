@@ -2,7 +2,7 @@
 
 namespace Vote.Monitor.Api.Feature.PollingStation.Specifications;
 
-public class ListPollingStationsSpecification : Specification<PollingStationAggregate>
+public sealed class ListPollingStationsSpecification : Specification<PollingStationAggregate>
 {
     public ListPollingStationsSpecification(List.Request request)
     {

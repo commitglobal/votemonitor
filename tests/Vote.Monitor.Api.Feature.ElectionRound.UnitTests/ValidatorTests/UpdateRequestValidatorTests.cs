@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Vote.Monitor.TestUtils.Utils;
 
 namespace Vote.Monitor.Api.Feature.ElectionRound.UnitTests.ValidatorTests;
 
@@ -216,6 +217,6 @@ public class UpdateRequestValidatorTests
         new List<object[]>
         {
             new object[] { new DateOnly(2024,01,01)},
-            new object[] { new DateOnly(2024,01,02)},
+            new object[] { new DateOnly(2024,01,02)}
         };
 }

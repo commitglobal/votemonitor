@@ -1,4 +1,6 @@
-﻿namespace Vote.Monitor.Api.Feature.FormTemplate.UnitTests;
+﻿using Vote.Monitor.TestUtils.Fakes;
+
+namespace Vote.Monitor.Api.Feature.FormTemplate.UnitTests;
 
 public sealed class FormTemplateModelFaker : PrivateFaker<FormTemplateModel>
 {

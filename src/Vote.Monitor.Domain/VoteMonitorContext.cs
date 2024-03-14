@@ -55,9 +55,15 @@ public class VoteMonitorContext : DbContext
         builder.ApplyConfiguration(new LanguageConfiguration());
         builder.ApplyConfiguration(new NgoConfiguration());
         builder.ApplyConfiguration(new ElectionRoundConfiguration());
+        builder.ApplyConfiguration(new MonitoringNgoConfiguration());
+        builder.ApplyConfiguration(new MonitoringObserverConfiguration());
         builder.ApplyConfiguration(new PollingStationConfiguration());
         builder.ApplyConfiguration(new ImportValidationErrorsConfiguration());
         builder.ApplyConfiguration(new FormTemplateConfiguration());
+        builder.ApplyConfiguration(new NotificationConfiguration());
+        builder.ApplyConfiguration(new NotificationTokenConfiguration());
+        builder.ApplyConfiguration(new PollingStationAttachmentConfiguration());
+        builder.ApplyConfiguration(new PollingStationNoteConfiguration());
     }
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)

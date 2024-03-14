@@ -2,7 +2,7 @@
 
 namespace Vote.Monitor.Api.Feature.Observer.Specifications;
 
-public class ListObserversSpecification : Specification<ObserverAggregate>
+public sealed class ListObserversSpecification : Specification<ObserverAggregate>
 {
     public ListObserversSpecification(List.Request request)
     {

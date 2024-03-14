@@ -1,5 +1,4 @@
-﻿using Vote.Monitor.Api.Feature.FormTemplate.Models;
-using Vote.Monitor.Api.Feature.FormTemplate.Specifications;
+﻿using Vote.Monitor.Api.Feature.FormTemplate.Specifications;
 using Vote.Monitor.Core.Services.Time;
 
 namespace Vote.Monitor.Api.Feature.FormTemplate.Create;
@@ -14,7 +13,7 @@ public class Endpoint(IRepository<FormTemplateAggregate> repository, ITimeProvid
 
     public override async Task<Results<Ok<FormTemplateModel>, Conflict<ProblemDetails>>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var specification = new GetFormTemplateSpecification(req.Code, req.FormType);
+        var specification = new GetFormTemplateSpecification(req.Code, req.FormTemplateType);
         var duplicatedFormTemplate = await repository.AnyAsync(specification, ct);
 
         if (duplicatedFormTemplate)
@@ -23,7 +22,7 @@ public class Endpoint(IRepository<FormTemplateAggregate> repository, ITimeProvid
             return TypedResults.Conflict(new ProblemDetails(ValidationFailures));
         }
 
-        var formTemplate = FormTemplateAggregate.Create(req.FormType, req.Code, req.Name, req.Languages, timeProvider);
+        var formTemplate = FormTemplateAggregate.Create(req.FormTemplateType, req.Code, req.Name, req.Languages, timeProvider);
 
         await repository.AddAsync(formTemplate, ct);
 

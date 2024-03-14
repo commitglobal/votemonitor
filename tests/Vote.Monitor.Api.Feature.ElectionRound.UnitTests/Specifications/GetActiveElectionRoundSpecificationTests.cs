@@ -16,7 +16,7 @@ public class GetActiveElectionRoundSpecificationTests
             electionRound,
             new ElectionRoundAggregateFaker(title: title, countryId: countryId, status: ElectionRoundStatus.Archived), // same title & country but archived
             new ElectionRoundAggregateFaker(countryId: countryId, status: status), // same country different title
-            new ElectionRoundAggregateFaker(title: title, status: status), // same title different country
+            new ElectionRoundAggregateFaker(title: title, status: status) // same title different country
         ];
 
         // Act

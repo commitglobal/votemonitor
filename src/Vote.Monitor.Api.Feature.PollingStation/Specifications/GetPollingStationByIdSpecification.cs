@@ -1,6 +1,6 @@
 ﻿namespace Vote.Monitor.Api.Feature.PollingStation.Specifications;
 
-public class GetPollingStationByIdSpecification : Specification<PollingStationAggregate>,
+public sealed class GetPollingStationByIdSpecification : Specification<PollingStationAggregate>,
     ISingleResultSpecification<PollingStationAggregate>
 {
     public GetPollingStationByIdSpecification(Guid id)

@@ -1,5 +1,4 @@
-﻿using Vote.Monitor.Api.Feature.FormTemplate.Models;
-using Vote.Monitor.Domain.Specifications;
+﻿using Vote.Monitor.Domain.Specifications;
 
 namespace Vote.Monitor.Api.Feature.FormTemplate.Specifications;
 
@@ -21,7 +20,7 @@ public sealed class ListFormTemplatesSpecification : Specification<FormTemplateA
             Status = x.Status,
             Languages = x.Languages.ToList(),
             CreatedOn = x.CreatedOn,
-            LastModifiedOn = x.LastModifiedOn,
+            LastModifiedOn = x.LastModifiedOn
         });
     }
 }

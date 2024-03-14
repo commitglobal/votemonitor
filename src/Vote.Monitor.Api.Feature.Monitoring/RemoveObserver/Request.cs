@@ -2,6 +2,7 @@
 
 public class Request
 {
-    public Guid Id { get; set; }
+    public Guid ElectionRoundId { get; set; }
+    public Guid NgoId { get; set; }
     public Guid ObserverId { get; set; }
 }

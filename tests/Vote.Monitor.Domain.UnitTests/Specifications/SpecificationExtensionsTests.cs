@@ -1,4 +1,6 @@
-﻿namespace Vote.Monitor.Domain.UnitTests.Specifications;
+﻿using Vote.Monitor.Core.Models;
+
+namespace Vote.Monitor.Domain.UnitTests.Specifications;
 
 public class SpecificationExtensionsTests
 {
@@ -29,7 +31,7 @@ public class SpecificationExtensionsTests
         // Arrange
         var request = new BaseSortPaginatedRequest
         {
-            SortColumnName = columnName,
+            SortColumnName = columnName
         };
 
         var spec = new TestSpecification(request);
@@ -49,7 +51,7 @@ public class SpecificationExtensionsTests
         var request = new BaseSortPaginatedRequest
         {
             SortColumnName = columnName,
-            SortOrder = sortOrder,
+            SortOrder = sortOrder
         };
 
         var spec = new TestSpecification(request);
@@ -69,7 +71,7 @@ public class SpecificationExtensionsTests
         var request = new BaseSortPaginatedRequest
         {
             SortColumnName = columnName,
-            SortOrder = sortOrder,
+            SortOrder = sortOrder
         };
 
         var spec = new TestSpecification(request);

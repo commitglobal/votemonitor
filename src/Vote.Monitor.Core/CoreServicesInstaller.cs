@@ -26,7 +26,7 @@ public static class CoreServicesInstaller
         });
 
         services
-        .AddScoped<ICurrentUserProvider, CurrentUserProvider>()
+            .AddScoped<ICurrentUserProvider, CurrentUserProvider>()
             .AddScoped(sp => (ICurrentUserInitializer)sp.GetRequiredService<ICurrentUserProvider>());
 
         return services;

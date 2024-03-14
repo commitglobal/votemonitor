@@ -1,4 +1,5 @@
 ﻿using Vote.Monitor.Api.Feature.Ngo.Update;
+using Vote.Monitor.TestUtils.Utils;
 
 namespace Vote.Monitor.Api.Feature.Ngo.UnitTests.ValidatorTests;
 

@@ -1,10 +1,13 @@
-﻿namespace Vote.Monitor.Api.Feature.Monitoring.RemoveObserver;
+﻿using Vote.Monitor.Api.Feature.Monitoring.Specifications;
 
-public class Endpoint(IRepository<ElectionRoundAggregate> repository) : Endpoint<Request, Results<NoContent, NotFound<string>>>
+namespace Vote.Monitor.Api.Feature.Monitoring.RemoveObserver;
+
+public class Endpoint(IRepository<MonitoringNgoAggregate> repository,
+    IReadRepository<ObserverAggregate> observersRepository) : Endpoint<Request, Results<NoContent, NotFound<string>>>
 {
     public override void Configure()
     {
-        Delete("/api/election-rounds/{id}/monitoring-observers/{observerId}");
+        Delete("/api/election-rounds/{electionRoundId}/monitoring-ngos/{ngoId}/monitoring-observers/{observerId}");
         Description(x => x.Accepts<Request>());
         DontAutoTag();
         Options(x => x.WithTags("monitoring"));
@@ -12,21 +15,21 @@ public class Endpoint(IRepository<ElectionRoundAggregate> repository) : Endpoint
 
     public override async Task<Results<NoContent, NotFound<string>>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var electionRound = await repository.GetByIdAsync(req.Id, ct);
-        if (electionRound is null)
+        var monitoringNgo = await repository.FirstOrDefaultAsync(new GetMonitoringNgoSpecification(req.ElectionRoundId, req.NgoId), ct);
+        if (monitoringNgo == null)
         {
-            return TypedResults.NotFound("Election round not found");
+            return TypedResults.NotFound("Monitoring NGO not found");
         }
 
-        var observerIsMonitoringElection = electionRound.MonitoringObservers.Any(x => x.ObserverId == req.ObserverId);
-        if (!observerIsMonitoringElection)
+        var observer = await observersRepository.GetByIdAsync(req.ObserverId, ct);
+        if (observer == null)
         {
-            return TypedResults.NotFound("Requested observer does not monitor requested election round");
+            return TypedResults.NotFound("Observer not found");
         }
 
-        electionRound.RemoveMonitoringObserver(req.ObserverId);
+        monitoringNgo.RemoveMonitoringObserver(observer);
 
-        await repository.SaveChangesAsync(ct);
+        await repository.UpdateAsync(monitoringNgo, ct);
         return TypedResults.NoContent();
     }
 }

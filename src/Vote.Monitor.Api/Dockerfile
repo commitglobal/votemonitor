@@ -15,17 +15,19 @@ COPY ["src/Vote.Monitor.Api.Feature.Auth/Vote.Monitor.Api.Feature.Auth.csproj", 
 COPY ["src/Vote.Monitor.Domain/Vote.Monitor.Domain.csproj", "src/Vote.Monitor.Domain/"]
 COPY ["src/Vote.Monitor.Core/Vote.Monitor.Core.csproj", "src/Vote.Monitor.Core/"]
 COPY ["src/Vote.Monitor.Api.Feature.Country/Vote.Monitor.Api.Feature.Country.csproj", "src/Vote.Monitor.Api.Feature.Country/"]
+COPY ["src/Vote.Monitor.Api.Feature.FormTemplate/Vote.Monitor.Api.Feature.FormTemplate.csproj", "src/Vote.Monitor.Api.Feature.FormTemplate/"]
 COPY ["src/Vote.Monitor.Api.Feature.Language/Vote.Monitor.Api.Feature.Language.csproj", "src/Vote.Monitor.Api.Feature.Language/"]
 COPY ["src/Vote.Monitor.Api.Feature.NgoAdmin/Vote.Monitor.Api.Feature.NgoAdmin.csproj", "src/Vote.Monitor.Api.Feature.NgoAdmin/"]
 COPY ["src/Vote.Monitor.Api.Feature.Ngo/Vote.Monitor.Api.Feature.Ngo.csproj", "src/Vote.Monitor.Api.Feature.Ngo/"]
 COPY ["src/Vote.Monitor.Api.Feature.ElectionRound/Vote.Monitor.Api.Feature.ElectionRound.csproj", "src/Vote.Monitor.Api.Feature.ElectionRound/"]
 COPY ["src/Vote.Monitor.Api.Feature.Monitoring/Vote.Monitor.Api.Feature.Monitoring.csproj", "src/Vote.Monitor.Api.Feature.Monitoring/"]
 COPY ["src/Vote.Monitor.Api.Feature.Observer/Vote.Monitor.Api.Feature.Observer.csproj", "src/Vote.Monitor.Api.Feature.Observer/"]
+COPY ["src/Vote.Monitor.Api.Feature.PollingStation.Attachments/Vote.Monitor.Api.Feature.PollingStation.Attachments.csproj", "src/Vote.Monitor.Api.Feature.PollingStation.Attachments/"]
+COPY ["src/Vote.Monitor.Api.Feature.PollingStation.Notes/Vote.Monitor.Api.Feature.PollingStation.Notes.csproj", "src/Vote.Monitor.Api.Feature.PollingStation.Notes/"]
 COPY ["src/Vote.Monitor.Api.Feature.PollingStation/Vote.Monitor.Api.Feature.PollingStation.csproj", "src/Vote.Monitor.Api.Feature.PollingStation/"]
+COPY ["src/Vote.Monitor.Api.Feature.Notifications/Vote.Monitor.Api.Feature.Notifications.csproj", "src/Vote.Monitor.Api.Feature.Notifications/"]
 COPY ["src/Vote.Monitor.Api.Feature.UserPreferences/Vote.Monitor.Api.Feature.UserPreferences.csproj", "src/Vote.Monitor.Api.Feature.UserPreferences/"]
-COPY ["src/Vote.Monitor.Api.Feature.FormTemplate/Vote.Monitor.Api.Feature.FormTemplate.csproj", "src/Vote.Monitor.Api.Feature.FormTemplate/"]
-
-RUN dotnet restore "src/Vote.Monitor.Api/Vote.Monitor.Api.csproj"
+RUN dotnet restore "./src/Vote.Monitor.Api/./Vote.Monitor.Api.csproj"
 COPY . .
 WORKDIR "/src/src/Vote.Monitor.Api"
 RUN dotnet build "Vote.Monitor.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build

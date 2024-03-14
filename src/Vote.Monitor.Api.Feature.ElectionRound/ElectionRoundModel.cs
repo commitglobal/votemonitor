@@ -6,7 +6,6 @@ namespace Vote.Monitor.Api.Feature.ElectionRound;
 public record ElectionRoundModel : ElectionRoundBaseModel
 {
     public required List<MonitoringNgoModel> MonitoringNgos { get; init; }
-    public required List<MonitoringObserverModel> MonitoringObservers { get; init; }
 }
 
 public class MonitoringNgoModel
@@ -16,6 +15,8 @@ public class MonitoringNgoModel
 
     [JsonConverter(typeof(SmartEnumNameConverter<NgoStatus, string>))]
     public required NgoStatus Status { get; init; }
+    public required List<MonitoringObserverModel> MonitoringObservers { get; init; }
+
 }
 
 public class MonitoringObserverModel

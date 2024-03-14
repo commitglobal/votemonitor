@@ -1,4 +1,7 @@
-﻿namespace Vote.Monitor.Api.Feature.FormTemplate.UnitTests.ValidatorTests;
+﻿using Vote.Monitor.Core.Models;
+using Vote.Monitor.TestUtils.Utils;
+
+namespace Vote.Monitor.Api.Feature.FormTemplate.UnitTests.ValidatorTests;
 
 public class ValidatorsTestData
 {
@@ -16,7 +19,7 @@ public class ValidatorsTestData
         new TranslatedString
         {
             [LanguagesList.RO.Iso1] = "a long string",
-            [LanguagesList.EN.Iso1] = "a long string".Repeat(257),
+            [LanguagesList.EN.Iso1] = "a long string".Repeat(257)
         },
         new TranslatedString { [""] = "an empty" },
         new TranslatedString { ["aaa"] = "an invalid iso" },
@@ -51,6 +54,6 @@ public class ValidatorsTestData
     public static IEnumerable<object[]> InvalidCodeTestCases =>
         new List<object[]>
         {
-            new object[] { "a".Repeat(257) },
+            new object[] { "a".Repeat(257) }
         };
 }

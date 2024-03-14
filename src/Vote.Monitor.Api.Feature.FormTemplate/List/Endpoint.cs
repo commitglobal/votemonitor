@@ -1,5 +1,5 @@
-﻿using Vote.Monitor.Api.Feature.FormTemplate.Models;
-using Vote.Monitor.Api.Feature.FormTemplate.Specifications;
+﻿using Vote.Monitor.Api.Feature.FormTemplate.Specifications;
+using Vote.Monitor.Core.Models;
 
 namespace Vote.Monitor.Api.Feature.FormTemplate.List;
 

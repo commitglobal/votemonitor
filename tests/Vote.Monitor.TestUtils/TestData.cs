@@ -9,7 +9,7 @@ public class TestData
             new object[] { "" },
             new object[] { " " },
             new object[] { "     " },
-            new object[] { "\t" },
+            new object[] { "\t" }
         };
 
     public static IEnumerable<object[]> EmptyStringsTestCases =>
@@ -18,6 +18,6 @@ public class TestData
             new object[] { "" },
             new object[] { " " },
             new object[] { "     " },
-            new object[] { "\t" },
+            new object[] { "\t" }
         };
 }

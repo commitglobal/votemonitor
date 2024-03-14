@@ -1,4 +1,5 @@
 ﻿using Vote.Monitor.Api.Feature.Ngo;
+using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.Entities.NgoAggregate;
 using ListEndpoint = Vote.Monitor.Api.Feature.Ngo.List.Endpoint;
 using ListRequest = Vote.Monitor.Api.Feature.Ngo.List.Request;

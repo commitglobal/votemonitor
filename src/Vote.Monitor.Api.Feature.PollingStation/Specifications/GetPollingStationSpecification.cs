@@ -1,6 +1,6 @@
 ﻿namespace Vote.Monitor.Api.Feature.PollingStation.Specifications;
 
-public class GetPollingStationSpecification : Specification<PollingStationAggregate>
+public sealed class GetPollingStationSpecification : Specification<PollingStationAggregate>
 {
     public GetPollingStationSpecification(string address, Dictionary<string, string> tags)
     {

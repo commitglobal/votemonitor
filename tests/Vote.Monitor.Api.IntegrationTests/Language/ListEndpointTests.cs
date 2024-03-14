@@ -30,7 +30,7 @@ public class ListEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeeder>
         List<Tuple<string, string>> testLanguages = new List<Tuple<string, string>>
         {
             new("EN", "English"),
-            new("FA", "Persian"),
+            new("FA", "Persian")
         };
 
         // Act
