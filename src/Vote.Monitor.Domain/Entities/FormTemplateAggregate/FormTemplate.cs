@@ -1,10 +1,11 @@
-﻿using Vote.Monitor.Domain.Entities.FormTemplateAggregate.Validation;
+﻿using Vote.Monitor.Core.Models;
+using Vote.Monitor.Domain.Entities.FormBase;
 
 namespace Vote.Monitor.Domain.Entities.FormTemplateAggregate;
 
 public class FormTemplate : AuditableBaseEntity, IAggregateRoot
 {
-    public FormType FormType { get; private set; }
+    public FormTemplateType FormTemplateType { get; private set; }
     public string Code { get; private set; }
     public TranslatedString Name { get; private set; }
     public FormTemplateStatus Status { get; private set; }
@@ -13,25 +14,25 @@ public class FormTemplate : AuditableBaseEntity, IAggregateRoot
 
     public IReadOnlyList<FormSection> Sections { get; private set; } = new List<FormSection>().AsReadOnly();
 
-    private FormTemplate(FormType formType,
+    private FormTemplate(FormTemplateType formTemplateType,
         string code,
         TranslatedString name,
         IEnumerable<string> languages,
         ITimeProvider timeProvider) : base(Guid.NewGuid(), timeProvider)
     {
-        FormType = formType;
+        FormTemplateType = formTemplateType;
         Code = code;
         Name = name;
         Languages = languages.ToList().AsReadOnly();
         Status = FormTemplateStatus.Drafted;
     }
 
-    public static FormTemplate Create(FormType formType,
+    public static FormTemplate Create(FormTemplateType formTemplateType,
         string code,
         TranslatedString name,
         IEnumerable<string> languages,
         ITimeProvider timeProvider) =>
-        new(formType, code, name, languages, timeProvider);
+        new(formTemplateType, code, name, languages, timeProvider);
 
     public PublishResult Publish()
     {
@@ -54,13 +55,13 @@ public class FormTemplate : AuditableBaseEntity, IAggregateRoot
     }
 
     public void UpdateDetails(string code, TranslatedString name,
-        FormType formType,
+        FormTemplateType formTemplateType,
         IEnumerable<string> languages,
         IEnumerable<FormSection> sections)
     {
         Code = code;
         Name = name;
-        FormType = formType;
+        FormTemplateType = formTemplateType;
         Languages = languages.ToList().AsReadOnly();
         Sections = sections.ToList().AsReadOnly();
     }

@@ -1,8 +1,9 @@
 ﻿using System.Text.Json;
 using FluentAssertions.Json;
 using Newtonsoft.Json.Linq;
-using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
-using Vote.Monitor.Domain.Entities.FormTemplateAggregate.Questions;
+using Vote.Monitor.Core.Models;
+using Vote.Monitor.Domain.Entities.FormBase;
+using Vote.Monitor.Domain.Entities.FormBase.Questions;
 
 namespace Vote.Monitor.Domain.UnitTests.Entities;
 
@@ -39,13 +40,13 @@ public class FormTemplateTests
         sections.Should().HaveCount(1);
         sections!.First().Questions.Should().HaveCount(1);
         var question = sections!.First().Questions.First();
-        question.Should().BeOfType<NumberInputQuestion>();
+        question.Should().BeOfType<NumberQuestion>();
     }
 
     [Fact]
     public void Should_SerializeCorrectly_WhenPolymorphicQuestions()
     {
-        var numberInputQuestion = new NumberInputQuestion(Guid.Parse("d519a2aa-4b68-4470-88a3-492fcf597df1"),
+        var numberInputQuestion = new NumberQuestion(Guid.Parse("d519a2aa-4b68-4470-88a3-492fcf597df1"),
             "A code",
             new TranslatedString { ["RO"] = "A text" },
             new TranslatedString { ["RO"] = "A helptext" },

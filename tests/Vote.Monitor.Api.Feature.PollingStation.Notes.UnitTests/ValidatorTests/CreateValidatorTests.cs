@@ -1,4 +1,6 @@
-﻿namespace Vote.Monitor.Api.Feature.PollingStation.Notes.UnitTests.ValidatorTests;
+﻿using Vote.Monitor.TestUtils.Utils;
+
+namespace Vote.Monitor.Api.Feature.PollingStation.Notes.UnitTests.ValidatorTests;
 
 public class CreateValidatorTests
 {

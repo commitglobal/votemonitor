@@ -9,7 +9,6 @@ global using Vote.Monitor.Api.Feature.Observer;
 global using Vote.Monitor.Api.Feature.PollingStation;
 global using Vote.Monitor.Api.Swagger;
 global using Vote.Monitor.Core;
-global using Vote.Monitor.Core.Models;
 global using Vote.Monitor.Core.Preprocessors;
 global using Vote.Monitor.Domain;
 global using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;

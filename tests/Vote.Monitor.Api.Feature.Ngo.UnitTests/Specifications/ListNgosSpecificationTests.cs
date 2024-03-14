@@ -1,7 +1,9 @@
-﻿using Vote.Monitor.Api.Feature.Ngo.List;
+﻿
+using Vote.Monitor.Api.Feature.Ngo.List;
 using Vote.Monitor.Api.Feature.Ngo.Specifications;
+using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.Entities.NgoAggregate;
-using Vote.Monitor.TestUtils.Fakes;
+using Vote.Monitor.TestUtils.Fakes.Aggregates;
 
 namespace Vote.Monitor.Api.Feature.Ngo.UnitTests.Specifications;
 

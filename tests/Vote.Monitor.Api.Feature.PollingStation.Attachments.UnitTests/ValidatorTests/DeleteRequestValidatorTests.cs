@@ -6,6 +6,7 @@ namespace Vote.Monitor.Api.Feature.PollingStation.Attachments.UnitTests.Validato
 public class DeleteRequestValidatorTests
 {
     private readonly Validator _validator = new();
+    
     [Fact]
     public void Validation_ShouldFail_When_Id_Empty()
     {

@@ -1,4 +1,6 @@
-﻿namespace Vote.Monitor.Domain.Specifications;
+﻿using Vote.Monitor.Core.Models;
+
+namespace Vote.Monitor.Domain.Specifications;
 
 public static class SpecificationExtensions
 {

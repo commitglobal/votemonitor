@@ -3,7 +3,6 @@ global using System.Text.Json;
 global using Ardalis.Specification;
 global using Microsoft.EntityFrameworkCore;
 global using SmartEnum.EFCore;
-global using Vote.Monitor.Core.Models;
 global using Vote.Monitor.Core.Services.ElectionRound;
 global using Vote.Monitor.Core.Services.Security;
 global using Vote.Monitor.Core.Services.Serialization;

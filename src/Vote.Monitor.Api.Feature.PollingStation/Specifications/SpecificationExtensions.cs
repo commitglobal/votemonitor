@@ -1,4 +1,6 @@
-﻿namespace Vote.Monitor.Api.Feature.PollingStation.Specifications;
+﻿using Vote.Monitor.Core.Models;
+
+namespace Vote.Monitor.Api.Feature.PollingStation.Specifications;
 
 public static class SpecificationExtensions
 {

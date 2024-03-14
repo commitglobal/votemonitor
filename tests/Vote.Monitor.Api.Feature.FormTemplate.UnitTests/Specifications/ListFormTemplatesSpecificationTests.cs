@@ -1,4 +1,6 @@
-﻿namespace Vote.Monitor.Api.Feature.FormTemplate.UnitTests.Specifications;
+﻿using Vote.Monitor.Core.Models;
+
+namespace Vote.Monitor.Api.Feature.FormTemplate.UnitTests.Specifications;
 
 public class ListFormTemplatesSpecificationTests
 {

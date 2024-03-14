@@ -1,4 +1,5 @@
-﻿using Vote.Monitor.Api.Feature.FormTemplate.Models;
+﻿using Vote.Monitor.Form.Module.Mappers;
+using Vote.Monitor.Form.Module.Models;
 
 namespace Vote.Monitor.Api.Feature.FormTemplate.Get;
 
@@ -32,7 +33,7 @@ public class Endpoint(IReadRepository<FormTemplateAggregate> repository) : Endpo
                 Id = section.Id,
                 Code = section.Code,
                 Title = section.Title,
-                Questions = section.Questions.Select(BaseQuestionModel.FromEntity).ToList()
+                Questions = section.Questions.Select(FormMapper.ToModel).ToList()
             }).ToList()
         });
     }

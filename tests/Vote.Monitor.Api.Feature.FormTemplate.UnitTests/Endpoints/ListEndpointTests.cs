@@ -1,4 +1,6 @@
-﻿namespace Vote.Monitor.Api.Feature.FormTemplate.UnitTests.Endpoints;
+﻿using Vote.Monitor.Core.Models;
+
+namespace Vote.Monitor.Api.Feature.FormTemplate.UnitTests.Endpoints;
 
 public class ListEndpointTests
 {
@@ -34,7 +36,7 @@ public class ListEndpointTests
         var totalCount = 154;
         var pageSize = 100;
 
-        var formTemplates = new AttachmentModelFaker().Generate(numberOfFormTemplates);
+        var formTemplates = new FormTemplateModelFaker().Generate(numberOfFormTemplates);
 
         var repository = Substitute.For<IReadRepository<FormTemplateAggregate>>();
         repository

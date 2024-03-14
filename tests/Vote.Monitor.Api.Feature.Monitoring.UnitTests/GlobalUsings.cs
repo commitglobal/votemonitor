@@ -6,7 +6,7 @@ global using NSubstitute;
 global using Vote.Monitor.Core.Services.Time;
 global using Vote.Monitor.Domain.Repository;
 global using Vote.Monitor.Api.Feature.Monitoring.Specifications;
-global using Vote.Monitor.TestUtils.Fakes;
+global using Vote.Monitor.TestUtils.Fakes.Aggregates;
 global using Xunit;
 
 global using ElectionRoundAggregate = Vote.Monitor.Domain.Entities.ElectionRoundAggregate.ElectionRound;

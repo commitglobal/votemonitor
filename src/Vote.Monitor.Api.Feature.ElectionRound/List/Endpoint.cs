@@ -1,4 +1,6 @@
-﻿namespace Vote.Monitor.Api.Feature.ElectionRound.List;
+﻿using Vote.Monitor.Core.Models;
+
+namespace Vote.Monitor.Api.Feature.ElectionRound.List;
 
 public class Endpoint(IReadRepository<ElectionRoundAggregate> repository)
     : Endpoint<Request, Results<Ok<PagedResponse<ElectionRoundBaseModel>>, ProblemDetails>>

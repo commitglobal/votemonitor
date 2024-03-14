@@ -1,4 +1,6 @@
-﻿namespace Vote.Monitor.Api.Feature.FormTemplate.UnitTests.Endpoints;
+﻿using Vote.Monitor.Core.Models;
+
+namespace Vote.Monitor.Api.Feature.FormTemplate.UnitTests.Endpoints;
 
 public class CreateEndpointTests
 {
