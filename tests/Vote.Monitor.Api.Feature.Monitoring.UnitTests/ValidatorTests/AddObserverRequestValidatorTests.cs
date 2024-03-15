@@ -57,7 +57,7 @@ public class AddObserverRequestValidatorTests
     }
 
     [Fact]
-    public void Validation_ShouldPass_When_NgoId_NotEmpty()
+    public void Validation_ShouldPass_When_MonitoringNgoId_NotEmpty()
     {
         // Arrange
         var request = new AddObserver.Request { MonitoringNgoId = Guid.NewGuid() };
@@ -70,7 +70,7 @@ public class AddObserverRequestValidatorTests
     }
 
     [Fact]
-    public void Validation_ShouldFail_When_NgoId_Empty()
+    public void Validation_ShouldFail_When_MonitoringNgoId_Empty()
     {
         // Arrange
         var request = new AddObserver.Request { MonitoringNgoId = Guid.Empty };

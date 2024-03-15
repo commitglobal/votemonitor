@@ -2,43 +2,60 @@
 using Vote.Monitor.Core.Extensions;
 using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
+using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 using Vote.Monitor.Domain.Entities.NgoAggregate;
 
 namespace Vote.Monitor.Api.Feature.Monitoring.AddObserver;
 
-public class Endpoint(IRepository<ElectionRoundAggregate> repository,
-    IRepository<MonitoringNgoAggregate> monitoringNgoRepository,
-    IReadRepository<ObserverAggregate> observerRepository,
-    ITimeProvider timeProvider) : Endpoint<Request, Results<NoContent, NotFound<string>, ValidationProblem>>
+public class Endpoint : Endpoint<Request, Results<Ok<MonitoringObserverModel>, NotFound<string>, Conflict<ProblemDetails>, ValidationProblem>>
 {
+    private readonly IRepository<ElectionRoundAggregate> _repository;
+    private readonly IRepository<MonitoringNgo> _monitoringNgoRepository;
+    private readonly IRepository<MonitoringObserver> _monitoringObserverRepository;
+    private readonly IReadRepository<Observer> _observerRepository;
+    private readonly ITimeProvider _timeProvider;
+
+    public Endpoint(IRepository<ElectionRoundAggregate> repository,
+        IRepository<MonitoringNgoAggregate> monitoringNgoRepository,
+        IReadRepository<ObserverAggregate> observerRepository,
+        IRepository<MonitoringObserver> monitoringObserverRepository, 
+        ITimeProvider timeProvider)
+    {
+        _repository = repository;
+        _monitoringNgoRepository = monitoringNgoRepository;
+        _observerRepository = observerRepository;
+        _monitoringObserverRepository = monitoringObserverRepository;
+        _timeProvider = timeProvider;
+    }
+
     public override void Configure()
     {
-        Post("/api/election-rounds/{electionRoundId}/monitoring-ngos/{ngoId}/monitoring-observers");
+        Post("/api/election-rounds/{electionRoundId}/monitoring-ngos/{monitoringNgoId}/monitoring-observers");
         DontAutoTag();
         Options(x => x.WithTags("monitoring"));
     }
 
-    public override async Task<Results<NoContent, NotFound<string>, ValidationProblem>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<Results<Ok<MonitoringObserverModel>, NotFound<string>, Conflict<ProblemDetails>, ValidationProblem>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var electionRound = await repository.GetByIdAsync(req.ElectionRoundId, ct);
+        var electionRound = await _repository.GetByIdAsync(req.ElectionRoundId, ct);
         if (electionRound is null)
         {
             return TypedResults.NotFound("Election round not found");
         }
 
-        var monitoringNgo = await monitoringNgoRepository.SingleOrDefaultAsync(new GetMonitoringNgoSpecification(req.ElectionRoundId, req.NgoId), ct);
+        var monitoringNgo = await _monitoringNgoRepository.SingleOrDefaultAsync(new GetMonitoringNgoSpecification(req.ElectionRoundId, req.MonitoringNgoId), ct);
         if (monitoringNgo is null)
         {
-            return TypedResults.NotFound("NGO not found");
+            return TypedResults.NotFound("Monitoring NGO not found");
         }
 
         if (monitoringNgo.Ngo.Status == NgoStatus.Deactivated || monitoringNgo.Status == MonitoringNgoStatus.Suspended)
         {
-            AddError(x => x.NgoId, "Only active ngos can add monitoring observers");
+            AddError(x => x.MonitoringNgoId, "Only active monitoring NGOs can add monitoring observers");
             return TypedResults.ValidationProblem(ValidationFailures.ToValidationErrorDictionary());
         }
 
-        var observer = await observerRepository.GetByIdAsync(req.ObserverId, ct);
+        var observer = await _observerRepository.GetByIdAsync(req.ObserverId, ct);
         if (observer is null)
         {
             return TypedResults.NotFound("Observer not found");
@@ -50,9 +67,20 @@ public class Endpoint(IRepository<ElectionRoundAggregate> repository,
             return TypedResults.ValidationProblem(ValidationFailures.ToValidationErrorDictionary());
         }
 
-        monitoringNgo.AddMonitoringObserver(observer, timeProvider);
+        var monitoringObserver = monitoringNgo.AddMonitoringObserver(observer, _timeProvider);
+        if (monitoringObserver is null)
+        {
+            AddError(x => x.ObserverId, "Observer is already registered as monitoring for this monitoring NGO.");
+            return TypedResults.Conflict(new ProblemDetails(ValidationFailures));
+        }
 
-        await monitoringNgoRepository.UpdateAsync(monitoringNgo, ct);
-        return TypedResults.NoContent();
+        await _monitoringObserverRepository.AddAsync(monitoringObserver, ct);
+
+        return TypedResults.Ok(new MonitoringObserverModel
+        {
+            Id = monitoringObserver.Id,
+            InviterNgoId = monitoringObserver.InviterNgoId,
+            Status = monitoringObserver.Status
+        });
     }
 }

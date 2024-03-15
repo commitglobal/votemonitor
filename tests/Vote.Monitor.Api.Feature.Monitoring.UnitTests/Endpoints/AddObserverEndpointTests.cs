@@ -1,5 +1,7 @@
-﻿using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
+﻿using Vote.Monitor.Api.Feature.Monitoring.AddObserver;
+using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
+using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 using Vote.Monitor.Domain.Entities.NgoAggregate;
 
 namespace Vote.Monitor.Api.Feature.Monitoring.UnitTests.Endpoints;
@@ -7,24 +9,37 @@ namespace Vote.Monitor.Api.Feature.Monitoring.UnitTests.Endpoints;
 public class AddObserverEndpointTests
 {
     private readonly ITimeProvider _timeProvider = Substitute.For<ITimeProvider>();
+    private readonly IRepository<ElectionRoundAggregate> _repository;
+    private readonly IRepository<MonitoringNgo> _monitoringNgoRepository;
+    private readonly IReadRepository<Observer> _observerRepository;
+    private readonly IRepository<MonitoringObserver> _monitoringObserverRepository;
+    private readonly Endpoint _endpoint;
+
+    public AddObserverEndpointTests()
+    {
+        _repository = Substitute.For<IRepository<ElectionRoundAggregate>>();
+        _monitoringNgoRepository = Substitute.For<IRepository<MonitoringNgoAggregate>>();
+        _observerRepository = Substitute.For<IReadRepository<ObserverAggregate>>();
+        _monitoringObserverRepository = Substitute.For<IRepository<MonitoringObserver>>();
+        _endpoint = Factory.Create<Endpoint>(_repository,
+            _monitoringNgoRepository,
+            _observerRepository,
+            _monitoringObserverRepository,
+            _timeProvider);
+    }
 
     [Fact]
     public async Task ShouldReturnNotFound_WhenElectionRoundNotFound()
     {
         // Arrange
-        var repository = Substitute.For<IRepository<ElectionRoundAggregate>>();
-        var monitoringNgoRepository = Substitute.For<IRepository<MonitoringNgoAggregate>>();
-        var observerRepository = Substitute.For<IReadRepository<ObserverAggregate>>();
-
-        var endpoint = Factory.Create<AddObserver.Endpoint>(repository, monitoringNgoRepository, observerRepository, _timeProvider);
 
         // Act
-        var request = new AddObserver.Request { ElectionRoundId = Guid.NewGuid() };
-        var result = await endpoint.ExecuteAsync(request, default);
+        var request = new Request { ElectionRoundId = Guid.NewGuid() };
+        var result = await _endpoint.ExecuteAsync(request, default);
 
         // Assert
         result
-            .Should().BeOfType<Results<NoContent, NotFound<string>, ValidationProblem>>()
+            .Should().BeOfType<Results<Ok<MonitoringObserverModel>, NotFound<string>, Conflict<ProblemDetails>, ValidationProblem>>()
             .Which
             .Result.Should().BeOfType<NotFound<string>>()
             .Which.Value.Should().Be("Election round not found");
@@ -36,24 +51,18 @@ public class AddObserverEndpointTests
         // Arrange
         var electionRoundId = Guid.NewGuid();
 
-        var repository = Substitute.For<IRepository<ElectionRoundAggregate>>();
-        repository.GetByIdAsync(electionRoundId).Returns(new ElectionRoundAggregateFaker(id: electionRoundId).Generate());
-
-        var monitoringNgoRepository = Substitute.For<IRepository<MonitoringNgoAggregate>>();
-        var observerRepository = Substitute.For<IReadRepository<ObserverAggregate>>();
-
-        var endpoint = Factory.Create<AddObserver.Endpoint>(repository, monitoringNgoRepository, observerRepository, _timeProvider);
+        _repository.GetByIdAsync(electionRoundId).Returns(new ElectionRoundAggregateFaker(id: electionRoundId).Generate());
 
         // Act
-        var request = new AddObserver.Request { ElectionRoundId = electionRoundId, MonitoringNgoId = Guid.NewGuid() };
-        var result = await endpoint.ExecuteAsync(request, default);
+        var request = new Request { ElectionRoundId = electionRoundId, MonitoringNgoId = Guid.NewGuid() };
+        var result = await _endpoint.ExecuteAsync(request, default);
 
         // Assert
         result
-            .Should().BeOfType<Results<NoContent, NotFound<string>, ValidationProblem>>()
+            .Should().BeOfType<Results<Ok<MonitoringObserverModel>, NotFound<string>, Conflict<ProblemDetails>, ValidationProblem>>()
             .Which
             .Result.Should().BeOfType<NotFound<string>>()
-            .Which.Value.Should().Be("NGO not found");
+            .Which.Value.Should().Be("Monitoring NGO not found");
     }
 
     [Fact]
@@ -64,23 +73,17 @@ public class AddObserverEndpointTests
         var ngo = new NgoAggregateFaker(status: NgoStatus.Activated).Generate();
         var monitoringNgo = new MonitoringNgoAggregateFaker(status: MonitoringNgoStatus.Active, ngo: ngo).Generate();
 
-        var repository = Substitute.For<IRepository<ElectionRoundAggregate>>();
-        repository.GetByIdAsync(electionRoundId).Returns(new ElectionRoundAggregateFaker(id: electionRoundId).Generate());
+        _repository.GetByIdAsync(electionRoundId).Returns(new ElectionRoundAggregateFaker(id: electionRoundId).Generate());
 
-        var monitoringNgoRepository = Substitute.For<IRepository<MonitoringNgoAggregate>>();
-        monitoringNgoRepository.SingleOrDefaultAsync(Arg.Any<GetMonitoringNgoSpecification>()).Returns(monitoringNgo);
-
-        var observerRepository = Substitute.For<IReadRepository<ObserverAggregate>>();
-
-        var endpoint = Factory.Create<AddObserver.Endpoint>(repository, monitoringNgoRepository, observerRepository, _timeProvider);
-
+        _monitoringNgoRepository.SingleOrDefaultAsync(Arg.Any<GetMonitoringNgoSpecification>()).Returns(monitoringNgo);
+        
         // Act
-        var request = new AddObserver.Request { ElectionRoundId = electionRoundId, MonitoringNgoId = ngo.Id };
-        var result = await endpoint.ExecuteAsync(request, default);
+        var request = new Request { ElectionRoundId = electionRoundId, MonitoringNgoId = ngo.Id };
+        var result = await _endpoint.ExecuteAsync(request, default);
 
         // Assert
         result
-            .Should().BeOfType<Results<NoContent, NotFound<string>, ValidationProblem>>()
+            .Should().BeOfType<Results<Ok<MonitoringObserverModel>, NotFound<string>, Conflict<ProblemDetails>, ValidationProblem>>()
             .Which
             .Result.Should().BeOfType<NotFound<string>>()
             .Which.Value.Should().Be("Observer not found");
@@ -94,29 +97,23 @@ public class AddObserverEndpointTests
         var ngo = new NgoAggregateFaker(status: NgoStatus.Deactivated).Generate();
         var monitoringNgo = new MonitoringNgoAggregateFaker(status: MonitoringNgoStatus.Active, ngo: ngo).Generate();
 
-        var repository = Substitute.For<IRepository<ElectionRoundAggregate>>();
-        repository.GetByIdAsync(electionRoundId).Returns(new ElectionRoundAggregateFaker(id: electionRoundId).Generate());
+        _repository.GetByIdAsync(electionRoundId).Returns(new ElectionRoundAggregateFaker(id: electionRoundId).Generate());
 
-        var monitoringNgoRepository = Substitute.For<IRepository<MonitoringNgoAggregate>>();
-        monitoringNgoRepository.SingleOrDefaultAsync(Arg.Any<GetMonitoringNgoSpecification>()).Returns(monitoringNgo);
-
-        var observerRepository = Substitute.For<IReadRepository<ObserverAggregate>>();
-
-        var endpoint = Factory.Create<AddObserver.Endpoint>(repository, monitoringNgoRepository, observerRepository, _timeProvider);
-
+        _monitoringNgoRepository.SingleOrDefaultAsync(Arg.Any<GetMonitoringNgoSpecification>()).Returns(monitoringNgo);
+        
         // Act
-        var request = new AddObserver.Request { ElectionRoundId = electionRoundId, MonitoringNgoId = ngo.Id };
-        var result = await endpoint.ExecuteAsync(request, default);
+        var request = new Request { ElectionRoundId = electionRoundId, MonitoringNgoId = ngo.Id };
+        var result = await _endpoint.ExecuteAsync(request, default);
 
         // Assert
         result
-            .Should().BeOfType<Results<NoContent, NotFound<string>, ValidationProblem>>()
+            .Should().BeOfType<Results<Ok<MonitoringObserverModel>, NotFound<string>, Conflict<ProblemDetails>, ValidationProblem>>()
             .Which
             .Result.Should().BeOfType<ValidationProblem>();
 
         var errors = result.Result.As<ValidationProblem>().ProblemDetails.Errors.Values;
         errors.Should().HaveCount(1);
-        errors.First().Should().Contain(["Only active ngos can add monitoring observers"]);
+        errors.First().Should().Contain(["Only active monitoring NGOs can add monitoring observers"]);
     }
 
     [Fact]
@@ -128,29 +125,24 @@ public class AddObserverEndpointTests
         var monitoringNgo = new MonitoringNgoAggregateFaker(status: MonitoringNgoStatus.Active, ngo: ngo).Generate();
         var observer = new ObserverAggregateFaker(status: UserStatus.Deactivated).Generate();
 
-        var repository = Substitute.For<IRepository<ElectionRoundAggregate>>();
-        repository.GetByIdAsync(electionRoundId).Returns(new ElectionRoundAggregateFaker(id: electionRoundId).Generate());
+        _repository.GetByIdAsync(electionRoundId).Returns(new ElectionRoundAggregateFaker(id: electionRoundId).Generate());
 
-        var monitoringNgoRepository = Substitute.For<IRepository<MonitoringNgoAggregate>>();
-        monitoringNgoRepository.SingleOrDefaultAsync(Arg.Any<GetMonitoringNgoSpecification>()).Returns(monitoringNgo);
+        _monitoringNgoRepository.SingleOrDefaultAsync(Arg.Any<GetMonitoringNgoSpecification>()).Returns(monitoringNgo);
 
-        var observerRepository = Substitute.For<IReadRepository<ObserverAggregate>>();
-        observerRepository.GetByIdAsync(observer.Id).Returns(observer);
-
-        var endpoint = Factory.Create<AddObserver.Endpoint>(repository, monitoringNgoRepository, observerRepository, _timeProvider);
+        _observerRepository.GetByIdAsync(observer.Id).Returns(observer);
 
         // Act
-        var request = new AddObserver.Request
+        var request = new Request
         {
             ElectionRoundId = electionRoundId,
             MonitoringNgoId = ngo.Id,
             ObserverId = observer.Id
         };
-        var result = await endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, default);
 
         // Assert
         result
-            .Should().BeOfType<Results<NoContent, NotFound<string>, ValidationProblem>>()
+            .Should().BeOfType<Results<Ok<MonitoringObserverModel>, NotFound<string>, Conflict<ProblemDetails>, ValidationProblem>>()
             .Which
             .Result.Should().BeOfType<ValidationProblem>();
 
@@ -168,34 +160,29 @@ public class AddObserverEndpointTests
         var monitoringNgo = electionRound.AddMonitoringNgo(ngo, _timeProvider);
         var observer = new ObserverAggregateFaker(status: UserStatus.Active).Generate();
 
-        var repository = Substitute.For<IRepository<ElectionRoundAggregate>>();
-        repository.GetByIdAsync(electionRound.Id).Returns(electionRound);
+        _repository.GetByIdAsync(electionRound.Id).Returns(electionRound);
 
-        var monitoringNgoRepository = Substitute.For<IRepository<MonitoringNgoAggregate>>();
-        monitoringNgoRepository.SingleOrDefaultAsync(Arg.Any<GetMonitoringNgoSpecification>()).Returns(monitoringNgo);
+        _monitoringNgoRepository.SingleOrDefaultAsync(Arg.Any<GetMonitoringNgoSpecification>()).Returns(monitoringNgo);
 
-        var observerRepository = Substitute.For<IReadRepository<ObserverAggregate>>();
-        observerRepository.GetByIdAsync(observer.Id).Returns(observer);
-
-        var endpoint = Factory.Create<AddObserver.Endpoint>(repository, monitoringNgoRepository, observerRepository, _timeProvider);
+        _observerRepository.GetByIdAsync(observer.Id).Returns(observer);
 
         // Act
-        var request = new AddObserver.Request
+        var request = new Request
         {
             ElectionRoundId = electionRound.Id,
             MonitoringNgoId = monitoringNgo.Id,
             ObserverId = observer.Id
         };
-        var result = await endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, default);
 
         // Assert
         result
-            .Should().BeOfType<Results<NoContent, NotFound<string>, ValidationProblem>>()
+            .Should().BeOfType<Results<Ok<MonitoringObserverModel>, NotFound<string>, Conflict<ProblemDetails>, ValidationProblem>>()
             .Which
-            .Result.Should().BeOfType<NoContent>();
+            .Result.Should().BeOfType<Ok<MonitoringObserverModel>>();
 
-        await monitoringNgoRepository
+        await _monitoringObserverRepository
             .Received(1)
-             .UpdateAsync(Arg.Is<MonitoringNgoAggregate>(x => x.MonitoringObservers.Any(o => o.ObserverId == observer.Id)));
+             .AddAsync(Arg.Is<MonitoringObserver>(x => x.ObserverId == observer.Id));
     }
 }
