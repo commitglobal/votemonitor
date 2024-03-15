@@ -2,7 +2,7 @@
 
 namespace Vote.Monitor.Api.Feature.PollingStation.Information.Create;
 
-public class Endpoint(IRepository<PollingStationInfo> repository, ITimeProvider timeProvider) :
+public class Endpoint(IRepository<PollingStationInformation> repository, ITimeProvider timeProvider) :
         Endpoint<Request, Ok<PollingStationInfoModel>>
 {
     public override void Configure()

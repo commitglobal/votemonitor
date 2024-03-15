@@ -1,4 +1,4 @@
-﻿using Vote.Monitor.Api.Feature.PollingStation.Information.Models;
+﻿using Vote.Monitor.Answer.Module.Requests;
 
 namespace Vote.Monitor.Api.Feature.PollingStation.Information.Create;
 
@@ -11,5 +11,5 @@ public class Request
     [FromClaim("Sub")]
     public Guid ObserverId { get; set; }
 
-    public List<BaseAnswerModel> Answers { get; set; }
+    public List<BaseAnswerRequest> Answers { get; set; } = [];
 }

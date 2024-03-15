@@ -1,5 +1,5 @@
-﻿using Vote.Monitor.Api.Feature.PollingStation.Information.Models;
-using Vote.Monitor.Api.Feature.PollingStation.Information.Validators;
+﻿using Vote.Monitor.Answer.Module.Requests;
+using Vote.Monitor.Answer.Module.Validators;
 
 namespace Vote.Monitor.Api.Feature.PollingStation.Information.Create;
 
@@ -14,12 +14,12 @@ public class Validator : Validator<Request>
         RuleForEach(x => x.Answers)
             .SetInheritanceValidator(v =>
             {
-                v.Add<RatingAnswerModel>(new RatingAnswerModelValidator());
-                v.Add<MultiSelectAnswerModel>(new MultiSelectAnswerModelValidator());
-                v.Add<SingleSelectAnswerModel>(new SingleSelectAnswerModelValidator());
-                v.Add<DateAnswerModel>(new DateAnswerModelValidator());
-                v.Add<NumberAnswerModel>(new NumberAnswerModelValidator());
-                v.Add<TextAnswerModel>(new TextAnswerModelValidator());
+                v.Add<RatingAnswerRequest>(new RatingAnswerRequestValidator());
+                v.Add<MultiSelectAnswerRequest>(new MultiSelectAnswerRequestValidator());
+                v.Add<SingleSelectAnswerRequest>(new SingleSelectAnswerRequestValidator());
+                v.Add<DateAnswerRequest>(new DateAnswerRequestValidator());
+                v.Add<NumberAnswerRequest>(new NumberAnswerRequestValidator());
+                v.Add<TextAnswerRequest>(new TextAnswerRequestValidator());
             });
     }
 }

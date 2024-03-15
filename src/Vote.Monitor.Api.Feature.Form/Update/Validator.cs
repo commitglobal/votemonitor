@@ -1,5 +1,6 @@
 ﻿using Vote.Monitor.Core.Validators;
 using Vote.Monitor.Domain.Constants;
+using Vote.Monitor.Form.Module.Requests;
 using Vote.Monitor.Form.Module.Validators;
 
 namespace Vote.Monitor.Api.Feature.Form.Update;
@@ -30,10 +31,16 @@ public class Validator : Validator<Request>
         RuleFor(x => x.FormType)
             .NotEmpty();
 
-        RuleForEach(x => x.Sections)
-            .SetValidator(x => new SectionRequestValidator(x.Languages));
+        RuleForEach(x => x.Questions)
+            .SetInheritanceValidator(v =>
+            {
+                v.Add<TextQuestionRequest>(x => new TextInputQuestionRequestValidator(x.Languages));
+                v.Add<NumberQuestionRequest>(x => new NumberInputQuestionRequestValidator(x.Languages));
+                v.Add<DateQuestionRequest>(x => new DateInputQuestionRequestValidator(x.Languages));
+                v.Add<SingleSelectQuestionRequest>(x => new SingleSelectQuestionRequestValidator(x.Languages));
+                v.Add<MultiSelectQuestionRequest>(x => new MultiSelectQuestionRequestValidator(x.Languages));
+                v.Add<RatingQuestionRequest>(x => new RatingQuestionRequestValidator(x.Languages));
+            });
 
-        RuleForEach(x => x.Sections)
-            .SetValidator((req, section) => new SectionUniquenessRequestValidator(req.Sections.Except([section])));
     }
 }

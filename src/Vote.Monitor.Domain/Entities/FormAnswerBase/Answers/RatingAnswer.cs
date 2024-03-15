@@ -1,6 +1,30 @@
-﻿namespace Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
+﻿using System.Text.Json.Serialization;
+using FluentValidation.Results;
+using Vote.Monitor.Domain.Entities.FormAnswerBase.Validators;
+using Vote.Monitor.Domain.Entities.FormBase.Questions;
+
+namespace Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 
 public class RatingAnswer : BaseAnswer
 {
-    public int Value { get; set; }
+    public int Value { get; private set; }
+
+    [JsonConstructor]
+    internal RatingAnswer(Guid questionId, int value) : base(questionId)
+    {
+        Value = value;
+    }
+
+    public static RatingAnswer Create(Guid questionId, int value) => new(questionId, value);
+
+    internal override ValidationResult Validate(BaseQuestion question, int index)
+    {
+        if (question.GetType() != typeof(RatingQuestion))
+        {
+            return GetInvalidAnswerTypeError(index, question, this);
+        }
+
+        var ratingQuestion = question as RatingQuestion;
+        return new RatingAnswerValidator(ratingQuestion!).Validate(this);
+    }
 }

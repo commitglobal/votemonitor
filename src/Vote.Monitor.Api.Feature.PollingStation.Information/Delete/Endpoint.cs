@@ -2,7 +2,7 @@
 
 namespace Vote.Monitor.Api.Feature.PollingStation.Information.Delete;
 
-public class Endpoint(IRepository<PollingStationInfo> repository) : Endpoint<Request, Results<NoContent, NotFound>>
+public class Endpoint(IRepository<PollingStationInformation> repository) : Endpoint<Request, Results<NoContent, NotFound>>
 {
     public override void Configure()
     {

@@ -17,7 +17,7 @@ public class PartiallyTranslatedStringValidator : Validator<TranslatedString>
             => isNotEmpty(translation.Value) && isNotEmpty(translation.Key);
 
         RuleFor(x => x)
-            .Must(ts => Enumerable.Any(ts, isValidTranslation))
+            .Must(ts => ts.Any(isValidTranslation))
             .WithMessage("Provide at least one translation")
             .Must((ts, _, context) =>
             {

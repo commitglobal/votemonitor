@@ -35,4 +35,9 @@
     <ProjectReference Include="..\Vote.Monitor.TestUtils\Vote.Monitor.TestUtils.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Entities\FormTemplateAggregate\" />
+    <Folder Include="NewFolder\" />
+  </ItemGroup>
+
 </Project>

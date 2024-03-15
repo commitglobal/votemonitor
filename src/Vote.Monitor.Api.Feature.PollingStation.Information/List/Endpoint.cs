@@ -2,7 +2,7 @@
 
 namespace Vote.Monitor.Api.Feature.PollingStation.Information.List;
 
-public class Endpoint(IReadRepository<PollingStationInfo> repository) : Endpoint<Request, Results<Ok<Response>, ProblemDetails>>
+public class Endpoint(IReadRepository<PollingStationInformation> repository) : Endpoint<Request, Results<Ok<Response>, ProblemDetails>>
 {
     public override void Configure()
     {

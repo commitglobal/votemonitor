@@ -1,5 +1,4 @@
 ﻿using Vote.Monitor.Core.Services.Time;
-using Vote.Monitor.Domain.Entities.PollingStationInfoAggregate;
 using Vote.Monitor.Domain.Entities.PollingStationInfoFormAggregate;
 
 namespace Vote.Monitor.Api.Feature.PollingStation.InformationForm.Create;

@@ -196,7 +196,7 @@ public class UpdateValidatorTests
     }
 
     [Fact]
-    public void Validation_ShouldFail_When_InvalidSection()
+    public void Validation_ShouldFail_When_InvalidQuestion()
     {
         // Arrange
         var request = new Request
@@ -205,14 +205,14 @@ public class UpdateValidatorTests
                 LanguagesList.EN.Iso1,
                 LanguagesList.RO.Iso1
             ],
-            Sections = [
-                new SectionRequest
+            Questions = [
+                new TextQuestionRequest
                 {
-                    Title = ValidatorsTestData.ValidPartiallyTranslatedTestData.First()
+                    Text = ValidatorsTestData.ValidPartiallyTranslatedTestData.First()
                 },
-                new SectionRequest
+                new TextQuestionRequest
                 {
-                    Title = ValidatorsTestData.InvalidPartiallyTranslatedTestData.First()
+                    Text = ValidatorsTestData.InvalidPartiallyTranslatedTestData.First()
                 }
             ]
         };
@@ -222,29 +222,16 @@ public class UpdateValidatorTests
 
         // Assert
         validationResult
-            .ShouldHaveValidationErrorFor("Sections[1].Title[\"IT\"]");
+            .ShouldHaveValidationErrorFor("Questions[1].Text[\"IT\"]");
     }
 
     [Fact]
-    public void Validation_ShouldPass_When_ValidFormSections()
+    public void Validation_ShouldPass_When_EmptyQuestions()
     {
         // Arrange
         var request = new Request
         {
-            Languages = [
-                LanguagesList.EN.Iso1,
-                LanguagesList.RO.Iso1
-            ],
-            Sections = [
-                new SectionRequest
-                {
-                    Title = ValidatorsTestData.ValidPartiallyTranslatedTestData.First()
-                },
-                new SectionRequest
-                {
-                    Title = ValidatorsTestData.ValidPartiallyTranslatedTestData.First()
-                }
-            ]
+            Questions = []
         };
 
         // Act
@@ -252,24 +239,7 @@ public class UpdateValidatorTests
 
         // Assert
         validationResult
-            .ShouldNotHaveValidationErrorFor(x => x.Sections);
-    }
-
-    [Fact]
-    public void Validation_ShouldPass_When_EmptyFormSections()
-    {
-        // Arrange
-        var request = new Request
-        {
-            Sections = []
-        };
-
-        // Act
-        var validationResult = _sut.TestValidate(request);
-
-        // Assert
-        validationResult
-            .ShouldNotHaveValidationErrorFor(x => x.Sections);
+            .ShouldNotHaveValidationErrorFor(x => x.Questions);
     }
 
     [Fact]
