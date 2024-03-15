@@ -2,10 +2,11 @@
 
 public sealed class GetMonitoringNgoSpecification : SingleResultSpecification<MonitoringNgoAggregate>
 {
-    public GetMonitoringNgoSpecification(Guid electionRoundId, Guid ngoId)
+    public GetMonitoringNgoSpecification(Guid electionRoundId, Guid monitoringNgoId)
     {
         Query
-            .Where(x => x.NgoId == ngoId && x.ElectionRoundId == electionRoundId)
-            .Include(x => x.MonitoringObservers);
+            .Where(x => x.Id == monitoringNgoId && x.ElectionRoundId == electionRoundId)
+            .Include(x => x.MonitoringObservers)
+            .Include(x => x.Ngo);
     }
 }
