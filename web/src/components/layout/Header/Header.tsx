@@ -1,6 +1,7 @@
 import { Fragment } from 'react';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
+import { UserCircleIcon } from '@heroicons/react/24/solid';
 import type { FunctionComponent } from '../../../common/types';
 import Logo from '../../../assets/icons/logo.svg?react';
 import { Link } from '@tanstack/router';
@@ -54,7 +55,7 @@ const Header = (): FunctionComponent => {
                     <Menu.Button className='relative flex text-sm bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'>
                       <span className='absolute -inset-1.5' />
                       <span className='sr-only'>Open user menu</span>
-                      <img className='w-8 h-8 rounded-full' src={user.imageUrl} alt='' />
+                      <UserCircleIcon className='w-8 h-8 fill-gray-400' />
                     </Menu.Button>
                   </div>
                   <Transition
@@ -116,7 +117,7 @@ const Header = (): FunctionComponent => {
             <div className='pt-4 pb-3 border-t border-gray-700'>
               <div className='flex items-center px-5'>
                 <div className='flex-shrink-0'>
-                  <img className='w-10 h-10 rounded-full' src={user.imageUrl} alt='' />
+                <UserCircleIcon className='w-10 h-10 fill-gray-400' />
                 </div>
                 <div className='ml-3'>
                   <div className='text-base font-medium leading-none text-gray-800'>{user.name}</div>

@@ -8,10 +8,10 @@ interface LayoutProps {
 const Layout = ({ title, children }: LayoutProps) => {
   return (
     <>
-      <header className='container py-6'>
+      <header className='container py-4'>
         <h1 className='text-3xl font-bold tracking-tight text-gray-900'>{title}</h1>
       </header>
-      <main className='container py-6'>
+      <main className='container'>
         {children}
       </main>
     </>
