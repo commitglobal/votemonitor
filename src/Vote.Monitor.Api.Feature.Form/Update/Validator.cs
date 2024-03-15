@@ -42,5 +42,7 @@ public class Validator : Validator<Request>
                 v.Add<RatingQuestionRequest>(x => new RatingQuestionRequestValidator(x.Languages));
             });
 
+        RuleForEach(x => x.Sections)
+            .SetValidator((req, section) => new SectionUniquenessRequestValidator(req.Sections.Except([section])));
     }
 }

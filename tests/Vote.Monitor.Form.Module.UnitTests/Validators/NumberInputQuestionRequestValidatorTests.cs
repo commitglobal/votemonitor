@@ -3,7 +3,11 @@ using Vote.Monitor.Core.Models;
 using Vote.Monitor.Form.Module.Requests;
 using Vote.Monitor.Form.Module.Validators;
 
+<<<<<<<< HEAD:tests/Vote.Monitor.Form.Module.UnitTests/Validators/NumberInputQuestionRequestValidatorTests.cs
 namespace Vote.Monitor.Form.Module.UnitTests.Validators;
+========
+namespace Vote.Monitor.Form.Module.UnitTests.ValidatorTests;
+>>>>>>>> main:tests/Vote.Monitor.Form.Module.UnitTests/ValidatorTests/NumberInputQuestionRequestValidatorTests.cs
 
 public class NumberInputQuestionRequestValidatorTests
 {

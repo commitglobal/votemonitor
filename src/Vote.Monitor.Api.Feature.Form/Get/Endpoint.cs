@@ -1,4 +1,6 @@
 ﻿
+using Vote.Monitor.Form.Module.Models;
+
 namespace Vote.Monitor.Api.Feature.Form.Get;
 
 public class Endpoint(IReadRepository<FormAggregate> repository) : Endpoint<Request, Results<Ok<FormModel>, NotFound>>
