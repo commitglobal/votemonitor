@@ -60,25 +60,25 @@ public class AddObserverRequestValidatorTests
     public void Validation_ShouldPass_When_NgoId_NotEmpty()
     {
         // Arrange
-        var request = new AddObserver.Request { NgoId = Guid.NewGuid() };
+        var request = new AddObserver.Request { MonitoringNgoId = Guid.NewGuid() };
 
         // Act
         var result = _validator.TestValidate(request);
 
         // Assert
-        result.ShouldNotHaveValidationErrorFor(x => x.NgoId);
+        result.ShouldNotHaveValidationErrorFor(x => x.MonitoringNgoId);
     }
 
     [Fact]
     public void Validation_ShouldFail_When_NgoId_Empty()
     {
         // Arrange
-        var request = new AddObserver.Request { NgoId = Guid.Empty };
+        var request = new AddObserver.Request { MonitoringNgoId = Guid.Empty };
 
         // Act
         var result = _validator.TestValidate(request);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.NgoId);
+        result.ShouldHaveValidationErrorFor(x => x.MonitoringNgoId);
     }
 }

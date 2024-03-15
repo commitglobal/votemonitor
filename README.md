@@ -46,5 +46,13 @@ INSERT INTO public."UserPreferences"("ApplicationUserId", "LanguageId") VALUES (
 3. Build
 4. Run and debug
 5. Enjoy 
+
+## Adding EF migrations
+
+Run the following command in the project root folder
+```
+dotnet ef migrations add MyNewMigration --project .\src\Vote.Monitor.Domain --startup-project .\src\Vote.Monitor.Api
+```
+
 # Polling stations feature
 [documentation](documentation/polling-stations/README.md)

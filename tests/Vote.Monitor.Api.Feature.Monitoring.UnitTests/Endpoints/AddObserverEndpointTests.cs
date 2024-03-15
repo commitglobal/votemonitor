@@ -45,7 +45,7 @@ public class AddObserverEndpointTests
         var endpoint = Factory.Create<AddObserver.Endpoint>(repository, monitoringNgoRepository, observerRepository, _timeProvider);
 
         // Act
-        var request = new AddObserver.Request { ElectionRoundId = electionRoundId, NgoId = Guid.NewGuid() };
+        var request = new AddObserver.Request { ElectionRoundId = electionRoundId, MonitoringNgoId = Guid.NewGuid() };
         var result = await endpoint.ExecuteAsync(request, default);
 
         // Assert
@@ -75,7 +75,7 @@ public class AddObserverEndpointTests
         var endpoint = Factory.Create<AddObserver.Endpoint>(repository, monitoringNgoRepository, observerRepository, _timeProvider);
 
         // Act
-        var request = new AddObserver.Request { ElectionRoundId = electionRoundId, NgoId = ngo.Id };
+        var request = new AddObserver.Request { ElectionRoundId = electionRoundId, MonitoringNgoId = ngo.Id };
         var result = await endpoint.ExecuteAsync(request, default);
 
         // Assert
@@ -105,7 +105,7 @@ public class AddObserverEndpointTests
         var endpoint = Factory.Create<AddObserver.Endpoint>(repository, monitoringNgoRepository, observerRepository, _timeProvider);
 
         // Act
-        var request = new AddObserver.Request { ElectionRoundId = electionRoundId, NgoId = ngo.Id };
+        var request = new AddObserver.Request { ElectionRoundId = electionRoundId, MonitoringNgoId = ngo.Id };
         var result = await endpoint.ExecuteAsync(request, default);
 
         // Assert
@@ -143,7 +143,7 @@ public class AddObserverEndpointTests
         var request = new AddObserver.Request
         {
             ElectionRoundId = electionRoundId,
-            NgoId = ngo.Id,
+            MonitoringNgoId = ngo.Id,
             ObserverId = observer.Id
         };
         var result = await endpoint.ExecuteAsync(request, default);
@@ -183,7 +183,7 @@ public class AddObserverEndpointTests
         var request = new AddObserver.Request
         {
             ElectionRoundId = electionRound.Id,
-            NgoId = monitoringNgo.Id,
+            MonitoringNgoId = monitoringNgo.Id,
             ObserverId = observer.Id
         };
         var result = await endpoint.ExecuteAsync(request, default);
