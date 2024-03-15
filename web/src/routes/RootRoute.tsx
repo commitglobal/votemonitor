@@ -4,7 +4,7 @@ import Header from '../components/layout/Header/Header';
 
 export const rootRoute = new RootRoute({
   component: (): FunctionComponent => (
-    <div className='min-h-full'>
+    <div className='flex flex-col min-h-screen pb-20 gap-y-10'>
       <Header />
       <Outlet />
     </div>
