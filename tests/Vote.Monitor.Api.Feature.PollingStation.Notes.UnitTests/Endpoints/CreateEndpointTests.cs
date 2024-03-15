@@ -2,6 +2,7 @@
 using FluentAssertions;
 using Microsoft.AspNetCore.Http.HttpResults;
 using NSubstitute;
+using Vote.Monitor.Api.Feature.PollingStation.Notes.Create;
 using Vote.Monitor.Api.Feature.PollingStation.Notes.Specifications;
 using Vote.Monitor.Core.Services.Time;
 using Vote.Monitor.Domain.Entities.ElectionRoundAggregate;
@@ -14,6 +15,27 @@ namespace Vote.Monitor.Api.Feature.PollingStation.Notes.UnitTests.Endpoints;
 
 public class CreateEndpointTests
 {
+    private readonly ITimeProvider _timeService;
+    private readonly IRepository<PollingStationNote> _repository;
+    private readonly IRepository<ElectionRound> _electionRoundRepository;
+    private readonly IRepository<PollingStationAggregate> _pollingStationRepository;
+    private readonly IRepository<MonitoringObserver> _monitoringObserverRepository;
+    private readonly Endpoint _endpoint;
+
+    public CreateEndpointTests()
+    {
+        _timeService = Substitute.For<ITimeProvider>();
+        _repository = Substitute.For<IRepository<PollingStationNote>>();
+        _electionRoundRepository = Substitute.For<IRepository<ElectionRound>>();
+        _pollingStationRepository = Substitute.For<IRepository<PollingStationAggregate>>();
+        _monitoringObserverRepository = Substitute.For<IRepository<MonitoringObserver>>();
+        _endpoint = Factory.Create<Endpoint>(_repository, 
+            _electionRoundRepository, 
+            _pollingStationRepository,
+            _monitoringObserverRepository,
+            _timeService);
+    }
+
     [Fact]
     public async Task ShouldReturnOkWithNoteModel_WhenAllIdsExist()
     {
@@ -22,43 +44,31 @@ public class CreateEndpointTests
         var fakePollingStation = new PollingStationFaker().Generate();
         var fakeMonitoringObserver = new MonitoringObserverFaker().Generate();
 
-        var timeService = Substitute.For<ITimeProvider>();
-        var repository = Substitute.For<IRepository<PollingStationNote>>();
-        var electionRoundRepository = Substitute.For<IRepository<ElectionRound>>();
-        var pollingStationRepository = Substitute.For<IRepository<PollingStationAggregate>>();
-        var monitoringObserverRepository = Substitute.For<IRepository<MonitoringObserver>>();
-
-        electionRoundRepository
+        _electionRoundRepository
             .FirstOrDefaultAsync(Arg.Any<GetElectionRoundSpecification>())
             .Returns(fakeElectionRound);
 
-        pollingStationRepository
+        _pollingStationRepository
             .FirstOrDefaultAsync(Arg.Any<GetPollingStationSpecification>())
             .Returns(fakePollingStation);
 
-        monitoringObserverRepository
+        _monitoringObserverRepository
             .FirstOrDefaultAsync(Arg.Any<GetMonitoringObserverSpecification>())
             .Returns(fakeMonitoringObserver);
 
-        var endpoint = Factory.Create<Create.Endpoint>(repository, 
-            electionRoundRepository, 
-            pollingStationRepository,
-            monitoringObserverRepository,
-            timeService);
-
         // Act
         var noteText = "a polling station note";
-        var request = new Create.Request
+        var request = new Request
         {
            ElectionRoundId = fakeElectionRound.Id,
            PollingStationId = fakePollingStation.Id,
            ObserverId = fakeMonitoringObserver.Id,
            Text = noteText
         };
-        var result = await endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, default);
 
         // Assert
-        await repository
+        await _repository
             .Received(1)
             .AddAsync(Arg.Is<PollingStationNote>(x => x.Text == noteText
                                                           && x.ElectionRoundId == fakeElectionRound.Id
@@ -77,32 +87,20 @@ public class CreateEndpointTests
         var fakePollingStation = new PollingStationFaker().Generate();
         var fakeMonitoringObserver = new MonitoringObserverFaker().Generate();
 
-        var timeService = Substitute.For<ITimeProvider>();
-        var repository = Substitute.For<IRepository<PollingStationNote>>();
-        var electionRoundRepository = Substitute.For<IRepository<ElectionRound>>();
-        var pollingStationRepository = Substitute.For<IRepository<PollingStationAggregate>>();
-        var monitoringObserverRepository = Substitute.For<IRepository<MonitoringObserver>>();
-
-        electionRoundRepository
+        _electionRoundRepository
             .FirstOrDefaultAsync(Arg.Any<GetElectionRoundSpecification>())
             .Returns((ElectionRound)null!);
 
-        var endpoint = Factory.Create<Create.Endpoint>(repository,
-            electionRoundRepository,
-            pollingStationRepository,
-            monitoringObserverRepository,
-            timeService);
-
         // Act
         var noteText = "a polling station note";
-        var request = new Create.Request
+        var request = new Request
         {
             ElectionRoundId = fakeElectionRound.Id,
             PollingStationId = fakePollingStation.Id,
             ObserverId = fakeMonitoringObserver.Id,
             Text = noteText
         };
-        var result = await endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, default);
 
         // Assert
         result
@@ -119,36 +117,24 @@ public class CreateEndpointTests
         var fakePollingStation = new PollingStationFaker().Generate();
         var fakeMonitoringObserver = new MonitoringObserverFaker().Generate();
 
-        var timeService = Substitute.For<ITimeProvider>();
-        var repository = Substitute.For<IRepository<PollingStationNote>>();
-        var electionRoundRepository = Substitute.For<IRepository<ElectionRound>>();
-        var pollingStationRepository = Substitute.For<IRepository<PollingStationAggregate>>();
-        var monitoringObserverRepository = Substitute.For<IRepository<MonitoringObserver>>();
-
-        electionRoundRepository
+        _electionRoundRepository
             .FirstOrDefaultAsync(Arg.Any<GetElectionRoundSpecification>())
-            .Returns((fakeElectionRound));
+            .Returns(fakeElectionRound);
 
-        pollingStationRepository
+        _pollingStationRepository
             .FirstOrDefaultAsync(Arg.Any<GetPollingStationSpecification>())
             .Returns((PollingStationAggregate)null!);
 
-        var endpoint = Factory.Create<Create.Endpoint>(repository,
-            electionRoundRepository,
-            pollingStationRepository,
-            monitoringObserverRepository,
-            timeService);
-
         // Act
         var noteText = "a polling station note";
-        var request = new Create.Request
+        var request = new Request
         {
             ElectionRoundId = fakeElectionRound.Id,
             PollingStationId = fakePollingStation.Id,
             ObserverId = fakeMonitoringObserver.Id,
             Text = noteText
         };
-        var result = await endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, default);
 
         // Assert
         result
@@ -164,41 +150,29 @@ public class CreateEndpointTests
         var fakeElectionRound = new ElectionRoundAggregateFaker().Generate();
         var fakePollingStation = new PollingStationFaker().Generate();
         var fakeMonitoringObserver = new MonitoringObserverFaker().Generate();
-
-        var timeService = Substitute.For<ITimeProvider>();
-        var repository = Substitute.For<IRepository<PollingStationNote>>();
-        var electionRoundRepository = Substitute.For<IRepository<ElectionRound>>();
-        var pollingStationRepository = Substitute.For<IRepository<PollingStationAggregate>>();
-        var monitoringObserverRepository = Substitute.For<IRepository<MonitoringObserver>>();
-
-        electionRoundRepository
+        
+        _electionRoundRepository
             .FirstOrDefaultAsync(Arg.Any<GetElectionRoundSpecification>())
-            .Returns((fakeElectionRound));
+            .Returns(fakeElectionRound);
 
-        pollingStationRepository
+        _pollingStationRepository
             .FirstOrDefaultAsync(Arg.Any<GetPollingStationSpecification>())
             .Returns(fakePollingStation);
 
-        monitoringObserverRepository
+        _monitoringObserverRepository
             .FirstOrDefaultAsync(Arg.Any<GetMonitoringObserverSpecification>())
             .Returns((MonitoringObserver)null!);
 
-        var endpoint = Factory.Create<Create.Endpoint>(repository,
-            electionRoundRepository,
-            pollingStationRepository,
-            monitoringObserverRepository,
-            timeService);
-
         // Act
         var noteText = "a polling station note";
-        var request = new Create.Request
+        var request = new Request
         {
             ElectionRoundId = fakeElectionRound.Id,
             PollingStationId = fakePollingStation.Id,
             ObserverId = fakeMonitoringObserver.Id,
             Text = noteText
         };
-        var result = await endpoint.ExecuteAsync(request, default);
+        var result = await _endpoint.ExecuteAsync(request, default);
 
         // Assert
         result
