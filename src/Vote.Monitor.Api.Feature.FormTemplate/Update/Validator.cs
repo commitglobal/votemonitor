@@ -3,12 +3,7 @@ using Vote.Monitor.Domain.Constants;
 using Vote.Monitor.Form.Module.Requests;
 using Vote.Monitor.Form.Module.Validators;
 
-<<<<<<<< HEAD:src/Vote.Monitor.Api.Feature.Form/Create/Validator.cs
-namespace Vote.Monitor.Api.Feature.Form.Create;
-========
 namespace Vote.Monitor.Api.Feature.FormTemplate.Update;
->>>>>>>> main:src/Vote.Monitor.Api.Feature.FormTemplate/Update/Validator.cs
-
 public class Validator : Validator<Request>
 {
     public Validator()

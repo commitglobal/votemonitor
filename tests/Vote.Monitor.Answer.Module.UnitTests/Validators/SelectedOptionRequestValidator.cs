@@ -1,4 +1,8 @@
-﻿namespace Vote.Monitor.Answer.Module.UnitTests.Validators;
+﻿using FastEndpoints;
+using FluentValidation;
+using Vote.Monitor.Answer.Module.Requests;
+
+namespace Vote.Monitor.Answer.Module.UnitTests.Validators;
 
 public class SelectedOptionRequestValidator : Validator<SelectedOptionRequest>
 {

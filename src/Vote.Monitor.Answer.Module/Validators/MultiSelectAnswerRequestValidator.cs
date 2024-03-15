@@ -9,7 +9,6 @@ public class MultiSelectAnswerRequestValidator : Validator<MultiSelectAnswerRequ
     public MultiSelectAnswerRequestValidator()
     {
         RuleFor(x => x.QuestionId).NotEmpty();
-        RuleFor(x => x.Selection).NotEmpty();
         RuleForEach(x => x.Selection).SetValidator(new SelectedOptionRequestValidator());
     }
 }

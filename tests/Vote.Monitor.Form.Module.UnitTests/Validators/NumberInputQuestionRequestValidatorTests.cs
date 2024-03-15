@@ -3,11 +3,7 @@ using Vote.Monitor.Core.Models;
 using Vote.Monitor.Form.Module.Requests;
 using Vote.Monitor.Form.Module.Validators;
 
-<<<<<<<< HEAD:tests/Vote.Monitor.Form.Module.UnitTests/Validators/NumberInputQuestionRequestValidatorTests.cs
 namespace Vote.Monitor.Form.Module.UnitTests.Validators;
-========
-namespace Vote.Monitor.Form.Module.UnitTests.ValidatorTests;
->>>>>>>> main:tests/Vote.Monitor.Form.Module.UnitTests/ValidatorTests/NumberInputQuestionRequestValidatorTests.cs
 
 public class NumberInputQuestionRequestValidatorTests
 {
@@ -31,7 +27,7 @@ public class NumberInputQuestionRequestValidatorTests
     }
 
     [Theory]
-    [MemberData(nameof(ValidatorsTestData.InvalidPartiallyTranslatedTestCases), MemberType = typeof(ValidatorsTestData))]
+    [MemberData(nameof(Validators.ValidatorsTestData.InvalidPartiallyTranslatedTestCases), MemberType = typeof(Validators.ValidatorsTestData))]
     public void Validation_ShouldFail_When_EmptyText(TranslatedString invalidText)
     {
         // Arrange
@@ -49,7 +45,7 @@ public class NumberInputQuestionRequestValidatorTests
     }
 
     [Theory]
-    [MemberData(nameof(ValidatorsTestData.InvalidPartiallyTranslatedTestCases), MemberType = typeof(ValidatorsTestData))]
+    [MemberData(nameof(Validators.ValidatorsTestData.InvalidPartiallyTranslatedTestCases), MemberType = typeof(Validators.ValidatorsTestData))]
     public void Validation_ShouldFail_When_EmptyHelptext(TranslatedString invalidHelptext)
     {
         // Arrange
@@ -103,7 +99,7 @@ public class NumberInputQuestionRequestValidatorTests
     }
 
     [Theory]
-    [MemberData(nameof(ValidatorsTestData.InvalidCodeTestCases), MemberType = typeof(ValidatorsTestData))]
+    [MemberData(nameof(Validators.ValidatorsTestData.InvalidCodeTestCases), MemberType = typeof(Validators.ValidatorsTestData))]
     public void Validation_ShouldFail_When_CodeHasInvalidLength(string code)
     {
         // Arrange
@@ -121,7 +117,7 @@ public class NumberInputQuestionRequestValidatorTests
     }
 
     [Theory]
-    [MemberData(nameof(ValidatorsTestData.InvalidPartiallyTranslatedTestCases), MemberType = typeof(ValidatorsTestData))]
+    [MemberData(nameof(Validators.ValidatorsTestData.InvalidPartiallyTranslatedTestCases), MemberType = typeof(Validators.ValidatorsTestData))]
     public void Validation_ShouldFail_When_InputPlaceholderInvalid(TranslatedString inputPlaceholder)
     {
         // Arrange
@@ -144,9 +140,9 @@ public class NumberInputQuestionRequestValidatorTests
         // Arrange
         var numberInputQuestionRequest = new NumberQuestionRequest
         {
-            InputPlaceholder = ValidatorsTestData.ValidPartiallyTranslatedTestData.First(),
-            Helptext = ValidatorsTestData.ValidPartiallyTranslatedTestData.First(),
-            Text = ValidatorsTestData.ValidPartiallyTranslatedTestData.First(),
+            InputPlaceholder = Validators.ValidatorsTestData.ValidPartiallyTranslatedTestData.First(),
+            Helptext = Validators.ValidatorsTestData.ValidPartiallyTranslatedTestData.First(),
+            Text = Validators.ValidatorsTestData.ValidPartiallyTranslatedTestData.First(),
             Code = "a code",
             Id = Guid.NewGuid()
         };

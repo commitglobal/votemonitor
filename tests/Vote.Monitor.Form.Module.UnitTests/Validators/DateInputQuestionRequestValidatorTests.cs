@@ -3,7 +3,7 @@ using Vote.Monitor.Core.Models;
 using Vote.Monitor.Form.Module.Requests;
 using Vote.Monitor.Form.Module.Validators;
 
-namespace Vote.Monitor.Form.Module.UnitTests.ValidatorTests;
+namespace Vote.Monitor.Form.Module.UnitTests.Validators;
 
 public class DateInputQuestionRequestValidatorTests
 {
@@ -27,7 +27,7 @@ public class DateInputQuestionRequestValidatorTests
     }
 
     [Theory]
-    [MemberData(nameof(ValidatorsTestData.InvalidPartiallyTranslatedTestCases), MemberType = typeof(ValidatorsTestData))]
+    [MemberData(nameof(ValidatorTests.ValidatorsTestData.InvalidPartiallyTranslatedTestCases), MemberType = typeof(ValidatorTests.ValidatorsTestData))]
     public void Validation_ShouldFail_When_EmptyText(TranslatedString invalidText)
     {
         // Arrange
@@ -45,7 +45,7 @@ public class DateInputQuestionRequestValidatorTests
     }
 
     [Theory]
-    [MemberData(nameof(ValidatorsTestData.InvalidPartiallyTranslatedTestCases), MemberType = typeof(ValidatorsTestData))]
+    [MemberData(nameof(ValidatorTests.ValidatorsTestData.InvalidPartiallyTranslatedTestCases), MemberType = typeof(ValidatorTests.ValidatorsTestData))]
     public void Validation_ShouldFail_When_EmptyHelptext(TranslatedString invalidHelptext)
     {
         // Arrange
@@ -99,7 +99,7 @@ public class DateInputQuestionRequestValidatorTests
     }
 
     [Theory]
-    [MemberData(nameof(ValidatorsTestData.InvalidCodeTestCases), MemberType = typeof(ValidatorsTestData))]
+    [MemberData(nameof(ValidatorTests.ValidatorsTestData.InvalidCodeTestCases), MemberType = typeof(ValidatorTests.ValidatorsTestData))]
     public void Validation_ShouldFail_When_CodeHasInvalidLength(string code)
     {
         // Arrange
@@ -123,8 +123,8 @@ public class DateInputQuestionRequestValidatorTests
         var dateInputQuestionRequest = new DateQuestionRequest
         {
             Code = "code",
-            Helptext = ValidatorsTestData.ValidPartiallyTranslatedTestData.First(),
-            Text = ValidatorsTestData.ValidPartiallyTranslatedTestData.Last(),
+            Helptext = ValidatorTests.ValidatorsTestData.ValidPartiallyTranslatedTestData.First(),
+            Text = ValidatorTests.ValidatorsTestData.ValidPartiallyTranslatedTestData.Last(),
             Id = Guid.NewGuid()
         };
 

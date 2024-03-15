@@ -3,11 +3,7 @@ using Vote.Monitor.Core.Models;
 using Vote.Monitor.Form.Module.Requests;
 using Vote.Monitor.Form.Module.Validators;
 
-<<<<<<<< HEAD:tests/Vote.Monitor.Form.Module.UnitTests/Validators/SelectOptionRequestValidatorTests.cs
 namespace Vote.Monitor.Form.Module.UnitTests.Validators;
-========
-namespace Vote.Monitor.Form.Module.UnitTests.ValidatorTests;
->>>>>>>> main:tests/Vote.Monitor.Form.Module.UnitTests/ValidatorTests/SelectOptionRequestValidatorTests.cs
 
 public class SelectOptionRequestValidatorTests
 {
@@ -31,7 +27,7 @@ public class SelectOptionRequestValidatorTests
     }
 
     [Theory]
-    [MemberData(nameof(ValidatorsTestData.InvalidPartiallyTranslatedTestCases), MemberType = typeof(ValidatorsTestData))]
+    [MemberData(nameof(Validators.ValidatorsTestData.InvalidPartiallyTranslatedTestCases), MemberType = typeof(Validators.ValidatorsTestData))]
     public void Validation_ShouldFail_When_TextInvalid(TranslatedString invalidText)
     {
         // Arrange
@@ -49,7 +45,7 @@ public class SelectOptionRequestValidatorTests
     }
 
     [Theory]
-    [MemberData(nameof(ValidatorsTestData.ValidPartiallyTranslatedTestCases), MemberType = typeof(ValidatorsTestData))]
+    [MemberData(nameof(Validators.ValidatorsTestData.ValidPartiallyTranslatedTestCases), MemberType = typeof(Validators.ValidatorsTestData))]
     public void Validation_ShouldPass_When_TextValid(TranslatedString validText)
     {
         // Arrange

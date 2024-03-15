@@ -1,6 +1,4 @@
-﻿using FastEndpoints;
-using FluentValidation;
-using FluentValidation.TestHelper;
+﻿using FluentValidation.TestHelper;
 using Vote.Monitor.Answer.Module.Requests;
 using Vote.Monitor.Answer.Module.Validators;
 using Xunit;
@@ -9,14 +7,6 @@ namespace Vote.Monitor.Answer.Module.UnitTests.Validators;
 
 public class MultiSelectAnswerRequestValidatorTests
 {
-    //public MultiSelectAnswerRequestValidator()
-    //{
-    //    RuleFor(x => x.QuestionId).NotEmpty();
-    //    RuleFor(x => x.Selection).NotEmpty();
-    //    RuleForEach(x => x.Selection).SetValidator(new SelectedOptionRequestValidator());
-    //}
-
-
     private readonly MultiSelectAnswerRequestValidator _validator = new();
 
     [Fact]
@@ -37,17 +27,49 @@ public class MultiSelectAnswerRequestValidatorTests
     }
 
     [Fact]
-    public void Validation_ShouldFail_When_EmptyDate()
+    public void Validation_ShouldFail_When_InvalidSelection()
     {
         // Arrange
-        var request = new MultiSelectAnswerRequest();
+        var request = new MultiSelectAnswerRequest
+        {
+            Selection = [
+                new SelectedOptionRequest
+                {
+                    Text = "a text",
+                    OptionId = Guid.NewGuid()
+                },
+                new SelectedOptionRequest
+                {
+                    Text = "",
+                    OptionId = Guid.Empty
+                },
+            ]
+        };
 
         // Act
         var validationResult = _validator.TestValidate(request);
 
         // Assert
         validationResult
-            .ShouldHaveValidationErrorFor(x => x.Date);
+            .ShouldHaveValidationErrorFor("Selection[1].OptionId");
+    }
+
+    [Fact]
+    public void Validation_ShouldPass_When_EmptySelection()
+    {
+        // Arrange
+        var request = new MultiSelectAnswerRequest
+        {
+            QuestionId = Guid.NewGuid(),
+            Selection = []
+        };
+
+        // Act
+        var validationResult = _validator.TestValidate(request);
+
+        // Assert
+        validationResult
+            .ShouldNotHaveAnyValidationErrors();
     }
 
     [Fact]
@@ -57,7 +79,13 @@ public class MultiSelectAnswerRequestValidatorTests
         var request = new MultiSelectAnswerRequest
         {
             QuestionId = Guid.NewGuid(),
-            Date = DateTime.UtcNow
+            Selection = [
+                new SelectedOptionRequest
+                {
+                    Text = "a text",
+                    OptionId = Guid.NewGuid()
+                }
+            ]
         };
 
         // Act

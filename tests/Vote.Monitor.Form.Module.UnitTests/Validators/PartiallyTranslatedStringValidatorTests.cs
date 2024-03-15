@@ -2,11 +2,7 @@
 using Vote.Monitor.Core.Models;
 using Vote.Monitor.Core.Validators;
 
-<<<<<<<< HEAD:tests/Vote.Monitor.Form.Module.UnitTests/Validators/PartiallyTranslatedStringValidatorTests.cs
 namespace Vote.Monitor.Form.Module.UnitTests.Validators;
-========
-namespace Vote.Monitor.Form.Module.UnitTests.ValidatorTests;
->>>>>>>> main:tests/Vote.Monitor.Form.Module.UnitTests/ValidatorTests/PartiallyTranslatedStringValidatorTests.cs
 
 public class PartiallyTranslatedStringValidatorTests
 {

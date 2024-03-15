@@ -30,7 +30,7 @@ public class NumberAnswerRequestValidatorTests
     public void Validation_ShouldFail_When_ValueNegative()
     {
         // Arrange
-        var request = new NumberAnswerRequest() { Value = -1 };
+        var request = new NumberAnswerRequest { Value = -1 };
 
         // Act
         var validationResult = _validator.TestValidate(request);

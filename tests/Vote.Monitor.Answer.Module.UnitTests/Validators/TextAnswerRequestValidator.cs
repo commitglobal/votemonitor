@@ -42,7 +42,7 @@ public class TextAnswerRequestValidatorTests //: Validator<TextAnswerRequest>
     public void Validation_ShouldFail_When_TextEmpty(string text)
     {
         // Arrange
-        var request = new TextAnswerRequest() { Text = text };
+        var request = new TextAnswerRequest { Text = text };
 
         // Act
         var validationResult = _validator.TestValidate(request);
@@ -56,7 +56,7 @@ public class TextAnswerRequestValidatorTests //: Validator<TextAnswerRequest>
     public void Validation_ShouldFail_When_TextExceedsLimits()
     {
         // Arrange
-        var request = new TextAnswerRequest() { Text = "a".Repeat(1025) };
+        var request = new TextAnswerRequest { Text = "a".Repeat(1025) };
 
         // Act
         var validationResult = _validator.TestValidate(request);

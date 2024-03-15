@@ -31,7 +31,7 @@ public class RatingAnswerRequestValidatorTests : Validator<RatingAnswerRequest>
     public void Validation_ShouldFail_When_ValueNegative()
     {
         // Arrange
-        var request = new RatingAnswerRequest() { Value = -1 };
+        var request = new RatingAnswerRequest { Value = -1 };
 
         // Act
         var validationResult = _validator.TestValidate(request);
