@@ -12,17 +12,15 @@ const user = {
   email: 'tom@example.com',
   imageUrl:
     'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-}
+};
 const navigation = [
   { name: 'Dashboard', to: '/' },
   { name: 'Election Events', to: '#' },
-  { name: 'NGOs', to: '#' },
+  { name: 'NGOs', to: '/ngos' },
   { name: 'Observers', to: '/observers' },
   { name: 'Forms', to: '#' },
 ];
-const userNavigation = [
-  { name: 'Sign out', to: '#' },
-];
+const userNavigation = [{ name: 'Sign out', to: '#' }];
 
 const Header = (): FunctionComponent => {
   return (
@@ -31,7 +29,7 @@ const Header = (): FunctionComponent => {
         <>
           <div className='container'>
             <div className='flex items-center justify-between h-16 gap-6 md:gap-10'>
-              <Logo className="w-12 h-12 fill-primary-400 shrink-0" />
+              <Logo className='w-12 h-12 fill-primary-400 shrink-0' />
 
               <div className='items-baseline flex-1 hidden gap-4 md:flex'>
                 {navigation.map((item) => (
@@ -41,8 +39,14 @@ const Header = (): FunctionComponent => {
                     params={{}}
                     key={item.name}
                     className='px-3 py-2 text-sm font-medium rounded-md'
-                    activeProps={{className: 'bg-primary-100 text-primary-600 cursor-default', "aria-current": 'page'}}
-                    inactiveProps={{className: 'hover:text-primary-600 hover:bg-secondary-300 focus:text-primary-600 focus:bg-secondary-300'}}>
+                    activeProps={{
+                      className: 'bg-primary-100 text-primary-600 cursor-default',
+                      'aria-current': 'page',
+                    }}
+                    inactiveProps={{
+                      className:
+                        'hover:text-primary-600 hover:bg-secondary-300 focus:text-primary-600 focus:bg-secondary-300',
+                    }}>
                     {item.name}
                   </Link>
                 ))}
@@ -85,7 +89,11 @@ const Header = (): FunctionComponent => {
 
               <div className='flex -mr-2 md:hidden'>
                 {/* Mobile menu button */}
-                <Disclosure.Button className={clsx('relative inline-flex items-center justify-center p-2 text-gray-400 bg-white rounded-md hover:text-primary-600 hover:bg-secondary-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',{ 'bg-secondary-300': open })}>
+                <Disclosure.Button
+                  className={clsx(
+                    'relative inline-flex items-center justify-center p-2 text-gray-400 bg-white rounded-md hover:text-primary-600 hover:bg-secondary-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',
+                    { 'bg-secondary-300': open }
+                  )}>
                   <span className='absolute -inset-0.5' />
                   <span className='sr-only'>Open main menu</span>
                   {open ? (
@@ -108,8 +116,11 @@ const Header = (): FunctionComponent => {
                   search={{}}
                   params={{}}
                   className='block px-3 py-2 text-base font-medium rounded-md'
-                  activeProps={{className: 'bg-primary-100 text-primary-600 cursor-default', "aria-current": 'page'}}
-                  inactiveProps={{className: 'hover:text-primary-600 hover:bg-secondary-300 focus:text-primary-600 focus:bg-secondary-300'}}>
+                  activeProps={{ className: 'bg-primary-100 text-primary-600 cursor-default', 'aria-current': 'page' }}
+                  inactiveProps={{
+                    className:
+                      'hover:text-primary-600 hover:bg-secondary-300 focus:text-primary-600 focus:bg-secondary-300',
+                  }}>
                   {item.name}
                 </Disclosure.Button>
               ))}
@@ -117,7 +128,7 @@ const Header = (): FunctionComponent => {
             <div className='pt-4 pb-3 border-t border-gray-700'>
               <div className='flex items-center px-5'>
                 <div className='flex-shrink-0'>
-                <UserCircleIcon className='w-10 h-10 fill-gray-400' />
+                  <UserCircleIcon className='w-10 h-10 fill-gray-400' />
                 </div>
                 <div className='ml-3'>
                   <div className='text-base font-medium leading-none text-gray-800'>{user.name}</div>

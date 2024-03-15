@@ -1,4 +1,4 @@
-import { observerColDefs, type Observer } from '../../models/Observer';
+import { ngoColDefs, type NGO } from '../../models/NGO';
 import type { ReactElement } from 'react';
 import { type UseQueryResult, useQuery } from '@tanstack/react-query';
 import type { PageParameters, PageResponse } from '@/common/types';
@@ -6,11 +6,11 @@ import { authApi } from '@/common/auth-api';
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
 import Layout from '@/components/layout/Layout';
 
-function useObservers(p: PageParameters): UseQueryResult<PageResponse<Observer>, Error> {
+function useNGOs(p: PageParameters): UseQueryResult<PageResponse<NGO>, Error> {
   return useQuery({
-    queryKey: ['observers', p.pageNumber, p.pageSize],
+    queryKey: ['ngos', p.pageNumber, p.pageSize],
     queryFn: async () => {
-      const response = await authApi.get<PageResponse<Observer>>('/observers', {
+      const response = await authApi.get<PageResponse<NGO>>('/ngos', {
         params: {
           NameFilter: '',
           PageNumber: p.pageNumber,
@@ -20,7 +20,7 @@ function useObservers(p: PageParameters): UseQueryResult<PageResponse<Observer>,
       });
 
       if (response.status !== 200) {
-        throw new Error('Failed to fetch observers');
+        throw new Error('Failed to fetch ngos');
       }
 
       return response.data;
@@ -28,10 +28,10 @@ function useObservers(p: PageParameters): UseQueryResult<PageResponse<Observer>,
   });
 }
 
-export default function ObserversDashboard(): ReactElement {
+export default function NGOsDashboard(): ReactElement {
   return (
-    <Layout title={'Observers'}>
-      <QueryParamsDataTable columns={observerColDefs} usePagedQuery={useObservers} />
+    <Layout title={'NGOs'}>
+      <QueryParamsDataTable columns={ngoColDefs} usePagedQuery={useNGOs} />
     </Layout>
   );
 }

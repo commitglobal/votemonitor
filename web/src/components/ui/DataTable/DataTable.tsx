@@ -40,9 +40,12 @@ export function DataTable<TData, TValue>({
   columns,
   usePagedQuery,
   paginationExt,
-  setPaginationExt
+  setPaginationExt,
 }: DataTableProps<TData, TValue>): ReactElement {
-  let [pagination, setPagination]: [PaginationState, (p: PaginationState) => void] = useState({ pageIndex: 0, pageSize: 10 });
+  let [pagination, setPagination]: [PaginationState, (p: PaginationState) => void] = useState({
+    pageIndex: 0,
+    pageSize: 10,
+  });
   if (paginationExt) {
     if (!setPaginationExt) throw new Error('setPaginationExt is required when paginationExt is provided.');
     [pagination, setPagination] = [paginationExt, setPaginationExt];
@@ -57,6 +60,7 @@ export function DataTable<TData, TValue>({
     data: data?.items || [],
     columns,
     manualPagination: true,
+    enableFilters: true,
     pageCount: data ? Math.ceil(data.totalCount / data.pageSize) : 0,
     getCoreRowModel: getCoreRowModel(),
     onPaginationChange: (updater) => {
@@ -66,8 +70,8 @@ export function DataTable<TData, TValue>({
   });
 
   return (
-    <div>
-      <div className='rounded-md border'>
+    <div className='bg-white border border-gray-300 shadow-sm filament-tables-container rounded-xl'>
+      <div>
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -111,9 +115,7 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <div className='mt-4'>
-        <DataTablePagination table={table} />
-      </div>
+      <DataTablePagination table={table} />
     </div>
   );
 }
