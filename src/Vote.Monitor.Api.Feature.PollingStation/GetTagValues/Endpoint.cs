@@ -10,7 +10,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<List<TagModel>>, ProblemDet
 
     public override void Configure()
     {
-        Post("/api/polling-stations/tags/values");
+        Post("/api/election-rounds/{electionRoundId}/polling-stations/tags/values");
     }
 
     public override async Task<Results<Ok<List<TagModel>>, ProblemDetails>> ExecuteAsync(Request req, CancellationToken ct)
@@ -19,6 +19,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<List<TagModel>>, ProblemDet
 
         var result = await _context
                .PollingStations
+               .Where(x => x.ElectionRoundId == req.ElectionRoundId)
                .Where(station => filter.Count == 0 || EF.Functions.JsonContains(station.Tags, filter))
                .Where(station => EF.Functions.JsonExists(station.Tags, req.SelectTag))
                .Select(station => new TagModel

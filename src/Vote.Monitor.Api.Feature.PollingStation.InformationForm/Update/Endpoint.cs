@@ -3,7 +3,7 @@ using Vote.Monitor.Domain.Entities.PollingStationInfoFormAggregate;
 
 namespace Vote.Monitor.Api.Feature.PollingStation.InformationForm.Update;
 
-public class Endpoint(IRepository<PollingStationInfoForm> repository) : Endpoint<Request, Results<NoContent, NotFound, Conflict<ProblemDetails>>>
+public class Endpoint(IRepository<PollingStationInformationForm> repository) : Endpoint<Request, Results<NoContent, NotFound, Conflict<ProblemDetails>>>
 {
     public override void Configure()
     {

@@ -31,12 +31,13 @@ public class UpdateEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeede
         // Act
         var updateRequest = Fixture.Fake.UpdateRequest(createResult.Id);
         var updateResponse = await Fixture.PlatformAdmin.PUTAsync<UpdateEndpoint, UpdateRequest>(updateRequest);
-        
+
         // Assert
         updateResponse.IsSuccessStatusCode.Should().BeTrue();
 
         var (getResponse, pollingStation) = await Fixture.PlatformAdmin.GETAsync<GetEndpoint, GetRequest, PollingStationModel>(new()
         {
+            ElectionRoundId = Guid.NewGuid(),
             Id = createResult.Id
         });
 
@@ -63,6 +64,7 @@ public class UpdateEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeede
 
         var (getResponse, pollingStation) = await Fixture.PlatformAdmin.GETAsync<GetEndpoint, GetRequest, PollingStationModel>(new()
         {
+            ElectionRoundId = Guid.NewGuid(),
             Id = createResult.Id
         });
 
@@ -82,6 +84,7 @@ public class UpdateEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeede
 
         var updateRequest = new UpdateRequest
         {
+            ElectionRoundId = Guid.NewGuid(),
             Id = createResult.Id,
             Address = "",
             DisplayOrder = -1,
@@ -97,6 +100,7 @@ public class UpdateEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeede
 
         var (getResponse, pollingStation) = await Fixture.PlatformAdmin.GETAsync<GetEndpoint, GetRequest, PollingStationModel>(new()
         {
+            ElectionRoundId = Guid.NewGuid(),
             Id = createResult.Id
         });
 

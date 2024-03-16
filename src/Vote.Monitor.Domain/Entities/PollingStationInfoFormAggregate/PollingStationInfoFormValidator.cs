@@ -4,7 +4,7 @@ using Vote.Monitor.Domain.Entities.FormBase.Validation;
 
 namespace Vote.Monitor.Domain.Entities.PollingStationInfoFormAggregate;
 
-public class PollingStationInfoFormValidator : Validator<PollingStationInfoForm>
+public class PollingStationInfoFormValidator : Validator<PollingStationInformationForm>
 {
     public PollingStationInfoFormValidator()
     {

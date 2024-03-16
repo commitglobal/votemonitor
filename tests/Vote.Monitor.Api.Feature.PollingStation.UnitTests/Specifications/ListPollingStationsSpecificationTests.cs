@@ -20,6 +20,7 @@ public class ListPollingStationsSpecificationTests
 
         var request = new List.Request
         {
+            ElectionRoundId = Guid.NewGuid(),
             PageSize = 100,
             PageNumber = 2
         };
@@ -50,6 +51,7 @@ public class ListPollingStationsSpecificationTests
 
         var request = new List.Request
         {
+            ElectionRoundId = Guid.NewGuid(),
             AddressFilter = DefaultAddress,
             PageSize = 100,
             PageNumber = 2
@@ -82,6 +84,7 @@ public class ListPollingStationsSpecificationTests
 
         var request = new List.Request
         {
+            ElectionRoundId = Guid.NewGuid(),
             AddressFilter = searchString,
             PageSize = 100,
             PageNumber = 2
@@ -116,6 +119,7 @@ public class ListPollingStationsSpecificationTests
 
         var request = new List.Request
         {
+            ElectionRoundId = Guid.NewGuid(),
             SortOrder = sortOrder,
             SortColumnName = columnName,
             PageSize = 100,
@@ -149,6 +153,7 @@ public class ListPollingStationsSpecificationTests
 
         var request = new List.Request
         {
+            ElectionRoundId = Guid.NewGuid(),
             SortOrder = SortOrder.Desc,
             SortColumnName = "DisplayOrder",
             PageSize = 100,

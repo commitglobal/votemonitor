@@ -13,41 +13,36 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
     public Guid MonitoringObserverId { get; private set; }
     public MonitoringObserver MonitoringObserver { get; private set; }
     public Guid PollingStationInfoFormId { get; private set; }
-    public PollingStationInfoForm PollingStationInfoForm { get; private set; }
-    public string Language { get; private set; }
+    public PollingStationInformationForm PollingStationInformationForm { get; private set; }
     public IReadOnlyList<BaseAnswer> Answers { get; private set; } = new List<BaseAnswer>().AsReadOnly();
 
     private PollingStationInformation(
         ElectionRound electionRound,
         PollingStation pollingStation,
         MonitoringObserver monitoringObserver,
-        PollingStationInfoForm pollingStationInfoForm,
-        string language,
+        PollingStationInformationForm pollingStationInformationForm,
         ITimeProvider timeProvider) : base(Guid.NewGuid(), timeProvider)
     {
         ElectionRound = electionRound;
         ElectionRoundId = electionRound.Id;
         PollingStation = pollingStation;
         PollingStationId = pollingStation.Id;
-        Language = language;
         MonitoringObserver = monitoringObserver;
         MonitoringObserverId = monitoringObserver.Id;
-        PollingStationInfoForm = pollingStationInfoForm;
-        PollingStationInfoFormId = pollingStationInfoForm.Id;
+        PollingStationInformationForm = pollingStationInformationForm;
+        PollingStationInfoFormId = pollingStationInformationForm.Id;
     }
 
     internal static PollingStationInformation Create(
         ElectionRound electionRound,
         PollingStation pollingStation,
         MonitoringObserver monitoringObserver,
-        PollingStationInfoForm pollingStationInfoForm,
-        string selectedLanguage,
+        PollingStationInformationForm pollingStationInformationForm,
         ITimeProvider timeProvider) =>
-        new(electionRound, pollingStation, monitoringObserver, pollingStationInfoForm, selectedLanguage, timeProvider);
+        new(electionRound, pollingStation, monitoringObserver, pollingStationInformationForm, timeProvider);
 
-    internal void UpdateDetails(string language, IEnumerable<BaseAnswer> answers)
+    internal void UpdateDetails(IEnumerable<BaseAnswer> answers)
     {
-        Language = language;
         Answers = answers.ToList().AsReadOnly();
     }
 

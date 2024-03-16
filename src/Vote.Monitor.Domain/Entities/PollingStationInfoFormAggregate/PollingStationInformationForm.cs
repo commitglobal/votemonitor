@@ -6,7 +6,7 @@ using Vote.Monitor.Domain.Entities.PollingStationInfoAggregate;
 
 namespace Vote.Monitor.Domain.Entities.PollingStationInfoFormAggregate;
 
-public class PollingStationInfoForm : AuditableBaseEntity, IAggregateRoot
+public class PollingStationInformationForm : AuditableBaseEntity, IAggregateRoot
 {
     public Guid ElectionRoundId { get; private set; }
     public ElectionRound ElectionRound { get; private set; }
@@ -14,7 +14,7 @@ public class PollingStationInfoForm : AuditableBaseEntity, IAggregateRoot
     public IReadOnlyList<string> Languages { get; private set; } = new List<string>().AsReadOnly();
     public IReadOnlyList<BaseQuestion> Questions { get; private set; } = new List<BaseQuestion>().AsReadOnly();
 
-    private PollingStationInfoForm(
+    private PollingStationInformationForm(
         ElectionRound electionRound,
         IEnumerable<string> languages,
         ITimeProvider timeProvider) : base(Guid.NewGuid(), timeProvider)
@@ -25,7 +25,7 @@ public class PollingStationInfoForm : AuditableBaseEntity, IAggregateRoot
         Status = PollingStationInfoFormStatus.Drafted;
     }
 
-    public static PollingStationInfoForm Create(
+    public static PollingStationInformationForm Create(
         ElectionRound electionRound,
         IEnumerable<string> languages,
         ITimeProvider timeProvider) =>
@@ -51,13 +51,11 @@ public class PollingStationInfoForm : AuditableBaseEntity, IAggregateRoot
         Questions = questions.ToList().AsReadOnly();
     }
 
-    public PollingStationInformation CreatePollingStationInfo(ElectionRound electionRound,
-        PollingStation pollingStation,
+    public PollingStationInformation CreatePollingStationInformation(PollingStation pollingStation,
         MonitoringObserver monitoringObserver,
-        string selectedLanguage,
         ITimeProvider timeProvider)
     {
-        return PollingStationInformation.Create(electionRound, pollingStation, monitoringObserver, this, selectedLanguage, timeProvider);
+        return PollingStationInformation.Create(ElectionRound, pollingStation, monitoringObserver, this, timeProvider);
     }
 
     public FillInPollingStationInformationResult FillIn(
@@ -72,13 +70,13 @@ public class PollingStationInfoForm : AuditableBaseEntity, IAggregateRoot
             return new FillInPollingStationInformationResult.ValidationFailed(validationResult);
         }
 
-        filledInForm.UpdateDetails(formLanguage, answers);
+        filledInForm.UpdateDetails(answers);
 
         return new FillInPollingStationInformationResult.Ok(filledInForm);
     }
 
 #pragma warning disable CS8618 // Required by Entity Framework
-    private PollingStationInfoForm()
+    private PollingStationInformationForm()
     {
 
     }

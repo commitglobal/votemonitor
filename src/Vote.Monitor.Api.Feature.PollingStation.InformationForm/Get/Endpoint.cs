@@ -2,7 +2,7 @@
 
 namespace Vote.Monitor.Api.Feature.PollingStation.InformationForm.Get;
 
-public class Endpoint(IReadRepository<PollingStationInfoForm> repository) : Endpoint<Request, Results<Ok<PollingStationInformationFormModel>, NotFound>>
+public class Endpoint(IReadRepository<PollingStationInformationForm> repository) : Endpoint<Request, Results<Ok<PollingStationInformationFormModel>, NotFound>>
 {
     public override void Configure()
     {

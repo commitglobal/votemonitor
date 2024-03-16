@@ -23,7 +23,6 @@ public class FormTemplateTests
                 ""Helptext"": null,
                 ""InputPlaceholder"": null
             }
-          }
         ]";
 
         var questions = JsonSerializer.Deserialize<IReadOnlyList<BaseQuestion>>(serialized);

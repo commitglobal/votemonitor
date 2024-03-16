@@ -2,7 +2,7 @@
 
 namespace Vote.Monitor.Api.Feature.PollingStation.Information.Get;
 
-public class Endpoint(IReadRepository<PollingStationInformation> repository) : Endpoint<Request, Results<Ok<PollingStationInfoModel>, NotFound>>
+public class Endpoint(IReadRepository<PollingStationInformation> repository) : Endpoint<Request, Results<Ok<PollingStationInformationModel>, NotFound>>
 {
     public override void Configure()
     {
@@ -11,7 +11,7 @@ public class Endpoint(IReadRepository<PollingStationInformation> repository) : E
         Options(x => x.WithTags("polling-station-information"));
     }
 
-    public override async Task<Results<Ok<PollingStationInfoModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<Results<Ok<PollingStationInformationModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
         throw new NotImplementedException();
     }

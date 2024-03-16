@@ -3,8 +3,8 @@ using Vote.Monitor.Domain.Entities.PollingStationInfoFormAggregate;
 
 namespace Vote.Monitor.Api.Feature.PollingStation.InformationForm.Create;
 
-public class Endpoint(IRepository<PollingStationInfoForm> repository, ITimeProvider timeProvider) :
-        Endpoint<Request, Results<Ok<PollingStationInformationFormModel>, Conflict<ProblemDetails>>>
+public class Endpoint(IRepository<PollingStationInformationForm> repository,
+    ITimeProvider timeProvider) : Endpoint<Request, Ok<PollingStationInformationFormModel>>
 {
     public override void Configure()
     {
@@ -13,7 +13,7 @@ public class Endpoint(IRepository<PollingStationInfoForm> repository, ITimeProvi
         Options(x => x.WithTags("polling-station-information-form"));
     }
 
-    public override async Task<Results<Ok<PollingStationInformationFormModel>, Conflict<ProblemDetails>>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<Ok<PollingStationInformationFormModel>> ExecuteAsync(Request req, CancellationToken ct)
     {
         throw new NotImplementedException();
     }

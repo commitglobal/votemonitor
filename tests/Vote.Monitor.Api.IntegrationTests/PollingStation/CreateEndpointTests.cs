@@ -32,6 +32,7 @@ public class CreateEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeede
 
         var request = new GetRequest
         {
+            ElectionRoundId = Guid.NewGuid(),
             Id = createResult.Id
         };
         var (getResponse, pollingStation) = await Fixture.PlatformAdmin.GETAsync<GetEndpoint, GetRequest, PollingStationModel>(request);
@@ -47,6 +48,7 @@ public class CreateEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeede
         // Arrange
         var newPollingStation = new CreateRequest
         {
+            ElectionRoundId = Guid.Empty,
             Address = "",
             DisplayOrder = -1,
             Tags = null

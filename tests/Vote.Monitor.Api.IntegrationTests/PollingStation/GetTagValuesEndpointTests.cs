@@ -22,6 +22,7 @@ public class GetTagValuesEndpointTests : IClassFixture<HttpServerFixture<NoopDat
 
         var request = new GetTagValuesRequest
         {
+            ElectionRoundId = Guid.NewGuid(),
             SelectTag = "Country"
         };
 
@@ -42,6 +43,7 @@ public class GetTagValuesEndpointTests : IClassFixture<HttpServerFixture<NoopDat
 
         var request = new GetTagValuesRequest
         {
+            ElectionRoundId = Guid.NewGuid(),
             SelectTag = "UAT",
             Filter = new Dictionary<string, string>
             {
@@ -75,6 +77,7 @@ public class GetTagValuesEndpointTests : IClassFixture<HttpServerFixture<NoopDat
 
         var request = new GetTagValuesRequest
         {
+            ElectionRoundId = Guid.NewGuid(),
             SelectTag = "UAT",
             Filter = new Dictionary<string, string>
             {

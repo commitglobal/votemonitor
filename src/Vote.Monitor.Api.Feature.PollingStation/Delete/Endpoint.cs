@@ -10,7 +10,9 @@ public class Endpoint : Endpoint<Request, Results<NoContent, NotFound, ProblemDe
 
     public override void Configure()
     {
-        Delete("/api/polling-stations/{id}");
+        Delete("/api/election-rounds/{electionRoundId}/polling-stations/{id}");
+        DontAutoTag();
+        Options(x => x.WithTags("polling-stations"));
     }
 
     public override async Task<Results<NoContent, NotFound, ProblemDetails>> ExecuteAsync(Request req, CancellationToken ct)

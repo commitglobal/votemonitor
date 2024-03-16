@@ -10,5 +10,4 @@ public class Request
     public Guid ObserverId { get; set; }
 
     public Guid Id { get; set; }
-    public string Text { get; set; } = string.Empty;
 }

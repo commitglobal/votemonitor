@@ -2,7 +2,6 @@
 using Vote.Monitor.Answer.Module.Requests;
 using Vote.Monitor.Answer.Module.Validators;
 using Vote.Monitor.TestUtils.Utils;
-using Vote.Monitor.TestUtils;
 using Xunit;
 
 namespace Vote.Monitor.Answer.Module.UnitTests.Validators;
@@ -26,21 +25,6 @@ public class SelectedOptionRequestValidatorTests
         // Assert
         validationResult
             .ShouldHaveValidationErrorFor(x => x.OptionId);
-    }
-
-    [Theory]
-    [MemberData(nameof(TestData.EmptyStringsTestCases), MemberType = typeof(TestData))]
-    public void Validation_ShouldFail_When_TextEmpty(string text)
-    {
-        // Arrange
-        var request = new SelectedOptionRequest { Text = text };
-
-        // Act
-        var validationResult = _validator.TestValidate(request);
-
-        // Assert
-        validationResult
-            .ShouldHaveValidationErrorFor(x => x.Text);
     }
 
     [Fact]

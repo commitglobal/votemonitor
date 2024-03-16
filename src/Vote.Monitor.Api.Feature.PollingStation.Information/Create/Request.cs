@@ -11,5 +11,7 @@ public class Request
     [FromClaim("Sub")]
     public Guid ObserverId { get; set; }
 
+    public Guid FormId { get; set; }
+
     public List<BaseAnswerRequest> Answers { get; set; } = [];
 }

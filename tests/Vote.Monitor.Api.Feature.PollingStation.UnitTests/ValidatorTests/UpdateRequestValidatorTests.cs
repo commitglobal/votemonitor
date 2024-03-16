@@ -10,6 +10,7 @@ public class UpdateRequestValidatorTests
         // Arrange
         var request = new Update.Request
         {
+            ElectionRoundId = Guid.NewGuid(),
             Id = Guid.NewGuid(),
             DisplayOrder = 5,
             Address = "123 Main St",
@@ -32,6 +33,7 @@ public class UpdateRequestValidatorTests
         // Arrange
         var request = new Update.Request
         {
+            ElectionRoundId = Guid.NewGuid(),
             Id = Guid.Empty,
             DisplayOrder = 5,
             Address = "123 Main St",
@@ -56,6 +58,7 @@ public class UpdateRequestValidatorTests
         // Arrange
         var request = new Update.Request
         {
+            ElectionRoundId = Guid.NewGuid(),
             Id = Guid.NewGuid(),
             DisplayOrder = displayOrder,
             Address = "123 Main St",
@@ -78,6 +81,7 @@ public class UpdateRequestValidatorTests
         // Arrange
         var request = new Update.Request
         {
+            ElectionRoundId = Guid.NewGuid(),
             Id = Guid.NewGuid(),
             DisplayOrder = 5,
             Address = "123 Main St",
@@ -101,6 +105,7 @@ public class UpdateRequestValidatorTests
         // Arrange
         var request = new Update.Request
         {
+            ElectionRoundId = Guid.NewGuid(),
             Id = Guid.NewGuid(),
             DisplayOrder = 5,
             Address = address,
@@ -123,6 +128,7 @@ public class UpdateRequestValidatorTests
         // Arrange
         var request = new Update.Request
         {
+            ElectionRoundId = Guid.NewGuid(),
             Id = Guid.NewGuid(),
             DisplayOrder = 5,
             Address = "123 Main St",
@@ -146,6 +152,7 @@ public class UpdateRequestValidatorTests
         // Arrange
         var request = new Update.Request
         {
+            ElectionRoundId = Guid.NewGuid(),
             Id = Guid.NewGuid(),
             DisplayOrder = 5,
             Address = "123 Main St",
@@ -168,6 +175,7 @@ public class UpdateRequestValidatorTests
         // Arrange
         var request = new Update.Request
         {
+            ElectionRoundId = Guid.NewGuid(),
             Id = Guid.NewGuid(),
             DisplayOrder = 5,
             Address = "123 Main St",
@@ -187,6 +195,7 @@ public class UpdateRequestValidatorTests
         // Arrange
         var request = new Update.Request
         {
+            ElectionRoundId = Guid.NewGuid(),
             Id = Guid.NewGuid(),
             DisplayOrder = 5,
             Address = "123 Main St",

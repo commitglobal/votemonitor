@@ -22,7 +22,10 @@ public class ListEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeeder>
         await Fixture.PlatformAdmin.ImportPollingStations();
 
         // Act
-        var (response, result) = await Fixture.PlatformAdmin.POSTAsync<ListEndpoint, ListRequest, PagedResponse<PollingStationModel>>(new ListRequest());
+        var (response, result) = await Fixture.PlatformAdmin.POSTAsync<ListEndpoint, ListRequest, PagedResponse<PollingStationModel>>(new ListRequest()
+        {
+            ElectionRoundId = Guid.NewGuid()
+        });
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -40,6 +43,7 @@ public class ListEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeeder>
 
         var request = new ListRequest
         {
+            ElectionRoundId = Guid.NewGuid(),
             PageSize = 15,
             AddressFilter = "ALBA IULIA",
             Filter = new Dictionary<string, string>

@@ -16,3 +16,4 @@ global using Vote.Monitor.Core.Services.Csv;
 global using Vote.Monitor.Domain;
 global using Vote.Monitor.Domain.Repository;
 global using PollingStationAggregate = Vote.Monitor.Domain.Entities.PollingStationAggregate.PollingStation;
+global using ElectionRoundAggregate = Vote.Monitor.Domain.Entities.ElectionRoundAggregate.ElectionRound;
