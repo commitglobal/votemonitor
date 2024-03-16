@@ -14,7 +14,7 @@
 
   <ItemGroup>
     <PackageReference Include="EFCore.BulkExtensions.PostgreSql" Version="8.0.2" />
-    <PackageReference Include="FastEndpoints" Version="5.22.0" />
+    <PackageReference Include="FastEndpoints" Version="5.23.0" />
   </ItemGroup>
 
   <ItemGroup>
