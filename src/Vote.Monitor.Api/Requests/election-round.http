@@ -1,0 +1,63 @@
+@hostAddress=https://localhost:7123
+@jwtToken=your_token
+@romaniaId = 51aa4900-30a6-91b7-2728-071542a064ff
+
+# Add election round
+# @name newElectionRound
+POST {{hostAddress}}/api/election-rounds
+Content-Type: application/json
+Authorization: Bearer {{jwtToken}}
+
+{
+    "countryId": "{{romaniaId}}",
+    "title": "Some election {{$guid}}",
+    "englishTitle": "En: some election",
+    "startDate": "{{$datetime 'YYYY-MM-DD' 2 d}}"
+}
+###
+
+# List election rounds
+GET {{hostAddress}}/api/election-rounds
+    ?PageNumber=1
+    &PageSize=100
+Authorization: Bearer {{jwtToken}}
+
+###
+@electionRoundId={{newElectionRound.response.body.$.id}}
+
+# Get an election round
+GET {{hostAddress}}/api/election-rounds/{{electionRoundId}}
+Authorization: Bearer {{jwtToken}}
+
+###
+
+# Delete an election round
+DELETE  {{hostAddress}}/api/election-rounds/{{electionRoundId}}
+Authorization: Bearer {{jwtToken}}
+
+###
+
+# Archive an election round
+POST  {{hostAddress}}/api/election-rounds/{{electionRoundId}}:archive
+Authorization: Bearer {{jwtToken}}
+
+###
+
+# Unarchive an election round
+POST  {{hostAddress}}/api/election-rounds/{{electionRoundId}}:unarchive
+Authorization: Bearer {{jwtToken}}
+
+###
+
+# Start an election round
+POST  {{hostAddress}}/api/election-rounds/{{electionRoundId}}:start
+Authorization: Bearer {{jwtToken}}
+
+###
+
+# Unstart an election round
+POST  {{hostAddress}}/api/election-rounds/{{electionRoundId}}:unstart
+Authorization: Bearer {{jwtToken}}
+
+###
+

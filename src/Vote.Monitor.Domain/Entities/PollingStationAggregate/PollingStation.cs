@@ -1,4 +1,5 @@
 ﻿namespace Vote.Monitor.Domain.Entities.PollingStationAggregate;
+
 public class PollingStation : AuditableBaseEntity, IAggregateRoot, IDisposable
 {
 #pragma warning disable CS8618 // Required by Entity Framework
@@ -12,6 +13,17 @@ public class PollingStation : AuditableBaseEntity, IAggregateRoot, IDisposable
         JsonDocument tags,
         ITimeProvider timeProvider) : base(Guid.NewGuid(), timeProvider)
     {
+        Address = address;
+        DisplayOrder = displayOrder;
+        Tags = tags;
+    }
+
+    internal PollingStation(Guid id, 
+        string address, 
+        int displayOrder,
+        JsonDocument tags, 
+        ITimeProvider timeProvider) : base(id, timeProvider)
+    { 
         Address = address;
         DisplayOrder = displayOrder;
         Tags = tags;

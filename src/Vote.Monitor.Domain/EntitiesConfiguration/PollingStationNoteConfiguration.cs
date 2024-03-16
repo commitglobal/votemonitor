@@ -13,7 +13,7 @@ internal class PollingStationNoteConfiguration : IEntityTypeConfiguration<Pollin
         builder.HasIndex(x => x.MonitoringObserverId);
 
         builder.Property(x => x.Text)
-            .HasMaxLength(1024)
+            .HasMaxLength(10000)
             .IsRequired();
 
         builder.Property(x => x.Timestamp);

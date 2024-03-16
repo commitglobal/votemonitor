@@ -7,3 +7,4 @@ global using Microsoft.AspNetCore.Http.HttpResults;
 global using Vote.Monitor.Core.Services.Time;
 global using Vote.Monitor.Domain.Repository;
 global using PollingStationNoteAggregate = Vote.Monitor.Domain.Entities.PollingStationNoteAggregate.PollingStationNote;
+global using PollingStationAggregate = Vote.Monitor.Domain.Entities.PollingStationAggregate.PollingStation;
