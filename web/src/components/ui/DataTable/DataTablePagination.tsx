@@ -6,25 +6,25 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 
 interface DataTablePaginationProps<TData> {
   table: Table<TData>;
+  totalCount?: number;
 }
 
-// TODO: get actual guery total
-const DataTablePaginationProgress = ({ pagination, total = 9999 }: { pagination: PaginationState, total?: number }): ReactElement => {
+const DataTablePaginationProgress = ({ pagination, totalCount }: { pagination: PaginationState, totalCount?: number }): ReactElement => {
   return (
     <p className="text-sm text-gray-700 ps-2">
       Showing{' '}
       <span className="font-medium">{(pagination.pageIndex * pagination.pageSize) + 1}</span>{' '}
       to{' '}
-      <span className="font-medium">{Math.min(total, (pagination.pageIndex + 1) * pagination.pageSize)}</span>{' '}
+      <span className="font-medium">{Math.min(totalCount ?? -1, (pagination.pageIndex + 1) * pagination.pageSize)}</span>{' '}
       of{' '}
-      <span className="font-medium">{total}</span>{' '}
+      <span className="font-medium">{totalCount}</span>{' '}
       results
     </p>
   );
 };
 
 
-export function DataTablePagination<TData>({ table }: DataTablePaginationProps<TData>): ReactElement {
+export function DataTablePagination<TData>({ table, totalCount }: DataTablePaginationProps<TData>): ReactElement {
   return (
     <div className='p-2 border-t'>
       {/* Simplified pagination for mobile */}
@@ -50,7 +50,7 @@ export function DataTablePagination<TData>({ table }: DataTablePaginationProps<T
 
       {/* Complete pagination for desktop */}
       <div className='items-center justify-between hidden md:flex md:gap-6 lg:gap-8'>
-        <DataTablePaginationProgress pagination={table.getState().pagination} />
+        <DataTablePaginationProgress pagination={table.getState().pagination} totalCount={totalCount} />
 
         <div className='flex items-center gap-2'>
           <Select
