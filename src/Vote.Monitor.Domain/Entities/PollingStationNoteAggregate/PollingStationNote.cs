@@ -35,4 +35,8 @@ public class PollingStationNote : BaseEntity, IAggregateRoot
     {
     }
 #pragma warning restore CS8618
+    public void UpdateText(string text)
+    {
+        Text = text;
+    }
 }
