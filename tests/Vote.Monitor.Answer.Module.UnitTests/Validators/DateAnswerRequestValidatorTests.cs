@@ -1,6 +1,4 @@
-﻿using FastEndpoints;
-using FluentValidation;
-using FluentValidation.TestHelper;
+﻿using FluentValidation.TestHelper;
 using Vote.Monitor.Answer.Module.Requests;
 using Vote.Monitor.Answer.Module.Validators;
 using Xunit;

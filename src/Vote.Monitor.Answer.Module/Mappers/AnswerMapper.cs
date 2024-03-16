@@ -60,7 +60,7 @@ public static class AnswerMapper
             case RatingAnswerRequest ratingAnswer:
                 return RatingAnswer.Create(ratingAnswer.QuestionId, ratingAnswer.Value);
 
-            default: throw new ApplicationException("Unknown question type received");
+            default: throw new ApplicationException("Unknown question type");
         }
     }
 

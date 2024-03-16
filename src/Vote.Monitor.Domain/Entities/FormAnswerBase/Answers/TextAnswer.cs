@@ -17,7 +17,7 @@ public class TextAnswer : BaseAnswer
 
     public static TextAnswer Create(Guid questionId, string text) => new(questionId, text);
 
-    internal override ValidationResult Validate(BaseQuestion question, int index)
+    public override ValidationResult Validate(BaseQuestion question, int index)
     {
         if (question.GetType() != typeof(DateQuestion))
         {

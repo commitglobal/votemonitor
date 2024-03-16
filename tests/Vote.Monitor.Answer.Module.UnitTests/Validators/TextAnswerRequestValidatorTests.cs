@@ -1,5 +1,4 @@
-﻿using FastEndpoints;
-using FluentValidation.TestHelper;
+﻿using FluentValidation.TestHelper;
 using Vote.Monitor.Answer.Module.Requests;
 using Vote.Monitor.Answer.Module.Validators;
 using Vote.Monitor.TestUtils;
@@ -8,16 +7,8 @@ using Xunit;
 
 namespace Vote.Monitor.Answer.Module.UnitTests.Validators;
 
-public class TextAnswerRequestValidatorTests //: Validator<TextAnswerRequest>
+public class TextAnswerRequestValidatorTests
 {
-    //public TextAnswerRequestValidator()
-    //{
-    //    RuleFor(x => x.QuestionId).NotEmpty();
-    //    RuleFor(x => x.Text).NotEmpty().MaximumLength(1024);
-    //}
-
-
-
     private readonly TextAnswerRequestValidator _validator = new();
 
     [Fact]

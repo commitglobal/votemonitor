@@ -27,7 +27,7 @@ public abstract class BaseAnswer
         QuestionId = questionId;
     }
 
-    internal abstract ValidationResult Validate(BaseQuestion question, int index);
+    public abstract ValidationResult Validate(BaseQuestion question, int index);
 
     protected static ValidationResult GetInvalidAnswerTypeError(int answerIndex, BaseQuestion question, BaseAnswer answer)
     {

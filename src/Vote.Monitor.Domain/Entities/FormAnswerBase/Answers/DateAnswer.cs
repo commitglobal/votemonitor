@@ -16,7 +16,7 @@ public class DateAnswer : BaseAnswer
     }
     public static DateAnswer Create(Guid questionId, DateTime date) => new(questionId, date);
 
-    internal override ValidationResult Validate(BaseQuestion question, int index)
+    public override ValidationResult Validate(BaseQuestion question, int index)
     {
         if (question.GetType() != typeof(DateQuestion))
         {

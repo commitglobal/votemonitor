@@ -18,7 +18,7 @@ public class MultiSelectAnswer : BaseAnswer
     public static MultiSelectAnswer Create(Guid questionId, IReadOnlyList<SelectedOption> selection) =>
         new(questionId, selection);
 
-    internal override ValidationResult Validate(BaseQuestion question, int index)
+    public override ValidationResult Validate(BaseQuestion question, int index)
     {
         if (question.GetType() != typeof(MultiSelectQuestion))
         {

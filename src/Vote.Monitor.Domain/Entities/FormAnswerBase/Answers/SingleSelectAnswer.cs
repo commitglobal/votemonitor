@@ -17,7 +17,7 @@ public class SingleSelectAnswer : BaseAnswer
 
     public static SingleSelectAnswer Create(Guid questionId, SelectedOption selection) => new(questionId, selection);
 
-    internal override ValidationResult Validate(BaseQuestion question, int index)
+    public override ValidationResult Validate(BaseQuestion question, int index)
     {
         if (question.GetType() != typeof(SingleSelectQuestion))
         {

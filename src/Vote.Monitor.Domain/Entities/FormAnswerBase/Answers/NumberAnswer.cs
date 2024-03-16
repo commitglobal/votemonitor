@@ -17,7 +17,7 @@ public class NumberAnswer : BaseAnswer
 
     public static NumberAnswer Create(Guid questionId, int value) => new(questionId, value);
 
-    internal override ValidationResult Validate(BaseQuestion question, int index)
+    public override ValidationResult Validate(BaseQuestion question, int index)
     {
         if (question.GetType() != typeof(NumberQuestion))
         {
