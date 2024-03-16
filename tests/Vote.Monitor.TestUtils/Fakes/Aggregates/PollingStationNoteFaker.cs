@@ -4,7 +4,7 @@ using Vote.Monitor.Domain.Entities.PollingStationNoteAggregate;
 
 namespace Vote.Monitor.TestUtils.Fakes.Aggregates;
 
-public class PollingStationNoteFaker : PrivateFaker<PollingStationNote>
+public sealed class PollingStationNoteFaker : PrivateFaker<PollingStationNote>
 {
     public PollingStationNoteFaker(Guid? id = null,
         string? text = null,

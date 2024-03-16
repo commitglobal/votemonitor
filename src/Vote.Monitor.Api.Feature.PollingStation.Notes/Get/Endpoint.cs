@@ -45,7 +45,11 @@ public class Endpoint : Endpoint<Request, Results<Ok<NoteModel>, BadRequest<Prob
             return TypedResults.BadRequest(new ProblemDetails(ValidationFailures));
         }
 
-        var pollingStationNote = await _repository.GetByIdAsync(req.Id, ct);
+        var specification = new GetPollingStationNoteSpecification(req.ElectionRoundId,
+            req.PollingStationId,
+            req.ObserverId,
+            req.Id);
+        var pollingStationNote = await _repository.FirstOrDefaultAsync(specification, ct);
         if (pollingStationNote is null)
         {
             return TypedResults.NotFound();

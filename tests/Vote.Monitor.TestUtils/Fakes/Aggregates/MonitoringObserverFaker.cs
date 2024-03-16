@@ -2,7 +2,7 @@
 
 namespace Vote.Monitor.TestUtils.Fakes.Aggregates;
 
-public class MonitoringObserverFaker : PrivateFaker<MonitoringObserver>
+public sealed class MonitoringObserverFaker : PrivateFaker<MonitoringObserver>
 {
     private readonly MonitoringObserverStatus[] _statuses = [MonitoringObserverStatus.Active, MonitoringObserverStatus.Suspended];
 

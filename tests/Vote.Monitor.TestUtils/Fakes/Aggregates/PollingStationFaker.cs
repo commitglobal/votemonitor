@@ -3,7 +3,7 @@ using Vote.Monitor.Domain.Entities.PollingStationAggregate;
 
 namespace Vote.Monitor.TestUtils.Fakes.Aggregates;
 
-public class PollingStationFaker : PrivateFaker<PollingStation>
+public sealed class PollingStationFaker : PrivateFaker<PollingStation>
 {
     public PollingStationFaker(Guid? id = null, 
         string? address = null, 

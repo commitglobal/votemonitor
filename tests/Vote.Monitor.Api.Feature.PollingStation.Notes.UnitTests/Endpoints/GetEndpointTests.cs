@@ -48,9 +48,9 @@ public class GetEndpointTests
             .FirstOrDefaultAsync(Arg.Any<GetPollingStationSpecification>())
             .Returns(fakePollingStation);
 
-        _repository.GetByIdAsync(noteId, CancellationToken.None)
+        _repository.FirstOrDefaultAsync(Arg.Any<GetPollingStationNoteSpecification>())
             .Returns(fakePollingStationNote);
-        
+
         // Act
         var request = new Request
         {
