@@ -21,7 +21,7 @@ public class CreateEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeede
     public async Task Should_CreatePollingStation_WhenValidRequestData()
     {
         // Arrange
-        var newPollingStation = Fixture.Fake.CreateRequest();
+        var newPollingStation = Fixture.Fake.CreateRequest(Fixture.ElectionRound);
 
         // Act
         var (createResponse, createResult) = await Fixture.PlatformAdmin.POSTAsync<CreateEndpoint, CreateRequest, PollingStationModel>(newPollingStation);
@@ -59,6 +59,6 @@ public class CreateEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeede
 
         // Assert
         createResponse.IsSuccessStatusCode.Should().BeFalse();
-        errorResponse.Errors.Count().Should().Be(3);
+        errorResponse.Errors.Count().Should().Be(4);
     }
 }

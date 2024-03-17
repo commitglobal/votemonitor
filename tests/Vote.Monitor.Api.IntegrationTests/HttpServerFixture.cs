@@ -1,9 +1,14 @@
 ﻿using MartinCostello.Logging.XUnit;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Logging;
+using Microsoft.VisualBasic.CompilerServices;
 using Vote.Monitor.Api.Feature.Auth.Login;
+using Vote.Monitor.Api.Feature.ElectionRound;
 using Vote.Monitor.Core.Services.Time;
+using Vote.Monitor.Domain.Constants;
 using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
+using ElectionRoundCreateEndpoint = Vote.Monitor.Api.Feature.ElectionRound.Create.Endpoint;
+using ElectionRoundCreateRequest = Vote.Monitor.Api.Feature.ElectionRound.Create.Request;
 
 namespace Vote.Monitor.Api.IntegrationTests;
 
@@ -31,6 +36,7 @@ public class HttpServerFixture<TDataSeeder> : WebApplicationFactory<Program>, IA
     /// The platform admin http client
     /// </summary>
     public HttpClient PlatformAdmin { get; private set; }
+    public ElectionRoundBaseModel ElectionRound { get; private set; }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
@@ -72,6 +78,15 @@ public class HttpServerFixture<TDataSeeder> : WebApplicationFactory<Program>, IA
 
         PlatformAdmin = CreateClient();
         PlatformAdmin.DefaultRequestHeaders.Authorization = new("Bearer", tokenResponse.Token);
+      
+        (_, ElectionRound) = await PlatformAdmin.POSTAsync<ElectionRoundCreateEndpoint, ElectionRoundCreateRequest, ElectionRoundBaseModel>(new()
+        {
+            CountryId = CountriesList.RO.Id,
+            Title = Guid.NewGuid().ToString(),
+            EnglishTitle = Guid.NewGuid().ToString(),
+            StartDate = Fake.Date.FutureDateOnly()
+        });
+
 
         var seeder = Services.GetRequiredService<IDataSeeder>();
         await seeder.SeedDataAsync();

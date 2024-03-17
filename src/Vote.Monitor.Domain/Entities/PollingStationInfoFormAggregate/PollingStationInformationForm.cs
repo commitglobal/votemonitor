@@ -60,7 +60,6 @@ public class PollingStationInformationForm : AuditableBaseEntity, IAggregateRoot
 
     public FillInPollingStationInformationResult FillIn(
         PollingStationInformation filledInForm,
-        string formLanguage,
         List<BaseAnswer> answers)
     {
         var validationResult = AnswersValidator.GetValidationResults(answers, Questions);

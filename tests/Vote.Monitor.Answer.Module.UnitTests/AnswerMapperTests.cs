@@ -145,7 +145,7 @@ public class AnswerMapperTests
     public void ToEntity_ShouldReturnNumberAnswer_WhenGivenNumberAnswerModel()
     {
         // Arrange
-        var numberAnswerRequest = new NumberAnswerRequest() { QuestionId = Guid.NewGuid(), Value = 1234 };
+        var numberAnswerRequest = new NumberAnswerRequest { QuestionId = Guid.NewGuid(), Value = 1234 };
 
         // Act
         var result = AnswerMapper.ToEntity(numberAnswerRequest);
@@ -159,7 +159,7 @@ public class AnswerMapperTests
     public void ToEntity_ShouldReturnNumberAnswer_WhenGivenDateAnswerModel()
     {
         // Arrange
-        var dateAnswerRequest = new DateAnswerRequest() { QuestionId = Guid.NewGuid(), Date = DateTime.UtcNow };
+        var dateAnswerRequest = new DateAnswerRequest { QuestionId = Guid.NewGuid(), Date = DateTime.UtcNow };
         // Act
         var result = AnswerMapper.ToEntity(dateAnswerRequest);
 
@@ -172,10 +172,10 @@ public class AnswerMapperTests
     public void ToEntity_ShouldReturnNumberAnswer_WhenGivenSingleSelectAnswerModel()
     {
         // Arrange
-        var singleSelectAnswerRequest = new SingleSelectAnswerRequest()
+        var singleSelectAnswerRequest = new SingleSelectAnswerRequest
         {
             QuestionId = Guid.NewGuid(),
-            Selection = new SelectedOptionRequest() { Text = "some text", OptionId = new Guid() }
+            Selection = new SelectedOptionRequest { Text = "some text", OptionId = new Guid() }
         };
 
         // Act
@@ -195,7 +195,7 @@ public class AnswerMapperTests
          new SelectedOptionRequest{ OptionId = Guid.NewGuid(),Text = null}
      };
 
-        var multiSelectAnswerRequest = new MultiSelectAnswerRequest()
+        var multiSelectAnswerRequest = new MultiSelectAnswerRequest
         {
             QuestionId = Guid.NewGuid(),
             Selection = selectedOptions.ToList()
@@ -213,7 +213,7 @@ public class AnswerMapperTests
     public void ToEntity_ShouldReturnNumberAnswer_WhenGivenRatingAnswerModel()
     {
         // Arrange
-        var ratingAnswerRequest = new RatingAnswerRequest() { QuestionId = Guid.NewGuid(), Value = 4 };
+        var ratingAnswerRequest = new RatingAnswerRequest { QuestionId = Guid.NewGuid(), Value = 4 };
 
         // Act
         var result = AnswerMapper.ToEntity(ratingAnswerRequest);

@@ -24,7 +24,7 @@ public class DeleteEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeede
     public async Task Should_DeletePollingStation_WhenSuchExists()
     {
         // Arrange
-        var newPollingStation = Fixture.Fake.CreateRequest();
+        var newPollingStation = Fixture.Fake.CreateRequest(Fixture.ElectionRound);
         var (createResponse, createResult) = await Fixture.PlatformAdmin.POSTAsync<CreateEndpoint, CreateRequest, PollingStationModel>(newPollingStation);
 
         createResponse.IsSuccessStatusCode.Should().BeTrue();
@@ -55,7 +55,7 @@ public class DeleteEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeede
     public async Task Should_ReturnNotFound_WhenNoSuchExists()
     {
         // Arrange
-        var newPollingStation = Fixture.Fake.CreateRequest();
+        var newPollingStation = Fixture.Fake.CreateRequest(Fixture.ElectionRound);
         var (createResponse, createResult) = await Fixture.PlatformAdmin.POSTAsync<CreateEndpoint, CreateRequest, PollingStationModel>(newPollingStation);
 
         createResponse.IsSuccessStatusCode.Should().BeTrue();

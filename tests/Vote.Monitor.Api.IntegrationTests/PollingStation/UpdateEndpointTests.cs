@@ -24,12 +24,12 @@ public class UpdateEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeede
     public async Task Should_UpdatePollingStation_WhenSuchExists()
     {
         // Arrange
-        var createRequest = Fixture.Fake.CreateRequest();
+        var createRequest = Fixture.Fake.CreateRequest(Fixture.ElectionRound);
         var (createResponse, createResult) = await Fixture.PlatformAdmin.POSTAsync<CreateEndpoint, CreateRequest, PollingStationModel>(createRequest);
         createResponse.IsSuccessStatusCode.Should().BeTrue();
 
         // Act
-        var updateRequest = Fixture.Fake.UpdateRequest(createResult.Id);
+        var updateRequest = Fixture.Fake.UpdateRequest(createResult.Id, Fixture.ElectionRound);
         var updateResponse = await Fixture.PlatformAdmin.PUTAsync<UpdateEndpoint, UpdateRequest>(updateRequest);
 
         // Assert
@@ -49,13 +49,13 @@ public class UpdateEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeede
     public async Task Should_ReturnNotFound_WhenNoSuchExists()
     {
         // Arrange
-        var newPollingStation = Fixture.Fake.CreateRequest();
+        var newPollingStation = Fixture.Fake.CreateRequest(Fixture.ElectionRound);
         var (createResponse, createResult) = await Fixture.PlatformAdmin.POSTAsync<Feature.PollingStation.Create.Endpoint, Feature.PollingStation.Create.Request, PollingStationModel>(newPollingStation);
 
         createResponse.IsSuccessStatusCode.Should().BeTrue();
 
         // Act
-        var updateRequest = Fixture.Fake.UpdateRequest(Guid.NewGuid());
+        var updateRequest = Fixture.Fake.UpdateRequest(Guid.NewGuid(), Fixture.ElectionRound);
         var updateResponse = await Fixture.PlatformAdmin.PUTAsync<UpdateEndpoint, UpdateRequest>(updateRequest);
 
         // Assert
@@ -77,8 +77,8 @@ public class UpdateEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeede
     public async Task Should_NotUpdate_WhenInvalidData()
     {
         // Arrange
-        var newPollingStation = Fixture.Fake.CreateRequest();
-        var (createResponse, createResult) = await Fixture.PlatformAdmin.POSTAsync<Feature.PollingStation.Create.Endpoint, Feature.PollingStation.Create.Request, PollingStationModel>(newPollingStation);
+        var newPollingStation = Fixture.Fake.CreateRequest(Fixture.ElectionRound);
+        var (createResponse, createResult) = await Fixture.PlatformAdmin.POSTAsync<CreateEndpoint, CreateRequest, PollingStationModel>(newPollingStation);
 
         createResponse.IsSuccessStatusCode.Should().BeTrue();
 

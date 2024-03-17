@@ -13,7 +13,7 @@ public class SingleSelectAnswerRequestValidatorTests
     public void Validation_ShouldFail_When_EmptyQuestionId()
     {
         // Arrange
-        var request = new SingleSelectAnswerRequest()
+        var request = new SingleSelectAnswerRequest
         {
             QuestionId = Guid.Empty
         };

@@ -1,4 +1,7 @@
-﻿namespace Vote.Monitor.Api.Feature.PollingStation.Information.Update;
+﻿using Vote.Monitor.Answer.Module.Requests;
+using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
+
+namespace Vote.Monitor.Api.Feature.PollingStation.Information.Update;
 
 public class Request
 {
@@ -8,6 +11,8 @@ public class Request
 
     [FromClaim("Sub")]
     public Guid ObserverId { get; set; }
+    public Guid FormId { get; set; }
 
     public Guid Id { get; set; }
+    public List<BaseAnswerRequest> Answers { get; set; } = [];
 }

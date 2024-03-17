@@ -22,7 +22,7 @@ public class ListEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeeder>
         await Fixture.PlatformAdmin.ImportPollingStations();
 
         // Act
-        var (response, result) = await Fixture.PlatformAdmin.POSTAsync<ListEndpoint, ListRequest, PagedResponse<PollingStationModel>>(new ListRequest()
+        var (response, result) = await Fixture.PlatformAdmin.POSTAsync<ListEndpoint, ListRequest, PagedResponse<PollingStationModel>>(new ListRequest
         {
             ElectionRoundId = Guid.NewGuid()
         });

@@ -1,4 +1,5 @@
 ﻿using GetTagsEndpoint = Vote.Monitor.Api.Feature.PollingStation.GetTags.Endpoint;
+using GetTagsRequest = Vote.Monitor.Api.Feature.PollingStation.GetTags.Request;
 
 namespace Vote.Monitor.Api.IntegrationTests.PollingStation;
 
@@ -18,7 +19,11 @@ public class GetTagsEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeed
         // Arrange
         await Fixture.PlatformAdmin.ImportPollingStations();
         // Act
-        var (getTagsResult, tags) = await Fixture.PlatformAdmin.GETAsync<GetTagsEndpoint, List<string>>();
+        var (getTagsResult, tags) = await Fixture.PlatformAdmin.GETAsync<GetTagsEndpoint, GetTagsRequest, List<string>>(
+        new()
+        {
+            ElectionRoundId = Fixture.ElectionRound.Id
+        });
 
         // Assert
         getTagsResult.IsSuccessStatusCode.Should().BeTrue();
