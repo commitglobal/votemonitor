@@ -1,4 +1,5 @@
-﻿using Vote.Monitor.Api.Feature.PollingStation;
+﻿using NSwag.Generation.Processors;
+using Vote.Monitor.Api.Feature.PollingStation;
 using CreateEndpoint = Vote.Monitor.Api.Feature.PollingStation.Create.Endpoint;
 using CreateRequest = Vote.Monitor.Api.Feature.PollingStation.Create.Request;
 
@@ -38,7 +39,7 @@ public class CreateEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeede
         var (getResponse, pollingStation) = await Fixture.PlatformAdmin.GETAsync<GetEndpoint, GetRequest, PollingStationModel>(request);
 
         getResponse.IsSuccessStatusCode.Should().BeTrue();
-        pollingStation.Should().BeEquivalentTo(newPollingStation);
+        pollingStation.Should().BeEquivalentTo(newPollingStation, opt => opt.Excluding(x => x.ElectionRoundId));
         pollingStation.Id.Should().Be(createResult.Id);
     }
 

@@ -11,6 +11,8 @@ public class Endpoint : Endpoint<Request, List<string>>
     public override void Configure()
     {
         Get("/api/election-rounds/{electionRoundId}/polling-stations/tags");
+        DontAutoTag();
+        Options(x => x.WithTags("polling-stations"));
     }
 
     public override async Task<List<string>> ExecuteAsync(Request req, CancellationToken ct)

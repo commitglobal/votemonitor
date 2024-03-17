@@ -42,7 +42,7 @@ public class UpdateEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeede
         });
 
         getResponse.IsSuccessStatusCode.Should().BeTrue();
-        pollingStation.Should().BeEquivalentTo(updateRequest);
+        pollingStation.Should().BeEquivalentTo(updateRequest, opt => opt.Excluding(x => x.ElectionRoundId));
     }
 
     [Fact]
@@ -69,7 +69,7 @@ public class UpdateEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeede
         });
 
         getResponse.IsSuccessStatusCode.Should().BeTrue();
-        pollingStation.Should().BeEquivalentTo(newPollingStation);
+        pollingStation.Should().BeEquivalentTo(newPollingStation, opt => opt.Excluding(x => x.ElectionRoundId));
         pollingStation.Id.Should().Be(createResult.Id);
     }
 
@@ -105,7 +105,7 @@ public class UpdateEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeede
         });
 
         getResponse.IsSuccessStatusCode.Should().BeTrue();
-        pollingStation.Should().BeEquivalentTo(newPollingStation);
+        pollingStation.Should().BeEquivalentTo(newPollingStation, opt => opt.Excluding(x => x.ElectionRoundId));
         pollingStation.Id.Should().Be(createResult.Id);
     }
 }

@@ -18,11 +18,11 @@ public class GetTagValuesEndpointTests : IClassFixture<HttpServerFixture<NoopDat
     public async Task Should_Return_TagValues_ForSelectedTag()
     {
         // Arrange
-        await Fixture.PlatformAdmin.ImportPollingStations();
+        await Fixture.PlatformAdmin.ImportPollingStations(Fixture.ElectionRound.Id);
 
         var request = new GetTagValuesRequest
         {
-            ElectionRoundId = Guid.NewGuid(),
+            ElectionRoundId = Fixture.ElectionRound.Id,
             SelectTag = "Country"
         };
 
@@ -39,11 +39,11 @@ public class GetTagValuesEndpointTests : IClassFixture<HttpServerFixture<NoopDat
     public async Task Should_Return_TagValues_ForSelectedTag_WhenFiltersApplied()
     {
         // Arrange
-        await Fixture.PlatformAdmin.ImportPollingStations();
+        await Fixture.PlatformAdmin.ImportPollingStations(Fixture.ElectionRound.Id);
 
         var request = new GetTagValuesRequest
         {
-            ElectionRoundId = Guid.NewGuid(),
+            ElectionRoundId = Fixture.ElectionRound.Id,
             SelectTag = "UAT",
             Filter = new Dictionary<string, string>
             {
@@ -73,11 +73,11 @@ public class GetTagValuesEndpointTests : IClassFixture<HttpServerFixture<NoopDat
     public async Task Should_Return_EmptyList_WhenNoRowsInDbFroAppliedFilters()
     {
         // Arrange
-        await Fixture.PlatformAdmin.ImportPollingStations();
+        await Fixture.PlatformAdmin.ImportPollingStations(Fixture.ElectionRound.Id);
 
         var request = new GetTagValuesRequest
         {
-            ElectionRoundId = Guid.NewGuid(),
+            ElectionRoundId = Fixture.ElectionRound.Id,
             SelectTag = "UAT",
             Filter = new Dictionary<string, string>
             {

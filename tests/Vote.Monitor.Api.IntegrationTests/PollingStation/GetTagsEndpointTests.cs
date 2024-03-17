@@ -17,7 +17,7 @@ public class GetTagsEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeed
     public async Task Should_Return_AllAvailableTags()
     {
         // Arrange
-        await Fixture.PlatformAdmin.ImportPollingStations();
+        await Fixture.PlatformAdmin.ImportPollingStations(Fixture.ElectionRound.Id);
         // Act
         var (getTagsResult, tags) = await Fixture.PlatformAdmin.GETAsync<GetTagsEndpoint, GetTagsRequest, List<string>>(
         new()

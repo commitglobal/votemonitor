@@ -11,6 +11,8 @@ public class Endpoint : Endpoint<Request, Results<Ok<List<TagModel>>, ProblemDet
     public override void Configure()
     {
         Post("/api/election-rounds/{electionRoundId}/polling-stations/tags/values");
+        DontAutoTag();
+        Options(x => x.WithTags("polling-stations"));
     }
 
     public override async Task<Results<Ok<List<TagModel>>, ProblemDetails>> ExecuteAsync(Request req, CancellationToken ct)

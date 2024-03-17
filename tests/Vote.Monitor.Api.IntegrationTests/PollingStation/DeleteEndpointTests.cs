@@ -80,7 +80,7 @@ public class DeleteEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeede
         });
 
         getResponse.IsSuccessStatusCode.Should().BeTrue();
-        pollingStation.Should().BeEquivalentTo(newPollingStation);
+        pollingStation.Should().BeEquivalentTo(newPollingStation, opt => opt.Excluding(x => x.ElectionRoundId));
         pollingStation.Id.Should().Be(createResult.Id);
     }
 }

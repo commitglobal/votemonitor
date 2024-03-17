@@ -19,12 +19,12 @@ public class ListEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeeder>
     public async Task Should_UseDefaultPagination_WhenNoFilterAndNoPagination()
     {
         // Arrange
-        await Fixture.PlatformAdmin.ImportPollingStations();
+        await Fixture.PlatformAdmin.ImportPollingStations(Fixture.ElectionRound.Id);
 
         // Act
         var (response, result) = await Fixture.PlatformAdmin.POSTAsync<ListEndpoint, ListRequest, PagedResponse<PollingStationModel>>(new ListRequest
         {
-            ElectionRoundId = Guid.NewGuid()
+            ElectionRoundId = Fixture.ElectionRound.Id
         });
 
         // Assert
@@ -39,11 +39,11 @@ public class ListEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeeder>
     public async Task Should_ListDataPaginated()
     {
         // Arrange
-        await Fixture.PlatformAdmin.ImportPollingStations();
+        await Fixture.PlatformAdmin.ImportPollingStations(Fixture.ElectionRound.Id);
 
         var request = new ListRequest
         {
-            ElectionRoundId = Guid.NewGuid(),
+            ElectionRoundId = Fixture.ElectionRound.Id,
             PageSize = 15,
             AddressFilter = "ALBA IULIA",
             Filter = new Dictionary<string, string>
