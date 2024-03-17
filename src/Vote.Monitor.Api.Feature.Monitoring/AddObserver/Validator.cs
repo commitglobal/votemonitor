@@ -10,7 +10,7 @@ public class Validator : Validator<Request>
         RuleFor(x => x.ObserverId)
             .NotEmpty();
 
-        RuleFor(x => x.NgoId)
+        RuleFor(x => x.MonitoringNgoId)
             .NotEmpty();
     }
 }
