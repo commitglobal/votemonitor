@@ -142,6 +142,11 @@ public class CreateEndpointTests
         var result = await _endpoint.ExecuteAsync(request, default);
 
         // Assert
+        await _repository
+            .Received(0)
+            .AddAsync(Arg.Is<PollingStationAttachmentAggregate>(x => x.ElectionRoundId == fakeElectionRound.Id
+                                                                     && x.MonitoringObserverId == fakeMonitoringObserver.Id));
+
         result
             .Should().BeOfType<Results<Ok<AttachmentModel>, BadRequest<ProblemDetails>, StatusCodeHttpResult>>()
             .Which

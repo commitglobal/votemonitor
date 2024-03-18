@@ -63,7 +63,7 @@ internal class S3FileStorageService : IFileStorageService
         {
             var urlString = await _client.GetPreSignedURLAsync(request);
 
-            return new GetPresignedUrlResult.Ok(urlString, filename);
+            return new GetPresignedUrlResult.Ok(urlString, filename, _options.PresignedUrlValidityInSeconds);
         }
         catch (AmazonS3Exception ex)
         {

@@ -11,6 +11,7 @@ internal class PollingStationAttachmentConfiguration : IEntityTypeConfiguration<
         builder.Property(x => x.Id).IsRequired();
         builder.HasIndex(x => x.ElectionRoundId);
         builder.HasIndex(x => x.MonitoringObserverId);
+        builder.HasIndex(x => x.PollingStationId);
 
         builder.Property(x => x.FileName)
             .HasMaxLength(256)
@@ -29,6 +30,10 @@ internal class PollingStationAttachmentConfiguration : IEntityTypeConfiguration<
         builder.HasOne(x => x.ElectionRound)
             .WithMany()
             .HasForeignKey(x => x.ElectionRoundId);
+
+        builder.HasOne(x => x.PollingStation)
+            .WithMany()
+            .HasForeignKey(x => x.PollingStationId);
 
         builder.HasOne(x => x.MonitoringObserver)
             .WithMany()

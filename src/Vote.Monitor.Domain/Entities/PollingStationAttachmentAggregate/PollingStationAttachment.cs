@@ -6,6 +6,8 @@ public class PollingStationAttachment : BaseEntity, IAggregateRoot
 {
     public Guid ElectionRoundId { get; private set; }
     public ElectionRound ElectionRound { get; private set; }
+    public Guid PollingStationId { get; private set; }
+    public PollingStation PollingStation { get; private set; }
     public Guid MonitoringObserverId { get; private set; }
     public MonitoringObserver MonitoringObserver { get; private set; }
     public string FileName { get; private set; }
@@ -14,6 +16,7 @@ public class PollingStationAttachment : BaseEntity, IAggregateRoot
     public DateTime Timestamp { get; private set; }
 
     public PollingStationAttachment(ElectionRound electionRound,
+        PollingStation pollingStation,
         MonitoringObserver monitoringObserver,
         string fileName,
         string filePath,
@@ -22,6 +25,8 @@ public class PollingStationAttachment : BaseEntity, IAggregateRoot
     {
         ElectionRound = electionRound;
         ElectionRoundId = electionRound.Id;
+        PollingStationId = pollingStation.Id;
+        PollingStation = pollingStation;
         MonitoringObserver = monitoringObserver;
         MonitoringObserverId = monitoringObserver.Id;
         Timestamp = timeProvider.UtcNow;

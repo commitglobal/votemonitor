@@ -70,6 +70,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<AttachmentModel>, BadReques
         var uploadPath = $"elections/{electionRound.Id}/polling-stations/{pollingStation.Id}/attachments";
         
         var pollingStationAttachment = new PollingStationAttachmentAggregate(electionRound,
+            pollingStation,
             monitoringObserver,
             req.Attachment.FileName,
             uploadPath,

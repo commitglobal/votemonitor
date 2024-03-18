@@ -6,6 +6,7 @@ namespace Vote.Monitor.Core.Services.FileStorage.LocalDisk;
 
 internal class LocalDiskFileStorageService : IFileStorageService
 {
+    private const int UrlValidityInSeconds = 99999;
     private readonly ILogger<LocalDiskFileStorageService> _logger;
     private readonly LocalDiskOptions _options;
 
@@ -36,7 +37,7 @@ internal class LocalDiskFileStorageService : IFileStorageService
             var result = await GetPresignedUrlAsync(uploadPath, filename, ct);
             if (result is GetPresignedUrlResult.Ok file)
             {
-                return new UploadFileResult.Ok(file.Url, file.Filename, 99999);
+                return new UploadFileResult.Ok(file.Url, file.Filename, UrlValidityInSeconds);
             }
 
             // Get presigned url failed but upload succeed
@@ -62,7 +63,7 @@ internal class LocalDiskFileStorageService : IFileStorageService
                 return new GetPresignedUrlResult.NotFound();
             }
 
-            return new GetPresignedUrlResult.Ok(fullPath, filename);
+            return new GetPresignedUrlResult.Ok(fullPath, filename, UrlValidityInSeconds);
 
         }
         catch (Exception e)
