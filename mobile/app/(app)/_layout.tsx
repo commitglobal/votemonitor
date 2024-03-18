@@ -14,7 +14,7 @@ const AppLayout = () => {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <Drawer>
+      <Drawer screenOptions={{ drawerType: "front" }}>
         <Drawer.Screen name="(tabs)" options={{ headerShown: true }} />
       </Drawer>
     </GestureHandlerRootView>
