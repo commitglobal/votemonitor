@@ -91,7 +91,6 @@ public class Endpoint : Endpoint<Request, Results<Ok<AttachmentModel>, BadReques
 
         await _repository.AddAsync(pollingStationAttachment, ct);
 
-        //add tests
         var result = uploadResult as UploadFileResult.Ok;
 
         return TypedResults.Ok(new AttachmentModel
