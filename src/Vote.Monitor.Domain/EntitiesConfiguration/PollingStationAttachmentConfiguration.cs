@@ -12,7 +12,11 @@ internal class PollingStationAttachmentConfiguration : IEntityTypeConfiguration<
         builder.HasIndex(x => x.ElectionRoundId);
         builder.HasIndex(x => x.MonitoringObserverId);
 
-        builder.Property(x => x.Filename)
+        builder.Property(x => x.FileName)
+            .HasMaxLength(256)
+            .IsRequired();
+
+        builder.Property(x => x.FilePath)
             .HasMaxLength(256)
             .IsRequired();
 

@@ -15,16 +15,17 @@ internal class LocalDiskFileStorageService : IFileStorageService
         _options = options.Value;
     }
 
-    public async Task<UploadFileResult> UploadFileAsync(string uploadFolder, string filename, Stream stream, CancellationToken ct = default)
+    public async Task<UploadFileResult> UploadFileAsync(string uploadPath, string filename, Stream stream, CancellationToken ct = default)
     {
         try
         {
-            if (!Directory.Exists(_options.Path))
+            var uploadDirectory = Path.Combine(_options.Path, uploadPath);
+            if (!Directory.Exists(uploadDirectory))
             {
-                Directory.CreateDirectory(_options.Path);
+                Directory.CreateDirectory(uploadDirectory);
             }
 
-            var fullPath = Path.Combine(uploadFolder, filename);
+            var fullPath = Path.Combine(_options.Path, uploadPath, filename);
 
             await using (var fileStream = File.Create(fullPath))
             {
@@ -32,29 +33,29 @@ internal class LocalDiskFileStorageService : IFileStorageService
                 await stream.CopyToAsync(fileStream, ct);
             }
 
-            var result = await GetPresignedUrlAsync(uploadFolder, filename, ct);
+            var result = await GetPresignedUrlAsync(uploadPath, filename, ct);
             if (result is GetPresignedUrlResult.Ok file)
             {
-                return new UploadFileResult.Ok(file.Url, file.Filename);
+                return new UploadFileResult.Ok(file.Url, file.Filename, 99999);
             }
 
             // Get presigned url failed but upload succeed
-            return new UploadFileResult.Ok(string.Empty, string.Empty);
+            return new UploadFileResult.Ok(string.Empty, string.Empty, 0);
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Could not upload file {uploadFolder} {filename}", uploadFolder, filename);
-            return new UploadFileResult.Failed();
+            _logger.LogError(e, "Could not upload file {uploadPath} {filename}", uploadPath, filename);
+            return new UploadFileResult.Failed($"Failed to upload file to LocalDisk: {e.Message}");
         }
     }
 
-    public async Task<GetPresignedUrlResult> GetPresignedUrlAsync(string uploadFolder, string filename, CancellationToken ct = default)
+    public async Task<GetPresignedUrlResult> GetPresignedUrlAsync(string uploadPath, string filename, CancellationToken ct = default)
     {
         try
         {
             await Task.CompletedTask;
 
-            var fullPath = Path.Combine(uploadFolder, filename);
+            var fullPath = Path.Combine(_options.Path, uploadPath, filename);
 
             if (!File.Exists(fullPath))
             {
@@ -66,9 +67,8 @@ internal class LocalDiskFileStorageService : IFileStorageService
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Could not get presigned url for file {uploadFolder} {filename}", uploadFolder, filename);
+            _logger.LogError(e, "Could not get presigned url for file {uploadPath} {filename}", uploadPath, filename);
+            return new GetPresignedUrlResult.Failed($"Failed to generate presigned url for LocalDisk: {e.Message}");
         }
-
-        return new GetPresignedUrlResult.Failed();
     }
 }
