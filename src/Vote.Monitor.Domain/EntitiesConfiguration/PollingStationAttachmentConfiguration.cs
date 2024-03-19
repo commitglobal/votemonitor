@@ -29,6 +29,8 @@ internal class PollingStationAttachmentConfiguration : IEntityTypeConfiguration<
             .HasMaxLength(256)
             .IsRequired();
 
+        builder.Property(x => x.IsDeleted);
+
         builder.Property(x => x.Timestamp);
 
         builder.HasOne(x => x.ElectionRound)
