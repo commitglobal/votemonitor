@@ -78,7 +78,6 @@ For local developemnt you can use your lcoal file ssytem for storage by setting 
 
 To use S3 file storage you need to set `"FileStorageType": "S3",` and need to have the following environment variables set, with the key ID referencing an IAM user with permissions restricted to only S3. 
 ```
- "ASPNETCORE_ENVIRONMENT": "Development",
  "AWS_ACCESS_KEY_ID": "",
  "AWS_SECRET_ACCESS_KEY": "",
  "AWS_REGION": ""
