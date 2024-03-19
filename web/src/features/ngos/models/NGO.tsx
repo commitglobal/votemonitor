@@ -11,8 +11,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { ArrowUpDown } from 'lucide-react';
 import { SortOrder } from '@/common/types';
+import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
 
 export interface NGO {
   id: string;
@@ -33,23 +33,16 @@ export const ngoColDefs: ColumnDef<NGO>[] = [
   {
     header: 'ID',
     accessorKey: 'id',
-    enableSorting: true,
   },
   {
     accessorKey: 'name',
     enableSorting: true,
-    header: ({ column }) => {
-      return (
-        <Button variant='ghost' size='none' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-          Name
-          <ArrowUpDown className='w-4 h-4 ml-2' />
-        </Button>
-      );
-    },
+    header: ({ column }) => <DataTableColumnHeader title='Name' column={column} />,
   },
   {
-    header: 'Status',
     accessorKey: 'status',
+    enableSorting: true,
+    header: ({ column }) => <DataTableColumnHeader title='Status' column={column} />,
   },
   {
     id: 'actions',
