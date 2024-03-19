@@ -1,13 +1,15 @@
 import {
-  type ColumnDef,
   flexRender,
   getCoreRowModel,
-  useReactTable,
+  getSortedRowModel,
+  type ColumnDef,
   type PaginationState,
+  type SortingState,
+  useReactTable,
 } from '@tanstack/react-table';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useState, type ReactElement } from 'react';
-import type { PageParameters, PageResponse } from '@/common/types';
+import { SortOrder, type DataTableParameters, type PageResponse } from '@/common/types';
 import { DataTablePagination } from './DataTablePagination';
 import type { UseQueryResult } from '@tanstack/react-query';
 import { Skeleton } from '../skeleton';
@@ -21,7 +23,7 @@ export interface DataTableProps<TData, TValue> {
   /**
    * Tanstack query for paginated data.
    */
-  usePagedQuery: (p: PageParameters) => UseQueryResult<PageResponse<TData>, Error>;
+  useQuery: (p: DataTableParameters) => UseQueryResult<PageResponse<TData>, Error>;
 
   /**
    * Externalize pagination state to the parent component.
@@ -34,39 +36,72 @@ export interface DataTableProps<TData, TValue> {
    * Used by QueryParamsDataTable.
    */
   setPaginationExt?: (p: PaginationState) => void;
+
+  /**
+   * Externalize sorting state to the parent component.
+   * Used by QueryParamsDataTable.
+   */
+  sortingExt?: SortingState;
+
+  /**
+   * Externalize sorting state to the parent component.
+   * Used by QueryParamsDataTable.
+   */
+  setSortingExt?: (p: SortingState) => void;
 }
 
 export function DataTable<TData, TValue>({
   columns,
-  usePagedQuery,
+  useQuery,
   paginationExt,
   setPaginationExt,
+  sortingExt,
+  setSortingExt,
 }: DataTableProps<TData, TValue>): ReactElement {
   let [pagination, setPagination]: [PaginationState, (p: PaginationState) => void] = useState({
     pageIndex: 0,
     pageSize: 10,
   });
+
   if (paginationExt) {
     if (!setPaginationExt) throw new Error('setPaginationExt is required when paginationExt is provided.');
     [pagination, setPagination] = [paginationExt, setPaginationExt];
   }
 
-  const { data, isFetching } = usePagedQuery({
+  let [sorting, setSorting]: [SortingState, (s: SortingState) => void] = useState<SortingState>([]);
+
+  if (sortingExt) {
+    if (!setSortingExt) throw new Error('setSortingExt is required when sortingExt is provided.');
+    [sorting, setSorting] = [sortingExt, setSortingExt];
+  }
+
+  const { data, isFetching } = useQuery({
     pageNumber: pagination.pageIndex + 1,
     pageSize: pagination.pageSize,
+    sortColumnName: sorting[0]?.id || 'id',
+    sortOrder: sorting[0]?.desc ? SortOrder.desc : SortOrder.asc,
   });
 
   const table = useReactTable({
     data: data?.items || [],
     columns,
     manualPagination: true,
+    manualSorting: true,
+    enableSorting: true,
     enableFilters: true,
     pageCount: data ? Math.ceil(data.totalCount / data.pageSize) : 0,
     getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
     onPaginationChange: (updater) => {
       setPagination(updater instanceof Function ? updater(pagination) : updater);
     },
-    state: { pagination },
+    onSortingChange: (updater) => {
+      setSorting(updater instanceof Function ? updater(sorting) : updater);
+    },
+    state: {
+      sorting,
+      pagination,
+    },
   });
 
   return (
@@ -115,7 +150,7 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <DataTablePagination table={table} totalCount = {data?.totalCount} />
+      <DataTablePagination table={table} totalCount={data?.totalCount} />
     </div>
   );
 }
