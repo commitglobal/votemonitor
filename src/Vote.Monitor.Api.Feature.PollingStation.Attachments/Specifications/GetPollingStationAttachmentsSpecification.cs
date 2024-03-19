@@ -9,6 +9,7 @@ public sealed class GetPollingStationAttachmentsSpecification : Specification<Po
         Query
             .Where(x => x.ElectionRoundId == electionRoundId
                         && x.PollingStationId == pollingStationId
-                        && x.MonitoringObserver.ObserverId == observerId);
+                        && x.MonitoringObserver.ObserverId == observerId
+                        && x.IsDeleted == false);
     }
 }
