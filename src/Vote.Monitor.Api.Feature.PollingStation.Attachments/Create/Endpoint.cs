@@ -76,12 +76,9 @@ public class Endpoint : Endpoint<Request, Results<Ok<AttachmentModel>, BadReques
             uploadPath,
             req.Attachment.ContentType,
             _timeProvider);
-
-        var extension = req.Attachment.FileName.Split('.').Last();
-        var fileNameWithExtension = $"{pollingStationAttachment.Id}.{extension}";
-
+        
         var uploadResult = await _fileStorageService.UploadFileAsync(uploadPath,
-            fileName: fileNameWithExtension,
+            fileName: pollingStationAttachment.UploadedFileName,
             req.Attachment.OpenReadStream(),
             ct);
 

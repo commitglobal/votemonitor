@@ -60,7 +60,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<AttachmentModel>, BadReques
         }
 
         var presignedUrl = await _fileStorageService.GetPresignedUrlAsync(pollingStationAttachment.FilePath, 
-            pollingStationAttachment.FileName,
+            pollingStationAttachment.UploadedFileName,
             ct);
 
         return TypedResults.Ok(new AttachmentModel

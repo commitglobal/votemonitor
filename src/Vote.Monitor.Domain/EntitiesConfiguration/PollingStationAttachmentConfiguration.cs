@@ -17,6 +17,10 @@ internal class PollingStationAttachmentConfiguration : IEntityTypeConfiguration<
             .HasMaxLength(256)
             .IsRequired();
 
+        builder.Property(x => x.UploadedFileName)
+            .HasMaxLength(256)
+            .IsRequired();
+
         builder.Property(x => x.FilePath)
             .HasMaxLength(256)
             .IsRequired();
