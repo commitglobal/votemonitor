@@ -43,7 +43,7 @@ public class DeleteEndpointTests
         var fakePollingStationAttachment = new PollingStationAttachmentFaker(attachmentId, fileName).Generate();
 
         _electionRoundRepository
-            .FirstOrDefaultAsync(Arg.Any<GetElectionRoundSpecification>())
+            .GetByIdAsync(fakeElectionRound.Id)
             .Returns(fakeElectionRound);
 
         _pollingStationRepository
@@ -79,7 +79,7 @@ public class DeleteEndpointTests
         var fakeMonitoringObserver = new MonitoringObserverFaker().Generate();
 
         _electionRoundRepository
-            .FirstOrDefaultAsync(Arg.Any<GetElectionRoundSpecification>())
+            .GetByIdAsync(fakeElectionRound.Id)
             .Returns((ElectionRound)null!);
 
         // Act
@@ -107,7 +107,7 @@ public class DeleteEndpointTests
         var fakeMonitoringObserver = new MonitoringObserverFaker().Generate();
 
         _electionRoundRepository
-            .FirstOrDefaultAsync(Arg.Any<GetElectionRoundSpecification>())
+            .GetByIdAsync(fakeElectionRound.Id)
             .Returns(fakeElectionRound);
 
         _pollingStationRepository
@@ -139,7 +139,7 @@ public class DeleteEndpointTests
         var fakeMonitoringObserver = new MonitoringObserverFaker().Generate();
 
         _electionRoundRepository
-            .FirstOrDefaultAsync(Arg.Any<GetElectionRoundSpecification>())
+            .GetByIdAsync(fakeElectionRound.Id)
             .Returns(fakeElectionRound);
 
         _pollingStationRepository

@@ -31,8 +31,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<List<AttachmentModel>>, Bad
 
     public override async Task<Results<Ok<List<AttachmentModel>>, BadRequest<ProblemDetails>>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var electionRoundSpecification = new GetElectionRoundSpecification(req.ElectionRoundId);
-        var electionRound = await _electionRoundRepository.FirstOrDefaultAsync(electionRoundSpecification, ct);
+        var electionRound = await _electionRoundRepository.GetByIdAsync(req.ElectionRoundId, ct);
 
         if (electionRound == null)
         {

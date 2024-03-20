@@ -48,7 +48,7 @@ public class ListEndpointTests
         var anotherFakePollingStationAttachment = new PollingStationAttachmentFaker().Generate();
 
         _electionRoundRepository
-            .FirstOrDefaultAsync(Arg.Any<GetElectionRoundSpecification>())
+            .GetByIdAsync(fakeElectionRound.Id)
             .Returns(fakeElectionRound);
 
         _pollingStationRepository
@@ -90,7 +90,7 @@ public class ListEndpointTests
         var fakeMonitoringObserver = new MonitoringObserverFaker().Generate();
 
         _electionRoundRepository
-            .FirstOrDefaultAsync(Arg.Any<GetElectionRoundSpecification>())
+            .GetByIdAsync(fakeElectionRound.Id)
             .Returns((ElectionRound)null!);
 
         // Act
@@ -118,7 +118,7 @@ public class ListEndpointTests
         var fakeMonitoringObserver = new MonitoringObserverFaker().Generate();
 
         _electionRoundRepository
-            .FirstOrDefaultAsync(Arg.Any<GetElectionRoundSpecification>())
+            .GetByIdAsync(fakeElectionRound.Id)
             .Returns(fakeElectionRound);
 
         _pollingStationRepository
@@ -150,7 +150,7 @@ public class ListEndpointTests
         var fakeMonitoringObserver = new MonitoringObserverFaker().Generate();
 
         _electionRoundRepository
-            .FirstOrDefaultAsync(Arg.Any<GetElectionRoundSpecification>())
+            .GetByIdAsync(fakeElectionRound.Id)
             .Returns(fakeElectionRound);
 
         _pollingStationRepository
