@@ -1,4 +1,5 @@
-﻿using NSwag;
+﻿using Feature.PollingStation.Information.Form;
+using NSwag;
 using Vote.Monitor.Api.Feature.Answers.Attachments;
 using Vote.Monitor.Api.Feature.Answers.Notes;
 using Vote.Monitor.Api.Feature.Emergencies;
@@ -10,7 +11,6 @@ using Vote.Monitor.Api.Feature.NgoAdmin;
 using Vote.Monitor.Api.Feature.Notifications;
 using Vote.Monitor.Api.Feature.PollingStation.Attachments;
 using Vote.Monitor.Api.Feature.PollingStation.Information;
-using Vote.Monitor.Api.Feature.PollingStation.InformationForm;
 using Vote.Monitor.Api.Feature.PollingStation.Notes;
 using Vote.Monitor.Core.Models;
 using Vote.Monitor.Core.Services.FileStorage;

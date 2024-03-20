@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace Vote.Monitor.Api.Feature.PollingStation.InformationForm;
+namespace Feature.PollingStation.Information.Form;
 
 public static class PollingStationInformationFormFeatureInstaller
 {

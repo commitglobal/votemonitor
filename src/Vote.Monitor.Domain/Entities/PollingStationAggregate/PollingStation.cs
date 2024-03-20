@@ -8,22 +8,26 @@ public class PollingStation : AuditableBaseEntity, IAggregateRoot, IDisposable
     }
 #pragma warning restore CS8618
 
-    public PollingStation(string address,
+    public PollingStation(ElectionRound electionRound, string address,
         int displayOrder,
         JsonDocument tags,
-        ITimeProvider timeProvider) : base(Guid.NewGuid(), timeProvider)
+        ITimeProvider timeProvider) : this(Guid.NewGuid(), electionRound, address, displayOrder, tags, timeProvider)
     {
-        Address = address;
-        DisplayOrder = displayOrder;
-        Tags = tags;
     }
 
-    internal PollingStation(Guid id, 
+    public ElectionRound ElectionRound { get; private set; }
+    public Guid ElectionRoundId { get; private set; }
+
+    internal PollingStation(
+        Guid id, 
+        ElectionRound electionRound,
         string address, 
         int displayOrder,
         JsonDocument tags, 
         ITimeProvider timeProvider) : base(id, timeProvider)
     { 
+        ElectionRoundId = electionRound.Id;
+        ElectionRound = electionRound;
         Address = address;
         DisplayOrder = displayOrder;
         Tags = tags;

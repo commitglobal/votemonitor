@@ -1,18 +1,26 @@
-﻿using Vote.Monitor.Domain.Entities.PollingStationInfoFormAggregate;
+﻿using Feature.PollingStation.Information.Form.Specifications;
 
-namespace Vote.Monitor.Api.Feature.PollingStation.InformationForm.Delete;
+namespace Feature.PollingStation.Information.Form.Delete;
 
-public class Endpoint(IRepository<PollingStationInfoForm> repository) : Endpoint<Request, Results<NoContent, NotFound, ProblemDetails>>
+public class Endpoint(IRepository<PollingStationInfoFormAggregate> repository) : Endpoint<Request, Results<NoContent, NotFound>>
 {
     public override void Configure()
     {
-        Delete("/api/election-rounds/{electionRoundId}/polling-station-information-form/{id}");
+        Delete("/api/election-rounds/{electionRoundId}/polling-station-information-form/");
         DontAutoTag();
         Options(x => x.WithTags("polling-station-information-form"));
     }
 
-    public override async Task<Results<NoContent, NotFound, ProblemDetails>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<Results<NoContent, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        throw new NotImplementedException();
+       var pollingStationInformationForm  = await repository.FirstOrDefaultAsync(new GetPollingStationInformationFormSpecification(req.ElectionRoundId), ct);
+
+       if (pollingStationInformationForm is null)
+       {
+           return TypedResults.NotFound();
+       }
+
+       await repository.DeleteAsync(pollingStationInformationForm, ct);
+       return TypedResults.NoContent();
     }
 }

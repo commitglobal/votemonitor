@@ -1,13 +1,12 @@
-﻿using Vote.Monitor.Domain.Entities.PollingStationInfoAggregate;
-using Vote.Monitor.Domain.Entities.PollingStationInfoFormAggregate;
+﻿using Feature.PollingStation.Information.Form.Specifications;
 
-namespace Vote.Monitor.Api.Feature.PollingStation.InformationForm.Get;
+namespace Feature.PollingStation.Information.Form.Get;
 
-public class Endpoint(IReadRepository<PollingStationInfoForm> repository) : Endpoint<Request, Results<Ok<PollingStationInformationFormModel>, NotFound>>
+public class Endpoint(IReadRepository<PollingStationInfoFormAggregate> repository) : Endpoint<Request, Results<Ok<PollingStationInformationFormModel>, NotFound>>
 {
     public override void Configure()
     {
-        Get("/api/election-rounds/{electionRoundId}/polling-station-information-form/{id}");
+        Get("/api/election-rounds/{electionRoundId}/polling-station-information-form");
         DontAutoTag();
         Options(x => x.WithTags("polling-station-information-form"));
         Description(x => x.Accepts<Request>());
@@ -15,6 +14,13 @@ public class Endpoint(IReadRepository<PollingStationInfoForm> repository) : Endp
 
     public override async Task<Results<Ok<PollingStationInformationFormModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        throw new NotImplementedException();
+        var form = await repository.FirstOrDefaultAsync(new PollingStationInformationModelSpecification(req.ElectionRoundId), ct);
+
+        if (form is null)
+        {
+            return TypedResults.NotFound();
+        }
+
+        return TypedResults.Ok(form);
     }
 }

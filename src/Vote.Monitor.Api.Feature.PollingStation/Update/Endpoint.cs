@@ -3,23 +3,19 @@ using Vote.Monitor.Api.Feature.PollingStation.Specifications;
 
 namespace Vote.Monitor.Api.Feature.PollingStation.Update;
 
-public class Endpoint : Endpoint<Request, Results<NoContent, NotFound, Conflict<ProblemDetails>>>
+public class Endpoint(IRepository<PollingStationAggregate> repository)
+    : Endpoint<Request, Results<NoContent, NotFound, Conflict<ProblemDetails>>>
 {
-    private readonly IRepository<PollingStationAggregate> _repository;
-
-    public Endpoint(IRepository<PollingStationAggregate> repository)
-    {
-        _repository = repository;
-    }
-
     public override void Configure()
     {
-        Put("/api/polling-stations/{id}");
+        Put("/api/election-rounds/{electionRoundId}/polling-stations/{id}");
+        DontAutoTag();
+        Options(x => x.WithTags("polling-stations"));
     }
 
     public override async Task<Results<NoContent, NotFound, Conflict<ProblemDetails>>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var pollingStation = await _repository.SingleOrDefaultAsync(new GetPollingStationByIdSpecification(req.Id), ct);
+        var pollingStation = await repository.SingleOrDefaultAsync(new GetPollingStationByIdSpecification(req.Id), ct);
 
         if (pollingStation is null)
         {
@@ -27,7 +23,7 @@ public class Endpoint : Endpoint<Request, Results<NoContent, NotFound, Conflict<
         }
 
         var specification = new GetPollingStationSpecification(req.Address, req.Tags);
-        var hasIdenticalPollingStation = await _repository.AnyAsync(specification, ct);
+        var hasIdenticalPollingStation = await repository.AnyAsync(specification, ct);
 
         if (hasIdenticalPollingStation)
         {
@@ -36,7 +32,7 @@ public class Endpoint : Endpoint<Request, Results<NoContent, NotFound, Conflict<
         }
 
         pollingStation.UpdateDetails(req.Address, req.DisplayOrder, req.Tags.ToTagsObject());
-        await _repository.SaveChangesAsync(ct);
+        await repository.SaveChangesAsync(ct);
 
         return TypedResults.NoContent();
     }

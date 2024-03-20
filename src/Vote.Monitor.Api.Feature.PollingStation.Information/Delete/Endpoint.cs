@@ -1,8 +1,9 @@
-﻿using Vote.Monitor.Domain.Entities.PollingStationInfoAggregate;
+﻿using Vote.Monitor.Api.Feature.PollingStation.Information.Specifications;
+using Vote.Monitor.Domain.Entities.PollingStationInfoAggregate;
 
 namespace Vote.Monitor.Api.Feature.PollingStation.Information.Delete;
 
-public class Endpoint(IRepository<PollingStationInfo> repository) : Endpoint<Request, Results<NoContent, NotFound>>
+public class Endpoint(IRepository<PollingStationInformation> repository) : Endpoint<Request, Results<NoContent, NotFound>>
 {
     public override void Configure()
     {
@@ -13,6 +14,15 @@ public class Endpoint(IRepository<PollingStationInfo> repository) : Endpoint<Req
 
     public override async Task<Results<NoContent, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        throw new NotImplementedException();
+        var specification = new GetPollingStationInformationSpecification(req.ElectionRoundId, req.PollingStationId, req.ObserverId);
+        var pollingStationInformation = await repository.FirstOrDefaultAsync(specification, ct);
+
+        if (pollingStationInformation is null)
+        {
+            return TypedResults.NotFound();
+        }
+        await repository.DeleteAsync(pollingStationInformation, ct);
+
+        return TypedResults.NoContent();
     }
 }

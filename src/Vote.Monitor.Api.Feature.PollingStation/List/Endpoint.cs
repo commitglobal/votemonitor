@@ -14,7 +14,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<PagedResponse<PollingStatio
 
     public override void Configure()
     {
-        Post("/api/polling-stations:list");
+        Post("/api/election-rounds/{electionRoundId}/polling-stations:list");
         DontAutoTag();
         Options(x => x.WithTags("polling-stations"));
     }

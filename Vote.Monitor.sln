@@ -90,13 +90,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Feature.Em
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Feature.Form", "src\Vote.Monitor.Api.Feature.Form\Vote.Monitor.Api.Feature.Form.csproj", "{AEF250A9-2105-408D-99F3-AFDEF374EC5C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Feature.PollingStation.InformationForm", "src\Vote.Monitor.Api.Feature.PollingStation.InformationForm\Vote.Monitor.Api.Feature.PollingStation.InformationForm.csproj", "{46DD5C48-94FB-44F9-8C20-037313D86C95}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feature.PollingStation.Information.Form", "src\Vote.Monitor.Api.Feature.PollingStation.InformationForm\Feature.PollingStation.Information.Form.csproj", "{46DD5C48-94FB-44F9-8C20-037313D86C95}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vote.Monitor.Form.Module", "src\Vote.Monitor.Form.Module\Vote.Monitor.Form.Module.csproj", "{5525ED0D-9098-4D43-918D-D810A148C2A7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Form.Module", "src\Vote.Monitor.Form.Module\Vote.Monitor.Form.Module.csproj", "{5525ED0D-9098-4D43-918D-D810A148C2A7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Form.Module.UnitTests", "tests\Vote.Monitor.Form.Module.UnitTests\Vote.Monitor.Form.Module.UnitTests.csproj", "{819E51B2-F24C-4E0B-AD50-72A0DED131E6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Answer.Module", "src\Vote.Monitor.Answer.Module\Vote.Monitor.Answer.Module.csproj", "{EEDAA138-9CEB-4F7B-82F3-0B3E6676523D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Answer.Module.UnitTests", "tests\Vote.Monitor.Answer.Module.UnitTests\Vote.Monitor.Answer.Module.UnitTests.csproj", "{53015FDA-E099-44B5-A14A-82045ACEE4D9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feature.PollingStation.Information.Form.UnitTests", "tests\Vote.Monitor.Api.Feature.PollingStation.Information.Form.UnitTests\Feature.PollingStation.Information.Form.UnitTests.csproj", "{65351AAF-BD9F-4FB8-9C12-37D5B44DBB56}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -272,6 +276,14 @@ Global
 		{EEDAA138-9CEB-4F7B-82F3-0B3E6676523D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EEDAA138-9CEB-4F7B-82F3-0B3E6676523D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EEDAA138-9CEB-4F7B-82F3-0B3E6676523D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53015FDA-E099-44B5-A14A-82045ACEE4D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53015FDA-E099-44B5-A14A-82045ACEE4D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53015FDA-E099-44B5-A14A-82045ACEE4D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53015FDA-E099-44B5-A14A-82045ACEE4D9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{65351AAF-BD9F-4FB8-9C12-37D5B44DBB56}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65351AAF-BD9F-4FB8-9C12-37D5B44DBB56}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65351AAF-BD9F-4FB8-9C12-37D5B44DBB56}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65351AAF-BD9F-4FB8-9C12-37D5B44DBB56}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -319,6 +331,8 @@ Global
 		{5525ED0D-9098-4D43-918D-D810A148C2A7} = {17945B3C-5A4C-4279-8022-65ABC606A510}
 		{819E51B2-F24C-4E0B-AD50-72A0DED131E6} = {3441EE1D-E3C6-45BE-A020-553816015081}
 		{EEDAA138-9CEB-4F7B-82F3-0B3E6676523D} = {17945B3C-5A4C-4279-8022-65ABC606A510}
+		{53015FDA-E099-44B5-A14A-82045ACEE4D9} = {3441EE1D-E3C6-45BE-A020-553816015081}
+		{65351AAF-BD9F-4FB8-9C12-37D5B44DBB56} = {3441EE1D-E3C6-45BE-A020-553816015081}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {50C20C9F-F2AF-45D8-994A-06661772B31C}

@@ -8,7 +8,7 @@ public class CreateValidatorTests
 
     [Theory]
     [MemberData(nameof(TestData.EmptyStringsTestCases), MemberType = typeof(TestData))]
-    [MemberData(nameof(ValidatorsTestData.InvalidCodeTestCases), MemberType = typeof(ValidatorsTestData))]
+    [MemberData(nameof(TranslatedStringTestData.InvalidCodeTestCases), MemberType = typeof(TranslatedStringTestData))]
     public void Validation_ShouldFail_When_InvalidCode(string code)
     {
         // Arrange
@@ -26,7 +26,7 @@ public class CreateValidatorTests
     }
 
     [Theory]
-    [MemberData(nameof(ValidatorsTestData.InvalidPartiallyTranslatedTestCases), MemberType = typeof(ValidatorsTestData))]
+    [MemberData(nameof(TranslatedStringTestData.InvalidPartiallyTranslatedTestCases), MemberType = typeof(TranslatedStringTestData))]
     public void Validation_ShouldFail_When_NameInvalid(TranslatedString invalidName)
     {
         // Arrange
@@ -106,7 +106,7 @@ public class CreateValidatorTests
             Languages = [LanguagesList.EN.Iso1, LanguagesList.RO.Iso1],
             Code = "A code",
             FormTemplateType = FormTemplateType.ClosingAndCounting,
-            Name = ValidatorsTestData.ValidPartiallyTranslatedTestData.First()
+            Name = TranslatedStringTestData.ValidPartiallyTranslatedTestData.First()
         };
 
         // Act

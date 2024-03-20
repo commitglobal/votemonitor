@@ -1,5 +1,4 @@
 ﻿using Vote.Monitor.Api.Feature.FormTemplate.Specifications;
-using Vote.Monitor.Domain.Entities.FormBase;
 using Vote.Monitor.Form.Module.Mappers;
 
 namespace Vote.Monitor.Api.Feature.FormTemplate.Update;
@@ -29,19 +28,10 @@ public class Endpoint(IRepository<FormTemplateAggregate> repository) : Endpoint<
             return TypedResults.Conflict(new ProblemDetails(ValidationFailures));
         }
 
-        var sections = req.Sections.Select(section =>
-         {
-             var questions = section.Questions
-                 .Select(FormMapper.ToEntity)
+        var questions = req.Questions.Select(FormMapper.ToEntity)
                  .ToList()
                  .AsReadOnly();
-
-             return FormSection.Create(section.Code, section.Title, questions);
-         })
-         .ToList()
-         .AsReadOnly();
-
-        formTemplate.UpdateDetails(req.Code, req.Name, req.FormTemplateType, req.Languages, sections);
+        formTemplate.UpdateDetails(req.Code, req.Name, req.FormTemplateType, req.Languages, questions);
 
         await repository.UpdateAsync(formTemplate, ct);
         return TypedResults.NoContent();
