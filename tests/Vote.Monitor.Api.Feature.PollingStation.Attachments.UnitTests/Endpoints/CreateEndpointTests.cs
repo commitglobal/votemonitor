@@ -5,6 +5,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using NSubstitute;
+using NSubstitute.ReturnsExtensions;
 using Vote.Monitor.Api.Feature.PollingStation.Attachments.Create;
 using Vote.Monitor.Api.Feature.PollingStation.Attachments.Specifications;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
@@ -166,7 +167,7 @@ public class CreateEndpointTests
 
         _electionRoundRepository
             .GetByIdAsync(fakeElectionRound.Id)
-            .Returns((ElectionRound)null!);
+            .ReturnsNull();
 
         // Act
         var request = new Request
@@ -198,7 +199,7 @@ public class CreateEndpointTests
 
         _pollingStationRepository
             .FirstOrDefaultAsync(Arg.Any<GetPollingStationSpecification>())
-            .Returns((PollingStationAggregate)null!);
+            .ReturnsNull();
 
         // Act
         var request = new Request
@@ -234,7 +235,7 @@ public class CreateEndpointTests
 
         _monitoringObserverRepository
             .FirstOrDefaultAsync(Arg.Any<GetMonitoringObserverSpecification>())
-            .Returns((MonitoringObserver)null!);
+            .ReturnsNull();
 
         // Act
         var request = new Request

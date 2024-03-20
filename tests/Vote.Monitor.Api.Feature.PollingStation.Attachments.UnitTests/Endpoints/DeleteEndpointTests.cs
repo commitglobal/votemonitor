@@ -2,6 +2,7 @@
 using FluentAssertions;
 using Microsoft.AspNetCore.Http.HttpResults;
 using NSubstitute;
+using NSubstitute.ReturnsExtensions;
 using Vote.Monitor.Api.Feature.PollingStation.Attachments.Delete;
 using Vote.Monitor.Api.Feature.PollingStation.Attachments.Specifications;
 using Vote.Monitor.Domain.Entities.ElectionRoundAggregate;
@@ -80,7 +81,7 @@ public class DeleteEndpointTests
 
         _electionRoundRepository
             .GetByIdAsync(fakeElectionRound.Id)
-            .Returns((ElectionRound)null!);
+            .ReturnsNull();
 
         // Act
         var request = new Request
@@ -112,7 +113,7 @@ public class DeleteEndpointTests
 
         _pollingStationRepository
             .FirstOrDefaultAsync(Arg.Any<GetPollingStationSpecification>())
-            .Returns((PollingStationAggregate)null!);
+            .ReturnsNull();
 
         // Act
         var request = new Request
@@ -151,8 +152,8 @@ public class DeleteEndpointTests
             .Returns(fakeMonitoringObserver);
 
         _repository
-            .FirstOrDefaultAsync(Arg.Any<GetPollingStationAttachmentSpecification>(), CancellationToken.None)
-            .Returns((PollingStationAttachmentAggregate)null!);
+            .FirstOrDefaultAsync(Arg.Any<GetPollingStationAttachmentSpecification>())
+            .ReturnsNull();
 
         // Act
         var request = new Request

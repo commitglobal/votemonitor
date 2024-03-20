@@ -95,7 +95,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<AttachmentModel>, BadReques
             FileName = pollingStationAttachment.FileName,
             PresignedUrl = result!.Url,
             MimeType = pollingStationAttachment.MimeType,
-            UrlValidityInSeconds = result.UrlValidityInSeconds,
+            UrlValidityInSeconds = result!.UrlValidityInSeconds,
             Id = pollingStationAttachment.Id
         });
     }
