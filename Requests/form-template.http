@@ -1,5 +1,5 @@
 @hostAddress=https://localhost:7123
-@jwtToken=eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3NzFiMGJiMC0zZjg3LTQ3YTAtYmM2NC0wODc4ZTIwNzAzNzQiLCJyb2xlIjoiUGxhdGZvcm1BZG1pbiIsImV4cCI6MTcxMDc1NzY1MywiaWF0IjoxNzEwNjcxMjUzLCJuYmYiOjE3MTA2NzEyNTN9.-_EG5TbrCFVyg7egeOPOXRHJwoyTHYvGcS6GPVOQnDY
+@jwtToken=your_token
 
 # List form templates
 GET {{hostAddress}}/api/form-templates
