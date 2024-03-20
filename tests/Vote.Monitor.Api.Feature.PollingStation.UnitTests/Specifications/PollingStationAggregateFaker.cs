@@ -4,7 +4,7 @@ using Vote.Monitor.TestUtils.Fakes.Aggregates;
 
 namespace Vote.Monitor.Api.Feature.PollingStation.UnitTests.Specifications;
 
-public class PollingStationAggregateFaker : PrivateFaker<PollingStationAggregate>
+public sealed class PollingStationAggregateFaker : PrivateFaker<PollingStationAggregate>
 {
     private readonly DateTime _baseCreationDate = new(2024, 01, 01, 00, 00, 00, DateTimeKind.Utc);
 

@@ -3,7 +3,7 @@ using Vote.Monitor.Domain.Entities.PollingStationInfoFormAggregate;
 
 namespace Vote.Monitor.Api.Feature.PollingStation.Information.Specifications;
 
-public class GetPollingStationInformationFormSpecification: SingleResultSpecification<PollingStationInformationForm>
+public sealed class GetPollingStationInformationFormSpecification: SingleResultSpecification<PollingStationInformationForm>
 {
     public GetPollingStationInformationFormSpecification(Guid electionRondId)
     {

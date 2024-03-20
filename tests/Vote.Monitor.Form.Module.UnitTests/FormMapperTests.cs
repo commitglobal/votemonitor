@@ -159,11 +159,6 @@ public class FormMapperTests
     public void ToModel_ShouldReturnNumberQuestionModel_WhenGivenMultiSelectQuestion()
     {
         // Arrange
-        var selectedOptions = new[] {
-            SelectedOption.Create(Guid.NewGuid(), "some extra text"),
-            SelectedOption.Create(Guid.NewGuid(), null)
-        };
-
         var multiSelectQuestion = MultiSelectQuestion.Create(Guid.NewGuid(), _code, _text, _helptext, _options);
 
         // Act
