@@ -14,7 +14,7 @@ public class FormTemplateTests
         var serialized = @"
         [
               {
-                ""$questionType"": ""numberInputQuestion"",
+                ""$questionType"": ""numberQuestion"",
                 ""Id"": ""d519a2aa-4b68-4470-88a3-492fcf597df1"",
                 ""Code"": ""C1"",
                 ""Text"": {
@@ -34,13 +34,13 @@ public class FormTemplateTests
     [Fact]
     public void Should_SerializeCorrectly_WhenPolymorphicQuestions()
     {
-        var numberInputQuestion = new NumberQuestion(Guid.Parse("d519a2aa-4b68-4470-88a3-492fcf597df1"),
+        var numberQuestion = new NumberQuestion(Guid.Parse("d519a2aa-4b68-4470-88a3-492fcf597df1"),
             "A code",
             new TranslatedString { ["RO"] = "A text" },
             new TranslatedString { ["RO"] = "A helptext" },
             new TranslatedString { ["RO"] = "A placeholder" });
 
-        var serialized = JToken.Parse(JsonSerializer.Serialize(numberInputQuestion));
+        var serialized = JToken.Parse(JsonSerializer.Serialize(numberQuestion));
 
         var expected = JToken.Parse(@"{
             ""Id"": ""d519a2aa-4b68-4470-88a3-492fcf597df1"",
@@ -48,7 +48,7 @@ public class FormTemplateTests
             ""Text"": {""RO"":""A text""},
             ""Helptext"": {""RO"":""A helptext""},
             ""InputPlaceholder"": {""RO"":""A placeholder""},
-            ""$questionType"": ""numberInputQuestion""
+            ""$questionType"": ""numberQuestion""
         }");
 
         serialized.Should().BeEquivalentTo(expected);

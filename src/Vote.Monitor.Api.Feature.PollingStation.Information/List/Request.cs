@@ -1,9 +1,11 @@
-﻿namespace Vote.Monitor.Api.Feature.PollingStation.Information.List;
+﻿using Vote.Monitor.Core.Models;
 
-public class Request
+namespace Vote.Monitor.Api.Feature.PollingStation.Information.List;
+
+public class Request: BaseSortPaginatedRequest
 {
     public Guid ElectionRoundId { get; set; }
 
-    [FromClaim("Sub")]
-    public Guid ObserverId { get; set; }
+    [FromClaim("NgoId")]
+    public Guid NgoId { get; set; }
 }

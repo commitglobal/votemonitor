@@ -28,7 +28,7 @@ public static class FormMapper
             case RatingQuestion ratingQuestionRequest:
                 return RatingQuestionModel.FromEntity(ratingQuestionRequest);
 
-            default: throw new ApplicationException("Unknown question type");
+            default: throw new ApplicationException("Unknown question type received");
         }
     }
 

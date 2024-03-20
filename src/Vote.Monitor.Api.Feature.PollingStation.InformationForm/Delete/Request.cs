@@ -1,7 +1,6 @@
-﻿namespace Vote.Monitor.Api.Feature.PollingStation.InformationForm.Delete;
+﻿namespace Feature.PollingStation.Information.Form.Delete;
 
 public class Request
 {
     public Guid ElectionRoundId { get; set; }
-    public Guid Id { get; set; }
 }

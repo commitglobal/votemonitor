@@ -14,7 +14,7 @@ public class Endpoint(IRepository<PollingStationInformation> repository) : Endpo
 
     public override async Task<Results<NoContent, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var specification = new GetPollingStationInformationByIdSpecification(req.ElectionRoundId, req.PollingStationId, req.ObserverId, req.Id);
+        var specification = new GetPollingStationInformationSpecification(req.ElectionRoundId, req.PollingStationId, req.ObserverId);
         var pollingStationInformation = await repository.FirstOrDefaultAsync(specification, ct);
 
         if (pollingStationInformation is null)

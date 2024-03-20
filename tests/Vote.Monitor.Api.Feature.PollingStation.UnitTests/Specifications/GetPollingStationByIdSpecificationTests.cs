@@ -6,7 +6,7 @@ public class GetPollingStationByIdSpecificationTests
     public void GetPollingStationByIdSpecification_AppliesCorrectFilters()
     {
         // Arrange
-        var pollingStation = new PollingStationAggregateFaker(Guid.NewGuid()).Generate();
+        var pollingStation = new PollingStationAggregateFaker(id: Guid.NewGuid()).Generate();
 
         var testCollection = new PollingStationAggregateFaker()
             .Generate(500)

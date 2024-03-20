@@ -8,6 +8,4 @@ public class Request
 
     [FromClaim("Sub")]
     public Guid ObserverId { get; set; }
-
-    public Guid Id { get; set; }
 }

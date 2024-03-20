@@ -32,12 +32,12 @@ public class Validator : Validator<Request>
         RuleForEach(x => x.Questions)
             .SetInheritanceValidator(v =>
             {
-                v.Add<TextQuestionRequest>(x => new TextInputQuestionRequestValidator(x.Languages));
-                v.Add<NumberQuestionRequest>(x => new NumberInputQuestionRequestValidator(x.Languages));
-                v.Add<DateQuestionRequest>(x => new DateInputQuestionRequestValidator(x.Languages));
-                v.Add<SingleSelectQuestionRequest>(x => new SingleSelectQuestionRequestValidator(x.Languages));
-                v.Add<MultiSelectQuestionRequest>(x => new MultiSelectQuestionRequestValidator(x.Languages));
-                v.Add<RatingQuestionRequest>(x => new RatingQuestionRequestValidator(x.Languages));
+                v.Add(x => new TextQuestionRequestValidator(x.Languages));
+                v.Add(x => new NumberQuestionRequestValidator(x.Languages));
+                v.Add(x => new DateQuestionRequestValidator(x.Languages));
+                v.Add(x => new SingleSelectQuestionRequestValidator(x.Languages));
+                v.Add(x => new MultiSelectQuestionRequestValidator(x.Languages));
+                v.Add(x => new RatingQuestionRequestValidator(x.Languages));
             });
     }
 }

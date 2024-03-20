@@ -5,8 +5,9 @@ namespace Vote.Monitor.Api.Feature.PollingStation.Information.Specifications;
 
 public class GetPollingStationInformationFormSpecification: SingleResultSpecification<PollingStationInformationForm>
 {
-    public GetPollingStationInformationFormSpecification(Guid electionRondId, Guid formId)
+    public GetPollingStationInformationFormSpecification(Guid electionRondId)
     {
-        Query.Where(x => x.ElectionRoundId == electionRondId && x.Id == formId);
+        Query.Where(x => x.ElectionRoundId == electionRondId);
+        Query.Include(x => x.ElectionRound);
     }
 }

@@ -3,7 +3,7 @@
 namespace Vote.Monitor.Api.Feature.PollingStation.List;
 public class Request: BaseSortPaginatedRequest
 {
-    public required Guid ElectionRoundId { get; set; }
+    public Guid ElectionRoundId { get; set; }
 
     [QueryParam]
     public string? AddressFilter { get; set; }

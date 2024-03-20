@@ -7,12 +7,12 @@ namespace Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 
 [PolyJsonConverter(distriminatorPropertyName: "$answerType")]
 
-[PolyJsonConverter.SubType(typeof(TextAnswer), "textAnswer")]
-[PolyJsonConverter.SubType(typeof(NumberAnswer), "numberAnswer")]
-[PolyJsonConverter.SubType(typeof(DateAnswer), "dateAnswer")]
-[PolyJsonConverter.SubType(typeof(SingleSelectAnswer), "singleSelectAnswer")]
-[PolyJsonConverter.SubType(typeof(MultiSelectAnswer), "multiSelectAnswer")]
-[PolyJsonConverter.SubType(typeof(RatingAnswer), "ratingAnswer")]
+[PolyJsonConverter.SubType(typeof(TextAnswer), AnswerTypes.TextAnswerType)]
+[PolyJsonConverter.SubType(typeof(NumberAnswer), AnswerTypes.NumberAnswerType)]
+[PolyJsonConverter.SubType(typeof(DateAnswer), AnswerTypes.DateAnswerType)]
+[PolyJsonConverter.SubType(typeof(SingleSelectAnswer), AnswerTypes.SingleSelectAnswerType)]
+[PolyJsonConverter.SubType(typeof(MultiSelectAnswer), AnswerTypes.MultiSelectAnswerType)]
+[PolyJsonConverter.SubType(typeof(RatingAnswer), AnswerTypes.RatingAnswerType)]
 public abstract class BaseAnswer
 {
     [JsonPropertyName("$answerType")]
@@ -32,7 +32,7 @@ public abstract class BaseAnswer
     protected static ValidationResult GetInvalidAnswerTypeError(int answerIndex, BaseQuestion question, BaseAnswer answer)
     {
         var propertyName = $"answers[{answerIndex}].QuestionId";
-        const string message = "Invalid answer type provided";
+        string message = $"Invalid answer type '{answer.Discriminator}' provided for question of type '{question.Discriminator}'";
         var validationFailure = new ValidationFailure(propertyName, message, answer.Discriminator);
 
         return new ValidationResult([validationFailure]);

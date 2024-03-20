@@ -1,0 +1,37 @@
+@hostAddress=https://localhost:7123
+@jwtToken=eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3NzFiMGJiMC0zZjg3LTQ3YTAtYmM2NC0wODc4ZTIwNzAzNzQiLCJyb2xlIjoiUGxhdGZvcm1BZG1pbiIsImV4cCI6MTcxMDc1NzY1MywiaWF0IjoxNzEwNjcxMjUzLCJuYmYiOjE3MTA2NzEyNTN9.-_EG5TbrCFVyg7egeOPOXRHJwoyTHYvGcS6GPVOQnDY
+@electionRoundId=76c94291-6b84-4dfa-a6b0-380865bb0b9c
+@pollingStationId=68bbb272-fccf-4e95-b9a6-776390159932
+
+# Add attachment
+# @name newAttachment
+POST {{hostAddress}}/api/election-rounds/{{electionRoundId}}/polling-stations/{{pollingStationId}}/attachments
+Authorization: Bearer {{jwtToken}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="Attachment"; filename="test_attachment.jpg"
+Content-Type: image/jpg
+
+< files/test_attachment.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+###
+
+# List attachments
+GET {{hostAddress}}/api/election-rounds/{{electionRoundId}}/polling-stations/{{pollingStationId}}/attachments
+Authorization: Bearer {{jwtToken}}
+
+###
+
+# Get an attachment
+GET {{hostAddress}}/api/election-rounds/{{electionRoundId}}/polling-stations/{{pollingStationId}}/attachments/{{newAttachment.response.body.$.id}}
+Authorization: Bearer {{jwtToken}}
+
+###
+
+# Delete an attachment
+DELETE  {{hostAddress}}/api/election-rounds/{{electionRoundId}}/polling-stations/{{pollingStationId}}/attachments/{{newAttachment.response.body.$.id}}
+Authorization: Bearer {{jwtToken}}
+
+###
+

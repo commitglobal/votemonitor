@@ -1,7 +1,6 @@
 ﻿using MartinCostello.Logging.XUnit;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Logging;
-using Microsoft.VisualBasic.CompilerServices;
 using Vote.Monitor.Api.Feature.Auth.Login;
 using Vote.Monitor.Api.Feature.ElectionRound;
 using Vote.Monitor.Core.Services.Time;

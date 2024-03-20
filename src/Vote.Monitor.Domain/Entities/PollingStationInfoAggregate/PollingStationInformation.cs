@@ -12,7 +12,7 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
     public PollingStation PollingStation { get; private set; }
     public Guid MonitoringObserverId { get; private set; }
     public MonitoringObserver MonitoringObserver { get; private set; }
-    public Guid PollingStationInfoFormId { get; private set; }
+    public Guid PollingStationInformationFormId { get; private set; }
     public PollingStationInformationForm PollingStationInformationForm { get; private set; }
     public IReadOnlyList<BaseAnswer> Answers { get; private set; } = new List<BaseAnswer>().AsReadOnly();
 
@@ -21,6 +21,7 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
         PollingStation pollingStation,
         MonitoringObserver monitoringObserver,
         PollingStationInformationForm pollingStationInformationForm,
+        List<BaseAnswer> answers,
         ITimeProvider timeProvider) : base(Guid.NewGuid(), timeProvider)
     {
         ElectionRound = electionRound;
@@ -30,7 +31,8 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
         MonitoringObserver = monitoringObserver;
         MonitoringObserverId = monitoringObserver.Id;
         PollingStationInformationForm = pollingStationInformationForm;
-        PollingStationInfoFormId = pollingStationInformationForm.Id;
+        PollingStationInformationFormId = pollingStationInformationForm.Id;
+        Answers = answers.ToList().AsReadOnly();
     }
 
     internal static PollingStationInformation Create(
@@ -38,8 +40,9 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
         PollingStation pollingStation,
         MonitoringObserver monitoringObserver,
         PollingStationInformationForm pollingStationInformationForm,
+        List<BaseAnswer> answers,
         ITimeProvider timeProvider) =>
-        new(electionRound, pollingStation, monitoringObserver, pollingStationInformationForm, timeProvider);
+        new(electionRound, pollingStation, monitoringObserver, pollingStationInformationForm, answers, timeProvider);
 
     internal void UpdateDetails(IEnumerable<BaseAnswer> answers)
     {

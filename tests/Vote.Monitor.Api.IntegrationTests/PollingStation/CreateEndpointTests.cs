@@ -1,5 +1,4 @@
-﻿using NSwag.Generation.Processors;
-using Vote.Monitor.Api.Feature.PollingStation;
+﻿using Vote.Monitor.Api.Feature.PollingStation;
 using CreateEndpoint = Vote.Monitor.Api.Feature.PollingStation.Create.Endpoint;
 using CreateRequest = Vote.Monitor.Api.Feature.PollingStation.Create.Request;
 

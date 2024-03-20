@@ -1,2 +1,17 @@
-﻿global using FluentValidation.TestHelper;
+﻿global using FastEndpoints;
+global using FluentAssertions;
+global using FluentValidation.TestHelper;
+global using Microsoft.AspNetCore.Http.HttpResults;
+global using NSubstitute;
+global using NSubstitute.ReturnsExtensions;
+global using Vote.Monitor.Answer.Module.Requests;
+global using Vote.Monitor.Api.Feature.PollingStation.Information.Specifications;
+global using Vote.Monitor.Core.Services.Time;
+global using Vote.Monitor.Domain.Entities.FormBase.Questions;
+global using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
+global using Vote.Monitor.Domain.Entities.PollingStationInfoAggregate;
+global using Vote.Monitor.Domain.Entities.PollingStationInfoFormAggregate;
+global using Vote.Monitor.Domain.Repository;
+global using Vote.Monitor.TestUtils.Fakes.Aggregates;
 global using Xunit;
+global using PollingStationAggregate = Vote.Monitor.Domain.Entities.PollingStationAggregate.PollingStation;

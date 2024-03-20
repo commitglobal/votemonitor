@@ -1,0 +1,34 @@
+@hostAddress=https://localhost:7123
+@jwtToken=eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3NzFiMGJiMC0zZjg3LTQ3YTAtYmM2NC0wODc4ZTIwNzAzNzQiLCJyb2xlIjoiUGxhdGZvcm1BZG1pbiIsImV4cCI6MTcxMDc1NzY1MywiaWF0IjoxNzEwNjcxMjUzLCJuYmYiOjE3MTA2NzEyNTN9.-_EG5TbrCFVyg7egeOPOXRHJwoyTHYvGcS6GPVOQnDY
+@electionRoundId=1c94724e-b94b-4a7b-965d-05d04f20eac8
+@pollingStationId=18207370-c06b-4329-80f6-a2078037de1a
+
+# Add note
+# @name newAttachment
+POST {{hostAddress}}/api/election-rounds/{{electionRoundId}}/polling-stations/{{pollingStationId}}/notes
+Content-Type: application/json
+Authorization: Bearer {{jwtToken}}
+
+{
+  "text": "some interesting and informative note"
+}
+###
+
+# List notes
+GET {{hostAddress}}/api/election-rounds/{{electionRoundId}}/polling-stations/{{pollingStationId}}/notes
+Authorization: Bearer {{jwtToken}}
+
+###
+
+# Get an note
+GET {{hostAddress}}/api/election-rounds/{{electionRoundId}}/polling-stations/{{pollingStationId}}/notes/{{newAttachment.response.body.$.id}}
+Authorization: Bearer {{jwtToken}}
+
+###
+
+# Delete an note
+DELETE  {{hostAddress}}/api/election-rounds/{{electionRoundId}}/polling-stations/{{pollingStationId}}/notes/{{newAttachment.response.body.$.id}}
+Authorization: Bearer {{jwtToken}}
+
+###
+

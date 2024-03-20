@@ -19,7 +19,7 @@ public class TextAnswer : BaseAnswer
 
     public override ValidationResult Validate(BaseQuestion question, int index)
     {
-        if (question.GetType() != typeof(DateQuestion))
+        if (question.GetType() != typeof(TextQuestion))
         {
             return GetInvalidAnswerTypeError(index, question, this);
         }

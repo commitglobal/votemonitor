@@ -1,5 +1,6 @@
 ﻿using FluentValidation.TestHelper;
 using Vote.Monitor.Core.Models;
+using Vote.Monitor.Domain.Entities.FormBase.Questions;
 using Vote.Monitor.Form.Module.Requests;
 using Vote.Monitor.Form.Module.Validators;
 
@@ -27,7 +28,7 @@ public class RatingQuestionRequestValidatorTests
     }
 
     [Theory]
-    [MemberData(nameof(Validators.ValidatorsTestData.InvalidPartiallyTranslatedTestCases), MemberType = typeof(Validators.ValidatorsTestData))]
+    [MemberData(nameof(ValidatorsTestData.InvalidPartiallyTranslatedTestCases), MemberType = typeof(ValidatorsTestData))]
     public void Validation_ShouldFail_When_EmptyText(TranslatedString invalidText)
     {
         // Arrange
@@ -45,7 +46,7 @@ public class RatingQuestionRequestValidatorTests
     }
 
     [Theory]
-    [MemberData(nameof(Validators.ValidatorsTestData.InvalidPartiallyTranslatedTestCases), MemberType = typeof(Validators.ValidatorsTestData))]
+    [MemberData(nameof(ValidatorsTestData.InvalidPartiallyTranslatedTestCases), MemberType = typeof(ValidatorsTestData))]
     public void Validation_ShouldFail_When_EmptyHelptext(TranslatedString invalidHelptext)
     {
         // Arrange
@@ -99,7 +100,7 @@ public class RatingQuestionRequestValidatorTests
     }
 
     [Theory]
-    [MemberData(nameof(Validators.ValidatorsTestData.InvalidCodeTestCases), MemberType = typeof(Validators.ValidatorsTestData))]
+    [MemberData(nameof(ValidatorsTestData.InvalidCodeTestCases), MemberType = typeof(ValidatorsTestData))]
     public void Validation_ShouldFail_When_CodeHasInvalidLength(string code)
     {
         // Arrange
@@ -136,9 +137,9 @@ public class RatingQuestionRequestValidatorTests
         // Arrange
         var ratingQuestionRequest = new RatingQuestionRequest
         {
-            Scale = RatingScaleModel.OneTo10,
-            Helptext = Validators.ValidatorsTestData.ValidPartiallyTranslatedTestData.First(),
-            Text = Validators.ValidatorsTestData.ValidPartiallyTranslatedTestData.First(),
+            Scale = RatingScale.OneTo10,
+            Helptext = ValidatorsTestData.ValidPartiallyTranslatedTestData.First(),
+            Text = ValidatorsTestData.ValidPartiallyTranslatedTestData.First(),
             Code = "A code",
             Id = Guid.NewGuid()
         };

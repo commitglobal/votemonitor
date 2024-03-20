@@ -1,0 +1,213 @@
+@hostAddress=https://localhost:7123
+@jwtToken=eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NjFiMGJiMC0zZjg3LTQ3YTAtYmM2NC0wODc4ZTIwNzAzNzQiLCJyb2xlIjoiT2JzZXJ2ZXIiLCJleHAiOjE3MTA5NDEwMzAsImlhdCI6MTcxMDg1NDYzMCwibmJmIjoxNzEwODU0NjMwfQ.c2qXA8sSk8r8hQ-j0Prsfy10FVJIbDPTo54WiRHCZzg
+
+@electionRoundId=1c94724e-b94b-4a7b-965d-05d04f20eac8
+
+# get election round polling station info form
+GET {{hostAddress}}/api/election-rounds/{{electionRoundId}}/polling-station-information-form
+Authorization: Bearer {{jwtToken}}
+
+###
+
+# Upsert a polling station info form
+Post {{hostAddress}}/api/election-rounds/{{electionRoundId}}/polling-station-information-form
+Content-Type: application/json
+Authorization: Bearer {{jwtToken}}
+
+{
+  "languages": [
+    "RO",
+    "EN"
+  ],
+  "questions": [
+    {
+      "$questionType": "numberQuestion",
+      "id": "{{$guid}}",
+      "code": "A1",
+      "text": {
+        "EN": "How many PEC members have been appointed",
+        "RO": "Câți membri PEC au fost numiți"
+      },
+      "helptext": {
+        "EN": "Please enter a number",
+        "RO": "Vă rugăm să introduceți numărul dvs"
+      },
+      "inputPlaceholder": {
+        "EN": "number",
+        "RO": "numar"
+      }
+    },
+    {
+      "$questionType": "textQuestion",
+      "id": "{{$guid}}",
+      "code": "A2",
+      "text": {
+        "EN": "How are you today",
+        "RO": "Cum te simți azi"
+      },
+      "helptext": {
+        "EN": "Please enter how are you",
+        "RO": "Vă rugăm să introduceți cum sunteți"
+      },
+      "inputPlaceholder": {
+        "EN": "mood",
+        "RO": "dispozitie"
+      }
+    },
+    {
+      "$questionType": "dateQuestion",
+      "id": "{{$guid}}",
+      "code": "A3",
+      "text": {
+        "EN": "Time of arrival",
+        "RO": "Timpul sosirii"
+      },
+      "helptext": {
+        "EN": "Please enter exact hour when did you arrive",
+        "RO": "Vă rugăm să introduceți ora exactă când ați sosit"
+      }
+    },
+    {
+      "$questionType": "singleSelectQuestion",
+      "id": "{{$guid}}",
+      "code": "B1",
+      "text": {
+        "EN": "The overall conduct of the opening of this PS was:",
+        "RO": "Conducerea generală a deschiderii acestui PS a fost:"
+      },
+      "helptext": {
+        "EN": "Please select a single option",
+        "RO": "Vă rugăm să selectați o singură opțiune"
+      },
+      "options": [
+        {
+          "id": "{{$guid}}",
+          "text": {
+            "EN": "Very good",
+            "RO": "Foarte bun"
+          },
+          "isFreeText": false,
+          "isFlagged": false
+        },
+        {
+          "id": "{{$guid}}",
+          "text": {
+            "EN": "Good",
+            "RO": "bun"
+          },
+          "isFreeText": false,
+          "isFlagged": false
+        },
+        {
+          "id": "{{$guid}}",
+          "text": {
+            "EN": "Bad",
+            "RO": "Rea"
+          },
+          "isFreeText": false,
+          "isFlagged": false
+        },
+        {
+          "id": "{{$guid}}",
+          "text": {
+            "EN": "Very bad",
+            "RO": "Foarte rea"
+          },
+          "isFreeText": false,
+          "isFlagged": true
+        },
+        {
+          "id": "{{$guid}}",
+          "text": {
+            "EN": "Other",
+            "RO": "Alta"
+          },
+          "isFreeText": true,
+          "isFlagged": true
+        }
+      ]
+    },
+    {
+      "$questionType": "multiSelectQuestion",
+      "id": "{{$guid}}",
+      "code": "B2",
+      "text": {
+        "EN": "What party/bloc proxies were present at the opening of this PS",
+        "RO": "Ce împuterniciri de partid/bloc au fost prezenți la deschiderea acestui PS"
+      },
+      "helptext": {
+        "EN": "Please select as many you want",
+        "RO": "Vă rugăm să selectați câte doriți"
+      },
+      "options": [
+        {
+          "id": "{{$guid}}",
+          "text": {
+            "EN": "Bloc 1",
+            "RO": "Bloc 1"
+          },
+          "isFreeText": false,
+          "isFlagged": false
+        },
+        {
+          "id": "{{$guid}}",
+          "text": {
+            "EN": "Bloc 2",
+            "RO": "Bloc 2"
+          },
+          "isFreeText": false,
+          "isFlagged": false
+        },
+        {
+          "id": "{{$guid}}",
+          "text": {
+            "EN": "Bloc 3",
+            "RO": "Bloc 3"
+          },
+          "isFreeText": false,
+          "isFlagged": false
+        },
+        {
+          "id": "{{$guid}}",
+          "text": {
+            "EN": "Party 1",
+            "RO": "Party 1"
+          },
+          "isFreeText": false,
+          "isFlagged": true
+        },
+        {
+          "id": "{{$guid}}",
+          "text": {
+            "EN": "Other",
+            "RO": "Other"
+          },
+          "isFreeText": true,
+          "isFlagged": true
+        }
+      ]
+    },
+    {
+      "$questionType": "ratingQuestion",
+      "id": "{{$guid}}",
+      "code": "C1",
+      "text": {
+        "EN": "Please rate this form",
+        "RO": "Vă rugăm să evaluați acest formular"
+      },
+      "helptext": {
+        "EN": "Please give us a rating",
+        "RO": "Vă rugăm să ne dați o evaluare"
+      },
+      "scale": "OneTo10"
+    }
+  ]
+}
+
+###
+
+# Delete a form template
+DELETE {{hostAddress}}/api/election-rounds/{{electionRoundId}}
+Authorization: Bearer {{jwtToken}}
+
+###

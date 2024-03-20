@@ -62,7 +62,7 @@ public class UpdateValidatorTests
     }
 
     [Theory]
-    [MemberData(nameof(ValidatorsTestData.InvalidCodeTestCases), MemberType = typeof(ValidatorsTestData))]
+    [MemberData(nameof(TranslatedStringTestData.InvalidCodeTestCases), MemberType = typeof(TranslatedStringTestData))]
     public void Validation_ShouldFail_When_CodeHasInvalidLength(string code)
     {
         // Arrange
@@ -97,7 +97,7 @@ public class UpdateValidatorTests
     }
 
     [Theory]
-    [MemberData(nameof(ValidatorsTestData.InvalidPartiallyTranslatedTestCases), MemberType = typeof(ValidatorsTestData))]
+    [MemberData(nameof(TranslatedStringTestData.InvalidPartiallyTranslatedTestCases), MemberType = typeof(TranslatedStringTestData))]
     public void Validation_ShouldFail_When_NameInvalid(TranslatedString invalidName)
     {
         // Arrange
@@ -119,7 +119,7 @@ public class UpdateValidatorTests
     }
 
     [Theory]
-    [MemberData(nameof(ValidatorsTestData.ValidPartiallyTranslatedTestCases), MemberType = typeof(ValidatorsTestData))]
+    [MemberData(nameof(TranslatedStringTestData.ValidPartiallyTranslatedTestCases), MemberType = typeof(TranslatedStringTestData))]
     public void Validation_ShouldPass_When_NameValid(TranslatedString validName)
     {
         // Arrange
@@ -208,11 +208,11 @@ public class UpdateValidatorTests
             Questions = [
                 new TextQuestionRequest
                 {
-                    Text = ValidatorsTestData.ValidPartiallyTranslatedTestData.First()
+                    Text = TranslatedStringTestData.ValidPartiallyTranslatedTestData.First()
                 },
                 new TextQuestionRequest
                 {
-                    Text = ValidatorsTestData.InvalidPartiallyTranslatedTestData.First()
+                    Text = TranslatedStringTestData.InvalidPartiallyTranslatedTestData.First()
                 }
             ]
         };

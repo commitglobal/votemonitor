@@ -14,7 +14,7 @@ public class Endpoint(IReadRepository<PollingStationInformation> repository) : E
 
     public override async Task<Ok<Response>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var specification = new GetPollingStationInformationForObserverSpecification(req.ElectionRoundId, req.ObserverId);
+        var specification = new GetPollingStationInformationForNgoSpecification(req);
         var infos = await repository.ListAsync(specification, ct);
 
         return TypedResults.Ok(new Response

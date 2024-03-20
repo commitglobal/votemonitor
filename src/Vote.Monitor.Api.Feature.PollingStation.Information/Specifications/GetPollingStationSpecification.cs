@@ -2,7 +2,7 @@
 
 namespace Vote.Monitor.Api.Feature.PollingStation.Information.Specifications;
 
-public class GetPollingStationSpecification: SingleResultSpecification<Domain.Entities.PollingStationAggregate.PollingStation>
+public sealed class GetPollingStationSpecification: SingleResultSpecification<PollingStationAggregate>
 {
     public GetPollingStationSpecification(Guid electionRoundId, Guid pollingStationId)
     {
