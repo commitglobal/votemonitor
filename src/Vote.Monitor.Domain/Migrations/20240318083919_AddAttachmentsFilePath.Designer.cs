@@ -3,6 +3,7 @@ using System;
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Vote.Monitor.Domain;
@@ -12,9 +13,11 @@ using Vote.Monitor.Domain;
 namespace Vote.Monitor.Domain.Migrations
 {
     [DbContext(typeof(VoteMonitorContext))]
-    partial class VoteMonitorContextModelSnapshot : ModelSnapshot
+    [Migration("20240318083919_AddAttachmentsFilePath")]
+    partial class AddAttachmentsFilePath
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -4526,9 +4529,6 @@ namespace Vote.Monitor.Domain.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
                     b.Property<string>("MimeType")
                         .IsRequired()
                         .HasMaxLength(256)
@@ -4537,24 +4537,14 @@ namespace Vote.Monitor.Domain.Migrations
                     b.Property<Guid>("MonitoringObserverId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("PollingStationId")
-                        .HasColumnType("uuid");
-
                     b.Property<DateTime>("Timestamp")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("UploadedFileName")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ElectionRoundId");
 
                     b.HasIndex("MonitoringObserverId");
-
-                    b.HasIndex("PollingStationId");
 
                     b.ToTable("PollingStationAttachment");
                 });
@@ -4754,17 +4744,9 @@ namespace Vote.Monitor.Domain.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Vote.Monitor.Domain.Entities.PollingStationAggregate.PollingStation", "PollingStation")
-                        .WithMany()
-                        .HasForeignKey("PollingStationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("ElectionRound");
 
                     b.Navigation("MonitoringObserver");
-
-                    b.Navigation("PollingStation");
                 });
 
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.PollingStationNoteAggregate.PollingStationNote", b =>
