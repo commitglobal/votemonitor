@@ -76,11 +76,11 @@ public class CurrentUserProvider : ICurrentUserProvider, ICurrentUserInitializer
             return null;
         }
 
-        if (!claims.ContainsKey(type))
+        if (claims.TryGetValue(type, out var values))
         {
-            return null;
+            return values.FirstOrDefault()?.Value;
         }
 
-        return claims[type].FirstOrDefault()?.Value;
+        return null;
     }
 }
