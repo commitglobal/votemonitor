@@ -9,10 +9,12 @@ public static class AuthorizationPoliciesInstaller
     {
         services.AddScoped<IAuthorizationHandler, MonitoringNgoAuthorizationHandler>();
         services.AddScoped<IAuthorizationHandler, MonitoringObserverAuthorizationHandler>();
+        services.AddScoped<IAuthorizationHandler, NgoAdminAuthorizationHandler>();
 
         services.AddAuthorization(options =>
         {
             options.AddPolicy(PolicyNames.PlatformAdminsOnly, policy => policy.RequireRole(UserRole.PlatformAdmin));
+            options.AddPolicy(PolicyNames.ObserversOnly, policy => policy.RequireRole(UserRole.Observer));
         });
 
         return services;
