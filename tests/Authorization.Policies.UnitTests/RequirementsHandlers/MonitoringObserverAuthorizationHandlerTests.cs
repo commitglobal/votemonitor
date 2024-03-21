@@ -9,13 +9,14 @@ public class MonitoringObserverAuthorizationHandlerTests
     private readonly IReadRepository<MonitoringObserver> _monitoringObserverRepository = Substitute.For<IReadRepository<MonitoringObserver>>();
 
     private readonly Guid _electionRoundId = Guid.NewGuid();
+    private readonly Guid _ngoId = Guid.NewGuid();
     private readonly Guid _observerId = Guid.NewGuid();
 
     private readonly AuthorizationHandlerContext _context;
 
     public MonitoringObserverAuthorizationHandlerTests()
     {
-        var requirement = new MonitoringNgoRequirement(_electionRoundId);
+        var requirement = new MonitoringObserverRequirement(_electionRoundId);
         _context = new AuthorizationHandlerContext([requirement], null, null);
     }
 
@@ -40,7 +41,7 @@ public class MonitoringObserverAuthorizationHandlerTests
     {
         // Arrange
         _currentUserProvider.IsObserver().Returns(true);
-        _currentUserProvider.GetNgoId().Returns(_observerId);
+        _currentUserProvider.GetUserId().Returns(_observerId);
 
         _monitoringObserverRepository
             .FirstOrDefaultAsync(Arg.Any<GetMonitoringObserverSpecification>())
@@ -60,18 +61,18 @@ public class MonitoringObserverAuthorizationHandlerTests
     {
         // Arrange
         _currentUserProvider.IsObserver().Returns(true);
-        _currentUserProvider.GetNgoId().Returns(_observerId);
+        _currentUserProvider.GetUserId().Returns(_observerId);
 
         _monitoringObserverRepository
             .FirstOrDefaultAsync(Arg.Any<GetMonitoringObserverSpecification>())
             .Returns(new MonitoringObserverView
             {
-                NgoId = _observerId,
                 ElectionRoundId = _electionRoundId,
-                NgoStatus = NgoStatus.Deactivated,
                 ElectionRoundStatus = ElectionRoundStatus.Started,
-                MonitoringNgoStatus = MonitoringNgoStatus.Active,
+                NgoId = _ngoId,
+                NgoStatus = NgoStatus.Deactivated,
                 MonitoringNgoId = Guid.NewGuid(),
+                MonitoringNgoStatus = MonitoringNgoStatus.Active,
                 ObserverId = _observerId,
                 UserStatus = UserStatus.Active,
                 MonitoringObserverId = Guid.NewGuid(),
@@ -92,18 +93,18 @@ public class MonitoringObserverAuthorizationHandlerTests
     {
         // Arrange
         _currentUserProvider.IsObserver().Returns(true);
-        _currentUserProvider.GetNgoId().Returns(_observerId);
+        _currentUserProvider.GetUserId().Returns(_observerId);
 
         _monitoringObserverRepository
             .FirstOrDefaultAsync(Arg.Any<GetMonitoringObserverSpecification>())
             .Returns(new MonitoringObserverView
             {
-                NgoId = _observerId,
                 ElectionRoundId = _electionRoundId,
-                NgoStatus = NgoStatus.Activated,
                 ElectionRoundStatus = ElectionRoundStatus.Started,
-                MonitoringNgoStatus = MonitoringNgoStatus.Suspended,
+                NgoId = _ngoId,
+                NgoStatus = NgoStatus.Activated,
                 MonitoringNgoId = Guid.NewGuid(),
+                MonitoringNgoStatus = MonitoringNgoStatus.Suspended,
                 ObserverId = _observerId,
                 UserStatus = UserStatus.Active,
                 MonitoringObserverId = Guid.NewGuid(),
@@ -124,18 +125,18 @@ public class MonitoringObserverAuthorizationHandlerTests
     {
         // Arrange
         _currentUserProvider.IsObserver().Returns(true);
-        _currentUserProvider.GetNgoId().Returns(_observerId);
+        _currentUserProvider.GetUserId().Returns(_observerId);
 
         _monitoringObserverRepository
             .FirstOrDefaultAsync(Arg.Any<GetMonitoringObserverSpecification>())
             .Returns(new MonitoringObserverView
             {
-                NgoId = _observerId,
                 ElectionRoundId = _electionRoundId,
-                NgoStatus = NgoStatus.Deactivated,
                 ElectionRoundStatus = ElectionRoundStatus.Started,
-                MonitoringNgoStatus = MonitoringNgoStatus.Active,
+                NgoId = _ngoId,
+                NgoStatus = NgoStatus.Activated,
                 MonitoringNgoId = Guid.NewGuid(),
+                MonitoringNgoStatus = MonitoringNgoStatus.Active,
                 ObserverId = _observerId,
                 UserStatus = UserStatus.Deactivated,
                 MonitoringObserverId = Guid.NewGuid(),
@@ -156,18 +157,18 @@ public class MonitoringObserverAuthorizationHandlerTests
     {
         // Arrange
         _currentUserProvider.IsObserver().Returns(true);
-        _currentUserProvider.GetNgoId().Returns(_observerId);
+        _currentUserProvider.GetUserId().Returns(_observerId);
 
         _monitoringObserverRepository
             .FirstOrDefaultAsync(Arg.Any<GetMonitoringObserverSpecification>())
             .Returns(new MonitoringObserverView
             {
-                NgoId = _observerId,
                 ElectionRoundId = _electionRoundId,
-                NgoStatus = NgoStatus.Activated,
                 ElectionRoundStatus = ElectionRoundStatus.Started,
-                MonitoringNgoStatus = MonitoringNgoStatus.Suspended,
+                NgoId = _ngoId,
+                NgoStatus = NgoStatus.Activated,
                 MonitoringNgoId = Guid.NewGuid(),
+                MonitoringNgoStatus = MonitoringNgoStatus.Active,
                 ObserverId = _observerId,
                 UserStatus = UserStatus.Active,
                 MonitoringObserverId = Guid.NewGuid(),
@@ -188,18 +189,18 @@ public class MonitoringObserverAuthorizationHandlerTests
     {
         // Arrange
         _currentUserProvider.IsObserver().Returns(true);
-        _currentUserProvider.GetNgoId().Returns(_observerId);
+        _currentUserProvider.GetUserId().Returns(_observerId);
 
         _monitoringObserverRepository
             .FirstOrDefaultAsync(Arg.Any<GetMonitoringObserverSpecification>())
             .Returns(new MonitoringObserverView
             {
-                NgoId = _observerId,
-                ElectionRoundId = _electionRoundId,
+                NgoId = _ngoId,
                 NgoStatus = NgoStatus.Activated,
+                ElectionRoundId = _electionRoundId,
                 ElectionRoundStatus = ElectionRoundStatus.Started,
-                MonitoringNgoStatus = MonitoringNgoStatus.Active,
                 MonitoringNgoId = Guid.NewGuid(),
+                MonitoringNgoStatus = MonitoringNgoStatus.Active,
                 ObserverId = _observerId,
                 UserStatus = UserStatus.Active,
                 MonitoringObserverId = Guid.NewGuid(),

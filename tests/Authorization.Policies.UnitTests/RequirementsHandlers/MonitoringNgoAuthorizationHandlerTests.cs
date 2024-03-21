@@ -63,12 +63,12 @@ public class MonitoringNgoAuthorizationHandlerTests
             .FirstOrDefaultAsync(Arg.Any<GetMonitoringNgoSpecification>())
             .Returns(new MonitoringNgoView
             {
-                NgoId = _ngoId,
                 ElectionRoundId = _electionRoundId,
-                NgoStatus = NgoStatus.Deactivated,
                 ElectionRoundStatus = ElectionRoundStatus.Started,
+                NgoId = _ngoId,
+                NgoStatus = NgoStatus.Deactivated,
+                MonitoringNgoId = Guid.NewGuid(),
                 MonitoringNgoStatus = MonitoringNgoStatus.Active,
-                MonitoringNgoId = Guid.NewGuid()
             });
 
         var handler = new MonitoringNgoAuthorizationHandler(_currentUserProvider, _monitoringNgoRepository);
@@ -91,12 +91,12 @@ public class MonitoringNgoAuthorizationHandlerTests
             .FirstOrDefaultAsync(Arg.Any<GetMonitoringNgoSpecification>())
             .Returns(new MonitoringNgoView
             {
-                NgoId = _ngoId,
                 ElectionRoundId = _electionRoundId,
-                NgoStatus = NgoStatus.Activated,
                 ElectionRoundStatus = ElectionRoundStatus.Started,
+                NgoId = _ngoId,
+                NgoStatus = NgoStatus.Activated,
+                MonitoringNgoId = Guid.NewGuid(),
                 MonitoringNgoStatus = MonitoringNgoStatus.Suspended,
-                MonitoringNgoId = Guid.NewGuid()
             });
 
         var handler = new MonitoringNgoAuthorizationHandler(_currentUserProvider, _monitoringNgoRepository);
@@ -119,12 +119,12 @@ public class MonitoringNgoAuthorizationHandlerTests
             .FirstOrDefaultAsync(Arg.Any<GetMonitoringNgoSpecification>())
             .Returns(new MonitoringNgoView
             {
-                NgoId = _ngoId,
                 ElectionRoundId = _electionRoundId,
-                NgoStatus = NgoStatus.Activated,
                 ElectionRoundStatus = ElectionRoundStatus.Started,
+                NgoId = _ngoId,
+                NgoStatus = NgoStatus.Activated,
+                MonitoringNgoId = Guid.NewGuid(),
                 MonitoringNgoStatus = MonitoringNgoStatus.Active,
-                MonitoringNgoId = Guid.NewGuid()
             });
 
         var handler = new MonitoringNgoAuthorizationHandler(_currentUserProvider, _monitoringNgoRepository);
