@@ -1,21 +1,26 @@
 ﻿using Authorization.Policies;
+using Authorization.Policies.Requirements;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Vote.Monitor.Api.Feature.Auth.NgoAdminsOnly;
 
-public class Endpoint: EndpointWithoutRequest<string>
+public class Endpoint(IAuthorizationService authorizationService) : Endpoint<Request, Results<Ok<string>, NotFound>>
 {
     public override void Configure()
     {
         Get("/api/auth/ngoAdminsGreeting");
-        Policies(PolicyNames.NgoAdminsOnly);
         DontAutoTag();
         Options(x => x.WithTags("test-auth-policies"));
     }
 
-    public override async Task<string> ExecuteAsync(CancellationToken ct)
+    public override async Task<Results<Ok<string>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        await Task.CompletedTask;
+        var authorizationResult = await authorizationService.AuthorizeAsync(User, new NgoAdminRequirement(req.NgoId));
+        if (!authorizationResult.Succeeded)
+        {
+            return TypedResults.NotFound();
+        }
 
-        return "Hello ngo admin!";
+        return TypedResults.Ok("Hello ngo admin!");
     }
 }

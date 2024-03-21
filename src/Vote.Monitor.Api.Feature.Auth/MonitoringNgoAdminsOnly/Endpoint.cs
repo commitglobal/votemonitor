@@ -21,6 +21,6 @@ public class Endpoint(IAuthorizationService authorizationService) : Endpoint<Req
             return TypedResults.NotFound();
         }
 
-        return TypedResults.Ok("Hello monitoring ngo!");
+        return TypedResults.Ok("Hello monitoring ngo admin!");
     }
 }
