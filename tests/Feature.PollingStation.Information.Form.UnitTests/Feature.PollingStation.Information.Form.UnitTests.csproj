@@ -34,7 +34,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Vote.Monitor.Api.Feature.PollingStation.InformationForm\Feature.PollingStation.Information.Form.csproj" />
+    <ProjectReference Include="..\..\src\Feature.PollingStation.Information.Form\Feature.PollingStation.Information.Form.csproj" />
     <ProjectReference Include="..\Vote.Monitor.TestUtils\Vote.Monitor.TestUtils.csproj" />
   </ItemGroup>
 

@@ -7,9 +7,6 @@ using NSubstitute.ReturnsExtensions;
 using Vote.Monitor.Core.Services.Time;
 using Vote.Monitor.Domain.Constants;
 using Vote.Monitor.Domain.Entities.ElectionRoundAggregate;
-using Vote.Monitor.Domain.Entities.FormBase.Questions;
-using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
-using Vote.Monitor.Domain.Entities.PollingStationInfoAggregate;
 using Vote.Monitor.Domain.Entities.PollingStationInfoFormAggregate;
 using Vote.Monitor.Domain.Repository;
 using Vote.Monitor.Form.Module.Requests;
@@ -49,7 +46,7 @@ public class UpsertEndpointTests
             ElectionRoundId = Guid.NewGuid(),
             Languages = languages,
             Questions = [
-                new NumberQuestionRequest()
+                new NumberQuestionRequest
                 {
                     Id = Guid.NewGuid(),
                     Text = new TranslatedStringFaker(languages).Generate(),

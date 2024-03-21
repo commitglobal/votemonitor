@@ -1,4 +1,5 @@
 ﻿using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
+using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
 using Vote.Monitor.Domain.Entities.NgoAggregate;
 using Vote.Monitor.Domain.Entities.PollingStationInfoAggregate;
 using Vote.Monitor.Domain.Entities.PollingStationInfoFormAggregate;
@@ -37,6 +38,7 @@ public class VoteMonitorContext : DbContext
     public DbSet<FormTemplate> FormTemplates { set; get; }
     public DbSet<PollingStationInformationForm> PollingStationInformationForms { set; get; }
     public DbSet<PollingStationInformation> PollingStationInformations { set; get; }
+    public DbSet<MonitoringNgo> MonitoringNgos { set; get; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -79,7 +81,7 @@ public class VoteMonitorContext : DbContext
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        var auditEntries = HandleAuditingBeforeSaveChanges(_currentUserProvider.GetUserId());
+        var auditEntries = HandleAuditingBeforeSaveChanges(_currentUserProvider.GetUserId()!.Value);
 
         int result = await base.SaveChangesAsync(cancellationToken);
 
