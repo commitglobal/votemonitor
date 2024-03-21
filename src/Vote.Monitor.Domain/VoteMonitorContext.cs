@@ -12,7 +12,7 @@ public class VoteMonitorContext : DbContext
     private readonly ITimeProvider _timeProvider;
     private readonly ICurrentUserProvider _currentUserProvider;
     private readonly IElectionRoundIdProvider _electionRoundIdProvider;
-
+    private readonly Guid _systemUserId = new("C8D35E34-43E4-45DB-B2A0-DF8136CCFD16");
     public VoteMonitorContext(DbContextOptions<VoteMonitorContext> options,
         ISerializerService serializerService,
         ITimeProvider timeProvider,
@@ -81,7 +81,7 @@ public class VoteMonitorContext : DbContext
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        var auditEntries = HandleAuditingBeforeSaveChanges(_currentUserProvider.GetUserId()!.Value);
+        var auditEntries = HandleAuditingBeforeSaveChanges(_currentUserProvider.GetUserId().GetValueOrDefault(_systemUserId));
 
         int result = await base.SaveChangesAsync(cancellationToken);
 
