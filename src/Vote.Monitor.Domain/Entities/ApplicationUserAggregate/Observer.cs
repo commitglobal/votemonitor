@@ -1,4 +1,6 @@
-﻿namespace Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
+﻿using Vote.Monitor.Core.Security;
+
+namespace Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
 
 public class Observer : ApplicationUser
 {

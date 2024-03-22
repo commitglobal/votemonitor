@@ -1,7 +1,7 @@
 ﻿using Authorization.Policies.Requirements;
 using Authorization.Policies.Specifications;
 
-namespace Authorization.Policies.RequirementsHandlers;
+namespace Authorization.Policies.RequirementHandlers;
 
 internal class MonitoringNgoAuthorizationHandler(
     ICurrentUserProvider currentUserProvider,

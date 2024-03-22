@@ -1,4 +1,5 @@
 ﻿using Vote.Monitor.Answer.Module.Requests;
+using Vote.Monitor.Core.Security;
 
 namespace Vote.Monitor.Api.Feature.PollingStation.Information.Upsert;
 
@@ -8,7 +9,7 @@ public class Request
 
     public Guid PollingStationId { get; set; }
 
-    [FromClaim("Sub")]
+    [FromClaim(ClaimTypes.UserId)]
     public Guid ObserverId { get; set; }
 
     public List<BaseAnswerRequest> Answers { get; set; } = [];

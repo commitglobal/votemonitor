@@ -1,4 +1,6 @@
-﻿namespace Authorization.Policies.UnitTests.RequirementsHandlers;
+﻿using Authorization.Policies.RequirementHandlers;
+
+namespace Authorization.Policies.UnitTests.RequirementsHandlers;
 
 public class MonitoringNgoAuthorizationHandlerTests
 {

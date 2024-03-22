@@ -1,5 +1,4 @@
-global using Authorization.Policies.Requirements;
-global using Authorization.Policies.RequirementsHandlers;
+﻿global using Authorization.Policies.Requirements;
 global using Authorization.Policies.Specifications;
 global using FluentAssertions;
 global using Microsoft.AspNetCore.Authorization;

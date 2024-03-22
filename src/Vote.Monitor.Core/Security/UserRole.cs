@@ -1,6 +1,6 @@
 ﻿using Ardalis.SmartEnum;
 
-namespace Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
+namespace Vote.Monitor.Core.Security;
 
 public sealed class UserRole : SmartEnum<UserRole, string>
 {

@@ -1,5 +1,6 @@
-﻿using Authorization.Policies.RequirementsHandlers;
+﻿using Authorization.Policies.RequirementHandlers;
 using Microsoft.Extensions.DependencyInjection;
+using Vote.Monitor.Core.Security;
 
 namespace Authorization.Policies;
 

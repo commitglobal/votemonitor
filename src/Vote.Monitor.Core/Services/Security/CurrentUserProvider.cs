@@ -1,4 +1,6 @@
 ﻿using System.Security.Claims;
+using Vote.Monitor.Core.Security;
+using ClaimTypes = Vote.Monitor.Core.Security.ClaimTypes;
 
 namespace Vote.Monitor.Core.Services.Security;
 
@@ -8,9 +10,7 @@ public class CurrentUserProvider : ICurrentUserProvider, ICurrentUserInitializer
     private Dictionary<string, IEnumerable<Claim>>? _claimsDict => _user?
         .Claims
         .GroupBy(c => c.Type)
-        .ToDictionary(c => c.Key, c => c.Select(v => v));
-
-    public string? Name => _user?.Identity?.Name;
+        .ToDictionary(c => c.Key, c => c.AsEnumerable());
 
     public Guid? GetUserId()
     {
@@ -19,7 +19,7 @@ public class CurrentUserProvider : ICurrentUserProvider, ICurrentUserInitializer
             return null;
         }
 
-        var userIdClaimsValue = GetClaimValue(_claimsDict, "sub");
+        var userIdClaimsValue = GetClaimValue(_claimsDict, ClaimTypes.UserId);
 
         if (string.IsNullOrWhiteSpace(userIdClaimsValue))
         {
@@ -36,7 +36,7 @@ public class CurrentUserProvider : ICurrentUserProvider, ICurrentUserInitializer
             return null;
         }
 
-        var ngoIdClaimValue = GetClaimValue(_claimsDict, "ngoId");
+        var ngoIdClaimValue = GetClaimValue(_claimsDict, ClaimTypes.NgoId);
 
         if (string.IsNullOrWhiteSpace(ngoIdClaimValue))
         {
@@ -49,15 +49,11 @@ public class CurrentUserProvider : ICurrentUserProvider, ICurrentUserInitializer
     public bool IsAuthenticated() =>
         _user?.Identity?.IsAuthenticated is true;
 
-    public bool IsInRole(string role) =>
-        _user?.IsInRole(role) is true;
+    public bool IsPlatformAdmin() => _user?.IsInRole(UserRole.PlatformAdmin.Value) is true;
 
-    public IEnumerable<Claim>? GetUserClaims() => _user?.Claims;
+    public bool IsNgoAdmin() => _user?.IsInRole(UserRole.NgoAdmin.Value) is true;
 
-    public bool IsPlatformAdmin() => _user?.IsInRole("PlatformAdmin") is true;
-    public bool IsNgoAdmin() => _user?.IsInRole("NgoAdmin") is true;
-
-    public bool IsObserver() => _user?.IsInRole("Observer") is true;
+    public bool IsObserver() => _user?.IsInRole(UserRole.Observer.Value) is true;
 
     public void SetCurrentUser(ClaimsPrincipal user)
     {

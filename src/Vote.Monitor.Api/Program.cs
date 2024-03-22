@@ -14,6 +14,7 @@ using Vote.Monitor.Api.Feature.PollingStation.Attachments;
 using Vote.Monitor.Api.Feature.PollingStation.Information;
 using Vote.Monitor.Api.Feature.PollingStation.Notes;
 using Vote.Monitor.Core.Models;
+using Vote.Monitor.Core.Security;
 using Vote.Monitor.Core.Services.FileStorage;
 using Vote.Monitor.Core.Services.PushNotification;
 using Vote.Monitor.Domain.Entities.FormBase.Questions;

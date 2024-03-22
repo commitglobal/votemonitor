@@ -1,4 +1,6 @@
-﻿namespace Vote.Monitor.Api.Feature.PollingStation.Information.Delete;
+﻿using Vote.Monitor.Core.Security;
+
+namespace Vote.Monitor.Api.Feature.PollingStation.Information.Delete;
 
 public class Request
 {
@@ -6,6 +8,6 @@ public class Request
 
     public Guid PollingStationId { get; set; }
 
-    [FromClaim("Sub")]
+    [FromClaim(ClaimTypes.UserId)]
     public Guid ObserverId { get; set; }
 }
