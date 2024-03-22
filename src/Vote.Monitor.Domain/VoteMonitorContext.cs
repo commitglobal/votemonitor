@@ -8,18 +8,18 @@ public class VoteMonitorContext : DbContext
     private readonly ISerializerService _serializerService;
     private readonly ITimeProvider _timeProvider;
     private readonly ICurrentUserProvider _currentUserProvider;
-    private readonly IElectionRoundIdProvider _electionRoundIdProvider;
+    //private readonly IElectionRoundIdProvider _electionRoundIdProvider;
 
     public VoteMonitorContext(DbContextOptions<VoteMonitorContext> options,
         ISerializerService serializerService,
         ITimeProvider timeProvider,
-        ICurrentUserProvider currentUserProvider,
-        IElectionRoundIdProvider electionRoundIdProvider) : base(options)
+        ICurrentUserProvider currentUserProvider
+        /*IElectionRoundIdProvider electionRoundIdProvider*/) : base(options)
     {
         _serializerService = serializerService;
         _timeProvider = timeProvider;
         _currentUserProvider = currentUserProvider;
-        _electionRoundIdProvider = electionRoundIdProvider;
+        //_electionRoundIdProvider = electionRoundIdProvider;
     }
 
     public DbSet<ApplicationUser> Users { get; set; }
@@ -71,6 +71,11 @@ public class VoteMonitorContext : DbContext
         configurationBuilder.ConfigureSmartEnum();
     }
 
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.AddInterceptors(new AuditingInterceptor(_currentUserProvider, _timeProvider));
+    }
+
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         var auditEntries = HandleAuditingBeforeSaveChanges(_currentUserProvider.GetUserId());
@@ -84,22 +89,6 @@ public class VoteMonitorContext : DbContext
 
     private List<AuditTrail> HandleAuditingBeforeSaveChanges(Guid userId)
     {
-        foreach (var entry in ChangeTracker.Entries<AuditableBaseEntity>().ToList())
-        {
-            switch (entry.State)
-            {
-                case EntityState.Added:
-                    entry.Entity.CreatedBy = userId;
-                    entry.Entity.LastModifiedBy = userId;
-                    break;
-
-                case EntityState.Modified:
-                    entry.Entity.LastModifiedOn = DateTime.UtcNow;
-                    entry.Entity.LastModifiedBy = userId;
-                    break;
-            }
-        }
-
         ChangeTracker.DetectChanges();
 
         var trailEntries = new List<AuditTrail>();

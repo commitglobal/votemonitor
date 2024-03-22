@@ -7,7 +7,7 @@ public abstract class AuditableBaseEntity : BaseEntity
     public Guid LastModifiedBy { get; internal set; }
     protected AuditableBaseEntity(Guid id, ITimeProvider timeProvider) : base(id, timeProvider)
     {
-        LastModifiedOn = timeProvider.UtcNow;
+        //LastModifiedOn = DateTime.UtcNow; //timeProvider.UtcNow;
     }
 
 #pragma warning disable CS8618 // Required by Entity Framework
