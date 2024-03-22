@@ -1,10 +1,12 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 
-const Panel = ({header, footer, children } : {
+interface Props {
   header?: ReactNode;
   footer?: ReactNode;
   children: ReactNode;
-}) => {
+}
+
+const Panel = ({header, footer, children } : Props): ReactNode => {
   return (
     <div className="overflow-hidden bg-white divide-y divide-gray-200 rounded-lg shadow">
       {!!header && (
