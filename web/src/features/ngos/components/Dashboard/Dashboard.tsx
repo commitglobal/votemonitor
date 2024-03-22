@@ -15,7 +15,6 @@ function useNGOs(p: DataTableParameters): UseQueryResult<PageResponse<NGO>, Erro
           NameFilter: '',
           PageNumber: p.pageNumber,
           PageSize: p.pageSize,
-          Status: 'Active',
           SortColumnName: p.sortColumnName,
           SortOrder: p.sortOrder,
         },

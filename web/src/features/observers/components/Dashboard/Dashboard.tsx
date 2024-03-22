@@ -31,7 +31,7 @@ function useObservers(p: PageParameters): UseQueryResult<PageResponse<Observer>,
 export default function ObserversDashboard(): ReactElement {
   return (
     <Layout title={'Observers'}>
-      <QueryParamsDataTable columns={observerColDefs} usePagedQuery={useObservers} />
+      <QueryParamsDataTable columns={observerColDefs} useQuery={useObservers} />
     </Layout>
   );
 }
