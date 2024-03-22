@@ -55,7 +55,7 @@ public class MonitoringNgoAuthorizationHandlerTests
     }
 
     [Fact]
-    public async Task HandleRequirementAsync_NgoIsDeactivated_Failure()
+    public async Task HandleRequirementAsync_ElectionRoundArchived_Failure()
     {
         // Arrange
         _currentUserProvider.IsNgoAdmin().Returns(true);
@@ -63,15 +63,7 @@ public class MonitoringNgoAuthorizationHandlerTests
 
         _monitoringNgoRepository
             .FirstOrDefaultAsync(Arg.Any<GetMonitoringNgoSpecification>())
-            .Returns(new MonitoringNgoView
-            {
-                ElectionRoundId = _electionRoundId,
-                ElectionRoundStatus = ElectionRoundStatus.Started,
-                NgoId = _ngoId,
-                NgoStatus = NgoStatus.Deactivated,
-                MonitoringNgoId = Guid.NewGuid(),
-                MonitoringNgoStatus = MonitoringNgoStatus.Active,
-            });
+            .Returns(CreateMonitoringNgoView.With().ArchivedElectionRound());
 
         var handler = new MonitoringNgoAuthorizationHandler(_currentUserProvider, _monitoringNgoRepository);
 
@@ -83,7 +75,7 @@ public class MonitoringNgoAuthorizationHandlerTests
     }
 
     [Fact]
-    public async Task HandleRequirementAsync_NgoIsSuspended_Failure()
+    public async Task HandleRequirementAsync_NgoIsDeactivated_Failure()
     {
         // Arrange
         _currentUserProvider.IsNgoAdmin().Returns(true);
@@ -91,15 +83,27 @@ public class MonitoringNgoAuthorizationHandlerTests
 
         _monitoringNgoRepository
             .FirstOrDefaultAsync(Arg.Any<GetMonitoringNgoSpecification>())
-            .Returns(new MonitoringNgoView
-            {
-                ElectionRoundId = _electionRoundId,
-                ElectionRoundStatus = ElectionRoundStatus.Started,
-                NgoId = _ngoId,
-                NgoStatus = NgoStatus.Activated,
-                MonitoringNgoId = Guid.NewGuid(),
-                MonitoringNgoStatus = MonitoringNgoStatus.Suspended,
-            });
+            .Returns(CreateMonitoringNgoView.With().DeactivatedNgo());
+
+        var handler = new MonitoringNgoAuthorizationHandler(_currentUserProvider, _monitoringNgoRepository);
+
+        // Act
+        await handler.HandleAsync(_context);
+
+        // Assert
+        _context.HasSucceeded.Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task HandleRequirementAsync_MonitoringNgoIsSuspended_Failure()
+    {
+        // Arrange
+        _currentUserProvider.IsNgoAdmin().Returns(true);
+        _currentUserProvider.GetNgoId().Returns(_ngoId);
+
+        _monitoringNgoRepository
+            .FirstOrDefaultAsync(Arg.Any<GetMonitoringNgoSpecification>())
+            .Returns(CreateMonitoringNgoView.With().SuspendedMonitoringNgo());
 
         var handler = new MonitoringNgoAuthorizationHandler(_currentUserProvider, _monitoringNgoRepository);
 
@@ -119,15 +123,7 @@ public class MonitoringNgoAuthorizationHandlerTests
 
         _monitoringNgoRepository
             .FirstOrDefaultAsync(Arg.Any<GetMonitoringNgoSpecification>())
-            .Returns(new MonitoringNgoView
-            {
-                ElectionRoundId = _electionRoundId,
-                ElectionRoundStatus = ElectionRoundStatus.Started,
-                NgoId = _ngoId,
-                NgoStatus = NgoStatus.Activated,
-                MonitoringNgoId = Guid.NewGuid(),
-                MonitoringNgoStatus = MonitoringNgoStatus.Active,
-            });
+            .Returns(CreateMonitoringNgoView.ForValidAccess());
 
         var handler = new MonitoringNgoAuthorizationHandler(_currentUserProvider, _monitoringNgoRepository);
 

@@ -58,6 +58,26 @@ public class MonitoringObserverAuthorizationHandlerTests
     }
 
     [Fact]
+    public async Task HandleRequirementAsync_ElectionRoundIsArchived_Failure()
+    {
+        // Arrange
+        _currentUserProvider.IsObserver().Returns(true);
+        _currentUserProvider.GetUserId().Returns(_observerId);
+
+        _monitoringObserverRepository
+            .FirstOrDefaultAsync(Arg.Any<GetMonitoringObserverSpecification>())
+            .Returns(CreateMonitoringObserverView.With().ArchivedElectionRound());
+
+        var handler = new MonitoringObserverAuthorizationHandler(_currentUserProvider, _monitoringObserverRepository);
+
+        // Act
+        await handler.HandleAsync(_context);
+
+        // Assert
+        _context.HasSucceeded.Should().BeFalse();
+    }    
+    
+    [Fact]
     public async Task HandleRequirementAsync_NgoIsDeactivated_Failure()
     {
         // Arrange
@@ -66,19 +86,7 @@ public class MonitoringObserverAuthorizationHandlerTests
 
         _monitoringObserverRepository
             .FirstOrDefaultAsync(Arg.Any<GetMonitoringObserverSpecification>())
-            .Returns(new MonitoringObserverView
-            {
-                ElectionRoundId = _electionRoundId,
-                ElectionRoundStatus = ElectionRoundStatus.Started,
-                NgoId = _ngoId,
-                NgoStatus = NgoStatus.Deactivated,
-                MonitoringNgoId = Guid.NewGuid(),
-                MonitoringNgoStatus = MonitoringNgoStatus.Active,
-                ObserverId = _observerId,
-                UserStatus = UserStatus.Active,
-                MonitoringObserverId = Guid.NewGuid(),
-                MonitoringObserverStatus = MonitoringObserverStatus.Active
-            });
+            .Returns(CreateMonitoringObserverView.With().DeactivatedNgo());
 
         var handler = new MonitoringObserverAuthorizationHandler(_currentUserProvider, _monitoringObserverRepository);
 
@@ -98,19 +106,7 @@ public class MonitoringObserverAuthorizationHandlerTests
 
         _monitoringObserverRepository
             .FirstOrDefaultAsync(Arg.Any<GetMonitoringObserverSpecification>())
-            .Returns(new MonitoringObserverView
-            {
-                ElectionRoundId = _electionRoundId,
-                ElectionRoundStatus = ElectionRoundStatus.Started,
-                NgoId = _ngoId,
-                NgoStatus = NgoStatus.Activated,
-                MonitoringNgoId = Guid.NewGuid(),
-                MonitoringNgoStatus = MonitoringNgoStatus.Suspended,
-                ObserverId = _observerId,
-                UserStatus = UserStatus.Active,
-                MonitoringObserverId = Guid.NewGuid(),
-                MonitoringObserverStatus = MonitoringObserverStatus.Active
-            });
+            .Returns(CreateMonitoringObserverView.With().SuspendedMonitoringNgo());
 
         var handler = new MonitoringObserverAuthorizationHandler(_currentUserProvider, _monitoringObserverRepository);
 
@@ -130,19 +126,7 @@ public class MonitoringObserverAuthorizationHandlerTests
 
         _monitoringObserverRepository
             .FirstOrDefaultAsync(Arg.Any<GetMonitoringObserverSpecification>())
-            .Returns(new MonitoringObserverView
-            {
-                ElectionRoundId = _electionRoundId,
-                ElectionRoundStatus = ElectionRoundStatus.Started,
-                NgoId = _ngoId,
-                NgoStatus = NgoStatus.Activated,
-                MonitoringNgoId = Guid.NewGuid(),
-                MonitoringNgoStatus = MonitoringNgoStatus.Active,
-                ObserverId = _observerId,
-                UserStatus = UserStatus.Deactivated,
-                MonitoringObserverId = Guid.NewGuid(),
-                MonitoringObserverStatus = MonitoringObserverStatus.Active
-            });
+            .Returns(CreateMonitoringObserverView.With().DeactivatedObserver());
 
         var handler = new MonitoringObserverAuthorizationHandler(_currentUserProvider, _monitoringObserverRepository);
 
@@ -162,19 +146,7 @@ public class MonitoringObserverAuthorizationHandlerTests
 
         _monitoringObserverRepository
             .FirstOrDefaultAsync(Arg.Any<GetMonitoringObserverSpecification>())
-            .Returns(new MonitoringObserverView
-            {
-                ElectionRoundId = _electionRoundId,
-                ElectionRoundStatus = ElectionRoundStatus.Started,
-                NgoId = _ngoId,
-                NgoStatus = NgoStatus.Activated,
-                MonitoringNgoId = Guid.NewGuid(),
-                MonitoringNgoStatus = MonitoringNgoStatus.Active,
-                ObserverId = _observerId,
-                UserStatus = UserStatus.Active,
-                MonitoringObserverId = Guid.NewGuid(),
-                MonitoringObserverStatus = MonitoringObserverStatus.Suspended
-            });
+            .Returns(CreateMonitoringObserverView.With().SuspendedMonitoringObserver());
 
         var handler = new MonitoringObserverAuthorizationHandler(_currentUserProvider, _monitoringObserverRepository);
 
@@ -194,19 +166,7 @@ public class MonitoringObserverAuthorizationHandlerTests
 
         _monitoringObserverRepository
             .FirstOrDefaultAsync(Arg.Any<GetMonitoringObserverSpecification>())
-            .Returns(new MonitoringObserverView
-            {
-                NgoId = _ngoId,
-                NgoStatus = NgoStatus.Activated,
-                ElectionRoundId = _electionRoundId,
-                ElectionRoundStatus = ElectionRoundStatus.Started,
-                MonitoringNgoId = Guid.NewGuid(),
-                MonitoringNgoStatus = MonitoringNgoStatus.Active,
-                ObserverId = _observerId,
-                UserStatus = UserStatus.Active,
-                MonitoringObserverId = Guid.NewGuid(),
-                MonitoringObserverStatus = MonitoringObserverStatus.Active
-            });
+            .Returns(CreateMonitoringObserverView.ForValidAccess());
 
         var handler = new MonitoringObserverAuthorizationHandler(_currentUserProvider, _monitoringObserverRepository);
 

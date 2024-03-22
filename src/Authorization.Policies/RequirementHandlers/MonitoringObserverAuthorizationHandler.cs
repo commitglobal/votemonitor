@@ -1,5 +1,6 @@
 ﻿using Authorization.Policies.Requirements;
 using Authorization.Policies.Specifications;
+using Vote.Monitor.Domain.Entities.ElectionRoundAggregate;
 
 namespace Authorization.Policies.RequirementHandlers;
 
@@ -21,6 +22,12 @@ internal class MonitoringObserverAuthorizationHandler(
         var result = await monitoringObserverRepository.FirstOrDefaultAsync(specification);
 
         if (result is null)
+        {
+            context.Fail();
+            return;
+        }
+
+        if (result.ElectionRoundStatus == ElectionRoundStatus.Archived)
         {
             context.Fail();
             return;
