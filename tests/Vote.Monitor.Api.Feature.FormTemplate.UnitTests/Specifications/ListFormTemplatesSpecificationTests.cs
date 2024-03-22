@@ -4,7 +4,7 @@ namespace Vote.Monitor.Api.Feature.FormTemplate.UnitTests.Specifications;
 
 public class ListFormTemplatesSpecificationTests
 {
-    private const string DefaultCode = "ABC";
+    private const string DefaultCode = "~ABC~";
     private readonly FormTemplateStatus DefaultStatus = FormTemplateStatus.Drafted;
 
     [Fact]

@@ -13,6 +13,7 @@ public class ListRequestValidatorTests
         // Arrange
         var request = new List.Request
         {
+            ElectionRoundId = Guid.NewGuid(),
             PageSize = pageSize,
             PageNumber = 1, 
             Filter = null
@@ -34,6 +35,7 @@ public class ListRequestValidatorTests
         // Arrange
         var request = new List.Request
         {
+            ElectionRoundId = Guid.NewGuid(),
             PageSize = pageSize, 
             PageNumber = 1, 
             Filter = null
@@ -55,6 +57,7 @@ public class ListRequestValidatorTests
         // Arrange
         var request = new List.Request
         {
+            ElectionRoundId = Guid.NewGuid(),
             PageSize = 10, 
             PageNumber = pageNumber, 
             Filter = null
@@ -75,6 +78,7 @@ public class ListRequestValidatorTests
         // Arrange
         var request = new List.Request
         {
+            ElectionRoundId = Guid.NewGuid(),
             PageSize = 10, 
             PageNumber = pageNumber,
             Filter = null
@@ -93,6 +97,7 @@ public class ListRequestValidatorTests
         // Arrange
         var request = new List.Request
         {
+            ElectionRoundId = Guid.NewGuid(),
             PageSize = 10, 
             PageNumber = 1,
             Filter = new Dictionary<string, string>
@@ -116,6 +121,7 @@ public class ListRequestValidatorTests
         // Arrange
         var request = new List.Request
         {
+            ElectionRoundId = Guid.NewGuid(),
             PageSize = 10,
             PageNumber = 1,
             Filter = new Dictionary<string, string>
@@ -136,7 +142,13 @@ public class ListRequestValidatorTests
     public void Validation_ShouldPass_When_Filter_Null()
     {
         // Arrange
-        var request = new List.Request { PageSize = 10, PageNumber = 1, Filter = null };
+        var request = new List.Request
+        {
+            ElectionRoundId = Guid.NewGuid(),
+            PageSize = 10, 
+            PageNumber = 1,
+            Filter = null
+        };
 
         // Act
         var result = _validator.TestValidate(request);

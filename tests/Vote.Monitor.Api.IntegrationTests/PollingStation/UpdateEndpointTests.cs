@@ -24,37 +24,38 @@ public class UpdateEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeede
     public async Task Should_UpdatePollingStation_WhenSuchExists()
     {
         // Arrange
-        var createRequest = Fixture.Fake.CreateRequest();
+        var createRequest = Fixture.Fake.CreateRequest(Fixture.ElectionRound);
         var (createResponse, createResult) = await Fixture.PlatformAdmin.POSTAsync<CreateEndpoint, CreateRequest, PollingStationModel>(createRequest);
         createResponse.IsSuccessStatusCode.Should().BeTrue();
 
         // Act
-        var updateRequest = Fixture.Fake.UpdateRequest(createResult.Id);
+        var updateRequest = Fixture.Fake.UpdateRequest(createResult.Id, Fixture.ElectionRound);
         var updateResponse = await Fixture.PlatformAdmin.PUTAsync<UpdateEndpoint, UpdateRequest>(updateRequest);
-        
+
         // Assert
         updateResponse.IsSuccessStatusCode.Should().BeTrue();
 
         var (getResponse, pollingStation) = await Fixture.PlatformAdmin.GETAsync<GetEndpoint, GetRequest, PollingStationModel>(new()
         {
+            ElectionRoundId = Guid.NewGuid(),
             Id = createResult.Id
         });
 
         getResponse.IsSuccessStatusCode.Should().BeTrue();
-        pollingStation.Should().BeEquivalentTo(updateRequest);
+        pollingStation.Should().BeEquivalentTo(updateRequest, opt => opt.Excluding(x => x.ElectionRoundId));
     }
 
     [Fact]
     public async Task Should_ReturnNotFound_WhenNoSuchExists()
     {
         // Arrange
-        var newPollingStation = Fixture.Fake.CreateRequest();
+        var newPollingStation = Fixture.Fake.CreateRequest(Fixture.ElectionRound);
         var (createResponse, createResult) = await Fixture.PlatformAdmin.POSTAsync<Feature.PollingStation.Create.Endpoint, Feature.PollingStation.Create.Request, PollingStationModel>(newPollingStation);
 
         createResponse.IsSuccessStatusCode.Should().BeTrue();
 
         // Act
-        var updateRequest = Fixture.Fake.UpdateRequest(Guid.NewGuid());
+        var updateRequest = Fixture.Fake.UpdateRequest(Guid.NewGuid(), Fixture.ElectionRound);
         var updateResponse = await Fixture.PlatformAdmin.PUTAsync<UpdateEndpoint, UpdateRequest>(updateRequest);
 
         // Assert
@@ -63,11 +64,12 @@ public class UpdateEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeede
 
         var (getResponse, pollingStation) = await Fixture.PlatformAdmin.GETAsync<GetEndpoint, GetRequest, PollingStationModel>(new()
         {
+            ElectionRoundId = Guid.NewGuid(),
             Id = createResult.Id
         });
 
         getResponse.IsSuccessStatusCode.Should().BeTrue();
-        pollingStation.Should().BeEquivalentTo(newPollingStation);
+        pollingStation.Should().BeEquivalentTo(newPollingStation, opt => opt.Excluding(x => x.ElectionRoundId));
         pollingStation.Id.Should().Be(createResult.Id);
     }
 
@@ -75,13 +77,14 @@ public class UpdateEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeede
     public async Task Should_NotUpdate_WhenInvalidData()
     {
         // Arrange
-        var newPollingStation = Fixture.Fake.CreateRequest();
-        var (createResponse, createResult) = await Fixture.PlatformAdmin.POSTAsync<Feature.PollingStation.Create.Endpoint, Feature.PollingStation.Create.Request, PollingStationModel>(newPollingStation);
+        var newPollingStation = Fixture.Fake.CreateRequest(Fixture.ElectionRound);
+        var (createResponse, createResult) = await Fixture.PlatformAdmin.POSTAsync<CreateEndpoint, CreateRequest, PollingStationModel>(newPollingStation);
 
         createResponse.IsSuccessStatusCode.Should().BeTrue();
 
         var updateRequest = new UpdateRequest
         {
+            ElectionRoundId = Guid.NewGuid(),
             Id = createResult.Id,
             Address = "",
             DisplayOrder = -1,
@@ -97,11 +100,12 @@ public class UpdateEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeede
 
         var (getResponse, pollingStation) = await Fixture.PlatformAdmin.GETAsync<GetEndpoint, GetRequest, PollingStationModel>(new()
         {
+            ElectionRoundId = Guid.NewGuid(),
             Id = createResult.Id
         });
 
         getResponse.IsSuccessStatusCode.Should().BeTrue();
-        pollingStation.Should().BeEquivalentTo(newPollingStation);
+        pollingStation.Should().BeEquivalentTo(newPollingStation, opt => opt.Excluding(x => x.ElectionRoundId));
         pollingStation.Id.Should().Be(createResult.Id);
     }
 }

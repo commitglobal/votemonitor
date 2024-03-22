@@ -10,11 +10,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FastEndpoints" Version="5.22.0" />
+    <PackageReference Include="FastEndpoints" Version="5.23.0" />
     <PackageReference Include="FastEndpoints.Security" Version="5.22.0" />
-    <PackageReference Include="FastEndpoints.Swagger" Version="5.22.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.2" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.2">
+    <PackageReference Include="FastEndpoints.Swagger" Version="5.23.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -29,7 +29,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Vote.Monitor.Api.Authorization.Policies\Vote.Monitor.Api.Authorization.Policies.csproj" />
+    <ProjectReference Include="..\Authorization.Policies\Authorization.Policies.csproj" />
+    <ProjectReference Include="..\Feature.PollingStation.Information.Form\Feature.PollingStation.Information.Form.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Api.Feature.Answers.Attachments\Vote.Monitor.Api.Feature.Answers.Attachments.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Api.Feature.Answers.Notes\Vote.Monitor.Api.Feature.Answers.Notes.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Api.Feature.Auth\Vote.Monitor.Api.Feature.Auth.csproj" />
@@ -46,7 +47,6 @@
     <ProjectReference Include="..\Vote.Monitor.Api.Feature.Notifications\Vote.Monitor.Api.Feature.Notifications.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Api.Feature.Observer\Vote.Monitor.Api.Feature.Observer.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Api.Feature.PollingStation.Attachments\Vote.Monitor.Api.Feature.PollingStation.Attachments.csproj" />
-    <ProjectReference Include="..\Vote.Monitor.Api.Feature.PollingStation.InformationForm\Vote.Monitor.Api.Feature.PollingStation.InformationForm.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Api.Feature.PollingStation.Information\Vote.Monitor.Api.Feature.PollingStation.Information.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Api.Feature.PollingStation.Notes\Vote.Monitor.Api.Feature.PollingStation.Notes.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Api.Feature.PollingStation\Vote.Monitor.Api.Feature.PollingStation.csproj" />

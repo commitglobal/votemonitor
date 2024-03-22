@@ -46,5 +46,40 @@ INSERT INTO public."UserPreferences"("ApplicationUserId", "LanguageId") VALUES (
 3. Build
 4. Run and debug
 5. Enjoy 
+
+## Adding EF migrations
+
+Run the following command in the project root folder
+```
+dotnet ef migrations add MyNewMigration --project .\src\Vote.Monitor.Domain --startup-project .\src\Vote.Monitor.Api
+```
+
 # Polling stations feature
 [documentation](documentation/polling-stations/README.md)
+
+
+## Confguration
+
+### File Storage
+
+For local developemnt you can use your lcoal file ssytem for storage by setting the file storge type in appconfig as follows.
+
+```
+ "FileStorage": {
+   "FileStorageType": "LocalDisk",
+   "LocalDisk": {
+     "Path": "Uploads"
+   },
+   "S3": {
+     ...
+   }
+ }
+```
+
+To use S3 file storage you need to set `"FileStorageType": "S3",` and need to have the following environment variables set, with the key ID referencing an IAM user with permissions restricted to only S3. 
+```
+ "AWS_ACCESS_KEY_ID": "",
+ "AWS_SECRET_ACCESS_KEY": "",
+ "AWS_REGION": ""
+```
+Alternatively, you can use a locally configured aws profile.

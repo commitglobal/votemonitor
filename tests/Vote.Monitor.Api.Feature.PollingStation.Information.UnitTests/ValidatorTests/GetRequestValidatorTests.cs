@@ -5,19 +5,6 @@ public class GetRequestValidatorTests
     private readonly Get.Validator _validator = new();
 
     [Fact]
-    public void Validation_ShouldFail_When_Id_Empty()
-    {
-        // Arrange
-        var request = new Get.Request { Id = Guid.Empty };
-
-        // Act
-        var result = _validator.TestValidate(request);
-
-        // Assert
-        result.ShouldHaveValidationErrorFor(x => x.Id);
-    }
-
-    [Fact]
     public void Validation_ShouldFail_When_ObserverId_Empty()
     {
         // Arrange
@@ -64,8 +51,7 @@ public class GetRequestValidatorTests
         {
             ElectionRoundId = Guid.NewGuid(),
             PollingStationId = Guid.NewGuid(),
-            ObserverId = Guid.NewGuid(),
-            Id = Guid.NewGuid()
+            ObserverId = Guid.NewGuid()
         };
 
         // Act

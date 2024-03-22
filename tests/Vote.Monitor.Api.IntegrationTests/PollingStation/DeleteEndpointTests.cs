@@ -24,13 +24,14 @@ public class DeleteEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeede
     public async Task Should_DeletePollingStation_WhenSuchExists()
     {
         // Arrange
-        var newPollingStation = Fixture.Fake.CreateRequest();
+        var newPollingStation = Fixture.Fake.CreateRequest(Fixture.ElectionRound);
         var (createResponse, createResult) = await Fixture.PlatformAdmin.POSTAsync<CreateEndpoint, CreateRequest, PollingStationModel>(newPollingStation);
 
         createResponse.IsSuccessStatusCode.Should().BeTrue();
 
         var request = new DeleteRequest
         {
+            ElectionRoundId = Guid.NewGuid(),
             Id = createResult.Id
         };
 
@@ -42,6 +43,7 @@ public class DeleteEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeede
 
         var getResponse = await Fixture.PlatformAdmin.GETAsync<GetEndpoint, GetRequest>(new()
         {
+            ElectionRoundId = Guid.NewGuid(),
             Id = createResult.Id
         });
 
@@ -53,13 +55,14 @@ public class DeleteEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeede
     public async Task Should_ReturnNotFound_WhenNoSuchExists()
     {
         // Arrange
-        var newPollingStation = Fixture.Fake.CreateRequest();
+        var newPollingStation = Fixture.Fake.CreateRequest(Fixture.ElectionRound);
         var (createResponse, createResult) = await Fixture.PlatformAdmin.POSTAsync<CreateEndpoint, CreateRequest, PollingStationModel>(newPollingStation);
 
         createResponse.IsSuccessStatusCode.Should().BeTrue();
 
         var request = new DeleteRequest
         {
+            ElectionRoundId = Guid.NewGuid(),
             Id = Guid.NewGuid()
         };
 
@@ -72,11 +75,12 @@ public class DeleteEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeede
 
         var (getResponse, pollingStation) = await Fixture.PlatformAdmin.GETAsync<GetEndpoint, GetRequest, PollingStationModel>(new()
         {
+            ElectionRoundId = Guid.NewGuid(),
             Id = createResult.Id
         });
 
         getResponse.IsSuccessStatusCode.Should().BeTrue();
-        pollingStation.Should().BeEquivalentTo(newPollingStation);
+        pollingStation.Should().BeEquivalentTo(newPollingStation, opt => opt.Excluding(x => x.ElectionRoundId));
         pollingStation.Id.Should().Be(createResult.Id);
     }
 }

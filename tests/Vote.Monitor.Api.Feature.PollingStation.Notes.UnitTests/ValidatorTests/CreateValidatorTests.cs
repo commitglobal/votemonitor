@@ -63,7 +63,7 @@ public class CreateValidatorTests
     public void Validation_ShouldFail_When_Text_ExceedsLimits()
     {
         // Arrange
-        var request = new Create.Request { Text = "a".Repeat(1025) };
+        var request = new Create.Request { Text = "a".Repeat(10001) };
 
         // Act
         var result = _validator.TestValidate(request);

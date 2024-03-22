@@ -15,7 +15,11 @@ public class ImportRequestValidatorTests
             .HavingLength(123)
             .Please();
 
-        var request = new Import.Request { File = formFile };
+        var request = new Import.Request
+        {
+            ElectionRoundId = Guid.NewGuid(),
+            File = formFile
+        };
 
         // Act
         var result = _validator.TestValidate(request);
@@ -28,7 +32,11 @@ public class ImportRequestValidatorTests
     public void Validation_ShouldFail_When_File_Empty()
     {
         // Arrange
-        var request = new Import.Request { File = null };
+        var request = new Import.Request
+        {
+            ElectionRoundId = Guid.NewGuid(),
+            File = null
+        };
 
         // Act
         var result = _validator.TestValidate(request);
@@ -46,7 +54,11 @@ public class ImportRequestValidatorTests
             .HavingLength(25 * 1024 * 1024 - 1)
             .Please();
 
-        var request = new Import.Request { File = formFile };
+        var request = new Import.Request
+        {
+            ElectionRoundId = Guid.NewGuid(),
+            File = formFile
+        };
 
         // Act
         var result = _validator.TestValidate(request);
@@ -64,7 +76,10 @@ public class ImportRequestValidatorTests
             .HavingLength(25 * 1024 * 1024 + 1)
             .Please();
 
-        var request = new Import.Request { File = formFile };
+        var request = new Import.Request
+        {
+            ElectionRoundId = Guid.NewGuid(),
+            File = formFile };
 
         // Act
         var result = _validator.TestValidate(request);
@@ -83,7 +98,10 @@ public class ImportRequestValidatorTests
             .HavingLength(123)
             .Please();
 
-        var request = new Import.Request { File = formFile };
+        var request = new Import.Request
+        {
+            ElectionRoundId = Guid.NewGuid(),
+            File = formFile };
 
         // Act
         var result = _validator.TestValidate(request);
@@ -101,7 +119,10 @@ public class ImportRequestValidatorTests
             .HavingLength(123)
             .Please();
 
-        var request = new Import.Request { File = formFile };
+        var request = new Import.Request
+        {
+            ElectionRoundId = Guid.NewGuid(),
+            File = formFile };
 
         // Act
         var result = _validator.TestValidate(request);

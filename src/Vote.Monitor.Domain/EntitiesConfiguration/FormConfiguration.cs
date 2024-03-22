@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.Entities.FormAggregate;
-using Vote.Monitor.Domain.Entities.FormBase;
+using Vote.Monitor.Domain.Entities.FormBase.Questions;
 
 namespace Vote.Monitor.Domain.EntitiesConfiguration;
 
@@ -46,11 +46,11 @@ public class FormConfiguration : IEntityTypeConfiguration<Form>
                     c => c.ToList().AsReadOnly()))
             .HasColumnType("jsonb");
 
-        builder.Property(x => x.Sections)
+        builder.Property(x => x.Questions)
             .HasConversion(
                 v => JsonSerializer.Serialize(v, jsonSerializerOptions),
-                v => JsonSerializer.Deserialize<IReadOnlyList<FormSection>>(v, jsonSerializerOptions),
-                new ValueComparer<IReadOnlyList<FormSection>>(
+                v => JsonSerializer.Deserialize<IReadOnlyList<BaseQuestion>>(v, jsonSerializerOptions),
+                new ValueComparer<IReadOnlyList<BaseQuestion>>(
                     (c1, c2) => c1.SequenceEqual(c2),
                     c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
                     c => c.ToList().AsReadOnly())

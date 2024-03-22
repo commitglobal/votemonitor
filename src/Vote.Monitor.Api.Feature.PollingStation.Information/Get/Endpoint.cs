@@ -1,18 +1,27 @@
-﻿using Vote.Monitor.Domain.Entities.PollingStationInfoAggregate;
+﻿using Vote.Monitor.Api.Feature.PollingStation.Information.Specifications;
+using Vote.Monitor.Domain.Entities.PollingStationInfoAggregate;
 
 namespace Vote.Monitor.Api.Feature.PollingStation.Information.Get;
 
-public class Endpoint(IReadRepository<PollingStationInfo> repository) : Endpoint<Request, Results<Ok<PollingStationInfoModel>, NotFound>>
+public class Endpoint(IReadRepository<PollingStationInformation> repository) : Endpoint<Request, Results<Ok<PollingStationInformationModel>, NotFound>>
 {
     public override void Configure()
     {
-        Get("/api/election-rounds/{electionRoundId}/polling-stations/{pollingStationId}/information/{id}");
+        Get("/api/election-rounds/{electionRoundId}/polling-stations/{pollingStationId}/information");
         DontAutoTag();
         Options(x => x.WithTags("polling-station-information"));
     }
 
-    public override async Task<Results<Ok<PollingStationInfoModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<Results<Ok<PollingStationInformationModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        throw new NotImplementedException();
+        var specification = new GetPollingStationInformationSpecification(req.ElectionRoundId, req.PollingStationId, req.ObserverId);
+        var pollingStationInformation = await repository.FirstOrDefaultAsync(specification, ct);
+
+        if (pollingStationInformation is null)
+        {
+            return TypedResults.NotFound();
+        }
+
+        return TypedResults.Ok(PollingStationInformationModel.FromEntity(pollingStationInformation));
     }
 }

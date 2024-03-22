@@ -13,7 +13,9 @@ public class Endpoint : Endpoint<Request, Results<Ok<PollingStationModel>, NotFo
 
     public override void Configure()
     {
-        Get("/api/polling-stations/{id}");
+        Get("/api/election-rounds/{electionRoundId}/polling-stations/{id}");
+        DontAutoTag();
+        Options(x => x.WithTags("polling-stations"));
     }
 
     public override async Task<Results<Ok<PollingStationModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)

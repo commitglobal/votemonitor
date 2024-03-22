@@ -14,7 +14,7 @@ public class ImportEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeede
     public async Task Should_ImportPollingStations_WhenValidCsvProvided()
     {
         // Arrange & Act
-        var (importResult, importResponse) = await Fixture.PlatformAdmin.ImportPollingStations();
+        var (importResult, importResponse) = await Fixture.PlatformAdmin.ImportPollingStations(Fixture.ElectionRound.Id);
 
         // Assert
         importResult.IsSuccessStatusCode.Should().BeTrue();

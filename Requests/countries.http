@@ -1,0 +1,15 @@
+@hostAddress=https://localhost:7123
+@jwtToken=your_token
+
+# List countries
+# @name countries
+GET {{hostAddress}}/api/countries
+Authorization: Bearer {{jwtToken}}
+
+###
+@romaniaId = 51aa4900-30a6-91b7-2728-071542a064ff
+# Get an country
+GET {{hostAddress}}/api/countries/{{romaniaId}}
+Authorization: Bearer {{jwtToken}}
+
+###

@@ -1,0 +1,11 @@
+@hostAddress=https://localhost:7123
+
+# Login
+POST {{hostAddress}}/api/auth
+Content-Type: application/json
+
+{
+  "username": "observer",
+  "password": "observer"
+}
+###

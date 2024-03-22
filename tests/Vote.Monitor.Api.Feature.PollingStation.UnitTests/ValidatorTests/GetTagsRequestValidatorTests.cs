@@ -8,7 +8,11 @@ public class GetTagsRequestValidatorTests
     public void Validation_ShouldPass_When_SelectTag_NotEmpty()
     {
         // Arrange
-        var request = new GetTagValues.Request { SelectTag = "SomeValue" };
+        var request = new GetTagValues.Request
+        {
+            ElectionRoundId = Guid.NewGuid(),
+            SelectTag = "SomeValue"
+        };
 
         // Act
         var result = _validator.TestValidate(request);
@@ -22,7 +26,11 @@ public class GetTagsRequestValidatorTests
     public void Validation_ShouldFail_When_SelectTag_Empty(string selectTag)
     {
         // Arrange
-        var request = new GetTagValues.Request { SelectTag = selectTag };
+        var request = new GetTagValues.Request
+        {
+            ElectionRoundId = Guid.NewGuid(),
+            SelectTag = selectTag
+        };
 
         // Act
         var result = _validator.TestValidate(request);
@@ -37,6 +45,7 @@ public class GetTagsRequestValidatorTests
         // Arrange
         var request = new GetTagValues.Request
         {
+            ElectionRoundId = Guid.NewGuid(),
             SelectTag = "SomeValue",
             Filter = new Dictionary<string, string>
             {
@@ -57,6 +66,7 @@ public class GetTagsRequestValidatorTests
         // Arrange
         var request = new GetTagValues.Request
         {
+            ElectionRoundId = Guid.NewGuid(),
             SelectTag = "SomeValue",
             Filter = new Dictionary<string, string>
             {
@@ -79,6 +89,7 @@ public class GetTagsRequestValidatorTests
         // Arrange
         var request = new GetTagValues.Request
         {
+            ElectionRoundId = Guid.NewGuid(),
             SelectTag = "SomeValue",
             Filter = new Dictionary<string, string>
             {

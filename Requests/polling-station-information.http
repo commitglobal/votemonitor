@@ -1,0 +1,72 @@
+@hostAddress=https://localhost:7123
+@jwtToken=your_token
+
+@electionRoundId=1c94724e-b94b-4a7b-965d-05d04f20eac8
+@pollingStationId=18207370-c06b-4329-80f6-a2078037de1a
+
+# get election round polling station info form
+GET {{hostAddress}}/api/election-rounds/{{electionRoundId}}/polling-stations/{{pollingStationId}}/information
+Authorization: Bearer {{jwtToken}}
+
+###
+
+###
+# upsert a polling station information
+POST {{hostAddress}}/api/election-rounds/{{electionRoundId}}/polling-stations/{{pollingStationId}}/information
+Content-Type: application/json
+Authorization: Bearer {{jwtToken}}
+
+{
+  "answers": [
+    {
+      "$answerType": "textAnswer",
+      "questionId": "5a030a7f-0b5d-4af7-9af1-f9e0265fd2fe",
+      "Text": "this is a text answer"
+    },
+    {
+      "$answerType": "numberAnswer",
+      "questionId": "719368e5-a943-4ffe-9933-62a00fd552de",
+      "value": 69420
+    },
+    {
+      "$answerType": "dateAnswer",
+      "questionId": "7a941b31-059c-4d2a-aad3-f8ce864067be",
+      "Date": "2029-01-01"
+    },
+    {
+      "$answerType": "singleSelectAnswer",
+      "questionId": "d56c9816-7df2-4a68-a13d-4b42e3aefd7b",
+      "selection": {
+        "optionId": "7fd159d0-0a23-4806-b683-9e3103d18b1a",
+        "text": "some freee text"
+      }
+    },
+    {
+      "$answerType": "multiSelectAnswer",
+      "questionId": "43124f4a-6707-448e-a4fd-f6890c04880f",
+      "Selection": [
+        {
+        "optionId": "dd704092-4d1e-4826-8f49-fdff3188f1bf",
+        "text": "some other freee text"
+        },
+        {
+        "optionId": "466974f8-74f4-4b16-9c8d-0f2b413c0ab9",
+        "text": null
+        }
+      ]
+    },
+    {
+      "$answerType": "ratingAnswer",
+      "questionId": "12d815b9-60c3-4ad2-ae31-2ffac818d6cc",
+      "value": "9"
+    }
+  ]
+}
+
+###
+
+# Delete a form template
+DELETE {{hostAddress}}/api/election-rounds/{{electionRoundId}}
+Authorization: Bearer {{jwtToken}}
+
+###
