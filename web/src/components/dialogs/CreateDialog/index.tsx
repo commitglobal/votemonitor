@@ -20,8 +20,6 @@ interface Props {
 }
 
 const CreateDialog = ({ title, description, children }: Props): ReactNode => {
-  const { t } = useTranslation();
-
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -38,19 +36,25 @@ const CreateDialog = ({ title, description, children }: Props): ReactNode => {
         </DialogHeader>
 
         {children}
-
-        <DialogFooter>
-          <DialogClose asChild>
-            <Button type="button" variant="outline">
-              {t('app.action.close')}
-            </Button>
-          </DialogClose>
-          <Button variant="default" type="submit">
-            {t('app.action.create')}
-          </Button>
-        </DialogFooter>
       </DialogContent>
     </Dialog>
+  );
+};
+
+export const CreateDialogFooter = (): ReactNode => {
+  const { t } = useTranslation();
+
+  return (
+    <DialogFooter>
+      <DialogClose asChild>
+        <Button type="button" variant="outline">
+          {t('app.action.close')}
+        </Button>
+      </DialogClose>
+      <Button variant="default" type="submit">
+        {t('app.action.create')}
+      </Button>
+    </DialogFooter>
   );
 };
 

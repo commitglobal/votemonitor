@@ -6,7 +6,7 @@ import { useQuery, type UseQueryResult } from '@tanstack/react-query';
 import Layout from '@/components/layout/Layout';
 import type { DataTableParameters, PageResponse } from '@/common/types';
 import type { ReactElement } from 'react';
-import CreateElectionRoundButton from '@/features/election-round/components/CreateElectionRoundButton';
+import CreateElectionRound from '@/features/election-round/components/CreateElectionRound';
 
 function useElectionRounds(p: DataTableParameters): UseQueryResult<PageResponse<ElectionRound>, Error> {
   return useQuery({
@@ -33,7 +33,7 @@ function useElectionRounds(p: DataTableParameters): UseQueryResult<PageResponse<
 function ElectionRounds(): ReactElement {
   return (
     <Layout title={'Election Rounds'} actions={(
-      <CreateElectionRoundButton />
+      <CreateElectionRound />
     )}>
       <QueryParamsDataTable columns={electionRoundColDefs} useQuery={useElectionRounds} />
     </Layout>
