@@ -1,4 +1,6 @@
-﻿namespace Vote.Monitor.TestUtils.Fakes.Aggregates;
+﻿using Vote.Monitor.Core.Security;
+
+namespace Vote.Monitor.TestUtils.Fakes.Aggregates;
 
 public sealed class ObserverAggregateFaker : PrivateFaker<ObserverAggregate>
 {

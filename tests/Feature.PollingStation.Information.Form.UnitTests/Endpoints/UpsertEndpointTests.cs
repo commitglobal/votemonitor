@@ -46,7 +46,7 @@ public class UpsertEndpointTests
             ElectionRoundId = Guid.NewGuid(),
             Languages = languages,
             Questions = [
-                new NumberQuestionRequest()
+                new NumberQuestionRequest
                 {
                     Id = Guid.NewGuid(),
                     Text = new TranslatedStringFaker(languages).Generate(),

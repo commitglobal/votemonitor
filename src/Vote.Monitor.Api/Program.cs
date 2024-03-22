@@ -1,4 +1,5 @@
-﻿using Feature.PollingStation.Information.Form;
+﻿using Authorization.Policies;
+using Feature.PollingStation.Information.Form;
 using NSwag;
 using Vote.Monitor.Api.Feature.Answers.Attachments;
 using Vote.Monitor.Api.Feature.Answers.Notes;
@@ -13,6 +14,7 @@ using Vote.Monitor.Api.Feature.PollingStation.Attachments;
 using Vote.Monitor.Api.Feature.PollingStation.Information;
 using Vote.Monitor.Api.Feature.PollingStation.Notes;
 using Vote.Monitor.Core.Models;
+using Vote.Monitor.Core.Security;
 using Vote.Monitor.Core.Services.FileStorage;
 using Vote.Monitor.Core.Services.PushNotification;
 using Vote.Monitor.Domain.Entities.FormBase.Questions;
@@ -71,6 +73,7 @@ builder.Services.AddFileStorage(builder.Configuration.GetRequiredSection(FileSto
 builder.Services.AddPushNotifications(builder.Configuration.GetRequiredSection(PushNotificationsInstaller.SectionKey));
 
 builder.Services.AddApplicationDomain(builder.Configuration.GetSection(DomainInstaller.SectionKey));
+builder.Services.AddAuthorizationPolicies();
 builder.Services.AddAuthFeature(builder.Configuration.GetSection(AuthFeatureInstaller.SectionKey));
 builder.Services.AddPollingStationFeature(builder.Configuration.GetSection(PollingStationFeatureInstaller.SectionKey));
 builder.Services.AddCountryFeature();
