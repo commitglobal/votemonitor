@@ -1,18 +1,21 @@
 import type { ReactElement } from 'react';
 import { DataTable, type DataTableProps } from './DataTable';
 import { SortOrder, type DataTableParameters } from '@/common/types';
-import { useNavigate, useSearch } from '@tanstack/router';
 import type { PaginationState, SortingState } from '@tanstack/react-table';
+import { useNavigate, useSearch } from '@tanstack/react-router';
+import { valueOrDefault } from '@/lib/utils';
 
 export function QueryParamsDataTable<TData, TValue>({
   columns,
   useQuery: pagedQuery,
 }: DataTableProps<TData, TValue>): ReactElement {
-  const queryParams: DataTableParameters = useSearch();
+  const queryParams: DataTableParameters = useSearch({
+    strict: false,
+  })
 
   const paginationState: PaginationState = {
-    pageIndex: queryParams.pageNumber - 1,
-    pageSize: queryParams.pageSize,
+    pageIndex: valueOrDefault(queryParams.pageNumber, 1) - 1,
+    pageSize: valueOrDefault(queryParams.pageSize, 10),
   };
 
   const sortingState: SortingState = [
@@ -27,8 +30,8 @@ export function QueryParamsDataTable<TData, TValue>({
     navigate({
       search: {
         ...queryParams,
-        pageNumber: p.pageIndex + 1,
-        pageSize: p.pageSize,
+        pageNumber: valueOrDefault(p.pageIndex, 0) + 1,
+        pageSize: valueOrDefault(p.pageSize, 10),
       },
     }).catch((error) => {
       throw error;

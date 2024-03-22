@@ -4,7 +4,7 @@ import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import { UserCircleIcon } from '@heroicons/react/24/solid';
 import type { FunctionComponent } from '../../../common/types';
 import Logo from '../../../assets/icons/logo.svg?react';
-import { Link } from '@tanstack/router';
+import { Link } from '@tanstack/react-router';
 import clsx from 'clsx';
 
 const user = {
@@ -15,10 +15,10 @@ const user = {
 };
 const navigation = [
   { name: 'Dashboard', to: '/' },
-  { name: 'Election Events', to: '#' },
+  { name: 'Election rounds', to: '/election-rounds' },
   { name: 'NGOs', to: '/ngos' },
   { name: 'Observers', to: '/observers' },
-  { name: 'Forms', to: '#' },
+  { name: 'Form templates', to: '/form-templates' },
 ];
 const userNavigation = [{ name: 'Sign out', to: '#' }];
 
