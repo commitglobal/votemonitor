@@ -3,17 +3,23 @@ import { initReactI18next } from 'react-i18next';
 
 import en from './locales/en.json';
 
+const resources = {
+  en: {
+    translation: en,
+  },
+} as const;
+
+export type Dict = typeof resources.en;
+
 i18n.use(initReactI18next).init({
   debug: true,
-  fallbackLng: 'en',
-  resources: {
-    en: {
-      translation: en,
-    },
-  },
+  lng: 'en',
+  defaultNS: 'translation',
+  contextSeparator: '|',
   interpolation: {
-    escapeValue: false, // not needed for react as it escapes by default
+    escapeValue: false,
   },
+  resources,
 });
 
 export default i18n;
