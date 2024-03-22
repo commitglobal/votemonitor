@@ -4,6 +4,8 @@ import "./styles/tailwind.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createRouter, ErrorComponent, RouterProvider } from "@tanstack/react-router";
 import { routeTree } from "./routeTree.gen.ts";
+import { I18nextProvider } from "react-i18next";
+import i18n from "./i18n";
 
 export const queryClient = new QueryClient()
 
@@ -28,7 +30,9 @@ declare module '@tanstack/react-router' {
 function App() {
 	return (
 	  <>
-		<RouterProvider router={router} />
+        <I18nextProvider i18n={i18n}>
+			<RouterProvider router={router} />
+        </I18nextProvider>
 	  </>
 	);
   };

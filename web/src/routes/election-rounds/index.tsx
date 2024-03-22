@@ -17,6 +17,7 @@ import { ElectionRound, electionRoundColDefs } from '@/features/election-round/m
 import { PlusIcon } from '@heroicons/react/24/outline';
 import { UseQueryResult, useQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
+import { useTranslation } from 'react-i18next';
 
 export const Route = createFileRoute('/election-rounds/')({
   component: ElectionRounds,
@@ -45,12 +46,16 @@ function useElectionRounds(p: DataTableParameters): UseQueryResult<PageResponse<
 }
 
 const CreateElectionRoundButton = () => {
+  const { t } = useTranslation();
+
   return (
     <Dialog>
       <DialogTrigger asChild>
         <Button variant='default'>
           <PlusIcon className='w-5 h-5 mr-2 -ml-1.5' />
-          <span>Create new election event</span>
+          <span>
+            {t('election-round.action.create')}
+          </span>
         </Button>
       </DialogTrigger>
       <DialogContent className='sm:max-w-[475px]'>
