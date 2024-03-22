@@ -1,7 +1,12 @@
 import { DataTableColumnHeader } from "@/components/ui/DataTable/DataTableColumnHeader";
 import { Button } from "@/components/ui/button";
 import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Link, useNavigate } from "@tanstack/react-router";
 import { ColumnDef } from "@tanstack/react-table";
 
@@ -51,7 +56,6 @@ export const electionRoundColDefs: ColumnDef<ElectionRound>[] = [
     {
         id: 'actions',
         cell: ({ row }) => {
-            const navigate = useNavigate();
             return (
                 <div className='text-right'>
                     <DropdownMenu>
@@ -62,7 +66,7 @@ export const electionRoundColDefs: ColumnDef<ElectionRound>[] = [
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align='end'>
-                            <DropdownMenuItem onClick={() => navigate({ to: '/election-rounds/$electionRoundId', params: { electionRoundId: row.original.id } })}>Edit</DropdownMenuItem>
+                            <Link to="/election-rounds/$electionRoundId" params={{ electionRoundId: row.original.id }} preload="intent"><DropdownMenuItem>Edit</DropdownMenuItem></Link>
                             <DropdownMenuItem>Deactivate</DropdownMenuItem>
                             <DropdownMenuItem>Delete</DropdownMenuItem>
                         </DropdownMenuContent>

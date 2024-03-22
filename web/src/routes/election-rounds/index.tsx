@@ -8,7 +8,7 @@ import { UseQueryResult, useQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/election-rounds/')({
-  component: ElectionEvents,
+  component: ElectionRounds
 })
 
 function useElectionRounds(p: DataTableParameters): UseQueryResult<PageResponse<ElectionRound>, Error> {
@@ -33,8 +33,7 @@ function useElectionRounds(p: DataTableParameters): UseQueryResult<PageResponse<
   });
 }
 
-
-function ElectionEvents() {
+function ElectionRounds() {
   return <Layout title={'Election Rounds'}>
     <QueryParamsDataTable columns={electionRoundColDefs} useQuery={useElectionRounds} />
   </Layout>
