@@ -1,6 +1,5 @@
 ﻿using System.Text.Json.Serialization;
 using PolyJson;
-using Vote.Monitor.Answer.Module.Models;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 
 namespace Vote.Monitor.Answer.Module.Requests;
