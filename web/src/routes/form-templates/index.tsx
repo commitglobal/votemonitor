@@ -64,10 +64,15 @@ export const formTemplateColumnDefs: ColumnDef<FormTemplate>[] = [
     header: ({ column }) => <DataTableColumnHeader title='Code' column={column} />,
   },
   {
+    accessorKey: 'type',
+    enableSorting: false,
+    header: ({ column }) => <DataTableColumnHeader title='Type' column={column} />,
+  },
+  {
     id: 'name',
     accessorFn: (row, _) => row.name[row.defaultLanguage],
     enableSorting: false,
-    header: ({ column }) => <DataTableColumnHeader title='Title' column={column} />,
+    header: ({ column }) => <DataTableColumnHeader title='Name' column={column} />,
   },
   {
     accessorKey: 'defaultLanguage',

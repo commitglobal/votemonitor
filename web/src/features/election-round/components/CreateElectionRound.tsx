@@ -3,7 +3,7 @@ import CreateDialog, { CreateDialogFooter } from '@/components/dialogs/CreateDia
 import type { ReactNode } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { electionRoundFormSchema, type ElectionRoundFormValues } from '../models/ElectionRound';
+import { ElectionRound, electionRoundFormSchema, type ElectionRoundFormValues } from '../models/ElectionRound';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -15,6 +15,7 @@ import { format } from 'date-fns';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from '@/components/ui/command';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
+import { authApi } from '@/common/auth-api';
 
 // This can come from the API.
 const defaultValues: Partial<ElectionRoundFormValues> = {
@@ -41,8 +42,8 @@ const CreateElectionRoundForm = (): ReactNode => {
   });
 
   const mutation = useMutation({
-    mutationFn: (data) => {
-      return axios.post('/election-rounds', data) // TODO: figure out proper using endpoing with auth
+    mutationFn: (data: ElectionRoundFormValues) => {
+      return authApi.post<ElectionRoundFormValues, ElectionRound>('/election-rounds', data) // TODO: figure out proper using endpoing with auth
     },
   })
 
