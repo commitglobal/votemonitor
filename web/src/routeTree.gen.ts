@@ -12,22 +12,19 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as ObserversImport } from './routes/observers'
-import { Route as FormTemplatesImport } from './routes/form-templates'
 import { Route as IndexImport } from './routes/index'
 import { Route as NgosIndexImport } from './routes/ngos/index'
+import { Route as FormTemplatesIndexImport } from './routes/form-templates/index'
 import { Route as ElectionRoundsIndexImport } from './routes/election-rounds/index'
 import { Route as NgosNgoIdImport } from './routes/ngos/$ngoId'
+import { Route as FormTemplatesFormTemplateIdImport } from './routes/form-templates/$formTemplateId'
 import { Route as ElectionRoundsElectionRoundIdImport } from './routes/election-rounds/$electionRoundId'
+import { Route as FormTemplatesFormTemplateIdEditImport } from './routes/form-templates/$formTemplateId.edit'
 
 // Create/Update Routes
 
 const ObserversRoute = ObserversImport.update({
   path: '/observers',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const FormTemplatesRoute = FormTemplatesImport.update({
-  path: '/form-templates',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -41,6 +38,11 @@ const NgosIndexRoute = NgosIndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const FormTemplatesIndexRoute = FormTemplatesIndexImport.update({
+  path: '/form-templates/',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const ElectionRoundsIndexRoute = ElectionRoundsIndexImport.update({
   path: '/election-rounds/',
   getParentRoute: () => rootRoute,
@@ -51,10 +53,22 @@ const NgosNgoIdRoute = NgosNgoIdImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const FormTemplatesFormTemplateIdRoute =
+  FormTemplatesFormTemplateIdImport.update({
+    path: '/form-templates/$formTemplateId',
+    getParentRoute: () => rootRoute,
+  } as any)
+
 const ElectionRoundsElectionRoundIdRoute =
   ElectionRoundsElectionRoundIdImport.update({
     path: '/election-rounds/$electionRoundId',
     getParentRoute: () => rootRoute,
+  } as any)
+
+const FormTemplatesFormTemplateIdEditRoute =
+  FormTemplatesFormTemplateIdEditImport.update({
+    path: '/edit',
+    getParentRoute: () => FormTemplatesFormTemplateIdRoute,
   } as any)
 
 // Populate the FileRoutesByPath interface
@@ -65,16 +79,16 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
-    '/form-templates': {
-      preLoaderRoute: typeof FormTemplatesImport
-      parentRoute: typeof rootRoute
-    }
     '/observers': {
       preLoaderRoute: typeof ObserversImport
       parentRoute: typeof rootRoute
     }
     '/election-rounds/$electionRoundId': {
       preLoaderRoute: typeof ElectionRoundsElectionRoundIdImport
+      parentRoute: typeof rootRoute
+    }
+    '/form-templates/$formTemplateId': {
+      preLoaderRoute: typeof FormTemplatesFormTemplateIdImport
       parentRoute: typeof rootRoute
     }
     '/ngos/$ngoId': {
@@ -85,9 +99,17 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ElectionRoundsIndexImport
       parentRoute: typeof rootRoute
     }
+    '/form-templates/': {
+      preLoaderRoute: typeof FormTemplatesIndexImport
+      parentRoute: typeof rootRoute
+    }
     '/ngos/': {
       preLoaderRoute: typeof NgosIndexImport
       parentRoute: typeof rootRoute
+    }
+    '/form-templates/$formTemplateId/edit': {
+      preLoaderRoute: typeof FormTemplatesFormTemplateIdEditImport
+      parentRoute: typeof FormTemplatesFormTemplateIdImport
     }
   }
 }
@@ -96,11 +118,14 @@ declare module '@tanstack/react-router' {
 
 export const routeTree = rootRoute.addChildren([
   IndexRoute,
-  FormTemplatesRoute,
   ObserversRoute,
   ElectionRoundsElectionRoundIdRoute,
+  FormTemplatesFormTemplateIdRoute.addChildren([
+    FormTemplatesFormTemplateIdEditRoute,
+  ]),
   NgosNgoIdRoute,
   ElectionRoundsIndexRoute,
+  FormTemplatesIndexRoute,
   NgosIndexRoute,
 ])
 
