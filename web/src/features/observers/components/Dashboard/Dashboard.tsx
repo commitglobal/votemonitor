@@ -12,10 +12,8 @@ function useObservers(p: PageParameters): UseQueryResult<PageResponse<Observer>,
     queryFn: async () => {
       const response = await authApi.get<PageResponse<Observer>>('/observers', {
         params: {
-          NameFilter: '',
           PageNumber: p.pageNumber,
           PageSize: p.pageSize,
-          Status: 'Active',
         },
       });
 

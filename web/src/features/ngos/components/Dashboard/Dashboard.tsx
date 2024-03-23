@@ -12,7 +12,6 @@ function useNGOs(p: DataTableParameters): UseQueryResult<PageResponse<NGO>, Erro
     queryFn: async () => {
       const response = await authApi.get<PageResponse<NGO>>('/ngos', {
         params: {
-          NameFilter: '',
           PageNumber: p.pageNumber,
           PageSize: p.pageSize,
           SortColumnName: p.sortColumnName,

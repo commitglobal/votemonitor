@@ -33,9 +33,9 @@ public class CreateEndpointTests
                .AddAsync(Arg.Is<FormTemplateAggregate>(x => x.Name == templateName));
 
         result
-            .Should().BeOfType<Results<Ok<FormTemplateModel>, Conflict<ProblemDetails>>>()!
+            .Should().BeOfType<Results<Ok<FormTemplateSlimModel>, Conflict<ProblemDetails>>>()!
             .Which!
-            .Result.Should().BeOfType<Ok<FormTemplateModel>>()!
+            .Result.Should().BeOfType<Ok<FormTemplateSlimModel>>()!
             .Which!.Value!.Name.Should().BeEquivalentTo(templateName);
     }
 
@@ -58,7 +58,7 @@ public class CreateEndpointTests
 
         // Assert
         result
-            .Should().BeOfType<Results<Ok<FormTemplateModel>, Conflict<ProblemDetails>>>()
+            .Should().BeOfType<Results<Ok<FormTemplateSlimModel>, Conflict<ProblemDetails>>>()
             .Which
             .Result.Should().BeOfType<Conflict<ProblemDetails>>();
     }

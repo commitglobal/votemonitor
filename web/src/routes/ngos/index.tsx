@@ -4,7 +4,6 @@ import NGOsDashboard from '@/features/ngos/components/Dashboard/Dashboard';
 import { createFileRoute } from '@tanstack/react-router';
 import { z } from 'zod';
 
-
 const ngoRouteSearchSchema = z.object({
   nameFilter: z.string().catch(''),
   pageNumber: z.number().catch(1),

@@ -31,3 +31,7 @@ export type PageResponse<T> = {
 };
 
 export type DataTableParameters = PageParameters & SortParameters;
+
+export type TranslatedString = {
+  [languageCode: string]: string;
+};
