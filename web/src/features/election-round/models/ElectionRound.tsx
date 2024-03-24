@@ -27,8 +27,8 @@ export interface ElectionRound {
 export const electionRoundFormSchema = z.object({
   title: z.string().min(2).max(255),
   englishTitle: z.string().min(2).max(255),
-  countryId: z.string(), // TODO: validate it exists in the database
-  startDate: z.date(),
+  countryId: z.string(),
+  startDate: z.string(),
 });
 
 export type ElectionRoundFormValues = z.infer<typeof electionRoundFormSchema>;

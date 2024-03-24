@@ -11,29 +11,26 @@ import { Button } from '@/components/ui/button';
 import { CalendarIcon, CheckIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
 import { Calendar } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
-import { format } from 'date-fns';
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from '@/components/ui/command';
+import { format, parseISO, formatISO } from 'date-fns';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
 import { authApi } from '@/common/auth-api';
+import { useCountries } from '@/features/countries/queries';
+import { queryClient } from '@/main';
+import { electionRoundKeys } from '../queries';
 
 // This can come from the API.
 const defaultValues: Partial<ElectionRoundFormValues> = {
   // title: "Election Round title",
   // englishTitle: "Election Round English title",
-  countryId: 'ROU',
+  // countryId: '51aa4900-30a6-91b7-2728-071542a064ff',
   // startDate: new Date("2024-03-22"),
 };
 
-const countries = [
-  { 'value': 'ROU', 'label': 'Romania' },
-  { 'value': 'FRA', 'label': 'France' },
-  { 'value': 'DEU', 'label': 'Germany' },
-  { 'value': 'GBR', 'label': 'United Kingdom' },
-  { 'value': 'USA', 'label': 'United States' },
-];
 
 const CreateElectionRoundForm = (): ReactNode => {
+  const { data: countries } = useCountries();
+
   const { t } = useTranslation();
 
   const form = useForm<ElectionRoundFormValues>({
@@ -43,8 +40,11 @@ const CreateElectionRoundForm = (): ReactNode => {
 
   const mutation = useMutation({
     mutationFn: (data: ElectionRoundFormValues) => {
-      return authApi.post<ElectionRoundFormValues, ElectionRound>('/election-rounds', data) // TODO: figure out proper using endpoing with auth
+      return authApi.post<ElectionRoundFormValues, ElectionRound>('/election-rounds', data)
     },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: electionRoundKeys.all })
+    }
   })
 
   function onSubmit(data: ElectionRoundFormValues) {
@@ -101,9 +101,9 @@ const CreateElectionRoundForm = (): ReactNode => {
                         )}
                       >
                         {field.value
-                          ? countries.find(
-                            (country) => country.value === field.value
-                          )?.label
+                          ? countries?.find(
+                            (country) => country.id === field.value
+                          )?.fullName
                           : t('app.action.select')}
                         <ChevronDownIcon className="w-4 h-4 ml-2 opacity-50 shrink-0" />
                       </Button>
@@ -113,27 +113,30 @@ const CreateElectionRoundForm = (): ReactNode => {
                     <Command>
                       <CommandInput placeholder="Search country..." />
                       <CommandEmpty>No country found.</CommandEmpty>
-                      <CommandGroup>
-                        {countries.map((country) => (
-                          <CommandItem
-                            value={country.label}
-                            key={country.value}
-                            onSelect={() => {
-                              form.setValue("countryId", country.value)
-                            }}
-                          >
-                            <CheckIcon
-                              className={cn(
-                                "mr-2 h-4 w-4",
-                                country.value === field.value
-                                  ? "opacity-100"
-                                  : "opacity-0"
-                              )}
-                            />
-                            {country.label}
-                          </CommandItem>
-                        ))}
-                      </CommandGroup>
+                      {/* TODO: https://github.com/shadcn-ui/ui/issues/2944 */}
+                      <CommandList>
+                        <CommandGroup>
+                          {!!countries && countries?.map((country) => (
+                            <CommandItem
+                              value={country.fullName}
+                              key={country.id}
+                              onSelect={() => {
+                                form.setValue("countryId", country.id)
+                              }}
+                            >
+                              <CheckIcon
+                                className={cn(
+                                  "mr-2 h-4 w-4",
+                                  country.id === field.value
+                                    ? "opacity-100"
+                                    : "opacity-0"
+                                )}
+                              />
+                              {country.fullName}
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
                     </Command>
                   </PopoverContent>
                 </Popover>
@@ -165,9 +168,11 @@ const CreateElectionRoundForm = (): ReactNode => {
                   <PopoverContent className='w-auto p-0' align='start'>
                     <Calendar
                       mode='single'
-                      selected={field.value}
-                      onSelect={field.onChange}
-                      disabled={(date) => date > new Date() || date < new Date('1900-01-01')}
+                      selected={field.value ? parseISO(field.value) : undefined}
+                      onSelect={(day) => {
+                        form.setValue("startDate", formatISO(day!, { representation: 'date' }))
+                      }}
+                      disabled={(date) => date < new Date()}
                       initialFocus
                     />
                   </PopoverContent>
