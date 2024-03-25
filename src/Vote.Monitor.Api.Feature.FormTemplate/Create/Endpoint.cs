@@ -34,7 +34,7 @@ public class Endpoint(IRepository<FormTemplateAggregate> repository, ITimeProvid
             Status = formTemplate.Status,
             CreatedOn = formTemplate.CreatedOn,
             LastModifiedOn = formTemplate.LastModifiedOn,
-            Sections = []
+            Questions = []
         });
     }
 }

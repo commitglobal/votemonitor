@@ -9,7 +9,7 @@ public class RatingQuestion : BaseQuestion
     public RatingScale Scale { get; private set; }
 
     [JsonConstructor]
-    private RatingQuestion(Guid id,
+    internal RatingQuestion(Guid id,
         string code,
         TranslatedString text,
         TranslatedString? helptext,

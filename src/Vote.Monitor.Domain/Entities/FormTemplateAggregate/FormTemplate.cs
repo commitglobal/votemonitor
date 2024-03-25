@@ -1,5 +1,5 @@
 ﻿using Vote.Monitor.Core.Models;
-using Vote.Monitor.Domain.Entities.FormBase;
+using Vote.Monitor.Domain.Entities.FormBase.Questions;
 
 namespace Vote.Monitor.Domain.Entities.FormTemplateAggregate;
 
@@ -12,7 +12,7 @@ public class FormTemplate : AuditableBaseEntity, IAggregateRoot
 
     public IReadOnlyList<string> Languages { get; private set; } = new List<string>().AsReadOnly();
 
-    public IReadOnlyList<FormSection> Sections { get; private set; } = new List<FormSection>().AsReadOnly();
+    public IReadOnlyList<BaseQuestion> Questions { get; private set; } = new List<BaseQuestion>().AsReadOnly();
 
     private FormTemplate(FormTemplateType formTemplateType,
         string code,
@@ -55,13 +55,13 @@ public class FormTemplate : AuditableBaseEntity, IAggregateRoot
     public void UpdateDetails(string code, TranslatedString name,
         FormTemplateType formTemplateType,
         IEnumerable<string> languages,
-        IEnumerable<FormSection> sections)
+        IEnumerable<BaseQuestion> questions)
     {
         Code = code;
         Name = name;
         FormTemplateType = formTemplateType;
         Languages = languages.ToList().AsReadOnly();
-        Sections = sections.ToList().AsReadOnly();
+        Questions = questions.ToList().AsReadOnly();
     }
 
 #pragma warning disable CS8618 // Required by Entity Framework

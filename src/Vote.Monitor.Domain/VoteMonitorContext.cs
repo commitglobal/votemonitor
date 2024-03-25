@@ -1,5 +1,8 @@
 ﻿using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
+using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
 using Vote.Monitor.Domain.Entities.NgoAggregate;
+using Vote.Monitor.Domain.Entities.PollingStationInfoAggregate;
+using Vote.Monitor.Domain.Entities.PollingStationInfoFormAggregate;
 
 namespace Vote.Monitor.Domain;
 
@@ -8,7 +11,7 @@ public class VoteMonitorContext : DbContext
     private readonly ISerializerService _serializerService;
     private readonly ITimeProvider _timeProvider;
     private readonly ICurrentUserProvider _currentUserProvider;
-
+    private readonly IElectionRoundIdProvider _electionRoundIdProvider;
     public VoteMonitorContext(DbContextOptions<VoteMonitorContext> options,
         ISerializerService serializerService,
         ITimeProvider timeProvider,
@@ -30,6 +33,9 @@ public class VoteMonitorContext : DbContext
     public DbSet<ImportValidationErrors> ImportValidationErrors { set; get; }
     public DbSet<Trail> AuditTrails => Set<Trail>();
     public DbSet<FormTemplate> FormTemplates { set; get; }
+    public DbSet<PollingStationInformationForm> PollingStationInformationForms { set; get; }
+    public DbSet<PollingStationInformation> PollingStationInformations { set; get; }
+    public DbSet<MonitoringNgo> MonitoringNgos { set; get; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -61,6 +67,8 @@ public class VoteMonitorContext : DbContext
         builder.ApplyConfiguration(new NotificationTokenConfiguration());
         builder.ApplyConfiguration(new PollingStationAttachmentConfiguration());
         builder.ApplyConfiguration(new PollingStationNoteConfiguration());
+        builder.ApplyConfiguration(new PollingStationInformationFormConfiguration());
+        builder.ApplyConfiguration(new PollingStationInformationConfiguration());
     }
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)

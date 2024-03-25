@@ -12,5 +12,11 @@ public class PollingStationConfiguration : IEntityTypeConfiguration<PollingStati
         builder.Property(p => p.Address).HasMaxLength(2024).IsRequired();
         builder.Property(p => p.DisplayOrder).IsRequired();
         builder.Property(p => p.Tags).IsRequired();
+
+        builder
+            .HasOne(x => x.ElectionRound)
+            .WithMany()
+            .HasForeignKey(x => x.ElectionRoundId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

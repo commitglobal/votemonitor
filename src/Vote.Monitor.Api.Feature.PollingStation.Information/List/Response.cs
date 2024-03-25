@@ -2,5 +2,5 @@
 
 public record Response
 {
-    public required List<PollingStationInfoModel> Informations { get; init; }
+    public required List<PollingStationInformationModel> Informations { get; init; }
 }

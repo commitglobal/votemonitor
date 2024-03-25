@@ -11,5 +11,5 @@ public class Request
     public TranslatedString Name { get; set; }
     public FormTemplateType FormTemplateType { get; set; }
     public List<string> Languages { get; set; } = new();
-    public List<SectionRequest> Sections { get; set; } = new();
+    public List<BaseQuestionRequest> Questions { get; set; } = new();
 }

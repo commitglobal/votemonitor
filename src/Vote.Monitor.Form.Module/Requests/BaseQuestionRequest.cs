@@ -1,17 +1,18 @@
 ﻿using System.Text.Json.Serialization;
 using PolyJson;
 using Vote.Monitor.Core.Models;
+using Vote.Monitor.Domain.Entities.FormBase.Questions;
 
 namespace Vote.Monitor.Form.Module.Requests;
 
 [PolyJsonConverter(distriminatorPropertyName: "$questionType")]
 
-[PolyJsonConverter.SubType(typeof(TextQuestionRequest), "textInputQuestion")]
-[PolyJsonConverter.SubType(typeof(NumberQuestionRequest), "numberInputQuestion")]
-[PolyJsonConverter.SubType(typeof(DateQuestionRequest), "dateInputQuestion")]
-[PolyJsonConverter.SubType(typeof(SingleSelectQuestionRequest), "singleSelectQuestion")]
-[PolyJsonConverter.SubType(typeof(MultiSelectQuestionRequest), "multiSelectQuestion")]
-[PolyJsonConverter.SubType(typeof(RatingQuestionRequest), "ratingQuestion")]
+[PolyJsonConverter.SubType(typeof(TextQuestionRequest), QuestionTypes.TextQuestionType)]
+[PolyJsonConverter.SubType(typeof(NumberQuestionRequest), QuestionTypes.NumberQuestionType)]
+[PolyJsonConverter.SubType(typeof(DateQuestionRequest), QuestionTypes.DateQuestionType)]
+[PolyJsonConverter.SubType(typeof(SingleSelectQuestionRequest), QuestionTypes.SingleSelectQuestionType)]
+[PolyJsonConverter.SubType(typeof(MultiSelectQuestionRequest), QuestionTypes.MultiSelectQuestionType)]
+[PolyJsonConverter.SubType(typeof(RatingQuestionRequest), QuestionTypes.RatingQuestionType)]
 public abstract class BaseQuestionRequest
 {
     [JsonPropertyName("$questionType")]

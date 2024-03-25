@@ -14,6 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Vote.Monitor.Api.Feature.PollingStation\Vote.Monitor.Api.Feature.PollingStation.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Domain\Vote.Monitor.Domain.csproj" />
   </ItemGroup>
 </Project>

@@ -1,4 +1,5 @@
-﻿using Vote.Monitor.Domain.Entities.NgoAggregate;
+﻿using Vote.Monitor.Core.Security;
+using Vote.Monitor.Domain.Entities.NgoAggregate;
 
 namespace Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
 

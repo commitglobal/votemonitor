@@ -19,7 +19,7 @@ public sealed class FormTemplateAggregateFaker : PrivateFaker<FormTemplate>
         UsePrivateConstructor();
 
         RuleFor(fake => fake.Id, fake => id ?? fake.Random.Guid());
-        RuleFor(fake => fake.Code, fake => code ?? fake.Random.String(3, 'A', 'Z'));
+        RuleFor(fake => fake.Code, code ?? Guid.NewGuid().ToString());
         RuleFor(fake => fake.Languages, fake => languages?.Select(x => x.Iso1).ToList().AsReadOnly() ?? fake.PickRandom(LanguagesList.GetAll(), 3).Select(x => x.Iso1).ToList().AsReadOnly());
         RuleFor(fake => fake.Status, fake => status ?? fake.PickRandom(_statuses));
         RuleFor(fake => fake.Name, name ?? new TranslatedString());

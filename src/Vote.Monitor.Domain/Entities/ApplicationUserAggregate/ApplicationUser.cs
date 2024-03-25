@@ -1,4 +1,5 @@
-﻿using Vote.Monitor.Domain.Constants;
+﻿using Vote.Monitor.Core.Security;
+using Vote.Monitor.Domain.Constants;
 
 namespace Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
 

@@ -1,7 +1,9 @@
-﻿namespace Vote.Monitor.Api.Feature.UserPreferences.Get;
+﻿using Vote.Monitor.Core.Security;
+
+namespace Vote.Monitor.Api.Feature.UserPreferences.Get;
 
 public class Request
 {
-    [FromClaim("Sub")]
+    [FromClaim(ClaimTypes.UserId)]
     public Guid Id { get; set; }
 }

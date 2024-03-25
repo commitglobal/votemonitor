@@ -25,7 +25,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="coverlet.collector" Version="6.0.1">
+    <PackageReference Include="coverlet.collector" Version="6.0.2">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
@@ -34,6 +34,11 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Vote.Monitor.Domain\Vote.Monitor.Domain.csproj" />
     <ProjectReference Include="..\Vote.Monitor.TestUtils\Vote.Monitor.TestUtils.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Entities\FormTemplateAggregate\" />
+    <Folder Include="NewFolder\" />
   </ItemGroup>
 
 </Project>

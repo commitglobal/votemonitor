@@ -6,9 +6,9 @@ namespace Vote.Monitor.Domain.Entities.FormAnswerBase.Validators;
 
 public class MultiSelectAnswerValidator : AbstractValidator<MultiSelectAnswer>
 {
-    public MultiSelectAnswerValidator(IReadOnlyList<SelectOption> questionOptions)
+    public MultiSelectAnswerValidator(MultiSelectQuestion multiSelectQuestion)
     {
         RuleFor(x => x.QuestionId).NotEmpty();
-        RuleForEach(x => x.Selection).SetValidator(new SelectedOptionValidator(questionOptions));
+        RuleForEach(x => x.Selection).SetValidator(new SelectedOptionValidator(multiSelectQuestion.Options));
     }
 }
