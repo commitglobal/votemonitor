@@ -2,7 +2,6 @@
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Domain.Entities.FormBase;
 using Vote.Monitor.Domain.Entities.FormBase.Questions;
-using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 using Vote.Monitor.Domain.Entities.PollingStationInfoAggregate;
 
@@ -18,8 +17,7 @@ public class PollingStationInfoForm : AuditableBaseEntity, IAggregateRoot
 
     private PollingStationInfoForm(
         ElectionRound electionRound,
-        IEnumerable<string> languages,
-        ITimeProvider timeProvider) : base(Guid.NewGuid(), timeProvider)
+        IEnumerable<string> languages) : base(Guid.NewGuid())
     {
         ElectionRound = electionRound;
         ElectionRoundId = electionRound.Id;
@@ -29,9 +27,8 @@ public class PollingStationInfoForm : AuditableBaseEntity, IAggregateRoot
 
     public static PollingStationInfoForm Create(
         ElectionRound electionRound,
-        IEnumerable<string> languages,
-        ITimeProvider timeProvider) =>
-        new(electionRound, languages, timeProvider);
+        IEnumerable<string> languages) =>
+        new(electionRound, languages);
 
     public PublishResult Publish()
     {
@@ -55,10 +52,9 @@ public class PollingStationInfoForm : AuditableBaseEntity, IAggregateRoot
     public PollingStationInfo CreatePollingStationInfo(ElectionRound electionRound,
         PollingStation pollingStation,
         MonitoringObserver monitoringObserver,
-        string selectedLanguage,
-        ITimeProvider timeProvider)
+        string selectedLanguage)
     {
-        return PollingStationInfo.Create(electionRound, pollingStation, monitoringObserver, this, selectedLanguage, timeProvider);
+        return PollingStationInfo.Create(electionRound, pollingStation, monitoringObserver, this, selectedLanguage);
     }
 
     public PollingStationInfo FillIn(

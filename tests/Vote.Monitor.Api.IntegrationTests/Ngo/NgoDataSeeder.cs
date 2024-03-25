@@ -16,13 +16,13 @@ public class NgoDataSeeder(
 
         var activatedNgos = Enumerable
             .Range(0, 20)
-            .Select(x => new Domain.Entities.NgoAggregate.Ngo($"Activated{x}", timeProvider));
+            .Select(x => new Domain.Entities.NgoAggregate.Ngo($"Activated{x}"));
 
         var deactivatedNgos = Enumerable
                   .Range(0, 20)
                   .Select(x =>
                   {
-                      var ngo = new Domain.Entities.NgoAggregate.Ngo($"Deactivated{x}", timeProvider);
+                      var ngo = new Domain.Entities.NgoAggregate.Ngo($"Deactivated{x}");
                       ngo.Deactivate();
                       return ngo;
                   });

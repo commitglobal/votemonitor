@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Logging;
 using Vote.Monitor.Api.Feature.Auth.Login;
-using Vote.Monitor.Core.Services.Time;
 using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
 
 namespace Vote.Monitor.Api.IntegrationTests;
@@ -59,7 +58,7 @@ public class HttpServerFixture<TDataSeeder> : WebApplicationFactory<Program>, IA
         var password = Fake.Internet.Password();
 
         using var voteMonitorContext = Services.GetRequiredService<VoteMonitorContext>();
-        voteMonitorContext.PlatformAdmins.Add(new PlatformAdmin("Integration test platform admin", email, password, CurrentUtcTimeProvider.Instance));
+        voteMonitorContext.PlatformAdmins.Add(new PlatformAdmin("Integration test platform admin", email, password));
         await voteMonitorContext.SaveChangesAsync();
 
         Client = CreateClient();

@@ -43,7 +43,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<Response>, NotFound, Proble
 
         var entities = successResult!
         .PollingStations
-            .Select(x => new PollingStationAggregate(x.Address, x.DisplayOrder, x.Tags.ToTagsObject(), _timeProvider))
+            .Select(x => new PollingStationAggregate(x.Address, x.DisplayOrder, x.Tags.ToTagsObject()))
             .ToList();
 
         await _context.PollingStations.BatchDeleteAsync(cancellationToken: ct);

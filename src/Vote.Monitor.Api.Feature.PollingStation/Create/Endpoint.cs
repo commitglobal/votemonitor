@@ -31,7 +31,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<PollingStationModel>, Confl
             return TypedResults.Conflict(new ProblemDetails(ValidationFailures));
         }
 
-        var pollingStation = new PollingStationAggregate(req.Address, req.DisplayOrder, req.Tags.ToTagsObject(), _timeProvider);
+        var pollingStation = new PollingStationAggregate(req.Address, req.DisplayOrder, req.Tags.ToTagsObject());
         await _repository.AddAsync(pollingStation, ct);
 
         return TypedResults.Ok(new PollingStationModel

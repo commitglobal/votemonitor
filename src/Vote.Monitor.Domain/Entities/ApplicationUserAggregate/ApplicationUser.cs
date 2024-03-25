@@ -21,8 +21,7 @@ public abstract class ApplicationUser : AuditableBaseEntity, IAggregateRoot
     public ApplicationUser(string name,
         string login,
         string password,
-        UserRole role,
-        ITimeProvider timeProvider) : base(Guid.NewGuid(), timeProvider)
+        UserRole role) : base(Guid.NewGuid())
     {
         Name = name;
         Login = login;

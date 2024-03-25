@@ -17,7 +17,6 @@ public sealed class PollingStationFaker : PrivateFaker<PollingStation>
         CustomInstantiator(f => new PollingStation(id ?? f.Random.Guid(),
             address: f.Address.FullAddress(),
             displayOrder: f.IndexFaker,
-            tags: JsonSerializer.SerializeToDocument(""), 
-            timeProvider: currentUtcTimeProvider));
+            tags: JsonSerializer.SerializeToDocument("")));
     }
 }

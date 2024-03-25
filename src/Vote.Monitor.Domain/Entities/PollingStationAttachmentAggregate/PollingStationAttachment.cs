@@ -2,7 +2,7 @@
 
 namespace Vote.Monitor.Domain.Entities.PollingStationAttachmentAggregate;
 
-public class PollingStationAttachment : BaseEntity, IAggregateRoot
+public class PollingStationAttachment : AuditableBaseEntity, IAggregateRoot
 {
     public Guid ElectionRoundId { get; private set; }
     public ElectionRound ElectionRound { get; private set; }
@@ -15,15 +15,13 @@ public class PollingStationAttachment : BaseEntity, IAggregateRoot
     public string FilePath { get; private set; }
     public string MimeType { get; private set; }
     public bool IsDeleted { get; private set; }
-    public DateTime Timestamp { get; private set; }
 
     public PollingStationAttachment(ElectionRound electionRound,
         PollingStation pollingStation,
         MonitoringObserver monitoringObserver,
         string fileName,
         string filePath,
-        string mimeType,
-        ITimeProvider timeProvider) : base(Guid.NewGuid(), timeProvider)
+        string mimeType) : base(Guid.NewGuid())
     {
         ElectionRound = electionRound;
         ElectionRoundId = electionRound.Id;
@@ -31,7 +29,6 @@ public class PollingStationAttachment : BaseEntity, IAggregateRoot
         PollingStation = pollingStation;
         MonitoringObserver = monitoringObserver;
         MonitoringObserverId = monitoringObserver.Id;
-        Timestamp = timeProvider.UtcNow;
         FileName = fileName;
         FilePath = filePath;
         MimeType = mimeType;

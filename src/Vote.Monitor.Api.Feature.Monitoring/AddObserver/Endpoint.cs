@@ -67,7 +67,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<MonitoringObserverModel>, N
             return TypedResults.ValidationProblem(ValidationFailures.ToValidationErrorDictionary());
         }
 
-        var monitoringObserver = monitoringNgo.AddMonitoringObserver(observer, _timeProvider);
+        var monitoringObserver = monitoringNgo.AddMonitoringObserver(observer);
         if (monitoringObserver is null)
         {
             AddError(x => x.ObserverId, "Observer is already registered as monitoring for this monitoring NGO.");

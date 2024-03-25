@@ -37,7 +37,7 @@ public class AuditingInterceptorTests
         _fakeTimeProvider.UtcNow.Returns(createdOn);
         _fakeCurrentUserProvider.GetUserId().Returns(userId);
         //Act 
-        var testEntity = new Ngo(string.Empty, _fakeTimeProvider);
+        var testEntity = new Ngo(string.Empty);
 
         await _context.Ngos.AddAsync(testEntity);
 
@@ -62,7 +62,7 @@ public class AuditingInterceptorTests
         _fakeCurrentUserProvider.GetUserId().Returns(userId);
 
         //Act 
-        var testEntity = new Ngo(string.Empty, _fakeTimeProvider);
+        var testEntity = new Ngo(string.Empty);
 
         await _context.Ngos.AddAsync(testEntity);
 
@@ -88,7 +88,7 @@ public class AuditingInterceptorTests
         _fakeTimeProvider.UtcNow.Returns(createdOn, lastModifiedOn);
         _fakeCurrentUserProvider.GetUserId().Returns(userId, anotherUserId);
         
-        var testEntity = new Ngo(string.Empty, _fakeTimeProvider);
+        var testEntity = new Ngo(string.Empty);
 
         await _context.Ngos.AddAsync(testEntity);
         await _context.SaveChangesAsync(CancellationToken.None);
@@ -115,7 +115,7 @@ public class AuditingInterceptorTests
         _fakeTimeProvider.UtcNow.Returns(createdOn, lastModifiedOn);
         _fakeCurrentUserProvider.GetUserId().Returns(userId, anotherUserId);
         
-        var testEntity = new Ngo(string.Empty, _fakeTimeProvider);
+        var testEntity = new Ngo(string.Empty);
 
         await _context.Ngos.AddAsync(testEntity);
         await _context.SaveChangesAsync(CancellationToken.None);

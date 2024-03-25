@@ -22,8 +22,7 @@ public class PollingStationInfo : AuditableBaseEntity, IAggregateRoot
         PollingStation pollingStation,
         MonitoringObserver monitoringObserver,
         PollingStationInfoForm pollingStationInfoForm,
-        string language,
-        ITimeProvider timeProvider) : base(Guid.NewGuid(), timeProvider)
+        string language) : base(Guid.NewGuid())
     {
         ElectionRound = electionRound;
         ElectionRoundId = electionRound.Id;
@@ -41,9 +40,8 @@ public class PollingStationInfo : AuditableBaseEntity, IAggregateRoot
         PollingStation pollingStation,
         MonitoringObserver monitoringObserver,
         PollingStationInfoForm pollingStationInfoForm,
-        string selectedLanguage,
-        ITimeProvider timeProvider) =>
-        new(electionRound, pollingStation, monitoringObserver, pollingStationInfoForm, selectedLanguage, timeProvider);
+        string selectedLanguage) =>
+        new(electionRound, pollingStation, monitoringObserver, pollingStationInfoForm, selectedLanguage);
 
     internal void UpdateDetails(string language, IEnumerable<BaseAnswer> answers)
     {

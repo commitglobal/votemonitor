@@ -37,7 +37,7 @@ public class AuditTrailInterceptorTests
 
         //Act 
         var ngoName = "my ngo";
-        var testEntity = new Ngo(ngoName, _fakeTimeProvider);
+        var testEntity = new Ngo(ngoName);
 
         await _context.Ngos.AddAsync(testEntity);
 
@@ -66,7 +66,7 @@ public class AuditTrailInterceptorTests
 
         //Act 
         var ngoName = "my ngo";
-        var testEntity = new Ngo(ngoName, _fakeTimeProvider);
+        var testEntity = new Ngo(ngoName);
 
         await _context.Ngos.AddAsync(testEntity);
 
@@ -96,7 +96,7 @@ public class AuditTrailInterceptorTests
         _fakeCurrentUserProvider.GetUserId().Returns(userId, anotherUserId);
 
         var ngoName = "my ngo";
-        var testEntity = new Ngo(ngoName, _fakeTimeProvider);
+        var testEntity = new Ngo(ngoName);
 
         await _context.Ngos.AddAsync(testEntity);
         await _context.SaveChangesAsync(CancellationToken.None);
@@ -132,7 +132,7 @@ public class AuditTrailInterceptorTests
         _fakeCurrentUserProvider.GetUserId().Returns(userId, anotherUserId);
         
         var ngoName = "my ngo";
-        var testEntity = new Ngo(ngoName, _fakeTimeProvider);
+        var testEntity = new Ngo(ngoName);
 
         await _context.Ngos.AddAsync(testEntity);
         await _context.SaveChangesAsync(CancellationToken.None);
@@ -168,7 +168,7 @@ public class AuditTrailInterceptorTests
         _fakeCurrentUserProvider.GetUserId().Returns(userId, anotherUserId);
 
         var ngoName = "my ngo";
-        var testEntity = new Ngo(ngoName, _fakeTimeProvider);
+        var testEntity = new Ngo(ngoName);
 
         await _context.Ngos.AddAsync(testEntity);
         await _context.SaveChangesAsync(CancellationToken.None);
@@ -202,7 +202,7 @@ public class AuditTrailInterceptorTests
         _fakeCurrentUserProvider.GetUserId().Returns(userId, anotherUserId);
 
         var ngoName = "my ngo";
-        var testEntity = new Ngo(ngoName, _fakeTimeProvider);
+        var testEntity = new Ngo(ngoName);
 
         await _context.Ngos.AddAsync(testEntity);
         await _context.SaveChangesAsync(CancellationToken.None);

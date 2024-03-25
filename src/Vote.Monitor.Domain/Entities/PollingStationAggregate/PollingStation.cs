@@ -10,8 +10,7 @@ public class PollingStation : AuditableBaseEntity, IAggregateRoot, IDisposable
 
     public PollingStation(string address,
         int displayOrder,
-        JsonDocument tags,
-        ITimeProvider timeProvider) : base(Guid.NewGuid(), timeProvider)
+        JsonDocument tags) : base(Guid.NewGuid())
     {
         Address = address;
         DisplayOrder = displayOrder;
@@ -21,8 +20,7 @@ public class PollingStation : AuditableBaseEntity, IAggregateRoot, IDisposable
     internal PollingStation(Guid id, 
         string address, 
         int displayOrder,
-        JsonDocument tags, 
-        ITimeProvider timeProvider) : base(id, timeProvider)
+        JsonDocument tags) : base(id)
     { 
         Address = address;
         DisplayOrder = displayOrder;

@@ -17,7 +17,5 @@ internal class EmergencyAttachmentConfiguration : IEntityTypeConfiguration<Emerg
         builder.Property(x => x.MimeType)
             .HasMaxLength(256)
             .IsRequired();
-
-        builder.Property(x => x.Timestamp);
     }
 }

@@ -25,8 +25,7 @@ public class Form : AuditableBaseEntity, IAggregateRoot
         FormType formType,
         string code,
         TranslatedString name,
-        IEnumerable<string> languages,
-        ITimeProvider timeProvider) : base(Guid.NewGuid(), timeProvider)
+        IEnumerable<string> languages) : base(Guid.NewGuid())
     {
         ElectionRound = electionRound;
         ElectionRoundId = electionRound.Id;
@@ -46,9 +45,8 @@ public class Form : AuditableBaseEntity, IAggregateRoot
         FormType formType,
         string code,
         TranslatedString name,
-        IEnumerable<string> languages,
-        ITimeProvider timeProvider) =>
-        new(electionRound, monitoringNgo, formType, code, name, languages, timeProvider);
+        IEnumerable<string> languages) =>
+        new(electionRound, monitoringNgo, formType, code, name, languages);
 
     public PublishResult Publish()
     {

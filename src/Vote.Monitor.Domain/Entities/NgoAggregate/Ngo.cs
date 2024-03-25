@@ -13,7 +13,7 @@ public class Ngo : AuditableBaseEntity, IAggregateRoot
     public NgoStatus Status { get; private set; }
     public HashSet<NgoAdmin> Admins { get; private set; } = new();
 
-    public Ngo(string name, ITimeProvider timeProvider) : base(Guid.NewGuid(), timeProvider)
+    public Ngo(string name) : base(Guid.NewGuid())
     {
         Name = name;
         Status = NgoStatus.Activated;

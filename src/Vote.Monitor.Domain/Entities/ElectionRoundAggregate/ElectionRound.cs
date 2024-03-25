@@ -26,8 +26,7 @@ public class ElectionRound : AuditableBaseEntity, IAggregateRoot
     public ElectionRound(Guid countryId,
         string title,
         string englishTitle,
-        DateOnly startDate,
-        ITimeProvider timeProvider) : base(Guid.NewGuid(), timeProvider)
+        DateOnly startDate) : base(Guid.NewGuid())
     {
         Title = title;
         EnglishTitle = englishTitle;
@@ -41,8 +40,7 @@ public class ElectionRound : AuditableBaseEntity, IAggregateRoot
         string englishTitle,
         DateOnly startDate,
         Country country,
-        List<MonitoringNgo> monitoringNgos,
-        ITimeProvider timeProvider) : base(id, timeProvider)
+        List<MonitoringNgo> monitoringNgos) : base(id)
     {
         Title = title;
         EnglishTitle = englishTitle;
@@ -84,9 +82,9 @@ public class ElectionRound : AuditableBaseEntity, IAggregateRoot
         Status = ElectionRoundStatus.NotStarted;
     }
 
-    public MonitoringNgo AddMonitoringNgo(Ngo ngo, ITimeProvider timeProvider)
+    public MonitoringNgo AddMonitoringNgo(Ngo ngo)
     {
-        var monitoringNgo = new MonitoringNgo(this, ngo, timeProvider);
+        var monitoringNgo = new MonitoringNgo(this, ngo);
         return monitoringNgo;
     }
 
