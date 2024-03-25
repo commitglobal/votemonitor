@@ -38,7 +38,7 @@ public class AuditingInterceptor : ISaveChangesInterceptor
     {
         var auditableEntries = eventData.Context?.ChangeTracker.Entries<AuditableBaseEntity>() 
                                ?? Enumerable.Empty<EntityEntry<AuditableBaseEntity>>();
-        var userId = _currentUserProvider.GetUserId();
+        var userId = _currentUserProvider.GetUserId() ?? Guid.Empty;
 
         foreach (var entry in auditableEntries)
         {

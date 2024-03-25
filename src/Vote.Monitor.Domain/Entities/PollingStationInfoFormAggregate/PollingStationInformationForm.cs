@@ -17,8 +17,7 @@ public class PollingStationInformationForm : AuditableBaseEntity, IAggregateRoot
     private PollingStationInformationForm(
         ElectionRound electionRound,
         IEnumerable<string> languages,
-        List<BaseQuestion> questions,
-        ITimeProvider timeProvider) : base(Guid.NewGuid(), timeProvider)
+        List<BaseQuestion> questions) : base(Guid.NewGuid())
     {
         ElectionRound = electionRound;
         ElectionRoundId = electionRound.Id;
@@ -27,8 +26,7 @@ public class PollingStationInformationForm : AuditableBaseEntity, IAggregateRoot
     }
     private PollingStationInformationForm(
         ElectionRound electionRound,
-        IEnumerable<string> languages,
-        ITimeProvider timeProvider) : this(electionRound, languages, [], timeProvider)
+        IEnumerable<string> languages) : this(electionRound, languages, [])
     {
     }
 
@@ -36,14 +34,14 @@ public class PollingStationInformationForm : AuditableBaseEntity, IAggregateRoot
         ElectionRound electionRound,
         IEnumerable<string> languages,
         ITimeProvider timeProvider) =>
-        new(electionRound, languages, timeProvider);
+        new(electionRound, languages);
 
     public static PollingStationInformationForm Create(
         ElectionRound electionRound,
         IEnumerable<string> languages,
         List<BaseQuestion> questions,
         ITimeProvider timeProvider) =>
-        new(electionRound, languages, questions, timeProvider);
+        new(electionRound, languages, questions);
 
     public void UpdateDetails(IEnumerable<string> languages, IEnumerable<BaseQuestion> questions)
     {
@@ -56,7 +54,7 @@ public class PollingStationInformationForm : AuditableBaseEntity, IAggregateRoot
         List<BaseAnswer> answers,
         ITimeProvider timeProvider)
     {
-        return PollingStationInformation.Create(ElectionRound, pollingStation, monitoringObserver, this, answers, timeProvider);
+        return PollingStationInformation.Create(ElectionRound, pollingStation, monitoringObserver, this, answers);
     }
 
     public void FillIn(PollingStationInformation filledInForm,

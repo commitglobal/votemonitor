@@ -56,7 +56,7 @@ public class AuditTrailInterceptor : ISaveChangesInterceptor
             var trailEntry = new AuditTrail(entry, _serializerService, _timeProvider)
             {
                 TableName = entry.Entity.GetType().Name,
-                UserId = userId
+                UserId = userId ?? Guid.Empty
             };
             trailEntries.Add(trailEntry);
             foreach (var property in entry.Properties)

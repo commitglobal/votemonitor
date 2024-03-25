@@ -10,7 +10,7 @@ public class PollingStation : AuditableBaseEntity, IAggregateRoot, IDisposable
 
     public PollingStation(ElectionRound electionRound, string address,
         int displayOrder,
-        JsonDocument tags) : base(Guid.NewGuid())
+        JsonDocument tags) : this(Guid.NewGuid(), electionRound, address, displayOrder, tags)
     {
     }
 
@@ -18,12 +18,12 @@ public class PollingStation : AuditableBaseEntity, IAggregateRoot, IDisposable
     public Guid ElectionRoundId { get; private set; }
 
     internal PollingStation(
-        Guid id, 
+        Guid id,
         ElectionRound electionRound,
-        string address, 
+        string address,
         int displayOrder,
         JsonDocument tags) : base(id)
-    { 
+    {
         ElectionRoundId = electionRound.Id;
         ElectionRound = electionRound;
         Address = address;

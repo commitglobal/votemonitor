@@ -21,8 +21,7 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
         PollingStation pollingStation,
         MonitoringObserver monitoringObserver,
         PollingStationInformationForm pollingStationInformationForm,
-        List<BaseAnswer> answers,
-        ITimeProvider timeProvider) : base(Guid.NewGuid(), timeProvider)
+        List<BaseAnswer> answers) : base(Guid.NewGuid())
     {
         ElectionRound = electionRound;
         ElectionRoundId = electionRound.Id;
@@ -40,9 +39,8 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
         PollingStation pollingStation,
         MonitoringObserver monitoringObserver,
         PollingStationInformationForm pollingStationInformationForm,
-        List<BaseAnswer> answers,
-        ITimeProvider timeProvider) =>
-        new(electionRound, pollingStation, monitoringObserver, pollingStationInformationForm, answers, timeProvider);
+        List<BaseAnswer> answers) =>
+        new(electionRound, pollingStation, monitoringObserver, pollingStationInformationForm, answers);
 
     internal void UpdateDetails(IEnumerable<BaseAnswer> answers)
     {
