@@ -23,7 +23,7 @@ public class Endpoint(IRepository<NgoAggregate> repository, ITimeProvider timePr
             return TypedResults.Conflict(new ProblemDetails(ValidationFailures));
         }
 
-        var ngo = new NgoAggregate(req.Name, timeProvider);
+        var ngo = new NgoAggregate(req.Name);
         await repository.AddAsync(ngo, ct);
 
         return TypedResults.Ok(new NgoModel

@@ -17,8 +17,7 @@ public class FormTemplate : AuditableBaseEntity, IAggregateRoot
     private FormTemplate(FormTemplateType formTemplateType,
         string code,
         TranslatedString name,
-        IEnumerable<string> languages,
-        ITimeProvider timeProvider) : base(Guid.NewGuid(), timeProvider)
+        IEnumerable<string> languages) : base(Guid.NewGuid())
     {
         FormTemplateType = formTemplateType;
         Code = code;
@@ -30,9 +29,8 @@ public class FormTemplate : AuditableBaseEntity, IAggregateRoot
     public static FormTemplate Create(FormTemplateType formTemplateType,
         string code,
         TranslatedString name,
-        IEnumerable<string> languages,
-        ITimeProvider timeProvider) =>
-        new(formTemplateType, code, name, languages, timeProvider);
+        IEnumerable<string> languages) =>
+        new(formTemplateType, code, name, languages);
 
     public PublishResult Publish()
     {

@@ -63,7 +63,7 @@ public class RemoveObserverEndpointTests
         var observer = new ObserverAggregateFaker(id: observerId).Generate();
         var ngo = new NgoAggregateFaker().Generate();
         var monitoringNgo = new MonitoringNgoAggregateFaker(ngo: ngo).Generate();
-        monitoringNgo.AddMonitoringObserver(observer, new CurrentUtcTimeProvider());
+        monitoringNgo.AddMonitoringObserver(observer);
 
         var repository = Substitute.For<IRepository<MonitoringNgoAggregate>>();
         repository

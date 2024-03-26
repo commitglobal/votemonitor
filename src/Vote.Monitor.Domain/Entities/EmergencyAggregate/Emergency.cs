@@ -31,8 +31,7 @@ public class Emergency : BaseEntity, IAggregateRoot
         string? pollingStationDescription,
         string title,
         string description,
-        List<EmergencyAttachment> attachments,
-        ITimeProvider timeProvider) : base(Guid.NewGuid(), timeProvider)
+        List<EmergencyAttachment> attachments) : base(Guid.NewGuid())
     {
         ElectionRoundId = electionRound.Id;
         ElectionRound = electionRound;
@@ -54,8 +53,7 @@ public class Emergency : BaseEntity, IAggregateRoot
         DateTime reportedAt,
         PollingStation? pollingStation,
         string title,
-        string description,
-        ITimeProvider timeProvider) : this(electionRound,
+        string description) : this(electionRound,
             monitoringObserver,
             locationType,
             reportedAt,
@@ -63,8 +61,7 @@ public class Emergency : BaseEntity, IAggregateRoot
             pollingStationDescription: null,
             title,
             description,
-            [],
-            timeProvider)
+            [])
     {
 
     }
@@ -75,8 +72,7 @@ public class Emergency : BaseEntity, IAggregateRoot
         DateTime reportedAt,
         string pollingStationDescription,
         string title,
-        string description,
-        ITimeProvider timeProvider) : this(electionRound,
+        string description) : this(electionRound,
         monitoringObserver,
         locationType,
         reportedAt,
@@ -84,8 +80,7 @@ public class Emergency : BaseEntity, IAggregateRoot
         pollingStationDescription,
         title,
         description,
-        [],
-        timeProvider)
+        [])
     {
     }
 
@@ -94,8 +89,7 @@ public class Emergency : BaseEntity, IAggregateRoot
         LocationType locationType,
         DateTime reportedAt,
         string title,
-        string description,
-        ITimeProvider timeProvider) : this(electionRound,
+        string description) : this(electionRound,
         monitoringObserver,
         locationType,
         reportedAt,
@@ -103,8 +97,7 @@ public class Emergency : BaseEntity, IAggregateRoot
         pollingStationDescription: null,
         title,
         description,
-        [],
-        timeProvider)
+        [])
     {
     }
 
@@ -121,8 +114,7 @@ public class Emergency : BaseEntity, IAggregateRoot
             timeProvider.UtcNow,
             pollingStation,
             title,
-            description,
-            timeProvider);
+            description);
     }
 
     internal Emergency CreateOtherPollingStationEmergency(ElectionRound electionRound,
@@ -138,8 +130,7 @@ public class Emergency : BaseEntity, IAggregateRoot
             timeProvider.UtcNow,
             pollingStationDescription,
             title,
-            description,
-            timeProvider);
+            description);
     }
 
     internal Emergency CreateNotRelatedToPollingStationEmergency(ElectionRound electionRound,
@@ -153,8 +144,7 @@ public class Emergency : BaseEntity, IAggregateRoot
             LocationType.NotRelatedToPollingStation,
             timeProvider.UtcNow,
             title,
-            description,
-            timeProvider);
+            description);
     }
 
 #pragma warning disable CS8618 // Required by Entity Framework

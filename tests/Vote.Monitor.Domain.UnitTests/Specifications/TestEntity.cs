@@ -2,7 +2,7 @@
 
 public class TestEntity : AuditableBaseEntity
 {
-    public TestEntity(ITimeProvider timeProvider) : base(Guid.NewGuid(), timeProvider)
+    public TestEntity(ITimeProvider timeProvider) : base(Guid.NewGuid())
     {
     }
 }

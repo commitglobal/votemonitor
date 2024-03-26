@@ -40,7 +40,7 @@ public class Endpoint : Endpoint<Request, Results<NoContent, BadRequest<ImportVa
         {
 
             string csv = failedResult.Items.ConstructErrorFileContent();
-            var errorSaved = await _errorRepo.AddAsync(new(ImportType.Observer, req.File.Name, csv, _timeProvider), ct);
+            var errorSaved = await _errorRepo.AddAsync(new(ImportType.Observer, req.File.Name, csv), ct);
             return TypedResults.BadRequest(
                 new ImportValidationErrorModel { Id = errorSaved.Id, Message = "The file contains errors! Please use the ID to get the file with the errors described inside." });
         }
@@ -48,7 +48,7 @@ public class Endpoint : Endpoint<Request, Results<NoContent, BadRequest<ImportVa
         var importedRows = parsingResult as ParsingResult<ObserverImportModel>.Success;
         List<ObserverAggregate> observers = importedRows!
             .Items
-            .Select(x => new ObserverAggregate(x.Name, x.Email, x.Password, x.PhoneNumber, _timeProvider))
+            .Select(x => new ObserverAggregate(x.Name, x.Email, x.Password, x.PhoneNumber))
             .ToList();
 
         var logins = observers.Select(o => o.Login);

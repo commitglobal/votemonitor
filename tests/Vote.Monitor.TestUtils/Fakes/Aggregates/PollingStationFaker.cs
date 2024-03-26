@@ -19,7 +19,6 @@ public sealed class PollingStationFaker : PrivateFaker<PollingStation>
             electionRound: electionRound ?? new ElectionRoundAggregateFaker().Generate(),
             address: f.Address.FullAddress(),
             displayOrder: f.IndexFaker,
-            tags: JsonSerializer.SerializeToDocument(""),
-            timeProvider: currentUtcTimeProvider));
+            tags: JsonSerializer.SerializeToDocument("")));
     }
 }

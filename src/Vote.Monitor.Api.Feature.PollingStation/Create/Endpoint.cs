@@ -1,12 +1,10 @@
 ﻿using Vote.Monitor.Api.Feature.PollingStation.Helpers;
 using Vote.Monitor.Api.Feature.PollingStation.Specifications;
-using Vote.Monitor.Core.Services.Time;
 
 namespace Vote.Monitor.Api.Feature.PollingStation.Create;
 public class Endpoint(
     IRepository<PollingStationAggregate> repository,
-    IRepository<ElectionRoundAggregate> electionRoundRepository,
-    ITimeProvider timeProvider)
+    IRepository<ElectionRoundAggregate> electionRoundRepository)
     : Endpoint<Request, Results<Ok<PollingStationModel>, Conflict<ProblemDetails>, NotFound<ProblemDetails>>>
 {
     public override void Configure()
@@ -34,7 +32,7 @@ public class Endpoint(
             return TypedResults.NotFound(new ProblemDetails(ValidationFailures));
         }
 
-        var pollingStation = new PollingStationAggregate(electionRound, req.Address, req.DisplayOrder, req.Tags.ToTagsObject(), timeProvider);
+        var pollingStation = new PollingStationAggregate(electionRound, req.Address, req.DisplayOrder, req.Tags.ToTagsObject());
         await repository.AddAsync(pollingStation, ct);
 
         return TypedResults.Ok(new PollingStationModel

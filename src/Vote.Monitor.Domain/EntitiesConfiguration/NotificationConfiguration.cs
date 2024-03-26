@@ -13,7 +13,6 @@ internal class NotificationConfiguration : IEntityTypeConfiguration<Notification
         builder.HasIndex(e => e.SenderId);
         builder.Property(x => x.Title).IsRequired().HasMaxLength(256);
         builder.Property(x => x.Body).IsRequired().HasMaxLength(1024);
-        builder.Property(x => x.Timestamp).IsRequired();
 
         builder
             .HasOne(x => x.Sender)

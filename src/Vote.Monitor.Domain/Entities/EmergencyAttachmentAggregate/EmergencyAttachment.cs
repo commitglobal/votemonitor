@@ -2,22 +2,19 @@
 
 namespace Vote.Monitor.Domain.Entities.EmergencyAttachmentAggregate;
 
-public class EmergencyAttachment : BaseEntity, IAggregateRoot
+public class EmergencyAttachment : AuditableBaseEntity, IAggregateRoot
 {
     public Guid EmergencyId { get; private set; }
     public Emergency Emergency { get; private set; }
     public string Filename { get; private set; }
     public string MimeType { get; private set; }
-    public DateTime Timestamp { get; private set; }
 
     public EmergencyAttachment(Emergency emergency,
         string filename,
-        string mimeType,
-        ITimeProvider timeProvider) : base(Guid.NewGuid(), timeProvider)
+        string mimeType) : base(Guid.NewGuid())
     {
         Emergency = emergency;
         EmergencyId = emergency.Id;
-        Timestamp = timeProvider.UtcNow;
         Filename = filename;
         MimeType = mimeType;
     }

@@ -25,7 +25,7 @@ public sealed class ElectionRoundAggregateFaker : PrivateFaker<ElectionRoundAggr
 
         var country = countryId.HasValue
             ? CountriesList.Get(countryId.Value)!.ToEntity()
-            : new Country("Test country", "Fake test country", "FC", "FTC", "999", currentUtcTimeProvider);
+            : new Country("Test country", "Fake test country", "FC", "FTC", "999");
 
         RuleFor(f => f.Status, f => status ?? f.PickRandom(_statuses));
         RuleFor(f => f.CreatedOn, _baseCreationDate.AddHours(index ?? 0));
@@ -38,7 +38,6 @@ public sealed class ElectionRoundAggregateFaker : PrivateFaker<ElectionRoundAggr
             englishTitle: englishTitle ?? f.Company.CompanyName(),
             startDate: startDate ?? f.Date.FutureDateOnly(),
             country: country,
-            monitoringNgos: monitoringNgos ?? [],
-            timeProvider: currentUtcTimeProvider));
+            monitoringNgos: monitoringNgos ?? []));
     }
 }

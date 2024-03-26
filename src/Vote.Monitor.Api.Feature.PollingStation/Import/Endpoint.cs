@@ -1,13 +1,11 @@
 ﻿using Vote.Monitor.Api.Feature.PollingStation.Helpers;
 using Vote.Monitor.Api.Feature.PollingStation.Services;
-using Vote.Monitor.Core.Services.Time;
 
 namespace Vote.Monitor.Api.Feature.PollingStation.Import;
 public class Endpoint(
     IRepository<ElectionRoundAggregate> electionRoundRepository,
     VoteMonitorContext context,
-    IPollingStationParser parser,
-    ITimeProvider timeProvider)
+    IPollingStationParser parser)
     : Endpoint<Request, Results<Ok<Response>, NotFound<ProblemDetails>, ProblemDetails>>
 {
     public override void Configure()
@@ -42,7 +40,7 @@ public class Endpoint(
 
         var entities = successResult!
         .PollingStations
-            .Select(x => new PollingStationAggregate(electionRound, x.Address, x.DisplayOrder, x.Tags.ToTagsObject(), timeProvider))
+            .Select(x => new PollingStationAggregate(electionRound, x.Address, x.DisplayOrder, x.Tags.ToTagsObject()))
             .ToList();
 
         await context.PollingStations.BatchDeleteAsync(cancellationToken: ct);

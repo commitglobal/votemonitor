@@ -19,7 +19,7 @@ public class Endpoint(IRepository<ElectionRoundAggregate> repository, ITimeProvi
             return TypedResults.Conflict(new ProblemDetails(ValidationFailures));
         }
 
-        var electionRound = new ElectionRoundAggregate(req.CountryId, req.Title,req.EnglishTitle, req.StartDate, timeProvider);
+        var electionRound = new ElectionRoundAggregate(req.CountryId, req.Title,req.EnglishTitle, req.StartDate);
         await repository.AddAsync(electionRound, ct);
 
         return TypedResults.Ok(new ElectionRoundBaseModel

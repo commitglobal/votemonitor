@@ -73,8 +73,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<AttachmentModel>, BadReques
             monitoringObserver,
             req.Attachment.FileName,
             uploadPath,
-            req.Attachment.ContentType,
-            _timeProvider);
+            req.Attachment.ContentType);
         
         var uploadResult = await _fileStorageService.UploadFileAsync(uploadPath,
             fileName: pollingStationAttachment.UploadedFileName,

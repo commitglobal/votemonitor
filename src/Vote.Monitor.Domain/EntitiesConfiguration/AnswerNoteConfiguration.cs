@@ -16,8 +16,6 @@ internal class AnswerNoteConfiguration : IEntityTypeConfiguration<AnswerNote>
             .HasMaxLength(1024)
             .IsRequired();
 
-        builder.Property(x => x.Timestamp);
-
         builder.HasOne(x => x.ElectionRound)
             .WithMany()
             .HasForeignKey(x => x.ElectionRoundId);

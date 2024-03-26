@@ -3,8 +3,7 @@ using Vote.Monitor.Domain.Entities.NotificationTokenAggregate;
 
 namespace Vote.Monitor.Api.Feature.Notifications.Subscribe;
 
-public class Endpoint(IRepository<NotificationToken> repository, ITimeProvider timeProvider) :
-        Endpoint<Request, NoContent>
+public class Endpoint(IRepository<NotificationToken> repository) : Endpoint<Request, NoContent>
 {
     public override void Configure()
     {
@@ -20,13 +19,13 @@ public class Endpoint(IRepository<NotificationToken> repository, ITimeProvider t
 
         if (token == null)
         {
-            var newToken = NotificationToken.Create(req.ObserverId, req.Token, timeProvider);
+            var newToken = NotificationToken.Create(req.ObserverId, req.Token);
             await repository.AddAsync(newToken, ct);
 
             return TypedResults.NoContent();
         }
 
-        token.Update(req.Token, timeProvider);
+        token.Update(req.Token);
         await repository.UpdateAsync(token, ct);
 
         return TypedResults.NoContent();

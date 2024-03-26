@@ -68,7 +68,7 @@ public class HttpServerFixture<TDataSeeder> : WebApplicationFactory<Program>, IA
         currentUserInitializer.SetCurrentUser(_integrationTestingUser);
 
         using var voteMonitorContext = Services.GetRequiredService<VoteMonitorContext>();
-        voteMonitorContext.PlatformAdmins.Add(new PlatformAdmin("Integration test platform admin", email, password, CurrentUtcTimeProvider.Instance));
+        voteMonitorContext.PlatformAdmins.Add(new PlatformAdmin("Integration test platform admin", email, password));
         await voteMonitorContext.SaveChangesAsync();
 
         Client = CreateClient();

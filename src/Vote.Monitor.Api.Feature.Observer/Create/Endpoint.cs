@@ -29,7 +29,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<ObserverModel>, Conflict<Pr
             return TypedResults.Conflict(new ProblemDetails(ValidationFailures));
         }
 
-        var observer = new ObserverAggregate(req.Name, req.Email, req.Password, req.PhoneNumber, _timeProvider);
+        var observer = new ObserverAggregate(req.Name, req.Email, req.Password, req.PhoneNumber);
         await _repository.AddAsync(observer, ct);
 
         return TypedResults.Ok(new ObserverModel

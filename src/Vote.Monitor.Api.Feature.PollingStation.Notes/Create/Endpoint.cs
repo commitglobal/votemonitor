@@ -63,8 +63,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<NoteModel>, BadRequest<Prob
         var pollingStationNote = new PollingStationNoteAggregate(electionRound,
             pollingStation,
             monitoringObserver,
-            req.Text,
-            _timeProvider);
+            req.Text);
 
         await _repository.AddAsync(pollingStationNote, ct);
 

@@ -157,7 +157,7 @@ public class AddObserverEndpointTests
         // Arrange
         var electionRound = new ElectionRoundAggregateFaker().Generate();
         var ngo = new NgoAggregateFaker(status: NgoStatus.Activated).Generate();
-        var monitoringNgo = electionRound.AddMonitoringNgo(ngo, _timeProvider);
+        var monitoringNgo = electionRound.AddMonitoringNgo(ngo);
         var observer = new ObserverAggregateFaker(status: UserStatus.Active).Generate();
 
         _repository.GetByIdAsync(electionRound.Id).Returns(electionRound);
