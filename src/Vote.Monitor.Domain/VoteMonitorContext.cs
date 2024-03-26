@@ -69,6 +69,7 @@ public class VoteMonitorContext : DbContext
         builder.ApplyConfiguration(new PollingStationNoteConfiguration());
         builder.ApplyConfiguration(new PollingStationInformationFormConfiguration());
         builder.ApplyConfiguration(new PollingStationInformationConfiguration());
+        builder.ApplyConfiguration(new ObserverGuideConfiguration());
     }
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)

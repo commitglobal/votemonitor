@@ -7,4 +7,4 @@ global using Microsoft.AspNetCore.Http.HttpResults;
 global using Vote.Monitor.Core.Models;
 global using Vote.Monitor.Core.Services.Time;
 global using Vote.Monitor.Domain.Repository;
-global using PollingStationAttachmentAggregate = Vote.Monitor.Domain.Entities.PollingStationAttachmentAggregate.PollingStationAttachment;
+global using ObserverGuideAggregate = Vote.Monitor.Domain.Entities.ObserverGuideAggregate.ObserverGuide;

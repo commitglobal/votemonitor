@@ -1,4 +1,5 @@
 ﻿using Authorization.Policies;
+using Feature.ObserverGuide;
 using Feature.PollingStation.Information.Form;
 using NSwag;
 using Vote.Monitor.Api.Feature.Answers.Attachments;
@@ -95,6 +96,7 @@ builder.Services.AddEmergencyAttachmentsFeature();
 builder.Services.AddPollingStationInformationFeature();
 builder.Services.AddFormFeature();
 builder.Services.AddPollingStationInformationFormFeature();
+builder.Services.AddObserverGuideFeature();
 
 builder.Services.AddAuthorization();
 

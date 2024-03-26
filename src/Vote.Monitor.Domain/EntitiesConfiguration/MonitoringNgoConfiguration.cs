@@ -7,6 +7,7 @@ internal class MonitoringNgoConfiguration : IEntityTypeConfiguration<MonitoringN
 {
     public void Configure(EntityTypeBuilder<MonitoringNgo> builder)
     {
+        builder.ToTable("MonitoringNgo");
         builder.HasKey(e => e.Id);
         builder.Property(e => e.Id).IsRequired();
 

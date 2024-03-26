@@ -30,7 +30,7 @@ internal class PollingStationAttachmentConfiguration : IEntityTypeConfiguration<
             .IsRequired();
 
         builder.Property(x => x.IsDeleted);
-        
+
         builder.HasOne(x => x.ElectionRound)
             .WithMany()
             .HasForeignKey(x => x.ElectionRoundId);
