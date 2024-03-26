@@ -2730,6 +2730,11 @@ namespace Vote.Monitor.Domain.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("DefaultLanguage")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
                     b.Property<string>("FormTemplateType")
                         .IsRequired()
                         .HasColumnType("text");
@@ -4333,7 +4338,7 @@ namespace Vote.Monitor.Domain.Migrations
 
                     b.HasIndex("NgoId");
 
-                    b.ToTable("MonitoringNgo");
+                    b.ToTable("MonitoringNgos");
                 });
 
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.MonitoringObserverAggregate.MonitoringObserver", b =>
@@ -4370,7 +4375,7 @@ namespace Vote.Monitor.Domain.Migrations
 
                     b.HasIndex("ObserverId");
 
-                    b.ToTable("MonitoringObserver");
+                    b.ToTable("MonitoringObservers");
                 });
 
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.NgoAggregate.Ngo", b =>

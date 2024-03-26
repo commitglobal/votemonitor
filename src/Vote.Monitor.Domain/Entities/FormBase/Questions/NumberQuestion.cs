@@ -5,7 +5,6 @@ namespace Vote.Monitor.Domain.Entities.FormBase.Questions;
 
 public class NumberQuestion : BaseQuestion
 {
-    public string Code { get; private set; }
     public TranslatedString? InputPlaceholder { get; private set; }
 
     [JsonConstructor]
@@ -13,9 +12,8 @@ public class NumberQuestion : BaseQuestion
         string code,
         TranslatedString text,
         TranslatedString? helptext,
-        TranslatedString? inputPlaceholder) : base(id, text, helptext)
+        TranslatedString? inputPlaceholder) : base(id, code, text, helptext)
     {
-        Code = code;
         InputPlaceholder = inputPlaceholder;
     }
 

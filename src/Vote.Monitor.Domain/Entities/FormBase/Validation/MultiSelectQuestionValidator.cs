@@ -9,6 +9,10 @@ internal class MultiSelectQuestionValidator : Validator<MultiSelectQuestion>
 {
     internal MultiSelectQuestionValidator()
     {
+        RuleFor(x => x.Code)
+            .NotEmpty()
+            .MaximumLength(256);
+
         RuleFor(x => x.Text)
             .SetValidator(new TranslatedStringValidator());
 

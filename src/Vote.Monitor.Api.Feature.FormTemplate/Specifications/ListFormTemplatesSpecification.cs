@@ -2,7 +2,7 @@
 
 namespace Vote.Monitor.Api.Feature.FormTemplate.Specifications;
 
-public sealed class ListFormTemplatesSpecification : Specification<FormTemplateAggregate, FormTemplateModel>
+public sealed class ListFormTemplatesSpecification : Specification<FormTemplateAggregate, FormTemplateSlimModel>
 {
     public ListFormTemplatesSpecification(List.Request request)
     {
@@ -12,10 +12,11 @@ public sealed class ListFormTemplatesSpecification : Specification<FormTemplateA
             .ApplyOrdering(request)
             .Paginate(request);
 
-        Query.Select(x => new FormTemplateModel
+        Query.Select(x => new FormTemplateSlimModel
         {
             Id = x.Id,
             Code = x.Code,
+            DefaultLanguage = x.DefaultLanguage,
             Name = x.Name,
             Status = x.Status,
             Languages = x.Languages.ToList(),

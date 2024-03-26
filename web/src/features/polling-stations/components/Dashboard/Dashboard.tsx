@@ -33,10 +33,7 @@ export default function PollingStationsDashboard(): ReactElement {
         <h3 className='text-base font-semibold leading-7 text-gray-900'>Polling stations</h3>
       </div>
       <div className='mt-6'>
-        <DataTable
-          columns={pollingStationColDefs}
-          usePagedQuery={usePollingStations}
-        />
+        <DataTable columns={pollingStationColDefs} useQuery={usePollingStations} />
       </div>
     </>
   );

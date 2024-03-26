@@ -19,13 +19,15 @@ public abstract class BaseQuestion
     public string Discriminator => DiscriminatorValue.Get(GetType());
 
     public Guid Id { get; private set; }
+    public string Code { get; private set; }
     public TranslatedString Text { get; private set; }
     public TranslatedString? Helptext { get; private set; }
 
     [JsonConstructor]
-    internal BaseQuestion(Guid id, TranslatedString text, TranslatedString? helptext)
+    internal BaseQuestion(Guid id, string code, TranslatedString text, TranslatedString? helptext)
     {
         Id = id;
+        Code = code;
         Text = text;
         Helptext = helptext;
     }

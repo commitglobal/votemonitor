@@ -1,7 +1,9 @@
+const colors = require('tailwindcss/colors');
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: ["class"],
-  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx,svg}"],
   theme: {
     container: {
       center: true,
@@ -18,10 +20,12 @@ module.exports = {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         primary: {
+          ...colors.violet,
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
         },
         secondary: {
+          ...colors.yellow,
           DEFAULT: "hsl(var(--secondary))",
           foreground: "hsl(var(--secondary-foreground))",
         },
@@ -47,8 +51,8 @@ module.exports = {
         },
       },
       borderRadius: {
-        lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
+        lg: `var(--radius)`,
+        md: `calc(var(--radius) - 2px)`,
         sm: "calc(var(--radius) - 4px)",
       },
       keyframes: {

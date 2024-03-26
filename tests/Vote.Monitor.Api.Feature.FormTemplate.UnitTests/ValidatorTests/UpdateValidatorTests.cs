@@ -1,18 +1,17 @@
-﻿using Vote.Monitor.Api.Feature.FormTemplate.Update;
-using Vote.Monitor.Core.Models;
+﻿using Vote.Monitor.Core.Models;
 using Vote.Monitor.Form.Module.Requests;
 
 namespace Vote.Monitor.Api.Feature.FormTemplate.UnitTests.ValidatorTests;
 
 public class UpdateValidatorTests
 {
-    private readonly Validator _sut = new();
+    private readonly Update.Validator _sut = new();
 
     [Fact]
     public void Validation_ShouldFail_When_EmptyId()
     {
         // Arrange
-        var request = new Request
+        var request = new Update.Request
         {
             Id = Guid.Empty
         };
@@ -25,29 +24,12 @@ public class UpdateValidatorTests
             .ShouldHaveValidationErrorFor(x => x.Id);
     }
 
-    [Fact]
-    public void Validation_ShouldPass_When_ValidId()
-    {
-        // Arrange
-        var request = new Request
-        {
-            Id = Guid.NewGuid()
-        };
-
-        // Act
-        var validationResult = _sut.TestValidate(request);
-
-        // Assert
-        validationResult
-            .ShouldNotHaveValidationErrorFor(x => x.Id);
-    }
-
     [Theory]
     [MemberData(nameof(TestData.EmptyStringsTestCases), MemberType = typeof(TestData))]
     public void Validation_ShouldFail_When_CodeEmpty(string code)
     {
         // Arrange
-        var request = new Request
+        var request = new Update.Request
         {
             Code = code
         };
@@ -66,7 +48,7 @@ public class UpdateValidatorTests
     public void Validation_ShouldFail_When_CodeHasInvalidLength(string code)
     {
         // Arrange
-        var request = new Request
+        var request = new Update.Request
         {
             Code = code
         };
@@ -79,29 +61,12 @@ public class UpdateValidatorTests
             .ShouldHaveValidationErrorFor(x => x.Code);
     }
 
-    [Fact]
-    public void Validation_ShouldPass_When_CodeValid()
-    {
-        // Arrange
-        var request = new Request
-        {
-            Code = "code"
-        };
-
-        // Act
-        var validationResult = _sut.TestValidate(request);
-
-        // Assert
-        validationResult
-            .ShouldNotHaveValidationErrorFor(x => x.Code);
-    }
-
     [Theory]
     [MemberData(nameof(TranslatedStringTestData.InvalidPartiallyTranslatedTestCases), MemberType = typeof(TranslatedStringTestData))]
     public void Validation_ShouldFail_When_NameInvalid(TranslatedString invalidName)
     {
         // Arrange
-        var request = new Request
+        var request = new Update.Request
         {
             Name = invalidName,
             Languages = [
@@ -118,33 +83,11 @@ public class UpdateValidatorTests
             .ShouldHaveValidationErrorFor(x => x.Name);
     }
 
-    [Theory]
-    [MemberData(nameof(TranslatedStringTestData.ValidPartiallyTranslatedTestCases), MemberType = typeof(TranslatedStringTestData))]
-    public void Validation_ShouldPass_When_NameValid(TranslatedString validName)
-    {
-        // Arrange
-        var request = new Request
-        {
-            Name = validName,
-            Languages = [
-                LanguagesList.EN.Iso1,
-                LanguagesList.RO.Iso1
-            ]
-        };
-
-        // Act
-        var validationResult = _sut.TestValidate(request);
-
-        // Assert
-        validationResult
-            .ShouldNotHaveValidationErrorFor(x => x.Name);
-    }
-
     [Fact]
     public void Validation_ShouldFail_When_EmptySupportedLanguages()
     {
         // Arrange
-        var request = new Request
+        var request = new Update.Request
         {
             Languages = []
         };
@@ -159,10 +102,11 @@ public class UpdateValidatorTests
 
     [Theory]
     [MemberData(nameof(TestData.EmptyAndNullStringsTestCases), MemberType = typeof(TestData))]
-    public void Validation_ShouldFail_When_EmptyLanguageCodes(string invalidLanguageCode)
+    [InlineData("unknown iso")]
+    public void Validation_ShouldFail_When_InvalidLanguageCodes(string invalidLanguageCode)
     {
         // Arrange
-        var request = new Request
+        var request = new Update.Request
         {
             Languages = [LanguagesList.RO.Iso1, invalidLanguageCode]
         };
@@ -175,16 +119,15 @@ public class UpdateValidatorTests
             .ShouldHaveValidationErrorFor(x => x.Languages);
     }
 
-    [Fact]
-    public void Validation_ShouldFail_When_ValidSupportedLanguages()
+    [Theory]
+    [MemberData(nameof(TestData.EmptyAndNullStringsTestCases), MemberType = typeof(TestData))]
+    [InlineData("unknown iso")]
+    public void Validation_ShouldFail_When_InvalidDefaultLanguageCode(string invalidLanguageCode)
     {
         // Arrange
-        var request = new Request
+        var request = new Update.Request
         {
-            Languages = [
-                LanguagesList.EN.Iso1,
-                LanguagesList.RO.Iso1
-            ]
+            DefaultLanguage = invalidLanguageCode
         };
 
         // Act
@@ -192,14 +135,14 @@ public class UpdateValidatorTests
 
         // Assert
         validationResult
-            .ShouldNotHaveValidationErrorFor(x => x.Languages);
+            .ShouldHaveValidationErrorFor(x => x.DefaultLanguage);
     }
 
     [Fact]
     public void Validation_ShouldFail_When_InvalidQuestion()
     {
         // Arrange
-        var request = new Request
+        var request = new Update.Request
         {
             Languages = [
                 LanguagesList.EN.Iso1,
@@ -229,7 +172,7 @@ public class UpdateValidatorTests
     public void Validation_ShouldPass_When_EmptyQuestions()
     {
         // Arrange
-        var request = new Request
+        var request = new Update.Request
         {
             Questions = []
         };
@@ -246,7 +189,7 @@ public class UpdateValidatorTests
     public void Validation_ShouldFail_When_EmptyFormType()
     {
         // Arrange
-        var request = new Request();
+        var request = new Update.Request();
 
         // Act
         var validationResult = _sut.TestValidate(request);
@@ -257,12 +200,13 @@ public class UpdateValidatorTests
     }
 
     [Fact]
-    public void Validation_ShouldPass_When_ValidFormType()
+    public void Validation_ShouldFail_When_DefaultLanguageNotInLanguageList()
     {
         // Arrange
-        var request = new Request
+        var request = new Update.Request
         {
-            FormTemplateType = FormTemplateType.ClosingAndCounting
+            DefaultLanguage = LanguagesList.EN.Iso1,
+            Languages = [LanguagesList.RO.Iso1]
         };
 
         // Act
@@ -270,6 +214,29 @@ public class UpdateValidatorTests
 
         // Assert
         validationResult
-            .ShouldNotHaveValidationErrorFor(x => x.FormTemplateType);
+            .ShouldHaveValidationErrorFor(x => x.DefaultLanguage).WithErrorMessage("Languages should contain declared default language.");
+    }
+
+    [Fact]
+    public void Validation_ShouldPass_When_ValidRequest()
+    {
+        // Arrange
+        var request = new Update.Request
+        {
+            Id = Guid.NewGuid(),
+            FormTemplateType = FormTemplateType.ClosingAndCounting,
+            DefaultLanguage = LanguagesList.EN.Iso1,
+            Languages = [LanguagesList.EN.Iso1],
+            Code = "c!",
+            Questions = [],
+            Name = new TranslatedStringFaker([LanguagesList.EN.Iso1]).Generate()
+        };
+
+        // Act
+        var validationResult = _sut.TestValidate(request);
+
+        // Assert
+        validationResult
+            .ShouldNotHaveAnyValidationErrors();
     }
 }

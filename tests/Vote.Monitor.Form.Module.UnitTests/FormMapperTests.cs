@@ -184,7 +184,7 @@ public class FormMapperTests
 
     internal class UnknownQuestion : BaseQuestion
     {
-        public UnknownQuestion(Guid id, TranslatedString text, TranslatedString? helptext) : base(id, text, helptext)
+        public UnknownQuestion(Guid id, string code, TranslatedString text, TranslatedString? helptext) : base(id, code, text, helptext)
         {
         }
     }
@@ -193,7 +193,7 @@ public class FormMapperTests
     public void ToModel_ShouldThrowApplicationException_WhenGivenUnknownQuestionType()
     {
         // Arrange
-        var unknownQuestion = new UnknownQuestion(Guid.NewGuid(), _text, _helptext);
+        var unknownQuestion = new UnknownQuestion(Guid.NewGuid(), "Unknown", _text, _helptext);
 
         // Act
         Action act = () => FormMapper.ToModel(unknownQuestion);

@@ -1,5 +1,6 @@
 ﻿using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
+using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 using Vote.Monitor.Domain.Entities.NgoAggregate;
 using Vote.Monitor.Domain.Entities.PollingStationInfoAggregate;
 using Vote.Monitor.Domain.Entities.PollingStationInfoFormAggregate;
@@ -38,6 +39,7 @@ public class VoteMonitorContext : DbContext
     public DbSet<PollingStationInformationForm> PollingStationInformationForms { set; get; }
     public DbSet<PollingStationInformation> PollingStationInformations { set; get; }
     public DbSet<MonitoringNgo> MonitoringNgos { set; get; }
+    public DbSet<MonitoringObserver> MonitoringObservers { set; get; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

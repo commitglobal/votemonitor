@@ -4,14 +4,14 @@ using Vote.Monitor.Core.Services.Time;
 namespace Vote.Monitor.Api.Feature.FormTemplate.Create;
 
 public class Endpoint(IRepository<FormTemplateAggregate> repository, ITimeProvider timeProvider) :
-        Endpoint<Request, Results<Ok<FormTemplateModel>, Conflict<ProblemDetails>>>
+        Endpoint<Request, Results<Ok<FormTemplateSlimModel>, Conflict<ProblemDetails>>>
 {
     public override void Configure()
     {
         Post("/api/form-templates");
     }
 
-    public override async Task<Results<Ok<FormTemplateModel>, Conflict<ProblemDetails>>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<Results<Ok<FormTemplateSlimModel>, Conflict<ProblemDetails>>> ExecuteAsync(Request req, CancellationToken ct)
     {
         var specification = new GetFormTemplateSpecification(req.Code, req.FormTemplateType);
         var duplicatedFormTemplate = await repository.AnyAsync(specification, ct);
@@ -22,19 +22,19 @@ public class Endpoint(IRepository<FormTemplateAggregate> repository, ITimeProvid
             return TypedResults.Conflict(new ProblemDetails(ValidationFailures));
         }
 
-        var formTemplate = FormTemplateAggregate.Create(req.FormTemplateType, req.Code, req.Name, req.Languages, timeProvider);
+        var formTemplate = FormTemplateAggregate.Create(req.FormTemplateType, req.Code, req.DefaultLanguage, req.Name, req.Languages, timeProvider);
 
         await repository.AddAsync(formTemplate, ct);
 
-        return TypedResults.Ok(new FormTemplateModel
+        return TypedResults.Ok(new FormTemplateSlimModel
         {
             Id = formTemplate.Id,
             Code = formTemplate.Code,
+            DefaultLanguage = formTemplate.DefaultLanguage,
             Name = formTemplate.Name,
             Status = formTemplate.Status,
             CreatedOn = formTemplate.CreatedOn,
-            LastModifiedOn = formTemplate.LastModifiedOn,
-            Questions = []
+            LastModifiedOn = formTemplate.LastModifiedOn
         });
     }
 }

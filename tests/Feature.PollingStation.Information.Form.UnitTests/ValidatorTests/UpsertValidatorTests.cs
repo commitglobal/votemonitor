@@ -69,7 +69,7 @@ public class UpsertValidatorTests
     [Theory]
     [MemberData(nameof(TestData.EmptyAndNullStringsTestCases), MemberType = typeof(TestData))]
     [InlineData("UnknownIso")]
-    public void Validation_ShouldFail_When_EmptyLanguageCodes(string invalidLanguageCode)
+    public void Validation_ShouldFail_When_InvalidLanguageCodes(string invalidLanguageCode)
     {
         // Arrange
         var request = new Upsert.Request

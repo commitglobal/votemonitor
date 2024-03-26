@@ -1,5 +1,5 @@
 @hostAddress=https://localhost:7123
-@jwtToken=your_token
+@jwtToken=eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3NzFiMGJiMC0zZjg3LTQ3YTAtYmM2NC0wODc4ZTIwNzAzNzQiLCJyb2xlIjoiUGxhdGZvcm1BZG1pbiIsImV4cCI6MTcxMTQzODU5NywiaWF0IjoxNzExMzUyMTk3LCJuYmYiOjE3MTEzNTIxOTd9.Zr1sGkp5G2sSVe83U_gqKUaKEgBPImaJuWtfulYcnxs
 
 # List form templates
 GET {{hostAddress}}/api/form-templates
@@ -16,7 +16,8 @@ Content-Type: application/json
 Authorization: Bearer {{jwtToken}}
 
 {
-  "code": "A",
+  "code": "A6",
+  "defaultLanguage": "RO",
   "languages": [
     "RO"
   ],
@@ -34,7 +35,8 @@ Content-Type: application/json
 Authorization: Bearer {{jwtToken}}
 
 {
-  "code": "A",
+  "code": "A6",
+  "defaultLanguage": "RO",
   "languages": [
     "RO",
     "EN"
@@ -46,7 +48,7 @@ Authorization: Bearer {{jwtToken}}
   "formTemplateType": "ClosingAndCounting",
   "questions": [
     {
-      "$questionType": "numberInputQuestion",
+      "$questionType": "numberQuestion",
       "id": "{{$guid}}",
       "code": "A1",
       "text": {
@@ -63,7 +65,7 @@ Authorization: Bearer {{jwtToken}}
       }
     },
     {
-      "$questionType": "textInputQuestion",
+      "$questionType": "textQuestion",
       "id": "{{$guid}}",
       "code": "A2",
       "text": {
@@ -80,7 +82,7 @@ Authorization: Bearer {{jwtToken}}
       }
     },
     {
-      "$questionType": "dateInputQuestion",
+      "$questionType": "dateQuestion",
       "id": "{{$guid}}",
       "code": "A3",
       "text": {
