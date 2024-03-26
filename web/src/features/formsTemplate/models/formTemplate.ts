@@ -1,12 +1,11 @@
-import { TranslatedString } from "@/common/types";
+import { BaseQuestion, TranslatedString } from "@/common/types";
 
 export enum FormTemplateStatus {
     Drafted = 'Drafted',
     Published = 'Published',
 }
 
-
-export interface FormTemplate {
+export interface FormTemplateBase {
     id: string;
     code: string;
     defaultLanguage: string;
@@ -15,4 +14,9 @@ export interface FormTemplate {
     createdOn: string;
     lastModifiedOn: string | null;
     languages: string[];
+}
+
+
+export interface FormTemplateFull extends FormTemplateBase {
+    questions: BaseQuestion[]
 }

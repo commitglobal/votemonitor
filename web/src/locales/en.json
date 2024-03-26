@@ -25,5 +25,18 @@
   "app.action.update": "Update",
   "app.action.upload": "Upload",
   "app.action.view": "View",
-  "election-round.action.create": "Create new election event"
+  "election-round.action.create": "Create new election event",
+  "election-round.field.title": "Title",
+  "election-round.placeholder.title": "Title",
+  "election-round.field.englishTitle": "English title",
+  "election-round.placeholder.englishTitle": "Title in English",
+  "election-round.field.country": "Country",
+  "election-round.field.startDate": "Start date",
+  "form-template.field.code": "Code",
+  "form-template.placeholder.code": "Form code",
+  "form-template.field.name": "Name",
+  "form-template.placeholder.name": "Form name",
+  "navigation.button.next": "Next",
+  "navigation.button.back": "Back",
+  "navigation.button.submit": "Submit"
 }

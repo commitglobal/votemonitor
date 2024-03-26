@@ -1,11 +1,12 @@
 ﻿using System.Text.Json.Serialization;
+using Ardalis.SmartEnum.SystemTextJson;
 using Vote.Monitor.Core.Models;
 
 namespace Vote.Monitor.Domain.Entities.FormBase.Questions;
 
 public class RatingQuestion : BaseQuestion
 {
-    public string Code { get; private set; }
+    [JsonConverter(typeof(SmartEnumNameConverter<RatingScale, string>))]
     public RatingScale Scale { get; private set; }
 
     [JsonConstructor]
@@ -13,9 +14,8 @@ public class RatingQuestion : BaseQuestion
         string code,
         TranslatedString text,
         TranslatedString? helptext,
-        RatingScale scale) : base(id, text, helptext)
+        RatingScale scale) : base(id, code, text, helptext)
     {
-        Code = code;
         Scale = scale;
     }
 

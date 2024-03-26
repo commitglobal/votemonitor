@@ -1,12 +1,10 @@
-import { authApi } from '@/common/auth-api';
-import { DataTableParameters, PageResponse, SortOrder } from '@/common/types';
+import { SortOrder } from '@/common/types';
 import Layout from '@/components/layout/Layout';
 import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
 import { Button } from '@/components/ui/button';
-import { FormTemplate } from '@/features/formsTemplate/models/formTemplate';
+import { FormTemplateBase } from '@/features/formsTemplate/models/formTemplate';
 import { EllipsisVerticalIcon } from '@heroicons/react/24/outline';
-import { UseQueryResult, useQuery } from '@tanstack/react-query';
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { ColumnDef } from '@tanstack/react-table';
 import { z } from 'zod';
@@ -16,6 +14,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useFormTemplates } from '@/features/formsTemplate/queries';
 
 const formTemplateRouteSearchSchema = z.object({
   nameFilter: z.string().catch(''),
@@ -31,29 +30,7 @@ export const Route = createFileRoute('/form-templates/')({
   validateSearch: formTemplateRouteSearchSchema
 });
 
-function useFormTemplates(p: DataTableParameters): UseQueryResult<PageResponse<FormTemplate>, Error> {
-  return useQuery({
-    queryKey: ['form-templates', p.pageNumber, p.pageSize, p.sortColumnName, p.sortOrder],
-    queryFn: async () => {
-      const response = await authApi.get<PageResponse<FormTemplate>>('/form-templates', {
-        params: {
-          PageNumber: p.pageNumber,
-          PageSize: p.pageSize,
-          SortColumnName: p.sortColumnName,
-          SortOrder: p.sortOrder,
-        },
-      });
-
-      if (response.status !== 200) {
-        throw new Error('Failed to fetch form templates');
-      }
-
-      return response.data;
-    },
-  });
-}
-
-export const formTemplateColumnDefs: ColumnDef<FormTemplate>[] = [
+export const formTemplateColumnDefs: ColumnDef<FormTemplateBase>[] = [
   {
     header: 'ID',
     accessorKey: 'id',
@@ -101,7 +78,7 @@ export const formTemplateColumnDefs: ColumnDef<FormTemplate>[] = [
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align='end'>
-              <DropdownMenuItem onClick={() =>  navigate({ to: '/ngos/$ngoId', params: { ngoId: row.original.id } })}>Edit</DropdownMenuItem>
+              <DropdownMenuItem onClick={() =>  navigate({ to: '/form-templates/$formTemplateId/edit', params: { formTemplateId: row.original.id } })}>Edit</DropdownMenuItem>
               <DropdownMenuItem>Deactivate</DropdownMenuItem>
               <DropdownMenuItem>Delete</DropdownMenuItem>
             </DropdownMenuContent>

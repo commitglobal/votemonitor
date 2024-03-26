@@ -17,7 +17,6 @@ import { Route as NgosIndexImport } from './routes/ngos/index'
 import { Route as FormTemplatesIndexImport } from './routes/form-templates/index'
 import { Route as ElectionRoundsIndexImport } from './routes/election-rounds/index'
 import { Route as NgosNgoIdImport } from './routes/ngos/$ngoId'
-import { Route as FormTemplatesFormTemplateIdImport } from './routes/form-templates/$formTemplateId'
 import { Route as ElectionRoundsElectionRoundIdImport } from './routes/election-rounds/$electionRoundId'
 import { Route as FormTemplatesFormTemplateIdEditImport } from './routes/form-templates/$formTemplateId.edit'
 
@@ -53,12 +52,6 @@ const NgosNgoIdRoute = NgosNgoIdImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const FormTemplatesFormTemplateIdRoute =
-  FormTemplatesFormTemplateIdImport.update({
-    path: '/form-templates/$formTemplateId',
-    getParentRoute: () => rootRoute,
-  } as any)
-
 const ElectionRoundsElectionRoundIdRoute =
   ElectionRoundsElectionRoundIdImport.update({
     path: '/election-rounds/$electionRoundId',
@@ -67,8 +60,8 @@ const ElectionRoundsElectionRoundIdRoute =
 
 const FormTemplatesFormTemplateIdEditRoute =
   FormTemplatesFormTemplateIdEditImport.update({
-    path: '/edit',
-    getParentRoute: () => FormTemplatesFormTemplateIdRoute,
+    path: '/form-templates/$formTemplateId/edit',
+    getParentRoute: () => rootRoute,
   } as any)
 
 // Populate the FileRoutesByPath interface
@@ -85,10 +78,6 @@ declare module '@tanstack/react-router' {
     }
     '/election-rounds/$electionRoundId': {
       preLoaderRoute: typeof ElectionRoundsElectionRoundIdImport
-      parentRoute: typeof rootRoute
-    }
-    '/form-templates/$formTemplateId': {
-      preLoaderRoute: typeof FormTemplatesFormTemplateIdImport
       parentRoute: typeof rootRoute
     }
     '/ngos/$ngoId': {
@@ -109,7 +98,7 @@ declare module '@tanstack/react-router' {
     }
     '/form-templates/$formTemplateId/edit': {
       preLoaderRoute: typeof FormTemplatesFormTemplateIdEditImport
-      parentRoute: typeof FormTemplatesFormTemplateIdImport
+      parentRoute: typeof rootRoute
     }
   }
 }
@@ -120,13 +109,11 @@ export const routeTree = rootRoute.addChildren([
   IndexRoute,
   ObserversRoute,
   ElectionRoundsElectionRoundIdRoute,
-  FormTemplatesFormTemplateIdRoute.addChildren([
-    FormTemplatesFormTemplateIdEditRoute,
-  ]),
   NgosNgoIdRoute,
   ElectionRoundsIndexRoute,
   FormTemplatesIndexRoute,
   NgosIndexRoute,
+  FormTemplatesFormTemplateIdEditRoute,
 ])
 
 /* prettier-ignore-end */
