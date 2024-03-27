@@ -4333,7 +4333,7 @@ namespace Vote.Monitor.Domain.Migrations
 
                     b.HasIndex("NgoId");
 
-                    b.ToTable("MonitoringNgo", (string)null);
+                    b.ToTable("MonitoringNgos");
                 });
 
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.MonitoringObserverAggregate.MonitoringObserver", b =>
@@ -4375,7 +4375,7 @@ namespace Vote.Monitor.Domain.Migrations
 
                     b.HasIndex("ObserverId");
 
-                    b.ToTable("MonitoringObserver");
+                    b.ToTable("MonitoringObservers");
                 });
 
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.NgoAggregate.Ngo", b =>
@@ -4450,7 +4450,7 @@ namespace Vote.Monitor.Domain.Migrations
 
                     b.HasIndex("SenderId");
 
-                    b.ToTable("Notification");
+                    b.ToTable("Notifications");
                 });
 
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.NotificationTokenAggregate.NotificationToken", b =>
@@ -4483,7 +4483,7 @@ namespace Vote.Monitor.Domain.Migrations
 
                     b.HasIndex("ObserverId");
 
-                    b.ToTable("NotificationToken");
+                    b.ToTable("NotificationTokens");
                 });
 
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.ObserverGuideAggregate.ObserverGuide", b =>
@@ -4538,7 +4538,7 @@ namespace Vote.Monitor.Domain.Migrations
 
                     b.HasIndex("MonitoringNgoId");
 
-                    b.ToTable("ObserverGuide");
+                    b.ToTable("ObserversGuides");
                 });
 
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.PollingStationAggregate.PollingStation", b =>
@@ -4639,7 +4639,7 @@ namespace Vote.Monitor.Domain.Migrations
 
                     b.HasIndex("PollingStationId");
 
-                    b.ToTable("PollingStationAttachment");
+                    b.ToTable("PollingStationAttachments");
                 });
 
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.PollingStationInfoAggregate.PollingStationInformation", b =>
@@ -4766,7 +4766,7 @@ namespace Vote.Monitor.Domain.Migrations
 
                     b.HasIndex("PollingStationId");
 
-                    b.ToTable("PollingStationNote");
+                    b.ToTable("PollingStationNotes");
                 });
 
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.ApplicationUserAggregate.NgoAdmin", b =>

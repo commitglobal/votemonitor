@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
@@ -56,12 +55,16 @@ namespace Vote.Monitor.Domain.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CSOs",
+                name: "FormTemplates",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    FormTemplateType = table.Column<string>(type: "text", nullable: false),
+                    Code = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    Name = table.Column<string>(type: "jsonb", nullable: false),
                     Status = table.Column<string>(type: "text", nullable: false),
+                    Languages = table.Column<string>(type: "jsonb", nullable: false),
+                    Questions = table.Column<string>(type: "jsonb", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
                     LastModifiedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
@@ -69,7 +72,7 @@ namespace Vote.Monitor.Domain.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CSOs", x => x.Id);
+                    table.PrimaryKey("PK_FormTemplates", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -106,13 +109,12 @@ namespace Vote.Monitor.Domain.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PollingStations",
+                name: "Ngos",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Address = table.Column<string>(type: "character varying(2024)", maxLength: 2024, nullable: false),
-                    DisplayOrder = table.Column<int>(type: "integer", nullable: false),
-                    Tags = table.Column<JsonDocument>(type: "jsonb", nullable: false),
+                    Name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    Status = table.Column<string>(type: "text", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
                     LastModifiedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
@@ -120,7 +122,7 @@ namespace Vote.Monitor.Domain.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PollingStations", x => x.Id);
+                    table.PrimaryKey("PK_Ngos", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -170,23 +172,23 @@ namespace Vote.Monitor.Domain.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CSOAdmins",
+                name: "NgoAdmins",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    CSOId = table.Column<Guid>(type: "uuid", nullable: false)
+                    NgoId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CSOAdmins", x => x.Id);
+                    table.PrimaryKey("PK_NgoAdmins", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CSOAdmins_CSOs_CSOId",
-                        column: x => x.CSOId,
-                        principalTable: "CSOs",
+                        name: "FK_NgoAdmins_Ngos_NgoId",
+                        column: x => x.NgoId,
+                        principalTable: "Ngos",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_CSOAdmins_Users_Id",
+                        name: "FK_NgoAdmins_Users_Id",
                         column: x => x.Id,
                         principalTable: "Users",
                         principalColumn: "Id",
@@ -229,27 +231,152 @@ namespace Vote.Monitor.Domain.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "MonitoringNGOs",
+                name: "UserPreferences",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ElectionRoundId = table.Column<Guid>(type: "uuid", nullable: false),
-                    NgoId = table.Column<Guid>(type: "uuid", nullable: false)
+                    ApplicationUserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    LanguageId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MonitoringNGOs", x => x.Id);
+                    table.PrimaryKey("PK_UserPreferences", x => x.ApplicationUserId);
                     table.ForeignKey(
-                        name: "FK_MonitoringNGOs_CSOs_NgoId",
-                        column: x => x.NgoId,
-                        principalTable: "CSOs",
+                        name: "FK_UserPreferences_Users_ApplicationUserId",
+                        column: x => x.ApplicationUserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "MonitoringNgos",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    ElectionRoundId = table.Column<Guid>(type: "uuid", nullable: false),
+                    NgoId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Status = table.Column<string>(type: "text", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
+                    LastModifiedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    LastModifiedBy = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MonitoringNgos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_MonitoringNgos_ElectionRounds_ElectionRoundId",
+                        column: x => x.ElectionRoundId,
+                        principalTable: "ElectionRounds",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_MonitoringNGOs_ElectionRounds_ElectionRoundId",
+                        name: "FK_MonitoringNgos_Ngos_NgoId",
+                        column: x => x.NgoId,
+                        principalTable: "Ngos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PollingStationInformationForms",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    ElectionRoundId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Languages = table.Column<string>(type: "jsonb", nullable: false),
+                    Questions = table.Column<string>(type: "jsonb", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
+                    LastModifiedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    LastModifiedBy = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PollingStationInformationForms", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PollingStationInformationForms_ElectionRounds_ElectionRound~",
                         column: x => x.ElectionRoundId,
                         principalTable: "ElectionRounds",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PollingStations",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    ElectionRoundId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Address = table.Column<string>(type: "character varying(2024)", maxLength: 2024, nullable: false),
+                    DisplayOrder = table.Column<int>(type: "integer", nullable: false),
+                    Tags = table.Column<JsonDocument>(type: "jsonb", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
+                    LastModifiedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    LastModifiedBy = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PollingStations", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PollingStations_ElectionRounds_ElectionRoundId",
+                        column: x => x.ElectionRoundId,
+                        principalTable: "ElectionRounds",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Notifications",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    ElectionRoundId = table.Column<Guid>(type: "uuid", nullable: false),
+                    SenderId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Title = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    Body = table.Column<string>(type: "character varying(1024)", maxLength: 1024, nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
+                    LastModifiedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    LastModifiedBy = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Notifications", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Notifications_ElectionRounds_ElectionRoundId",
+                        column: x => x.ElectionRoundId,
+                        principalTable: "ElectionRounds",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Notifications_NgoAdmins_SenderId",
+                        column: x => x.SenderId,
+                        principalTable: "NgoAdmins",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "NotificationTokens",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    ObserverId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Token = table.Column<string>(type: "character varying(1024)", maxLength: 1024, nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
+                    LastModifiedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    LastModifiedBy = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_NotificationTokens", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_NotificationTokens_Observers_ObserverId",
+                        column: x => x.ObserverId,
+                        principalTable: "Observers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -258,31 +385,208 @@ namespace Vote.Monitor.Domain.Migrations
                 name: "MonitoringObservers",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ElectionRoundId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     ObserverId = table.Column<Guid>(type: "uuid", nullable: false),
-                    InviterNgoId = table.Column<Guid>(type: "uuid", nullable: false)
+                    InviterNgoId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Status = table.Column<string>(type: "text", nullable: false),
+                    MonitoringNgoId = table.Column<Guid>(type: "uuid", nullable: true),
+                    CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
+                    LastModifiedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    LastModifiedBy = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_MonitoringObservers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_MonitoringObservers_CSOs_InviterNgoId",
+                        name: "FK_MonitoringObservers_MonitoringNgos_InviterNgoId",
                         column: x => x.InviterNgoId,
-                        principalTable: "CSOs",
+                        principalTable: "MonitoringNgos",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_MonitoringObservers_ElectionRounds_ElectionRoundId",
+                        name: "FK_MonitoringObservers_MonitoringNgos_MonitoringNgoId",
+                        column: x => x.MonitoringNgoId,
+                        principalTable: "MonitoringNgos",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_MonitoringObservers_Observers_ObserverId",
+                        column: x => x.ObserverId,
+                        principalTable: "Observers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ObserversGuides",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    MonitoringNgoId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Title = table.Column<string>(type: "text", nullable: false),
+                    FileName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    UploadedFileName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    FilePath = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    MimeType = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
+                    LastModifiedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    LastModifiedBy = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ObserversGuides", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ObserversGuides_MonitoringNgos_MonitoringNgoId",
+                        column: x => x.MonitoringNgoId,
+                        principalTable: "MonitoringNgos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "MonitoringObserverNotification",
+                columns: table => new
+                {
+                    NotificationId = table.Column<Guid>(type: "uuid", nullable: false),
+                    TargetedObserversId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MonitoringObserverNotification", x => new { x.NotificationId, x.TargetedObserversId });
+                    table.ForeignKey(
+                        name: "FK_MonitoringObserverNotification_MonitoringObservers_Targeted~",
+                        column: x => x.TargetedObserversId,
+                        principalTable: "MonitoringObservers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_MonitoringObserverNotification_Notifications_NotificationId",
+                        column: x => x.NotificationId,
+                        principalTable: "Notifications",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PollingStationAttachments",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    ElectionRoundId = table.Column<Guid>(type: "uuid", nullable: false),
+                    PollingStationId = table.Column<Guid>(type: "uuid", nullable: false),
+                    MonitoringObserverId = table.Column<Guid>(type: "uuid", nullable: false),
+                    FileName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    UploadedFileName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    FilePath = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    MimeType = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
+                    LastModifiedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    LastModifiedBy = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PollingStationAttachments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PollingStationAttachments_ElectionRounds_ElectionRoundId",
                         column: x => x.ElectionRoundId,
                         principalTable: "ElectionRounds",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_MonitoringObservers_Observers_ObserverId",
-                        column: x => x.ObserverId,
-                        principalTable: "Observers",
+                        name: "FK_PollingStationAttachments_MonitoringObservers_MonitoringObs~",
+                        column: x => x.MonitoringObserverId,
+                        principalTable: "MonitoringObservers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PollingStationAttachments_PollingStations_PollingStationId",
+                        column: x => x.PollingStationId,
+                        principalTable: "PollingStations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PollingStationInformations",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    ElectionRoundId = table.Column<Guid>(type: "uuid", nullable: false),
+                    PollingStationId = table.Column<Guid>(type: "uuid", nullable: false),
+                    MonitoringObserverId = table.Column<Guid>(type: "uuid", nullable: false),
+                    PollingStationInformationFormId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Answers = table.Column<string>(type: "jsonb", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
+                    LastModifiedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    LastModifiedBy = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PollingStationInformations", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PollingStationInformations_ElectionRounds_ElectionRoundId",
+                        column: x => x.ElectionRoundId,
+                        principalTable: "ElectionRounds",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PollingStationInformations_MonitoringObservers_MonitoringOb~",
+                        column: x => x.MonitoringObserverId,
+                        principalTable: "MonitoringObservers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PollingStationInformations_PollingStationInformationForms_P~",
+                        column: x => x.PollingStationInformationFormId,
+                        principalTable: "PollingStationInformationForms",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PollingStationInformations_PollingStations_PollingStationId",
+                        column: x => x.PollingStationId,
+                        principalTable: "PollingStations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PollingStationNotes",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    ElectionRoundId = table.Column<Guid>(type: "uuid", nullable: false),
+                    PollingStationId = table.Column<Guid>(type: "uuid", nullable: false),
+                    MonitoringObserverId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Text = table.Column<string>(type: "character varying(10000)", maxLength: 10000, nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
+                    LastModifiedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    LastModifiedBy = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PollingStationNotes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PollingStationNotes_ElectionRounds_ElectionRoundId",
+                        column: x => x.ElectionRoundId,
+                        principalTable: "ElectionRounds",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PollingStationNotes_MonitoringObservers_MonitoringObserverId",
+                        column: x => x.MonitoringObserverId,
+                        principalTable: "MonitoringObservers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PollingStationNotes_PollingStations_PollingStationId",
+                        column: x => x.PollingStationId,
+                        principalTable: "PollingStations",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -752,11 +1056,6 @@ namespace Vote.Monitor.Domain.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_CSOAdmins_CSOId",
-                table: "CSOAdmins",
-                column: "CSOId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_ElectionRounds_CountryId",
                 table: "ElectionRounds",
                 column: "CountryId");
@@ -778,19 +1077,19 @@ namespace Vote.Monitor.Domain.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_MonitoringNGOs_ElectionRoundId",
-                table: "MonitoringNGOs",
+                name: "IX_MonitoringNgos_ElectionRoundId",
+                table: "MonitoringNgos",
                 column: "ElectionRoundId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MonitoringNGOs_NgoId",
-                table: "MonitoringNGOs",
+                name: "IX_MonitoringNgos_NgoId",
+                table: "MonitoringNgos",
                 column: "NgoId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MonitoringObservers_ElectionRoundId",
-                table: "MonitoringObservers",
-                column: "ElectionRoundId");
+                name: "IX_MonitoringObserverNotification_TargetedObserversId",
+                table: "MonitoringObserverNotification",
+                column: "TargetedObserversId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_MonitoringObservers_InviterNgoId",
@@ -798,9 +1097,100 @@ namespace Vote.Monitor.Domain.Migrations
                 column: "InviterNgoId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_MonitoringObservers_MonitoringNgoId",
+                table: "MonitoringObservers",
+                column: "MonitoringNgoId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_MonitoringObservers_ObserverId",
                 table: "MonitoringObservers",
                 column: "ObserverId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_NgoAdmins_NgoId",
+                table: "NgoAdmins",
+                column: "NgoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Notifications_ElectionRoundId",
+                table: "Notifications",
+                column: "ElectionRoundId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Notifications_SenderId",
+                table: "Notifications",
+                column: "SenderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_NotificationTokens_ObserverId",
+                table: "NotificationTokens",
+                column: "ObserverId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ObserversGuides_MonitoringNgoId",
+                table: "ObserversGuides",
+                column: "MonitoringNgoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PollingStationAttachments_ElectionRoundId",
+                table: "PollingStationAttachments",
+                column: "ElectionRoundId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PollingStationAttachments_MonitoringObserverId",
+                table: "PollingStationAttachments",
+                column: "MonitoringObserverId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PollingStationAttachments_PollingStationId",
+                table: "PollingStationAttachments",
+                column: "PollingStationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PollingStationInformationForms_ElectionRoundId",
+                table: "PollingStationInformationForms",
+                column: "ElectionRoundId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PollingStationInformations_ElectionRoundId",
+                table: "PollingStationInformations",
+                column: "ElectionRoundId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PollingStationInformations_MonitoringObserverId",
+                table: "PollingStationInformations",
+                column: "MonitoringObserverId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PollingStationInformations_PollingStationId",
+                table: "PollingStationInformations",
+                column: "PollingStationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PollingStationInformations_PollingStationInformationFormId",
+                table: "PollingStationInformations",
+                column: "PollingStationInformationFormId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PollingStationNotes_ElectionRoundId",
+                table: "PollingStationNotes",
+                column: "ElectionRoundId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PollingStationNotes_MonitoringObserverId",
+                table: "PollingStationNotes",
+                column: "MonitoringObserverId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PollingStationNotes_PollingStationId",
+                table: "PollingStationNotes",
+                column: "PollingStationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PollingStations_ElectionRoundId",
+                table: "PollingStations",
+                column: "ElectionRoundId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_Login",
@@ -816,7 +1206,7 @@ namespace Vote.Monitor.Domain.Migrations
                 name: "AuditTrails");
 
             migrationBuilder.DropTable(
-                name: "CSOAdmins");
+                name: "FormTemplates");
 
             migrationBuilder.DropTable(
                 name: "ImportValidationErrors");
@@ -825,31 +1215,61 @@ namespace Vote.Monitor.Domain.Migrations
                 name: "Language");
 
             migrationBuilder.DropTable(
-                name: "MonitoringNGOs");
+                name: "MonitoringObserverNotification");
 
             migrationBuilder.DropTable(
-                name: "MonitoringObservers");
+                name: "NotificationTokens");
+
+            migrationBuilder.DropTable(
+                name: "ObserversGuides");
 
             migrationBuilder.DropTable(
                 name: "PlatformAdmins");
 
             migrationBuilder.DropTable(
+                name: "PollingStationAttachments");
+
+            migrationBuilder.DropTable(
+                name: "PollingStationInformations");
+
+            migrationBuilder.DropTable(
+                name: "PollingStationNotes");
+
+            migrationBuilder.DropTable(
+                name: "UserPreferences");
+
+            migrationBuilder.DropTable(
+                name: "Notifications");
+
+            migrationBuilder.DropTable(
+                name: "PollingStationInformationForms");
+
+            migrationBuilder.DropTable(
+                name: "MonitoringObservers");
+
+            migrationBuilder.DropTable(
                 name: "PollingStations");
 
             migrationBuilder.DropTable(
-                name: "CSOs");
+                name: "NgoAdmins");
 
             migrationBuilder.DropTable(
-                name: "ElectionRounds");
+                name: "MonitoringNgos");
 
             migrationBuilder.DropTable(
                 name: "Observers");
 
             migrationBuilder.DropTable(
-                name: "Countries");
+                name: "ElectionRounds");
+
+            migrationBuilder.DropTable(
+                name: "Ngos");
 
             migrationBuilder.DropTable(
                 name: "Users");
+
+            migrationBuilder.DropTable(
+                name: "Countries");
         }
     }
 }
