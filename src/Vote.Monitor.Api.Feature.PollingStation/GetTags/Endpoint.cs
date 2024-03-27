@@ -12,7 +12,7 @@ public class Endpoint : Endpoint<Request, List<string>>
     {
         Get("/api/election-rounds/{electionRoundId}/polling-stations/tags");
         DontAutoTag();
-        Options(x => x.WithTags("polling-stations"));
+        Options(x => x.WithTags("polling-stations", "obsolete"));
     }
 
     public override async Task<List<string>> ExecuteAsync(Request req, CancellationToken ct)
