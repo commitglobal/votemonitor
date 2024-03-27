@@ -1,6 +1,15 @@
-﻿namespace Feature.ObserverGuide.Delete;
+﻿using Authorization.Policies;
+using Authorization.Policies.Requirements;
+using Feature.ObserverGuide.Specifications;
+using Microsoft.AspNetCore.Authorization;
+using Vote.Monitor.Core.Services.Security;
 
-public class Endpoint(IRepository<ObserverGuideAggregate> repository) : Endpoint<Request, Results<NoContent, NotFound>>
+namespace Feature.ObserverGuide.Delete;
+
+public class Endpoint(IAuthorizationService authorizationService,
+    ICurrentUserProvider currentUserProvider, 
+    IRepository<ObserverGuideAggregate> repository)
+    : Endpoint<Request, Results<NoContent, NotFound>>
 {
     public override void Configure()
     {
@@ -11,6 +20,24 @@ public class Endpoint(IRepository<ObserverGuideAggregate> repository) : Endpoint
 
     public override async Task<Results<NoContent, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        throw new NotImplementedException();
+        var authorizationResult = await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminRequirement(req.ElectionRoundId));
+        if (!authorizationResult.Succeeded)
+        {
+            return TypedResults.NotFound();
+        }
+
+        var specification = new GetObserverGuideSpecification(currentUserProvider.GetNgoId(), req.Id);
+        var observerGuide = await repository.FirstOrDefaultAsync(specification, ct);
+
+        if (observerGuide == null)
+        {
+            return TypedResults.NotFound();
+        }
+
+        observerGuide.Delete();
+
+        await repository.UpdateAsync(observerGuide, ct);
+
+        return TypedResults.NoContent();
     }
 }
