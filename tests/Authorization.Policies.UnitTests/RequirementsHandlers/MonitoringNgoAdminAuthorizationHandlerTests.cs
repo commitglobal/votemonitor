@@ -2,7 +2,7 @@
 
 namespace Authorization.Policies.UnitTests.RequirementsHandlers;
 
-public class MonitoringNgoAuthorizationHandlerTests
+public class MonitoringNgoAdminAuthorizationHandlerTests
 {
     private readonly ICurrentUserProvider _currentUserProvider = Substitute.For<ICurrentUserProvider>();
     private readonly IReadRepository<MonitoringNgo> _monitoringNgoRepository = Substitute.For<IReadRepository<MonitoringNgo>>();
@@ -12,9 +12,9 @@ public class MonitoringNgoAuthorizationHandlerTests
 
     private readonly AuthorizationHandlerContext _context;
 
-    public MonitoringNgoAuthorizationHandlerTests()
+    public MonitoringNgoAdminAuthorizationHandlerTests()
     {
-        var requirement = new MonitoringNgoRequirement(_electionRoundId);
+        var requirement = new MonitoringNgoAdminRequirement(_electionRoundId);
         _context = new AuthorizationHandlerContext([requirement], null, null);
     }
 
@@ -25,7 +25,7 @@ public class MonitoringNgoAuthorizationHandlerTests
         _currentUserProvider.IsNgoAdmin().Returns(false);
         _currentUserProvider.GetNgoId().Returns(_ngoId);
 
-        var handler = new MonitoringNgoAuthorizationHandler(_currentUserProvider, _monitoringNgoRepository);
+        var handler = new MonitoringNgoAdminAuthorizationHandler(_currentUserProvider, _monitoringNgoRepository);
 
         // Act
         await handler.HandleAsync(_context);
@@ -45,7 +45,7 @@ public class MonitoringNgoAuthorizationHandlerTests
             .FirstOrDefaultAsync(Arg.Any<GetMonitoringNgoSpecification>())
             .ReturnsNull();
 
-        var handler = new MonitoringNgoAuthorizationHandler(_currentUserProvider, _monitoringNgoRepository);
+        var handler = new MonitoringNgoAdminAuthorizationHandler(_currentUserProvider, _monitoringNgoRepository);
 
         // Act
         await handler.HandleAsync(_context);
@@ -65,7 +65,7 @@ public class MonitoringNgoAuthorizationHandlerTests
             .FirstOrDefaultAsync(Arg.Any<GetMonitoringNgoSpecification>())
             .Returns(CreateMonitoringNgoView.With().ArchivedElectionRound());
 
-        var handler = new MonitoringNgoAuthorizationHandler(_currentUserProvider, _monitoringNgoRepository);
+        var handler = new MonitoringNgoAdminAuthorizationHandler(_currentUserProvider, _monitoringNgoRepository);
 
         // Act
         await handler.HandleAsync(_context);
@@ -85,7 +85,7 @@ public class MonitoringNgoAuthorizationHandlerTests
             .FirstOrDefaultAsync(Arg.Any<GetMonitoringNgoSpecification>())
             .Returns(CreateMonitoringNgoView.With().DeactivatedNgo());
 
-        var handler = new MonitoringNgoAuthorizationHandler(_currentUserProvider, _monitoringNgoRepository);
+        var handler = new MonitoringNgoAdminAuthorizationHandler(_currentUserProvider, _monitoringNgoRepository);
 
         // Act
         await handler.HandleAsync(_context);
@@ -105,7 +105,7 @@ public class MonitoringNgoAuthorizationHandlerTests
             .FirstOrDefaultAsync(Arg.Any<GetMonitoringNgoSpecification>())
             .Returns(CreateMonitoringNgoView.With().SuspendedMonitoringNgo());
 
-        var handler = new MonitoringNgoAuthorizationHandler(_currentUserProvider, _monitoringNgoRepository);
+        var handler = new MonitoringNgoAdminAuthorizationHandler(_currentUserProvider, _monitoringNgoRepository);
 
         // Act
         await handler.HandleAsync(_context);
@@ -125,7 +125,7 @@ public class MonitoringNgoAuthorizationHandlerTests
             .FirstOrDefaultAsync(Arg.Any<GetMonitoringNgoSpecification>())
             .Returns(CreateMonitoringNgoView.ForValidAccess());
 
-        var handler = new MonitoringNgoAuthorizationHandler(_currentUserProvider, _monitoringNgoRepository);
+        var handler = new MonitoringNgoAdminAuthorizationHandler(_currentUserProvider, _monitoringNgoRepository);
 
         // Act
         await handler.HandleAsync(_context);

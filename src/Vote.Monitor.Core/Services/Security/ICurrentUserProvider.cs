@@ -8,5 +8,4 @@ public interface ICurrentUserProvider
     bool IsPlatformAdmin();
     bool IsNgoAdmin();
     bool IsObserver();
-
 }
