@@ -1,6 +1,7 @@
 import { View, Text } from "react-native";
 import { router } from "expo-router";
 import { useAuth } from "../hooks/useAuth";
+import { Button } from "tamagui";
 
 const Login = () => {
   const { signIn } = useAuth();
@@ -13,7 +14,7 @@ const Login = () => {
         gap: 20,
       }}
     >
-      <Text
+      <Button
         onPress={() => {
           signIn();
           // Navigate after signing in. You may want to tweak this to ensure sign-in is
@@ -22,14 +23,14 @@ const Login = () => {
         }}
       >
         Sign In
-      </Text>
-      <Text
+      </Button>
+      <Button
         onPress={() => {
           router.push("/forgot-password");
         }}
       >
         Forgot Password
-      </Text>
+      </Button>
     </View>
   );
 };

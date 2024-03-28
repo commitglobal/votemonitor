@@ -1,5 +1,5 @@
 import { Slot } from "expo-router";
-import { Text } from "react-native";
+// import { Text } from "react-native";
 import AuthContextProvider from "../contexts/auth/AuthContext.provider";
 import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -12,6 +12,9 @@ import {
   onlineManager,
   useIsRestoring,
 } from "@tanstack/react-query";
+import { TamaguiProvider } from "@tamagui/core";
+import { tamaguiConfig } from "../tamagui.config";
+import { useFonts } from "expo-font";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -69,6 +72,17 @@ const persister = createAsyncStoragePersister({
 export default function Root() {
   const [isOnline, setIsOnline] = useState(true);
 
+  const [loaded] = useFonts({
+    Inter: require("@tamagui/font-inter/otf/Inter-Medium.otf"),
+    InterBold: require("@tamagui/font-inter/otf/Inter-Bold.otf"),
+  });
+
+  useEffect(() => {
+    if (loaded) {
+      // can hide splash screen here
+    }
+  }, [loaded]);
+
   useEffect(() => {
     return NetInfo.addEventListener((state) => {
       const status = !!state.isConnected;
@@ -81,6 +95,10 @@ export default function Root() {
   const isRestoring = useIsRestoring();
   console.log("isRestoring persistQueryClient", isRestoring);
 
+  if (!loaded) {
+    return null;
+  }
+
   return (
     <PersistQueryClientProvider
       onSuccess={async () => {
@@ -91,18 +109,20 @@ export default function Root() {
       persistOptions={{ persister }}
       client={queryClient}
     >
-      <AuthContextProvider>
-        {!isOnline && <OfflineBanner />}
-        <Slot />
-        <Text
-          onPress={() => {
-            setIsOnline(!isOnline);
-            onlineManager.setOnline(!isOnline);
-          }}
-        >
-          Go Online/Offline
-        </Text>
-      </AuthContextProvider>
+      <TamaguiProvider config={tamaguiConfig}>
+        <AuthContextProvider>
+          {!isOnline && <OfflineBanner />}
+          <Slot />
+          {/* <Text
+            onPress={() => {
+              setIsOnline(!isOnline);
+              onlineManager.setOnline(!isOnline);
+            }}
+          >
+            Go Online/Offline
+          </Text> */}
+        </AuthContextProvider>
+      </TamaguiProvider>
     </PersistQueryClientProvider>
   );
 }
