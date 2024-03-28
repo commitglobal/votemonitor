@@ -1,6 +1,4 @@
-﻿using Vote.Monitor.Domain.Entities.NgoAggregate;
-
-namespace Vote.Monitor.Api.Feature.ElectionRound.UnitTests.Endpoints;
+﻿namespace Vote.Monitor.Api.Feature.ElectionRound.UnitTests.Endpoints;
 
 public class GetEndpointTests
 {
@@ -17,25 +15,6 @@ public class GetEndpointTests
             Status = ElectionRoundStatus.NotStarted,
             Country = CountriesList.MD.Name,
             CountryId = CountriesList.MD.Id,
-            MonitoringNgos =
-            [
-                new MonitoringNgoModel
-                {
-                    Name = "A big NGO",
-                    Status = NgoStatus.Activated,
-                    NgoId = Guid.NewGuid(),
-                    MonitoringObservers =
-                    [
-                        new MonitoringObserverModel
-                        {
-                            Name = "Some observer",
-                            Status = UserStatus.Active,
-                            ObserverId = Guid.NewGuid()
-                        }
-                    ],
-                }
-            ],
-
             CreatedOn = DateTime.UtcNow.AddHours(-30),
             LastModifiedOn = DateTime.UtcNow.AddHours(-15)
         };

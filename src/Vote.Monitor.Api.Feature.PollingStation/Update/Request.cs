@@ -1,9 +1,15 @@
 ﻿namespace Vote.Monitor.Api.Feature.PollingStation.Update;
 public class Request
 {
-    public required Guid ElectionRoundId { get; set; }
+    public Guid ElectionRoundId { get; set; }
     public Guid Id { get; set; }
-    public required int DisplayOrder { get; set; }
-    public required string Address { get; set; }
-    public required Dictionary<string, string> Tags { get; set; }
+    public string Level1 { get; set; }
+    public string Level2 { get; set; }
+    public string Level3 { get; set; }
+    public string Level4 { get; set; }
+    public string Level5 { get; set; }
+    public string Number { get; set; }
+    public int DisplayOrder { get; set; }
+    public string Address { get; set; }
+    public Dictionary<string, string> Tags { get; set; }
 }

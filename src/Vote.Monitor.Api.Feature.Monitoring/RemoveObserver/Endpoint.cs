@@ -15,7 +15,7 @@ public class Endpoint(IRepository<MonitoringNgoAggregate> repository,
 
     public override async Task<Results<NoContent, NotFound<string>>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var monitoringNgo = await repository.FirstOrDefaultAsync(new GetMonitoringNgoSpecification(req.ElectionRoundId, req.NgoId), ct);
+        var monitoringNgo = await repository.FirstOrDefaultAsync(new GetMonitoringNgoWithObserversSpecification(req.ElectionRoundId, req.NgoId), ct);
         if (monitoringNgo == null)
         {
             return TypedResults.NotFound("Monitoring NGO not found");

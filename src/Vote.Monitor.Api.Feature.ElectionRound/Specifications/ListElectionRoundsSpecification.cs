@@ -2,7 +2,7 @@
 
 namespace Vote.Monitor.Api.Feature.ElectionRound.Specifications;
 
-public sealed class ListElectionRoundsSpecification : Specification<ElectionRoundAggregate, ElectionRoundBaseModel>
+public sealed class ListElectionRoundsSpecification : Specification<ElectionRoundAggregate, ElectionRoundModel>
 {
     public ListElectionRoundsSpecification(List.Request request)
     {
@@ -13,7 +13,7 @@ public sealed class ListElectionRoundsSpecification : Specification<ElectionRoun
             .ApplyOrdering(request)
             .Paginate(request);
 
-        Query.Select(x => new ElectionRoundBaseModel
+        Query.Select(x => new ElectionRoundModel
         {
             Id = x.Id,
             Title = x.Title,

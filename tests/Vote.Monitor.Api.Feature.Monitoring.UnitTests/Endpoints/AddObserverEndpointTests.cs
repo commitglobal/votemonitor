@@ -8,7 +8,6 @@ namespace Vote.Monitor.Api.Feature.Monitoring.UnitTests.Endpoints;
 
 public class AddObserverEndpointTests
 {
-    private readonly ITimeProvider _timeProvider = Substitute.For<ITimeProvider>();
     private readonly IRepository<ElectionRoundAggregate> _repository;
     private readonly IRepository<MonitoringNgo> _monitoringNgoRepository;
     private readonly IReadRepository<Observer> _observerRepository;
@@ -24,8 +23,7 @@ public class AddObserverEndpointTests
         _endpoint = Factory.Create<Endpoint>(_repository,
             _monitoringNgoRepository,
             _observerRepository,
-            _monitoringObserverRepository,
-            _timeProvider);
+            _monitoringObserverRepository);
     }
 
     [Fact]
@@ -39,7 +37,7 @@ public class AddObserverEndpointTests
 
         // Assert
         result
-            .Should().BeOfType<Results<Ok<MonitoringObserverModel>, NotFound<string>, Conflict<ProblemDetails>, ValidationProblem>>()
+            .Should().BeOfType<Results<Ok<Response>, NotFound<string>, Conflict<ProblemDetails>, ValidationProblem>>()
             .Which
             .Result.Should().BeOfType<NotFound<string>>()
             .Which.Value.Should().Be("Election round not found");
@@ -59,7 +57,7 @@ public class AddObserverEndpointTests
 
         // Assert
         result
-            .Should().BeOfType<Results<Ok<MonitoringObserverModel>, NotFound<string>, Conflict<ProblemDetails>, ValidationProblem>>()
+            .Should().BeOfType<Results<Ok<Response>, NotFound<string>, Conflict<ProblemDetails>, ValidationProblem>>()
             .Which
             .Result.Should().BeOfType<NotFound<string>>()
             .Which.Value.Should().Be("Monitoring NGO not found");
@@ -75,7 +73,7 @@ public class AddObserverEndpointTests
 
         _repository.GetByIdAsync(electionRoundId).Returns(new ElectionRoundAggregateFaker(id: electionRoundId).Generate());
 
-        _monitoringNgoRepository.SingleOrDefaultAsync(Arg.Any<GetMonitoringNgoSpecification>()).Returns(monitoringNgo);
+        _monitoringNgoRepository.SingleOrDefaultAsync(Arg.Any<GetMonitoringNgoWithObserversSpecification>()).Returns(monitoringNgo);
         
         // Act
         var request = new Request { ElectionRoundId = electionRoundId, MonitoringNgoId = ngo.Id };
@@ -83,7 +81,7 @@ public class AddObserverEndpointTests
 
         // Assert
         result
-            .Should().BeOfType<Results<Ok<MonitoringObserverModel>, NotFound<string>, Conflict<ProblemDetails>, ValidationProblem>>()
+            .Should().BeOfType<Results<Ok<Response>, NotFound<string>, Conflict<ProblemDetails>, ValidationProblem>>()
             .Which
             .Result.Should().BeOfType<NotFound<string>>()
             .Which.Value.Should().Be("Observer not found");
@@ -99,7 +97,7 @@ public class AddObserverEndpointTests
 
         _repository.GetByIdAsync(electionRoundId).Returns(new ElectionRoundAggregateFaker(id: electionRoundId).Generate());
 
-        _monitoringNgoRepository.SingleOrDefaultAsync(Arg.Any<GetMonitoringNgoSpecification>()).Returns(monitoringNgo);
+        _monitoringNgoRepository.SingleOrDefaultAsync(Arg.Any<GetMonitoringNgoWithObserversSpecification>()).Returns(monitoringNgo);
         
         // Act
         var request = new Request { ElectionRoundId = electionRoundId, MonitoringNgoId = ngo.Id };
@@ -107,7 +105,7 @@ public class AddObserverEndpointTests
 
         // Assert
         result
-            .Should().BeOfType<Results<Ok<MonitoringObserverModel>, NotFound<string>, Conflict<ProblemDetails>, ValidationProblem>>()
+            .Should().BeOfType<Results<Ok<Response>, NotFound<string>, Conflict<ProblemDetails>, ValidationProblem>>()
             .Which
             .Result.Should().BeOfType<ValidationProblem>();
 
@@ -127,7 +125,7 @@ public class AddObserverEndpointTests
 
         _repository.GetByIdAsync(electionRoundId).Returns(new ElectionRoundAggregateFaker(id: electionRoundId).Generate());
 
-        _monitoringNgoRepository.SingleOrDefaultAsync(Arg.Any<GetMonitoringNgoSpecification>()).Returns(monitoringNgo);
+        _monitoringNgoRepository.SingleOrDefaultAsync(Arg.Any<GetMonitoringNgoWithObserversSpecification>()).Returns(monitoringNgo);
 
         _observerRepository.GetByIdAsync(observer.Id).Returns(observer);
 
@@ -142,7 +140,7 @@ public class AddObserverEndpointTests
 
         // Assert
         result
-            .Should().BeOfType<Results<Ok<MonitoringObserverModel>, NotFound<string>, Conflict<ProblemDetails>, ValidationProblem>>()
+            .Should().BeOfType<Results<Ok<Response>, NotFound<string>, Conflict<ProblemDetails>, ValidationProblem>>()
             .Which
             .Result.Should().BeOfType<ValidationProblem>();
 
@@ -162,7 +160,7 @@ public class AddObserverEndpointTests
 
         _repository.GetByIdAsync(electionRound.Id).Returns(electionRound);
 
-        _monitoringNgoRepository.SingleOrDefaultAsync(Arg.Any<GetMonitoringNgoSpecification>()).Returns(monitoringNgo);
+        _monitoringNgoRepository.SingleOrDefaultAsync(Arg.Any<GetMonitoringNgoWithObserversSpecification>()).Returns(monitoringNgo);
 
         _observerRepository.GetByIdAsync(observer.Id).Returns(observer);
 
@@ -177,9 +175,9 @@ public class AddObserverEndpointTests
 
         // Assert
         result
-            .Should().BeOfType<Results<Ok<MonitoringObserverModel>, NotFound<string>, Conflict<ProblemDetails>, ValidationProblem>>()
+            .Should().BeOfType<Results<Ok<Response>, NotFound<string>, Conflict<ProblemDetails>, ValidationProblem>>()
             .Which
-            .Result.Should().BeOfType<Ok<MonitoringObserverModel>>();
+            .Result.Should().BeOfType<Ok<Response>>();
 
         await _monitoringObserverRepository
             .Received(1)

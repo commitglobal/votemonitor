@@ -2,7 +2,7 @@
 
 namespace Vote.Monitor.Api.Feature.ElectionRound.UnitTests;
 
-public class ElectionRoundBaseModelFaker: Faker<ElectionRoundBaseModel>
+public class ElectionRoundBaseModelFaker: Faker<ElectionRoundModel>
 {
     private readonly ElectionRoundStatus[] _statuses = [ElectionRoundStatus.NotStarted, ElectionRoundStatus.Started, ElectionRoundStatus.Archived];
     private readonly DateTime _baseCreationDate = new(2024, 01, 01, 00, 00, 00, DateTimeKind.Utc);

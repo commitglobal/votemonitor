@@ -20,7 +20,7 @@ public class AddNgoEndpointTests
 
         // Assert
         result
-            .Should().BeOfType<Results<NoContent, NotFound<string>, ValidationProblem>>()
+            .Should().BeOfType<Results<Ok<AddNgo.Response>, NotFound<string>, ValidationProblem>>()
             .Which
             .Result.Should().BeOfType<NotFound<string>>()
             .Which.Value.Should().Be("Election round not found");
@@ -46,7 +46,7 @@ public class AddNgoEndpointTests
 
         // Assert
         result
-            .Should().BeOfType<Results<NoContent, NotFound<string>, ValidationProblem>>()
+            .Should().BeOfType<Results<Ok<AddNgo.Response>, NotFound<string>, ValidationProblem>>()
             .Which
             .Result.Should().BeOfType<NotFound<string>>()
             .Which.Value.Should().Be("NGO not found");
@@ -75,7 +75,7 @@ public class AddNgoEndpointTests
 
         // Assert
         result
-            .Should().BeOfType<Results<NoContent, NotFound<string>, ValidationProblem>>()
+            .Should().BeOfType<Results<Ok<AddNgo.Response>, NotFound<string>, ValidationProblem>>()
             .Which
             .Result.Should().BeOfType<ValidationProblem>();
 
@@ -85,7 +85,7 @@ public class AddNgoEndpointTests
     }
 
     [Fact]
-    public async Task ShouldReturnNoContent_AndAddToMonitoringNgos()
+    public async Task ShouldAddToMonitoringNgos()
     {
         // Arrange
         var electionRoundId = Guid.NewGuid();
@@ -107,9 +107,9 @@ public class AddNgoEndpointTests
 
         // Assert
         result
-            .Should().BeOfType<Results<NoContent, NotFound<string>, ValidationProblem>>()
+            .Should().BeOfType<Results<Ok<AddNgo.Response>, NotFound<string>, ValidationProblem>>()
             .Which
-            .Result.Should().BeOfType<NoContent>();
+            .Result.Should().BeOfType<Ok<AddNgo.Response>>();
 
        await monitoringNgoRepository.Received(1).AddAsync(Arg.Is<MonitoringNgoAggregate>(x=>x.NgoId == ngo.Id));
     }

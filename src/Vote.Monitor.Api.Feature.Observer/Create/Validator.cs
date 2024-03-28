@@ -18,7 +18,6 @@ public class Validator : Validator<Request>
             .NotEmpty();
 
         RuleFor(x => x.PhoneNumber)
-           .MinimumLength(8) //lenhth of phone number can be 8 or 9
            .NotEmpty();
     }
 }

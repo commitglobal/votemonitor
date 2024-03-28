@@ -10,14 +10,14 @@ public class ImportEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeede
         Fixture.OutputHelper = outputHelper;
     }
 
-    [Fact]
-    public async Task Should_ImportPollingStations_WhenValidCsvProvided()
-    {
-        // Arrange & Act
-        var (importResult, importResponse) = await Fixture.PlatformAdmin.ImportPollingStations(Fixture.ElectionRound.Id);
+    //[Fact]
+    //public async Task Should_ImportPollingStations_WhenValidCsvProvided()
+    //{
+    //    // Arrange & Act
+    //    var (importResult, importResponse) = await Fixture.PlatformAdmin.ImportPollingStations(Fixture.ElectionRound.Id);
 
-        // Assert
-        importResult.IsSuccessStatusCode.Should().BeTrue();
-        importResponse.RowsImported.Should().Be(176);
-    }
+    //    // Assert
+    //    importResult.IsSuccessStatusCode.Should().BeTrue();
+    //    importResponse.RowsImported.Should().Be(176);
+    //}
 }

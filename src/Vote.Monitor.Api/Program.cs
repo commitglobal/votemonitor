@@ -1,6 +1,8 @@
-﻿using Authorization.Policies;
+﻿using System.IO.Compression;
+using Authorization.Policies;
 using Feature.ObserverGuide;
 using Feature.PollingStation.Information.Form;
+using Microsoft.AspNetCore.ResponseCompression;
 using NSwag;
 using Vote.Monitor.Api.Feature.Answers.Attachments;
 using Vote.Monitor.Api.Feature.Answers.Notes;
@@ -40,6 +42,7 @@ builder.Services.SwaggerDocument(o =>
     };
 });
 
+builder.Services.AddMemoryCache();
 builder.Services.AddOptions();
 builder.Services.AddLogging(logging =>
     {
@@ -99,6 +102,18 @@ builder.Services.AddPollingStationInformationFormFeature();
 builder.Services.AddObserverGuideFeature();
 
 builder.Services.AddAuthorization();
+
+builder.Services.AddResponseCompression(opts =>
+    {
+        opts.EnableForHttps = true;
+        opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] { "application/octet-stream" }).ToArray();
+        opts.Providers.Add<BrotliCompressionProvider>();
+        opts.Providers.Add<GzipCompressionProvider>();
+    })
+    .Configure<BrotliCompressionProviderOptions>(opt => opt.Level = CompressionLevel.Fastest)
+    .Configure<GzipCompressionProviderOptions>(opt => opt.Level = CompressionLevel.Fastest);
+
+
 
 var app = builder.Build();
 await app.Services.InitializeDatabasesAsync();
@@ -160,6 +175,7 @@ uiConfig: cfg =>
 {
     cfg.DocExpansion = "list";
 });
+app.UseResponseCompression();
 
 app.Run();
 

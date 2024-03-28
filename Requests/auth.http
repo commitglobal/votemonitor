@@ -5,7 +5,7 @@ POST {{hostAddress}}/api/auth
 Content-Type: application/json
 
 {
-  "username": "observer",
-  "password": "observer"
+  "username": "string",
+  "password": "string"
 }
 ###
