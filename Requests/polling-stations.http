@@ -45,6 +45,11 @@ Accept-Encoding: gzip
 Authorization: Bearer {{jwtToken}}
 ###
 
+# Fetch polling stations v2
+GET {{hostAddress}}/api/election-rounds/{{electionRoundId}}/polling-stations:fetchAllv2
+Authorization: Bearer {{jwtToken}}
+###
+
 # List polling stations
 POST {{hostAddress}}/api/election-rounds/{{electionRoundId}}/polling-stations:list
    ?pageNumber=2
