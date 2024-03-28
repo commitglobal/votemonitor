@@ -20,7 +20,6 @@ namespace Vote.Monitor.Api.Feature.PollingStation.Attachments.UnitTests.Endpoint
 
 public class CreateEndpointTests
 {
-    private readonly ITimeProvider _timeService;
     private readonly IRepository<PollingStationAttachmentAggregate> _repository;
     private readonly IFileStorageService _fileStorageService;
     private readonly IRepository<ElectionRound> _electionRoundRepository;
@@ -30,7 +29,6 @@ public class CreateEndpointTests
 
     public CreateEndpointTests()
     {
-        _timeService = Substitute.For<ITimeProvider>();
         _repository = Substitute.For<IRepository<PollingStationAttachmentAggregate>>();
         _fileStorageService = Substitute.For<IFileStorageService>();
         _electionRoundRepository = Substitute.For<IRepository<ElectionRound>>();
@@ -40,8 +38,7 @@ public class CreateEndpointTests
             _fileStorageService,
             _electionRoundRepository,
             _pollingStationRepository,
-            _monitoringObserverRepository,
-            _timeService);
+            _monitoringObserverRepository);
     }
 
     [Fact]

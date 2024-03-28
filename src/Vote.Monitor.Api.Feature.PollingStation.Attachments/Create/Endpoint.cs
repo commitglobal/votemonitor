@@ -13,20 +13,17 @@ public class Endpoint : Endpoint<Request, Results<Ok<AttachmentModel>, BadReques
     private readonly IRepository<ElectionRound> _electionRoundRepository;
     private readonly IRepository<PollingStationAggregate> _pollingStationRepository;
     private readonly IRepository<MonitoringObserver> _monitoringObserverRepository;
-    private readonly ITimeProvider _timeProvider;
 
     public Endpoint(IRepository<PollingStationAttachmentAggregate> repository,
         IFileStorageService fileStorageService,
         IRepository<ElectionRound> electionRoundRepository,
         IRepository<PollingStationAggregate> pollingStationRepository,
-        IRepository<MonitoringObserver> monitoringObserverRepository,
-        ITimeProvider timeProvider)
+        IRepository<MonitoringObserver> monitoringObserverRepository)
     {
         _repository = repository;
         _electionRoundRepository = electionRoundRepository;
         _pollingStationRepository = pollingStationRepository;
         _monitoringObserverRepository = monitoringObserverRepository;
-        _timeProvider = timeProvider;
         _fileStorageService = fileStorageService;
     }
 

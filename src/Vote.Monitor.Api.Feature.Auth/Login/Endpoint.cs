@@ -1,16 +1,21 @@
 ﻿using Vote.Monitor.Api.Feature.Auth.Options;
 using Vote.Monitor.Api.Feature.Auth.Specifications;
+using Vote.Monitor.Core.Security;
 
 namespace Vote.Monitor.Api.Feature.Auth.Login;
 
 public class Endpoint : Endpoint<Request, Results<Ok<Response>, ProblemDetails>>
 {
     private readonly IReadRepository<ApplicationUser> _repository;
+    private readonly IReadRepository<NgoAdmin> _ngoAdminRepository;
     private readonly JWTConfig _options;
 
-    public Endpoint(IReadRepository<ApplicationUser> repository, IOptions<JWTConfig> options)
+    public Endpoint(IReadRepository<ApplicationUser> repository,
+        IReadRepository<NgoAdmin> ngoAdminRepository,
+        IOptions<JWTConfig> options)
     {
         _repository = repository;
+        _ngoAdminRepository = ngoAdminRepository;
         _options = options.Value;
     }
 
@@ -31,11 +36,23 @@ public class Endpoint : Endpoint<Request, Results<Ok<Response>, ProblemDetails>>
             return new ProblemDetails(ValidationFailures);
         }
 
+        var claims = new List<(string claimType, string claimValue)> { (JwtRegisteredClaimNames.Sub, user.Id.ToString()) };
+
+        if (user.Role == UserRole.NgoAdmin)
+        {
+            var ngoAdminSpecification = new GetNgoAdminSpecification(user.Id);
+            var ngoAdmin = await _ngoAdminRepository.FirstOrDefaultAsync(ngoAdminSpecification, ct);
+            if (ngoAdmin is not null)
+            {
+                claims.Add((ClaimTypes.NgoId, ngoAdmin.NgoId.ToString()));
+            }
+        }
+
         var jwtToken = JWTBearer.CreateToken(
             signingKey: _options.TokenSigningKey,
             expireAt: DateTime.UtcNow.AddDays(1),
             roles: new[] { user.Role.Name },
-            claims: new (string claimType, string claimValue)[] { (JwtRegisteredClaimNames.Sub, user.Id.ToString()) }
+            claims: claims.ToArray()
         );
 
         return TypedResults.Ok(new Response { Token = jwtToken });

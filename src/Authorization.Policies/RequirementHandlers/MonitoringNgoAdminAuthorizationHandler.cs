@@ -4,12 +4,12 @@ using Vote.Monitor.Domain.Entities.ElectionRoundAggregate;
 
 namespace Authorization.Policies.RequirementHandlers;
 
-internal class MonitoringNgoAuthorizationHandler(
+internal class MonitoringNgoAdminAuthorizationHandler(
     ICurrentUserProvider currentUserProvider,
     IReadRepository<MonitoringNgo> monitoringNgoRepository)
-    : AuthorizationHandler<MonitoringNgoRequirement>
+    : AuthorizationHandler<MonitoringNgoAdminRequirement>
 {
-    protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, MonitoringNgoRequirement requirement)
+    protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, MonitoringNgoAdminRequirement adminRequirement)
     {
         if (!currentUserProvider.IsNgoAdmin())
         {
@@ -18,7 +18,7 @@ internal class MonitoringNgoAuthorizationHandler(
         }
 
         var ngoId = currentUserProvider.GetNgoId()!.Value;
-        var getMonitoringNgoSpecification = new GetMonitoringNgoSpecification(requirement.ElectionRoundId, ngoId);
+        var getMonitoringNgoSpecification = new GetMonitoringNgoSpecification(adminRequirement.ElectionRoundId, ngoId);
         var result = await monitoringNgoRepository.FirstOrDefaultAsync(getMonitoringNgoSpecification);
 
         if (result is null)
@@ -35,6 +35,6 @@ internal class MonitoringNgoAuthorizationHandler(
             return;
         }
 
-        context.Succeed(requirement);
+        context.Succeed(adminRequirement);
     }
 }
