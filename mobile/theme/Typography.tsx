@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleProp, TextProps as RNTextProps, TextStyle } from "react-native";
-import { Text } from "tamagui";
+import { SizableText } from "tamagui";
 
 type Sizes = keyof typeof $sizeStyles;
 type Presets = keyof typeof $presets;
@@ -33,14 +33,14 @@ export function Typography(props: TextProps) {
   const preset: Presets = props.preset ?? "default";
   const $styles: StyleProp<TextStyle> = [
     $presets[preset],
-    // size && $sizeStyles[size],
+    size && $sizeStyles[size],
     $styleOverride,
   ];
 
   return (
-    <Text {...rest} style={$styles}>
+    <SizableText {...rest} color="$gray9" style={$styles}>
       {children}
-    </Text>
+    </SizableText>
   );
 }
 
@@ -52,25 +52,25 @@ const $sizeStyles = {
   xs: { fontSize: 12, lineHeight: 14, fontWeight: "700" } satisfies TextStyle,
 };
 
-const $baseStyle: StyleProp<TextStyle> = [$sizeStyles.sm, { color: "$gray9" }];
+const $baseStyle: StyleProp<TextStyle> = $sizeStyles.sm;
 
 const $presets = {
   default: $baseStyle,
 
-  bold: [$baseStyle] as StyleProp<TextStyle>,
+  bold: $baseStyle as StyleProp<TextStyle>,
 
-  heading: [$baseStyle, $sizeStyles.xl] as StyleProp<TextStyle>,
+  heading: { ...$baseStyle, ...$sizeStyles.xl } as StyleProp<TextStyle>,
 
-  subheading: [$baseStyle, $sizeStyles.lg] as StyleProp<TextStyle>,
+  subheading: { ...$baseStyle, ...$sizeStyles.lg } as StyleProp<TextStyle>,
 
-  body1: [$baseStyle, $sizeStyles.md] as StyleProp<TextStyle>,
-  body2: [
-    $baseStyle,
-    $sizeStyles.md,
-    { fontWeight: "700" },
-  ] as StyleProp<TextStyle>,
+  body1: { ...$baseStyle, ...$sizeStyles.md } as StyleProp<TextStyle>,
+  body2: {
+    ...$baseStyle,
+    ...$sizeStyles.md,
+    fontWeight: "700",
+  } as StyleProp<TextStyle>,
 
-  label: [$baseStyle] as StyleProp<TextStyle>,
+  label: $baseStyle as StyleProp<TextStyle>,
 
-  helper: [$baseStyle, $sizeStyles.xs] as StyleProp<TextStyle>,
+  helper: { ...$baseStyle, ...$sizeStyles.xs } as StyleProp<TextStyle>,
 };
