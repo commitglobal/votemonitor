@@ -73,8 +73,12 @@ export default function Root() {
   const [isOnline, setIsOnline] = useState(true);
 
   const [loaded] = useFonts({
-    Inter: require("@tamagui/font-inter/otf/Inter-Medium.otf"),
-    InterBold: require("@tamagui/font-inter/otf/Inter-Bold.otf"),
+    Roboto: require("../assets/fonts/Roboto-Medium.ttf"),
+    RobotoRegular: require("../assets/fonts/Roboto-Regular.ttf"),
+    RobotoBold: require("../assets/fonts/Roboto-Bold.ttf"),
+    DMSans: require("../assets/fonts/DMSans-Medium.ttf"),
+    DMSansRegular: require("../assets/fonts/DMSans-Regular.ttf"),
+    DMSansBold: require("../assets/fonts/DMSans-Bold.ttf"),
   });
 
   useEffect(() => {

@@ -1,4 +1,4 @@
-import { Redirect, Stack } from "expo-router";
+import { Redirect } from "expo-router";
 import { useAuth } from "../../hooks/useAuth";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Drawer } from "expo-router/drawer";

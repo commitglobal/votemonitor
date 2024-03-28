@@ -1,7 +1,7 @@
-import { View, Text } from "react-native";
+import { View } from "react-native";
 import { router } from "expo-router";
 import { useAuth } from "../hooks/useAuth";
-import { Button } from "tamagui";
+import { Button, Text } from "tamagui";
 
 const Login = () => {
   const { signIn } = useAuth();
@@ -31,6 +31,12 @@ const Login = () => {
       >
         Forgot Password
       </Button>
+      <Text fontFamily={"$heading"} fontSize={24}>
+        Roboto
+      </Text>
+      <Text fontFamily={"$body"} fontSize={24}>
+        DMSans
+      </Text>
     </View>
   );
 };
