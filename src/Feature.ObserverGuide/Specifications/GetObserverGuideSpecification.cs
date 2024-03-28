@@ -6,7 +6,6 @@ public sealed class GetObserverGuideSpecification : SingleResultSpecification<Ob
 {
     public GetObserverGuideSpecification(Guid? ngoId, Guid id)
     {
-        Query//.Include(x => x.MonitoringNgo)
-            .Where(x => x.MonitoringNgo.NgoId == ngoId && x.Id == id);
+        Query.Where(x => x.MonitoringNgo.NgoId == ngoId && x.Id == id);
     }
 }
