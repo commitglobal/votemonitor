@@ -1,44 +1,73 @@
-import {
-  blue,
-  blueDark,
-  gray,
-  grayDark,
-  green,
-  greenDark,
-  orange,
-  orangeDark,
-  pink,
-  pinkDark,
-  purple,
-  purpleDark,
-  red,
-  redDark,
-  yellow,
-  yellowDark,
-} from "@tamagui/colors";
+import { gray, green, purple, red, yellow } from "@tamagui/colors";
 import { createThemeBuilder } from "@tamagui/theme-builder";
 import type { Variable } from "@tamagui/web";
 
 const colorTokens = {
   light: {
-    blue,
-    gray,
-    green,
-    orange,
-    pink,
-    purple,
-    red,
-    yellow,
+    gray: {
+      ...gray,
+      gray1: "hsl(0, 0%, 88%)",
+      gray3: "hsl(240, 5%, 84%)",
+      gray5: "hsl(240, 4%, 46%)",
+      gray7: "hsl(240, 5%, 26%)",
+      gray9: "hsl(240, 6%, 10%)",
+    },
+    green: {
+      ...green,
+      green1: "hsl(152, 81%, 96%)",
+      green10: "hsl(160, 84%, 39%)",
+      green12: "hsl(145, 63%, 42%)",
+    },
+    purple: {
+      ...purple,
+      purple1: "hsl(265, 100%, 95%)",
+      purple5: "hsl(272, 56%, 45%)",
+      purple6: "#5F288D",
+    },
+    red: {
+      ...red,
+      red1: "hsl(0, 86%, 97%)",
+      red10: "hsl(0, 74%, 56%)",
+      red12: "hsl(0, 74%, 42%)",
+    },
+    yellow: {
+      ...yellow,
+      yellow2: "hsla(49, 100%, 58%, 0.25)",
+      yellow6: "hsl(49, 100%, 58%)",
+    },
   },
   dark: {
-    blue: blueDark,
-    gray: grayDark,
-    green: greenDark,
-    orange: orangeDark,
-    pink: pinkDark,
-    purple: purpleDark,
-    red: redDark,
-    yellow: yellowDark,
+    gray: {
+      ...gray,
+      gray1: "hsl(0, 0%, 88%)",
+      gray3: "hsl(240, 5%, 84%)",
+      gray5: "hsl(240, 4%, 46%)",
+      gray7: "hsl(240, 5%, 26%)",
+      gray9: "hsl(240, 6%, 10%)",
+    },
+    green: {
+      ...green,
+      green1: "hsl(152, 81%, 96%)",
+      green10: "hsl(160, 84%, 39%)",
+      green12: "hsl(145, 63%, 42%)",
+    },
+    purple: {
+      ...purple,
+      purple1: "hsl(265, 100%, 95%)",
+      purple5: "hsl(272, 56%, 45%)",
+      purple6: "#5F288D",
+    },
+    red: {
+      ...red,
+      red1: "hsl(0, 86%, 97%)",
+      red10: "hsl(0, 74%, 56%)",
+      red12: "hsl(0, 74%, 42%)",
+    },
+    yellow: {
+      ...yellow,
+      yellow2: "hsla(49, 100%, 58%, 0.25)",
+      yellow6: "hsl(49, 100%, 58%)",
+    },
   },
 };
 
@@ -48,22 +77,16 @@ const darkShadowColor = "rgba(0,0,0,0.2)";
 const darkShadowColorStrong = "rgba(0,0,0,0.3)";
 
 const darkColors = {
-  ...colorTokens.dark.blue,
   ...colorTokens.dark.gray,
   ...colorTokens.dark.green,
-  ...colorTokens.dark.orange,
-  ...colorTokens.dark.pink,
   ...colorTokens.dark.purple,
   ...colorTokens.dark.red,
   ...colorTokens.dark.yellow,
 };
 
 const lightColors = {
-  ...colorTokens.light.blue,
   ...colorTokens.light.gray,
   ...colorTokens.light.green,
-  ...colorTokens.light.orange,
-  ...colorTokens.light.pink,
   ...colorTokens.light.purple,
   ...colorTokens.light.red,
   ...colorTokens.light.yellow,
@@ -450,10 +473,6 @@ const themeBuilder = createThemeBuilder()
     },
   })
   .addChildThemes({
-    orange: {
-      palette: "orange",
-      template: "base",
-    },
     yellow: {
       palette: "yellow",
       template: "base",
@@ -462,16 +481,8 @@ const themeBuilder = createThemeBuilder()
       palette: "green",
       template: "base",
     },
-    blue: {
-      palette: "blue",
-      template: "base",
-    },
     purple: {
       palette: "purple",
-      template: "base",
-    },
-    pink: {
-      palette: "pink",
       template: "base",
     },
     red: {
