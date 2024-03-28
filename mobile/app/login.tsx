@@ -31,10 +31,10 @@ const Login = () => {
       >
         Forgot Password
       </Button>
-      <Text fontFamily={"$heading"} fontSize={24}>
+      <Text fontFamily={"$heading"} fontSize={24} fontWeight={"700"}>
         Roboto
       </Text>
-      <Text fontFamily={"$body"} fontSize={24}>
+      <Text fontFamily={"$body"} fontSize={24} fontWeight={"500"}>
         DMSans
       </Text>
     </View>

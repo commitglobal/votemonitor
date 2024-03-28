@@ -2,24 +2,24 @@ import { config } from "@tamagui/config/v3";
 import { createFont } from "tamagui";
 
 const dmSansFace = {
-  normal: { normal: "DMSans-Regular" },
-  bold: { normal: "DMSans-Bold" },
-  unset: { normal: "DMSans-Regular" },
-  500: { normal: "DMSans-Regular" },
-  600: { normal: "DMSans-Medium" },
-  700: { normal: "DMSans-Bold" },
+  normal: { normal: "DMSansRegular" },
+  bold: { normal: "DMSansBold" },
+  unset: { normal: "DMSansRegular" },
+  500: { normal: "DMSansRegular" },
+  600: { normal: "DMSans" },
+  700: { normal: "DMSansBold" },
 };
 
 const robotoFace = {
-  normal: { normal: "Roboto-Regular" },
-  bold: { normal: "Roboto-Bold" },
-  unset: { normal: "Roboto-Regular" },
-  500: { normal: "Roboto-Regular" },
-  600: { normal: "Roboto-Medium" },
-  700: { normal: "Roboto-Bold" },
+  normal: { normal: "RobotoRegular" },
+  bold: { normal: "RobotoBold" },
+  unset: { normal: "RobotoRegular" },
+  500: { normal: "RobotoRegular" },
+  600: { normal: "Roboto" },
+  700: { normal: "RobotoBold" },
 };
 
-const headingFont = createFont({
+const Roboto = createFont({
   family: "Roboto",
   size: config.fonts.heading.size,
   lineHeight: config.fonts.heading.lineHeight,
@@ -28,7 +28,7 @@ const headingFont = createFont({
   face: robotoFace,
 });
 
-const bodyFont = createFont({
+const DMSans = createFont({
   family: "DMSans",
   size: config.fonts.body.size,
   lineHeight: config.fonts.body.lineHeight,
@@ -37,4 +37,4 @@ const bodyFont = createFont({
   face: dmSansFace,
 });
 
-export const fonts = { heading: headingFont, body: bodyFont };
+export const fonts = { body: DMSans, heading: DMSans, tabs: Roboto };
