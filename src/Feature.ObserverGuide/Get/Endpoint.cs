@@ -28,7 +28,7 @@ public class Endpoint(IAuthorizationService authorizationService,
             return TypedResults.NotFound();
         }
 
-        var specification = new GetObserverGuideSpecification(currentUserProvider.GetUserId(), req.Id);
+        var specification = new GetObserverGuideSpecification(currentUserProvider.GetNgoId(), req.Id);
         var observerGuide = await repository.FirstOrDefaultAsync(specification, ct);
 
         if (observerGuide == null)
