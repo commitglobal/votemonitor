@@ -22470,31 +22470,31 @@
             "normal": "DMSans"
           },
           "400": {
-            "normal": "DMSans"
+            "normal": "DMSansRegular"
           },
           "500": {
-            "normal": "DMSans-Regular"
+            "normal": "DMSans"
           },
           "600": {
-            "normal": "DMSans-Medium"
+            "normal": "DMSans"
           },
           "700": {
-            "normal": "DMSans-Bold"
+            "normal": "DMSansBold"
           },
           "800": {
-            "normal": "DMSans-Bold"
+            "normal": "DMSansBold"
           },
           "900": {
-            "normal": "DMSans-Bold"
+            "normal": "DMSansBold"
           },
           "normal": {
-            "normal": "DMSans-Regular"
+            "normal": "DMSansRegular"
           },
           "bold": {
-            "normal": "DMSans-Bold"
+            "normal": "DMSansBold"
           },
           "unset": {
-            "normal": "DMSans-Regular"
+            "normal": "DMSansRegular"
           }
         }
       },
@@ -22587,31 +22587,31 @@
             "normal": "DMSans"
           },
           "400": {
-            "normal": "DMSans"
+            "normal": "DMSansRegular"
           },
           "500": {
-            "normal": "DMSans-Regular"
+            "normal": "DMSans"
           },
           "600": {
-            "normal": "DMSans-Medium"
+            "normal": "DMSans"
           },
           "700": {
-            "normal": "DMSans-Bold"
+            "normal": "DMSansBold"
           },
           "800": {
-            "normal": "DMSans-Bold"
+            "normal": "DMSansBold"
           },
           "900": {
-            "normal": "DMSans-Bold"
+            "normal": "DMSansBold"
           },
           "normal": {
-            "normal": "DMSans-Regular"
+            "normal": "DMSansRegular"
           },
           "bold": {
-            "normal": "DMSans-Bold"
+            "normal": "DMSansBold"
           },
           "unset": {
-            "normal": "DMSans-Regular"
+            "normal": "DMSansRegular"
           }
         }
       },
@@ -22660,8 +22660,8 @@
           "2": "400",
           "3": "400",
           "4": "400",
-          "5": "500",
-          "6": "600",
+          "5": "400",
+          "6": "400",
           "7": "700",
           "8": "700",
           "9": "700",
@@ -22704,31 +22704,31 @@
             "normal": "Roboto"
           },
           "400": {
-            "normal": "Roboto"
+            "normal": "RobotoRegular"
           },
           "500": {
-            "normal": "Roboto-Regular"
+            "normal": "RobotoRegular"
           },
           "600": {
-            "normal": "Roboto-Medium"
+            "normal": "RobotoRegular"
           },
           "700": {
-            "normal": "Roboto-Bold"
+            "normal": "RobotoRegular"
           },
           "800": {
-            "normal": "Roboto-Bold"
+            "normal": "RobotoRegular"
           },
           "900": {
-            "normal": "Roboto-Bold"
+            "normal": "RobotoRegular"
           },
           "normal": {
-            "normal": "Roboto-Regular"
+            "normal": "RobotoRegular"
           },
           "bold": {
-            "normal": "Roboto-Bold"
+            "normal": "RobotoBold"
           },
           "unset": {
-            "normal": "Roboto-Regular"
+            "normal": "RobotoRegular"
           }
         }
       }

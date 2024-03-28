@@ -2,6 +2,7 @@ import { View } from "react-native";
 import { router } from "expo-router";
 import { useAuth } from "../hooks/useAuth";
 import { Button, Text } from "tamagui";
+import { Typography } from "../theme/Typography";
 
 const Login = () => {
   const { signIn } = useAuth();
@@ -31,12 +32,12 @@ const Login = () => {
       >
         Forgot Password
       </Button>
-      <Text fontFamily={"$heading"} fontSize={24} fontWeight={"700"}>
-        Roboto
-      </Text>
-      <Text fontFamily={"$body"} fontSize={24} fontWeight={"500"}>
-        DMSans
-      </Text>
+      <Typography preset="heading">Heading</Typography>
+      <Typography preset="subheading">Subheading</Typography>
+      <Typography preset="default">default</Typography>
+      <Typography preset="body1">body1</Typography>
+      <Typography preset="body2">body2</Typography>
+      <Typography preset="helper">helper</Typography>
     </View>
   );
 };

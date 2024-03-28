@@ -5,8 +5,8 @@ const dmSansFace = {
   normal: { normal: "DMSansRegular" },
   bold: { normal: "DMSansBold" },
   unset: { normal: "DMSansRegular" },
-  500: { normal: "DMSansRegular" },
-  600: { normal: "DMSans" },
+  400: { normal: "DMSansRegular" },
+  500: { normal: "DMSans" },
   700: { normal: "DMSansBold" },
 };
 
@@ -14,9 +14,7 @@ const robotoFace = {
   normal: { normal: "RobotoRegular" },
   bold: { normal: "RobotoBold" },
   unset: { normal: "RobotoRegular" },
-  500: { normal: "RobotoRegular" },
-  600: { normal: "Roboto" },
-  700: { normal: "RobotoBold" },
+  400: { normal: "RobotoRegular" },
 };
 
 const Roboto = createFont({
