@@ -12,6 +12,8 @@ import {
   onlineManager,
   useIsRestoring,
 } from "@tanstack/react-query";
+import { TamaguiProvider } from "tamagui";
+import { tamaguiConfig } from "../tamagui.config";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -82,27 +84,29 @@ export default function Root() {
   console.log("isRestoring persistQueryClient", isRestoring);
 
   return (
-    <PersistQueryClientProvider
-      onSuccess={async () => {
-        queryClient
-          .resumePausedMutations()
-          .then(() => queryClient.invalidateQueries());
-      }}
-      persistOptions={{ persister }}
-      client={queryClient}
-    >
-      <AuthContextProvider>
-        {!isOnline && <OfflineBanner />}
-        <Slot />
-        <Text
-          onPress={() => {
-            setIsOnline(!isOnline);
-            onlineManager.setOnline(!isOnline);
-          }}
-        >
-          Go Online/Offline
-        </Text>
-      </AuthContextProvider>
-    </PersistQueryClientProvider>
+    <TamaguiProvider config={tamaguiConfig}>
+      <PersistQueryClientProvider
+        onSuccess={async () => {
+          queryClient
+            .resumePausedMutations()
+            .then(() => queryClient.invalidateQueries());
+        }}
+        persistOptions={{ persister }}
+        client={queryClient}
+      >
+        <AuthContextProvider>
+          {!isOnline && <OfflineBanner />}
+          <Slot />
+          <Text
+            onPress={() => {
+              setIsOnline(!isOnline);
+              onlineManager.setOnline(!isOnline);
+            }}
+          >
+            Go Online/Offline
+          </Text>
+        </AuthContextProvider>
+      </PersistQueryClientProvider>
+    </TamaguiProvider>
   );
 }
