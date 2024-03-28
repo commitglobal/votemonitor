@@ -35,7 +35,7 @@ public class RemoveObserverEndpointTests
         var repository = Substitute.For<IRepository<MonitoringNgoAggregate>>();
 
         repository
-            .FirstOrDefaultAsync(Arg.Any<GetMonitoringNgoSpecification>())
+            .FirstOrDefaultAsync(Arg.Any<GetMonitoringNgoWithObserversSpecification>())
             .Returns(monitoringNgo);
 
         var observersRepository = Substitute.For<IReadRepository<ObserverAggregate>>();
@@ -67,7 +67,7 @@ public class RemoveObserverEndpointTests
 
         var repository = Substitute.For<IRepository<MonitoringNgoAggregate>>();
         repository
-            .FirstOrDefaultAsync(Arg.Any<GetMonitoringNgoSpecification>())
+            .FirstOrDefaultAsync(Arg.Any<GetMonitoringNgoWithObserversSpecification>())
             .Returns(monitoringNgo);
 
         var observersRepository = Substitute.For<IReadRepository<ObserverAggregate>>();

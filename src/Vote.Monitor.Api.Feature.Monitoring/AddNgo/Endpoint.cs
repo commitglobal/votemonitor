@@ -6,7 +6,7 @@ namespace Vote.Monitor.Api.Feature.Monitoring.AddNgo;
 
 public class Endpoint(IRepository<ElectionRoundAggregate> repository,
     IReadRepository<NgoAggregate> ngoRepository,
-    IRepository<MonitoringNgo> monitoringNgoRepository) : Endpoint<Request, Results<NoContent, NotFound<string>, ValidationProblem>>
+    IRepository<MonitoringNgo> monitoringNgoRepository) : Endpoint<Request, Results<Ok<Response>, NotFound<string>, ValidationProblem>>
 {
     public override void Configure()
     {
@@ -15,7 +15,7 @@ public class Endpoint(IRepository<ElectionRoundAggregate> repository,
         Options(x => x.WithTags("monitoring"));
     }
 
-    public override async Task<Results<NoContent, NotFound<string>, ValidationProblem>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<Results<Ok<Response>, NotFound<string>, ValidationProblem>> ExecuteAsync(Request req, CancellationToken ct)
     {
         var electionRound = await repository.GetByIdAsync(req.ElectionRoundId, ct);
         if (electionRound is null)
@@ -38,6 +38,9 @@ public class Endpoint(IRepository<ElectionRoundAggregate> repository,
         var monitoringNgo = electionRound.AddMonitoringNgo(ngo);
         await monitoringNgoRepository.AddAsync(monitoringNgo, ct);
 
-        return TypedResults.NoContent();
+        return TypedResults.Ok(new Response
+        {
+            Id = monitoringNgo.Id
+        });
     }
 }

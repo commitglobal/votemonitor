@@ -1,12 +1,10 @@
 ﻿using System.Security.Claims;
-using FluentAssertions.Common;
 using MartinCostello.Logging.XUnit;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Logging;
 using Vote.Monitor.Api.Feature.Auth.Login;
 using Vote.Monitor.Api.Feature.ElectionRound;
 using Vote.Monitor.Core.Services.Security;
-using Vote.Monitor.Core.Services.Time;
 using Vote.Monitor.Domain.Constants;
 using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
 using ClaimTypes = Vote.Monitor.Core.Security.ClaimTypes;
@@ -39,7 +37,7 @@ public class HttpServerFixture<TDataSeeder> : WebApplicationFactory<Program>, IA
     /// The platform admin http client
     /// </summary>
     public HttpClient PlatformAdmin { get; private set; }
-    public ElectionRoundBaseModel ElectionRound { get; private set; }
+    public ElectionRoundModel ElectionRound { get; private set; }
 
     private readonly ClaimsPrincipal _integrationTestingUser = new([new ClaimsIdentity([new Claim(ClaimTypes.UserId, "007e57ed-7e57-7e57-7e57-007e57ed0000")],"fake")]);
 
@@ -82,7 +80,7 @@ public class HttpServerFixture<TDataSeeder> : WebApplicationFactory<Program>, IA
         PlatformAdmin = CreateClient();
         PlatformAdmin.DefaultRequestHeaders.Authorization = new("Bearer", tokenResponse.Token);
 
-        (_, ElectionRound) = await PlatformAdmin.POSTAsync<ElectionRoundCreateEndpoint, ElectionRoundCreateRequest, ElectionRoundBaseModel>(new()
+        (_, ElectionRound) = await PlatformAdmin.POSTAsync<ElectionRoundCreateEndpoint, ElectionRoundCreateRequest, ElectionRoundModel>(new()
         {
             CountryId = CountriesList.RO.Id,
             Title = Guid.NewGuid().ToString(),

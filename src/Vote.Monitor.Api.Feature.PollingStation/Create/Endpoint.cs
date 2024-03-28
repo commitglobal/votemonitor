@@ -28,16 +28,34 @@ public class Endpoint(
         var electionRound = await electionRoundRepository.GetByIdAsync(req.ElectionRoundId, ct);
         if (electionRound is null)
         {
-            AddError(r => r.ElectionRoundId, "A polling station with same address and tags exists");
+            AddError(r => r.ElectionRoundId, "Election round not found");
             return TypedResults.NotFound(new ProblemDetails(ValidationFailures));
         }
 
-        var pollingStation = new PollingStationAggregate(electionRound, req.Address, req.DisplayOrder, req.Tags.ToTagsObject());
+        var pollingStation = new PollingStationAggregate(electionRound, 
+            req.Level1,
+            req.Level2,
+            req.Level3,
+            req.Level4,
+            req.Level5,
+            req.Number,
+            req.Address,
+            req.DisplayOrder, 
+            req.Tags.ToTagsObject());
+
         await repository.AddAsync(pollingStation, ct);
+        electionRound.UpdatePollingStationsVersion();
+        await electionRoundRepository.UpdateAsync(electionRound, ct);
 
         return TypedResults.Ok(new PollingStationModel
         {
             Id = pollingStation.Id,
+            Level1 = pollingStation.Level1,
+            Level2 = pollingStation.Level2,
+            Level3 = pollingStation.Level3,
+            Level4 = pollingStation.Level4,
+            Level5 = pollingStation.Level5,
+            Number = pollingStation.Number,
             Address = pollingStation.Address,
             DisplayOrder = pollingStation.DisplayOrder,
             Tags = pollingStation.Tags.ToDictionary()

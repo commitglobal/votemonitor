@@ -1,5 +1,4 @@
 ﻿using Authorization.Policies;
-using Microsoft.AspNetCore.Authorization;
 
 namespace Vote.Monitor.Api.Feature.Auth.ObserversOnly;
 

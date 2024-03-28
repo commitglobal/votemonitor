@@ -1,5 +1,4 @@
 ﻿using Authorization.Policies.RequirementHandlers;
-using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 
 namespace Authorization.Policies.UnitTests.RequirementsHandlers;
@@ -10,7 +9,6 @@ public class MonitoringObserverAuthorizationHandlerTests
     private readonly IReadRepository<MonitoringObserver> _monitoringObserverRepository = Substitute.For<IReadRepository<MonitoringObserver>>();
 
     private readonly Guid _electionRoundId = Guid.NewGuid();
-    private readonly Guid _ngoId = Guid.NewGuid();
     private readonly Guid _observerId = Guid.NewGuid();
 
     private readonly AuthorizationHandlerContext _context;

@@ -31,7 +31,7 @@ public class DeleteEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeede
 
         var request = new DeleteRequest
         {
-            ElectionRoundId = Guid.NewGuid(),
+            ElectionRoundId = Fixture.ElectionRound.Id,
             Id = createResult.Id
         };
 
@@ -43,7 +43,7 @@ public class DeleteEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeede
 
         var getResponse = await Fixture.PlatformAdmin.GETAsync<GetEndpoint, GetRequest>(new()
         {
-            ElectionRoundId = Guid.NewGuid(),
+            ElectionRoundId = Fixture.ElectionRound.Id,
             Id = createResult.Id
         });
 
