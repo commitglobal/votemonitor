@@ -9,7 +9,6 @@ using NSubstitute.ReturnsExtensions;
 using Vote.Monitor.Api.Feature.PollingStation.Attachments.Create;
 using Vote.Monitor.Api.Feature.PollingStation.Attachments.Specifications;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
-using Vote.Monitor.Core.Services.Time;
 using Vote.Monitor.Domain.Entities.ElectionRoundAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 using Vote.Monitor.Domain.Repository;

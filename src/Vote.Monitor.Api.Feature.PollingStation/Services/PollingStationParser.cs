@@ -55,16 +55,19 @@ public class PollingStationParser : IPollingStationParser
         }
         catch (HeaderValidationException e)
         {
+            SentrySdk.CaptureException(e);
             _logger.LogError(e, "Cannot parse the header.");
             return new PollingStationParsingResult.Fail(new ValidationFailure("Header", "Invalid header provided in import polling stations file."));
         }
         catch (CsvHelper.MissingFieldException e)
         {
+            SentrySdk.CaptureException(e);
             _logger.LogError(e, "Malformed csv provided.");
             return new PollingStationParsingResult.Fail(new ValidationFailure("Csv File", "Malformed import polling stations file provided."));
         }
         catch (CsvHelper.TypeConversion.TypeConverterException e)
         {
+            SentrySdk.CaptureException(e);
             _logger.LogError(e, "Invalid data found in columns.");
             return new PollingStationParsingResult.Fail(new ValidationFailure("Csv File", "Malformed import polling stations file provided."));
         }

@@ -7,6 +7,8 @@ namespace Vote.Monitor.Core.Services.Security;
 public class CurrentUserProvider : ICurrentUserProvider, ICurrentUserInitializer
 {
     private ClaimsPrincipal? _user;
+    public ClaimsPrincipal? User=> _user;
+
     private Dictionary<string, IEnumerable<Claim>>? _claimsDict => _user?
         .Claims
         .GroupBy(c => c.Type)
