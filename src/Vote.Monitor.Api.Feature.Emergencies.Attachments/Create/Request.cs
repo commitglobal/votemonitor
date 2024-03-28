@@ -8,7 +8,7 @@ public class Request
 
     public Guid EmergencyId { get; set; }
 
-    [FromClaim(ClaimTypes.UserId)]
+    [FromClaim(ApplicationClaimTypes.UserId)]
     public Guid ObserverId { get; set; }
 
     public IFormFile Attachment { get; set; }

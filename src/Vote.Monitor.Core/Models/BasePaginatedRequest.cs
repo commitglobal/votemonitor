@@ -7,6 +7,6 @@ public class BasePaginatedRequest
     public int PageNumber { get; set; } = 1;
 
     [QueryParam]
-    [DefaultValue(100)]
-    public int PageSize { get; set; } = 100;
+    [DefaultValue(25)]
+    public int PageSize { get; set; } = 25;
 }

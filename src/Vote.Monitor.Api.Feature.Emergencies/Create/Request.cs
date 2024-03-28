@@ -6,6 +6,6 @@ public class Request
 {
     public required Guid ElectionRoundId { get; set; }
 
-    [FromClaim(ClaimTypes.UserId)]
+    [FromClaim(ApplicationClaimTypes.UserId)]
     public Guid ObserverId { get; set; }
 }

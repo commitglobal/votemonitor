@@ -44,7 +44,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<Response>, ProblemDetails>>
             var ngoAdmin = await _ngoAdminRepository.FirstOrDefaultAsync(ngoAdminSpecification, ct);
             if (ngoAdmin is not null)
             {
-                claims.Add((ClaimTypes.NgoId, ngoAdmin.NgoId.ToString()));
+                claims.Add((ApplicationClaimTypes.NgoId, ngoAdmin.NgoId.ToString()));
             }
         }
 

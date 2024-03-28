@@ -4,9 +4,6 @@ using Feature.ObserverGuide;
 using Feature.PollingStation.Information.Form;
 using Microsoft.AspNetCore.ResponseCompression;
 using NSwag;
-using OpenTelemetry.Metrics;
-using Sentry.OpenTelemetry;
-using Serilog.Events;
 using Vote.Monitor.Api.Feature.Answers.Attachments;
 using Vote.Monitor.Api.Feature.Answers.Notes;
 using Vote.Monitor.Api.Feature.Emergencies;
@@ -28,50 +25,11 @@ using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 using Vote.Monitor.Domain.Entities.NgoAggregate;
-using OpenTelemetry.Trace;
-using Sentry;
-
+using Vote.Monitor.Api.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services
-    .AddOpenTelemetry()
-    .WithTracing(tracerProviderBuilder =>
-            tracerProviderBuilder
-                .AddAspNetCoreInstrumentation() // <-- Adds ASP.NET Core telemetry sources
-                .AddHttpClientInstrumentation() // <-- Adds HttpClient telemetry sources
-                .AddSentry() // <-- Configure OpenTelemetry to send trace information to Sentry
-    )   // This block configures OpenTelemetry metrics that we care about... later we'll configure Sentry to capture these
-    .WithMetrics(metrics =>
-    {
-        metrics
-            .AddRuntimeInstrumentation() // <-- Requires the OpenTelemetry.Instrumentation.Runtime package
-                                         // Collect some of the built-in ASP.NET Core metrics
-            .AddMeter(
-                "Microsoft.AspNetCore.Hosting",
-                "Microsoft.AspNetCore.Server.Kestrel",
-                "System.Net.Http");
-    });
-
-builder.WebHost.UseSentry(options =>
-{
-    options.Dsn = "";
-    options.Debug = true;
-    options.TracesSampleRate = 0.2;
-
-    options.UseOpenTelemetry(); // <-- Configure Sentry to use OpenTelemetry trace information
-    // This shows experimental support for capturing OpenTelemetry metrics with Sentry
-    options.ExperimentalMetrics = new ExperimentalMetricsOptions()
-    {
-        // Here we're telling Sentry to capture all built-in metrics. This includes all the metrics we configured
-        // OpenTelemetry to emit when we called `builder.Services.AddOpenTelemetry()` above:
-        // - "OpenTelemetry.Instrumentation.Runtime"
-        // - "Microsoft.AspNetCore.Hosting",
-        // - "Microsoft.AspNetCore.Server.Kestrel",
-        // - "System.Net.Http"
-        CaptureSystemDiagnosticsMeters = BuiltInSystemDiagnosticsMeters.All
-    };
-});
+builder.AddSentry();
 
 builder.Services.AddFastEndpoints();
 builder.Services.SwaggerDocument(o =>
@@ -90,6 +48,7 @@ builder.Services.SwaggerDocument(o =>
 
 builder.Services.AddMemoryCache();
 builder.Services.AddOptions();
+
 builder.Services.AddLogging(logging =>
     {
         Serilog.Debugging.SelfLog.Enable(Console.WriteLine);
@@ -100,12 +59,7 @@ builder.Services.AddLogging(logging =>
             .Enrich.FromLogContext()
             .Enrich.WithMachineName()
             .Enrich.WithEnvironmentUserName()
-            .WriteTo.Sentry(s =>
-            {
-                s.InitializeSdk = false;
-                s.MinimumBreadcrumbLevel = LogEventLevel.Debug;
-                s.MinimumEventLevel = LogEventLevel.Error;
-            });
+            .WriteToSentry(builder.Configuration);
 
         var logger = Log.Logger = loggerConfiguration.CreateLogger();
 
