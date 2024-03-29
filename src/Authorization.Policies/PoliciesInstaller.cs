@@ -9,6 +9,7 @@ public static class AuthorizationPoliciesInstaller
     public static IServiceCollection AddAuthorizationPolicies(this IServiceCollection services)
     {
         services.AddScoped<IAuthorizationHandler, MonitoringNgoAdminAuthorizationHandler>();
+        services.AddScoped<IAuthorizationHandler, MonitoringNgoAdminOrObserverAuthorizationHandler>();
         services.AddScoped<IAuthorizationHandler, MonitoringObserverAuthorizationHandler>();
         services.AddScoped<IAuthorizationHandler, NgoAdminAuthorizationHandler>();
 
