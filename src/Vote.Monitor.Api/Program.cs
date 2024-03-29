@@ -181,7 +181,7 @@ uiConfig: cfg =>
     cfg.DocExpansion = "list";
 });
 app.UseResponseCompression();
-app.UseSentryTracing();
+app.UseSentryMiddleware();
 
 app.Run();
 

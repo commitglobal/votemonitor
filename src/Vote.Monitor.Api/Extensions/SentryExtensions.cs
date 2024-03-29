@@ -7,9 +7,10 @@ namespace Vote.Monitor.Api.Extensions;
 
 public static class SentryExtensions
 {
+    const string SentryConfigurationSection = "Sentry";
     public static WebApplicationBuilder AddSentry(this WebApplicationBuilder builder)
     {
-        var sentryConfig = builder.Configuration.GetSection("Sentry");
+        var sentryConfig = builder.Configuration.GetSection(SentryConfigurationSection);
         var isSentryEnabled = sentryConfig.GetValue<bool?>("Enabled") ?? false;
         if (!isSentryEnabled)
         {
@@ -66,6 +67,18 @@ public static class SentryExtensions
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddSingleton<ISentryUserFactory, CustomSentryUserFactory>();
         return builder;
+    }
+
+    public static IApplicationBuilder UseSentryMiddleware(this IApplicationBuilder app)
+    {
+        var sentryConfig = app.ApplicationServices.GetRequiredService<IConfiguration>().GetSection(SentryConfigurationSection);
+        var isSentryEnabled = sentryConfig.GetValue<bool?>("Enabled") ?? false;
+        if (!isSentryEnabled)
+        {
+            return app;
+        }
+
+        return app.UseSentryTracing();
     }
 
     private static MeterProviderBuilder AddBuiltInMeters(this MeterProviderBuilder meterProviderBuilder) =>
