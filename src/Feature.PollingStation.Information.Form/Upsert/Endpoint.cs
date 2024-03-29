@@ -1,10 +1,4 @@
-﻿using Feature.PollingStation.Information.Form.Specifications;
-using Vote.Monitor.Core.Services.Time;
-using Vote.Monitor.Domain.Entities.ElectionRoundAggregate;
-using Vote.Monitor.Domain.Entities.FormBase.Questions;
-using Vote.Monitor.Form.Module.Mappers;
-
-namespace Feature.PollingStation.Information.Form.Upsert;
+﻿namespace Feature.PollingStation.Information.Form.Upsert;
 
 public class Endpoint(IRepository<PollingStationInfoFormAggregate> repository,
     IRepository<ElectionRound> electionRoundRepository,
@@ -15,6 +9,7 @@ public class Endpoint(IRepository<PollingStationInfoFormAggregate> repository,
         Post("/api/election-rounds/{electionRoundId}/polling-station-information-form");
         DontAutoTag();
         Options(x => x.WithTags("polling-station-information-form"));
+        Permissions(PolicyNames.PlatformAdminsOnly);
     }
 
     public override async Task<Results<Ok<PollingStationInformationFormModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)

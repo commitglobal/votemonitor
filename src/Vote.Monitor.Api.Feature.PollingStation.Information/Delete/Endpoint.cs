@@ -9,7 +9,10 @@ public class Endpoint(IRepository<PollingStationInformation> repository) : Endpo
     {
         Delete("/api/election-rounds/{electionRoundId}/polling-stations/{pollingStationId}/information/{id}");
         DontAutoTag();
-        Options(x => x.WithTags("polling-station-information"));
+        Options(x => x.WithTags("polling-station-information", "mobile"));
+        Summary(s => {
+            s.Summary = "Deletes polling station information submitted for a polling station";
+        });
     }
 
     public override async Task<Results<NoContent, NotFound>> ExecuteAsync(Request req, CancellationToken ct)

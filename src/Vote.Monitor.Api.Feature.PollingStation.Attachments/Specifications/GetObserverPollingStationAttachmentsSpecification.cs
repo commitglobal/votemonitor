@@ -2,9 +2,9 @@
 
 namespace Vote.Monitor.Api.Feature.PollingStation.Attachments.Specifications;
 
-public sealed class GetPollingStationAttachmentsSpecification : Specification<PollingStationAttachmentAggregate>
+public sealed class GetObserverPollingStationAttachmentsSpecification : Specification<PollingStationAttachmentAggregate>
 {
-    public GetPollingStationAttachmentsSpecification(Guid electionRoundId, Guid pollingStationId, Guid observerId)
+    public GetObserverPollingStationAttachmentsSpecification(Guid electionRoundId, Guid pollingStationId, Guid observerId)
     {
         Query
             .Where(x => x.ElectionRoundId == electionRoundId

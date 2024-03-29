@@ -28,7 +28,10 @@ public class Endpoint : Endpoint<Request, Results<Ok<NoteModel>, BadRequest<Prob
     {
         Post("/api/election-rounds/{electionRoundId}/polling-stations/{pollingStationId}/notes");
         DontAutoTag();
-        Options(x => x.WithTags("notes"));
+        Options(x => x.WithTags("notes", "mobile"));
+        Summary(s => {
+            s.Summary = "Creates a note for a polling station";
+        });
     }
 
     public override async Task<Results<Ok<NoteModel>, BadRequest<ProblemDetails>>> ExecuteAsync(Request req, CancellationToken ct)

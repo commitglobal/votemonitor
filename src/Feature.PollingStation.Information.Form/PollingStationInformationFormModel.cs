@@ -1,5 +1,4 @@
-﻿using Vote.Monitor.Form.Module.Mappers;
-using Vote.Monitor.Form.Module.Models;
+﻿using Vote.Monitor.Form.Module.Models;
 
 namespace Feature.PollingStation.Information.Form;
 
