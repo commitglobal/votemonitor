@@ -63,7 +63,7 @@ public static class SentryExtensions
                 CaptureSystemDiagnosticsMeters = BuiltInSystemDiagnosticsMeters.All
             };
         });
-
+        builder.Services.AddHttpContextAccessor();
         builder.Services.AddSingleton<ISentryUserFactory, CustomSentryUserFactory>();
         return builder;
     }
