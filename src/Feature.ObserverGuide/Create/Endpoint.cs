@@ -9,7 +9,8 @@ using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
 
 namespace Feature.ObserverGuide.Create;
 
-public class Endpoint(IAuthorizationService authorizationService,
+public class Endpoint(
+    IAuthorizationService authorizationService,
     IRepository<ObserverGuideAggregate> repository,
     ICurrentUserProvider currentUserProvider,
     IReadRepository<MonitoringNgo> monitoringNgoRepository,
