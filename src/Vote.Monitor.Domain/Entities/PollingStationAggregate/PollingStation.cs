@@ -8,7 +8,7 @@ public class PollingStation : AuditableBaseEntity, IAggregateRoot, IDisposable
     }
 #pragma warning restore CS8618
 
-    public PollingStation(ElectionRound electionRound,
+    internal PollingStation(ElectionRound electionRound,
         string level1,
         string level2,
         string level3,
@@ -19,6 +19,28 @@ public class PollingStation : AuditableBaseEntity, IAggregateRoot, IDisposable
         int displayOrder,
         JsonDocument tags) : this(Guid.NewGuid(), electionRound, level1, level2, level3, level4, level5, number, address, displayOrder, tags)
     {
+    }
+
+    public static PollingStation Create(ElectionRound electionRound,
+        string level1,
+        string level2,
+        string level3,
+        string level4,
+        string level5,
+        string number,
+        string address,
+        int displayOrder,
+        JsonDocument tags,
+        DateTime createdOn,
+        Guid userId)
+    {
+        var pollingStation = new PollingStation(electionRound, level1, level2, level3, level4, level5, number, address, displayOrder,
+            tags);
+
+        pollingStation.CreatedOn = createdOn;
+        pollingStation.CreatedBy = userId;
+
+        return pollingStation;
     }
 
     public ElectionRound ElectionRound { get; private set; }
