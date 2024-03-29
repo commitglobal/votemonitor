@@ -16,6 +16,7 @@ COPY ["src/Vote.Monitor.Domain/Vote.Monitor.Domain.csproj", "src/Vote.Monitor.Do
 COPY ["src/Feature.ObserverGuide/Feature.ObserverGuide.csproj", "src/Feature.ObserverGuide/"]
 COPY ["src/Feature.PollingStation.Information.Form/Feature.PollingStation.Information.Form.csproj", "src/Feature.PollingStation.Information.Form/"]
 COPY ["src/Vote.Monitor.Form.Module/Vote.Monitor.Form.Module.csproj", "src/Vote.Monitor.Form.Module/"]
+COPY ["src/Feature.PollingStation.Visit/Feature.PollingStation.Visit.csproj", "src/Feature.PollingStation.Visit/"]
 COPY ["src/Vote.Monitor.Api.Feature.Answers.Attachments/Vote.Monitor.Api.Feature.Answers.Attachments.csproj", "src/Vote.Monitor.Api.Feature.Answers.Attachments/"]
 COPY ["src/Vote.Monitor.Api.Feature.Answers.Notes/Vote.Monitor.Api.Feature.Answers.Notes.csproj", "src/Vote.Monitor.Api.Feature.Answers.Notes/"]
 COPY ["src/Vote.Monitor.Api.Feature.Auth/Vote.Monitor.Api.Feature.Auth.csproj", "src/Vote.Monitor.Api.Feature.Auth/"]

@@ -51,13 +51,16 @@ public class PollingStationInformationForm : AuditableBaseEntity, IAggregateRoot
 
     public PollingStationInformation CreatePollingStationInformation(PollingStation pollingStation,
         MonitoringObserver monitoringObserver,
-        List<BaseAnswer> answers,
-        ITimeProvider timeProvider)
+        DateTime? arrivalTime,
+        DateTime? departureTime,
+        List<BaseAnswer> answers)
     {
-        return PollingStationInformation.Create(ElectionRound, pollingStation, monitoringObserver, this, answers);
+        return PollingStationInformation.Create(ElectionRound, pollingStation, monitoringObserver, this, arrivalTime, departureTime, answers);
     }
 
     public void FillIn(PollingStationInformation filledInForm,
+        DateTime? arrivalTime,
+        DateTime? departureTime,
         List<BaseAnswer> answers)
     {
         var validationResult = AnswersValidator.GetValidationResults(answers, Questions);
@@ -67,7 +70,7 @@ public class PollingStationInformationForm : AuditableBaseEntity, IAggregateRoot
             throw new ValidationException(validationResult.Errors);
         }
 
-        filledInForm.UpdateDetails(answers);
+        filledInForm.UpdateDetails(arrivalTime, departureTime, answers);
     }
 
 #pragma warning disable CS8618 // Required by Entity Framework

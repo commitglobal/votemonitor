@@ -1,16 +1,14 @@
 ﻿namespace Vote.Monitor.Api.Feature.ElectionRound.Specifications;
 
-public sealed class GetNgoUpcomingElectionSpecification : Specification<ElectionRoundAggregate, ElectionRoundModel>
+public sealed class GetObserverElectionSpecification : Specification<ElectionRoundAggregate, ElectionRoundModel>
 {
-    public GetNgoUpcomingElectionSpecification(Guid ngoId, ITimeProvider timeProvider)
+    public GetObserverElectionSpecification(Guid observerId)
     {
-        var today = timeProvider.UtcNowDate;
-
         Query
             .Include(x => x.MonitoringNgos)
             .ThenInclude(x => x.MonitoringObservers)
-            .Where(x => x.StartDate >= today)
-            .Where(x => x.MonitoringNgos.Any(ngo => ngo.Id == ngoId));
+            .Where(x => x.Status != ElectionRoundStatus.Archived)
+            .Where(x => x.MonitoringNgos.Any(ngo => ngo.MonitoringObservers.Any(o => o.ObserverId == observerId)));
 
         Query.Select(x => new ElectionRoundModel
         {
