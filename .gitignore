@@ -266,3 +266,5 @@ log*.txt
 *.env
 .~lock.*
 .vscode
+
+OfflineCapabilities

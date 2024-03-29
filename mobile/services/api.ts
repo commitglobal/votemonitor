@@ -2,7 +2,7 @@ import axios from "axios";
 
 // https://vitejs.dev/guide/env-and-mode.html
 const API = axios.create({
-  baseURL: `https://ce19-79-115-230-202.ngrok-free.app/`,
+  baseURL: `https://eefd-79-115-230-202.ngrok-free.app/`,
   timeout: 100000,
   headers: {
     "Content-Type": "application/json",
