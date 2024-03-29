@@ -1,0 +1,22 @@
+{
+  "cli": {
+    "version": ">= 3.13.3"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "channel": "development"
+    },
+    "preview": {
+      "distribution": "internal",
+      "channel": "testing" // https://github.com/expo/eas-cli#eas-channeledit-name
+    },
+    "production": {
+      "channel": "production"
+    },
+    "staging": {
+      "channel": "staging"
+    }
+  }
+}

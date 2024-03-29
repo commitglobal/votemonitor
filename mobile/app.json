@@ -1,0 +1,66 @@
+{
+  "expo": {
+    "name": "vote-monitor-mobile",
+    "slug": "vote-monitor",
+    "version": "1.0.0",
+    "scheme": "mobile",
+    "orientation": "portrait",
+    "icon": "./assets/icons/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/icons/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "org.commitglobal.votemonitor",
+      "buildNumber": "2",
+      "config": {
+        "usesNonExemptEncryption": false
+      },
+      "infoPlist": {
+        "UIBackgroundModes": ["fetch", "remote-notification"]
+      }
+    },
+    "android": {
+      "versionCode": 2,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/icons/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "org.commitglobal.votemonitor"
+    },
+    "web": {
+      "favicon": "./assets/icons/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "93e17628-ddcd-4e67-849c-b356a18a6082"
+      }
+    },
+    "owner": "commit-global",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/93e17628-ddcd-4e67-849c-b356a18a6082"
+    },
+    "plugins": [
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "./assets/fonts/DMSans-Bold.ttf",
+            "./assets/fonts/DMSans-Medium.ttf",
+            "./assets/fonts/DMSans-Regular.ttf",
+            "./assets/fonts/Roboto-Bold.ttf",
+            "./assets/fonts/Roboto-Medium.ttf",
+            "./assets/fonts/Roboto-Regular.ttf"
+          ]
+        }
+      ]
+    ]
+  }
+}
