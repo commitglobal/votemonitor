@@ -1,8 +1,10 @@
-﻿namespace Vote.Monitor.Api.Feature.Notifications.Subscribe;
+﻿using Vote.Monitor.Core.Security;
+
+namespace Vote.Monitor.Api.Feature.Notifications.Subscribe;
 
 public class Request
 {
-    [FromClaim("Sub")]
+    [FromClaim(ApplicationClaimTypes.UserId)]
     public Guid ObserverId { get; set; }
 
     public string Token { get; set; }

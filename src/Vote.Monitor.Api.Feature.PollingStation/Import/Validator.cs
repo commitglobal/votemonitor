@@ -1,14 +1,17 @@
-﻿namespace Vote.Monitor.Api.Feature.PollingStation.Import;
+﻿using Vote.Monitor.Core.Validators;
+
+namespace Vote.Monitor.Api.Feature.PollingStation.Import;
 
 public class Validator : Validator<Request>
 {
     public Validator()
     {
+        RuleFor(x => x.ElectionRoundId).NotEmpty();
         RuleFor(x => x.File)
             .NotEmpty();
 
         RuleFor(x => x.File)
-            .Must(file => file.Length < 25 * 1024 * 1024) // 25 MB
+            .FileSmallerThan(25 * 1024 * 1024)// 25 MB
             .When(x => x.File != null)
             .WithMessage("The selected file exceeds 25 MB limit.");
 

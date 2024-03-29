@@ -1,0 +1,76 @@
+@hostAddress=https://localhost:7123
+@jwtToken=your_token
+@electionRoundId=c3fceffd-137a-4090-a4ca-241e4d0bd72b
+
+# Add polling station
+# @name newPollingStation
+POST {{hostAddress}}/api/election-rounds/{{electionRoundId}}/polling-stations
+Content-Type: application/json
+Authorization: Bearer {{jwtToken}}
+
+{
+   "level1": "Narnia",
+   "level2": "Beruna",
+   "number": "1002",
+   "displayOrder" :1,
+   "address" : "some random address {{$guid}}",
+   "tags" :{
+      "tag1": "{{$guid}}"
+   }
+}
+###
+
+# import polling stations
+# @name newPollingStation
+POST {{hostAddress}}/api/election-rounds/{{electionRoundId}}/polling-stations:import
+Authorization: Bearer {{jwtToken}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="File"; filename="test-data.csv"
+Content-Type: text/csv
+
+< files/test-data.csv
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+###
+
+# Fetch polling stations version
+GET {{hostAddress}}/api/election-rounds/{{electionRoundId}}/polling-stations:version
+Authorization: Bearer {{jwtToken}}
+###
+
+# Fetch polling stations
+GET {{hostAddress}}/api/election-rounds/{{electionRoundId}}/polling-stations:fetchAll
+Accept-Encoding: gzip
+Authorization: Bearer {{jwtToken}}
+###
+
+# Fetch polling stations v2
+GET {{hostAddress}}/api/election-rounds/{{electionRoundId}}/polling-stations:fetchAllv2
+Authorization: Bearer {{jwtToken}}
+###
+
+# List polling stations
+POST {{hostAddress}}/api/election-rounds/{{electionRoundId}}/polling-stations:list
+   ?pageNumber=2
+   &pageSize=100
+Content-Type: application/json
+Authorization: Bearer {{jwtToken}}
+
+{
+
+}
+###
+@pollingStationId ={{newPollingStation.response.body.$.id}}
+# Get a polling station
+GET {{hostAddress}}/api/election-rounds/{{electionRoundId}}/polling-stations/{{pollingStationId}}
+Authorization: Bearer {{jwtToken}}
+
+###
+
+# Delete a polling station
+DELETE  {{hostAddress}}/api/election-rounds/{{electionRoundId}}/polling-stations/{{pollingStationId}}
+Authorization: Bearer {{jwtToken}}
+
+###
+

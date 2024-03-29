@@ -1,4 +1,6 @@
-﻿namespace Vote.Monitor.Api.Feature.Emergencies.Get;
+﻿using Vote.Monitor.Core.Security;
+
+namespace Vote.Monitor.Api.Feature.Emergencies.Get;
 
 public class Request
 {
@@ -6,7 +8,7 @@ public class Request
 
     public  Guid PollingStationId { get; set; }
 
-    [FromClaim("Sub")]
+    [FromClaim(ApplicationClaimTypes.UserId)]
     public Guid ObserverId { get; set; }
 
     public  Guid Id { get; set; }

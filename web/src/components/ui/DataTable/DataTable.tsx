@@ -57,6 +57,7 @@ export function DataTable<TData, TValue>({
     data: data?.items || [],
     columns,
     manualPagination: true,
+    enableFilters: true,
     pageCount: data ? Math.ceil(data.totalCount / data.pageSize) : 0,
     getCoreRowModel: getCoreRowModel(),
     onPaginationChange: (updater) => {

@@ -1,5 +1,5 @@
 ﻿using Vote.Monitor.Core.Models;
-using Vote.Monitor.Domain.Entities.FormBase;
+using Vote.Monitor.Domain.Entities.FormBase.Questions;
 using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
 
 namespace Vote.Monitor.Domain.Entities.FormAggregate;
@@ -17,7 +17,7 @@ public class Form : AuditableBaseEntity, IAggregateRoot
 
     public IReadOnlyList<string> Languages { get; private set; } = new List<string>().AsReadOnly();
 
-    public IReadOnlyList<FormSection> Sections { get; private set; } = new List<FormSection>().AsReadOnly();
+    public IReadOnlyList<BaseQuestion> Questions { get; private set; } = new List<BaseQuestion>().AsReadOnly();
 
     private Form(
         ElectionRound electionRound,
@@ -25,8 +25,7 @@ public class Form : AuditableBaseEntity, IAggregateRoot
         FormType formType,
         string code,
         TranslatedString name,
-        IEnumerable<string> languages,
-        ITimeProvider timeProvider) : base(Guid.NewGuid(), timeProvider)
+        IEnumerable<string> languages) : base(Guid.NewGuid())
     {
         ElectionRound = electionRound;
         ElectionRoundId = electionRound.Id;
@@ -46,9 +45,8 @@ public class Form : AuditableBaseEntity, IAggregateRoot
         FormType formType,
         string code,
         TranslatedString name,
-        IEnumerable<string> languages,
-        ITimeProvider timeProvider) =>
-        new(electionRound, monitoringNgo, formType, code, name, languages, timeProvider);
+        IEnumerable<string> languages) =>
+        new(electionRound, monitoringNgo, formType, code, name, languages);
 
     public PublishResult Publish()
     {
@@ -78,13 +76,13 @@ public class Form : AuditableBaseEntity, IAggregateRoot
         TranslatedString name,
         FormType formType,
         IEnumerable<string> languages,
-        IEnumerable<FormSection> sections)
+        IEnumerable<BaseQuestion> questions)
     {
         Code = code;
         Name = name;
         FormType = formType;
         Languages = languages.ToList().AsReadOnly();
-        Sections = sections.ToList().AsReadOnly();
+        Questions = questions.ToList().AsReadOnly();
     }
 
 #pragma warning disable CS8618 // Required by Entity Framework

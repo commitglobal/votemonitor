@@ -49,6 +49,7 @@ public class FirebasePushNotificationService : IPushNotificationService
         catch (Exception e)
         {
             _logger.LogError(e, "Failed to send notification");
+            SentrySdk.CaptureException(e);
             return new SendNotificationResult.Failed();
         }
     }

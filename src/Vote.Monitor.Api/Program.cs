@@ -1,4 +1,9 @@
-﻿using NSwag;
+﻿using System.IO.Compression;
+using Authorization.Policies;
+using Feature.ObserverGuide;
+using Feature.PollingStation.Information.Form;
+using Microsoft.AspNetCore.ResponseCompression;
+using NSwag;
 using Vote.Monitor.Api.Feature.Answers.Attachments;
 using Vote.Monitor.Api.Feature.Answers.Notes;
 using Vote.Monitor.Api.Feature.Emergencies;
@@ -10,9 +15,9 @@ using Vote.Monitor.Api.Feature.NgoAdmin;
 using Vote.Monitor.Api.Feature.Notifications;
 using Vote.Monitor.Api.Feature.PollingStation.Attachments;
 using Vote.Monitor.Api.Feature.PollingStation.Information;
-using Vote.Monitor.Api.Feature.PollingStation.InformationForm;
 using Vote.Monitor.Api.Feature.PollingStation.Notes;
 using Vote.Monitor.Core.Models;
+using Vote.Monitor.Core.Security;
 using Vote.Monitor.Core.Services.FileStorage;
 using Vote.Monitor.Core.Services.PushNotification;
 using Vote.Monitor.Domain.Entities.FormBase.Questions;
@@ -20,12 +25,16 @@ using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 using Vote.Monitor.Domain.Entities.NgoAggregate;
+using Vote.Monitor.Api.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.AddSentry();
+
 builder.Services.AddFastEndpoints();
 builder.Services.SwaggerDocument(o =>
 {
-    o.FlattenSchema = true;
+    o.FlattenSchema = true; 
     o.AutoTagPathSegmentIndex = 2;
     o.TagCase = TagCase.LowerCase;
 
@@ -37,7 +46,9 @@ builder.Services.SwaggerDocument(o =>
     };
 });
 
+builder.Services.AddMemoryCache();
 builder.Services.AddOptions();
+
 builder.Services.AddLogging(logging =>
     {
         Serilog.Debugging.SelfLog.Enable(Console.WriteLine);
@@ -47,7 +58,8 @@ builder.Services.AddLogging(logging =>
             .WriteTo.Console()
             .Enrich.FromLogContext()
             .Enrich.WithMachineName()
-            .Enrich.WithEnvironmentUserName();
+            .Enrich.WithEnvironmentUserName()
+            .WriteToSentry(builder.Configuration);
 
         var logger = Log.Logger = loggerConfiguration.CreateLogger();
 
@@ -71,6 +83,7 @@ builder.Services.AddFileStorage(builder.Configuration.GetRequiredSection(FileSto
 builder.Services.AddPushNotifications(builder.Configuration.GetRequiredSection(PushNotificationsInstaller.SectionKey));
 
 builder.Services.AddApplicationDomain(builder.Configuration.GetSection(DomainInstaller.SectionKey));
+builder.Services.AddAuthorizationPolicies();
 builder.Services.AddAuthFeature(builder.Configuration.GetSection(AuthFeatureInstaller.SectionKey));
 builder.Services.AddPollingStationFeature(builder.Configuration.GetSection(PollingStationFeatureInstaller.SectionKey));
 builder.Services.AddCountryFeature();
@@ -92,8 +105,20 @@ builder.Services.AddEmergencyAttachmentsFeature();
 builder.Services.AddPollingStationInformationFeature();
 builder.Services.AddFormFeature();
 builder.Services.AddPollingStationInformationFormFeature();
+builder.Services.AddObserverGuideFeature();
 
 builder.Services.AddAuthorization();
+
+builder.Services.AddResponseCompression(opts =>
+    {
+        opts.EnableForHttps = true;
+        opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] { "application/octet-stream" }).ToArray();
+        opts.Providers.Add<BrotliCompressionProvider>();
+        opts.Providers.Add<GzipCompressionProvider>();
+    })
+    .Configure<BrotliCompressionProviderOptions>(opt => opt.Level = CompressionLevel.Fastest)
+    .Configure<GzipCompressionProviderOptions>(opt => opt.Level = CompressionLevel.Fastest);
+
 
 var app = builder.Build();
 await app.Services.InitializeDatabasesAsync();
@@ -155,6 +180,9 @@ uiConfig: cfg =>
 {
     cfg.DocExpansion = "list";
 });
+app.UseResponseCompression();
+app.UseSentryMiddleware();
+app.UseDefaultExceptionHandler(logStructuredException: true);
 
 app.Run();
 

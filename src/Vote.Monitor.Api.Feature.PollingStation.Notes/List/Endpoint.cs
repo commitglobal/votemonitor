@@ -54,7 +54,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<List<NoteModel>>, BadReques
                 Id = m.Id,
                 Text = m.Text,
                 CreatedAt = m.CreatedOn,
-                UpdatedAt = m.Timestamp
+                UpdatedAt = m.LastModifiedOn
             })
             .ToList()
         );

@@ -36,7 +36,7 @@ public class CreateEndpointTests
                                                           && x.EnglishTitle == englishTitle
                                                           && x.StartDate == startDate));
 
-        var model = result.Result.As<Ok<ElectionRoundBaseModel>>();
+        var model = result.Result.As<Ok<ElectionRoundModel>>();
         model.Value.Title.Should().Be(electionRoundTitle);
         model.Value.EnglishTitle.Should().Be(englishTitle);
         model.Value.StartDate.Should().Be(startDate);
@@ -62,7 +62,7 @@ public class CreateEndpointTests
 
         // Assert
         result
-            .Should().BeOfType<Results<Ok<ElectionRoundBaseModel>, Conflict<ProblemDetails>>>()
+            .Should().BeOfType<Results<Ok<ElectionRoundModel>, Conflict<ProblemDetails>>>()
             .Which
             .Result.Should().BeOfType<Conflict<ProblemDetails>>();
     }

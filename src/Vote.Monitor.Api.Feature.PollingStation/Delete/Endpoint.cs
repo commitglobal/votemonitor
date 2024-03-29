@@ -1,28 +1,36 @@
 ﻿namespace Vote.Monitor.Api.Feature.PollingStation.Delete;
-public class Endpoint : Endpoint<Request, Results<NoContent, NotFound, ProblemDetails>>
+public class Endpoint(IRepository<PollingStationAggregate> repository,
+    IRepository<ElectionRoundAggregate> electionRoundRepository)
+    : Endpoint<Request, Results<NoContent, NotFound<ProblemDetails>, ProblemDetails>>
 {
-    private readonly IRepository<PollingStationAggregate> _repository;
-
-    public Endpoint(IRepository<PollingStationAggregate> repository)
-    {
-        _repository = repository;
-    }
-
     public override void Configure()
     {
-        Delete("/api/polling-stations/{id}");
+        Delete("/api/election-rounds/{electionRoundId}/polling-stations/{id}");
+        DontAutoTag();
+        Options(x => x.WithTags("polling-stations"));
     }
 
-    public override async Task<Results<NoContent, NotFound, ProblemDetails>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<Results<NoContent, NotFound<ProblemDetails>, ProblemDetails>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var pollingStation = await _repository.GetByIdAsync(req.Id, ct);
+        var electionRound = await electionRoundRepository.GetByIdAsync(req.ElectionRoundId, ct);
+        if (electionRound is null)
+        {
+            AddError(r => r.ElectionRoundId, "Election round not found");
+            return TypedResults.NotFound(new ProblemDetails(ValidationFailures));
+        }
+
+        var pollingStation = await repository.GetByIdAsync(req.Id, ct);
 
         if (pollingStation is null)
         {
-            return TypedResults.NotFound();
+            AddError(r => r.Id, "Polling station not found");
+            return TypedResults.NotFound(new ProblemDetails(ValidationFailures));
         }
 
-        await _repository.DeleteAsync(pollingStation, ct);
+        await repository.DeleteAsync(pollingStation, ct);
+
+        electionRound.UpdatePollingStationsVersion();
+        await electionRoundRepository.UpdateAsync(electionRound, ct);
 
         return TypedResults.NoContent();
     }

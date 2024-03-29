@@ -7,25 +7,22 @@ using Vote.Monitor.Domain.Entities.NgoAggregate;
 
 namespace Vote.Monitor.Api.Feature.Monitoring.AddObserver;
 
-public class Endpoint : Endpoint<Request, Results<Ok<MonitoringObserverModel>, NotFound<string>, Conflict<ProblemDetails>, ValidationProblem>>
+public class Endpoint : Endpoint<Request, Results<Ok<Response>, NotFound<string>, Conflict<ProblemDetails>, ValidationProblem>>
 {
     private readonly IRepository<ElectionRoundAggregate> _repository;
     private readonly IRepository<MonitoringNgo> _monitoringNgoRepository;
     private readonly IRepository<MonitoringObserver> _monitoringObserverRepository;
     private readonly IReadRepository<Observer> _observerRepository;
-    private readonly ITimeProvider _timeProvider;
 
     public Endpoint(IRepository<ElectionRoundAggregate> repository,
         IRepository<MonitoringNgoAggregate> monitoringNgoRepository,
         IReadRepository<ObserverAggregate> observerRepository,
-        IRepository<MonitoringObserver> monitoringObserverRepository, 
-        ITimeProvider timeProvider)
+        IRepository<MonitoringObserver> monitoringObserverRepository)
     {
         _repository = repository;
         _monitoringNgoRepository = monitoringNgoRepository;
         _observerRepository = observerRepository;
         _monitoringObserverRepository = monitoringObserverRepository;
-        _timeProvider = timeProvider;
     }
 
     public override void Configure()
@@ -35,7 +32,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<MonitoringObserverModel>, N
         Options(x => x.WithTags("monitoring"));
     }
 
-    public override async Task<Results<Ok<MonitoringObserverModel>, NotFound<string>, Conflict<ProblemDetails>, ValidationProblem>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<Results<Ok<Response>, NotFound<string>, Conflict<ProblemDetails>, ValidationProblem>> ExecuteAsync(Request req, CancellationToken ct)
     {
         var electionRound = await _repository.GetByIdAsync(req.ElectionRoundId, ct);
         if (electionRound is null)
@@ -43,7 +40,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<MonitoringObserverModel>, N
             return TypedResults.NotFound("Election round not found");
         }
 
-        var monitoringNgo = await _monitoringNgoRepository.SingleOrDefaultAsync(new GetMonitoringNgoSpecification(req.ElectionRoundId, req.MonitoringNgoId), ct);
+        var monitoringNgo = await _monitoringNgoRepository.SingleOrDefaultAsync(new GetMonitoringNgoWithObserversSpecification(req.ElectionRoundId, req.MonitoringNgoId), ct);
         if (monitoringNgo is null)
         {
             return TypedResults.NotFound("Monitoring NGO not found");
@@ -67,7 +64,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<MonitoringObserverModel>, N
             return TypedResults.ValidationProblem(ValidationFailures.ToValidationErrorDictionary());
         }
 
-        var monitoringObserver = monitoringNgo.AddMonitoringObserver(observer, _timeProvider);
+        var monitoringObserver = monitoringNgo.AddMonitoringObserver(observer);
         if (monitoringObserver is null)
         {
             AddError(x => x.ObserverId, "Observer is already registered as monitoring for this monitoring NGO.");
@@ -76,11 +73,11 @@ public class Endpoint : Endpoint<Request, Results<Ok<MonitoringObserverModel>, N
 
         await _monitoringObserverRepository.AddAsync(monitoringObserver, ct);
 
-        return TypedResults.Ok(new MonitoringObserverModel
+        return TypedResults.Ok(new Response
         {
             Id = monitoringObserver.Id,
             InviterNgoId = monitoringObserver.InviterNgoId,
-            Status = monitoringObserver.Status
+            ObserverId = observer.Id
         });
     }
 }

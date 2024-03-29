@@ -14,7 +14,7 @@ public class MonitoringNgo : AuditableBaseEntity, IAggregateRoot
 
     public MonitoringNgoStatus Status { get; private set; }
 
-    internal MonitoringNgo(ElectionRound electionRound, Ngo ngo, ITimeProvider timeProvider) : base(Guid.NewGuid(), timeProvider)
+    internal MonitoringNgo(ElectionRound electionRound, Ngo ngo) : base(Guid.NewGuid())
     {
         ElectionRound = electionRound;
         ElectionRoundId = electionRound.Id;
@@ -23,7 +23,7 @@ public class MonitoringNgo : AuditableBaseEntity, IAggregateRoot
         Status = MonitoringNgoStatus.Active;
     }
 
-    public virtual MonitoringObserver? AddMonitoringObserver(Observer observer, ITimeProvider timeProvider)
+    public virtual MonitoringObserver? AddMonitoringObserver(Observer observer)
     {
         MonitoringObservers ??= new List<MonitoringObserver>();
 
@@ -32,7 +32,7 @@ public class MonitoringNgo : AuditableBaseEntity, IAggregateRoot
             return null;
         }
 
-        var monitoringObserver = new MonitoringObserver( this, observer, timeProvider);
+        var monitoringObserver = new MonitoringObserver( this, observer);
         MonitoringObservers.Add(monitoringObserver);
 
         return monitoringObserver;

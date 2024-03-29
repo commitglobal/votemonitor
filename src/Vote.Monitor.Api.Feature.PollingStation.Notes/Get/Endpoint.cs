@@ -60,7 +60,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<NoteModel>, BadRequest<Prob
             Id = pollingStationNote.Id,
             Text = pollingStationNote.Text,
             CreatedAt = pollingStationNote.CreatedOn,
-            UpdatedAt = pollingStationNote.Timestamp
+            UpdatedAt = pollingStationNote.LastModifiedOn
         });
     }
 }

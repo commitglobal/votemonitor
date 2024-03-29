@@ -2,29 +2,41 @@
 
 namespace Vote.Monitor.Domain.Entities.PollingStationAttachmentAggregate;
 
-public class PollingStationAttachment : BaseEntity, IAggregateRoot
+public class PollingStationAttachment : AuditableBaseEntity, IAggregateRoot
 {
     public Guid ElectionRoundId { get; private set; }
     public ElectionRound ElectionRound { get; private set; }
+    public Guid PollingStationId { get; private set; }
+    public PollingStation PollingStation { get; private set; }
     public Guid MonitoringObserverId { get; private set; }
     public MonitoringObserver MonitoringObserver { get; private set; }
-    public string Filename { get; private set; }
+    public string FileName { get; private set; }
+    public string UploadedFileName { get; private set; }
+    public string FilePath { get; private set; }
     public string MimeType { get; private set; }
-    public DateTime Timestamp { get; private set; }
+    public bool IsDeleted { get; private set; }
 
     public PollingStationAttachment(ElectionRound electionRound,
+        PollingStation pollingStation,
         MonitoringObserver monitoringObserver,
-        string filename,
-        string mimeType,
-        ITimeProvider timeProvider) : base(Guid.NewGuid(), timeProvider)
+        string fileName,
+        string filePath,
+        string mimeType) : base(Guid.NewGuid())
     {
         ElectionRound = electionRound;
         ElectionRoundId = electionRound.Id;
+        PollingStationId = pollingStation.Id;
+        PollingStation = pollingStation;
         MonitoringObserver = monitoringObserver;
         MonitoringObserverId = monitoringObserver.Id;
-        Timestamp = timeProvider.UtcNow;
-        Filename = filename;
+        FileName = fileName;
+        FilePath = filePath;
         MimeType = mimeType;
+        IsDeleted = false;
+
+        var extension = FileName.Split('.').Last();
+        var uploadedFileName = $"{Id}.{extension}";
+        UploadedFileName = uploadedFileName;
     }
 
 #pragma warning disable CS8618 // Required by Entity Framework
@@ -33,4 +45,8 @@ public class PollingStationAttachment : BaseEntity, IAggregateRoot
     {
     }
 #pragma warning restore CS8618
+    public void Delete()
+    {
+        IsDeleted = true;
+    }
 }

@@ -21,7 +21,7 @@ public class CreateEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeede
     public async Task Should_CreatePollingStation_WhenValidRequestData()
     {
         // Arrange
-        var newPollingStation = Fixture.Fake.CreateRequest();
+        var newPollingStation = Fixture.Fake.CreateRequest(Fixture.ElectionRound);
 
         // Act
         var (createResponse, createResult) = await Fixture.PlatformAdmin.POSTAsync<CreateEndpoint, CreateRequest, PollingStationModel>(newPollingStation);
@@ -32,12 +32,13 @@ public class CreateEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeede
 
         var request = new GetRequest
         {
+            ElectionRoundId = Guid.NewGuid(),
             Id = createResult.Id
         };
         var (getResponse, pollingStation) = await Fixture.PlatformAdmin.GETAsync<GetEndpoint, GetRequest, PollingStationModel>(request);
 
         getResponse.IsSuccessStatusCode.Should().BeTrue();
-        pollingStation.Should().BeEquivalentTo(newPollingStation);
+        pollingStation.Should().BeEquivalentTo(newPollingStation, opt => opt.Excluding(x => x.ElectionRoundId));
         pollingStation.Id.Should().Be(createResult.Id);
     }
 
@@ -47,6 +48,7 @@ public class CreateEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeede
         // Arrange
         var newPollingStation = new CreateRequest
         {
+            ElectionRoundId = Guid.Empty,
             Address = "",
             DisplayOrder = -1,
             Tags = null
@@ -57,6 +59,6 @@ public class CreateEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeede
 
         // Assert
         createResponse.IsSuccessStatusCode.Should().BeFalse();
-        errorResponse.Errors.Count().Should().Be(3);
+        errorResponse.Errors.Count().Should().Be(6);
     }
 }

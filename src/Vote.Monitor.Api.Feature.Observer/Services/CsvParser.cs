@@ -84,6 +84,7 @@ public class CsvParser<T, TMapper> : ICsvParser<T> where T : class where TMapper
         }
         catch (HeaderValidationException ex)
         {
+            SentrySdk.CaptureException(ex);
             _logger.LogError(ex, "Cannot parse the header!");
             header.IsSuccess = false;
             header.ErrorMessage = "Cannot parse the header!";

@@ -1,4 +1,6 @@
-﻿namespace Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
+﻿using Vote.Monitor.Core.Security;
+
+namespace Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
 
 public class PlatformAdmin : ApplicationUser
 {
@@ -10,8 +12,7 @@ public class PlatformAdmin : ApplicationUser
 
     public PlatformAdmin(string name,
         string login,
-        string password,
-        ITimeProvider timeProvider) : base(name, login, password, UserRole.PlatformAdmin, timeProvider)
+        string password) : base(name, login, password, UserRole.PlatformAdmin)
     {
     }
 }

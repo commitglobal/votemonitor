@@ -22,7 +22,7 @@ public class Endpoint(IRepository<FormTemplateAggregate> repository, ITimeProvid
             return TypedResults.Conflict(new ProblemDetails(ValidationFailures));
         }
 
-        var formTemplate = FormTemplateAggregate.Create(req.FormTemplateType, req.Code, req.Name, req.Languages, timeProvider);
+        var formTemplate = FormTemplateAggregate.Create(req.FormTemplateType, req.Code, req.Name, req.Languages);
 
         await repository.AddAsync(formTemplate, ct);
 
@@ -34,7 +34,7 @@ public class Endpoint(IRepository<FormTemplateAggregate> repository, ITimeProvid
             Status = formTemplate.Status,
             CreatedOn = formTemplate.CreatedOn,
             LastModifiedOn = formTemplate.LastModifiedOn,
-            Sections = []
+            Questions = []
         });
     }
 }

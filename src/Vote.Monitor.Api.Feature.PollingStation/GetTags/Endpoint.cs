@@ -1,5 +1,5 @@
 ﻿namespace Vote.Monitor.Api.Feature.PollingStation.GetTags;
-public class Endpoint : EndpointWithoutRequest<List<string>>
+public class Endpoint : Endpoint<Request, List<string>>
 {
     private readonly VoteMonitorContext _context;
 
@@ -10,13 +10,16 @@ public class Endpoint : EndpointWithoutRequest<List<string>>
 
     public override void Configure()
     {
-        Get("/api/polling-stations/tags");
+        Get("/api/election-rounds/{electionRoundId}/polling-stations/tags");
+        DontAutoTag();
+        Options(x => x.WithTags("polling-stations", "obsolete"));
     }
 
-    public override async Task<List<string>> ExecuteAsync(CancellationToken ct)
+    public override async Task<List<string>> ExecuteAsync(Request req, CancellationToken ct)
     {
         var tags = await _context
               .PollingStations
+              .Where(x=>x.ElectionRoundId == req.ElectionRoundId)
               .Select(x => Postgres.Functions.ObjectKeys(x.Tags))
               .Distinct()
               .ToListAsync(cancellationToken: ct);

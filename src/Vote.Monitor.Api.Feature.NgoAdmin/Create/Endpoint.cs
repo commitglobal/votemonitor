@@ -32,7 +32,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<NgoAdminModel>, Conflict<Pr
             return TypedResults.Conflict(new ProblemDetails(ValidationFailures));
         }
 
-        var ngoAdmin = new NgoAdminAggregate(req.NgoId, req.Name, req.Login, req.Password, _timeProvider);
+        var ngoAdmin = new NgoAdminAggregate(req.NgoId, req.Name, req.Login, req.Password);
         await _repository.AddAsync(ngoAdmin, ct);
 
         return TypedResults.Ok(new NgoAdminModel

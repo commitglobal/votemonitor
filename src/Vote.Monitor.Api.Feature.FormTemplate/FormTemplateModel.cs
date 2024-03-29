@@ -17,6 +17,6 @@ public record FormTemplateModel
 
     public required DateTime CreatedOn { get; init; }
     public required DateTime? LastModifiedOn { get; init; }
-    public List<SectionModel> Sections { get; init; } = [];
+    public List<BaseQuestionModel> Questions { get; init; } = [];
     public List<string> Languages { get; init; } = [];
 }

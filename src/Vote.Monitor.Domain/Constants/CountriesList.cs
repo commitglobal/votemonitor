@@ -43,9 +43,7 @@ public record CountryDetails
 
     public Country ToEntity()
     {
-        // Set the time to first of January in order to not regenerate the migration every time.
-        var timeService = new FreezeTimeProvider(new DateTime(2024, 01, 01, 00, 00, 00, DateTimeKind.Utc));
-        return new Country(Name, FullName, Iso2, Iso3, NumericCode, timeService);
+        return new Country(Name, FullName, Iso2, Iso3, NumericCode);
     }
 }
 

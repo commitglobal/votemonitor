@@ -6,16 +6,16 @@ public class ListRequestValidatorTests
 
 
     [Fact]
-    public void Validation_ShouldFail_When_ObserverId_Empty()
+    public void Validation_ShouldFail_When_NgoId_Empty()
     {
         // Arrange
-        var request = new List.Request { ObserverId = Guid.Empty };
+        var request = new List.Request { NgoId = Guid.Empty };
 
         // Act
         var result = _validator.TestValidate(request);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.ObserverId);
+        result.ShouldHaveValidationErrorFor(x => x.NgoId);
     }
 
     [Fact]
@@ -38,7 +38,7 @@ public class ListRequestValidatorTests
         var request = new List.Request
         {
             ElectionRoundId = Guid.NewGuid(),
-            ObserverId = Guid.NewGuid()
+            NgoId = Guid.NewGuid()
         };
 
         // Act

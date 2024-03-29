@@ -48,7 +48,7 @@ public class ListEndpointTests
             .FirstOrDefaultAsync(Arg.Any<GetPollingStationSpecification>())
             .Returns(fakePollingStation);
 
-        var expected = new List<PollingStationNoteAggregate>()
+        var expected = new List<PollingStationNoteAggregate>
         {
             fakePollingStationNote, anotherFakePollingStationNote
         };

@@ -6,12 +6,12 @@ namespace Vote.Monitor.Domain.Entities.FormBase.Questions;
 
 [PolyJsonConverter(distriminatorPropertyName: "$questionType")]
 
-[PolyJsonConverter.SubType(typeof(TextQuestion), "textInputQuestion")]
-[PolyJsonConverter.SubType(typeof(NumberQuestion), "numberInputQuestion")]
-[PolyJsonConverter.SubType(typeof(DateQuestion), "dateInputQuestion")]
-[PolyJsonConverter.SubType(typeof(SingleSelectQuestion), "singleSelectQuestion")]
-[PolyJsonConverter.SubType(typeof(MultiSelectQuestion), "multiSelectQuestion")]
-[PolyJsonConverter.SubType(typeof(RatingQuestion), "ratingQuestion")]
+[PolyJsonConverter.SubType(typeof(TextQuestion), QuestionTypes.TextQuestionType)]
+[PolyJsonConverter.SubType(typeof(NumberQuestion), QuestionTypes.NumberQuestionType)]
+[PolyJsonConverter.SubType(typeof(DateQuestion), QuestionTypes.DateQuestionType)]
+[PolyJsonConverter.SubType(typeof(SingleSelectQuestion), QuestionTypes.SingleSelectQuestionType)]
+[PolyJsonConverter.SubType(typeof(MultiSelectQuestion), QuestionTypes.MultiSelectQuestionType)]
+[PolyJsonConverter.SubType(typeof(RatingQuestion), QuestionTypes.RatingQuestionType)]
 public abstract class BaseQuestion
 {
     [JsonPropertyName("$questionType")]

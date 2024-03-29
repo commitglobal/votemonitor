@@ -9,7 +9,7 @@ public class MultiSelectQuestion : BaseQuestion
     public IReadOnlyList<SelectOption> Options { get; private set; }
 
     [JsonConstructor]
-    private MultiSelectQuestion(Guid id,
+    internal MultiSelectQuestion(Guid id,
         string code,
         TranslatedString text,
         TranslatedString? helptext,

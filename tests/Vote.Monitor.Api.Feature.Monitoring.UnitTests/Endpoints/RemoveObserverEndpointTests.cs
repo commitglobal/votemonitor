@@ -35,7 +35,7 @@ public class RemoveObserverEndpointTests
         var repository = Substitute.For<IRepository<MonitoringNgoAggregate>>();
 
         repository
-            .FirstOrDefaultAsync(Arg.Any<GetMonitoringNgoSpecification>())
+            .FirstOrDefaultAsync(Arg.Any<GetMonitoringNgoWithObserversSpecification>())
             .Returns(monitoringNgo);
 
         var observersRepository = Substitute.For<IReadRepository<ObserverAggregate>>();
@@ -63,11 +63,11 @@ public class RemoveObserverEndpointTests
         var observer = new ObserverAggregateFaker(id: observerId).Generate();
         var ngo = new NgoAggregateFaker().Generate();
         var monitoringNgo = new MonitoringNgoAggregateFaker(ngo: ngo).Generate();
-        monitoringNgo.AddMonitoringObserver(observer, new CurrentUtcTimeProvider());
+        monitoringNgo.AddMonitoringObserver(observer);
 
         var repository = Substitute.For<IRepository<MonitoringNgoAggregate>>();
         repository
-            .FirstOrDefaultAsync(Arg.Any<GetMonitoringNgoSpecification>())
+            .FirstOrDefaultAsync(Arg.Any<GetMonitoringNgoWithObserversSpecification>())
             .Returns(monitoringNgo);
 
         var observersRepository = Substitute.For<IReadRepository<ObserverAggregate>>();

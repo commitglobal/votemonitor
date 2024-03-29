@@ -1,4 +1,6 @@
-﻿namespace Vote.Monitor.Api.Feature.Answers.Attachments.List;
+﻿using Vote.Monitor.Core.Security;
+
+namespace Vote.Monitor.Api.Feature.Answers.Attachments.List;
 
 public class Request
 {
@@ -8,6 +10,6 @@ public class Request
     public Guid FormId { get; set; }
     public Guid QuestionId { get; set; }
 
-    [FromClaim("Sub")]
+    [FromClaim(ApplicationClaimTypes.UserId)]
     public Guid ObserverId { get; set; }
 }

@@ -13,7 +13,9 @@ public class Endpoint : Endpoint<Request, Results<Ok<PollingStationModel>, NotFo
 
     public override void Configure()
     {
-        Get("/api/polling-stations/{id}");
+        Get("/api/election-rounds/{electionRoundId}/polling-stations/{id}");
+        DontAutoTag();
+        Options(x => x.WithTags("polling-stations"));
     }
 
     public override async Task<Results<Ok<PollingStationModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
@@ -28,6 +30,12 @@ public class Endpoint : Endpoint<Request, Results<Ok<PollingStationModel>, NotFo
         return TypedResults.Ok(new PollingStationModel
         {
             Id = pollingStation.Id,
+            Level1 = pollingStation.Level1,
+            Level2 = pollingStation.Level2,
+            Level3 = pollingStation.Level3,
+            Level4 = pollingStation.Level4,
+            Level5 = pollingStation.Level5,
+            Number = pollingStation.Number,
             Address = pollingStation.Address,
             DisplayOrder = pollingStation.DisplayOrder,
             Tags = pollingStation.Tags.ToDictionary()

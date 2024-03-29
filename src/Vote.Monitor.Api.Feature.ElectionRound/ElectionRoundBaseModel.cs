@@ -1,6 +1,6 @@
 ﻿namespace Vote.Monitor.Api.Feature.ElectionRound;
 
-public record ElectionRoundBaseModel
+public record ElectionRoundModel
 {
     public required Guid Id { get; init; }
     public required Guid CountryId { get; init; }

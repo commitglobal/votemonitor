@@ -1,14 +1,14 @@
-﻿using System.Security.Claims;
+﻿
+using System.Security.Claims;
 
 namespace Vote.Monitor.Core.Services.Security;
 
 public interface ICurrentUserProvider
 {
-    Guid GetUserId();
-
-    bool IsAuthenticated();
-
-    bool IsInRole(string role);
-
-    IEnumerable<Claim>? GetUserClaims();
+    ClaimsPrincipal User { get; }
+    Guid? GetUserId();
+    Guid? GetNgoId();
+    bool IsPlatformAdmin();
+    bool IsNgoAdmin();
+    bool IsObserver();
 }
