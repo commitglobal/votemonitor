@@ -1,12 +1,13 @@
 ﻿using System.Security.Claims;
 using Vote.Monitor.Core.Security;
-using ClaimTypes = Vote.Monitor.Core.Security.ClaimTypes;
 
 namespace Vote.Monitor.Core.Services.Security;
 
 public class CurrentUserProvider : ICurrentUserProvider, ICurrentUserInitializer
 {
     private ClaimsPrincipal? _user;
+    public ClaimsPrincipal? User=> _user;
+
     private Dictionary<string, IEnumerable<Claim>>? _claimsDict => _user?
         .Claims
         .GroupBy(c => c.Type)
@@ -19,7 +20,7 @@ public class CurrentUserProvider : ICurrentUserProvider, ICurrentUserInitializer
             return null;
         }
 
-        var userIdClaimsValue = GetClaimValue(_claimsDict, ClaimTypes.UserId);
+        var userIdClaimsValue = GetClaimValue(_claimsDict, ApplicationClaimTypes.UserId);
 
         if (string.IsNullOrWhiteSpace(userIdClaimsValue))
         {
@@ -36,7 +37,7 @@ public class CurrentUserProvider : ICurrentUserProvider, ICurrentUserInitializer
             return null;
         }
 
-        var ngoIdClaimValue = GetClaimValue(_claimsDict, ClaimTypes.NgoId);
+        var ngoIdClaimValue = GetClaimValue(_claimsDict, ApplicationClaimTypes.NgoId);
 
         if (string.IsNullOrWhiteSpace(ngoIdClaimValue))
         {

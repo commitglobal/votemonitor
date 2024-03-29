@@ -25,12 +25,16 @@ using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 using Vote.Monitor.Domain.Entities.NgoAggregate;
+using Vote.Monitor.Api.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.AddSentry();
+
 builder.Services.AddFastEndpoints();
 builder.Services.SwaggerDocument(o =>
 {
-    o.FlattenSchema = true;
+    o.FlattenSchema = true; 
     o.AutoTagPathSegmentIndex = 2;
     o.TagCase = TagCase.LowerCase;
 
@@ -44,6 +48,7 @@ builder.Services.SwaggerDocument(o =>
 
 builder.Services.AddMemoryCache();
 builder.Services.AddOptions();
+
 builder.Services.AddLogging(logging =>
     {
         Serilog.Debugging.SelfLog.Enable(Console.WriteLine);
@@ -53,7 +58,8 @@ builder.Services.AddLogging(logging =>
             .WriteTo.Console()
             .Enrich.FromLogContext()
             .Enrich.WithMachineName()
-            .Enrich.WithEnvironmentUserName();
+            .Enrich.WithEnvironmentUserName()
+            .WriteToSentry(builder.Configuration);
 
         var logger = Log.Logger = loggerConfiguration.CreateLogger();
 
@@ -112,7 +118,6 @@ builder.Services.AddResponseCompression(opts =>
     })
     .Configure<BrotliCompressionProviderOptions>(opt => opt.Level = CompressionLevel.Fastest)
     .Configure<GzipCompressionProviderOptions>(opt => opt.Level = CompressionLevel.Fastest);
-
 
 
 var app = builder.Build();
@@ -176,6 +181,7 @@ uiConfig: cfg =>
     cfg.DocExpansion = "list";
 });
 app.UseResponseCompression();
+app.UseSentryMiddleware();
 
 app.Run();
 

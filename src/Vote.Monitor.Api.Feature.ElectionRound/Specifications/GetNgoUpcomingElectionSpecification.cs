@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Vote.Monitor.Api.Feature.ElectionRound.Specifications;
+﻿namespace Vote.Monitor.Api.Feature.ElectionRound.Specifications;
 
 public sealed class GetNgoUpcomingElectionSpecification : Specification<ElectionRoundAggregate, ElectionRoundModel>
 {

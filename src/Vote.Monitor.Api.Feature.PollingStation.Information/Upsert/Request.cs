@@ -9,7 +9,7 @@ public class Request
 
     public Guid PollingStationId { get; set; }
 
-    [FromClaim(ClaimTypes.UserId)]
+    [FromClaim(ApplicationClaimTypes.UserId)]
     public Guid ObserverId { get; set; }
 
     public List<BaseAnswerRequest> Answers { get; set; } = [];

@@ -4,10 +4,10 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Logging;
 using Vote.Monitor.Api.Feature.Auth.Login;
 using Vote.Monitor.Api.Feature.ElectionRound;
+using Vote.Monitor.Core.Security;
 using Vote.Monitor.Core.Services.Security;
 using Vote.Monitor.Domain.Constants;
 using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
-using ClaimTypes = Vote.Monitor.Core.Security.ClaimTypes;
 using ElectionRoundCreateEndpoint = Vote.Monitor.Api.Feature.ElectionRound.Create.Endpoint;
 using ElectionRoundCreateRequest = Vote.Monitor.Api.Feature.ElectionRound.Create.Request;
 
@@ -39,7 +39,7 @@ public class HttpServerFixture<TDataSeeder> : WebApplicationFactory<Program>, IA
     public HttpClient PlatformAdmin { get; private set; }
     public ElectionRoundModel ElectionRound { get; private set; }
 
-    private readonly ClaimsPrincipal _integrationTestingUser = new([new ClaimsIdentity([new Claim(ClaimTypes.UserId, "007e57ed-7e57-7e57-7e57-007e57ed0000")],"fake")]);
+    private readonly ClaimsPrincipal _integrationTestingUser = new([new ClaimsIdentity([new Claim(ApplicationClaimTypes.UserId, "007e57ed-7e57-7e57-7e57-007e57ed0000")],"fake")]);
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
