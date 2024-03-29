@@ -1,11 +1,15 @@
 ﻿using Vote.Monitor.Api.Feature.PollingStation.Helpers;
 using Vote.Monitor.Api.Feature.PollingStation.Services;
+using Vote.Monitor.Core.Services.Security;
+using Vote.Monitor.Core.Services.Time;
 
 namespace Vote.Monitor.Api.Feature.PollingStation.Import;
 public class Endpoint(
     IRepository<ElectionRoundAggregate> electionRoundRepository,
     VoteMonitorContext context,
-    IPollingStationParser parser)
+    IPollingStationParser parser,
+    ITimeProvider timeProvider,
+    ICurrentUserProvider userProvider)
     : Endpoint<Request, Results<Ok<Response>, NotFound<ProblemDetails>, ProblemDetails>>
 {
     public override void Configure()
@@ -40,7 +44,7 @@ public class Endpoint(
 
         var entities = successResult!
         .PollingStations
-            .Select(x => new PollingStationAggregate(electionRound,
+            .Select(x => PollingStationAggregate.Create(electionRound,
                 x.Level1,
                 x.Level2,
                 x.Level3,
@@ -49,14 +53,17 @@ public class Endpoint(
                 x.Number,
                 x.Address,
                 x.DisplayOrder,
-                x.Tags.ToTagsObject()))
+                x.Tags.ToTagsObject(),
+                timeProvider.UtcNow,
+                userProvider.GetUserId()!.Value))
             .ToList();
 
         await context.BulkInsertAsync(entities, cancellationToken: ct);
+
         electionRound.UpdatePollingStationsVersion();
 
-        await context.BulkSaveChangesAsync(cancellationToken: ct);
-        
+        await electionRoundRepository.UpdateAsync(electionRound, cancellationToken: ct);
+
         return TypedResults.Ok(new Response { RowsImported = entities.Count });
     }
 }

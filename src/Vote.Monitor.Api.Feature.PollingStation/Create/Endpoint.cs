@@ -1,10 +1,14 @@
-﻿using Vote.Monitor.Api.Feature.PollingStation.Helpers;
+﻿using FirebaseAdmin.Auth;
+using Vote.Monitor.Api.Feature.PollingStation.Helpers;
 using Vote.Monitor.Api.Feature.PollingStation.Specifications;
+using Vote.Monitor.Core.Services.Security;
+using Vote.Monitor.Core.Services.Time;
 
 namespace Vote.Monitor.Api.Feature.PollingStation.Create;
-public class Endpoint(
-    IRepository<PollingStationAggregate> repository,
-    IRepository<ElectionRoundAggregate> electionRoundRepository)
+public class Endpoint(IRepository<PollingStationAggregate> repository,
+    IRepository<ElectionRoundAggregate> electionRoundRepository,
+    ITimeProvider timeProvider,
+    ICurrentUserProvider userProvider)
     : Endpoint<Request, Results<Ok<PollingStationModel>, Conflict<ProblemDetails>, NotFound<ProblemDetails>>>
 {
     public override void Configure()
@@ -32,7 +36,7 @@ public class Endpoint(
             return TypedResults.NotFound(new ProblemDetails(ValidationFailures));
         }
 
-        var pollingStation = new PollingStationAggregate(electionRound, 
+        var pollingStation = PollingStationAggregate.Create(electionRound, 
             req.Level1,
             req.Level2,
             req.Level3,
@@ -41,7 +45,9 @@ public class Endpoint(
             req.Number,
             req.Address,
             req.DisplayOrder, 
-            req.Tags.ToTagsObject());
+            req.Tags.ToTagsObject(),
+            timeProvider.UtcNow,
+            userProvider.GetUserId()!.Value);
 
         await repository.AddAsync(pollingStation, ct);
         electionRound.UpdatePollingStationsVersion();
