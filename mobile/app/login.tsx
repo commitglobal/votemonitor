@@ -1,8 +1,8 @@
 import { View } from "react-native";
 import { router } from "expo-router";
 import { useAuth } from "../hooks/useAuth";
-import { Button, Text } from "tamagui";
-import { Typography } from "../theme/Typography";
+import { Button } from "tamagui";
+import { Typography } from "../components/Typography";
 
 const Login = () => {
   const { signIn } = useAuth();

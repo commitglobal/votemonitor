@@ -21,7 +21,6 @@ export default function TabLayout() {
         headerShown: false,
         tabBarStyle: [$tabBar, { height: insets.bottom + 60 }],
         tabBarLabelStyle: $tabBarLabel,
-        tabBarItemStyle: $tabBarItem,
       }}
     >
       <Tabs.Screen
@@ -69,10 +68,7 @@ const $tabBar: ViewStyle = {
 
 const $tabBarLabel: TextStyle = {
   marginBottom: 4,
+  marginTop: -12,
   fontFamily: "Roboto",
   fontSize: 12,
-};
-
-const $tabBarItem: ViewStyle = {
-  paddingTop: 2,
 };

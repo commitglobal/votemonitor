@@ -57,8 +57,6 @@ const $baseStyle: StyleProp<TextStyle> = $sizeStyles.sm;
 const $presets = {
   default: $baseStyle,
 
-  bold: $baseStyle as StyleProp<TextStyle>,
-
   heading: { ...$baseStyle, ...$sizeStyles.xl } as StyleProp<TextStyle>,
 
   subheading: { ...$baseStyle, ...$sizeStyles.lg } as StyleProp<TextStyle>,
