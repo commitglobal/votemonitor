@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
+using Vote.Monitor.Core.Extensions;
 
 namespace Vote.Monitor.Api.Feature.PollingStation.FetchAll;
 public class Endpoint(VoteMonitorContext context, IMemoryCache cache) : Endpoint<Request, Results<Ok<Response>, NotFound>>
@@ -9,7 +10,8 @@ public class Endpoint(VoteMonitorContext context, IMemoryCache cache) : Endpoint
         DontAutoTag();
         Options(x => x.WithTags("polling-stations", "mobile"));
         Description(x => x.Accepts<Request>());
-        Summary(s => {
+        Summary(s =>
+        {
             s.Summary = "Gets all polling stations for a specific election round";
             s.Description = "Gets all polling stations and a cache key for the data";
         });
@@ -65,123 +67,58 @@ public class Endpoint(VoteMonitorContext context, IMemoryCache cache) : Endpoint
 
     private static List<LocationNode> GetLocationNodes(List<PollingStationModel> pollingStations)
     {
-        Dictionary<string, LocationNode> lvl1Cache = new();
-        Dictionary<string, LocationNode> lvl2Cache = new();
-        Dictionary<string, LocationNode> lvl3Cache = new();
-        Dictionary<string, LocationNode> lvl4Cache = new();
-        Dictionary<string, LocationNode> lvl5Cache = new();
-
+        Dictionary<string, LocationNode> cache = new();
         var result = new List<LocationNode>();
         int id = 0;
 
-        foreach (var pollingStation in pollingStations)
+        foreach (var ps in pollingStations)
         {
-            LocationNode currentParent = null;
-            if (!lvl1Cache.ContainsKey(pollingStation.Level1))
+            var parentNode = cache.GetOrCreate(BuildKey(ps.Level1), () => new LocationNode { Id = ++id, Name = ps.Level1 });
+            result.Add(parentNode);
+
+            if (!string.IsNullOrWhiteSpace(ps.Level2))
             {
-                currentParent = new LocationNode
-                {
-                    Id = ++id,
-                    Name = pollingStation.Level1
-                };
-                result.Add(currentParent);
-                lvl1Cache.TryAdd(pollingStation.Level1, currentParent);
-            }
-            else
-            {
-                currentParent = lvl1Cache[pollingStation.Level1];
+                var level2Key = BuildKey(ps.Level1, ps.Level2);
+                parentNode = cache.GetOrCreate(level2Key, () => new LocationNode { Id = ++id, Name = ps.Level2, ParentId = parentNode.Id });
+                result.Add(parentNode);
             }
 
-            if (!string.IsNullOrEmpty(pollingStation.Level2))
+            if (!string.IsNullOrWhiteSpace(ps.Level3))
             {
-                if (!lvl2Cache.ContainsKey(pollingStation.Level2))
-                {
-                    currentParent = new LocationNode
-                    {
-                        Id = ++id,
-                        Name = pollingStation.Level2,
-                        ParentId = lvl1Cache[pollingStation.Level1].Id
-                    };
-                    result.Add(currentParent);
-
-                    lvl2Cache.TryAdd(pollingStation.Level2, currentParent);
-                }
-                else
-                {
-                    currentParent = lvl2Cache[pollingStation.Level2];
-                }
+                var level3Key = BuildKey(ps.Level1, ps.Level2, ps.Level3);
+                parentNode = cache.GetOrCreate(level3Key, () => new LocationNode { Id = ++id, Name = ps.Level3, ParentId = parentNode.Id });
+                result.Add(parentNode);
             }
 
-            if (!string.IsNullOrEmpty(pollingStation.Level3))
+            if (!string.IsNullOrWhiteSpace(ps.Level4))
             {
-                if (!lvl3Cache.ContainsKey(pollingStation.Level3))
-                {
-                    currentParent = new LocationNode
-                    {
-                        Id = ++id,
-                        Name = pollingStation.Level3,
-                        ParentId = lvl2Cache[pollingStation.Level2].Id
-                    };
-
-                    result.Add(currentParent);
-                    lvl3Cache.TryAdd(pollingStation.Level3, currentParent);
-                }
-                else
-                {
-                    currentParent = lvl3Cache[pollingStation.Level3];
-                }
+                var level4Key = BuildKey(ps.Level1, ps.Level2, ps.Level3, ps.Level4);
+                parentNode = cache.GetOrCreate(level4Key, () => new LocationNode { Id = ++id, Name = ps.Level4, ParentId = parentNode.Id });
+                result.Add(parentNode);
             }
 
-            if (!string.IsNullOrEmpty(pollingStation.Level4))
+            if (!string.IsNullOrWhiteSpace(ps.Level5))
             {
-                if (!lvl4Cache.ContainsKey(pollingStation.Level4))
-                {
-                    currentParent = new LocationNode
-                    {
-                        Id = ++id,
-                        Name = pollingStation.Level4,
-                        ParentId = lvl3Cache[pollingStation.Level3].Id
-                    };
-
-                    result.Add(currentParent);
-                    lvl4Cache.TryAdd(pollingStation.Level4, currentParent);
-                }
-                else
-                {
-                    currentParent = lvl4Cache[pollingStation.Level4];
-                }
-            }
-
-            if (!string.IsNullOrEmpty(pollingStation.Level5))
-            {
-                if (!lvl5Cache.ContainsKey(pollingStation.Level5))
-                {
-                    currentParent = new LocationNode
-                    {
-                        Id = ++id,
-                        Name = pollingStation.Level5,
-                        ParentId = lvl4Cache[pollingStation.Level4].Id
-                    };
-
-                    result.Add(currentParent);
-                    lvl5Cache.Add(pollingStation.Level5, currentParent);
-                }
-                else
-                {
-                    currentParent = lvl5Cache[pollingStation.Level5];
-                }
+                var level5Key = BuildKey(ps.Level1, ps.Level2, ps.Level3, ps.Level4, ps.Level5);
+                parentNode = cache.GetOrCreate(level5Key, () => new LocationNode { Id = ++id, Name = ps.Level5, ParentId = parentNode.Id });
+                result.Add(parentNode);
             }
 
             result.Add(new LocationNode
             {
                 Id = ++id,
-                Name = pollingStation.Address,
-                ParentId = currentParent!.Id,
-                Number = pollingStation.Number,
-                PollingStationId = pollingStation.Id
+                Name = ps.Address,
+                ParentId = parentNode!.Id,
+                Number = ps.Number,
+                PollingStationId = ps.Id
             });
         }
 
         return result;
+    }
+
+    private static string BuildKey(params string[] keyParts)
+    {
+        return string.Join("-", keyParts);
     }
 }
