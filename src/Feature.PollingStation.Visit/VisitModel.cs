@@ -1,5 +1,4 @@
-﻿
-namespace Feature.PollingStation.Visit;
+﻿namespace Feature.PollingStation.Visit;
 
 public record VisitModel
 {

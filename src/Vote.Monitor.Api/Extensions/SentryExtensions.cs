@@ -28,8 +28,11 @@ public static class SentryExtensions
             .WithMetrics(metrics =>
             {
                 metrics
+                    .AddAspNetCoreInstrumentation()
+                    .AddProcessInstrumentation()
                     .AddRuntimeInstrumentation() // <-- Requires the OpenTelemetry.Instrumentation.Runtime package
                                                  // Collect some of the built-in ASP.NET Core metrics
+                    .AddProcessInstrumentation()
                     .AddBuiltInMeters();
             });
 
