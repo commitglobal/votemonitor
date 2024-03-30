@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Vote.Monitor.Domain.Constants;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Domain.Entities.PollingStationInfoAggregate;
 
@@ -9,6 +10,8 @@ public class PollingStationInformationConfiguration : IEntityTypeConfiguration<P
 {
     public void Configure(EntityTypeBuilder<PollingStationInformation> builder)
     {
+        builder.ToTable(Tables.PollingStationInformation);
+
         builder.HasKey(x => x.Id);
 
         builder.HasOne(x => x.ElectionRound)

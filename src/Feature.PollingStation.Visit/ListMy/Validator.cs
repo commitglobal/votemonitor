@@ -1,6 +1,4 @@
-﻿using FluentValidation;
-
-namespace Feature.PollingStation.Visit.ListMy;
+﻿namespace Feature.PollingStation.Visit.ListMy;
 
 public class Validator : Validator<Request>
 {
