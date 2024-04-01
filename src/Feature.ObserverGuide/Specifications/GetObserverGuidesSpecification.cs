@@ -10,6 +10,7 @@ public sealed class GetObserverGuidesSpecification : Specification<ObserverGuide
             .ThenInclude(x=> x.MonitoringObservers)
             .Where(x => x.MonitoringNgo
                 .MonitoringObservers
-                .Any(y=> y.ObserverId == observerId));
+                .Any(y=> y.ObserverId == observerId) 
+            && !x.IsDeleted);
     }
 }

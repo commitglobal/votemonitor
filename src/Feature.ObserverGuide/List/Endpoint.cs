@@ -22,14 +22,24 @@ public class Endpoint(IAuthorizationService authorizationService,
 
     public override async Task<Results<Ok<Response>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var authorizationResult = await authorizationService.AuthorizeAsync(User, new MonitoringObserverRequirement(req.ElectionRoundId));
+        var authorizationResult = await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminOrObserverRequirement(req.ElectionRoundId));
         if (!authorizationResult.Succeeded)
         {
             return TypedResults.NotFound();
         }
 
-        var specification = new GetObserverGuidesSpecification(currentUserProvider.GetUserId());
-        var observerGuides = await repository.ListAsync(specification, ct);
+        var observerGuides = new List<ObserverGuideAggregate>();
+
+        if (currentUserProvider.IsObserver())
+        {
+            var specification = new GetObserverGuidesSpecification(currentUserProvider.GetUserId());
+            observerGuides = await repository.ListAsync(specification, ct);
+        }
+        else if (currentUserProvider.IsNgoAdmin())
+        {
+            var specification = new GetObserverGuidesForNgoAdminSpecification(currentUserProvider.GetNgoId());
+            observerGuides = await repository.ListAsync(specification, ct);
+        }
 
         var observerGuideModels = observerGuides
             .Select(async observerGuide =>
