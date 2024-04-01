@@ -13,5 +13,6 @@ public sealed class GetPollingStationInformationForNgoSpecification : Specificat
             .ApplyOrdering(request)
             .Paginate(request);
 
+         Query.Select(x => PollingStationInformationModel.FromEntity(x));
     }
 }
