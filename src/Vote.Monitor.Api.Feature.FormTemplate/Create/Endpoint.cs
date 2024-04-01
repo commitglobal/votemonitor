@@ -30,6 +30,7 @@ public class Endpoint(IRepository<FormTemplateAggregate> repository) :
         {
             Id = formTemplate.Id,
             Code = formTemplate.Code,
+            Languages = formTemplate.Languages.ToList(),
             DefaultLanguage = formTemplate.DefaultLanguage,
             Name = formTemplate.Name,
             Status = formTemplate.Status,

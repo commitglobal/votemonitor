@@ -6,7 +6,7 @@ import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import { useTranslation } from 'react-i18next';
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
-import {  useMemo } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 export interface PreviewSingleSelectQuestionProps {
   languageCode: string;
@@ -36,16 +36,23 @@ function PreviewSingleSelectQuestion({
     }
   });
 
-  const selectedOptionId = form.watch("selection.optionId");
+  const [freeTextSelected, setFreeTextSelected] = useState(
+    !!answer && !question.options.find((c) => c.id === answer.selection.optionId && c.isFreeText === true)
+  );
 
-  const freeTextOptions = useMemo(() => {
-    const freeTextOptions: { [optionId: string]: string } = {};
-    question.options.filter(o => o.isFreeText).forEach(o => {
-      freeTextOptions[o.id] = o.id;
-    });
+  const regularOptions = useMemo(() => {
+    if (!question.options) {
+      return [];
+    }
+    const regularOptions = question.options.filter((option) => !option.isFreeText);
+    return regularOptions;
+  }, [question.options]);
 
-    return freeTextOptions;
-  }, [question]);
+  // Currently we only support one free text option
+  const freeTextOption = useMemo(
+    () => question.options.find((option) => option.isFreeText),
+    [question.options]
+  );
 
   return (
     <Form {...form}>
@@ -58,36 +65,48 @@ function PreviewSingleSelectQuestion({
               <FormLabel>{question.text[languageCode]}</FormLabel>
               <FormControl>
                 <RadioGroup
-                  onValueChange={field.onChange}
+                  onValueChange={(value) => {
+                    field.onChange(value);
+                    setFreeTextSelected(value === freeTextOption?.id);
+                  }}
                   defaultValue={field.value}
                   className="flex flex-col space-y-1"
                 >
-                  {question.options.map(option => (<FormItem className="flex items-center space-x-3 space-y-0" key={option.id}>
+                  {regularOptions?.map(option => (<FormItem className="flex items-center space-x-3 space-y-0" key={option.id}>
                     <FormControl>
                       <RadioGroupItem value={option.id} />
                     </FormControl>
                     <FormLabel className="font-normal">{option.text[languageCode]}</FormLabel>
                   </FormItem>))}
+
+                  {!!freeTextOption &&
+                    <FormItem className="flex items-center space-x-3 space-y-0" key={freeTextOption.id}>
+                      <FormControl>
+                        <RadioGroupItem value={freeTextOption.id} />
+                      </FormControl>
+                      <FormLabel className="font-normal">{freeTextOption.text[languageCode]}</FormLabel>
+                    </FormItem>
+                  }
                 </RadioGroup>
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-
-        {!!selectedOptionId && !!freeTextOptions[selectedOptionId] && <FormField
-          control={form.control}
-          name='selection.text'
-          defaultValue=''
-          render={({ field }) => (
-            <FormItem className='sm:col-span-2'>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />}
+        {freeTextSelected &&
+          <FormField
+            control={form.control}
+            name="selection.text"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Username</FormLabel>
+                <FormControl>
+                  <Input placeholder={t("app.input.pleaseSpecify")} {...field} defaultValue={field.value}/>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />}
 
         <div className="mt-4 flex w-full justify-between">
           {!isFirstQuestion && (

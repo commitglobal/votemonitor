@@ -1,5 +1,5 @@
 @hostAddress=https://localhost:7123
-@jwtToken=eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3NzFiMGJiMC0zZjg3LTQ3YTAtYmM2NC0wODc4ZTIwNzAzNzQiLCJyb2xlIjoiUGxhdGZvcm1BZG1pbiIsImV4cCI6MTcxMTQzODU5NywiaWF0IjoxNzExMzUyMTk3LCJuYmYiOjE3MTEzNTIxOTd9.Zr1sGkp5G2sSVe83U_gqKUaKEgBPImaJuWtfulYcnxs
+@jwtToken=eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3NzFiMGJiMC0zZjg3LTQ3YTAtYmM2NC0wODc4ZTIwNzAzNzQiLCJyb2xlIjoiUGxhdGZvcm1BZG1pbiIsImV4cCI6MTcxMjA0MTkzMiwiaWF0IjoxNzExOTU1NTMyLCJuYmYiOjE3MTE5NTU1MzJ9.Ag5a-RhzeIQk1CkVqba2thZJkrRcD-G44Llzco9awyo
 
 # List form templates
 GET {{hostAddress}}/api/form-templates
@@ -16,7 +16,7 @@ Content-Type: application/json
 Authorization: Bearer {{jwtToken}}
 
 {
-  "code": "A6",
+  "code": "A",
   "defaultLanguage": "RO",
   "languages": [
     "RO"
@@ -35,7 +35,7 @@ Content-Type: application/json
 Authorization: Bearer {{jwtToken}}
 
 {
-  "code": "A6",
+  "code": "A",
   "defaultLanguage": "RO",
   "languages": [
     "RO",

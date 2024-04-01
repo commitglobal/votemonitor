@@ -21,7 +21,6 @@ function PreviewForm({ languageCode, localQuestions, activeQuestionId, setActive
     const [responseData, setResponseData] = useState<ResponseData>({});
 
     useEffect(() => {
-        console.log('eff');
         const id = activeQuestionId || localQuestions[0]?.id;
         setQuestionId(id);
     }, [activeQuestionId, localQuestions]);

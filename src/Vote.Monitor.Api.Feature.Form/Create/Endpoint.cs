@@ -11,7 +11,7 @@ public class Endpoint(IRepository<FormAggregate> repository,
 {
     public override void Configure()
     {
-        Post("/api/election-rounds/{electionRoundId}/monitoring-ngo/{monitoringNgo}/forms");
+        Post("/api/election-rounds/{electionRoundId}/monitoring-ngo/{monitoringNgoId}/forms");
         DontAutoTag();
         Options(x => x.WithTags("forms"));
     }

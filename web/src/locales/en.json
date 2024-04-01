@@ -38,5 +38,6 @@
   "form-template.placeholder.name": "Form name",
   "navigation.button.next": "Next",
   "navigation.button.back": "Back",
-  "navigation.button.submit": "Submit"
+  "navigation.button.submit": "Submit",
+  "app.input.pleaseSpecify": "Please specify"
 }
