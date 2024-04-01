@@ -11,7 +11,7 @@
     <PackageReference Include="Ardalis.SmartEnum.SystemTextJson" Version="8.0.0" />
     <PackageReference Include="Ardalis.Specification" Version="8.0.0" />
     <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.7.300" />
-    <PackageReference Include="AWSSDK.S3" Version="3.7.307.5" />
+    <PackageReference Include="AWSSDK.S3" Version="3.7.307.6" />
     <PackageReference Include="CsvHelper" Version="31.0.2" />
     <PackageReference Include="FastEndpoints" Version="5.23.0" />
     <PackageReference Include="FirebaseAdmin" Version="2.4.0" />
