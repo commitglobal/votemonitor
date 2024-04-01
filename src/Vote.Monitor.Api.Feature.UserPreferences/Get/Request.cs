@@ -4,6 +4,6 @@ namespace Vote.Monitor.Api.Feature.UserPreferences.Get;
 
 public class Request
 {
-    [FromClaim(ClaimTypes.UserId)]
+    [FromClaim(ApplicationClaimTypes.UserId)]
     public Guid Id { get; set; }
 }

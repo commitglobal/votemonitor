@@ -20,8 +20,6 @@ internal class AnswerAttachmentConfiguration : IEntityTypeConfiguration<AnswerAt
             .HasMaxLength(256)
             .IsRequired();
 
-        builder.Property(x => x.Timestamp);
-
         builder.HasOne(x => x.ElectionRound)
             .WithMany()
             .HasForeignKey(x => x.ElectionRoundId);

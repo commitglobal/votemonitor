@@ -1,5 +1,10 @@
-﻿using Authorization.Policies;
+﻿using System.IO.Compression;
+using System.Text.Json.Serialization;
+using Authorization.Policies;
+using Feature.ObserverGuide;
 using Feature.PollingStation.Information.Form;
+using Feature.PollingStation.Visit;
+using Microsoft.AspNetCore.ResponseCompression;
 using NSwag;
 using Vote.Monitor.Api.Feature.Answers.Attachments;
 using Vote.Monitor.Api.Feature.Answers.Notes;
@@ -22,12 +27,16 @@ using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 using Vote.Monitor.Domain.Entities.NgoAggregate;
+using Vote.Monitor.Api.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.AddSentry();
+
 builder.Services.AddFastEndpoints();
 builder.Services.SwaggerDocument(o =>
 {
-    o.FlattenSchema = true;
+    o.FlattenSchema = true; 
     o.AutoTagPathSegmentIndex = 2;
     o.TagCase = TagCase.LowerCase;
 
@@ -39,7 +48,9 @@ builder.Services.SwaggerDocument(o =>
     };
 });
 
+builder.Services.AddMemoryCache();
 builder.Services.AddOptions();
+
 builder.Services.AddLogging(logging =>
     {
         Serilog.Debugging.SelfLog.Enable(Console.WriteLine);
@@ -49,7 +60,8 @@ builder.Services.AddLogging(logging =>
             .WriteTo.Console()
             .Enrich.FromLogContext()
             .Enrich.WithMachineName()
-            .Enrich.WithEnvironmentUserName();
+            .Enrich.WithEnvironmentUserName()
+            .WriteToSentry(builder.Configuration);
 
         var logger = Log.Logger = loggerConfiguration.CreateLogger();
 
@@ -95,8 +107,21 @@ builder.Services.AddEmergencyAttachmentsFeature();
 builder.Services.AddPollingStationInformationFeature();
 builder.Services.AddFormFeature();
 builder.Services.AddPollingStationInformationFormFeature();
+builder.Services.AddObserverGuideFeature();
+builder.Services.AddPollingStationVisitFeature();
 
 builder.Services.AddAuthorization();
+
+builder.Services.AddResponseCompression(opts =>
+    {
+        opts.EnableForHttps = true;
+        opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] { "application/octet-stream" }).ToArray();
+        opts.Providers.Add<BrotliCompressionProvider>();
+        opts.Providers.Add<GzipCompressionProvider>();
+    })
+    .Configure<BrotliCompressionProviderOptions>(opt => opt.Level = CompressionLevel.Fastest)
+    .Configure<GzipCompressionProviderOptions>(opt => opt.Level = CompressionLevel.Fastest);
+
 
 var app = builder.Build();
 await app.Services.InitializeDatabasesAsync();
@@ -123,6 +148,8 @@ app.UseFastEndpoints(x =>
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<MonitoringNgoStatus, string>());
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<MonitoringObserverStatus, string>());
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<RatingScale, string>());
+
+    x.Serializer.Options.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
 });
 
 app.UseSwaggerGen(
@@ -158,6 +185,9 @@ uiConfig: cfg =>
 {
     cfg.DocExpansion = "list";
 });
+app.UseResponseCompression();
+app.UseSentryMiddleware();
+app.UseDefaultExceptionHandler(logStructuredException: true);
 
 app.Run();
 

@@ -15,8 +15,7 @@ public class Observer : ApplicationUser
     public Observer(string name,
         string login,
         string password,
-        string phoneNumber,
-        ITimeProvider timeProvider) : base(name, login, password, UserRole.Observer, timeProvider)
+        string phoneNumber) : base(name, login, password, UserRole.Observer)
     {
         PhoneNumber = phoneNumber;
     }

@@ -13,20 +13,17 @@ public class Endpoint : Endpoint<Request, Results<Ok<AttachmentModel>, BadReques
     private readonly IRepository<ElectionRound> _electionRoundRepository;
     private readonly IRepository<PollingStationAggregate> _pollingStationRepository;
     private readonly IRepository<MonitoringObserver> _monitoringObserverRepository;
-    private readonly ITimeProvider _timeProvider;
 
     public Endpoint(IRepository<PollingStationAttachmentAggregate> repository,
         IFileStorageService fileStorageService,
         IRepository<ElectionRound> electionRoundRepository,
         IRepository<PollingStationAggregate> pollingStationRepository,
-        IRepository<MonitoringObserver> monitoringObserverRepository,
-        ITimeProvider timeProvider)
+        IRepository<MonitoringObserver> monitoringObserverRepository)
     {
         _repository = repository;
         _electionRoundRepository = electionRoundRepository;
         _pollingStationRepository = pollingStationRepository;
         _monitoringObserverRepository = monitoringObserverRepository;
-        _timeProvider = timeProvider;
         _fileStorageService = fileStorageService;
     }
 
@@ -34,8 +31,11 @@ public class Endpoint : Endpoint<Request, Results<Ok<AttachmentModel>, BadReques
     {
         Post("/api/election-rounds/{electionRoundId}/polling-stations/{pollingStationId}/attachments");
         DontAutoTag();
-        Options(x => x.WithTags("attachments"));
+        Options(x => x.WithTags("attachments", "mobile"));
         AllowFileUploads();
+        Summary(s => {
+            s.Summary = "Uploads an attachment for a specific polling station";
+        });
     }
 
     public override async Task<Results<Ok<AttachmentModel>, BadRequest<ProblemDetails>, StatusCodeHttpResult>> ExecuteAsync(Request req, CancellationToken ct)
@@ -73,8 +73,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<AttachmentModel>, BadReques
             monitoringObserver,
             req.Attachment.FileName,
             uploadPath,
-            req.Attachment.ContentType,
-            _timeProvider);
+            req.Attachment.ContentType);
         
         var uploadResult = await _fileStorageService.UploadFileAsync(uploadPath,
             fileName: pollingStationAttachment.UploadedFileName,

@@ -7,10 +7,10 @@ namespace Vote.Monitor.Api.Feature.PollingStation.Information;
 public record PollingStationInformationModel
 {
     public required Guid Id { get; init; }
-    public required DateTime CreatedAt { get; init; }
-    public required DateTime? UpdatedAt { get; init; }
-    public IReadOnlyList<BaseAnswerModel> Answers { get; set; }
 
+    public required DateTime? ArrivalTime { get; set; }
+    public required DateTime? DepartureTime { get; set; }
+    public IReadOnlyList<BaseAnswerModel> Answers { get; set; }
 
     public static PollingStationInformationModel FromEntity(PollingStationInformation entity) => new()
     {
@@ -18,7 +18,8 @@ public record PollingStationInformationModel
         Answers = entity.Answers
             .Select(AnswerMapper.ToModel)
             .ToList(),
-        CreatedAt = entity.CreatedOn,
-        UpdatedAt = entity.LastModifiedOn
+
+        ArrivalTime = entity.ArrivalTime,
+        DepartureTime = entity.DepartureTime
     };
 }

@@ -22,7 +22,10 @@ public class Endpoint : Endpoint<Request, Results<Ok<List<NoteModel>>, BadReques
     {
         Get("/api/election-rounds/{electionRoundId}/polling-stations/{pollingStationId}/notes");
         DontAutoTag();
-        Options(x => x.WithTags("notes"));
+        Options(x => x.WithTags("notes", "mobile"));
+        Summary(s => {
+            s.Summary = "Lists notes for a polling station";
+        });
     }
 
     public override async Task<Results<Ok<List<NoteModel>>, BadRequest<ProblemDetails>>> ExecuteAsync(Request req, CancellationToken ct)
@@ -54,7 +57,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<List<NoteModel>>, BadReques
                 Id = m.Id,
                 Text = m.Text,
                 CreatedAt = m.CreatedOn,
-                UpdatedAt = m.Timestamp
+                UpdatedAt = m.LastModifiedOn
             })
             .ToList()
         );

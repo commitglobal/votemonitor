@@ -9,8 +9,11 @@ public class Request
 
     public Guid PollingStationId { get; set; }
 
-    [FromClaim(ClaimTypes.UserId)]
+    [FromClaim(ApplicationClaimTypes.UserId)]
     public Guid ObserverId { get; set; }
+
+    public DateTime? ArrivalTime { get; set; }
+    public DateTime? DepartureTime { get; set; }
 
     public List<BaseAnswerRequest> Answers { get; set; } = [];
 }

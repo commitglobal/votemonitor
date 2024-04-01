@@ -50,25 +50,25 @@ internal class LocalDiskFileStorageService : IFileStorageService
         }
     }
 
-    public async Task<GetPresignedUrlResult> GetPresignedUrlAsync(string uploadPath, string filename, CancellationToken ct = default)
+    public async Task<GetPresignedUrlResult> GetPresignedUrlAsync(string uploadPath, string fileName, CancellationToken ct = default)
     {
         try
         {
             await Task.CompletedTask;
 
-            var fullPath = Path.Combine(_options.Path, uploadPath, filename);
+            var fullPath = Path.Combine(_options.Path, uploadPath, fileName);
 
             if (!File.Exists(fullPath))
             {
                 return new GetPresignedUrlResult.NotFound();
             }
 
-            return new GetPresignedUrlResult.Ok(fullPath, filename, UrlValidityInSeconds);
+            return new GetPresignedUrlResult.Ok(fullPath, fileName, UrlValidityInSeconds);
 
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Could not get presigned url for file {uploadPath} {filename}", uploadPath, filename);
+            _logger.LogError(e, "Could not get presigned url for file {uploadPath} {filename}", uploadPath, fileName);
             return new GetPresignedUrlResult.Failed($"Failed to generate presigned url for LocalDisk: {e.Message}");
         }
     }

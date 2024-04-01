@@ -9,7 +9,6 @@ using NSubstitute.ReturnsExtensions;
 using Vote.Monitor.Api.Feature.PollingStation.Attachments.Create;
 using Vote.Monitor.Api.Feature.PollingStation.Attachments.Specifications;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
-using Vote.Monitor.Core.Services.Time;
 using Vote.Monitor.Domain.Entities.ElectionRoundAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 using Vote.Monitor.Domain.Repository;
@@ -20,7 +19,6 @@ namespace Vote.Monitor.Api.Feature.PollingStation.Attachments.UnitTests.Endpoint
 
 public class CreateEndpointTests
 {
-    private readonly ITimeProvider _timeService;
     private readonly IRepository<PollingStationAttachmentAggregate> _repository;
     private readonly IFileStorageService _fileStorageService;
     private readonly IRepository<ElectionRound> _electionRoundRepository;
@@ -30,7 +28,6 @@ public class CreateEndpointTests
 
     public CreateEndpointTests()
     {
-        _timeService = Substitute.For<ITimeProvider>();
         _repository = Substitute.For<IRepository<PollingStationAttachmentAggregate>>();
         _fileStorageService = Substitute.For<IFileStorageService>();
         _electionRoundRepository = Substitute.For<IRepository<ElectionRound>>();
@@ -40,8 +37,7 @@ public class CreateEndpointTests
             _fileStorageService,
             _electionRoundRepository,
             _pollingStationRepository,
-            _monitoringObserverRepository,
-            _timeService);
+            _monitoringObserverRepository);
     }
 
     [Fact]

@@ -10,6 +10,6 @@ public class Request
     public Guid FormId { get; set; }
     public Guid QuestionId { get; set; }
 
-    [FromClaim(ClaimTypes.UserId)]
+    [FromClaim(ApplicationClaimTypes.UserId)]
     public Guid ObserverId { get; set; }
 }

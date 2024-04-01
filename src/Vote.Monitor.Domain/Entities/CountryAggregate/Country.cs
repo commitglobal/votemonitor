@@ -40,13 +40,14 @@ public class Country : BaseEntity, IAggregateRoot
         string fullName, 
         string iso2, 
         string iso3, 
-        string numericCode,
-        ITimeProvider timeProvider) : base(iso2.ToGuid(), timeProvider)
+        string numericCode) : base(iso2.ToGuid())
     {
         Name = name;
         FullName = fullName;
         Iso2 = iso2;
         Iso3 = iso3;
         NumericCode = numericCode;
+
+        CreatedOn = new DateTime(2024, 01, 01, 00, 00, 00, DateTimeKind.Utc);
     }
 }

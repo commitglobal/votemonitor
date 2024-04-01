@@ -10,8 +10,8 @@ public class MonitoringObserver : AuditableBaseEntity, IAggregateRoot
     public MonitoringNgo InviterNgo { get; private set; }
     public MonitoringObserverStatus Status { get; private set; }
 
-    internal MonitoringObserver(MonitoringNgo inviterNgo, Observer observer, ITimeProvider timeProvider)
-        : base(Guid.NewGuid(), timeProvider)
+    internal MonitoringObserver(MonitoringNgo inviterNgo, Observer observer)
+        : base(Guid.NewGuid())
     {
         InviterNgoId = inviterNgo.Id;
         InviterNgo = inviterNgo;
@@ -21,8 +21,8 @@ public class MonitoringObserver : AuditableBaseEntity, IAggregateRoot
         Status = MonitoringObserverStatus.Active;
     }
 
-    internal MonitoringObserver(Guid id, MonitoringNgo inviterNgo, Observer observer, ITimeProvider timeProvider)
-        : base(id, timeProvider)
+    internal MonitoringObserver(Guid id, MonitoringNgo inviterNgo, Observer observer)
+        : base(id)
     {
         InviterNgoId = inviterNgo.Id;
         InviterNgo = inviterNgo;

@@ -3,7 +3,7 @@ using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 
 namespace Vote.Monitor.Domain.Entities.AnswerNoteAggregate;
 
-public class AnswerNote: BaseEntity, IAggregateRoot
+public class AnswerNote : AuditableBaseEntity, IAggregateRoot
 {
     public Guid ElectionRoundId { get; private set; }
     public ElectionRound ElectionRound { get; private set; }
@@ -13,14 +13,12 @@ public class AnswerNote: BaseEntity, IAggregateRoot
     public Guid MonitoringObserverId { get; private set; }
     public MonitoringObserver MonitoringObserver { get; private set; }
     public string Text { get; private set; }
-    public DateTime Timestamp { get; private set; }
 
     internal AnswerNote(ElectionRound electionRound,
         Form form,
         Guid questionId,
         MonitoringObserver monitoringObserver,
-        string text,
-        ITimeProvider timeProvider) : base(Guid.NewGuid(), timeProvider)
+        string text) : base(Guid.NewGuid())
     {
         ElectionRound = electionRound;
         ElectionRoundId = electionRound.Id;
@@ -29,14 +27,12 @@ public class AnswerNote: BaseEntity, IAggregateRoot
         QuestionId = questionId;
         MonitoringObserver = monitoringObserver;
         MonitoringObserverId = monitoringObserver.Id;
-        Timestamp = timeProvider.UtcNow;
         Text = text;
     }
 
-    public void Update(string text, ITimeProvider timeProvider)
+    public void Update(string text)
     {
         Text = text;
-        Timestamp = timeProvider.UtcNow;
     }
 
 #pragma warning disable CS8618 // Required by Entity Framework

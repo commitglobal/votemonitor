@@ -1,5 +1,6 @@
 ﻿using Vote.Monitor.Api.Feature.PollingStation.Helpers;
 using Vote.Monitor.Api.Feature.PollingStation.Services;
+using Vote.Monitor.Core.Services.Security;
 using Vote.Monitor.Core.Services.Time;
 
 namespace Vote.Monitor.Api.Feature.PollingStation.Import;
@@ -7,7 +8,8 @@ public class Endpoint(
     IRepository<ElectionRoundAggregate> electionRoundRepository,
     VoteMonitorContext context,
     IPollingStationParser parser,
-    ITimeProvider timeProvider)
+    ITimeProvider timeProvider,
+    ICurrentUserProvider userProvider)
     : Endpoint<Request, Results<Ok<Response>, NotFound<ProblemDetails>, ProblemDetails>>
 {
     public override void Configure()
@@ -23,7 +25,7 @@ public class Endpoint(
         var electionRound = await electionRoundRepository.GetByIdAsync(req.ElectionRoundId, ct);
         if (electionRound is null)
         {
-            AddError(r => r.ElectionRoundId, "A polling station with same address and tags exists");
+            AddError(r => r.ElectionRoundId, "Election round not found");
             return TypedResults.NotFound(new ProblemDetails(ValidationFailures));
         }
 
@@ -42,12 +44,25 @@ public class Endpoint(
 
         var entities = successResult!
         .PollingStations
-            .Select(x => new PollingStationAggregate(electionRound, x.Address, x.DisplayOrder, x.Tags.ToTagsObject(), timeProvider))
+            .Select(x => PollingStationAggregate.Create(electionRound,
+                x.Level1,
+                x.Level2,
+                x.Level3,
+                x.Level4,
+                x.Level5,
+                x.Number,
+                x.Address,
+                x.DisplayOrder,
+                x.Tags.ToTagsObject(),
+                timeProvider.UtcNow,
+                userProvider.GetUserId()!.Value))
             .ToList();
 
-        await context.PollingStations.BatchDeleteAsync(cancellationToken: ct);
         await context.BulkInsertAsync(entities, cancellationToken: ct);
-        await context.BulkSaveChangesAsync(cancellationToken: ct);
+
+        electionRound.UpdatePollingStationsVersion();
+
+        await electionRoundRepository.UpdateAsync(electionRound, cancellationToken: ct);
 
         return TypedResults.Ok(new Response { RowsImported = entities.Count });
     }

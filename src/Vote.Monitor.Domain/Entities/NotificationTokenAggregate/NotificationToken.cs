@@ -1,25 +1,22 @@
 ﻿namespace Vote.Monitor.Domain.Entities.NotificationTokenAggregate;
 
-public class NotificationToken : BaseEntity, IAggregateRoot
+public class NotificationToken : AuditableBaseEntity, IAggregateRoot
 {
     public Guid ObserverId { get; private set; }
-    public DateTime Timestamp { get; private set; }
     public string Token { get; private set; }
 
-    public static NotificationToken Create(Guid observerId, string token, ITimeProvider timeProvider)
-        => new(observerId, timeProvider.UtcNow, token, timeProvider);
+    public static NotificationToken Create(Guid observerId, string token)
+        => new(observerId, token);
 
-    private NotificationToken(Guid observerId, DateTime timestamp, string token, ITimeProvider timeProvider) : base(Guid.NewGuid(), timeProvider)
+    private NotificationToken(Guid observerId, string token) : base(Guid.NewGuid())
     {
         ObserverId = observerId;
-        Timestamp = timestamp;
         Token = token;
     }
 
-    public void Update(string token, ITimeProvider timeProvider)
+    public void Update(string token)
     {
         Token = token;
-        Timestamp = timeProvider.UtcNow;
     }
 
 #pragma warning disable CS8618 // Required by Entity Framework

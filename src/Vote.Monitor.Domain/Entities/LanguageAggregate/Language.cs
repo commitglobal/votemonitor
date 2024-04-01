@@ -27,12 +27,13 @@ public class Language : BaseEntity, IAggregateRoot
 
     public Language(string name,
         string nativeName,
-        string iso1,
-        ITimeProvider timeProvider) : base(iso1.ToGuid(), timeProvider)
+        string iso1) : base(iso1.ToGuid())
     {
         Id = iso1.ToGuid();
         Name = name;
         NativeName = nativeName;
         Iso1 = iso1;
+
+        CreatedOn = new DateTime(2024, 01, 01, 00, 00, 00, DateTimeKind.Utc);
     }
 }

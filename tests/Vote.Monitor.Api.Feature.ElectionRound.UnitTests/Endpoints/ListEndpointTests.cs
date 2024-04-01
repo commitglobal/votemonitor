@@ -22,7 +22,7 @@ public class ListEndpointTests
         // Assert
         result
             .Should()
-            .BeOfType<Results<Ok<PagedResponse<ElectionRoundBaseModel>>, ProblemDetails>>();
+            .BeOfType<Results<Ok<PagedResponse<ElectionRoundModel>>, ProblemDetails>>();
 
         await repository.Received(1).ListAsync(Arg.Any<ListElectionRoundsSpecification>());
         await repository.Received(1).CountAsync(Arg.Any<ListElectionRoundsSpecification>());
@@ -59,12 +59,12 @@ public class ListEndpointTests
 
         // Assert
         result
-            .Should().BeOfType<Results<Ok<PagedResponse<ElectionRoundBaseModel>>, ProblemDetails>>()
+            .Should().BeOfType<Results<Ok<PagedResponse<ElectionRoundModel>>, ProblemDetails>>()
             .Which
-            .Result.Should().BeOfType<Ok<PagedResponse<ElectionRoundBaseModel>>>()
+            .Result.Should().BeOfType<Ok<PagedResponse<ElectionRoundModel>>>()
             .Which.Value.Should().NotBeNull();
 
-        var pagedResult = result.Result.As<Ok<PagedResponse<ElectionRoundBaseModel>>>()!.Value!;
+        var pagedResult = result.Result.As<Ok<PagedResponse<ElectionRoundModel>>>()!.Value!;
 
         pagedResult.PageSize.Should().Be(pageSize);
         pagedResult.CurrentPage.Should().Be(numberOfItems);

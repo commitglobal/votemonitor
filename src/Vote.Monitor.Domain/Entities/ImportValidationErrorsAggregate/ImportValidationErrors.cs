@@ -9,7 +9,7 @@ public class ImportValidationErrors : AuditableBaseEntity, IAggregateRoot
     }
 #pragma warning restore CS8618
 
-    public ImportValidationErrors(ImportType importType, string originalFileName, string data, ITimeProvider timeProvider) : base(Guid.NewGuid(), timeProvider)
+    public ImportValidationErrors(ImportType importType, string originalFileName, string data) : base(Guid.NewGuid())
     {
         ImportType = importType;
         OriginalFileName = originalFileName;

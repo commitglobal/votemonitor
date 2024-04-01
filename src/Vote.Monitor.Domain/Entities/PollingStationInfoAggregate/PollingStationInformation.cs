@@ -14,6 +14,9 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
     public MonitoringObserver MonitoringObserver { get; private set; }
     public Guid PollingStationInformationFormId { get; private set; }
     public PollingStationInformationForm PollingStationInformationForm { get; private set; }
+    public DateTime? ArrivalTime { get; set; }
+    public DateTime? DepartureTime { get; set; }
+
     public IReadOnlyList<BaseAnswer> Answers { get; private set; } = new List<BaseAnswer>().AsReadOnly();
 
     private PollingStationInformation(
@@ -21,8 +24,9 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
         PollingStation pollingStation,
         MonitoringObserver monitoringObserver,
         PollingStationInformationForm pollingStationInformationForm,
-        List<BaseAnswer> answers,
-        ITimeProvider timeProvider) : base(Guid.NewGuid(), timeProvider)
+        DateTime? arrivalTime,
+        DateTime? departureTime,
+        List<BaseAnswer> answers) : base(Guid.NewGuid())
     {
         ElectionRound = electionRound;
         ElectionRoundId = electionRound.Id;
@@ -32,6 +36,8 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
         MonitoringObserverId = monitoringObserver.Id;
         PollingStationInformationForm = pollingStationInformationForm;
         PollingStationInformationFormId = pollingStationInformationForm.Id;
+        ArrivalTime = arrivalTime;
+        DepartureTime = departureTime;
         Answers = answers.ToList().AsReadOnly();
     }
 
@@ -40,12 +46,15 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
         PollingStation pollingStation,
         MonitoringObserver monitoringObserver,
         PollingStationInformationForm pollingStationInformationForm,
-        List<BaseAnswer> answers,
-        ITimeProvider timeProvider) =>
-        new(electionRound, pollingStation, monitoringObserver, pollingStationInformationForm, answers, timeProvider);
+        DateTime? arrivalTime,
+        DateTime? departureTime,
+        List<BaseAnswer> answers) =>
+        new(electionRound, pollingStation, monitoringObserver, pollingStationInformationForm, arrivalTime, departureTime, answers);
 
-    internal void UpdateDetails(IEnumerable<BaseAnswer> answers)
+    internal void UpdateDetails(DateTime? arrivalTime, DateTime? departureTime, IEnumerable<BaseAnswer> answers)
     {
+        ArrivalTime = arrivalTime;
+        DepartureTime = departureTime;
         Answers = answers.ToList().AsReadOnly();
     }
 

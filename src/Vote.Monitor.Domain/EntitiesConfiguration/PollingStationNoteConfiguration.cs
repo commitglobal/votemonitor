@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Vote.Monitor.Domain.Constants;
 using Vote.Monitor.Domain.Entities.PollingStationNoteAggregate;
 
 namespace Vote.Monitor.Domain.EntitiesConfiguration;
@@ -7,6 +8,8 @@ internal class PollingStationNoteConfiguration : IEntityTypeConfiguration<Pollin
 {
     public void Configure(EntityTypeBuilder<PollingStationNote> builder)
     {
+        builder.ToTable(Tables.PollingStationNotes);
+
         builder.HasKey(x => x.Id);
         builder.Property(x => x.Id).IsRequired();
         builder.HasIndex(x => x.ElectionRoundId);
@@ -15,8 +18,6 @@ internal class PollingStationNoteConfiguration : IEntityTypeConfiguration<Pollin
         builder.Property(x => x.Text)
             .HasMaxLength(10000)
             .IsRequired();
-
-        builder.Property(x => x.Timestamp);
 
         builder.HasOne(x => x.ElectionRound)
             .WithMany()

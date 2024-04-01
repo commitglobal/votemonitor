@@ -4,7 +4,7 @@ namespace Vote.Monitor.Api.Feature.Notifications.Subscribe;
 
 public class Request
 {
-    [FromClaim(ClaimTypes.UserId)]
+    [FromClaim(ApplicationClaimTypes.UserId)]
     public Guid ObserverId { get; set; }
 
     public string Token { get; set; }

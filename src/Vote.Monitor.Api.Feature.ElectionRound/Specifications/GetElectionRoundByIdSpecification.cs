@@ -23,20 +23,7 @@ public sealed class GetElectionRoundByIdSpecification : SingleResultSpecificatio
             Status = electionRound.Status,
             StartDate = electionRound.StartDate,
             LastModifiedOn = electionRound.LastModifiedOn,
-            CreatedOn = electionRound.CreatedOn,
-
-            MonitoringNgos = electionRound.MonitoringNgos.Select(ngo => new MonitoringNgoModel
-            {
-                NgoId = ngo.NgoId,
-                Name = ngo.Ngo.Name,
-                Status = ngo.Ngo.Status,
-                MonitoringObservers = ngo.MonitoringObservers.Select(observer => new MonitoringObserverModel
-                {
-                    ObserverId = observer.ObserverId,
-                    Name = observer.Observer.Name,
-                    Status = observer.Observer.Status
-                }).ToList(),
-            }).ToList()
+            CreatedOn = electionRound.CreatedOn
         });
     }
 }

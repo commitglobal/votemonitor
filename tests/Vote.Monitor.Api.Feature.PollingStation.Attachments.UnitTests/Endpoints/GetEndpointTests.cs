@@ -36,7 +36,7 @@ public class GetEndpointTests
     }
 
     [Fact]
-    public async Task ShouldReturnOkWithNoteModel_WhenAllIdsExist()
+    public async Task ShouldReturnOkWithAttachmentModel_WhenAllIdsExist()
     {
         // Arrange
         var attachmentId = Guid.NewGuid();

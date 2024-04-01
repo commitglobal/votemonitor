@@ -9,7 +9,10 @@ public class Endpoint(IReadRepository<PollingStationInformation> repository) : E
     {
         Get("/api/election-rounds/{electionRoundId}/information:my");
         DontAutoTag();
-        Options(x => x.WithTags("polling-station-information"));
+        Options(x => x.WithTags("polling-station-information", "mobile"));
+        Summary(s => {
+            s.Summary = "Gets all polling station information by an observer";
+        });
     }
 
     public override async Task<Ok<Response>> ExecuteAsync(Request req, CancellationToken ct)

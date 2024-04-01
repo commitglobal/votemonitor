@@ -22,7 +22,11 @@ public class Endpoint : Endpoint<Request, Results<Ok<NoteModel>, NotFound, BadRe
     {
         Put("/api/election-rounds/{electionRoundId}/polling-stations/{pollingStationId}/notes/{id}");
         DontAutoTag();
-        Options(x => x.WithTags("notes"));
+        Options(x => x.WithTags("notes", "mobile"));
+        Summary(s =>
+        {
+            s.Summary = "Updates a note for a polling station";
+        });
     }
 
     public override async Task<Results<Ok<NoteModel>, NotFound, BadRequest<ProblemDetails>>> ExecuteAsync(Request req, CancellationToken ct)
@@ -64,7 +68,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<NoteModel>, NotFound, BadRe
             Id = pollingStationNote.Id,
             Text = pollingStationNote.Text,
             CreatedAt = pollingStationNote.CreatedOn,
-            UpdatedAt = pollingStationNote.Timestamp
+            UpdatedAt = pollingStationNote.LastModifiedOn
         });
     }
 }

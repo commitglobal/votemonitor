@@ -17,8 +17,7 @@ public class PollingStationInformationForm : AuditableBaseEntity, IAggregateRoot
     private PollingStationInformationForm(
         ElectionRound electionRound,
         IEnumerable<string> languages,
-        List<BaseQuestion> questions,
-        ITimeProvider timeProvider) : base(Guid.NewGuid(), timeProvider)
+        List<BaseQuestion> questions) : base(Guid.NewGuid())
     {
         ElectionRound = electionRound;
         ElectionRoundId = electionRound.Id;
@@ -27,8 +26,7 @@ public class PollingStationInformationForm : AuditableBaseEntity, IAggregateRoot
     }
     private PollingStationInformationForm(
         ElectionRound electionRound,
-        IEnumerable<string> languages,
-        ITimeProvider timeProvider) : this(electionRound, languages, [], timeProvider)
+        IEnumerable<string> languages) : this(electionRound, languages, [])
     {
     }
 
@@ -36,14 +34,14 @@ public class PollingStationInformationForm : AuditableBaseEntity, IAggregateRoot
         ElectionRound electionRound,
         IEnumerable<string> languages,
         ITimeProvider timeProvider) =>
-        new(electionRound, languages, timeProvider);
+        new(electionRound, languages);
 
     public static PollingStationInformationForm Create(
         ElectionRound electionRound,
         IEnumerable<string> languages,
         List<BaseQuestion> questions,
         ITimeProvider timeProvider) =>
-        new(electionRound, languages, questions, timeProvider);
+        new(electionRound, languages, questions);
 
     public void UpdateDetails(IEnumerable<string> languages, IEnumerable<BaseQuestion> questions)
     {
@@ -53,13 +51,16 @@ public class PollingStationInformationForm : AuditableBaseEntity, IAggregateRoot
 
     public PollingStationInformation CreatePollingStationInformation(PollingStation pollingStation,
         MonitoringObserver monitoringObserver,
-        List<BaseAnswer> answers,
-        ITimeProvider timeProvider)
+        DateTime? arrivalTime,
+        DateTime? departureTime,
+        List<BaseAnswer> answers)
     {
-        return PollingStationInformation.Create(ElectionRound, pollingStation, monitoringObserver, this, answers, timeProvider);
+        return PollingStationInformation.Create(ElectionRound, pollingStation, monitoringObserver, this, arrivalTime, departureTime, answers);
     }
 
     public void FillIn(PollingStationInformation filledInForm,
+        DateTime? arrivalTime,
+        DateTime? departureTime,
         List<BaseAnswer> answers)
     {
         var validationResult = AnswersValidator.GetValidationResults(answers, Questions);
@@ -69,7 +70,7 @@ public class PollingStationInformationForm : AuditableBaseEntity, IAggregateRoot
             throw new ValidationException(validationResult.Errors);
         }
 
-        filledInForm.UpdateDetails(answers);
+        filledInForm.UpdateDetails(arrivalTime, departureTime, answers);
     }
 
 #pragma warning disable CS8618 // Required by Entity Framework
