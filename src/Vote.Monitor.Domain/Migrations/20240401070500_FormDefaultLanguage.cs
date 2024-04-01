@@ -5,7 +5,7 @@
 namespace Vote.Monitor.Domain.Migrations
 {
     /// <inheritdoc />
-    public partial class AddDefaultLanguageToFormTemplates : Migration
+    public partial class FormDefaultLanguage : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

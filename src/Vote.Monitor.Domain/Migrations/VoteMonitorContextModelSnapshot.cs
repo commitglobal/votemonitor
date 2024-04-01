@@ -4808,6 +4808,34 @@ namespace Vote.Monitor.Domain.Migrations
                     b.ToTable("PollingStationNotes", (string)null);
                 });
 
+            modelBuilder.Entity("Vote.Monitor.Domain.ViewModels.PollingStationVisitViewModel", b =>
+                {
+                    b.Property<Guid>("ElectionRoundId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("MonitoringNgoId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("MonitoringObserverId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("NgoId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ObserverId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("PollingStationId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("VisitedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.ToTable((string)null);
+
+                    b.ToView("PollingStationVisits", (string)null);
+                });
+
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.ApplicationUserAggregate.NgoAdmin", b =>
                 {
                     b.HasBaseType("Vote.Monitor.Domain.Entities.ApplicationUserAggregate.ApplicationUser");

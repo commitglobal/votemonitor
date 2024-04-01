@@ -3,7 +3,7 @@ using Vote.Monitor.Core.Services.Time;
 
 namespace Vote.Monitor.Api.Feature.FormTemplate.Create;
 
-public class Endpoint(IRepository<FormTemplateAggregate> repository, ITimeProvider timeProvider) :
+public class Endpoint(IRepository<FormTemplateAggregate> repository) :
         Endpoint<Request, Results<Ok<FormTemplateSlimModel>, Conflict<ProblemDetails>>>
 {
     public override void Configure()
@@ -22,7 +22,7 @@ public class Endpoint(IRepository<FormTemplateAggregate> repository, ITimeProvid
             return TypedResults.Conflict(new ProblemDetails(ValidationFailures));
         }
 
-        var formTemplate = FormTemplateAggregate.Create(req.FormTemplateType, req.Code, req.DefaultLanguage, req.Name, req.Languages, timeProvider);
+        var formTemplate = FormTemplateAggregate.Create(req.FormTemplateType, req.Code, req.DefaultLanguage, req.Name, req.Languages);
 
         await repository.AddAsync(formTemplate, ct);
 
