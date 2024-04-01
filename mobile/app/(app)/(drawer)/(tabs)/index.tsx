@@ -13,7 +13,15 @@ const Index = () => {
       <StatusBar barStyle="light-content" />
       <Text>Observation</Text>
       <OfflinePersistComponentExample></OfflinePersistComponentExample>
-      <Button onPress={() => router.push("/wizzard")}>Go To Wizzard</Button>
+      <Button onPress={() => router.push("/polling-station-wizzard/1")}>
+        Go To Polling station wizzard
+      </Button>
+      <Button onPress={() => router.push("/form-questionnaire/1")}>
+        Go Form wizzard
+      </Button>
+      <Button onPress={() => router.push("/polling-station-questionnaire")}>
+        Go To Polling Station Qustionnaire
+      </Button>
       <Text onPress={signOut}>Logout</Text>
     </View>
   );

@@ -13,7 +13,9 @@ const AppLayout = () => {
   return (
     <Stack>
       <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
-      <Stack.Screen name="wizzard" />
+      <Stack.Screen name="polling-station-wizzard" />
+      <Stack.Screen name="form-questionnaire" />
+      <Stack.Screen name="polling-station-questionnaire" />
     </Stack>
   );
 };

@@ -1,9 +1,7 @@
 import { View } from "react-native";
-import { router } from "expo-router";
-import { Button } from "tamagui";
 import { Typography } from "../../components/Typography";
 
-const Wizzard = () => {
+const PollingStationQuestionnaire = () => {
   return (
     <View
       style={{
@@ -13,9 +11,9 @@ const Wizzard = () => {
         gap: 20,
       }}
     >
-      <Typography>This is the wizzard</Typography>
+      <Typography>This is the polling station questionnaire</Typography>
     </View>
   );
 };
 
-export default Wizzard;
+export default PollingStationQuestionnaire;
