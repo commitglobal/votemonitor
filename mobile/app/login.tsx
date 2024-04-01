@@ -30,7 +30,7 @@ const Login = () => {
         paddingHorizontal="$xl"
         height={"auto"}
         paddingVertical="$lg"
-        backgroundColor={"$yellow2"}
+        backgroundColor="$yellow2"
         onPress={() => {
           router.push("/forgot-password");
         }}
