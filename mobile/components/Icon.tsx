@@ -1,23 +1,30 @@
 import * as React from "react";
-import { ComponentType } from "react";
-import {
-  Image,
-  ImageStyle,
-  StyleProp,
-  TouchableOpacity,
-  TouchableOpacityProps,
-  View,
-  ViewProps,
-  ViewStyle,
-} from "react-native";
+import EyeOff from "../assets/icons/Eye off.svg";
+import Eye from "../assets/icons/Eye.svg";
+import Observation from "../assets/icons/observation.svg";
+import QuickReport from "../assets/icons/quick-report.svg";
+import Learning from "../assets/icons/Learning.svg";
+import Inbox from "../assets/icons/Inbox.svg";
+import More from "../assets/icons/More.svg";
+import ChevronRight from "../assets/icons/Chevron right.svg";
+import ChevronLeft from "../assets/icons/Chevron left.svg";
+import AddNote from "../assets/icons/add-note.svg";
+import Trash from "../assets/icons/Trash.svg";
+import Logout from "../assets/icons/logout.svg";
+import PencilAlt from "../assets/icons/Pencil alt.svg";
+import XCircle from "../assets/icons/x-circle.svg";
+import MenuAlt2 from "../assets/icons/menu-alt-2.svg";
+import DotsVertical from "../assets/icons/dots-vertical.svg";
 
-export type IconTypes = keyof typeof iconRegistry;
+import { styled } from "tamagui";
+import { View } from "tamagui";
+import { StyleProp, ViewStyle } from "react-native";
 
-interface IconProps extends TouchableOpacityProps {
+interface IconProps {
   /**
    * The name of the icon
    */
-  icon: IconTypes;
+  icon: string;
 
   /**
    * An optional tint color for the icon
@@ -30,19 +37,9 @@ interface IconProps extends TouchableOpacityProps {
   size?: number;
 
   /**
-   * Style overrides for the icon image
+   * Style overrides for the view container
    */
-  style?: StyleProp<ImageStyle>;
-
-  /**
-   * Style overrides for the icon container
-   */
-  containerStyle?: StyleProp<ViewStyle>;
-
-  /**
-   * An optional function to be called when the icon is pressed
-   */
-  onPress?: TouchableOpacityProps["onPress"];
+  style?: StyleProp<ViewStyle>;
 }
 
 /**
@@ -52,43 +49,115 @@ interface IconProps extends TouchableOpacityProps {
  * @param {IconProps} props - The props for the `Icon` component.
  * @returns {JSX.Element} The rendered `Icon` component.
  */
-export function Icon(props: IconProps) {
+
+type IconRegistry = {
+  [key: string]: React.ReactNode;
+};
+
+export const defaultIcon = (props: IconProps) => {
   const {
     icon,
     color,
     size,
-    style: $imageStyleOverride,
-    containerStyle: $containerStyleOverride,
-    ...WrapperProps
+    style: $viewStyleOverride,
+    ...tamaguiProps
   } = props;
 
-  const isPressable = !!WrapperProps.onPress;
-  const Wrapper = (
-    WrapperProps?.onPress ? TouchableOpacity : View
-  ) as ComponentType<TouchableOpacityProps | ViewProps>;
+  const iconRegistry: IconRegistry = {
+    eyeOff: (
+      <EyeOff fill={color || "black"} width={size || 24} height={size || 24} />
+    ),
+    eye: <Eye fill={color || "black"} width={size || 24} height={size || 24} />,
+    observation: (
+      <Observation
+        fill={color || "black"}
+        width={size || 24}
+        height={size || 24}
+      />
+    ),
 
-  const $imageStyle: StyleProp<ImageStyle> = [
-    $imageStyleBase,
-    color !== undefined && { tintColor: color },
-    size !== undefined && { width: size, height: size },
-    $imageStyleOverride,
-  ];
+    quickReport: (
+      <QuickReport
+        fill={color || "black"}
+        width={size || 24}
+        height={size || 24}
+      />
+    ),
+    learning: (
+      <Learning
+        fill={color || "black"}
+        width={size || 24}
+        height={size || 24}
+      />
+    ),
+    inbox: (
+      <Inbox fill={color || "black"} width={size || 24} height={size || 24} />
+    ),
+    more: (
+      <More fill={color || "black"} width={size || 24} height={size || 24} />
+    ),
+    chevronRight: (
+      <ChevronRight
+        fill={color || "black"}
+        width={size || 24}
+        height={size || 24}
+      />
+    ),
+    chevronLeft: (
+      <ChevronLeft
+        fill={color || "black"}
+        width={size || 24}
+        height={size || 24}
+      />
+    ),
+    addNote: (
+      <AddNote fill={color || "black"} width={size || 24} height={size || 24} />
+    ),
+    trash: (
+      <Trash fill={color || "black"} width={size || 24} height={size || 24} />
+    ),
+    logout: (
+      <Logout fill={color || "black"} width={size || 24} height={size || 24} />
+    ),
+    pencilAlt: (
+      <PencilAlt
+        fill={color || "black"}
+        width={size || 24}
+        height={size || 24}
+      />
+    ),
+    xCircle: (
+      <XCircle fill={color || "black"} width={size || 24} height={size || 24} />
+    ),
+    menuAlt2: (
+      <MenuAlt2
+        fill={color || "black"}
+        width={size || 24}
+        height={size || 24}
+      />
+    ),
+    dotsVertical: (
+      <DotsVertical
+        fill={color || "black"}
+        width={size || 24}
+        height={size || 24}
+      />
+    ),
+  };
 
   return (
-    <Wrapper
-      accessibilityRole={isPressable ? "imagebutton" : undefined}
-      {...WrapperProps}
-      style={$containerStyleOverride}
-    >
-      <Image style={$imageStyle} source={iconRegistry[icon]} />
-    </Wrapper>
+    <View {...tamaguiProps} style={$viewStyleOverride}>
+      {iconRegistry[icon]}
+    </View>
   );
-}
-
-export const iconRegistry = {
-  back: require("../../assets/icons/back.png"),
 };
 
-const $imageStyleBase: ImageStyle = {
-  resizeMode: "contain",
-};
+export const Icon = styled(
+  defaultIcon,
+  {},
+  {
+    accept: {
+      color: "color",
+    },
+  }
+);
