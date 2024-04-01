@@ -6,7 +6,7 @@ import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import { useTranslation } from 'react-i18next';
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
 
 export interface PreviewSingleSelectQuestionProps {
   languageCode: string;
@@ -32,12 +32,15 @@ function PreviewSingleSelectQuestion({
     resolver: zodResolver(SingleSelectAnswerSchema),
     defaultValues: answer ?? {
       questionId: question.id,
-      $answerType: AnswerType.SingleSelectAnswerType
+      $answerType: AnswerType.SingleSelectAnswerType,
+      selection: {
+        text: ''
+      }
     }
   });
 
   const [freeTextSelected, setFreeTextSelected] = useState(
-    !!answer && !question.options.find((c) => c.id === answer.selection.optionId && c.isFreeText === true)
+    !!answer && !question.options.find((c) => c.id === answer.selection?.optionId && c.isFreeText === true)
   );
 
   const regularOptions = useMemo(() => {
@@ -99,9 +102,8 @@ function PreviewSingleSelectQuestion({
             name="selection.text"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Username</FormLabel>
                 <FormControl>
-                  <Input placeholder={t("app.input.pleaseSpecify")} {...field} defaultValue={field.value}/>
+                  <Input {...field} placeholder={t("app.input.pleaseSpecify")}/>
                 </FormControl>
                 <FormMessage />
               </FormItem>

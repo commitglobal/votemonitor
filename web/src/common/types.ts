@@ -119,41 +119,41 @@ export type BaseAnswer = z.infer<typeof BaseAnswerSchema>;
 export const TextAnswerSchema = BaseAnswerSchema.extend({
   $answerType: z.literal(AnswerType.TextAnswerType),
   text: z.string().optional()
-})
+});
 export type TextAnswer = z.infer<typeof TextAnswerSchema>;
 
 export const NumberAnswerSchema = BaseAnswerSchema.extend({
   $answerType: z.literal(AnswerType.NumberAnswerType),
   value: z.coerce.number().optional()
-})
+});
 export type NumberAnswer = z.infer<typeof NumberAnswerSchema>;
 
 export const DateAnswerSchema = BaseAnswerSchema.extend({
   $answerType: z.literal(AnswerType.DateAnswerType),
   date: z.string().optional()
-})
+});
 export type DateAnswer = z.infer<typeof DateAnswerSchema>;
 
 export const RatingAnswerSchema = BaseAnswerSchema.extend({
   $answerType: z.literal(AnswerType.RatingAnswerType),
   value: z.coerce.number().optional()
-})
+});
 export type RatingAnswer = z.infer<typeof RatingAnswerSchema>;
 
 export const SelectedOptionSchema = z.object({
-  optionId: z.string(),
+  optionId: z.string().optional(),
   text: z.string().optional()
 });
 export type SelectedOption = z.infer<typeof SelectedOptionSchema>;
 
 export const SingleSelectAnswerSchema = BaseAnswerSchema.extend({
   $answerType: z.literal(AnswerType.SingleSelectAnswerType),
-  selection: SelectedOptionSchema
-})
+  selection: SelectedOptionSchema.optional()
+});
 export type SingleSelectAnswer = z.infer<typeof SingleSelectAnswerSchema>;
 
 export const MultiSelectAnswerSchema = BaseAnswerSchema.extend({
   $answerType: z.literal(AnswerType.MultiSelectAnswerType),
   selection: z.array(SelectedOptionSchema).optional()
-})
+});
 export type MultiSelectAnswer = z.infer<typeof MultiSelectAnswerSchema>;

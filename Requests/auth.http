@@ -1,11 +1,11 @@
-@hostAddress=https://localhost:7123
+@hostAddress=https://votemonitor.staging.heroesof.tech
 
 # Login
 POST {{hostAddress}}/api/auth
 Content-Type: application/json
 
 {
-  "username": "string",
-  "password": "string"
+  "username": "platform@admin.com",
+  "password": "L8v1gXFtAWoeFUIEU5wc"
 }
 ###

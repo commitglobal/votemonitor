@@ -34,9 +34,7 @@ function PreviewForm({ languageCode, localQuestions, activeQuestionId, setActive
 
     function resetProgress() {
         setActiveQuestionId(localQuestions[0]?.id!);
-        // setQuestionId(localQuestions[0]?.id!);
     }
-
 
     function onSubmitAnswer(answer: BaseAnswer) {
         console.log(answer);
@@ -77,8 +75,6 @@ function PreviewForm({ languageCode, localQuestions, activeQuestionId, setActive
                     onSubmitAnswer={onSubmitAnswer}
                     onBackButtonClicked={onBackButtonClicked}
                 />
-
-
             ) : (
                 // Handle the case when there are no questions and both welcome and thank you cards are disabled
                 <div>No questions available.</div>
