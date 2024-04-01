@@ -1,7 +1,9 @@
 import { View, Text } from "react-native";
-import { useAuth } from "../../../hooks/useAuth";
-import OfflinePersistComponentExample from "../../../components/OfflinePersistComponentExample";
+import { useAuth } from "../../../../hooks/useAuth";
+import OfflinePersistComponentExample from "../../../../components/OfflinePersistComponentExample";
 import { StatusBar } from "react-native";
+import { Button } from "tamagui";
+import { router } from "expo-router";
 
 const Index = () => {
   const { signOut } = useAuth();
@@ -11,6 +13,7 @@ const Index = () => {
       <StatusBar barStyle="light-content" />
       <Text>Observation</Text>
       <OfflinePersistComponentExample></OfflinePersistComponentExample>
+      <Button onPress={() => router.push("/wizzard")}>Go To Wizzard</Button>
       <Text onPress={signOut}>Logout</Text>
     </View>
   );

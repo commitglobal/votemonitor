@@ -1,10 +1,10 @@
 import React from "react";
 import { Tabs } from "expo-router";
-import ObservationSVG from "../../../assets/icons/observation.svg";
-import QuickReportSVG from "../../../assets/icons/quick-report.svg";
-import GuidesSVG from "../../../assets/icons/Learning.svg";
-import InboxSVG from "../../../assets/icons/Inbox.svg";
-import MoreSVG from "../../../assets/icons/More.svg";
+import ObservationSVG from "../../../../assets/icons/observation.svg";
+import QuickReportSVG from "../../../../assets/icons/quick-report.svg";
+import GuidesSVG from "../../../../assets/icons/Learning.svg";
+import InboxSVG from "../../../../assets/icons/Inbox.svg";
+import MoreSVG from "../../../../assets/icons/More.svg";
 import { TextStyle, ViewStyle } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTheme } from "tamagui";
