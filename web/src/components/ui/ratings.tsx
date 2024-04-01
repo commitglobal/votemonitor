@@ -6,25 +6,28 @@ import { cn } from "@/lib/utils"
 
 interface RatingItemProps
   extends React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Item> {
-  selectedValue: number | null
+  selectedValue: number | null;
+  scale: number
 }
 
 const RatingItem = React.forwardRef<
   React.ElementRef<typeof RadioGroupPrimitive.Item>,
   RatingItemProps
->(({ className, value, selectedValue, ...props }, ref) => {
+>(({ className, value, selectedValue, scale, ...props }, ref) => {
   return (
     <RadioGroupPrimitive.Item
       ref={ref}
       value={value}
       className={cn(
-        "aspect-square fill-transparent px-1.5 text-primary ring-offset-background focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>svg]:stroke-primary",
-        props["aria-readonly"] && "pointer-events-none",
+        Number(value) === 1 && "rounded-l-md",
+        "relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 focus:z-20 focus:outline-offset-0",
+        (selectedValue ?? -1) === Number(value) && "z-10 bg-indigo-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600",
+        Number(value) === scale && "rounded-r-md",
         className
       )}
       {...props}
     >
-      <div className={cn((selectedValue ?? -1) >= Number(value) && "bg-red-950")}>{value}</div>
+      <div>{value}</div>
     </RadioGroupPrimitive.Item>
   )
 })
@@ -33,7 +36,7 @@ RatingItem.displayName = RadioGroupPrimitive.Item.displayName
 
 interface RatingGroupProps
   extends React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Root> {
-  ratingSteps?: number
+  scale?: number
 }
 
 const RatingGroup = React.forwardRef<
@@ -43,7 +46,7 @@ const RatingGroup = React.forwardRef<
   (
     {
       className,
-      ratingSteps = 5,
+      scale = 5,
       ...props
     },
     ref
@@ -53,8 +56,7 @@ const RatingGroup = React.forwardRef<
     return (
       <RadioGroupPrimitive.Root
         className={cn(
-          "flex items-center",
-          props.disabled && "pointer-events-none",
+          "isolate inline-flex -space-x-px rounded-md shadow-sm",
           className
         )}
         {...props}
@@ -65,11 +67,12 @@ const RatingGroup = React.forwardRef<
         }}
         tabIndex={0}
       >
-        {Array.from({ length: ratingSteps }, (_, i) => i + 1).map((value) => (
+        {Array.from({ length: scale }, (_, i) => i + 1).map((value) => (
           <RatingItem
             key={value}
             value={value.toString()}
             selectedValue={selectedValue}
+            scale={scale}
           />
         ))}
       </RadioGroupPrimitive.Root>

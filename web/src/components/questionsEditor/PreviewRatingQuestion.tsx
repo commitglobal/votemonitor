@@ -1,4 +1,4 @@
-import { AnswerType, BaseAnswer, RatingAnswer, RatingAnswerSchema, RatingQuestion, RatingScaleType } from '@/common/types'
+import { AnswerType, BaseAnswer, RatingAnswer, RatingQuestion, RatingScaleType } from '@/common/types'
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../ui/form';
@@ -48,18 +48,18 @@ function PreviewRatingQuestion({ languageCode,
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
         defaultValues: {
-            value: answer?.value?.toString()
+            value: answer?.value?.toString() ?? ''
         }
     });
 
     function handleSubmit(data: z.infer<typeof FormSchema>) {
-        const multiSelectAnswer: RatingAnswer = {
+        const ratingAnswer: RatingAnswer = {
             questionId: question.id,
             $answerType: AnswerType.RatingAnswerType,
             value: Number(data.value)
         };
 
-        onSubmitAnswer(multiSelectAnswer);
+        onSubmitAnswer(ratingAnswer);
     }
 
     return (<Form {...form}>
@@ -69,10 +69,14 @@ function PreviewRatingQuestion({ languageCode,
                     control={form.control}
                     name='value'
                     render={({ field }) => (
-                        <FormItem className='sm:col-span-2'>
+                        <FormItem className='flex flex-col'>
                             <FormLabel>{question.text[languageCode]}</FormLabel>
                             <FormControl>
-                                <RatingGroup ratingSteps={scaleToNumber(question.scale)}  {...field} name='value'/>
+                                <RatingGroup
+                                    scale={scaleToNumber(question.scale)}
+                                    {...field}
+                                    name='value'
+                                    onValueChange={(v) => field.onChange(v)} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
