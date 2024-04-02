@@ -3,7 +3,6 @@ import { useAuth } from "../../hooks/useAuth";
 
 const AppLayout = () => {
   const { isAuthenticated } = useAuth();
-  // const theme = useTheme();
 
   if (!isAuthenticated) {
     // On web, static rendering will stop here as the user is not authenticated
