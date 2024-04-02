@@ -18,7 +18,7 @@ const Login = () => {
         gap: 20,
       }}
     >
-      <TamaguiButton
+      {/* <TamaguiButton
         onPress={() => {
           signIn();
           // Navigate after signing in. You may want to tweak this to ensure sign-in is
@@ -38,7 +38,7 @@ const Login = () => {
         }}
       >
         <Typography size="xl">Forgot Password</Typography>
-      </TamaguiButton>
+      </TamaguiButton> */}
       <Typography preset="heading">Heading</Typography>
       <Typography preset="subheading">Subheading</Typography>
       <Typography preset="default">default</Typography>
@@ -48,30 +48,28 @@ const Login = () => {
 
 
       <Button
-        onPress={() => console.log("Default pressed")}>
-          <Typography style = {{color: "white"}}> Default (filled) </Typography>
-      </Button>
+        text="Default (filled)"
+        onPress={() => console.log("Default pressed")} />
 
       <Button
+        text="Outlined pressed"
         preset="outlined"
         icon={<InboxSVG fill={'#7833B3'}></InboxSVG>}
-        onPress={() => console.log("Outlined pressed")}>
-          Outlined with left accessory
-      </Button>
+        onPress={() => console.log("Outlined pressed")} />
+  
 
       <Button
+        text="Chromeless"
         preset="chromeless"
         iconAfter={<InboxSVG fill={'#7833B3'}></InboxSVG>}
-        onPress={() => console.log("Chromeless pressed")}>
-          Chromeless
-      </Button>
+        onPress={() => console.log("Chromeless pressed")}/>
+       
 
       <Button
+        text="Clear form"
         preset="red"
-        onPress={() => console.log("Red pressed")}>
-          <Typography style = {{color: "white"}}> Clear form </Typography>
-      </Button>
-      
+        onPress={() => console.log("Red pressed")}/>
+    
     </View>
   );
 };

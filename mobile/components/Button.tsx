@@ -1,18 +1,23 @@
 import React from "react";
-import { StyleProp, ViewStyle} from "react-native";
-import { Button as TamaguiButton, ButtonProps as TamaguiButtonProps } from "tamagui";
-import { useTheme } from 'tamagui'
-import { getTokens } from 'tamagui'
+import { StyleProp, TextStyle, ViewStyle, StyleSheet} from "react-native";
+import { 
+  Button as TamaguiButton, 
+  ButtonProps as TamaguiButtonProps, 
+  Variable, 
+  useTheme, 
+} from "tamagui";
 
-/*
-  TODO(maybe):
-  Currently, the border of button changes its color to grey while pressing.
-  Cutomize this?
-*/
+import { UseThemeResult } from '@tamagui/web/src/hooks/useTheme';
+import { Typography } from "./Typography";
+import {tokens} from "../theme/tokens"
+
+
 
 type PresetType = "default" | "outlined" | "chromeless" | "red";
 
 export interface ButtonProps extends TamaguiButtonProps {
+    text: String;
+
     style? : StyleProp<ViewStyle>;
 
     /**
@@ -21,9 +26,9 @@ export interface ButtonProps extends TamaguiButtonProps {
     preset? : PresetType;
 
     /**
-     * Children components.
+     * Optional styling for overriding presetType text styling
      */
-    children?: React.ReactNode;
+    textStyle? : TextStyle;
 }
 
 /**
@@ -34,30 +39,41 @@ export interface ButtonProps extends TamaguiButtonProps {
  */
 export function Button(props : ButtonProps): JSX.Element {
     const theme = useTheme()
-    const tokens = getTokens()
 
-    const {children, style: $styleOverride, ...rest} = props;
+    const {style: $styleOverride, text, textStyle, ...rest} = props;
     const presetType : PresetType = props.preset ?? "default";
-
-    const preset = $presets(theme, tokens)[presetType]
+    const preset = $presets(theme, tokens.space)[presetType];
 
     const $styles: StyleProp<ViewStyle> = [
       preset,
       $styleOverride,
     ];
 
+    const $presetStyleText = {
+        color: presetType === 'default' || presetType === 'red' ?
+          'white' :
+          theme.$purple5?.val,
+        fontSize: 16,
+    };
+
+    const $styleText: TextStyle = {...$presetStyleText, ...textStyle};
+
     return (
       <TamaguiButton {...rest} style={$styles}>
-        {children}
+        <Typography style={$styleText}> {text} </Typography>
       </TamaguiButton>
     );
-}
+} 
 
 
-const $presets = (theme: any, tokens: any) => {
+
+const $presets = (
+  theme: UseThemeResult,
+  spacing: { [key: string]: Variable<number> }
+) => {
   const $baseStyle : StyleProp<ViewStyle> = {
-    paddingHorizontal: tokens.space.md,
-    paddingVertical: tokens.space.xs,
+    paddingHorizontal: spacing.md.val,
+    paddingVertical: spacing.xs.val,
     borderRadius: 8,
     backgroundColor : theme.$purple5?.val,
     alignItems: 'center',
@@ -80,7 +96,7 @@ const $presets = (theme: any, tokens: any) => {
 
       red: {
         ...$baseStyle,
-        backgroundColor: theme.$red10.val,
+        backgroundColor: theme.$red10?.val,
       } as StyleProp<ViewStyle>,
   
   };
