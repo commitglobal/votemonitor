@@ -4,6 +4,7 @@ import { useAuth } from "../hooks/useAuth";
 import { Button as TamaguiButton } from "tamagui";
 import { Typography } from "../components/Typography";
 import { Button } from "../components/Button";
+import InboxSVG from "/home/madalina/votemonitor/mobile/assets/icons/Inbox.svg";
 
 const Login = () => {
   const { signIn } = useAuth();
@@ -46,12 +47,14 @@ const Login = () => {
 
       <Button
         preset="outlined"
+        icon={<InboxSVG fill={'#7833B3'}></InboxSVG>}
         onPress={() => console.log("Outlined pressed")}>
-          Outlined button
+          Outlined with left accessory
       </Button>
 
       <Button
         preset="chromeless"
+        iconAfter={<InboxSVG fill={'#7833B3'}></InboxSVG>}
         onPress={() => console.log("Chromeless pressed")}>
           Chromeless
       </Button>
