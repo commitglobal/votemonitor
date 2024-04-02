@@ -3,6 +3,7 @@ import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import EditQuestionFactory from "./edit/EditQuestionFactory";
 import { StrictModeDroppable } from "./StrictModeDroppable";
 import { validateQuestion } from "./edit/Validation";
+import AddQuestionButton from "./edit/AddQuestionButton";
 
 export interface QuestionsEditProps {
   languageCode: string;
@@ -108,7 +109,7 @@ function QuestionsEdit({
           </StrictModeDroppable>
         </div>
       </DragDropContext>
-      {/* <AddQuestionButton addQuestion={addQuestion} /> */}
+      <AddQuestionButton languageCode={languageCode} addQuestion={addQuestion} />
     </div>
   )
 }
