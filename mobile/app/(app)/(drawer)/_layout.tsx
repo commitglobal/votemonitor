@@ -1,13 +1,12 @@
+import React from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Drawer } from "expo-router/drawer";
 import { getHeaderTitle } from "@react-navigation/elements";
 import { useTheme } from "tamagui";
-import React from "react";
-import Eye from "../../../assets/icons/Eye.svg";
-import ObservationSVG from "../../../assets/icons/observation.svg";
 import { DrawerActions } from "@react-navigation/native";
 import Header from "../../../components/Header";
 import { Icon } from "../../../components/Icon";
+import { StyleProp, ViewStyle } from "react-native";
 
 export default function MainLayout() {
   const theme = useTheme();
@@ -16,20 +15,16 @@ export default function MainLayout() {
       <Drawer
         screenOptions={{
           drawerType: "front",
-          headerStyle: {
-            backgroundColor: theme?.purple5?.val,
-          },
           header: ({ navigation, route, options }) => {
             const title = getHeaderTitle(options, route.name);
             return (
               <Header
-                // navigation={navigation}
-                title="2024 EU Parliamentary RO"
+                title={title}
                 titleColor="white"
                 backgroundColor={theme.purple5?.val}
-                // style={options.headerStyle}
+                barStyle="light-content"
+                style={options.headerStyle as StyleProp<ViewStyle>}
                 leftIcon={<Icon icon="menuAlt2" color="white" />}
-                leftIconColor="white"
                 onLeftPress={() =>
                   navigation.dispatch(DrawerActions.openDrawer)
                 }
