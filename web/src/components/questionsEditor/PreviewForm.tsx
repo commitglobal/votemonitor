@@ -21,16 +21,28 @@ function PreviewForm({ languageCode,
     setActiveQuestionId }: PreviewFormProps) {
     const [currentQuestion, setCurrentQuestion] = useState<BaseQuestion | undefined>();
     const [responseData, setResponseData] = useState<ResponseData>({});
+    const [progress, setProgress] = useState(0);
+
+    useEffect(() => {
+        if(activeQuestionId === "end"){
+            setProgress(100);
+            return;
+        }
+
+        const currentQuestionIndex = localQuestions.findIndex((q) => q.id === activeQuestionId);
+        const percentage = (currentQuestionIndex / localQuestions.length) * 100;
+
+        setProgress(percentage);
+    }, [activeQuestionId, localQuestions]);
 
     useEffect(() => {
         const currentQuestionIndex = localQuestions.findIndex((q) => q.id === activeQuestionId);
         const currentQuestion = localQuestions[currentQuestionIndex];
         setCurrentQuestion(currentQuestion);
 
-    }, [activeQuestionId]);
+    }, [activeQuestionId, localQuestions]);
 
     function resetProgress() {
-
         setActiveQuestionId(localQuestions[0]?.id!);
     }
 
@@ -86,7 +98,7 @@ function PreviewForm({ languageCode,
             )}
         </div>
         <div className="mt-8">
-            <Progress value={33} max={100} />
+            <Progress value={progress} max={100} />
         </div>
     </div>)
 }
