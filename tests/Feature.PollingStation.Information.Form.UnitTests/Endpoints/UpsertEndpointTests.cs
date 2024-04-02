@@ -27,7 +27,7 @@ public class UpsertEndpointTests
         _electionRoundRepository = Substitute.For<IRepository<ElectionRound>>();
         _formRepository = Substitute.For<IRepository<PollingStationInformationForm>>();
 
-        _endpoint = Factory.Create<Upsert.Endpoint>(_formRepository, _electionRoundRepository, new CurrentUtcTimeProvider());
+        _endpoint = Factory.Create<Upsert.Endpoint>(_formRepository, _electionRoundRepository);
     }
 
     [Fact]

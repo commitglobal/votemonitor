@@ -32,15 +32,13 @@ public class PollingStationInformationForm : AuditableBaseEntity, IAggregateRoot
 
     public static PollingStationInformationForm Create(
         ElectionRound electionRound,
-        IEnumerable<string> languages,
-        ITimeProvider timeProvider) =>
+        IEnumerable<string> languages) =>
         new(electionRound, languages);
 
     public static PollingStationInformationForm Create(
         ElectionRound electionRound,
         IEnumerable<string> languages,
-        List<BaseQuestion> questions,
-        ITimeProvider timeProvider) =>
+        List<BaseQuestion> questions) =>
         new(electionRound, languages, questions);
 
     public void UpdateDetails(IEnumerable<string> languages, IEnumerable<BaseQuestion> questions)
