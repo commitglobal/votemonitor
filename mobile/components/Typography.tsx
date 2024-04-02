@@ -38,7 +38,7 @@ export function Typography(props: TextProps) {
   ];
 
   return (
-    <SizableText {...rest} color="$gray9" style={$styles}>
+    <SizableText {...rest} color="$gray9" style={$styles} numberOfLines={1}>
       {children}
     </SizableText>
   );

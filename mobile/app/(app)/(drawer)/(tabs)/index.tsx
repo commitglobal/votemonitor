@@ -4,7 +4,7 @@ import OfflinePersistComponentExample from "../../../../components/OfflinePersis
 import { StatusBar } from "react-native";
 import { Button } from "tamagui";
 import { router } from "expo-router";
-import { SelectPollingStation } from "../../../../components/SelectPollingStation";
+import SelectPollingStation from "../../../../components/SelectPollingStation";
 
 const Index = () => {
   const { signOut } = useAuth();
