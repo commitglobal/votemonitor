@@ -5,7 +5,7 @@ import { useAuth } from "../hooks/useAuth";
 import { Button as TamaguiButton } from "tamagui";
 import { Typography } from "../components/Typography";
 import { Button } from "../components/Button";
-import InboxSVG from "/home/madalina/votemonitor/mobile/assets/icons/Inbox.svg";
+import { Icon } from "../components/Icon";
 
 const Login = () => {
   const { signIn } = useAuth();
@@ -18,7 +18,7 @@ const Login = () => {
         gap: 20,
       }}
     >
-      {/* <TamaguiButton
+      <TamaguiButton
         onPress={() => {
           signIn();
           // Navigate after signing in. You may want to tweak this to ensure sign-in is
@@ -38,7 +38,8 @@ const Login = () => {
         }}
       >
         <Typography size="xl">Forgot Password</Typography>
-      </TamaguiButton> */}
+      </TamaguiButton>
+
       <Typography preset="heading">Heading</Typography>
       <Typography preset="subheading">Subheading</Typography>
       <Typography preset="default">default</Typography>
@@ -54,14 +55,14 @@ const Login = () => {
       <Button
         text="Outlined pressed"
         preset="outlined"
-        icon={<InboxSVG fill={'#7833B3'}></InboxSVG>}
+        icon={<Icon icon="inbox" color={'#7833B3'} />}
         onPress={() => console.log("Outlined pressed")} />
   
 
       <Button
         text="Chromeless"
         preset="chromeless"
-        iconAfter={<InboxSVG fill={'#7833B3'}></InboxSVG>}
+        iconAfter={<Icon icon="inbox" color={'#7833B3'} />}
         onPress={() => console.log("Chromeless pressed")}/>
        
 

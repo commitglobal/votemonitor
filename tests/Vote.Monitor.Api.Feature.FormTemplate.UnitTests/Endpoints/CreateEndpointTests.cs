@@ -9,14 +9,13 @@ public class CreateEndpointTests
     {
         // Arrange
         var templateName = new TranslatedString { [LanguagesList.RO.Iso1] = "UniqueName" };
-        var timeService = Substitute.For<ITimeProvider>();
         var repository = Substitute.For<IRepository<FormTemplateAggregate>>();
 
         repository
             .AnyAsync(Arg.Any<GetFormTemplateSpecification>())
             .Returns(false);
 
-        var endpoint = Factory.Create<Create.Endpoint>(repository, timeService);
+        var endpoint = Factory.Create<Create.Endpoint>(repository);
 
         // Act
         var request = new Create.Request
@@ -33,9 +32,9 @@ public class CreateEndpointTests
                .AddAsync(Arg.Is<FormTemplateAggregate>(x => x.Name == templateName));
 
         result
-            .Should().BeOfType<Results<Ok<FormTemplateModel>, Conflict<ProblemDetails>>>()!
+            .Should().BeOfType<Results<Ok<FormTemplateSlimModel>, Conflict<ProblemDetails>>>()!
             .Which!
-            .Result.Should().BeOfType<Ok<FormTemplateModel>>()!
+            .Result.Should().BeOfType<Ok<FormTemplateSlimModel>>()!
             .Which!.Value!.Name.Should().BeEquivalentTo(templateName);
     }
 
@@ -43,14 +42,13 @@ public class CreateEndpointTests
     public async Task ShouldReturnConflict_WhenNgoWithSameNameExists()
     {
         // Arrange
-        var timeService = Substitute.For<ITimeProvider>();
         var repository = Substitute.For<IRepository<FormTemplateAggregate>>();
 
         repository
             .AnyAsync(Arg.Any<GetFormTemplateSpecification>())
             .Returns(true);
 
-        var endpoint = Factory.Create<Create.Endpoint>(repository, timeService);
+        var endpoint = Factory.Create<Create.Endpoint>(repository);
 
         // Act
         var request = new Create.Request();
@@ -58,7 +56,7 @@ public class CreateEndpointTests
 
         // Assert
         result
-            .Should().BeOfType<Results<Ok<FormTemplateModel>, Conflict<ProblemDetails>>>()
+            .Should().BeOfType<Results<Ok<FormTemplateSlimModel>, Conflict<ProblemDetails>>>()
             .Which
             .Result.Should().BeOfType<Conflict<ProblemDetails>>();
     }

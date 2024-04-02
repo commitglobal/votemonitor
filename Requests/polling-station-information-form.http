@@ -1,18 +1,15 @@
-@hostAddress=https://localhost:7123
-@jwtToken=your_token
-
 @electionRoundId=1c94724e-b94b-4a7b-965d-05d04f20eac8
 
 # get election round polling station info form
-GET {{hostAddress}}/api/election-rounds/{{electionRoundId}}/polling-station-information-form
-Authorization: Bearer {{jwtToken}}
+GET {{$dotenv HOST }}/api/election-rounds/{{electionRoundId}}/polling-station-information-form
+Authorization: Bearer {{$dotenv JWT_TOKEN}}
 
 ###
 
 # Upsert a polling station info form
-Post {{hostAddress}}/api/election-rounds/{{electionRoundId}}/polling-station-information-form
+Post {{$dotenv HOST }}/api/election-rounds/{{electionRoundId}}/polling-station-information-form
 Content-Type: application/json
-Authorization: Bearer {{jwtToken}}
+Authorization: Bearer {{$dotenv JWT_TOKEN}}
 
 {
   "languages": [
@@ -207,7 +204,7 @@ Authorization: Bearer {{jwtToken}}
 ###
 
 # Delete a form template
-DELETE {{hostAddress}}/api/election-rounds/{{electionRoundId}}
-Authorization: Bearer {{jwtToken}}
+DELETE {{$dotenv HOST }}/api/election-rounds/{{electionRoundId}}
+Authorization: Bearer {{$dotenv JWT_TOKEN}}
 
 ###

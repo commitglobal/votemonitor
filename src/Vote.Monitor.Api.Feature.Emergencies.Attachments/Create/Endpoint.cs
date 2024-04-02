@@ -1,6 +1,6 @@
 ﻿namespace Vote.Monitor.Api.Feature.Emergencies.Attachments.Create;
 
-public class Endpoint(IRepository<EmergencyAttachmentAggregate> repository, ITimeProvider timeProvider) :
+public class Endpoint(IRepository<EmergencyAttachmentAggregate> repository) :
         Endpoint<Request, Ok<AttachmentModel>>
 {
     public override void Configure()
