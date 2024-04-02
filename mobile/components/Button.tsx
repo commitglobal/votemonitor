@@ -44,23 +44,26 @@ export function Button(props : ButtonProps): JSX.Element {
     const presetType : PresetType = props.preset ?? "default";
     const preset = $presets(theme, tokens.space)[presetType];
 
-    const $styles: StyleProp<ViewStyle> = [
+    const $buttonStyles: StyleProp<ViewStyle> = [
       preset,
       $styleOverride,
     ];
 
-    const $presetStyleText = {
+    const $presetTextStyles = {
         color: presetType === 'default' || presetType === 'red' ?
           'white' :
           theme.$purple5?.val,
-        fontSize: 16,
     };
 
-    const $styleText: TextStyle = {...$presetStyleText, ...textStyle};
+    const $textStyles: TextStyle = {...$presetTextStyles, ...textStyle};
 
     return (
-      <TamaguiButton {...rest} style={$styles}>
-        <Typography style={$styleText}> {text} </Typography>
+      <TamaguiButton {...rest} style={$buttonStyles}>
+        <Typography
+          preset="body1"
+          style={{ ...$textStyles, fontWeight: "500" }}>
+            {text}
+        </Typography>
       </TamaguiButton>
     );
 } 
