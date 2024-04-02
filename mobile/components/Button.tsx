@@ -1,6 +1,8 @@
 import React from "react";
 import { StyleProp, ViewStyle} from "react-native";
 import { Button as TamaguiButton, ButtonProps as TamaguiButtonProps } from "tamagui";
+import { useTheme } from 'tamagui'
+import { getTokens } from 'tamagui'
 
 /*
   TODO(maybe):
@@ -8,7 +10,7 @@ import { Button as TamaguiButton, ButtonProps as TamaguiButtonProps } from "tama
   Cutomize this?
 */
 
-type Presets = keyof typeof $presets
+type PresetType = "default" | "outlined" | "chromeless" | "red";
 
 export interface ButtonProps extends TamaguiButtonProps {
     style? : StyleProp<ViewStyle>;
@@ -16,7 +18,7 @@ export interface ButtonProps extends TamaguiButtonProps {
     /**
      * One of the different types of button presets.
      */
-    preset? : Presets;
+    preset? : PresetType;
 
     /**
      * Children components.
@@ -31,11 +33,16 @@ export interface ButtonProps extends TamaguiButtonProps {
  * @returns {JSX.Element} The rendered `Button` component.
  */
 export function Button(props : ButtonProps): JSX.Element {
-    const {children, style: $styleOverride, ...rest} = props;
+    const theme = useTheme()
+    const tokens = getTokens()
 
-    const preset : Presets = props.preset ?? "default";
+    const {children, style: $styleOverride, ...rest} = props;
+    const presetType : PresetType = props.preset ?? "default";
+
+    const preset = $presets(theme, tokens)[presetType]
+
     const $styles: StyleProp<ViewStyle> = [
-      $presets[preset],
+      preset,
       $styleOverride,
     ];
 
@@ -46,27 +53,36 @@ export function Button(props : ButtonProps): JSX.Element {
     );
 }
 
-const $baseStyle : StyleProp<ViewStyle> = {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    backgroundColor : "#7833B3",
-    alignItems: 'center',
+
+const $presets = (theme: any, tokens: any) => {
+  const $baseStyle : StyleProp<ViewStyle> = {
+    paddingHorizontal: tokens.space.md,
+    paddingVertical: tokens.space.xs,
     borderRadius: 8,
-};
+    backgroundColor : theme.$purple5?.val,
+    alignItems: 'center',
+  };
 
-const $presets = {
-    default: $baseStyle,
+  return {
+      default: $baseStyle, 
 
-    outlined: {
+      outlined: {
+          ...$baseStyle,
+          borderWidth: 1,
+          borderColor: theme.$purple5?.val,
+          backgroundColor: 'transparent',
+      } as StyleProp<ViewStyle>,
+
+      chromeless: {
+          ...$baseStyle,
+          backgroundColor: 'transparent',
+      } as StyleProp<ViewStyle>,
+
+      red: {
         ...$baseStyle,
-        borderWidth: 1,
-        borderColor: '#7833B3',
-        backgroundColor: 'transparent',
-    } as StyleProp<ViewStyle>,
-
-    chromeless: {
-        ...$baseStyle,
-        backgroundColor: 'transparent',
-    } as StyleProp<ViewStyle>,
+        backgroundColor: theme.$red10.val,
+      } as StyleProp<ViewStyle>,
+  
+  };
 
 };

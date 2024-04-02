@@ -27,8 +27,8 @@ const Login = () => {
         }}
       >
         <Typography>Sign In</Typography>
-      </Button>
-      <Button
+      </TamaguiButton>
+      <TamaguiButton
         paddingHorizontal="$xl"
         height={"auto"}
         paddingVertical="$lg"
@@ -38,7 +38,7 @@ const Login = () => {
         }}
       >
         <Typography size="xl">Forgot Password</Typography>
-      </Button>
+      </TamaguiButton>
       <Typography preset="heading">Heading</Typography>
       <Typography preset="subheading">Subheading</Typography>
       <Typography preset="default">default</Typography>
@@ -48,7 +48,9 @@ const Login = () => {
 
 
       <Button
-        onPress={() => console.log("Default pressed")}> Default (filled) </Button>
+        onPress={() => console.log("Default pressed")}>
+          <Typography style = {{color: "white"}}> Default (filled) </Typography>
+      </Button>
 
       <Button
         preset="outlined"
@@ -62,6 +64,12 @@ const Login = () => {
         iconAfter={<InboxSVG fill={'#7833B3'}></InboxSVG>}
         onPress={() => console.log("Chromeless pressed")}>
           Chromeless
+      </Button>
+
+      <Button
+        preset="red"
+        onPress={() => console.log("Red pressed")}>
+          <Typography style = {{color: "white"}}> Clear form </Typography>
       </Button>
       
     </View>
