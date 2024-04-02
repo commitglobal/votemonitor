@@ -59,110 +59,29 @@ export const defaultIcon = React.forwardRef(
   (props: IconProps, ref?: Ref<typeof View>) => {
     const {
       icon,
-      color,
-      size,
+      color = "black",
+      size = 24,
       style: $viewStyleOverride,
       ...tamaguiProps
     } = props;
 
     const iconRegistry: IconRegistry = {
-      eyeOff: (
-        <EyeOff
-          fill={color || "black"}
-          width={size || 24}
-          height={size || 24}
-        />
-      ),
-      eye: (
-        <Eye fill={color || "black"} width={size || 24} height={size || 24} />
-      ),
-      observation: (
-        <Observation
-          fill={color || "black"}
-          width={size || 24}
-          height={size || 24}
-        />
-      ),
-
-      quickReport: (
-        <QuickReport
-          fill={color || "black"}
-          width={size || 24}
-          height={size || 24}
-        />
-      ),
-      learning: (
-        <Learning
-          fill={color || "black"}
-          width={size || 24}
-          height={size || 24}
-        />
-      ),
-      inbox: (
-        <Inbox fill={color || "black"} width={size || 24} height={size || 24} />
-      ),
-      more: (
-        <More fill={color || "black"} width={size || 24} height={size || 24} />
-      ),
-      chevronRight: (
-        <ChevronRight
-          fill={color || "black"}
-          width={size || 24}
-          height={size || 24}
-        />
-      ),
-      chevronLeft: (
-        <ChevronLeft
-          fill={color || "black"}
-          width={size || 24}
-          height={size || 24}
-        />
-      ),
-      addNote: (
-        <AddNote
-          fill={color || "black"}
-          width={size || 24}
-          height={size || 24}
-        />
-      ),
-      trash: (
-        <Trash fill={color || "black"} width={size || 24} height={size || 24} />
-      ),
-      logout: (
-        <Logout
-          fill={color || "black"}
-          width={size || 24}
-          height={size || 24}
-        />
-      ),
-      pencilAlt: (
-        <PencilAlt
-          fill={color || "black"}
-          width={size || 24}
-          height={size || 24}
-        />
-      ),
-      xCircle: (
-        <XCircle
-          fill={color || "black"}
-          width={size || 24}
-          height={size || 24}
-        />
-      ),
-      menuAlt2: (
-        <MenuAlt2
-          fill={color || "black"}
-          width={size || 24}
-          height={size || 24}
-        />
-      ),
-      dotsVertical: (
-        <DotsVertical
-          fill={color || "black"}
-          width={size || 24}
-          height={size || 24}
-        />
-      ),
+      eyeOff: <EyeOff fill={color} width={size} height={size} />,
+      eye: <Eye fill={color} width={size} height={size} />,
+      observation: <Observation fill={color} width={size} height={size} />,
+      quickReport: <QuickReport fill={color} width={size} height={size} />,
+      learning: <Learning fill={color} width={size} height={size} />,
+      inbox: <Inbox fill={color} width={size} height={size} />,
+      more: <More fill={color} width={size} height={size} />,
+      chevronRight: <ChevronRight fill={color} width={size} height={size} />,
+      chevronLeft: <ChevronLeft fill={color} width={size} height={size} />,
+      addNote: <AddNote fill={color} width={size} height={size} />,
+      trash: <Trash fill={color} width={size} height={size} />,
+      logout: <Logout fill={color} width={size} height={size} />,
+      pencilAlt: <PencilAlt fill={color} width={size} height={size} />,
+      xCircle: <XCircle fill={color} width={size} height={size} />,
+      menuAlt2: <MenuAlt2 fill={color} width={size} height={size} />,
+      dotsVertical: <DotsVertical fill={color} width={size} height={size} />,
     };
 
     return (
