@@ -7,6 +7,7 @@ import Eye from "../../../assets/icons/Eye.svg";
 import ObservationSVG from "../../../assets/icons/observation.svg";
 import { DrawerActions } from "@react-navigation/native";
 import Header from "../../../components/Header";
+import { Icon } from "../../../components/Icon";
 
 export default function MainLayout() {
   const theme = useTheme();
@@ -23,15 +24,16 @@ export default function MainLayout() {
             return (
               <Header
                 // navigation={navigation}
-                title={title}
+                title="2024 EU Parliamentary RO"
                 titleColor="white"
+                backgroundColor={theme.purple5?.val}
                 // style={options.headerStyle}
-                leftIcon={<Eye fill="white" />}
+                leftIcon={<Icon icon="menuAlt2" color="white" />}
                 leftIconColor="white"
                 onLeftPress={() =>
                   navigation.dispatch(DrawerActions.openDrawer)
                 }
-                rightIcon={<ObservationSVG fill="white" />}
+                rightIcon={<Icon icon="dotsVertical" color="white" />}
               />
             );
           },
