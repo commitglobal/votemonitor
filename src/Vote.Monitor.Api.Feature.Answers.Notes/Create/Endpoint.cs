@@ -1,6 +1,6 @@
 ﻿namespace Vote.Monitor.Api.Feature.Answers.Notes.Create;
 
-public class Endpoint(IRepository<AnswerNoteAggregate> repository, ITimeProvider timeProvider) :
+public class Endpoint(IRepository<AnswerNoteAggregate> repository) :
         Endpoint<Request, Ok<NoteModel>>
 {
     public override void Configure()

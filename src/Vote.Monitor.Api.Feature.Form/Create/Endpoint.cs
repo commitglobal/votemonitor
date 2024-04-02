@@ -6,8 +6,7 @@ namespace Vote.Monitor.Api.Feature.Form.Create;
 
 public class Endpoint(IRepository<FormAggregate> repository,
     IRepository<ElectionRound> electionRoundRepository,
-    IRepository<MonitoringNgo> monitoringNgoRepository,
-    ITimeProvider timeProvider) : Endpoint<Request, Results<Ok<FormModel>, Conflict<ProblemDetails>>>
+    IRepository<MonitoringNgo> monitoringNgoRepository) : Endpoint<Request, Results<Ok<FormModel>, Conflict<ProblemDetails>>>
 {
     public override void Configure()
     {

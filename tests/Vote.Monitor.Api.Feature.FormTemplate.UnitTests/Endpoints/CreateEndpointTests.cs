@@ -9,14 +9,13 @@ public class CreateEndpointTests
     {
         // Arrange
         var templateName = new TranslatedString { [LanguagesList.RO.Iso1] = "UniqueName" };
-        var timeService = Substitute.For<ITimeProvider>();
         var repository = Substitute.For<IRepository<FormTemplateAggregate>>();
 
         repository
             .AnyAsync(Arg.Any<GetFormTemplateSpecification>())
             .Returns(false);
 
-        var endpoint = Factory.Create<Create.Endpoint>(repository, timeService);
+        var endpoint = Factory.Create<Create.Endpoint>(repository);
 
         // Act
         var request = new Create.Request
@@ -43,14 +42,13 @@ public class CreateEndpointTests
     public async Task ShouldReturnConflict_WhenNgoWithSameNameExists()
     {
         // Arrange
-        var timeService = Substitute.For<ITimeProvider>();
         var repository = Substitute.For<IRepository<FormTemplateAggregate>>();
 
         repository
             .AnyAsync(Arg.Any<GetFormTemplateSpecification>())
             .Returns(true);
 
-        var endpoint = Factory.Create<Create.Endpoint>(repository, timeService);
+        var endpoint = Factory.Create<Create.Endpoint>(repository);
 
         // Act
         var request = new Create.Request();
