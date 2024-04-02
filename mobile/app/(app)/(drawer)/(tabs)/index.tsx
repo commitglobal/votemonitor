@@ -4,6 +4,7 @@ import OfflinePersistComponentExample from "../../../../components/OfflinePersis
 import { StatusBar } from "react-native";
 import { Button } from "tamagui";
 import { router } from "expo-router";
+import { SelectPollingStation } from "../../../../components/SelectPollingStation";
 
 const Index = () => {
   const { signOut } = useAuth();
@@ -11,6 +12,7 @@ const Index = () => {
   return (
     <View style={{ gap: 20 }}>
       <StatusBar barStyle="light-content" />
+      <SelectPollingStation />
       <Text>Observation</Text>
       <OfflinePersistComponentExample></OfflinePersistComponentExample>
       <Button onPress={() => router.push("/polling-station-wizzard/1")}>

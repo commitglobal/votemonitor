@@ -9,6 +9,7 @@ export const CustomDrawerContent = (props: any) => {
       {/* <DrawerItemList {...props} /> */}
       {votingSessions.map((votingSession) => (
         <DrawerItem
+          key={votingSession.name}
           label={votingSession.name}
           inactiveTintColor={theme.yellow6?.val}
           onPress={() => console.log("")}
