@@ -39,5 +39,11 @@
   "navigation.button.next": "Next",
   "navigation.button.back": "Back",
   "navigation.button.submit": "Submit",
-  "app.input.pleaseSpecify": "Please specify"
+  "app.input.pleaseSpecify": "Please specify",
+  "questionEditor.questionType.textQuestion":"Text question",
+  "questionEditor.questionType.numberQuestion":"Number question",
+  "questionEditor.questionType.dateQuestion":"Date question",
+  "questionEditor.questionType.singleSelectQuestion":"Single select question",
+  "questionEditor.questionType.multiSelectQuestion":"Multi select question",
+  "questionEditor.questionType.ratingQuestion":"Rating question"
 }

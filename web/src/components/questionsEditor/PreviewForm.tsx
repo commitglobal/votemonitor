@@ -1,6 +1,6 @@
 import { BaseAnswer, BaseAnswerSchema, BaseQuestion } from "@/common/types"
 import { useEffect, useState } from "react";
-import PreviewQuestionFactory from "./PreviewQuestionFactory";
+import PreviewQuestionFactory from "./preview/PreviewQuestionFactory";
 import { Progress } from "../ui/progress";
 import { z } from "zod";
 import { Button } from "../ui/button";

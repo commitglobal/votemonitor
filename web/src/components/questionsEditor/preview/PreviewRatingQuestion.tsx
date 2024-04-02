@@ -1,10 +1,10 @@
 import { AnswerType, BaseAnswer, RatingAnswer, RatingQuestion, RatingScaleType } from '@/common/types'
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../ui/form';
-import { Button } from '../ui/button';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../ui/form';
+import { Button } from '../../ui/button';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { RatingGroup } from '../ui/ratings';
+import { RatingGroup } from '../../ui/ratings';
 import { z } from 'zod';
 
 export interface PreviewRatingQuestionProps {

@@ -6,13 +6,20 @@ export interface FormQuestionsEditorProps {
   languageCode: string;
   localQuestions: BaseQuestion[];
   setLocalQuestions: (questions: BaseQuestion[]) => void;
-  activeQuestionId: string | null;
+  activeQuestionId: string | undefined;
   setActiveQuestionId: (questionId: string) => void;
   invalidQuestions: string[] | null
   setInvalidQuestions: (questions: string[]) => void;
 }
 
-function FormQuestionsEditor({ languageCode, localQuestions, setLocalQuestions, activeQuestionId, setActiveQuestionId, invalidQuestions, setInvalidQuestions }: FormQuestionsEditorProps) {
+function FormQuestionsEditor({ 
+  languageCode,
+  localQuestions,
+  setLocalQuestions,
+  activeQuestionId,
+  setActiveQuestionId,
+  invalidQuestions,
+  setInvalidQuestions }: FormQuestionsEditorProps) {
 
   return (
     (
@@ -20,6 +27,7 @@ function FormQuestionsEditor({ languageCode, localQuestions, setLocalQuestions, 
         <div className="relative z-0 flex flex-1 overflow-hidden">
           <main className="relative z-0 flex-1 overflow-y-auto focus:outline-none">
             <QuestionsEdit
+              languageCode={languageCode}
               localQuestions={localQuestions}
               setLocalQuestions={setLocalQuestions}
               activeQuestionId={activeQuestionId}

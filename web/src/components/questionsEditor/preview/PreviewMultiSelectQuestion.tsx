@@ -1,14 +1,14 @@
 import { BaseAnswer, MultiSelectAnswer, MultiSelectQuestion, AnswerType } from '@/common/types'
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '../ui/form';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '../../ui/form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useMemo, useState } from 'react';
 
 import { } from '@/common/types'
-import { Checkbox } from '../ui/checkbox';
-import { Button } from '../ui/button';
-import { Input } from '../ui/input';
+import { Checkbox } from '../../ui/checkbox';
+import { Button } from '../../ui/button';
+import { Input } from '../../ui/input';
 import { z } from 'zod';
 
 export interface PreviewMultiSelectQuestionProps {
@@ -87,10 +87,11 @@ function PreviewMultiSelectQuestion({
                     render={() => (
                         <FormItem>
                             <div className="mb-4">
-                                <FormLabel className="text-base">Sidebar</FormLabel>
-                                <FormDescription>
-                                    Select the items you want to display in the sidebar.
+                                <FormLabel className="text-base">{question.text[languageCode]}</FormLabel>
+                                {!!question.helptext && <FormDescription>
+                                    {question.helptext[languageCode]}
                                 </FormDescription>
+                                }
                             </div>
                             {regularOptions.map((option) => (
                                 <FormField

@@ -1,9 +1,9 @@
 import { AnswerType, BaseAnswer, NumberAnswer, TextAnswerSchema, NumberQuestion, TextAnswer, TextQuestion } from '@/common/types'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../ui/form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { Input } from '../ui/input';
-import { Button } from '../ui/button';
+import { Input } from '../../ui/input';
+import { Button } from '../../ui/button';
 import { useTranslation } from 'react-i18next';
 
 export interface PreviewTextQuestionProps {

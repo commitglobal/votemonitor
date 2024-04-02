@@ -1,13 +1,13 @@
 import { AnswerType, BaseAnswer, DateAnswer, DateAnswerSchema, DateQuestion } from '@/common/types'
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../ui/form';
 import { useForm } from 'react-hook-form';
-import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
+import { Popover, PopoverContent, PopoverTrigger } from '../../ui/popover';
 import { cn } from '@/lib/utils';
-import { Calendar } from '../ui/calendar';
+import { Calendar } from '../../ui/calendar';
 import { format, parseISO, formatISO } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
-import { Button } from '../ui/button';
+import { Button } from '../../ui/button';
 import { useTranslation } from 'react-i18next';
 
 export interface PreviewDateQuestionProps {
