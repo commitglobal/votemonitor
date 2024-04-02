@@ -1,4 +1,4 @@
-import { BaseQuestion } from '@/common/types'
+import { BaseQuestion, MultiSelectQuestion } from '@/common/types'
 import { useTranslation } from 'react-i18next';
 
 import { } from '@/common/types'
@@ -10,7 +10,7 @@ export interface EditMultiSelectQuestionProps {
     activeQuestionId: string | undefined;
     isLastQuestion: boolean;
     isInValid: boolean;
-    question: BaseQuestion | undefined;
+    question: MultiSelectQuestion;
     setActiveQuestionId: (questionId: string) => void;
     moveQuestion: (questionIndex: number, direction: MoveDirection) => void;
     updateQuestion: (questionIndex: number, question: BaseQuestion) => void;
@@ -20,16 +20,16 @@ export interface EditMultiSelectQuestionProps {
 
 function EditMultiSelectQuestion({
     languageCode,
-  questionIdx,
-  activeQuestionId,
-  isLastQuestion,
-  isInValid,
-  question,
-  setActiveQuestionId,
-  moveQuestion,
-  updateQuestion,
-  duplicateQuestion,
-  deleteQuestion }: EditMultiSelectQuestionProps) {
+    questionIdx,
+    activeQuestionId,
+    isLastQuestion,
+    isInValid,
+    question,
+    setActiveQuestionId,
+    moveQuestion,
+    updateQuestion,
+    duplicateQuestion,
+    deleteQuestion }: EditMultiSelectQuestionProps) {
 
     const { t } = useTranslation();
 

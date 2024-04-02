@@ -6,6 +6,7 @@ import { Input } from '../../ui/input';
 import { Button } from '../../ui/button';
 import { useTranslation } from 'react-i18next';
 import { MoveDirection } from '../QuestionsEdit';
+import QuestionHeader from './QuestionHeader';
 
 export interface EditNumberQuestionProps {
   languageCode: string;
@@ -13,7 +14,7 @@ export interface EditNumberQuestionProps {
   activeQuestionId: string | undefined;
   isLastQuestion: boolean;
   isInValid: boolean;
-  question: BaseQuestion | undefined;
+  question: NumberQuestion;
   setActiveQuestionId: (questionId: string) => void;
   moveQuestion: (questionIndex: number, direction: MoveDirection) => void;
   updateQuestion: (questionIndex: number, question: BaseQuestion) => void;
@@ -32,10 +33,20 @@ function EditNumberQuestion({
   moveQuestion,
   updateQuestion,
   duplicateQuestion,
-  deleteQuestion}: EditNumberQuestionProps) {
+  deleteQuestion }: EditNumberQuestionProps) {
   const { t } = useTranslation();
 
-
-  return (<div>Hello EditDateQuestion</div>)
+  return (
+    <form>
+      <QuestionHeader
+        languageCode={languageCode}
+        isInValid={isInValid}
+        question={question}
+        questionIdx={questionIdx}
+        updateQuestion={updateQuestion}
+      />
+    </form>
+  )
 }
+
 export default EditNumberQuestion

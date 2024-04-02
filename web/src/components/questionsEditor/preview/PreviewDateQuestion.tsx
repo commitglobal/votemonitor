@@ -38,7 +38,7 @@ function PreviewDateQuestion({
     }
   });
 
-  return <Form {...form}>
+  return (<Form {...form}>
     <form onSubmit={form.handleSubmit(onSubmitAnswer)}>
       <div className='grid gap-6 py-4 sm:grid-cols-2'>
         <FormField
@@ -92,7 +92,7 @@ function PreviewDateQuestion({
         </Button>
       </div>
     </form>
-  </Form>
+  </Form>)
 }
 
 

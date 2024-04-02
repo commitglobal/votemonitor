@@ -15,7 +15,8 @@ export interface PreviewFormProps {
 export const ResponseDataSchema = z.record(BaseAnswerSchema);
 export type ResponseData = z.infer<typeof ResponseDataSchema>;
 
-function PreviewForm({ languageCode,
+function PreviewForm({ 
+    languageCode,
     localQuestions,
     activeQuestionId,
     setActiveQuestionId }: PreviewFormProps) {
@@ -24,7 +25,7 @@ function PreviewForm({ languageCode,
     const [progress, setProgress] = useState(0);
 
     useEffect(() => {
-        if(activeQuestionId === "end"){
+        if(activeQuestionId === "end") {
             setProgress(100);
             return;
         }

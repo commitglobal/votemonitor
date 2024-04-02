@@ -7,12 +7,12 @@ export interface FormQuestionsEditorProps {
   localQuestions: BaseQuestion[];
   setLocalQuestions: (questions: BaseQuestion[]) => void;
   activeQuestionId: string | undefined;
-  setActiveQuestionId: (questionId: string) => void;
+  setActiveQuestionId: (questionId: string | undefined) => void;
   invalidQuestions: string[] | null
   setInvalidQuestions: (questions: string[]) => void;
 }
 
-function FormQuestionsEditor({ 
+function FormQuestionsEditor({
   languageCode,
   localQuestions,
   setLocalQuestions,

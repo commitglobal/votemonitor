@@ -1,6 +1,11 @@
-import { BaseQuestion } from '@/common/types'
+import { BaseQuestion, DateQuestion } from '@/common/types'
 import { useTranslation } from 'react-i18next';
 import { MoveDirection } from '../QuestionsEdit';
+import { Button } from '@/components/ui/button';
+import { Form } from '@/components/ui/form';
+import QuestionHeader from './QuestionHeader';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 
 export interface EditDateQuestionProps {
   languageCode: string;
@@ -8,7 +13,7 @@ export interface EditDateQuestionProps {
   activeQuestionId: string | undefined;
   isLastQuestion: boolean;
   isInValid: boolean;
-  question: BaseQuestion | undefined;
+  question: DateQuestion;
   setActiveQuestionId: (questionId: string) => void;
   moveQuestion: (questionIndex: number, direction: MoveDirection) => void;
   updateQuestion: (questionIndex: number, question: BaseQuestion) => void;
@@ -31,7 +36,17 @@ function EditDateQuestion({
   const { t } = useTranslation();
 
 
-  return (<div>Hello EditDateQuestion</div>)
+  return (
+    <form>
+      <QuestionHeader
+        languageCode={languageCode}
+        isInValid={isInValid}
+        question={question}
+        questionIdx={questionIdx}
+        updateQuestion={updateQuestion}
+      />
+    </form>
+  )
 }
 
 

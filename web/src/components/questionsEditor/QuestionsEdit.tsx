@@ -2,13 +2,14 @@ import { BaseQuestion } from "@/common/types"
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import EditQuestionFactory from "./edit/EditQuestionFactory";
 import { StrictModeDroppable } from "./StrictModeDroppable";
+import { validateQuestion } from "./edit/Validation";
 
 export interface QuestionsEditProps {
   languageCode: string;
   localQuestions: BaseQuestion[];
   setLocalQuestions: (questions: BaseQuestion[]) => void;
   activeQuestionId: string | undefined;
-  setActiveQuestionId: (questionId: string) => void;
+  setActiveQuestionId: (questionId: string | undefined) => void;
   invalidQuestions: string[] | null;
   setInvalidQuestions: (questions: string[]) => void;
 }
@@ -27,10 +28,35 @@ function QuestionsEdit({
   invalidQuestions,
   setInvalidQuestions }: QuestionsEditProps) {
 
+  function handleValidation(question: BaseQuestion) {
+    if (invalidQuestions === null) {
+      return;
+    }
+
+    let temp: string[] = [...invalidQuestions]
+
+    if (validateQuestion(question, languageCode)) {
+      temp = invalidQuestions.filter((id) => id !== question.id);
+      setInvalidQuestions(temp);
+    } else if (!invalidQuestions.includes(question.id)) {
+      temp.push(question.id);
+      setInvalidQuestions(temp);
+    }
+  };
+
 
   function addQuestion() { }
-  function updateQuestion(questionIndex: number, question: BaseQuestion) { }
+
+  function updateQuestion(questionIndex: number, question: BaseQuestion) {
+    localQuestions[questionIndex] = { ...question };
+    const updatedQuestions = Array.from(localQuestions);
+
+    setLocalQuestions(updatedQuestions);
+    handleValidation(question);
+  }
+
   function duplicateQuestion(questionIndex: number) { }
+
   function deleteQuestion(questionIndex: number) { }
 
   function onDragEnd(result: DropResult) {

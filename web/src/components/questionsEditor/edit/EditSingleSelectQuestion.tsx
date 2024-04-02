@@ -1,4 +1,4 @@
-import { BaseAnswer, SingleSelectAnswer, SingleSelectQuestion, AnswerType, SingleSelectAnswerSchema } from '@/common/types'
+import { BaseAnswer, SingleSelectAnswer, SingleSelectQuestion, AnswerType, SingleSelectAnswerSchema, BaseQuestion } from '@/common/types'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../ui/form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -7,6 +7,8 @@ import { Button } from '../../ui/button';
 import { useTranslation } from 'react-i18next';
 import { RadioGroup, RadioGroupItem } from '../../ui/radio-group';
 import { useMemo, useState } from 'react';
+import QuestionHeader from './QuestionHeader';
+import { MoveDirection } from '../QuestionsEdit';
 
 export interface PreviewSingleSelectQuestionProps {
   languageCode: string;
@@ -14,7 +16,7 @@ export interface PreviewSingleSelectQuestionProps {
   activeQuestionId: string | undefined;
   isLastQuestion: boolean;
   isInValid: boolean;
-  question: BaseQuestion | undefined;
+  question: SingleSelectQuestion;
   setActiveQuestionId: (questionId: string) => void;
   moveQuestion: (questionIndex: number, direction: MoveDirection) => void;
   updateQuestion: (questionIndex: number, question: BaseQuestion) => void;
@@ -34,10 +36,19 @@ function EditSingleSelectQuestion({
   updateQuestion,
   duplicateQuestion,
   deleteQuestion }: PreviewSingleSelectQuestionProps) {
-    const { t } = useTranslation();
+  const { t } = useTranslation();
 
 
-    return (<div>Hello EditSingleSelectQuestion</div>)
-  }
-
+  return (
+    <form>
+      <QuestionHeader
+        languageCode={languageCode}
+        isInValid={isInValid}
+        question={question}
+        questionIdx={questionIdx}
+        updateQuestion={updateQuestion}
+      />
+    </form>
+  )
+}
 export default EditSingleSelectQuestion

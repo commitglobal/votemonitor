@@ -7,6 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { RatingGroup } from '../../ui/ratings';
 import { z } from 'zod';
 import { MoveDirection } from '../QuestionsEdit';
+import QuestionHeader from './QuestionHeader';
 
 export interface EditRatingQuestionProps {
     languageCode: string;
@@ -14,7 +15,7 @@ export interface EditRatingQuestionProps {
     activeQuestionId: string | undefined;
     isLastQuestion: boolean;
     isInValid: boolean;
-    question: BaseQuestion | undefined;
+    question: RatingQuestion;
     setActiveQuestionId: (questionId: string) => void;
     moveQuestion: (questionIndex: number, direction: MoveDirection) => void;
     updateQuestion: (questionIndex: number, question: BaseQuestion) => void;
@@ -23,24 +24,33 @@ export interface EditRatingQuestionProps {
 }
 
 
-function EditRatingQuestion({ 
+function EditRatingQuestion({
     languageCode,
-  questionIdx,
-  activeQuestionId,
-  isLastQuestion,
-  isInValid,
-  question,
-  setActiveQuestionId,
-  moveQuestion,
-  updateQuestion,
-  duplicateQuestion,
-  deleteQuestion}: EditRatingQuestionProps) {
+    questionIdx,
+    activeQuestionId,
+    isLastQuestion,
+    isInValid,
+    question,
+    setActiveQuestionId,
+    moveQuestion,
+    updateQuestion,
+    duplicateQuestion,
+    deleteQuestion }: EditRatingQuestionProps) {
 
     const { t } = useTranslation();
 
 
-    return (<div>Hello EditRatingQuestion</div>)
+    return (
+        <form>
+            <QuestionHeader
+                languageCode={languageCode}
+                isInValid={isInValid}
+                question={question}
+                questionIdx={questionIdx}
+                updateQuestion={updateQuestion}
+            />
+        </form>
+    )
 }
-
 
 export default EditRatingQuestion
