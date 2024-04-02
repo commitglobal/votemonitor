@@ -65,7 +65,7 @@ const $presets = {
   body2: {
     ...$baseStyle,
     ...$sizeStyles.md,
-    fontWeight: "700",
+    fontWeight: "500",
   } as StyleProp<TextStyle>,
 
   label: $baseStyle as StyleProp<TextStyle>,
