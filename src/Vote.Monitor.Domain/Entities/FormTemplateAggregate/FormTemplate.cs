@@ -7,6 +7,7 @@ public class FormTemplate : AuditableBaseEntity, IAggregateRoot
 {
     public FormTemplateType FormTemplateType { get; private set; }
     public string Code { get; private set; }
+    public string DefaultLanguage { get; private set; }
     public TranslatedString Name { get; private set; }
     public FormTemplateStatus Status { get; private set; }
 
@@ -16,11 +17,13 @@ public class FormTemplate : AuditableBaseEntity, IAggregateRoot
 
     private FormTemplate(FormTemplateType formTemplateType,
         string code,
+        string defaultLanguage,
         TranslatedString name,
         IEnumerable<string> languages) : base(Guid.NewGuid())
     {
         FormTemplateType = formTemplateType;
         Code = code;
+        DefaultLanguage = defaultLanguage;
         Name = name;
         Languages = languages.ToList().AsReadOnly();
         Status = FormTemplateStatus.Drafted;
@@ -28,9 +31,10 @@ public class FormTemplate : AuditableBaseEntity, IAggregateRoot
 
     public static FormTemplate Create(FormTemplateType formTemplateType,
         string code,
+        string defaultLanguage,
         TranslatedString name,
         IEnumerable<string> languages) =>
-        new(formTemplateType, code, name, languages);
+        new(formTemplateType, code, defaultLanguage, name, languages);
 
     public PublishResult Publish()
     {
@@ -52,12 +56,15 @@ public class FormTemplate : AuditableBaseEntity, IAggregateRoot
         Status = FormTemplateStatus.Drafted;
     }
 
-    public void UpdateDetails(string code, TranslatedString name,
+    public void UpdateDetails(string code,
+        string defaultLanguage,
+        TranslatedString name,
         FormTemplateType formTemplateType,
         IEnumerable<string> languages,
         IEnumerable<BaseQuestion> questions)
     {
         Code = code;
+        DefaultLanguage = defaultLanguage;
         Name = name;
         FormTemplateType = formTemplateType;
         Languages = languages.ToList().AsReadOnly();

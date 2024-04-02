@@ -13,6 +13,7 @@ public class FormTemplateConfiguration : IEntityTypeConfiguration<FormTemplate>
         builder.HasKey(e => e.Id);
         builder.Property(x => x.FormTemplateType).IsRequired();
         builder.Property(x => x.Code).HasMaxLength(256).IsRequired();
+        builder.Property(x => x.DefaultLanguage).HasMaxLength(64).IsRequired();
         builder.Property(x => x.Status).IsRequired();
 
         var jsonSerializerOptions = (JsonSerializerOptions)null;

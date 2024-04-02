@@ -1,6 +1,6 @@
 ﻿namespace Vote.Monitor.Api.Feature.Answers.Attachments.Create;
 
-public class Endpoint(IRepository<AnswerAttachmentAggregate> repository, ITimeProvider timeProvider) :
+public class Endpoint(IRepository<AnswerAttachmentAggregate> repository) :
         Endpoint<Request, Ok<AttachmentModel>>
 {
     public override void Configure()

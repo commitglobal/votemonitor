@@ -3,7 +3,7 @@ using Vote.Monitor.Core.Services.PushNotification.Contracts;
 
 namespace Vote.Monitor.Api.Feature.Notifications.Send;
 
-public class Endpoint(IRepository<NotificationAggregate> repository, IPushNotificationService notificationService, ITimeProvider timeProvider) :
+public class Endpoint(IRepository<NotificationAggregate> repository, IPushNotificationService notificationService) :
         Endpoint<Request, Ok<Response>>
 {
     public override void Configure()

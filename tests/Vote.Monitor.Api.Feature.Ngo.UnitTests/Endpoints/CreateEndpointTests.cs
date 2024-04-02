@@ -11,14 +11,13 @@ public class CreateEndpointTests
     {
         // Arrange
         var ngoName = "UniqueName";
-        var timeService = Substitute.For<ITimeProvider>();
         var repository = Substitute.For<IRepository<NgoAggregate>>();
 
         repository
             .AnyAsync(Arg.Any<GetNgoByNameSpecification>())
             .Returns(false);
 
-        var endpoint = Factory.Create<Endpoint>(repository, timeService);
+        var endpoint = Factory.Create<Endpoint>(repository);
 
         // Act
         var request = new Request { Name = ngoName };
@@ -40,14 +39,13 @@ public class CreateEndpointTests
     public async Task ShouldReturnConflict_WhenNgoWithSameNameExists()
     {
         // Arrange
-        var timeService = Substitute.For<ITimeProvider>();
-        var repository = Substitute.For<IRepository<Domain.Entities.NgoAggregate.Ngo>>();
+        var repository = Substitute.For<IRepository<NgoAggregate>>();
 
         repository
             .AnyAsync(Arg.Any<GetNgoByNameSpecification>())
             .Returns(true);
 
-        var endpoint = Factory.Create<Endpoint>(repository, timeService);
+        var endpoint = Factory.Create<Endpoint>(repository);
 
         // Act
         var request = new Request { Name = "ExistingName" };
