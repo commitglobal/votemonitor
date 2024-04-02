@@ -21,9 +21,9 @@ public class GetEndpointTests
 
         // Assert
         result
-            .Should().BeOfType<Results<Ok<FormTemplateModel>, NotFound>>()
+            .Should().BeOfType<Results<Ok<FormTemplateFullModel>, NotFound>>()
             .Which
-            .Result.Should().BeOfType<Ok<FormTemplateModel>>()
+            .Result.Should().BeOfType<Ok<FormTemplateFullModel>>()
             .Which.Value.Should().BeEquivalentTo(formTemplate, options => options.ExcludingMissingMembers());
     }
 
@@ -40,7 +40,7 @@ public class GetEndpointTests
 
         // Assert
         result
-            .Should().BeOfType<Results<Ok<FormTemplateModel>, NotFound>>()
+            .Should().BeOfType<Results<Ok<FormTemplateFullModel>, NotFound>>()
             .Which
             .Result.Should().BeOfType<NotFound>();
     }

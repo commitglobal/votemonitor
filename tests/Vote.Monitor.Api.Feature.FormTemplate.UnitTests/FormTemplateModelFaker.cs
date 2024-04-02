@@ -2,7 +2,7 @@
 
 namespace Vote.Monitor.Api.Feature.FormTemplate.UnitTests;
 
-public sealed class FormTemplateModelFaker : PrivateFaker<FormTemplateModel>
+public sealed class FormTemplateModelFaker : PrivateFaker<FormTemplateSlimModel>
 {
     private readonly List<FormTemplateStatus> _statuses = [FormTemplateStatus.Drafted, FormTemplateStatus.Published];
     public FormTemplateModelFaker(Guid? id = null, FormTemplateStatus? status = null)

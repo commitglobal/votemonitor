@@ -31,7 +31,7 @@ public class Endpoint(IRepository<FormTemplateAggregate> repository) : Endpoint<
         var questions = req.Questions.Select(FormMapper.ToEntity)
                  .ToList()
                  .AsReadOnly();
-        formTemplate.UpdateDetails(req.Code, req.Name, req.FormTemplateType, req.Languages, questions);
+        formTemplate.UpdateDetails(req.Code, req.DefaultLanguage, req.Name, req.FormTemplateType, req.Languages, questions);
 
         await repository.UpdateAsync(formTemplate, ct);
         return TypedResults.NoContent();

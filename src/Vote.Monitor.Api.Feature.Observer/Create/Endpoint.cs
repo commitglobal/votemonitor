@@ -2,17 +2,9 @@
 
 namespace Vote.Monitor.Api.Feature.Observer.Create;
 
-public class Endpoint : Endpoint<Request, Results<Ok<ObserverModel>, Conflict<ProblemDetails>>>
+public class Endpoint(IRepository<ObserverAggregate> repository)
+    : Endpoint<Request, Results<Ok<ObserverModel>, Conflict<ProblemDetails>>>
 {
-    private readonly IRepository<ObserverAggregate> _repository;
-    private readonly ITimeProvider _timeProvider;
-
-    public Endpoint(IRepository<ObserverAggregate> repository, ITimeProvider timeProvider)
-    {
-        _repository = repository;
-        _timeProvider = timeProvider;
-    }
-
     public override void Configure()
     {
         Post("/api/observers");
@@ -21,7 +13,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<ObserverModel>, Conflict<Pr
     public override async Task<Results<Ok<ObserverModel>, Conflict<ProblemDetails>>> ExecuteAsync(Request req, CancellationToken ct)
     {
         var specification = new GetObserverByLoginSpecification(req.Email);
-        var hasObserverWithSameLogin = await _repository.AnyAsync(specification, ct);
+        var hasObserverWithSameLogin = await repository.AnyAsync(specification, ct);
 
         if (hasObserverWithSameLogin)
         {
@@ -30,7 +22,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<ObserverModel>, Conflict<Pr
         }
 
         var observer = new ObserverAggregate(req.Name, req.Email, req.Password, req.PhoneNumber);
-        await _repository.AddAsync(observer, ct);
+        await repository.AddAsync(observer, ct);
 
         return TypedResults.Ok(new ObserverModel
         {

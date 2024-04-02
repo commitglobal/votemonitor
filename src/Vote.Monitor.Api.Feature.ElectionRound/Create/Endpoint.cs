@@ -1,6 +1,6 @@
 ﻿namespace Vote.Monitor.Api.Feature.ElectionRound.Create;
 
-public class Endpoint(IRepository<ElectionRoundAggregate> repository, ITimeProvider timeProvider)
+public class Endpoint(IRepository<ElectionRoundAggregate> repository)
     : Endpoint<Request, Results<Ok<ElectionRoundModel>, Conflict<ProblemDetails>>>
 {
     public override void Configure()

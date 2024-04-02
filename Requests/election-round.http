@@ -1,12 +1,10 @@
-@hostAddress=https://localhost:7123
-@jwtToken=your_token
 @romaniaId = 51aa4900-30a6-91b7-2728-071542a064ff
 
 # Add election round
 # @name newElectionRound
-POST {{hostAddress}}/api/election-rounds
+POST {{$dotenv HOST }}/api/election-rounds
 Content-Type: application/json
-Authorization: Bearer {{jwtToken}}
+Authorization: Bearer {{$dotenv JWT_TOKEN}}
 
 {
     "countryId": "{{romaniaId}}",
@@ -17,47 +15,47 @@ Authorization: Bearer {{jwtToken}}
 ###
 
 # List election rounds
-GET {{hostAddress}}/api/election-rounds
+GET {{$dotenv HOST }}/api/election-rounds
     ?PageNumber=1
     &PageSize=100
-Authorization: Bearer {{jwtToken}}
+Authorization: Bearer {{$dotenv JWT_TOKEN}}
 
 ###
 @electionRoundId={{newElectionRound.response.body.$.id}}
 
 # Get an election round
-GET {{hostAddress}}/api/election-rounds/{{electionRoundId}}
-Authorization: Bearer {{jwtToken}}
+GET {{$dotenv HOST }}/api/election-rounds/{{electionRoundId}}
+Authorization: Bearer {{$dotenv JWT_TOKEN}}
 
 ###
 
 # Delete an election round
-DELETE  {{hostAddress}}/api/election-rounds/{{electionRoundId}}
-Authorization: Bearer {{jwtToken}}
+DELETE  {{$dotenv HOST }}/api/election-rounds/{{electionRoundId}}
+Authorization: Bearer {{$dotenv JWT_TOKEN}}
 
 ###
 
 # Archive an election round
-POST  {{hostAddress}}/api/election-rounds/{{electionRoundId}}:archive
-Authorization: Bearer {{jwtToken}}
+POST  {{$dotenv HOST }}/api/election-rounds/{{electionRoundId}}:archive
+Authorization: Bearer {{$dotenv JWT_TOKEN}}
 
 ###
 
 # Unarchive an election round
-POST  {{hostAddress}}/api/election-rounds/{{electionRoundId}}:unarchive
-Authorization: Bearer {{jwtToken}}
+POST  {{$dotenv HOST }}/api/election-rounds/{{electionRoundId}}:unarchive
+Authorization: Bearer {{$dotenv JWT_TOKEN}}
 
 ###
 
 # Start an election round
-POST  {{hostAddress}}/api/election-rounds/{{electionRoundId}}:start
-Authorization: Bearer {{jwtToken}}
+POST  {{$dotenv HOST }}/api/election-rounds/{{electionRoundId}}:start
+Authorization: Bearer {{$dotenv JWT_TOKEN}}
 
 ###
 
 # Unstart an election round
-POST  {{hostAddress}}/api/election-rounds/{{electionRoundId}}:unstart
-Authorization: Bearer {{jwtToken}}
+POST  {{$dotenv HOST }}/api/election-rounds/{{electionRoundId}}:unstart
+Authorization: Bearer {{$dotenv JWT_TOKEN}}
 
 ###
 

@@ -5,7 +5,6 @@ namespace Vote.Monitor.Domain.Entities.FormBase.Questions;
 
 public class SingleSelectQuestion : BaseQuestion
 {
-    public string Code { get; private set; }
     public IReadOnlyList<SelectOption> Options { get; private set; }
 
     [JsonConstructor]
@@ -13,9 +12,8 @@ public class SingleSelectQuestion : BaseQuestion
         string code,
         TranslatedString text,
         TranslatedString? helptext,
-        IReadOnlyList<SelectOption> options) : base(id, text, helptext)
+        IReadOnlyList<SelectOption> options) : base(id, code, text, helptext)
     {
-        Code = code;
         Options = options.ToList().AsReadOnly();
     }
 

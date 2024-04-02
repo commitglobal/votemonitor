@@ -9,6 +9,10 @@ internal class RatingQuestionValidator : Validator<RatingQuestion>
 {
     internal RatingQuestionValidator()
     {
+        RuleFor(x => x.Code)
+            .NotEmpty()
+            .MaximumLength(256);
+
         RuleFor(x => x.Text)
             .SetValidator(new TranslatedStringValidator());
 

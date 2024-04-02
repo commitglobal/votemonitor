@@ -9,6 +9,10 @@ internal class NumberQuestionValidator : Validator<NumberQuestion>
 {
     internal NumberQuestionValidator()
     {
+        RuleFor(x => x.Code)
+            .NotEmpty()
+            .MaximumLength(256);
+
         RuleFor(x => x.Text)
             .SetValidator(new TranslatedStringValidator());
 

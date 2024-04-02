@@ -1,6 +1,6 @@
 ﻿namespace Vote.Monitor.Api.Feature.Emergencies.Create;
 
-public class Endpoint(IRepository<EmergencyAggregate> repository, ITimeProvider timeProvider) :
+public class Endpoint(IRepository<EmergencyAggregate> repository) :
         Endpoint<Request, Ok<EmergencyModel>>
 {
     public override void Configure()

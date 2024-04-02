@@ -10,14 +10,13 @@ public class CreateEndpointTests
         var englishTitle = "some english title";
         var startDate = new DateOnly(2024, 01, 02);
 
-        var timeService = Substitute.For<ITimeProvider>();
         var repository = Substitute.For<IRepository<ElectionRoundAggregate>>();
 
         repository
             .AnyAsync(Arg.Any<GetActiveElectionRoundSpecification>())
             .Returns(false);
 
-        var endpoint = Factory.Create<Create.Endpoint>(repository, timeService);
+        var endpoint = Factory.Create<Create.Endpoint>(repository);
 
         // Act
         var request = new Create.Request
@@ -47,14 +46,13 @@ public class CreateEndpointTests
     public async Task ShouldReturnConflict_WhenElectionRoundWithSameTitleExists()
     {
         // Arrange
-        var timeService = Substitute.For<ITimeProvider>();
         var repository = Substitute.For<IRepository<ElectionRoundAggregate>>();
 
         repository
             .AnyAsync(Arg.Any<GetActiveElectionRoundSpecification>())
             .Returns(true);
 
-        var endpoint = Factory.Create<Create.Endpoint>(repository, timeService);
+        var endpoint = Factory.Create<Create.Endpoint>(repository);
 
         // Act
         var request = new Create.Request { Title = "a title", EnglishTitle = "an english title", StartDate = DateOnly.MinValue };
