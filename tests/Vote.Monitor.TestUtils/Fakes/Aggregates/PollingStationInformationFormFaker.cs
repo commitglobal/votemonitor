@@ -9,8 +9,6 @@ public sealed class PollingStationInformationFormFaker : PrivateFaker<PollingSta
         List<string>? languages = null,
         List<BaseQuestion>? questions = null)
     {
-        ITimeProvider timeProvider = new CurrentUtcTimeProvider();
-
         languages ??= [LanguagesList.EN.Iso1, LanguagesList.RO.Iso1];
         electionRound ??= new ElectionRoundAggregateFaker().Generate();
 
@@ -49,6 +47,6 @@ public sealed class PollingStationInformationFormFaker : PrivateFaker<PollingSta
             new MultiSelectQuestion(Guid.NewGuid(), "c6", multiSelectQuestionText, null, multiSelectOptions)
         ];
         CustomInstantiator(_ =>
-            PollingStationInformationForm.Create(electionRound, languages, questions, timeProvider));
+            PollingStationInformationForm.Create(electionRound, languages, questions));
     }
 }

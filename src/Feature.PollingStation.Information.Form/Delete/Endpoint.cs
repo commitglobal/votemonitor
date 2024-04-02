@@ -7,7 +7,7 @@ public class Endpoint(IRepository<PollingStationInfoFormAggregate> repository) :
         Delete("/api/election-rounds/{electionRoundId}/polling-station-information-form/");
         DontAutoTag();
         Options(x => x.WithTags("polling-station-information-form"));
-        Permissions(PolicyNames.PlatformAdminsOnly);
+        Policies(PolicyNames.PlatformAdminsOnly);
     }
 
     public override async Task<Results<NoContent, NotFound>> ExecuteAsync(Request req, CancellationToken ct)

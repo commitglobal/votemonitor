@@ -1,3 +1,4 @@
+import React from "react";
 import { View } from "react-native";
 import { router } from "expo-router";
 import { useAuth } from "../hooks/useAuth";
@@ -25,16 +26,20 @@ const Login = () => {
           router.replace("/");
         }}
       >
-        Sign In
-      </TamaguiButton>
-      <TamaguiButton
+        <Typography>Sign In</Typography>
+      </Button>
+      <Button
+        paddingHorizontal="$xl"
+        height={"auto"}
+        paddingVertical="$lg"
+        backgroundColor="$yellow2"
         onPress={() => {
           router.push("/forgot-password");
         }}
       >
-        Forgot Password
-      </TamaguiButton>
-      <Typography preset="heading" size="sm">Heading</Typography>
+        <Typography size="xl">Forgot Password</Typography>
+      </Button>
+      <Typography preset="heading">Heading</Typography>
       <Typography preset="subheading">Subheading</Typography>
       <Typography preset="default">default</Typography>
       <Typography preset="body1">body1</Typography>
