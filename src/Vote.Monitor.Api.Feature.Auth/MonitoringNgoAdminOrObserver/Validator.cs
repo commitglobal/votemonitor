@@ -1,4 +1,5 @@
-﻿namespace Vote.Monitor.Api.Feature.PollingStation.FetchAllV2;
+﻿
+namespace Vote.Monitor.Api.Feature.Auth.MonitoringNgoAdminOrObserver;
 
 public class Validator : Validator<Request>
 {

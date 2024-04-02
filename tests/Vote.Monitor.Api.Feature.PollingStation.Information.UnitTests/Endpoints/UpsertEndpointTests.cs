@@ -16,7 +16,7 @@ public class UpsertEndpointTests
         _monitoringObserverRepository = Substitute.For<IReadRepository<MonitoringObserver>>();
         _formRepository = Substitute.For<IReadRepository<PollingStationInformationForm>>();
 
-        _endpoint = Factory.Create<Upsert.Endpoint>(_repository, _pollingStationRepository, _monitoringObserverRepository, _formRepository, new CurrentUtcTimeProvider());
+        _endpoint = Factory.Create<Upsert.Endpoint>(_repository, _pollingStationRepository, _monitoringObserverRepository, _formRepository);
     }
 
     [Fact]

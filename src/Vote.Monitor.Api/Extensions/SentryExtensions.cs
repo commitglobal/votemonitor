@@ -28,8 +28,11 @@ public static class SentryExtensions
             .WithMetrics(metrics =>
             {
                 metrics
+                    .AddAspNetCoreInstrumentation()
+                    .AddProcessInstrumentation()
                     .AddRuntimeInstrumentation() // <-- Requires the OpenTelemetry.Instrumentation.Runtime package
                                                  // Collect some of the built-in ASP.NET Core metrics
+                    .AddProcessInstrumentation()
                     .AddBuiltInMeters();
             });
 
@@ -53,7 +56,7 @@ public static class SentryExtensions
 
             options.UseOpenTelemetry(); // <-- Configure Sentry to use OpenTelemetry trace information
             // This shows experimental support for capturing OpenTelemetry metrics with Sentry
-            options.ExperimentalMetrics = new ExperimentalMetricsOptions()
+            options.ExperimentalMetrics = new ExperimentalMetricsOptions
             {
                 // Here we're telling Sentry to capture all built-in metrics. This includes all the metrics we configured
                 // OpenTelemetry to emit when we called `builder.Services.AddOpenTelemetry()` above:

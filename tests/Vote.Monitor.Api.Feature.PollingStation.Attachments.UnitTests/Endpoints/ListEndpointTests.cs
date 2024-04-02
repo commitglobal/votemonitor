@@ -57,7 +57,7 @@ public class ListEndpointTests
             .Returns(fakePollingStation);
 
         _repository
-            .ListAsync(Arg.Any<GetPollingStationAttachmentsSpecification>(), CancellationToken.None)
+            .ListAsync(Arg.Any<GetObserverPollingStationAttachmentsSpecification>(), CancellationToken.None)
             .Returns([
                 fakePollingStationAttachment,
                 anotherFakePollingStationAttachment
@@ -162,7 +162,7 @@ public class ListEndpointTests
             .Returns(fakeMonitoringObserver);
 
         _repository
-            .ListAsync(Arg.Any<GetPollingStationAttachmentsSpecification>(), CancellationToken.None)
+            .ListAsync(Arg.Any<GetObserverPollingStationAttachmentsSpecification>(), CancellationToken.None)
             .Returns([]);
 
         // Act
