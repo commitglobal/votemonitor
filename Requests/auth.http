@@ -1,11 +1,9 @@
-@hostAddress=https://votemonitor.staging.heroesof.tech
-
 # Login
-POST {{hostAddress}}/api/auth
+POST {{$dotenv HOST }}/api/auth
 Content-Type: application/json
 
 {
-  "username": "platform@admin.com",
-  "password": "L8v1gXFtAWoeFUIEU5wc"
+  "username": "{{$dotenv USERNAME}}",
+  "password": "{{$dotenv PASSWORD}}"
 }
 ###

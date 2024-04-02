@@ -1,19 +1,16 @@
-@hostAddress=https://localhost:7123
-@jwtToken=eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3NzFiMGJiMC0zZjg3LTQ3YTAtYmM2NC0wODc4ZTIwNzAzNzQiLCJyb2xlIjoiUGxhdGZvcm1BZG1pbiIsImV4cCI6MTcxMjA0MTkzMiwiaWF0IjoxNzExOTU1NTMyLCJuYmYiOjE3MTE5NTU1MzJ9.Ag5a-RhzeIQk1CkVqba2thZJkrRcD-G44Llzco9awyo
-
 # List form templates
-GET {{hostAddress}}/api/form-templates
+GET {{$dotenv HOST }}/api/form-templates
       ?pageNumber=1
       &pageSize=10
-Authorization: Bearer {{jwtToken}}
+Authorization: Bearer {{$dotenv JWT_TOKEN}}
 
 ###
 
 # Create a form template
 # @name newFormTemplate
-POST {{hostAddress}}/api/form-templates
+POST {{$dotenv HOST }}/api/form-templates
 Content-Type: application/json
-Authorization: Bearer {{jwtToken}}
+Authorization: Bearer {{$dotenv JWT_TOKEN}}
 
 {
   "code": "A",
@@ -30,9 +27,9 @@ Authorization: Bearer {{jwtToken}}
 ###
 @formTemplateId = {{newFormTemplate.response.body.$.id}}
 # Update a form template
-PUT {{hostAddress}}/api/form-templates/{{formTemplateId}}
+PUT {{$dotenv HOST }}/api/form-templates/{{formTemplateId}}
 Content-Type: application/json
-Authorization: Bearer {{jwtToken}}
+Authorization: Bearer {{$dotenv JWT_TOKEN}}
 
 {
   "code": "A",
@@ -234,25 +231,25 @@ Authorization: Bearer {{jwtToken}}
 ###
 
 # Get a form template
-GET {{hostAddress}}/api/form-templates/{{newFormTemplate.response.body.$.id}}
-Authorization: Bearer {{jwtToken}}
+GET {{$dotenv HOST }}/api/form-templates/{{newFormTemplate.response.body.$.id}}
+Authorization: Bearer {{$dotenv JWT_TOKEN}}
 
 ###
 
 # Delete a form template
-DELETE {{hostAddress}}/api/form-templates/{{newFormTemplate.response.body.$.id}}
-Authorization: Bearer {{jwtToken}}
+DELETE {{$dotenv HOST }}/api/form-templates/{{newFormTemplate.response.body.$.id}}
+Authorization: Bearer {{$dotenv JWT_TOKEN}}
 
 ###
 
 # Draft a form template
-POST {{hostAddress}}/api/form-templates/{{newFormTemplate.response.body.$.id}}:draft
-Authorization: Bearer {{jwtToken}}
+POST {{$dotenv HOST }}/api/form-templates/{{newFormTemplate.response.body.$.id}}:draft
+Authorization: Bearer {{$dotenv JWT_TOKEN}}
 
 ###
 
 # Publish a form template
-POST {{hostAddress}}/api/form-templates/{{newFormTemplate.response.body.$.id}}:publish
-Authorization: Bearer {{jwtToken}}
+POST {{$dotenv HOST }}/api/form-templates/{{newFormTemplate.response.body.$.id}}:publish
+Authorization: Bearer {{$dotenv JWT_TOKEN}}
 
 ###
