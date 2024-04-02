@@ -1,13 +1,9 @@
 import React from "react";
 import { Tabs } from "expo-router";
-import ObservationSVG from "../../../../assets/icons/observation.svg";
-import QuickReportSVG from "../../../../assets/icons/quick-report.svg";
-import GuidesSVG from "../../../../assets/icons/Learning.svg";
-import InboxSVG from "../../../../assets/icons/Inbox.svg";
-import MoreSVG from "../../../../assets/icons/More.svg";
 import { TextStyle, ViewStyle } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTheme } from "tamagui";
+import { Icon } from "../../../../components/Icon";
 
 export default function TabLayout() {
   const insets = useSafeAreaInsets();
@@ -16,7 +12,7 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: theme.purple5.val,
+        tabBarActiveTintColor: theme.purple5?.val,
         tabBarHideOnKeyboard: true,
         headerShown: false,
         tabBarStyle: [$tabBar, { height: insets.bottom + 60 }],
@@ -27,35 +23,35 @@ export default function TabLayout() {
         name="index"
         options={{
           title: "Observation",
-          tabBarIcon: ({ color }) => <ObservationSVG fill={color} />,
+          tabBarIcon: ({ color }) => <Icon icon="eyeOff" color={color} />,
         }}
       />
       <Tabs.Screen
         name="quick-report"
         options={{
           title: "Quick Report",
-          tabBarIcon: ({ color }) => <QuickReportSVG fill={color} />,
+          tabBarIcon: ({ color }) => <Icon icon="quickReport" color={color} />,
         }}
       />
       <Tabs.Screen
         name="guides"
         options={{
           title: "Guides",
-          tabBarIcon: ({ color }) => <GuidesSVG fill={color} />,
+          tabBarIcon: ({ color }) => <Icon icon="learning" color={color} />,
         }}
       />
       <Tabs.Screen
         name="inbox"
         options={{
           title: "Inbox",
-          tabBarIcon: ({ color }) => <InboxSVG fill={color} />,
+          tabBarIcon: ({ color }) => <Icon icon="inbox" color={color} />,
         }}
       />
       <Tabs.Screen
         name="more"
         options={{
           title: "More",
-          tabBarIcon: ({ color }) => <MoreSVG fill={color} />,
+          tabBarIcon: ({ color }) => <Icon icon="more" color={color} />,
         }}
       />
     </Tabs>
