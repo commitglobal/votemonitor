@@ -7,12 +7,16 @@ import { DrawerActions } from "@react-navigation/native";
 import Header from "../../../components/Header";
 import { Icon } from "../../../components/Icon";
 import { StyleProp, ViewStyle } from "react-native";
+import { CustomDrawerContent } from "../../../components/CustomDrawerContent";
 
 export default function MainLayout() {
   const theme = useTheme();
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <Drawer
+        drawerContent={() => (
+          <CustomDrawerContent backgroundColor={theme.purple5?.val} />
+        )}
         screenOptions={{
           drawerType: "front",
           header: ({ navigation, route, options }) => {
