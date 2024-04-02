@@ -22,7 +22,10 @@ public class Endpoint : Endpoint<Request, Results<Ok<NoteModel>, BadRequest<Prob
     {
         Get("/api/election-rounds/{electionRoundId}/polling-stations/{pollingStationId}/notes/{id}");
         DontAutoTag();
-        Options(x => x.WithTags("notes"));
+        Options(x => x.WithTags("notes", "mobile"));
+        Summary(s => {
+            s.Summary = "Gets a note for a polling station";
+        });
     }
 
     public override async Task<Results<Ok<NoteModel>, BadRequest<ProblemDetails>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
@@ -49,6 +52,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<NoteModel>, BadRequest<Prob
             req.PollingStationId,
             req.ObserverId,
             req.Id);
+
         var pollingStationNote = await _repository.FirstOrDefaultAsync(specification, ct);
         if (pollingStationNote is null)
         {

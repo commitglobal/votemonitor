@@ -4667,7 +4667,7 @@ namespace Vote.Monitor.Domain.Migrations
 
                     b.HasIndex("PollingStationId");
 
-                    b.ToTable("PollingStationAttachments");
+                    b.ToTable("PollingStationAttachments", (string)null);
                 });
 
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.PollingStationInfoAggregate.PollingStationInformation", b =>
@@ -4680,10 +4680,16 @@ namespace Vote.Monitor.Domain.Migrations
                         .IsRequired()
                         .HasColumnType("jsonb");
 
+                    b.Property<DateTime?>("ArrivalTime")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("DepartureTime")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("ElectionRoundId")
@@ -4714,7 +4720,7 @@ namespace Vote.Monitor.Domain.Migrations
 
                     b.HasIndex("PollingStationInformationFormId");
 
-                    b.ToTable("PollingStationInformations");
+                    b.ToTable("PollingStationInformation", (string)null);
                 });
 
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.PollingStationInfoFormAggregate.PollingStationInformationForm", b =>
@@ -4794,7 +4800,7 @@ namespace Vote.Monitor.Domain.Migrations
 
                     b.HasIndex("PollingStationId");
 
-                    b.ToTable("PollingStationNotes");
+                    b.ToTable("PollingStationNotes", (string)null);
                 });
 
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.ApplicationUserAggregate.NgoAdmin", b =>

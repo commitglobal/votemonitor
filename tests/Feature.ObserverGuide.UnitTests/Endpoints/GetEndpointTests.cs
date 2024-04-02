@@ -9,7 +9,6 @@ using NSubstitute;
 using NSubstitute.ReturnsExtensions;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
 using Vote.Monitor.Core.Services.Security;
-using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
 using Vote.Monitor.Domain.Repository;
 using Vote.Monitor.TestUtils.Fakes.Aggregates;
 
@@ -19,7 +18,7 @@ public class GetEndpointTests
 {
     private readonly IReadRepository<ObserverGuideAggregate> _repository;
     private readonly IAuthorizationService _authorizationService;
-    private readonly IReadRepository<MonitoringNgo> _monitoringNgoRepository;
+    private readonly ICurrentUserProvider _currentUserProvider;
     private readonly Endpoint _endpoint;
 
     public GetEndpointTests()
@@ -27,34 +26,63 @@ public class GetEndpointTests
         _repository = Substitute.For<IReadRepository<ObserverGuideAggregate>>();
         var fileStorageService = Substitute.For<IFileStorageService>();
         _authorizationService = Substitute.For<IAuthorizationService>();
-        var currentUserProvider = Substitute.For<ICurrentUserProvider>();
-        _monitoringNgoRepository = Substitute.For<IReadRepository<MonitoringNgo>>();
+        _currentUserProvider = Substitute.For<ICurrentUserProvider>();
 
         _endpoint = Factory.Create<Endpoint>(_authorizationService,
-            currentUserProvider,
+            _currentUserProvider,
             _repository,
             fileStorageService);
     }
 
     [Fact]
-    public async Task ShouldReturnOkWithObserverGuideModel_WhenObserverGuideExists()
+    public async Task ShouldReturnOkWithObserverGuideModel_WhenObserverGuideExists_UserIsObserver()
     {
         // Arrange
         var observerGuideId = Guid.NewGuid();
         var fileName = "photo.jpg";
 
         var fakeElectionRound = new ElectionRoundAggregateFaker().Generate();
-        var fakeMonitoringNgo = new MonitoringNgoAggregateFaker().Generate();
         var fakeObserverGuide = new ObserverGuideAggregateFaker(observerGuideId, fileName).Generate();
 
         _authorizationService.AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object?>(), Arg.Any<IEnumerable<IAuthorizationRequirement>>())
             .Returns(AuthorizationResult.Success());
 
-        _monitoringNgoRepository
-            .FirstOrDefaultAsync(Arg.Any<GetMonitoringNgoSpecification>())
-            .Returns(fakeMonitoringNgo);
+        _currentUserProvider.IsObserver().Returns(true);
 
         _repository.FirstOrDefaultAsync(Arg.Any<GetObserverGuideSpecification>())
+            .Returns(fakeObserverGuide);
+
+        // Act
+        var request = new Request
+        {
+            ElectionRoundId = fakeElectionRound.Id,
+            Id = observerGuideId
+        };
+        var result = await _endpoint.ExecuteAsync(request, default);
+
+        // Assert
+        var model = result.Result.As<Ok<ObserverGuideModel>>();
+        model.Value!.FileName.Should().Be(fakeObserverGuide.FileName);
+        model.Value.Id.Should().Be(fakeObserverGuide.Id);
+    }
+
+    [Fact]
+    public async Task ShouldReturnOkWithObserverGuideModel_WhenObserverGuideExists_UserIsNgoAdmin()
+    {
+        // Arrange
+        var observerGuideId = Guid.NewGuid();
+        var fileName = "photo.jpg";
+
+        var fakeElectionRound = new ElectionRoundAggregateFaker().Generate();
+        var fakeObserverGuide = new ObserverGuideAggregateFaker(observerGuideId, fileName).Generate();
+
+        _authorizationService.AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object?>(), Arg.Any<IEnumerable<IAuthorizationRequirement>>())
+            .Returns(AuthorizationResult.Success());
+
+        _currentUserProvider.IsObserver().Returns(false);
+        _currentUserProvider.IsNgoAdmin().Returns(true);
+
+        _repository.FirstOrDefaultAsync(Arg.Any<GetObserverGuideForNgoAdminSpecification>())
             .Returns(fakeObserverGuide);
 
         // Act
@@ -79,15 +107,10 @@ public class GetEndpointTests
         var fileName = "photo.jpg";
 
         var fakeElectionRound = new ElectionRoundAggregateFaker().Generate();
-        var fakeMonitoringNgo = new MonitoringNgoAggregateFaker().Generate();
         var fakeObserverGuide = new ObserverGuideAggregateFaker(observerGuideId, fileName).Generate();
 
         _authorizationService.AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object?>(), Arg.Any<IEnumerable<IAuthorizationRequirement>>())
             .Returns(AuthorizationResult.Failed());
-
-        _monitoringNgoRepository
-            .FirstOrDefaultAsync(Arg.Any<GetMonitoringNgoSpecification>())
-            .Returns(fakeMonitoringNgo);
 
         _repository.FirstOrDefaultAsync(Arg.Any<GetObserverGuideSpecification>())
             .Returns(fakeObserverGuide);
@@ -114,14 +137,9 @@ public class GetEndpointTests
         var observerGuideId = Guid.NewGuid();
 
         var fakeElectionRound = new ElectionRoundAggregateFaker().Generate();
-        var fakeMonitoringNgo = new MonitoringNgoAggregateFaker().Generate();
 
         _authorizationService.AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object?>(), Arg.Any<IEnumerable<IAuthorizationRequirement>>())
             .Returns(AuthorizationResult.Success());
-
-        _monitoringNgoRepository
-            .FirstOrDefaultAsync(Arg.Any<GetMonitoringNgoSpecification>())
-            .Returns(fakeMonitoringNgo);
 
         _repository.FirstOrDefaultAsync(Arg.Any<GetObserverGuideSpecification>())
             .ReturnsNull();

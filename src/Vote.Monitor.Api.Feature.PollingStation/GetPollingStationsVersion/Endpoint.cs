@@ -7,6 +7,10 @@ public class Endpoint(VoteMonitorContext context) : Endpoint<Request, Results<Ok
         Get("/api/election-rounds/{electionRoundId}/polling-stations:version");
         DontAutoTag();
         Options(x => x.WithTags("polling-stations", "mobile"));
+        Summary(s => {
+            s.Summary = "Gets current version of polling stations for an election round";
+            s.Description = "Cache key changes every time any polling station changes";
+        });
     }
 
     public override async Task<Results<Ok<Response>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)

@@ -19,5 +19,3 @@ const AppLayout = () => {
     </Stack>
   );
 };
-
-export default AppLayout;

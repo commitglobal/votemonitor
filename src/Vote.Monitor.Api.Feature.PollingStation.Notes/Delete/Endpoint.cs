@@ -22,7 +22,10 @@ public class Endpoint : Endpoint<Request, Results<NoContent, NotFound, BadReques
     {
         Delete("/api/election-rounds/{electionRoundId}/polling-stations/{pollingStationId}/notes/{id}");
         DontAutoTag();
-        Options(x => x.WithTags("notes"));
+        Options(x => x.WithTags("notes", "mobile"));
+        Summary(s => {
+            s.Summary = "Deletes a note for a polling station";
+        });
     }
 
     public override async Task<Results<NoContent, NotFound, BadRequest<ProblemDetails>>> ExecuteAsync(Request req, CancellationToken ct)

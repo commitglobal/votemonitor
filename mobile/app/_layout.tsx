@@ -129,6 +129,14 @@ export default function Root() {
         <AuthContextProvider>
           {!isOnline && <OfflineBanner />}
           <Slot />
+          {/* <Text
+            onPress={() => {
+              setIsOnline(!isOnline);
+              onlineManager.setOnline(!isOnline);
+            }}
+          >
+            Go Online/Offline
+          </Text> */}
         </AuthContextProvider>
       </TamaguiProvider>
     </PersistQueryClientProvider>

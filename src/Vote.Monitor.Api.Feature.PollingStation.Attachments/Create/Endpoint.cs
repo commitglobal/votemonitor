@@ -31,8 +31,11 @@ public class Endpoint : Endpoint<Request, Results<Ok<AttachmentModel>, BadReques
     {
         Post("/api/election-rounds/{electionRoundId}/polling-stations/{pollingStationId}/attachments");
         DontAutoTag();
-        Options(x => x.WithTags("attachments"));
+        Options(x => x.WithTags("attachments", "mobile"));
         AllowFileUploads();
+        Summary(s => {
+            s.Summary = "Uploads an attachment for a specific polling station";
+        });
     }
 
     public override async Task<Results<Ok<AttachmentModel>, BadRequest<ProblemDetails>, StatusCodeHttpResult>> ExecuteAsync(Request req, CancellationToken ct)

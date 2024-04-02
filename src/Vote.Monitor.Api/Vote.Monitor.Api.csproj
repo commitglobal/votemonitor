@@ -20,6 +20,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.6" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.2" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.Process" Version="0.5.0-beta.4" />
     <PackageReference Include="Sentry" Version="4.2.1" />
     <PackageReference Include="Sentry.AspNetCore" Version="4.2.1" />
     <PackageReference Include="Sentry.OpenTelemetry" Version="4.2.1" />
@@ -31,7 +32,7 @@
     <PackageReference Include="Serilog.Sinks.Console" Version="5.0.1" />
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
     <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.7.0" />
-    <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.7.0" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.7.1" />
     <PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.7.1" />
     <PackageReference Include="OpenTelemetry.Instrumentation.Runtime" Version="1.7.0" />
 
@@ -41,6 +42,7 @@
     <ProjectReference Include="..\Authorization.Policies\Authorization.Policies.csproj" />
     <ProjectReference Include="..\Feature.ObserverGuide\Feature.ObserverGuide.csproj" />
     <ProjectReference Include="..\Feature.PollingStation.Information.Form\Feature.PollingStation.Information.Form.csproj" />
+    <ProjectReference Include="..\Feature.PollingStation.Visit\Feature.PollingStation.Visit.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Api.Feature.Answers.Attachments\Vote.Monitor.Api.Feature.Answers.Attachments.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Api.Feature.Answers.Notes\Vote.Monitor.Api.Feature.Answers.Notes.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Api.Feature.Auth\Vote.Monitor.Api.Feature.Auth.csproj" />
