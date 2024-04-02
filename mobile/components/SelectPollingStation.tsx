@@ -9,64 +9,78 @@ import {
   Sheet,
   useTheme,
   XStack,
+  YStack,
 } from "tamagui";
 import { Typography } from "./Typography";
 import { Icon } from "./Icon";
 
 const SelectPollingStation = () => {
-  const [open, setOpen] = useState(false);
-  const insets = useSafeAreaInsets();
-  const theme = useTheme();
-  return (
-    <>
-      <XStack
-        backgroundColor="white"
-        paddingVertical="$xs"
-        paddingHorizontal="$md"
-      >
-        <XStack
-          backgroundColor="$purple1"
-          flex={1}
-          borderRadius={50}
-          paddingVertical={7}
-          paddingHorizontal="$xs"
-          alignItems="center"
-          justifyContent="space-between"
-          onPress={() => setOpen(true)}
-        >
-          <Typography
-            preset="body2"
-            style={{ color: theme.purple5?.val, flex: 1 }}
-          >
-            Secția 123, Str. Moldovei, nr. 30, Targu Muree3eeeeeeeeeez
-          </Typography>
-          <Icon icon="chevronRight" />
-        </XStack>
-      </XStack>
+  const [val, setVal] = useState("");
 
-      <Sheet modal={true} open={open} onOpenChange={setOpen} zIndex={100_000}>
-        <Sheet.Overlay />
-        <Sheet.Frame justifyContent="center" alignItems="center">
-          <XStack
-            padding="$md"
-            gap="$sm"
-            marginBottom={Platform.OS === "ios" && insets.bottom}
-          >
-            <Button
-              backgroundColor="transparent"
-              fontWeight="500"
-              fontSize={16}
-              onPress={() => setOpen(false)}
-            >
-              Cancel
-            </Button>
-            <Button backgroundColor="$red12" color="white" flex={1}>
-              Clear form
-            </Button>
-          </XStack>
-        </Sheet.Frame>
-      </Sheet>
-    </>
+  return (
+    <YStack
+      paddingVertical="$xs"
+      paddingHorizontal="$md"
+      backgroundColor="white"
+    >
+      <Select value={val} onValueChange={setVal} disablePreventBodyScroll>
+        <Select.Trigger
+          backgroundColor="$purple1"
+          borderRadius="$10"
+          // iconAfter={<ChevronDown color="#7833B3" />}
+        >
+          <Select.Value color="$purple5">
+            <Typography preset="body2">
+              Secția 163, Str. Moldovei, nr. 3, Targu Mures
+            </Typography>
+          </Select.Value>
+          {/* // TODO: placeholder from translation */}
+        </Select.Trigger>
+
+        <Adapt platform="touch">
+          <Sheet native modal snapPoints={[80, 50]}>
+            <Sheet.Frame>
+              <Sheet.ScrollView>
+                <Adapt.Contents />
+              </Sheet.ScrollView>
+            </Sheet.Frame>
+            <Sheet.Overlay />
+          </Sheet>
+        </Adapt>
+
+        <Select.Content>
+          <Select.Viewport>
+            <Select.Group>
+              {/* //TODO: text from translation */}
+              <Select.Label>Select polling station</Select.Label>
+              {useMemo(
+                () =>
+                  pollingStationAdresses.map((pollingStationAddress, i) => {
+                    return (
+                      <Select.Item
+                        index={i}
+                        key={pollingStationAddress.id}
+                        value={pollingStationAddress.address}
+                        gap="$3"
+                      >
+                        {/* //TODO: change number of lines to 2 if that's what we want */}
+                        <Select.ItemText width={"90%"} numberOfLines={1}>
+                          {pollingStationAddress.address}
+                        </Select.ItemText>
+                        <Select.ItemIndicator>
+                          {/* <Check size={16} /> */}
+                        </Select.ItemIndicator>
+                      </Select.Item>
+                    );
+                  }),
+                [pollingStationAdresses]
+              )}
+            </Select.Group>
+          </Select.Viewport>
+          <Select.ScrollDownButton />
+        </Select.Content>
+      </Select>
+    </YStack>
   );
 };
 
