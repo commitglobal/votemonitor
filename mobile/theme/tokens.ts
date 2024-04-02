@@ -22,7 +22,7 @@ export const tokens = createTokens({
     true: 16, //mandatory default spacing
     xxxs: 2,
     xxs: 4,
-    xs: 8,
+    xs: 10,
     sm: 12,
     md: 16,
     lg: 24,
