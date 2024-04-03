@@ -3,23 +3,24 @@ import { Typography } from "./Typography";
 import { YStack, XStack, Sheet, Button } from "tamagui";
 import { Icon } from "./Icon";
 import { Platform } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import RNDateTimePicker, {
-  DateTimePickerAndroid,
   DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
 import DateTimePickerModal from "@react-native-community/datetimepicker";
-import DatePicker from "react-native-date-picker";
 
 const TimeSelect = () => {
   const [open, setOpen] = useState(false);
-  const [time, setTime] = useState(new Date());
+  const [time, setTime] = useState<Date>(new Date());
 
-  const onChange = (event: DateTimePickerEvent, selectedTime: Date) => {
-    setTime(selectedTime);
+  const onChange = (
+    event: DateTimePickerEvent,
+    selectedTime: Date | undefined
+  ) => {
+    selectedTime && setTime(selectedTime);
     if (Platform.OS === "android") {
       setOpen(false);
     }
+    return;
   };
 
   const onResetTime = () => {
@@ -27,6 +28,10 @@ const TimeSelect = () => {
     resetTime.setMinutes(0);
     resetTime.setHours(0);
     setTime(resetTime);
+  };
+
+  const onClose = () => {
+    setOpen(false);
   };
 
   return (
@@ -60,7 +65,7 @@ const TimeSelect = () => {
               <Button fontWeight="500" fontSize={16} onPress={onResetTime}>
                 Reset
               </Button>
-              <Button onPress={() => setOpen(false)}>Done</Button>
+              <Button onPress={onClose}>Done</Button>
             </XStack>
             <XStack flex={1} justifyContent="center" alignItems="center">
               <RNDateTimePicker
