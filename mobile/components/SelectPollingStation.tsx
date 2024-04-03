@@ -75,6 +75,7 @@ const SelectPollingStation = () => {
                 paddingVertical="$xl"
                 paddingHorizontal={40}
                 borderTopWidth={1}
+                borderTopColor="$gray3"
                 marginBottom={insets.bottom}
               >
                 {/* //TODO: change button here with our custom one */}
