@@ -12,6 +12,7 @@ const AppLayout = () => {
   }
 
   return (
+    // PortalProvider used for showing bottomsheets
     <PortalProvider>
       <Stack>
         <Stack.Screen name="(drawer)" options={{ headerShown: false }} />

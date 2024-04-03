@@ -1,18 +1,7 @@
 import React, { useMemo, useState } from "react";
-import { Platform } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import {
-  Adapt,
-  Button,
-  PortalProvider,
-  Select,
-  Sheet,
-  useTheme,
-  XStack,
-  YStack,
-} from "tamagui";
-import { Typography } from "./Typography";
+import { Adapt, Select, Sheet, YStack, Button } from "tamagui";
 import { Icon } from "./Icon";
+import { Check, ChevronDown, Plus } from "@tamagui/lucide-icons";
 
 const SelectPollingStation = () => {
   const [val, setVal] = useState("");
@@ -23,18 +12,20 @@ const SelectPollingStation = () => {
       paddingHorizontal="$md"
       backgroundColor="white"
     >
+      <Button icon={<Plus size="$4" />}>Hello world</Button>
       <Select value={val} onValueChange={setVal} disablePreventBodyScroll>
         <Select.Trigger
+          justifyContent="center"
+          alignItems="center"
           backgroundColor="$purple1"
           borderRadius="$10"
-          // iconAfter={<ChevronDown color="#7833B3" />}
+          iconAfter={<Icon icon="chevronDown" />}
         >
-          <Select.Value color="$purple5">
-            <Typography preset="body2">
-              Secția 163, Str. Moldovei, nr. 3, Targu Mures
-            </Typography>
-          </Select.Value>
-          {/* // TODO: placeholder from translation */}
+          <Select.Value
+            width={"90%"}
+            color="$purple5"
+            placeholder="Select polling station"
+          ></Select.Value>
         </Select.Trigger>
 
         <Adapt platform="touch">
@@ -68,7 +59,7 @@ const SelectPollingStation = () => {
                           {pollingStationAddress.address}
                         </Select.ItemText>
                         <Select.ItemIndicator>
-                          {/* <Check size={16} /> */}
+                          {/* <Check size={24} /> */}
                         </Select.ItemIndicator>
                       </Select.Item>
                     );
@@ -100,6 +91,16 @@ const pollingStationAdresses = [
     id: 7,
     address: "Secția 567, Str. Maramureșului, nr. 25, Baia Mare, Romania",
   },
+  { id: 8, address: "Secția 890, Str. Dobrogei, nr. 8, Constanța, Romania" },
+  { id: 9, address: "Secția 111, Str. Ardealului, nr. 5, Sibiu, Romania" },
+  { id: 10, address: "Secția 222, Str. Banatului, nr. 18, Arad, Romania" },
+  {
+    id: 7,
+    address: "Secția 567, Str. Maramureșului, nr. 25, Baia Mare, Romania",
+  },
+  { id: 8, address: "Secția 890, Str. Dobrogei, nr. 8, Constanța, Romania" },
+  { id: 9, address: "Secția 111, Str. Ardealului, nr. 5, Sibiu, Romania" },
+  { id: 10, address: "Secția 222, Str. Banatului, nr. 18, Arad, Romania" },
   { id: 8, address: "Secția 890, Str. Dobrogei, nr. 8, Constanța, Romania" },
   { id: 9, address: "Secția 111, Str. Ardealului, nr. 5, Sibiu, Romania" },
   { id: 10, address: "Secția 222, Str. Banatului, nr. 18, Arad, Romania" },
