@@ -1,9 +1,8 @@
 import { BaseQuestion, DateQuestion, MultiSelectQuestion, NumberQuestion, QuestionType, RatingQuestion, SingleSelectAnswer, SingleSelectQuestion, TextQuestion } from "@/common/types";
 import EditDateQuestion from "./EditDateQuestion";
-import EditMultiSelectQuestion from "./EditMultiSelectQuestion";
+import EditSelectQuestion from "./EditSelectQuestion";
 import EditNumberQuestion from "./EditNumberQuestion";
 import EditRatingQuestion from "./EditRatingQuestion";
-import EditSingleSelectQuestion from "./EditSingleSelectQuestion";
 import EditTextQuestion from "./EditTextQuestion";
 import { MoveDirection } from "../QuestionsEdit";
 import { Draggable } from "react-beautiful-dnd";
@@ -153,7 +152,7 @@ export default function EditQuestionFactory({
                   isInValid={isInValid}
                 />
               ) : question.$questionType === QuestionType.MultiSelectQuestionType ? (
-                <EditMultiSelectQuestion
+                <EditSelectQuestion
                   languageCode={languageCode}
                   question={question as MultiSelectQuestion}
                   questionIdx={questionIdx}
@@ -167,7 +166,7 @@ export default function EditQuestionFactory({
                   isInValid={isInValid}
                 />
               ) : question.$questionType === QuestionType.SingleSelectQuestionType ? (
-                <EditSingleSelectQuestion
+                <EditSelectQuestion
                   languageCode={languageCode}
                   question={question as SingleSelectQuestion}
                   questionIdx={questionIdx}

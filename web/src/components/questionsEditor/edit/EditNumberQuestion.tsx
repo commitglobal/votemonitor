@@ -74,8 +74,6 @@ function EditNumberQuestion({
         </div>
       </div>
     </form>
-
-
   )
 }
 
