@@ -1,7 +1,6 @@
 import React, { useMemo, useState } from "react";
-import { Adapt, Select, Sheet, YStack, Button } from "tamagui";
+import { Adapt, Select, Sheet, YStack } from "tamagui";
 import { Icon } from "./Icon";
-import { Check, ChevronDown, Plus } from "@tamagui/lucide-icons";
 
 const SelectPollingStation = () => {
   const [val, setVal] = useState("");
@@ -12,19 +11,26 @@ const SelectPollingStation = () => {
       paddingHorizontal="$md"
       backgroundColor="white"
     >
-      <Button icon={<Plus size="$4" />}>Hello world</Button>
       <Select value={val} onValueChange={setVal} disablePreventBodyScroll>
         <Select.Trigger
           justifyContent="center"
           alignItems="center"
           backgroundColor="$purple1"
           borderRadius="$10"
-          iconAfter={<Icon icon="chevronDown" />}
+          iconAfter={
+            <Icon
+              icon="chevronRight"
+              size={24}
+              transform="rotate(90deg)"
+              color="$purple5"
+            />
+          }
         >
           <Select.Value
             width={"90%"}
             color="$purple5"
             placeholder="Select polling station"
+            fontWeight="500"
           ></Select.Value>
         </Select.Trigger>
 
@@ -59,7 +65,7 @@ const SelectPollingStation = () => {
                           {pollingStationAddress.address}
                         </Select.ItemText>
                         <Select.ItemIndicator>
-                          {/* <Check size={24} /> */}
+                          <Icon icon="chevronLeft" />
                         </Select.ItemIndicator>
                       </Select.Item>
                     );
@@ -93,15 +99,4 @@ const pollingStationAdresses = [
   },
   { id: 8, address: "Secția 890, Str. Dobrogei, nr. 8, Constanța, Romania" },
   { id: 9, address: "Secția 111, Str. Ardealului, nr. 5, Sibiu, Romania" },
-  { id: 10, address: "Secția 222, Str. Banatului, nr. 18, Arad, Romania" },
-  {
-    id: 7,
-    address: "Secția 567, Str. Maramureșului, nr. 25, Baia Mare, Romania",
-  },
-  { id: 8, address: "Secția 890, Str. Dobrogei, nr. 8, Constanța, Romania" },
-  { id: 9, address: "Secția 111, Str. Ardealului, nr. 5, Sibiu, Romania" },
-  { id: 10, address: "Secția 222, Str. Banatului, nr. 18, Arad, Romania" },
-  { id: 8, address: "Secția 890, Str. Dobrogei, nr. 8, Constanța, Romania" },
-  { id: 9, address: "Secția 111, Str. Ardealului, nr. 5, Sibiu, Romania" },
-  { id: 10, address: "Secția 222, Str. Banatului, nr. 18, Arad, Romania" },
 ];
