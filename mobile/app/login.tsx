@@ -4,11 +4,10 @@ import { router } from "expo-router";
 import { useAuth } from "../hooks/useAuth";
 import { Button, useTheme } from "tamagui";
 import { Typography } from "../components/Typography";
-import { Card } from "../components/Card"
-
+import { Card } from "../components/Card";
 
 const Login = () => {
-  const theme = useTheme()
+  const theme = useTheme();
 
   const { signIn } = useAuth();
   return (
@@ -49,10 +48,13 @@ const Login = () => {
       <Typography preset="helper">helper</Typography>
 
       <Card
-        customStyle={{backgroundColor:theme.$gray1?.val}}
-        children={<View><Text>Children component</Text></View>}>
-      </Card>
-
+        style={{}}
+        children={
+          <View>
+            <Text>Children component</Text>
+          </View>
+        }
+      ></Card>
     </View>
   );
 };

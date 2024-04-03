@@ -1,26 +1,37 @@
 import React from "react";
-import { StyleProp, ViewStyle, View} from "react-native";
-import { Card as TamaguiCard, CardProps as TamaguiCardProps} from 'tamagui'
+import { StyleProp, ViewStyle, View } from "react-native";
+import {
+  Card as TamaguiCard,
+  CardProps as TamaguiCardProps,
+  useTheme,
+} from "tamagui";
 import { tokens } from "../theme/tokens";
 
 export interface CardProps extends TamaguiCardProps {
-    customStyle?: StyleProp<ViewStyle>
-    children? : React.ReactNode;
+  style?: StyleProp<ViewStyle>;
+  children?: React.ReactNode;
 }
 
-/**
- * This component is a HOC over the Tamagui Button.
- * @param {ButtonProps} props - The props for the `Buttom` component.
- * @returns {JSX.Element} The rendered `Card` component.
- */
-export function Card(props : CardProps) : JSX.Element {
-    const {children, customStyle, ...rest} = props
+export function Card(props: CardProps): JSX.Element {
+  const theme = useTheme();
+  const { children, style, ...rest } = props;
 
-    return (
-        <View style={[{ padding: tokens.space.md.val, backgroundColor: 'white'}, customStyle]}>
-          <TamaguiCard style={[{backgroundColor: 'white'}, customStyle]} {...rest} >
-            {children}
-          </TamaguiCard>
-        </View>
-    )
+  const $defaultStyling: ViewStyle = {
+    padding: tokens.space.md.val,
+    backgroundColor: "white",
+    borderRadius: 3,
+    shadowColor: theme.gray13?.val,
+    shadowOffset: { width: 0, height: 1 },
+    shadowRadius: 3,
+    shadowOpacity: 0.07,
+    elevation: 1,
+  };
+
+  return (
+    <View style={[$defaultStyling, style]}>
+      <TamaguiCard style={[{ backgroundColor: "white" }, style]} {...rest}>
+        {children}
+      </TamaguiCard>
+    </View>
+  );
 }
