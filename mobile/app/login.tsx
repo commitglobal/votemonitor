@@ -48,7 +48,6 @@ const Login = () => {
       <Typography preset="helper">helper</Typography>
 
       <Card
-        style={{}}
         children={
           <View>
             <Text>Children component</Text>

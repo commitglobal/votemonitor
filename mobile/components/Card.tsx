@@ -18,7 +18,6 @@ export function Card(props: CardProps): JSX.Element {
 
   const $defaultStyling: ViewStyle = {
     padding: tokens.space.md.val,
-    backgroundColor: "white",
     borderRadius: 3,
     shadowColor: theme.gray13?.val,
     shadowOffset: { width: 0, height: 1 },
@@ -28,10 +27,12 @@ export function Card(props: CardProps): JSX.Element {
   };
 
   return (
-    <View style={[$defaultStyling, style]}>
-      <TamaguiCard style={[{ backgroundColor: "white" }, style]} {...rest}>
-        {children}
-      </TamaguiCard>
-    </View>
+    <TamaguiCard
+      style={[$defaultStyling, style]}
+      backgroundColor="white"
+      {...rest}
+    >
+      {children}
+    </TamaguiCard>
   );
 }
