@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from "react";
-import { Adapt, Select, Sheet, YStack } from "tamagui";
+import { Adapt, Select, Sheet, Text, View, YStack } from "tamagui";
 import { Icon } from "./Icon";
+import { Typography } from "./Typography";
 
 const SelectPollingStation = () => {
   const [val, setVal] = useState("");
@@ -48,8 +49,22 @@ const SelectPollingStation = () => {
         <Select.Content>
           <Select.Viewport>
             <Select.Group>
-              {/* //TODO: text from translation */}
-              <Select.Label>Select polling station</Select.Label>
+              {/* //TODO: texts from translation */}
+              <Select.Label flexDirection="column" alignItems="flex-start">
+                {/* //TODO: fix this after fixing Typography to accept tamagui props*/}
+                <Typography
+                  preset="body1"
+                  style={{ fontWeight: "500", marginBottom: 4 }}
+                >
+                  My polling stations
+                </Typography>
+                <View>
+                  <Text fontSize={14} fontWeight="400" lineHeight={20}>
+                    You can switch between polling stations if you want to
+                    revisit form answers or polling station information.
+                  </Text>
+                </View>
+              </Select.Label>
               {useMemo(
                 () =>
                   pollingStationAdresses.map((pollingStationAddress, i) => {
