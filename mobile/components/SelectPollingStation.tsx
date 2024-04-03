@@ -1,10 +1,21 @@
 import React, { useMemo, useState } from "react";
-import { Adapt, Select, Sheet, Text, View, YStack } from "tamagui";
+import {
+  Adapt,
+  Button,
+  ScrollView,
+  Select,
+  Sheet,
+  Text,
+  View,
+  YStack,
+} from "tamagui";
 import { Icon } from "./Icon";
 import { Typography } from "./Typography";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const SelectPollingStation = () => {
   const [val, setVal] = useState("");
+  const insets = useSafeAreaInsets();
 
   return (
     <YStack
@@ -38,20 +49,11 @@ const SelectPollingStation = () => {
         <Adapt platform="touch">
           <Sheet native modal snapPoints={[80, 50]}>
             <Sheet.Frame>
-              <Sheet.ScrollView>
-                <Adapt.Contents />
-              </Sheet.ScrollView>
-            </Sheet.Frame>
-            <Sheet.Overlay />
-          </Sheet>
-        </Adapt>
-
-        <Select.Content>
-          <Select.Viewport>
-            <Select.Group>
-              {/* //TODO: texts from translation */}
-              <Select.Label flexDirection="column" alignItems="flex-start">
-                {/* //TODO: fix this after fixing Typography to accept tamagui props*/}
+              <YStack
+                padding="$lg"
+                borderBottomWidth={1}
+                borderBottomColor="$gray3"
+              >
                 <Typography
                   preset="body1"
                   style={{ fontWeight: "500", marginBottom: 4 }}
@@ -64,7 +66,30 @@ const SelectPollingStation = () => {
                     revisit form answers or polling station information.
                   </Text>
                 </View>
-              </Select.Label>
+              </YStack>
+
+              <Sheet.ScrollView padding="$sm">
+                <Adapt.Contents />
+              </Sheet.ScrollView>
+              <View
+                paddingVertical="$xl"
+                paddingHorizontal={40}
+                borderTopWidth={1}
+                marginBottom={insets.bottom}
+              >
+                {/* //TODO: change button here with our custom one */}
+                <Button>Add new polling station</Button>
+              </View>
+            </Sheet.Frame>
+            <Sheet.Overlay />
+          </Sheet>
+        </Adapt>
+
+        <Select.Content>
+          <Select.Viewport>
+            <Select.Group>
+              {/* //TODO: texts from translation */}
+
               {useMemo(
                 () =>
                   pollingStationAdresses.map((pollingStationAddress, i) => {
@@ -89,7 +114,6 @@ const SelectPollingStation = () => {
               )}
             </Select.Group>
           </Select.Viewport>
-          <Select.ScrollDownButton />
         </Select.Content>
       </Select>
     </YStack>
@@ -114,4 +138,18 @@ const pollingStationAdresses = [
   },
   { id: 8, address: "Secția 890, Str. Dobrogei, nr. 8, Constanța, Romania" },
   { id: 9, address: "Secția 111, Str. Ardealului, nr. 5, Sibiu, Romania" },
+  { id: 10, address: "Secția 222, Str. Olteniei, nr. 18, Craiova, Romania" },
+  { id: 11, address: "Secția 333, Str. Banatului, nr. 22, Arad, Romania" },
+  { id: 12, address: "Secția 444, Str. Mureșului, nr. 11, Deva, Romania" },
+  { id: 13, address: "Secția 555, Str. Dobrogei, nr. 7, Tulcea, Romania" },
+  { id: 14, address: "Secția 667, Str. Moldovei, nr. 9, Bacău, Romania" },
+  { id: 15, address: "Secția 777, Str. Crișului, nr. 13, Satu Mare, Romania" },
+  { id: 16, address: "Secția 888, Str. Olteniei, nr. 4, Pitești, Romania" },
+  { id: 17, address: "Secția 999, Str. Bucovinei, nr. 16, Suceava, Romania" },
+  {
+    id: 18,
+    address: "Secția 1010, Str. Transilvaniei, nr. 32, Alba Iulia, Romania",
+  },
+  { id: 19, address: "Secția 1111, Str. Banatului, nr. 3, Reșița, Romania" },
+  { id: 20, address: "Secția 1212, Str. București, nr. 7, Galați, Romania" },
 ];
