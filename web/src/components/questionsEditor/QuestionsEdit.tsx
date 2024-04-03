@@ -46,7 +46,12 @@ function QuestionsEdit({
   };
 
 
-  function addQuestion() { }
+  function addQuestion(question: BaseQuestion) {
+    localQuestions.push(question);
+    const updatedQuestions = Array.from(localQuestions);
+    setLocalQuestions(updatedQuestions);
+    setActiveQuestionId(question.id);
+  }
 
   function updateQuestion(questionIndex: number, question: BaseQuestion) {
     localQuestions[questionIndex] = { ...question };
@@ -56,9 +61,13 @@ function QuestionsEdit({
     handleValidation(question);
   }
 
-  function duplicateQuestion(questionIndex: number) { }
+  function duplicateQuestion(questionIndex: number) {
 
-  function deleteQuestion(questionIndex: number) { }
+  }
+
+  function deleteQuestion(questionIndex: number) {
+
+  }
 
   function onDragEnd(result: DropResult) {
     if (!result.destination) {

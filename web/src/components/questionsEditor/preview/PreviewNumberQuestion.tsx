@@ -1,5 +1,5 @@
 import { AnswerType, BaseAnswer, NumberAnswer, NumberAnswerSchema, NumberQuestion } from '@/common/types'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../ui/form';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '../../ui/form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { Input } from '../../ui/input';
@@ -43,6 +43,7 @@ function PreviewNumberQuestion({
           render={({ field }) => (
             <FormItem className='sm:col-span-2'>
               <FormLabel>{question.text[languageCode]}</FormLabel>
+              {!!question.helptext && <FormDescription>{question.helptext[languageCode]}</FormDescription>}
               <FormControl>
                 <Input type='number' placeholder={question.inputPlaceholder ? question.inputPlaceholder[languageCode] : ''} {...field} />
               </FormControl>

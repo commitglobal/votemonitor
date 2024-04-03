@@ -1,6 +1,6 @@
 import { AnswerType, BaseAnswer, DateAnswer, DateAnswerSchema, DateQuestion } from '@/common/types'
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../ui/form';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '../../ui/form';
 import { useForm } from 'react-hook-form';
 import { Popover, PopoverContent, PopoverTrigger } from '../../ui/popover';
 import { cn } from '@/lib/utils';
@@ -47,6 +47,7 @@ function PreviewDateQuestion({
           render={({ field }) => (
             <FormItem className='flex flex-col'>
               <FormLabel>{question.text[languageCode]}</FormLabel>
+              {!!question.helptext && <FormDescription>{question.helptext[languageCode]}</FormDescription>}
               <Popover>
                 <PopoverTrigger asChild>
                   <FormControl>

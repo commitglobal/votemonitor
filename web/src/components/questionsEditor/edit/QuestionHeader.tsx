@@ -2,6 +2,7 @@ import { BaseQuestion } from '@/common/types';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { RefObject } from 'react'
+import { useTranslation } from 'react-i18next';
 
 interface QuestionHeaderProps {
     languageCode: string;
@@ -20,6 +21,9 @@ function QuestionHeader({
     ref,
     updateQuestion
 }: QuestionHeaderProps) {
+
+    const { t } = useTranslation();
+
     function updateText(text: string) {
         const updatedText = {
             ...question.text,
@@ -43,7 +47,7 @@ function QuestionHeader({
     return (
         <>
             <div className="mt-3">
-                <Label htmlFor="code">Code</Label>
+                <Label htmlFor="code">{t('questionEditor.question.code')}</Label>
                 <div className="mt-2 flex flex-col gap-6">
                     <div className="flex items-center space-x-2">
                         <Input
@@ -59,7 +63,7 @@ function QuestionHeader({
                 </div>
             </div>
             <div className="mt-3">
-                <Label htmlFor="text">Question</Label>
+                <Label htmlFor="text">{t('questionEditor.question.text')}</Label>
                 <div className="mt-2 flex flex-col gap-6">
                     <div className="flex items-center space-x-2">
                         <Input
@@ -73,7 +77,7 @@ function QuestionHeader({
                 </div>
             </div>
             <div className="mt-3">
-                <Label htmlFor="helptext">Helptext</Label>
+                <Label htmlFor="helptext">{t('questionEditor.question.helptext')}</Label>
                 <div className="mt-2 flex flex-col gap-6">
                     <div className="flex items-center space-x-2">
                         <Input

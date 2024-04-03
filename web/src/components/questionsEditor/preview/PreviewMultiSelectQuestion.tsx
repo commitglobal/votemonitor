@@ -88,10 +88,7 @@ function PreviewMultiSelectQuestion({
                         <FormItem>
                             <div className="mb-4">
                                 <FormLabel className="text-base">{question.text[languageCode]}</FormLabel>
-                                {!!question.helptext && <FormDescription>
-                                    {question.helptext[languageCode]}
-                                </FormDescription>
-                                }
+                                {!!question.helptext && <FormDescription>{question.helptext[languageCode]}</FormDescription>}
                             </div>
                             {regularOptions.map((option) => (
                                 <FormField
