@@ -2,9 +2,11 @@ import { View, Text } from "react-native";
 import { useAuth } from "../../../../hooks/useAuth";
 import OfflinePersistComponentExample from "../../../../components/OfflinePersistComponentExample";
 import { StatusBar } from "react-native";
-import { Button } from "tamagui";
+import { Button, Card } from "tamagui";
 import { router } from "expo-router";
 import SelectPollingStation from "../../../../components/SelectPollingStation";
+import { Typography } from "../../../../components/Typography";
+import TimeSelect from "../../../../components/TimeSelect";
 
 const Index = () => {
   const { signOut } = useAuth();
@@ -13,6 +15,9 @@ const Index = () => {
     <View style={{ gap: 20 }}>
       <StatusBar barStyle="light-content" />
       <SelectPollingStation />
+      <Card>
+        <TimeSelect />
+      </Card>
       <Text>Observation</Text>
       <OfflinePersistComponentExample></OfflinePersistComponentExample>
       <Button onPress={() => router.push("/polling-station-wizzard/1")}>
