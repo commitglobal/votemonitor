@@ -43,7 +43,6 @@ const TimeSelect = () => {
             minute: "2-digit",
           })}
         </Typography>
-        {/*  */}
         <XStack onPress={() => setOpen(true)}>
           <Typography>Arrival time</Typography>
           <Icon icon="chevronRight" />
