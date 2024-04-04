@@ -2,10 +2,11 @@ import { View, Text } from "react-native";
 import { useAuth } from "../../../../hooks/useAuth";
 import OfflinePersistComponentExample from "../../../../components/OfflinePersistComponentExample";
 import { StatusBar } from "react-native";
-import { Button, Card } from "tamagui";
+import { Button } from "tamagui";
 import { router } from "expo-router";
 import CardFooter from "../../../../components/CardFooter";
 import { Typography } from "../../../../components/Typography";
+import Card from "../../../../components/Card";
 
 const Index = () => {
   const { signOut } = useAuth();
