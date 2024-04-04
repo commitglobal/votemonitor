@@ -5,7 +5,7 @@ import { UseThemeResult } from "@tamagui/web/src/hooks/useTheme";
 import { tokens } from "../theme/tokens";
 import { Typography } from "./Typography";
 
-type Presets = "default" | "success" | "warning" | "danger";
+export type Presets = "default" | "success" | "warning" | "danger";
 
 export interface BadgeProps {
   /**

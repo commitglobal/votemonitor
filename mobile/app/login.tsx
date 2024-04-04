@@ -5,7 +5,7 @@ import { useAuth } from "../hooks/useAuth";
 import { Button } from "tamagui";
 import { Typography } from "../components/Typography";
 import { Badge } from "../components/Badge";
-import { Card } from "../components/Card";
+import Card from "../components/Card";
 // import { Badge, BadgeProps } from "../components/Badge";
 import { FormCard } from "../components/FormCard";
 
@@ -55,24 +55,18 @@ const Login = () => {
       <Typography preset="body2">body2</Typography>
       <Typography preset="helper">helper</Typography>
 
-      {/* <Card
-        children={
-          <View>
-            <Text>Children component</Text>
-          </View>
-        }
-      ></Card> */}
       <FormCard header="A - Opening (EN)" footer="0/33 questions" />
       <FormCard
         header="A - Opening"
         subHeader="Available in RO, BG, EN"
         footer="0/33 questions"
+        badgePreset="warning"
       />
-
+      {/* 
       <Badge></Badge>
       <Badge preset="success"></Badge>
       <Badge preset="warning"></Badge>
-      <Badge preset="danger"></Badge>
+      <Badge preset="danger"></Badge> */}
     </View>
   );
 };

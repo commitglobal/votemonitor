@@ -1,12 +1,8 @@
 import React from "react";
-import { StyleProp, ViewStyle, View, TextStyle } from "react-native";
-import {
-  Card as TamaguiCard,
-  CardProps as TamaguiCardProps,
-  useTheme,
-} from "tamagui";
+import { StyleProp, View, TextStyle } from "react-native";
+import { useTheme } from "tamagui";
 import { tokens } from "../theme/tokens";
-// import { Badge, BadgePresets, BadgeProps } from "./Badge";
+import { Badge, Presets } from "./Badge";
 import Card from "./Card";
 import { Typography } from "./Typography";
 import { Icon } from "./Icon";
@@ -15,7 +11,7 @@ export interface FormCardProps {
   header: String;
   subHeader?: String;
   footer: String;
-  // badgePreset?: BadgePresets;
+  badgePreset?: Presets;
 
   headerStyle?: StyleProp<TextStyle>;
 }
@@ -23,13 +19,7 @@ export interface FormCardProps {
 export function FormCard(props: FormCardProps) {
   const theme = useTheme();
 
-  const {
-    header,
-    subHeader,
-    footer,
-    headerStyle,
-    // badgePreset,
-  } = props;
+  const { header, subHeader, footer, headerStyle, badgePreset } = props;
 
   const hasSubHeader = subHeader ? subHeader.trim() !== "" : false;
 
@@ -48,7 +38,7 @@ export function FormCard(props: FormCardProps) {
         <Typography preset="body2" style={headerStyles}>
           {header}
         </Typography>
-        {/* <Badge preset={badgePreset}></Badge> */}
+        <Badge preset={badgePreset}></Badge>
       </View>
 
       {hasSubHeader === true && (
