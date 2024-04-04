@@ -1,9 +1,10 @@
 import React from "react";
-import { View } from "react-native";
+import { View, Text } from "react-native";
 import { router } from "expo-router";
 import { useAuth } from "../hooks/useAuth";
 import { Button } from "tamagui";
 import { Typography } from "../components/Typography";
+import Card from "../components/Card";
 
 const Login = () => {
   const { signIn } = useAuth();
@@ -49,6 +50,12 @@ const Login = () => {
       <Typography preset="body1">body1</Typography>
       <Typography preset="body2">body2</Typography>
       <Typography preset="helper">helper</Typography>
+
+      <Card>
+        <View>
+          <Text>Children component</Text>
+        </View>
+      </Card>
     </View>
   );
 };
