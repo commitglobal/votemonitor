@@ -1,16 +1,16 @@
 import React from "react";
-import { ScrollView, Text } from "react-native";
+import { Text } from "react-native";
 import { Typography } from "../../../../components/Typography";
 import { Stack } from "tamagui";
 import Button from "../../../../components/Button";
 import { Icon } from "../../../../components/Icon";
 import Card from "../../../../components/Card";
+import { Screen } from "../../../../components/Screen";
 
 const QuickReport = () => {
   return (
-    <ScrollView>
+    <Screen preset="auto" backgroundColor="white" contentContainerStyle={{ gap: 20 }}>
       <Text>Quick Report</Text>
-
       <Card>
         <Typography
           preset="heading"
@@ -95,7 +95,7 @@ const QuickReport = () => {
           </Button>
         </Stack>
       </Stack>
-    </ScrollView>
+    </Screen>
   );
 };
 
