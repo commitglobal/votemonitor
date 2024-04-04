@@ -10,7 +10,7 @@ const QuickReport = () => {
     <ScrollView>
       <Text>Quick Report</Text>
 
-      {/* example of using default spacing for padding*/}
+      {/* example of using default spacing for padding */}
       <Stack backgroundColor="$purple5" padding="$sm">
         <Typography size="xl">Hello typo</Typography>
       </Stack>
@@ -35,21 +35,13 @@ const QuickReport = () => {
           <Button disabled onPress={() => console.log("filled")}>
             Filled
           </Button>
-          <Button
-            disabled
-            preset="outlined"
-            onPress={() => console.log("outlined")}
-          >
+          <Button disabled preset="outlined" onPress={() => console.log("outlined")}>
             Outlined
           </Button>
           <Button disabled preset="red" onPress={() => console.log("Danger")}>
             Danger
           </Button>
-          <Button
-            disabled
-            preset="chromeless"
-            onPress={() => console.log("Chromeless")}
-          >
+          <Button disabled preset="chromeless" onPress={() => console.log("Chromeless")}>
             Danger
           </Button>
         </Stack>

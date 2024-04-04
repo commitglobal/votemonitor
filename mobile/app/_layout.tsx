@@ -6,11 +6,7 @@ import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client
 import { useEffect, useState } from "react";
 import NetInfo from "@react-native-community/netinfo";
 import OfflineBanner from "../components/OfflineBanner";
-import {
-  QueryClient,
-  onlineManager,
-  useIsRestoring,
-} from "@tanstack/react-query";
+import { QueryClient, onlineManager, useIsRestoring } from "@tanstack/react-query";
 import { TamaguiProvider } from "@tamagui/core";
 import { tamaguiConfig } from "../tamagui.config";
 import { useFonts } from "expo-font";
@@ -117,9 +113,7 @@ export default function Root() {
   return (
     <PersistQueryClientProvider
       onSuccess={async () => {
-        queryClient
-          .resumePausedMutations()
-          .then(() => queryClient.invalidateQueries());
+        queryClient.resumePausedMutations().then(() => queryClient.invalidateQueries());
       }}
       persistOptions={{ persister }}
       client={queryClient}
