@@ -50,21 +50,21 @@ const SelectPollingStation = () => {
           <Sheet native modal snapPoints={[80, 50]}>
             <Sheet.Frame>
               <YStack
-                padding="$lg"
+                paddingVertical="$xl"
+                paddingLeft="$lg"
+                paddingRight="$xxxl"
                 borderBottomWidth={1}
                 borderBottomColor="$gray3"
               >
-                <Typography
-                  preset="body1"
-                  style={{ fontWeight: "500", marginBottom: 4 }}
-                >
+                <Typography preset="body1" color="$gray5">
                   My polling stations
                 </Typography>
-                <View>
-                  <Text fontSize={14} fontWeight="400" lineHeight={20}>
+                <View marginTop="$xxs">
+                  {/* //TODO: typography doesnt accept nrOfLines */}
+                  <Typography numberOfLines={3}>
                     You can switch between polling stations if you want to
                     revisit form answers or polling station information.
-                  </Text>
+                  </Typography>
                 </View>
               </YStack>
 
