@@ -12,7 +12,7 @@ export interface CardProps extends TamaguiCardProps {
   children?: React.ReactNode;
 }
 
-export function Card(props: CardProps): JSX.Element {
+const Card = (props: CardProps): JSX.Element => {
   const theme = useTheme();
   const { children, style, ...rest } = props;
 
@@ -35,4 +35,6 @@ export function Card(props: CardProps): JSX.Element {
       {children}
     </TamaguiCard>
   );
-}
+};
+
+export default Card;

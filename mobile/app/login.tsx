@@ -4,7 +4,7 @@ import { router } from "expo-router";
 import { useAuth } from "../hooks/useAuth";
 import { Button } from "tamagui";
 import { Typography } from "../components/Typography";
-import { Card } from "../components/Card";
+import Card from "../components/Card";
 
 const Login = () => {
   const { signIn } = useAuth();
