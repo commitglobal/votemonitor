@@ -75,7 +75,7 @@ public class DeleteEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeede
 
         var (getResponse, pollingStation) = await Fixture.PlatformAdmin.GETAsync<GetEndpoint, GetRequest, PollingStationModel>(new()
         {
-            ElectionRoundId = Guid.NewGuid(),
+            ElectionRoundId = Fixture.ElectionRound.Id,
             Id = createResult.Id
         });
 
