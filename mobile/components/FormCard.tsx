@@ -1,8 +1,7 @@
 import React from "react";
-import { StyleProp, View, ViewStyle } from "react-native";
-import { useTheme } from "tamagui";
-import { tokens } from "../theme/tokens";
-import { Badge, Presets } from "./Badge";
+import { useTheme, View, styled } from "tamagui";
+import { Presets } from "./Badge";
+import Badge from "./Badge";
 import Card from "./Card";
 import { Typography } from "./Typography";
 import { Icon } from "./Icon";
@@ -36,39 +35,24 @@ const FormCard = (props: FormCardProps): JSX.Element => {
   const { header, subHeader, footer, badgePreset } = props;
   const hasSubHeader = subHeader ? subHeader.trim() !== "" : false;
 
-  const $headerContainerStyles: StyleProp<ViewStyle> = {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: tokens.space.xxs.val,
-  };
-
-  const $subHeaderStyles = {
-    color: theme.gray14?.val,
-    marginBottom: tokens.space.xxs.val,
-  };
-
   return (
     <Card style={{ width: "100%" }}>
-      <View style={$headerContainerStyles}>
-        <Typography preset="body2" style={{ color: theme.gray9?.val }}>
+      <HeaderContainer>
+        <Typography preset="body1" color="$gray9" style={{ fontWeight: "700" }}>
           {header}
         </Typography>
         <Badge preset={badgePreset}></Badge>
-      </View>
+      </HeaderContainer>
 
       {hasSubHeader === true && (
-        <Typography preset="body1" style={$subHeaderStyles}>
+        <Typography preset="body1" color="$gray6" style={{ marginBottom: 8 }}>
           {subHeader}
         </Typography>
       )}
 
       {/* TODO: Footer will come as a separate component: Card footer component */}
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Typography
-          preset="default"
-          style={{ fontWeight: "400", color: theme.gray5?.val }}
-        >
+        <Typography preset="default" style={{ fontWeight: "400", color: theme.gray5?.val }}>
           {footer}
         </Typography>
         <Icon icon="chevronRight" color={theme.purple7?.val}></Icon>
@@ -76,5 +60,13 @@ const FormCard = (props: FormCardProps): JSX.Element => {
     </Card>
   );
 };
+
+const HeaderContainer = styled(View, {
+  name: "HeaderContainer",
+  justifyContent: "space-between",
+  flexDirection: "row",
+  alignItems: "center",
+  marginBottom: 8,
+});
 
 export default FormCard;

@@ -7,6 +7,7 @@ import { Icon } from "../../../../components/Icon";
 import Badge from "../../../../components/Badge";
 
 import Card from "../../../../components/Card";
+import FormCard from "../../../../components/FormCard";
 
 const QuickReport = () => {
   return (
@@ -102,6 +103,17 @@ const QuickReport = () => {
         <Badge preset="success"></Badge>
         <Badge preset="warning"></Badge>
         <Badge preset="danger"></Badge>
+      </Stack>
+
+      <Stack padding="$sm" gap="$xs">
+        <Typography preset="heading">FormCard</Typography>
+        <FormCard header={"A-Opening"} footer={"0/33 questions"}></FormCard>
+        <FormCard
+          header={"A-Opening"}
+          footer={"0/33 questions"}
+          subHeader={"Available in RO, BG, EN"}
+          badgePreset="success"
+        ></FormCard>
       </Stack>
     </ScrollView>
   );
