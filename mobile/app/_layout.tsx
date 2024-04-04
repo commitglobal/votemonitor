@@ -15,7 +15,7 @@ import {
 import { TamaguiProvider } from "@tamagui/core";
 import { tamaguiConfig } from "../tamagui.config";
 import { useFonts } from "expo-font";
-import Reactotron, { networking } from "reactotron-react-native";
+import Reactotron from "reactotron-react-native";
 
 if (__DEV__) {
   Reactotron.setAsyncStorageHandler(AsyncStorage)
@@ -97,6 +97,7 @@ export default function Root() {
     if (loaded) {
       // can hide splash screen here
     }
+    // createPollingStation("1", "Romania").then(console.log).catch(console.log);
   }, [loaded]);
 
   useEffect(() => {
@@ -122,7 +123,16 @@ export default function Root() {
           .resumePausedMutations()
           .then(() => queryClient.invalidateQueries());
       }}
-      persistOptions={{ persister }}
+      persistOptions={{
+        persister,
+        dehydrateOptions: {
+          shouldDehydrateQuery: ({ queryKey, state }) => {
+            // SELECTIVELY PERSIST QUERY KEYS https://github.com/TanStack/query/discussions/3568
+            // console.log("shouldDehydrateQuery", queryKey);
+            return true;
+          },
+        },
+      }}
       client={queryClient}
     >
       <TamaguiProvider config={tamaguiConfig}>
