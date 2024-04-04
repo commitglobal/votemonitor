@@ -37,6 +37,9 @@ export function FormCard(props: FormCardProps) {
 
   const hasSubHeader = subHeader ? subHeader.trim() !== "" : false;
 
+  const defaultHeaderStyle = { color: theme.gray9?.val };
+  const headerStyles = [defaultHeaderStyle, headerStyle];
+
   return (
     <Card style={{ width: "100%" }}>
       <View
@@ -46,7 +49,7 @@ export function FormCard(props: FormCardProps) {
           marginBottom: 8,
         }}
       >
-        <Typography preset="body2" style={{ color: theme.gray9?.val }}>
+        <Typography preset="body2" style={headerStyles}>
           {header}
         </Typography>
         {/* <Badge preset={badgePreset}></Badge> */}
