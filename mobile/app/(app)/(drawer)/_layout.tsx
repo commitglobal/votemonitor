@@ -59,6 +59,9 @@ export default function MainLayout() {
                   navigation.dispatch(DrawerActions.openDrawer)
                 }
                 rightIcon={<Icon icon="dotsVertical" color="white" />}
+                onRightPress={() => {
+                  console.log("on right action press");
+                }}
               />
             );
           },
