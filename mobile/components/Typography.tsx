@@ -16,6 +16,10 @@ export interface TextProps extends RNTextProps {
    */
   size?: Sizes;
   /**
+   * Set number of lines to display.
+   */
+  numberOfLines?: number;
+  /**
    * Text color modifier.
    */
   color?: string;
@@ -32,7 +36,13 @@ export interface TextProps extends RNTextProps {
  * @returns {JSX.Element} The rendered `Text` component.
  */
 export function Typography(props: TextProps) {
-  const { size, children, style: $styleOverride, ...rest } = props;
+  const {
+    size,
+    children,
+    style: $styleOverride,
+    numberOfLines = 1,
+    ...rest
+  } = props;
 
   const preset: Presets = props.preset ?? "default";
   const $styles: StyleProp<TextStyle> = [
@@ -42,7 +52,12 @@ export function Typography(props: TextProps) {
   ];
 
   return (
-    <SizableText color="$gray9" style={$styles} {...rest}>
+    <SizableText
+      color="$gray9"
+      style={$styles}
+      numberOfLines={numberOfLines}
+      {...rest}
+    >
       {children}
     </SizableText>
   );

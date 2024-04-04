@@ -41,7 +41,9 @@ const Login = () => {
         Heading
       </Typography>
 
-      <Typography color="$purple5">Subheading</Typography>
+      <Typography color="$purple5" numberOfLines={3}>
+        SubheadingSubheadingSubheadingSubheadingSubheadingSubheadingSubheadingSubheadingSubheadingSubheadingSubheadingSubheadingSubheading
+      </Typography>
 
       <Typography preset="default">default</Typography>
       <Typography preset="body1">body1</Typography>
