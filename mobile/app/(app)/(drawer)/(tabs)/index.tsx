@@ -2,12 +2,13 @@ import { View } from "react-native";
 import { useAuth } from "../../../../hooks/useAuth";
 import OfflinePersistComponentExample from "../../../../components/OfflinePersistComponentExample";
 import { StatusBar } from "react-native";
-import { Button, Card, Text } from "tamagui";
+import { Button, Card, YStack, Text, XStack } from "tamagui";
 import { router } from "expo-router";
 import SelectPollingStation from "../../../../components/SelectPollingStation";
+import { Typography } from "../../../../components/Typography";
 import TimeSelect from "../../../../components/TimeSelect";
 import PollingStationInfoDefault from "../../../../components/PollingStationInfoDefault";
-import CardFooter from "../../../../components/CardFooter";
+import { Icon } from "../../../../components/Icon";
 
 const Index = () => {
   const { signOut } = useAuth();
@@ -23,11 +24,14 @@ const Index = () => {
       {/* polling station info card */}
       <Card width="90%" padding="$5" backgroundColor="white">
         <PollingStationInfoDefault />
-        <CardFooter
-          text="Polling station information"
-          action={() => console.log("hello")}
-          marginTop={8}
-        />
+        <XStack
+          alignItems="center"
+          justifyContent="space-between"
+          marginTop="$md"
+        >
+          <Text color="$gray7">Polling station information</Text>
+          <Icon icon="chevronRight" />
+        </XStack>
       </Card>
       <Text>Observation</Text>
       <OfflinePersistComponentExample></OfflinePersistComponentExample>
