@@ -71,7 +71,7 @@ const $presets = (
     alignItems: "center",
 
     childTextStyle: {
-      color: theme.$gray9?.val,
+      color: theme.$gray10?.val,
       fontWeight: "500",
     },
   };
