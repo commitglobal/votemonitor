@@ -11,6 +11,7 @@ const colorTokens = {
       gray5: "hsl(240, 4%, 46%)",
       gray7: "hsl(240, 5%, 26%)",
       gray9: "hsl(240, 6%, 10%)",
+      gray14: "hsl(240, 5%, 34%)",
     },
     green: {
       ...green,
@@ -23,6 +24,7 @@ const colorTokens = {
       purple1: "hsl(265, 100%, 95%)",
       purple5: "hsl(272, 56%, 45%)",
       purple6: "#5F288D",
+      purple7: "hsl(273, 56%, 45%)",
     },
     red: {
       ...red,

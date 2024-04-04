@@ -5,6 +5,8 @@ import { useAuth } from "../hooks/useAuth";
 import { Button, useTheme } from "tamagui";
 import { Typography } from "../components/Typography";
 import { Card } from "../components/Card";
+import { Badge, BadgeProps } from "../components/Badge";
+import { FormCard } from "../components/FormCard";
 
 const Login = () => {
   const theme = useTheme();
@@ -17,6 +19,7 @@ const Login = () => {
         justifyContent: "center",
         alignItems: "center",
         gap: 20,
+        paddingHorizontal: 16,
       }}
     >
       <Button
@@ -47,13 +50,20 @@ const Login = () => {
       <Typography preset="body2">body2</Typography>
       <Typography preset="helper">helper</Typography>
 
-      <Card
+      {/* <Card
         children={
           <View>
             <Text>Children component</Text>
           </View>
         }
-      ></Card>
+      ></Card> */}
+      <FormCard header="A - Opening (EN)" footer="0/33 questions" />
+      <FormCard
+        header="A - Opening"
+        subHeader="Available in RO, BG, EN"
+        footer="0/33 questions"
+        badgePreset="success"
+      />
     </View>
   );
 };
