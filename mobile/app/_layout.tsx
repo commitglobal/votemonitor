@@ -11,6 +11,8 @@ import { TamaguiProvider } from "@tamagui/core";
 import { tamaguiConfig } from "../tamagui.config";
 import { useFonts } from "expo-font";
 import Reactotron from "reactotron-react-native";
+import "../common/config/i18n";
+import LanguageContextProvider from "../contexts/language/LanguageContext.provider";
 
 if (__DEV__) {
   Reactotron.setAsyncStorageHandler(AsyncStorage)
@@ -120,8 +122,10 @@ export default function Root() {
     >
       <TamaguiProvider config={tamaguiConfig}>
         <AuthContextProvider>
-          {!isOnline && <OfflineBanner />}
-          <Slot />
+          <LanguageContextProvider>
+            {!isOnline && <OfflineBanner />}
+            <Slot />
+          </LanguageContextProvider>
         </AuthContextProvider>
       </TamaguiProvider>
     </PersistQueryClientProvider>
