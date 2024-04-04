@@ -1,0 +1,17 @@
+{
+  "app": {
+    "action": {
+      "activate": "Activează",
+      "add": "Adaugă",
+      "addChoice": "Adaugă opțiune",
+      "apply": "Aplică",
+      "attach": "Atașează",
+      "back": "Înapoi",
+      "cancel": "Anulează",
+      "clear": "Golește",
+      "close": "Închide",
+      "confirm": "Confirmă",
+      "exit": "Ieși"
+    }
+  }
+}
