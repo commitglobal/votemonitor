@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleProp, ViewStyle, View } from "react-native";
+import { StyleProp, ViewStyle } from "react-native";
 import {
   Card as TamaguiCard,
   CardProps as TamaguiCardProps,
