@@ -60,7 +60,7 @@ export const formTemplateColumnDefs: ColumnDef<FormTemplateBase>[] = [
     accessorKey: 'languages',
     enableSorting: false,
     header: ({ column }) => <DataTableColumnHeader title='Languages' column={column} />,
-    cell:({ row }) => row.original.languages.join(", ")
+    cell: ({ row }) => row.original.languages.join(", ")
   },
   {
     id: 'actions',
@@ -78,7 +78,7 @@ export const formTemplateColumnDefs: ColumnDef<FormTemplateBase>[] = [
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align='end'>
-              <DropdownMenuItem onClick={() =>  navigate({ to: '/form-templates/$formTemplateId/edit', params: { formTemplateId: row.original.id } })}>Edit</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate({ to: '/form-templates/$formTemplateId/edit', params: { formTemplateId: row.original.id } })}>Edit</DropdownMenuItem>
               <DropdownMenuItem>Deactivate</DropdownMenuItem>
               <DropdownMenuItem>Delete</DropdownMenuItem>
             </DropdownMenuContent>
@@ -90,11 +90,13 @@ export const formTemplateColumnDefs: ColumnDef<FormTemplateBase>[] = [
 ];
 
 
-
-function FormTemplatesList(){
+function FormTemplatesList() {
   return (
     <Layout title={'Form templates'}>
-      <QueryParamsDataTable columns={formTemplateColumnDefs} useQuery={useFormTemplates} />
+      <QueryParamsDataTable
+        columns={formTemplateColumnDefs}
+        useQuery={useFormTemplates}
+      />
     </Layout>
   );
 }

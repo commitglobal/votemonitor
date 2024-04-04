@@ -6,7 +6,7 @@ import { FormTemplateFull } from '@/features/formsTemplate/models/formTemplate';
 import { formTemplateDetailsQueryOptions } from '@/features/formsTemplate/queries'
 import { createFileRoute } from '@tanstack/react-router'
 import { useEffect, useState } from 'react';
-
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 export const Route = createFileRoute('/form-templates/$formTemplateId/edit')({
   component: EditFormTemplate,
@@ -18,7 +18,7 @@ function EditFormTemplate() {
   const formTemplate = Route.useLoaderData();
   const [localForm, setLocalForm] = useState<FormTemplateFull | null>();
   const [localQuestions, setLocalQuestions] = useState<BaseQuestion[]>([]);
-  const [activeQuestionId, setActiveQuestionId] = useState<string | null>(null);
+  const [activeQuestionId, setActiveQuestionId] = useState<string | undefined>();
   const [invalidQuestions, setInvalidQuestions] = useState<string[] | null>(null);
 
   useEffect(() => {
@@ -36,15 +36,26 @@ function EditFormTemplate() {
   return (
     <>
       <FormTemplateActions formTemplate={formTemplate} />
-      <FormTemplateHeader formTemplate={formTemplate} />
-      <FormQuestionsEditor
-        languageCode={formTemplate.defaultLanguage}
-        localQuestions={localQuestions}
-        setLocalQuestions={setLocalQuestions}
-        activeQuestionId={activeQuestionId}
-        setActiveQuestionId={setActiveQuestionId}
-        invalidQuestions={invalidQuestions}
-        setInvalidQuestions={setInvalidQuestions} />
+
+      <Tabs defaultValue="details" className="w-full">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="details">Details</TabsTrigger>
+          <TabsTrigger value="questions">Questions</TabsTrigger>
+        </TabsList>
+        <TabsContent value="details">
+          <FormTemplateHeader formTemplate={formTemplate} />
+        </TabsContent>
+        <TabsContent value="questions">
+          <FormQuestionsEditor
+            languageCode={formTemplate.defaultLanguage}
+            localQuestions={localQuestions}
+            setLocalQuestions={setLocalQuestions}
+            activeQuestionId={activeQuestionId}
+            setActiveQuestionId={setActiveQuestionId}
+            invalidQuestions={invalidQuestions}
+            setInvalidQuestions={setInvalidQuestions} />
+        </TabsContent>
+      </Tabs>
     </>
   )
 }
