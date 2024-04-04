@@ -1,4 +1,7 @@
-﻿namespace Vote.Monitor.Api.Feature.PollingStation.Information.UnitTests.Endpoints;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+
+namespace Vote.Monitor.Api.Feature.PollingStation.Information.UnitTests.Endpoints;
 
 public class UpsertEndpointTests
 {
@@ -6,6 +9,7 @@ public class UpsertEndpointTests
     private readonly IReadRepository<PollingStationAggregate> _pollingStationRepository;
     private readonly IReadRepository<MonitoringObserver> _monitoringObserverRepository;
     private readonly IReadRepository<PollingStationInformationForm> _formRepository;
+    private readonly IAuthorizationService _authorizationService;
 
     private readonly Upsert.Endpoint _endpoint;
 
@@ -15,8 +19,38 @@ public class UpsertEndpointTests
         _pollingStationRepository = Substitute.For<IReadRepository<PollingStationAggregate>>();
         _monitoringObserverRepository = Substitute.For<IReadRepository<MonitoringObserver>>();
         _formRepository = Substitute.For<IReadRepository<PollingStationInformationForm>>();
+        _authorizationService = Substitute.For<IAuthorizationService>();
 
-        _endpoint = Factory.Create<Upsert.Endpoint>(_repository, _pollingStationRepository, _monitoringObserverRepository, _formRepository);
+        _endpoint = Factory.Create<Upsert.Endpoint>(_repository, _pollingStationRepository, _monitoringObserverRepository, _formRepository, _authorizationService);
+
+        _authorizationService
+            .AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object>(),
+                Arg.Any<IEnumerable<IAuthorizationRequirement>>()).Returns(AuthorizationResult.Success());
+    }
+
+    [Fact]
+    public async Task ShouldReturnNotFound_WhenUserIsNotAuthorized()
+    {
+        // Arrange
+        _authorizationService
+            .AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object>(), Arg.Any<IEnumerable<IAuthorizationRequirement>>())
+            .Returns(AuthorizationResult.Failed());
+
+        // Act
+        var request = new Upsert.Request
+        {
+            ElectionRoundId = Guid.NewGuid(),
+            PollingStationId = Guid.NewGuid(),
+            ObserverId = Guid.NewGuid()
+        };
+
+        var result = await _endpoint.ExecuteAsync(request, default);
+
+        // Assert
+        result
+            .Should().BeOfType<Results<Ok<PollingStationInformationModel>, NotFound>>()
+            .Which
+            .Result.Should().BeOfType<NotFound>();
     }
 
     [Fact]

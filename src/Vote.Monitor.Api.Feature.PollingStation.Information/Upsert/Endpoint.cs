@@ -1,4 +1,6 @@
-﻿using Vote.Monitor.Answer.Module.Mappers;
+﻿using Authorization.Policies.Requirements;
+using Microsoft.AspNetCore.Authorization;
+using Vote.Monitor.Answer.Module.Mappers;
 using Vote.Monitor.Api.Feature.PollingStation.Information.Specifications;
 using Vote.Monitor.Domain.Entities.FormAnswerBase;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
@@ -11,7 +13,8 @@ namespace Vote.Monitor.Api.Feature.PollingStation.Information.Upsert;
 public class Endpoint(IRepository<PollingStationInformation> repository,
     IReadRepository<PollingStationAggregate> pollingStationRepository,
     IReadRepository<MonitoringObserver> monitoringObserverRepository,
-    IReadRepository<PollingStationInformationForm> formRepository) : Endpoint<Request, Results<Ok<PollingStationInformationModel>, NotFound>>
+    IReadRepository<PollingStationInformationForm> formRepository,
+    IAuthorizationService authorizationService) : Endpoint<Request, Results<Ok<PollingStationInformationModel>, NotFound>>
 {
     public override void Configure()
     {
@@ -26,6 +29,12 @@ public class Endpoint(IRepository<PollingStationInformation> repository,
 
     public override async Task<Results<Ok<PollingStationInformationModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
+        var authorizationResult = await authorizationService.AuthorizeAsync(User, new MonitoringObserverRequirement(req.ElectionRoundId));
+        if (!authorizationResult.Succeeded)
+        {
+            TypedResults.NotFound();
+        }
+
         var formSpecification = new GetPollingStationInformationFormSpecification(req.ElectionRoundId);
         var form = await formRepository.FirstOrDefaultAsync(formSpecification, ct);
         if (form is null)
@@ -53,7 +62,9 @@ public class Endpoint(IRepository<PollingStationInformation> repository,
         List<BaseAnswer> answers,
         CancellationToken ct)
     {
-        form.FillIn(pollingStationInformation, arrivalTime, departureTime, answers);
+        pollingStationInformation = form.FillIn(pollingStationInformation, answers);
+        pollingStationInformation.UpdateArrivalTime(arrivalTime);
+        pollingStationInformation.UpdateDepartureTime(departureTime);
         await repository.UpdateAsync(pollingStationInformation, ct);
 
         return TypedResults.Ok(PollingStationInformationModel.FromEntity(pollingStationInformation));

@@ -14,8 +14,8 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
     public MonitoringObserver MonitoringObserver { get; private set; }
     public Guid PollingStationInformationFormId { get; private set; }
     public PollingStationInformationForm PollingStationInformationForm { get; private set; }
-    public DateTime? ArrivalTime { get; set; }
-    public DateTime? DepartureTime { get; set; }
+    public DateTime? ArrivalTime { get; private set; }
+    public DateTime? DepartureTime { get; private set; }
 
     public IReadOnlyList<BaseAnswer> Answers { get; private set; } = new List<BaseAnswer>().AsReadOnly();
 
@@ -51,11 +51,25 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
         List<BaseAnswer> answers) =>
         new(electionRound, pollingStation, monitoringObserver, pollingStationInformationForm, arrivalTime, departureTime, answers);
 
-    internal void UpdateDetails(DateTime? arrivalTime, DateTime? departureTime, IEnumerable<BaseAnswer> answers)
+    internal void UpdateAnswers(IEnumerable<BaseAnswer> answers)
     {
-        ArrivalTime = arrivalTime;
-        DepartureTime = departureTime;
         Answers = answers.ToList().AsReadOnly();
+    }
+
+    public void UpdateArrivalTime(DateTime? arrivalTime)
+    {
+        if (arrivalTime.HasValue)
+        {
+            ArrivalTime = arrivalTime;
+        }
+    }
+
+    public void UpdateDepartureTime(DateTime? departureTime)
+    {
+        if (departureTime.HasValue)
+        {
+            DepartureTime = departureTime;
+        }
     }
 
 #pragma warning disable CS8618 // Required by Entity Framework
