@@ -60,8 +60,7 @@ const SelectPollingStation = () => {
                   My polling stations
                 </Typography>
                 <View marginTop="$xxs">
-                  {/* //TODO: typography doesnt accept nrOfLines */}
-                  <Typography numberOfLines={3}>
+                  <Typography numberOfLines={3} color="$gray5">
                     You can switch between polling stations if you want to
                     revisit form answers or polling station information.
                   </Typography>
