@@ -2,15 +2,13 @@ import React from "react";
 import { View, Text } from "react-native";
 import { router } from "expo-router";
 import { useAuth } from "../hooks/useAuth";
-import { Button, useTheme } from "tamagui";
+import { Button } from "tamagui";
 import { Typography } from "../components/Typography";
 import { Card } from "../components/Card";
 // import { Badge, BadgeProps } from "../components/Badge";
 import { FormCard } from "../components/FormCard";
 
 const Login = () => {
-  const theme = useTheme();
-
   const { signIn } = useAuth();
   return (
     <View
