@@ -4,11 +4,9 @@ import { Typography } from "../../../../components/Typography";
 import { Stack } from "tamagui";
 import Button from "../../../../components/Button";
 import { Icon } from "../../../../components/Icon";
-<<<<<<< HEAD
 import Badge from "../../../../components/Badge";
-=======
+
 import Card from "../../../../components/Card";
->>>>>>> main
 
 const QuickReport = () => {
   return (
@@ -47,8 +45,6 @@ const QuickReport = () => {
             Danger
           </Button>
         </Stack>
-
-        {/* disabled buttons */}
         <Stack gap="$xs">
           <Typography preset="subheading">Disabled</Typography>
           <Button disabled onPress={() => console.log("filled")}>
