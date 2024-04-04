@@ -1,7 +1,7 @@
 import React from "react";
 import { ScrollView, Text } from "react-native";
 import { Typography } from "../../../../components/Typography";
-import { Stack, styled } from "tamagui";
+import { Stack } from "tamagui";
 import Button from "../../../../components/Button";
 import { Icon } from "../../../../components/Icon";
 import Card from "../../../../components/Card";
