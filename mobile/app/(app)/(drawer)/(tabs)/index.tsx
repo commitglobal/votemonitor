@@ -26,7 +26,7 @@ const Index = () => {
         <CardFooter
           text="Polling station information"
           action={() => console.log("hello")}
-          marginTop={20}
+          marginTop={8}
         />
       </Card>
       <Text>Observation</Text>

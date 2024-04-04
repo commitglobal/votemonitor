@@ -1,26 +1,22 @@
-import React, { useState } from "react";
-import { XStack, XStackProps } from "tamagui";
+import React from "react";
+import { XStack, Text } from "tamagui";
 import { Icon } from "./Icon";
 import { Typography } from "./Typography";
 
-interface CardFooterProps extends XStackProps {
+const CardFooter = ({
+  text,
+  action,
+  ...rest
+}: {
   text: string;
   action: () => void;
-}
-
-const CardFooter: React.FC<CardFooterProps> = ({ text, action, ...rest }) => {
-  // const [isPressed, setIsPressed] = useState(false);
-
+}) => {
   return (
     <XStack
       alignItems="center"
       justifyContent="space-between"
       width="100%"
       onPress={action}
-      //TODO: do we handle pressed state?
-      // onPressIn={() => setIsPressed(true)}
-      // onPressOut={() => setIsPressed(false)}
-      // opacity={isPressed ? 0.5 : 1}
       {...rest}
     >
       <Typography
