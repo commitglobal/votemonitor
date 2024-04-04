@@ -1,0 +1,9 @@
+{
+  "common": {
+    "yes": "Da",
+    "no": "Nu"
+  },
+  "login": {
+    "submit": "Intra in aplicatie"
+  }
+}

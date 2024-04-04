@@ -19,14 +19,12 @@ const QuickReport = () => {
           numberOfLines={1}
           style={{ backgroundColor: "yellow" }}
         >
-          Hello from typographyHello from typographyHello from typographyHello
-          from typographyHello from typographyHello from typographyHello from
-          typography
+          Hello from typographyHello from typographyHello from typographyHello from typographyHello
+          from typographyHello from typographyHello from typography
         </Typography>
         <Typography>
-          Hello from typographyHello from typographyHello from typographyHello
-          from typographyHello from typographyHello from typographyHello from
-          typography
+          Hello from typographyHello from typographyHello from typographyHello from typographyHello
+          from typographyHello from typographyHello from typography
         </Typography>
       </Card>
       <Stack padding="$sm" gap="$xs">
@@ -52,21 +50,13 @@ const QuickReport = () => {
           <Button disabled onPress={() => console.log("filled")}>
             Filled
           </Button>
-          <Button
-            disabled
-            preset="outlined"
-            onPress={() => console.log("outlined")}
-          >
+          <Button disabled preset="outlined" onPress={() => console.log("outlined")}>
             Outlined
           </Button>
           <Button disabled preset="red" onPress={() => console.log("Danger")}>
             Danger
           </Button>
-          <Button
-            disabled
-            preset="chromeless"
-            onPress={() => console.log("Chromeless")}
-          >
+          <Button disabled preset="chromeless" onPress={() => console.log("Chromeless")}>
             Danger
           </Button>
         </Stack>
