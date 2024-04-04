@@ -3,7 +3,7 @@ import { Tabs } from "expo-router";
 import { TextStyle, ViewStyle } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTheme } from "tamagui";
-import { Icon } from "../../../components/Icon";
+import { Icon } from "../../../../components/Icon";
 
 export default function TabLayout() {
   const insets = useSafeAreaInsets();
@@ -12,7 +12,7 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: theme.purple5.val,
+        tabBarActiveTintColor: theme.purple5?.val,
         tabBarHideOnKeyboard: true,
         headerShown: false,
         tabBarStyle: [$tabBar, { height: insets.bottom + 60 }],
@@ -23,7 +23,7 @@ export default function TabLayout() {
         name="index"
         options={{
           title: "Observation",
-          tabBarIcon: ({ color }) => <Icon icon="eyeOff" color={color} />,
+          tabBarIcon: ({ color }) => <Icon icon="observation" color={color} />,
         }}
       />
       <Tabs.Screen

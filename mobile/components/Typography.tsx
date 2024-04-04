@@ -16,6 +16,14 @@ export interface TextProps extends RNTextProps {
    */
   size?: Sizes;
   /**
+   * Set number of lines to display.
+   */
+  numberOfLines?: number;
+  /**
+   * Text color modifier.
+   */
+  color?: string;
+  /**
    * Children components.
    */
   children?: React.ReactNode;
@@ -28,7 +36,13 @@ export interface TextProps extends RNTextProps {
  * @returns {JSX.Element} The rendered `Text` component.
  */
 export function Typography(props: TextProps) {
-  const { size, children, style: $styleOverride, ...rest } = props;
+  const {
+    size,
+    children,
+    style: $styleOverride,
+    numberOfLines = 1,
+    ...rest
+  } = props;
 
   const preset: Presets = props.preset ?? "default";
   const $styles: StyleProp<TextStyle> = [
@@ -38,7 +52,12 @@ export function Typography(props: TextProps) {
   ];
 
   return (
-    <SizableText {...rest} color="$gray9" style={$styles}>
+    <SizableText
+      color="$gray9"
+      style={$styles}
+      numberOfLines={numberOfLines}
+      {...rest}
+    >
       {children}
     </SizableText>
   );
@@ -47,7 +66,7 @@ export function Typography(props: TextProps) {
 const $sizeStyles = {
   xl: { fontSize: 24, lineHeight: 32, fontWeight: "400" } satisfies TextStyle,
   lg: { fontSize: 20, lineHeight: 26, fontWeight: "700" } satisfies TextStyle,
-  md: { fontSize: 16, lineHeight: 20, fontWeight: "400" } satisfies TextStyle,
+  md: { fontSize: 16, lineHeight: 20, fontWeight: "500" } satisfies TextStyle,
   sm: { fontSize: 14, lineHeight: 20, fontWeight: "400" } satisfies TextStyle,
   xs: { fontSize: 12, lineHeight: 14, fontWeight: "700" } satisfies TextStyle,
 };
@@ -65,7 +84,7 @@ const $presets = {
   body2: {
     ...$baseStyle,
     ...$sizeStyles.md,
-    fontWeight: "700",
+    fontWeight: "500",
   } as StyleProp<TextStyle>,
 
   label: $baseStyle as StyleProp<TextStyle>,

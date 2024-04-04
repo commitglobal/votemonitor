@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 
-namespace Authorization.Policies;
+// ReSharper disable once CheckNamespace
+namespace Microsoft.AspNetCore.Authorization;
 
 public static class AuthorizationServiceExtensions
 {

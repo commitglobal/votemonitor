@@ -1,9 +1,10 @@
 import React from "react";
-import { View } from "react-native";
+import { View, Text } from "react-native";
 import { router } from "expo-router";
 import { useAuth } from "../hooks/useAuth";
 import { Button } from "tamagui";
 import { Typography } from "../components/Typography";
+import Card from "../components/Card";
 import { Badge } from "../components/Badge";
 
 const Login = () => {
@@ -38,8 +39,14 @@ const Login = () => {
       >
         <Typography size="xl">Forgot Password</Typography>
       </Button>
-      <Typography preset="heading">Heading</Typography>
-      <Typography preset="subheading">Subheading</Typography>
+      <Typography preset="heading" color="$red12">
+        Heading
+      </Typography>
+
+      <Typography color="$purple5" numberOfLines={3}>
+        SubheadingSubheadingSubheadingSubheadingSubheadingSubheadingSubheadingSubheadingSubheadingSubheadingSubheadingSubheadingSubheading
+      </Typography>
+
       <Typography preset="default">default</Typography>
       <Typography preset="body1">body1</Typography>
       <Typography preset="body2">body2</Typography>
@@ -49,6 +56,12 @@ const Login = () => {
       <Badge preset="success"></Badge>
       <Badge preset="warning"></Badge>
       <Badge preset="danger"></Badge>
+
+      <Card>
+        <View>
+          <Text>Children component</Text>
+        </View>
+      </Card>
     </View>
   );
 };
