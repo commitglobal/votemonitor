@@ -6,7 +6,8 @@ namespace Vote.Monitor.Core.Services.Security;
 public class CurrentUserProvider : ICurrentUserProvider, ICurrentUserInitializer
 {
     private ClaimsPrincipal? _user;
-    public ClaimsPrincipal? User=> _user;
+
+    public ClaimsPrincipal? User => _user;
 
     private Dictionary<string, IEnumerable<Claim>>? _claimsDict => _user?
         .Claims
@@ -47,8 +48,7 @@ public class CurrentUserProvider : ICurrentUserProvider, ICurrentUserInitializer
         return Guid.Parse(ngoIdClaimValue);
     }
 
-    public bool IsAuthenticated() =>
-        _user?.Identity?.IsAuthenticated is true;
+    public bool IsAuthenticated() => _user?.Identity?.IsAuthenticated is true;
 
     public bool IsPlatformAdmin() => _user?.IsInRole(UserRole.PlatformAdmin.Value) is true;
 

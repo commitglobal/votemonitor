@@ -1,4 +1,4 @@
-﻿using Authorization.Policies;
+﻿using Ardalis.Specification;
 using Authorization.Policies.Requirements;
 using Feature.ObserverGuide.Specifications;
 using Microsoft.AspNetCore.Authorization;
@@ -27,19 +27,18 @@ public class Endpoint(IAuthorizationService authorizationService,
         {
             return TypedResults.NotFound();
         }
-
-        var observerGuides = new List<ObserverGuideAggregate>();
-
+        
+        Specification<ObserverGuideAggregate> specification = null!;
         if (currentUserProvider.IsObserver())
         {
-            var specification = new GetObserverGuidesSpecification(currentUserProvider.GetUserId());
-            observerGuides = await repository.ListAsync(specification, ct);
+            specification = new GetObserverGuidesSpecification(currentUserProvider.GetUserId());
         }
         else if (currentUserProvider.IsNgoAdmin())
-        {
-            var specification = new GetObserverGuidesForNgoAdminSpecification(currentUserProvider.GetNgoId());
-            observerGuides = await repository.ListAsync(specification, ct);
+        { 
+            specification = new GetObserverGuidesForNgoAdminSpecification(currentUserProvider.GetNgoId());
         }
+
+        var observerGuides = await repository.ListAsync(specification, ct);
 
         var observerGuideModels = observerGuides
             .Select(async observerGuide =>

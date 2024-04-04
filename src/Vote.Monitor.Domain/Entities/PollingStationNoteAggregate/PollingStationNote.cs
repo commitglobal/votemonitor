@@ -26,6 +26,19 @@ public class PollingStationNote : AuditableBaseEntity, IAggregateRoot
         Text = text;
     }
 
+    public PollingStationNote(Guid electionRoundId,
+        PollingStation pollingStation,
+        MonitoringObserver monitoringObserver,
+        string text) : base(Guid.NewGuid())
+    {
+        ElectionRoundId = electionRoundId;
+        PollingStation = pollingStation;
+        PollingStationId = pollingStation.Id;
+        MonitoringObserver = monitoringObserver;
+        MonitoringObserverId = monitoringObserver.Id;
+        Text = text;
+    }
+
 #pragma warning disable CS8618 // Required by Entity Framework
 
     internal PollingStationNote()
