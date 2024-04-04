@@ -26,7 +26,11 @@ public class Endpoint : Endpoint<Request, Results<Ok<List<AttachmentModel>>, Bad
     {
         Get("/api/election-rounds/{electionRoundId}/polling-stations/{pollingStationId}/attachments");
         DontAutoTag();
-        Options(x => x.WithTags("attachments"));
+        Options(x => x.WithTags("attachments", "mobile"));
+        Summary(s => {
+            s.Summary = "Gets all attachments an observer has uploaded for a polling station";
+            s.Description = "Gets all attachments with freshly generated presigned urls";
+        });
     }
 
     public override async Task<Results<Ok<List<AttachmentModel>>, BadRequest<ProblemDetails>>> ExecuteAsync(Request req, CancellationToken ct)
@@ -48,10 +52,10 @@ public class Endpoint : Endpoint<Request, Results<Ok<List<AttachmentModel>>, Bad
             return TypedResults.BadRequest(new ProblemDetails(ValidationFailures));
         }
 
-        var specification = new GetPollingStationAttachmentsSpecification(req.ElectionRoundId, req.PollingStationId, req.ObserverId);
-        var pollingStationAttachments = await _repository.ListAsync(specification, ct);
+        var specification = new GetObserverPollingStationAttachmentsSpecification(req.ElectionRoundId, req.PollingStationId, req.ObserverId);
+        var attachments = await _repository.ListAsync(specification, ct);
 
-        var attachmentModels = pollingStationAttachments
+        var attachmentModels = attachments
             .Select(async pollingStationAttachment =>
             {
                 var presignedUrl = await _fileStorageService.GetPresignedUrlAsync(

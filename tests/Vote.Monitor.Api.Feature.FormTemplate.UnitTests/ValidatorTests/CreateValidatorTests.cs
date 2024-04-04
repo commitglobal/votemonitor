@@ -81,7 +81,7 @@ public class CreateValidatorTests
     [Theory]
     [MemberData(nameof(TestData.EmptyAndNullStringsTestCases), MemberType = typeof(TestData))]
     [InlineData("UnknownIso")]
-    public void Validation_ShouldFail_When_EmptyLanguageCodes(string invalidLanguageCode)
+    public void Validation_ShouldFail_When_InvalidLanguageCodes(string invalidLanguageCode)
     {
         // Arrange
         var request = new Create.Request
@@ -97,6 +97,43 @@ public class CreateValidatorTests
             .ShouldHaveValidationErrorFor(x => x.Languages);
     }
 
+    [Theory]
+    [MemberData(nameof(TestData.EmptyAndNullStringsTestCases), MemberType = typeof(TestData))]
+    [InlineData("UnknownIso")]
+    public void Validation_ShouldFail_When_InvalidDefaultLanguage(string invalidLanguageCode)
+    {
+        // Arrange
+        var request = new Create.Request
+        {
+            DefaultLanguage = invalidLanguageCode
+        };
+
+        // Act
+        var validationResult = _sut.TestValidate(request);
+
+        // Assert
+        validationResult
+            .ShouldHaveValidationErrorFor(x => x.DefaultLanguage);
+    }
+
+    [Fact]
+    public void Validation_ShouldFail_When_DefaultLanguageNotInLanguageList()
+    {
+        // Arrange
+        var request = new Create.Request
+        {
+            DefaultLanguage = LanguagesList.EN.Iso1,
+            Languages = [LanguagesList.RO.Iso1]
+        };
+
+        // Act
+        var validationResult = _sut.TestValidate(request);
+
+        // Assert
+        validationResult
+            .ShouldHaveValidationErrorFor(x => x.DefaultLanguage).WithErrorMessage("Languages should contain declared default language.");
+    }
+
     [Fact]
     public void Validation_ShouldPass_When_ValidRequest()
     {
@@ -104,6 +141,7 @@ public class CreateValidatorTests
         var request = new Create.Request
         {
             Languages = [LanguagesList.EN.Iso1, LanguagesList.RO.Iso1],
+            DefaultLanguage = LanguagesList.EN.Iso1,
             Code = "A code",
             FormTemplateType = FormTemplateType.ClosingAndCounting,
             Name = TranslatedStringTestData.ValidPartiallyTranslatedTestData.First()
@@ -116,5 +154,4 @@ public class CreateValidatorTests
         validationResult
             .ShouldNotHaveAnyValidationErrors();
     }
-
 }

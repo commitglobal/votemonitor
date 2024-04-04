@@ -1,3 +1,4 @@
+import React from "react";
 import { View } from "react-native";
 import { router } from "expo-router";
 import { useAuth } from "../hooks/useAuth";
@@ -23,17 +24,27 @@ const Login = () => {
           router.replace("/");
         }}
       >
-        Sign In
+        <Typography>Sign In</Typography>
       </Button>
       <Button
+        paddingHorizontal="$xl"
+        height={"auto"}
+        paddingVertical="$lg"
+        backgroundColor="$yellow2"
         onPress={() => {
           router.push("/forgot-password");
         }}
       >
-        Forgot Password
+        <Typography size="xl">Forgot Password</Typography>
       </Button>
-      <Typography preset="heading">Heading</Typography>
-      <Typography preset="subheading">Subheading</Typography>
+      <Typography preset="heading" color="$red12">
+        Heading
+      </Typography>
+
+      <Typography color="$purple5" numberOfLines={3}>
+        SubheadingSubheadingSubheadingSubheadingSubheadingSubheadingSubheadingSubheadingSubheadingSubheadingSubheadingSubheadingSubheading
+      </Typography>
+
       <Typography preset="default">default</Typography>
       <Typography preset="body1">body1</Typography>
       <Typography preset="body2">body2</Typography>

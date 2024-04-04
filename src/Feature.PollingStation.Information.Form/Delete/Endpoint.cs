@@ -1,6 +1,4 @@
-﻿using Feature.PollingStation.Information.Form.Specifications;
-
-namespace Feature.PollingStation.Information.Form.Delete;
+﻿namespace Feature.PollingStation.Information.Form.Delete;
 
 public class Endpoint(IRepository<PollingStationInfoFormAggregate> repository) : Endpoint<Request, Results<NoContent, NotFound>>
 {
@@ -9,6 +7,7 @@ public class Endpoint(IRepository<PollingStationInfoFormAggregate> repository) :
         Delete("/api/election-rounds/{electionRoundId}/polling-station-information-form/");
         DontAutoTag();
         Options(x => x.WithTags("polling-station-information-form"));
+        Policies(PolicyNames.PlatformAdminsOnly);
     }
 
     public override async Task<Results<NoContent, NotFound>> ExecuteAsync(Request req, CancellationToken ct)

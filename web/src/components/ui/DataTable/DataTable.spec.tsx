@@ -3,7 +3,7 @@ import { DataTable, type DataTableProps } from './DataTable';
 import { test, expect, vi } from 'vitest';
 
 test('should call pagedQuery to get data', () => {
-  const useQuery = vi.fn().mockImplementation(()=> {
+  const useQuery = vi.fn().mockImplementation(() => {
     return {
       data: {
         items: [],
@@ -12,9 +12,9 @@ test('should call pagedQuery to get data', () => {
       },
       isFetching: false,
     };
-  }) as DataTableProps<null, null>['usePagedQuery'];
-  
-  render(<DataTable columns={[]} usePagedQuery={useQuery} />);
+  }) as DataTableProps<null, null>['useQuery'];
+
+  render(<DataTable columns={[]} useQuery={useQuery} />);
   expect(useQuery).toHaveBeenCalledOnce();
   expect(useQuery).toHaveBeenCalledWith({
     pageNumber: 1,

@@ -8,4 +8,7 @@ public class Request
 
     [FromClaim(ApplicationClaimTypes.UserId)]
     public Guid ObserverId { get; set; }
+
+    [QueryParam] 
+    public List<Guid>? PollingStationIds { get; set; }
 }

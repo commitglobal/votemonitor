@@ -10,18 +10,15 @@ public class Endpoint : Endpoint<Request, Results<NoContent, BadRequest<ImportVa
     private readonly IRepository<ObserverAggregate> _repository;
     private readonly IRepository<ImportValidationErrors> _errorRepo;
     private readonly ICsvParser<ObserverImportModel> _parser;
-    private readonly ITimeProvider _timeProvider;
     private readonly ILogger<Endpoint> _logger;
     public Endpoint(IRepository<ObserverAggregate> repository,
         IRepository<ImportValidationErrors> errorRepo,
         ICsvParser<ObserverImportModel> parser,
-        ITimeProvider timeProvider,
         ILogger<Endpoint> logger)
     {
         _repository = repository;
         _errorRepo = errorRepo;
         _parser = parser;
-        _timeProvider = timeProvider;
         _logger = logger;
     }
 

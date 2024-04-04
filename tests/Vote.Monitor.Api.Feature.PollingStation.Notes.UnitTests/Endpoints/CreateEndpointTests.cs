@@ -15,7 +15,6 @@ namespace Vote.Monitor.Api.Feature.PollingStation.Notes.UnitTests.Endpoints;
 
 public class CreateEndpointTests
 {
-    private readonly ITimeProvider _timeService;
     private readonly IRepository<PollingStationNote> _repository;
     private readonly IRepository<ElectionRound> _electionRoundRepository;
     private readonly IRepository<PollingStationAggregate> _pollingStationRepository;
@@ -24,7 +23,6 @@ public class CreateEndpointTests
 
     public CreateEndpointTests()
     {
-        _timeService = Substitute.For<ITimeProvider>();
         _repository = Substitute.For<IRepository<PollingStationNote>>();
         _electionRoundRepository = Substitute.For<IRepository<ElectionRound>>();
         _pollingStationRepository = Substitute.For<IRepository<PollingStationAggregate>>();
@@ -32,8 +30,7 @@ public class CreateEndpointTests
         _endpoint = Factory.Create<Endpoint>(_repository, 
             _electionRoundRepository, 
             _pollingStationRepository,
-            _monitoringObserverRepository,
-            _timeService);
+            _monitoringObserverRepository);
     }
 
     [Fact]

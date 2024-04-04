@@ -1,4 +1,6 @@
-﻿using Vote.Monitor.Answer.Module.Mappers;
+﻿using Authorization.Policies.Requirements;
+using Microsoft.AspNetCore.Authorization;
+using Vote.Monitor.Answer.Module.Mappers;
 using Vote.Monitor.Api.Feature.PollingStation.Information.Specifications;
 using Vote.Monitor.Domain.Entities.FormAnswerBase;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
@@ -12,17 +14,27 @@ public class Endpoint(IRepository<PollingStationInformation> repository,
     IReadRepository<PollingStationAggregate> pollingStationRepository,
     IReadRepository<MonitoringObserver> monitoringObserverRepository,
     IReadRepository<PollingStationInformationForm> formRepository,
-    ITimeProvider timeProvider) : Endpoint<Request, Results<Ok<PollingStationInformationModel>, NotFound>>
+    IAuthorizationService authorizationService) : Endpoint<Request, Results<Ok<PollingStationInformationModel>, NotFound>>
 {
     public override void Configure()
     {
         Post("/api/election-rounds/{electionRoundId}/polling-stations/{pollingStationId}/information");
         DontAutoTag();
-        Options(x => x.WithTags("polling-station-information"));
+        Options(x => x.WithTags("polling-station-information", "mobile"));
+        Summary(s =>
+        {
+            s.Summary = "Upserts polling station information for a polling station";
+        });
     }
 
     public override async Task<Results<Ok<PollingStationInformationModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
+        var authorizationResult = await authorizationService.AuthorizeAsync(User, new MonitoringObserverRequirement(req.ElectionRoundId));
+        if (!authorizationResult.Succeeded)
+        {
+            TypedResults.NotFound();
+        }
+
         var formSpecification = new GetPollingStationInformationFormSpecification(req.ElectionRoundId);
         var form = await formRepository.FirstOrDefaultAsync(formSpecification, ct);
         if (form is null)
@@ -39,13 +51,20 @@ public class Endpoint(IRepository<PollingStationInformation> repository,
 
         return pollingStationInformation is null
             ? await AddPollingStationInformationAsync(req, form, answers, ct)
-            : await UpdatePollingStationInformationAsync(form, pollingStationInformation, answers, ct);
+            : await UpdatePollingStationInformationAsync(form, pollingStationInformation, req.ArrivalTime, req.DepartureTime, answers, ct);
     }
 
-    private async Task<Results<Ok<PollingStationInformationModel>, NotFound>> UpdatePollingStationInformationAsync(PollingStationInformationForm form,
-        PollingStationInformation pollingStationInformation, List<BaseAnswer> answers, CancellationToken ct)
+    private async Task<Results<Ok<PollingStationInformationModel>, NotFound>> UpdatePollingStationInformationAsync(
+        PollingStationInformationForm form,
+        PollingStationInformation pollingStationInformation,
+        DateTime? arrivalTime,
+        DateTime? departureTime,
+        List<BaseAnswer> answers,
+        CancellationToken ct)
     {
-        form.FillIn(pollingStationInformation, answers);
+        pollingStationInformation = form.FillIn(pollingStationInformation, answers);
+        pollingStationInformation.UpdateArrivalTime(arrivalTime);
+        pollingStationInformation.UpdateDepartureTime(departureTime);
         await repository.UpdateAsync(pollingStationInformation, ct);
 
         return TypedResults.Ok(PollingStationInformationModel.FromEntity(pollingStationInformation));
@@ -70,7 +89,7 @@ public class Endpoint(IRepository<PollingStationInformation> repository,
             return TypedResults.NotFound();
         }
 
-        var pollingStationInformation = form.CreatePollingStationInformation(pollingStation, monitoringObserver, answers, timeProvider);
+        var pollingStationInformation = form.CreatePollingStationInformation(pollingStation, monitoringObserver, req.ArrivalTime, req.DepartureTime, answers);
         await repository.AddAsync(pollingStationInformation, ct);
 
         return TypedResults.Ok(PollingStationInformationModel.FromEntity(pollingStationInformation));
