@@ -7,22 +7,45 @@ import {
   ViewStyle,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useTheme, XStack } from "tamagui";
+import { XStack } from "tamagui";
 import { Typography } from "./Typography";
 import { tokens } from "../theme/tokens";
 
 interface HeaderProps {
+  /**
+   * Background color
+   */
   backgroundColor?: string;
-  barStyle?: "light-content" | "dark-content" | "default";
-  // title
+  /**
+   * Title
+   */
   title?: string;
+  /**
+   * Title color
+   */
   titleColor?: string;
+  /**
+   * Optional inner header wrapper style override.
+   */
   style?: StyleProp<ViewStyle>;
-  // left icon
+  barStyle?: "light-content" | "dark-content" | "default";
+  /**
+   * Icon that should appear on the left.
+   * Can be used with `onLeftPress`.
+   */
   leftIcon?: React.ReactNode;
+  /**
+   * What happens when you press the left icon or text action.
+   */
   onLeftPress?: TouchableOpacityProps["onPress"];
-  // right icon
+  /**
+   * Icon that should appear on the right.
+   * Can be used with `onRightPress`.
+   */
   rightIcon?: React.ReactNode;
+  /**
+   * What happens when you press the right icon or text action.
+   */
   onRightPress?: TouchableOpacityProps["onPress"];
 }
 
@@ -31,7 +54,7 @@ const Header = ({
   barStyle = "light-content",
   title,
   titleColor,
-  style,
+  style: $styleOverride,
   leftIcon,
   onLeftPress,
   rightIcon,
@@ -42,13 +65,13 @@ const Header = ({
   return (
     <XStack
       style={[
-        style,
         $headerContainer,
         {
           height: 50 + insets.top,
           paddingTop: insets.top,
           backgroundColor: backgroundColor,
         },
+        $styleOverride,
       ]}
     >
       {/* manipulating status bar icons to desired color */}
