@@ -4,20 +4,36 @@ import { Typography } from "../../../../components/Typography";
 import { Stack } from "tamagui";
 import Button from "../../../../components/Button";
 import { Icon } from "../../../../components/Icon";
+<<<<<<< HEAD
 import Badge from "../../../../components/Badge";
+=======
+import Card from "../../../../components/Card";
+>>>>>>> main
 
 const QuickReport = () => {
   return (
     <ScrollView>
       <Text>Quick Report</Text>
 
-      {/* example of using default spacing for padding*/}
-      <Stack backgroundColor="$purple5" padding="$sm">
-        <Typography size="xl">Hello typo</Typography>
-      </Stack>
-
+      <Card>
+        <Typography
+          preset="heading"
+          color="$red10"
+          marginBottom="$sm"
+          numberOfLines={1}
+          style={{ backgroundColor: "yellow" }}
+        >
+          Hello from typographyHello from typographyHello from typographyHello from typographyHello
+          from typographyHello from typographyHello from typography
+        </Typography>
+        <Typography>
+          Hello from typographyHello from typographyHello from typographyHello from typographyHello
+          from typographyHello from typographyHello from typography
+        </Typography>
+      </Card>
       <Stack padding="$sm" gap="$xs">
         <Typography preset="heading">Button</Typography>
+
         <Stack gap="$xs">
           <Typography preset="subheading">Default</Typography>
           <Button onPress={() => console.log("filled")}>Filled</Button>
@@ -31,26 +47,20 @@ const QuickReport = () => {
             Danger
           </Button>
         </Stack>
+
+        {/* disabled buttons */}
         <Stack gap="$xs">
           <Typography preset="subheading">Disabled</Typography>
           <Button disabled onPress={() => console.log("filled")}>
             Filled
           </Button>
-          <Button
-            disabled
-            preset="outlined"
-            onPress={() => console.log("outlined")}
-          >
+          <Button disabled preset="outlined" onPress={() => console.log("outlined")}>
             Outlined
           </Button>
           <Button disabled preset="red" onPress={() => console.log("Danger")}>
             Danger
           </Button>
-          <Button
-            disabled
-            preset="chromeless"
-            onPress={() => console.log("Chromeless")}
-          >
+          <Button disabled preset="chromeless" onPress={() => console.log("Chromeless")}>
             Danger
           </Button>
         </Stack>

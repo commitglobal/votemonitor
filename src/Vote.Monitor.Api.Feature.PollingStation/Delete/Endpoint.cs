@@ -1,4 +1,6 @@
-﻿namespace Vote.Monitor.Api.Feature.PollingStation.Delete;
+﻿using Vote.Monitor.Api.Feature.PollingStation.Specifications;
+
+namespace Vote.Monitor.Api.Feature.PollingStation.Delete;
 public class Endpoint(IRepository<PollingStationAggregate> repository,
     IRepository<ElectionRoundAggregate> electionRoundRepository)
     : Endpoint<Request, Results<NoContent, NotFound<ProblemDetails>, ProblemDetails>>
@@ -19,7 +21,7 @@ public class Endpoint(IRepository<PollingStationAggregate> repository,
             return TypedResults.NotFound(new ProblemDetails(ValidationFailures));
         }
 
-        var pollingStation = await repository.GetByIdAsync(req.Id, ct);
+        var pollingStation = await repository.FirstOrDefaultAsync(new GetPollingStationByIdSpecification(req.ElectionRoundId, req.Id), ct);
 
         if (pollingStation is null)
         {
