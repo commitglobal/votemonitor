@@ -82,7 +82,7 @@ public class GetEndpointTests
         _currentUserProvider.IsObserver().Returns(false);
         _currentUserProvider.IsNgoAdmin().Returns(true);
 
-        _repository.FirstOrDefaultAsync(Arg.Any<GetObserverGuideForNgoAdminSpecification>())
+        _repository.FirstOrDefaultAsync(Arg.Any<GetObserverGuideSpecification>())
             .Returns(fakeObserverGuide);
 
         // Act

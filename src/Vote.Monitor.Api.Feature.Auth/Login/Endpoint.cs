@@ -1,6 +1,7 @@
 ﻿using Vote.Monitor.Api.Feature.Auth.Options;
 using Vote.Monitor.Api.Feature.Auth.Specifications;
 using Vote.Monitor.Core.Security;
+using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 
 namespace Vote.Monitor.Api.Feature.Auth.Login;
 
@@ -8,14 +9,17 @@ public class Endpoint : Endpoint<Request, Results<Ok<Response>, ProblemDetails>>
 {
     private readonly IReadRepository<ApplicationUser> _repository;
     private readonly IReadRepository<NgoAdmin> _ngoAdminRepository;
+    private readonly IReadRepository<MonitoringObserver> _monitoringObserverRepository;
     private readonly JWTConfig _options;
 
     public Endpoint(IReadRepository<ApplicationUser> repository,
         IReadRepository<NgoAdmin> ngoAdminRepository,
+        IReadRepository<MonitoringObserver> monitoringObserverRepository,
         IOptions<JWTConfig> options)
     {
         _repository = repository;
         _ngoAdminRepository = ngoAdminRepository;
+        _monitoringObserverRepository = monitoringObserverRepository;
         _options = options.Value;
     }
 
@@ -45,6 +49,15 @@ public class Endpoint : Endpoint<Request, Results<Ok<Response>, ProblemDetails>>
             if (ngoAdmin is not null)
             {
                 claims.Add((ApplicationClaimTypes.NgoId, ngoAdmin.NgoId.ToString()));
+            }
+        }
+        else if (user.Role == UserRole.Observer)
+        {
+            var monitoringObserverSpecification = new GetMonitoringObserverSpecification(user.Id);
+            var monitoringObserver = await _monitoringObserverRepository.FirstOrDefaultAsync(monitoringObserverSpecification, ct);
+            if (monitoringObserver is not null)
+            {
+                claims.Add((ApplicationClaimTypes.NgoId, monitoringObserver.InviterNgo.NgoId.ToString()));
             }
         }
 

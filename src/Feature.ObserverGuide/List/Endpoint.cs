@@ -1,5 +1,4 @@
-﻿using Ardalis.Specification;
-using Authorization.Policies.Requirements;
+﻿using Authorization.Policies.Requirements;
 using Feature.ObserverGuide.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
@@ -28,16 +27,7 @@ public class Endpoint(IAuthorizationService authorizationService,
             return TypedResults.NotFound();
         }
         
-        Specification<ObserverGuideAggregate> specification = null!;
-        if (currentUserProvider.IsObserver())
-        {
-            specification = new GetObserverGuidesSpecification(currentUserProvider.GetUserId());
-        }
-        else if (currentUserProvider.IsNgoAdmin())
-        { 
-            specification = new GetObserverGuidesForNgoAdminSpecification(currentUserProvider.GetNgoId());
-        }
-
+        var  specification =  new GetObserverGuidesSpecification(currentUserProvider.GetNgoId());
         var observerGuides = await repository.ListAsync(specification, ct);
 
         var observerGuideModels = observerGuides

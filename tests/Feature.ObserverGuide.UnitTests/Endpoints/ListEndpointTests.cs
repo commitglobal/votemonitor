@@ -86,7 +86,7 @@ public class ListEndpointTests
         _currentUserProvider.IsObserver().Returns(false);
         _currentUserProvider.IsNgoAdmin().Returns(true);
 
-        _repository.ListAsync(Arg.Any<GetObserverGuidesForNgoAdminSpecification>())
+        _repository.ListAsync(Arg.Any<GetObserverGuidesSpecification>())
             .Returns([fakeObserverGuide, anotherFakeObserverGuide]);
 
         // Act
