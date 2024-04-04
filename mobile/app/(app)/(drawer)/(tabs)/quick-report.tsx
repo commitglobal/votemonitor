@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text } from "react-native";
-import { Typography } from "../../../components/Typography";
+import { Typography } from "../../../../components/Typography";
 import { Stack } from "tamagui";
 
 const QuickReport = () => {

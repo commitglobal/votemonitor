@@ -1,11 +1,10 @@
 import React from "react";
-import { View } from "react-native";
+import { View, Text } from "react-native";
 import { router } from "expo-router";
 import { useAuth } from "../hooks/useAuth";
 import { Button as TamaguiButton } from "tamagui";
 import { Typography } from "../components/Typography";
-import { Button } from "../components/Button";
-import { Icon } from "../components/Icon";
+import Card from "../components/Card";
 
 const Login = () => {
   const { signIn } = useAuth();
@@ -39,38 +38,24 @@ const Login = () => {
       >
         <Typography size="xl">Forgot Password</Typography>
       </TamaguiButton>
+      <Typography preset="heading" color="$red12">
+        Heading
+      </Typography>
 
-      <Typography preset="heading">Heading</Typography>
-      <Typography preset="subheading">Subheading</Typography>
+      <Typography color="$purple5" numberOfLines={3}>
+        SubheadingSubheadingSubheadingSubheadingSubheadingSubheadingSubheadingSubheadingSubheadingSubheadingSubheadingSubheadingSubheading
+      </Typography>
+
       <Typography preset="default">default</Typography>
       <Typography preset="body1">body1</Typography>
-      <Typography preset="body2" >body2</Typography>
+      <Typography preset="body2">body2</Typography>
       <Typography preset="helper">helper</Typography>
 
-
-      <Button
-        text="Default (filled)"
-        onPress={() => console.log("Default pressed")} />
-
-      <Button
-        text="Outlined pressed"
-        preset="outlined"
-        icon={<Icon icon="inbox" color={'#7833B3'} />}
-        onPress={() => console.log("Outlined pressed")} />
-  
-
-      <Button
-        text="Chromeless"
-        preset="chromeless"
-        iconAfter={<Icon icon="inbox" color={'#7833B3'} />}
-        onPress={() => console.log("Chromeless pressed")}/>
-       
-
-      <Button
-        text="Clear form"
-        preset="red"
-        onPress={() => console.log("Red pressed")}/>
-    
+      <Card>
+        <View>
+          <Text>Children component</Text>
+        </View>
+      </Card>
     </View>
   );
 };

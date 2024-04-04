@@ -1,5 +1,4 @@
 import { Slot } from "expo-router";
-import { Text } from "react-native";
 import AuthContextProvider from "../contexts/auth/AuthContext.provider";
 import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -15,7 +14,7 @@ import {
 import { TamaguiProvider } from "@tamagui/core";
 import { tamaguiConfig } from "../tamagui.config";
 import { useFonts } from "expo-font";
-import Reactotron, { networking } from "reactotron-react-native";
+import Reactotron from "reactotron-react-native";
 
 if (__DEV__) {
   Reactotron.setAsyncStorageHandler(AsyncStorage)
@@ -129,14 +128,6 @@ export default function Root() {
         <AuthContextProvider>
           {!isOnline && <OfflineBanner />}
           <Slot />
-          {/* <Text
-            onPress={() => {
-              setIsOnline(!isOnline);
-              onlineManager.setOnline(!isOnline);
-            }}
-          >
-            Go Online/Offline
-          </Text> */}
         </AuthContextProvider>
       </TamaguiProvider>
     </PersistQueryClientProvider>
