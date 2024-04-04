@@ -11,7 +11,6 @@ const Index = () => {
   return (
     <View style={{ gap: 20 }}>
       <StatusBar barStyle="light-content" />
-      <Text>Observation</Text>
       <OfflinePersistComponentExample></OfflinePersistComponentExample>
       <Button onPress={() => router.push("/polling-station-wizzard/1")}>
         Go To Polling station wizzard

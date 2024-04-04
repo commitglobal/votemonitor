@@ -30221,7 +30221,7 @@
           "isVar": true,
           "key": "$xs",
           "name": "space-60",
-          "val": 10,
+          "val": 8,
           "variable": ""
         },
         "sm": {
@@ -31131,7 +31131,7 @@
         "isVar": true,
         "key": "$xs",
         "name": "space-60",
-        "val": 10,
+        "val": 8,
         "variable": ""
       },
       "$space.sm": {

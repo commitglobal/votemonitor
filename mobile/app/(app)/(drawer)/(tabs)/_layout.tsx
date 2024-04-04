@@ -23,7 +23,7 @@ export default function TabLayout() {
         name="index"
         options={{
           title: "Observation",
-          tabBarIcon: ({ color }) => <Icon icon="eyeOff" color={color} />,
+          tabBarIcon: ({ color }) => <Icon icon="observation" color={color} />,
         }}
       />
       <Tabs.Screen
