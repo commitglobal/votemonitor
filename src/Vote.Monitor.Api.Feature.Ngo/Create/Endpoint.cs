@@ -3,7 +3,7 @@ using Vote.Monitor.Core.Services.Time;
 
 namespace Vote.Monitor.Api.Feature.Ngo.Create;
 
-public class Endpoint(IRepository<NgoAggregate> repository, ITimeProvider timeProvider) :
+public class Endpoint(IRepository<NgoAggregate> repository) :
         Endpoint<Request, Results<Ok<NgoModel>, Conflict<ProblemDetails>>>
 {
 

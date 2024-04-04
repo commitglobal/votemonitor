@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Vote.Monitor.Domain.Constants;
 using Vote.Monitor.Domain.Entities.PollingStationAttachmentAggregate;
 
 namespace Vote.Monitor.Domain.EntitiesConfiguration;
@@ -7,6 +8,8 @@ internal class PollingStationAttachmentConfiguration : IEntityTypeConfiguration<
 {
     public void Configure(EntityTypeBuilder<PollingStationAttachment> builder)
     {
+        builder.ToTable(Tables.PollingStationAttachments);
+
         builder.HasKey(x => x.Id);
         builder.Property(x => x.Id).IsRequired();
         builder.HasIndex(x => x.ElectionRoundId);

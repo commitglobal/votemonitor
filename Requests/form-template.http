@@ -1,22 +1,20 @@
-@hostAddress=https://localhost:7123
-@jwtToken=your_token
-
 # List form templates
-GET {{hostAddress}}/api/form-templates
+GET {{$dotenv HOST }}/api/form-templates
       ?pageNumber=1
       &pageSize=10
-Authorization: Bearer {{jwtToken}}
+Authorization: Bearer {{$dotenv JWT_TOKEN}}
 
 ###
 
 # Create a form template
 # @name newFormTemplate
-POST {{hostAddress}}/api/form-templates
+POST {{$dotenv HOST }}/api/form-templates
 Content-Type: application/json
-Authorization: Bearer {{jwtToken}}
+Authorization: Bearer {{$dotenv JWT_TOKEN}}
 
 {
   "code": "A",
+  "defaultLanguage": "RO",
   "languages": [
     "RO"
   ],
@@ -29,12 +27,13 @@ Authorization: Bearer {{jwtToken}}
 ###
 @formTemplateId = {{newFormTemplate.response.body.$.id}}
 # Update a form template
-PUT {{hostAddress}}/api/form-templates/{{formTemplateId}}
+PUT {{$dotenv HOST }}/api/form-templates/{{formTemplateId}}
 Content-Type: application/json
-Authorization: Bearer {{jwtToken}}
+Authorization: Bearer {{$dotenv JWT_TOKEN}}
 
 {
   "code": "A",
+  "defaultLanguage": "RO",
   "languages": [
     "RO",
     "EN"
@@ -46,7 +45,7 @@ Authorization: Bearer {{jwtToken}}
   "formTemplateType": "ClosingAndCounting",
   "questions": [
     {
-      "$questionType": "numberInputQuestion",
+      "$questionType": "numberQuestion",
       "id": "{{$guid}}",
       "code": "A1",
       "text": {
@@ -63,7 +62,7 @@ Authorization: Bearer {{jwtToken}}
       }
     },
     {
-      "$questionType": "textInputQuestion",
+      "$questionType": "textQuestion",
       "id": "{{$guid}}",
       "code": "A2",
       "text": {
@@ -80,7 +79,7 @@ Authorization: Bearer {{jwtToken}}
       }
     },
     {
-      "$questionType": "dateInputQuestion",
+      "$questionType": "dateQuestion",
       "id": "{{$guid}}",
       "code": "A3",
       "text": {
@@ -232,25 +231,25 @@ Authorization: Bearer {{jwtToken}}
 ###
 
 # Get a form template
-GET {{hostAddress}}/api/form-templates/{{newFormTemplate.response.body.$.id}}
-Authorization: Bearer {{jwtToken}}
+GET {{$dotenv HOST }}/api/form-templates/{{newFormTemplate.response.body.$.id}}
+Authorization: Bearer {{$dotenv JWT_TOKEN}}
 
 ###
 
 # Delete a form template
-DELETE {{hostAddress}}/api/form-templates/{{newFormTemplate.response.body.$.id}}
-Authorization: Bearer {{jwtToken}}
+DELETE {{$dotenv HOST }}/api/form-templates/{{newFormTemplate.response.body.$.id}}
+Authorization: Bearer {{$dotenv JWT_TOKEN}}
 
 ###
 
 # Draft a form template
-POST {{hostAddress}}/api/form-templates/{{newFormTemplate.response.body.$.id}}:draft
-Authorization: Bearer {{jwtToken}}
+POST {{$dotenv HOST }}/api/form-templates/{{newFormTemplate.response.body.$.id}}:draft
+Authorization: Bearer {{$dotenv JWT_TOKEN}}
 
 ###
 
 # Publish a form template
-POST {{hostAddress}}/api/form-templates/{{newFormTemplate.response.body.$.id}}:publish
-Authorization: Bearer {{jwtToken}}
+POST {{$dotenv HOST }}/api/form-templates/{{newFormTemplate.response.body.$.id}}:publish
+Authorization: Bearer {{$dotenv JWT_TOKEN}}
 
 ###

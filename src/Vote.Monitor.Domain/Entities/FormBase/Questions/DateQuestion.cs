@@ -5,15 +5,12 @@ namespace Vote.Monitor.Domain.Entities.FormBase.Questions;
 
 public class DateQuestion : BaseQuestion
 {
-    public string Code { get; private set; }
-
     [JsonConstructor]
     internal DateQuestion(Guid id,
         string code,
         TranslatedString text,
-        TranslatedString? helptext) : base(id, text, helptext)
+        TranslatedString? helptext) : base(id, code, text, helptext)
     {
-        Code = code;
     }
 
     public static DateQuestion Create(Guid id,

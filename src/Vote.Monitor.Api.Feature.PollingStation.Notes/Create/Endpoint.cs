@@ -10,25 +10,25 @@ public class Endpoint : Endpoint<Request, Results<Ok<NoteModel>, BadRequest<Prob
     private readonly IRepository<ElectionRound> _electionRoundRepository;
     private readonly IRepository<PollingStationAggregate> _pollingStationRepository;
     private readonly IRepository<MonitoringObserver> _monitoringObserverRepository;
-    private readonly ITimeProvider _timeProvider;
 
     public Endpoint(IRepository<PollingStationNoteAggregate> repository,
         IRepository<ElectionRound> electionRoundRepository,
         IRepository<PollingStationAggregate> pollingStationRepository,
-        IRepository<MonitoringObserver> monitoringObserverRepository,
-        ITimeProvider timeProvider)
+        IRepository<MonitoringObserver> monitoringObserverRepository)
     {
         _repository = repository;
         _electionRoundRepository = electionRoundRepository;
         _pollingStationRepository = pollingStationRepository;
         _monitoringObserverRepository = monitoringObserverRepository;
-        _timeProvider = timeProvider;
     }
     public override void Configure()
     {
         Post("/api/election-rounds/{electionRoundId}/polling-stations/{pollingStationId}/notes");
         DontAutoTag();
-        Options(x => x.WithTags("notes"));
+        Options(x => x.WithTags("notes", "mobile"));
+        Summary(s => {
+            s.Summary = "Creates a note for a polling station";
+        });
     }
 
     public override async Task<Results<Ok<NoteModel>, BadRequest<ProblemDetails>>> ExecuteAsync(Request req, CancellationToken ct)

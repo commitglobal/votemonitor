@@ -1,13 +1,11 @@
-@hostAddress=https://localhost:7123
-@jwtToken=your_token
 @electionRoundId=1c94724e-b94b-4a7b-965d-05d04f20eac8
 @pollingStationId=18207370-c06b-4329-80f6-a2078037de1a
 
 # Add note
 # @name newAttachment
-POST {{hostAddress}}/api/election-rounds/{{electionRoundId}}/polling-stations/{{pollingStationId}}/notes
+POST {{$dotenv HOST }}/api/election-rounds/{{electionRoundId}}/polling-stations/{{pollingStationId}}/notes
 Content-Type: application/json
-Authorization: Bearer {{jwtToken}}
+Authorization: Bearer {{$dotenv JWT_TOKEN}}
 
 {
   "text": "some interesting and informative note"
@@ -15,20 +13,20 @@ Authorization: Bearer {{jwtToken}}
 ###
 
 # List notes
-GET {{hostAddress}}/api/election-rounds/{{electionRoundId}}/polling-stations/{{pollingStationId}}/notes
-Authorization: Bearer {{jwtToken}}
+GET {{$dotenv HOST }}/api/election-rounds/{{electionRoundId}}/polling-stations/{{pollingStationId}}/notes
+Authorization: Bearer {{$dotenv JWT_TOKEN}}
 
 ###
 
 # Get an note
-GET {{hostAddress}}/api/election-rounds/{{electionRoundId}}/polling-stations/{{pollingStationId}}/notes/{{newAttachment.response.body.$.id}}
-Authorization: Bearer {{jwtToken}}
+GET {{$dotenv HOST }}/api/election-rounds/{{electionRoundId}}/polling-stations/{{pollingStationId}}/notes/{{newAttachment.response.body.$.id}}
+Authorization: Bearer {{$dotenv JWT_TOKEN}}
 
 ###
 
 # Delete an note
-DELETE  {{hostAddress}}/api/election-rounds/{{electionRoundId}}/polling-stations/{{pollingStationId}}/notes/{{newAttachment.response.body.$.id}}
-Authorization: Bearer {{jwtToken}}
+DELETE  {{$dotenv HOST }}/api/election-rounds/{{electionRoundId}}/polling-stations/{{pollingStationId}}/notes/{{newAttachment.response.body.$.id}}
+Authorization: Bearer {{$dotenv JWT_TOKEN}}
 
 ###
 

@@ -1,7 +1,7 @@
 ﻿
 namespace Vote.Monitor.Api.Feature.Notifications.ListSent;
 
-public class Endpoint(IRepository<NotificationAggregate> repository, ITimeProvider timeProvider) :
+public class Endpoint(IRepository<NotificationAggregate> repository) :
         Endpoint<Request, Ok<Response>>
 {
     public override void Configure()

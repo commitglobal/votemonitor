@@ -1,7 +1,5 @@
-import { Redirect } from "expo-router";
+import { Redirect, Stack } from "expo-router";
 import { useAuth } from "../../hooks/useAuth";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { Drawer } from "expo-router/drawer";
 
 const AppLayout = () => {
   const { isAuthenticated } = useAuth();
@@ -13,11 +11,12 @@ const AppLayout = () => {
   }
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <Drawer screenOptions={{ drawerType: "front" }}>
-        <Drawer.Screen name="(tabs)" options={{ headerShown: true }} />
-      </Drawer>
-    </GestureHandlerRootView>
+    <Stack>
+      <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
+      <Stack.Screen name="polling-station-wizzard" />
+      <Stack.Screen name="form-questionnaire" />
+      <Stack.Screen name="polling-station-questionnaire" />
+    </Stack>
   );
 };
 

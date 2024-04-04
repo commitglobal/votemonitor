@@ -32,15 +32,13 @@ public class PollingStationInformationForm : AuditableBaseEntity, IAggregateRoot
 
     public static PollingStationInformationForm Create(
         ElectionRound electionRound,
-        IEnumerable<string> languages,
-        ITimeProvider timeProvider) =>
+        IEnumerable<string> languages) =>
         new(electionRound, languages);
 
     public static PollingStationInformationForm Create(
         ElectionRound electionRound,
         IEnumerable<string> languages,
-        List<BaseQuestion> questions,
-        ITimeProvider timeProvider) =>
+        List<BaseQuestion> questions) =>
         new(electionRound, languages, questions);
 
     public void UpdateDetails(IEnumerable<string> languages, IEnumerable<BaseQuestion> questions)
@@ -51,15 +49,20 @@ public class PollingStationInformationForm : AuditableBaseEntity, IAggregateRoot
 
     public PollingStationInformation CreatePollingStationInformation(PollingStation pollingStation,
         MonitoringObserver monitoringObserver,
-        List<BaseAnswer> answers,
-        ITimeProvider timeProvider)
-    {
-        return PollingStationInformation.Create(ElectionRound, pollingStation, monitoringObserver, this, answers);
-    }
-
-    public void FillIn(PollingStationInformation filledInForm,
+        DateTime? arrivalTime,
+        DateTime? departureTime,
         List<BaseAnswer> answers)
     {
+        return PollingStationInformation.Create(ElectionRound, pollingStation, monitoringObserver, this, arrivalTime, departureTime, answers);
+    }
+
+    public PollingStationInformation FillIn(PollingStationInformation filledInForm, List<BaseAnswer> answers)
+    {
+        if (!answers.Any())
+        {
+            return filledInForm;
+        }
+
         var validationResult = AnswersValidator.GetValidationResults(answers, Questions);
 
         if (!validationResult.IsValid)
@@ -67,7 +70,9 @@ public class PollingStationInformationForm : AuditableBaseEntity, IAggregateRoot
             throw new ValidationException(validationResult.Errors);
         }
 
-        filledInForm.UpdateDetails(answers);
+        filledInForm.UpdateAnswers(answers);
+
+        return filledInForm;
     }
 
 #pragma warning disable CS8618 // Required by Entity Framework

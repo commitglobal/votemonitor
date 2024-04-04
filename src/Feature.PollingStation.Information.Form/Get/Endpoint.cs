@@ -1,6 +1,4 @@
-﻿using Feature.PollingStation.Information.Form.Specifications;
-
-namespace Feature.PollingStation.Information.Form.Get;
+﻿namespace Feature.PollingStation.Information.Form.Get;
 
 public class Endpoint(IReadRepository<PollingStationInfoFormAggregate> repository) : Endpoint<Request, Results<Ok<PollingStationInformationFormModel>, NotFound>>
 {
@@ -8,8 +6,11 @@ public class Endpoint(IReadRepository<PollingStationInfoFormAggregate> repositor
     {
         Get("/api/election-rounds/{electionRoundId}/polling-station-information-form");
         DontAutoTag();
-        Options(x => x.WithTags("polling-station-information-form"));
-        Description(x => x.Accepts<Request>());
+        Options(x => x.WithTags("polling-station-information-form", "mobile"));
+        Description(x => x.Accepts<Request>()); Summary(s => {
+            s.Summary = "Gets the polling station information form.";
+            s.Description = "Gets the polling station information form. Observers will fill in this form when they visit a polling station.";
+        });
     }
 
     public override async Task<Results<Ok<PollingStationInformationFormModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
