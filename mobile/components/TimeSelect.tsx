@@ -36,14 +36,15 @@ const TimeSelect = () => {
 
   return (
     <>
-      <YStack onPress={() => setOpen(true)}>
-        <Typography size="xl">
+      <YStack>
+        <Typography size="xl" style={{ fontWeight: "500" }}>
           {time.toLocaleTimeString([], {
             hour: "2-digit",
             minute: "2-digit",
           })}
         </Typography>
-        <XStack>
+        {/*  */}
+        <XStack onPress={() => setOpen(true)}>
           <Typography>Arrival time</Typography>
           <Icon icon="chevronRight" />
         </XStack>
