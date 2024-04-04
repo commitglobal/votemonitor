@@ -1,25 +1,26 @@
-﻿using Vote.Monitor.Api.Feature.PollingStation.Attachments.Specifications;
+﻿using Authorization.Policies.Requirements;
+using Microsoft.AspNetCore.Authorization;
+using Vote.Monitor.Api.Feature.PollingStation.Attachments.Specifications;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
-using Vote.Monitor.Domain.Entities.ElectionRoundAggregate;
 
 namespace Vote.Monitor.Api.Feature.PollingStation.Attachments.List;
 
-public class Endpoint : Endpoint<Request, Results<Ok<List<AttachmentModel>>, BadRequest<ProblemDetails>>>
+public class Endpoint : Endpoint<Request, Results<Ok<List<AttachmentModel>>, NotFound, BadRequest<ProblemDetails>>>
 {
+    private readonly IAuthorizationService _authorizationService;
     private readonly IReadRepository<PollingStationAttachmentAggregate> _repository;
     private readonly IFileStorageService _fileStorageService;
-    private readonly IRepository<ElectionRound> _electionRoundRepository;
     private readonly IRepository<PollingStationAggregate> _pollingStationRepository;
 
-    public Endpoint(IReadRepository<PollingStationAttachmentAggregate> repository,
+    public Endpoint(IAuthorizationService authorizationService,
+        IReadRepository<PollingStationAttachmentAggregate> repository,
         IFileStorageService fileStorageService,
-        IRepository<ElectionRound> electionRoundRepository,
         IRepository<PollingStationAggregate> pollingStationRepository)
     {
         _repository = repository;
         _fileStorageService = fileStorageService;
-        _electionRoundRepository = electionRoundRepository;
         _pollingStationRepository = pollingStationRepository;
+        _authorizationService = authorizationService;
     }
 
     public override void Configure()
@@ -27,20 +28,19 @@ public class Endpoint : Endpoint<Request, Results<Ok<List<AttachmentModel>>, Bad
         Get("/api/election-rounds/{electionRoundId}/polling-stations/{pollingStationId}/attachments");
         DontAutoTag();
         Options(x => x.WithTags("attachments", "mobile"));
-        Summary(s => {
+        Summary(s =>
+        {
             s.Summary = "Gets all attachments an observer has uploaded for a polling station";
             s.Description = "Gets all attachments with freshly generated presigned urls";
         });
     }
 
-    public override async Task<Results<Ok<List<AttachmentModel>>, BadRequest<ProblemDetails>>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<Results<Ok<List<AttachmentModel>>, NotFound, BadRequest<ProblemDetails>>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var electionRound = await _electionRoundRepository.GetByIdAsync(req.ElectionRoundId, ct);
-
-        if (electionRound == null)
+        var authorizationResult = await _authorizationService.AuthorizeAsync(User, new MonitoringObserverRequirement(req.ElectionRoundId));
+        if (!authorizationResult.Succeeded)
         {
-            AddError(r => r.ElectionRoundId, "Election round not found");
-            return TypedResults.BadRequest(new ProblemDetails(ValidationFailures));
+            return TypedResults.NotFound();
         }
 
         var pollingStationSpecification = new GetPollingStationSpecification(req.PollingStationId);
