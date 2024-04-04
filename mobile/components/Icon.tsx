@@ -56,7 +56,7 @@ type IconRegistry = {
 };
 
 export const defaultIcon = React.forwardRef(
-  (props: IconProps, ref?: Ref<typeof View>) => {
+  (props: IconProps, ref?: Ref<typeof View>): JSX.Element => {
     const {
       icon,
       color = "black",

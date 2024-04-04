@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text } from "react-native";
 import { router } from "expo-router";
 import { useAuth } from "../hooks/useAuth";
-import { Button } from "tamagui";
+import { Button as TamaguiButton } from "tamagui";
 import { Typography } from "../components/Typography";
 import Card from "../components/Card";
 
@@ -17,7 +17,7 @@ const Login = () => {
         gap: 20,
       }}
     >
-      <Button
+      <TamaguiButton
         onPress={() => {
           signIn();
           // Navigate after signing in. You may want to tweak this to ensure sign-in is
@@ -26,8 +26,8 @@ const Login = () => {
         }}
       >
         <Typography>Sign In</Typography>
-      </Button>
-      <Button
+      </TamaguiButton>
+      <TamaguiButton
         paddingHorizontal="$xl"
         height={"auto"}
         paddingVertical="$lg"
@@ -37,7 +37,7 @@ const Login = () => {
         }}
       >
         <Typography size="xl">Forgot Password</Typography>
-      </Button>
+      </TamaguiButton>
       <Typography preset="heading" color="$red12">
         Heading
       </Typography>
