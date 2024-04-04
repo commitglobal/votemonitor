@@ -11,7 +11,6 @@ const QuickReport = () => {
     <ScrollView>
       <Text>Quick Report</Text>
 
-      {/* example of using default spacing for padding*/}
       <Card>
         <Typography
           preset="heading"
