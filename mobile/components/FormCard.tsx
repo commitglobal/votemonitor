@@ -6,7 +6,7 @@ import {
   useTheme,
 } from "tamagui";
 import { tokens } from "../theme/tokens";
-import { Badge, BadgePresets, BadgeProps } from "./Badge";
+// import { Badge, BadgePresets, BadgeProps } from "./Badge";
 import { Card } from "./Card";
 import { Typography } from "./Typography";
 import { Icon } from "./Icon";
@@ -15,7 +15,7 @@ export interface FormCardProps {
   header: String;
   subHeader?: String;
   footer: String;
-  badgePreset?: BadgePresets;
+  // badgePreset?: BadgePresets;
 
   headerStyle?: StyleProp<TextStyle>;
   footerStyle?: StyleProp<TextStyle>;
@@ -32,7 +32,7 @@ export function FormCard(props: FormCardProps) {
     headerStyle,
     footerStyle,
     subHeaderStyle,
-    badgePreset,
+    // badgePreset,
   } = props;
 
   const hasSubHeader = subHeader ? subHeader.trim() !== "" : false;
@@ -49,7 +49,7 @@ export function FormCard(props: FormCardProps) {
         <Typography preset="body2" style={{ color: theme.gray9?.val }}>
           {header}
         </Typography>
-        <Badge preset={badgePreset}></Badge>
+        {/* <Badge preset={badgePreset}></Badge> */}
       </View>
 
       {hasSubHeader === true && (

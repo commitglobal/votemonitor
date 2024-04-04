@@ -5,7 +5,7 @@ import { useAuth } from "../hooks/useAuth";
 import { Button, useTheme } from "tamagui";
 import { Typography } from "../components/Typography";
 import { Card } from "../components/Card";
-import { Badge, BadgeProps } from "../components/Badge";
+// import { Badge, BadgeProps } from "../components/Badge";
 import { FormCard } from "../components/FormCard";
 
 const Login = () => {
@@ -62,7 +62,6 @@ const Login = () => {
         header="A - Opening"
         subHeader="Available in RO, BG, EN"
         footer="0/33 questions"
-        badgePreset="success"
       />
     </View>
   );
