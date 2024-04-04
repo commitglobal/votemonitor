@@ -15,6 +15,7 @@ import PencilAlt from "../assets/icons/Pencil alt.svg";
 import XCircle from "../assets/icons/x-circle.svg";
 import MenuAlt2 from "../assets/icons/menu-alt-2.svg";
 import DotsVertical from "../assets/icons/dots-vertical.svg";
+import Check from "../assets/icons/check.svg";
 
 import { styled } from "tamagui";
 import { View } from "tamagui";
@@ -82,6 +83,7 @@ export const defaultIcon = React.forwardRef(
       xCircle: <XCircle fill={color} width={size} height={size} />,
       menuAlt2: <MenuAlt2 fill={color} width={size} height={size} />,
       dotsVertical: <DotsVertical fill={color} width={size} height={size} />,
+      check: <Check fill={color} width={size} height={size} />,
     };
 
     return (

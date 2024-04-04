@@ -5,7 +5,8 @@ import { StatusBar } from "react-native";
 import { Button } from "tamagui";
 import { router } from "expo-router";
 import Card from "../../../../components/Card";
-import Input from "../../../../components/Input";
+import Input from "../../../../components/Inputs/Input";
+import CheckboxInput from "../../../../components/Inputs/CheckboxInput";
 
 const Index = () => {
   const { signOut } = useAuth();
@@ -14,6 +15,8 @@ const Index = () => {
     <View style={{ gap: 20 }}>
       <Card>
         <Input />
+        <CheckboxInput label="hello" marginTop={20} id="1" />
+        <CheckboxInput label="hello2" marginTop={10} id="2" />
       </Card>
 
       <StatusBar barStyle="light-content" />
