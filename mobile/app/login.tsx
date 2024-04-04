@@ -4,6 +4,7 @@ import { router } from "expo-router";
 import { useAuth } from "../hooks/useAuth";
 import { Button } from "tamagui";
 import { Typography } from "../components/Typography";
+import { Badge } from "../components/Badge";
 import { Card } from "../components/Card";
 // import { Badge, BadgeProps } from "../components/Badge";
 import { FormCard } from "../components/FormCard";
@@ -67,6 +68,11 @@ const Login = () => {
         subHeader="Available in RO, BG, EN"
         footer="0/33 questions"
       />
+
+      <Badge></Badge>
+      <Badge preset="success"></Badge>
+      <Badge preset="warning"></Badge>
+      <Badge preset="danger"></Badge>
     </View>
   );
 };
