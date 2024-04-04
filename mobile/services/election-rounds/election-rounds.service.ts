@@ -1,5 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
+  ElectionRoundsAPIResponse,
   PollingStationInformationAPIPayload,
   PollingStationNomenclatorNodeAPIResponse,
   getElectionRounds,
@@ -17,22 +18,17 @@ import {
 } from "../../common/models/election-round.model";
 
 import * as PollingStationInformationFormDAO from "../../database/DAO/PollingStationInformationForm.dao";
+import { PollingStationNomenclatorNodeVM } from "../../common/models/polling-station.model";
 
 export const useElectionRoundsQuery = () => {
-  return useQuery<ElectionRoundVM[]>({
+  return useQuery<ElectionRoundsAPIResponse>({
     queryKey: ["election-rounds"],
     queryFn: async () => {
-      /**
-       *
-       *  TODO: 1. Add schema for Election Rounds to be saved in DB
-       *  TODO: 2. Get from DB, update from API
-       *
-       *
-       *
-       */
       const apiData = await getElectionRounds();
-      return transformElectionRoundsApiToVM(apiData);
+      return apiData;
     },
+    gcTime: Infinity,
+    staleTime: Infinity,
   });
 };
 
@@ -40,17 +36,13 @@ export const usePollingStationsNomenclatorQuery = (electionRoundId: string) => {
   return useQuery({
     queryKey: ["polling-stations-nomenclator", electionRoundId],
     queryFn: async () => {
-      /**
-       *
-       *      We either get the data from Database or from API
-       *
-       *      TODO: Need to save and check if the CacheKey is the same (bust cache)
-       */
+      // TODO: Need to save and check if the CacheKey is the same (bust cache)
+
       const count = await performanceLog(
         () => DB.getPollingStationNomenclatorNodesCount(electionRoundId),
         "DB.getPollingStationNomenclatorNodesCount"
       );
-      console.log("usePollingStationsNomenclatorQuery", count);
+
       if (count > 0) {
         return "RETRIEVED FROM DB";
       } else {
@@ -63,9 +55,6 @@ export const usePollingStationsNomenclatorQuery = (electionRoundId: string) => {
       }
     },
     enabled: !!electionRoundId,
-    // initialData
-    // gcTime: Infinity,
-    // staleTime: Infinity,
   });
 };
 
@@ -76,19 +65,25 @@ export const usePollingStationsVisits = (electionRoundId: string) => {
       return getPollingStationsVisits(electionRoundId);
     },
     enabled: !!electionRoundId,
+    gcTime: Infinity,
+    staleTime: Infinity,
   });
 };
 
 export const usePollingStationByParentID = (parentId: number = -1) => {
-  /**
-   *
-   *  We save the top-level parents with "parentId = -1" in DB
-   *
-   */
-  return useQuery({
+  // We save the top-level parents with "parentId = -1" in DB
+  return useQuery<PollingStationNomenclatorNodeVM[]>({
     queryKey: ["polling-stations-parent", parentId],
     queryFn: async () => {
-      return DB.getPollingStationsByParentId(parentId);
+      const data = await DB.getPollingStationsByParentId(parentId);
+      const mapped: PollingStationNomenclatorNodeVM[] = data?.map((item) => ({
+        id: item._id,
+        name: item.name,
+        number: item.pollingStationNumber,
+        parentId: item.parentId,
+        pollingStationId: item.pollingStationId,
+      }));
+      return mapped;
     },
     enabled: !!parentId,
   });

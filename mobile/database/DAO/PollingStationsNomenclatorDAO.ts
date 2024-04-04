@@ -66,7 +66,7 @@ export const deleteAllRecordsPollingStationNomenclator = () => {
 
 export const getPollingStationsByParentId = (parentId: number | null) => {
   return database
-    .get("polling_stations_nom")
+    .get<PollingStationsNom>("polling_stations_nom")
     .query(Q.where("parent_id", parentId))
     .fetch();
 };

@@ -1,5 +1,4 @@
 import { Slot } from "expo-router";
-import { Text } from "react-native";
 import AuthContextProvider from "../contexts/auth/AuthContext.provider";
 import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -97,7 +96,6 @@ export default function Root() {
     if (loaded) {
       // can hide splash screen here
     }
-    // createPollingStation("1", "Romania").then(console.log).catch(console.log);
   }, [loaded]);
 
   useEffect(() => {
@@ -123,30 +121,13 @@ export default function Root() {
           .resumePausedMutations()
           .then(() => queryClient.invalidateQueries());
       }}
-      persistOptions={{
-        persister,
-        dehydrateOptions: {
-          shouldDehydrateQuery: ({ queryKey, state }) => {
-            // SELECTIVELY PERSIST QUERY KEYS https://github.com/TanStack/query/discussions/3568
-            // console.log("shouldDehydrateQuery", queryKey);
-            return true;
-          },
-        },
-      }}
+      persistOptions={{ persister }}
       client={queryClient}
     >
       <TamaguiProvider config={tamaguiConfig}>
         <AuthContextProvider>
           {!isOnline && <OfflineBanner />}
           <Slot />
-          <Text
-            onPress={() => {
-              setIsOnline(!isOnline);
-              onlineManager.setOnline(!isOnline);
-            }}
-          >
-            Go Online/Offline
-          </Text>
         </AuthContextProvider>
       </TamaguiProvider>
     </PersistQueryClientProvider>
