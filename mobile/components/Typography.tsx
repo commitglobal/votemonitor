@@ -1,11 +1,11 @@
 import React from "react";
-import { StyleProp, TextProps as RNTextProps, TextStyle } from "react-native";
-import { SizableText } from "tamagui";
+import { StyleProp, TextStyle } from "react-native";
+import { SizableText, TextProps as TaamguiTextProps } from "tamagui";
 
 type Sizes = keyof typeof $sizeStyles;
 type Presets = keyof typeof $presets;
 
-export interface TextProps extends RNTextProps {
+export interface TextProps extends TaamguiTextProps {
   style?: StyleProp<TextStyle>;
   /**
    * One of the different types of text presets.
@@ -66,7 +66,7 @@ export function Typography(props: TextProps) {
 const $sizeStyles = {
   xl: { fontSize: 24, lineHeight: 32, fontWeight: "400" } satisfies TextStyle,
   lg: { fontSize: 20, lineHeight: 26, fontWeight: "700" } satisfies TextStyle,
-  md: { fontSize: 16, lineHeight: 20, fontWeight: "500" } satisfies TextStyle,
+  md: { fontSize: 16, lineHeight: 20, fontWeight: "400" } satisfies TextStyle,
   sm: { fontSize: 14, lineHeight: 20, fontWeight: "400" } satisfies TextStyle,
   xs: { fontSize: 12, lineHeight: 14, fontWeight: "700" } satisfies TextStyle,
 };

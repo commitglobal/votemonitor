@@ -1,14 +1,5 @@
 import React, { useMemo, useState } from "react";
-import {
-  Adapt,
-  Button,
-  ScrollView,
-  Select,
-  Sheet,
-  Text,
-  View,
-  YStack,
-} from "tamagui";
+import { Adapt, Button, Select, Sheet, View, YStack } from "tamagui";
 import { Icon } from "./Icon";
 import { Typography } from "./Typography";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -56,11 +47,13 @@ const SelectPollingStation = () => {
                 borderBottomWidth={1}
                 borderBottomColor="$gray3"
               >
-                <Typography preset="body1" color="$gray5">
+                <Typography preset="body2" color="$gray5">
                   My polling stations
                 </Typography>
                 <View marginTop="$xxs">
-                  <Typography numberOfLines={7} color="$gray5">
+                  {/* //TODO: not sure how many nroflines we should leave here */}
+                  <Typography size="sm" numberOfLines={7} color="$gray5">
+                    {/* //TODO: translation here */}
                     You can switch between polling stations if you want to
                     revisit form answers or polling station information.
                   </Typography>
