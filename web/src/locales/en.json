@@ -27,7 +27,8 @@
       "select": "Select",
       "update": "Update",
       "upload": "Upload",
-      "view": "View"
+      "view": "View",
+      "publish": "Publish"
     }
   },
   "app.input.pleaseSpecify": "Please specify",
