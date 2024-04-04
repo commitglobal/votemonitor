@@ -1,5 +1,5 @@
 import { Q, Query } from "@nozbe/watermelondb";
-import { PollingStationNomenclatorNodeAPIResponse } from "../../services/election-rounds/election-rounds.api";
+import { PollingStationNomenclatorNodeAPIResponse } from "../../services/definitions.api";
 import { database } from "../db";
 import { PollingStationsNom } from "../models/polling-stations-nomenclator.model";
 

@@ -11,7 +11,7 @@ import * as ElectionRoundsDBQueries from "../database/DAO/ElectionRounds.dao";
 import {
   getElectionRounds,
   getPollingStationInformation,
-} from "../services/election-rounds/election-rounds.api";
+} from "../services/definitions.api";
 
 Reactotron.onCustomCommand({
   title: "AsyncStorage",

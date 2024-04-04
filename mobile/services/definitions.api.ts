@@ -1,6 +1,6 @@
-import API from "../api";
-import { ApiFormAnswer } from "../interfaces/answer.type";
-import { ApiFormQuestion } from "../interfaces/question.type";
+import API from "./api";
+import { ApiFormAnswer } from "./interfaces/answer.type";
+import { ApiFormQuestion } from "./interfaces/question.type";
 
 /** ========================================================================
     ====================== GET Election Rounds ===================

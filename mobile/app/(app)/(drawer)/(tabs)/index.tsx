@@ -1,6 +1,5 @@
 import { View, Text } from "react-native";
 import { useAuth } from "../../../../hooks/useAuth";
-import OfflinePersistComponentExample from "../../../../components/OfflinePersistComponentExample";
 import { StatusBar } from "react-native";
 import { Button } from "tamagui";
 import { router } from "expo-router";
@@ -11,7 +10,6 @@ const Index = () => {
   return (
     <View style={{ gap: 20 }}>
       <StatusBar barStyle="light-content" />
-      <OfflinePersistComponentExample></OfflinePersistComponentExample>
       <Button onPress={() => router.push("/polling-station-wizzard/1")}>
         Go To Polling station wizzard
       </Button>

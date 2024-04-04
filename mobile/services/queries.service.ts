@@ -9,16 +9,15 @@ import {
   getPollingStationNomenclator,
   getPollingStationsVisits,
   upsertPollingStationGeneralInformation,
-} from "./election-rounds.api";
-import * as DB from "../../database/DAO/PollingStationsNomenclatorDAO";
-import { performanceLog } from "../../helpers/misc";
+} from "./definitions.api";
+import * as DB from "../database/DAO/PollingStationsNomenclatorDAO";
+import { performanceLog } from "../helpers/misc";
 import {
   ElectionRoundVM,
   transformElectionRoundsApiToVM,
-} from "../../common/models/election-round.model";
+} from "../common/models/election-round.model";
 
-import * as PollingStationInformationFormDAO from "../../database/DAO/PollingStationInformationForm.dao";
-import { PollingStationNomenclatorNodeVM } from "../../common/models/polling-station.model";
+import { PollingStationNomenclatorNodeVM } from "../common/models/polling-station.model";
 
 export const useElectionRoundsQuery = () => {
   return useQuery<ElectionRoundsAPIResponse>({
@@ -119,26 +118,8 @@ export const usePollingStationInformationForm = (electionRoundId: string) => {
   return useQuery({
     queryKey: ["polling-station-information-form", electionRoundId],
     queryFn: async () => {
-      // 1. Check if we have the "information form" in DB
-      const existing = await PollingStationInformationFormDAO.get(
-        electionRoundId
-      );
-
-      // 2. We have the form, return it
-      if (existing) {
-        return existing;
-      } else {
-        // 3. Get the form from API and save it to DB
-        const data = await getPollingStationInformationForm(electionRoundId);
-        const added = await PollingStationInformationFormDAO.add(
-          electionRoundId,
-          data
-        );
-
-        console.log("added", added);
-
-        return data;
-      }
+      const data = await getPollingStationInformationForm(electionRoundId);
+      return data;
     },
     enabled: !!electionRoundId,
   });

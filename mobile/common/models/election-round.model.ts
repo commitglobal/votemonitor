@@ -1,4 +1,4 @@
-import { ElectionRoundsAPIResponse } from "../../services/election-rounds/election-rounds.api";
+import { ElectionRoundsAPIResponse } from "../../services/definitions.api";
 
 export type ElectionRoundVM = {
   id: string;
