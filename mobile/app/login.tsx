@@ -1,13 +1,26 @@
-import React from "react";
-import { View, Text } from "react-native";
+import React, { useContext } from "react";
+import { View } from "react-native";
 import { router } from "expo-router";
 import { useAuth } from "../hooks/useAuth";
-import { Button } from "tamagui";
+import { Button as TamaguiButton } from "tamagui";
 import { Typography } from "../components/Typography";
-import FormCard from "../components/FormCard";
+import { useTranslation } from "react-i18next";
+import { LanguageContext } from "../contexts/language/LanguageContext.provider";
+import Button from "../components/Button";
 
 const Login = () => {
   const { signIn } = useAuth();
+  const { t } = useTranslation("login");
+  const { changeLanguage } = useContext(LanguageContext);
+
+  const switchToEnglish = () => {
+    changeLanguage("en");
+  };
+
+  const switchToRomanian = () => {
+    changeLanguage("ro");
+  };
+
   return (
     <View
       style={{
@@ -18,7 +31,7 @@ const Login = () => {
         paddingHorizontal: 16,
       }}
     >
-      <Button
+      <TamaguiButton
         onPress={() => {
           signIn();
           // Navigate after signing in. You may want to tweak this to ensure sign-in is
@@ -26,9 +39,9 @@ const Login = () => {
           router.replace("/");
         }}
       >
-        <Typography>Sign In</Typography>
-      </Button>
-      <Button
+        <Typography>{t("submit")}</Typography>
+      </TamaguiButton>
+      <TamaguiButton
         paddingHorizontal="$xl"
         height={"auto"}
         paddingVertical="$lg"
@@ -38,27 +51,9 @@ const Login = () => {
         }}
       >
         <Typography size="xl">Forgot Password</Typography>
-      </Button>
-      <Typography preset="heading" color="$red12">
-        Heading
-      </Typography>
-
-      <Typography color="$purple5" numberOfLines={3}>
-        SubheadingSubheadingSubheadingSubheadingSubheadingSubheadingSubheadingSubheadingSubheadingSubheadingSubheadingSubheadingSubheading
-      </Typography>
-
-      <Typography preset="default">default</Typography>
-      <Typography preset="body1">body1</Typography>
-      <Typography preset="body2">body2</Typography>
-      <Typography preset="helper">helper</Typography>
-
-      <FormCard header="A - Opening (EN)" footer="0/33 questions" />
-      <FormCard
-        header="A - Opening"
-        subHeader="Available in RO, BG, EN"
-        footer="0/33 questions"
-        badgePreset="warning"
-      />
+      </TamaguiButton>
+      <Button onPress={switchToEnglish}>English</Button>
+      <Button onPress={switchToRomanian}>Romanian</Button>
     </View>
   );
 };

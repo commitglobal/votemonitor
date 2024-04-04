@@ -1,6 +1,6 @@
-import { gray, green, purple, red, yellow } from "@tamagui/colors";
-import { createThemeBuilder } from "@tamagui/theme-builder";
-import type { Variable } from "@tamagui/web";
+import { gray, green, purple, red, yellow } from "@tamagui/colors"
+import { createThemeBuilder } from "@tamagui/theme-builder"
+import type { Variable } from "@tamagui/web"
 
 const colorTokens = {
   light: {
@@ -18,6 +18,8 @@ const colorTokens = {
     green: {
       ...green,
       green1: "hsl(152, 81%, 96%)",
+      green2: "hsl(136, 73%, 97%)",
+      green9: "hsl(142, 71%, 27%)",
       green10: "hsl(160, 84%, 39%)",
       green12: "hsl(145, 63%, 42%)",
     },
@@ -37,9 +39,9 @@ const colorTokens = {
     yellow: {
       ...yellow,
       yellow2: "hsla(49, 100%, 58%, 0.25)",
+      yellow3: "hsl(48, 100%, 96%)",
       yellow6: "hsl(49, 100%, 58%)",
-      yellow13: "hsl(48, 100.0%, 96.0%)",
-      yellow14: "hsl(38, 90.0%, 35.0%)",
+      yellow7: "hsl(38, 90%, 35%)",
     },
   },
   dark: {
@@ -54,10 +56,10 @@ const colorTokens = {
     green: {
       ...green,
       green1: "hsl(152, 81%, 96%)",
+      green2: "hsl(136, 73%, 97%)",
+      green5: "hsl(142, 71%, 27%)",
       green10: "hsl(160, 84%, 39%)",
       green12: "hsl(145, 63%, 42%)",
-      green13: "hsl(136, 73%, 97%)",
-      green14: "hsl(142, 71%, 27%)",
     },
     purple: {
       ...purple,
@@ -77,12 +79,12 @@ const colorTokens = {
       yellow6: "hsl(49, 100%, 58%)",
     },
   },
-};
+}
 
-const lightShadowColor = "rgba(0,0,0,0.04)";
-const lightShadowColorStrong = "rgba(0,0,0,0.085)";
-const darkShadowColor = "rgba(0,0,0,0.2)";
-const darkShadowColorStrong = "rgba(0,0,0,0.3)";
+const lightShadowColor = "rgba(0,0,0,0.04)"
+const lightShadowColorStrong = "rgba(0,0,0,0.085)"
+const darkShadowColor = "rgba(0,0,0,0.2)"
+const darkShadowColorStrong = "rgba(0,0,0,0.3)"
 
 const darkColors = {
   ...colorTokens.dark.gray,
@@ -90,7 +92,7 @@ const darkColors = {
   ...colorTokens.dark.purple,
   ...colorTokens.dark.red,
   ...colorTokens.dark.yellow,
-};
+}
 
 const lightColors = {
   ...colorTokens.light.gray,
@@ -98,7 +100,7 @@ const lightColors = {
   ...colorTokens.light.purple,
   ...colorTokens.light.red,
   ...colorTokens.light.yellow,
-};
+}
 
 const color = {
   white0: "rgba(255,255,255,0)",
@@ -135,16 +137,16 @@ const color = {
   black12: "#fff",
   ...postfixObjKeys(lightColors, "Light"),
   ...postfixObjKeys(darkColors, "Dark"),
-};
+}
 
 export const palettes = (() => {
   const transparent = (hsl: string, opacity = 0) =>
-    hsl.replace(`%)`, `%, ${opacity})`).replace(`hsl(`, `hsla(`);
+    hsl.replace(`%)`, `%, ${opacity})`).replace(`hsl(`, `hsla(`)
 
-  const getColorPalette = (colors: Object): string[] => {
-    const colorPalette = Object.values(colors);
+  const getColorPalette = (colors: object): string[] => {
+    const colorPalette = Object.values(colors)
     // make the transparent color vibrant and towards the middle
-    const colorI = colorPalette.length - 4;
+    const colorI = colorPalette.length - 4
 
     // add our transparent colors first/last
     // and make sure the last (foreground) color is white/black rather than colorful
@@ -159,8 +161,8 @@ export const palettes = (() => {
       transparent(colorPalette[colorI], 0.5),
       transparent(colorPalette[colorI], 0.25),
       transparent(colorPalette[colorI], 0),
-    ];
-  };
+    ]
+  }
 
   const lightPalette = [
     color.white0,
@@ -183,7 +185,7 @@ export const palettes = (() => {
     color.black05,
     color.black025,
     color.black0,
-  ];
+  ]
 
   const darkPalette = [
     color.black0,
@@ -206,35 +208,34 @@ export const palettes = (() => {
     color.white05,
     color.white025,
     color.white0,
-  ];
+  ]
 
   const lightPalettes = objectFromEntries(
     objectKeys(colorTokens.light).map(
-      (key) =>
-        [`light_${key}`, getColorPalette(colorTokens.light[key])] as const
-    )
-  );
+      (key) => [`light_${key}`, getColorPalette(colorTokens.light[key])] as const,
+    ),
+  )
 
   const darkPalettes = objectFromEntries(
     objectKeys(colorTokens.dark).map(
-      (key) => [`dark_${key}`, getColorPalette(colorTokens.dark[key])] as const
-    )
-  );
+      (key) => [`dark_${key}`, getColorPalette(colorTokens.dark[key])] as const,
+    ),
+  )
 
   const colorPalettes = {
     ...lightPalettes,
     ...darkPalettes,
-  };
+  }
 
   return {
     light: lightPalette,
     dark: darkPalette,
     ...colorPalettes,
-  };
-})();
+  }
+})()
 
 export const templates = (() => {
-  const transparencies = 3;
+  const transparencies = 3
 
   // templates use the palette and specify index
   // negative goes backwards from end so -1 is the last item
@@ -278,7 +279,7 @@ export const templates = (() => {
     colorTransparent: -0,
     placeholderColor: -transparencies - 4,
     outlineColor: -1,
-  };
+  }
 
   const surface1 = {
     background: base.background + 1,
@@ -289,7 +290,7 @@ export const templates = (() => {
     borderColorHover: base.borderColorHover + 1,
     borderColorFocus: base.borderColorFocus + 1,
     borderColorPress: base.borderColorPress + 1,
-  };
+  }
 
   const surface2 = {
     background: base.background + 2,
@@ -300,7 +301,7 @@ export const templates = (() => {
     borderColorHover: base.borderColorHover + 2,
     borderColorFocus: base.borderColorFocus + 2,
     borderColorPress: base.borderColorPress + 2,
-  };
+  }
 
   const surface3 = {
     background: base.background + 3,
@@ -311,7 +312,7 @@ export const templates = (() => {
     borderColorHover: base.borderColorHover + 3,
     borderColorFocus: base.borderColorFocus + 3,
     borderColorPress: base.borderColorPress + 3,
-  };
+  }
 
   const surfaceActive = {
     background: base.background + 5,
@@ -322,7 +323,7 @@ export const templates = (() => {
     borderColorHover: base.borderColor + 5,
     borderColorFocus: base.borderColorFocus + 5,
     borderColorPress: base.borderColorPress + 5,
-  };
+  }
 
   const inverseSurface1 = {
     color: surface1.background,
@@ -337,7 +338,7 @@ export const templates = (() => {
     borderColorHover: base.color - 3,
     borderColorFocus: base.color - 4,
     borderColorPress: base.color - 5,
-  };
+  }
 
   const inverseActive = {
     ...inverseSurface1,
@@ -349,21 +350,21 @@ export const templates = (() => {
     borderColorHover: base.color - 3 - 2,
     borderColorFocus: base.color - 4 - 2,
     borderColorPress: base.color - 5 - 2,
-  };
+  }
 
   const alt1 = {
     color: base.color - 1,
     colorHover: base.colorHover - 1,
     colorPress: base.colorPress - 1,
     colorFocus: base.colorFocus - 1,
-  };
+  }
 
   const alt2 = {
     color: base.color - 2,
     colorHover: base.colorHover - 2,
     colorPress: base.colorPress - 2,
     colorFocus: base.colorFocus - 2,
-  };
+  }
 
   return {
     base,
@@ -375,8 +376,8 @@ export const templates = (() => {
     inverseSurface1,
     inverseActive,
     surfaceActive,
-  };
-})();
+  }
+})()
 
 const shadows = {
   light: {
@@ -391,7 +392,7 @@ const shadows = {
     shadowColorPress: darkShadowColor,
     shadowColorFocus: darkShadowColor,
   },
-};
+}
 
 const nonInherited = {
   light: {
@@ -402,7 +403,7 @@ const nonInherited = {
     ...darkColors,
     ...shadows.dark,
   },
-};
+}
 
 const overlayThemeDefinitions = [
   {
@@ -417,7 +418,7 @@ const overlayThemeDefinitions = [
       background: "rgba(0,0,0,0.9)",
     },
   },
-];
+]
 
 const inverseSurface1 = [
   {
@@ -428,7 +429,7 @@ const inverseSurface1 = [
     parent: "",
     template: "inverseSurface1",
   },
-] as any;
+] as any
 
 const surface1 = [
   {
@@ -439,7 +440,7 @@ const surface1 = [
     parent: "",
     template: "surface1",
   },
-] as any;
+] as any
 
 const surface2 = [
   {
@@ -450,7 +451,7 @@ const surface2 = [
     parent: "",
     template: "surface2",
   },
-] as any;
+] as any
 
 const surface3 = [
   {
@@ -461,7 +462,7 @@ const surface3 = [
     parent: "",
     template: "surface3",
   },
-] as any;
+] as any
 
 // --- themeBuilder ---
 
@@ -552,78 +553,64 @@ const themeBuilder = createThemeBuilder()
     },
     {
       avoidNestingWithin: ["alt1", "alt2"],
-    }
-  );
+    },
+  )
 
 // --- themes ---
 
-const themesIn = themeBuilder.build();
+const themesIn = themeBuilder.build()
 
-export type Theme = Record<keyof typeof templates.base, string> &
-  typeof nonInherited.light;
-export type ThemesOut = Record<keyof typeof themesIn, Theme>;
-export const themes = themesIn as ThemesOut;
+export type Theme = Record<keyof typeof templates.base, string> & typeof nonInherited.light
+export type ThemesOut = Record<keyof typeof themesIn, Theme>
+export const themes = themesIn as ThemesOut
 
 // --- utils ---
 
 export function postfixObjKeys<
   A extends { [key: string]: Variable<string> | string },
-  B extends string
+  B extends string,
 >(
   obj: A,
-  postfix: B
+  postfix: B,
 ): {
-  [Key in `${keyof A extends string ? keyof A : never}${B}`]:
-    | Variable<string>
-    | string;
+  [Key in `${keyof A extends string ? keyof A : never}${B}`]: Variable<string> | string
 } {
-  return Object.fromEntries(
-    Object.entries(obj).map(([k, v]) => [`${k}${postfix}`, v])
-  ) as any;
+  return Object.fromEntries(Object.entries(obj).map(([k, v]) => [`${k}${postfix}`, v])) as any
 }
 
 // a bit odd but keeping backward compat for values >8 while fixing below
 export function sizeToSpace(v: number) {
-  if (v === 0) return 0;
-  if (v === 2) return 0.5;
-  if (v === 4) return 1;
-  if (v === 8) return 1.5;
-  if (v <= 16) return Math.round(v * 0.333);
-  return Math.floor(v * 0.7 - 12);
+  if (v === 0) return 0
+  if (v === 2) return 0.5
+  if (v === 4) return 1
+  if (v === 8) return 1.5
+  if (v <= 16) return Math.round(v * 0.333)
+  return Math.floor(v * 0.7 - 12)
 }
 
-export function objectFromEntries<ARR_T extends EntriesType>(
-  arr: ARR_T
-): EntriesToObject<ARR_T> {
-  return Object.fromEntries(arr) as EntriesToObject<ARR_T>;
+export function objectFromEntries<ARR_T extends EntriesType>(arr: ARR_T): EntriesToObject<ARR_T> {
+  return Object.fromEntries(arr) as EntriesToObject<ARR_T>
 }
 
-export type EntriesType =
-  | [PropertyKey, unknown][]
-  | ReadonlyArray<readonly [PropertyKey, unknown]>;
+export type EntriesType = [PropertyKey, unknown][] | ReadonlyArray<readonly [PropertyKey, unknown]>
 
 export type DeepWritable<OBJ_T> = {
-  -readonly [P in keyof OBJ_T]: DeepWritable<OBJ_T[P]>;
-};
+  -readonly [P in keyof OBJ_T]: DeepWritable<OBJ_T[P]>
+}
 export type UnionToIntersection<UNION_T> = // From https://stackoverflow.com/a/50375286
-  (UNION_T extends any ? (k: UNION_T) => void : never) extends (
-    k: infer I
-  ) => void
-    ? I
-    : never;
+  (UNION_T extends any ? (k: UNION_T) => void : never) extends (k: infer I) => void ? I : never
 
 export type UnionObjectFromArrayOfPairs<ARR_T extends EntriesType> =
   DeepWritable<ARR_T> extends (infer R)[]
     ? R extends [infer key, infer val]
       ? { [prop in key & PropertyKey]: val }
       : never
-    : never;
-export type MergeIntersectingObjects<ObjT> = { [key in keyof ObjT]: ObjT[key] };
-export type EntriesToObject<ARR_T extends EntriesType> =
-  MergeIntersectingObjects<
-    UnionToIntersection<UnionObjectFromArrayOfPairs<ARR_T>>
-  >;
+    : never
+export type MergeIntersectingObjects<ObjT> = { [key in keyof ObjT]: ObjT[key] }
+export type EntriesToObject<ARR_T extends EntriesType> = MergeIntersectingObjects<
+  UnionToIntersection<UnionObjectFromArrayOfPairs<ARR_T>>
+>
 
-export function objectKeys<O extends Object>(obj: O) {
-  return Object.keys(obj) as Array<keyof O>;
+export function objectKeys<O extends NonNullable<unknown>>(obj: O) {
+  return Object.keys(obj) as Array<keyof O>
 }
