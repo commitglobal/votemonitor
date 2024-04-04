@@ -1,8 +1,5 @@
 import React from "react";
-import { View, ViewStyle, TextStyle } from "react-native";
-import { useTheme, Variable } from "tamagui";
-import { UseThemeResult } from "@tamagui/web/src/hooks/useTheme";
-import { tokens } from "../theme/tokens";
+import { View, styled } from "tamagui";
 import { Typography } from "./Typography";
 
 export type Presets = "default" | "success" | "warning" | "danger";
@@ -16,24 +13,51 @@ export interface BadgeProps {
 
 /**
  * Badge component which supports 4 initial presets: default, succes, warning and danger
- * @param {ButtonProps} props - The props for the `Buttom` component.
- * @returns {JSX.Element} The rendered `Button` component.
+ * @param {BadgeProps} props - The props for the `Badge` component.
+ * @returns {JSX.Element} The rendered `Badge` component.
  */
-export function Badge(props: BadgeProps): JSX.Element {
-  const theme = useTheme();
-
+const Badge = (props: BadgeProps): JSX.Element => {
   const presetType: Presets = props.preset ?? "default";
-  const style = $presets(theme, tokens.space)[presetType];
   const text = getTextByPresetType(presetType);
 
+  const StyledView = styled(View, {
+    name: "StyledView",
+    paddingHorizontal: "$xs",
+    paddingVertical: 2,
+    borderRadius: 28,
+    backgroundColor: "$gray2",
+    alignItems: "center",
+    variants: {
+      presets: {
+        default: {},
+        success: { backgroundColor: "$green2" },
+        warning: { backgroundColor: "$yellow3" },
+        danger: { backgroundColor: "$red1" },
+      },
+    } as const,
+  });
+
+  const textColor =
+    presetType === "success"
+      ? "$green9"
+      : presetType === "warning"
+      ? "$yellow7"
+      : presetType === "danger"
+      ? "$red10"
+      : "$gray10";
+
   return (
-    <View style={style}>
-      <Typography preset="body1" style={style.childTextStyle}>
+    <StyledView presets={presetType}>
+      <Typography
+        preset="body1"
+        style={{ fontSize: 16, lineHeight: 20, fontWeight: "500" }}
+        color={textColor}
+      >
         {text}
       </Typography>
-    </View>
+    </StyledView>
   );
-}
+};
 
 /* 
   Extract text based on the presetType
@@ -51,62 +75,4 @@ const getTextByPresetType = (presetType: Presets): string => {
   }
 };
 
-/*
-  This type incoroporates ViewStyle for parent component
-  and TextStyle for its child component.
-*/
-type ViewAndChildStyle = ViewStyle & {
-  childTextStyle?: TextStyle;
-};
-
-const $presets = (
-  theme: UseThemeResult,
-  spacing: { [key: string]: Variable<number> }
-) => {
-  const $baseStyle: ViewAndChildStyle = {
-    paddingHorizontal: spacing.xs.val,
-    paddingVertical: spacing.xxxs.val,
-    borderRadius: 28,
-    backgroundColor: theme.$gray2?.val,
-    alignItems: "center",
-
-    childTextStyle: {
-      color: theme.$gray10?.val,
-      fontWeight: "500",
-    },
-  };
-
-  return {
-    default: $baseStyle,
-
-    success: {
-      ...$baseStyle,
-      backgroundColor: theme.$green1?.val,
-
-      childTextStyle: {
-        ...$baseStyle.childTextStyle,
-        color: theme.$green11?.val,
-      },
-    } as ViewAndChildStyle,
-
-    danger: {
-      ...$baseStyle,
-      backgroundColor: theme.$red1?.val,
-
-      childTextStyle: {
-        ...$baseStyle.childTextStyle,
-        color: theme.$red10?.val,
-      },
-    } as ViewAndChildStyle,
-
-    warning: {
-      ...$baseStyle,
-      backgroundColor: theme.$yellow13?.val,
-
-      childTextStyle: {
-        ...$baseStyle.childTextStyle,
-        color: theme.$yellow14?.val,
-      },
-    } as ViewAndChildStyle,
-  };
-};
+export default Badge;

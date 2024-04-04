@@ -4,6 +4,7 @@ import { Typography } from "../../../../components/Typography";
 import { Stack } from "tamagui";
 import Button from "../../../../components/Button";
 import { Icon } from "../../../../components/Icon";
+import Badge from "../../../../components/Badge";
 
 const QuickReport = () => {
   return (
@@ -87,6 +88,14 @@ const QuickReport = () => {
             Danger
           </Button>
         </Stack>
+      </Stack>
+
+      <Stack padding="$sm" gap="$xs" backgroundColor="white">
+        <Typography preset="heading">Badge</Typography>
+        <Badge></Badge>
+        <Badge preset="success"></Badge>
+        <Badge preset="warning"></Badge>
+        <Badge preset="danger"></Badge>
       </Stack>
     </ScrollView>
   );

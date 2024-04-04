@@ -5,7 +5,6 @@ import { useAuth } from "../hooks/useAuth";
 import { Button as TamaguiButton } from "tamagui";
 import { Typography } from "../components/Typography";
 import Card from "../components/Card";
-import { Badge } from "../components/Badge";
 
 const Login = () => {
   const { signIn } = useAuth();
@@ -51,11 +50,6 @@ const Login = () => {
       <Typography preset="body1">body1</Typography>
       <Typography preset="body2">body2</Typography>
       <Typography preset="helper">helper</Typography>
-
-      <Badge></Badge>
-      <Badge preset="success"></Badge>
-      <Badge preset="warning"></Badge>
-      <Badge preset="danger"></Badge>
 
       <Card>
         <View>
