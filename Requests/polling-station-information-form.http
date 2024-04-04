@@ -1,4 +1,4 @@
-@electionRoundId=1c94724e-b94b-4a7b-965d-05d04f20eac8
+@electionRoundId=ea779505-6fa1-497d-9cae-cbd59431bdd7
 
 # get election round polling station info form
 GET {{$dotenv HOST }}/api/election-rounds/{{electionRoundId}}/polling-station-information-form

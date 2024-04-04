@@ -14,6 +14,8 @@ Content-Type: application/json
 Authorization: Bearer {{$dotenv JWT_TOKEN}}
 
 {
+  "arrivalTime": "{{$datetime iso8601 -3h}}",
+  "departureTime": "{{$datetime iso8601}}",
   "answers": [
     {
       "$answerType": "textAnswer",
