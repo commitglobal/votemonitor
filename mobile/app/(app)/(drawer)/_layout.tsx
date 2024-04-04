@@ -2,12 +2,38 @@ import React from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Drawer } from "expo-router/drawer";
 import { getHeaderTitle } from "@react-navigation/elements";
-import { useTheme } from "tamagui";
 import { DrawerActions } from "@react-navigation/native";
 import Header from "../../../components/Header";
 import { Icon } from "../../../components/Icon";
-import { StyleProp, ViewStyle } from "react-native";
-import { CustomDrawerContent } from "../../../components/CustomDrawerContent";
+import { ScrollViewProps, StyleProp, ViewStyle } from "react-native";
+import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
+import { useTheme } from "tamagui";
+
+type DrawerContentProps = ScrollViewProps & {
+  children?: React.ReactNode;
+  backgroundColor: string;
+};
+
+export const DrawerContent = (props: DrawerContentProps) => {
+  const votingSessions = [
+    { name: "session 1" },
+    { name: "session2" },
+    { name: "session 3" },
+  ];
+  const theme = useTheme();
+  return (
+    <DrawerContentScrollView {...props}>
+      {votingSessions.map((votingSession, index) => (
+        <DrawerItem
+          key={index}
+          label={votingSession.name}
+          inactiveTintColor={theme.yellow6?.val}
+          onPress={() => console.log("")}
+        />
+      ))}
+    </DrawerContentScrollView>
+  );
+};
 
 export default function MainLayout() {
   const theme = useTheme();
@@ -15,7 +41,7 @@ export default function MainLayout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <Drawer
         drawerContent={() => (
-          <CustomDrawerContent backgroundColor={theme.purple5?.val} />
+          <DrawerContent backgroundColor={theme.purple5?.val} />
         )}
         screenOptions={{
           drawerType: "front",
