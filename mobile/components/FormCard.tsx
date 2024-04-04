@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleProp, View, TextStyle } from "react-native";
+import { StyleProp, View, ViewStyle } from "react-native";
 import { useTheme } from "tamagui";
 import { tokens } from "../theme/tokens";
 import { Badge, Presets } from "./Badge";
@@ -8,53 +8,66 @@ import { Typography } from "./Typography";
 import { Icon } from "./Icon";
 
 export interface FormCardProps {
+  /**
+   * Header text
+   */
   header: String;
-  subHeader?: String;
-  footer: String;
-  badgePreset?: Presets;
 
-  headerStyle?: StyleProp<TextStyle>;
+  /**
+   * Subheader optional text
+   */
+  subHeader?: String;
+
+  /**
+   * Footer text
+   */
+  footer: String;
+
+  /**
+   * Optional preset type.
+   * The default is 'Not started'
+   */
+  badgePreset?: Presets;
 }
 
-export function FormCard(props: FormCardProps) {
+const FormCard = (props: FormCardProps): JSX.Element => {
   const theme = useTheme();
 
-  const { header, subHeader, footer, headerStyle, badgePreset } = props;
-
+  const { header, subHeader, footer, badgePreset } = props;
   const hasSubHeader = subHeader ? subHeader.trim() !== "" : false;
 
-  const defaultHeaderStyle = { color: theme.gray9?.val };
-  const headerStyles = [defaultHeaderStyle, headerStyle];
+  const $headerContainerStyles: StyleProp<ViewStyle> = {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: tokens.space.xxs.val,
+  };
+
+  const $subHeaderStyles = {
+    color: theme.gray14?.val,
+    marginBottom: tokens.space.xxs.val,
+  };
 
   return (
     <Card style={{ width: "100%" }}>
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          marginBottom: 8,
-        }}
-      >
-        <Typography preset="body2" style={headerStyles}>
+      <View style={$headerContainerStyles}>
+        <Typography preset="body2" style={{ color: theme.gray9?.val }}>
           {header}
         </Typography>
         <Badge preset={badgePreset}></Badge>
       </View>
 
       {hasSubHeader === true && (
-        <Typography
-          preset="body1"
-          style={{ color: theme.gray11?.val, marginBottom: 8 }}
-        >
+        <Typography preset="body1" style={$subHeaderStyles}>
           {subHeader}
         </Typography>
       )}
 
-      {/* Footer will come as a separate component */}
+      {/* TODO: Footer will come as a separate component: Card footer component */}
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
         <Typography
           preset="default"
-          style={{ fontWeight: "500", color: theme.gray14?.val }}
+          style={{ fontWeight: "400", color: theme.gray5?.val }}
         >
           {footer}
         </Typography>
@@ -62,4 +75,6 @@ export function FormCard(props: FormCardProps) {
       </View>
     </Card>
   );
-}
+};
+
+export default FormCard;
