@@ -18,8 +18,6 @@ export interface FormCardProps {
   // badgePreset?: BadgePresets;
 
   headerStyle?: StyleProp<TextStyle>;
-  footerStyle?: StyleProp<TextStyle>;
-  subHeaderStyle?: StyleProp<TextStyle>;
 }
 
 export function FormCard(props: FormCardProps) {
@@ -30,8 +28,6 @@ export function FormCard(props: FormCardProps) {
     subHeader,
     footer,
     headerStyle,
-    footerStyle,
-    subHeaderStyle,
     // badgePreset,
   } = props;
 
@@ -64,6 +60,7 @@ export function FormCard(props: FormCardProps) {
         </Typography>
       )}
 
+      {/* Footer will come as a separate component */}
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
         <Typography
           preset="default"
