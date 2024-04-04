@@ -7,7 +7,7 @@ import {
 } from "tamagui";
 import { tokens } from "../theme/tokens";
 // import { Badge, BadgePresets, BadgeProps } from "./Badge";
-import { Card } from "./Card";
+import Card from "./Card";
 import { Typography } from "./Typography";
 import { Icon } from "./Icon";
 
