@@ -3,15 +3,14 @@ import { Adapt, Select as TamaguiSelect, Sheet } from "tamagui";
 import { Icon } from "./Icon";
 
 const Select = ({
-  placeholder,
+  placeholder = "Select",
   selectionData,
 }: {
-  placeholder: string;
-  //   change 'any' from here as we don't know how the data looks like
+  placeholder?: string;
+  // TODO: change 'any' from here as we don't know how the data looks like
   selectionData: any[];
 }) => {
-  const [val, setVal] = useState();
-  console.log(val);
+  const [val, setVal] = useState("");
 
   return (
     <TamaguiSelect value={val} onValueChange={setVal} disablePreventBodyScroll>
@@ -37,7 +36,7 @@ const Select = ({
       </TamaguiSelect.Trigger>
 
       <Adapt platform="touch">
-        <Sheet native modal snapPoints={[50]}>
+        <Sheet native modal snapPoints={[80, 50]}>
           <Sheet.Frame>
             <Sheet.ScrollView padding="$sm">
               <Adapt.Contents />

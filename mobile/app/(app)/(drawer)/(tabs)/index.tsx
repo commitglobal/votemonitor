@@ -25,10 +25,10 @@ const Index = () => {
       </Button>
       <Text onPress={signOut}>Logout</Text>
       <Card>
-        <Select placeholder="Select region" selectionData={regionData} />
+        <Select placeholder=" Select region" selectionData={regionData} />
       </Card>
       <Card>
-        <Select placeholder="Select country" selectionData={countryData} />
+        <Select placeholder=" Select region" selectionData={countryData} />
       </Card>
     </View>
   );
