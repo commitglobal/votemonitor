@@ -1,17 +1,25 @@
-import { Progress } from "tamagui";
+import { Progress, styled } from "tamagui";
 
 export interface ProgressProps {
   total: number;
   current: number;
 }
 
-export function LinearProgress(props: ProgressProps) {
+const LinearProgress = (props: ProgressProps) => {
   const { total, current } = props;
   const progress = (current / total) * 100;
 
+  const StyledProgress = styled(Progress, {
+    height: 4,
+    borderRadius: 8,
+    backgroundColor: "$yellow4",
+  });
+
   return (
-    <Progress value={progress} height={4} borderRadius={8} backgroundColor="$yellow3">
-      <Progress.Indicator backgroundColor="$yellow4" />
-    </Progress>
+    <StyledProgress value={progress}>
+      <Progress.Indicator backgroundColor="$yellow5" />
+    </StyledProgress>
   );
-}
+};
+
+export default LinearProgress;
