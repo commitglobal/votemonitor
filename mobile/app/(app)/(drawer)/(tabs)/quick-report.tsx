@@ -19,7 +19,6 @@ const QuickReport = () => {
           options={regionData}
           placeholder="Select option"
           defaultValue={"West"}
-          onValueChange={(val) => console.log("value", val)}
         />
         <Select options={countryData} placeholder="Select option" />
       </Stack>
