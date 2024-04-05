@@ -16,15 +16,14 @@ public class PollingStationAttachment : AuditableBaseEntity, IAggregateRoot
     public string MimeType { get; private set; }
     public bool IsDeleted { get; private set; }
 
-    public PollingStationAttachment(ElectionRound electionRound,
+    public PollingStationAttachment(Guid electionRoundId,
         PollingStation pollingStation,
         MonitoringObserver monitoringObserver,
         string fileName,
         string filePath,
         string mimeType) : base(Guid.NewGuid())
     {
-        ElectionRound = electionRound;
-        ElectionRoundId = electionRound.Id;
+        ElectionRoundId = electionRoundId;
         PollingStationId = pollingStation.Id;
         PollingStation = pollingStation;
         MonitoringObserver = monitoringObserver;

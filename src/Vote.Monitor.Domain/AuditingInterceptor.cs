@@ -5,10 +5,10 @@ namespace Vote.Monitor.Domain;
 
 public class AuditingInterceptor : ISaveChangesInterceptor
 {
-    private readonly ICurrentUserProvider _currentUserProvider;
+    private readonly ICurrentUserIdProvider _currentUserProvider;
     private readonly ITimeProvider _timeProvider;
 
-    public AuditingInterceptor(ICurrentUserProvider currentUserProvider, 
+    public AuditingInterceptor(ICurrentUserIdProvider currentUserProvider, 
         ITimeProvider timeProvider)
     {
         _currentUserProvider = currentUserProvider;

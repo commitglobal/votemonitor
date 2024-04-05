@@ -1,25 +1,26 @@
-﻿using Vote.Monitor.Api.Feature.PollingStation.Attachments.Specifications;
+﻿using Authorization.Policies.Requirements;
+using Microsoft.AspNetCore.Authorization;
+using Vote.Monitor.Api.Feature.PollingStation.Attachments.Specifications;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
-using Vote.Monitor.Domain.Entities.ElectionRoundAggregate;
 
 namespace Vote.Monitor.Api.Feature.PollingStation.Attachments.Get;
 
 public class Endpoint : Endpoint<Request, Results<Ok<AttachmentModel>, BadRequest<ProblemDetails>, NotFound>>
 {
+    private readonly IAuthorizationService _authorizationService;
     private readonly IReadRepository<PollingStationAttachmentAggregate> _repository;
     private readonly IFileStorageService _fileStorageService;
-    private readonly IRepository<ElectionRound> _electionRoundRepository;
     private readonly IRepository<PollingStationAggregate> _pollingStationRepository;
 
-    public Endpoint(IReadRepository<PollingStationAttachmentAggregate> repository,
+    public Endpoint(IAuthorizationService authorizationService,
+        IReadRepository<PollingStationAttachmentAggregate> repository,
         IFileStorageService fileStorageService,
-        IRepository<ElectionRound> electionRoundRepository,
         IRepository<PollingStationAggregate> pollingStationRepository)
     {
         _repository = repository;
         _fileStorageService = fileStorageService;
-        _electionRoundRepository = electionRoundRepository;
         _pollingStationRepository = pollingStationRepository;
+        _authorizationService = authorizationService;
     }
 
     public override void Configure()
@@ -35,12 +36,10 @@ public class Endpoint : Endpoint<Request, Results<Ok<AttachmentModel>, BadReques
 
     public override async Task<Results<Ok<AttachmentModel>, BadRequest<ProblemDetails>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var electionRound = await _electionRoundRepository.GetByIdAsync(req.ElectionRoundId, ct);
-
-        if (electionRound == null)
+        var authorizationResult = await _authorizationService.AuthorizeAsync(User, new MonitoringObserverRequirement(req.ElectionRoundId));
+        if (!authorizationResult.Succeeded)
         {
-            AddError(r => r.ElectionRoundId, "Election round not found");
-            return TypedResults.BadRequest(new ProblemDetails(ValidationFailures));
+            return TypedResults.NotFound();
         }
 
         var pollingStationSpecification = new GetPollingStationSpecification(req.PollingStationId);

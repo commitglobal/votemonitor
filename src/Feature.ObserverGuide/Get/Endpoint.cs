@@ -1,5 +1,4 @@
-﻿using Authorization.Policies;
-using Authorization.Policies.Requirements;
+﻿using Authorization.Policies.Requirements;
 using Feature.ObserverGuide.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
@@ -8,7 +7,7 @@ using Vote.Monitor.Core.Services.Security;
 namespace Feature.ObserverGuide.Get;
 
 public class Endpoint(IAuthorizationService authorizationService,
-    ICurrentUserProvider currentUserProvider, 
+    ICurrentUserRoleProvider currentUserRoleProvider, 
     IReadRepository<ObserverGuideAggregate> repository,
     IFileStorageService fileStorageService) 
     : Endpoint<Request, Results<Ok<ObserverGuideModel>, NotFound>>
@@ -28,18 +27,9 @@ public class Endpoint(IAuthorizationService authorizationService,
             return TypedResults.NotFound();
         }
 
-        ObserverGuideAggregate? observerGuide = null;
-
-        if (currentUserProvider.IsObserver())
-        {
-            var specification = new GetObserverGuideSpecification(currentUserProvider.GetUserId(), req.Id);
-            observerGuide = await repository.FirstOrDefaultAsync(specification, ct);
-        }
-        else if(currentUserProvider.IsNgoAdmin())
-        {
-            var specification = new GetObserverGuideForNgoAdminSpecification(currentUserProvider.GetNgoId(), req.Id);
-            observerGuide = await repository.FirstOrDefaultAsync(specification, ct);
-        }
+        var ngoId = await currentUserRoleProvider.GetNgoId();
+        var specification = new GetObserverGuideSpecification(ngoId, req.Id);
+        var observerGuide = await repository.FirstOrDefaultAsync(specification, ct);
 
         if (observerGuide == null)
         {
