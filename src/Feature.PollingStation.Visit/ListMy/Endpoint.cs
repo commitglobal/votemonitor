@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Vote.Monitor.Domain;
-using Authorization.Policies;
 
 namespace Feature.PollingStation.Visit.ListMy;
 

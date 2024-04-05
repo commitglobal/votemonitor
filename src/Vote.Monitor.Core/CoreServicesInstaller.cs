@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Vote.Monitor.Core.Services.Csv;
-using Vote.Monitor.Core.Services.Security;
 using Vote.Monitor.Core.Services.Serialization;
 using Vote.Monitor.Core.Services.Time;
 
@@ -22,10 +21,6 @@ public static class CoreServicesInstaller
 
             return new FreezeTimeProvider(currentUtc);
         });
-
-        services
-            .AddScoped<ICurrentUserProvider, CurrentUserProvider>()
-            .AddScoped(sp => (ICurrentUserInitializer)sp.GetRequiredService<ICurrentUserProvider>());
 
         return services;
     }

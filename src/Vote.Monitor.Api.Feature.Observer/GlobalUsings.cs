@@ -12,3 +12,8 @@ global using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
 global using Vote.Monitor.Domain.Repository;
 global using ObserverAggregate = Vote.Monitor.Domain.Entities.ApplicationUserAggregate.Observer;
 global using ImportValidationErrors = Vote.Monitor.Domain.Entities.ImportValidationErrorsAggregate.ImportValidationErrors;
+global using Authorization.Policies;
+global using Microsoft.Extensions.Logging;
+global using Vote.Monitor.Api.Feature.Observer.Services;
+global using Vote.Monitor.Core.Models;
+global using Vote.Monitor.Domain.Entities.ImportValidationErrorsAggregate;

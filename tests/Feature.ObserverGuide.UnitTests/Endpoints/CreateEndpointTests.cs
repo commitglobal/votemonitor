@@ -31,12 +31,12 @@ public class CreateEndpointTests
         _repository = Substitute.For<IRepository<ObserverGuideAggregate>>();
         _fileStorageService = Substitute.For<IFileStorageService>();
         _authorizationService = Substitute.For<IAuthorizationService>();
-        var currentUserProvider = Substitute.For<ICurrentUserProvider>();
+        var currentUserRoleProvider = Substitute.For<ICurrentUserRoleProvider>();
         _monitoringNgoRepository = Substitute.For<IReadRepository<MonitoringNgo>>();
 
         _endpoint = Factory.Create<Create.Endpoint>(_authorizationService,
             _repository,
-            currentUserProvider,
+            currentUserRoleProvider,
             _monitoringNgoRepository,
             _fileStorageService);
     }

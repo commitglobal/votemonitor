@@ -7,8 +7,11 @@ namespace Vote.Monitor.Domain.UnitTests.Interceptors;
 
 public class TestContext : VoteMonitorContext
 {
-    public TestContext(DbContextOptions<VoteMonitorContext> options, ISerializerService serializerService, ITimeProvider timeProvider, ICurrentUserProvider currentUserProvider)
-        : base(options, serializerService, timeProvider, currentUserProvider)
+    public TestContext(DbContextOptions<VoteMonitorContext> options, 
+        ISerializerService serializerService, 
+        ITimeProvider timeProvider, 
+        ICurrentUserIdProvider currentUserIdProvider)
+        : base(options, serializerService, timeProvider, currentUserIdProvider)
     {
     }
 

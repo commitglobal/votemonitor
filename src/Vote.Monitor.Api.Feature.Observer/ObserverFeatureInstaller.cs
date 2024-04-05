@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Vote.Monitor.Api.Feature.Observer.Services;
 
 namespace Vote.Monitor.Api.Feature.Observer;
 

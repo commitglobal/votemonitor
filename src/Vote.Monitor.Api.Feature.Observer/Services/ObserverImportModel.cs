@@ -8,7 +8,6 @@ public class ObserverImportModel
     public string Password { get => "string"; }
     public required string PhoneNumber { get; set; }
 
-
     public override int GetHashCode()
     {
         return Email.GetHashCode();
@@ -25,8 +24,3 @@ public class ObserverImportModel
     }
 
 }
-
-
-
-
-
