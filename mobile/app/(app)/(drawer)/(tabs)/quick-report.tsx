@@ -113,15 +113,23 @@ const QuickReport = () => {
 
       <Stack padding="$sm" gap="$xs">
         <Typography preset="heading">FormCard</Typography>
-        <FormCard header={"A-Opening"} footer={"0/33 questions"}></FormCard>
+        <FormCard
+          header={"A-Opening"}
+          footer={"0/33 questions"}
+          badgeProps={{
+            children: "Not started",
+          }}
+        ></FormCard>
         <FormCard
           header={"A-Opening"}
           footer={"0/33 questions"}
           subHeader={"Available in RO, BG, EN"}
-          badgePreset="success"
+          badgeProps={{
+            children: "Great work",
+            preset: "success",
+          }}
         ></FormCard>
       </Stack>
-      {/* </ScrollView> */}
     </Screen>
   );
 };

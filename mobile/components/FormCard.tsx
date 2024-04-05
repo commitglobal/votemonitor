@@ -1,6 +1,6 @@
 import React from "react";
 import { useTheme, View, styled } from "tamagui";
-import Badge, { Presets } from "./Badge";
+import Badge, { BadgeProps } from "./Badge";
 import Card from "./Card";
 import { Typography } from "./Typography";
 import { Icon } from "./Icon";
@@ -25,14 +25,25 @@ export interface FormCardProps {
    * Optional preset type.
    * The default is 'Not started'
    */
-  badgePreset?: Presets;
+  badgeProps: BadgeProps;
 }
 
 const FormCard = (props: FormCardProps): JSX.Element => {
   const theme = useTheme();
 
-  const { header, subHeader, footer, badgePreset } = props;
+  const { header, subHeader, footer, badgeProps } = props;
   const hasSubHeader = subHeader ? subHeader.trim() !== "" : false;
+
+  const badgePreset = badgeProps.preset || "default";
+  const badgeChildren = badgeProps.children;
+
+  const HeaderContainer = styled(View, {
+    name: "HeaderContainer",
+    justifyContent: "space-between",
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 8,
+  });
 
   return (
     <Card style={{ width: "100%" }}>
@@ -40,7 +51,8 @@ const FormCard = (props: FormCardProps): JSX.Element => {
         <Typography preset="body1" color="$gray9" style={{ fontWeight: "700" }}>
           {header}
         </Typography>
-        <Badge preset={badgePreset}> In progress </Badge>
+
+        <Badge preset={badgePreset}>{badgeChildren}</Badge>
       </HeaderContainer>
 
       {hasSubHeader === true && (
@@ -59,13 +71,5 @@ const FormCard = (props: FormCardProps): JSX.Element => {
     </Card>
   );
 };
-
-const HeaderContainer = styled(View, {
-  name: "HeaderContainer",
-  justifyContent: "space-between",
-  flexDirection: "row",
-  alignItems: "center",
-  marginBottom: 8,
-});
 
 export default FormCard;
