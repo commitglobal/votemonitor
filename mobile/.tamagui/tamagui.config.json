@@ -30207,14 +30207,14 @@
           "isVar": true,
           "key": "$xxxs",
           "name": "space-58",
-          "val": 2,
+          "val": 4,
           "variable": ""
         },
         "xxs": {
           "isVar": true,
           "key": "$xxs",
           "name": "space-59",
-          "val": 4,
+          "val": 8,
           "variable": ""
         },
         "xs": {
@@ -31117,14 +31117,14 @@
         "isVar": true,
         "key": "$xxxs",
         "name": "space-58",
-        "val": 2,
+        "val": 4,
         "variable": ""
       },
       "$space.xxs": {
         "isVar": true,
         "key": "$xxs",
         "name": "space-59",
-        "val": 4,
+        "val": 8,
         "variable": ""
       },
       "$space.xs": {

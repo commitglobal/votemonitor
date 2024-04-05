@@ -1,14 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import { ScrollView, Text } from "react-native";
 import { Typography } from "../../../../components/Typography";
-import { Stack } from "tamagui";
+import { RadioGroup, Stack } from "tamagui";
 import Button from "../../../../components/Button";
 import { Icon } from "../../../../components/Icon";
 import Badge from "../../../../components/Badge";
 
 import Card from "../../../../components/Card";
+import Input from "../../../../components/Inputs/Input";
+import CheckboxInput from "../../../../components/Inputs/CheckboxInput";
+import RadioInput from "../../../../components/Inputs/RadioInput";
 
 const QuickReport = () => {
+  const [selectedRadioValue, setSelectedRadioValue] = useState("rural");
+
   return (
     <ScrollView>
       <Text>Quick Report</Text>
@@ -102,6 +107,31 @@ const QuickReport = () => {
         <Badge preset="success"> Success </Badge>
         <Badge preset="warning"> In progress </Badge>
         <Badge preset="danger"> Red badge</Badge>
+      </Stack>
+
+      {/* inputs */}
+      <Stack padding="$sm" gap="$xs" marginTop="$md" backgroundColor="white">
+        <Typography preset="heading">Inputs</Typography>
+        <Typography preset="subheading">Text</Typography>
+        <Input />
+        <Typography preset="subheading">Checkbox</Typography>
+        <CheckboxInput label="hello" id="1" />
+        <CheckboxInput label="hello2" id="2" />
+        <Typography preset="subheading">Radio buttons</Typography>
+        <RadioGroup
+          gap="$sm"
+          defaultValue={selectedRadioValue}
+          onValueChange={(value) => setSelectedRadioValue(value)}
+        >
+          <RadioInput id="10" value="rural" label="Rural" selectedValue={selectedRadioValue} />
+          <RadioInput id="20" value="urban" label="Urban" selectedValue={selectedRadioValue} />
+          <RadioInput
+            id="30"
+            value="not-known"
+            label="Not known"
+            selectedValue={selectedRadioValue}
+          />
+        </RadioGroup>
       </Stack>
     </ScrollView>
   );
