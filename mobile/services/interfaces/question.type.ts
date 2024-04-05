@@ -14,7 +14,7 @@ export type ApiFormQuestionSelectOption = {
 };
 
 export type ApiFormQuestion = {
-  id: string; //"f5cc674f-48b3-4918-8f9e-67dec35f1009";
+  id: string; // "f5cc674f-48b3-4918-8f9e-67dec35f1009";
   code: string; // "A2"; // A - deschidere, B - in timpul zilei, C - la numarare
   text: Record<string, string>; // { EN: string; // "mood"; RO: string; // "dispozitie";};
   helptext: Record<string, string>; // { EN: string; // "mood"; RO: string; // "dispozitie";};

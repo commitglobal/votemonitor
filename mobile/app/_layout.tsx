@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import { Slot } from "expo-router";
 import AuthContextProvider from "../contexts/auth/AuthContext.provider";
 import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
@@ -6,15 +7,9 @@ import {
   PersistQueryClientProvider,
   removeOldestQuery,
 } from "@tanstack/react-query-persist-client";
-import { useEffect, useState } from "react";
 import NetInfo from "@react-native-community/netinfo";
 import OfflineBanner from "../components/OfflineBanner";
-import {
-  MutationCache,
-  QueryClient,
-  onlineManager,
-  useIsRestoring,
-} from "@tanstack/react-query";
+import { MutationCache, QueryClient, onlineManager, useIsRestoring } from "@tanstack/react-query";
 import { TamaguiProvider } from "@tamagui/core";
 import { tamaguiConfig } from "../tamagui.config";
 import { useFonts } from "expo-font";
@@ -24,11 +19,13 @@ import {
   PollingStationInformationAPIPayload,
   upsertPollingStationGeneralInformation,
 } from "../services/definitions.api";
+import "../common/config/i18n";
+import LanguageContextProvider from "../contexts/language/LanguageContext.provider";
 
 if (__DEV__) {
   Reactotron.setAsyncStorageHandler(AsyncStorage)
     .configure({
-      host: "192.168.68.58", // PUT YOUR OWN LOCAL IP (logged by Expo)
+      host: "192.168.68.51", // PUT YOUR OWN LOCAL IP (logged by Expo)
     }) // controls connection & communication settings
     .useReactNative({
       networking: {},
@@ -142,7 +139,7 @@ export default function Root() {
     <PersistQueryClientProvider
       onSuccess={async () => {
         console.log(
-          "PersistQueryClientProvider onSuccess - Succesfully get data from AsyncStorage"
+          "PersistQueryClientProvider onSuccess - Succesfully get data from AsyncStorage",
         );
         queryClient.resumePausedMutations().then(() => {
           console.log("PersistQueryClientProvider invalidateQueries");
@@ -155,9 +152,7 @@ export default function Root() {
         dehydrateOptions: {
           shouldDehydrateQuery: ({ queryKey, state }) => {
             // SELECTIVELY PERSIST QUERY KEYS https://github.com/TanStack/query/discussions/3568
-            return queryKey.includes("polling-stations-nomenclator")
-              ? false
-              : true;
+            return !queryKey.includes("polling-stations-nomenclator");
           },
         },
       }}
@@ -175,6 +170,10 @@ export default function Root() {
           >
             Go Online/Offline
           </Button>
+          <LanguageContextProvider>
+            {!isOnline && <OfflineBanner />}
+            <Slot />
+          </LanguageContextProvider>
         </AuthContextProvider>
       </TamaguiProvider>
     </PersistQueryClientProvider>

@@ -3,8 +3,8 @@
 public sealed class GetPollingStationByIdSpecification : Specification<PollingStationAggregate>,
     ISingleResultSpecification<PollingStationAggregate>
 {
-    public GetPollingStationByIdSpecification(Guid id)
+    public GetPollingStationByIdSpecification(Guid electionRoundId, Guid id)
     {
-        Query.Where(pollingStation => pollingStation.Id == id);
+        Query.Where(pollingStation => pollingStation.ElectionRoundId == electionRoundId && pollingStation.Id == id);
     }
 }

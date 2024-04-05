@@ -149,7 +149,7 @@ export type PollingStationInformationFormAPIResponse = {
   id: string;
   createdOn: string;
   lastModifiedOn: string;
-  languages: string[]; //["RO", "EN"]
+  languages: string[]; // ["RO", "EN"]
   questions: ApiFormQuestion[];
 };
 
