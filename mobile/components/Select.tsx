@@ -16,6 +16,8 @@ const Select = ({
     <TamaguiSelect.Trigger
       backgroundColor="transparent"
       paddingHorizontal="$md"
+      borderColor="$gray1"
+      borderWidth={1}
       iconAfter={
         <Icon
           icon="chevronRight"

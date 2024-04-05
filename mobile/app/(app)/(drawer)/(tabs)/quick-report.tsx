@@ -3,6 +3,7 @@ import { View, Text } from "react-native";
 import { Typography } from "../../../../components/Typography";
 import { Stack } from "tamagui";
 import Select from "../../../../components/Select";
+import Card from "../../../../components/Card";
 
 const QuickReport = () => {
   return (
@@ -13,7 +14,7 @@ const QuickReport = () => {
       <Stack backgroundColor="$purple5" padding="$sm">
         <Typography size="xl">Hello typo</Typography>
       </Stack>
-      <Stack gap="$xs" padding="$sm">
+      <Card gap="$xs" padding="$sm">
         <Typography preset="subheading">Select</Typography>
         <Select
           options={regionData}
@@ -21,7 +22,7 @@ const QuickReport = () => {
           defaultValue={"West"}
         />
         <Select options={countryData} placeholder="Select option" />
-      </Stack>
+      </Card>
     </View>
   );
 };

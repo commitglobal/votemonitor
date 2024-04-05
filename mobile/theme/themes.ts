@@ -203,14 +203,14 @@ export const palettes = (() => {
   const lightPalettes = objectFromEntries(
     objectKeys(colorTokens.light).map(
       (key) =>
-        [`light_${key}`, getColorPalette(colorTokens.light[key])] as const
-    )
+        [`light_${key}`, getColorPalette(colorTokens.light[key])] as const,
+    ),
   );
 
   const darkPalettes = objectFromEntries(
     objectKeys(colorTokens.dark).map(
-      (key) => [`dark_${key}`, getColorPalette(colorTokens.dark[key])] as const
-    )
+      (key) => [`dark_${key}`, getColorPalette(colorTokens.dark[key])] as const,
+    ),
   );
 
   const colorPalettes = {
@@ -544,7 +544,7 @@ const themeBuilder = createThemeBuilder()
     },
     {
       avoidNestingWithin: ["alt1", "alt2"],
-    }
+    },
   );
 
 // --- themes ---
@@ -560,17 +560,17 @@ export const themes = themesIn as ThemesOut;
 
 export function postfixObjKeys<
   A extends { [key: string]: Variable<string> | string },
-  B extends string
+  B extends string,
 >(
   obj: A,
-  postfix: B
+  postfix: B,
 ): {
   [Key in `${keyof A extends string ? keyof A : never}${B}`]:
     | Variable<string>
     | string;
 } {
   return Object.fromEntries(
-    Object.entries(obj).map(([k, v]) => [`${k}${postfix}`, v])
+    Object.entries(obj).map(([k, v]) => [`${k}${postfix}`, v]),
   ) as any;
 }
 
@@ -585,7 +585,7 @@ export function sizeToSpace(v: number) {
 }
 
 export function objectFromEntries<ARR_T extends EntriesType>(
-  arr: ARR_T
+  arr: ARR_T,
 ): EntriesToObject<ARR_T> {
   return Object.fromEntries(arr) as EntriesToObject<ARR_T>;
 }
@@ -599,7 +599,7 @@ export type DeepWritable<OBJ_T> = {
 };
 export type UnionToIntersection<UNION_T> = // From https://stackoverflow.com/a/50375286
   (UNION_T extends any ? (k: UNION_T) => void : never) extends (
-    k: infer I
+    k: infer I,
   ) => void
     ? I
     : never;
