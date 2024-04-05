@@ -1,5 +1,5 @@
 import React from "react";
-import { ScrollView, Text } from "react-native";
+import { Text } from "react-native";
 import { Typography } from "../../../../components/Typography";
 import { Stack } from "tamagui";
 import Select from "../../../../components/Select";
@@ -8,12 +8,12 @@ import { Icon } from "../../../../components/Icon";
 import Badge from "../../../../components/Badge";
 
 import Card from "../../../../components/Card";
+import { Screen } from "../../../../components/Screen";
 
 const QuickReport = () => {
   return (
-    <ScrollView>
+    <Screen preset="auto" backgroundColor="white" contentContainerStyle={{ gap: 20 }}>
       <Text>Quick Report</Text>
-
       <Card>
         <Typography
           preset="heading"
@@ -109,7 +109,7 @@ const QuickReport = () => {
           <Badge preset="danger"> Red badge</Badge>
         </Stack>
       </Stack>
-    </ScrollView>
+    </Screen>
   );
 };
 
