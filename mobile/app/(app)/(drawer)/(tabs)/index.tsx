@@ -1,23 +1,15 @@
-import { Text , StatusBar } from "react-native";
-import { useAuth } from "../../../../hooks/useAuth";
+import { Text } from "react-native";
 import { Button } from "tamagui";
 import { router } from "expo-router";
 import {
-  upsertPollingStationGeneralInformationMutation,
+  // upsertPollingStationGeneralInformationMutation,
   useElectionRoundsQuery,
-  usePollingStationById,
   usePollingStationsNomenclatorQuery,
-  usePollingStationsVisits,
 } from "../../../../services/queries.service";
-import { Screen } from "../../../../components/Screen";
 
 import * as ReactotronCommands from "../../../../helpers/reactotron-custom-commands";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-  PollingStationInformationAPIPayload,
-  upsertPollingStationGeneralInformation,
-} from "../../../../services/definitions.api";
-import React from "react";
+import { useAuth } from "../../../../hooks/useAuth";
+import { Screen } from "../../../../components/Screen";
 
 ReactotronCommands.default();
 const Index = () => {
@@ -28,22 +20,23 @@ const Index = () => {
   // const { data: visits } = usePollingStationsVisits(
   //   rounds ? rounds.electionRounds[0].id : ""
   // );
-  const {} = usePollingStationsNomenclatorQuery(rounds ? rounds.electionRounds[0].id : "");
+  const { data } = usePollingStationsNomenclatorQuery(rounds ? rounds.electionRounds[0].id : "");
+  console.log(data);
 
   // const { data: station } = usePollingStationById(25902);
   // // Station ID: d3e6d2e9-0341-4dde-a58a-142a3f2dd19a
 
-  const update = () => {
-    mutate({
-      electionRoundId: "43b91c74-6d05-4fd1-bd93-dfe203c83c53",
-      pollingStationId: "d3e6d2e9-0341-4dde-a58a-142a3f2dd19a",
-      arrivalTime: new Date().toISOString(),
-      departureTime: new Date().toISOString(),
-      answers: [],
-    });
-  };
+  // const update = () => {
+  //   mutate({
+  //     electionRoundId: "43b91c74-6d05-4fd1-bd93-dfe203c83c53",
+  //     pollingStationId: "d3e6d2e9-0341-4dde-a58a-142a3f2dd19a",
+  //     arrivalTime: new Date().toISOString(),
+  //     departureTime: new Date().toISOString(),
+  //     answers: [],
+  //   });
+  // };
 
-  const { mutate, error } = upsertPollingStationGeneralInformationMutation();
+  // const { mutate, error } = upsertPollingStationGeneralInformationMutation();
 
   return (
     <Screen preset="fixed" contentContainerStyle={{ gap: 20 }} safeAreaEdges={["top"]}>
