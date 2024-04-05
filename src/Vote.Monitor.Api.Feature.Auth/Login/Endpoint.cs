@@ -51,15 +51,6 @@ public class Endpoint : Endpoint<Request, Results<Ok<Response>, ProblemDetails>>
                 claims.Add((ApplicationClaimTypes.NgoId, ngoAdmin.NgoId.ToString()));
             }
         }
-        else if (user.Role == UserRole.Observer)
-        {
-            var monitoringObserverSpecification = new GetMonitoringObserverSpecification(user.Id);
-            var monitoringObserver = await _monitoringObserverRepository.FirstOrDefaultAsync(monitoringObserverSpecification, ct);
-            if (monitoringObserver is not null)
-            {
-                claims.Add((ApplicationClaimTypes.NgoId, monitoringObserver.InviterNgo.NgoId.ToString()));
-            }
-        }
 
         var jwtToken = JWTBearer.CreateToken(
             signingKey: _options.TokenSigningKey,

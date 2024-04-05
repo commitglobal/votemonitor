@@ -7,7 +7,7 @@ using Vote.Monitor.Core.Services.Security;
 namespace Feature.ObserverGuide.List;
 
 public class Endpoint(IAuthorizationService authorizationService,
-    ICurrentUserProvider currentUserProvider,
+    ICurrentUserRoleProvider currentUserRoleProvider,
     IReadRepository<ObserverGuideAggregate> repository,
     IFileStorageService fileStorageService)
     : Endpoint<Request, Results<Ok<Response>, NotFound>>
@@ -26,8 +26,9 @@ public class Endpoint(IAuthorizationService authorizationService,
         {
             return TypedResults.NotFound();
         }
-        
-        var  specification =  new GetObserverGuidesSpecification(currentUserProvider.GetNgoId());
+
+        var ngoId = await currentUserRoleProvider.GetNgoId();
+        var  specification =  new GetObserverGuidesSpecification(ngoId);
         var observerGuides = await repository.ListAsync(specification, ct);
 
         var observerGuideModels = observerGuides

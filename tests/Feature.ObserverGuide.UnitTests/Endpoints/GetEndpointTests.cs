@@ -18,7 +18,7 @@ public class GetEndpointTests
 {
     private readonly IReadRepository<ObserverGuideAggregate> _repository;
     private readonly IAuthorizationService _authorizationService;
-    private readonly ICurrentUserProvider _currentUserProvider;
+    private readonly ICurrentUserRoleProvider _currentUserRoleProvider;
     private readonly Endpoint _endpoint;
 
     public GetEndpointTests()
@@ -26,10 +26,10 @@ public class GetEndpointTests
         _repository = Substitute.For<IReadRepository<ObserverGuideAggregate>>();
         var fileStorageService = Substitute.For<IFileStorageService>();
         _authorizationService = Substitute.For<IAuthorizationService>();
-        _currentUserProvider = Substitute.For<ICurrentUserProvider>();
+        _currentUserRoleProvider = Substitute.For<ICurrentUserRoleProvider>();
 
         _endpoint = Factory.Create<Endpoint>(_authorizationService,
-            _currentUserProvider,
+            _currentUserRoleProvider,
             _repository,
             fileStorageService);
     }
@@ -47,7 +47,7 @@ public class GetEndpointTests
         _authorizationService.AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object?>(), Arg.Any<IEnumerable<IAuthorizationRequirement>>())
             .Returns(AuthorizationResult.Success());
 
-        _currentUserProvider.IsObserver().Returns(true);
+        _currentUserRoleProvider.IsObserver().Returns(true);
 
         _repository.FirstOrDefaultAsync(Arg.Any<GetObserverGuideSpecification>())
             .Returns(fakeObserverGuide);
@@ -79,8 +79,8 @@ public class GetEndpointTests
         _authorizationService.AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object?>(), Arg.Any<IEnumerable<IAuthorizationRequirement>>())
             .Returns(AuthorizationResult.Success());
 
-        _currentUserProvider.IsObserver().Returns(false);
-        _currentUserProvider.IsNgoAdmin().Returns(true);
+        _currentUserRoleProvider.IsObserver().Returns(false);
+        _currentUserRoleProvider.IsNgoAdmin().Returns(true);
 
         _repository.FirstOrDefaultAsync(Arg.Any<GetObserverGuideSpecification>())
             .Returns(fakeObserverGuide);

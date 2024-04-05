@@ -6,7 +6,7 @@ using Vote.Monitor.Core.Services.Security;
 namespace Feature.ObserverGuide.Delete;
 
 public class Endpoint(IAuthorizationService authorizationService,
-    ICurrentUserProvider currentUserProvider, 
+    ICurrentUserRoleProvider currentUserRoleProvider, 
     IRepository<ObserverGuideAggregate> repository)
     : Endpoint<Request, Results<NoContent, NotFound>>
 {
@@ -25,7 +25,8 @@ public class Endpoint(IAuthorizationService authorizationService,
             return TypedResults.NotFound();
         }
 
-        var specification = new GetObserverGuideSpecification(currentUserProvider.GetNgoId(), req.Id);
+        var ngoId = await currentUserRoleProvider.GetNgoId();
+        var specification = new GetObserverGuideSpecification(ngoId, req.Id);
         var observerGuide = await repository.FirstOrDefaultAsync(specification, ct);
 
         if (observerGuide == null)
