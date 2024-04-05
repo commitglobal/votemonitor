@@ -1,5 +1,4 @@
 ﻿using Vote.Monitor.Api.Feature.Ngo.Specifications;
-using Vote.Monitor.Core.Services.Time;
 
 namespace Vote.Monitor.Api.Feature.Ngo.Create;
 

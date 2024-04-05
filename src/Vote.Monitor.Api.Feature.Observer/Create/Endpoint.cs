@@ -1,6 +1,4 @@
-﻿using Vote.Monitor.Core.Services.Time;
-
-namespace Vote.Monitor.Api.Feature.Observer.Create;
+﻿namespace Vote.Monitor.Api.Feature.Observer.Create;
 
 public class Endpoint(IRepository<ObserverAggregate> repository)
     : Endpoint<Request, Results<Ok<ObserverModel>, Conflict<ProblemDetails>>>

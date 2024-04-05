@@ -38,6 +38,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Authorization.Policies\Authorization.Policies.csproj" />
+    <ProjectReference Include="..\Feature.MonitoringObservers\Feature.MonitoringObservers.csproj" />
     <ProjectReference Include="..\Feature.ObserverGuide\Feature.ObserverGuide.csproj" />
     <ProjectReference Include="..\Feature.PollingStation.Information.Form\Feature.PollingStation.Information.Form.csproj" />
     <ProjectReference Include="..\Feature.PollingStation.Visit\Feature.PollingStation.Visit.csproj" />

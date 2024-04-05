@@ -42,7 +42,7 @@ namespace Vote.Monitor.Domain.Migrations
                   FROM ""{Tables.PollingStationAttachments}"" a
               ) t 
               INNER JOIN ""MonitoringObservers"" mo ON mo.""Id"" = t.""MonitoringObserverId""
-              INNER JOIN ""MonitoringNgos"" mn ON mo.""InviterNgoId"" = mn.""Id""
+              INNER JOIN ""MonitoringNgos"" mn ON mo.""MonitoringNgoId"" = mn.""Id""
               GROUP BY  t.""ElectionRoundId"", t.""PollingStationId"", mo.""MonitoringNgoId"", mn.""NgoId"", t.""MonitoringObserverId"", mo.""ObserverId"";
               ");
         }

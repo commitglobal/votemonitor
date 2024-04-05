@@ -6,30 +6,32 @@ public class MonitoringObserver : AuditableBaseEntity, IAggregateRoot
 {
     public Guid ObserverId { get; private set; }
     public Observer Observer { get; private set; }
-    public Guid InviterNgoId { get; private set; }
-    public MonitoringNgo InviterNgo { get; private set; }
+    public Guid MonitoringNgoId { get; private set; }
+    public MonitoringNgo MonitoringNgo { get; private set; }
     public MonitoringObserverStatus Status { get; private set; }
 
-    internal MonitoringObserver(MonitoringNgo inviterNgo, Observer observer)
+    public string[] Tags { get; private set; }
+
+    internal MonitoringObserver(MonitoringNgo monitoringNgo, Observer observer)
         : base(Guid.NewGuid())
     {
-        InviterNgoId = inviterNgo.Id;
-        InviterNgo = inviterNgo;
+        MonitoringNgoId = monitoringNgo.Id;
+        MonitoringNgo = monitoringNgo;
         ObserverId = observer.Id;
         Observer = observer;
-
-        Status = MonitoringObserverStatus.Active;
+        Tags = [];
+        Status = MonitoringObserverStatus.Pending;
     }
 
-    internal MonitoringObserver(Guid id, MonitoringNgo inviterNgo, Observer observer)
+    internal MonitoringObserver(Guid id, MonitoringNgo monitoringNgo, Observer observer, string[] tags)
         : base(id)
     {
-        InviterNgoId = inviterNgo.Id;
-        InviterNgo = inviterNgo;
+        MonitoringNgoId = monitoringNgo.Id;
+        MonitoringNgo = monitoringNgo;
         ObserverId = observer.Id;
         Observer = observer;
-
-        Status = MonitoringObserverStatus.Active;
+        Tags = tags.Distinct().ToArray();
+        Status = MonitoringObserverStatus.Pending;
     }
 
     public void Activate()

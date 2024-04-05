@@ -9,7 +9,7 @@ public sealed class GetPollingStationInformationForNgoSpecification : Specificat
     public GetPollingStationInformationForNgoSpecification(List.Request request)
     {
         Query.Where(x => x.ElectionRoundId == request.ElectionRoundId 
-                         && x.MonitoringObserver.InviterNgoId == request.NgoId)
+                         && x.MonitoringObserver.MonitoringNgoId == request.NgoId)
             .ApplyOrdering(request)
             .Paginate(request);
 

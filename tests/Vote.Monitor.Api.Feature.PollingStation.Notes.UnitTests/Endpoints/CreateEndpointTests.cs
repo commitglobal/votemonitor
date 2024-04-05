@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using NSubstitute;
 using Vote.Monitor.Api.Feature.PollingStation.Notes.Create;
 using Vote.Monitor.Api.Feature.PollingStation.Notes.Specifications;
-using Vote.Monitor.Core.Services.Time;
 using Vote.Monitor.Domain.Entities.ElectionRoundAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 using Vote.Monitor.Domain.Entities.PollingStationNoteAggregate;

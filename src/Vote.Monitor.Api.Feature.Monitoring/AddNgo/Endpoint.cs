@@ -1,4 +1,5 @@
-﻿using Vote.Monitor.Core.Extensions;
+﻿using Authorization.Policies;
+using Vote.Monitor.Core.Extensions;
 using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
 using Vote.Monitor.Domain.Entities.NgoAggregate;
 
@@ -13,6 +14,7 @@ public class Endpoint(IRepository<ElectionRoundAggregate> repository,
         Post("/api/election-rounds/{electionRoundId}/monitoring-ngos");
         DontAutoTag();
         Options(x => x.WithTags("monitoring"));
+        Policies(PolicyNames.PlatformAdminsOnly);
     }
 
     public override async Task<Results<Ok<Response>, NotFound<string>, ValidationProblem>> ExecuteAsync(Request req, CancellationToken ct)
