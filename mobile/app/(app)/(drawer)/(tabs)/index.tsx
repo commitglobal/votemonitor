@@ -1,15 +1,15 @@
-import { View, Text, StatusBar } from "react-native";
+import { Text } from "react-native";
 import { useAuth } from "../../../../hooks/useAuth";
 import OfflinePersistComponentExample from "../../../../components/OfflinePersistComponentExample";
 import { Button } from "tamagui";
 import { router } from "expo-router";
+import { Screen } from "../../../../components/Screen";
 
 const Index = () => {
   const { signOut } = useAuth();
 
   return (
-    <View style={{ gap: 20 }}>
-      <StatusBar barStyle="light-content" />
+    <Screen preset="fixed" contentContainerStyle={{ gap: 20 }} safeAreaEdges={["top"]}>
       <OfflinePersistComponentExample></OfflinePersistComponentExample>
       <Button onPress={() => router.push("/polling-station-wizzard/1")}>
         Go To Polling station wizzard
@@ -19,7 +19,7 @@ const Index = () => {
         Go To Polling Station Qustionnaire
       </Button>
       <Text onPress={signOut}>Logout</Text>
-    </View>
+    </Screen>
   );
 };
 

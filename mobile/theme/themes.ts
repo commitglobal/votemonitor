@@ -7,14 +7,18 @@ const colorTokens = {
     gray: {
       ...gray,
       gray1: "hsl(0, 0%, 88%)",
+      gray2: "hsl(220, 14%, 96%)",
       gray3: "hsl(240, 5%, 84%)",
       gray5: "hsl(240, 4%, 46%)",
       gray7: "hsl(240, 5%, 26%)",
       gray9: "hsl(240, 6%, 10%)",
+      gray10: "hsl(217, 19%, 27%)",
     },
     green: {
       ...green,
       green1: "hsl(152, 81%, 96%)",
+      green2: "hsl(136, 73%, 97%)",
+      green9: "hsl(142, 71%, 27%)",
       green10: "hsl(160, 84%, 39%)",
       green12: "hsl(145, 63%, 42%)",
     },
@@ -33,9 +37,11 @@ const colorTokens = {
     yellow: {
       ...yellow,
       yellow2: "hsla(49, 100%, 58%, 0.25)",
+      yellow3: "hsl(48, 100%, 96%)",
       yellow3: "hsla(49, 100%, 58%, 0.25)",
       yellow4: "hsla(49, 100%, 58%, 1)",
       yellow6: "hsl(49, 100%, 58%)",
+      yellow7: "hsl(38, 90%, 35%)",
     },
   },
   dark: {
@@ -50,6 +56,8 @@ const colorTokens = {
     green: {
       ...green,
       green1: "hsl(152, 81%, 96%)",
+      green2: "hsl(136, 73%, 97%)",
+      green5: "hsl(142, 71%, 27%)",
       green10: "hsl(160, 84%, 39%)",
       green12: "hsl(145, 63%, 42%)",
     },

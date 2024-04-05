@@ -1,17 +1,20 @@
 import React from "react";
-import { ScrollView, Text } from "react-native";
+import { Text } from "react-native";
 import { Typography } from "../../../../components/Typography";
 import { Stack } from "tamagui";
+import Select from "../../../../components/Select";
 import Button from "../../../../components/Button";
 import { Icon } from "../../../../components/Icon";
+import Badge from "../../../../components/Badge";
+
 import Card from "../../../../components/Card";
+import { Screen } from "../../../../components/Screen";
 import { LinearProgress } from "../../../../components/LinearProgress";
 
 const QuickReport = () => {
   return (
-    <ScrollView>
+    <Screen preset="auto" backgroundColor="white" contentContainerStyle={{ gap: 20 }}>
       <Text>Quick Report</Text>
-
       <Card>
         <Typography
           preset="heading"
@@ -44,8 +47,6 @@ const QuickReport = () => {
             Danger
           </Button>
         </Stack>
-
-        {/* disabled buttons */}
         <Stack gap="$xs">
           <Typography preset="subheading">Disabled</Typography>
           <Button disabled onPress={() => console.log("filled")}>
@@ -95,6 +96,19 @@ const QuickReport = () => {
             Danger
           </Button>
         </Stack>
+        <Card gap="$xs" padding="$sm">
+          <Typography preset="subheading">Select</Typography>
+          <Select options={regionData} placeholder="Select option" defaultValue={"West"} />
+          <Select options={countryData} placeholder="Select option" />
+        </Card>
+
+        <Stack padding="$sm" gap="$xs" backgroundColor="white">
+          <Typography preset="heading">Badge</Typography>
+          <Badge> Not started </Badge>
+          <Badge preset="success"> Success </Badge>
+          <Badge preset="warning"> In progress </Badge>
+          <Badge preset="danger"> Red badge</Badge>
+        </Stack>
 
         <LinearProgress total={5} current={1}></LinearProgress>
         <LinearProgress total={5} current={2}></LinearProgress>
@@ -102,8 +116,26 @@ const QuickReport = () => {
         <LinearProgress total={5} current={4}></LinearProgress>
         <LinearProgress total={5} current={5}></LinearProgress>
       </Stack>
-    </ScrollView>
+    </Screen>
   );
 };
+
+const regionData = [
+  { id: 1, value: "North" },
+  { id: 2, value: "North-West" },
+  { id: 3, value: "North-East" },
+  { id: 4, value: "West" },
+  { id: 5, value: "East" },
+  { id: 6, value: "South-West" },
+  { id: 7, value: "South" },
+];
+
+const countryData = [
+  { id: 3, value: "Russia" },
+  { id: 4, value: "France" },
+  { id: 5, value: "China" },
+  { id: 6, value: "Brazil" },
+  { id: 7, value: "Australia" },
+];
 
 export default QuickReport;
