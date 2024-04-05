@@ -27,4 +27,23 @@ internal sealed class GetMonitoringObserverSpecification : SingleResultSpecifica
             MonitoringObserverId = x.Id
         });
     }
+
+    public GetMonitoringObserverSpecification(Guid? observerId)
+    {
+        Query.Where(x => x.ObserverId == observerId);
+
+        Query.Select(x => new MonitoringObserverView
+        {
+            ElectionRoundId = x.InviterNgo.ElectionRoundId,
+            ElectionRoundStatus = x.InviterNgo.ElectionRound.Status,
+            NgoId = x.InviterNgo.NgoId,
+            NgoStatus = x.InviterNgo.Ngo.Status,
+            MonitoringNgoId = x.InviterNgoId,
+            MonitoringNgoStatus = x.InviterNgo.Status,
+            ObserverId = x.ObserverId,
+            UserStatus = x.Observer.Status,
+            MonitoringObserverStatus = x.Status,
+            MonitoringObserverId = x.Id
+        });
+    }
 }

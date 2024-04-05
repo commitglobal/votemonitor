@@ -6,11 +6,11 @@ namespace Vote.Monitor.Domain;
 public class AuditTrailInterceptor : ISaveChangesInterceptor
 {
     private readonly ISerializerService _serializerService;
-    private readonly ICurrentUserProvider _currentUserProvider;
+    private readonly ICurrentUserIdProvider _currentUserProvider;
     private readonly ITimeProvider _timeProvider;
 
     public AuditTrailInterceptor(ISerializerService serializerService,
-        ICurrentUserProvider currentUserProvider,
+        ICurrentUserIdProvider currentUserProvider,
         ITimeProvider timeProvider)
     {
         _serializerService = serializerService;

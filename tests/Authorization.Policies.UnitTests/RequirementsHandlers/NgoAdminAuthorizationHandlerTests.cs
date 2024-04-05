@@ -5,32 +5,35 @@ namespace Authorization.Policies.UnitTests.RequirementsHandlers;
 
 public class NgoAdminAuthorizationHandlerTests
 {
-    private readonly ICurrentUserProvider _currentUserProvider = Substitute.For<ICurrentUserProvider>();
+    private readonly ICurrentUserIdProvider _currentUserIdProvider = Substitute.For<ICurrentUserIdProvider>();
+    private readonly ICurrentUserRoleProvider _currentUserRoleProvider = Substitute.For<ICurrentUserRoleProvider>();
     private readonly IReadRepository<NgoAdmin> _ngoAdminRepository = Substitute.For<IReadRepository<NgoAdmin>>();
 
     private readonly Guid _ngoId = Guid.NewGuid();
     private readonly Guid _ngoAdminId = Guid.NewGuid();
 
     private readonly AuthorizationHandlerContext _context;
+    private readonly NgoAdminAuthorizationHandler _handler;
 
     public NgoAdminAuthorizationHandlerTests()
     {
         var requirement = new NgoAdminRequirement(_ngoId);
-        _context = new AuthorizationHandlerContext([requirement], null, null);
+        _context = new AuthorizationHandlerContext([requirement], null!, null);
+        _handler = new NgoAdminAuthorizationHandler(_currentUserIdProvider,
+            _currentUserRoleProvider,
+            _ngoAdminRepository);
     }
 
     [Fact]
     public async Task HandleRequirementAsync_UserIsNotNgoAdmin_Failure()
     {
         // Arrange
-        _currentUserProvider.IsNgoAdmin().Returns(false);
-        _currentUserProvider.GetNgoId().Returns(_ngoId);
-        _currentUserProvider.GetUserId().Returns(_ngoAdminId);
-
-        var handler = new NgoAdminAuthorizationHandler(_currentUserProvider, _ngoAdminRepository);
+        _currentUserRoleProvider.IsNgoAdmin().Returns(false);
+        _currentUserRoleProvider.GetNgoId().Returns(_ngoId);
+        _currentUserIdProvider.GetUserId().Returns(_ngoAdminId);
 
         // Act
-        await handler.HandleAsync(_context);
+        await _handler.HandleAsync(_context);
 
         // Assert
         _context.HasSucceeded.Should().BeFalse();
@@ -40,18 +43,16 @@ public class NgoAdminAuthorizationHandlerTests
     public async Task HandleRequirementAsync_NgoAdminNotFound_Failure()
     {
         // Arrange
-        _currentUserProvider.IsNgoAdmin().Returns(true);
-        _currentUserProvider.GetNgoId().Returns(_ngoId);
-        _currentUserProvider.GetUserId().Returns(_ngoAdminId);
+        _currentUserRoleProvider.IsNgoAdmin().Returns(true);
+        _currentUserRoleProvider.GetNgoId().Returns(_ngoId);
+        _currentUserIdProvider.GetUserId().Returns(_ngoAdminId);
 
         _ngoAdminRepository
             .FirstOrDefaultAsync(Arg.Any<GetNgoAdminSpecification>())
             .ReturnsNull();
 
-        var handler = new NgoAdminAuthorizationHandler(_currentUserProvider, _ngoAdminRepository);
-
         // Act
-        await handler.HandleAsync(_context);
+        await _handler.HandleAsync(_context);
 
         // Assert
         _context.HasSucceeded.Should().BeFalse();
@@ -61,9 +62,9 @@ public class NgoAdminAuthorizationHandlerTests
     public async Task HandleRequirementAsync_NgoIsDeactivated_Failure()
     {
         // Arrange
-        _currentUserProvider.IsNgoAdmin().Returns(true);
-        _currentUserProvider.GetNgoId().Returns(_ngoId);
-        _currentUserProvider.GetUserId().Returns(_ngoAdminId);
+        _currentUserRoleProvider.IsNgoAdmin().Returns(true);
+        _currentUserRoleProvider.GetNgoId().Returns(_ngoId);
+        _currentUserIdProvider.GetUserId().Returns(_ngoAdminId);
 
         _ngoAdminRepository
             .FirstOrDefaultAsync(Arg.Any<GetNgoAdminSpecification>())
@@ -75,10 +76,8 @@ public class NgoAdminAuthorizationHandlerTests
                 UserStatus = UserStatus.Active,
             });
 
-        var handler = new NgoAdminAuthorizationHandler(_currentUserProvider, _ngoAdminRepository);
-
         // Act
-        await handler.HandleAsync(_context);
+        await _handler.HandleAsync(_context);
 
         // Assert
         _context.HasSucceeded.Should().BeFalse();
@@ -88,9 +87,9 @@ public class NgoAdminAuthorizationHandlerTests
     public async Task HandleRequirementAsync_UserIsDeactivated_Failure()
     {
         // Arrange
-        _currentUserProvider.IsNgoAdmin().Returns(true);
-        _currentUserProvider.GetNgoId().Returns(_ngoId);
-        _currentUserProvider.GetUserId().Returns(_ngoAdminId);
+        _currentUserRoleProvider.IsNgoAdmin().Returns(true);
+        _currentUserRoleProvider.GetNgoId().Returns(_ngoId);
+        _currentUserIdProvider.GetUserId().Returns(_ngoAdminId);
 
         _ngoAdminRepository
             .FirstOrDefaultAsync(Arg.Any<GetNgoAdminSpecification>())
@@ -102,10 +101,8 @@ public class NgoAdminAuthorizationHandlerTests
                 UserStatus = UserStatus.Deactivated,
             });
 
-        var handler = new NgoAdminAuthorizationHandler(_currentUserProvider, _ngoAdminRepository);
-
         // Act
-        await handler.HandleAsync(_context);
+        await _handler.HandleAsync(_context);
 
         // Assert
         _context.HasSucceeded.Should().BeFalse();
@@ -115,9 +112,9 @@ public class NgoAdminAuthorizationHandlerTests
     public async Task HandleRequirementAsync_ValidNgoAdmin_Success()
     {
         // Arrange
-        _currentUserProvider.IsNgoAdmin().Returns(true);
-        _currentUserProvider.GetNgoId().Returns(_ngoId);
-        _currentUserProvider.GetUserId().Returns(_ngoAdminId);
+        _currentUserRoleProvider.IsNgoAdmin().Returns(true);
+        _currentUserRoleProvider.GetNgoId().Returns(_ngoId);
+        _currentUserIdProvider.GetUserId().Returns(_ngoAdminId);
 
         _ngoAdminRepository
             .FirstOrDefaultAsync(Arg.Any<GetNgoAdminSpecification>())
@@ -129,10 +126,8 @@ public class NgoAdminAuthorizationHandlerTests
                 UserStatus = UserStatus.Active,
             });
 
-        var handler = new NgoAdminAuthorizationHandler(_currentUserProvider, _ngoAdminRepository);
-
         // Act
-        await handler.HandleAsync(_context);
+        await _handler.HandleAsync(_context);
 
         // Assert
         _context.HasSucceeded.Should().BeTrue();

@@ -9,7 +9,7 @@ public class Endpoint(
     VoteMonitorContext context,
     IPollingStationParser parser,
     ITimeProvider timeProvider,
-    ICurrentUserProvider userProvider)
+    ICurrentUserIdProvider userProvider)
     : Endpoint<Request, Results<Ok<Response>, NotFound<ProblemDetails>, ProblemDetails>>
 {
     public override void Configure()
