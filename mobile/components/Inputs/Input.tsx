@@ -25,6 +25,7 @@ const StyledTextArea = styled(TamaguiTextArea, {
   minHeight: 98,
   paddingVertical: "$xs",
   paddingHorizontal: 14,
+  borderColor: "$gray3",
   fontSize: 16,
   lineHeight: 24,
   fontWeight: "400",
