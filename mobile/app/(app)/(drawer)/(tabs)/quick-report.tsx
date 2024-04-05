@@ -121,7 +121,8 @@ const QuickReport = () => {
           badgePreset="success"
         ></FormCard>
       </Stack>
-    </ScrollView>
+      {/* </ScrollView> */}
+    </Screen>
   );
 };
 

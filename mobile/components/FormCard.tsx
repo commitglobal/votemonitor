@@ -1,7 +1,6 @@
 import React from "react";
 import { useTheme, View, styled } from "tamagui";
-import { Presets } from "./Badge";
-import Badge from "./Badge";
+import Badge, { Presets } from "./Badge";
 import Card from "./Card";
 import { Typography } from "./Typography";
 import { Icon } from "./Icon";
@@ -10,17 +9,17 @@ export interface FormCardProps {
   /**
    * Header text
    */
-  header: String;
+  header: string;
 
   /**
    * Subheader optional text
    */
-  subHeader?: String;
+  subHeader?: string;
 
   /**
    * Footer text
    */
-  footer: String;
+  footer: string;
 
   /**
    * Optional preset type.
@@ -41,7 +40,7 @@ const FormCard = (props: FormCardProps): JSX.Element => {
         <Typography preset="body1" color="$gray9" style={{ fontWeight: "700" }}>
           {header}
         </Typography>
-        <Badge preset={badgePreset}></Badge>
+        <Badge preset={badgePreset}> In progress </Badge>
       </HeaderContainer>
 
       {hasSubHeader === true && (
