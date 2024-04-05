@@ -2,6 +2,7 @@ import React from "react";
 import { ScrollView, Text } from "react-native";
 import { Typography } from "../../../../components/Typography";
 import { Stack } from "tamagui";
+import Select from "../../../../components/Select";
 import Button from "../../../../components/Button";
 import { Icon } from "../../../../components/Icon";
 import Badge from "../../../../components/Badge";
@@ -94,17 +95,40 @@ const QuickReport = () => {
             Danger
           </Button>
         </Stack>
-      </Stack>
+        <Card gap="$xs" padding="$sm">
+          <Typography preset="subheading">Select</Typography>
+          <Select options={regionData} placeholder="Select option" defaultValue={"West"} />
+          <Select options={countryData} placeholder="Select option" />
+        </Card>
 
-      <Stack padding="$sm" gap="$xs" backgroundColor="white">
-        <Typography preset="heading">Badge</Typography>
-        <Badge> Not started </Badge>
-        <Badge preset="success"> Success </Badge>
-        <Badge preset="warning"> In progress </Badge>
-        <Badge preset="danger"> Red badge</Badge>
+        <Stack padding="$sm" gap="$xs" backgroundColor="white">
+          <Typography preset="heading">Badge</Typography>
+          <Badge> Not started </Badge>
+          <Badge preset="success"> Success </Badge>
+          <Badge preset="warning"> In progress </Badge>
+          <Badge preset="danger"> Red badge</Badge>
+        </Stack>
       </Stack>
     </ScrollView>
   );
 };
+
+const regionData = [
+  { id: 1, value: "North" },
+  { id: 2, value: "North-West" },
+  { id: 3, value: "North-East" },
+  { id: 4, value: "West" },
+  { id: 5, value: "East" },
+  { id: 6, value: "South-West" },
+  { id: 7, value: "South" },
+];
+
+const countryData = [
+  { id: 3, value: "Russia" },
+  { id: 4, value: "France" },
+  { id: 5, value: "China" },
+  { id: 6, value: "Brazil" },
+  { id: 7, value: "Australia" },
+];
 
 export default QuickReport;
