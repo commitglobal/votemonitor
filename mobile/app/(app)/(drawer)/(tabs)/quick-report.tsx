@@ -123,7 +123,7 @@ const QuickReport = () => {
         <Input type="numeric" />
 
         <Typography preset="subheading">Checkbox</Typography>
-        <CheckboxInput label="hello" id="1" />
+        <CheckboxInput label="hello" id="1" defaultChecked />
         <CheckboxInput label="hello2" id="2" />
         <Typography preset="subheading">Radio buttons</Typography>
         <RadioGroup
