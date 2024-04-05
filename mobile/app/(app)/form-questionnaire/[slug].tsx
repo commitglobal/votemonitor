@@ -15,11 +15,7 @@ const FormQuestionnaire = () => {
       }}
     >
       <Typography>This is the form questionnaire, page {slug}</Typography>
-      <Button
-        onPress={() =>
-          router.replace(`/form-questionnaire/${+(slug || 0) + 1}`)
-        }
-      >
+      <Button onPress={() => router.replace(`/form-questionnaire/${+(slug || 0) + 1}`)}>
         Next
       </Button>
     </View>

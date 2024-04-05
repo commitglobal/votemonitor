@@ -15,11 +15,7 @@ const PollingStationWizzard = () => {
       }}
     >
       <Typography>This is the wizzard, page {slug}</Typography>
-      <Button
-        onPress={() =>
-          router.replace(`/polling-station-wizzard/${+(slug || 0) + 1}`)
-        }
-      >
+      <Button onPress={() => router.replace(`/polling-station-wizzard/${+(slug || 0) + 1}`)}>
         Next
       </Button>
     </View>
