@@ -11,7 +11,7 @@ public class Endpoint(IReadRepository<MonitoringNgo> repository,
     {
         Get("/api/election-rounds:monitoring");
         DontAutoTag();
-        Options(x => x.WithTags("election-rounds", "web"));
+        Options(x => x.WithTags("election-rounds"));
         Summary(s =>
         {
             s.Summary = "Lists election rounds which are monitored by current NGO";
