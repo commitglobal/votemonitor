@@ -1,4 +1,5 @@
 ﻿using Vote.Monitor.Api.Feature.PollingStation.Helpers;
+using Vote.Monitor.Api.Feature.PollingStation.Specifications;
 
 namespace Vote.Monitor.Api.Feature.PollingStation.Get;
 
@@ -20,7 +21,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<PollingStationModel>, NotFo
 
     public override async Task<Results<Ok<PollingStationModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var pollingStation = await _repository.GetByIdAsync(req.Id, ct);
+        var pollingStation = await _repository.FirstOrDefaultAsync(new GetPollingStationByIdSpecification(req.ElectionRoundId, req.Id), ct);
 
         if (pollingStation is null)
         {
