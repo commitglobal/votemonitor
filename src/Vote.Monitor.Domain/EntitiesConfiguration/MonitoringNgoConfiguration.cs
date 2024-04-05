@@ -20,8 +20,5 @@ internal class MonitoringNgoConfiguration : IEntityTypeConfiguration<MonitoringN
             .WithOne(e => e.MonitoringNgo)
             .HasForeignKey(e => e.MonitoringNgoId)
             .IsRequired();
-
-        builder.Navigation(nameof(MonitoringNgo.MonitoringObservers))
-            .UsePropertyAccessMode(PropertyAccessMode.Field);
     }
 }

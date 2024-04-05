@@ -5,6 +5,7 @@ public sealed class ImportType : SmartEnum<ImportType, string>
 {
     public static readonly ImportType PollingStation = new(nameof(PollingStation), nameof(PollingStation));
     public static readonly ImportType Observer = new(nameof(Observer), nameof(Observer));
+    public static readonly ImportType MonitoringObserver = new(nameof(MonitoringObserver), nameof(MonitoringObserver));
 
     /// <summary>Gets an item associated with the specified value. Parses SmartEnum when used as query params</summary>
     /// <see href="https://github.com/ardalis/SmartEnum/issues/410#issuecomment-1686057067">this issue</see>

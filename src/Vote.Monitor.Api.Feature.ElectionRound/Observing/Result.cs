@@ -1,4 +1,4 @@
-﻿namespace Vote.Monitor.Api.Feature.ElectionRound.My;
+﻿namespace Vote.Monitor.Api.Feature.ElectionRound.Observing;
 
 public class Result
 {

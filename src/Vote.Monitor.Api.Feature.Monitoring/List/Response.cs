@@ -3,7 +3,7 @@ using Ardalis.SmartEnum.SystemTextJson;
 using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
 using Vote.Monitor.Domain.Entities.NgoAggregate;
 
-namespace Vote.Monitor.Api.Feature.Monitoring.GetMonitoringNgos;
+namespace Vote.Monitor.Api.Feature.Monitoring.List;
 
 public class Response
 {

@@ -1,4 +1,4 @@
-﻿namespace Vote.Monitor.Api.Feature.Monitoring.AddNgo;
+﻿namespace Vote.Monitor.Api.Feature.Monitoring.Add;
 
 public class Request
 {

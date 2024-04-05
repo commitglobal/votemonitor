@@ -1,11 +1,10 @@
 ﻿namespace Vote.Monitor.Api.Feature.Observer.Services;
 
 public class ObserverImportModel
-
 {
     public required string Name { get; set; }
     public required string Email { get; set; }
-    public string Password { get => "string"; }
+    public string Password { get; set; }
     public required string PhoneNumber { get; set; }
 
     public override int GetHashCode()

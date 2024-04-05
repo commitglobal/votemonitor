@@ -1,4 +1,4 @@
-﻿namespace Vote.Monitor.Api.Feature.Monitoring.GetMonitoringNgos;
+﻿namespace Vote.Monitor.Api.Feature.Monitoring.List;
 
 public class Validator : Validator<Request>
 {

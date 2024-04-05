@@ -3,7 +3,7 @@ using Vote.Monitor.Core.Extensions;
 using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
 using Vote.Monitor.Domain.Entities.NgoAggregate;
 
-namespace Vote.Monitor.Api.Feature.Monitoring.AddNgo;
+namespace Vote.Monitor.Api.Feature.Monitoring.Add;
 
 public class Endpoint(IRepository<ElectionRoundAggregate> repository,
     IReadRepository<NgoAggregate> ngoRepository,

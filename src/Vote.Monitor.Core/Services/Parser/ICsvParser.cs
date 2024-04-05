@@ -1,5 +1,5 @@
 ﻿
-namespace Vote.Monitor.Api.Feature.Observer.Services;
+namespace Vote.Monitor.Core.Services.Parser;
 
 public interface ICsvParser<T> where T : class
 {

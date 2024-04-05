@@ -1,8 +1,9 @@
 ﻿using System.Globalization;
 using CsvHelper;
 using CsvHelper.Configuration;
+using Microsoft.Extensions.Logging;
 
-namespace Vote.Monitor.Api.Feature.Observer.Services;
+namespace Vote.Monitor.Core.Services.Parser;
 
 public class CsvParser<T, TMapper> : ICsvParser<T> where T : class where TMapper : ClassMap<T>
 {
@@ -59,7 +60,12 @@ public class CsvParser<T, TMapper> : ICsvParser<T> where T : class where TMapper
             return new ParsingResult<T>.Fail(rowsRead);
         }
 
-        return new ParsingResult<T>.Success(rowsRead.Where(x => x.Value != null).Select(x => x.Value!));
+        var items = rowsRead
+            .Where(x => x.Value != null)
+            .Select(x => x.Value!)
+            .ToList();
+
+        return new ParsingResult<T>.Success(items);
     }
 
 

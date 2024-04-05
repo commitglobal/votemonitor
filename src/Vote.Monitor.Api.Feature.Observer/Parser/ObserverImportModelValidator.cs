@@ -14,8 +14,7 @@ internal class ObserverImportModelValidator : Validator<ObserverImportModel>
             .MinimumLength(3);
 
         RuleFor(x => x.PhoneNumber)
-           .MinimumLength(8); //lenhth of phone number can be 8 or 9
-
-
+           .MinimumLength(3);
+        
     }
 }

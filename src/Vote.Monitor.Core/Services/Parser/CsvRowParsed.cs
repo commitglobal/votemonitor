@@ -1,4 +1,4 @@
-﻿namespace Vote.Monitor.Api.Feature.Observer.Services;
+﻿namespace Vote.Monitor.Core.Services.Parser;
 public sealed class CsvRowParsed<T> where T : class
 {
     public bool IsSuccess { get; set; }
@@ -7,7 +7,3 @@ public sealed class CsvRowParsed<T> where T : class
     public T? Value { get; set; }
 
 }
-
-
-
-

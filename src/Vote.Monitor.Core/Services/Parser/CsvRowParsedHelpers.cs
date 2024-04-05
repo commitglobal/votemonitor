@@ -1,5 +1,6 @@
 ﻿using System.Text;
-namespace Vote.Monitor.Api.Feature.Observer.Services;
+
+namespace Vote.Monitor.Core.Services.Parser;
 
 public static class CsvRowParsedHelpers
 {
@@ -19,7 +20,6 @@ public static class CsvRowParsedHelpers
 
         return sb.ToString();
     }
-
 
     public static bool CheckAndSetDuplicatesLines<T>(this List<CsvRowParsed<T>> rows) where T : class
     {
@@ -46,5 +46,4 @@ public static class CsvRowParsedHelpers
 
         return containsDuplicates;
     }
-
 }

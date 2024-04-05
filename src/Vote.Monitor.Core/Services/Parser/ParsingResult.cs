@@ -1,9 +1,9 @@
-﻿namespace Vote.Monitor.Api.Feature.Observer.Services;
+﻿namespace Vote.Monitor.Core.Services.Parser;
 
 public abstract record ParsingResult<T> where T : class
 {
-    public sealed record Success(IEnumerable<T> Items) : ParsingResult<T>;
-    public sealed record Fail(IEnumerable<CsvRowParsed<T>> Items) : ParsingResult<T>
+    public sealed record Success(List<T> Items) : ParsingResult<T>;
+    public sealed record Fail(List<CsvRowParsed<T>> Items) : ParsingResult<T>
     {
         public Fail(string errorMessage) : this(new List<CsvRowParsed<T>>
         {
@@ -21,7 +21,6 @@ public abstract record ParsingResult<T> where T : class
         {
         }
     }
-
 
     private ParsingResult() { }
 }

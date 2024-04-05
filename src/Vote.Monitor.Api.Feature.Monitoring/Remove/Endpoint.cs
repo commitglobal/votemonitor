@@ -1,6 +1,6 @@
 ﻿using Vote.Monitor.Api.Feature.Monitoring.Specifications;
 
-namespace Vote.Monitor.Api.Feature.Monitoring.RemoveNgo;
+namespace Vote.Monitor.Api.Feature.Monitoring.Remove;
 
 public class Endpoint(IRepository<ElectionRoundAggregate> repository) : Endpoint<Request, Results<NoContent, NotFound<string>>>
 {

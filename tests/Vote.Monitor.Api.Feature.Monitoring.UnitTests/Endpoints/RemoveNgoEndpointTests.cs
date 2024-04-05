@@ -1,4 +1,6 @@
-﻿namespace Vote.Monitor.Api.Feature.Monitoring.UnitTests.Endpoints;
+﻿using Vote.Monitor.Api.Feature.Monitoring.Remove;
+
+namespace Vote.Monitor.Api.Feature.Monitoring.UnitTests.Endpoints;
 
 public class RemoveNgoEndpointTests
 {
@@ -9,10 +11,10 @@ public class RemoveNgoEndpointTests
         // Arrange
         var repository = Substitute.For<IRepository<ElectionRoundAggregate>>();
 
-        var endpoint = Factory.Create<RemoveNgo.Endpoint>(repository);
+        var endpoint = Factory.Create<Endpoint>(repository);
 
         // Act
-        var request = new RemoveNgo.Request { ElectionRoundId = Guid.NewGuid(), NgoId = Guid.NewGuid() };
+        var request = new Request { ElectionRoundId = Guid.NewGuid(), NgoId = Guid.NewGuid() };
         var result = await endpoint.ExecuteAsync(request, default);
 
         // Assert
@@ -34,10 +36,10 @@ public class RemoveNgoEndpointTests
             .SingleOrDefaultAsync(Arg.Any<GetElectionRoundByIdSpecification>())
             .Returns(new ElectionRoundAggregateFaker(id: electionRoundId).Generate());
 
-        var endpoint = Factory.Create<RemoveNgo.Endpoint>(repository);
+        var endpoint = Factory.Create<Endpoint>(repository);
 
         // Act
-        var request = new RemoveNgo.Request { ElectionRoundId = electionRoundId, NgoId = Guid.NewGuid() };
+        var request = new Request { ElectionRoundId = electionRoundId, NgoId = Guid.NewGuid() };
         var result = await endpoint.ExecuteAsync(request, default);
 
         // Assert
@@ -67,10 +69,10 @@ public class RemoveNgoEndpointTests
 
         repository.GetByIdAsync(electionRoundId).Returns(electionRound);
 
-        var endpoint = Factory.Create<RemoveNgo.Endpoint>(repository);
+        var endpoint = Factory.Create<Endpoint>(repository);
 
         // Act
-        var request = new RemoveNgo.Request { ElectionRoundId = electionRoundId, NgoId = ngoId };
+        var request = new Request { ElectionRoundId = electionRoundId, NgoId = ngoId };
         var result = await endpoint.ExecuteAsync(request, default);
 
         // Assert
