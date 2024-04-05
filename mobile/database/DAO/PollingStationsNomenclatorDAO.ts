@@ -64,17 +64,23 @@ export const deleteAllRecordsPollingStationNomenclator = () => {
   });
 };
 
-export const getPollingStationsByParentId = (parentId: number | null) => {
+/**
+ * @param {number} [parentId=-1] we save top-level nodes with -1
+ * @returns {Promise<PollingStationsNom[]>}
+ */
+export const getPollingStationsByParentId = (parentId: number | null = -1) => {
   return database
     .get<PollingStationsNom>("polling_stations_nom")
     .query(Q.where("parent_id", parentId))
     .fetch();
 };
 
-export const getPollingStationById = (
+export const getPollingStationById = async (
   id: number
-): Query<PollingStationsNom> => {
-  return database
+): Promise<PollingStationsNom | null> => {
+  const data = await database
     .get<PollingStationsNom>("polling_stations_nom")
     .query(Q.where("_id", id));
+
+  return data?.length ? data[0] : null;
 };

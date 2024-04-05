@@ -16,7 +16,7 @@ export class PollingStationsNom extends Model {
   @text("polling_station_id") pollingStationId?: string;
 
   // @ts-ignore
-  @field("polling_station_number") pollingStationNumber?: number;
+  @field("polling_station_number") pollingStationNumber?: string;
 
   // @ts-ignore
   @field("parent_id") parentId?: number;

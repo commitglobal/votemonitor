@@ -5,8 +5,13 @@ import { useAuth } from "../hooks/useAuth";
 import { Button } from "tamagui";
 import { Typography } from "../components/Typography";
 import Card from "../components/Card";
+import { useIsRestoring } from "@tanstack/react-query";
 
 const Login = () => {
+  // https://tanstack.com/query/latest/docs/framework/react/plugins/persistQueryClient#useisrestoring
+  const isRestoring = useIsRestoring();
+  console.log("isRestoring persistQueryClient", isRestoring);
+
   const { signIn } = useAuth();
   return (
     <View

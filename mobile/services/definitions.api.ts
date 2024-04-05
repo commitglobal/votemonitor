@@ -37,7 +37,7 @@ export type PollingStationNomenclatorNodeAPIResponse = {
   id: number;
   name: string;
   parentId?: number; // available for the leafs
-  number?: number; // available for the leafs
+  number?: string; // available for the leafs
   pollingStationId?: string; // available for the leafs
 };
 export type PollingStationNomenclatorAPIResponse = {
@@ -132,7 +132,9 @@ export const upsertPollingStationGeneralInformation = ({
     {
       ...rest,
     }
-  ).then((res) => res.data);
+  )
+    .then((res) => res.data)
+    .catch(console.log);
 };
 
 /** ========================================================================

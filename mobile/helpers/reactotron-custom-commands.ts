@@ -7,7 +7,6 @@ import {
   deleteAllRecordsPollingStationNomenclator,
   getPollingStationNomenclatorNodes,
 } from "../database/DAO/PollingStationsNomenclatorDAO";
-import * as ElectionRoundsDBQueries from "../database/DAO/ElectionRounds.dao";
 import {
   getElectionRounds,
   getPollingStationInformation,
@@ -74,26 +73,6 @@ Reactotron.onCustomCommand({
         parentId: i.parentId,
       }))
     );
-  },
-});
-
-Reactotron.onCustomCommand({
-  title: "Watermelon getElectionRounds",
-  command: "getAllElectionRounds",
-  handler: async () => {
-    console.log("Calling getAllElectionRounds");
-    console.log(await ElectionRoundsDBQueries.getElectionRounds());
-  },
-});
-
-Reactotron.onCustomCommand({
-  title: "Watermelon addElectionRoundsFromAPItoDB",
-  command: "addElectionRoundsFromAPItoDB",
-  handler: async () => {
-    console.log("Calling addElectionRoundsFromAPItoDB");
-    const data = await getElectionRounds();
-    await ElectionRoundsDBQueries.addElectionRoundsBulk(data);
-    console.log("Done addElectionRoundsFromAPItoDB");
   },
 });
 

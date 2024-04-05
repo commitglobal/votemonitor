@@ -25,7 +25,7 @@ API.interceptors.request.use(async (request) => {
     //     .getJwtToken()}`;
     // }
     const hardcodedToken =
-      "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2MDVlZTIxZC00YjRjLTQ2ZDMtOTYzMS1hNTc3YThhMzQ3NjIiLCJyb2xlIjoiT2JzZXJ2ZXIiLCJleHAiOjE3MTIzMDI5MzUsImlhdCI6MTcxMjIxNjUzNSwibmJmIjoxNzEyMjE2NTM1fQ.cqITZUFKjsc6MN3sSOmqqeb23cgIp285L8GLzzc1d6I";
+      "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2MDVlZTIxZC00YjRjLTQ2ZDMtOTYzMS1hNTc3YThhMzQ3NjIiLCJyb2xlIjoiT2JzZXJ2ZXIiLCJleHAiOjE3MTIzODk0MjAsImlhdCI6MTcxMjMwMzAyMCwibmJmIjoxNzEyMzAzMDIwfQ.PFzTfPX33ijCa6lPcWAs85s88kB3IZuxLQhesGXT4O8";
     request.headers.Authorization = `Bearer ${hardcodedToken}`;
   } catch (err) {
     // User not authenticated. May be a public API.
