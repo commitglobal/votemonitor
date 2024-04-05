@@ -118,8 +118,10 @@ const QuickReport = () => {
       {/* inputs */}
       <Stack padding="$sm" gap="$xs" marginTop="$md" backgroundColor="white">
         <Typography preset="heading">Inputs</Typography>
-        <Typography preset="subheading">Text</Typography>
-        <Input />
+        <Typography preset="subheading">Text/Numeric</Typography>
+        <Input type="text" />
+        <Input type="numeric" />
+
         <Typography preset="subheading">Checkbox</Typography>
         <CheckboxInput label="hello" id="1" />
         <CheckboxInput label="hello2" id="2" />
