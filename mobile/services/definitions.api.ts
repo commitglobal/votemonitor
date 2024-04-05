@@ -8,18 +8,20 @@ import { ApiFormQuestion } from "./interfaces/question.type";
     @description The election rounds where my user is asigned
     @returns {ElectionRoundsAPIResponse} 
 */
+export type ElectionRoundVM = {
+  id: string;
+  countryId: string;
+  country: string;
+  title: string;
+  englishTitle: string;
+  startDate: string;
+  status: "Archived" | "NotStarted" | "Started";
+  createdOn: string;
+  lastModifiedOn: string | null;
+};
+
 export type ElectionRoundsAPIResponse = {
-  electionRounds: {
-    id: string;
-    countryId: string;
-    country: string;
-    title: string;
-    englishTitle: string;
-    startDate: string;
-    status: "Archived" | "NotStarted" | "Started";
-    createdOn: string;
-    lastModifiedOn: string | null;
-  }[];
+  electionRounds: ElectionRoundVM[];
 };
 
 export const getElectionRounds = (): Promise<ElectionRoundsAPIResponse> => {
@@ -47,11 +49,11 @@ export type PollingStationNomenclatorAPIResponse = {
 };
 
 export const getPollingStationNomenclator = (
-  electionRoundId: string
+  electionRoundId: string,
 ): Promise<PollingStationNomenclatorAPIResponse> => {
-  return API.get(
-    `election-rounds/${electionRoundId}/polling-stations:fetchAll`
-  ).then((res) => res.data);
+  return API.get(`election-rounds/${electionRoundId}/polling-stations:fetchAll`).then(
+    (res) => res.data,
+  );
 };
 /** ========================================================================
     ====================== GET pollingStationNomenclatorVersion ============
@@ -66,11 +68,11 @@ export type PollingStationNomenclatorVersionAPIResponse = {
 };
 
 export const getPollingStationNomenclatorVersion = (
-  electionRoundId: string
+  electionRoundId: string,
 ): Promise<PollingStationNomenclatorVersionAPIResponse> => {
-  return API.get(
-    `election-rounds/${electionRoundId}/polling-stations:version`
-  ).then((res) => res.data);
+  return API.get(`election-rounds/${electionRoundId}/polling-stations:version`).then(
+    (res) => res.data,
+  );
 };
 
 /** ========================================================================
@@ -80,19 +82,21 @@ export const getPollingStationNomenclatorVersion = (
     @param {string} electionRoundId 
     @returns {PollingStationVisitsAPIResponse} 
 */
+export type PollingStationVisitVM = {
+  pollingStationId: string;
+  visitedAt: string; // ISO date
+};
+
 export type PollingStationVisitsAPIResponse = {
-  visits: {
-    pollingStationId: string;
-    visitedAt: string; // ISO date
-  };
+  visits: PollingStationVisitVM[];
 };
 
 export const getPollingStationsVisits = (
-  electionRoundId: string
+  electionRoundId: string,
 ): Promise<PollingStationVisitsAPIResponse> => {
-  return API.get(
-    `election-rounds/${electionRoundId}/polling-station-visits:my`
-  ).then((res) => res.data);
+  return API.get(`election-rounds/${electionRoundId}/polling-station-visits:my`).then(
+    (res) => res.data,
+  );
 };
 
 /**
@@ -131,7 +135,7 @@ export const upsertPollingStationGeneralInformation = ({
     `election-rounds/${electionRoundId}/polling-stations/${pollingStationId}/information`,
     {
       ...rest,
-    }
+    },
   )
     .then((res) => res.data)
     .catch(console.log);
@@ -154,16 +158,16 @@ export type PollingStationInformationFormAPIResponse = {
 };
 
 export const getPollingStationInformationForm = (
-  electionRoundId: string
+  electionRoundId: string,
 ): Promise<PollingStationInformationFormAPIResponse> => {
-  return API.get(
-    `election-rounds/${electionRoundId}/polling-station-information-form`
-  ).then((res) => res.data);
+  return API.get(`election-rounds/${electionRoundId}/polling-station-information-form`).then(
+    (res) => res.data,
+  );
 };
 
 export const getPollingStationInformation = (
   electionRoundId: string,
-  pollingStationIds?: string[]
+  pollingStationIds?: string[],
 ): Promise<PollingStationInformationAPIResponse> => {
   return API.get(`election-rounds/${electionRoundId}/information:my`, {
     params: {

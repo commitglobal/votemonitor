@@ -46,17 +46,14 @@ export const usePollingStationsNomenclatorQuery = (electionRoundId: string) => {
 
       const count = await performanceLog(
         () => DB.getPollingStationNomenclatorNodesCount(electionRoundId),
-        "DB.getPollingStationNomenclatorNodesCount"
+        "DB.getPollingStationNomenclatorNodesCount",
       );
 
       if (count > 0) {
         return "RETRIEVED FROM DB";
       } else {
         const data = await getPollingStationNomenclator(electionRoundId);
-        await DB.addPollingStationsNomenclatureBulk(
-          electionRoundId,
-          data.nodes
-        );
+        await DB.addPollingStationsNomenclatureBulk(electionRoundId, data.nodes);
         return "ADDED TO DB";
       }
     },
@@ -126,19 +123,12 @@ export const usePollingStationInformationForm = (electionRoundId: string) => {
 
 export const usePollingStationInformation = (
   electionRoundId: string,
-  pollingStationIds?: string[]
+  pollingStationIds?: string[],
 ) => {
   return useQuery({
-    queryKey: [
-      "polling-station-information",
-      electionRoundId,
-      pollingStationIds,
-    ],
+    queryKey: ["polling-station-information", electionRoundId, pollingStationIds],
     queryFn: async () => {
-      const data = await getPollingStationInformation(
-        electionRoundId,
-        pollingStationIds
-      );
+      const data = await getPollingStationInformation(electionRoundId, pollingStationIds);
       console.log("usePollingStationInformation", data);
       return data;
     },

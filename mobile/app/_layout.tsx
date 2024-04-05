@@ -11,18 +11,19 @@ import { TamaguiProvider } from "@tamagui/core";
 import { tamaguiConfig } from "../tamagui.config";
 import { useFonts } from "expo-font";
 import Reactotron from "reactotron-react-native";
-import { Button } from "tamagui";
+// import { Button } from "tamagui";
 import {
   PollingStationInformationAPIPayload,
   upsertPollingStationGeneralInformation,
 } from "../services/definitions.api";
 import "../common/config/i18n";
 import LanguageContextProvider from "../contexts/language/LanguageContext.provider";
+import UserContextProvider from "../contexts/user/UserContext.provider";
 
 if (__DEV__) {
   Reactotron.setAsyncStorageHandler(AsyncStorage)
     .configure({
-      host: "192.168.68.51", // PUT YOUR OWN LOCAL IP (logged by Expo)
+      host: "192.168.68.56", // PUT YOUR OWN LOCAL IP (logged by Expo)
     }) // controls connection & communication settings
     .useReactNative({
       networking: {},
@@ -157,19 +158,19 @@ export default function Root() {
     >
       <TamaguiProvider config={tamaguiConfig}>
         <AuthContextProvider>
-          {!isOnline && <OfflineBanner />}
-          <Slot />
-          <Button
-            onPress={() => {
-              setIsOnline(!isOnline);
-              onlineManager.setOnline(!isOnline);
-            }}
-          >
-            Go Online/Offline
-          </Button>
           <LanguageContextProvider>
-            {!isOnline && <OfflineBanner />}
-            <Slot />
+            <UserContextProvider>
+              {!isOnline && <OfflineBanner />}
+              <Slot />
+              {/* <Button
+              onPress={() => {
+                setIsOnline(!isOnline);
+                onlineManager.setOnline(!isOnline);
+              }}
+            >
+              Go Online/Offline
+            </Button> */}
+            </UserContextProvider>
           </LanguageContextProvider>
         </AuthContextProvider>
       </TamaguiProvider>
