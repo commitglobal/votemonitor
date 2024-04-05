@@ -6,6 +6,7 @@ public class Endpoint(IRepository<ObserverAggregate> repository)
     public override void Configure()
     {
         Post("/api/observers");
+        Policies(PolicyNames.PlatformAdminsOnly);
     }
 
     public override async Task<Results<Ok<ObserverModel>, Conflict<ProblemDetails>>> ExecuteAsync(Request req, CancellationToken ct)
