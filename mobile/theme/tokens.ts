@@ -20,8 +20,8 @@ export const tokens = createTokens({
   space: {
     ...config.tokens.space,
     true: 16, // mandatory default spacing
-    xxxs: 2,
-    xxs: 4,
+    xxxs: 4,
+    xxs: 8,
     xs: 10,
     sm: 12,
     md: 16,
