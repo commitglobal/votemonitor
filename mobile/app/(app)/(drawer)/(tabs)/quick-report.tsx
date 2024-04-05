@@ -96,7 +96,11 @@ const QuickReport = () => {
           </Button>
         </Stack>
 
-        <LinearProgress></LinearProgress>
+        <LinearProgress total={5} current={1}></LinearProgress>
+        <LinearProgress total={5} current={2}></LinearProgress>
+        <LinearProgress total={5} current={3}></LinearProgress>
+        <LinearProgress total={5} current={4}></LinearProgress>
+        <LinearProgress total={5} current={5}></LinearProgress>
       </Stack>
     </ScrollView>
   );
