@@ -4,16 +4,20 @@ import { Icon } from "./Icon";
 
 const Select = ({
   placeholder = "Select",
-  selectionData,
+  options,
 }: {
   placeholder?: string;
-  // TODO: change 'any' from here as we don't know how the data looks like
-  selectionData: any[];
+  options: { id: string | number; value: string }[];
 }) => {
   const [val, setVal] = useState("");
 
   return (
-    <TamaguiSelect value={val} onValueChange={setVal} disablePreventBodyScroll>
+    <TamaguiSelect
+      value={val}
+      onValueChange={setVal}
+      disablePreventBodyScroll
+      native
+    >
       <TamaguiSelect.Trigger
         backgroundColor="transparent"
         paddingHorizontal="$md"
@@ -29,7 +33,6 @@ const Select = ({
         <TamaguiSelect.Value
           width={"90%"}
           color="$gray5"
-          // TODO: change the placeholder
           placeholder={placeholder}
           fontWeight="500"
         ></TamaguiSelect.Value>
@@ -51,7 +54,7 @@ const Select = ({
           <TamaguiSelect.Group>
             {useMemo(
               () =>
-                selectionData.map((entry, i) => {
+                options.map((entry, i) => {
                   return (
                     <TamaguiSelect.Item
                       index={i}
@@ -68,7 +71,7 @@ const Select = ({
                     </TamaguiSelect.Item>
                   );
                 }),
-              [selectionData]
+              [options],
             )}
           </TamaguiSelect.Group>
         </TamaguiSelect.Viewport>

@@ -19,7 +19,7 @@ import Reactotron from "reactotron-react-native";
 if (__DEV__) {
   Reactotron.setAsyncStorageHandler(AsyncStorage)
     .configure({
-      host: "192.168.68.58", // PUT YOUR OWN LOCAL IP (logged by Expo)
+      host: "192.168.68.51", // PUT YOUR OWN LOCAL IP (logged by Expo)
     }) // controls connection & communication settings
     .useReactNative({
       networking: {},
