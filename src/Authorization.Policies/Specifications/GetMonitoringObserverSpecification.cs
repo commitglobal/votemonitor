@@ -34,12 +34,12 @@ internal sealed class GetMonitoringObserverSpecification : SingleResultSpecifica
 
         Query.Select(x => new MonitoringObserverView
         {
-            ElectionRoundId = x.InviterNgo.ElectionRoundId,
-            ElectionRoundStatus = x.InviterNgo.ElectionRound.Status,
-            NgoId = x.InviterNgo.NgoId,
-            NgoStatus = x.InviterNgo.Ngo.Status,
-            MonitoringNgoId = x.InviterNgoId,
-            MonitoringNgoStatus = x.InviterNgo.Status,
+            ElectionRoundId = x.MonitoringNgo.ElectionRoundId,
+            ElectionRoundStatus = x.MonitoringNgo.ElectionRound.Status,
+            NgoId = x.MonitoringNgo.NgoId,
+            NgoStatus = x.MonitoringNgo.Ngo.Status,
+            MonitoringNgoId = x.MonitoringNgoId,
+            MonitoringNgoStatus = x.MonitoringNgo.Status,
             ObserverId = x.ObserverId,
             UserStatus = x.Observer.Status,
             MonitoringObserverStatus = x.Status,
