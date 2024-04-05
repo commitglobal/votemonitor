@@ -7,10 +7,7 @@ import {
   deleteAllRecordsPollingStationNomenclator,
   getPollingStationNomenclatorNodes,
 } from "../database/DAO/PollingStationsNomenclatorDAO";
-import {
-  getElectionRounds,
-  getPollingStationInformation,
-} from "../services/definitions.api";
+import { getPollingStationInformation } from "../services/definitions.api";
 
 Reactotron.onCustomCommand({
   title: "AsyncStorage",
@@ -43,9 +40,7 @@ Reactotron.onCustomCommand({
   handler: async () => {
     console.log("Calling getPollingStationNomenclatorNodes");
     console.log(
-      await getPollingStationNomenclatorNodesCount(
-        "1e34f72d-0fe6-415d-a123-f9d6b8fa962d"
-      )
+      await getPollingStationNomenclatorNodesCount("1e34f72d-0fe6-415d-a123-f9d6b8fa962d"),
     );
   },
 });
@@ -71,7 +66,7 @@ Reactotron.onCustomCommand({
         id: i._id,
         electionRoundId: i.electionRoundId,
         parentId: i.parentId,
-      }))
+      })),
     );
   },
 });
@@ -80,10 +75,9 @@ Reactotron.onCustomCommand({
   title: "TEst getPollingStationInformation",
   command: "getPollingStationInformation",
   handler: async () => {
-    const data = await getPollingStationInformation(
-      "1e34f72d-0fe6-415d-a123-f9d6b8fa962d",
-      ["9133160e-d9b7-acce-436d67372722"]
-    )
+    await getPollingStationInformation("1e34f72d-0fe6-415d-a123-f9d6b8fa962d", [
+      "9133160e-d9b7-acce-436d67372722",
+    ])
       .then(console.log)
       .catch((err) => console.log(err.response.data));
   },

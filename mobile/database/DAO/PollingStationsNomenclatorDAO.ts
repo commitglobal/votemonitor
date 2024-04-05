@@ -5,38 +5,32 @@ import { PollingStationsNom } from "../models/polling-stations-nomenclator.model
 
 export const addPollingStationsNomenclatureBulk = async (
   electionRoundId: string,
-  data: PollingStationNomenclatorNodeAPIResponse[]
+  data: PollingStationNomenclatorNodeAPIResponse[],
 ) => {
   console.log("addPollingStationsNomenclatureBulk");
   const startTime = performance.now();
 
   await database.write(async () => {
     const newNomenclature = data.map((node) =>
-      database
-        .get<PollingStationsNom>("polling_stations_nom")
-        .prepareCreate((pollingStation) => {
-          pollingStation._id = node.id;
-          pollingStation.name = node.name;
-          pollingStation.electionRoundId = electionRoundId;
-          pollingStation.pollingStationId = node.pollingStationId;
-          pollingStation.pollingStationNumber = node.number;
-          pollingStation.parentId = node.parentId || -1;
-        })
+      database.get<PollingStationsNom>("polling_stations_nom").prepareCreate((pollingStation) => {
+        pollingStation._id = node.id;
+        pollingStation.name = node.name;
+        pollingStation.electionRoundId = electionRoundId;
+        pollingStation.pollingStationId = node.pollingStationId;
+        pollingStation.pollingStationNumber = node.number;
+        pollingStation.parentId = node.parentId || -1;
+      }),
     );
     await database.batch(newNomenclature);
 
     const endTime = performance.now();
-    console.log(
-      `addPollingStationsNomenclatureBulk took ${
-        endTime - startTime
-      } milliseconds.`
-    );
+    console.log(`addPollingStationsNomenclatureBulk took ${endTime - startTime} milliseconds.`);
   });
 };
 
 export const getPollingStationNomenclatorNodesCount = (
   electionRoundId: string,
-  take?: number
+  // take?: number
 ) => {
   // TODO: instead of counting, we can try to take 1 and if exists, we know all are there
   console.log("[DATABASE CALL] getPollingStationNomenclatorNodesCount");
@@ -46,12 +40,9 @@ export const getPollingStationNomenclatorNodesCount = (
     .fetchCount();
 };
 
-export const getPollingStationNomenclatorNodes =
-  (): Query<PollingStationsNom> => {
-    return database
-      .get<PollingStationsNom>("polling_stations_nom")
-      .query(Q.take(10));
-  };
+export const getPollingStationNomenclatorNodes = (): Query<PollingStationsNom> => {
+  return database.get<PollingStationsNom>("polling_stations_nom").query(Q.take(10));
+};
 
 export const deleteAllRecordsPollingStationNomenclator = () => {
   console.log("deleteAllRecordsPollingStationNomenclator");
@@ -75,9 +66,7 @@ export const getPollingStationsByParentId = (parentId: number | null = -1) => {
     .fetch();
 };
 
-export const getPollingStationById = async (
-  id: number
-): Promise<PollingStationsNom | null> => {
+export const getPollingStationById = async (id: number): Promise<PollingStationsNom | null> => {
   const data = await database
     .get<PollingStationsNom>("polling_stations_nom")
     .query(Q.where("_id", id));

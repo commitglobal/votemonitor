@@ -1,5 +1,3 @@
-import { ElectionRoundsAPIResponse } from "../../services/definitions.api";
-
 export type ElectionRoundVM = {
   id: string;
   countryId: string;

@@ -3,13 +3,10 @@ import { Slot } from "expo-router";
 import AuthContextProvider from "../contexts/auth/AuthContext.provider";
 import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {
-  PersistQueryClientProvider,
-  removeOldestQuery,
-} from "@tanstack/react-query-persist-client";
+import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import NetInfo from "@react-native-community/netinfo";
 import OfflineBanner from "../components/OfflineBanner";
-import { MutationCache, QueryClient, onlineManager, useIsRestoring } from "@tanstack/react-query";
+import { MutationCache, QueryClient, onlineManager } from "@tanstack/react-query";
 import { TamaguiProvider } from "@tamagui/core";
 import { tamaguiConfig } from "../tamagui.config";
 import { useFonts } from "expo-font";
@@ -150,7 +147,7 @@ export default function Root() {
         persister,
         maxAge: 5 * 24 * 60 * 60 * 1000,
         dehydrateOptions: {
-          shouldDehydrateQuery: ({ queryKey, state }) => {
+          shouldDehydrateQuery: ({ queryKey }) => {
             // SELECTIVELY PERSIST QUERY KEYS https://github.com/TanStack/query/discussions/3568
             return !queryKey.includes("polling-stations-nomenclator");
           },

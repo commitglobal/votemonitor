@@ -6,6 +6,7 @@
     "start": "npm run lint && expo start -c",
     "android": "expo run:android",
     "ios": "expo run:ios",
+    "start:ios": "eas build:run -p ios",
     "web": "expo start --web",
     "format": "prettier --write \"app/**/*.{js,jsx,json,md,ts,tsx}\"",
     "lint": "eslint . --fix && npm run format"
