@@ -5,7 +5,7 @@ import { Stack } from "tamagui";
 import Button from "../../../../components/Button";
 import { Icon } from "../../../../components/Icon";
 import Card from "../../../../components/Card";
-import { ProgressBar } from "../../../../components/ProgressBar";
+import { LinearProgress } from "../../../../components/LinearProgress";
 
 const QuickReport = () => {
   return (
@@ -95,9 +95,9 @@ const QuickReport = () => {
             Danger
           </Button>
         </Stack>
-      </Stack>
 
-      <ProgressBar></ProgressBar>
+        <LinearProgress></LinearProgress>
+      </Stack>
     </ScrollView>
   );
 };
