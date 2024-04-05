@@ -96,11 +96,11 @@ const QuickReport = () => {
             Danger
           </Button>
         </Stack>
-        <Card gap="$xs" padding="$sm">
+        <Stack gap="$xs" padding="$sm">
           <Typography preset="subheading">Select</Typography>
           <Select options={regionData} placeholder="Select option" defaultValue={"West"} />
           <Select options={countryData} placeholder="Select option" />
-        </Card>
+        </Stack>
 
         <Stack padding="$sm" gap="$xs" backgroundColor="white">
           <Typography preset="heading">Badge</Typography>

@@ -4356,16 +4356,13 @@ namespace Vote.Monitor.Domain.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid>("InviterNgoId")
-                        .HasColumnType("uuid");
-
                     b.Property<Guid>("LastModifiedBy")
                         .HasColumnType("uuid");
 
                     b.Property<DateTime?>("LastModifiedOn")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid?>("MonitoringNgoId")
+                    b.Property<Guid>("MonitoringNgoId")
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("ObserverId")
@@ -4375,9 +4372,11 @@ namespace Vote.Monitor.Domain.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.HasKey("Id");
+                    b.Property<string[]>("Tags")
+                        .IsRequired()
+                        .HasColumnType("text[]");
 
-                    b.HasIndex("InviterNgoId");
+                    b.HasKey("Id");
 
                     b.HasIndex("MonitoringNgoId");
 
@@ -4935,15 +4934,11 @@ namespace Vote.Monitor.Domain.Migrations
 
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.MonitoringObserverAggregate.MonitoringObserver", b =>
                 {
-                    b.HasOne("Vote.Monitor.Domain.Entities.MonitoringNgoAggregate.MonitoringNgo", "InviterNgo")
-                        .WithMany()
-                        .HasForeignKey("InviterNgoId")
+                    b.HasOne("Vote.Monitor.Domain.Entities.MonitoringNgoAggregate.MonitoringNgo", "MonitoringNgo")
+                        .WithMany("MonitoringObservers")
+                        .HasForeignKey("MonitoringNgoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("Vote.Monitor.Domain.Entities.MonitoringNgoAggregate.MonitoringNgo", null)
-                        .WithMany("MonitoringObservers")
-                        .HasForeignKey("MonitoringNgoId");
 
                     b.HasOne("Vote.Monitor.Domain.Entities.ApplicationUserAggregate.Observer", "Observer")
                         .WithMany()
@@ -4951,7 +4946,7 @@ namespace Vote.Monitor.Domain.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("InviterNgo");
+                    b.Navigation("MonitoringNgo");
 
                     b.Navigation("Observer");
                 });

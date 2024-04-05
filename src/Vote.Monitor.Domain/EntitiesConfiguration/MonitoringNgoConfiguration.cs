@@ -14,11 +14,12 @@ internal class MonitoringNgoConfiguration : IEntityTypeConfiguration<MonitoringN
 
         builder.HasIndex(x => x.ElectionRoundId);
         builder.HasIndex(x => x.NgoId);
-        
+
         builder
-            .HasMany(x => x.MonitoringObservers)
-            .WithOne(x => x.InviterNgo)
-            .HasForeignKey(x => x.InviterNgoId);
+            .HasMany(e => e.MonitoringObservers)
+            .WithOne(e => e.MonitoringNgo)
+            .HasForeignKey(e => e.MonitoringNgoId)
+            .IsRequired();
 
         builder.Navigation(nameof(MonitoringNgo.MonitoringObservers))
             .UsePropertyAccessMode(PropertyAccessMode.Field);
