@@ -1,10 +1,11 @@
-﻿using FastEndpoints;
+﻿using System.Security.Claims;
+using FastEndpoints;
 using FluentAssertions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using NSubstitute;
 using Vote.Monitor.Api.Feature.PollingStation.Notes.Get;
 using Vote.Monitor.Api.Feature.PollingStation.Notes.Specifications;
-using Vote.Monitor.Domain.Entities.ElectionRoundAggregate;
 using Vote.Monitor.Domain.Entities.PollingStationNoteAggregate;
 using Vote.Monitor.Domain.Repository;
 using Vote.Monitor.TestUtils.Fakes.Aggregates;
@@ -13,19 +14,19 @@ namespace Vote.Monitor.Api.Feature.PollingStation.Notes.UnitTests.Endpoints;
 
 public class GetEndpointTests
 {
+    private readonly IAuthorizationService _authorizationService;
     private readonly IReadRepository<PollingStationNoteAggregate> _repository;
-    private readonly IRepository<ElectionRound> _electionRoundRepository;
     private readonly IRepository<PollingStationAggregate> _pollingStationRepository;
     private readonly Endpoint _endpoint;
 
     public GetEndpointTests()
     {
+        _authorizationService = Substitute.For<IAuthorizationService>();
         _repository = Substitute.For<IReadRepository<PollingStationNote>>();
         _pollingStationRepository = Substitute.For<IRepository<PollingStationAggregate>>();
-        _electionRoundRepository = Substitute.For<IRepository<ElectionRound>>();
-        _endpoint = Factory.Create<Endpoint>(_repository,
-            _pollingStationRepository,
-            _electionRoundRepository);
+        _endpoint = Factory.Create<Endpoint>(_authorizationService,
+            _repository,
+            _pollingStationRepository);
     }
 
     [Fact]
@@ -34,15 +35,14 @@ public class GetEndpointTests
         // Arrange
         var noteId = Guid.NewGuid();
         var noteText = "a polling station note";
-        
+
         var fakeElectionRound = new ElectionRoundAggregateFaker().Generate();
         var fakePollingStation = new PollingStationFaker().Generate();
         var fakeMonitoringObserver = new MonitoringObserverFaker().Generate();
         var fakePollingStationNote = new PollingStationNoteFaker(noteId, noteText).Generate();
 
-        _electionRoundRepository
-            .FirstOrDefaultAsync(Arg.Any<GetElectionRoundSpecification>())
-            .Returns(fakeElectionRound);
+        _authorizationService.AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object?>(), Arg.Any<IEnumerable<IAuthorizationRequirement>>())
+            .Returns(AuthorizationResult.Success());
 
         _pollingStationRepository
             .FirstOrDefaultAsync(Arg.Any<GetPollingStationSpecification>())
@@ -68,16 +68,15 @@ public class GetEndpointTests
     }
 
     [Fact]
-    public async Task ShouldReturnBadRequest_WhenElectionRoundDoesNotExist()
+    public async Task ShouldReturnNotFound_WhenNotAuthorised()
     {
         // Arrange
         var fakeElectionRound = new ElectionRoundAggregateFaker().Generate();
         var fakePollingStation = new PollingStationFaker().Generate();
         var fakeMonitoringObserver = new MonitoringObserverFaker().Generate();
 
-        _electionRoundRepository
-            .FirstOrDefaultAsync(Arg.Any<GetElectionRoundSpecification>())
-            .Returns((ElectionRound)null!);
+        _authorizationService.AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object?>(), Arg.Any<IEnumerable<IAuthorizationRequirement>>())
+            .Returns(AuthorizationResult.Failed());
 
         // Act
         var request = new Request
@@ -93,7 +92,7 @@ public class GetEndpointTests
         result
             .Should().BeOfType<Results<Ok<NoteModel>, BadRequest<ProblemDetails>, NotFound>>()
             .Which
-            .Result.Should().BeOfType<BadRequest<ProblemDetails>>();
+            .Result.Should().BeOfType<NotFound>();
     }
 
     [Fact]
@@ -104,9 +103,8 @@ public class GetEndpointTests
         var fakePollingStation = new PollingStationFaker().Generate();
         var fakeMonitoringObserver = new MonitoringObserverFaker().Generate();
 
-        _electionRoundRepository
-            .FirstOrDefaultAsync(Arg.Any<GetElectionRoundSpecification>())
-            .Returns(fakeElectionRound);
+        _authorizationService.AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object?>(), Arg.Any<IEnumerable<IAuthorizationRequirement>>())
+            .Returns(AuthorizationResult.Success());
 
         _pollingStationRepository
             .FirstOrDefaultAsync(Arg.Any<GetPollingStationSpecification>())

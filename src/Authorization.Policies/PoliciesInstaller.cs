@@ -19,6 +19,11 @@ public static class AuthorizationPoliciesInstaller
             options.AddPolicy(PolicyNames.ObserversOnly, policy => policy.RequireRole(UserRole.Observer));
         });
 
+        services
+            .AddScoped<ICurrentUserIdProvider, CurrentUserIdProvider>()
+            .AddScoped<ICurrentUserRoleProvider, CurrentUserRoleProvider>()
+            .AddScoped(sp => (ICurrentUserInitializer)sp.GetRequiredService<ICurrentUserIdProvider>());
+
         return services;
     }
 }

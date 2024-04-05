@@ -23,10 +23,10 @@ public class DeleteEndpointTests
     {
         _repository = Substitute.For<IRepository<ObserverGuideAggregate>>();
         _authorizationService = Substitute.For<IAuthorizationService>();
-        var currentUserProvider = Substitute.For<ICurrentUserProvider>();
+        var currentUserRoleProvider = Substitute.For<ICurrentUserRoleProvider>();
 
         _endpoint = Factory.Create<Endpoint>(_authorizationService,
-            currentUserProvider,
+            currentUserRoleProvider,
             _repository);
     }
 

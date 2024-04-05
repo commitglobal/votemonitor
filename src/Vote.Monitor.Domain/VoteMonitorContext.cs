@@ -17,15 +17,15 @@ public class VoteMonitorContext : DbContext
 {
     private readonly ISerializerService _serializerService;
     private readonly ITimeProvider _timeProvider;
-    private readonly ICurrentUserProvider _currentUserProvider;
+    private readonly ICurrentUserIdProvider _currentUserIdProvider;
     public VoteMonitorContext(DbContextOptions<VoteMonitorContext> options,
         ISerializerService serializerService,
         ITimeProvider timeProvider,
-        ICurrentUserProvider currentUserProvider) : base(options)
+        ICurrentUserIdProvider currentUserIdProvider) : base(options)
     {
         _serializerService = serializerService;
         _timeProvider = timeProvider;
-        _currentUserProvider = currentUserProvider;
+        _currentUserIdProvider = currentUserIdProvider;
     }
 
     public DbSet<ApplicationUser> Users { get; set; }
@@ -97,7 +97,7 @@ public class VoteMonitorContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.AddInterceptors(new AuditingInterceptor(_currentUserProvider, _timeProvider));
-        optionsBuilder.AddInterceptors(new AuditTrailInterceptor(_serializerService, _currentUserProvider, _timeProvider));
+        optionsBuilder.AddInterceptors(new AuditingInterceptor(_currentUserIdProvider, _timeProvider));
+        optionsBuilder.AddInterceptors(new AuditTrailInterceptor(_serializerService, _currentUserIdProvider, _timeProvider));
     }
 }
