@@ -1,16 +1,24 @@
+import React, { useEffect, useState } from "react";
 import { Slot } from "expo-router";
 import AuthContextProvider from "../contexts/auth/AuthContext.provider";
 import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
-import { useEffect, useState } from "react";
+import {
+  PersistQueryClientProvider,
+  removeOldestQuery,
+} from "@tanstack/react-query-persist-client";
 import NetInfo from "@react-native-community/netinfo";
 import OfflineBanner from "../components/OfflineBanner";
-import { QueryClient, onlineManager, useIsRestoring } from "@tanstack/react-query";
+import { MutationCache, QueryClient, onlineManager, useIsRestoring } from "@tanstack/react-query";
 import { TamaguiProvider } from "@tamagui/core";
 import { tamaguiConfig } from "../tamagui.config";
 import { useFonts } from "expo-font";
 import Reactotron from "reactotron-react-native";
+import { Button } from "tamagui";
+import {
+  PollingStationInformationAPIPayload,
+  upsertPollingStationGeneralInformation,
+} from "../services/definitions.api";
 import "../common/config/i18n";
 import LanguageContextProvider from "../contexts/language/LanguageContext.provider";
 
@@ -26,13 +34,20 @@ if (__DEV__) {
 }
 
 const queryClient = new QueryClient({
+  mutationCache: new MutationCache({
+    onSuccess: (data: any) => {
+      console.log("MutationCache ", data);
+    },
+    onError: (error) => {
+      console.log("MutationCache error ", error);
+    },
+  }),
   defaultOptions: {
     mutations: {
       /*
 
           Set the mutations Garbage Collection time to a very high number to avoid losing pending mutations
 
-          TODO: Do we need to cache queries? Probably NOT!
           TODO: To check with AsyncStorage how it works and when the GC kicks in
 
           If it is not set when creating the QueryClient instance,
@@ -53,7 +68,12 @@ const queryClient = new QueryClient({
           TODO TESTING: Can go online/offline to simulate this by using onlineManager.setOnline(true/false)
 
       */
-      gcTime: 1000 * 60 * 60 * 24, // 24h - maybe need infity here
+      gcTime: 5 * 24 * 60 * 60 * 1000, // 5 days
+      onError: (err) => {
+        console.log(err);
+        console.log("QueryClient - mutations: ", JSON.stringify(err));
+      },
+      throwOnError: true,
     },
     queries: {
       /*
@@ -64,7 +84,8 @@ const queryClient = new QueryClient({
           TODO: probably will also need this, to allow user to close the app and reopen and still see the forms, data, etc 
 
       */
-      gcTime: 1000 * 60 * 60 * 24,
+      gcTime: 5 * 24 * 60 * 60 * 1000, // 5 days The duration until inactive queries will be removed from the cache. This defaults to 5 minutes. Queries transition to the inactive state as soon as there are no observers registered, so when all components which use that query have unmounted.
+      staleTime: 5 * 24 * 60 * 60 * 1000, // 5 days The duration until a query transitions from fresh to stale. As long as the query is fresh, data will always be read from the cache only - no network request will happen! If the query is stale (which per default is: instantly), you will still get data from the cache, but a background refetch can happen under certain conditions.
     },
   },
 });
@@ -74,8 +95,8 @@ const queryClient = new QueryClient({
 // https://tanstack.com/query/v4/docs/framework/react/plugins/createAsyncStoragePersister
 const persister = createAsyncStoragePersister({
   storage: AsyncStorage,
-  throttleTime: 3000, // TODO: check what implications are here
-  // key: "REACT_QUERY_OFFLINE_CACHE" // this is the default key
+  // throttleTime: 3000, // TODO: check what implications are here
+  // key: "REACT_QUERY_OFFLINE_CACHE" // t  his is the default key
 });
 
 export default function Root() {
@@ -104,24 +125,51 @@ export default function Root() {
     });
   }, []);
 
-  // https://tanstack.com/query/latest/docs/framework/react/plugins/persistQueryClient#useisrestoring
-  const isRestoring = useIsRestoring();
-  console.log("isRestoring persistQueryClient", isRestoring);
-
   if (!loaded) {
     return null;
   }
 
+  queryClient.setMutationDefaults(["upsertPollingStationGeneralInformation"], {
+    mutationFn: (payload: PollingStationInformationAPIPayload) => {
+      return upsertPollingStationGeneralInformation(payload);
+    },
+  });
+
   return (
     <PersistQueryClientProvider
       onSuccess={async () => {
-        queryClient.resumePausedMutations().then(() => queryClient.invalidateQueries());
+        console.log(
+          "PersistQueryClientProvider onSuccess - Succesfully get data from AsyncStorage",
+        );
+        queryClient.resumePausedMutations().then(() => {
+          console.log("PersistQueryClientProvider invalidateQueries");
+          queryClient.invalidateQueries();
+        });
       }}
-      persistOptions={{ persister }}
+      persistOptions={{
+        persister,
+        maxAge: 5 * 24 * 60 * 60 * 1000,
+        dehydrateOptions: {
+          shouldDehydrateQuery: ({ queryKey, state }) => {
+            // SELECTIVELY PERSIST QUERY KEYS https://github.com/TanStack/query/discussions/3568
+            return !queryKey.includes("polling-stations-nomenclator");
+          },
+        },
+      }}
       client={queryClient}
     >
       <TamaguiProvider config={tamaguiConfig}>
         <AuthContextProvider>
+          {!isOnline && <OfflineBanner />}
+          <Slot />
+          <Button
+            onPress={() => {
+              setIsOnline(!isOnline);
+              onlineManager.setOnline(!isOnline);
+            }}
+          >
+            Go Online/Offline
+          </Button>
           <LanguageContextProvider>
             {!isOnline && <OfflineBanner />}
             <Slot />

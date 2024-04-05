@@ -8,6 +8,13 @@
       "distribution": "internal",
       "channel": "development"
     },
+    "development-simulator": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "ios": {
+        "simulator": true
+      }
+    },
     "preview": {
       "distribution": "internal",
       "channel": "testing" // https://github.com/expo/eas-cli#eas-channeledit-name
