@@ -14,8 +14,8 @@ const CheckboxInput: React.FC<CheckboxInputProps> = ({ label, id, ...rest }) => 
     <XStack
       height={42}
       alignItems="center"
-      borderColor={isChecked ? "$purple5" : "$gray3"}
       borderWidth={1}
+      borderColor={isChecked ? "$purple5" : "$gray3"}
       gap="$xs"
       paddingHorizontal={14}
       paddingVertical="$xs"
@@ -23,6 +23,8 @@ const CheckboxInput: React.FC<CheckboxInputProps> = ({ label, id, ...rest }) => 
       {...rest}
     >
       <Checkbox
+        width="$md"
+        height="$md"
         borderRadius={4}
         id={id}
         onCheckedChange={(checked) => setIsChecked(checked)}
@@ -34,8 +36,8 @@ const CheckboxInput: React.FC<CheckboxInputProps> = ({ label, id, ...rest }) => 
         </Checkbox.Indicator>
       </Checkbox>
 
-      <Label htmlFor={id} padding="$0" margin="$0" lineHeight={24} flex={1}>
-        <Typography>{label}</Typography>
+      <Label htmlFor={id} padding="$0" margin="$0" flex={1}>
+        <Typography preset="body1">{label}</Typography>
       </Label>
     </XStack>
   );
