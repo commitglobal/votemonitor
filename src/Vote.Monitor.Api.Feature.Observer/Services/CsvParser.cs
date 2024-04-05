@@ -1,7 +1,6 @@
 ﻿using System.Globalization;
 using CsvHelper;
 using CsvHelper.Configuration;
-using Microsoft.Extensions.Logging;
 
 namespace Vote.Monitor.Api.Feature.Observer.Services;
 

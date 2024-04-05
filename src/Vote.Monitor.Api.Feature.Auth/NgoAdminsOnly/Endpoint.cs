@@ -1,5 +1,4 @@
-﻿using Authorization.Policies;
-using Authorization.Policies.Requirements;
+﻿using Authorization.Policies.Requirements;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Vote.Monitor.Api.Feature.Auth.NgoAdminsOnly;

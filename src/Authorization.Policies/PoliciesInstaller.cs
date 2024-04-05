@@ -16,6 +16,7 @@ public static class AuthorizationPoliciesInstaller
         services.AddAuthorization(options =>
         {
             options.AddPolicy(PolicyNames.PlatformAdminsOnly, policy => policy.RequireRole(UserRole.PlatformAdmin));
+            options.AddPolicy(PolicyNames.NgoAdminsOnly, policy => policy.RequireRole(UserRole.NgoAdmin));
             options.AddPolicy(PolicyNames.ObserversOnly, policy => policy.RequireRole(UserRole.Observer));
         });
 
