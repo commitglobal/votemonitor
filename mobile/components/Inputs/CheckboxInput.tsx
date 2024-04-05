@@ -8,11 +8,7 @@ interface CheckboxInputProps extends CheckboxProps {
   label: string;
 }
 
-const CheckboxInput: React.FC<CheckboxInputProps> = ({
-  label,
-  id,
-  ...rest
-}) => {
+const CheckboxInput: React.FC<CheckboxInputProps> = ({ label, id, ...rest }) => {
   const [isChecked, setIsChecked] = useState<CheckedState>(false);
   return (
     <XStack
@@ -31,6 +27,7 @@ const CheckboxInput: React.FC<CheckboxInputProps> = ({
         id={id}
         onCheckedChange={(checked) => setIsChecked(checked)}
         backgroundColor={isChecked ? "$purple5" : "white"}
+        borderColor={isChecked ? "$purple5" : "$gray3"}
       >
         <Checkbox.Indicator>
           <Icon icon="check" color="white" />
