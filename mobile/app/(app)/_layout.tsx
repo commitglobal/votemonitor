@@ -1,5 +1,6 @@
 import { Redirect, Stack } from "expo-router";
 import { useAuth } from "../../hooks/useAuth";
+import { PortalProvider } from "tamagui";
 
 const AppLayout = () => {
   const { isAuthenticated } = useAuth();
@@ -11,12 +12,14 @@ const AppLayout = () => {
   }
 
   return (
-    <Stack>
-      <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
-      <Stack.Screen name="polling-station-wizzard" options={{ headerShown: false }} />
-      <Stack.Screen name="form-questionnaire" />
-      <Stack.Screen name="polling-station-questionnaire" />
-    </Stack>
+    <PortalProvider>
+      <Stack>
+        <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
+        <Stack.Screen name="polling-station-wizzard" />
+        <Stack.Screen name="form-questionnaire" />
+        <Stack.Screen name="polling-station-questionnaire" />
+      </Stack>
+    </PortalProvider>
   );
 };
 
