@@ -4,6 +4,8 @@ import { Typography } from "../../../../components/Typography";
 import { Stack } from "tamagui";
 import Button from "../../../../components/Button";
 import { Icon } from "../../../../components/Icon";
+import Badge from "../../../../components/Badge";
+
 import Card from "../../../../components/Card";
 
 const QuickReport = () => {
@@ -43,8 +45,6 @@ const QuickReport = () => {
             Danger
           </Button>
         </Stack>
-
-        {/* disabled buttons */}
         <Stack gap="$xs">
           <Typography preset="subheading">Disabled</Typography>
           <Button disabled onPress={() => console.log("filled")}>
@@ -94,6 +94,14 @@ const QuickReport = () => {
             Danger
           </Button>
         </Stack>
+      </Stack>
+
+      <Stack padding="$sm" gap="$xs" backgroundColor="white">
+        <Typography preset="heading">Badge</Typography>
+        <Badge> Not started </Badge>
+        <Badge preset="success"> Success </Badge>
+        <Badge preset="warning"> In progress </Badge>
+        <Badge preset="danger"> Red badge</Badge>
       </Stack>
     </ScrollView>
   );
