@@ -5,19 +5,20 @@ using Vote.Monitor.Domain.Entities.ElectionRoundAggregate;
 namespace Authorization.Policies.RequirementHandlers;
 
 internal class MonitoringObserverAuthorizationHandler(
-    ICurrentUserProvider currentUserProvider,
+    ICurrentUserIdProvider currentUserIdProvider,
+    ICurrentUserRoleProvider currentUserRoleProvider,
     IReadRepository<MonitoringObserver> monitoringObserverRepository)
     : AuthorizationHandler<MonitoringObserverRequirement>
 {
     protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context,
         MonitoringObserverRequirement requirement)
     {
-        if (!currentUserProvider.IsObserver())
+        if (!currentUserRoleProvider.IsObserver())
         {
             return;
         }
 
-        var observerId = currentUserProvider.GetUserId()!.Value;
+        var observerId = currentUserIdProvider.GetUserId()!.Value;
         var specification = new GetMonitoringObserverSpecification(requirement.ElectionRoundId, observerId);
         var result = await monitoringObserverRepository.FirstOrDefaultAsync(specification);
 

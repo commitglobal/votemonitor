@@ -4,13 +4,9 @@ namespace Feature.ObserverGuide.Specifications;
 
 public sealed class GetObserverGuidesSpecification : Specification<ObserverGuideAggregate>
 {
-    public GetObserverGuidesSpecification(Guid? observerId)
+    public GetObserverGuidesSpecification(Guid? ngoId)
     {
         Query.Include(x=> x.MonitoringNgo)
-            .ThenInclude(x=> x.MonitoringObservers)
-            .Where(x => x.MonitoringNgo
-                .MonitoringObservers
-                .Any(y=> y.ObserverId == observerId) 
-            && !x.IsDeleted);
+            .Where(x => x.MonitoringNgo.NgoId == ngoId && !x.IsDeleted);
     }
 }

@@ -1,29 +1,30 @@
 ﻿using System.Net;
+using Authorization.Policies.Requirements;
+using Microsoft.AspNetCore.Authorization;
 using Vote.Monitor.Api.Feature.PollingStation.Attachments.Specifications;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
-using Vote.Monitor.Domain.Entities.ElectionRoundAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 
 namespace Vote.Monitor.Api.Feature.PollingStation.Attachments.Create;
 
-public class Endpoint : Endpoint<Request, Results<Ok<AttachmentModel>, BadRequest<ProblemDetails>, StatusCodeHttpResult>>
+public class Endpoint : Endpoint<Request, Results<Ok<AttachmentModel>, NotFound, BadRequest<ProblemDetails>, StatusCodeHttpResult>>
 {
+    private readonly IAuthorizationService _authorizationService;
     private readonly IRepository<PollingStationAttachmentAggregate> _repository;
     private readonly IFileStorageService _fileStorageService;
-    private readonly IRepository<ElectionRound> _electionRoundRepository;
     private readonly IRepository<PollingStationAggregate> _pollingStationRepository;
     private readonly IRepository<MonitoringObserver> _monitoringObserverRepository;
 
-    public Endpoint(IRepository<PollingStationAttachmentAggregate> repository,
+    public Endpoint(IAuthorizationService authorizationService,
+        IRepository<PollingStationAttachmentAggregate> repository,
         IFileStorageService fileStorageService,
-        IRepository<ElectionRound> electionRoundRepository,
         IRepository<PollingStationAggregate> pollingStationRepository,
         IRepository<MonitoringObserver> monitoringObserverRepository)
     {
         _repository = repository;
-        _electionRoundRepository = electionRoundRepository;
         _pollingStationRepository = pollingStationRepository;
         _monitoringObserverRepository = monitoringObserverRepository;
+        _authorizationService = authorizationService;
         _fileStorageService = fileStorageService;
     }
 
@@ -38,14 +39,12 @@ public class Endpoint : Endpoint<Request, Results<Ok<AttachmentModel>, BadReques
         });
     }
 
-    public override async Task<Results<Ok<AttachmentModel>, BadRequest<ProblemDetails>, StatusCodeHttpResult>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<Results<Ok<AttachmentModel>, NotFound, BadRequest<ProblemDetails>, StatusCodeHttpResult>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var electionRound = await _electionRoundRepository.GetByIdAsync(req.ElectionRoundId, ct);
-
-        if (electionRound == null)
+        var authorizationResult = await _authorizationService.AuthorizeAsync(User, new MonitoringObserverRequirement(req.ElectionRoundId));
+        if (!authorizationResult.Succeeded)
         {
-            AddError(r => r.ElectionRoundId, "Election round not found");
-            return TypedResults.BadRequest(new ProblemDetails(ValidationFailures));
+            return TypedResults.NotFound();
         }
 
         var pollingStationSpecification = new GetPollingStationSpecification(req.PollingStationId);
@@ -66,9 +65,9 @@ public class Endpoint : Endpoint<Request, Results<Ok<AttachmentModel>, BadReques
             return TypedResults.BadRequest(new ProblemDetails(ValidationFailures));
         }
 
-        var uploadPath = $"elections/{electionRound.Id}/polling-stations/{pollingStation.Id}/attachments";
+        var uploadPath = $"elections/{req.ElectionRoundId}/polling-stations/{pollingStation.Id}/attachments";
         
-        var pollingStationAttachment = new PollingStationAttachmentAggregate(electionRound,
+        var pollingStationAttachment = new PollingStationAttachmentAggregate(req.ElectionRoundId,
             pollingStation,
             monitoringObserver,
             req.Attachment.FileName,
@@ -94,7 +93,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<AttachmentModel>, BadReques
             FileName = pollingStationAttachment.FileName,
             PresignedUrl = result!.Url,
             MimeType = pollingStationAttachment.MimeType,
-            UrlValidityInSeconds = result!.UrlValidityInSeconds,
+            UrlValidityInSeconds = result.UrlValidityInSeconds,
             Id = pollingStationAttachment.Id
         });
     }
