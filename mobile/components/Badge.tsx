@@ -5,6 +5,7 @@ import { Typography } from "./Typography";
 export type Presets = "default" | "success" | "warning" | "danger";
 
 export interface BadgeProps {
+  children: string;
   /**
    * One of the different types of badge presets.
    */
@@ -17,8 +18,8 @@ export interface BadgeProps {
  * @returns {JSX.Element} The rendered `Badge` component.
  */
 const Badge = (props: BadgeProps): JSX.Element => {
+  const { children } = props;
   const presetType: Presets = props.preset ?? "default";
-  const text = getTextByPresetType(presetType);
 
   const StyledView = styled(View, {
     name: "StyledView",
@@ -41,10 +42,10 @@ const Badge = (props: BadgeProps): JSX.Element => {
     presetType === "success"
       ? "$green9"
       : presetType === "warning"
-      ? "$yellow7"
-      : presetType === "danger"
-      ? "$red10"
-      : "$gray10";
+        ? "$yellow7"
+        : presetType === "danger"
+          ? "$red10"
+          : "$gray10";
 
   return (
     <StyledView presets={presetType}>
@@ -53,26 +54,10 @@ const Badge = (props: BadgeProps): JSX.Element => {
         style={{ fontSize: 16, lineHeight: 20, fontWeight: "500" }}
         color={textColor}
       >
-        {text}
+        {children}
       </Typography>
     </StyledView>
   );
-};
-
-/* 
-  Extract text based on the presetType
-*/
-const getTextByPresetType = (presetType: Presets): string => {
-  switch (presetType) {
-    case "success":
-      return "Completed";
-    case "warning":
-      return "In progress";
-    case "danger":
-      return "Danger";
-    default:
-      return "Not started";
-  }
 };
 
 export default Badge;

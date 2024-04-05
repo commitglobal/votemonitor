@@ -98,10 +98,10 @@ const QuickReport = () => {
 
       <Stack padding="$sm" gap="$xs" backgroundColor="white">
         <Typography preset="heading">Badge</Typography>
-        <Badge></Badge>
-        <Badge preset="success"></Badge>
-        <Badge preset="warning"></Badge>
-        <Badge preset="danger"></Badge>
+        <Badge> Not started </Badge>
+        <Badge preset="success"> Success </Badge>
+        <Badge preset="warning"> In progress </Badge>
+        <Badge preset="danger"> Red badge</Badge>
       </Stack>
     </ScrollView>
   );
