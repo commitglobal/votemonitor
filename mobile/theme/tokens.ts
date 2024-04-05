@@ -19,7 +19,7 @@ export const tokens = createTokens({
   // All properties not matched by the above: padding, margin, etc
   space: {
     ...config.tokens.space,
-    true: 16, //mandatory default spacing
+    true: 16, // mandatory default spacing
     xxxs: 4,
     xxs: 8,
     xs: 10,
