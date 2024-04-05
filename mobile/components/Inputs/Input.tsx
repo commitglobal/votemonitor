@@ -1,9 +1,5 @@
 import React from "react";
-import {
-  styled,
-  Input as TamaguiInput,
-  InputProps as TamaguiInputProps,
-} from "tamagui";
+import { styled, Input as TamaguiInput, InputProps as TamaguiInputProps } from "tamagui";
 
 interface InputProps extends TamaguiInputProps {
   // TODO: do we want to give it a placeholder?
@@ -20,7 +16,7 @@ const StyledInput = styled(TamaguiInput, {
   },
 });
 
-const Input: React.FC<InputProps> = ({ placeholder, ...rest }) => {
+const Input: React.FC<InputProps> = ({ ...rest }) => {
   return <StyledInput {...rest} />;
 };
 
