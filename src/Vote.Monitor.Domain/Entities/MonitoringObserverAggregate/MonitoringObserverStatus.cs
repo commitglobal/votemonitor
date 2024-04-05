@@ -5,6 +5,7 @@ namespace Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 public sealed class MonitoringObserverStatus : SmartEnum<MonitoringObserverStatus, string>
 {
     public static readonly MonitoringObserverStatus Active = new(nameof(Active), nameof(Active));
+    public static readonly MonitoringObserverStatus Pending = new(nameof(Pending), nameof(Pending));
     public static readonly MonitoringObserverStatus Suspended = new(nameof(Suspended), nameof(Suspended));
     
     /// <summary>Gets an item associated with the specified value. Parses SmartEnum when used as query params</summary>

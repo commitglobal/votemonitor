@@ -23,14 +23,14 @@ public class Endpoint(IRepository<PollingStationAggregate> repository,
             return TypedResults.NotFound(new ProblemDetails(ValidationFailures));
         }
 
-        var pollingStation = await repository.SingleOrDefaultAsync(new GetPollingStationByIdSpecification(req.Id), ct);
+        var pollingStation = await repository.SingleOrDefaultAsync(new GetPollingStationByIdSpecification(req.ElectionRoundId, req.Id), ct);
         if (pollingStation is null)
         {
             AddError(r => r.Id, "Polling station not found.");
             return TypedResults.NotFound(new ProblemDetails(ValidationFailures));
         }
 
-        var specification = new GetPollingStationSpecification(req.Address, req.Tags);
+        var specification = new GetPollingStationSpecification(req.ElectionRoundId, req.Address, req.Tags);
         var hasIdenticalPollingStation = await repository.AnyAsync(specification, ct);
         if (hasIdenticalPollingStation)
         {
