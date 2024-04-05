@@ -1,4 +1,5 @@
-﻿using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
+﻿using Vote.Monitor.Domain.Constants;
+using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 using Vote.Monitor.Domain.Entities.NgoAggregate;
@@ -83,7 +84,7 @@ public class VoteMonitorContext : DbContext
 
         builder
             .HasDbFunction(arrayUnique!)
-            .HasName("array_unique");
+            .HasName(CustomDBFunctions.ArrayUnique);
 
         builder
             .HasDbFunction(arrayRemove!)
@@ -91,7 +92,7 @@ public class VoteMonitorContext : DbContext
 
         builder
             .HasDbFunction(arrayDiff!)
-            .HasName("array_diff");
+            .HasName(CustomDBFunctions.ArrayDiff);
 
         builder.ApplyConfiguration(new ApplicationUserConfiguration());
         builder.ApplyConfiguration(new NgoAdminConfiguration());

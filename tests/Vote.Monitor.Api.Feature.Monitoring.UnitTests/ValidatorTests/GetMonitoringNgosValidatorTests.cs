@@ -1,6 +1,4 @@
-﻿using FluentValidation.TestHelper;
-
-namespace Vote.Monitor.Api.Feature.Monitoring.UnitTests.ValidatorTests;
+﻿namespace Vote.Monitor.Api.Feature.Monitoring.UnitTests.ValidatorTests;
 
 public class GetMonitoringNgosValidatorTests
 {

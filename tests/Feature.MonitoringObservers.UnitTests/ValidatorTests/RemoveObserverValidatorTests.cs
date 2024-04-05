@@ -1,6 +1,4 @@
-﻿using FluentValidation.TestHelper;
-
-namespace Feature.MonitoringObservers.UnitTests.ValidatorTests;
+﻿namespace Feature.MonitoringObservers.UnitTests.ValidatorTests;
 
 public class RemoveObserverValidatorTests
 {

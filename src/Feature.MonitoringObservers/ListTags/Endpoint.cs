@@ -1,10 +1,7 @@
 ﻿using Authorization.Policies.Requirements;
-using Feature.MonitoringObservers.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
-using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain;
-using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
 
 namespace Feature.MonitoringObservers.ListTags;
 

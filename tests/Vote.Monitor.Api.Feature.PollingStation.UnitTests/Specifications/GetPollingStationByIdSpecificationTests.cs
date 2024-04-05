@@ -1,5 +1,4 @@
-﻿using Vote.Monitor.Domain.Entities.ElectionRoundAggregate;
-using Vote.Monitor.TestUtils.Fakes.Aggregates;
+﻿using Vote.Monitor.TestUtils.Fakes.Aggregates;
 
 namespace Vote.Monitor.Api.Feature.PollingStation.UnitTests.Specifications;
 

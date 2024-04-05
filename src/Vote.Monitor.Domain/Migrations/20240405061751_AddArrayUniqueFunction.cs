@@ -11,19 +11,13 @@ namespace Vote.Monitor.Domain.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.Sql(@$"
-            CREATE OR REPLACE FUNCTION ""array_unique"" (a text[]) RETURNS text[] AS $$
-              SELECT ARRAY (
-                SELECT DISTINCT v FROM unnest(a) AS b(v)
-              )
-            $$ LANGUAGE SQL;
-              ");
+            migrationBuilder.Sql(CustomDBFunctions.CreateArrayUnique);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.Sql(@$"DROP FUNCTION IF EXISTS ""array_unique"";");
+            migrationBuilder.Sql(@$"DROP FUNCTION IF EXISTS ""{CustomDBFunctions.ArrayUnique}"";");
         }
     }
 }
