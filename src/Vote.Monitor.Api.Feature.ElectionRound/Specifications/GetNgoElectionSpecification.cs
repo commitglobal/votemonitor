@@ -15,6 +15,7 @@ public sealed class GetNgoElectionSpecification : Specification<MonitoringNgo, N
         Query.Select(x => new NgoElectionRoundView
         {
             MonitoringNgoId = x.Id,
+            ElectionRoundId = x.ElectionRoundId,
             Title = x.ElectionRound.Title,
             EnglishTitle = x.ElectionRound.EnglishTitle,
             StartDate = x.ElectionRound.StartDate,
