@@ -57,7 +57,7 @@ public class Endpoint(
     {
         var logins = observers.Select(x => x.Email).ToList();
 
-        var monitoringNgo =await context.MonitoringNgos
+        var monitoringNgo = await context.MonitoringNgos
             .Include(x => x.MonitoringObservers)
             .ThenInclude(x => x.Observer)
             .Where(x => x.Id == req.MonitoringNgoId)
@@ -71,9 +71,9 @@ public class Endpoint(
             .Where(x => logins.Contains(x.Login))
             .Select(x => new { x.Id, x.Login })
             .ToListAsync(ct);
-     
+
         var monitoringObservers = existingObservers
-            .Where(o=> !existingMonitoringObservers.Contains(o.Login))
+            .Where(o => !existingMonitoringObservers.Contains(o.Login))
             .Select(observer => MonitoringObserverAggregate.Create(req.MonitoringNgoId, observer.Id))
             .ToList();
 
@@ -81,10 +81,10 @@ public class Endpoint(
         // TODO: Send notifications!
 
         var newObservers = observers
-                .Where(o => !existingObservers.Any(x=> string.Equals(x.Login, o.Email, StringComparison.InvariantCultureIgnoreCase)))
+                .Where(o => !existingObservers.Any(x => string.Equals(x.Login, o.Email, StringComparison.InvariantCultureIgnoreCase)))
                .Select(x =>
                {
-                   var observer = ObserverAggregate.Create(x.FirstName + x.LastName, x.Email, "string", x.PhoneNumber);
+                   var observer = ObserverAggregate.Create(GetName(x.FirstName, x.LastName), x.Email, "string", x.PhoneNumber);
 
                    var monitoringObserver = MonitoringObserver.Create(req.MonitoringNgoId, observer);
                    return (observer, monitoringObserver);
@@ -97,6 +97,11 @@ public class Endpoint(
 
         await context.SaveChangesAsync(ct);
         await SendNoContentAsync(ct);
+    }
+
+    private static string GetName(string firstName, string lastName)
+    {
+        return string.Join(" ", firstName, lastName);
     }
 
     private async Task HandleParsingFailedAsync(string fileName, ParsingResult<MonitoringObserverImportModel>.Fail failedResult, CancellationToken ct)
@@ -113,28 +118,4 @@ public class Endpoint(
 
         await SendAsync(errorResponse, cancellation: ct);
     }
-
-
-    //    List<ObserverAggregate> observers = importedRows!
-    //        .Items
-    //        .Select(x => new ObserverAggregate(x.Name, x.Email, x.Password, x.PhoneNumber))
-    //        .ToList();
-
-    //    var logins = observers.Select(o => o.Login);
-    //    var specification = new GetObserversByLoginsSpecification(logins);
-    //    var existingObservers = await repository.ListAsync(specification, ct);
-
-    //    var duplicates = observers.Where(x => existingObservers.Any(y => y.Login == x.Login)).ToList();
-
-    //    foreach (var obs in duplicates)
-    //    {
-    //        logger.LogWarning("An Observer with email {obs.Login} already exists!", obs.Login);
-    //    }
-
-    //    List<ObserverAggregate> observersToAdd = observers.Where(x => !existingObservers.Any(y => y.Login == x.Login)).ToList();
-
-    //    if (observersToAdd.Count > 0) await repository.AddRangeAsync(observersToAdd, ct);
-
-    //    return TypedResults.NoContent();
-    //}
 }
