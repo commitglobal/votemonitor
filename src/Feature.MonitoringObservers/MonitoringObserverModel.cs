@@ -1,6 +1,5 @@
 ﻿using System.Text.Json.Serialization;
 using Ardalis.SmartEnum.SystemTextJson;
-using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 
 namespace Feature.MonitoringObservers;
@@ -8,16 +7,24 @@ namespace Feature.MonitoringObservers;
 public class MonitoringObserverModel
 {
     public Guid Id { get; init; }
-    public Guid InviterNgoId { get; set; }
-    public Guid ObserverId { get; init; }
     public string Name { get; init; }
-    public string Email { get; set; }
-    public string PhoneNumber { get; set; }
-    public required IReadOnlyList<string> Tags { get; set; }
-
-    [JsonConverter(typeof(SmartEnumNameConverter<UserStatus, string>))]
-    public UserStatus UserStatus { get; init; }
+    public string Email { get; init; }
+    public string PhoneNumber { get; init; }
+    public required IReadOnlyList<string> Tags { get; init; }
 
     [JsonConverter(typeof(SmartEnumNameConverter<MonitoringObserverStatus, string>))]
-    public MonitoringObserverStatus MonitoringObserverStatus { get; set; }
+    public MonitoringObserverStatus Status { get; init; }
+
+    public static MonitoringObserverModel FromEntity(MonitoringObserverAggregate entity)
+    {
+        return new MonitoringObserverModel
+        {
+            Id = entity.Id,
+            Email = entity.Observer.Login,
+            Status = entity.Status,
+            Name = entity.Observer.Name,
+            PhoneNumber = entity.Observer.PhoneNumber,
+            Tags = entity.Tags
+        };
+    }
 }

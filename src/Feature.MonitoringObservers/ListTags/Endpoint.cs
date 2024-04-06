@@ -33,7 +33,7 @@ public class Endpoint(IAuthorizationService authorizationService,
             .Distinct()
             .ToListAsync(cancellationToken: ct);
 
-        return TypedResults.Ok(new Response()
+        return TypedResults.Ok(new Response
         {
             Tags = tags.ToList().AsReadOnly()
         });
