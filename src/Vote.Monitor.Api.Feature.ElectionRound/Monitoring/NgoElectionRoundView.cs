@@ -3,6 +3,7 @@
 public class NgoElectionRoundView
 {
     public Guid MonitoringNgoId { get; set; }
+    public Guid ElectionRoundId { get; set; }
     public string Title { get; set; }
     public string EnglishTitle { get; set; }
     public DateOnly StartDate { get; set; }
