@@ -147,7 +147,7 @@ public class ObserverCsvParserTests
             new List<int>{2},
             new List<string>
             {
-                "'Email' is not a valid email address.,The length of 'Phone Number' must be at least 8 characters. You entered 0 characters."
+                "'Email' is not a valid email address.,The length of 'Phone Number' must be at least 3 characters. You entered 0 characters."
             },
             new List<int>{1}
         },
@@ -164,7 +164,7 @@ public class ObserverCsvParserTests
             new List<int>{2},
             new List<string>
             {
-                "'Email' is not a valid email address.,The length of 'Phone Number' must be at least 8 characters. You entered 0 characters."
+                "'Email' is not a valid email address.,The length of 'Phone Number' must be at least 3 characters. You entered 0 characters."
             },
             new List<int>{0,3,4,5}
         },
@@ -182,7 +182,7 @@ public class ObserverCsvParserTests
             {
                 "The length of 'Name' must be at least 3 characters. You entered 0 characters." ,
                 "'Email' is not a valid email address." ,
-                "The length of 'Phone Number' must be at least 8 characters. You entered 0 characters."
+                "The length of 'Phone Number' must be at least 3 characters. You entered 0 characters."
             },
             new List<int>{1}
         },
