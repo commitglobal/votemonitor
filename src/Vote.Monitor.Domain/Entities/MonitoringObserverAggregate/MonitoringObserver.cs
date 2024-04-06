@@ -71,8 +71,13 @@ public class MonitoringObserver : AuditableBaseEntity, IAggregateRoot
         return new MonitoringObserver(monitoringNgoId, observer);
     }
 
-#pragma warning disable CS8618 // Required by Entity Framework
+    public void Update(MonitoringObserverStatus status, string[] tags)
+    {
+        Status = status;
+        Tags = tags;
+    }
 
+#pragma warning disable CS8618 // Required by Entity Framework
     private MonitoringObserver()
     {
 

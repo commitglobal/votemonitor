@@ -4,10 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Feature.MonitoringObservers.Activate;
 
-public class Endpoint(IAuthorizationService authorizationService,
-    IRepository<MonitoringNgoAggregate> repository,
-    IRepository<MonitoringObserverAggregate> monitoringObserversRepository
-    ) : Endpoint<Request, Results<NoContent, NotFound>>
+public class Endpoint(IAuthorizationService authorizationService, IRepository<MonitoringObserverAggregate> repository) : Endpoint<Request, Results<NoContent, NotFound>>
 {
     public override void Configure()
     {
@@ -31,14 +28,15 @@ public class Endpoint(IAuthorizationService authorizationService,
             return TypedResults.NotFound();
         }
 
-        var monitoringNgo = await repository.FirstOrDefaultAsync(new GetMonitoringNgoWithObserversSpecification(req.ElectionRoundId, req.MonitoringNgoId), ct);
+        var monitoringObserver = await repository.FirstOrDefaultAsync(new GetMonitoringObserverSpecification(req.ElectionRoundId, req.MonitoringNgoId, req.Id), ct);
 
-        var monitoringObserver = monitoringNgo!.MonitoringObservers.FirstOrDefault(x => x.Id == req.Id);
-        if (monitoringObserver is not null)
+        if (monitoringObserver is null)
         {
-            monitoringObserver.Activate();
-            await monitoringObserversRepository.UpdateAsync(monitoringObserver, ct);
+            return TypedResults.NotFound();
         }
+
+        monitoringObserver.Activate();
+        await repository.UpdateAsync(monitoringObserver, ct);
 
         return TypedResults.NoContent();
     }

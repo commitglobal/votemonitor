@@ -2,21 +2,20 @@
 using Feature.MonitoringObservers.Specifications;
 using Microsoft.AspNetCore.Authorization;
 
-namespace Feature.MonitoringObservers.Suspend;
+namespace Feature.MonitoringObservers.Update;
 
-public class Endpoint(IAuthorizationService authorizationService, IRepository<MonitoringObserverAggregate> repository
-    ) : Endpoint<Request, Results<NoContent, NotFound>>
+public class Endpoint(IAuthorizationService authorizationService, IRepository<MonitoringObserverAggregate> repository) : Endpoint<Request, Results<NoContent, NotFound>>
 {
     public override void Configure()
     {
-        Delete("/api/election-rounds/{electionRoundId}/monitoring-ngos/{monitoringNgoId}/monitoring-observers/{id}:suspend");
+        Post("/api/election-rounds/{electionRoundId}/monitoring-ngos/{monitoringNgoId}/monitoring-observers/{id}");
         Description(x => x.Accepts<Request>());
         DontAutoTag();
         Options(x => x.WithTags("monitoring-observers"));
         Summary(s =>
         {
-            s.Summary = "Suspends monitoring observer account";
-            s.Description = "Changes status of monitoring observer to Suspended";
+            s.Summary = "Activates monitoring observer account";
+            s.Description = "Changes status of monitoring observer to Active";
         });
     }
 
@@ -36,7 +35,7 @@ public class Endpoint(IAuthorizationService authorizationService, IRepository<Mo
             return TypedResults.NotFound();
         }
 
-        monitoringObserver.Suspend();
+        monitoringObserver.Update(req.Status, req.Tags);
         await repository.UpdateAsync(monitoringObserver, ct);
 
         return TypedResults.NoContent();
