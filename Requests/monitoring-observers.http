@@ -1,0 +1,76 @@
+@electionRoundId=ea779505-6fa1-497d-9cae-cbd59431bdd7
+@monitoringNgoId=6cf86b57-c1bb-4aa0-ad3b-304a49d64b80
+# List tags
+GET {{$dotenv HOST }}/api/election-rounds/{{electionRoundId}}/monitoring-ngos/{{monitoringNgoId}}/monitoring-observers:tags
+Authorization: Bearer {{$dotenv JWT_TOKEN}}
+
+###
+# List monitoring observers
+GET {{$dotenv HOST }}/api/election-rounds/{{electionRoundId}}/monitoring-ngos/{{monitoringNgoId}}/monitoring-observers
+  ?tags=tag1
+  &pageNumber=1
+  &pageSize=25
+Authorization: Bearer {{$dotenv JWT_TOKEN}}
+
+###
+
+###
+# Tag monitoring observers
+PUT {{$dotenv HOST }}/api/election-rounds/{{electionRoundId}}/monitoring-ngos/{{monitoringNgoId}}/monitoring-observers:tags
+Authorization: Bearer {{$dotenv JWT_TOKEN}}
+Content-Type: application/json
+
+{
+  "electionRoundId": "{{electionRoundId}}",
+  "monitoringNgoId": "{{monitoringNgoId}}",
+  "monitoringObserverIds": [
+    "699f8cbc-ce7d-4ee5-964a-a199cf5af032",
+    "6cf86b57-c1bb-4aa0-ad3b-304a49d64b80"
+  ],
+  "tags":[
+    "tag1",
+    "tag2"
+  ]
+}
+###
+
+###
+# Untag monitoring observers
+POST {{$dotenv HOST }}/api/election-rounds/{{electionRoundId}}/monitoring-ngos/{{monitoringNgoId}}/monitoring-observers:tags
+Authorization: Bearer {{$dotenv JWT_TOKEN}}
+Content-Type: application/json
+
+{
+  "electionRoundId": "{{electionRoundId}}",
+  "monitoringNgoId": "{{monitoringNgoId}}",
+  "monitoringObserverIds": [
+    "699f8cbc-ce7d-4ee5-964a-a199cf5af032",
+    "6cf86b57-c1bb-4aa0-ad3b-304a49d64b80"
+  ],
+  "tags":["tag5"]
+}
+###
+
+###
+# Clear monitoring observers tags
+DELETE  {{$dotenv HOST }}/api/election-rounds/{{electionRoundId}}/monitoring-ngos/{{monitoringNgoId}}/monitoring-observers:tags
+Authorization: Bearer {{$dotenv JWT_TOKEN}}
+Content-Type: application/json
+
+{
+  "electionRoundId": "{{electionRoundId}}",
+  "monitoringNgoId": "{{monitoringNgoId}}",
+  "monitoringObserverIds": [
+    "699f8cbc-ce7d-4ee5-964a-a199cf5af032",
+    "6cf86b57-c1bb-4aa0-ad3b-304a49d64b80"
+  ]
+}
+###
+
+@monitoringObserId=699f8cbc-ce7d-4ee5-964a-a199cf5af032
+###
+# Remove monitoring observers
+DELETE  {{$dotenv HOST }}/api/election-rounds/{{electionRoundId}}/monitoring-ngos/{{monitoringNgoId}}/monitoring-observers/{{monitoringObserId}}
+Authorization: Bearer {{$dotenv JWT_TOKEN}}
+
+###

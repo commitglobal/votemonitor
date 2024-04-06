@@ -1,17 +1,9 @@
-import { Redirect } from "expo-router";
+import { Redirect, Stack } from "expo-router";
 import { useAuth } from "../../hooks/useAuth";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { Drawer } from "expo-router/drawer";
-import { useTheme } from "tamagui";
-import {
-  DrawerContentScrollView,
-  DrawerItem,
-  DrawerItemList,
-} from "@react-navigation/drawer";
+import { PortalProvider } from "tamagui";
 
 const AppLayout = () => {
   const { isAuthenticated } = useAuth();
-  const theme = useTheme();
 
   if (!isAuthenticated) {
     // On web, static rendering will stop here as the user is not authenticated
@@ -20,42 +12,15 @@ const AppLayout = () => {
   }
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <Drawer
-        screenOptions={{
-          drawerType: "front",
-          drawerStyle: { backgroundColor: theme.purple5.val },
-          drawerActiveTintColor: theme.yellow10.val,
-          drawerActiveBackgroundColor: "transparent",
-        }}
-        drawerContent={CustomDrawerContent}
-      >
-        <Drawer.Screen name="(tabs)" options={{ headerShown: true }} />
-      </Drawer>
-    </GestureHandlerRootView>
+    <PortalProvider>
+      <Stack>
+        <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
+        <Stack.Screen name="polling-station-wizzard" />
+        <Stack.Screen name="form-questionnaire" />
+        <Stack.Screen name="polling-station-questionnaire" />
+      </Stack>
+    </PortalProvider>
   );
 };
 
-function CustomDrawerContent(props) {
-  const theme = useTheme();
-  return (
-    <DrawerContentScrollView {...props}>
-      {/* <DrawerItemList {...props} /> */}
-      {votingSessions.map((votingSession) => (
-        <DrawerItem
-          label={votingSession.name}
-          inactiveTintColor={theme.yellow6.val}
-          onPress={() => console.log("")}
-        />
-      ))}
-    </DrawerContentScrollView>
-  );
-}
-
 export default AppLayout;
-
-const votingSessions = [
-  { name: "session 1" },
-  { name: "session2" },
-  { name: "session 3" },
-];

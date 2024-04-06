@@ -10,7 +10,7 @@ public class MonitoringNgo : AuditableBaseEntity, IAggregateRoot
     public Guid NgoId { get; private set; }
     public Ngo Ngo { get; private set; }
 
-    public virtual List<MonitoringObserver>? MonitoringObservers { get; internal set; }
+    public virtual List<MonitoringObserver> MonitoringObservers { get; internal set; } = [];
 
     public MonitoringNgoStatus Status { get; private set; }
 
@@ -25,14 +25,12 @@ public class MonitoringNgo : AuditableBaseEntity, IAggregateRoot
 
     public virtual MonitoringObserver? AddMonitoringObserver(Observer observer)
     {
-        MonitoringObservers ??= new List<MonitoringObserver>();
-
         if (MonitoringObservers.Any(x => x.ObserverId == observer.Id))
         {
             return null;
         }
 
-        var monitoringObserver = new MonitoringObserver( this, observer);
+        var monitoringObserver = new MonitoringObserver(this, observer);
         MonitoringObservers.Add(monitoringObserver);
 
         return monitoringObserver;
@@ -40,33 +38,19 @@ public class MonitoringNgo : AuditableBaseEntity, IAggregateRoot
 
     public bool IsObserverMonitoring(Observer observer)
     {
-        MonitoringObservers ??= new List<MonitoringObserver>();
-
         return MonitoringObservers.Any(x => x.Id == observer.Id);
     }
 
-    public virtual void ActivateMonitoringObserver(Observer observer)
+    public virtual void ActivateMonitoringObserver(Guid monitoringObserverId)
     {
-        MonitoringObservers ??= new List<MonitoringObserver>();
-
-        var monitoringObserver = MonitoringObservers.First(x => x.ObserverId == observer.Id);
+        var monitoringObserver = MonitoringObservers.First(x => x.Id == monitoringObserverId);
         monitoringObserver.Activate();
     }
 
-    public virtual void SuspendMonitoringObserver(Observer observer)
+    public virtual void SuspendMonitoringObserver(Guid monitoringObserverId)
     {
-        MonitoringObservers ??= new List<MonitoringObserver>();
-
-        var monitoringObserver = MonitoringObservers.First(x => x.ObserverId == observer.Id);
+        var monitoringObserver = MonitoringObservers.First(x => x.Id == monitoringObserverId);
         monitoringObserver.Suspend();
-    }
-
-    public virtual void RemoveMonitoringObserver(Observer observer)
-    {
-        MonitoringObservers ??= new List<MonitoringObserver>();
-
-        var monitoringObserver = MonitoringObservers.First(x => x.ObserverId == observer.Id);
-        MonitoringObservers.Remove(monitoringObserver);
     }
 
     public void Activate()

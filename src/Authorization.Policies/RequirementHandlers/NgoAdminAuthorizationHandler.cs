@@ -3,21 +3,22 @@ using Authorization.Policies.Specifications;
 
 namespace Authorization.Policies.RequirementHandlers;
 
-internal class NgoAdminAuthorizationHandler(ICurrentUserProvider currentUserProvider,
+internal class NgoAdminAuthorizationHandler(ICurrentUserIdProvider currentUserIdProvider,
+    ICurrentUserRoleProvider currentUserRoleProvider,
     IReadRepository<NgoAdmin> ngoAdminRepository) : AuthorizationHandler<NgoAdminRequirement>
 {
     protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, NgoAdminRequirement requirement)
     {
-        if (!currentUserProvider.IsNgoAdmin())
+        if (!currentUserRoleProvider.IsNgoAdmin())
         {
             context.Fail();
             return;
         }
 
-        var ngoId = currentUserProvider.GetNgoId()!.Value;
-        var ngoAdminId = currentUserProvider.GetUserId()!.Value;
+        var ngoId = await currentUserRoleProvider.GetNgoId();
+        var ngoAdminId = currentUserIdProvider.GetUserId()!.Value;
 
-        var result = await ngoAdminRepository.FirstOrDefaultAsync(new GetNgoAdminSpecification(ngoId, ngoAdminId));
+        var result = await ngoAdminRepository.FirstOrDefaultAsync(new GetNgoAdminSpecification(ngoId!.Value, ngoAdminId));
 
         if (result is null)
         {

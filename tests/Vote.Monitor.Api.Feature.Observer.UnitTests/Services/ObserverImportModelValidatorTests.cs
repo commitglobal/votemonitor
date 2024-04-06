@@ -61,13 +61,13 @@ public class ObserverImportModelValidatorTests
     {
         // Arrange
         var validator = new ObserverImportModelValidator();
-        model.PhoneNumber = "1234"; // less than the required minimum length
+        model.PhoneNumber = "12"; // less than the required minimum length
 
         // Act
         var result = validator.TestValidate(model);
 
         // Assert
         result.ShouldHaveValidationErrorFor(x => x.PhoneNumber)
-            .WithErrorMessage("The length of 'Phone Number' must be at least 8 characters. You entered 4 characters.");
+            .WithErrorMessage("The length of 'Phone Number' must be at least 3 characters. You entered 2 characters.");
     }
 }

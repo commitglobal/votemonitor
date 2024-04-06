@@ -4,7 +4,6 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Http.HttpResults;
 using NSubstitute;
 using NSubstitute.ReturnsExtensions;
-using Vote.Monitor.Core.Services.Time;
 using Vote.Monitor.Domain.Constants;
 using Vote.Monitor.Domain.Entities.ElectionRoundAggregate;
 using Vote.Monitor.Domain.Entities.PollingStationInfoFormAggregate;
