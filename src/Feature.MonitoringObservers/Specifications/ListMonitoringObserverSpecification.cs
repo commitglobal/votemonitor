@@ -6,7 +6,9 @@ public sealed class ListMonitoringObserverSpecification : SingleResultSpecificat
 {
     public ListMonitoringObserverSpecification(List.Request request)
     {
-        Query.Where(x => x.MonitoringNgo.ElectionRoundId == request.ElectionRoundId
+        Query
+            .Search(x => x.Observer.Name, "%" + request.NameFilter + "%", !string.IsNullOrEmpty(request.NameFilter))
+            .Where(x => x.MonitoringNgo.ElectionRoundId == request.ElectionRoundId
                          && x.MonitoringNgoId == request.MonitoringNgoId)
             .Where(x => x.Tags.Intersect(request.Tags).Any(), request.Tags.Any())
             .ApplyOrdering(request)

@@ -1,10 +1,9 @@
 ﻿using System.Text;
 using Authorization.Policies;
-using Microsoft.AspNetCore.Authorization;
 
 namespace Feature.MonitoringObservers.GetImportTemplate;
 
-public class Endpoint(IAuthorizationService authorizationService) : EndpointWithoutRequest
+public class Endpoint : EndpointWithoutRequest
 {
     public override void Configure()
     {
@@ -20,7 +19,7 @@ public class Endpoint(IAuthorizationService authorizationService) : EndpointWith
             s.Summary = "Gets monitoring observers import template";
         });
 
-        Policies(PolicyNames.PlatformAdminsOnly, PolicyNames.NgoAdminsOnly);
+        Policies(PolicyNames.AdminsOnly);
     }
 
     public override async Task HandleAsync(CancellationToken ct)

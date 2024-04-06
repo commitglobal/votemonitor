@@ -4,7 +4,7 @@ namespace Vote.Monitor.Api.Feature.Observer.UnitTests.Specifications;
 
 public class ListObserversSpecificationTests
 {
-    private const string DefaultName = "name";
+    private const string DefaultName = "Default$ObserverName";
     private readonly UserStatus DefaultStatus = UserStatus.Active;
 
     [Fact]

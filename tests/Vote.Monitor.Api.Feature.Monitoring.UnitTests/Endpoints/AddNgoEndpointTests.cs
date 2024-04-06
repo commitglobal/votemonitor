@@ -1,4 +1,5 @@
-﻿using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
+﻿using Vote.Monitor.Api.Feature.Monitoring.Add;
+using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
 using Vote.Monitor.Domain.Entities.NgoAggregate;
 
 namespace Vote.Monitor.Api.Feature.Monitoring.UnitTests.Endpoints;
@@ -12,15 +13,15 @@ public class AddNgoEndpointTests
         var repository = Substitute.For<IRepository<ElectionRoundAggregate>>();
         var ngoRepository = Substitute.For<IReadRepository<NgoAggregate>>();
         var monitoringNgoRepository = Substitute.For<IRepository<MonitoringNgo>>();
-        var endpoint = Factory.Create<AddNgo.Endpoint>(repository, ngoRepository, monitoringNgoRepository);
+        var endpoint = Factory.Create<Endpoint>(repository, ngoRepository, monitoringNgoRepository);
 
         // Act
-        var request = new AddNgo.Request { ElectionRoundId = Guid.NewGuid() };
+        var request = new Request { ElectionRoundId = Guid.NewGuid() };
         var result = await endpoint.ExecuteAsync(request, default);
 
         // Assert
         result
-            .Should().BeOfType<Results<Ok<AddNgo.Response>, NotFound<string>, ValidationProblem>>()
+            .Should().BeOfType<Results<Ok<Response>, NotFound<string>, ValidationProblem>>()
             .Which
             .Result.Should().BeOfType<NotFound<string>>()
             .Which.Value.Should().Be("Election round not found");
@@ -38,15 +39,15 @@ public class AddNgoEndpointTests
         var ngoRepository = Substitute.For<IReadRepository<NgoAggregate>>();
         var monitoringNgoRepository = Substitute.For<IRepository<MonitoringNgo>>();
 
-        var endpoint = Factory.Create<AddNgo.Endpoint>(repository, ngoRepository, monitoringNgoRepository);
+        var endpoint = Factory.Create<Endpoint>(repository, ngoRepository, monitoringNgoRepository);
 
         // Act
-        var request = new AddNgo.Request { ElectionRoundId = electionRoundId };
+        var request = new Request { ElectionRoundId = electionRoundId };
         var result = await endpoint.ExecuteAsync(request, default);
 
         // Assert
         result
-            .Should().BeOfType<Results<Ok<AddNgo.Response>, NotFound<string>, ValidationProblem>>()
+            .Should().BeOfType<Results<Ok<Response>, NotFound<string>, ValidationProblem>>()
             .Which
             .Result.Should().BeOfType<NotFound<string>>()
             .Which.Value.Should().Be("NGO not found");
@@ -67,15 +68,15 @@ public class AddNgoEndpointTests
         ngoRepository.GetByIdAsync(ngo.Id).Returns(ngo);
         var monitoringNgoRepository = Substitute.For<IRepository<MonitoringNgo>>();
 
-        var endpoint = Factory.Create<AddNgo.Endpoint>(repository, ngoRepository, monitoringNgoRepository);
+        var endpoint = Factory.Create<Endpoint>(repository, ngoRepository, monitoringNgoRepository);
 
         // Act
-        var request = new AddNgo.Request { ElectionRoundId = electionRoundId, NgoId = ngo.Id };
+        var request = new Request { ElectionRoundId = electionRoundId, NgoId = ngo.Id };
         var result = await endpoint.ExecuteAsync(request, default);
 
         // Assert
         result
-            .Should().BeOfType<Results<Ok<AddNgo.Response>, NotFound<string>, ValidationProblem>>()
+            .Should().BeOfType<Results<Ok<Response>, NotFound<string>, ValidationProblem>>()
             .Which
             .Result.Should().BeOfType<ValidationProblem>();
 
@@ -99,17 +100,17 @@ public class AddNgoEndpointTests
         ngoRepository.GetByIdAsync(ngo.Id).Returns(ngo);
         var monitoringNgoRepository = Substitute.For<IRepository<MonitoringNgo>>();
 
-        var endpoint = Factory.Create<AddNgo.Endpoint>(repository, ngoRepository, monitoringNgoRepository);
+        var endpoint = Factory.Create<Endpoint>(repository, ngoRepository, monitoringNgoRepository);
 
         // Act
-        var request = new AddNgo.Request { ElectionRoundId = electionRoundId, NgoId = ngo.Id };
+        var request = new Request { ElectionRoundId = electionRoundId, NgoId = ngo.Id };
         var result = await endpoint.ExecuteAsync(request, default);
 
         // Assert
         result
-            .Should().BeOfType<Results<Ok<AddNgo.Response>, NotFound<string>, ValidationProblem>>()
+            .Should().BeOfType<Results<Ok<Response>, NotFound<string>, ValidationProblem>>()
             .Which
-            .Result.Should().BeOfType<Ok<AddNgo.Response>>();
+            .Result.Should().BeOfType<Ok<Response>>();
 
        await monitoringNgoRepository.Received(1).AddAsync(Arg.Is<MonitoringNgoAggregate>(x=>x.NgoId == ngo.Id));
     }

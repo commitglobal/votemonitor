@@ -261,11 +261,11 @@ public class ListEndpointTests : IClassFixture<HttpServerFixture<NgoDataSeeder>>
         result.Items.Count.Should().Be(10);
         // should be  D19,  D18, D17, D16, D15
 
-        result.Items[0].Name.Should().Be($"Deactivated19");
-        result.Items[1].Name.Should().Be($"Deactivated18");
-        result.Items[2].Name.Should().Be($"Deactivated17");
-        result.Items[3].Name.Should().Be($"Deactivated16");
-        result.Items[4].Name.Should().Be($"Deactivated15");
+        result.Items[0].Name.Should().Be($"Non19");
+        result.Items[1].Name.Should().Be($"Non18");
+        result.Items[2].Name.Should().Be($"Non17");
+        result.Items[3].Name.Should().Be($"Non16");
+        result.Items[4].Name.Should().Be($"Non15");
 
 
     }
