@@ -1,11 +1,25 @@
-import { Fragment } from 'react';
+import { Fragment, useState } from 'react';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
-import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
+import { Bars3Icon, XMarkIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
 import { UserCircleIcon } from '@heroicons/react/24/solid';
-import type { FunctionComponent } from '../../../common/types';
+import type { ElectionRoundMonitoring, FunctionComponent } from '../../../common/types';
 import Logo from '../../../assets/icons/logo.svg?react';
 import { Link } from '@tanstack/react-router';
 import clsx from 'clsx';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Badge } from '@/components/ui/badge';
+import { useQuery } from '@tanstack/react-query';
+import { authApi } from '@/common/auth-api';
+import { Skeleton } from '@/components/ui/skeleton';
+import { ElectionRound } from '@/features/election-round/models/ElectionRound';
+import { queryClient } from '@/main';
 
 const user = {
   name: 'Tom Cook',
@@ -23,6 +37,33 @@ const navigation = [
 const userNavigation = [{ name: 'Sign out', to: '#' }];
 
 const Header = (): FunctionComponent => {
+  const [selectedElection, setSelectedElection] = useState<ElectionRoundMonitoring | null | undefined>(null);
+
+  const { status, data } = useQuery({
+    queryKey: ['electionRounds'],
+    queryFn: async () => {
+      const response = await authApi.get<{ electionRounds: ElectionRoundMonitoring[] }>('/election-rounds:monitoring');
+
+      if (response.status !== 200) {
+        throw new Error('Failed to fetch observers');
+      }
+
+      setSelectedElection(response.data.electionRounds[0]);
+      localStorage.setItem('electionRoundId', response.data.electionRounds[0]!.electionRoundId);
+      localStorage.setItem('monitoringNgoId', response.data.electionRounds[0]!.monitoringNgoId);
+
+      return response.data;
+    },
+  });
+
+  const handleSelectEelection = (ev: ElectionRoundMonitoring) => {
+    setSelectedElection(ev);
+    localStorage.setItem('electionRoundId', ev.electionRoundId);
+    localStorage.setItem('monitoringNgoId', ev.monitoringNgoId);
+
+    queryClient.invalidateQueries({ queryKey: ['observers'] });
+  };
+
   return (
     <Disclosure as='nav' className='bg-white shadow-sm'>
       {({ open }) => (
@@ -52,8 +93,28 @@ const Header = (): FunctionComponent => {
                 ))}
               </div>
 
-              <div className='items-center hidden md:flex'>
-                {/* Profile dropdown */}
+              <div className='items-center gap-2 hidden md:flex'>
+                {status === 'pending' ? (
+                  <Skeleton className='w-[160px] h-[26px] mr-2 rounded-lg bg-secondary-300 text-secondary-900 hover:bg-secondary-300/90' />
+                ) : (
+                  <DropdownMenu className='mr-4'>
+                    <DropdownMenuTrigger>
+                      <Badge className='bg-secondary-300 text-secondary-900 hover:bg-secondary-300/90'>
+                        <span className='election-text'>{selectedElection?.englishTitle}</span>
+                        <ChevronDownIcon className='w-[20px] ml-2' />
+                      </Badge>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      <DropdownMenuRadioGroup value={selectedElection} onValueChange={handleSelectEelection}>
+                        {data?.electionRounds.map((electionRound) => (
+                          <DropdownMenuRadioItem key={electionRound.electionRoundId} value={electionRound}>
+                            {electionRound.englishTitle}
+                          </DropdownMenuRadioItem>
+                        ))}
+                      </DropdownMenuRadioGroup>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                )}
                 <Menu as='div' className='relative'>
                   <div>
                     <Menu.Button className='relative flex text-sm bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'>
