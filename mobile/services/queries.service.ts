@@ -6,13 +6,14 @@ import {
   getPollingStationInformation,
   getPollingStationInformationForm,
   getPollingStationNomenclator,
+  getPollingStationNomenclatorVersion,
   getPollingStationsVisits,
   upsertPollingStationGeneralInformation,
 } from "./definitions.api";
 import * as DB from "../database/DAO/PollingStationsNomenclatorDAO";
-import { performanceLog } from "../helpers/misc";
 
 import { PollingStationNomenclatorNodeVM } from "../common/models/polling-station.model";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const electionRoundsKeys = {
   all: ["election-rounds"] as const,
@@ -26,6 +27,15 @@ const pollingStationsKeys = {
   nomenclatorList: (parentId: number | null = -1) =>
     [...pollingStationsKeys.all, "node", parentId] as const,
   one: (id: number) => [...pollingStationsKeys.all, id] as const,
+  nomenclator: (electionRoundId: string) => [
+    ...pollingStationsKeys.all,
+    "nomenclator",
+    electionRoundId,
+  ],
+  nomenclatorCacheKey: (electionRoundId: string) => [
+    ...pollingStationsKeys.nomenclator(electionRoundId),
+    "cacheKey",
+  ],
 };
 
 export const useElectionRoundsQuery = () => {
@@ -40,24 +50,40 @@ export const useElectionRoundsQuery = () => {
 
 export const usePollingStationsNomenclatorQuery = (electionRoundId: string) => {
   return useQuery({
-    queryKey: ["polling-stations-nomenclator", electionRoundId],
+    queryKey: pollingStationsKeys.nomenclator(electionRoundId),
     queryFn: async () => {
-      // TODO: Need to save and check if the CacheKey is the same (bust cache)
+      try {
+        const { cacheKey: serverVersionKey } =
+          await getPollingStationNomenclatorVersion(electionRoundId);
+        const localVersionKey = await AsyncStorage.getItem(
+          pollingStationsKeys.nomenclatorCacheKey(electionRoundId).join(),
+        );
+        const exists = await DB.getOne(electionRoundId);
 
-      const count = await performanceLog(
-        () => DB.getPollingStationNomenclatorNodesCount(electionRoundId),
-        "DB.getPollingStationNomenclatorNodesCount",
-      );
+        if (!localVersionKey) console.log("🆕🆕🆕🆕 Nomenclator: No Local Version Key");
+        if (!exists) console.log("🆕🆕🆕🆕 Nomenclator: No data for the election round");
+        if (localVersionKey !== serverVersionKey)
+          console.log("❌❌❌❌ Nomenclator: Busting cache, new data coming");
 
-      if (count > 0) {
-        return "RETRIEVED FROM DB";
-      } else {
-        const data = await getPollingStationNomenclator(electionRoundId);
-        await DB.addPollingStationsNomenclatureBulk(electionRoundId, data.nodes);
-        return "ADDED TO DB";
+        if (!localVersionKey || !exists || serverVersionKey !== localVersionKey) {
+          await DB.deleteAll(electionRoundId);
+          const data = await getPollingStationNomenclator(electionRoundId);
+          await DB.addPollingStationsNomenclatureBulk(electionRoundId, data.nodes);
+          await AsyncStorage.setItem(
+            pollingStationsKeys.nomenclatorCacheKey(electionRoundId).join(),
+            serverVersionKey,
+          );
+          return "ADDED TO DB";
+        } else {
+          return "RETRIEVED FROM DB";
+        }
+      } catch (err) {
+        // TODO: Add Sentry
+        console.warn("usePollingStationsNomenclatorQuery", err);
       }
     },
     enabled: !!electionRoundId,
+    staleTime: 5 * 60 * 1000,
   });
 };
 
