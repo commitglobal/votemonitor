@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using Vote.Monitor.Core.Services.Time;
 using Vote.Monitor.Domain.Repository;
 
 namespace Vote.Monitor.Api.IntegrationTests.Ngo;
