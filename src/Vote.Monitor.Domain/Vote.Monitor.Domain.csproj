@@ -33,6 +33,7 @@
 
   <ItemGroup>
     <Folder Include="Entities\EmergencyAggregate\" />
+    <Folder Include="Entities\FormSubmissionAggregate\" />
   </ItemGroup>
 
 </Project>

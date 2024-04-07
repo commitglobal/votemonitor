@@ -1,7 +1,6 @@
 ﻿using Authorization.Policies.Requirements;
 using Feature.MonitoringObservers.Specifications;
 using Microsoft.AspNetCore.Authorization;
-using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 
 namespace Feature.MonitoringObservers.Get;
 
