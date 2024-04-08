@@ -1,5 +1,5 @@
-import React from "react";
-import { Checkbox, Label, XStack, CheckboxProps, styled } from "tamagui";
+import React, { useState } from "react";
+import { Checkbox, Label, XStack, CheckboxProps } from "tamagui";
 import { Icon } from "../Icon";
 import { Typography } from "../Typography";
 
@@ -8,42 +8,41 @@ interface CheckboxInputProps extends CheckboxProps {
   label: string;
 }
 
-const StyledCheckbox = styled(Checkbox, {
-  width: "$md",
-  height: "$md",
-  borderRadius: 4,
-  // onCheckedChange={(checked) => console.log(checked)}
-  // backgroundColor={this.checked ? "$purple5" : "white"}
-  // borderColor={checked ? "$purple5" : "$gray3"}
-});
-
 const CheckboxInput: React.FC<CheckboxInputProps> = ({
   label,
   id,
   defaultChecked = false,
-  checked,
   ...rest
 }) => {
-  console.log(checked);
+  const [isChecked, setIsChecked] = useState(defaultChecked);
+
   return (
     <XStack
       height={42}
       alignItems="center"
       borderWidth={1}
-      borderColor={checked ? "$purple5" : "$gray3"}
+      borderColor={isChecked ? "$purple5" : "$gray3"}
       gap="$xs"
       paddingHorizontal={14}
-      paddingVertical="$xs"
       borderRadius={8}
       {...rest}
     >
-      <StyledCheckbox id={id}>
+      <Checkbox
+        defaultChecked={defaultChecked}
+        width="$md"
+        height="$md"
+        borderRadius={4}
+        id={id}
+        onCheckedChange={(checked) => setIsChecked(checked)}
+        backgroundColor={isChecked ? "$purple5" : "white"}
+        borderColor={isChecked ? "$purple5" : "$gray3"}
+      >
         <Checkbox.Indicator>
-          <Icon icon="check" color="black" />
+          <Icon icon="check" color="white" />
         </Checkbox.Indicator>
-      </StyledCheckbox>
+      </Checkbox>
 
-      <Label htmlFor={id} padding="$0" margin="$0" flex={1}>
+      <Label htmlFor={id} paddingVertical="$xs" margin="$0" flex={1}>
         <Typography preset="body1">{label}</Typography>
       </Label>
     </XStack>
