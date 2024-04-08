@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { styled, ToggleGroup, Text, ToggleGroupSingleProps } from "tamagui";
+import { styled, ToggleGroup, ToggleGroupSingleProps } from "tamagui";
 import { Typography } from "../Typography";
 
 const ratings = [1, 2, 3, 4, 5];
@@ -44,7 +44,7 @@ export const RatingInput: React.FC<RatingInputProps> = ({ id, defaultValue, ...r
           key={i}
           value={rating.toString()}
           flex={1}
-          active={rating.toString() == selected}
+          active={rating.toString() === selected}
         >
           <Typography>{rating.toString()}</Typography>
         </StyledToggleGroupItem>
