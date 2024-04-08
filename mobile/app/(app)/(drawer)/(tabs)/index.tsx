@@ -2,9 +2,6 @@ import React from "react";
 import { Text } from "react-native";
 import { Button } from "tamagui";
 import { router } from "expo-router";
-import CardFooter from "../../../../components/CardFooter";
-import { Typography } from "../../../../components/Typography";
-import Card from "../../../../components/Card";
 import {
   // upsertPollingStationGeneralInformationMutation,
   useElectionRoundsQuery,
@@ -51,10 +48,6 @@ const Index = () => {
       <Button onPress={() => router.push("/polling-station-questionnaire")}>
         Go To Polling Station Qustionnaire
       </Button>
-      <Card padding="$md">
-        <Typography>Card component</Typography>
-        <CardFooter text="Card footer" action={() => console.log("card footer")} marginTop="$sm" />
-      </Card>
       <Text onPress={signOut}>Logout</Text>
     </Screen>
   );
