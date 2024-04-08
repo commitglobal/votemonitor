@@ -32,6 +32,7 @@ const navigation = [
   { name: 'Election rounds', to: '/election-rounds' },
   { name: 'NGOs', to: '/ngos' },
   { name: 'Observers', to: '/observers' },
+  { name: 'Monitoring Observers', to: '/monitoring-observers' },
   { name: 'Form templates', to: '/form-templates' },
 ];
 const userNavigation = [{ name: 'Sign out', to: '#' }];

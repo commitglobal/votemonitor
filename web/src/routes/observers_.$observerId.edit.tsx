@@ -1,5 +1,5 @@
 import EditObserver from '@/features/observers/components/EditObserver/EditObserver';
-import { Outlet, createFileRoute } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 import { observerQueryOptions } from './observers/$observerId';
 
 export const Route = createFileRoute('/observers/$observerId/edit')({

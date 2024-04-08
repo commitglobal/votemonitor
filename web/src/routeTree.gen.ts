@@ -14,12 +14,15 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as IndexImport } from './routes/index'
 import { Route as ObserversIndexImport } from './routes/observers/index'
 import { Route as NgosIndexImport } from './routes/ngos/index'
+import { Route as MonitoringObserversIndexImport } from './routes/monitoring-observers/index'
 import { Route as FormTemplatesIndexImport } from './routes/form-templates/index'
 import { Route as ElectionRoundsIndexImport } from './routes/election-rounds/index'
 import { Route as ObserversObserverIdImport } from './routes/observers/$observerId'
 import { Route as NgosNgoIdImport } from './routes/ngos/$ngoId'
+import { Route as MonitoringObserversMonitoringObserverIdImport } from './routes/monitoring-observers/$monitoringObserverId'
 import { Route as ElectionRoundsElectionRoundIdImport } from './routes/election-rounds/$electionRoundId'
 import { Route as ObserversObserverIdEditImport } from './routes/observers_.$observerId.edit'
+import { Route as MonitoringObserversMonitoringObserverIdEditImport } from './routes/monitoring-observers_.$monitoringObserverId.edit'
 import { Route as FormTemplatesFormTemplateIdEditImport } from './routes/form-templates/$formTemplateId.edit'
 
 // Create/Update Routes
@@ -36,6 +39,11 @@ const ObserversIndexRoute = ObserversIndexImport.update({
 
 const NgosIndexRoute = NgosIndexImport.update({
   path: '/ngos/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const MonitoringObserversIndexRoute = MonitoringObserversIndexImport.update({
+  path: '/monitoring-observers/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -59,6 +67,12 @@ const NgosNgoIdRoute = NgosNgoIdImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const MonitoringObserversMonitoringObserverIdRoute =
+  MonitoringObserversMonitoringObserverIdImport.update({
+    path: '/monitoring-observers/$monitoringObserverId',
+    getParentRoute: () => rootRoute,
+  } as any)
+
 const ElectionRoundsElectionRoundIdRoute =
   ElectionRoundsElectionRoundIdImport.update({
     path: '/election-rounds/$electionRoundId',
@@ -69,6 +83,12 @@ const ObserversObserverIdEditRoute = ObserversObserverIdEditImport.update({
   path: '/observers/$observerId/edit',
   getParentRoute: () => rootRoute,
 } as any)
+
+const MonitoringObserversMonitoringObserverIdEditRoute =
+  MonitoringObserversMonitoringObserverIdEditImport.update({
+    path: '/monitoring-observers/$monitoringObserverId/edit',
+    getParentRoute: () => rootRoute,
+  } as any)
 
 const FormTemplatesFormTemplateIdEditRoute =
   FormTemplatesFormTemplateIdEditImport.update({
@@ -88,6 +108,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ElectionRoundsElectionRoundIdImport
       parentRoute: typeof rootRoute
     }
+    '/monitoring-observers/$monitoringObserverId': {
+      preLoaderRoute: typeof MonitoringObserversMonitoringObserverIdImport
+      parentRoute: typeof rootRoute
+    }
     '/ngos/$ngoId': {
       preLoaderRoute: typeof NgosNgoIdImport
       parentRoute: typeof rootRoute
@@ -104,6 +128,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FormTemplatesIndexImport
       parentRoute: typeof rootRoute
     }
+    '/monitoring-observers/': {
+      preLoaderRoute: typeof MonitoringObserversIndexImport
+      parentRoute: typeof rootRoute
+    }
     '/ngos/': {
       preLoaderRoute: typeof NgosIndexImport
       parentRoute: typeof rootRoute
@@ -114,6 +142,10 @@ declare module '@tanstack/react-router' {
     }
     '/form-templates/$formTemplateId/edit': {
       preLoaderRoute: typeof FormTemplatesFormTemplateIdEditImport
+      parentRoute: typeof rootRoute
+    }
+    '/monitoring-observers/$monitoringObserverId/edit': {
+      preLoaderRoute: typeof MonitoringObserversMonitoringObserverIdEditImport
       parentRoute: typeof rootRoute
     }
     '/observers/$observerId/edit': {
@@ -128,13 +160,16 @@ declare module '@tanstack/react-router' {
 export const routeTree = rootRoute.addChildren([
   IndexRoute,
   ElectionRoundsElectionRoundIdRoute,
+  MonitoringObserversMonitoringObserverIdRoute,
   NgosNgoIdRoute,
   ObserversObserverIdRoute,
   ElectionRoundsIndexRoute,
   FormTemplatesIndexRoute,
+  MonitoringObserversIndexRoute,
   NgosIndexRoute,
   ObserversIndexRoute,
   FormTemplatesFormTemplateIdEditRoute,
+  MonitoringObserversMonitoringObserverIdEditRoute,
   ObserversObserverIdEditRoute,
 ])
 

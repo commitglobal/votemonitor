@@ -1,5 +1,5 @@
 import { useLoaderData, useNavigate } from '@tanstack/react-router';
-import { Observer } from '../../models/Observer';
+import { MonitoringObserver } from '../../models/MonitoringObserver';
 import Layout from '@/components/layout/Layout';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
@@ -18,7 +18,7 @@ const phoneRegex = new RegExp(/^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[
 
 export default function EditObserver() {
   const navigate = useNavigate();
-  const observer: Observer = useLoaderData({ strict: false });
+  const observer: MonitoringObserver = useLoaderData({ strict: false });
   const editObserverFormSchema = z.object({
     name: z.string().min(2, {
       message: 'This field is mandatory',
