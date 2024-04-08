@@ -15,6 +15,7 @@ public static class DomainInstaller
         NpgsqlConnection.GlobalTypeMapper.EnableDynamicJson();
 
         services.AddDbContext<VoteMonitorContext>(options =>
+        {
             options.UseNpgsql(connectionString, sqlOptions =>
             {
                 sqlOptions.EnableRetryOnFailure(
@@ -22,7 +23,10 @@ public static class DomainInstaller
                     maxRetryDelay: TimeSpan.FromSeconds(5),
                     errorCodesToAdd: null
                 );
-            }));
+            });
+
+            options.EnableSensitiveDataLogging();
+        });
 
         services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
         services.AddScoped(typeof(IReadRepository<>), typeof(EfRepository<>));

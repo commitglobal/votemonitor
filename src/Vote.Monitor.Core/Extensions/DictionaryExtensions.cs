@@ -12,4 +12,17 @@ public static class DictionaryExtensions
 
         return value;
     }
+
+    public static void AddOrUpdate<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key, Func<TValue> createFunc, Action<TValue> updateFunc)
+    {
+        if (!dict.TryGetValue(key, out var value))
+        {
+            value = createFunc();
+            dict.Add(key, value);
+        }
+        else
+        {
+            updateFunc(value);
+        }
+    }
 }

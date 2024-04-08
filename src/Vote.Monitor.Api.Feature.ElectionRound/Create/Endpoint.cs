@@ -6,6 +6,7 @@ public class Endpoint(IRepository<ElectionRoundAggregate> repository)
     public override void Configure()
     {
         Post("/api/election-rounds");
+        Policies(PolicyNames.PlatformAdminsOnly);
     }
 
     public override async Task<Results<Ok<ElectionRoundModel>, Conflict<ProblemDetails>>> ExecuteAsync(Request req, CancellationToken ct)

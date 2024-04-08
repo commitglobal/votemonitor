@@ -1,6 +1,4 @@
-﻿using Vote.Monitor.Core.Services.Time;
-
-namespace Vote.Monitor.Api.Feature.Observer.Create;
+﻿namespace Vote.Monitor.Api.Feature.Observer.Create;
 
 public class Endpoint(IRepository<ObserverAggregate> repository)
     : Endpoint<Request, Results<Ok<ObserverModel>, Conflict<ProblemDetails>>>
@@ -8,6 +6,7 @@ public class Endpoint(IRepository<ObserverAggregate> repository)
     public override void Configure()
     {
         Post("/api/observers");
+        Policies(PolicyNames.PlatformAdminsOnly);
     }
 
     public override async Task<Results<Ok<ObserverModel>, Conflict<ProblemDetails>>> ExecuteAsync(Request req, CancellationToken ct)
@@ -21,7 +20,7 @@ public class Endpoint(IRepository<ObserverAggregate> repository)
             return TypedResults.Conflict(new ProblemDetails(ValidationFailures));
         }
 
-        var observer = new ObserverAggregate(req.Name, req.Email, req.Password, req.PhoneNumber);
+        var observer = ObserverAggregate.Create(req.Name, req.Email, req.Password, req.PhoneNumber);
         await repository.AddAsync(observer, ct);
 
         return TypedResults.Ok(new ObserverModel
