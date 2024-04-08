@@ -10,6 +10,7 @@ import Badge from "../../../../components/Badge";
 import Card from "../../../../components/Card";
 import { Screen } from "../../../../components/Screen";
 import LinearProgress from "../../../../components/LinearProgress";
+import CardFooter from "../../../../components/CardFooter";
 
 const QuickReport = () => {
   return (
@@ -30,6 +31,10 @@ const QuickReport = () => {
           Hello from typographyHello from typographyHello from typographyHello from typographyHello
           from typographyHello from typographyHello from typography
         </Typography>
+      </Card>
+      <Card padding="$md">
+        <Typography>Card component</Typography>
+        <CardFooter text="Card footer" action={() => console.log("card footer")} marginTop="$sm" />
       </Card>
       <Stack padding="$sm" gap="$xs">
         <Typography preset="heading">Button</Typography>
