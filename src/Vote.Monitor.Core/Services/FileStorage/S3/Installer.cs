@@ -1,5 +1,6 @@
 ﻿using Amazon.Extensions.NETCore.Setup;
 using Amazon.Runtime;
+using Amazon.Runtime.CredentialManagement;
 using Amazon.S3;
 using Humanizer.Configuration;
 using Microsoft.Extensions.Configuration;
@@ -25,14 +26,9 @@ internal static class Installer
         services.AddDefaultAWSOptions(new AWSOptions() { Credentials = credentials, Region = region });
         Log.Logger.Warning("done AddDefaultAWSOptions");
 
-        services.AddSingleton<IAmazonS3>(_ =>
-        {
-            Log.Logger.Warning("starting aws sdk init {@region} {awsAccessKey} {awsSecretKey}", region, awsAccessKey, awsSecretKey);
-            var client = new AmazonS3Client(credentials, region);
-            Log.Logger.Warning("done starting aws sdk init");
-
-            return client;
-        });
+        Log.Logger.Warning("starting aws sdk init {@region} {awsAccessKey} {awsSecretKey}", region, awsAccessKey, awsSecretKey);
+        services.AddAWSService<IAmazonS3>();
+        Log.Logger.Warning("done starting aws sdk init");
 
         services.AddSingleton<IFileStorageService, S3FileStorageService>();
 
