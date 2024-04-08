@@ -25,9 +25,9 @@ const StyledToggleGroupItem = styled(ToggleGroup.Item, {
   },
 });
 
-export const RatingInput: React.FC<RatingInputProps> = ({ id, ...rest }) => {
+export const RatingInput: React.FC<RatingInputProps> = ({ id, defaultValue, ...rest }) => {
   // TODO: styling without state?
-  const [selected, setSelected] = useState("");
+  const [selected, setSelected] = useState(defaultValue);
 
   console.log(selected);
   return (
