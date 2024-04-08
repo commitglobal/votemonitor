@@ -12,11 +12,6 @@ internal static class Installer
     {
         services.Configure<S3Options>(configurationSection);
 
-        // Get the AWS profile information from configuration providers
-        AWSOptions awsOptions = configurationSection.GetAWSOptions();
-
-        // Configure AWS service clients to use these credentials
-        services.AddDefaultAWSOptions(awsOptions);
         services.AddAWSService<IAmazonS3>();
         services.AddSingleton<IFileStorageService, S3FileStorageService>();
 
