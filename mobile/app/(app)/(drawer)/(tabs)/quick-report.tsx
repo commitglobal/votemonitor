@@ -134,6 +134,9 @@ const QuickReport = () => {
           badgeProps={{
             children: "Not started",
           }}
+          action={() => {
+            console.log("FormCard");
+          }}
         ></FormCard>
         <FormCard
           header={"A-Opening"}
@@ -142,6 +145,9 @@ const QuickReport = () => {
           badgeProps={{
             children: "Great work",
             preset: "success",
+          }}
+          action={() => {
+            console.log("FormCard");
           }}
         ></FormCard>
       </Stack>

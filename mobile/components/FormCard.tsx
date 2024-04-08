@@ -1,9 +1,10 @@
 import React from "react";
-import { useTheme, View, styled } from "tamagui";
+import { useState } from "react";
+import { View, styled } from "tamagui";
 import Badge, { BadgeProps } from "./Badge";
 import Card from "./Card";
 import { Typography } from "./Typography";
-import { Icon } from "./Icon";
+import CardFooter from "./CardFooter";
 
 export interface FormCardProps {
   /**
@@ -23,51 +24,55 @@ export interface FormCardProps {
 
   /**
    * Optional preset type.
-   * The default is 'Not started'
    */
   badgeProps: BadgeProps;
+
+  /**
+   * Performed action for onPress
+   */
+  action: () => void;
 }
 
 const FormCard = (props: FormCardProps): JSX.Element => {
-  const theme = useTheme();
-
-  const { header, subHeader, footer, badgeProps } = props;
+  const { header, subHeader, footer, badgeProps, action } = props;
   const hasSubHeader = subHeader ? subHeader.trim() !== "" : false;
 
   const badgePreset = badgeProps.preset || "default";
   const badgeChildren = badgeProps.children;
 
-  const HeaderContainer = styled(View, {
-    name: "HeaderContainer",
+  const CardHeader = styled(View, {
+    name: "CardHeader",
     justifyContent: "space-between",
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 8,
   });
 
+  const [isPressed, setIsPressed] = useState(false);
+
   return (
-    <Card style={{ width: "100%" }}>
-      <HeaderContainer>
+    <Card
+      style={{ width: "100%" }}
+      onPress={action}
+      onPressIn={() => setIsPressed(true)}
+      onPressOut={() => setIsPressed(false)}
+      opacity={isPressed ? 0.5 : 1}
+    >
+      <CardHeader>
         <Typography preset="body1" color="$gray9" style={{ fontWeight: "700" }}>
           {header}
         </Typography>
 
         <Badge preset={badgePreset}>{badgeChildren}</Badge>
-      </HeaderContainer>
+      </CardHeader>
 
-      {hasSubHeader === true && (
+      {hasSubHeader && (
         <Typography preset="body1" color="$gray6" style={{ marginBottom: 8 }}>
           {subHeader}
         </Typography>
       )}
 
-      {/* TODO: Footer will come as a separate component: Card footer component */}
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Typography preset="default" style={{ fontWeight: "400", color: theme.gray5?.val }}>
-          {footer}
-        </Typography>
-        <Icon icon="chevronRight" color={theme.purple7?.val}></Icon>
-      </View>
+      <CardFooter text={footer} action={() => {}} />
     </Card>
   );
 };
