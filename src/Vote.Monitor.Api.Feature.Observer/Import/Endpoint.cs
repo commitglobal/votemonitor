@@ -1,4 +1,6 @@
-﻿namespace Vote.Monitor.Api.Feature.Observer.Import;
+﻿using Vote.Monitor.Core.Services.Parser;
+
+namespace Vote.Monitor.Api.Feature.Observer.Import;
 
 public class Endpoint(
     IRepository<ObserverAggregate> repository,
@@ -31,7 +33,7 @@ public class Endpoint(
         var importedRows = parsingResult as ParsingResult<ObserverImportModel>.Success;
         List<ObserverAggregate> observers = importedRows!
             .Items
-            .Select(x => new ObserverAggregate(x.Name, x.Email, x.Password, x.PhoneNumber))
+            .Select(x => ObserverAggregate.Create(x.Name, x.Email, x.Password, x.PhoneNumber))
             .ToList();
 
         var logins = observers.Select(o => o.Login);

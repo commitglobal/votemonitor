@@ -1,5 +1,4 @@
-﻿
-using Authorization.Policies.Requirements;
+﻿using Authorization.Policies.Requirements;
 using Feature.MonitoringObservers.Specifications;
 using Microsoft.AspNetCore.Authorization;
 

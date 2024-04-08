@@ -1,9 +1,7 @@
-
 import { createFileRoute } from '@tanstack/react-router';
 import { authApi } from '@/common/auth-api';
 import { NGO } from '@/features/ngos/models/NGO';
 import { queryOptions } from '@tanstack/react-query';
-
 
 export const ngoQueryOptions = (ngoId: string) =>
   queryOptions({
@@ -21,14 +19,11 @@ export const ngoQueryOptions = (ngoId: string) =>
 
 export const Route = createFileRoute('/ngos/$ngoId')({
   component: NgoDetails,
-  loader: ({ context: { queryClient }, params: { ngoId } }) => queryClient.ensureQueryData(ngoQueryOptions(ngoId))
+  loader: ({ context: { queryClient }, params: { ngoId } }) => queryClient.ensureQueryData(ngoQueryOptions(ngoId)),
 });
-
-
 
 function NgoDetails() {
   const ngo = Route.useLoaderData();
 
-  return <div className="p-2">
-    Hello from ngos! {JSON.stringify(ngo, null, 2)}</div>
+  return <div className='p-2'>Hello from ngos! {JSON.stringify(ngo, null, 2)}</div>;
 }

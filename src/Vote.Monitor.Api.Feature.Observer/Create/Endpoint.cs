@@ -20,7 +20,7 @@ public class Endpoint(IRepository<ObserverAggregate> repository)
             return TypedResults.Conflict(new ProblemDetails(ValidationFailures));
         }
 
-        var observer = new ObserverAggregate(req.Name, req.Email, req.Password, req.PhoneNumber);
+        var observer = ObserverAggregate.Create(req.Name, req.Email, req.Password, req.PhoneNumber);
         await repository.AddAsync(observer, ct);
 
         return TypedResults.Ok(new ObserverModel

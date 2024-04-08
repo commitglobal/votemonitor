@@ -25,7 +25,8 @@ public class Form : AuditableBaseEntity, IAggregateRoot
         FormType formType,
         string code,
         TranslatedString name,
-        IEnumerable<string> languages) : base(Guid.NewGuid())
+        IEnumerable<string> languages,
+        IEnumerable<BaseQuestion> questions) : base(Guid.NewGuid())
     {
         ElectionRound = electionRound;
         ElectionRoundId = electionRound.Id;
@@ -37,6 +38,7 @@ public class Form : AuditableBaseEntity, IAggregateRoot
         Name = name;
         Languages = languages.ToList().AsReadOnly();
         Status = FormStatus.Drafted;
+        Questions = questions.ToList().AsReadOnly();
     }
 
     public static Form Create(
@@ -45,8 +47,9 @@ public class Form : AuditableBaseEntity, IAggregateRoot
         FormType formType,
         string code,
         TranslatedString name,
-        IEnumerable<string> languages) =>
-        new(electionRound, monitoringNgo, formType, code, name, languages);
+        IEnumerable<string> languages,
+        IEnumerable<BaseQuestion> questions) =>
+        new(electionRound, monitoringNgo, formType, code, name, languages, questions);
 
     public PublishResult Publish()
     {

@@ -4853,7 +4853,8 @@ namespace Vote.Monitor.Domain.Migrations
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
 
                     b.ToTable("Observers", (string)null);
                 });
@@ -4941,7 +4942,7 @@ namespace Vote.Monitor.Domain.Migrations
                         .IsRequired();
 
                     b.HasOne("Vote.Monitor.Domain.Entities.ApplicationUserAggregate.Observer", "Observer")
-                        .WithMany()
+                        .WithMany("MonitoringObservers")
                         .HasForeignKey("ObserverId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -5149,6 +5150,11 @@ namespace Vote.Monitor.Domain.Migrations
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.NgoAggregate.Ngo", b =>
                 {
                     b.Navigation("Admins");
+                });
+
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.ApplicationUserAggregate.Observer", b =>
+                {
+                    b.Navigation("MonitoringObservers");
                 });
 #pragma warning restore 612, 618
         }

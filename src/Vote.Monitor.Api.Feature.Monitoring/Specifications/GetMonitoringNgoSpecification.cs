@@ -1,4 +1,4 @@
-﻿using Vote.Monitor.Api.Feature.Monitoring.GetMonitoringNgos;
+﻿using Vote.Monitor.Api.Feature.Monitoring.List;
 
 namespace Vote.Monitor.Api.Feature.Monitoring.Specifications;
 

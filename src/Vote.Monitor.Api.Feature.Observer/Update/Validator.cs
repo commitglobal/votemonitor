@@ -9,6 +9,8 @@ public class Validator : Validator<Request>
 
         RuleFor(x => x.Name)
             .NotEmpty()
-            .MinimumLength(3);
+            .MinimumLength(3)
+            .MaximumLength(32);
+
     }
 }

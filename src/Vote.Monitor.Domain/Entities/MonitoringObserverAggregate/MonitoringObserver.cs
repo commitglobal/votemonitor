@@ -12,6 +12,23 @@ public class MonitoringObserver : AuditableBaseEntity, IAggregateRoot
 
     public string[] Tags { get; private set; }
 
+    private MonitoringObserver(Guid monitoringNgoId, Guid observerId)
+        : base(Guid.NewGuid())
+    {
+        MonitoringNgoId = monitoringNgoId;
+        ObserverId = observerId;
+        Tags = [];
+        Status = MonitoringObserverStatus.Pending;
+    }
+    private MonitoringObserver(Guid monitoringNgoId, Observer observer)
+        : base(Guid.NewGuid())
+    {
+        MonitoringNgoId = monitoringNgoId;
+        ObserverId = observer.Id;
+        Tags = [];
+        Status = MonitoringObserverStatus.Pending;
+    }
+
     internal MonitoringObserver(MonitoringNgo monitoringNgo, Observer observer)
         : base(Guid.NewGuid())
     {
@@ -44,8 +61,23 @@ public class MonitoringObserver : AuditableBaseEntity, IAggregateRoot
         Status = MonitoringObserverStatus.Suspended;
     }
 
-#pragma warning disable CS8618 // Required by Entity Framework
+    public static MonitoringObserver Create(Guid monitoringNgoId, Guid observerId)
+    {
+        return new MonitoringObserver(monitoringNgoId, observerId);
+    }
 
+    public static MonitoringObserver Create(Guid monitoringNgoId, Observer observer)
+    {
+        return new MonitoringObserver(monitoringNgoId, observer);
+    }
+
+    public void Update(MonitoringObserverStatus status, string[] tags)
+    {
+        Status = status;
+        Tags = tags;
+    }
+
+#pragma warning disable CS8618 // Required by Entity Framework
     private MonitoringObserver()
     {
 

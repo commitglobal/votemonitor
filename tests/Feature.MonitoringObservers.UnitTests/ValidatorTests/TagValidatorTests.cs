@@ -94,7 +94,7 @@ public class TagValidatorTests
         var result = _validator.TestValidate(request);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.MonitoringObserverIds);
+        result.ShouldHaveValidationErrorFor(x => x.Tags);
     }
 
     [Fact]

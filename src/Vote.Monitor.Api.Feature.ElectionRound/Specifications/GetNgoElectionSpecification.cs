@@ -1,26 +1,26 @@
-﻿namespace Vote.Monitor.Api.Feature.ElectionRound.Specifications;
+﻿using Vote.Monitor.Api.Feature.ElectionRound.Monitoring;
+using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
 
-public sealed class GetNgoElectionSpecification : Specification<ElectionRoundAggregate, ElectionRoundModel>
+namespace Vote.Monitor.Api.Feature.ElectionRound.Specifications;
+
+public sealed class GetNgoElectionSpecification : Specification<MonitoringNgo, NgoElectionRoundView>
 {
     public GetNgoElectionSpecification(Guid ngoId)
     {
         Query
-            .Include(x => x.MonitoringNgos)
-            .ThenInclude(x => x.MonitoringObservers)
-            .Where(x => x.Status != ElectionRoundStatus.Archived)
-            .Where(x => x.MonitoringNgos.Any(ngo => ngo.Id == ngoId));
+            .Include(x => x.ElectionRound)
+            .Where(x => x.NgoId == ngoId)
+            .Where(x => x.ElectionRound.Status != ElectionRoundStatus.Archived);
 
-        Query.Select(x => new ElectionRoundModel
+        Query.Select(x => new NgoElectionRoundView
         {
-            Id = x.Id,
-            Title = x.Title,
-            EnglishTitle = x.EnglishTitle,
-            StartDate = x.StartDate,
-            Status = x.Status,
-            CreatedOn = x.CreatedOn,
-            LastModifiedOn = x.LastModifiedOn,
-            Country = x.Country.FullName,
-            CountryId = x.CountryId
+            MonitoringNgoId = x.Id,
+            ElectionRoundId = x.ElectionRoundId,
+            Title = x.ElectionRound.Title,
+            EnglishTitle = x.ElectionRound.EnglishTitle,
+            StartDate = x.ElectionRound.StartDate,
+            Country = x.ElectionRound.Country.FullName,
+            CountryId = x.ElectionRound.CountryId
         });
     }
 }
