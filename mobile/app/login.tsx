@@ -1,17 +1,17 @@
-import React, { useContext } from "react";
+import React from "react";
 import { View } from "react-native";
 import { router } from "expo-router";
 import { useAuth } from "../hooks/useAuth";
 import { Button as TamaguiButton } from "tamagui";
 import { Typography } from "../components/Typography";
 import { useTranslation } from "react-i18next";
-import { LanguageContext } from "../contexts/language/LanguageContext.provider";
+import { useLanguage } from "../contexts/language/LanguageContext.provider";
 import Button from "../components/Button";
 
 const Login = () => {
   const { signIn } = useAuth();
   const { t } = useTranslation("login");
-  const { changeLanguage } = useContext(LanguageContext);
+  const { changeLanguage } = useLanguage();
 
   const switchToEnglish = () => {
     changeLanguage("en");

@@ -7,25 +7,14 @@ interface StyledSelectProps extends SelectProps {
   options: { id: string | number; value: string }[];
 }
 
-const Select = ({
-  placeholder = "Select",
-  options,
-  ...props
-}: StyledSelectProps) => (
+const Select = ({ placeholder = "Select", options, ...props }: StyledSelectProps) => (
   <TamaguiSelect disablePreventBodyScroll native {...props}>
     <TamaguiSelect.Trigger
       backgroundColor="transparent"
       paddingHorizontal="$md"
       borderColor="$gray1"
       borderWidth={1}
-      iconAfter={
-        <Icon
-          icon="chevronRight"
-          size={20}
-          transform="rotate(90deg)"
-          color="$gray7"
-        />
-      }
+      iconAfter={<Icon icon="chevronRight" size={20} transform="rotate(90deg)" color="$gray7" />}
     >
       <TamaguiSelect.Value
         width={"90%"}
@@ -36,7 +25,7 @@ const Select = ({
     </TamaguiSelect.Trigger>
 
     <Adapt platform="touch">
-      <Sheet native modal snapPoints={[80, 50]}>
+      <Sheet native modal snapPoints={[50, 40]}>
         <Sheet.Frame>
           <Sheet.ScrollView padding="$sm">
             <Adapt.Contents />
@@ -53,12 +42,7 @@ const Select = ({
             () =>
               options.map((entry, i) => {
                 return (
-                  <TamaguiSelect.Item
-                    index={i}
-                    key={entry.id}
-                    value={entry.value}
-                    gap="$3"
-                  >
+                  <TamaguiSelect.Item index={i} key={entry.id} value={entry.value} gap="$3">
                     <TamaguiSelect.ItemText width={"90%"} numberOfLines={1}>
                       {entry.value}
                     </TamaguiSelect.ItemText>

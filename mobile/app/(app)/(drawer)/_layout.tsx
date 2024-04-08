@@ -45,7 +45,6 @@ export default function MainLayout() {
               <Header
                 title={title}
                 titleColor="white"
-                backgroundColor={theme.purple5?.val}
                 barStyle="light-content"
                 style={options.headerStyle as StyleProp<ViewStyle>}
                 leftIcon={<Icon icon="menuAlt2" color="white" />}

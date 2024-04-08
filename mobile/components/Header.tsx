@@ -5,75 +5,72 @@ import {
   TouchableOpacity,
   TouchableOpacityProps,
   ViewStyle,
-} from "react-native"
-import { useSafeAreaInsets } from "react-native-safe-area-context"
-import { XStack } from "tamagui"
-import { Typography } from "./Typography"
-import { tokens } from "../theme/tokens"
+} from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { styled, XStack } from "tamagui";
+import { Typography } from "./Typography";
+import { tokens } from "../theme/tokens";
 
 interface HeaderProps {
   /**
    * Background color
    */
-  backgroundColor?: string
+  backgroundColor?: string;
   /**
    * Title
    */
-  title?: string
+  title?: string;
   /**
    * Title color
    */
-  titleColor?: string
+  titleColor?: string;
   /**
    * Optional inner header wrapper style override.
    */
-  style?: StyleProp<ViewStyle>
-  barStyle?: "light-content" | "dark-content" | "default"
+  style?: StyleProp<ViewStyle>;
+  barStyle?: "light-content" | "dark-content" | "default";
   /**
    * Icon that should appear on the left.
    * Can be used with `onLeftPress`.
    */
-  leftIcon?: React.ReactNode
+  leftIcon?: React.ReactNode;
   /**
    * What happens when you press the left icon or text action.
    */
-  onLeftPress?: TouchableOpacityProps["onPress"]
+  onLeftPress?: TouchableOpacityProps["onPress"];
   /**
    * Icon that should appear on the right.
    * Can be used with `onRightPress`.
    */
-  rightIcon?: React.ReactNode
+  rightIcon?: React.ReactNode;
   /**
    * What happens when you press the right icon or text action.
    */
-  onRightPress?: TouchableOpacityProps["onPress"]
+  onRightPress?: TouchableOpacityProps["onPress"];
 }
 
 const Header = ({
-  backgroundColor = "gray",
+  backgroundColor = "$purple5",
   barStyle = "light-content",
   title,
-  titleColor,
+  titleColor = "white",
   style: $styleOverride,
   leftIcon,
   onLeftPress,
   rightIcon,
   onRightPress,
 }: HeaderProps) => {
-  const insets = useSafeAreaInsets()
+  const insets = useSafeAreaInsets();
+
+  const StyledWrapper = styled(XStack, {
+    name: "StyledWrapper",
+    backgroundColor,
+    height: 50 + insets.top,
+    paddingTop: insets.top,
+  });
 
   return (
-    <XStack
-      style={[
-        $headerContainer,
-        {
-          height: 50 + insets.top,
-          paddingTop: insets.top,
-          backgroundColor,
-        },
-        $styleOverride,
-      ]}
-    >
+    <StyledWrapper style={[$headerContainer, $styleOverride]}>
       {/* manipulating status bar icons to desired color */}
       <StatusBar barStyle={barStyle} />
 
@@ -99,14 +96,14 @@ const Header = ({
       >
         {rightIcon || null}
       </TouchableOpacity>
-    </XStack>
-  )
-}
+    </StyledWrapper>
+  );
+};
 
 const $headerContainer: ViewStyle = {
   justifyContent: "space-between",
   alignItems: "center",
-}
+};
 
 const $leftIconContainer: ViewStyle = {
   flex: 1,
@@ -115,12 +112,12 @@ const $leftIconContainer: ViewStyle = {
   paddingLeft: 14,
   flexDirection: "row",
   justifyContent: "flex-start",
-}
+};
 
 const $title: TextStyle = {
   flex: 6,
   textAlign: "center",
-}
+};
 
 const $rightIconContainer: ViewStyle = {
   flex: 1,
@@ -129,6 +126,6 @@ const $rightIconContainer: ViewStyle = {
   paddingRight: 14,
   flexDirection: "row",
   justifyContent: "flex-end",
-}
+};
 
-export default Header
+export default Header;
