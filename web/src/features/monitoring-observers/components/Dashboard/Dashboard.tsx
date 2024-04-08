@@ -1,7 +1,7 @@
-import { type Observer } from '../../models/Observer';
+import { type MonitoringObserver } from '../../models/MonitoringObserver';
 import { useState, type ReactElement, useRef } from 'react';
 import { type UseQueryResult, useQuery, useMutation } from '@tanstack/react-query';
-import { SortOrder, type DataTableParameters, type PageParameters, type PageResponse } from '@/common/types';
+import { type DataTableParameters, type PageResponse } from '@/common/types';
 import { authApi } from '@/common/auth-api';
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
 import Layout from '@/components/layout/Layout';
@@ -37,13 +37,12 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
 
-export default function ObserversDashboard(): ReactElement {
-  const observerColDefs: ColumnDef<Observer>[] = [
+export default function MonitoringObserversDashboard(): ReactElement {
+  const monitoringObserverColDefs: ColumnDef<MonitoringObserver>[] = [
     {
       header: ({ column }) => <DataTableColumnHeader title='Name' column={column} />,
       accessorKey: 'name',
@@ -66,9 +65,9 @@ export default function ObserversDashboard(): ReactElement {
       enableSorting: true,
       cell: ({
         row: {
-          original: { userStatus },
+          original: { status },
         },
-      }) => <Badge className={'badge-' + userStatus}>{userStatus}</Badge>,
+      }) => <Badge className={'badge-' + status}>{status}</Badge>,
     },
     {
       header: '',
@@ -91,14 +90,14 @@ export default function ObserversDashboard(): ReactElement {
     },
   ];
 
-  const [searchText, setSerachText] = useState('');
+  const [searchText, setSearchText] = useState('');
   const [fileName, setFileName] = useState('');
   const [isFiltering, setFiltering] = useState(false);
   const [statusFilter, setStatusFilter] = useState('');
 
   const navigate = useNavigate();
   const handleSearchInput = (ev: React.FormEvent<HTMLInputElement>) => {
-    setSerachText(ev.currentTarget.value);
+    setSearchText(ev.currentTarget.value);
   };
 
   const hiddenFileInput = useRef(null);
@@ -112,15 +111,15 @@ export default function ObserversDashboard(): ReactElement {
     setFileName(fileUploaded.name);
   };
 
-  const handleDelete = (observerId: string) => {
-    deleteMutation.mutate(observerId);
+  const handleDelete = (monitoringObserverId: string) => {
+    deleteMutation.mutate(monitoringObserverId);
   };
 
-  const navigateToObserver = (observerId: string) => {
-    navigate({ to: '/observers/$observerId', params: { observerId } });
+  const navigateToObserver = (monitoringObserverId: string) => {
+    navigate({ to: '/monitoring-observers/$monitoringObserverId', params: { monitoringObserverId } });
   };
 
-  const useObservers = (p: DataTableParameters): UseQueryResult<PageResponse<Observer>, Error> => {
+  const useMonitoringObservers = (p: DataTableParameters): UseQueryResult<PageResponse<MonitoringObserver>, Error> => {
     return useQuery({
       queryKey: ['observers', p.pageNumber, p.pageSize, p.sortColumnName, p.sortOrder, searchText, statusFilter],
       queryFn: async () => {
@@ -133,10 +132,10 @@ export default function ObserversDashboard(): ReactElement {
           status: statusFilter,
         };
         const electionRoundId: string | null = localStorage.getItem('electionRoundId');
-        const monitoringNgId: string | null = localStorage.getItem('monitoringNgoId');
+        const monitoringNgoId: string | null = localStorage.getItem('monitoringNgoId');
 
-        const response = await authApi.get<PageResponse<Observer>>(
-          `/election-rounds/${electionRoundId}/monitoring-ngos/${monitoringNgId}/monitoring-observers`,
+        const response = await authApi.get<PageResponse<MonitoringObserver>>(
+          `/election-rounds/${electionRoundId}/monitoring-ngos/${monitoringNgoId}/monitoring-observers`,
           {
             params: Object.keys(paramsObject)
               .filter((k) => paramsObject[k] !== null && paramsObject[k] !== '')
@@ -145,7 +144,7 @@ export default function ObserversDashboard(): ReactElement {
         );
 
         if (response.status !== 200) {
-          throw new Error('Failed to fetch observers');
+          throw new Error('Failed to fetch monitoring observers');
         }
 
         return response.data;
@@ -154,11 +153,14 @@ export default function ObserversDashboard(): ReactElement {
   };
 
   const deleteMutation = useMutation({
-    mutationFn: (observerId: string) => {
-      return authApi.delete<void>(`/observers/${observerId}`);
+    mutationFn: (monitoringObserverId: string) => {
+      const electionRoundId: string | null = localStorage.getItem('electionRoundId');
+      const monitoringNgoId: string | null = localStorage.getItem('monitoringNgoId');
+
+      return authApi.delete<void>(`/election-rounds/${electionRoundId}/monitoring-ngos/${monitoringNgoId}/monitoring-observers/${monitoringObserverId}`);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['observers'] });
+      queryClient.invalidateQueries({ queryKey: ['monitoring-observers'] });
     },
   });
 
@@ -179,18 +181,18 @@ export default function ObserversDashboard(): ReactElement {
 
   return (
     <Layout
-      title={'Observers'}
-      subtitle='View all observers you imported as an NGO admin and invite them to current election observation event.'>
+      title={'Monitoring Observers'}
+      subtitle='View all monitoring observers you imported as an NGO admin and invite them to current election observation event.'>
       <Tabs defaultValue='account'>
         <TabsList className='grid grid-cols-2 bg-gray-200 w-[400px] mb-4'>
-          <TabsTrigger value='account'>All observers</TabsTrigger>
+          <TabsTrigger value='account'>All monitoring observers</TabsTrigger>
           <TabsTrigger value='password'>Push messages</TabsTrigger>
         </TabsList>
         <TabsContent value='account'>
           <Card className='w-full pt-0'>
             <CardHeader className='flex flex-column gap-2'>
               <div className='flex flex-row justify-between items-center px-6'>
-                <CardTitle className='text-xl'>Observers list</CardTitle>
+                <CardTitle className='text-xl'>Monitoring observers list</CardTitle>
                 <div className='table-actions flex flex-row-reverse flex-row- gap-4'>
                   <Dialog>
                     <DialogTrigger>
@@ -215,11 +217,11 @@ export default function ObserversDashboard(): ReactElement {
                     </DialogTrigger>
                     <DialogContent className='min-w-[650px]'>
                       <DialogHeader>
-                        <DialogTitle className='mb-3.5'>Import observer list</DialogTitle>
+                        <DialogTitle className='mb-3.5'>Import monitoring observer list</DialogTitle>
                         <Separator />
                         <DialogDescription>
                           <div className='mt-3.5 text-base'>
-                            In order to successfully import a list of observers, please use the template provided below.
+                            In order to successfully import a list of monitoring observers, please use the template provided below.
                             Download the template, fill it in with the observer information and then upload it. No other
                             format is accepted for import.
                           </div>
@@ -233,7 +235,7 @@ export default function ObserversDashboard(): ReactElement {
                           <div className='text-sm text-purple-900 flex flex-row gap-1'>
                             {' '}
                             <ArrowDownTrayIcon className='w-[15px]' />
-                            Observers_template.csv
+                            monitoring_observers_template.csv
                           </div>
                           <div className='text-xs text-purple-900'>28kb</div>
                         </div>
@@ -283,7 +285,7 @@ export default function ObserversDashboard(): ReactElement {
                         fill='#5F288D'
                       />
                     </svg>
-                    Export observer list
+                    Export monitoring observer list
                   </Button>
                 </div>
               </div>
@@ -307,6 +309,7 @@ export default function ObserversDashboard(): ReactElement {
                     <SelectContent>
                       <SelectGroup>
                         <SelectItem value='Active'>Active</SelectItem>
+                        <SelectItem value='Active'>Pending</SelectItem>
                         <SelectItem value='Suspended'>Suspended</SelectItem>
                       </SelectGroup>
                     </SelectContent>
@@ -334,7 +337,7 @@ export default function ObserversDashboard(): ReactElement {
               )}
             </CardHeader>
             <CardContent>
-              <QueryParamsDataTable columns={observerColDefs} useQuery={useObservers} />
+              <QueryParamsDataTable columns={monitoringObserverColDefs} useQuery={useMonitoringObservers} />
             </CardContent>
             <CardFooter className='flex justify-between'></CardFooter>
           </Card>
