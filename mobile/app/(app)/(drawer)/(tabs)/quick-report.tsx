@@ -164,7 +164,7 @@ const QuickReport = () => {
           id="5"
           type="single"
           defaultValue="2"
-          onValueChange={(value) => console.log(value)}
+          // onValueChange={(value) => console.log(value)}
         />
 
         <Typography preset="subheading">Date</Typography>

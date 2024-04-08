@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { styled, ToggleGroup, Text, ToggleGroupSingleProps } from "tamagui";
 import { Typography } from "../Typography";
 
@@ -10,7 +10,6 @@ interface RatingInputProps extends ToggleGroupSingleProps {
 
 const StyledToggleGroupItem = styled(ToggleGroup.Item, {
   name: "Styled Group Item",
-  //   backgroundColor: "red",
   borderColor: "$gray3",
   pressStyle: {
     backgroundColor: "transparent",
@@ -19,18 +18,34 @@ const StyledToggleGroupItem = styled(ToggleGroup.Item, {
   variants: {
     active: {
       true: {
-        backgroundColor: "red",
-        borderColor: "black",
+        backgroundColor: "$purple1",
+        borderColor: "$purple5",
       },
     },
   },
 });
 
 export const RatingInput: React.FC<RatingInputProps> = ({ id, ...rest }) => {
+  // TODO: styling without state?
+  const [selected, setSelected] = useState("");
+
+  console.log(selected);
   return (
-    <ToggleGroup orientation="horizontal" id={id} height={40} width="100%" {...rest}>
+    <ToggleGroup
+      onValueChange={(val: any) => setSelected(val)}
+      orientation="horizontal"
+      id={id}
+      height={40}
+      width="100%"
+      {...rest}
+    >
       {ratings.map((rating, i) => (
-        <StyledToggleGroupItem key={i} value={rating.toString()} flex={1}>
+        <StyledToggleGroupItem
+          key={i}
+          value={rating.toString()}
+          flex={1}
+          active={rating.toString() == selected}
+        >
           <Typography>{rating.toString()}</Typography>
         </StyledToggleGroupItem>
       ))}
