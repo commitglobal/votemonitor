@@ -23,14 +23,17 @@ internal static class Installer
         var credentials = new BasicAWSCredentials(awsAccessKey, awsSecretKey);
 
         Log.Logger.Warning("start AddDefaultAWSOptions");
-        services.AddDefaultAWSOptions(new AWSOptions() { Credentials = credentials, Region = region });
+        services.AddDefaultAWSOptions(new AWSOptions()
+        {
+            Credentials = credentials, 
+            Region = region,
+            DefaultConfigurationMode = DefaultConfigurationMode.Standard
+        });
+
         Log.Logger.Warning("done AddDefaultAWSOptions");
 
         Log.Logger.Warning("starting aws sdk init {@region} {awsAccessKey} {awsSecretKey}", region, awsAccessKey, awsSecretKey);
-        services.AddAWSService<IAmazonS3>(new AWSOptions()
-        {
-            DefaultConfigurationMode = DefaultConfigurationMode.Standard
-        });
+        services.AddSingleton<IAmazonS3>(new AmazonS3Client(awsAccessKey, awsSecretKey, region));
         Log.Logger.Warning("done starting aws sdk init");
 
         services.AddSingleton<IFileStorageService, S3FileStorageService>();
