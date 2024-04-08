@@ -27,7 +27,10 @@ internal static class Installer
         Log.Logger.Warning("done AddDefaultAWSOptions");
 
         Log.Logger.Warning("starting aws sdk init {@region} {awsAccessKey} {awsSecretKey}", region, awsAccessKey, awsSecretKey);
-        services.AddAWSService<IAmazonS3>();
+        services.AddAWSService<IAmazonS3>(new AWSOptions()
+        {
+            DefaultConfigurationMode = DefaultConfigurationMode.Standard
+        });
         Log.Logger.Warning("done starting aws sdk init");
 
         services.AddSingleton<IFileStorageService, S3FileStorageService>();
