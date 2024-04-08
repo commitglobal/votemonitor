@@ -1,19 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 import { Text } from "react-native";
 import { Typography } from "../../../../components/Typography";
-import { Stack } from "tamagui";
+import { RadioGroup, Stack } from "tamagui";
 import Select from "../../../../components/Select";
 import Button from "../../../../components/Button";
 import { Icon } from "../../../../components/Icon";
 import Badge from "../../../../components/Badge";
 
 import Card from "../../../../components/Card";
+import Input from "../../../../components/Inputs/Input";
+import CheckboxInput from "../../../../components/Inputs/CheckboxInput";
+import RadioInput from "../../../../components/Inputs/RadioInput";
 import FormCard from "../../../../components/FormCard";
 import { Screen } from "../../../../components/Screen";
 import LinearProgress from "../../../../components/LinearProgress";
 import CardFooter from "../../../../components/CardFooter";
 
 const QuickReport = () => {
+  const [selectedRadioValue, setSelectedRadioValue] = useState("rural");
+
   return (
     <Screen preset="auto" backgroundColor="white" contentContainerStyle={{ gap: 20 }}>
       <Text>Quick Report</Text>
@@ -124,6 +129,34 @@ const QuickReport = () => {
           <LinearProgress total={5} current={4}></LinearProgress>
           <LinearProgress total={5} current={5}></LinearProgress>
         </Stack>
+      </Stack>
+
+      {/* inputs */}
+      <Stack padding="$sm" gap="$xs" marginTop="$md" backgroundColor="white">
+        <Typography preset="heading">Inputs</Typography>
+        <Typography preset="subheading">Text/Numeric</Typography>
+        <Input type="text" />
+        <Input type="numeric" />
+
+        <Typography preset="subheading">Checkbox</Typography>
+        <CheckboxInput id="1" label="hello" />
+        <CheckboxInput id="2" label="hello2" defaultChecked />
+
+        <Typography preset="subheading">Radio buttons</Typography>
+        <RadioGroup
+          gap="$sm"
+          defaultValue={selectedRadioValue}
+          onValueChange={(value) => setSelectedRadioValue(value)}
+        >
+          <RadioInput id="10" value="rural" label="Rural" selectedValue={selectedRadioValue} />
+          <RadioInput id="20" value="urban" label="Urban" selectedValue={selectedRadioValue} />
+          <RadioInput
+            id="30"
+            value="not-known"
+            label="Not known"
+            selectedValue={selectedRadioValue}
+          />
+        </RadioGroup>
       </Stack>
 
       <Stack padding="$sm" gap="$xs">
