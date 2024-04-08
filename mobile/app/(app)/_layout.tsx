@@ -16,7 +16,6 @@ const AppLayout = () => {
     return <Redirect href="/login" />;
   }
 
-  // // Show this while loading data
   if (isLoading) {
     return (
       <Screen safeAreaEdges={["top"]} backgroundColor="red">
