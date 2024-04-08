@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Sheet, XStack } from "tamagui";
 import RNDateTimePicker, { DateTimePickerEvent } from "@react-native-community/datetimepicker";
-// import DateTimePickerModal from "@react-native-community/datetimepicker";
+import DateTimePickerModal from "@react-native-community/datetimepicker";
 import { Platform } from "react-native";
 import { Typography } from "../Typography";
 import { Icon } from "../Icon";
@@ -16,9 +16,12 @@ export const DateInput = ({
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
 
-  const onChange = (event: DateTimePickerEvent, selectedDate) => {
-    const currentDate = selectedDate;
-    setDate(currentDate);
+  const onChange = (event: DateTimePickerEvent, selectedDate: Date | undefined) => {
+    selectedDate && setDate(selectedDate);
+    if (Platform.OS === "android") {
+      setOpen(false);
+    }
+    return;
   };
 
   return (
@@ -40,6 +43,7 @@ export const DateInput = ({
         </Typography>
         <Icon icon="calendar" color="transparent" />
 
+        {/* open bottom sheet on ios with date picker */}
         {Platform.OS === "ios" ? (
           <Sheet modal native open={open} onOpenChange={setOpen} zIndex={100_000} snapPoints={[45]}>
             <Sheet.Overlay />
@@ -47,9 +51,8 @@ export const DateInput = ({
               <XStack gap="$sm" justifyContent="space-between" width="100%"></XStack>
               <XStack flex={1} justifyContent="center" alignItems="center">
                 <RNDateTimePicker
-                  display="spinner"
                   value={date}
-                  is24Hour={true}
+                  display="spinner"
                   onChange={onChange}
                   minimumDate={minimumDate}
                   maximumDate={maximumDate}
@@ -58,14 +61,15 @@ export const DateInput = ({
             </Sheet.Frame>
           </Sheet>
         ) : (
-          open &&
-          // <DateTimePickerModal
-          //   value={date}
-          //   onChange={onChange}
-          //   minimumDate={minimumDate}
-          //   maximumDate={maximumDate}
-          // />
-          console.log("todo")
+          // open date picker modal on android
+          open && (
+            <DateTimePickerModal
+              value={date}
+              onChange={onChange}
+              minimumDate={minimumDate}
+              maximumDate={maximumDate}
+            />
+          )
         )}
       </XStack>
     </>
