@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -35,4 +34,43 @@
 
     --radius: 0.5rem;
   }
+}
+
+.badge-Active {
+  background-color: #f2fdf5;
+  color: #147638;
+}
+
+.badge-Pending {
+  background-color: #fffbeb;
+  color: #a96e09;
+}
+
+.badge-Suspended {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+.breadcrumbs .crumb:after {
+  content: '>';
+  margin-left: 0.5rem;
+}
+
+.breadcrumbs .crumb {
+  color: #7833b3;
+}
+
+.breadcrumbs .crumb:last-child {
+  color: #71717a;
+}
+
+.breadcrumbs .crumb:last-child:after {
+  display: none;
+}
+
+.election-text {
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

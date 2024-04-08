@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from 'zod';
 
 export type FunctionComponent = React.ReactElement | null;
 
@@ -23,6 +23,7 @@ export enum SortOrder {
 export type SortParameters = {
   sortColumnName: string;
   sortOrder: SortOrder;
+  nameFilter?: string;
 };
 
 export type PageResponse<T> = {
@@ -39,12 +40,12 @@ export type TranslatedString = {
 };
 
 export enum QuestionType {
-  TextQuestionType = "textQuestion",
-  NumberQuestionType = "numberQuestion",
-  DateQuestionType = "dateQuestion",
-  SingleSelectQuestionType = "singleSelectQuestion",
-  MultiSelectQuestionType = "multiSelectQuestion",
-  RatingQuestionType = "ratingQuestion",
+  TextQuestionType = 'textQuestion',
+  NumberQuestionType = 'numberQuestion',
+  DateQuestionType = 'dateQuestion',
+  SingleSelectQuestionType = 'singleSelectQuestion',
+  MultiSelectQuestionType = 'multiSelectQuestion',
+  RatingQuestionType = 'ratingQuestion',
 }
 
 export interface BaseQuestion {
@@ -76,7 +77,7 @@ export enum RatingScaleType {
   OneTo7 = 'OneTo7',
   OneTo8 = 'OneTo8',
   OneTo9 = 'OneTo9',
-  OneTo10 = 'OneTo10'
+  OneTo10 = 'OneTo10',
 }
 
 export interface RatingQuestion extends BaseQuestion {
@@ -100,60 +101,69 @@ export interface MultiSelectQuestion extends BaseQuestion {
   options: SelectOption[];
 }
 
-
 export enum AnswerType {
-  TextAnswerType = "textAnswer",
-  NumberAnswerType = "numberAnswer",
-  DateAnswerType = "dateAnswer",
-  SingleSelectAnswerType = "singleSelectAnswer",
-  MultiSelectAnswerType = "multiSelectAnswer",
-  RatingAnswerType = "ratingAnswer"
+  TextAnswerType = 'textAnswer',
+  NumberAnswerType = 'numberAnswer',
+  DateAnswerType = 'dateAnswer',
+  SingleSelectAnswerType = 'singleSelectAnswer',
+  MultiSelectAnswerType = 'multiSelectAnswer',
+  RatingAnswerType = 'ratingAnswer',
 }
 
 export const BaseAnswerSchema = z.object({
   $answerType: z.string(),
-  questionId: z.string()
+  questionId: z.string(),
 });
 export type BaseAnswer = z.infer<typeof BaseAnswerSchema>;
 
 export const TextAnswerSchema = BaseAnswerSchema.extend({
   $answerType: z.literal(AnswerType.TextAnswerType),
-  text: z.string().optional()
+  text: z.string().optional(),
 });
 export type TextAnswer = z.infer<typeof TextAnswerSchema>;
 
 export const NumberAnswerSchema = BaseAnswerSchema.extend({
   $answerType: z.literal(AnswerType.NumberAnswerType),
-  value: z.coerce.number().optional()
+  value: z.coerce.number().optional(),
 });
 export type NumberAnswer = z.infer<typeof NumberAnswerSchema>;
 
 export const DateAnswerSchema = BaseAnswerSchema.extend({
   $answerType: z.literal(AnswerType.DateAnswerType),
-  date: z.string().optional()
+  date: z.string().optional(),
 });
 export type DateAnswer = z.infer<typeof DateAnswerSchema>;
 
 export const RatingAnswerSchema = BaseAnswerSchema.extend({
   $answerType: z.literal(AnswerType.RatingAnswerType),
-  value: z.coerce.number().optional()
+  value: z.coerce.number().optional(),
 });
 export type RatingAnswer = z.infer<typeof RatingAnswerSchema>;
 
 export const SelectedOptionSchema = z.object({
   optionId: z.string().optional(),
-  text: z.string().optional()
+  text: z.string().optional(),
 });
 export type SelectedOption = z.infer<typeof SelectedOptionSchema>;
 
 export const SingleSelectAnswerSchema = BaseAnswerSchema.extend({
   $answerType: z.literal(AnswerType.SingleSelectAnswerType),
-  selection: SelectedOptionSchema.optional()
+  selection: SelectedOptionSchema.optional(),
 });
 export type SingleSelectAnswer = z.infer<typeof SingleSelectAnswerSchema>;
 
 export const MultiSelectAnswerSchema = BaseAnswerSchema.extend({
   $answerType: z.literal(AnswerType.MultiSelectAnswerType),
-  selection: z.array(SelectedOptionSchema).optional()
+  selection: z.array(SelectedOptionSchema).optional(),
 });
 export type MultiSelectAnswer = z.infer<typeof MultiSelectAnswerSchema>;
+
+export type ElectionRoundMonitoring = {
+  monitoringNgoId: string;
+  electionRoundId: string;
+  title: string;
+  englishTitle: string;
+  startDate: string;
+  country: string;
+  countryId: string;
+};

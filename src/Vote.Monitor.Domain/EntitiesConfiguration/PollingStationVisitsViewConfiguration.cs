@@ -9,7 +9,7 @@ public class PollingStationVisitsViewConfiguration : IEntityTypeConfiguration<Po
     public void Configure(EntityTypeBuilder<PollingStationVisitViewModel> builder)
     {
         builder
-            .ToView(Views.PollingStationVisits)
+            .ToView(CustomDBViews.PollingStationVisits)
             .HasNoKey();
     }
 }

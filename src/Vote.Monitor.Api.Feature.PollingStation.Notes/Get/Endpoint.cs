@@ -1,21 +1,22 @@
-﻿using Vote.Monitor.Api.Feature.PollingStation.Notes.Specifications;
-using Vote.Monitor.Domain.Entities.ElectionRoundAggregate;
+﻿using Authorization.Policies.Requirements;
+using Microsoft.AspNetCore.Authorization;
+using Vote.Monitor.Api.Feature.PollingStation.Notes.Specifications;
 
 namespace Vote.Monitor.Api.Feature.PollingStation.Notes.Get;
 
 public class Endpoint : Endpoint<Request, Results<Ok<NoteModel>, BadRequest<ProblemDetails>, NotFound>>
 {
+    private readonly IAuthorizationService _authorizationService;
     private readonly IReadRepository<PollingStationNoteAggregate> _repository;
     private readonly IRepository<PollingStationAggregate> _pollingStationRepository;
-    private readonly IRepository<ElectionRound> _electionRoundRepository;
 
-    public Endpoint(IReadRepository<PollingStationNoteAggregate> repository,
-        IRepository<PollingStationAggregate> pollingStationRepository,
-        IRepository<ElectionRound> electionRoundRepository)
+    public Endpoint(IAuthorizationService authorizationService, 
+        IReadRepository<PollingStationNoteAggregate> repository,
+        IRepository<PollingStationAggregate> pollingStationRepository)
     {
         _repository = repository;
         _pollingStationRepository = pollingStationRepository;
-        _electionRoundRepository = electionRoundRepository;
+        _authorizationService = authorizationService;
     }
 
     public override void Configure()
@@ -30,13 +31,10 @@ public class Endpoint : Endpoint<Request, Results<Ok<NoteModel>, BadRequest<Prob
 
     public override async Task<Results<Ok<NoteModel>, BadRequest<ProblemDetails>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var electionRoundSpecification = new GetElectionRoundSpecification(req.ElectionRoundId);
-        var electionRound = await _electionRoundRepository.FirstOrDefaultAsync(electionRoundSpecification, ct);
-
-        if (electionRound == null)
+        var authorizationResult = await _authorizationService.AuthorizeAsync(User, new MonitoringObserverRequirement(req.ElectionRoundId));
+        if (!authorizationResult.Succeeded)
         {
-            AddError(r => r.ElectionRoundId, "Election round not found");
-            return TypedResults.BadRequest(new ProblemDetails(ValidationFailures));
+            return TypedResults.NotFound();
         }
 
         var pollingStationSpecification = new GetPollingStationSpecification(req.PollingStationId);

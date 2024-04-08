@@ -16,8 +16,15 @@ public static class AuthorizationPoliciesInstaller
         services.AddAuthorization(options =>
         {
             options.AddPolicy(PolicyNames.PlatformAdminsOnly, policy => policy.RequireRole(UserRole.PlatformAdmin));
+            options.AddPolicy(PolicyNames.NgoAdminsOnly, policy => policy.RequireRole(UserRole.NgoAdmin));
             options.AddPolicy(PolicyNames.ObserversOnly, policy => policy.RequireRole(UserRole.Observer));
+            options.AddPolicy(PolicyNames.AdminsOnly, policy => policy.RequireRole(UserRole.PlatformAdmin, UserRole.NgoAdmin));
         });
+
+        services
+            .AddScoped<ICurrentUserIdProvider, CurrentUserIdProvider>()
+            .AddScoped<ICurrentUserRoleProvider, CurrentUserRoleProvider>()
+            .AddScoped(sp => (ICurrentUserInitializer)sp.GetRequiredService<ICurrentUserIdProvider>());
 
         return services;
     }

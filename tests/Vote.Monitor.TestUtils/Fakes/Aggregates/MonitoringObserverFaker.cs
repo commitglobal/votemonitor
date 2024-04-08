@@ -14,8 +14,8 @@ public sealed class MonitoringObserverFaker : PrivateFaker<MonitoringObserver>
         var observer = new ObserverAggregateFaker(observerId).Generate();
 
         RuleFor(fake => fake.Id, fake => id ?? fake.Random.Guid());
-        RuleFor(fake => fake.InviterNgo, monitoringNgo);
-        RuleFor(fake => fake.InviterNgoId, monitoringNgo.Id);
+        RuleFor(fake => fake.MonitoringNgo, monitoringNgo);
+        RuleFor(fake => fake.MonitoringNgoId, monitoringNgo.Id);
         RuleFor(fake => fake.Observer, observer);
         RuleFor(fake => fake.ObserverId, observer.Id);
         RuleFor(fake => fake.Status, fake => fake.PickRandom(_statuses));

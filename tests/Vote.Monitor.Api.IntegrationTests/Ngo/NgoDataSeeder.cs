@@ -1,13 +1,11 @@
 ﻿using Microsoft.Extensions.Logging;
-using Vote.Monitor.Core.Services.Time;
 using Vote.Monitor.Domain.Repository;
 
 namespace Vote.Monitor.Api.IntegrationTests.Ngo;
 
 public class NgoDataSeeder(
     ILogger<NgoDataSeeder> logger,
-    IRepository<Domain.Entities.NgoAggregate.Ngo> repository,
-    ITimeProvider timeProvider)
+    IRepository<Domain.Entities.NgoAggregate.Ngo> repository)
     : IDataSeeder
 {
     public async Task SeedDataAsync()
@@ -22,7 +20,7 @@ public class NgoDataSeeder(
                   .Range(0, 20)
                   .Select(x =>
                   {
-                      var ngo = new Domain.Entities.NgoAggregate.Ngo($"Deactivated{x}");
+                      var ngo = new Domain.Entities.NgoAggregate.Ngo($"Non{x}");
                       ngo.Deactivate();
                       return ngo;
                   });
