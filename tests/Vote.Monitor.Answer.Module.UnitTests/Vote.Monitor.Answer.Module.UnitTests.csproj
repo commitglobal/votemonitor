@@ -28,4 +28,8 @@
     <ProjectReference Include="..\Vote.Monitor.TestUtils\Vote.Monitor.TestUtils.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Aggregators\Extensions\" />
+  </ItemGroup>
+
 </Project>
