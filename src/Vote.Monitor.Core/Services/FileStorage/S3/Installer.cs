@@ -13,8 +13,7 @@ internal static class Installer
     {
         services.Configure<S3Options>(configurationSection);
 
-        services.AddDefaultAWSOptions(GetAwsOptions(configurationSection));
-        services.AddAWSService<IAmazonS3>();
+        services.AddAWSService<IAmazonS3>(GetAwsOptions(configurationSection));
         services.AddSingleton<IFileStorageService, S3FileStorageService>();
 
         return services;
