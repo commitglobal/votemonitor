@@ -168,7 +168,7 @@ const QuickReport = () => {
         />
 
         <Typography preset="subheading">Date</Typography>
-        <DateInput />
+        <DateInput minimumDate={new Date(2024, 6, 20)} />
       </Stack>
     </Screen>
   );
