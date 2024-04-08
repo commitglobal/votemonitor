@@ -1,39 +1,30 @@
 import React from "react";
 import { StyleProp, ViewStyle } from "react-native";
-import {
-  Card as TamaguiCard,
-  CardProps as TamaguiCardProps,
-  useTheme,
-} from "tamagui";
-import { tokens } from "../theme/tokens";
+import { styled, Card as TamaguiCard, CardProps as TamaguiCardProps } from "tamagui";
 
 export interface CardProps extends TamaguiCardProps {
   style?: StyleProp<ViewStyle>;
   children?: React.ReactNode;
 }
 
-const Card = (props: CardProps): JSX.Element => {
-  const theme = useTheme();
-  const { children, style, ...rest } = props;
+const StyledCard = styled(TamaguiCard, {
+  padding: "$md",
+  borderRadius: 3,
+  backgroundColor: "white",
+  shadowColor: "$gray13",
+  shadowOffset: { width: 0, height: 1 },
+  shadowRadius: 3,
+  shadowOpacity: 0.07,
+  elevation: 1,
+});
 
-  const $defaultStyling: ViewStyle = {
-    padding: tokens.space.md.val,
-    borderRadius: 3,
-    shadowColor: theme.gray13?.val,
-    shadowOffset: { width: 0, height: 1 },
-    shadowRadius: 3,
-    shadowOpacity: 0.07,
-    elevation: 1,
-  };
+const Card = (props: CardProps): JSX.Element => {
+  const { children, style: $styleOverride, ...rest } = props;
 
   return (
-    <TamaguiCard
-      style={[$defaultStyling, style]}
-      backgroundColor="white"
-      {...rest}
-    >
+    <StyledCard style={$styleOverride} {...rest}>
       {children}
-    </TamaguiCard>
+    </StyledCard>
   );
 };
 
