@@ -9,6 +9,7 @@ import Badge from "../../../../components/Badge";
 
 import Card from "../../../../components/Card";
 import { Screen } from "../../../../components/Screen";
+import LinearProgress from "../../../../components/LinearProgress";
 
 const QuickReport = () => {
   return (
@@ -107,6 +108,15 @@ const QuickReport = () => {
           <Badge preset="success"> Success </Badge>
           <Badge preset="warning"> In progress </Badge>
           <Badge preset="danger"> Red badge</Badge>
+        </Stack>
+
+        <Stack padding="$sm" gap="$xs" backgroundColor="white">
+          <Typography preset="heading">LinearProgress</Typography>
+          <LinearProgress total={5} current={1}></LinearProgress>
+          <LinearProgress total={5} current={2}></LinearProgress>
+          <LinearProgress total={5} current={3}></LinearProgress>
+          <LinearProgress total={5} current={4}></LinearProgress>
+          <LinearProgress total={5} current={5}></LinearProgress>
         </Stack>
       </Stack>
     </Screen>
