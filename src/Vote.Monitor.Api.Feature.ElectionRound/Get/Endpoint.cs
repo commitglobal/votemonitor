@@ -6,6 +6,7 @@ public class Endpoint(IReadRepository<ElectionRoundAggregate> repository)
     public override void Configure()
     {
         Get("/api/election-rounds/{id}");
+        Policies(PolicyNames.PlatformAdminsOnly);
     }
 
     public override async Task<Results<Ok<ElectionRoundModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)

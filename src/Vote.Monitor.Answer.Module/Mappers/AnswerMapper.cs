@@ -72,8 +72,13 @@ public static class AnswerMapper
             .AsReadOnly();
     }
 
-    private static SelectedOption ToEntity(SelectedOptionRequest option)
+    private static SelectedOption? ToEntity(SelectedOptionRequest? option)
     {
-        return SelectedOption.Create(option.OptionId, option.Text);
+        if(option is not null)
+        {
+            return SelectedOption.Create(option.OptionId, option.Text);
+        }
+
+        return null;
     }
 }

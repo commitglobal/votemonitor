@@ -6,6 +6,7 @@ public class Endpoint(IRepository<ElectionRoundAggregate> repository) : Endpoint
     {
         Post("/api/election-rounds/{id}:start");
         Description(x => x.Accepts<Request>());
+        Policies(PolicyNames.PlatformAdminsOnly);
     }
 
     public override async Task<Results<NoContent, NotFound>> ExecuteAsync(Request req, CancellationToken ct)

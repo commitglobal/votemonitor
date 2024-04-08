@@ -17,7 +17,7 @@ public abstract class BaseAnswer
 {
     [JsonPropertyName("$answerType")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public string Discriminator => DiscriminatorValue.Get(GetType());
+    public virtual string Discriminator => DiscriminatorValue.Get(GetType());
 
     public Guid QuestionId { get; private set; }
     

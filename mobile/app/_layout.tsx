@@ -11,7 +11,6 @@ import { TamaguiProvider } from "@tamagui/core";
 import { tamaguiConfig } from "../tamagui.config";
 import { useFonts } from "expo-font";
 import Reactotron from "reactotron-react-native";
-// import { Button } from "tamagui";
 import {
   PollingStationInformationAPIPayload,
   upsertPollingStationGeneralInformation,

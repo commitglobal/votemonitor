@@ -1,4 +1,6 @@
-﻿namespace Vote.Monitor.Api.Feature.Observer.UnitTests.Services;
+﻿using Vote.Monitor.Core.Services.Parser;
+
+namespace Vote.Monitor.Api.Feature.Observer.UnitTests.Services;
 public class CsvRowParsedHelpersTests
 {
 

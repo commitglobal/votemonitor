@@ -4,15 +4,15 @@ namespace Vote.Monitor.Domain.Entities.FormBase.Questions;
 
 public class RatingScale : SmartEnum<RatingScale, string>
 {
-    public static readonly RatingScale OneTo3 = new(nameof(OneTo3), nameof(OneTo3));
-    public static readonly RatingScale OneTo4 = new(nameof(OneTo4), nameof(OneTo4));
-    public static readonly RatingScale OneTo5 = new(nameof(OneTo5), nameof(OneTo5));
-    public static readonly RatingScale OneTo6 = new(nameof(OneTo6), nameof(OneTo6));
-    public static readonly RatingScale OneTo7 = new(nameof(OneTo7), nameof(OneTo7));
-    public static readonly RatingScale OneTo8 = new(nameof(OneTo8), nameof(OneTo8));
-    public static readonly RatingScale OneTo9 = new(nameof(OneTo9), nameof(OneTo9));
-    public static readonly RatingScale OneTo10 = new(nameof(OneTo10), nameof(OneTo10));
-
+    private readonly int _upperBound;
+    public static readonly RatingScale OneTo3 = new(nameof(OneTo3), nameof(OneTo3), 3);
+    public static readonly RatingScale OneTo4 = new(nameof(OneTo4), nameof(OneTo4), 4);
+    public static readonly RatingScale OneTo5 = new(nameof(OneTo5), nameof(OneTo5), 5);
+    public static readonly RatingScale OneTo6 = new(nameof(OneTo6), nameof(OneTo6), 6);
+    public static readonly RatingScale OneTo7 = new(nameof(OneTo7), nameof(OneTo7), 7);
+    public static readonly RatingScale OneTo8 = new(nameof(OneTo8), nameof(OneTo8), 8);
+    public static readonly RatingScale OneTo9 = new(nameof(OneTo9), nameof(OneTo9), 9);
+    public static readonly RatingScale OneTo10 = new(nameof(OneTo10), nameof(OneTo10), 10);
 
     /// <summary>Gets an item associated with the specified value. Parses SmartEnum when used as query params</summary>
     /// <see href="https://github.com/ardalis/SmartEnum/issues/410#issuecomment-1686057067">this issue</see>
@@ -28,7 +28,13 @@ public class RatingScale : SmartEnum<RatingScale, string>
         return TryFromValue(value, out result);
     }
 
-    private RatingScale(string name, string value) : base(name, value)
+    private RatingScale(string name, string value, int upperBound) : base(name, value)
     {
+        _upperBound = upperBound;
+    }
+
+    public int[] ToRange()
+    {
+        return Enumerable.Range(1, _upperBound).ToArray();
     }
 }
