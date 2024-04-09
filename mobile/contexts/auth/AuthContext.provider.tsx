@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { AuthContext } from "./auth-context";
-// import API from "../../services/api";
+import API from "../../services/api";
 import * as SecureStore from "expo-secure-store";
 
 const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
@@ -16,11 +16,13 @@ const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
   const signIn = async () => {
     try {
       setIsLoading(true);
-      const { token } = await dummyLogin();
-      // API.post("auth", {
-      //   username: "alice@example.com",
-      //   password: "string",
-      // });
+      // const { token } = await dummyLogin();
+      const {
+        data: { token },
+      } = await API.post("auth", {
+        username: "alice@example.com",
+        password: "string",
+      });
       SecureStore.setItem("access_token", token);
       setIsAuthenticated(true);
     } catch (err: unknown) {
@@ -30,6 +32,7 @@ const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
     }
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const dummyLogin = async (): Promise<{ token: string }> => {
     return new Promise((resolve) => {
       setTimeout(() => {

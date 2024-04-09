@@ -87,12 +87,17 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
     });
   }
 
+  if (!isAuthenticated) {
+    return children;
+  }
+
   return (
     <PersistQueryClientProvider
       onSuccess={async () => {
         console.log(
           "PersistQueryClientProvider onSuccess - Successfully get data from AsyncStorage",
         );
+
         queryClient.resumePausedMutations().then(() => {
           console.log("PersistQueryClientProvider invalidateQueries");
           queryClient.invalidateQueries();

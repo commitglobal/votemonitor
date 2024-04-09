@@ -4,7 +4,7 @@ import { Icon } from "./Icon";
 
 interface StyledSelectProps extends SelectProps {
   placeholder?: string;
-  options: { id: string | number; value: string }[];
+  options: { id: string | number; value: string; label: string }[];
 }
 
 const Select = ({ placeholder = "Select", options, ...props }: StyledSelectProps) => (
@@ -42,9 +42,14 @@ const Select = ({ placeholder = "Select", options, ...props }: StyledSelectProps
             () =>
               options.map((entry, i) => {
                 return (
-                  <TamaguiSelect.Item index={i} key={entry.id} value={entry.value} gap="$3">
+                  <TamaguiSelect.Item
+                    index={i}
+                    key={`${entry.id}_${i}`}
+                    value={entry.value}
+                    gap="$3"
+                  >
                     <TamaguiSelect.ItemText width={"90%"} numberOfLines={1}>
-                      {entry.value}
+                      {entry.label}
                     </TamaguiSelect.ItemText>
                     <TamaguiSelect.ItemIndicator>
                       <Icon icon="chevronLeft" />

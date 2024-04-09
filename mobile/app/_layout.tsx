@@ -10,8 +10,7 @@ import { useFonts } from "expo-font";
 import Reactotron from "reactotron-react-native";
 import "../common/config/i18n";
 import LanguageContextProvider from "../contexts/language/LanguageContext.provider";
-// import UserContextProvider from "../contexts/user/UserContext.provider";
-// import PersistQueryContextProvider from "../contexts/persist-query/PersistQueryContext.provider";
+import PersistQueryContextProvider from "../contexts/persist-query/PersistQueryContext.provider";
 import { onlineManager } from "@tanstack/react-query";
 
 if (__DEV__) {
@@ -58,14 +57,12 @@ export default function Root() {
   return (
     <TamaguiProvider config={tamaguiConfig}>
       <AuthContextProvider>
-        {/* <PersistQueryContextProvider> */}
-        <LanguageContextProvider>
-          {/* <UserContextProvider> */}
-          {!isOnline && <OfflineBanner />}
-          <Slot />
-          {/* </UserContextProvider> */}
-        </LanguageContextProvider>
-        {/* </PersistQueryContextProvider> */}
+        <PersistQueryContextProvider>
+          <LanguageContextProvider>
+            {!isOnline && <OfflineBanner />}
+            <Slot />
+          </LanguageContextProvider>
+        </PersistQueryContextProvider>
       </AuthContextProvider>
     </TamaguiProvider>
   );

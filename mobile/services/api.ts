@@ -1,5 +1,6 @@
 import * as SecureStore from "expo-secure-store";
 import axios, { AxiosRequestHeaders } from "axios";
+import { reloadAsync } from "expo-updates";
 
 // https://vitejs.dev/guide/env-and-mode.html
 const API = axios.create({
@@ -45,6 +46,11 @@ API.interceptors.response.use(
       console.log("Response data", error.response.data);
       console.log("Response status", error.response.status);
       console.log(error.response.headers);
+
+      if (error.response.status === 401) {
+        await SecureStore.deleteItemAsync("access_token");
+        reloadAsync();
+      }
     } else if (error.request) {
       // The request was made but no response was received
       // `error.request` is an instance of XMLHttpRequest in the browser and an instance of

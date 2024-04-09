@@ -1,7 +1,7 @@
 import { Redirect, Stack } from "expo-router";
 import { PortalProvider } from "tamagui";
 import { useAuth } from "../../hooks/useAuth";
-import { useUserData } from "../../contexts/user/UserContext.provider";
+import UserContextProvider, { useUserData } from "../../contexts/user/UserContext.provider";
 import { Typography } from "../../components/Typography";
 import { Screen } from "../../components/Screen";
 
@@ -26,12 +26,14 @@ const AppLayout = () => {
 
   return (
     <PortalProvider>
-      <Stack>
-        <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
-        <Stack.Screen name="polling-station-wizzard" options={{ headerShown: false }} />
-        <Stack.Screen name="form-questionnaire" />
-        <Stack.Screen name="polling-station-questionnaire" />
-      </Stack>
+      <UserContextProvider>
+        <Stack>
+          <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
+          <Stack.Screen name="polling-station-wizzard" options={{ headerShown: false }} />
+          <Stack.Screen name="form-questionnaire" />
+          <Stack.Screen name="polling-station-questionnaire" />
+        </Stack>
+      </UserContextProvider>
     </PortalProvider>
   );
 };

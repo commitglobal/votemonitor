@@ -111,6 +111,7 @@ export const usePollingStationByParentID = (parentId: number | null) => {
       }));
       return mapped;
     },
+    initialData: [],
     enabled: !!parentId,
   });
 };
