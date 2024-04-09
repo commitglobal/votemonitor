@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Sheet, XStack } from "tamagui";
 import RNDateTimePicker, { DateTimePickerEvent } from "@react-native-community/datetimepicker";
-import DateTimePickerModal from "@react-native-community/datetimepicker";
 import { Platform } from "react-native";
 import { Typography } from "../Typography";
 import { Icon } from "../Icon";
@@ -21,7 +20,6 @@ export const DateInput = ({
     if (Platform.OS === "android") {
       setOpen(false);
     }
-    return;
   };
 
   return (
@@ -63,7 +61,7 @@ export const DateInput = ({
         ) : (
           // open date picker modal on android
           open && (
-            <DateTimePickerModal
+            <RNDateTimePicker
               value={date}
               onChange={onChange}
               minimumDate={minimumDate}

@@ -9,7 +9,7 @@ interface RatingInputProps extends ToggleGroupSingleProps {
 }
 
 const StyledToggleGroupItem = styled(ToggleGroup.Item, {
-  name: "Styled Group Item",
+  name: "StyledGroupItem",
   borderColor: "$gray3",
   pressStyle: {
     backgroundColor: "transparent",
