@@ -70,33 +70,46 @@ const Header = ({
   });
 
   return (
-    <StyledWrapper style={[$headerContainer, $styleOverride]}>
-      {/* manipulating status bar icons to desired color */}
-      <StatusBar barStyle={barStyle} />
+    <>
+      <StyledWrapper style={[$headerContainer, $styleOverride]}>
+        {/* manipulating status bar icons to desired color */}
+        <StatusBar barStyle={barStyle} />
+        {/* left icon */}
+        <TouchableOpacity
+          onPress={leftIcon && onLeftPress ? onLeftPress : undefined}
+          style={$leftIconContainer}
+          disabled={!onLeftPress}
+        >
+          {leftIcon || null}
+        </TouchableOpacity>
 
-      {/* left icon */}
-      <TouchableOpacity
-        onPress={leftIcon && onLeftPress ? onLeftPress : undefined}
-        style={$leftIconContainer}
-        disabled={!onLeftPress}
-      >
-        {leftIcon || null}
-      </TouchableOpacity>
+        {/* header title */}
+        <Typography preset="body2" style={{ ...$title, color: titleColor }}>
+          {title}
+        </Typography>
 
-      {/* header title */}
-      <Typography preset="body2" style={{ ...$title, color: titleColor }}>
-        {title}
-      </Typography>
-
-      {/* right icon */}
-      <TouchableOpacity
-        onPress={rightIcon && onRightPress ? onRightPress : undefined}
-        style={$rightIconContainer}
-        disabled={!onRightPress}
-      >
-        {rightIcon || null}
-      </TouchableOpacity>
-    </StyledWrapper>
+        {/* right icon */}
+        <TouchableOpacity
+          onPress={rightIcon && onRightPress ? onRightPress : undefined}
+          style={$rightIconContainer}
+          disabled={!onRightPress}
+        >
+          {rightIcon || null}
+        </TouchableOpacity>
+      </StyledWrapper>
+      {/* ONLINE  banner*/}
+      <XStack backgroundColor="$red1" paddingVertical="$xxs" paddingHorizontal={20}>
+        <Typography fontWeight="500" color="$gray7">
+          Offline mode. Saving answers locally.
+        </Typography>
+      </XStack>
+      {/* OFFLINE banner */}
+      <XStack backgroundColor="$green1" paddingVertical="$xxs" paddingHorizontal={20}>
+        <Typography fontWeight="500" color="$gray7">
+          App online. All answers sent to server.
+        </Typography>
+      </XStack>
+    </>
   );
 };
 
