@@ -14,6 +14,7 @@ import RadioInput from "../../../../components/Inputs/RadioInput";
 import { Screen } from "../../../../components/Screen";
 import LinearProgress from "../../../../components/LinearProgress";
 import CardFooter from "../../../../components/CardFooter";
+import CircularProgress from "../../../../components/CircularProgress";
 
 const QuickReport = () => {
   const [selectedRadioValue, setSelectedRadioValue] = useState("rural");
@@ -156,6 +157,10 @@ const QuickReport = () => {
             selectedValue={selectedRadioValue}
           />
         </RadioGroup>
+      </Stack>
+
+      <Stack padding="$sm" gap="$xs" marginTop="$md" backgroundColor="white">
+        <CircularProgress></CircularProgress>
       </Stack>
     </Screen>
   );

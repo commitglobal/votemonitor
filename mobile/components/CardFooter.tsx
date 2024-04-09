@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { XStack, XStackProps } from "tamagui";
 import { Icon } from "./Icon";
 import { Typography } from "./Typography";
@@ -17,17 +17,13 @@ const CardFooter: React.FC<CardFooterProps> = ({ text, action, ...rest }) => {
       justifyContent="space-between"
       width="100%"
       onPress={action}
-      //TODO: do we handle pressed state?
+      // TODO: do we handle pressed state?
       // onPressIn={() => setIsPressed(true)}
       // onPressOut={() => setIsPressed(false)}
       // opacity={isPressed ? 0.5 : 1}
       {...rest}
     >
-      <Typography
-        color="$gray5"
-        size="sm"
-        style={{ fontWeight: "500", width: "80%" }}
-      >
+      <Typography color="$gray5" size="sm" style={{ fontWeight: "500", width: "80%" }}>
         {text}
       </Typography>
       <Icon icon="chevronRight" color="$purple5" />
