@@ -1,12 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { View } from "react-native";
 import { Svg, Circle } from "react-native-svg";
-import Animated, { useSharedValue, withTiming, useAnimatedProps } from "react-native-reanimated";
+import Animated, {
+  useSharedValue,
+  withTiming,
+  useAnimatedProps,
+  useDerivedValue,
+  interpolateColor,
+} from "react-native-reanimated";
 import Button from "./Button";
+import { Typography } from "./Typography";
 
-// Pentru cerc
+export interface CircularProgressProps {
+  progress: number;
+}
+
 const size = 200;
-const strokeWidth = 10;
+const strokeWidth = 8;
 const radius = (size - strokeWidth) / 2;
 const CIRCLE_LENGTH = radius * 2 * Math.PI;
 const duration = 1000;
@@ -17,6 +27,15 @@ const CircularProgress = (): JSX.Element => {
   const [progress, setProgress] = useState(0);
   const animatedProgress = useSharedValue(progress);
 
+  // Color
+  const strokeColor = useDerivedValue(() => {
+    return interpolateColor(
+      animatedProgress.value,
+      [0, 10, 99, 100],
+      ["grey", "yellow", "yellow", "green"],
+    );
+  });
+
   // Progress Indicator animation
   useEffect(() => {
     animatedProgress.value = withTiming(progress, { duration });
@@ -24,14 +43,25 @@ const CircularProgress = (): JSX.Element => {
 
   const animatedProps = useAnimatedProps(() => ({
     strokeDashoffset: (CIRCLE_LENGTH * (100 - animatedProgress.value)) / 100,
+    stroke: strokeColor.value,
   }));
 
-  const gap = CIRCLE_LENGTH * 0.03;
+  // Background Circle Animation
+  const gap = progress == 0 ? 0 : CIRCLE_LENGTH * 0.05;
   const seg1 = (CIRCLE_LENGTH * (100 - progress)) / 100 - 2 * gap;
   const seg2 = CIRCLE_LENGTH * (progress / 100);
 
+  const strokeColor2 = useDerivedValue(() => {
+    return interpolateColor(
+      animatedProgress.value,
+      [0, 10, 99, 100],
+      ["grey", "#FFFDD0", "#FFFDD0", "green"],
+    );
+  });
+
   const animatedProps2 = useAnimatedProps(() => ({
     strokeDashoffset: (CIRCLE_LENGTH * (100 - animatedProgress.value)) / 100 - gap,
+    stroke: strokeColor2.value,
   }));
 
   return (
@@ -55,7 +85,10 @@ const CircularProgress = (): JSX.Element => {
             position: "absolute",
           }}
         >
-          {Math.round(progress)} %
+          <View style={{ flexDirection: "column", alignItems: "center" }}>
+            <Typography>{Math.round(progress)} %</Typography>
+            <Typography> completed </Typography>
+          </View>
         </Animated.Text>
 
         <Svg width={size} height={size}>
@@ -74,6 +107,7 @@ const CircularProgress = (): JSX.Element => {
           <AnimatedCircle
             stroke="yellow"
             fill="none"
+            strokeLinecap="round"
             cx={size / 2}
             cy={size / 2}
             r={radius}
@@ -87,7 +121,7 @@ const CircularProgress = (): JSX.Element => {
             cx={size / 2}
             cy={size / 2}
             r={radius}
-            stroke="#FFD209"
+            // stroke="#FFD209"
             strokeWidth={strokeWidth}
             strokeLinecap="round"
             fill="none"
