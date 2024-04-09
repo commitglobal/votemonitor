@@ -4,25 +4,51 @@ import { Screen } from "../../../../components/Screen";
 import { useUserData } from "../../../../contexts/user/UserContext.provider";
 import { Typography } from "../../../../components/Typography";
 import Button from "../../../../components/Button";
+import { Stack, YStack } from "tamagui";
+import { Icon } from "../../../../components/Icon";
 
 ReactotronCommands.default();
 
 const MissingElectionRounds = () => (
   <Screen preset="fixed">
-    <Typography>This will be the missing election round screen</Typography>
+    <Stack height="100%" backgroundColor="white" justifyContent="center" alignItems="center">
+      <YStack width={312} alignItems="center">
+        <Icon icon="peopleAddingVote" marginBottom="$md" />
+        <Typography preset="subheading" textAlign="center" marginBottom="$xxxs">
+          No election event to observe yet
+        </Typography>
+        <Typography preset="body1" textAlign="center" color="$gray5">
+          You will be able to use the app once you will be assigned to an election event by your
+          organization
+        </Typography>
+      </YStack>
+    </Stack>
   </Screen>
 );
 
 const MissingVisits = () => (
   <Screen preset="fixed">
-    <Typography>This will be the missing visited polling stations screen</Typography>
-    <Button
-      preset="outlined"
-      backgroundColor="white"
-      onPress={router.push.bind(null, "/polling-station-wizzard/-1")}
-    >
-      Add your first polling station
-    </Button>
+    <Stack height="100%" backgroundColor="white" justifyContent="center" alignItems="center">
+      <YStack width={312} alignItems="center" gap="$md">
+        <Icon icon="missingPollingStation" />
+        <YStack gap="$xxxs">
+          <Typography preset="subheading" textAlign="center">
+            No visited polling stations yet
+          </Typography>
+          <Typography preset="body1" textAlign="center" color="$gray5">
+            Start configuring your first polling station before completing observation forms.
+          </Typography>
+        </YStack>
+        <Button
+          preset="outlined"
+          backgroundColor="white"
+          width="100%"
+          onPress={router.push.bind(null, "/polling-station-wizzard/-1")}
+        >
+          Add your first polling station
+        </Button>
+      </YStack>
+    </Stack>
   </Screen>
 );
 
@@ -42,7 +68,7 @@ const Index = () => {
 
   // const { mutate } = upsertPollingStationGeneralInformationMutation();
 
-  if (!isAssignedToEllectionRound) {
+  if (isAssignedToEllectionRound) {
     return <MissingElectionRounds />;
   }
 
