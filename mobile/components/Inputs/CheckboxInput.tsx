@@ -42,7 +42,7 @@ const CheckboxInput: React.FC<CheckboxInputProps> = ({
         </Checkbox.Indicator>
       </Checkbox>
 
-      <Label htmlFor={id} paddingVertical="$xs" margin="$0" flex={1}>
+      <Label htmlFor={id} paddingVertical="$xs" flex={1} lineHeight={20}>
         <Typography preset="body1">{label}</Typography>
       </Label>
     </XStack>

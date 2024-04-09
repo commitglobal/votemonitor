@@ -35,7 +35,7 @@ const RadioInput: React.FC<RadioInputProps> = ({ id, value, label, selectedValue
         <RadioGroup.Indicator backgroundColor="white" />
       </RadioGroup.Item>
 
-      <Label htmlFor={id} padding="$0" margin="$0" flex={1}>
+      <Label htmlFor={id} flex={1} lineHeight={20}>
         <Typography preset="body1">{label}</Typography>
       </Label>
     </XStack>
