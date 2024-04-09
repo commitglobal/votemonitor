@@ -32,6 +32,12 @@ using Vote.Monitor.Api.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+builder.WebHost.ConfigureKestrel(o =>
+{
+    o.Limits.MaxRequestBodySize = 1073741824; //set to max allowed file size of your system
+});
+
 builder.AddSentry();
 
 builder.Services.AddFastEndpoints();
