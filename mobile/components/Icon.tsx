@@ -18,6 +18,8 @@ import MenuAlt2 from "../assets/icons/menu-alt-2.svg";
 import DotsVertical from "../assets/icons/dots-vertical.svg";
 import Check from "../assets/icons/check.svg";
 import Calendar from "../assets/icons/Calendar.svg";
+import PeopleAddingVote from "../assets/icons/people-adding-vote.svg";
+import MissingPollingStation from "../assets/icons/missing-polling-station.svg";
 
 import { styled, View } from "tamagui";
 import { StyleProp, ViewStyle } from "react-native";
@@ -80,6 +82,8 @@ export const defaultIcon = React.forwardRef(
       dotsVertical: <DotsVertical fill={color} width={size} height={size} />,
       check: <Check fill={color} width={size} height={size} />,
       calendar: <Calendar fill={color} width={size} height={size} />,
+      peopleAddingVote: <PeopleAddingVote fill={color} width={226} height={170} />,
+      missingPollingStation: <MissingPollingStation fill={color} width={224} height={170} />,
     };
 
     return (
