@@ -30,7 +30,7 @@ const Select = ({ placeholder = "Select", options, ...props }: StyledSelectProps
       <Adapt platform="touch">
         <Sheet native modal snapPoints={[50, 40]}>
           <Sheet.Frame>
-            <Sheet.ScrollView padding="$sm" marginBottom={insets.bottom + 60}>
+            <Sheet.ScrollView padding="$sm" marginBottom={insets.bottom}>
               <Adapt.Contents />
             </Sheet.ScrollView>
           </Sheet.Frame>

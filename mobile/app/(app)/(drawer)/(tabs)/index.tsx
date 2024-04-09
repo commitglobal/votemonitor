@@ -19,7 +19,7 @@ const MissingVisits = () => (
     <Button
       preset="outlined"
       backgroundColor="white"
-      onPress={router.push.bind(null, "/polling-station-wizzard/-1")}
+      onPress={router.push.bind(null, "/polling-station-wizzard")}
     >
       Add your first polling station
     </Button>
