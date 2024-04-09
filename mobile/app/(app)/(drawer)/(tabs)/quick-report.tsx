@@ -40,7 +40,7 @@ const QuickReport = () => {
       </Card>
       <Card padding="$md">
         <Typography>Card component</Typography>
-        <CardFooter text="Card footer" action={() => console.log("card footer")} marginTop="$sm" />
+        <CardFooter text="Card footer" marginTop="$sm" />
       </Card>
       <Stack padding="$sm" gap="$xs">
         <Typography preset="heading">Button</Typography>
@@ -174,6 +174,17 @@ const regionData = [
   { id: 5, value: "East" },
   { id: 6, value: "South-West" },
   { id: 7, value: "South" },
+  { id: 8, value: "South-East" },
+  { id: 9, value: "Central" },
+  { id: 10, value: "Mid-West" },
+  { id: 11, value: "Mid-East" },
+  { id: 12, value: "Far North" },
+  { id: 13, value: "Far South" },
+  { id: 14, value: "Far West" },
+  { id: 15, value: "Far East" },
+  { id: 16, value: "Northern Territory" },
+  { id: 17, value: "Pacific Northwest" },
+  { id: 18, value: "South Central" },
 ];
 
 const countryData = [
