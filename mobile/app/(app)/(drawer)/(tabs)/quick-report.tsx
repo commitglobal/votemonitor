@@ -14,6 +14,8 @@ import RadioInput from "../../../../components/Inputs/RadioInput";
 import { Screen } from "../../../../components/Screen";
 import LinearProgress from "../../../../components/LinearProgress";
 import CardFooter from "../../../../components/CardFooter";
+import { RatingInput } from "../../../../components/Inputs/RatingInput";
+import { DateInput } from "../../../../components/Inputs/DateInput";
 
 const QuickReport = () => {
   const [selectedRadioValue, setSelectedRadioValue] = useState("rural");
@@ -156,6 +158,17 @@ const QuickReport = () => {
             selectedValue={selectedRadioValue}
           />
         </RadioGroup>
+
+        <Typography preset="subheading">Rating</Typography>
+        <RatingInput
+          id="5"
+          type="single"
+          defaultValue="2"
+          // onValueChange={(value) => console.log(value)}
+        />
+
+        <Typography preset="subheading">Date</Typography>
+        <DateInput minimumDate={new Date(2024, 6, 20)} />
       </Stack>
     </Screen>
   );

@@ -45,7 +45,8 @@
     "react-native-screens": "~3.29.0",
     "react-native-svg": "^15.1.0",
     "tamagui": "^1.93.2",
-    "expo-localization": "~14.8.3"
+    "expo-localization": "~14.8.3",
+    "@react-native-community/datetimepicker": "7.6.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
