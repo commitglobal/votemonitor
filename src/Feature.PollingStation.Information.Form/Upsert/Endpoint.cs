@@ -15,7 +15,7 @@ public class Endpoint(IRepository<PollingStationInfoFormAggregate> repository,
     {
         var formSpecification = new GetPollingStationInformationFormSpecification(req.ElectionRoundId);
         var form = await repository.FirstOrDefaultAsync(formSpecification, ct);
-        var questions = req.Questions.Select(FormMapper.ToEntity).ToList();
+        var questions = req.Questions.Select(QuestionsMapper.ToEntity).ToList();
 
         return form is null
             ? await AddPollingStationInfoFormAsync(req.ElectionRoundId, req.Languages, questions, ct)

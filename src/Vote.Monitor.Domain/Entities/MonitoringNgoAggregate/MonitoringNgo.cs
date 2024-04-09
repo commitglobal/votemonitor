@@ -9,7 +9,7 @@ public class MonitoringNgo : AuditableBaseEntity, IAggregateRoot
     public ElectionRound ElectionRound { get; private set; }
     public Guid NgoId { get; private set; }
     public Ngo Ngo { get; private set; }
-
+    public Guid FormStationsVersion { get; private set; }
     public virtual List<MonitoringObserver> MonitoringObservers { get; internal set; } = [];
 
     public MonitoringNgoStatus Status { get; private set; }

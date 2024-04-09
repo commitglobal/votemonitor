@@ -28,16 +28,7 @@ public class FormTemplateConfiguration : IEntityTypeConfiguration<FormTemplate>
                     c => c.ToDictionary() as TranslatedString))
             .HasColumnType("jsonb");
 
-        builder
-            .Property(x => x.Languages)
-            .HasConversion(
-                v => JsonSerializer.Serialize(v, jsonSerializerOptions),
-                v => JsonSerializer.Deserialize<IReadOnlyList<string>>(v, jsonSerializerOptions),
-                new ValueComparer<IReadOnlyList<string>>(
-                    (c1, c2) => c1.SequenceEqual(c2),
-                    c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
-                    c => c.ToList().AsReadOnly()))
-            .HasColumnType("jsonb");
+        builder.Property(x => x.Languages).IsRequired();
 
         builder.Property(x => x.Questions)
             .HasConversion(

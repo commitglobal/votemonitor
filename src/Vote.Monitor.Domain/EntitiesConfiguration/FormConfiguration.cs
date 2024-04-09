@@ -11,9 +11,9 @@ public class FormConfiguration : IEntityTypeConfiguration<Form>
     public void Configure(EntityTypeBuilder<Form> builder)
     {
         builder.HasKey(e => e.Id);
-        builder.Property(x => x.FormType).IsRequired();
         builder.Property(x => x.Code).HasMaxLength(256).IsRequired();
         builder.Property(x => x.Status).IsRequired();
+        builder.Property(x => x.FormType).IsRequired();
 
         builder.HasOne(x => x.ElectionRound)
             .WithMany()
@@ -35,16 +35,8 @@ public class FormConfiguration : IEntityTypeConfiguration<Form>
                     c => c.ToDictionary() as TranslatedString))
             .HasColumnType("jsonb");
 
-        builder
-            .Property(x => x.Languages)
-            .HasConversion(
-                v => JsonSerializer.Serialize(v, jsonSerializerOptions),
-                v => JsonSerializer.Deserialize<IReadOnlyList<string>>(v, jsonSerializerOptions),
-                new ValueComparer<IReadOnlyList<string>>(
-                    (c1, c2) => c1.SequenceEqual(c2),
-                    c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
-                    c => c.ToList().AsReadOnly()))
-            .HasColumnType("jsonb");
+        builder.Property(x => x.DefaultLanguage).IsRequired();
+        builder.Property(x => x.Languages).IsRequired();
 
         builder.Property(x => x.Questions)
             .HasConversion(

@@ -38,6 +38,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Authorization.Policies\Authorization.Policies.csproj" />
+    <ProjectReference Include="..\Feature.Forms\Feature.Forms.csproj" />
+    <ProjectReference Include="..\Feature.FormTemplates\Feature.FormTemplates.csproj" />
     <ProjectReference Include="..\Feature.MonitoringObservers\Feature.MonitoringObservers.csproj" />
     <ProjectReference Include="..\Feature.ObserverGuide\Feature.ObserverGuide.csproj" />
     <ProjectReference Include="..\Feature.PollingStation.Information.Form\Feature.PollingStation.Information.Form.csproj" />
@@ -48,8 +50,6 @@
     <ProjectReference Include="..\Vote.Monitor.Api.Feature.Country\Vote.Monitor.Api.Feature.Country.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Api.Feature.Emergencies.Attachments\Vote.Monitor.Api.Feature.Emergencies.Attachments.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Api.Feature.Emergencies\Vote.Monitor.Api.Feature.Emergencies.csproj" />
-    <ProjectReference Include="..\Vote.Monitor.Api.Feature.FormTemplate\Vote.Monitor.Api.Feature.FormTemplate.csproj" />
-    <ProjectReference Include="..\Vote.Monitor.Api.Feature.Form\Vote.Monitor.Api.Feature.Form.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Api.Feature.Language\Vote.Monitor.Api.Feature.Language.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Api.Feature.NgoAdmin\Vote.Monitor.Api.Feature.NgoAdmin.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Api.Feature.Ngo\Vote.Monitor.Api.Feature.Ngo.csproj" />

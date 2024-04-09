@@ -10,8 +10,7 @@ public class FormTemplate : AuditableBaseEntity, IAggregateRoot
     public string DefaultLanguage { get; private set; }
     public TranslatedString Name { get; private set; }
     public FormTemplateStatus Status { get; private set; }
-
-    public IReadOnlyList<string> Languages { get; private set; } = new List<string>().AsReadOnly();
+    public string[] Languages { get; private set; } = [];
 
     public IReadOnlyList<BaseQuestion> Questions { get; private set; } = new List<BaseQuestion>().AsReadOnly();
 
@@ -25,7 +24,7 @@ public class FormTemplate : AuditableBaseEntity, IAggregateRoot
         Code = code;
         DefaultLanguage = defaultLanguage;
         Name = name;
-        Languages = languages.ToList().AsReadOnly();
+        Languages = languages.ToArray();
         Status = FormTemplateStatus.Drafted;
     }
 
@@ -67,7 +66,7 @@ public class FormTemplate : AuditableBaseEntity, IAggregateRoot
         DefaultLanguage = defaultLanguage;
         Name = name;
         FormTemplateType = formTemplateType;
-        Languages = languages.ToList().AsReadOnly();
+        Languages = languages.ToArray();
         Questions = questions.ToList().AsReadOnly();
     }
 

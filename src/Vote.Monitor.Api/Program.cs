@@ -1,6 +1,8 @@
 ﻿using System.IO.Compression;
 using System.Text.Json.Serialization;
 using Authorization.Policies;
+using Feature.Forms;
+using Feature.FormTemplates;
 using Feature.MonitoringObservers;
 using Feature.ObserverGuide;
 using Feature.PollingStation.Information.Form;
@@ -11,8 +13,6 @@ using Vote.Monitor.Api.Feature.Answers.Attachments;
 using Vote.Monitor.Api.Feature.Answers.Notes;
 using Vote.Monitor.Api.Feature.Emergencies;
 using Vote.Monitor.Api.Feature.Emergencies.Attachments;
-using Vote.Monitor.Api.Feature.Form;
-using Vote.Monitor.Api.Feature.FormTemplate;
 using Vote.Monitor.Api.Feature.Ngo;
 using Vote.Monitor.Api.Feature.NgoAdmin;
 using Vote.Monitor.Api.Feature.Notifications;
@@ -29,6 +29,7 @@ using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 using Vote.Monitor.Domain.Entities.NgoAggregate;
 using Vote.Monitor.Api.Extensions;
+using Vote.Monitor.Domain.Entities.FormAggregate;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -156,6 +157,7 @@ app.UseFastEndpoints(x =>
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<MonitoringNgoStatus, string>());
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<MonitoringObserverStatus, string>());
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<RatingScale, string>());
+    x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<FormType, string>());
 
     x.Serializer.Options.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
 });

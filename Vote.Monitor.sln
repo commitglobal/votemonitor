@@ -60,9 +60,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Feature.Us
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Feature.PollingStation", "src\Vote.Monitor.Api.Feature.PollingStation\Vote.Monitor.Api.Feature.PollingStation.csproj", "{E80EA093-4BFC-4C89-A17F-A6ACB0A6C1D1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Feature.FormTemplate", "src\Vote.Monitor.Api.Feature.FormTemplate\Vote.Monitor.Api.Feature.FormTemplate.csproj", "{0321A760-1AD8-486E-A3B0-DC2F090C75A0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feature.FormTemplates", "src\Feature.FormTemplates\Feature.FormTemplates.csproj", "{0321A760-1AD8-486E-A3B0-DC2F090C75A0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Feature.FormTemplate.UnitTests", "tests\Vote.Monitor.Api.Feature.FormTemplate.UnitTests\Vote.Monitor.Api.Feature.FormTemplate.UnitTests.csproj", "{E16183F8-7602-4995-AE99-24C19271A75B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feature.FormTemplates.UnitTests", "tests\Feature.FormTemplates.UnitTests\Feature.FormTemplates.UnitTests.csproj", "{E16183F8-7602-4995-AE99-24C19271A75B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Feature.PollingStation.Attachments", "src\Vote.Monitor.Api.Feature.PollingStation.Attachments\Vote.Monitor.Api.Feature.PollingStation.Attachments.csproj", "{A6F95F72-F3DC-4F65-BCDE-69C07BAB533D}"
 EndProject
@@ -88,7 +88,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Feature.Po
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Feature.Emergencies.Attachments", "src\Vote.Monitor.Api.Feature.Emergencies.Attachments\Vote.Monitor.Api.Feature.Emergencies.Attachments.csproj", "{02284315-900C-4DFD-B12D-DA3161277F32}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Feature.Form", "src\Vote.Monitor.Api.Feature.Form\Vote.Monitor.Api.Feature.Form.csproj", "{AEF250A9-2105-408D-99F3-AFDEF374EC5C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feature.Forms", "src\Feature.Forms\Feature.Forms.csproj", "{AEF250A9-2105-408D-99F3-AFDEF374EC5C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feature.PollingStation.Information.Form", "src\Feature.PollingStation.Information.Form\Feature.PollingStation.Information.Form.csproj", "{46DD5C48-94FB-44F9-8C20-037313D86C95}"
 EndProject
@@ -113,6 +113,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feature.MonitoringObservers", "src\Feature.MonitoringObservers\Feature.MonitoringObservers.csproj", "{2BE577FC-2F96-43FD-B9AF-A3BE3A924F4A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feature.MonitoringObservers.UnitTests", "tests\Feature.MonitoringObservers.UnitTests\Feature.MonitoringObservers.UnitTests.csproj", "{85AD9EA8-5358-4C28-8EE4-AA4225571CAE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feature.Forms.UnitTests", "tests\Feature.Forms.UnitTests\Feature.Forms.UnitTests.csproj", "{F5635850-535C-4B5C-9EFA-5A29CF9864C5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -320,6 +322,10 @@ Global
 		{85AD9EA8-5358-4C28-8EE4-AA4225571CAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{85AD9EA8-5358-4C28-8EE4-AA4225571CAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{85AD9EA8-5358-4C28-8EE4-AA4225571CAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F5635850-535C-4B5C-9EFA-5A29CF9864C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5635850-535C-4B5C-9EFA-5A29CF9864C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5635850-535C-4B5C-9EFA-5A29CF9864C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F5635850-535C-4B5C-9EFA-5A29CF9864C5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -375,6 +381,7 @@ Global
 		{686AFB6A-23D5-4ECA-B26C-87A2EF893F1A} = {17945B3C-5A4C-4279-8022-65ABC606A510}
 		{2BE577FC-2F96-43FD-B9AF-A3BE3A924F4A} = {17945B3C-5A4C-4279-8022-65ABC606A510}
 		{85AD9EA8-5358-4C28-8EE4-AA4225571CAE} = {3441EE1D-E3C6-45BE-A020-553816015081}
+		{F5635850-535C-4B5C-9EFA-5A29CF9864C5} = {3441EE1D-E3C6-45BE-A020-553816015081}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {50C20C9F-F2AF-45D8-994A-06661772B31C}

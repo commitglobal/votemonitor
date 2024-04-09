@@ -14,8 +14,8 @@ public class Form : AuditableBaseEntity, IAggregateRoot
     public string Code { get; private set; }
     public TranslatedString Name { get; private set; }
     public FormStatus Status { get; private set; }
-
-    public IReadOnlyList<string> Languages { get; private set; } = new List<string>().AsReadOnly();
+    public string DefaultLanguage { get; private set; }
+    public string[] Languages { get; private set; } = [];
 
     public IReadOnlyList<BaseQuestion> Questions { get; private set; } = new List<BaseQuestion>().AsReadOnly();
 
@@ -25,6 +25,7 @@ public class Form : AuditableBaseEntity, IAggregateRoot
         FormType formType,
         string code,
         TranslatedString name,
+        string defaultLanguage,
         IEnumerable<string> languages,
         IEnumerable<BaseQuestion> questions) : base(Guid.NewGuid())
     {
@@ -36,7 +37,29 @@ public class Form : AuditableBaseEntity, IAggregateRoot
         FormType = formType;
         Code = code;
         Name = name;
-        Languages = languages.ToList().AsReadOnly();
+        DefaultLanguage = defaultLanguage;
+        Languages = languages.ToArray();
+        Status = FormStatus.Drafted;
+        Questions = questions.ToList().AsReadOnly();
+    }
+    private Form(
+        Guid electionRoundId,
+        Guid monitoringNgoId,
+        FormType formType,
+        string code,
+        TranslatedString name,
+        string defaultLanguage,
+        IEnumerable<string> languages,
+        IEnumerable<BaseQuestion> questions) : base(Guid.NewGuid())
+    {
+        ElectionRoundId = electionRoundId;
+        MonitoringNgoId = monitoringNgoId;
+
+        FormType = formType;
+        Code = code;
+        Name = name;
+        DefaultLanguage = defaultLanguage;
+        Languages = languages.ToArray();
         Status = FormStatus.Drafted;
         Questions = questions.ToList().AsReadOnly();
     }
@@ -47,9 +70,21 @@ public class Form : AuditableBaseEntity, IAggregateRoot
         FormType formType,
         string code,
         TranslatedString name,
+        string defaultLanguage,
         IEnumerable<string> languages,
         IEnumerable<BaseQuestion> questions) =>
-        new(electionRound, monitoringNgo, formType, code, name, languages, questions);
+        new(electionRound, monitoringNgo, formType, code, name, defaultLanguage, languages, questions);
+
+    public static Form Create(
+        Guid electionRoundId,
+        Guid monitoringNgoId,
+        FormType formType,
+        string code,
+        TranslatedString name,
+        string defaultLanguage,
+        IEnumerable<string> languages,
+        IEnumerable<BaseQuestion> questions) =>
+        new(electionRoundId, monitoringNgoId, formType, code, name, defaultLanguage, languages, questions);
 
     public PublishResult Publish()
     {
@@ -58,7 +93,7 @@ public class Form : AuditableBaseEntity, IAggregateRoot
 
         if (!validationResult.IsValid)
         {
-            return new PublishResult.InvalidFormTemplate(validationResult);
+            return new PublishResult.InvalidForm(validationResult);
         }
 
         Status = FormStatus.Published;
@@ -78,13 +113,15 @@ public class Form : AuditableBaseEntity, IAggregateRoot
     public void UpdateDetails(string code,
         TranslatedString name,
         FormType formType,
+        string defaultLanguage,
         IEnumerable<string> languages,
         IEnumerable<BaseQuestion> questions)
     {
         Code = code;
         Name = name;
         FormType = formType;
-        Languages = languages.ToList().AsReadOnly();
+        DefaultLanguage = defaultLanguage;
+        Languages = languages.ToArray();
         Questions = questions.ToList().AsReadOnly();
     }
 
