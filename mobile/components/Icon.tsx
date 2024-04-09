@@ -20,6 +20,7 @@ import Check from "../assets/icons/check.svg";
 import Calendar from "../assets/icons/Calendar.svg";
 import PeopleAddingVote from "../assets/icons/people-adding-vote.svg";
 import MissingPollingStation from "../assets/icons/missing-polling-station.svg";
+import X from "../assets/icons/x.svg";
 
 import { styled, View } from "tamagui";
 import { StyleProp, ViewStyle } from "react-native";
@@ -84,6 +85,7 @@ export const defaultIcon = React.forwardRef(
       calendar: <Calendar fill={color} width={size} height={size} />,
       peopleAddingVote: <PeopleAddingVote fill={color} width={226} height={170} />,
       missingPollingStation: <MissingPollingStation fill={color} width={224} height={170} />,
+      x: <X fill={color} width={size} height={size} />,
     };
 
     return (
