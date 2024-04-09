@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Text } from "react-native";
 import { Typography } from "../../../../components/Typography";
-import { RadioGroup, Stack } from "tamagui";
+import { AlertDialog, RadioGroup, Stack, XStack } from "tamagui";
 import Select from "../../../../components/Select";
 import Button from "../../../../components/Button";
 import { Icon } from "../../../../components/Icon";
@@ -157,10 +157,35 @@ const QuickReport = () => {
             selectedValue={selectedRadioValue}
           />
         </RadioGroup>
-        <Typography preset="subheading">Alert Dialog</Typography>
-        <Dialog>
-          <Typography>Alert Dialog</Typography>
-        </Dialog>
+
+        {/* Alert Dialog Example */}
+        <Stack marginTop="$md" gap="$sm">
+          <Typography preset="subheading">Alert Dialog</Typography>
+          <Dialog
+            trigger={<Button preset="red">Delete</Button>}
+            header={<Typography preset="heading">Clear answer to Question A1</Typography>}
+            content={
+              <Typography preset="body1" color="$gray7">
+                Clearing the answer will permanently delete all its information (including notes and
+                media files). Question status will be reverted to Not Answered.
+              </Typography>
+            }
+            footer={
+              <XStack gap="$sm">
+                {/* //TODO: maybe we move this Cancel dirrectly into the Dialog? */}
+                {/* // !this 'asChild' is necessary in order to close the modal */}
+                <AlertDialog.Cancel asChild>
+                  <Button preset="chromeless" textStyle={{ color: "black" }}>
+                    Cancel
+                  </Button>
+                </AlertDialog.Cancel>
+                <Button preset="red" flex={1}>
+                  Clear answer
+                </Button>
+              </XStack>
+            }
+          ></Dialog>
+        </Stack>
       </Stack>
     </Screen>
   );
