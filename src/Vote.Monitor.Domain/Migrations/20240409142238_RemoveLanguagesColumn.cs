@@ -6,25 +6,25 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Vote.Monitor.Domain.Migrations
 {
     /// <inheritdoc />
-    public partial class FormTweaks : Migration
+    public partial class RemoveLanguagesColumn : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropColumn(
+                name: "Languages",
+                table: "PollingStationInformationForms");
+
+            migrationBuilder.DropColumn(
+                name: "Languages",
+                table: "FormTemplates");
+
             migrationBuilder.AddColumn<Guid>(
                 name: "FormStationsVersion",
                 table: "MonitoringNgos",
                 type: "uuid",
                 nullable: false,
                 defaultValue: new Guid("00000000-0000-0000-0000-000000000000"));
-
-            migrationBuilder.AlterColumn<string[]>(
-                name: "Languages",
-                table: "FormTemplates",
-                type: "text[]",
-                nullable: false,
-                oldClrType: typeof(string),
-                oldType: "jsonb");
         }
 
         /// <inheritdoc />
@@ -34,13 +34,19 @@ namespace Vote.Monitor.Domain.Migrations
                 name: "FormStationsVersion",
                 table: "MonitoringNgos");
 
-            migrationBuilder.AlterColumn<string>(
+            migrationBuilder.AddColumn<string>(
+                name: "Languages",
+                table: "PollingStationInformationForms",
+                type: "jsonb",
+                nullable: false,
+                defaultValue: "");
+
+            migrationBuilder.AddColumn<string>(
                 name: "Languages",
                 table: "FormTemplates",
                 type: "jsonb",
                 nullable: false,
-                oldClrType: typeof(string[]),
-                oldType: "text[]");
+                defaultValue: "");
         }
     }
 }

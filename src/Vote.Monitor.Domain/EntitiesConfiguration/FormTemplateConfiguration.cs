@@ -28,7 +28,7 @@ public class FormTemplateConfiguration : IEntityTypeConfiguration<FormTemplate>
                     c => c.ToDictionary() as TranslatedString))
             .HasColumnType("jsonb");
 
-        builder.Property(x => x.Languages).IsRequired();
+        builder.Ignore(x => x.Languages);
 
         builder.Property(x => x.Questions)
             .HasConversion(

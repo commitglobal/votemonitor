@@ -13,8 +13,8 @@ using Vote.Monitor.Domain;
 namespace Vote.Monitor.Domain.Migrations
 {
     [DbContext(typeof(VoteMonitorContext))]
-    [Migration("20240409131001_FormTweaks")]
-    partial class FormTweaks
+    [Migration("20240409142238_RemoveLanguagesColumn")]
+    partial class RemoveLanguagesColumn
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -2745,10 +2745,6 @@ namespace Vote.Monitor.Domain.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string[]>("Languages")
-                        .IsRequired()
-                        .HasColumnType("text[]");
-
                     b.Property<Guid>("LastModifiedBy")
                         .HasColumnType("uuid");
 
@@ -4747,10 +4743,6 @@ namespace Vote.Monitor.Domain.Migrations
 
                     b.Property<Guid>("ElectionRoundId")
                         .HasColumnType("uuid");
-
-                    b.Property<string>("Languages")
-                        .IsRequired()
-                        .HasColumnType("jsonb");
 
                     b.Property<Guid>("LastModifiedBy")
                         .HasColumnType("uuid");

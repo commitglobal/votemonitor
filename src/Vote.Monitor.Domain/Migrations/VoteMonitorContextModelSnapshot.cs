@@ -2804,10 +2804,6 @@ namespace Vote.Monitor.Domain.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string[]>("Languages")
-                        .IsRequired()
-                        .HasColumnType("text[]");
-
                     b.Property<Guid>("LastModifiedBy")
                         .HasColumnType("uuid");
 
@@ -4806,10 +4802,6 @@ namespace Vote.Monitor.Domain.Migrations
 
                     b.Property<Guid>("ElectionRoundId")
                         .HasColumnType("uuid");
-
-                    b.Property<string>("Languages")
-                        .IsRequired()
-                        .HasColumnType("jsonb");
 
                     b.Property<Guid>("LastModifiedBy")
                         .HasColumnType("uuid");

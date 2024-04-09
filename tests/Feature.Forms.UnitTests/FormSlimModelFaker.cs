@@ -15,6 +15,6 @@ public sealed class FormSlimModelFaker: Faker<FormSlimModel>
         RuleFor(fake => fake.CreatedOn, f => f.Date.Recent());
         RuleFor(fake => fake.LastModifiedOn, f => f.Date.Recent());
         RuleFor(fake => fake.Name, new TranslatedStringFaker().Generate());
-        RuleFor(fake => fake.Languages, f => f.PickRandom(_languages, 3));
+        RuleFor(fake => fake.Languages, f => f.PickRandom(_languages, 3).ToArray());
     }
 }

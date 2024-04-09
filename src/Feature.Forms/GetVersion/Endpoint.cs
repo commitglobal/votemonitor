@@ -1,6 +1,4 @@
-﻿using Authorization.Policies.Requirements;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Authorization;
 using Vote.Monitor.Core.Services.Security;
 using Vote.Monitor.Domain;
 

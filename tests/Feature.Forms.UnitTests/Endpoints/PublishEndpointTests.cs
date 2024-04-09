@@ -34,7 +34,7 @@ public class PublishEndpointTests
 
         // Assert
         result
-            .Should().BeOfType<Results<NoContent, NotFound>>()
+            .Should().BeOfType<Results<NoContent, NotFound, ProblemDetails>>()
             .Which
             .Result.Should().BeOfType<NotFound>();
     }
@@ -58,7 +58,7 @@ public class PublishEndpointTests
             .UpdateAsync(Arg.Is<Form>(x => x.Status == FormStatus.Published));
 
         result
-            .Should().BeOfType<Results<NoContent, NotFound>>()
+            .Should().BeOfType<Results<NoContent, NotFound, ProblemDetails>>()
             .Which
             .Result.Should().BeOfType<NoContent>();
     }
@@ -78,7 +78,7 @@ public class PublishEndpointTests
 
         // Assert
         result
-            .Should().BeOfType<Results<NoContent, NotFound>>()
+            .Should().BeOfType<Results<NoContent, NotFound, ProblemDetails>>()
             .Which
             .Result.Should().BeOfType<NotFound>();
     }

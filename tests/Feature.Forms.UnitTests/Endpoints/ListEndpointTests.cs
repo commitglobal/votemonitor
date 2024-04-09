@@ -33,7 +33,7 @@ public class ListEndpointTests
         // Assert
         result
             .Should()
-            .BeOfType<Results<Ok<PagedResponse<FormSlimModel>>, ProblemDetails>>();
+            .BeOfType<Results<Ok<PagedResponse<FormSlimModel>>, NotFound>>();
 
         await _repository.Received(1).ListAsync(Arg.Any<ListFormsSpecification>());
         await _repository.Received(1).CountAsync(Arg.Any<ListFormsSpecification>());
@@ -67,7 +67,7 @@ public class ListEndpointTests
 
         // Assert
         result
-            .Should().BeOfType<Results<Ok<PagedResponse<FormSlimModel>>, ProblemDetails>>()
+            .Should().BeOfType<Results<Ok<PagedResponse<FormSlimModel>>, NotFound>>()
             .Which
             .Result.Should().BeOfType<Ok<PagedResponse<FormSlimModel>>>()
             .Which.Value.Should().NotBeNull();

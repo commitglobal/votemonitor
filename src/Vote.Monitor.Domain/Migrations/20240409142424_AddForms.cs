@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Vote.Monitor.Domain.Migrations
 {
     /// <inheritdoc />
-    public partial class FormTable : Migration
+    public partial class AddForms : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
