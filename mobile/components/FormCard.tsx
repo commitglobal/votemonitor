@@ -1,5 +1,4 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { View, styled } from "tamagui";
 import Badge, { BadgeProps } from "./Badge";
 import Card from "./Card";
@@ -10,22 +9,22 @@ export interface FormCardProps {
   /**
    * Header text
    */
-  header: string;
+  headerText: string;
 
   /**
    * Subheader optional text
    */
-  subHeader?: string;
+  subHeaderText?: string;
 
   /**
    * Footer text
    */
-  footer: string;
+  footerText: string;
 
   /**
    * Optional preset type.
    */
-  badgeProps: BadgeProps;
+  badgeProps?: BadgeProps;
 
   /**
    * Performed action for onPress
@@ -34,45 +33,45 @@ export interface FormCardProps {
 }
 
 const FormCard = (props: FormCardProps): JSX.Element => {
-  const { header, subHeader, footer, badgeProps, action } = props;
-  const hasSubHeader = subHeader ? subHeader.trim() !== "" : false;
+  const { headerText, subHeaderText, footerText, badgeProps, action } = props;
+  const hasSubHeader = subHeaderText ? subHeaderText.trim() !== "" : false;
 
-  const badgePreset = badgeProps.preset || "default";
-  const badgeChildren = badgeProps.children;
+  const badgePreset = badgeProps ? badgeProps.preset : "default";
+  const badgeChildren = badgeProps ? badgeProps.children : "Not started";
 
   const CardHeader = styled(View, {
     name: "CardHeader",
     justifyContent: "space-between",
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 8,
+    marginBottom: "$xxs",
   });
 
   const [isPressed, setIsPressed] = useState(false);
 
   return (
     <Card
-      style={{ width: "100%" }}
+      width="100%"
       onPress={action}
       onPressIn={() => setIsPressed(true)}
       onPressOut={() => setIsPressed(false)}
       opacity={isPressed ? 0.5 : 1}
     >
       <CardHeader>
-        <Typography preset="body1" color="$gray9" style={{ fontWeight: "700" }}>
-          {header}
+        <Typography preset="body1" color="$gray9" fontWeight="700">
+          {headerText}
         </Typography>
 
         <Badge preset={badgePreset}>{badgeChildren}</Badge>
       </CardHeader>
 
       {hasSubHeader && (
-        <Typography preset="body1" color="$gray6" style={{ marginBottom: 8 }}>
-          {subHeader}
+        <Typography preset="body1" color="$gray6" marginBottom="$xxs">
+          {subHeaderText}
         </Typography>
       )}
 
-      <CardFooter text={footer} action={() => {}} />
+      <CardFooter text={footerText} />
     </Card>
   );
 };

@@ -15,6 +15,8 @@ import FormCard from "../../../../components/FormCard";
 import { Screen } from "../../../../components/Screen";
 import LinearProgress from "../../../../components/LinearProgress";
 import CardFooter from "../../../../components/CardFooter";
+import { RatingInput } from "../../../../components/Inputs/RatingInput";
+import { DateInput } from "../../../../components/Inputs/DateInput";
 
 const QuickReport = () => {
   const [selectedRadioValue, setSelectedRadioValue] = useState("rural");
@@ -40,7 +42,7 @@ const QuickReport = () => {
       </Card>
       <Card padding="$md">
         <Typography>Card component</Typography>
-        <CardFooter text="Card footer" action={() => console.log("card footer")} marginTop="$sm" />
+        <CardFooter text="Card footer" marginTop="$sm" />
       </Card>
       <Stack padding="$sm" gap="$xs">
         <Typography preset="heading">Button</Typography>
@@ -157,24 +159,32 @@ const QuickReport = () => {
             selectedValue={selectedRadioValue}
           />
         </RadioGroup>
+
+        <Typography preset="subheading">Rating</Typography>
+        <RatingInput
+          id="5"
+          type="single"
+          defaultValue="2"
+          // onValueChange={(value) => console.log(value)}
+        />
+
+        <Typography preset="subheading">Date</Typography>
+        <DateInput minimumDate={new Date(2024, 6, 20)} />
       </Stack>
 
       <Stack padding="$sm" gap="$xs">
         <Typography preset="heading">FormCard</Typography>
         <FormCard
-          header={"A-Opening"}
-          footer={"0/33 questions"}
-          badgeProps={{
-            children: "Not started",
-          }}
+          headerText={"A-Opening"}
+          footerText={"0/33 questions"}
           action={() => {
             console.log("FormCard");
           }}
         ></FormCard>
         <FormCard
-          header={"A-Opening"}
-          footer={"0/33 questions"}
-          subHeader={"Available in RO, BG, EN"}
+          headerText={"A-Opening"}
+          footerText={"0/33 questions"}
+          subHeaderText={"Available in RO, BG, EN"}
           badgeProps={{
             children: "Great work",
             preset: "success",
@@ -196,6 +206,17 @@ const regionData = [
   { id: 5, value: "East" },
   { id: 6, value: "South-West" },
   { id: 7, value: "South" },
+  { id: 8, value: "South-East" },
+  { id: 9, value: "Central" },
+  { id: 10, value: "Mid-West" },
+  { id: 11, value: "Mid-East" },
+  { id: 12, value: "Far North" },
+  { id: 13, value: "Far South" },
+  { id: 14, value: "Far West" },
+  { id: 15, value: "Far East" },
+  { id: 16, value: "Northern Territory" },
+  { id: 17, value: "Pacific Northwest" },
+  { id: 18, value: "South Central" },
 ];
 
 const countryData = [
