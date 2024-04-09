@@ -23,8 +23,8 @@ const duration = 1000;
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
-const CircularProgress = (): JSX.Element => {
-  const [progress, setProgress] = useState(0);
+const CircularProgress = (props: CircularProgressProps): JSX.Element => {
+  const { progress } = props;
   const animatedProgress = useSharedValue(progress);
 
   // Color
@@ -66,16 +66,6 @@ const CircularProgress = (): JSX.Element => {
 
   return (
     <View style={{ alignItems: "center", justifyContent: "center" }}>
-      <Button
-        preset="outlined"
-        style={{ marginBottom: 20 }}
-        onPress={() => {
-          setProgress((prevProgress) => (prevProgress + 10) % 110);
-        }}
-      >
-        Progress
-      </Button>
-
       <View style={{ alignItems: "center", justifyContent: "center" }}>
         <Animated.Text
           style={{
@@ -102,8 +92,8 @@ const CircularProgress = (): JSX.Element => {
             r={radius}
             strokeWidth={strokeWidth}
           />
-          {/* Background Circle */}
 
+          {/* Background Circle */}
           <AnimatedCircle
             stroke="yellow"
             fill="none"
@@ -121,7 +111,6 @@ const CircularProgress = (): JSX.Element => {
             cx={size / 2}
             cy={size / 2}
             r={radius}
-            // stroke="#FFD209"
             strokeWidth={strokeWidth}
             strokeLinecap="round"
             fill="none"

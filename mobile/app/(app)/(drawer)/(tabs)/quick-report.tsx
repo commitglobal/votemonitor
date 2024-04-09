@@ -18,6 +18,7 @@ import CircularProgress from "../../../../components/CircularProgress";
 
 const QuickReport = () => {
   const [selectedRadioValue, setSelectedRadioValue] = useState("rural");
+  const [progress, setProgress] = useState(0);
 
   return (
     <Screen preset="auto" backgroundColor="white" contentContainerStyle={{ gap: 20 }}>
@@ -160,7 +161,16 @@ const QuickReport = () => {
       </Stack>
 
       <Stack padding="$sm" gap="$xs" marginTop="$md" backgroundColor="white">
-        <CircularProgress></CircularProgress>
+        <Button
+          preset="outlined"
+          style={{ marginBottom: 20 }}
+          onPress={() => {
+            setProgress((prevProgress) => (prevProgress + 10) % 110);
+          }}
+        >
+          Progress
+        </Button>
+        <CircularProgress progress={progress}></CircularProgress>
       </Stack>
     </Screen>
   );
