@@ -1,5 +1,4 @@
-﻿using Bogus;
-using Vote.Monitor.Core.Models;
+﻿using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
 
 namespace Vote.Monitor.TestUtils.Fakes.Aggregates;

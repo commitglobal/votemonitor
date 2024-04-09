@@ -32,7 +32,7 @@ public class CreateEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeede
 
         var request = new GetRequest
         {
-            ElectionRoundId = Guid.NewGuid(),
+            ElectionRoundId = Fixture.ElectionRound.Id,
             Id = createResult.Id
         };
         var (getResponse, pollingStation) = await Fixture.PlatformAdmin.GETAsync<GetEndpoint, GetRequest, PollingStationModel>(request);

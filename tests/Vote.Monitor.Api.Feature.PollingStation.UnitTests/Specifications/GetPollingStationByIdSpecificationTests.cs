@@ -1,4 +1,6 @@
-﻿namespace Vote.Monitor.Api.Feature.PollingStation.UnitTests.Specifications;
+﻿using Vote.Monitor.TestUtils.Fakes.Aggregates;
+
+namespace Vote.Monitor.Api.Feature.PollingStation.UnitTests.Specifications;
 
 public class GetPollingStationByIdSpecificationTests
 {
@@ -6,15 +8,16 @@ public class GetPollingStationByIdSpecificationTests
     public void GetPollingStationByIdSpecification_AppliesCorrectFilters()
     {
         // Arrange
-        var pollingStation = new PollingStationAggregateFaker(id: Guid.NewGuid()).Generate();
+        var electionRound = new ElectionRoundAggregateFaker().Generate();
+        var pollingStation = new PollingStationAggregateFaker(id: Guid.NewGuid(), electionRound: electionRound).Generate();
 
-        var testCollection = new PollingStationAggregateFaker()
+        var testCollection = new PollingStationAggregateFaker(electionRound: electionRound)
             .Generate(500)
             .Union(new[] { pollingStation })
-            .Union(new PollingStationAggregateFaker().Generate(500))
+            .Union(new PollingStationAggregateFaker(id: pollingStation.Id).Generate(500))
             .ToList();
 
-        var spec = new GetPollingStationByIdSpecification(pollingStation.Id);
+        var spec = new GetPollingStationByIdSpecification(pollingStation.ElectionRoundId, pollingStation.Id);
 
         // Act
         var result = spec.Evaluate(testCollection).ToList();

@@ -1,0 +1,9 @@
+{
+  "common": {
+    "yes": "Yes",
+    "no": "No"
+  },
+  "login": {
+    "submit": "Sign In"
+  }
+}

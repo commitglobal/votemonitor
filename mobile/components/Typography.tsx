@@ -1,28 +1,18 @@
 import React from "react";
 import { StyleProp, TextStyle } from "react-native";
-import { SizableText, TextProps as TaamguiTextProps } from "tamagui";
+import { Text, styled, TextProps as TamaguiTextProps } from "tamagui";
 
-type Sizes = keyof typeof $sizeStyles;
-type Presets = keyof typeof $presets;
+type PresetType = "default" | "heading" | "subheading" | "body1" | "body2" | "helper";
 
-export interface TextProps extends TaamguiTextProps {
+export interface TextProps extends TamaguiTextProps {
+  /**
+   * Style overrides
+   */
   style?: StyleProp<TextStyle>;
   /**
    * One of the different types of text presets.
    */
-  preset?: Presets;
-  /**
-   * Text size modifier.
-   */
-  size?: Sizes;
-  /**
-   * Set number of lines to display.
-   */
-  numberOfLines?: number;
-  /**
-   * Text color modifier.
-   */
-  color?: string;
+  preset?: PresetType;
   /**
    * Children components.
    */
@@ -36,58 +26,31 @@ export interface TextProps extends TaamguiTextProps {
  * @returns {JSX.Element} The rendered `Text` component.
  */
 export function Typography(props: TextProps) {
-  const {
-    size,
-    children,
-    style: $styleOverride,
-    numberOfLines = 1,
-    ...rest
-  } = props;
+  const { children, style: $styleOverride, ...rest } = props;
+  const presetType: PresetType = props.preset ?? "default";
 
-  const preset: Presets = props.preset ?? "default";
-  const $styles: StyleProp<TextStyle> = [
-    $presets[preset],
-    size && $sizeStyles[size],
-    $styleOverride,
-  ];
+  const StyledText = styled(Text, {
+    name: "StyledText",
+    color: "$gray9",
+    fontWeight: "400",
+    lineHeight: 20,
+    fontSize: 14,
+    // nr of lines?
+    variants: {
+      presets: {
+        default: {},
+        heading: { fontSize: 24, lineHeight: 32 },
+        subheading: { fontSize: 20, lineHeight: 26, fontWeight: "700" },
+        body1: { fontSize: 16 },
+        body2: { fontSize: 16, fontWeight: "500" },
+        helper: { fontSize: 12, lineHeight: 14, fontWeight: "700" },
+      },
+    } as const,
+  });
 
   return (
-    <SizableText
-      color="$gray9"
-      style={$styles}
-      numberOfLines={numberOfLines}
-      {...rest}
-    >
+    <StyledText presets={presetType} style={$styleOverride} {...rest}>
       {children}
-    </SizableText>
+    </StyledText>
   );
 }
-
-const $sizeStyles = {
-  xl: { fontSize: 24, lineHeight: 32, fontWeight: "400" } satisfies TextStyle,
-  lg: { fontSize: 20, lineHeight: 26, fontWeight: "700" } satisfies TextStyle,
-  md: { fontSize: 16, lineHeight: 20, fontWeight: "400" } satisfies TextStyle,
-  sm: { fontSize: 14, lineHeight: 20, fontWeight: "400" } satisfies TextStyle,
-  xs: { fontSize: 12, lineHeight: 14, fontWeight: "700" } satisfies TextStyle,
-};
-
-const $baseStyle: StyleProp<TextStyle> = $sizeStyles.sm;
-
-const $presets = {
-  default: $baseStyle,
-
-  heading: { ...$baseStyle, ...$sizeStyles.xl } as StyleProp<TextStyle>,
-
-  subheading: { ...$baseStyle, ...$sizeStyles.lg } as StyleProp<TextStyle>,
-
-  body1: { ...$baseStyle, ...$sizeStyles.md } as StyleProp<TextStyle>,
-  body2: {
-    ...$baseStyle,
-    ...$sizeStyles.md,
-    fontWeight: "500",
-  } as StyleProp<TextStyle>,
-
-  label: $baseStyle as StyleProp<TextStyle>,
-
-  helper: { ...$baseStyle, ...$sizeStyles.xs } as StyleProp<TextStyle>,
-};
