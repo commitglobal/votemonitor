@@ -8,7 +8,7 @@ interface CardFooterProps extends XStackProps {}
 const CardFooter: React.FC<CardFooterProps> = ({ children, ...rest }) => {
   return (
     <XStack alignItems="center" justifyContent="space-between" width="100%" {...rest}>
-      <Typography color="$gray5" preset="body2" style={{ fontWeight: "500", width: "80%" }}>
+      <Typography color="$gray5" fontWeight="500" width="80%">
         {children}
       </Typography>
       <Icon icon="chevronRight" color="$purple5" />

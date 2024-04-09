@@ -6,7 +6,6 @@ import Select from "../../../../components/Select";
 import Button from "../../../../components/Button";
 import { Icon } from "../../../../components/Icon";
 import Badge from "../../../../components/Badge";
-
 import Card from "../../../../components/Card";
 import Input from "../../../../components/Inputs/Input";
 import CheckboxInput from "../../../../components/Inputs/CheckboxInput";
@@ -14,6 +13,8 @@ import RadioInput from "../../../../components/Inputs/RadioInput";
 import { Screen } from "../../../../components/Screen";
 import LinearProgress from "../../../../components/LinearProgress";
 import CardFooter from "../../../../components/CardFooter";
+import { RatingInput } from "../../../../components/Inputs/RatingInput";
+import { DateInput } from "../../../../components/Inputs/DateInput";
 
 const QuickReport = () => {
   const [selectedRadioValue, setSelectedRadioValue] = useState("rural");
@@ -39,7 +40,7 @@ const QuickReport = () => {
       </Card>
       <Card padding="$md">
         <Typography>Card component</Typography>
-        <CardFooter text="Card footer" action={() => console.log("card footer")} marginTop="$sm" />
+        <CardFooter marginTop="$sm">Card footer</CardFooter>
       </Card>
       <Stack padding="$sm" gap="$xs">
         <Typography preset="heading">Button</Typography>
@@ -156,27 +157,31 @@ const QuickReport = () => {
             selectedValue={selectedRadioValue}
           />
         </RadioGroup>
+
+        <Typography preset="subheading">Rating</Typography>
+        <RatingInput
+          id="5"
+          type="single"
+          defaultValue="2"
+          // onValueChange={(value) => console.log(value)}
+        />
+
+        <Typography preset="subheading">Date</Typography>
+        <DateInput minimumDate={new Date(2024, 6, 20)} />
       </Stack>
     </Screen>
   );
 };
 
 const regionData = [
-  { id: 1, value: "North" },
-  { id: 2, value: "North-West" },
-  { id: 3, value: "North-East" },
-  { id: 4, value: "West" },
-  { id: 5, value: "East" },
-  { id: 6, value: "South-West" },
-  { id: 7, value: "South" },
+  { id: 1, value: "North", label: "North" },
+  { id: 2, value: "North-West", label: "North-West" },
 ];
 
 const countryData = [
-  { id: 3, value: "Russia" },
-  { id: 4, value: "France" },
-  { id: 5, value: "China" },
-  { id: 6, value: "Brazil" },
-  { id: 7, value: "Australia" },
+  { id: 3, value: "Russia", label: "Russia" },
+  { id: 4, value: "France", label: "France" },
+  { id: 5, value: "China", label: "China" },
 ];
 
 export default QuickReport;
