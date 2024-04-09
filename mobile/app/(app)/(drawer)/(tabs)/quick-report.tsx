@@ -14,6 +14,7 @@ import RadioInput from "../../../../components/Inputs/RadioInput";
 import { Screen } from "../../../../components/Screen";
 import LinearProgress from "../../../../components/LinearProgress";
 import CardFooter from "../../../../components/CardFooter";
+import { Dialog } from "../../../../components/Dialog";
 
 const QuickReport = () => {
   const [selectedRadioValue, setSelectedRadioValue] = useState("rural");
@@ -156,6 +157,10 @@ const QuickReport = () => {
             selectedValue={selectedRadioValue}
           />
         </RadioGroup>
+        <Typography preset="subheading">Alert Dialog</Typography>
+        <Dialog>
+          <Typography>Alert Dialog</Typography>
+        </Dialog>
       </Stack>
     </Screen>
   );
