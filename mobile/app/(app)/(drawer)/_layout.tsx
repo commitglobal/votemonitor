@@ -49,10 +49,10 @@ export default function MainLayout() {
                 style={options.headerStyle as StyleProp<ViewStyle>}
                 leftIcon={<Icon icon="menuAlt2" color="white" />}
                 onLeftPress={() => navigation.dispatch(DrawerActions.openDrawer)}
-                rightIcon={<Icon icon="dotsVertical" color="white" />}
-                onRightPress={() => {
-                  console.log("on right action press");
-                }}
+                // rightIcon={<Icon icon="dotsVertical" color="white" />}
+                // onRightPress={() => {
+                //   console.log("on right action press");
+                // }}
               />
             );
           },
