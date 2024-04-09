@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Animated as RNAnimated, View } from "react-native";
+import { View } from "react-native";
 import { Svg, Circle } from "react-native-svg";
-import Animated, { useAnimatedProps, useSharedValue, withTiming } from "react-native-reanimated";
+import Animated, { useSharedValue, withTiming, useAnimatedProps } from "react-native-reanimated";
 import Button from "./Button";
 
 // Pentru cerc
@@ -26,9 +26,13 @@ const CircularProgress = (): JSX.Element => {
     strokeDashoffset: (CIRCLE_LENGTH * (100 - animatedProgress.value)) / 100,
   }));
 
-  // Background Circle
-  // const progressLess = 100 - progress;
-  // const animatedProgressLess = useSharedValue(progressLess);
+  const gap = CIRCLE_LENGTH * 0.03;
+  const seg1 = (CIRCLE_LENGTH * (100 - progress)) / 100 - 2 * gap;
+  const seg2 = CIRCLE_LENGTH * (progress / 100);
+
+  const animatedProps2 = useAnimatedProps(() => ({
+    strokeDashoffset: (CIRCLE_LENGTH * (100 - animatedProgress.value)) / 100 - gap,
+  }));
 
   return (
     <View style={{ alignItems: "center", justifyContent: "center" }}>
@@ -55,14 +59,27 @@ const CircularProgress = (): JSX.Element => {
         </Animated.Text>
 
         <Svg width={size} height={size}>
-          {/* Background Circle */}
+          {/* Background Background Circle */}
           <Circle
-            stroke="#D9D9D9"
+            stroke="white"
+            opacity={25}
             fill="none"
             cx={size / 2}
             cy={size / 2}
             r={radius}
             strokeWidth={strokeWidth}
+          />
+          {/* Background Circle */}
+
+          <AnimatedCircle
+            stroke="yellow"
+            fill="none"
+            cx={size / 2}
+            cy={size / 2}
+            r={radius}
+            strokeWidth={strokeWidth}
+            strokeDasharray={`${seg1} ${gap} ${seg2} ${gap}`}
+            animatedProps={animatedProps2}
           />
 
           {/* Progress indicator */}
@@ -70,7 +87,7 @@ const CircularProgress = (): JSX.Element => {
             cx={size / 2}
             cy={size / 2}
             r={radius}
-            stroke="#00C282"
+            stroke="#FFD209"
             strokeWidth={strokeWidth}
             strokeLinecap="round"
             fill="none"
