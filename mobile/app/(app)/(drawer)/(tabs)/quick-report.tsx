@@ -39,7 +39,7 @@ const QuickReport = () => {
       </Card>
       <Card padding="$md">
         <Typography>Card component</Typography>
-        <CardFooter text="Card footer" action={() => console.log("card footer")} marginTop="$sm" />
+        <CardFooter text="Card footer" marginTop="$sm" />
       </Card>
       <Stack padding="$sm" gap="$xs">
         <Typography preset="heading">Button</Typography>
