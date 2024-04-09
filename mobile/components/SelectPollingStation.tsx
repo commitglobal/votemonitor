@@ -1,8 +1,9 @@
 import React, { useMemo, useState } from "react";
-import { Adapt, Button, Select, Sheet, View, YStack, SelectProps } from "tamagui";
+import { Adapt, Select, Sheet, View, YStack, SelectProps } from "tamagui";
 import { Icon } from "./Icon";
 import { Typography } from "./Typography";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Button from "../components/Button";
 
 interface SelectPollingStationProps extends SelectProps {
   placeholder?: string;
@@ -49,14 +50,12 @@ const SelectPollingStation: React.FC<SelectPollingStationProps> = ({
                 <Typography preset="body2" color="$gray5">
                   My polling stations
                 </Typography>
-                <View marginTop="$xxs">
-                  {/* //TODO: not sure how many nroflines we should leave here */}
-                  <Typography numberOfLines={7} color="$gray5">
-                    {/* //TODO: translation here */}
-                    You can switch between polling stations if you want to revisit form answers or
-                    polling station information.
-                  </Typography>
-                </View>
+                {/* //TODO: not sure how many nroflines we should leave here */}
+                <Typography numberOfLines={7} color="$gray5" marginTop="$xxs">
+                  {/* //TODO: translation here */}
+                  You can switch between polling stations if you want to revisit form answers or
+                  polling station information.
+                </Typography>
               </YStack>
 
               <Sheet.ScrollView padding="$sm">
@@ -69,8 +68,7 @@ const SelectPollingStation: React.FC<SelectPollingStationProps> = ({
                 borderTopColor="$gray3"
                 marginBottom={insets.bottom}
               >
-                {/* //TODO: change button here with our custom one */}
-                <Button>Add new polling station</Button>
+                <Button preset="outlined">Add new polling station</Button>
               </View>
             </Sheet.Frame>
             <Sheet.Overlay />
