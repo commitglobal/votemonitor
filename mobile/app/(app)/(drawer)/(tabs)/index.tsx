@@ -2,7 +2,6 @@ import React from "react";
 import { Text } from "react-native";
 import { Button } from "tamagui";
 import { router } from "expo-router";
-import SelectPollingStation from "../../../../components/SelectPollingStation";
 import {
   // upsertPollingStationGeneralInformationMutation,
   useElectionRoundsQuery,

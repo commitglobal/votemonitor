@@ -14,12 +14,14 @@ import RadioInput from "../../../../components/Inputs/RadioInput";
 import { Screen } from "../../../../components/Screen";
 import LinearProgress from "../../../../components/LinearProgress";
 import CardFooter from "../../../../components/CardFooter";
+import SelectPollingStation from "../../../../components/SelectPollingStation";
 
 const QuickReport = () => {
   const [selectedRadioValue, setSelectedRadioValue] = useState("rural");
 
   return (
     <Screen preset="auto" backgroundColor="white" contentContainerStyle={{ gap: 20 }}>
+      <SelectPollingStation placeholder="Select polling station" options={pollingStationAdresses} />
       <Text>Quick Report</Text>
       <Card>
         <Typography
@@ -190,4 +192,35 @@ const countryData = [
   { id: 7, value: "Australia" },
 ];
 
+const pollingStationAdresses = [
+  { id: 1, value: "Secția 123, Str. Moldovei, nr. 30, Târgu Mureș, Romania" },
+  {
+    id: 2,
+    value: "Secția 456, Str. Transilvaniei, nr. 45, Cluj-Napoca, Romania",
+  },
+  { id: 3, value: "Secția 789, Str. București, nr. 12, București, Romania" },
+  { id: 4, value: "Secția 101, Str. Timișoarei, nr. 20, Timișoara, Romania" },
+  { id: 5, value: "Secția 234, Str. Iași, nr. 15, Iași, Romania" },
+  { id: 6, value: "Secția 345, Str. Crișana, nr. 10, Oradea, Romania" },
+  {
+    id: 7,
+    value: "Secția 567, Str. Maramureșului, nr. 25, Baia Mare, Romania",
+  },
+  { id: 8, value: "Secția 890, Str. Dobrogei, nr. 8, Constanța, Romania" },
+  { id: 9, value: "Secția 111, Str. Ardealului, nr. 5, Sibiu, Romania" },
+  { id: 10, value: "Secția 222, Str. Olteniei, nr. 18, Craiova, Romania" },
+  { id: 11, value: "Secția 333, Str. Banatului, nr. 22, Arad, Romania" },
+  { id: 12, value: "Secția 444, Str. Mureșului, nr. 11, Deva, Romania" },
+  { id: 13, value: "Secția 555, Str. Dobrogei, nr. 7, Tulcea, Romania" },
+  { id: 14, value: "Secția 667, Str. Moldovei, nr. 9, Bacău, Romania" },
+  { id: 15, value: "Secția 777, Str. Crișului, nr. 13, Satu Mare, Romania" },
+  { id: 16, value: "Secția 888, Str. Olteniei, nr. 4, Pitești, Romania" },
+  { id: 17, value: "Secția 999, Str. Bucovinei, nr. 16, Suceava, Romania" },
+  {
+    id: 18,
+    value: "Secția 1010, Str. Transilvaniei, nr. 32, Alba Iulia, Romania",
+  },
+  { id: 19, value: "Secția 1111, Str. Banatului, nr. 3, Reșița, Romania" },
+  { id: 20, value: "Secția 1212, Str. București, nr. 7, Galați, Romania" },
+];
 export default QuickReport;
