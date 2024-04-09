@@ -1,11 +1,6 @@
-﻿using Amazon.Extensions.NETCore.Setup;
-using Amazon.Runtime;
-using Amazon.Runtime.CredentialManagement;
-using Amazon.S3;
-using Humanizer.Configuration;
+﻿using Amazon.S3;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Serilog;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
 
 namespace Vote.Monitor.Core.Services.FileStorage.S3;
@@ -20,22 +15,8 @@ internal static class Installer
         string awsSecretKey = configuration.GetSection("AWSSecretKey").Value!;
 
         var region = Amazon.RegionEndpoint.GetBySystemName(awsRegion);
-        var credentials = new BasicAWSCredentials(awsAccessKey, awsSecretKey);
 
-        Log.Logger.Warning("start AddDefaultAWSOptions");
-        services.AddDefaultAWSOptions(new AWSOptions()
-        {
-            Credentials = credentials, 
-            Region = region,
-            DefaultConfigurationMode = DefaultConfigurationMode.Standard
-        });
-
-        Log.Logger.Warning("done AddDefaultAWSOptions");
-
-        Log.Logger.Warning("starting aws sdk init {@region} {awsAccessKey} {awsSecretKey}", region, awsAccessKey, awsSecretKey);
         services.AddSingleton<IAmazonS3>(new AmazonS3Client(awsAccessKey, awsSecretKey, region));
-        Log.Logger.Warning("done starting aws sdk init");
-
         services.AddSingleton<IFileStorageService, S3FileStorageService>();
 
         return services;
