@@ -57,8 +57,7 @@ internal class S3FileStorageService(IAmazonS3 client, ILogger<S3FileStorageServi
 
         try
         {
-            var urlString = client.GetPreSignedURL(request);
-            await Task.CompletedTask;
+            var urlString = await client.GetPreSignedURLAsync(request);
 
             return new GetPresignedUrlResult.Ok(urlString, fileName, _options.PresignedUrlValidityInSeconds);
         }

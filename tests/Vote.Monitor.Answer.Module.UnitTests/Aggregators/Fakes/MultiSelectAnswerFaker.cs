@@ -1,6 +1,5 @@
 ﻿using Bogus;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
-using Vote.Monitor.Domain.Entities.FormBase.Questions;
 
 namespace Vote.Monitor.Answer.Module.UnitTests.Aggregators.Fakes;
 
