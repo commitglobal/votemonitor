@@ -14,7 +14,7 @@ public class Endpoint(VoteMonitorContext context, IMemoryCache cache) : Endpoint
         Description(x => x.Accepts<Request>());
         Summary(s =>
         {
-            s.Summary = "Gets all forms created by user ngo for a specific election round";
+            s.Summary = "Gets all published forms by an ngo for an election round";
             s.Description = "Gets all forms and a cache key for the data";
         });
     }
