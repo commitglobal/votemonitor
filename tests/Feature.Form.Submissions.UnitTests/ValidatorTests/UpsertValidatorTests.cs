@@ -102,6 +102,7 @@ public class UpsertValidatorTests
         // Arrange
         var request = new Upsert.Request
         {
+            FormId = Guid.NewGuid(),
             ElectionRoundId = Guid.NewGuid(),
             PollingStationId = Guid.NewGuid(),
             ObserverId = Guid.NewGuid(),
