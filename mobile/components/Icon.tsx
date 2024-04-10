@@ -1,46 +1,51 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import * as React from "react"
-import EyeOff from "../assets/icons/Eye off.svg"
-import Eye from "../assets/icons/Eye.svg"
-import Observation from "../assets/icons/observation.svg"
-import QuickReport from "../assets/icons/quick-report.svg"
-import Learning from "../assets/icons/Learning.svg"
-import Inbox from "../assets/icons/Inbox.svg"
-import More from "../assets/icons/More.svg"
-import ChevronRight from "../assets/icons/Chevron right.svg"
-import ChevronLeft from "../assets/icons/Chevron left.svg"
-import AddNote from "../assets/icons/add-note.svg"
-import Trash from "../assets/icons/Trash.svg"
-import Logout from "../assets/icons/logout.svg"
-import PencilAlt from "../assets/icons/Pencil alt.svg"
-import XCircle from "../assets/icons/x-circle.svg"
-import MenuAlt2 from "../assets/icons/menu-alt-2.svg"
-import DotsVertical from "../assets/icons/dots-vertical.svg"
+import * as React from "react";
+import EyeOff from "../assets/icons/Eye off.svg";
+import Eye from "../assets/icons/Eye.svg";
+import Observation from "../assets/icons/observation.svg";
+import QuickReport from "../assets/icons/quick-report.svg";
+import Learning from "../assets/icons/Learning.svg";
+import Inbox from "../assets/icons/Inbox.svg";
+import More from "../assets/icons/More.svg";
+import ChevronRight from "../assets/icons/Chevron right.svg";
+import ChevronLeft from "../assets/icons/Chevron left.svg";
+import AddNote from "../assets/icons/add-note.svg";
+import Trash from "../assets/icons/Trash.svg";
+import Logout from "../assets/icons/logout.svg";
+import PencilAlt from "../assets/icons/Pencil alt.svg";
+import XCircle from "../assets/icons/x-circle.svg";
+import MenuAlt2 from "../assets/icons/menu-alt-2.svg";
+import DotsVertical from "../assets/icons/dots-vertical.svg";
+import Check from "../assets/icons/check.svg";
+import Calendar from "../assets/icons/Calendar.svg";
+import PeopleAddingVote from "../assets/icons/people-adding-vote.svg";
+import MissingPollingStation from "../assets/icons/missing-polling-station.svg";
+import X from "../assets/icons/x.svg";
 
-import { styled, View } from "tamagui"
-import { StyleProp, ViewStyle } from "react-native"
-import { Ref } from "react"
+import { styled, View } from "tamagui";
+import { StyleProp, ViewStyle } from "react-native";
+import { Ref } from "react";
 
 interface IconProps {
   /**
    * The name of the icon
    */
-  icon: string
+  icon: string;
 
   /**
    * An optional tint color for the icon
    */
-  color?: string
+  color?: string;
 
   /**
    * An optional size for the icon. If not provided, the icon will be sized to the icon's resolution.
    */
-  size?: number
+  size?: number;
 
   /**
    * Style overrides for the view container
    */
-  style?: StyleProp<ViewStyle>
+  style?: StyleProp<ViewStyle>;
 }
 
 /**
@@ -52,12 +57,12 @@ interface IconProps {
  */
 
 type IconRegistry = {
-  [key: string]: React.ReactNode
-}
+  [key: string]: React.ReactNode;
+};
 
 export const defaultIcon = React.forwardRef(
   (props: IconProps, ref?: Ref<typeof View>): JSX.Element => {
-    const { icon, color = "black", size = 24, style: $viewStyleOverride, ...tamaguiProps } = props
+    const { icon, color = "black", size = 24, style: $viewStyleOverride, ...tamaguiProps } = props;
 
     const iconRegistry: IconRegistry = {
       eyeOff: <EyeOff fill={color} width={size} height={size} />,
@@ -76,15 +81,20 @@ export const defaultIcon = React.forwardRef(
       xCircle: <XCircle fill={color} width={size} height={size} />,
       menuAlt2: <MenuAlt2 fill={color} width={size} height={size} />,
       dotsVertical: <DotsVertical fill={color} width={size} height={size} />,
-    }
+      check: <Check fill={color} width={size} height={size} />,
+      calendar: <Calendar fill={color} width={size} height={size} />,
+      peopleAddingVote: <PeopleAddingVote fill={color} width={226} height={170} />,
+      missingPollingStation: <MissingPollingStation fill={color} width={224} height={170} />,
+      x: <X fill={color} width={size} height={size} />,
+    };
 
     return (
       <View {...tamaguiProps} style={$viewStyleOverride}>
         {iconRegistry[icon]}
       </View>
-    )
+    );
   },
-)
+);
 
 export const Icon = styled(
   defaultIcon,
@@ -94,4 +104,4 @@ export const Icon = styled(
       color: "color",
     },
   },
-)
+);

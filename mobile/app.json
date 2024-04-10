@@ -81,7 +81,8 @@
           "photosPermission": "The app accesses your photos to let you upload them.",
           "cameraPermission": "The app accesses your camera to let you take photos or videos and upload them."
         }
-      ]
+      ],
+      "expo-secure-store"
     ]
   }
 }

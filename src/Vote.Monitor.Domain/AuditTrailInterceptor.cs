@@ -102,7 +102,7 @@ public class AuditTrailInterceptor : ISaveChangesInterceptor
 
         var voteMonitorContext = eventData.Context as VoteMonitorContext;
 
-        foreach (var auditEntry in trailEntries.Where(e => !e.HasTemporaryProperties))
+        foreach (var auditEntry in trailEntries.Where(e => !e.HasTemporaryProperties).Where(x=>x.TrailType != null))
         {
             voteMonitorContext!.AuditTrails.Add(auditEntry.ToAuditTrail());
         }

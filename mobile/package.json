@@ -4,6 +4,7 @@
   "main": "expo-router/entry",
   "scripts": {
     "start": "npm run lint && expo start -c",
+    "start:dev": "npm run lint && expo start -c --dev-client",
     "android": "expo run:android",
     "ios": "expo run:ios",
     "start:ios": "eas build:run -p ios",
@@ -47,7 +48,9 @@
     "tamagui": "^1.93.2",
     "expo-localization": "~14.8.3",
     "expo-image-picker": "~14.7.1",
-    "expo-file-system": "~16.0.8"
+    "expo-file-system": "~16.0.8",
+    "expo-secure-store": "~12.8.1",
+    "@react-native-community/datetimepicker": "7.6.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

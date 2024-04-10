@@ -7,7 +7,7 @@ public sealed class GetMonitoringObserverSpecification : SingleResultSpecificati
 {
     public GetMonitoringObserverSpecification(Guid observerId)
     {
-        Query.Include(x=> x.InviterNgo)
+        Query.Include(x=> x.MonitoringNgoId)
             .Where(x => x.ObserverId == observerId);
     }
 }

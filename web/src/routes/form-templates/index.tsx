@@ -5,7 +5,7 @@ import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataT
 import { Button } from '@/components/ui/button';
 import { FormTemplateBase } from '@/features/formsTemplate/models/formTemplate';
 import { EllipsisVerticalIcon } from '@heroicons/react/24/outline';
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { ColumnDef } from '@tanstack/react-table';
 import { z } from 'zod';
 import {
@@ -24,10 +24,9 @@ const formTemplateRouteSearchSchema = z.object({
   sortOrder: z.enum([SortOrder.asc, SortOrder.desc]).catch(SortOrder.asc),
 });
 
-
 export const Route = createFileRoute('/form-templates/')({
   component: FormTemplatesList,
-  validateSearch: formTemplateRouteSearchSchema
+  validateSearch: formTemplateRouteSearchSchema,
 });
 
 export const formTemplateColumnDefs: ColumnDef<FormTemplateBase>[] = [
@@ -60,12 +59,11 @@ export const formTemplateColumnDefs: ColumnDef<FormTemplateBase>[] = [
     accessorKey: 'languages',
     enableSorting: false,
     header: ({ column }) => <DataTableColumnHeader title='Languages' column={column} />,
-    cell:({ row }) => row.original.languages.join(", ")
+    cell: ({ row }) => row.original.languages.join(', '),
   },
   {
     id: 'actions',
     cell: ({ row }) => {
-
       const navigate = useNavigate();
 
       return (
@@ -78,7 +76,12 @@ export const formTemplateColumnDefs: ColumnDef<FormTemplateBase>[] = [
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align='end'>
-              <DropdownMenuItem onClick={() =>  navigate({ to: '/form-templates/$formTemplateId/edit', params: { formTemplateId: row.original.id } })}>Edit</DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() =>
+                  navigate({ to: '/form-templates/$formTemplateId/edit', params: { formTemplateId: row.original.id } })
+                }>
+                Edit
+              </DropdownMenuItem>
               <DropdownMenuItem>Deactivate</DropdownMenuItem>
               <DropdownMenuItem>Delete</DropdownMenuItem>
             </DropdownMenuContent>
@@ -89,9 +92,7 @@ export const formTemplateColumnDefs: ColumnDef<FormTemplateBase>[] = [
   },
 ];
 
-
-
-function FormTemplatesList(){
+function FormTemplatesList() {
   return (
     <Layout title={'Form templates'}>
       <QueryParamsDataTable columns={formTemplateColumnDefs} useQuery={useFormTemplates} />

@@ -38,6 +38,8 @@ const colorTokens = {
       ...yellow,
       yellow2: "hsla(49, 100%, 58%, 0.25)",
       yellow3: "hsl(48, 100%, 96%)",
+      yellow4: "hsla(49, 100%, 58%, 0.25)",
+      yellow5: "hsla(49, 100%, 58%, 1)",
       yellow6: "hsl(49, 100%, 58%)",
       yellow7: "hsl(38, 90%, 35%)",
     },
