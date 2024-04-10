@@ -139,7 +139,7 @@ const PollingStationWizzardContent = ({
             Select the [Location - L1] of the polling station
           </Typography>
           <Select
-            key={activeStep?.id || "-1"}
+            key={activeStep?.id}
             options={pollingStationsMappedOptions}
             placeholder="Select Region"
             onValueChange={onSelectOption}

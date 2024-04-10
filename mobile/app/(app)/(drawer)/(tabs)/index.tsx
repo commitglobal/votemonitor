@@ -68,7 +68,7 @@ const Index = () => {
 
   // const { mutate } = upsertPollingStationGeneralInformationMutation();
 
-  if (isAssignedToEllectionRound) {
+  if (!isAssignedToEllectionRound) {
     return <MissingElectionRounds />;
   }
 
