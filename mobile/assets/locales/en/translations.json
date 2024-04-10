@@ -5,5 +5,16 @@
   },
   "login": {
     "submit": "Sign In"
+  },
+  "more" : {
+    "change-language" : "Change app language",
+    "change-password" : "Change password",
+    "terms": "Terms and Conditions",
+    "privacy_policy": "Privacy Policy",
+    "about": "About Vote Monitor",
+    "app_version": "Vote Monitor version {{value}}",
+    "support": "Call the NGO Hotline",
+    "feedback": "Offer app feedback",
+    "logout": "Logout"
   }
 }

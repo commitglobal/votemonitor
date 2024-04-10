@@ -5,5 +5,16 @@
   },
   "login": {
     "submit": "Intra in aplicatie"
+  },
+  "more" : {
+    "change-language" : "Schimba limba aplicației",
+    "change-password" : "Schimba parola",
+    "terms": "Termeni si Conditii",
+    "privacy_policy": "Politica de confidențialitate",
+    "support": "Sunati la ONG-uri",
+    "about": "Despre Vote Monitor",
+    "app_version": "Vote Monitor versiunea {{value}}",
+    "feedback": "Oferiți feedback aplicație",
+    "logout": "Deconectare"
   }
 }
