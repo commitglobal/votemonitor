@@ -12,7 +12,7 @@ namespace Vote.Monitor.Domain.Entities.FormBase.Questions;
 [PolyJsonConverter.SubType(typeof(SingleSelectQuestion), QuestionTypes.SingleSelectQuestionType)]
 [PolyJsonConverter.SubType(typeof(MultiSelectQuestion), QuestionTypes.MultiSelectQuestionType)]
 [PolyJsonConverter.SubType(typeof(RatingQuestion), QuestionTypes.RatingQuestionType)]
-public abstract class BaseQuestion
+public abstract record BaseQuestion
 {
     [JsonPropertyName("$questionType")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]

@@ -3,7 +3,7 @@ using Vote.Monitor.Core.Models;
 
 namespace Vote.Monitor.Domain.Entities.FormBase.Questions;
 
-public class SingleSelectQuestion : BaseQuestion
+public record SingleSelectQuestion : BaseQuestion
 {
     public IReadOnlyList<SelectOption> Options { get; private set; }
 
@@ -23,4 +23,14 @@ public class SingleSelectQuestion : BaseQuestion
         TranslatedString? helptext,
         IReadOnlyList<SelectOption> options) =>
         new(id, code, text, helptext, options);
+
+    public virtual bool Equals(SingleSelectQuestion? other)
+    {
+        return base.Equals(other) && Options.SequenceEqual(other.Options);
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(base.GetHashCode(), Options);
+    }
 }

@@ -5,7 +5,7 @@ using Vote.Monitor.Domain.Entities.FormBase.Questions;
 
 namespace Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 
-public class TextAnswer : BaseAnswer
+public record TextAnswer : BaseAnswer
 {
     public string Text { get; private set; }
 

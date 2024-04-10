@@ -182,7 +182,7 @@ public class QuestionsMapperTests
         result.Should().BeEquivalentTo(ratingQuestion);
     }
 
-    internal class UnknownQuestion : BaseQuestion
+    internal record UnknownQuestion : BaseQuestion
     {
         public UnknownQuestion(Guid id, string code, TranslatedString text, TranslatedString? helptext) : base(id, code, text, helptext)
         {

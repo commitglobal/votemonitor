@@ -1,6 +1,11 @@
-﻿using Vote.Monitor.Core.Models;
+﻿using FluentValidation;
+using Vote.Monitor.Core.Models;
+using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
+using Vote.Monitor.Domain.Entities.FormAnswerBase;
 using Vote.Monitor.Domain.Entities.FormBase.Questions;
+using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
+using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 
 namespace Vote.Monitor.Domain.Entities.FormAggregate;
 
@@ -123,6 +128,32 @@ public class Form : AuditableBaseEntity, IAggregateRoot
         DefaultLanguage = defaultLanguage;
         Languages = languages.ToArray();
         Questions = questions.ToList().AsReadOnly();
+    }
+
+    public FormSubmission CreateFormSubmission(PollingStation pollingStation,
+        MonitoringObserver monitoringObserver,
+        List<BaseAnswer> answers)
+    {
+        return FormSubmission.Create(ElectionRound, pollingStation, monitoringObserver, this, answers);
+    }
+
+    public FormSubmission FillIn(FormSubmission submission, List<BaseAnswer> answers)
+    {
+        if (!answers.Any())
+        {
+            return submission;
+        }
+
+        var validationResult = AnswersValidator.GetValidationResults(answers, Questions);
+
+        if (!validationResult.IsValid)
+        {
+            throw new ValidationException(validationResult.Errors);
+        }
+
+        submission.UpdateAnswers(answers);
+
+        return submission;
     }
 
 #pragma warning disable CS8618 // Required by Entity Framework

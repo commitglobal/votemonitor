@@ -1,10 +1,10 @@
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 using Ardalis.SmartEnum.SystemTextJson;
 using Vote.Monitor.Core.Models;
 
 namespace Vote.Monitor.Domain.Entities.FormBase.Questions;
 
-public class RatingQuestion : BaseQuestion
+public record RatingQuestion : BaseQuestion
 {
     [JsonConverter(typeof(SmartEnumNameConverter<RatingScale, string>))]
     public RatingScale Scale { get; private set; }

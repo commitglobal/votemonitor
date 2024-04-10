@@ -1,8 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Vote.Monitor.Core.Models;
-using Vote.Monitor.Domain.Entities.FormBase.Questions;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
+using Vote.Monitor.Domain.ValueComparers;
+using Vote.Monitor.Domain.ValueConverters;
 
 namespace Vote.Monitor.Domain.EntitiesConfiguration;
 
@@ -16,29 +15,14 @@ public class FormTemplateConfiguration : IEntityTypeConfiguration<FormTemplate>
         builder.Property(x => x.DefaultLanguage).HasMaxLength(64).IsRequired();
         builder.Property(x => x.Status).IsRequired();
 
-        var jsonSerializerOptions = (JsonSerializerOptions)null;
-
         builder.Property(x => x.Name)
-            .HasConversion(
-                v => JsonSerializer.Serialize(v, jsonSerializerOptions),
-                v => JsonSerializer.Deserialize<TranslatedString>(v, jsonSerializerOptions),
-                new ValueComparer<TranslatedString>(
-                    (c1, c2) => c1.SequenceEqual(c2),
-                    c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
-                    c => c.ToDictionary() as TranslatedString))
+            .HasConversion<TranslatedStringToJsonConverter, TranslatedStringValueComparer>()
             .HasColumnType("jsonb");
 
-        builder.Ignore(x => x.Languages);
+        builder.Property(x => x.Languages).IsRequired();
 
         builder.Property(x => x.Questions)
-            .HasConversion(
-                v => JsonSerializer.Serialize(v, jsonSerializerOptions),
-                v => JsonSerializer.Deserialize<IReadOnlyList<BaseQuestion>>(v, jsonSerializerOptions),
-                new ValueComparer<IReadOnlyList<BaseQuestion>>(
-                    (c1, c2) => c1.SequenceEqual(c2),
-                    c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
-                    c => c.ToList().AsReadOnly())
-                )
+            .HasConversion<QuestionsToJsonConverter, QuestionsValueComparer>()
             .HasColumnType("jsonb");
     }
 }

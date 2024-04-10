@@ -37,8 +37,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Entities\FormAnswerBase\Validators\" />
     <Folder Include="Entities\FormTemplateAggregate\" />
-    <Folder Include="NewFolder\" />
+    <Folder Include="ValueComparers\" />
   </ItemGroup>
 
 </Project>

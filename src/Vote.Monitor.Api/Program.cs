@@ -1,10 +1,12 @@
 ﻿using System.IO.Compression;
 using System.Text.Json.Serialization;
 using Authorization.Policies;
+using Feature.Form.Submissions;
 using Feature.Forms;
 using Feature.FormTemplates;
 using Feature.MonitoringObservers;
 using Feature.ObserverGuide;
+using Feature.PollingStation.Information;
 using Feature.PollingStation.Information.Form;
 using Feature.PollingStation.Visit;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -17,7 +19,6 @@ using Vote.Monitor.Api.Feature.Ngo;
 using Vote.Monitor.Api.Feature.NgoAdmin;
 using Vote.Monitor.Api.Feature.Notifications;
 using Vote.Monitor.Api.Feature.PollingStation.Attachments;
-using Vote.Monitor.Api.Feature.PollingStation.Information;
 using Vote.Monitor.Api.Feature.PollingStation.Notes;
 using Vote.Monitor.Core.Models;
 using Vote.Monitor.Core.Security;
@@ -118,6 +119,7 @@ builder.Services.AddPollingStationInformationFormFeature();
 builder.Services.AddObserverGuideFeature();
 builder.Services.AddPollingStationVisitFeature();
 builder.Services.AddMonitoringObserversFeature();
+builder.Services.AddFormSubmissionsFeature();
 
 builder.Services.AddAuthorization();
 
