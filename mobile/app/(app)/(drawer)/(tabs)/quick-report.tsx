@@ -14,6 +14,8 @@ import RadioInput from "../../../../components/Inputs/RadioInput";
 import { Screen } from "../../../../components/Screen";
 import LinearProgress from "../../../../components/LinearProgress";
 import CardFooter from "../../../../components/CardFooter";
+import { RatingInput } from "../../../../components/Inputs/RatingInput";
+import { DateInput } from "../../../../components/Inputs/DateInput";
 import CircularProgress from "../../../../components/CircularProgress";
 
 const QuickReport = () => {
@@ -41,7 +43,7 @@ const QuickReport = () => {
       </Card>
       <Card padding="$md">
         <Typography>Card component</Typography>
-        <CardFooter text="Card footer" action={() => console.log("card footer")} marginTop="$sm" />
+        <CardFooter text="Card footer" marginTop="$sm" />
       </Card>
       <Stack padding="$sm" gap="$xs">
         <Typography preset="heading">Button</Typography>
@@ -158,6 +160,17 @@ const QuickReport = () => {
             selectedValue={selectedRadioValue}
           />
         </RadioGroup>
+
+        <Typography preset="subheading">Rating</Typography>
+        <RatingInput
+          id="5"
+          type="single"
+          defaultValue="2"
+          // onValueChange={(value) => console.log(value)}
+        />
+
+        <Typography preset="subheading">Date</Typography>
+        <DateInput minimumDate={new Date(2024, 6, 20)} />
       </Stack>
 
       <Stack padding="$sm" gap="$xs" marginTop="$md" backgroundColor="white">
@@ -165,10 +178,25 @@ const QuickReport = () => {
           preset="outlined"
           style={{ marginBottom: 20 }}
           onPress={() => {
-            setProgress((prevProgress) => (prevProgress + 10) % 110);
+            setProgress((prevProgress) => {
+              const newProgress = prevProgress + 10;
+              return newProgress <= 360 ? newProgress : 360;
+            });
           }}
         >
-          Progress
+          Progress 10%
+        </Button>
+        <Button
+          preset="outlined"
+          style={{ marginBottom: 20 }}
+          onPress={() => {
+            setProgress((prevProgress) => {
+              const newProgress = prevProgress + 45;
+              return newProgress <= 360 ? newProgress : 360;
+            });
+          }}
+        >
+          Progress 45%
         </Button>
         <CircularProgress progress={progress}></CircularProgress>
       </Stack>
@@ -184,6 +212,17 @@ const regionData = [
   { id: 5, value: "East" },
   { id: 6, value: "South-West" },
   { id: 7, value: "South" },
+  { id: 8, value: "South-East" },
+  { id: 9, value: "Central" },
+  { id: 10, value: "Mid-West" },
+  { id: 11, value: "Mid-East" },
+  { id: 12, value: "Far North" },
+  { id: 13, value: "Far South" },
+  { id: 14, value: "Far West" },
+  { id: 15, value: "Far East" },
+  { id: 16, value: "Northern Territory" },
+  { id: 17, value: "Pacific Northwest" },
+  { id: 18, value: "South Central" },
 ];
 
 const countryData = [

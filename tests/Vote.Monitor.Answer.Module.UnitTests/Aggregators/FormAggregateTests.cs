@@ -7,8 +7,6 @@ using Vote.Monitor.Domain.Entities.FormAggregate;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Domain.Entities.FormBase.Questions;
 using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
-using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
-using Vote.Monitor.Domain.Entities.PollingStationAggregate;
 using Vote.Monitor.TestUtils.Fakes.Aggregates;
 using Xunit;
 

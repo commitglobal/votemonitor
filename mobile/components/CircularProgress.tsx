@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import { View } from "react-native";
+import React, { useEffect } from "react";
 import { Svg, Circle } from "react-native-svg";
 import Animated, {
   useSharedValue,
@@ -7,19 +6,22 @@ import Animated, {
   useAnimatedProps,
   useDerivedValue,
   interpolateColor,
+  useAnimatedStyle,
+  SharedValue,
 } from "react-native-reanimated";
-import Button from "./Button";
-import { Typography } from "./Typography";
+import { View } from "tamagui";
 
 export interface CircularProgressProps {
   progress: number;
 }
 
-const size = 200;
-const strokeWidth = 8;
-const radius = (size - strokeWidth) / 2;
-const CIRCLE_LENGTH = radius * 2 * Math.PI;
-const duration = 1000;
+// TODO: adjust circle size by modifying these variables
+const SIZE = 150;
+const STROKEWIDTH = 8;
+const RADIUS = (SIZE - STROKEWIDTH) / 2;
+const CIRCLE_LENGTH = RADIUS * 2 * Math.PI;
+const MAX_PROGRESS = 360;
+const duration = 750;
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
@@ -27,98 +29,102 @@ const CircularProgress = (props: CircularProgressProps): JSX.Element => {
   const { progress } = props;
   const animatedProgress = useSharedValue(progress);
 
-  // Color
-  const strokeColor = useDerivedValue(() => {
-    return interpolateColor(
-      animatedProgress.value,
-      [0, 10, 99, 100],
-      ["grey", "yellow", "yellow", "green"],
-    );
-  });
-
-  // Progress Indicator animation
   useEffect(() => {
     animatedProgress.value = withTiming(progress, { duration });
   }, [progress]);
 
-  const animatedProps = useAnimatedProps(() => ({
-    strokeDashoffset: (CIRCLE_LENGTH * (100 - animatedProgress.value)) / 100,
-    stroke: strokeColor.value,
-  }));
+  return (
+    <View alignItems="center" justifyContent="center">
+      <AnimatedText progress={progress} animatedProgress={animatedProgress} />
 
-  // Background Circle Animation
-  const gap = progress == 0 ? 0 : CIRCLE_LENGTH * 0.05;
-  const seg1 = (CIRCLE_LENGTH * (100 - progress)) / 100 - 2 * gap;
-  const seg2 = CIRCLE_LENGTH * (progress / 100);
+      <Svg width={SIZE} height={SIZE}>
+        <BackgroundCircle animatedProgress={animatedProgress}></BackgroundCircle>
+        <ProgressCircle animatedProgress={animatedProgress} />
+      </Svg>
+    </View>
+  );
+};
 
-  const strokeColor2 = useDerivedValue(() => {
+const ProgressCircle = ({ animatedProgress }: { animatedProgress: SharedValue<number> }) => {
+  const strokeColor = useDerivedValue(() => {
     return interpolateColor(
       animatedProgress.value,
-      [0, 10, 99, 100],
-      ["grey", "#FFFDD0", "#FFFDD0", "green"],
+      [0, 1, MAX_PROGRESS - 1, MAX_PROGRESS],
+      ["#E4E4E7", "#FFD209", "#FFD209", "#10B981"],
     );
   });
 
-  const animatedProps2 = useAnimatedProps(() => ({
-    strokeDashoffset: (CIRCLE_LENGTH * (100 - animatedProgress.value)) / 100 - gap,
-    stroke: strokeColor2.value,
+  const animatedProps = useAnimatedProps(() => ({
+    strokeDashoffset: (CIRCLE_LENGTH * (MAX_PROGRESS - animatedProgress.value)) / MAX_PROGRESS,
+    stroke: strokeColor.value,
   }));
 
   return (
-    <View style={{ alignItems: "center", justifyContent: "center" }}>
-      <View style={{ alignItems: "center", justifyContent: "center" }}>
-        <Animated.Text
-          style={{
-            color: "#37306B",
-            fontSize: 24,
-            fontWeight: "bold",
-            position: "absolute",
-          }}
-        >
-          <View style={{ flexDirection: "column", alignItems: "center" }}>
-            <Typography>{Math.round(progress)} %</Typography>
-            <Typography> completed </Typography>
-          </View>
-        </Animated.Text>
+    <AnimatedCircle
+      cx={SIZE / 2}
+      cy={SIZE / 2}
+      r={RADIUS}
+      strokeWidth={STROKEWIDTH}
+      strokeLinecap="round"
+      fill="none"
+      strokeDasharray={`${CIRCLE_LENGTH} ${CIRCLE_LENGTH}`}
+      animatedProps={animatedProps}
+    />
+  );
+};
 
-        <Svg width={size} height={size}>
-          {/* Background Background Circle */}
-          <Circle
-            stroke="white"
-            opacity={25}
-            fill="none"
-            cx={size / 2}
-            cy={size / 2}
-            r={radius}
-            strokeWidth={strokeWidth}
-          />
+const BackgroundCircle = ({ animatedProgress }: { animatedProgress: SharedValue<number> }) => {
+  const animatedProps = useAnimatedProps(() => {
+    return {
+      stroke: interpolateColor(
+        animatedProgress.value,
+        [0, 1, MAX_PROGRESS - 1, MAX_PROGRESS],
+        ["#E4E4E7", "hsla(49, 100%, 58%, 0.25)", "hsla(49, 100%, 58%, 0.25)", "#10B981"],
+      ),
+    };
+  });
 
-          {/* Background Circle */}
-          <AnimatedCircle
-            stroke="yellow"
-            fill="none"
-            strokeLinecap="round"
-            cx={size / 2}
-            cy={size / 2}
-            r={radius}
-            strokeWidth={strokeWidth}
-            strokeDasharray={`${seg1} ${gap} ${seg2} ${gap}`}
-            animatedProps={animatedProps2}
-          />
+  return (
+    <AnimatedCircle
+      fill="none"
+      cx={SIZE / 2}
+      cy={SIZE / 2}
+      r={RADIUS}
+      strokeWidth={STROKEWIDTH}
+      animatedProps={animatedProps}
+    />
+  );
+};
 
-          {/* Progress indicator */}
-          <AnimatedCircle
-            cx={size / 2}
-            cy={size / 2}
-            r={radius}
-            strokeWidth={strokeWidth}
-            strokeLinecap="round"
-            fill="none"
-            strokeDasharray={`${CIRCLE_LENGTH} ${CIRCLE_LENGTH}`}
-            animatedProps={animatedProps}
-          />
-        </Svg>
-      </View>
+/**
+ * Animated text which displays X % completed
+ * Animation consist in color changing based on animatedProgress value.
+ */
+const AnimatedText = ({
+  progress,
+  animatedProgress,
+}: {
+  progress: number;
+  animatedProgress: SharedValue<number>;
+}) => {
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      color: interpolateColor(
+        animatedProgress.value,
+        [0, 1, MAX_PROGRESS - 1, MAX_PROGRESS],
+        ["#71717A", "#A16207", "#A16207", "#10B981"],
+      ),
+    };
+  });
+
+  return (
+    <View flexDirection="column" alignItems="center" position="absolute">
+      <Animated.Text style={[animatedStyle, { fontSize: 14, fontWeight: "700" }]}>
+        {Math.round(progress)} %
+      </Animated.Text>
+      <Animated.Text style={[animatedStyle, { fontSize: 12, fontWeight: "700" }]}>
+        {"progress"}
+      </Animated.Text>
     </View>
   );
 };
