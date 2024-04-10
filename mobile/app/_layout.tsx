@@ -19,11 +19,14 @@ import {
 import "../common/config/i18n";
 import LanguageContextProvider from "../contexts/language/LanguageContext.provider";
 import UserContextProvider from "../contexts/user/UserContext.provider";
+import { performanceLog } from "../helpers/misc";
+import * as API from "../services/definitions.api";
+import { pollingStationsKeys } from "../services/queries.service";
 
 if (__DEV__) {
   Reactotron.setAsyncStorageHandler(AsyncStorage)
     .configure({
-      host: "192.168.68.56", // PUT YOUR OWN LOCAL IP (logged by Expo)
+      host: "192.168.68.58", // PUT YOUR OWN LOCAL IP (logged by Expo)
     }) // controls connection & communication settings
     .useReactNative({
       networking: {},
@@ -133,6 +136,12 @@ export default function Root() {
     },
   });
 
+  queryClient.setMutationDefaults(pollingStationsKeys.addAttachmentMutation(), {
+    mutationFn: async (payload: API.AddAttachmentAPIPayload) => {
+      return performanceLog(() => API.addAttachment(payload));
+    },
+  });
+
   return (
     <PersistQueryClientProvider
       onSuccess={async () => {
@@ -163,13 +172,13 @@ export default function Root() {
               {!isOnline && <OfflineBanner />}
               <Slot />
               {/* <Button
-              onPress={() => {
-                setIsOnline(!isOnline);
-                onlineManager.setOnline(!isOnline);
-              }}
-            >
-              Go Online/Offline
-            </Button> */}
+                onPress={() => {
+                  setIsOnline(!isOnline);
+                  onlineManager.setOnline(!isOnline);
+                }}
+              >
+                Go Online/Offline
+              </Button> */}
             </UserContextProvider>
           </LanguageContextProvider>
         </AuthContextProvider>

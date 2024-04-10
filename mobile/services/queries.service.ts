@@ -11,16 +11,18 @@ import {
   upsertPollingStationGeneralInformation,
 } from "./definitions.api";
 import * as DB from "../database/DAO/PollingStationsNomenclatorDAO";
+import * as API from "./definitions.api";
 
 import { PollingStationNomenclatorNodeVM } from "../common/models/polling-station.model";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { performanceLog } from "../helpers/misc";
 
 const electionRoundsKeys = {
   all: ["election-rounds"] as const,
   one: (id: string) => [...electionRoundsKeys.all, id] as const,
 };
 
-const pollingStationsKeys = {
+export const pollingStationsKeys = {
   all: ["polling-stations"] as const,
   visits: (electionRoundId: string) =>
     [...pollingStationsKeys.all, "visits", electionRoundId] as const,
@@ -36,6 +38,7 @@ const pollingStationsKeys = {
     ...pollingStationsKeys.nomenclator(electionRoundId),
     "cacheKey",
   ],
+  addAttachmentMutation: () => [...pollingStationsKeys.all, "addAttachment"],
 };
 
 export const useElectionRoundsQuery = () => {
@@ -80,6 +83,7 @@ export const usePollingStationsNomenclatorQuery = (electionRoundId: string) => {
       } catch (err) {
         // TODO: Add Sentry
         console.warn("usePollingStationsNomenclatorQuery", err);
+        throw err;
       }
     },
     enabled: !!electionRoundId,
@@ -169,6 +173,17 @@ export const upsertPollingStationGeneralInformationMutation = () => {
     mutationKey: ["upsertPollingStationGeneralInformation"],
     mutationFn: async (payload: PollingStationInformationAPIPayload) => {
       return upsertPollingStationGeneralInformation(payload);
+    },
+  });
+};
+
+export const addAttachmentMutation = () => {
+  return useMutation({
+    mutationKey: pollingStationsKeys.addAttachmentMutation(),
+    mutationFn: async (
+      payload: API.AddAttachmentAPIPayload,
+    ): Promise<API.AddAttachmentAPIResponse> => {
+      return performanceLog(() => API.addAttachment(payload));
     },
   });
 };
