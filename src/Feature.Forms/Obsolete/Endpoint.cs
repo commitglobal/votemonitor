@@ -1,10 +1,9 @@
 ﻿using Authorization.Policies.Requirements;
 using Feature.Forms.Specifications;
 using Microsoft.AspNetCore.Authorization;
-using Vote.Monitor.Domain.Entities.FormAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
 
-namespace Feature.Forms.Publish;
+namespace Feature.Forms.Obsolete;
 
 public class Endpoint(
     IAuthorizationService authorizationService,
@@ -13,7 +12,7 @@ public class Endpoint(
 {
     public override void Configure()
     {
-        Post("/api/election-rounds/{electionRoundId}/monitoring-ngo/{monitoringNgoId}/forms/{id}:publish");
+        Post("/api/election-rounds/{electionRoundId}/monitoring-ngo/{monitoringNgoId}/forms/{id}:obsolete");
         Description(x => x.Accepts<Request>());
         DontAutoTag();
         Options(x => x.WithTags("forms"));
@@ -36,13 +35,7 @@ public class Endpoint(
             return TypedResults.NotFound();
         }
 
-        var result = form.Publish();
-
-        if (result is PublishResult.InvalidForm validationResult)
-        {
-            validationResult.Problems.Errors.ForEach(AddError);
-            return new ProblemDetails(ValidationFailures);
-        }
+        form.Obsolete();
 
         await formsRepository.UpdateAsync(form, ct);
 

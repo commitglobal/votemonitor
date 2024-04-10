@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using NSubstitute.ReturnsExtensions;
 using Vote.Monitor.Domain.Entities.FormAggregate;
+using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
 
 namespace Feature.Forms.UnitTests.Endpoints;
 
@@ -9,14 +10,20 @@ public class DeleteEndpointTests
 {
     private readonly IAuthorizationService _authorizationService = Substitute.For<IAuthorizationService>();
     private readonly IRepository<Form> _repository = Substitute.For<IRepository<Form>>();
+    private readonly IRepository<MonitoringNgo> _monitoringNgoRepository = Substitute.For<IRepository<MonitoringNgo>>();
+    private readonly Guid _initialFormVersion = Guid.NewGuid();
+    private readonly MonitoringNgo _monitoringNgo;
     private readonly Delete.Endpoint _endpoint;
 
     public DeleteEndpointTests()
     {
-        _endpoint = Factory.Create<Delete.Endpoint>(_authorizationService, _repository);
+        _endpoint = Factory.Create<Delete.Endpoint>(_authorizationService, _monitoringNgoRepository, _repository);
         _authorizationService
             .AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object>(),
                 Arg.Any<IEnumerable<IAuthorizationRequirement>>()).Returns(AuthorizationResult.Success());
+
+        _monitoringNgo = new MonitoringNgoAggregateFaker(formsVersions: _initialFormVersion).Generate();
+        _monitoringNgoRepository.GetByIdAsync(_monitoringNgo.Id).Returns(_monitoringNgo);
     }
 
     [Fact]
@@ -50,7 +57,11 @@ public class DeleteEndpointTests
             .Returns(form);
 
         // Act
-        var request = new Delete.Request { Id = form.Id };
+        var request = new Delete.Request
+        {
+            MonitoringNgoId = _monitoringNgo.Id,
+            Id = form.Id
+        };
         var result = await _endpoint.ExecuteAsync(request, default);
 
         // Assert
@@ -60,6 +71,31 @@ public class DeleteEndpointTests
             .Should().BeOfType<Results<NoContent, NotFound, ProblemDetails>>()
             .Which
             .Result.Should().BeOfType<NoContent>();
+    }
+
+    [Fact]
+    public async Task ShouldUpdateFormVersion_WhenValidRequest()
+    {
+        // Arrange
+        var form = new FormAggregateFaker().Generate();
+
+        _repository
+            .FirstOrDefaultAsync(Arg.Any<GetFormByIdSpecification>())
+            .Returns(form);
+
+        // Act
+        var request = new Delete.Request
+        {
+            MonitoringNgoId = _monitoringNgo.Id,
+            Id = form.Id
+        };
+        await _endpoint.ExecuteAsync(request, default);
+
+        // Assert
+        await _monitoringNgoRepository
+            .Received(1)
+            .UpdateAsync(Arg.Is<MonitoringNgo>(x => x.Id == _monitoringNgo.Id
+                                                    && x.FormsVersion != _initialFormVersion));
     }
 
     [Fact]

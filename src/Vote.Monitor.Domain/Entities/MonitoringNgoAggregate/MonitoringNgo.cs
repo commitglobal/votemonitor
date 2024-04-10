@@ -21,6 +21,7 @@ public class MonitoringNgo : AuditableBaseEntity, IAggregateRoot
         Ngo = ngo;
         NgoId = ngo.Id;
         Status = MonitoringNgoStatus.Active;
+        FormsVersion = Guid.NewGuid();
     }
 
     public virtual MonitoringObserver? AddMonitoringObserver(Observer observer)
@@ -62,7 +63,10 @@ public class MonitoringNgo : AuditableBaseEntity, IAggregateRoot
     {
         Status = MonitoringNgoStatus.Suspended;
     }
-
+    public void UpdatePollingStationsVersion()
+    {
+        FormsVersion = Guid.NewGuid();
+    }
 #pragma warning disable CS8618 // Required by Entity Framework
     private MonitoringNgo()
     {

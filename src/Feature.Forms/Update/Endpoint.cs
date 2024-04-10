@@ -1,17 +1,19 @@
 ﻿using Authorization.Policies.Requirements;
 using Feature.Forms.Specifications;
 using Microsoft.AspNetCore.Authorization;
+using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
 using Vote.Monitor.Form.Module.Mappers;
 
 namespace Feature.Forms.Update;
 
 public class Endpoint(
     IAuthorizationService authorizationService,
-    IRepository<FormAggregate> repository) : Endpoint<Request, Results<NoContent, NotFound, Conflict<ProblemDetails>>>
+    IRepository<MonitoringNgo> monitoringNgoRepository,
+    IRepository<FormAggregate> formsRepository) : Endpoint<Request, Results<NoContent, NotFound, Conflict<ProblemDetails>>>
 {
     public override void Configure()
     {
-        Put("/api/election-rounds/{electionRoundId}/monitoring-ngo/{monitoringNgo}/forms/{id}");
+        Put("/api/election-rounds/{electionRoundId}/monitoring-ngo/{monitoringNgoId}/forms/{id}");
         DontAutoTag();
         Options(x => x.WithTags("forms"));
     }
@@ -26,7 +28,7 @@ public class Endpoint(
         }
 
         var specification = new GetFormByIdSpecification(req.ElectionRoundId, req.MonitoringNgoId, req.Id);
-        var form = await repository.FirstOrDefaultAsync(specification, ct);
+        var form = await formsRepository.FirstOrDefaultAsync(specification, ct);
 
         if (form is null)
         {
@@ -34,7 +36,7 @@ public class Endpoint(
         }
 
         var exitingFormsSpecification = new GetExistingFormsByCodeAndTypeSpecification(req.ElectionRoundId, req.MonitoringNgoId, req.Id, req.Code, req.FormType);
-        var duplicatedFormTemplate = await repository.AnyAsync(exitingFormsSpecification, ct);
+        var duplicatedFormTemplate = await formsRepository.AnyAsync(exitingFormsSpecification, ct);
 
         if (duplicatedFormTemplate)
         {
@@ -49,7 +51,12 @@ public class Endpoint(
 
         form.UpdateDetails(req.Code, req.Name, req.FormType, req.DefaultLanguage, req.Languages, questions);
 
-        await repository.UpdateAsync(form, ct);
+        await formsRepository.UpdateAsync(form, ct);
+
+        var monitoringNgo = await monitoringNgoRepository.GetByIdAsync(req.MonitoringNgoId, ct);
+        monitoringNgo!.UpdatePollingStationsVersion();
+        await monitoringNgoRepository.UpdateAsync(monitoringNgo, ct);
+
         return TypedResults.NoContent();
     }
 }

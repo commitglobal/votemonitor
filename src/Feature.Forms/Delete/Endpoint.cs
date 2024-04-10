@@ -1,15 +1,17 @@
 ﻿using Authorization.Policies.Requirements;
 using Feature.Forms.Specifications;
 using Microsoft.AspNetCore.Authorization;
+using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
 
 namespace Feature.Forms.Delete;
 
 public class Endpoint(IAuthorizationService authorizationService,
-    IRepository<FormAggregate> repository) : Endpoint<Request, Results<NoContent, NotFound, ProblemDetails>>
+    IRepository<MonitoringNgo> monitoringNgoRepository,
+    IRepository<FormAggregate> formsRepository) : Endpoint<Request, Results<NoContent, NotFound, ProblemDetails>>
 {
     public override void Configure()
     {
-        Delete("/api/election-rounds/{electionRoundId}/monitoring-ngo/{monitoringNgo}/forms/{id}");
+        Delete("/api/election-rounds/{electionRoundId}/monitoring-ngo/{monitoringNgoId}/forms/{id}");
         DontAutoTag();
         Options(x => x.WithTags("forms"));
     }
@@ -24,14 +26,18 @@ public class Endpoint(IAuthorizationService authorizationService,
         }
 
         var specification = new GetFormByIdSpecification(req.ElectionRoundId, req.MonitoringNgoId, req.Id);
-        var form = await repository.FirstOrDefaultAsync(specification, ct);
+        var form = await formsRepository.FirstOrDefaultAsync(specification, ct);
 
         if (form is null)
         {
             return TypedResults.NotFound();
         }
 
-        await repository.DeleteAsync(form, ct);
+        await formsRepository.DeleteAsync(form, ct);
+
+        var monitoringNgo = await monitoringNgoRepository.GetByIdAsync(req.MonitoringNgoId, ct);
+        monitoringNgo!.UpdatePollingStationsVersion();
+        await monitoringNgoRepository.UpdateAsync(monitoringNgo, ct);
 
         return TypedResults.NoContent();
     }

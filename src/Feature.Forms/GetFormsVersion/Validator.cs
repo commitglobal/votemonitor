@@ -1,4 +1,4 @@
-﻿namespace Feature.Forms.GetVersion;
+﻿namespace Feature.Forms.GetFormsVersion;
 
 public class Validator : Validator<Request>
 {

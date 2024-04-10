@@ -20,15 +20,15 @@ public class FormSlimModel
         LastModifiedOn = form.LastModifiedOn
     };
 
-    public Guid Id { get; init; }
+    public required Guid Id { get; init; }
     [JsonConverter(typeof(SmartEnumNameConverter<FormType, string>))]
-    public FormType FormType { get; init; }
-    public string Code { get; init; }
+    public required FormType FormType { get; init; }
+    public required string Code { get; init; }
     public TranslatedString Name { get; init; }
     [JsonConverter(typeof(SmartEnumNameConverter<FormStatus, string>))]
-    public FormStatus Status { get; init; }
-    public string DefaultLanguage { get; init; }
-    public string[] Languages { get; init; } = [];
-    public DateTime CreatedOn { get; init; }
-    public DateTime? LastModifiedOn { get; init; }
+    public required FormStatus Status { get; init; }
+    public required string DefaultLanguage { get; init; }
+    public required string[] Languages { get; init; } = [];
+    public required DateTime CreatedOn { get; init; }
+    public required DateTime? LastModifiedOn { get; init; }
 }

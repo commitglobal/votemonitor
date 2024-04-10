@@ -11,6 +11,7 @@ public class FormFullModel: FormSlimModel
         Code = form.Code,
         FormType = form.FormType,
         Status = form.Status,
+        DefaultLanguage = form.DefaultLanguage,
         Languages = form.Languages,
         Name = form.Name,
         Questions = form.Questions.Select(QuestionsMapper.ToModel).ToList(),

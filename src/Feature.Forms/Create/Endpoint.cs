@@ -1,12 +1,14 @@
 ﻿using Authorization.Policies.Requirements;
 using Feature.Forms.Specifications;
 using Microsoft.AspNetCore.Authorization;
+using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
 
 namespace Feature.Forms.Create;
 
 public class Endpoint(
     IAuthorizationService authorizationService,
-    IRepository<FormAggregate> repository) : Endpoint<Request, Results<Ok<FormFullModel>, NotFound, Conflict<ProblemDetails>>>
+    IRepository<MonitoringNgo> monitoringNgoRepository,
+    IRepository<FormAggregate> formsRepository) : Endpoint<Request, Results<Ok<FormFullModel>, NotFound, Conflict<ProblemDetails>>>
 {
     public override void Configure()
     {
@@ -26,7 +28,7 @@ public class Endpoint(
 
         var existingFormsSpecification = new GetExistingFormsByCodeAndTypeSpecification(req.ElectionRoundId, req.MonitoringNgoId, req.Code, req.FormType);
 
-        var isDuplicate = await repository.AnyAsync(existingFormsSpecification, ct);
+        var isDuplicate = await formsRepository.AnyAsync(existingFormsSpecification, ct);
         if (isDuplicate)
         {
             AddError(x => x.Code, "A form with same code and form type already exists.");
@@ -35,8 +37,11 @@ public class Endpoint(
 
         var form = FormAggregate.Create(req.ElectionRoundId, req.MonitoringNgoId, req.FormType, req.Code, req.Name, req.DefaultLanguage, req.Languages, []);
 
-        await repository.AddAsync(form, ct);
+        var monitoringNgo = await monitoringNgoRepository.GetByIdAsync(req.MonitoringNgoId, ct);
+        monitoringNgo!.UpdatePollingStationsVersion();
+        await monitoringNgoRepository.UpdateAsync(monitoringNgo, ct);
 
+        await formsRepository.AddAsync(form, ct);
         return TypedResults.Ok(FormFullModel.FromEntity(form));
     }
 }

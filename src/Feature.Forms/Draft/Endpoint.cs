@@ -1,16 +1,18 @@
 ﻿using Authorization.Policies.Requirements;
 using Feature.Forms.Specifications;
 using Microsoft.AspNetCore.Authorization;
+using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
 
 namespace Feature.Forms.Draft;
 
 public class Endpoint(
     IAuthorizationService authorizationService,
-    IRepository<FormAggregate> repository) : Endpoint<Request, Results<NoContent, NotFound>>
+    IRepository<MonitoringNgo> monitoringNgoRepository,
+    IRepository<FormAggregate> formsRepository) : Endpoint<Request, Results<NoContent, NotFound>>
 {
     public override void Configure()
     {
-        Post("/api/election-rounds/{electionRoundId}/monitoring-ngo/{monitoringNgo}/forms/{id}:draft");
+        Post("/api/election-rounds/{electionRoundId}/monitoring-ngo/{monitoringNgoId}/forms/{id}:draft");
         Description(x => x.Accepts<Request>());
         DontAutoTag();
         Options(x => x.WithTags("forms"));
@@ -24,9 +26,9 @@ public class Endpoint(
         {
             return TypedResults.NotFound();
         }
-        
+
         var specification = new GetFormByIdSpecification(req.ElectionRoundId, req.MonitoringNgoId, req.Id);
-        var form = await repository.FirstOrDefaultAsync(specification, ct);
+        var form = await formsRepository.FirstOrDefaultAsync(specification, ct);
 
         if (form is null)
         {
@@ -35,7 +37,11 @@ public class Endpoint(
 
         form.Draft();
 
-        await repository.UpdateAsync(form, ct);
+        await formsRepository.UpdateAsync(form, ct);
+
+        var monitoringNgo = await monitoringNgoRepository.GetByIdAsync(req.MonitoringNgoId, ct);
+        monitoringNgo!.UpdatePollingStationsVersion();
+        await monitoringNgoRepository.UpdateAsync(monitoringNgo, ct);
 
         return TypedResults.NoContent();
     }

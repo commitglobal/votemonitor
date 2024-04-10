@@ -6,18 +6,18 @@ using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
 
 namespace Feature.Forms.UnitTests.Endpoints;
 
-public class PublishEndpointTests
+public class ObsoleteEndpointTests
 {
     private readonly IAuthorizationService _authorizationService = Substitute.For<IAuthorizationService>();
     private readonly IRepository<Form> _repository = Substitute.For<IRepository<Form>>();
     private readonly IRepository<MonitoringNgo> _monitoringNgoRepository = Substitute.For<IRepository<MonitoringNgo>>();
     private readonly Guid _initialFormVersion = Guid.NewGuid();
     private readonly MonitoringNgo _monitoringNgo;
-    private readonly Publish.Endpoint _endpoint;
+    private readonly Obsolete.Endpoint _endpoint;
 
-    public PublishEndpointTests()
+    public ObsoleteEndpointTests()
     {
-        _endpoint = Factory.Create<Publish.Endpoint>(_authorizationService, _monitoringNgoRepository, _repository);
+        _endpoint = Factory.Create<Obsolete.Endpoint>(_authorizationService, _monitoringNgoRepository, _repository);
         _authorizationService
             .AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object>(),
                 Arg.Any<IEnumerable<IAuthorizationRequirement>>()).Returns(AuthorizationResult.Success());
@@ -35,7 +35,7 @@ public class PublishEndpointTests
             .Returns(AuthorizationResult.Failed());
 
         // Act
-        var request = new Publish.Request();
+        var request = new Obsolete.Request();
 
         var result = await _endpoint.ExecuteAsync(request, default);
 
@@ -47,16 +47,16 @@ public class PublishEndpointTests
     }
 
     [Fact]
-    public async Task Should_PublishForm_And_Return_NoContent_WhenFormExists()
+    public async Task Should_ObsoleteForm_And_Return_NoContent_WhenFormExists()
     {
         // Arrange
-        var form = new FormAggregateFaker(status: FormStatus.Published).Generate();
+        var form = new FormAggregateFaker(status: FormStatus.Obsolete).Generate();
         _repository
             .FirstOrDefaultAsync(Arg.Any<GetFormByIdSpecification>())
             .Returns(form);
 
         // Act
-        var request = new Publish.Request
+        var request = new Obsolete.Request
         {
             MonitoringNgoId = _monitoringNgo.Id,
             Id = form.Id
@@ -66,7 +66,7 @@ public class PublishEndpointTests
         // Assert
         await _repository
             .Received(1)
-            .UpdateAsync(Arg.Is<Form>(x => x.Status == FormStatus.Published));
+            .UpdateAsync(Arg.Is<Form>(x => x.Status == FormStatus.Obsolete));
 
         result
             .Should().BeOfType<Results<NoContent, NotFound, ProblemDetails>>()
@@ -85,7 +85,7 @@ public class PublishEndpointTests
             .Returns(form);
 
         // Act
-        var request = new Publish.Request
+        var request = new Obsolete.Request
         {
             MonitoringNgoId = _monitoringNgo.Id,
             Id = form.Id
@@ -107,7 +107,7 @@ public class PublishEndpointTests
             .FirstOrDefaultAsync(Arg.Any<GetFormByIdSpecification>())
             .ReturnsNullForAnyArgs();
 
-        var request = new Publish.Request { Id = Guid.NewGuid() };
+        var request = new Obsolete.Request { Id = Guid.NewGuid() };
 
         // Act
         var result = await _endpoint.ExecuteAsync(request, default);
