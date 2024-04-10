@@ -29,13 +29,17 @@ const More = () => {
       <Section
         headerText={t("change-language")}
         subHeaderText={appLanguage}
-        iconName="check"
+        iconName="language"
         chevronRight={true}
       ></Section>
-      <Section headerText={t("change-password")} iconName="check" chevronRight={true}></Section>
+      <Section
+        headerText={t("change-password")}
+        iconName="changePassword"
+        chevronRight={true}
+      ></Section>
       <Section
         headerText={t("terms")}
-        iconName="check"
+        iconName="termsConds"
         chevronRight={true}
         action={() => {
           Linking.openURL(URL);
@@ -43,7 +47,7 @@ const More = () => {
       ></Section>
       <Section
         headerText={t("privacy_policy")}
-        iconName="check"
+        iconName="privacyPolicy"
         chevronRight={true}
         action={() => {
           Linking.openURL(URL);
@@ -52,12 +56,12 @@ const More = () => {
       <Section
         headerText={t("about")}
         subHeaderText={t("app_version", { value: appVersion })}
-        iconName="check"
+        iconName="aboutVM"
         chevronRight={true}
       ></Section>
-      <Section headerText={t("support")} iconName="check"></Section>
-      <Section headerText={t("feedback")} iconName="check"></Section>
-      <Section headerText={t("logout")} iconName="check"></Section>
+      <Section headerText={t("support")} iconName="contactNGO"></Section>
+      <Section headerText={t("feedback")} iconName="feedback"></Section>
+      <Section headerText={t("logout")} iconName="logoutNoBackground"></Section>
     </Screen>
   );
 };
@@ -93,7 +97,7 @@ const Section = (props: SectionProps) => {
           </View>
         </XStack>
 
-        {hasChevronRight && <Icon size={24} icon="chevronRight" color="$purple7" />}
+        {hasChevronRight && <Icon size={32} icon="chevronRight" color="$purple7" />}
       </XStack>
     </Card>
   );
