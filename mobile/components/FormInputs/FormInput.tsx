@@ -2,6 +2,7 @@ import React from "react";
 import { YStack } from "tamagui";
 import { Typography } from "../Typography";
 import Input, { InputProps } from "../Inputs/Input";
+import FormElement from "./FormElement";
 
 interface FormInputProps extends InputProps {
   //   question title
@@ -14,16 +15,9 @@ interface FormInputProps extends InputProps {
 
 const FormInput: React.FC<FormInputProps> = ({ type, label, paragraph, helper, ...rest }) => {
   return (
-    <YStack>
-      <YStack gap="$xxs" marginBottom="$lg">
-        <Typography preset="subheading" fontWeight="500">
-          {label}
-        </Typography>
-        {paragraph && <Typography color="$gray7">{paragraph}</Typography>}
-      </YStack>
+    <FormElement label={label} paragraph={paragraph} helper={helper}>
       <Input type={type} marginBottom="$xxs" {...rest} />
-      {helper && <Typography color="$gray5">{helper}</Typography>}
-    </YStack>
+    </FormElement>
   );
 };
 
