@@ -1,14 +1,5 @@
 import React, { useMemo, useState } from "react";
-import {
-  Adapt,
-  Button,
-  ScrollView,
-  Select,
-  Sheet,
-  Text,
-  View,
-  YStack,
-} from "tamagui";
+import { Adapt, Button, Select, Sheet, View, YStack } from "tamagui";
 import { Icon } from "./Icon";
 import { Typography } from "./Typography";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -18,11 +9,7 @@ const SelectPollingStation = () => {
   const insets = useSafeAreaInsets();
 
   return (
-    <YStack
-      paddingVertical="$xs"
-      paddingHorizontal="$md"
-      backgroundColor="white"
-    >
+    <YStack paddingVertical="$xs" paddingHorizontal="$md" backgroundColor="white">
       <Select value={val} onValueChange={setVal} disablePreventBodyScroll>
         <Select.Trigger
           justifyContent="center"
@@ -30,12 +17,7 @@ const SelectPollingStation = () => {
           backgroundColor="$purple1"
           borderRadius="$10"
           iconAfter={
-            <Icon
-              icon="chevronRight"
-              size={24}
-              transform="rotate(90deg)"
-              color="$purple5"
-            />
+            <Icon icon="chevronRight" size={24} transform="rotate(90deg)" color="$purple5" />
           }
         >
           <Select.Value
@@ -61,8 +43,8 @@ const SelectPollingStation = () => {
                 </Typography>
                 <View marginTop="$xxs">
                   <Typography numberOfLines={3} color="$gray5">
-                    You can switch between polling stations if you want to
-                    revisit form answers or polling station information.
+                    You can switch between polling stations if you want to revisit form answers or
+                    polling station information.
                   </Typography>
                 </View>
               </YStack>
@@ -110,7 +92,7 @@ const SelectPollingStation = () => {
                       </Select.Item>
                     );
                   }),
-                [pollingStationAdresses]
+                [pollingStationAdresses],
               )}
             </Select.Group>
           </Select.Viewport>

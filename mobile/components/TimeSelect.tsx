@@ -1,26 +1,29 @@
 import React, { useState } from "react";
 import { Typography } from "./Typography";
-import { YStack, XStack, Sheet, Button } from "tamagui";
-import { Icon } from "./Icon";
+import { YStack, XStack, Sheet } from "tamagui";
+import Button from "../components/Button";
 import { Platform } from "react-native";
-import RNDateTimePicker, {
-  DateTimePickerEvent,
-} from "@react-native-community/datetimepicker";
-import DateTimePickerModal from "@react-native-community/datetimepicker";
+import RNDateTimePicker, { DateTimePickerEvent } from "@react-native-community/datetimepicker";
+import CardFooter from "../components/CardFooter";
 
-const TimeSelect = () => {
+interface TimeSelectProps {
+  type: "arrival" | "departure";
+}
+
+enum CardFooterDisplay {
+  ARRIVAL = "Arrival",
+  DEPARTURE = "Departure",
+}
+
+const TimeSelect: React.FC<TimeSelectProps> = ({ type }) => {
   const [open, setOpen] = useState(false);
   const [time, setTime] = useState<Date>(new Date());
 
-  const onChange = (
-    event: DateTimePickerEvent,
-    selectedTime: Date | undefined
-  ) => {
+  const onChange = (event: DateTimePickerEvent, selectedTime: Date | undefined) => {
     selectedTime && setTime(selectedTime);
     if (Platform.OS === "android") {
       setOpen(false);
     }
-    return;
   };
 
   const onResetTime = () => {
@@ -36,17 +39,19 @@ const TimeSelect = () => {
 
   return (
     <>
-      <YStack>
-        <Typography size="xl" style={{ fontWeight: "500" }}>
+      <YStack onPress={() => setOpen(true)}>
+        <Typography preset="heading" fontWeight="500" paddingVertical="$sm" marginBottom="$xxs">
           {time.toLocaleTimeString([], {
             hour: "2-digit",
             minute: "2-digit",
           })}
         </Typography>
-        <XStack onPress={() => setOpen(true)}>
-          <Typography>Arrival time</Typography>
-          <Icon icon="chevronRight" />
-        </XStack>
+
+        <CardFooter>
+          <Typography fontWeight="500" color="$gray5">
+            {type === "arrival" ? CardFooterDisplay.ARRIVAL : CardFooterDisplay.DEPARTURE} time
+          </Typography>
+        </CardFooter>
       </YStack>
 
       {Platform.OS === "ios" ? (
@@ -62,7 +67,7 @@ const TimeSelect = () => {
           <Sheet.Overlay />
           <Sheet.Frame padding="$md">
             <XStack gap="$sm" justifyContent="space-between" width="100%">
-              <Button fontWeight="500" fontSize={16} onPress={onResetTime}>
+              <Button preset="outlined" onPress={onResetTime}>
                 Reset
               </Button>
               <Button onPress={onClose}>Done</Button>
@@ -79,15 +84,7 @@ const TimeSelect = () => {
           </Sheet.Frame>
         </Sheet>
       ) : (
-        open && (
-          <DateTimePickerModal
-            mode="time"
-            value={time}
-            is24Hour={true}
-            onChange={onChange}
-            onTouchCancel={() => console.log("cancelled")}
-          />
-        )
+        open && <RNDateTimePicker mode="time" value={time} is24Hour={true} onChange={onChange} />
       )}
     </>
   );

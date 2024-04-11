@@ -9,6 +9,8 @@ import { Card, Stack, Text, XStack, YStack } from "tamagui";
 import { Icon } from "../../../../components/Icon";
 import { Dimensions, ViewStyle } from "react-native";
 import { ListView } from "../../../../components/ListView";
+import TimeSelect from "../../../../components/TimeSelect";
+import CardFooter from "../../../../components/CardFooter";
 
 ReactotronCommands.default();
 
@@ -138,13 +140,18 @@ const Index = () => {
       <YStack paddingHorizontal="$md" gap="$lg">
         <YStack gap="$xxs">
           <XStack gap="$xxs">
-            <Card flex={0.5}>
-              <Typography>Time Card</Typography>
+            <Card flex={0.5} paddingHorizontal="$md" paddingVertical="$xs">
+              <TimeSelect type="arrival" />
             </Card>
-            <Card flex={0.5}>
-              <Typography>Time Card</Typography>
+            <Card flex={0.5} paddingHorizontal="$md" paddingVertical="$xs">
+              <TimeSelect type="departure" />
             </Card>
           </XStack>
+          <Card padding="$md">
+            <CardFooter>
+              <Typography>Polling station information</Typography>
+            </CardFooter>
+          </Card>
           <Card padding="$md">
             <Button onPress={() => router.push("/form-questionnaire/1")}>Go Form wizzard</Button>
           </Card>
