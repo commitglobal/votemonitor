@@ -1,6 +1,6 @@
 import React from "react";
 import { styled, ToggleGroup, ToggleGroupSingleProps } from "tamagui";
-import { Typography } from "../Typography";
+// import { Typography } from "../Typography";
 import { Text } from "react-native";
 
 const ratings = [1, 2, 3, 4, 5];
@@ -45,7 +45,7 @@ export const RatingInput: React.FC<RatingInputProps> = ({ id, value, onValueChan
           active={rating.toString() === value}
         >
           <Text>{rating.toString()}</Text>
-          {/*//TODO: removed typography because it was causing a warning, should we add it back? */}
+          {/* //TODO: removed typography because it was causing a warning, should we add it back? */}
           {/* <Typography>{rating.toString()}</Typography> */}
         </StyledToggleGroupItem>
       ))}
