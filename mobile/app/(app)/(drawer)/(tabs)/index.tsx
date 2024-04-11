@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Dimensions, ViewStyle } from "react-native";
 // import { useAuth } from "../../../../hooks/useAuth";
 import { router } from "expo-router";
@@ -61,6 +61,7 @@ const MissingVisits = () => (
 
 const MyVisitsSection = () => {
   const { visits } = useUserData();
+  console.log(visits);
   return (
     <YStack elevation={1} paddingHorizontal="$md" paddingVertical={11} backgroundColor="white">
       <Text>{JSON.stringify(visits)}</Text>
@@ -119,6 +120,10 @@ const FormList = () => {
 const Index = () => {
   const { isAssignedToEllectionRound, visits } = useUserData();
   const { selectedPollingStation: _selectedPollingStation } = useUserData();
+  //TODO: how do we want to manage the time?
+  const [arrivalTime, setArrivalTime] = useState(new Date());
+  const [departureTime, setDeparturetime] = useState(new Date());
+
   //
   if (!isAssignedToEllectionRound) {
     return <MissingElectionRounds />;
@@ -142,14 +147,14 @@ const Index = () => {
       <YStack paddingHorizontal="$md" gap="$lg">
         <YStack gap="$xxs">
           <XStack gap="$xxs">
-            <Card flex={0.5} paddingHorizontal="$md" paddingVertical="$xs">
-              <TimeSelect type="arrival" />
+            <Card flex={0.5} paddingHorizontal="$md" paddingVertical="$xs" backgroundColor="white">
+              <TimeSelect type="arrival" time={arrivalTime} setTime={setArrivalTime} />
             </Card>
-            <Card flex={0.5} paddingHorizontal="$md" paddingVertical="$xs">
-              <TimeSelect type="departure" />
+            <Card flex={0.5} paddingHorizontal="$md" paddingVertical="$xs" backgroundColor="white">
+              <TimeSelect type="departure" time={departureTime} setTime={setDeparturetime} />
             </Card>
           </XStack>
-          <Card padding="$md" gap="$md">
+          <Card padding="$md" gap="$md" backgroundColor="white">
             <PollingStationInfoDefault />
             <CardFooter>
               <Typography>Polling station information</Typography>

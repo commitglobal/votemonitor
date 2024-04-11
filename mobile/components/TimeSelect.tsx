@@ -8,6 +8,8 @@ import CardFooter from "../components/CardFooter";
 
 interface TimeSelectProps {
   type: "arrival" | "departure";
+  time: Date;
+  setTime: React.Dispatch<React.SetStateAction<Date>>;
 }
 
 enum CardFooterDisplay {
@@ -15,9 +17,8 @@ enum CardFooterDisplay {
   DEPARTURE = "Departure",
 }
 
-const TimeSelect: React.FC<TimeSelectProps> = ({ type }) => {
+const TimeSelect: React.FC<TimeSelectProps> = ({ type, time, setTime }) => {
   const [open, setOpen] = useState(false);
-  const [time, setTime] = useState<Date>(new Date());
 
   const onChange = (event: DateTimePickerEvent, selectedTime: Date | undefined) => {
     selectedTime && setTime(selectedTime);
