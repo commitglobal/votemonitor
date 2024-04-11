@@ -1,6 +1,7 @@
 import React, { ReactNode } from "react";
 import { YStack } from "tamagui";
 import { Typography } from "../Typography";
+import { Keyboard } from "react-native";
 
 export interface FormElementProps {
   //   question title
@@ -15,7 +16,7 @@ export interface FormElementProps {
 
 const FormElement: React.FC<FormElementProps> = ({ children, label, paragraph, helper }) => {
   return (
-    <YStack gap="$xxs" marginBottom="$lg">
+    <YStack gap="$xxs" marginBottom="$lg" onPress={Keyboard.dismiss}>
       {/* header */}
       <Typography preset="subheading" fontWeight="500">
         {label}
