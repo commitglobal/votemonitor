@@ -21,6 +21,15 @@ import Calendar from "../assets/icons/Calendar.svg";
 import PeopleAddingVote from "../assets/icons/people-adding-vote.svg";
 import MissingPollingStation from "../assets/icons/missing-polling-station.svg";
 import X from "../assets/icons/x.svg";
+import TermsConds from "../assets/icons/Terms conds.svg";
+import PrivacyPolicy from "../assets/icons/Privacy policy.svg";
+import ContactNGO from "../assets/icons/Contact NGO.svg";
+import AboutVM from "../assets/icons/About VM.svg";
+import Feedback from "../assets/icons/Feedback.svg";
+import Language from "../assets/icons/Language.svg";
+import ChangePassword from "../assets/icons/Change password.svg";
+import Settings from "../assets/icons/Settings.svg";
+import LogoutNoBackground from "../assets/icons/LogoutNoBackground.svg";
 
 import { styled, View } from "tamagui";
 import { StyleProp, ViewStyle } from "react-native";
@@ -62,7 +71,13 @@ type IconRegistry = {
 
 export const defaultIcon = React.forwardRef(
   (props: IconProps, ref?: Ref<typeof View>): JSX.Element => {
-    const { icon, color = "black", size = 24, style: $viewStyleOverride, ...tamaguiProps } = props;
+    const {
+      icon,
+      color = "black",
+      size = 24,
+      style: $viewStyleOverride,
+      ...tamaguiProps
+    } = props;
 
     const iconRegistry: IconRegistry = {
       eyeOff: <EyeOff fill={color} width={size} height={size} />,
@@ -83,9 +98,26 @@ export const defaultIcon = React.forwardRef(
       dotsVertical: <DotsVertical fill={color} width={size} height={size} />,
       check: <Check fill={color} width={size} height={size} />,
       calendar: <Calendar fill={color} width={size} height={size} />,
-      peopleAddingVote: <PeopleAddingVote fill={color} width={226} height={170} />,
-      missingPollingStation: <MissingPollingStation fill={color} width={224} height={170} />,
+      peopleAddingVote: (
+        <PeopleAddingVote fill={color} width={226} height={170} />
+      ),
+      missingPollingStation: (
+        <MissingPollingStation fill={color} width={224} height={170} />
+      ),
       x: <X fill={color} width={size} height={size} />,
+      termsConds: <TermsConds fill={color} width={size} height={size} />,
+      privacyPolicy: <PrivacyPolicy fill={color} width={size} height={size} />,
+      contactNGO: <ContactNGO fill={color} width={size} height={size} />,
+      aboutVM: <AboutVM fill={color} width={size} height={size} />,
+      feedback: <Feedback fill={color} width={size} height={size} />,
+      language: <Language fill={color} width={size} height={size} />,
+      changePassword: (
+        <ChangePassword fill={color} width={size} height={size} />
+      ),
+      settings: <Settings fill={color} width={size} height={size} />,
+      logoutNoBackground: (
+        <LogoutNoBackground fill={color} width={size} height={size} />
+      ),
     };
 
     return (

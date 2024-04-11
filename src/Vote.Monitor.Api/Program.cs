@@ -1,8 +1,12 @@
 ﻿using System.IO.Compression;
 using System.Text.Json.Serialization;
 using Authorization.Policies;
+using Feature.Form.Submissions;
+using Feature.Forms;
+using Feature.FormTemplates;
 using Feature.MonitoringObservers;
 using Feature.ObserverGuide;
+using Feature.PollingStation.Information;
 using Feature.PollingStation.Information.Form;
 using Feature.PollingStation.Visit;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -11,13 +15,10 @@ using Vote.Monitor.Api.Feature.Answers.Attachments;
 using Vote.Monitor.Api.Feature.Answers.Notes;
 using Vote.Monitor.Api.Feature.Emergencies;
 using Vote.Monitor.Api.Feature.Emergencies.Attachments;
-using Vote.Monitor.Api.Feature.Form;
-using Vote.Monitor.Api.Feature.FormTemplate;
 using Vote.Monitor.Api.Feature.Ngo;
 using Vote.Monitor.Api.Feature.NgoAdmin;
 using Vote.Monitor.Api.Feature.Notifications;
 using Vote.Monitor.Api.Feature.PollingStation.Attachments;
-using Vote.Monitor.Api.Feature.PollingStation.Information;
 using Vote.Monitor.Api.Feature.PollingStation.Notes;
 using Vote.Monitor.Core.Models;
 using Vote.Monitor.Core.Security;
@@ -29,6 +30,7 @@ using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 using Vote.Monitor.Domain.Entities.NgoAggregate;
 using Vote.Monitor.Api.Extensions;
+using Vote.Monitor.Domain.Entities.FormAggregate;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -117,6 +119,7 @@ builder.Services.AddPollingStationInformationFormFeature();
 builder.Services.AddObserverGuideFeature();
 builder.Services.AddPollingStationVisitFeature();
 builder.Services.AddMonitoringObserversFeature();
+builder.Services.AddFormSubmissionsFeature();
 
 builder.Services.AddAuthorization();
 
@@ -156,6 +159,7 @@ app.UseFastEndpoints(x =>
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<MonitoringNgoStatus, string>());
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<MonitoringObserverStatus, string>());
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<RatingScale, string>());
+    x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<FormType, string>());
 
     x.Serializer.Options.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
 });
@@ -165,13 +169,13 @@ cfg =>
 {
     cfg.PostProcess = (document, _) =>
     {
-        var commitHash = Environment.GetEnvironmentVariable("COMMIT_HASH") ?? "Unknown";
+        var commitHash = Environment.GetEnvironmentVariable("COMMIT_HASH")?[..7] ?? "Unknown";
 
         document.Info = new OpenApiInfo
         {
             Version = "v2.0",
             Title = $"Vote Monitor API({commitHash})",
-            Description = $"An ASP.NET Core Web API for monitoring elections.",
+            Description = "An ASP.NET Core Web API for monitoring elections.",
             ExtensionData = new Dictionary<string, object?>
             {
                 ["commit-hash"] = commitHash

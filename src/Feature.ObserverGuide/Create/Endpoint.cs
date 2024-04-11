@@ -32,8 +32,7 @@ public class Endpoint(
             return TypedResults.NotFound();
         }
 
-        var ngoId = await currentUserRoleProvider.GetNgoId();
-        var specification = new GetMonitoringNgoSpecification(ngoId, req.ElectionRoundId);
+        var specification = new GetMonitoringNgoSpecification(req.ElectionRoundId, req.MonitoringNgoId);
         var monitoringNgo = await monitoringNgoRepository.FirstOrDefaultAsync(specification, ct);
         if (monitoringNgo == null)
         {

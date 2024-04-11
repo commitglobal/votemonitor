@@ -3,7 +3,7 @@ using Vote.Monitor.Core.Models;
 
 namespace Vote.Monitor.Domain.Entities.FormBase.Questions;
 
-public class SelectOption
+public record SelectOption
 {
     public Guid Id { get; private set; }
     public TranslatedString Text { get; private set; }

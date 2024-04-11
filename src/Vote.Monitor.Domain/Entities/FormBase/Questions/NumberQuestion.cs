@@ -3,7 +3,7 @@ using Vote.Monitor.Core.Models;
 
 namespace Vote.Monitor.Domain.Entities.FormBase.Questions;
 
-public class NumberQuestion : BaseQuestion
+public record NumberQuestion : BaseQuestion
 {
     public TranslatedString? InputPlaceholder { get; private set; }
 

@@ -37,6 +37,7 @@ const Login = () => {
         justifyContent: "center",
         alignItems: "center",
         gap: 20,
+        paddingHorizontal: 16,
       }}
     >
       <TamaguiButton onPress={onLogin}>

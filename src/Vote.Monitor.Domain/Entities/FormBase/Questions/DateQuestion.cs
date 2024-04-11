@@ -3,7 +3,7 @@ using Vote.Monitor.Core.Models;
 
 namespace Vote.Monitor.Domain.Entities.FormBase.Questions;
 
-public class DateQuestion : BaseQuestion
+public record DateQuestion : BaseQuestion
 {
     [JsonConstructor]
     internal DateQuestion(Guid id,

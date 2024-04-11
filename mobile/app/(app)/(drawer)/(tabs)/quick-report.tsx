@@ -13,7 +13,11 @@ import CardFooter from "../../../../components/CardFooter";
 
 const QuickReport = () => {
   return (
-    <Screen preset="auto" backgroundColor="white" contentContainerStyle={{ gap: 20 }}>
+    <Screen
+      preset="auto"
+      backgroundColor="white"
+      contentContainerStyle={{ gap: 20 }}
+    >
       <Text>Quick Report</Text>
       <Card>
         <Typography
@@ -23,12 +27,14 @@ const QuickReport = () => {
           numberOfLines={1}
           style={{ backgroundColor: "yellow" }}
         >
-          Hello from typographyHello from typographyHello from typographyHello from typographyHello
-          from typographyHello from typographyHello from typography
+          Hello from typographyHello from typographyHello from typographyHello
+          from typographyHello from typographyHello from typographyHello from
+          typography
         </Typography>
         <Typography>
-          Hello from typographyHello from typographyHello from typographyHello from typographyHello
-          from typographyHello from typographyHello from typography
+          Hello from typographyHello from typographyHello from typographyHello
+          from typographyHello from typographyHello from typographyHello from
+          typography
         </Typography>
       </Card>
       <Card padding="$md">
@@ -56,13 +62,21 @@ const QuickReport = () => {
           <Button disabled onPress={() => console.log("filled")}>
             Filled
           </Button>
-          <Button disabled preset="outlined" onPress={() => console.log("outlined")}>
+          <Button
+            disabled
+            preset="outlined"
+            onPress={() => console.log("outlined")}
+          >
             Outlined
           </Button>
           <Button disabled preset="red" onPress={() => console.log("Danger")}>
             Danger
           </Button>
-          <Button disabled preset="chromeless" onPress={() => console.log("Chromeless")}>
+          <Button
+            disabled
+            preset="chromeless"
+            onPress={() => console.log("Chromeless")}
+          >
             Danger
           </Button>
         </Stack>
@@ -102,16 +116,20 @@ const QuickReport = () => {
         </Stack>
         <Stack gap="$xs" padding="$sm">
           <Typography preset="subheading">Select</Typography>
-          <Select options={regionData} placeholder="Select option" defaultValue={"West"} />
+          <Select
+            options={regionData}
+            placeholder="Select option"
+            defaultValue={"West"}
+          />
           <Select options={countryData} placeholder="Select option" />
         </Stack>
 
         <Stack padding="$sm" gap="$xs" backgroundColor="white">
           <Typography preset="heading">Badge</Typography>
-          <Badge> Not started </Badge>
-          <Badge preset="success"> Success </Badge>
-          <Badge preset="warning"> In progress </Badge>
-          <Badge preset="danger"> Red badge</Badge>
+          <Badge status="not started" />
+          <Badge status="completed" />
+          <Badge status="in progress" />
+          <Badge status="danger" />
         </Stack>
 
         <Stack padding="$sm" gap="$xs" backgroundColor="white">
