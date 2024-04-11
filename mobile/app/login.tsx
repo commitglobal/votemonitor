@@ -6,7 +6,6 @@ import { Button as TamaguiButton } from "tamagui";
 import { Typography } from "../components/Typography";
 import { useIsRestoring } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { LanguageContext } from "../contexts/language/LanguageContext.provider";
 import Button from "../components/Button";
 
 const Login = () => {
@@ -16,15 +15,6 @@ const Login = () => {
 
   const { signIn } = useAuth();
   const { t } = useTranslation("login");
-  const { changeLanguage } = useContext(LanguageContext);
-
-  const switchToEnglish = () => {
-    changeLanguage("en");
-  };
-
-  const switchToRomanian = () => {
-    changeLanguage("ro");
-  };
 
   return (
     <View
@@ -45,8 +35,6 @@ const Login = () => {
       >
         <Typography>{t("submit")}</Typography>
       </TamaguiButton>
-      <Button onPress={switchToEnglish}>English</Button>
-      <Button onPress={switchToRomanian}>Romanian</Button>
     </View>
   );
 };

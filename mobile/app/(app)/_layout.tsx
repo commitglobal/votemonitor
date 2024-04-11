@@ -18,6 +18,7 @@ const AppLayout = () => {
         <Stack.Screen name="polling-station-wizzard" />
         <Stack.Screen name="form-questionnaire" />
         <Stack.Screen name="polling-station-questionnaire" />
+        <Stack.Screen name="change-language" />
       </Stack>
     </PortalProvider>
   );

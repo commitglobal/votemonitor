@@ -7,6 +7,7 @@ import { Icon } from "../../../../components/Icon";
 import { useTranslation } from "react-i18next";
 import * as Linking from "expo-linking";
 import { tokens } from "../../../../theme/tokens";
+import { router } from "expo-router";
 
 const More = () => {
   const { t } = useTranslation("more");
@@ -31,6 +32,7 @@ const More = () => {
         helper={appLanguage}
         icon="language"
         chevronRight={true}
+        onClick={() => router.push("/change-language")}
       ></MenuItem>
       <MenuItem label={t("change-password")} icon="changePassword" chevronRight={true}></MenuItem>
       <MenuItem
