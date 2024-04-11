@@ -16,17 +16,11 @@ export interface Form {
 
 export interface FormCardProps {
   form: Form;
-
-  /**
-   * Performed action for onPress
-   */
-  action: () => void;
+  onPress: () => void;
 }
 
 const FormCard = (props: FormCardProps): JSX.Element => {
-  const { form, action } = props;
-  const presetType =
-    form.status === "completed" ? "success" : form.status === "in progress" ? "warning" : "default";
+  const { form, onPress } = props;
 
   const CardHeader = styled(View, {
     name: "CardHeader",
@@ -36,22 +30,14 @@ const FormCard = (props: FormCardProps): JSX.Element => {
     marginBottom: "$xxs",
   });
 
-  const [isPressed, setIsPressed] = useState(false);
-
   return (
-    <Card
-      width="100%"
-      onPress={action}
-      onPressIn={() => setIsPressed(true)}
-      onPressOut={() => setIsPressed(false)}
-      opacity={isPressed ? 0.5 : 1}
-    >
+    <Card width="100%" onPress={onPress}>
       <CardHeader>
         <Typography preset="body1" color="$gray9" fontWeight="700">
           {form.name}
         </Typography>
 
-        <Badge preset={presetType}>{form.status}</Badge>
+        <Badge status={form.status} />
       </CardHeader>
 
       {form.options && (

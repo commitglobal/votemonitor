@@ -119,10 +119,10 @@ const QuickReport = () => {
 
         <Stack padding="$sm" gap="$xs" backgroundColor="white">
           <Typography preset="heading">Badge</Typography>
-          <Badge> Not started </Badge>
-          <Badge preset="success"> Success </Badge>
-          <Badge preset="warning"> In progress </Badge>
-          <Badge preset="danger"> Red badge</Badge>
+          <Badge status="not started" />
+          <Badge status="completed" />
+          <Badge status="in progress" />
+          <Badge status="danger" />
         </Stack>
 
         <Stack padding="$sm" gap="$xs" backgroundColor="white">
@@ -206,13 +206,13 @@ const QuickReport = () => {
         <Typography preset="heading">FormCard</Typography>
         <FormCard
           form={{ name: "Name", status: "in progress" }}
-          action={() => {
+          onPress={() => {
             console.log("FormCard");
           }}
         ></FormCard>
         <FormCard
           form={{ name: "Name", status: "completed", options: "Option 1" }}
-          action={() => {
+          onPress={() => {
             console.log("FormCard");
           }}
         ></FormCard>
