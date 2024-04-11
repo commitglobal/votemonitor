@@ -1,7 +1,6 @@
 import React from "react";
 import { View } from "react-native";
 import { useAuth } from "../../../../hooks/useAuth";
-import OfflinePersistComponentExample from "../../../../components/OfflinePersistComponentExample";
 import { StatusBar } from "react-native";
 import { router } from "expo-router";
 import * as ReactotronCommands from "../../../../helpers/reactotron-custom-commands";
@@ -152,7 +151,8 @@ const Index = () => {
               <TimeSelect type="departure" />
             </Card>
           </XStack>
-          <Card padding="$md">
+          <Card padding="$md" gap="$md">
+            <PollingStationInfoDefault />
             <CardFooter>
               <Typography>Polling station information</Typography>
             </CardFooter>

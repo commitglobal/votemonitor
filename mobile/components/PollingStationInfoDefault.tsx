@@ -1,5 +1,7 @@
 import React from "react";
-import { YStack, Text, Button } from "tamagui";
+import { YStack, Text } from "tamagui";
+import Button from "./Button";
+import { Typography } from "./Typography";
 
 const PollingStationInfoDefault = () => {
   return (
@@ -11,13 +13,13 @@ const PollingStationInfoDefault = () => {
       alignItems="center"
       gap={8}
     >
-      {/* //TODO: typography here */}
-      <Text textAlign="center" color="$gray7">
+      <Typography textAlign="center" fontWeight="500" color="$gray5">
         {/* //TODO: add translation here */}
         Answer a few quick questions about the polling station.
-      </Text>
-      {/* //TODO: use custom button */}
-      <Button variant="outlined">Answer Question</Button>
+      </Typography>
+      <Button preset="outlined" backgroundColor="white">
+        Answer questions
+      </Button>
     </YStack>
   );
 };
