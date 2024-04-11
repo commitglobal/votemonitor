@@ -14,6 +14,7 @@ import TimeSelect from "../../../../components/TimeSelect";
 import CardFooter from "../../../../components/CardFooter";
 import PollingStationInfoDefault from "../../../../components/PollingStationInfoDefault";
 import FormCard from "../../../../components/FormCard";
+import SelectPollingStation from "../../../../components/SelectPollingStation";
 
 ReactotronCommands.default();
 
@@ -64,9 +65,10 @@ const MyVisitsSection = () => {
   const { visits } = useUserData();
 
   return (
-    <YStack elevation={1} paddingHorizontal="$md" paddingVertical={11} backgroundColor="white">
-      <Text>{JSON.stringify(visits)}</Text>
-    </YStack>
+    // <YStack elevation={1} paddingHorizontal="$md" paddingVertical={11} backgroundColor="red">
+    //   <Text>{JSON.stringify(visits)}</Text>
+    // </YStack>
+    <SelectPollingStation options={visits} />
   );
 };
 

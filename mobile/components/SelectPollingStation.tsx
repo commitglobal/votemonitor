@@ -3,8 +3,13 @@ import { Adapt, Button, Select, Sheet, View, YStack } from "tamagui";
 import { Icon } from "./Icon";
 import { Typography } from "./Typography";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { PollingStationVisitVM } from "../services/definitions.api";
 
-const SelectPollingStation = () => {
+interface SelectPollingStationProps {
+  options: PollingStationVisitVM[];
+}
+
+const SelectPollingStation: React.FC<SelectPollingStationProps> = ({ options }) => {
   const [val, setVal] = useState("");
   const insets = useSafeAreaInsets();
 
@@ -74,17 +79,17 @@ const SelectPollingStation = () => {
 
               {useMemo(
                 () =>
-                  pollingStationAdresses.map((pollingStationAddress, i) => {
+                  options.map((option, i) => {
                     return (
                       <Select.Item
                         index={i}
-                        key={pollingStationAddress.id}
-                        value={pollingStationAddress.address}
+                        key={option.pollingStationId}
+                        value={option.pollingStationId.toString()}
                         gap="$3"
                       >
                         {/* //TODO: change number of lines to 2 if that's what we want */}
                         <Select.ItemText width={"90%"} numberOfLines={1}>
-                          {pollingStationAddress.address}
+                          {option.pollingStationId}
                         </Select.ItemText>
                         <Select.ItemIndicator>
                           <Icon icon="chevronLeft" />
@@ -92,7 +97,7 @@ const SelectPollingStation = () => {
                       </Select.Item>
                     );
                   }),
-                [pollingStationAdresses],
+                [options],
               )}
             </Select.Group>
           </Select.Viewport>
@@ -103,35 +108,3 @@ const SelectPollingStation = () => {
 };
 
 export default SelectPollingStation;
-
-const pollingStationAdresses = [
-  { id: 1, address: "Secția 123, Str. Moldovei, nr. 30, Târgu Mureș, Romania" },
-  {
-    id: 2,
-    address: "Secția 456, Str. Transilvaniei, nr. 45, Cluj-Napoca, Romania",
-  },
-  { id: 3, address: "Secția 789, Str. București, nr. 12, București, Romania" },
-  { id: 4, address: "Secția 101, Str. Timișoarei, nr. 20, Timișoara, Romania" },
-  { id: 5, address: "Secția 234, Str. Iași, nr. 15, Iași, Romania" },
-  { id: 6, address: "Secția 345, Str. Crișana, nr. 10, Oradea, Romania" },
-  {
-    id: 7,
-    address: "Secția 567, Str. Maramureșului, nr. 25, Baia Mare, Romania",
-  },
-  { id: 8, address: "Secția 890, Str. Dobrogei, nr. 8, Constanța, Romania" },
-  { id: 9, address: "Secția 111, Str. Ardealului, nr. 5, Sibiu, Romania" },
-  { id: 10, address: "Secția 222, Str. Olteniei, nr. 18, Craiova, Romania" },
-  { id: 11, address: "Secția 333, Str. Banatului, nr. 22, Arad, Romania" },
-  { id: 12, address: "Secția 444, Str. Mureșului, nr. 11, Deva, Romania" },
-  { id: 13, address: "Secția 555, Str. Dobrogei, nr. 7, Tulcea, Romania" },
-  { id: 14, address: "Secția 667, Str. Moldovei, nr. 9, Bacău, Romania" },
-  { id: 15, address: "Secția 777, Str. Crișului, nr. 13, Satu Mare, Romania" },
-  { id: 16, address: "Secția 888, Str. Olteniei, nr. 4, Pitești, Romania" },
-  { id: 17, address: "Secția 999, Str. Bucovinei, nr. 16, Suceava, Romania" },
-  {
-    id: 18,
-    address: "Secția 1010, Str. Transilvaniei, nr. 32, Alba Iulia, Romania",
-  },
-  { id: 19, address: "Secția 1111, Str. Banatului, nr. 3, Reșița, Romania" },
-  { id: 20, address: "Secția 1212, Str. București, nr. 7, Galați, Romania" },
-];
