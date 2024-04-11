@@ -10,9 +10,10 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { Button } from '@/components/ui/button';
 import { ColumnDef } from '@tanstack/react-table';
 import { EllipsisVerticalIcon, FunnelIcon, Cog8ToothIcon, ArrowDownTrayIcon } from '@heroicons/react/24/outline';
-
+import { X } from 'lucide-react';
 import {
   DropdownMenu,
+  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
@@ -32,15 +33,9 @@ import {
 } from '@/components/ui/dialog';
 import { queryClient } from '@/main';
 import { useNavigate } from '@tanstack/react-router';
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import TableTagList from '@/components/table-tag-list/TableTagList';
+import PushMessages from '../PushMessages/PushMessages';
 export default function MonitoringObserversDashboard(): ReactElement {
   const monitoringObserverColDefs: ColumnDef<MonitoringObserver>[] = [
     {
@@ -53,6 +48,15 @@ export default function MonitoringObserversDashboard(): ReactElement {
       header: ({ column }) => <DataTableColumnHeader title='Email' column={column} />,
       accessorKey: 'email',
       enableSorting: true,
+    },
+    {
+      header: ({ column }) => <DataTableColumnHeader title='Tags' column={column} />,
+      accessorKey: 'tags',
+      cell: ({
+        row: {
+          original: { tags },
+        },
+      }) => <TableTagList tags={tags} />,
     },
     {
       header: ({ column }) => <DataTableColumnHeader title='Phone' column={column} />,
@@ -80,7 +84,7 @@ export default function MonitoringObserversDashboard(): ReactElement {
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuItem onClick={() => navigateToObserver(row.original.id)}>View</DropdownMenuItem>
-            <DropdownMenuItem>Edit</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigateToEdit(row.original.id)}>Edit</DropdownMenuItem>
             <DropdownMenuItem className='text-red-600' onClick={() => handleDelete(row.original.id)}>
               Delete
             </DropdownMenuItem>
@@ -94,6 +98,7 @@ export default function MonitoringObserversDashboard(): ReactElement {
   const [fileName, setFileName] = useState('');
   const [isFiltering, setFiltering] = useState(false);
   const [statusFilter, setStatusFilter] = useState('');
+  const [tagsFilter, setTagsFilter] = useState([]);
 
   const navigate = useNavigate();
   const handleSearchInput = (ev: React.FormEvent<HTMLInputElement>) => {
@@ -118,10 +123,57 @@ export default function MonitoringObserversDashboard(): ReactElement {
   const navigateToObserver = (monitoringObserverId: string) => {
     navigate({ to: '/monitoring-observers/$monitoringObserverId', params: { monitoringObserverId } });
   };
+  const navigateToEdit = (monitoringObserverId: string) => {
+    navigate({ to: '/monitoring-observers/$monitoringObserverId/edit', params: { monitoringObserverId } });
+  };
+
+  const downloadImportExample = async () => {
+    const res = await authApi.get('/monitoring-observers:import-template');
+    const csvData = res.data;
+
+    const blob = new Blob([csvData], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.style.display = 'none';
+    a.href = url;
+    a.download = 'import-template.csv';
+
+    document.body.appendChild(a);
+    a.click();
+
+    window.URL.revokeObjectURL(url);
+  };
+
+  const { data } = useQuery({
+    queryKey: ['tags'],
+    queryFn: async () => {
+      const electionRoundId: string | null = localStorage.getItem('electionRoundId');
+      const monitoringNgoId: string | null = localStorage.getItem('monitoringNgoId');
+
+      const response = await authApi.get<{ tags: string[] }>(
+        `/election-rounds/${electionRoundId}/monitoring-ngos/${monitoringNgoId}/monitoring-observers:tags`
+      );
+
+      if (response.status !== 200) {
+        throw new Error('Failed to fetch monitoring observers');
+      }
+      return response.data;
+    },
+  });
 
   const useMonitoringObservers = (p: DataTableParameters): UseQueryResult<PageResponse<MonitoringObserver>, Error> => {
     return useQuery({
-      queryKey: ['observers', p.pageNumber, p.pageSize, p.sortColumnName, p.sortOrder, searchText, statusFilter],
+      queryKey: [
+        'observers',
+        p.pageNumber,
+        p.pageSize,
+        p.sortColumnName,
+        p.sortOrder,
+        searchText,
+        statusFilter,
+        tagsFilter,
+      ],
       queryFn: async () => {
         const paramsObject = {
           PageNumber: p.pageNumber,
@@ -135,7 +187,9 @@ export default function MonitoringObserversDashboard(): ReactElement {
         const monitoringNgoId: string | null = localStorage.getItem('monitoringNgoId');
 
         const response = await authApi.get<PageResponse<MonitoringObserver>>(
-          `/election-rounds/${electionRoundId}/monitoring-ngos/${monitoringNgoId}/monitoring-observers`,
+          `/election-rounds/${electionRoundId}/monitoring-ngos/${monitoringNgoId}/monitoring-observers?${tagsFilter
+            .map((n) => `tags=${n}`)
+            .join('&')}`,
           {
             params: Object.keys(paramsObject)
               .filter((k) => paramsObject[k] !== null && paramsObject[k] !== '')
@@ -157,7 +211,9 @@ export default function MonitoringObserversDashboard(): ReactElement {
       const electionRoundId: string | null = localStorage.getItem('electionRoundId');
       const monitoringNgoId: string | null = localStorage.getItem('monitoringNgoId');
 
-      return authApi.delete<void>(`/election-rounds/${electionRoundId}/monitoring-ngos/${monitoringNgoId}/monitoring-observers/${monitoringObserverId}`);
+      return authApi.delete<void>(
+        `/election-rounds/${electionRoundId}/monitoring-ngos/${monitoringNgoId}/monitoring-observers/${monitoringObserverId}`
+      );
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['monitoring-observers'] });
@@ -177,6 +233,17 @@ export default function MonitoringObserversDashboard(): ReactElement {
 
   const resetFilters = () => {
     setStatusFilter('');
+    setTagsFilter([]);
+  };
+
+  const toggleTagsFilter = (tag: string) => {
+    setTagsFilter((prevTags) => {
+      if (!prevTags.includes(tag)) {
+        return [...prevTags, tag];
+      } else {
+        return prevTags.filter((tagText) => tagText !== tag);
+      }
+    });
   };
 
   return (
@@ -221,9 +288,9 @@ export default function MonitoringObserversDashboard(): ReactElement {
                         <Separator />
                         <DialogDescription>
                           <div className='mt-3.5 text-base'>
-                            In order to successfully import a list of monitoring observers, please use the template provided below.
-                            Download the template, fill it in with the observer information and then upload it. No other
-                            format is accepted for import.
+                            In order to successfully import a list of monitoring observers, please use the template
+                            provided below. Download the template, fill it in with the observer information and then
+                            upload it. No other format is accepted for import.
                           </div>
                         </DialogDescription>
                       </DialogHeader>
@@ -231,9 +298,10 @@ export default function MonitoringObserversDashboard(): ReactElement {
                         <p className='text-sm text-gray-700'>
                           Download template <span className='text-red-500'>*</span>
                         </p>
-                        <div className='px-3 py-1 bg-purple-50 rounded-lg cursor-pointer'>
+                        <div
+                          onClick={downloadImportExample}
+                          className='px-3 py-1 bg-purple-50 rounded-lg cursor-pointer'>
                           <div className='text-sm text-purple-900 flex flex-row gap-1'>
-                            {' '}
                             <ArrowDownTrayIcon className='w-[15px]' />
                             monitoring_observers_template.csv
                           </div>
@@ -242,12 +310,7 @@ export default function MonitoringObserversDashboard(): ReactElement {
                         <div className='text-sm text-gray-500 font-normal	'>
                           Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                         </div>
-                        <input
-                          type='file'
-                          ref={hiddenFileInput}
-                          onChange={handleChange}
-                          style={{ display: 'none' }} // NOTICE!
-                        />
+                        <input type='file' ref={hiddenFileInput} onChange={handleChange} style={{ display: 'none' }} />
                         <Button onClick={handleClick} variant='outline'>
                           <span className='text-gray-500 font-normal'>
                             {fileName || (
@@ -287,6 +350,26 @@ export default function MonitoringObserversDashboard(): ReactElement {
                     </svg>
                     Export monitoring observer list
                   </Button>
+                  <Button
+                    onClick={downloadImportExample}
+                    className='bg-background hover:bg-purple-50 hover:text-purple-500 text-purple-900'>
+                    <svg
+                      className='mr-1.5'
+                      xmlns='http://www.w3.org/2000/svg'
+                      width='18'
+                      height='18'
+                      viewBox='0 0 18 18'
+                      fill='none'>
+                      <path
+                        d='M3 12L3 12.75C3 13.9926 4.00736 15 5.25 15L12.75 15C13.9926 15 15 13.9926 15 12.75L15 12M12 9L9 12M9 12L6 9M9 12L9 3'
+                        stroke='#5F288D'
+                        strokeWidth='2'
+                        strokeLinecap='round'
+                        strokeLinejoin='round'
+                      />
+                    </svg>
+                    Download template
+                  </Button>
                 </div>
               </div>
               <Separator />
@@ -301,7 +384,7 @@ export default function MonitoringObserversDashboard(): ReactElement {
               </div>
               <Separator />
               {isFiltering ? (
-                <div className='table-filters flex flex-row gap-4'>
+                <div className='table-filters flex flex-row gap-4 items-center'>
                   <Select value={statusFilter} onValueChange={handleStatusFilter}>
                     <SelectTrigger className='w-[180px]'>
                       <SelectValue placeholder='Observer status' />
@@ -309,28 +392,53 @@ export default function MonitoringObserversDashboard(): ReactElement {
                     <SelectContent>
                       <SelectGroup>
                         <SelectItem value='Active'>Active</SelectItem>
-                        <SelectItem value='Active'>Pending</SelectItem>
+                        <SelectItem value='Pending'>Pending</SelectItem>
                         <SelectItem value='Suspended'>Suspended</SelectItem>
                       </SelectGroup>
                     </SelectContent>
                   </Select>
-                  <Select>
-                    <SelectTrigger className='w-[180px]'>
-                      <SelectValue placeholder='Tags' />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectItem value='apple'>Tag1</SelectItem>
-                        <SelectItem value='banana'>Tag2</SelectItem>
-                        <SelectItem value='blueberry'>Tag3</SelectItem>
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <div className='flex h-10 w-48 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50'>
+                        Tags
+                      </div>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className='w-56'>
+                      {data?.tags.map((tag) => (
+                        <DropdownMenuCheckboxItem
+                          checked={tagsFilter.includes(tag)}
+                          onCheckedChange={() => toggleTagsFilter(tag)}
+                          key={tag}>
+                          {tag}
+                        </DropdownMenuCheckboxItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                   <Button variant='ghost-primary'>
                     <span onClick={resetFilters} className='text-base text-purple-900'>
                       Reset filters
                     </span>
                   </Button>
+                  <div className='flex flex-row gap-2 flex-wrap'>
+                    {statusFilter && (
+                      <span
+                        onClick={() => handleStatusFilter('')}
+                        className='rounded-full cursor-pointer py-1 px-4 bg-purple-100 text-sm text-purple-900 font-medium flex items-center gap-2'>
+                        Observer status: {statusFilter}
+                        <X size={14} />
+                      </span>
+                    )}
+
+                    {tagsFilter.map((tag) => (
+                      <span
+                        key={tag}
+                        onClick={() => toggleTagsFilter(tag)}
+                        className='rounded-full cursor-pointer py-1 px-4 bg-purple-100 text-sm text-purple-900 font-medium flex items-center gap-2'>
+                        Tags: {tag}
+                        <X size={14} />
+                      </span>
+                    ))}
+                  </div>
                 </div>
               ) : (
                 ''
@@ -342,7 +450,9 @@ export default function MonitoringObserversDashboard(): ReactElement {
             <CardFooter className='flex justify-between'></CardFooter>
           </Card>
         </TabsContent>
-        <TabsContent value='password'>Change your password here.</TabsContent>
+        <TabsContent value='password'>
+          <PushMessages />
+        </TabsContent>
       </Tabs>
     </Layout>
   );

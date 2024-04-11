@@ -19,6 +19,7 @@ import { Route as FormTemplatesIndexImport } from './routes/form-templates/index
 import { Route as ElectionRoundsIndexImport } from './routes/election-rounds/index'
 import { Route as ObserversObserverIdImport } from './routes/observers/$observerId'
 import { Route as NgosNgoIdImport } from './routes/ngos/$ngoId'
+import { Route as MonitoringObserversCreateNewMessageImport } from './routes/monitoring-observers/create-new-message'
 import { Route as MonitoringObserversMonitoringObserverIdImport } from './routes/monitoring-observers/$monitoringObserverId'
 import { Route as ElectionRoundsElectionRoundIdImport } from './routes/election-rounds/$electionRoundId'
 import { Route as ObserversObserverIdEditImport } from './routes/observers_.$observerId.edit'
@@ -67,6 +68,12 @@ const NgosNgoIdRoute = NgosNgoIdImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const MonitoringObserversCreateNewMessageRoute =
+  MonitoringObserversCreateNewMessageImport.update({
+    path: '/monitoring-observers/create-new-message',
+    getParentRoute: () => rootRoute,
+  } as any)
+
 const MonitoringObserversMonitoringObserverIdRoute =
   MonitoringObserversMonitoringObserverIdImport.update({
     path: '/monitoring-observers/$monitoringObserverId',
@@ -110,6 +117,10 @@ declare module '@tanstack/react-router' {
     }
     '/monitoring-observers/$monitoringObserverId': {
       preLoaderRoute: typeof MonitoringObserversMonitoringObserverIdImport
+      parentRoute: typeof rootRoute
+    }
+    '/monitoring-observers/create-new-message': {
+      preLoaderRoute: typeof MonitoringObserversCreateNewMessageImport
       parentRoute: typeof rootRoute
     }
     '/ngos/$ngoId': {
@@ -161,6 +172,7 @@ export const routeTree = rootRoute.addChildren([
   IndexRoute,
   ElectionRoundsElectionRoundIdRoute,
   MonitoringObserversMonitoringObserverIdRoute,
+  MonitoringObserversCreateNewMessageRoute,
   NgosNgoIdRoute,
   ObserversObserverIdRoute,
   ElectionRoundsIndexRoute,

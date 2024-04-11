@@ -41,6 +41,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import PushMessages from '../../../monitoring-observers/components/PushMessages/PushMessages';
 
 export default function ObserversDashboard(): ReactElement {
   const observerColDefs: ColumnDef<Observer>[] = [
@@ -339,7 +340,7 @@ export default function ObserversDashboard(): ReactElement {
             <CardFooter className='flex justify-between'></CardFooter>
           </Card>
         </TabsContent>
-        <TabsContent value='password'>Change your password here.</TabsContent>
+        <TabsContent value='password'></TabsContent>
       </Tabs>
     </Layout>
   );
