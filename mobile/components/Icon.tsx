@@ -18,6 +18,15 @@ import MenuAlt2 from "../assets/icons/menu-alt-2.svg";
 import DotsVertical from "../assets/icons/dots-vertical.svg";
 import Check from "../assets/icons/check.svg";
 import Calendar from "../assets/icons/Calendar.svg";
+import TermsConds from "../assets/icons/Terms conds.svg";
+import PrivacyPolicy from "../assets/icons/Privacy policy.svg";
+import ContactNGO from "../assets/icons/Contact NGO.svg";
+import AboutVM from "../assets/icons/About VM.svg";
+import Feedback from "../assets/icons/Feedback.svg";
+import Language from "../assets/icons/Language.svg";
+import ChangePassword from "../assets/icons/Change password.svg";
+import Settings from "../assets/icons/Settings.svg";
+import LogoutNoBackground from "../assets/icons/LogoutNoBackground.svg";
 
 import { styled, View } from "tamagui";
 import { StyleProp, ViewStyle } from "react-native";
@@ -80,6 +89,15 @@ export const defaultIcon = React.forwardRef(
       dotsVertical: <DotsVertical fill={color} width={size} height={size} />,
       check: <Check fill={color} width={size} height={size} />,
       calendar: <Calendar fill={color} width={size} height={size} />,
+      termsConds: <TermsConds fill={color} width={size} height={size} />,
+      privacyPolicy: <PrivacyPolicy fill={color} width={size} height={size} />,
+      contactNGO: <ContactNGO fill={color} width={size} height={size} />,
+      aboutVM: <AboutVM fill={color} width={size} height={size} />,
+      feedback: <Feedback fill={color} width={size} height={size} />,
+      language: <Language fill={color} width={size} height={size} />,
+      changePassword: <ChangePassword fill={color} width={size} height={size} />,
+      settings: <Settings fill={color} width={size} height={size} />,
+      logoutNoBackground: <LogoutNoBackground fill={color} width={size} height={size} />,
     };
 
     return (
