@@ -1,7 +1,6 @@
 import React from "react";
-import { View } from "react-native";
-import { useAuth } from "../../../../hooks/useAuth";
-import { StatusBar } from "react-native";
+import { Dimensions, ViewStyle } from "react-native";
+// import { useAuth } from "../../../../hooks/useAuth";
 import { router } from "expo-router";
 import * as ReactotronCommands from "../../../../helpers/reactotron-custom-commands";
 import { Screen } from "../../../../components/Screen";
@@ -10,7 +9,6 @@ import { Typography } from "../../../../components/Typography";
 import Button from "../../../../components/Button";
 import { Card, Stack, Text, XStack, YStack } from "tamagui";
 import { Icon } from "../../../../components/Icon";
-import { Dimensions, ViewStyle } from "react-native";
 import { ListView } from "../../../../components/ListView";
 import TimeSelect from "../../../../components/TimeSelect";
 import CardFooter from "../../../../components/CardFooter";

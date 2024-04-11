@@ -1,5 +1,5 @@
 import React from "react";
-import { YStack, Text } from "tamagui";
+import { YStack } from "tamagui";
 import Button from "./Button";
 import { Typography } from "./Typography";
 
