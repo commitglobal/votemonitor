@@ -1,4 +1,6 @@
 ﻿using Vote.Monitor.Domain.Constants;
+using Vote.Monitor.Domain.Entities.FormAggregate;
+using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
 using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
@@ -40,6 +42,8 @@ public class VoteMonitorContext : DbContext
     public DbSet<ImportValidationErrors> ImportValidationErrors { set; get; }
     public DbSet<Trail> AuditTrails => Set<Trail>();
     public DbSet<FormTemplate> FormTemplates { set; get; }
+    public DbSet<Form> Forms { set; get; }
+    public DbSet<FormSubmission> FormSubmissions { set; get; }
     public DbSet<PollingStationInformationForm> PollingStationInformationForms { set; get; }
     public DbSet<PollingStationInformation> PollingStationInformation { set; get; }
     public DbSet<MonitoringNgo> MonitoringNgos { set; get; }
@@ -114,6 +118,8 @@ public class VoteMonitorContext : DbContext
         builder.ApplyConfiguration(new PollingStationInformationFormConfiguration());
         builder.ApplyConfiguration(new PollingStationInformationConfiguration());
         builder.ApplyConfiguration(new ObserverGuideConfiguration());
+        builder.ApplyConfiguration(new FormConfiguration());
+        builder.ApplyConfiguration(new FormSubmissionConfiguration());
 
         // views
         builder.ApplyConfiguration(new PollingStationVisitsViewConfiguration());

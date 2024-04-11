@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Vote.Monitor.Domain.Entities.FormBase.Questions;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Vote.Monitor.Domain.Entities.PollingStationInfoFormAggregate;
+using Vote.Monitor.Domain.ValueComparers;
+using Vote.Monitor.Domain.ValueConverters;
 
 namespace Vote.Monitor.Domain.EntitiesConfiguration;
 
@@ -17,28 +17,10 @@ public class PollingStationInformationFormConfiguration : IEntityTypeConfigurati
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
 
-        var jsonSerializerOptions = (JsonSerializerOptions)null;
-
-        builder
-            .Property(x => x.Languages)
-            .HasConversion(
-                v => JsonSerializer.Serialize(v, jsonSerializerOptions),
-                v => JsonSerializer.Deserialize<IReadOnlyList<string>>(v, jsonSerializerOptions),
-                new ValueComparer<IReadOnlyList<string>>(
-                    (c1, c2) => c1.SequenceEqual(c2),
-                    c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
-                    c => c.ToList().AsReadOnly()))
-            .HasColumnType("jsonb");
+        builder.Property(x => x.Languages).IsRequired();
 
         builder.Property(x => x.Questions)
-            .HasConversion(
-                v => JsonSerializer.Serialize(v, jsonSerializerOptions),
-                v => JsonSerializer.Deserialize<IReadOnlyList<BaseQuestion>>(v, jsonSerializerOptions),
-                new ValueComparer<IReadOnlyList<BaseQuestion>>(
-                    (c1, c2) => c1.SequenceEqual(c2),
-                    c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
-                    c => c.ToList().AsReadOnly())
-            )
+            .HasConversion<QuestionsToJsonConverter, QuestionsValueComparer>()
             .HasColumnType("jsonb");
     }
 }

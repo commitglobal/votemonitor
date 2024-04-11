@@ -5,7 +5,7 @@ using Vote.Monitor.Domain.Entities.FormBase.Questions;
 
 namespace Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 
-public class DateAnswer : BaseAnswer
+public record DateAnswer : BaseAnswer
 {
     public DateTime Date { get; private set; }
 

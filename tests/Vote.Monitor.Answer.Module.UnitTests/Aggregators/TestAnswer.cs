@@ -4,7 +4,7 @@ using Vote.Monitor.Domain.Entities.FormBase.Questions;
 
 namespace Vote.Monitor.Answer.Module.UnitTests.Aggregators;
 
-public class TestAnswer() : BaseAnswer(Guid.NewGuid())
+public record TestAnswer() : BaseAnswer(Guid.NewGuid())
 {
     public override string Discriminator => "TestAnswer";
 
