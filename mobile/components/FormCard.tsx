@@ -5,6 +5,12 @@ import Card from "./Card";
 import { Typography } from "./Typography";
 import CardFooter from "./CardFooter";
 
+enum FormProgress {
+  NOT_STARTED = "Not started",
+  IN_PROGRESS = "In progress",
+  COMPLETED = "Completed",
+}
+
 export interface FormCardProps {
   /**
    * Header text
