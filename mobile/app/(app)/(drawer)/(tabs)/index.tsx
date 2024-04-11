@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Dimensions, ViewStyle } from "react-native";
+import { Dimensions, View, ViewStyle } from "react-native";
 // import { useAuth } from "../../../../hooks/useAuth";
 import { router } from "expo-router";
 import * as ReactotronCommands from "../../../../helpers/reactotron-custom-commands";
