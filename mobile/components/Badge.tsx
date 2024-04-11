@@ -4,11 +4,11 @@ import { Typography } from "./Typography";
 
 export type Presets = "default" | "success" | "warning" | "danger";
 
-enum FormProgress {
-  NOT_STARTED = "Not started",
-  IN_PROGRESS = "In progress",
-  COMPLETED = "Completed",
-}
+// enum FormProgress {
+//   NOT_STARTED = "Not started",
+//   IN_PROGRESS = "In progress",
+//   COMPLETED = "Completed",
+// }
 
 export interface BadgeProps {
   children: string;

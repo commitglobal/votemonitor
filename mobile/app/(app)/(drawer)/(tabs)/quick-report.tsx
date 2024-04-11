@@ -205,20 +205,13 @@ const QuickReport = () => {
       <Stack padding="$sm" gap="$xs">
         <Typography preset="heading">FormCard</Typography>
         <FormCard
-          headerText={"A-Opening"}
-          footerText={"0/33 questions"}
+          form={{ name: "Name" }}
           action={() => {
             console.log("FormCard");
           }}
         ></FormCard>
         <FormCard
-          headerText={"A-Opening"}
-          footerText={"0/33 questions"}
-          subHeaderText={"Available in RO, BG, EN"}
-          badgeProps={{
-            children: "Great work",
-            preset: "success",
-          }}
+          form={{ name: "Name", status: "completed", options: "Option 1" }}
           action={() => {
             console.log("FormCard");
           }}

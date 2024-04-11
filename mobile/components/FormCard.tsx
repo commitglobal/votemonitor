@@ -1,30 +1,27 @@
 import React, { useState } from "react";
 import { View, styled } from "tamagui";
-import Badge, { BadgeProps } from "./Badge";
+import Badge from "./Badge";
 import Card from "./Card";
 import { Typography } from "./Typography";
 import CardFooter from "./CardFooter";
 
+enum FormProgress {
+  NOT_STARTED = "Not started",
+  IN_PROGRESS = "In progress",
+  COMPLETED = "Completed",
+}
+
+export interface Form {
+  id?: string;
+  name?: string;
+  options?: string;
+  numberOfQuestions?: string;
+  numberOfCompletedQuestions?: string;
+  status?: string;
+}
+
 export interface FormCardProps {
-  /**
-   * Header text
-   */
-  headerText: string;
-
-  /**
-   * Subheader optional text
-   */
-  subHeaderText?: string;
-
-  /**
-   * Footer text
-   */
-  footerText: string;
-
-  /**
-   * Optional preset type.
-   */
-  badgeProps?: BadgeProps;
+  form: Form;
 
   /**
    * Performed action for onPress
@@ -33,11 +30,19 @@ export interface FormCardProps {
 }
 
 const FormCard = (props: FormCardProps): JSX.Element => {
-  const { headerText, subHeaderText, footerText, badgeProps, action } = props;
-  const hasSubHeader = subHeaderText ? subHeaderText.trim() !== "" : false;
+  const { form, action } = props;
 
-  const badgePreset = badgeProps ? badgeProps.preset : "default";
-  const badgeChildren = badgeProps ? badgeProps.children : "Not started";
+  const hasOptions = form.options ? form.options.trim() !== "" : false;
+
+  const presetType =
+    form.status === "completed" ? "success" : form.status === "in progress" ? "warning" : "default";
+
+  const badgeText =
+    form.status === "completed"
+      ? FormProgress.COMPLETED
+      : form.status === "in progress"
+        ? FormProgress.IN_PROGRESS
+        : FormProgress.NOT_STARTED;
 
   const CardHeader = styled(View, {
     name: "CardHeader",
@@ -59,19 +64,19 @@ const FormCard = (props: FormCardProps): JSX.Element => {
     >
       <CardHeader>
         <Typography preset="body1" color="$gray9" fontWeight="700">
-          {headerText}
+          {form.name}
         </Typography>
 
-        <Badge preset={badgePreset}>{badgeChildren}</Badge>
+        <Badge preset={presetType}>{badgeText}</Badge>
       </CardHeader>
 
-      {hasSubHeader && (
+      {hasOptions === true && (
         <Typography preset="body1" color="$gray6" marginBottom="$xxs">
-          {subHeaderText}
+          {form.options}
         </Typography>
       )}
 
-      <CardFooter text={footerText} />
+      <CardFooter text={form.numberOfCompletedQuestions + "/" + form.numberOfQuestions} />
     </Card>
   );
 };
