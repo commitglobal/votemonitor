@@ -1,15 +1,20 @@
 import React, { useMemo, useState } from "react";
-import { Adapt, Button, Select, Sheet, View, YStack } from "tamagui";
+import { Adapt, Select, SelectProps, Sheet, View, YStack } from "tamagui";
 import { Icon } from "./Icon";
 import { Typography } from "./Typography";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { PollingStationVisitVM } from "../services/definitions.api";
+import Button from "../components/Button";
 
-interface SelectPollingStationProps {
+interface SelectPollingStationProps extends SelectProps {
+  placeholder?: string;
   options: PollingStationVisitVM[];
 }
 
-const SelectPollingStation: React.FC<SelectPollingStationProps> = ({ options }) => {
+const SelectPollingStation: React.FC<SelectPollingStationProps> = ({
+  options,
+  placeholder = "Select polling station",
+}) => {
   const [val, setVal] = useState("");
   const insets = useSafeAreaInsets();
 
@@ -28,7 +33,7 @@ const SelectPollingStation: React.FC<SelectPollingStationProps> = ({ options }) 
           <Select.Value
             width={"90%"}
             color="$purple5"
-            placeholder="Select polling station"
+            placeholder={placeholder}
             fontWeight="500"
           ></Select.Value>
         </Select.Trigger>
@@ -43,15 +48,15 @@ const SelectPollingStation: React.FC<SelectPollingStationProps> = ({ options }) 
                 borderBottomWidth={1}
                 borderBottomColor="$gray3"
               >
-                <Typography preset="body1" color="$gray5">
+                <Typography preset="body2" color="$gray5">
                   My polling stations
                 </Typography>
-                <View marginTop="$xxs">
-                  <Typography numberOfLines={7} color="$gray5">
-                    You can switch between polling stations if you want to revisit form answers or
-                    polling station information.
-                  </Typography>
-                </View>
+                {/* //TODO: not sure how many nroflines we should leave here */}
+                <Typography numberOfLines={7} color="$gray5" marginTop="$xxs">
+                  {/* //TODO: translation here */}
+                  You can switch between polling stations if you want to revisit form answers or
+                  polling station information.
+                </Typography>
               </YStack>
 
               <Sheet.ScrollView padding="$sm">
@@ -64,8 +69,7 @@ const SelectPollingStation: React.FC<SelectPollingStationProps> = ({ options }) 
                 borderTopColor="$gray3"
                 marginBottom={insets.bottom}
               >
-                {/* //TODO: change button here with our custom one */}
-                <Button>Add new polling station</Button>
+                <Button preset="outlined">Add new polling station</Button>
               </View>
             </Sheet.Frame>
             <Sheet.Overlay />
@@ -79,17 +83,17 @@ const SelectPollingStation: React.FC<SelectPollingStationProps> = ({ options }) 
 
               {useMemo(
                 () =>
-                  options.map((option, i) => {
+                  options.map((entry, i) => {
                     return (
                       <Select.Item
                         index={i}
-                        key={option.pollingStationId}
-                        value={option.pollingStationId.toString()}
+                        key={entry.pollingStationId}
+                        value={entry.pollingStationId}
                         gap="$3"
                       >
                         {/* //TODO: change number of lines to 2 if that's what we want */}
                         <Select.ItemText width={"90%"} numberOfLines={1}>
-                          {option.pollingStationId}
+                          {entry.pollingStationId}
                         </Select.ItemText>
                         <Select.ItemIndicator>
                           <Icon icon="chevronLeft" />
