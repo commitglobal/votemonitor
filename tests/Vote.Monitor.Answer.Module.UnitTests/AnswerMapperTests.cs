@@ -100,7 +100,7 @@ public class AnswerMapperTests
         result.Should().BeEquivalentTo(ratingAnswer);
     }
 
-    internal class UnknownAnswer : BaseAnswer
+    internal record UnknownAnswer : BaseAnswer
     {
         public UnknownAnswer(Guid questionId) : base(questionId)
         {

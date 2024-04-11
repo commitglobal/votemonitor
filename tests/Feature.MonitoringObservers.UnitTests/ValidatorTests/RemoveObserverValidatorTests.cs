@@ -1,15 +1,17 @@
-﻿namespace Feature.MonitoringObservers.UnitTests.ValidatorTests;
+﻿using Feature.MonitoringObservers.Remove;
+
+namespace Feature.MonitoringObservers.UnitTests.ValidatorTests;
 
 public class RemoveObserverValidatorTests
 {
 
-    private readonly RemoveObserver.Validator _validator = new();
+    private readonly Validator _validator = new();
 
     [Fact]
     public void Validation_ShouldFail_When_ElectionRoundId_Empty()
     {
         // Arrange
-        var request = new RemoveObserver.Request { ElectionRoundId = Guid.Empty };
+        var request = new Request { ElectionRoundId = Guid.Empty };
 
         // Act
         var result = _validator.TestValidate(request);
@@ -22,7 +24,7 @@ public class RemoveObserverValidatorTests
     public void Validation_ShouldFail_When_MonitoringNgoId_Empty()
     {
         // Arrange
-        var request = new RemoveObserver.Request { MonitoringNgoId = Guid.Empty };
+        var request = new Request { MonitoringNgoId = Guid.Empty };
 
         // Act
         var result = _validator.TestValidate(request);
@@ -35,7 +37,7 @@ public class RemoveObserverValidatorTests
     public void Validation_ShouldFail_When_Id_Empty()
     {
         // Arrange
-        var request = new RemoveObserver.Request { Id = Guid.Empty };
+        var request = new Request { Id = Guid.Empty };
 
         // Act
         var result = _validator.TestValidate(request);
@@ -48,7 +50,7 @@ public class RemoveObserverValidatorTests
     public void Validation_ShouldPass_When_ValidRequest()
     {
         // Arrange
-        var request = new RemoveObserver.Request
+        var request = new Request
         {
             ElectionRoundId = Guid.NewGuid(),
             MonitoringNgoId = Guid.NewGuid(),

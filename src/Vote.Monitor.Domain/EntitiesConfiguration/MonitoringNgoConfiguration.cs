@@ -10,6 +10,7 @@ internal class MonitoringNgoConfiguration : IEntityTypeConfiguration<MonitoringN
         builder.HasKey(e => e.Id);
         builder.Property(e => e.Id).IsRequired();
 
+        builder.Property(e => e.FormsVersion).IsRequired();
         builder.Property(e => e.Status).IsRequired();
 
         builder.HasIndex(x => x.ElectionRoundId);

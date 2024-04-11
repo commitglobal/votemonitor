@@ -17,9 +17,11 @@ import LinearProgress from "../../../../components/LinearProgress";
 import CardFooter from "../../../../components/CardFooter";
 import { RatingInput } from "../../../../components/Inputs/RatingInput";
 import { DateInput } from "../../../../components/Inputs/DateInput";
+import CircularProgress from "../../../../components/CircularProgress";
 
 const QuickReport = () => {
   const [selectedRadioValue, setSelectedRadioValue] = useState("rural");
+  const [progress, setProgress] = useState(0);
 
   return (
     <Screen preset="auto" backgroundColor="white" contentContainerStyle={{ gap: 20 }}>
@@ -170,6 +172,34 @@ const QuickReport = () => {
 
         <Typography preset="subheading">Date</Typography>
         <DateInput minimumDate={new Date(2024, 6, 20)} />
+      </Stack>
+
+      <Stack padding="$sm" gap="$xs" marginTop="$md" backgroundColor="white">
+        <Button
+          preset="outlined"
+          style={{ marginBottom: 20 }}
+          onPress={() => {
+            setProgress((prevProgress) => {
+              const newProgress = prevProgress + 10;
+              return newProgress <= 360 ? newProgress : 360;
+            });
+          }}
+        >
+          Progress 10%
+        </Button>
+        <Button
+          preset="outlined"
+          style={{ marginBottom: 20 }}
+          onPress={() => {
+            setProgress((prevProgress) => {
+              const newProgress = prevProgress + 45;
+              return newProgress <= 360 ? newProgress : 360;
+            });
+          }}
+        >
+          Progress 45%
+        </Button>
+        <CircularProgress progress={progress}></CircularProgress>
       </Stack>
 
       <Stack padding="$sm" gap="$xs">
