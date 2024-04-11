@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { View, XStack } from "tamagui";
 import Card from "../../../../components/Card";
 import { Screen } from "../../../../components/Screen";
