@@ -4,8 +4,10 @@ import { Screen } from "../../../../components/Screen";
 import { useUserData } from "../../../../contexts/user/UserContext.provider";
 import { Typography } from "../../../../components/Typography";
 import Button from "../../../../components/Button";
-import { Stack, YStack } from "tamagui";
+import { Card, Stack, Text, XStack, YStack } from "tamagui";
 import { Icon } from "../../../../components/Icon";
+import { Dimensions, ViewStyle } from "react-native";
+import { ListView } from "../../../../components/ListView";
 
 ReactotronCommands.default();
 
@@ -52,38 +54,108 @@ const MissingVisits = () => (
   </Screen>
 );
 
+const MyVisitsSection = () => {
+  const { visits } = useUserData();
+  return (
+    <YStack elevation={1} paddingHorizontal="$md" paddingVertical={11} backgroundColor="white">
+      <Text>{JSON.stringify(visits)}</Text>
+    </YStack>
+  );
+};
+
+type FormItemStatus = "not started" | "in progress" | "completed";
+
+type FormListItem = {
+  id: string;
+  name: string;
+  options: string;
+  numberOfQuestions: number;
+  numberOfCompletedQuestions: number;
+  status: FormItemStatus;
+};
+
+// Function to generate a random status
+function getRandomStatus(): FormItemStatus {
+  const statuses = ["not started", "in progress", "completed"];
+  const randomIndex = Math.floor(Math.random() * statuses.length);
+  return statuses[randomIndex] as FormItemStatus;
+}
+
+// Generate an array of 25 elements
+const formList: FormListItem[] = Array.from({ length: 25 }, (_, index) => ({
+  id: `id_${index + 1}`,
+  name: `Form ${index + 1}`,
+  options: `Option ${index + 1}`,
+  numberOfQuestions: Math.floor(Math.random() * 10) + 1,
+  numberOfCompletedQuestions: Math.floor(Math.random() * 10),
+  status: getRandomStatus(),
+}));
+
+const FormList = () => {
+  return (
+    <YStack gap="$xxs">
+      <Typography>Flashlist</Typography>
+      {/* To do validate the height of this list */}
+      <YStack height={Dimensions.get("screen").height}>
+        <ListView<FormListItem>
+          data={formList}
+          showsVerticalScrollIndicator={false}
+          bounces={false}
+          renderItem={({ item, index }) => (
+            <Typography key={index}>{JSON.stringify(item)}</Typography>
+          )}
+          estimatedItemSize={100}
+        />
+      </YStack>
+    </YStack>
+  );
+};
+
 const Index = () => {
   const { isAssignedToEllectionRound, visits } = useUserData();
-
-  // // Station ID: d3e6d2e9-0341-4dde-a58a-142a3f2dd19a
-  // const update = () => {
-  //   mutate({
-  //     electionRoundId: "43b91c74-6d05-4fd1-bd93-dfe203c83c53",
-  //     pollingStationId: "d3e6d2e9-0341-4dde-a58a-142a3f2dd19a",
-  //     arrivalTime: new Date().toISOString(),
-  //     departureTime: new Date().toISOString(),
-  //     answers: [],
-  //   });
-  // };
-
-  // const { mutate } = upsertPollingStationGeneralInformationMutation();
-
+  const { selectedPollingStation: _selectedPollingStation } = useUserData();
+  //
   if (!isAssignedToEllectionRound) {
     return <MissingElectionRounds />;
   }
 
-  if (visits.length !== 0) {
+  if (visits.length === 0) {
     return <MissingVisits />;
   }
 
   return (
-    <Screen preset="fixed" contentContainerStyle={{ gap: 20 }} safeAreaEdges={["top"]}>
-      <Button onPress={() => router.push("/form-questionnaire/1")}>Go Form wizzard</Button>
-      <Button onPress={() => router.push("/polling-station-questionnaire")}>
-        Go To Polling Station Qustionnaire
-      </Button>
+    <Screen
+      preset="scroll"
+      contentContainerStyle={$containerStyle}
+      ScrollViewProps={{
+        showsVerticalScrollIndicator: false,
+        stickyHeaderIndices: [0],
+        bounces: false,
+      }}
+    >
+      <MyVisitsSection />
+      <YStack paddingHorizontal="$md" gap="$lg">
+        <YStack gap="$xxs">
+          <XStack gap="$xxs">
+            <Card flex={0.5}>
+              <Typography>Time Card</Typography>
+            </Card>
+            <Card flex={0.5}>
+              <Typography>Time Card</Typography>
+            </Card>
+          </XStack>
+          <Card padding="$md">
+            <Button onPress={() => router.push("/form-questionnaire/1")}>Go Form wizzard</Button>
+          </Card>
+        </YStack>
+        <FormList />
+      </YStack>
     </Screen>
   );
+};
+
+const $containerStyle: ViewStyle = {
+  gap: 20,
 };
 
 export default Index;

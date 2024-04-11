@@ -11,6 +11,8 @@ import Button from "../../components/Button";
 import { usePollingStationByParentID } from "../../services/queries.service";
 import { useMemo, useState } from "react";
 import { PollingStationNomenclatorNodeVM } from "../../common/models/polling-station.model";
+import { useTranslation } from "react-i18next";
+import { useUserData } from "../../contexts/user/UserContext.provider";
 
 const mapPollingStationOptionsToSelectValues = (
   options: PollingStationNomenclatorNodeVM[],
@@ -28,6 +30,7 @@ type PollingStationStep = {
 };
 
 const PollingStationWizzard = () => {
+  const { t } = useTranslation("add_polling_station");
   const [steps, setSteps] = useState<PollingStationStep[]>([]);
 
   const onNextPress = (nextStep: PollingStationStep) => {
@@ -48,7 +51,7 @@ const PollingStationWizzard = () => {
   return (
     <Screen style={$screenStyle} contentContainerStyle={$containerStyle} preset="fixed">
       <Header
-        title={"Add polling station"}
+        title={t("header.title")}
         leftIcon={<Icon icon="chevronLeft" color="white" />}
         onLeftPress={router.back}
       />
@@ -75,8 +78,10 @@ const PollingStationWizzardContent = ({
   activeStep,
   locations,
 }: PollingStationWizzardContentProps) => {
+  const { t } = useTranslation("add_polling_station");
   const insets = useSafeAreaInsets();
   const [selectedOption, setSelectedOption] = useState<PollingStationStep>();
+  const { setSelectedPollingStation } = useUserData();
 
   const {
     data: pollingStationOptions,
@@ -115,13 +120,23 @@ const PollingStationWizzardContent = ({
   };
 
   const onFinishButtonPress = () => {
-    console.log("on finish button press");
+    if (!selectedOption) {
+      return;
+    }
+    const pollingStationId = pollingStationOptions.find(
+      (option) => option.id === selectedOption.id,
+    )?.pollingStationId;
+
+    setSelectedPollingStation(pollingStationId as string);
+    router.back();
   };
 
+  // TODO: To be handled
   if (isLoadingPollingStations) {
     return <Typography>Loading...</Typography>;
   }
 
+  // TODO: To be handled
   if (pollingStationsError) {
     return <Typography>Error handling here...</Typography>;
   }
@@ -131,17 +146,17 @@ const PollingStationWizzardContent = ({
       <YStack paddingHorizontal="$md" paddingTop="$xl">
         <YStack gap="$md" minHeight="$xxl">
           {activeStep && (
-            <Typography color="$gray5">{`Add polling station from the ${locations}`}</Typography>
+            <Typography color="$gray5">{t("progress.location", { value: locations })}</Typography>
           )}
         </YStack>
         <YStack paddingTop={140} gap="$lg" justifyContent="center">
           <Typography preset="body2" style={$labelStyle}>
-            Select the [Location - L1] of the polling station
+            {t("form.region.title")}
           </Typography>
           <Select
             key={activeStep?.id}
             options={pollingStationsMappedOptions}
-            placeholder="Select Region"
+            placeholder={t("form.region.placeholder")}
             onValueChange={onSelectOption}
             value={selectedOption ? `${selectedOption.id}_${selectedOption.name}` : undefined}
           />
@@ -162,19 +177,19 @@ const PollingStationWizzardContent = ({
               preset="chromeless"
               onPress={onBackButtonPress}
             >
-              Back
+              {t("actions.back")}
             </Button>
           </XStack>
         )}
         <XStack flex={!activeStep?.id ? 1 : 0.75}>
           {!isLastElement && (
             <Button disabled={!selectedOption} width="100%" onPress={onNextButtonPress}>
-              Next Step
+              {t("actions.next_step")}
             </Button>
           )}
           {isLastElement && (
             <Button width="100%" onPress={onFinishButtonPress}>
-              Finalize
+              {t("actions.finalize")}
             </Button>
           )}
         </XStack>

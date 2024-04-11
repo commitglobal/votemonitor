@@ -67,11 +67,10 @@ const Header = ({
   const [showNetInfoBanner, setShowNetInfoBanner] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = NetInfo.addEventListener((state) => {
+    return NetInfo.addEventListener((state) => {
       const status = !!state.isConnected;
       setIsOnline(status);
     });
-    return unsubscribe();
   }, []);
 
   // show online banner again after user is connected again
@@ -117,7 +116,7 @@ const Header = ({
         </TouchableOpacity>
       </StyledWrapper>
       {isOnline ? (
-        showNetInfoBanner && (
+        !showNetInfoBanner && (
           <XStack
             backgroundColor="$green1"
             paddingLeft={20}
