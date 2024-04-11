@@ -9,7 +9,7 @@ import CardFooter from "../components/CardFooter";
 interface TimeSelectProps {
   type: "arrival" | "departure";
   time: Date | undefined;
-  setTime: React.Dispatch<Date> | React.Dispatch<undefined>;
+  setTime: any;
 }
 
 enum CardFooterDisplay {
@@ -29,11 +29,11 @@ const TimeSelect: React.FC<TimeSelectProps> = ({ type, time, setTime }) => {
 
   const onResetTime = () => {
     //TODO: do we want to reset it to undefined(current time) or to 00:00?
-    const resetTime = time ? new Date(time) : new Date();
-    resetTime.setMinutes(0);
-    resetTime.setHours(0);
-    // setTime(undefined);
-    setTime(resetTime);
+    // const resetTime = time ? new Date(time) : new Date();
+    // resetTime.setMinutes(0);
+    // resetTime.setHours(0);
+    setTime();
+    // setTime(resetTime);
   };
 
   const onClose = () => {
@@ -59,11 +59,9 @@ const TimeSelect: React.FC<TimeSelectProps> = ({ type, time, setTime }) => {
           )}
         </Stack>
 
-        <CardFooter>
-          <Typography fontWeight="500" color="$gray5">
-            {type === "arrival" ? CardFooterDisplay.ARRIVAL : CardFooterDisplay.DEPARTURE} time
-          </Typography>
-        </CardFooter>
+        <CardFooter
+          text={`${type === "arrival" ? CardFooterDisplay.ARRIVAL : CardFooterDisplay.DEPARTURE} time`}
+        ></CardFooter>
       </YStack>
 
       {Platform.OS === "ios" ? (

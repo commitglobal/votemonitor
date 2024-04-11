@@ -13,6 +13,7 @@ import { ListView } from "../../../../components/ListView";
 import TimeSelect from "../../../../components/TimeSelect";
 import CardFooter from "../../../../components/CardFooter";
 import PollingStationInfoDefault from "../../../../components/PollingStationInfoDefault";
+import FormCard from "../../../../components/FormCard";
 
 ReactotronCommands.default();
 
@@ -61,7 +62,7 @@ const MissingVisits = () => (
 
 const MyVisitsSection = () => {
   const { visits } = useUserData();
-  console.log(visits);
+
   return (
     <YStack elevation={1} paddingHorizontal="$md" paddingVertical={11} backgroundColor="white">
       <Text>{JSON.stringify(visits)}</Text>
@@ -107,9 +108,15 @@ const FormList = () => {
           data={formList}
           showsVerticalScrollIndicator={false}
           bounces={false}
-          renderItem={({ item, index }) => (
-            <Typography key={index}>{JSON.stringify(item)}</Typography>
-          )}
+          renderItem={({ item, index }) => {
+            return (
+              <FormCard
+                form={item}
+                onPress={() => console.log("Form Card action")}
+                marginBottom="$xxs"
+              />
+            );
+          }}
           estimatedItemSize={100}
         />
       </YStack>
@@ -121,8 +128,8 @@ const Index = () => {
   const { isAssignedToEllectionRound, visits } = useUserData();
   const { selectedPollingStation: _selectedPollingStation } = useUserData();
   //TODO: how do we want to manage the time?
-  const [arrivalTime, setArrivalTime] = useState(undefined);
-  const [departureTime, setDeparturetime] = useState(new Date());
+  const [arrivalTime, setArrivalTime] = useState();
+  const [departureTime, setDeparturetime] = useState();
 
   //
   if (!isAssignedToEllectionRound) {
@@ -151,14 +158,12 @@ const Index = () => {
               <TimeSelect type="arrival" time={arrivalTime} setTime={setArrivalTime} />
             </Card>
             <Card flex={0.5} paddingHorizontal="$md" paddingVertical="$xs" backgroundColor="white">
-              {/* <TimeSelect type="departure" time={departureTime} setTime={setDeparturetime} /> */}
+              <TimeSelect type="departure" time={departureTime} setTime={setDeparturetime} />
             </Card>
           </XStack>
           <Card padding="$md" gap="$md" backgroundColor="white">
             <PollingStationInfoDefault />
-            <CardFooter>
-              <Typography>Polling station information</Typography>
-            </CardFooter>
+            <CardFooter text="Polling station information"></CardFooter>
           </Card>
           <Card padding="$md">
             <Button onPress={() => router.push("/form-questionnaire/1")}>Go Form wizzard</Button>

@@ -4,17 +4,18 @@ import Badge from "./Badge";
 import Card from "./Card";
 import { Typography } from "./Typography";
 import CardFooter from "./CardFooter";
+import { CardProps } from "./Card";
 
 export interface Form {
   id?: string;
   name?: string;
   options?: string;
-  numberOfQuestions?: string;
-  numberOfCompletedQuestions?: string;
+  numberOfQuestions?: number;
+  numberOfCompletedQuestions?: number;
   status: string;
 }
 
-export interface FormCardProps {
+export interface FormCardProps extends CardProps {
   form: Form;
   onPress: () => void;
 }

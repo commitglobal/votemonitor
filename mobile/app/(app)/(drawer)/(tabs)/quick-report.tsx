@@ -13,11 +13,7 @@ import CardFooter from "../../../../components/CardFooter";
 
 const QuickReport = () => {
   return (
-    <Screen
-      preset="auto"
-      backgroundColor="white"
-      contentContainerStyle={{ gap: 20 }}
-    >
+    <Screen preset="auto" backgroundColor="white" contentContainerStyle={{ gap: 20 }}>
       <Text>Quick Report</Text>
       <Card>
         <Typography
@@ -27,19 +23,17 @@ const QuickReport = () => {
           numberOfLines={1}
           style={{ backgroundColor: "yellow" }}
         >
-          Hello from typographyHello from typographyHello from typographyHello
-          from typographyHello from typographyHello from typographyHello from
-          typography
+          Hello from typographyHello from typographyHello from typographyHello from typographyHello
+          from typographyHello from typographyHello from typography
         </Typography>
         <Typography>
-          Hello from typographyHello from typographyHello from typographyHello
-          from typographyHello from typographyHello from typographyHello from
-          typography
+          Hello from typographyHello from typographyHello from typographyHello from typographyHello
+          from typographyHello from typographyHello from typography
         </Typography>
       </Card>
       <Card padding="$md">
         <Typography>Card component</Typography>
-        <CardFooter marginTop="$sm">Card footer</CardFooter>
+        <CardFooter marginTop="$sm" text="Card footer" />
       </Card>
       <Stack padding="$sm" gap="$xs">
         <Typography preset="heading">Button</Typography>
@@ -62,21 +56,13 @@ const QuickReport = () => {
           <Button disabled onPress={() => console.log("filled")}>
             Filled
           </Button>
-          <Button
-            disabled
-            preset="outlined"
-            onPress={() => console.log("outlined")}
-          >
+          <Button disabled preset="outlined" onPress={() => console.log("outlined")}>
             Outlined
           </Button>
           <Button disabled preset="red" onPress={() => console.log("Danger")}>
             Danger
           </Button>
-          <Button
-            disabled
-            preset="chromeless"
-            onPress={() => console.log("Chromeless")}
-          >
+          <Button disabled preset="chromeless" onPress={() => console.log("Chromeless")}>
             Danger
           </Button>
         </Stack>
@@ -116,11 +102,7 @@ const QuickReport = () => {
         </Stack>
         <Stack gap="$xs" padding="$sm">
           <Typography preset="subheading">Select</Typography>
-          <Select
-            options={regionData}
-            placeholder="Select option"
-            defaultValue={"West"}
-          />
+          <Select options={regionData} placeholder="Select option" defaultValue={"West"} />
           <Select options={countryData} placeholder="Select option" />
         </Stack>
 

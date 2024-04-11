@@ -67,10 +67,11 @@ const Header = ({
   const [showNetInfoBanner, setShowNetInfoBanner] = useState(true);
 
   useEffect(() => {
-    return NetInfo.addEventListener((state) => {
+    const unsubscribe = NetInfo.addEventListener((state) => {
       const status = !!state.isConnected;
       setIsOnline(status);
     });
+    return unsubscribe();
   }, []);
 
   // show online banner again after user is connected again
@@ -116,12 +117,15 @@ const Header = ({
         </TouchableOpacity>
       </StyledWrapper>
       {isOnline ? (
-        !showNetInfoBanner && (
+        showNetInfoBanner && (
           <XStack
             backgroundColor="$green1"
             paddingLeft={20}
             justifyContent="space-between"
             alignItems="center"
+            position="absolute"
+            width="100%"
+            top={50 + insets.top}
           >
             <Typography fontWeight="500" color="$gray7">
               App online. All answers sent to server.
@@ -136,7 +140,14 @@ const Header = ({
           </XStack>
         )
       ) : (
-        <XStack backgroundColor="$red1" paddingVertical="$xxs" paddingHorizontal={20}>
+        <XStack
+          backgroundColor="$red1"
+          paddingVertical="$xxs"
+          paddingHorizontal={20}
+          position="absolute"
+          width="100%"
+          top={50 + insets.top}
+        >
           <Typography fontWeight="500" color="$gray7">
             Offline mode. Saving answers locally.
           </Typography>
