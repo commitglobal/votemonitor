@@ -24,7 +24,7 @@ const mapPollingStationOptionsToSelectValues = (
 
 type PollingStationStep = {
   id: number;
-  name: string | null;
+  name: string;
 };
 
 const PollingStationWizzard = () => {
@@ -34,8 +34,11 @@ const PollingStationWizzard = () => {
     setSteps([...steps, nextStep]);
   };
 
-  const onPreviousPress = () => {
-    setSteps(steps.slice(0, steps.length - 1));
+  const onPreviousPress = (): PollingStationStep | undefined => {
+    const updatedSteps = [...steps];
+    const lastStep = updatedSteps.pop();
+    setSteps(updatedSteps);
+    return lastStep;
   };
 
   const activeStep = useMemo(() => [...steps].pop(), [steps]);
@@ -60,7 +63,7 @@ const PollingStationWizzard = () => {
 };
 
 interface PollingStationWizzardContentProps {
-  onPreviousPress: () => void;
+  onPreviousPress: () => PollingStationStep | undefined;
   onNextPress: (nextStep: PollingStationStep) => void;
   activeStep?: PollingStationStep;
   locations: string;
@@ -73,15 +76,13 @@ const PollingStationWizzardContent = ({
   locations,
 }: PollingStationWizzardContentProps) => {
   const insets = useSafeAreaInsets();
-  const [selectedOption, setSelectedOption] = useState<{ id: number; name: string }>();
+  const [selectedOption, setSelectedOption] = useState<PollingStationStep>();
 
-  // Call polling station
-  const { data: pollingStationOptions } = usePollingStationByParentID(
-    activeStep?.id ? +activeStep.id.toFixed(1) : -1,
-  );
-
-  console.log("activeStep", activeStep);
-  console.log("pollingStationOptions", pollingStationOptions.length);
+  const {
+    data: pollingStationOptions,
+    isLoading: isLoadingPollingStations,
+    error: pollingStationsError,
+  } = usePollingStationByParentID(activeStep?.id ? +activeStep.id.toFixed(1) : -1);
 
   const pollingStationsMappedOptions = useMemo(
     () => mapPollingStationOptionsToSelectValues(pollingStationOptions),
@@ -109,18 +110,26 @@ const PollingStationWizzardContent = ({
   };
 
   const onBackButtonPress = () => {
-    onPreviousPress();
-    setSelectedOption(undefined);
+    const lastStep = onPreviousPress();
+    setSelectedOption(lastStep);
   };
 
   const onFinishButtonPress = () => {
     console.log("on finish button press");
   };
 
+  if (isLoadingPollingStations) {
+    return <Typography>Loading...</Typography>;
+  }
+
+  if (pollingStationsError) {
+    return <Typography>Error handling here...</Typography>;
+  }
+
   return (
     <YStack style={$containerStyle} justifyContent="space-between">
       <YStack paddingHorizontal="$md" paddingTop="$xl">
-        <YStack gap="$md" minHeight="$xl">
+        <YStack gap="$md" minHeight="$xxl">
           {activeStep && (
             <Typography color="$gray5">{`Add polling station from the ${locations}`}</Typography>
           )}
@@ -130,10 +139,11 @@ const PollingStationWizzardContent = ({
             Select the [Location - L1] of the polling station
           </Typography>
           <Select
-            key={activeStep?.id || "-1"}
+            key={activeStep?.id}
             options={pollingStationsMappedOptions}
             placeholder="Select Region"
             onValueChange={onSelectOption}
+            value={selectedOption ? `${selectedOption.id}_${selectedOption.name}` : undefined}
           />
         </YStack>
       </YStack>
