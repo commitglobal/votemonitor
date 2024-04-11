@@ -1,4 +1,8 @@
 import React from "react";
+import { View } from "react-native";
+import { useAuth } from "../../../../hooks/useAuth";
+import OfflinePersistComponentExample from "../../../../components/OfflinePersistComponentExample";
+import { StatusBar } from "react-native";
 import { router } from "expo-router";
 import * as ReactotronCommands from "../../../../helpers/reactotron-custom-commands";
 import { Screen } from "../../../../components/Screen";
@@ -11,6 +15,7 @@ import { Dimensions, ViewStyle } from "react-native";
 import { ListView } from "../../../../components/ListView";
 import TimeSelect from "../../../../components/TimeSelect";
 import CardFooter from "../../../../components/CardFooter";
+import PollingStationInfoDefault from "../../../../components/PollingStationInfoDefault";
 
 ReactotronCommands.default();
 
