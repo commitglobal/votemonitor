@@ -26,74 +26,63 @@ const More = () => {
         paddingVertical: tokens.space.xl.val,
       }}
     >
-      <Section
-        headerText={t("change-language")}
-        subHeaderText={appLanguage}
-        iconName="language"
+      <MenuItem
+        label={t("change-language")}
+        helper={appLanguage}
+        icon="language"
         chevronRight={true}
-      ></Section>
-      <Section
-        headerText={t("change-password")}
-        iconName="changePassword"
+      ></MenuItem>
+      <MenuItem label={t("change-password")} icon="changePassword" chevronRight={true}></MenuItem>
+      <MenuItem
+        label={t("terms")}
+        icon="termsConds"
         chevronRight={true}
-      ></Section>
-      <Section
-        headerText={t("terms")}
-        iconName="termsConds"
-        chevronRight={true}
-        action={() => {
+        onClick={() => {
           Linking.openURL(URL);
         }}
-      ></Section>
-      <Section
-        headerText={t("privacy_policy")}
-        iconName="privacyPolicy"
+      ></MenuItem>
+      <MenuItem
+        label={t("privacy_policy")}
+        icon="privacyPolicy"
         chevronRight={true}
-        action={() => {
+        onClick={() => {
           Linking.openURL(URL);
         }}
-      ></Section>
-      <Section
-        headerText={t("about")}
-        subHeaderText={t("app_version", { value: appVersion })}
-        iconName="aboutVM"
+      ></MenuItem>
+      <MenuItem
+        label={t("about")}
+        helper={t("app_version", { value: appVersion })}
+        icon="aboutVM"
         chevronRight={true}
-      ></Section>
-      <Section headerText={t("support")} iconName="contactNGO"></Section>
-      <Section headerText={t("feedback")} iconName="feedback"></Section>
-      <Section headerText={t("logout")} iconName="logoutNoBackground"></Section>
+      ></MenuItem>
+      <MenuItem label={t("support")} icon="contactNGO"></MenuItem>
+      <MenuItem label={t("feedback")} icon="feedback"></MenuItem>
+      <MenuItem label={t("logout")} icon="logoutNoBackground"></MenuItem>
     </Screen>
   );
 };
 
-interface SectionProps {
-  headerText: string;
-  subHeaderText?: string;
-  iconName: string;
+interface MenuItemProps {
+  label: string;
+  helper?: string;
+  icon: string;
   chevronRight?: boolean;
-  action?: () => void;
+  onClick?: () => void;
 }
 
-const Section = (props: SectionProps) => {
-  const { headerText, subHeaderText, iconName, chevronRight, action } = props;
-  const hasSubHeader = subHeaderText ? true : false;
+const MenuItem = (props: MenuItemProps) => {
+  const { label, helper, icon, chevronRight, onClick } = props;
+  const hasSubHeader = helper ? true : false;
   const hasChevronRight = chevronRight ? true : false;
 
-  const [isPressed, setIsPressed] = useState(false);
-
   return (
-    <Card
-      onPress={action}
-      onPressIn={() => setIsPressed(true)}
-      onPressOut={() => setIsPressed(false)}
-      opacity={isPressed ? 0.5 : 1}
-    >
+    <Card onPress={onClick}>
       <XStack alignItems="center" justifyContent="space-between">
         <XStack alignItems="center" gap="$xxs">
-          <Icon size={24} icon={iconName} color="black" />
+          <Icon size={24} icon={icon} color="black" />
           <View alignContent="center" gap="$xxxs">
-            <Typography preset="body2"> {headerText} </Typography>
-            {hasSubHeader && <Typography color="$gray8"> {subHeaderText}</Typography>}
+            <Typography preset="body2"> {label} </Typography>
+            {hasSubHeader && <Typography color="$gray8"> {helper}</Typography>}
           </View>
         </XStack>
 
