@@ -11,7 +11,7 @@ public class PollingStationInformationForm : AuditableBaseEntity, IAggregateRoot
 {
     public Guid ElectionRoundId { get; private set; }
     public ElectionRound ElectionRound { get; private set; }
-    public IReadOnlyList<string> Languages { get; private set; } = new List<string>().AsReadOnly();
+    public string[] Languages { get; private set; }
     public IReadOnlyList<BaseQuestion> Questions { get; private set; } = new List<BaseQuestion>().AsReadOnly();
 
     private PollingStationInformationForm(
@@ -21,7 +21,7 @@ public class PollingStationInformationForm : AuditableBaseEntity, IAggregateRoot
     {
         ElectionRound = electionRound;
         ElectionRoundId = electionRound.Id;
-        Languages = languages.ToList().AsReadOnly();
+        Languages = languages.ToArray();
         Questions = questions.ToList().AsReadOnly();
     }
     private PollingStationInformationForm(
@@ -43,7 +43,7 @@ public class PollingStationInformationForm : AuditableBaseEntity, IAggregateRoot
 
     public void UpdateDetails(IEnumerable<string> languages, IEnumerable<BaseQuestion> questions)
     {
-        Languages = languages.ToList().AsReadOnly();
+        Languages = languages.ToArray();
         Questions = questions.ToList().AsReadOnly();
     }
 

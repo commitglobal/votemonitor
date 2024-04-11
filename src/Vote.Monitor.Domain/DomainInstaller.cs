@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Npgsql;
+using Vote.Monitor.Core.Services.ConnectionString;
 using Vote.Monitor.Domain.Repository;
 
 namespace Vote.Monitor.Domain;
@@ -31,6 +32,7 @@ public static class DomainInstaller
         services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
         services.AddScoped(typeof(IReadRepository<>), typeof(EfRepository<>));
 
+        services.AddSingleton<IConnectionStringProvider>(_ => new ConnectionStringProvider(connectionString));
         return services;
     }
 

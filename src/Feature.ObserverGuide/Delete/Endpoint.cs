@@ -12,7 +12,7 @@ public class Endpoint(IAuthorizationService authorizationService,
 {
     public override void Configure()
     {
-        Delete("/api/election-rounds/{electionRoundId}/observer-guide/{id}");
+        Delete("/api/election-rounds/{electionRoundId}/monitoring-ngos/{monitoringNgoId}/observer-guide/{id}");
         DontAutoTag();
         Options(x => x.WithTags("observer-guide"));
     }
