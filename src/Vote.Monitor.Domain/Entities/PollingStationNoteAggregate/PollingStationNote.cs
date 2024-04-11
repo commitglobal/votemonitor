@@ -11,14 +11,13 @@ public class PollingStationNote : AuditableBaseEntity, IAggregateRoot
     public Guid MonitoringObserverId { get; private set; }
     public MonitoringObserver MonitoringObserver { get; private set; }
     public string Text { get; private set; }
-
-    public PollingStationNote(ElectionRound electionRound,
+    
+    public PollingStationNote(Guid electionRoundId,
         PollingStation pollingStation,
         MonitoringObserver monitoringObserver,
         string text) : base(Guid.NewGuid())
     {
-        ElectionRound = electionRound;
-        ElectionRoundId = electionRound.Id;
+        ElectionRoundId = electionRoundId;
         PollingStation = pollingStation;
         PollingStationId = pollingStation.Id;
         MonitoringObserver = monitoringObserver;

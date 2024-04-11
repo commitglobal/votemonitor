@@ -7,9 +7,12 @@ import {
   ViewStyle,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { XStack } from "tamagui";
+import { styled, XStack, Stack } from "tamagui";
 import { Typography } from "./Typography";
+import { Icon } from "../components/Icon";
 import { tokens } from "../theme/tokens";
+import { useEffect, useState } from "react";
+import NetInfo from "@react-native-community/netinfo";
 
 interface HeaderProps {
   /**
@@ -50,56 +53,96 @@ interface HeaderProps {
 }
 
 const Header = ({
-  backgroundColor = "gray",
+  backgroundColor = "$purple5",
   barStyle = "light-content",
   title,
-  titleColor,
+  titleColor = "white",
   style: $styleOverride,
   leftIcon,
   onLeftPress,
   rightIcon,
   onRightPress,
 }: HeaderProps) => {
+  const [isOnline, setIsOnline] = useState(true);
+  const [showNetInfoBanner, setShowNetInfoBanner] = useState(true);
+
+  useEffect(() => {
+    return NetInfo.addEventListener((state) => {
+      const status = !!state.isConnected;
+      setIsOnline(status);
+    });
+  }, []);
+
+  // show online banner again after user is connected again
+  useEffect(() => {
+    if (isOnline) setShowNetInfoBanner(true);
+  }, [isOnline]);
+
   const insets = useSafeAreaInsets();
 
+  const StyledWrapper = styled(XStack, {
+    name: "StyledWrapper",
+    backgroundColor,
+    height: 50 + insets.top,
+    paddingTop: insets.top,
+  });
+
   return (
-    <XStack
-      style={[
-        $headerContainer,
-        {
-          height: 50 + insets.top,
-          paddingTop: insets.top,
-          backgroundColor: backgroundColor,
-        },
-        $styleOverride,
-      ]}
-    >
-      {/* manipulating status bar icons to desired color */}
-      <StatusBar barStyle={barStyle} />
+    <>
+      <StyledWrapper style={[$headerContainer, $styleOverride]}>
+        {/* manipulating status bar icons to desired color */}
+        <StatusBar barStyle={barStyle} />
+        {/* left icon */}
+        <TouchableOpacity
+          onPress={leftIcon && onLeftPress ? onLeftPress : undefined}
+          style={$leftIconContainer}
+          disabled={!onLeftPress}
+        >
+          {leftIcon || null}
+        </TouchableOpacity>
 
-      {/* left icon */}
-      <TouchableOpacity
-        onPress={leftIcon && onLeftPress ? onLeftPress : () => void 0}
-        style={$leftIconContainer}
-        disabled={!onLeftPress}
-      >
-        {leftIcon ? leftIcon : null}
-      </TouchableOpacity>
+        {/* header title */}
+        <Typography preset="body2" style={{ ...$title, color: titleColor }}>
+          {title}
+        </Typography>
 
-      {/* header title */}
-      <Typography preset="body2" style={{ ...$title, color: titleColor }}>
-        {title}
-      </Typography>
-
-      {/* right icon */}
-      <TouchableOpacity
-        onPress={rightIcon && onRightPress ? onRightPress : () => void 0}
-        style={$rightIconContainer}
-        disabled={!onRightPress}
-      >
-        {rightIcon ? rightIcon : null}
-      </TouchableOpacity>
-    </XStack>
+        {/* right icon */}
+        <TouchableOpacity
+          onPress={rightIcon && onRightPress ? onRightPress : undefined}
+          style={$rightIconContainer}
+          disabled={!onRightPress}
+        >
+          {rightIcon || null}
+        </TouchableOpacity>
+      </StyledWrapper>
+      {isOnline ? (
+        !showNetInfoBanner && (
+          <XStack
+            backgroundColor="$green1"
+            paddingLeft={20}
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <Typography fontWeight="500" color="$gray7">
+              App online. All answers sent to server.
+            </Typography>
+            <Stack
+              onPress={() => setShowNetInfoBanner(false)}
+              paddingVertical="$xxs"
+              paddingHorizontal={20}
+            >
+              <Icon icon="x" size={16} />
+            </Stack>
+          </XStack>
+        )
+      ) : (
+        <XStack backgroundColor="$red1" paddingVertical="$xxs" paddingHorizontal={20}>
+          <Typography fontWeight="500" color="$gray7">
+            Offline mode. Saving answers locally.
+          </Typography>
+        </XStack>
+      )}
+    </>
   );
 };
 

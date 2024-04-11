@@ -11,7 +11,7 @@ export function QueryParamsDataTable<TData, TValue>({
 }: DataTableProps<TData, TValue>): ReactElement {
   const queryParams: DataTableParameters = useSearch({
     strict: false,
-  })
+  });
 
   const paginationState: PaginationState = {
     pageIndex: valueOrDefault(queryParams.pageNumber, 1) - 1,

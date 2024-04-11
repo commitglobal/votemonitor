@@ -1,13 +1,35 @@
 import React from "react";
-import { View, Text } from "react-native";
+import { View } from "react-native";
 import { router } from "expo-router";
 import { useAuth } from "../hooks/useAuth";
-import { Button } from "tamagui";
+import { Button as TamaguiButton } from "tamagui";
 import { Typography } from "../components/Typography";
-import Card from "../components/Card";
+import { useTranslation } from "react-i18next";
+import { useLanguage } from "../contexts/language/LanguageContext.provider";
+import Button from "../components/Button";
 
 const Login = () => {
   const { signIn } = useAuth();
+  const { t } = useTranslation("login");
+  const { changeLanguage } = useLanguage();
+
+  const switchToEnglish = () => {
+    changeLanguage("en");
+  };
+
+  const switchToRomanian = () => {
+    changeLanguage("ro");
+  };
+
+  const onLogin = async () => {
+    try {
+      await signIn();
+      router.replace("/");
+    } catch (err) {
+      console.error("Error while logging in...");
+    }
+  };
+
   return (
     <View
       style={{
@@ -17,45 +39,11 @@ const Login = () => {
         gap: 20,
       }}
     >
-      <Button
-        onPress={() => {
-          signIn();
-          // Navigate after signing in. You may want to tweak this to ensure sign-in is
-          // successful before navigating.
-          router.replace("/");
-        }}
-      >
-        <Typography>Sign In</Typography>
-      </Button>
-      <Button
-        paddingHorizontal="$xl"
-        height={"auto"}
-        paddingVertical="$lg"
-        backgroundColor="$yellow2"
-        onPress={() => {
-          router.push("/forgot-password");
-        }}
-      >
-        <Typography size="xl">Forgot Password</Typography>
-      </Button>
-      <Typography preset="heading" color="$red12">
-        Heading
-      </Typography>
-
-      <Typography color="$purple5" numberOfLines={3}>
-        SubheadingSubheadingSubheadingSubheadingSubheadingSubheadingSubheadingSubheadingSubheadingSubheadingSubheadingSubheadingSubheading
-      </Typography>
-
-      <Typography preset="default">default</Typography>
-      <Typography preset="body1">body1</Typography>
-      <Typography preset="body2">body2</Typography>
-      <Typography preset="helper">helper</Typography>
-
-      <Card>
-        <View>
-          <Text>Children component</Text>
-        </View>
-      </Card>
+      <TamaguiButton onPress={onLogin}>
+        <Typography>{t("submit")}</Typography>
+      </TamaguiButton>
+      <Button onPress={switchToEnglish}>English</Button>
+      <Button onPress={switchToRomanian}>Romanian</Button>
     </View>
   );
 };

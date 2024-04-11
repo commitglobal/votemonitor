@@ -1,6 +1,7 @@
 ﻿using System.IO.Compression;
 using System.Text.Json.Serialization;
 using Authorization.Policies;
+using Feature.MonitoringObservers;
 using Feature.ObserverGuide;
 using Feature.PollingStation.Information.Form;
 using Feature.PollingStation.Visit;
@@ -30,6 +31,12 @@ using Vote.Monitor.Domain.Entities.NgoAggregate;
 using Vote.Monitor.Api.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
+
+
+builder.WebHost.ConfigureKestrel(o =>
+{
+    o.Limits.MaxRequestBodySize = 1073741824; //set to max allowed file size of your system
+});
 
 builder.AddSentry();
 
@@ -109,6 +116,7 @@ builder.Services.AddFormFeature();
 builder.Services.AddPollingStationInformationFormFeature();
 builder.Services.AddObserverGuideFeature();
 builder.Services.AddPollingStationVisitFeature();
+builder.Services.AddMonitoringObserversFeature();
 
 builder.Services.AddAuthorization();
 

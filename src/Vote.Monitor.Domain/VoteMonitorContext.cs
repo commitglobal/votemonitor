@@ -1,4 +1,5 @@
-﻿using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
+﻿using Vote.Monitor.Domain.Constants;
+using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 using Vote.Monitor.Domain.Entities.NgoAggregate;
@@ -17,15 +18,15 @@ public class VoteMonitorContext : DbContext
 {
     private readonly ISerializerService _serializerService;
     private readonly ITimeProvider _timeProvider;
-    private readonly ICurrentUserProvider _currentUserProvider;
+    private readonly ICurrentUserIdProvider _currentUserIdProvider;
     public VoteMonitorContext(DbContextOptions<VoteMonitorContext> options,
         ISerializerService serializerService,
         ITimeProvider timeProvider,
-        ICurrentUserProvider currentUserProvider) : base(options)
+        ICurrentUserIdProvider currentUserIdProvider) : base(options)
     {
         _serializerService = serializerService;
         _timeProvider = timeProvider;
-        _currentUserProvider = currentUserProvider;
+        _currentUserIdProvider = currentUserIdProvider;
     }
 
     public DbSet<ApplicationUser> Users { get; set; }
@@ -58,12 +59,40 @@ public class VoteMonitorContext : DbContext
 
         builder.HasPostgresExtension("uuid-ossp");
 
-        var method = typeof(Postgres.Functions)
+        var jsonbObjectKeys = typeof(Postgres.Functions)
             .GetRuntimeMethod(nameof(Postgres.Functions.ObjectKeys), new[] { typeof(JsonDocument) });
 
+        var unnest = typeof(Postgres.Functions)
+            .GetRuntimeMethod(nameof(Postgres.Functions.Unnest), new[] { typeof(string[]) });
+
+        var arrayUnique = typeof(Postgres.Functions)
+            .GetRuntimeMethod(nameof(Postgres.Functions.ArrayUnique), new[] { typeof(string[]) });
+
+        var arrayRemove = typeof(Postgres.Functions)
+            .GetRuntimeMethod(nameof(Postgres.Functions.ArrayRemove), new[] { typeof(string[]), typeof(string) });
+
+        var arrayDiff = typeof(Postgres.Functions)
+            .GetRuntimeMethod(nameof(Postgres.Functions.ArrayDiff), new[] { typeof(string[]), typeof(string[]) });
+
         builder
-            .HasDbFunction(method!)
+            .HasDbFunction(jsonbObjectKeys!)
             .HasName("jsonb_object_keys");
+
+        builder
+            .HasDbFunction(unnest!)
+            .HasName("unnest");
+
+        builder
+            .HasDbFunction(arrayUnique!)
+            .HasName(CustomDBFunctions.ArrayUnique);
+
+        builder
+            .HasDbFunction(arrayRemove!)
+            .HasName("array_remove");
+
+        builder
+            .HasDbFunction(arrayDiff!)
+            .HasName(CustomDBFunctions.ArrayDiff);
 
         builder.ApplyConfiguration(new ApplicationUserConfiguration());
         builder.ApplyConfiguration(new NgoAdminConfiguration());
@@ -97,7 +126,7 @@ public class VoteMonitorContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.AddInterceptors(new AuditingInterceptor(_currentUserProvider, _timeProvider));
-        optionsBuilder.AddInterceptors(new AuditTrailInterceptor(_serializerService, _currentUserProvider, _timeProvider));
+        optionsBuilder.AddInterceptors(new AuditingInterceptor(_currentUserIdProvider, _timeProvider));
+        optionsBuilder.AddInterceptors(new AuditTrailInterceptor(_serializerService, _currentUserIdProvider, _timeProvider));
     }
 }

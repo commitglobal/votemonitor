@@ -6,11 +6,11 @@ namespace Vote.Monitor.Domain;
 public class AuditTrailInterceptor : ISaveChangesInterceptor
 {
     private readonly ISerializerService _serializerService;
-    private readonly ICurrentUserProvider _currentUserProvider;
+    private readonly ICurrentUserIdProvider _currentUserProvider;
     private readonly ITimeProvider _timeProvider;
 
     public AuditTrailInterceptor(ISerializerService serializerService,
-        ICurrentUserProvider currentUserProvider,
+        ICurrentUserIdProvider currentUserProvider,
         ITimeProvider timeProvider)
     {
         _serializerService = serializerService;
@@ -102,7 +102,7 @@ public class AuditTrailInterceptor : ISaveChangesInterceptor
 
         var voteMonitorContext = eventData.Context as VoteMonitorContext;
 
-        foreach (var auditEntry in trailEntries.Where(e => !e.HasTemporaryProperties))
+        foreach (var auditEntry in trailEntries.Where(e => !e.HasTemporaryProperties).Where(x=>x.TrailType != null))
         {
             voteMonitorContext!.AuditTrails.Add(auditEntry.ToAuditTrail());
         }

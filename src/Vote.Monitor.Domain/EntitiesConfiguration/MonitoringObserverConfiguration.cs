@@ -10,10 +10,18 @@ internal class MonitoringObserverConfiguration : IEntityTypeConfiguration<Monito
         builder.HasKey(e => e.Id);
         builder.Property(e => e.Id).IsRequired();
         builder.Property(e => e.Status).IsRequired();
+        builder.Property(e => e.Tags).IsRequired();
 
         builder
-            .HasOne(x => x.InviterNgo)
-            .WithMany()
-            .HasForeignKey(x => x.InviterNgoId);
+            .HasOne(e => e.MonitoringNgo)
+            .WithMany(e => e.MonitoringObservers)
+            .HasForeignKey(e => e.MonitoringNgoId)
+            .IsRequired();
+
+        builder
+            .HasOne(e => e.Observer)
+            .WithMany(e => e.MonitoringObservers)
+            .HasForeignKey(e => e.ObserverId)
+            .IsRequired();
     }
 }

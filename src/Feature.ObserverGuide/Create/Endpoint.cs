@@ -1,5 +1,4 @@
 ﻿using System.Net;
-using Authorization.Policies;
 using Authorization.Policies.Requirements;
 using Feature.ObserverGuide.Specifications;
 using Microsoft.AspNetCore.Authorization;
@@ -12,7 +11,7 @@ namespace Feature.ObserverGuide.Create;
 public class Endpoint(
     IAuthorizationService authorizationService,
     IRepository<ObserverGuideAggregate> repository,
-    ICurrentUserProvider currentUserProvider,
+    ICurrentUserRoleProvider currentUserRoleProvider,
     IReadRepository<MonitoringNgo> monitoringNgoRepository,
     IFileStorageService fileStorageService)
     : Endpoint<Request, Results<Ok<ObserverGuideModel>, NotFound, StatusCodeHttpResult>>
@@ -33,7 +32,8 @@ public class Endpoint(
             return TypedResults.NotFound();
         }
 
-        var specification = new GetMonitoringNgoSpecification(currentUserProvider.GetNgoId(), req.ElectionRoundId);
+        var ngoId = await currentUserRoleProvider.GetNgoId();
+        var specification = new GetMonitoringNgoSpecification(ngoId, req.ElectionRoundId);
         var monitoringNgo = await monitoringNgoRepository.FirstOrDefaultAsync(specification, ct);
         if (monitoringNgo == null)
         {

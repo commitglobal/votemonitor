@@ -15,11 +15,7 @@ type DrawerContentProps = ScrollViewProps & {
 };
 
 export const DrawerContent = (props: DrawerContentProps) => {
-  const votingSessions = [
-    { name: "session 1" },
-    { name: "session2" },
-    { name: "session 3" },
-  ];
+  const votingSessions = [{ name: "session 1" }, { name: "session2" }, { name: "session 3" }];
   const theme = useTheme();
   return (
     <DrawerContentScrollView {...props}>
@@ -40,9 +36,7 @@ export default function MainLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <Drawer
-        drawerContent={() => (
-          <DrawerContent backgroundColor={theme.purple5?.val} />
-        )}
+        drawerContent={() => <DrawerContent backgroundColor={theme.purple5?.val} />}
         screenOptions={{
           drawerType: "front",
           header: ({ navigation, route, options }) => {
@@ -51,17 +45,14 @@ export default function MainLayout() {
               <Header
                 title={title}
                 titleColor="white"
-                backgroundColor={theme.purple5?.val}
                 barStyle="light-content"
                 style={options.headerStyle as StyleProp<ViewStyle>}
                 leftIcon={<Icon icon="menuAlt2" color="white" />}
-                onLeftPress={() =>
-                  navigation.dispatch(DrawerActions.openDrawer)
-                }
-                rightIcon={<Icon icon="dotsVertical" color="white" />}
-                onRightPress={() => {
-                  console.log("on right action press");
-                }}
+                onLeftPress={() => navigation.dispatch(DrawerActions.openDrawer)}
+                // rightIcon={<Icon icon="dotsVertical" color="white" />}
+                // onRightPress={() => {
+                //   console.log("on right action press");
+                // }}
               />
             );
           },

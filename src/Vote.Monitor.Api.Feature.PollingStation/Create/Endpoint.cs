@@ -7,7 +7,7 @@ namespace Vote.Monitor.Api.Feature.PollingStation.Create;
 public class Endpoint(IRepository<PollingStationAggregate> repository,
     IRepository<ElectionRoundAggregate> electionRoundRepository,
     ITimeProvider timeProvider,
-    ICurrentUserProvider userProvider)
+    ICurrentUserIdProvider userProvider)
     : Endpoint<Request, Results<Ok<PollingStationModel>, Conflict<ProblemDetails>, NotFound<ProblemDetails>>>
 {
     public override void Configure()
@@ -19,7 +19,7 @@ public class Endpoint(IRepository<PollingStationAggregate> repository,
 
     public override async Task<Results<Ok<PollingStationModel>, Conflict<ProblemDetails>, NotFound<ProblemDetails>>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var specification = new GetPollingStationSpecification(req.Address, req.Tags);
+        var specification = new GetPollingStationSpecification(req.ElectionRoundId, req.Address, req.Tags);
         var hasIdenticalPollingStation = await repository.AnyAsync(specification, ct);
 
         if (hasIdenticalPollingStation)
@@ -35,7 +35,7 @@ public class Endpoint(IRepository<PollingStationAggregate> repository,
             return TypedResults.NotFound(new ProblemDetails(ValidationFailures));
         }
 
-        var pollingStation = PollingStationAggregate.Create(electionRound, 
+        var pollingStation = PollingStationAggregate.Create(electionRound,
             req.Level1,
             req.Level2,
             req.Level3,
@@ -43,7 +43,7 @@ public class Endpoint(IRepository<PollingStationAggregate> repository,
             req.Level5,
             req.Number,
             req.Address,
-            req.DisplayOrder, 
+            req.DisplayOrder,
             req.Tags.ToTagsObject(),
             timeProvider.UtcNow,
             userProvider.GetUserId()!.Value);

@@ -3,6 +3,7 @@
 global using System.Text.Json.Serialization;
 global using Ardalis.SmartEnum.SystemTextJson;
 global using Ardalis.Specification;
+global using Authorization.Policies;
 global using FastEndpoints;
 global using FluentValidation;
 global using Microsoft.AspNetCore.Http.HttpResults;

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import * as React from "react";
 import EyeOff from "../assets/icons/Eye off.svg";
 import Eye from "../assets/icons/Eye.svg";
@@ -15,9 +16,13 @@ import PencilAlt from "../assets/icons/Pencil alt.svg";
 import XCircle from "../assets/icons/x-circle.svg";
 import MenuAlt2 from "../assets/icons/menu-alt-2.svg";
 import DotsVertical from "../assets/icons/dots-vertical.svg";
+import Check from "../assets/icons/check.svg";
+import Calendar from "../assets/icons/Calendar.svg";
+import PeopleAddingVote from "../assets/icons/people-adding-vote.svg";
+import MissingPollingStation from "../assets/icons/missing-polling-station.svg";
+import X from "../assets/icons/x.svg";
 
-import { styled } from "tamagui";
-import { View } from "tamagui";
+import { styled, View } from "tamagui";
 import { StyleProp, ViewStyle } from "react-native";
 import { Ref } from "react";
 
@@ -56,14 +61,8 @@ type IconRegistry = {
 };
 
 export const defaultIcon = React.forwardRef(
-  (props: IconProps, ref?: Ref<typeof View>) => {
-    const {
-      icon,
-      color = "black",
-      size = 24,
-      style: $viewStyleOverride,
-      ...tamaguiProps
-    } = props;
+  (props: IconProps, ref?: Ref<typeof View>): JSX.Element => {
+    const { icon, color = "black", size = 24, style: $viewStyleOverride, ...tamaguiProps } = props;
 
     const iconRegistry: IconRegistry = {
       eyeOff: <EyeOff fill={color} width={size} height={size} />,
@@ -82,6 +81,11 @@ export const defaultIcon = React.forwardRef(
       xCircle: <XCircle fill={color} width={size} height={size} />,
       menuAlt2: <MenuAlt2 fill={color} width={size} height={size} />,
       dotsVertical: <DotsVertical fill={color} width={size} height={size} />,
+      check: <Check fill={color} width={size} height={size} />,
+      calendar: <Calendar fill={color} width={size} height={size} />,
+      peopleAddingVote: <PeopleAddingVote fill={color} width={226} height={170} />,
+      missingPollingStation: <MissingPollingStation fill={color} width={224} height={170} />,
+      x: <X fill={color} width={size} height={size} />,
     };
 
     return (
@@ -89,7 +93,7 @@ export const defaultIcon = React.forwardRef(
         {iconRegistry[icon]}
       </View>
     );
-  }
+  },
 );
 
 export const Icon = styled(
@@ -99,5 +103,5 @@ export const Icon = styled(
     accept: {
       color: "color",
     },
-  }
+  },
 );
