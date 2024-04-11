@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import { Checkbox, Label, XStack, CheckboxProps } from "tamagui";
 import { Icon } from "../Icon";
 import { Typography } from "../Typography";
 
-interface CheckboxInputProps extends CheckboxProps {
+export interface CheckboxInputProps extends CheckboxProps {
   id: string;
   label: string;
 }

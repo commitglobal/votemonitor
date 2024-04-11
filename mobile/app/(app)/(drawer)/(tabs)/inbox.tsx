@@ -1,11 +1,13 @@
-import { View, Text } from "react-native";
+import { View } from "react-native";
 import { Controller, useForm } from "react-hook-form";
 import Button from "../../../../components/Button";
-import FormInput from "../../../../components/FormInputs/FormInput";
 import { YStack } from "tamagui";
+// import FormInput from "../../../../components/FormInputs/FormInput";
+import RatingFormInput from "../../../../components/FormInputs/RatingFormInput";
 
 interface FormData {
-  nrOfMembers: string;
+  performanceRating: string;
+  // nrOfMembers: string;
 }
 
 const Inbox = () => {
@@ -17,11 +19,12 @@ const Inbox = () => {
   const onSubmit = (data: any) => {
     console.log(data);
   };
+  console.log("errors:", errors);
 
   return (
     <View style={{ backgroundColor: "white" }}>
       <YStack padding="$md" gap="$lg">
-        <Controller
+        {/* <Controller
           control={control}
           name="nrOfMembers"
           rules={{ maxLength: 10 }}
@@ -35,7 +38,23 @@ const Inbox = () => {
               value={value}
             />
           )}
+        /> */}
+
+        <Controller
+          control={control}
+          name="performanceRating"
+          render={({ field: { onChange, value } }) => (
+            <RatingFormInput
+              id="123456"
+              type="single"
+              label="A4. Please indicate your opinion regarding performance of PEC"
+              paragraph="According to the range of 1 = very bad to 5 = very good."
+              onValueChange={onChange}
+              value={value}
+            />
+          )}
         />
+
         <Button onPress={handleSubmit(onSubmit)}>Submit answer</Button>
       </YStack>
     </View>

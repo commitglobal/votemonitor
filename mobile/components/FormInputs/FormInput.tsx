@@ -1,6 +1,4 @@
 import React from "react";
-import { YStack } from "tamagui";
-import { Typography } from "../Typography";
 import Input, { InputProps } from "../Inputs/Input";
 import FormElement from "./FormElement";
 

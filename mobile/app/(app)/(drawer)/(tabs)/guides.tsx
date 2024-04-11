@@ -4,6 +4,7 @@ import CheckboxInput from "../../../../components/Inputs/CheckboxInput";
 import { YStack, CheckedState } from "tamagui";
 import { useForm, Controller } from "react-hook-form";
 import Button from "../../../../components/Button";
+import FormElement from "../../../../components/FormInputs/FormElement";
 
 interface FormData {
   missingMaterials: string[];
@@ -23,8 +24,7 @@ const Guides = () => {
     },
   });
 
-  // TODO: change data type here with that we need
-  const onSubmit = (data: any) => console.log(data);
+  const onSubmit = (data: FormData) => console.log(data);
 
   const handleCheckboxChange = (value: string, checked: CheckedState) => {
     // Get the current state of missingMaterials from the form
@@ -42,25 +42,27 @@ const Guides = () => {
   return (
     <View>
       <Text>Guides hello</Text>
-      <YStack gap="$sm">
-        {checkboxOptions.map((option, index) => (
-          <Controller
-            key={option.value}
-            name="missingMaterials"
-            control={control}
-            rules={{ required: true }}
-            render={() => (
-              <YStack>
-                <CheckboxInput
-                  id={index.toString()}
-                  label={option.label}
-                  checked={getValues("missingMaterials").includes(option.value)}
-                  onCheckedChange={(checked) => handleCheckboxChange(option.value, checked)}
-                />
-              </YStack>
-            )}
-          />
-        ))}
+      <YStack gap="$sm" padding="$md">
+        <FormElement label="A1.1. Mark all the materials that are not present:">
+          {/* //! we need a controller for every checbox input, so does it make sense to have a separate CheckboxFormInput where we add the controller inside? */}
+          {checkboxOptions.map((option, index) => (
+            <Controller
+              key={option.value}
+              name="missingMaterials"
+              control={control}
+              render={() => (
+                <YStack>
+                  <CheckboxInput
+                    id={index.toString()}
+                    label={option.label}
+                    checked={getValues("missingMaterials").includes(option.value)}
+                    onCheckedChange={(checked) => handleCheckboxChange(option.value, checked)}
+                  />
+                </YStack>
+              )}
+            />
+          ))}
+        </FormElement>
       </YStack>
       <Button onPress={handleSubmit(onSubmit)}>Submit</Button>
     </View>

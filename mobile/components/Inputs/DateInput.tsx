@@ -25,7 +25,7 @@ export const DateInput: React.FC<DateInputProps> = ({
     // send selected date to the form
     onChange(selectedDate);
 
-    //on android, close the modal
+    // on android, close the modal
     if (Platform.OS === "android") {
       setOpen(false);
     }

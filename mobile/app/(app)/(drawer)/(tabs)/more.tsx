@@ -10,7 +10,6 @@ const More = () => {
   const { control, handleSubmit } = useForm();
 
   const onSubmit = (data: any) => {
-    console.log("here");
     console.log(data);
   };
 
@@ -26,7 +25,6 @@ const More = () => {
             <DateFormInput
               label="A5. Lorem ipsum dolor sit amet consectetur?"
               paragraph="sncksnd"
-              helper={"ejne"}
               value={value}
               onChange={onChange}
             />
