@@ -121,7 +121,7 @@ const Index = () => {
   const { isAssignedToEllectionRound, visits } = useUserData();
   const { selectedPollingStation: _selectedPollingStation } = useUserData();
   //TODO: how do we want to manage the time?
-  const [arrivalTime, setArrivalTime] = useState(new Date());
+  const [arrivalTime, setArrivalTime] = useState(undefined);
   const [departureTime, setDeparturetime] = useState(new Date());
 
   //
@@ -151,7 +151,7 @@ const Index = () => {
               <TimeSelect type="arrival" time={arrivalTime} setTime={setArrivalTime} />
             </Card>
             <Card flex={0.5} paddingHorizontal="$md" paddingVertical="$xs" backgroundColor="white">
-              <TimeSelect type="departure" time={departureTime} setTime={setDeparturetime} />
+              {/* <TimeSelect type="departure" time={departureTime} setTime={setDeparturetime} /> */}
             </Card>
           </XStack>
           <Card padding="$md" gap="$md" backgroundColor="white">

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Typography } from "./Typography";
-import { YStack, XStack, Sheet } from "tamagui";
+import { YStack, XStack, Sheet, Stack } from "tamagui";
 import Button from "../components/Button";
 import { Platform } from "react-native";
 import RNDateTimePicker, { DateTimePickerEvent } from "@react-native-community/datetimepicker";
@@ -8,8 +8,8 @@ import CardFooter from "../components/CardFooter";
 
 interface TimeSelectProps {
   type: "arrival" | "departure";
-  time: Date;
-  setTime: React.Dispatch<React.SetStateAction<Date>>;
+  time: Date | undefined;
+  setTime: React.Dispatch<Date> | React.Dispatch<undefined>;
 }
 
 enum CardFooterDisplay {
@@ -28,9 +28,11 @@ const TimeSelect: React.FC<TimeSelectProps> = ({ type, time, setTime }) => {
   };
 
   const onResetTime = () => {
-    const resetTime = new Date(time);
+    //TODO: do we want to reset it to undefined(current time) or to 00:00?
+    const resetTime = time ? new Date(time) : new Date();
     resetTime.setMinutes(0);
     resetTime.setHours(0);
+    // setTime(undefined);
     setTime(resetTime);
   };
 
@@ -41,12 +43,21 @@ const TimeSelect: React.FC<TimeSelectProps> = ({ type, time, setTime }) => {
   return (
     <>
       <YStack onPress={() => setOpen(true)}>
-        <Typography preset="heading" fontWeight="500" paddingVertical="$sm" marginBottom="$xxs">
-          {time.toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-          })}
-        </Typography>
+        <Stack paddingVertical="$sm" marginBottom="$xxs">
+          {time ? (
+            <Typography preset="heading" fontWeight="500">
+              {time &&
+                time.toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+            </Typography>
+          ) : (
+            <Typography preset="heading" fontWeight="500" color="$gray5">
+              Not defined
+            </Typography>
+          )}
+        </Stack>
 
         <CardFooter>
           <Typography fontWeight="500" color="$gray5">
@@ -77,7 +88,7 @@ const TimeSelect: React.FC<TimeSelectProps> = ({ type, time, setTime }) => {
               <RNDateTimePicker
                 mode="time"
                 display="spinner"
-                value={time}
+                value={time || new Date()}
                 is24Hour={true}
                 onChange={onChange}
               />
@@ -85,7 +96,14 @@ const TimeSelect: React.FC<TimeSelectProps> = ({ type, time, setTime }) => {
           </Sheet.Frame>
         </Sheet>
       ) : (
-        open && <RNDateTimePicker mode="time" value={time} is24Hour={true} onChange={onChange} />
+        open && (
+          <RNDateTimePicker
+            mode="time"
+            value={time || new Date()}
+            is24Hour={true}
+            onChange={onChange}
+          />
+        )
       )}
     </>
   );
