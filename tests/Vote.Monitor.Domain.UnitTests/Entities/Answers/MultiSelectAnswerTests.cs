@@ -26,7 +26,6 @@ public class MultiSelectAnswerTests
     {
         // Arrange
         var id = Guid.NewGuid();
-        var optionId = Guid.NewGuid();
         var answer1 = MultiSelectAnswer.Create(id, new SelectedOptionFaker().Generate(3));
         var answer2 = MultiSelectAnswer.Create(id, new SelectedOptionFaker().Generate(3));
 
