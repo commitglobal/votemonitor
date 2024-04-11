@@ -1,4 +1,4 @@
-import { createContext, useContext } from "react";
+import { createContext, useContext, useState } from "react";
 import {
   useElectionRoundsQuery,
   usePollingStationsNomenclatorQuery,
@@ -10,8 +10,10 @@ type UserContextType = {
   electionRounds: ElectionRoundVM[];
   visits: PollingStationVisitVM[];
   isAssignedToEllectionRound: boolean;
+  selectedPollingStation?: string;
   isLoading: boolean;
   error: Error | null;
+  setSelectedPollingStation: (pollingStation: string) => void;
 };
 
 export const UserContext = createContext<UserContextType>({
@@ -20,9 +22,12 @@ export const UserContext = createContext<UserContextType>({
   isLoading: false,
   error: null,
   isAssignedToEllectionRound: false,
+  setSelectedPollingStation: (_pollingStation: string) => {},
 });
 
 const UserContextProvider = ({ children }: React.PropsWithChildren) => {
+  const [selectedPollingStation, setSelectedPollingStation] = useState<string>();
+
   const {
     data: rounds,
     isFetching: isLoadingRounds,
@@ -36,6 +41,7 @@ const UserContextProvider = ({ children }: React.PropsWithChildren) => {
   const { isFetching: isLoadingNomenclature, error: NomenclatureError } =
     usePollingStationsNomenclatorQuery(rounds ? rounds.electionRounds[0].id : "");
 
+  // usePollingStationById(selectedPollingStation);
   // usePollingStationById(25902);
   // TODO: Prefetch query for details for the active one
 
@@ -48,6 +54,8 @@ const UserContextProvider = ({ children }: React.PropsWithChildren) => {
         electionRounds: rounds?.electionRounds || [],
         isAssignedToEllectionRound:
           (rounds?.electionRounds && rounds?.electionRounds?.length > 0) || false,
+        selectedPollingStation,
+        setSelectedPollingStation,
       }}
     >
       {children}

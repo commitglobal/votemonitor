@@ -49,7 +49,7 @@ const Guides = () => {
             name="missingMaterials"
             control={control}
             rules={{ required: true }}
-            render={({ field: { onChange, value } }) => (
+            render={() => (
               <YStack>
                 <CheckboxInput
                   id={index.toString()}

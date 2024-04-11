@@ -12,6 +12,7 @@ import { usePollingStationByParentID } from "../../services/queries.service";
 import { useMemo, useState } from "react";
 import { PollingStationNomenclatorNodeVM } from "../../common/models/polling-station.model";
 import { useTranslation } from "react-i18next";
+import { useUserData } from "../../contexts/user/UserContext.provider";
 
 const mapPollingStationOptionsToSelectValues = (
   options: PollingStationNomenclatorNodeVM[],
@@ -80,6 +81,7 @@ const PollingStationWizzardContent = ({
   const { t } = useTranslation("add_polling_station");
   const insets = useSafeAreaInsets();
   const [selectedOption, setSelectedOption] = useState<PollingStationStep>();
+  const { setSelectedPollingStation } = useUserData();
 
   const {
     data: pollingStationOptions,
@@ -118,7 +120,15 @@ const PollingStationWizzardContent = ({
   };
 
   const onFinishButtonPress = () => {
-    console.log("on finish button press");
+    if (!selectedOption) {
+      return;
+    }
+    const pollingStationId = pollingStationOptions.find(
+      (option) => option.id === selectedOption.id,
+    )?.pollingStationId;
+
+    setSelectedPollingStation(pollingStationId as string);
+    router.back();
   };
 
   // TODO: To be handled
