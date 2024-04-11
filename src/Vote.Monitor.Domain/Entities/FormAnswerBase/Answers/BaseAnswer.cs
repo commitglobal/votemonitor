@@ -13,7 +13,7 @@ namespace Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 [PolyJsonConverter.SubType(typeof(SingleSelectAnswer), AnswerTypes.SingleSelectAnswerType)]
 [PolyJsonConverter.SubType(typeof(MultiSelectAnswer), AnswerTypes.MultiSelectAnswerType)]
 [PolyJsonConverter.SubType(typeof(RatingAnswer), AnswerTypes.RatingAnswerType)]
-public abstract class BaseAnswer
+public abstract record BaseAnswer
 {
     [JsonPropertyName("$answerType")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]

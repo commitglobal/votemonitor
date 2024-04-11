@@ -5,7 +5,6 @@ namespace Feature.PollingStation.Information.Form;
 public record PollingStationInformationFormModel
 {
     public Guid Id { get; init; }
-
     public required DateTime CreatedOn { get; init; }
     public required DateTime? LastModifiedOn { get; init; }
     public List<BaseQuestionModel> Questions { get; init; } = [];
@@ -17,6 +16,6 @@ public record PollingStationInformationFormModel
         Languages = entity.Languages.ToList(),
         CreatedOn = entity.CreatedOn,
         LastModifiedOn = entity.LastModifiedOn,
-        Questions = entity.Questions.Select(FormMapper.ToModel).ToList()
+        Questions = entity.Questions.Select(QuestionsMapper.ToModel).ToList()
     };
 }

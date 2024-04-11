@@ -1,11 +1,9 @@
-﻿using Vote.Monitor.Core.Services.Security;
-using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
+﻿using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
 
 namespace Vote.Monitor.Api.Feature.ElectionRound.Monitoring;
 
-public class Endpoint(IReadRepository<MonitoringNgo> repository,
-    ICurrentUserRoleProvider roleProvider)
-    : EndpointWithoutRequest<Results<Ok<Result>, ProblemDetails>>
+public class Endpoint(IReadRepository<MonitoringNgo> repository)
+    : Endpoint<Request, Ok<Result>>
 {
     public override void Configure()
     {
@@ -21,10 +19,9 @@ public class Endpoint(IReadRepository<MonitoringNgo> repository,
         Policies(PolicyNames.NgoAdminsOnly);
     }
 
-    public override async Task<Results<Ok<Result>, ProblemDetails>> ExecuteAsync(CancellationToken ct)
+    public override async Task<Ok<Result>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var ngoId = await roleProvider.GetNgoId();
-        var electionRounds = await repository.ListAsync(new GetNgoElectionSpecification(ngoId!.Value), ct);
+        var electionRounds = await repository.ListAsync(new GetNgoElectionSpecification(req.NgoId), ct);
 
         return TypedResults.Ok(new Result { ElectionRounds = electionRounds });
     }

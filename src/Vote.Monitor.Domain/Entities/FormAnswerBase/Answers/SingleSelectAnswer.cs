@@ -5,7 +5,7 @@ using Vote.Monitor.Domain.Entities.FormBase.Questions;
 
 namespace Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 
-public class SingleSelectAnswer : BaseAnswer
+public record SingleSelectAnswer : BaseAnswer
 {
     public SelectedOption Selection { get; private set; }
 
