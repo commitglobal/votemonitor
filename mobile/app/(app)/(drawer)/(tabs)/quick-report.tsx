@@ -205,7 +205,7 @@ const QuickReport = () => {
       <Stack padding="$sm" gap="$xs">
         <Typography preset="heading">FormCard</Typography>
         <FormCard
-          form={{ name: "Name" }}
+          form={{ name: "Name", status: "in progress" }}
           action={() => {
             console.log("FormCard");
           }}

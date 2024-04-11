@@ -5,19 +5,13 @@ import Card from "./Card";
 import { Typography } from "./Typography";
 import CardFooter from "./CardFooter";
 
-enum FormProgress {
-  NOT_STARTED = "Not started",
-  IN_PROGRESS = "In progress",
-  COMPLETED = "Completed",
-}
-
 export interface Form {
   id?: string;
   name?: string;
   options?: string;
   numberOfQuestions?: string;
   numberOfCompletedQuestions?: string;
-  status?: string;
+  status: string;
 }
 
 export interface FormCardProps {
@@ -31,18 +25,8 @@ export interface FormCardProps {
 
 const FormCard = (props: FormCardProps): JSX.Element => {
   const { form, action } = props;
-
-  const hasOptions = form.options ? form.options.trim() !== "" : false;
-
   const presetType =
     form.status === "completed" ? "success" : form.status === "in progress" ? "warning" : "default";
-
-  const badgeText =
-    form.status === "completed"
-      ? FormProgress.COMPLETED
-      : form.status === "in progress"
-        ? FormProgress.IN_PROGRESS
-        : FormProgress.NOT_STARTED;
 
   const CardHeader = styled(View, {
     name: "CardHeader",
@@ -67,10 +51,10 @@ const FormCard = (props: FormCardProps): JSX.Element => {
           {form.name}
         </Typography>
 
-        <Badge preset={presetType}>{badgeText}</Badge>
+        <Badge preset={presetType}>{form.status}</Badge>
       </CardHeader>
 
-      {hasOptions === true && (
+      {form.options && (
         <Typography preset="body1" color="$gray6" marginBottom="$xxs">
           {form.options}
         </Typography>

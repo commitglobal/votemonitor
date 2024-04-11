@@ -4,11 +4,11 @@ import { Typography } from "./Typography";
 
 export type Presets = "default" | "success" | "warning" | "danger";
 
-// enum FormProgress {
-//   NOT_STARTED = "Not started",
-//   IN_PROGRESS = "In progress",
-//   COMPLETED = "Completed",
-// }
+enum FormProgress {
+  NOT_STARTED = "Not started",
+  IN_PROGRESS = "In progress",
+  COMPLETED = "Completed",
+}
 
 export interface BadgeProps {
   children: string;
@@ -26,6 +26,13 @@ export interface BadgeProps {
 const Badge = (props: BadgeProps): JSX.Element => {
   const { children } = props;
   const presetType: Presets = props.preset ?? "default";
+
+  const badgeText =
+    children === "completed"
+      ? FormProgress.COMPLETED
+      : children === "in progress"
+        ? FormProgress.IN_PROGRESS
+        : FormProgress.NOT_STARTED;
 
   const StyledView = styled(View, {
     name: "StyledView",
@@ -60,7 +67,7 @@ const Badge = (props: BadgeProps): JSX.Element => {
         style={{ fontSize: 16, lineHeight: 20, fontWeight: "500" }}
         color={textColor}
       >
-        {children}
+        {badgeText}
       </Typography>
     </StyledView>
   );
