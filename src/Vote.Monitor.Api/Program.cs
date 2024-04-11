@@ -169,13 +169,13 @@ cfg =>
 {
     cfg.PostProcess = (document, _) =>
     {
-        var commitHash = Environment.GetEnvironmentVariable("COMMIT_HASH") ?? "Unknown";
+        var commitHash = Environment.GetEnvironmentVariable("COMMIT_HASH")?[..7] ?? "Unknown";
 
         document.Info = new OpenApiInfo
         {
             Version = "v2.0",
             Title = $"Vote Monitor API({commitHash})",
-            Description = $"An ASP.NET Core Web API for monitoring elections.",
+            Description = "An ASP.NET Core Web API for monitoring elections.",
             ExtensionData = new Dictionary<string, object?>
             {
                 ["commit-hash"] = commitHash
