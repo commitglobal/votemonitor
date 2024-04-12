@@ -83,13 +83,13 @@ export const getPollingStationNomenclatorVersion = (
     @param {string} electionRoundId 
     @returns {PollingStationVisitsAPIResponse} 
 */
-export type PollingStationVisitVM = {
-  pollingStationId: string;
-  visitedAt: string; // ISO date
-};
-
 export type PollingStationVisitsAPIResponse = {
-  visits: PollingStationVisitVM[];
+  visits: {
+    pollingStationId: string;
+    visitedAt: string; // ISO date
+    address: string;
+    number: number;
+  }[];
 };
 
 export const getPollingStationsVisits = (
@@ -114,9 +114,9 @@ export const getPollingStationsVisits = (
 export type PollingStationInformationAPIPayload = {
   electionRoundId: string;
   pollingStationId: string;
-  arrivalTime: string; // ISO String  "2024-04-01T12:58:06.670Z";
-  departureTime: string;
-  answers: ApiFormAnswer[];
+  arrivalTime?: string; // ISO String  "2024-04-01T12:58:06.670Z";
+  departureTime?: string;
+  answers?: ApiFormAnswer[];
 };
 
 export type PollingStationInformationAPIResponse = {

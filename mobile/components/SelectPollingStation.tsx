@@ -27,7 +27,7 @@ const SelectPollingStation = () => {
           <Select.Value
             width={"90%"}
             color="$purple5"
-            placeholder={selectedPollingStation?.pollingStationId}
+            placeholder={`${selectedPollingStation?.number} - ${selectedPollingStation?.name}`}
             fontWeight="500"
           ></Select.Value>
         </Select.Trigger>
@@ -91,8 +91,8 @@ const SelectPollingStation = () => {
                         gap="$3"
                       >
                         {/* //TODO: change number of lines to 2 if that's what we want */}
-                        <Select.ItemText width={"90%"} numberOfLines={1}>
-                          {entry.pollingStationId}
+                        <Select.ItemText width={"90%"} numberOfLines={2}>
+                          {entry.number} - {entry.address}
                         </Select.ItemText>
                         <Select.ItemIndicator>
                           <Icon icon="chevronLeft" />

@@ -83,7 +83,7 @@ const PollingStationWizzardContent = ({
   const { t } = useTranslation("add_polling_station");
   const insets = useSafeAreaInsets();
   const [selectedOption, setSelectedOption] = useState<PollingStationStep>();
-  const { electionRounds } = useUserData();
+  const { activeElectionRound } = useUserData();
 
   const queryClient = useQueryClient();
 
@@ -123,27 +123,32 @@ const PollingStationWizzardContent = ({
     setSelectedOption(lastStep);
   };
 
-  const onFinishButtonPress = () => {
+  const onFinishButtonPress = async () => {
     if (!selectedOption) {
       return;
     }
     const pollingStation = pollingStationOptions.find((option) => option.id === selectedOption.id);
 
-    if (pollingStation?.pollingStationId) {
-      queryClient.setQueryData(
-        pollingStationsKeys.visits(electionRounds[0].id),
-        (current: PollingStationVisitsAPIResponse) => {
-          console.log(current);
-          return {
-            visits: [
-              ...current.visits,
-              {
-                pollingStationId: pollingStation?.pollingStationId,
-                visitedAt: new Date().toISOString(),
-              },
-            ],
-          };
-        },
+    if (pollingStation?.pollingStationId && activeElectionRound) {
+      await queryClient.cancelQueries({
+        queryKey: pollingStationsKeys.visits(activeElectionRound.id),
+      });
+      const previousData =
+        queryClient.getQueryData<PollingStationVisitsAPIResponse[]>(
+          pollingStationsKeys.visits(activeElectionRound.id),
+        ) ?? [];
+
+      queryClient.setQueryData<PollingStationVisitsAPIResponse[]>(
+        pollingStationsKeys.visits(activeElectionRound.id),
+        [
+          ...previousData,
+          {
+            pollingStationId: pollingStation.pollingStationId,
+            visitedAt: new Date().toISOString(),
+            address: "Test",
+            number: 1234,
+          },
+        ],
       );
     }
 

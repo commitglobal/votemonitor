@@ -13,7 +13,10 @@ import {
 import * as DB from "../database/DAO/PollingStationsNomenclatorDAO";
 import * as API from "./definitions.api";
 
-import { PollingStationNomenclatorNodeVM } from "../common/models/polling-station.model";
+import {
+  PollingStationNomenclatorNodeVM,
+  PollingStationVisitVM,
+} from "../common/models/polling-station.model";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { performanceLog } from "../helpers/misc";
 
@@ -54,12 +57,10 @@ export const pollingStationsKeys = {
 };
 
 export const useElectionRoundsQuery = () => {
-  return useQuery<ElectionRoundsAPIResponse>({
+  return useQuery<ElectionRoundsAPIResponse, Error, API.ElectionRoundVM[]>({
     queryKey: electionRoundsKeys.all,
-    queryFn: async () => {
-      const apiData = await getElectionRounds();
-      return apiData;
-    },
+    queryFn: getElectionRounds,
+    select: (data): API.ElectionRoundVM[] => data.electionRounds,
   });
 };
 
@@ -112,12 +113,13 @@ export const usePollingStationsNomenclatorQuery = (electionRoundId: string | und
 };
 
 export const usePollingStationsVisits = (electionRoundId: string | undefined) => {
-  return useQuery({
+  return useQuery<API.PollingStationVisitsAPIResponse, Error, PollingStationVisitVM[]>({
     queryKey: pollingStationsKeys.visits(electionRoundId!),
-    queryFn: async () => {
+    queryFn: () => {
       return getPollingStationsVisits(electionRoundId!);
     },
     enabled: !!electionRoundId,
+    select: (data): PollingStationVisitVM[] => data.visits,
   });
 };
 
@@ -142,7 +144,6 @@ export const usePollingStationByParentID = (parentId: number | null) => {
 };
 
 export const usePollingStationById = (pollingStationId: string | undefined) => {
-  console.log("pollingStationId", pollingStationId);
   return useQuery({
     queryKey: pollingStationsKeys.one(pollingStationId!),
     queryFn: async () => {
@@ -184,7 +185,7 @@ export const usePollingStationInformation = (
     queryFn: async () => {
       const data = await getPollingStationInformation(electionRoundId!, pollingStationId!);
       console.log("usePollingStationInformation", data);
-      return data;
+      return data || null;
     },
     enabled: !!electionRoundId && !!pollingStationId,
   });

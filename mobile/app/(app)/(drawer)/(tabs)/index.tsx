@@ -7,8 +7,7 @@ import { Screen } from "../../../../components/Screen";
 import { useUserData } from "../../../../contexts/user/UserContext.provider";
 import { Typography } from "../../../../components/Typography";
 import Button from "../../../../components/Button";
-import { Card, Stack, XStack, YStack } from "tamagui";
-import { Icon } from "../../../../components/Icon";
+import { Card, XStack, YStack } from "tamagui";
 import { ListView } from "../../../../components/ListView";
 import TimeSelect from "../../../../components/TimeSelect";
 import CardFooter from "../../../../components/CardFooter";
@@ -22,55 +21,15 @@ import {
 import { ApiFormAnswer } from "../../../../services/interfaces/answer.type";
 import { useQueryClient } from "@tanstack/react-query";
 import SelectPollingStation from "../../../../components/SelectPollingStation";
+import NoVisitsExist from "../../../../components/NoVisitsExist";
+import NoElectionRounds from "../../../../components/NoElectionRounds";
+import { formList } from "../../../../helpers/misc";
 
 ReactotronCommands.default();
 
-const MissingElectionRounds = () => (
-  <Screen preset="fixed">
-    <Stack height="100%" backgroundColor="white" justifyContent="center" alignItems="center">
-      <YStack width={312} alignItems="center">
-        <Icon icon="peopleAddingVote" marginBottom="$md" />
-        <Typography preset="subheading" textAlign="center" marginBottom="$xxxs">
-          No election event to observe yet
-        </Typography>
-        <Typography preset="body1" textAlign="center" color="$gray5">
-          You will be able to use the app once you will be assigned to an election event by your
-          organization
-        </Typography>
-      </YStack>
-    </Stack>
-  </Screen>
-);
+export type FormItemStatus = "not started" | "in progress" | "completed";
 
-const MissingVisits = () => (
-  <Screen preset="fixed">
-    <Stack height="100%" backgroundColor="white" justifyContent="center" alignItems="center">
-      <YStack width={312} alignItems="center" gap="$md">
-        <Icon icon="missingPollingStation" />
-        <YStack gap="$xxxs">
-          <Typography preset="subheading" textAlign="center">
-            No visited polling stations yet
-          </Typography>
-          <Typography preset="body1" textAlign="center" color="$gray5">
-            Start configuring your first polling station before completing observation forms.
-          </Typography>
-        </YStack>
-        <Button
-          preset="outlined"
-          backgroundColor="white"
-          width="100%"
-          onPress={router.push.bind(null, "/polling-station-wizzard")}
-        >
-          Add your first polling station
-        </Button>
-      </YStack>
-    </Stack>
-  </Screen>
-);
-
-type FormItemStatus = "not started" | "in progress" | "completed";
-
-type FormListItem = {
+export type FormListItem = {
   id: string;
   name: string;
   options: string;
@@ -78,23 +37,6 @@ type FormListItem = {
   numberOfCompletedQuestions: number;
   status: FormItemStatus;
 };
-
-// Function to generate a random status
-function getRandomStatus(): FormItemStatus {
-  const statuses = ["not started", "in progress", "completed"];
-  const randomIndex = Math.floor(Math.random() * statuses.length);
-  return statuses[randomIndex] as FormItemStatus;
-}
-
-// Generate an array of 25 elements
-const formList: FormListItem[] = Array.from({ length: 25 }, (_, index) => ({
-  id: `id_${index + 1}`,
-  name: `Form ${index + 1}`,
-  options: `Option ${index + 1}`,
-  numberOfQuestions: Math.floor(Math.random() * 10) + 1,
-  numberOfCompletedQuestions: Math.floor(Math.random() * 10),
-  status: getRandomStatus(),
-}));
 
 const FormList = () => {
   return (
@@ -130,10 +72,9 @@ type PollingStationInformationVM = {
 };
 
 const Index = () => {
-  const { isAssignedToEllectionRound, visits, selectedPollingStation, activeElectionRound } =
+  const { isLoading, electionRounds, visits, selectedPollingStation, activeElectionRound } =
     useUserData();
   const { selectedPollingStation: _selectedPollingStation } = useUserData();
-  // TODO: how do we want to manage the time?
 
   const { data } = usePollingStationInformation(
     activeElectionRound?.id,
@@ -159,14 +100,14 @@ const Index = () => {
       },
     );
 
-    if (data && selectedPollingStation && activeElectionRound) {
+    if (selectedPollingStation && activeElectionRound) {
       mutate(
         {
           electionRoundId: activeElectionRound?.id,
           pollingStationId: selectedPollingStation?.pollingStationId as string,
-          arrivalTime: data.arrivalTime ?? null,
-          departureTime: data.departureTime ?? null,
-          answers: data.answers,
+          arrivalTime: data?.arrivalTime,
+          departureTime: data?.departureTime,
+          answers: data?.answers,
           ...payload,
         },
         {
@@ -179,14 +120,16 @@ const Index = () => {
     }
   };
 
-  console.log("Polling Station Information", data);
-
-  if (!isAssignedToEllectionRound) {
-    return <MissingElectionRounds />;
+  if (isLoading) {
+    return <Typography>Loading...</Typography>;
   }
 
-  if (visits.length !== 0) {
-    return <MissingVisits />;
+  if (!electionRounds?.length) {
+    return <NoElectionRounds />;
+  }
+
+  if (visits.length === 0) {
+    return <NoVisitsExist />;
   }
 
   return (

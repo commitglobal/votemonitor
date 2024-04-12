@@ -6,8 +6,9 @@ export type PollingStationNomenclatorNodeVM = {
   pollingStationId?: string; // available for the leafs
 };
 
-export type PollingStationVM = {
-  id: string;
-  name: string;
+export type PollingStationVisitVM = {
+  pollingStationId: string;
+  visitedAt: string; // ISO date
+  address: string;
   number: number;
 };
