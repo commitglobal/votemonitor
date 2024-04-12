@@ -2,9 +2,13 @@ import React, { ReactNode } from "react";
 import { AlertDialog, AlertDialogProps, Stack } from "tamagui";
 
 interface DialogProps extends AlertDialogProps {
+  // what you press on in order to open the dialog
   trigger: ReactNode;
+  // dialog header
   header: ReactNode;
+  // content inside dialog
   content: ReactNode;
+  // dialog footer
   footer: ReactNode;
 }
 

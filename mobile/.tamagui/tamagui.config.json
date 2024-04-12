@@ -22833,7 +22833,7 @@
         "colorTransparent": "rgba(10,10,10,0)",
         "placeholderColor": "hsl(0, 0%, 56.1%)",
         "outlineColor": "rgba(10,10,10,0.25)",
-        "gray1": "hsl(0, 0%, 88%)",
+        "gray1": "\thsl(210, 20%, 98%)",
         "gray2": "hsl(220, 14%, 96%)",
         "gray3": "hsl(240, 5%, 84%)",
         "gray4": "hsl(0, 0%, 93.0%)",
@@ -23154,11 +23154,11 @@
         "id": "light_red"
       },
       "light_gray": {
-        "background0": "hsla(0, 0%, 88%, 0)",
-        "background025": "hsla(0, 0%, 88%, 0.25)",
-        "background05": "hsla(0, 0%, 88%, 0.5)",
-        "background075": "hsla(0, 0%, 88%, 0.75)",
-        "color1": "hsl(0, 0%, 88%)",
+        "background0": "\thsla(210, 20%, 98%, 0)",
+        "background025": "\thsla(210, 20%, 98%, 0.25)",
+        "background05": "\thsla(210, 20%, 98%, 0.5)",
+        "background075": "\thsla(210, 20%, 98%, 0.75)",
+        "color1": "\thsl(210, 20%, 98%)",
         "color2": "hsl(220, 14%, 96%)",
         "color3": "hsl(240, 5%, 84%)",
         "color4": "hsl(0, 0%, 93.0%)",
@@ -23174,10 +23174,10 @@
         "color025": "hsla(240, 6%, 10%, 0.25)",
         "color05": "hsla(240, 6%, 10%, 0.5)",
         "color075": "hsla(240, 6%, 10%, 0.75)",
-        "background": "hsl(0, 0%, 88%)",
+        "background": "\thsl(210, 20%, 98%)",
         "backgroundHover": "hsl(220, 14%, 96%)",
         "backgroundPress": "hsl(240, 5%, 84%)",
-        "backgroundFocus": "hsl(0, 0%, 88%)",
+        "backgroundFocus": "\thsl(210, 20%, 98%)",
         "borderColor": "hsl(0, 0%, 93.0%)",
         "borderColorHover": "hsl(240, 4%, 46%)",
         "borderColorFocus": "hsl(220, 14%, 96%)",
@@ -30263,7 +30263,7 @@
           "isVar": true,
           "key": "$xxxl",
           "name": "space-66",
-          "val": 64,
+          "val": 58,
           "variable": ""
         }
       },
@@ -31173,7 +31173,7 @@
         "isVar": true,
         "key": "$xxxl",
         "name": "space-66",
-        "val": 64,
+        "val": 58,
         "variable": ""
       }
     }

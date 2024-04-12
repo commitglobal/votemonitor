@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from "react";
+import React, { ReactNode } from "react";
 import { Stack, XStack, YStack } from "tamagui";
 import { Typography } from "../Typography";
 import { Keyboard } from "react-native";

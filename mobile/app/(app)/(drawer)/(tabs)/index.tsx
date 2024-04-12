@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Dimensions, View, ViewStyle } from "react-native";
+import { Dimensions, ViewStyle } from "react-native";
 // import { useAuth } from "../../../../hooks/useAuth";
 import { router } from "expo-router";
 import * as ReactotronCommands from "../../../../helpers/reactotron-custom-commands";
@@ -7,7 +7,7 @@ import { Screen } from "../../../../components/Screen";
 import { useUserData } from "../../../../contexts/user/UserContext.provider";
 import { Typography } from "../../../../components/Typography";
 import Button from "../../../../components/Button";
-import { Card, Stack, Text, XStack, YStack } from "tamagui";
+import { Card, Stack, XStack, YStack } from "tamagui";
 import { Icon } from "../../../../components/Icon";
 import { ListView } from "../../../../components/ListView";
 import TimeSelect from "../../../../components/TimeSelect";
@@ -129,7 +129,7 @@ const FormList = () => {
 const Index = () => {
   const { isAssignedToEllectionRound, visits } = useUserData();
   const { selectedPollingStation: _selectedPollingStation } = useUserData();
-  //TODO: how do we want to manage the time?
+  // TODO: how do we want to manage the time?
   const [arrivalTime, setArrivalTime] = useState();
   const [departureTime, setDeparturetime] = useState();
 

@@ -1,7 +1,7 @@
 import React from "react";
 import { Text } from "react-native";
 import { Typography } from "../../../../components/Typography";
-import { Stack } from "tamagui";
+import { AlertDialog, Stack, XStack } from "tamagui";
 import Select from "../../../../components/Select";
 import Button from "../../../../components/Button";
 import { Icon } from "../../../../components/Icon";
@@ -11,6 +11,7 @@ import { Screen } from "../../../../components/Screen";
 import LinearProgress from "../../../../components/LinearProgress";
 import CardFooter from "../../../../components/CardFooter";
 import SelectPollingStation from "../../../../components/SelectPollingStation";
+import { Dialog } from "../../../../components/Dialog";
 
 const QuickReport = () => {
   return (
@@ -124,6 +125,37 @@ const QuickReport = () => {
           <LinearProgress total={5} current={4}></LinearProgress>
           <LinearProgress total={5} current={5}></LinearProgress>
         </Stack>
+
+        <Stack padding="$sm" gap="$xs" backgroundColor="white">
+          <Typography preset="heading">Dialog</Typography>
+          <Stack marginTop="$md" gap="$sm">
+            <Typography preset="subheading">Alert Dialog</Typography>
+            <Dialog
+              trigger={<Button preset="red">Delete</Button>}
+              header={<Typography preset="heading">Clear answer to Question A1</Typography>}
+              content={
+                <Typography preset="body1" color="$gray7">
+                  Clearing the answer will permanently delete all its information (including notes
+                  and media files). Question status will be reverted to Not Answered.
+                </Typography>
+              }
+              footer={
+                <XStack gap="$sm">
+                  {/* //TODO: maybe we move this Cancel dirrectly into the Dialog? */}
+                  {/* // !this 'asChild' is necessary in order to close the modal */}
+                  <AlertDialog.Cancel asChild>
+                    <Button preset="chromeless" textStyle={{ color: "black" }}>
+                      Cancel
+                    </Button>
+                  </AlertDialog.Cancel>
+                  <Button preset="red" flex={1}>
+                    Clear answer
+                  </Button>
+                </XStack>
+              }
+            ></Dialog>
+          </Stack>
+        </Stack>
       </Stack>
     </Screen>
   );
@@ -141,34 +173,34 @@ const countryData = [
 ];
 
 const pollingStationAdresses = [
-  { id: 1, value: "Secția 123, Str. Moldovei, nr. 30, Târgu Mureș, Romania" },
+  { pollingStationId: 1, visitedAt: "Secția 123, Str. Moldovei, nr. 30, Târgu Mureș, Romania" },
   {
-    id: 2,
-    value: "Secția 456, Str. Transilvaniei, nr. 45, Cluj-Napoca, Romania",
+    pollingStationId: 2,
+    visitedAt: "Secția 456, Str. Transilvaniei, nr. 45, Cluj-Napoca, Romania",
   },
-  { id: 3, value: "Secția 789, Str. București, nr. 12, București, Romania" },
-  { id: 4, value: "Secția 101, Str. Timișoarei, nr. 20, Timișoara, Romania" },
-  { id: 5, value: "Secția 234, Str. Iași, nr. 15, Iași, Romania" },
-  { id: 6, value: "Secția 345, Str. Crișana, nr. 10, Oradea, Romania" },
+  { pollingStationId: 3, visitedAt: "Secția 789, Str. București, nr. 12, București, Romania" },
+  { pollingStationId: 4, visitedAt: "Secția 101, Str. Timișoarei, nr. 20, Timișoara, Romania" },
+  { pollingStationId: 5, visitedAt: "Secția 234, Str. Iași, nr. 15, Iași, Romania" },
+  { pollingStationId: 6, visitedAt: "Secția 345, Str. Crișana, nr. 10, Oradea, Romania" },
   {
-    id: 7,
-    value: "Secția 567, Str. Maramureșului, nr. 25, Baia Mare, Romania",
+    pollingStationId: 7,
+    visitedAt: "Secția 567, Str. Maramureșului, nr. 25, Baia Mare, Romania",
   },
-  { id: 8, value: "Secția 890, Str. Dobrogei, nr. 8, Constanța, Romania" },
-  { id: 9, value: "Secția 111, Str. Ardealului, nr. 5, Sibiu, Romania" },
-  { id: 10, value: "Secția 222, Str. Olteniei, nr. 18, Craiova, Romania" },
-  { id: 11, value: "Secția 333, Str. Banatului, nr. 22, Arad, Romania" },
-  { id: 12, value: "Secția 444, Str. Mureșului, nr. 11, Deva, Romania" },
-  { id: 13, value: "Secția 555, Str. Dobrogei, nr. 7, Tulcea, Romania" },
-  { id: 14, value: "Secția 667, Str. Moldovei, nr. 9, Bacău, Romania" },
-  { id: 15, value: "Secția 777, Str. Crișului, nr. 13, Satu Mare, Romania" },
-  { id: 16, value: "Secția 888, Str. Olteniei, nr. 4, Pitești, Romania" },
-  { id: 17, value: "Secția 999, Str. Bucovinei, nr. 16, Suceava, Romania" },
+  { pollingStationId: 8, visitedAt: "Secția 890, Str. Dobrogei, nr. 8, Constanța, Romania" },
+  { pollingStationId: 9, visitedAt: "Secția 111, Str. Ardealului, nr. 5, Sibiu, Romania" },
+  { pollingStationId: 10, visitedAt: "Secția 222, Str. Olteniei, nr. 18, Craiova, Romania" },
+  { pollingStationId: 11, visitedAt: "Secția 333, Str. Banatului, nr. 22, Arad, Romania" },
+  { pollingStationId: 12, visitedAt: "Secția 444, Str. Mureșului, nr. 11, Deva, Romania" },
+  { pollingStationId: 13, visitedAt: "Secția 555, Str. Dobrogei, nr. 7, Tulcea, Romania" },
+  { pollingStationId: 14, visitedAt: "Secția 667, Str. Moldovei, nr. 9, Bacău, Romania" },
+  { pollingStationId: 15, visitedAt: "Secția 777, Str. Crișului, nr. 13, Satu Mare, Romania" },
+  { pollingStationId: 16, visitedAt: "Secția 888, Str. Olteniei, nr. 4, Pitești, Romania" },
+  { pollingStationId: 17, visitedAt: "Secția 999, Str. Bucovinei, nr. 16, Suceava, Romania" },
   {
-    id: 18,
-    value: "Secția 1010, Str. Transilvaniei, nr. 32, Alba Iulia, Romania",
+    pollingStationId: 18,
+    visitedAt: "Secția 1010, Str. Transilvaniei, nr. 32, Alba Iulia, Romania",
   },
-  { id: 19, value: "Secția 1111, Str. Banatului, nr. 3, Reșița, Romania" },
-  { id: 20, value: "Secția 1212, Str. București, nr. 7, Galați, Romania" },
+  { pollingStationId: 19, visitedAt: "Secția 1111, Str. Banatului, nr. 3, Reșița, Romania" },
+  { pollingStationId: 20, visitedAt: "Secția 1212, Str. București, nr. 7, Galați, Romania" },
 ];
 export default QuickReport;
