@@ -1,6 +1,7 @@
 ﻿using Authorization.Policies;
 using Feature.MonitoringObservers.Specifications;
 using Vote.Monitor.Core.Extensions;
+using Vote.Monitor.Domain;
 using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
@@ -23,13 +24,20 @@ public class Endpoint(
         Policies(PolicyNames.PlatformAdminsOnly);
         Summary(s =>
         {
-            s.Summary = "Permanently removes an monitoring observer from monitoring ngo";
-            s.Description = "All data will be lost. Only PlatformAdmins can perform this operation";
+            s.Summary = "Adds a monitoring observer to selected election round and ngo";
         });
     }
 
     public override async Task<Results<Ok<Response>, NotFound<string>, Conflict<ProblemDetails>, ValidationProblem>> ExecuteAsync(Request req, CancellationToken ct)
     {
+        var specification = new GetMonitoringObserverForElectionRound(req.ElectionRoundId, req.ObserverId);
+        var isAlreadyMonitoring = await monitoringObserverRepository.AnyAsync(specification,ct);
+        if (isAlreadyMonitoring)
+        {
+            AddError(x => x.ObserverId, "Observer is already monitoring for another ngo.");
+            return TypedResults.Conflict(new ProblemDetails(ValidationFailures));
+        }
+
         var electionRound = await repository.GetByIdAsync(req.ElectionRoundId, ct);
         if (electionRound is null)
         {
