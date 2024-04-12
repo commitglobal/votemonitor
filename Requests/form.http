@@ -1,5 +1,5 @@
-@electionRoundId=9a6255a2-2897-4b89-8ecf-d172b712f7d2
-@monitoringNgoId=fe7709e3-240c-41ea-9ba2-5739c1a51764
+@electionRoundId=43b91c74-6d05-4fd1-bd93-dfe203c83c53
+@monitoringNgoId=898408dd-1b50-43db-bfa4-34068eafdd66
 # List forms
 GET {{$dotenv HOST }}/api/election-rounds/{{electionRoundId}}/monitoring-ngo/{{monitoringNgoId}}/forms
       ?pageNumber=1
@@ -29,15 +29,17 @@ Content-Type: application/json
 Authorization: Bearer {{$dotenv JWT_TOKEN}}
 
 {
-  "code": "A2",
+  "code": "A1",
   "defaultLanguage": "RO",
   "languages": [
-    "RO"
+    "RO",
+    "EN"
   ],
   "name": {
-    "RO": "test form"
+    "RO": "formular de test",
+    "EN": "test form for voting"
   },
-  "formType": "ClosingAndCounting"
+  "formType": "Voting"
 }
 
 ###
@@ -48,7 +50,7 @@ Content-Type: application/json
 Authorization: Bearer {{$dotenv JWT_TOKEN}}
 
 {
-  "code": "A2",
+  "code": "A1",
   "defaultLanguage": "RO",
   "languages": [
     "RO",
@@ -265,7 +267,7 @@ Authorization: Bearer {{$dotenv JWT_TOKEN}}
 ###
 
 # Publish a form
-POST {{$dotenv HOST }}/api/election-rounds/{{electionRoundId}}/monitoring-ngo/{{monitoringNgoId}}/forms/{{newForm.response.body.$.id}}:publish
+POST {{$dotenv HOST }}/api/election-rounds/{{electionRoundId}}/monitoring-ngo/{{monitoringNgoId}}/forms/3043260e-017b-4e48-bb31-6e8bcdd870f0:publish
 Authorization: Bearer {{$dotenv JWT_TOKEN}}
 
 ###
