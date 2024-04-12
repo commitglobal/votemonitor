@@ -8,11 +8,13 @@ import { Typography } from "../../components/Typography";
 import Select from "../../components/Select";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Button from "../../components/Button";
-import { usePollingStationByParentID } from "../../services/queries.service";
+import { pollingStationsKeys, usePollingStationByParentID } from "../../services/queries.service";
 import { useMemo, useState } from "react";
 import { PollingStationNomenclatorNodeVM } from "../../common/models/polling-station.model";
 import { useTranslation } from "react-i18next";
 import { useUserData } from "../../contexts/user/UserContext.provider";
+import { useQueryClient } from "@tanstack/react-query";
+import { PollingStationVisitsAPIResponse } from "../../services/definitions.api";
 
 const mapPollingStationOptionsToSelectValues = (
   options: PollingStationNomenclatorNodeVM[],
@@ -81,7 +83,9 @@ const PollingStationWizzardContent = ({
   const { t } = useTranslation("add_polling_station");
   const insets = useSafeAreaInsets();
   const [selectedOption, setSelectedOption] = useState<PollingStationStep>();
-  const { setSelectedPollingStation } = useUserData();
+  const { electionRounds } = useUserData();
+
+  const queryClient = useQueryClient();
 
   const {
     data: pollingStationOptions,
@@ -123,11 +127,26 @@ const PollingStationWizzardContent = ({
     if (!selectedOption) {
       return;
     }
-    const pollingStationId = pollingStationOptions.find(
-      (option) => option.id === selectedOption.id,
-    )?.pollingStationId;
+    const pollingStation = pollingStationOptions.find((option) => option.id === selectedOption.id);
 
-    setSelectedPollingStation(pollingStationId as string);
+    if (pollingStation?.pollingStationId) {
+      queryClient.setQueryData(
+        pollingStationsKeys.visits(electionRounds[0].id),
+        (current: PollingStationVisitsAPIResponse) => {
+          console.log(current);
+          return {
+            visits: [
+              ...current.visits,
+              {
+                pollingStationId: pollingStation?.pollingStationId,
+                visitedAt: new Date().toISOString(),
+              },
+            ],
+          };
+        },
+      );
+    }
+
     router.back();
   };
 

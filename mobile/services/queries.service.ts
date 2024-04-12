@@ -28,7 +28,7 @@ export const pollingStationsKeys = {
     [...pollingStationsKeys.all, "visits", electionRoundId] as const,
   nomenclatorList: (parentId: number | null = -1) =>
     [...pollingStationsKeys.all, "node", parentId] as const,
-  one: (id: number) => [...pollingStationsKeys.all, id] as const,
+  one: (id: string) => [...pollingStationsKeys.all, id] as const,
   nomenclator: (electionRoundId: string) => [
     ...pollingStationsKeys.all,
     "nomenclator",
@@ -39,6 +39,8 @@ export const pollingStationsKeys = {
     "cacheKey",
   ],
   addAttachmentMutation: () => [...pollingStationsKeys.all, "addAttachment"],
+  pollingStationInformation: (electionRoundId: string, pollingStationId: string) =>
+    [...pollingStationsKeys.all, electionRoundId, pollingStationId] as const,
 };
 
 export const useElectionRoundsQuery = () => {
@@ -121,7 +123,8 @@ export const usePollingStationByParentID = (parentId: number | null) => {
   });
 };
 
-export const usePollingStationById = (pollingStationId: number) => {
+export const usePollingStationById = (pollingStationId: string) => {
+  console.log("pollingStationId", pollingStationId);
   return useQuery({
     queryKey: pollingStationsKeys.one(pollingStationId),
     queryFn: async () => {
@@ -139,6 +142,7 @@ export const usePollingStationById = (pollingStationId: number) => {
       return mapped;
     },
     enabled: !!pollingStationId,
+    staleTime: 0,
   });
 };
 
@@ -153,18 +157,15 @@ export const usePollingStationInformationForm = (electionRoundId: string) => {
   });
 };
 
-export const usePollingStationInformation = (
-  electionRoundId: string,
-  pollingStationIds?: string[],
-) => {
+export const usePollingStationInformation = (electionRoundId: string, pollingStationId: string) => {
   return useQuery({
-    queryKey: ["polling-station-information", electionRoundId, pollingStationIds],
+    queryKey: pollingStationsKeys.pollingStationInformation(electionRoundId, pollingStationId),
     queryFn: async () => {
-      const data = await getPollingStationInformation(electionRoundId, pollingStationIds);
+      const data = await getPollingStationInformation(electionRoundId, pollingStationId);
       console.log("usePollingStationInformation", data);
       return data;
     },
-    enabled: !!electionRoundId,
+    enabled: !!electionRoundId && !!pollingStationId,
   });
 };
 
