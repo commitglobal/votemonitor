@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { Adapt, Select, Sheet, View, YStack } from "tamagui";
 import { Icon } from "./Icon";
 import { Typography } from "./Typography";
@@ -9,12 +9,18 @@ import { router } from "expo-router";
 
 const SelectPollingStation = () => {
   const { visits, selectedPollingStation, setSelectedPollingStationId } = useUserData();
+  const [open, setOpen] = useState(false);
 
   const insets = useSafeAreaInsets();
 
   return (
     <YStack paddingVertical="$xs" paddingHorizontal="$md" backgroundColor="white">
-      <Select onValueChange={setSelectedPollingStationId} disablePreventBodyScroll>
+      <Select
+        onValueChange={setSelectedPollingStationId}
+        disablePreventBodyScroll
+        open={open}
+        onOpenChange={setOpen}
+      >
         <Select.Trigger
           justifyContent="center"
           alignItems="center"
@@ -65,7 +71,10 @@ const SelectPollingStation = () => {
               >
                 <Button
                   preset="outlined"
-                  onPress={router.push.bind(null, "/polling-station-wizzard")}
+                  onPress={() => {
+                    setOpen(false);
+                    router.push.bind(null, "/polling-station-wizzard")();
+                  }}
                 >
                   Add new polling station
                 </Button>
