@@ -5,11 +5,11 @@ import {
   usePollingStationsNomenclatorQuery,
   usePollingStationsVisits,
 } from "../../services/queries.service";
-import { ElectionRoundVM } from "../../services/definitions.api";
 import {
   PollingStationNomenclatorNodeVM,
   PollingStationVisitVM,
 } from "../../common/models/polling-station.model";
+import { ElectionRoundVM } from "../../common/models/election-round.model";
 
 type UserContextType = {
   electionRounds: ElectionRoundVM[];

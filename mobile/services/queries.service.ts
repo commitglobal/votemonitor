@@ -1,6 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
-  ElectionRoundsAPIResponse,
   PollingStationInformationAPIPayload,
   getElectionRounds,
   getPollingStationInformation,
@@ -13,10 +12,7 @@ import {
 import * as DB from "../database/DAO/PollingStationsNomenclatorDAO";
 import * as API from "./definitions.api";
 
-import {
-  PollingStationNomenclatorNodeVM,
-  PollingStationVisitVM,
-} from "../common/models/polling-station.model";
+import { PollingStationNomenclatorNodeVM } from "../common/models/polling-station.model";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { performanceLog } from "../helpers/misc";
 
@@ -57,10 +53,9 @@ export const pollingStationsKeys = {
 };
 
 export const useElectionRoundsQuery = () => {
-  return useQuery<ElectionRoundsAPIResponse, Error, API.ElectionRoundVM[]>({
+  return useQuery({
     queryKey: electionRoundsKeys.all,
     queryFn: getElectionRounds,
-    select: (data): API.ElectionRoundVM[] => data.electionRounds,
   });
 };
 
@@ -109,17 +104,17 @@ export const usePollingStationsNomenclatorQuery = (electionRoundId: string | und
     enabled: !!electionRoundId,
     // staleTime: 5 * 60 * 1000,
     staleTime: 0,
+    networkMode: "always",
   });
 };
 
 export const usePollingStationsVisits = (electionRoundId: string | undefined) => {
-  return useQuery<API.PollingStationVisitsAPIResponse, Error, PollingStationVisitVM[]>({
+  return useQuery({
     queryKey: pollingStationsKeys.visits(electionRoundId!),
     queryFn: () => {
       return getPollingStationsVisits(electionRoundId!);
     },
     enabled: !!electionRoundId,
-    select: (data): PollingStationVisitVM[] => data.visits,
   });
 };
 
@@ -140,6 +135,7 @@ export const usePollingStationByParentID = (parentId: number | null) => {
     enabled: !!parentId,
     initialData: [],
     staleTime: 0,
+    networkMode: "always",
   });
 };
 
@@ -147,6 +143,7 @@ export const usePollingStationById = (pollingStationId: string | undefined) => {
   return useQuery({
     queryKey: pollingStationsKeys.one(pollingStationId!),
     queryFn: async () => {
+      console.log("usePollingStationById", pollingStationId);
       const data = await DB.getPollingStationById(pollingStationId!);
 
       if (!data) return null;
@@ -162,6 +159,7 @@ export const usePollingStationById = (pollingStationId: string | undefined) => {
     },
     enabled: !!pollingStationId,
     staleTime: 0,
+    networkMode: "always", // https://tanstack.com/query/v4/docs/framework/react/guides/network-mode#network-mode-always
   });
 };
 
@@ -184,7 +182,6 @@ export const usePollingStationInformation = (
     queryKey: pollingStationsKeys.pollingStationInformation(electionRoundId!, pollingStationId!),
     queryFn: async () => {
       const data = await getPollingStationInformation(electionRoundId!, pollingStationId!);
-      console.log("usePollingStationInformation", data);
       return data || null;
     },
     enabled: !!electionRoundId && !!pollingStationId,

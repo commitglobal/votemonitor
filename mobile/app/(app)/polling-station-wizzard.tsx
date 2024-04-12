@@ -10,11 +10,13 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Button from "../../components/Button";
 import { pollingStationsKeys, usePollingStationByParentID } from "../../services/queries.service";
 import { useMemo, useState } from "react";
-import { PollingStationNomenclatorNodeVM } from "../../common/models/polling-station.model";
+import {
+  PollingStationNomenclatorNodeVM,
+  PollingStationVisitVM,
+} from "../../common/models/polling-station.model";
 import { useTranslation } from "react-i18next";
 import { useUserData } from "../../contexts/user/UserContext.provider";
 import { useQueryClient } from "@tanstack/react-query";
-import { PollingStationVisitsAPIResponse } from "../../services/definitions.api";
 
 const mapPollingStationOptionsToSelectValues = (
   options: PollingStationNomenclatorNodeVM[],
@@ -135,19 +137,19 @@ const PollingStationWizzardContent = ({
         queryKey: pollingStationsKeys.visits(activeElectionRound.id),
       });
       const previousData =
-        queryClient.getQueryData<PollingStationVisitsAPIResponse[]>(
+        queryClient.getQueryData<PollingStationVisitVM[]>(
           pollingStationsKeys.visits(activeElectionRound.id),
         ) ?? [];
 
-      queryClient.setQueryData<PollingStationVisitsAPIResponse[]>(
+      queryClient.setQueryData<PollingStationVisitVM[]>(
         pollingStationsKeys.visits(activeElectionRound.id),
         [
           ...previousData,
           {
             pollingStationId: pollingStation.pollingStationId,
             visitedAt: new Date().toISOString(),
-            address: "Test",
-            number: 1234,
+            address: pollingStation.name,
+            number: +(pollingStation?.number || 0),
           },
         ],
       );

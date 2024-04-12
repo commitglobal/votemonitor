@@ -1,3 +1,5 @@
+import { ElectionRoundVM } from "../common/models/election-round.model";
+import { PollingStationVisitVM } from "../common/models/polling-station.model";
 import { CameraResult } from "../hooks/useCamera";
 import API from "./api";
 import { ApiFormAnswer } from "./interfaces/answer.type";
@@ -9,24 +11,15 @@ import { ApiFormQuestion } from "./interfaces/question.type";
     @description The election rounds where my user is asigned
     @returns {ElectionRoundsAPIResponse} 
 */
-export type ElectionRoundVM = {
-  id: string;
-  countryId: string;
-  country: string;
-  title: string;
-  englishTitle: string;
-  startDate: string;
-  status: "Archived" | "NotStarted" | "Started";
-  createdOn: string;
-  lastModifiedOn: string | null;
-};
 
 export type ElectionRoundsAPIResponse = {
   electionRounds: ElectionRoundVM[];
 };
 
-export const getElectionRounds = (): Promise<ElectionRoundsAPIResponse> => {
-  return API.get("election-rounds:my").then((res) => res.data);
+export const getElectionRounds = (): Promise<ElectionRoundVM[]> => {
+  return API.get<ElectionRoundsAPIResponse>("election-rounds:my").then(
+    (res) => res.data.electionRounds,
+  );
 };
 
 /** ========================================================================
@@ -94,10 +87,10 @@ export type PollingStationVisitsAPIResponse = {
 
 export const getPollingStationsVisits = (
   electionRoundId: string,
-): Promise<PollingStationVisitsAPIResponse> => {
-  return API.get(`election-rounds/${electionRoundId}/polling-station-visits:my`).then(
-    (res) => res.data,
-  );
+): Promise<PollingStationVisitVM[]> => {
+  return API.get<PollingStationVisitsAPIResponse>(
+    `election-rounds/${electionRoundId}/polling-station-visits:my`,
+  ).then((res) => res.data.visits);
 };
 
 /**
