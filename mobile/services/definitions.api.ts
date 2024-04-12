@@ -175,16 +175,16 @@ export const getPollingStationInformationForm = (
 */
 export const getPollingStationInformation = (
   electionRoundId: string,
-  pollingStationIds?: string[],
+  pollingStationId: string,
 ): Promise<PollingStationInformationAPIResponse> => {
   return API.get(`election-rounds/${electionRoundId}/information:my`, {
     params: {
-      pollingStationIds,
+      pollingStationIds: [pollingStationId],
     },
     paramsSerializer: {
       indexes: null,
     },
-  }).then((res) => res.data?.informations);
+  }).then((res) => res.data?.informations[0]);
 };
 
 /** ========================================================================

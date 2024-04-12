@@ -1,19 +1,21 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useMemo, useState } from "react";
 import {
   useElectionRoundsQuery,
+  usePollingStationById,
   usePollingStationsNomenclatorQuery,
   usePollingStationsVisits,
 } from "../../services/queries.service";
 import { ElectionRoundVM, PollingStationVisitVM } from "../../services/definitions.api";
+import { PollingStationNomenclatorNodeVM } from "../../common/models/polling-station.model";
 
 type UserContextType = {
   electionRounds: ElectionRoundVM[];
   visits: PollingStationVisitVM[];
   isAssignedToEllectionRound: boolean;
-  selectedPollingStation?: string;
+  selectedPollingStation?: PollingStationNomenclatorNodeVM;
   isLoading: boolean;
   error: Error | null;
-  setSelectedPollingStation: (pollingStation: string) => void;
+  setSelectedPollingStation: (pollingStation: PollingStationNomenclatorNodeVM) => void;
 };
 
 export const UserContext = createContext<UserContextType>({
@@ -22,27 +24,42 @@ export const UserContext = createContext<UserContextType>({
   isLoading: false,
   error: null,
   isAssignedToEllectionRound: false,
-  setSelectedPollingStation: (_pollingStation: string) => {},
+  setSelectedPollingStation: (_pollingStation: PollingStationNomenclatorNodeVM) => {},
 });
 
 const UserContextProvider = ({ children }: React.PropsWithChildren) => {
-  const [selectedPollingStation, setSelectedPollingStation] = useState<string>();
+  const [_, setSelectedPollingStation] = useState<PollingStationNomenclatorNodeVM>();
 
   const {
     data: rounds,
     isFetching: isLoadingRounds,
     error: ElectionRoundsError,
   } = useElectionRoundsQuery();
+
+  const activeElectionRound = useMemo(
+    () => rounds?.electionRounds?.find((round) => round.status === "Started"),
+    [rounds],
+  );
+
   const {
     data: visits,
     isFetching: isLoadingVisits,
     error: PollingStationsError,
-  } = usePollingStationsVisits(rounds ? rounds.electionRounds[0].id : "");
-  const { isFetching: isLoadingNomenclature, error: NomenclatureError } =
-    usePollingStationsNomenclatorQuery(rounds ? rounds.electionRounds[0].id : "");
+  } = usePollingStationsVisits(activeElectionRound?.id);
 
-  // usePollingStationById(selectedPollingStation);
-  // usePollingStationById(25902);
+  const lastVisit = useMemo(
+    () =>
+      visits?.visits.sort(
+        (a, b) => new Date(b.visitedAt).getTime() - new Date(a.visitedAt).getTime(),
+      )[0],
+    [visits],
+  );
+
+  const { isFetching: isLoadingNomenclature, error: NomenclatureError } =
+    usePollingStationsNomenclatorQuery(activeElectionRound?.id);
+
+  const { data: currentPollingStation } = usePollingStationById(lastVisit?.pollingStationId);
+
   // TODO: Prefetch query for details for the active one
 
   return (
@@ -54,7 +71,7 @@ const UserContextProvider = ({ children }: React.PropsWithChildren) => {
         electionRounds: rounds?.electionRounds || [],
         isAssignedToEllectionRound:
           (rounds?.electionRounds && rounds?.electionRounds?.length > 0) || false,
-        selectedPollingStation,
+        selectedPollingStation: currentPollingStation as PollingStationNomenclatorNodeVM,
         setSelectedPollingStation,
       }}
     >

@@ -83,10 +83,10 @@ export const getPollingStationsByParentId = (parentId: number | null = -1) => {
     .fetch();
 };
 
-export const getPollingStationById = async (id: number): Promise<PollingStationsNom | null> => {
+export const getPollingStationById = async (id: string): Promise<PollingStationsNom | null> => {
   const data = await database
     .get<PollingStationsNom>("polling_stations_nom")
-    .query(Q.where("_id", id));
+    .query(Q.where("polling_station_id", id));
 
   return data?.length ? data[0] : null;
 };

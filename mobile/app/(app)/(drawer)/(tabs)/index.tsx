@@ -14,7 +14,13 @@ import TimeSelect from "../../../../components/TimeSelect";
 import CardFooter from "../../../../components/CardFooter";
 import PollingStationInfoDefault from "../../../../components/PollingStationInfoDefault";
 import FormCard from "../../../../components/FormCard";
-import SelectPollingStation from "../../../../components/SelectPollingStation";
+import {
+  pollingStationsKeys,
+  upsertPollingStationGeneralInformationMutation,
+  usePollingStationInformation,
+} from "../../../../services/queries.service";
+import { ApiFormAnswer } from "../../../../services/interfaces/answer.type";
+import { useQueryClient } from "@tanstack/react-query";
 
 ReactotronCommands.default();
 
@@ -62,13 +68,12 @@ const MissingVisits = () => (
 );
 
 const MyVisitsSection = () => {
-  const { visits } = useUserData();
+  const { selectedPollingStation } = useUserData();
 
   return (
-    // <YStack elevation={1} paddingHorizontal="$md" paddingVertical={11} backgroundColor="red">
-    //   <Text>{JSON.stringify(visits)}</Text>
-    // </YStack>
-    <SelectPollingStation options={visits} />
+    <YStack elevation={1} paddingHorizontal="$md" paddingVertical={11} backgroundColor="white">
+      <Text>{JSON.stringify(selectedPollingStation)}</Text>
+    </YStack>
   );
 };
 
@@ -127,12 +132,71 @@ const FormList = () => {
   );
 };
 
+type PollingStationInformationVM = {
+  arrivalTime: string;
+  departureTime: string;
+  answers: ApiFormAnswer[];
+};
+
 const Index = () => {
-  const { isAssignedToEllectionRound, visits } = useUserData();
+  const { isAssignedToEllectionRound, visits, electionRounds, selectedPollingStation } =
+    useUserData();
   const { selectedPollingStation: _selectedPollingStation } = useUserData();
   // TODO: how do we want to manage the time?
   const [arrivalTime, setArrivalTime] = useState();
   const [departureTime, setDeparturetime] = useState();
+
+  const { data } = usePollingStationInformation(
+    electionRounds[0]?.id,
+    selectedPollingStation?.pollingStationId || "",
+  );
+
+  console.log("Aici", data);
+
+  const { mutate } = upsertPollingStationGeneralInformationMutation();
+
+  const queryClient = useQueryClient();
+
+  const updateGeneralData = (payload: Partial<PollingStationInformationVM>) => {
+    // Set query data
+    queryClient.setQueryData(
+      pollingStationsKeys.pollingStationInformation(
+        electionRounds[0].id,
+        selectedPollingStation?.pollingStationId as string,
+      ),
+      (current: any) => {
+        return {
+          ...current,
+          ...payload,
+        };
+      },
+    );
+
+    if (data && selectedPollingStation) {
+      mutate(
+        {
+          electionRoundId: electionRounds[0].id,
+          pollingStationId: selectedPollingStation?.pollingStationId as string,
+          arrivalTime: data.arrivalTime,
+          departureTime: data.departureTime,
+          answers: data.answers,
+          ...payload,
+          // answers: [],
+          // pollingStationId: selectedPollingStation?.pollingStationId || '',
+          // arrivalTime: new Date().toISOString(),
+          // departureTime: new Date().toISOString()
+        },
+        {
+          onSuccess: () => {
+            // QueryClient setQurydata
+            console.log("OK");
+          },
+        },
+      );
+    }
+  };
+
+  console.log("Data", data);
 
   //
   if (!isAssignedToEllectionRound) {
@@ -158,10 +222,18 @@ const Index = () => {
         <YStack gap="$xxs">
           <XStack gap="$xxs">
             <Card flex={0.5} paddingHorizontal="$md" paddingVertical="$xs" backgroundColor="white">
-              <TimeSelect type="arrival" time={arrivalTime} setTime={setArrivalTime} />
+              <TimeSelect
+                type="arrival"
+                time={data?.arrivalTime ? new Date(data?.arrivalTime) : undefined}
+                setTime={(data: Date) => updateGeneralData({ arrivalTime: data.toISOString() })}
+              />
             </Card>
             <Card flex={0.5} paddingHorizontal="$md" paddingVertical="$xs" backgroundColor="white">
-              <TimeSelect type="departure" time={departureTime} setTime={setDeparturetime} />
+              <TimeSelect
+                type="departure"
+                time={data?.departureTime ? new Date(data?.departureTime) : undefined}
+                setTime={(data: Date) => updateGeneralData({ departureTime: data.toISOString() })}
+              />
             </Card>
           </XStack>
           <Card padding="$md" gap="$md" backgroundColor="white">
