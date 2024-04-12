@@ -1,8 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Vote.Monitor.Domain.Constants;
-using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Domain.Entities.PollingStationInfoAggregate;
+using Vote.Monitor.Domain.ValueComparers;
+using Vote.Monitor.Domain.ValueConverters;
 
 namespace Vote.Monitor.Domain.EntitiesConfiguration;
 
@@ -13,7 +13,7 @@ public class PollingStationInformationConfiguration : IEntityTypeConfiguration<P
         builder.ToTable(Tables.PollingStationInformation);
 
         builder.HasKey(x => x.Id);
-
+        
         builder.HasOne(x => x.ElectionRound)
             .WithMany()
             .HasForeignKey(x => x.ElectionRoundId);
@@ -26,17 +26,10 @@ public class PollingStationInformationConfiguration : IEntityTypeConfiguration<P
             .WithMany()
             .HasForeignKey(x => x.MonitoringObserverId);
 
-        var jsonSerializerOptions = (JsonSerializerOptions)null;
-
+        builder.Property(x => x.ArrivalTime);
+        builder.Property(x => x.DepartureTime);
         builder.Property(x => x.Answers)
-            .HasConversion(
-                v => JsonSerializer.Serialize(v, jsonSerializerOptions),
-                v => JsonSerializer.Deserialize<IReadOnlyList<BaseAnswer>>(v, jsonSerializerOptions),
-                new ValueComparer<IReadOnlyList<BaseAnswer>>(
-                    (c1, c2) => c1.SequenceEqual(c2),
-                    c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
-                    c => c.ToList().AsReadOnly())
-            )
+            .HasConversion<AnswersToJsonConverter, AnswersValueComparer>()
             .HasColumnType("jsonb");
     }
 }

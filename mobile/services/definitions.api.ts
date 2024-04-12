@@ -1,3 +1,4 @@
+import { CameraResult } from "../hooks/useCamera";
 import API from "./api";
 import { ApiFormAnswer } from "./interfaces/answer.type";
 import { ApiFormQuestion } from "./interfaces/question.type";
@@ -8,18 +9,20 @@ import { ApiFormQuestion } from "./interfaces/question.type";
     @description The election rounds where my user is asigned
     @returns {ElectionRoundsAPIResponse} 
 */
+export type ElectionRoundVM = {
+  id: string;
+  countryId: string;
+  country: string;
+  title: string;
+  englishTitle: string;
+  startDate: string;
+  status: "Archived" | "NotStarted" | "Started";
+  createdOn: string;
+  lastModifiedOn: string | null;
+};
+
 export type ElectionRoundsAPIResponse = {
-  electionRounds: {
-    id: string;
-    countryId: string;
-    country: string;
-    title: string;
-    englishTitle: string;
-    startDate: string;
-    status: "Archived" | "NotStarted" | "Started";
-    createdOn: string;
-    lastModifiedOn: string | null;
-  }[];
+  electionRounds: ElectionRoundVM[];
 };
 
 export const getElectionRounds = (): Promise<ElectionRoundsAPIResponse> => {
@@ -47,11 +50,11 @@ export type PollingStationNomenclatorAPIResponse = {
 };
 
 export const getPollingStationNomenclator = (
-  electionRoundId: string
+  electionRoundId: string,
 ): Promise<PollingStationNomenclatorAPIResponse> => {
-  return API.get(
-    `election-rounds/${electionRoundId}/polling-stations:fetchAll`
-  ).then((res) => res.data);
+  return API.get(`election-rounds/${electionRoundId}/polling-stations:fetchAll`).then(
+    (res) => res.data,
+  );
 };
 /** ========================================================================
     ====================== GET pollingStationNomenclatorVersion ============
@@ -66,11 +69,11 @@ export type PollingStationNomenclatorVersionAPIResponse = {
 };
 
 export const getPollingStationNomenclatorVersion = (
-  electionRoundId: string
+  electionRoundId: string,
 ): Promise<PollingStationNomenclatorVersionAPIResponse> => {
-  return API.get(
-    `election-rounds/${electionRoundId}/polling-stations:version`
-  ).then((res) => res.data);
+  return API.get(`election-rounds/${electionRoundId}/polling-stations:version`).then(
+    (res) => res.data,
+  );
 };
 
 /** ========================================================================
@@ -80,19 +83,21 @@ export const getPollingStationNomenclatorVersion = (
     @param {string} electionRoundId 
     @returns {PollingStationVisitsAPIResponse} 
 */
+export type PollingStationVisitVM = {
+  pollingStationId: string;
+  visitedAt: string; // ISO date
+};
+
 export type PollingStationVisitsAPIResponse = {
-  visits: {
-    pollingStationId: string;
-    visitedAt: string; // ISO date
-  };
+  visits: PollingStationVisitVM[];
 };
 
 export const getPollingStationsVisits = (
-  electionRoundId: string
+  electionRoundId: string,
 ): Promise<PollingStationVisitsAPIResponse> => {
-  return API.get(
-    `election-rounds/${electionRoundId}/polling-station-visits:my`
-  ).then((res) => res.data);
+  return API.get(`election-rounds/${electionRoundId}/polling-station-visits:my`).then(
+    (res) => res.data,
+  );
 };
 
 /**
@@ -131,7 +136,7 @@ export const upsertPollingStationGeneralInformation = ({
     `election-rounds/${electionRoundId}/polling-stations/${pollingStationId}/information`,
     {
       ...rest,
-    }
+    },
   )
     .then((res) => res.data)
     .catch(console.log);
@@ -139,7 +144,7 @@ export const upsertPollingStationGeneralInformation = ({
 
 /** ========================================================================
     ================= GET pollingStationInformationForm ====================
-    ======== The general form to be completed for each polling station =====
+    ======== The form data to be completed for each polling station =====
     ========================================================================
     @description Get the general data for the Polling Station (arrival/departure time and information form)
     @param {string} electionRoundId 
@@ -154,16 +159,23 @@ export type PollingStationInformationFormAPIResponse = {
 };
 
 export const getPollingStationInformationForm = (
-  electionRoundId: string
+  electionRoundId: string,
 ): Promise<PollingStationInformationFormAPIResponse> => {
-  return API.get(
-    `election-rounds/${electionRoundId}/polling-station-information-form`
-  ).then((res) => res.data);
+  return API.get(`election-rounds/${electionRoundId}/polling-station-information-form`).then(
+    (res) => res.data,
+  );
 };
 
+/** ========================================================================
+    ================= GET getPollingStationInformation ====================
+    ========================================================================
+    @description Get the available completed form data for the Polling Station (arrival/departure time and information form)
+    @param {string} electionRoundId 
+    @returns {PollingStationInformationAPIResponse} 
+*/
 export const getPollingStationInformation = (
   electionRoundId: string,
-  pollingStationIds?: string[]
+  pollingStationIds?: string[],
 ): Promise<PollingStationInformationAPIResponse> => {
   return API.get(`election-rounds/${electionRoundId}/information:my`, {
     params: {
@@ -173,4 +185,48 @@ export const getPollingStationInformation = (
       indexes: null,
     },
   }).then((res) => res.data?.informations);
+};
+
+/** ========================================================================
+    ================= POST addAttachment ====================
+    ========================================================================
+    @description Sends a photo/video to the backend to be saved
+    @param {AddAttachmentAPIPayload} payload 
+    @returns {AddAttachmentAPIResponse} 
+*/
+export type AddAttachmentAPIPayload = {
+  electionRoundId: string;
+  pollingStationId: string;
+  cameraResult: CameraResult;
+};
+
+export type AddAttachmentAPIResponse = {
+  id: string;
+  fileName: string;
+  mimeType: string;
+  presignedUrl: string;
+  urlValidityInSeconds: number;
+};
+
+export const addAttachment = ({
+  electionRoundId,
+  pollingStationId,
+  cameraResult,
+}: AddAttachmentAPIPayload): Promise<AddAttachmentAPIResponse> => {
+  const formData = new FormData();
+  formData.append("attachment", {
+    uri: cameraResult.uri,
+    name: cameraResult.name,
+    type: cameraResult.type,
+  } as unknown as Blob);
+
+  return API.post(
+    `election-rounds/${electionRoundId}/polling-stations/${pollingStationId}/attachments`,
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    },
+  ).then((res) => res.data);
 };

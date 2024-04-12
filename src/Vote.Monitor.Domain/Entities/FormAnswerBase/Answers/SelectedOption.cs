@@ -2,7 +2,7 @@
 
 namespace Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 
-public class SelectedOption
+public record SelectedOption
 {
     public Guid OptionId { get; private set; }
     public string Text { get; private set; }

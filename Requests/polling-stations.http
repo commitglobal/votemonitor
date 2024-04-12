@@ -1,4 +1,4 @@
-@electionRoundId=c3fceffd-137a-4090-a4ca-241e4d0bd72b
+@electionRoundId=9a6255a2-2897-4b89-8ecf-d172b712f7d2
 
 # Add polling station
 # @name newPollingStation
@@ -40,11 +40,6 @@ Authorization: Bearer {{$dotenv JWT_TOKEN}}
 # Fetch polling stations
 GET {{$dotenv HOST }}/api/election-rounds/{{electionRoundId}}/polling-stations:fetchAll
 Accept-Encoding: gzip
-Authorization: Bearer {{$dotenv JWT_TOKEN}}
-###
-
-# Fetch polling stations v2
-GET {{$dotenv HOST }}/api/election-rounds/{{electionRoundId}}/polling-stations:fetchAllv2
 Authorization: Bearer {{$dotenv JWT_TOKEN}}
 ###
 

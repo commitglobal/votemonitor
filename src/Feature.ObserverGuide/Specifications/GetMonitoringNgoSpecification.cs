@@ -5,7 +5,7 @@ namespace Feature.ObserverGuide.Specifications;
 
 public sealed class GetMonitoringNgoSpecification : SingleResultSpecification<MonitoringNgo>
 {
-    public GetMonitoringNgoSpecification(Guid? ngoId, Guid electionRoundId)
+    public GetMonitoringNgoSpecification(Guid electionRoundId, Guid? ngoId)
     {
         Query.Where(x => x.ElectionRoundId == electionRoundId && x.NgoId == ngoId);
     }

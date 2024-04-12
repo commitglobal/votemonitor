@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, styled } from "tamagui";
 import Badge from "./Badge";
-import Card, { CardProps } from "./Card";
+import Card from "./Card";
 import { Typography } from "./Typography";
 import CardFooter from "./CardFooter";
+import { CardProps } from "./Card";
 
 export interface Form {
   id?: string;

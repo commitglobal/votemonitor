@@ -19,8 +19,8 @@ public sealed class FormTemplateAggregateFaker : PrivateFaker<FormTemplate>
         UsePrivateConstructor();
 
 
-        var formLanguages = languages?.Select(x => x.Iso1).ToList().AsReadOnly() ??
-                            FakerHub.PickRandom(LanguagesList.GetAll(), 3).Select(x => x.Iso1).ToList().AsReadOnly();
+        var formLanguages = languages?.Select(x => x.Iso1).ToArray() ??
+                            FakerHub.PickRandom(LanguagesList.GetAll(), 3).Select(x => x.Iso1).ToArray();
 
         RuleFor(fake => fake.Id, fake => id ?? fake.Random.Guid());
         RuleFor(fake => fake.Code, code ?? Guid.NewGuid().ToString());

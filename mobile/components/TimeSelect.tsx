@@ -28,7 +28,7 @@ const TimeSelect: React.FC<TimeSelectProps> = ({ type, time, setTime }) => {
   };
 
   const onResetTime = () => {
-    // TODO: do we want to reset it to undefined(current time) or to 00:00?
+    //TODO: do we want to reset it to undefined(current time) or to 00:00?
     // const resetTime = time ? new Date(time) : new Date();
     // resetTime.setMinutes(0);
     // resetTime.setHours(0);

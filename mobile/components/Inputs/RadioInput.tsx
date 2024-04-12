@@ -2,7 +2,7 @@ import React from "react";
 import { Label, RadioGroup, XStack, RadioGroupItemProps } from "tamagui";
 import { Typography } from "../Typography";
 
-interface RadioInputProps extends RadioGroupItemProps {
+export interface RadioInputProps extends RadioGroupItemProps {
   id: string;
   value: string;
   label: string;
@@ -10,17 +10,17 @@ interface RadioInputProps extends RadioGroupItemProps {
 }
 
 const RadioInput: React.FC<RadioInputProps> = ({ id, value, label, selectedValue, ...rest }) => {
-  const isSelected = value === selectedValue;
+  const isSelected = selectedValue === value;
 
   return (
     <XStack
       alignItems="center"
       height={42}
       borderWidth={1}
+      backgroundColor="white"
       borderColor={isSelected ? "$purple5" : "$gray3"}
       gap="$xs"
       paddingHorizontal={14}
-      paddingVertical="$xs"
       borderRadius={8}
       {...rest}
     >
@@ -35,7 +35,7 @@ const RadioInput: React.FC<RadioInputProps> = ({ id, value, label, selectedValue
         <RadioGroup.Indicator backgroundColor="white" />
       </RadioGroup.Item>
 
-      <Label htmlFor={id} flex={1} lineHeight={20}>
+      <Label htmlFor={id} flex={1} lineHeight={20} paddingVertical="$xs">
         <Typography preset="body1">{label}</Typography>
       </Label>
     </XStack>
