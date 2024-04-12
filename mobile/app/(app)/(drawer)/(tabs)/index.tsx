@@ -21,6 +21,7 @@ import {
 } from "../../../../services/queries.service";
 import { ApiFormAnswer } from "../../../../services/interfaces/answer.type";
 import { useQueryClient } from "@tanstack/react-query";
+import SelectPollingStation from "../../../../components/SelectPollingStation";
 
 ReactotronCommands.default();
 
@@ -66,16 +67,6 @@ const MissingVisits = () => (
     </Stack>
   </Screen>
 );
-
-const MyVisitsSection = () => {
-  const { selectedPollingStation } = useUserData();
-
-  return (
-    <YStack elevation={1} paddingHorizontal="$md" paddingVertical={11} backgroundColor="white">
-      <Text>{JSON.stringify(selectedPollingStation)}</Text>
-    </YStack>
-  );
-};
 
 type FormItemStatus = "not started" | "in progress" | "completed";
 
@@ -139,7 +130,7 @@ type PollingStationInformationVM = {
 };
 
 const Index = () => {
-  const { isAssignedToEllectionRound, visits, electionRounds, selectedPollingStation } =
+  const { isAssignedToEllectionRound, visits, selectedPollingStation, activeElectionRound } =
     useUserData();
   const { selectedPollingStation: _selectedPollingStation } = useUserData();
   // TODO: how do we want to manage the time?
@@ -147,11 +138,9 @@ const Index = () => {
   const [departureTime, setDeparturetime] = useState();
 
   const { data } = usePollingStationInformation(
-    electionRounds[0]?.id,
-    selectedPollingStation?.pollingStationId || "",
+    activeElectionRound?.id,
+    selectedPollingStation?.pollingStationId,
   );
-
-  console.log("Aici", data);
 
   const { mutate } = upsertPollingStationGeneralInformationMutation();
 
@@ -161,8 +150,8 @@ const Index = () => {
     // Set query data
     queryClient.setQueryData(
       pollingStationsKeys.pollingStationInformation(
-        electionRounds[0].id,
-        selectedPollingStation?.pollingStationId as string,
+        activeElectionRound?.id,
+        selectedPollingStation?.pollingStationId,
       ),
       (current: any) => {
         return {
@@ -172,19 +161,15 @@ const Index = () => {
       },
     );
 
-    if (data && selectedPollingStation) {
+    if (data && selectedPollingStation && activeElectionRound) {
       mutate(
         {
-          electionRoundId: electionRounds[0].id,
+          electionRoundId: activeElectionRound?.id,
           pollingStationId: selectedPollingStation?.pollingStationId as string,
-          arrivalTime: data.arrivalTime,
-          departureTime: data.departureTime,
+          arrivalTime: data.arrivalTime ?? null,
+          departureTime: data.departureTime ?? null,
           answers: data.answers,
           ...payload,
-          // answers: [],
-          // pollingStationId: selectedPollingStation?.pollingStationId || '',
-          // arrivalTime: new Date().toISOString(),
-          // departureTime: new Date().toISOString()
         },
         {
           onSuccess: () => {
@@ -196,9 +181,8 @@ const Index = () => {
     }
   };
 
-  console.log("Data", data);
+  console.log("Polling Station Information", data);
 
-  //
   if (!isAssignedToEllectionRound) {
     return <MissingElectionRounds />;
   }
@@ -217,7 +201,7 @@ const Index = () => {
         bounces: false,
       }}
     >
-      <MyVisitsSection />
+      <SelectPollingStation />
       <YStack paddingHorizontal="$md" gap="$lg">
         <YStack gap="$xxs">
           <XStack gap="$xxs">
@@ -225,14 +209,14 @@ const Index = () => {
               <TimeSelect
                 type="arrival"
                 time={data?.arrivalTime ? new Date(data?.arrivalTime) : undefined}
-                setTime={(data: Date) => updateGeneralData({ arrivalTime: data.toISOString() })}
+                setTime={(data: Date) => updateGeneralData({ arrivalTime: data?.toISOString() })}
               />
             </Card>
             <Card flex={0.5} paddingHorizontal="$md" paddingVertical="$xs" backgroundColor="white">
               <TimeSelect
                 type="departure"
                 time={data?.departureTime ? new Date(data?.departureTime) : undefined}
-                setTime={(data: Date) => updateGeneralData({ departureTime: data.toISOString() })}
+                setTime={(data: Date) => updateGeneralData({ departureTime: data?.toISOString() })}
               />
             </Card>
           </XStack>

@@ -44,14 +44,14 @@ const TimeSelect: React.FC<TimeSelectProps> = ({ type, time, setTime }) => {
     onClose();
   };
 
-  const onResetTime = () => {
-    // setting time to undefined
-    setTime();
-    // resetting temporary time
-    setTempTime(new Date());
-    // close the picker
-    onClose();
-  };
+  // const onResetTime = () => {
+  //   // setting time to undefined
+  //   setTime();
+  //   // resetting temporary time
+  //   setTempTime(new Date());
+  //   // close the picker
+  //   onClose();
+  // };
 
   const onClose = () => {
     setOpen(false);
@@ -97,10 +97,10 @@ const TimeSelect: React.FC<TimeSelectProps> = ({ type, time, setTime }) => {
         >
           <Sheet.Overlay />
           <Sheet.Frame padding="$md">
-            <XStack gap="$sm" justifyContent="space-between" width="100%">
-              <Button preset="outlined" onPress={onResetTime}>
+            <XStack gap="$sm" justifyContent="flex-end" width="100%">
+              {/* <Button preset="outlined" onPress={onResetTime}>
                 Reset
-              </Button>
+              </Button> */}
               <Button onPress={onDonePress}>Done</Button>
             </XStack>
             <XStack flex={1} justifyContent="center" alignItems="center">
