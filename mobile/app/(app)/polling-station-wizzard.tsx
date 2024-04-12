@@ -90,6 +90,7 @@ const PollingStationWizzardContent = ({
   const {
     data: pollingStationOptions,
     isLoading: isLoadingPollingStations,
+    isFetching: isFetchingPollingStations,
     error: pollingStationsError,
   } = usePollingStationByParentID(activeStep?.id ? +activeStep.id.toFixed(1) : -1);
 
@@ -172,13 +173,15 @@ const PollingStationWizzardContent = ({
           <Typography preset="body2" style={$labelStyle}>
             {t("form.region.title")}
           </Typography>
-          <Select
-            key={activeStep?.id}
-            options={pollingStationsMappedOptions}
-            placeholder={t("form.region.placeholder")}
-            onValueChange={onSelectOption}
-            value={selectedOption ? `${selectedOption.id}_${selectedOption.name}` : undefined}
-          />
+          {!isFetchingPollingStations && (
+            <Select
+              key={activeStep?.id}
+              options={pollingStationsMappedOptions}
+              placeholder={t("form.region.placeholder")}
+              onValueChange={onSelectOption}
+              value={selectedOption ? `${selectedOption.id}_${selectedOption.name}` : undefined}
+            />
+          )}
         </YStack>
       </YStack>
       <XStack
