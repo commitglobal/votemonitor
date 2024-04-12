@@ -181,7 +181,7 @@ const PollingStationWizzardContent = ({
             </Button>
           </XStack>
         )}
-        <XStack flex={!activeStep?.id ? 1 : 0.75}>
+        <XStack flex={!activeStep?.id ? 1 : 0.75} marginBottom="$md">
           {!isLastElement && (
             <Button disabled={!selectedOption} width="100%" onPress={onNextButtonPress}>
               {t("actions.next_step")}

@@ -10,10 +10,11 @@ interface StyledSelectProps extends SelectProps {
 
 const Select = ({ placeholder = "Select", options, ...props }: StyledSelectProps) => {
   const insets = useSafeAreaInsets();
+
   return (
     <TamaguiSelect disablePreventBodyScroll native {...props}>
       <TamaguiSelect.Trigger
-        backgroundColor="transparent"
+        backgroundColor="white"
         paddingHorizontal="$md"
         borderColor="$gray1"
         borderWidth={1}
