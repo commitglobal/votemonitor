@@ -5,5 +5,10 @@
   },
   "login": {
     "submit": "Intra in aplicatie"
+  },
+  "polling_station_information" : {
+    "header" : {
+        "title": "Informații despre secția de votare"
+    }
   }
 }
