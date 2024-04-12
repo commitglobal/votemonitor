@@ -5,7 +5,7 @@ services:
     image: votemonitorapi
     build:
       context: .
-      dockerfile: src/Vote.Monitor.Api/Dockerfile
+      dockerfile: api/src/Vote.Monitor.Api/Dockerfile
       args:
         - BUILD_CONFIGURATION=Development
         - REVISION=LocalBuild

@@ -1,0 +1,83 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerfileContext>..\..</DockerfileContext>
+    <UserSecretsId>3e7d5a45-4561-44f1-96d7-0dae14ef735c</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FastEndpoints" Version="5.24.0" />
+    <PackageReference Include="FastEndpoints.Security" Version="5.24.0" />
+    <PackageReference Include="FastEndpoints.Swagger" Version="5.24.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.4">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.2" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.Process" Version="0.5.0-beta.5" />
+    <PackageReference Include="Sentry" Version="4.3.0" />
+    <PackageReference Include="Sentry.AspNetCore" Version="4.3.0" />
+    <PackageReference Include="Sentry.OpenTelemetry" Version="4.3.0" />
+    <PackageReference Include="Sentry.Serilog" Version="4.3.0" />
+    <PackageReference Include="Serilog" Version="3.1.1" />
+    <PackageReference Include="Serilog.Enrichers.Environment" Version="2.3.0" />
+    <PackageReference Include="Serilog.Extensions.Logging" Version="8.0.0" />
+    <PackageReference Include="Serilog.Settings.Configuration" Version="8.0.0" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="5.0.1" />
+    <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.8.0" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.8.0" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.8.0" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.Runtime" Version="1.8.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Authorization.Policies\Authorization.Policies.csproj" />
+    <ProjectReference Include="..\Feature.Form.Submissions\Feature.Form.Submissions.csproj" />
+    <ProjectReference Include="..\Feature.Forms\Feature.Forms.csproj" />
+    <ProjectReference Include="..\Feature.FormTemplates\Feature.FormTemplates.csproj" />
+    <ProjectReference Include="..\Feature.MonitoringObservers\Feature.MonitoringObservers.csproj" />
+    <ProjectReference Include="..\Feature.ObserverGuide\Feature.ObserverGuide.csproj" />
+    <ProjectReference Include="..\Feature.PollingStation.Information.Form\Feature.PollingStation.Information.Form.csproj" />
+    <ProjectReference Include="..\Feature.PollingStation.Information\Feature.PollingStation.Information.csproj" />
+    <ProjectReference Include="..\Feature.PollingStation.Visit\Feature.PollingStation.Visit.csproj" />
+    <ProjectReference Include="..\Vote.Monitor.Api.Feature.Answers.Attachments\Vote.Monitor.Api.Feature.Answers.Attachments.csproj" />
+    <ProjectReference Include="..\Vote.Monitor.Api.Feature.Answers.Notes\Vote.Monitor.Api.Feature.Answers.Notes.csproj" />
+    <ProjectReference Include="..\Vote.Monitor.Api.Feature.Auth\Vote.Monitor.Api.Feature.Auth.csproj" />
+    <ProjectReference Include="..\Vote.Monitor.Api.Feature.Country\Vote.Monitor.Api.Feature.Country.csproj" />
+    <ProjectReference Include="..\Vote.Monitor.Api.Feature.ElectionRound\Vote.Monitor.Api.Feature.ElectionRound.csproj" />
+    <ProjectReference Include="..\Vote.Monitor.Api.Feature.Emergencies.Attachments\Vote.Monitor.Api.Feature.Emergencies.Attachments.csproj" />
+    <ProjectReference Include="..\Vote.Monitor.Api.Feature.Emergencies\Vote.Monitor.Api.Feature.Emergencies.csproj" />
+    <ProjectReference Include="..\Vote.Monitor.Api.Feature.Language\Vote.Monitor.Api.Feature.Language.csproj" />
+    <ProjectReference Include="..\Vote.Monitor.Api.Feature.Monitoring\Vote.Monitor.Api.Feature.Monitoring.csproj" />
+    <ProjectReference Include="..\Vote.Monitor.Api.Feature.NgoAdmin\Vote.Monitor.Api.Feature.NgoAdmin.csproj" />
+    <ProjectReference Include="..\Vote.Monitor.Api.Feature.Ngo\Vote.Monitor.Api.Feature.Ngo.csproj" />
+    <ProjectReference Include="..\Vote.Monitor.Api.Feature.Notifications\Vote.Monitor.Api.Feature.Notifications.csproj" />
+    <ProjectReference Include="..\Vote.Monitor.Api.Feature.Observer\Vote.Monitor.Api.Feature.Observer.csproj" />
+    <ProjectReference Include="..\Vote.Monitor.Api.Feature.PollingStation.Attachments\Vote.Monitor.Api.Feature.PollingStation.Attachments.csproj" />
+    <ProjectReference Include="..\Vote.Monitor.Api.Feature.PollingStation.Notes\Vote.Monitor.Api.Feature.PollingStation.Notes.csproj" />
+    <ProjectReference Include="..\Vote.Monitor.Api.Feature.PollingStation\Vote.Monitor.Api.Feature.PollingStation.csproj" />
+    <ProjectReference Include="..\Vote.Monitor.Api.Feature.UserPreferences\Vote.Monitor.Api.Feature.UserPreferences.csproj" />
+    <ProjectReference Include="..\Vote.Monitor.Core\Vote.Monitor.Core.csproj" />
+    <ProjectReference Include="..\Vote.Monitor.Domain\Vote.Monitor.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="appsettings.Development.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="appsettings.Testing.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>
+
+</Project>
