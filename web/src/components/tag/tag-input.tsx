@@ -308,8 +308,8 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
               onBlur={onBlur}
               {...inputProps}
               className={className}
-              autoComplete={enableAutocomplete ? 'on' : 'off'}
-              list={enableAutocomplete ? 'autocomplete-options' : undefined}
+              autoComplete={'off'}
+              list={undefined}
               disabled={maxTags !== undefined && tags.length >= maxTags}
             />
           ) : (
@@ -341,8 +341,8 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
                 onBlur={onBlur}
                 {...inputProps}
                 className={className}
-                autoComplete={enableAutocomplete ? 'on' : 'off'}
-                list={enableAutocomplete ? 'autocomplete-options' : undefined}
+                autoComplete={'off'}
+                list={undefined}
                 disabled={maxTags !== undefined && tags.length >= maxTags}
               />
             </TagPopover>
