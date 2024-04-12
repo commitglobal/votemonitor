@@ -1,7 +1,6 @@
 ﻿using Authorization.Policies;
 using Feature.MonitoringObservers.Specifications;
 using Vote.Monitor.Core.Extensions;
-using Vote.Monitor.Domain;
 using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
