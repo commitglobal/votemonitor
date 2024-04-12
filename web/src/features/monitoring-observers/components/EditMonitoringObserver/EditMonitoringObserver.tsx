@@ -5,7 +5,6 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { Separator } from '@/components/ui/separator';
 import { useForm } from 'react-hook-form';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -16,10 +15,7 @@ import { useMutation } from '@tanstack/react-query';
 import { Tag, TagInput } from '@/components/tag/tag-input';
 import { useState } from 'react';
 import { v4 as uuid } from 'uuid';
-import { queryClient } from '@/main';
 import { useToast } from '@/components/ui/use-toast';
-
-const phoneRegex = new RegExp(/^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/);
 
 export default function EditObserver() {
   const navigate = useNavigate();

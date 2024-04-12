@@ -111,7 +111,6 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
   const [inputValue, setInputValue] = React.useState('');
   const [tagCount, setTagCount] = React.useState(Math.max(0, tags.length));
   const inputRef = React.useRef<HTMLInputElement>(null);
-  const [draggedTagId, setDraggedTagId] = React.useState<string | null>(null);
 
   if ((maxTags !== undefined && maxTags < 0) || (props.minTags !== undefined && props.minTags < 0)) {
     console.warn('maxTags and minTags cannot be less than 0');
