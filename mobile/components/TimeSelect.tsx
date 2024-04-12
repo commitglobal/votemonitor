@@ -20,20 +20,37 @@ enum CardFooterDisplay {
 const TimeSelect: React.FC<TimeSelectProps> = ({ type, time, setTime }) => {
   const [open, setOpen] = useState(false);
 
+  // on ios we use a temporary time, as the onChange function gets triggered every time the user picks a new time
+  // therefore, we will update the FINAL time state (that comes from the outside), only onDonePress
+  const [tempTime, setTempTime] = useState(new Date());
+
   const onChange = (event: DateTimePickerEvent, selectedTime: Date | undefined) => {
-    selectedTime && setTime(selectedTime);
-    if (Platform.OS === "android") {
-      setOpen(false);
+    if (Platform.OS === "ios") {
+      selectedTime ? setTempTime(selectedTime) : setTempTime(tempTime);
+    } else {
+      // press OK - set the time
+      if (event.type === "set") {
+        onClose();
+        setTime(selectedTime);
+      } else if (event.type === "dismissed") {
+        // press Cancel - close modal
+        onClose();
+      }
     }
   };
 
+  const onDonePress = () => {
+    setTime(tempTime);
+    onClose();
+  };
+
   const onResetTime = () => {
-    //TODO: do we want to reset it to undefined(current time) or to 00:00?
-    // const resetTime = time ? new Date(time) : new Date();
-    // resetTime.setMinutes(0);
-    // resetTime.setHours(0);
+    // setting time to undefined
     setTime();
-    // setTime(resetTime);
+    // resetting temporary time
+    setTempTime(new Date());
+    // close the picker
+    onClose();
   };
 
   const onClose = () => {
@@ -42,7 +59,11 @@ const TimeSelect: React.FC<TimeSelectProps> = ({ type, time, setTime }) => {
 
   return (
     <>
-      <YStack onPress={() => setOpen(true)}>
+      <YStack
+        onPress={() => {
+          setOpen(true);
+        }}
+      >
         <Stack paddingVertical="$sm" marginBottom="$xxs">
           {time ? (
             <Typography preset="heading" fontWeight="500">
@@ -80,13 +101,13 @@ const TimeSelect: React.FC<TimeSelectProps> = ({ type, time, setTime }) => {
               <Button preset="outlined" onPress={onResetTime}>
                 Reset
               </Button>
-              <Button onPress={onClose}>Done</Button>
+              <Button onPress={onDonePress}>Done</Button>
             </XStack>
             <XStack flex={1} justifyContent="center" alignItems="center">
               <RNDateTimePicker
                 mode="time"
                 display="spinner"
-                value={time || new Date()}
+                value={tempTime || new Date()}
                 is24Hour={true}
                 onChange={onChange}
               />

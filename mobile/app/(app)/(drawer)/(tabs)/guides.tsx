@@ -46,7 +46,7 @@ const Guides = () => {
         <FormElement label="A1.1. Mark all the materials that are not present:">
           {/* //! we need a controller for every checbox input, so does it make sense to have a separate CheckboxFormInput where we add the controller inside? */}
           {checkboxOptions.map((option, index) => (
-            <YStack>
+            <YStack key={index}>
               <Controller
                 key={option.value}
                 name="missingMaterials"
