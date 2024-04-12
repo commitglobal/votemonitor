@@ -1,6 +1,5 @@
 import React from "react";
 import { Dimensions, ViewStyle } from "react-native";
-// import { useAuth } from "../../../../hooks/useAuth";
 import { router } from "expo-router";
 import * as ReactotronCommands from "../../../../helpers/reactotron-custom-commands";
 import { Screen } from "../../../../components/Screen";

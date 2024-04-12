@@ -20,7 +20,7 @@ export interface FormCardProps extends CardProps {
 }
 
 const FormCard = (props: FormCardProps): JSX.Element => {
-  const { form, onPress } = props;
+  const { form, onPress, ...rest } = props;
 
   const CardHeader = styled(View, {
     name: "CardHeader",
@@ -31,7 +31,7 @@ const FormCard = (props: FormCardProps): JSX.Element => {
   });
 
   return (
-    <Card width="100%" onPress={onPress}>
+    <Card width="100%" onPress={onPress} {...rest}>
       <CardHeader>
         <Typography preset="body1" color="$gray9" fontWeight="700">
           {form.name}

@@ -1,10 +1,20 @@
 import React, { useMemo, useState } from "react";
-import { Adapt, Button, Select, Sheet, View, YStack } from "tamagui";
+import { Adapt, Select, SelectProps, Sheet, View, YStack } from "tamagui";
 import { Icon } from "./Icon";
 import { Typography } from "./Typography";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { PollingStationVisitVM } from "../services/definitions.api";
+import Button from "../components/Button";
 
-const SelectPollingStation = () => {
+interface SelectPollingStationProps extends SelectProps {
+  placeholder?: string;
+  options: PollingStationVisitVM[];
+}
+
+const SelectPollingStation: React.FC<SelectPollingStationProps> = ({
+  options,
+  placeholder = "Select polling station",
+}) => {
   const [val, setVal] = useState("");
   const insets = useSafeAreaInsets();
 
@@ -23,7 +33,7 @@ const SelectPollingStation = () => {
           <Select.Value
             width={"90%"}
             color="$purple5"
-            placeholder="Select polling station"
+            placeholder={placeholder}
             fontWeight="500"
           ></Select.Value>
         </Select.Trigger>
@@ -38,15 +48,15 @@ const SelectPollingStation = () => {
                 borderBottomWidth={1}
                 borderBottomColor="$gray3"
               >
-                <Typography preset="body1" color="$gray5">
+                <Typography preset="body2" color="$gray5">
                   My polling stations
                 </Typography>
-                <View marginTop="$xxs">
-                  <Typography numberOfLines={7} color="$gray5">
-                    You can switch between polling stations if you want to revisit form answers or
-                    polling station information.
-                  </Typography>
-                </View>
+                {/* //TODO: not sure how many nroflines we should leave here */}
+                <Typography numberOfLines={7} color="$gray5" marginTop="$xxs">
+                  {/* //TODO: translation here */}
+                  You can switch between polling stations if you want to revisit form answers or
+                  polling station information.
+                </Typography>
               </YStack>
 
               <Sheet.ScrollView padding="$sm">
@@ -59,8 +69,7 @@ const SelectPollingStation = () => {
                 borderTopColor="$gray3"
                 marginBottom={insets.bottom}
               >
-                {/* //TODO: change button here with our custom one */}
-                <Button>Add new polling station</Button>
+                <Button preset="outlined">Add new polling station</Button>
               </View>
             </Sheet.Frame>
             <Sheet.Overlay />
@@ -74,17 +83,17 @@ const SelectPollingStation = () => {
 
               {useMemo(
                 () =>
-                  pollingStationAdresses.map((pollingStationAddress, i) => {
+                  options.map((entry, i) => {
                     return (
                       <Select.Item
                         index={i}
-                        key={pollingStationAddress.id}
-                        value={pollingStationAddress.address}
+                        key={entry.pollingStationId}
+                        value={entry.pollingStationId}
                         gap="$3"
                       >
                         {/* //TODO: change number of lines to 2 if that's what we want */}
                         <Select.ItemText width={"90%"} numberOfLines={1}>
-                          {pollingStationAddress.address}
+                          {entry.pollingStationId}
                         </Select.ItemText>
                         <Select.ItemIndicator>
                           <Icon icon="chevronLeft" />
@@ -92,7 +101,7 @@ const SelectPollingStation = () => {
                       </Select.Item>
                     );
                   }),
-                [pollingStationAdresses],
+                [options],
               )}
             </Select.Group>
           </Select.Viewport>
@@ -103,35 +112,3 @@ const SelectPollingStation = () => {
 };
 
 export default SelectPollingStation;
-
-const pollingStationAdresses = [
-  { id: 1, address: "Secția 123, Str. Moldovei, nr. 30, Târgu Mureș, Romania" },
-  {
-    id: 2,
-    address: "Secția 456, Str. Transilvaniei, nr. 45, Cluj-Napoca, Romania",
-  },
-  { id: 3, address: "Secția 789, Str. București, nr. 12, București, Romania" },
-  { id: 4, address: "Secția 101, Str. Timișoarei, nr. 20, Timișoara, Romania" },
-  { id: 5, address: "Secția 234, Str. Iași, nr. 15, Iași, Romania" },
-  { id: 6, address: "Secția 345, Str. Crișana, nr. 10, Oradea, Romania" },
-  {
-    id: 7,
-    address: "Secția 567, Str. Maramureșului, nr. 25, Baia Mare, Romania",
-  },
-  { id: 8, address: "Secția 890, Str. Dobrogei, nr. 8, Constanța, Romania" },
-  { id: 9, address: "Secția 111, Str. Ardealului, nr. 5, Sibiu, Romania" },
-  { id: 10, address: "Secția 222, Str. Olteniei, nr. 18, Craiova, Romania" },
-  { id: 11, address: "Secția 333, Str. Banatului, nr. 22, Arad, Romania" },
-  { id: 12, address: "Secția 444, Str. Mureșului, nr. 11, Deva, Romania" },
-  { id: 13, address: "Secția 555, Str. Dobrogei, nr. 7, Tulcea, Romania" },
-  { id: 14, address: "Secția 667, Str. Moldovei, nr. 9, Bacău, Romania" },
-  { id: 15, address: "Secția 777, Str. Crișului, nr. 13, Satu Mare, Romania" },
-  { id: 16, address: "Secția 888, Str. Olteniei, nr. 4, Pitești, Romania" },
-  { id: 17, address: "Secția 999, Str. Bucovinei, nr. 16, Suceava, Romania" },
-  {
-    id: 18,
-    address: "Secția 1010, Str. Transilvaniei, nr. 32, Alba Iulia, Romania",
-  },
-  { id: 19, address: "Secția 1111, Str. Banatului, nr. 3, Reșița, Romania" },
-  { id: 20, address: "Secția 1212, Str. București, nr. 7, Galați, Romania" },
-];
