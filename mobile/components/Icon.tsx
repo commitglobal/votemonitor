@@ -27,6 +27,7 @@ import Language from "../assets/icons/Language.svg";
 import ChangePassword from "../assets/icons/Change password.svg";
 import Settings from "../assets/icons/Settings.svg";
 import LogoutNoBackground from "../assets/icons/LogoutNoBackground.svg";
+import DragHandle from "../assets/icons/Drag handle.svg";
 
 import { styled, View } from "tamagui";
 import { StyleProp, ViewStyle } from "react-native";
@@ -98,6 +99,7 @@ export const defaultIcon = React.forwardRef(
       changePassword: <ChangePassword fill={color} width={size} height={size} />,
       settings: <Settings fill={color} width={size} height={size} />,
       logoutNoBackground: <LogoutNoBackground fill={color} width={size} height={size} />,
+      dragHandle: <DragHandle fill={color} width={size} height={size} />,
     };
 
     return (

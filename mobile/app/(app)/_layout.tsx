@@ -1,11 +1,9 @@
 import { Redirect, Stack } from "expo-router";
 import { useAuth } from "../../hooks/useAuth";
-import { PortalProvider } from "tamagui";
+import { PortalProvider, useTheme } from "tamagui";
 import Header from "../../components/Header";
 import { Icon } from "../../components/Icon";
-import { getHeaderTitle } from "@react-navigation/elements";
 import { StyleProp, ViewStyle } from "react-native";
-import { useTheme } from "tamagui";
 import { useTranslation } from "react-i18next";
 
 const AppLayout = () => {
@@ -26,8 +24,7 @@ const AppLayout = () => {
         <Stack.Screen
           name="polling-station-wizzard"
           options={{
-            header: ({ navigation, route, options }) => {
-              const title = getHeaderTitle(options, route.name);
+            header: ({ navigation, options }) => {
               return (
                 <Header
                   title={t("header.title")}
