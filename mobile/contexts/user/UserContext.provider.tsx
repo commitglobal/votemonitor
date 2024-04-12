@@ -12,10 +12,13 @@ type UserContextType = {
   electionRounds: ElectionRoundVM[];
   visits: PollingStationVisitVM[];
   isAssignedToEllectionRound: boolean;
+
+  activeElectionRound?: ElectionRoundVM;
   selectedPollingStation?: PollingStationNomenclatorNodeVM;
+
   isLoading: boolean;
   error: Error | null;
-  setSelectedPollingStation: (pollingStation: PollingStationNomenclatorNodeVM) => void;
+  setSelectedPollingStationId: (pollingStationId: string) => void;
 };
 
 export const UserContext = createContext<UserContextType>({
@@ -24,11 +27,11 @@ export const UserContext = createContext<UserContextType>({
   isLoading: false,
   error: null,
   isAssignedToEllectionRound: false,
-  setSelectedPollingStation: (_pollingStation: PollingStationNomenclatorNodeVM) => {},
+  setSelectedPollingStationId: (_pollingStationId: string) => {},
 });
 
 const UserContextProvider = ({ children }: React.PropsWithChildren) => {
-  const [_, setSelectedPollingStation] = useState<PollingStationNomenclatorNodeVM>();
+  const [selectedPollingStationId, setSelectedPollingStationId] = useState<string>();
 
   const {
     data: rounds,
@@ -47,18 +50,21 @@ const UserContextProvider = ({ children }: React.PropsWithChildren) => {
     error: PollingStationsError,
   } = usePollingStationsVisits(activeElectionRound?.id);
 
-  const lastVisit = useMemo(
-    () =>
+  const currentSelectedpollingStationId = useMemo(() => {
+    return (
+      selectedPollingStationId ||
       visits?.visits.sort(
         (a, b) => new Date(b.visitedAt).getTime() - new Date(a.visitedAt).getTime(),
-      )[0],
-    [visits],
-  );
+      )[0].pollingStationId
+    );
+  }, [visits, selectedPollingStationId]);
 
   const { isFetching: isLoadingNomenclature, error: NomenclatureError } =
     usePollingStationsNomenclatorQuery(activeElectionRound?.id);
 
-  const { data: currentPollingStation } = usePollingStationById(lastVisit?.pollingStationId);
+  const { data: lastVisitedPollingStation } = usePollingStationById(
+    currentSelectedpollingStationId,
+  );
 
   // TODO: Prefetch query for details for the active one
 
@@ -69,10 +75,11 @@ const UserContextProvider = ({ children }: React.PropsWithChildren) => {
         isLoading: isLoadingRounds || isLoadingVisits || isLoadingNomenclature,
         visits: visits?.visits || [],
         electionRounds: rounds?.electionRounds || [],
+        activeElectionRound,
         isAssignedToEllectionRound:
           (rounds?.electionRounds && rounds?.electionRounds?.length > 0) || false,
-        selectedPollingStation: currentPollingStation as PollingStationNomenclatorNodeVM,
-        setSelectedPollingStation,
+        selectedPollingStation: lastVisitedPollingStation as PollingStationNomenclatorNodeVM,
+        setSelectedPollingStationId,
       }}
     >
       {children}

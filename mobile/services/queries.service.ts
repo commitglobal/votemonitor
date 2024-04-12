@@ -28,7 +28,7 @@ export const pollingStationsKeys = {
     [...pollingStationsKeys.all, "visits", electionRoundId] as const,
   nomenclatorList: (parentId: number | null = -1) =>
     [...pollingStationsKeys.all, "node", parentId] as const,
-  one: (id: string) => [...pollingStationsKeys.all, id] as const,
+  one: (id: string) => [...pollingStationsKeys.all, "DB.getOneById", id] as const,
   nomenclator: (electionRoundId: string) => [
     ...pollingStationsKeys.all,
     "nomenclator",
@@ -39,8 +39,18 @@ export const pollingStationsKeys = {
     "cacheKey",
   ],
   addAttachmentMutation: () => [...pollingStationsKeys.all, "addAttachment"],
-  pollingStationInformation: (electionRoundId: string, pollingStationId: string) =>
-    [...pollingStationsKeys.all, electionRoundId, pollingStationId] as const,
+  pollingStationInformation: (
+    electionRoundId: string | undefined,
+    pollingStationId: string | undefined,
+  ) =>
+    [
+      ...pollingStationsKeys.all,
+      "electionRound",
+      electionRoundId,
+      "pollingStation",
+      pollingStationId,
+      "information",
+    ] as const,
 };
 
 export const useElectionRoundsQuery = () => {
@@ -54,7 +64,6 @@ export const useElectionRoundsQuery = () => {
 };
 
 export const usePollingStationsNomenclatorQuery = (electionRoundId: string | undefined) => {
-  console.log("usePollingStationsNomenclatorQuery", electionRoundId);
   const getData = async () => {
     console.log("getData", electionRoundId);
     return typeof electionRoundId === "undefined"
@@ -166,11 +175,14 @@ export const usePollingStationInformationForm = (electionRoundId: string) => {
   });
 };
 
-export const usePollingStationInformation = (electionRoundId: string, pollingStationId: string) => {
+export const usePollingStationInformation = (
+  electionRoundId: string | undefined,
+  pollingStationId: string | undefined,
+) => {
   return useQuery({
-    queryKey: pollingStationsKeys.pollingStationInformation(electionRoundId, pollingStationId),
+    queryKey: pollingStationsKeys.pollingStationInformation(electionRoundId!, pollingStationId!),
     queryFn: async () => {
-      const data = await getPollingStationInformation(electionRoundId, pollingStationId);
+      const data = await getPollingStationInformation(electionRoundId!, pollingStationId!);
       console.log("usePollingStationInformation", data);
       return data;
     },
