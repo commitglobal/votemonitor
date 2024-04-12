@@ -5,6 +5,7 @@ import { Typography } from "./Typography";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Button from "../components/Button";
 import { useUserData } from "../contexts/user/UserContext.provider";
+import { router } from "expo-router";
 
 const SelectPollingStation = () => {
   const { visits, selectedPollingStation, setSelectedPollingStationId } = useUserData();
@@ -32,7 +33,7 @@ const SelectPollingStation = () => {
         </Select.Trigger>
 
         <Adapt platform="touch">
-          <Sheet native modal snapPoints={[80, 50]}>
+          <Sheet native modal snapPoints={[80]}>
             <Sheet.Frame>
               <YStack
                 paddingVertical="$xl"
@@ -62,7 +63,12 @@ const SelectPollingStation = () => {
                 borderTopColor="$gray3"
                 marginBottom={insets.bottom}
               >
-                <Button preset="outlined">Add new polling station</Button>
+                <Button
+                  preset="outlined"
+                  onPress={router.push.bind(null, "/polling-station-wizzard")}
+                >
+                  Add new polling station
+                </Button>
               </View>
             </Sheet.Frame>
             <Sheet.Overlay />

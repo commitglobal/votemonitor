@@ -163,8 +163,8 @@ const Index = () => {
         {
           electionRoundId: activeElectionRound?.id,
           pollingStationId: selectedPollingStation?.pollingStationId as string,
-          arrivalTime: data.arrivalTime,
-          departureTime: data.departureTime,
+          arrivalTime: data.arrivalTime ?? null,
+          departureTime: data.departureTime ?? null,
           answers: data.answers,
           ...payload,
         },
@@ -206,14 +206,14 @@ const Index = () => {
               <TimeSelect
                 type="arrival"
                 time={data?.arrivalTime ? new Date(data?.arrivalTime) : undefined}
-                setTime={(data: Date) => updateGeneralData({ arrivalTime: data.toISOString() })}
+                setTime={(data: Date) => updateGeneralData({ arrivalTime: data?.toISOString() })}
               />
             </Card>
             <Card flex={0.5} paddingHorizontal="$md" paddingVertical="$xs" backgroundColor="white">
               <TimeSelect
                 type="departure"
                 time={data?.departureTime ? new Date(data?.departureTime) : undefined}
-                setTime={(data: Date) => updateGeneralData({ departureTime: data.toISOString() })}
+                setTime={(data: Date) => updateGeneralData({ departureTime: data?.toISOString() })}
               />
             </Card>
           </XStack>

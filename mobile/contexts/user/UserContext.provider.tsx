@@ -55,7 +55,7 @@ const UserContextProvider = ({ children }: React.PropsWithChildren) => {
       selectedPollingStationId ||
       visits?.visits.sort(
         (a, b) => new Date(b.visitedAt).getTime() - new Date(a.visitedAt).getTime(),
-      )[0].pollingStationId
+      )[0]?.pollingStationId
     );
   }, [visits, selectedPollingStationId]);
 
