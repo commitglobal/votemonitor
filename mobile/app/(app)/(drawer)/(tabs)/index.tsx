@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Dimensions, ViewStyle } from "react-native";
 // import { useAuth } from "../../../../hooks/useAuth";
 import { router } from "expo-router";
@@ -134,8 +134,6 @@ const Index = () => {
     useUserData();
   const { selectedPollingStation: _selectedPollingStation } = useUserData();
   // TODO: how do we want to manage the time?
-  const [arrivalTime, setArrivalTime] = useState();
-  const [departureTime, setDeparturetime] = useState();
 
   const { data } = usePollingStationInformation(
     activeElectionRound?.id,
