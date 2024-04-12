@@ -30,6 +30,7 @@ using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 using Vote.Monitor.Domain.Entities.NgoAggregate;
 using Vote.Monitor.Api.Extensions;
+using Vote.Monitor.Core.Services.Mailing;
 using Vote.Monitor.Domain.Entities.FormAggregate;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -54,6 +55,7 @@ builder.Services.SwaggerDocument(o =>
         s.Title = "Vote Monitor API";
         s.Version = "v2";
         s.SchemaSettings.SchemaProcessors.Add(new SmartEnumSchemaProcessor());
+        s.SchemaSettings.SchemaProcessors.Add(new GuidSchemaProcessor());
     };
 });
 
@@ -89,13 +91,14 @@ builder.Services.AddCors(options =>
             });
     });
 
-builder.Services.AddCoreServices();
+builder.Services.AddCoreServices(builder.Configuration);
 builder.Services.AddFileStorage(builder.Configuration.GetRequiredSection(FileStorageInstaller.SectionKey));
+builder.Services.AddMailing(builder.Configuration.GetRequiredSection(MailingInstaller.SectionKey));
 builder.Services.AddPushNotifications(builder.Configuration.GetRequiredSection(PushNotificationsInstaller.SectionKey));
 
 builder.Services.AddApplicationDomain(builder.Configuration.GetSection(DomainInstaller.SectionKey));
-builder.Services.AddAuthorizationPolicies();
 builder.Services.AddAuthFeature(builder.Configuration.GetSection(AuthFeatureInstaller.SectionKey));
+builder.Services.AddAuthorizationPolicies();
 builder.Services.AddPollingStationFeature(builder.Configuration.GetSection(PollingStationFeatureInstaller.SectionKey));
 builder.Services.AddCountryFeature();
 builder.Services.AddLanguageFeature();

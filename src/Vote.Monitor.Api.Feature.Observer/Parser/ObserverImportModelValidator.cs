@@ -1,20 +1,31 @@
-﻿namespace Vote.Monitor.Api.Feature.Observer.Services;
+﻿namespace Vote.Monitor.Api.Feature.Observer.Parser;
 internal class ObserverImportModelValidator : Validator<ObserverImportModel>
 {
     public ObserverImportModelValidator()
     {
+        RuleFor(x => x.FirstName)
+            .NotEmpty()
+            .MinimumLength(3)
+            .MaximumLength(256);
 
-        RuleFor(x => x.Name)
-          .MinimumLength(3);
+        RuleFor(x => x.LastName)
+            .NotEmpty()
+            .MinimumLength(3)
+            .MaximumLength(256);
 
         RuleFor(x => x.Email)
-            .EmailAddress();
-
-        RuleFor(x => x.Password)
-            .MinimumLength(3);
+            .NotEmpty()
+            .EmailAddress()
+            .MaximumLength(256);
 
         RuleFor(x => x.PhoneNumber)
-           .MinimumLength(3);
-        
+            .NotEmpty()
+            .MinimumLength(3)
+            .MaximumLength(256);
+
+        RuleFor(x => x.Password)
+            .NotEmpty()
+            .MinimumLength(3)
+            .MaximumLength(256);
     }
 }

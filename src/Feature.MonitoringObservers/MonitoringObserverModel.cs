@@ -7,7 +7,8 @@ namespace Feature.MonitoringObservers;
 public class MonitoringObserverModel
 {
     public Guid Id { get; init; }
-    public string Name { get; init; }
+    public string FirstName { get; init; }
+    public string LastName { get; init; }
     public string Email { get; init; }
     public string PhoneNumber { get; init; }
     public required IReadOnlyList<string> Tags { get; init; }
@@ -20,10 +21,11 @@ public class MonitoringObserverModel
         return new MonitoringObserverModel
         {
             Id = entity.Id,
-            Email = entity.Observer.Login,
+            Email = entity.Observer.ApplicationUser.Email,
             Status = entity.Status,
-            Name = entity.Observer.Name,
-            PhoneNumber = entity.Observer.PhoneNumber,
+            FirstName = entity.Observer.ApplicationUser.FirstName,
+            LastName = entity.Observer.ApplicationUser.LastName,
+            PhoneNumber = entity.Observer.ApplicationUser.PhoneNumber,
             Tags = entity.Tags
         };
     }

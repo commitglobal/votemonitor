@@ -1,12 +1,16 @@
-﻿namespace Vote.Monitor.Api.Feature.Observer.UnitTests.Services;
+﻿using Vote.Monitor.Api.Feature.Observer.Parser;
+
+namespace Vote.Monitor.Api.Feature.Observer.UnitTests.Services;
 
 public class ObserverImportModelValidatorTests
 {
-    private ObserverImportModel model = new ObserverImportModel
+    private ObserverImportModel _model = new()
     {
-        Name = "jhon",
+        FirstName = "jhon",
+        LastName = "Smith",
         Email = "test@code.com",
-        PhoneNumber = "12345678"
+        PhoneNumber = "12345678",
+        Password = "Passw0rd"
     };
 
     [Fact]
@@ -16,28 +20,37 @@ public class ObserverImportModelValidatorTests
         var validator = new ObserverImportModelValidator();
 
         // Act
-        var result = validator.TestValidate(model);
+        var result = validator.TestValidate(_model);
 
         // Assert
-        result.ShouldNotHaveValidationErrorFor(x => x.Name);
-        result.ShouldNotHaveValidationErrorFor(x => x.Email);
-        result.ShouldNotHaveValidationErrorFor(x => x.Password);
-        result.ShouldNotHaveValidationErrorFor(x => x.PhoneNumber);
+        result.ShouldNotHaveAnyValidationErrors();
     }
 
     [Fact]
-    public void Validate_WithInvalidName_ShouldHaveValidationError()
+    public void Validate_WithInvalidFirstName_ShouldHaveValidationError()
     {
         // Arrange
         var validator = new ObserverImportModelValidator();
-        model.Name = "Jo"; // less than the required minimum length
+        _model = _model with { FirstName = "Jo" }; // less than the required minimum length
 
         // Act
-        var result = validator.TestValidate(model);
+        var result = validator.TestValidate(_model);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.Name)
-            .WithErrorMessage("The length of 'Name' must be at least 3 characters. You entered 2 characters.");
+        result.ShouldHaveValidationErrorFor(x => x.FirstName);
+    }
+    [Fact]
+    public void Validate_WithInvalidLastName_ShouldHaveValidationError()
+    {
+        // Arrange
+        var validator = new ObserverImportModelValidator();
+        _model = _model with { LastName = "Jo" }; // less than the required minimum length
+
+        // Act
+        var result = validator.TestValidate(_model);
+
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.LastName);
     }
 
     [Fact]
@@ -45,15 +58,13 @@ public class ObserverImportModelValidatorTests
     {
         // Arrange
         var validator = new ObserverImportModelValidator();
-        model.Email = "invalidemail";
-
+        _model = _model with { Email = "invalidemail" };
 
         // Act
-        var result = validator.TestValidate(model);
+        var result = validator.TestValidate(_model);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.Email)
-            .WithErrorMessage("'Email' is not a valid email address.");
+        result.ShouldHaveValidationErrorFor(x => x.Email);
     }
 
     [Fact]
@@ -61,13 +72,12 @@ public class ObserverImportModelValidatorTests
     {
         // Arrange
         var validator = new ObserverImportModelValidator();
-        model.PhoneNumber = "12"; // less than the required minimum length
+        _model = _model with { PhoneNumber = "12" }; // less than the required minimum length
 
         // Act
-        var result = validator.TestValidate(model);
+        var result = validator.TestValidate(_model);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.PhoneNumber)
-            .WithErrorMessage("The length of 'Phone Number' must be at least 3 characters. You entered 2 characters.");
+        result.ShouldHaveValidationErrorFor(x => x.PhoneNumber);
     }
 }

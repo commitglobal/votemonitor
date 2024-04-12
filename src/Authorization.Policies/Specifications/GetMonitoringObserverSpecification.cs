@@ -9,7 +9,6 @@ internal sealed class GetMonitoringObserverSpecification : SingleResultSpecifica
         Query
             .Include(x => x.MonitoringNgo)
             .ThenInclude(x => x.ElectionRound)
-
             .Where(x => x.ObserverId == observerId && x.MonitoringNgo.ElectionRoundId == electionRoundId);
 
 
@@ -22,7 +21,7 @@ internal sealed class GetMonitoringObserverSpecification : SingleResultSpecifica
             MonitoringNgoId = x.MonitoringNgoId,
             MonitoringNgoStatus = x.MonitoringNgo.Status,
             ObserverId = x.ObserverId,
-            UserStatus = x.Observer.Status,
+            UserStatus = x.Observer.ApplicationUser.Status,
             MonitoringObserverStatus = x.Status,
             MonitoringObserverId = x.Id
         });
@@ -41,7 +40,7 @@ internal sealed class GetMonitoringObserverSpecification : SingleResultSpecifica
             MonitoringNgoId = x.MonitoringNgoId,
             MonitoringNgoStatus = x.MonitoringNgo.Status,
             ObserverId = x.ObserverId,
-            UserStatus = x.Observer.Status,
+            UserStatus = x.Observer.ApplicationUser.Status,
             MonitoringObserverStatus = x.Status,
             MonitoringObserverId = x.Id
         });

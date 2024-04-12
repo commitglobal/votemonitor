@@ -1,4 +1,5 @@
-﻿using GetEndpoint = Vote.Monitor.Api.Feature.UserPreferences.Get.Endpoint;
+﻿using Vote.Monitor.Domain.Constants;
+using GetEndpoint = Vote.Monitor.Api.Feature.UserPreferences.Get.Endpoint;
 using GetRequest = Vote.Monitor.Api.Feature.UserPreferences.Get.Request;
 using UpdateEndpoint = Vote.Monitor.Api.Feature.UserPreferences.Update.Endpoint;
 using UpdateRequest = Vote.Monitor.Api.Feature.UserPreferences.Update.Request;
@@ -15,19 +16,17 @@ public class UpdateEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeede
         Fixture.OutputHelper = outputHelper;
     }
 
-  
-
     [Fact]
     public async Task UpdateUserPreferences_ReturnsSuccessStatusCode_WhenTheUpdateRequestIsValid()
     {
         // Arrange
-        Guid languageId = new Guid("094b3769-68b1-6211-ba2d-6bba92d6a167");
+        Guid languageId = LanguagesList.RO.Id;
         var updateRequest = new UpdateRequest
         {
             LanguageId = languageId
         };
 
-        UserPreferencesModel userPreferences = new (){LanguageId = languageId};
+        UserPreferencesModel userPreferences = new() { LanguageId = languageId };
 
         // Act
         var updateResponse = await Fixture.PlatformAdmin.POSTAsync<UpdateEndpoint, UpdateRequest>(updateRequest);

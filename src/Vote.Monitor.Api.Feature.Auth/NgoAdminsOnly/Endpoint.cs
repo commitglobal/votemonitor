@@ -1,9 +1,8 @@
 ﻿using Authorization.Policies;
-using Microsoft.AspNetCore.Authorization;
 
 namespace Vote.Monitor.Api.Feature.Auth.NgoAdminsOnly;
 
-public class Endpoint(IAuthorizationService authorizationService) : Endpoint<Request, Results<Ok<string>, NotFound>>
+public class Endpoint() : Endpoint<Request, Results<Ok<string>, NotFound>>
 {
     public override void Configure()
     {

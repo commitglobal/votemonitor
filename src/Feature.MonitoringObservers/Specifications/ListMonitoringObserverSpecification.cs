@@ -7,8 +7,9 @@ public sealed class ListMonitoringObserverSpecification : Specification<Monitori
     public ListMonitoringObserverSpecification(List.Request request)
     {
         Query
-            .Search(x => x.Observer.Name, "%" + request.NameFilter + "%", !string.IsNullOrEmpty(request.NameFilter))
-            .Search(x => x.Observer.Login, "%" + request.EmailFilter + "%", !string.IsNullOrEmpty(request.EmailFilter))
+            .Search(x => x.Observer.ApplicationUser.FirstName, "%" + request.NameFilter + "%", !string.IsNullOrEmpty(request.NameFilter))
+            .Search(x => x.Observer.ApplicationUser.LastName, "%" + request.NameFilter + "%", !string.IsNullOrEmpty(request.NameFilter))
+            .Search(x => x.Observer.ApplicationUser.Email, "%" + request.EmailFilter + "%", !string.IsNullOrEmpty(request.EmailFilter))
             .Where(x => x.MonitoringNgo.ElectionRoundId == request.ElectionRoundId
                          && x.MonitoringNgoId == request.MonitoringNgoId)
             .Where(x => x.Tags.Intersect(request.Tags).Any(), request.Tags.Any())
@@ -16,7 +17,9 @@ public sealed class ListMonitoringObserverSpecification : Specification<Monitori
             .ApplyOrdering(request)
             .Paginate(request);
 
-        Query.Include(x => x.Observer);
+        Query
+            .Include(x => x.Observer)
+            .ThenInclude(x=>x.ApplicationUser);
 
         Query.Select(entity => MonitoringObserverModel.FromEntity(entity));
     }

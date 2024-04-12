@@ -5,9 +5,9 @@ namespace Vote.Monitor.Api.Feature.NgoAdmin.List;
 
 public class Endpoint : Endpoint<Request, Results<Ok<PagedResponse<NgoAdminModel>>, ProblemDetails>>
 {
-     readonly IReadRepository<NgoAdminAggregate> _repository;
+     readonly IReadRepository<Domain.Entities.NgoAdminAggregate.NgoAdmin> _repository;
 
-    public Endpoint(IReadRepository<NgoAdminAggregate> repository)
+    public Endpoint(IReadRepository<Domain.Entities.NgoAdminAggregate.NgoAdmin> repository)
     {
         _repository = repository;
     }
@@ -28,9 +28,10 @@ public class Endpoint : Endpoint<Request, Results<Ok<PagedResponse<NgoAdminModel
         var result = admins.Select(x => new NgoAdminModel
         {
             Id = x.Id,
-            Name = x.Name,
-            Login = x.Login,
-            Status = x.Status,
+            FirstName = x.ApplicationUser.FirstName,
+            LastName = x.ApplicationUser.LastName,
+            Email = x.ApplicationUser.Email!,
+            Status = x.ApplicationUser.Status,
             CreatedOn = x.CreatedOn,
             LastModifiedOn = x.LastModifiedOn
         }).ToList();

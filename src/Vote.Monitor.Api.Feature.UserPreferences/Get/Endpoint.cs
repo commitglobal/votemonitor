@@ -10,10 +10,8 @@ public class Endpoint(IReadRepository<ApplicationUser> repository) : Endpoint<Re
         Get("/api/preferences");
     }
 
-
     public override async Task<Results<Ok<UserPreferencesModel>, NotFound<string>>> ExecuteAsync(Request req, CancellationToken ct)
     {
-
         var user = await repository.GetByIdAsync(req.Id, ct);
         if (user is null)
         {

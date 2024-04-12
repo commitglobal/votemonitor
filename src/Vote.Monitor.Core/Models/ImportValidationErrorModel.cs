@@ -1,4 +1,4 @@
-﻿namespace Vote.Monitor.Api.Feature.Observer;
+﻿namespace Vote.Monitor.Core.Models;
 public class ImportValidationErrorModel
 {
     public Guid Id { get; set; }

@@ -23,15 +23,15 @@ public static class CsvRowParsedHelpers
 
     public static bool CheckAndSetDuplicatesLines<T>(this List<CsvRowParsed<T>> rows) where T : class
     {
-        Dictionary<int, int> set = new();
+        Dictionary<T, int> set = new();
         bool containsDuplicates = false;
         for (int i = 0; i < rows.Count; i++)
         {
             var row = rows[i];
             if (row.IsSuccess && row.Value == null) continue;
-            if (set.ContainsKey(row.Value!.GetHashCode()))
+            if (set.ContainsKey(row.Value!))
             {
-                int firstRowIndex = set[row.Value.GetHashCode()];
+                int firstRowIndex = set[row.Value!];
                 containsDuplicates = true;
                 row.IsSuccess = false;
                 row.ErrorMessage += $"Duplicated data found. First row where you can find the duplicate data is {firstRowIndex + 1}";
@@ -40,7 +40,7 @@ public static class CsvRowParsedHelpers
             }
             else
             {
-                set.Add(row.Value!.GetHashCode(), i);
+                set.Add(row.Value!, i);
             }
         }
 

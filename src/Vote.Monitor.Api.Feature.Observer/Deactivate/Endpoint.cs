@@ -1,23 +1,37 @@
-﻿namespace Vote.Monitor.Api.Feature.Observer.Deactivate;
+﻿using Microsoft.AspNetCore.Identity;
+using Vote.Monitor.Core.Extensions;
 
-public class Endpoint(IRepository<ObserverAggregate> repository) : Endpoint<Request, Results<NoContent, NotFound>>
+namespace Vote.Monitor.Api.Feature.Observer.Deactivate;
+
+public class Endpoint(
+    UserManager<ApplicationUser> userManager,
+    IRepository<ObserverAggregate> repository) : Endpoint<Request, Results<NoContent, NotFound, ValidationProblem>>
 {
     public override void Configure()
     {
         Put("/api/observers/{id}:deactivate");
         Policies(PolicyNames.PlatformAdminsOnly);
+        Summary(x => { x.Description = "Deactivates account of an observer"; });
     }
 
-    public override async Task<Results<NoContent, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<Results<NoContent, NotFound, ValidationProblem>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var observer = await repository.GetByIdAsync(req.Id, ct);
+        var specification = new GetObserverByIdSpecification(req.Id);
+        var observer = await repository.SingleOrDefaultAsync(specification, ct);
+
         if (observer is null)
         {
             return TypedResults.NotFound();
         }
 
-        observer.Deactivate();
-        await repository.SaveChangesAsync(ct);
+        observer.ApplicationUser.Deactivate();
+        var result = await userManager.UpdateAsync(observer.ApplicationUser);
+
+        if (!result.Succeeded)
+        {
+            AddError(x => x.Id, result.GetAllErrors());
+            return TypedResults.ValidationProblem(ValidationFailures.ToValidationErrorDictionary());
+        }
 
         return TypedResults.NoContent();
     }

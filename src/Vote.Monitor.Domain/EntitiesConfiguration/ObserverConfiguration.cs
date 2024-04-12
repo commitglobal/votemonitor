@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Vote.Monitor.Domain.Entities.ObserverAggregate;
 
 namespace Vote.Monitor.Domain.EntitiesConfiguration;
 
@@ -7,7 +8,7 @@ public class ObserverConfiguration : IEntityTypeConfiguration<Observer>
     public void Configure(EntityTypeBuilder<Observer> builder)
     {
         builder.ToTable("Observers");
-        builder.Property(x => x.PhoneNumber).HasMaxLength(32);
+        builder.HasOne(x => x.ApplicationUser).WithOne();
 
         builder
             .HasMany(e => e.MonitoringObservers)

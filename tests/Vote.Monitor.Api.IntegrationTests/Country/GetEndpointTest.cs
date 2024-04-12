@@ -29,9 +29,6 @@ public class GetEndpointTest : IClassFixture<HttpServerFixture<NoopDataSeeder>>
         // Act
         var (response, result) = await Fixture.PlatformAdmin.GETAsync<Endpoint, Request ,CountryModel>(request);
 
-
-       // var expected = result.FirstOrDefault(x => x.Iso2 == code && x.Name == name);
-
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         result.Should().NotBeNull();

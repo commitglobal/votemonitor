@@ -1,5 +1,6 @@
 ﻿using Authorization.Policies.RequirementHandlers;
 using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
+using Vote.Monitor.Domain.Entities.NgoAdminAggregate;
 
 namespace Authorization.Policies.UnitTests.RequirementsHandlers;
 

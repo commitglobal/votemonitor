@@ -4,7 +4,6 @@ global using FluentValidation.TestHelper;
 global using Microsoft.Extensions.Logging;
 global using Microsoft.Extensions.Logging.Abstractions;
 global using NSubstitute;
-global using Vote.Monitor.Api.Feature.Observer.Services;
 global using Xunit;
 global using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
 global using Vote.Monitor.Api.Feature.Observer.Specifications;

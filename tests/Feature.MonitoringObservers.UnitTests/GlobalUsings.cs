@@ -10,7 +10,7 @@ global using Xunit;
 
 global using ElectionRoundAggregate = Vote.Monitor.Domain.Entities.ElectionRoundAggregate.ElectionRound;
 global using NgoAggregate = Vote.Monitor.Domain.Entities.NgoAggregate.Ngo;
-global using ObserverAggregate = Vote.Monitor.Domain.Entities.ApplicationUserAggregate.Observer;
+global using ObserverAggregate = Vote.Monitor.Domain.Entities.ObserverAggregate.Observer;
 
 
 global using MonitoringNgoAggregate = Vote.Monitor.Domain.Entities.MonitoringNgoAggregate.MonitoringNgo;

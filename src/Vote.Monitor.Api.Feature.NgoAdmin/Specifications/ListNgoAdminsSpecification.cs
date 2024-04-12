@@ -7,8 +7,10 @@ public sealed class ListNgoAdminsSpecification : Specification<NgoAdminAggregate
     public ListNgoAdminsSpecification(List.Request request)
     {
         Query
-            .Search(x => x.Name, "%" + request.NameFilter + "%", !string.IsNullOrEmpty(request.NameFilter))
-            .Where(x => x.Status == request.Status, request.Status != null)
+            .Include(x => x.ApplicationUser)
+            .Search(x => x.ApplicationUser.FirstName, "%" + request.NameFilter + "%", !string.IsNullOrEmpty(request.NameFilter))
+            .Search(x => x.ApplicationUser.LastName, "%" + request.NameFilter + "%", !string.IsNullOrEmpty(request.NameFilter))
+            .Where(x => x.ApplicationUser.Status == request.Status, request.Status != null)
             .ApplyOrdering(request)
             .Paginate(request);
     }

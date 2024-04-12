@@ -1,5 +1,6 @@
 ﻿using Authorization.Policies.Requirements;
 using Authorization.Policies.Specifications;
+using Vote.Monitor.Domain.Entities.NgoAdminAggregate;
 
 namespace Authorization.Policies.RequirementHandlers;
 

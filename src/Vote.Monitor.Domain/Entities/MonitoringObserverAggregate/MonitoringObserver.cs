@@ -1,4 +1,5 @@
 ﻿using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
+using Vote.Monitor.Domain.Entities.ObserverAggregate;
 
 namespace Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 

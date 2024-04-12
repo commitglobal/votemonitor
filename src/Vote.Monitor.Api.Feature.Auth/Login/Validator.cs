@@ -4,7 +4,7 @@ public class Validator : Validator<Request>
 {
     public Validator()
     {
-        RuleFor(x => x.Username)
+        RuleFor(x => x.Email)
             .NotEmpty();
 
         RuleFor(x => x.Password)

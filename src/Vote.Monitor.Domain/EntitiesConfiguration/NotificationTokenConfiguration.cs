@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Vote.Monitor.Domain.Entities.NotificationTokenAggregate;
+using Vote.Monitor.Domain.Entities.ObserverAggregate;
 
 namespace Vote.Monitor.Domain.EntitiesConfiguration;
 

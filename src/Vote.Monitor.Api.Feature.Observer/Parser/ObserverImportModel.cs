@@ -1,25 +1,20 @@
-﻿namespace Vote.Monitor.Api.Feature.Observer.Services;
+﻿namespace Vote.Monitor.Api.Feature.Observer.Parser;
 
-public class ObserverImportModel
+public record ObserverImportModel
 {
-    public required string Name { get; set; }
-    public required string Email { get; set; }
-    public string Password { get; set; }
-    public required string PhoneNumber { get; set; }
+    public required string LastName { get; init; }
+    public required string FirstName { get; init; }
+    public required string Email { get; init; }
+    public required string PhoneNumber { get; init; }
+    public required string Password { get; init; }
+
+    public virtual bool Equals(ObserverImportModel? other)
+    {
+        return other?.Email == Email;
+    }
 
     public override int GetHashCode()
     {
         return Email.GetHashCode();
     }
-
-    public override bool Equals(object? obj)
-    {
-        if (obj == null || obj is not ObserverImportModel) return false;
-        if (ReferenceEquals(this, obj)) return true;
-
-        ObserverImportModel observerImportModel = (ObserverImportModel)obj;
-
-        return Email.Equals(observerImportModel.Email);
-    }
-
 }

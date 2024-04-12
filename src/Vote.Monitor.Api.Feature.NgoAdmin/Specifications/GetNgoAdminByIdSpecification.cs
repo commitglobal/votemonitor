@@ -5,6 +5,7 @@ public sealed class GetNgoAdminByIdSpecification : Specification<NgoAdminAggrega
     public GetNgoAdminByIdSpecification(Guid ngoId, Guid adminId)
     {
         Query
-            .Where(x => x.NgoId == ngoId && x.Id == adminId);
+            .Where(x => x.NgoId == ngoId && x.Id == adminId)
+            .Include(x=>x.ApplicationUser);
     }
 }

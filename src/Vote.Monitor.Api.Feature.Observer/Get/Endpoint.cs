@@ -11,7 +11,9 @@ public class Endpoint(IReadRepository<ObserverAggregate> repository)
 
     public override async Task<Results<Ok<ObserverModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var observer = await repository.GetByIdAsync(req.Id, ct);
+        var specification = new GetObserverByIdSpecification(req.Id);
+        var observer = await repository.SingleOrDefaultAsync(specification, ct);
+
         if (observer is null)
         {
             return TypedResults.NotFound();
@@ -20,10 +22,11 @@ public class Endpoint(IReadRepository<ObserverAggregate> repository)
         return TypedResults.Ok(new ObserverModel
         {
             Id = observer.Id,
-            Login = observer.Login,
-            Name = observer.Name,
-            PhoneNumber = observer.PhoneNumber,
-            Status = observer.Status,
+            Email = observer.ApplicationUser.Email!,
+            FirstName = observer.ApplicationUser.FirstName,
+            LastName = observer.ApplicationUser.LastName,
+            PhoneNumber = observer.ApplicationUser.PhoneNumber!,
+            Status = observer.ApplicationUser.Status,
             CreatedOn = observer.CreatedOn,
             LastModifiedOn = observer.LastModifiedOn
         });

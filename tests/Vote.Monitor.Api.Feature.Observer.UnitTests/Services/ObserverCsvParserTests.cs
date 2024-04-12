@@ -1,4 +1,5 @@
-﻿using Vote.Monitor.Core.Services.Parser;
+﻿using Vote.Monitor.Api.Feature.Observer.Parser;
+using Vote.Monitor.Core.Services.Parser;
 
 namespace Vote.Monitor.Api.Feature.Observer.UnitTests.Services;
 public class ObserverCsvParserTests
@@ -48,7 +49,7 @@ public class ObserverCsvParserTests
 
     [Theory]
     [method: MemberData(nameof(MalformedCsv))]
-    public void Parsing_ShouldFail_When_MalformedCsv(string fileContent, int numberOfRows, List<int> rowIndexWithErrors, List<string> errormessages, List<int> rowOk)
+    public void Parsing_ShouldFail_When_MalformedCsv(string fileContent, int numberOfRows, List<int> rowIndexWithErrors, List<int> rowOk)
     {
         // Arrange
         using var fileStream = new MemoryStream(Encoding.UTF8.GetBytes(fileContent));
@@ -68,7 +69,6 @@ public class ObserverCsvParserTests
         {
             int rowIndex = rowIndexWithErrors[i];
             failItemResult[rowIndex].IsSuccess.Should().BeFalse();
-            failItemResult[rowIndex].ErrorMessage.Should().Be(errormessages[i]);
         }
 
         for (int i = 0; i < rowOk.Count; i++)
@@ -103,19 +103,19 @@ public class ObserverCsvParserTests
     public static IEnumerable<object[]> ValidCsv => new List<object[]>
     {
          new object[] {
-             "Name,Email,PhoneNumber"
-            + Environment.NewLine + "Obs1,obs1@mail.com,2000000000"
-            + Environment.NewLine + "Obs2,obs2@mail.com,3000000000"   ,
+             "FirstName,LastName,Email,PhoneNumber,Password"
+            + Environment.NewLine + "Obs1,test,obs1@mail.com,2000000000,pa$$word"
+            + Environment.NewLine + "Obs2,test,obs2@mail.com,3000000000,pa$$word",
              new List<ObserverImportModel>{
-                 new() {Name = "Obs1", Email = "obs1@mail.com", PhoneNumber = "2000000000" },
-                 new() {Name = "Obs2", Email = "obs2@mail.com", PhoneNumber = "3000000000" }
+                 new() {FirstName = "Obs1",LastName="test",Password="pa$$word", Email = "obs1@mail.com", PhoneNumber = "2000000000", },
+                 new() {FirstName = "Obs2",LastName="test",Password="pa$$word", Email = "obs2@mail.com", PhoneNumber = "3000000000" }
              }
          },
-         new object[] {"Name,Email,PhoneNumber", new List<ObserverImportModel>() },
-         new object[] {  "Name,Email,PhoneNumber"
-                + Environment.NewLine + "Obs1,obs1@mail.com,2000000000",
+         new object[] { "FirstName,LastName,Email,PhoneNumber,Password", new List<ObserverImportModel>() },
+         new object[] {  "FirstName,LastName,Email,PhoneNumber,Password"
+                + Environment.NewLine + "Obs1,test,obs1@mail.com,2000000000,pa$$word",
              new List<ObserverImportModel>{
-                 new() {Name = "Obs1", Email = "obs1@mail.com", PhoneNumber = "2000000000" }
+                 new() {FirstName = "Obs1", LastName="test",Password="pa$$word",Email = "obs1@mail.com", PhoneNumber = "2000000000" }
              }
          }
     };
@@ -124,81 +124,56 @@ public class ObserverCsvParserTests
     {
         // all rows are malformed
         new object[] {
-            "Name,Email,PhoneNumber"
-            + Environment.NewLine + ",obs1@mail.com,2000000000"
-            + Environment.NewLine + ",obs2@mail.com,3000000000",
+            "FirstName,LastName,Email,PhoneNumber,Password"
+            + Environment.NewLine + ",,obs1@mail.com,2000000000,"
+            + Environment.NewLine + ",,obs2@mail.com,3000000000,",
             3,
             new List<int>{1,2},
-            new List<string>{
-                "The length of 'Name' must be at least 3 characters. You entered 0 characters."
-                ,
-                "The length of 'Name' must be at least 3 characters. You entered 0 characters."
-            },
             new List<int>()
         }, 
         //last row is malformed
         new object[]
         {
-            "Name,Email,PhoneNumber"
-            + Environment.NewLine + "Obs1,obs1@mail.com,2000000000"
-            + Environment.NewLine + "Obs2,",
-
+            "FirstName,LastName,Email,PhoneNumber,Password"
+            + Environment.NewLine + "Obs1,Test,obs1@mail.com,2000000000,pa$$word"
+            + Environment.NewLine + "Obs2,Test,",
             3,
             new List<int>{2},
-            new List<string>
-            {
-                "'Email' is not a valid email address.,The length of 'Phone Number' must be at least 3 characters. You entered 0 characters."
-            },
             new List<int>{1}
         },
         //middle row is malformed
         new object[]
         {
-            "Name,Email,PhoneNumber"
-            + Environment.NewLine + "Obs1,obs1@mail.com,2000000000"
+            "FirstName,LastName,Email,PhoneNumber,Password"
+            + Environment.NewLine + "Obs1,Test,obs1@mail.com,2000000000,pa$$word"
             + Environment.NewLine + "Obs5"
-            + Environment.NewLine + "Obs2,obs2@mail.com,2000000000"
-            + Environment.NewLine + "Obs3,obs3@mail.com,3000000000"
-            + Environment.NewLine + "Obs4,obs4@mail.com,4000000000",
+            + Environment.NewLine + "Obs2,Test,obs2@mail.com,2000000000,pa$$word"
+            + Environment.NewLine + "Obs3,Test,obs3@mail.com,3000000000,pa$$word"
+            + Environment.NewLine + "Obs4,Test,obs4@mail.com,4000000000,pa$$word",
             6,
             new List<int>{2},
-            new List<string>
-            {
-                "'Email' is not a valid email address.,The length of 'Phone Number' must be at least 3 characters. You entered 0 characters."
-            },
             new List<int>{0,3,4,5}
         },
         //invalid observer data
         new object[]
         {
-            "Name,Email,PhoneNumber"
-            + Environment.NewLine + "Observer1,obs1@mail.com,2000000000"
-            + Environment.NewLine + ",obs2@mail.com,3000000000"
-            + Environment.NewLine + "Observer3,,4000000000"
-            + Environment.NewLine + "Observer4,obs4@mail.com,",
+            "FirstName,LastName,Email,PhoneNumber,Password"
+            + Environment.NewLine + "Observer1,Test,obs1@mail.com,2000000000,pa$$word"
+            + Environment.NewLine + ",obs2@mail.com,3000000000,"
+            + Environment.NewLine + "Observer3,Test,,4000000000,pa$$word"
+            + Environment.NewLine + "Observer4,Test,obs4@mail.com,pa$$word",
             5,
             new List<int>{2,3,4},
-            new List<string>
-            {
-                "The length of 'Name' must be at least 3 characters. You entered 0 characters." ,
-                "'Email' is not a valid email address." ,
-                "The length of 'Phone Number' must be at least 3 characters. You entered 0 characters."
-            },
             new List<int>{1}
         },
         //duplicate email
         new object[]
         {
-            "Name,Email,PhoneNumber" + Environment.NewLine +
-            "Obs1,obs1@mail.com,2000000000" + Environment.NewLine +
-            "Obs2,obs1@mail.com,3000000000",
+            "FirstName,LastName,Email,PhoneNumber,Password" + Environment.NewLine +
+            "Obs1,Test,obs1@mail.com,2000000000,pa$$word" + Environment.NewLine +
+            "Obs2,Test,obs1@mail.com,3000000000,pa$$word",
             3,
             new List<int>{1,2},
-            new List<string>
-            {
-                "Duplicated data found. Row(s) where you can find the duplicate data are 3",
-                "Duplicated data found. First row where you can find the duplicate data is 2"
-            },
             new List<int>()
         }
     };

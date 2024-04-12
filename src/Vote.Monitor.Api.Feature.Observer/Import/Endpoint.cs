@@ -1,8 +1,12 @@
-﻿using Vote.Monitor.Core.Services.Parser;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Vote.Monitor.Api.Feature.Observer.Parser;
+using Vote.Monitor.Core.Services.Parser;
 
 namespace Vote.Monitor.Api.Feature.Observer.Import;
 
 public class Endpoint(
+    UserManager<ApplicationUser> userManager,
     IRepository<ObserverAggregate> repository,
     IRepository<ImportValidationErrors> errorRepo,
     ICsvParser<ObserverImportModel> parser,
@@ -26,30 +30,41 @@ public class Endpoint(
 
             string csv = failedResult.Items.ConstructErrorFileContent();
             var errorSaved = await errorRepo.AddAsync(new(ImportType.Observer, req.File.Name, csv), ct);
-            return TypedResults.BadRequest(
-                new ImportValidationErrorModel { Id = errorSaved.Id, Message = "The file contains errors! Please use the ID to get the file with the errors described inside." });
+            return TypedResults.BadRequest(new ImportValidationErrorModel { Id = errorSaved.Id, Message = "The file contains errors! Please use the ID to get the file with the errors described inside." });
         }
 
         var importedRows = parsingResult as ParsingResult<ObserverImportModel>.Success;
-        List<ObserverAggregate> observers = importedRows!
+
+        var applicationUsers = importedRows!
             .Items
-            .Select(x => ObserverAggregate.Create(x.Name, x.Email, x.Password, x.PhoneNumber))
-            .ToList();
+            .Select(x => ApplicationUser.Create(x.FirstName, x.LastName, x.Email, x.PhoneNumber, x.Password))
+            .ToDictionary(x => x.NormalizedEmail!);
 
-        var logins = observers.Select(o => o.Login);
-        var specification = new GetObserversByLoginsSpecification(logins);
-        var existingObservers = await repository.ListAsync(specification, ct);
+        var existingUsers = await userManager.Users
+            .Where(user => applicationUsers.Keys.Contains(user.NormalizedEmail!))
+            .ToListAsync(ct);
 
-        var duplicates = observers.Where(x => existingObservers.Any(y => y.Login == x.Login)).ToList();
-
-        foreach (var obs in duplicates)
+        foreach (var applicationUser in applicationUsers)
         {
-            logger.LogWarning("An Observer with email {obs.Login} already exists!", obs.Login);
+            var isDuplicatedAccount = existingUsers.Any(x => x.NormalizedEmail == applicationUser.Key);
+
+            if (isDuplicatedAccount)
+            {
+                logger.LogWarning("An Observer with {email} already exists!", applicationUser.Key);
+                continue;
+            }
+
+            var result = await userManager.CreateAsync(applicationUser.Value);
+            if (result.Succeeded)
+            {
+                await repository.AddAsync(ObserverAggregate.Create(applicationUser.Value), ct);
+            }
+            else
+            {
+                logger.LogError("An error occured when creating user with {email}!", applicationUser.Key);
+            }
         }
-        List<ObserverAggregate> observersToAdd = observers.Where(x => !existingObservers.Any(y => y.Login == x.Login)).ToList();
-
-        if (observersToAdd.Count > 0) await repository.AddRangeAsync(observersToAdd, ct);
-
+        
         return TypedResults.NoContent();
     }
 }

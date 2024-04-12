@@ -5,13 +5,14 @@ using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 using Vote.Monitor.Domain.Entities.NgoAggregate;
+using Vote.Monitor.Domain.Entities.ObserverAggregate;
 
 namespace Feature.MonitoringObservers.Add;
 
 public class Endpoint(
     IRepository<ElectionRoundAggregate> repository,
     IRepository<MonitoringNgoAggregate> monitoringNgoRepository,
-    IReadRepository<ObserverAggregate> observerRepository,
+    IReadRepository<Observer> observerRepository,
     IRepository<MonitoringObserver> monitoringObserverRepository)
     : Endpoint<Request, Results<Ok<Response>, NotFound<string>, Conflict<ProblemDetails>, ValidationProblem>>
 {
@@ -54,7 +55,7 @@ public class Endpoint(
             return TypedResults.NotFound("Observer not found");
         }
 
-        if (observer.Status == UserStatus.Deactivated)
+        if (observer.ApplicationUser.Status == UserStatus.Deactivated)
         {
             AddError(x => x.ObserverId, "Only active observers can monitor elections");
             return TypedResults.ValidationProblem(ValidationFailures.ToValidationErrorDictionary());

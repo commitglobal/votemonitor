@@ -1,4 +1,5 @@
 ﻿using Ardalis.Specification;
+using Vote.Monitor.Domain.Entities.NgoAdminAggregate;
 
 namespace Authorization.Policies.Specifications;
 
@@ -15,7 +16,7 @@ internal sealed class GetNgoAdminSpecification : SingleResultSpecification<NgoAd
             NgoId = x.Ngo.Id,
             NgoStatus = x.Ngo.Status,
             NgoAdminId = x.Id,
-            UserStatus = x.Status
+            UserStatus = x.ApplicationUser.Status
         });
     }
 }

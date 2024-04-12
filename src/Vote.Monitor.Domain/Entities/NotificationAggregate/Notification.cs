@@ -1,4 +1,6 @@
 ﻿using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
+using Vote.Monitor.Domain.Entities.NgoAdminAggregate;
+
 namespace Vote.Monitor.Domain.Entities.NotificationAggregate;
 
 public class Notification : AuditableBaseEntity, IAggregateRoot

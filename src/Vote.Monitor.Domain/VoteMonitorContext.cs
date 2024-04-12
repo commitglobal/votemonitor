@@ -1,12 +1,17 @@
-﻿using Vote.Monitor.Domain.Constants;
+﻿using System.Data;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Vote.Monitor.Domain.Constants;
 using Vote.Monitor.Domain.Entities.FormAggregate;
 using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
 using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
+using Vote.Monitor.Domain.Entities.NgoAdminAggregate;
 using Vote.Monitor.Domain.Entities.NgoAggregate;
 using Vote.Monitor.Domain.Entities.NotificationAggregate;
 using Vote.Monitor.Domain.Entities.NotificationTokenAggregate;
+using Vote.Monitor.Domain.Entities.ObserverAggregate;
 using Vote.Monitor.Domain.Entities.ObserverGuideAggregate;
 using Vote.Monitor.Domain.Entities.PollingStationAttachmentAggregate;
 using Vote.Monitor.Domain.Entities.PollingStationInfoAggregate;
@@ -16,7 +21,7 @@ using Vote.Monitor.Domain.ViewModels;
 
 namespace Vote.Monitor.Domain;
 
-public class VoteMonitorContext : DbContext
+public class VoteMonitorContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>
 {
     private readonly ISerializerService _serializerService;
     private readonly ITimeProvider _timeProvider;
@@ -31,10 +36,11 @@ public class VoteMonitorContext : DbContext
         _currentUserIdProvider = currentUserIdProvider;
     }
 
+    // Used by Dapper
+    public IDbConnection Connection => Database.GetDbConnection();
     public DbSet<ApplicationUser> Users { get; set; }
     public DbSet<Country> Countries { get; set; }
     public DbSet<Ngo> Ngos { get; set; }
-    public DbSet<PlatformAdmin> PlatformAdmins { get; set; }
     public DbSet<NgoAdmin> NgoAdmins { get; set; }
     public DbSet<Observer> Observers { get; set; }
     public DbSet<PollingStation> PollingStations { get; set; }
@@ -101,7 +107,6 @@ public class VoteMonitorContext : DbContext
         builder.ApplyConfiguration(new ApplicationUserConfiguration());
         builder.ApplyConfiguration(new NgoAdminConfiguration());
         builder.ApplyConfiguration(new ObserverConfiguration());
-        builder.ApplyConfiguration(new PlatformAdminConfiguration());
         builder.ApplyConfiguration(new CountryConfiguration());
         builder.ApplyConfiguration(new LanguageConfiguration());
         builder.ApplyConfiguration(new NgoConfiguration());
@@ -120,6 +125,7 @@ public class VoteMonitorContext : DbContext
         builder.ApplyConfiguration(new ObserverGuideConfiguration());
         builder.ApplyConfiguration(new FormConfiguration());
         builder.ApplyConfiguration(new FormSubmissionConfiguration());
+        builder.ApplyConfiguration(new RoleConfiguration());
 
         // views
         builder.ApplyConfiguration(new PollingStationVisitsViewConfiguration());

@@ -1,8 +1,10 @@
 ﻿using System.Security.Claims;
 using MartinCostello.Logging.XUnit;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Logging;
 using Vote.Monitor.Api.Feature.Auth.Login;
+using Vote.Monitor.Api.Feature.Auth.Services;
 using Vote.Monitor.Api.Feature.ElectionRound;
 using Vote.Monitor.Core.Security;
 using Vote.Monitor.Core.Services.Security;
@@ -39,7 +41,7 @@ public class HttpServerFixture<TDataSeeder> : WebApplicationFactory<Program>, IA
     public HttpClient PlatformAdmin { get; private set; }
     public ElectionRoundModel ElectionRound { get; private set; }
 
-    private readonly ClaimsPrincipal _integrationTestingUser = new([new ClaimsIdentity([new Claim(ApplicationClaimTypes.UserId, "007e57ed-7e57-7e57-7e57-007e57ed0000")],"fake")]);
+    private readonly ClaimsPrincipal _integrationTestingUser = new([new ClaimsIdentity([new Claim(ApplicationClaimTypes.UserId, "007e57ed-7e57-7e57-7e57-007e57ed0000")], "fake")]);
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
@@ -60,27 +62,35 @@ public class HttpServerFixture<TDataSeeder> : WebApplicationFactory<Program>, IA
     {
         await _postgresContainer.StartAsync();
 
+        var firstName = Fake.Name.FirstName();
+        var lastName = Fake.Name.FirstName();
+        var phoneNumber = Fake.Phone.PhoneNumber();
         var email = Fake.Internet.Email();
         var password = Fake.Internet.Password();
         var currentUserInitializer = Services.GetRequiredService<ICurrentUserInitializer>();
         currentUserInitializer.SetCurrentUser(_integrationTestingUser);
 
-        using var voteMonitorContext = Services.GetRequiredService<VoteMonitorContext>();
-        voteMonitorContext.PlatformAdmins.Add(new PlatformAdmin("Integration test platform admin", email, password));
-        await voteMonitorContext.SaveChangesAsync();
+        using var userManager = Services.GetRequiredService<UserManager<ApplicationUser>>();
+
+        var platformAdmin = ApplicationUser.Create(firstName, lastName, email, phoneNumber, password);
+        platformAdmin.EmailConfirmed = true;
+        await userManager.CreateAsync(platformAdmin);
+        await userManager.AddToRoleAsync(platformAdmin, UserRole.PlatformAdmin);
 
         Client = CreateClient();
 
-        var (_, tokenResponse) = await Client.POSTAsync<Endpoint, Request, Response>(new()
+        var ( tokenResult, tokenResponse) = await Client.POSTAsync<Endpoint, Request, TokenResponse>(new()
         {
-            Username = email,
+            Email = email,
             Password = password
         });
+        
+        tokenResult.IsSuccessStatusCode.Should().BeTrue();
 
         PlatformAdmin = CreateClient();
         PlatformAdmin.DefaultRequestHeaders.Authorization = new("Bearer", tokenResponse.Token);
 
-        (_, ElectionRound) = await PlatformAdmin.POSTAsync<ElectionRoundCreateEndpoint, ElectionRoundCreateRequest, ElectionRoundModel>(new()
+        (var electionRoundResult, ElectionRound) = await PlatformAdmin.POSTAsync<ElectionRoundCreateEndpoint, ElectionRoundCreateRequest, ElectionRoundModel>(new()
         {
             CountryId = CountriesList.RO.Id,
             Title = Guid.NewGuid().ToString(),
@@ -88,6 +98,7 @@ public class HttpServerFixture<TDataSeeder> : WebApplicationFactory<Program>, IA
             StartDate = Fake.Date.FutureDateOnly()
         });
 
+        electionRoundResult.IsSuccessStatusCode.Should().BeTrue();
 
         var seeder = Services.GetRequiredService<IDataSeeder>();
         await seeder.SeedDataAsync();

@@ -1,9 +1,8 @@
-﻿using Vote.Monitor.Core.Security;
-using Vote.Monitor.Domain.Constants;
+﻿using Microsoft.AspNetCore.Identity;
 
 namespace Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
 
-public abstract class ApplicationUser : AuditableBaseEntity, IAggregateRoot
+public class ApplicationUser : IdentityUser<Guid>, IAggregateRoot
 {
 #pragma warning disable CS8618 // Required by Entity Framework
     protected ApplicationUser()
@@ -12,29 +11,60 @@ public abstract class ApplicationUser : AuditableBaseEntity, IAggregateRoot
     }
 #pragma warning restore CS8618
 
-    public string Name { get; private set; }
-    public string Login { get; private set; }
-    public string Password { get; private set; }
-    public UserRole Role { get; private set; }
+    public string FirstName { get; private set; }
+    public string LastName { get; private set; }
+    public string? RefreshToken { get; private set; }
+    public DateTime RefreshTokenExpiryTime { get; private set; }
     public UserStatus Status { get; private set; }
     public UserPreferences Preferences { get; private set; }
 
-    public ApplicationUser(string name,
-        string login,
-        string password,
-        UserRole role) : base(Guid.NewGuid())
+    private ApplicationUser(string firstName, string lastName, string email, string password, string phoneNumber)
     {
-        Name = name;
-        Login = login;
-        Password = password;
-        Role = role;
+        FirstName = firstName;
+        LastName = lastName;
+        Email = email;
+        UserName = email;
+        NormalizedEmail = email.ToUpperInvariant();
+        NormalizedUserName = email.ToUpperInvariant();
+        PhoneNumber = phoneNumber;
+
+        Status = UserStatus.Active;
+        Preferences = UserPreferences.Defaults;
+
+        var hasher = new PasswordHasher<ApplicationUser>();
+        PasswordHash = hasher.HashPassword(this, password);
+    }
+
+    private ApplicationUser(string firstName, string lastName, string email, string phoneNumber)
+    {
+        FirstName = firstName;
+        LastName = lastName;
+        Email = email;
+        UserName = email;
+        NormalizedEmail = email.ToUpperInvariant();
+        NormalizedUserName = email.ToUpperInvariant();
+        PhoneNumber = phoneNumber;
         Status = UserStatus.Active;
         Preferences = UserPreferences.Defaults;
     }
 
-    public void UpdateDetails(string name)
+    public static ApplicationUser CreateForInvite(string firstName, string lastName, string email, string phoneNumber) => 
+        new(firstName, lastName, email, phoneNumber);
+
+    public static ApplicationUser Create(string firstName, string lastName, string email, string phoneNumber, string password) =>
+         new(firstName, lastName, email, password, phoneNumber);
+
+    public void UpdateDetails(string firstName, string lastName, string phoneNumber)
     {
-        Name = name;
+        FirstName = firstName;
+        LastName = lastName;
+        PhoneNumber = phoneNumber;
+    }
+
+    public void UpdateRefreshToken(string refreshToken, DateTime refreshTokenExpiryTime)
+    {
+        RefreshToken = refreshToken;
+        RefreshTokenExpiryTime = refreshTokenExpiryTime;
     }
 
     public void Activate()
@@ -48,26 +78,6 @@ public abstract class ApplicationUser : AuditableBaseEntity, IAggregateRoot
         // TODO: handle invariants
         Status = UserStatus.Deactivated;
     }
-}
 
-public class UserPreferences
-{
-#pragma warning disable CS8618 // Required by Entity Framework
-    protected UserPreferences()
-    {
-    }
-#pragma warning restore CS8618
 
-    protected UserPreferences(Guid languageId)
-    {
-        LanguageId = languageId;
-    }
-
-    public static UserPreferences Defaults => new(LanguagesList.EN.Id);
-    public Guid LanguageId { get; private set; }
-
-    public void Update(Guid languageId)
-    {
-        LanguageId = languageId;
-    }
 }

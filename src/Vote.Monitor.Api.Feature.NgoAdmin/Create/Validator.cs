@@ -7,11 +7,15 @@ public class Validator : Validator<Request>
         RuleFor(x => x.NgoId)
             .NotEmpty();
 
-        RuleFor(x => x.Name)
+        RuleFor(x => x.FirstName)
             .MinimumLength(3)
             .NotEmpty();
 
-        RuleFor(x => x.Login)
+        RuleFor(x => x.LastName)
+             .MinimumLength(3)
+             .NotEmpty();
+
+        RuleFor(x => x.Email)
             .MinimumLength(3)
             .NotEmpty();
 

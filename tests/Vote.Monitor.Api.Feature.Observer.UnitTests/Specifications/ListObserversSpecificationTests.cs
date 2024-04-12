@@ -5,17 +5,16 @@ namespace Vote.Monitor.Api.Feature.Observer.UnitTests.Specifications;
 public class ListObserversSpecificationTests
 {
     private const string DefaultName = "Default$ObserverName";
-    private readonly UserStatus DefaultStatus = UserStatus.Active;
 
     [Fact]
     public void ListObserversSpecification_AppliesCorrectFilters()
     {
         // Arrange
-        var observer1 = new ObserverAggregateFaker(index: 101, status: DefaultStatus).Generate();
-        var observer2 = new ObserverAggregateFaker(index: 102, status: DefaultStatus).Generate();
+        var observer1 = new ObserverAggregateFaker(index: 101).Generate();
+        var observer2 = new ObserverAggregateFaker(index: 102).Generate();
 
         var testCollection = Enumerable.Range(1, 100)
-            .Select(idx => new ObserverAggregateFaker(index: idx, status: DefaultStatus).Generate())
+            .Select(idx => new ObserverAggregateFaker(index: idx).Generate())
         .Union(new[] { observer1, observer2 })
         .ToList();
 
@@ -40,12 +39,12 @@ public class ListObserversSpecificationTests
     public void ListObserversSpecification_AppliesCorrectFilters_WhenNameFilterApplied()
     {
         // Arrange
-        var observer1 = new ObserverAggregateFaker(index: 101, name: DefaultName, status: DefaultStatus).Generate();
-        var observer2 = new ObserverAggregateFaker(index: 102, name: DefaultName, status: DefaultStatus).Generate();
+        var observer1 = new ObserverAggregateFaker(index: 101, applicationUser: new ApplicationUserFaker(name: DefaultName)).Generate();
+        var observer2 = new ObserverAggregateFaker(index: 102, applicationUser: new ApplicationUserFaker(name: DefaultName)).Generate();
 
         var testCollection = Enumerable
         .Range(1, 100)
-            .Select(index => new ObserverAggregateFaker(index: index, status: DefaultStatus).Generate())
+            .Select(index => new ObserverAggregateFaker(index: index).Generate())
             .Union(new[] { observer1, observer2 })
             .ToList();
 
@@ -71,12 +70,12 @@ public class ListObserversSpecificationTests
     public void ListObserversSpecification_AppliesCorrectFilters_WhenPartialFilterApplied(string searchString)
     {
         // Arrange
-        var observer1 = new ObserverAggregateFaker(index: 101, name: searchString, status: DefaultStatus).Generate();
-        var observer2 = new ObserverAggregateFaker(index: 102, name: searchString, status: DefaultStatus).Generate();
+        var observer1 = new ObserverAggregateFaker(index: 101, applicationUser: new ApplicationUserFaker(name: searchString)).Generate();
+        var observer2 = new ObserverAggregateFaker(index: 102, applicationUser: new ApplicationUserFaker(name: searchString)).Generate();
 
         var testCollection = Enumerable
             .Range(1, 100)
-            .Select(idx => new ObserverAggregateFaker(index: idx, status: DefaultStatus).Generate())
+            .Select(idx => new ObserverAggregateFaker(index: idx).Generate())
             .Union(new[] { observer1, observer2 })
             .ToList();
 
@@ -106,7 +105,7 @@ public class ListObserversSpecificationTests
 
         var testCollection = Enumerable
             .Range(1, 100)
-            .Select(idx => new ObserverAggregateFaker(index: idx, status: DefaultStatus).Generate())
+            .Select(idx => new ObserverAggregateFaker(index: idx).Generate())
             .Union(new[] { observer1, observer2 })
             .ToList();
 
@@ -133,12 +132,12 @@ public class ListObserversSpecificationTests
     public void ListObserversSpecification_AppliesSortingCorrectly(string columnName, SortOrder? sortOrder)
     {
         // Arrange
-        var observer1 = new ObserverAggregateFaker(index: 1, name: "Observer-901").Generate();
-        var observer2 = new ObserverAggregateFaker(index: 2, name: "Observer-902").Generate();
+        var observer1 = new ObserverAggregateFaker(index: 1, applicationUser: new ApplicationUserFaker(name: "Observer-901")).Generate();
+        var observer2 = new ObserverAggregateFaker(index: 2, applicationUser: new ApplicationUserFaker(name: "Observer-902")).Generate();
 
         var testCollection = Enumerable
             .Range(100, 100)
-            .Select(idx => new ObserverAggregateFaker(index: idx, name: $"Observer-{idx}").Generate())
+            .Select(idx => new ObserverAggregateFaker(index: idx, applicationUser: new ApplicationUserFaker(name: $"Observer-{idx}")).Generate())
             .Union(new[] { observer1, observer2 })
             .Reverse()
             .ToList();
@@ -166,19 +165,19 @@ public class ListObserversSpecificationTests
     public void ListObserversSpecification_AppliesSortOrderCorrectly()
     {
         // Arrange
-        var observer1 = new ObserverAggregateFaker(index: 1, name: "Observer-101").Generate();
-        var observer2 = new ObserverAggregateFaker(index: 2, name: "Observer-102").Generate();
+        var observer1 = new ObserverAggregateFaker(index: 1, applicationUser: new ApplicationUserFaker(name: "Observer-101")).Generate();
+        var observer2 = new ObserverAggregateFaker(index: 2, applicationUser: new ApplicationUserFaker(name: "Observer-102")).Generate();
 
         var testCollection = Enumerable
             .Range(900, 100)
-            .Select(idx => new ObserverAggregateFaker(index: idx, name: $"Observer-{idx}").Generate())
+            .Select(idx => new ObserverAggregateFaker(index: idx, applicationUser: new ApplicationUserFaker(name: $"Observer-{idx}")).Generate())
             .Union(new[] { observer1, observer2 })
             .Reverse()
             .ToList();
 
         var request = new List.Request
         {
-            SortColumnName = "name",
+            SortColumnName = "FirstName",
             SortOrder = SortOrder.Desc,
             PageSize = 100,
             PageNumber = 2
@@ -197,9 +196,9 @@ public class ListObserversSpecificationTests
     public static IEnumerable<object[]> NameSortingTestCases =>
         new List<object[]>
         {
-            new object[] { "name", null },
-            new object[] { "Name", null },
-            new object[] { "name", SortOrder.Asc },
-            new object[] { "Name", SortOrder.Asc }
+            new object[] { "firstName", null },
+            new object[] { "FirstName", null },
+            new object[] { "firstName", SortOrder.Asc },
+            new object[] { "FirstName", SortOrder.Asc }
         };
 }

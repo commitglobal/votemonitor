@@ -11,4 +11,4 @@ global using ElectionRoundAggregate = Vote.Monitor.Domain.Entities.ElectionRound
 global using NgoAggregate = Vote.Monitor.Domain.Entities.NgoAggregate.Ngo;
 global using MonitoringNgoAggregate = Vote.Monitor.Domain.Entities.MonitoringNgoAggregate.MonitoringNgo;
 global using MonitoringObserverAggregate = Vote.Monitor.Domain.Entities.MonitoringObserverAggregate.MonitoringObserver;
-global using ObserverAggregate = Vote.Monitor.Domain.Entities.ApplicationUserAggregate.Observer;
+global using ObserverAggregate = Vote.Monitor.Domain.Entities.ObserverAggregate.Observer;

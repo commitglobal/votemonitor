@@ -16,10 +16,11 @@ public class Endpoint(IReadRepository<ObserverAggregate> repository) : Endpoint<
         var result = observers.Select(x => new ObserverModel
         {
             Id = x.Id,
-            Name = x.Name,
-            Login = x.Login,
-            PhoneNumber = x.PhoneNumber,
-            Status = x.Status,
+            Email = x.ApplicationUser.Email!,
+            FirstName = x.ApplicationUser.FirstName,
+            LastName = x.ApplicationUser.LastName,
+            PhoneNumber = x.ApplicationUser.PhoneNumber!,
+            Status = x.ApplicationUser.Status,
             CreatedOn = x.CreatedOn,
             LastModifiedOn = x.LastModifiedOn
         }).ToList();

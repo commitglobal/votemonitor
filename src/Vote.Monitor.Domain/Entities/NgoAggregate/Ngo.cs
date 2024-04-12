@@ -1,4 +1,6 @@
-﻿namespace Vote.Monitor.Domain.Entities.NgoAggregate;
+﻿using Vote.Monitor.Domain.Entities.NgoAdminAggregate;
+
+namespace Vote.Monitor.Domain.Entities.NgoAggregate;
 
 public class Ngo : AuditableBaseEntity, IAggregateRoot
 {

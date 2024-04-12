@@ -6,20 +6,15 @@ internal class ApplicationUserConfiguration : IEntityTypeConfiguration<Applicati
 {
     public void Configure(EntityTypeBuilder<ApplicationUser> builder)
     {
-        builder.HasKey(u => u.Id);
-        builder.HasIndex(u => u.Login).IsUnique();
-        builder.UseTptMappingStrategy();
-
-        builder.Property(u => u.Id).IsRequired();
-        builder.Property(u => u.Name).HasMaxLength(256).IsRequired();
-        builder.Property(u => u.Login).HasMaxLength(256).IsRequired();
-        builder.Property(u => u.Password).HasMaxLength(256).IsRequired();
-        builder.Property(u => u.Role).IsRequired();
         builder.Property(u => u.Status).IsRequired();
+        builder.Property(u => u.FirstName).IsRequired().HasMaxLength(256);
+        builder.Property(u => u.LastName).IsRequired().HasMaxLength(256);
+        builder.Property(u => u.RefreshToken).HasMaxLength(256);
+        builder.Property(u => u.RefreshTokenExpiryTime);
 
         builder.OwnsOne(u => u.Preferences, b =>
         {
-            b.ToTable("UserPreferences");
+            b.ToJson();
         });
     }
 }

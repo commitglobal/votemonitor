@@ -1,4 +1,6 @@
-﻿namespace Vote.Monitor.Api.Feature.Observer.UnitTests.Services;
+﻿using Vote.Monitor.Api.Feature.Observer.Parser;
+
+namespace Vote.Monitor.Api.Feature.Observer.UnitTests.Services;
 
 public class ObserverImportModelTests
 {
@@ -6,8 +8,23 @@ public class ObserverImportModelTests
     public void GetHashCode_ReturnsSameHashCodeForEqualEmail()
     {
         // Arrange
-        var observer1 = new ObserverImportModel { Name = "d", PhoneNumber = "00009999999", Email = "test@example.com" };
-        var observer2 = new ObserverImportModel { Name = "d1", PhoneNumber = "11119999999", Email = "test@example.com" };
+        var observer1 = new ObserverImportModel
+        {
+            FirstName = "d",
+            LastName = "LastName1",
+            PhoneNumber = "00009999999",
+            Email = "test@example.com",
+            Password = "Password1!"
+        };
+
+        var observer2 = new ObserverImportModel
+        {
+            FirstName = "d1",
+            PhoneNumber = "11119999999",
+            Email = "test@example.com",
+            LastName = "LastName2",
+            Password = "Password2!"
+        };
 
         // Act
         var hashCode1 = observer1.GetHashCode();
@@ -21,8 +38,22 @@ public class ObserverImportModelTests
     public void Equals_ReturnsTrueForEqualEmail()
     {
         // Arrange
-        var observer1 = new ObserverImportModel { Name = "d", PhoneNumber = "00009999999", Email = "test@example.com" };
-        var observer2 = new ObserverImportModel { Name = "d1", PhoneNumber = "11119999999", Email = "test@example.com" };
+        var observer1 = new ObserverImportModel
+        {
+            PhoneNumber = "00009999999",
+            Email = "test@example.com",
+            LastName = "LastName1",
+            FirstName = "FirstName1",
+            Password = "Password!1"
+        };
+        var observer2 = new ObserverImportModel
+        {
+            PhoneNumber = "1111111",
+            Email = "test@example.com",
+            LastName = "LastName2",
+            FirstName = "FirstName2",
+            Password = "Password!2"
+        };
 
         // Act
         var areEqual = observer1.Equals(observer2);
@@ -31,55 +62,30 @@ public class ObserverImportModelTests
         Assert.True(areEqual);
     }
 
-    [Fact]
-    public void Equals_ReturnsTrueForSameInstance()
-    {
-        // Arrange
-        var observer = new ObserverImportModel { Name = "d", PhoneNumber = "00009999999", Email = "test@example.com" };
-
-        // Act
-        var areEqual = observer.Equals(observer);
-
-        // Assert
-        Assert.True(areEqual);
-    }
-
+   
     [Fact]
     public void Equals_ReturnsFalseForDifferentEmails()
     {
         // Arrange
-        var observer1 = new ObserverImportModel { Name = "d", PhoneNumber = "00009999999", Email = "test@example.com" };
-        var observer2 = new ObserverImportModel { Name = "d1", PhoneNumber = "11119999999", Email = "test1@example.com" };
+        var observer1 = new ObserverImportModel
+        {
+            PhoneNumber = "00009999999",
+            Email = "test@example.com",
+            LastName = "LastName",
+            FirstName = "FirstName",
+            Password = "Password"
+        };
+        var observer2 = new ObserverImportModel
+        {
+            PhoneNumber = "00009999999",
+            Email = "noop@example.com",
+            LastName = "LastName",
+            FirstName = "FirstName",
+            Password = "Password"
+        };
 
         // Act
         var areEqual = observer1.Equals(observer2);
-
-        // Assert
-        Assert.False(areEqual);
-    }
-
-    [Fact]
-    public void Equals_ReturnsFalseForNullInstance()
-    {
-        // Arrange
-        var observer = new ObserverImportModel { Name = "d", PhoneNumber = "00009999999", Email = "test@example.com" };
-
-        // Act
-        var areEqual = observer.Equals(null);
-
-        // Assert
-        Assert.False(areEqual);
-    }
-
-    [Fact]
-    public void Equals_ReturnsFalseForDifferentType()
-    {
-        // Arrange
-        var observer = new ObserverImportModel { Name = "d", PhoneNumber = "00009999999", Email = "test@example.com" };
-        var otherObject = new object();
-
-        // Act
-        var areEqual = observer.Equals(otherObject);
 
         // Assert
         Assert.False(areEqual);

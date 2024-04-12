@@ -7,10 +7,15 @@ public class Validator : Validator<Request>
         RuleFor(x => x.Id)
             .NotEmpty();
 
-        RuleFor(x => x.Name)
+        RuleFor(x => x.FirstName)
             .NotEmpty()
             .MinimumLength(3)
-            .MaximumLength(32);
+            .MaximumLength(256);
+
+        RuleFor(x => x.LastName)
+            .NotEmpty()
+            .MinimumLength(3)
+            .MaximumLength(256);
 
     }
 }

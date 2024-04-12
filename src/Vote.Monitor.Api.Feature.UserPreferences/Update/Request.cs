@@ -1,9 +1,9 @@
-﻿using Microsoft.IdentityModel.JsonWebTokens;
+﻿using Vote.Monitor.Core.Security;
 
 namespace Vote.Monitor.Api.Feature.UserPreferences.Update;
 public class Request
 {
-    [FromClaim(JwtRegisteredClaimNames.Sub)]
+    [FromClaim(ApplicationClaimTypes.UserId)]
     public Guid Id { get; set; }
     public Guid LanguageId { get; set; }
 }

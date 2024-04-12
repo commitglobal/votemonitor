@@ -1,8 +1,11 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Npgsql;
-using Vote.Monitor.Core.Services.ConnectionString;
+using Vote.Monitor.Core.Extensions;
 using Vote.Monitor.Domain.Repository;
+using Vote.Monitor.Domain.Seeders;
+
 
 namespace Vote.Monitor.Domain;
 
@@ -12,7 +15,8 @@ public static class DomainInstaller
 
     public static IServiceCollection AddApplicationDomain(this IServiceCollection services, IConfiguration config)
     {
-        var connectionString = GetConnectionString(config);
+        var connectionString = config.GetNpgsqlConnectionString("DbConnectionConfig");
+
         NpgsqlConnection.GlobalTypeMapper.EnableDynamicJson();
 
         services.AddDbContext<VoteMonitorContext>(options =>
@@ -32,7 +36,11 @@ public static class DomainInstaller
         services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
         services.AddScoped(typeof(IReadRepository<>), typeof(EfRepository<>));
 
-        services.AddSingleton<IConnectionStringProvider>(_ => new ConnectionStringProvider(connectionString));
+        // Seeders
+        services.AddScoped<IAmDbSeeder, PlatformAdminSeeder>();
+
+        services.AddIdentity();
+
         return services;
     }
 
@@ -42,19 +50,27 @@ public static class DomainInstaller
         using var scope = services.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<VoteMonitorContext>();
         await dbContext.Database.MigrateAsync(cancellationToken);
+        var seeders = scope.ServiceProvider.GetServices<IAmDbSeeder>();
+
+        
+        foreach (var seeder in seeders)
+        {
+            await seeder.SeedAsync();
+        }
     }
 
-    private static string GetConnectionString(IConfiguration config)
-    {
-        var connectionStringBuilder = new NpgsqlConnectionStringBuilder
-        {
-            Host = config["DbConnectionConfig:Server"]!,
-            Port = int.Parse(config["DbConnectionConfig:Port"]!),
-            Database = config["DbConnectionConfig:Database"]!,
-            Username = config["DbConnectionConfig:UserId"],
-            Password = config["DbConnectionConfig:Password"],
-            IncludeErrorDetail = true
-        };
-        return connectionStringBuilder.ToString();
-    }
+    private static IServiceCollection AddIdentity(this IServiceCollection services) =>
+        services
+            .AddIdentity<ApplicationUser, IdentityRole<Guid>>(options =>
+            {
+                options.Password.RequiredLength = 6;
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.User.RequireUniqueEmail = true;
+            })
+            .AddEntityFrameworkStores<VoteMonitorContext>()
+            .AddDefaultTokenProviders()
+            .Services;
 }

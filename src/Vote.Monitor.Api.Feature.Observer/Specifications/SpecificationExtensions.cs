@@ -4,30 +4,41 @@ public static class SpecificationExtensions
 {
     public static ISpecificationBuilder<ObserverAggregate> ApplyOrdering(this ISpecificationBuilder<ObserverAggregate> builder, BaseSortPaginatedRequest request)
     {
-        if (string.Equals(request.SortColumnName, nameof(ObserverAggregate.Name), StringComparison.InvariantCultureIgnoreCase))
+        if (string.Equals(request.SortColumnName, nameof(ApplicationUser.FirstName), StringComparison.InvariantCultureIgnoreCase))
         {
             return request.IsAscendingSorting
                 ? builder
-                    .OrderBy(x => x.Name)
+                    .OrderBy(x => x.ApplicationUser.FirstName)
                     .ThenBy(x => x.Id)
                 : builder
-                    .OrderByDescending(x => x.Name)
+                    .OrderByDescending(x => x.ApplicationUser.FirstName)
+                    .ThenBy(x => x.Id);
+        }
+        
+        if (string.Equals(request.SortColumnName, nameof(ApplicationUser.LastName), StringComparison.InvariantCultureIgnoreCase))
+        {
+            return request.IsAscendingSorting
+                ? builder
+                    .OrderBy(x => x.ApplicationUser.LastName)
+                    .ThenBy(x => x.Id)
+                : builder
+                    .OrderByDescending(x => x.ApplicationUser.LastName)
                     .ThenBy(x => x.Id);
         }
 
-        if (string.Equals(request.SortColumnName, nameof(ObserverAggregate.Status), StringComparison.InvariantCultureIgnoreCase))
+        if (string.Equals(request.SortColumnName, nameof(ApplicationUser.Status), StringComparison.InvariantCultureIgnoreCase))
         {
             return request.IsAscendingSorting
                 ? builder
-                    .OrderBy(x => x.Status)
+                    .OrderBy(x => x.ApplicationUser.Status)
                     .ThenBy(x => x.Id)
                 : builder
-                    .OrderByDescending(x => x.Status)
+                    .OrderByDescending(x => x.ApplicationUser.Status)
                     .ThenBy(x => x.Id);
         }
 
         return builder.OrderBy(x => x.CreatedOn)
-            .ThenBy(x => x.Name)
+            .ThenBy(x => x.ApplicationUser.FirstName)
             .ThenBy(x => x.Id);
     }
 }

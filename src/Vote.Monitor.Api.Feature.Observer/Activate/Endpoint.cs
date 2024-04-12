@@ -1,6 +1,11 @@
-﻿namespace Vote.Monitor.Api.Feature.Observer.Activate;
+﻿using Microsoft.AspNetCore.Identity;
+using Vote.Monitor.Core.Extensions;
 
-public class Endpoint(IRepository<ObserverAggregate> repository) : Endpoint<Request, Results<NoContent, NotFound>>
+namespace Vote.Monitor.Api.Feature.Observer.Activate;
+
+public class Endpoint(
+    UserManager<ApplicationUser> userManager,
+    IRepository<ObserverAggregate> repository) : Endpoint<Request, Results<NoContent, NotFound, ValidationProblem>>
 {
     public override void Configure()
     {
@@ -8,7 +13,7 @@ public class Endpoint(IRepository<ObserverAggregate> repository) : Endpoint<Requ
         Policies(PolicyNames.PlatformAdminsOnly);
     }
 
-    public override async Task<Results<NoContent, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<Results<NoContent, NotFound, ValidationProblem>> ExecuteAsync(Request req, CancellationToken ct)
     {
         var observer = await repository.GetByIdAsync(req.Id, ct);
         if (observer is null)
@@ -16,8 +21,13 @@ public class Endpoint(IRepository<ObserverAggregate> repository) : Endpoint<Requ
             return TypedResults.NotFound();
         }
 
-        observer.Activate();
-        await repository.SaveChangesAsync(ct);
+        observer.ApplicationUser.Activate();
+        var result = await userManager.UpdateAsync(observer.ApplicationUser);
+        if (!result.Succeeded)
+        {
+            AddError(x => x.Id, result.GetAllErrors());
+            return TypedResults.ValidationProblem(ValidationFailures.ToValidationErrorDictionary());
+        }
 
         return TypedResults.NoContent();
     }
