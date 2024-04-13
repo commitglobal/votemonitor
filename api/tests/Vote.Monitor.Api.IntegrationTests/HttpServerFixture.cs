@@ -72,7 +72,7 @@ public class HttpServerFixture<TDataSeeder> : WebApplicationFactory<Program>, IA
 
         using var userManager = Services.GetRequiredService<UserManager<ApplicationUser>>();
 
-        var platformAdmin = ApplicationUser.Create(firstName, lastName, email, phoneNumber, password);
+        var platformAdmin = ApplicationUser.CreatePlatformAdmin(firstName, lastName, email, phoneNumber, password);
         platformAdmin.EmailConfirmed = true;
         await userManager.CreateAsync(platformAdmin);
         await userManager.AddToRoleAsync(platformAdmin, UserRole.PlatformAdmin);

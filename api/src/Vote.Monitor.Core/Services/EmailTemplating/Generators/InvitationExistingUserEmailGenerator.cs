@@ -5,14 +5,15 @@ namespace Vote.Monitor.Core.Services.EmailTemplating.Generators;
 
 internal class InvitationExistingUserEmailGenerator : IEmailGenerator<InvitationExistingUserEmailProps>
 {
-    public string Generate(InvitationExistingUserEmailProps props)
+    public EmailModel Generate(InvitationExistingUserEmailProps props)
     {
         var template = EmailTemplateLoader.GetTemplate(EmailTemplateType.InvitationExistingUser);
 
-        var mail = template
+        var body = template
             .Replace("~$cdnUrl$~", props.CdnUrl)
             .Replace("~$acceptUrl$~", props.AcceptUrl);
 
-        return mail;
+        return new EmailModel($"Accept invitation to monitor elections", body);
+
     }
 }

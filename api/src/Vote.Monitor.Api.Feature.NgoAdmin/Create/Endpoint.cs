@@ -24,7 +24,7 @@ public class Endpoint(UserManager<ApplicationUser> userManager,
             return TypedResults.Conflict(new ProblemDetails(ValidationFailures));
         }
 
-        var applicationUser = ApplicationUser.Create(req.FirstName, req.LastName, req.Email,req.PhoneNumber, req.Password);
+        var applicationUser = ApplicationUser.CreateNgoAdmin(req.FirstName, req.LastName, req.Email,req.PhoneNumber, req.Password);
 
         var result = await userManager.CreateAsync(applicationUser);
         if (!result.Succeeded)

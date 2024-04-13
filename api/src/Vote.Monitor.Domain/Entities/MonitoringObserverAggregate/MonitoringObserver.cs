@@ -5,50 +5,25 @@ namespace Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 
 public class MonitoringObserver : AuditableBaseEntity, IAggregateRoot
 {
-    public Guid ObserverId { get; private set; }
-    public Observer Observer { get; private set; }
+    public Guid ElectionRoundId { get; private set; }
+    public ElectionRound ElectionRound { get; private set; }
     public Guid MonitoringNgoId { get; private set; }
     public MonitoringNgo MonitoringNgo { get; private set; }
+
+    public Guid ObserverId { get; private set; }
+    public Observer Observer { get; private set; }
+
     public MonitoringObserverStatus Status { get; private set; }
 
     public string[] Tags { get; private set; }
 
-    private MonitoringObserver(Guid monitoringNgoId, Guid observerId)
+    private MonitoringObserver(Guid electionRoundId, Guid monitoringNgoId, Guid observerId, string[] tags)
         : base(Guid.NewGuid())
     {
+        ElectionRoundId = electionRoundId;
         MonitoringNgoId = monitoringNgoId;
         ObserverId = observerId;
-        Tags = [];
-        Status = MonitoringObserverStatus.Pending;
-    }
-    private MonitoringObserver(Guid monitoringNgoId, Observer observer)
-        : base(Guid.NewGuid())
-    {
-        MonitoringNgoId = monitoringNgoId;
-        ObserverId = observer.Id;
-        Tags = [];
-        Status = MonitoringObserverStatus.Pending;
-    }
-
-    internal MonitoringObserver(MonitoringNgo monitoringNgo, Observer observer)
-        : base(Guid.NewGuid())
-    {
-        MonitoringNgoId = monitoringNgo.Id;
-        MonitoringNgo = monitoringNgo;
-        ObserverId = observer.Id;
-        Observer = observer;
-        Tags = [];
-        Status = MonitoringObserverStatus.Pending;
-    }
-
-    internal MonitoringObserver(Guid id, MonitoringNgo monitoringNgo, Observer observer, string[] tags)
-        : base(id)
-    {
-        MonitoringNgoId = monitoringNgo.Id;
-        MonitoringNgo = monitoringNgo;
-        ObserverId = observer.Id;
-        Observer = observer;
-        Tags = tags.Distinct().ToArray();
+        Tags = tags;
         Status = MonitoringObserverStatus.Pending;
     }
 
@@ -62,14 +37,9 @@ public class MonitoringObserver : AuditableBaseEntity, IAggregateRoot
         Status = MonitoringObserverStatus.Suspended;
     }
 
-    public static MonitoringObserver Create(Guid monitoringNgoId, Guid observerId)
+    public static MonitoringObserver Create(Guid electionRoundId, Guid monitoringNgoId, Guid observerId, string[] tags)
     {
-        return new MonitoringObserver(monitoringNgoId, observerId);
-    }
-
-    public static MonitoringObserver Create(Guid monitoringNgoId, Observer observer)
-    {
-        return new MonitoringObserver(monitoringNgoId, observer);
+        return new MonitoringObserver(electionRoundId, monitoringNgoId, observerId, tags);
     }
 
     public void Update(MonitoringObserverStatus status, string[] tags)

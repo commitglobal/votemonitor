@@ -9,7 +9,7 @@ public class Observer : AuditableBaseEntity, IAggregateRoot
 
     public virtual List<MonitoringObserver> MonitoringObservers { get; internal set; } = [];
 
-    private Observer(ApplicationUser applicationUser)
+    private Observer(ApplicationUser applicationUser) : base(Guid.NewGuid())
     {
         ApplicationUser = applicationUser;
         ApplicationUserId = applicationUser.Id;

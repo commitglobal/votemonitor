@@ -37,7 +37,7 @@ public class Endpoint(
 
         var applicationUsers = importedRows!
             .Items
-            .Select(x => ApplicationUser.Create(x.FirstName, x.LastName, x.Email, x.PhoneNumber, x.Password))
+            .Select(x => ApplicationUser.CreateObserver(x.FirstName, x.LastName, x.Email, x.PhoneNumber, x.Password))
             .ToDictionary(x => x.NormalizedEmail!);
 
         var existingUsers = await userManager.Users

@@ -5,14 +5,14 @@ namespace Vote.Monitor.Core.Services.EmailTemplating.Generators;
 
 internal class ResetPasswordEmailGenerator : IEmailGenerator<ResetPasswordEmailProps>
 {
-    public string Generate(ResetPasswordEmailProps props)
+    public EmailModel Generate(ResetPasswordEmailProps props)
     {
         var template = EmailTemplateLoader.GetTemplate(EmailTemplateType.ResetPassword);
 
-        var mail = template
+        var body = template
             .Replace("~$cdnUrl$~", props.CdnUrl)
             .Replace("~$acceptUrl$~", props.ResetUrl);
 
-        return mail;
+        return new EmailModel("Reset your password on VoteMonitor platform", body);
     }
 }

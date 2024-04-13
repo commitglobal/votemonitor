@@ -58,6 +58,22 @@ services:
       MP_DATA_FILE: /data/mailpit.db
       MP_SMTP_AUTH_ACCEPT_ANY: 1
       MP_SMTP_AUTH_ALLOW_INSECURE: 1
+  hangfire:
+    image: votemonitorhangfire
+    build:
+      context: .
+      dockerfile: api/src/Vote.Monitor.Hangfire/Dockerfile
+      args:
+        - BUILD_CONFIGURATION=Development
+        - REVISION=LocalBuild
+    container_name: votemonitorhangfire
+    env_file:
+      - .env
+    ports:
+      - "5001:8080"
+    depends_on:
+      db:
+        condition: service_started
 
 
 

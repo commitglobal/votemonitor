@@ -10,7 +10,7 @@ public static class MailingInstaller
     public const string SectionKey = "Mailing";
     public static IServiceCollection AddMailing(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddSingleton<IEmailTemplateFactory, EmailTemplateFactory>();
+        services.AddSingleton<IEmailTemplateFactory, EmailFactory>();
 
         switch (configuration.GetValue<MailSenderType>("MailSenderType"))
         {

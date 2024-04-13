@@ -38,7 +38,6 @@ public class VoteMonitorContext : IdentityDbContext<ApplicationUser, IdentityRol
 
     // Used by Dapper
     public IDbConnection Connection => Database.GetDbConnection();
-    public DbSet<ApplicationUser> Users { get; set; }
     public DbSet<Country> Countries { get; set; }
     public DbSet<Ngo> Ngos { get; set; }
     public DbSet<NgoAdmin> NgoAdmins { get; set; }

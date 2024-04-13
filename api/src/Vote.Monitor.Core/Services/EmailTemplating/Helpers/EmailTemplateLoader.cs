@@ -15,7 +15,7 @@ internal static class EmailTemplateLoader
     public static string GetTemplate(EmailTemplateType templateType)
     {
         var baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-        var tmplFolder = Path.Combine(baseDirectory, "Email Templates");
+        var tmplFolder = Path.Combine(baseDirectory, "EmailTemplates");
         var filePath = Path.Combine(tmplFolder, _templateMap[templateType]);
 
         using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);

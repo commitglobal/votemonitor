@@ -11,7 +11,7 @@ public class Endpoint(
     UserManager<ApplicationUser> userManager,
     IJobService jobService,
     IOptions<ApiConfiguration> apiConfig,
-    IEmailTemplateFactory templateFactory)
+    IEmailTemplateFactory emailFactory)
     : Endpoint<Request, Results<Ok, ProblemHttpResult>>
 {
     private readonly ApiConfiguration _apiConfig = apiConfig.Value;
@@ -38,9 +38,9 @@ public class Endpoint(
         string passwordResetUrl = QueryHelpers.AddQueryString(endpointUri.ToString(), "Token", code);
 
         var emailProps = new ResetPasswordEmailProps(string.Empty, passwordResetUrl);
-        var body = templateFactory.GenerateEmailTemplate(EmailTemplateType.ConfirmEmail, emailProps);
+        var mail = emailFactory.GenerateEmail(EmailTemplateType.ResetPassword, emailProps);
 
-        jobService.Enqueue<ISendEmailJob>(job => job.SendAsync(request.Email, "Reset Password", body));
+        jobService.SendEmail(request.Email, mail.Subject, mail.Body);
 
         return TypedResults.Ok();
     }

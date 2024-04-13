@@ -3,7 +3,6 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Vote.Monitor.Api.Feature.Auth.Options;
-using Vote.Monitor.Core.Exceptions;
 
 namespace Vote.Monitor.Api.Feature.Auth;
 
@@ -44,17 +43,14 @@ public class ConfigureJwtBearerOptions : IConfigureNamedOptions<JwtBearerOptions
         };
         options.Events = new JwtBearerEvents
         {
-            OnChallenge = context =>
+            OnAuthenticationFailed = context =>
             {
-                context.HandleResponse();
-                if (!context.Response.HasStarted)
+                if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
                 {
-                    throw new UnauthorizedException("Authentication Failed.");
+                    context.Response.Headers.Add("Token-Expired", "true");
                 }
-
                 return Task.CompletedTask;
-            },
-            OnForbidden = _ => throw new ForbiddenException("You are not authorized to access this resource.")
+            }
         };
     }
 }

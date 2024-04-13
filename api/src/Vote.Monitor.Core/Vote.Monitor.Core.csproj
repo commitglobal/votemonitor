@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="EmailTemplates\confirm-email.html" />
+    <None Remove="EmailTemplates\invitation-existing-user.html" />
+    <None Remove="EmailTemplates\invitation-new-user.html" />
+    <None Remove="EmailTemplates\reset-password.html" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Ardalis.SmartEnum" Version="8.0.0" />
     <PackageReference Include="Ardalis.SmartEnum.SystemTextJson" Version="8.0.0" />
     <PackageReference Include="Ardalis.Specification" Version="8.0.0" />
@@ -36,6 +43,21 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Job.Contracts\Job.Contracts.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="EmailTemplates\confirm-email.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="EmailTemplates\invitation-existing-user.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="EmailTemplates\invitation-new-user.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="EmailTemplates\reset-password.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   
 

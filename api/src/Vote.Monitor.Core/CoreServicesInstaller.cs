@@ -47,7 +47,7 @@ public static class CoreServicesInstaller
         });
 
         services.AddTransient<IJobService, HangfireJobService>();
-        services.AddTransient<IEmailTemplateFactory, EmailTemplateFactory>();
+        services.AddTransient<IEmailTemplateFactory, EmailFactory>();
 
         return services;
     }

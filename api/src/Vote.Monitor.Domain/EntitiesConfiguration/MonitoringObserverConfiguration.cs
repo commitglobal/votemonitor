@@ -11,6 +11,13 @@ internal class MonitoringObserverConfiguration : IEntityTypeConfiguration<Monito
         builder.Property(e => e.Id).IsRequired();
         builder.Property(e => e.Status).IsRequired();
         builder.Property(e => e.Tags).IsRequired();
+        builder.HasIndex(x => new { x.ElectionRoundId, x.Id }).IsUnique();
+
+        builder
+            .HasOne(e => e.ElectionRound)
+            .WithMany()
+            .HasForeignKey(e => e.ElectionRoundId)
+            .IsRequired();
 
         builder
             .HasOne(e => e.MonitoringNgo)

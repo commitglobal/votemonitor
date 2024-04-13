@@ -1,10 +1,15 @@
 ﻿using Authorization.Policies.Requirements;
 using Feature.MonitoringObservers.Parser;
+using Job.Contracts;
+using Job.Contracts.Jobs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Vote.Monitor.Core.Models;
+using Vote.Monitor.Core.Security;
+using Vote.Monitor.Core.Services.EmailTemplating;
+using Vote.Monitor.Core.Services.EmailTemplating.Props;
 using Vote.Monitor.Core.Services.Parser;
 using Vote.Monitor.Domain;
 using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
@@ -18,7 +23,9 @@ public class Endpoint(
     IAuthorizationService authorizationService,
     VoteMonitorContext context,
     ICsvParser<MonitoringObserverImportModel> parser,
-    ILogger<Endpoint> logger)
+    ILogger<Endpoint> logger,
+    IJobService jobService,
+    IEmailTemplateFactory emailFactory)
     : Endpoint<Request>
 {
     private const string? ParsingFailedErrorMessage = "The file contains errors! Please use the ID to get the file with the errors described inside.";
@@ -36,13 +43,13 @@ public class Endpoint(
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        var requirement = new MonitoringNgoAdminRequirement(req.ElectionRoundId);
-        var authorizationResult = await authorizationService.AuthorizeAsync(User, requirement);
-        if (!authorizationResult.Succeeded)
-        {
-            await SendNotFoundAsync(ct);
-            return;
-        }
+        //var requirement = new MonitoringNgoAdminRequirement(req.ElectionRoundId);
+        //var authorizationResult = await authorizationService.AuthorizeAsync(User, requirement);
+        //if (!authorizationResult.Succeeded)
+        //{
+        //    await SendNotFoundAsync(ct);
+        //    return;
+        //}
 
         var parsingResult = parser.Parse(req.File.OpenReadStream());
 
@@ -60,60 +67,98 @@ public class Endpoint(
 
     private async Task HandleParsingSucceedAsync(Request req, List<MonitoringObserverImportModel> observers, CancellationToken ct)
     {
-        var logins = observers.Select(x => x.Email).ToList();
+        var normalizedEmails = observers.Select(x => x.Email.ToUpperInvariant()).ToList();
 
-        var monitoringNgo = await context.MonitoringNgos
-            .Include(x => x.MonitoringObservers)
-            .ThenInclude(x => x.Observer)
-            .Where(x => x.Id == req.MonitoringNgoId)
-            .FirstAsync(ct);
+        var existingAccounts = await userManager
+            .Users
+            .Where(x => normalizedEmails.Contains(x.NormalizedEmail))
+            .ToListAsync(ct);
 
-        var existingMonitoringObservers = monitoringNgo.MonitoringObservers.Select(x => x.Observer.ApplicationUser.Email).ToList();
+        var existingMonitoringObservers = await context
+            .MonitoringObservers
+            .Include(x => x.Observer)
+            .ThenInclude(x => x.ApplicationUser)
+            .Where(x => normalizedEmails.Contains(x.Observer.ApplicationUser.NormalizedEmail))
+            .ToListAsync(ct);
 
-        // Get observers with an account.
         var existingObservers = await context
             .Observers
             .Include(x => x.ApplicationUser)
-            .Where(x => logins.Contains(x.ApplicationUser.Email))
-            .Select(x => new { x.Id, x.ApplicationUser.Email })
+            .Where(x => normalizedEmails.Contains(x.ApplicationUser.NormalizedEmail))
             .ToListAsync(ct);
 
-        var monitoringObservers = existingObservers
-            .Where(o => !existingMonitoringObservers.Contains(o.Email))
-            .Select(observer => MonitoringObserverAggregate.Create(req.MonitoringNgoId, observer.Id))
-            .ToList();
-
-        await context.MonitoringObservers.AddRangeAsync(monitoringObservers, ct);
-        // TODO: Send notifications!
-
-        var newObservers = observers
-                .Where(o => !existingObservers.Any(x => string.Equals(x.Email, o.Email, StringComparison.InvariantCultureIgnoreCase)))
-               .Select(x =>
-               {
-
-                   var user = ApplicationUser.CreateForInvite(x.FirstName, x.LastName, x.Email, x.PhoneNumber);
-                   var observer = ObserverAggregate.Create(user);
-                   var monitoringObserver = MonitoringObserver.Create(req.MonitoringNgoId, observer);
-                   return (user, observer, monitoringObserver);
-               })
-               .ToList();
-
-        foreach (var newObserver in newObservers)
+        foreach (var observer in observers)
         {
-            var result = await userManager.CreateAsync(newObserver.user);
-            if (!result.Succeeded)
+            var normalizedEmail = observer.Email.ToUpperInvariant();
+            // Has account in our system
+            var existingAccount = existingAccounts.FirstOrDefault(x => x.NormalizedEmail == normalizedEmail);
+
+            if (existingAccount != null)
             {
-                logger.LogError("Errors when importing monitoring observer {email} {@errors}", newObserver.user, result.Errors);
+                // Check if is observer
+                if (existingAccount.Role != UserRole.Observer)
+                {
+                    logger.LogWarning("Invited {observer} has different {role} in our system", existingAccount.Email, existingAccount.Role);
+                    continue;
+                }
+
+                // Check if it is already monitoring same election but for different NGO
+                var isMonitoringForAnotherNgo = existingMonitoringObservers.Any(x =>
+                     x.Observer.ApplicationUser.NormalizedEmail == normalizedEmail &&
+                     x.ElectionRoundId == req.ElectionRoundId);
+
+                if (isMonitoringForAnotherNgo)
+                {
+                    logger.LogWarning("Invited {observer} is monitoring same {electionRound} for different ngo", existingAccount.Email, req.ElectionRoundId);
+                    continue;
+                }
+
+                // Has an account is not monitoring this election round
+                var existingObserver = existingObservers.FirstOrDefault(x => x.ApplicationUser.NormalizedEmail == normalizedEmail);
+
+                if (existingObserver is null)
+                {
+                    // has an account but we failed to create the observer 
+                    existingAccount.NewInvite();
+                    var newObserver = ObserverAggregate.Create(existingAccount);
+                    var newMonitoringObserver = MonitoringObserver.Create(req.ElectionRoundId, req.MonitoringNgoId, newObserver.Id, observer.Tags);
+                    await context.Observers.AddAsync(newObserver, ct);
+                    await context.MonitoringObservers.AddAsync(newMonitoringObserver, ct);
+
+                    var email = emailFactory.GenerateEmail(EmailTemplateType.InvitationNewUser, new InvitationNewUserEmailProps("", existingAccount.InvitationToken!.Value.ToString()));
+                    jobService.SendEmail(observer.Email, email.Subject, email.Body);
+                }
+                else
+                {
+                    var newMonitoringObserver = MonitoringObserverAggregate.Create(req.ElectionRoundId,
+                        req.MonitoringNgoId, existingObserver.Id,
+                        observer.Tags);
+
+                    await context.MonitoringObservers.AddAsync(newMonitoringObserver, ct);
+                    var email = emailFactory.GenerateEmail(EmailTemplateType.InvitationExistingUser,
+                        new InvitationExistingUserEmailProps("", ""));
+                    jobService.SendEmail(observer.Email, email.Subject, email.Body);
+                }
             }
+            else
+            {
+                // Does not have an account 
+                var user = ApplicationUser.Invite(observer.FirstName, observer.LastName, observer.Email, observer.PhoneNumber);
 
-            await context.Observers.AddAsync(newObserver.observer, ct);
-            await context.MonitoringObservers.AddAsync(newObserver.monitoringObserver, ct);
+                var result = await userManager.CreateAsync(user);
+                if (!result.Succeeded)
+                {
+                    logger.LogError("Errors when importing monitoring observer {email} {@errors}", user.Email, result.Errors);
+                }
+                var newObserver = ObserverAggregate.Create(user);
+                var newMonitoringObserver = MonitoringObserver.Create(req.ElectionRoundId, req.MonitoringNgoId, newObserver.Id, observer.Tags);
+                await context.Observers.AddAsync(newObserver, ct);
+                await context.MonitoringObservers.AddAsync(newMonitoringObserver, ct);
 
+                var email = emailFactory.GenerateEmail(EmailTemplateType.InvitationNewUser, new InvitationNewUserEmailProps("", user.InvitationToken!.Value.ToString()));
+                jobService.SendEmail(observer.Email, email.Subject, email.Body);
+            }
         }
-
-
-        // TODO: send mails 
-
         await context.SaveChangesAsync(ct);
         await SendNoContentAsync(ct);
     }

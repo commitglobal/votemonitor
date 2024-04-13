@@ -30,7 +30,6 @@ using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 using Vote.Monitor.Domain.Entities.NgoAggregate;
 using Vote.Monitor.Api.Extensions;
-using Vote.Monitor.Core.Services.Mailing;
 using Vote.Monitor.Domain.Entities.FormAggregate;
 
 var builder = WebApplication.CreateBuilder(args);

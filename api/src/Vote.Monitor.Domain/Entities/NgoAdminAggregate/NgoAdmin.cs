@@ -9,7 +9,7 @@ public class NgoAdmin : AuditableBaseEntity, IAggregateRoot
     public Guid NgoId { get; private set; }
     public Ngo Ngo { get; private set; }
 
-    public NgoAdmin(Guid ngoId, ApplicationUser applicationUser)
+    public NgoAdmin(Guid ngoId, ApplicationUser applicationUser) : base(Guid.NewGuid())
     {
         NgoId = ngoId;
         ApplicationUser = applicationUser;
