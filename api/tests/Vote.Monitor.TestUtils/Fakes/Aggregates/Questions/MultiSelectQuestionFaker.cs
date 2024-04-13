@@ -8,6 +8,6 @@ public sealed class MultiSelectQuestionFaker : Faker<MultiSelectQuestion>
     public MultiSelectQuestionFaker(List<SelectOption>? options = null)
     {
         CustomInstantiator(f => MultiSelectQuestion.Create(f.Random.Guid(), f.Random.AlphaNumeric(2),
-            new TranslatedStringFaker(), new TranslatedStringFaker(), options ?? []));
+            new TranslatedStringFaker(), new TranslatedStringFaker(), options ?? new SelectOptionFaker().Generate(4)));
     }
 }

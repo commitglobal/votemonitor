@@ -1,7 +1,5 @@
-﻿using Authorization.Policies.Requirements;
-using Feature.MonitoringObservers.Parser;
+﻿using Feature.MonitoringObservers.Parser;
 using Job.Contracts;
-using Job.Contracts.Jobs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

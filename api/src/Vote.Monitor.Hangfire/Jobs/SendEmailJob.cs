@@ -14,6 +14,7 @@ public class SendEmailJob(IMailService mailService, ILogger<SendEmailJob> logger
         catch (Exception e)
         {
             logger.LogError(e, "An error occured when sending mail");
+            throw;
         }
     }
 }

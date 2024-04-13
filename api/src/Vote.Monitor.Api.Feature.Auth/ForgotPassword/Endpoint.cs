@@ -1,5 +1,4 @@
 ﻿using Job.Contracts;
-using Job.Contracts.Jobs;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Vote.Monitor.Core.Options;

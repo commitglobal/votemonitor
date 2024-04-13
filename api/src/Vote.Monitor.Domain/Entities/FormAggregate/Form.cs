@@ -134,7 +134,51 @@ public class Form : AuditableBaseEntity, IAggregateRoot
         MonitoringObserver monitoringObserver,
         List<BaseAnswer> answers)
     {
-        return FormSubmission.Create(ElectionRound, pollingStation, monitoringObserver, this, answers);
+        var numberOfQuestionAnswered = CountNumberOfQuestionsAnswered(answers);
+        var numberOfFlaggedAnswers = CountNumberOfFlaggedAnswers(answers);
+
+        var validationResult = AnswersValidator.GetValidationResults(answers, Questions);
+
+        if (!validationResult.IsValid)
+        {
+            throw new ValidationException(validationResult.Errors);
+        }
+
+        return FormSubmission.Create(ElectionRound, pollingStation, monitoringObserver, this, answers, numberOfQuestionAnswered, numberOfFlaggedAnswers);
+    }
+
+    private int CountNumberOfFlaggedAnswers(List<BaseAnswer> answers)
+    {
+        var singleSelectFlaggedOptionIds =
+            Questions
+                .OfType<SingleSelectQuestion>()
+                .SelectMany(x => x.Options)
+                .Where(x => x.IsFlagged)
+                .Select(x => x.Id)
+                .ToList();
+
+        var multiSelectFlaggedOptionIds =
+            Questions
+                .OfType<MultiSelectQuestion>()
+                .SelectMany(x => x.Options)
+                .Where(x => x.IsFlagged)
+                .Select(x => x.Id)
+                .ToList();
+
+        return answers
+                   .OfType<SingleSelectAnswer>()
+                   .Count(x => singleSelectFlaggedOptionIds.Contains(x.Selection.OptionId))
+               + answers
+                   .OfType<MultiSelectAnswer>()
+                   .SelectMany(x => x.Selection)
+                   .Count(x => multiSelectFlaggedOptionIds.Contains(x.OptionId));
+    }
+
+    private int CountNumberOfQuestionsAnswered(List<BaseAnswer> answers)
+    {
+        var questionIds = Questions.Select(x => x.Id).ToList();
+
+        return answers.Count(x => questionIds.Contains(x.QuestionId));
     }
 
     public FormSubmission FillIn(FormSubmission submission, List<BaseAnswer> answers)
@@ -151,7 +195,10 @@ public class Form : AuditableBaseEntity, IAggregateRoot
             throw new ValidationException(validationResult.Errors);
         }
 
-        submission.UpdateAnswers(answers);
+        var numberOfQuestionAnswered = CountNumberOfQuestionsAnswered(answers);
+        var numberOfFlaggedAnswers = CountNumberOfFlaggedAnswers(answers);
+
+        submission.UpdateAnswers(numberOfQuestionAnswered, numberOfFlaggedAnswers, answers);
 
         return submission;
     }

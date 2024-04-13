@@ -23,7 +23,8 @@ public class FormAggregate
         .AsReadOnly();
 
     public int SubmissionCount { get; private set; }
-
+    public int TotalNumberOfQuestionsAnswered { get; private set; }
+    public int TotalNumberOfFlaggedAnswers { get; private set; }
     public IReadOnlyDictionary<Guid, BaseAnswerAggregate> Aggregates { get; }
 
     public FormAggregate(Form form)
@@ -50,6 +51,8 @@ public class FormAggregate
             updateFunc: set => set.Add(formSubmission.Id));
 
         SubmissionCount++;
+        TotalNumberOfFlaggedAnswers += formSubmission.NumberOfFlaggedAnswers;
+        TotalNumberOfQuestionsAnswered += formSubmission.NumberOfQuestionAnswered;
 
         foreach (var answer in formSubmission.Answers)
         {
