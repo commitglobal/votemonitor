@@ -5,11 +5,16 @@ import Header from "../../components/Header";
 import { Icon } from "../../components/Icon";
 import { StyleProp, ViewStyle } from "react-native";
 import { useTranslation } from "react-i18next";
+import { useState } from "react";
+import { CustomSheet } from "./polling-station-wizzard/modal";
 
 const AppLayout = () => {
   const { isAuthenticated } = useAuth();
   const theme = useTheme();
   const { t } = useTranslation("polling_station_information");
+
+  const [open, setOpen] = useState(false);
+  console.log("Open:" + open);
 
   if (!isAuthenticated) {
     // On web, static rendering will stop here as the user is not authenticated
@@ -36,7 +41,7 @@ const AppLayout = () => {
                   onLeftPress={() => navigation.goBack()}
                   rightIcon={<Icon icon="dotsVertical" color="white" />}
                   onRightPress={() => {
-                    console.log("on right action press");
+                    setOpen(!open);
                   }}
                 />
               );
@@ -46,6 +51,8 @@ const AppLayout = () => {
         <Stack.Screen name="form-questionnaire" />
         <Stack.Screen name="polling-station-questionnaire" />
       </Stack>
+
+      <CustomSheet open={open} onClose={() => setOpen(false)}></CustomSheet>
     </PortalProvider>
   );
 };
