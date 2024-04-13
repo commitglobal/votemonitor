@@ -1,15 +1,10 @@
-﻿using System.Threading;
-using Hangfire;
-using Vote.Monitor.Domain.Seeders;
-using Vote.Monitor.Domain;
+﻿using Hangfire;
 using Vote.Monitor.Hangfire.RecurringJobs;
 using Job.Contracts.RecurringJobs;
-using System.ComponentModel;
-using Microsoft.Extensions.DependencyInjection;
 
-namespace Vote.Monitor.Hangfire;
+namespace Vote.Monitor.Hangfire.Extensions;
 
-public static class RecurringJobScheduler
+public static class SchedulingExtensions
 {
     public static void ScheduleRecurringJobs(this WebApplication application)
     {

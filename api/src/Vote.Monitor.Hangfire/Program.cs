@@ -1,20 +1,19 @@
 ﻿using Serilog;
-using Vote.Monitor.Core.Services.FileStorage;
 using Vote.Monitor.Core.Services.Mailing;
 using Vote.Monitor.Domain;
 using Hangfire;
 using Hangfire.PostgreSql;
+using HangfireBasicAuthenticationFilter;
 using Job.Contracts.RecurringJobs;
 using Vote.Monitor.Core.Extensions;
 using Vote.Monitor.Hangfire.RecurringJobs;
-using Sentry.Protocol;
-using Hangfire.Dashboard;
 using Vote.Monitor.Hangfire;
 using Job.Contracts.Jobs;
 using Vote.Monitor.Core.Services.Security;
 using Vote.Monitor.Hangfire.Jobs;
 using Vote.Monitor.Core.Services.Serialization;
 using Vote.Monitor.Core.Services.Time;
+using Vote.Monitor.Hangfire.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOptions();
@@ -76,7 +75,19 @@ builder.Services.AddHangfireServer();
 
 var app = builder.Build();
 
-app.UseHangfireDashboard();
+app.UseHangfireDashboard("/hangfire", new DashboardOptions
+{
+    DashboardTitle = "Vote.Monitor.Hangfire",
+    Authorization = new[]
+    {
+        new HangfireCustomBasicAuthenticationFilter{
+            User = app.Configuration["DashboardAuth:Username"],
+            Pass = app.Configuration["DashboardAuth:Password"]
+        }
+    }
+});
+
+
 app.ScheduleRecurringJobs();
 
 
