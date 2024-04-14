@@ -181,6 +181,60 @@ export const getPollingStationInformation = (
 };
 
 /** ========================================================================
+    ================= GET ElectionRoundAllForms ====================
+    ========================================================================
+    @description Get all the possible forms for a given election round
+    @param {string} electionRoundId 
+    @returns {PollingStationInformationAPIResponse} 
+*/
+
+export type ElectionRoundsAllFormsAPIResponse = {
+  electionRoundId: string;
+  version: string;
+  forms: {
+    id: string;
+    formType: string; // "ClosingAndCounting",
+    code: string; // "A1",
+    name: Record<string, string>; // { "EN": "test form", "RO": "formular de test" },
+    status: string; // "Published",
+    defaultLanguage: string; // "RO",
+    languages: string[]; // [ "RO", "EN" ],
+    createdOn: string;
+    lastModifiedOn: string; // "2024-04-12T11:45:38.589445Z"
+    questions: ApiFormQuestion[];
+  }[];
+};
+
+export const getElectionRoundAllForms = (
+  electionRoundId: string,
+): Promise<ElectionRoundsAllFormsAPIResponse> => {
+  return API.get(`election-rounds/${electionRoundId}/forms:fetchAll`, {}).then((res) => res.data);
+};
+
+/** ========================================================================
+    ================= GET FORM SUBMISSIONS ====================
+    ========================================================================
+    @description Get form submissions for a given >polling station< in an >election round<
+    @param {string} electionRoundId 
+    @param {string} pollingStationId 
+    @returns {unknown} 
+*/
+
+export const getFormSubmissions = (
+  electionRoundId: string,
+  pollingStationId: string,
+): Promise<unknown> => {
+  return API.get(`election-rounds/${electionRoundId}/form-submissions:my`, {
+    params: {
+      pollingStationIds: [pollingStationId],
+    },
+    paramsSerializer: {
+      indexes: null,
+    },
+  }).then((res) => res.data);
+};
+
+/** ========================================================================
     ================= POST addAttachment ====================
     ========================================================================
     @description Sends a photo/video to the backend to be saved

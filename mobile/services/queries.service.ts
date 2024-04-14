@@ -19,12 +19,21 @@ import { performanceLog } from "../helpers/misc";
 const electionRoundsKeys = {
   all: ["election-rounds"] as const,
   one: (id: string) => [...electionRoundsKeys.all, id] as const,
+  forms: () => [...electionRoundsKeys.all, "forms"] as const,
 };
 
 export const pollingStationsKeys = {
   all: ["polling-stations"] as const,
   visits: (electionRoundId: string) =>
     [...pollingStationsKeys.all, "visits", electionRoundId] as const,
+  formSubmissions: (electionRoundId: string | undefined, pollingStationId: string | undefined) => [
+    ...pollingStationsKeys.all,
+    "electionRoundId",
+    electionRoundId,
+    "pollingStationId",
+    pollingStationId,
+    "form-submissions",
+  ],
   nomenclatorList: (parentId: number | null = -1) =>
     [...pollingStationsKeys.all, "node", parentId] as const,
   one: (id: string) => [...pollingStationsKeys.all, "DB.getOneById", id] as const,
@@ -173,6 +182,25 @@ export const usePollingStationInformationForm = (electionRoundId: string | undef
       return data;
     },
     enabled: !!electionRoundId,
+  });
+};
+
+export const useElectionRoundAllForms = (electionRoundId: string | undefined) => {
+  return useQuery({
+    queryKey: electionRoundsKeys.forms(),
+    queryFn: () => API.getElectionRoundAllForms(electionRoundId!),
+    enabled: !!electionRoundId,
+  });
+};
+
+export const useFormSubmissions = (
+  electionRoundId: string | undefined,
+  pollingStationId: string | undefined,
+) => {
+  return useQuery({
+    queryKey: pollingStationsKeys.formSubmissions(electionRoundId, pollingStationId),
+    queryFn: () => API.getFormSubmissions(electionRoundId!, pollingStationId!),
+    enabled: !!electionRoundId && !!pollingStationId,
   });
 };
 

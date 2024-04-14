@@ -16,6 +16,8 @@ import FormCard from "../../../../components/FormCard";
 import {
   pollingStationsKeys,
   upsertPollingStationGeneralInformationMutation,
+  useElectionRoundAllForms,
+  useFormSubmissions,
   usePollingStationInformation,
   usePollingStationInformationForm,
 } from "../../../../services/queries.service";
@@ -24,7 +26,6 @@ import { useQueryClient } from "@tanstack/react-query";
 import SelectPollingStation from "../../../../components/SelectPollingStation";
 import NoVisitsExist from "../../../../components/NoVisitsExist";
 import NoElectionRounds from "../../../../components/NoElectionRounds";
-import { formList } from "../../../../helpers/misc";
 import Badge from "../../../../components/Badge";
 
 ReactotronCommands.default();
@@ -41,10 +42,33 @@ export type FormListItem = {
 };
 
 const FormList = () => {
+  const { activeElectionRound, selectedPollingStation } = useUserData();
+
+  const { data: allForms } = useElectionRoundAllForms(activeElectionRound?.id);
+  console.log(allForms?.forms.length);
+
+  const { data: formSubmissions } = useFormSubmissions(
+    activeElectionRound?.id,
+    selectedPollingStation?.pollingStationId,
+  );
+  console.log("formSubmissions", formSubmissions);
+
+  const formList: FormListItem[] =
+    allForms?.forms.map((form) => {
+      return {
+        id: form.id,
+        name: `${form.code} - ${form.name.RO}`,
+        numberOfCompletedQuestions: 0,
+        numberOfQuestions: form.questions.length,
+        options: `Available in ${Object.keys(form.name).join(", ")}`,
+        status: "not started",
+      };
+    }) || [];
+
   return (
     <YStack gap="$xxs">
       <Typography>Flashlist</Typography>
-      {/* To do validate the height of this list */}
+      {/* TODO: the heigh should be number of forms * their height */}
       <YStack height={Dimensions.get("screen").height}>
         <ListView<FormListItem>
           data={formList}
@@ -74,9 +98,10 @@ type PollingStationInformationVM = {
 };
 
 const Index = () => {
+  const queryClient = useQueryClient();
+
   const { isLoading, electionRounds, visits, selectedPollingStation, activeElectionRound } =
     useUserData();
-  const { selectedPollingStation: _selectedPollingStation } = useUserData();
 
   const { data } = usePollingStationInformation(
     activeElectionRound?.id,
@@ -86,11 +111,8 @@ const Index = () => {
   const { data: informationFormQuestions } = usePollingStationInformationForm(
     activeElectionRound?.id,
   );
-  console.log("informationFormQuestions", informationFormQuestions);
 
   const { mutate } = upsertPollingStationGeneralInformationMutation();
-
-  const queryClient = useQueryClient();
 
   const updateGeneralData = (payload: Partial<PollingStationInformationVM>) => {
     // Set query data
