@@ -17,6 +17,7 @@ import {
   pollingStationsKeys,
   upsertPollingStationGeneralInformationMutation,
   usePollingStationInformation,
+  usePollingStationInformationForm,
 } from "../../../../services/queries.service";
 import { ApiFormAnswer } from "../../../../services/interfaces/answer.type";
 import { useQueryClient } from "@tanstack/react-query";
@@ -24,6 +25,7 @@ import SelectPollingStation from "../../../../components/SelectPollingStation";
 import NoVisitsExist from "../../../../components/NoVisitsExist";
 import NoElectionRounds from "../../../../components/NoElectionRounds";
 import { formList } from "../../../../helpers/misc";
+import Badge from "../../../../components/Badge";
 
 ReactotronCommands.default();
 
@@ -80,6 +82,11 @@ const Index = () => {
     activeElectionRound?.id,
     selectedPollingStation?.pollingStationId,
   );
+
+  const { data: informationFormQuestions } = usePollingStationInformationForm(
+    activeElectionRound?.id,
+  );
+  console.log("informationFormQuestions", informationFormQuestions);
 
   const { mutate } = upsertPollingStationGeneralInformationMutation();
 
@@ -162,7 +169,16 @@ const Index = () => {
             </Card>
           </XStack>
           <Card padding="$md" gap="$md" backgroundColor="white">
-            <PollingStationInfoDefault />
+            {!data?.answers?.length ? (
+              <PollingStationInfoDefault />
+            ) : (
+              <XStack>
+                <Typography textAlign="center" fontWeight="500" color="$gray5">
+                  {data?.answers.length} / {informationFormQuestions?.questions.length} Questions{" "}
+                </Typography>
+                <Badge status="in progress" />
+              </XStack>
+            )}
             <CardFooter text="Polling station information"></CardFooter>
           </Card>
           <Card padding="$md">

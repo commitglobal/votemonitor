@@ -27,6 +27,8 @@ export interface BadgeProps {
 const Badge = (props: BadgeProps): JSX.Element => {
   const { status } = props;
 
+  // TODO @madalinazanficu: memoize everything please
+  // TODO @madalinazanficu: use strong typed values for props
   const text =
     status === "completed"
       ? FormProgress.COMPLETED
