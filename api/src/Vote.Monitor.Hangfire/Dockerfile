@@ -10,6 +10,9 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["src/Vote.Monitor.Hangfire/Vote.Monitor.Hangfire.csproj", "src/Vote.Monitor.Hangfire/"]
+COPY ["src/Vote.Monitor.Core/Vote.Monitor.Core.csproj", "src/Vote.Monitor.Core/"]
+COPY ["src/Job.Contracts/Job.Contracts.csproj", "src/Job.Contracts/"]
+COPY ["src/Vote.Monitor.Domain/Vote.Monitor.Domain.csproj", "src/Vote.Monitor.Domain/"]
 RUN dotnet restore "./src/Vote.Monitor.Hangfire/./Vote.Monitor.Hangfire.csproj"
 COPY . .
 WORKDIR "/src/src/Vote.Monitor.Hangfire"
