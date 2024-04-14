@@ -1,6 +1,9 @@
 ﻿using Authorization.Policies;
 using Feature.MonitoringObservers.Specifications;
+using Job.Contracts;
 using Vote.Monitor.Core.Extensions;
+using Vote.Monitor.Core.Services.EmailTemplating;
+using Vote.Monitor.Core.Services.EmailTemplating.Props;
 using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
@@ -10,6 +13,8 @@ using Vote.Monitor.Domain.Entities.ObserverAggregate;
 namespace Feature.MonitoringObservers.Add;
 
 public class Endpoint(
+    IJobService jobService,
+    IEmailTemplateFactory emailFactory,
     IRepository<ElectionRoundAggregate> repository,
     IRepository<MonitoringNgoAggregate> monitoringNgoRepository,
     IReadRepository<Observer> observerRepository,
@@ -67,8 +72,12 @@ public class Endpoint(
             AddError(x => x.ObserverId, "Observer is already registered as monitoring for this monitoring NGO.");
             return TypedResults.Conflict(new ProblemDetails(ValidationFailures));
         }
-
+     
         await monitoringObserverRepository.AddAsync(monitoringObserver, ct);
+
+        var email = emailFactory.GenerateEmail(EmailTemplateType.InvitationExistingUser,
+            new InvitationExistingUserEmailProps("", ""));
+        jobService.SendEmail(observer.ApplicationUser.Email!, email.Subject, email.Body);
 
         return TypedResults.Ok(new Response
         {

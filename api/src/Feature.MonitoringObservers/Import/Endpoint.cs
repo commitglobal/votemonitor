@@ -1,4 +1,5 @@
-﻿using Feature.MonitoringObservers.Parser;
+﻿using Authorization.Policies.Requirements;
+using Feature.MonitoringObservers.Parser;
 using Job.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -41,13 +42,13 @@ public class Endpoint(
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        //var requirement = new MonitoringNgoAdminRequirement(req.ElectionRoundId);
-        //var authorizationResult = await authorizationService.AuthorizeAsync(User, requirement);
-        //if (!authorizationResult.Succeeded)
-        //{
-        //    await SendNotFoundAsync(ct);
-        //    return;
-        //}
+        var requirement = new MonitoringNgoAdminRequirement(req.ElectionRoundId);
+        var authorizationResult = await authorizationService.AuthorizeAsync(User, requirement);
+        if (!authorizationResult.Succeeded)
+        {
+            await SendNotFoundAsync(ct);
+            return;
+        }
 
         var parsingResult = parser.Parse(req.File.OpenReadStream());
 
