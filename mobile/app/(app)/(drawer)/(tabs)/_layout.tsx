@@ -7,7 +7,7 @@ import { Icon } from "../../../../components/Icon";
 import { useUserData } from "../../../../contexts/user/UserContext.provider";
 
 export default function TabLayout() {
-  const { isAssignedToEllectionRound } = useUserData();
+  const { electionRounds } = useUserData();
   const insets = useSafeAreaInsets();
   const theme = useTheme();
 
@@ -33,7 +33,7 @@ export default function TabLayout() {
         options={{
           title: "Quick Report",
           tabBarIcon: ({ color }) => <Icon icon="quickReport" color={color} />,
-          href: isAssignedToEllectionRound ? "/quick-report" : null,
+          href: electionRounds?.length ? "/quick-report" : null,
         }}
       />
       <Tabs.Screen
@@ -41,7 +41,7 @@ export default function TabLayout() {
         options={{
           title: "Guides",
           tabBarIcon: ({ color }) => <Icon icon="learning" color={color} />,
-          href: isAssignedToEllectionRound ? "/guides" : null,
+          href: electionRounds?.length ? "/guides" : null,
         }}
       />
       <Tabs.Screen
@@ -49,7 +49,7 @@ export default function TabLayout() {
         options={{
           title: "Inbox",
           tabBarIcon: ({ color }) => <Icon icon="inbox" color={color} />,
-          href: isAssignedToEllectionRound ? "/inbox" : null,
+          href: electionRounds?.length ? "/inbox" : null,
         }}
       />
       <Tabs.Screen
