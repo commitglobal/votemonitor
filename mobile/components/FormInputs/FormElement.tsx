@@ -13,9 +13,17 @@ export interface FormElementProps {
   helper?: string;
   //   children elements
   children: ReactNode;
+
+  allowAttachment?: boolean;
 }
 
-const FormElement: React.FC<FormElementProps> = ({ children, label, paragraph, helper }) => {
+const FormElement: React.FC<FormElementProps> = ({
+  children,
+  label,
+  paragraph,
+  helper,
+  allowAttachment,
+}) => {
   return (
     <YStack gap="$xxs" onPress={Keyboard.dismiss}>
       {/* header */}
@@ -33,12 +41,14 @@ const FormElement: React.FC<FormElementProps> = ({ children, label, paragraph, h
       {helper && <Typography color="$gray5">{helper}</Typography>}
 
       {/* attach element */}
-      <XStack alignItems="center" paddingTop="$md" onPress={() => console.log("attach")}>
-        <Icon icon="attachment" />
-        <Typography color="$purple5" marginLeft="$xs">
-          Add Note, Photo or Video
-        </Typography>
-      </XStack>
+      {allowAttachment && (
+        <XStack alignItems="center" paddingTop="$md" onPress={() => console.log("attach")}>
+          <Icon icon="attachment" />
+          <Typography color="$purple5" marginLeft="$xs">
+            Add Note, Photo or Video
+          </Typography>
+        </XStack>
+      )}
     </YStack>
   );
 };

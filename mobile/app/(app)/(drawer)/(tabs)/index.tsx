@@ -45,7 +45,7 @@ const FormList = () => {
   const { activeElectionRound, selectedPollingStation } = useUserData();
 
   const { data: allForms } = useElectionRoundAllForms(activeElectionRound?.id);
-  console.log(allForms?.forms.length);
+  console.log(allForms?.forms);
 
   const { data: formSubmissions } = useFormSubmissions(
     activeElectionRound?.id,
@@ -190,7 +190,12 @@ const Index = () => {
               />
             </Card>
           </XStack>
-          <Card padding="$md" gap="$md" backgroundColor="white">
+          <Card
+            padding="$md"
+            gap="$md"
+            backgroundColor="white"
+            onPress={router.push.bind(null, "/polling-station-questionnaire")}
+          >
             {!data?.answers?.length ? (
               <PollingStationInfoDefault />
             ) : (

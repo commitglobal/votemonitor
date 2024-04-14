@@ -1,4 +1,6 @@
-export type ApiFormQuestionType =
+import { FormQuestionType } from "./question.type";
+
+export type ApiFormAnswerType =
   | "textAnswer"
   | "numberAnswer"
   | "dateAnswer"
@@ -36,3 +38,12 @@ export type ApiFormAnswer = {
       }[];
     }
 );
+
+export const FormQuestionAnswerTypeMapping: Record<FormQuestionType, ApiFormAnswerType> = {
+  numberQuestion: "numberAnswer",
+  textQuestion: "textAnswer",
+  dateQuestion: "dateAnswer",
+  singleSelectQuestion: "singleSelectAnswer",
+  multiSelectQuestion: "multiSelectAnswer",
+  ratingQuestion: "ratingAnswer",
+};

@@ -14,7 +14,7 @@ interface FormInputProps extends InputProps {
 const FormInput: React.FC<FormInputProps> = ({ type, label, paragraph, helper, ...rest }) => {
   return (
     <FormElement label={label} paragraph={paragraph} helper={helper}>
-      <Input type={type} marginBottom="$xxs" {...rest} />
+      <Input type={type} marginBottom="$xxs" {...rest} placeholder={helper || ""} />
     </FormElement>
   );
 };
