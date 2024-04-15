@@ -1,4 +1,5 @@
-﻿using Authorization.Policies.Requirements;
+﻿using Authorization.Policies;
+using Authorization.Policies.Requirements;
 using Feature.MonitoringObservers.Specifications;
 using Microsoft.AspNetCore.Authorization;
 
@@ -15,6 +16,12 @@ public class Endpoint(IAuthorizationService authorizationService,
         Description(x => x.Accepts<Request>());
         DontAutoTag();
         Options(x => x.WithTags("monitoring-observers"));
+        Policies(PolicyNames.PlatformAdminsOnly);
+        Summary(s =>
+        {
+            s.Summary = "Permanently removes an monitoring observer from monitoring ngo";
+            s.Description = "All data will be lost. Only PlatformAdmins can perform this operation";
+        });
     }
 
     public override async Task<Results<NoContent, NotFound<string>>> ExecuteAsync(Request req, CancellationToken ct)

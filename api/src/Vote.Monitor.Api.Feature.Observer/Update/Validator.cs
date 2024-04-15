@@ -9,12 +9,10 @@ public class Validator : Validator<Request>
 
         RuleFor(x => x.FirstName)
             .NotEmpty()
-            .MinimumLength(3)
             .MaximumLength(256);
 
         RuleFor(x => x.LastName)
             .NotEmpty()
-            .MinimumLength(3)
             .MaximumLength(256);
 
     }

@@ -8,12 +8,10 @@ public class Validator : Validator<Request>
             .NotEmpty();
 
         RuleFor(x => x.FirstName)
-            .NotEmpty()
-            .MinimumLength(3);
+            .NotEmpty();
 
         RuleFor(x => x.LastName)
-            .NotEmpty()
-            .MinimumLength(3);
+            .NotEmpty();
 
         RuleFor(x => x.PhoneNumber)
             .NotEmpty()

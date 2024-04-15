@@ -29,8 +29,7 @@ public class Endpoint(
         Policies(PolicyNames.PlatformAdminsOnly);
         Summary(s =>
         {
-            s.Summary = "Permanently removes an monitoring observer from monitoring ngo";
-            s.Description = "All data will be lost. Only PlatformAdmins can perform this operation";
+            s.Summary = "Adds observer as monitoring observer for a monitoring ngo";
         });
     }
 

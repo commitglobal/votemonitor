@@ -8,10 +8,12 @@ using Vote.Monitor.Api.Feature.Auth.Options;
 using Vote.Monitor.Core.Extensions;
 using Vote.Monitor.Core.Security;
 using Vote.Monitor.Core.Services.Time;
+using Vote.Monitor.Domain.Entities.NgoAdminAggregate;
 
 namespace Vote.Monitor.Api.Feature.Auth.Services;
 
 internal class TokenService(UserManager<ApplicationUser> userManager,
+    IReadRepository<NgoAdmin> ngoAdminRepository,
     IOptions<JWTConfig> jwtOptions,
     ITimeProvider timeProvider) : ITokenService
 {
@@ -58,29 +60,32 @@ internal class TokenService(UserManager<ApplicationUser> userManager,
 
     private async Task<TokenResponse> GenerateTokensAndUpdateUser(ApplicationUser user)
     {
-        var roles = await userManager.GetRolesAsync(user);
-        string token = GenerateJwt(user, roles);
+        var claims = await GetClaims(user);
+        string token = GenerateEncryptedToken(GetSigningCredentials(), claims);
 
         var refreshToken = GenerateRefreshToken();
         var refreshTokenExpiryTime = timeProvider.UtcNow.AddDays(_jwtConfig.RefreshTokenExpirationInDays);
         user.UpdateRefreshToken(refreshToken, refreshTokenExpiryTime);
 
         await userManager.UpdateAsync(user);
-        return new TokenResponse(token, user.RefreshToken, user.RefreshTokenExpiryTime, roles.ToArray());
+        return new TokenResponse(token, user.RefreshToken, user.RefreshTokenExpiryTime, user.Role);
     }
 
-    private string GenerateJwt(ApplicationUser user, IList<string> roles) =>
-        GenerateEncryptedToken(GetSigningCredentials(), GetClaims(user, roles));
 
-    private IEnumerable<Claim> GetClaims(ApplicationUser user, IList<string> roles)
+    private async Task<IEnumerable<Claim>> GetClaims(ApplicationUser user)
     {
         var claims = new List<Claim>
         {
             new(ApplicationClaimTypes.UserId, user.Id.ToString()),
             new(ClaimTypes.Email, user.Email!),
+            new(ClaimTypes.Role, user.Role)
         };
-        claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
 
+        if (user.Role == UserRole.NgoAdmin)
+        {
+            var ngoAdmin = await ngoAdminRepository.GetByIdAsync(user.Id);
+            claims.Add(new Claim(ApplicationClaimTypes.NgoId, ngoAdmin?.NgoId.ToString() ?? string.Empty));
+        }
         return claims;
     }
 

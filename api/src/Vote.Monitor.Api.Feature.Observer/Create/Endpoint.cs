@@ -18,7 +18,7 @@ public class Endpoint(UserManager<ApplicationUser> userManager,
     {
         var user = await userManager.FindByEmailAsync(req.Email);
 
-        if (user is null)
+        if (user is not null)
         {
             AddError(r => r.Email, "A user with same email already exists");
             return TypedResults.Conflict(new ProblemDetails(ValidationFailures));

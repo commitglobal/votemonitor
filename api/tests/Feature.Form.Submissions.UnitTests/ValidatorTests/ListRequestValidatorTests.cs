@@ -1,15 +1,17 @@
-﻿namespace Feature.Form.Submissions.UnitTests.ValidatorTests;
+﻿using Feature.Form.Submissions.ListEntries;
+
+namespace Feature.Form.Submissions.UnitTests.ValidatorTests;
 
 public class ListRequestValidatorTests
 {
-    private readonly List.Validator _validator = new();
+    private readonly Validator _validator = new();
 
 
     [Fact]
     public void Validation_ShouldFail_When_NgoId_Empty()
     {
         // Arrange
-        var request = new List.Request { NgoId = Guid.Empty };
+        var request = new Request { NgoId = Guid.Empty };
 
         // Act
         var result = _validator.TestValidate(request);
@@ -22,7 +24,7 @@ public class ListRequestValidatorTests
     public void Validation_ShouldFail_When_ElectionRoundId_Empty()
     {
         // Arrange
-        var request = new List.Request { ElectionRoundId = Guid.Empty };
+        var request = new Request { ElectionRoundId = Guid.Empty };
 
         // Act
         var result = _validator.TestValidate(request);
@@ -35,7 +37,7 @@ public class ListRequestValidatorTests
     public void Validation_ShouldPass_When_ValidRequest()
     {
         // Arrange
-        var request = new List.Request
+        var request = new Request
         {
             ElectionRoundId = Guid.NewGuid(),
             NgoId = Guid.NewGuid()

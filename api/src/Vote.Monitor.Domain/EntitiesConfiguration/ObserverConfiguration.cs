@@ -9,6 +9,7 @@ public class ObserverConfiguration : IEntityTypeConfiguration<Observer>
     {
         builder.ToTable("Observers");
         builder.HasOne(x => x.ApplicationUser);
+        builder.Navigation(e => e.ApplicationUser).AutoInclude();
 
         builder
             .HasMany(e => e.MonitoringObservers)

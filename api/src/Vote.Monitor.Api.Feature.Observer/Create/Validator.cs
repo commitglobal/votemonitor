@@ -5,11 +5,9 @@ public class Validator : Validator<Request>
     public Validator()
     {
         RuleFor(x => x.FirstName)
-            .MinimumLength(3)
             .NotEmpty();
 
         RuleFor(x => x.LastName)
-            .MinimumLength(3)
             .NotEmpty();
 
         RuleFor(x => x.Email)

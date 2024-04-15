@@ -1,4 +1,4 @@
-﻿namespace Feature.Form.Submissions.List;
+﻿namespace Feature.Form.Submissions.ListEntries;
 
 public class Validator : Validator<Request>
 {
