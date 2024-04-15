@@ -42,6 +42,8 @@ public class HttpServerFixture<TDataSeeder> : WebApplicationFactory<Program>, IA
     public ElectionRoundModel ElectionRound { get; private set; }
 
     private readonly ClaimsPrincipal _integrationTestingUser = new([new ClaimsIdentity([new Claim(ApplicationClaimTypes.UserId, "007e57ed-7e57-7e57-7e57-007e57ed0000")], "fake")]);
+    private const string AdminEmail = "admin@example.com";
+    private const string AdminPassword = "toTallyNotTestPassw0rd";
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
@@ -62,27 +64,16 @@ public class HttpServerFixture<TDataSeeder> : WebApplicationFactory<Program>, IA
     {
         await _postgresContainer.StartAsync();
 
-        var firstName = Fake.Name.FirstName();
-        var lastName = Fake.Name.FirstName();
-        var phoneNumber = Fake.Phone.PhoneNumber();
-        var email = Fake.Internet.Email();
-        var password = Fake.Internet.Password();
         var currentUserInitializer = Services.GetRequiredService<ICurrentUserInitializer>();
         currentUserInitializer.SetCurrentUser(_integrationTestingUser);
 
         using var userManager = Services.GetRequiredService<UserManager<ApplicationUser>>();
-
-        var platformAdmin = ApplicationUser.CreatePlatformAdmin(firstName, lastName, email, phoneNumber, password);
-        platformAdmin.EmailConfirmed = true;
-        await userManager.CreateAsync(platformAdmin);
-        await userManager.AddToRoleAsync(platformAdmin, UserRole.PlatformAdmin);
-
         Client = CreateClient();
 
         var ( tokenResult, tokenResponse) = await Client.POSTAsync<Endpoint, Request, TokenResponse>(new()
         {
-            Email = email,
-            Password = password
+            Email = AdminEmail,
+            Password = AdminPassword
         });
         
         tokenResult.IsSuccessStatusCode.Should().BeTrue();
