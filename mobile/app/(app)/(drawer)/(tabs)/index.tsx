@@ -192,7 +192,7 @@ const Index = () => {
             </Card>
           </XStack>
           <Card gap="$md">
-            {data?.answers?.length ? (
+            {!data?.answers?.length ? (
               <PollingStationInfoDefault />
             ) : (
               <PollingStationInfo
