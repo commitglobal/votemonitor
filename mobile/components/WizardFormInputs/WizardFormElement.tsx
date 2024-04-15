@@ -17,7 +17,7 @@ export interface FormElementProps {
   allowAttachment?: boolean;
 }
 
-const FormElement: React.FC<FormElementProps> = ({
+const WizardFormElement: React.FC<FormElementProps> = ({
   children,
   label,
   paragraph,
@@ -53,4 +53,4 @@ const FormElement: React.FC<FormElementProps> = ({
   );
 };
 
-export default FormElement;
+export default WizardFormElement;

@@ -4,7 +4,7 @@ import Button from "../../../../components/Button";
 import { Controller, useForm } from "react-hook-form";
 // import DateFormInput from "../../../../components/FormInputs/DateFormInput";
 import { YStack } from "tamagui";
-import RadioFormInput from "../../../../components/FormInputs/RadioFormInput";
+import WizardRadioFormInput from "../../../../components/WizardFormInputs/WizardRadioFormInput";
 
 const options = [
   { id: "1", value: "yes", label: "Yes" },
@@ -41,7 +41,7 @@ const More = () => {
           control={control}
           name="allMaterialsPresent"
           render={({ field: { onChange, value } }) => (
-            <RadioFormInput
+            <WizardRadioFormInput
               options={options}
               label="A1. Were all necessary election materials present?"
               paragraph="Lorem ipsum dolor sit amet consectetur. Maecenas donec pharetra elementum mauris est sodales."

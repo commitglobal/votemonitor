@@ -1,9 +1,9 @@
 import React from "react";
-import FormElement from "./FormElement";
-import { RadioGroup , RadioGroupProps } from "tamagui";
+import WizardFormElement from "./WizardFormElement";
+import { RadioGroup, RadioGroupProps } from "tamagui";
 import RadioInput from "../Inputs/RadioInput";
 
-interface RadioFormInputProps extends RadioGroupProps {
+interface WizardRadioFormInputProps extends RadioGroupProps {
   //   question title
   label: string;
   //   question subtitle
@@ -14,7 +14,7 @@ interface RadioFormInputProps extends RadioGroupProps {
   options: { id: string; value: string; label: string }[];
 }
 
-const RadioFormInput: React.FC<RadioFormInputProps> = ({
+const WizardRadioFormInput: React.FC<WizardRadioFormInputProps> = ({
   label,
   paragraph,
   helper,
@@ -23,14 +23,14 @@ const RadioFormInput: React.FC<RadioFormInputProps> = ({
   ...rest
 }) => {
   return (
-    <FormElement label={label} paragraph={paragraph} helper={helper}>
+    <WizardFormElement label={label} paragraph={paragraph} helper={helper}>
       <RadioGroup gap="$md" {...rest}>
         {options.map(({ id, value: optionValue, label }) => (
-          <RadioInput id={id} value={optionValue} label={label} selectedValue={value} key={id}/>
+          <RadioInput id={id} value={optionValue} label={label} selectedValue={value} key={id} />
         ))}
       </RadioGroup>
-    </FormElement>
+    </WizardFormElement>
   );
 };
 
-export default RadioFormInput;
+export default WizardRadioFormInput;

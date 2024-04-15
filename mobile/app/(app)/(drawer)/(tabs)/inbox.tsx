@@ -2,7 +2,7 @@ import { View } from "react-native";
 import { Controller, useForm } from "react-hook-form";
 import Button from "../../../../components/Button";
 import { YStack } from "tamagui";
-import FormInput from "../../../../components/FormInputs/FormInput";
+import WizardFormInput from "../../../../components/WizardFormInputs/WizardFormInput";
 // import RatingFormInput from "../../../../components/FormInputs/RatingFormInput";
 
 interface FormData {
@@ -29,7 +29,7 @@ const Inbox = () => {
           name="nrOfMembers"
           rules={{ maxLength: 10 }}
           render={({ field: { onChange, value } }) => (
-            <FormInput
+            <WizardFormInput
               type="text"
               label="A2. How many PEC members have been appointed?"
               paragraph="Lorem ipsum dolor sit amet consectetur. Maecenas donec pharetra elementum mauris est sodales."

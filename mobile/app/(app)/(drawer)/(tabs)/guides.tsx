@@ -4,7 +4,7 @@ import CheckboxInput from "../../../../components/Inputs/CheckboxInput";
 import { YStack, CheckedState } from "tamagui";
 import { useForm, Controller } from "react-hook-form";
 import Button from "../../../../components/Button";
-import FormElement from "../../../../components/FormInputs/FormElement";
+import WizardFormElement from "../../../../components/WizardFormInputs/WizardFormElement";
 
 interface FormData {
   missingMaterials: string[];
@@ -43,7 +43,7 @@ const Guides = () => {
     <View>
       <Text>Guides hello</Text>
       <YStack gap="$sm" padding="$md">
-        <FormElement label="A1.1. Mark all the materials that are not present:">
+        <WizardFormElement label="A1.1. Mark all the materials that are not present:">
           {/* //! we need a controller for every checbox input, so does it make sense to have a separate CheckboxFormInput where we add the controller inside? */}
           {checkboxOptions.map((option, index) => (
             <YStack key={index}>
@@ -65,7 +65,7 @@ const Guides = () => {
               />
             </YStack>
           ))}
-        </FormElement>
+        </WizardFormElement>
       </YStack>
       <Button onPress={handleSubmit(onSubmit)}>Submit</Button>
     </View>

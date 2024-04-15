@@ -1,7 +1,7 @@
 import { ViewStyle } from "react-native";
 import { Typography } from "../../components/Typography";
 import { Controller, useForm } from "react-hook-form";
-import FormInput from "../../components/FormInputs/FormInput";
+import WizardFormInput from "../../components/WizardFormInputs/WizardFormInput";
 import { Button, CheckedState, YStack } from "tamagui";
 import {
   pollingStationsKeys,
@@ -10,11 +10,11 @@ import {
 } from "../../services/queries.service";
 import { useUserData } from "../../contexts/user/UserContext.provider";
 import { ApiFormQuestion } from "../../services/interfaces/question.type";
-import DateFormInput from "../../components/FormInputs/DateFormInput";
-import RadioFormInput from "../../components/FormInputs/RadioFormInput";
+import WizardDateFormInput from "../../components/WizardFormInputs/WizardDateFormInput";
+import WizardRadioFormInput from "../../components/WizardFormInputs/WizardRadioFormInput";
 import { Screen } from "../../components/Screen";
 import CheckboxInput from "../../components/Inputs/CheckboxInput";
-import FormElement from "../../components/FormInputs/FormElement";
+import WizardFormElement from "../../components/WizardFormInputs/WizardFormElement";
 import {
   ApiFormAnswer,
   FormQuestionAnswerTypeMapping,
@@ -27,7 +27,7 @@ import {
   upsertPollingStationGeneralInformation,
 } from "../../services/definitions.api";
 import { router } from "expo-router";
-import RatingFormInput from "../../components/FormInputs/RatingFormInput";
+import WizardRatingFormInput from "../../components/WizardFormInputs/WizardRatingFormInput";
 
 const PollingStationQuestionnaire = () => {
   const queryClient = useQueryClient();
@@ -256,7 +256,7 @@ const PollingStationQuestionnaire = () => {
               control={control}
               render={({ field: { onChange, value } }) => (
                 <YStack>
-                  <FormInput
+                  <WizardFormInput
                     type="numeric"
                     label={label}
                     helper={helper}
@@ -277,7 +277,7 @@ const PollingStationQuestionnaire = () => {
               control={control}
               render={({ field: { onChange, value } }) => (
                 <YStack>
-                  <FormInput
+                  <WizardFormInput
                     type="text"
                     label={label}
                     helper={helper}
@@ -298,7 +298,12 @@ const PollingStationQuestionnaire = () => {
               control={control}
               render={({ field: { onChange, value } }) => (
                 <YStack>
-                  <DateFormInput label={label} helper={helper} onChange={onChange} value={value} />
+                  <WizardDateFormInput
+                    label={label}
+                    helper={helper}
+                    onChange={onChange}
+                    value={value}
+                  />
                 </YStack>
               )}
             />
@@ -314,7 +319,7 @@ const PollingStationQuestionnaire = () => {
               control={control}
               render={({ field: { onChange, value } }) => (
                 <YStack>
-                  <RadioFormInput
+                  <WizardRadioFormInput
                     options={question.options.map((option) => ({
                       id: option.id,
                       label: option.text.EN,
@@ -339,7 +344,7 @@ const PollingStationQuestionnaire = () => {
               control={control}
               render={({ field: { onChange, value } }) => (
                 <YStack>
-                  <RatingFormInput
+                  <WizardRatingFormInput
                     id={question.id}
                     type="single"
                     label={label}
@@ -354,7 +359,7 @@ const PollingStationQuestionnaire = () => {
 
         if (question.$questionType === "multiSelectQuestion") {
           return (
-            <FormElement key={question.id} label={`${question.code}. ${question.text.EN}`}>
+            <WizardFormElement key={question.id} label={`${question.code}. ${question.text.EN}`}>
               {question.options.map((option) => (
                 <Controller
                   key={option.id}
@@ -375,7 +380,7 @@ const PollingStationQuestionnaire = () => {
                   )}
                 />
               ))}
-            </FormElement>
+            </WizardFormElement>
           );
         }
 
