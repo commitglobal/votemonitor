@@ -1,133 +1,163 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
-using System.Text.Json;
 using Bogus;
-using Figgle;
 using Refit;
+using Spectre.Console;
 using SubmissionsFaker.Clients;
 using SubmissionsFaker.Clients.MonitoringObserver;
-using SubmissionsFaker.Clients.MonitoringObserver.Models;
 using SubmissionsFaker.Clients.NgoAdmin;
 using SubmissionsFaker.Clients.PlatformAdmin;
 using SubmissionsFaker.Clients.PollingStations;
 using SubmissionsFaker.Clients.Token;
 using SubmissionsFaker.Fakers;
 using SubmissionsFaker.Forms;
+using SubmissionsFaker.Seeders;
 using Credentials = SubmissionsFaker.Clients.Token.Credentials;
 
+ProgressColumn[] progressColumns = [
+    new TaskDescriptionColumn(),    // Task description
+    new ProgressBarColumn(),        // Progress bar
+    new PercentageColumn(),         // Percentage
+    new SpinnerColumn() // Spinner
+];
 
-Console.WriteLine(FiggleFonts.Standard.Render("Submissions Faker"));
+AnsiConsole.Write(
+    new FigletText("Submissions Faker")
+        .Centered()
+        .Color(Color.Yellow));
+
+#region constants
+const int NUMBER_OF_OBSERVERS = 100;
+const int NUMBER_OF_SUBMISSIONS = 100;
+const string platformAdminUsername = "john.doe@example.com";
+const string platformAdminPassword = "password123";
+#endregion
+
 
 #region setup clients
-
 var client = new HttpClient
 {
     BaseAddress = new Uri("https://localhost:7123")
 };
 
-var tokenApi = RestService.For<ITokenClient>(client);
+var tokenApi = RestService.For<ITokenApi>(client);
 var platformAdminApi = RestService.For<IPlatformAdminApi>(client);
 var pollingStationsApi = RestService.For<IPollingStationsApi>(client);
 var ngoAdminApi = RestService.For<INgoAdminApi>(client);
-IMonitoringObserverApi observerApi = RestService.For<IMonitoringObserverApi>(client);
-
+var observerApi = RestService.For<IMonitoringObserverApi>(client);
 #endregion
 
 #region authorize platform admin
-
-var platformAdminUsername = "john.doe@example.com";
-var platformAdminPassword = "password123";
-
 var platformAdminToken = await tokenApi.GetToken(new Credentials(platformAdminUsername, platformAdminPassword));
-
 #endregion
 
-#region create election round
-var electionRound = await platformAdminApi.CreateElectionRound(new ElectionRoundFaker().Generate(), platformAdminToken.Token);
-#endregion
+CreateResponse electionRound = default!;
+CreateResponse monitoringNgo = default!;
+LoginResponse ngoAdminToken = default!;
+List<LocationNode> pollingStations = [];
+List<CreateResponse> formIds = [];
+List<LoginResponse> observersTokens = [];
 
-#region create NGO
-var ngo = await platformAdminApi.CreateNgo(new NgoFaker().Generate(), platformAdminToken.Token);
-var monitoringNgo = await platformAdminApi.AssignNgoToElectionRound(electionRound.Id, new AssignNgoRequest(ngo.Id), platformAdminToken.Token);
-var ngoAdmin = new ApplicationUserFaker().Generate();
-await platformAdminApi.CreateNgoAdmin(ngoAdmin, ngo.Id, platformAdminToken.Token);
-var ngoAdminToken = await tokenApi.GetToken(new Credentials(ngoAdmin.Email, ngoAdmin.Password));
-#endregion
+var observers = new ApplicationUserFaker().Generate(NUMBER_OF_OBSERVERS)!;
 
-#region create polling stations
-using var pollingStationsStream = File.OpenRead("polling-stations.csv");
-await platformAdminApi.CreatePollingStations(electionRound.Id, new StreamPart(pollingStationsStream, "polling-stations.csv", "text/csv"), platformAdminToken.Token);
-var pollingStationNodes = await pollingStationsApi.GetAllPollingStations(electionRound.Id, platformAdminToken.Token);
-var pollingStations = pollingStationNodes.Nodes.Where(x => x.PollingStationId.HasValue).ToList();
-#endregion
-
-#region create forms
-
-var openingForm = await ngoAdminApi.CreateForm(electionRound.Id, monitoringNgo.Id, FormData.OpeningForm, ngoAdminToken.Token);
-await ngoAdminApi.UpdateForm(electionRound.Id, monitoringNgo.Id, openingForm.Id, FormData.OpeningForm, ngoAdminToken.Token);
-#endregion
-
-var observers = new ApplicationUserFaker().Generate(100);
-var observerIds = new List<CreateResponse>();
-
-#region create 1000 observers
-foreach (var observersChunk in observers.Chunk(25))
-{
-    var tasks = new List<Task<CreateResponse>>();
-    foreach (var observer in observersChunk)
+await AnsiConsole.Progress()
+    .AutoRefresh(true)
+    .AutoClear(false)
+    .HideCompleted(false)
+    .Columns(progressColumns)
+    .StartAsync(async ctx =>
     {
-        var createTask = platformAdminApi.CreateObserver(observer, platformAdminToken.Token);
-        tasks.Add(createTask);
-    }
+        var setupTask = ctx.AddTask("[green]Setup election round and NGO [/]", maxValue: 6);
 
-    var observersChunkIds = await Task.WhenAll(tasks);
-    observerIds.AddRange(observersChunkIds);
-}
+        electionRound = await platformAdminApi.CreateElectionRound(new ElectionRoundFaker().Generate(), platformAdminToken.Token);
+        setupTask.Increment(1);
 
-#endregion
+        var ngo = await platformAdminApi.CreateNgo(new NgoFaker().Generate(), platformAdminToken.Token);
+        setupTask.Increment(1);
 
+        monitoringNgo = await platformAdminApi.AssignNgoToElectionRound(electionRound.Id, new AssignNgoRequest(ngo.Id), platformAdminToken.Token);
+        setupTask.Increment(1);
 
-#region assign observers to election round
-foreach (var observersIdsChunk in observerIds.Chunk(25))
-{
-    var tasks = new List<Task<CreateResponse>>();
-    foreach (var observer in observersIdsChunk)
+        var ngoAdmin = new ApplicationUserFaker().Generate();
+        await platformAdminApi.CreateNgoAdmin(ngoAdmin, ngo.Id, platformAdminToken.Token);
+        setupTask.Increment(1);
+
+        ngoAdminToken = await tokenApi.GetToken(new Credentials(ngoAdmin.Email, ngoAdmin.Password));
+        setupTask.Increment(1);
+
+        using var pollingStationsStream = File.OpenRead("polling-stations.csv");
+        await platformAdminApi.CreatePollingStations(electionRound.Id, new StreamPart(pollingStationsStream, "polling-stations.csv", "text/csv"), platformAdminToken.Token);
+        var pollingStationNodes = await pollingStationsApi.GetAllPollingStations(electionRound.Id, platformAdminToken.Token);
+        pollingStations = pollingStationNodes.Nodes.Where(x => x.PollingStationId.HasValue).ToList();
+        setupTask.Increment(1);
+    });
+
+await AnsiConsole.Progress()
+    .AutoRefresh(true)
+    .AutoClear(false)
+    .HideCompleted(false)
+    .Columns(progressColumns)
+    .StartAsync(async ctx =>
     {
-        var assignTask = platformAdminApi.AssignObserverToMonitoring(electionRound.Id, monitoringNgo.Id, new AssignObserverRequest(observer.Id), platformAdminToken.Token);
-        tasks.Add(assignTask);
-    }
+        var formsTask = ctx.AddTask("[green]Creating forms[/]", maxValue: 3, autoStart: false);
+        var observersTask = ctx.AddTask("[green]Seeding observers[/]", maxValue: 2 * NUMBER_OF_OBSERVERS, autoStart: false);
 
-    await Task.WhenAll(tasks);
-}
-#endregion
-var observersTokens = new List<LoginResponse>();
+        var ids = await Task.WhenAll([
+            FormsSeeder.Seed(ngoAdminApi, ngoAdminToken, electionRound.Id, monitoringNgo.Id, formsTask),
+            ObserversSeeder.Seed(platformAdminApi, platformAdminToken, observers, electionRound.Id, monitoringNgo.Id, observersTask)
+         ]);
 
-#region login observers
-foreach (var observersChunk in observers.Chunk(25))
-{
-    var tasks = new List<Task<LoginResponse>>();
-    foreach (var observer in observersChunk)
+        formIds = ids[0];
+    });
+
+
+
+await AnsiConsole.Progress()
+    .AutoRefresh(true)
+    .AutoClear(false)
+    .HideCompleted(false)
+    .Columns(progressColumns)
+    .StartAsync(async ctx =>
     {
-        var loginTask = tokenApi.GetToken(new Credentials(observer.Email, observer.Password));
-        tasks.Add(loginTask);
-    }
+        var observersLoginTask = ctx.AddTask("[green]Logging in observers[/]", maxValue: NUMBER_OF_SUBMISSIONS);
 
-    var tokens = await Task.WhenAll(tasks);
-    observersTokens.AddRange(tokens);
-}
-#endregion
+        #region login observers
+        foreach (var observersChunk in observers.Chunk(25))
+        {
+            var tasks = new List<Task<LoginResponse>>();
+            foreach (var observer in observersChunk)
+            {
+                var loginTask = tokenApi.GetToken(new Credentials(observer.Email, observer.Password));
+                tasks.Add(loginTask);
+            }
 
-#region generate submissions
+            var tokens = await Task.WhenAll(tasks);
+            observersTokens.AddRange(tokens);
+            observersLoginTask.Increment(25);
+        }
+        #endregion
+    });
 
-var faker = new Faker();
 
-for (int i = 0; i < 1000; i++)
-{
-    var pollingStation = faker.PickRandom(pollingStations)!;
-    var observer = faker.PickRandom(observersTokens)!;
-    var submissionRequest = new SubmissionFaker(openingForm.Id, pollingStation.PollingStationId.Value, FormData.OpeningForm.Questions);
+await AnsiConsole.Progress()
+    .AutoRefresh(true)
+    .AutoClear(false)
+    .HideCompleted(false)
+    .Columns(progressColumns)
+    .StartAsync(async ctx =>
+    {
+        var progressTask = ctx.AddTask("[green]Faking submissions[/]", maxValue: NUMBER_OF_SUBMISSIONS);
+        var faker = new Faker();
+        var submissionRequests = new SubmissionFaker(formIds, pollingStations, FormData.OpeningForm.Questions).Generate(NUMBER_OF_SUBMISSIONS);
 
-    await observerApi.SubmitForm(electionRound.Id, submissionRequest, observer.Token);
-}
+        foreach (var submissionsChunk in submissionRequests.Chunk(25))
+        {
+            var observer = faker.PickRandom(observersTokens)!;
+            var tasks = submissionsChunk.Select(submissionRequest => observerApi.SubmitForm(electionRound.Id, submissionRequest, observer.Token)).ToList();
+            await Task.WhenAll(tasks);
+            progressTask.Increment(25);
+        }
+    });
 
-#endregion
+var rule = new Rule("[red]Finished[/]");
+AnsiConsole.Write(rule);

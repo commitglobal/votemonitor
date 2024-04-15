@@ -1,15 +1,17 @@
 ﻿using Bogus;
+using SubmissionsFaker.Clients;
 using SubmissionsFaker.Clients.MonitoringObserver.Models;
 using SubmissionsFaker.Clients.NgoAdmin.Models;
+using SubmissionsFaker.Clients.PollingStations;
 
 namespace SubmissionsFaker.Fakers;
 
 public sealed class SubmissionFaker : Faker<SubmissionRequest>
 {
-    public SubmissionFaker(Guid formId, Guid pollingStationId, List<BaseQuestionRequest> questions)
+    public SubmissionFaker(List<CreateResponse> forms, List<LocationNode> pollingStations, List<BaseQuestionRequest> questions)
     {
-        RuleFor(x => x.PollingStationId, pollingStationId);
-        RuleFor(x => x.FormId, formId);
+        RuleFor(x => x.PollingStationId, f => f.PickRandom(pollingStations).PollingStationId!);
+        RuleFor(x => x.FormId, f => f.PickRandom(forms).Id);
         RuleFor(x => x.SubmissionId, f => f.Random.Guid());
         RuleFor(x => x.Answers, questions.Select(GetFakeAnswer).ToList());
     }
