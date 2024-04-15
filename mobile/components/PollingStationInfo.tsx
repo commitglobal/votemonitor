@@ -6,13 +6,11 @@ import Badge from "./Badge";
 interface PollingStationInfoProps {
   nrOfAnswers: number | undefined;
   nrOfQuestions: number | undefined;
-  status: string;
 }
 
 const PollingStationInfo: React.FC<PollingStationInfoProps> = ({
   nrOfAnswers = 0,
   nrOfQuestions = 0,
-  status = "not started",
 }) => {
   return (
     <>
@@ -20,7 +18,7 @@ const PollingStationInfo: React.FC<PollingStationInfoProps> = ({
         <Typography preset="heading" fontWeight="500">
           {nrOfAnswers}/{nrOfQuestions} questions
         </Typography>
-        <Badge status={status} />
+        <Badge status={nrOfAnswers === nrOfQuestions ? "completed" : "in progress"} />
       </XStack>
     </>
   );

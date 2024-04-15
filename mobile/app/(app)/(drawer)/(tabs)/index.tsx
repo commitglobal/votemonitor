@@ -28,7 +28,6 @@ import SelectPollingStation from "../../../../components/SelectPollingStation";
 import NoVisitsExist from "../../../../components/NoVisitsExist";
 import NoElectionRounds from "../../../../components/NoElectionRounds";
 import PollingStationInfo from "../../../../components/PollingStationInfo";
-import { FormStatus } from "../../../../components/Badge";
 ReactotronCommands.default();
 
 export type FormItemStatus = "not started" | "in progress" | "completed";
@@ -200,8 +199,6 @@ const Index = () => {
               <PollingStationInfo
                 nrOfAnswers={data?.answers.length}
                 nrOfQuestions={informationFormQuestions?.questions.length}
-                // TODO: how do we send the status here? do we need to calculate it depending on the nrOfAnswers?
-                status={FormStatus.IN_PROGRESS}
               />
             )}
             <CardFooter text="Polling station information"></CardFooter>

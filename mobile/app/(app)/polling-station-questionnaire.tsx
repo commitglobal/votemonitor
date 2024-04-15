@@ -27,6 +27,7 @@ import {
   upsertPollingStationGeneralInformation,
 } from "../../services/definitions.api";
 import { router } from "expo-router";
+import RatingFormInput from "../../components/FormInputs/RatingFormInput";
 
 const PollingStationQuestionnaire = () => {
   const queryClient = useQueryClient();
@@ -122,9 +123,14 @@ const PollingStationQuestionnaire = () => {
 
         switch (FormQuestionAnswerTypeMapping[question.$questionType]) {
           case "numberAnswer":
-          case "ratingAnswer":
             return {
               $answerType: "numberAnswer",
+              questionId,
+              value: formData[questionId],
+            } as ApiFormAnswer;
+          case "ratingAnswer":
+            return {
+              $answerType: "ratingAnswer",
               questionId,
               value: formData[questionId],
             } as ApiFormAnswer;
@@ -314,6 +320,28 @@ const PollingStationQuestionnaire = () => {
                       label: option.text.EN,
                       value: option.id,
                     }))}
+                    label={label}
+                    value={value}
+                    onValueChange={onChange}
+                  />
+                </YStack>
+              )}
+            />
+          );
+        }
+
+        if (question.$questionType === "ratingQuestion") {
+          return (
+            // TODO: need to handle free text option
+            <Controller
+              key={question.id}
+              name={question.id}
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <YStack>
+                  <RatingFormInput
+                    id={question.id}
+                    type="single"
                     label={label}
                     value={value}
                     onValueChange={onChange}
