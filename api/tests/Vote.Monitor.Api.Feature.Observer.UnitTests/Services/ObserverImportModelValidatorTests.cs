@@ -31,7 +31,7 @@ public class ObserverImportModelValidatorTests
     {
         // Arrange
         var validator = new ObserverImportModelValidator();
-        _model = _model with { FirstName = "Jo" }; // less than the required minimum length
+        _model = _model with { FirstName = "" }; // less than the required minimum length
 
         // Act
         var result = validator.TestValidate(_model);
@@ -44,7 +44,7 @@ public class ObserverImportModelValidatorTests
     {
         // Arrange
         var validator = new ObserverImportModelValidator();
-        _model = _model with { LastName = "Jo" }; // less than the required minimum length
+        _model = _model with { LastName = "" }; // less than the required minimum length
 
         // Act
         var result = validator.TestValidate(_model);

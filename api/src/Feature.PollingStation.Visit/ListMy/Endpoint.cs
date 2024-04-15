@@ -1,4 +1,5 @@
 ﻿using Authorization.Policies.Requirements;
+using Dapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Vote.Monitor.Domain;
@@ -27,24 +28,63 @@ public class Endpoint(IAuthorizationService authorizationService, VoteMonitorCon
             return TypedResults.NotFound();
         }
 
-        var visits = await context
-            .PollingStationVisits
-            .Where(x => x.ElectionRoundId == req.ElectionRoundId && x.ObserverId == req.ObserverId)
-            .Select(x => new VisitModel
-            {
-                PollingStationId = x.PollingStationId,
-                VisitedAt = x.VisitedAt,
-                Level1 = x.Level1,
-                Level2 = x.Level2,
-                Level3 = x.Level3,
-                Level4 = x.Level4,
-                Level5 = x.Level5,
-                Address = x.Address,
-                Number = x.Number
-            })
-            .AsNoTracking()
-            .ToListAsync(ct);
+        var sql = @" SELECT t.""ElectionRoundId"",
+                     t.""PollingStationId"",
+                     ps.""Level1"",
+                     ps.""Level2"",
+                     ps.""Level3"",
+                     ps.""Level4"",
+                     ps.""Level5"",
+                     ps.""Address"",
+                     ps.""Number"",
+                     mo.""MonitoringNgoId"",
+                     mn.""NgoId"",
+                     t.""MonitoringObserverId"",
+                     mo.""ObserverId"",
+                     MIN(t.""LatestTimestamp"") ""VisitedAt""
+                     FROM (
+                         SELECT psi.""{nameof(PollingStationInformation.ElectionRoundId)}"",
+                         psi.""{nameof(PollingStationInformation.PollingStationId)}"",
+                         psi.""{nameof(PollingStationInformation.MonitoringObserverId)}"",
+                         COALESCE(psi.""ArrivalTime"", psi.""LastModifiedOn"", psi.""CreatedOn"") ""LatestTimestamp""
+                         FROM ""{Tables.PollingStationInformation}"" psi
+                         UNION
+                         SELECT
+                         n.""{nameof(PollingStationNote.ElectionRoundId)}"", 
+                         n.""{nameof(PollingStationNote.PollingStationId)}"", 
+                         n.""{nameof(PollingStationNote.MonitoringObserverId)}"", 
+                         COALESCE(n.""LastModifiedOn"", n.""CreatedOn"") ""LatestTimestamp""
+                         FROM ""{Tables.PollingStationNotes}"" n
+                         UNION
+                         SELECT
+                         a.""{nameof(PollingStationAttachment.ElectionRoundId)}"", 
+                         a.""{nameof(PollingStationAttachment.PollingStationId)}"", 
+                         a.""{nameof(PollingStationNote.MonitoringObserverId)}"", 
+                         COALESCE(a.""LastModifiedOn"", a.""CreatedOn"") ""LatestTimestamp""
+                         FROM ""{Tables.PollingStationAttachments}"" a
+                     ) t 
+                     INNER JOIN ""{Tables.MonitoringObservers}"" mo ON mo.""Id"" = t.""MonitoringObserverId""
+                     INNER JOIN ""{Tables.MonitoringNgos}"" mn ON mo.""MonitoringNgoId"" = mn.""Id""
+                     INNER JOIN ""{Tables.PollingStations}"" ps ON ps.""Id"" = t.""PollingStationId""
+                     WHERE t.""ElectionRoundId"" =@electionRoundId AND mo.""ObserverId"" = @observerId
+                     GROUP BY 
+                           t.""ElectionRoundId"",
+                           t.""PollingStationId"",
+                           ps.""Level1"",
+                           ps.""Level2"",
+                           ps.""Level3"",
+                           ps.""Level4"",
+                           ps.""Level5"",
+                           ps.""Address"",
+                           ps.""Number"",
+                           mo.""MonitoringNgoId"",
+                           mn.""NgoId"", 
+                           t.""MonitoringObserverId"",
+                           mo.""ObserverId"";";
+        var queryArgs = new { electionRoundId = req.ElectionRoundId, observerId = req.ObserverId };
 
-        return TypedResults.Ok(new Response { Visits = visits });
+        var visits = await context.Connection.QueryAsync<VisitModel>(sql, queryArgs);
+
+        return TypedResults.Ok(new Response { Visits = visits.ToList() });
     }
 }

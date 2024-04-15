@@ -19,8 +19,6 @@ namespace Vote.Monitor.Domain.Migrations
                 nullable: false,
                 oldClrType: typeof(string),
                 oldType: "text");
-
-            migrationBuilder.Sql(CustomDBViews.CreatePollingStationVisits);
         }
 
         /// <inheritdoc />
@@ -34,8 +32,6 @@ namespace Vote.Monitor.Domain.Migrations
                 oldClrType: typeof(string),
                 oldType: "character varying(64)",
                 oldMaxLength: 64);
-
-            migrationBuilder.Sql($@"DROP VIEW IF EXISTS ""{CustomDBViews.PollingStationVisits}""");
         }
     }
 }

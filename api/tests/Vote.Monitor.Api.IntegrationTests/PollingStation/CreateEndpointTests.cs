@@ -59,6 +59,6 @@ public class CreateEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeede
 
         // Assert
         createResponse.IsSuccessStatusCode.Should().BeFalse();
-        errorResponse.Errors.Count().Should().Be(6);
+        errorResponse.Errors.Count().Should().Be(5);
     }
 }

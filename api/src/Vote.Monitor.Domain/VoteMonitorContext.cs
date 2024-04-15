@@ -17,7 +17,6 @@ using Vote.Monitor.Domain.Entities.PollingStationAttachmentAggregate;
 using Vote.Monitor.Domain.Entities.PollingStationInfoAggregate;
 using Vote.Monitor.Domain.Entities.PollingStationInfoFormAggregate;
 using Vote.Monitor.Domain.Entities.PollingStationNoteAggregate;
-using Vote.Monitor.Domain.ViewModels;
 
 namespace Vote.Monitor.Domain;
 
@@ -58,10 +57,6 @@ public class VoteMonitorContext : IdentityDbContext<ApplicationUser, IdentityRol
     public DbSet<Notification> Notifications { set; get; }
     public DbSet<PollingStationAttachment> PollingStationAttachments { set; get; }
     public DbSet<PollingStationNote> PollingStationNotes { set; get; }
-
-
-    public DbSet<PollingStationVisitViewModel> PollingStationVisits { set; get; }
-
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
@@ -125,9 +120,6 @@ public class VoteMonitorContext : IdentityDbContext<ApplicationUser, IdentityRol
         builder.ApplyConfiguration(new FormConfiguration());
         builder.ApplyConfiguration(new FormSubmissionConfiguration());
         builder.ApplyConfiguration(new RoleConfiguration());
-
-        // views
-        builder.ApplyConfiguration(new PollingStationVisitsViewConfiguration());
     }
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
