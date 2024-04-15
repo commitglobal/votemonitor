@@ -9,7 +9,6 @@ import clsx from 'clsx';
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
@@ -18,7 +17,6 @@ import { Badge } from '@/components/ui/badge';
 import { useQuery } from '@tanstack/react-query';
 import { authApi } from '@/common/auth-api';
 import { Skeleton } from '@/components/ui/skeleton';
-import { ElectionRound } from '@/features/election-round/models/ElectionRound';
 import { queryClient } from '@/main';
 
 const user = {
@@ -49,12 +47,14 @@ const Header = (): FunctionComponent => {
         throw new Error('Failed to fetch observers');
       }
 
-      setSelectedElection(response.data.electionRounds[0]);
-      localStorage.setItem('electionRoundId', response.data.electionRounds[0]!.electionRoundId);
-      localStorage.setItem('monitoringNgoId', response.data.electionRounds[0]!.monitoringNgoId);
+      console.log('refreshed', response.data.electionRounds[0]);
+
+      handleSelectEelection(response.data.electionRounds[0] as ElectionRoundMonitoring);
 
       return response.data;
     },
+    staleTime: 0,
+    refetchOnWindowFocus: false,
   });
 
   const handleSelectEelection = (ev: ElectionRoundMonitoring) => {
@@ -63,6 +63,7 @@ const Header = (): FunctionComponent => {
     localStorage.setItem('monitoringNgoId', ev.monitoringNgoId);
 
     queryClient.invalidateQueries({ queryKey: ['observers'] });
+    queryClient.invalidateQueries({ queryKey: ['tags'] });
   };
 
   return (
