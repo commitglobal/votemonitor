@@ -24,7 +24,7 @@ export const DateInput: React.FC<DateInputProps> = ({
   const [open, setOpen] = useState(false);
   // on ios we use a temporary date, as the onChange function gets triggered every time the user picks a new date
   // therefore, we will update the FINAL date state (that comes from the outside), only onDonePress
-  const [tempDate, setTempDate] = useState(new Date());
+  const [tempDate, setTempDate] = useState(value || new Date());
 
   const handleSheetOpen = () => {
     Keyboard.dismiss();
@@ -84,7 +84,7 @@ export const DateInput: React.FC<DateInputProps> = ({
             </XStack>
             <XStack flex={1} justifyContent="center" alignItems="center">
               <RNDateTimePicker
-                value={value || new Date()}
+                value={tempDate}
                 display="spinner"
                 onChange={onDateChange}
                 minimumDate={minimumDate}
