@@ -7,15 +7,17 @@ import { router } from "expo-router";
 import { useState } from "react";
 import { Sheet, View } from "tamagui";
 import { ViewStyle } from "react-native";
+import { useTranslation } from "react-i18next";
 
 const PollingStationQuestionnaire = () => {
   const theme = useTheme();
+  const { t } = useTranslation("polling_station_information");
   const [open, setOpen] = useState(false);
 
   return (
     <Screen style={$screenStyle} contentContainerStyle={$containerStyle} preset="fixed">
       <Header
-        title="Header"
+        title={t("header.title")}
         titleColor="white"
         backgroundColor={theme.purple5?.val}
         barStyle="light-content"
@@ -31,7 +33,10 @@ const PollingStationQuestionnaire = () => {
 };
 
 interface PollingStationQuestionnaireProps {
+  /* The current state of the sheet*/
   open: boolean;
+
+  /* Control the state for sheet */
   setOpen: (state: boolean) => void;
 }
 
@@ -39,37 +44,47 @@ const PollingStationQuestionnaireContent = (props: PollingStationQuestionnairePr
   const { open, setOpen } = props;
 
   return (
-    <>
+    <View>
       <Typography>This is the polling station questionnaire</Typography>
-      <CustomSheet open={open} onClose={() => setOpen(false)}></CustomSheet>
-    </>
+      <ButtomSheet open={open} setOpen={setOpen}></ButtomSheet>
+    </View>
   );
 };
 
-export const CustomSheet = ({ open, onClose }: { open: boolean; onClose: any }) => {
-  console.log("Open:" + open);
+interface ButtomSheetProps {
+  /* The current state of the sheet*/
+  open: boolean;
+
+  /* Control the state of the sheet*/
+  setOpen: (state: boolean) => void;
+
+  /* For future: Triggered action for pressing "Clear form" */
+  action?: () => void;
+}
+
+export const ButtomSheet = (props: ButtomSheetProps) => {
+  const { open, setOpen } = props;
+  const { t } = useTranslation("bottom_sheets");
+
   return (
-    <>
-      <Sheet
-        open={open}
-        onOpenChange={onClose}
-        snapPointsMode="fit"
-        modal={true}
-        dismissOnSnapToBottom
-      >
-        <Sheet.Overlay animation="lazy" enterStyle={{ opacity: 0 }} exitStyle={{ opacity: 0 }} />
+    <Sheet
+      open={open}
+      onOpenChange={() => setOpen(false)}
+      snapPointsMode="fit"
+      modal={true}
+      dismissOnSnapToBottom
+    >
+      <Sheet.Overlay animation="lazy" enterStyle={{ opacity: 0 }} exitStyle={{ opacity: 0 }} />
+      <Sheet.Frame borderRadius={28} gap="$sm" paddingHorizontal="$md" paddingBottom="$xl">
+        <Icon paddingVertical="$md" alignSelf="center" icon="dragHandle"></Icon>
 
-        <Sheet.Frame borderRadius={28} gap={12} paddingHorizontal={16} paddingBottom={32}>
-          <Icon paddingVertical={16} alignSelf="center" icon="dragHandle"></Icon>
-
-          <View paddingVertical={8} paddingHorizontal={12}>
-            <Typography preset="body1" color="$gray7" lineHeight={24}>
-              Clear form (delete all answers)
-            </Typography>
-          </View>
-        </Sheet.Frame>
-      </Sheet>
-    </>
+        <View paddingVertical="$xxs" paddingHorizontal="$sm">
+          <Typography preset="body1" color="$gray7" lineHeight={24}>
+            {t("observations.actions.clear_form")}
+          </Typography>
+        </View>
+      </Sheet.Frame>
+    </Sheet>
   );
 };
 

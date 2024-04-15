@@ -10,5 +10,12 @@
     "header" : {
         "title": "Informații despre secția de votare"
     }
+  },
+  "bottom_sheets": {
+    "observations": {
+        "actions": {
+            "clear_form": "Ștergeți formularul (ștergeți toate răspunsurile)"
+        }
+    }
   }
 }

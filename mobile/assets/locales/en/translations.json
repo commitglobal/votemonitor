@@ -10,5 +10,12 @@
     "header" : {
         "title": "Polling station information"
     }
+  },
+  "bottom_sheets": {
+    "observations": {
+        "actions": {
+            "clear_form": "Clear form (delete all answers)"
+        }
+    }
   }
 }
