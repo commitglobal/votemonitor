@@ -56,5 +56,17 @@
       "skip": "Skip this step",
       "finalize": "Finalize"
     }
+  },
+  "polling_station_information": {
+    "header": {
+      "title": "Polling station information"
+    }
+  },
+  "bottom_sheets": {
+    "observations": {
+      "actions": {
+        "clear_form": "Clear form (delete all answers)"
+      }
+    }
   }
 }
