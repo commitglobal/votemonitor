@@ -2735,7 +2735,8 @@ namespace Vote.Monitor.Domain.Migrations
 
                     b.Property<string>("DefaultLanguage")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
 
                     b.Property<Guid>("ElectionRoundId")
                         .HasColumnType("uuid");
@@ -4921,8 +4922,32 @@ namespace Vote.Monitor.Domain.Migrations
 
             modelBuilder.Entity("Vote.Monitor.Domain.ViewModels.PollingStationVisitViewModel", b =>
                 {
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<Guid>("ElectionRoundId")
                         .HasColumnType("uuid");
+
+                    b.Property<string>("Level1")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Level2")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Level3")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Level4")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Level5")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<Guid>("MonitoringNgoId")
                         .HasColumnType("uuid");
@@ -4932,6 +4957,10 @@ namespace Vote.Monitor.Domain.Migrations
 
                     b.Property<Guid>("NgoId")
                         .HasColumnType("uuid");
+
+                    b.Property<string>("Number")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<Guid>("ObserverId")
                         .HasColumnType("uuid");

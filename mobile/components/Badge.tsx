@@ -2,14 +2,21 @@ import React from "react";
 import { View, styled } from "tamagui";
 import { Typography } from "./Typography";
 
-export type Presets = "default" | "success" | "warning" | "danger";
+enum Presets {
+  DEFAULT = "default",
+  SUCCESS = "success",
+  WARNING = "warning",
+  DANGER = "danger",
+}
+
+enum FormProgress {
+  NOT_STARTED = "Not started",
+  IN_PROGRESS = "In progress",
+  COMPLETED = "Completed",
+}
 
 export interface BadgeProps {
-  children: string;
-  /**
-   * One of the different types of badge presets.
-   */
-  preset?: Presets;
+  status: string;
 }
 
 /**
@@ -18,8 +25,23 @@ export interface BadgeProps {
  * @returns {JSX.Element} The rendered `Badge` component.
  */
 const Badge = (props: BadgeProps): JSX.Element => {
-  const { children } = props;
-  const presetType: Presets = props.preset ?? "default";
+  const { status } = props;
+
+  const text =
+    status === "completed"
+      ? FormProgress.COMPLETED
+      : status === "in progress"
+        ? FormProgress.IN_PROGRESS
+        : FormProgress.NOT_STARTED;
+
+  const presetType =
+    status === "completed"
+      ? Presets.SUCCESS
+      : status === "in progress"
+        ? Presets.WARNING
+        : status === "danger"
+          ? Presets.DANGER
+          : Presets.DEFAULT;
 
   const StyledView = styled(View, {
     name: "StyledView",
@@ -39,11 +61,11 @@ const Badge = (props: BadgeProps): JSX.Element => {
   });
 
   const textColor =
-    presetType === "success"
+    presetType === Presets.SUCCESS
       ? "$green9"
-      : presetType === "warning"
+      : presetType === Presets.WARNING
         ? "$yellow7"
-        : presetType === "danger"
+        : presetType === Presets.DANGER
           ? "$red10"
           : "$gray10";
 
@@ -54,7 +76,7 @@ const Badge = (props: BadgeProps): JSX.Element => {
         style={{ fontSize: 16, lineHeight: 20, fontWeight: "500" }}
         color={textColor}
       >
-        {children}
+        {text}
       </Typography>
     </StyledView>
   );

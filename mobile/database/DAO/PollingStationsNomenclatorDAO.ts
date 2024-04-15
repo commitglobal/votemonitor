@@ -2,6 +2,7 @@ import { Q, Query } from "@nozbe/watermelondb";
 import { PollingStationNomenclatorNodeAPIResponse } from "../../services/definitions.api";
 import { database } from "../db";
 import { PollingStationsNom } from "../models/polling-stations-nomenclator.model";
+import { DB_TABLE_NAMES } from "../schemas";
 
 export const addPollingStationsNomenclatureBulk = async (
   electionRoundId: string,
@@ -28,6 +29,14 @@ export const addPollingStationsNomenclatureBulk = async (
   });
 };
 
+export const getOne = async (electionRoundId: string) => {
+  const data = await database
+    .get<PollingStationsNom>(DB_TABLE_NAMES.POLLING_STATIONS_NOMENCLATOR)
+    .query(Q.where("election_round_id", electionRoundId), Q.take(1));
+
+  return data?.length ? data[0] : null;
+};
+
 export const getPollingStationNomenclatorNodesCount = (
   electionRoundId: string,
   // take?: number
@@ -44,10 +53,18 @@ export const getPollingStationNomenclatorNodes = (): Query<PollingStationsNom> =
   return database.get<PollingStationsNom>("polling_stations_nom").query(Q.take(10));
 };
 
-export const deleteAllRecordsPollingStationNomenclator = () => {
+export const deleteAll = (electionRoundId: string) => {
   console.log("deleteAllRecordsPollingStationNomenclator");
   return database.write(async () => {
-    const data = await database.get("polling_stations_nom").query().fetch();
+    const data = await database
+      .get(DB_TABLE_NAMES.POLLING_STATIONS_NOMENCLATOR)
+      .query(Q.where("election_round_id", electionRoundId))
+      .fetch();
+
+    if (!data.length) {
+      return;
+    }
+
     const deleted = data.map((item) => item.prepareDestroyPermanently());
 
     await database.batch(deleted);

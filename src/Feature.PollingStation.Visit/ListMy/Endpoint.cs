@@ -33,7 +33,14 @@ public class Endpoint(IAuthorizationService authorizationService, VoteMonitorCon
             .Select(x => new VisitModel
             {
                 PollingStationId = x.PollingStationId,
-                VisitedAt = x.VisitedAt
+                VisitedAt = x.VisitedAt,
+                Level1 = x.Level1,
+                Level2 = x.Level2,
+                Level3 = x.Level3,
+                Level4 = x.Level4,
+                Level5 = x.Level5,
+                Address = x.Address,
+                Number = x.Number
             })
             .AsNoTracking()
             .ToListAsync(ct);

@@ -22,7 +22,7 @@ authApi.defaults.headers.common['Access-Control-Allow-Credentials'] = 'true';
  * TODO Upgrade to a real login and authentication system for production.
  */
 export const getAccessTokenFn = async (): Promise<string> => {
-  const mockUser = { username: 'string', password: 'string' };
+  const mockUser = { username: 'admin@alfa.com', password: 'string' };
 
   const response = await authApi.post<ILoginResponse>('auth', mockUser);
   return response.data.token;

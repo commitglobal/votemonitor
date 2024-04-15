@@ -6,9 +6,9 @@
   "login": {
     "submit": "Intra in aplicatie"
   },
-  "more" : {
-    "change-language" : "Schimba limba aplicației",
-    "change-password" : "Schimba parola",
+  "more": {
+    "change-language": "Schimba limba aplicației",
+    "change-password": "Schimba parola",
     "terms": "Termeni si Conditii",
     "privacy_policy": "Politica de confidențialitate",
     "support": "Sunati la ONG-uri",
@@ -16,5 +16,45 @@
     "app_version": "Vote Monitor versiunea {{value}}",
     "feedback": "Oferiți feedback aplicație",
     "logout": "Deconectare"
+  },
+  "add_polling_station": {
+    "header": {
+      "title": "Add polling station"
+    },
+    "progress": {
+      "location": "Add polling station from the {{value}}"
+    },
+    "form": {
+      "region": {
+        "title": "Select the [Location - L1] of the polling station",
+        "placeholder": "Select region",
+        "required": "Region is mandatory"
+      },
+      "county": {
+        "title": "Select the [Location - L2] of the polling station",
+        "placeholder": "Select county",
+        "required": "County is mandatory"
+      },
+      "municipality": {
+        "title": "Select the [Location - L3] of the polling station",
+        "place_holder": "Select municipality",
+        "required": "Municipality is mandatory"
+      },
+      "street": {
+        "title": "Select the [Street] of the polling station",
+        "placeholder": "Select street"
+      },
+      "number": {
+        "title": "Select the [Number] of the polling station",
+        "placeholder": "Select number",
+        "required": "Number is mandatory"
+      }
+    },
+    "actions": {
+      "next_step": "Next step",
+      "back": "Back",
+      "skip": "Skip this step",
+      "finalize": "Finalize"
+    }
   }
 }

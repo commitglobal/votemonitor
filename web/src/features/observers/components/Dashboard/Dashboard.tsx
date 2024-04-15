@@ -1,7 +1,7 @@
 import { type Observer } from '../../models/Observer';
 import { useState, type ReactElement, useRef } from 'react';
 import { type UseQueryResult, useQuery, useMutation } from '@tanstack/react-query';
-import { SortOrder, type DataTableParameters, type PageParameters, type PageResponse } from '@/common/types';
+import { type DataTableParameters, type PageResponse } from '@/common/types';
 import { authApi } from '@/common/auth-api';
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
 import Layout from '@/components/layout/Layout';
@@ -32,15 +32,7 @@ import {
 } from '@/components/ui/dialog';
 import { queryClient } from '@/main';
 import { useNavigate } from '@tanstack/react-router';
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export default function ObserversDashboard(): ReactElement {
   const observerColDefs: ColumnDef<Observer>[] = [
@@ -66,9 +58,9 @@ export default function ObserversDashboard(): ReactElement {
       enableSorting: true,
       cell: ({
         row: {
-          original: { userStatus },
+          original: { status },
         },
-      }) => <Badge className={'badge-' + userStatus}>{userStatus}</Badge>,
+      }) => <Badge className={'badge-' + status}>{status}</Badge>,
     },
     {
       header: '',
@@ -101,13 +93,13 @@ export default function ObserversDashboard(): ReactElement {
     setSerachText(ev.currentTarget.value);
   };
 
-  const hiddenFileInput = useRef(null);
+  const hiddenFileInput: React.Ref<any> = useRef(null);
 
-  const handleClick = (event) => {
+  const handleClick = () => {
     hiddenFileInput?.current?.click();
   };
 
-  const handleChange = (event) => {
+  const handleChange = (event: any) => {
     const fileUploaded = event.target.files[0];
     setFileName(fileUploaded.name);
   };
@@ -124,7 +116,7 @@ export default function ObserversDashboard(): ReactElement {
     return useQuery({
       queryKey: ['observers', p.pageNumber, p.pageSize, p.sortColumnName, p.sortOrder, searchText, statusFilter],
       queryFn: async () => {
-        const paramsObject = {
+        const paramsObject: any = {
           PageNumber: p.pageNumber,
           PageSize: p.pageSize,
           SortColumnName: p.sortColumnName,
@@ -339,7 +331,7 @@ export default function ObserversDashboard(): ReactElement {
             <CardFooter className='flex justify-between'></CardFooter>
           </Card>
         </TabsContent>
-        <TabsContent value='password'>Change your password here.</TabsContent>
+        <TabsContent value='password'></TabsContent>
       </Tabs>
     </Layout>
   );

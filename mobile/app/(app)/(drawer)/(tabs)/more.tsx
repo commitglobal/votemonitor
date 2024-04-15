@@ -70,26 +70,20 @@ interface MenuItemProps {
   onClick?: () => void;
 }
 
-const MenuItem = (props: MenuItemProps) => {
-  const { label, helper, icon, chevronRight, onClick } = props;
-  const hasSubHeader = helper ? true : false;
-  const hasChevronRight = chevronRight ? true : false;
-
-  return (
-    <Card onPress={onClick}>
-      <XStack alignItems="center" justifyContent="space-between">
-        <XStack alignItems="center" gap="$xxs">
-          <Icon size={24} icon={icon} color="black" />
-          <View alignContent="center" gap="$xxxs">
-            <Typography preset="body2"> {label} </Typography>
-            {hasSubHeader && <Typography color="$gray8"> {helper}</Typography>}
-          </View>
-        </XStack>
-
-        {hasChevronRight && <Icon size={32} icon="chevronRight" color="$purple7" />}
+const MenuItem = ({ label, helper, icon, chevronRight, onClick }: MenuItemProps) => (
+  <Card onPress={onClick}>
+    <XStack alignItems="center" justifyContent="space-between">
+      <XStack alignItems="center" gap="$xxs">
+        <Icon size={24} icon={icon} color="black" />
+        <View alignContent="center" gap="$xxxs">
+          <Typography preset="body2"> {label} </Typography>
+          {helper && <Typography color="$gray8"> {helper}</Typography>}
+        </View>
       </XStack>
-    </Card>
-  );
-};
+
+      {chevronRight && <Icon size={32} icon="chevronRight" color="$purple7" />}
+    </XStack>
+  </Card>
+);
 
 export default More;

@@ -1,21 +1,21 @@
-import { BaseQuestion } from "@/common/types"
-import { DragDropContext, DropResult } from "react-beautiful-dnd";
-import EditQuestionFactory from "./edit/EditQuestionFactory";
-import { StrictModeDroppable } from "./StrictModeDroppable";
+import { BaseQuestion } from '@/common/types';
+import { DragDropContext, DropResult } from 'react-beautiful-dnd';
+import EditQuestionFactory from './edit/EditQuestionFactory';
+import { StrictModeDroppable } from './StrictModeDroppable';
 
 export interface QuestionsEditProps {
   languageCode: string;
   localQuestions: BaseQuestion[];
   setLocalQuestions: (questions: BaseQuestion[]) => void;
   activeQuestionId: string | undefined;
-  setActiveQuestionId: (questionId: string) => void;
+  setActiveQuestionId: (questionId: string | undefined) => void;
   invalidQuestions: string[] | null;
   setInvalidQuestions: (questions: string[]) => void;
 }
 
 export enum MoveDirection {
   UP = 'UP',
-  DOWN = 'DOWN'
+  DOWN = 'DOWN',
 }
 
 function QuestionsEdit({
@@ -25,13 +25,12 @@ function QuestionsEdit({
   activeQuestionId,
   setActiveQuestionId,
   invalidQuestions,
-  setInvalidQuestions }: QuestionsEditProps) {
-
-
-  function addQuestion() { }
-  function updateQuestion(questionIndex: number, question: BaseQuestion) { }
-  function duplicateQuestion(questionIndex: number) { }
-  function deleteQuestion(questionIndex: number) { }
+  setInvalidQuestions,
+}: QuestionsEditProps) {
+  function addQuestion() {}
+  function updateQuestion(questionIndex: number, question: BaseQuestion) {}
+  function duplicateQuestion(questionIndex: number) {}
+  function deleteQuestion(questionIndex: number) {}
 
   function onDragEnd(result: DropResult) {
     if (!result.destination) {
@@ -49,17 +48,15 @@ function QuestionsEdit({
     const destinationIndex = direction === MoveDirection.UP ? questionIndex - 1 : questionIndex + 1;
     newQuestions.splice(destinationIndex, 0, reorderedQuestion!);
     setLocalQuestions([...newQuestions]);
-  };
-
+  }
 
   return (
-    <div className="mt-12 px-5 py-4">
-
+    <div className='mt-12 px-5 py-4'>
       <DragDropContext onDragEnd={onDragEnd}>
-        <div className="mb-5 grid grid-cols-1 gap-5 ">
-          <StrictModeDroppable droppableId="questionsList">
+        <div className='mb-5 grid grid-cols-1 gap-5 '>
+          <StrictModeDroppable droppableId='questionsList'>
             {(provided) => (
-              <div className="grid gap-5" ref={provided.innerRef} {...provided.droppableProps}>
+              <div className='grid gap-5' ref={provided.innerRef} {...provided.droppableProps}>
                 {localQuestions.map((question, questionIdx) => (
                   <EditQuestionFactory
                     key={question.id}
@@ -84,6 +81,6 @@ function QuestionsEdit({
       </DragDropContext>
       {/* <AddQuestionButton addQuestion={addQuestion} /> */}
     </div>
-  )
+  );
 }
 export default QuestionsEdit;
