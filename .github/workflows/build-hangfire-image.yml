@@ -13,6 +13,7 @@ jobs:
     with:
       images: commitglobal/votemonitor-hangfire
       dockerfile: ./api/src/Vote.Monitor.Hangfire/Dockerfile
+      context: ./api
     secrets:
       username: ${{ secrets.DOCKER_HUB_USERNAME }}
       token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
