@@ -46,8 +46,8 @@ export function QueryParamsDataTable<TData, TValue>({
     navigate({
       search: {
         ...queryParams,
-        sortColumnName: s[0].id,
-        sortOrder: s[0].desc ? SortOrder.desc : SortOrder.asc,
+        sortColumnName: s[0]?.id,
+        sortOrder: s[0]?.desc ? SortOrder.desc : SortOrder.asc,
       },
     }).catch((error) => {
       throw error;

@@ -1,4 +1,3 @@
-import { useRouter } from '@tanstack/react-router';
 import type { ReactNode } from 'react';
 import Breadcrumbs from './Breadcrumbs/Breadcrumbs';
 import BackButton from './Breadcrumbs/BackButton';
@@ -11,7 +10,7 @@ interface LayoutProps {
   children: ReactNode;
 }
 
-const Layout = ({ title, breadcrumbs, subtitle, actions, children }: LayoutProps) => {
+const Layout = ({ title, subtitle, actions, children }: LayoutProps) => {
   return (
     <>
       <header className='container py-4'>

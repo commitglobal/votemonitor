@@ -98,20 +98,20 @@ export default function MonitoringObserversDashboard(): ReactElement {
   const [fileName, setFileName] = useState('');
   const [isFiltering, setFiltering] = useState(false);
   const [statusFilter, setStatusFilter] = useState('');
-  const [tagsFilter, setTagsFilter] = useState([]);
+  const [tagsFilter, setTagsFilter] = useState<string[]>([]);
 
   const navigate = useNavigate();
   const handleSearchInput = (ev: React.FormEvent<HTMLInputElement>) => {
     setSearchText(ev.currentTarget.value);
   };
 
-  const hiddenFileInput = useRef(null);
+  const hiddenFileInput: React.Ref<any> = useRef(null);
 
-  const handleClick = (event) => {
+  const handleClick = () => {
     hiddenFileInput?.current?.click();
   };
 
-  const handleChange = (event) => {
+  const handleChange = (event: any) => {
     const fileUploaded = event.target.files[0];
     setFileName(fileUploaded.name);
   };
@@ -175,7 +175,7 @@ export default function MonitoringObserversDashboard(): ReactElement {
         tagsFilter,
       ],
       queryFn: async () => {
-        const paramsObject = {
+        const paramsObject: any = {
           PageNumber: p.pageNumber,
           PageSize: p.pageSize,
           SortColumnName: p.sortColumnName,
@@ -237,11 +237,11 @@ export default function MonitoringObserversDashboard(): ReactElement {
   };
 
   const toggleTagsFilter = (tag: string) => {
-    setTagsFilter((prevTags) => {
+    setTagsFilter((prevTags: any) => {
       if (!prevTags.includes(tag)) {
         return [...prevTags, tag];
       } else {
-        return prevTags.filter((tagText) => tagText !== tag);
+        return prevTags.filter((tagText: string) => tagText !== tag);
       }
     });
   };

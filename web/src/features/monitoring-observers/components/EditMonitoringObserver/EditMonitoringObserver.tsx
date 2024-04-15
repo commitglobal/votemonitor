@@ -37,7 +37,7 @@ export default function EditObserver() {
   });
 
   function onSubmit(values: z.infer<typeof editObserverFormSchema>) {
-    const newObj = {
+    const newObj: any = {
       tags: values.tags.map((tag: Tag) => tag.text),
       status: values.status,
     };

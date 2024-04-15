@@ -58,9 +58,9 @@ export default function ObserversDashboard(): ReactElement {
       enableSorting: true,
       cell: ({
         row: {
-          original: { userStatus },
+          original: { status },
         },
-      }) => <Badge className={'badge-' + userStatus}>{userStatus}</Badge>,
+      }) => <Badge className={'badge-' + status}>{status}</Badge>,
     },
     {
       header: '',
@@ -93,13 +93,13 @@ export default function ObserversDashboard(): ReactElement {
     setSerachText(ev.currentTarget.value);
   };
 
-  const hiddenFileInput = useRef(null);
+  const hiddenFileInput: React.Ref<any> = useRef(null);
 
-  const handleClick = (event) => {
+  const handleClick = () => {
     hiddenFileInput?.current?.click();
   };
 
-  const handleChange = (event) => {
+  const handleChange = (event: any) => {
     const fileUploaded = event.target.files[0];
     setFileName(fileUploaded.name);
   };
@@ -116,7 +116,7 @@ export default function ObserversDashboard(): ReactElement {
     return useQuery({
       queryKey: ['observers', p.pageNumber, p.pageSize, p.sortColumnName, p.sortOrder, searchText, statusFilter],
       queryFn: async () => {
-        const paramsObject = {
+        const paramsObject: any = {
           PageNumber: p.pageNumber,
           PageSize: p.pageSize,
           SortColumnName: p.sortColumnName,
