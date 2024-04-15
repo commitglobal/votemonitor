@@ -198,6 +198,7 @@ const Index = () => {
               <PollingStationInfo
                 nrOfAnswers={data?.answers.length}
                 nrOfQuestions={informationFormQuestions?.questions.length}
+                // TODO: how do we send the status here? do we need to calculate it depending on the nrOfAnswers?
                 status={FormStatus.IN_PROGRESS}
               />
             )}
