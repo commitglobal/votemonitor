@@ -34,21 +34,38 @@ public static class CoreServicesInstaller
             return new FreezeTimeProvider(currentUtc);
         });
 
-        services.AddHangfire(config =>
+        var enableHangfire = configuration.GetValue<bool>("EnableHangfire");
+        if (enableHangfire)
         {
-            config
-                .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
-                .UseSimpleAssemblyNameTypeSerializer()
-                .UseRecommendedSerializerSettings()
-                .UsePostgreSqlStorage(c =>
-                c.UseNpgsqlConnection(configuration.GetNpgsqlConnectionString("HangfireConnectionConfig")));
+            services.AddHangfire(config =>
+            {
+                config
+                    .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+                    .UseSimpleAssemblyNameTypeSerializer()
+                    .UseRecommendedSerializerSettings()
+                    .UsePostgreSqlStorage(c =>
+                        c.UseNpgsqlConnection(configuration.GetNpgsqlConnectionString("HangfireConnectionConfig")));
 
-            config.UseColouredConsoleLogProvider();
-        });
+                config.UseColouredConsoleLogProvider();
+            });
 
-        services.AddTransient<IJobService, HangfireJobService>();
+            services.AddTransient<IJobService, HangfireJobService>();
+        }
+        else
+        {
+            services.AddTransient<IJobService, NoopJobService>();
+        }
+
         services.AddTransient<IEmailTemplateFactory, EmailFactory>();
 
         return services;
     }
+
+    internal class NoopJobService : IJobService
+    {
+        public void SendEmail(string to, string subject, string body)
+        {
+        }
+    }
+
 }

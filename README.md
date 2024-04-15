@@ -25,15 +25,11 @@
 ```json
   "Seeders": {
         "PlatformAdminSeeder": {
-            "PlatformAdmins": [
-                {
-                    "FirstName": "John",
-                    "LastName": "Doe",
-                    "Email": "john.doe@example.com",
-                    "PhoneNumber": "1234567890",
-                    "Password": "<your-password>"
-                }
-            ]
+            "FirstName": "John",
+            "LastName": "Doe",
+            "Email": "john.doe@example.com",
+            "PhoneNumber": "1234567890",
+            "Password": "<your-password>"
         }
     }
 ```
