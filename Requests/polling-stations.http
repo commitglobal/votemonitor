@@ -43,6 +43,12 @@ Accept-Encoding: gzip
 Authorization: Bearer {{$dotenv JWT_TOKEN}}
 ###
 
+# Fetch levels
+GET {{$dotenv HOST }}/api/election-rounds/{{electionRoundId}}/polling-stations:fetchLevels
+Accept-Encoding: gzip
+Authorization: Bearer {{$dotenv JWT_TOKEN}}
+###
+
 # List polling stations
 POST {{$dotenv HOST }}/api/election-rounds/{{electionRoundId}}/polling-stations:list
    ?pageNumber=2
