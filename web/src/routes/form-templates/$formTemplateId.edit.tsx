@@ -3,22 +3,21 @@ import FormQuestionsEditor from '@/components/questionsEditor/FormQuestionsEdito
 import FormTemplateActions from '@/features/formsTemplate/components/FormTemplateActions';
 import FormTemplateHeader from '@/features/formsTemplate/components/FormTemplateHeader';
 import { FormTemplateFull } from '@/features/formsTemplate/models/formTemplate';
-import { formTemplateDetailsQueryOptions } from '@/features/formsTemplate/queries'
-import { createFileRoute } from '@tanstack/react-router'
+import { formTemplateDetailsQueryOptions } from '@/features/formsTemplate/queries';
+import { createFileRoute } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
-
 
 export const Route = createFileRoute('/form-templates/$formTemplateId/edit')({
   component: EditFormTemplate,
-  loader: ({ context: { queryClient }, params: { formTemplateId } }) => queryClient.ensureQueryData(formTemplateDetailsQueryOptions(formTemplateId))
-
-})
+  loader: ({ context: { queryClient }, params: { formTemplateId } }) =>
+    queryClient.ensureQueryData(formTemplateDetailsQueryOptions(formTemplateId)),
+});
 
 function EditFormTemplate() {
   const formTemplate = Route.useLoaderData();
   const [localForm, setLocalForm] = useState<FormTemplateFull | null>();
   const [localQuestions, setLocalQuestions] = useState<BaseQuestion[]>([]);
-  const [activeQuestionId, setActiveQuestionId] = useState<string | null>(null);
+  const [activeQuestionId, setActiveQuestionId] = useState<string | undefined>(undefined);
   const [invalidQuestions, setInvalidQuestions] = useState<string[] | null>(null);
 
   useEffect(() => {
@@ -44,7 +43,8 @@ function EditFormTemplate() {
         activeQuestionId={activeQuestionId}
         setActiveQuestionId={setActiveQuestionId}
         invalidQuestions={invalidQuestions}
-        setInvalidQuestions={setInvalidQuestions} />
+        setInvalidQuestions={setInvalidQuestions}
+      />
     </>
-  )
+  );
 }

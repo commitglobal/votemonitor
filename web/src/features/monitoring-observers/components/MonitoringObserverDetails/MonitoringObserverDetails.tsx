@@ -7,12 +7,13 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 import { PencilIcon } from '@heroicons/react/24/outline';
+import TableTagList from '@/components/table-tag-list/TableTagList';
 
 export default function ObserverDetails() {
   const observer: MonitoringObserver = useLoaderData({ strict: false });
   const navigate = useNavigate();
   const navigateToEdit = () => {
-    navigate({ to: 'edit' });
+    navigate({ to: '/monitoring-observers/$monitoringObserverId/edit', params: { monitoringObserverId: observer.id } });
   };
 
   return (
@@ -49,7 +50,7 @@ export default function ObserverDetails() {
               </div>
               <div className='flex flex-col gap-1'>
                 <p className='text-gray-700 font-bold'>Tags</p>
-                <p className='text-gray-900 font-normal'>N/A</p>
+                <TableTagList tags={observer.tags} />
               </div>
               <div className='flex flex-col gap-1'>
                 <p className='text-gray-700 font-bold'>Last activity</p>

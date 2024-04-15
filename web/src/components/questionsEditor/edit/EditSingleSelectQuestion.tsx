@@ -1,12 +1,8 @@
-import { BaseAnswer, SingleSelectAnswer, SingleSelectQuestion, AnswerType, SingleSelectAnswerSchema } from '@/common/types'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../ui/form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { Input } from '../../ui/input';
-import { Button } from '../../ui/button';
+import { BaseQuestion } from '@/common/types';
+
 import { useTranslation } from 'react-i18next';
-import { RadioGroup, RadioGroupItem } from '../../ui/radio-group';
-import { useMemo, useState } from 'react';
+
+import { MoveDirection } from '../QuestionsEdit';
 
 export interface PreviewSingleSelectQuestionProps {
   languageCode: string;
@@ -33,11 +29,11 @@ function EditSingleSelectQuestion({
   moveQuestion,
   updateQuestion,
   duplicateQuestion,
-  deleteQuestion }: PreviewSingleSelectQuestionProps) {
-    const { t } = useTranslation();
+  deleteQuestion,
+}: PreviewSingleSelectQuestionProps) {
+  const { t } = useTranslation();
 
+  return <div>Hello EditSingleSelectQuestion</div>;
+}
 
-    return (<div>Hello EditSingleSelectQuestion</div>)
-  }
-
-export default EditSingleSelectQuestion
+export default EditSingleSelectQuestion;

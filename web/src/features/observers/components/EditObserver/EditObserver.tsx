@@ -58,7 +58,7 @@ export default function EditObserver() {
   });
 
   const editMutation = useMutation({
-    mutationFn: ({ observerId, obj }) => {
+    mutationFn: ({ observerId, obj }: any) => {
       return authApi.put<void>(`/observers/${observerId}`, obj);
     },
   });
