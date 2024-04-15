@@ -1,7 +1,6 @@
 import { ViewStyle } from "react-native";
 import { Typography } from "../../components/Typography";
 import { Controller, useForm } from "react-hook-form";
-import WizardFormInput from "../../components/WizardFormInputs/WizardFormInput";
 import { Button, CheckedState, YStack } from "tamagui";
 import {
   pollingStationsKeys,
@@ -10,11 +9,8 @@ import {
 } from "../../services/queries.service";
 import { useUserData } from "../../contexts/user/UserContext.provider";
 import { ApiFormQuestion } from "../../services/interfaces/question.type";
-import WizardDateFormInput from "../../components/WizardFormInputs/WizardDateFormInput";
-import WizardRadioFormInput from "../../components/WizardFormInputs/WizardRadioFormInput";
 import { Screen } from "../../components/Screen";
 import CheckboxInput from "../../components/Inputs/CheckboxInput";
-import WizardFormElement from "../../components/WizardFormInputs/WizardFormElement";
 import {
   ApiFormAnswer,
   FormQuestionAnswerTypeMapping,
@@ -27,7 +23,11 @@ import {
   upsertPollingStationGeneralInformation,
 } from "../../services/definitions.api";
 import { router } from "expo-router";
-import WizardRatingFormInput from "../../components/WizardFormInputs/WizardRatingFormInput";
+import FormInput from "../../components/FormInputs/FormInput";
+import DateFormInput from "../../components/FormInputs/DateFormInput";
+import RadioFormInput from "../../components/FormInputs/RadioFormInput";
+import RatingFormInput from "../../components/FormInputs/RatingFormInput";
+import FormElement from "../../components/FormInputs/FormElement";
 
 const PollingStationQuestionnaire = () => {
   const queryClient = useQueryClient();
@@ -243,7 +243,7 @@ const PollingStationQuestionnaire = () => {
 
   return (
     <Screen preset="scroll" contentContainerStyle={$containerStyle}>
-      <Typography>This is the polling station questionnaire</Typography>
+      <Typography marginBottom="$md">This is the polling station questionnaire</Typography>
       {formStructure?.questions.map((question: ApiFormQuestion) => {
         const label = `${question.code}. ${question.text.EN}`;
         const helper = question.helptext.EN;
@@ -255,15 +255,13 @@ const PollingStationQuestionnaire = () => {
               name={question.id}
               control={control}
               render={({ field: { onChange, value } }) => (
-                <YStack>
-                  <WizardFormInput
-                    type="numeric"
-                    label={label}
-                    helper={helper}
-                    onChangeText={onChange}
-                    value={value}
-                  />
-                </YStack>
+                <FormInput
+                  title={question.text.EN}
+                  placeholder={question.helptext?.EN}
+                  type="numeric"
+                  value={value}
+                  onChangeText={onChange}
+                />
               )}
             />
           );
@@ -277,10 +275,10 @@ const PollingStationQuestionnaire = () => {
               control={control}
               render={({ field: { onChange, value } }) => (
                 <YStack>
-                  <WizardFormInput
+                  <FormInput
                     type="text"
-                    label={label}
-                    helper={helper}
+                    title={question.text.EN}
+                    placeholder={question.helptext?.EN}
                     onChangeText={onChange}
                     value={value}
                   />
@@ -291,6 +289,7 @@ const PollingStationQuestionnaire = () => {
         }
 
         if (question.$questionType === "dateQuestion") {
+          console.log("DATE Q", question);
           return (
             <Controller
               key={question.id}
@@ -298,11 +297,11 @@ const PollingStationQuestionnaire = () => {
               control={control}
               render={({ field: { onChange, value } }) => (
                 <YStack>
-                  <WizardDateFormInput
-                    label={label}
-                    helper={helper}
+                  <DateFormInput
+                    title={question.text.EN}
                     onChange={onChange}
                     value={value}
+                    placeholder={question.helptext?.EN}
                   />
                 </YStack>
               )}
@@ -319,13 +318,13 @@ const PollingStationQuestionnaire = () => {
               control={control}
               render={({ field: { onChange, value } }) => (
                 <YStack>
-                  <WizardRadioFormInput
+                  <RadioFormInput
                     options={question.options.map((option) => ({
                       id: option.id,
                       label: option.text.EN,
                       value: option.id,
                     }))}
-                    label={label}
+                    title={question.text.EN}
                     value={value}
                     onValueChange={onChange}
                   />
@@ -344,10 +343,10 @@ const PollingStationQuestionnaire = () => {
               control={control}
               render={({ field: { onChange, value } }) => (
                 <YStack>
-                  <WizardRatingFormInput
+                  <RatingFormInput
                     id={question.id}
                     type="single"
-                    label={label}
+                    title={question.text.EN}
                     value={value}
                     onValueChange={onChange}
                   />
@@ -359,7 +358,7 @@ const PollingStationQuestionnaire = () => {
 
         if (question.$questionType === "multiSelectQuestion") {
           return (
-            <WizardFormElement key={question.id} label={`${question.code}. ${question.text.EN}`}>
+            <FormElement key={question.id} title={`${question.code}. ${question.text.EN}`}>
               {question.options.map((option) => (
                 <Controller
                   key={option.id}
@@ -380,7 +379,7 @@ const PollingStationQuestionnaire = () => {
                   )}
                 />
               ))}
-            </WizardFormElement>
+            </FormElement>
           );
         }
 
