@@ -7,11 +7,12 @@ import { Screen } from "../../../../components/Screen";
 import { useUserData } from "../../../../contexts/user/UserContext.provider";
 import { Typography } from "../../../../components/Typography";
 import Button from "../../../../components/Button";
-import { Card, XStack, YStack } from "tamagui";
+import { XStack, YStack } from "tamagui";
 import { ListView } from "../../../../components/ListView";
 import TimeSelect from "../../../../components/TimeSelect";
 import CardFooter from "../../../../components/CardFooter";
 import PollingStationInfoDefault from "../../../../components/PollingStationInfoDefault";
+import Card from "../../../../components/Card";
 import FormCard from "../../../../components/FormCard";
 import {
   pollingStationsKeys,
@@ -26,8 +27,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import SelectPollingStation from "../../../../components/SelectPollingStation";
 import NoVisitsExist from "../../../../components/NoVisitsExist";
 import NoElectionRounds from "../../../../components/NoElectionRounds";
-import Badge from "../../../../components/Badge";
-
+import PollingStationInfo from "../../../../components/PollingStationInfo";
+import { FormStatus } from "../../../../components/Badge";
 ReactotronCommands.default();
 
 export type FormItemStatus = "not started" | "in progress" | "completed";
@@ -175,14 +176,14 @@ const Index = () => {
       <YStack paddingHorizontal="$md" gap="$lg">
         <YStack gap="$xxs">
           <XStack gap="$xxs">
-            <Card flex={0.5} paddingHorizontal="$md" paddingVertical="$xs" backgroundColor="white">
+            <Card flex={0.5}>
               <TimeSelect
                 type="arrival"
                 time={data?.arrivalTime ? new Date(data?.arrivalTime) : undefined}
                 setTime={(data: Date) => updateGeneralData({ arrivalTime: data?.toISOString() })}
               />
             </Card>
-            <Card flex={0.5} paddingHorizontal="$md" paddingVertical="$xs" backgroundColor="white">
+            <Card flex={0.5}>
               <TimeSelect
                 type="departure"
                 time={data?.departureTime ? new Date(data?.departureTime) : undefined}
@@ -190,25 +191,20 @@ const Index = () => {
               />
             </Card>
           </XStack>
-          <Card
-            padding="$md"
-            gap="$md"
-            backgroundColor="white"
-            onPress={router.push.bind(null, "/polling-station-questionnaire")}
-          >
-            {!data?.answers?.length ? (
+          <Card gap="$md">
+            {data?.answers?.length ? (
               <PollingStationInfoDefault />
             ) : (
-              <XStack>
-                <Typography textAlign="center" fontWeight="500" color="$gray5">
-                  {data?.answers.length} / {informationFormQuestions?.questions.length} Questions{" "}
-                </Typography>
-                <Badge status="in progress" />
-              </XStack>
+              <PollingStationInfo
+                nrOfAnswers={data?.answers.length}
+                nrOfQuestions={informationFormQuestions?.questions.length}
+                // TODO: how do we send the status here? do we need to calculate it depending on the nrOfAnswers?
+                status={FormStatus.IN_PROGRESS}
+              />
             )}
             <CardFooter text="Polling station information"></CardFooter>
           </Card>
-          <Card padding="$md">
+          <Card>
             <Button onPress={() => router.push("/form-questionnaire/1")}>Go Form wizzard</Button>
           </Card>
         </YStack>

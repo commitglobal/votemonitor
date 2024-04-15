@@ -1,7 +1,8 @@
-import React, { useMemo } from "react";
-import { Adapt, Select as TamaguiSelect, Sheet, SelectProps } from "tamagui";
+import React, { useMemo, useState } from "react";
+import { Adapt, Select as TamaguiSelect, Sheet, SelectProps, styled } from "tamagui";
 import { Icon } from "./Icon";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Input } from "tamagui";
 
 interface StyledSelectProps extends SelectProps {
   placeholder?: string;
@@ -10,6 +11,15 @@ interface StyledSelectProps extends SelectProps {
 
 const Select = ({ placeholder = "Select", options, ...props }: StyledSelectProps) => {
   const insets = useSafeAreaInsets();
+  const [searchTerm, setSearchTerm] = useState<string>("");
+
+  // Filter options based on search term
+  const filteredOptions = useMemo(() => {
+    if (!searchTerm) return options;
+    return options.filter((option) =>
+      option.label.toLowerCase().includes(searchTerm.toLowerCase()),
+    );
+  }, [options, searchTerm]);
 
   return (
     <TamaguiSelect disablePreventBodyScroll native {...props}>
@@ -29,9 +39,10 @@ const Select = ({ placeholder = "Select", options, ...props }: StyledSelectProps
       </TamaguiSelect.Trigger>
 
       <Adapt platform="touch">
-        <Sheet native modal snapPoints={[50, 40]}>
-          <Sheet.Frame>
-            <Sheet.ScrollView padding="$sm" marginBottom={insets.bottom}>
+        <Sheet native modal snapPoints={[50, 40]} moveOnKeyboardChange={true}>
+          <Sheet.Frame padding="$sm">
+            <SearchInput value={searchTerm} onChangeText={setSearchTerm} />
+            <Sheet.ScrollView marginBottom={insets.bottom}>
               <Adapt.Contents />
             </Sheet.ScrollView>
           </Sheet.Frame>
@@ -42,27 +53,18 @@ const Select = ({ placeholder = "Select", options, ...props }: StyledSelectProps
       <TamaguiSelect.Content>
         <TamaguiSelect.Viewport>
           <TamaguiSelect.Group>
-            {useMemo(
-              () =>
-                options.map((entry, i) => {
-                  return (
-                    <TamaguiSelect.Item
-                      index={i}
-                      key={`${entry.id}_${i}`}
-                      value={entry.value}
-                      gap="$3"
-                    >
-                      <TamaguiSelect.ItemText width={"90%"} numberOfLines={1}>
-                        {entry.label}
-                      </TamaguiSelect.ItemText>
-                      <TamaguiSelect.ItemIndicator>
-                        <Icon icon="chevronLeft" />
-                      </TamaguiSelect.ItemIndicator>
-                    </TamaguiSelect.Item>
-                  );
-                }),
-              [options],
-            )}
+            {filteredOptions.map((entry, i) => {
+              return (
+                <TamaguiSelect.Item index={i} key={`${entry.id}_${i}`} value={entry.value} gap="$3">
+                  <TamaguiSelect.ItemText width={"90%"} numberOfLines={1}>
+                    {entry.label}
+                  </TamaguiSelect.ItemText>
+                  <TamaguiSelect.ItemIndicator>
+                    <Icon icon="chevronLeft" />
+                  </TamaguiSelect.ItemIndicator>
+                </TamaguiSelect.Item>
+              );
+            })}
           </TamaguiSelect.Group>
         </TamaguiSelect.Viewport>
       </TamaguiSelect.Content>
@@ -71,3 +73,10 @@ const Select = ({ placeholder = "Select", options, ...props }: StyledSelectProps
 };
 
 export default Select;
+
+const SearchInput = styled(Input, {
+  backgroundColor: "$purple1",
+  placeholder: "Search",
+  color: "$purple5",
+  placeholderTextColor: "$purple5",
+});
