@@ -5,12 +5,14 @@ import FormElement from "./FormElement";
 interface FormInputProps extends InputProps {
   //   question title
   title: string;
+  // placeholder
+  placeholder?: string;
 }
 
-const FormInput: React.FC<FormInputProps> = ({ type, title, placeholder, ...rest }) => {
+const FormInput: React.FC<FormInputProps> = ({ type, title, placeholder = "", ...rest }) => {
   return (
     <FormElement title={title}>
-      <Input type={type} marginBottom="$xxs" placeholder={placeholder || ""} {...rest} />
+      <Input type={type} marginBottom="$xxs" placeholder={placeholder} {...rest} />
     </FormElement>
   );
 };

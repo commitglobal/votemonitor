@@ -7,6 +7,8 @@ interface WizardFormInputProps extends DateInputProps {
   label: string;
   //   question subtitle
   paragraph?: string;
+  // placeholder
+  placeholder?: string;
   // helper text
   helper?: string;
 }
@@ -14,12 +16,13 @@ interface WizardFormInputProps extends DateInputProps {
 const WizardDateFormInput: React.FC<WizardFormInputProps> = ({
   label,
   paragraph,
+  placeholder = "",
   helper,
   ...rest
 }) => {
   return (
     <WizardFormElement label={label} paragraph={paragraph} helper={helper}>
-      <DateInput {...rest} />
+      <DateInput placeholder={placeholder} {...rest} />
     </WizardFormElement>
   );
 };
