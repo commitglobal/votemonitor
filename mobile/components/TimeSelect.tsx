@@ -22,7 +22,7 @@ const TimeSelect: React.FC<TimeSelectProps> = ({ type, time, setTime }) => {
 
   // on ios we use a temporary time, as the onChange function gets triggered every time the user picks a new time
   // therefore, we will update the FINAL time state (that comes from the outside), only onDonePress
-  const [tempTime, setTempTime] = useState(new Date());
+  const [tempTime, setTempTime] = useState(time || new Date());
 
   const onChange = (event: DateTimePickerEvent, selectedTime: Date | undefined) => {
     if (Platform.OS === "ios") {
@@ -107,7 +107,7 @@ const TimeSelect: React.FC<TimeSelectProps> = ({ type, time, setTime }) => {
               <RNDateTimePicker
                 mode="time"
                 display="spinner"
-                value={tempTime || new Date()}
+                value={tempTime}
                 is24Hour={true}
                 onChange={onChange}
               />
