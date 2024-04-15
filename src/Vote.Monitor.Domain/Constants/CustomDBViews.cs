@@ -21,8 +21,15 @@ public static class CustomDBViews
 
     public const string CreatePollingStationVisits = @$"
               CREATE OR REPLACE VIEW ""{PollingStationVisits}"" AS 
-              SELECT t.""ElectionRoundId"", 
+              SELECT t.""ElectionRoundId"",
               t.""PollingStationId"",
+              ps.""Level1"",
+              ps.""Level2"",
+              ps.""Level3"",
+              ps.""Level4"",
+              ps.""Level5"",
+              ps.""Address"",
+              ps.""Number"",
               mo.""MonitoringNgoId"",
               mn.""NgoId"",
               t.""MonitoringObserverId"",
@@ -49,8 +56,22 @@ public static class CustomDBViews
                   COALESCE(a.""LastModifiedOn"", a.""CreatedOn"") ""LatestTimestamp""
                   FROM ""{Tables.PollingStationAttachments}"" a
               ) t 
-              INNER JOIN ""MonitoringObservers"" mo ON mo.""Id"" = t.""MonitoringObserverId""
-              INNER JOIN ""MonitoringNgos"" mn ON mo.""MonitoringNgoId"" = mn.""Id""
-              GROUP BY  t.""ElectionRoundId"", t.""PollingStationId"", mo.""MonitoringNgoId"", mn.""NgoId"", t.""MonitoringObserverId"", mo.""ObserverId"";
+              INNER JOIN ""{Tables.MonitoringObservers}"" mo ON mo.""Id"" = t.""MonitoringObserverId""
+              INNER JOIN ""{Tables.MonitoringNgos}"" mn ON mo.""MonitoringNgoId"" = mn.""Id""
+              INNER JOIN ""{Tables.PollingStations}"" ps ON ps.""Id"" = t.""PollingStationId""
+              GROUP BY 
+                    t.""ElectionRoundId"",
+                    t.""PollingStationId"",
+                    ps.""Level1"",
+                    ps.""Level2"",
+                    ps.""Level3"",
+                    ps.""Level4"",
+                    ps.""Level5"",
+                    ps.""Address"",
+                    ps.""Number"",
+                    mo.""MonitoringNgoId"",
+                    mn.""NgoId"", 
+                    t.""MonitoringObserverId"",
+                    mo.""ObserverId"";
               ";
 }

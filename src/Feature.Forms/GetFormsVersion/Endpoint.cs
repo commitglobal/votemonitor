@@ -1,11 +1,9 @@
-﻿using Authorization.Policies.Requirements;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Vote.Monitor.Domain;
 
 namespace Feature.Forms.GetFormsVersion;
 
-public class Endpoint(IAuthorizationService authorizationService, VoteMonitorContext context) : Endpoint<Request, Results<Ok<Response>, NotFound>>
+public class Endpoint(VoteMonitorContext context) : Endpoint<Request, Results<Ok<Response>, NotFound>>
 {
     public override void Configure()
     {
@@ -21,16 +19,11 @@ public class Endpoint(IAuthorizationService authorizationService, VoteMonitorCon
 
     public override async Task<Results<Ok<Response>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var requirement = new MonitoringObserverRequirement(req.ElectionRoundId);
-        var authorizationResult = await authorizationService.AuthorizeAsync(User, requirement);
-        if (!authorizationResult.Succeeded)
-        {
-            return TypedResults.NotFound();
-        }
-
-        var monitoringNgo = await context.MonitoringNgos
-            .Where(x => x.ElectionRoundId == req.ElectionRoundId)
-            .Select(x => new { x.FormsVersion, x.Id })
+        var monitoringNgo = await context.MonitoringObservers
+            .Include(x=>x.MonitoringNgo)
+            .Where(x=>x.ObserverId == req.ObserverId)
+            .Where(x => x.MonitoringNgo.ElectionRoundId == req.ElectionRoundId)
+            .Select(x => new { x.MonitoringNgo.FormsVersion, x.MonitoringNgo.ElectionRoundId })
             .FirstOrDefaultAsync(ct);
 
         if (monitoringNgo is null)
@@ -40,7 +33,7 @@ public class Endpoint(IAuthorizationService authorizationService, VoteMonitorCon
 
         return TypedResults.Ok(new Response
         {
-            ElectionRoundId = monitoringNgo.Id,
+            ElectionRoundId = monitoringNgo.ElectionRoundId,
             CacheKey = monitoringNgo.FormsVersion.ToString()
         });
     }
