@@ -4,7 +4,8 @@ import { Controller, useForm } from "react-hook-form";
 import FormInput from "../../components/FormInputs/FormInput";
 import { Button, CheckedState, YStack } from "tamagui";
 import {
-  upsertPollingStationGeneralInformationMutation,
+  pollingStationsKeys,
+  usePollingStationInformation,
   usePollingStationInformationForm,
 } from "../../services/queries.service";
 import { useUserData } from "../../contexts/user/UserContext.provider";
@@ -18,30 +19,103 @@ import {
   ApiFormAnswer,
   FormQuestionAnswerTypeMapping,
 } from "../../services/interfaces/answer.type";
+import { useMemo } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  PollingStationInformationAPIPayload,
+  PollingStationInformationAPIResponse,
+  upsertPollingStationGeneralInformation,
+} from "../../services/definitions.api";
+import { router } from "expo-router";
 
 const PollingStationQuestionnaire = () => {
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-    getValues,
-    setValue,
-  } = useForm();
+  const queryClient = useQueryClient();
 
   const { activeElectionRound, selectedPollingStation } = useUserData();
 
-  const { data } = usePollingStationInformationForm(activeElectionRound?.id);
+  const { data: formStructure } = usePollingStationInformationForm(activeElectionRound?.id);
+  const { data: formData } = usePollingStationInformation(
+    activeElectionRound?.id,
+    selectedPollingStation?.pollingStationId,
+  );
 
-  const { mutate } = upsertPollingStationGeneralInformationMutation();
+  const questions: Record<string, ApiFormQuestion> = useMemo(
+    () =>
+      formStructure?.questions.reduce(
+        (acc: Record<string, ApiFormQuestion>, curr: ApiFormQuestion) => {
+          acc[curr.id] = curr;
+
+          return acc;
+        },
+        {},
+      ) || {},
+    [formStructure],
+  );
+  const answers: Record<string, ApiFormAnswer> = useMemo(
+    () =>
+      formData?.answers.reduce((acc: Record<string, ApiFormAnswer>, curr: ApiFormAnswer) => {
+        acc[curr.questionId] = curr;
+
+        return acc;
+      }, {}) || {},
+    [formData],
+  );
+
+  const pollingStationInformationQK = useMemo(
+    () =>
+      pollingStationsKeys.pollingStationInformation(
+        activeElectionRound?.id,
+        selectedPollingStation?.pollingStationId,
+      ),
+    [activeElectionRound, selectedPollingStation],
+  );
+
+  const { mutate } = useMutation({
+    mutationKey: ["upsertPollingStationGeneralInformation"],
+    mutationFn: async (payload: PollingStationInformationAPIPayload) => {
+      return upsertPollingStationGeneralInformation(payload);
+    },
+    onMutate: async (payload: PollingStationInformationAPIPayload) => {
+      // Cancel any outgoing refetches
+      // (so they don't overwrite our optimistic update)
+      await queryClient.cancelQueries({ queryKey: [pollingStationInformationQK] });
+
+      // Snapshot the previous value
+      const previousData = queryClient.getQueryData<PollingStationInformationAPIResponse>(
+        pollingStationInformationQK,
+      );
+
+      // Optimistically update to the new value
+      if (previousData && payload?.answers) {
+        // TODO: improve this
+        queryClient.setQueryData<PollingStationInformationAPIResponse>(
+          pollingStationInformationQK,
+          {
+            ...previousData,
+            answers: payload.answers,
+          },
+        );
+      }
+
+      // Return a context object with the snapshotted value
+      return { previousData };
+    },
+    onError: (err, newData, context) => {
+      console.log(err);
+      queryClient.setQueryData([pollingStationInformationQK], context?.previousData);
+    },
+    onSettled: () => {
+      // TODO: we want to keep the mutation in pending until the refetch is done?
+      return queryClient.invalidateQueries({ queryKey: [pollingStationInformationQK] });
+    },
+  });
 
   const onSubmit = (formData: Record<string, string | string[]>) => {
     console.log(formData);
 
     const answers: ApiFormAnswer[] = Object.keys(formData)
       .map((questionId: string) => {
-        const question: ApiFormQuestion | undefined = data?.questions.find(
-          (q) => q.id === questionId,
-        );
+        const question: ApiFormQuestion = questions[questionId];
 
         if (!question) return undefined;
         if (!formData[questionId]) return undefined;
@@ -58,13 +132,13 @@ const PollingStationQuestionnaire = () => {
             return {
               $answerType: "textAnswer",
               questionId,
-              Text: formData[questionId],
+              text: formData[questionId],
             } as ApiFormAnswer;
           case "dateAnswer":
             return {
               $answerType: "dateAnswer",
               questionId,
-              Date: new Date(formData[questionId] as string).toISOString(),
+              date: new Date(formData[questionId] as string).toISOString(),
             } as ApiFormAnswer;
           case "singleSelectAnswer":
             return {
@@ -95,22 +169,13 @@ const PollingStationQuestionnaire = () => {
     console.log("answers", JSON.stringify(answers));
 
     if (activeElectionRound?.id && selectedPollingStation?.pollingStationId) {
-      // TODO Cum scapam de asta elegant?
-      mutate(
-        {
-          electionRoundId: activeElectionRound?.id,
-          pollingStationId: selectedPollingStation?.pollingStationId,
-          answers,
-        },
-        {
-          onSuccess: () => {
-            console.log("A mers");
-          },
-          onError: (err) => {
-            console.log("N-a mers", err);
-          },
-        },
-      );
+      // TODO: How we get rid of so many undefined validations? If we press the button and we don't have the data, is equaly bad
+      mutate({
+        electionRoundId: activeElectionRound?.id,
+        pollingStationId: selectedPollingStation?.pollingStationId,
+        answers,
+      });
+      router.back();
     }
   };
 
@@ -127,15 +192,57 @@ const PollingStationQuestionnaire = () => {
     setValue(name, updated, { shouldValidate: true });
   };
 
+  const setFormDefaultValues = () => {
+    const formFields: Record<string, any> = Object.keys(answers).reduce(
+      (acc: Record<string, any>, questionId: string) => {
+        const answer = answers[questionId];
+        switch (answer.$answerType) {
+          case "textAnswer":
+            acc[questionId] = answer.text;
+            break;
+          case "numberAnswer":
+          case "ratingAnswer":
+            acc[questionId] = answer?.value?.toString() ?? "";
+            break;
+          case "dateAnswer":
+            acc[questionId] = answer.date ? new Date(answer.date) : "";
+            break;
+          case "singleSelectAnswer":
+            acc[questionId] = answer.selection.optionId;
+            break;
+          case "multiSelectAnswer":
+            acc[questionId] = answer.selection.map((o) => o.optionId);
+            break;
+          default:
+            break;
+        }
+        return acc;
+      },
+      {},
+    );
+
+    console.log("Reseting values to ", formFields);
+    return formFields;
+  };
+
+  const {
+    control,
+    handleSubmit,
+    // formState: { errors },
+    getValues,
+    setValue,
+  } = useForm({
+    defaultValues: setFormDefaultValues(),
+  });
+
   return (
     <Screen preset="scroll" contentContainerStyle={$containerStyle}>
       <Typography>This is the polling station questionnaire</Typography>
-      {data?.questions.map((question: ApiFormQuestion) => {
-        if (
-          ["numberQuestion", "textQuestion", "dateQuestion", "singleSelectQuestion"].includes(
-            question.$questionType,
-          )
-        ) {
+      {formStructure?.questions.map((question: ApiFormQuestion) => {
+        const label = `${question.code}. ${question.text.EN}`;
+        const helper = question.helptext.EN;
+
+        if (question.$questionType === "numberQuestion") {
           return (
             <Controller
               key={question.id}
@@ -143,58 +250,74 @@ const PollingStationQuestionnaire = () => {
               control={control}
               render={({ field: { onChange, value } }) => (
                 <YStack>
-                  {question.$questionType === "numberQuestion" && (
-                    <FormInput
-                      type="numeric"
-                      label={`${question.code}. ${question.text.EN}`}
-                      helper={question.helptext.EN}
-                      onChangeText={onChange}
-                      value={value}
-                    />
-                  )}
-                  {question.$questionType === "textQuestion" && (
-                    <FormInput
-                      type="text"
-                      label={`${question.code}. ${question.text.EN}`}
-                      helper={question.helptext.EN}
-                      onChangeText={onChange}
-                      value={value}
-                    />
-                  )}
-                  {question.$questionType === "dateQuestion" && (
-                    <DateFormInput
-                      label={`${question.code}. ${question.text.EN}`}
-                      helper={question.helptext.EN}
-                      onChange={onChange}
-                      value={value}
-                    />
-                  )}
-                  {question.$questionType === "singleSelectQuestion" && (
-                    // TODO: need to handle free text option
-                    <RadioFormInput
-                      options={question.options.map((option) => ({
-                        id: option.id,
-                        label: option.text.EN,
-                        value: option.id,
-                      }))}
-                      label={`${question.code}. ${question.text.EN}`}
-                      value={value}
-                      onValueChange={onChange}
-                    />
-                  )}
-                  {/* {question.$questionType === "ratingQuestion" && (
-                    // TODO: need to handle free text option
-                    <RadioFormInput
-                      options={question.options.map((option) => ({
-                        id: option.id,
-                        label: option.text.EN,
-                        value: option.id,
-                      }))}
-                      label={`${question.code}. ${question.text.EN}`}
-                      value={value}
-                      onValueChange={onChange}
-                    />
-                  )} */}
+                  <FormInput
+                    type="numeric"
+                    label={label}
+                    helper={helper}
+                    onChangeText={onChange}
+                    value={value}
+                  />
+                </YStack>
+              )}
+            />
+          );
+        }
+
+        if (question.$questionType === "textQuestion") {
+          return (
+            <Controller
+              key={question.id}
+              name={question.id}
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <YStack>
+                  <FormInput
+                    type="text"
+                    label={label}
+                    helper={helper}
+                    onChangeText={onChange}
+                    value={value}
+                  />
+                </YStack>
+              )}
+            />
+          );
+        }
+
+        if (question.$questionType === "dateQuestion") {
+          return (
+            <Controller
+              key={question.id}
+              name={question.id}
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <YStack>
+                  <DateFormInput label={label} helper={helper} onChange={onChange} value={value} />
+                </YStack>
+              )}
+            />
+          );
+        }
+
+        if (question.$questionType === "singleSelectQuestion") {
+          return (
+            // TODO: need to handle free text option
+            <Controller
+              key={question.id}
+              name={question.id}
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <YStack>
+                  <RadioFormInput
+                    options={question.options.map((option) => ({
+                      id: option.id,
+                      label: option.text.EN,
+                      value: option.id,
+                    }))}
+                    label={label}
+                    value={value}
+                    onValueChange={onChange}
+                  />
                 </YStack>
               )}
             />
@@ -231,10 +354,6 @@ const PollingStationQuestionnaire = () => {
         return <Typography key={question.id}></Typography>;
       })}
       <Button onPress={handleSubmit(onSubmit)}>Submit answer</Button>
-      <Button onPress={() => console.log(getValues())}>Get VAlues</Button>
-      <Button onPress={() => console.log(getValues("5b7c0c8c-c116-4f85-8b14-14137fe91f6a"))}>
-        Get VAlues for multi
-      </Button>
     </Screen>
   );
 };

@@ -8,36 +8,55 @@ export type ApiFormAnswerType =
   | "multiSelectAnswer"
   | "ratingAnswer";
 
-export type ApiFormAnswer = {
+export type ApiFormAnswer =
+  | TextAnswer
+  | NumberAnswer
+  | RatingAnswer
+  | DateAnswer
+  | SingleSelectAnswer
+  | MultiSelectAnswer;
+
+export type TextAnswer = {
   questionId: string;
-} & (
-  | {
-      $answerType: "textAnswer";
-      Text: string;
-    }
-  | {
-      $answerType: "numberAnswer" | "ratingAnswer";
-      value: string;
-    }
-  | {
-      $answerType: "dateAnswer";
-      Date: string; // ISO String
-    }
-  | {
-      $answerType: "singleSelectAnswer";
-      selection: {
-        optionId: string;
-        text?: string;
-      };
-    }
-  | {
-      $answerType: "multiSelectAnswer";
-      selection: {
-        optionId: string;
-        text?: string;
-      }[];
-    }
-);
+  $answerType: "textAnswer";
+  text: string;
+};
+
+export type NumberAnswer = {
+  questionId: string;
+  $answerType: "numberAnswer";
+  value: string;
+};
+
+export type RatingAnswer = {
+  questionId: string;
+  $answerType: "ratingAnswer";
+  value: string;
+};
+
+export type DateAnswer = {
+  questionId: string;
+  $answerType: "dateAnswer";
+  date: string; // ISO String
+};
+
+export type SingleSelectAnswer = {
+  questionId: string;
+  $answerType: "singleSelectAnswer";
+  selection: {
+    optionId: string;
+    text?: string;
+  };
+};
+
+export type MultiSelectAnswer = {
+  questionId: string;
+  $answerType: "multiSelectAnswer";
+  selection: {
+    optionId: string;
+    text?: string;
+  }[];
+};
 
 export const FormQuestionAnswerTypeMapping: Record<FormQuestionType, ApiFormAnswerType> = {
   numberQuestion: "numberAnswer",
