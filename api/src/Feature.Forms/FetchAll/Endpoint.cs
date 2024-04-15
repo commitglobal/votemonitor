@@ -19,11 +19,18 @@ public class Endpoint(VoteMonitorContext context, IMemoryCache cache) : Endpoint
         });
     }
 
-    public override async Task<Results<Ok<Response>, NotFound>> ExecuteAsync(Request request, CancellationToken ct)
+    public override async Task<Results<Ok<Response>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var monitoringNgo = await context.MonitoringNgos
-            .Where(x => x.ElectionRoundId == request.ElectionRoundId)
-            .Select(x => new { x.FormsVersion, x.Id })
+        var monitoringNgo = await context.MonitoringObservers
+            .Include(x => x.MonitoringNgo)
+            .Where(x => x.ObserverId == req.ObserverId)
+            .Where(x => x.MonitoringNgo.ElectionRoundId == req.ElectionRoundId)
+            .Select(x => new
+            {
+                x.MonitoringNgo.ElectionRoundId,
+                x.MonitoringNgoId,
+                x.MonitoringNgo.FormsVersion
+            })
             .FirstOrDefaultAsync(ct);
 
         if (monitoringNgo is null)
@@ -31,14 +38,14 @@ public class Endpoint(VoteMonitorContext context, IMemoryCache cache) : Endpoint
             return TypedResults.NotFound();
         }
 
-        var cacheKey = $"election-rounds/{request.ElectionRoundId}/monitoring-ngo/{monitoringNgo.Id}/forms/{monitoringNgo.FormsVersion}";
+        var cacheKey = $"election-rounds/{req.ElectionRoundId}/monitoring-ngo/{monitoringNgo.MonitoringNgoId}/forms/{monitoringNgo.FormsVersion}";
 
         var cachedResponse = await cache.GetOrCreateAsync(cacheKey, async (e) =>
         {
             var forms = await context.Forms
-                .Where(x=>x.Status == FormStatus.Published)
-                .Where(x => x.ElectionRoundId == request.ElectionRoundId)
-                .Where(x => x.MonitoringNgoId == monitoringNgo.Id)
+                .Where(x => x.Status == FormStatus.Published)
+                .Where(x => x.ElectionRoundId == req.ElectionRoundId)
+                .Where(x => x.MonitoringNgoId == monitoringNgo.MonitoringNgoId)
                 .OrderBy(x => x.Code)
                 .ToListAsync(cancellationToken: ct);
 
@@ -46,7 +53,7 @@ public class Endpoint(VoteMonitorContext context, IMemoryCache cache) : Endpoint
 
             return new Response
             {
-                ElectionRoundId = monitoringNgo.Id,
+                ElectionRoundId = monitoringNgo.ElectionRoundId,
                 Version = monitoringNgo.FormsVersion.ToString(),
                 Forms = forms.Select(FormFullModel.FromEntity).ToList()
             };
