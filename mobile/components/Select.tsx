@@ -1,8 +1,7 @@
 import React, { useMemo, useState } from "react";
-import { Adapt, Select as TamaguiSelect, Sheet, SelectProps, styled } from "tamagui";
+import { Adapt, Select as TamaguiSelect, Sheet, SelectProps, styled, Input } from "tamagui";
 import { Icon } from "./Icon";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Input } from "tamagui";
 
 interface StyledSelectProps extends SelectProps {
   placeholder?: string;
@@ -42,7 +41,7 @@ const Select = ({ placeholder = "Select", options, ...props }: StyledSelectProps
         <Sheet native modal snapPoints={[50, 40]} moveOnKeyboardChange={true}>
           <Sheet.Frame padding="$sm">
             <SearchInput value={searchTerm} onChangeText={setSearchTerm} />
-            <Sheet.ScrollView marginBottom={insets.bottom}>
+            <Sheet.ScrollView marginBottom={insets.bottom} keyboardShouldPersistTaps="handled">
               <Adapt.Contents />
             </Sheet.ScrollView>
           </Sheet.Frame>
