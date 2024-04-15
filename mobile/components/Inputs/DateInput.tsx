@@ -22,7 +22,7 @@ export const DateInput: React.FC<DateInputProps> = ({
 }) => {
   const [open, setOpen] = useState(false);
 
-  const handleSheetOpen = (e: any) => {
+  const handleSheetOpen = () => {
     Keyboard.dismiss();
     setOpen(true);
   };
