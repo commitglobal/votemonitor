@@ -45,15 +45,14 @@ export default function MainLayout() {
               <Header
                 title={title}
                 titleColor="white"
-                backgroundColor={theme.purple5?.val}
                 barStyle="light-content"
                 style={options.headerStyle as StyleProp<ViewStyle>}
                 leftIcon={<Icon icon="menuAlt2" color="white" />}
                 onLeftPress={() => navigation.dispatch(DrawerActions.openDrawer)}
-                rightIcon={<Icon icon="dotsVertical" color="white" />}
-                onRightPress={() => {
-                  console.log("on right action press");
-                }}
+                // rightIcon={<Icon icon="dotsVertical" color="white" />}
+                // onRightPress={() => {
+                //   console.log("on right action press");
+                // }}
               />
             );
           },

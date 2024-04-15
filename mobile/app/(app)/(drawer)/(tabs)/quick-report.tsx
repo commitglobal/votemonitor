@@ -1,29 +1,22 @@
-import React, { useState } from "react";
+import React from "react";
 import { Text } from "react-native";
 import { Typography } from "../../../../components/Typography";
-import { RadioGroup, Stack } from "tamagui";
+import { AlertDialog, Stack, XStack } from "tamagui";
 import Select from "../../../../components/Select";
 import Button from "../../../../components/Button";
 import { Icon } from "../../../../components/Icon";
 import Badge from "../../../../components/Badge";
-
 import Card from "../../../../components/Card";
-import Input from "../../../../components/Inputs/Input";
-import CheckboxInput from "../../../../components/Inputs/CheckboxInput";
-import RadioInput from "../../../../components/Inputs/RadioInput";
 import { Screen } from "../../../../components/Screen";
 import LinearProgress from "../../../../components/LinearProgress";
 import CardFooter from "../../../../components/CardFooter";
-import { RatingInput } from "../../../../components/Inputs/RatingInput";
-import { DateInput } from "../../../../components/Inputs/DateInput";
-import CircularProgress from "../../../../components/CircularProgress";
+import SelectPollingStation from "../../../../components/SelectPollingStation";
+import { Dialog } from "../../../../components/Dialog";
 
 const QuickReport = () => {
-  const [selectedRadioValue, setSelectedRadioValue] = useState("rural");
-  const [progress, setProgress] = useState(0);
-
   return (
     <Screen preset="auto" backgroundColor="white" contentContainerStyle={{ gap: 20 }}>
+      <SelectPollingStation placeholder="Select polling station" options={pollingStationAdresses} />
       <Text>Quick Report</Text>
       <Card>
         <Typography
@@ -43,7 +36,7 @@ const QuickReport = () => {
       </Card>
       <Card padding="$md">
         <Typography>Card component</Typography>
-        <CardFooter text="Card footer" marginTop="$sm" />
+        <CardFooter marginTop="$sm" text="Card footer" />
       </Card>
       <Stack padding="$sm" gap="$xs">
         <Typography preset="heading">Button</Typography>
@@ -118,10 +111,10 @@ const QuickReport = () => {
 
         <Stack padding="$sm" gap="$xs" backgroundColor="white">
           <Typography preset="heading">Badge</Typography>
-          <Badge> Not started </Badge>
-          <Badge preset="success"> Success </Badge>
-          <Badge preset="warning"> In progress </Badge>
-          <Badge preset="danger"> Red badge</Badge>
+          <Badge status="not started" />
+          <Badge status="completed" />
+          <Badge status="in progress" />
+          <Badge status="danger" />
         </Stack>
 
         <Stack padding="$sm" gap="$xs" backgroundColor="white">
@@ -132,105 +125,82 @@ const QuickReport = () => {
           <LinearProgress total={5} current={4}></LinearProgress>
           <LinearProgress total={5} current={5}></LinearProgress>
         </Stack>
-      </Stack>
 
-      {/* inputs */}
-      <Stack padding="$sm" gap="$xs" marginTop="$md" backgroundColor="white">
-        <Typography preset="heading">Inputs</Typography>
-        <Typography preset="subheading">Text/Numeric</Typography>
-        <Input type="text" />
-        <Input type="numeric" />
-
-        <Typography preset="subheading">Checkbox</Typography>
-        <CheckboxInput id="1" label="hello" />
-        <CheckboxInput id="2" label="hello2" defaultChecked />
-
-        <Typography preset="subheading">Radio buttons</Typography>
-        <RadioGroup
-          gap="$sm"
-          defaultValue={selectedRadioValue}
-          onValueChange={(value) => setSelectedRadioValue(value)}
-        >
-          <RadioInput id="10" value="rural" label="Rural" selectedValue={selectedRadioValue} />
-          <RadioInput id="20" value="urban" label="Urban" selectedValue={selectedRadioValue} />
-          <RadioInput
-            id="30"
-            value="not-known"
-            label="Not known"
-            selectedValue={selectedRadioValue}
-          />
-        </RadioGroup>
-
-        <Typography preset="subheading">Rating</Typography>
-        <RatingInput
-          id="5"
-          type="single"
-          defaultValue="2"
-          // onValueChange={(value) => console.log(value)}
-        />
-
-        <Typography preset="subheading">Date</Typography>
-        <DateInput minimumDate={new Date(2024, 6, 20)} />
-      </Stack>
-
-      <Stack padding="$sm" gap="$xs" marginTop="$md" backgroundColor="white">
-        <Button
-          preset="outlined"
-          style={{ marginBottom: 20 }}
-          onPress={() => {
-            setProgress((prevProgress) => {
-              const newProgress = prevProgress + 10;
-              return newProgress <= 360 ? newProgress : 360;
-            });
-          }}
-        >
-          Progress 10%
-        </Button>
-        <Button
-          preset="outlined"
-          style={{ marginBottom: 20 }}
-          onPress={() => {
-            setProgress((prevProgress) => {
-              const newProgress = prevProgress + 45;
-              return newProgress <= 360 ? newProgress : 360;
-            });
-          }}
-        >
-          Progress 45%
-        </Button>
-        <CircularProgress progress={progress}></CircularProgress>
+        <Stack padding="$sm" gap="$xs" backgroundColor="white">
+          <Typography preset="heading">Dialog</Typography>
+          <Stack marginTop="$md" gap="$sm">
+            <Typography preset="subheading">Alert Dialog</Typography>
+            <Dialog
+              trigger={<Button preset="red">Delete</Button>}
+              header={<Typography preset="heading">Clear answer to Question A1</Typography>}
+              content={
+                <Typography preset="body1" color="$gray7">
+                  Clearing the answer will permanently delete all its information (including notes
+                  and media files). Question status will be reverted to Not Answered.
+                </Typography>
+              }
+              footer={
+                <XStack gap="$sm">
+                  {/* //TODO: maybe we move this Cancel dirrectly into the Dialog? */}
+                  {/* // !this 'asChild' is necessary in order to close the modal */}
+                  <AlertDialog.Cancel asChild>
+                    <Button preset="chromeless" textStyle={{ color: "black" }}>
+                      Cancel
+                    </Button>
+                  </AlertDialog.Cancel>
+                  <Button preset="red" flex={1}>
+                    Clear answer
+                  </Button>
+                </XStack>
+              }
+            ></Dialog>
+          </Stack>
+        </Stack>
       </Stack>
     </Screen>
   );
 };
 
 const regionData = [
-  { id: 1, value: "North" },
-  { id: 2, value: "North-West" },
-  { id: 3, value: "North-East" },
-  { id: 4, value: "West" },
-  { id: 5, value: "East" },
-  { id: 6, value: "South-West" },
-  { id: 7, value: "South" },
-  { id: 8, value: "South-East" },
-  { id: 9, value: "Central" },
-  { id: 10, value: "Mid-West" },
-  { id: 11, value: "Mid-East" },
-  { id: 12, value: "Far North" },
-  { id: 13, value: "Far South" },
-  { id: 14, value: "Far West" },
-  { id: 15, value: "Far East" },
-  { id: 16, value: "Northern Territory" },
-  { id: 17, value: "Pacific Northwest" },
-  { id: 18, value: "South Central" },
+  { id: 1, value: "North", label: "North" },
+  { id: 2, value: "North-West", label: "North-West" },
 ];
 
 const countryData = [
-  { id: 3, value: "Russia" },
-  { id: 4, value: "France" },
-  { id: 5, value: "China" },
-  { id: 6, value: "Brazil" },
-  { id: 7, value: "Australia" },
+  { id: 3, value: "Russia", label: "Russia" },
+  { id: 4, value: "France", label: "France" },
+  { id: 5, value: "China", label: "China" },
 ];
 
+const pollingStationAdresses = [
+  { pollingStationId: 1, visitedAt: "Secția 123, Str. Moldovei, nr. 30, Târgu Mureș, Romania" },
+  {
+    pollingStationId: 2,
+    visitedAt: "Secția 456, Str. Transilvaniei, nr. 45, Cluj-Napoca, Romania",
+  },
+  { pollingStationId: 3, visitedAt: "Secția 789, Str. București, nr. 12, București, Romania" },
+  { pollingStationId: 4, visitedAt: "Secția 101, Str. Timișoarei, nr. 20, Timișoara, Romania" },
+  { pollingStationId: 5, visitedAt: "Secția 234, Str. Iași, nr. 15, Iași, Romania" },
+  { pollingStationId: 6, visitedAt: "Secția 345, Str. Crișana, nr. 10, Oradea, Romania" },
+  {
+    pollingStationId: 7,
+    visitedAt: "Secția 567, Str. Maramureșului, nr. 25, Baia Mare, Romania",
+  },
+  { pollingStationId: 8, visitedAt: "Secția 890, Str. Dobrogei, nr. 8, Constanța, Romania" },
+  { pollingStationId: 9, visitedAt: "Secția 111, Str. Ardealului, nr. 5, Sibiu, Romania" },
+  { pollingStationId: 10, visitedAt: "Secția 222, Str. Olteniei, nr. 18, Craiova, Romania" },
+  { pollingStationId: 11, visitedAt: "Secția 333, Str. Banatului, nr. 22, Arad, Romania" },
+  { pollingStationId: 12, visitedAt: "Secția 444, Str. Mureșului, nr. 11, Deva, Romania" },
+  { pollingStationId: 13, visitedAt: "Secția 555, Str. Dobrogei, nr. 7, Tulcea, Romania" },
+  { pollingStationId: 14, visitedAt: "Secția 667, Str. Moldovei, nr. 9, Bacău, Romania" },
+  { pollingStationId: 15, visitedAt: "Secția 777, Str. Crișului, nr. 13, Satu Mare, Romania" },
+  { pollingStationId: 16, visitedAt: "Secția 888, Str. Olteniei, nr. 4, Pitești, Romania" },
+  { pollingStationId: 17, visitedAt: "Secția 999, Str. Bucovinei, nr. 16, Suceava, Romania" },
+  {
+    pollingStationId: 18,
+    visitedAt: "Secția 1010, Str. Transilvaniei, nr. 32, Alba Iulia, Romania",
+  },
+  { pollingStationId: 19, visitedAt: "Secția 1111, Str. Banatului, nr. 3, Reșița, Romania" },
+  { pollingStationId: 20, visitedAt: "Secția 1212, Str. București, nr. 7, Galați, Romania" },
+];
 export default QuickReport;

@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 import { styled, ToggleGroup, ToggleGroupSingleProps } from "tamagui";
-import { Typography } from "../Typography";
+// import { Typography } from "../Typography";
+import { Text } from "react-native";
 
 const ratings = [1, 2, 3, 4, 5];
 
-interface RatingInputProps extends ToggleGroupSingleProps {
+export interface RatingInputProps extends ToggleGroupSingleProps {
   id: string;
 }
 
@@ -25,18 +26,15 @@ const StyledToggleGroupItem = styled(ToggleGroup.Item, {
   },
 });
 
-export const RatingInput: React.FC<RatingInputProps> = ({ id, defaultValue, ...rest }) => {
-  // TODO: styling without state?
-  const [selected, setSelected] = useState(defaultValue);
-
-  console.log(selected);
+export const RatingInput: React.FC<RatingInputProps> = ({ id, value, onValueChange, ...rest }) => {
   return (
     <ToggleGroup
-      onValueChange={(val: any) => setSelected(val)}
       orientation="horizontal"
       id={id}
       height={40}
       width="100%"
+      value={value}
+      onValueChange={onValueChange}
       {...rest}
     >
       {ratings.map((rating, i) => (
@@ -44,11 +42,15 @@ export const RatingInput: React.FC<RatingInputProps> = ({ id, defaultValue, ...r
           key={i}
           value={rating.toString()}
           flex={1}
-          active={rating.toString() === selected}
+          active={rating.toString() === value}
         >
-          <Typography>{rating.toString()}</Typography>
+          <Text>{rating.toString()}</Text>
+          {/* //TODO: removed typography because it was causing a warning, should we add it back? */}
+          {/* <Typography>{rating.toString()}</Typography> */}
         </StyledToggleGroupItem>
       ))}
     </ToggleGroup>
   );
 };
+
+export default RatingInput;

@@ -5,18 +5,27 @@ import { Platform } from "react-native";
 import { Typography } from "../Typography";
 import { Icon } from "../Icon";
 
-export const DateInput = ({
-  minimumDate,
-  maximumDate,
-}: {
+export interface DateInputProps {
+  value: Date;
+  onChange: (...event: any[]) => void;
   minimumDate?: Date;
   maximumDate?: Date;
+}
+
+export const DateInput: React.FC<DateInputProps> = ({
+  value,
+  onChange,
+  minimumDate,
+  maximumDate,
 }) => {
-  const [date, setDate] = useState(new Date());
+  // const [date, setDate] = useState(value);
   const [open, setOpen] = useState(false);
 
-  const onChange = (event: DateTimePickerEvent, selectedDate: Date | undefined) => {
-    selectedDate && setDate(selectedDate);
+  const onDateChange = (event: DateTimePickerEvent, selectedDate: Date | undefined) => {
+    // send selected date to the form
+    onChange(selectedDate);
+
+    // on android, close the modal
     if (Platform.OS === "android") {
       setOpen(false);
     }
@@ -36,8 +45,8 @@ export const DateInput = ({
         borderRadius={8}
         gap="$xs"
       >
-        <Typography preset="body1" color="$gray7">
-          {date.toLocaleDateString("en-GB")}
+        <Typography preset="body1" color="$gray5">
+          {value ? value.toLocaleDateString("en-GB") : "Select date"}
         </Typography>
         <Icon icon="calendar" color="transparent" />
 
@@ -49,9 +58,9 @@ export const DateInput = ({
               <XStack gap="$sm" justifyContent="space-between" width="100%"></XStack>
               <XStack flex={1} justifyContent="center" alignItems="center">
                 <RNDateTimePicker
-                  value={date}
+                  value={value || new Date()}
                   display="spinner"
-                  onChange={onChange}
+                  onChange={onDateChange}
                   minimumDate={minimumDate}
                   maximumDate={maximumDate}
                 />
@@ -62,8 +71,8 @@ export const DateInput = ({
           // open date picker modal on android
           open && (
             <RNDateTimePicker
-              value={date}
-              onChange={onChange}
+              value={value || new Date()}
+              onChange={onDateChange}
               minimumDate={minimumDate}
               maximumDate={maximumDate}
             />

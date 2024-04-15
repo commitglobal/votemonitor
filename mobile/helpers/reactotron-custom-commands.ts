@@ -40,7 +40,7 @@ Reactotron.onCustomCommand({
   handler: async () => {
     console.log("Calling getPollingStationNomenclatorNodes");
     console.log(
-      await getPollingStationNomenclatorNodesCount("1e34f72d-0fe6-415d-a123-f9d6b8fa962d"),
+      await getPollingStationNomenclatorNodesCount("43b91c74-6d05-4fd1-bd93-dfe203c83c53"),
     );
   },
 });

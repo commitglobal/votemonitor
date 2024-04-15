@@ -16,6 +16,9 @@ const StyledCard = styled(TamaguiCard, {
   shadowRadius: 3,
   shadowOpacity: 0.07,
   elevation: 1,
+  pressStyle: {
+    opacity: 0.5,
+  },
 });
 
 const Card = (props: CardProps): JSX.Element => {
