@@ -39,5 +39,4 @@ public class Request : BaseSortPaginatedRequest
     
     [QueryParam]
     public Guid? MonitoringObserverId { get; set; }
-
 }

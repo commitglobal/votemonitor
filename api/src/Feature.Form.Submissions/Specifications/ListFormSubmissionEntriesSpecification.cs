@@ -30,6 +30,7 @@ public sealed class ListFormSubmissionEntriesSpecification : Specification<FormS
 
         Query.Select(x => new FormSubmissionEntries
         {
+            SubmissionId = x.Id,
             FormCode = x.Form.Code,
             FormType = x.Form.FormType,
             PollingStationId = x.PollingStation.Id,

@@ -6,6 +6,7 @@ namespace Feature.Form.Submissions;
 public record FormSubmissionModel
 {
     public required Guid Id { get; init; }
+    public required Guid FormId { get; init; }
     public required Guid PollingStationId { get; init; }
     public IReadOnlyList<BaseAnswerModel> Answers { get; set; }
 
@@ -13,6 +14,7 @@ public record FormSubmissionModel
     {
         Id = entity.Id,
         PollingStationId = entity.PollingStationId,
+        FormId = entity.FormId,
         Answers = entity.Answers
             .Select(AnswerMapper.ToModel)
             .ToList(),

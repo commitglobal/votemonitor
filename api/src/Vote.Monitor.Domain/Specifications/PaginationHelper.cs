@@ -1,6 +1,6 @@
 ﻿namespace Vote.Monitor.Domain.Specifications;
 
-internal static class PaginationHelper
+public static class PaginationHelper
 {
     public static int DefaultPage => 1;
     public static int DefaultPageSize => 10;

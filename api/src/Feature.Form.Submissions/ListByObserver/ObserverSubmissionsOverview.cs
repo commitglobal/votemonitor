@@ -6,6 +6,7 @@ public record ObserverSubmissionsOverview
     public string FirstName { get; init; } = default!;
     public string LastName { get; init; } = default!;
     public string[] Tags { get; init; } = [];
+    public int NumberOfFormsSubmitted { get; init; }
     public int NumberOfQuestionAnswered { get; init; }
     public int NumberOfFlaggedAnswers { get; init; }
     public int NumberOfUploads { get; set; }
