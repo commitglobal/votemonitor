@@ -16,24 +16,22 @@ public class PlatformAdminSeeder(UserManager<ApplicationUser> userManager,
         var seedOption = new PlatformAdminSeederSettings();
         configuration.GetSection("Seeders").GetSection(SectionKey).Bind(seedOption);
 
-        foreach (var platformAdmin in seedOption.PlatformAdmins)
+        if (await userManager.FindByEmailAsync(seedOption.Email) is not ApplicationUser adminUser)
         {
-            if (await userManager.FindByEmailAsync(platformAdmin.Email) is not ApplicationUser adminUser)
-            {
-                adminUser = ApplicationUser.CreatePlatformAdmin(platformAdmin.FirstName, platformAdmin.LastName, platformAdmin.Email,
-                    platformAdmin.PhoneNumber, platformAdmin.Password);
+            adminUser = ApplicationUser.CreatePlatformAdmin(seedOption.FirstName, seedOption.LastName, seedOption.Email,
+                seedOption.PhoneNumber, seedOption.Password);
 
-                logger.LogInformation("Seeding PlatformAdmin {user}", platformAdmin.Email);
+            logger.LogInformation("Seeding PlatformAdmin {user}", seedOption.Email);
 
-                await userManager.CreateAsync(adminUser);
-            }
-
-            // Assign role to user
-            if (!await userManager.IsInRoleAsync(adminUser, UserRole.PlatformAdmin))
-            {
-                logger.LogInformation("Assigning PlatformAdminRole for {user}", platformAdmin.Email);
-                await userManager.AddToRoleAsync(adminUser, UserRole.PlatformAdmin);
-            }
+            await userManager.CreateAsync(adminUser);
         }
+
+        // Assign role to user
+        if (!await userManager.IsInRoleAsync(adminUser, UserRole.PlatformAdmin))
+        {
+            logger.LogInformation("Assigning PlatformAdminRole for {user}", seedOption.Email);
+            await userManager.AddToRoleAsync(adminUser, UserRole.PlatformAdmin);
+        }
+
     }
 }

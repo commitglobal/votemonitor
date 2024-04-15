@@ -1,5 +1,4 @@
 ﻿using Vote.Monitor.Core.Models;
-using Vote.Monitor.Domain.Entities.FormAggregate;
 
 namespace Feature.Form.Submissions.ListByObserver;
 

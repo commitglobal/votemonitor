@@ -2,9 +2,7 @@
 using Dapper;
 using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain;
-using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
 using Vote.Monitor.Domain.Specifications;
-
 namespace Feature.Form.Submissions.ListByObserver;
 
 public class Endpoint(VoteMonitorContext context) : Endpoint<Request, PagedResponse<ObserverSubmissionsOverview>>
@@ -40,13 +38,13 @@ public class Endpoint(VoteMonitorContext context) : Endpoint<Request, PagedRespo
         or ps.""Id"" = psn.""PollingStationId""
         or ps.""Id"" = psi.""PollingStationId""
         where ps.""ElectionRoundId"" = @electionRoundId
-            and mn.""NgoId"" = @monitoringNgoId
-            and fs.""ElectionRoundId""= @electionRoundId
-            and psn.""ElectionRoundId""= @electionRoundId
-            and psi.""ElectionRoundId""= @electionRoundId
-            and psa.""ElectionRoundId""= @electionRoundId
-            and psa.""IsDeleted"" = FALSE;
-            and (cardinality(@tagsFilter, 1) = 0 OR mo.""Tags"" && @tagsFilter)
+            AND mn.""NgoId"" = @ngoId
+            AND (cardinality(@tagsFilter) = 0 OR mo.""Tags"" && @tagsFilter)
+            AND (fs.""ElectionRoundId"" IS NULL OR fs.""ElectionRoundId"" = @electionRoundId)
+            AND (psn.""ElectionRoundId"" IS NULL OR psn.""ElectionRoundId"" = @electionRoundId)
+            AND (psi.""ElectionRoundId"" IS NULL OR psi.""ElectionRoundId"" = @electionRoundId)
+            AND (psa.""ElectionRoundId"" IS NULL OR psa.""ElectionRoundId"" = @electionRoundId)
+            AND (psa.""IsDeleted"" IS NULL OR psa.""IsDeleted"" = FALSE);
 
         SELECT mo.""Id"" as ""MonitoringObserverId"",
                o.""FirstName"",
@@ -76,20 +74,20 @@ public class Endpoint(VoteMonitorContext context) : Endpoint<Request, PagedRespo
         or ps.""Id"" = psn.""PollingStationId""
         or ps.""Id"" = psi.""PollingStationId""
         WHERE ps.""ElectionRoundId"" = @electionRoundId
-            and mn.""NgoId"" = @monitoringNgoId
-            and fs.""ElectionRoundId""= @electionRoundId
-            and psn.""ElectionRoundId""= @electionRoundId
-            and psi.""ElectionRoundId""= @electionRoundId
-            and psa.""ElectionRoundId""= @electionRoundId
-            and psa.""IsDeleted"" = FALSE
-            and (cardinality(@tagsFilter, 1) = 0 OR mo.""Tags"" && @tagsFilter)
+            AND mn.""NgoId"" = @ngoId
+            AND (cardinality(@tagsFilter) = 0 OR mo.""Tags"" && @tagsFilter)
+            AND (fs.""ElectionRoundId"" IS NULL OR fs.""ElectionRoundId"" = @electionRoundId)
+            AND (psn.""ElectionRoundId"" IS NULL OR psn.""ElectionRoundId"" = @electionRoundId)
+            AND (psi.""ElectionRoundId"" IS NULL OR psi.""ElectionRoundId"" = @electionRoundId)
+            AND (psa.""ElectionRoundId"" IS NULL OR psa.""ElectionRoundId"" = @electionRoundId)
+            AND (psa.""IsDeleted"" IS NULL OR psa.""IsDeleted"" = FALSE)
         GROUP BY mo.""Id"",
                  o.""FirstName"",
                  o.""LastName"",
                  mo.""Tags""
         ORDER BY {orderBySql}
         OFFSET @offset ROWS
-        FETCH NEXT @pageSize ROWS ONLY";
+        FETCH NEXT @pageSize ROWS ONLY;";
 
         var queryArgs = new
         {
@@ -99,7 +97,7 @@ public class Endpoint(VoteMonitorContext context) : Endpoint<Request, PagedRespo
             pageSize = req.PageSize,
             tagsFilter = req.TagsFilter
         };
-
+       
         var multi = await context.Connection.QueryMultipleAsync(sql, queryArgs);
         var totalRowCount = multi.Read<int>().Single();
         var entries = multi.Read<ObserverSubmissionsOverview>().ToList();

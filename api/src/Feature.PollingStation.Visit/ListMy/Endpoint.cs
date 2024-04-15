@@ -1,7 +1,6 @@
 ﻿using Authorization.Policies.Requirements;
 using Dapper;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore;
 using Vote.Monitor.Domain;
 
 namespace Feature.PollingStation.Visit.ListMy;

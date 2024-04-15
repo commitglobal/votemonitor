@@ -1,7 +1,6 @@
 ﻿
 using Dapper;
 using Vote.Monitor.Domain;
-using Vote.Monitor.Domain.Entities.ElectionRoundAggregate;
 
 namespace Feature.Statistics.Get;
 
