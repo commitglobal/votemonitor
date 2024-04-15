@@ -11,7 +11,7 @@ function PushMessages() {
         <div className='flex flex-row justify-between items-center px-6'>
           <CardTitle className='text-xl'>Push messages</CardTitle>
           <div className='table-actions flex flex-row-reverse flex-row- gap-4'>
-            <Link to='create-new-message'>
+            <Link to='/monitoring-observers/create-new-message'>
               <Button>
                 <Plus className='mr-2' width={18} height={18} />
                 Create new message

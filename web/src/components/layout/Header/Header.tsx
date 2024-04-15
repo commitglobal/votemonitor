@@ -3,7 +3,7 @@ import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
 import { UserCircleIcon } from '@heroicons/react/24/solid';
 import type { ElectionRoundMonitoring, FunctionComponent } from '../../../common/types';
-import Logo from '../../../assets/icons/logo.svg?react';
+import Logo from './Logo';
 import { Link } from '@tanstack/react-router';
 import clsx from 'clsx';
 import {
@@ -36,7 +36,7 @@ const navigation = [
 const userNavigation = [{ name: 'Sign out', to: '#' }];
 
 const Header = (): FunctionComponent => {
-  const [selectedElection, setSelectedElection] = useState<ElectionRoundMonitoring | null | undefined>(null);
+  const [selectedElection, setSelectedElection] = useState<any>(null);
 
   const { status, data } = useQuery({
     queryKey: ['electionRounds'],
@@ -57,7 +57,7 @@ const Header = (): FunctionComponent => {
     refetchOnWindowFocus: false,
   });
 
-  const handleSelectEelection = (ev: ElectionRoundMonitoring) => {
+  const handleSelectEelection = (ev: any): void => {
     setSelectedElection(ev);
     localStorage.setItem('electionRoundId', ev.electionRoundId);
     localStorage.setItem('monitoringNgoId', ev.monitoringNgoId);
@@ -72,7 +72,7 @@ const Header = (): FunctionComponent => {
         <>
           <div className='container'>
             <div className='flex items-center justify-between h-16 gap-6 md:gap-10'>
-              <Logo className='w-12 h-12 fill-primary-400 shrink-0' />
+              <Logo />
 
               <div className='items-baseline flex-1 hidden gap-4 md:flex'>
                 {navigation.map((item) => (
@@ -99,7 +99,7 @@ const Header = (): FunctionComponent => {
                 {status === 'pending' ? (
                   <Skeleton className='w-[160px] h-[26px] mr-2 rounded-lg bg-secondary-300 text-secondary-900 hover:bg-secondary-300/90' />
                 ) : (
-                  <DropdownMenu className='mr-4'>
+                  <DropdownMenu>
                     <DropdownMenuTrigger>
                       <Badge className='bg-secondary-300 text-secondary-900 hover:bg-secondary-300/90'>
                         <span className='election-text'>{selectedElection?.englishTitle}</span>
@@ -108,8 +108,10 @@ const Header = (): FunctionComponent => {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
                       <DropdownMenuRadioGroup value={selectedElection} onValueChange={handleSelectEelection}>
-                        {data?.electionRounds.map((electionRound) => (
-                          <DropdownMenuRadioItem key={electionRound.electionRoundId} value={electionRound}>
+                        {data?.electionRounds?.map((electionRound) => (
+                          <DropdownMenuRadioItem
+                            key={electionRound.electionRoundId}
+                            value={electionRound as unknown as string}>
                             {electionRound.englishTitle}
                           </DropdownMenuRadioItem>
                         ))}
