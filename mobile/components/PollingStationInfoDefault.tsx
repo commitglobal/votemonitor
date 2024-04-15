@@ -2,6 +2,7 @@ import React from "react";
 import { YStack } from "tamagui";
 import Button from "./Button";
 import { Typography } from "./Typography";
+import { router } from "expo-router";
 
 const PollingStationInfoDefault = () => {
   return (
@@ -17,7 +18,11 @@ const PollingStationInfoDefault = () => {
         {/* //TODO: add translation here */}
         Answer a few quick questions about the polling station.
       </Typography>
-      <Button preset="outlined" backgroundColor="white">
+      <Button
+        preset="outlined"
+        backgroundColor="white"
+        onPress={router.push.bind(null, "/polling-station-questionnaire")}
+      >
         Answer questions
       </Button>
     </YStack>
