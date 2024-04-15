@@ -191,12 +191,8 @@ const Index = () => {
               />
             </Card>
           </XStack>
-          <Card
-            gap="$md"
-            backgroundColor="white"
-            onPress={router.push.bind(null, "/polling-station-questionnaire")}
-          >
-            {!data?.answers?.length ? (
+          <Card gap="$md">
+            {data?.answers?.length ? (
               <PollingStationInfoDefault />
             ) : (
               <PollingStationInfo
