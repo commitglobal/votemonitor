@@ -40,6 +40,7 @@ public class SmtpMailService(IOptions<SmtpOptions> settings, ILogger<SmtpMailSer
         catch (Exception ex)
         {
             logger.LogError(ex, ex.Message);
+            throw;
         }
     }
 }
