@@ -2,7 +2,6 @@ import React from "react";
 import { XStack } from "tamagui";
 import { Typography } from "./Typography";
 import Badge from "./Badge";
-import { FormProgress } from "./Badge";
 
 interface PollingStationInfoProps {
   nrOfAnswers: number | undefined;
