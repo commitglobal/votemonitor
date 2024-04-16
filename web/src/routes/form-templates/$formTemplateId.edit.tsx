@@ -4,10 +4,7 @@ import FormTemplateActions from '@/features/formsTemplate/components/FormTemplat
 import FormTemplateHeader from '@/features/formsTemplate/components/FormTemplateHeader';
 import { FormTemplateFull } from '@/features/formsTemplate/models/formTemplate';
 import { formTemplateDetailsQueryOptions } from '@/features/formsTemplate/queries';
-<<<<<<< HEAD
 import { redirectIfNotAuth } from '@/lib/utils';
-=======
->>>>>>> ed2f97ffd5349bdb084da24d24d258b18fd3cced
 import { createFileRoute } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
