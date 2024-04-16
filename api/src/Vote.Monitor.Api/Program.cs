@@ -23,7 +23,6 @@ using Vote.Monitor.Api.Feature.PollingStation.Notes;
 using Vote.Monitor.Core.Models;
 using Vote.Monitor.Core.Security;
 using Vote.Monitor.Core.Services.FileStorage;
-using Vote.Monitor.Core.Services.PushNotification;
 using Vote.Monitor.Domain.Entities.FormBase.Questions;
 using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
@@ -31,6 +30,7 @@ using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 using Vote.Monitor.Domain.Entities.NgoAggregate;
 using Vote.Monitor.Api.Extensions;
 using Vote.Monitor.Domain.Entities.FormAggregate;
+using Vote.Monitor.Module.Notifications;
 
 var builder = WebApplication.CreateBuilder(args);
 

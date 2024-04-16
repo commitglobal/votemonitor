@@ -1,4 +1,4 @@
-﻿namespace Vote.Monitor.Core.Services.PushNotification.Contracts;
+﻿namespace Vote.Monitor.Module.Notifications.Contracts;
 
 public interface IPushNotificationService
 {

@@ -1,9 +1,9 @@
 ﻿using FirebaseAdmin.Messaging;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Vote.Monitor.Core.Services.PushNotification.Contracts;
+using Vote.Monitor.Module.Notifications.Contracts;
 
-namespace Vote.Monitor.Core.Services.PushNotification.Firebase;
+namespace Vote.Monitor.Module.Notifications.Firebase;
 
 public class FirebasePushNotificationService : IPushNotificationService
 {
@@ -20,8 +20,8 @@ public class FirebasePushNotificationService : IPushNotificationService
     {
         try
         {
-            int successCount = 0;
-            int failedCount = 0;
+            var successCount = 0;
+            var failedCount = 0;
 
             var batchedMessages = userIdentifiers
                 .Select(identifier => new Message
