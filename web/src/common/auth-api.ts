@@ -3,8 +3,13 @@
 
 import axios from 'axios';
 
-interface ILoginResponse {
+export interface ILoginResponse {
   token: string;
+}
+
+export interface LoginDTO {
+  email: string;
+  password: string;
 }
 
 const BASE_URL = 'https://votemonitor.staging.heroesof.tech/api/';
@@ -22,9 +27,9 @@ authApi.defaults.headers.common['Access-Control-Allow-Credentials'] = 'true';
  * TODO Upgrade to a real login and authentication system for production.
  */
 export const getAccessTokenFn = async (): Promise<string> => {
-  const mockUser = { username: 'admin@alfa.com', password: 'string' };
+  const mockUser = { email: 'admin@alfa.com', password: 'string' };
 
-  const response = await authApi.post<ILoginResponse>('auth', mockUser);
+  const response = await authApi.post<ILoginResponse>('auth/login', mockUser);
   return response.data.token;
 };
 

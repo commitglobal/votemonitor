@@ -2,6 +2,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import { authApi } from '@/common/auth-api';
 import { NGO } from '@/features/ngos/models/NGO';
 import { queryOptions } from '@tanstack/react-query';
+import { redirectIfNotAuth } from '@/lib/utils';
 
 export const ngoQueryOptions = (ngoId: string) =>
   queryOptions({
@@ -18,6 +19,9 @@ export const ngoQueryOptions = (ngoId: string) =>
   });
 
 export const Route = createFileRoute('/ngos/$ngoId')({
+  beforeLoad: ({ context }) => {
+    redirectIfNotAuth(context.authContext.isAuthenticated);
+  },
   component: NgoDetails,
   loader: ({ context: { queryClient }, params: { ngoId } }) => queryClient.ensureQueryData(ngoQueryOptions(ngoId)),
 });

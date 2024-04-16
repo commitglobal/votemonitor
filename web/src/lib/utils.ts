@@ -1,3 +1,4 @@
+import { redirect } from '@tanstack/react-router';
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -24,4 +25,10 @@ export function stringToText(str: string) {
     colour += ('00' + value.toString(16)).substr(-2);
   }
   return colour;
+}
+
+export function redirectIfNotAuth(isAuthenticated: boolean) {
+  throw redirect({
+    to: 'login',
+  });
 }
