@@ -2,6 +2,13 @@ import React from "react";
 import { View, styled } from "tamagui";
 import { Typography } from "./Typography";
 
+export enum FormStatus {
+  NOT_STARTED = "not started",
+  IN_PROGRESS = "in progress",
+  COMPLETED = "completed",
+  DANGER = "danger",
+}
+
 enum Presets {
   DEFAULT = "default",
   SUCCESS = "success",
@@ -9,10 +16,11 @@ enum Presets {
   DANGER = "danger",
 }
 
-enum FormProgress {
+export enum FormProgress {
   NOT_STARTED = "Not started",
   IN_PROGRESS = "In progress",
   COMPLETED = "Completed",
+  DANGER = "Danger",
 }
 
 export interface BadgeProps {
@@ -27,21 +35,8 @@ export interface BadgeProps {
 const Badge = (props: BadgeProps): JSX.Element => {
   const { status } = props;
 
-  const text =
-    status === "completed"
-      ? FormProgress.COMPLETED
-      : status === "in progress"
-        ? FormProgress.IN_PROGRESS
-        : FormProgress.NOT_STARTED;
-
-  const presetType =
-    status === "completed"
-      ? Presets.SUCCESS
-      : status === "in progress"
-        ? Presets.WARNING
-        : status === "danger"
-          ? Presets.DANGER
-          : Presets.DEFAULT;
+  // TODO @madalinazanficu: memoize everything please
+  // TODO @madalinazanficu: use strong typed values for props
 
   const StyledView = styled(View, {
     name: "StyledView",
@@ -50,6 +45,7 @@ const Badge = (props: BadgeProps): JSX.Element => {
     borderRadius: 28,
     backgroundColor: "$gray2",
     alignItems: "center",
+    justifyContent: "center",
     variants: {
       presets: {
         default: {},
@@ -60,6 +56,15 @@ const Badge = (props: BadgeProps): JSX.Element => {
     } as const,
   });
 
+  const presetType =
+    status === FormStatus.COMPLETED
+      ? Presets.SUCCESS
+      : status === FormStatus.IN_PROGRESS
+        ? Presets.WARNING
+        : status === FormStatus.DANGER
+          ? Presets.DANGER
+          : Presets.DEFAULT;
+
   const textColor =
     presetType === Presets.SUCCESS
       ? "$green9"
@@ -69,13 +74,18 @@ const Badge = (props: BadgeProps): JSX.Element => {
           ? "$red10"
           : "$gray10";
 
+  const text =
+    status === FormStatus.COMPLETED
+      ? FormProgress.COMPLETED
+      : status === FormStatus.IN_PROGRESS
+        ? FormProgress.IN_PROGRESS
+        : status === FormStatus.DANGER
+          ? FormProgress.DANGER
+          : FormProgress.NOT_STARTED;
+
   return (
     <StyledView presets={presetType}>
-      <Typography
-        preset="body1"
-        style={{ fontSize: 16, lineHeight: 20, fontWeight: "500" }}
-        color={textColor}
-      >
+      <Typography preset="body2" color={textColor}>
         {text}
       </Typography>
     </StyledView>

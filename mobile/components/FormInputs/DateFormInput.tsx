@@ -4,17 +4,15 @@ import FormElement from "./FormElement";
 
 interface FormInputProps extends DateInputProps {
   //   question title
-  label: string;
-  //   question subtitle
-  paragraph?: string;
-  // helper text
-  helper?: string;
+  title: string;
+  // placeholder
+  placeholder?: string;
 }
 
-const DateFormInput: React.FC<FormInputProps> = ({ label, paragraph, helper, ...rest }) => {
+const DateFormInput: React.FC<FormInputProps> = ({ title, placeholder = "", ...rest }) => {
   return (
-    <FormElement label={label} paragraph={paragraph} helper={helper}>
-      <DateInput {...rest} />
+    <FormElement title={title}>
+      <DateInput placeholder={placeholder} {...rest} />
     </FormElement>
   );
 };

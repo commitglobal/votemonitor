@@ -12,6 +12,7 @@ import "../common/config/i18n";
 import LanguageContextProvider from "../contexts/language/LanguageContext.provider";
 import PersistQueryContextProvider from "../contexts/persist-query/PersistQueryContext.provider";
 import { onlineManager } from "@tanstack/react-query";
+import { Button } from "tamagui";
 
 if (__DEV__) {
   Reactotron.setAsyncStorageHandler(AsyncStorage)
@@ -61,6 +62,14 @@ export default function Root() {
           <LanguageContextProvider>
             {!isOnline && <OfflineBanner />}
             <Slot />
+            <Button
+              onPress={() => {
+                setIsOnline(!isOnline);
+                onlineManager.setOnline(!isOnline);
+              }}
+            >
+              Go Offline online
+            </Button>
           </LanguageContextProvider>
         </PersistQueryContextProvider>
       </AuthContextProvider>

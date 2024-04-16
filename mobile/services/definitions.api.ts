@@ -1,3 +1,5 @@
+import { ElectionRoundVM } from "../common/models/election-round.model";
+import { PollingStationVisitVM } from "../common/models/polling-station.model";
 import { CameraResult } from "../hooks/useCamera";
 import API from "./api";
 import { ApiFormAnswer } from "./interfaces/answer.type";
@@ -9,24 +11,15 @@ import { ApiFormQuestion } from "./interfaces/question.type";
     @description The election rounds where my user is asigned
     @returns {ElectionRoundsAPIResponse} 
 */
-export type ElectionRoundVM = {
-  id: string;
-  countryId: string;
-  country: string;
-  title: string;
-  englishTitle: string;
-  startDate: string;
-  status: "Archived" | "NotStarted" | "Started";
-  createdOn: string;
-  lastModifiedOn: string | null;
-};
 
 export type ElectionRoundsAPIResponse = {
   electionRounds: ElectionRoundVM[];
 };
 
-export const getElectionRounds = (): Promise<ElectionRoundsAPIResponse> => {
-  return API.get("election-rounds:my").then((res) => res.data);
+export const getElectionRounds = (): Promise<ElectionRoundVM[]> => {
+  return API.get<ElectionRoundsAPIResponse>("election-rounds:my").then(
+    (res) => res.data.electionRounds,
+  );
 };
 
 /** ========================================================================
@@ -83,21 +76,21 @@ export const getPollingStationNomenclatorVersion = (
     @param {string} electionRoundId 
     @returns {PollingStationVisitsAPIResponse} 
 */
-export type PollingStationVisitVM = {
-  pollingStationId: string;
-  visitedAt: string; // ISO date
-};
-
 export type PollingStationVisitsAPIResponse = {
-  visits: PollingStationVisitVM[];
+  visits: {
+    pollingStationId: string;
+    visitedAt: string; // ISO date
+    address: string;
+    number: number;
+  }[];
 };
 
 export const getPollingStationsVisits = (
   electionRoundId: string,
-): Promise<PollingStationVisitsAPIResponse> => {
-  return API.get(`election-rounds/${electionRoundId}/polling-station-visits:my`).then(
-    (res) => res.data,
-  );
+): Promise<PollingStationVisitVM[]> => {
+  return API.get<PollingStationVisitsAPIResponse>(
+    `election-rounds/${electionRoundId}/polling-station-visits:my`,
+  ).then((res) => res.data.visits);
 };
 
 /**
@@ -114,9 +107,9 @@ export const getPollingStationsVisits = (
 export type PollingStationInformationAPIPayload = {
   electionRoundId: string;
   pollingStationId: string;
-  arrivalTime: string; // ISO String  "2024-04-01T12:58:06.670Z";
-  departureTime: string;
-  answers: ApiFormAnswer[];
+  arrivalTime?: string; // ISO String  "2024-04-01T12:58:06.670Z";
+  departureTime?: string;
+  answers?: ApiFormAnswer[];
 };
 
 export type PollingStationInformationAPIResponse = {
@@ -175,16 +168,70 @@ export const getPollingStationInformationForm = (
 */
 export const getPollingStationInformation = (
   electionRoundId: string,
-  pollingStationIds?: string[],
+  pollingStationId: string,
 ): Promise<PollingStationInformationAPIResponse> => {
   return API.get(`election-rounds/${electionRoundId}/information:my`, {
     params: {
-      pollingStationIds,
+      pollingStationIds: [pollingStationId],
     },
     paramsSerializer: {
       indexes: null,
     },
-  }).then((res) => res.data?.informations);
+  }).then((res) => res.data?.informations[0]);
+};
+
+/** ========================================================================
+    ================= GET ElectionRoundAllForms ====================
+    ========================================================================
+    @description Get all the possible forms for a given election round
+    @param {string} electionRoundId 
+    @returns {PollingStationInformationAPIResponse} 
+*/
+
+export type ElectionRoundsAllFormsAPIResponse = {
+  electionRoundId: string;
+  version: string;
+  forms: {
+    id: string;
+    formType: string; // "ClosingAndCounting",
+    code: string; // "A1",
+    name: Record<string, string>; // { "EN": "test form", "RO": "formular de test" },
+    status: string; // "Published",
+    defaultLanguage: string; // "RO",
+    languages: string[]; // [ "RO", "EN" ],
+    createdOn: string;
+    lastModifiedOn: string; // "2024-04-12T11:45:38.589445Z"
+    questions: ApiFormQuestion[];
+  }[];
+};
+
+export const getElectionRoundAllForms = (
+  electionRoundId: string,
+): Promise<ElectionRoundsAllFormsAPIResponse> => {
+  return API.get(`election-rounds/${electionRoundId}/forms:fetchAll`, {}).then((res) => res.data);
+};
+
+/** ========================================================================
+    ================= GET FORM SUBMISSIONS ====================
+    ========================================================================
+    @description Get form submissions for a given >polling station< in an >election round<
+    @param {string} electionRoundId 
+    @param {string} pollingStationId 
+    @returns {unknown} 
+*/
+
+export const getFormSubmissions = (
+  electionRoundId: string,
+  pollingStationId: string,
+): Promise<unknown> => {
+  return API.get(`election-rounds/${electionRoundId}/form-submissions:my`, {
+    params: {
+      pollingStationIds: [pollingStationId],
+    },
+    paramsSerializer: {
+      indexes: null,
+    },
+  }).then((res) => res.data);
 };
 
 /** ========================================================================

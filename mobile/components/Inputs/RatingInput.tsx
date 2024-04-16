@@ -3,7 +3,9 @@ import { styled, ToggleGroup, ToggleGroupSingleProps } from "tamagui";
 // import { Typography } from "../Typography";
 import { Text } from "react-native";
 
-const ratings = [1, 2, 3, 4, 5];
+const SCALES = {
+  OneTo10: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+};
 
 export interface RatingInputProps extends ToggleGroupSingleProps {
   id: string;
@@ -37,7 +39,7 @@ export const RatingInput: React.FC<RatingInputProps> = ({ id, value, onValueChan
       onValueChange={onValueChange}
       {...rest}
     >
-      {ratings.map((rating, i) => (
+      {SCALES.OneTo10.map((rating, i) => (
         <StyledToggleGroupItem
           key={i}
           value={rating.toString()}

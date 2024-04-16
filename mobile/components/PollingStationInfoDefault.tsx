@@ -3,7 +3,7 @@ import { YStack } from "tamagui";
 import Button from "./Button";
 import { Typography } from "./Typography";
 
-const PollingStationInfoDefault = () => {
+const PollingStationInfoDefault = ({ onPress }: { onPress: () => void }) => {
   return (
     <YStack
       backgroundColor="$gray1"
@@ -17,7 +17,7 @@ const PollingStationInfoDefault = () => {
         {/* //TODO: add translation here */}
         Answer a few quick questions about the polling station.
       </Typography>
-      <Button preset="outlined" backgroundColor="white">
+      <Button preset="outlined" backgroundColor="white" onPress={onPress}>
         Answer questions
       </Button>
     </YStack>

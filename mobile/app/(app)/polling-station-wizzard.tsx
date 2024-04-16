@@ -8,11 +8,15 @@ import { Typography } from "../../components/Typography";
 import Select from "../../components/Select";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Button from "../../components/Button";
-import { usePollingStationByParentID } from "../../services/queries.service";
+import { pollingStationsKeys, usePollingStationByParentID } from "../../services/queries.service";
 import { useMemo, useState } from "react";
-import { PollingStationNomenclatorNodeVM } from "../../common/models/polling-station.model";
+import {
+  PollingStationNomenclatorNodeVM,
+  PollingStationVisitVM,
+} from "../../common/models/polling-station.model";
 import { useTranslation } from "react-i18next";
 import { useUserData } from "../../contexts/user/UserContext.provider";
+import { useQueryClient } from "@tanstack/react-query";
 
 const mapPollingStationOptionsToSelectValues = (
   options: PollingStationNomenclatorNodeVM[],
@@ -81,11 +85,14 @@ const PollingStationWizzardContent = ({
   const { t } = useTranslation("add_polling_station");
   const insets = useSafeAreaInsets();
   const [selectedOption, setSelectedOption] = useState<PollingStationStep>();
-  const { setSelectedPollingStation } = useUserData();
+  const { activeElectionRound } = useUserData();
+
+  const queryClient = useQueryClient();
 
   const {
     data: pollingStationOptions,
     isLoading: isLoadingPollingStations,
+    isFetching: isFetchingPollingStations,
     error: pollingStationsError,
   } = usePollingStationByParentID(activeStep?.id ? +activeStep.id.toFixed(1) : -1);
 
@@ -119,15 +126,35 @@ const PollingStationWizzardContent = ({
     setSelectedOption(lastStep);
   };
 
-  const onFinishButtonPress = () => {
+  const onFinishButtonPress = async () => {
     if (!selectedOption) {
       return;
     }
-    const pollingStationId = pollingStationOptions.find(
-      (option) => option.id === selectedOption.id,
-    )?.pollingStationId;
+    const pollingStation = pollingStationOptions.find((option) => option.id === selectedOption.id);
 
-    setSelectedPollingStation(pollingStationId as string);
+    if (pollingStation?.pollingStationId && activeElectionRound) {
+      await queryClient.cancelQueries({
+        queryKey: pollingStationsKeys.visits(activeElectionRound.id),
+      });
+      const previousData =
+        queryClient.getQueryData<PollingStationVisitVM[]>(
+          pollingStationsKeys.visits(activeElectionRound.id),
+        ) ?? [];
+
+      queryClient.setQueryData<PollingStationVisitVM[]>(
+        pollingStationsKeys.visits(activeElectionRound.id),
+        [
+          ...previousData,
+          {
+            pollingStationId: pollingStation.pollingStationId,
+            visitedAt: new Date().toISOString(),
+            address: pollingStation.name,
+            number: +(pollingStation?.number || 0),
+          },
+        ],
+      );
+    }
+
     router.back();
   };
 
@@ -153,13 +180,15 @@ const PollingStationWizzardContent = ({
           <Typography preset="body2" style={$labelStyle}>
             {t("form.region.title")}
           </Typography>
-          <Select
-            key={activeStep?.id}
-            options={pollingStationsMappedOptions}
-            placeholder={t("form.region.placeholder")}
-            onValueChange={onSelectOption}
-            value={selectedOption ? `${selectedOption.id}_${selectedOption.name}` : undefined}
-          />
+          {!isFetchingPollingStations && (
+            <Select
+              key={activeStep?.id}
+              options={pollingStationsMappedOptions}
+              placeholder={t("form.region.placeholder")}
+              onValueChange={onSelectOption}
+              value={selectedOption ? `${selectedOption.id}_${selectedOption.name}` : undefined}
+            />
+          )}
         </YStack>
       </YStack>
       <XStack
@@ -181,7 +210,7 @@ const PollingStationWizzardContent = ({
             </Button>
           </XStack>
         )}
-        <XStack flex={!activeStep?.id ? 1 : 0.75}>
+        <XStack flex={!activeStep?.id ? 1 : 0.75} marginBottom="$md">
           {!isLastElement && (
             <Button disabled={!selectedOption} width="100%" onPress={onNextButtonPress}>
               {t("actions.next_step")}

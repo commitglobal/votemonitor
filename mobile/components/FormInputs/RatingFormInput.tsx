@@ -4,22 +4,12 @@ import RatingInput, { RatingInputProps } from "../Inputs/RatingInput";
 
 interface RatingFormInputProps extends RatingInputProps {
   //   question title
-  label: string;
-  //   question subtitle
-  paragraph?: string;
-  // helper text
-  helper?: string;
+  title: string;
 }
 
-const RatingFormInput: React.FC<RatingFormInputProps> = ({
-  id,
-  label,
-  paragraph,
-  helper,
-  ...rest
-}) => {
+const RatingFormInput: React.FC<RatingFormInputProps> = ({ id, title, ...rest }) => {
   return (
-    <FormElement label={label} paragraph={paragraph} helper={helper}>
+    <FormElement title={title}>
       <RatingInput id={id} {...rest} />
     </FormElement>
   );

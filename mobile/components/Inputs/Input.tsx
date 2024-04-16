@@ -43,7 +43,7 @@ const Input: React.FC<InputProps> = ({ type, value, ...rest }) => {
           <StyledTextArea value={value} {...rest} />
         </>
       ) : (
-        <StyledInput value={value} keyboardType="numeric" {...rest} />
+        <StyledInput value={value} keyboardType="numeric" fontSize={16} {...rest} />
       )}
     </>
   );
