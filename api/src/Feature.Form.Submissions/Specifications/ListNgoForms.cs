@@ -3,7 +3,7 @@ using Vote.Monitor.Domain.Entities.FormAggregate;
 
 namespace Feature.Form.Submissions.Specifications;
 
-public class ListNgoForms: Specification<FormAggregate>
+public sealed class ListNgoForms: Specification<FormAggregate>
 {
     public ListNgoForms(Guid electionRoundId ,Guid ngoId)
     {
