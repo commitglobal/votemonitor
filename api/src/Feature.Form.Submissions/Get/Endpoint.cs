@@ -14,7 +14,7 @@ public class Endpoint(IReadRepository<FormSubmission> repository) : Endpoint<Req
 
     public override async Task<Results<Ok<FormSubmissionModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var specification = new GetFormSubmissionById(req.ElectionRoundId, req.ObserverId, req.Id);
+        var specification = new GetFormSubmissionById(req.ElectionRoundId, req.PollingStationId, req.ObserverId);
         var pollingStationInformation = await repository.FirstOrDefaultAsync(specification, ct);
 
         if (pollingStationInformation is null)
