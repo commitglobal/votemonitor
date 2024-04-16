@@ -42,7 +42,8 @@ authApi.interceptors.response.use(
     if (error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
-      const accessToken = await getAccessTokenFn();
+      const accessToken = localStorage.getItem('token');
+      console.log('from auth api', accessToken);
       authApi.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument

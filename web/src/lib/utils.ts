@@ -28,7 +28,10 @@ export function stringToText(str: string) {
 }
 
 export function redirectIfNotAuth(isAuthenticated: boolean) {
-  throw redirect({
-    to: 'login',
-  });
+  console.log('isAuth', isAuthenticated);
+  if (!isAuthenticated) {
+    throw redirect({
+      to: '/login',
+    });
+  }
 }

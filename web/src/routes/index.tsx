@@ -14,7 +14,7 @@ const Index = (): FunctionComponent => {
 
 export const Route = createFileRoute('/')({
   beforeLoad: ({ context }) => {
-    redirectIfNotAuth(context.authContext.isAuthenticated);
+    console.log('from index', context.authContext.isAuthenticated);
   },
   component: Index,
 });

@@ -1,8 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router';
-
+import Login from '../../features/auth/login';
 export const Route = createFileRoute('/login/')({
-  beforeLoad: ({ context }) => {
-    console.log(context.authContext.isAuthenticated);
-  },
-  component: () => <div>Hello /login/!</div>,
+  component: Login,
 });

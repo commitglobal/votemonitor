@@ -1,4 +1,5 @@
 import { ILoginResponse, LoginDTO, authApi } from '@/common/auth-api';
+import { redirect } from '@tanstack/react-router';
 import { createContext, useEffect, useState } from 'react';
 
 export type AuthContextType = {
@@ -19,6 +20,7 @@ const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
+    console.log('token', !!token);
     setIsAuthenticated(!!token);
     setIsLoading(false);
   }, []);
@@ -27,6 +29,9 @@ const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
     const response = await authApi.post<ILoginResponse>('auth/login', user);
     localStorage.setItem('token', response.data.token);
     setIsAuthenticated(true);
+    redirect({
+      to: '/',
+    });
     console.log('user autheticated');
   };
 
