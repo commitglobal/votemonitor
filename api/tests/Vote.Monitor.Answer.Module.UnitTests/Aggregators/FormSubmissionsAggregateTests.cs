@@ -137,7 +137,11 @@ public class FormSubmissionsAggregateTests
 
         // Assert
         aggregate.Responders.Should().HaveCount(2);
-        aggregate.Responders.Should().Contain([monitoringObserver1.Id, monitoringObserver2.Id]);
+        var observer1 = monitoringObserver1.Observer.ApplicationUser;
+        var observer2 = monitoringObserver2.Observer.ApplicationUser;
+        var responder1 = new Responder(monitoringObserver1.Id, observer1.FirstName, observer1.LastName, observer1.Email, observer1.PhoneNumber);
+        var responder2 = new Responder(monitoringObserver2.Id, observer2.FirstName, observer2.LastName, observer2.Email, observer2.PhoneNumber);
+        aggregate.Responders.Should().Contain([responder1, responder2]);
     }
 
     [Fact]
