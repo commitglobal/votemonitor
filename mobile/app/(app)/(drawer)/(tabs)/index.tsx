@@ -175,14 +175,14 @@ const Index = () => {
       <YStack paddingHorizontal="$md" gap="$lg">
         <YStack gap="$xxs">
           <XStack gap="$xxs">
-            <Card flex={0.5}>
+            <Card flex={0.5} paddingVertical="$xs">
               <TimeSelect
                 type="arrival"
                 time={data?.arrivalTime ? new Date(data?.arrivalTime) : undefined}
                 setTime={(data: Date) => updateGeneralData({ arrivalTime: data?.toISOString() })}
               />
             </Card>
-            <Card flex={0.5}>
+            <Card flex={0.5} paddingVertical="$xs">
               <TimeSelect
                 type="departure"
                 time={data?.departureTime ? new Date(data?.departureTime) : undefined}
@@ -191,14 +191,14 @@ const Index = () => {
             </Card>
           </XStack>
           <Card gap="$md" onPress={router.push.bind(null, "/polling-station-questionnaire")}>
-            {!data?.answers?.length ? (
+            {data?.answers?.length ? (
               <PollingStationInfoDefault
                 onPress={router.push.bind(null, "/polling-station-questionnaire")}
               />
             ) : (
               <PollingStationInfo
-                nrOfAnswers={data?.answers.length}
-                nrOfQuestions={informationFormQuestions?.questions.length}
+                nrOfAnswers={data?.answers?.length}
+                nrOfQuestions={informationFormQuestions?.questions?.length}
               />
             )}
             <CardFooter text="Polling station information"></CardFooter>

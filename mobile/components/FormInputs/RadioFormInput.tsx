@@ -6,20 +6,11 @@ import RadioInput from "../Inputs/RadioInput";
 interface RadioFormInputProps extends RadioGroupProps {
   //   question title
   title: string;
-  //   placeholder
-  placeholder?: string;
-  //   question subtitle
   value: string;
   options: { id: string; value: string; label: string }[];
 }
 
-const RadioFormInput: React.FC<RadioFormInputProps> = ({
-  title,
-  placeholder,
-  options,
-  value,
-  ...rest
-}) => {
+const RadioFormInput: React.FC<RadioFormInputProps> = ({ title, options, value, ...rest }) => {
   return (
     <FormElement title={title}>
       <RadioGroup gap="$md" {...rest}>
