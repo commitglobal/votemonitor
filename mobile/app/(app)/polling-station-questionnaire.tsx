@@ -1,11 +1,10 @@
 import { Typography } from "../../components/Typography";
 import Header from "../../components/Header";
 import { Screen } from "../../components/Screen";
-import { useTheme } from "tamagui";
+import { useTheme, Sheet, View } from "tamagui";
 import { Icon } from "../../components/Icon";
 import { router } from "expo-router";
 import { useState } from "react";
-import { Sheet, View } from "tamagui";
 import { ViewStyle } from "react-native";
 import { useTranslation } from "react-i18next";
 
@@ -33,7 +32,7 @@ const PollingStationQuestionnaire = () => {
 };
 
 interface PollingStationQuestionnaireProps {
-  /* The current state of the sheet*/
+  /* The current state of the sheet */
   open: boolean;
 
   /* Control the state for sheet */
@@ -52,10 +51,10 @@ const PollingStationQuestionnaireContent = (props: PollingStationQuestionnairePr
 };
 
 interface ButtomSheetProps {
-  /* The current state of the sheet*/
+  /* The current state of the sheet */
   open: boolean;
 
-  /* Control the state of the sheet*/
+  /* Control the state of the sheet */
   setOpen: (state: boolean) => void;
 
   /* For future: Triggered action for pressing "Clear form" */

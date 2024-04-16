@@ -19,8 +19,8 @@ const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
       // const { token } = await dummyLogin();
       const {
         data: { token },
-      } = await API.post("auth", {
-        username: "alice@example.com",
+      } = await API.post("auth/login", {
+        email: "alice@example.com",
         password: "string",
       });
       SecureStore.setItem("access_token", token);
