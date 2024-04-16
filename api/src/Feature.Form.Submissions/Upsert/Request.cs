@@ -13,7 +13,5 @@ public class Request
 
     public Guid FormId { get; set; }
 
-    public Guid SubmissionId { get; set; }
-
     public List<BaseAnswerRequest> Answers { get; set; } = [];
 }

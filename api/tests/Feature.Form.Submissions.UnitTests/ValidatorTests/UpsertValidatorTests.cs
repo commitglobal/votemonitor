@@ -54,21 +54,7 @@ public class UpsertValidatorTests
         // Assert
         result.ShouldHaveValidationErrorFor(x => x.FormId);
     }
-
-    [Fact]
-    public void Validation_ShouldFail_When_SubmissionId_Empty()
-    {
-        // Arrange
-        var request = new Upsert.Request { SubmissionId = Guid.Empty };
-
-        // Act
-        var result = _validator.TestValidate(request);
-
-        // Assert
-        result.ShouldHaveValidationErrorFor(x => x.SubmissionId);
-    }
-
-
+    
     [Fact]
     public void Validation_ShouldFail_When_Answers_Invalid()
     {
@@ -106,7 +92,6 @@ public class UpsertValidatorTests
             ElectionRoundId = Guid.NewGuid(),
             PollingStationId = Guid.NewGuid(),
             ObserverId = Guid.NewGuid(),
-            SubmissionId = Guid.NewGuid()
         };
 
         // Act

@@ -8,5 +8,5 @@ public class Request
 
     [FromClaim(ApplicationClaimTypes.UserId)]
     public Guid ObserverId { get; set; }
-    public Guid Id { get; set; }
+    public Guid PollingStationId { get; set; }
 }
