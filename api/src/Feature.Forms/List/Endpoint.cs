@@ -1,4 +1,5 @@
-﻿using Authorization.Policies.Requirements;
+﻿using Authorization.Policies;
+using Authorization.Policies.Requirements;
 using Feature.Forms.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using Vote.Monitor.Core.Models;
@@ -14,6 +15,7 @@ public class Endpoint(
         Get("/api/election-rounds/{electionRoundId}/monitoring-ngo/{monitoringNgoId}/forms");
         DontAutoTag();
         Options(x => x.WithTags("forms"));
+        Policies(PolicyNames.NgoAdminsOnly);
     }
 
     public override async Task<Results<Ok<PagedResponse<FormSlimModel>>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)

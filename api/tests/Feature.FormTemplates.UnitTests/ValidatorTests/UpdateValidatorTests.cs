@@ -84,6 +84,28 @@ public class UpdateValidatorTests
             .ShouldHaveValidationErrorFor(x => x.Name);
     }
 
+    [Theory]
+    [MemberData(nameof(TranslatedStringTestData.InvalidPartiallyTranslatedTestCases), MemberType = typeof(TranslatedStringTestData))]
+    public void Validation_ShouldFail_When_DescriptionInvalid(TranslatedString invalidDescription)
+    {
+        // Arrange
+        var request = new Request
+        {
+            Description = invalidDescription,
+            Languages = [
+                LanguagesList.EN.Iso1,
+                LanguagesList.RO.Iso1
+            ]
+        };
+
+        // Act
+        var validationResult = _sut.TestValidate(request);
+
+        // Assert
+        validationResult
+            .ShouldHaveValidationErrorFor(x => x.Name);
+    }
+
     [Fact]
     public void Validation_ShouldFail_When_EmptySupportedLanguages()
     {
@@ -230,7 +252,8 @@ public class UpdateValidatorTests
             Languages = [LanguagesList.EN.Iso1],
             Code = "c!",
             Questions = [],
-            Name = new TranslatedStringFaker([LanguagesList.EN.Iso1]).Generate()
+            Name = new TranslatedStringFaker([LanguagesList.EN.Iso1]).Generate(),
+            Description = new TranslatedStringFaker([LanguagesList.EN.Iso1]).Generate(),
         };
 
         // Act

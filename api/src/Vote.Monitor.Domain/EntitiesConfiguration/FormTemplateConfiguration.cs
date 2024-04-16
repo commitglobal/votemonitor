@@ -19,6 +19,10 @@ public class FormTemplateConfiguration : IEntityTypeConfiguration<FormTemplate>
             .HasConversion<TranslatedStringToJsonConverter, TranslatedStringValueComparer>()
             .HasColumnType("jsonb");
 
+        builder.Property(x => x.Description)
+            .HasConversion<TranslatedStringToJsonConverter, TranslatedStringValueComparer>()
+            .HasColumnType("jsonb");
+
         builder.Property(x => x.Languages).IsRequired();
 
         builder.Property(x => x.Questions)

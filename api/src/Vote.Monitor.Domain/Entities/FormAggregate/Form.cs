@@ -18,6 +18,7 @@ public class Form : AuditableBaseEntity, IAggregateRoot
     public FormType FormType { get; private set; }
     public string Code { get; private set; }
     public TranslatedString Name { get; private set; }
+    public TranslatedString Description { get; private set; }
     public FormStatus Status { get; private set; }
     public string DefaultLanguage { get; private set; }
     public string[] Languages { get; private set; } = [];
@@ -30,6 +31,7 @@ public class Form : AuditableBaseEntity, IAggregateRoot
         FormType formType,
         string code,
         TranslatedString name,
+        TranslatedString description,
         string defaultLanguage,
         IEnumerable<string> languages,
         IEnumerable<BaseQuestion> questions) : base(Guid.NewGuid())
@@ -42,6 +44,7 @@ public class Form : AuditableBaseEntity, IAggregateRoot
         FormType = formType;
         Code = code;
         Name = name;
+        Description = description;
         DefaultLanguage = defaultLanguage;
         Languages = languages.ToArray();
         Status = FormStatus.Drafted;
@@ -53,6 +56,7 @@ public class Form : AuditableBaseEntity, IAggregateRoot
         FormType formType,
         string code,
         TranslatedString name,
+        TranslatedString description,
         string defaultLanguage,
         IEnumerable<string> languages,
         IEnumerable<BaseQuestion> questions) : base(Guid.NewGuid())
@@ -63,6 +67,7 @@ public class Form : AuditableBaseEntity, IAggregateRoot
         FormType = formType;
         Code = code;
         Name = name;
+        Description = description;
         DefaultLanguage = defaultLanguage;
         Languages = languages.ToArray();
         Status = FormStatus.Drafted;
@@ -75,10 +80,11 @@ public class Form : AuditableBaseEntity, IAggregateRoot
         FormType formType,
         string code,
         TranslatedString name,
+        TranslatedString description,
         string defaultLanguage,
         IEnumerable<string> languages,
         IEnumerable<BaseQuestion> questions) =>
-        new(electionRound, monitoringNgo, formType, code, name, defaultLanguage, languages, questions);
+        new(electionRound, monitoringNgo, formType, code, name, description, defaultLanguage, languages, questions);
 
     public static Form Create(
         Guid electionRoundId,
@@ -86,10 +92,11 @@ public class Form : AuditableBaseEntity, IAggregateRoot
         FormType formType,
         string code,
         TranslatedString name,
+        TranslatedString description,
         string defaultLanguage,
         IEnumerable<string> languages,
         IEnumerable<BaseQuestion> questions) =>
-        new(electionRoundId, monitoringNgoId, formType, code, name, defaultLanguage, languages, questions);
+        new(electionRoundId, monitoringNgoId, formType, code, name, description, defaultLanguage, languages, questions);
 
     public PublishResult Publish()
     {
@@ -117,6 +124,7 @@ public class Form : AuditableBaseEntity, IAggregateRoot
 
     public void UpdateDetails(string code,
         TranslatedString name,
+        TranslatedString description,
         FormType formType,
         string defaultLanguage,
         IEnumerable<string> languages,
@@ -124,6 +132,7 @@ public class Form : AuditableBaseEntity, IAggregateRoot
     {
         Code = code;
         Name = name;
+        Description = description;
         FormType = formType;
         DefaultLanguage = defaultLanguage;
         Languages = languages.ToArray();
