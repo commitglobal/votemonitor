@@ -126,6 +126,7 @@ const Header = ({
             position="absolute"
             width="100%"
             top={50 + insets.top}
+            zIndex={100_000}
           >
             <Typography fontWeight="500" color="$gray7">
               App online. All answers sent to server.
