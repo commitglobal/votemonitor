@@ -26,6 +26,10 @@ public class FormConfiguration : IEntityTypeConfiguration<Form>
             .HasConversion<TranslatedStringToJsonConverter, TranslatedStringValueComparer>()
             .HasColumnType("jsonb");
 
+        builder.Property(x => x.Description)
+            .HasConversion<TranslatedStringToJsonConverter, TranslatedStringValueComparer>()
+            .HasColumnType("jsonb");
+
         builder.Property(x => x.DefaultLanguage).HasMaxLength(64).IsRequired();
         builder.Property(x => x.Languages).IsRequired();
 

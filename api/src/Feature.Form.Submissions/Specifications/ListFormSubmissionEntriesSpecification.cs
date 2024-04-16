@@ -1,12 +1,11 @@
 ﻿using Ardalis.Specification;
-using Feature.Form.Submissions.ListEntries;
 using Vote.Monitor.Domain.Specifications;
 
 namespace Feature.Form.Submissions.Specifications;
 
-public sealed class ListFormSubmissionEntriesSpecification : Specification<FormSubmission, FormSubmissionEntries>
+public sealed class ListFormSubmissionEntriesSpecification : Specification<FormSubmission, ListEntries.FormSubmissionEntries>
 {
-    public ListFormSubmissionEntriesSpecification(Request request)
+    public ListFormSubmissionEntriesSpecification(ListEntries.Request request)
     {
         Query
             .Include(x => x.Form)
@@ -28,7 +27,7 @@ public sealed class ListFormSubmissionEntriesSpecification : Specification<FormS
             .ApplyOrdering(request)
             .Paginate(request);
 
-        Query.Select(x => new FormSubmissionEntries
+        Query.Select(x => new ListEntries.FormSubmissionEntries
         {
             SubmissionId = x.Id,
             FormCode = x.Form.Code,

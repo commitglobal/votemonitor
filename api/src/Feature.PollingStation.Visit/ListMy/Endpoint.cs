@@ -2,6 +2,10 @@
 using Dapper;
 using Microsoft.AspNetCore.Authorization;
 using Vote.Monitor.Domain;
+using Vote.Monitor.Domain.Constants;
+using Vote.Monitor.Domain.Entities.PollingStationAttachmentAggregate;
+using Vote.Monitor.Domain.Entities.PollingStationInfoAggregate;
+using Vote.Monitor.Domain.Entities.PollingStationNoteAggregate;
 
 namespace Feature.PollingStation.Visit.ListMy;
 
@@ -27,7 +31,7 @@ public class Endpoint(IAuthorizationService authorizationService, VoteMonitorCon
             return TypedResults.NotFound();
         }
 
-        var sql = @" SELECT t.""ElectionRoundId"",
+        var sql = @$" SELECT t.""ElectionRoundId"",
                      t.""PollingStationId"",
                      ps.""Level1"",
                      ps.""Level2"",

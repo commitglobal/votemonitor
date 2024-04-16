@@ -54,7 +54,7 @@ public sealed class FormAggregateFaker : PrivateFaker<Form>
 
         CustomInstantiator(_ =>
         {
-            var form = Form.Create(electionRound, monitoringNgo, FormType.ClosingAndCounting, "C1", new TranslatedString(),
+            var form = Form.Create(electionRound, monitoringNgo, FormType.ClosingAndCounting, "C1", new TranslatedString(),new TranslatedString(),
                 languages.First(), languages, questions);
 
             if (status == FormStatus.Obsolete)

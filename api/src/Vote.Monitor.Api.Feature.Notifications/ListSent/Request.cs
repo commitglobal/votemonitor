@@ -1,9 +1,11 @@
-﻿namespace Vote.Monitor.Api.Feature.Notifications.ListSent;
+﻿using Vote.Monitor.Core.Security;
+
+namespace Vote.Monitor.Api.Feature.Notifications.ListSent;
 
 public class Request
 {
     public Guid ElectionRoundId { get; set; }
 
-    [FromClaim("NgoId")]
+    [FromClaim(ApplicationClaimTypes.NgoId)]
     public Guid NgoId { get; set; }
 }
