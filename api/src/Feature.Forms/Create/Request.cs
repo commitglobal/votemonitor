@@ -8,7 +8,8 @@ public class Request
     public Guid ElectionRoundId { get; set; }
     public Guid MonitoringNgoId { get; set; }
     public string Code { get; set; }
-    public TranslatedString Name { get; set; }
+    public TranslatedString Name { get; set; } = new ();
+    public TranslatedString Description { get; set; } = new ();
     public FormType FormType { get; set; }
     public List<string> Languages { get; set; } = [];
     public string DefaultLanguage { get; set; }

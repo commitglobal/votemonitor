@@ -1,4 +1,5 @@
 ﻿using Vote.Monitor.Core.Models;
+using Vote.Monitor.Core.Security;
 using Vote.Monitor.Domain.Entities.FormAggregate;
 
 namespace Feature.Form.Submissions.ListEntries;
@@ -7,7 +8,7 @@ public class Request : BaseSortPaginatedRequest
 {
     public Guid ElectionRoundId { get; set; }
 
-    [FromClaim("NgoId")]
+    [FromClaim(ApplicationClaimTypes.NgoId)]
     public Guid NgoId { get; set; }
 
     [QueryParam]

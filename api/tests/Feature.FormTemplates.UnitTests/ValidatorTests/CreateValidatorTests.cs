@@ -48,6 +48,28 @@ public class CreateValidatorTests
             .ShouldHaveValidationErrorFor(x => x.Name);
     }
 
+    [Theory]
+    [MemberData(nameof(TranslatedStringTestData.InvalidPartiallyTranslatedTestCases), MemberType = typeof(TranslatedStringTestData))]
+    public void Validation_ShouldFail_When_DescriptionInvalid(TranslatedString invalidDescription)
+    {
+        // Arrange
+        var request = new Request
+        {
+            Description = invalidDescription,
+            Languages = [
+                LanguagesList.EN.Iso1,
+                LanguagesList.RO.Iso1
+            ]
+        };
+
+        // Act
+        var validationResult = _sut.TestValidate(request);
+
+        // Assert
+        validationResult
+            .ShouldHaveValidationErrorFor(x => x.Name);
+    }
+
     [Fact]
     public void Validation_ShouldFail_When_FormTypeEmpty()
     {
@@ -145,7 +167,8 @@ public class CreateValidatorTests
             DefaultLanguage = LanguagesList.EN.Iso1,
             Code = "A code",
             FormTemplateType = FormTemplateType.ClosingAndCounting,
-            Name = TranslatedStringTestData.ValidPartiallyTranslatedTestData.First()
+            Name = TranslatedStringTestData.ValidPartiallyTranslatedTestData.First(),
+            Description = TranslatedStringTestData.ValidPartiallyTranslatedTestData.First(),
         };
 
         // Act

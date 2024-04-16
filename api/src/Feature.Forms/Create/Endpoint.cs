@@ -35,7 +35,7 @@ public class Endpoint(
             return TypedResults.Conflict(new ProblemDetails(ValidationFailures));
         }
 
-        var form = FormAggregate.Create(req.ElectionRoundId, req.MonitoringNgoId, req.FormType, req.Code, req.Name, req.DefaultLanguage, req.Languages, []);
+        var form = FormAggregate.Create(req.ElectionRoundId, req.MonitoringNgoId, req.FormType, req.Code, req.Name, req.Description, req.DefaultLanguage, req.Languages, []);
 
         var monitoringNgo = await monitoringNgoRepository.GetByIdAsync(req.MonitoringNgoId, ct);
         monitoringNgo!.UpdatePollingStationsVersion();
