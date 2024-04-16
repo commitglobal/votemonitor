@@ -64,6 +64,7 @@
     <ProjectReference Include="..\Vote.Monitor.Api.Feature.UserPreferences\Vote.Monitor.Api.Feature.UserPreferences.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Core\Vote.Monitor.Core.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Domain\Vote.Monitor.Domain.csproj" />
+    <ProjectReference Include="..\Vote.Monitor.Module.Notifications\Vote.Monitor.Module.Notifications.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -2,7 +2,7 @@
 
 namespace Vote.Monitor.Api.Feature.Notifications.Specifications;
 
-public sealed class GetNotificationTokenForObserverSpecification: Specification<NotificationToken>, ISingleResultSpecification<NotificationToken>
+public sealed class GetNotificationTokenForObserverSpecification: SingleResultSpecification<NotificationToken>
 {
     public GetNotificationTokenForObserverSpecification(Guid observerId)
     {

@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Vote.Monitor.Core.Services.PushNotification.Contracts;
+using Vote.Monitor.Module.Notifications.Contracts;
 
-namespace Vote.Monitor.Core.Services.PushNotification.Noop;
+namespace Vote.Monitor.Module.Notifications.Noop;
 
 internal static class Installer
 {

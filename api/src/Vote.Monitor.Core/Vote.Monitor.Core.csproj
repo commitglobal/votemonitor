@@ -33,11 +33,12 @@
     <PackageReference Include="FastEndpoints.Attributes" Version="5.24.0" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.2" />
     <PackageReference Include="PolyJson" Version="1.4.0" />
+    <PackageReference Include="Refit" Version="7.0.0" />
+    <PackageReference Include="Refit.HttpClientFactory" Version="7.0.0" />
     <PackageReference Include="Sentry.AspNetCore" Version="4.4.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Services\PushNotification\Noop\" />
     <Folder Include="Services\Serialization\" />
   </ItemGroup>
 

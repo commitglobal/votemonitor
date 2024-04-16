@@ -2,9 +2,9 @@
 using Google.Apis.Auth.OAuth2;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Vote.Monitor.Core.Services.PushNotification.Contracts;
+using Vote.Monitor.Module.Notifications.Contracts;
 
-namespace Vote.Monitor.Core.Services.PushNotification.Firebase;
+namespace Vote.Monitor.Module.Notifications.Firebase;
 
 internal static class Installer
 {

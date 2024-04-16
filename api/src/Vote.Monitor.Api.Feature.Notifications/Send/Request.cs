@@ -9,7 +9,10 @@ public class Request
     [FromClaim(ApplicationClaimTypes.NgoId)]
     public Guid NgoId { get; set; }
 
-    public List<Guid> ObserverIds { get; set; } = new();
+    [FromClaim(ApplicationClaimTypes.UserId)]
+    public Guid UserId { get; set; }
+
+    public List<Guid> MonitoringObserverIds { get; set; } = new();
 
     public string Title { get; set; }
     public string Body { get; set; }

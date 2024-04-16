@@ -13,22 +13,25 @@ public class Notification : AuditableBaseEntity, IAggregateRoot
     public string Body { get; private set; }
     public IReadOnlyList<MonitoringObserver> TargetedObservers { get; private set; }
 
-    private Notification(ElectionRound electionRound,
-        NgoAdmin sender,
+    private Notification(Guid electionRoundId,
+        Guid senderId,
         IEnumerable<MonitoringObserver> observers,
         string title,
         string body) : base(Guid.NewGuid())
     {
-        ElectionRoundId = electionRound.Id;
-        ElectionRound = electionRound;
-
-        Sender = sender;
-        SenderId = sender.Id;
+        ElectionRoundId = electionRoundId;
+        SenderId = senderId;
 
         TargetedObservers = observers.ToList().AsReadOnly();
         Title = title;
         Body = body;
     }
+
+    public static Notification Create(Guid electionRoundId,
+        Guid senderId,
+        IEnumerable<MonitoringObserver> observers,
+        string title,
+        string body) => new(electionRoundId, senderId, observers, title, body);
 
 #pragma warning disable CS8618 // Required by Entity Framework
 
