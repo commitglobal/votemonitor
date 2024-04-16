@@ -248,7 +248,7 @@ const PollingStationQuestionnaire = () => {
   });
 
   return (
-    <Screen preset="scroll">
+    <Screen preset="scroll" backgroundColor="white">
       <Header
         title={t("header.title")}
         titleColor="white"
@@ -258,150 +258,151 @@ const PollingStationQuestionnaire = () => {
         onLeftPress={() => router.back()}
         onRightPress={() => setOpen(true)}
       />
-      <Typography marginBottom="$md">This is the polling station questionnaire</Typography>
-      {formStructure?.questions.map((question: ApiFormQuestion) => {
-        const label = `${question.code}. ${question.text.EN}`;
-        const helper = question.helptext.EN;
+      <YStack padding="$md" gap="$lg">
+        {formStructure?.questions.map((question: ApiFormQuestion) => {
+          const label = `${question.code}. ${question.text.EN}`;
+          const helper = question.helptext.EN;
 
-        if (question.$questionType === "numberQuestion") {
-          return (
-            <Controller
-              key={question.id}
-              name={question.id}
-              control={control}
-              render={({ field: { onChange, value } }) => (
-                <FormInput
-                  title={question.text.EN}
-                  placeholder={question.helptext?.EN}
-                  type="numeric"
-                  value={value}
-                  onChangeText={onChange}
-                />
-              )}
-            />
-          );
-        }
-
-        if (question.$questionType === "textQuestion") {
-          return (
-            <Controller
-              key={question.id}
-              name={question.id}
-              control={control}
-              render={({ field: { onChange, value } }) => (
-                <YStack>
+          if (question.$questionType === "numberQuestion") {
+            return (
+              <Controller
+                key={question.id}
+                name={question.id}
+                control={control}
+                render={({ field: { onChange, value } }) => (
                   <FormInput
-                    type="text"
                     title={question.text.EN}
                     placeholder={question.helptext?.EN}
+                    type="numeric"
+                    value={value}
                     onChangeText={onChange}
-                    value={value}
                   />
-                </YStack>
-              )}
-            />
-          );
-        }
+                )}
+              />
+            );
+          }
 
-        if (question.$questionType === "dateQuestion") {
-          console.log("DATE Q", question);
-          return (
-            <Controller
-              key={question.id}
-              name={question.id}
-              control={control}
-              render={({ field: { onChange, value } }) => (
-                <YStack>
-                  <DateFormInput
-                    title={question.text.EN}
-                    onChange={onChange}
-                    value={value}
-                    placeholder={question.helptext?.EN}
+          if (question.$questionType === "textQuestion") {
+            return (
+              <Controller
+                key={question.id}
+                name={question.id}
+                control={control}
+                render={({ field: { onChange, value } }) => (
+                  <YStack>
+                    <FormInput
+                      type="text"
+                      title={question.text.EN}
+                      placeholder={question.helptext?.EN}
+                      onChangeText={onChange}
+                      value={value}
+                    />
+                  </YStack>
+                )}
+              />
+            );
+          }
+
+          if (question.$questionType === "dateQuestion") {
+            console.log("DATE Q", question);
+            return (
+              <Controller
+                key={question.id}
+                name={question.id}
+                control={control}
+                render={({ field: { onChange, value } }) => (
+                  <YStack>
+                    <DateFormInput
+                      title={question.text.EN}
+                      onChange={onChange}
+                      value={value}
+                      placeholder={question.helptext?.EN}
+                    />
+                  </YStack>
+                )}
+              />
+            );
+          }
+
+          if (question.$questionType === "singleSelectQuestion") {
+            return (
+              // TODO: need to handle free text option
+              <Controller
+                key={question.id}
+                name={question.id}
+                control={control}
+                render={({ field: { onChange, value } }) => (
+                  <YStack>
+                    <RadioFormInput
+                      options={question.options.map((option) => ({
+                        id: option.id,
+                        label: option.text.EN,
+                        value: option.id,
+                      }))}
+                      title={question.text.EN}
+                      value={value}
+                      onValueChange={onChange}
+                    />
+                  </YStack>
+                )}
+              />
+            );
+          }
+
+          if (question.$questionType === "ratingQuestion") {
+            return (
+              // TODO: need to handle free text option
+              <Controller
+                key={question.id}
+                name={question.id}
+                control={control}
+                render={({ field: { onChange, value } }) => (
+                  <YStack>
+                    <RatingFormInput
+                      id={question.id}
+                      type="single"
+                      title={question.text.EN}
+                      value={value}
+                      onValueChange={onChange}
+                    />
+                  </YStack>
+                )}
+              />
+            );
+          }
+
+          if (question.$questionType === "multiSelectQuestion") {
+            return (
+              <FormElement key={question.id} title={`${question.code}. ${question.text.EN}`}>
+                {question.options.map((option) => (
+                  <Controller
+                    key={option.id}
+                    name={question.id} // TODO: maybe more?
+                    control={control}
+                    render={() => (
+                      <YStack>
+                        <CheckboxInput
+                          marginBottom="$md"
+                          id={option.id}
+                          label={option.text.EN}
+                          checked={!!getValues(question.id)?.includes(option.id)}
+                          onCheckedChange={(checked) =>
+                            handleCheckboxChange(question.id, option.id, checked)
+                          }
+                        />
+                      </YStack>
+                    )}
                   />
-                </YStack>
-              )}
-            />
-          );
-        }
+                ))}
+              </FormElement>
+            );
+          }
 
-        if (question.$questionType === "singleSelectQuestion") {
-          return (
-            // TODO: need to handle free text option
-            <Controller
-              key={question.id}
-              name={question.id}
-              control={control}
-              render={({ field: { onChange, value } }) => (
-                <YStack>
-                  <RadioFormInput
-                    options={question.options.map((option) => ({
-                      id: option.id,
-                      label: option.text.EN,
-                      value: option.id,
-                    }))}
-                    title={question.text.EN}
-                    value={value}
-                    onValueChange={onChange}
-                  />
-                </YStack>
-              )}
-            />
-          );
-        }
-
-        if (question.$questionType === "ratingQuestion") {
-          return (
-            // TODO: need to handle free text option
-            <Controller
-              key={question.id}
-              name={question.id}
-              control={control}
-              render={({ field: { onChange, value } }) => (
-                <YStack>
-                  <RatingFormInput
-                    id={question.id}
-                    type="single"
-                    title={question.text.EN}
-                    value={value}
-                    onValueChange={onChange}
-                  />
-                </YStack>
-              )}
-            />
-          );
-        }
-
-        if (question.$questionType === "multiSelectQuestion") {
-          return (
-            <FormElement key={question.id} title={`${question.code}. ${question.text.EN}`}>
-              {question.options.map((option) => (
-                <Controller
-                  key={option.id}
-                  name={question.id} // TODO: maybe more?
-                  control={control}
-                  render={() => (
-                    <YStack>
-                      <CheckboxInput
-                        marginBottom="$md"
-                        id={option.id}
-                        label={option.text.EN}
-                        checked={!!getValues(question.id)?.includes(option.id)}
-                        onCheckedChange={(checked) =>
-                          handleCheckboxChange(question.id, option.id, checked)
-                        }
-                      />
-                    </YStack>
-                  )}
-                />
-              ))}
-            </FormElement>
-          );
-        }
-
-        return <Typography key={question.id}></Typography>;
-      })}
-      <Button onPress={handleSubmit(onSubmit)}>Submit answer</Button>
-      <OptionsSheet open={open} setOpen={setOpen} onClear={() => console.log("clear form")} />
+          return <Typography key={question.id}></Typography>;
+        })}
+        <Button onPress={handleSubmit(onSubmit)}>Submit answer</Button>
+        <OptionsSheet open={open} setOpen={setOpen} onClear={() => console.log("clear form")} />
+      </YStack>
     </Screen>
   );
 };
