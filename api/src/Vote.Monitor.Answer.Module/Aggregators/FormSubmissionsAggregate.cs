@@ -1,17 +1,26 @@
 ﻿using Vote.Monitor.Core.Extensions;
+using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.Entities.FormAggregate;
 using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
 
 namespace Vote.Monitor.Answer.Module.Aggregators;
 
-public class FormAggregate
+
+public record Responder(Guid ResponderId, string FirstName, string LastName, string Email, string PhoneNumber);
+public class FormSubmissionsAggregate
 {
     public Guid ElectionRoundId { get; }
     public Guid MonitoringNgoId { get; }
     public Guid FormId { get; }
+    public string FormCode { get; }
+    public FormType FormType { get; }
+    public TranslatedString Name { get; }
+    public TranslatedString Description { get; }
+    public string DefaultLanguage { get; }
+    public string[] Languages { get; } = [];
 
-    private readonly HashSet<Guid> _responders = new();
-    public IReadOnlyList<Guid> Responders => _responders.ToList().AsReadOnly();
+    private readonly HashSet<Responder> _responders = new();
+    public IReadOnlyList<Responder> Responders => _responders.ToList().AsReadOnly();
 
     private readonly Dictionary<Guid, HashSet<Guid>> _pollingStations = new();
 
@@ -27,11 +36,17 @@ public class FormAggregate
     public int TotalNumberOfFlaggedAnswers { get; private set; }
     public IReadOnlyDictionary<Guid, BaseAnswerAggregate> Aggregates { get; }
 
-    public FormAggregate(Form form)
+    public FormSubmissionsAggregate(Form form)
     {
         ElectionRoundId = form.ElectionRoundId;
         MonitoringNgoId = form.MonitoringNgoId;
         FormId = form.Id;
+        FormCode = form.Code;
+        FormType = form.FormType;
+        Name = form.Name;
+        Description = form.Description;
+        Languages = form.Languages;
+        DefaultLanguage = form.DefaultLanguage;
 
         Aggregates = form
             .Questions
@@ -40,11 +55,12 @@ public class FormAggregate
             .AsReadOnly();
     }
 
-    public FormAggregate AggregateAnswers(FormSubmission formSubmission)
+    public FormSubmissionsAggregate AggregateAnswers(FormSubmission formSubmission)
     {
         var responderId = formSubmission.MonitoringObserverId;
 
-        _responders.Add(responderId);
+        var observer= formSubmission.MonitoringObserver.Observer.ApplicationUser;
+        _responders.Add(new Responder(responderId, observer.FirstName, observer.LastName, observer.Email, observer.PhoneNumber));
 
         _pollingStations.AddOrUpdate(formSubmission.PollingStationId,
             createFunc: () => [formSubmission.Id],

@@ -54,7 +54,7 @@ public class Endpoint(VoteMonitorContext context) : Endpoint<Request, Response>
         or psi.""MonitoringObserverId"" = mo.""Id""
         left join ""MonitoringNgos"" mn on mn.""Id"" = mo.""MonitoringNgoId""
         where ps.""ElectionRoundId"" = @electionRoundId
-            and mn.""NgoId"" = @monitoringNgoId
+            and mn.""NgoId"" = @ngoId
             and fs.""ElectionRoundId""= @electionRoundId
             and psn.""ElectionRoundId""= @electionRoundId
             and psi.""ElectionRoundId""= @electionRoundId

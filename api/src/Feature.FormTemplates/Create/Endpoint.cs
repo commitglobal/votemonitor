@@ -22,7 +22,7 @@ public class Endpoint(IRepository<FormTemplateAggregate> repository) :
             return TypedResults.Conflict(new ProblemDetails(ValidationFailures));
         }
 
-        var formTemplate = FormTemplateAggregate.Create(req.FormTemplateType, req.Code, req.DefaultLanguage, req.Name, req.Languages);
+        var formTemplate = FormTemplateAggregate.Create(req.FormTemplateType, req.Code, req.DefaultLanguage, req.Name, req.Description, req.Languages);
 
         await repository.AddAsync(formTemplate, ct);
 

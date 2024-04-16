@@ -71,7 +71,6 @@ internal class TokenService(UserManager<ApplicationUser> userManager,
         return new TokenResponse(token, user.RefreshToken, user.RefreshTokenExpiryTime, user.Role);
     }
 
-
     private async Task<IEnumerable<Claim>> GetClaims(ApplicationUser user)
     {
         var claims = new List<Claim>

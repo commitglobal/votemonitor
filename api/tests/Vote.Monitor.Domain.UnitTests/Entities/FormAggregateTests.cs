@@ -47,7 +47,7 @@ public class FormAggregateTests
             multiSelectQuestion,
         };
 
-        var form = Form.Create(electionRound, monitoringNgo, FormType.ClosingAndCounting, "", new TranslatedString(), "EN", ["EN"], questions);
+        var form = Form.Create(electionRound, monitoringNgo, FormType.ClosingAndCounting, "", new TranslatedString(), new TranslatedString(), "EN", ["EN"], questions);
 
         // Act
 
@@ -102,7 +102,7 @@ public class FormAggregateTests
             multiSelectQuestion,
         };
 
-        var form = Form.Create(electionRound, monitoringNgo, FormType.ClosingAndCounting, "", new TranslatedString(), "EN", ["EN"], questions);
+        var form = Form.Create(electionRound, monitoringNgo, FormType.ClosingAndCounting, "", new TranslatedString(), new TranslatedString(), "EN", ["EN"], questions);
 
         List<BaseAnswer> initialAnswers = [
             new SingleSelectAnswer(singleSelectQuestion.Id, SelectedOption.Create(flaggedOptionId1, ""))
@@ -152,7 +152,7 @@ public class FormAggregateTests
             multiSelectQuestion,
         };
 
-        var form = Form.Create(electionRound, monitoringNgo, FormType.ClosingAndCounting, "", new TranslatedString(), "EN", ["EN"], questions);
+        var form = Form.Create(electionRound, monitoringNgo, FormType.ClosingAndCounting, "", new TranslatedString(), new TranslatedString(), "EN", ["EN"], questions);
 
         List<BaseAnswer> answers = [
             new SingleSelectAnswerFaker(singleSelectQuestion),
@@ -196,7 +196,7 @@ public class FormAggregateTests
             multiSelectQuestion,
         };
 
-        var form = Form.Create(electionRound, monitoringNgo, FormType.ClosingAndCounting, "", new TranslatedString(), "EN", ["EN"], questions);
+        var form = Form.Create(electionRound, monitoringNgo, FormType.ClosingAndCounting, "", new TranslatedString(),new TranslatedString(), "EN", ["EN"], questions);
 
         List<BaseAnswer> initialAnswers = [
             new SingleSelectAnswerFaker(singleSelectQuestion)

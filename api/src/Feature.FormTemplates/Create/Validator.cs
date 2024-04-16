@@ -29,6 +29,9 @@ public class Validator : Validator<Request>
         RuleFor(x => x.Name)
             .SetValidator(x => new PartiallyTranslatedStringValidator(x.Languages, 3, 256));
 
+        RuleFor(x => x.Description)
+            .SetValidator(x => new PartiallyTranslatedStringValidator(x.Languages, 3, 256));
+
         RuleFor(x => x.FormTemplateType)
             .NotEmpty();
     }

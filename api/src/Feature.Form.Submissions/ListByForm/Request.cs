@@ -1,6 +1,6 @@
 ﻿using Vote.Monitor.Core.Security;
 
-namespace Vote.Monitor.Api.Feature.Emergencies.ListReceived;
+namespace Feature.Form.Submissions.ListByForm;
 
 public class Request
 {

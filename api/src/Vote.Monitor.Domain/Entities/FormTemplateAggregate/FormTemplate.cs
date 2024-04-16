@@ -9,6 +9,7 @@ public class FormTemplate : AuditableBaseEntity, IAggregateRoot
     public string Code { get; private set; }
     public string DefaultLanguage { get; private set; }
     public TranslatedString Name { get; private set; }
+    public TranslatedString Description { get; private set; }
     public FormTemplateStatus Status { get; private set; }
     public string[] Languages { get; private set; } = [];
 
@@ -18,12 +19,14 @@ public class FormTemplate : AuditableBaseEntity, IAggregateRoot
         string code,
         string defaultLanguage,
         TranslatedString name,
+        TranslatedString description,
         IEnumerable<string> languages) : base(Guid.NewGuid())
     {
         FormTemplateType = formTemplateType;
         Code = code;
         DefaultLanguage = defaultLanguage;
         Name = name;
+        Description = description;
         Languages = languages.ToArray();
         Status = FormTemplateStatus.Drafted;
     }
@@ -32,8 +35,9 @@ public class FormTemplate : AuditableBaseEntity, IAggregateRoot
         string code,
         string defaultLanguage,
         TranslatedString name,
+        TranslatedString description,
         IEnumerable<string> languages) =>
-        new(formTemplateType, code, defaultLanguage, name, languages);
+        new(formTemplateType, code, defaultLanguage, name, description, languages);
 
     public PublishResult Publish()
     {
@@ -58,6 +62,7 @@ public class FormTemplate : AuditableBaseEntity, IAggregateRoot
     public void UpdateDetails(string code,
         string defaultLanguage,
         TranslatedString name,
+        TranslatedString description,
         FormTemplateType formTemplateType,
         IEnumerable<string> languages,
         IEnumerable<BaseQuestion> questions)
@@ -65,6 +70,7 @@ public class FormTemplate : AuditableBaseEntity, IAggregateRoot
         Code = code;
         DefaultLanguage = defaultLanguage;
         Name = name;
+        Description = description;
         FormTemplateType = formTemplateType;
         Languages = languages.ToArray();
         Questions = questions.ToList().AsReadOnly();
