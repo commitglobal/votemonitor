@@ -32,6 +32,7 @@ import Settings from "../assets/icons/Settings.svg";
 import LogoutNoBackground from "../assets/icons/LogoutNoBackground.svg";
 import Attachment from "../assets/icons/attachment.svg";
 import DragHandle from "../assets/icons/Drag handle.svg";
+import Search from "../assets/icons/search.svg";
 
 import { styled, View } from "tamagui";
 import { StyleProp, ViewStyle } from "react-native";
@@ -108,6 +109,7 @@ export const defaultIcon = React.forwardRef(
       logoutNoBackground: <LogoutNoBackground fill={color} width={size} height={size} />,
       attachment: <Attachment fill={color} width={size} height={size} />,
       dragHandle: <DragHandle fill={color} width={size} height={size} />,
+      search: <Search fill={color} width={size} height={size} />,
     };
 
     return (
