@@ -72,22 +72,24 @@ export const usePollingStationsNomenclatorQuery = (electionRoundId: string | und
   return useQuery({
     queryKey: pollingStationsKeys.nomenclator(electionRoundId!),
     queryFn: async () => {
-      try {
-        console.log("usePollingStationsNomenclatorQuery");
-        const { cacheKey: serverVersionKey } = await getPollingStationNomenclatorVersion(
-          electionRoundId!,
-        );
-        const localVersionKey = await AsyncStorage.getItem(
-          pollingStationsKeys.nomenclatorCacheKey(electionRoundId!).join(),
-        );
-        const exists = await DB.getOne(electionRoundId!);
+      console.log("usePollingStationsNomenclatorQuery");
 
-        console.log(
-          "usePollingStationsNomenclatorQuery",
-          serverVersionKey,
-          localVersionKey,
-          electionRoundId,
-        );
+      const localVersionKey = await AsyncStorage.getItem(
+        pollingStationsKeys.nomenclatorCacheKey(electionRoundId!).join(),
+      );
+
+      let serverVersionKey;
+      try {
+        serverVersionKey = (await getPollingStationNomenclatorVersion(electionRoundId!))?.cacheKey;
+      } catch (err) {
+        // Possible offline or backend has issues, let it pass
+        // Sentry log
+        serverVersionKey = localVersionKey ?? "";
+        console.log("usePollingStationsNomenclatorQuery", err);
+      }
+
+      try {
+        const exists = await DB.getOne(electionRoundId!);
 
         if (!localVersionKey) console.log("🆕🆕🆕🆕 Nomenclator: No Local Version Key");
         if (!exists) console.log("🆕🆕🆕🆕 Nomenclator: No data for the election round");
@@ -95,8 +97,8 @@ export const usePollingStationsNomenclatorQuery = (electionRoundId: string | und
           console.log("❌❌❌❌ Nomenclator: Busting cache, new data coming");
 
         if (!localVersionKey || !exists || serverVersionKey !== localVersionKey) {
-          await DB.deleteAll(electionRoundId!);
           const data = await getPollingStationNomenclator(electionRoundId!);
+          await DB.deleteAll(electionRoundId!);
           await DB.addPollingStationsNomenclatureBulk(electionRoundId!, data.nodes);
           await AsyncStorage.setItem(
             pollingStationsKeys.nomenclatorCacheKey(electionRoundId!).join(),
@@ -115,7 +117,7 @@ export const usePollingStationsNomenclatorQuery = (electionRoundId: string | und
     enabled: !!electionRoundId,
     // staleTime: 5 * 60 * 1000,
     staleTime: 0,
-    // networkMode: "always",
+    networkMode: "always",
   });
 };
 

@@ -18,7 +18,9 @@ type UserContextType = {
   activeElectionRound?: ElectionRoundVM;
   selectedPollingStation?: PollingStationNomenclatorNodeVM | null;
 
+  hadEnoughDataForOffline: boolean;
   isLoading: boolean;
+
   error: Error | null;
   setSelectedPollingStationId: (pollingStationId: string) => void;
 };
@@ -27,6 +29,7 @@ export const UserContext = createContext<UserContextType>({
   electionRounds: [],
   visits: [],
   isLoading: false,
+  hadEnoughDataForOffline: true,
   error: null,
   setSelectedPollingStationId: (_pollingStationId: string) => {},
 });
@@ -59,8 +62,11 @@ const UserContextProvider = ({ children }: React.PropsWithChildren) => {
     );
   }, [visits, selectedPollingStationId]);
 
-  const { isFetching: isLoadingNomenclature, error: NomenclatureError } =
-    usePollingStationsNomenclatorQuery(activeElectionRound?.id);
+  const {
+    data: nomenclatorExists,
+    isFetching: isLoadingNomenclature,
+    error: NomenclatureError,
+  } = usePollingStationsNomenclatorQuery(activeElectionRound?.id);
 
   const { data: lastVisitedPollingStation } = usePollingStationById(
     currentSelectedPollingStationId,
@@ -71,6 +77,7 @@ const UserContextProvider = ({ children }: React.PropsWithChildren) => {
       value={{
         error: ElectionRoundsError || PollingStationsError || NomenclatureError,
         isLoading: isLoadingRounds || isLoadingVisits || isLoadingNomenclature,
+        hadEnoughDataForOffline: !!rounds?.length && !!nomenclatorExists,
         visits: visits || [],
         electionRounds: rounds || [],
         activeElectionRound,
