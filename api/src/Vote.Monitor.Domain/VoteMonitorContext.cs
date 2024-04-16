@@ -10,6 +10,7 @@ using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 using Vote.Monitor.Domain.Entities.NgoAdminAggregate;
 using Vote.Monitor.Domain.Entities.NgoAggregate;
 using Vote.Monitor.Domain.Entities.NotificationAggregate;
+using Vote.Monitor.Domain.Entities.NotificationStubAggregate;
 using Vote.Monitor.Domain.Entities.NotificationTokenAggregate;
 using Vote.Monitor.Domain.Entities.ObserverAggregate;
 using Vote.Monitor.Domain.Entities.ObserverGuideAggregate;
@@ -57,6 +58,8 @@ public class VoteMonitorContext : IdentityDbContext<ApplicationUser, IdentityRol
     public DbSet<Notification> Notifications { set; get; }
     public DbSet<PollingStationAttachment> PollingStationAttachments { set; get; }
     public DbSet<PollingStationNote> PollingStationNotes { set; get; }
+    public DbSet<NotificationStub> NotificationStubs { get; set; }
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
@@ -120,6 +123,7 @@ public class VoteMonitorContext : IdentityDbContext<ApplicationUser, IdentityRol
         builder.ApplyConfiguration(new FormConfiguration());
         builder.ApplyConfiguration(new FormSubmissionConfiguration());
         builder.ApplyConfiguration(new RoleConfiguration());
+        builder.ApplyConfiguration(new NotificationStubConfiguration());
     }
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)

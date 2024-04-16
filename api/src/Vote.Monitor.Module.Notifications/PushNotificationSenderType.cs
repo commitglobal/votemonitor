@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace Vote.Monitor.Core.Services.PushNotification;
+namespace Vote.Monitor.Module.Notifications;
 
 public enum PushNotificationSenderType
 {
@@ -9,5 +9,8 @@ public enum PushNotificationSenderType
     Noop,
 
     [EnumMember(Value = "Firebase")]
-    Firebase
+    Firebase,
+
+    [EnumMember(Value = "Expo")]
+    Expo
 }
