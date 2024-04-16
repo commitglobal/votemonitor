@@ -1,4 +1,4 @@
-import { Outlet, useLoaderData, useNavigate } from '@tanstack/react-router';
+import { useLoaderData, useNavigate } from '@tanstack/react-router';
 import { Observer } from '../../models/Observer';
 import Layout from '@/components/layout/Layout';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -12,7 +12,7 @@ export default function ObserverDetails() {
   const observer: Observer = useLoaderData({ strict: false });
   const navigate = useNavigate();
   const navigateToEdit = () => {
-    navigate({ to: 'edit' });
+    navigate({ to: `/observers/$observerId/edit`, params: { observerId: observer.id } });
   };
 
   return (

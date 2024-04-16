@@ -1,4 +1,4 @@
-import { createContext } from "react";
+import { createContext, useContext } from "react";
 import i18n from "../../common/config/i18n";
 
 type Language = "en" | "ro";
@@ -27,6 +27,10 @@ const LanguageContextProvider = ({ children }: React.PropsWithChildren) => {
       {children}
     </LanguageContext.Provider>
   );
+};
+
+export const useLanguage = () => {
+  return useContext(LanguageContext);
 };
 
 export default LanguageContextProvider;

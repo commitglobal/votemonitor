@@ -37,10 +37,7 @@ const Button = (props: ButtonProps): JSX.Element => {
   const { style: $styleOverride, children, textStyle, ...rest } = props;
   const presetType: PresetType = props.preset ?? "default";
   const $presetTextStyles = {
-    color:
-      presetType === "default" || presetType === "red"
-        ? "white"
-        : theme.$purple5?.val,
+    color: presetType === "default" || presetType === "red" ? "white" : theme.$purple5?.val,
   };
 
   const $textStyles: TextStyle = { ...$presetTextStyles, ...textStyle };
@@ -82,6 +79,7 @@ const Button = (props: ButtonProps): JSX.Element => {
           pressStyle: {
             backgroundColor: "transparent",
             opacity: 0.8,
+            borderColor: "transparent",
           },
         },
         red: {
@@ -97,7 +95,7 @@ const Button = (props: ButtonProps): JSX.Element => {
 
   return (
     <StyledButton presets={presetType} style={$styleOverride} {...rest}>
-      <Typography preset="body1" style={{ ...$textStyles, fontWeight: "500" }}>
+      <Typography preset="body2" style={$textStyles}>
         {children}
       </Typography>
     </StyledButton>

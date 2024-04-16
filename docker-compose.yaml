@@ -5,7 +5,7 @@ services:
     image: votemonitorapi
     build:
       context: .
-      dockerfile: src/Vote.Monitor.Api/Dockerfile
+      dockerfile: api/src/Vote.Monitor.Api/Dockerfile
       args:
         - BUILD_CONFIGURATION=Development
         - REVISION=LocalBuild
@@ -40,9 +40,42 @@ services:
       POSTGRES_DB: docker
     ports:
       - "5432:5432"
+    command: ["postgres", "-c", "log_statement=all"]
     container_name: postgresql-local
     volumes:
       - db-data:/var/lib/postgresql/data:rw,size=200m
+      
+  mailpit:
+    image: axllent/mailpit
+    container_name: mailpit
+    restart: always
+    volumes:
+      - ./.data:/data
+    ports:
+      - 8025:8025
+      - 1025:1025
+    environment:
+      MP_MAX_MESSAGES: 5000
+      MP_DATA_FILE: /data/mailpit.db
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
+  hangfire:
+    image: votemonitorhangfire
+    build:
+      context: .
+      dockerfile: api/src/Vote.Monitor.Hangfire/Dockerfile
+      args:
+        - BUILD_CONFIGURATION=Development
+        - REVISION=LocalBuild
+    container_name: votemonitorhangfire
+    env_file:
+      - .env
+    ports:
+      - "5001:8080"
+    depends_on:
+      db:
+        condition: service_started
+
 
 
 volumes:

@@ -1,14 +1,12 @@
 import { Link, useRouter } from '@tanstack/react-router';
-import { ChevronLeftIcon } from '@heroicons/react/24/outline';
 
 const BackButton = () => {
   const { latestLocation } = useRouter();
-
   const links = latestLocation.pathname.split('/').filter((crumb: string) => crumb !== '');
   return (
     <>
       {links.length > 1 ? (
-        <Link to={`/${links[links.length - 2]}`} preload='intent'>
+        <Link to={`../`} preload='intent'>
           <svg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30' fill='none'>
             <path
               fillRule='evenodd'

@@ -193,7 +193,7 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
     setTags((currentTags) => {
       const newTags = [...currentTags];
       const [removedTag] = newTags.splice(oldIndex, 1);
-      newTags.splice(newIndex, 0, removedTag);
+      newTags.splice(newIndex, 0, removedTag!);
 
       return newTags;
     });

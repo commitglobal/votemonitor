@@ -13,7 +13,7 @@ export default function ObserverDetails() {
   const observer: MonitoringObserver = useLoaderData({ strict: false });
   const navigate = useNavigate();
   const navigateToEdit = () => {
-    navigate({ to: 'edit' });
+    navigate({ to: '/monitoring-observers/$monitoringObserverId/edit', params: { monitoringObserverId: observer.id } });
   };
 
   return (

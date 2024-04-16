@@ -1,0 +1,11 @@
+﻿global using System.Text;
+global using FluentAssertions;
+global using FluentValidation.TestHelper;
+global using Microsoft.Extensions.Logging;
+global using Microsoft.Extensions.Logging.Abstractions;
+global using NSubstitute;
+global using Xunit;
+global using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
+global using Vote.Monitor.Api.Feature.Observer.Specifications;
+global using Vote.Monitor.TestUtils;
+global using Vote.Monitor.TestUtils.Fakes.Aggregates;
