@@ -8,6 +8,7 @@ import { Icon } from "../../../components/Icon";
 import { ScrollViewProps, StyleProp, ViewStyle } from "react-native";
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 import { useTheme } from "tamagui";
+import { useUserData } from "../../../contexts/user/UserContext.provider";
 
 type DrawerContentProps = ScrollViewProps & {
   children?: React.ReactNode;
@@ -15,14 +16,15 @@ type DrawerContentProps = ScrollViewProps & {
 };
 
 export const DrawerContent = (props: DrawerContentProps) => {
-  const votingSessions = [{ name: "session 1" }, { name: "session2" }, { name: "session 3" }];
+  const { electionRounds } = useUserData();
+
   const theme = useTheme();
   return (
     <DrawerContentScrollView {...props}>
-      {votingSessions.map((votingSession, index) => (
+      {electionRounds.map((round, index) => (
         <DrawerItem
           key={index}
-          label={votingSession.name}
+          label={`${round.status} - ${round.title}`}
           inactiveTintColor={theme.yellow6?.val}
           onPress={() => console.log("")}
         />
