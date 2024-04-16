@@ -100,8 +100,14 @@ type PollingStationInformationVM = {
 const Index = () => {
   const queryClient = useQueryClient();
 
-  const { isLoading, electionRounds, visits, selectedPollingStation, activeElectionRound } =
-    useUserData();
+  const {
+    isLoading,
+    enoughDataForOffline,
+    electionRounds,
+    visits,
+    selectedPollingStation,
+    activeElectionRound,
+  } = useUserData();
 
   const { data } = usePollingStationInformation(
     activeElectionRound?.id,
@@ -151,6 +157,10 @@ const Index = () => {
 
   if (isLoading) {
     return <Typography>Loading...</Typography>;
+  }
+
+  if (!enoughDataForOffline) {
+    return <Typography>Not enough data for offline, need to retry...</Typography>;
   }
 
   if (!electionRounds?.length) {

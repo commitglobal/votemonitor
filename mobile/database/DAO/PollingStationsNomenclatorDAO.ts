@@ -72,6 +72,21 @@ export const deleteAll = (electionRoundId: string) => {
   });
 };
 
+export const deleteEverything = () => {
+  return database.write(async () => {
+    const data = await database.get(DB_TABLE_NAMES.POLLING_STATIONS_NOMENCLATOR).query().fetch();
+
+    if (!data.length) {
+      return;
+    }
+
+    const deleted = data.map((item) => item.prepareDestroyPermanently());
+
+    await database.batch(deleted);
+    console.log("deleteAllRecordsPollingStationNomenclator END");
+  });
+};
+
 /**
  * @param {number} [parentId=-1] we save top-level nodes with -1
  * @returns {Promise<PollingStationsNom[]>}
