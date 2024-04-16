@@ -248,7 +248,7 @@ const PollingStationQuestionnaire = () => {
   });
 
   return (
-    <Screen preset="scroll" contentContainerStyle={$containerStyle}>
+    <Screen preset="scroll">
       <Header
         title={t("header.title")}
         titleColor="white"
@@ -441,10 +441,6 @@ export const OptionsSheet = (props: OptionsSheetProps) => {
       </Sheet.Frame>
     </Sheet>
   );
-};
-
-const $containerStyle: ViewStyle = {
-  padding: 10,
 };
 
 export default PollingStationQuestionnaire;
