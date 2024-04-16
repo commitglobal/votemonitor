@@ -44,7 +44,7 @@ public static class CoreServicesInstaller
                     .UseSimpleAssemblyNameTypeSerializer()
                     .UseRecommendedSerializerSettings()
                     .UsePostgreSqlStorage(c =>
-                        c.UseNpgsqlConnection(configuration.GetNpgsqlConnectionString("HangfireConnectionConfig")));
+                        c.UseNpgsqlConnection(configuration.GetNpgsqlConnectionString("HangfireConnectionConfig")), new PostgreSqlStorageOptions() { PrepareSchemaIfNecessary = false });
 
                 config.UseColouredConsoleLogProvider();
             });
