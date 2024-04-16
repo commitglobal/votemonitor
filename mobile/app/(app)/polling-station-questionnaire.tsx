@@ -360,6 +360,7 @@ const PollingStationQuestionnaire = () => {
                 <YStack>
                   <RatingFormInput
                     id={question.id}
+                    scale="OneTo7"
                     type="single"
                     title={question.text.EN}
                     value={value}

@@ -4,11 +4,19 @@ import { styled, ToggleGroup, ToggleGroupSingleProps } from "tamagui";
 import { Text } from "react-native";
 
 const SCALES = {
+  OneTo3: [1, 2, 3],
+  OneTo4: [1, 2, 3, 4],
+  OneTo5: [1, 2, 3, 4, 5],
+  OneTo6: [1, 2, 3, 4, 5, 6],
+  OneTo7: [1, 2, 3, 4, 5, 6, 7],
+  OneTo8: [1, 2, 3, 4, 5, 6, 7, 8],
+  OneTo9: [1, 2, 3, 4, 5, 6, 7, 8, 9],
   OneTo10: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
 };
 
 export interface RatingInputProps extends ToggleGroupSingleProps {
   id: string;
+  scale: string;
 }
 
 const StyledToggleGroupItem = styled(ToggleGroup.Item, {
@@ -28,7 +36,15 @@ const StyledToggleGroupItem = styled(ToggleGroup.Item, {
   },
 });
 
-export const RatingInput: React.FC<RatingInputProps> = ({ id, value, onValueChange, ...rest }) => {
+export const RatingInput: React.FC<RatingInputProps> = ({
+  id,
+  scale,
+  value,
+  onValueChange,
+  ...rest
+}) => {
+  const selectedScale = SCALES[scale as keyof typeof SCALES] || SCALES.OneTo10;
+
   return (
     <ToggleGroup
       orientation="horizontal"
@@ -39,7 +55,7 @@ export const RatingInput: React.FC<RatingInputProps> = ({ id, value, onValueChan
       onValueChange={onValueChange}
       {...rest}
     >
-      {SCALES.OneTo10.map((rating, i) => (
+      {selectedScale.map((rating, i) => (
         <StyledToggleGroupItem
           key={i}
           value={rating.toString()}
