@@ -32,7 +32,9 @@ const RadioInput: React.FC<RadioInputProps> = ({ id, value, label, selectedValue
         backgroundColor={isSelected ? "$purple5" : "white"}
         borderColor={isSelected ? "$purple5" : "$gray3"}
       >
-        <RadioGroup.Indicator backgroundColor="white" />
+        {isSelected && (
+          <RadioGroup.Indicator forceMount={true} backgroundColor="white"></RadioGroup.Indicator>
+        )}
       </RadioGroup.Item>
 
       <Label htmlFor={id} flex={1} lineHeight={20} paddingVertical="$xs">
