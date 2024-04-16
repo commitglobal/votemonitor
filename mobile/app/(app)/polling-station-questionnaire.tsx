@@ -248,7 +248,14 @@ const PollingStationQuestionnaire = () => {
   });
 
   return (
-    <Screen preset="scroll" backgroundColor="white">
+    <Screen
+      preset="scroll"
+      backgroundColor="white"
+      ScrollViewProps={{
+        stickyHeaderIndices: [0],
+        bounces: false,
+      }}
+    >
       <Header
         title={t("header.title")}
         titleColor="white"
