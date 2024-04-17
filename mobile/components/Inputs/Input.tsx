@@ -22,7 +22,7 @@ const StyledInput = styled(TamaguiInput, {
 
 const StyledTextArea = styled(TamaguiTextArea, {
   backgroundColor: "white",
-  minHeight: 98,
+  minHeight: 20,
   paddingVertical: "$xs",
   paddingHorizontal: 14,
   borderColor: "$gray3",

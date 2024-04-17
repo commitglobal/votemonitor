@@ -14,18 +14,14 @@ const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
   }, []);
 
   const signIn = async (email: string, password: string) => {
-    console.log("Signing in...");
-    console.log("Email: ", email);
-    console.log("Password: ", password);
-
     try {
       setIsLoading(true);
       // const { token } = await dummyLogin();
       const {
         data: { token },
       } = await API.post("auth/login", {
-        email: "alice@example.com",
-        password: "string",
+        email,
+        password,
       });
       SecureStore.setItem("access_token", token);
       setIsAuthenticated(true);

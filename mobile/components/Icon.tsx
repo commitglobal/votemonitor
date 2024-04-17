@@ -34,6 +34,7 @@ import Attachment from "../assets/icons/attachment.svg";
 import DragHandle from "../assets/icons/Drag handle.svg";
 import Search from "../assets/icons/search.svg";
 import LoginLogo from "../assets/icons/VM login logo.svg";
+import InfoCircle from "../assets/icons/Information circle.svg";
 
 import { styled, View } from "tamagui";
 import { StyleProp, ViewStyle } from "react-native";
@@ -112,6 +113,7 @@ export const defaultIcon = React.forwardRef(
       dragHandle: <DragHandle fill={color} width={size} height={size} />,
       search: <Search fill={color} width={size} height={size} />,
       loginLogo: <LoginLogo fill={color} width={size} height={size} />,
+      infoCircle: <InfoCircle fill={color} width={size} height={size} />,
     };
 
     return (

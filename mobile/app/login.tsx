@@ -1,10 +1,10 @@
 import React from "react";
 import { router } from "expo-router";
 import { useAuth } from "../hooks/useAuth";
-import { View, XStack, YStack, styled } from "tamagui";
+import { View, XStack, styled } from "tamagui";
 import { useTranslation } from "react-i18next";
 import { Screen } from "../components/Screen";
-import { StatusBar } from "react-native";
+import { StatusBar, ViewStyle } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Icon } from "../components/Icon";
 import { tokens } from "../theme/tokens";
@@ -12,89 +12,156 @@ import { Typography } from "../components/Typography";
 import Button from "../components/Button";
 import FormInput from "../components/FormInputs/FormInput";
 import { Controller, useForm } from "react-hook-form";
+import Card from "../components/Card";
 
 const Login = () => {
   const { t } = useTranslation("login");
-
-  const ContentContainer = styled(View, {
-    name: "Container",
-    gap: 40,
-    paddingHorizontal: tokens.space.md.val,
-    paddingVertical: tokens.space.xl.val,
-  });
-
-  return (
-    <Screen preset="auto" backgroundColor="white">
-      <BigHeader />
-
-      <ContentContainer>
-        <Typography> {t("informative-text")}</Typography>
-        <LoginForm />
-      </ContentContainer>
-    </Screen>
-  );
-};
-
-const LoginForm = () => {
-  const { handleSubmit, control } = useForm();
-
   const { signIn } = useAuth();
-  const onLogin = async (email: string, password: string) => {
+  const onLogin = async (formData: Record<string, string>) => {
     try {
-      await signIn(email, password);
+      await signIn(formData.email, formData.password);
       router.replace("/");
     } catch (err) {
       console.error("Error while logging in...");
     }
   };
+  const { handleSubmit, control } = useForm({
+    // defaultValues: {
+    //   email: "alice@example.com",
+    //   password: "string",
+    // },
+  });
 
-  const onSubmit = (data: any) => {
-    console.log(data);
-    onLogin(data.email, data.password);
-  };
+  const ContentContainer = styled(View, {
+    name: "Container",
+    flex: 1,
+    gap: 40,
+    paddingHorizontal: tokens.space.md.val,
+    paddingTop: tokens.space.xl.val,
+  });
 
   return (
-    <YStack>
-      <Typography> Log in </Typography>
+    <Screen preset="auto" contentContainerStyle={$containerStyle}>
+      <BigHeader />
 
-      <Typography>
-        Please use the email address with which you registered as an independent observer:
-      </Typography>
+      <ContentContainer>
+        <View flexDirection="row" gap={8}>
+          <Icon icon="infoCircle" size={18} color="white" style={{ marginTop: 2 }} />
+          <Typography>{t("informative-text")}</Typography>
+        </View>
 
-      <Controller
-        key="email"
-        name="email"
-        control={control}
-        render={({ field: { onChange, value } }) => (
-          <FormInput
-            type="text"
-            title="email"
-            placeholder="email"
-            value={value}
-            onChangeText={onChange}
-          ></FormInput>
-        )}
-      />
+        <View gap={12}>
+          <Typography preset="heading" fontWeight="700">
+            Log in
+          </Typography>
 
-      <Controller
-        key="password"
-        name="password"
-        control={control}
-        render={({ field: { onChange, value } }) => (
-          <FormInput
-            type="text"
-            title="password"
-            placeholder="password"
-            value={value}
-            onChangeText={onChange}
-          ></FormInput>
-        )}
-      />
+          <Typography>
+            Please use the email address with which you registered as an independent observer:
+          </Typography>
 
-      <Button onPress={handleSubmit(onSubmit)}>Log in</Button>
-    </YStack>
+          <Controller
+            key="email"
+            name="email"
+            control={control}
+            render={({ field: { onChange, value } }) => (
+              <FormInput
+                type="text"
+                title="Email *"
+                placeholder="E-mail"
+                value={value}
+                onChangeText={onChange}
+              ></FormInput>
+            )}
+          />
+
+          <Controller
+            key="password"
+            name="password"
+            control={control}
+            render={({ field: { onChange, value } }) => (
+              <FormInput
+                type="text"
+                title="Password *"
+                placeholder="Password"
+                value={value}
+                onChangeText={onChange}
+              ></FormInput>
+            )}
+          />
+        </View>
+      </ContentContainer>
+
+      <Card width="100%">
+        <Button onPress={handleSubmit(onLogin)}>Log in</Button>
+      </Card>
+    </Screen>
   );
 };
+
+// const LoginForm = () => {
+//   // const { handleSubmit, control } = useForm({
+//   //   // defaultValues: {
+//   //   //   email: "alice@example.com",
+//   //   //   password: "string",
+//   //   // },
+//   // });
+
+//   // const { signIn } = useAuth();
+//   // const onLogin = async (formData: Record<string, string>) => {
+//   //   try {
+//   //     await signIn(formData.email, formData.password);
+//   //     router.replace("/");
+//   //   } catch (err) {
+//   //     console.error("Error while logging in...");
+//   //   }
+//   // };
+
+//   return (
+//     // <View gap={12}>
+//     //   <Typography preset="heading" fontWeight="700">
+//     //     Log in
+//     //   </Typography>
+
+//     //   <Typography>
+//     //     Please use the email address with which you registered as an independent observer:
+//     //   </Typography>
+
+//     //   <Controller
+//     //     key="email"
+//     //     name="email"
+//     //     // control={control}
+//     //     render={({ field: { onChange, value } }) => (
+//     //       <FormInput
+//     //         type="text"
+//     //         title="Email *"
+//     //         placeholder="E-mail"
+//     //         value={value}
+//     //         onChangeText={onChange}
+//     //       ></FormInput>
+//     //     )}
+//     //   />
+
+//     //   <Controller
+//     //     key="password"
+//     //     name="password"
+//     //     // control={control}
+//     //     render={({ field: { onChange, value } }) => (
+//     //       <FormInput
+//     //         type="text"
+//     //         title="Password *"
+//     //         placeholder="Password"
+//     //         value={value}
+//     //         onChangeText={onChange}
+//     //       ></FormInput>
+//     //     )}
+//     //   />
+//     // </View>
+
+//     // {/* <Card width="100%">
+//     //   <Button onPress={handleSubmit(onLogin)}>Log in</Button>
+//     // </Card> */}
+//   );
+// };
 
 // const SmallHeader = () => {
 //   const insets = useSafeAreaInsets();
@@ -129,6 +196,10 @@ const BigHeader = () => {
       <Icon icon="loginLogo" size={300} />
     </StyledWrapper>
   );
+};
+
+const $containerStyle: ViewStyle = {
+  flex: 1,
 };
 
 export default Login;
