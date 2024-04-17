@@ -8,6 +8,7 @@ import React, {
   useState,
 } from "react";
 import NetInfo from "@react-native-community/netinfo";
+import { onlineManager } from "@tanstack/react-query";
 
 type NetInfoContextType = {
   isOnline: boolean;
@@ -22,21 +23,22 @@ const NetInfoContext = createContext<NetInfoContextType>({
 export const useNetInfoContext = () => useContext(NetInfoContext);
 
 export const NetInfoProvider = ({ children }: { children: ReactNode }) => {
-  const [isOnline, setIsOnline] = useState(false);
-  const [showNetInfoBanner, setShowNetInfoBanner] = useState(true);
+  const [isOnline, setIsOnline] = useState(true);
+  const [showNetInfoBanner, setShowNetInfoBanner] = useState(false);
 
   const isFirstRender = useRef(true);
 
   useEffect(() => {
     const unsubscribe = NetInfo.addEventListener((state) => {
       const status = !!state.isConnected;
+      onlineManager.setOnline(status);
       setIsOnline(status);
     });
-    return unsubscribe();
+    return () => unsubscribe();
   }, []);
 
   useEffect(() => {
-    if (isOnline && isFirstRender.current !== true) {
+    if (!isFirstRender.current && isOnline) {
       setShowNetInfoBanner(true);
     }
 
