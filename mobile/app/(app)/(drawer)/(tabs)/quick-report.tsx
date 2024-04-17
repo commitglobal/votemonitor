@@ -12,11 +12,43 @@ import LinearProgress from "../../../../components/LinearProgress";
 import CardFooter from "../../../../components/CardFooter";
 import SelectPollingStation from "../../../../components/SelectPollingStation";
 import { Dialog } from "../../../../components/Dialog";
+import FormOverview from "../../../../components/FormOverview";
+import QuestionCard from "../../../../components/QuestionCard";
+
+const mockQuestions = [
+  {
+    id: "5043260e-017b-4e48-bb31-6e8bcdd870f0",
+    text: "Were all necessary election materials present?",
+    status: "not answered",
+    numberOfQuestions: 6,
+  },
+  {
+    id: "5043260e-017b-4e48-cb31-jnckencksjn",
+    text: "Were the tasks/responsibilities of individual PEC members determined by drawing lots?",
+    status: "not answered",
+    numberOfQuestions: 6,
+  },
+];
 
 const QuickReport = () => {
   return (
     <Screen preset="auto" backgroundColor="white" contentContainerStyle={{ gap: 20 }}>
       <SelectPollingStation placeholder="Select polling station" options={pollingStationAdresses} />
+      <Stack padding="$md" gap="$md">
+        <Card>
+          <FormOverview />
+        </Card>
+        <Typography>Questions</Typography>
+        {mockQuestions.map((question, index) => (
+          <QuestionCard
+            question={question}
+            index={index + 1}
+            onPress={() => console.log("question action")}
+            key={question.id}
+          />
+        ))}
+      </Stack>
+
       <Text>Quick Report</Text>
       <Card>
         <Typography
