@@ -39,7 +39,7 @@ public class Endpoint(IRepository<FormSubmission> repository,
             return TypedResults.NotFound();
         }
 
-        var specification = new GetFormSubmissionById(req.ElectionRoundId, req.PollingStationId, req.ObserverId);
+        var specification = new GetFormSubmissionSpecification(req.ElectionRoundId, req.PollingStationId, req.FormId, req.ObserverId);
         var formSubmission = await repository.FirstOrDefaultAsync(specification, ct);
 
         var answers = req.Answers.Select(AnswerMapper.ToEntity).ToList();

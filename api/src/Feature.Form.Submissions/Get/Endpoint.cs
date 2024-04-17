@@ -4,17 +4,18 @@ public class Endpoint(IReadRepository<FormSubmission> repository) : Endpoint<Req
 {
     public override void Configure()
     {
-        Get("/api/election-rounds/{electionRoundId}/form-submissions/{id}");
+        Get("/api/election-rounds/{electionRoundId}/form-submissions");
         DontAutoTag();
         Options(x => x.WithTags("form-submissions", "mobile"));
-        Summary(s => {
+        Summary(s =>
+        {
             s.Summary = "Gets submission for a polling station";
         });
     }
 
     public override async Task<Results<Ok<FormSubmissionModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var specification = new GetFormSubmissionById(req.ElectionRoundId, req.PollingStationId, req.ObserverId);
+        var specification = new GetFormSubmissionSpecification(req.ElectionRoundId, req.PollingStationId, req.FormId, req.ObserverId);
         var pollingStationInformation = await repository.FirstOrDefaultAsync(specification, ct);
 
         if (pollingStationInformation is null)
