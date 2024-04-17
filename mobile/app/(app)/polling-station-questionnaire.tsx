@@ -395,7 +395,8 @@ const PollingStationQuestionnaire = () => {
                   name={question.id}
                   control={control}
                   render={({ field: { onChange, value } }) => {
-                    const selections: Record<string, { optionId: string; text: string }> = value;
+                    const selections: Record<string, { optionId: string; text: string }> =
+                      value || {};
 
                     return (
                       <>
