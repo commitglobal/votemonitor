@@ -4,6 +4,7 @@ public class NotificationStub : BaseEntity
 {
     public NotificationStubType StubType { get; private set; }
     public string SerializedData { get; private set; }
+    public bool HasBeenProcessed { get; private set; }
 
     public NotificationStub(NotificationStubType stubType, string serializedData) : base(Guid.NewGuid())
     {
@@ -16,6 +17,11 @@ public class NotificationStub : BaseEntity
 
     public static NotificationStub CreateFirebaseNotificationStub(string serializedData)
         => new(NotificationStubType.Firebase, serializedData);
+
+    public void MarkAsProcessed()
+    {
+        HasBeenProcessed = true;
+    }
 
 #pragma warning disable CS8618 // Required by Entity Framework
 

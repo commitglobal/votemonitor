@@ -9,5 +9,8 @@ public class NotificationStubConfiguration : IEntityTypeConfiguration<Notificati
     {
         builder.Property(x => x.StubType).IsRequired();
         builder.Property(x => x.SerializedData).IsRequired();
+        builder.Property(x => x.HasBeenProcessed)
+            .HasDefaultValue(false)
+            .IsRequired();
     }
 }
