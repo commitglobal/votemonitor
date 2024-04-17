@@ -57,22 +57,22 @@ export default function Root() {
 
   return (
     <TamaguiProvider config={tamaguiConfig}>
-      <AuthContextProvider>
-        <PersistQueryContextProvider>
-          <LanguageContextProvider>
-            {!isOnline && <OfflineBanner />}
-            <Slot />
-            <Button
-              onPress={() => {
-                setIsOnline(!isOnline);
-                onlineManager.setOnline(!isOnline);
-              }}
-            >
-              Go Offline online
-            </Button>
-          </LanguageContextProvider>
-        </PersistQueryContextProvider>
-      </AuthContextProvider>
+      {/* <AuthContextProvider> */}
+      <PersistQueryContextProvider>
+        <LanguageContextProvider>
+          {!isOnline && <OfflineBanner />}
+          <Slot />
+          <Button
+            onPress={() => {
+              setIsOnline(!isOnline);
+              onlineManager.setOnline(!isOnline);
+            }}
+          >
+            Go Offline online
+          </Button>
+        </LanguageContextProvider>
+      </PersistQueryContextProvider>
+      {/* </AuthContextProvider> */}
     </TamaguiProvider>
   );
 }
