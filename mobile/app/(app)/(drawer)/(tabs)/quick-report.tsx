@@ -25,7 +25,7 @@ const mockQuestions = [
   {
     id: "5043260e-017b-4e48-cb31-jnckencksjn",
     text: "Were the tasks/responsibilities of individual PEC members determined by drawing lots?",
-    status: "not answered",
+    status: "answered",
     numberOfQuestions: 6,
   },
 ];
