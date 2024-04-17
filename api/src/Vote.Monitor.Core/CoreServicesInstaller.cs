@@ -56,7 +56,7 @@ public static class CoreServicesInstaller
             services.AddTransient<IJobService, NoopJobService>();
         }
 
-        services.AddTransient<IEmailTemplateFactory, EmailFactory>();
+        services.AddTransient<IEmailTemplateFactory, EmailTemplateFactory>();
 
         return services;
     }
