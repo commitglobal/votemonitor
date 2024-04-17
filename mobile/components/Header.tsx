@@ -6,12 +6,9 @@ import {
   ViewStyle,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { styled, XStack, Stack } from "tamagui";
+import { styled, XStack } from "tamagui";
 import { Typography } from "./Typography";
-import { Icon } from "../components/Icon";
 import { tokens } from "../theme/tokens";
-import { useEffect, useState } from "react";
-import NetInfo from "@react-native-community/netinfo";
 
 interface HeaderProps {
   /**
@@ -62,22 +59,6 @@ const Header = ({
   rightIcon,
   onRightPress,
 }: HeaderProps) => {
-  const [isOnline, setIsOnline] = useState(true);
-  const [showNetInfoBanner, setShowNetInfoBanner] = useState(true);
-
-  useEffect(() => {
-    const unsubscribe = NetInfo.addEventListener((state) => {
-      const status = !!state.isConnected;
-      setIsOnline(status);
-    });
-    return unsubscribe();
-  }, []);
-
-  // show online banner again after user is connected again
-  useEffect(() => {
-    if (isOnline) setShowNetInfoBanner(true);
-  }, [isOnline]);
-
   const insets = useSafeAreaInsets();
 
   const StyledWrapper = styled(XStack, {
@@ -115,37 +96,6 @@ const Header = ({
           {rightIcon || null}
         </TouchableOpacity>
       </StyledWrapper>
-      {isOnline ? (
-        showNetInfoBanner && (
-          <XStack
-            backgroundColor="$green1"
-            paddingLeft={20}
-            justifyContent="space-between"
-            alignItems="center"
-            position="absolute"
-            width="100%"
-            top={50 + insets.top}
-            zIndex={100_000}
-          >
-            <Typography fontWeight="500" color="$gray7">
-              App online. All answers sent to server.
-            </Typography>
-            <Stack
-              onPress={() => setShowNetInfoBanner(false)}
-              paddingVertical="$xxs"
-              paddingHorizontal={20}
-            >
-              <Icon icon="x" size={16} />
-            </Stack>
-          </XStack>
-        )
-      ) : (
-        <XStack backgroundColor="$red1" paddingVertical="$xxs" paddingHorizontal={20} width="100%">
-          <Typography fontWeight="500" color="$gray7">
-            Offline mode. Saving answers locally.
-          </Typography>
-        </XStack>
-      )}
     </>
   );
 };

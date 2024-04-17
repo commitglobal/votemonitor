@@ -1,11 +1,9 @@
 import React from "react";
 import { Dimensions, ViewStyle } from "react-native";
-// import { useAuth } from "../../../../hooks/useAuth";
 import { router } from "expo-router";
 import { Screen } from "../../../../components/Screen";
 import { useUserData } from "../../../../contexts/user/UserContext.provider";
 import { Typography } from "../../../../components/Typography";
-import Button from "../../../../components/Button";
 import { XStack, YStack } from "tamagui";
 import { ListView } from "../../../../components/ListView";
 import TimeSelect from "../../../../components/TimeSelect";
@@ -45,13 +43,11 @@ const FormList = () => {
   const { activeElectionRound, selectedPollingStation } = useUserData();
 
   const { data: allForms } = useElectionRoundAllForms(activeElectionRound?.id);
-  console.log(allForms?.forms);
 
   const { data: formSubmissions } = useFormSubmissions(
     activeElectionRound?.id,
     selectedPollingStation?.pollingStationId,
   );
-  console.log("formSubmissions", formSubmissions);
 
   const formList: FormListItem[] =
     allForms?.forms.map((form) => {
@@ -82,20 +78,7 @@ const FormList = () => {
 
   return (
     <YStack gap="$xxs">
-      <Card>
-        <FormOverview />
-      </Card>
-      <Typography>Questions</Typography>
-      {mockQuestions.map((question, index) => (
-        <QuestionCard
-          question={question}
-          index={index + 1}
-          onPress={() => console.log("question action")}
-          key={question.id}
-        />
-      ))}
-
-      <Typography>Flashlist</Typography>
+      <Typography>Forms</Typography>
       {/* TODO: the heigh should be number of forms * their height */}
       <YStack height={Dimensions.get("screen").height}>
         <ListView<FormListItem>
@@ -135,6 +118,7 @@ const Index = () => {
     visits,
     selectedPollingStation,
     activeElectionRound,
+    error,
   } = useUserData();
 
   const { data } = usePollingStationInformation(
@@ -183,12 +167,18 @@ const Index = () => {
     }
   };
 
+  if (error) {
+    return <Typography>Error while loading data {JSON.stringify(error)}</Typography>;
+  }
+
   if (isLoading) {
     return <Typography>Loading...</Typography>;
   }
 
   if (!enoughDataForOffline) {
-    return <Typography>Not enough data for offline, need to retry...</Typography>;
+    return (
+      <Typography>Not enough data for offline, need to invalidate queries and retry...</Typography>
+    );
   }
 
   if (!electionRounds?.length) {
@@ -240,9 +230,6 @@ const Index = () => {
               />
             )}
             <CardFooter text="Polling station information"></CardFooter>
-          </Card>
-          <Card>
-            <Button onPress={() => router.push("/form-questionnaire/1")}>Go Form wizzard</Button>
           </Card>
         </YStack>
         <FormList />

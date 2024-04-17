@@ -104,7 +104,7 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
 
         queryClient.resumePausedMutations().then(() => {
           console.log("PersistQueryClientProvider invalidateQueries");
-          queryClient.invalidateQueries();
+          queryClient.invalidateQueries(); // TODO: should we?
         });
       }}
       persistOptions={{
