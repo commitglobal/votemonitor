@@ -32,6 +32,7 @@ import FormElement from "../../components/FormInputs/FormElement";
 import { Icon } from "../../components/Icon";
 import { useTranslation } from "react-i18next";
 import Header from "../../components/Header";
+import Input from "../../components/Inputs/Input";
 
 const PollingStationQuestionnaire = () => {
   const queryClient = useQueryClient();
@@ -117,9 +118,7 @@ const PollingStationQuestionnaire = () => {
     },
   });
 
-  const onSubmit = (formData: Record<string, string | string[]>) => {
-    console.log(formData);
-
+  const onSubmit = (formData: Record<string, string | string[] | Record<string, any>>) => {
     const answers: ApiFormAnswer[] = Object.keys(formData)
       .map((questionId: string) => {
         const question: ApiFormQuestion = questions[questionId];
@@ -157,18 +156,20 @@ const PollingStationQuestionnaire = () => {
               $answerType: "singleSelectAnswer",
               questionId,
               selection: {
-                optionId: formData[questionId],
-                // text: '' //TODO: handle free text
+                optionId: (formData[questionId] as Record<string, string>).radioValue,
+                text: (formData[questionId] as Record<string, string>).textValue,
               },
             } as ApiFormAnswer;
           case "multiSelectAnswer": {
-            const selections: string[] = formData[questionId] as string[];
+            const selections: Record<string, { optionId: string; text: string }> = formData[
+              questionId
+            ] as Record<string, { optionId: string; text: string }>;
             return {
               $answerType: "multiSelectAnswer",
               questionId,
-              selection: selections.map((optionId) => ({
-                optionId,
-                // text: '' //TODO: handle free text
+              selection: Object.values(selections).map((selection) => ({
+                optionId: selection.optionId,
+                text: selection.text,
               })),
             } as ApiFormAnswer;
           }
@@ -177,8 +178,6 @@ const PollingStationQuestionnaire = () => {
         }
       })
       .filter(Boolean) as ApiFormAnswer[];
-
-    console.log("answers", JSON.stringify(answers));
 
     if (activeElectionRound?.id && selectedPollingStation?.pollingStationId) {
       // TODO: How we get rid of so many undefined validations? If we press the button and we don't have the data, is equaly bad
@@ -189,19 +188,6 @@ const PollingStationQuestionnaire = () => {
       });
       router.back();
     }
-  };
-
-  const handleCheckboxChange = (name: string, value: string, checked: CheckedState) => {
-    // Get the current state of missingMaterials from the form
-    const currentValues = getValues(name) || [];
-
-    // Update the state based on whether the checkbox was checked or unchecked
-    const updated = checked
-      ? [...currentValues, value] // Add to the array if checked
-      : currentValues.filter((v: any) => v !== value); // Remove from the array if unchecked
-
-    // Update the missingMaterials state
-    setValue(name, updated, { shouldValidate: true });
   };
 
   const setFormDefaultValues = () => {
@@ -220,10 +206,16 @@ const PollingStationQuestionnaire = () => {
             acc[questionId] = answer.date ? new Date(answer.date) : "";
             break;
           case "singleSelectAnswer":
-            acc[questionId] = answer.selection.optionId;
+            acc[questionId] = {
+              radioValue: answer.selection.optionId,
+              textValue: answer.selection.text,
+            };
             break;
           case "multiSelectAnswer":
-            acc[questionId] = answer.selection.map((o) => o.optionId);
+            acc[questionId] = answer.selection.reduce((acc: Record<string, any>, curr) => {
+              acc[curr.optionId] = { optionId: curr.optionId, text: curr.text };
+              return acc;
+            }, {});
             break;
           default:
             break;
@@ -246,7 +238,6 @@ const PollingStationQuestionnaire = () => {
   } = useForm({
     defaultValues: setFormDefaultValues(),
   });
-
   return (
     <Screen
       preset="scroll"
@@ -311,7 +302,6 @@ const PollingStationQuestionnaire = () => {
           }
 
           if (question.$questionType === "dateQuestion") {
-            console.log("DATE Q", question);
             return (
               <Controller
                 key={question.id}
@@ -338,20 +328,39 @@ const PollingStationQuestionnaire = () => {
                 key={question.id}
                 name={question.id}
                 control={control}
-                render={({ field: { onChange, value } }) => (
-                  <YStack>
-                    <RadioFormInput
-                      options={question.options.map((option) => ({
-                        id: option.id,
-                        label: option.text.EN,
-                        value: option.id,
-                      }))}
-                      title={question.text.EN}
-                      value={value}
-                      onValueChange={onChange}
-                    />
-                  </YStack>
-                )}
+                render={({ field: { onChange, value = { radioValue: "", textValue: null } } }) => {
+                  return (
+                    <YStack>
+                      <RadioFormInput
+                        options={question.options.map((option) => ({
+                          id: option.id,
+                          label: option.text.EN,
+                          value: option.id,
+                        }))}
+                        title={question.text.EN}
+                        value={value.radioValue}
+                        onValueChange={(radioValue) =>
+                          onChange({ ...value, radioValue, textValue: null })
+                        }
+                      />
+                      {/* if the selected option is "other", show textArea */}
+                      {question.options.map((option) => {
+                        if (value.radioValue === option.id && option.isFreeText) {
+                          return (
+                            <Input
+                              type="text"
+                              marginTop="$md"
+                              key={option.id}
+                              value={value.textValue}
+                              onChangeText={(textValue) => onChange({ ...value, textValue })}
+                            />
+                          );
+                        }
+                        return undefined;
+                      })}
+                    </YStack>
+                  );
+                }}
               />
             );
           }
@@ -381,26 +390,52 @@ const PollingStationQuestionnaire = () => {
           if (question.$questionType === "multiSelectQuestion") {
             return (
               <FormElement key={question.id} title={`${question.code}. ${question.text.EN}`}>
-                {question.options.map((option) => (
-                  <Controller
-                    key={option.id}
-                    name={question.id} // TODO: maybe more?
-                    control={control}
-                    render={() => (
-                      <YStack>
-                        <CheckboxInput
-                          marginBottom="$md"
-                          id={option.id}
-                          label={option.text.EN}
-                          checked={!!getValues(question.id)?.includes(option.id)}
-                          onCheckedChange={(checked) =>
-                            handleCheckboxChange(question.id, option.id, checked)
-                          }
-                        />
-                      </YStack>
-                    )}
-                  />
-                ))}
+                <Controller
+                  key={question.id}
+                  name={question.id}
+                  control={control}
+                  render={({ field: { onChange, value } }) => {
+                    const selections: Record<string, { optionId: string; text: string }> = value;
+
+                    return (
+                      <>
+                        {question.options.map((option) => (
+                          <YStack key={option.id}>
+                            <CheckboxInput
+                              marginBottom="$md"
+                              id={option.id}
+                              label={option.text.EN}
+                              checked={selections[option.id]?.optionId === option.id}
+                              onCheckedChange={(checked) => {
+                                if (checked) {
+                                  return onChange({
+                                    ...selections,
+                                    [option.id]: { optionId: option.id, text: null },
+                                  });
+                                } else {
+                                  const { [option.id]: toRemove, ...rest } = selections;
+                                  return onChange(rest);
+                                }
+                              }}
+                            />
+                            {selections[option.id]?.optionId === option.id && option.isFreeText && (
+                              <Input
+                                type="text"
+                                marginTop="$md"
+                                value={selections[option.id]?.text}
+                                placeholder="Please enter a text..."
+                                onChangeText={(textValue) => {
+                                  selections[option.id] = { optionId: option.id, text: textValue };
+                                  onChange(selections);
+                                }}
+                              />
+                            )}
+                          </YStack>
+                        ))}
+                      </>
+                    );
+                  }}
+                ></Controller>
               </FormElement>
             );
           }
