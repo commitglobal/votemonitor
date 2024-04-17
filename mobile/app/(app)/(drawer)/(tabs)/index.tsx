@@ -27,6 +27,8 @@ import SelectPollingStation from "../../../../components/SelectPollingStation";
 import NoVisitsExist from "../../../../components/NoVisitsExist";
 import NoElectionRounds from "../../../../components/NoElectionRounds";
 import PollingStationInfo from "../../../../components/PollingStationInfo";
+import FormOverview from "../../../../components/FormOverview";
+import QuestionCard from "../../../../components/QuestionCard";
 
 export type FormItemStatus = "not started" | "in progress" | "completed";
 
@@ -63,8 +65,36 @@ const FormList = () => {
       };
     }) || [];
 
+  const mockQuestions = [
+    {
+      id: "5043260e-017b-4e48-bb31-6e8bcdd870f0",
+      text: "Were all necessary election materials present?",
+      status: "not answered",
+      numberOfQuestions: 6,
+    },
+    {
+      id: "5043260e-017b-4e48-cb31-jnckencksjn",
+      text: "Were the tasks/responsibilities of individual PEC members determined by drawing lots?",
+      status: "not answered",
+      numberOfQuestions: 6,
+    },
+  ];
+
   return (
     <YStack gap="$xxs">
+      <Card>
+        <FormOverview />
+      </Card>
+      <Typography>Questions</Typography>
+      {mockQuestions.map((question, index) => (
+        <QuestionCard
+          question={question}
+          index={index + 1}
+          onPress={() => console.log("question action")}
+          key={question.id}
+        />
+      ))}
+
       <Typography>Flashlist</Typography>
       {/* TODO: the heigh should be number of forms * their height */}
       <YStack height={Dimensions.get("screen").height}>
