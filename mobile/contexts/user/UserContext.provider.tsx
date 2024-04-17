@@ -14,7 +14,6 @@ import {
 } from "../../common/models/polling-station.model";
 import { ElectionRoundVM } from "../../common/models/election-round.model";
 import { useQueries, useQueryClient } from "@tanstack/react-query";
-import { getPollingStationInformationForm } from "../../services/definitions.api";
 
 type UserContextType = {
   electionRounds: ElectionRoundVM[];
