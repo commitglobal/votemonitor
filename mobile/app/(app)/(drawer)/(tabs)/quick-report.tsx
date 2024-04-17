@@ -11,10 +11,42 @@ import { Screen } from "../../../../components/Screen";
 import LinearProgress from "../../../../components/LinearProgress";
 import CardFooter from "../../../../components/CardFooter";
 import { Dialog } from "../../../../components/Dialog";
+import FormOverview from "../../../../components/FormOverview";
+import QuestionCard from "../../../../components/QuestionCard";
+
+const mockQuestions = [
+  {
+    id: "5043260e-017b-4e48-bb31-6e8bcdd870f0",
+    text: "Were all necessary election materials present?",
+    status: "not answered",
+    numberOfQuestions: 6,
+  },
+  {
+    id: "5043260e-017b-4e48-cb31-jnckencksjn",
+    text: "Were the tasks/responsibilities of individual PEC members determined by drawing lots?",
+    status: "answered",
+    numberOfQuestions: 6,
+  },
+];
 
 const QuickReport = () => {
   return (
     <Screen preset="auto" backgroundColor="white" contentContainerStyle={{ gap: 20 }}>
+      <Stack padding="$md" gap="$md">
+        <Card>
+          <FormOverview />
+        </Card>
+        <Typography>Questions</Typography>
+        {mockQuestions.map((question, index) => (
+          <QuestionCard
+            question={question}
+            index={index + 1}
+            onPress={() => console.log("question action")}
+            key={question.id}
+          />
+        ))}
+      </Stack>
+
       <Text>Quick Report</Text>
       <Card>
         <Typography
@@ -129,7 +161,7 @@ const QuickReport = () => {
           <Stack marginTop="$md" gap="$sm">
             <Typography preset="subheading">Alert Dialog</Typography>
             <Dialog
-              trigger={<Button preset="red">Delete</Button>}
+              // trigger={<Button preset="red">Delete</Button>}
               header={<Typography preset="heading">Clear answer to Question A1</Typography>}
               content={
                 <Typography preset="body1" color="$gray7">
@@ -170,35 +202,4 @@ const countryData = [
   { id: 5, value: "China", label: "China" },
 ];
 
-const pollingStationAdresses = [
-  { pollingStationId: 1, visitedAt: "Secția 123, Str. Moldovei, nr. 30, Târgu Mureș, Romania" },
-  {
-    pollingStationId: 2,
-    visitedAt: "Secția 456, Str. Transilvaniei, nr. 45, Cluj-Napoca, Romania",
-  },
-  { pollingStationId: 3, visitedAt: "Secția 789, Str. București, nr. 12, București, Romania" },
-  { pollingStationId: 4, visitedAt: "Secția 101, Str. Timișoarei, nr. 20, Timișoara, Romania" },
-  { pollingStationId: 5, visitedAt: "Secția 234, Str. Iași, nr. 15, Iași, Romania" },
-  { pollingStationId: 6, visitedAt: "Secția 345, Str. Crișana, nr. 10, Oradea, Romania" },
-  {
-    pollingStationId: 7,
-    visitedAt: "Secția 567, Str. Maramureșului, nr. 25, Baia Mare, Romania",
-  },
-  { pollingStationId: 8, visitedAt: "Secția 890, Str. Dobrogei, nr. 8, Constanța, Romania" },
-  { pollingStationId: 9, visitedAt: "Secția 111, Str. Ardealului, nr. 5, Sibiu, Romania" },
-  { pollingStationId: 10, visitedAt: "Secția 222, Str. Olteniei, nr. 18, Craiova, Romania" },
-  { pollingStationId: 11, visitedAt: "Secția 333, Str. Banatului, nr. 22, Arad, Romania" },
-  { pollingStationId: 12, visitedAt: "Secția 444, Str. Mureșului, nr. 11, Deva, Romania" },
-  { pollingStationId: 13, visitedAt: "Secția 555, Str. Dobrogei, nr. 7, Tulcea, Romania" },
-  { pollingStationId: 14, visitedAt: "Secția 667, Str. Moldovei, nr. 9, Bacău, Romania" },
-  { pollingStationId: 15, visitedAt: "Secția 777, Str. Crișului, nr. 13, Satu Mare, Romania" },
-  { pollingStationId: 16, visitedAt: "Secția 888, Str. Olteniei, nr. 4, Pitești, Romania" },
-  { pollingStationId: 17, visitedAt: "Secția 999, Str. Bucovinei, nr. 16, Suceava, Romania" },
-  {
-    pollingStationId: 18,
-    visitedAt: "Secția 1010, Str. Transilvaniei, nr. 32, Alba Iulia, Romania",
-  },
-  { pollingStationId: 19, visitedAt: "Secția 1111, Str. Banatului, nr. 3, Reșița, Romania" },
-  { pollingStationId: 20, visitedAt: "Secția 1212, Str. București, nr. 7, Galați, Romania" },
-];
 export default QuickReport;

@@ -3,7 +3,7 @@ import { AlertDialog, AlertDialogProps, Stack } from "tamagui";
 
 interface DialogProps extends AlertDialogProps {
   // dialog header
-  header: ReactNode;
+  header?: ReactNode;
   // content inside dialog
   content?: ReactNode;
   // dialog footer

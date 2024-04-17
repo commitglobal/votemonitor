@@ -5,11 +5,13 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTheme } from "tamagui";
 import { Icon } from "../../../../components/Icon";
 import { useUserData } from "../../../../contexts/user/UserContext.provider";
+import { useNetInfoContext } from "../../../../contexts/net-info-banner/NetInfoContext";
 
 export default function TabLayout() {
   const { electionRounds } = useUserData();
   const insets = useSafeAreaInsets();
   const theme = useTheme();
+  const { isBannerShowing } = useNetInfoContext();
 
   return (
     <Tabs
@@ -17,7 +19,13 @@ export default function TabLayout() {
         tabBarActiveTintColor: theme.purple5?.val,
         tabBarHideOnKeyboard: true,
         headerShown: false,
-        tabBarStyle: [$tabBar, { height: insets.bottom + 60 }],
+        tabBarStyle: [
+          $tabBar,
+          {
+            height: insets.bottom + 60,
+            ...(isBannerShowing ? { marginBottom: -insets.bottom + 10 } : {}),
+          },
+        ],
         tabBarLabelStyle: $tabBarLabel,
       }}
     >

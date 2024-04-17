@@ -1,11 +1,9 @@
 import React, { useState } from "react";
 import { Dimensions, ViewStyle } from "react-native";
 import { router } from "expo-router";
-import * as ReactotronCommands from "../../../../helpers/reactotron-custom-commands";
 import { Screen } from "../../../../components/Screen";
 import { useUserData } from "../../../../contexts/user/UserContext.provider";
 import { Typography } from "../../../../components/Typography";
-import Button from "../../../../components/Button";
 import { XStack, YStack } from "tamagui";
 import { ListView } from "../../../../components/ListView";
 import TimeSelect from "../../../../components/TimeSelect";
@@ -28,7 +26,7 @@ import NoVisitsExist from "../../../../components/NoVisitsExist";
 import NoElectionRounds from "../../../../components/NoElectionRounds";
 import PollingStationInfo from "../../../../components/PollingStationInfo";
 import { Dialog } from "../../../../components/Dialog";
-ReactotronCommands.default();
+import Button from "../../../../components/Button";
 
 export type FormItemStatus = "not started" | "in progress" | "completed";
 
@@ -94,7 +92,7 @@ const FormList = () => {
 
   return (
     <YStack gap="$xxs">
-      <Typography>Flashlist</Typography>
+      <Typography>Forms</Typography>
       {/* TODO: the heigh should be number of forms * their height */}
       <YStack height={Dimensions.get("screen").height}>
         <ListView<FormListItem>
@@ -140,6 +138,7 @@ const Index = () => {
     visits,
     selectedPollingStation,
     activeElectionRound,
+    error,
   } = useUserData();
 
   const { data } = usePollingStationInformation(
@@ -188,12 +187,18 @@ const Index = () => {
     }
   };
 
+  if (error) {
+    return <Typography>Error while loading data {JSON.stringify(error)}</Typography>;
+  }
+
   if (isLoading) {
     return <Typography>Loading...</Typography>;
   }
 
   if (!enoughDataForOffline) {
-    return <Typography>Not enough data for offline, need to retry...</Typography>;
+    return (
+      <Typography>Not enough data for offline, need to invalidate queries and retry...</Typography>
+    );
   }
 
   if (!electionRounds?.length) {
