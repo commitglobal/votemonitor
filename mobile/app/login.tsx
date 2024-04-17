@@ -11,6 +11,7 @@ import { tokens } from "../theme/tokens";
 import { Typography } from "../components/Typography";
 import Button from "../components/Button";
 import FormInput from "../components/FormInputs/FormInput";
+import { Controller, useForm } from "react-hook-form";
 
 const Login = () => {
   const { signIn } = useAuth();
@@ -40,13 +41,17 @@ const Login = () => {
         <Typography> {t("informative-text")}</Typography>
         <LoginForm />
       </ContentContainer>
-
-      <Button> Log in</Button>
     </Screen>
   );
 };
 
 const LoginForm = () => {
+  const { handleSubmit, control } = useForm();
+
+  const onSubmit = (data: any) => {
+    console.log(data);
+  };
+
   return (
     <YStack>
       <Typography> Log in </Typography>
@@ -55,8 +60,37 @@ const LoginForm = () => {
         Please use the email address with which you registered as an independent observer:
       </Typography>
 
-      <FormInput type="text" title="email" placeholder="email"></FormInput>
-      <FormInput type="text" title="password" placeholder="password"></FormInput>
+      <Controller
+        key="email"
+        name="email"
+        control={control}
+        render={({ field: { onChange, value } }) => (
+          <FormInput
+            type="text"
+            title="email"
+            placeholder="email"
+            value={value}
+            onChangeText={onChange}
+          ></FormInput>
+        )}
+      />
+
+      <Controller
+        key="password"
+        name="password"
+        control={control}
+        render={({ field: { onChange, value } }) => (
+          <FormInput
+            type="text"
+            title="password"
+            placeholder="password"
+            value={value}
+            onChangeText={onChange}
+          ></FormInput>
+        )}
+      />
+
+      <Button onPress={handleSubmit(onSubmit)}>Log in</Button>
     </YStack>
   );
 };
