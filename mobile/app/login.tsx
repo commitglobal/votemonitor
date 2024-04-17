@@ -14,17 +14,7 @@ import FormInput from "../components/FormInputs/FormInput";
 import { Controller, useForm } from "react-hook-form";
 
 const Login = () => {
-  const { signIn } = useAuth();
   const { t } = useTranslation("login");
-
-  const onLogin = async () => {
-    try {
-      await signIn();
-      router.replace("/");
-    } catch (err) {
-      console.error("Error while logging in...");
-    }
-  };
 
   const ContentContainer = styled(View, {
     name: "Container",
@@ -48,8 +38,19 @@ const Login = () => {
 const LoginForm = () => {
   const { handleSubmit, control } = useForm();
 
+  const { signIn } = useAuth();
+  const onLogin = async (email: string, password: string) => {
+    try {
+      await signIn(email, password);
+      router.replace("/");
+    } catch (err) {
+      console.error("Error while logging in...");
+    }
+  };
+
   const onSubmit = (data: any) => {
     console.log(data);
+    onLogin(data.email, data.password);
   };
 
   return (
@@ -95,21 +96,21 @@ const LoginForm = () => {
   );
 };
 
-const SmallHeader = () => {
-  const insets = useSafeAreaInsets();
-  const StyledWrapper = styled(XStack, {
-    name: "StyledWrapper",
-    backgroundColor: "$purple5",
-    height: insets.top,
-    paddingTop: insets.top,
-  });
+// const SmallHeader = () => {
+//   const insets = useSafeAreaInsets();
+//   const StyledWrapper = styled(XStack, {
+//     name: "StyledWrapper",
+//     backgroundColor: "$purple5",
+//     height: insets.top,
+//     paddingTop: insets.top,
+//   });
 
-  return (
-    <StyledWrapper>
-      <StatusBar barStyle="light-content"></StatusBar>
-    </StyledWrapper>
-  );
-};
+//   return (
+//     <StyledWrapper>
+//       <StatusBar barStyle="light-content"></StatusBar>
+//     </StyledWrapper>
+//   );
+// };
 
 const BigHeader = () => {
   const insets = useSafeAreaInsets();

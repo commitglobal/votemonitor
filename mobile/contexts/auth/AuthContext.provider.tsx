@@ -13,7 +13,11 @@ const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
     setIsLoading(false);
   }, []);
 
-  const signIn = async () => {
+  const signIn = async (email: string, password: string) => {
+    console.log("Signing in...");
+    console.log("Email: ", email);
+    console.log("Password: ", password);
+
     try {
       setIsLoading(true);
       // const { token } = await dummyLogin();
