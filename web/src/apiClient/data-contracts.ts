@@ -150,17 +150,6 @@ export interface VoteMonitorApiFeaturePollingStationCreateRequest {
   tags: Record<string, string>;
 }
 
-export type VoteMonitorApiFeatureCountryGetRequest = object;
-
-export interface VoteMonitorApiFeatureLanguageLanguageModel {
-  /** @format guid */
-  id?: string;
-  code?: string;
-  name?: string;
-  nativeName?: string;
-}
-
-export type VoteMonitorApiFeatureLanguageGetRequest = object;
 
 export interface VoteMonitorApiFeatureNgoUpdateRequest {
   /**

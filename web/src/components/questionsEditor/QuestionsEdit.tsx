@@ -1,7 +1,9 @@
-import { BaseQuestion } from '@/common/types';
-import { DragDropContext, DropResult } from 'react-beautiful-dnd';
-import EditQuestionFactory from './edit/EditQuestionFactory';
-import { StrictModeDroppable } from './StrictModeDroppable';
+import { BaseQuestion } from "@/common/types"
+import { DragDropContext, DropResult } from "react-beautiful-dnd";
+import EditQuestionFactory from "./edit/EditQuestionFactory";
+import { StrictModeDroppable } from "./StrictModeDroppable";
+import { validateQuestion } from "./edit/Validation";
+import AddQuestionButton from "./edit/AddQuestionButton";
 
 export interface QuestionsEditProps {
   languageCode: string;
@@ -25,12 +27,47 @@ function QuestionsEdit({
   activeQuestionId,
   setActiveQuestionId,
   invalidQuestions,
-  setInvalidQuestions,
-}: QuestionsEditProps) {
-  function addQuestion() {}
-  function updateQuestion(questionIndex: number, question: BaseQuestion) {}
-  function duplicateQuestion(questionIndex: number) {}
-  function deleteQuestion(questionIndex: number) {}
+  setInvalidQuestions }: QuestionsEditProps) {
+
+  function handleValidation(question: BaseQuestion) {
+    if (invalidQuestions === null) {
+      return;
+    }
+
+    let temp: string[] = [...invalidQuestions]
+
+    if (validateQuestion(question, languageCode)) {
+      temp = invalidQuestions.filter((id) => id !== question.id);
+      setInvalidQuestions(temp);
+    } else if (!invalidQuestions.includes(question.id)) {
+      temp.push(question.id);
+      setInvalidQuestions(temp);
+    }
+  };
+
+
+  function addQuestion(question: BaseQuestion) {
+    localQuestions.push(question);
+    const updatedQuestions = Array.from(localQuestions);
+    setLocalQuestions(updatedQuestions);
+    setActiveQuestionId(question.id);
+  }
+
+  function updateQuestion(questionIndex: number, question: BaseQuestion) {
+    localQuestions[questionIndex] = { ...question };
+    const updatedQuestions = Array.from(localQuestions);
+
+    setLocalQuestions(updatedQuestions);
+    handleValidation(question);
+  }
+
+  function duplicateQuestion(questionIndex: number) {
+
+  }
+
+  function deleteQuestion(questionIndex: number) {
+
+  }
 
   function onDragEnd(result: DropResult) {
     if (!result.destination) {
@@ -79,7 +116,7 @@ function QuestionsEdit({
           </StrictModeDroppable>
         </div>
       </DragDropContext>
-      {/* <AddQuestionButton addQuestion={addQuestion} /> */}
+      <AddQuestionButton languageCode={languageCode} addQuestion={addQuestion} />
     </div>
   );
 }

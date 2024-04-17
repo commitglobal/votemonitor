@@ -1,16 +1,15 @@
-import { BaseQuestion, QuestionType } from "@/common/types";
+import { BaseQuestion, DateQuestion, MultiSelectQuestion, NumberQuestion, QuestionType, RatingQuestion, SingleSelectAnswer, SingleSelectQuestion, TextQuestion } from "@/common/types";
 import EditDateQuestion from "./EditDateQuestion";
-import EditMultiSelectQuestion from "./EditMultiSelectQuestion";
+import EditSelectQuestion from "./EditSelectQuestion";
 import EditNumberQuestion from "./EditNumberQuestion";
 import EditRatingQuestion from "./EditRatingQuestion";
-import EditSingleSelectQuestion from "./EditSingleSelectQuestion";
 import EditTextQuestion from "./EditTextQuestion";
 import { MoveDirection } from "../QuestionsEdit";
-import NewQuestion from "./NewQuestion";
 import { Draggable } from "react-beautiful-dnd";
 import { cn } from "@/lib/utils";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { useTranslation } from "react-i18next";
+import QuestionActions from "./QuestionActions";
 
 interface EditQuestionFactoryProps {
   languageCode: string;
@@ -99,21 +98,21 @@ export default function EditQuestionFactory({
                 </div>
 
                 <div className="flex items-center space-x-2">
-                  {/* <QuestionActions
+                  <QuestionActions
                     questionIdx={questionIdx}
-                    lastQuestion={lastQuestion}
+                    isLastQuestion={isLastQuestion}
                     duplicateQuestion={duplicateQuestion}
                     deleteQuestion={deleteQuestion}
                     moveQuestion={moveQuestion}
-                  /> */}
+                  />
                 </div>
               </div>
             </CollapsibleTrigger>
             <CollapsibleContent className="px-4 pb-4">
-              {!!question ? (question.$questionType === QuestionType.TextQuestionType ? (
+              {question.$questionType === QuestionType.TextQuestionType ? (
                 <EditTextQuestion
                   languageCode={languageCode}
-                  question={question}
+                  question={question as TextQuestion}
                   questionIdx={questionIdx}
                   moveQuestion={moveQuestion}
                   updateQuestion={updateQuestion}
@@ -127,7 +126,7 @@ export default function EditQuestionFactory({
               ) : question.$questionType === QuestionType.DateQuestionType ? (
                 <EditDateQuestion
                   languageCode={languageCode}
-                  question={question}
+                  question={question as DateQuestion}
                   questionIdx={questionIdx}
                   moveQuestion={moveQuestion}
                   updateQuestion={updateQuestion}
@@ -141,7 +140,7 @@ export default function EditQuestionFactory({
               ) : question.$questionType === QuestionType.NumberQuestionType ? (
                 <EditNumberQuestion
                   languageCode={languageCode}
-                  question={question}
+                  question={question as NumberQuestion}
                   questionIdx={questionIdx}
                   moveQuestion={moveQuestion}
                   updateQuestion={updateQuestion}
@@ -153,9 +152,9 @@ export default function EditQuestionFactory({
                   isInValid={isInValid}
                 />
               ) : question.$questionType === QuestionType.MultiSelectQuestionType ? (
-                <EditMultiSelectQuestion
+                <EditSelectQuestion
                   languageCode={languageCode}
-                  question={question}
+                  question={question as MultiSelectQuestion}
                   questionIdx={questionIdx}
                   moveQuestion={moveQuestion}
                   updateQuestion={updateQuestion}
@@ -167,9 +166,9 @@ export default function EditQuestionFactory({
                   isInValid={isInValid}
                 />
               ) : question.$questionType === QuestionType.SingleSelectQuestionType ? (
-                <EditSingleSelectQuestion
+                <EditSelectQuestion
                   languageCode={languageCode}
-                  question={question}
+                  question={question as SingleSelectQuestion}
                   questionIdx={questionIdx}
                   moveQuestion={moveQuestion}
                   updateQuestion={updateQuestion}
@@ -182,7 +181,7 @@ export default function EditQuestionFactory({
               ) : question.$questionType === QuestionType.RatingQuestionType ? (
                 <EditRatingQuestion
                   languageCode={languageCode}
-                  question={question}
+                  question={question as RatingQuestion}
                   questionIdx={questionIdx}
                   moveQuestion={moveQuestion}
                   updateQuestion={updateQuestion}
@@ -193,20 +192,7 @@ export default function EditQuestionFactory({
                   isLastQuestion={isLastQuestion}
                   isInValid={isInValid}
                 />
-              ) : null) : <NewQuestion
-                languageCode={languageCode}
-                question={question}
-                questionIdx={questionIdx}
-                moveQuestion={moveQuestion}
-                updateQuestion={updateQuestion}
-                duplicateQuestion={duplicateQuestion}
-                deleteQuestion={deleteQuestion}
-                activeQuestionId={activeQuestionId}
-                setActiveQuestionId={setActiveQuestionId}
-                isLastQuestion={isLastQuestion}
-                isInValid={isInValid} />
-              }
-
+              ) : null}
             </CollapsibleContent>
           </Collapsible>
         </div>

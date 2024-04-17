@@ -1,6 +1,6 @@
 import { AnswerType, BaseAnswer, DateAnswer, DateAnswerSchema, DateQuestion } from '@/common/types'
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../ui/form';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '../../ui/form';
 import { useForm } from 'react-hook-form';
 import { Popover, PopoverContent, PopoverTrigger } from '../../ui/popover';
 import { cn } from '@/lib/utils';
@@ -38,7 +38,7 @@ function PreviewDateQuestion({
     }
   });
 
-  return <Form {...form}>
+  return (<Form {...form}>
     <form onSubmit={form.handleSubmit(onSubmitAnswer)}>
       <div className='grid gap-6 py-4 sm:grid-cols-2'>
         <FormField
@@ -47,6 +47,7 @@ function PreviewDateQuestion({
           render={({ field }) => (
             <FormItem className='flex flex-col'>
               <FormLabel>{question.text[languageCode]}</FormLabel>
+              {!!question.helptext && <FormDescription>{question.helptext[languageCode]}</FormDescription>}
               <Popover>
                 <PopoverTrigger asChild>
                   <FormControl>
@@ -76,7 +77,7 @@ function PreviewDateQuestion({
         />
       </div>
     </form>
-  </Form>
+  </Form>)
 }
 
 

@@ -1,5 +1,5 @@
 import { BaseAnswer, SingleSelectAnswer, SingleSelectQuestion, AnswerType, SingleSelectAnswerSchema } from '@/common/types'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../ui/form';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '../../ui/form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { Input } from '../../ui/input';
@@ -66,6 +66,7 @@ function PreviewSingleSelectQuestion({
           render={({ field }) => (
             <FormItem className="space-y-3">
               <FormLabel>{question.text[languageCode]}</FormLabel>
+              {!!question.helptext && <FormDescription>{question.helptext[languageCode]}</FormDescription>}
               <FormControl>
                 <RadioGroup
                   onValueChange={(value) => {
@@ -103,7 +104,7 @@ function PreviewSingleSelectQuestion({
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Input {...field} placeholder={t("app.input.pleaseSpecify")}/>
+                  <Input {...field} placeholder={t("app.input.pleaseSpecify")} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
