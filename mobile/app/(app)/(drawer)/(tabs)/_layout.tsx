@@ -8,10 +8,11 @@ import { useUserData } from "../../../../contexts/user/UserContext.provider";
 import { useNetInfoContext } from "../../../../contexts/net-info-banner/NetInfoContext";
 
 export default function TabLayout() {
-  const { electionRounds } = useUserData();
   const insets = useSafeAreaInsets();
   const theme = useTheme();
-  const { isBannerShowing } = useNetInfoContext();
+
+  const { electionRounds } = useUserData();
+  const { shouldDisplayBanner } = useNetInfoContext();
 
   return (
     <Tabs
@@ -23,7 +24,7 @@ export default function TabLayout() {
           $tabBar,
           {
             height: insets.bottom + 60,
-            ...(isBannerShowing ? { marginBottom: -insets.bottom + 10 } : {}),
+            ...(shouldDisplayBanner && insets?.bottom ? { marginBottom: -insets.bottom + 10 } : {}),
           },
         ],
         tabBarLabelStyle: $tabBarLabel,
@@ -76,8 +77,8 @@ const $tabBar: ViewStyle = {
 };
 
 const $tabBarLabel: TextStyle = {
-  marginBottom: 4,
-  marginTop: -12,
+  marginBottom: 11,
+  marginTop: -5,
   fontFamily: "Roboto",
   fontSize: 12,
 };
