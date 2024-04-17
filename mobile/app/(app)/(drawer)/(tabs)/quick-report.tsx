@@ -12,6 +12,7 @@ import LinearProgress from "../../../../components/LinearProgress";
 import CardFooter from "../../../../components/CardFooter";
 import SelectPollingStation from "../../../../components/SelectPollingStation";
 import { Dialog } from "../../../../components/Dialog";
+import CircularProgress from "../../../../components/CircularProgress";
 
 const QuickReport = () => {
   return (
@@ -155,6 +156,12 @@ const QuickReport = () => {
               }
             ></Dialog>
           </Stack>
+        </Stack>
+
+        <Stack padding="$sm" gap="$xs" backgroundColor="white">
+          <CircularProgress progress={0} />
+          <CircularProgress progress={75} />
+          <CircularProgress progress={100} />
         </Stack>
       </Stack>
     </Screen>
