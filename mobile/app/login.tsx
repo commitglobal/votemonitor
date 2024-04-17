@@ -11,7 +11,7 @@ import { tokens } from "../theme/tokens";
 import { Typography } from "../components/Typography";
 import Button from "../components/Button";
 import FormInput from "../components/FormInputs/FormInput";
-import { Controller, useForm } from "react-hook-form";
+import { Control, Controller, FieldValues, useForm } from "react-hook-form";
 import Card from "../components/Card";
 
 const Login = () => {
@@ -50,45 +50,7 @@ const Login = () => {
           <Typography>{t("informative-text")}</Typography>
         </View>
 
-        <View gap={12}>
-          <Typography preset="heading" fontWeight="700">
-            Log in
-          </Typography>
-
-          <Typography>
-            Please use the email address with which you registered as an independent observer:
-          </Typography>
-
-          <Controller
-            key="email"
-            name="email"
-            control={control}
-            render={({ field: { onChange, value } }) => (
-              <FormInput
-                type="text"
-                title="Email *"
-                placeholder="E-mail"
-                value={value}
-                onChangeText={onChange}
-              ></FormInput>
-            )}
-          />
-
-          <Controller
-            key="password"
-            name="password"
-            control={control}
-            render={({ field: { onChange, value } }) => (
-              <FormInput
-                type="text"
-                title="Password *"
-                placeholder="Password"
-                value={value}
-                onChangeText={onChange}
-              ></FormInput>
-            )}
-          />
-        </View>
+        <LoginForm control={control} />
       </ContentContainer>
 
       <Card width="100%">
@@ -98,70 +60,49 @@ const Login = () => {
   );
 };
 
-// const LoginForm = () => {
-//   // const { handleSubmit, control } = useForm({
-//   //   // defaultValues: {
-//   //   //   email: "alice@example.com",
-//   //   //   password: "string",
-//   //   // },
-//   // });
+const LoginForm = ({ control }: { control: Control<FieldValues, any> }) => {
+  const { t } = useTranslation("login");
 
-//   // const { signIn } = useAuth();
-//   // const onLogin = async (formData: Record<string, string>) => {
-//   //   try {
-//   //     await signIn(formData.email, formData.password);
-//   //     router.replace("/");
-//   //   } catch (err) {
-//   //     console.error("Error while logging in...");
-//   //   }
-//   // };
+  return (
+    <View gap={12}>
+      <Typography preset="heading" fontWeight="700">
+        {t("title")}
+      </Typography>
 
-//   return (
-//     // <View gap={12}>
-//     //   <Typography preset="heading" fontWeight="700">
-//     //     Log in
-//     //   </Typography>
+      <Typography>{t("paragraph")}</Typography>
 
-//     //   <Typography>
-//     //     Please use the email address with which you registered as an independent observer:
-//     //   </Typography>
+      <Controller
+        key="email"
+        name="email"
+        control={control}
+        render={({ field: { onChange, value } }) => (
+          <FormInput
+            type="text"
+            title={t("form.email.label")}
+            placeholder={t("form.email.placeholder")}
+            value={value}
+            onChangeText={onChange}
+          ></FormInput>
+        )}
+      />
 
-//     //   <Controller
-//     //     key="email"
-//     //     name="email"
-//     //     // control={control}
-//     //     render={({ field: { onChange, value } }) => (
-//     //       <FormInput
-//     //         type="text"
-//     //         title="Email *"
-//     //         placeholder="E-mail"
-//     //         value={value}
-//     //         onChangeText={onChange}
-//     //       ></FormInput>
-//     //     )}
-//     //   />
-
-//     //   <Controller
-//     //     key="password"
-//     //     name="password"
-//     //     // control={control}
-//     //     render={({ field: { onChange, value } }) => (
-//     //       <FormInput
-//     //         type="text"
-//     //         title="Password *"
-//     //         placeholder="Password"
-//     //         value={value}
-//     //         onChangeText={onChange}
-//     //       ></FormInput>
-//     //     )}
-//     //   />
-//     // </View>
-
-//     // {/* <Card width="100%">
-//     //   <Button onPress={handleSubmit(onLogin)}>Log in</Button>
-//     // </Card> */}
-//   );
-// };
+      <Controller
+        key="password"
+        name="password"
+        control={control}
+        render={({ field: { onChange, value } }) => (
+          <FormInput
+            type="text"
+            title={t("form.password.label")}
+            placeholder={t("form.password.placeholder")}
+            value={value}
+            onChangeText={onChange}
+          ></FormInput>
+        )}
+      />
+    </View>
+  );
+};
 
 // const SmallHeader = () => {
 //   const insets = useSafeAreaInsets();

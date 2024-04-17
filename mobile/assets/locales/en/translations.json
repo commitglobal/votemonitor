@@ -5,7 +5,27 @@
   },
   "login": {
     "submit": "Sign In",
-    "informative-text": "If you are not accredited by an organization as an independent observer, you cannot use Vote Monitor app. Please refer to Vot Corect to learn what steps you need to take to become an electoral observer."
+    "informative-text": "If you are not accredited by an organization as an independent observer, you cannot use Vote Monitor app. Please refer to Vot Corect to learn what steps you need to take to become an electoral observer.",
+    "title": "Log in",
+    "paragraph": "Please use the email address with which you registered as an independent observer:",
+    "form": {
+      "email":{
+          "label": "E-mail",
+          "placeholder": "E-mail",
+          "required": "E-mail is mandatory",
+          "format": "E-mail format is not valid"
+      },
+      "password": {
+          "label": "Password",
+          "placeholder": "Password",
+          "required": "Password is mandatory"
+      }
+    },
+    "actions": {
+        "forgot_password": "Forgot your password?",
+        "login": "Log in"
+    }
+  
   },
   "more": {
     "change-language": "Change app language",
