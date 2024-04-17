@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Vote.Monitor.Core.Services.Mailing.Contracts;
-using Vote.Monitor.Core.Services.Mailing.Smtp;
 
 namespace Vote.Monitor.Core.Services.Mailing.Ses;
 internal static class Installer
