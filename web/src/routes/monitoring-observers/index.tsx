@@ -2,10 +2,10 @@ import MonitoringObserversDashboard from '@/features/monitoring-observers/compon
 import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/monitoring-observers/')({
-  component: Observers,
+  component: MonitoringObservers,
 });
 
-function Observers() {
+function MonitoringObservers() {
   return (
     <div className='p-2'>
       <MonitoringObserversDashboard />

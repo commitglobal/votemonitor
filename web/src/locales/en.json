@@ -67,5 +67,10 @@
   "questionEditor.ratingQuestion.scale": "Scale",
   "questionEditor.selectQuestion.addFreeTextOption": "Add free text option",
   "questionEditor.selectQuestion.toMultiSelectQuestion": "Convert to multi select question",
-  "questionEditor.selectQuestion.toSingleSelectQuestion": "Convert to single select question"
+  "questionEditor.selectQuestion.toSingleSelectQuestion": "Convert to single select question",
+  "formTemplateType":{
+    "opening": "Opening",
+    "voting": "Voting",
+    "closingAndCounting": "Closing And Counting"
+  }
 }

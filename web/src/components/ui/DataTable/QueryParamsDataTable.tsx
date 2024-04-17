@@ -8,6 +8,8 @@ import { valueOrDefault } from '@/lib/utils';
 export function QueryParamsDataTable<TData, TValue>({
   columns,
   useQuery: pagedQuery,
+  getSubrows,
+  getRowClassName
 }: DataTableProps<TData, TValue>): ReactElement {
   const queryParams: DataTableParameters = useSearch({
     strict: false,
@@ -63,6 +65,8 @@ export function QueryParamsDataTable<TData, TValue>({
         setPaginationExt={setPaginationState}
         sortingExt={sortingState}
         setSortingExt={setSortingState}
+        getSubrows={getSubrows}
+        getRowClassName={getRowClassName}
       />
     </div>
   );

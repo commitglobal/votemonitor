@@ -9,7 +9,7 @@ import PreviewTextQuestion from "./PreviewTextQuestion";
 interface PreviewQuestionFactoryProps {
   languageCode: string;
   question: BaseQuestion;
-  answer: BaseAnswer;
+  answer: BaseAnswer | undefined;
   isFirstQuestion: boolean;
   isLastQuestion: boolean;
   onSubmitAnswer: (answer: BaseAnswer) => void;

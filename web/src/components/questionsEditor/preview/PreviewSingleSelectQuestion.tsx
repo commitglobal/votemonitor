@@ -109,23 +109,6 @@ function PreviewSingleSelectQuestion({
               </FormItem>
             )}
           />}
-
-        <div className="mt-4 flex w-full justify-between">
-          {!isFirstQuestion && (
-            <Button
-              type='button'
-              onClick={() => {
-                onBackButtonClicked();
-              }}
-            >
-              {t('navigation.button.back')}
-            </Button>
-          )}
-          <div></div>
-          <Button type='submit'>
-            {isLastQuestion ? t('navigation.button.submit') : t('navigation.button.next')}
-          </Button>
-        </div>
       </form>
     </Form>
   )

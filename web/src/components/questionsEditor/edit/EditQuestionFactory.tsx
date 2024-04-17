@@ -44,7 +44,6 @@ export default function EditQuestionFactory({
   const open = activeQuestionId === question.id;
 
   function getQuestionTypeName(questionType: QuestionType): string {
-    debugger;
     switch (questionType) {
       case QuestionType.TextQuestionType: return t("questionEditor.questionType.textQuestion");
       case QuestionType.NumberQuestionType: return t("questionEditor.questionType.numberQuestion");
@@ -111,10 +110,6 @@ export default function EditQuestionFactory({
               </div>
             </CollapsibleTrigger>
             <CollapsibleContent className="px-4 pb-4">
-
-
-
-
               {!!question ? (question.$questionType === QuestionType.TextQuestionType ? (
                 <EditTextQuestion
                   languageCode={languageCode}

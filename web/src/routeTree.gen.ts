@@ -21,10 +21,11 @@ import { Route as ObserversObserverIdImport } from './routes/observers/$observer
 import { Route as NgosNgoIdImport } from './routes/ngos/$ngoId'
 import { Route as MonitoringObserversCreateNewMessageImport } from './routes/monitoring-observers/create-new-message'
 import { Route as MonitoringObserversMonitoringObserverIdImport } from './routes/monitoring-observers/$monitoringObserverId'
+import { Route as FormTemplatesFormTemplateIdImport } from './routes/form-templates/$formTemplateId'
 import { Route as ElectionRoundsElectionRoundIdImport } from './routes/election-rounds/$electionRoundId'
 import { Route as ObserversObserverIdEditImport } from './routes/observers_.$observerId.edit'
 import { Route as MonitoringObserversMonitoringObserverIdEditImport } from './routes/monitoring-observers_.$monitoringObserverId.edit'
-import { Route as FormTemplatesFormTemplateIdEditImport } from './routes/form-templates/$formTemplateId.edit'
+import { Route as FormTemplatesFormTemplateIdEditImport } from './routes/form-templates_.$formTemplateId.edit'
 
 // Create/Update Routes
 
@@ -80,6 +81,12 @@ const MonitoringObserversMonitoringObserverIdRoute =
     getParentRoute: () => rootRoute,
   } as any)
 
+const FormTemplatesFormTemplateIdRoute =
+  FormTemplatesFormTemplateIdImport.update({
+    path: '/form-templates/$formTemplateId',
+    getParentRoute: () => rootRoute,
+  } as any)
+
 const ElectionRoundsElectionRoundIdRoute =
   ElectionRoundsElectionRoundIdImport.update({
     path: '/election-rounds/$electionRoundId',
@@ -113,6 +120,10 @@ declare module '@tanstack/react-router' {
     }
     '/election-rounds/$electionRoundId': {
       preLoaderRoute: typeof ElectionRoundsElectionRoundIdImport
+      parentRoute: typeof rootRoute
+    }
+    '/form-templates/$formTemplateId': {
+      preLoaderRoute: typeof FormTemplatesFormTemplateIdImport
       parentRoute: typeof rootRoute
     }
     '/monitoring-observers/$monitoringObserverId': {
@@ -171,6 +182,7 @@ declare module '@tanstack/react-router' {
 export const routeTree = rootRoute.addChildren([
   IndexRoute,
   ElectionRoundsElectionRoundIdRoute,
+  FormTemplatesFormTemplateIdRoute,
   MonitoringObserversMonitoringObserverIdRoute,
   MonitoringObserversCreateNewMessageRoute,
   NgosNgoIdRoute,
