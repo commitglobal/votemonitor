@@ -13,6 +13,10 @@ public record FormTemplateSlimModel
     public List<string> Languages { get; init; } = [];
 
     public required TranslatedString Name { get; init; }
+    public required TranslatedString Description { get; init; }
+
+    [JsonConverter(typeof(SmartEnumNameConverter<FormTemplateType, string>))]
+    public required FormTemplateType FormTemplateType { get; init; }
 
     [JsonConverter(typeof(SmartEnumNameConverter<FormTemplateStatus, string>))]
     public required FormTemplateStatus Status { get; init; }
