@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Slot } from "expo-router";
 import AuthContextProvider from "../contexts/auth/AuthContext.provider";
 import { TamaguiProvider } from "@tamagui/core";
@@ -7,11 +7,9 @@ import { useFonts } from "expo-font";
 import "../common/config/i18n";
 import LanguageContextProvider from "../contexts/language/LanguageContext.provider";
 import PersistQueryContextProvider from "../contexts/persist-query/PersistQueryContext.provider";
-
-import { XStack } from "tamagui";
-import { Typography } from "../components/Typography";
-import NetInfo from "@react-native-community/netinfo";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { PortalProvider } from "tamagui";
+import { NetInfoProvider } from "../contexts/net-info-banner/NetInfoContext";
+import NetInfoBanner from "../components/NetInfoBanner";
 
 export default function Root() {
   const [loaded] = useFonts({
@@ -22,34 +20,6 @@ export default function Root() {
     DMSansRegular: require("../assets/fonts/DMSans-Regular.ttf"),
     DMSansBold: require("../assets/fonts/DMSans-Bold.ttf"),
   });
-
-  const [isOnline, setIsOnline] = useState(false);
-  const [showNetInfoBanner, setShowNetInfoBanner] = useState(true);
-  const insets = useSafeAreaInsets();
-
-  useEffect(() => {
-    const unsubscribe = NetInfo.addEventListener((state) => {
-      const status = !!state.isConnected;
-      setIsOnline(status);
-    });
-    return unsubscribe();
-  }, []);
-
-  // show online banner again after user is connected again
-  useEffect(() => {
-    if (isOnline) setShowNetInfoBanner(true);
-  }, [isOnline]);
-
-  // remove online banner after 3 seconds
-  useEffect(() => {
-    if (showNetInfoBanner) {
-      const timer = setTimeout(() => {
-        setShowNetInfoBanner(false);
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-    return;
-  }, [showNetInfoBanner]);
 
   useEffect(() => {
     if (loaded) {
@@ -63,47 +33,18 @@ export default function Root() {
 
   return (
     <TamaguiProvider config={tamaguiConfig}>
-      <AuthContextProvider>
-        <PersistQueryContextProvider>
-          <LanguageContextProvider>
-            <Slot />
-            {isOnline ? (
-              showNetInfoBanner && (
-                <XStack
-                  backgroundColor="$green7"
-                  padding="$xxs"
-                  justifyContent="center"
-                  alignItems="center"
-                  width="100%"
-                  zIndex={100_000}
-                >
-                  <Typography
-                    fontWeight="500"
-                    color="$gray7"
-                    paddingBottom={insets.bottom}
-                    textAlign="center"
-                  >
-                    App online. All answers sent to server.
-                  </Typography>
-                </XStack>
-              )
-            ) : (
-              <XStack
-                backgroundColor="$red9"
-                padding="$xxs"
-                justifyContent="center"
-                alignItems="center"
-                width="100%"
-                zIndex={100_000}
-              >
-                <Typography fontWeight="500" color="white" paddingBottom={insets.bottom}>
-                  Offline mode. Saving answers locally.
-                </Typography>
-              </XStack>
-            )}
-          </LanguageContextProvider>
-        </PersistQueryContextProvider>
-      </AuthContextProvider>
+      <NetInfoProvider>
+        <PortalProvider>
+          <AuthContextProvider>
+            <PersistQueryContextProvider>
+              <LanguageContextProvider>
+                <Slot />
+                <NetInfoBanner />
+              </LanguageContextProvider>
+            </PersistQueryContextProvider>
+          </AuthContextProvider>
+        </PortalProvider>
+      </NetInfoProvider>
     </TamaguiProvider>
   );
 }

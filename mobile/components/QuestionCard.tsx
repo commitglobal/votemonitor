@@ -13,7 +13,7 @@ interface QuestionCardProps {
 }
 
 const QuestionCard: React.FC<QuestionCardProps> = ({ question, index, onPress }) => {
-  const { numberOfCompletedQuestions, numberOfQuestions, status, text } = question;
+  const { numberOfQuestions, status, text } = question;
   return (
     <Card onPress={onPress}>
       <XStack alignItems="center" justifyContent="space-between">

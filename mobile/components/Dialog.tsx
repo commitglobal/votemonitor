@@ -5,9 +5,9 @@ interface DialogProps extends AlertDialogProps {
   // what you press on in order to open the dialog
   trigger: ReactNode;
   // dialog header
-  header: ReactNode;
+  header?: ReactNode;
   // content inside dialog
-  content: ReactNode;
+  content?: ReactNode;
   // dialog footer
   footer: ReactNode;
 }
