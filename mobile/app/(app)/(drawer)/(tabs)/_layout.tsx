@@ -59,6 +59,13 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <Icon icon="more" color={color} />,
         }}
       />
+      <Tabs.Screen
+        name="form-details/[slug]"
+        options={{
+          title: "Form Details",
+          href: null,
+        }}
+      />
     </Tabs>
   );
 }

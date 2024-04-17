@@ -1,6 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
 import { Dimensions, ViewStyle } from "react-native";
-// import { useAuth } from "../../../../hooks/useAuth";
 import { router } from "expo-router";
 import * as ReactotronCommands from "../../../../helpers/reactotron-custom-commands";
 import { Screen } from "../../../../components/Screen";
@@ -28,6 +27,7 @@ import SelectPollingStation from "../../../../components/SelectPollingStation";
 import NoVisitsExist from "../../../../components/NoVisitsExist";
 import NoElectionRounds from "../../../../components/NoElectionRounds";
 import PollingStationInfo from "../../../../components/PollingStationInfo";
+import { Dialog } from "../../../../components/Dialog";
 ReactotronCommands.default();
 
 export type FormItemStatus = "not started" | "in progress" | "completed";
@@ -43,15 +43,21 @@ export type FormListItem = {
 
 const FormList = () => {
   const { activeElectionRound, selectedPollingStation } = useUserData();
+  const [selectedFormId, setSelectedFormId] = useState<string | null>(null);
 
-  const { data: allForms } = useElectionRoundAllForms(activeElectionRound?.id);
-  console.log(allForms?.forms);
+  const {
+    data: allForms,
+    isLoading: isLoadingForms,
+    error: formsError,
+  } = useElectionRoundAllForms(activeElectionRound?.id);
+  console.log("my forms", allForms);
 
-  const { data: formSubmissions } = useFormSubmissions(
-    activeElectionRound?.id,
-    selectedPollingStation?.pollingStationId,
-  );
-  console.log("formSubmissions", formSubmissions);
+  const {
+    data: formSubmissions,
+    isLoading: isLoadingAnswers,
+    error: answersError,
+  } = useFormSubmissions(activeElectionRound?.id, selectedPollingStation?.pollingStationId);
+  console.log("formSubmissions", formSubmissions?.submissions);
 
   const formList: FormListItem[] =
     allForms?.forms.map((form) => {
@@ -64,6 +70,27 @@ const FormList = () => {
         status: "not started",
       };
     }) || [];
+
+  const onConfirmFormLanguage = (language: string) => {
+    console.log("language", language);
+
+    // navigate to the language
+    router.push(`/form-details/${selectedFormId}?language=${language}`);
+
+    setSelectedFormId(null);
+  };
+
+  if (isLoadingAnswers || isLoadingForms) {
+    return <Typography>Loading...</Typography>;
+  }
+
+  if (allForms?.forms.length === 0) {
+    return <Typography>No data to display</Typography>;
+  }
+
+  if (formsError || answersError) {
+    return <Typography>Error while showing form data</Typography>;
+  }
 
   return (
     <YStack gap="$xxs">
@@ -79,7 +106,7 @@ const FormList = () => {
               <FormCard
                 key={index}
                 form={item}
-                onPress={() => console.log("Form Card action")}
+                onPress={setSelectedFormId.bind(null, item.id)}
                 marginBottom="$xxs"
               />
             );
@@ -87,6 +114,12 @@ const FormList = () => {
           estimatedItemSize={100}
         />
       </YStack>
+      <Dialog
+        open={!!selectedFormId}
+        header={<Typography>Choose language</Typography>}
+        content={<Typography>Select language</Typography>}
+        footer={<Button onPress={onConfirmFormLanguage.bind(null, "en")}>Confirm selection</Button>}
+      />
     </YStack>
   );
 };
@@ -212,9 +245,6 @@ const Index = () => {
               />
             )}
             <CardFooter text="Polling station information"></CardFooter>
-          </Card>
-          <Card>
-            <Button onPress={() => router.push("/form-questionnaire/1")}>Go Form wizzard</Button>
           </Card>
         </YStack>
         <FormList />

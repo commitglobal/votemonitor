@@ -10,13 +10,11 @@ import Card from "../../../../components/Card";
 import { Screen } from "../../../../components/Screen";
 import LinearProgress from "../../../../components/LinearProgress";
 import CardFooter from "../../../../components/CardFooter";
-import SelectPollingStation from "../../../../components/SelectPollingStation";
 import { Dialog } from "../../../../components/Dialog";
 
 const QuickReport = () => {
   return (
     <Screen preset="auto" backgroundColor="white" contentContainerStyle={{ gap: 20 }}>
-      <SelectPollingStation placeholder="Select polling station" options={pollingStationAdresses} />
       <Text>Quick Report</Text>
       <Card>
         <Typography
