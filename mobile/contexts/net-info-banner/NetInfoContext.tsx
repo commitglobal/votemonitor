@@ -30,7 +30,7 @@ export const NetInfoProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const unsubscribe = NetInfo.addEventListener((state) => {
       const status = !!state.isConnected;
-      setIsOnline(!status);
+      setIsOnline(status);
     });
     return unsubscribe();
   }, []);

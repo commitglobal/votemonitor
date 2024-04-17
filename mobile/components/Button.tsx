@@ -31,7 +31,7 @@ export interface ButtonProps extends TamaguiButtonProps {
  * @param {ButtonProps} props - The props for the `Button` component.
  * @returns {JSX.Element} The rendered `Button` component.
  */
-const Button = (props: ButtonProps): JSX.Element => {
+const Button = React.forwardRef((props: ButtonProps, _): JSX.Element => {
   const theme = useTheme();
 
   const { style: $styleOverride, children, textStyle, ...rest } = props;
@@ -100,6 +100,6 @@ const Button = (props: ButtonProps): JSX.Element => {
       </Typography>
     </StyledButton>
   );
-};
+});
 
 export default Button;
