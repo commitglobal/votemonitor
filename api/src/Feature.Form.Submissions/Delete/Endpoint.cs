@@ -4,7 +4,7 @@ public class Endpoint(IRepository<FormSubmission> repository) : Endpoint<Request
 {
     public override void Configure()
     {
-        Delete("/api/election-rounds/{electionRoundId}/form-submissions/{id}");
+        Delete("/api/election-rounds/{electionRoundId}/form-submissions");
         DontAutoTag();
         Options(x => x.WithTags("form-submissions", "mobile"));
         Summary(s =>
@@ -15,7 +15,7 @@ public class Endpoint(IRepository<FormSubmission> repository) : Endpoint<Request
 
     public override async Task<Results<NoContent, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var specification = new GetFormSubmissionById(req.ElectionRoundId, req.PollingStationId, req.ObserverId);
+        var specification = new GetFormSubmissionSpecification(req.ElectionRoundId, req.PollingStationId, req.FormId, req.ObserverId);
         var submission = await repository.FirstOrDefaultAsync(specification, ct);
 
         if (submission is null)

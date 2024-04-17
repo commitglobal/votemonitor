@@ -55,7 +55,7 @@ public class UpsertEndpointTests
     }
 
     [Fact]
-    public async Task ShouldReturnNotFound_WhenPollingStationInformationFormNotFound()
+    public async Task ShouldReturnNotFound_WhenFormSubmissionFormNotFound()
     {
         // Arrange
         _formRepository
@@ -80,7 +80,7 @@ public class UpsertEndpointTests
     }
 
     [Fact]
-    public async Task ShouldUpdatePollingStationInformation_WhenPollingStationInformationExists()
+    public async Task ShouldUpdateFormSubmission_WhenFormSubmissionExists()
     {
         // Arrange
         var form = new FormAggregateFaker().Generate();
@@ -89,7 +89,7 @@ public class UpsertEndpointTests
             .Returns(form);
 
         var formSubmission = new FormSubmissionFaker().Generate();
-        _repository.FirstOrDefaultAsync(Arg.Any<GetFormSubmissionById>())
+        _repository.FirstOrDefaultAsync(Arg.Any<GetFormSubmissionSpecification>())
             .Returns(formSubmission);
 
         // Act
@@ -127,7 +127,7 @@ public class UpsertEndpointTests
         var pollingStationId = Guid.NewGuid();
         var observerId = Guid.NewGuid();
 
-        _repository.FirstOrDefaultAsync(Arg.Any<GetFormSubmissionById>())
+        _repository.FirstOrDefaultAsync(Arg.Any<GetFormSubmissionSpecification>())
             .ReturnsNull();
 
         var request = new Upsert.Request
@@ -161,7 +161,7 @@ public class UpsertEndpointTests
 
         var electionRound = new ElectionRoundAggregateFaker(electionRoundId).Generate();
 
-        _repository.FirstOrDefaultAsync(Arg.Any<GetFormSubmissionById>())
+        _repository.FirstOrDefaultAsync(Arg.Any<GetFormSubmissionSpecification>())
             .ReturnsNull();
 
         var request = new Upsert.Request
@@ -204,7 +204,7 @@ public class UpsertEndpointTests
             .FirstOrDefaultAsync(Arg.Any<GetFormSpecification>())
             .Returns(formSubmission);
 
-        _repository.FirstOrDefaultAsync(Arg.Any<GetFormSubmissionById>())
+        _repository.FirstOrDefaultAsync(Arg.Any<GetFormSubmissionSpecification>())
             .ReturnsNull();
 
         var request = new Upsert.Request
@@ -239,7 +239,7 @@ public class UpsertEndpointTests
     }
 
     [Fact]
-    public async Task ShouldCreatePollingStationInformation_WhenPollingStationInformationNotExists()
+    public async Task ShouldCreateFormSubmission_WhenNotExists()
     {
         // Arrange
         var electionRoundId = Guid.NewGuid();
@@ -253,7 +253,7 @@ public class UpsertEndpointTests
             .FirstOrDefaultAsync(Arg.Any<GetFormSpecification>())
             .Returns(form);
 
-        _repository.FirstOrDefaultAsync(Arg.Any<GetFormSubmissionById>())
+        _repository.FirstOrDefaultAsync(Arg.Any<GetFormSubmissionSpecification>())
             .ReturnsNull();
 
         var numberQuestionId = form.Questions.First(x => x.Discriminator == QuestionTypes.NumberQuestionType).Id;
