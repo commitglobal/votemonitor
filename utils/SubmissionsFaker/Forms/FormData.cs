@@ -14,6 +14,11 @@ public class FormData
             { "EN", "test form" },
             { "RO", "formular de test" }
         },
+        Description = new TranslatedString
+        {
+            { "EN", "test form" },
+            { "RO", "formular de test" }
+        },
         FormType = "Opening",
         Questions = [
         new NumberQuestionRequest
