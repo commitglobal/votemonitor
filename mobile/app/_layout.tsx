@@ -8,10 +8,10 @@ import "../common/config/i18n";
 import LanguageContextProvider from "../contexts/language/LanguageContext.provider";
 import PersistQueryContextProvider from "../contexts/persist-query/PersistQueryContext.provider";
 
-import { Stack, XStack } from "tamagui";
-import { Icon } from "../components/Icon";
+import { XStack } from "tamagui";
 import { Typography } from "../components/Typography";
 import NetInfo from "@react-native-community/netinfo";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function Root() {
   const [loaded] = useFonts({
@@ -23,13 +23,14 @@ export default function Root() {
     DMSansBold: require("../assets/fonts/DMSans-Bold.ttf"),
   });
 
-  const [isOnline, setIsOnline] = useState(true);
+  const [isOnline, setIsOnline] = useState(false);
   const [showNetInfoBanner, setShowNetInfoBanner] = useState(true);
+  const insets = useSafeAreaInsets();
 
   useEffect(() => {
     const unsubscribe = NetInfo.addEventListener((state) => {
       const status = !!state.isConnected;
-      setIsOnline(!status);
+      setIsOnline(status);
     });
     return unsubscribe();
   }, []);
@@ -38,6 +39,17 @@ export default function Root() {
   useEffect(() => {
     if (isOnline) setShowNetInfoBanner(true);
   }, [isOnline]);
+
+  // remove online banner after 3 seconds
+  useEffect(() => {
+    if (showNetInfoBanner) {
+      const timer = setTimeout(() => {
+        setShowNetInfoBanner(false);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+    return;
+  }, [showNetInfoBanner]);
 
   useEffect(() => {
     if (loaded) {
@@ -59,34 +71,32 @@ export default function Root() {
               showNetInfoBanner && (
                 <XStack
                   backgroundColor="$green7"
-                  paddingLeft={20}
-                  justifyContent="space-between"
+                  padding="$xxs"
+                  justifyContent="center"
                   alignItems="center"
-                  // position="absolute"
                   width="100%"
-                  // bottom={50}
                   zIndex={100_000}
                 >
-                  <Typography fontWeight="500" color="$gray7" paddingBottom={50}>
+                  <Typography
+                    fontWeight="500"
+                    color="$gray7"
+                    paddingBottom={insets.bottom}
+                    textAlign="center"
+                  >
                     App online. All answers sent to server.
                   </Typography>
-                  <Stack
-                    onPress={() => setShowNetInfoBanner(false)}
-                    paddingVertical="$xxs"
-                    paddingHorizontal={20}
-                  >
-                    <Icon icon="x" size={16} />
-                  </Stack>
                 </XStack>
               )
             ) : (
               <XStack
-                backgroundColor="$red6"
-                paddingVertical="$xxs"
-                paddingHorizontal={20}
+                backgroundColor="$red9"
+                padding="$xxs"
+                justifyContent="center"
+                alignItems="center"
                 width="100%"
+                zIndex={100_000}
               >
-                <Typography fontWeight="500" color="$gray7" paddingBottom={10}>
+                <Typography fontWeight="500" color="white" paddingBottom={insets.bottom}>
                   Offline mode. Saving answers locally.
                 </Typography>
               </XStack>
