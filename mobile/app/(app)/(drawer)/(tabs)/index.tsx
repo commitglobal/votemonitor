@@ -2,7 +2,6 @@ import React from "react";
 import { Dimensions, ViewStyle } from "react-native";
 // import { useAuth } from "../../../../hooks/useAuth";
 import { router } from "expo-router";
-import * as ReactotronCommands from "../../../../helpers/reactotron-custom-commands";
 import { Screen } from "../../../../components/Screen";
 import { useUserData } from "../../../../contexts/user/UserContext.provider";
 import { Typography } from "../../../../components/Typography";
@@ -28,7 +27,6 @@ import SelectPollingStation from "../../../../components/SelectPollingStation";
 import NoVisitsExist from "../../../../components/NoVisitsExist";
 import NoElectionRounds from "../../../../components/NoElectionRounds";
 import PollingStationInfo from "../../../../components/PollingStationInfo";
-ReactotronCommands.default();
 
 export type FormItemStatus = "not started" | "in progress" | "completed";
 
