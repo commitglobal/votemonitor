@@ -18,4 +18,7 @@ public record DateQuestion : BaseQuestion
         TranslatedString text,
         TranslatedString? helptext)
         => new(id, code, text, helptext);
+
+    protected override void AddTranslationsInternal(string languageCode) { }
+    protected override void RemoveTranslationInternal(string languageCode) { }
 }

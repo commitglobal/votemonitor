@@ -53,7 +53,7 @@ export interface BaseQuestion {
   $questionType: QuestionType;
   code: string;
   text: TranslatedString;
-  helptext?: TranslatedString | null;
+  helptext?: TranslatedString;
 }
 
 export interface DateQuestion extends BaseQuestion {
@@ -62,11 +62,11 @@ export interface DateQuestion extends BaseQuestion {
 
 export interface TextQuestion extends BaseQuestion {
   $questionType: QuestionType.TextQuestionType;
-  inputPlaceholder?: TranslatedString | null;
+  inputPlaceholder?: TranslatedString;
 }
 export interface NumberQuestion extends BaseQuestion {
   $questionType: QuestionType.NumberQuestionType;
-  inputPlaceholder?: TranslatedString | null;
+  inputPlaceholder?: TranslatedString;
 }
 
 export enum RatingScaleType {
@@ -167,3 +167,14 @@ export type ElectionRoundMonitoring = {
   country: string;
   countryId: string;
 };
+
+
+export const removeTranslation = (translatedString: TranslatedString | undefined, translationToRemove: string): TranslatedString | undefined => {
+  if (translatedString) {
+    const newTranslatedString = { ...translatedString };
+    delete newTranslatedString[translationToRemove];
+    return newTranslatedString;
+  }
+
+  return undefined;
+}

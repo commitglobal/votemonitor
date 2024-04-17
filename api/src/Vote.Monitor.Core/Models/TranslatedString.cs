@@ -33,4 +33,22 @@ public class TranslatedString : Dictionary<string, string>
 
         return true;
     }
+
+    public void AddTranslation(string languageCode)
+    {
+        if (ContainsKey(languageCode))
+        {
+            return;
+        }
+
+        Add(languageCode, string.Empty);
+    }
+
+    public void RemoveTranslation(string languageCode)
+    {
+        if (ContainsKey(languageCode))
+        {
+            Remove(languageCode);
+        }
+    }
 }

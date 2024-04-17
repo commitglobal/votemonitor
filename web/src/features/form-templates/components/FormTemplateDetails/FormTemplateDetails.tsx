@@ -9,10 +9,13 @@ import { PencilIcon } from '@heroicons/react/24/outline';
 import { FormTemplateFull, mapFormTemplateType } from '../../models/formTemplate';
 import PreviewQuestionFactory from '@/components/questionsEditor/preview/PreviewQuestionFactory';
 import { BaseAnswer } from '@/common/types';
+import { Route as FormTemplateDetailsRoute } from '@/routes/form-templates/$formTemplateId_.$languageCode';
 
 export default function FormTemplateDetails() {
   const formTemplate: FormTemplateFull = useLoaderData({ strict: false });
+  const { formTemplateId, languageCode } = FormTemplateDetailsRoute.useParams()
   const navigate = useNavigate();
+
   const navigateToEdit = () => {
     navigate({ to: '/form-templates/$formTemplateId/edit', params: { formTemplateId: formTemplate.id } });
   };
@@ -43,11 +46,11 @@ export default function FormTemplateDetails() {
               </div>
               <div className='flex flex-col gap-1'>
                 <p className='text-gray-700 font-bold'>Name</p>
-                <p className='text-gray-900 font-normal'>{formTemplate.name[formTemplate.defaultLanguage]}</p>
+                <p className='text-gray-900 font-normal'>{formTemplate.name[languageCode]}</p>
               </div>
               <div className='flex flex-col gap-1'>
                 <p className='text-gray-700 font-bold'>Description</p>
-                <p className='text-gray-900 font-normal'>{formTemplate.description[formTemplate.defaultLanguage]}</p>
+                <p className='text-gray-900 font-normal'>{formTemplate.description[languageCode]}</p>
               </div>
               <div className='flex flex-col gap-1'>
                 <p className='text-gray-700 font-bold'>Form template type</p>

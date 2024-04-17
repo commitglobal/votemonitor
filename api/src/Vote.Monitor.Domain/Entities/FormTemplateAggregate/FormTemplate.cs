@@ -1,4 +1,5 @@
-﻿using Vote.Monitor.Core.Models;
+﻿using System.Text.Json.Serialization;
+using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.Entities.FormBase.Questions;
 
 namespace Vote.Monitor.Domain.Entities.FormTemplateAggregate;
@@ -14,6 +15,25 @@ public class FormTemplate : AuditableBaseEntity, IAggregateRoot
     public string[] Languages { get; private set; } = [];
 
     public IReadOnlyList<BaseQuestion> Questions { get; private set; } = new List<BaseQuestion>().AsReadOnly();
+
+    [JsonConstructor]
+    internal FormTemplate(Guid id,
+        FormTemplateType formTemplateType,
+        string code,
+        string defaultLanguage,
+        TranslatedString name,
+        TranslatedString description,
+        FormTemplateStatus status,
+        string[] languages) : base(id)
+    {
+        FormTemplateType = formTemplateType;
+        Code = code;
+        DefaultLanguage = defaultLanguage;
+        Name = name;
+        Description = description;
+        Status = status;
+        Languages = languages;
+    }
 
     private FormTemplate(FormTemplateType formTemplateType,
         string code,
@@ -76,7 +96,64 @@ public class FormTemplate : AuditableBaseEntity, IAggregateRoot
         Questions = questions.ToList().AsReadOnly();
     }
 
+    public void AddTranslations(string[] languageCodes)
+    {
+        var newLanguages = languageCodes.Except(Languages);
+        Languages = Languages.Union(languageCodes).ToArray();
+
+        foreach (var languageCode in newLanguages)
+        {
+            Description.AddTranslation(languageCode);
+            Name.AddTranslation(languageCode);
+
+            foreach (var question in Questions)
+            {
+                question.AddTranslation(languageCode);
+            }
+        }
+    }
+
+    public void RemoveTranslation(string languageCode)
+    {
+        bool hasLanguageCode = languageCode.Contains(languageCode);
+
+        if (!hasLanguageCode)
+        {
+            return;
+        }
+
+        if (DefaultLanguage == languageCode)
+        {
+            throw new ArgumentException("Cannot remove default language");
+        }
+
+        Languages = Languages.Except([languageCode]).ToArray();
+        Description.RemoveTranslation(languageCode);
+        Name.RemoveTranslation(languageCode);
+
+        foreach (var question in Questions)
+        {
+            question.RemoveTranslation(languageCode);
+        }
+    }
+
+    public bool HasTranslation(string languageCode)
+    {
+        return Languages.Contains(languageCode);
+    }
+
+    public void SetDefaultLanguage(string languageCode)
+    {
+        if (!HasTranslation(languageCode))
+        {
+            throw new ArgumentException("Form template does not have translations for language code");
+        }
+
+        DefaultLanguage = languageCode;
+    }
+
 #pragma warning disable CS8618 // Required by Entity Framework
+
     private FormTemplate()
     {
 

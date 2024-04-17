@@ -1,4 +1,4 @@
-﻿using Vote.Monitor.Domain.Constants;
+﻿using Vote.Monitor.Core.Constants;
 
 namespace Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
 
@@ -10,16 +10,16 @@ public class UserPreferences
     }
 #pragma warning restore CS8618
 
-    protected UserPreferences(Guid languageId)
+    protected UserPreferences(string languageCode)
     {
-        LanguageId = languageId;
+        LanguageCode = languageCode;
     }
 
-    public static UserPreferences Defaults => new(LanguagesList.EN.Id);
-    public Guid LanguageId { get; private set; }
+    public static UserPreferences Defaults => new(LanguagesList.EN.Iso1);
+    public string LanguageCode { get; private set; }
 
-    public void Update(Guid languageId)
+    public void Update(string languageCode)
     {
-        LanguageId = languageId;
+        LanguageCode = languageCode;
     }
 }

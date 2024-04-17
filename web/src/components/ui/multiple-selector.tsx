@@ -104,6 +104,7 @@ function transToGroupOption(options: Option[], groupBy?: string) {
     if (!groupOption[key]) {
       groupOption[key] = [];
     }
+    // @ts-ignore
     groupOption[key].push(option);
   });
   return groupOption;
@@ -207,6 +208,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
         if (input) {
           if (e.key === 'Delete' || e.key === 'Backspace') {
             if (input.value === '' && selected.length > 0) {
+              // @ts-ignore
               handleUnselect(selected[selected.length - 1]);
             }
           }

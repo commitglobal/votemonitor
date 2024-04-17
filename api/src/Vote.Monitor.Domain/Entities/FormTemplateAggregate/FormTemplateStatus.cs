@@ -1,4 +1,5 @@
-﻿using Ardalis.SmartEnum;
+﻿using System.Text.Json.Serialization;
+using Ardalis.SmartEnum;
 
 namespace Vote.Monitor.Domain.Entities.FormTemplateAggregate;
 
@@ -21,6 +22,7 @@ public sealed class FormTemplateStatus : SmartEnum<FormTemplateStatus, string>
         return TryFromValue(value, out result);
     }
 
+    [JsonConstructor]
     private FormTemplateStatus(string name, string value) : base(name, value)
     {
     }

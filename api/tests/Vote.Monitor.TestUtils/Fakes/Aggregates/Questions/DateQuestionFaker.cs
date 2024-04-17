@@ -5,9 +5,9 @@ namespace Vote.Monitor.TestUtils.Fakes.Aggregates.Questions;
 
 public sealed class DateQuestionFaker : Faker<DateQuestion>
 {
-    public DateQuestionFaker()
+    public DateQuestionFaker(string[]? languageList = null)
     {
         CustomInstantiator(f => DateQuestion.Create(f.Random.Guid(), f.Random.AlphaNumeric(2),
-            new TranslatedStringFaker(), new TranslatedStringFaker()));
+            new TranslatedStringFaker(languageList), new TranslatedStringFaker(languageList)));
     }
 }

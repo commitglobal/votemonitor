@@ -4,10 +4,6 @@ namespace Vote.Monitor.Api.Feature.UserPreferences.UnitTests.Endpoints;
 
 public class UpdateEndpointTests
 {
-    public UpdateEndpointTests()
-    {
-    }
-
     [Fact]
     public async Task ShouldCallServiceWhenValidationPasses()
     {
@@ -17,7 +13,7 @@ public class UpdateEndpointTests
         var appUser = new ApplicationUserFaker().Generate();
         repository.GetByIdAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>()).Returns(appUser);
 
-        var request = new Request { Id = Guid.NewGuid(), LanguageId = new Guid("094b3769-68b1-6211-ba2d-6bba92d6a167") };
+        var request = new Request { Id = Guid.NewGuid(), LanguageCode = "EN" };
 
         //act 
 
@@ -39,7 +35,7 @@ public class UpdateEndpointTests
         ApplicationUser appUser = null;
         repository.GetByIdAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>()).Returns(appUser);
 
-        var request = new Request { Id = Guid.NewGuid(), LanguageId = new Guid("094b3769-68b1-6211-ba2d-6bba92d6a167") };
+        var request = new Request { Id = Guid.NewGuid(), LanguageCode = "UNKNOWN" };
 
         //act 
         var response = await endpoint.ExecuteAsync(request, default);

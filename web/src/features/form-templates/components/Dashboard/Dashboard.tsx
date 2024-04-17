@@ -1,6 +1,6 @@
 import { useState, type ReactElement, useRef, CSSProperties } from 'react';
 import { type UseQueryResult, useQuery, useMutation } from '@tanstack/react-query';
-import { type DataTableParameters, type PageResponse } from '@/common/types';
+import { BaseQuestion, MultiSelectQuestion, NumberQuestion, QuestionType, SingleSelectQuestion, TextQuestion, removeTranslation, type DataTableParameters, type PageResponse } from '@/common/types';
 import { authApi } from '@/common/auth-api';
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
 import Layout from '@/components/layout/Layout';
@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ColumnDef, Row } from '@tanstack/react-table';
-import { EllipsisVerticalIcon, FunnelIcon, Cog8ToothIcon, ChevronUpIcon, ChevronDownIcon  } from '@heroicons/react/24/outline';
+import { EllipsisVerticalIcon, FunnelIcon, Cog8ToothIcon, ChevronUpIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
 import { X } from 'lucide-react';
 import {
   DropdownMenu,
@@ -33,14 +33,17 @@ import {
 import { queryClient } from '@/main';
 import { useNavigate } from '@tanstack/react-router';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { FormTemplateBase, FormTemplateType, mapFormTemplateType } from '../../models/formTemplate';
-import { useFormTemplates } from '../../queries';
-import { useTranslation } from 'react-i18next';
-import clsx from 'clsx';
-
+import { FormTemplateBase, FormTemplateFull, FormTemplateType, mapFormTemplateType } from '../../models/formTemplate';
+import { formTemplatesKeys, useFormTemplates } from '../../queries';
+import { toast } from '@/components/ui/use-toast';
+import { cn } from '@/lib/utils';
+import { useDialog } from '@/components/ui/use-dialog';
+import AddTranslationsDialog from './AddTranslationsDialog';
 
 
 export default function FormTemplatesDashboard(): ReactElement {
+  const addTranslationsDialog = useDialog();
+
   const formTemplateColDefs: ColumnDef<FormTemplateBase>[] = [
     {
       header: '',
@@ -48,17 +51,17 @@ export default function FormTemplatesDashboard(): ReactElement {
       cell: ({ row, getValue }) => (
         <div>
           {row.getCanExpand() ? (
-                <button
-                  {...{
-                    onClick: row.getToggleExpandedHandler(),
-                    style: { cursor: 'pointer' },
-                  }}
-                >
-                  {row.getIsExpanded() ? <ChevronUpIcon className='w-4 h-4 ml-auto opacity-50'/> : <ChevronDownIcon className='w-4 h-4 ml-auto opacity-50'/>}
-                </button>
-              ) : (
-                ''
-              )}
+            <button
+              {...{
+                onClick: row.getToggleExpandedHandler(),
+                style: { cursor: 'pointer' },
+              }}
+            >
+              {row.getIsExpanded() ? <ChevronUpIcon className='w-4 h-4 ml-auto opacity-50' /> : <ChevronDownIcon className='w-4 h-4 ml-auto opacity-50' />}
+            </button>
+          ) : (
+            ''
+          )}
           {getValue<boolean>()}
         </div>
       ),
@@ -100,38 +103,95 @@ export default function FormTemplatesDashboard(): ReactElement {
             <EllipsisVerticalIcon className='w-[24px] h-[24px] tex t-purple-600' />
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuItem onClick={() => navigateToFormTemplate(row.original.id)}>View</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigateToEdit(row.original.id)}>Edit</DropdownMenuItem>
-            <DropdownMenuItem className='text-red-600' onClick={() => handleDelete(row.original.id)}>
-              Delete
-            </DropdownMenuItem>
+
+            <DropdownMenuItem onClick={() => navigateToFormTemplate(row.original.id, row.original.defaultLanguage)}>View</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigateToEdit(row.original.id, row.original.defaultLanguage)}>Edit</DropdownMenuItem>
+
+            {
+              row.depth === 0 ?
+                <>
+                  <DropdownMenuItem onClick={() => handleEditTranslations(row.original)}>Add translations</DropdownMenuItem>
+                </>
+                : null
+            }
+            {row.depth === 0 ?
+              <DropdownMenuItem className='text-red-600' onClick={() => handleDeleteFormTemplate(row.original.id)}>
+                Delete template form
+              </DropdownMenuItem>
+              :
+              <DropdownMenuItem className='text-red-600' onClick={() => handleDeleteTranslation(row.original.id, row.original.defaultLanguage)}>
+                Delete translation
+              </DropdownMenuItem>}
           </DropdownMenuContent>
-        </DropdownMenu>
-      ),
+        </DropdownMenu>)
     }
   ];
 
   const [searchText, setSearchText] = useState('');
   const [isFiltering, setFiltering] = useState(false);
   const [formTypeFilter, setFormType] = useState('');
-
+  const [currentFormTemplate, setCurrentFormTemplate] = useState<FormTemplateBase | null>(null)
   const navigate = useNavigate();
   const handleSearchInput = (ev: React.FormEvent<HTMLInputElement>) => {
     setSearchText(ev.currentTarget.value);
   };
 
-  const handleDelete = (formTemplateId: string) => {
-    deleteMutation.mutate(formTemplateId);
+  const handleDeleteFormTemplate = (formTemplateId: string) => {
+    deleteFormTemplateMutation.mutate(formTemplateId);
   };
 
-  const navigateToFormTemplate = (formTemplateId: string) => {
-    navigate({ to: '/form-templates/$formTemplateId', params: { formTemplateId } });
+  const handleEditTranslations = (formTemplate: FormTemplateBase) => {
+    setCurrentFormTemplate(formTemplate);
+    addTranslationsDialog.trigger();
+  }
+
+  const handleDeleteTranslation = (formTemplateId: string, translationToDelete: string) => {
+    deleteTranslationMutation.mutate({ formTemplateId, languageCode: translationToDelete });
   };
-  const navigateToEdit = (formTemplateId: string) => {
+
+  const navigateToFormTemplate = (formTemplateId: string, languageCode: string) => {
+    navigate({ to: '/form-templates/$formTemplateId/$languageCode', params: { formTemplateId, languageCode } });
+  };
+
+  const navigateToEdit = (formTemplateId: string, languageCode: string) => {
     navigate({ to: '/form-templates/$formTemplateId/edit', params: { formTemplateId } });
   };
 
-  const deleteMutation = useMutation({
+  const editMutation = useMutation({
+    mutationFn: (formTemplate: FormTemplateFull) => {
+
+      return authApi.post<void>(
+        `/form-templates/${formTemplate.id}`,
+        formTemplate
+      );
+    },
+
+    onSuccess: () => {
+      toast({
+        title: 'Success',
+        description: 'Observer successfully updated',
+      });
+
+      queryClient.invalidateQueries({ queryKey: formTemplatesKeys.all });
+    },
+  });
+
+  const deleteTranslationMutation = useMutation({
+    mutationFn: ({ formTemplateId, languageCode }: { formTemplateId: string; languageCode: string; }) => {
+      return authApi.delete<void>(`/form-templates/${formTemplateId}/${languageCode}`);
+    },
+
+    onSuccess: () => {
+      toast({
+        title: 'Success',
+        description: 'Translation deleted',
+      });
+
+      queryClient.invalidateQueries({ queryKey: formTemplatesKeys.all });
+    },
+  });
+
+  const deleteFormTemplateMutation = useMutation({
     mutationFn: (formTemplateId: string) => {
 
       return authApi.delete<void>(
@@ -139,7 +199,11 @@ export default function FormTemplatesDashboard(): ReactElement {
       );
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['form-templates'] });
+      toast({
+        title: 'Success',
+        description: 'Template form deleted',
+      });
+      queryClient.invalidateQueries({ queryKey: formTemplatesKeys.all });
     },
   });
 
@@ -159,11 +223,11 @@ export default function FormTemplatesDashboard(): ReactElement {
   };
 
   const getSubrows = (originalRow: FormTemplateBase, index: number): undefined | FormTemplateBase[] => {
-    if(originalRow.languages.length === 0) return undefined;
+    if (originalRow.languages.length === 0) return undefined;
 
     // we need to have subrows only for translations
     return originalRow.languages
-      .filter(languageCode=> originalRow.defaultLanguage !== languageCode)
+      .filter(languageCode => originalRow.defaultLanguage !== languageCode)
       .map(languageCode => ({
         ...originalRow,
         languages: [],
@@ -172,7 +236,7 @@ export default function FormTemplatesDashboard(): ReactElement {
       }));
   }
 
-  const getRowClassName = (row: Row<FormTemplateBase>): string => (clsx( { 'bg-secondary-300 bg-opacity-[.15]': row.depth === 1 }));
+  const getRowClassName = (row: Row<FormTemplateBase>): string => (cn({ 'bg-secondary-300 bg-opacity-[.15]': row.depth === 1 }));
 
   return (
     <Layout
@@ -235,7 +299,11 @@ export default function FormTemplatesDashboard(): ReactElement {
               )}
             </CardHeader>
             <CardContent>
-              <QueryParamsDataTable columns={formTemplateColDefs} useQuery={useFormTemplates} getSubrows={getSubrows} getRowClassName={getRowClassName}/>
+              <QueryParamsDataTable columns={formTemplateColDefs} useQuery={useFormTemplates} getSubrows={getSubrows} getRowClassName={getRowClassName} />
+              {!!currentFormTemplate && <AddTranslationsDialog {...addTranslationsDialog.dialogProps}
+                formTemplateId={currentFormTemplate.id}
+                languages={currentFormTemplate.languages}
+              />}
             </CardContent>
             <CardFooter className='flex justify-between'></CardFooter>
           </Card>
@@ -244,6 +312,7 @@ export default function FormTemplatesDashboard(): ReactElement {
           <QueryParamsDataTable columns={formTemplateColDefs} useQuery={useFormTemplates} getSubrows={getSubrows} getRowClassName={getRowClassName} />
         </TabsContent>
       </Tabs>
+
     </Layout>
   );
 }

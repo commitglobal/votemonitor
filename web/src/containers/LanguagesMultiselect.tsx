@@ -4,13 +4,13 @@ import { ReactNode, useEffect, useMemo, useState } from 'react'
 
 export interface LanguagesMultiselectProps {
     value?: string[];
-    defaultLanguage: string;
+    defaultLanguages: string[];
     placeholder: string;
-    emptyIndicator: ReactNode;
+    emptyIndicator?: ReactNode;
     onChange: (values: string[]) => void;
 }
 
-function LanguagesMultiselect({ value, defaultLanguage, placeholder, emptyIndicator, onChange }: LanguagesMultiselectProps) {
+function LanguagesMultiselect({ value, defaultLanguages, placeholder, emptyIndicator, onChange }: LanguagesMultiselectProps) {
     const { data: languages } = useLanguages();
     const [selected, setSelected] = useState<Option[]>([]);
 
@@ -21,7 +21,7 @@ function LanguagesMultiselect({ value, defaultLanguage, placeholder, emptyIndica
             acc[language.code] = {
                 value: language.code,
                 label: `${language.name} / ${language.nativeName}`,
-                fixed: language.code == defaultLanguage
+                fixed: defaultLanguages?.includes(language.code)
             }
             return acc;
         }, {});
@@ -35,10 +35,9 @@ function LanguagesMultiselect({ value, defaultLanguage, placeholder, emptyIndica
         }
     }, [value, languages]);
 
-
-    function handleSearchLanguages(value: string): Promise<Option[]> {
-        if (value) {
-            return Promise.resolve(languageOptions?.filter(language => language.label.includes(value)));
+    function handleSearchLanguages(search: string): Promise<Option[]> {
+        if (search) {
+            return Promise.resolve(languageOptions?.filter(language => language.label.toLocaleLowerCase().includes(search.toLocaleLowerCase()) ));
         }
 
         return Promise.resolve(languageOptions);
@@ -54,7 +53,7 @@ function LanguagesMultiselect({ value, defaultLanguage, placeholder, emptyIndica
             onChange={handleOnChange}
             defaultOptions={languageOptions}
             onSearch={handleSearchLanguages}
-            triggerSearchOnFocus
+            hidePlaceholderWhenSelected={true}
             placeholder={placeholder}
             emptyIndicator={emptyIndicator}
         />

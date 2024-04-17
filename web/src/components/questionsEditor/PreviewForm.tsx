@@ -1,7 +1,9 @@
 import { BaseAnswer, BaseAnswerSchema, BaseQuestion } from '@/common/types';
 import { useEffect, useState } from 'react';
 import PreviewQuestionFactory from './preview/PreviewQuestionFactory';
+import { Progress } from '../ui/progress';
 import { z } from 'zod';
+import { Button } from '../ui/button';
 
 export interface PreviewFormProps {
   languageCode: string;
@@ -13,36 +15,15 @@ export interface PreviewFormProps {
 export const ResponseDataSchema = z.record(BaseAnswerSchema);
 export type ResponseData = z.infer<typeof ResponseDataSchema>;
 
-function PreviewForm({ 
-    languageCode,
-    localQuestions,
-    activeQuestionId,
-    setActiveQuestionId }: PreviewFormProps) {
-    const [currentQuestion, setCurrentQuestion] = useState<BaseQuestion | undefined>();
-    const [responseData, setResponseData] = useState<ResponseData>({});
-    const [progress, setProgress] = useState(0);
+function PreviewForm({ languageCode, localQuestions, activeQuestionId, setActiveQuestionId }: PreviewFormProps) {
+  const [currentQuestion, setCurrentQuestion] = useState<BaseQuestion | undefined>();
+  const [responseData, setResponseData] = useState<ResponseData>({});
+  const [progress, setProgress] = useState(0);
 
-    useEffect(() => {
-        if(activeQuestionId === "end") {
-            setProgress(100);
-            return;
-        }
-
-        const currentQuestionIndex = localQuestions.findIndex((q) => q.id === activeQuestionId);
-        const percentage = (currentQuestionIndex / localQuestions.length) * 100;
-
-        setProgress(percentage);
-    }, [activeQuestionId, localQuestions]);
-
-    useEffect(() => {
-        const currentQuestionIndex = localQuestions.findIndex((q) => q.id === activeQuestionId);
-        const currentQuestion = localQuestions[currentQuestionIndex];
-        setCurrentQuestion(currentQuestion);
-
-    }, [activeQuestionId, localQuestions]);
-
-    function resetProgress() {
-        setActiveQuestionId(localQuestions[0]?.id!);
+  useEffect(() => {
+    if (activeQuestionId === 'end') {
+      setProgress(100);
+      return;
     }
 
     const currentQuestionIndex = localQuestions.findIndex((q) => q.id === activeQuestionId);

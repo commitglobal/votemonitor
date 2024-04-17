@@ -3,11 +3,11 @@ import { cva } from "class-variance-authority"
 import { CheckIcon, Loader2, LucideIcon, X } from "lucide-react"
 
 import { cn } from "@/lib/utils"
-import { Button } from "@/registry/default/ui/button"
+import { Button } from "./button"
 import {
   Collapsible,
   CollapsibleContent,
-} from "@/registry/default/ui/collapsible"
+} from "./collapsible"
 
 // <---------- CONTEXT ---------->
 
