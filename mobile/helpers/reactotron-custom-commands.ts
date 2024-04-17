@@ -4,10 +4,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { calculateSizes, clearStorage } from "./calculateAsyncStorageSize";
 import {
   getPollingStationNomenclatorNodesCount,
-  deleteAllRecordsPollingStationNomenclator,
   getPollingStationNomenclatorNodes,
+  deleteEverything,
 } from "../database/DAO/PollingStationsNomenclatorDAO";
-import { getPollingStationInformation } from "../services/definitions.api";
 
 Reactotron.onCustomCommand({
   title: "AsyncStorage",
@@ -50,7 +49,7 @@ Reactotron.onCustomCommand({
   command: "deleteAllRecordsPollingStationNomenclator",
   handler: async () => {
     console.log("Calling deleteAllRecordsPollingStationNomenclator");
-    console.log(await deleteAllRecordsPollingStationNomenclator());
+    console.log(await deleteEverything());
   },
 });
 
@@ -68,18 +67,6 @@ Reactotron.onCustomCommand({
         parentId: i.parentId,
       })),
     );
-  },
-});
-
-Reactotron.onCustomCommand({
-  title: "TEst getPollingStationInformation",
-  command: "getPollingStationInformation",
-  handler: async () => {
-    await getPollingStationInformation("1e34f72d-0fe6-415d-a123-f9d6b8fa962d", [
-      "9133160e-d9b7-acce-436d67372722",
-    ])
-      .then(console.log)
-      .catch((err) => console.log(err.response.data));
   },
 });
 

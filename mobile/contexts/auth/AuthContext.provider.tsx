@@ -32,15 +32,6 @@ const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
     }
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const dummyLogin = async (): Promise<{ token: string }> => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({ token: "token_1231231231" });
-      }, 3000);
-    });
-  };
-
   const signOut = async () => {
     setIsAuthenticated(false);
     // remove token

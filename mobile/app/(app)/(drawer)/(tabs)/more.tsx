@@ -8,9 +8,12 @@ import { useTranslation } from "react-i18next";
 import * as Linking from "expo-linking";
 import { tokens } from "../../../../theme/tokens";
 import { router } from "expo-router";
+import { useAuth } from "../../../../hooks/useAuth";
 
 const More = () => {
   const { t } = useTranslation("more");
+
+  const { signOut } = useAuth();
 
   // TODO: Change these consts
   const appVersion = "2.0.4";
@@ -59,7 +62,7 @@ const More = () => {
       ></MenuItem>
       <MenuItem label={t("support")} icon="contactNGO"></MenuItem>
       <MenuItem label={t("feedback")} icon="feedback"></MenuItem>
-      <MenuItem label={t("logout")} icon="logoutNoBackground"></MenuItem>
+      <MenuItem label={t("logout")} icon="logoutNoBackground" onClick={signOut}></MenuItem>
     </Screen>
   );
 };

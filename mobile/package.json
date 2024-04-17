@@ -10,7 +10,8 @@
     "start:ios": "eas build:run -p ios",
     "web": "expo start --web",
     "format": "prettier --write \"app/**/*.{js,jsx,json,md,ts,tsx}\"",
-    "lint": "eslint . --fix && npm run format"
+    "lint": "eslint . --fix && npm run format",
+    "build-ios-local": "eas build --platform ios --local"
   },
   "dependencies": {
     "@morrowdigital/watermelondb-expo-plugin": "^2.3.1",

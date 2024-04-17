@@ -59,6 +59,12 @@ export const pollingStationsKeys = {
       pollingStationId,
       "information",
     ] as const,
+  informationForm: (electionRoundId?: string) => [
+    ...pollingStationsKeys.all,
+    "electionRoundId",
+    electionRoundId,
+    "polling-station-information-form",
+  ],
 };
 
 export const useElectionRoundsQuery = () => {
@@ -72,22 +78,24 @@ export const usePollingStationsNomenclatorQuery = (electionRoundId: string | und
   return useQuery({
     queryKey: pollingStationsKeys.nomenclator(electionRoundId!),
     queryFn: async () => {
-      try {
-        console.log("usePollingStationsNomenclatorQuery");
-        const { cacheKey: serverVersionKey } = await getPollingStationNomenclatorVersion(
-          electionRoundId!,
-        );
-        const localVersionKey = await AsyncStorage.getItem(
-          pollingStationsKeys.nomenclatorCacheKey(electionRoundId!).join(),
-        );
-        const exists = await DB.getOne(electionRoundId!);
+      console.log("usePollingStationsNomenclatorQuery");
 
-        console.log(
-          "usePollingStationsNomenclatorQuery",
-          serverVersionKey,
-          localVersionKey,
-          electionRoundId,
-        );
+      const localVersionKey = await AsyncStorage.getItem(
+        pollingStationsKeys.nomenclatorCacheKey(electionRoundId!).join(),
+      );
+
+      let serverVersionKey;
+      try {
+        serverVersionKey = (await getPollingStationNomenclatorVersion(electionRoundId!))?.cacheKey;
+      } catch (err) {
+        // Possible offline or backend has issues, let it pass
+        // Sentry log
+        serverVersionKey = localVersionKey ?? "";
+        console.log("usePollingStationsNomenclatorQuery", err);
+      }
+
+      try {
+        const exists = await DB.getOne(electionRoundId!);
 
         if (!localVersionKey) console.log("🆕🆕🆕🆕 Nomenclator: No Local Version Key");
         if (!exists) console.log("🆕🆕🆕🆕 Nomenclator: No data for the election round");
@@ -95,8 +103,8 @@ export const usePollingStationsNomenclatorQuery = (electionRoundId: string | und
           console.log("❌❌❌❌ Nomenclator: Busting cache, new data coming");
 
         if (!localVersionKey || !exists || serverVersionKey !== localVersionKey) {
-          await DB.deleteAll(electionRoundId!);
           const data = await getPollingStationNomenclator(electionRoundId!);
+          await DB.deleteAll(electionRoundId!);
           await DB.addPollingStationsNomenclatureBulk(electionRoundId!, data.nodes);
           await AsyncStorage.setItem(
             pollingStationsKeys.nomenclatorCacheKey(electionRoundId!).join(),
@@ -115,7 +123,7 @@ export const usePollingStationsNomenclatorQuery = (electionRoundId: string | und
     enabled: !!electionRoundId,
     // staleTime: 5 * 60 * 1000,
     staleTime: 0,
-    // networkMode: "always",
+    networkMode: "always",
   });
 };
 
@@ -150,37 +158,36 @@ export const usePollingStationByParentID = (parentId: number | null) => {
   });
 };
 
+export const pollingStationByIdQueryFn = async (pollingStationId: string | undefined) => {
+  console.log("usePollingStationById", pollingStationId);
+  const data = await DB.getPollingStationById(pollingStationId!);
+
+  if (!data)
+    throw Error(`Could not find data for ${pollingStationId}, maybe nomenclator not there yet.`);
+
+  const mapped: PollingStationNomenclatorNodeVM = {
+    id: data._id,
+    name: data.name,
+    number: data.pollingStationNumber,
+    parentId: data.parentId,
+    pollingStationId: data.pollingStationId,
+  };
+  return mapped;
+};
 export const usePollingStationById = (pollingStationId: string | undefined) => {
   return useQuery({
     queryKey: pollingStationsKeys.one(pollingStationId!),
-    queryFn: async () => {
-      console.log("usePollingStationById", pollingStationId);
-      const data = await DB.getPollingStationById(pollingStationId!);
-
-      if (!data) return null;
-
-      const mapped: PollingStationNomenclatorNodeVM = {
-        id: data._id,
-        name: data.name,
-        number: data.pollingStationNumber,
-        parentId: data.parentId,
-        pollingStationId: data.pollingStationId,
-      };
-      return mapped;
-    },
+    queryFn: () => pollingStationByIdQueryFn(pollingStationId),
     enabled: !!pollingStationId,
-    staleTime: 0,
+    staleTime: 60 * 1000,
     networkMode: "always", // https://tanstack.com/query/v4/docs/framework/react/guides/network-mode#network-mode-always
   });
 };
 
 export const usePollingStationInformationForm = (electionRoundId: string | undefined) => {
   return useQuery({
-    queryKey: ["polling-station-information-form", electionRoundId],
-    queryFn: async () => {
-      const data = await getPollingStationInformationForm(electionRoundId!);
-      return data;
-    },
+    queryKey: pollingStationsKeys.informationForm(electionRoundId),
+    queryFn: () => getPollingStationInformationForm(electionRoundId!),
     enabled: !!electionRoundId,
   });
 };
@@ -204,16 +211,19 @@ export const useFormSubmissions = (
   });
 };
 
+export const pollingStationInformationQueryFn = (
+  electionRoundId: string | undefined,
+  pollingStationId: string | undefined,
+) => {
+  return getPollingStationInformation(electionRoundId!, pollingStationId!);
+};
 export const usePollingStationInformation = (
   electionRoundId: string | undefined,
   pollingStationId: string | undefined,
 ) => {
   return useQuery({
     queryKey: pollingStationsKeys.pollingStationInformation(electionRoundId!, pollingStationId!),
-    queryFn: async () => {
-      const data = await getPollingStationInformation(electionRoundId!, pollingStationId!);
-      return data || null;
-    },
+    queryFn: () => pollingStationInformationQueryFn(electionRoundId, pollingStationId),
     enabled: !!electionRoundId && !!pollingStationId,
   });
 };

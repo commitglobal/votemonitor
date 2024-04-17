@@ -1,7 +1,6 @@
 import {
   StatusBar,
   StyleProp,
-  TextStyle,
   TouchableOpacity,
   TouchableOpacityProps,
   ViewStyle,
@@ -103,7 +102,7 @@ const Header = ({
         </TouchableOpacity>
 
         {/* header title */}
-        <Typography preset="body2" style={{ ...$title, color: titleColor }}>
+        <Typography preset="body2" color={titleColor} flex={6} textAlign="center">
           {title}
         </Typography>
 
@@ -126,6 +125,7 @@ const Header = ({
             position="absolute"
             width="100%"
             top={50 + insets.top}
+            zIndex={100_000}
           >
             <Typography fontWeight="500" color="$gray7">
               App online. All answers sent to server.
@@ -140,14 +140,7 @@ const Header = ({
           </XStack>
         )
       ) : (
-        <XStack
-          backgroundColor="$red1"
-          paddingVertical="$xxs"
-          paddingHorizontal={20}
-          position="absolute"
-          width="100%"
-          top={50 + insets.top}
-        >
+        <XStack backgroundColor="$red1" paddingVertical="$xxs" paddingHorizontal={20} width="100%">
           <Typography fontWeight="500" color="$gray7">
             Offline mode. Saving answers locally.
           </Typography>
@@ -169,11 +162,6 @@ const $leftIconContainer: ViewStyle = {
   paddingLeft: 14,
   flexDirection: "row",
   justifyContent: "flex-start",
-};
-
-const $title: TextStyle = {
-  flex: 6,
-  textAlign: "center",
 };
 
 const $rightIconContainer: ViewStyle = {
