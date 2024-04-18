@@ -15,6 +15,7 @@ import QuestionCard from "../../../../components/QuestionCard";
 import Header from "../../../../components/Header";
 import { useNavigation } from "expo-router";
 import { DrawerActions } from "@react-navigation/native";
+import Input from "../../../../components/Inputs/Input";
 
 const mockQuestions = [
   {
@@ -61,6 +62,12 @@ const QuickReport = () => {
             key={question.id}
           />
         ))}
+      </Stack>
+      <Stack padding="$md" gap="$md">
+        <Typography preset="subheading">Inputs</Typography>
+        <Input type="text" placeholder="type = text" />
+        <Input type="textarea" placeholder="type = textarea" />
+        <Input type="numeric" placeholder="type = numeric" />
       </Stack>
 
       <Text>Quick Report</Text>
@@ -157,10 +164,10 @@ const QuickReport = () => {
 
         <Stack padding="$sm" gap="$xs" backgroundColor="white">
           <Typography preset="heading">Badge</Typography>
-          <Badge status="not started" />
-          <Badge status="completed" />
-          <Badge status="in progress" />
-          <Badge status="danger" />
+          <Badge status="not started">not started</Badge>
+          <Badge status="completed">not started</Badge>
+          <Badge status="in progress">not started</Badge>
+          <Badge status="danger">not started</Badge>
         </Stack>
 
         <Stack padding="$sm" gap="$xs" backgroundColor="white">
