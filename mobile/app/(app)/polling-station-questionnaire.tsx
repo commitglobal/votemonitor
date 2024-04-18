@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Typography } from "../../components/Typography";
 import { Controller, useForm } from "react-hook-form";
-import { Button, CheckedState, Sheet, View, YStack } from "tamagui";
+import { Sheet, View, XStack, YStack } from "tamagui";
 import {
   pollingStationsKeys,
   usePollingStationInformation,
@@ -36,11 +36,14 @@ import {
   mapAPIQuestionsToFormQuestions,
 } from "../../services/form.parser";
 import Input from "../../components/Inputs/Input";
+import Button from "../../components/Button";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const PollingStationQuestionnaire = () => {
   const queryClient = useQueryClient();
   const { t } = useTranslation("polling_station_information");
   const [open, setOpen] = useState(false);
+  const insets = useSafeAreaInsets();
 
   const { activeElectionRound, selectedPollingStation } = useUserData();
 
@@ -229,214 +232,236 @@ const PollingStationQuestionnaire = () => {
     defaultValues: setFormDefaultValues(),
   });
   return (
-    <Screen
-      preset="scroll"
-      backgroundColor="white"
-      ScrollViewProps={{
-        stickyHeaderIndices: [0],
-        bounces: false,
-      }}
-    >
-      <Header
-        title={t("header.title")}
-        titleColor="white"
-        barStyle="light-content"
-        leftIcon={<Icon icon="chevronLeft" color="white" />}
-        rightIcon={<Icon icon="dotsVertical" color="white" />}
-        onLeftPress={() => router.back()}
-        onRightPress={() => setOpen(true)}
-      />
-      <YStack padding="$md" gap="$lg">
-        {formStructure?.questions.map((question: ApiFormQuestion) => {
-          const label = `${question.code}. ${question.text.EN}`;
-          const helper = question.helptext.EN;
+    <>
+      <Screen
+        preset="scroll"
+        backgroundColor="white"
+        ScrollViewProps={{
+          stickyHeaderIndices: [0],
+          bounces: false,
+        }}
+      >
+        <Header
+          title={t("header.title")}
+          titleColor="white"
+          barStyle="light-content"
+          leftIcon={<Icon icon="chevronLeft" color="white" />}
+          rightIcon={<Icon icon="dotsVertical" color="white" />}
+          onLeftPress={() => router.back()}
+          onRightPress={() => setOpen(true)}
+        />
+        <YStack padding="$md" gap="$lg">
+          {formStructure?.questions.map((question: ApiFormQuestion) => {
+            const label = `${question.code}. ${question.text.EN}`;
+            const helper = question.helptext.EN;
 
-          if (question.$questionType === "numberQuestion") {
-            return (
-              <Controller
-                key={question.id}
-                name={question.id}
-                control={control}
-                render={({ field: { onChange, value } }) => (
-                  <FormInput
-                    title={question.text.EN}
-                    placeholder={question.helptext?.EN}
-                    type="numeric"
-                    value={value}
-                    onChangeText={onChange}
-                  />
-                )}
-              />
-            );
-          }
-
-          if (question.$questionType === "textQuestion") {
-            return (
-              <Controller
-                key={question.id}
-                name={question.id}
-                control={control}
-                render={({ field: { onChange, value } }) => (
-                  <YStack>
-                    <FormInput
-                      type="textarea"
-                      title={question.text.EN}
-                      placeholder={question.helptext?.EN}
-                      onChangeText={onChange}
-                      value={value}
-                    />
-                  </YStack>
-                )}
-              />
-            );
-          }
-
-          if (question.$questionType === "dateQuestion") {
-            return (
-              <Controller
-                key={question.id}
-                name={question.id}
-                control={control}
-                render={({ field: { onChange, value } }) => (
-                  <YStack>
-                    <DateFormInput
-                      title={question.text.EN}
-                      onChange={onChange}
-                      value={value}
-                      placeholder={question.helptext?.EN}
-                    />
-                  </YStack>
-                )}
-              />
-            );
-          }
-
-          if (question.$questionType === "singleSelectQuestion") {
-            return (
-              // TODO: need to handle free text option
-              <Controller
-                key={question.id}
-                name={question.id}
-                control={control}
-                render={({ field: { onChange, value = { radioValue: "", textValue: null } } }) => {
-                  return (
-                    <YStack>
-                      <RadioFormInput
-                        options={question.options.map((option) => ({
-                          id: option.id,
-                          label: option.text.EN,
-                          value: option.id,
-                        }))}
-                        title={question.text.EN}
-                        value={value.radioValue}
-                        onValueChange={(radioValue) =>
-                          onChange({ ...value, radioValue, textValue: null })
-                        }
-                      />
-                      {/* if the selected option is "other", show textArea */}
-                      {question.options.map((option) => {
-                        if (value.radioValue === option.id && option.isFreeText) {
-                          return (
-                            <Input
-                              type="textarea"
-                              marginTop="$md"
-                              key={option.id}
-                              value={value.textValue}
-                              onChangeText={(textValue) => onChange({ ...value, textValue })}
-                            />
-                          );
-                        }
-                        return undefined;
-                      })}
-                    </YStack>
-                  );
-                }}
-              />
-            );
-          }
-
-          if (question.$questionType === "ratingQuestion") {
-            return (
-              // TODO: need to handle free text option
-              <Controller
-                key={question.id}
-                name={question.id}
-                control={control}
-                render={({ field: { onChange, value } }) => (
-                  <YStack>
-                    <RatingFormInput
-                      id={question.id}
-                      type="single"
-                      title={question.text.EN}
-                      value={value}
-                      onValueChange={onChange}
-                    />
-                  </YStack>
-                )}
-              />
-            );
-          }
-
-          if (question.$questionType === "multiSelectQuestion") {
-            return (
-              <FormElement key={question.id} title={`${question.code}. ${question.text.EN}`}>
+            if (question.$questionType === "numberQuestion") {
+              return (
                 <Controller
                   key={question.id}
                   name={question.id}
                   control={control}
-                  render={({ field: { onChange, value } }) => {
-                    const selections: Record<string, { optionId: string; text: string }> =
-                      value || {};
+                  render={({ field: { onChange, value } }) => (
+                    <FormInput
+                      title={question.text.EN}
+                      placeholder={question.helptext?.EN}
+                      type="numeric"
+                      value={value}
+                      onChangeText={onChange}
+                    />
+                  )}
+                />
+              );
+            }
 
+            if (question.$questionType === "textQuestion") {
+              return (
+                <Controller
+                  key={question.id}
+                  name={question.id}
+                  control={control}
+                  render={({ field: { onChange, value } }) => (
+                    <YStack>
+                      <FormInput
+                        type="textarea"
+                        title={question.text.EN}
+                        placeholder={question.helptext?.EN}
+                        onChangeText={onChange}
+                        value={value}
+                      />
+                    </YStack>
+                  )}
+                />
+              );
+            }
+
+            if (question.$questionType === "dateQuestion") {
+              return (
+                <Controller
+                  key={question.id}
+                  name={question.id}
+                  control={control}
+                  render={({ field: { onChange, value } }) => (
+                    <YStack>
+                      <DateFormInput
+                        title={question.text.EN}
+                        onChange={onChange}
+                        value={value}
+                        placeholder={question.helptext?.EN}
+                      />
+                    </YStack>
+                  )}
+                />
+              );
+            }
+
+            if (question.$questionType === "singleSelectQuestion") {
+              return (
+                // TODO: need to handle free text option
+                <Controller
+                  key={question.id}
+                  name={question.id}
+                  control={control}
+                  render={({
+                    field: { onChange, value = { radioValue: "", textValue: null } },
+                  }) => {
                     return (
-                      <>
-                        {question.options.map((option) => (
-                          <YStack key={option.id}>
-                            <CheckboxInput
-                              marginBottom="$md"
-                              id={option.id}
-                              label={option.text.EN}
-                              checked={selections[option.id]?.optionId === option.id}
-                              onCheckedChange={(checked) => {
-                                if (checked) {
-                                  return onChange({
-                                    ...selections,
-                                    [option.id]: { optionId: option.id, text: null },
-                                  });
-                                } else {
-                                  const { [option.id]: toRemove, ...rest } = selections;
-                                  return onChange(rest);
-                                }
-                              }}
-                            />
-                            {selections[option.id]?.optionId === option.id && option.isFreeText && (
+                      <YStack>
+                        <RadioFormInput
+                          options={question.options.map((option) => ({
+                            id: option.id,
+                            label: option.text.EN,
+                            value: option.id,
+                          }))}
+                          title={question.text.EN}
+                          value={value.radioValue}
+                          onValueChange={(radioValue) =>
+                            onChange({ ...value, radioValue, textValue: null })
+                          }
+                        />
+                        {/* if the selected option is "other", show textArea */}
+                        {question.options.map((option) => {
+                          if (value.radioValue === option.id && option.isFreeText) {
+                            return (
                               <Input
                                 type="textarea"
                                 marginTop="$md"
-                                value={selections[option.id]?.text}
-                                placeholder="Please enter a text..."
-                                onChangeText={(textValue) => {
-                                  selections[option.id] = { optionId: option.id, text: textValue };
-                                  onChange(selections);
-                                }}
+                                key={option.id}
+                                value={value.textValue}
+                                onChangeText={(textValue) => onChange({ ...value, textValue })}
                               />
-                            )}
-                          </YStack>
-                        ))}
-                      </>
+                            );
+                          }
+                          return undefined;
+                        })}
+                      </YStack>
                     );
                   }}
-                ></Controller>
-              </FormElement>
-            );
-          }
+                />
+              );
+            }
 
-          return <Typography key={question.id}></Typography>;
-        })}
-        <Button onPress={handleSubmit(onSubmit)}>Submit answer</Button>
-        <OptionsSheet open={open} setOpen={setOpen} onClear={() => console.log("clear form")} />
-      </YStack>
-    </Screen>
+            if (question.$questionType === "ratingQuestion") {
+              return (
+                // TODO: need to handle free text option
+                <Controller
+                  key={question.id}
+                  name={question.id}
+                  control={control}
+                  render={({ field: { onChange, value } }) => (
+                    <YStack>
+                      <RatingFormInput
+                        id={question.id}
+                        type="single"
+                        title={question.text.EN}
+                        value={value}
+                        onValueChange={onChange}
+                      />
+                    </YStack>
+                  )}
+                />
+              );
+            }
+
+            if (question.$questionType === "multiSelectQuestion") {
+              return (
+                <FormElement key={question.id} title={`${question.code}. ${question.text.EN}`}>
+                  <Controller
+                    key={question.id}
+                    name={question.id}
+                    control={control}
+                    render={({ field: { onChange, value } }) => {
+                      const selections: Record<string, { optionId: string; text: string }> =
+                        value || {};
+
+                      return (
+                        <>
+                          {question.options.map((option) => (
+                            <YStack key={option.id}>
+                              <CheckboxInput
+                                marginBottom="$md"
+                                id={option.id}
+                                label={option.text.EN}
+                                checked={selections[option.id]?.optionId === option.id}
+                                onCheckedChange={(checked) => {
+                                  if (checked) {
+                                    return onChange({
+                                      ...selections,
+                                      [option.id]: { optionId: option.id, text: null },
+                                    });
+                                  } else {
+                                    const { [option.id]: toRemove, ...rest } = selections;
+                                    return onChange(rest);
+                                  }
+                                }}
+                              />
+                              {selections[option.id]?.optionId === option.id &&
+                                option.isFreeText && (
+                                  <Input
+                                    type="textarea"
+                                    marginTop="$md"
+                                    value={selections[option.id]?.text}
+                                    placeholder="Please enter a text..."
+                                    onChangeText={(textValue) => {
+                                      selections[option.id] = {
+                                        optionId: option.id,
+                                        text: textValue,
+                                      };
+                                      onChange(selections);
+                                    }}
+                                  />
+                                )}
+                            </YStack>
+                          ))}
+                        </>
+                      );
+                    }}
+                  ></Controller>
+                </FormElement>
+              );
+            }
+
+            return <Typography key={question.id}></Typography>;
+          })}
+          <OptionsSheet open={open} setOpen={setOpen} onClear={() => console.log("clear form")} />
+        </YStack>
+      </Screen>
+
+      <XStack
+        backgroundColor="white"
+        padding="$xs"
+        justifyContent="center"
+        paddingBottom={insets.bottom + 10}
+        shadowColor="$gray13"
+        shadowOffset={{ width: 0, height: -5 }}
+        shadowRadius={3}
+        shadowOpacity={0.1}
+      >
+        <Button flex={1} onPress={handleSubmit(onSubmit)}>
+          Submit answer
+        </Button>
+      </XStack>
+    </>
   );
 };
 
