@@ -18,6 +18,7 @@ enum Presets {
 
 export interface BadgeProps {
   status: string;
+  children: string;
 }
 
 /**
@@ -63,23 +64,10 @@ const Badge = (props: BadgeProps): JSX.Element => {
         ? "$yellow7"
         : "$gray10";
 
-  const text =
-    status === Status.COMPLETED
-      ? Status.COMPLETED.charAt(0).toUpperCase() + Status.COMPLETED.slice(1)
-      : status === Status.ANSWERED
-        ? Status.ANSWERED.charAt(0).toUpperCase() + Status.ANSWERED.slice(1)
-        : status === Status.NOT_ANSWERED
-          ? Status.NOT_ANSWERED.split(" ")
-              .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-              .join(" ")
-          : status === Status.IN_PROGRESS
-            ? Status.IN_PROGRESS.charAt(0).toUpperCase() + Status.IN_PROGRESS.slice(1)
-            : Status.NOT_STARTED.charAt(0).toUpperCase() + Status.NOT_STARTED.slice(1);
-
   return (
     <StyledView presets={presetType}>
       <Typography preset="body2" color={textColor}>
-        {text}
+        {props.children}
       </Typography>
     </StyledView>
   );

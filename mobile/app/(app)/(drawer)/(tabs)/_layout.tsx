@@ -1,6 +1,6 @@
 import React from "react";
-import { Tabs } from "expo-router";
-import { TextStyle, ViewStyle } from "react-native";
+import { router, Tabs } from "expo-router";
+import { Pressable, TextStyle, ViewStyle } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTheme } from "tamagui";
 import { Icon } from "../../../../components/Icon";
@@ -31,10 +31,13 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
-        name="index"
+        name="(observation)"
         options={{
           title: "Observation",
           tabBarIcon: ({ color }) => <Icon icon="observation" color={color} />,
+          tabBarButton: (props) => (
+            <Pressable {...props} onPress={() => router.push("/(observation)")} />
+          ),
         }}
       />
       <Tabs.Screen

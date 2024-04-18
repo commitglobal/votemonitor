@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { ViewStyle } from "react-native";
 import { Typography } from "../../components/Typography";
 import { Controller, useForm } from "react-hook-form";
 import { Button, CheckedState, Sheet, View, YStack } from "tamagui";
@@ -32,6 +31,10 @@ import FormElement from "../../components/FormInputs/FormElement";
 import { Icon } from "../../components/Icon";
 import { useTranslation } from "react-i18next";
 import Header from "../../components/Header";
+import {
+  mapAPIAnswersToFormAnswers,
+  mapAPIQuestionsToFormQuestions,
+} from "../../services/form.parser";
 import Input from "../../components/Inputs/Input";
 
 const PollingStationQuestionnaire = () => {
@@ -48,24 +51,11 @@ const PollingStationQuestionnaire = () => {
   );
 
   const questions: Record<string, ApiFormQuestion> = useMemo(
-    () =>
-      formStructure?.questions.reduce(
-        (acc: Record<string, ApiFormQuestion>, curr: ApiFormQuestion) => {
-          acc[curr.id] = curr;
-
-          return acc;
-        },
-        {},
-      ) || {},
+    () => mapAPIQuestionsToFormQuestions(formStructure?.questions),
     [formStructure],
   );
   const answers: Record<string, ApiFormAnswer> = useMemo(
-    () =>
-      formData?.answers.reduce((acc: Record<string, ApiFormAnswer>, curr: ApiFormAnswer) => {
-        acc[curr.questionId] = curr;
-
-        return acc;
-      }, {}) || {},
+    () => mapAPIAnswersToFormAnswers(formData?.answers),
     [formData],
   );
 

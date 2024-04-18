@@ -1,16 +1,16 @@
-import React from "react";
-import { Dimensions, ViewStyle } from "react-native";
-import { router } from "expo-router";
-import { Screen } from "../../../../components/Screen";
-import { useUserData } from "../../../../contexts/user/UserContext.provider";
-import { Typography } from "../../../../components/Typography";
+import React, { useState } from "react";
+import { Dimensions } from "react-native";
+import { router, useNavigation } from "expo-router";
+import { Screen } from "../../../../../components/Screen";
+import { useUserData } from "../../../../../contexts/user/UserContext.provider";
+import { Typography } from "../../../../../components/Typography";
 import { XStack, YStack } from "tamagui";
-import { ListView } from "../../../../components/ListView";
-import TimeSelect from "../../../../components/TimeSelect";
-import CardFooter from "../../../../components/CardFooter";
-import PollingStationInfoDefault from "../../../../components/PollingStationInfoDefault";
-import Card from "../../../../components/Card";
-import FormCard from "../../../../components/FormCard";
+import { ListView } from "../../../../../components/ListView";
+import TimeSelect from "../../../../../components/TimeSelect";
+import CardFooter from "../../../../../components/CardFooter";
+import PollingStationInfoDefault from "../../../../../components/PollingStationInfoDefault";
+import Card from "../../../../../components/Card";
+import FormCard from "../../../../../components/FormCard";
 import {
   pollingStationsKeys,
   upsertPollingStationGeneralInformationMutation,
@@ -18,13 +18,18 @@ import {
   useFormSubmissions,
   usePollingStationInformation,
   usePollingStationInformationForm,
-} from "../../../../services/queries.service";
-import { ApiFormAnswer } from "../../../../services/interfaces/answer.type";
+} from "../../../../../services/queries.service";
+import { ApiFormAnswer } from "../../../../../services/interfaces/answer.type";
 import { useQueryClient } from "@tanstack/react-query";
-import SelectPollingStation from "../../../../components/SelectPollingStation";
-import NoVisitsExist from "../../../../components/NoVisitsExist";
-import NoElectionRounds from "../../../../components/NoElectionRounds";
-import PollingStationInfo from "../../../../components/PollingStationInfo";
+import SelectPollingStation from "../../../../../components/SelectPollingStation";
+import NoVisitsExist from "../../../../../components/NoVisitsExist";
+import NoElectionRounds from "../../../../../components/NoElectionRounds";
+import PollingStationInfo from "../../../../../components/PollingStationInfo";
+import { Dialog } from "../../../../../components/Dialog";
+import Button from "../../../../../components/Button";
+import Header from "../../../../../components/Header";
+import { Icon } from "../../../../../components/Icon";
+import { DrawerActions } from "@react-navigation/native";
 
 export type FormItemStatus = "not started" | "in progress" | "completed";
 
@@ -39,14 +44,21 @@ export type FormListItem = {
 
 const FormList = () => {
   const { activeElectionRound, selectedPollingStation } = useUserData();
+  const [selectedFormId, setSelectedFormId] = useState<string | null>(null);
 
-  const { data: allForms } = useElectionRoundAllForms(activeElectionRound?.id);
+  const {
+    data: allForms,
+    isLoading: isLoadingForms,
+    error: formsError,
+  } = useElectionRoundAllForms(activeElectionRound?.id);
+  console.log("my forms", allForms);
 
-  const { data: formSubmissions } = useFormSubmissions(
-    activeElectionRound?.id,
-    selectedPollingStation?.pollingStationId,
-  );
-  console.log(formSubmissions);
+  const {
+    data: formSubmissions,
+    isLoading: isLoadingAnswers,
+    error: answersError,
+  } = useFormSubmissions(activeElectionRound?.id, selectedPollingStation?.pollingStationId);
+  console.log("formSubmissions", formSubmissions?.submissions);
 
   const formList: FormListItem[] =
     allForms?.forms.map((form) => {
@@ -59,6 +71,27 @@ const FormList = () => {
         status: "not started",
       };
     }) || [];
+
+  const onConfirmFormLanguage = (language: string) => {
+    console.log("language", language);
+
+    // navigate to the language
+    router.push(`/form-details/${selectedFormId}?language=${language}`);
+
+    setSelectedFormId(null);
+  };
+
+  if (isLoadingAnswers || isLoadingForms) {
+    return <Typography>Loading...</Typography>;
+  }
+
+  if (allForms?.forms.length === 0) {
+    return <Typography>No data to display</Typography>;
+  }
+
+  if (formsError || answersError) {
+    return <Typography>Error while showing form data</Typography>;
+  }
 
   return (
     <YStack gap="$xxs">
@@ -74,7 +107,7 @@ const FormList = () => {
               <FormCard
                 key={index}
                 form={item}
-                onPress={() => console.log("Form Card action")}
+                onPress={setSelectedFormId.bind(null, item.id)}
                 marginBottom="$xxs"
               />
             );
@@ -82,6 +115,12 @@ const FormList = () => {
           estimatedItemSize={100}
         />
       </YStack>
+      <Dialog
+        open={!!selectedFormId}
+        header={<Typography>Choose language</Typography>}
+        content={<Typography>Select language</Typography>}
+        footer={<Button onPress={onConfirmFormLanguage.bind(null, "EN")}>Confirm selection</Button>}
+      />
     </YStack>
   );
 };
@@ -94,6 +133,7 @@ type PollingStationInformationVM = {
 
 const Index = () => {
   const queryClient = useQueryClient();
+  const navigation = useNavigation();
 
   const {
     isLoading,
@@ -176,14 +216,22 @@ const Index = () => {
   return (
     <Screen
       preset="scroll"
-      contentContainerStyle={$containerStyle}
       ScrollViewProps={{
         showsVerticalScrollIndicator: false,
         stickyHeaderIndices: [0],
         bounces: false,
       }}
     >
-      <SelectPollingStation />
+      <YStack marginBottom={20}>
+        <Header
+          title={"Observation"}
+          titleColor="white"
+          barStyle="light-content"
+          leftIcon={<Icon icon="menuAlt2" color="white" />}
+          onLeftPress={() => navigation.dispatch(DrawerActions.openDrawer)}
+        />
+        <SelectPollingStation />
+      </YStack>
       <YStack paddingHorizontal="$md" gap="$lg">
         <YStack gap="$xxs">
           <XStack gap="$xxs">
@@ -220,10 +268,6 @@ const Index = () => {
       </YStack>
     </Screen>
   );
-};
-
-const $containerStyle: ViewStyle = {
-  gap: 20,
 };
 
 export default Index;

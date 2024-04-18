@@ -220,10 +220,25 @@ export const getElectionRoundAllForms = (
     @returns {unknown} 
 */
 
+export type FormSubmission = {
+  id: string;
+  formId: string;
+  pollingStationId: string;
+  answers: FormSubmissionAnswer[];
+};
+export type FormSubmissionAnswer = {
+  $answerType: "string";
+  questionId: string;
+};
+
+export type FormSubmissionsApiResponse = {
+  submissions: FormSubmission[];
+};
+
 export const getFormSubmissions = (
   electionRoundId: string,
   pollingStationId: string,
-): Promise<unknown> => {
+): Promise<FormSubmissionsApiResponse> => {
   return API.get(`election-rounds/${electionRoundId}/form-submissions:my`, {
     params: {
       pollingStationIds: [pollingStationId],

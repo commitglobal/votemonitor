@@ -2,8 +2,6 @@ import React, { ReactNode } from "react";
 import { AlertDialog, AlertDialogProps, Stack } from "tamagui";
 
 interface DialogProps extends AlertDialogProps {
-  // what you press on in order to open the dialog
-  trigger: ReactNode;
   // dialog header
   header?: ReactNode;
   // content inside dialog
@@ -12,12 +10,9 @@ interface DialogProps extends AlertDialogProps {
   footer: ReactNode;
 }
 
-export const Dialog: React.FC<DialogProps> = ({ trigger, header, content, footer }) => {
+export const Dialog: React.FC<DialogProps> = ({ header, content, footer, ...props }) => {
   return (
-    <AlertDialog>
-      {/* the button we press on to open the modal */}
-      <AlertDialog.Trigger asChild>{trigger}</AlertDialog.Trigger>
-
+    <AlertDialog {...props}>
       <AlertDialog.Portal>
         {/* backdrop for the modal */}
         <AlertDialog.Overlay
