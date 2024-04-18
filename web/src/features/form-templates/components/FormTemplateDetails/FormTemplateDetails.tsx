@@ -11,6 +11,7 @@ import PreviewQuestionFactory from '@/components/questionsEditor/preview/Preview
 import { BaseAnswer } from '@/common/types';
 import { Route as FormTemplateDetailsRoute } from '@/routes/form-templates/$formTemplateId_.$languageCode';
 import { useTranslation } from 'react-i18next';
+import { Fieldset } from '@/components/ui/fieldset';
 
 export default function FormTemplateDetails() {
   const formTemplate: FormTemplateFull = useLoaderData({ strict: false });
@@ -29,7 +30,7 @@ export default function FormTemplateDetails() {
           <TabsTrigger value='questions'>Questions</TabsTrigger>
         </TabsList>
         <TabsContent value='form-details'>
-          <Card className=' pt-0'>
+          <Card className='pt-0'>
             <CardHeader className='flex flex-column gap-2'>
               <div className='flex flex-row justify-between items-center'>
                 <CardTitle className='text-xl'>Template form details</CardTitle>
@@ -83,17 +84,34 @@ export default function FormTemplateDetails() {
             <CardFooter className='flex justify-between'></CardFooter>
           </Card>
         </TabsContent>
-        <TabsContent value='questions'>{
-          formTemplate.questions.map(q => <PreviewQuestionFactory
-            languageCode={formTemplate.defaultLanguage}
-            question={q}
-            key={q.id}
-            answer={undefined}
-            isFirstQuestion={false}
-            isLastQuestion={false}
-            onSubmitAnswer={(answer: BaseAnswer) => { }}
-            onBackButtonClicked={() => { }} />)
-        }
+        <TabsContent value='questions'>
+          <Card className='pt-0'>
+            <CardHeader className='flex flex-column gap-2'>
+              <div className='flex flex-row justify-between items-center'>
+                <CardTitle className='text-xl'>Template form questions</CardTitle>
+                <Button onClick={navigateToEdit} variant='ghost-primary'>
+                  <PencilIcon className='w-[18px] mr-2 text-purple-900' />
+                  <span className='text-base text-purple-900'>Edit</span>
+                </Button>
+              </div>
+              <Separator />
+            </CardHeader>
+            <CardContent className='-mx-6 flex items-start justify-left px-6 sm:mx-0 sm:px-8'>
+              <Fieldset className='grid gap-3 divide-y divide-gray-700'>
+                {
+                  formTemplate.questions.map(q => <PreviewQuestionFactory
+                    languageCode={formTemplate.defaultLanguage}
+                    question={q}
+                    key={q.id}
+                    answer={undefined}
+                    isFirstQuestion={false}
+                    isLastQuestion={false}
+                    onSubmitAnswer={(answer: BaseAnswer) => { }}
+                    onBackButtonClicked={() => { }} />)
+                }
+              </Fieldset>
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
     </Layout>

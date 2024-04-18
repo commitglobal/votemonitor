@@ -1,11 +1,9 @@
 import { AnswerType, BaseAnswer, NumberAnswer, NumberAnswerSchema, NumberQuestion } from '@/common/types'
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '../../ui/form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { Input } from '../../ui/input';
-import { Button } from '../../ui/button';
+import { Input } from '@/components/ui/input';
 import { useTranslation } from 'react-i18next';
-
+import { Description, Field, Label } from '@/components/ui/fieldset';
 export interface PreviewNumberQuestionProps {
   languageCode: string;
   question: NumberQuestion;
@@ -16,7 +14,7 @@ export interface PreviewNumberQuestionProps {
   onBackButtonClicked: () => void;
 }
 
-function PreviewNumberQuestion({ 
+function PreviewNumberQuestion({
   languageCode,
   question,
   answer,
@@ -34,26 +32,13 @@ function PreviewNumberQuestion({
     }
   });
 
-  return (<Form {...form}>
-    <form onSubmit={form.handleSubmit(onSubmitAnswer)}>
-      <div className='grid gap-6 py-4 sm:grid-cols-2'>
-        <FormField
-          control={form.control}
-          name='value'
-          render={({ field }) => (
-            <FormItem className='sm:col-span-2'>
-              <FormLabel>{question.text[languageCode]}</FormLabel>
-              {!!question.helptext && <FormDescription>{question.helptext[languageCode]}</FormDescription>}
-              <FormControl>
-                <Input type='number' placeholder={question.inputPlaceholder ? question.inputPlaceholder[languageCode] : ''} {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      </div>
-    </form>
-  </Form>)
+  return (
+    <Field>
+      <Label>{question.code} - {question.text[languageCode]}</Label>
+      {!!question.helptext && <Description>{question.helptext[languageCode]}</Description>}
+      <Input type="number" placeholder={question.inputPlaceholder ? question.inputPlaceholder[languageCode] : ''} />
+    </Field>
+  )
 }
 
 export default PreviewNumberQuestion

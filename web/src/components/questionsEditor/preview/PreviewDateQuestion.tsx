@@ -9,6 +9,8 @@ import { format, parseISO, formatISO } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
 import { Button } from '../../ui/button';
 import { useTranslation } from 'react-i18next';
+import { Description, Field, Label } from '@/components/ui/fieldset';
+import { useState } from 'react';
 
 export interface PreviewDateQuestionProps {
   languageCode: string;
@@ -29,7 +31,7 @@ function PreviewDateQuestion({
   onSubmitAnswer,
   onBackButtonClicked }: PreviewDateQuestionProps) {
   const { t } = useTranslation();
-
+  const [date, setDate] = useState<string>('');
   const form = useForm<DateAnswer>({
     resolver: zodResolver(DateAnswerSchema),
     defaultValues: answer ?? {
@@ -38,46 +40,32 @@ function PreviewDateQuestion({
     }
   });
 
-  return (<Form {...form}>
-    <form onSubmit={form.handleSubmit(onSubmitAnswer)}>
-      <div className='grid gap-6 py-4 sm:grid-cols-2'>
-        <FormField
-          control={form.control}
-          name='date'
-          render={({ field }) => (
-            <FormItem className='flex flex-col'>
-              <FormLabel>{question.text[languageCode]}</FormLabel>
-              {!!question.helptext && <FormDescription>{question.helptext[languageCode]}</FormDescription>}
-              <Popover>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <Button
-                      variant={'outline'}
-                      className={cn('w-full pl-3 text-left font-normal', !field.value && 'text-muted-foreground')}>
-                      {field.value ? format(field.value, 'PPP') : <span>Pick a date</span>}
-                      <CalendarIcon className='w-4 h-4 ml-auto opacity-50' />
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className='w-auto p-0' align='start'>
-                  <Calendar
-                    mode='single'
-                    selected={field.value ? parseISO(field.value) : undefined}
-                    onSelect={(day) => {
-                      form.setValue("date", formatISO(day!, { representation: 'date' }))
-                    }}
-                    disabled={(date) => date < new Date()}
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      </div>
-    </form>
-  </Form>)
+  return (
+    <Field>
+      <Label>{question.code} - {question.text[languageCode]}</Label>
+      {!!question.helptext && <Description>{question.helptext[languageCode]}</Description>}
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button
+            variant={'outline'}
+            className={cn('w-full pl-3 text-left font-normal', !date && 'text-muted-foreground')}>
+            {date ? format(date, 'PPP') : <span>Pick a date</span>}
+            <CalendarIcon className='w-4 h-4 ml-auto opacity-50' />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className='w-auto p-0' align='start'>
+          <Calendar
+            mode='single'
+            selected={date ? parseISO(date) : undefined}
+            onSelect={(day) => {
+              setDate(formatISO(day!, { representation: 'date' }))
+            }}
+            disabled={(date) => date < new Date()}
+            initialFocus
+          />
+        </PopoverContent>
+      </Popover>
+    </Field>)
 }
 
 

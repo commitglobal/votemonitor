@@ -6,6 +6,7 @@ import { Button } from '../../ui/button';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { RatingGroup } from '../../ui/ratings';
 import { z } from 'zod';
+import { Description, Field, Label } from '@/components/ui/fieldset';
 
 export interface PreviewRatingQuestionProps {
     languageCode: string;
@@ -62,30 +63,16 @@ function PreviewRatingQuestion({ languageCode,
         onSubmitAnswer(ratingAnswer);
     }
 
-    return (<Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)}>
-            <div className='grid gap-6 py-4 sm:grid-cols-2'>
-                <FormField
-                    control={form.control}
-                    name='value'
-                    render={({ field }) => (
-                        <FormItem className='flex flex-col'>
-                            <FormLabel>{question.text[languageCode]}</FormLabel>
-                            {!!question.helptext && <FormDescription>{question.helptext[languageCode]}</FormDescription>}
-                            <FormControl>
-                                <RatingGroup
-                                    scale={scaleToNumber(question.scale)}
-                                    {...field}
-                                    name='value'
-                                    onValueChange={(v) => field.onChange(v)} />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-            </div>
-        </form>
-    </Form>)
+    return (
+        <Field>
+            <Label>{question.text[languageCode]}</Label>
+            {!!question.helptext && <Description>{question.helptext[languageCode]}</Description>}
+            <RatingGroup
+                className='my-2'
+                scale={scaleToNumber(question.scale)}
+                name='value' />
+        </Field>
+    )
 }
 
 
