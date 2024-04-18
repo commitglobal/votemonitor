@@ -1,6 +1,5 @@
-import { useState, type ReactElement, useRef, CSSProperties } from 'react';
-import { type UseQueryResult, useQuery, useMutation } from '@tanstack/react-query';
-import { BaseQuestion, MultiSelectQuestion, NumberQuestion, QuestionType, SingleSelectQuestion, TextQuestion, removeTranslation, type DataTableParameters, type PageResponse } from '@/common/types';
+import { useState, type ReactElement } from 'react';
+import { useMutation } from '@tanstack/react-query';
 import { authApi } from '@/common/auth-api';
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
 import Layout from '@/components/layout/Layout';
@@ -12,34 +11,22 @@ import { EllipsisVerticalIcon, FunnelIcon, Cog8ToothIcon, ChevronUpIcon, Chevron
 import { X } from 'lucide-react';
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Separator } from '@/components/ui/separator';
-import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
 import { queryClient } from '@/main';
 import { useNavigate } from '@tanstack/react-router';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { FormTemplateBase, FormTemplateFull, FormTemplateType, mapFormTemplateType } from '../../models/formTemplate';
+import { FormTemplateBase, FormTemplateFull, mapFormTemplateType } from '../../models/formTemplate';
 import { formTemplatesKeys, useFormTemplates } from '../../queries';
 import { toast } from '@/components/ui/use-toast';
 import { cn } from '@/lib/utils';
 import { useDialog } from '@/components/ui/use-dialog';
 import AddTranslationsDialog from './AddTranslationsDialog';
-
 
 export default function FormTemplatesDashboard(): ReactElement {
   const addTranslationsDialog = useDialog();

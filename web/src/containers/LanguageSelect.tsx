@@ -31,7 +31,7 @@ function LanguageSelect({ languageCode, onSelect }: LanguageSelectProps) {
 
     const placeholder = useMemo(()=>{
         if(value && languages?.length){
-          const language =   languages?.find((l) => l.code === value);
+          const language = languages?.find((l) => l.code === value);
 
           return `${language?.name} / ${language?.nativeName}`;
         }
@@ -43,10 +43,10 @@ function LanguageSelect({ languageCode, onSelect }: LanguageSelectProps) {
         <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
                 <Button
-                    variant="outline"
+                    variant="ghost"
                     role="combobox"
                     aria-expanded={open}
-                    className="w-[350px] justify-between"
+                    className="w-[350px] justify-between my-1 flex h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                     {placeholder}
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />

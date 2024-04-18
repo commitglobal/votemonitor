@@ -10,12 +10,13 @@ import { FormTemplateFull, mapFormTemplateType } from '../../models/formTemplate
 import PreviewQuestionFactory from '@/components/questionsEditor/preview/PreviewQuestionFactory';
 import { BaseAnswer } from '@/common/types';
 import { Route as FormTemplateDetailsRoute } from '@/routes/form-templates/$formTemplateId_.$languageCode';
+import { useTranslation } from 'react-i18next';
 
 export default function FormTemplateDetails() {
   const formTemplate: FormTemplateFull = useLoaderData({ strict: false });
   const { formTemplateId, languageCode } = FormTemplateDetailsRoute.useParams()
   const navigate = useNavigate();
-
+  const { t } = useTranslation();
   const navigateToEdit = () => {
     navigate({ to: '/form-templates/$formTemplateId/edit', params: { formTemplateId: formTemplate.id } });
   };
@@ -28,7 +29,7 @@ export default function FormTemplateDetails() {
           <TabsTrigger value='questions'>Questions</TabsTrigger>
         </TabsList>
         <TabsContent value='form-details'>
-          <Card className='w-[800px] pt-0'>
+          <Card className=' pt-0'>
             <CardHeader className='flex flex-column gap-2'>
               <div className='flex flex-row justify-between items-center'>
                 <CardTitle className='text-xl'>Template form details</CardTitle>
@@ -39,31 +40,45 @@ export default function FormTemplateDetails() {
               </div>
               <Separator />
             </CardHeader>
-            <CardContent className='flex flex-col gap-6 items-baseline	'>
-              <div className='flex flex-col gap-1'>
-                <p className='text-gray-700 font-bold'>Code</p>
-                <p className='text-gray-900 font-normal'>{formTemplate.code}</p>
-              </div>
-              <div className='flex flex-col gap-1'>
-                <p className='text-gray-700 font-bold'>Name</p>
-                <p className='text-gray-900 font-normal'>{formTemplate.name[languageCode]}</p>
-              </div>
-              <div className='flex flex-col gap-1'>
-                <p className='text-gray-700 font-bold'>Description</p>
-                <p className='text-gray-900 font-normal'>{formTemplate.description[languageCode]}</p>
-              </div>
-              <div className='flex flex-col gap-1'>
-                <p className='text-gray-700 font-bold'>Form template type</p>
-                <p className='text-gray-900 font-normal'>{mapFormTemplateType(formTemplate.formTemplateType)}</p>
-              </div>
-              <div className='flex flex-col gap-1'>
-                <p className='text-gray-700 font-bold'>Languages</p>
-                <p className='text-gray-900 font-normal'>{formTemplate.languages.join(',')}</p>
-              </div>
-              <div className='flex flex-col gap-1'>
-                <p className='text-gray-700 font-bold'>Status</p>
-                <Badge className={'badge-' + formTemplate.status}>{formTemplate.status}</Badge>
-              </div>
+            <CardContent className='mt-6 grid grid-cols-5 gap-3'>
+              <dl className='divide-y divide-gray-100 col-span-2'>
+                <div className='px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0'>
+                  <dt className='text-sm font-medium leading-6 text-gray-900'>{t('form-template.field.code')}</dt>
+                  <dd className='mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0'>{formTemplate.code}</dd>
+                </div>
+                <div className='px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0'>
+                  <dt className='text-sm font-medium leading-6 text-gray-900'>{t('form-template.field.name')}</dt>
+                  <dd className='mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0'>{formTemplate.name[formTemplate.defaultLanguage]}</dd>
+                </div>
+                <div className='px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0'>
+                  <dt className='text-sm font-medium leading-6 text-gray-900'>{t('form-template.field.formTemplateType')}</dt>
+                  <dd className='mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0'>{mapFormTemplateType(formTemplate.formTemplateType)}</dd>
+                </div>
+                <div className='px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0'>
+                  <dt className='text-sm font-medium leading-6 text-gray-900'>{t('form-template.field.defaultLanguage')}</dt>
+                  <dd className='mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0'>{formTemplate.defaultLanguage}</dd>
+                </div>
+                <div className='px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0'>
+                  <dt className='text-sm font-medium leading-6 text-gray-900'>{t('form-template.field.languages')}</dt>
+                  <dd className='mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0'>
+                    {formTemplate.languages.join(', ')}
+                  </dd>
+                </div>
+                <div className='px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0'>
+                  <dt className='text-sm font-medium leading-6 text-gray-900'>{t('form-template.field.status')}</dt>
+                  <dd className='mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0'>
+                    <Badge className={'badge-' + formTemplate.status}>{formTemplate.status}</Badge>
+                  </dd>
+                </div>
+              </dl>
+              <dl className='col-span-3'>
+                <div className='flex flex-col gap-1'>
+                  <dt className='text-sm font-medium leading-6 text-gray-900'>{t('form-template.field.description')}</dt>
+                  <dd className='mt-1 text-sm leading-6 px-2 py-2 text-gray-700 sm:col-span-2 sm:mt-0 rounded-md border border-gray-200 min-h-[100px]'>
+                    {formTemplate.description[languageCode]}
+                  </dd>
+                </div>
+              </dl>
             </CardContent>
             <CardFooter className='flex justify-between'></CardFooter>
           </Card>
