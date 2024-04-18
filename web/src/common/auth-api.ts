@@ -22,17 +22,6 @@ export const authApi = axios.create({
 authApi.defaults.headers.common['Content-Type'] = 'application/json';
 authApi.defaults.headers.common['Access-Control-Allow-Credentials'] = 'true';
 
-/**
- * WARNING: This uses a mock user and is for DEMO PURPOSES ONLY.
- * TODO Upgrade to a real login and authentication system for production.
- */
-export const getAccessTokenFn = async (): Promise<string> => {
-  const mockUser = { email: 'admin@alfa.com', password: 'string' };
-
-  const response = await authApi.post<ILoginResponse>('auth/login', mockUser);
-  return response.data.token;
-};
-
 authApi.interceptors.response.use(
   (response) => {
     return response;
