@@ -25,9 +25,14 @@ enum FormStatus {
 interface FormOverviewProps {
   completedAnswers: number;
   numberOfQuestions: number;
+  onFormActionClick: () => void;
 }
 
-const FormOverview = ({ completedAnswers, numberOfQuestions }: FormOverviewProps) => {
+const FormOverview = ({
+  completedAnswers,
+  numberOfQuestions,
+  onFormActionClick,
+}: FormOverviewProps) => {
   const formStatus = useMemo(() => {
     if (completedAnswers === 0) return FormStatus.NOT_STARTED;
     if (completedAnswers < numberOfQuestions) return FormStatus.IN_PROGRESS;
@@ -55,7 +60,12 @@ const FormOverview = ({ completedAnswers, numberOfQuestions }: FormOverviewProps
         {/* TODO: This doesn't look good */}
         <CircularProgress progress={(completedAnswers / numberOfQuestions) * 100} size={98} />
       </XStack>
-      <Button preset="outlined" marginTop="$md" disabled={completedAnswers === numberOfQuestions}>
+      <Button
+        preset="outlined"
+        marginTop="$md"
+        disabled={completedAnswers === numberOfQuestions}
+        onPress={onFormActionClick}
+      >
         {formStatus === FormStatus.NOT_STARTED ? "Start form" : "Resume form"}
       </Button>
     </Card>
@@ -132,6 +142,16 @@ const FormDetails = () => {
     router.push(`/form-questionnaire/${questionId}?formId=${formId}&language=${language}`);
   };
 
+  const onFormOverviewActionClick = () => {
+    // find first unanswered question
+    const form = allForms?.forms.find((form) => form.id === formId);
+    // do not navigate if the form has no questions or not found
+    if (!form || form.questions.length === 0) return;
+    return router.push(
+      `/form-questionnaire/${form?.questions[0].id}?formId=${formId}&language=${language}`,
+    );
+  };
+
   if (isLoadingForms || isLoadingAnswers) {
     return <Typography>Loading</Typography>;
   }
@@ -157,7 +177,11 @@ const FormDetails = () => {
         onLeftPress={() => router.back()}
       />
       <YStack paddingTop={28} gap="$xl" paddingHorizontal="$md">
-        <FormOverview completedAnswers={numberOfAnswers} numberOfQuestions={numberOfQuestions} />
+        <FormOverview
+          completedAnswers={numberOfAnswers}
+          numberOfQuestions={numberOfQuestions}
+          onFormActionClick={onFormOverviewActionClick}
+        />
         <YStack gap="$xxs">
           <Typography preset="body1" fontWeight="700" gap="$xxs">
             Questions
