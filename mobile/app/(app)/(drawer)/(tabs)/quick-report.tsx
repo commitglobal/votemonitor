@@ -11,8 +11,10 @@ import { Screen } from "../../../../components/Screen";
 import LinearProgress from "../../../../components/LinearProgress";
 import CardFooter from "../../../../components/CardFooter";
 import { Dialog } from "../../../../components/Dialog";
-import FormOverview from "../../../../components/FormOverview";
 import QuestionCard from "../../../../components/QuestionCard";
+import Header from "../../../../components/Header";
+import { useNavigation } from "expo-router";
+import { DrawerActions } from "@react-navigation/native";
 
 const mockQuestions = [
   {
@@ -30,12 +32,26 @@ const mockQuestions = [
 ];
 
 const QuickReport = () => {
+  const navigation = useNavigation();
   return (
-    <Screen preset="auto" backgroundColor="white" contentContainerStyle={{ gap: 20 }}>
+    <Screen
+      preset="auto"
+      backgroundColor="white"
+      contentContainerStyle={{ gap: 20 }}
+      ScrollViewProps={{
+        stickyHeaderIndices: [0],
+        bounces: false,
+        showsVerticalScrollIndicator: false,
+      }}
+    >
+      <Header
+        title={"Quick Report"}
+        titleColor="white"
+        barStyle="light-content"
+        leftIcon={<Icon icon="menuAlt2" color="white" />}
+        onLeftPress={() => navigation.dispatch(DrawerActions.openDrawer)}
+      />
       <Stack padding="$md" gap="$md">
-        <Card>
-          <FormOverview />
-        </Card>
         <Typography>Questions</Typography>
         {mockQuestions.map((question, index) => (
           <QuestionCard
