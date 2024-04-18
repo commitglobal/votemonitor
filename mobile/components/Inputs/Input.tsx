@@ -7,7 +7,7 @@ import {
 } from "tamagui";
 
 export interface InputProps extends TamaguiInputProps {
-  type: "text" | "numeric";
+  type: "text" | "numeric" | "textarea";
 }
 
 const StyledInput = styled(TamaguiInput, {
@@ -38,12 +38,15 @@ const StyledTextArea = styled(TamaguiTextArea, {
 const Input: React.FC<InputProps> = ({ type, value, ...rest }) => {
   return (
     <>
-      {type === "text" ? (
-        <>
-          <StyledTextArea value={value} {...rest} />
-        </>
+      {type === "textarea" ? (
+        <StyledTextArea value={value} {...rest} />
       ) : (
-        <StyledInput value={value} keyboardType="numeric" fontSize={16} {...rest} />
+        <StyledInput
+          value={value}
+          keyboardType={type === "numeric" ? type : "default"}
+          fontSize={16}
+          {...rest}
+        />
       )}
     </>
   );

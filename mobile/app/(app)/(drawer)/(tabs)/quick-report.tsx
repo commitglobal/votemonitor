@@ -14,6 +14,7 @@ import SelectPollingStation from "../../../../components/SelectPollingStation";
 import { Dialog } from "../../../../components/Dialog";
 import FormOverview from "../../../../components/FormOverview";
 import QuestionCard from "../../../../components/QuestionCard";
+import Input from "../../../../components/Inputs/Input";
 
 const mockQuestions = [
   {
@@ -47,6 +48,12 @@ const QuickReport = () => {
             key={question.id}
           />
         ))}
+      </Stack>
+      <Stack padding="$md" gap="$md">
+        <Typography preset="subheading">Inputs</Typography>
+        <Input type="text" placeholder="type = text" />
+        <Input type="textarea" placeholder="type = textarea" />
+        <Input type="numeric" placeholder="type = numeric" />
       </Stack>
 
       <Text>Quick Report</Text>

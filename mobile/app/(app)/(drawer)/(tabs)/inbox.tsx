@@ -30,7 +30,7 @@ const Inbox = () => {
           rules={{ maxLength: 10 }}
           render={({ field: { onChange, value } }) => (
             <WizardFormInput
-              type="text"
+              type="textarea"
               label="A2. How many PEC members have been appointed?"
               paragraph="Lorem ipsum dolor sit amet consectetur. Maecenas donec pharetra elementum mauris est sodales."
               helper="10 characters"

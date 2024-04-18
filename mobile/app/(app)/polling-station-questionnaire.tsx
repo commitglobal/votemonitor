@@ -289,7 +289,7 @@ const PollingStationQuestionnaire = () => {
                 render={({ field: { onChange, value } }) => (
                   <YStack>
                     <FormInput
-                      type="text"
+                      type="textarea"
                       title={question.text.EN}
                       placeholder={question.helptext?.EN}
                       onChangeText={onChange}
@@ -348,7 +348,7 @@ const PollingStationQuestionnaire = () => {
                         if (value.radioValue === option.id && option.isFreeText) {
                           return (
                             <Input
-                              type="text"
+                              type="textarea"
                               marginTop="$md"
                               key={option.id}
                               value={value.textValue}
@@ -421,7 +421,7 @@ const PollingStationQuestionnaire = () => {
                             />
                             {selections[option.id]?.optionId === option.id && option.isFreeText && (
                               <Input
-                                type="text"
+                                type="textarea"
                                 marginTop="$md"
                                 value={selections[option.id]?.text}
                                 placeholder="Please enter a text..."
