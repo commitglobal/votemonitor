@@ -39,7 +39,7 @@ const SelectPollingStation = () => {
         </Select.Trigger>
 
         <Adapt platform="touch">
-          <Sheet native modal snapPoints={[80]}>
+          <Sheet native modal snapPoints={[80]} dismissOnSnapToBottom>
             <Sheet.Frame>
               <YStack
                 paddingVertical="$xl"

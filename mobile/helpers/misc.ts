@@ -1,4 +1,4 @@
-import { FormItemStatus, FormListItem } from "../app/(app)/(drawer)/(tabs)";
+import { FormItemStatus, FormListItem } from "../app/(app)/(drawer)/(tabs)/(observation)/index";
 
 export const performanceLog = async (func: any, funcName = "Unnamed function") => {
   console.log("🚀🚀🚀🚀🚀[PERFORMANCE CHECK STARTED FOR] ", funcName);

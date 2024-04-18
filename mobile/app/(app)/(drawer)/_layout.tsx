@@ -1,11 +1,7 @@
 import React from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Drawer } from "expo-router/drawer";
-import { getHeaderTitle } from "@react-navigation/elements";
-import { DrawerActions } from "@react-navigation/native";
-import Header from "../../../components/Header";
-import { Icon } from "../../../components/Icon";
-import { ScrollViewProps, StyleProp, ViewStyle } from "react-native";
+import { ScrollViewProps } from "react-native";
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 import { useTheme } from "tamagui";
 import { useUserData } from "../../../contexts/user/UserContext.provider";
@@ -41,23 +37,7 @@ export default function MainLayout() {
         drawerContent={() => <DrawerContent backgroundColor={theme.purple5?.val} />}
         screenOptions={{
           drawerType: "front",
-          header: ({ navigation, route, options }) => {
-            const title = getHeaderTitle(options, route.name);
-            return (
-              <Header
-                title={title}
-                titleColor="white"
-                barStyle="light-content"
-                style={options.headerStyle as StyleProp<ViewStyle>}
-                leftIcon={<Icon icon="menuAlt2" color="white" />}
-                onLeftPress={() => navigation.dispatch(DrawerActions.openDrawer)}
-                // rightIcon={<Icon icon="dotsVertical" color="white" />}
-                // onRightPress={() => {
-                //   console.log("on right action press");
-                // }}
-              />
-            );
-          },
+          headerShown: false,
         }}
       >
         <Drawer.Screen name="(tabs)" />

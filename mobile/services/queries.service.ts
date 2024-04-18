@@ -1,13 +1,11 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
-  PollingStationInformationAPIPayload,
   getElectionRounds,
   getPollingStationInformation,
   getPollingStationInformationForm,
   getPollingStationNomenclator,
   getPollingStationNomenclatorVersion,
   getPollingStationsVisits,
-  upsertPollingStationGeneralInformation,
 } from "./definitions.api";
 import * as DB from "../database/DAO/PollingStationsNomenclatorDAO";
 import * as API from "./definitions.api";
@@ -59,6 +57,13 @@ export const pollingStationsKeys = {
       pollingStationId,
       "information",
     ] as const,
+  informationForm: (electionRoundId?: string) => [
+    ...pollingStationsKeys.all,
+    "electionRoundId",
+    electionRoundId,
+    "polling-station-information-form",
+  ],
+  mutatePollingStationGeneralData: () => [...pollingStationsKeys.all, "mutate-general-data"],
 };
 
 export const useElectionRoundsQuery = () => {
@@ -152,37 +157,36 @@ export const usePollingStationByParentID = (parentId: number | null) => {
   });
 };
 
+export const pollingStationByIdQueryFn = async (pollingStationId: string | undefined) => {
+  console.log("usePollingStationById", pollingStationId);
+  const data = await DB.getPollingStationById(pollingStationId!);
+
+  if (!data)
+    throw Error(`Could not find data for ${pollingStationId}, maybe nomenclator not there yet.`);
+
+  const mapped: PollingStationNomenclatorNodeVM = {
+    id: data._id,
+    name: data.name,
+    number: data.pollingStationNumber,
+    parentId: data.parentId,
+    pollingStationId: data.pollingStationId,
+  };
+  return mapped;
+};
 export const usePollingStationById = (pollingStationId: string | undefined) => {
   return useQuery({
     queryKey: pollingStationsKeys.one(pollingStationId!),
-    queryFn: async () => {
-      console.log("usePollingStationById", pollingStationId);
-      const data = await DB.getPollingStationById(pollingStationId!);
-
-      if (!data) return null;
-
-      const mapped: PollingStationNomenclatorNodeVM = {
-        id: data._id,
-        name: data.name,
-        number: data.pollingStationNumber,
-        parentId: data.parentId,
-        pollingStationId: data.pollingStationId,
-      };
-      return mapped;
-    },
+    queryFn: () => pollingStationByIdQueryFn(pollingStationId),
     enabled: !!pollingStationId,
-    staleTime: 0,
+    staleTime: 60 * 1000,
     networkMode: "always", // https://tanstack.com/query/v4/docs/framework/react/guides/network-mode#network-mode-always
   });
 };
 
 export const usePollingStationInformationForm = (electionRoundId: string | undefined) => {
   return useQuery({
-    queryKey: ["polling-station-information-form", electionRoundId],
-    queryFn: async () => {
-      const data = await getPollingStationInformationForm(electionRoundId!);
-      return data;
-    },
+    queryKey: pollingStationsKeys.informationForm(electionRoundId),
+    queryFn: () => getPollingStationInformationForm(electionRoundId!),
     enabled: !!electionRoundId,
   });
 };
@@ -206,30 +210,24 @@ export const useFormSubmissions = (
   });
 };
 
+export const pollingStationInformationQueryFn = (
+  electionRoundId: string | undefined,
+  pollingStationId: string | undefined,
+) => {
+  return getPollingStationInformation(electionRoundId!, pollingStationId!);
+};
 export const usePollingStationInformation = (
   electionRoundId: string | undefined,
   pollingStationId: string | undefined,
 ) => {
   return useQuery({
     queryKey: pollingStationsKeys.pollingStationInformation(electionRoundId!, pollingStationId!),
-    queryFn: async () => {
-      const data = await getPollingStationInformation(electionRoundId!, pollingStationId!);
-      return data || null;
-    },
+    queryFn: () => pollingStationInformationQueryFn(electionRoundId, pollingStationId),
     enabled: !!electionRoundId && !!pollingStationId,
   });
 };
 
 // ================== Mutations =====================
-
-export const upsertPollingStationGeneralInformationMutation = () => {
-  return useMutation({
-    mutationKey: ["upsertPollingStationGeneralInformation"],
-    mutationFn: async (payload: PollingStationInformationAPIPayload) => {
-      return upsertPollingStationGeneralInformation(payload);
-    },
-  });
-};
 
 export const addAttachmentMutation = () => {
   return useMutation({

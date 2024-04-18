@@ -2,29 +2,23 @@ import React from "react";
 import { View, styled } from "tamagui";
 import { Typography } from "./Typography";
 
-export enum FormStatus {
+export enum Status {
   NOT_STARTED = "not started",
   IN_PROGRESS = "in progress",
   COMPLETED = "completed",
-  DANGER = "danger",
+  NOT_ANSWERED = "not answered",
+  ANSWERED = "answered",
 }
 
 enum Presets {
   DEFAULT = "default",
   SUCCESS = "success",
   WARNING = "warning",
-  DANGER = "danger",
-}
-
-export enum FormProgress {
-  NOT_STARTED = "Not started",
-  IN_PROGRESS = "In progress",
-  COMPLETED = "Completed",
-  DANGER = "Danger",
 }
 
 export interface BadgeProps {
   status: string;
+  children: string;
 }
 
 /**
@@ -57,36 +51,23 @@ const Badge = (props: BadgeProps): JSX.Element => {
   });
 
   const presetType =
-    status === FormStatus.COMPLETED
+    status === Status.COMPLETED || status === Status.ANSWERED
       ? Presets.SUCCESS
-      : status === FormStatus.IN_PROGRESS
+      : status === Status.IN_PROGRESS
         ? Presets.WARNING
-        : status === FormStatus.DANGER
-          ? Presets.DANGER
-          : Presets.DEFAULT;
+        : Presets.DEFAULT;
 
   const textColor =
     presetType === Presets.SUCCESS
       ? "$green9"
       : presetType === Presets.WARNING
         ? "$yellow7"
-        : presetType === Presets.DANGER
-          ? "$red10"
-          : "$gray10";
-
-  const text =
-    status === FormStatus.COMPLETED
-      ? FormProgress.COMPLETED
-      : status === FormStatus.IN_PROGRESS
-        ? FormProgress.IN_PROGRESS
-        : status === FormStatus.DANGER
-          ? FormProgress.DANGER
-          : FormProgress.NOT_STARTED;
+        : "$gray10";
 
   return (
     <StyledView presets={presetType}>
       <Typography preset="body2" color={textColor}>
-        {text}
+        {props.children}
       </Typography>
     </StyledView>
   );

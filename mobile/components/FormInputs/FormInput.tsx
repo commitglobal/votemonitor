@@ -12,7 +12,7 @@ interface FormInputProps extends InputProps {
 const FormInput: React.FC<FormInputProps> = ({ type, title, placeholder = "", ...rest }) => {
   return (
     <FormElement title={title}>
-      <Input type={type} marginBottom="$xxs" placeholder={placeholder} {...rest} />
+      <Input type={type} placeholder={placeholder} {...rest} />
     </FormElement>
   );
 };
