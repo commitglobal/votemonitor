@@ -231,7 +231,6 @@ export default function MonitoringObserversDashboard(): ReactElement {
 
   const changeIsFiltering = () => {
     setFiltering((prev) => {
-      console.log(prev);
       return !prev;
     });
   };

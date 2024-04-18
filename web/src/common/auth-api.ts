@@ -43,7 +43,6 @@ authApi.interceptors.response.use(
       originalRequest._retry = true;
 
       const accessToken = localStorage.getItem('token');
-      console.log('from auth api', accessToken);
       authApi.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument

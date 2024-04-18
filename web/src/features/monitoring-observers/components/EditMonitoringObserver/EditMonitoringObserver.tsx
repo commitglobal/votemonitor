@@ -119,7 +119,6 @@ export default function EditObserver() {
                         tags={tags}
                         className='sm:min-w-[450px]'
                         setTags={(newTags) => {
-                          console.log(newTags);
                           setTags(newTags);
                           setValue('tags', newTags as [Tag, ...Tag[]]);
                         }}
