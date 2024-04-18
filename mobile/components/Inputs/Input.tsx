@@ -15,7 +15,7 @@ export interface InputProps extends TamaguiInputProps {
 
 const StyledTextArea = styled(TamaguiTextArea, {
   backgroundColor: "white",
-  minHeight: 20,
+  minHeight: 98,
   paddingVertical: "$xs",
   paddingHorizontal: 14,
   borderColor: "$gray3",
