@@ -14,10 +14,16 @@ import FormInput from "../components/FormInputs/FormInput";
 import { Control, Controller, FieldErrors, FieldValues, useForm } from "react-hook-form";
 import Card from "../components/Card";
 
+interface FormData {
+  email: string;
+  password: string;
+}
+
 const Login = () => {
   const { t } = useTranslation("login");
   const { signIn } = useAuth();
-  const onLogin = async (formData: Record<string, string>) => {
+
+  const onLogin = async (formData: FormData) => {
     try {
       await signIn(formData.email, formData.password);
       router.replace("/");
@@ -25,16 +31,12 @@ const Login = () => {
       console.error("Error while logging in...");
     }
   };
-  const { handleSubmit, control, formState } = useForm({});
+  const { handleSubmit, control, formState } = useForm({
+    defaultValues: { email: "alice@example.com", password: "string" },
+  });
   const { errors } = formState;
 
   const insets = useSafeAreaInsets();
-
-  const ContentContainer = styled(YStack, {
-    name: "Container",
-    gap: 20,
-    paddingHorizontal: tokens.space.md.val,
-  });
 
   return (
     <Screen
@@ -70,7 +72,7 @@ const LoginForm = ({
   control,
   errors,
 }: {
-  control: Control<FieldValues, any>;
+  control: Control<FormData, any>;
   errors: FieldErrors<FieldValues>;
 }) => {
   const { t } = useTranslation("login");
@@ -105,7 +107,9 @@ const LoginForm = ({
               onChangeText={onChange}
             ></FormInput>
 
-            <Typography color="$red5">{errors?.email?.message?.toString() ?? ""}</Typography>
+            <Typography color="$red5" marginTop="$xs">
+              {errors?.email?.message?.toString() ?? ""}
+            </Typography>
           </YStack>
         )}
       />
@@ -135,7 +139,9 @@ const LoginForm = ({
               }}
             ></FormInput>
 
-            <Typography color="$red5">{errors?.password?.message?.toString() ?? ""}</Typography>
+            <Typography color="$red5" marginTop="$xs">
+              {errors?.password?.message?.toString() ?? ""}
+            </Typography>
           </YStack>
         )}
       />

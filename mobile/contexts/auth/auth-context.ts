@@ -8,7 +8,7 @@ type AuthContextType = {
 };
 
 export const AuthContext = React.createContext<AuthContextType>({
-  signIn: (_email: string, _password: string) => null,
+  signIn: (email: string, password: string) => null,
   signOut: () => null,
   isAuthenticated: false,
   isLoading: false,
