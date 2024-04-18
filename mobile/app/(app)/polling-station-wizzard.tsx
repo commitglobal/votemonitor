@@ -24,7 +24,7 @@ const mapPollingStationOptionsToSelectValues = (
   return options.map((option) => ({
     id: option.id,
     value: `${option.id}_${option.name}`,
-    label: option.name,
+    label: option.pollingStationId ? `${option.number} - ${option.name}` : option.name,
   }));
 };
 
@@ -217,7 +217,7 @@ const PollingStationWizzardContent = ({
             </Button>
           )}
           {isLastElement && (
-            <Button width="100%" onPress={onFinishButtonPress}>
+            <Button disabled={!selectedOption} width="100%" onPress={onFinishButtonPress}>
               {t("actions.finalize")}
             </Button>
           )}
