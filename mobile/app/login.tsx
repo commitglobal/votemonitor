@@ -13,7 +13,6 @@ import Button from "../components/Button";
 import FormInput from "../components/FormInputs/FormInput";
 import { Control, Controller, FieldErrors, FieldValues, useForm } from "react-hook-form";
 import Card from "../components/Card";
-import DateFormInput from "../components/FormInputs/DateFormInput";
 
 const Login = () => {
   const { t } = useTranslation("login");
