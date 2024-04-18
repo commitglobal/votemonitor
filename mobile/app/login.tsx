@@ -1,7 +1,7 @@
 import React from "react";
 import { router } from "expo-router";
 import { useAuth } from "../hooks/useAuth";
-import { View, XStack, styled } from "tamagui";
+import { View, XStack, YStack, styled } from "tamagui";
 import { useTranslation } from "react-i18next";
 import { Screen } from "../components/Screen";
 import { StatusBar, ViewStyle } from "react-native";
@@ -11,8 +11,9 @@ import { tokens } from "../theme/tokens";
 import { Typography } from "../components/Typography";
 import Button from "../components/Button";
 import FormInput from "../components/FormInputs/FormInput";
-import { Control, Controller, FieldValues, useForm } from "react-hook-form";
+import { Control, Controller, FieldErrors, FieldValues, useForm } from "react-hook-form";
 import Card from "../components/Card";
+import DateFormInput from "../components/FormInputs/DateFormInput";
 
 const Login = () => {
   const { t } = useTranslation("login");
@@ -25,12 +26,13 @@ const Login = () => {
       console.error("Error while logging in...");
     }
   };
-  const { handleSubmit, control } = useForm({
+  const { handleSubmit, control, formState } = useForm({
     // defaultValues: {
     //   email: "alice@example.com",
     //   password: "string",
     // },
   });
+  const { errors } = formState;
 
   const ContentContainer = styled(View, {
     name: "Container",
@@ -41,7 +43,7 @@ const Login = () => {
   });
 
   return (
-    <Screen preset="auto" contentContainerStyle={$containerStyle}>
+    <Screen preset="scroll" contentContainerStyle={$containerStyle}>
       <BigHeader />
 
       <ContentContainer>
@@ -50,7 +52,7 @@ const Login = () => {
           <Typography>{t("informative-text")}</Typography>
         </View>
 
-        <LoginForm control={control} />
+        <LoginForm control={control} errors={errors} />
       </ContentContainer>
 
       <Card width="100%">
@@ -60,7 +62,13 @@ const Login = () => {
   );
 };
 
-const LoginForm = ({ control }: { control: Control<FieldValues, any> }) => {
+const LoginForm = ({
+  control,
+  errors,
+}: {
+  control: Control<FieldValues, any>;
+  errors: FieldErrors<FieldValues>;
+}) => {
   const { t } = useTranslation("login");
 
   return (
@@ -75,14 +83,24 @@ const LoginForm = ({ control }: { control: Control<FieldValues, any> }) => {
         key="email"
         name="email"
         control={control}
+        rules={{
+          required: {
+            value: true,
+            message: t("form.email.required"),
+          },
+        }}
         render={({ field: { onChange, value } }) => (
-          <FormInput
-            type="text"
-            title={t("form.email.label")}
-            placeholder={t("form.email.placeholder")}
-            value={value}
-            onChangeText={onChange}
-          ></FormInput>
+          <YStack>
+            <FormInput
+              type="text"
+              title={t("form.email.label")}
+              placeholder={t("form.email.placeholder")}
+              value={value}
+              onChangeText={onChange}
+            ></FormInput>
+
+            <Typography>{errors?.email?.message?.toString() ?? ""}</Typography>
+          </YStack>
         )}
       />
 
@@ -90,14 +108,24 @@ const LoginForm = ({ control }: { control: Control<FieldValues, any> }) => {
         key="password"
         name="password"
         control={control}
+        rules={{
+          required: {
+            value: true,
+            message: t("form.password.required"),
+          },
+        }}
         render={({ field: { onChange, value } }) => (
-          <FormInput
-            type="text"
-            title={t("form.password.label")}
-            placeholder={t("form.password.placeholder")}
-            value={value}
-            onChangeText={onChange}
-          ></FormInput>
+          <YStack>
+            <FormInput
+              type="text"
+              title={t("form.password.label")}
+              placeholder={t("form.password.placeholder")}
+              value={value}
+              onChangeText={onChange}
+            ></FormInput>
+
+            <Typography>{errors?.password?.message?.toString() ?? ""}</Typography>
+          </YStack>
         )}
       />
     </View>
