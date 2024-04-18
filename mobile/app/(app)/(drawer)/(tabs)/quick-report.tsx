@@ -70,6 +70,7 @@ const QuickReport = () => {
           type="password"
           placeholder="type = password"
           iconRight={<Icon icon="eye" size={20} color="$gray5" />}
+          onIconRightPress={() => console.log("icon pressed")}
         />
         <Input type="textarea" placeholder="type = textarea" />
         <Input type="numeric" placeholder="type = numeric" />

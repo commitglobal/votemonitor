@@ -10,6 +10,7 @@ import {
 export interface InputProps extends TamaguiInputProps {
   type: "text" | "numeric" | "textarea" | "password";
   iconRight?: ReactNode;
+  onIconRightPress?: () => void;
 }
 
 const StyledTextArea = styled(TamaguiTextArea, {
@@ -27,7 +28,7 @@ const StyledTextArea = styled(TamaguiTextArea, {
   },
 });
 
-const Input: React.FC<InputProps> = ({ type, value, iconRight, ...rest }) => {
+const Input: React.FC<InputProps> = ({ type, value, iconRight, onIconRightPress, ...rest }) => {
   return (
     <>
       {type === "textarea" ? (
@@ -40,24 +41,12 @@ const Input: React.FC<InputProps> = ({ type, value, iconRight, ...rest }) => {
             keyboardType={type === "numeric" ? type : "default"}
             {...rest}
           />
-          {iconRight}
+          {iconRight && <IconWrapper onPress={onIconRightPress}>{iconRight}</IconWrapper>}
         </InputWrapper>
       )}
     </>
   );
 };
-
-const SearchInput = styled(TamaguiInput, {
-  backgroundColor: "transparent",
-  flex: 1,
-  fontSize: 16,
-  padding: 0,
-  borderWidth: 0,
-  borderRadius: 0,
-  focusStyle: {
-    borderColor: "transparent",
-  },
-});
 
 const InputWrapper = styled(XStack, {
   backgroundColor: "white",
@@ -65,13 +54,33 @@ const InputWrapper = styled(XStack, {
   height: 42,
   alignItems: "center",
   justifyContent: "space-between",
-  paddingHorizontal: 14,
+  // paddingHorizontal: 14,
   borderWidth: 1,
   borderColor: "$gray3",
   borderRadius: 8,
   focusStyle: {
     borderColor: "$purple5",
   },
+});
+
+const SearchInput = styled(TamaguiInput, {
+  backgroundColor: "transparent",
+  flex: 9,
+  fontSize: 16,
+  padding: 0,
+  paddingLeft: 14,
+  borderWidth: 0,
+  borderRadius: 0,
+  focusStyle: {
+    borderColor: "transparent",
+  },
+});
+
+const IconWrapper = styled(XStack, {
+  flex: 1,
+  paddingVertical: 11,
+  justifyContent: "flex-end",
+  paddingRight: 14,
 });
 
 export default Input;
