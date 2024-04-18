@@ -1,13 +1,11 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
-  PollingStationInformationAPIPayload,
   getElectionRounds,
   getPollingStationInformation,
   getPollingStationInformationForm,
   getPollingStationNomenclator,
   getPollingStationNomenclatorVersion,
   getPollingStationsVisits,
-  upsertPollingStationGeneralInformation,
 } from "./definitions.api";
 import * as DB from "../database/DAO/PollingStationsNomenclatorDAO";
 import * as API from "./definitions.api";
@@ -65,6 +63,7 @@ export const pollingStationsKeys = {
     electionRoundId,
     "polling-station-information-form",
   ],
+  mutatePollingStationGeneralData: () => [...pollingStationsKeys.all, "mutate-general-data"],
 };
 
 export const useElectionRoundsQuery = () => {
@@ -229,15 +228,6 @@ export const usePollingStationInformation = (
 };
 
 // ================== Mutations =====================
-
-export const upsertPollingStationGeneralInformationMutation = () => {
-  return useMutation({
-    mutationKey: ["upsertPollingStationGeneralInformation"],
-    mutationFn: async (payload: PollingStationInformationAPIPayload) => {
-      return upsertPollingStationGeneralInformation(payload);
-    },
-  });
-};
 
 export const addAttachmentMutation = () => {
   return useMutation({

@@ -8,10 +8,13 @@ import { XStack, YStack } from "tamagui";
 import LinearProgress from "../../../components/LinearProgress";
 import { useMemo } from "react";
 import { useUserData } from "../../../contexts/user/UserContext.provider";
+import { ApiFormQuestion } from "../../../services/interfaces/question.type";
 
 const FormQuestionnaire = () => {
   const { questionId, formId, language } = useLocalSearchParams();
   console.log("language", language);
+  console.log("formId", formId);
+  console.log("questionId", questionId);
 
   const { activeElectionRound, selectedPollingStation } = useUserData();
 
@@ -33,12 +36,16 @@ const FormQuestionnaire = () => {
     return form;
   }, [allForms]);
 
-  const currenQuestion = useMemo(() => {
-    const q = currentForm?.questions.find((qt) => qt.id === questionId);
-    return q;
+  const activeQuestion: { question: ApiFormQuestion; index: number } | null = useMemo(() => {
+    const qIndex = currentForm?.questions.findIndex((qt) => qt.id === questionId);
+    return qIndex !== undefined && qIndex >= 0
+      ? { question: currentForm?.questions[qIndex] as ApiFormQuestion, index: qIndex + 1 }
+      : null;
   }, [questionId]);
 
-  console.log("currenQuestion", currenQuestion);
+  const formTitle = useMemo(() => {
+    return currentForm?.name[(language as string) || currentForm.defaultLanguage];
+  }, [currentForm]);
 
   if (isLoadingForms || isLoadingAnswers) {
     return <Typography>Loading</Typography>;
@@ -58,7 +65,7 @@ const FormQuestionnaire = () => {
       }}
     >
       <Header
-        title={`${questionId}`}
+        title={`${formTitle}`}
         titleColor="white"
         barStyle="light-content"
         leftIcon={<Icon icon="chevronLeft" color="white" />}
@@ -68,11 +75,16 @@ const FormQuestionnaire = () => {
         <YStack gap="$xxs">
           <XStack justifyContent="space-between">
             <Typography>Some text here</Typography>
-            <Typography justifyContent="space-between">{`${0}/${currentForm?.questions.length}`}</Typography>
+            <Typography justifyContent="space-between">{`${activeQuestion?.index}/${currentForm?.questions.length}`}</Typography>
           </XStack>
-          <LinearProgress current={0} total={currentForm?.questions.length || 0} />
+          <LinearProgress
+            current={activeQuestion?.index || 0}
+            total={currentForm?.questions.length || 0}
+          />
           <XStack justifyContent="flex-end">
-            <Typography>Clear answer</Typography>
+            <Typography color="$red10" onPress={() => console.log("press me to clear")}>
+              Clear answer
+            </Typography>
           </XStack>
         </YStack>
       </YStack>
