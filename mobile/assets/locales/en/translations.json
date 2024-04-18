@@ -44,6 +44,10 @@
         "send": "Send"
     }
   },
+  "email-confirmation" : {
+    "title": "Email sent",
+    "paragraph": "Check your email and open the link we sent to continue. Check your spam filter if you did not receive the email."
+  },
   "more": {
     "change-language": "Change app language",
     "change-password": "Change password",

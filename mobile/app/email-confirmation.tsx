@@ -7,6 +7,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { StatusBar } from "react-native";
 
 const EmailConfirmation = () => {
+  const { t } = useTranslation("email-confirmation");
+
   return (
     <Screen
       preset="auto"
@@ -19,12 +21,18 @@ const EmailConfirmation = () => {
       }}
     >
       <Header />
-      <YStack justifyContent="center" alignItems="center" flexGrow={1} gap={8}>
-        <Icon icon="emailSent" size={126} color="$purple5" marginBottom={16} />
+      <YStack
+        paddingHorizontal="$xxxl"
+        justifyContent="center"
+        alignItems="center"
+        flexGrow={1}
+        gap="$xxs"
+      >
+        <Icon icon="emailSent" size={126} marginBottom="$md" />
         <Typography preset="heading" fontWeight="700">
-          Email sent
+          {t("title")}
         </Typography>
-        <Typography>Email sent</Typography>
+        <Typography>{t("paragraph")}</Typography>
       </YStack>
     </Screen>
   );
