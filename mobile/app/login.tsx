@@ -7,7 +7,6 @@ import { Screen } from "../components/Screen";
 import { StatusBar } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Icon } from "../components/Icon";
-import { tokens } from "../theme/tokens";
 import { Typography } from "../components/Typography";
 import Button from "../components/Button";
 import FormInput from "../components/FormInputs/FormInput";
