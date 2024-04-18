@@ -16,7 +16,9 @@ type FormData = {
 };
 
 const ForgotPassword = () => {
-  const { handleSubmit, control, formState } = useForm<FormData>({});
+  const { handleSubmit, control, formState } = useForm<FormData>({
+    defaultValues: { email: "alice@example.com" },
+  });
 
   const { t } = useTranslation("reset");
   const { errors } = formState;
