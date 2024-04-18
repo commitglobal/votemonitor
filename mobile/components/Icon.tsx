@@ -112,7 +112,7 @@ export const defaultIcon = React.forwardRef(
       attachment: <Attachment fill={color} width={size} height={size} />,
       dragHandle: <DragHandle fill={color} width={size} height={size} />,
       search: <Search fill={color} width={size} height={size} />,
-      loginLogo: <LoginLogo fill={color} width={size} height={size} />,
+      loginLogo: <LoginLogo fill={color} width={size | 294} height={size | 67} />,
       infoCircle: <InfoCircle fill={color} width={size} height={size} />,
     };
 

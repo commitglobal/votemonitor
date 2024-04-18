@@ -28,27 +28,38 @@ const Login = () => {
   const { handleSubmit, control, formState } = useForm({});
   const { errors } = formState;
 
+  const insets = useSafeAreaInsets();
+
   const ContentContainer = styled(YStack, {
     name: "Container",
-    gap: 40,
+    gap: 20,
     paddingHorizontal: tokens.space.md.val,
-    paddingTop: tokens.space.xl.val,
   });
 
   return (
-    <Screen preset="auto">
+    <Screen
+      preset="auto"
+      ScrollViewProps={{
+        bounces: false,
+      }}
+      contentContainerStyle={{
+        flexGrow: 1,
+      }}
+    >
       <Header />
 
-      <ContentContainer>
-        <View flexDirection="row" gap={tokens.space.xxs}>
+      <YStack paddingHorizontal="$md" gap="$md">
+        <XStack marginTop="$md" justifyContent="flex-start" gap="$xxs">
           <Icon icon="infoCircle" size={18} color="white" style={{ marginTop: 2 }} />
-          <Typography>{t("informative-text")}</Typography>
-        </View>
+          <XStack flex={1}>
+            <Typography>{t("informative-text")}</Typography>
+          </XStack>
+        </XStack>
 
         <LoginForm control={control} errors={errors} />
-      </ContentContainer>
+      </YStack>
 
-      <Card width="100%">
+      <Card width="100%" paddingBottom={16 + insets.bottom} marginTop="auto">
         <Button onPress={handleSubmit(onLogin)}>Log in</Button>
       </Card>
     </Screen>
@@ -141,7 +152,7 @@ const Header = () => {
   const StyledWrapper = styled(XStack, {
     name: "StyledWrapper",
     backgroundColor: "$purple5",
-    height: 160 + insets.top,
+    height: "20%",
     paddingTop: insets.top,
     alignItems: "center",
     justifyContent: "center",
@@ -150,7 +161,7 @@ const Header = () => {
   return (
     <StyledWrapper>
       <StatusBar barStyle="light-content"></StatusBar>
-      <Icon icon="loginLogo" size={300} />
+      <Icon icon="loginLogo" />
     </StyledWrapper>
   );
 };
