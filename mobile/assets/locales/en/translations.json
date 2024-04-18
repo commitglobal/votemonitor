@@ -27,6 +27,23 @@
     }
   
   },
+  "reset":{
+    "header": {
+        "title": "Forgot password"
+    },
+    "title": "Forgot your password?",
+    "paragraph": "Please enter the email address associated with your account and we'll send you a verification code.",
+    "form": {
+        "email": {
+             "label": "E-mail *",
+            "placeholder": "E-mail",
+            "required": "E-mail is mandatory"
+        }
+    },
+    "actions" : {
+        "send": "Send"
+    }
+  },
   "more": {
     "change-language": "Change app language",
     "change-password": "Change password",

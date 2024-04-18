@@ -20,11 +20,12 @@ const ForgotPassword = () => {
 
   const { handleSubmit, control, formState } = useForm<FormData>({});
 
-  const { t } = useTranslation("login");
+  const { t } = useTranslation("reset");
   const { errors } = formState;
 
   const insets = useSafeAreaInsets();
 
+  // TODO: Implement the onSubmit function
   const onSubmit = (data: FormData) => {
     console.log("Forgot password for email: ", data.email);
   };
@@ -40,7 +41,7 @@ const ForgotPassword = () => {
       }}
     >
       <Header
-        title={"More"}
+        title={t("header.title")}
         titleColor="white"
         barStyle="light-content"
         leftIcon={<Icon icon="chevronLeft" color="white" />}
@@ -49,13 +50,10 @@ const ForgotPassword = () => {
 
       <YStack paddingHorizontal="$md" gap="$md" paddingTop={10 + insets.top}>
         <Typography preset="heading" fontWeight="700">
-          Forgot your password?{" "}
+          {t("title")}
         </Typography>
 
-        <Typography>
-          Please enter the email address associated with your account and we'll send you a link to
-          reset your password.
-        </Typography>
+        <Typography>{t("paragraph")}</Typography>
 
         <Controller
           key="email"
@@ -86,7 +84,7 @@ const ForgotPassword = () => {
       </YStack>
 
       <Card width="100%" paddingBottom={16 + insets.bottom} marginTop="auto">
-        <Button onPress={handleSubmit(onSubmit)}>Log in</Button>
+        <Button onPress={handleSubmit(onSubmit)}>{t("actions.send")}</Button>
       </Card>
     </Screen>
   );
