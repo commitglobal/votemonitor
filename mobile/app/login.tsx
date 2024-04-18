@@ -145,7 +145,13 @@ const LoginForm = ({
         )}
       />
 
-      <Typography textAlign="right" color="$purple5">
+      <Typography
+        textAlign="right"
+        color="$purple5"
+        onPress={() => {
+          router.push("./forgot-password");
+        }}
+      >
         {t("actions.forgot_password")}
       </Typography>
     </View>

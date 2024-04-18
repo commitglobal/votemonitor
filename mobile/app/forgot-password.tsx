@@ -2,7 +2,7 @@ import Header from "../components/Header";
 import { Screen } from "../components/Screen";
 import { useTranslation } from "react-i18next";
 import { Icon } from "../components/Icon";
-import { useNavigation, router } from "expo-router";
+import { router } from "expo-router";
 import { YStack } from "tamagui";
 import { Typography } from "../components/Typography";
 import { useForm, Controller } from "react-hook-form";
@@ -16,8 +16,6 @@ type FormData = {
 };
 
 const ForgotPassword = () => {
-  const navigation = useNavigation();
-
   const { handleSubmit, control, formState } = useForm<FormData>({});
 
   const { t } = useTranslation("reset");
@@ -46,7 +44,7 @@ const ForgotPassword = () => {
         titleColor="white"
         barStyle="light-content"
         leftIcon={<Icon icon="chevronLeft" color="white" />}
-        onLeftPress={() => navigation.goBack()}
+        onLeftPress={() => router.back()}
       />
 
       <YStack paddingHorizontal="$md" gap="$md" paddingTop={10 + insets.top}>
