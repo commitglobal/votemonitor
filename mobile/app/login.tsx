@@ -95,6 +95,10 @@ const LoginForm = ({
             value: true,
             message: t("form.email.required"),
           },
+          pattern: {
+            value: /\S+@\S+\.\S+/,
+            message: t("form.email.format"),
+          },
         }}
         render={({ field: { onChange, value } }) => (
           <YStack>

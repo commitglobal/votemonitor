@@ -36,7 +36,8 @@
         "email": {
           "label": "E-mail *",
           "placeholder": "E-mail",
-          "required": "E-mailul este obligatoriu"
+          "required": "E-mailul este obligatoriu",
+          "format": "Formatul e-mailului nu este valid"
         }
     },
     "actions" : {
