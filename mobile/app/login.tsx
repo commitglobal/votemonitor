@@ -4,7 +4,7 @@ import { useAuth } from "../hooks/useAuth";
 import { View, XStack, YStack, styled } from "tamagui";
 import { useTranslation } from "react-i18next";
 import { Screen } from "../components/Screen";
-import { StatusBar, ViewStyle } from "react-native";
+import { StatusBar } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Icon } from "../components/Icon";
 import { tokens } from "../theme/tokens";
@@ -25,28 +25,22 @@ const Login = () => {
       console.error("Error while logging in...");
     }
   };
-  const { handleSubmit, control, formState } = useForm({
-    // defaultValues: {
-    //   email: "alice@example.com",
-    //   password: "string",
-    // },
-  });
+  const { handleSubmit, control, formState } = useForm({});
   const { errors } = formState;
 
-  const ContentContainer = styled(View, {
+  const ContentContainer = styled(YStack, {
     name: "Container",
-    flex: 1,
     gap: 40,
     paddingHorizontal: tokens.space.md.val,
     paddingTop: tokens.space.xl.val,
   });
 
   return (
-    <Screen preset="scroll" contentContainerStyle={$containerStyle}>
-      <BigHeader />
+    <Screen preset="auto">
+      <Header />
 
       <ContentContainer>
-        <View flexDirection="row" gap={8}>
+        <View flexDirection="row" gap={tokens.space.xxs}>
           <Icon icon="infoCircle" size={18} color="white" style={{ marginTop: 2 }} />
           <Typography>{t("informative-text")}</Typography>
         </View>
@@ -69,6 +63,8 @@ const LoginForm = ({
   errors: FieldErrors<FieldValues>;
 }) => {
   const { t } = useTranslation("login");
+  const [secureTextEntry, setSecureTextEntry] = React.useState(false);
+  const passIcon = secureTextEntry === false ? "eye" : "eyeOff";
 
   return (
     <View gap={12}>
@@ -98,7 +94,7 @@ const LoginForm = ({
               onChangeText={onChange}
             ></FormInput>
 
-            <Typography>{errors?.email?.message?.toString() ?? ""}</Typography>
+            <Typography color="$red5">{errors?.email?.message?.toString() ?? ""}</Typography>
           </YStack>
         )}
       />
@@ -117,39 +113,30 @@ const LoginForm = ({
           <YStack>
             <FormInput
               type="password"
-              secureTextEntry={false}
+              secureTextEntry={secureTextEntry}
               title={t("form.password.label")}
               placeholder={t("form.password.placeholder")}
               value={value}
               onChangeText={onChange}
-              iconRight={<Icon icon="eyeOff" color="grey" size={20} />}
+              iconRight={<Icon icon={passIcon} size={20} color="$gray11" />}
+              onIconRightPress={() => {
+                setSecureTextEntry(!secureTextEntry);
+              }}
             ></FormInput>
 
-            <Typography>{errors?.password?.message?.toString() ?? ""}</Typography>
+            <Typography color="$red5">{errors?.password?.message?.toString() ?? ""}</Typography>
           </YStack>
         )}
       />
+
+      <Typography textAlign="right" color="$purple5">
+        {t("actions.forgot_password")}
+      </Typography>
     </View>
   );
 };
 
-// const SmallHeader = () => {
-//   const insets = useSafeAreaInsets();
-//   const StyledWrapper = styled(XStack, {
-//     name: "StyledWrapper",
-//     backgroundColor: "$purple5",
-//     height: insets.top,
-//     paddingTop: insets.top,
-//   });
-
-//   return (
-//     <StyledWrapper>
-//       <StatusBar barStyle="light-content"></StatusBar>
-//     </StyledWrapper>
-//   );
-// };
-
-const BigHeader = () => {
+const Header = () => {
   const insets = useSafeAreaInsets();
   const StyledWrapper = styled(XStack, {
     name: "StyledWrapper",
@@ -166,10 +153,6 @@ const BigHeader = () => {
       <Icon icon="loginLogo" size={300} />
     </StyledWrapper>
   );
-};
-
-const $containerStyle: ViewStyle = {
-  flex: 1,
 };
 
 export default Login;
