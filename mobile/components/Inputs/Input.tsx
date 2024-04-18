@@ -1,24 +1,17 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import {
   styled,
   Input as TamaguiInput,
   InputProps as TamaguiInputProps,
   TextArea as TamaguiTextArea,
+  XStack,
 } from "tamagui";
 
 export interface InputProps extends TamaguiInputProps {
   type: "text" | "numeric" | "textarea" | "password";
+  iconRight?: ReactNode;
+  onIconRightPress?: () => void;
 }
-
-const StyledInput = styled(TamaguiInput, {
-  backgroundColor: "white",
-  borderColor: "$gray3",
-  height: 42,
-  width: "100%",
-  focusStyle: {
-    borderColor: "$purple5",
-  },
-});
 
 const StyledTextArea = styled(TamaguiTextArea, {
   backgroundColor: "white",
@@ -35,22 +28,59 @@ const StyledTextArea = styled(TamaguiTextArea, {
   },
 });
 
-const Input: React.FC<InputProps> = ({ type, value, ...rest }) => {
+const Input: React.FC<InputProps> = ({ type, value, iconRight, onIconRightPress, ...rest }) => {
   return (
     <>
       {type === "textarea" ? (
         <StyledTextArea value={value} {...rest} />
       ) : (
-        <StyledInput
-          secureTextEntry={type === "password"}
-          value={value}
-          keyboardType={type === "numeric" ? type : "default"}
-          fontSize={16}
-          {...rest}
-        />
+        <InputWrapper>
+          <SearchInput
+            value={value}
+            secureTextEntry={type === "password"}
+            keyboardType={type === "numeric" ? type : "default"}
+            {...rest}
+          />
+          {iconRight && <IconWrapper onPress={onIconRightPress}>{iconRight}</IconWrapper>}
+        </InputWrapper>
       )}
     </>
   );
 };
+
+const InputWrapper = styled(XStack, {
+  backgroundColor: "white",
+  width: "100%",
+  height: 42,
+  alignItems: "center",
+  justifyContent: "space-between",
+  // paddingHorizontal: 14,
+  borderWidth: 1,
+  borderColor: "$gray3",
+  borderRadius: 8,
+  focusStyle: {
+    borderColor: "$purple5",
+  },
+});
+
+const SearchInput = styled(TamaguiInput, {
+  backgroundColor: "transparent",
+  flex: 9,
+  fontSize: 16,
+  padding: 0,
+  paddingLeft: 14,
+  borderWidth: 0,
+  borderRadius: 0,
+  focusStyle: {
+    borderColor: "transparent",
+  },
+});
+
+const IconWrapper = styled(XStack, {
+  flex: 1,
+  paddingVertical: 11,
+  justifyContent: "flex-end",
+  paddingRight: 14,
+});
 
 export default Input;

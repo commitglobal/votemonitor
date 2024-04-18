@@ -23,7 +23,7 @@ const mapPollingStationOptionsToSelectValues = (
   return options.map((option) => ({
     id: option.id,
     value: `${option.id}_${option.name}`,
-    label: option.name,
+    label: option.pollingStationId ? `${option.number} - ${option.name}` : option.name,
   }));
 };
 
@@ -134,10 +134,18 @@ const PollingStationWizzardContent = ({
       await queryClient.cancelQueries({
         queryKey: pollingStationsKeys.visits(activeElectionRound.id),
       });
-      const previousData =
+      let previousData =
         queryClient.getQueryData<PollingStationVisitVM[]>(
           pollingStationsKeys.visits(activeElectionRound.id),
         ) ?? [];
+
+      // Remove the pollingStation if already exists, to be added again as new visit and prevent duplicates
+      previousData = previousData.filter((item) => {
+        if (item.pollingStationId === pollingStation.pollingStationId) {
+          return false;
+        }
+        return true;
+      });
 
       queryClient.setQueryData<PollingStationVisitVM[]>(
         pollingStationsKeys.visits(activeElectionRound.id),

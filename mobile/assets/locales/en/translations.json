@@ -26,9 +26,9 @@
     },
     "form": {
       "region": {
-        "title": "Select the [Location - L1] of the polling station",
-        "placeholder": "Select region",
-        "required": "Region is mandatory"
+        "title": "Select one of the options",
+        "placeholder": "Tap to select",
+        "required": "A selection is mandatory"
       },
       "county": {
         "title": "Select the [Location - L2] of the polling station",
