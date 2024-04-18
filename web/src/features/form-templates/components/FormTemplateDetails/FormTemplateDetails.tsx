@@ -15,7 +15,7 @@ import { Fieldset } from '@/components/ui/fieldset';
 
 export default function FormTemplateDetails() {
   const formTemplate: FormTemplateFull = useLoaderData({ strict: false });
-  const { formTemplateId, languageCode } = FormTemplateDetailsRoute.useParams()
+  const { formTemplateId, languageCode } = FormTemplateDetailsRoute.useParams();
   const navigate = useNavigate();
   const { t } = useTranslation();
   const navigateToEdit = () => {
@@ -102,12 +102,7 @@ export default function FormTemplateDetails() {
                   formTemplate.questions.map(q => <PreviewQuestionFactory
                     languageCode={formTemplate.defaultLanguage}
                     question={q}
-                    key={q.id}
-                    answer={undefined}
-                    isFirstQuestion={false}
-                    isLastQuestion={false}
-                    onSubmitAnswer={(answer: BaseAnswer) => { }}
-                    onBackButtonClicked={() => { }} />)
+                    key={q.id} />)
                 }
               </Fieldset>
             </CardContent>

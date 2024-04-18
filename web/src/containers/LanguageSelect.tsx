@@ -46,13 +46,13 @@ function LanguageSelect({ languageCode, onSelect }: LanguageSelectProps) {
                     variant="ghost"
                     role="combobox"
                     aria-expanded={open}
-                    className="w-[350px] justify-between my-1 flex h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="w-full justify-between my-1 flex h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                     {placeholder}
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-[350px] p-0">
+            <PopoverContent className="w-[350px] py-1 px-0">
                 <Command filter={(value, search, keywords) => {
                     const extendValue = value + ' ' + keywords?.join(' ');
                     if (extendValue.toLocaleLowerCase().includes(search.toLocaleLowerCase())) return 1
@@ -79,7 +79,7 @@ function LanguageSelect({ languageCode, onSelect }: LanguageSelectProps) {
                                             value === language.code ? "opacity-100" : "opacity-0"
                                         )}
                                     />
-                                    {language.name}
+                                    {`${language.name} / ${language.nativeName}`}
                                 </CommandItem>
                             ))}
                         </CommandGroup>

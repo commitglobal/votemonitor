@@ -9,11 +9,11 @@ import { Textarea } from '../../ui/textarea';
 export interface PreviewTextQuestionProps {
     languageCode: string;
     question: TextQuestion;
-    answer: TextAnswer;
-    isFirstQuestion: boolean;
-    isLastQuestion: boolean;
-    onSubmitAnswer: (answer: BaseAnswer) => void;
-    onBackButtonClicked: () => void;
+    answer?: TextAnswer;
+    isFirstQuestion?: boolean;
+    isLastQuestion?: boolean;
+    onSubmitAnswer?: (answer: BaseAnswer) => void;
+    onBackButtonClicked?: () => void;
 }
 
 function PreviewTextQuestion({

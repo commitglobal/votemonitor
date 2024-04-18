@@ -14,11 +14,11 @@ import { Textarea } from '@/components/ui/textarea';
 export interface PreviewSingleSelectQuestionProps {
   languageCode: string;
   question: SingleSelectQuestion;
-  isFirstQuestion: boolean;
-  isLastQuestion: boolean;
-  answer: SingleSelectAnswer;
-  onSubmitAnswer: (answer: BaseAnswer) => void;
-  onBackButtonClicked: () => void;
+  isFirstQuestion?: boolean;
+  isLastQuestion?: boolean;
+  answer?: SingleSelectAnswer;
+  onSubmitAnswer?: (answer: BaseAnswer) => void;
+  onBackButtonClicked?: () => void;
 }
 
 function PreviewSingleSelectQuestion({

@@ -12,10 +12,10 @@ export interface PreviewRatingQuestionProps {
     languageCode: string;
     question: RatingQuestion;
     answer: RatingAnswer;
-    isFirstQuestion: boolean;
-    isLastQuestion: boolean;
-    onSubmitAnswer: (answer: BaseAnswer) => void;
-    onBackButtonClicked: () => void;
+    isFirstQuestion?: boolean;
+    isLastQuestion?: boolean;
+    onSubmitAnswer?: (answer: BaseAnswer) => void;
+    onBackButtonClicked?: () => void;
 }
 
 function scaleToNumber(scale: RatingScaleType): number {
@@ -65,7 +65,7 @@ function PreviewRatingQuestion({ languageCode,
 
     return (
         <Field>
-            <Label>{question.text[languageCode]}</Label>
+            <Label>{question.code} - {question.text[languageCode]}</Label>
             {!!question.helptext && <Description>{question.helptext[languageCode]}</Description>}
             <RatingGroup
                 className='my-2'

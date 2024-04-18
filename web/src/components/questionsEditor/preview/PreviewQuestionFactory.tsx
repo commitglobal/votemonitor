@@ -9,11 +9,11 @@ import PreviewTextQuestion from "./PreviewTextQuestion";
 interface PreviewQuestionFactoryProps {
   languageCode: string;
   question: BaseQuestion;
-  answer: BaseAnswer | undefined;
-  isFirstQuestion: boolean;
-  isLastQuestion: boolean;
-  onSubmitAnswer: (answer: BaseAnswer) => void;
-  onBackButtonClicked: () => void;
+  answer?: BaseAnswer | undefined;
+  isFirstQuestion?: boolean;
+  isLastQuestion?: boolean;
+  onSubmitAnswer?: (answer: BaseAnswer) => void;
+  onBackButtonClicked?: () => void;
 }
 
 export default function PreviewQuestionFactory({

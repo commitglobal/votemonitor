@@ -16,10 +16,10 @@ export interface PreviewDateQuestionProps {
   languageCode: string;
   question: DateQuestion;
   answer: DateAnswer;
-  isFirstQuestion: boolean;
-  isLastQuestion: boolean;
-  onSubmitAnswer: (answer: BaseAnswer) => void;
-  onBackButtonClicked: () => void;
+  isFirstQuestion?: boolean;
+  isLastQuestion?: boolean;
+  onSubmitAnswer?: (answer: BaseAnswer) => void;
+  onBackButtonClicked?: () => void;
 }
 
 function PreviewDateQuestion({

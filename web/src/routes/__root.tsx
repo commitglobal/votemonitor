@@ -18,8 +18,8 @@ function RootComponent() {
         <Header />
         <Outlet />
         <Suspense>
-          <TanStackReactQueryDevelopmentTools buttonPosition='bottom-left' />
-          <TanStackRouterDevelopmentTools position='bottom-right' initialIsOpen={false} />
+          <TanStackReactQueryDevelopmentTools buttonPosition='top-left' />
+          <TanStackRouterDevelopmentTools position='top-right' initialIsOpen={false} />
         </Suspense>
       </div>
     </>

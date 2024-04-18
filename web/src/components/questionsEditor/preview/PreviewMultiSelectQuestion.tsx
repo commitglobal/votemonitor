@@ -15,10 +15,10 @@ export interface PreviewMultiSelectQuestionProps {
     languageCode: string;
     question: MultiSelectQuestion;
     answer: MultiSelectAnswer;
-    isFirstQuestion: boolean;
-    isLastQuestion: boolean;
-    onSubmitAnswer: (answer: BaseAnswer) => void;
-    onBackButtonClicked: () => void;
+    isFirstQuestion?: boolean;
+    isLastQuestion?: boolean;
+    onSubmitAnswer?: (answer: BaseAnswer) => void;
+    onBackButtonClicked?: () => void;
 }
 
 function PreviewMultiSelectQuestion({

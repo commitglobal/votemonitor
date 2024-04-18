@@ -8,10 +8,10 @@ export interface PreviewNumberQuestionProps {
   languageCode: string;
   question: NumberQuestion;
   answer: NumberAnswer;
-  isFirstQuestion: boolean;
-  isLastQuestion: boolean;
-  onSubmitAnswer: (answer: BaseAnswer) => void;
-  onBackButtonClicked: () => void;
+  isFirstQuestion?: boolean;
+  isLastQuestion?: boolean;
+  onSubmitAnswer?: (answer: BaseAnswer) => void;
+  onBackButtonClicked?: () => void;
 }
 
 function PreviewNumberQuestion({
