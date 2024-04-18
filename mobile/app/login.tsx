@@ -117,11 +117,13 @@ const LoginForm = ({
         render={({ field: { onChange, value } }) => (
           <YStack>
             <FormInput
-              type="text"
+              type="password"
+              secureTextEntry={false}
               title={t("form.password.label")}
               placeholder={t("form.password.placeholder")}
               value={value}
               onChangeText={onChange}
+              iconRight={<Icon icon="eyeOff" color="grey" size={20} />}
             ></FormInput>
 
             <Typography>{errors?.password?.message?.toString() ?? ""}</Typography>
