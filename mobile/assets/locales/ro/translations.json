@@ -4,7 +4,27 @@
     "no": "Nu"
   },
   "login": {
-    "submit": "Intra in aplicatie"
+    "submit": "Intra in aplicatie",
+    "informative-text": "Dacă nu sunteți acreditat de către o organizație ca \nobservator independent, nu puteți utiliza aplicația \nVote Monitor. Vă rugăm să consultați Votați corect \npentru a afla ce pași trebuie să urmați pentru a deveni observator electoral.",
+    "title": "Autentificare",
+    "paragraph": "Vă rugăm să utilizați adresa de e-mail cu care v-ați înregistrat ca observator independent:",
+    "form": {
+      "email":{
+          "label": "E-mail",
+          "placeholder": "E-mail",
+          "required": "E-mailul este obligatoriu",
+          "format": "Formatul e-mailului nu este valid"
+      },
+      "password": {
+          "label": "Parola",
+          "placeholder": "Parola",
+          "required": "Parola este obligatorie"
+      }
+    },
+    "actions": {
+        "forgot_password": "Ti-ai uitat parola?",
+        "login": "Intra in aplicatie"
+    }
   },
   "more": {
     "change-language": "Schimba limba aplicației",
