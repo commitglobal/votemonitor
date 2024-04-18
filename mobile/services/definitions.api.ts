@@ -177,7 +177,7 @@ export const getPollingStationInformation = (
     paramsSerializer: {
       indexes: null,
     },
-  }).then((res) => res.data?.informations[0]);
+  }).then((res) => res.data?.informations[0] || null);
 };
 
 /** ========================================================================
