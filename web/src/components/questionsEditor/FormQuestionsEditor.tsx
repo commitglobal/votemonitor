@@ -1,26 +1,22 @@
 import { BaseQuestion } from '@/common/types';
 import QuestionsEdit from './QuestionsEdit';
 import PreviewForm from './PreviewForm';
+import { useState } from 'react';
 
 export interface FormQuestionsEditorProps {
   languageCode: string;
   localQuestions: BaseQuestion[];
   setLocalQuestions: (questions: BaseQuestion[]) => void;
-  activeQuestionId: string | undefined;
-  setActiveQuestionId: (questionId: string | undefined) => void;
-  invalidQuestions: string[] | null;
-  setInvalidQuestions: (questions: string[]) => void;
 }
 
 function FormQuestionsEditor({
   languageCode,
   localQuestions,
   setLocalQuestions,
-  activeQuestionId,
-  setActiveQuestionId,
-  invalidQuestions,
-  setInvalidQuestions,
 }: FormQuestionsEditorProps) {
+  const [activeQuestionId, setActiveQuestionId] = useState<string | undefined>();
+  const [invalidQuestions, setInvalidQuestions] = useState<string[]>([]);
+
   return (
     <div className='flex h-full flex-col'>
       <div className='relative z-0 flex flex-1 overflow-hidden'>

@@ -1,4 +1,4 @@
-import { useLoaderData, useNavigate } from '@tanstack/react-router';
+import { useLoaderData } from '@tanstack/react-router';
 import Layout from '@/components/layout/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
@@ -9,7 +9,6 @@ import { authApi } from '@/common/auth-api';
 import { useMutation } from '@tanstack/react-query';
 import { useToast } from '@/components/ui/use-toast';
 import { FormTemplateFull, FormTemplateType, mapFormTemplateType } from '../../models/formTemplate';
-import { Route as FormTemplatesListRoute } from '@/routes/form-templates/'
 import { Form, FormControl, FormField, FormMessage } from '@/components/ui/form';
 import { useTranslation } from 'react-i18next';
 import LanguageSelect from '@/containers/LanguageSelect';
@@ -26,12 +25,17 @@ import {
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import EditFormTemplateFooter from './EditFormTemplateFooter';
+import { queryClient } from '@/main';
+import { formTemplatesKeys } from '../../queries';
+import FormQuestionsEditor from '@/components/questionsEditor/FormQuestionsEditor';
+import { useState } from 'react';
+import { fromTheme } from 'tailwind-merge';
 
 
 export default function EditFormTemplate() {
-  const navigate = useNavigate({ from: FormTemplatesListRoute.fullPath })
   const { t } = useTranslation();
   const formTemplate: FormTemplateFull = useLoaderData({ strict: false });
+  const [localQuestions, setLocalQuestions] = useState(formTemplate.questions);
   const { toast } = useToast();
 
   const editFormTemplateFormSchema = z.object({
@@ -54,9 +58,15 @@ export default function EditFormTemplate() {
   });
 
   function onSubmit(values: z.infer<typeof editFormTemplateFormSchema>) {
+    formTemplate.code = values.code;
+    formTemplate.name[formTemplate.defaultLanguage] = values.name;
+    formTemplate.description[formTemplate.defaultLanguage] = values.description ?? '';
+    formTemplate.formTemplateType = values.formTemplateType;
+    formTemplate.defaultLanguage = values.defaultLanguage;
+
     const updatedFormTemplate: FormTemplateFull = {
       ...formTemplate,
-    
+
     };
 
     editMutation.mutate(updatedFormTemplate);
@@ -67,7 +77,10 @@ export default function EditFormTemplate() {
 
       return authApi.put<void>(
         `/form-templates/${formTemplate.id}`,
-        obj
+        {
+          ...obj,
+          questions: localQuestions
+        }
       );
     },
 
@@ -76,10 +89,10 @@ export default function EditFormTemplate() {
         title: 'Success',
         description: 'Form template updated successfully updated',
       });
+
+      queryClient.invalidateQueries({ queryKey: formTemplatesKeys.all });
     },
   });
-
-  const { setValue } = form;
 
   return (
     <Layout title={`${formTemplate.code} - ${formTemplate.name[formTemplate.defaultLanguage]}`}>
@@ -134,7 +147,6 @@ export default function EditFormTemplate() {
                           </Field>
                         )}
                       />
-
                       <FormField
                         control={form.control}
                         name='name'
@@ -180,12 +192,15 @@ export default function EditFormTemplate() {
                 <CardHeader className='flex flex-column gap-2'>
                   <div className='flex flex-row justify-between items-center'>
                     <CardTitle className='text-xl'>Template form questions</CardTitle>
-                  </div>onSubmit
-
+                  </div>
                   <Separator />
                 </CardHeader>
                 <CardContent className='-mx-6 flex items-start justify-left px-6 sm:mx-0 sm:px-8'>
-                  editorr goes here
+                  <FormQuestionsEditor
+                    languageCode={formTemplate.defaultLanguage}
+                    localQuestions={localQuestions}
+                    setLocalQuestions={setLocalQuestions}
+                  />
                 </CardContent>
               </Card>
             </TabsContent>

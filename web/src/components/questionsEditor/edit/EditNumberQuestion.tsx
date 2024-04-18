@@ -50,7 +50,7 @@ function EditNumberQuestion({
   }
 
   return (
-    <form>
+    <div>
       <QuestionHeader
         languageCode={languageCode}
         isInValid={isInValid}
@@ -73,7 +73,7 @@ function EditNumberQuestion({
           </div>
         </div>
       </div>
-    </form>
+    </div>
   )
 }
 

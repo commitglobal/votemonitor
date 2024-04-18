@@ -151,8 +151,7 @@ function EditSelectQuestion({
     }, [question.options?.length]);
 
     return (
-
-        <form>
+        <div>
             <QuestionHeader
                 languageCode={languageCode}
                 isInValid={isInValid}
@@ -230,7 +229,7 @@ function EditSelectQuestion({
                     </div>
                 </div>
             </div>
-        </form>
+        </div>
     )
 }
 

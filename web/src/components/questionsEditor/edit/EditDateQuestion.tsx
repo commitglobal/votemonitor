@@ -33,11 +33,10 @@ function EditDateQuestion({
   updateQuestion,
   duplicateQuestion,
   deleteQuestion }: EditDateQuestionProps) {
-  const { t } = useTranslation();
 
 
   return (
-    <form>
+    <div>
       <QuestionHeader
         languageCode={languageCode}
         isInValid={isInValid}
@@ -45,7 +44,7 @@ function EditDateQuestion({
         questionIdx={questionIdx}
         updateQuestion={updateQuestion}
       />
-    </form>
+    </div>
   )
 }
 

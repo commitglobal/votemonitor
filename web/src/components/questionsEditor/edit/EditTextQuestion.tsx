@@ -46,7 +46,7 @@ function EditTextQuestion({
     }
 
     return (
-        <form>
+        <div>
             <QuestionHeader
                 languageCode={languageCode}
                 isInValid={isInValid}
@@ -69,7 +69,7 @@ function EditTextQuestion({
                     </div>
                 </div>
             </div>
-        </form>
+        </div>
     )
 }
 export default EditTextQuestion

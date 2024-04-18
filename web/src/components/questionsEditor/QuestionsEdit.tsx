@@ -4,6 +4,7 @@ import EditQuestionFactory from "./edit/EditQuestionFactory";
 import { StrictModeDroppable } from "./StrictModeDroppable";
 import { validateQuestion } from "./edit/Validation";
 import AddQuestionButton from "./edit/AddQuestionButton";
+import { v4 as uuidv4 } from 'uuid';
 
 export interface QuestionsEditProps {
   languageCode: string;
@@ -62,11 +63,18 @@ function QuestionsEdit({
   }
 
   function duplicateQuestion(questionIndex: number) {
+    const question = localQuestions[questionIndex]; // Get the element to duplicate
+    localQuestions.splice(questionIndex, 0, {...question!, id: uuidv4()}); // Insert a copy of the element at the specified index
+    const updatedQuestions = Array.from(localQuestions);
 
+    setLocalQuestions(updatedQuestions);
   }
 
   function deleteQuestion(questionIndex: number) {
+    const newQuestionsArray = Array.from(localQuestions);
+    newQuestionsArray.splice(questionIndex, 1); // Deletes one element at the specified index
 
+    setLocalQuestions(newQuestionsArray);
   }
 
   function onDragEnd(result: DropResult) {
@@ -88,7 +96,7 @@ function QuestionsEdit({
   }
 
   return (
-    <div className='mt-12 px-5 py-4'>
+    <div>
       <DragDropContext onDragEnd={onDragEnd}>
         <div className='mb-5 grid grid-cols-1 gap-5 '>
           <StrictModeDroppable droppableId='questionsList'>
