@@ -3,11 +3,9 @@ import { Screen } from "../../components/Screen";
 import Header from "../../components/Header";
 import { Icon } from "../../components/Icon";
 import { TextStyle, ViewStyle } from "react-native";
-import { XStack, YStack } from "tamagui";
+import { YStack } from "tamagui";
 import { Typography } from "../../components/Typography";
 import Select from "../../components/Select";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Button from "../../components/Button";
 import { pollingStationsKeys, usePollingStationByParentID } from "../../services/queries.service";
 import { useMemo, useState } from "react";
 import {
@@ -17,6 +15,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { useUserData } from "../../contexts/user/UserContext.provider";
 import { useQueryClient } from "@tanstack/react-query";
+import WizzardControls from "../../components/WizzardControls";
 
 const mapPollingStationOptionsToSelectValues = (
   options: PollingStationNomenclatorNodeVM[],
@@ -83,7 +82,6 @@ const PollingStationWizzardContent = ({
   locations,
 }: PollingStationWizzardContentProps) => {
   const { t } = useTranslation("add_polling_station");
-  const insets = useSafeAreaInsets();
   const [selectedOption, setSelectedOption] = useState<PollingStationStep>();
   const { activeElectionRound } = useUserData();
 
@@ -136,10 +134,18 @@ const PollingStationWizzardContent = ({
       await queryClient.cancelQueries({
         queryKey: pollingStationsKeys.visits(activeElectionRound.id),
       });
-      const previousData =
+      let previousData =
         queryClient.getQueryData<PollingStationVisitVM[]>(
           pollingStationsKeys.visits(activeElectionRound.id),
         ) ?? [];
+
+      // Remove the pollingStation if already exists, to be added again as new visit and prevent duplicates
+      previousData = previousData.filter((item) => {
+        if (item.pollingStationId === pollingStation.pollingStationId) {
+          return false;
+        }
+        return true;
+      });
 
       queryClient.setQueryData<PollingStationVisitVM[]>(
         pollingStationsKeys.visits(activeElectionRound.id),
@@ -191,38 +197,13 @@ const PollingStationWizzardContent = ({
           )}
         </YStack>
       </YStack>
-      <XStack
-        elevation={2}
-        backgroundColor="white"
-        gap="$sm"
-        padding="$md"
-        paddingBottom={insets.bottom}
-      >
-        {activeStep?.id && (
-          <XStack flex={0.25}>
-            <Button
-              width="100%"
-              icon={() => <Icon icon="chevronLeft" color="$purple5" />}
-              preset="chromeless"
-              onPress={onBackButtonPress}
-            >
-              {t("actions.back")}
-            </Button>
-          </XStack>
-        )}
-        <XStack flex={!activeStep?.id ? 1 : 0.75} marginBottom="$md">
-          {!isLastElement && (
-            <Button disabled={!selectedOption} width="100%" onPress={onNextButtonPress}>
-              {t("actions.next_step")}
-            </Button>
-          )}
-          {isLastElement && (
-            <Button disabled={!selectedOption} width="100%" onPress={onFinishButtonPress}>
-              {t("actions.finalize")}
-            </Button>
-          )}
-        </XStack>
-      </XStack>
+      <WizzardControls
+        isFirstElement={!!activeStep?.id}
+        isLastElement={isLastElement}
+        onPreviousButtonPress={onBackButtonPress}
+        isNextDisabled={!selectedOption}
+        onNextButtonPress={isLastElement ? onFinishButtonPress : onNextButtonPress}
+      />
     </YStack>
   );
 };

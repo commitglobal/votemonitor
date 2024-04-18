@@ -72,7 +72,7 @@ const PollingStationQuestionnaire = () => {
   );
 
   const { mutate } = useMutation({
-    mutationKey: ["upsertPollingStationGeneralInformation"],
+    mutationKey: [pollingStationsKeys.mutatePollingStationGeneralData()],
     mutationFn: async (payload: PollingStationInformationAPIPayload) => {
       return upsertPollingStationGeneralInformation(payload);
     },
