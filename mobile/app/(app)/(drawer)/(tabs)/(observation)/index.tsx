@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Dimensions } from "react-native";
 import { router, useNavigation } from "expo-router";
 import { Screen } from "../../../../../components/Screen";
@@ -13,14 +13,13 @@ import Card from "../../../../../components/Card";
 import FormCard from "../../../../../components/FormCard";
 import {
   pollingStationsKeys,
-  upsertPollingStationGeneralInformationMutation,
   useElectionRoundAllForms,
   useFormSubmissions,
   usePollingStationInformation,
   usePollingStationInformationForm,
 } from "../../../../../services/queries.service";
 import { ApiFormAnswer } from "../../../../../services/interfaces/answer.type";
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import SelectPollingStation from "../../../../../components/SelectPollingStation";
 import NoVisitsExist from "../../../../../components/NoVisitsExist";
 import NoElectionRounds from "../../../../../components/NoElectionRounds";
@@ -30,6 +29,11 @@ import Button from "../../../../../components/Button";
 import Header from "../../../../../components/Header";
 import { Icon } from "../../../../../components/Icon";
 import { DrawerActions } from "@react-navigation/native";
+import {
+  PollingStationInformationAPIPayload,
+  PollingStationInformationAPIResponse,
+  upsertPollingStationGeneralInformation,
+} from "../../../../../services/definitions.api";
 
 export type FormItemStatus = "not started" | "in progress" | "completed";
 
@@ -154,40 +158,71 @@ const Index = () => {
     activeElectionRound?.id,
   );
 
-  const { mutate } = upsertPollingStationGeneralInformationMutation();
-
-  const updateGeneralData = (payload: Partial<PollingStationInformationVM>) => {
-    // Set query data
-    queryClient.setQueryData(
+  const pollingStationInformationQK = useMemo(
+    () =>
       pollingStationsKeys.pollingStationInformation(
         activeElectionRound?.id,
         selectedPollingStation?.pollingStationId,
       ),
-      (current: any) => {
-        return {
-          ...current,
-          ...payload,
-        };
-      },
-    );
+    [activeElectionRound, selectedPollingStation],
+  );
 
-    if (selectedPollingStation && activeElectionRound) {
-      mutate(
-        {
-          electionRoundId: activeElectionRound?.id,
-          pollingStationId: selectedPollingStation?.pollingStationId as string,
-          arrivalTime: data?.arrivalTime,
-          departureTime: data?.departureTime,
-          answers: data?.answers,
-          ...payload,
-        },
-        {
-          onSuccess: () => {
-            // QueryClient setQurydata
-            console.log("OK");
-          },
-        },
+  // TODO: this is almost duplicate of PollingStationQuestionnaire, merge them
+  const { mutate } = useMutation({
+    mutationKey: [pollingStationsKeys.mutatePollingStationGeneralData()],
+    mutationFn: async (payload: PollingStationInformationAPIPayload) => {
+      return upsertPollingStationGeneralInformation(payload);
+    },
+    onMutate: async (payload: PollingStationInformationAPIPayload) => {
+      // Cancel any outgoing refetches
+      // (so they don't overwrite our optimistic update)
+      await queryClient.cancelQueries({ queryKey: [pollingStationInformationQK] });
+
+      // Snapshot the previous value
+      const previousData = queryClient.getQueryData<PollingStationInformationAPIResponse>(
+        pollingStationInformationQK,
       );
+
+      // Optimistically update to the new value
+      if (previousData && (payload?.arrivalTime || payload?.departureTime)) {
+        // TODO: improve this
+        queryClient.setQueryData<PollingStationInformationAPIResponse>(
+          pollingStationInformationQK,
+          {
+            ...previousData,
+            arrivalTime: payload.arrivalTime || previousData.arrivalTime,
+            departureTime: payload.departureTime || previousData.departureTime,
+          },
+        );
+      }
+
+      // Return a context object with the snapshotted value
+      return { previousData };
+    },
+    onError: (err, newData, context) => {
+      console.log(err);
+      queryClient.setQueryData([pollingStationInformationQK], context?.previousData);
+    },
+    onSettled: () => {
+      // TODO: we want to keep the mutation in pending until the refetch is done?
+      return queryClient.invalidateQueries({ queryKey: [pollingStationInformationQK] });
+    },
+  });
+
+  const updateArrivalDepartureTime = (
+    payload: Partial<Pick<PollingStationInformationVM, "arrivalTime" | "departureTime">>,
+  ) => {
+    if (selectedPollingStation?.pollingStationId && activeElectionRound?.id) {
+      mutate({
+        electionRoundId: activeElectionRound?.id,
+        pollingStationId: selectedPollingStation?.pollingStationId,
+        arrivalTime: data?.arrivalTime,
+        departureTime: data?.departureTime,
+        // answers: data?.answers,
+        ...payload,
+      });
+    } else {
+      console.error("Missing election round and polling station");
     }
   };
 
@@ -239,14 +274,18 @@ const Index = () => {
               <TimeSelect
                 type="arrival"
                 time={data?.arrivalTime ? new Date(data?.arrivalTime) : undefined}
-                setTime={(data: Date) => updateGeneralData({ arrivalTime: data?.toISOString() })}
+                setTime={(data: Date) =>
+                  updateArrivalDepartureTime({ arrivalTime: data?.toISOString() })
+                }
               />
             </Card>
             <Card flex={0.5} paddingVertical="$xs">
               <TimeSelect
                 type="departure"
                 time={data?.departureTime ? new Date(data?.departureTime) : undefined}
-                setTime={(data: Date) => updateGeneralData({ departureTime: data?.toISOString() })}
+                setTime={(data: Date) =>
+                  updateArrivalDepartureTime({ departureTime: data?.toISOString() })
+                }
               />
             </Card>
           </XStack>

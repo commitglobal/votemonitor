@@ -65,6 +65,7 @@ export const pollingStationsKeys = {
     electionRoundId,
     "polling-station-information-form",
   ],
+  mutatePollingStationGeneralData: () => [...pollingStationsKeys.all, "mutate-general-data"],
 };
 
 export const useElectionRoundsQuery = () => {
@@ -229,15 +230,6 @@ export const usePollingStationInformation = (
 };
 
 // ================== Mutations =====================
-
-export const upsertPollingStationGeneralInformationMutation = () => {
-  return useMutation({
-    mutationKey: ["upsertPollingStationGeneralInformation"],
-    mutationFn: async (payload: PollingStationInformationAPIPayload) => {
-      return upsertPollingStationGeneralInformation(payload);
-    },
-  });
-};
 
 export const addAttachmentMutation = () => {
   return useMutation({
