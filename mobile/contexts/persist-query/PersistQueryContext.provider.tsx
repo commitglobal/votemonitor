@@ -79,7 +79,7 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
   // console.log("isRestoring persistQueryClient", isRestoring);
   const { isAuthenticated } = useAuth();
 
-  queryClient.setMutationDefaults(["upsertPollingStationGeneralInformation"], {
+  queryClient.setMutationDefaults([pollingStationsKeys.mutatePollingStationGeneralData()], {
     mutationFn: (payload: API.PollingStationInformationAPIPayload) => {
       return API.upsertPollingStationGeneralInformation(payload);
     },
