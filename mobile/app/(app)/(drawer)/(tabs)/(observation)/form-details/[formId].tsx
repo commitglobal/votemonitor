@@ -129,7 +129,7 @@ const FormDetails = () => {
   }, [allForms]);
 
   const onQuestionItemClick = (questionId: string) => {
-    console.log("press on id", questionId);
+    router.push(`/form-questionnaire/${questionId}?formId=${formId}&language=${language}`);
   };
 
   if (isLoadingForms || isLoadingAnswers) {
