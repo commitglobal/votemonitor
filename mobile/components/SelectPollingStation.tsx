@@ -10,7 +10,6 @@ import { router } from "expo-router";
 const SelectPollingStation = () => {
   const { visits, selectedPollingStation, setSelectedPollingStationId } = useUserData();
   const [open, setOpen] = useState(false);
-
   const insets = useSafeAreaInsets();
 
   return (
@@ -88,7 +87,6 @@ const SelectPollingStation = () => {
           <Select.Viewport>
             <Select.Group>
               {/* //TODO: texts from translation */}
-
               {useMemo(
                 () =>
                   visits.map((entry, i) => {
@@ -100,16 +98,21 @@ const SelectPollingStation = () => {
                         gap="$3"
                       >
                         {/* //TODO: change number of lines to 2 if that's what we want */}
-                        <Select.ItemText width={"90%"} numberOfLines={2}>
+                        <Select.ItemText
+                          width={"90%"}
+                          numberOfLines={2}
+                          color={
+                            entry.pollingStationId === selectedPollingStation?.pollingStationId
+                              ? "$purple5"
+                              : "$gray9"
+                          }
+                        >
                           {entry.number} - {entry.address}
                         </Select.ItemText>
-                        <Select.ItemIndicator>
-                          <Icon icon="chevronLeft" />
-                        </Select.ItemIndicator>
                       </Select.Item>
                     );
                   }),
-                [visits],
+                [visits, selectedPollingStation],
               )}
             </Select.Group>
           </Select.Viewport>
