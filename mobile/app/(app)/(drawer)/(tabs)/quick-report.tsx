@@ -16,6 +16,7 @@ import Header from "../../../../components/Header";
 import { useNavigation } from "expo-router";
 import { DrawerActions } from "@react-navigation/native";
 import Input from "../../../../components/Inputs/Input";
+import CircularProgress from "../../../../components/CircularProgress";
 
 const mockQuestions = [
   {
@@ -31,7 +32,6 @@ const mockQuestions = [
     numberOfQuestions: 6,
   },
 ];
-import CircularProgress from "../../../../components/CircularProgress";
 
 const QuickReport = () => {
   const navigation = useNavigation();

@@ -37,7 +37,6 @@ const CircularProgress = (props: CircularProgressProps): JSX.Element => {
   return (
     <View alignItems="center" justifyContent="center">
       <AnimatedText
-        progress={progress}
         animatedProgress={animatedProgress}
         maxProgress={MAX_PROGRESS}
         inputProgress={inputProgress}
@@ -145,12 +144,10 @@ const BackgroundCircle = ({
  * Animation consist in color changing based on animatedProgress value.
  */
 const AnimatedText = ({
-  progress,
   animatedProgress,
   maxProgress,
   inputProgress,
 }: {
-  progress: number;
   animatedProgress: SharedValue<number>;
   maxProgress: number;
   inputProgress: number;
