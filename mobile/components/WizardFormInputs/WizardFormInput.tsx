@@ -23,7 +23,7 @@ const WizardFormInput: React.FC<WizardFormInputProps> = ({
 }) => {
   return (
     <WizardFormElement label={label} paragraph={paragraph} helper={helper}>
-      <Input type={type} marginBottom="$xxs" {...rest} placeholder={placeholder} />
+      <Input type={type} {...rest} placeholder={placeholder} />
     </WizardFormElement>
   );
 };
