@@ -29,10 +29,12 @@ public class Endpoint(IRepository<FormTemplateAggregate> repository) :
         return TypedResults.Ok(new FormTemplateSlimModel
         {
             Id = formTemplate.Id,
+            FormTemplateType = formTemplate.FormTemplateType,
             Code = formTemplate.Code,
             Languages = formTemplate.Languages.ToList(),
             DefaultLanguage = formTemplate.DefaultLanguage,
             Name = formTemplate.Name,
+            Description = formTemplate.Description,
             Status = formTemplate.Status,
             CreatedOn = formTemplate.CreatedOn,
             LastModifiedOn = formTemplate.LastModifiedOn

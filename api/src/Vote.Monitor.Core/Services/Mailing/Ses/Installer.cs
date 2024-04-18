@@ -1,6 +1,7 @@
 ﻿using Amazon.SimpleEmail;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Vote.Monitor.Core.Services.Mailing.Contracts;
 
 namespace Vote.Monitor.Core.Services.Mailing.Ses;
 internal static class Installer
@@ -16,6 +17,8 @@ internal static class Installer
 
         services.AddSingleton<IAmazonSimpleEmailService>(new AmazonSimpleEmailServiceClient(awsAccessKey, awsSecretKey, 
             region));
+
+        services.AddSingleton<IMailService, SesMailService>();
 
         return services;
     }

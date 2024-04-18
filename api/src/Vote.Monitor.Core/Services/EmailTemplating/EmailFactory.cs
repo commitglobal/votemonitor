@@ -3,7 +3,7 @@ using Vote.Monitor.Core.Services.EmailTemplating.Props;
 
 namespace Vote.Monitor.Core.Services.EmailTemplating;
 
-internal class EmailFactory : IEmailTemplateFactory
+internal class EmailTemplateFactory : IEmailTemplateFactory
 {
     public EmailModel GenerateEmail(EmailTemplateType templateType, BaseEmailProps emailProps)
     {

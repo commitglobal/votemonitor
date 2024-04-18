@@ -1,9 +1,9 @@
 # Login
-POST {{$dotenv HOST }}/api/auth
+POST {{$dotenv HOST }}/api/auth/login
 Content-Type: application/json
 
 {
-  "username": "{{$dotenv USERNAME}}",
+  "email": "{{$dotenv USERNAME}}",
   "password": "{{$dotenv PASSWORD}}"
 }
 ###

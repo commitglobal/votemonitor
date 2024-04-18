@@ -13,13 +13,16 @@ Content-Type: application/json
 Authorization: Bearer {{$dotenv JWT_TOKEN}}
 
 {
-  "code": "A",
+  "code": "C",
   "defaultLanguage": "RO",
   "languages": [
     "RO"
   ],
   "name": {
     "RO": "test form"
+  },
+  "description": {
+    "RO": "this is a test form"
   },
   "formTemplateType": "ClosingAndCounting"
 }
@@ -32,7 +35,7 @@ Content-Type: application/json
 Authorization: Bearer {{$dotenv JWT_TOKEN}}
 
 {
-  "code": "A",
+  "code": "C",
   "defaultLanguage": "RO",
   "languages": [
     "RO",
@@ -41,6 +44,10 @@ Authorization: Bearer {{$dotenv JWT_TOKEN}}
   "name": {
     "EN": "test form",
     "RO": "formular de test"
+  },
+  "description": {
+    "RO": "this is a test form",
+    "EN": "this is a test form"
   },
   "formTemplateType": "ClosingAndCounting",
   "questions": [

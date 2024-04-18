@@ -4,6 +4,7 @@ public class NewForm
 {
     public string Code { get; set; }
     public TranslatedString Name { get; set; }
+    public TranslatedString Description { get; set; }
     /// <summary>
     /// Opening | Voting | ClosingAndCounting
     /// </summary>
