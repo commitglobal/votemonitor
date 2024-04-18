@@ -66,6 +66,7 @@ const QuickReport = () => {
       <Stack padding="$md" gap="$md">
         <Typography preset="subheading">Inputs</Typography>
         <Input type="text" placeholder="type = text" />
+        <Input type="password" placeholder="type = password" />
         <Input type="textarea" placeholder="type = textarea" />
         <Input type="numeric" placeholder="type = numeric" />
       </Stack>
