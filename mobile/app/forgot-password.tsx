@@ -2,7 +2,7 @@ import Header from "../components/Header";
 import { Screen } from "../components/Screen";
 import { useTranslation } from "react-i18next";
 import { Icon } from "../components/Icon";
-import { useNavigation } from "expo-router";
+import { useNavigation, router } from "expo-router";
 import { YStack } from "tamagui";
 import { Typography } from "../components/Typography";
 import { useForm, Controller } from "react-hook-form";
@@ -28,6 +28,7 @@ const ForgotPassword = () => {
   // TODO: Implement the onSubmit function
   const onSubmit = (data: FormData) => {
     console.log("Forgot password for email: ", data.email);
+    router.push("/email-confirmation");
   };
 
   return (
