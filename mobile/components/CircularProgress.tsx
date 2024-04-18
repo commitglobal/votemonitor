@@ -13,15 +13,8 @@ import { View } from "tamagui";
 
 export interface CircularProgressProps {
   progress: number;
+  size?: number;
 }
-
-// TODO: adjust circle size by modifying these variables
-const SIZE = 150;
-const STROKEWIDTH = 8;
-const RADIUS = (SIZE - STROKEWIDTH) / 2;
-const CIRCLE_LENGTH = RADIUS * 2 * Math.PI;
-const MAX_PROGRESS = 360;
-const duration = 750;
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
@@ -29,42 +22,78 @@ const CircularProgress = (props: CircularProgressProps): JSX.Element => {
   const { progress } = props;
   const animatedProgress = useSharedValue(progress);
 
+  const SIZE = props.size || 150;
+  const STROKEWIDTH = 8;
+  const RADIUS = (SIZE - STROKEWIDTH) / 2;
+  const MAX_PROGRESS = 360;
+  const duration = 750;
+
   useEffect(() => {
     animatedProgress.value = withTiming(progress, { duration });
   }, [progress]);
 
   return (
     <View alignItems="center" justifyContent="center">
-      <AnimatedText progress={progress} animatedProgress={animatedProgress} />
+      <AnimatedText
+        progress={progress}
+        animatedProgress={animatedProgress}
+        maxProgress={MAX_PROGRESS}
+      />
 
       <Svg width={SIZE} height={SIZE}>
-        <BackgroundCircle animatedProgress={animatedProgress}></BackgroundCircle>
-        <ProgressCircle animatedProgress={animatedProgress} />
+        <BackgroundCircle
+          animatedProgress={animatedProgress}
+          maxProgress={MAX_PROGRESS}
+          size={SIZE}
+          radius={RADIUS}
+          strokeWidth={STROKEWIDTH}
+        ></BackgroundCircle>
+        <ProgressCircle
+          animatedProgress={animatedProgress}
+          size={SIZE}
+          radius={RADIUS}
+          maxProgress={MAX_PROGRESS}
+          strokeWidth={STROKEWIDTH}
+        />
       </Svg>
     </View>
   );
 };
 
-const ProgressCircle = ({ animatedProgress }: { animatedProgress: SharedValue<number> }) => {
+const ProgressCircle = ({
+  animatedProgress,
+  size,
+  radius,
+  maxProgress,
+  strokeWidth,
+}: {
+  animatedProgress: SharedValue<number>;
+  size: number;
+  radius: number;
+  maxProgress: number;
+  strokeWidth: number;
+}) => {
+  const CIRCLE_LENGTH = radius * 2 * Math.PI;
+
   const strokeColor = useDerivedValue(() => {
     return interpolateColor(
       animatedProgress.value,
-      [0, 1, MAX_PROGRESS - 1, MAX_PROGRESS],
+      [0, 1, maxProgress - 1, maxProgress],
       ["#E4E4E7", "#FFD209", "#FFD209", "#10B981"],
     );
   });
 
   const animatedProps = useAnimatedProps(() => ({
-    strokeDashoffset: (CIRCLE_LENGTH * (MAX_PROGRESS - animatedProgress.value)) / MAX_PROGRESS,
+    strokeDashoffset: (CIRCLE_LENGTH * (maxProgress - animatedProgress.value)) / maxProgress,
     stroke: strokeColor.value,
   }));
 
   return (
     <AnimatedCircle
-      cx={SIZE / 2}
-      cy={SIZE / 2}
-      r={RADIUS}
-      strokeWidth={STROKEWIDTH}
+      cx={size / 2}
+      cy={size / 2}
+      r={radius}
+      strokeWidth={strokeWidth}
       strokeLinecap="round"
       fill="none"
       strokeDasharray={`${CIRCLE_LENGTH} ${CIRCLE_LENGTH}`}
@@ -73,12 +102,24 @@ const ProgressCircle = ({ animatedProgress }: { animatedProgress: SharedValue<nu
   );
 };
 
-const BackgroundCircle = ({ animatedProgress }: { animatedProgress: SharedValue<number> }) => {
+const BackgroundCircle = ({
+  animatedProgress,
+  maxProgress,
+  size,
+  radius,
+  strokeWidth,
+}: {
+  animatedProgress: SharedValue<number>;
+  maxProgress: number;
+  size: number;
+  radius: number;
+  strokeWidth: number;
+}) => {
   const animatedProps = useAnimatedProps(() => {
     return {
       stroke: interpolateColor(
         animatedProgress.value,
-        [0, 1, MAX_PROGRESS - 1, MAX_PROGRESS],
+        [0, 1, maxProgress - 1, maxProgress],
         ["#E4E4E7", "hsla(49, 100%, 58%, 0.25)", "hsla(49, 100%, 58%, 0.25)", "#10B981"],
       ),
     };
@@ -87,10 +128,10 @@ const BackgroundCircle = ({ animatedProgress }: { animatedProgress: SharedValue<
   return (
     <AnimatedCircle
       fill="none"
-      cx={SIZE / 2}
-      cy={SIZE / 2}
-      r={RADIUS}
-      strokeWidth={STROKEWIDTH}
+      cx={size / 2}
+      cy={size / 2}
+      r={radius}
+      strokeWidth={strokeWidth}
       animatedProps={animatedProps}
     />
   );
@@ -103,15 +144,17 @@ const BackgroundCircle = ({ animatedProgress }: { animatedProgress: SharedValue<
 const AnimatedText = ({
   progress,
   animatedProgress,
+  maxProgress,
 }: {
   progress: number;
   animatedProgress: SharedValue<number>;
+  maxProgress: number;
 }) => {
   const animatedStyle = useAnimatedStyle(() => {
     return {
       color: interpolateColor(
         animatedProgress.value,
-        [0, 1, MAX_PROGRESS - 1, MAX_PROGRESS],
+        [0, 1, maxProgress - 1, maxProgress],
         ["#71717A", "#A16207", "#A16207", "#10B981"],
       ),
     };

@@ -31,9 +31,9 @@ const AppLayout = () => {
         <Stack>
           <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
           <Stack.Screen name="polling-station-wizzard" options={{ headerShown: false }} />
-          <Stack.Screen name="form-questionnaire" />
+          <Stack.Screen name="form-questionnaire" options={{ headerShown: false }} />
           <Stack.Screen name="polling-station-questionnaire" options={{ headerShown: false }} />
-          <Stack.Screen name="change-language" />
+          <Stack.Screen name="change-language" options={{ headerShown: false }} />
         </Stack>
       </UserContextProvider>
     </PortalProvider>
