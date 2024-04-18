@@ -1,5 +1,5 @@
 import type { FunctionComponent } from '../common/types';
-import { createFileRoute, redirect } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 import Layout from '@/components/layout/Layout';
 import PollingStationsDashboard from '@/features/polling-stations/components/Dashboard/Dashboard';
 import { redirectIfNotAuth } from '@/lib/utils';
