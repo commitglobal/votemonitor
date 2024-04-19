@@ -8,10 +8,10 @@ import {
 } from "../../../../../../services/queries.service";
 import { useUserData } from "../../../../../../contexts/user/UserContext.provider";
 import { Typography } from "../../../../../../components/Typography";
-import { Card, XStack, YStack } from "tamagui";
+import { Card, Sheet, XStack, YStack } from "tamagui";
 import CircularProgress from "../../../../../../components/CircularProgress";
 import Button from "../../../../../../components/Button";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { ListView } from "../../../../../../components/ListView";
 import CardFooter from "../../../../../../components/CardFooter";
 import Badge from "../../../../../../components/Badge";
@@ -22,6 +22,9 @@ import {
 } from "../../../../../../services/form.parser";
 import { ApiFormAnswer } from "../../../../../../services/interfaces/answer.type";
 import { Dimensions, Platform } from "react-native";
+import { useTranslation } from "react-i18next";
+import { FormStateToTextMapper } from "../../../../../../components/FormCard";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface FormOverviewProps {
   completedAnswers: number;
@@ -38,17 +41,19 @@ const FormOverview = ({
     () => mapFormStateStatus(completedAnswers, numberOfQuestions),
     [completedAnswers, numberOfQuestions],
   );
+  const { t } = useTranslation("form_overview");
 
   return (
     <Card padding="$md">
       {/* //TODO: translations */}
       <Typography preset="body1" fontWeight="700">
-        Form overview
+        {t("form_overview.title")}
       </Typography>
       <XStack alignItems="center" justifyContent="space-between">
         <YStack gap="$sm">
           <Typography fontWeight="500" color="$gray5">
-            Form status: <Typography fontWeight="700">{formStatus}</Typography>
+            {t("form_overview.status")}:{" "}
+            <Typography fontWeight="700">{FormStateToTextMapper[formStatus]}</Typography>
           </Typography>
           <Typography fontWeight="500" color="$gray5">
             Answered questions:{" "}
@@ -111,6 +116,8 @@ const FormQuestionListItem = ({
 const FormDetails = () => {
   const { formId, language } = useLocalSearchParams();
   const { activeElectionRound, selectedPollingStation } = useUserData();
+  const [optionSheetOpen, setOptionSheetOpen] = useState(false);
+  const insets = useSafeAreaInsets();
 
   const {
     data: allForms,
@@ -193,6 +200,8 @@ const FormDetails = () => {
         barStyle="light-content"
         leftIcon={<Icon icon="chevronLeft" color="white" />}
         onLeftPress={() => router.back()}
+        rightIcon={<Icon icon="dotsVertical" color="white" />}
+        onRightPress={() => setOptionSheetOpen(true)}
       />
       <YStack
         paddingTop={28}
@@ -234,6 +243,39 @@ const FormDetails = () => {
           estimatedItemSize={100}
         />
       </YStack>
+      <Sheet
+        open={optionSheetOpen}
+        modal
+        native
+        onOpenChange={(option: boolean) => {
+          return setOptionSheetOpen(option);
+        }}
+        snapPointsMode="fit"
+        dismissOnSnapToBottom
+        zIndex={100_000}
+      >
+        <Sheet.Overlay />
+        <Sheet.Frame borderTopLeftRadius={28} borderTopRightRadius={28}>
+          <Icon alignSelf="center" icon="dragHandle"></Icon>
+          <YStack paddingHorizontal={28} paddingBottom={8 + insets.bottom}>
+            <Typography
+              preset="body1"
+              paddingTop="$md"
+              paddingBottom="$sm"
+              onPress={() => console.log("language action")}
+            >
+              Change language
+            </Typography>
+            <Typography
+              preset="body1"
+              paddingVertical="$sm"
+              onPress={() => console.log("clear form action")}
+            >
+              Clear form (delete all answers)
+            </Typography>
+          </YStack>
+        </Sheet.Frame>
+      </Sheet>
     </Screen>
   );
 };
