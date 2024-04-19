@@ -251,7 +251,7 @@ const FormDetails = () => {
         <Sheet.Overlay />
         <Sheet.Frame borderTopLeftRadius={28} borderTopRightRadius={28}>
           <Icon paddingVertical="$md" alignSelf="center" icon="dragHandle"></Icon>
-          <YStack padding="$md" paddingBottom={16 + insets.bottom} gap="$lg">
+          <YStack paddingHorizontal={28} paddingBottom={16 + insets.bottom} gap="$lg">
             <Typography preset="body1">Change language</Typography>
             <Typography preset="body1">Clear form (delete all answers)</Typography>
           </YStack>
