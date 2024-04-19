@@ -480,14 +480,20 @@ export const OptionsSheet = (props: OptionsSheetProps) => {
 
   return (
     <Sheet
+      modal
       open={open}
       onOpenChange={() => setOpen(false)}
       snapPointsMode="fit"
-      modal={true}
       dismissOnSnapToBottom
     >
-      <Sheet.Overlay animation="lazy" enterStyle={{ opacity: 0 }} exitStyle={{ opacity: 0 }} />
-      <Sheet.Frame borderRadius={28} gap="$sm" paddingHorizontal="$md" paddingBottom="$xl">
+      <Sheet.Overlay animation="quick" enterStyle={{ opacity: 0 }} exitStyle={{ opacity: 0 }} />
+      <Sheet.Frame
+        borderTopLeftRadius={28}
+        borderTopRightRadius={28}
+        gap="$sm"
+        paddingHorizontal="$md"
+        paddingBottom="$xl"
+      >
         <Icon paddingVertical="$md" alignSelf="center" icon="dragHandle"></Icon>
 
         <View paddingVertical="$xxs" paddingHorizontal="$sm">
