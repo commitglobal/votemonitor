@@ -1,5 +1,4 @@
 import React, { useMemo, useState } from "react";
-import { Dimensions } from "react-native";
 import { router, useNavigation } from "expo-router";
 import { Screen } from "../../../../../components/Screen";
 import { useUserData } from "../../../../../contexts/user/UserContext.provider";
@@ -97,7 +96,7 @@ const FormList = () => {
     <YStack gap="$xxs">
       <Typography>Forms</Typography>
       {/* TODO: the heigh should be number of forms * their height */}
-      <YStack height={Dimensions.get("screen").height}>
+      <YStack height={300}>
         <ListView<FormListItem>
           data={formList}
           showsVerticalScrollIndicator={false}

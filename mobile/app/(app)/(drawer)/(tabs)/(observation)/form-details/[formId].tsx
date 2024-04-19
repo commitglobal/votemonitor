@@ -21,6 +21,7 @@ import {
   mapFormStateStatus,
 } from "../../../../../../services/form.parser";
 import { ApiFormAnswer } from "../../../../../../services/interfaces/answer.type";
+import { Dimensions } from "react-native";
 
 interface FormOverviewProps {
   completedAnswers: number;
@@ -191,7 +192,12 @@ const FormDetails = () => {
         leftIcon={<Icon icon="chevronLeft" color="white" />}
         onLeftPress={() => router.back()}
       />
-      <YStack paddingTop={28} gap="$xl" paddingHorizontal="$md">
+      <YStack
+        paddingTop={28}
+        gap="$xl"
+        paddingHorizontal="$md"
+        height={Dimensions.get("screen").height - 200}
+      >
         <ListView<Pick<FormQuestionListItemProps, "question" | "status"> & { id: string }>
           data={questions}
           ListHeaderComponent={
