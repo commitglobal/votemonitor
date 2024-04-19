@@ -196,7 +196,7 @@ public class FormAggregateTests
             multiSelectQuestion,
         };
 
-        var form = Form.Create(electionRound, monitoringNgo, FormType.ClosingAndCounting, "", new TranslatedString(),new TranslatedString(), "EN", ["EN"], questions);
+        var form = Form.Create(electionRound, monitoringNgo, FormType.ClosingAndCounting, "", new TranslatedString(), new TranslatedString(), "EN", ["EN"], questions);
 
         List<BaseAnswer> initialAnswers = [
             new SingleSelectAnswerFaker(singleSelectQuestion)
@@ -218,5 +218,52 @@ public class FormAggregateTests
 
         // Assert
         submission.NumberOfQuestionAnswered.Should().Be(6);
+    }
+    [Fact]
+    public void WhenFillingInSubmission_AndNullAnswers_ShouldClearAnswers()
+    {
+        // Arrange
+        var electionRound = new ElectionRoundAggregateFaker().Generate();
+        var monitoringNgo = new MonitoringNgoAggregateFaker().Generate();
+        var pollingStation = new PollingStationFaker().Generate();
+        var monitoringObserver = new MonitoringObserverFaker().Generate();
+
+        var textQuestion = new TextQuestionFaker().Generate();
+        var dateQuestion = new DateQuestionFaker().Generate();
+        var ratingQuestion = new RatingQuestionFaker().Generate();
+        var numberQuestion = new NumberQuestionFaker().Generate();
+        var singleSelectQuestion = new SingleSelectQuestionFaker().Generate();
+        var multiSelectQuestion = new MultiSelectQuestionFaker().Generate();
+
+        var questions = new BaseQuestion[]
+        {
+            textQuestion,
+            dateQuestion,
+            ratingQuestion,
+            numberQuestion,
+            singleSelectQuestion,
+            multiSelectQuestion,
+        };
+
+        var form = Form.Create(electionRound, monitoringNgo, FormType.ClosingAndCounting, "", new TranslatedString(), new TranslatedString(), "EN", ["EN"], questions);
+
+        List<BaseAnswer> initialAnswers = [
+            new SingleSelectAnswerFaker(singleSelectQuestion),
+            new MultiSelectAnswerFaker(multiSelectQuestion),
+            new TextAnswerFaker(textQuestion.Id),
+            new NumberAnswerFaker(numberQuestion.Id),
+            new RatingAnswerFaker(ratingQuestion.Id),
+            new DateAnswerFaker(dateQuestion.Id),
+        ];
+
+        var submission = form.CreateFormSubmission(pollingStation, monitoringObserver, initialAnswers);
+
+        // Act
+        form.FillIn(submission, null);
+
+        // Assert
+        submission.NumberOfQuestionAnswered.Should().Be(0);
+        submission.NumberOfFlaggedAnswers.Should().Be(0);
+        submission.Answers.Should().HaveCount(0);
     }
 }
