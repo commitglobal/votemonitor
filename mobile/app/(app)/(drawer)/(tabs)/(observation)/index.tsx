@@ -34,6 +34,9 @@ import {
   PollingStationInformationAPIResponse,
   upsertPollingStationGeneralInformation,
 } from "../../../../../services/definitions.api";
+import { useTranslation } from "react-i18next";
+import RadioFormInput from "../../../../../components/FormInputs/RadioFormInput";
+import { Controller, FieldError, FieldErrorsImpl, Merge, useForm } from "react-hook-form";
 
 export type FormItemStatus = "not started" | "in progress" | "completed";
 
@@ -44,11 +47,13 @@ export type FormListItem = {
   numberOfQuestions: number;
   numberOfCompletedQuestions: number;
   status: FormItemStatus;
+  languages: string[];
 };
 
 const FormList = () => {
   const { activeElectionRound, selectedPollingStation } = useUserData();
   const [selectedFormId, setSelectedFormId] = useState<string | null>(null);
+  const { t } = useTranslation("form_overview");
 
   const {
     data: allForms,
@@ -72,8 +77,15 @@ const FormList = () => {
         numberOfQuestions: form.questions.length,
         options: `Available in ${Object.keys(form.name).join(", ")}`,
         status: "not started",
+        languages: form.languages,
       };
     }) || [];
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({});
 
   const onConfirmFormLanguage = (language: string) => {
     console.log("language", language);
@@ -107,23 +119,56 @@ const FormList = () => {
           bounces={false}
           renderItem={({ item, index }) => {
             return (
-              <FormCard
-                key={index}
-                form={item}
-                onPress={setSelectedFormId.bind(null, item.id)}
-                marginBottom="$xxs"
-              />
+              <>
+                <FormCard
+                  key={index}
+                  form={item}
+                  onPress={setSelectedFormId.bind(null, item.id)}
+                  marginBottom="$xxs"
+                />
+                <Controller
+                  key={item.id}
+                  name={item.name}
+                  control={control}
+                  rules={{
+                    required: { value: true, message: t("language_modal.error") },
+                  }}
+                  render={({ field: { onChange, value } }) => (
+                    <Dialog
+                      open={!!selectedFormId}
+                      header={
+                        <Typography preset="heading">{t("language_modal.header")}</Typography>
+                      }
+                      content={
+                        <DialogContent
+                          languages={item.languages}
+                          error={errors[item.name]}
+                          value={value}
+                          onChange={onChange}
+                        />
+                      }
+                      footer={
+                        <XStack gap="$md">
+                          <Button preset="chromeless" onPress={setSelectedFormId.bind(null, null)}>
+                            Cancel
+                          </Button>
+                          <Button
+                            onPress={handleSubmit(() => onConfirmFormLanguage(value))}
+                            flex={1}
+                          >
+                            Save
+                          </Button>
+                        </XStack>
+                      }
+                    />
+                  )}
+                />
+              </>
             );
           }}
           estimatedItemSize={100}
         />
       </YStack>
-      <Dialog
-        open={!!selectedFormId}
-        header={<Typography>Choose language</Typography>}
-        content={<Typography>Select language</Typography>}
-        footer={<Button onPress={onConfirmFormLanguage.bind(null, "EN")}>Confirm selection</Button>}
-      />
     </YStack>
   );
 };
@@ -302,6 +347,45 @@ const Index = () => {
         <FormList />
       </YStack>
     </Screen>
+  );
+};
+
+const DialogContent = ({
+  languages,
+  error,
+  value,
+  onChange,
+}: {
+  languages: string[];
+  error: FieldError | Merge<FieldError, FieldErrorsImpl<any>> | undefined;
+  value: string;
+  onChange: (...event: any[]) => void;
+}) => {
+  const { t } = useTranslation("form_overview");
+
+  const languageMapping: { [key: string]: string } = {
+    RO: "Romanian",
+    EN: "English",
+  };
+
+  const transformedLanguages = languages.map((language) => ({
+    id: language,
+    value: language,
+    // TODO: decide if we add the name to the label as well
+    label: languageMapping[language],
+  }));
+  return (
+    <YStack>
+      <Typography preset="body1" marginBottom="$lg">
+        {t("language_modal.helper")}
+      </Typography>
+      <RadioFormInput options={transformedLanguages} value={value} onValueChange={onChange} />
+      {error && (
+        <Typography marginTop="$sm" style={{ color: "red" }}>
+          {`${error.message}`}
+        </Typography>
+      )}
+    </YStack>
   );
 };
 

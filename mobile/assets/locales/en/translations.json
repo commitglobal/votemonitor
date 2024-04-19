@@ -9,23 +9,22 @@
     "title": "Log in",
     "paragraph": "Please use the email address with which you registered as an independent observer:",
     "form": {
-      "email":{
-          "label": "E-mail",
-          "placeholder": "E-mail",
-          "required": "E-mail is mandatory",
-          "format": "E-mail format is not valid"
+      "email": {
+        "label": "E-mail",
+        "placeholder": "E-mail",
+        "required": "E-mail is mandatory",
+        "format": "E-mail format is not valid"
       },
       "password": {
-          "label": "Password",
-          "placeholder": "Password",
-          "required": "Password is mandatory"
+        "label": "Password",
+        "placeholder": "Password",
+        "required": "Password is mandatory"
       }
     },
     "actions": {
-        "forgot_password": "Forgot your password?",
-        "login": "Log in"
+      "forgot_password": "Forgot your password?",
+      "login": "Log in"
     }
-  
   },
   "more": {
     "change-language": "Change app language",
@@ -88,6 +87,13 @@
       "actions": {
         "clear_form": "Clear form (delete all answers)"
       }
+    }
+  },
+  "form_overview": {
+    "language_modal": {
+      "header": "Select form language",
+      "helper": "The selected form is available in multiple languages. Please select which one you would like to continue with.",
+      "error": "Please select one of the options"
     }
   }
 }
