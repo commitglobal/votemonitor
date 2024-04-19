@@ -64,6 +64,7 @@ const FormQuestionnaire = () => {
   const {
     control,
     handleSubmit,
+    reset,
     formState: { isValid },
   } = useForm({
     defaultValues: setFormDefaultValues(questionId as string, answers[questionId as string]) as any,
@@ -100,7 +101,7 @@ const FormQuestionnaire = () => {
   );
 
   const formTitle = useMemo(() => {
-    return currentForm?.name[(language as string) || currentForm.defaultLanguage];
+    return `${currentForm?.code} - ${currentForm?.name[(language as string) || currentForm.defaultLanguage]} (${(language as string) || currentForm?.defaultLanguage})`;
   }, [currentForm]);
 
   const { mutate: updateSubmission } = useMutation({
@@ -198,6 +199,11 @@ const FormQuestionnaire = () => {
     }
   };
 
+  const onClearForm = () => {
+    const formState = setFormDefaultValues(questionId as string);
+    reset(formState);
+  };
+
   if (isLoadingForms || isLoadingAnswers) {
     return <Typography>Loading</Typography>;
   }
@@ -223,7 +229,7 @@ const FormQuestionnaire = () => {
       <YStack padding="$md" style={$containerStyle}>
         <YStack gap="$xxs">
           <XStack justifyContent="space-between">
-            <Typography>Some text here</Typography>
+            <Typography>Form progress</Typography>
             <Typography justifyContent="space-between">{`${activeQuestion?.index + 1}/${currentForm?.questions.length}`}</Typography>
           </XStack>
           <LinearProgress
@@ -231,7 +237,9 @@ const FormQuestionnaire = () => {
             total={currentForm?.questions.length || 0}
           />
           <XStack justifyContent="flex-end">
-            <Typography color="$red10">Clear answer</Typography>
+            <Typography onPress={onClearForm} color="$red10">
+              Clear answer
+            </Typography>
           </XStack>
         </YStack>
         <YStack style={{ flex: 1 }} justifyContent="center">
