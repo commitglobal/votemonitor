@@ -346,7 +346,9 @@ const FormQuestionnaire = () => {
                                   });
                                 } else {
                                   const { [option.id]: _toRemove, ...rest } = selections;
-                                  return onChange(rest);
+                                  return onChange(
+                                    Object.values(rest).filter(Boolean).length > 0 ? rest : "",
+                                  );
                                 }
                               }}
                             />
