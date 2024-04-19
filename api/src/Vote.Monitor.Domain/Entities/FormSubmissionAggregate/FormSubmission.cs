@@ -57,7 +57,15 @@ public class FormSubmission : AuditableBaseEntity, IAggregateRoot
         Answers = answers.ToList().AsReadOnly();
     }
 
+    public void ClearAnswers()
+    {
+        Answers = [];
+        NumberOfFlaggedAnswers = 0;
+        NumberOfQuestionAnswered = 0;
+    }
+
 #pragma warning disable CS8618 // Required by Entity Framework
+
     private FormSubmission()
     {
 
