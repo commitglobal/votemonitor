@@ -16,8 +16,6 @@ API.interceptors.request.use(async (request) => {
   try {
     const token = SecureStore.getItem("access_token");
 
-    console.log("token", token);
-
     if (!request.headers) {
       request.headers = {} as AxiosRequestHeaders;
     }

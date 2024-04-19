@@ -170,9 +170,11 @@ const FormDetails = () => {
     const form = allForms?.forms.find((form) => form.id === formId);
     // do not navigate if the form has no questions or not found
     if (!form || form.questions.length === 0) return;
-    return router.push(
-      `/form-questionnaire/${form?.questions[0].id}?formId=${formId}&language=${language}`,
-    );
+    // get the first unanswered question
+    const lastQ = questions?.find((q) => !answers[q.id]);
+    // if all questions are answered get the last question
+    const lastQId = lastQ?.id || form?.questions[form.questions.length - 1].id;
+    return router.push(`/form-questionnaire/${lastQId}?formId=${formId}&language=${language}`);
   };
 
   if (isLoadingForms || isLoadingAnswers) {
