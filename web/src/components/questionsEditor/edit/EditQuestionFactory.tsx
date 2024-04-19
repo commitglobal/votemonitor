@@ -114,13 +114,7 @@ export default function EditQuestionFactory({
                   languageCode={languageCode}
                   question={question as TextQuestion}
                   questionIdx={questionIdx}
-                  moveQuestion={moveQuestion}
                   updateQuestion={updateQuestion}
-                  duplicateQuestion={duplicateQuestion}
-                  deleteQuestion={deleteQuestion}
-                  activeQuestionId={activeQuestionId}
-                  setActiveQuestionId={setActiveQuestionId}
-                  isLastQuestion={isLastQuestion}
                   isInValid={isInValid}
                 />
               ) : question.$questionType === QuestionType.DateQuestionType ? (
@@ -128,13 +122,7 @@ export default function EditQuestionFactory({
                   languageCode={languageCode}
                   question={question as DateQuestion}
                   questionIdx={questionIdx}
-                  moveQuestion={moveQuestion}
                   updateQuestion={updateQuestion}
-                  duplicateQuestion={duplicateQuestion}
-                  deleteQuestion={deleteQuestion}
-                  activeQuestionId={activeQuestionId}
-                  setActiveQuestionId={setActiveQuestionId}
-                  isLastQuestion={isLastQuestion}
                   isInValid={isInValid}
                 />
               ) : question.$questionType === QuestionType.NumberQuestionType ? (
@@ -142,13 +130,7 @@ export default function EditQuestionFactory({
                   languageCode={languageCode}
                   question={question as NumberQuestion}
                   questionIdx={questionIdx}
-                  moveQuestion={moveQuestion}
                   updateQuestion={updateQuestion}
-                  duplicateQuestion={duplicateQuestion}
-                  deleteQuestion={deleteQuestion}
-                  activeQuestionId={activeQuestionId}
-                  setActiveQuestionId={setActiveQuestionId}
-                  isLastQuestion={isLastQuestion}
                   isInValid={isInValid}
                 />
               ) : question.$questionType === QuestionType.MultiSelectQuestionType ? (
@@ -156,13 +138,7 @@ export default function EditQuestionFactory({
                   languageCode={languageCode}
                   question={question as MultiSelectQuestion}
                   questionIdx={questionIdx}
-                  moveQuestion={moveQuestion}
                   updateQuestion={updateQuestion}
-                  duplicateQuestion={duplicateQuestion}
-                  deleteQuestion={deleteQuestion}
-                  activeQuestionId={activeQuestionId}
-                  setActiveQuestionId={setActiveQuestionId}
-                  isLastQuestion={isLastQuestion}
                   isInValid={isInValid}
                 />
               ) : question.$questionType === QuestionType.SingleSelectQuestionType ? (
@@ -170,26 +146,14 @@ export default function EditQuestionFactory({
                   languageCode={languageCode}
                   question={question as SingleSelectQuestion}
                   questionIdx={questionIdx}
-                  moveQuestion={moveQuestion}
                   updateQuestion={updateQuestion}
-                  duplicateQuestion={duplicateQuestion}
-                  deleteQuestion={deleteQuestion}
-                  activeQuestionId={activeQuestionId}
-                  setActiveQuestionId={setActiveQuestionId}
-                  isLastQuestion={isLastQuestion}
                   isInValid={isInValid} />
               ) : question.$questionType === QuestionType.RatingQuestionType ? (
                 <EditRatingQuestion
                   languageCode={languageCode}
                   question={question as RatingQuestion}
                   questionIdx={questionIdx}
-                  moveQuestion={moveQuestion}
                   updateQuestion={updateQuestion}
-                  duplicateQuestion={duplicateQuestion}
-                  deleteQuestion={deleteQuestion}
-                  activeQuestionId={activeQuestionId}
-                  setActiveQuestionId={setActiveQuestionId}
-                  isLastQuestion={isLastQuestion}
                   isInValid={isInValid}
                 />
               ) : null}

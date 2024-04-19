@@ -1,7 +1,7 @@
 import { BaseQuestion } from '@/common/types';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { RefObject } from 'react'
+import { RefObject } from 'react';
 import { useTranslation } from 'react-i18next';
 
 interface QuestionHeaderProps {

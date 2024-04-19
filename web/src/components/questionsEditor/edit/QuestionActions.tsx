@@ -8,7 +8,6 @@ export interface QuestionActionsProps {
     duplicateQuestion: (questionIndex: number) => void;
     deleteQuestion: (questionIndex: number) => void;
     moveQuestion: (questionIndex: number, direction: MoveDirection) => void;
-
 }
 
 function QuestionActions({ questionIdx, isLastQuestion, duplicateQuestion, deleteQuestion, moveQuestion }: QuestionActionsProps) {

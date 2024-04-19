@@ -1,36 +1,23 @@
-import { BaseQuestion, TextQuestion } from '@/common/types'
-import { useTranslation } from 'react-i18next';
-import { MoveDirection } from '../QuestionsEdit';
-import QuestionHeader from './QuestionHeader';
-import { Label } from '@/components/ui/label';
+import { BaseQuestion, TextQuestion } from '@/common/types';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { useTranslation } from 'react-i18next';
+import QuestionHeader from './QuestionHeader';
 
 export interface EditTextQuestionProps {
     languageCode: string;
     questionIdx: number;
-    activeQuestionId: string | undefined;
-    isLastQuestion: boolean;
     isInValid: boolean;
     question: TextQuestion;
-    setActiveQuestionId: (questionId: string) => void;
-    moveQuestion: (questionIndex: number, direction: MoveDirection) => void;
     updateQuestion: (questionIndex: number, question: BaseQuestion) => void;
-    duplicateQuestion: (questionIndex: number) => void;
-    deleteQuestion: (questionIndex: number) => void;
 }
 
 function EditTextQuestion({
     languageCode,
     questionIdx,
-    activeQuestionId,
-    isLastQuestion,
     isInValid,
     question,
-    setActiveQuestionId,
-    moveQuestion,
-    updateQuestion,
-    duplicateQuestion,
-    deleteQuestion }: EditTextQuestionProps) {
+    updateQuestion }: EditTextQuestionProps) {
     const { t } = useTranslation();
 
     function updateInputPlaceholder(inputPlaceholder: string) {

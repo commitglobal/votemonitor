@@ -1,41 +1,28 @@
-import { BaseQuestion, MultiSelectQuestion, QuestionType, SelectOption, SingleSelectQuestion } from '@/common/types'
+import { BaseQuestion, MultiSelectQuestion, QuestionType, SelectOption, SingleSelectQuestion } from '@/common/types';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { cn } from '@/lib/utils';
+import { PlusIcon, TrashIcon } from '@heroicons/react/24/solid';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { v4 as uuidv4 } from 'uuid';
-import { MoveDirection } from '../QuestionsEdit';
 import QuestionHeader from './QuestionHeader';
-import { Button } from '@/components/ui/button';
-import { PlusIcon, TrashIcon } from '@heroicons/react/24/solid';
-import { Input } from '@/components/ui/input';
-import { cn } from '@/lib/utils';
-import { Label } from '@/components/ui/label';
-import { useEffect, useRef, useState } from 'react';
 
 export interface EditMultiSelectQuestionProps {
     languageCode: string;
     questionIdx: number;
-    activeQuestionId: string | undefined;
-    isLastQuestion: boolean;
     isInValid: boolean;
     question: MultiSelectQuestion | SingleSelectQuestion;
-    setActiveQuestionId: (questionId: string) => void;
-    moveQuestion: (questionIndex: number, direction: MoveDirection) => void;
     updateQuestion: (questionIndex: number, question: BaseQuestion) => void;
-    duplicateQuestion: (questionIndex: number) => void;
-    deleteQuestion: (questionIndex: number) => void;
 }
 
 function EditSelectQuestion({
     languageCode,
     questionIdx,
-    activeQuestionId,
-    isLastQuestion,
     isInValid,
     question,
-    setActiveQuestionId,
-    moveQuestion,
-    updateQuestion,
-    duplicateQuestion,
-    deleteQuestion }: EditMultiSelectQuestionProps) {
+    updateQuestion }: EditMultiSelectQuestionProps) {
 
     const [invalidOptionId, setInvalidOptionId] = useState<string | null>(null);
     const lastOptionRef = useRef<HTMLInputElement>(null);
