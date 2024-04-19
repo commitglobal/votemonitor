@@ -10,9 +10,11 @@ import { router, useNavigation } from "expo-router";
 import { useAuth } from "../../../../hooks/useAuth";
 import Header from "../../../../components/Header";
 import { DrawerActions } from "@react-navigation/native";
+import { useQueryClient } from "@tanstack/react-query";
 
 const More = () => {
   const navigation = useNavigation();
+  const queryClient = useQueryClient();
 
   const { t } = useTranslation("more");
 
@@ -22,6 +24,10 @@ const More = () => {
   const appVersion = "2.0.4";
   const appLanguage = "English (United States)";
   const URL = "https://www.google.com/";
+
+  const logout = () => {
+    signOut(queryClient);
+  };
 
   return (
     <Screen
@@ -73,7 +79,7 @@ const More = () => {
         ></MenuItem>
         <MenuItem label={t("support")} icon="contactNGO"></MenuItem>
         <MenuItem label={t("feedback")} icon="feedback"></MenuItem>
-        <MenuItem label={t("logout")} icon="logoutNoBackground" onClick={signOut}></MenuItem>
+        <MenuItem label={t("logout")} icon="logoutNoBackground" onClick={logout}></MenuItem>
       </YStack>
     </Screen>
   );
