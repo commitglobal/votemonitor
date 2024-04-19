@@ -107,8 +107,8 @@ export const getPollingStationsVisits = (
 export type PollingStationInformationAPIPayload = {
   electionRoundId: string;
   pollingStationId: string;
-  arrivalTime?: string; // ISO String  "2024-04-01T12:58:06.670Z";
-  departureTime?: string;
+  arrivalTime?: string | null; // ISO String  "2024-04-01T12:58:06.670Z";
+  departureTime?: string | null;
   answers?: ApiFormAnswer[];
 };
 

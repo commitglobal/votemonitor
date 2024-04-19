@@ -57,13 +57,15 @@ export const pollingStationsKeys = {
       pollingStationId,
       "information",
     ] as const,
-  informationForm: (electionRoundId?: string) => [
-    ...pollingStationsKeys.all,
-    "electionRoundId",
-    electionRoundId,
-    "polling-station-information-form",
-  ],
-  mutatePollingStationGeneralData: () => [...pollingStationsKeys.all, "mutate-general-data"],
+  informationForm: (electionRoundId?: string) =>
+    [
+      ...pollingStationsKeys.all,
+      "electionRoundId",
+      electionRoundId,
+      "polling-station-information-form",
+    ] as const,
+  mutatePollingStationGeneralData: () =>
+    [...pollingStationsKeys.all, "mutate-general-data"] as const,
 };
 
 export const useElectionRoundsQuery = () => {

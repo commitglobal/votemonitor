@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { AuthContext } from "./auth-context";
 import API from "../../services/api";
 import * as SecureStore from "expo-secure-store";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -36,6 +37,7 @@ const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
     setIsAuthenticated(false);
     // remove token
     await SecureStore.deleteItemAsync("access_token");
+    await AsyncStorage.clear();
   };
 
   return (

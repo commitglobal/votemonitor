@@ -19,7 +19,9 @@ export interface CircularProgressProps {
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
 const CircularProgress = (props: CircularProgressProps): JSX.Element => {
-  const { progress } = props;
+  const { progress: inputProgress } = props;
+
+  const progress = (inputProgress * 360) / 100;
   const animatedProgress = useSharedValue(progress);
 
   const SIZE = props.size || 150;
@@ -35,9 +37,9 @@ const CircularProgress = (props: CircularProgressProps): JSX.Element => {
   return (
     <View alignItems="center" justifyContent="center">
       <AnimatedText
-        progress={progress}
         animatedProgress={animatedProgress}
         maxProgress={MAX_PROGRESS}
+        inputProgress={inputProgress}
       />
 
       <Svg width={SIZE} height={SIZE}>
@@ -142,13 +144,13 @@ const BackgroundCircle = ({
  * Animation consist in color changing based on animatedProgress value.
  */
 const AnimatedText = ({
-  progress,
   animatedProgress,
   maxProgress,
+  inputProgress,
 }: {
-  progress: number;
   animatedProgress: SharedValue<number>;
   maxProgress: number;
+  inputProgress: number;
 }) => {
   const animatedStyle = useAnimatedStyle(() => {
     return {
@@ -163,7 +165,7 @@ const AnimatedText = ({
   return (
     <View flexDirection="column" alignItems="center" position="absolute">
       <Animated.Text style={[animatedStyle, { fontSize: 14, fontWeight: "700" }]}>
-        {Math.round(progress)} %
+        {Math.round(inputProgress)} %
       </Animated.Text>
       <Animated.Text style={[animatedStyle, { fontSize: 12, fontWeight: "700" }]}>
         {"progress"}

@@ -79,7 +79,7 @@ const PollingStationQuestionnaire = () => {
     onMutate: async (payload: PollingStationInformationAPIPayload) => {
       // Cancel any outgoing refetches
       // (so they don't overwrite our optimistic update)
-      await queryClient.cancelQueries({ queryKey: [pollingStationInformationQK] });
+      await queryClient.cancelQueries({ queryKey: pollingStationInformationQK });
 
       // Snapshot the previous value
       const previousData = queryClient.getQueryData<PollingStationInformationAPIResponse>(
@@ -87,27 +87,26 @@ const PollingStationQuestionnaire = () => {
       );
 
       // Optimistically update to the new value
-      if (previousData && payload?.answers) {
-        // TODO: improve this
-        queryClient.setQueryData<PollingStationInformationAPIResponse>(
-          pollingStationInformationQK,
-          {
-            ...previousData,
-            answers: payload.answers,
-          },
-        );
-      }
+      queryClient.setQueryData<PollingStationInformationAPIResponse>(pollingStationInformationQK, {
+        ...(previousData || {
+          id: "-1",
+          pollingStationId: payload.pollingStationId,
+          arrivalTime: "",
+          departureTime: "",
+        }),
+        answers: payload?.answers || [],
+      });
 
       // Return a context object with the snapshotted value
       return { previousData };
     },
     onError: (err, newData, context) => {
       console.log(err);
-      queryClient.setQueryData([pollingStationInformationQK], context?.previousData);
+      queryClient.setQueryData(pollingStationInformationQK, context?.previousData);
     },
     onSettled: () => {
       // TODO: we want to keep the mutation in pending until the refetch is done?
-      return queryClient.invalidateQueries({ queryKey: [pollingStationInformationQK] });
+      return queryClient.invalidateQueries({ queryKey: pollingStationInformationQK });
     },
   });
 
@@ -218,7 +217,6 @@ const PollingStationQuestionnaire = () => {
       {},
     );
 
-    console.log("Reseting values to ", formFields);
     return formFields;
   };
 
