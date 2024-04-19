@@ -363,7 +363,6 @@ const PollingStationQuestionnaire = () => {
 
             if (question.$questionType === "ratingQuestion") {
               return (
-                // TODO: need to handle free text option
                 <Controller
                   key={question.id}
                   name={question.id}
@@ -375,6 +374,7 @@ const PollingStationQuestionnaire = () => {
                         type="single"
                         title={question.text.EN}
                         value={value}
+                        scale={question.scale}
                         onValueChange={onChange}
                       />
                     </YStack>
