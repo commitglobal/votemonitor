@@ -37,6 +37,7 @@ import {
 import { useTranslation } from "react-i18next";
 import RadioFormInput from "../../../../../components/FormInputs/RadioFormInput";
 import { Controller, FieldError, FieldErrorsImpl, Merge, useForm } from "react-hook-form";
+import { Dimensions } from "react-native";
 
 export type FormListItem = {
   id: string;
@@ -108,7 +109,7 @@ const FormList = () => {
     <YStack gap="$xxs">
       <Typography>Forms</Typography>
       {/* TODO: the heigh should be number of forms * their height */}
-      <YStack height={300}>
+      <YStack height={Dimensions.get("screen").height - 550}>
         <ListView<FormListItem>
           data={formList}
           showsVerticalScrollIndicator={false}

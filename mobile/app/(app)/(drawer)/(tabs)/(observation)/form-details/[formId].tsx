@@ -196,7 +196,7 @@ const FormDetails = () => {
         paddingTop={28}
         gap="$xl"
         paddingHorizontal="$md"
-        height={Dimensions.get("screen").height - 160}
+        height={Dimensions.get("screen").height - 120}
       >
         <ListView<Pick<FormQuestionListItemProps, "question" | "status"> & { id: string }>
           data={questions}
