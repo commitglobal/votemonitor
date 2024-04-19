@@ -15,6 +15,7 @@ import { Route as IndexImport } from './routes/index'
 import { Route as ObserversIndexImport } from './routes/observers/index'
 import { Route as NgosIndexImport } from './routes/ngos/index'
 import { Route as MonitoringObserversIndexImport } from './routes/monitoring-observers/index'
+import { Route as LoginIndexImport } from './routes/login/index'
 import { Route as FormTemplatesIndexImport } from './routes/form-templates/index'
 import { Route as ElectionRoundsIndexImport } from './routes/election-rounds/index'
 import { Route as ObserversObserverIdImport } from './routes/observers/$observerId'
@@ -47,6 +48,11 @@ const NgosIndexRoute = NgosIndexImport.update({
 
 const MonitoringObserversIndexRoute = MonitoringObserversIndexImport.update({
   path: '/monitoring-observers/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const LoginIndexRoute = LoginIndexImport.update({
+  path: '/login/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -153,6 +159,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FormTemplatesIndexImport
       parentRoute: typeof rootRoute
     }
+    '/login/': {
+      preLoaderRoute: typeof LoginIndexImport
+      parentRoute: typeof rootRoute
+    }
     '/monitoring-observers/': {
       preLoaderRoute: typeof MonitoringObserversIndexImport
       parentRoute: typeof rootRoute
@@ -199,6 +209,7 @@ export const routeTree = rootRoute.addChildren([
   ObserversObserverIdRoute,
   ElectionRoundsIndexRoute,
   FormTemplatesIndexRoute,
+  LoginIndexRoute,
   MonitoringObserversIndexRoute,
   NgosIndexRoute,
   ObserversIndexRoute,

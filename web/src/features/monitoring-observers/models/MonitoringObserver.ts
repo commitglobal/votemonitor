@@ -4,12 +4,13 @@ import { z } from 'zod';
 export enum MonitoringObserverStatus {
   Active = 'Active',
   Pending = 'Pending',
-  Suspended = 'Suspended'
+  Suspended = 'Suspended',
 }
 
 export interface MonitoringObserver {
   id: string;
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   status: MonitoringObserverStatus;
   phoneNumber: string;

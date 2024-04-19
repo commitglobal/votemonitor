@@ -168,13 +168,11 @@ export type ElectionRoundMonitoring = {
   countryId: string;
 };
 
+export type UserPayload = {
+  'user-role': string;
+};
 
-export const removeTranslation = (translatedString: TranslatedString | undefined, translationToRemove: string): TranslatedString | undefined => {
-  if (translatedString) {
-    const newTranslatedString = { ...translatedString };
-    delete newTranslatedString[translationToRemove];
-    return newTranslatedString;
-  }
+export type UserPayload = {
+  'user-role': string;
+};
 
-  return undefined;
-}

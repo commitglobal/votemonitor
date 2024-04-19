@@ -43,6 +43,15 @@ export default function MonitoringObserversDashboard(): ReactElement {
       accessorKey: 'name',
       enableSorting: true,
       enableGlobalFilter: true,
+      cell: ({
+        row: {
+          original: { firstName, lastName },
+        },
+      }) => (
+        <p>
+          {firstName} {lastName}
+        </p>
+      ),
     },
     {
       header: ({ column }) => <DataTableColumnHeader title='Email' column={column} />,
@@ -222,7 +231,6 @@ export default function MonitoringObserversDashboard(): ReactElement {
 
   const changeIsFiltering = () => {
     setFiltering((prev) => {
-      console.log(prev);
       return !prev;
     });
   };

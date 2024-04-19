@@ -77,7 +77,8 @@ internal class TokenService(UserManager<ApplicationUser> userManager,
         {
             new(ApplicationClaimTypes.UserId, user.Id.ToString()),
             new(ClaimTypes.Email, user.Email!),
-            new(ClaimTypes.Role, user.Role)
+            new(ClaimTypes.Role, user.Role),
+            new(ApplicationClaimTypes.Role, user.Role)
         };
 
         if (user.Role == UserRole.NgoAdmin)

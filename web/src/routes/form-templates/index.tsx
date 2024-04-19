@@ -1,8 +1,7 @@
 import { SortOrder } from '@/common/types';
 import { createFileRoute } from '@tanstack/react-router';
 import { z } from 'zod';
-
-import FormTemplatesDashboard from '@/features/form-templates/components/Dashboard/Dashboard';
+import { redirectIfNotAuth } from '@/lib/utils';
 
 const formTemplateRouteSearchSchema = z.object({
   nameFilter: z.string().catch(''),
@@ -13,11 +12,14 @@ const formTemplateRouteSearchSchema = z.object({
 });
 
 export const Route = createFileRoute('/form-templates/')({
-  component: FormTemplates,
+  beforeLoad: ({ context }) => {
+    redirectIfNotAuth(context.authContext.isAuthenticated);
+  },
+  component: FormTemplatesList,
   validateSearch: formTemplateRouteSearchSchema,
 });
 
-function FormTemplates() {
+function FormTemplatesList() {
   return (
     <div className='p-2'>
       <FormTemplatesDashboard />
