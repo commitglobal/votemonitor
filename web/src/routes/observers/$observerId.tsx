@@ -1,6 +1,7 @@
 import { authApi } from '@/common/auth-api';
 import ObserverDetails from '@/features/observers/components/ObserverDetails/ObserverDetails';
 import { Observer } from '@/features/observers/models/Observer';
+import { redirectIfNotAuth } from '@/lib/utils';
 import { queryOptions } from '@tanstack/react-query';
 import { Outlet, createFileRoute } from '@tanstack/react-router';
 
@@ -19,6 +20,9 @@ export const observerQueryOptions = (observerId: string) =>
   });
 
 export const Route = createFileRoute('/observers/$observerId')({
+  beforeLoad: ({ context }) => {
+    redirectIfNotAuth(context.authContext.isAuthenticated);
+  },
   component: Details,
   loader: ({ context: { queryClient }, params: { observerId } }) =>
     queryClient.ensureQueryData(observerQueryOptions(observerId)),
