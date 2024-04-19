@@ -112,6 +112,12 @@
     }
   },
   "form_overview": {
+    "form_overview": {
+      "title": "Form Overview",
+      "status": "Form status",
+      "answered_questions": "Answered questions",
+      "resume": "Resume form"
+    },
     "language_modal": {
       "header": "Select form language",
       "helper": "The selected form is available in multiple languages. Please select which one you would like to continue with.",

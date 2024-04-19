@@ -6,7 +6,7 @@ import { Typography } from "./Typography";
 import CardFooter from "./CardFooter";
 import { FormStatus } from "../services/form.parser";
 
-const FormStateToTextMapper: Record<FormStatus, string> = {
+export const FormStateToTextMapper: Record<FormStatus, string> = {
   [FormStatus.NOT_STARTED]: "Not started",
   [FormStatus.IN_PROGRESS]: "In progress",
   [FormStatus.COMPLETED]: "Completed",
