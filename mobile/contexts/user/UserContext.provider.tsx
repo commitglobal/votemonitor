@@ -85,17 +85,15 @@ const UserContextProvider = ({ children }: React.PropsWithChildren) => {
         visits
           ?.map((visit) => {
             const nodes = {
-              queryKey: [pollingStationsKeys.one(visit.pollingStationId)],
+              queryKey: pollingStationsKeys.one(visit.pollingStationId),
               queryFn: () => pollingStationByIdQueryFn(visit.pollingStationId),
               staleTime: 5 * 60 * 1000,
             };
             const informations = {
-              queryKey: [
-                pollingStationsKeys.pollingStationInformation(
-                  activeElectionRound?.id,
-                  visit.pollingStationId,
-                ),
-              ],
+              queryKey: pollingStationsKeys.pollingStationInformation(
+                activeElectionRound?.id,
+                visit.pollingStationId,
+              ),
               queryFn: () =>
                 pollingStationInformationQueryFn(activeElectionRound?.id, visit.pollingStationId),
               staleTime: 5 * 60 * 1000,

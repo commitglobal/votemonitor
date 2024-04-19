@@ -16,6 +16,7 @@ import Header from "../../../../components/Header";
 import { useNavigation } from "expo-router";
 import { DrawerActions } from "@react-navigation/native";
 import Input from "../../../../components/Inputs/Input";
+import CircularProgress from "../../../../components/CircularProgress";
 
 const mockQuestions = [
   {
@@ -214,6 +215,12 @@ const QuickReport = () => {
               }
             ></Dialog>
           </Stack>
+        </Stack>
+
+        <Stack padding="$sm" gap="$xs" backgroundColor="white">
+          <CircularProgress progress={0} />
+          <CircularProgress progress={75} />
+          <CircularProgress progress={100} />
         </Stack>
       </Stack>
     </Screen>
