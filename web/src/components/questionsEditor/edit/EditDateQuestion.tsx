@@ -4,6 +4,7 @@ import QuestionHeader from './QuestionHeader';
 
 export interface EditDateQuestionProps {
   languageCode: string;
+  availableLanguages: string[];
   questionIdx: number;
   isInValid: boolean;
   question: DateQuestion;
@@ -11,6 +12,7 @@ export interface EditDateQuestionProps {
 }
 
 function EditDateQuestion({
+  availableLanguages,
   languageCode,
   questionIdx,
   isInValid,
@@ -21,6 +23,7 @@ function EditDateQuestion({
   return (
     <div>
       <QuestionHeader
+        availableLanguages={availableLanguages}
         languageCode={languageCode}
         isInValid={isInValid}
         question={question}

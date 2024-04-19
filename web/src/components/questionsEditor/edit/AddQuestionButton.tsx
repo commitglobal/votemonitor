@@ -3,14 +3,14 @@ import { PlusIcon, Bars3BottomLeftIcon, CalculatorIcon, CalendarIcon, StarIcon, 
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
 import { v4 as uuidv4 } from 'uuid';
-import { BaseQuestion, DateQuestion, MultiSelectQuestion, NumberQuestion, QuestionType, RatingQuestion, RatingScaleType, SingleSelectQuestion, TextQuestion } from "@/common/types";
+import { BaseQuestion, DateQuestion, MultiSelectQuestion, NumberQuestion, QuestionType, RatingQuestion, RatingScaleType, SingleSelectQuestion, TextQuestion, newTranslatedString } from "@/common/types";
 import i18n from "@/i18n";
 
 export type QuestionTypeConfig = {
     type: QuestionType;
     label: string;
     icon: any;
-    create: (languageCode: string) => BaseQuestion;
+    create: (availableLanguages: string[], languageCode: string) => BaseQuestion;
 };
 
 const questionTypes: QuestionTypeConfig[] = [
@@ -18,14 +18,12 @@ const questionTypes: QuestionTypeConfig[] = [
         type: QuestionType.TextQuestionType,
         icon: Bars3BottomLeftIcon,
         label: i18n.t('questionEditor.questionType.textQuestion'),
-        create: (languageCode: string) => {
+        create: (availableLanguages: string[], languageCode: string) => {
             const newTextQuestion: TextQuestion = {
                 id: uuidv4(),
                 $questionType: QuestionType.TextQuestionType,
                 code: '',
-                text: {
-                    [languageCode]: ""
-                }
+                text: newTranslatedString(availableLanguages, languageCode)
             };
 
             return newTextQuestion;
@@ -35,14 +33,12 @@ const questionTypes: QuestionTypeConfig[] = [
         type: QuestionType.NumberQuestionType,
         icon: CalculatorIcon,
         label: i18n.t('questionEditor.questionType.numberQuestion'),
-        create: (languageCode: string) => {
+        create: (availableLanguages: string[], languageCode: string) => {
             const newNumberQuestion: NumberQuestion = {
                 id: uuidv4(),
                 $questionType: QuestionType.NumberQuestionType,
                 code: '',
-                text: {
-                    [languageCode]: ""
-                }
+                text: newTranslatedString(availableLanguages, languageCode)
             };
 
             return newNumberQuestion;
@@ -52,14 +48,12 @@ const questionTypes: QuestionTypeConfig[] = [
         type: QuestionType.DateQuestionType,
         icon: CalendarIcon,
         label: i18n.t('questionEditor.questionType.dateQuestion'),
-        create: (languageCode: string) => {
+        create: (availableLanguages: string[], languageCode: string) => {
             const newDateQuestion: DateQuestion = {
                 id: uuidv4(),
                 $questionType: QuestionType.DateQuestionType,
                 code: '',
-                text: {
-                    [languageCode]: ""
-                }
+                text: newTranslatedString(availableLanguages, languageCode)
             };
 
             return newDateQuestion;
@@ -69,14 +63,12 @@ const questionTypes: QuestionTypeConfig[] = [
         type: QuestionType.RatingQuestionType,
         icon: StarIcon,
         label: i18n.t('questionEditor.questionType.ratingQuestion'),
-        create: (languageCode: string) => {
+        create: (availableLanguages: string[], languageCode: string) => {
             const newRatingQuestion: RatingQuestion = {
                 id: uuidv4(),
                 $questionType: QuestionType.RatingQuestionType,
                 code: '',
-                text: {
-                    [languageCode]: ""
-                },
+                text: newTranslatedString(availableLanguages, languageCode),
                 scale: RatingScaleType.OneTo5
             };
 
@@ -87,14 +79,12 @@ const questionTypes: QuestionTypeConfig[] = [
         type: QuestionType.SingleSelectQuestionType,
         icon: CheckCircleIcon,
         label: i18n.t('questionEditor.questionType.singleSelectQuestion'),
-        create: (languageCode: string) => {
+        create: (availableLanguages: string[], languageCode: string) => {
             const newSingleSelectQuestion: SingleSelectQuestion = {
                 id: uuidv4(),
                 $questionType: QuestionType.SingleSelectQuestionType,
                 code: '',
-                text: {
-                    [languageCode]: ""
-                },
+                text: newTranslatedString(availableLanguages, languageCode),
                 options: []
             };
 
@@ -105,14 +95,12 @@ const questionTypes: QuestionTypeConfig[] = [
         type: QuestionType.MultiSelectQuestionType,
         icon: ListBulletIcon,
         label: i18n.t('questionEditor.questionType.multiSelectQuestion'),
-        create: (languageCode: string) => {
+        create: (availableLanguages: string[], languageCode: string) => {
             const newMultiSelectQuestion: MultiSelectQuestion = {
                 id: uuidv4(),
                 $questionType: QuestionType.MultiSelectQuestionType,
                 code: '',
-                text: {
-                    [languageCode]: ""
-                },
+                text: newTranslatedString(availableLanguages, languageCode),
                 options: []
             }
 
@@ -123,11 +111,12 @@ const questionTypes: QuestionTypeConfig[] = [
 ];
 
 interface AddQuestionButtonProps {
-    languageCode: string
+    availableLanguages: string[];
+    languageCode: string;
     addQuestion: (question: BaseQuestion) => void;
 }
 
-export default function AddQuestionButton({ languageCode, addQuestion }: AddQuestionButtonProps) {
+export default function AddQuestionButton({ availableLanguages, languageCode, addQuestion }: AddQuestionButtonProps) {
     const [open, setOpen] = useState(false);
 
     return (
@@ -152,10 +141,11 @@ export default function AddQuestionButton({ languageCode, addQuestion }: AddQues
             <CollapsibleContent className="justify-left flex flex-col ">
                 {questionTypes.map((questionType) => (
                     <button
+                        type="button"
                         key={questionType.type}
                         className="mx-2 inline-flex items-center rounded p-0.5 px-4 py-2 font-medium text-slate-700 last:mb-2 hover:bg-slate-100 hover:text-slate-800"
                         onClick={() => {
-                            addQuestion(questionType.create(languageCode));
+                            addQuestion(questionType.create(availableLanguages, languageCode));
                             setOpen(false);
                         }}>
                         <questionType.icon className="text-primary -ml-0.5 mr-2 h-5 w-5" aria-hidden="true" />

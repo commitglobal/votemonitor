@@ -89,7 +89,7 @@ export default function EditFormTemplate() {
         title: 'Success',
         description: 'Form template updated successfully updated',
       });
-      
+
       queryClient.invalidateQueries({ queryKey: formTemplatesKeys.all });
     },
   });
@@ -197,6 +197,7 @@ export default function EditFormTemplate() {
                 </CardHeader>
                 <CardContent className='-mx-6 flex items-start justify-left px-6 sm:mx-0 sm:px-8'>
                   <FormQuestionsEditor
+                    availableLanguages={formTemplate.languages}
                     languageCode={formTemplate.defaultLanguage}
                     localQuestions={localQuestions}
                     setLocalQuestions={setLocalQuestions}

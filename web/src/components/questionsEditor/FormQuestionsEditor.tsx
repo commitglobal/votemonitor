@@ -4,12 +4,14 @@ import PreviewForm from './PreviewForm';
 import { useState } from 'react';
 
 export interface FormQuestionsEditorProps {
+  availableLanguages: string[];
   languageCode: string;
   localQuestions: BaseQuestion[];
   setLocalQuestions: (questions: BaseQuestion[]) => void;
 }
 
 function FormQuestionsEditor({
+  availableLanguages,
   languageCode,
   localQuestions,
   setLocalQuestions,
@@ -22,6 +24,7 @@ function FormQuestionsEditor({
       <div className='relative z-0 flex flex-1 overflow-hidden'>
         <main className='relative z-0 flex-1 overflow-y-auto focus:outline-none'>
           <QuestionsEdit
+            availableLanguages={availableLanguages}
             languageCode={languageCode}
             localQuestions={localQuestions}
             setLocalQuestions={setLocalQuestions}

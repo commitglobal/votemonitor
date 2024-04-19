@@ -12,6 +12,7 @@ import { useTranslation } from "react-i18next";
 import QuestionActions from "./QuestionActions";
 
 interface EditQuestionFactoryProps {
+  availableLanguages: string[];
   languageCode: string;
   questionIdx: number;
   activeQuestionId: string | undefined;
@@ -26,6 +27,7 @@ interface EditQuestionFactoryProps {
 }
 
 export default function EditQuestionFactory({
+  availableLanguages,
   languageCode,
   questionIdx,
   activeQuestionId,
@@ -111,6 +113,7 @@ export default function EditQuestionFactory({
             <CollapsibleContent className="px-4 pb-4">
               {question.$questionType === QuestionType.TextQuestionType ? (
                 <EditTextQuestion
+                  availableLanguages={availableLanguages}
                   languageCode={languageCode}
                   question={question as TextQuestion}
                   questionIdx={questionIdx}
@@ -119,6 +122,7 @@ export default function EditQuestionFactory({
                 />
               ) : question.$questionType === QuestionType.DateQuestionType ? (
                 <EditDateQuestion
+                  availableLanguages={availableLanguages}
                   languageCode={languageCode}
                   question={question as DateQuestion}
                   questionIdx={questionIdx}
@@ -127,6 +131,7 @@ export default function EditQuestionFactory({
                 />
               ) : question.$questionType === QuestionType.NumberQuestionType ? (
                 <EditNumberQuestion
+                  availableLanguages={availableLanguages}
                   languageCode={languageCode}
                   question={question as NumberQuestion}
                   questionIdx={questionIdx}
@@ -135,6 +140,7 @@ export default function EditQuestionFactory({
                 />
               ) : question.$questionType === QuestionType.MultiSelectQuestionType ? (
                 <EditSelectQuestion
+                  availableLanguages={availableLanguages}
                   languageCode={languageCode}
                   question={question as MultiSelectQuestion}
                   questionIdx={questionIdx}
@@ -143,6 +149,7 @@ export default function EditQuestionFactory({
                 />
               ) : question.$questionType === QuestionType.SingleSelectQuestionType ? (
                 <EditSelectQuestion
+                  availableLanguages={availableLanguages}
                   languageCode={languageCode}
                   question={question as SingleSelectQuestion}
                   questionIdx={questionIdx}
@@ -150,6 +157,7 @@ export default function EditQuestionFactory({
                   isInValid={isInValid} />
               ) : question.$questionType === QuestionType.RatingQuestionType ? (
                 <EditRatingQuestion
+                  availableLanguages={availableLanguages}
                   languageCode={languageCode}
                   question={question as RatingQuestion}
                   questionIdx={questionIdx}

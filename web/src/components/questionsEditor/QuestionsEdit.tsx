@@ -7,6 +7,7 @@ import AddQuestionButton from "./edit/AddQuestionButton";
 import { v4 as uuidv4 } from 'uuid';
 
 export interface QuestionsEditProps {
+  availableLanguages: string[];
   languageCode: string;
   localQuestions: BaseQuestion[];
   setLocalQuestions: (questions: BaseQuestion[]) => void;
@@ -22,6 +23,7 @@ export enum MoveDirection {
 }
 
 function QuestionsEdit({
+  availableLanguages,
   languageCode,
   localQuestions,
   setLocalQuestions,
@@ -45,7 +47,6 @@ function QuestionsEdit({
       setInvalidQuestions(temp);
     }
   };
-
 
   function addQuestion(question: BaseQuestion) {
     localQuestions.push(question);
@@ -105,6 +106,7 @@ function QuestionsEdit({
                 {localQuestions.map((question, questionIdx) => (
                   <EditQuestionFactory
                     key={question.id}
+                    availableLanguages={availableLanguages}
                     languageCode={languageCode}
                     question={question}
                     questionIdx={questionIdx}
@@ -124,7 +126,7 @@ function QuestionsEdit({
           </StrictModeDroppable>
         </div>
       </DragDropContext>
-      <AddQuestionButton languageCode={languageCode} addQuestion={addQuestion} />
+      <AddQuestionButton availableLanguages={availableLanguages} languageCode={languageCode} addQuestion={addQuestion} />
     </div>
   );
 }

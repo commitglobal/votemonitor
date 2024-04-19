@@ -131,6 +131,7 @@ export default function EditFormTemplateTranslation() {
                 </CardHeader>
                 <CardContent className='-mx-6 flex items-start justify-left px-6 sm:mx-0 sm:px-8'>
                   <FormQuestionsEditor
+                    availableLanguages={formTemplate.languages}
                     languageCode={formTemplate.defaultLanguage}
                     localQuestions={localQuestions}
                     setLocalQuestions={setLocalQuestions}

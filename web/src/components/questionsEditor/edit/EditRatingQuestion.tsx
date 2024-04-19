@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import QuestionHeader from './QuestionHeader';
 
 export interface EditRatingQuestionProps {
+    availableLanguages: string[];
     languageCode: string;
     questionIdx: number;
     isInValid: boolean;
@@ -15,12 +16,13 @@ export interface EditRatingQuestionProps {
 
 
 function EditRatingQuestion({
+    availableLanguages,
     languageCode,
     questionIdx,
     isInValid,
     question,
     updateQuestion,
- }: EditRatingQuestionProps) {
+}: EditRatingQuestionProps) {
 
     const { t } = useTranslation();
     const options = useMemo(() => [
@@ -43,6 +45,7 @@ function EditRatingQuestion({
     return (
         <form>
             <QuestionHeader
+                availableLanguages={availableLanguages}
                 languageCode={languageCode}
                 isInValid={isInValid}
                 question={question}
@@ -52,23 +55,23 @@ function EditRatingQuestion({
 
             <div className="mt-3">
                 <Label htmlFor="scale">{t('questionEditor.ratingQuestion.scale')}</Label>
-                        <Select
-                            name='scale'
-                            value={question.scale}
-                            onValueChange={(value: RatingScaleType) => {
-                                updateRatingScale(value)
-                            }}>
-                            <SelectTrigger className='h-8 w-[200px]'>
-                                <SelectValue placeholder={question.scale} />
-                            </SelectTrigger>
-                            <SelectContent side='top'>
-                                {options.map((option) => (
-                                    <SelectItem key={option.value} value={option.value}>
-                                        {option.label}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
+                <Select
+                    name='scale'
+                    value={question.scale}
+                    onValueChange={(value: RatingScaleType) => {
+                        updateRatingScale(value)
+                    }}>
+                    <SelectTrigger className='h-8 w-[200px]'>
+                        <SelectValue placeholder={question.scale} />
+                    </SelectTrigger>
+                    <SelectContent side='top'>
+                        {options.map((option) => (
+                            <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                            </SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
             </div>
         </form>
     )

@@ -6,6 +6,7 @@ import QuestionHeader from './QuestionHeader';
 
 export interface EditTextQuestionProps {
     languageCode: string;
+    availableLanguages: string[];
     questionIdx: number;
     isInValid: boolean;
     question: TextQuestion;
@@ -13,6 +14,7 @@ export interface EditTextQuestionProps {
 }
 
 function EditTextQuestion({
+    availableLanguages,
     languageCode,
     questionIdx,
     isInValid,
@@ -35,6 +37,7 @@ function EditTextQuestion({
     return (
         <div>
             <QuestionHeader
+                availableLanguages={availableLanguages}
                 languageCode={languageCode}
                 isInValid={isInValid}
                 question={question}

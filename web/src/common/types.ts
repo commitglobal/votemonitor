@@ -171,3 +171,22 @@ export type ElectionRoundMonitoring = {
 export type UserPayload = {
   'user-role': string;
 };
+
+
+/**
+ * Creates a new Translated String containing all available languages
+ * @param availableLanguages available translations list
+ * @param languageCode language code for which to add value
+ * @param value value to set for required languageCode
+ * @returns new instance of @see {@link TranslatedString}
+ */
+export const newTranslatedString: (availableLanguages: string[], languageCode: string, value?: string) => TranslatedString = (availableLanguages, languageCode, value) => {
+  const translatedString: TranslatedString = {};
+  availableLanguages.forEach(language => {
+    translatedString[language] = '';
+  });
+
+  translatedString[languageCode] = value ?? '';
+  
+  return translatedString;
+};
