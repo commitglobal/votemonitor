@@ -1,5 +1,5 @@
-@electionRoundId=9a6255a2-2897-4b89-8ecf-d172b712f7d2
-@pollingStationId=b93a6883-2d28-486c-b38d-9d5ca61dba8d
+@electionRoundId=ec618650-b83d-4969-ae18-f638edeedae4
+@pollingStationId=5d00b66f-d874-4936-9eca-5eac0d4baf7c
 
 # get election round forms
 GET {{$dotenv HOST }}/api/election-rounds/{{electionRoundId}}/forms:fetchAll
@@ -14,53 +14,43 @@ Content-Type: application/json
 Authorization: Bearer {{$dotenv JWT_TOKEN}}
 
 {
-  "formId": "4b517991-edd6-43e4-88e4-65126d41802c", 
-  "submissionId": "f9a83c45-060b-4e69-9f9c-493f09b8d051", 
+  "formId": "cc61c97d-b512-448f-b385-0cb783ac91fd",
   "pollingStationId": "{{pollingStationId}}",
   "answers": [
     {
       "$answerType": "textAnswer",
-      "questionId": "2651c5b6-9cf2-4f89-b8bc-9c354feb84e0",
+      "questionId": "ff951f9b-024f-43d1-ac63-941922cf6150",
       "Text": "this is a text answer"
-    },
-    {
-      "$answerType": "numberAnswer",
-      "questionId": "25089e3a-b818-4271-a2be-dcfabc71fc17",
-      "value": 42
-    },
-    {
-      "$answerType": "dateAnswer",
-      "questionId": "fb00343e-032f-4fc3-95b3-105465b17222",
-      "Date": "2029-01-01"
-    },
-    {
-      "$answerType": "singleSelectAnswer",
-      "questionId": "b07dc717-065c-4d20-83c6-a482dd7fb6c8",
-      "selection": {
-        "optionId": "59929130-4d84-4daa-b4f3-f2507054fbc7",
-        "text": "some freee text"
-      }
-    },
-    {
-      "$answerType": "multiSelectAnswer",
-      "questionId": "5eddcd37-26c3-4180-b863-d2f45da33e15",
-      "Selection": [
-        {
-        "optionId": "cead6f60-0011-486d-8023-f59ea6390fa9",
-        "text": "some other freee text"
-        },
-        {
-        "optionId": "d58b0597-4cdc-41d3-889b-12db74105d23",
-        "text": null
-        }
-      ]
-    },
-    {
-      "$answerType": "ratingAnswer",
-      "questionId": "3197ab57-6ad3-4521-9611-158eeedbee08",
-      "value": "9"
     }
   ]
+}
+
+###
+
+###
+# upsert with empty array does nothing
+POST {{$dotenv HOST }}/api/election-rounds/{{electionRoundId}}/form-submissions
+Content-Type: application/json
+Authorization: Bearer {{$dotenv JWT_TOKEN}}
+
+{
+  "formId": "cc61c97d-b512-448f-b385-0cb783ac91fd",
+  "pollingStationId": "{{pollingStationId}}",
+  "answers": [
+  ]
+}
+
+###
+
+###
+# upsert with null/undefined removes answers
+POST {{$dotenv HOST }}/api/election-rounds/{{electionRoundId}}/form-submissions
+Content-Type: application/json
+Authorization: Bearer {{$dotenv JWT_TOKEN}}
+
+{
+  "formId": "cc61c97d-b512-448f-b385-0cb783ac91fd",
+  "pollingStationId": "{{pollingStationId}}"
 }
 
 ###
