@@ -16,6 +16,7 @@ import { Tag, TagInput } from '@/components/tag/tag-input';
 import { useState } from 'react';
 import { v4 as uuid } from 'uuid';
 import { useToast } from '@/components/ui/use-toast';
+import { useTags } from '../../queries';
 
 export default function EditObserver() {
   const navigate = useNavigate();
@@ -115,7 +116,7 @@ export default function EditObserver() {
                     <FormControl>
                       <TagInput
                         {...field}
-                        placeholder='Enter a topic'
+                        placeholder='Add user tags'
                         tags={tags}
                         className='sm:min-w-[450px]'
                         setTags={(newTags) => {
