@@ -71,7 +71,7 @@ const Button = React.forwardRef((props: ButtonProps, _): JSX.Element => {
           },
           disabledStyle: {
             backgroundColor: "transparent",
-            borderColor: "$gray3",
+            opacity: 0.5,
           },
         },
         chromeless: {
