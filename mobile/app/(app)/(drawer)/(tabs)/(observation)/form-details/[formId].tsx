@@ -15,12 +15,12 @@ import { useMemo } from "react";
 import { ListView } from "../../../../../../components/ListView";
 import CardFooter from "../../../../../../components/CardFooter";
 import Badge from "../../../../../../components/Badge";
-
-enum FormStatus {
-  NOT_STARTED = "Not Started",
-  IN_PROGRESS = "In progress",
-  COMPLETED = "Completed",
-}
+import {
+  FormStatus,
+  mapAPIAnswersToFormAnswers,
+  mapFormStateStatus,
+} from "../../../../../../services/form.parser";
+import { ApiFormAnswer } from "../../../../../../services/interfaces/answer.type";
 
 interface FormOverviewProps {
   completedAnswers: number;
@@ -33,11 +33,10 @@ const FormOverview = ({
   numberOfQuestions,
   onFormActionClick,
 }: FormOverviewProps) => {
-  const formStatus = useMemo(() => {
-    if (completedAnswers === 0) return FormStatus.NOT_STARTED;
-    if (completedAnswers < numberOfQuestions) return FormStatus.IN_PROGRESS;
-    if (completedAnswers === numberOfQuestions) return FormStatus.COMPLETED;
-  }, [completedAnswers, numberOfQuestions]);
+  const formStatus = useMemo(
+    () => mapFormStateStatus(completedAnswers, numberOfQuestions),
+    [completedAnswers, numberOfQuestions],
+  );
 
   return (
     <Card padding="$md">
@@ -72,10 +71,19 @@ const FormOverview = ({
   );
 };
 
+enum QuestionStatus {
+  ANSWERED = "answered",
+  NOT_ANSWERED = "not answered",
+}
+
+const QuestionStatusToTextWrapper = {
+  [QuestionStatus.ANSWERED]: "Answered",
+  [QuestionStatus.NOT_ANSWERED]: "Not Answered",
+};
 interface FormQuestionListItemProps {
   index: number;
   numberOfQuestions: number;
-  status: string;
+  status: QuestionStatus;
   question: string;
   onClick: () => void;
 }
@@ -91,7 +99,7 @@ const FormQuestionListItem = ({
     <YStack gap="$xxs">
       <XStack justifyContent="space-between">
         <Typography color="$gray5">{`${index}/${numberOfQuestions}`}</Typography>
-        <Badge status="Not started">{status}</Badge>
+        <Badge status={status}>{QuestionStatusToTextWrapper[status]}</Badge>
       </XStack>
       <Typography preset="body2">{question}</Typography>
     </YStack>
@@ -101,8 +109,6 @@ const FormQuestionListItem = ({
 
 const FormDetails = () => {
   const { formId, language } = useLocalSearchParams();
-  console.log("language", language);
-
   const { activeElectionRound, selectedPollingStation } = useUserData();
 
   const {
@@ -117,25 +123,34 @@ const FormDetails = () => {
     error: answersError,
   } = useFormSubmissions(activeElectionRound?.id, selectedPollingStation?.pollingStationId);
 
-  const numberOfQuestions = useMemo(() => {
-    const form = allForms?.forms.find((form) => form.id === formId);
-    return form ? form.questions.length : 0;
-  }, [allForms]);
+  const answers: Record<string, ApiFormAnswer> = useMemo(() => {
+    const formSubmission = formSubmissions?.submissions.find(
+      (sub) => sub.formId === (formId as string),
+    );
+    return mapAPIAnswersToFormAnswers(formSubmission?.answers);
+  }, [formSubmissions]);
 
-  const numberOfAnswers = useMemo(() => {
+  const { questions, numberOfAnswers } = useMemo(() => {
+    const form = allForms?.forms.find((form) => form.id === formId);
     const submission = formSubmissions?.submissions.find(
       (submission) => submission.formId === formId,
     );
-    return submission ? submission.answers.length : 0;
-  }, [allForms]);
+    return {
+      questions: form?.questions.map((q) => ({
+        status: answers[q.id] ? QuestionStatus.ANSWERED : QuestionStatus.NOT_ANSWERED,
+        question: q.text[language as string],
+        id: q.id,
+      })),
+      numberOfAnswers: submission ? submission.answers.length : 0,
+    };
+  }, [allForms, formSubmissions]);
 
-  const questions = useMemo(() => {
+  const { numberOfQuestions, formTitle } = useMemo(() => {
     const form = allForms?.forms.find((form) => form.id === formId);
-    return form?.questions.map((q) => ({
-      status: "Not Answered",
-      question: q.text[language as string],
-      id: q.id,
-    }));
+    return {
+      numberOfQuestions: form ? form.questions.length : 0,
+      formTitle: `${form?.code} - ${form?.name[language as string]} (${language as string})`,
+    };
   }, [allForms]);
 
   const onQuestionItemClick = (questionId: string) => {
@@ -170,42 +185,42 @@ const FormDetails = () => {
       }}
     >
       <Header
-        title={`${formId}`}
+        title={`${formTitle}`}
         titleColor="white"
         barStyle="light-content"
         leftIcon={<Icon icon="chevronLeft" color="white" />}
         onLeftPress={() => router.back()}
       />
       <YStack paddingTop={28} gap="$xl" paddingHorizontal="$md">
-        <FormOverview
-          completedAnswers={numberOfAnswers}
-          numberOfQuestions={numberOfQuestions}
-          onFormActionClick={onFormOverviewActionClick}
+        <ListView<Pick<FormQuestionListItemProps, "question" | "status"> & { id: string }>
+          data={questions}
+          ListHeaderComponent={
+            <YStack gap="$xl" paddingBottom="$xxs">
+              <FormOverview
+                completedAnswers={numberOfAnswers}
+                numberOfQuestions={numberOfQuestions}
+                onFormActionClick={onFormOverviewActionClick}
+              />
+              <Typography preset="body1" fontWeight="700" gap="$xxs">
+                Questions
+              </Typography>
+            </YStack>
+          }
+          showsVerticalScrollIndicator={false}
+          bounces={false}
+          renderItem={({ item, index }) => {
+            return (
+              <FormQuestionListItem
+                key={index}
+                {...item}
+                index={index + 1}
+                numberOfQuestions={numberOfQuestions}
+                onClick={onQuestionItemClick.bind(null, item.id)}
+              />
+            );
+          }}
+          estimatedItemSize={100}
         />
-        <YStack gap="$xxs">
-          <Typography preset="body1" fontWeight="700" gap="$xxs">
-            Questions
-          </Typography>
-          <YStack height={600}>
-            <ListView<Pick<FormQuestionListItemProps, "question" | "status"> & { id: string }>
-              data={questions}
-              showsVerticalScrollIndicator={false}
-              bounces={false}
-              renderItem={({ item, index }) => {
-                return (
-                  <FormQuestionListItem
-                    key={index}
-                    {...item}
-                    index={index + 1}
-                    numberOfQuestions={numberOfQuestions}
-                    onClick={onQuestionItemClick.bind(null, item.id)}
-                  />
-                );
-              }}
-              estimatedItemSize={100}
-            />
-          </YStack>
-        </YStack>
       </YStack>
     </Screen>
   );

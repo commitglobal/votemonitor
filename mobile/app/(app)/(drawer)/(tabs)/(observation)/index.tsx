@@ -29,6 +29,7 @@ import Button from "../../../../../components/Button";
 import Header from "../../../../../components/Header";
 import { Icon } from "../../../../../components/Icon";
 import { DrawerActions } from "@react-navigation/native";
+import { FormStatus, mapFormStateStatus } from "../../../../../services/form.parser";
 import {
   PollingStationInformationAPIPayload,
   PollingStationInformationAPIResponse,
@@ -38,16 +39,14 @@ import { useTranslation } from "react-i18next";
 import RadioFormInput from "../../../../../components/FormInputs/RadioFormInput";
 import { Controller, FieldError, FieldErrorsImpl, Merge, useForm } from "react-hook-form";
 
-export type FormItemStatus = "not started" | "in progress" | "completed";
-
 export type FormListItem = {
   id: string;
   name: string;
   options: string;
   numberOfQuestions: number;
   numberOfCompletedQuestions: number;
-  status: FormItemStatus;
   languages: string[];
+  status: FormStatus;
 };
 
 const FormList = () => {
@@ -66,17 +65,18 @@ const FormList = () => {
     isLoading: isLoadingAnswers,
     error: answersError,
   } = useFormSubmissions(activeElectionRound?.id, selectedPollingStation?.pollingStationId);
-  console.log("formSubmissions", formSubmissions?.submissions);
 
   const formList: FormListItem[] =
     allForms?.forms.map((form) => {
+      const numberOfAnswers =
+        formSubmissions?.submissions.find((sub) => sub.formId === form.id)?.answers.length || 0;
       return {
         id: form.id,
         name: `${form.code} - ${form.name.RO}`,
-        numberOfCompletedQuestions: 0,
+        numberOfCompletedQuestions: numberOfAnswers,
         numberOfQuestions: form.questions.length,
         options: `Available in ${Object.keys(form.name).join(", ")}`,
-        status: "not started",
+        status: mapFormStateStatus(numberOfAnswers, form.questions.length),
         languages: form.languages,
       };
     }) || [];
@@ -88,11 +88,8 @@ const FormList = () => {
   } = useForm({});
 
   const onConfirmFormLanguage = (language: string) => {
-    console.log("language", language);
-
     // navigate to the language
     router.push(`/form-details/${selectedFormId}?language=${language}`);
-
     setSelectedFormId(null);
   };
 
