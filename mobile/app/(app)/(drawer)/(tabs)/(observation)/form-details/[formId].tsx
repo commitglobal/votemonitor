@@ -243,17 +243,32 @@ const FormDetails = () => {
         open={optionSheetOpen}
         modal
         native
-        onOpenChange={setOptionSheetOpen}
+        onOpenChange={(option: boolean) => {
+          return setOptionSheetOpen(option);
+        }}
         snapPointsMode="fit"
         dismissOnSnapToBottom
         zIndex={100_000}
       >
         <Sheet.Overlay />
         <Sheet.Frame borderTopLeftRadius={28} borderTopRightRadius={28}>
-          <Icon paddingVertical="$md" alignSelf="center" icon="dragHandle"></Icon>
-          <YStack paddingHorizontal={28} paddingBottom={16 + insets.bottom} gap="$lg">
-            <Typography preset="body1">Change language</Typography>
-            <Typography preset="body1">Clear form (delete all answers)</Typography>
+          <Icon alignSelf="center" icon="dragHandle"></Icon>
+          <YStack paddingHorizontal={28} paddingBottom={8 + insets.bottom}>
+            <Typography
+              preset="body1"
+              paddingTop="$md"
+              paddingBottom="$sm"
+              onPress={() => console.log("language action")}
+            >
+              Change language
+            </Typography>
+            <Typography
+              preset="body1"
+              paddingVertical="$sm"
+              onPress={() => console.log("clear form action")}
+            >
+              Clear form (delete all answers)
+            </Typography>
           </YStack>
         </Sheet.Frame>
       </Sheet>
