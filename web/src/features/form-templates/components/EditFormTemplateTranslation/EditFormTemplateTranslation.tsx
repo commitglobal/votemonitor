@@ -1,25 +1,25 @@
-import { useLoaderData, useNavigate } from '@tanstack/react-router';
+import { authApi } from '@/common/auth-api';
 import Layout from '@/components/layout/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { authApi } from '@/common/auth-api';
-import { useMutation } from '@tanstack/react-query';
-import { useToast } from '@/components/ui/use-toast';
-import { FormTemplateFull } from '../../models/formTemplate';
+import { ErrorMessage, Field, FieldGroup, Fieldset, Label } from '@/components/ui/fieldset';
 import { Form, FormField } from '@/components/ui/form';
-import { useTranslation } from 'react-i18next';
-import { ErrorMessage, Field, FieldGroup, Fieldset, Label } from '@/components/ui/fieldset'
 import { Input } from '@/components/ui/input';
+import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
+import { useToast } from '@/components/ui/use-toast';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation } from '@tanstack/react-query';
+import { useLoaderData, useNavigate } from '@tanstack/react-router';
+import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
+import { z } from 'zod';
+import { FormTemplateFull } from '../../models/formTemplate';
 
+import FormQuestionsEditor from '@/components/questionsEditor/FormQuestionsEditor';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { queryClient } from '@/main';
-import { formTemplatesKeys } from '../../queries';
-import FormQuestionsEditor from '@/components/questionsEditor/FormQuestionsEditor';
 import { useState } from 'react';
+import { formTemplatesKeys } from '../../queries';
 import EditFormTemplateFooter from '../EditFormTemplate/EditFormTemplateFooter';
 
 

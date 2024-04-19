@@ -1,33 +1,33 @@
-import { useState, type ReactElement } from 'react';
-import { useMutation } from '@tanstack/react-query';
 import { authApi } from '@/common/auth-api';
-import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
+import CreateDialog from '@/components/dialogs/CreateDialog';
 import Layout from '@/components/layout/Layout';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
+import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
 import { Button } from '@/components/ui/button';
-import { ColumnDef, Row } from '@tanstack/react-table';
-import { EllipsisVerticalIcon, FunnelIcon, Cog8ToothIcon, ChevronUpIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
-import { X } from 'lucide-react';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Separator } from '@/components/ui/separator';
 import { Input } from '@/components/ui/input';
-import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
-import { queryClient } from '@/main';
-import { useNavigate } from '@tanstack/react-router';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { FormTemplateBase, FormTemplateFull, mapFormTemplateType } from '../../models/formTemplate';
-import { formTemplatesKeys, useFormTemplates } from '../../queries';
+import { Separator } from '@/components/ui/separator';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useDialog } from '@/components/ui/use-dialog';
 import { toast } from '@/components/ui/use-toast';
 import { cn } from '@/lib/utils';
-import { useDialog } from '@/components/ui/use-dialog';
+import { queryClient } from '@/main';
+import { ChevronDownIcon, ChevronUpIcon, Cog8ToothIcon, EllipsisVerticalIcon, FunnelIcon } from '@heroicons/react/24/outline';
+import { useMutation } from '@tanstack/react-query';
+import { useNavigate } from '@tanstack/react-router';
+import { ColumnDef, Row } from '@tanstack/react-table';
+import { X } from 'lucide-react';
+import { useState, type ReactElement } from 'react';
+import { FormTemplateBase, mapFormTemplateType } from '../../models/formTemplate';
+import { formTemplatesKeys, useFormTemplates } from '../../queries';
 import AddTranslationsDialog from './AddTranslationsDialog';
-import CreateDialog from '@/components/dialogs/CreateDialog';
 import CreateTemplateForm from './CreateTemplateForm';
 
 export default function FormTemplatesDashboard(): ReactElement {

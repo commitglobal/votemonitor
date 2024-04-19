@@ -4,10 +4,10 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 import { Separator } from '@/components/ui/separator';
 import { toast } from '@/components/ui/use-toast';
 import LanguagesMultiselect from '@/containers/LanguagesMultiselect';
+import { queryClient } from '@/main';
 import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 import { formTemplatesKeys } from '../../queries';
-import { queryClient } from '@/main';
 
 
 export interface AddTranslationsDialogProps {

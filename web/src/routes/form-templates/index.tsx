@@ -1,8 +1,8 @@
 import { SortOrder } from '@/common/types';
+import FormTemplatesDashboard from '@/features/form-templates/components/Dashboard/Dashboard';
+import { redirectIfNotAuth } from '@/lib/utils';
 import { createFileRoute } from '@tanstack/react-router';
 import { z } from 'zod';
-import { redirectIfNotAuth } from '@/lib/utils';
-import FormTemplatesDashboard from '@/features/form-templates/components/Dashboard/Dashboard';
 
 const formTemplateRouteSearchSchema = z.object({
   nameFilter: z.string().catch(''),

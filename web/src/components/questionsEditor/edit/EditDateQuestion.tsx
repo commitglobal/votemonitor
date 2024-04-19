@@ -1,11 +1,6 @@
-import { BaseQuestion, DateQuestion } from '@/common/types'
-import { useTranslation } from 'react-i18next';
+import { BaseQuestion, DateQuestion } from '@/common/types';
 import { MoveDirection } from '../QuestionsEdit';
-import { Button } from '@/components/ui/button';
-import { Form } from '@/components/ui/form';
 import QuestionHeader from './QuestionHeader';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
 
 export interface EditDateQuestionProps {
   languageCode: string;

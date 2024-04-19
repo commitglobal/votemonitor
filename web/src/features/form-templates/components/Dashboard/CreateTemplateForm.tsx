@@ -1,22 +1,22 @@
 import { authApi } from '@/common/auth-api';
-import { toast } from '@/components/ui/use-toast';
-import { useMutation } from '@tanstack/react-query';
-import { formTemplatesKeys } from '../../queries';
-import { queryClient } from '@/main';
+import { TranslatedString } from '@/common/types';
+import { CreateDialogFooter } from '@/components/dialogs/CreateDialog';
 import { ErrorMessage, Field, FieldGroup, Fieldset, Label } from '@/components/ui/fieldset';
 import { Form, FormControl, FormField } from '@/components/ui/form';
-import { FormTemplateBase, FormTemplateType, NewFormTemplateRequest, mapFormTemplateType } from '../../models/formTemplate';
-import { z } from 'zod';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useTranslation } from 'react-i18next';
-import { TranslatedString } from '@/common/types';
-import { useNavigate } from '@tanstack/react-router';
-import LanguageSelect from '@/containers/LanguageSelect';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { CreateDialogFooter } from '@/components/dialogs/CreateDialog';
+import { toast } from '@/components/ui/use-toast';
+import LanguageSelect from '@/containers/LanguageSelect';
+import { queryClient } from '@/main';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation } from '@tanstack/react-query';
+import { useNavigate } from '@tanstack/react-router';
+import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
+import { z } from 'zod';
+import { FormTemplateBase, FormTemplateType, NewFormTemplateRequest, mapFormTemplateType } from '../../models/formTemplate';
+import { formTemplatesKeys } from '../../queries';
 
 function CreateTemplateForm() {
     const { t } = useTranslation();

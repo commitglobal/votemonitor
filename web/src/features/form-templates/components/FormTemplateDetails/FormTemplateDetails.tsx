@@ -1,17 +1,16 @@
-import { useLoaderData, useNavigate } from '@tanstack/react-router';
 import Layout from '@/components/layout/Layout';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
-import { Button } from '@/components/ui/button';
-import { PencilIcon } from '@heroicons/react/24/outline';
-import { FormTemplateFull, mapFormTemplateType } from '../../models/formTemplate';
 import PreviewQuestionFactory from '@/components/questionsEditor/preview/PreviewQuestionFactory';
-import { BaseAnswer } from '@/common/types';
-import { Route as FormTemplateDetailsRoute } from '@/routes/form-templates/$formTemplateId_.$languageCode';
-import { useTranslation } from 'react-i18next';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Fieldset } from '@/components/ui/fieldset';
+import { Separator } from '@/components/ui/separator';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Route as FormTemplateDetailsRoute } from '@/routes/form-templates/$formTemplateId_.$languageCode';
+import { PencilIcon } from '@heroicons/react/24/outline';
+import { useLoaderData, useNavigate } from '@tanstack/react-router';
+import { useTranslation } from 'react-i18next';
+import { FormTemplateFull, mapFormTemplateType } from '../../models/formTemplate';
 
 export default function FormTemplateDetails() {
   const formTemplate: FormTemplateFull = useLoaderData({ strict: false });
