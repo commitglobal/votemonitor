@@ -224,11 +224,7 @@ export type FormSubmission = {
   id: string;
   formId: string;
   pollingStationId: string;
-  answers: FormSubmissionAnswer[];
-};
-export type FormSubmissionAnswer = {
-  $answerType: "string";
-  questionId: string;
+  answers: ApiFormAnswer[];
 };
 
 export type FormSubmissionsApiResponse = {
@@ -268,6 +264,27 @@ export type AddAttachmentAPIResponse = {
   mimeType: string;
   presignedUrl: string;
   urlValidityInSeconds: number;
+};
+
+/**
+    ========================================================================
+    ================= POST form submission ====================
+    ======== Upsert answer for a specific form from a polling station =====
+    ========================================================================
+    @description Updates: Arrival/Departure Time and Polling Station Information Form
+    @param {FormSubmissionAPIPayload} payload 
+    @returns {FormSubmission} updated data 
+
+*/
+export type FormSubmissionAPIPayload = Omit<FormSubmission, "id"> & { electionRoundId: string };
+
+export const upsertFormSubmission = ({
+  electionRoundId,
+  ...payload
+}: FormSubmissionAPIPayload): Promise<FormSubmission> => {
+  return API.post(`election-rounds/${electionRoundId}/form-submissions`, payload)
+    .then((res) => res.data)
+    .catch(console.log);
 };
 
 export const addAttachment = ({

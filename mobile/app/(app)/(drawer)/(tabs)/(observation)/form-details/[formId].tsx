@@ -15,12 +15,12 @@ import { useMemo } from "react";
 import { ListView } from "../../../../../../components/ListView";
 import CardFooter from "../../../../../../components/CardFooter";
 import Badge from "../../../../../../components/Badge";
-
-enum FormStatus {
-  NOT_STARTED = "Not Started",
-  IN_PROGRESS = "In progress",
-  COMPLETED = "Completed",
-}
+import {
+  FormStatus,
+  mapAPIAnswersToFormAnswers,
+  mapFormStateStatus,
+} from "../../../../../../services/form.parser";
+import { ApiFormAnswer } from "../../../../../../services/interfaces/answer.type";
 
 interface FormOverviewProps {
   completedAnswers: number;
@@ -33,11 +33,10 @@ const FormOverview = ({
   numberOfQuestions,
   onFormActionClick,
 }: FormOverviewProps) => {
-  const formStatus = useMemo(() => {
-    if (completedAnswers === 0) return FormStatus.NOT_STARTED;
-    if (completedAnswers < numberOfQuestions) return FormStatus.IN_PROGRESS;
-    if (completedAnswers === numberOfQuestions) return FormStatus.COMPLETED;
-  }, [completedAnswers, numberOfQuestions]);
+  const formStatus = useMemo(
+    () => mapFormStateStatus(completedAnswers, numberOfQuestions),
+    [completedAnswers, numberOfQuestions],
+  );
 
   return (
     <Card padding="$md">
@@ -72,10 +71,19 @@ const FormOverview = ({
   );
 };
 
+enum QuestionStatus {
+  ANSWERED = "answered",
+  NOT_ANSWERED = "not answered",
+}
+
+const QuestionStatusToTextWrapper = {
+  [QuestionStatus.ANSWERED]: "Answered",
+  [QuestionStatus.NOT_ANSWERED]: "Not Answered",
+};
 interface FormQuestionListItemProps {
   index: number;
   numberOfQuestions: number;
-  status: string;
+  status: QuestionStatus;
   question: string;
   onClick: () => void;
 }
@@ -91,7 +99,7 @@ const FormQuestionListItem = ({
     <YStack gap="$xxs">
       <XStack justifyContent="space-between">
         <Typography color="$gray5">{`${index}/${numberOfQuestions}`}</Typography>
-        <Badge status="Not started">{status}</Badge>
+        <Badge status={status}>{QuestionStatusToTextWrapper[status]}</Badge>
       </XStack>
       <Typography preset="body2">{question}</Typography>
     </YStack>
@@ -101,8 +109,6 @@ const FormQuestionListItem = ({
 
 const FormDetails = () => {
   const { formId, language } = useLocalSearchParams();
-  console.log("language", language);
-
   const { activeElectionRound, selectedPollingStation } = useUserData();
 
   const {
@@ -116,6 +122,13 @@ const FormDetails = () => {
     isLoading: isLoadingAnswers,
     error: answersError,
   } = useFormSubmissions(activeElectionRound?.id, selectedPollingStation?.pollingStationId);
+
+  const answers: Record<string, ApiFormAnswer> = useMemo(() => {
+    const formSubmission = formSubmissions?.submissions.find(
+      (sub) => sub.formId === (formId as string),
+    );
+    return mapAPIAnswersToFormAnswers(formSubmission?.answers);
+  }, [formSubmissions]);
 
   const numberOfQuestions = useMemo(() => {
     const form = allForms?.forms.find((form) => form.id === formId);
@@ -132,7 +145,7 @@ const FormDetails = () => {
   const questions = useMemo(() => {
     const form = allForms?.forms.find((form) => form.id === formId);
     return form?.questions.map((q) => ({
-      status: "Not Answered",
+      status: answers[q.id] ? QuestionStatus.ANSWERED : QuestionStatus.NOT_ANSWERED,
       question: q.text[language as string],
       id: q.id,
     }));

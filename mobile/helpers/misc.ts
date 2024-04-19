@@ -1,4 +1,5 @@
-import { FormItemStatus, FormListItem } from "../app/(app)/(drawer)/(tabs)/(observation)/index";
+import { FormListItem } from "../app/(app)/(drawer)/(tabs)/(observation)/index";
+import { FormStatus } from "../services/form.parser";
 
 export const performanceLog = async (func: any, funcName = "Unnamed function") => {
   console.log("🚀🚀🚀🚀🚀[PERFORMANCE CHECK STARTED FOR] ", funcName);
@@ -18,10 +19,10 @@ export const performanceLog = async (func: any, funcName = "Unnamed function") =
 };
 
 // Function to generate a random status
-function getRandomStatus(): FormItemStatus {
+function getRandomStatus(): FormStatus {
   const statuses = ["not started", "in progress", "completed"];
   const randomIndex = Math.floor(Math.random() * statuses.length);
-  return statuses[randomIndex] as FormItemStatus;
+  return statuses[randomIndex] as FormStatus;
 }
 
 // Generate an array of 25 elements

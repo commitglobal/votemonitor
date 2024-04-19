@@ -4,6 +4,13 @@ import Badge from "./Badge";
 import Card, { CardProps } from "./Card";
 import { Typography } from "./Typography";
 import CardFooter from "./CardFooter";
+import { FormStatus } from "../services/form.parser";
+
+const FormStateToTextMapper: Record<FormStatus, string> = {
+  [FormStatus.NOT_STARTED]: "Not started",
+  [FormStatus.IN_PROGRESS]: "In progress",
+  [FormStatus.COMPLETED]: "Completed",
+};
 
 export interface Form {
   id?: string;
@@ -11,7 +18,7 @@ export interface Form {
   options?: string;
   numberOfQuestions?: number;
   numberOfCompletedQuestions?: number;
-  status: string;
+  status: FormStatus;
 }
 
 export interface FormCardProps extends CardProps {
@@ -37,7 +44,7 @@ const FormCard = (props: FormCardProps): JSX.Element => {
           {form.name}
         </Typography>
 
-        <Badge status={form.status} />
+        <Badge status={form.status}>{FormStateToTextMapper[form.status]}</Badge>
       </CardHeader>
 
       {form.options && (

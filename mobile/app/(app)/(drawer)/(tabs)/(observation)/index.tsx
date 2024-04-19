@@ -30,8 +30,7 @@ import Button from "../../../../../components/Button";
 import Header from "../../../../../components/Header";
 import { Icon } from "../../../../../components/Icon";
 import { DrawerActions } from "@react-navigation/native";
-
-export type FormItemStatus = "not started" | "in progress" | "completed";
+import { FormStatus, mapFormStateStatus } from "../../../../../services/form.parser";
 
 export type FormListItem = {
   id: string;
@@ -39,7 +38,7 @@ export type FormListItem = {
   options: string;
   numberOfQuestions: number;
   numberOfCompletedQuestions: number;
-  status: FormItemStatus;
+  status: FormStatus;
 };
 
 const FormList = () => {
@@ -51,33 +50,30 @@ const FormList = () => {
     isLoading: isLoadingForms,
     error: formsError,
   } = useElectionRoundAllForms(activeElectionRound?.id);
-  console.log("my forms", allForms);
 
   const {
     data: formSubmissions,
     isLoading: isLoadingAnswers,
     error: answersError,
   } = useFormSubmissions(activeElectionRound?.id, selectedPollingStation?.pollingStationId);
-  console.log("formSubmissions", formSubmissions?.submissions);
 
   const formList: FormListItem[] =
     allForms?.forms.map((form) => {
+      const numberOfAnswers =
+        formSubmissions?.submissions.find((sub) => sub.formId === form.id)?.answers.length || 0;
       return {
         id: form.id,
         name: `${form.code} - ${form.name.RO}`,
-        numberOfCompletedQuestions: 0,
+        numberOfCompletedQuestions: numberOfAnswers,
         numberOfQuestions: form.questions.length,
         options: `Available in ${Object.keys(form.name).join(", ")}`,
-        status: "not started",
+        status: mapFormStateStatus(numberOfAnswers, form.questions.length),
       };
     }) || [];
 
   const onConfirmFormLanguage = (language: string) => {
-    console.log("language", language);
-
     // navigate to the language
     router.push(`/form-details/${selectedFormId}?language=${language}`);
-
     setSelectedFormId(null);
   };
 
@@ -119,7 +115,7 @@ const FormList = () => {
         open={!!selectedFormId}
         header={<Typography>Choose language</Typography>}
         content={<Typography>Select language</Typography>}
-        footer={<Button onPress={onConfirmFormLanguage.bind(null, "EN")}>Confirm selection</Button>}
+        footer={<Button onPress={onConfirmFormLanguage.bind(null, "RO")}>Confirm selection</Button>}
       />
     </YStack>
   );
