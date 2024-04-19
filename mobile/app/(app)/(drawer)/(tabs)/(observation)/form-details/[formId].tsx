@@ -192,35 +192,35 @@ const FormDetails = () => {
         onLeftPress={() => router.back()}
       />
       <YStack paddingTop={28} gap="$xl" paddingHorizontal="$md">
-        <FormOverview
-          completedAnswers={numberOfAnswers}
-          numberOfQuestions={numberOfQuestions}
-          onFormActionClick={onFormOverviewActionClick}
+        <ListView<Pick<FormQuestionListItemProps, "question" | "status"> & { id: string }>
+          data={questions}
+          ListHeaderComponent={
+            <YStack gap="$xl" paddingBottom="$xxs">
+              <FormOverview
+                completedAnswers={numberOfAnswers}
+                numberOfQuestions={numberOfQuestions}
+                onFormActionClick={onFormOverviewActionClick}
+              />
+              <Typography preset="body1" fontWeight="700" gap="$xxs">
+                Questions
+              </Typography>
+            </YStack>
+          }
+          showsVerticalScrollIndicator={false}
+          bounces={false}
+          renderItem={({ item, index }) => {
+            return (
+              <FormQuestionListItem
+                key={index}
+                {...item}
+                index={index + 1}
+                numberOfQuestions={numberOfQuestions}
+                onClick={onQuestionItemClick.bind(null, item.id)}
+              />
+            );
+          }}
+          estimatedItemSize={100}
         />
-        <YStack gap="$xxs">
-          <Typography preset="body1" fontWeight="700" gap="$xxs">
-            Questions
-          </Typography>
-          <YStack height={600}>
-            <ListView<Pick<FormQuestionListItemProps, "question" | "status"> & { id: string }>
-              data={questions}
-              showsVerticalScrollIndicator={false}
-              bounces={false}
-              renderItem={({ item, index }) => {
-                return (
-                  <FormQuestionListItem
-                    key={index}
-                    {...item}
-                    index={index + 1}
-                    numberOfQuestions={numberOfQuestions}
-                    onClick={onQuestionItemClick.bind(null, item.id)}
-                  />
-                );
-              }}
-              estimatedItemSize={100}
-            />
-          </YStack>
-        </YStack>
       </YStack>
     </Screen>
   );
