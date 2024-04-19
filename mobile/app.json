@@ -8,9 +8,9 @@
     "icon": "./assets/icons/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/icons/splash.png",
+      "image": "./assets/icons/Vote Monitor logo.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#5F288D"
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {

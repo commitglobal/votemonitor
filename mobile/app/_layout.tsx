@@ -10,6 +10,7 @@ import PersistQueryContextProvider from "../contexts/persist-query/PersistQueryC
 import { PortalProvider } from "tamagui";
 import { NetInfoProvider } from "../contexts/net-info-banner/NetInfoContext";
 import NetInfoBanner from "../components/NetInfoBanner";
+import SplashScreen from "./splash-screen";
 
 export default function Root() {
   const [loaded] = useFonts({
@@ -21,9 +22,12 @@ export default function Root() {
     DMSansBold: require("../assets/fonts/DMSans-Bold.ttf"),
   });
 
+  const [splashScreenVisible, setSplashScreenVisible] = React.useState(true);
+
   useEffect(() => {
     if (loaded) {
       // can hide splash screen here
+      setSplashScreenVisible(false);
     }
   }, [loaded]);
 
@@ -38,7 +42,7 @@ export default function Root() {
           <AuthContextProvider>
             <PersistQueryContextProvider>
               <LanguageContextProvider>
-                <Slot />
+                {(splashScreenVisible && <SplashScreen />) || <Slot />}
                 <NetInfoBanner />
               </LanguageContextProvider>
             </PersistQueryContextProvider>
