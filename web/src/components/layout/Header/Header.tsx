@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react';
+import { Fragment, useContext, useState } from 'react';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
 import { UserCircleIcon } from '@heroicons/react/24/solid';
@@ -18,6 +18,8 @@ import { useQuery } from '@tanstack/react-query';
 import { authApi } from '@/common/auth-api';
 import { Skeleton } from '@/components/ui/skeleton';
 import { queryClient } from '@/main';
+import { AuthContext } from '@/context/auth.context';
+import { parseJwt } from '@/lib/utils';
 
 const user = {
   name: 'Tom Cook',
@@ -26,17 +28,19 @@ const user = {
     'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
 };
 const navigation = [
-  { name: 'Dashboard', to: '/' },
-  { name: 'Election rounds', to: '/election-rounds' },
-  { name: 'NGOs', to: '/ngos' },
-  { name: 'Observers', to: '/observers' },
-  { name: 'Monitoring Observers', to: '/monitoring-observers' },
-  { name: 'Form templates', to: '/form-templates' },
+  { name: 'Dashboard', to: '/', roles: ['NgoAdmin'] },
+  { name: 'Election rounds', to: '/election-rounds', roles: ['PlatformAdmin', 'NgoAdmin'] },
+  { name: 'NGOs', to: '/ngos', roles: ['PlatformAdmin'] },
+  { name: 'Observers', to: '/observers', roles: ['PlatformAdmin'] },
+  { name: 'Monitoring Observers', to: '/monitoring-observers', roles: ['NgoAdmin'] },
+  { name: 'Form templates', to: '/form-templates', roles: 'PlatformAdmin' },
 ];
 const userNavigation = [{ name: 'Sign out', to: '#' }];
 
 const Header = (): FunctionComponent => {
   const [selectedElection, setSelectedElection] = useState<any>(null);
+
+  const { token } = useContext(AuthContext);
 
   const { status, data } = useQuery({
     queryKey: ['electionRounds'],
@@ -46,8 +50,6 @@ const Header = (): FunctionComponent => {
       if (response.status !== 200) {
         throw new Error('Failed to fetch observers');
       }
-
-      console.log('refreshed', response.data.electionRounds[0]);
 
       handleSelectEelection(response.data.electionRounds[0] as ElectionRoundMonitoring);
 
@@ -70,29 +72,32 @@ const Header = (): FunctionComponent => {
     <Disclosure as='nav' className='bg-white shadow-sm'>
       {({ open }) => (
         <>
+          {}
           <div className='container'>
             <div className='flex items-center justify-between h-16 gap-6 md:gap-10'>
-              <Logo />
+              <Logo width={48} height={48} />
 
               <div className='items-baseline flex-1 hidden gap-4 md:flex'>
-                {navigation.map((item) => (
-                  <Link
-                    to={item.to}
-                    search={{}}
-                    params={{}}
-                    key={item.name}
-                    className='px-3 py-2 text-sm font-medium rounded-md'
-                    activeProps={{
-                      className: 'bg-primary-100 text-primary-600 cursor-default',
-                      'aria-current': 'page',
-                    }}
-                    inactiveProps={{
-                      className:
-                        'hover:text-primary-600 hover:bg-secondary-300 focus:text-primary-600 focus:bg-secondary-300',
-                    }}>
-                    {item.name}
-                  </Link>
-                ))}
+                {navigation
+                  .filter((nav) => nav.roles.includes(parseJwt(token)[`user-role`]))
+                  .map((item) => (
+                    <Link
+                      to={item.to}
+                      search={{}}
+                      params={{}}
+                      key={item.name}
+                      className='px-3 py-2 text-sm font-medium rounded-md'
+                      activeProps={{
+                        className: 'bg-primary-100 text-primary-600 cursor-default',
+                        'aria-current': 'page',
+                      }}
+                      inactiveProps={{
+                        className:
+                          'hover:text-primary-600 hover:bg-secondary-300 focus:text-primary-600 focus:bg-secondary-300',
+                      }}>
+                      {item.name}
+                    </Link>
+                  ))}
               </div>
 
               <div className='items-center gap-2 hidden md:flex'>

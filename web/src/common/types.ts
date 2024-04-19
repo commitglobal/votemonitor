@@ -168,10 +168,13 @@ export type ElectionRoundMonitoring = {
   countryId: string;
 };
 
-
 export type LevelNode = {
   id: number;
   name: string;
   depth: number;
   parentId: number;
 }
+
+export type UserPayload = {
+  'user-role': string;
+};

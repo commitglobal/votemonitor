@@ -42,7 +42,7 @@ export default function EditObserver() {
       tags: values.tags.map((tag: Tag) => tag.text),
       status: values.status,
     };
-    editMutation.mutate(newObj);
+    editMutation.mutate(newObj as any);
   }
 
   const deleteMutation = useMutation({
@@ -82,7 +82,7 @@ export default function EditObserver() {
   const { setValue } = form;
 
   return (
-    <Layout title={`Edit ${observer.name}`}>
+    <Layout title={`Edit ${observer.firstName} ${observer.lastName}`}>
       <Card className='w-[800px] pt-0'>
         <CardHeader className='flex flex-column gap-2'>
           <div className='flex flex-row justify-between items-center'>
@@ -93,7 +93,9 @@ export default function EditObserver() {
         <CardContent className='flex flex-col gap-6 items-baseline'>
           <div className='flex flex-col gap-1'>
             <p className='text-gray-700 font-bold'>Name</p>
-            <p className='text-gray-900 font-normal'>{observer.name}</p>
+            <p className='text-gray-900 font-normal'>
+              {observer.firstName} {observer.lastName}
+            </p>
           </div>
           <div className='flex flex-col gap-1'>
             <p className='text-gray-700 font-bold'>Email</p>
@@ -118,7 +120,6 @@ export default function EditObserver() {
                         tags={tags}
                         className='sm:min-w-[450px]'
                         setTags={(newTags) => {
-                          console.log(newTags);
                           setTags(newTags);
                           setValue('tags', newTags as [Tag, ...Tag[]]);
                         }}
@@ -146,6 +147,7 @@ export default function EditObserver() {
                           <SelectGroup>
                             <SelectItem value='Active'>Active</SelectItem>
                             <SelectItem value='Suspended'>Suspended</SelectItem>
+                            <SelectItem value='Pending'>Pending</SelectItem>
                           </SelectGroup>
                         </SelectContent>
                       </Select>

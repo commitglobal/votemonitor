@@ -49,7 +49,7 @@ public class Endpoint(IAuthorizationService authorizationService, VoteMonitorCon
                          SELECT psi.""{nameof(PollingStationInformation.ElectionRoundId)}"",
                          psi.""{nameof(PollingStationInformation.PollingStationId)}"",
                          psi.""{nameof(PollingStationInformation.MonitoringObserverId)}"",
-                         COALESCE(psi.""ArrivalTime"", psi.""LastModifiedOn"", psi.""CreatedOn"") ""LatestTimestamp""
+                         COALESCE(psi.""LastModifiedOn"", psi.""CreatedOn"") ""LatestTimestamp""
                          FROM ""{Tables.PollingStationInformation}"" psi
                          UNION
                          SELECT

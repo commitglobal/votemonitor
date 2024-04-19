@@ -51,13 +51,31 @@ public class PollingStationInformationForm : AuditableBaseEntity, IAggregateRoot
         MonitoringObserver monitoringObserver,
         DateTime? arrivalTime,
         DateTime? departureTime,
-        List<BaseAnswer> answers)
+        List<BaseAnswer>? answers)
     {
-        return PollingStationInformation.Create(ElectionRound, pollingStation, monitoringObserver, this, arrivalTime, departureTime, answers);
+        if (answers == null)
+        {
+            return PollingStationInformation.Create(ElectionRound, pollingStation, monitoringObserver, this, arrivalTime, departureTime, []);
+        }
+
+        var validationResult = AnswersValidator.GetValidationResults(answers, Questions);
+
+        if (!validationResult.IsValid)
+        {
+            throw new ValidationException(validationResult.Errors);
+        }
+
+        return PollingStationInformation.Create(ElectionRound, pollingStation, monitoringObserver, this, arrivalTime, departureTime, answers ?? []);
     }
 
-    public PollingStationInformation FillIn(PollingStationInformation filledInForm, List<BaseAnswer> answers)
+    public PollingStationInformation FillIn(PollingStationInformation filledInForm, List<BaseAnswer>? answers)
     {
+        if (answers is null)
+        {
+            filledInForm.ClearAnswers();
+            return filledInForm;
+        }
+
         if (!answers.Any())
         {
             return filledInForm;

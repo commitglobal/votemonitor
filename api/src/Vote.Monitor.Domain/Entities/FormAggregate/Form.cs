@@ -141,8 +141,13 @@ public class Form : AuditableBaseEntity, IAggregateRoot
 
     public FormSubmission CreateFormSubmission(PollingStation pollingStation,
         MonitoringObserver monitoringObserver,
-        List<BaseAnswer> answers)
+        List<BaseAnswer>? answers)
     {
+        if (answers == null)
+        {
+            return FormSubmission.Create(ElectionRound, pollingStation, monitoringObserver, this, [], 0, 0);
+        }
+
         var numberOfQuestionAnswered = CountNumberOfQuestionsAnswered(answers);
         var numberOfFlaggedAnswers = CountNumberOfFlaggedAnswers(answers);
 
@@ -190,8 +195,14 @@ public class Form : AuditableBaseEntity, IAggregateRoot
         return answers.Count(x => questionIds.Contains(x.QuestionId));
     }
 
-    public FormSubmission FillIn(FormSubmission submission, List<BaseAnswer> answers)
+    public FormSubmission FillIn(FormSubmission submission, List<BaseAnswer>? answers)
     {
+        if (answers == null)
+        {
+            submission.ClearAnswers();
+            return submission;
+        }
+
         if (!answers.Any())
         {
             return submission;

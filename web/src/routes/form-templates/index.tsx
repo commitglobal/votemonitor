@@ -15,6 +15,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useFormTemplates } from '@/features/formsTemplate/queries';
+import { redirectIfNotAuth } from '@/lib/utils';
 
 const formTemplateRouteSearchSchema = z.object({
   nameFilter: z.string().catch(''),
@@ -25,6 +26,9 @@ const formTemplateRouteSearchSchema = z.object({
 });
 
 export const Route = createFileRoute('/form-templates/')({
+  beforeLoad: ({ context }) => {
+    redirectIfNotAuth(context.authContext.isAuthenticated);
+  },
   component: FormTemplatesList,
   validateSearch: formTemplateRouteSearchSchema,
 });

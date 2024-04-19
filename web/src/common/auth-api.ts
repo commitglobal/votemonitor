@@ -3,8 +3,13 @@
 
 import axios from 'axios';
 
-interface ILoginResponse {
+export interface ILoginResponse {
   token: string;
+}
+
+export interface LoginDTO {
+  email: string;
+  password: string;
 }
 
 const BASE_URL = 'https://votemonitor.staging.heroesof.tech/api/';
@@ -17,17 +22,6 @@ export const authApi = axios.create({
 authApi.defaults.headers.common['Content-Type'] = 'application/json';
 authApi.defaults.headers.common['Access-Control-Allow-Credentials'] = 'true';
 
-/**
- * WARNING: This uses a mock user and is for DEMO PURPOSES ONLY.
- * TODO Upgrade to a real login and authentication system for production.
- */
-export const getAccessTokenFn = async (): Promise<string> => {
-  const mockUser = { username: 'admin@alfa.com', password: 'string' };
-
-  const response = await authApi.post<ILoginResponse>('auth', mockUser);
-  return response.data.token;
-};
-
 authApi.interceptors.response.use(
   (response) => {
     return response;
@@ -37,7 +31,7 @@ authApi.interceptors.response.use(
     if (error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
-      const accessToken = await getAccessTokenFn();
+      const accessToken = localStorage.getItem('token');
       authApi.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument

@@ -19,9 +19,11 @@ public class Endpoint(IReadRepository<FormTemplateAggregate> repository) : Endpo
         return TypedResults.Ok(new FormTemplateFullModel
         {
             Id = formTemplate.Id,
+            FormTemplateType = formTemplate.FormTemplateType,
             Code = formTemplate.Code,
             DefaultLanguage = formTemplate.DefaultLanguage,
             Name = formTemplate.Name,
+            Description = formTemplate.Description,
             Status = formTemplate.Status,
             CreatedOn = formTemplate.CreatedOn,
             LastModifiedOn = formTemplate.LastModifiedOn,
