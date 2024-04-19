@@ -54,7 +54,8 @@
     "react-native-svg": "14.1.0",
     "tamagui": "^1.93.2",
     "expo-image-picker": "~14.7.1",
-    "expo-file-system": "~16.0.8"
+    "expo-file-system": "~16.0.8",
+    "lottie-react-native": "6.5.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

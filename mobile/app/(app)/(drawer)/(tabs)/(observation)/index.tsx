@@ -34,6 +34,7 @@ import {
   PollingStationInformationAPIResponse,
   upsertPollingStationGeneralInformation,
 } from "../../../../../services/definitions.api";
+import LottieView from "lottie-react-native";
 
 export type FormItemStatus = "not started" | "in progress" | "completed";
 
@@ -85,7 +86,14 @@ const FormList = () => {
   };
 
   if (isLoadingAnswers || isLoadingForms) {
-    return <Typography>Loading...</Typography>;
+    return (
+      <LottieView
+        source={require("../../../../../assets/animations/loader.json")}
+        autoPlay
+        loop
+        style={{ height: 50 }}
+      />
+    );
   }
 
   if (allForms?.forms.length === 0) {
@@ -227,7 +235,14 @@ const Index = () => {
   }
 
   if (isLoading) {
-    return <Typography>Loading...</Typography>;
+    return (
+      <LottieView
+        source={require("../../../../../assets/animations/loader.json")}
+        autoPlay
+        loop
+        style={{ height: 50 }}
+      />
+    );
   }
 
   if (!enoughDataForOffline) {
