@@ -1,14 +1,10 @@
-import { AnswerType, BaseAnswer, DateAnswer, DateAnswerSchema, DateQuestion } from '@/common/types'
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '../../ui/form';
-import { useForm } from 'react-hook-form';
+import { DateAnswer, DateQuestion } from '@/common/types'
 import { Popover, PopoverContent, PopoverTrigger } from '../../ui/popover';
 import { cn } from '@/lib/utils';
 import { Calendar } from '../../ui/calendar';
 import { format, parseISO, formatISO } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
 import { Button } from '../../ui/button';
-import { useTranslation } from 'react-i18next';
 import { Description, Field, Label } from '@/components/ui/fieldset';
 import { useState } from 'react';
 
@@ -16,29 +12,15 @@ export interface PreviewDateQuestionProps {
   languageCode: string;
   question: DateQuestion;
   answer: DateAnswer;
-  isFirstQuestion?: boolean;
-  isLastQuestion?: boolean;
-  onSubmitAnswer?: (answer: BaseAnswer) => void;
-  onBackButtonClicked?: () => void;
+  setAnswer: (answer: DateAnswer) => void;
 }
 
 function PreviewDateQuestion({
   languageCode,
   question,
   answer,
-  isFirstQuestion,
-  isLastQuestion,
-  onSubmitAnswer,
-  onBackButtonClicked }: PreviewDateQuestionProps) {
-  const { t } = useTranslation();
+  setAnswer }: PreviewDateQuestionProps) {
   const [date, setDate] = useState<string>('');
-  const form = useForm<DateAnswer>({
-    resolver: zodResolver(DateAnswerSchema),
-    defaultValues: answer ?? {
-      questionId: question.id,
-      $answerType: AnswerType.DateAnswerType,
-    }
-  });
 
   return (
     <Field>

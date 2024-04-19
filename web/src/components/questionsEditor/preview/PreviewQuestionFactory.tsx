@@ -30,59 +30,42 @@ export default function PreviewQuestionFactory({
       languageCode={languageCode}
       question={question as TextQuestion}
       answer={answer as TextAnswer}
-      isFirstQuestion={isFirstQuestion}
-      isLastQuestion={isLastQuestion}
-      onSubmitAnswer={onSubmitAnswer}
-      onBackButtonClicked={onBackButtonClicked}
+      setAnswer={(answer) => onSubmitAnswer?.(answer)}
     />
   ) : question.$questionType === QuestionType.DateQuestionType ? (
     <PreviewDateQuestion
       languageCode={languageCode}
       question={question as DateQuestion}
       answer={answer as DateAnswer}
-      isFirstQuestion={isFirstQuestion}
-      isLastQuestion={isLastQuestion}
-      onSubmitAnswer={onSubmitAnswer}
-      onBackButtonClicked={onBackButtonClicked}
+      setAnswer={(answer) => onSubmitAnswer?.(answer)}
     />
   ) : question.$questionType === QuestionType.NumberQuestionType ? (
     <PreviewNumberQuestion
       languageCode={languageCode}
       question={question as NumberQuestion}
       answer={answer as NumberAnswer}
-      isFirstQuestion={isFirstQuestion}
-      isLastQuestion={isLastQuestion}
-      onSubmitAnswer={onSubmitAnswer}
-      onBackButtonClicked={onBackButtonClicked}
+      setAnswer={(answer) => onSubmitAnswer?.(answer)}
     />
   ) : question.$questionType === QuestionType.MultiSelectQuestionType ? (
     <PreviewMultiSelectQuestion
       languageCode={languageCode}
       question={question as MultiSelectQuestion}
       answer={answer as MultiSelectAnswer}
-      isFirstQuestion={isFirstQuestion}
-      isLastQuestion={isLastQuestion}
-      onSubmitAnswer={onSubmitAnswer}
-      onBackButtonClicked={onBackButtonClicked}
+      setAnswer={(answer) => onSubmitAnswer?.(answer)}
     />
   ) : question.$questionType === QuestionType.SingleSelectQuestionType ? (
     <PreviewSingleSelectQuestion
       languageCode={languageCode}
       question={question as SingleSelectQuestion}
       answer={answer as SingleSelectAnswer}
-      isFirstQuestion={isFirstQuestion}
-      isLastQuestion={isLastQuestion}
-      onSubmitAnswer={onSubmitAnswer}
-      onBackButtonClicked={onBackButtonClicked} />
+      setAnswer={(answer) => onSubmitAnswer?.(answer)}
+    />
   ) : question.$questionType === QuestionType.RatingQuestionType ? (
     <PreviewRatingQuestion
       languageCode={languageCode}
       question={question as RatingQuestion}
       answer={answer as RatingAnswer}
-      isFirstQuestion={isFirstQuestion}
-      isLastQuestion={isLastQuestion}
-      onSubmitAnswer={onSubmitAnswer}
-      onBackButtonClicked={onBackButtonClicked}
+      setAnswer={(answer) => onSubmitAnswer?.(answer)}
     />
   ) : null;
 }

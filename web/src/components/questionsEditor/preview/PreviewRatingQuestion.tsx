@@ -1,21 +1,12 @@
-import { AnswerType, BaseAnswer, RatingAnswer, RatingQuestion, RatingScaleType } from '@/common/types'
-import { useForm } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '../../ui/form';
-import { Button } from '../../ui/button';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { RatingAnswer, RatingQuestion, RatingScaleType } from '@/common/types'
 import { RatingGroup } from '../../ui/ratings';
-import { z } from 'zod';
 import { Description, Field, Label } from '@/components/ui/fieldset';
 
 export interface PreviewRatingQuestionProps {
     languageCode: string;
     question: RatingQuestion;
     answer: RatingAnswer;
-    isFirstQuestion?: boolean;
-    isLastQuestion?: boolean;
-    onSubmitAnswer?: (answer: BaseAnswer) => void;
-    onBackButtonClicked?: () => void;
+    setAnswer: (answer: RatingAnswer) => void;
 }
 
 function scaleToNumber(scale: RatingScaleType): number {
@@ -36,32 +27,7 @@ function scaleToNumber(scale: RatingScaleType): number {
 function PreviewRatingQuestion({ languageCode,
     question,
     answer,
-    isFirstQuestion,
-    isLastQuestion,
-    onSubmitAnswer,
-    onBackButtonClicked }: PreviewRatingQuestionProps) {
-    const { t } = useTranslation();
-
-    const FormSchema = z.object({
-        value: z.string().optional()
-    });
-
-    const form = useForm<z.infer<typeof FormSchema>>({
-        resolver: zodResolver(FormSchema),
-        defaultValues: {
-            value: answer?.value?.toString() ?? ''
-        }
-    });
-
-    function handleSubmit(data: z.infer<typeof FormSchema>) {
-        const ratingAnswer: RatingAnswer = {
-            questionId: question.id,
-            $answerType: AnswerType.RatingAnswerType,
-            value: Number(data.value)
-        };
-
-        onSubmitAnswer(ratingAnswer);
-    }
+    setAnswer }: PreviewRatingQuestionProps) {
 
     return (
         <Field>
