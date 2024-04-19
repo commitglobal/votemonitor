@@ -171,8 +171,3 @@ export type ElectionRoundMonitoring = {
 export type UserPayload = {
   'user-role': string;
 };
-
-export type UserPayload = {
-  'user-role': string;
-};
-
