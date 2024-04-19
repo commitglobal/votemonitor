@@ -120,17 +120,11 @@ const FormQuestionnaire = () => {
       if (previousData && payload.answers) {
         const updatedSubmission = previousData.submissions.find((s) => s.formId === formId);
 
-        // exclude the answer array if any
-        const restOfAnswers =
-          updatedSubmission?.answers.filter((a) => a.questionId !== activeQuestion.question.id) ||
-          [];
-
         queryClient.setQueryData<FormSubmissionsApiResponse>(formSubmissionsQK, {
           submissions: [
             ...previousData.submissions.filter((s) => s.formId !== formId),
             {
               ...payload,
-              answers: [...restOfAnswers, ...payload.answers],
               id: (updatedSubmission?.id as string) || "-1",
             },
           ],
@@ -154,19 +148,25 @@ const FormQuestionnaire = () => {
   const onSubmitAnswer = (formValues: any) => {
     const questionId = activeQuestion?.question.id as string;
     if (activeElectionRound?.id && selectedPollingStation?.pollingStationId && activeQuestion) {
-      const answers = [
-        mapFormSubmissionDataToAPIFormSubmissionAnswer(
-          questionId,
-          activeQuestion?.question.$questionType,
-          formValues[questionId],
-        ),
-      ].filter(Boolean) as ApiFormAnswer[];
+      // map the answer values
+      const updatedAnswer = mapFormSubmissionDataToAPIFormSubmissionAnswer(
+        questionId,
+        activeQuestion?.question.$questionType,
+        formValues[questionId],
+      );
 
+      // update the answer to the question key
+      const updatedAnswers = {
+        ...answers,
+        [activeQuestion.question.id]: updatedAnswer,
+      };
+
+      // update the api
       updateSubmission({
         pollingStationId: selectedPollingStation?.pollingStationId as string,
         electionRoundId: activeElectionRound?.id as string,
         formId: currentForm?.id as string,
-        answers,
+        answers: Object.values(updatedAnswers).filter(Boolean) as ApiFormAnswer[],
       });
 
       // get next question
