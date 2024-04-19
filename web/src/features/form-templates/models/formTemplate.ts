@@ -34,9 +34,18 @@ export interface FormTemplateFull extends FormTemplateBase {
 
 export function mapFormTemplateType(formType: FormTemplateType): string {
     switch (formType) {
-      case FormTemplateType.Opening: return i18n.t('formTemplateType.opening');
-      case FormTemplateType.Voting: return i18n.t('formTemplateType.voting');
-      case FormTemplateType.ClosingAndCounting: return i18n.t('formTemplateType.closingAndCounting');
-      default: return "Unknown";
+        case FormTemplateType.Opening: return i18n.t('formTemplateType.opening');
+        case FormTemplateType.Voting: return i18n.t('formTemplateType.voting');
+        case FormTemplateType.ClosingAndCounting: return i18n.t('formTemplateType.closingAndCounting');
+        default: return "Unknown";
     }
-  }
+}
+
+export interface NewFormTemplateRequest {
+    code: string;
+    defaultLanguage: string;
+    name: TranslatedString;
+    description: TranslatedString;
+    formTemplateType: FormTemplateType;
+    languages: string[];
+}

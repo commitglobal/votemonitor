@@ -8,31 +8,22 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { authApi } from '@/common/auth-api';
 import { useMutation } from '@tanstack/react-query';
 import { useToast } from '@/components/ui/use-toast';
-import { FormTemplateFull, FormTemplateType, mapFormTemplateType } from '../../models/formTemplate';
-import { Form, FormControl, FormField, FormMessage } from '@/components/ui/form';
+import { FormTemplateFull } from '../../models/formTemplate';
+import { Form, FormField } from '@/components/ui/form';
 import { useTranslation } from 'react-i18next';
-import LanguageSelect from '@/containers/LanguageSelect';
 import { ErrorMessage, Field, FieldGroup, Fieldset, Label } from '@/components/ui/fieldset'
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import EditFormTemplateFooter from './EditFormTemplateFooter';
 import { queryClient } from '@/main';
 import { formTemplatesKeys } from '../../queries';
 import FormQuestionsEditor from '@/components/questionsEditor/FormQuestionsEditor';
 import { useState } from 'react';
-import { fromTheme } from 'tailwind-merge';
+import EditFormTemplateFooter from '../EditFormTemplate/EditFormTemplateFooter';
 
 
-export default function EditFormTemplate() {
+export default function EditFormTemplateTranslation() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const formTemplate: FormTemplateFull = useLoaderData({ strict: false });
@@ -40,34 +31,24 @@ export default function EditFormTemplate() {
   const { toast } = useToast();
 
   const editFormTemplateFormSchema = z.object({
-    code: z.string().nonempty(),
     name: z.string().nonempty(),
-    description: z.string().optional(),
-    defaultLanguage: z.string().nonempty(),
-    formTemplateType: z.enum([FormTemplateType.Opening, FormTemplateType.Voting, FormTemplateType.ClosingAndCounting]).catch(FormTemplateType.Opening)
+    description: z.string().optional()
   });
 
   const form = useForm<z.infer<typeof editFormTemplateFormSchema>>({
     resolver: zodResolver(editFormTemplateFormSchema),
     defaultValues: {
-      code: formTemplate.code,
       name: formTemplate.name[formTemplate.defaultLanguage],
       description: formTemplate.description[formTemplate.defaultLanguage],
-      formTemplateType: formTemplate.formTemplateType,
-      defaultLanguage: formTemplate.defaultLanguage,
     },
   });
 
   function onSubmit(values: z.infer<typeof editFormTemplateFormSchema>) {
-    formTemplate.code = values.code;
     formTemplate.name[formTemplate.defaultLanguage] = values.name;
     formTemplate.description[formTemplate.defaultLanguage] = values.description ?? '';
-    formTemplate.formTemplateType = values.formTemplateType;
-    formTemplate.defaultLanguage = values.defaultLanguage;
 
     const updatedFormTemplate: FormTemplateFull = {
       ...formTemplate,
-
     };
 
     editMutation.mutate(updatedFormTemplate);
@@ -90,7 +71,7 @@ export default function EditFormTemplate() {
         title: 'Success',
         description: 'Form template updated successfully updated',
       });
-      
+
       queryClient.invalidateQueries({ queryKey: formTemplatesKeys.all });
     },
   });
@@ -117,39 +98,6 @@ export default function EditFormTemplate() {
                     <FieldGroup className='!mt-0'>
                       <FormField
                         control={form.control}
-                        name='code'
-                        render={({ field, fieldState }) => (
-                          <Field>
-                            <Label>{t('form-template.field.code')}</Label>
-                            <Input placeholder={t('form-template.placeholder.code')} {...field}  {...fieldState} />
-                            {fieldState.invalid && <ErrorMessage>{fieldState?.error?.message}</ErrorMessage>}
-                          </Field>
-                        )} />
-
-                      <FormField
-                        control={form.control}
-                        name="formTemplateType"
-                        render={({ field }) => (
-                          <Field>
-                            <Label>{t('form-template.field.formTemplateType')}</Label>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="Select a form template type" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                <SelectItem value={FormTemplateType.Opening}>{mapFormTemplateType(FormTemplateType.Opening)}</SelectItem>
-                                <SelectItem value={FormTemplateType.Voting}>{mapFormTemplateType(FormTemplateType.Voting)}</SelectItem>
-                                <SelectItem value={FormTemplateType.ClosingAndCounting}>{mapFormTemplateType(FormTemplateType.ClosingAndCounting)}</SelectItem>
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </Field>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
                         name='name'
                         render={({ field, fieldState }) => (
                           <Field>
@@ -158,21 +106,6 @@ export default function EditFormTemplate() {
                             {fieldState.invalid && <ErrorMessage>{fieldState?.error?.message}</ErrorMessage>}
                           </Field>)} />
 
-                      <FormField
-                        control={form.control}
-                        name='defaultLanguage'
-                        render={({ field }) => (
-                          <Field>
-                            <Label>{t('form-template.field.defaultLanguage')}</Label>
-                            <LanguageSelect
-                              languageCode={field.value}
-                              onSelect={field.onChange}
-                            />
-                          </Field>
-                        )}
-                      />
-                    </FieldGroup>
-                    <FieldGroup className='!mt-0'>
                       <FormField
                         control={form.control}
                         name='description'

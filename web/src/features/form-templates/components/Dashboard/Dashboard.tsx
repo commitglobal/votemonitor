@@ -27,6 +27,8 @@ import { toast } from '@/components/ui/use-toast';
 import { cn } from '@/lib/utils';
 import { useDialog } from '@/components/ui/use-dialog';
 import AddTranslationsDialog from './AddTranslationsDialog';
+import CreateDialog from '@/components/dialogs/CreateDialog';
+import CreateTemplateForm from './CreateTemplateForm';
 
 export default function FormTemplatesDashboard(): ReactElement {
   const addTranslationsDialog = useDialog();
@@ -92,13 +94,16 @@ export default function FormTemplatesDashboard(): ReactElement {
           <DropdownMenuContent>
 
             <DropdownMenuItem onClick={() => navigateToFormTemplate(row.original.id, row.original.defaultLanguage)}>View</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigateToEdit(row.original.id, row.original.defaultLanguage)}>Edit</DropdownMenuItem>
 
             {
               row.depth === 0 ?
-                <>
-                  <DropdownMenuItem onClick={() => handleEditTranslations(row.original)}>Add translations</DropdownMenuItem>
-                </>
+                <DropdownMenuItem onClick={() => navigateToEdit(row.original.id, row.original.defaultLanguage)}>Edit</DropdownMenuItem>
+                : <DropdownMenuItem onClick={() => navigateToEditTranslation(row.original.id, row.original.defaultLanguage)}>Edit</DropdownMenuItem>
+            }
+
+            {
+              row.depth === 0 ?
+                <DropdownMenuItem onClick={() => handleEditTranslations(row.original)}>Add translations</DropdownMenuItem>
                 : null
             }
             {row.depth === 0 ?
@@ -144,24 +149,9 @@ export default function FormTemplatesDashboard(): ReactElement {
     navigate({ to: '/form-templates/$formTemplateId/edit', params: { formTemplateId } });
   };
 
-  const editMutation = useMutation({
-    mutationFn: (formTemplate: FormTemplateFull) => {
-
-      return authApi.post<void>(
-        `/form-templates/${formTemplate.id}`,
-        formTemplate
-      );
-    },
-
-    onSuccess: () => {
-      toast({
-        title: 'Success',
-        description: 'Observer successfully updated',
-      });
-
-      queryClient.invalidateQueries({ queryKey: formTemplatesKeys.all });
-    },
-  });
+  const navigateToEditTranslation = (formTemplateId: string, languageCode: string) => {
+    navigate({ to: '/form-templates/$formTemplateId/edit-translation/$languageCode', params: { formTemplateId, languageCode } });
+  };
 
   const deleteTranslationMutation = useMutation({
     mutationFn: ({ formTemplateId, languageCode }: { formTemplateId: string; languageCode: string; }) => {
@@ -237,12 +227,19 @@ export default function FormTemplatesDashboard(): ReactElement {
         <TabsContent value='template-forms'>
           <Card className='w-full pt-0'>
             <CardHeader className='flex flex-column gap-2'>
-              <div className='flex flex-row justify-between items-center px-6'>
-                <CardTitle className='text-xl'>Observation template forms</CardTitle>
-              </div>
+              <CardTitle className='flex flex-row justify-between items-center px-6'>
+                <div className='text-xl'>
+                  Observation template forms
+                </div>
+                <div>
+                  <CreateDialog title='Create template form'>
+                    <CreateTemplateForm />
+                  </CreateDialog>
+                </div>
+              </CardTitle>
               <Separator />
               <div className='filters px-6 flex flex-row justify-end gap-4'>
-                <Input onChange={handleSearchInput} className='w-[400px]' placeholder='Search' />
+                <div className='w-[400px]'><Input onChange={handleSearchInput} placeholder='Search' /></div>
                 <FunnelIcon
                   onClick={changeIsFiltering}
                   className='w-[20px] text-purple-900 cursor-pointer'

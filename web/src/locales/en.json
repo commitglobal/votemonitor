@@ -48,7 +48,7 @@
   "form-template.field.status": "Status",
   "form-template.placeholder.code": "Form code",
   "form-template.placeholder.name": "Form name",
-  "form-template.placeholder.description": "Form name",
+  "form-template.placeholder.description": "Form description",
   "form-template.placeholder.defaultLanguage": "Select a default language",
   "form-template.placeholder.languages": "Select available languages",
   "navigation.button.back": "Back",
