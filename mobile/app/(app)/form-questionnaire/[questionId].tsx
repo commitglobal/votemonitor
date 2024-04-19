@@ -307,6 +307,7 @@ const FormQuestionnaire = () => {
                         if (option.isFreeText && option.id === value.radioValue) {
                           return (
                             <Input
+                              key={option.id}
                               type="textarea"
                               marginTop="$md"
                               value={value.textValue || ""}
@@ -317,6 +318,7 @@ const FormQuestionnaire = () => {
                             />
                           );
                         }
+                        return <></>;
                       })}
                     </>
                   );
