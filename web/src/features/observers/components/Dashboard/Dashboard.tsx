@@ -156,7 +156,6 @@ export default function ObserversDashboard(): ReactElement {
 
   const changeIsFiltering = () => {
     setFiltering((prev) => {
-      console.log(prev);
       return !prev;
     });
   };
