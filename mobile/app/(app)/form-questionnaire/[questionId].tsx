@@ -112,7 +112,7 @@ const FormQuestionnaire = () => {
     onMutate: async (payload: FormSubmissionAPIPayload) => {
       // Cancel any outgoing refetches
       // (so they don't overwrite our optimistic update)
-      await queryClient.cancelQueries({ queryKey: [formSubmissionsQK] });
+      await queryClient.cancelQueries({ queryKey: formSubmissionsQK });
 
       // Snapshot the previous value
       const previousData = queryClient.getQueryData<FormSubmissionsApiResponse>(formSubmissionsQK);
@@ -138,11 +138,11 @@ const FormQuestionnaire = () => {
     },
     onError: (err, newData, context) => {
       console.log(err);
-      queryClient.setQueryData([formSubmissionsQK], context?.previousData);
+      queryClient.setQueryData(formSubmissionsQK, context?.previousData);
     },
     onSettled: () => {
       // TODO: we want to keep the mutation in pending until the refetch is done?
-      return queryClient.invalidateQueries({ queryKey: [formSubmissionsQK] });
+      return queryClient.invalidateQueries({ queryKey: formSubmissionsQK });
     },
   });
 

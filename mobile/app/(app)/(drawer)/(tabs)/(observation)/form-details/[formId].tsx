@@ -21,7 +21,7 @@ import {
   mapFormStateStatus,
 } from "../../../../../../services/form.parser";
 import { ApiFormAnswer } from "../../../../../../services/interfaces/answer.type";
-import { Dimensions } from "react-native";
+import { Dimensions, Platform } from "react-native";
 
 interface FormOverviewProps {
   completedAnswers: number;
@@ -198,7 +198,11 @@ const FormDetails = () => {
         paddingTop={28}
         gap="$xl"
         paddingHorizontal="$md"
-        height={Dimensions.get("screen").height - 120}
+        height={
+          Platform.OS === "ios"
+            ? Dimensions.get("screen").height - 120
+            : Dimensions.get("screen").height * 1.4 // TODO: need to do something about this
+        }
       >
         <ListView<Pick<FormQuestionListItemProps, "question" | "status"> & { id: string }>
           data={questions}

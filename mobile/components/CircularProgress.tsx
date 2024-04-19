@@ -8,6 +8,8 @@ import Animated, {
   interpolateColor,
   useAnimatedStyle,
   SharedValue,
+  createAnimatedPropAdapter,
+  processColor,
 } from "react-native-reanimated";
 import { View } from "tamagui";
 
@@ -85,10 +87,26 @@ const ProgressCircle = ({
     );
   });
 
-  const animatedProps = useAnimatedProps(() => ({
-    strokeDashoffset: (CIRCLE_LENGTH * (maxProgress - animatedProgress.value)) / maxProgress,
-    stroke: strokeColor.value,
-  }));
+  const animatedProps = useAnimatedProps(
+    () => {
+      return {
+        strokeDashoffset: (CIRCLE_LENGTH * (maxProgress - animatedProgress.value)) / maxProgress,
+        stroke: strokeColor.value,
+      };
+    },
+    [],
+    createAnimatedPropAdapter(
+      (props) => {
+        if (Object.keys(props).includes("fill")) {
+          props.fill = { type: 0, payload: processColor(props.fill) };
+        }
+        if (Object.keys(props).includes("stroke")) {
+          props.stroke = { type: 0, payload: processColor(props.stroke) };
+        }
+      },
+      ["fill", "stroke"],
+    ),
+  );
 
   return (
     <AnimatedCircle
@@ -117,15 +135,29 @@ const BackgroundCircle = ({
   radius: number;
   strokeWidth: number;
 }) => {
-  const animatedProps = useAnimatedProps(() => {
-    return {
-      stroke: interpolateColor(
-        animatedProgress.value,
-        [0, 1, maxProgress - 1, maxProgress],
-        ["#E4E4E7", "hsla(49, 100%, 58%, 0.25)", "hsla(49, 100%, 58%, 0.25)", "#10B981"],
-      ),
-    };
-  });
+  const animatedProps = useAnimatedProps(
+    () => {
+      return {
+        stroke: interpolateColor(
+          animatedProgress.value,
+          [0, 1, maxProgress - 1, maxProgress],
+          ["#E4E4E7", "hsla(49, 100%, 58%, 0.25)", "hsla(49, 100%, 58%, 0.25)", "#10B981"],
+        ),
+      };
+    },
+    [],
+    createAnimatedPropAdapter(
+      (props) => {
+        if (Object.keys(props).includes("fill")) {
+          props.fill = { type: 0, payload: processColor(props.fill) };
+        }
+        if (Object.keys(props).includes("stroke")) {
+          props.stroke = { type: 0, payload: processColor(props.stroke) };
+        }
+      },
+      ["fill", "stroke"],
+    ),
+  );
 
   return (
     <AnimatedCircle
