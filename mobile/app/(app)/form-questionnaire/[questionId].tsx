@@ -289,8 +289,16 @@ const FormQuestionnaire = () => {
                         value: option.id,
                         label: option.text[language as string],
                       }))}
-                      onValueChange={onChange}
-                      value={value}
+                      onValueChange={(value) =>
+                        onChange({
+                          radioValue: value,
+                          textValue:
+                            question?.options?.find((o) => o.id === value)?.text[
+                              language as string
+                            ] || "",
+                        })
+                      }
+                      value={value.radioValue}
                     />
                   );
                 case "multiSelectQuestion":
