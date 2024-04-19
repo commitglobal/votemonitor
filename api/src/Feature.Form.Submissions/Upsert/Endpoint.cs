@@ -42,9 +42,13 @@ public class Endpoint(IRepository<FormSubmission> repository,
         var specification = new GetFormSubmissionSpecification(req.ElectionRoundId, req.PollingStationId, req.FormId, req.ObserverId);
         var formSubmission = await repository.FirstOrDefaultAsync(specification, ct);
 
-        var answers = req.Answers.Select(AnswerMapper.ToEntity).ToList();
+        List<BaseAnswer>? answers = null;
+        if (req.Answers != null)
+        {
+            answers = req.Answers.Select(AnswerMapper.ToEntity).ToList();
 
-        ValidateAnswers(answers, form);
+            ValidateAnswers(answers, form);
+        }
 
         return formSubmission is null
             ? await AddFormSubmissionAsync(req, form, answers, ct)
@@ -54,7 +58,7 @@ public class Endpoint(IRepository<FormSubmission> repository,
     private async Task<Results<Ok<FormSubmissionModel>, NotFound>> UpdateFormSubmissionAsync(
         FormAggregate form,
         FormSubmission submission,
-        List<BaseAnswer> answers,
+        List<BaseAnswer>? answers,
         CancellationToken ct)
     {
         submission = form.FillIn(submission, answers);
@@ -65,7 +69,7 @@ public class Endpoint(IRepository<FormSubmission> repository,
 
     private async Task<Results<Ok<FormSubmissionModel>, NotFound>> AddFormSubmissionAsync(Request req,
         FormAggregate form,
-        List<BaseAnswer> answers,
+        List<BaseAnswer>? answers,
         CancellationToken ct)
     {
         var pollingStationSpecification = new GetPollingStationSpecification(req.ElectionRoundId, req.PollingStationId);

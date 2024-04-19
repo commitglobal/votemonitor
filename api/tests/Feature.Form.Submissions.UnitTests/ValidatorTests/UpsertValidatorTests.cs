@@ -3,6 +3,7 @@
 public class UpsertValidatorTests
 {
     private readonly Upsert.Validator _validator = new();
+
     [Fact]
     public void Validation_ShouldFail_When_ObserverId_Empty()
     {
@@ -54,7 +55,7 @@ public class UpsertValidatorTests
         // Assert
         result.ShouldHaveValidationErrorFor(x => x.FormId);
     }
-    
+
     [Fact]
     public void Validation_ShouldFail_When_Answers_Invalid()
     {
@@ -101,4 +102,43 @@ public class UpsertValidatorTests
         result.ShouldNotHaveAnyValidationErrors();
     }
 
+    [Fact]
+    public void Validation_ShouldPass_When_Answers_Empty()
+    {
+        // Arrange
+        var request = new Upsert.Request
+        {
+            FormId = Guid.NewGuid(),
+            ElectionRoundId = Guid.NewGuid(),
+            PollingStationId = Guid.NewGuid(),
+            ObserverId = Guid.NewGuid(),
+            Answers = []
+        };
+
+        // Act
+        var result = _validator.TestValidate(request);
+
+        // Assert
+        result.ShouldNotHaveAnyValidationErrors();
+    }
+
+    [Fact]
+    public void Validation_ShouldPass_When_Answers_Null()
+    {
+        // Arrange
+        var request = new Upsert.Request
+        {
+            FormId = Guid.NewGuid(),
+            ElectionRoundId = Guid.NewGuid(),
+            PollingStationId = Guid.NewGuid(),
+            ObserverId = Guid.NewGuid(),
+            Answers = null
+        };
+
+        // Act
+        var result = _validator.TestValidate(request);
+
+        // Assert
+        result.ShouldNotHaveAnyValidationErrors();
+    }
 }

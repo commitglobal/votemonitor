@@ -78,4 +78,8 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
 
     }
 #pragma warning restore CS8618
+    public void ClearAnswers()
+    {
+        Answers = [];
+    }
 }
