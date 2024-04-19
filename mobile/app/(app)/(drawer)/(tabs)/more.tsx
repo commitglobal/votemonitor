@@ -54,7 +54,12 @@ const More = () => {
           chevronRight={true}
           onClick={() => router.push("/change-language")}
         ></MenuItem>
-        <MenuItem label={t("change-password")} icon="changePassword" chevronRight={true}></MenuItem>
+        <MenuItem
+          label={t("change-password")}
+          icon="changePassword"
+          chevronRight={true}
+          onClick={() => router.push("/forgot-password")}
+        ></MenuItem>
         <MenuItem
           label={t("terms")}
           icon="termsConds"
