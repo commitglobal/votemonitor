@@ -45,9 +45,13 @@ public class Endpoint(IRepository<PollingStationInformation> repository,
         var specification = new GetPollingStationInformationSpecification(req.ElectionRoundId, req.PollingStationId, req.ObserverId);
         var pollingStationInformation = await repository.FirstOrDefaultAsync(specification, ct);
 
-        var answers = req.Answers.Select(AnswerMapper.ToEntity).ToList();
+        List<BaseAnswer>? answers = null;
+        if (req.Answers != null)
+        {
+            answers = req.Answers.Select(AnswerMapper.ToEntity).ToList();
 
-        ValidateAnswers(answers, form);
+            ValidateAnswers(answers, form);
+        }
 
         return pollingStationInformation is null
             ? await AddPollingStationInformationAsync(req, form, answers, ct)
@@ -59,7 +63,7 @@ public class Endpoint(IRepository<PollingStationInformation> repository,
         PollingStationInformation pollingStationInformation,
         DateTime? arrivalTime,
         DateTime? departureTime,
-        List<BaseAnswer> answers,
+        List<BaseAnswer>? answers,
         CancellationToken ct)
     {
         pollingStationInformation = form.FillIn(pollingStationInformation, answers);
@@ -72,7 +76,7 @@ public class Endpoint(IRepository<PollingStationInformation> repository,
 
     private async Task<Results<Ok<PollingStationInformationModel>, NotFound>> AddPollingStationInformationAsync(Request req,
         PollingStationInformationForm form,
-        List<BaseAnswer> answers,
+        List<BaseAnswer>? answers,
         CancellationToken ct)
     {
         var pollingStationSpecification = new GetPollingStationSpecification(req.ElectionRoundId, req.PollingStationId);
