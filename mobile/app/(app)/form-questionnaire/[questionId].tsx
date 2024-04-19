@@ -281,17 +281,36 @@ const FormQuestionnaire = () => {
                   );
                 case "singleSelectQuestion":
                   return (
-                    <WizardRadioFormInput
-                      label={`${question.code}. ${question.text[language as string]}`}
-                      paragraph={question.helptext[language as string]}
-                      options={question.options.map((option) => ({
-                        id: option.id,
-                        value: option.id,
-                        label: option.text[language as string],
-                      }))}
-                      onValueChange={onChange}
-                      value={value}
-                    />
+                    <>
+                      <WizardRadioFormInput
+                        label={`${question.code}. ${question.text[language as string]}`}
+                        paragraph={question.helptext[language as string]}
+                        options={question.options.map((option) => ({
+                          id: option.id,
+                          value: option.id,
+                          label: option.text[language as string],
+                        }))}
+                        onValueChange={(radioValue) =>
+                          onChange({ ...value, radioValue, textValue: null })
+                        }
+                        value={value.radioValue || ""}
+                      />
+                      {question.options.map((option) => {
+                        if (option.isFreeText && option.id === value.radioValue) {
+                          return (
+                            <Input
+                              type="textarea"
+                              marginTop="$md"
+                              value={value.textValue || ""}
+                              placeholder="Please enter a text..."
+                              onChangeText={(textValue) => {
+                                onChange({ ...value, textValue });
+                              }}
+                            />
+                          );
+                        }
+                      })}
+                    </>
                   );
                 case "multiSelectQuestion":
                   return (
