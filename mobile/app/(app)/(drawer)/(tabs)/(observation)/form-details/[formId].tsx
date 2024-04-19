@@ -130,25 +130,27 @@ const FormDetails = () => {
     return mapAPIAnswersToFormAnswers(formSubmission?.answers);
   }, [formSubmissions]);
 
-  const numberOfQuestions = useMemo(() => {
+  const { questions, numberOfAnswers } = useMemo(() => {
     const form = allForms?.forms.find((form) => form.id === formId);
-    return form ? form.questions.length : 0;
-  }, [allForms]);
-
-  const numberOfAnswers = useMemo(() => {
     const submission = formSubmissions?.submissions.find(
       (submission) => submission.formId === formId,
     );
-    return submission ? submission.answers.length : 0;
-  }, [allForms]);
+    return {
+      questions: form?.questions.map((q) => ({
+        status: answers[q.id] ? QuestionStatus.ANSWERED : QuestionStatus.NOT_ANSWERED,
+        question: q.text[language as string],
+        id: q.id,
+      })),
+      numberOfAnswers: submission ? submission.answers.length : 0,
+    };
+  }, [allForms, formSubmissions]);
 
-  const questions = useMemo(() => {
+  const { numberOfQuestions, formTitle } = useMemo(() => {
     const form = allForms?.forms.find((form) => form.id === formId);
-    return form?.questions.map((q) => ({
-      status: answers[q.id] ? QuestionStatus.ANSWERED : QuestionStatus.NOT_ANSWERED,
-      question: q.text[language as string],
-      id: q.id,
-    }));
+    return {
+      numberOfQuestions: form ? form.questions.length : 0,
+      formTitle: `${form?.code} - ${form?.name[language as string]} (${language as string})`,
+    };
   }, [allForms]);
 
   const onQuestionItemClick = (questionId: string) => {
@@ -183,7 +185,7 @@ const FormDetails = () => {
       }}
     >
       <Header
-        title={`${formId}`}
+        title={`${formTitle}`}
         titleColor="white"
         barStyle="light-content"
         leftIcon={<Icon icon="chevronLeft" color="white" />}
