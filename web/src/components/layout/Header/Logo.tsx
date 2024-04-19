@@ -1,7 +1,7 @@
-function Logo() {
+function Logo({ width, height }: { width: number; height: number }) {
   return (
     <>
-      <svg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 148 147' fill='none'>
+      <svg xmlns='http://www.w3.org/2000/svg' width={width} height={height} viewBox='0 0 148 147' fill='none'>
         <path
           d='M73.561 147C32.9993 147 0 114.027 0 73.5C0 32.9719 32.9993 0 73.561 0C114.123 0 147.122 32.9719 147.122 73.5C147.122 114.027 114.123 147 73.561 147Z'
           className='fill-secondary-300'

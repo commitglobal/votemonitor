@@ -4,10 +4,14 @@ import FormTemplateActions from '@/features/formsTemplate/components/FormTemplat
 import FormTemplateHeader from '@/features/formsTemplate/components/FormTemplateHeader';
 import { FormTemplateFull } from '@/features/formsTemplate/models/formTemplate';
 import { formTemplateDetailsQueryOptions } from '@/features/formsTemplate/queries';
+import { redirectIfNotAuth } from '@/lib/utils';
 import { createFileRoute } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
 export const Route = createFileRoute('/form-templates/$formTemplateId/edit')({
+  beforeLoad: ({ context }) => {
+    redirectIfNotAuth(context.authContext.isAuthenticated);
+  },
   component: EditFormTemplate,
   loader: ({ context: { queryClient }, params: { formTemplateId } }) =>
     queryClient.ensureQueryData(formTemplateDetailsQueryOptions(formTemplateId)),
