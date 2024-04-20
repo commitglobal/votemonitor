@@ -38,6 +38,9 @@ import { useTranslation } from "react-i18next";
 import RadioFormInput from "../../../../../components/FormInputs/RadioFormInput";
 import { Controller, FieldError, FieldErrorsImpl, Merge, useForm } from "react-hook-form";
 import { Dimensions } from "react-native";
+import LoadingScreen from "../../../../../components/LoadingScreen";
+import NotEnoughData from "../../../../../components/NotEnoughData";
+import GenericErrorScreen from "../../../../../components/GenericErrorScreen";
 
 export type FormListItem = {
   id: string;
@@ -265,25 +268,24 @@ const Index = () => {
   };
 
   if (error) {
-    return <Typography>Error while loading data {JSON.stringify(error)}</Typography>;
+    console.log(error);
+    return <GenericErrorScreen />;
   }
 
   if (isLoading) {
-    return <Typography>Loading...</Typography>;
-  }
+    return <LoadingScreen />;
+  } else {
+    if (!electionRounds?.length) {
+      return <NoElectionRounds />;
+    }
 
-  if (!enoughDataForOffline) {
-    return (
-      <Typography>Not enough data for offline, need to invalidate queries and retry...</Typography>
-    );
-  }
+    if (visits.length === 0) {
+      return <NoVisitsExist />;
+    }
 
-  if (!electionRounds?.length) {
-    return <NoElectionRounds />;
-  }
-
-  if (visits.length === 0) {
-    return <NoVisitsExist />;
+    if (!enoughDataForOffline) {
+      return <NotEnoughData />;
+    }
   }
 
   return (

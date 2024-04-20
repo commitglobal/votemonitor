@@ -2,27 +2,16 @@ import React from "react";
 import { Redirect, Stack } from "expo-router";
 import { PortalProvider } from "tamagui";
 import { useAuth } from "../../hooks/useAuth";
-import UserContextProvider, { useUserData } from "../../contexts/user/UserContext.provider";
-import { Typography } from "../../components/Typography";
-import { Screen } from "../../components/Screen";
+import UserContextProvider from "../../contexts/user/UserContext.provider";
 
 const AppLayout = () => {
   const { isAuthenticated } = useAuth();
-  const { isLoading } = useUserData();
 
   // TODO: This will be logout
   if (!isAuthenticated) {
     // On web, static rendering will stop here as the user is not authenticated
     // in the headless Node process that the pages are rendered in.
     return <Redirect href="/login" />;
-  }
-
-  if (isLoading) {
-    return (
-      <Screen safeAreaEdges={["top"]} backgroundColor="red">
-        <Typography preset="heading">Loading...</Typography>
-      </Screen>
-    );
   }
 
   return (
