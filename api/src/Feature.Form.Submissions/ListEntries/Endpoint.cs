@@ -87,6 +87,8 @@ public class Endpoint(VoteMonitorContext context) : Endpoint<Request, PagedRespo
                s.""MonitoringObserverId"",
                u.""FirstName"",
                u.""LastName"",
+               u.""Email"",
+               u.""PhoneNumber"",
                mo.""Tags"",
                s.""NumberOfQuestionsAnswered"",
                s.""NumberOfFlaggedAnswers"",

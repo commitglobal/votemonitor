@@ -8,7 +8,7 @@ public class Endpoint(IReadRepository<FormSubmission> repository) : Endpoint<Req
     {
         Get("/api/election-rounds/{electionRoundId}/form-submissions/{submissionId}");
         DontAutoTag();
-        Options(x => x.WithTags("form-submissions", "mobile"));
+        Options(x => x.WithTags("form-submissions"));
         Policies(PolicyNames.NgoAdminsOnly);
         Summary(s =>
         {
