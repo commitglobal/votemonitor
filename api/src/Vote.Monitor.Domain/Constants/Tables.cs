@@ -3,8 +3,8 @@
 public static class Tables
 {
     public const string PollingStationInformation = "PollingStationInformation";
-    public const string PollingStationNotes = "PollingStationNotes";
-    public const string PollingStationAttachments = "PollingStationAttachments";
+    public const string Notes = "Notes";
+    public const string Attachments = "Attachments";
 
     public const string MonitoringObservers = "MonitoringObservers";
     public const string MonitoringNgos = "MonitoringNgos";

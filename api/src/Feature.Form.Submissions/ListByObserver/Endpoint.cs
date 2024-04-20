@@ -5,7 +5,7 @@ using Vote.Monitor.Domain;
 using Vote.Monitor.Domain.Specifications;
 namespace Feature.Form.Submissions.ListByObserver;
 
-public class Endpoint(VoteMonitorContext context) : Endpoint<Request, PagedResponse<ObserverSubmissionsOverview>>
+public class Endpoint(VoteMonitorContext context) : Endpoint<Request, PagedResponse<ObserverSubmissionOverview>>
 {
     public override void Configure()
     {
@@ -20,7 +20,7 @@ public class Endpoint(VoteMonitorContext context) : Endpoint<Request, PagedRespo
         });
     }
 
-    public override async Task<PagedResponse<ObserverSubmissionsOverview>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<PagedResponse<ObserverSubmissionOverview>> ExecuteAsync(Request req, CancellationToken ct)
     {
         var orderBySql = BuildOrderBySql(req.SortColumnName, req.IsAscendingSorting);
 
@@ -66,8 +66,8 @@ public class Endpoint(VoteMonitorContext context) : Endpoint<Request, PagedRespo
         inner join ""AspNetUsers"" o on mo.""ObserverId"" = o.""Id""
         INNER JOIN ""MonitoringNgos"" mn ON mn.""Id"" = mo.""MonitoringNgoId""
         LEFT JOIN ""FormSubmissions"" fs ON fs.""MonitoringObserverId"" = mo.""Id""
-        LEFT JOIN ""PollingStationAttachments"" psa on psa.""MonitoringObserverId"" = mo.""Id""
-        LEFT JOIN ""PollingStationNotes"" psn ON psn.""MonitoringObserverId"" = mo.""Id""
+        LEFT JOIN ""Attachments"" psa on psa.""MonitoringObserverId"" = mo.""Id""
+        LEFT JOIN ""Notes"" psn ON psn.""MonitoringObserverId"" = mo.""Id""
         LEFT JOIN ""PollingStationInformation"" psi ON psi.""MonitoringObserverId"" = mo.""Id""
         left join ""PollingStations"" ps on ps.""Id"" = fs.""PollingStationId""
         OR ps.""Id"" = psa.""PollingStationId""
@@ -100,63 +100,63 @@ public class Endpoint(VoteMonitorContext context) : Endpoint<Request, PagedRespo
        
         var multi = await context.Connection.QueryMultipleAsync(sql, queryArgs);
         var totalRowCount = multi.Read<int>().Single();
-        var entries = multi.Read<ObserverSubmissionsOverview>().ToList();
+        var entries = multi.Read<ObserverSubmissionOverview>().ToList();
 
-        return new PagedResponse<ObserverSubmissionsOverview>(entries, totalRowCount, req.PageNumber, req.PageSize);
+        return new PagedResponse<ObserverSubmissionOverview>(entries, totalRowCount, req.PageNumber, req.PageSize);
     }
 
     private static string BuildOrderBySql(string sortOrderColumn, bool isAscendingSorting)
     {
-        if (string.Equals(sortOrderColumn, nameof(ObserverSubmissionsOverview.FirstName), StringComparison.InvariantCultureIgnoreCase))
+        if (string.Equals(sortOrderColumn, nameof(ObserverSubmissionOverview.FirstName), StringComparison.InvariantCultureIgnoreCase))
         {
             return isAscendingSorting
                 ? @"o.""FirstName"", mo.""Id"""
                 : @"o.""FirstName"" desc, mo.""Id""";
         }
 
-        if (string.Equals(sortOrderColumn, nameof(ObserverSubmissionsOverview.LastName), StringComparison.InvariantCultureIgnoreCase))
+        if (string.Equals(sortOrderColumn, nameof(ObserverSubmissionOverview.LastName), StringComparison.InvariantCultureIgnoreCase))
         {
             return isAscendingSorting
                 ? @"o.""LastName"", ""LastActivity"" desc"
                 : @"o.""LastName"" desc, ""LastActivity"" desc";
         }
 
-        if (string.Equals(sortOrderColumn, nameof(ObserverSubmissionsOverview.LastActivity), StringComparison.InvariantCultureIgnoreCase))
+        if (string.Equals(sortOrderColumn, nameof(ObserverSubmissionOverview.LastActivity), StringComparison.InvariantCultureIgnoreCase))
         {
             return isAscendingSorting
                 ? @"""LastActivity"", ""LastActivity"" desc"
                 : @"""LastActivity"" desc, ""LastActivity"" desc";
         }
 
-        if (string.Equals(sortOrderColumn, nameof(ObserverSubmissionsOverview.NumberOfFormsSubmitted), StringComparison.InvariantCultureIgnoreCase))
+        if (string.Equals(sortOrderColumn, nameof(ObserverSubmissionOverview.NumberOfFormsSubmitted), StringComparison.InvariantCultureIgnoreCase))
         {
             return isAscendingSorting
                 ? @"""NumberOfFormsSubmitted"", ""LastActivity"" desc"
                 : @"""NumberOfFormsSubmitted"" desc, ""LastActivity"" desc";
         }
 
-        if (string.Equals(sortOrderColumn, nameof(ObserverSubmissionsOverview.NumberOfQuestionAnswered), StringComparison.InvariantCultureIgnoreCase))
+        if (string.Equals(sortOrderColumn, nameof(ObserverSubmissionOverview.NumberOfQuestionsAnswered), StringComparison.InvariantCultureIgnoreCase))
         {
             return isAscendingSorting
                 ? @"""NumberOfQuestionAnswered"", ""LastActivity"" desc"
                 : @"""NumberOfQuestionAnswered"" desc, ""LastActivity"" desc";
         }
 
-        if (string.Equals(sortOrderColumn, nameof(ObserverSubmissionsOverview.NumberOfFlaggedAnswers), StringComparison.InvariantCultureIgnoreCase))
+        if (string.Equals(sortOrderColumn, nameof(ObserverSubmissionOverview.NumberOfFlaggedAnswers), StringComparison.InvariantCultureIgnoreCase))
         {
             return isAscendingSorting
                 ? @"""NumberOfFlaggedAnswers"", ""LastActivity"" desc"
                 : @"""NumberOfFlaggedAnswers"" desc, ""LastActivity"" desc";
         }
 
-        if (string.Equals(sortOrderColumn, nameof(ObserverSubmissionsOverview.NumberOfUploads), StringComparison.InvariantCultureIgnoreCase))
+        if (string.Equals(sortOrderColumn, nameof(ObserverSubmissionOverview.NumberOfUploads), StringComparison.InvariantCultureIgnoreCase))
         {
             return isAscendingSorting
                 ? @"""NumberOfUploads"", ""LastActivity"" desc"
                 : @"""NumberOfUploads"" desc, ""LastActivity"" desc";
         }
 
-        if (string.Equals(sortOrderColumn, nameof(ObserverSubmissionsOverview.NumberOfNotes), StringComparison.InvariantCultureIgnoreCase))
+        if (string.Equals(sortOrderColumn, nameof(ObserverSubmissionOverview.NumberOfNotes), StringComparison.InvariantCultureIgnoreCase))
         {
             return isAscendingSorting
                 ? @"""NumberOfNotes"", ""LastActivity"" desc"

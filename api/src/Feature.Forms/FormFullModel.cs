@@ -15,6 +15,7 @@ public class FormFullModel: FormSlimModel
         Languages = form.Languages,
         Name = form.Name,
         Questions = form.Questions.Select(QuestionsMapper.ToModel).ToList(),
+        NumberOfQuestions = form.NumberOfQuestions,
         CreatedOn = form.CreatedOn,
         LastModifiedOn = form.LastModifiedOn
     };

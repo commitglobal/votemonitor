@@ -22,9 +22,10 @@ public sealed class ListFormTemplatesSpecification : Specification<FormTemplateA
             Name = x.Name,
             Description = x.Description,
             Status = x.Status,
-            Languages = x.Languages.ToList(),
+            Languages = x.Languages,
             CreatedOn = x.CreatedOn,
-            LastModifiedOn = x.LastModifiedOn
+            LastModifiedOn = x.LastModifiedOn,
+            NumberOfQuestions = x.NumberOfQuestions
         });
     }
 }

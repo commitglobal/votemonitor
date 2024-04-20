@@ -5,6 +5,7 @@ using Vote.Monitor.Domain.Entities.FormBase.Questions;
 using Vote.Monitor.TestUtils.Fakes.Aggregates;
 using Vote.Monitor.TestUtils.Fakes.Aggregates.Answers;
 using Vote.Monitor.TestUtils.Fakes.Aggregates.Questions;
+using Vote.Monitor.TestUtils.Utils;
 
 namespace Vote.Monitor.Domain.UnitTests.Entities;
 
@@ -167,7 +168,7 @@ public class FormAggregateTests
         var submission = form.CreateFormSubmission(pollingStation, monitoringObserver, answers);
 
         // Assert
-        submission.NumberOfQuestionAnswered.Should().Be(6);
+        submission.NumberOfQuestionsAnswered.Should().Be(6);
     }
 
     [Fact]
@@ -217,10 +218,11 @@ public class FormAggregateTests
         form.FillIn(submission, updatedAnswers);
 
         // Assert
-        submission.NumberOfQuestionAnswered.Should().Be(6);
+        submission.NumberOfQuestionsAnswered.Should().Be(6);
     }
+   
     [Fact]
-    public void WhenFillingInSubmission_AndNullAnswers_ShouldClearAnswers()
+    public void WhenFillingInSubmission_EmptyAnswers_ShouldClearAnswers()
     {
         // Arrange
         var electionRound = new ElectionRoundAggregateFaker().Generate();
@@ -259,11 +261,56 @@ public class FormAggregateTests
         var submission = form.CreateFormSubmission(pollingStation, monitoringObserver, initialAnswers);
 
         // Act
+        form.FillIn(submission, []);
+
+        // Assert
+        submission.NumberOfQuestionsAnswered.Should().Be(0);
+        submission.NumberOfFlaggedAnswers.Should().Be(0);
+        submission.Answers.Should().HaveCount(0);
+    }
+    
+    [Fact]
+    public void WhenFillingInSubmission_EmptyAnswers_ShouldStayTheSame()
+    {
+        // Arrange
+        var electionRound = new ElectionRoundAggregateFaker().Generate();
+        var monitoringNgo = new MonitoringNgoAggregateFaker().Generate();
+        var pollingStation = new PollingStationFaker().Generate();
+        var monitoringObserver = new MonitoringObserverFaker().Generate();
+
+        var textQuestion = new TextQuestionFaker().Generate();
+        var dateQuestion = new DateQuestionFaker().Generate();
+        var ratingQuestion = new RatingQuestionFaker().Generate();
+        var numberQuestion = new NumberQuestionFaker().Generate();
+        var singleSelectQuestion = new SingleSelectQuestionFaker().Generate();
+        var multiSelectQuestion = new MultiSelectQuestionFaker().Generate();
+
+        var questions = new BaseQuestion[]
+        {
+            textQuestion,
+            dateQuestion,
+            ratingQuestion,
+            numberQuestion,
+            singleSelectQuestion,
+            multiSelectQuestion,
+        };
+
+        var form = Form.Create(electionRound, monitoringNgo, FormType.ClosingAndCounting, "", new TranslatedString(), new TranslatedString(), "EN", ["EN"], questions);
+        List<BaseAnswer> initialAnswers = [
+            new SingleSelectAnswerFaker(singleSelectQuestion),
+            new MultiSelectAnswerFaker(multiSelectQuestion),
+            new TextAnswerFaker(textQuestion.Id),
+            new NumberAnswerFaker(numberQuestion.Id),
+            new RatingAnswerFaker(ratingQuestion.Id),
+            new DateAnswerFaker(dateQuestion.Id),
+        ];
+
+        var submission = form.CreateFormSubmission(pollingStation, monitoringObserver, initialAnswers);
+
+        // Act
         form.FillIn(submission, null);
 
         // Assert
-        submission.NumberOfQuestionAnswered.Should().Be(0);
-        submission.NumberOfFlaggedAnswers.Should().Be(0);
-        submission.Answers.Should().HaveCount(0);
+        submission.Answers.Should().HaveCount(6);
     }
 }

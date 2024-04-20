@@ -68,7 +68,7 @@ public class FormSubmissionsAggregate
 
         SubmissionCount++;
         TotalNumberOfFlaggedAnswers += formSubmission.NumberOfFlaggedAnswers;
-        TotalNumberOfQuestionsAnswered += formSubmission.NumberOfQuestionAnswered;
+        TotalNumberOfQuestionsAnswered += formSubmission.NumberOfQuestionsAnswered;
 
         foreach (var answer in formSubmission.Answers)
         {
