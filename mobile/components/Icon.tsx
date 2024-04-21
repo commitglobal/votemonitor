@@ -38,6 +38,7 @@ import LoginLogo from "../assets/icons/VM login logo.svg";
 import InfoCircle from "../assets/icons/Information circle.svg";
 import EmailSent from "../assets/icons/Email sent.svg";
 import UndrawInbox from "../assets/icons/undraw_inbox_oppv.svg";
+import UndrawReading from "../assets/icons/undraw_reading_book.svg";
 
 import { styled, View } from "tamagui";
 import { StyleProp, ViewStyle } from "react-native";
@@ -120,6 +121,7 @@ export const defaultIcon = React.forwardRef(
       infoCircle: <InfoCircle fill={color} width={size} height={size} />,
       emailSent: <EmailSent fill={color} width={size} height={size} />,
       undrawInbox: <UndrawInbox fill={color} width={size} height={size} />,
+      undrawReading: <UndrawReading fill={color} width={size} height={size} />,
     };
 
     return (
