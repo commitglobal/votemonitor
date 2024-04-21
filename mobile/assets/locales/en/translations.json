@@ -123,5 +123,9 @@
       "helper": "The selected form is available in multiple languages. Please select which one you would like to continue with.",
       "error": "Please select one of the options"
     }
+  },
+  "inbox_empty": {
+    "title": "No message received yet",
+    "paragraph": "Push messages and alerts from your organization will appear here."
   }
 }
