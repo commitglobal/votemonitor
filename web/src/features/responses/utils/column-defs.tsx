@@ -1,14 +1,14 @@
 import type { ColumnDef, VisibilityState } from '@tanstack/react-table';
 import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
-import type { FormSubmissionByEntry } from '../models/form-submission';
+import type { FormSubmissionByEntry, FormSubmissionByForm, FormSubmissionByObserver } from '../models/form-submission';
 
 export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry>[] = [
-  // {
-  //   header: ({ column }) => <DataTableColumnHeader title='Entry ID' column={column} />,
-  //   accessorKey: 'entryId',
-  //   enableSorting: true,
-  //   enableGlobalFilter: true,
-  // },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Entry ID' column={column} />,
+    accessorKey: 'id',
+    enableSorting: true,
+    enableGlobalFilter: true,
+  },
   {
     header: ({ column }) => <DataTableColumnHeader title='Time submitted' column={column} />,
     accessorKey: 'submittedAt',
@@ -107,6 +107,7 @@ export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry>[
 ];
 
 export const formSubmissionsByEntryDefaultColumns: VisibilityState = {
+  id: false,
   submittedAt: true,
   formType: true,
   pollingStationNumber: true,
@@ -117,3 +118,98 @@ export const formSubmissionsByEntryDefaultColumns: VisibilityState = {
   numberOfQuestionAnswered: true,
   numberOfFlaggedAnswers: true,
 };
+
+export const formSubmissionsByObserverColumnDefs: ColumnDef<FormSubmissionByObserver>[] = [
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Observer name' column={column} />,
+    accessorKey: 'observerName',
+    enableSorting: true,
+    enableGlobalFilter: true,
+    cell: ({ row }) => (
+      <div>
+        {row.original.firstName} {row.original.lastName}
+      </div>
+    ),
+  },
+  // {
+  //   header: ({ column }) => <DataTableColumnHeader title='Observer contact' column={column} />,
+  //   accessorKey: 'contact',
+  //   enableSorting: true,
+  //   enableGlobalFilter: true,
+  // },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Observer tags' column={column} />,
+    accessorKey: 'tags',
+    enableSorting: true,
+    enableGlobalFilter: true,
+  },
+  // {
+  //   header: ({ column }) => <DataTableColumnHeader title='Locations' column={column} />,
+  //   accessorKey: 'locations',
+  //   enableSorting: true,
+  //   enableGlobalFilter: true,
+  // },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Forms' column={column} />,
+    accessorKey: 'numberOfFormsSubmitted',
+    enableSorting: true,
+    enableGlobalFilter: true,
+  },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Flagged answers' column={column} />,
+    accessorKey: 'numberOfFlaggedAnswers',
+    enableSorting: true,
+    enableGlobalFilter: true,
+  },
+  // {
+  //   header: ({ column }) => <DataTableColumnHeader title='Status' column={column} />,
+  //   accessorKey: 'formStatus',
+  //   enableSorting: true,
+  //   enableGlobalFilter: true,
+  // },
+];
+
+export const formSubmissionsByFormColumnDefs: ColumnDef<FormSubmissionByForm>[] = [
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Form name' column={column} />,
+    accessorKey: 'name',
+    enableSorting: true,
+    enableGlobalFilter: true,
+  },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Form type' column={column} />,
+    accessorKey: 'formType',
+    enableSorting: true,
+    enableGlobalFilter: true,
+  },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Language' column={column} />,
+    accessorKey: 'defaultLanguage',
+    enableSorting: true,
+    enableGlobalFilter: true,
+  },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Responses' column={column} />,
+    accessorKey: 'totalNumberOfQuestionsAnswered',
+    enableSorting: true,
+    enableGlobalFilter: true,
+  },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Flagged answers' column={column} />,
+    accessorKey: 'totalNumberOfFlaggedAnswers',
+    enableSorting: true,
+    enableGlobalFilter: true,
+  },
+  // {
+  //   header: ({ column }) => <DataTableColumnHeader title='Question notes' column={column} />,
+  //   accessorKey: 'totalNumberOfNotes',
+  //   enableSorting: true,
+  //   enableGlobalFilter: true,
+  // },
+  // {
+  //   header: ({ column }) => <DataTableColumnHeader title='Media files' column={column} />,
+  //   accessorKey: 'totalNumberOfUploads',
+  //   enableSorting: true,
+  //   enableGlobalFilter: true,
+  // },
+];

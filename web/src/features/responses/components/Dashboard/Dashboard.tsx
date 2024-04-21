@@ -16,8 +16,17 @@ import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataT
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { formSubmissionsByEntryColumnDefs, formSubmissionsByEntryDefaultColumns } from '../../utils/column-defs';
-import { useFormSubmissionsByEntry } from '../../hooks/form-submissions-queries';
+import {
+  useFormSubmissionsByEntry,
+  useFormSubmissionsByForm,
+  useFormSubmissionsByObserver,
+} from '../../hooks/form-submissions-queries';
+import {
+  formSubmissionsByEntryColumnDefs,
+  formSubmissionsByEntryDefaultColumns,
+  formSubmissionsByFormColumnDefs,
+  formSubmissionsByObserverColumnDefs,
+} from '../../utils/column-defs';
 
 type FilterBy = 'byEntry' | 'byObserver' | 'byForm';
 
@@ -91,6 +100,18 @@ export default function ResponsesDashboard(): ReactElement {
                   columns={formSubmissionsByEntryColumnDefs}
                   useQuery={useFormSubmissionsByEntry}
                 />
+              )}
+              {byFilter === 'byObserver' && (
+                <QueryParamsDataTable
+                  columns={formSubmissionsByObserverColumnDefs}
+                  useQuery={useFormSubmissionsByObserver}
+                />
+              )}
+              {byFilter === 'byForm' && (
+                // @todo will not work, needs items prop
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
+                <QueryParamsDataTable columns={formSubmissionsByFormColumnDefs} useQuery={useFormSubmissionsByForm} />
               )}
             </CardContent>
           </Card>
