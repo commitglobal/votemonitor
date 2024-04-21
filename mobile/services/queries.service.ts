@@ -138,11 +138,14 @@ export const usePollingStationsVisits = (electionRoundId: string | undefined) =>
   });
 };
 
-export const usePollingStationByParentID = (parentId: number | null) => {
+export const usePollingStationByParentID = (
+  parentId: number | null,
+  electionRoundId: string | undefined,
+) => {
   return useQuery<PollingStationNomenclatorNodeVM[]>({
     queryKey: pollingStationsKeys.nomenclatorList(parentId),
     queryFn: async () => {
-      const data = await DB.getPollingStationsByParentId(parentId);
+      const data = await DB.getPollingStationsByParentId(parentId, electionRoundId!);
       const mapped: PollingStationNomenclatorNodeVM[] = data?.map((item) => ({
         id: item._id,
         name: item.name,
@@ -152,7 +155,7 @@ export const usePollingStationByParentID = (parentId: number | null) => {
       }));
       return mapped;
     },
-    enabled: !!parentId,
+    enabled: !!parentId && !!electionRoundId,
     initialData: [],
     staleTime: 0,
     networkMode: "always",

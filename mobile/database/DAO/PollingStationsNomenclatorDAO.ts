@@ -91,10 +91,13 @@ export const deleteEverything = () => {
  * @param {number} [parentId=-1] we save top-level nodes with -1
  * @returns {Promise<PollingStationsNom[]>}
  */
-export const getPollingStationsByParentId = (parentId: number | null = -1) => {
+export const getPollingStationsByParentId = (
+  parentId: number | null = -1,
+  electionRoundId: string,
+) => {
   return database
     .get<PollingStationsNom>("polling_stations_nom")
-    .query(Q.where("parent_id", parentId))
+    .query(Q.where("parent_id", parentId), Q.where("election_round_id", electionRoundId))
     .fetch();
 };
 
