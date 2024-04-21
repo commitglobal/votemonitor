@@ -7,7 +7,7 @@ public record Response
 
 public class AggregatedFormOverview
 {
-    public string FormId { get; set; }
+    public Guid FormId { get; set; }
     public string FormCode { get; set; }
     public string FormType { get; set; }
     public int NumberOfSubmissions { get; set; }
