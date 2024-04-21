@@ -6,6 +6,7 @@ import {
   type PaginationState,
   type SortingState,
   useReactTable,
+  type VisibilityState,
 } from '@tanstack/react-table';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useState, type ReactElement } from 'react';
@@ -48,15 +49,22 @@ export interface DataTableProps<TData, TValue> {
    * Used by QueryParamsDataTable.
    */
   setSortingExt?: (p: SortingState) => void;
+
+  /**
+   * Externalize column visibility state to the parent component.
+   * Used by QueryParamsDataTable
+   */
+  columnVisibility?: VisibilityState;
 }
 
 export function DataTable<TData, TValue>({
+  columnVisibility,
   columns,
-  useQuery,
   paginationExt,
   setPaginationExt,
-  sortingExt,
   setSortingExt,
+  sortingExt,
+  useQuery,
 }: DataTableProps<TData, TValue>): ReactElement {
   let [pagination, setPagination]: [PaginationState, (p: PaginationState) => void] = useState({
     pageIndex: 0,
@@ -101,6 +109,7 @@ export function DataTable<TData, TValue>({
     state: {
       sorting,
       pagination,
+      columnVisibility,
     },
   });
 
@@ -123,9 +132,9 @@ export function DataTable<TData, TValue>({
           </TableHeader>
           <TableBody>
             {isFetching ? (
-              Array.from({ length: 5 }).map((_, index) => (
+              Array.from({ length: pagination.pageSize }).map((_, index) => (
                 <TableRow key={index}>
-                  {columns.map((_, index) => (
+                  {table.getVisibleLeafColumns().map((_, index) => (
                     <TableCell key={index}>
                       <Skeleton className='w-[100px] h-[20px] rounded-full' />
                     </TableCell>
