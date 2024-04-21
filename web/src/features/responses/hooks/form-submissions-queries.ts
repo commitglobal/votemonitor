@@ -3,6 +3,8 @@ import type { DataTableParameters, PageResponse } from '@/common/types';
 import type { FormSubmissionByEntry, FormSubmissionByForm, FormSubmissionByObserver } from '../models/form-submission';
 import { authApi } from '@/common/auth-api';
 
+const STALE_TIME = 1000 * 60; // one minute
+
 type FormSubmissionsByEntryResponse = PageResponse<FormSubmissionByEntry>;
 
 type UseFormSubmissionsByEntryResult = UseQueryResult<FormSubmissionsByEntryResponse, Error>;
@@ -14,6 +16,7 @@ export function useFormSubmissionsByEntry(queryParams: DataTableParameters): Use
       const electionRoundId = localStorage.getItem('electionRoundId');
 
       const params = {
+        ...queryParams.otherParams,
         PageNumber: String(queryParams.pageNumber),
         PageSize: String(queryParams.pageSize),
         SortColumnName: queryParams.sortColumnName,
@@ -33,6 +36,7 @@ export function useFormSubmissionsByEntry(queryParams: DataTableParameters): Use
         items: response.data.items.map((submission) => ({ ...submission, id: submission.submissionId })),
       };
     },
+    staleTime: STALE_TIME,
   });
 }
 
@@ -47,6 +51,7 @@ export function useFormSubmissionsByObserver(queryParams: DataTableParameters): 
       const electionRoundId = localStorage.getItem('electionRoundId');
 
       const params = {
+        ...queryParams.otherParams,
         PageNumber: String(queryParams.pageNumber),
         PageSize: String(queryParams.pageSize),
         SortColumnName: queryParams.sortColumnName,
@@ -66,6 +71,7 @@ export function useFormSubmissionsByObserver(queryParams: DataTableParameters): 
         items: response.data.items.map((submission) => ({ ...submission, id: submission.monitoringObserverId })),
       };
     },
+    staleTime: STALE_TIME,
   });
 }
 
@@ -80,6 +86,7 @@ export function useFormSubmissionsByForm(queryParams: DataTableParameters): UseF
       const electionRoundId = localStorage.getItem('electionRoundId');
 
       const params = {
+        ...queryParams.otherParams,
         PageNumber: String(queryParams.pageNumber),
         PageSize: String(queryParams.pageSize),
         SortColumnName: queryParams.sortColumnName,
@@ -104,5 +111,6 @@ export function useFormSubmissionsByForm(queryParams: DataTableParameters): UseF
         })),
       };
     },
+    staleTime: STALE_TIME,
   });
 }

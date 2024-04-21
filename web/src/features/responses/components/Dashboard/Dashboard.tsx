@@ -1,5 +1,6 @@
 import { ChevronDownIcon, Cog8ToothIcon, FunnelIcon } from '@heroicons/react/24/outline';
-import { useState, type ReactElement } from 'react';
+import { useDebounce } from '@uidotdev/usehooks';
+import { type ChangeEvent, useState, type ReactElement } from 'react';
 import { CsvFileIcon } from '@/components/icons/CsvFileIcon';
 import Layout from '@/components/layout/Layout';
 import { Badge } from '@/components/ui/badge';
@@ -47,6 +48,14 @@ export default function ResponsesDashboard(): ReactElement {
   const [submissionsByEntryColumnVisibility, setSubmissionsByEntryColumnVisibility] = useState(
     formSubmissionsDefaultColumns.byEntry
   );
+
+  const [searchText, setSearchText] = useState('');
+  const debouncedSearchText = useDebounce(searchText, 300);
+
+  const handleSearchInput = (ev: ChangeEvent<HTMLInputElement>): void => {
+    const value = ev.currentTarget.value;
+    if (!value || value.length >= 2) setSearchText(ev.currentTarget.value);
+  };
 
   return (
     <Layout title='Responses' subtitle='View all form answers and other issues reported by your observers.  '>
@@ -97,7 +106,7 @@ export default function ResponsesDashboard(): ReactElement {
               <Separator />
 
               <div className='px-6 flex justify-end gap-4'>
-                <Input className='w-[400px]' placeholder='Search' />
+                <Input className='w-[400px]' onChange={handleSearchInput} placeholder='Search' />
                 <FunnelIcon className='w-[20px] text-purple-900 cursor-pointer' />
 
                 <DropdownMenu>
@@ -129,6 +138,7 @@ export default function ResponsesDashboard(): ReactElement {
                   columnVisibility={submissionsByEntryColumnVisibility}
                   columns={formSubmissionsByEntryColumnDefs}
                   useQuery={useFormSubmissionsByEntry}
+                  queryParams={{ formCodeFilter: debouncedSearchText }}
                 />
               )}
 
@@ -137,6 +147,7 @@ export default function ResponsesDashboard(): ReactElement {
                   columnVisibility={submissionsByEntryColumnVisibility}
                   columns={formSubmissionsByObserverColumnDefs}
                   useQuery={useFormSubmissionsByObserver}
+                  queryParams={{ observerNameFilter: debouncedSearchText }}
                 />
               )}
 
@@ -145,6 +156,7 @@ export default function ResponsesDashboard(): ReactElement {
                   columnVisibility={submissionsByEntryColumnVisibility}
                   columns={formSubmissionsByFormColumnDefs}
                   useQuery={useFormSubmissionsByForm}
+                  queryParams={{ formCodeFilter: debouncedSearchText }}
                 />
               )}
             </CardContent>
