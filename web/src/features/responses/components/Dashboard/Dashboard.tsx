@@ -7,9 +7,12 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   DropdownMenu,
+  DropdownMenuCheckboxItem,
   DropdownMenuContent,
+  DropdownMenuLabel,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
@@ -23,12 +26,14 @@ import {
 } from '../../hooks/form-submissions-queries';
 import {
   formSubmissionsByEntryColumnDefs,
-  formSubmissionsByEntryDefaultColumns,
   formSubmissionsByFormColumnDefs,
   formSubmissionsByObserverColumnDefs,
 } from '../../utils/column-defs';
-
-type FilterBy = 'byEntry' | 'byObserver' | 'byForm';
+import {
+  columnVisibilityOptions,
+  formSubmissionsDefaultColumns,
+  type FilterBy,
+} from '../../utils/column-visibility-options';
 
 const viewBy: Record<FilterBy, string> = {
   byEntry: 'View by entry',
@@ -38,6 +43,10 @@ const viewBy: Record<FilterBy, string> = {
 
 export default function ResponsesDashboard(): ReactElement {
   const [byFilter, setByFilter] = useState<FilterBy>('byEntry');
+
+  const [submissionsByEntryColumnVisibility, setSubmissionsByEntryColumnVisibility] = useState(
+    formSubmissionsDefaultColumns.byEntry
+  );
 
   return (
     <Layout title='Responses' subtitle='View all form answers and other issues reported by your observers.  '>
@@ -73,6 +82,7 @@ export default function ResponsesDashboard(): ReactElement {
                       <DropdownMenuRadioGroup
                         onValueChange={(value) => {
                           setByFilter(value as FilterBy);
+                          setSubmissionsByEntryColumnVisibility(formSubmissionsDefaultColumns[value as FilterBy]);
                         }}
                         value={byFilter}>
                         {Object.entries(viewBy).map(([value, label]) => (
@@ -89,29 +99,56 @@ export default function ResponsesDashboard(): ReactElement {
               <div className='px-6 flex justify-end gap-4'>
                 <Input className='w-[400px]' placeholder='Search' />
                 <FunnelIcon className='w-[20px] text-purple-900 cursor-pointer' />
-                <Cog8ToothIcon className='w-[20px] text-purple-900 cursor-pointer' />
+
+                <DropdownMenu>
+                  <DropdownMenuTrigger>
+                    <Cog8ToothIcon className='w-[20px] text-purple-900 cursor-pointer' />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuLabel>Table columns</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    {columnVisibilityOptions[byFilter].map((option) => (
+                      <DropdownMenuCheckboxItem
+                        key={option.id}
+                        checked={submissionsByEntryColumnVisibility[option.id]}
+                        disabled={!option.enableHiding}
+                        onCheckedChange={(checked) => {
+                          setSubmissionsByEntryColumnVisibility((prev) => ({ ...prev, [option.id]: checked }));
+                        }}>
+                        {option.label}
+                      </DropdownMenuCheckboxItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             </CardHeader>
 
             <CardContent>
               {byFilter === 'byEntry' && (
                 <QueryParamsDataTable
-                  columnVisibility={formSubmissionsByEntryDefaultColumns}
+                  columnVisibility={submissionsByEntryColumnVisibility}
                   columns={formSubmissionsByEntryColumnDefs}
                   useQuery={useFormSubmissionsByEntry}
                 />
               )}
+
               {byFilter === 'byObserver' && (
                 <QueryParamsDataTable
+                  columnVisibility={submissionsByEntryColumnVisibility}
                   columns={formSubmissionsByObserverColumnDefs}
                   useQuery={useFormSubmissionsByObserver}
                 />
               )}
+
               {byFilter === 'byForm' && (
-                // @todo will not work, needs items prop
+                // @todo will not work, needs support in table component
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-ignore
-                <QueryParamsDataTable columns={formSubmissionsByFormColumnDefs} useQuery={useFormSubmissionsByForm} />
+                <QueryParamsDataTable
+                  columnVisibility={submissionsByEntryColumnVisibility}
+                  columns={formSubmissionsByFormColumnDefs}
+                  useQuery={useFormSubmissionsByForm}
+                />
               )}
             </CardContent>
           </Card>

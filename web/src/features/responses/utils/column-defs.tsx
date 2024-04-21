@@ -1,4 +1,4 @@
-import type { ColumnDef, VisibilityState } from '@tanstack/react-table';
+import type { ColumnDef } from '@tanstack/react-table';
 import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
 import type { FormSubmissionByEntry, FormSubmissionByForm, FormSubmissionByObserver } from '../models/form-submission';
 
@@ -105,19 +105,6 @@ export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry>[
   //   enableGlobalFilter: true,
   // },
 ];
-
-export const formSubmissionsByEntryDefaultColumns: VisibilityState = {
-  id: false,
-  submittedAt: true,
-  formType: true,
-  pollingStationNumber: true,
-  pollingStationLevel1: false,
-  pollingStationLevel2: false,
-  pollingStationLevel3: false,
-  observerName: false,
-  numberOfQuestionAnswered: true,
-  numberOfFlaggedAnswers: true,
-};
 
 export const formSubmissionsByObserverColumnDefs: ColumnDef<FormSubmissionByObserver>[] = [
   {
