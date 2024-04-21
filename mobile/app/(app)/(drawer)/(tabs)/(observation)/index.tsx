@@ -185,7 +185,7 @@ const Index = () => {
 
   const {
     isLoading,
-    enoughDataForOffline,
+    notEnoughDataForOffline,
     electionRounds,
     visits,
     selectedPollingStation,
@@ -275,15 +275,15 @@ const Index = () => {
   if (isLoading) {
     return <LoadingScreen />;
   } else {
-    if (!electionRounds?.length) {
+    if (electionRounds && !electionRounds.length) {
       return <NoElectionRounds />;
     }
 
-    if (visits.length === 0) {
+    if (visits && !visits.length) {
       return <NoVisitsExist />;
     }
 
-    if (!enoughDataForOffline) {
+    if (notEnoughDataForOffline) {
       return <NotEnoughData />;
     }
   }
