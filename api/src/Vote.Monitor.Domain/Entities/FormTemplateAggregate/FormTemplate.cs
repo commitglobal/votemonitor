@@ -12,7 +12,7 @@ public class FormTemplate : AuditableBaseEntity, IAggregateRoot
     public TranslatedString Description { get; private set; }
     public FormTemplateStatus Status { get; private set; }
     public string[] Languages { get; private set; } = [];
-
+    public int NumberOfQuestions { get; private set; }
     public IReadOnlyList<BaseQuestion> Questions { get; private set; } = new List<BaseQuestion>().AsReadOnly();
 
     private FormTemplate(FormTemplateType formTemplateType,
@@ -74,6 +74,7 @@ public class FormTemplate : AuditableBaseEntity, IAggregateRoot
         FormTemplateType = formTemplateType;
         Languages = languages.ToArray();
         Questions = questions.ToList().AsReadOnly();
+        NumberOfQuestions = Questions.Count;
     }
 
 #pragma warning disable CS8618 // Required by Entity Framework
