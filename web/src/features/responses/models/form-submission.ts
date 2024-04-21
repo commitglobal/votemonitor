@@ -11,7 +11,7 @@ export enum FormStatus {
 }
 
 export interface FormSubmissionByEntry {
-  id: string;
+  email: string;
   firstName: string;
   formCode: string;
   formType: FormType;
@@ -20,56 +20,40 @@ export interface FormSubmissionByEntry {
   numberOfFlaggedAnswers: number;
   numberOfQuestionAnswered: number;
   pollingStationId: string;
-  pollingStationLevel1: string;
-  pollingStationLevel2: string;
-  pollingStationLevel3: string;
-  pollingStationLevel4: string;
-  pollingStationLevel5: string;
-  pollingStationNumber: string;
+  level1: string;
+  level2: string;
+  level3: string;
+  level4: string;
+  level5: string;
+  mediaFilesCount: number;
+  notesCount: number;
+  number: string;
+  phoneNumber: string;
   submissionId: string;
-  submittedAt: string;
+  tags: string[];
+  timeSubmitted: string;
+  status?: string;
 }
 
 export interface FormSubmissionByObserver {
+  email: string;
   firstName: string;
-  lastActivity: string;
   lastName: string;
   monitoringObserverId: string;
   numberOfFlaggedAnswers: number;
   numberOfFormsSubmitted: number;
-  numberOfNotes: number;
-  numberOfQuestionAnswered: number;
-  numberOfUploads: number;
+  numberOfLocations: number;
+  phoneNumber: string;
   tags: string[];
+  status?: string;
 }
 
 export interface FormSubmissionByForm {
-  electionRoundId: string;
-  monitoringNgoId: string;
   formId: string;
   formCode: string;
   formType: FormType;
-  name: string;
-  description: string;
-  defaultLanguage: string;
-  languages: string[];
-  responders: {
-    responderId: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    phoneNumber: string;
-  }[];
-  pollingStations: Record<string, string[]>;
-  submissionCount: number;
-  totalNumberOfQuestionsAnswered: number;
-  totalNumberOfFlaggedAnswers: number;
-  aggregates: Record<
-    string,
-    {
-      questionId: string;
-      answersAggregated: number;
-      responders: string[];
-    }
-  >;
+  numberOfSubmissions: number;
+  numberOfFlaggedAnswers: number;
+  numberOfNotes: number;
+  numberOfMediaFiles: number;
 }
