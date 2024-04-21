@@ -81,7 +81,7 @@ export type PollingStationVisitsAPIResponse = {
     pollingStationId: string;
     visitedAt: string; // ISO date
     address: string;
-    number: number;
+    number: string;
   }[];
 };
 

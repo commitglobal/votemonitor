@@ -10,5 +10,5 @@ export type PollingStationVisitVM = {
   pollingStationId: string;
   visitedAt: string; // ISO date
   address: string;
-  number: number;
+  number: string;
 };
