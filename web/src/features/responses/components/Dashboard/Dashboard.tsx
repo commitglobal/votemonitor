@@ -141,9 +141,6 @@ export default function ResponsesDashboard(): ReactElement {
               )}
 
               {byFilter === 'byForm' && (
-                // @todo will not work, needs support in table component
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
                 <QueryParamsDataTable
                   columnVisibility={submissionsByEntryColumnVisibility}
                   columns={formSubmissionsByFormColumnDefs}
@@ -154,7 +151,7 @@ export default function ResponsesDashboard(): ReactElement {
           </Card>
         </TabsContent>
 
-        <TabsContent value='quick-reports'>quick reports</TabsContent>
+        <TabsContent value='quick-reports'>TBD</TabsContent>
       </Tabs>
     </Layout>
   );

@@ -69,7 +69,7 @@ export function useFormSubmissionsByObserver(queryParams: DataTableParameters): 
   });
 }
 
-type FormSubmissionsByFormResponse = { formSubmissionsAggregates: FormSubmissionByForm[] };
+type FormSubmissionsByFormResponse = PageResponse<FormSubmissionByForm>;
 
 type UseFormSubmissionsByFormResult = UseQueryResult<FormSubmissionsByFormResponse, Error>;
 
@@ -87,7 +87,7 @@ export function useFormSubmissionsByForm(queryParams: DataTableParameters): UseF
       };
       const searchParams = new URLSearchParams(params);
 
-      const response = await authApi.get<FormSubmissionsByFormResponse>(
+      const response = await authApi.get<{ aggregatedForms: FormSubmissionByForm[] }>(
         `/election-rounds/${electionRoundId}/form-submissions:byForm`,
         {
           params: searchParams,
@@ -95,8 +95,10 @@ export function useFormSubmissionsByForm(queryParams: DataTableParameters): UseF
       );
 
       return {
-        ...response.data,
-        items: response.data.formSubmissionsAggregates.map((submission) => ({
+        currentPage: 1,
+        pageSize: queryParams.pageSize,
+        totalCount: response.data.aggregatedForms.length,
+        items: response.data.aggregatedForms.map((submission) => ({
           ...submission,
           id: submission.formId,
         })),
