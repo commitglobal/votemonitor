@@ -64,12 +64,17 @@ public static class AnswerMapper
         }
     }
 
-    private static IReadOnlyList<SelectedOption> ToEntities(IEnumerable<SelectedOptionRequest> options)
+    private static IReadOnlyList<SelectedOption> ToEntities(IEnumerable<SelectedOptionRequest>? options)
     {
-        return options
-            .Select(ToEntity)
-            .ToList()
-            .AsReadOnly();
+        if (options is not null)
+        {
+            return options
+                .Select(x=> ToEntity(x)!)
+                .ToList()
+                .AsReadOnly();
+        }
+
+        return Array.Empty<SelectedOption>();
     }
 
     private static SelectedOption? ToEntity(SelectedOptionRequest? option)
