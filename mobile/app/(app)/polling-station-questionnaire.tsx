@@ -42,7 +42,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 const PollingStationQuestionnaire = () => {
   const queryClient = useQueryClient();
   const { t } = useTranslation("polling_station_information");
-  const [open, setOpen] = useState(false);
+  const [openContextualMenu, setOpenContextualMenu] = useState(false);
   const insets = useSafeAreaInsets();
 
   const { activeElectionRound, selectedPollingStation } = useUserData();
@@ -182,6 +182,22 @@ const PollingStationQuestionnaire = () => {
     }
   };
 
+  const resetFormValues = () => {
+    const formFields: Record<string, any> = Object.keys(questions).reduce(
+      (acc: Record<string, any>, questionId: string) => {
+        acc[questionId] = "";
+        return acc;
+      },
+      {},
+    );
+
+    reset(formFields);
+
+    if (openContextualMenu) {
+      setOpenContextualMenu(false);
+    }
+  };
+
   const setFormDefaultValues = () => {
     const formFields: Record<string, any> = Object.keys(answers).reduce(
       (acc: Record<string, any>, questionId: string) => {
@@ -220,13 +236,7 @@ const PollingStationQuestionnaire = () => {
     return formFields;
   };
 
-  const {
-    control,
-    handleSubmit,
-    // formState: { errors },
-    getValues,
-    setValue,
-  } = useForm({
+  const { control, handleSubmit, reset } = useForm({
     defaultValues: setFormDefaultValues(),
   });
   return (
@@ -246,7 +256,7 @@ const PollingStationQuestionnaire = () => {
           leftIcon={<Icon icon="chevronLeft" color="white" />}
           rightIcon={<Icon icon="dotsVertical" color="white" />}
           onLeftPress={() => router.back()}
-          onRightPress={() => setOpen(true)}
+          onRightPress={() => setOpenContextualMenu(true)}
         />
         <YStack padding="$md" gap="$lg">
           {formStructure?.questions.map((question: ApiFormQuestion) => {
@@ -441,7 +451,11 @@ const PollingStationQuestionnaire = () => {
 
             return <Typography key={question.id}></Typography>;
           })}
-          <OptionsSheet open={open} setOpen={setOpen} onClear={() => console.log("clear form")} />
+          <OptionsSheet
+            open={openContextualMenu}
+            setOpen={setOpenContextualMenu}
+            onClear={() => resetFormValues()}
+          />
         </YStack>
       </Screen>
 
@@ -475,7 +489,7 @@ interface OptionsSheetProps {
 }
 
 export const OptionsSheet = (props: OptionsSheetProps) => {
-  const { open, setOpen } = props;
+  const { open, setOpen, onClear } = props;
   const { t } = useTranslation("bottom_sheets");
 
   return (
@@ -497,7 +511,7 @@ export const OptionsSheet = (props: OptionsSheetProps) => {
         <Icon paddingVertical="$md" alignSelf="center" icon="dragHandle"></Icon>
 
         <View paddingVertical="$xxs" paddingHorizontal="$sm">
-          <Typography preset="body1" color="$gray7" lineHeight={24}>
+          <Typography preset="body1" color="$gray7" lineHeight={24} onPress={onClear}>
             {t("observations.actions.clear_form")}
           </Typography>
         </View>
