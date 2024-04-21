@@ -3,6 +3,8 @@ import { AuthContext } from "./auth-context";
 import API from "../../services/api";
 import * as SecureStore from "expo-secure-store";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { QueryClient } from "@tanstack/react-query";
+import * as DB from "../../database/DAO/PollingStationsNomenclatorDAO";
 
 const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -33,11 +35,14 @@ const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
     }
   };
 
-  const signOut = async () => {
+  const signOut = async (queryClient: QueryClient) => {
     setIsAuthenticated(false);
-    // remove token
+
+    queryClient.clear();
+
     await SecureStore.deleteItemAsync("access_token");
     await AsyncStorage.clear();
+    await DB.deleteEverything();
   };
 
   return (

@@ -15,6 +15,11 @@
         "simulator": true
       }
     },
+    "android-apk": {
+      "android": {
+        "buildType": "apk"
+      }
+    },
     "preview": {
       "distribution": "internal",
       "channel": "testing" // https://github.com/expo/eas-cli#eas-channeledit-name

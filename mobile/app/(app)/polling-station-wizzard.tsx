@@ -92,7 +92,10 @@ const PollingStationWizzardContent = ({
     isLoading: isLoadingPollingStations,
     isFetching: isFetchingPollingStations,
     error: pollingStationsError,
-  } = usePollingStationByParentID(activeStep?.id ? +activeStep.id.toFixed(1) : -1);
+  } = usePollingStationByParentID(
+    activeStep?.id ? +activeStep.id.toFixed(1) : -1,
+    activeElectionRound?.id,
+  );
 
   const pollingStationsMappedOptions = useMemo(
     () => mapPollingStationOptionsToSelectValues(pollingStationOptions),

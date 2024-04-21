@@ -11,15 +11,10 @@ interface FormData {
 }
 
 const Inbox = () => {
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FormData>();
+  const { control, handleSubmit } = useForm<FormData>();
   const onSubmit = (data: any) => {
     console.log(data);
   };
-  console.log("errors:", errors);
 
   return (
     <View style={{ backgroundColor: "white" }}>

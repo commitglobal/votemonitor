@@ -8,19 +8,23 @@ import {
 } from "../../../../../../services/queries.service";
 import { useUserData } from "../../../../../../contexts/user/UserContext.provider";
 import { Typography } from "../../../../../../components/Typography";
-import { Card, XStack, YStack } from "tamagui";
+import { Card, Sheet, XStack, YStack } from "tamagui";
 import CircularProgress from "../../../../../../components/CircularProgress";
 import Button from "../../../../../../components/Button";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { ListView } from "../../../../../../components/ListView";
 import CardFooter from "../../../../../../components/CardFooter";
 import Badge from "../../../../../../components/Badge";
-
-enum FormStatus {
-  NOT_STARTED = "Not Started",
-  IN_PROGRESS = "In progress",
-  COMPLETED = "Completed",
-}
+import {
+  FormStatus,
+  mapAPIAnswersToFormAnswers,
+  mapFormStateStatus,
+} from "../../../../../../services/form.parser";
+import { ApiFormAnswer } from "../../../../../../services/interfaces/answer.type";
+import { Dimensions, Platform } from "react-native";
+import { useTranslation } from "react-i18next";
+import { FormStateToTextMapper } from "../../../../../../components/FormCard";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface FormOverviewProps {
   completedAnswers: number;
@@ -33,22 +37,23 @@ const FormOverview = ({
   numberOfQuestions,
   onFormActionClick,
 }: FormOverviewProps) => {
-  const formStatus = useMemo(() => {
-    if (completedAnswers === 0) return FormStatus.NOT_STARTED;
-    if (completedAnswers < numberOfQuestions) return FormStatus.IN_PROGRESS;
-    if (completedAnswers === numberOfQuestions) return FormStatus.COMPLETED;
-  }, [completedAnswers, numberOfQuestions]);
+  const formStatus = useMemo(
+    () => mapFormStateStatus(completedAnswers, numberOfQuestions),
+    [completedAnswers, numberOfQuestions],
+  );
+  const { t } = useTranslation("form_overview");
 
   return (
     <Card padding="$md">
       {/* //TODO: translations */}
       <Typography preset="body1" fontWeight="700">
-        Form overview
+        {t("form_overview.title")}
       </Typography>
       <XStack alignItems="center" justifyContent="space-between">
         <YStack gap="$sm">
           <Typography fontWeight="500" color="$gray5">
-            Form status: <Typography fontWeight="700">{formStatus}</Typography>
+            {t("form_overview.status")}:{" "}
+            <Typography fontWeight="700">{FormStateToTextMapper[formStatus]}</Typography>
           </Typography>
           <Typography fontWeight="500" color="$gray5">
             Answered questions:{" "}
@@ -72,10 +77,19 @@ const FormOverview = ({
   );
 };
 
+enum QuestionStatus {
+  ANSWERED = "answered",
+  NOT_ANSWERED = "not answered",
+}
+
+const QuestionStatusToTextWrapper = {
+  [QuestionStatus.ANSWERED]: "Answered",
+  [QuestionStatus.NOT_ANSWERED]: "Not Answered",
+};
 interface FormQuestionListItemProps {
   index: number;
   numberOfQuestions: number;
-  status: string;
+  status: QuestionStatus;
   question: string;
   onClick: () => void;
 }
@@ -91,7 +105,7 @@ const FormQuestionListItem = ({
     <YStack gap="$xxs">
       <XStack justifyContent="space-between">
         <Typography color="$gray5">{`${index}/${numberOfQuestions}`}</Typography>
-        <Badge status="Not started">{status}</Badge>
+        <Badge status={status}>{QuestionStatusToTextWrapper[status]}</Badge>
       </XStack>
       <Typography preset="body2">{question}</Typography>
     </YStack>
@@ -101,9 +115,9 @@ const FormQuestionListItem = ({
 
 const FormDetails = () => {
   const { formId, language } = useLocalSearchParams();
-  console.log("language", language);
-
   const { activeElectionRound, selectedPollingStation } = useUserData();
+  const [optionSheetOpen, setOptionSheetOpen] = useState(false);
+  const insets = useSafeAreaInsets();
 
   const {
     data: allForms,
@@ -117,25 +131,34 @@ const FormDetails = () => {
     error: answersError,
   } = useFormSubmissions(activeElectionRound?.id, selectedPollingStation?.pollingStationId);
 
-  const numberOfQuestions = useMemo(() => {
-    const form = allForms?.forms.find((form) => form.id === formId);
-    return form ? form.questions.length : 0;
-  }, [allForms]);
+  const answers: Record<string, ApiFormAnswer> = useMemo(() => {
+    const formSubmission = formSubmissions?.submissions.find(
+      (sub) => sub.formId === (formId as string),
+    );
+    return mapAPIAnswersToFormAnswers(formSubmission?.answers);
+  }, [formSubmissions]);
 
-  const numberOfAnswers = useMemo(() => {
+  const { questions, numberOfAnswers } = useMemo(() => {
+    const form = allForms?.forms.find((form) => form.id === formId);
     const submission = formSubmissions?.submissions.find(
       (submission) => submission.formId === formId,
     );
-    return submission ? submission.answers.length : 0;
-  }, [allForms]);
+    return {
+      questions: form?.questions.map((q) => ({
+        status: answers[q.id] ? QuestionStatus.ANSWERED : QuestionStatus.NOT_ANSWERED,
+        question: q.text[language as string],
+        id: q.id,
+      })),
+      numberOfAnswers: submission ? submission.answers.length : 0,
+    };
+  }, [allForms, formSubmissions]);
 
-  const questions = useMemo(() => {
+  const { numberOfQuestions, formTitle } = useMemo(() => {
     const form = allForms?.forms.find((form) => form.id === formId);
-    return form?.questions.map((q) => ({
-      status: "Not Answered",
-      question: q.text[language as string],
-      id: q.id,
-    }));
+    return {
+      numberOfQuestions: form ? form.questions.length : 0,
+      formTitle: `${form?.code} - ${form?.name[language as string]} (${language as string})`,
+    };
   }, [allForms]);
 
   const onQuestionItemClick = (questionId: string) => {
@@ -147,9 +170,11 @@ const FormDetails = () => {
     const form = allForms?.forms.find((form) => form.id === formId);
     // do not navigate if the form has no questions or not found
     if (!form || form.questions.length === 0) return;
-    return router.push(
-      `/form-questionnaire/${form?.questions[0].id}?formId=${formId}&language=${language}`,
-    );
+    // get the first unanswered question
+    const lastQ = questions?.find((q) => !answers[q.id]);
+    // if all questions are answered get the last question
+    const lastQId = lastQ?.id || form?.questions[form.questions.length - 1].id;
+    return router.push(`/form-questionnaire/${lastQId}?formId=${formId}&language=${language}`);
   };
 
   if (isLoadingForms || isLoadingAnswers) {
@@ -170,43 +195,87 @@ const FormDetails = () => {
       }}
     >
       <Header
-        title={`${formId}`}
+        title={`${formTitle}`}
         titleColor="white"
         barStyle="light-content"
         leftIcon={<Icon icon="chevronLeft" color="white" />}
         onLeftPress={() => router.back()}
+        rightIcon={<Icon icon="dotsVertical" color="white" />}
+        onRightPress={() => setOptionSheetOpen(true)}
       />
-      <YStack paddingTop={28} gap="$xl" paddingHorizontal="$md">
-        <FormOverview
-          completedAnswers={numberOfAnswers}
-          numberOfQuestions={numberOfQuestions}
-          onFormActionClick={onFormOverviewActionClick}
+      <YStack
+        paddingTop={28}
+        gap="$xl"
+        paddingHorizontal="$md"
+        height={
+          Platform.OS === "ios"
+            ? Dimensions.get("screen").height - 120
+            : Dimensions.get("screen").height * 1.4 // TODO: need to do something about this
+        }
+      >
+        <ListView<Pick<FormQuestionListItemProps, "question" | "status"> & { id: string }>
+          data={questions}
+          ListHeaderComponent={
+            <YStack gap="$xl" paddingBottom="$xxs">
+              <FormOverview
+                completedAnswers={numberOfAnswers}
+                numberOfQuestions={numberOfQuestions}
+                onFormActionClick={onFormOverviewActionClick}
+              />
+              <Typography preset="body1" fontWeight="700" gap="$xxs">
+                Questions
+              </Typography>
+            </YStack>
+          }
+          showsVerticalScrollIndicator={false}
+          bounces={false}
+          renderItem={({ item, index }) => {
+            return (
+              <FormQuestionListItem
+                key={index}
+                {...item}
+                index={index + 1}
+                numberOfQuestions={numberOfQuestions}
+                onClick={onQuestionItemClick.bind(null, item.id)}
+              />
+            );
+          }}
+          estimatedItemSize={100}
         />
-        <YStack gap="$xxs">
-          <Typography preset="body1" fontWeight="700" gap="$xxs">
-            Questions
-          </Typography>
-          <YStack height={600}>
-            <ListView<Pick<FormQuestionListItemProps, "question" | "status"> & { id: string }>
-              data={questions}
-              showsVerticalScrollIndicator={false}
-              bounces={false}
-              renderItem={({ item, index }) => {
-                return (
-                  <FormQuestionListItem
-                    key={index}
-                    {...item}
-                    index={index + 1}
-                    numberOfQuestions={numberOfQuestions}
-                    onClick={onQuestionItemClick.bind(null, item.id)}
-                  />
-                );
-              }}
-              estimatedItemSize={100}
-            />
-          </YStack>
-        </YStack>
       </YStack>
+      <Sheet
+        open={optionSheetOpen}
+        modal
+        native
+        onOpenChange={(option: boolean) => {
+          return setOptionSheetOpen(option);
+        }}
+        snapPointsMode="fit"
+        dismissOnSnapToBottom
+        zIndex={100_000}
+      >
+        <Sheet.Overlay />
+        <Sheet.Frame borderTopLeftRadius={28} borderTopRightRadius={28}>
+          <Icon alignSelf="center" icon="dragHandle"></Icon>
+          <YStack paddingHorizontal={28} paddingBottom={8 + insets.bottom}>
+            <Typography
+              preset="body1"
+              paddingTop="$md"
+              paddingBottom="$sm"
+              onPress={() => console.log("language action")}
+            >
+              Change language
+            </Typography>
+            <Typography
+              preset="body1"
+              paddingVertical="$sm"
+              onPress={() => console.log("clear form action")}
+            >
+              Clear form (delete all answers)
+            </Typography>
+          </YStack>
+        </Sheet.Frame>
+      </Sheet>
     </Screen>
   );
 };

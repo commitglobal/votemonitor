@@ -12,6 +12,8 @@ import Button from "../components/Button";
 import FormInput from "../components/FormInputs/FormInput";
 import { Control, Controller, FieldErrors, FieldValues, useForm } from "react-hook-form";
 import Card from "../components/Card";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { CURRENT_USER_STORAGE_KEY } from "../common/constants";
 
 interface FormData {
   email: string;
@@ -25,6 +27,7 @@ const Login = () => {
   const onLogin = async (formData: FormData) => {
     try {
       await signIn(formData.email, formData.password);
+      await AsyncStorage.setItem(CURRENT_USER_STORAGE_KEY, formData.email);
       router.replace("/");
     } catch (err) {
       console.error("Error while logging in...");
@@ -95,6 +98,10 @@ const LoginForm = ({
             value: true,
             message: t("form.email.required"),
           },
+          pattern: {
+            value: /\S+@\S+\.\S+/,
+            message: t("form.email.format"),
+          },
         }}
         render={({ field: { onChange, value } }) => (
           <YStack>
@@ -145,7 +152,13 @@ const LoginForm = ({
         )}
       />
 
-      <Typography textAlign="right" color="$purple5">
+      <Typography
+        textAlign="right"
+        color="$purple5"
+        onPress={() => {
+          router.push("./forgot-password");
+        }}
+      >
         {t("actions.forgot_password")}
       </Typography>
     </View>

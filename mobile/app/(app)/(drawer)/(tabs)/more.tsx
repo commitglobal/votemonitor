@@ -10,18 +10,32 @@ import { router, useNavigation } from "expo-router";
 import { useAuth } from "../../../../hooks/useAuth";
 import Header from "../../../../components/Header";
 import { DrawerActions } from "@react-navigation/native";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import Constants from "expo-constants";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { CURRENT_USER_STORAGE_KEY } from "../../../../common/constants";
 
 const More = () => {
   const navigation = useNavigation();
+  const queryClient = useQueryClient();
 
   const { t } = useTranslation("more");
 
   const { signOut } = useAuth();
 
   // TODO: Change these consts
-  const appVersion = "2.0.4";
+  const appVersion = Constants.expoConfig?.version;
   const appLanguage = "English (United States)";
   const URL = "https://www.google.com/";
+
+  const { data: currentUser } = useQuery({
+    queryKey: [CURRENT_USER_STORAGE_KEY],
+    queryFn: () => AsyncStorage.getItem(CURRENT_USER_STORAGE_KEY),
+  });
+
+  const logout = () => {
+    signOut(queryClient);
+  };
 
   return (
     <Screen
@@ -48,7 +62,12 @@ const More = () => {
           chevronRight={true}
           onClick={() => router.push("/change-language")}
         ></MenuItem>
-        <MenuItem label={t("change-password")} icon="changePassword" chevronRight={true}></MenuItem>
+        <MenuItem
+          label={t("change-password")}
+          icon="changePassword"
+          chevronRight={true}
+          onClick={() => router.push("/forgot-password")}
+        ></MenuItem>
         <MenuItem
           label={t("terms")}
           icon="termsConds"
@@ -73,7 +92,12 @@ const More = () => {
         ></MenuItem>
         <MenuItem label={t("support")} icon="contactNGO"></MenuItem>
         <MenuItem label={t("feedback")} icon="feedback"></MenuItem>
-        <MenuItem label={t("logout")} icon="logoutNoBackground" onClick={signOut}></MenuItem>
+        <MenuItem
+          label={t("logout")}
+          icon="logoutNoBackground"
+          onClick={logout}
+          helper={currentUser ? `Logged in as ${currentUser}` : ""}
+        ></MenuItem>
       </YStack>
     </Screen>
   );

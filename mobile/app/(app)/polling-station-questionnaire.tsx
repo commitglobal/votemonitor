@@ -42,7 +42,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 const PollingStationQuestionnaire = () => {
   const queryClient = useQueryClient();
   const { t } = useTranslation("polling_station_information");
-  const [open, setOpen] = useState(false);
+  const [openContextualMenu, setOpenContextualMenu] = useState(false);
   const insets = useSafeAreaInsets();
 
   const { activeElectionRound, selectedPollingStation } = useUserData();
@@ -156,14 +156,17 @@ const PollingStationQuestionnaire = () => {
             const selections: Record<string, { optionId: string; text: string }> = formData[
               questionId
             ] as Record<string, { optionId: string; text: string }>;
-            return {
-              $answerType: "multiSelectAnswer",
-              questionId,
-              selection: Object.values(selections).map((selection) => ({
-                optionId: selection.optionId,
-                text: selection.text,
-              })),
-            } as ApiFormAnswer;
+            const mappedSelections = Object.values(selections).map((selection) => ({
+              optionId: selection.optionId,
+              text: selection.text,
+            }));
+            return mappedSelections?.length
+              ? ({
+                  $answerType: "multiSelectAnswer",
+                  questionId,
+                  selection: mappedSelections,
+                } as ApiFormAnswer)
+              : undefined;
           }
           default:
             return undefined;
@@ -179,6 +182,22 @@ const PollingStationQuestionnaire = () => {
         answers,
       });
       router.back();
+    }
+  };
+
+  const resetFormValues = () => {
+    const formFields: Record<string, any> = Object.keys(questions).reduce(
+      (acc: Record<string, any>, questionId: string) => {
+        acc[questionId] = "";
+        return acc;
+      },
+      {},
+    );
+
+    reset(formFields);
+
+    if (openContextualMenu) {
+      setOpenContextualMenu(false);
     }
   };
 
@@ -220,13 +239,7 @@ const PollingStationQuestionnaire = () => {
     return formFields;
   };
 
-  const {
-    control,
-    handleSubmit,
-    // formState: { errors },
-    getValues,
-    setValue,
-  } = useForm({
+  const { control, handleSubmit, reset } = useForm({
     defaultValues: setFormDefaultValues(),
   });
   return (
@@ -246,7 +259,7 @@ const PollingStationQuestionnaire = () => {
           leftIcon={<Icon icon="chevronLeft" color="white" />}
           rightIcon={<Icon icon="dotsVertical" color="white" />}
           onLeftPress={() => router.back()}
-          onRightPress={() => setOpen(true)}
+          onRightPress={() => setOpenContextualMenu(true)}
         />
         <YStack padding="$md" gap="$lg">
           {formStructure?.questions.map((question: ApiFormQuestion) => {
@@ -441,7 +454,11 @@ const PollingStationQuestionnaire = () => {
 
             return <Typography key={question.id}></Typography>;
           })}
-          <OptionsSheet open={open} setOpen={setOpen} onClear={() => console.log("clear form")} />
+          <OptionsSheet
+            open={openContextualMenu}
+            setOpen={setOpenContextualMenu}
+            onClear={() => resetFormValues()}
+          />
         </YStack>
       </Screen>
 
@@ -475,23 +492,29 @@ interface OptionsSheetProps {
 }
 
 export const OptionsSheet = (props: OptionsSheetProps) => {
-  const { open, setOpen } = props;
+  const { open, setOpen, onClear } = props;
   const { t } = useTranslation("bottom_sheets");
 
   return (
     <Sheet
+      modal
       open={open}
       onOpenChange={() => setOpen(false)}
       snapPointsMode="fit"
-      modal={true}
       dismissOnSnapToBottom
     >
-      <Sheet.Overlay animation="lazy" enterStyle={{ opacity: 0 }} exitStyle={{ opacity: 0 }} />
-      <Sheet.Frame borderRadius={28} gap="$sm" paddingHorizontal="$md" paddingBottom="$xl">
+      <Sheet.Overlay animation="quick" enterStyle={{ opacity: 0 }} exitStyle={{ opacity: 0 }} />
+      <Sheet.Frame
+        borderTopLeftRadius={28}
+        borderTopRightRadius={28}
+        gap="$sm"
+        paddingHorizontal="$md"
+        paddingBottom="$xl"
+      >
         <Icon paddingVertical="$md" alignSelf="center" icon="dragHandle"></Icon>
 
         <View paddingVertical="$xxs" paddingHorizontal="$sm">
-          <Typography preset="body1" color="$gray7" lineHeight={24}>
+          <Typography preset="body1" color="$gray7" lineHeight={24} onPress={onClear}>
             {t("observations.actions.clear_form")}
           </Typography>
         </View>

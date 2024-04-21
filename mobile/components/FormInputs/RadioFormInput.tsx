@@ -5,7 +5,7 @@ import RadioInput from "../Inputs/RadioInput";
 
 interface RadioFormInputProps extends RadioGroupProps {
   //   question title
-  title: string;
+  title?: string;
   value: string;
   options: { id: string; value: string; label: string }[];
 }

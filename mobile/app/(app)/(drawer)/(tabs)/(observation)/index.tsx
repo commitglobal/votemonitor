@@ -1,5 +1,4 @@
 import React, { useMemo, useState } from "react";
-import { Dimensions } from "react-native";
 import { router, useNavigation } from "expo-router";
 import { Screen } from "../../../../../components/Screen";
 import { useUserData } from "../../../../../contexts/user/UserContext.provider";
@@ -29,13 +28,19 @@ import Button from "../../../../../components/Button";
 import Header from "../../../../../components/Header";
 import { Icon } from "../../../../../components/Icon";
 import { DrawerActions } from "@react-navigation/native";
+import { FormStatus, mapFormStateStatus } from "../../../../../services/form.parser";
 import {
   PollingStationInformationAPIPayload,
   PollingStationInformationAPIResponse,
   upsertPollingStationGeneralInformation,
 } from "../../../../../services/definitions.api";
-
-export type FormItemStatus = "not started" | "in progress" | "completed";
+import { useTranslation } from "react-i18next";
+import RadioFormInput from "../../../../../components/FormInputs/RadioFormInput";
+import { Controller, FieldError, FieldErrorsImpl, Merge, useForm } from "react-hook-form";
+import { Dimensions } from "react-native";
+import LoadingScreen from "../../../../../components/LoadingScreen";
+import NotEnoughData from "../../../../../components/NotEnoughData";
+import GenericErrorScreen from "../../../../../components/GenericErrorScreen";
 
 export type FormListItem = {
   id: string;
@@ -43,12 +48,14 @@ export type FormListItem = {
   options: string;
   numberOfQuestions: number;
   numberOfCompletedQuestions: number;
-  status: FormItemStatus;
+  languages: string[];
+  status: FormStatus;
 };
 
 const FormList = () => {
   const { activeElectionRound, selectedPollingStation } = useUserData();
   const [selectedFormId, setSelectedFormId] = useState<string | null>(null);
+  const { t } = useTranslation("form_overview");
 
   const {
     data: allForms,
@@ -61,26 +68,31 @@ const FormList = () => {
     isLoading: isLoadingAnswers,
     error: answersError,
   } = useFormSubmissions(activeElectionRound?.id, selectedPollingStation?.pollingStationId);
-  console.log("formSubmissions", formSubmissions?.submissions);
 
   const formList: FormListItem[] =
     allForms?.forms.map((form) => {
+      const numberOfAnswers =
+        formSubmissions?.submissions.find((sub) => sub.formId === form.id)?.answers.length || 0;
       return {
         id: form.id,
         name: `${form.code} - ${form.name.RO}`,
-        numberOfCompletedQuestions: 0,
+        numberOfCompletedQuestions: numberOfAnswers,
         numberOfQuestions: form.questions.length,
         options: `Available in ${Object.keys(form.name).join(", ")}`,
-        status: "not started",
+        status: mapFormStateStatus(numberOfAnswers, form.questions.length),
+        languages: form.languages,
       };
     }) || [];
 
-  const onConfirmFormLanguage = (language: string) => {
-    console.log("language", language);
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({});
 
+  const onConfirmFormLanguage = (language: string) => {
     // navigate to the language
     router.push(`/form-details/${selectedFormId}?language=${language}`);
-
     setSelectedFormId(null);
   };
 
@@ -100,30 +112,63 @@ const FormList = () => {
     <YStack gap="$xxs">
       <Typography>Forms</Typography>
       {/* TODO: the heigh should be number of forms * their height */}
-      <YStack height={Dimensions.get("screen").height}>
+      <YStack height={Dimensions.get("screen").height - 550}>
         <ListView<FormListItem>
           data={formList}
           showsVerticalScrollIndicator={false}
           bounces={false}
           renderItem={({ item, index }) => {
             return (
-              <FormCard
-                key={index}
-                form={item}
-                onPress={setSelectedFormId.bind(null, item.id)}
-                marginBottom="$xxs"
-              />
+              <>
+                <FormCard
+                  key={index}
+                  form={item}
+                  onPress={setSelectedFormId.bind(null, item.id)}
+                  marginBottom="$xxs"
+                />
+                <Controller
+                  key={item.id}
+                  name={item.name}
+                  control={control}
+                  rules={{
+                    required: { value: true, message: t("language_modal.error") },
+                  }}
+                  render={({ field: { onChange, value } }) => (
+                    <Dialog
+                      open={!!selectedFormId}
+                      header={
+                        <Typography preset="heading">{t("language_modal.header")}</Typography>
+                      }
+                      content={
+                        <DialogContent
+                          languages={item.languages}
+                          error={errors[item.name]}
+                          value={value}
+                          onChange={onChange}
+                        />
+                      }
+                      footer={
+                        <XStack gap="$md">
+                          <Button preset="chromeless" onPress={setSelectedFormId.bind(null, null)}>
+                            Cancel
+                          </Button>
+                          <Button
+                            onPress={handleSubmit(() => onConfirmFormLanguage(value))}
+                            flex={1}
+                          >
+                            Save
+                          </Button>
+                        </XStack>
+                      }
+                    />
+                  )}
+                />
+              </>
             );
           }}
           estimatedItemSize={100}
         />
       </YStack>
-      <Dialog
-        open={!!selectedFormId}
-        header={<Typography>Choose language</Typography>}
-        content={<Typography>Select language</Typography>}
-        footer={<Button onPress={onConfirmFormLanguage.bind(null, "EN")}>Confirm selection</Button>}
-      />
     </YStack>
   );
 };
@@ -223,25 +268,24 @@ const Index = () => {
   };
 
   if (error) {
-    return <Typography>Error while loading data {JSON.stringify(error)}</Typography>;
+    console.log(error);
+    return <GenericErrorScreen />;
   }
 
   if (isLoading) {
-    return <Typography>Loading...</Typography>;
-  }
+    return <LoadingScreen />;
+  } else {
+    if (!electionRounds?.length) {
+      return <NoElectionRounds />;
+    }
 
-  if (!enoughDataForOffline) {
-    return (
-      <Typography>Not enough data for offline, need to invalidate queries and retry...</Typography>
-    );
-  }
+    if (visits.length === 0) {
+      return <NoVisitsExist />;
+    }
 
-  if (!electionRounds?.length) {
-    return <NoElectionRounds />;
-  }
-
-  if (visits.length === 0) {
-    return <NoVisitsExist />;
+    if (!enoughDataForOffline) {
+      return <NotEnoughData />;
+    }
   }
 
   return (
@@ -302,6 +346,45 @@ const Index = () => {
         <FormList />
       </YStack>
     </Screen>
+  );
+};
+
+const DialogContent = ({
+  languages,
+  error,
+  value,
+  onChange,
+}: {
+  languages: string[];
+  error: FieldError | Merge<FieldError, FieldErrorsImpl<any>> | undefined;
+  value: string;
+  onChange: (...event: any[]) => void;
+}) => {
+  const { t } = useTranslation("form_overview");
+
+  const languageMapping: { [key: string]: string } = {
+    RO: "Romanian",
+    EN: "English",
+  };
+
+  const transformedLanguages = languages.map((language) => ({
+    id: language,
+    value: language,
+    // TODO: decide if we add the name to the label as well
+    label: languageMapping[language],
+  }));
+  return (
+    <YStack>
+      <Typography preset="body1" marginBottom="$lg">
+        {t("language_modal.helper")}
+      </Typography>
+      <RadioFormInput options={transformedLanguages} value={value} onValueChange={onChange} />
+      {error && (
+        <Typography marginTop="$sm" style={{ color: "red" }}>
+          {`${error.message}`}
+        </Typography>
+      )}
+    </YStack>
   );
 };
 

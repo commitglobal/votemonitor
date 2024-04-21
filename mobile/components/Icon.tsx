@@ -19,6 +19,7 @@ import DotsVertical from "../assets/icons/dots-vertical.svg";
 import Check from "../assets/icons/check.svg";
 import Calendar from "../assets/icons/Calendar.svg";
 import PeopleAddingVote from "../assets/icons/people-adding-vote.svg";
+import LoadingScreenDevice from "../assets/icons/loading-screen-device.svg";
 import MissingPollingStation from "../assets/icons/missing-polling-station.svg";
 import X from "../assets/icons/x.svg";
 import TermsConds from "../assets/icons/Terms conds.svg";
@@ -35,6 +36,7 @@ import DragHandle from "../assets/icons/Drag handle.svg";
 import Search from "../assets/icons/search.svg";
 import LoginLogo from "../assets/icons/VM login logo.svg";
 import InfoCircle from "../assets/icons/Information circle.svg";
+import EmailSent from "../assets/icons/Email sent.svg";
 
 import { styled, View } from "tamagui";
 import { StyleProp, ViewStyle } from "react-native";
@@ -98,6 +100,7 @@ export const defaultIcon = React.forwardRef(
       check: <Check fill={color} width={size} height={size} />,
       calendar: <Calendar fill={color} width={size} height={size} />,
       peopleAddingVote: <PeopleAddingVote fill={color} width={226} height={170} />,
+      loadingScreenDevice: <LoadingScreenDevice fill={color} width={226} height={170} />,
       missingPollingStation: <MissingPollingStation fill={color} width={224} height={170} />,
       x: <X fill={color} width={size} height={size} />,
       termsConds: <TermsConds fill={color} width={size} height={size} />,
@@ -114,6 +117,7 @@ export const defaultIcon = React.forwardRef(
       search: <Search fill={color} width={size} height={size} />,
       loginLogo: <LoginLogo fill={color} width={size | 294} height={size | 67} />,
       infoCircle: <InfoCircle fill={color} width={size} height={size} />,
+      emailSent: <EmailSent fill={color} width={size} height={size} />,
     };
 
     return (

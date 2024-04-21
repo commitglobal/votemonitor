@@ -30,7 +30,7 @@ const WizzardControls = ({
       padding="$md"
       paddingBottom={insets.bottom}
     >
-      {isFirstElement && (
+      {!isFirstElement && (
         <XStack flex={0.25}>
           <Button
             width="100%"
@@ -42,7 +42,7 @@ const WizzardControls = ({
           </Button>
         </XStack>
       )}
-      <XStack flex={!isFirstElement ? 1 : 0.75} marginBottom="$md">
+      <XStack flex={isFirstElement ? 1 : 0.75} marginBottom="$md">
         <Button disabled={isNextDisabled} width="100%" onPress={onNextButtonPress}>
           {!isLastElement ? t("actions.next_step") : t("actions.finalize")}
         </Button>

@@ -32,7 +32,7 @@ type UserContextType = {
 export const UserContext = createContext<UserContextType>({
   electionRounds: [],
   visits: [],
-  isLoading: false,
+  isLoading: true,
   enoughDataForOffline: true,
   error: null,
   setSelectedPollingStationId: (_pollingStationId: string) => {},
