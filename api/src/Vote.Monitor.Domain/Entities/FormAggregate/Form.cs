@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using System.Text.Json.Serialization;
+using FluentValidation;
 using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Domain.Entities.FormAnswerBase;
@@ -22,6 +23,7 @@ public class Form : AuditableBaseEntity, IAggregateRoot
     public FormStatus Status { get; private set; }
     public string DefaultLanguage { get; private set; }
     public string[] Languages { get; private set; } = [];
+    public int NumberOfQuestions { get; private set; }
 
     public IReadOnlyList<BaseQuestion> Questions { get; private set; } = new List<BaseQuestion>().AsReadOnly();
 
@@ -49,6 +51,7 @@ public class Form : AuditableBaseEntity, IAggregateRoot
         Languages = languages.ToArray();
         Status = FormStatus.Drafted;
         Questions = questions.ToList().AsReadOnly();
+        NumberOfQuestions = Questions.Count;
     }
     private Form(
         Guid electionRoundId,
@@ -72,6 +75,23 @@ public class Form : AuditableBaseEntity, IAggregateRoot
         Languages = languages.ToArray();
         Status = FormStatus.Drafted;
         Questions = questions.ToList().AsReadOnly();
+        NumberOfQuestions = Questions.Count;
+    }
+
+    [JsonConstructor]
+    public Form(Guid id, Guid electionRoundId, ElectionRound electionRound, Guid monitoringNgoId, MonitoringNgo monitoringNgo, FormType formType, string code, TranslatedString name, TranslatedString description, FormStatus status, string defaultLanguage, int numberOfQuestions) : base(id)
+    {
+        ElectionRoundId = electionRoundId;
+        ElectionRound = electionRound;
+        MonitoringNgoId = monitoringNgoId;
+        MonitoringNgo = monitoringNgo;
+        FormType = formType;
+        Code = code;
+        Name = name;
+        Description = description;
+        Status = status;
+        DefaultLanguage = defaultLanguage;
+        NumberOfQuestions = numberOfQuestions;
     }
 
     public static Form Create(
@@ -137,6 +157,7 @@ public class Form : AuditableBaseEntity, IAggregateRoot
         DefaultLanguage = defaultLanguage;
         Languages = languages.ToArray();
         Questions = questions.ToList().AsReadOnly();
+        NumberOfQuestions = Questions.Count;
     }
 
     public FormSubmission CreateFormSubmission(PollingStation pollingStation,
@@ -199,12 +220,12 @@ public class Form : AuditableBaseEntity, IAggregateRoot
     {
         if (answers == null)
         {
-            submission.ClearAnswers();
             return submission;
         }
 
         if (!answers.Any())
         {
+            submission.ClearAnswers();
             return submission;
         }
 
@@ -215,10 +236,10 @@ public class Form : AuditableBaseEntity, IAggregateRoot
             throw new ValidationException(validationResult.Errors);
         }
 
-        var numberOfQuestionAnswered = CountNumberOfQuestionsAnswered(answers);
+        var numberOfQuestionsAnswered = CountNumberOfQuestionsAnswered(answers);
         var numberOfFlaggedAnswers = CountNumberOfFlaggedAnswers(answers);
 
-        submission.UpdateAnswers(numberOfQuestionAnswered, numberOfFlaggedAnswers, answers);
+        submission.UpdateAnswers(numberOfQuestionsAnswered, numberOfFlaggedAnswers, answers);
 
         return submission;
     }

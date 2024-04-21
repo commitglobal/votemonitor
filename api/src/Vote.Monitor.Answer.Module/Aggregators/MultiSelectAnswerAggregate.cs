@@ -12,7 +12,7 @@ public class MultiSelectAnswerAggregate : BaseAnswerAggregate
     private readonly Dictionary<Guid, int> _answersHistogram;
     public IReadOnlyDictionary<Guid, int> AnswersHistogram => _answersHistogram.AsReadOnly();
 
-    public MultiSelectAnswerAggregate(MultiSelectQuestion question) : base(question.Id)
+    public MultiSelectAnswerAggregate(MultiSelectQuestion question) : base(question)
     {
         _answersHistogram = question.Options.ToDictionary(o => o.Id, _ => 0);
 

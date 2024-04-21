@@ -16,7 +16,9 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
     public PollingStationInformationForm PollingStationInformationForm { get; private set; }
     public DateTime? ArrivalTime { get; private set; }
     public DateTime? DepartureTime { get; private set; }
+    public double? MinutesMonitoring { get; private set; }
 
+    public int NumberOfQuestionsAnswered { get; private set; }
     public IReadOnlyList<BaseAnswer> Answers { get; private set; } = new List<BaseAnswer>().AsReadOnly();
 
     private PollingStationInformation(
@@ -26,7 +28,8 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
         PollingStationInformationForm pollingStationInformationForm,
         DateTime? arrivalTime,
         DateTime? departureTime,
-        List<BaseAnswer> answers) : base(Guid.NewGuid())
+        List<BaseAnswer> answers,
+        int numberOfQuestionsAnswered) : base(Guid.NewGuid())
     {
         ElectionRound = electionRound;
         ElectionRoundId = electionRound.Id;
@@ -39,6 +42,7 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
         ArrivalTime = arrivalTime;
         DepartureTime = departureTime;
         Answers = answers.ToList().AsReadOnly();
+        NumberOfQuestionsAnswered = numberOfQuestionsAnswered;
     }
 
     internal static PollingStationInformation Create(
@@ -48,38 +52,45 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
         PollingStationInformationForm pollingStationInformationForm,
         DateTime? arrivalTime,
         DateTime? departureTime,
-        List<BaseAnswer> answers) =>
-        new(electionRound, pollingStation, monitoringObserver, pollingStationInformationForm, arrivalTime, departureTime, answers);
+        List<BaseAnswer> answers,
+        int numberOfQuestionsAnswered) =>
+        new(electionRound, pollingStation, monitoringObserver, pollingStationInformationForm, arrivalTime, departureTime, answers, numberOfQuestionsAnswered);
 
-    internal void UpdateAnswers(IEnumerable<BaseAnswer> answers)
+    internal void UpdateAnswers(IEnumerable<BaseAnswer> answers, int numberOfQuestionsAnswered)
     {
         Answers = answers.ToList().AsReadOnly();
+        NumberOfQuestionsAnswered = numberOfQuestionsAnswered;
     }
 
-    public void UpdateArrivalTime(DateTime? arrivalTime)
+    public void UpdateTimesOfStay(DateTime? arrivalTime, DateTime? departureTime)
     {
         if (arrivalTime.HasValue)
         {
             ArrivalTime = arrivalTime;
         }
-    }
 
-    public void UpdateDepartureTime(DateTime? departureTime)
-    {
         if (departureTime.HasValue)
         {
             DepartureTime = departureTime;
         }
+
+        if (departureTime.HasValue && arrivalTime.HasValue && departureTime >= arrivalTime)
+        {
+            MinutesMonitoring = (departureTime.Value - arrivalTime.Value).TotalMinutes;
+        }
+    }
+
+    public void ClearAnswers()
+    {
+        Answers = [];
+        NumberOfQuestionsAnswered = 0;
     }
 
 #pragma warning disable CS8618 // Required by Entity Framework
+
     private PollingStationInformation()
     {
 
     }
 #pragma warning restore CS8618
-    public void ClearAnswers()
-    {
-        Answers = [];
-    }
 }

@@ -14,7 +14,7 @@ public class FormSubmission : AuditableBaseEntity, IAggregateRoot
     public MonitoringObserver MonitoringObserver { get; private set; }
     public Guid FormId { get; private set; }
     public Form Form { get; private set; }
-    public int NumberOfQuestionAnswered { get; private set; }
+    public int NumberOfQuestionsAnswered { get; private set; }
     public int NumberOfFlaggedAnswers { get; private set; }
     public IReadOnlyList<BaseAnswer> Answers { get; private set; } = new List<BaseAnswer>().AsReadOnly();
 
@@ -24,7 +24,7 @@ public class FormSubmission : AuditableBaseEntity, IAggregateRoot
         MonitoringObserver monitoringObserver,
         Form form,
         List<BaseAnswer> answers,
-        int numberOfQuestionAnswered,
+        int numberOfQuestionsAnswered,
         int numberOfFlaggedAnswers) : base(Guid.NewGuid())
     {
         ElectionRound = electionRound;
@@ -36,7 +36,7 @@ public class FormSubmission : AuditableBaseEntity, IAggregateRoot
         Form = form;
         FormId = form.Id;
         Answers = answers.ToList().AsReadOnly();
-        NumberOfQuestionAnswered = numberOfQuestionAnswered;
+        NumberOfQuestionsAnswered = numberOfQuestionsAnswered;
         NumberOfFlaggedAnswers = numberOfFlaggedAnswers;
     }
 
@@ -50,10 +50,10 @@ public class FormSubmission : AuditableBaseEntity, IAggregateRoot
         int numberOfFlaggedAnswers) =>
         new(electionRound, pollingStation, monitoringObserver, form, answers, numberOfQuestionAnswered, numberOfFlaggedAnswers);
 
-    internal void UpdateAnswers(int numberOfQuestionAnswered, int numberOfFlaggedAnswers, IEnumerable<BaseAnswer> answers)
+    internal void UpdateAnswers(int numberOfQuestionsAnswered, int numberOfFlaggedAnswers, IEnumerable<BaseAnswer> answers)
     {
         NumberOfFlaggedAnswers = numberOfFlaggedAnswers;
-        NumberOfQuestionAnswered = numberOfQuestionAnswered;
+        NumberOfQuestionsAnswered = numberOfQuestionsAnswered;
         Answers = answers.ToList().AsReadOnly();
     }
 
@@ -61,7 +61,7 @@ public class FormSubmission : AuditableBaseEntity, IAggregateRoot
     {
         Answers = [];
         NumberOfFlaggedAnswers = 0;
-        NumberOfQuestionAnswered = 0;
+        NumberOfQuestionsAnswered = 0;
     }
 
 #pragma warning disable CS8618 // Required by Entity Framework

@@ -1,9 +1,10 @@
 ﻿using Authorization.Policies;
-using Vote.Monitor.Answer.Module.Aggregators;
+using Dapper;
+using Vote.Monitor.Domain;
 
 namespace Feature.Form.Submissions.ListByForm;
 
-public class Endpoint(IReadRepository<FormSubmission> repository, IReadRepository<FormAggregate> formRepository) : Endpoint<Request, Response>
+public class Endpoint(VoteMonitorContext context) : Endpoint<Request, Response>
 {
     public override void Configure()
     {
@@ -20,25 +21,34 @@ public class Endpoint(IReadRepository<FormSubmission> repository, IReadRepositor
 
     public override async Task<Response> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var submissions = await repository.ListAsync(new ListFormSubmissions(req), ct);
+        var sql = @"
+            select f.""Id"" as ""FormId"",
+                   f.""Code"" as ""FormCode"",
+                   f.""FormType"" as ""FormType"",
+                   count(distinct fs.""Id"") ""NumberOfSubmissions"",
+                   sum(fs.""NumberOfFlaggedAnswers"") ""NumberOfFlaggedAnswers"",
+                   count(distinct n.""Id"") ""NumberOfNotes"",
+                   count(distinct a.""Id"") ""NumberOfMediaFiles""
+            from ""Forms"" f
+            inner join ""MonitoringNgos"" mn on mn.""Id"" = f.""MonitoringNgoId""
+            inner join ""FormSubmissions"" fs on fs.""FormId"" = f.""Id""
+            left JOIN ""Notes"" n on n.""FormId"" = f.""Id""
+            left JOIN ""Attachments"" a on a.""FormId"" = f.""Id""
+            WHERE f.""ElectionRoundId"" = @electionRoundId
+                AND mn.""NgoId"" = @ngoId
+            group by f.""Id"",
+                     f.""Code"",
+                     f.""FormType"";
+        ";
 
-        var forms = await formRepository.ListAsync(new ListNgoForms(req.ElectionRoundId, req.NgoId), ct);
-        var submissionsByFormId = submissions
-            .GroupBy(x => x.FormId, y => y, (formId, g) => new { FormId = formId, Submissions = g.ToList() })
-            .ToDictionary(x => x.FormId, y => y.Submissions);
-
-        List<FormSubmissionsAggregate> aggregates = [];
-        foreach (var form in forms)
+        var queryArgs = new
         {
-            var formSubmissionsAggregate = new FormSubmissionsAggregate(form);
-            foreach (var formSubmission in submissionsByFormId[form.Id])
-            {
-                formSubmissionsAggregate.AggregateAnswers(formSubmission);
-            }
+            electionRoundId = req.ElectionRoundId,
+            ngoId = req.NgoId
+        };
 
-            aggregates.Add(formSubmissionsAggregate);
-        }
+        var aggregatedFormOverviews = await context.Connection.QueryAsync<AggregatedFormOverview>(sql, queryArgs);
 
-        return new Response() { FormSubmissionsAggregates = aggregates, };
+        return new Response() { AggregatedForms = aggregatedFormOverviews.ToList() };
     }
 }

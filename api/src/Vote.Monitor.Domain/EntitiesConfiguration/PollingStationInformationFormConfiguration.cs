@@ -18,6 +18,7 @@ public class PollingStationInformationFormConfiguration : IEntityTypeConfigurati
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.Property(x => x.Languages).IsRequired();
+        builder.Property(x => x.NumberOfQuestions).IsRequired();
 
         builder.Property(x => x.Questions)
             .HasConversion<QuestionsToJsonConverter, QuestionsValueComparer>()

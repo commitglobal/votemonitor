@@ -67,8 +67,9 @@ public class Endpoint(IRepository<PollingStationInformation> repository,
         CancellationToken ct)
     {
         pollingStationInformation = form.FillIn(pollingStationInformation, answers);
-        pollingStationInformation.UpdateArrivalTime(arrivalTime);
-        pollingStationInformation.UpdateDepartureTime(departureTime);
+
+        pollingStationInformation.UpdateTimesOfStay(arrivalTime, departureTime);
+
         await repository.UpdateAsync(pollingStationInformation, ct);
 
         return TypedResults.Ok(PollingStationInformationModel.FromEntity(pollingStationInformation));
