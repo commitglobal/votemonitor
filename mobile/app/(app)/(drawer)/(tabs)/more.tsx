@@ -10,7 +10,10 @@ import { router, useNavigation } from "expo-router";
 import { useAuth } from "../../../../hooks/useAuth";
 import Header from "../../../../components/Header";
 import { DrawerActions } from "@react-navigation/native";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import Constants from "expo-constants";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { CURRENT_USER_STORAGE_KEY } from "../../../../common/constants";
 
 const More = () => {
   const navigation = useNavigation();
@@ -21,9 +24,14 @@ const More = () => {
   const { signOut } = useAuth();
 
   // TODO: Change these consts
-  const appVersion = "2.0.4";
+  const appVersion = Constants.expoConfig?.version;
   const appLanguage = "English (United States)";
   const URL = "https://www.google.com/";
+
+  const { data: currentUser } = useQuery({
+    queryKey: [CURRENT_USER_STORAGE_KEY],
+    queryFn: () => AsyncStorage.getItem(CURRENT_USER_STORAGE_KEY),
+  });
 
   const logout = () => {
     signOut(queryClient);
@@ -84,7 +92,12 @@ const More = () => {
         ></MenuItem>
         <MenuItem label={t("support")} icon="contactNGO"></MenuItem>
         <MenuItem label={t("feedback")} icon="feedback"></MenuItem>
-        <MenuItem label={t("logout")} icon="logoutNoBackground" onClick={logout}></MenuItem>
+        <MenuItem
+          label={t("logout")}
+          icon="logoutNoBackground"
+          onClick={logout}
+          helper={currentUser ? `Logged in as ${currentUser}` : ""}
+        ></MenuItem>
       </YStack>
     </Screen>
   );

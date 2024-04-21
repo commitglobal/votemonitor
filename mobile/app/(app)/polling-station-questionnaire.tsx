@@ -156,14 +156,17 @@ const PollingStationQuestionnaire = () => {
             const selections: Record<string, { optionId: string; text: string }> = formData[
               questionId
             ] as Record<string, { optionId: string; text: string }>;
-            return {
-              $answerType: "multiSelectAnswer",
-              questionId,
-              selection: Object.values(selections).map((selection) => ({
-                optionId: selection.optionId,
-                text: selection.text,
-              })),
-            } as ApiFormAnswer;
+            const mappedSelections = Object.values(selections).map((selection) => ({
+              optionId: selection.optionId,
+              text: selection.text,
+            }));
+            return mappedSelections?.length
+              ? ({
+                  $answerType: "multiSelectAnswer",
+                  questionId,
+                  selection: mappedSelections,
+                } as ApiFormAnswer)
+              : undefined;
           }
           default:
             return undefined;
