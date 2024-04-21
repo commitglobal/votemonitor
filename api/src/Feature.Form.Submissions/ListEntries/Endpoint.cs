@@ -1,6 +1,5 @@
 ﻿using Authorization.Policies;
 using Dapper;
-using Feature.Form.Submissions.ListByObserver;
 using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain;
 using Vote.Monitor.Domain.Specifications;
@@ -23,7 +22,7 @@ public class Endpoint(VoteMonitorContext context) : Endpoint<Request, PagedRespo
 
     public override async Task<PagedResponse<FormSubmissionEntry>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var sql = @$"
+        var sql = @"
         SELECT SUM(count)
         FROM
             (SELECT count(1) as count
@@ -36,8 +35,8 @@ public class Endpoint(VoteMonitorContext context) : Endpoint<Request, PagedRespo
              FROM ""FormSubmissions"" fs
              INNER JOIN ""MonitoringObservers"" mo ON fs.""MonitoringObserverId"" = mo.""Id""
              INNER JOIN ""MonitoringNgos"" mn ON mn.""Id"" = mo.""MonitoringNgoId""
-             WHERE mn.""ElectionRoundId"" = @electionRoundId AND mn.""NgoId"" =@ngoId) c
-
+             WHERE mn.""ElectionRoundId"" = @electionRoundId AND mn.""NgoId"" =@ngoId
+             AND (@monitoringObserverId IS NULL OR mo.""Id"" =@monitoringObserverId)) c;
 
         WITH submissions AS
             (SELECT psi.""Id"" AS ""SubmissionId"",
@@ -55,6 +54,7 @@ public class Endpoint(VoteMonitorContext context) : Endpoint<Request, PagedRespo
              INNER JOIN ""MonitoringNgos"" mn ON mn.""Id"" = mo.""MonitoringNgoId""
              WHERE mn.""ElectionRoundId"" = @electionRoundId
                  AND mn.""NgoId"" =@ngoId
+                 AND (@monitoringObserverId IS NULL OR mo.""Id"" =@monitoringObserverId)
              UNION ALL SELECT fs.""Id"" AS ""SubmissionId"",
                               f.""FormType"" AS ""FormType"",
                               f.""Code"" AS ""FormCode"",
@@ -71,6 +71,7 @@ public class Endpoint(VoteMonitorContext context) : Endpoint<Request, PagedRespo
              INNER JOIN ""Forms"" f on f.""Id"" = fs.""FormId""
              WHERE mn.""ElectionRoundId"" = @electionRoundId
                  AND mn.""NgoId"" =@ngoId
+                 AND (@monitoringObserverId IS NULL OR mo.""Id"" =@monitoringObserverId)
              ORDER BY ""TimeSubmitted"" desc)
 
         SELECT s.""SubmissionId"",
@@ -102,6 +103,7 @@ public class Endpoint(VoteMonitorContext context) : Endpoint<Request, PagedRespo
         INNER JOIN ""AspNetUsers"" u ON u.""Id"" = o.""ApplicationUserId""
         WHERE mn.""ElectionRoundId"" = @electionRoundId
             AND mn.""NgoId"" = @ngoId
+            AND (@monitoringObserverId IS NULL OR mo.""Id"" =@monitoringObserverId)
         ORDER BY ""TimeSubmitted"" desc
         OFFSET @offset ROWS
         FETCH NEXT @pageSize ROWS ONLY;";
@@ -112,6 +114,7 @@ public class Endpoint(VoteMonitorContext context) : Endpoint<Request, PagedRespo
             ngoId = req.NgoId,
             offset = PaginationHelper.CalculateSkip(req.PageSize, req.PageNumber),
             pageSize = req.PageSize,
+            monitoringObserverId = req.MonitoringObserverId
         };
 
         var multi = await context.Connection.QueryMultipleAsync(sql, queryArgs);

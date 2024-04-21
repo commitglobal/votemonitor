@@ -1,6 +1,8 @@
 ﻿using FluentAssertions;
 using Vote.Monitor.Answer.Module.Aggregators;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
+using Vote.Monitor.Domain.Entities.FormBase.Questions;
+using Vote.Monitor.TestUtils.Fakes.Aggregates.Questions;
 using Xunit;
 
 namespace Vote.Monitor.Answer.Module.UnitTests.Aggregators;
@@ -12,7 +14,7 @@ public class BaseAnswerAggregateTests
     public void Aggregate_ShouldIncrementAnswersAggregated()
     {
         // Arrange
-        var aggregate = new TestAnswerAggregate(Guid.NewGuid());
+        var aggregate = new TestAnswerAggregate(new TextQuestionFaker().Generate());
 
         // Act
         aggregate.Aggregate(Guid.NewGuid(), new TestAnswer());
@@ -27,7 +29,7 @@ public class BaseAnswerAggregateTests
     public void Aggregate_ShouldAddResponderIdToResponders()
     {
         // Arrange
-        var aggregate = new TestAnswerAggregate(Guid.NewGuid());
+        var aggregate = new TestAnswerAggregate(new TextQuestionFaker().Generate());
         var responderId1 = Guid.NewGuid();
         var responderId2 = Guid.NewGuid();
 
@@ -45,7 +47,7 @@ public class BaseAnswerAggregateTests
     public void Aggregate_ShouldInvokeQuestionSpecificAggregate()
     {
         // Arrange
-        var aggregate = new TestAnswerAggregate(Guid.NewGuid());
+        var aggregate = new TestAnswerAggregate(new TextQuestionFaker().Generate());
         var responderId = Guid.NewGuid();
 
         // Act
@@ -60,7 +62,7 @@ public class TestAnswerAggregate : BaseAnswerAggregate
 {
     public bool QuestionSpecificAggregateInvoked { get; private set; }
 
-    public TestAnswerAggregate(Guid questionId) : base(questionId)
+    public TestAnswerAggregate(BaseQuestion question) : base(question)
     {
     }
 
