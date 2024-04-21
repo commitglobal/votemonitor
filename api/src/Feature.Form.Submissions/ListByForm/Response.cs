@@ -1,8 +1,17 @@
-﻿using Vote.Monitor.Answer.Module.Aggregators;
-
-namespace Feature.Form.Submissions.ListByForm;
+﻿namespace Feature.Form.Submissions.ListByForm;
 
 public record Response
 {
-    public List<FormSubmissionsAggregate> FormSubmissionsAggregates { get; set; } = [];
+    public List<AggregatedFormOverview> AggregatedForms { get; set; } = [];
+}
+
+public class AggregatedFormOverview
+{
+    public string FormId { get; set; }
+    public string FormCode { get; set; }
+    public string FormType { get; set; }
+    public int NumberOfSubmissions { get; set; }
+    public int NumberOfFlaggedAnswers { get; set; }
+    public int NumberOfNotes { get; set; }
+    public int NumberOfMediaFiles { get; set; }
 }

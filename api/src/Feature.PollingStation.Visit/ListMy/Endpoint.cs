@@ -3,9 +3,9 @@ using Dapper;
 using Microsoft.AspNetCore.Authorization;
 using Vote.Monitor.Domain;
 using Vote.Monitor.Domain.Constants;
-using Vote.Monitor.Domain.Entities.PollingStationAttachmentAggregate;
+using Vote.Monitor.Domain.Entities.AttachmentAggregate;
+using Vote.Monitor.Domain.Entities.NoteAggregate;
 using Vote.Monitor.Domain.Entities.PollingStationInfoAggregate;
-using Vote.Monitor.Domain.Entities.PollingStationNoteAggregate;
 
 namespace Feature.PollingStation.Visit.ListMy;
 
@@ -53,18 +53,18 @@ public class Endpoint(IAuthorizationService authorizationService, VoteMonitorCon
                          FROM ""{Tables.PollingStationInformation}"" psi
                          UNION
                          SELECT
-                         n.""{nameof(PollingStationNote.ElectionRoundId)}"", 
-                         n.""{nameof(PollingStationNote.PollingStationId)}"", 
-                         n.""{nameof(PollingStationNote.MonitoringObserverId)}"", 
+                         n.""{nameof(Note.ElectionRoundId)}"", 
+                         n.""{nameof(Note.PollingStationId)}"", 
+                         n.""{nameof(Note.MonitoringObserverId)}"", 
                          COALESCE(n.""LastModifiedOn"", n.""CreatedOn"") ""LatestTimestamp""
-                         FROM ""{Tables.PollingStationNotes}"" n
+                         FROM ""{Tables.Notes}"" n
                          UNION
                          SELECT
-                         a.""{nameof(PollingStationAttachment.ElectionRoundId)}"", 
-                         a.""{nameof(PollingStationAttachment.PollingStationId)}"", 
-                         a.""{nameof(PollingStationNote.MonitoringObserverId)}"", 
+                         a.""{nameof(Attachment.ElectionRoundId)}"", 
+                         a.""{nameof(Attachment.PollingStationId)}"", 
+                         a.""{nameof(Attachment.MonitoringObserverId)}"", 
                          COALESCE(a.""LastModifiedOn"", a.""CreatedOn"") ""LatestTimestamp""
-                         FROM ""{Tables.PollingStationAttachments}"" a
+                         FROM ""{Tables.Attachments}"" a
                      ) t 
                      INNER JOIN ""{Tables.MonitoringObservers}"" mo ON mo.""Id"" = t.""MonitoringObserverId""
                      INNER JOIN ""{Tables.MonitoringNgos}"" mn ON mo.""MonitoringNgoId"" = mn.""Id""

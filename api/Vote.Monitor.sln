@@ -64,13 +64,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feature.FormTemplates", "sr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feature.FormTemplates.UnitTests", "tests\Feature.FormTemplates.UnitTests\Feature.FormTemplates.UnitTests.csproj", "{E16183F8-7602-4995-AE99-24C19271A75B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Feature.PollingStation.Attachments", "src\Vote.Monitor.Api.Feature.PollingStation.Attachments\Vote.Monitor.Api.Feature.PollingStation.Attachments.csproj", "{A6F95F72-F3DC-4F65-BCDE-69C07BAB533D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feature.Attachments", "src\Feature.Attachments\Feature.Attachments.csproj", "{A6F95F72-F3DC-4F65-BCDE-69C07BAB533D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Feature.PollingStation.Notes", "src\Vote.Monitor.Api.Feature.PollingStation.Notes\Vote.Monitor.Api.Feature.PollingStation.Notes.csproj", "{0DD63E43-DB5B-4C36-A887-C5A09C77A136}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feature.Notes", "src\Feature.Notes\Feature.Notes.csproj", "{0DD63E43-DB5B-4C36-A887-C5A09C77A136}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Feature.PollingStation.Notes.UnitTests", "tests\Vote.Monitor.Api.Feature.PollingStation.Notes.UnitTests\Vote.Monitor.Api.Feature.PollingStation.Notes.UnitTests.csproj", "{12169A76-ABAC-4A91-9B35-268667469008}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feature.Notes.UnitTests", "tests\Feature.Notes.UnitTests\Feature.Notes.UnitTests.csproj", "{12169A76-ABAC-4A91-9B35-268667469008}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Feature.PollingStation.Attachments.UnitTests", "tests\Vote.Monitor.Api.Feature.PollingStation.Attachments.UnitTests\Vote.Monitor.Api.Feature.PollingStation.Attachments.UnitTests.csproj", "{22A13BA9-CFA0-4B0A-8680-0145228CCEB9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feature.Attachments.UnitTests", "tests\Feature.Attachments.UnitTests\Feature.Attachments.UnitTests.csproj", "{22A13BA9-CFA0-4B0A-8680-0145228CCEB9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Feature.Notifications", "src\Vote.Monitor.Api.Feature.Notifications\Vote.Monitor.Api.Feature.Notifications.csproj", "{CEE96E21-9E8A-4C0C-B1B5-3DDC1F1C56A8}"
 EndProject

@@ -13,6 +13,7 @@ public class FormConfiguration : IEntityTypeConfiguration<Form>
         builder.Property(x => x.Code).HasMaxLength(256).IsRequired();
         builder.Property(x => x.Status).IsRequired();
         builder.Property(x => x.FormType).IsRequired();
+        builder.Property(x => x.NumberOfQuestions).IsRequired();
 
         builder.HasOne(x => x.ElectionRound)
             .WithMany()

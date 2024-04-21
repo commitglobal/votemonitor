@@ -29,6 +29,7 @@ public class FormSlimModel
     public required FormStatus Status { get; init; }
     public required string DefaultLanguage { get; init; }
     public required string[] Languages { get; init; } = [];
+    public int NumberOfQuestions { get; init; }
     public required DateTime CreatedOn { get; init; }
     public required DateTime? LastModifiedOn { get; init; }
 }

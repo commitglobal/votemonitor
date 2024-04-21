@@ -14,6 +14,7 @@ public class FormTemplateConfiguration : IEntityTypeConfiguration<FormTemplate>
         builder.Property(x => x.Code).HasMaxLength(256).IsRequired();
         builder.Property(x => x.DefaultLanguage).HasMaxLength(64).IsRequired();
         builder.Property(x => x.Status).IsRequired();
+        builder.Property(x => x.NumberOfQuestions).IsRequired();
 
         builder.Property(x => x.Name)
             .HasConversion<TranslatedStringToJsonConverter, TranslatedStringValueComparer>()
