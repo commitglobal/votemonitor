@@ -6,14 +6,12 @@ export const Route = createFileRoute('/form-templates/$formTemplateId/edit-trans
   component: Edit,
   loader: ({ context: { queryClient }, params: { formTemplateId } }) =>
     queryClient.ensureQueryData(formTemplateDetailsQueryOptions(formTemplateId)),
-  
 });
 
 function Edit() {
   return (
-    <div className='p-2'>
+    <div className='p-2 flex-1'>
       <EditFormTemplateTranslation />
     </div>
   );
 }
-

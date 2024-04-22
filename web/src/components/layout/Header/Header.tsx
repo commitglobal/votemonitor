@@ -69,10 +69,9 @@ const Header = (): FunctionComponent => {
   };
 
   return (
-    <Disclosure as='nav' className='bg-white shadow-sm'>
+    <Disclosure as='nav' className='bg-white shadow-sm mb-10'>
       {({ open }) => (
         <>
-          {}
           <div className='container'>
             <div className='flex items-center justify-between h-16 gap-6 md:gap-10'>
               <Logo width={48} height={48} />
