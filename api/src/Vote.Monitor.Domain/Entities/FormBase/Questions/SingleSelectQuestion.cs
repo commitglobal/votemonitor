@@ -29,6 +29,22 @@ public record SingleSelectQuestion : BaseQuestion
         return base.Equals(other) && Options.SequenceEqual(other.Options);
     }
 
+    protected override void AddTranslationsInternal(string languageCode)
+    {
+        foreach (var option in Options)
+        {
+            option.AddTranslation(languageCode);
+        }
+    }
+
+    protected override void RemoveTranslationInternal(string languageCode)
+    {
+        foreach (var option in Options)
+        {
+            option.RemoveTranslation(languageCode);
+        }
+    }
+
     public override int GetHashCode()
     {
         return HashCode.Combine(base.GetHashCode(), Options);

@@ -1,4 +1,4 @@
-﻿using Vote.Monitor.Domain.Constants;
+﻿using Vote.Monitor.Core.Validators;
 using Vote.Monitor.Form.Module.Validators;
 
 namespace Feature.PollingStation.Information.Form.Upsert;
@@ -8,14 +8,10 @@ public class Validator : Validator<Request>
     public Validator()
     {
         RuleFor(x => x.ElectionRoundId).NotEmpty();
-
         RuleFor(x => x.Languages).NotEmpty();
 
         RuleForEach(x => x.Languages)
-            .NotNull()
-            .NotEmpty()
-            .Must(iso => !string.IsNullOrWhiteSpace(iso) && LanguagesList.GetByIso(iso) != null)
-            .WithMessage("Unknown language iso.");
+            .IsValidLanguageCode();
 
         RuleForEach(x => x.Questions)
             .SetInheritanceValidator(v =>

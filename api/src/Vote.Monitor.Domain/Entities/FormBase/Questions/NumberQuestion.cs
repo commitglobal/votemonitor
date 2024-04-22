@@ -23,4 +23,15 @@ public record NumberQuestion : BaseQuestion
         TranslatedString? helptext,
         TranslatedString? inputPlaceholder)
         => new(id, code, text, helptext, inputPlaceholder);
+
+    protected override void AddTranslationsInternal(string languageCode)
+    {
+        InputPlaceholder?.AddTranslation(languageCode);
+    }
+
+    protected override void RemoveTranslationInternal(string languageCode)
+    {
+        InputPlaceholder?.RemoveTranslation(languageCode);
+
+    }
 }

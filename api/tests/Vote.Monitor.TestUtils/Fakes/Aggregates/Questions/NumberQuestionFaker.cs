@@ -5,9 +5,9 @@ namespace Vote.Monitor.TestUtils.Fakes.Aggregates.Questions;
 
 public sealed class NumberQuestionFaker : Faker<NumberQuestion>
 {
-    public NumberQuestionFaker()
+    public NumberQuestionFaker(string[]? languageList = null)
     {
         CustomInstantiator(f => NumberQuestion.Create(f.Random.Guid(), f.Random.AlphaNumeric(2),
-            new TranslatedStringFaker(), new TranslatedStringFaker(), new TranslatedStringFaker()));
+            new TranslatedStringFaker(languageList), new TranslatedStringFaker(languageList), new TranslatedStringFaker(languageList)));
     }
 }

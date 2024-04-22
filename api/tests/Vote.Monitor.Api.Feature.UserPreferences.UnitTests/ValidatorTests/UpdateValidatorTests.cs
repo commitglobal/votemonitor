@@ -1,11 +1,9 @@
-﻿
-using Vote.Monitor.Api.Feature.UserPreferences.Update;
+﻿using Vote.Monitor.Api.Feature.UserPreferences.Update;
 using FluentValidation.TestHelper;
 
 namespace Vote.Monitor.Api.Feature.UserPreferences.UnitTests.ValidatorTests;
 public class UpdateValidatorTests
 {
-
     private readonly Validator _validator;
 
     public UpdateValidatorTests()
@@ -24,35 +22,32 @@ public class UpdateValidatorTests
         result.ShouldHaveValidationErrorFor(x => x.Id);
     }
 
-
-
     [Fact]
     public void ShouldHaveErrorWhenLanguageIdIsEmpty()
     {
         //arrange
-        var model = new Request { Id = Guid.NewGuid(), LanguageId = Guid.Empty };
+        var model = new Request { Id = Guid.NewGuid(), LanguageCode = "" };
         //act
         var result = _validator.TestValidate(model);
         //assert
-        result.ShouldHaveValidationErrorFor(x => x.LanguageId);
+        result.ShouldHaveValidationErrorFor(x => x.LanguageCode);
     }
 
     [Fact]
-    public void ShouldHaveErrorWhenLanguageIdIsSpecifiedButISNotFoundInLanguageList()
+    public void ShouldHaveErrorWhenLanguageUnknown()
     {
         //arrange
-        var model = new Request { Id = Guid.NewGuid(), LanguageId = Guid.NewGuid() };
+        var model = new Request { Id = Guid.NewGuid(), LanguageCode = "Unknown" };
         //act
         var result = _validator.TestValidate(model);
         //assert
-        result.ShouldHaveValidationErrorFor(x => x.LanguageId);
+        result.ShouldHaveValidationErrorFor(x => x.LanguageCode);
     }
 
     [Fact]
-    public void ShouldNotHaveErrorWhenLanguageIdIsSpecifiedAndLanguageIdisFromList()
+    public void ShouldNotHaveErrors_WhenValidRequest()
     {
-        Guid languageId = new Guid("094b3769-68b1-6211-ba2d-6bba92d6a167");
-        var model = new Request { Id = Guid.NewGuid(), LanguageId = languageId };
+        var model = new Request { Id = Guid.NewGuid(), LanguageCode = "EN" };
         //act
         var result = _validator.TestValidate(model);
         //assert

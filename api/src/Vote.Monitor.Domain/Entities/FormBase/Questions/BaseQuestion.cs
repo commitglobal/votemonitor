@@ -31,4 +31,24 @@ public abstract record BaseQuestion
         Text = text;
         Helptext = helptext;
     }
+
+    public void AddTranslation(string languageCode)
+    {
+        Text.AddTranslation(languageCode);
+        Helptext?.AddTranslation(languageCode);
+
+        AddTranslationsInternal(languageCode);
+    }
+
+    protected abstract void AddTranslationsInternal(string languageCode);
+
+    public void RemoveTranslation(string languageCode)
+    {
+        Text.RemoveTranslation(languageCode);
+        Helptext?.RemoveTranslation(languageCode);
+
+        RemoveTranslationInternal(languageCode);
+    }
+
+    protected abstract void RemoveTranslationInternal(string languageCode);
 }

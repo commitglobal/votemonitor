@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { PencilIcon } from '@heroicons/react/24/outline';
 import TableTagList from '@/components/table-tag-list/TableTagList';
 
-export default function ObserverDetails() {
+export default function MonitoringObserverDetails() {
   const observer: MonitoringObserver = useLoaderData({ strict: false });
   const navigate = useNavigate();
   const navigateToEdit = () => {

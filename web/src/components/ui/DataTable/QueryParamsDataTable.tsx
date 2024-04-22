@@ -10,6 +10,8 @@ export function QueryParamsDataTable<TData, TValue>({
   columns,
   useQuery: pagedQuery,
   queryParams: otherQueryParams,
+  getSubrows,
+  getRowClassName
 }: DataTableProps<TData, TValue>): ReactElement {
   const queryParams: DataTableParameters = useSearch({
     strict: false,
@@ -67,6 +69,8 @@ export function QueryParamsDataTable<TData, TValue>({
         setSortingExt={setSortingState}
         columnVisibility={columnVisibility}
         queryParams={otherQueryParams}
+        getSubrows={getSubrows}
+        getRowClassName={getRowClassName}
       />
     </div>
   );

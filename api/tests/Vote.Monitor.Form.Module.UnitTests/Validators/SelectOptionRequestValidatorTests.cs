@@ -1,4 +1,5 @@
 ﻿using FluentValidation.TestHelper;
+using Vote.Monitor.Core.Constants;
 using Vote.Monitor.Core.Models;
 using Vote.Monitor.Form.Module.Requests;
 using Vote.Monitor.Form.Module.Validators;
@@ -27,7 +28,7 @@ public class SelectOptionRequestValidatorTests
     }
 
     [Theory]
-    [MemberData(nameof(Validators.ValidatorsTestData.InvalidPartiallyTranslatedTestCases), MemberType = typeof(Validators.ValidatorsTestData))]
+    [MemberData(nameof(ValidatorsTestData.InvalidPartiallyTranslatedTestCases), MemberType = typeof(ValidatorsTestData))]
     public void Validation_ShouldFail_When_TextInvalid(TranslatedString invalidText)
     {
         // Arrange
@@ -45,7 +46,7 @@ public class SelectOptionRequestValidatorTests
     }
 
     [Theory]
-    [MemberData(nameof(Validators.ValidatorsTestData.ValidPartiallyTranslatedTestCases), MemberType = typeof(Validators.ValidatorsTestData))]
+    [MemberData(nameof(ValidatorsTestData.ValidPartiallyTranslatedTestCases), MemberType = typeof(ValidatorsTestData))]
     public void Validation_ShouldPass_When_TextValid(TranslatedString validText)
     {
         // Arrange

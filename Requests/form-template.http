@@ -13,7 +13,7 @@ Content-Type: application/json
 Authorization: Bearer {{$dotenv JWT_TOKEN}}
 
 {
-  "code": "C",
+  "code": "Code-3",
   "defaultLanguage": "RO",
   "languages": [
     "RO"
@@ -35,7 +35,7 @@ Content-Type: application/json
 Authorization: Bearer {{$dotenv JWT_TOKEN}}
 
 {
-  "code": "C",
+  "code": "Code-3",
   "defaultLanguage": "RO",
   "languages": [
     "RO",

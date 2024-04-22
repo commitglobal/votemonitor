@@ -1,20 +1,12 @@
-import { AnswerType, BaseAnswer, RatingAnswer, RatingQuestion, RatingScaleType } from '@/common/types'
-import { useForm } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../ui/form';
-import { Button } from '../../ui/button';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { RatingAnswer, RatingQuestion, RatingScaleType } from '@/common/types'
 import { RatingGroup } from '../../ui/ratings';
-import { z } from 'zod';
+import { Description, Field, Label } from '@/components/ui/fieldset';
 
 export interface PreviewRatingQuestionProps {
     languageCode: string;
     question: RatingQuestion;
     answer: RatingAnswer;
-    isFirstQuestion: boolean;
-    isLastQuestion: boolean;
-    onSubmitAnswer: (answer: BaseAnswer) => void;
-    onBackButtonClicked: () => void;
+    setAnswer: (answer: RatingAnswer) => void;
 }
 
 function scaleToNumber(scale: RatingScaleType): number {
@@ -35,69 +27,18 @@ function scaleToNumber(scale: RatingScaleType): number {
 function PreviewRatingQuestion({ languageCode,
     question,
     answer,
-    isFirstQuestion,
-    isLastQuestion,
-    onSubmitAnswer,
-    onBackButtonClicked }: PreviewRatingQuestionProps) {
-    const { t } = useTranslation();
+    setAnswer }: PreviewRatingQuestionProps) {
 
-    const FormSchema = z.object({
-        value: z.string().optional()
-    });
-
-    const form = useForm<z.infer<typeof FormSchema>>({
-        resolver: zodResolver(FormSchema),
-        defaultValues: {
-            value: answer?.value?.toString() ?? ''
-        }
-    });
-
-    function handleSubmit(data: z.infer<typeof FormSchema>) {
-        const ratingAnswer: RatingAnswer = {
-            questionId: question.id,
-            $answerType: AnswerType.RatingAnswerType,
-            value: Number(data.value)
-        };
-
-        onSubmitAnswer(ratingAnswer);
-    }
-
-    return (<Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)}>
-            <div className='grid gap-6 py-4 sm:grid-cols-2'>
-                <FormField
-                    control={form.control}
-                    name='value'
-                    render={({ field }) => (
-                        <FormItem className='flex flex-col'>
-                            <FormLabel>{question.text[languageCode]}</FormLabel>
-                            <FormControl>
-                                <RatingGroup
-                                    scale={scaleToNumber(question.scale)}
-                                    {...field}
-                                    name='value'
-                                    onValueChange={(v) => field.onChange(v)} />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-            </div>
-            <div className="mt-4 flex w-full justify-between">
-                {!isFirstQuestion && (
-                    <Button
-                        type='button'
-                        onClick={() => { onBackButtonClicked(); }}>
-                        {t('navigation.button.back')}
-                    </Button>
-                )}
-                <div></div>
-                <Button type='submit'>
-                    {isLastQuestion ? t('navigation.button.submit') : t('navigation.button.next')}
-                </Button>
-            </div>
-        </form>
-    </Form>)
+    return (
+        <Field>
+            <Label>{question.code} - {question.text[languageCode]}</Label>
+            {!!question.helptext && <Description>{question.helptext[languageCode]}</Description>}
+            <RatingGroup
+                className='my-2'
+                scale={scaleToNumber(question.scale)}
+                name='value' />
+        </Field>
+    )
 }
 
 

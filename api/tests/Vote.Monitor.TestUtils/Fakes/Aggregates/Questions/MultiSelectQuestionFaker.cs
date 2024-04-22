@@ -5,9 +5,9 @@ namespace Vote.Monitor.TestUtils.Fakes.Aggregates.Questions;
 
 public sealed class MultiSelectQuestionFaker : Faker<MultiSelectQuestion>
 {
-    public MultiSelectQuestionFaker(List<SelectOption>? options = null)
+    public MultiSelectQuestionFaker(List<SelectOption>? options = null, string[]? languageList = null)
     {
         CustomInstantiator(f => MultiSelectQuestion.Create(f.Random.Guid(), f.Random.AlphaNumeric(2),
-            new TranslatedStringFaker(), new TranslatedStringFaker(), options ?? new SelectOptionFaker().Generate(4)));
+            new TranslatedStringFaker(languageList), new TranslatedStringFaker(languageList), options ?? new SelectOptionFaker(languageList: languageList).Generate(4)));
     }
 }

@@ -1,4 +1,4 @@
-﻿using Vote.Monitor.Domain.Constants;
+﻿using Vote.Monitor.Core.Constants;
 using GetEndpoint = Vote.Monitor.Api.Feature.UserPreferences.Get.Endpoint;
 using GetRequest = Vote.Monitor.Api.Feature.UserPreferences.Get.Request;
 using UpdateEndpoint = Vote.Monitor.Api.Feature.UserPreferences.Update.Endpoint;
@@ -20,13 +20,13 @@ public class UpdateEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeede
     public async Task UpdateUserPreferences_ReturnsSuccessStatusCode_WhenTheUpdateRequestIsValid()
     {
         // Arrange
-        Guid languageId = LanguagesList.RO.Id;
+        string languageCode = LanguagesList.RO.Iso1;
         var updateRequest = new UpdateRequest
         {
-            LanguageId = languageId
+            LanguageCode = languageCode
         };
 
-        UserPreferencesModel userPreferences = new() { LanguageId = languageId };
+        UserPreferencesModel userPreferences = new() { LanguageCode = languageCode };
 
         // Act
         var updateResponse = await Fixture.PlatformAdmin.POSTAsync<UpdateEndpoint, UpdateRequest>(updateRequest);
@@ -43,10 +43,10 @@ public class UpdateEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeede
     public async Task UpdateUserPreferences_ReturnsNotFound_WhenLanguageIdIsInvalid()
     {
         // Arrange
-        Guid languageId = Guid.NewGuid();
+        string languageCode = "UNKNOWN";
         var updateRequest = new UpdateRequest
         {
-            LanguageId = languageId
+            LanguageCode = languageCode
         };
 
         // Act
@@ -68,6 +68,6 @@ public class UpdateEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeede
         // Assert
         updateResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         errors.Errors.Count().Should().Be(1);
-        errors.Errors.Any(e => string.Equals(e.Reason, "'Language Id' must not be empty.")).Should().BeTrue();
+        errors.Errors.First().Reason.Should().Be("'Language Code' must not be empty.");
     }
 }

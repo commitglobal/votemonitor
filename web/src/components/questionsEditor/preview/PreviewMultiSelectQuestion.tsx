@@ -1,50 +1,25 @@
-import { BaseAnswer, MultiSelectAnswer, MultiSelectQuestion, AnswerType } from '@/common/types'
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '../../ui/form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
+import { MultiSelectAnswer, MultiSelectQuestion } from '@/common/types'
 import { useMemo, useState } from 'react';
 
 import { } from '@/common/types'
-import { Checkbox } from '../../ui/checkbox';
-import { Button } from '../../ui/button';
-import { Input } from '../../ui/input';
-import { z } from 'zod';
+import { Checkbox, CheckboxField, CheckboxGroup } from '@/components/ui/checkbox';
+import { Field, Fieldset, Label, Legend } from '@/components/ui/fieldset';
+import { Text } from '@/components/ui/text';
+import { Textarea } from '@/components/ui/textarea';
 
 export interface PreviewMultiSelectQuestionProps {
     languageCode: string;
     question: MultiSelectQuestion;
     answer: MultiSelectAnswer;
-    isFirstQuestion: boolean;
-    isLastQuestion: boolean;
-    onSubmitAnswer: (answer: BaseAnswer) => void;
-    onBackButtonClicked: () => void;
+    setAnswer: (answer: MultiSelectAnswer) => void;
 }
 
 function PreviewMultiSelectQuestion({
     languageCode,
     question,
     answer,
-    isFirstQuestion,
-    isLastQuestion,
-    onSubmitAnswer,
-    onBackButtonClicked }: PreviewMultiSelectQuestionProps) {
-
-    const { t } = useTranslation();
-
-    const FormSchema = z.object({
-        selectedOptions: z.array(z.string()).optional(),
-        freeText: z.string().optional()
-    });
-
-    const form = useForm<z.infer<typeof FormSchema>>({
-        resolver: zodResolver(FormSchema),
-        defaultValues: {
-            selectedOptions: answer?.selection?.map(s => s.optionId) ?? [],
-            freeText: answer?.selection?.map(s => s.text).filter(t => !!t)[0] ?? ''
-        }
-    });
-
+    setAnswer }: PreviewMultiSelectQuestionProps) {
+    const [selectedOptionIds, setSelectedOptionIds] = useState<Set<string>>(new Set());
     const [freeTextSelected, setFreeTextSelected] = useState(false);
 
     const regularOptions = useMemo(() => {
@@ -61,146 +36,38 @@ function PreviewMultiSelectQuestion({
         [question.options]
     );
 
-    function handleSubmit(data: z.infer<typeof FormSchema>) {
-        const selection = data?.selectedOptions?.map(option => {
-            if (option === freeTextOption?.id) {
-                return { optionId: option, text: data.freeText }
-            }
-            return { optionId: option }
-        });
+    const handleOptionSelected = (optionId: string) => {
+        // Since we cannot mutate the state value directly better to instantiate new state with the values of the state
+        const optionIds = new Set(selectedOptionIds);
 
-        const multiSelectAnswer: MultiSelectAnswer = {
-            questionId: question.id,
-            $answerType: AnswerType.MultiSelectAnswerType,
-            selection: selection ?? []
-        };
-
-        onSubmitAnswer(multiSelectAnswer);
-    }
+        if (optionIds.has(optionId)) {
+            optionIds.delete(optionId);
+        } else {
+            optionIds.add(optionId);
+        }
+        setSelectedOptionIds(optionIds);
+    };
 
     return (
-        <Form {...form}>
-            <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
-                <FormField
-                    control={form.control}
-                    name="selectedOptions"
-                    render={() => (
-                        <FormItem>
-                            <div className="mb-4">
-                                <FormLabel className="text-base">{question.text[languageCode]}</FormLabel>
-                                {!!question.helptext && <FormDescription>
-                                    {question.helptext[languageCode]}
-                                </FormDescription>
-                                }
-                            </div>
-                            {regularOptions.map((option) => (
-                                <FormField
-                                    key={option.id}
-                                    control={form.control}
-                                    name="selectedOptions"
-                                    render={({ field }) => {
-                                        return (
-                                            <FormItem
-                                                key={option.id}
-                                                className="flex flex-row items-start space-x-3 space-y-0"
-                                            >
-                                                <FormControl>
-                                                    <Checkbox
-                                                        checked={field.value?.includes(option.id)}
-                                                        onCheckedChange={(checked) => {
-                                                            return checked
-                                                                ? field.onChange([...field.value!, option.id])
-                                                                : field.onChange(
-                                                                    field.value?.filter(
-                                                                        (value) => value !== option.id
-                                                                    )
-                                                                )
-                                                        }}
-                                                    />
-                                                </FormControl>
-                                                <FormLabel className="font-normal">
-                                                    {option.text[languageCode]}
-                                                </FormLabel>
-                                            </FormItem>
-                                        )
-                                    }}
-                                />
-                            ))}
+        <Fieldset>
+            <Legend>{question.code} - {question.text[languageCode]}</Legend>
+            {!!question.helptext && <Text>{question.helptext[languageCode]}</Text>}
+            <CheckboxGroup>
+                {regularOptions.map(option => <CheckboxField key={option.id}>
+                    <Checkbox name={option.id} onChange={() => handleOptionSelected(option.id)} />
+                    <Label>{option.text[languageCode]}</Label>
+                </CheckboxField>)}
 
-                            {!!freeTextOption &&
-                                <FormField
-                                    key={freeTextOption.id}
-                                    control={form.control}
-                                    name="selectedOptions"
-                                    render={({ field }) => {
-                                        return (
-                                            <FormItem
-                                                key={freeTextOption.id}
-                                                className="flex flex-row items-start space-x-3 space-y-0"
-                                            >
-                                                <FormControl>
-                                                    <Checkbox
-                                                        checked={field.value?.includes(freeTextOption.id)}
-                                                        onCheckedChange={(checked) => {
-                                                            if (checked) {
-                                                                setFreeTextSelected(true);
-                                                                field.onChange([...field.value!, freeTextOption.id]);
-                                                            }
-                                                            else {
-                                                                setFreeTextSelected(false);
-                                                                field.onChange(
-                                                                    field.value?.filter(
-                                                                        (value) => value !== freeTextOption.id
-                                                                    )
-                                                                )
-                                                            }
-                                                        }}
-                                                    />
-                                                </FormControl>
-                                                <FormLabel className="font-normal">
-                                                    {freeTextOption.text[languageCode]}
-                                                </FormLabel>
-                                            </FormItem>
-                                        )
-                                    }}
-                                />}
-
-                            {freeTextSelected &&
-                                <FormField
-                                    control={form.control}
-                                    name="freeText"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormControl>
-                                                <Input {...field} placeholder={t("app.input.pleaseSpecify")} />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />}
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-
-                <div className="mt-4 flex w-full justify-between">
-                    {!isFirstQuestion && (
-                        <Button
-                            type='button'
-                            onClick={() => {
-                                onBackButtonClicked();
-                            }}
-                        >
-                            {t('navigation.button.back')}
-                        </Button>
-                    )}
-                    <div></div>
-                    <Button type='submit'>
-                        {isLastQuestion ? t('navigation.button.submit') : t('navigation.button.next')}
-                    </Button>
-                </div>
-            </form>
-        </Form>
+                {!!freeTextOption && <CheckboxField>
+                    <Checkbox name={freeTextOption.id} onChange={(checked) => {
+                        handleOptionSelected(freeTextOption.id);
+                        setFreeTextSelected(checked);
+                    }} />
+                    <Label>{freeTextOption.text[languageCode]}.</Label>
+                </CheckboxField>}
+            </CheckboxGroup>
+            {freeTextSelected && <Field><Textarea /></Field>}
+        </Fieldset>
     )
 }
 
