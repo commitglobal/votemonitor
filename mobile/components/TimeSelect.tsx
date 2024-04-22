@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { Typography } from "./Typography";
 import { YStack, XStack, Sheet, Stack } from "tamagui";
 import Button from "../components/Button";
@@ -17,8 +17,7 @@ enum CardFooterDisplay {
   DEPARTURE = "Departure",
 }
 
-// TODO: Memo
-const TimeSelect: React.FC<TimeSelectProps> = ({ type, time, setTime }) => {
+const TimeSelect: React.FC<TimeSelectProps> = memo(({ type, time, setTime }) => {
   const [open, setOpen] = useState(false);
 
   // on ios we use a temporary time, as the onChange function gets triggered every time the user picks a new time
@@ -131,6 +130,6 @@ const TimeSelect: React.FC<TimeSelectProps> = ({ type, time, setTime }) => {
       )}
     </>
   );
-};
+});
 
 export default TimeSelect;
