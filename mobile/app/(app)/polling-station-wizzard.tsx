@@ -2,7 +2,7 @@ import { router } from "expo-router";
 import { Screen } from "../../components/Screen";
 import Header from "../../components/Header";
 import { Icon } from "../../components/Icon";
-import { TextStyle, ViewStyle } from "react-native";
+import { Keyboard, TextStyle, ViewStyle } from "react-native";
 import { ScrollView, YStack } from "tamagui";
 import { Typography } from "../../components/Typography";
 import Select from "../../components/Select";
@@ -108,6 +108,7 @@ const PollingStationWizzardContent = ({
   );
 
   const onSelectOption = (option: string) => {
+    Keyboard.dismiss();
     const [id, value] = option.split("_");
     setSelectedOption({
       id: +id,
@@ -186,7 +187,12 @@ const PollingStationWizzardContent = ({
           )}
         </YStack>
       </YStack>
-      <ScrollView paddingTop={100} contentContainerStyle={{ flexGrow: 1 }} centerContent>
+      <ScrollView
+        paddingTop={140}
+        contentContainerStyle={{ flexGrow: 1 }}
+        centerContent
+        keyboardShouldPersistTaps="handled"
+      >
         <YStack paddingHorizontal="$md" gap="$lg">
           <Typography preset="body2" style={$labelStyle}>
             {t("form.region.title")}
