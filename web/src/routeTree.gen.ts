@@ -26,7 +26,9 @@ import { Route as MonitoringObserversMonitoringObserverIdImport } from './routes
 import { Route as ElectionRoundsElectionRoundIdImport } from './routes/election-rounds/$electionRoundId'
 import { Route as ObserversObserverIdEditImport } from './routes/observers_.$observerId.edit'
 import { Route as MonitoringObserversMonitoringObserverIdEditImport } from './routes/monitoring-observers_.$monitoringObserverId.edit'
-import { Route as FormTemplatesFormTemplateIdEditImport } from './routes/form-templates/$formTemplateId.edit'
+import { Route as FormTemplatesFormTemplateIdEditImport } from './routes/form-templates_.$formTemplateId.edit'
+import { Route as FormTemplatesFormTemplateIdLanguageCodeImport } from './routes/form-templates/$formTemplateId_.$languageCode'
+import { Route as FormTemplatesFormTemplateIdEditTranslationLanguageCodeImport } from './routes/form-templates_.$formTemplateId.edit-translation.$languageCode'
 
 // Create/Update Routes
 
@@ -115,6 +117,18 @@ const FormTemplatesFormTemplateIdEditRoute =
     getParentRoute: () => rootRoute,
   } as any)
 
+const FormTemplatesFormTemplateIdLanguageCodeRoute =
+  FormTemplatesFormTemplateIdLanguageCodeImport.update({
+    path: '/form-templates/$formTemplateId/$languageCode',
+    getParentRoute: () => rootRoute,
+  } as any)
+
+const FormTemplatesFormTemplateIdEditTranslationLanguageCodeRoute =
+  FormTemplatesFormTemplateIdEditTranslationLanguageCodeImport.update({
+    path: '/form-templates/$formTemplateId/edit-translation/$languageCode',
+    getParentRoute: () => rootRoute,
+  } as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -171,6 +185,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResponsesIndexImport
       parentRoute: typeof rootRoute
     }
+    '/form-templates/$formTemplateId/$languageCode': {
+      preLoaderRoute: typeof FormTemplatesFormTemplateIdLanguageCodeImport
+      parentRoute: typeof rootRoute
+    }
     '/form-templates/$formTemplateId/edit': {
       preLoaderRoute: typeof FormTemplatesFormTemplateIdEditImport
       parentRoute: typeof rootRoute
@@ -181,6 +199,10 @@ declare module '@tanstack/react-router' {
     }
     '/observers/$observerId/edit': {
       preLoaderRoute: typeof ObserversObserverIdEditImport
+      parentRoute: typeof rootRoute
+    }
+    '/form-templates/$formTemplateId/edit-translation/$languageCode': {
+      preLoaderRoute: typeof FormTemplatesFormTemplateIdEditTranslationLanguageCodeImport
       parentRoute: typeof rootRoute
     }
   }
@@ -202,9 +224,11 @@ export const routeTree = rootRoute.addChildren([
   NgosIndexRoute,
   ObserversIndexRoute,
   ResponsesIndexRoute,
+  FormTemplatesFormTemplateIdLanguageCodeRoute,
   FormTemplatesFormTemplateIdEditRoute,
   MonitoringObserversMonitoringObserverIdEditRoute,
   ObserversObserverIdEditRoute,
+  FormTemplatesFormTemplateIdEditTranslationLanguageCodeRoute,
 ])
 
 /* prettier-ignore-end */

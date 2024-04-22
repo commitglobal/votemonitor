@@ -6,10 +6,10 @@ export const Route = createFileRoute('/monitoring-observers/')({
   beforeLoad: ({ context }) => {
     redirectIfNotAuth(context.authContext.isAuthenticated);
   },
-  component: Observers,
+  component: MonitoringObservers,
 });
 
-function Observers() {
+function MonitoringObservers() {
   return (
     <div className='p-2'>
       <MonitoringObserversDashboard />

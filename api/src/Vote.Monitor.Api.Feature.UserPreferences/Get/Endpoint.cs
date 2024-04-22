@@ -20,7 +20,7 @@ public class Endpoint(IReadRepository<ApplicationUser> repository) : Endpoint<Re
 
         return TypedResults.Ok(new UserPreferencesModel
         {
-            LanguageId = user.Preferences.LanguageId
+            LanguageCode = user.Preferences.LanguageCode
         });
     }
 }

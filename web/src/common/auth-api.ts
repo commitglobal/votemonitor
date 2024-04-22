@@ -12,11 +12,9 @@ export interface LoginDTO {
   password: string;
 }
 
-const BASE_URL = 'https://votemonitor.staging.heroesof.tech/api/';
 
 export const authApi = axios.create({
-  baseURL: BASE_URL,
-  // withCredentials: true, // TODO Enable this when using a real login and authentication system
+  baseURL: import.meta.env.VITE_API_URL
 });
 
 authApi.defaults.headers.common['Content-Type'] = 'application/json';

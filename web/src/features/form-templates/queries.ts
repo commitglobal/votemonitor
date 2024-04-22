@@ -46,7 +46,7 @@ export function useFormTemplates(p: DataTableParameters): UseQueryResult<PageRes
             if (response.status !== 200) {
                 throw new Error('Failed to fetch form templates');
             }
-
+            
             return response.data;
         },
     });

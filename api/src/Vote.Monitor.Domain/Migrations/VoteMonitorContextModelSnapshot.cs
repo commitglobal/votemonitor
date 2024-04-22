@@ -5324,8 +5324,9 @@ namespace Vote.Monitor.Domain.Migrations
                             b1.Property<Guid>("ApplicationUserId")
                                 .HasColumnType("uuid");
 
-                            b1.Property<Guid>("LanguageId")
-                                .HasColumnType("uuid");
+                            b1.Property<string>("LanguageCode")
+                                .IsRequired()
+                                .HasColumnType("text");
 
                             b1.HasKey("ApplicationUserId");
 

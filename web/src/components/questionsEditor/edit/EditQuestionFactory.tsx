@@ -1,18 +1,18 @@
-import { BaseQuestion, QuestionType } from "@/common/types";
+import { BaseQuestion, DateQuestion, MultiSelectQuestion, NumberQuestion, QuestionType, RatingQuestion, SingleSelectAnswer, SingleSelectQuestion, TextQuestion } from "@/common/types";
 import EditDateQuestion from "./EditDateQuestion";
-import EditMultiSelectQuestion from "./EditMultiSelectQuestion";
+import EditSelectQuestion from "./EditSelectQuestion";
 import EditNumberQuestion from "./EditNumberQuestion";
 import EditRatingQuestion from "./EditRatingQuestion";
-import EditSingleSelectQuestion from "./EditSingleSelectQuestion";
 import EditTextQuestion from "./EditTextQuestion";
 import { MoveDirection } from "../QuestionsEdit";
-import NewQuestion from "./NewQuestion";
 import { Draggable } from "react-beautiful-dnd";
 import { cn } from "@/lib/utils";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { useTranslation } from "react-i18next";
+import QuestionActions from "./QuestionActions";
 
 interface EditQuestionFactoryProps {
+  availableLanguages: string[];
   languageCode: string;
   questionIdx: number;
   activeQuestionId: string | undefined;
@@ -27,6 +27,7 @@ interface EditQuestionFactoryProps {
 }
 
 export default function EditQuestionFactory({
+  availableLanguages,
   languageCode,
   questionIdx,
   activeQuestionId,
@@ -44,7 +45,6 @@ export default function EditQuestionFactory({
   const open = activeQuestionId === question.id;
 
   function getQuestionTypeName(questionType: QuestionType): string {
-    debugger;
     switch (questionType) {
       case QuestionType.TextQuestionType: return t("questionEditor.questionType.textQuestion");
       case QuestionType.NumberQuestionType: return t("questionEditor.questionType.numberQuestion");
@@ -100,118 +100,71 @@ export default function EditQuestionFactory({
                 </div>
 
                 <div className="flex items-center space-x-2">
-                  {/* <QuestionActions
+                  <QuestionActions
                     questionIdx={questionIdx}
-                    lastQuestion={lastQuestion}
+                    isLastQuestion={isLastQuestion}
                     duplicateQuestion={duplicateQuestion}
                     deleteQuestion={deleteQuestion}
                     moveQuestion={moveQuestion}
-                  /> */}
+                  />
                 </div>
               </div>
             </CollapsibleTrigger>
             <CollapsibleContent className="px-4 pb-4">
-
-
-
-
-              {!!question ? (question.$questionType === QuestionType.TextQuestionType ? (
+              {question.$questionType === QuestionType.TextQuestionType ? (
                 <EditTextQuestion
+                  availableLanguages={availableLanguages}
                   languageCode={languageCode}
-                  question={question}
+                  question={question as TextQuestion}
                   questionIdx={questionIdx}
-                  moveQuestion={moveQuestion}
                   updateQuestion={updateQuestion}
-                  duplicateQuestion={duplicateQuestion}
-                  deleteQuestion={deleteQuestion}
-                  activeQuestionId={activeQuestionId}
-                  setActiveQuestionId={setActiveQuestionId}
-                  isLastQuestion={isLastQuestion}
                   isInValid={isInValid}
                 />
               ) : question.$questionType === QuestionType.DateQuestionType ? (
                 <EditDateQuestion
+                  availableLanguages={availableLanguages}
                   languageCode={languageCode}
-                  question={question}
+                  question={question as DateQuestion}
                   questionIdx={questionIdx}
-                  moveQuestion={moveQuestion}
                   updateQuestion={updateQuestion}
-                  duplicateQuestion={duplicateQuestion}
-                  deleteQuestion={deleteQuestion}
-                  activeQuestionId={activeQuestionId}
-                  setActiveQuestionId={setActiveQuestionId}
-                  isLastQuestion={isLastQuestion}
                   isInValid={isInValid}
                 />
               ) : question.$questionType === QuestionType.NumberQuestionType ? (
                 <EditNumberQuestion
+                  availableLanguages={availableLanguages}
                   languageCode={languageCode}
-                  question={question}
+                  question={question as NumberQuestion}
                   questionIdx={questionIdx}
-                  moveQuestion={moveQuestion}
                   updateQuestion={updateQuestion}
-                  duplicateQuestion={duplicateQuestion}
-                  deleteQuestion={deleteQuestion}
-                  activeQuestionId={activeQuestionId}
-                  setActiveQuestionId={setActiveQuestionId}
-                  isLastQuestion={isLastQuestion}
                   isInValid={isInValid}
                 />
               ) : question.$questionType === QuestionType.MultiSelectQuestionType ? (
-                <EditMultiSelectQuestion
+                <EditSelectQuestion
+                  availableLanguages={availableLanguages}
                   languageCode={languageCode}
-                  question={question}
+                  question={question as MultiSelectQuestion}
                   questionIdx={questionIdx}
-                  moveQuestion={moveQuestion}
                   updateQuestion={updateQuestion}
-                  duplicateQuestion={duplicateQuestion}
-                  deleteQuestion={deleteQuestion}
-                  activeQuestionId={activeQuestionId}
-                  setActiveQuestionId={setActiveQuestionId}
-                  isLastQuestion={isLastQuestion}
                   isInValid={isInValid}
                 />
               ) : question.$questionType === QuestionType.SingleSelectQuestionType ? (
-                <EditSingleSelectQuestion
+                <EditSelectQuestion
+                  availableLanguages={availableLanguages}
                   languageCode={languageCode}
-                  question={question}
+                  question={question as SingleSelectQuestion}
                   questionIdx={questionIdx}
-                  moveQuestion={moveQuestion}
                   updateQuestion={updateQuestion}
-                  duplicateQuestion={duplicateQuestion}
-                  deleteQuestion={deleteQuestion}
-                  activeQuestionId={activeQuestionId}
-                  setActiveQuestionId={setActiveQuestionId}
-                  isLastQuestion={isLastQuestion}
                   isInValid={isInValid} />
               ) : question.$questionType === QuestionType.RatingQuestionType ? (
                 <EditRatingQuestion
+                  availableLanguages={availableLanguages}
                   languageCode={languageCode}
-                  question={question}
+                  question={question as RatingQuestion}
                   questionIdx={questionIdx}
-                  moveQuestion={moveQuestion}
                   updateQuestion={updateQuestion}
-                  duplicateQuestion={duplicateQuestion}
-                  deleteQuestion={deleteQuestion}
-                  activeQuestionId={activeQuestionId}
-                  setActiveQuestionId={setActiveQuestionId}
-                  isLastQuestion={isLastQuestion}
                   isInValid={isInValid}
                 />
-              ) : null) : <NewQuestion
-                languageCode={languageCode}
-                question={question}
-                questionIdx={questionIdx}
-                moveQuestion={moveQuestion}
-                updateQuestion={updateQuestion}
-                duplicateQuestion={duplicateQuestion}
-                deleteQuestion={deleteQuestion}
-                activeQuestionId={activeQuestionId}
-                setActiveQuestionId={setActiveQuestionId}
-                isLastQuestion={isLastQuestion}
-                isInValid={isInValid} />
-              }
-
+              ) : null}
             </CollapsibleContent>
           </Collapsible>
         </div>

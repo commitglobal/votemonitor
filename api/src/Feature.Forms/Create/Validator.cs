@@ -1,5 +1,4 @@
 ﻿using Vote.Monitor.Core.Validators;
-using Vote.Monitor.Domain.Constants;
 
 namespace Feature.Forms.Create;
 
@@ -10,19 +9,13 @@ public class Validator : Validator<Request>
         RuleFor(x => x.ElectionRoundId).NotEmpty();
         RuleFor(x => x.MonitoringNgoId).NotEmpty();
         RuleFor(x => x.DefaultLanguage)
-            .NotNull()
-            .NotEmpty()
-            .Must(iso => !string.IsNullOrWhiteSpace(iso) && LanguagesList.GetByIso(iso) != null)
-            .WithMessage("Unknown language iso.")
+            .IsValidLanguageCode()
             .Must((request, iso) => request.Languages.Contains(iso))
             .WithMessage("Languages should contain declared default language.");
 
         RuleFor(x => x.Languages).NotEmpty();
 
-        RuleForEach(x => x.Languages)
-            .NotEmpty()
-            .Must(iso => !string.IsNullOrWhiteSpace(iso) && LanguagesList.GetByIso(iso) != null)
-            .WithMessage("Unknown language iso.");
+        RuleForEach(x => x.Languages).IsValidLanguageCode();
 
         RuleFor(x => x.Code)
             .NotEmpty()

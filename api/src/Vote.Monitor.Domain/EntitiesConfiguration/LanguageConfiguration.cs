@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Vote.Monitor.Domain.Constants;
+using Vote.Monitor.Core.Constants;
 using Vote.Monitor.Domain.Entities.LanguageAggregate;
 
 namespace Vote.Monitor.Domain.EntitiesConfiguration;
@@ -16,6 +16,6 @@ internal class LanguageConfiguration : IEntityTypeConfiguration<Language>
         builder.Property(l => l.NativeName).HasMaxLength(256).IsRequired();
         builder.Property(l => l.Iso1).HasMaxLength(2).IsRequired();
 
-        builder.HasData(LanguagesList.GetAll().Select(x => x.ToEntity()));
+        builder.HasData(LanguagesList.GetAll().Select(Language.FromLanguageDetails));
     }
 }

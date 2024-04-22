@@ -1,7 +1,7 @@
-﻿using Vote.Monitor.Core.Extensions;
-using Vote.Monitor.Domain.Entities.LanguageAggregate;
+﻿using System.Reflection;
+using Vote.Monitor.Core.Extensions;
 
-namespace Vote.Monitor.Domain.Constants;
+namespace Vote.Monitor.Core.Constants;
 
 public record LanguageDetails
 {
@@ -29,11 +29,6 @@ public record LanguageDetails
     /// Two-letter language code (ISO 639-1)
     /// </summary>
     public string Iso1 { get; }
-
-    public Language ToEntity()
-    {
-        return new Language(Name, NativeName, Iso1);
-    }
 }
 
 public static class LanguagesList
@@ -235,19 +230,25 @@ public static class LanguagesList
         }
     }
 
-    public static LanguageDetails? GetByIso(string iso1)
+    private static readonly Lazy<Dictionary<string, LanguageDetails>> _languages = new(() =>
     {
-        return typeof(LanguagesList).GetField(iso1, BindingFlags.Static |
-                                      BindingFlags.Public)?.GetValue(null) as LanguageDetails;
+        var languages = typeof(LanguagesList)
+            .GetFields(BindingFlags.Static |
+                       BindingFlags.Public)
+            .Where(x => x.FieldType == typeof(LanguageDetails))
+            .Select(field => (LanguageDetails)field.GetValue(null)!)
+            .ToDictionary(x => x.Iso1);
+
+        return languages;
+    });
+
+    public static LanguageDetails? GetByLanguageCode(string languageCode)
+    {
+        return string.IsNullOrWhiteSpace(languageCode) ? null : _languages.Value.GetValueOrDefault(languageCode);
     }
 
-    public static bool IsKnownLanguage(Guid languageId)
+    public static bool IsKnownLanguage(string languageCode)
     {
-        return GetAll().Any(x => x.Id == languageId);
-    }
-
-    public static LanguageDetails? Get(Guid languageId)
-    {
-        return GetAll().FirstOrDefault(x => x.Id == languageId);
+        return !string.IsNullOrWhiteSpace(languageCode) && _languages.Value.ContainsKey(languageCode);
     }
 }
