@@ -52,7 +52,7 @@ const PollingStationWizzard = () => {
   const locations = useMemo(() => steps.map((step) => step.name).join(", "), [steps]);
 
   return (
-    <Screen contentContainerStyle={$containerStyle} preset="fixed">
+    <Screen backgroundColor="white" contentContainerStyle={$containerStyle} preset="fixed">
       <Header
         title={t("header.title")}
         leftIcon={<Icon icon="chevronLeft" color="white" />}
@@ -178,7 +178,7 @@ const PollingStationWizzardContent = ({
   }
 
   return (
-    <YStack style={$containerStyle}>
+    <YStack style={$containerStyle} justifyContent="space-between">
       <YStack paddingHorizontal="$md" paddingTop="$xl">
         <YStack gap="$md" minHeight="$xxl">
           {activeStep && (
@@ -186,7 +186,7 @@ const PollingStationWizzardContent = ({
           )}
         </YStack>
       </YStack>
-      <ScrollView paddingTop={140}>
+      <ScrollView paddingTop={100} contentContainerStyle={{ flexGrow: 1 }} centerContent>
         <YStack paddingHorizontal="$md" gap="$lg">
           <Typography preset="body2" style={$labelStyle}>
             {t("form.region.title")}
@@ -214,8 +214,6 @@ const PollingStationWizzardContent = ({
 };
 
 const $containerStyle: ViewStyle = {
-  backgroundColor: "white",
-  justifyContent: "space-between",
   flex: 1,
 };
 
