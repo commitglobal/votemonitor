@@ -5,7 +5,7 @@
   },
   "login": {
     "submit": "Intra in aplicatie",
-    "informative-text": "Dacă nu sunteți acreditat de către o organizație ca \nobservator independent, nu puteți utiliza aplicația \nVote Monitor. Vă rugăm să consultați Votați corect \npentru a afla ce pași trebuie să urmați pentru a deveni observator electoral.",
+    "informative-text": "Dacă nu sunteți acreditat de către o organizație ca observator independent, nu puteți utiliza aplicația Vote Monitor. Vă rugăm să consultați Votați corect pentru a afla ce pași trebuie să urmați pentru a deveni observator electoral.",
     "title": "Autentificare",
     "paragraph": "Vă rugăm să utilizați adresa de e-mail cu care v-ați înregistrat ca observator independent:",
     "form": {
