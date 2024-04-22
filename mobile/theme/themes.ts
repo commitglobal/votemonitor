@@ -36,6 +36,7 @@ const colorTokens = {
       ...red,
       red1: "hsl(0, 86%, 97%)",
       red5: "hsl(347, 77%, 40%)",
+      red6: "hsl(0, 70%, 35%)",
       red10: "hsl(0, 74%, 56%)",
       red12: "hsl(0, 74%, 42%)",
     },

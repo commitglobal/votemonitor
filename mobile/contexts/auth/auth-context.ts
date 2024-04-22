@@ -6,6 +6,7 @@ type AuthContextType = {
   signOut: (queryClient: QueryClient) => void;
   isLoading: boolean;
   isAuthenticated: boolean;
+  authError: boolean;
 };
 
 export const AuthContext = React.createContext<AuthContextType>({
@@ -13,4 +14,5 @@ export const AuthContext = React.createContext<AuthContextType>({
   signOut: (_queryClient: QueryClient) => null,
   isAuthenticated: false,
   isLoading: false,
+  authError: false,
 });

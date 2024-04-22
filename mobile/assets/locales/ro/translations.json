@@ -24,6 +24,10 @@
     "actions": {
       "forgot_password": "Ti-ai uitat parola?",
       "login": "Intra in aplicatie"
+    },
+    "errors": {
+      "credentials": "Credentialele nu sunt corecte. Vă rugăm să încercați din nou.",
+      "general": "Eroare la încercarea de conectare"
     }
   },
   "reset": {

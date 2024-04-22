@@ -37,6 +37,7 @@ import Search from "../assets/icons/search.svg";
 import LoginLogo from "../assets/icons/VM login logo.svg";
 import InfoCircle from "../assets/icons/Information circle.svg";
 import EmailSent from "../assets/icons/Email sent.svg";
+import LoginError from "../assets/icons/LoginError.svg";
 
 import { styled, View } from "tamagui";
 import { StyleProp, ViewStyle } from "react-native";
@@ -118,6 +119,7 @@ export const defaultIcon = React.forwardRef(
       loginLogo: <LoginLogo fill={color} width={size | 294} height={size | 67} />,
       infoCircle: <InfoCircle fill={color} width={size} height={size} />,
       emailSent: <EmailSent fill={color} width={size} height={size} />,
+      loginError: <LoginError fill={color} width={size} height={size} />,
     };
 
     return (
