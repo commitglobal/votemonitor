@@ -17,7 +17,7 @@ export const DrawerContent = (props: DrawerContentProps) => {
   const theme = useTheme();
   return (
     <DrawerContentScrollView {...props}>
-      {electionRounds.map((round, index) => (
+      {electionRounds?.map((round, index) => (
         <DrawerItem
           key={index}
           label={`${round.status} - ${round.title}`}

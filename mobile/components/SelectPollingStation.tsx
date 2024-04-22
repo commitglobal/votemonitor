@@ -89,7 +89,7 @@ const SelectPollingStation = () => {
               {/* //TODO: texts from translation */}
               {useMemo(
                 () =>
-                  visits.map((entry, i) => {
+                  visits?.map((entry, i) => {
                     return (
                       <Select.Item
                         index={i}

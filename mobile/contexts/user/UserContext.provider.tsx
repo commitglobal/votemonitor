@@ -16,13 +16,13 @@ import { ElectionRoundVM } from "../../common/models/election-round.model";
 import { useQueries, useQueryClient } from "@tanstack/react-query";
 
 type UserContextType = {
-  electionRounds: ElectionRoundVM[];
-  visits: PollingStationVisitVM[];
+  electionRounds: ElectionRoundVM[] | undefined;
+  visits: PollingStationVisitVM[] | undefined;
 
   activeElectionRound?: ElectionRoundVM;
   selectedPollingStation?: PollingStationNomenclatorNodeVM | null;
 
-  enoughDataForOffline: boolean;
+  notEnoughDataForOffline: boolean;
   isLoading: boolean;
 
   error: Error | null;
@@ -33,7 +33,7 @@ export const UserContext = createContext<UserContextType>({
   electionRounds: [],
   visits: [],
   isLoading: true,
-  enoughDataForOffline: true,
+  notEnoughDataForOffline: true,
   error: null,
   setSelectedPollingStationId: (_pollingStationId: string) => {},
 });
@@ -44,19 +44,20 @@ const UserContextProvider = ({ children }: React.PropsWithChildren) => {
   const [selectedPollingStationId, setSelectedPollingStationId] = useState<string>();
 
   const {
-    data: rounds = [],
-    isFetching: isLoadingRounds,
+    data: rounds,
+    isLoading: isLoadingRounds,
+    isSuccess: isSuccessRounds,
     error: ElectionRoundsError,
   } = useElectionRoundsQuery();
 
   const activeElectionRound = useMemo(
-    () => rounds.find((round) => round.status === "Started"),
+    () => rounds?.find((round) => round.status === "Started"),
     [rounds],
   );
 
   const {
     data: visits,
-    isFetching: isLoadingVisits,
+    isLoading: isLoadingVisits,
     error: PollingStationsError,
   } = usePollingStationsVisits(activeElectionRound?.id);
 
@@ -70,7 +71,8 @@ const UserContextProvider = ({ children }: React.PropsWithChildren) => {
 
   const {
     data: nomenclatorExists,
-    isFetching: isLoadingNomenclature,
+    isLoading: isLoadingNomenclature,
+    isSuccess: isSuccessNomenclature,
     error: NomenclatureError,
   } = usePollingStationsNomenclatorQuery(activeElectionRound?.id);
 
@@ -114,9 +116,10 @@ const UserContextProvider = ({ children }: React.PropsWithChildren) => {
           NomenclatureError ||
           PollingStationNomenclatorNodeDBError,
         isLoading: isLoadingRounds || isLoadingVisits || isLoadingNomenclature,
-        enoughDataForOffline: !!rounds?.length && !!nomenclatorExists,
-        visits: visits || [],
-        electionRounds: rounds || [],
+        notEnoughDataForOffline:
+          isSuccessRounds && isSuccessNomenclature && !rounds && !nomenclatorExists,
+        visits,
+        electionRounds: rounds,
         activeElectionRound,
         selectedPollingStation: lastVisitedPollingStation,
         setSelectedPollingStationId,
