@@ -123,5 +123,13 @@
       "helper": "Formularul selectat este disponibil în mai multe limbi. Vă rugăm selectați limba cu care doriți să continuați.",
       "error": "Vă rugăm selectați una din opțiuni."
     }
+  },
+  "inbox_empty": {
+    "title": "Nu s-a primit încă niciun mesaj",
+    "paragraph": "Mesajele push și alertele de la organizația dvs. vor apărea aici."
+  },
+  "guides_empty": {
+    "title": "Nu există ghiduri de citit încă",
+    "paragraph": "Ghidurile și resursele de la organizația dvs. sunt la îndemâna dumneavoastră."
   }
 }

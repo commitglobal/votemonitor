@@ -1,74 +1,51 @@
-import * as React from "react";
-import { View, Text } from "react-native";
-import CheckboxInput from "../../../../components/Inputs/CheckboxInput";
-import { YStack, CheckedState } from "tamagui";
-import { useForm, Controller } from "react-hook-form";
-import Button from "../../../../components/Button";
-import WizardFormElement from "../../../../components/WizardFormInputs/WizardFormElement";
-
-interface FormData {
-  missingMaterials: string[];
-}
-
-const checkboxOptions = [
-  { label: "PEC SEal", value: "pecSeal" },
-  { label: "Voters list", value: "votersList" },
-  { label: "Envelopes", value: "envelopes" },
-  { label: "Protocols", value: "protocols" },
-];
+import { YStack } from "tamagui";
+import { Screen } from "../../../../components/Screen";
+import Header from "../../../../components/Header";
+import { Typography } from "../../../../components/Typography";
+import { Icon } from "../../../../components/Icon";
+import { useNavigation } from "expo-router";
+import { DrawerActions } from "@react-navigation/native";
+import { useTranslation } from "react-i18next";
 
 const Guides = () => {
-  const { control, handleSubmit, setValue, getValues } = useForm<FormData>({
-    defaultValues: {
-      missingMaterials: ["votersList"],
-    },
-  });
-
-  const onSubmit = (data: FormData) => console.log(data);
-
-  const handleCheckboxChange = (value: string, checked: CheckedState) => {
-    // Get the current state of missingMaterials from the form
-    const currentMissingMaterials = getValues("missingMaterials");
-
-    // Update the state based on whether the checkbox was checked or unchecked
-    const updatedMissingMaterials = checked
-      ? [...currentMissingMaterials, value] // Add to the array if checked
-      : currentMissingMaterials.filter((v) => v !== value); // Remove from the array if unchecked
-
-    // Update the missingMaterials state
-    setValue("missingMaterials", updatedMissingMaterials, { shouldValidate: true });
-  };
+  const navigation = useNavigation();
+  const { t } = useTranslation("guides_empty");
 
   return (
-    <View>
-      <Text>Guides hello</Text>
-      <YStack gap="$sm" padding="$md">
-        <WizardFormElement label="A1.1. Mark all the materials that are not present:">
-          {/* //! we need a controller for every checbox input, so does it make sense to have a separate CheckboxFormInput where we add the controller inside? */}
-          {checkboxOptions.map((option, index) => (
-            <YStack key={index}>
-              <Controller
-                key={option.value}
-                name="missingMaterials"
-                control={control}
-                render={() => (
-                  <YStack>
-                    <CheckboxInput
-                      marginBottom="$md"
-                      id={option.value}
-                      label={option.label}
-                      checked={getValues("missingMaterials").includes(option.value)}
-                      onCheckedChange={(checked) => handleCheckboxChange(option.value, checked)}
-                    />
-                  </YStack>
-                )}
-              />
-            </YStack>
-          ))}
-        </WizardFormElement>
+    <Screen
+      preset="auto"
+      ScrollViewProps={{
+        bounces: false,
+      }}
+      contentContainerStyle={{
+        flexGrow: 1,
+      }}
+    >
+      <Header
+        title={"Inbox"}
+        titleColor="white"
+        barStyle="light-content"
+        leftIcon={<Icon icon="menuAlt2" color="white" />}
+        onLeftPress={() => navigation.dispatch(DrawerActions.openDrawer)}
+        rightIcon={<Icon icon="dotsVertical" color="white" />}
+        onRightPress={() => {
+          console.log("Right icon pressed");
+        }}
+      />
+
+      <YStack flex={1} alignItems="center" justifyContent="center" gap="$md">
+        <Icon icon="undrawReading" size={190} />
+
+        <YStack gap="$xxxs" paddingHorizontal="$lg">
+          <Typography preset="subheading" textAlign="center">
+            {t("title")}
+          </Typography>
+          <Typography preset="body1" textAlign="center" color="$gray12">
+            {t("paragraph")}
+          </Typography>
+        </YStack>
       </YStack>
-      <Button onPress={handleSubmit(onSubmit)}>Submit</Button>
-    </View>
+    </Screen>
   );
 };
 

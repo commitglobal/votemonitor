@@ -1,59 +1,51 @@
-import { View } from "react-native";
-import { Controller, useForm } from "react-hook-form";
-import Button from "../../../../components/Button";
 import { YStack } from "tamagui";
-import WizardFormInput from "../../../../components/WizardFormInputs/WizardFormInput";
-// import RatingFormInput from "../../../../components/FormInputs/RatingFormInput";
-
-interface FormData {
-  // performanceRating: string;
-  nrOfMembers: string;
-}
+import { Screen } from "../../../../components/Screen";
+import Header from "../../../../components/Header";
+import { Typography } from "../../../../components/Typography";
+import { Icon } from "../../../../components/Icon";
+import { useNavigation } from "expo-router";
+import { DrawerActions } from "@react-navigation/native";
+import { useTranslation } from "react-i18next";
 
 const Inbox = () => {
-  const { control, handleSubmit } = useForm<FormData>();
-  const onSubmit = (data: any) => {
-    console.log(data);
-  };
+  const navigation = useNavigation();
+  const { t } = useTranslation("inbox_empty");
 
   return (
-    <View style={{ backgroundColor: "white" }}>
-      <YStack padding="$md" gap="$lg">
-        <Controller
-          control={control}
-          name="nrOfMembers"
-          rules={{ maxLength: 10 }}
-          render={({ field: { onChange, value } }) => (
-            <WizardFormInput
-              type="textarea"
-              label="A2. How many PEC members have been appointed?"
-              paragraph="Lorem ipsum dolor sit amet consectetur. Maecenas donec pharetra elementum mauris est sodales."
-              helper="10 characters"
-              onChangeText={onChange}
-              value={value}
-            />
-          )}
-        />
+    <Screen
+      preset="auto"
+      ScrollViewProps={{
+        bounces: false,
+      }}
+      contentContainerStyle={{
+        flexGrow: 1,
+      }}
+    >
+      <Header
+        title={"Inbox"}
+        titleColor="white"
+        barStyle="light-content"
+        leftIcon={<Icon icon="menuAlt2" color="white" />}
+        onLeftPress={() => navigation.dispatch(DrawerActions.openDrawer)}
+        rightIcon={<Icon icon="dotsVertical" color="white" />}
+        onRightPress={() => {
+          console.log("Right icon pressed");
+        }}
+      />
 
-        {/* <Controller
-          control={control}
-          name="performanceRating"
-          render={({ field: { onChange, value } }) => (
-            <RatingFormInput
-              id="123456"
-              type="single"
-              label="A4. Please indicate your opinion regarding performance of PEC"
-              paragraph="According to the range of 1 = very bad to 5 = very good."
-              helper="helper text"
-              onValueChange={onChange}
-              value={value}
-            />
-          )}
-        /> */}
+      <YStack flex={1} alignItems="center" justifyContent="center" gap="$md">
+        <Icon icon="undrawInbox" size={190} />
 
-        <Button onPress={handleSubmit(onSubmit)}>Submit answer</Button>
+        <YStack gap="$xxxs" paddingHorizontal="$lg">
+          <Typography preset="subheading" textAlign="center">
+            {t("title")}
+          </Typography>
+          <Typography preset="body1" textAlign="center" color="$gray12">
+            {t("paragraph")}
+          </Typography>
+        </YStack>
       </YStack>
-    </View>
+    </Screen>
   );
 };
 
