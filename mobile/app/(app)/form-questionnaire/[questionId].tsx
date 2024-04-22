@@ -336,7 +336,7 @@ const FormQuestionnaire = () => {
                             <CheckboxInput
                               marginBottom="$md"
                               id={option.id}
-                              label={option.text.EN}
+                              label={option.text[language as string]}
                               checked={selections[option.id]?.optionId === option.id}
                               onCheckedChange={(checked) => {
                                 if (checked) {
