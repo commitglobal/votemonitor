@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Typography } from "../../components/Typography";
 import { Controller, useForm } from "react-hook-form";
 import { Sheet, View, XStack, YStack } from "tamagui";
@@ -263,8 +262,8 @@ const PollingStationQuestionnaire = () => {
         />
         <YStack padding="$md" gap="$lg">
           {formStructure?.questions.map((question: ApiFormQuestion) => {
-            const label = `${question.code}. ${question.text.EN}`;
-            const helper = question.helptext.EN;
+            const _label = `${question.code}. ${question.text.EN}`;
+            const _helper = question.helptext.EN;
 
             if (question.$questionType === "numberQuestion") {
               return (
@@ -421,7 +420,7 @@ const PollingStationQuestionnaire = () => {
                                       [option.id]: { optionId: option.id, text: null },
                                     });
                                   } else {
-                                    const { [option.id]: toRemove, ...rest } = selections;
+                                    const { [option.id]: _toRemove, ...rest } = selections;
                                     return onChange(rest);
                                   }
                                 }}
