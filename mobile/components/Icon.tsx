@@ -37,6 +37,8 @@ import Search from "../assets/icons/search.svg";
 import LoginLogo from "../assets/icons/VM login logo.svg";
 import InfoCircle from "../assets/icons/Information circle.svg";
 import EmailSent from "../assets/icons/Email sent.svg";
+import UndrawInbox from "../assets/icons/undraw_inbox_oppv.svg";
+import UndrawReading from "../assets/icons/undraw_reading_book.svg";
 import LoginError from "../assets/icons/LoginError.svg";
 
 import { styled, View } from "tamagui";
@@ -119,6 +121,8 @@ export const defaultIcon = React.forwardRef(
       loginLogo: <LoginLogo fill={color} width={size | 294} height={size | 67} />,
       infoCircle: <InfoCircle fill={color} width={size} height={size} />,
       emailSent: <EmailSent fill={color} width={size} height={size} />,
+      undrawInbox: <UndrawInbox fill={color} width={size} height={size} />,
+      undrawReading: <UndrawReading fill={color} width={size} height={size} />,
       loginError: <LoginError fill={color} width={size} height={size} />,
     };
 

@@ -64,7 +64,7 @@ const Select = ({ placeholder = "Select", options, ...props }: StyledSelectProps
 
             <Sheet.ScrollView
               marginBottom={insets.bottom}
-              padding="$sm"
+              paddingHorizontal="$sm"
               keyboardShouldPersistTaps="handled"
             >
               <Adapt.Contents />
@@ -87,6 +87,7 @@ const Select = ({ placeholder = "Select", options, ...props }: StyledSelectProps
                     key={`${entry.id}_${i}`}
                     value={entry.value}
                     gap="$3"
+                    paddingBottom="$sm"
                   >
                     <TamaguiSelect.ItemText width={"90%"} numberOfLines={1}>
                       {entry.label}

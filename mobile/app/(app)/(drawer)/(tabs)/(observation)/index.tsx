@@ -54,7 +54,7 @@ export type FormListItem = {
 
 const FormList = () => {
   const { activeElectionRound, selectedPollingStation } = useUserData();
-  const [selectedFormId, setSelectedFormId] = useState<string | null>(null);
+  const [selectedForm, setSelectedForm] = useState<FormListItem | null>(null);
   const { t } = useTranslation("form_overview");
 
   const {
@@ -90,10 +90,23 @@ const FormList = () => {
     formState: { errors },
   } = useForm({});
 
-  const onConfirmFormLanguage = (language: string) => {
+  const onConfirmFormLanguage = (formItem: FormListItem, language: string) => {
     // navigate to the language
-    router.push(`/form-details/${selectedFormId}?language=${language}`);
-    setSelectedFormId(null);
+    router.push(`/form-details/${formItem?.id}?language=${language}`);
+    setSelectedForm(null);
+  };
+
+  const openForm = (formItem: FormListItem) => {
+    if (!formItem?.languages?.length) {
+      // TODO: Display error toast
+      console.log("No language exists");
+    }
+
+    if (formItem?.languages?.length === 1) {
+      onConfirmFormLanguage(formItem, formItem.languages[0]);
+    } else {
+      setSelectedForm(formItem);
+    }
   };
 
   if (isLoadingAnswers || isLoadingForms) {
@@ -123,51 +136,51 @@ const FormList = () => {
                 <FormCard
                   key={index}
                   form={item}
-                  onPress={setSelectedFormId.bind(null, item.id)}
+                  onPress={openForm.bind(null, item)}
                   marginBottom="$xxs"
-                />
-                <Controller
-                  key={item.id}
-                  name={item.name}
-                  control={control}
-                  rules={{
-                    required: { value: true, message: t("language_modal.error") },
-                  }}
-                  render={({ field: { onChange, value } }) => (
-                    <Dialog
-                      open={!!selectedFormId}
-                      header={
-                        <Typography preset="heading">{t("language_modal.header")}</Typography>
-                      }
-                      content={
-                        <DialogContent
-                          languages={item.languages}
-                          error={errors[item.name]}
-                          value={value}
-                          onChange={onChange}
-                        />
-                      }
-                      footer={
-                        <XStack gap="$md">
-                          <Button preset="chromeless" onPress={setSelectedFormId.bind(null, null)}>
-                            Cancel
-                          </Button>
-                          <Button
-                            onPress={handleSubmit(() => onConfirmFormLanguage(value))}
-                            flex={1}
-                          >
-                            Save
-                          </Button>
-                        </XStack>
-                      }
-                    />
-                  )}
                 />
               </>
             );
           }}
           estimatedItemSize={100}
         />
+        {selectedForm && (
+          <Controller
+            key={selectedForm.id}
+            name={selectedForm.name}
+            control={control}
+            rules={{
+              required: { value: true, message: t("language_modal.error") },
+            }}
+            render={({ field: { onChange, value } }) => (
+              <Dialog
+                open={!!selectedForm}
+                header={<Typography preset="heading">{t("language_modal.header")}</Typography>}
+                content={
+                  <DialogContent
+                    languages={selectedForm.languages}
+                    error={errors[selectedForm.name]}
+                    value={value}
+                    onChange={onChange}
+                  />
+                }
+                footer={
+                  <XStack gap="$md">
+                    <Button preset="chromeless" onPress={setSelectedForm.bind(null, null)}>
+                      Cancel
+                    </Button>
+                    <Button
+                      onPress={handleSubmit(() => onConfirmFormLanguage(selectedForm, value))}
+                      flex={1}
+                    >
+                      Save
+                    </Button>
+                  </XStack>
+                }
+              />
+            )}
+          />
+        )}
       </YStack>
     </YStack>
   );
@@ -373,6 +386,7 @@ const DialogContent = ({
     // TODO: decide if we add the name to the label as well
     label: languageMapping[language],
   }));
+
   return (
     <YStack>
       <Typography preset="body1" marginBottom="$lg">
