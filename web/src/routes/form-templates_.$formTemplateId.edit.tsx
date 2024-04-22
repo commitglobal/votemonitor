@@ -10,9 +10,8 @@ export const Route = createFileRoute('/form-templates/$formTemplateId/edit')({
 
 function Edit() {
   return (
-    <div className='p-2'>
+    <div className='p-2 flex flex-col flex-1'>
       <EditFormTemplate />
     </div>
   );
 }
-

@@ -16,13 +16,9 @@ function RootComponent() {
   return (
     <>
       <Toaster />
-      <div className='flex flex-col min-h-screen pb-20 gap-y-10'>
+      <div className='flex flex-col min-h-screen pb-20'>
         {isAuthenticated && <Header />}
         <Outlet />
-        <Suspense>
-          <TanStackReactQueryDevelopmentTools buttonPosition='top-left' />
-          <TanStackRouterDevelopmentTools position='top-right' initialIsOpen={false} />
-        </Suspense>
       </div>
     </>
   );

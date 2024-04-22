@@ -22,7 +22,6 @@ import { useState } from 'react';
 import { formTemplatesKeys } from '../../queries';
 import EditFormTemplateFooter from '../EditFormTemplate/EditFormTemplateFooter';
 
-
 export default function EditFormTemplateTranslation() {
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -32,7 +31,7 @@ export default function EditFormTemplateTranslation() {
 
   const editFormTemplateFormSchema = z.object({
     name: z.string().nonempty(),
-    description: z.string().optional()
+    description: z.string().optional(),
   });
 
   const form = useForm<z.infer<typeof editFormTemplateFormSchema>>({
@@ -56,14 +55,10 @@ export default function EditFormTemplateTranslation() {
 
   const editMutation = useMutation({
     mutationFn: (obj: FormTemplateFull) => {
-
-      return authApi.put<void>(
-        `/form-templates/${formTemplate.id}`,
-        {
-          ...obj,
-          questions: localQuestions
-        }
-      );
+      return authApi.put<void>(`/form-templates/${formTemplate.id}`, {
+        ...obj,
+        questions: localQuestions,
+      });
     },
 
     onSuccess: () => {
@@ -102,9 +97,11 @@ export default function EditFormTemplateTranslation() {
                         render={({ field, fieldState }) => (
                           <Field>
                             <Label>{t('form-template.field.name')}</Label>
-                            <Input placeholder={t('form-template.placeholder.name')} {...field}  {...fieldState} />
+                            <Input placeholder={t('form-template.placeholder.name')} {...field} {...fieldState} />
                             {fieldState.invalid && <ErrorMessage>{fieldState?.error?.message}</ErrorMessage>}
-                          </Field>)} />
+                          </Field>
+                        )}
+                      />
 
                       <FormField
                         control={form.control}
@@ -112,7 +109,12 @@ export default function EditFormTemplateTranslation() {
                         render={({ field }) => (
                           <Field>
                             <Label>{t('form-template.field.description')}</Label>
-                            <Textarea rows={10} cols={100} {...field} placeholder={t('form-template.placeholder.description')} />
+                            <Textarea
+                              rows={10}
+                              cols={100}
+                              {...field}
+                              placeholder={t('form-template.placeholder.description')}
+                            />
                           </Field>
                         )}
                       />

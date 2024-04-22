@@ -17,19 +17,12 @@ import { z } from 'zod';
 import { FormTemplateFull, FormTemplateType, mapFormTemplateType } from '../../models/formTemplate';
 
 import FormQuestionsEditor from '@/components/questionsEditor/FormQuestionsEditor';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { queryClient } from '@/main';
 import { useState } from 'react';
 import { formTemplatesKeys } from '../../queries';
 import EditFormTemplateFooter from './EditFormTemplateFooter';
-
 
 export default function EditFormTemplate() {
   const navigate = useNavigate();
@@ -43,7 +36,9 @@ export default function EditFormTemplate() {
     name: z.string().nonempty(),
     description: z.string().optional(),
     defaultLanguage: z.string().nonempty(),
-    formTemplateType: z.enum([FormTemplateType.Opening, FormTemplateType.Voting, FormTemplateType.ClosingAndCounting]).catch(FormTemplateType.Opening)
+    formTemplateType: z
+      .enum([FormTemplateType.Opening, FormTemplateType.Voting, FormTemplateType.ClosingAndCounting])
+      .catch(FormTemplateType.Opening),
   });
 
   const form = useForm<z.infer<typeof editFormTemplateFormSchema>>({
@@ -66,7 +61,6 @@ export default function EditFormTemplate() {
 
     const updatedFormTemplate: FormTemplateFull = {
       ...formTemplate,
-
     };
 
     editMutation.mutate(updatedFormTemplate);
@@ -74,14 +68,10 @@ export default function EditFormTemplate() {
 
   const editMutation = useMutation({
     mutationFn: (obj: FormTemplateFull) => {
-
-      return authApi.put<void>(
-        `/form-templates/${formTemplate.id}`,
-        {
-          ...obj,
-          questions: localQuestions
-        }
-      );
+      return authApi.put<void>(`/form-templates/${formTemplate.id}`, {
+        ...obj,
+        questions: localQuestions,
+      });
     },
 
     onSuccess: () => {
@@ -89,7 +79,7 @@ export default function EditFormTemplate() {
         title: 'Success',
         description: 'Form template updated successfully updated',
       });
-      
+
       queryClient.invalidateQueries({ queryKey: formTemplatesKeys.all });
     },
   });
@@ -97,8 +87,8 @@ export default function EditFormTemplate() {
   return (
     <Layout title={`${formTemplate.code} - ${formTemplate.name[formTemplate.defaultLanguage]}`}>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
-          <Tabs defaultValue='form-details'>
+        <form className='flex flex-col flex-1' onSubmit={form.handleSubmit(onSubmit)}>
+          <Tabs className='flex flex-col flex-1' defaultValue='form-details'>
             <TabsList className='grid grid-cols-2 bg-gray-200 w-[400px] mb-4'>
               <TabsTrigger value='form-details'>Template form details</TabsTrigger>
               <TabsTrigger value='questions'>Questions</TabsTrigger>
@@ -120,27 +110,34 @@ export default function EditFormTemplate() {
                         render={({ field, fieldState }) => (
                           <Field>
                             <Label>{t('form-template.field.code')}</Label>
-                            <Input placeholder={t('form-template.placeholder.code')} {...field}  {...fieldState} />
+                            <Input placeholder={t('form-template.placeholder.code')} {...field} {...fieldState} />
                             {fieldState.invalid && <ErrorMessage>{fieldState?.error?.message}</ErrorMessage>}
                           </Field>
-                        )} />
+                        )}
+                      />
 
                       <FormField
                         control={form.control}
-                        name="formTemplateType"
+                        name='formTemplateType'
                         render={({ field }) => (
                           <Field>
                             <Label>{t('form-template.field.formTemplateType')}</Label>
                             <Select onValueChange={field.onChange} defaultValue={field.value}>
                               <FormControl>
                                 <SelectTrigger>
-                                  <SelectValue placeholder="Select a form template type" />
+                                  <SelectValue placeholder='Select a form template type' />
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
-                                <SelectItem value={FormTemplateType.Opening}>{mapFormTemplateType(FormTemplateType.Opening)}</SelectItem>
-                                <SelectItem value={FormTemplateType.Voting}>{mapFormTemplateType(FormTemplateType.Voting)}</SelectItem>
-                                <SelectItem value={FormTemplateType.ClosingAndCounting}>{mapFormTemplateType(FormTemplateType.ClosingAndCounting)}</SelectItem>
+                                <SelectItem value={FormTemplateType.Opening}>
+                                  {mapFormTemplateType(FormTemplateType.Opening)}
+                                </SelectItem>
+                                <SelectItem value={FormTemplateType.Voting}>
+                                  {mapFormTemplateType(FormTemplateType.Voting)}
+                                </SelectItem>
+                                <SelectItem value={FormTemplateType.ClosingAndCounting}>
+                                  {mapFormTemplateType(FormTemplateType.ClosingAndCounting)}
+                                </SelectItem>
                               </SelectContent>
                             </Select>
                             <FormMessage />
@@ -153,9 +150,11 @@ export default function EditFormTemplate() {
                         render={({ field, fieldState }) => (
                           <Field>
                             <Label>{t('form-template.field.name')}</Label>
-                            <Input placeholder={t('form-template.placeholder.name')} {...field}  {...fieldState} />
+                            <Input placeholder={t('form-template.placeholder.name')} {...field} {...fieldState} />
                             {fieldState.invalid && <ErrorMessage>{fieldState?.error?.message}</ErrorMessage>}
-                          </Field>)} />
+                          </Field>
+                        )}
+                      />
 
                       <FormField
                         control={form.control}
@@ -163,10 +162,7 @@ export default function EditFormTemplate() {
                         render={({ field }) => (
                           <Field>
                             <Label>{t('form-template.field.defaultLanguage')}</Label>
-                            <LanguageSelect
-                              languageCode={field.value}
-                              onSelect={field.onChange}
-                            />
+                            <LanguageSelect languageCode={field.value} onSelect={field.onChange} />
                           </Field>
                         )}
                       />
@@ -178,7 +174,12 @@ export default function EditFormTemplate() {
                         render={({ field }) => (
                           <Field>
                             <Label>{t('form-template.field.description')}</Label>
-                            <Textarea rows={10} cols={100} {...field} placeholder={t('form-template.placeholder.description')} />
+                            <Textarea
+                              rows={10}
+                              cols={100}
+                              {...field}
+                              placeholder={t('form-template.placeholder.description')}
+                            />
                           </Field>
                         )}
                       />
@@ -187,15 +188,15 @@ export default function EditFormTemplate() {
                 </CardContent>
               </Card>
             </TabsContent>
-            <TabsContent value='questions'>
-              <Card className='pt-0'>
+            <TabsContent className='flex flex-1 flex-col' value='questions'>
+              <Card className='pt-0 flex flex-col flex-1'>
                 <CardHeader className='flex flex-column gap-2'>
                   <div className='flex flex-row justify-between items-center'>
                     <CardTitle className='text-xl'>Template form questions</CardTitle>
                   </div>
                   <Separator />
                 </CardHeader>
-                <CardContent className='-mx-6 flex items-start justify-left px-6 sm:mx-0 sm:px-8'>
+                <CardContent className='flex flex-1'>
                   <FormQuestionsEditor
                     languageCode={formTemplate.defaultLanguage}
                     localQuestions={localQuestions}
