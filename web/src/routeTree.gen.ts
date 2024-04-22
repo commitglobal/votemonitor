@@ -12,6 +12,7 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as IndexImport } from './routes/index'
+import { Route as ResponsesIndexImport } from './routes/responses/index'
 import { Route as ObserversIndexImport } from './routes/observers/index'
 import { Route as NgosIndexImport } from './routes/ngos/index'
 import { Route as MonitoringObserversIndexImport } from './routes/monitoring-observers/index'
@@ -33,6 +34,11 @@ import { Route as FormTemplatesFormTemplateIdEditTranslationLanguageCodeImport }
 
 const IndexRoute = IndexImport.update({
   path: '/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ResponsesIndexRoute = ResponsesIndexImport.update({
+  path: '/responses/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -175,6 +181,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ObserversIndexImport
       parentRoute: typeof rootRoute
     }
+    '/responses/': {
+      preLoaderRoute: typeof ResponsesIndexImport
+      parentRoute: typeof rootRoute
+    }
     '/form-templates/$formTemplateId/$languageCode': {
       preLoaderRoute: typeof FormTemplatesFormTemplateIdLanguageCodeImport
       parentRoute: typeof rootRoute
@@ -213,6 +223,7 @@ export const routeTree = rootRoute.addChildren([
   MonitoringObserversIndexRoute,
   NgosIndexRoute,
   ObserversIndexRoute,
+  ResponsesIndexRoute,
   FormTemplatesFormTemplateIdLanguageCodeRoute,
   FormTemplatesFormTemplateIdEditRoute,
   MonitoringObserversMonitoringObserverIdEditRoute,
