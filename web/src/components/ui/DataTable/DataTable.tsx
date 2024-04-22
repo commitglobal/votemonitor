@@ -7,9 +7,11 @@ import {
   type SortingState,
   useReactTable,
   type VisibilityState,
+  getExpandedRowModel,
+  Row,
 } from '@tanstack/react-table';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { useState, type ReactElement } from 'react';
+import { CSSProperties, useState, type ReactElement } from 'react';
 import { SortOrder, type DataTableParameters, type PageResponse } from '@/common/types';
 import { DataTablePagination } from './DataTablePagination';
 import type { UseQueryResult } from '@tanstack/react-query';
@@ -61,6 +63,23 @@ export interface DataTableProps<TData, TValue, TQueryParams = object> {
    * Used by QueryParamsDataTable
    */
   queryParams?: TQueryParams;
+
+  /**
+   * Externalize subrows creation
+   * Used by DataTable
+   * @param originalRow 
+   * @param index 
+   * @returns 
+   */
+  getSubrows?: (originalRow: TData, index: number) => undefined | TData[];
+  /**
+   * Externalize row styling
+   * Used by DataTable
+   * @param originalRow 
+   * @param index 
+   * @returns 
+   */
+  getRowClassName?: (row: Row<TData>) => string | undefined;
 }
 
 export function DataTable<TData, TValue, TQueryParams = object>({
@@ -72,6 +91,8 @@ export function DataTable<TData, TValue, TQueryParams = object>({
   sortingExt,
   useQuery,
   queryParams,
+  getSubrows,
+  getRowClassName
 }: DataTableProps<TData, TValue, TQueryParams>): ReactElement {
   let [pagination, setPagination]: [PaginationState, (p: PaginationState) => void] = useState({
     pageIndex: 0,
@@ -108,6 +129,8 @@ export function DataTable<TData, TValue, TQueryParams = object>({
     pageCount: data ? Math.ceil(data.totalCount / data.pageSize) : 0,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
+    getExpandedRowModel: getExpandedRowModel(),
+    getSubRows: getSubrows,
     onPaginationChange: (updater) => {
       setPagination(updater instanceof Function ? updater(pagination) : updater);
     },
@@ -151,7 +174,7 @@ export function DataTable<TData, TValue, TQueryParams = object>({
               ))
             ) : table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
+                <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'} className={getRowClassName ? getRowClassName(row): ''}>
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                   ))}

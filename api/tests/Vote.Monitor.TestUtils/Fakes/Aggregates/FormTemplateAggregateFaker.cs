@@ -1,4 +1,5 @@
-﻿using Vote.Monitor.Core.Models;
+﻿using Vote.Monitor.Core.Constants;
+using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
 
 namespace Vote.Monitor.TestUtils.Fakes.Aggregates;
@@ -25,7 +26,7 @@ public sealed class FormTemplateAggregateFaker : PrivateFaker<FormTemplate>
         RuleFor(fake => fake.Id, fake => id ?? fake.Random.Guid());
         RuleFor(fake => fake.Code, code ?? Guid.NewGuid().ToString());
         RuleFor(fake => fake.Languages, formLanguages);
-        RuleFor(fake => fake.DefaultLanguage, fake => fake.PickRandom<string>(formLanguages));
+        RuleFor(fake => fake.DefaultLanguage, fake => fake.PickRandom(formLanguages));
         RuleFor(fake => fake.Status, fake => status ?? fake.PickRandom(_statuses));
         RuleFor(fake => fake.Name, name ?? new TranslatedString());
 

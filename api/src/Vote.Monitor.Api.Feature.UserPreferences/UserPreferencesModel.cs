@@ -2,5 +2,5 @@
 
 public class UserPreferencesModel
 {
-    public Guid LanguageId { get; set; }
+    public string LanguageCode { get; set; }
 }

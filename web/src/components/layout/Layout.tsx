@@ -25,7 +25,7 @@ const Layout = ({ title, subtitle, actions, children }: LayoutProps) => {
           {!!actions && <div className='flex shrink-0'>{actions}</div>}
         </div>
       </header>
-      <main className='container'>{children}</main>
+      <main className='container flex flex-col flex-1'>{children}</main>
     </>
   );
 };

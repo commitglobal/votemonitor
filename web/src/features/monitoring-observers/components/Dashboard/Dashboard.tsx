@@ -261,7 +261,7 @@ export default function MonitoringObserversDashboard(): ReactElement {
       <Tabs defaultValue='account'>
         <TabsList className='grid grid-cols-2 bg-gray-200 w-[400px] mb-4'>
           <TabsTrigger value='account'>All monitoring observers</TabsTrigger>
-          <TabsTrigger value='password'>Push messages</TabsTrigger>
+          <TabsTrigger value='push-messages'>Push messages</TabsTrigger>
         </TabsList>
         <TabsContent value='account'>
           <Card className='w-full pt-0'>
@@ -458,7 +458,7 @@ export default function MonitoringObserversDashboard(): ReactElement {
             <CardFooter className='flex justify-between'></CardFooter>
           </Card>
         </TabsContent>
-        <TabsContent value='password'>
+        <TabsContent value='push-messages'>
           <PushMessages />
         </TabsContent>
       </Tabs>

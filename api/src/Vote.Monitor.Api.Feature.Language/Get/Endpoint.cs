@@ -1,4 +1,6 @@
-﻿namespace Vote.Monitor.Api.Feature.Language.Get;
+﻿using Vote.Monitor.Core.Constants;
+
+namespace Vote.Monitor.Api.Feature.Language.Get;
 
 public class Endpoint : Endpoint<Request, Results<Ok<LanguageModel>, NotFound>>
 {

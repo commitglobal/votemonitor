@@ -302,26 +302,30 @@ public static class CountriesList
     public static readonly CountryDetails ZM = new("Zambia", "Republic of Zambia", "ZM", "ZMB", "894");
     public static readonly CountryDetails ZW = new("Zimbabwe", "Republic of Zimbabwe", "ZW", "ZWE", "716");
 
+
+    private static readonly Lazy<Dictionary<Guid, CountryDetails>> _countries = new(() =>
+    {
+        var countries = typeof(CountriesList)
+            .GetFields(BindingFlags.Static |
+                       BindingFlags.Public)
+            .Where(x => x.FieldType == typeof(CountryDetails))
+            .Select(field => (CountryDetails)field.GetValue(null)!)
+            .ToDictionary(x => x.Id);
+
+        return countries;
+    });
     public static IEnumerable<CountryDetails> GetAll()
     {
-        var fields = typeof(CountriesList)
-            .GetFields(BindingFlags.Static |
-                           BindingFlags.Public)
-            .Where(x => x.FieldType == typeof(CountryDetails));
-
-        foreach (var field in fields)
-        {
-            yield return (CountryDetails)field.GetValue(null)!;
-        }
+       return _countries.Value.Values;
     }
 
     public static bool IsKnownCountry(Guid countryId)
     {
-        return GetAll().Any(x => x.Id == countryId);
+        return _countries.Value.ContainsKey(countryId);
     }
 
     public static CountryDetails? Get(Guid countryId)
     {
-        return GetAll().FirstOrDefault(x => x.Id == countryId);
+        return _countries.Value.GetValueOrDefault(countryId);
     }
 }
