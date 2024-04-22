@@ -106,8 +106,12 @@ export default function ResponsesDashboard(): ReactElement {
               <Separator />
 
               <div className='px-6 flex justify-end gap-4'>
-                <Input className='w-[400px]' onChange={handleSearchInput} placeholder='Search' />
-                <FunnelIcon className='w-[20px] text-purple-900 cursor-pointer' />
+                {byFilter !== 'byForm' && (
+                  <>
+                    <Input className='w-[400px]' onChange={handleSearchInput} placeholder='Search' />
+                    <FunnelIcon className='w-[20px] text-purple-900 cursor-pointer' />
+                  </>
+                )}
 
                 <DropdownMenu>
                   <DropdownMenuTrigger>
