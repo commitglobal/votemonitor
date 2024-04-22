@@ -27,7 +27,8 @@ public class Endpoint(IReadRepository<FormTemplateAggregate> repository) : Endpo
             Status = formTemplate.Status,
             CreatedOn = formTemplate.CreatedOn,
             LastModifiedOn = formTemplate.LastModifiedOn,
-            Languages = formTemplate.Languages.ToList(),
+            Languages = formTemplate.Languages,
+            NumberOfQuestions = formTemplate.NumberOfQuestions,
             Questions = formTemplate.Questions.Select(QuestionsMapper.ToModel).ToList()
         });
     }

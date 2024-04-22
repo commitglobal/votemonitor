@@ -33,7 +33,8 @@ export type PageResponse<T> = {
   items: T[];
 };
 
-export type DataTableParameters = PageParameters & SortParameters;
+export type DataTableParameters<TQueryParams = object> = PageParameters &
+  SortParameters & { otherParams?: TQueryParams };
 
 export type TranslatedString = {
   [languageCode: string]: string;
@@ -173,11 +174,12 @@ export type LevelNode = {
   name: string;
   depth: number;
   parentId: number;
-}
+};
 
 export type UserPayload = {
   'user-role': string;
 };
+
 
 /**
  * Creates a new Translated String containing all available languages

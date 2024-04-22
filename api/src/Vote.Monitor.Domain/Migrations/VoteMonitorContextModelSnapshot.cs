@@ -282,6 +282,75 @@ namespace Vote.Monitor.Domain.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.AttachmentAggregate.Attachment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("ElectionRoundId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<string>("FilePath")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<Guid>("FormId")
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid>("LastModifiedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("LastModifiedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("MimeType")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<Guid>("MonitoringObserverId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("PollingStationId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("QuestionId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("UploadedFileName")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ElectionRoundId");
+
+                    b.HasIndex("FormId");
+
+                    b.HasIndex("MonitoringObserverId");
+
+                    b.HasIndex("PollingStationId");
+
+                    b.ToTable("Attachments", (string)null);
+                });
+
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.Auditing.Trail", b =>
                 {
                     b.Property<Guid>("Id")
@@ -2958,6 +3027,9 @@ namespace Vote.Monitor.Domain.Migrations
                         .IsRequired()
                         .HasColumnType("jsonb");
 
+                    b.Property<int>("NumberOfQuestions")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Questions")
                         .IsRequired()
                         .HasColumnType("jsonb");
@@ -3009,7 +3081,7 @@ namespace Vote.Monitor.Domain.Migrations
                     b.Property<int>("NumberOfFlaggedAnswers")
                         .HasColumnType("integer");
 
-                    b.Property<int>("NumberOfQuestionAnswered")
+                    b.Property<int>("NumberOfQuestionsAnswered")
                         .HasColumnType("integer");
 
                     b.Property<Guid>("PollingStationId")
@@ -3071,6 +3143,9 @@ namespace Vote.Monitor.Domain.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("jsonb");
+
+                    b.Property<int>("NumberOfQuestions")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Questions")
                         .IsRequired()
@@ -4775,6 +4850,57 @@ namespace Vote.Monitor.Domain.Migrations
                     b.ToTable("Ngos");
                 });
 
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.NoteAggregate.Note", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("ElectionRoundId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("FormId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("LastModifiedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("LastModifiedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("MonitoringObserverId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("PollingStationId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("QuestionId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasMaxLength(10000)
+                        .HasColumnType("character varying(10000)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ElectionRoundId");
+
+                    b.HasIndex("FormId");
+
+                    b.HasIndex("MonitoringObserverId");
+
+                    b.HasIndex("PollingStationId");
+
+                    b.ToTable("Notes", (string)null);
+                });
+
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.NotificationAggregate.Notification", b =>
                 {
                     b.Property<Guid>("Id")
@@ -5026,67 +5152,6 @@ namespace Vote.Monitor.Domain.Migrations
                     b.ToTable("PollingStations");
                 });
 
-            modelBuilder.Entity("Vote.Monitor.Domain.Entities.PollingStationAttachmentAggregate.PollingStationAttachment", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("ElectionRoundId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("FileName")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
-
-                    b.Property<string>("FilePath")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<Guid>("LastModifiedBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime?>("LastModifiedOn")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("MimeType")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
-
-                    b.Property<Guid>("MonitoringObserverId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("PollingStationId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("UploadedFileName")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ElectionRoundId");
-
-                    b.HasIndex("MonitoringObserverId");
-
-                    b.HasIndex("PollingStationId");
-
-                    b.ToTable("PollingStationAttachments", (string)null);
-                });
-
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.PollingStationInfoAggregate.PollingStationInformation", b =>
                 {
                     b.Property<Guid>("Id")
@@ -5118,8 +5183,14 @@ namespace Vote.Monitor.Domain.Migrations
                     b.Property<DateTime?>("LastModifiedOn")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<double?>("MinutesMonitoring")
+                        .HasColumnType("double precision");
+
                     b.Property<Guid>("MonitoringObserverId")
                         .HasColumnType("uuid");
+
+                    b.Property<int>("NumberOfQuestionsAnswered")
+                        .HasColumnType("integer");
 
                     b.Property<Guid>("PollingStationId")
                         .HasColumnType("uuid");
@@ -5165,6 +5236,9 @@ namespace Vote.Monitor.Domain.Migrations
                     b.Property<DateTime?>("LastModifiedOn")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<int>("NumberOfQuestions")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Questions")
                         .IsRequired()
                         .HasColumnType("jsonb");
@@ -5175,49 +5249,6 @@ namespace Vote.Monitor.Domain.Migrations
                         .IsUnique();
 
                     b.ToTable("PollingStationInformationForms");
-                });
-
-            modelBuilder.Entity("Vote.Monitor.Domain.Entities.PollingStationNoteAggregate.PollingStationNote", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("ElectionRoundId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("LastModifiedBy")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime?>("LastModifiedOn")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("MonitoringObserverId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("PollingStationId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Text")
-                        .IsRequired()
-                        .HasMaxLength(10000)
-                        .HasColumnType("character varying(10000)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ElectionRoundId");
-
-                    b.HasIndex("MonitoringObserverId");
-
-                    b.HasIndex("PollingStationId");
-
-                    b.ToTable("PollingStationNotes", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -5309,6 +5340,41 @@ namespace Vote.Monitor.Domain.Migrations
 
                     b.Navigation("Preferences")
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.AttachmentAggregate.Attachment", b =>
+                {
+                    b.HasOne("Vote.Monitor.Domain.Entities.ElectionRoundAggregate.ElectionRound", "ElectionRound")
+                        .WithMany()
+                        .HasForeignKey("ElectionRoundId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Vote.Monitor.Domain.Entities.FormAggregate.Form", "Form")
+                        .WithMany()
+                        .HasForeignKey("FormId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Vote.Monitor.Domain.Entities.MonitoringObserverAggregate.MonitoringObserver", "MonitoringObserver")
+                        .WithMany()
+                        .HasForeignKey("MonitoringObserverId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Vote.Monitor.Domain.Entities.PollingStationAggregate.PollingStation", "PollingStation")
+                        .WithMany()
+                        .HasForeignKey("PollingStationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ElectionRound");
+
+                    b.Navigation("Form");
+
+                    b.Navigation("MonitoringObserver");
+
+                    b.Navigation("PollingStation");
                 });
 
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.ElectionRoundAggregate.ElectionRound", b =>
@@ -5441,6 +5507,41 @@ namespace Vote.Monitor.Domain.Migrations
                     b.Navigation("Ngo");
                 });
 
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.NoteAggregate.Note", b =>
+                {
+                    b.HasOne("Vote.Monitor.Domain.Entities.ElectionRoundAggregate.ElectionRound", "ElectionRound")
+                        .WithMany()
+                        .HasForeignKey("ElectionRoundId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Vote.Monitor.Domain.Entities.FormAggregate.Form", "Form")
+                        .WithMany()
+                        .HasForeignKey("FormId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Vote.Monitor.Domain.Entities.MonitoringObserverAggregate.MonitoringObserver", "MonitoringObserver")
+                        .WithMany()
+                        .HasForeignKey("MonitoringObserverId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Vote.Monitor.Domain.Entities.PollingStationAggregate.PollingStation", "PollingStation")
+                        .WithMany()
+                        .HasForeignKey("PollingStationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ElectionRound");
+
+                    b.Navigation("Form");
+
+                    b.Navigation("MonitoringObserver");
+
+                    b.Navigation("PollingStation");
+                });
+
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.NotificationAggregate.Notification", b =>
                 {
                     b.HasOne("Vote.Monitor.Domain.Entities.ElectionRoundAggregate.ElectionRound", "ElectionRound")
@@ -5502,33 +5603,6 @@ namespace Vote.Monitor.Domain.Migrations
                     b.Navigation("ElectionRound");
                 });
 
-            modelBuilder.Entity("Vote.Monitor.Domain.Entities.PollingStationAttachmentAggregate.PollingStationAttachment", b =>
-                {
-                    b.HasOne("Vote.Monitor.Domain.Entities.ElectionRoundAggregate.ElectionRound", "ElectionRound")
-                        .WithMany()
-                        .HasForeignKey("ElectionRoundId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Vote.Monitor.Domain.Entities.MonitoringObserverAggregate.MonitoringObserver", "MonitoringObserver")
-                        .WithMany()
-                        .HasForeignKey("MonitoringObserverId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Vote.Monitor.Domain.Entities.PollingStationAggregate.PollingStation", "PollingStation")
-                        .WithMany()
-                        .HasForeignKey("PollingStationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ElectionRound");
-
-                    b.Navigation("MonitoringObserver");
-
-                    b.Navigation("PollingStation");
-                });
-
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.PollingStationInfoAggregate.PollingStationInformation", b =>
                 {
                     b.HasOne("Vote.Monitor.Domain.Entities.ElectionRoundAggregate.ElectionRound", "ElectionRound")
@@ -5573,33 +5647,6 @@ namespace Vote.Monitor.Domain.Migrations
                         .IsRequired();
 
                     b.Navigation("ElectionRound");
-                });
-
-            modelBuilder.Entity("Vote.Monitor.Domain.Entities.PollingStationNoteAggregate.PollingStationNote", b =>
-                {
-                    b.HasOne("Vote.Monitor.Domain.Entities.ElectionRoundAggregate.ElectionRound", "ElectionRound")
-                        .WithMany()
-                        .HasForeignKey("ElectionRoundId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Vote.Monitor.Domain.Entities.MonitoringObserverAggregate.MonitoringObserver", "MonitoringObserver")
-                        .WithMany()
-                        .HasForeignKey("MonitoringObserverId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Vote.Monitor.Domain.Entities.PollingStationAggregate.PollingStation", "PollingStation")
-                        .WithMany()
-                        .HasForeignKey("PollingStationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ElectionRound");
-
-                    b.Navigation("MonitoringObserver");
-
-                    b.Navigation("PollingStation");
                 });
 
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.ElectionRoundAggregate.ElectionRound", b =>
