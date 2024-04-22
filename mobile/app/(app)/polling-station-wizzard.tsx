@@ -201,7 +201,7 @@ const PollingStationWizzardContent = ({
         </YStack>
       </YStack>
       <WizzardControls
-        isFirstElement={!!activeStep?.id}
+        isFirstElement={!activeStep?.id}
         isLastElement={isLastElement}
         onPreviousButtonPress={onBackButtonPress}
         isNextDisabled={!selectedOption}
