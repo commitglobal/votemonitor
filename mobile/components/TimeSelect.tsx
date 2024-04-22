@@ -3,7 +3,11 @@ import { Typography } from "./Typography";
 import { YStack, XStack, Sheet, Stack } from "tamagui";
 import Button from "../components/Button";
 import { Platform } from "react-native";
-import RNDateTimePicker, { DateTimePickerEvent } from "@react-native-community/datetimepicker";
+import RNDateTimePicker, {
+  DateTimePickerAndroid,
+  DateTimePickerEvent,
+} from "@react-native-community/datetimepicker";
+
 import CardFooter from "../components/CardFooter";
 
 interface TimeSelectProps {
@@ -119,14 +123,14 @@ const TimeSelect: React.FC<TimeSelectProps> = memo(({ type, time, setTime }) => 
           </Sheet.Frame>
         </Sheet>
       ) : (
-        open && (
-          <RNDateTimePicker
-            mode="time"
-            value={time || new Date()}
-            is24Hour={true}
-            onChange={onChange}
-          />
-        )
+        open &&
+        //using imperative API for android
+        DateTimePickerAndroid.open({
+          mode: "time",
+          value: time || new Date(),
+          onChange,
+          is24Hour: true,
+        })
       )}
     </>
   );
