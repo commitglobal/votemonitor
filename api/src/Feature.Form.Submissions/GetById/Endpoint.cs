@@ -51,19 +51,19 @@ public class Endpoint(VoteMonitorContext context, IFileStorageService fileStorag
                fs.""Answers"",
                f.""Questions"",
 
-            (select jsonb_build_array(jsonb_build_object('QuestionId', ""QuestionId"", 'FileName', ""FileName"", 'MimeType', ""MimeType"", 'FilePath', ""FilePath"", 'UploadedFileName', ""UploadedFileName"", 'TimeSubmitted', COALESCE(""LastModifiedOn"", ""CreatedOn"")))
+            COALESCE((select jsonb_build_array(jsonb_build_object('QuestionId', ""QuestionId"", 'FileName', ""FileName"", 'MimeType', ""MimeType"", 'FilePath', ""FilePath"", 'UploadedFileName', ""UploadedFileName"", 'TimeSubmitted', COALESCE(""LastModifiedOn"", ""CreatedOn"")))
              from ""Attachments"" a
              where a.""ElectionRoundId"" = @electionRoundId
                  and a.""FormId"" = fs.""FormId""
                  and a.""MonitoringObserverId"" = fs.""MonitoringObserverId""
-                 and fs.""PollingStationId"" = a.""PollingStationId"") as ""Attachments"",
+                 and fs.""PollingStationId"" = a.""PollingStationId""),'[]'::JSONB) as ""Attachments"",
 
-            (select jsonb_build_array(jsonb_build_object('QuestionId', ""QuestionId"", 'Text', ""Text"", 'TimeSubmitted', COALESCE(""LastModifiedOn"", ""CreatedOn"")))
+            COALESCE((select jsonb_build_array(jsonb_build_object('QuestionId', ""QuestionId"", 'Text', ""Text"", 'TimeSubmitted', COALESCE(""LastModifiedOn"", ""CreatedOn"")))
              from ""Notes"" n
              where n.""ElectionRoundId"" = @electionRoundId
                  and n.""FormId"" = fs.""FormId""
                  and n.""MonitoringObserverId"" = fs.""MonitoringObserverId""
-                 and fs.""PollingStationId"" = n.""PollingStationId"") as ""Notes"",
+                 and fs.""PollingStationId"" = n.""PollingStationId""), '[]'::JSONB) as ""Notes"",
                COALESCE(fs.""LastModifiedOn"", fs.""CreatedOn"") ""TimeSubmitted""
         FROM ""FormSubmissions"" fs
         inner join ""MonitoringObservers"" mo ON fs.""MonitoringObserverId"" = mo.""Id""
