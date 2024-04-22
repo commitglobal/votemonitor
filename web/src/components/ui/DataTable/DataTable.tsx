@@ -6,6 +6,7 @@ import {
   type PaginationState,
   type SortingState,
   useReactTable,
+  type VisibilityState,
 } from '@tanstack/react-table';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useState, type ReactElement } from 'react';
@@ -14,7 +15,7 @@ import { DataTablePagination } from './DataTablePagination';
 import type { UseQueryResult } from '@tanstack/react-query';
 import { Skeleton } from '../skeleton';
 
-export interface DataTableProps<TData, TValue> {
+export interface DataTableProps<TData, TValue, TQueryParams = object> {
   /**
    * Tanstack table column definitions.
    */
@@ -23,7 +24,7 @@ export interface DataTableProps<TData, TValue> {
   /**
    * Tanstack query for paginated data.
    */
-  useQuery: (p: DataTableParameters) => UseQueryResult<PageResponse<TData>, Error>;
+  useQuery: (p: DataTableParameters<TQueryParams>) => UseQueryResult<PageResponse<TData>, Error>;
 
   /**
    * Externalize pagination state to the parent component.
@@ -48,16 +49,30 @@ export interface DataTableProps<TData, TValue> {
    * Used by QueryParamsDataTable.
    */
   setSortingExt?: (p: SortingState) => void;
+
+  /**
+   * Externalize column visibility state to the parent component.
+   * Used by QueryParamsDataTable
+   */
+  columnVisibility?: VisibilityState;
+
+  /**
+   * Externalize query params to the parent component.
+   * Used by QueryParamsDataTable
+   */
+  queryParams?: TQueryParams;
 }
 
-export function DataTable<TData, TValue>({
+export function DataTable<TData, TValue, TQueryParams = object>({
+  columnVisibility,
   columns,
-  useQuery,
   paginationExt,
   setPaginationExt,
-  sortingExt,
   setSortingExt,
-}: DataTableProps<TData, TValue>): ReactElement {
+  sortingExt,
+  useQuery,
+  queryParams,
+}: DataTableProps<TData, TValue, TQueryParams>): ReactElement {
   let [pagination, setPagination]: [PaginationState, (p: PaginationState) => void] = useState({
     pageIndex: 0,
     pageSize: 10,
@@ -80,6 +95,7 @@ export function DataTable<TData, TValue>({
     pageSize: pagination.pageSize,
     sortColumnName: sorting[0]?.id || 'id',
     sortOrder: sorting[0]?.desc ? SortOrder.desc : SortOrder.asc,
+    otherParams: queryParams,
   });
 
   const table = useReactTable({
@@ -101,6 +117,7 @@ export function DataTable<TData, TValue>({
     state: {
       sorting,
       pagination,
+      columnVisibility,
     },
   });
 
@@ -123,9 +140,9 @@ export function DataTable<TData, TValue>({
           </TableHeader>
           <TableBody>
             {isFetching ? (
-              Array.from({ length: 5 }).map((_, index) => (
+              Array.from({ length: pagination.pageSize }).map((_, index) => (
                 <TableRow key={index}>
-                  {columns.map((_, index) => (
+                  {table.getVisibleLeafColumns().map((_, index) => (
                     <TableCell key={index}>
                       <Skeleton className='w-[100px] h-[20px] rounded-full' />
                     </TableCell>
