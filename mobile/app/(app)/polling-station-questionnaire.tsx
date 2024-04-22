@@ -453,12 +453,12 @@ const PollingStationQuestionnaire = () => {
 
             return <Typography key={question.id}></Typography>;
           })}
-          <OptionsSheet
-            open={openContextualMenu}
-            setOpen={setOpenContextualMenu}
-            onClear={() => resetFormValues()}
-          />
         </YStack>
+        <OptionsSheet
+          open={openContextualMenu}
+          setOpen={setOpenContextualMenu}
+          onClear={() => resetFormValues()}
+        />
       </Screen>
 
       <XStack
@@ -493,24 +493,27 @@ interface OptionsSheetProps {
 export const OptionsSheet = (props: OptionsSheetProps) => {
   const { open, setOpen, onClear } = props;
   const { t } = useTranslation("bottom_sheets");
-
+  const insets = useSafeAreaInsets();
   return (
     <Sheet
       modal
+      native
       open={open}
-      onOpenChange={() => setOpen(false)}
+      onOpenChange={setOpen}
+      zIndex={100_000}
       snapPointsMode="fit"
       dismissOnSnapToBottom
     >
-      <Sheet.Overlay animation="quick" enterStyle={{ opacity: 0 }} exitStyle={{ opacity: 0 }} />
+      <Sheet.Overlay />
       <Sheet.Frame
         borderTopLeftRadius={28}
         borderTopRightRadius={28}
         gap="$sm"
         paddingHorizontal="$md"
         paddingBottom="$xl"
+        marginBottom={insets.bottom}
       >
-        <Icon paddingVertical="$md" alignSelf="center" icon="dragHandle"></Icon>
+        <Icon paddingVertical="$md" alignSelf="center" icon="dragHandle" />
 
         <View paddingVertical="$xxs" paddingHorizontal="$sm">
           <Typography preset="body1" color="$gray7" lineHeight={24} onPress={onClear}>
