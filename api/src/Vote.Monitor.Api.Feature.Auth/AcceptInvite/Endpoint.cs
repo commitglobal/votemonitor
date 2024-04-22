@@ -1,14 +1,15 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Vote.Monitor.Api.Feature.Auth.Specifications;
-using Vote.Monitor.Core.Extensions;
+﻿using Vote.Monitor.Api.Feature.Auth.Specifications;
+using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 
 namespace Vote.Monitor.Api.Feature.Auth.AcceptInvite;
 
-public class Endpoint(UserManager<ApplicationUser> userManager, IReadRepository<ApplicationUser> repository) : Endpoint<Request, Results<Ok, ProblemHttpResult>>
+public class Endpoint(IRepository<ApplicationUser> repository,
+    IRepository<MonitoringObserver> monitoringObserverRepository) : Endpoint<Request, Results<Ok, ProblemHttpResult>>
 {
     public override void Configure()
     {
         Post("/api/auth/accept-invite");
+        AllowAnonymous();
     }
 
     public override async Task<Results<Ok, ProblemHttpResult>> ExecuteAsync(Request request, CancellationToken ct)
@@ -20,10 +21,16 @@ public class Endpoint(UserManager<ApplicationUser> userManager, IReadRepository<
             return TypedResults.Problem();
         }
         user.AcceptInvite(request.Password);
-        var result = await userManager.ChangePasswordAsync(user, request.Password, request.NewPassword);
+            // just in case they were invited multiple times
+        var monitoringObservers = await monitoringObserverRepository.ListAsync(new ListMonitoringObserverSpecification(user.Id), ct);
 
-        return result.Succeeded
-            ? TypedResults.Ok()
-            : TypedResults.Problem(string.Join(",", result.GetErrors()));
+        foreach (var monitoringObserver in monitoringObservers)
+        {
+            monitoringObserver.Activate();
+        }
+
+        await repository.UpdateAsync(user, ct);
+        await monitoringObserverRepository.SaveChangesAsync(ct);
+        return TypedResults.Ok();
     }
 }

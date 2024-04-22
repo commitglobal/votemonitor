@@ -74,6 +74,7 @@ public class ApplicationUser : IdentityUser<Guid>, IAggregateRoot
         InvitationToken = null;
         var hasher = new PasswordHasher<ApplicationUser>();
         PasswordHash = hasher.HashPassword(this, password);
+        EmailConfirmed = true;
     }
 
     public void NewInvite()

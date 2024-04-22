@@ -2,7 +2,7 @@
 
 namespace Vote.Monitor.Api.Feature.Auth.Specifications;
 
-public class GetByInvitationCode: SingleResultSpecification<ApplicationUser>
+public sealed class GetByInvitationCode: SingleResultSpecification<ApplicationUser>
 {
     public GetByInvitationCode(string invitationToken)
     {

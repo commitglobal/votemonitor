@@ -1,7 +1,5 @@
 import { ILoginResponse, LoginDTO, authApi } from '@/common/auth-api';
 import { useToast } from '@/components/ui/use-toast';
-import { redirect, useNavigate, useRouter } from '@tanstack/react-router';
-import { AxiosError } from 'axios';
 import { createContext, useEffect, useState } from 'react';
 
 export type AuthContextType = {

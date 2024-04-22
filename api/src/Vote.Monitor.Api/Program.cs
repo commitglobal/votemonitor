@@ -43,6 +43,7 @@ builder.WebHost.ConfigureKestrel(o =>
 builder.AddSentry();
 
 builder.Services.AddFastEndpoints();
+builder.Services.AddApiConfiguration(builder.Configuration);
 builder.Services.SwaggerDocument(o =>
 {
     o.FlattenSchema = true; 

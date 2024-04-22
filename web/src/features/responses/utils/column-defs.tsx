@@ -38,18 +38,57 @@ export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry>[
     accessorKey: 'level1',
     enableSorting: true,
     enableGlobalFilter: true,
+    cell: ({ row }) => (
+      <div>
+        {row.original.level1 ?? '-'}
+      </div>
+    ),
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Location - L2' column={column} />,
     accessorKey: 'level2',
     enableSorting: true,
     enableGlobalFilter: true,
+    cell: ({ row }) => (
+      <div>
+        {row.original.level2 ?? '-'}
+
+      </div>
+    ),
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Location - L3' column={column} />,
     accessorKey: 'level3',
     enableSorting: true,
     enableGlobalFilter: true,
+    cell: ({ row }) => (
+      <div>
+        {row.original.level3 ?? '-'}
+
+      </div>
+    ),
+  },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Location - L4' column={column} />,
+    accessorKey: 'level4',
+    enableSorting: true,
+    enableGlobalFilter: true,
+    cell: ({ row }) => (
+      <div>
+        {row.original.level4 ?? '-'}
+      </div>
+    ),
+  },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Location - L5' column={column} />,
+    accessorKey: 'level5',
+    enableSorting: true,
+    enableGlobalFilter: true,
+    cell: ({ row }) => (
+      <div>
+        {row.original.level5 ?? '-'}
+      </div>
+    ),
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Observer' column={column} />,

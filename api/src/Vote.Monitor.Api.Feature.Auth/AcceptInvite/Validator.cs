@@ -4,17 +4,14 @@ public class Validator : Validator<Request>
 {
     public Validator()
     {
-        RuleFor(p => p.InviteCode)
+        RuleFor(p => p.InvitationToken)
             .NotEmpty();
 
         RuleFor(p => p.Password)
             .NotEmpty();
 
-        RuleFor(p => p.NewPassword)
-            .NotEmpty();
-
-        RuleFor(p => p.ConfirmNewPassword)
-            .Equal(p => p.NewPassword)
+        RuleFor(p => p.ConfirmPassword)
+            .Equal(p => p.Password)
             .WithMessage("Passwords must match");
     }
 }

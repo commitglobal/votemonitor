@@ -9,6 +9,9 @@ import { useNavigate } from '@tanstack/react-router';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import Logo from '@/components/layout/Header/Logo';
 import { Route as AcceptInviteRoute } from '@/routes/accept-invite/index';
+import { useMutation } from '@tanstack/react-query';
+import { noAuthApi } from '@/common/no-auth-api';
+import { toast } from '@/components/ui/use-toast';
 
 const formSchema = z.object({
   password: z.string().min(6, { message: 'Password is mandatory and must bt at least 6 characters long' }),
@@ -23,9 +26,14 @@ const formSchema = z.object({
   }
 );
 
+interface AcceptInviteRequest{
+  password: string;
+  confirmPassword: string;
+  invitationToken: string;
+}
 function AcceptInvite() {
   const navigate = useNavigate();
-  const { token } = AcceptInviteRoute.useSearch();
+  const { invitationToken } = AcceptInviteRoute.useSearch();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -35,8 +43,36 @@ function AcceptInvite() {
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  const acceptInviteMutation = useMutation({
+    mutationFn: (obj:AcceptInviteRequest) => {
+      return noAuthApi.post<AcceptInviteRequest>(
+        `/auth/accept-invite`,
+        obj
+      );
+    },
 
+    onSuccess: () => {
+      toast({
+        title: 'Success',
+        description: 'Password was set successfully',
+      });
+    },
+
+    onError: ()=>{
+      toast({
+        title: 'Error accepting invite',
+        description: 'Please contact tech support',
+        variant: 'destructive'
+      });
+    }
+  });
+
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    acceptInviteMutation.mutate({
+      password: values.password,
+      confirmPassword: values.confirmPassword,
+      invitationToken: invitationToken
+    })
   };
 
   return (
@@ -47,8 +83,8 @@ function AcceptInvite() {
             <CardHeader>
               <div className='flex'>
                 <div>
-                  <CardTitle className='text-2xl'>Login</CardTitle>
-                  <CardDescription>Enter your email below to login to your account.</CardDescription>
+                  <CardTitle className='text-2xl'>Accept invite</CardTitle>
+                  <CardDescription>Set up your password for the new account.</CardDescription>
                 </div>
                 <Logo width={56} height={56} />
               </div>
@@ -59,9 +95,9 @@ function AcceptInvite() {
                 name='password'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input type='password' {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -73,7 +109,7 @@ function AcceptInvite() {
                 name='confirmPassword'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel>Confirm password</FormLabel>
                     <FormControl>
                       <Input type='password' {...field} />
                     </FormControl>
@@ -84,7 +120,7 @@ function AcceptInvite() {
             </CardContent>
             <CardFooter>
               <Button type='submit' className='w-full'>
-                Sign in
+                Accept invite
               </Button>
             </CardFooter>
           </Card>

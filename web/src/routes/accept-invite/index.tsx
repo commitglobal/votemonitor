@@ -3,7 +3,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import { z } from 'zod';
 
 const acceptInviteRouteSearchSchema = z.object({
-  token: z.any().catch('')
+  invitationToken: z.any().catch('')
 });
 
 export const Route = createFileRoute('/accept-invite/')({

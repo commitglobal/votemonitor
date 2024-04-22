@@ -11,9 +11,20 @@ import Logo from '@/components/layout/Header/Logo';
 import { Route as ResetPasswordRoute } from '@/routes/reset-password/index'
 import { useMutation } from '@tanstack/react-query';
 import { noAuthApi } from '@/common/no-auth-api';
-
+import { toast } from '@/components/ui/use-toast';
+interface ResetPasswordRequest{
+  password: string;
+  token: string;
+  email: string;
+}
 
 const formSchema = z.object({
+  email: z
+  .string()
+  .min(1, {
+    message: 'Email is mandatory',
+  })
+  .email({ message: 'Email format is not correct' }),
   password: z.string().min(6, { message: 'Password is mandatory and must bt at least 6 characters long' }),
   confirmPassword: z.string().min(6, { message: 'Password is mandatory and must bt at least 6 characters long' }),
 }).refine(
@@ -32,18 +43,16 @@ function ResetPassword() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      email: '',
       password: '',
       confirmPassword: '',
     },
   });
 
-  const resetPasswordMutation = useMutation<ResetPasswordRequest>({
-    mutationFn: (obj) => {
-      const electionRoundId: string | null = localStorage.getItem('electionRoundId');
-      const monitoringNgoId: string | null = localStorage.getItem('monitoringNgoId');
-
-      return noAuthApi.post<void>(
-        `/election-rounds/${electionRoundId}/monitoring-ngos/${monitoringNgoId}/monitoring-observers/${observer.id}`,
+  const resetPasswordMutation = useMutation({
+    mutationFn: (obj:ResetPasswordRequest) => {
+      return noAuthApi.post<ResetPasswordRequest>(
+        `auth/reset-password`,
         obj
       );
     },
@@ -51,14 +60,17 @@ function ResetPassword() {
     onSuccess: () => {
       toast({
         title: 'Success',
-        description: 'Observer successfully updated',
+        description: 'Password was reset successfully',
       });
     },
   });
 
-
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    
+    resetPasswordMutation.mutate({
+      email: values.email,
+      password: values.password,
+      token: token
+    })
   };
 
   return (
@@ -76,6 +88,20 @@ function ResetPassword() {
               </div>
             </CardHeader>
             <CardContent className='grid gap-4'>
+              <FormField
+                control={form.control}
+                name='email'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
+                      <Input type='email' {...field} />
+
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <FormField
                 control={form.control}
                 name='password'

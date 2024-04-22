@@ -36,6 +36,8 @@ import { useNavigate } from '@tanstack/react-router';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import TableTagList from '@/components/table-tag-list/TableTagList';
 import PushMessages from '../PushMessages/PushMessages';
+import { toast } from '@/components/ui/use-toast';
+
 export default function MonitoringObserversDashboard(): ReactElement {
   const monitoringObserverColDefs: ColumnDef<MonitoringObserver>[] = [
     {
@@ -108,7 +110,8 @@ export default function MonitoringObserversDashboard(): ReactElement {
   const [isFiltering, setFiltering] = useState(false);
   const [statusFilter, setStatusFilter] = useState('');
   const [tagsFilter, setTagsFilter] = useState<string[]>([]);
-
+  const [isImportDialogOpen, setIsImportDialogOpen] = useState(false);
+  
   const navigate = useNavigate();
   const handleSearchInput = (ev: React.FormEvent<HTMLInputElement>) => {
     setSearchText(ev.currentTarget.value);
@@ -119,6 +122,44 @@ export default function MonitoringObserversDashboard(): ReactElement {
   const handleClick = () => {
     hiddenFileInput?.current?.click();
   };
+
+
+  const importObserversMutation = useMutation({
+    mutationFn: () => {
+      const electionRoundId: string | null = localStorage.getItem('electionRoundId');
+      const monitoringNgoId: string | null = localStorage.getItem('monitoringNgoId');
+
+      // get the selected file from the input
+      const file = hiddenFileInput.current.files[0];
+      // create a new FormData object and append the file to it
+      const formData = new FormData();
+      formData.append("file", file);
+      debugger;
+
+      return authApi.post(
+        `/election-rounds/${electionRoundId}/monitoring-ngos/${monitoringNgoId}/monitoring-observers:import`,
+        formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        }
+      });
+    },
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['monitoring-observers'] });
+      queryClient.invalidateQueries({ queryKey: ['tags'] });
+
+      toast({
+        title: 'Success',
+        description: 'Import was successful',
+      });
+    },
+  });
+
+  const handleImport = () => {
+    setIsImportDialogOpen(false);
+    importObserversMutation.mutate();
+  }
 
   const handleChange = (event: any) => {
     const fileUploaded = event.target.files[0];
@@ -174,7 +215,7 @@ export default function MonitoringObserversDashboard(): ReactElement {
   const useMonitoringObservers = (p: DataTableParameters): UseQueryResult<PageResponse<MonitoringObserver>, Error> => {
     return useQuery({
       queryKey: [
-        'observers',
+        'monitoring-observers',
         p.pageNumber,
         p.pageSize,
         p.sortColumnName,
@@ -226,6 +267,7 @@ export default function MonitoringObserversDashboard(): ReactElement {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['monitoring-observers'] });
+      queryClient.invalidateQueries({ queryKey: ['tags'] });
     },
   });
 
@@ -269,9 +311,9 @@ export default function MonitoringObserversDashboard(): ReactElement {
               <div className='flex flex-row justify-between items-center px-6'>
                 <CardTitle className='text-xl'>Monitoring observers list</CardTitle>
                 <div className='table-actions flex flex-row-reverse flex-row- gap-4'>
-                  <Dialog>
+                  <Dialog open={isImportDialogOpen}>
                     <DialogTrigger>
-                      <Button className='bg-purple-900 hover:bg-purple-600'>
+                      <Button className='bg-purple-900 hover:bg-purple-600' onClick={()=>setIsImportDialogOpen(true)}>
                         <svg
                           className='mr-1.5'
                           xmlns='http://www.w3.org/2000/svg'
@@ -337,7 +379,7 @@ export default function MonitoringObserversDashboard(): ReactElement {
                         <Button className='border border-input border-purple-900 bg-background hover:bg-purple-50 text-purple-900 hover:text-purple-600'>
                           Cancel
                         </Button>
-                        <Button className='bg-purple-900 hover:bg-purple-600'>Import list</Button>
+                        <Button className='bg-purple-900 hover:bg-purple-600' onClick={handleImport}>Import list</Button>
                       </DialogFooter>
                     </DialogContent>
                   </Dialog>

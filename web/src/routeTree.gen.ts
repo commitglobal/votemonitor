@@ -13,12 +13,15 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as IndexImport } from './routes/index'
 import { Route as ResponsesIndexImport } from './routes/responses/index'
+import { Route as ResetPasswordIndexImport } from './routes/reset-password/index'
 import { Route as ObserversIndexImport } from './routes/observers/index'
 import { Route as NgosIndexImport } from './routes/ngos/index'
 import { Route as MonitoringObserversIndexImport } from './routes/monitoring-observers/index'
 import { Route as LoginIndexImport } from './routes/login/index'
 import { Route as FormTemplatesIndexImport } from './routes/form-templates/index'
+import { Route as ForgotPasswordIndexImport } from './routes/forgot-password/index'
 import { Route as ElectionRoundsIndexImport } from './routes/election-rounds/index'
+import { Route as AcceptInviteIndexImport } from './routes/accept-invite/index'
 import { Route as ObserversObserverIdImport } from './routes/observers/$observerId'
 import { Route as NgosNgoIdImport } from './routes/ngos/$ngoId'
 import { Route as MonitoringObserversCreateNewMessageImport } from './routes/monitoring-observers/create-new-message'
@@ -39,6 +42,11 @@ const IndexRoute = IndexImport.update({
 
 const ResponsesIndexRoute = ResponsesIndexImport.update({
   path: '/responses/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ResetPasswordIndexRoute = ResetPasswordIndexImport.update({
+  path: '/reset-password/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -67,8 +75,18 @@ const FormTemplatesIndexRoute = FormTemplatesIndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const ForgotPasswordIndexRoute = ForgotPasswordIndexImport.update({
+  path: '/forgot-password/',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const ElectionRoundsIndexRoute = ElectionRoundsIndexImport.update({
   path: '/election-rounds/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AcceptInviteIndexRoute = AcceptInviteIndexImport.update({
+  path: '/accept-invite/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -157,8 +175,16 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ObserversObserverIdImport
       parentRoute: typeof rootRoute
     }
+    '/accept-invite/': {
+      preLoaderRoute: typeof AcceptInviteIndexImport
+      parentRoute: typeof rootRoute
+    }
     '/election-rounds/': {
       preLoaderRoute: typeof ElectionRoundsIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/forgot-password/': {
+      preLoaderRoute: typeof ForgotPasswordIndexImport
       parentRoute: typeof rootRoute
     }
     '/form-templates/': {
@@ -179,6 +205,10 @@ declare module '@tanstack/react-router' {
     }
     '/observers/': {
       preLoaderRoute: typeof ObserversIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/reset-password/': {
+      preLoaderRoute: typeof ResetPasswordIndexImport
       parentRoute: typeof rootRoute
     }
     '/responses/': {
@@ -217,12 +247,15 @@ export const routeTree = rootRoute.addChildren([
   MonitoringObserversCreateNewMessageRoute,
   NgosNgoIdRoute,
   ObserversObserverIdRoute,
+  AcceptInviteIndexRoute,
   ElectionRoundsIndexRoute,
+  ForgotPasswordIndexRoute,
   FormTemplatesIndexRoute,
   LoginIndexRoute,
   MonitoringObserversIndexRoute,
   NgosIndexRoute,
   ObserversIndexRoute,
+  ResetPasswordIndexRoute,
   ResponsesIndexRoute,
   FormTemplatesFormTemplateIdLanguageCodeRoute,
   FormTemplatesFormTemplateIdEditRoute,

@@ -7,6 +7,9 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import Logo from '@/components/layout/Header/Logo';
+import { noAuthApi } from '@/common/no-auth-api';
+import { useMutation } from '@tanstack/react-query';
+import { toast } from '@/components/ui/use-toast';
 
 const formSchema = z.object({
   email: z
@@ -17,17 +20,38 @@ const formSchema = z.object({
     .email({ message: 'Email format is not correct' }),
 })
 
-function ForgotPassword() {
+interface ForgotPasswordRequest {
+  email: string;
+}
 
+function ForgotPassword() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: ''
+    }
+  });
+
+  const forgotPasswordMutation = useMutation({
+    mutationFn: (obj: ForgotPasswordRequest) => {
+      return noAuthApi.post<ForgotPasswordRequest>(
+        `auth/forgot-password`,
+        obj
+      );
+    },
+
+    onSuccess: () => {
+      toast({
+        title: 'Success',
+        description: 'An email was sent with reset password instructions',
+      });
     },
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-
+    forgotPasswordMutation.mutate({
+      email: values.email
+    })
   };
 
   return (

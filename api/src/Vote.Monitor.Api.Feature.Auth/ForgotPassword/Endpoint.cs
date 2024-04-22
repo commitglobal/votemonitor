@@ -34,7 +34,7 @@ public class Endpoint(
         // visit https://go.microsoft.com/fwlink/?LinkID=532713
         string code = await userManager.GeneratePasswordResetTokenAsync(user);
         var endpointUri = new Uri(Path.Combine($"{_apiConfig.WebAppUrl}", "reset-password"));
-        string passwordResetUrl = QueryHelpers.AddQueryString(endpointUri.ToString(), "Token", code);
+        string passwordResetUrl = QueryHelpers.AddQueryString(endpointUri.ToString(), "token", code);
 
         var emailProps = new ResetPasswordEmailProps(string.Empty, passwordResetUrl);
         var mail = emailFactory.GenerateEmail(EmailTemplateType.ResetPassword, emailProps);

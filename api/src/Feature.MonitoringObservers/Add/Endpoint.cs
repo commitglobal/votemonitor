@@ -71,11 +71,11 @@ public class Endpoint(
             AddError(x => x.ObserverId, "Observer is already registered as monitoring for this monitoring NGO.");
             return TypedResults.Conflict(new ProblemDetails(ValidationFailures));
         }
-     
+
         await monitoringObserverRepository.AddAsync(monitoringObserver, ct);
 
         var email = emailFactory.GenerateEmail(EmailTemplateType.InvitationExistingUser,
-            new InvitationExistingUserEmailProps("", ""));
+            new InvitationExistingUserEmailProps("", monitoringNgo.Ngo.Name, electionRound.Title));
         jobService.SendEmail(observer.ApplicationUser.Email!, email.Subject, email.Body);
 
         return TypedResults.Ok(new Response
