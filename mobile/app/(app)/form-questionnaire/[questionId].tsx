@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { router, useLocalSearchParams } from "expo-router";
 import { Screen } from "../../../components/Screen";
 import Header from "../../../components/Header";
@@ -8,7 +9,7 @@ import {
   useFormSubmissions,
 } from "../../../services/queries.service";
 import { Typography } from "../../../components/Typography";
-import { XStack, YStack } from "tamagui";
+import { XStack, YStack, ScrollView } from "tamagui";
 import LinearProgress from "../../../components/LinearProgress";
 import { useMemo } from "react";
 import { useUserData } from "../../../contexts/user/UserContext.provider";
@@ -226,23 +227,24 @@ const FormQuestionnaire = () => {
         leftIcon={<Icon icon="chevronLeft" color="white" />}
         onLeftPress={() => router.back()}
       />
-      <YStack padding="$md" style={$containerStyle}>
-        <YStack gap="$xxs">
-          <XStack justifyContent="space-between">
-            <Typography>Form progress</Typography>
-            <Typography justifyContent="space-between">{`${activeQuestion?.index + 1}/${currentForm?.questions.length}`}</Typography>
-          </XStack>
-          <LinearProgress
-            current={activeQuestion?.index + 1}
-            total={currentForm?.questions.length || 0}
-          />
-          <XStack justifyContent="flex-end">
-            <Typography onPress={onClearForm} color="$red10">
-              Clear answer
-            </Typography>
-          </XStack>
-        </YStack>
-        <YStack style={{ flex: 1 }} justifyContent="center">
+      {/* Takes all the space in between */}
+      <YStack gap="$xxs" padding="$md">
+        <XStack justifyContent="space-between">
+          <Typography>Form progress</Typography>
+          <Typography justifyContent="space-between">{`${activeQuestion?.index + 1}/${currentForm?.questions.length}`}</Typography>
+        </XStack>
+        <LinearProgress
+          current={activeQuestion?.index + 1}
+          total={currentForm?.questions.length || 0}
+        />
+        <XStack justifyContent="flex-end">
+          <Typography onPress={onClearForm} color="$red10">
+            Clear answer
+          </Typography>
+        </XStack>
+      </YStack>
+      <ScrollView centerContent>
+        <YStack style={{ flex: 1 }} padding="$md" justifyContent="center">
           <Controller
             key={activeQuestion?.question.id}
             name={activeQuestion?.question.id as string}
@@ -385,7 +387,7 @@ const FormQuestionnaire = () => {
             }}
           />
         </YStack>
-      </YStack>
+      </ScrollView>
       <WizzardControls
         isFirstElement={activeQuestion?.index === 0}
         isLastElement={
