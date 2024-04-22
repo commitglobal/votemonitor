@@ -124,7 +124,7 @@ public class Endpoint(
                     await context.Observers.AddAsync(newObserver, ct);
                     await context.MonitoringObservers.AddAsync(newMonitoringObserver, ct);
 
-                    var email = emailFactory.GenerateEmail(EmailTemplateType.InvitationNewUser, new InvitationNewUserEmailProps("", existingAccount.InvitationToken!.Value.ToString()));
+                    var email = emailFactory.GenerateEmail(EmailTemplateType.InvitationNewUser, new InvitationNewUserEmailProps("", existingAccount.InvitationToken));
                     jobService.SendEmail(observer.Email, email.Subject, email.Body);
                 }
                 else
@@ -154,7 +154,7 @@ public class Endpoint(
                 await context.Observers.AddAsync(newObserver, ct);
                 await context.MonitoringObservers.AddAsync(newMonitoringObserver, ct);
 
-                var email = emailFactory.GenerateEmail(EmailTemplateType.InvitationNewUser, new InvitationNewUserEmailProps("", user.InvitationToken!.Value.ToString()));
+                var email = emailFactory.GenerateEmail(EmailTemplateType.InvitationNewUser, new InvitationNewUserEmailProps("", user.InvitationToken!));
                 jobService.SendEmail(observer.Email, email.Subject, email.Body);
             }
         }
