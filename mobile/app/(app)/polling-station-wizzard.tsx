@@ -178,7 +178,7 @@ const PollingStationWizzardContent = ({
   }
 
   return (
-    <YStack style={$containerStyle} justifyContent="space-between">
+    <>
       <YStack paddingHorizontal="$md" paddingTop="$xl">
         <YStack gap="$md" minHeight="$xxl">
           {activeStep && (
@@ -209,12 +209,13 @@ const PollingStationWizzardContent = ({
         isNextDisabled={!selectedOption}
         onNextButtonPress={isLastElement ? onFinishButtonPress : onNextButtonPress}
       />
-    </YStack>
+    </>
   );
 };
 
 const $containerStyle: ViewStyle = {
   flex: 1,
+  justifyContent: "space-between",
 };
 
 const $labelStyle: TextStyle = {
