@@ -40,7 +40,7 @@ const FormCard = (props: FormCardProps): JSX.Element => {
   return (
     <Card width="100%" onPress={onPress} {...rest}>
       <CardHeader>
-        <Typography preset="body1" color="$gray9" fontWeight="700">
+        <Typography preset="body1" color="$gray9" fontWeight="700" maxWidth="70%" numberOfLines={2}>
           {form.name}
         </Typography>
 
