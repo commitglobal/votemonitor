@@ -1,9 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { Typography } from "./Typography";
 import { YStack, XStack, Sheet, Stack } from "tamagui";
 import Button from "../components/Button";
 import { Platform } from "react-native";
-import RNDateTimePicker, { DateTimePickerEvent } from "@react-native-community/datetimepicker";
+import RNDateTimePicker, {
+  DateTimePickerAndroid,
+  DateTimePickerEvent,
+} from "@react-native-community/datetimepicker";
+
 import CardFooter from "../components/CardFooter";
 
 interface TimeSelectProps {
@@ -17,8 +21,7 @@ enum CardFooterDisplay {
   DEPARTURE = "Departure",
 }
 
-// TODO: Memo
-const TimeSelect: React.FC<TimeSelectProps> = ({ type, time, setTime }) => {
+const TimeSelect: React.FC<TimeSelectProps> = memo(({ type, time, setTime }) => {
   const [open, setOpen] = useState(false);
 
   // on ios we use a temporary time, as the onChange function gets triggered every time the user picks a new time
@@ -120,17 +123,17 @@ const TimeSelect: React.FC<TimeSelectProps> = ({ type, time, setTime }) => {
           </Sheet.Frame>
         </Sheet>
       ) : (
-        open && (
-          <RNDateTimePicker
-            mode="time"
-            value={time || new Date()}
-            is24Hour={true}
-            onChange={onChange}
-          />
-        )
+        open &&
+        //using imperative API for android
+        DateTimePickerAndroid.open({
+          mode: "time",
+          value: time || new Date(),
+          onChange,
+          is24Hour: true,
+        })
       )}
     </>
   );
-};
+});
 
 export default TimeSelect;
