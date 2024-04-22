@@ -180,7 +180,6 @@ export type UserPayload = {
   'user-role': string;
 };
 
-
 /**
  * Creates a new Translated String containing all available languages
  * @param availableLanguages available translations list
