@@ -38,7 +38,7 @@ const SelectPollingStation = () => {
         </Select.Trigger>
 
         <Adapt platform="touch">
-          <Sheet native modal snapPoints={[80]} dismissOnSnapToBottom>
+          <Sheet native modal snapPoints={[80]} dismissOnSnapToBottom zIndex={100_100}>
             <Sheet.Frame>
               <YStack
                 paddingVertical="$xl"
@@ -58,9 +58,10 @@ const SelectPollingStation = () => {
                 </Typography>
               </YStack>
 
-              <Sheet.ScrollView padding="$sm">
+              <Sheet.ScrollView paddingHorizontal="$sm">
                 <Adapt.Contents />
               </Sheet.ScrollView>
+
               <View
                 paddingVertical="$xl"
                 paddingHorizontal={40}
@@ -99,7 +100,6 @@ const SelectPollingStation = () => {
                       >
                         {/* //TODO: change number of lines to 2 if that's what we want */}
                         <Select.ItemText
-                          width={"90%"}
                           numberOfLines={2}
                           color={
                             entry.pollingStationId === selectedPollingStation?.pollingStationId
