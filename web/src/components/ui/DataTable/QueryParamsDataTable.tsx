@@ -6,8 +6,10 @@ import { useNavigate, useSearch } from '@tanstack/react-router';
 import { valueOrDefault } from '@/lib/utils';
 
 export function QueryParamsDataTable<TData, TValue>({
+  columnVisibility,
   columns,
   useQuery: pagedQuery,
+  queryParams: otherQueryParams,
 }: DataTableProps<TData, TValue>): ReactElement {
   const queryParams: DataTableParameters = useSearch({
     strict: false,
@@ -39,7 +41,7 @@ export function QueryParamsDataTable<TData, TValue>({
   };
 
   const setSortingState = (s: SortingState): void => {
-    if (!s.length) {
+    if (s.length === 0) {
       return;
     }
 
@@ -63,6 +65,8 @@ export function QueryParamsDataTable<TData, TValue>({
         setPaginationExt={setPaginationState}
         sortingExt={sortingState}
         setSortingExt={setSortingState}
+        columnVisibility={columnVisibility}
+        queryParams={otherQueryParams}
       />
     </div>
   );

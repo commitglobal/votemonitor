@@ -34,11 +34,22 @@ const navigation = [
   { name: 'Observers', to: '/observers', roles: ['PlatformAdmin'] },
   { name: 'Monitoring Observers', to: '/monitoring-observers', roles: ['NgoAdmin'] },
   { name: 'Form templates', to: '/form-templates', roles: 'PlatformAdmin' },
+  { name: 'Responses', to: '/responses', roles: ['NgoAdmin'] },
 ];
 const userNavigation = [{ name: 'Sign out', to: '#' }];
 
 const Header = (): FunctionComponent => {
-  const [selectedElection, setSelectedElection] = useState<any>(null);
+  const [selectedElection, setSelectedElection] = useState<ElectionRoundMonitoring>();
+
+  const handleSelectElection = (ev?: ElectionRoundMonitoring): void => {
+    setSelectedElection(ev);
+    localStorage.setItem('electionRoundId', ev?.electionRoundId ?? '');
+    localStorage.setItem('monitoringNgoId', ev?.monitoringNgoId ?? '');
+
+    void queryClient.invalidateQueries({ queryKey: ['observers'] });
+    void queryClient.invalidateQueries({ queryKey: ['tags'] });
+    void queryClient.invalidateQueries({ queryKey: ['form-submissions'] });
+  };
 
   const { token } = useContext(AuthContext);
 
@@ -51,22 +62,13 @@ const Header = (): FunctionComponent => {
         throw new Error('Failed to fetch observers');
       }
 
-      handleSelectEelection(response.data.electionRounds[0] as ElectionRoundMonitoring);
+      handleSelectElection(response.data.electionRounds[0]);
 
       return response.data;
     },
     staleTime: 0,
     refetchOnWindowFocus: false,
   });
-
-  const handleSelectEelection = (ev: any): void => {
-    setSelectedElection(ev);
-    localStorage.setItem('electionRoundId', ev.electionRoundId);
-    localStorage.setItem('monitoringNgoId', ev.monitoringNgoId);
-
-    queryClient.invalidateQueries({ queryKey: ['observers'] });
-    queryClient.invalidateQueries({ queryKey: ['tags'] });
-  };
 
   return (
     <Disclosure as='nav' className='bg-white shadow-sm'>
@@ -112,11 +114,16 @@ const Header = (): FunctionComponent => {
                       </Badge>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
-                      <DropdownMenuRadioGroup value={selectedElection} onValueChange={handleSelectEelection}>
+                      <DropdownMenuRadioGroup
+                        value={selectedElection?.electionRoundId ?? ''}
+                        onValueChange={(value) => {
+                          const electionRound = data?.electionRounds.find((er) => er.electionRoundId === value);
+                          handleSelectElection(electionRound);
+                        }}>
                         {data?.electionRounds?.map((electionRound) => (
                           <DropdownMenuRadioItem
                             key={electionRound.electionRoundId}
-                            value={electionRound as unknown as string}>
+                            value={electionRound.electionRoundId}>
                             {electionRound.englishTitle}
                           </DropdownMenuRadioItem>
                         ))}
