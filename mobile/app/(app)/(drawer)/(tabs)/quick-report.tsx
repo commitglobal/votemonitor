@@ -1,6 +1,6 @@
 import React from "react";
 import { Typography } from "../../../../components/Typography";
-import { Stack, YStack } from "tamagui";
+import { YStack } from "tamagui";
 import { Icon } from "../../../../components/Icon";
 import { Screen } from "../../../../components/Screen";
 import { useNavigation } from "expo-router";

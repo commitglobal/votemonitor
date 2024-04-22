@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { router, useLocalSearchParams } from "expo-router";
 import { Screen } from "../../../components/Screen";
 import Header from "../../../components/Header";
@@ -227,7 +226,6 @@ const FormQuestionnaire = () => {
         leftIcon={<Icon icon="chevronLeft" color="white" />}
         onLeftPress={() => router.back()}
       />
-      {/* Takes all the space in between */}
       <YStack gap="$xxs" padding="$md">
         <XStack justifyContent="space-between">
           <Typography>Form progress</Typography>
@@ -243,8 +241,8 @@ const FormQuestionnaire = () => {
           </Typography>
         </XStack>
       </YStack>
-      <ScrollView centerContent>
-        <YStack style={{ flex: 1 }} padding="$md" justifyContent="center">
+      <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }} centerContent>
+        <YStack paddingHorizontal="$md" paddingBottom="$md" justifyContent="center">
           <Controller
             key={activeQuestion?.question.id}
             name={activeQuestion?.question.id as string}
