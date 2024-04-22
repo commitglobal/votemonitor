@@ -11,7 +11,7 @@ type UseFormSubmissionsByEntryResult = UseQueryResult<FormSubmissionsByEntryResp
 
 export function useFormSubmissionsByEntry(queryParams: DataTableParameters): UseFormSubmissionsByEntryResult {
   return useQuery({
-    queryKey: ['form-submissions-by-entry', queryParams],
+    queryKey: ['form-submissions', 'by-entry', queryParams],
     queryFn: async () => {
       const electionRoundId = localStorage.getItem('electionRoundId');
 
@@ -46,7 +46,7 @@ type UseFormSubmissionsByObserverResult = UseQueryResult<FormSubmissionsByObserv
 
 export function useFormSubmissionsByObserver(queryParams: DataTableParameters): UseFormSubmissionsByObserverResult {
   return useQuery({
-    queryKey: ['form-submissions-by-observer', queryParams],
+    queryKey: ['form-submissions', 'by-observer', queryParams],
     queryFn: async () => {
       const electionRoundId = localStorage.getItem('electionRoundId');
 
@@ -81,7 +81,7 @@ type UseFormSubmissionsByFormResult = UseQueryResult<FormSubmissionsByFormRespon
 
 export function useFormSubmissionsByForm(queryParams: DataTableParameters): UseFormSubmissionsByFormResult {
   return useQuery({
-    queryKey: ['form-submissions-by-form', queryParams],
+    queryKey: ['form-submissions', 'by-form', queryParams],
     queryFn: async () => {
       const electionRoundId = localStorage.getItem('electionRoundId');
 

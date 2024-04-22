@@ -160,7 +160,6 @@ export default function ResponsesDashboard(): ReactElement {
                   columnVisibility={submissionsByEntryColumnVisibility}
                   columns={formSubmissionsByFormColumnDefs}
                   useQuery={useFormSubmissionsByForm}
-                  queryParams={{ formCodeFilter: debouncedSearchText }}
                 />
               )}
             </CardContent>

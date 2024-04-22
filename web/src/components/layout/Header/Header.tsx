@@ -48,6 +48,7 @@ const Header = (): FunctionComponent => {
 
     void queryClient.invalidateQueries({ queryKey: ['observers'] });
     void queryClient.invalidateQueries({ queryKey: ['tags'] });
+    void queryClient.invalidateQueries({ queryKey: ['form-submissions'] });
   };
 
   const { token } = useContext(AuthContext);
