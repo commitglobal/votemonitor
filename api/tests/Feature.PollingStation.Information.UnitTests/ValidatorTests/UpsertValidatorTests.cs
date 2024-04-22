@@ -5,6 +5,7 @@ namespace Feature.PollingStation.Information.UnitTests.ValidatorTests;
 public class UpsertValidatorTests
 {
     private readonly Validator _validator = new();
+
     [Fact]
     public void Validation_ShouldFail_When_ObserverId_Empty()
     {
@@ -80,6 +81,44 @@ public class UpsertValidatorTests
             ElectionRoundId = Guid.NewGuid(),
             PollingStationId = Guid.NewGuid(),
             ObserverId = Guid.NewGuid()
+        };
+
+        // Act
+        var result = _validator.TestValidate(request);
+
+        // Assert
+        result.ShouldNotHaveAnyValidationErrors();
+    }
+
+    [Fact]
+    public void Validation_ShouldPass_When_AnswersEmpty()
+    {
+        // Arrange
+        var request = new Request
+        {
+            ElectionRoundId = Guid.NewGuid(),
+            PollingStationId = Guid.NewGuid(),
+            ObserverId = Guid.NewGuid(),
+            Answers = []
+        };
+
+        // Act
+        var result = _validator.TestValidate(request);
+
+        // Assert
+        result.ShouldNotHaveAnyValidationErrors();
+    }
+
+    [Fact]
+    public void Validation_ShouldPass_When_AnswersNull()
+    {
+        // Arrange
+        var request = new Request
+        {
+            ElectionRoundId = Guid.NewGuid(),
+            PollingStationId = Guid.NewGuid(),
+            ObserverId = Guid.NewGuid(),
+            Answers = null
         };
 
         // Act

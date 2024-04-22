@@ -15,5 +15,5 @@ public class Request
     public DateTime? ArrivalTime { get; set; }
     public DateTime? DepartureTime { get; set; }
 
-    public List<BaseAnswerRequest> Answers { get; set; } = [];
+    public List<BaseAnswerRequest>? Answers { get; set; }
 }

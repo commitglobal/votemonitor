@@ -1,44 +1,28 @@
-import { AnswerType, BaseAnswer, BaseQuestion, RatingAnswer, RatingQuestion, RatingScaleType, SelectedOptionSchema } from '@/common/types'
-import { useForm } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../ui/form';
-import { Button } from '../../ui/button';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { RatingGroup } from '../../ui/ratings';
-import { z } from 'zod';
-import { MoveDirection } from '../QuestionsEdit';
-import QuestionHeader from './QuestionHeader';
-import { useMemo } from 'react';
+import { BaseQuestion, RatingQuestion, RatingScaleType } from '@/common/types';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+import QuestionHeader from './QuestionHeader';
 
 export interface EditRatingQuestionProps {
+    availableLanguages: string[];
     languageCode: string;
     questionIdx: number;
-    activeQuestionId: string | undefined;
-    isLastQuestion: boolean;
     isInValid: boolean;
     question: RatingQuestion;
-    setActiveQuestionId: (questionId: string) => void;
-    moveQuestion: (questionIndex: number, direction: MoveDirection) => void;
     updateQuestion: (questionIndex: number, question: BaseQuestion) => void;
-    duplicateQuestion: (questionIndex: number) => void;
-    deleteQuestion: (questionIndex: number) => void;
 }
 
 
 function EditRatingQuestion({
+    availableLanguages,
     languageCode,
     questionIdx,
-    activeQuestionId,
-    isLastQuestion,
     isInValid,
     question,
-    setActiveQuestionId,
-    moveQuestion,
     updateQuestion,
-    duplicateQuestion,
-    deleteQuestion }: EditRatingQuestionProps) {
+}: EditRatingQuestionProps) {
 
     const { t } = useTranslation();
     const options = useMemo(() => [
@@ -61,6 +45,7 @@ function EditRatingQuestion({
     return (
         <form>
             <QuestionHeader
+                availableLanguages={availableLanguages}
                 languageCode={languageCode}
                 isInValid={isInValid}
                 question={question}
@@ -70,23 +55,23 @@ function EditRatingQuestion({
 
             <div className="mt-3">
                 <Label htmlFor="scale">{t('questionEditor.ratingQuestion.scale')}</Label>
-                        <Select
-                            name='scale'
-                            value={question.scale}
-                            onValueChange={(value: RatingScaleType) => {
-                                updateRatingScale(value)
-                            }}>
-                            <SelectTrigger className='h-8 w-[200px]'>
-                                <SelectValue placeholder={question.scale} />
-                            </SelectTrigger>
-                            <SelectContent side='top'>
-                                {options.map((option) => (
-                                    <SelectItem key={option.value} value={option.value}>
-                                        {option.label}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
+                <Select
+                    name='scale'
+                    value={question.scale}
+                    onValueChange={(value: RatingScaleType) => {
+                        updateRatingScale(value)
+                    }}>
+                    <SelectTrigger className='h-8 w-[200px]'>
+                        <SelectValue placeholder={question.scale} />
+                    </SelectTrigger>
+                    <SelectContent side='top'>
+                        {options.map((option) => (
+                            <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                            </SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
             </div>
         </form>
     )

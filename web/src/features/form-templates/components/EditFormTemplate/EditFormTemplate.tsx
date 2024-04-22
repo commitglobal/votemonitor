@@ -198,6 +198,7 @@ export default function EditFormTemplate() {
                 </CardHeader>
                 <CardContent className='flex flex-1'>
                   <FormQuestionsEditor
+                    availableLanguages={formTemplate.languages}
                     languageCode={formTemplate.defaultLanguage}
                     localQuestions={localQuestions}
                     setLocalQuestions={setLocalQuestions}

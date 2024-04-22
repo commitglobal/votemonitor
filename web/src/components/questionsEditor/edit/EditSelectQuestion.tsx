@@ -1,44 +1,34 @@
-import { BaseQuestion, MultiSelectQuestion, QuestionType, SelectOption, SingleSelectQuestion } from '@/common/types'
+import { BaseQuestion, MultiSelectQuestion, QuestionType, SelectOption, SingleSelectQuestion, newTranslatedString } from '@/common/types';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { cn } from '@/lib/utils';
+import { PlusIcon, TrashIcon, FlagIcon } from '@heroicons/react/24/solid';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { v4 as uuidv4 } from 'uuid';
-import { MoveDirection } from '../QuestionsEdit';
 import QuestionHeader from './QuestionHeader';
-import { Button } from '@/components/ui/button';
-import { PlusIcon, TrashIcon } from '@heroicons/react/24/solid';
-import { Input } from '@/components/ui/input';
-import { cn } from '@/lib/utils';
-import { Label } from '@/components/ui/label';
-import { useEffect, useRef, useState } from 'react';
 
 export interface EditMultiSelectQuestionProps {
+    availableLanguages: string[],
     languageCode: string;
     questionIdx: number;
-    activeQuestionId: string | undefined;
-    isLastQuestion: boolean;
     isInValid: boolean;
     question: MultiSelectQuestion | SingleSelectQuestion;
-    setActiveQuestionId: (questionId: string) => void;
-    moveQuestion: (questionIndex: number, direction: MoveDirection) => void;
     updateQuestion: (questionIndex: number, question: BaseQuestion) => void;
-    duplicateQuestion: (questionIndex: number) => void;
-    deleteQuestion: (questionIndex: number) => void;
 }
 
 function EditSelectQuestion({
+    availableLanguages,
     languageCode,
     questionIdx,
-    activeQuestionId,
-    isLastQuestion,
     isInValid,
     question,
-    setActiveQuestionId,
-    moveQuestion,
-    updateQuestion,
-    duplicateQuestion,
-    deleteQuestion }: EditMultiSelectQuestionProps) {
+    updateQuestion }: EditMultiSelectQuestionProps) {
 
     const [invalidOptionId, setInvalidOptionId] = useState<string | null>(null);
     const lastOptionRef = useRef<HTMLInputElement>(null);
+    const [freeTextOptionId, setFreeTextOptionId] = useState<string | null>(null);
     const { t } = useTranslation();
 
     function addOption(optionIdx?: number) {
@@ -50,9 +40,7 @@ function EditSelectQuestion({
 
         const newOption: SelectOption = {
             id: uuidv4(),
-            text: {
-                [languageCode]: ''
-            },
+            text: newTranslatedString(availableLanguages, languageCode),
             isFlagged: false,
             isFreeText: false
         };
@@ -81,9 +69,7 @@ function EditSelectQuestion({
             const newOptions = !question.options ? [] : question.options.filter((option) => !option.isFreeText);
             const freeTextOption: SelectOption = {
                 id: uuidv4(),
-                text: {
-                    [languageCode]: ''
-                },
+                text: newTranslatedString(availableLanguages, languageCode),
                 isFlagged: false,
                 isFreeText: true
             };
@@ -92,6 +78,7 @@ function EditSelectQuestion({
             const updatedSelectQuestion: MultiSelectQuestion | SingleSelectQuestion = { ...question, options: newOptions };
 
             updateQuestion(questionIdx, updatedSelectQuestion);
+            setFreeTextOptionId(freeTextOption.id);
         }
     };
 
@@ -104,9 +91,11 @@ function EditSelectQuestion({
 
         const updatedSelectQuestion: MultiSelectQuestion | SingleSelectQuestion = { ...question, options: newOptions };
         updateQuestion(questionIdx, updatedSelectQuestion);
+        setFreeTextOptionId(optionId === freeTextOptionId ? null : freeTextOptionId);
     };
 
     function updateOption(optionId: string, text: string) {
+        // debugger;
         const newOptions = question.options.map((option) => {
             if (option.id === optionId) {
                 const newText = option.text;
@@ -115,6 +104,25 @@ function EditSelectQuestion({
                 return {
                     ...option,
                     text: newText
+                }
+            }
+
+            return { ...option };
+        });
+
+        const updatedSelectQuestion: MultiSelectQuestion | SingleSelectQuestion = { ...question, options: newOptions };
+        updateQuestion(questionIdx, updatedSelectQuestion);
+    }
+
+    function updateOptionFlag(optionId: string) {
+        // debugger;
+        const newOptions = question.options.map((option) => {
+            if (option.id === optionId) {
+                const isFlagged = option.isFlagged;
+
+                return {
+                    ...option,
+                    isFlagged: !isFlagged
                 }
             }
 
@@ -137,6 +145,7 @@ function EditSelectQuestion({
     };
 
     function getOptionIdWithEmptyLabel(): string | null {
+        // debugger;
         for (let i = 0; i < question.options.length; i++) {
             if (question.options[i]!.text[languageCode]!.trim() === "") return question.options[i]!.id;
         }
@@ -153,6 +162,7 @@ function EditSelectQuestion({
     return (
         <div>
             <QuestionHeader
+                availableLanguages={availableLanguages}
                 languageCode={languageCode}
                 isInValid={isInValid}
                 question={question}
@@ -171,7 +181,7 @@ function EditSelectQuestion({
                                     id={option.id}
                                     name={option.id}
                                     value={option.text[languageCode]}
-                                    className={cn(option.id === "other" && "border-dashed", ((invalidOptionId === "" && option.text[languageCode]!.trim() === "") ||
+                                    className={cn(option.id === freeTextOptionId && "border-dashed", ((invalidOptionId === "" && option.text[languageCode]!.trim() === "") ||
                                         (invalidOptionId !== null && option.text[languageCode]!.trim() === invalidOptionId.trim())) && "border-red-300 focus:border-red-300")}
                                     placeholder={`Option ${optionIdx + 1}`}
                                     onBlur={() => {
@@ -195,8 +205,13 @@ function EditSelectQuestion({
                                         onClick={() => deleteOption(option.id)}
                                     />
                                 )}
+                                <FlagIcon
+                                    className="ml-2 h-4 w-4 cursor-pointer text-slate-400 hover:text-slate-500"
+                                    onClick={() => updateOptionFlag(option.id)}
+                                />
+
                                 <div className="ml-2 h-4 w-4">
-                                    {option.id !== "other" && (
+                                    {option.id !== freeTextOptionId && (
                                         <PlusIcon
                                             className="h-full w-full cursor-pointer text-slate-400 hover:text-slate-500"
                                             onClick={() => addOption(questionIdx)}

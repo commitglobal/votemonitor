@@ -1,10 +1,11 @@
-import { BaseQuestion } from '@/common/types';
+import { BaseQuestion, newTranslatedString } from '@/common/types';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { RefObject } from 'react'
+import { RefObject } from 'react';
 import { useTranslation } from 'react-i18next';
 
 interface QuestionHeaderProps {
+    availableLanguages: string[];
     languageCode: string;
     question: BaseQuestion;
     questionIdx: number;
@@ -14,6 +15,7 @@ interface QuestionHeaderProps {
 }
 
 function QuestionHeader({
+    availableLanguages,
     languageCode,
     question,
     questionIdx,
@@ -37,9 +39,7 @@ function QuestionHeader({
         const updatedHelptext = question.helptext ? {
             ...question.helptext,
             [languageCode]: helptext
-        } : {
-            [languageCode]: helptext
-        };
+        } : newTranslatedString(availableLanguages, languageCode, helptext);
 
         updateQuestion(questionIdx, { ...question, helptext: updatedHelptext });
     }

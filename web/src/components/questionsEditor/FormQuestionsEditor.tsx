@@ -4,12 +4,18 @@ import PreviewForm from './PreviewForm';
 import { useState } from 'react';
 
 export interface FormQuestionsEditorProps {
+  availableLanguages: string[];
   languageCode: string;
   localQuestions: BaseQuestion[];
   setLocalQuestions: (questions: BaseQuestion[]) => void;
 }
 
-function FormQuestionsEditor({ languageCode, localQuestions, setLocalQuestions }: FormQuestionsEditorProps) {
+function FormQuestionsEditor({
+  availableLanguages,
+  languageCode,
+  localQuestions,
+  setLocalQuestions,
+}: FormQuestionsEditorProps) {
   const [activeQuestionId, setActiveQuestionId] = useState<string | undefined>();
   const [invalidQuestions, setInvalidQuestions] = useState<string[]>([]);
 
@@ -17,6 +23,7 @@ function FormQuestionsEditor({ languageCode, localQuestions, setLocalQuestions }
     <div className='flex w-full gap-4'>
       <main className='question-list flex-1'>
         <QuestionsEdit
+          availableLanguages={availableLanguages}
           languageCode={languageCode}
           localQuestions={localQuestions}
           setLocalQuestions={setLocalQuestions}

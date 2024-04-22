@@ -1,40 +1,25 @@
-import { AnswerType, BaseAnswer, BaseQuestion, NumberAnswer, NumberAnswerSchema, NumberQuestion } from '@/common/types'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../ui/form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { Input } from '../../ui/input';
-import { Button } from '../../ui/button';
-import { useTranslation } from 'react-i18next';
-import { MoveDirection } from '../QuestionsEdit';
-import QuestionHeader from './QuestionHeader';
+import { BaseQuestion, NumberQuestion } from '@/common/types';
 import { Label } from '@/components/ui/label';
+import { useTranslation } from 'react-i18next';
+import { Input } from '../../ui/input';
+import QuestionHeader from './QuestionHeader';
 
 export interface EditNumberQuestionProps {
   languageCode: string;
+  availableLanguages: string[];
   questionIdx: number;
-  activeQuestionId: string | undefined;
-  isLastQuestion: boolean;
   isInValid: boolean;
   question: NumberQuestion;
-  setActiveQuestionId: (questionId: string) => void;
-  moveQuestion: (questionIndex: number, direction: MoveDirection) => void;
   updateQuestion: (questionIndex: number, question: BaseQuestion) => void;
-  duplicateQuestion: (questionIndex: number) => void;
-  deleteQuestion: (questionIndex: number) => void;
 }
 
 function EditNumberQuestion({
+  availableLanguages,
   languageCode,
   questionIdx,
-  activeQuestionId,
-  isLastQuestion,
   isInValid,
   question,
-  setActiveQuestionId,
-  moveQuestion,
-  updateQuestion,
-  duplicateQuestion,
-  deleteQuestion }: EditNumberQuestionProps) {
+  updateQuestion }: EditNumberQuestionProps) {
   const { t } = useTranslation();
 
   function updateInputPlaceholder(inputPlaceholder: string) {
@@ -52,6 +37,7 @@ function EditNumberQuestion({
   return (
     <div>
       <QuestionHeader
+        availableLanguages={availableLanguages}
         languageCode={languageCode}
         isInValid={isInValid}
         question={question}
