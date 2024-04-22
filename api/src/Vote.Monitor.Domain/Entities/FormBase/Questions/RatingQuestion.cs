@@ -21,4 +21,7 @@ public record RatingQuestion : BaseQuestion
 
     public static RatingQuestion Create(Guid id, string code, TranslatedString text, TranslatedString? helptext, RatingScale scale) =>
         new(id, code, text, helptext, scale);
+
+    protected override void AddTranslationsInternal(string languageCode) { }
+    protected override void RemoveTranslationInternal(string languageCode) { }
 }

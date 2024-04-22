@@ -1,4 +1,5 @@
 ﻿using FluentValidation.TestHelper;
+using Vote.Monitor.Core.Constants;
 using Vote.Monitor.Core.Models;
 using Vote.Monitor.Form.Module.Requests;
 using Vote.Monitor.Form.Module.Validators;
@@ -27,7 +28,7 @@ public class TextQuestionRequestValidatorTests
     }
 
     [Theory]
-    [MemberData(nameof(Validators.ValidatorsTestData.InvalidPartiallyTranslatedTestCases), MemberType = typeof(Validators.ValidatorsTestData))]
+    [MemberData(nameof(ValidatorsTestData.InvalidPartiallyTranslatedTestCases), MemberType = typeof(ValidatorsTestData))]
     public void Validation_ShouldFail_When_EmptyText(TranslatedString invalidText)
     {
         // Arrange
@@ -45,7 +46,7 @@ public class TextQuestionRequestValidatorTests
     }
 
     [Theory]
-    [MemberData(nameof(Validators.ValidatorsTestData.InvalidPartiallyTranslatedTestCases), MemberType = typeof(Validators.ValidatorsTestData))]
+    [MemberData(nameof(ValidatorsTestData.InvalidPartiallyTranslatedTestCases), MemberType = typeof(ValidatorsTestData))]
     public void Validation_ShouldFail_When_EmptyHelptext(TranslatedString invalidHelptext)
     {
         // Arrange
@@ -99,7 +100,7 @@ public class TextQuestionRequestValidatorTests
     }
 
     [Theory]
-    [MemberData(nameof(Validators.ValidatorsTestData.InvalidCodeTestCases), MemberType = typeof(Validators.ValidatorsTestData))]
+    [MemberData(nameof(ValidatorsTestData.InvalidCodeTestCases), MemberType = typeof(ValidatorsTestData))]
     public void Validation_ShouldFail_When_CodeHasInvalidLength(string code)
     {
         // Arrange
@@ -117,7 +118,7 @@ public class TextQuestionRequestValidatorTests
     }
 
     [Theory]
-    [MemberData(nameof(Validators.ValidatorsTestData.InvalidPartiallyTranslatedTestCases), MemberType = typeof(Validators.ValidatorsTestData))]
+    [MemberData(nameof(ValidatorsTestData.InvalidPartiallyTranslatedTestCases), MemberType = typeof(ValidatorsTestData))]
     public void Validation_ShouldFail_When_InputPlaceholderInvalid(TranslatedString inputPlaceholder)
     {
         // Arrange
@@ -140,11 +141,11 @@ public class TextQuestionRequestValidatorTests
         // Arrange
         var textInputQuestionRequest = new TextQuestionRequest
         {
-            Helptext = Validators.ValidatorsTestData.ValidPartiallyTranslatedTestData.First(),
-            Text = Validators.ValidatorsTestData.ValidPartiallyTranslatedTestData.First(),
+            Helptext = ValidatorsTestData.ValidPartiallyTranslatedTestData.First(),
+            Text = ValidatorsTestData.ValidPartiallyTranslatedTestData.First(),
             Code = "A code",
             Id = Guid.NewGuid(),
-            InputPlaceholder = Validators.ValidatorsTestData.ValidPartiallyTranslatedTestData.First()
+            InputPlaceholder = ValidatorsTestData.ValidPartiallyTranslatedTestData.First()
         };
 
         // Act

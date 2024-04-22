@@ -1,4 +1,6 @@
-﻿namespace Vote.Monitor.Api.Feature.Language.List;
+﻿using Vote.Monitor.Core.Constants;
+
+namespace Vote.Monitor.Api.Feature.Language.List;
 
 public class Endpoint : EndpointWithoutRequest<List<LanguageModel>>
 {

@@ -1,4 +1,5 @@
-﻿using Vote.Monitor.Core.Extensions;
+﻿using Vote.Monitor.Core.Constants;
+using Vote.Monitor.Core.Extensions;
 
 namespace Vote.Monitor.Domain.Entities.LanguageAggregate;
 
@@ -35,5 +36,11 @@ public class Language : BaseEntity, IAggregateRoot
         Iso1 = iso1;
 
         CreatedOn = new DateTime(2024, 01, 01, 00, 00, 00, DateTimeKind.Utc);
+    }
+
+
+    public static Language FromLanguageDetails(LanguageDetails details)
+    {
+        return new Language(details.Name, details.NativeName, details.Iso1);
     }
 }

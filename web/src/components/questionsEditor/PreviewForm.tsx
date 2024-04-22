@@ -4,6 +4,7 @@ import PreviewQuestionFactory from './preview/PreviewQuestionFactory';
 import { Progress } from '../ui/progress';
 import { z } from 'zod';
 import { Button } from '../ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../ui/card';
 
 export interface PreviewFormProps {
   languageCode: string;
@@ -74,31 +75,35 @@ function PreviewForm({ languageCode, localQuestions, activeQuestionId, setActive
   }
 
   return (
-    <div className='flex h-full w-full flex-col justify-between px-6 pb-3 pt-6'>
-      <Button type='button' onClick={resetProgress}>
-        Start from the beginning
-      </Button>
-      <div>
-        {!!currentQuestion ? (
-          <PreviewQuestionFactory
-            languageCode={languageCode}
-            question={currentQuestion}
-            answer={responseData[activeQuestionId!]!}
-            isFirstQuestion={currentQuestion.id === localQuestions[0]?.id}
-            isLastQuestion={currentQuestion.id === localQuestions[localQuestions.length - 1]?.id}
-            onSubmitAnswer={onSubmitAnswer}
-            onBackButtonClicked={onBackButtonClicked}
-          />
-        ) : activeQuestionId === 'end' ? (
-          <div>Done!</div>
-        ) : (
-          <div>No questions available.</div>
-        )}
-      </div>
-      <div className='mt-8'>
-        <Progress value={progress} max={100} />
-      </div>
-    </div>
+    <Card className='w-[480px]'>
+      <CardContent>
+        <div className='flex h-full w-full flex-col justify-between px-6 pb-3 pt-6'>
+          <Button className='mb-4' type='button' onClick={resetProgress}>
+            Start from the beginning
+          </Button>
+          <div>
+            {!!currentQuestion ? (
+              <PreviewQuestionFactory
+                languageCode={languageCode}
+                question={currentQuestion}
+                answer={responseData[activeQuestionId!]!}
+                isFirstQuestion={currentQuestion.id === localQuestions[0]?.id}
+                isLastQuestion={currentQuestion.id === localQuestions[localQuestions.length - 1]?.id}
+                onSubmitAnswer={onSubmitAnswer}
+                onBackButtonClicked={onBackButtonClicked}
+              />
+            ) : activeQuestionId === 'end' ? (
+              <div>Done!</div>
+            ) : (
+              <div>No questions available.</div>
+            )}
+          </div>
+          <div className='mt-8'>
+            <Progress value={progress} max={100} />
+          </div>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
 export default PreviewForm;

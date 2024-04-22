@@ -21,4 +21,14 @@ public record SelectOption
 
     public static SelectOption Create(Guid id, TranslatedString text, bool isFreeText, bool isFlagged) =>
         new(id, text, isFreeText, isFlagged);
+
+    public void AddTranslation(string languageCode)
+    {
+        Text.AddTranslation(languageCode);
+    }
+
+    public void RemoveTranslation(string languageCode)
+    {
+        Text.RemoveTranslation(languageCode);
+    }
 }

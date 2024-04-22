@@ -1,5 +1,5 @@
 ﻿using FluentValidation.TestHelper;
-using Vote.Monitor.Domain.Constants;
+using Vote.Monitor.Core.Constants;
 using Vote.Monitor.Form.Module.Requests;
 using Vote.Monitor.TestUtils;
 using Xunit;

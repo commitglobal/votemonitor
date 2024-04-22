@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using Vote.Monitor.Core.Constants;
 using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.Entities.FormBase.Questions;
 using Vote.Monitor.Form.Module.Mappers;
@@ -185,6 +186,14 @@ public class QuestionsMapperTests
     internal record UnknownQuestion : BaseQuestion
     {
         public UnknownQuestion(Guid id, string code, TranslatedString text, TranslatedString? helptext) : base(id, code, text, helptext)
+        {
+        }
+
+        protected override void AddTranslationsInternal(string languageCode)
+        {
+        }
+
+        protected override void RemoveTranslationInternal(string languageCode)
         {
         }
     }
