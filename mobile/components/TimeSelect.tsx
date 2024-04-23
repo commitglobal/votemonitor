@@ -124,7 +124,7 @@ const TimeSelect: React.FC<TimeSelectProps> = memo(({ type, time, setTime }) => 
         </Sheet>
       ) : (
         open &&
-        //using imperative API for android
+        // using imperative API for android
         DateTimePickerAndroid.open({
           mode: "time",
           value: time || new Date(),

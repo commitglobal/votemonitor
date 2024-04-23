@@ -27,8 +27,11 @@ const Login = () => {
 
   const onLogin = async (formData: FormData) => {
     try {
-      await signIn(formData.email, formData.password);
-      await AsyncStorage.setItem(CURRENT_USER_STORAGE_KEY, formData.email);
+      const email = formData.email.trim().toLocaleLowerCase();
+      const password = formData.password.trim();
+
+      await signIn(email, password);
+      await AsyncStorage.setItem(CURRENT_USER_STORAGE_KEY, email);
       router.replace("/");
     } catch (err) {
       setAuthError(true);
