@@ -1,13 +1,24 @@
-import Layout from '@/components/layout/Layout';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { MutableRefObject, ReactElement, useRef } from 'react';
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
-import { Doughnut } from 'react-chartjs-2';
-import { observersAccountsDataConfig ,observersOnFieldDataConfig } from '../../utils/chart-defs';
 import DoughnutChart from '@/components/charts/doughnut-chart/DoughnutChart';
-import { ArrowDownTrayIcon } from '@heroicons/react/24/solid';
+import GaugeChart from '@/components/charts/gauge-chart/GaugeChart';
+import LineChart from '@/components/charts/line-chart/LineChart';
+import MetricChart from '@/components/charts/metric-chart/MetricChart';
+import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
-import { saveAs } from 'file-saver';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { ArrowDownTrayIcon } from '@heroicons/react/24/solid';
+import { ArcElement, Chart as ChartJS, Legend, Tooltip } from 'chart.js';
+import { ReactElement, useRef } from 'react';
+
+import {
+  observersAccountsDataConfig,
+  observersOnFieldDataConfig,
+  pollingStationsDataConfig,
+  startedFormsDataConfig,
+  timeSpentObservingDataConfig,
+  questionsAnsweredDataConfig,
+  flaggedAnswersDataConfig,
+  quickReportsDataConfig,
+} from '../../utils/chart-defs';
 
 
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -15,6 +26,12 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 export default function PlatformAdminDashboard(): ReactElement {
   const observersAccountsChartRef = useRef(null);
   const observersOnFieldChartRef = useRef(null);
+  const pollingStationsChartRef = useRef(null);
+  const timeSpentObservingChartRef = useRef(null);
+  const startedFormsChartRef = useRef(null);
+  const questionsAnsweredChartRef = useRef(null);
+  const flaggedAnswersChartRef = useRef(null);
+  const quickReportsChartRef = useRef(null);
 
   function saveChart(chartRef: any, chartName: string): void {
     const base64Image = chartRef.current.toBase64Image().replace('data:image/png;base64,', '');
@@ -48,7 +65,7 @@ export default function PlatformAdminDashboard(): ReactElement {
         <div className="flex-1 space-y-4">
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardHeader className="flex flex-row items-center justify-between py-0!">
                 <CardTitle className="text-sm font-medium">
                   Observers accounts
                 </CardTitle>
@@ -57,11 +74,11 @@ export default function PlatformAdminDashboard(): ReactElement {
                 </Button>
               </CardHeader>
               <CardContent>
-                <DoughnutChart title='total accounts' data={observersAccountsDataConfig} ref={observersAccountsChartRef} />
+                <DoughnutChart title='Total accounts' data={observersAccountsDataConfig} ref={observersAccountsChartRef} />
               </CardContent>
             </Card>
             <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardHeader className="flex flex-row items-center justify-between py-0!">
                 <CardTitle className="text-sm font-medium">
                   Observers on field
                 </CardTitle>
@@ -70,78 +87,113 @@ export default function PlatformAdminDashboard(): ReactElement {
                 </Button>
               </CardHeader>
               <CardContent>
-                <DoughnutChart title='Observers' data={observersOnFieldDataConfig} ref={observersOnFieldChartRef} />
+                <GaugeChart
+                  title='Observers in polling stations'
+                  metricLabel='With at least one question answered'
+                  data={observersOnFieldDataConfig}
+                  ref={observersOnFieldChartRef} />
               </CardContent>
             </Card>
             <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Polling stations</CardTitle>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  className="h-4 w-4 text-muted-foreground"
-                >
-                  <rect width="20" height="14" x="2" y="5" rx="2" />
-                  <path d="M2 10h20" />
-                </svg>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle className="text-sm font-medium">
+                  Polling stations
+                </CardTitle>
+                <Button type='button' variant='ghost' onClick={() => saveChart(pollingStationsChartRef, 'polling-stations-covered.png')}>
+                  <ArrowDownTrayIcon className='w-6 h-6 fill-gray-400' />
+                </Button>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">+12,234</div>
-                <p className="text-xs text-muted-foreground">
-                  +19% from last month
-                </p>
+                <GaugeChart
+                  title='Stations visited by at least one observer'
+                  metricLabel='coverage'
+                  data={pollingStationsDataConfig}
+                  ref={pollingStationsChartRef} />
               </CardContent>
             </Card>
             <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="text-sm font-medium">
                   Time spent observing
                 </CardTitle>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  className="h-4 w-4 text-muted-foreground"
-                >
-                  <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-                </svg>
+                <Button type='button' variant='ghost' onClick={() => saveChart(timeSpentObservingChartRef, 'time-spent-observing.png')}>
+                  <ArrowDownTrayIcon className='w-6 h-6 fill-gray-400' />
+                </Button>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">+573</div>
-                <p className="text-xs text-muted-foreground">
-                  +201 since last hour
-                </p>
+                <MetricChart
+                  title='Based on start-end times reported'
+                  unit='h'
+                  data={timeSpentObservingDataConfig}
+                  ref={timeSpentObservingChartRef} />
               </CardContent>
             </Card>
           </div>
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-            <Card className="col-span-4">
-              <CardHeader>
-                <CardTitle>Overview</CardTitle>
-              </CardHeader>
-              <CardContent className="pl-2">
-              </CardContent>
-            </Card>
-            <Card className="col-span-3">
-              <CardHeader>
-                <CardTitle>Recent Sales</CardTitle>
-                <CardDescription>
-                  You made 265 sales this month.
-                </CardDescription>
+
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle className="text-sm font-medium">
+                  Started forms
+                </CardTitle>
+                <Button type='button' variant='ghost' onClick={() => saveChart(startedFormsChartRef, 'started-forms.png')}>
+                  <ArrowDownTrayIcon className='w-6 h-6 fill-gray-400' />
+                </Button>
               </CardHeader>
               <CardContent>
+                <LineChart title='forms started between 08:00 - 20:00' data={startedFormsDataConfig} ref={startedFormsChartRef} />
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle className="text-sm font-medium">
+                  Questions answered
+                </CardTitle>
+                <Button type='button' variant='ghost' onClick={() => saveChart(questionsAnsweredChartRef, 'questions-answered.png')}>
+                  <ArrowDownTrayIcon className='w-6 h-6 fill-gray-400' />
+                </Button>
+              </CardHeader>
+              <CardContent>
+                <LineChart
+                  title='questions answered between 08:00 - 20:00'
+                  data={questionsAnsweredDataConfig}
+                  ref={questionsAnsweredChartRef} />
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle className="text-sm font-medium">
+                  Flagged answers
+                </CardTitle>
+                <Button type='button' variant='ghost' onClick={() => saveChart(flaggedAnswersChartRef, 'flagged-answers.png')}>
+                  <ArrowDownTrayIcon className='w-6 h-6 fill-gray-400' />
+                </Button>
+              </CardHeader>
+              <CardContent>
+                <LineChart
+                  title='answers were flagged through forms'
+                  data={flaggedAnswersDataConfig}
+                  ref={flaggedAnswersChartRef} />
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle className="text-sm font-medium">
+                  Quick reports
+                </CardTitle>
+                <Button type='button' variant='ghost' onClick={() => saveChart(quickReportsChartRef, 'quick-reports.png')}>
+                  <ArrowDownTrayIcon className='w-6 h-6 fill-gray-400' />
+                </Button>
+              </CardHeader>
+              <CardContent>
+                <LineChart
+                  title='quick reports were signalled '
+                  data={quickReportsDataConfig}
+                  ref={quickReportsChartRef} />
               </CardContent>
             </Card>
           </div>
+
         </div>
       </div>
     </Layout>

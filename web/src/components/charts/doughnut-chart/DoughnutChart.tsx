@@ -1,39 +1,19 @@
-import { ArcElement, CategoryScale, Chart, ChartData, ChartOptions, Legend, Tooltip } from 'chart.js';
+import { ArcElement, CategoryScale, ChartData, Chart as ChartJS, ChartOptions, Legend, Tooltip } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { ChartJSOrUndefined } from 'node_modules/react-chartjs-2/dist/types';
-import React, { forwardRef, useEffect, useRef, useState } from 'react';
+import { forwardRef } from 'react';
 import { Doughnut } from 'react-chartjs-2';
 
+ChartJS.register(ArcElement, CategoryScale, ChartDataLabels, Tooltip, Legend);
 export interface DoughnutProps {
     title: string;
     data: ChartData<"doughnut">;
-    aspectRatio?: number;
 };
 
-Chart.register(ArcElement, CategoryScale, ChartDataLabels, Tooltip, Legend);
 
 const DoughnutChart = forwardRef<ChartJSOrUndefined<"doughnut">, DoughnutProps>((props, chartRef) => {
-    const [aspectRatio, setAspectRatio] = useState(props.aspectRatio || (window.innerWidth <= 1800 ? 1 : 1.2));
-
-    // @ts-ignore
-    useEffect(() => {
-        if (!props.aspectRatio) {
-            const handleResize = () => {
-                setAspectRatio(window.innerWidth <= 1800 ? 1 : 1.2);
-            };
-            window.addEventListener('resize', handleResize);
-
-            // Cleanup function
-            return () => {
-                window.removeEventListener('resize', handleResize);
-            };
-        }
-    }, [props.aspectRatio]);
-
     const options: ChartOptions<"doughnut"> = {
-        responsive: true,
-        maintainAspectRatio: true,
-        aspectRatio: aspectRatio,
+        maintainAspectRatio: false,
         plugins: {
             datalabels: {
                 color: '#FFFFFF',
@@ -52,10 +32,6 @@ const DoughnutChart = forwardRef<ChartJSOrUndefined<"doughnut">, DoughnutProps>(
                     boxHeight: 20,
                     usePointStyle: true,
                     pointStyle: 'circle' as const,
-                },
-                title: {
-                    text: 'djdjdjdjjd',
-                    color: '#FF0000'
                 }
             },
             tooltip: {
@@ -76,11 +52,11 @@ const DoughnutChart = forwardRef<ChartJSOrUndefined<"doughnut">, DoughnutProps>(
         <div>
             <div>
                 <div className="text-2xl font-bold">{props.data.datasets.reduce((t, d) => t + d.data.reduce((a, b) => a + b), 0)}</div>
-                <span>{props.title}</span>
+                <span className='text-sm text-slate-500'>{props.title}</span>
             </div>
             <div>
                 <div>
-                    <Doughnut data={props.data} options={options} ref={chartRef} plugins={[htmlLegendPlugin]} />
+                    <Doughnut data={props.data} options={options} ref={chartRef} />
                 </div>
             </div>
         </div>
