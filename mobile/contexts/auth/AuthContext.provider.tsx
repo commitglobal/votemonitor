@@ -9,13 +9,11 @@ import * as DB from "../../database/DAO/PollingStationsNomenclatorDAO";
 const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [authError, setAuthError] = useState<boolean>(false);
 
   useEffect(() => {
     const token = SecureStore.getItem("access_token");
     setIsAuthenticated(!!token);
     setIsLoading(false);
-    setAuthError(false);
   }, []);
 
   const signIn = async (email: string, password: string) => {
@@ -30,10 +28,9 @@ const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
       });
       SecureStore.setItem("access_token", token);
       setIsAuthenticated(true);
-      setAuthError(false);
     } catch (err: unknown) {
       console.log("Error while trying to sign in", err);
-      setAuthError(true);
+      throw new Error("Error while trying to sign in");
     } finally {
       setIsLoading(false);
     }
@@ -56,7 +53,6 @@ const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
         signOut,
         isAuthenticated,
         isLoading,
-        authError,
       }}
     >
       {children}

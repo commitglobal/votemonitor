@@ -22,7 +22,8 @@ interface FormData {
 
 const Login = () => {
   const { t } = useTranslation("login");
-  const { signIn, authError } = useAuth();
+  const { signIn } = useAuth();
+  const [authError, setAuthError] = React.useState(false);
 
   const onLogin = async (formData: FormData) => {
     try {
@@ -30,7 +31,7 @@ const Login = () => {
       await AsyncStorage.setItem(CURRENT_USER_STORAGE_KEY, formData.email);
       router.replace("/");
     } catch (err) {
-      console.error("Error while logging in...");
+      setAuthError(true);
     }
   };
   const { handleSubmit, control, formState } = useForm({
