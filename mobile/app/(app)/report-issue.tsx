@@ -11,15 +11,18 @@ import FormInput from "../../components/FormInputs/FormInput";
 import Select from "../../components/Select";
 import { useUserData } from "../../contexts/user/UserContext.provider";
 import { Controller, useForm } from "react-hook-form";
+import { PollingStationVisitVM } from "../../common/models/polling-station.model";
 
-const mapVisitsToSelectPollingStations = (visits) => {
-  const pollingStationsForSelect = visits.map((visit) => {
-    return {
-      id: visit.pollingStationId,
-      value: visit.pollingStationId,
-      label: `${visit.number} - ${visit.address}`,
-    };
-  });
+const mapVisitsToSelectPollingStations = (visits: PollingStationVisitVM[] | undefined) => {
+  const pollingStationsForSelect = visits
+    ? visits.map((visit) => {
+        return {
+          id: visit.pollingStationId,
+          value: visit.pollingStationId,
+          label: `${visit.number} - ${visit.address}`,
+        };
+      })
+    : [];
 
   //   adding the 'other' and 'not related to a polling station' options
   pollingStationsForSelect.push(
@@ -73,7 +76,10 @@ const ReportIssue = () => {
               name="polling-station"
               control={control}
               render={({
-                field: { onChange, value = { id: undefined, issueCategory: undefined } },
+                field: {
+                  onChange,
+                  value = { id: undefined, issueCategory: undefined, details: undefined },
+                },
               }) => (
                 <>
                   <YStack gap="$xxs">
@@ -82,20 +88,31 @@ const ReportIssue = () => {
                       value={value.id}
                       options={pollingStations}
                       placeholder="Select polling station"
-                      onValueChange={(id) => onChange({ ...value, id, issueCategory: null })}
+                      onValueChange={(id) =>
+                        onChange({ ...value, id, issueCategory: null, details: null })
+                      }
                     />
                   </YStack>
                   {value.id === "other" || value.id === "not_related_to_polling_station" ? (
                     <YStack gap="$xxs">
                       <Typography fontWeight="500">Issue category</Typography>
                       <Select
-                        value={value}
-                        options={pollingStations}
+                        value={value.issueCategory}
+                        options={mockOptions}
                         placeholder="Select category"
-                        onValueChange={onChange}
+                        onValueChange={(issueCategory) => onChange({ ...value, issueCategory })}
                       />
                     </YStack>
                   ) : null}
+                  {value.id === "other" && (
+                    <FormInput
+                      title="Polling station details *"
+                      type="textarea"
+                      placeholder="Please write here some identification details for this polling station (such as address, name, number, etc.)"
+                      value={value.details}
+                      onChangeText={(details) => onChange({ ...value, details })}
+                    />
+                  )}
                 </>
               )}
             />
@@ -159,5 +176,18 @@ const ReportIssue = () => {
     </>
   );
 };
+
+const mockOptions = [
+  { id: "1", value: "fraud", label: "Fraud" },
+  { id: "2", value: "error", label: "Error" },
+  { id: "3", value: "other", label: "Other" },
+  { id: "4", value: "issue", label: "Issue" },
+  { id: "5", value: "bug", label: "Bug" },
+  { id: "6", value: "defect", label: "Defect" },
+  { id: "7", value: "problem", label: "Problem" },
+  { id: "8", value: "glitch", label: "Glitch" },
+  { id: "9", value: "inaccuracy", label: "Inaccuracy" },
+  { id: "10", value: "mistake", label: "Mistake" },
+];
 
 export default ReportIssue;
