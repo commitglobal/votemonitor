@@ -1,12 +1,11 @@
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
-import { MutationCache, QueryClient, defaultShouldDehydrateQuery } from "@tanstack/react-query";
+import { MutationCache, QueryClient } from "@tanstack/react-query";
 import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useAuth } from "../../hooks/useAuth";
 import { pollingStationsKeys } from "../../services/queries.service";
 import * as API from "../../services/definitions.api";
 import { performanceLog } from "../../helpers/misc";
-import { PersistGate } from "../../components/PersistGate";
 
 const queryClient = new QueryClient({
   mutationCache: new MutationCache({
@@ -144,7 +143,8 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
 
             // if (query.meta?.dontPersist) return false;
 
-            return defaultShouldDehydrateQuery(query);
+            // return defaultShouldDehydrateQuery(query);
+            return true;
           },
         },
       }}

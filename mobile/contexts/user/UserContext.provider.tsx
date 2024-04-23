@@ -70,8 +70,6 @@ const UserContextProvider = ({ children }: React.PropsWithChildren) => {
   const { data: lastVisitedPollingStation, error: PollingStationNomenclatorNodeDBError } =
     usePollingStationById(currentSelectedPollingStationId);
 
-  // Prefetch some data for the polling stations in advance
-  // TODO: Revisit this, sometimes it seems the data is imediately stale and refetching when chaning the station
   useQueries(
     {
       queries:
