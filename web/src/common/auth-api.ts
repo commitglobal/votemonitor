@@ -5,13 +5,13 @@ import axios from 'axios';
 
 export interface ILoginResponse {
   token: string;
+  role: string;
 }
 
 export interface LoginDTO {
   email: string;
   password: string;
 }
-
 
 export const authApi = axios.create({
   baseURL: import.meta.env.VITE_API_URL

@@ -28,7 +28,7 @@ const user = {
     'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
 };
 const navigation = [
-  { name: 'Dashboard', to: '/', roles: ['NgoAdmin'] },
+  { name: 'Dashboard', to: '/', roles: ['PlatformAdmin'] },
   { name: 'Election rounds', to: '/election-rounds', roles: ['PlatformAdmin', 'NgoAdmin'] },
   { name: 'NGOs', to: '/ngos', roles: ['PlatformAdmin'] },
   { name: 'Observers', to: '/observers', roles: ['PlatformAdmin'] },
@@ -51,7 +51,7 @@ const Header = (): FunctionComponent => {
     void queryClient.invalidateQueries({ queryKey: ['form-submissions'] });
   };
 
-  const { token } = useContext(AuthContext);
+  const { userRole } = useContext(AuthContext);
 
   const { status, data } = useQuery({
     queryKey: ['electionRounds'],
@@ -80,7 +80,7 @@ const Header = (): FunctionComponent => {
 
               <div className='items-baseline flex-1 hidden gap-4 md:flex'>
                 {navigation
-                  .filter((nav) => nav.roles.includes(parseJwt(token)[`user-role`]))
+                  .filter((nav) => nav.roles.includes(userRole ?? 'Unknown'))
                   .map((item) => (
                     <Link
                       to={item.to}

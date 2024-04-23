@@ -1,15 +1,15 @@
-import type { FunctionComponent } from '../common/types';
-import { createFileRoute } from '@tanstack/react-router';
-import Layout from '@/components/layout/Layout';
-import PollingStationsDashboard from '@/features/polling-stations/components/Dashboard/Dashboard';
+import { AuthContext } from '@/context/auth.context';
+import NgoAdminDashboard from '@/features/ngo-admin-dashboard/components/Dashboard/Dashboard';
+import PlatformAdminDashboard from '@/features/platform-admin-dashboard/components/Dashboard/Dashboard';
 import { redirectIfNotAuth } from '@/lib/utils';
+import { createFileRoute } from '@tanstack/react-router';
+import { useContext } from 'react';
 
+import type { FunctionComponent } from '../common/types';
 const Index = (): FunctionComponent => {
-  return (
-    <Layout title={'Dashboard'}>
-      <PollingStationsDashboard />
-    </Layout>
-  );
+  const { userRole } = useContext(AuthContext);
+
+  return userRole === 'PlatformAdmin' ? <PlatformAdminDashboard /> : <NgoAdminDashboard />
 };
 
 export const Route = createFileRoute('/')({

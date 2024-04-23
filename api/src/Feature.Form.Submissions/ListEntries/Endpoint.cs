@@ -104,6 +104,15 @@ public class Endpoint(VoteMonitorContext context) : Endpoint<Request, PagedRespo
         WHERE mn.""ElectionRoundId"" = @electionRoundId
             AND mn.""NgoId"" = @ngoId
             AND (@monitoringObserverId IS NULL OR mo.""Id"" =@monitoringObserverId)
+            AND (@formCode is null OR s.""FormCode"" = @formCode) 
+            AND (@formType is null OR s.""FormType"" = @formType)
+            AND (@level1 is null OR ps.""Level1"" = @level1)
+            AND (@level2 is null OR ps.""Level2"" = @level2)
+            AND (@level3 is null OR ps.""Level3"" = @level3)
+            AND (@level4 is null OR ps.""Level4"" = @level4)
+            AND (@level5 is null OR ps.""Level5"" = @level5)
+            AND (@pollingStationNumber is null OR ps.""Number"" = @pollingStationNumber)
+            AND (@hasFlaggedAnswers is null OR @hasFlaggedAnswers =  ps.""Level5"" = @level5)
         ORDER BY ""TimeSubmitted"" desc
         OFFSET @offset ROWS
         FETCH NEXT @pageSize ROWS ONLY;";
@@ -114,7 +123,16 @@ public class Endpoint(VoteMonitorContext context) : Endpoint<Request, PagedRespo
             ngoId = req.NgoId,
             offset = PaginationHelper.CalculateSkip(req.PageSize, req.PageNumber),
             pageSize = req.PageSize,
-            monitoringObserverId = req.MonitoringObserverId
+            monitoringObserverId = req.MonitoringObserverId,
+            formCode= req.FormCodeFilter,
+            formType = req.FormTypeFilter,
+            level1 = req.Level1Filter,
+            level2 = req.Level2Filter,
+            level3 = req.Level3Filter,
+            level4 = req.Level4Filter,
+            level5 = req.Level5Filter,
+            pollingStationNumber = req.PollingStationNumberFilter,
+            hasFlaggedAnswers = req.HasFlaggedAnswers,
         };
 
         var multi = await context.Connection.QueryMultipleAsync(sql, queryArgs);

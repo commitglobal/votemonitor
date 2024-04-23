@@ -1,5 +1,6 @@
 import { ILoginResponse, LoginDTO, authApi } from '@/common/auth-api';
 import { useToast } from '@/components/ui/use-toast';
+import { parseJwt } from '@/lib/utils';
 import { createContext, useEffect, useState } from 'react';
 
 export type AuthContextType = {
@@ -7,6 +8,7 @@ export type AuthContextType = {
   isAuthenticated: boolean;
   isLoading: boolean;
   token: string | undefined;
+  userRole: string | undefined;
 };
 
 export const AuthContext = createContext<AuthContextType>({
@@ -14,12 +16,14 @@ export const AuthContext = createContext<AuthContextType>({
   isAuthenticated: true,
   isLoading: false,
   token: undefined,
+  userRole: undefined
 });
 
 const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [token, setToken] = useState<string>('');
+  const [userRole, setUserRole] = useState<string>('Unknown');
   const { toast } = useToast();
 
   useEffect(() => {
@@ -28,6 +32,7 @@ const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
     setIsLoading(false);
     if (token) {
       setToken(token);
+      setUserRole(parseJwt(token)[`user-role`]);
     }
   }, []);
 
@@ -57,6 +62,7 @@ const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
         isAuthenticated,
         isLoading,
         token,
+        userRole,
       }}>
       {children}
     </AuthContext.Provider>
