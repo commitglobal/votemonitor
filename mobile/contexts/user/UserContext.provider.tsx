@@ -14,6 +14,10 @@ import {
 } from "../../common/models/polling-station.model";
 import { ElectionRoundVM } from "../../common/models/election-round.model";
 import { useQueries, useQueryClient } from "@tanstack/react-query";
+import LoadingScreen from "../../components/LoadingScreen";
+import NoElectionRounds from "../../components/NoElectionRounds";
+import NoVisitsExist from "../../components/NoVisitsExist";
+import GenericErrorScreen from "../../components/GenericErrorScreen";
 
 type UserContextType = {
   electionRounds: ElectionRoundVM[] | undefined;
@@ -22,21 +26,13 @@ type UserContextType = {
   activeElectionRound?: ElectionRoundVM;
   selectedPollingStation?: PollingStationNomenclatorNodeVM | null;
 
-  notEnoughDataForOffline: boolean;
   isLoading: boolean;
 
   error: Error | null;
   setSelectedPollingStationId: (pollingStationId: string) => void;
 };
 
-export const UserContext = createContext<UserContextType>({
-  electionRounds: [],
-  visits: [],
-  isLoading: true,
-  notEnoughDataForOffline: true,
-  error: null,
-  setSelectedPollingStationId: (_pollingStationId: string) => {},
-});
+export const UserContext = createContext<UserContextType | null>(null);
 
 const UserContextProvider = ({ children }: React.PropsWithChildren) => {
   const queryClient = useQueryClient();
@@ -46,7 +42,6 @@ const UserContextProvider = ({ children }: React.PropsWithChildren) => {
   const {
     data: rounds,
     isLoading: isLoadingRounds,
-    isSuccess: isSuccessRounds,
     error: ElectionRoundsError,
   } = useElectionRoundsQuery();
 
@@ -69,12 +64,8 @@ const UserContextProvider = ({ children }: React.PropsWithChildren) => {
     );
   }, [visits, selectedPollingStationId]);
 
-  const {
-    data: nomenclatorExists,
-    isLoading: isLoadingNomenclature,
-    isSuccess: isSuccessNomenclature,
-    error: NomenclatureError,
-  } = usePollingStationsNomenclatorQuery(activeElectionRound?.id);
+  const { isLoading: isLoadingNomenclature, error: NomenclatureError } =
+    usePollingStationsNomenclatorQuery(activeElectionRound?.id);
 
   const { data: lastVisitedPollingStation, error: PollingStationNomenclatorNodeDBError } =
     usePollingStationById(currentSelectedPollingStationId);
@@ -107,29 +98,60 @@ const UserContextProvider = ({ children }: React.PropsWithChildren) => {
     queryClient,
   );
 
-  return (
-    <UserContext.Provider
-      value={{
-        error:
-          ElectionRoundsError ||
-          PollingStationsError ||
-          NomenclatureError ||
-          PollingStationNomenclatorNodeDBError,
-        isLoading: isLoadingRounds || isLoadingVisits || isLoadingNomenclature,
-        notEnoughDataForOffline:
-          isSuccessRounds && isSuccessNomenclature && !rounds && !nomenclatorExists,
-        visits,
-        electionRounds: rounds,
-        activeElectionRound,
-        selectedPollingStation: lastVisitedPollingStation,
-        setSelectedPollingStationId,
-      }}
-    >
-      {children}
-    </UserContext.Provider>
-  );
+  const error =
+    ElectionRoundsError ||
+    PollingStationsError ||
+    NomenclatureError ||
+    PollingStationNomenclatorNodeDBError;
+
+  const isLoading = isLoadingRounds || isLoadingVisits || isLoadingNomenclature; // will be false while offline, because the queryFn is not running. isPending will be true
+
+  const contextValues = useMemo(() => {
+    return {
+      error,
+      isLoading,
+      visits,
+      electionRounds: rounds,
+      activeElectionRound,
+      selectedPollingStation: lastVisitedPollingStation,
+      setSelectedPollingStationId,
+    };
+  }, [error, isLoading, visits, rounds, activeElectionRound, lastVisitedPollingStation]);
+
+  if (error) {
+    console.log(error);
+    return <GenericErrorScreen />;
+  }
+
+  console.log("👀👀👀 isLoading", isLoadingRounds || isLoadingVisits || isLoadingNomenclature);
+  console.log("✅ isLoadingRounds", isLoadingRounds);
+  console.log("✅ isLoadingVisits", isLoadingNomenclature);
+  console.log("✅ isLoadingNomenclature", isLoadingNomenclature);
+  console.log("🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀");
+
+  if (isLoading) {
+    return <LoadingScreen />;
+  } else {
+    if (rounds && !rounds.length) {
+      return <NoElectionRounds />;
+    }
+
+    if (visits && !visits.length) {
+      return <NoVisitsExist />;
+    }
+  }
+
+  return <UserContext.Provider value={contextValues}>{children}</UserContext.Provider>;
 };
 
-export const useUserData = () => useContext(UserContext);
+export const useUserData = () => {
+  const data = useContext(UserContext);
+
+  if (!data) {
+    throw new Error("No data in UserContext found. Was used outside the tree");
+  }
+
+  return data;
+};
 
 export default UserContextProvider;

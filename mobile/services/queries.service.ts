@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { skipToken, useMutation, useQuery } from "@tanstack/react-query";
 import {
   getElectionRounds,
   getPollingStationInformation,
@@ -22,7 +22,7 @@ const electionRoundsKeys = {
 
 export const pollingStationsKeys = {
   all: ["polling-stations"] as const,
-  visits: (electionRoundId: string) =>
+  visits: (electionRoundId: string | undefined) =>
     [...pollingStationsKeys.all, "visits", electionRoundId] as const,
   formSubmissions: (electionRoundId: string | undefined, pollingStationId: string | undefined) => [
     ...pollingStationsKeys.all,
@@ -123,18 +123,17 @@ export const usePollingStationsNomenclatorQuery = (electionRoundId: string | und
     },
     enabled: !!electionRoundId,
     // staleTime: 5 * 60 * 1000,
+    retry: 0, // to avoid waiting 25s to fail the promise
     staleTime: 0,
     networkMode: "always",
+    // meta: { dontPersist: true }, // TODO: will set isLoading true all the time
   });
 };
 
 export const usePollingStationsVisits = (electionRoundId: string | undefined) => {
   return useQuery({
-    queryKey: pollingStationsKeys.visits(electionRoundId!),
-    queryFn: () => {
-      return getPollingStationsVisits(electionRoundId!);
-    },
-    enabled: !!electionRoundId,
+    queryKey: pollingStationsKeys.visits(electionRoundId),
+    queryFn: electionRoundId ? () => getPollingStationsVisits(electionRoundId) : skipToken,
   });
 };
 

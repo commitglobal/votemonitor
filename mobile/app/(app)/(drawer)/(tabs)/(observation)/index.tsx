@@ -26,8 +26,6 @@ import {
 import { ApiFormAnswer } from "../../../../../services/interfaces/answer.type";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import SelectPollingStation from "../../../../../components/SelectPollingStation";
-import NoVisitsExist from "../../../../../components/NoVisitsExist";
-import NoElectionRounds from "../../../../../components/NoElectionRounds";
 import PollingStationInfo from "../../../../../components/PollingStationInfo";
 import { Dialog } from "../../../../../components/Dialog";
 import Button from "../../../../../components/Button";
@@ -44,9 +42,6 @@ import { useTranslation } from "react-i18next";
 import RadioFormInput from "../../../../../components/FormInputs/RadioFormInput";
 import { Controller, FieldError, FieldErrorsImpl, Merge, useForm } from "react-hook-form";
 import { Dimensions } from "react-native";
-import LoadingScreen from "../../../../../components/LoadingScreen";
-import NotEnoughData from "../../../../../components/NotEnoughData";
-import GenericErrorScreen from "../../../../../components/GenericErrorScreen";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export type FormListItem = {
@@ -214,15 +209,7 @@ const Index = () => {
   const queryClient = useQueryClient();
   const navigation = useNavigation();
 
-  const {
-    isLoading,
-    notEnoughDataForOffline,
-    electionRounds,
-    visits,
-    selectedPollingStation,
-    activeElectionRound,
-    error,
-  } = useUserData();
+  const { selectedPollingStation, activeElectionRound } = useUserData();
 
   const { data } = usePollingStationInformation(
     activeElectionRound?.id,
@@ -243,6 +230,7 @@ const Index = () => {
   );
 
   // TODO: this is almost duplicate of PollingStationQuestionnaire, merge them
+  // TODO: make a custom hook and merge them
   const { mutate } = useMutation({
     mutationKey: [pollingStationsKeys.mutatePollingStationGeneralData()],
     mutationFn: async (payload: PollingStationInformationAPIPayload) => {
@@ -274,6 +262,8 @@ const Index = () => {
     },
     onError: (err, newData, context) => {
       console.log(err);
+
+      // Show toast with error
       queryClient.setQueryData(pollingStationInformationQK, context?.previousData);
     },
     onSettled: () => {
@@ -286,6 +276,8 @@ const Index = () => {
     payload: Partial<Pick<PollingStationInformationVM, "arrivalTime" | "departureTime">>,
   ) => {
     if (selectedPollingStation?.pollingStationId && activeElectionRound?.id) {
+      // 1. Split another component to pass the data after we know we have it
+      // 2. Suspense Query - tradeoffs
       mutate({
         electionRoundId: activeElectionRound?.id,
         pollingStationId: selectedPollingStation?.pollingStationId,
@@ -297,27 +289,6 @@ const Index = () => {
       console.error("Missing election round and polling station");
     }
   };
-
-  if (error) {
-    console.log(error);
-    return <GenericErrorScreen />;
-  }
-
-  if (isLoading) {
-    return <LoadingScreen />;
-  } else {
-    if (electionRounds && !electionRounds.length) {
-      return <NoElectionRounds />;
-    }
-
-    if (visits && !visits.length) {
-      return <NoVisitsExist />;
-    }
-
-    if (notEnoughDataForOffline) {
-      return <NotEnoughData />;
-    }
-  }
 
   return (
     <Screen
