@@ -21,37 +21,37 @@ interface FormData {
   confirmPassword: string;
 }
 
-const formSchema = z
-  .object({
-    currentPassword: z.string(),
-    newPassword: z
-      .string()
-      .min(8, "Password must be at least 8 characters long")
-      .regex(
-        /^(?=.*[A-Z])(?=.*[0-9])(?=.*[^a-zA-Z0-9]).*$/,
-        "Password should have at least one uppercase character, one number, one special character, and be minimum 8 characters long without spaces",
-      ),
-    confirmPassword: z.string(),
-  })
-  .refine((data) => data.newPassword === data.confirmPassword, {
-    message: "Passwords do not match",
-    path: ["confirmPassword"],
-  });
-
 const ChangePassowrd = () => {
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation("change_password");
 
+  // Form validation schema
+  const formSchema = z
+    .object({
+      currentPassword: z.string(),
+      newPassword: z
+        .string()
+        .min(8, t("form.new_password.helper"))
+        .regex(/^(?=.*[A-Z])(?=.*[0-9])(?=.*[^a-zA-Z0-9]).*$/, t("form.new_password.pattern")),
+      confirmPassword: z.string(),
+    })
+    .refine((data) => data.newPassword === data.confirmPassword, {
+      message: t("form.new_password.no_match"),
+      path: ["confirmPassword"],
+    });
+
+  // React Hook Form setup
   const { handleSubmit, control, formState } = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       currentPassword: "",
-      newPassword: "Votemonitor1*",
+      newPassword: "Votemonitor1",
       confirmPassword: "Votemonitor1",
     },
   });
   const { errors } = formState;
-  const { t } = useTranslation("change_password");
 
+  // TODO: Add API call to change password
   const onSubmit = (data: FormData) => {
     console.log("Change password: ", data);
   };
@@ -89,8 +89,15 @@ const Form = ({
   control: Control<FormData, any>;
   errors: FieldErrors<FieldValues>;
 }) => {
-  const [secureTextEntry, setSecureTextEntry] = React.useState(false);
-  const passIcon = secureTextEntry === false ? "eye" : "eyeOff";
+  const [passSecureEntry, setPassSecureEntry] = React.useState(false);
+  const passIcon = passSecureEntry === false ? "eye" : "eyeOff";
+
+  const [newPassSecureEntry, setNewPassSecureEntry] = React.useState(false);
+  const newPassIcon = newPassSecureEntry === false ? "eye" : "eyeOff";
+
+  const [confirmPassSecureEntry, setConfirmPassSecureEntry] = React.useState(false);
+  const confirmPassIcon = confirmPassSecureEntry === false ? "eye" : "eyeOff";
+
   const { t } = useTranslation("change_password");
 
   return (
@@ -103,14 +110,14 @@ const Form = ({
           <YStack>
             <FormInput
               type="password"
-              secureTextEntry={secureTextEntry}
+              secureTextEntry={passSecureEntry}
               title={t("form.current_password.label")}
               placeholder={t("form.current_password.placeholder")}
               value={value}
               onChangeText={onChange}
               iconRight={<Icon icon={passIcon} size={20} color="$gray11" />}
               onIconRightPress={() => {
-                setSecureTextEntry(!secureTextEntry);
+                setPassSecureEntry(!passSecureEntry);
               }}
             ></FormInput>
           </YStack>
@@ -125,14 +132,14 @@ const Form = ({
           <YStack>
             <FormInput
               type="password"
-              secureTextEntry={secureTextEntry}
+              secureTextEntry={newPassSecureEntry}
               title={t("form.new_password.label")}
               placeholder={t("form.new_password.placeholder")}
               value={value}
               onChangeText={onChange}
               iconRight={<Icon icon={passIcon} size={20} color="$gray11" />}
               onIconRightPress={() => {
-                setSecureTextEntry(!secureTextEntry);
+                setNewPassSecureEntry(!newPassSecureEntry);
               }}
             ></FormInput>
 
@@ -141,7 +148,7 @@ const Form = ({
                 error: true,
                 message: errors?.newPassword?.message?.toString() ?? "",
               })) ||
-              helperText({ error: false, message: "Must be at least 8 characters" })}
+              helperText({ error: false, message: t("form.new_password.helper") })}
           </YStack>
         )}
       />
@@ -154,14 +161,14 @@ const Form = ({
           <YStack>
             <FormInput
               type="password"
-              secureTextEntry={secureTextEntry}
+              secureTextEntry={confirmPassSecureEntry}
               title={t("form.confirm_password.label")}
               placeholder={t("form.confirm_password.placeholder")}
               value={value}
               onChangeText={onChange}
               iconRight={<Icon icon={passIcon} size={20} color="$gray11" />}
               onIconRightPress={() => {
-                setSecureTextEntry(!secureTextEntry);
+                setConfirmPassSecureEntry(!confirmPassSecureEntry);
               }}
             ></FormInput>
 
@@ -170,7 +177,7 @@ const Form = ({
                 error: true,
                 message: errors?.confirmPassword?.message?.toString() ?? "",
               })) ||
-              helperText({ error: false, message: "Both passwords must match." })}
+              helperText({ error: false, message: t("form.confirm_password.helper") })}
           </YStack>
         )}
       />
