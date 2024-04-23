@@ -35,7 +35,7 @@ const Select = ({ placeholder = "Select", options, ...props }: StyledSelectProps
       <TamaguiSelect.Trigger
         backgroundColor="white"
         paddingHorizontal="$md"
-        borderColor="$gray1"
+        borderColor="$gray3"
         borderWidth={1}
         iconAfter={<Icon icon="chevronRight" size={20} transform="rotate(90deg)" color="$gray7" />}
       >
@@ -43,7 +43,8 @@ const Select = ({ placeholder = "Select", options, ...props }: StyledSelectProps
           width={"90%"}
           color="$gray5"
           placeholder={placeholder}
-          fontWeight="500"
+          fontSize={16}
+          // fontWeight="500"
         ></TamaguiSelect.Value>
       </TamaguiSelect.Trigger>
 
