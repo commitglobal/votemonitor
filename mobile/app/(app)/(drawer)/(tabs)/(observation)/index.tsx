@@ -1,4 +1,10 @@
-import React, { useMemo, useState } from "react";
+import React, {
+  ComponentType,
+  JSXElementConstructor,
+  ReactElement,
+  useMemo,
+  useState,
+} from "react";
 import { router, useNavigation } from "expo-router";
 import { Screen } from "../../../../../components/Screen";
 import { useUserData } from "../../../../../contexts/user/UserContext.provider";
@@ -41,6 +47,7 @@ import { Dimensions } from "react-native";
 import LoadingScreen from "../../../../../components/LoadingScreen";
 import NotEnoughData from "../../../../../components/NotEnoughData";
 import GenericErrorScreen from "../../../../../components/GenericErrorScreen";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export type FormListItem = {
   id: string;
@@ -52,10 +59,19 @@ export type FormListItem = {
   status: FormStatus;
 };
 
-const FormList = () => {
+const FormList = ({
+  ListHeaderComponent,
+}: {
+  ListHeaderComponent:
+    | ComponentType<any>
+    | ReactElement<any, string | JSXElementConstructor<any>>
+    | null
+    | undefined;
+}) => {
   const { activeElectionRound, selectedPollingStation } = useUserData();
   const [selectedForm, setSelectedForm] = useState<FormListItem | null>(null);
   const { t } = useTranslation("form_overview");
+  const insets = useSafeAreaInsets();
 
   const {
     data: allForms,
@@ -123,11 +139,13 @@ const FormList = () => {
 
   return (
     <YStack gap="$xxs">
-      <Typography>Forms</Typography>
-      {/* TODO: the heigh should be number of forms * their height */}
-      <YStack height={Dimensions.get("screen").height - 550}>
+      {/* height = screen height - tabs height (50 + insets.bottom) - header (70 + insets.top) - select polling station component (66) - margin (20) */}
+      <YStack
+        height={Dimensions.get("screen").height - 50 - insets.bottom - 60 - insets.top - 66 - 20}
+      >
         <ListView<FormListItem>
           data={formList}
+          ListHeaderComponent={ListHeaderComponent}
           showsVerticalScrollIndicator={false}
           bounces={false}
           renderItem={({ item, index }) => {
@@ -320,43 +338,56 @@ const Index = () => {
         />
         <SelectPollingStation />
       </YStack>
-      <YStack paddingHorizontal="$md" gap="$lg">
-        <YStack gap="$xxs">
-          <XStack gap="$xxs">
-            <Card flex={0.5} paddingVertical="$xs">
-              <TimeSelect
-                type="arrival"
-                time={data?.arrivalTime ? new Date(data?.arrivalTime) : undefined}
-                setTime={(data: Date) =>
-                  updateArrivalDepartureTime({ arrivalTime: data?.toISOString() })
-                }
-              />
-            </Card>
-            <Card flex={0.5} paddingVertical="$xs">
-              <TimeSelect
-                type="departure"
-                time={data?.departureTime ? new Date(data?.departureTime) : undefined}
-                setTime={(data: Date) =>
-                  updateArrivalDepartureTime({ departureTime: data?.toISOString() })
-                }
-              />
-            </Card>
-          </XStack>
-          <Card gap="$md" onPress={router.push.bind(null, "/polling-station-questionnaire")}>
-            {!data?.answers?.length ? (
-              <PollingStationInfoDefault
+
+      <YStack paddingHorizontal="$md">
+        <FormList
+          ListHeaderComponent={
+            <YStack>
+              <XStack gap="$xxs">
+                <Card flex={0.5} paddingVertical="$xs">
+                  <TimeSelect
+                    type="arrival"
+                    time={data?.arrivalTime ? new Date(data?.arrivalTime) : undefined}
+                    setTime={(data: Date) =>
+                      updateArrivalDepartureTime({ arrivalTime: data?.toISOString() })
+                    }
+                  />
+                </Card>
+                <Card flex={0.5} paddingVertical="$xs">
+                  <TimeSelect
+                    type="departure"
+                    time={data?.departureTime ? new Date(data?.departureTime) : undefined}
+                    setTime={(data: Date) =>
+                      updateArrivalDepartureTime({ departureTime: data?.toISOString() })
+                    }
+                  />
+                </Card>
+              </XStack>
+
+              <Card
+                gap="$md"
                 onPress={router.push.bind(null, "/polling-station-questionnaire")}
-              />
-            ) : (
-              <PollingStationInfo
-                nrOfAnswers={data?.answers?.length}
-                nrOfQuestions={informationFormQuestions?.questions?.length}
-              />
-            )}
-            <CardFooter text="Polling station information"></CardFooter>
-          </Card>
-        </YStack>
-        <FormList />
+                marginTop="$xxs"
+              >
+                {!data?.answers?.length ? (
+                  <PollingStationInfoDefault
+                    onPress={router.push.bind(null, "/polling-station-questionnaire")}
+                  />
+                ) : (
+                  <PollingStationInfo
+                    nrOfAnswers={data?.answers?.length}
+                    nrOfQuestions={informationFormQuestions?.questions?.length}
+                  />
+                )}
+                <CardFooter text="Polling station information"></CardFooter>
+              </Card>
+
+              <Typography preset="body1" fontWeight="700" marginTop="$lg" marginBottom="$xxs">
+                Forms
+              </Typography>
+            </YStack>
+          }
+        />
       </YStack>
     </Screen>
   );
