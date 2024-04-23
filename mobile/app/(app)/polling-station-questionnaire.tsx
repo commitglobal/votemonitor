@@ -14,7 +14,7 @@ import {
   ApiFormAnswer,
   FormQuestionAnswerTypeMapping,
 } from "../../services/interfaces/answer.type";
-import { useMemo, useState } from "react";
+import { ReactNode, useMemo, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   PollingStationInformationAPIPayload,
@@ -454,11 +454,9 @@ const PollingStationQuestionnaire = () => {
             return <Typography key={question.id}></Typography>;
           })}
         </YStack>
-        <OptionsSheet
-          open={openContextualMenu}
-          setOpen={setOpenContextualMenu}
-          onClear={() => resetFormValues()}
-        />
+        <OptionsSheet open={openContextualMenu} setOpen={setOpenContextualMenu}>
+          <OptionSheetContent onClear={() => resetFormValues()} />
+        </OptionsSheet>
       </Screen>
 
       <XStack
@@ -488,12 +486,14 @@ interface OptionsSheetProps {
 
   /* For future: Triggered action for pressing "Clear form" */
   onClear?: () => void;
+
+  children?: ReactNode;
 }
 
 export const OptionsSheet = (props: OptionsSheetProps) => {
-  const { open, setOpen, onClear } = props;
-  const { t } = useTranslation("bottom_sheets");
+  const { open, setOpen, children } = props;
   const insets = useSafeAreaInsets();
+
   return (
     <Sheet
       modal
@@ -514,14 +514,21 @@ export const OptionsSheet = (props: OptionsSheetProps) => {
         marginBottom={insets.bottom}
       >
         <Icon paddingVertical="$md" alignSelf="center" icon="dragHandle" />
-
-        <View paddingVertical="$xxs" paddingHorizontal="$sm">
-          <Typography preset="body1" color="$gray7" lineHeight={24} onPress={onClear}>
-            {t("observations.actions.clear_form")}
-          </Typography>
-        </View>
+        {children}
       </Sheet.Frame>
     </Sheet>
+  );
+};
+
+const OptionSheetContent = ({ onClear }: { onClear: () => void }) => {
+  const { t } = useTranslation("bottom_sheets");
+
+  return (
+    <View paddingVertical="$xxs" paddingHorizontal="$sm">
+      <Typography preset="body1" color="$gray7" lineHeight={24} onPress={onClear}>
+        {t("observations.actions.clear_form")}
+      </Typography>
+    </View>
   );
 };
 
