@@ -2,7 +2,7 @@
   "expo": {
     "name": "VoteMonitor",
     "slug": "vote-monitor",
-    "version": "0.0.23",
+    "version": "0.0.26",
     "scheme": "mobile",
     "orientation": "portrait",
     "icon": "./assets/icons/icon.png",
@@ -16,7 +16,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "org.commitglobal.votemonitor",
-      "buildNumber": "23",
+      "buildNumber": "26",
       "config": {
         "usesNonExemptEncryption": false
       },
@@ -25,7 +25,7 @@
       }
     },
     "android": {
-      "versionCode": 23,
+      "versionCode": 26,
       "adaptiveIcon": {
         "foregroundImage": "./assets/icons/adaptive-icon.png",
         "backgroundColor": "#5F288D"
