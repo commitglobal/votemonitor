@@ -61,6 +61,7 @@ function QuestionsEdit({
 
     setLocalQuestions(updatedQuestions);
     handleValidation(question);
+    setActiveQuestionId(question.id);
   }
 
   function duplicateQuestion(questionIndex: number) {

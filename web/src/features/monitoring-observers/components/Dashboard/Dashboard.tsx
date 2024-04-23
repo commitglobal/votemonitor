@@ -134,7 +134,6 @@ export default function MonitoringObserversDashboard(): ReactElement {
       // create a new FormData object and append the file to it
       const formData = new FormData();
       formData.append("file", file);
-      debugger;
 
       return authApi.post(
         `/election-rounds/${electionRoundId}/monitoring-ngos/${monitoringNgoId}/monitoring-observers:import`,

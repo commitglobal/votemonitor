@@ -20,28 +20,28 @@ function FormQuestionsEditor({
   const [invalidQuestions, setInvalidQuestions] = useState<string[]>([]);
 
   return (
-    <div className='flex w-full gap-4'>
-      <main className='question-list flex-1'>
-        <QuestionsEdit
-          availableLanguages={availableLanguages}
-          languageCode={languageCode}
-          localQuestions={localQuestions}
-          setLocalQuestions={setLocalQuestions}
-          activeQuestionId={activeQuestionId}
-          setActiveQuestionId={setActiveQuestionId}
-          invalidQuestions={invalidQuestions}
-          setInvalidQuestions={setInvalidQuestions}
-        />
-      </main>
-      <aside className='flex-1 items-center justify-center  border-slate-100 bg-slate-50 py-6  md:flex md:flex-col rounded-lg'>
-        <PreviewForm
-          languageCode={languageCode}
-          localQuestions={localQuestions}
-          setActiveQuestionId={setActiveQuestionId}
-          activeQuestionId={activeQuestionId}
-        />
-      </aside>
-    </div>
+      <div className='relative z-0 flex flex-1 overflow-hidden h-screen'>
+        <main className='h-full flex-1 overflow-y-auto bg-slate-50'>
+          <QuestionsEdit
+            availableLanguages={availableLanguages}
+            languageCode={languageCode}
+            localQuestions={localQuestions}
+            setLocalQuestions={setLocalQuestions}
+            activeQuestionId={activeQuestionId}
+            setActiveQuestionId={setActiveQuestionId}
+            invalidQuestions={invalidQuestions}
+            setInvalidQuestions={setInvalidQuestions}
+          />
+        </main>
+        <aside className='flex-1 items-center justify-center  border-slate-100 bg-slate-50 py-6  md:flex md:flex-col rounded-lg'>
+          <PreviewForm
+            languageCode={languageCode}
+            localQuestions={localQuestions}
+            setActiveQuestionId={setActiveQuestionId}
+            activeQuestionId={activeQuestionId}
+          />
+        </aside>
+      </div>
   );
 }
 

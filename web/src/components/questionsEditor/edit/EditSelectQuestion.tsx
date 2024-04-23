@@ -1,12 +1,21 @@
-import { BaseQuestion, MultiSelectQuestion, QuestionType, SelectOption, SingleSelectQuestion, newTranslatedString } from '@/common/types';
+import {
+    BaseQuestion,
+    MultiSelectQuestion,
+    newTranslatedString,
+    QuestionType,
+    SelectOption,
+    SingleSelectQuestion,
+} from '@/common/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
-import { PlusIcon, TrashIcon, FlagIcon } from '@heroicons/react/24/solid';
+import { FlagIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/solid';
+import { CheckCircle, CheckSquare, PencilLine } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { v4 as uuidv4 } from 'uuid';
+
 import QuestionHeader from './QuestionHeader';
 
 export interface EditMultiSelectQuestionProps {
@@ -95,7 +104,6 @@ function EditSelectQuestion({
     };
 
     function updateOption(optionId: string, text: string) {
-        // debugger;
         const newOptions = question.options.map((option) => {
             if (option.id === optionId) {
                 const newText = option.text;
@@ -115,7 +123,6 @@ function EditSelectQuestion({
     }
 
     function updateOptionFlag(optionId: string) {
-        // debugger;
         const newOptions = question.options.map((option) => {
             if (option.id === optionId) {
                 const isFlagged = option.isFlagged;
@@ -145,7 +152,6 @@ function EditSelectQuestion({
     };
 
     function getOptionIdWithEmptyLabel(): string | null {
-        // debugger;
         for (let i = 0; i < question.options.length; i++) {
             if (question.options[i]!.text[languageCode]!.trim() === "") return question.options[i]!.id;
         }
@@ -176,6 +182,11 @@ function EditSelectQuestion({
                     {question.options &&
                         question.options.map((option, optionIdx) => (
                             <div key={optionIdx} className="inline-flex w-full items-center">
+                                <div className="mr-2 h-4 w-4">
+                                    {option.isFreeText ? <PencilLine className="h-full w-full text-slate-700" />
+                                        : question.$questionType === QuestionType.SingleSelectQuestionType
+                                            ? <CheckCircle className="h-full w-full text-slate-700" /> : <CheckSquare className="h-full w-full text-slate-700"  />}
+                                </div>
                                 <Input
                                     ref={optionIdx === question.options.length - 1 ? lastOptionRef : null}
                                     id={option.id}
@@ -206,7 +217,10 @@ function EditSelectQuestion({
                                     />
                                 )}
                                 <FlagIcon
-                                    className="ml-2 h-4 w-4 cursor-pointer text-slate-400 hover:text-slate-500"
+                                    className={cn('ml-2 h-4 w-4 cursor-pointer', {
+                                        'text-slate-700 hover:text-red-600': !option.isFlagged,
+                                        'text-red-600 hover:text-slate-00': option.isFlagged,
+                                    })}
                                     onClick={() => updateOptionFlag(option.id)}
                                 />
 
