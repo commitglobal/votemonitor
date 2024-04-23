@@ -1,7 +1,7 @@
-import { Slot } from "expo-router";
+import { Stack } from "expo-router/stack";
 
 const IndexLayout = () => {
-  return <Slot />;
+  return <Stack screenOptions={{ headerShown: false }} />;
 };
 
 export default IndexLayout;

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Typography } from "../../components/Typography";
 import { Controller, useForm } from "react-hook-form";
 import { Sheet, View, XStack, YStack } from "tamagui";
@@ -263,8 +262,8 @@ const PollingStationQuestionnaire = () => {
         />
         <YStack padding="$md" gap="$lg">
           {formStructure?.questions.map((question: ApiFormQuestion) => {
-            const label = `${question.code}. ${question.text.EN}`;
-            const helper = question.helptext.EN;
+            const _label = `${question.code}. ${question.text.EN}`;
+            const _helper = question.helptext.EN;
 
             if (question.$questionType === "numberQuestion") {
               return (
@@ -328,7 +327,6 @@ const PollingStationQuestionnaire = () => {
 
             if (question.$questionType === "singleSelectQuestion") {
               return (
-                // TODO: need to handle free text option
                 <Controller
                   key={question.id}
                   name={question.id}
@@ -421,7 +419,7 @@ const PollingStationQuestionnaire = () => {
                                       [option.id]: { optionId: option.id, text: null },
                                     });
                                   } else {
-                                    const { [option.id]: toRemove, ...rest } = selections;
+                                    const { [option.id]: _toRemove, ...rest } = selections;
                                     return onChange(rest);
                                   }
                                 }}
@@ -454,12 +452,12 @@ const PollingStationQuestionnaire = () => {
 
             return <Typography key={question.id}></Typography>;
           })}
-          <OptionsSheet
-            open={openContextualMenu}
-            setOpen={setOpenContextualMenu}
-            onClear={() => resetFormValues()}
-          />
         </YStack>
+        <OptionsSheet
+          open={openContextualMenu}
+          setOpen={setOpenContextualMenu}
+          onClear={() => resetFormValues()}
+        />
       </Screen>
 
       <XStack
@@ -494,24 +492,27 @@ interface OptionsSheetProps {
 export const OptionsSheet = (props: OptionsSheetProps) => {
   const { open, setOpen, onClear } = props;
   const { t } = useTranslation("bottom_sheets");
-
+  const insets = useSafeAreaInsets();
   return (
     <Sheet
       modal
+      native
       open={open}
-      onOpenChange={() => setOpen(false)}
+      onOpenChange={setOpen}
+      zIndex={100_000}
       snapPointsMode="fit"
       dismissOnSnapToBottom
     >
-      <Sheet.Overlay animation="quick" enterStyle={{ opacity: 0 }} exitStyle={{ opacity: 0 }} />
+      <Sheet.Overlay />
       <Sheet.Frame
         borderTopLeftRadius={28}
         borderTopRightRadius={28}
         gap="$sm"
         paddingHorizontal="$md"
         paddingBottom="$xl"
+        marginBottom={insets.bottom}
       >
-        <Icon paddingVertical="$md" alignSelf="center" icon="dragHandle"></Icon>
+        <Icon paddingVertical="$md" alignSelf="center" icon="dragHandle" />
 
         <View paddingVertical="$xxs" paddingHorizontal="$sm">
           <Typography preset="body1" color="$gray7" lineHeight={24} onPress={onClear}>

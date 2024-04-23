@@ -2,8 +2,8 @@ import { router } from "expo-router";
 import { Screen } from "../../components/Screen";
 import Header from "../../components/Header";
 import { Icon } from "../../components/Icon";
-import { TextStyle, ViewStyle } from "react-native";
-import { YStack } from "tamagui";
+import { Keyboard, TextStyle, ViewStyle } from "react-native";
+import { ScrollView, YStack } from "tamagui";
 import { Typography } from "../../components/Typography";
 import Select from "../../components/Select";
 import { pollingStationsKeys, usePollingStationByParentID } from "../../services/queries.service";
@@ -52,7 +52,7 @@ const PollingStationWizzard = () => {
   const locations = useMemo(() => steps.map((step) => step.name).join(", "), [steps]);
 
   return (
-    <Screen style={$screenStyle} contentContainerStyle={$containerStyle} preset="fixed">
+    <Screen backgroundColor="white" contentContainerStyle={$containerStyle} preset="fixed">
       <Header
         title={t("header.title")}
         leftIcon={<Icon icon="chevronLeft" color="white" />}
@@ -108,6 +108,7 @@ const PollingStationWizzardContent = ({
   );
 
   const onSelectOption = (option: string) => {
+    Keyboard.dismiss();
     const [id, value] = option.split("_");
     setSelectedOption({
       id: +id,
@@ -178,14 +179,21 @@ const PollingStationWizzardContent = ({
   }
 
   return (
-    <YStack style={$containerStyle} justifyContent="space-between">
+    <>
       <YStack paddingHorizontal="$md" paddingTop="$xl">
         <YStack gap="$md" minHeight="$xxl">
           {activeStep && (
             <Typography color="$gray5">{t("progress.location", { value: locations })}</Typography>
           )}
         </YStack>
-        <YStack paddingTop={140} gap="$lg" justifyContent="center">
+      </YStack>
+      <ScrollView
+        paddingTop={140}
+        contentContainerStyle={{ flexGrow: 1 }}
+        centerContent
+        keyboardShouldPersistTaps="handled"
+      >
+        <YStack paddingHorizontal="$md" gap="$lg">
           <Typography preset="body2" style={$labelStyle}>
             {t("form.region.title")}
           </Typography>
@@ -199,25 +207,21 @@ const PollingStationWizzardContent = ({
             />
           )}
         </YStack>
-      </YStack>
+      </ScrollView>
       <WizzardControls
-        isFirstElement={!!activeStep?.id}
+        isFirstElement={!activeStep?.id}
         isLastElement={isLastElement}
         onPreviousButtonPress={onBackButtonPress}
         isNextDisabled={!selectedOption}
         onNextButtonPress={isLastElement ? onFinishButtonPress : onNextButtonPress}
       />
-    </YStack>
+    </>
   );
-};
-
-const $screenStyle: ViewStyle = {
-  backgroundColor: "white",
-  justifyContent: "space-between",
 };
 
 const $containerStyle: ViewStyle = {
   flex: 1,
+  justifyContent: "space-between",
 };
 
 const $labelStyle: TextStyle = {
