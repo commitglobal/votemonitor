@@ -199,7 +199,7 @@ const CredentialsError = () => {
       borderRadius={6}
       justifyContent="center"
       padding="$md"
-      alignItems="center"
+      alignItems="flex-start"
     >
       <Icon icon="loginError" size={16} />
       <Typography paddingHorizontal="$md" color="$red6" fontWeight="500">
