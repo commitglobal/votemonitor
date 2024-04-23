@@ -327,7 +327,6 @@ const PollingStationQuestionnaire = () => {
 
             if (question.$questionType === "singleSelectQuestion") {
               return (
-                // TODO: need to handle free text option
                 <Controller
                   key={question.id}
                   name={question.id}
