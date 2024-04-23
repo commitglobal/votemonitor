@@ -48,7 +48,7 @@ const FormCard = (props: FormCardProps): JSX.Element => {
       </CardHeader>
 
       {form.options && (
-        <Typography preset="body1" color="$gray6" marginBottom="$xxs">
+        <Typography preset="body1" color="$gray6" marginBottom="$xxs" numberOfLines={1}>
           {form.options}
         </Typography>
       )}
