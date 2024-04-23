@@ -11,6 +11,9 @@ import { Control, Controller, FieldErrors, FieldValues, useForm } from "react-ho
 import React from "react";
 import { Typography } from "../../../components/Typography";
 import FormInput from "../../../components/FormInputs/FormInput";
+import { useTranslation } from "react-i18next";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 interface FormData {
   currentPassword: string;
@@ -18,11 +21,40 @@ interface FormData {
   confirmPassword: string;
 }
 
+const formSchema = z
+  .object({
+    currentPassword: z.string(),
+    newPassword: z
+      .string()
+      .min(8, "Password must be at least 8 characters long")
+      .regex(
+        /^(?=.*[A-Z])(?=.*[0-9])(?=.*[^a-zA-Z0-9]).*$/,
+        "Password should have at least one uppercase character, one number, one special character, and be minimum 8 characters long without spaces",
+      ),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
+
 const ChangePassowrd = () => {
   const insets = useSafeAreaInsets();
 
-  const { handleSubmit, control, formState } = useForm<FormData>({});
+  const { handleSubmit, control, formState } = useForm<FormData>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      currentPassword: "",
+      newPassword: "Votemonitor1*",
+      confirmPassword: "Votemonitor1",
+    },
+  });
   const { errors } = formState;
+  const { t } = useTranslation("change_password");
+
+  const onSubmit = (data: FormData) => {
+    console.log("Change password: ", data);
+  };
 
   return (
     <Screen
@@ -34,7 +66,7 @@ const ChangePassowrd = () => {
       contentContainerStyle={$containerStyle}
     >
       <Header
-        title={"Change Password"}
+        title={t("header.title")}
         titleColor="white"
         barStyle="light-content"
         leftIcon={<Icon icon="chevronLeft" color="white" />}
@@ -44,7 +76,7 @@ const ChangePassowrd = () => {
       <Form control={control} errors={errors}></Form>
 
       <Card width="100%" paddingBottom={16 + insets.bottom} marginTop="auto">
-        <Button onPress={() => console.log("Save new password")}>Save new pass</Button>
+        <Button onPress={handleSubmit(onSubmit)}>{t("form.actions.save_password")}</Button>
       </Card>
     </Screen>
   );
@@ -59,6 +91,7 @@ const Form = ({
 }) => {
   const [secureTextEntry, setSecureTextEntry] = React.useState(false);
   const passIcon = secureTextEntry === false ? "eye" : "eyeOff";
+  const { t } = useTranslation("change_password");
 
   return (
     <YStack gap={32} paddingHorizontal={16} paddingVertical={32}>
@@ -71,8 +104,8 @@ const Form = ({
             <FormInput
               type="password"
               secureTextEntry={secureTextEntry}
-              title={"Password"}
-              placeholder={"Password"}
+              title={t("form.current_password.label")}
+              placeholder={t("form.current_password.placeholder")}
               value={value}
               onChangeText={onChange}
               iconRight={<Icon icon={passIcon} size={20} color="$gray11" />}
@@ -93,8 +126,8 @@ const Form = ({
             <FormInput
               type="password"
               secureTextEntry={secureTextEntry}
-              title={"Password"}
-              placeholder={"Password"}
+              title={t("form.new_password.label")}
+              placeholder={t("form.new_password.placeholder")}
               value={value}
               onChangeText={onChange}
               iconRight={<Icon icon={passIcon} size={20} color="$gray11" />}
@@ -102,6 +135,13 @@ const Form = ({
                 setSecureTextEntry(!secureTextEntry);
               }}
             ></FormInput>
+
+            {(errors?.confirmPassword?.message &&
+              helperText({
+                error: true,
+                message: errors?.newPassword?.message?.toString() ?? "",
+              })) ||
+              helperText({ error: false, message: "Must be at least 8 characters" })}
           </YStack>
         )}
       />
@@ -115,8 +155,8 @@ const Form = ({
             <FormInput
               type="password"
               secureTextEntry={secureTextEntry}
-              title={"Password"}
-              placeholder={"Password"}
+              title={t("form.confirm_password.label")}
+              placeholder={t("form.confirm_password.placeholder")}
               value={value}
               onChangeText={onChange}
               iconRight={<Icon icon={passIcon} size={20} color="$gray11" />}
@@ -124,10 +164,25 @@ const Form = ({
                 setSecureTextEntry(!secureTextEntry);
               }}
             ></FormInput>
+
+            {(errors?.confirmPassword?.message &&
+              helperText({
+                error: true,
+                message: errors?.confirmPassword?.message?.toString() ?? "",
+              })) ||
+              helperText({ error: false, message: "Both passwords must match." })}
           </YStack>
         )}
       />
     </YStack>
+  );
+};
+
+const helperText = ({ error, message }: { error: boolean; message: string }) => {
+  return (
+    <Typography color={error ? "$red5" : "gray"} marginTop="$xs">
+      {message}
+    </Typography>
   );
 };
 
