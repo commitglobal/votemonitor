@@ -135,34 +135,34 @@
 
   "change_password": {
     "header": {
-        "title": "Change password"
+        "title": "Schimbare parola"
     },
     "form": {
         "current_password": {
-            "label": "Current password *",
-            "placeholder": "Insert current password",
-            "required": "Password is mandatory"
+            "label": "Parola curenta*",
+            "placeholder": "Inserati parola curenta",
+            "required": "Parola este obligatorie"
         },
         "new_password": {
-            "label": "New password *",
-            "placeholder": "Insert new password",
-            "helper": "Must be at least 8 characters",
-            "required": "Password is mandatory",
-            "pattern": "Password should have at least one uppercase character, one number, one special character and to be minimum 8 character long without spaces"
+            "label": "Parola noua*",
+            "placeholder": "Iserati noua parola",
+            "helper": "Trebuie sa contina cel putin 8 caractere",
+            "required": "Parola este obligatorie",
+            "pattern": "Parola trebuie să aibă cel puțin un caracter majuscul, un număr, un caracter special și să aibă minimum 8 caractere fără spații"
         },
         "confirm_password": {
-            "label": "Confirm new password *",
-            "placeholder": "Confirm password",
-            "helper": "Both passwords must match.",
-            "no_match": "Passwords do not match"
+            "label": "Confirmati noua parola *",
+            "placeholder": "Confirmati parola",
+            "helper": "Ambele parole trebuie să se potrivească.",
+            "no_match": "Parolele nu se potrivesc"
         },
         "actions": {
-            "save_password": "Save new password"
+            "save_password": "Salvati noua parola"
         }
     },
     "success_page": {
-        "title": "Password changed!",
-        "paragraph": "Your password has been successfully changed."
+        "title": "Parola a fost schimbata!",
+        "paragraph": "Parola ta a fost schimbată cu succes."
     }
   }
 }
