@@ -12,6 +12,7 @@ import {
 import { Icon } from "./Icon";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Typography } from "./Typography";
+import { Keyboard } from "react-native";
 
 interface StyledSelectProps extends SelectProps {
   placeholder?: string;
@@ -21,6 +22,7 @@ interface StyledSelectProps extends SelectProps {
 const Select = ({ placeholder = "Select", options, ...props }: StyledSelectProps) => {
   const insets = useSafeAreaInsets();
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [isOpen, setIsOpen] = useState(false);
 
   // Filter options based on search term
   const filteredOptions = useMemo(() => {
@@ -31,7 +33,15 @@ const Select = ({ placeholder = "Select", options, ...props }: StyledSelectProps
   }, [options, searchTerm]);
 
   return (
-    <TamaguiSelect disablePreventBodyScroll native {...props}>
+    <TamaguiSelect
+      disablePreventBodyScroll
+      native
+      onOpenChange={(open) => {
+        open && Keyboard.dismiss();
+        return setIsOpen(open);
+      }}
+      {...props}
+    >
       <TamaguiSelect.Trigger
         backgroundColor="white"
         paddingHorizontal="$md"
@@ -49,7 +59,13 @@ const Select = ({ placeholder = "Select", options, ...props }: StyledSelectProps
       </TamaguiSelect.Trigger>
 
       <Adapt platform="touch">
-        <Sheet native modal snapPoints={[50]} moveOnKeyboardChange={true}>
+        <Sheet
+          native
+          modal
+          snapPoints={[50]}
+          open={isOpen}
+          moveOnKeyboardChange={isOpen || Keyboard.isVisible()}
+        >
           <Sheet.Frame>
             <YStack
               borderBottomWidth={1}

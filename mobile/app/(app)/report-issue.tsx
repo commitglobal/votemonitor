@@ -1,6 +1,5 @@
 import React, { useMemo } from "react";
-import { Text, XStack, YStack } from "tamagui";
-import { Typography } from "../../components/Typography";
+import { XStack, YStack } from "tamagui";
 import { Screen } from "../../components/Screen";
 import { Icon } from "../../components/Icon";
 import { router } from "expo-router";
@@ -12,7 +11,6 @@ import Select from "../../components/Select";
 import { useUserData } from "../../contexts/user/UserContext.provider";
 import { Controller, useForm } from "react-hook-form";
 import { PollingStationVisitVM } from "../../common/models/polling-station.model";
-import { Keyboard } from "react-native";
 import FormElement from "../../components/FormInputs/FormElement";
 
 const mapVisitsToSelectPollingStations = (visits: PollingStationVisitVM[] | undefined) => {

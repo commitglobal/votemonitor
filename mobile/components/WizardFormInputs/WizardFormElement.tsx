@@ -1,8 +1,7 @@
 import React, { ReactNode } from "react";
-import { Stack, XStack, YStack } from "tamagui";
+import { Stack, YStack } from "tamagui";
 import { Typography } from "../Typography";
 import { Keyboard } from "react-native";
-import { Icon } from "../Icon";
 import AddAttachment from "../AddAttachment";
 
 export interface FormElementProps {
