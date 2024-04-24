@@ -6,6 +6,7 @@ import { useAuth } from "../../hooks/useAuth";
 import { pollingStationsKeys } from "../../services/queries.service";
 import * as API from "../../services/definitions.api";
 import { performanceLog } from "../../helpers/misc";
+import { PersistGate } from "../../components/PersistGate";
 
 const queryClient = new QueryClient({
   mutationCache: new MutationCache({
@@ -82,9 +83,9 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
   // console.log("isRestoring persistQueryClient", isRestoring);
   const { isAuthenticated } = useAuth();
 
-  queryClient.getMutationCache().subscribe((event) => {
-    console.log("👀", event);
-  });
+  // queryClient.getMutationCache().subscribe((event) => {
+  //   console.log("👀", event);
+  // });
 
   queryClient.setMutationDefaults([pollingStationsKeys.mutatePollingStationGeneralData()], {
     mutationFn: (payload: API.PollingStationInformationAPIPayload) => {
@@ -128,8 +129,6 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
           queryClient.invalidateQueries();
           console.log("✅ Resume Paused Mutation & Invalidate Quries");
         }
-
-        // Can useIsRestoring to show a loading state until is done
       }}
       persistOptions={{
         persister,
@@ -150,8 +149,8 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
       }}
       client={queryClient}
     >
-      {/* <PersistGate>{children}</PersistGate> */}
-      {children}
+      <PersistGate>{children}</PersistGate>
+      {/* {children} */}
     </PersistQueryClientProvider>
   );
 };

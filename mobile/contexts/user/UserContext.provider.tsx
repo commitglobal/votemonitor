@@ -16,7 +16,6 @@ import { ElectionRoundVM } from "../../common/models/election-round.model";
 import { useQueries, useQueryClient } from "@tanstack/react-query";
 import LoadingScreen from "../../components/LoadingScreen";
 import NoElectionRounds from "../../components/NoElectionRounds";
-import NoVisitsExist from "../../components/NoVisitsExist";
 import GenericErrorScreen from "../../components/GenericErrorScreen";
 
 type UserContextType = {
@@ -67,8 +66,11 @@ const UserContextProvider = ({ children }: React.PropsWithChildren) => {
   const { isLoading: isLoadingNomenclature, error: NomenclatureError } =
     usePollingStationsNomenclatorQuery(activeElectionRound?.id);
 
-  const { data: lastVisitedPollingStation, error: PollingStationNomenclatorNodeDBError } =
-    usePollingStationById(currentSelectedPollingStationId);
+  const {
+    data: lastVisitedPollingStation,
+    isLoading: isLoadingCurrentPS,
+    error: PollingStationNomenclatorNodeDBError,
+  } = usePollingStationById(currentSelectedPollingStationId);
 
   useQueries(
     {
@@ -102,7 +104,8 @@ const UserContextProvider = ({ children }: React.PropsWithChildren) => {
     NomenclatureError ||
     PollingStationNomenclatorNodeDBError;
 
-  const isLoading = isLoadingRounds || isLoadingVisits || isLoadingNomenclature; // will be false while offline, because the queryFn is not running. isPending will be true
+  const isLoading =
+    isLoadingRounds || isLoadingVisits || isLoadingNomenclature || isLoadingCurrentPS; // will be false while offline, because the queryFn is not running. isPending will be true
 
   const contextValues = useMemo(() => {
     return {
@@ -125,6 +128,7 @@ const UserContextProvider = ({ children }: React.PropsWithChildren) => {
   // console.log("✅ isLoadingRounds", isLoadingRounds);
   // console.log("✅ isLoadingVisits", isLoadingNomenclature);
   // console.log("✅ isLoadingNomenclature", isLoadingNomenclature);
+  // console.log("✅ isLoadingCurrentPS", isLoadingCurrentPS);
   // console.log("🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀");
 
   if (isLoading) {
