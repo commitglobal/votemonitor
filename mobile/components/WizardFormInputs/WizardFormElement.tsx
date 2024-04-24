@@ -14,7 +14,7 @@ export interface FormElementProps {
   //   children elements
   children: ReactNode;
 
-  allowAttachment?: boolean;
+  // allowAttachment?: boolean;
 }
 
 const WizardFormElement: React.FC<FormElementProps> = ({
@@ -22,7 +22,7 @@ const WizardFormElement: React.FC<FormElementProps> = ({
   label,
   paragraph,
   helper,
-  allowAttachment,
+  // allowAttachment,
 }) => {
   return (
     <YStack gap="$xxs" onPress={Keyboard.dismiss}>
@@ -36,12 +36,8 @@ const WizardFormElement: React.FC<FormElementProps> = ({
       <Stack paddingTop="$md" gap="$md">
         {children}
       </Stack>
-
       {/* helper text */}
       {helper && <Typography color="$gray5">{helper}</Typography>}
-
-      {/* attach element */}
-      {allowAttachment && <AddAttachment onPress={() => console.log("attach")} />}
     </YStack>
   );
 };
