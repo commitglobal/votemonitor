@@ -3,17 +3,18 @@ import { Screen } from "../../../components/Screen";
 import Header from "../../../components/Header";
 import { Icon } from "../../../components/Icon";
 import { router } from "expo-router";
-import { YStack } from "tamagui";
+import { XStack, YStack } from "tamagui";
 import Card from "../../../components/Card";
 import Button from "../../../components/Button";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Control, Controller, FieldErrors, FieldValues, useForm } from "react-hook-form";
+import { Control, Controller, FieldErrors, FieldValues, set, useForm } from "react-hook-form";
 import React from "react";
 import { Typography } from "../../../components/Typography";
 import FormInput from "../../../components/FormInputs/FormInput";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import API from "../../../services/api";
 
 interface FormData {
   currentPassword: string;
@@ -24,6 +25,7 @@ interface FormData {
 const ChangePassowrd = () => {
   const insets = useSafeAreaInsets();
   const { t } = useTranslation("change_password");
+  const [credentialsError, setCredentialsError] = React.useState(false);
 
   // Form validation schema
   const formSchema = z
@@ -44,16 +46,26 @@ const ChangePassowrd = () => {
   const { handleSubmit, control, formState } = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      currentPassword: "",
-      newPassword: "Votemonitor1",
-      confirmPassword: "Votemonitor1",
+      currentPassword: "string",
+      newPassword: "Votemonitor1*",
+      confirmPassword: "Votemonitor1*",
     },
   });
   const { errors } = formState;
 
-  // TODO: Add API call to change password
-  const onSubmit = (data: FormData) => {
-    console.log("Change password: ", data);
+  // Submit handler - change password
+  const onSubmit = async (data: FormData) => {
+    console.log("Change password... : ", data);
+    try {
+      await API.post("auth/change-password", {
+        password: data.currentPassword,
+        newPassword: data.newPassword,
+        confirmNewPassword: data.confirmPassword,
+      });
+    } catch (err) {
+      console.log("Error while changing password...", err);
+      setCredentialsError(true);
+    }
   };
 
   return (
@@ -73,7 +85,7 @@ const ChangePassowrd = () => {
         onLeftPress={() => router.back()}
       />
 
-      <Form control={control} errors={errors}></Form>
+      <Form control={control} errors={errors} credentialsError={credentialsError}></Form>
 
       <Card width="100%" paddingBottom={16 + insets.bottom} marginTop="auto">
         <Button onPress={handleSubmit(onSubmit)}>{t("form.actions.save_password")}</Button>
@@ -85,14 +97,18 @@ const ChangePassowrd = () => {
 const Form = ({
   control,
   errors,
+  credentialsError,
 }: {
   control: Control<FormData, any>;
   errors: FieldErrors<FieldValues>;
+  credentialsError: boolean;
 }) => {
   const { t } = useTranslation("change_password");
 
   return (
-    <YStack gap={32} paddingHorizontal={16} paddingVertical={40}>
+    <YStack gap="$xl" paddingHorizontal={16} paddingVertical={40}>
+      {credentialsError && <CredentialsError />}
+
       <PasswordInput
         formKey="currentPassword"
         control={control}
@@ -172,6 +188,24 @@ const PasswordInput = (props: PasswordInputProps) => {
         </YStack>
       )}
     />
+  );
+};
+
+const CredentialsError = () => {
+  const { t } = useTranslation("login");
+  return (
+    <XStack
+      backgroundColor="$red1"
+      borderRadius={6}
+      justifyContent="center"
+      padding="$md"
+      alignItems="flex-start"
+    >
+      <Icon icon="loginError" size={16} />
+      <Typography paddingHorizontal="$md" color="$red6" fontWeight="500">
+        Parola curenta este gresita.
+      </Typography>
+    </XStack>
   );
 };
 
