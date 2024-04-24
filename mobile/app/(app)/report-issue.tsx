@@ -47,7 +47,12 @@ const ReportIssue = () => {
 
   const insets = useSafeAreaInsets();
 
-  const { control, handleSubmit, reset } = useForm({
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
     defaultValues: {
       polling_station: { details: "", id: "" },
       issue_title: "",
@@ -121,34 +126,49 @@ const ReportIssue = () => {
               name="issue_title"
               control={control}
               rules={{
-                required: true,
+                required: { value: true, message: "This field is required." },
               }}
               render={({ field: { onChange, value } }) => (
-                <FormInput
-                  title="Title of issue *"
-                  placeholder="Write a title for this issue."
-                  type="text"
-                  value={value}
-                  onChangeText={onChange}
-                />
+                <YStack gap="$xxs">
+                  <FormInput
+                    title="Title of issue *"
+                    placeholder="Write a title for this issue."
+                    type="text"
+                    value={value}
+                    onChangeText={onChange}
+                    borderColor={errors.issue_title && "$red5"}
+                    titleProps={errors.issue_title && { color: "hsl(347, 77%, 40%)" }}
+                  />
+                  {errors.issue_title && (
+                    <Typography color="$red5">{errors.issue_title.message}</Typography>
+                  )}
+                </YStack>
               )}
             />
+
             {/* issue description */}
             <Controller
               key="issue_description"
               name="issue_description"
               control={control}
               rules={{
-                required: true,
+                required: { value: true, message: "This field is required." },
               }}
               render={({ field: { onChange, value } }) => (
-                <FormInput
-                  title="Description *"
-                  type="textarea"
-                  placeholder="Describe the situation in detail here."
-                  value={value}
-                  onChangeText={onChange}
-                />
+                <YStack gap="$xxs">
+                  <FormInput
+                    title="Description *"
+                    type="textarea"
+                    placeholder="Describe the situation in detail here."
+                    value={value}
+                    onChangeText={onChange}
+                    borderColor={errors.issue_description && "$red5"}
+                    titleProps={errors.issue_description && { color: "hsl(347, 77%, 40%)" }}
+                  />
+                  {errors.issue_description && (
+                    <Typography color="$red5">{errors.issue_description.message}</Typography>
+                  )}
+                </YStack>
               )}
             />
 
