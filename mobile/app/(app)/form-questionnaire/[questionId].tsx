@@ -10,7 +10,7 @@ import {
 import { Typography } from "../../../components/Typography";
 import { XStack, YStack, ScrollView } from "tamagui";
 import LinearProgress from "../../../components/LinearProgress";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useUserData } from "../../../contexts/user/UserContext.provider";
 import { ApiFormQuestion } from "../../../services/interfaces/question.type";
 import WizzardControls from "../../../components/WizzardControls";
@@ -36,11 +36,17 @@ import WizardFormElement from "../../../components/WizardFormInputs/WizardFormEl
 import CheckboxInput from "../../../components/Inputs/CheckboxInput";
 import Input from "../../../components/Inputs/Input";
 import WizardRatingFormInput from "../../../components/WizardFormInputs/WizardRatingFormInput";
+import OptionsSheet from "../../../components/OptionsSheet";
+import AddAttachment from "../../../components/AddAttachment";
+import { Dialog } from "../../../components/Dialog";
+import Button from "../../../components/Button";
 
 const FormQuestionnaire = () => {
   const { questionId, formId, language } = useLocalSearchParams();
   const { activeElectionRound, selectedPollingStation } = useUserData();
   const queryClient = useQueryClient();
+  const [isOptionsSheetOpen, setIsOptionsSheetOpen] = useState(false);
+  const [isNoteModalOpen, setIsNoteModalOpen] = useState(false);
 
   const {
     data: allForms,
@@ -262,6 +268,7 @@ const FormQuestionnaire = () => {
                       paragraph={question.helptext[language as string]}
                       onChangeText={onChange}
                       value={value}
+                      // onAttachPress={() => setIsOptionsSheetOpen(true)}
                     />
                   );
                 case "textQuestion":
@@ -384,6 +391,13 @@ const FormQuestionnaire = () => {
               }
             }}
           />
+          <AddAttachment
+            marginTop="$lg"
+            onPress={() => {
+              console.log("doing stuff for question", activeQuestion);
+              return setIsOptionsSheetOpen(true);
+            }}
+          />
         </YStack>
       </ScrollView>
       <WizzardControls
@@ -394,6 +408,48 @@ const FormQuestionnaire = () => {
         isNextDisabled={!isValid}
         onNextButtonPress={handleSubmit(onSubmitAnswer)}
         onPreviousButtonPress={onBackButtonPress}
+      />
+      <OptionsSheet open={isOptionsSheetOpen} setOpen={setIsOptionsSheetOpen}>
+        <YStack paddingHorizontal="$sm" gap="$xxs">
+          <Typography
+            preset="body1"
+            paddingVertical="$md"
+            pressStyle={{ color: "$purple5" }}
+            onPress={() => {
+              setIsOptionsSheetOpen(false);
+              setIsNoteModalOpen(true);
+            }}
+          >
+            Add note
+          </Typography>
+          <Typography preset="body1" paddingVertical="$md" pressStyle={{ color: "$purple5" }}>
+            Load from gallery
+          </Typography>
+          <Typography preset="body1" paddingVertical="$md" pressStyle={{ color: "$purple5" }}>
+            Take a photo
+          </Typography>
+          <Typography preset="body1" paddingVertical="$md" pressStyle={{ color: "$purple5" }}>
+            Record a video
+          </Typography>
+        </YStack>
+      </OptionsSheet>
+
+      <Dialog
+        open={isNoteModalOpen}
+        header={<Typography preset="heading">Add a note</Typography>}
+        content={
+          <>
+            <Input type="textarea" placeholder="Add any relevant notes to this question." />
+          </>
+        }
+        footer={
+          <XStack gap="$md">
+            <Button preset="chromeless" onPress={() => setIsNoteModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button flex={1}>Save</Button>
+          </XStack>
+        }
       />
     </Screen>
   );
