@@ -1,8 +1,8 @@
 import React, { ReactNode } from "react";
-import { Stack, XStack, YStack } from "tamagui";
+import { Stack, YStack } from "tamagui";
 import { Typography } from "../Typography";
 import { Keyboard } from "react-native";
-import { Icon } from "../Icon";
+import AddAttachment from "../AddAttachment";
 
 export interface FormElementProps {
   //   question title
@@ -41,14 +41,7 @@ const WizardFormElement: React.FC<FormElementProps> = ({
       {helper && <Typography color="$gray5">{helper}</Typography>}
 
       {/* attach element */}
-      {allowAttachment && (
-        <XStack alignItems="center" paddingTop="$md" onPress={() => console.log("attach")}>
-          <Icon icon="attachment" />
-          <Typography color="$purple5" marginLeft="$xs">
-            Add Note, Photo or Video
-          </Typography>
-        </XStack>
-      )}
+      {allowAttachment && <AddAttachment onPress={() => console.log("attach")} />}
     </YStack>
   );
 };
