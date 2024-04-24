@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { XStack, YStack } from "tamagui";
+import { Text, XStack, YStack } from "tamagui";
 import { Typography } from "../../components/Typography";
 import { Screen } from "../../components/Screen";
 import { Icon } from "../../components/Icon";
@@ -12,6 +12,8 @@ import Select from "../../components/Select";
 import { useUserData } from "../../contexts/user/UserContext.provider";
 import { Controller, useForm } from "react-hook-form";
 import { PollingStationVisitVM } from "../../common/models/polling-station.model";
+import { Keyboard } from "react-native";
+import FormElement from "../../components/FormInputs/FormElement";
 
 const mapVisitsToSelectPollingStations = (visits: PollingStationVisitVM[] | undefined) => {
   const pollingStationsForSelect = visits
@@ -42,10 +44,15 @@ const ReportIssue = () => {
 
   const insets = useSafeAreaInsets();
 
-  // TODO: default values?
-  const { control, handleSubmit } = useForm({});
+  const { control, handleSubmit, reset } = useForm({
+    defaultValues: {
+      polling_station: { details: "", id: "" },
+      issue_title: "",
+      issue_description: "",
+    },
+  });
 
-  const onSubmit = (formData: Record<string, string>) => {
+  const onSubmit = (formData: Record<string, string | Record<string, string>>) => {
     console.log("💞💞💞💞💞💞 FORM DATA 💞💞💞💞💞", formData);
   };
 
@@ -54,9 +61,11 @@ const ReportIssue = () => {
       <Screen
         preset="scroll"
         backgroundColor="white"
+        keyboardShouldPersistTaps="never"
         ScrollViewProps={{
           stickyHeaderIndices: [0],
           bounces: false,
+          keyboardShouldPersistTaps: "handled",
         }}
       >
         <Header
@@ -73,37 +82,21 @@ const ReportIssue = () => {
           <YStack gap="$lg">
             <Controller
               key="polling_station"
-              name="polling-station"
+              name="polling_station"
               control={control}
-              render={({
-                field: {
-                  onChange,
-                  value = { id: undefined, issueCategory: undefined, details: undefined },
-                },
-              }) => (
+              render={({ field: { onChange, value = { id: undefined, details: undefined } } }) => (
                 <>
-                  <YStack gap="$xxs">
-                    <Typography fontWeight="500">Polling station</Typography>
+                  {/* select polling station */}
+                  <FormElement title="Polling station">
                     <Select
                       value={value.id}
                       options={pollingStations}
                       placeholder="Select polling station"
-                      onValueChange={(id) =>
-                        onChange({ ...value, id, issueCategory: null, details: null })
-                      }
+                      onValueChange={(id) => onChange({ ...value, id, details: null })}
+                      // onOpenChange={(open) => open && Keyboard.dismiss()}
                     />
-                  </YStack>
-                  {value.id === "other" || value.id === "not_related_to_polling_station" ? (
-                    <YStack gap="$xxs">
-                      <Typography fontWeight="500">Issue category</Typography>
-                      <Select
-                        value={value.issueCategory}
-                        options={mockOptions}
-                        placeholder="Select category"
-                        onValueChange={(issueCategory) => onChange({ ...value, issueCategory })}
-                      />
-                    </YStack>
-                  ) : null}
+                  </FormElement>
+                  {/* polling station details */}
                   {value.id === "other" && (
                     <FormInput
                       title="Polling station details *"
@@ -118,6 +111,7 @@ const ReportIssue = () => {
             />
 
             {/* //TODO: does the '*' need to be red? */}
+            {/* issue title */}
             <Controller
               key="issue_title"
               name="issue_title"
@@ -135,7 +129,7 @@ const ReportIssue = () => {
                 />
               )}
             />
-
+            {/* issue description */}
             <Controller
               key="issue_description"
               name="issue_description"
@@ -167,8 +161,10 @@ const ReportIssue = () => {
         elevation={2}
         gap="$sm"
       >
-        {/* //TODO: clear form */}
-        <Button preset="chromeless">Clear</Button>
+        {/* this will reset form to defaultValues */}
+        <Button preset="chromeless" onPress={() => reset()}>
+          Clear
+        </Button>
         <Button flex={1} onPress={handleSubmit(onSubmit)}>
           Submit issue
         </Button>
@@ -176,18 +172,5 @@ const ReportIssue = () => {
     </>
   );
 };
-
-const mockOptions = [
-  { id: "1", value: "fraud", label: "Fraud" },
-  { id: "2", value: "error", label: "Error" },
-  { id: "3", value: "other", label: "Other" },
-  { id: "4", value: "issue", label: "Issue" },
-  { id: "5", value: "bug", label: "Bug" },
-  { id: "6", value: "defect", label: "Defect" },
-  { id: "7", value: "problem", label: "Problem" },
-  { id: "8", value: "glitch", label: "Glitch" },
-  { id: "9", value: "inaccuracy", label: "Inaccuracy" },
-  { id: "10", value: "mistake", label: "Mistake" },
-];
 
 export default ReportIssue;
