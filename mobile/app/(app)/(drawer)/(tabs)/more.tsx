@@ -14,18 +14,25 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Constants from "expo-constants";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CURRENT_USER_STORAGE_KEY } from "../../../../common/constants";
+// import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Select from "../../../../components/Select";
 
 const More = () => {
   const navigation = useNavigation();
   const queryClient = useQueryClient();
-
+  const [open, setOpen] = React.useState(false);
+  console.log("Open: ", open);
+  const options = [
+    { id: "1", value: "1", label: "Option 1" },
+    { id: "2", value: "2", label: "Option 2" },
+    { id: "3", value: "3", label: "Option 3" },
+  ];
   const { t } = useTranslation("more");
 
   const { signOut } = useAuth();
 
   // TODO: Change these consts
   const appVersion = Constants.expoConfig?.version;
-  const appLanguage = "English (United States)";
   const URL = "https://www.google.com/";
 
   const { data: currentUser } = useQuery({
@@ -55,13 +62,13 @@ const More = () => {
         onLeftPress={() => navigation.dispatch(DrawerActions.openDrawer)}
       />
       <YStack paddingHorizontal="$md" paddingVertical="$xl" gap="$md">
+        <Select placeholder="Select" options={options}></Select>
         <MenuItem
           label={t("change-language")}
-          helper={appLanguage}
-          icon="language"
-          chevronRight={true}
-          onClick={() => router.push("/change-language")}
+          icon="changeLanguage"
+          onClick={() => console.log("Change language")}
         ></MenuItem>
+
         <MenuItem
           label={t("change-password")}
           icon="changePassword"
@@ -126,5 +133,39 @@ const MenuItem = ({ label, helper, icon, chevronRight, onClick }: MenuItemProps)
     </XStack>
   </Card>
 );
+
+// interface SelectLanguageSheetProps {
+//   open: boolean;
+//   setOpen: (state: boolean) => void;
+// }
+
+// const SelectLanguageSheet = (props: SelectLanguageSheetProps) => {
+//   const { open, setOpen } = props;
+//   const insets = useSafeAreaInsets();
+
+//   return (
+//     <Sheet
+//       modal
+//       native
+//       open={open}
+//       onOpenChange={setOpen}
+//       zIndex={100_000}
+//       snapPointsMode="fit"
+//       dismissOnSnapToBottom
+//     >
+//       <Sheet.Overlay />
+//       <Sheet.Frame
+//         borderTopLeftRadius={28}
+//         borderTopRightRadius={28}
+//         gap="$sm"
+//         paddingHorizontal="$md"
+//         paddingBottom="$xl"
+//         marginBottom={insets.bottom}
+//       >
+//         <Typography> Hello! </Typography>
+//       </Sheet.Frame>
+//     </Sheet>
+//   );
+// };
 
 export default More;
