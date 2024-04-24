@@ -30,6 +30,7 @@ const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
       setIsAuthenticated(true);
     } catch (err: unknown) {
       console.log("Error while trying to sign in", err);
+      throw new Error("Error while trying to sign in");
     } finally {
       setIsLoading(false);
     }
