@@ -1,4 +1,4 @@
-import { BaseQuestion, TextQuestion } from '@/common/types';
+import { BaseQuestion, TextQuestion, newTranslatedString } from '@/common/types';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useTranslation } from 'react-i18next';
@@ -26,9 +26,7 @@ function EditTextQuestion({
         const updatedInputPlaceholder = question.inputPlaceholder ? {
             ...question.inputPlaceholder,
             [languageCode]: inputPlaceholder
-        } : {
-            [languageCode]: inputPlaceholder
-        };
+        } : newTranslatedString(availableLanguages, languageCode)
 
         const updatedTextQuestion: TextQuestion = { ...question, inputPlaceholder: updatedInputPlaceholder };
         updateQuestion(questionIdx, updatedTextQuestion);

@@ -112,7 +112,7 @@ public class Endpoint(VoteMonitorContext context) : Endpoint<Request, PagedRespo
             AND (@level4 is null OR ps.""Level4"" = @level4)
             AND (@level5 is null OR ps.""Level5"" = @level5)
             AND (@pollingStationNumber is null OR ps.""Number"" = @pollingStationNumber)
-            AND (@hasFlaggedAnswers is null OR @hasFlaggedAnswers =  ps.""Level5"" = @level5)
+            AND ((@hasFlaggedAnswers = false OR @hasFlaggedAnswers IS NULL) OR s.""NumberOfFlaggedAnswers"" > 0 )
         ORDER BY ""TimeSubmitted"" desc
         OFFSET @offset ROWS
         FETCH NEXT @pageSize ROWS ONLY;";
@@ -124,8 +124,8 @@ public class Endpoint(VoteMonitorContext context) : Endpoint<Request, PagedRespo
             offset = PaginationHelper.CalculateSkip(req.PageSize, req.PageNumber),
             pageSize = req.PageSize,
             monitoringObserverId = req.MonitoringObserverId,
-            formCode= req.FormCodeFilter,
-            formType = req.FormTypeFilter,
+            formCode = string.IsNullOrWhiteSpace(req.FormCodeFilter) ? null : req.FormCodeFilter,
+            formType = req.FormTypeFilter?.ToString(),
             level1 = req.Level1Filter,
             level2 = req.Level2Filter,
             level3 = req.Level3Filter,

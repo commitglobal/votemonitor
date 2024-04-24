@@ -49,7 +49,7 @@ export default function ResponsesDashboard(): ReactElement {
     formSubmissionsDefaultColumns.byEntry
   );
 
-  const [searchText, setSearchText] = useState('');
+  const [searchText, setSearchText] = useState<string>('');
   const debouncedSearchText = useDebounce(searchText, 300);
 
   const handleSearchInput = (ev: ChangeEvent<HTMLInputElement>): void => {

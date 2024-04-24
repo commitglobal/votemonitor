@@ -42,12 +42,13 @@ const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
       localStorage.setItem('token', response.data.token);
       setIsAuthenticated(true);
       setToken(response.data.token);
+      setUserRole(response.data.role);
       return true;
     } catch (error: any) {
       if (error.response.status === 400) {
         toast({
           title: 'Error',
-          description: 'You have entered an invalid email or password',
+        description: 'You have tered an invalid email or password',
           variant: 'destructive',
         });
       }

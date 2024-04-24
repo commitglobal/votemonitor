@@ -109,7 +109,7 @@ export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry>[
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Responses' column={column} />,
-    accessorKey: 'numberOfQuestionAnswered',
+    accessorKey: 'numberOfQuestionsAnswered',
     enableSorting: true,
     enableGlobalFilter: true,
   },

@@ -29,7 +29,7 @@ const user = {
 };
 const navigation = [
   { name: 'Dashboard', to: '/', roles: ['PlatformAdmin'] },
-  { name: 'Election rounds', to: '/election-rounds', roles: ['PlatformAdmin', 'NgoAdmin'] },
+  { name: 'Election rounds', to: '/election-rounds', roles: ['NgoAdmin'] },
   { name: 'NGOs', to: '/ngos', roles: ['PlatformAdmin'] },
   { name: 'Observers', to: '/observers', roles: ['PlatformAdmin'] },
   { name: 'Monitoring Observers', to: '/monitoring-observers', roles: ['NgoAdmin'] },
@@ -52,7 +52,6 @@ const Header = (): FunctionComponent => {
   };
 
   const { userRole } = useContext(AuthContext);
-
   const { status, data } = useQuery({
     queryKey: ['electionRounds'],
     queryFn: async () => {
