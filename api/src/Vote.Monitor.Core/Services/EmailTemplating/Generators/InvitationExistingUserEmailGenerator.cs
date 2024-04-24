@@ -11,7 +11,8 @@ internal class InvitationExistingUserEmailGenerator : IEmailGenerator<Invitation
 
         var body = template
             .Replace("~$cdnUrl$~", props.CdnUrl)
-            .Replace("~$acceptUrl$~", props.AcceptUrl);
+            .Replace("~$ngoName$~", props.NgoName)
+            .Replace("~$electionRoundDetails$~", props.ElectionRoundDetails);
 
         return new EmailModel($"Accept invitation to monitor elections", body);
 

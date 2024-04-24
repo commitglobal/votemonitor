@@ -38,11 +38,8 @@ public static class SentryExtensions
 
         builder.WebHost.UseSentry(options =>
         {
-            if (builder.Environment.IsProduction())
-            {
-                var commitHash = Environment.GetEnvironmentVariable("COMMIT_HASH") ?? "Unknown";
-                options.Release = commitHash;
-            }
+            var commitHash = Environment.GetEnvironmentVariable("COMMIT_HASH") ?? "Unknown";
+            options.Release = commitHash;
 
             options.Dsn = sentryConfig.GetValue<string>("Dsn")!;
             options.TracesSampleRate = sentryConfig.GetValue<double?>("TracesSampleRate");
@@ -67,6 +64,7 @@ public static class SentryExtensions
                 CaptureSystemDiagnosticsMeters = BuiltInSystemDiagnosticsMeters.All
             };
         });
+
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddSingleton<ISentryUserFactory, CustomSentryUserFactory>();
         return builder;

@@ -85,7 +85,14 @@ const questionTypes: QuestionTypeConfig[] = [
                 $questionType: QuestionType.SingleSelectQuestionType,
                 code: '',
                 text: newTranslatedString(availableLanguages, languageCode),
-                options: []
+                options: [
+                    {
+                        id: uuidv4(),
+                        text: newTranslatedString(availableLanguages, languageCode),
+                        isFlagged: false,
+                        isFreeText: false
+                    }
+                ]
             };
 
             return newSingleSelectQuestion;
@@ -101,7 +108,14 @@ const questionTypes: QuestionTypeConfig[] = [
                 $questionType: QuestionType.MultiSelectQuestionType,
                 code: '',
                 text: newTranslatedString(availableLanguages, languageCode),
-                options: []
+                options: [
+                    {
+                        id: uuidv4(),
+                        text: newTranslatedString(availableLanguages, languageCode),
+                        isFlagged: false,
+                        isFreeText: false
+                    }
+                ]
             }
 
             return newMultiSelectQuestion;

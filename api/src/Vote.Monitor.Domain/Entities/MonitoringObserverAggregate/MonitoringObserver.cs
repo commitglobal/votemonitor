@@ -17,14 +17,14 @@ public class MonitoringObserver : AuditableBaseEntity, IAggregateRoot
 
     public string[] Tags { get; private set; }
 
-    private MonitoringObserver(Guid electionRoundId, Guid monitoringNgoId, Guid observerId, string[] tags)
+    private MonitoringObserver(Guid electionRoundId, Guid monitoringNgoId, Guid observerId, string[] tags, MonitoringObserverStatus status)
         : base(Guid.NewGuid())
     {
         ElectionRoundId = electionRoundId;
         MonitoringNgoId = monitoringNgoId;
         ObserverId = observerId;
         Tags = tags;
-        Status = MonitoringObserverStatus.Pending;
+        Status = status;
     }
 
     public void Activate()
@@ -39,7 +39,11 @@ public class MonitoringObserver : AuditableBaseEntity, IAggregateRoot
 
     public static MonitoringObserver Create(Guid electionRoundId, Guid monitoringNgoId, Guid observerId, string[] tags)
     {
-        return new MonitoringObserver(electionRoundId, monitoringNgoId, observerId, tags);
+        return new MonitoringObserver(electionRoundId, monitoringNgoId, observerId, tags, MonitoringObserverStatus.Pending);
+    }
+    public static MonitoringObserver CreateForExisting(Guid electionRoundId, Guid monitoringNgoId, Guid observerId, string[] tags)
+    {
+        return new MonitoringObserver(electionRoundId, monitoringNgoId, observerId, tags, MonitoringObserverStatus.Active);
     }
 
     public void Update(MonitoringObserverStatus status, string[] tags)

@@ -11,7 +11,7 @@ internal class ApplicationUserConfiguration : IEntityTypeConfiguration<Applicati
         builder.Property(u => u.LastName).IsRequired().HasMaxLength(256);
         builder.Property(u => u.RefreshToken).HasMaxLength(256);
         builder.Property(u => u.RefreshTokenExpiryTime);
-        builder.Property(u => u.InvitationToken);
+        builder.Property(u => u.InvitationToken).HasMaxLength(256);
 
         builder.OwnsOne(u => u.Preferences, b =>
         {
