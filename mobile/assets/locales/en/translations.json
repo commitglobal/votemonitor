@@ -24,6 +24,10 @@
     "actions": {
       "forgot_password": "Forgot your password?",
       "login": "Log in"
+    },
+    "errors": {
+      "credentials": "There was a problem with your credentials. Please try again.",
+      "general": "Error while trying to log in"
     }
   },
   "reset":{

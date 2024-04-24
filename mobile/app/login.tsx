@@ -23,14 +23,18 @@ interface FormData {
 const Login = () => {
   const { t } = useTranslation("login");
   const { signIn } = useAuth();
+  const [authError, setAuthError] = React.useState(false);
 
   const onLogin = async (formData: FormData) => {
     try {
-      await signIn(formData.email, formData.password);
-      await AsyncStorage.setItem(CURRENT_USER_STORAGE_KEY, formData.email);
+      const email = formData.email.trim().toLocaleLowerCase();
+      const password = formData.password.trim();
+
+      await signIn(email, password);
+      await AsyncStorage.setItem(CURRENT_USER_STORAGE_KEY, email);
       router.replace("/");
     } catch (err) {
-      console.error("Error while logging in...");
+      setAuthError(true);
     }
   };
   const { handleSubmit, control, formState } = useForm({
@@ -59,8 +63,7 @@ const Login = () => {
             <Typography>{t("informative-text")}</Typography>
           </XStack>
         </XStack>
-
-        <LoginForm control={control} errors={errors} />
+        <LoginForm control={control} errors={errors} authError={authError} />
       </YStack>
 
       <Card width="100%" paddingBottom={16 + insets.bottom} marginTop="auto">
@@ -73,9 +76,11 @@ const Login = () => {
 const LoginForm = ({
   control,
   errors,
+  authError,
 }: {
   control: Control<FormData, any>;
   errors: FieldErrors<FieldValues>;
+  authError: boolean;
 }) => {
   const { t } = useTranslation("login");
   const [secureTextEntry, setSecureTextEntry] = React.useState(false);
@@ -88,6 +93,8 @@ const LoginForm = ({
       </Typography>
 
       <Typography>{t("paragraph")}</Typography>
+
+      {authError && <CredentialsError />}
 
       <Controller
         key="email"
@@ -181,6 +188,24 @@ const Header = () => {
       <StatusBar barStyle="light-content"></StatusBar>
       <Icon icon="loginLogo" />
     </StyledWrapper>
+  );
+};
+
+const CredentialsError = () => {
+  const { t } = useTranslation("login");
+  return (
+    <XStack
+      backgroundColor="$red1"
+      borderRadius={6}
+      justifyContent="center"
+      padding="$md"
+      alignItems="flex-start"
+    >
+      <Icon icon="loginError" size={16} />
+      <Typography paddingHorizontal="$md" color="$red6" fontWeight="500">
+        {t("errors.credentials")}
+      </Typography>
+    </XStack>
   );
 };
 
