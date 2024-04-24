@@ -3,9 +3,12 @@ using Feature.MonitoringObservers.Parser;
 using Job.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Vote.Monitor.Core.Models;
+using Vote.Monitor.Core.Options;
 using Vote.Monitor.Core.Security;
 using Vote.Monitor.Core.Services.EmailTemplating;
 using Vote.Monitor.Core.Services.EmailTemplating.Props;
@@ -24,10 +27,12 @@ public class Endpoint(
     ICsvParser<MonitoringObserverImportModel> parser,
     ILogger<Endpoint> logger,
     IJobService jobService,
-    IEmailTemplateFactory emailFactory)
+    IEmailTemplateFactory emailFactory,
+    IOptions<ApiConfiguration> apiConfig)
     : Endpoint<Request>
 {
     private const string? ParsingFailedErrorMessage = "The file contains errors! Please use the ID to get the file with the errors described inside.";
+    private readonly ApiConfiguration _apiConfig = apiConfig.Value;
 
     public override void Configure()
     {
@@ -86,6 +91,18 @@ public class Endpoint(
             .Where(x => normalizedEmails.Contains(x.ApplicationUser.NormalizedEmail))
             .ToListAsync(ct);
 
+        var ngoName = await context
+            .MonitoringNgos
+            .Include(x => x.Ngo)
+            .Where(x => x.Id == req.MonitoringNgoId)
+            .Select(x => x.Ngo.Name)
+            .FirstAsync(ct);
+
+        var electionRoundName = await context.ElectionRounds
+            .Where(x => x.Id == req.ElectionRoundId)
+            .Select(x => x.Title)
+            .FirstAsync(ct);
+
         foreach (var observer in observers)
         {
             var normalizedEmail = observer.Email.ToUpperInvariant();
@@ -120,22 +137,25 @@ public class Endpoint(
                     // has an account but we failed to create the observer 
                     existingAccount.NewInvite();
                     var newObserver = ObserverAggregate.Create(existingAccount);
-                    var newMonitoringObserver = MonitoringObserver.Create(req.ElectionRoundId, req.MonitoringNgoId, newObserver.Id, observer.Tags);
+                    var newMonitoringObserver = MonitoringObserver.CreateForExisting(req.ElectionRoundId, req.MonitoringNgoId, newObserver.Id, observer.Tags);
                     await context.Observers.AddAsync(newObserver, ct);
                     await context.MonitoringObservers.AddAsync(newMonitoringObserver, ct);
 
-                    var email = emailFactory.GenerateEmail(EmailTemplateType.InvitationNewUser, new InvitationNewUserEmailProps("", existingAccount.InvitationToken!.Value.ToString()));
+                    var endpointUri = new Uri(Path.Combine($"{_apiConfig.WebAppUrl}", "accept-invite"));
+                    string acceptInviteUrl = QueryHelpers.AddQueryString(endpointUri.ToString(), "invitationToken", existingAccount.InvitationToken!);
+
+                    var email = emailFactory.GenerateEmail(EmailTemplateType.InvitationNewUser, new InvitationNewUserEmailProps("", acceptInviteUrl, ngoName, electionRoundName));
                     jobService.SendEmail(observer.Email, email.Subject, email.Body);
                 }
                 else
                 {
-                    var newMonitoringObserver = MonitoringObserverAggregate.Create(req.ElectionRoundId,
+                    var newMonitoringObserver = MonitoringObserverAggregate.CreateForExisting(req.ElectionRoundId,
                         req.MonitoringNgoId, existingObserver.Id,
                         observer.Tags);
 
                     await context.MonitoringObservers.AddAsync(newMonitoringObserver, ct);
                     var email = emailFactory.GenerateEmail(EmailTemplateType.InvitationExistingUser,
-                        new InvitationExistingUserEmailProps("", ""));
+                        new InvitationExistingUserEmailProps("", ngoName, electionRoundName));
                     jobService.SendEmail(observer.Email, email.Subject, email.Body);
                 }
             }
@@ -153,8 +173,10 @@ public class Endpoint(
                 var newMonitoringObserver = MonitoringObserver.Create(req.ElectionRoundId, req.MonitoringNgoId, newObserver.Id, observer.Tags);
                 await context.Observers.AddAsync(newObserver, ct);
                 await context.MonitoringObservers.AddAsync(newMonitoringObserver, ct);
+                var endpointUri = new Uri(Path.Combine($"{_apiConfig.WebAppUrl}", "accept-invite"));
+                string acceptInviteUrl = QueryHelpers.AddQueryString(endpointUri.ToString(), "invitationToken", user.InvitationToken!);
 
-                var email = emailFactory.GenerateEmail(EmailTemplateType.InvitationNewUser, new InvitationNewUserEmailProps("", user.InvitationToken!.Value.ToString()));
+                var email = emailFactory.GenerateEmail(EmailTemplateType.InvitationNewUser, new InvitationNewUserEmailProps("", acceptInviteUrl, ngoName, electionRoundName));
                 jobService.SendEmail(observer.Email, email.Subject, email.Body);
             }
         }

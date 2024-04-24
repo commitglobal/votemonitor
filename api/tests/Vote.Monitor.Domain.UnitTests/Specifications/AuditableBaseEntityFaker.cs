@@ -1,5 +1,4 @@
 ﻿using Bogus;
-using NSubstitute;
 
 namespace Vote.Monitor.Domain.UnitTests.Specifications;
 

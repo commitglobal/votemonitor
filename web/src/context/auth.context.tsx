@@ -1,7 +1,6 @@
 import { ILoginResponse, LoginDTO, authApi } from '@/common/auth-api';
 import { useToast } from '@/components/ui/use-toast';
-import { redirect, useNavigate, useRouter } from '@tanstack/react-router';
-import { AxiosError } from 'axios';
+import { parseJwt } from '@/lib/utils';
 import { createContext, useEffect, useState } from 'react';
 
 export type AuthContextType = {
@@ -9,6 +8,7 @@ export type AuthContextType = {
   isAuthenticated: boolean;
   isLoading: boolean;
   token: string | undefined;
+  userRole: string | undefined;
 };
 
 export const AuthContext = createContext<AuthContextType>({
@@ -16,12 +16,14 @@ export const AuthContext = createContext<AuthContextType>({
   isAuthenticated: true,
   isLoading: false,
   token: undefined,
+  userRole: undefined
 });
 
 const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [token, setToken] = useState<string>('');
+  const [userRole, setUserRole] = useState<string>('Unknown');
   const { toast } = useToast();
 
   useEffect(() => {
@@ -30,6 +32,7 @@ const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
     setIsLoading(false);
     if (token) {
       setToken(token);
+      setUserRole(parseJwt(token)[`user-role`]);
     }
   }, []);
 
@@ -39,12 +42,13 @@ const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
       localStorage.setItem('token', response.data.token);
       setIsAuthenticated(true);
       setToken(response.data.token);
+      setUserRole(response.data.role);
       return true;
     } catch (error: any) {
       if (error.response.status === 400) {
         toast({
           title: 'Error',
-          description: 'You have entered an invalid email or password',
+        description: 'You have tered an invalid email or password',
           variant: 'destructive',
         });
       }
@@ -59,6 +63,7 @@ const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
         isAuthenticated,
         isLoading,
         token,
+        userRole,
       }}>
       {children}
     </AuthContext.Provider>

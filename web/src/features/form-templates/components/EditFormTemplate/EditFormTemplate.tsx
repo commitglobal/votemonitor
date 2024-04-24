@@ -85,7 +85,7 @@ export default function EditFormTemplate() {
   });
 
   return (
-    <Layout title={`${formTemplate.code} - ${formTemplate.name[formTemplate.defaultLanguage]}`}>
+    <div>
       <Form {...form}>
         <form className='flex flex-col flex-1' onSubmit={form.handleSubmit(onSubmit)}>
           <Tabs className='flex flex-col flex-1' defaultValue='form-details'>
@@ -210,6 +210,6 @@ export default function EditFormTemplate() {
           <EditFormTemplateFooter />
         </form>
       </Form>
-    </Layout>
+    </div>
   );
 }

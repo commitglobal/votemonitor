@@ -19,7 +19,7 @@ public class ApplicationUser : IdentityUser<Guid>, IAggregateRoot
     public DateTime RefreshTokenExpiryTime { get; private set; }
     public UserStatus Status { get; private set; }
     public UserPreferences Preferences { get; private set; }
-    public Guid? InvitationToken { get; set; }
+    public string? InvitationToken { get; private set; } = null;
 
     private ApplicationUser(UserRole role, string firstName, string lastName, string email, string phoneNumber, string password)
     {
@@ -74,12 +74,12 @@ public class ApplicationUser : IdentityUser<Guid>, IAggregateRoot
         InvitationToken = null;
         var hasher = new PasswordHasher<ApplicationUser>();
         PasswordHash = hasher.HashPassword(this, password);
+        EmailConfirmed = true;
     }
-
 
     public void NewInvite()
     {
-        InvitationToken = Guid.NewGuid();
+        InvitationToken = Guid.NewGuid().ToString();
     }
 
     public void Activate()

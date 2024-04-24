@@ -10,7 +10,6 @@ import { AuthContext } from '@/context/auth.context';
 import { LoginDTO } from '@/common/auth-api';
 import { useNavigate } from '@tanstack/react-router';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Label } from '@radix-ui/react-dropdown-menu';
 import Logo from '@/components/layout/Header/Logo';
 
 const formSchema = z.object({

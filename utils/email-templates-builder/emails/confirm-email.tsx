@@ -3,10 +3,12 @@ import {
   Container,
   Head,
   Heading,
+  Hr,
   Html,
   Img,
   Link,
   Preview,
+  Section,
   Text,
 } from "@react-email/components";
 import * as React from "react";
@@ -22,22 +24,29 @@ export const ConfirmEmail = ({
 }: NotionMagicLinkEmailProps) => (
   <Html>
     <Head />
-    <Preview>Confirm your account on VoteMonitor platform</Preview>
+    <Preview>Confirm your email on VoteMonitor platform.</Preview>
     <Body style={main}>
       <Container style={container}>
-        <Img src={`${cdnUrl}/static/logo.png`} alt="logo" width="150" height="150" style={container} />
-        <Heading style={h1}>Confirm your account on VoteMonitor platform</Heading>
-        <Link
-          href={confirmUrl}
-          target="_blank"
-          style={{
-            ...link,
-            display: "block",
-            marginBottom: "16px",
-          }}
-        >
-          Click here to confirm your email address
-        </Link>
+        <Heading style={heading}>Confirm your email on VoteMonitor platform.</Heading>
+        <Section style={body}>
+          <Text style={paragraph}>
+            Hello!
+          </Text>
+          <Text style={paragraph}>
+            This is an automatic email that was sent to confirm your account.
+          </Text>
+          <Text style={paragraph}>
+            Please follow
+            <Link style={link} href={confirmUrl}>👉 this link👈</Link>
+            to complete your registration in order to use the application.
+          </Text>
+        </Section>
+        <Text style={paragraph}>
+          Thank you,
+          <br />- Vote Monitor Team
+        </Text>
+        <Hr style={hr} />
+        <Text style={footer}>Commit Global.</Text>
       </Container>
     </Body>
   </Html>
@@ -52,28 +61,44 @@ export default ConfirmEmail;
 
 const main = {
   backgroundColor: "#ffffff",
+  fontFamily:
+    '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif',
 };
 
 const container = {
-  paddingLeft: "12px",
-  paddingRight: "12px",
   margin: "0 auto",
+  padding: "20px 25px 48px",
+  backgroundImage: 'url("/assets/raycast-bg.png")',
+  backgroundPosition: "bottom",
+  backgroundRepeat: "no-repeat, no-repeat",
 };
 
-const h1 = {
-  color: "#333",
-  fontFamily:
-    "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif",
-  fontSize: "24px",
+const heading = {
+  fontSize: "28px",
   fontWeight: "bold",
-  margin: "40px 0",
-  padding: "0",
+  marginTop: "48px",
+};
+
+const body = {
+  margin: "24px 0",
+};
+
+const paragraph = {
+  fontSize: "16px",
+  lineHeight: "26px",
 };
 
 const link = {
-  color: "#2754C5",
-  fontFamily:
-    "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif",
-  fontSize: "14px",
-  textDecoration: "underline",
+  color: "#FF6363",
+};
+
+const hr = {
+  borderColor: "#dddddd",
+  marginTop: "48px",
+};
+
+const footer = {
+  color: "#8898aa",
+  fontSize: "12px",
+  marginLeft: "4px",
 };

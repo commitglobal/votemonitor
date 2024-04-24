@@ -4,7 +4,6 @@ using Job.Contracts;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Vote.Monitor.Core.Extensions;
-using Vote.Monitor.Core.Options;
 using Vote.Monitor.Core.Services.Csv;
 using Vote.Monitor.Core.Services.EmailTemplating;
 using Vote.Monitor.Core.Services.Hangfire;
@@ -19,8 +18,6 @@ public static class CoreServicesInstaller
 
     public static IServiceCollection AddCoreServices(this IServiceCollection services, IConfiguration configuration)
     {
-        services.Configure<ApiConfiguration>(configuration.GetSection(ApiConfiguration.Key));
-
         services.AddSingleton(typeof(ICsvReader<>), typeof(CsvReader<>));
         services.AddSingleton(typeof(ICsvWriter<>), typeof(CsvWriter<>));
 

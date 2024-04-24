@@ -18,7 +18,7 @@ export interface FormSubmissionByEntry {
   lastName: string;
   monitoringObserverId: string;
   numberOfFlaggedAnswers: number;
-  numberOfQuestionAnswered: number;
+  numberOfQuestionsAnswered: number;
   pollingStationId: string;
   level1: string;
   level2: string;

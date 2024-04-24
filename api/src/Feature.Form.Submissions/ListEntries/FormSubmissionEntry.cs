@@ -4,9 +4,10 @@ public record FormSubmissionEntry
 {
     public Guid SubmissionId { get; init; }
     public DateTime TimeSubmitted { get; init; }
-    public string FormCode { get; init; }
+
+    public string? FormCode { get; init; } = default!;
     // TODO: extract to smart enum ?
-    public string FormType { get; init; } = default!;
+    public string? FormType { get; init; } = default!;
 
     public Guid PollingStationId { get; init; }
     public string Level1 { get; init; } = default!;
