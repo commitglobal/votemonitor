@@ -13,7 +13,14 @@ public class PollingStationInformationConfiguration : IEntityTypeConfiguration<P
         builder.ToTable(Tables.PollingStationInformation);
 
         builder.HasKey(x => x.Id);
-        
+        builder.HasIndex(x => new
+        {
+            x.ElectionRoundId,
+            x.PollingStationId,
+            x.MonitoringObserverId,
+            x.PollingStationInformationFormId
+        }).IsUnique();
+
         builder.HasOne(x => x.ElectionRound)
             .WithMany()
             .HasForeignKey(x => x.ElectionRoundId);

@@ -68,13 +68,14 @@ const GaugeChart = forwardRef<ChartJSOrUndefined<"doughnut">, GaugeProps>((props
                 <span className='text-sm text-slate-500'>{props.title}</span>
             </div>
             <div>
-                <div>
-                    <Doughnut
-                        data={props.data}
-                        options={options}
-                        ref={chartRef}
-                        plugins={[gaugeLabel]} />
-                </div>
+                <Doughnut
+                    data={props.data}
+                    options={options}
+                    ref={chartRef}
+                    plugins={[gaugeLabel]} />
+            </div>
+            <div className='text-sm text-slate-500 text-center'>
+                <span >{props.metricLabel}</span>
             </div>
         </div>
     )
