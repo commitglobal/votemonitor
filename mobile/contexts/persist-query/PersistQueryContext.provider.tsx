@@ -1,5 +1,5 @@
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
-import { MutationCache, QueryClient } from "@tanstack/react-query";
+import { Mutation, MutationCache, QueryClient } from "@tanstack/react-query";
 import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useAuth } from "../../hooks/useAuth";
@@ -121,8 +121,44 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
           .getAll()
           .filter((mutation) => mutation.state.isPaused);
 
-        // I will look into the mutations by scopeId, and merge the ones that are the same
-        // I can give the mutation different scopes if the endpoint is the same
+        // console.log("🆕🆕🆕🆕🆕", SuperJSON.stringify(pausedMutation));
+
+        const mergedMutations = pausedMutation.reduce(
+          (acc: Record<string, Mutation<unknown, Error, void, unknown>>, mutation) => {
+            const scopeId = mutation.options.scope?.id;
+
+            if (!scopeId) {
+              // Use mutationId as key if scope was not defined (nothing will merge here)
+              acc[mutation.mutationId] = mutation;
+              return acc;
+            }
+
+            if (scopeId && !acc[scopeId]) {
+              acc[scopeId] = mutation;
+              return acc;
+            }
+
+            if (mutation.state.submittedAt > acc[scopeId].state.submittedAt) {
+              acc[scopeId] = mutation;
+            }
+
+            return acc;
+          },
+          {},
+        );
+
+        queryClient.getMutationCache().clear();
+
+        Object.values(mergedMutations).forEach((mutation) => {
+          queryClient.getMutationCache().add(mutation);
+        });
+
+        // const newPausedMutations = queryClient
+        //   .getMutationCache()
+        //   .getAll()
+        //   .filter((mutation) => mutation.state.isPaused);
+
+        // console.log("📍📍📍📍📍📍", SuperJSON.stringify(newPausedMutations));
 
         if (pausedMutation?.length) {
           await queryClient.resumePausedMutations(); // Looks in the inmemory cache

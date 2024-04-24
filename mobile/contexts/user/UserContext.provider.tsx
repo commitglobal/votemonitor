@@ -137,6 +137,10 @@ const UserContextProvider = ({ children }: React.PropsWithChildren) => {
     if (rounds && !rounds.length) {
       return <NoElectionRounds />;
     }
+    if (!rounds) {
+      // No internet and no data available in cache (restoration already happeened here)
+      return <GenericErrorScreen />;
+    }
   }
 
   return <UserContext.Provider value={contextValues}>{children}</UserContext.Provider>;
