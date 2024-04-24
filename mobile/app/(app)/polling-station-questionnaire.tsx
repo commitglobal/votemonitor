@@ -1,6 +1,6 @@
 import { Typography } from "../../components/Typography";
 import { Controller, useForm } from "react-hook-form";
-import { XStack, YStack } from "tamagui";
+import { View, XStack, YStack } from "tamagui";
 import {
   pollingStationsKeys,
   usePollingStationInformation,
@@ -454,11 +454,9 @@ const PollingStationQuestionnaire = () => {
             return <Typography key={question.id}></Typography>;
           })}
         </YStack>
-        <OptionsSheet
-          open={openContextualMenu}
-          setOpen={setOpenContextualMenu}
-          onClear={() => resetFormValues()}
-        />
+        <OptionsSheet open={openContextualMenu} setOpen={setOpenContextualMenu}>
+          <OptionSheetContent onClear={() => resetFormValues()} />
+        </OptionsSheet>
       </Screen>
 
       <XStack
@@ -476,6 +474,18 @@ const PollingStationQuestionnaire = () => {
         </Button>
       </XStack>
     </>
+  );
+};
+
+const OptionSheetContent = ({ onClear }: { onClear: () => void }) => {
+  const { t } = useTranslation("bottom_sheets");
+
+  return (
+    <View paddingVertical="$xxs" paddingHorizontal="$sm">
+      <Typography preset="body1" color="$gray7" lineHeight={24} onPress={onClear}>
+        {t("observations.actions.clear_form")}
+      </Typography>
+    </View>
   );
 };
 
