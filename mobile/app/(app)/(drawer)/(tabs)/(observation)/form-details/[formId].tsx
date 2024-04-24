@@ -8,7 +8,7 @@ import {
 } from "../../../../../../services/queries.service";
 import { useUserData } from "../../../../../../contexts/user/UserContext.provider";
 import { Typography } from "../../../../../../components/Typography";
-import { Card, Sheet, XStack, YStack } from "tamagui";
+import { Card, XStack, YStack } from "tamagui";
 import CircularProgress from "../../../../../../components/CircularProgress";
 import Button from "../../../../../../components/Button";
 import { useMemo, useState } from "react";
@@ -24,7 +24,6 @@ import { ApiFormAnswer } from "../../../../../../services/interfaces/answer.type
 import { Dimensions, Platform } from "react-native";
 import { useTranslation } from "react-i18next";
 import { FormStateToTextMapper } from "../../../../../../components/FormCard";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import OptionsSheet from "../../../../../../components/OptionsSheet";
 
 interface FormOverviewProps {
@@ -118,7 +117,6 @@ const FormDetails = () => {
   const { formId, language } = useLocalSearchParams();
   const { activeElectionRound, selectedPollingStation } = useUserData();
   const [optionSheetOpen, setOptionSheetOpen] = useState(false);
-  const insets = useSafeAreaInsets();
 
   const {
     data: allForms,

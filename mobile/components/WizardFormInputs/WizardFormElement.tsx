@@ -2,7 +2,7 @@ import React, { ReactNode } from "react";
 import { Stack, YStack } from "tamagui";
 import { Typography } from "../Typography";
 import { Keyboard } from "react-native";
-import AddAttachment from "../AddAttachment";
+// import AddAttachment from "../AddAttachment";
 
 export interface FormElementProps {
   //   question title
