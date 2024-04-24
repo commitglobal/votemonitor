@@ -43,6 +43,7 @@ import RadioFormInput from "../../../../../components/FormInputs/RadioFormInput"
 import { Controller, FieldError, FieldErrorsImpl, Merge, useForm } from "react-hook-form";
 import { Dimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import NoVisitsExist from "../../../../../components/NoVisitsExist";
 
 export type FormListItem = {
   id: string;
@@ -209,7 +210,7 @@ const Index = () => {
   const queryClient = useQueryClient();
   const navigation = useNavigation();
 
-  const { selectedPollingStation, activeElectionRound } = useUserData();
+  const { isLoading, visits, selectedPollingStation, activeElectionRound } = useUserData();
 
   const { data } = usePollingStationInformation(
     activeElectionRound?.id,
@@ -289,6 +290,10 @@ const Index = () => {
       console.error("Missing election round and polling station");
     }
   };
+
+  if (!isLoading && visits && !visits.length) {
+    return <NoVisitsExist />;
+  }
 
   return (
     <Screen

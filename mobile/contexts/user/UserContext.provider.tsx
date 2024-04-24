@@ -121,21 +121,17 @@ const UserContextProvider = ({ children }: React.PropsWithChildren) => {
     return <GenericErrorScreen />;
   }
 
-  console.log("👀👀👀 isLoading", isLoadingRounds || isLoadingVisits || isLoadingNomenclature);
-  console.log("✅ isLoadingRounds", isLoadingRounds);
-  console.log("✅ isLoadingVisits", isLoadingNomenclature);
-  console.log("✅ isLoadingNomenclature", isLoadingNomenclature);
-  console.log("🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀");
+  // console.log("👀👀👀 isLoading", isLoadingRounds || isLoadingVisits || isLoadingNomenclature);
+  // console.log("✅ isLoadingRounds", isLoadingRounds);
+  // console.log("✅ isLoadingVisits", isLoadingNomenclature);
+  // console.log("✅ isLoadingNomenclature", isLoadingNomenclature);
+  // console.log("🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀");
 
   if (isLoading) {
     return <LoadingScreen />;
   } else {
     if (rounds && !rounds.length) {
       return <NoElectionRounds />;
-    }
-
-    if (visits && !visits.length) {
-      return <NoVisitsExist />;
     }
   }
 
