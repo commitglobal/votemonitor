@@ -1,6 +1,6 @@
 import { Typography } from "../../components/Typography";
 import { Controller, useForm } from "react-hook-form";
-import { Sheet, View, XStack, YStack } from "tamagui";
+import { View, XStack, YStack } from "tamagui";
 import {
   pollingStationsKeys,
   usePollingStationInformation,
