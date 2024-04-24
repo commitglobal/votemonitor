@@ -1,6 +1,6 @@
 import { Typography } from "../../components/Typography";
 import { Controller, useForm } from "react-hook-form";
-import { Sheet, View, XStack, YStack } from "tamagui";
+import { XStack, YStack } from "tamagui";
 import {
   pollingStationsKeys,
   usePollingStationInformation,
@@ -37,6 +37,7 @@ import {
 import Input from "../../components/Inputs/Input";
 import Button from "../../components/Button";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import OptionsSheet from "../../components/OptionsSheet";
 
 const PollingStationQuestionnaire = () => {
   const queryClient = useQueryClient();
@@ -475,52 +476,6 @@ const PollingStationQuestionnaire = () => {
         </Button>
       </XStack>
     </>
-  );
-};
-
-interface OptionsSheetProps {
-  /* The current state of the sheet */
-  open: boolean;
-
-  /* Control the state of the sheet */
-  setOpen: (state: boolean) => void;
-
-  /* For future: Triggered action for pressing "Clear form" */
-  onClear?: () => void;
-}
-
-export const OptionsSheet = (props: OptionsSheetProps) => {
-  const { open, setOpen, onClear } = props;
-  const { t } = useTranslation("bottom_sheets");
-  const insets = useSafeAreaInsets();
-  return (
-    <Sheet
-      modal
-      native
-      open={open}
-      onOpenChange={setOpen}
-      zIndex={100_000}
-      snapPointsMode="fit"
-      dismissOnSnapToBottom
-    >
-      <Sheet.Overlay />
-      <Sheet.Frame
-        borderTopLeftRadius={28}
-        borderTopRightRadius={28}
-        gap="$sm"
-        paddingHorizontal="$md"
-        paddingBottom="$xl"
-        marginBottom={insets.bottom}
-      >
-        <Icon paddingVertical="$md" alignSelf="center" icon="dragHandle" />
-
-        <View paddingVertical="$xxs" paddingHorizontal="$sm">
-          <Typography preset="body1" color="$gray7" lineHeight={24} onPress={onClear}>
-            {t("observations.actions.clear_form")}
-          </Typography>
-        </View>
-      </Sheet.Frame>
-    </Sheet>
   );
 };
 
