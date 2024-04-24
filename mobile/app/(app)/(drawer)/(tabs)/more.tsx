@@ -16,6 +16,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CURRENT_USER_STORAGE_KEY } from "../../../../common/constants";
 // import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Select from "../../../../components/Select";
+import API from "../../../../services/api";
 
 const More = () => {
   const navigation = useNavigation();
@@ -28,8 +29,17 @@ const More = () => {
     { id: "3", value: "3", label: "Option 3" },
   ];
   const { t } = useTranslation("more");
-
   const { signOut } = useAuth();
+
+  // API call
+  const getLanguages = async () => {
+    try {
+      const response = await API.get("languages");
+      console.log("Languages: ", response.data);
+    } catch (error) {
+      console.log("Error while trying to get languages", error);
+    }
+  };
 
   // TODO: Change these consts
   const appVersion = Constants.expoConfig?.version;
@@ -66,7 +76,10 @@ const More = () => {
         <MenuItem
           label={t("change-language")}
           icon="changeLanguage"
-          onClick={() => console.log("Change language")}
+          onClick={() => {
+            setOpen(!open);
+            getLanguages();
+          }}
         ></MenuItem>
 
         <MenuItem
