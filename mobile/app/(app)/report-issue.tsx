@@ -57,6 +57,7 @@ const ReportIssue = () => {
 
   const onSubmit = (formData: Record<string, string | Record<string, string>>) => {
     console.log("💞💞💞💞💞💞 FORM DATA 💞💞💞💞💞", formData);
+    router.back();
   };
 
   return (
