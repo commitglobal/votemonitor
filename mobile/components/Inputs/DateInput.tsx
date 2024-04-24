@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import { Sheet, XStack } from "tamagui";
+import { Sheet, XStack, XStackProps } from "tamagui";
 import RNDateTimePicker, { DateTimePickerEvent } from "@react-native-community/datetimepicker";
 import { Keyboard, Platform } from "react-native";
 import { Typography } from "../Typography";
 import { Icon } from "../Icon";
 import Button from "../Button";
 
-export interface DateInputProps {
+export interface DateInputProps extends XStackProps {
   value: Date;
   onChange: (...event: any[]) => void;
   minimumDate?: Date;
@@ -20,6 +20,7 @@ export const DateInput: React.FC<DateInputProps> = ({
   minimumDate,
   maximumDate,
   placeholder,
+  ...rest
 }) => {
   const [open, setOpen] = useState(false);
   // on ios we use a temporary date, as the onChange function gets triggered every time the user picks a new date
@@ -68,6 +69,7 @@ export const DateInput: React.FC<DateInputProps> = ({
       borderColor="$gray3"
       borderRadius={8}
       gap="$xs"
+      {...rest}
     >
       <Typography preset="body1" color="$gray5" numberOfLines={1} width="90%">
         {value ? value.toLocaleDateString("en-GB") : placeholder}
