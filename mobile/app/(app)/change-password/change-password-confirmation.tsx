@@ -9,7 +9,7 @@ import Button from "../../../components/Button";
 import { router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-const PasswordChanged = () => {
+const ChangePasswordConfirmation = () => {
   const { t } = useTranslation("change_password");
   const insets = useSafeAreaInsets();
 
@@ -32,15 +32,17 @@ const PasswordChanged = () => {
         flexGrow={1}
         gap="$xxs"
       >
-        <Icon icon="emailSent" size={126} marginBottom="$md" color="yellow" />
-        <Typography preset="heading" fontWeight="700">
+        <Icon icon="passwordConfirmation" size={126} marginBottom="$md" />
+        <Typography preset="heading" fontWeight="700" color="$purple5">
           {t("success_page.title")}
         </Typography>
-        <Typography>{t("success_page.paragraph")}</Typography>
+        <Typography preset="body1" color="black">
+          {t("success_page.paragraph")}
+        </Typography>
       </YStack>
 
       <Card width="100%" paddingBottom={16 + insets.bottom} marginTop="auto">
-        <Button onPress={() => router.back()}>{t("form.actions.save_password")}</Button>
+        <Button onPress={() => router.back()}>{t("success_page.actions.back")}</Button>
       </Card>
     </Screen>
   );
@@ -64,4 +66,4 @@ const Header = () => {
   );
 };
 
-export default PasswordChanged;
+export default ChangePasswordConfirmation;

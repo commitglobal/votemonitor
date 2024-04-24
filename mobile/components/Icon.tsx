@@ -40,7 +40,7 @@ import EmailSent from "../assets/icons/Email sent.svg";
 import UndrawInbox from "../assets/icons/undraw_inbox_oppv.svg";
 import UndrawReading from "../assets/icons/undraw_reading_book.svg";
 import LoginError from "../assets/icons/LoginError.svg";
-
+import PasswordConfirmation from "../assets/icons/password confirmation.svg";
 import { styled, View } from "tamagui";
 import { StyleProp, ViewStyle } from "react-native";
 import { Ref } from "react";
@@ -124,6 +124,7 @@ export const defaultIcon = React.forwardRef(
       undrawInbox: <UndrawInbox fill={color} width={size} height={size} />,
       undrawReading: <UndrawReading fill={color} width={size} height={size} />,
       loginError: <LoginError fill={color} width={size} height={size} />,
+      passwordConfirmation: <PasswordConfirmation fill={color} width={size} height={size} />,
     };
 
     return (

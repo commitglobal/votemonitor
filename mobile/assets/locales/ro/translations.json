@@ -167,7 +167,10 @@
     },
     "success_page": {
         "title": "Parola a fost schimbata!",
-        "paragraph": "Parola ta a fost schimbată cu succes."
+        "paragraph": "Parola ta a fost schimbată cu succes.",
+        "actions": {
+          "back": "Inapoi in aplicatie"
+      }
     }
   }
 }

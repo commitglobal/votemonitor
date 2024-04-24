@@ -166,7 +166,10 @@
     },
     "success_page": {
         "title": "Password changed!",
-        "paragraph": "Your password has been successfully changed."
+        "paragraph": "Your password has been successfully changed.",
+        "actions": {
+            "back": "Back to app"
+        }
     }
   }
 }

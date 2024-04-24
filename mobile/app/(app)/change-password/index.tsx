@@ -15,6 +15,7 @@ import { useTranslation } from "react-i18next";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import API from "../../../services/api";
+import ChangePasswordConfirmation from "./change-password-confirmation";
 
 interface FormData {
   currentPassword: string;
@@ -26,6 +27,7 @@ const ChangePassowrd = () => {
   const insets = useSafeAreaInsets();
   const { t } = useTranslation("change_password");
   const [credentialsError, setCredentialsError] = React.useState(false);
+  const [succesfullyChanged, setSuccesfullyChanged] = React.useState(false);
 
   // Form validation schema
   const formSchema = z
@@ -61,15 +63,17 @@ const ChangePassowrd = () => {
         newPassword: data.newPassword,
         confirmNewPassword: data.confirmPassword,
       });
-      setCredentialsError(false);
-      router.push("/confirmartion");
+      setSuccesfullyChanged(true);
     } catch (err) {
       console.log("Error while changing password...", err);
       setCredentialsError(true);
     }
   };
 
-  return (
+  // Render either form or confirmation screen
+  return succesfullyChanged ? (
+    <ChangePasswordConfirmation />
+  ) : (
     <Screen
       preset="auto"
       backgroundColor="white"
@@ -172,6 +176,7 @@ const PasswordInput = (props: PasswordInputProps) => {
       render={({ field: { onChange, value } }) => (
         <YStack>
           <FormInput
+            borderColor={hasError ? "$red7" : "$gray11"}
             key="currentPassword"
             type="password"
             secureTextEntry={secureTextEntry}
@@ -186,7 +191,7 @@ const PasswordInput = (props: PasswordInputProps) => {
           ></FormInput>
 
           {!hasError && <Typography color="gray">{helper}</Typography>}
-          {hasError && <Typography color="$red5">{error}</Typography>}
+          {hasError && <Typography color="$red7">{error}</Typography>}
         </YStack>
       )}
     />
