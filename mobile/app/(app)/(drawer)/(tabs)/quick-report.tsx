@@ -6,8 +6,8 @@ import { Screen } from "../../../../components/Screen";
 import { router, useNavigation } from "expo-router";
 import Header from "../../../../components/Header";
 import { DrawerActions } from "@react-navigation/native";
-import { OptionsSheet } from "../../polling-station-questionnaire";
 import Button from "../../../../components/Button";
+import OptionsSheet from "../../../../components/OptionsSheet";
 
 const QuickReport = () => {
   const navigation = useNavigation();

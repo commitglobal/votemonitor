@@ -37,6 +37,7 @@ import {
 import Input from "../../components/Inputs/Input";
 import Button from "../../components/Button";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import OptionsSheet from "../../components/OptionsSheet";
 
 const PollingStationQuestionnaire = () => {
   const queryClient = useQueryClient();
@@ -470,49 +471,6 @@ const PollingStationQuestionnaire = () => {
         </Button>
       </XStack>
     </>
-  );
-};
-
-interface OptionsSheetProps {
-  /* The current state of the sheet */
-  open: boolean;
-
-  /* Control the state of the sheet */
-  setOpen: (state: boolean) => void;
-
-  /* For future: Triggered action for pressing "Clear form" */
-  onClear?: () => void;
-
-  children?: ReactNode;
-}
-
-export const OptionsSheet = (props: OptionsSheetProps) => {
-  const { open, setOpen, children } = props;
-  const insets = useSafeAreaInsets();
-
-  return (
-    <Sheet
-      modal
-      native
-      open={open}
-      onOpenChange={setOpen}
-      zIndex={100_000}
-      snapPointsMode="fit"
-      dismissOnSnapToBottom
-    >
-      <Sheet.Overlay />
-      <Sheet.Frame
-        borderTopLeftRadius={28}
-        borderTopRightRadius={28}
-        gap="$sm"
-        paddingHorizontal="$md"
-        paddingBottom="$xl"
-        marginBottom={insets.bottom}
-      >
-        <Icon paddingVertical="$md" alignSelf="center" icon="dragHandle" />
-        {children}
-      </Sheet.Frame>
-    </Sheet>
   );
 };
 

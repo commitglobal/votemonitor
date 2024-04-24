@@ -37,7 +37,7 @@ const Select = ({ placeholder = "Select", options, ...props }: StyledSelectProps
       disablePreventBodyScroll
       native
       onOpenChange={(open) => {
-        open && Keyboard.dismiss();
+        Keyboard.dismiss();
         return setIsOpen(open);
       }}
       {...props}

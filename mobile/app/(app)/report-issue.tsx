@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { XStack, YStack } from "tamagui";
 import { Screen } from "../../components/Screen";
 import { Icon } from "../../components/Icon";
@@ -12,6 +12,10 @@ import { useUserData } from "../../contexts/user/UserContext.provider";
 import { Controller, useForm } from "react-hook-form";
 import { PollingStationVisitVM } from "../../common/models/polling-station.model";
 import FormElement from "../../components/FormInputs/FormElement";
+import AddAttachment from "../../components/AddAttachment";
+import { Keyboard } from "react-native";
+import OptionsSheet from "../../components/OptionsSheet";
+import { Typography } from "../../components/Typography";
 
 const mapVisitsToSelectPollingStations = (visits: PollingStationVisitVM[] | undefined) => {
   const pollingStationsForSelect = visits
@@ -39,6 +43,7 @@ const mapVisitsToSelectPollingStations = (visits: PollingStationVisitVM[] | unde
 const ReportIssue = () => {
   const { visits } = useUserData();
   const pollingStations = useMemo(() => mapVisitsToSelectPollingStations(visits), [visits]);
+  const [optionsSheetOpen, setOptionsSheetOpen] = useState(false);
 
   const insets = useSafeAreaInsets();
 
@@ -82,7 +87,7 @@ const ReportIssue = () => {
               key="polling_station"
               name="polling_station"
               control={control}
-              render={({ field: { onChange, value = { id: undefined, details: undefined } } }) => (
+              render={({ field: { onChange, value = { id: "", details: "" } } }) => (
                 <>
                   {/* select polling station */}
                   <FormElement title="Polling station">
@@ -90,7 +95,7 @@ const ReportIssue = () => {
                       value={value.id}
                       options={pollingStations}
                       placeholder="Select polling station"
-                      onValueChange={(id) => onChange({ ...value, id, details: null })}
+                      onValueChange={(id) => onChange({ ...value, id, details: "" })}
                       // onOpenChange={(open) => open && Keyboard.dismiss()}
                     />
                   </FormElement>
@@ -145,8 +150,46 @@ const ReportIssue = () => {
                 />
               )}
             />
+
+            <AddAttachment
+              paddingVertical="$xxs"
+              onPress={() => {
+                Keyboard.dismiss();
+                setOptionsSheetOpen(true);
+              }}
+            />
           </YStack>
         </YStack>
+
+        {/* //TODO: handle press on options */}
+        <OptionsSheet open={optionsSheetOpen} setOpen={setOptionsSheetOpen}>
+          <YStack paddingHorizontal="$sm">
+            <Typography
+              preset="body1"
+              marginBottom="$md"
+              paddingVertical="$sm"
+              onPress={() => setOptionsSheetOpen(false)}
+            >
+              Load from gallery
+            </Typography>
+            <Typography
+              preset="body1"
+              marginBottom="$md"
+              paddingVertical="$sm"
+              onPress={() => setOptionsSheetOpen(false)}
+            >
+              Take a photo
+            </Typography>
+            <Typography
+              preset="body1"
+              marginBottom="$md"
+              paddingVertical="$sm"
+              onPress={() => setOptionsSheetOpen(false)}
+            >
+              Record a video
+            </Typography>
+          </YStack>
+        </OptionsSheet>
       </Screen>
 
       <XStack
@@ -170,5 +213,7 @@ const ReportIssue = () => {
     </>
   );
 };
+
+const options = ["Load from gallery", "Take a photo", "Record a video"];
 
 export default ReportIssue;

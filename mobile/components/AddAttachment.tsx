@@ -5,7 +5,7 @@ import { Typography } from "./Typography";
 
 const AddAttachment = ({ ...rest }: XStackProps) => {
   return (
-    <XStack alignItems="center" paddingTop="$md" {...rest}>
+    <XStack alignItems="center" pressStyle={{ opacity: 0.5 }} {...rest}>
       <Icon icon="attachment" />
       <Typography color="$purple5" marginLeft="$xs">
         Add Note, Photo or Video
