@@ -41,7 +41,6 @@ export const pollingStationsDataConfig: ChartData<"doughnut"> = {
         '#DADADA', // not visited color
       ],
       borderWidth: 1,
-      label: 'sss'
     },
   ]
 };
