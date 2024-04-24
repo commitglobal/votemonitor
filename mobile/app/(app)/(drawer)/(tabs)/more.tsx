@@ -62,12 +62,7 @@ const More = () => {
           chevronRight={true}
           onClick={() => router.push("/change-language")}
         ></MenuItem>
-        <MenuItem
-          label={t("change-password")}
-          icon="changePassword"
-          chevronRight={true}
-          onClick={() => router.push("/change-password")}
-        ></MenuItem>
+
         <MenuItem
           label={t("terms")}
           icon="termsConds"
@@ -91,6 +86,12 @@ const More = () => {
           chevronRight={true}
         ></MenuItem>
         <MenuItem label={t("support")} icon="contactNGO"></MenuItem>
+        <MenuItem
+          label={t("change-password")}
+          icon="changePassword"
+          chevronRight={true}
+          onClick={() => router.push("/change-password")}
+        ></MenuItem>
         <MenuItem label={t("feedback")} icon="feedback"></MenuItem>
         <MenuItem
           label={t("logout")}

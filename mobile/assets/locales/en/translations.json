@@ -144,7 +144,8 @@
         "current_password": {
             "label": "Current password *",
             "placeholder": "Insert current password",
-            "required": "Password is mandatory"
+            "required": "Password is mandatory",
+            "credentials_error": "The current password is incorrect"
         },
         "new_password": {
             "label": "New password *",

@@ -3,7 +3,7 @@ import { Screen } from "../../../components/Screen";
 import Header from "../../../components/Header";
 import { Icon } from "../../../components/Icon";
 import { router } from "expo-router";
-import { XStack, YStack } from "tamagui";
+import { YStack } from "tamagui";
 import Card from "../../../components/Card";
 import Button from "../../../components/Button";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -46,7 +46,7 @@ const ChangePassowrd = () => {
   const { handleSubmit, control, formState } = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      currentPassword: "string",
+      currentPassword: "Votemonitor1*",
       newPassword: "Votemonitor1*",
       confirmPassword: "Votemonitor1*",
     },
@@ -55,13 +55,14 @@ const ChangePassowrd = () => {
 
   // Submit handler - change password
   const onSubmit = async (data: FormData) => {
-    console.log("Change password... : ", data);
     try {
       await API.post("auth/change-password", {
         password: data.currentPassword,
         newPassword: data.newPassword,
         confirmNewPassword: data.confirmPassword,
       });
+      setCredentialsError(false);
+      router.push("/confirmartion");
     } catch (err) {
       console.log("Error while changing password...", err);
       setCredentialsError(true);
@@ -107,16 +108,17 @@ const Form = ({
 
   return (
     <YStack gap="$xl" paddingHorizontal={16} paddingVertical={40}>
-      {credentialsError && <CredentialsError />}
-
       <PasswordInput
         formKey="currentPassword"
         control={control}
         helper={""}
-        error={errors?.currentPassword?.message?.toString() ?? ""}
+        error={
+          (errors?.currentPassword?.message?.toString() ?? "") ||
+          (credentialsError ? t("form.current_password.credentials_error") : "")
+        }
         label={t("form.current_password.label")}
         placeholder={t("form.current_password.placeholder")}
-        hasError={!!errors?.currentPassword}
+        hasError={!!errors?.currentPassword || credentialsError}
         name="currentPassword"
       />
 
@@ -188,24 +190,6 @@ const PasswordInput = (props: PasswordInputProps) => {
         </YStack>
       )}
     />
-  );
-};
-
-const CredentialsError = () => {
-  const { t } = useTranslation("login");
-  return (
-    <XStack
-      backgroundColor="$red1"
-      borderRadius={6}
-      justifyContent="center"
-      padding="$md"
-      alignItems="flex-start"
-    >
-      <Icon icon="loginError" size={16} />
-      <Typography paddingHorizontal="$md" color="$red6" fontWeight="500">
-        Parola curenta este gresita.
-      </Typography>
-    </XStack>
   );
 };
 

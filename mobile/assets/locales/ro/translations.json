@@ -145,7 +145,8 @@
         "current_password": {
             "label": "Parola curenta*",
             "placeholder": "Inserati parola curenta",
-            "required": "Parola este obligatorie"
+            "required": "Parola este obligatorie",
+            "credentials_error": "Parola curenta nu este corecta"
         },
         "new_password": {
             "label": "Parola noua*",
