@@ -214,8 +214,9 @@ namespace Vote.Monitor.Domain.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
-                    b.Property<Guid?>("InvitationToken")
-                        .HasColumnType("uuid");
+                    b.Property<string>("InvitationToken")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.Property<string>("LastName")
                         .IsRequired()

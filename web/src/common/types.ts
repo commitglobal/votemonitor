@@ -197,3 +197,7 @@ export const newTranslatedString: (availableLanguages: string[], languageCode: s
   
   return translatedString;
 };
+
+export type HistogramData = {
+  [bucket: string]: number;
+};

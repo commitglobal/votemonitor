@@ -20,9 +20,9 @@ function PreviewForm({ languageCode, localQuestions, activeQuestionId, setActive
   const [currentQuestion, setCurrentQuestion] = useState<BaseQuestion | undefined>();
   const [responseData, setResponseData] = useState<ResponseData>({});
   const [progress, setProgress] = useState(0);
-
+console.log(localQuestions);
   useEffect(() => {
-    if (activeQuestionId === 'end') {
+    if (activeQuestionId === localQuestions[localQuestions.length - 1]?.id) {
       setProgress(100);
       return;
     }
@@ -95,12 +95,13 @@ function PreviewForm({ languageCode, localQuestions, activeQuestionId, setActive
             ) : activeQuestionId === 'end' ? (
               <div>Done!</div>
             ) : (
-              <div>No questions available.</div>
+
+              localQuestions.length ? <div></div> : <div>No questions available.</div>
             )}
           </div>
-          <div className='mt-8'>
+          {!!localQuestions.length && <div className='mt-8'>
             <Progress value={progress} max={100} />
-          </div>
+          </div>}
         </div>
       </CardContent>
     </Card>

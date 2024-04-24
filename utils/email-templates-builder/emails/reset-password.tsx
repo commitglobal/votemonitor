@@ -3,10 +3,13 @@ import {
   Container,
   Head,
   Heading,
+  Hr,
   Html,
   Img,
   Link,
-  Preview
+  Preview,
+  Section,
+  Text
 } from "@react-email/components";
 import * as React from "react";
 
@@ -16,27 +19,42 @@ interface ResetPasswordEmailProps {
 }
 
 export const ResetPasswordEmail = ({
-  resetPasswordUrl= '~$resetPasswordUrl$~',
+  resetPasswordUrl = '~$resetPasswordUrl$~',
   cdnUrl = '~$cdnUrl$~'
 }: ResetPasswordEmailProps) => (
   <Html>
     <Head />
-    <Preview>Reset your password</Preview>
+    <Preview>Reset your password on VoteMonitor Platform</Preview>
     <Body style={main}>
       <Container style={container}>
-        <Img src={`${cdnUrl}/static/logo.png`} alt="Cat" width="150" height="150" style={container} />
-        <Heading style={h1}>Reset your password</Heading>
-        <Link
-          href={resetPasswordUrl}
-          target="_blank"
-          style={{
-            ...link,
-            display: "block",
-            marginBottom: "16px",
-          }}
-        >
-          Click here to reset your password
-        </Link>
+        <Heading style={heading}>Reset your password on VoteMonitor Platform</Heading>
+        <Section style={body}>
+          <Text style={paragraph}>
+            Hello,
+          </Text>
+          <Text style={paragraph}>
+            You are receiving this email because you requested help with your account credentials.
+          </Text>
+          <Text style={paragraph}>
+            In order to reset your password please follow
+            <Link style={link} href={resetPasswordUrl}>👉 this link👈</Link>
+            and the instructions provided in the application.
+          </Text>
+          <Text style={paragraph}>
+            If you don&apos;t want to change your password or didn&apos;t
+            request this, just ignore and delete this message.
+          </Text>
+          <Text style={paragraph}>
+            To keep your account secure, please don&apos;t forward this email
+            to anyone.
+          </Text>
+        </Section>
+        <Text style={paragraph}>
+          Thank you,
+          <br />- Vote Monitor Team
+        </Text>
+        <Hr style={hr} />
+        <Text style={footer}>Commit Global.</Text>
       </Container>
     </Body>
   </Html>
@@ -51,28 +69,44 @@ export default ResetPasswordEmail;
 
 const main = {
   backgroundColor: "#ffffff",
+  fontFamily:
+    '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif',
 };
 
 const container = {
-  paddingLeft: "12px",
-  paddingRight: "12px",
   margin: "0 auto",
+  padding: "20px 25px 48px",
+  backgroundImage: 'url("/assets/raycast-bg.png")',
+  backgroundPosition: "bottom",
+  backgroundRepeat: "no-repeat, no-repeat",
 };
 
-const h1 = {
-  color: "#333",
-  fontFamily:
-    "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif",
-  fontSize: "24px",
+const heading = {
+  fontSize: "28px",
   fontWeight: "bold",
-  margin: "40px 0",
-  padding: "0",
+  marginTop: "48px",
+};
+
+const body = {
+  margin: "24px 0",
+};
+
+const paragraph = {
+  fontSize: "16px",
+  lineHeight: "26px",
 };
 
 const link = {
-  color: "#2754C5",
-  fontFamily:
-    "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif",
-  fontSize: "14px",
-  textDecoration: "underline",
+  color: "#FF6363",
+};
+
+const hr = {
+  borderColor: "#dddddd",
+  marginTop: "48px",
+};
+
+const footer = {
+  color: "#8898aa",
+  fontSize: "12px",
+  marginLeft: "4px",
 };

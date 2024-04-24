@@ -5,10 +5,10 @@ namespace SubmissionsFaker.Fakers;
 
 public sealed class ApplicationUserFaker : Faker<ApplicationUser>
 {
-    public ApplicationUserFaker()
+    public ApplicationUserFaker(string? email = null, string? password = null)
     {
-        RuleFor(x => x.Email, f => f.Internet.Email(provider: "example.com"));
-        RuleFor(x => x.Password, f => f.Internet.Password());
+        RuleFor(x => x.Email, f => email ?? f.Internet.Email(provider: "example.com"));
+        RuleFor(x => x.Password, f => password ?? f.Internet.Password());
         RuleFor(x => x.FirstName, f => f.Name.FirstName());
         RuleFor(x => x.LastName, f => f.Name.LastName());
         RuleFor(x => x.PhoneNumber, f => f.Phone.PhoneNumber());
