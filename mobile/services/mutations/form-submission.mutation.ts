@@ -42,6 +42,7 @@ export const useFormSubmissionMutation = ({
       const previousData = queryClient.getQueryData<FormSubmissionsApiResponse>(formSubmissionsQK);
 
       // Optimistically update to the new value
+      // TODO @radulescuandrew will not set the data if previousData does not exist, refactor
       if (previousData && payload.answers) {
         const updatedSubmission = previousData.submissions.find((s) => s.formId === payload.formId);
 

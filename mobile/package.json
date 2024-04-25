@@ -55,7 +55,8 @@
     "react-native-screens": "~3.29.0",
     "react-native-svg": "14.1.0",
     "superjson": "^2.2.1",
-    "tamagui": "^1.93.2"
+    "tamagui": "^1.93.2",
+    "expo-crypto": "~12.8.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
