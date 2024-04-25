@@ -39,7 +39,8 @@ const languages = [
 const More = () => {
   const navigation = useNavigation();
   const queryClient = useQueryClient();
-  const [open, setOpen] = React.useState(false);
+  const [openLanguageSheet, setOpenLanguageSheet] = React.useState(false);
+  const [language, setLanguage] = useState("");
 
   const { t } = useTranslation("more");
   const { signOut } = useAuth();
@@ -75,12 +76,26 @@ const More = () => {
         onLeftPress={() => navigation.dispatch(DrawerActions.openDrawer)}
       />
       <YStack paddingHorizontal="$md" paddingVertical="$xl" gap="$md">
+        {/* 
+          This element is controlled via the MenuItem change-language component.
+          It is visible only when open===true as a bottom sheet. 
+          Otherwise, no select element is rendered.
+         */}
+        <SelectLanguage
+          open={openLanguageSheet}
+          setOpen={setOpenLanguageSheet}
+          options={languages}
+          language={language}
+          setLanguage={setLanguage}
+        />
+
         <MenuItem
           label={t("change-language")}
-          icon="changeLanguage"
+          icon="language"
           onClick={() => {
-            setOpen(!open);
+            setOpenLanguageSheet(!openLanguageSheet);
           }}
+          helper={language}
         ></MenuItem>
 
         <MenuItem
@@ -120,8 +135,6 @@ const More = () => {
           helper={currentUser ? `Logged in as ${currentUser}` : ""}
         ></MenuItem>
       </YStack>
-
-      <SelectLanguageSheet open={open} setOpen={setOpen} options={languages} />
     </Screen>
   );
 };
@@ -150,18 +163,20 @@ const MenuItem = ({ label, helper, icon, chevronRight, onClick }: MenuItemProps)
   </Card>
 );
 
-interface SelectLanguageSheetProps {
+interface SelectLanguageProps {
   open: boolean;
   setOpen: (state: boolean) => void;
   options: string[];
+  language: string;
+  setLanguage: (state: string) => void;
 }
 
-const SelectLanguageSheet = (props: SelectLanguageSheetProps) => {
-  const { open, setOpen, options } = props;
-  const insets = useSafeAreaInsets();
+const SelectLanguage = (props: SelectLanguageProps) => {
+  const { open, setOpen, options, language, setLanguage } = props;
+  console.log("language: ", language);
 
   return (
-    <Select open={open} onOpenChange={setOpen}>
+    <Select open={open} onOpenChange={setOpen} onValueChange={setLanguage}>
       <Adapt platform="touch">
         <Sheet
           native
@@ -182,22 +197,26 @@ const SelectLanguageSheet = (props: SelectLanguageSheetProps) => {
       <Select.Content>
         <Select.Viewport>
           <Select.Group>
-            {options.map((entry, i) => {
-              return (
-                <Select.Item
-                  index={i}
-                  key={`${entry}_${i}`}
-                  value={entry}
-                  gap="$3"
-                  paddingBottom="$sm"
-                >
-                  <Select.ItemText>{entry}</Select.ItemText>
-                  <Select.ItemIndicator>
-                    <Icon icon="chevronLeft" />
-                  </Select.ItemIndicator>
-                </Select.Item>
-              );
-            })}
+            {useMemo(
+              () =>
+                options?.map((entry, i) => {
+                  return (
+                    <Select.Item
+                      index={i}
+                      key={`${entry}_${i}`}
+                      value={entry}
+                      gap="$3"
+                      paddingBottom="$sm"
+                    >
+                      <Select.ItemText>{entry}</Select.ItemText>
+                      <Select.ItemIndicator>
+                        <Icon icon="chevronLeft" />
+                      </Select.ItemIndicator>
+                    </Select.Item>
+                  );
+                }),
+              [options, language],
+            )}
           </Select.Group>
         </Select.Viewport>
       </Select.Content>
