@@ -1,11 +1,6 @@
-import { Fragment, useContext, useState } from 'react';
-import { Disclosure, Menu, Transition } from '@headlessui/react';
-import { Bars3Icon, XMarkIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
-import { UserCircleIcon } from '@heroicons/react/24/solid';
-import type { ElectionRoundMonitoring, FunctionComponent } from '../../../common/types';
-import Logo from './Logo';
-import { Link } from '@tanstack/react-router';
-import clsx from 'clsx';
+import { authApi } from '@/common/auth-api';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,13 +8,18 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Badge } from '@/components/ui/badge';
-import { useQuery } from '@tanstack/react-query';
-import { authApi } from '@/common/auth-api';
 import { Skeleton } from '@/components/ui/skeleton';
-import { queryClient } from '@/main';
 import { AuthContext } from '@/context/auth.context';
-import { parseJwt } from '@/lib/utils';
+import { queryClient } from '@/main';
+import { Disclosure, Menu, Transition } from '@headlessui/react';
+import { Bars3Icon, ChevronDownIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { UserCircleIcon } from '@heroicons/react/24/solid';
+import { useQuery } from '@tanstack/react-query';
+import { Link, useNavigate } from '@tanstack/react-router';
+import clsx from 'clsx';
+import { Fragment, useContext, useState } from 'react';
+import type { ElectionRoundMonitoring, FunctionComponent } from '../../../common/types';
+import Logo from './Logo';
 
 const user = {
   name: 'Tom Cook',
@@ -36,7 +36,7 @@ const navigation = [
   { name: 'Form templates', to: '/form-templates', roles: 'PlatformAdmin' },
   { name: 'Responses', to: '/responses', roles: ['NgoAdmin'] },
 ];
-const userNavigation = [{ name: 'Sign out', to: '#' }];
+const userNavigation: { name: string, to: string }[] = [];
 
 const Header = (): FunctionComponent => {
   const [selectedElection, setSelectedElection] = useState<ElectionRoundMonitoring>();
@@ -51,7 +51,9 @@ const Header = (): FunctionComponent => {
     void queryClient.invalidateQueries({ queryKey: ['form-submissions'] });
   };
 
-  const { userRole } = useContext(AuthContext);
+  const { userRole, signOut } = useContext(AuthContext);
+  const navigate = useNavigate();
+
   const { status, data } = useQuery({
     queryKey: ['electionRounds'],
     queryFn: async () => {
@@ -157,6 +159,11 @@ const Header = (): FunctionComponent => {
                           </Link>
                         </Menu.Item>
                       ))}
+                      <Menu.Item key='sign-out'>
+
+                        <Button type='button' variant='link' onClick={() => { signOut(); navigate({ to: '/login' }) }}>Sign out</Button>
+                      </Menu.Item>
+
                     </Menu.Items>
                   </Transition>
                 </Menu>
@@ -183,22 +190,24 @@ const Header = (): FunctionComponent => {
 
           <Disclosure.Panel className='md:hidden'>
             <div className='px-2 pt-2 pb-3 space-y-1 sm:px-3'>
-              {navigation.map((item) => (
-                <Disclosure.Button
-                  key={item.name}
-                  as={Link}
-                  to={item.to}
-                  search={{}}
-                  params={{}}
-                  className='block px-3 py-2 text-base font-medium rounded-md'
-                  activeProps={{ className: 'bg-primary-100 text-primary-600 cursor-default', 'aria-current': 'page' }}
-                  inactiveProps={{
-                    className:
-                      'hover:text-primary-600 hover:bg-secondary-300 focus:text-primary-600 focus:bg-secondary-300',
-                  }}>
-                  {item.name}
-                </Disclosure.Button>
-              ))}
+              {navigation
+                .filter((nav) => nav.roles.includes(userRole ?? 'Unknown'))
+                .map((item) => (
+                  <Disclosure.Button
+                    key={item.name}
+                    as={Link}
+                    to={item.to}
+                    search={{}}
+                    params={{}}
+                    className='block px-3 py-2 text-base font-medium rounded-md'
+                    activeProps={{ className: 'bg-primary-100 text-primary-600 cursor-default', 'aria-current': 'page' }}
+                    inactiveProps={{
+                      className:
+                        'hover:text-primary-600 hover:bg-secondary-300 focus:text-primary-600 focus:bg-secondary-300',
+                    }}>
+                    {item.name}
+                  </Disclosure.Button>
+                ))}
             </div>
             <div className='pt-4 pb-3 border-t border-gray-700'>
               <div className='flex items-center px-5'>
@@ -222,6 +231,14 @@ const Header = (): FunctionComponent => {
                     {item.name}
                   </Disclosure.Button>
                 ))}
+                <Disclosure.Button
+                  key='Sign Out'
+                  as={Button}
+                  onClick={() => { signOut(); navigate({ to: '/login' }); }}
+                  variant='link'
+                  className='block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800'>
+                  Sign Out
+                </Disclosure.Button>
               </div>
             </div>
           </Disclosure.Panel>

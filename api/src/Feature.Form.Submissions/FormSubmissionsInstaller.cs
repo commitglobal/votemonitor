@@ -1,8 +1,10 @@
 ﻿using System.Text.Json;
+using Ardalis.SmartEnum.Dapper;
 using Dapper;
 using Feature.Form.Submissions.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Vote.Monitor.Answer.Module.Models;
+using Vote.Monitor.Domain.Entities.ExportedDataAggregate;
 using Vote.Monitor.Form.Module.Models;
 
 namespace Feature.Form.Submissions;

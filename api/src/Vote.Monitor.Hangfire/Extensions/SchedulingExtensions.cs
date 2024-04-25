@@ -1,6 +1,5 @@
 ﻿using Hangfire;
 using Vote.Monitor.Hangfire.RecurringJobs;
-using Job.Contracts.RecurringJobs;
 
 namespace Vote.Monitor.Hangfire.Extensions;
 
@@ -14,5 +13,7 @@ public static class SchedulingExtensions
 
         recurringJobManager
             .AddOrUpdate<IAuditLogCleanerJob>(RecurringJobNames.AuditLogCleaner, x => x.Run(), Cron.Daily);
+        recurringJobManager
+            .AddOrUpdate<IExportedDataCleanerJob>(RecurringJobNames.AuditLogCleaner, x => x.Run(), Cron.Daily);
     }
 }

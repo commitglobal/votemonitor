@@ -1,4 +1,4 @@
-﻿namespace Job.Contracts.RecurringJobs;
+﻿namespace Vote.Monitor.Hangfire.RecurringJobs;
 
 public interface IAuditLogCleanerJob
 {

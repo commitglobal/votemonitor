@@ -13,6 +13,13 @@ public class FormSubmissionConfiguration : IEntityTypeConfiguration<FormSubmissi
         builder.ToTable(Tables.FormSubmissions);
 
         builder.HasKey(x => x.Id);
+        builder.HasIndex(x => new
+        {
+            x.ElectionRoundId,
+            x.PollingStationId,
+            x.MonitoringObserverId,
+            x.FormId
+        }).IsUnique();
 
         builder.HasOne(x => x.ElectionRound)
             .WithMany()

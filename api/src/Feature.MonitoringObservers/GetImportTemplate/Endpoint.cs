@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using Authorization.Policies;
+using Vote.Monitor.Core.Extensions;
 
 namespace Feature.MonitoringObservers.GetImportTemplate;
 
@@ -25,15 +26,10 @@ public class Endpoint : EndpointWithoutRequest
     public override async Task HandleAsync(CancellationToken ct)
     {
         const string template = @"""Email"",""FirstName"",""LastName"",""PhoneNumber""" + "\n"
-        + @"""alice@example.com"",""Alice"",""Smith"",""5551111""" + "\n"
-        + @"""bob@example.com"",""Bob"",""Smith"",""5552222""";
+            + @"""alice@example.com"",""Alice"",""Smith"",""5551111""" + "\n"
+            + @"""bob@example.com"",""Bob"",""Smith"",""5552222""";
 
-        var stream = GenerateStreamFromString(template);
+        var stream = template.ToMemoryStream();
         await SendStreamAsync(stream, "import-template.csv", stream.Length, "text/csv", cancellation: ct);
-    }
-
-    private static MemoryStream GenerateStreamFromString(string value)
-    {
-        return new MemoryStream(Encoding.UTF8.GetBytes(value ?? ""));
     }
 }

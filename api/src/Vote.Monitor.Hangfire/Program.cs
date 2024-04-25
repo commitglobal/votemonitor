@@ -4,16 +4,15 @@ using Vote.Monitor.Domain;
 using Hangfire;
 using Hangfire.PostgreSql;
 using HangfireBasicAuthenticationFilter;
-using Job.Contracts.RecurringJobs;
 using Vote.Monitor.Core.Extensions;
 using Vote.Monitor.Hangfire.RecurringJobs;
-using Vote.Monitor.Hangfire;
 using Job.Contracts.Jobs;
 using Vote.Monitor.Core.Services.Security;
 using Vote.Monitor.Hangfire.Jobs;
 using Vote.Monitor.Core.Services.Serialization;
 using Vote.Monitor.Core.Services.Time;
 using Vote.Monitor.Hangfire.Extensions;
+using Vote.Monitor.Hangfire.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOptions();

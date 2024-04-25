@@ -20,8 +20,8 @@ public record NumberQuestion : BaseQuestion
     public static NumberQuestion Create(Guid id,
         string code,
         TranslatedString text,
-        TranslatedString? helptext,
-        TranslatedString? inputPlaceholder)
+        TranslatedString? helptext = null,
+        TranslatedString? inputPlaceholder = null)
         => new(id, code, text, helptext, inputPlaceholder);
 
     protected override void AddTranslationsInternal(string languageCode)

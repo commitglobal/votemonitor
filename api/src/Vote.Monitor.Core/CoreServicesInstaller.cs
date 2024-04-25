@@ -63,6 +63,11 @@ public static class CoreServicesInstaller
         public void SendEmail(string to, string subject, string body)
         {
         }
+
+        public string ExportFormSubmissions(Guid electionRoundId, Guid ngoId, Guid exportedDataId)
+        {
+            return $"noop-job-{Guid.NewGuid()}";
+        }
     }
 
 }

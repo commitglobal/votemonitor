@@ -186,7 +186,6 @@ export default function FormTemplatesDashboard(): ReactElement {
 
   const changeIsFiltering = () => {
     setFiltering((prev) => {
-      console.log(prev);
       return !prev;
     });
   };

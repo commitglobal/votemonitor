@@ -1,7 +1,7 @@
 ﻿using System.Security.Claims;
 using Vote.Monitor.Core.Services.Security;
 
-namespace Vote.Monitor.Hangfire;
+namespace Vote.Monitor.Hangfire.Services;
 
 public class MockCurrentUserIdProvider : ICurrentUserIdProvider
 {

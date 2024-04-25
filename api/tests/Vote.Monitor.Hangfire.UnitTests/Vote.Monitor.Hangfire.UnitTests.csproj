@@ -45,4 +45,8 @@
     <ProjectReference Include="..\Vote.Monitor.TestUtils\Vote.Monitor.TestUtils.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Jobs\ExportData\" />
+  </ItemGroup>
+
 </Project>

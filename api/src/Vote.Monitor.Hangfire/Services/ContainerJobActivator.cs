@@ -1,6 +1,6 @@
 ﻿using Hangfire;
 
-namespace Vote.Monitor.Hangfire;
+namespace Vote.Monitor.Hangfire.Services;
 
 public class ContainerJobActivator(IServiceProvider serviceProvider) : JobActivator
 {

@@ -54,6 +54,7 @@ export default function EditQuestionFactory({
       case QuestionType.RatingQuestionType: return t("questionEditor.questionType.ratingQuestion");
       default: "Unknown"
     }
+    
     return "";
   }
 
