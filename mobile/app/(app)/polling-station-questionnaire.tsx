@@ -14,7 +14,7 @@ import {
   ApiFormAnswer,
   FormQuestionAnswerTypeMapping,
 } from "../../services/interfaces/answer.type";
-import { ReactNode, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   PollingStationInformationAPIPayload,

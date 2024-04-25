@@ -235,6 +235,4 @@ const ReportIssue = () => {
   );
 };
 
-const options = ["Load from gallery", "Take a photo", "Record a video"];
-
 export default ReportIssue;
