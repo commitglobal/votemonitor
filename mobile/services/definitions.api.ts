@@ -1,4 +1,5 @@
 import { ElectionRoundVM } from "../common/models/election-round.model";
+import { Note } from "../common/models/note";
 import { PollingStationVisitVM } from "../common/models/polling-station.model";
 import { CameraResult } from "../hooks/useCamera";
 import API from "./api";
@@ -212,6 +213,33 @@ export const getElectionRoundAllForms = (
 };
 
 /** ========================================================================
+    ================= GET NotesForPollingStation ====================
+    ========================================================================
+    @description Get all the possible notes for a given polling station
+    @param {string} electionRoundId 
+    @param {string} pollingStationId
+    @param {string} formId 
+    @returns {Note[]} 
+*/
+
+export const getNotesForPollingStation = (
+  electionRoundId: string,
+  pollingStationId: string,
+  formId: string,
+): Promise<Note[]> => {
+  return API.get(`election-rounds/${electionRoundId}/notes`, {
+    params: {
+      electionRoundId: [electionRoundId],
+      pollingStationId: [pollingStationId],
+      formId: [formId],
+    },
+    paramsSerializer: {
+      indexes: null,
+    },
+  }).then((res) => res.data);
+};
+
+/** ========================================================================
     ================= GET FORM SUBMISSIONS ====================
     ========================================================================
     @description Get form submissions for a given >polling station< in an >election round<
@@ -308,4 +336,24 @@ export const addAttachment = ({
       },
     },
   ).then((res) => res.data);
+};
+
+/** ========================================================================
+    ================= POST addNote ====================
+    ========================================================================
+    @description Get all the possible notes for a given polling station
+    @param {string} electionRoundId 
+    @returns {Note} 
+*/
+
+export type NotePayload = {
+  electionRoundId: string | undefined;
+  pollingStationId: string;
+  text: string;
+  formId: string;
+  questionId: string;
+};
+
+export const addNote = ({ electionRoundId, ...notePayload }: NotePayload): Promise<Note> => {
+  return API.post(`election-rounds/${electionRoundId}/notes`, notePayload).then((res) => res.data);
 };

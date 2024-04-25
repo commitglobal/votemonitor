@@ -2,7 +2,11 @@ import { router, useLocalSearchParams } from "expo-router";
 import { Screen } from "../../../components/Screen";
 import Header from "../../../components/Header";
 import { Icon } from "../../../components/Icon";
-import { useElectionRoundAllForms, useFormSubmissions } from "../../../services/queries.service";
+import {
+  useElectionRoundAllForms,
+  useFormSubmissions,
+  useNotesForPollingStation,
+} from "../../../services/queries.service";
 import { Typography } from "../../../components/Typography";
 import { XStack, YStack, ScrollView } from "tamagui";
 import LinearProgress from "../../../components/LinearProgress";
@@ -15,6 +19,7 @@ import { Controller, useForm } from "react-hook-form";
 import WizardFormInput from "../../../components/WizardFormInputs/WizardFormInput";
 import {
   mapAPIAnswersToFormAnswers,
+  mapAPINotesToQuestionNote,
   mapAPIQuestionsToFormQuestions,
   mapFormSubmissionDataToAPIFormSubmissionAnswer,
   setFormDefaultValues,
@@ -31,6 +36,7 @@ import OptionsSheet from "../../../components/OptionsSheet";
 import AddAttachment from "../../../components/AddAttachment";
 import AddNoteModal from "../../../components/AddNoteModal";
 import Card from "../../../components/Card";
+import { Note } from "../../../common/models/note";
 
 const FormQuestionnaire = () => {
   const { questionId, formId, language } = useLocalSearchParams();
@@ -56,6 +62,16 @@ const FormQuestionnaire = () => {
     );
     return mapAPIAnswersToFormAnswers(formSubmission?.answers);
   }, [formSubmissions]);
+
+  const { data: formNotes } = useNotesForPollingStation(
+    activeElectionRound?.id,
+    selectedPollingStation?.pollingStationId,
+    formId as string,
+  );
+
+  const notes: Record<string, Note[]> | undefined = useMemo(() => {
+    return mapAPINotesToQuestionNote(formNotes);
+  }, [formNotes]);
 
   const {
     control,
@@ -338,20 +354,35 @@ const FormQuestionnaire = () => {
           />
 
           {/* notes section */}
-          <YStack marginTop="$lg" gap="$xxs">
-            <XStack justifyContent="space-between" alignItems="center">
+          {notes && notes[questionId as string] && (
+            <YStack marginTop="$lg" gap="$xxs">
               <Typography fontWeight="500">Notes</Typography>
-              <Icon icon="pencilAlt" />
-            </XStack>
-
-            <Card>
-              <Typography>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-                exercitation
-              </Typography>
-            </Card>
-          </YStack>
+              {notes[questionId as string].map((note) => {
+                return (
+                  <Card
+                    key={note.id}
+                    flexDirection="row"
+                    justifyContent="space-between"
+                    padding="$0"
+                    paddingLeft="$md"
+                    pressStyle={{ opacity: 1 }}
+                  >
+                    <Typography paddingVertical="$md" maxWidth="85%">
+                      {note.text}
+                    </Typography>
+                    <YStack>
+                      <Icon
+                        icon="pencilAlt"
+                        size={24}
+                        padding="$md"
+                        pressStyle={{ opacity: 0.5 }}
+                      />
+                    </YStack>
+                  </Card>
+                );
+              })}
+            </YStack>
+          )}
 
           {/* attachments */}
           <YStack marginTop="$lg" gap="$xxs">
@@ -372,7 +403,7 @@ const FormQuestionnaire = () => {
                       icon="xCircle"
                       size={18}
                       color="$gray5"
-                      //TODO: delete media action
+                      // TODO: delete media action
                       onPress={() => console.log("delete media action")}
                       pressStyle={{ opacity: 0.5 }}
                       padding="$md"
@@ -397,6 +428,7 @@ const FormQuestionnaire = () => {
             pollingStationId={selectedPollingStation?.pollingStationId as string}
             formId={formId as string}
             questionId={questionId as string}
+            electionRoundId={activeElectionRound?.id}
           />
         </YStack>
       </ScrollView>

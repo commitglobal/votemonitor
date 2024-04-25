@@ -6,6 +6,7 @@ import Input from "./Inputs/Input";
 import { XStack } from "tamagui";
 import Button from "./Button";
 import { Keyboard } from "react-native";
+import { useAddNoteMutation } from "../services/mutations/add-note.mutation";
 
 interface AddNoteModalProps {
   open: boolean;
@@ -13,6 +14,7 @@ interface AddNoteModalProps {
   pollingStationId: string;
   formId: string;
   questionId: string;
+  electionRoundId: string | undefined;
 }
 
 const AddNoteModal: React.FC<AddNoteModalProps> = ({
@@ -21,8 +23,11 @@ const AddNoteModal: React.FC<AddNoteModalProps> = ({
   pollingStationId,
   formId,
   questionId,
+  electionRoundId,
 }) => {
   const { control, handleSubmit } = useForm({});
+
+  const { mutate: addNote } = useAddNoteMutation(electionRoundId, pollingStationId, formId);
 
   const onSubmitNote = (note: any) => {
     const notePayload = {
@@ -32,7 +37,7 @@ const AddNoteModal: React.FC<AddNoteModalProps> = ({
       questionId,
     };
 
-    console.log("📒📒📒📒📒📒📒📒📒 notePayload 📒📒📒📒📒📒📒📒📒", notePayload);
+    addNote({ electionRoundId, ...notePayload });
     Keyboard.dismiss();
     setOpen(false);
   };
