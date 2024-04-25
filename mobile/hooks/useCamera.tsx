@@ -57,10 +57,15 @@ export const useCamera = () => {
     const luncher =
       type === "library" ? ImagePicker.launchImageLibraryAsync : ImagePicker.launchCameraAsync;
 
-    const specifiedMediaType =
-      type === "cameraPhoto"
-        ? { mediaTypes: ImagePicker.MediaTypeOptions.Images }
-        : { mediaTypes: ImagePicker.MediaTypeOptions.Videos };
+    const specifiedMediaType = { mediaTypes: ImagePicker.MediaTypeOptions.All };
+
+    if (type === "cameraPhoto") {
+      specifiedMediaType.mediaTypes = ImagePicker.MediaTypeOptions.Images;
+    }
+
+    if (type === "cameraVideo") {
+      specifiedMediaType.mediaTypes = ImagePicker.MediaTypeOptions.Videos;
+    }
 
     const result = await luncher({
       ...(specifiedMediaType || { mediaTypes: ImagePicker.MediaTypeOptions.All }),
