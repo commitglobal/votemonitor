@@ -15,7 +15,8 @@ const GenericErrorScreen = () => {
             Oops, something went wrong!
           </Typography>
           <Typography preset="body1" textAlign="center" color="$gray5">
-            We could not recover after this error. Please restart the application!
+            We could not recover after this error. Please check your internet connection and restart
+            the application!
           </Typography>
           <Button onPress={() => reloadAsync().catch((_error) => {})}>Retry</Button>
         </YStack>
