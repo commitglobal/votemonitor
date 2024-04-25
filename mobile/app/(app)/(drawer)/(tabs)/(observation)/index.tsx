@@ -224,7 +224,6 @@ const Index = () => {
             <YStack>
               {activeElectionRound &&
                 selectedPollingStation?.pollingStationId &&
-                psiData !== undefined &&
                 psiFormQuestions && (
                   <PollingStationGeneral
                     electionRoundId={activeElectionRound.id}

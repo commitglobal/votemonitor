@@ -3,9 +3,10 @@ import {
   PollingStationInformationAPIPayload,
   upsertPollingStationGeneralInformation,
   PollingStationInformationAPIResponse,
-} from "./definitions.api";
-import { pollingStationsKeys } from "./queries.service";
+} from "../definitions.api";
+import { pollingStationsKeys } from "../queries.service";
 import { useMemo } from "react";
+import { PollingStationVisitVM } from "../../common/models/polling-station.model";
 
 export const useMutatePollingStationGeneralData = ({
   electionRoundId,
@@ -39,6 +40,7 @@ export const useMutatePollingStationGeneralData = ({
       // Cancel any outgoing refetches
       // (so they don't overwrite our optimistic update)
       await queryClient.cancelQueries({ queryKey: pollingStationInformationQK });
+      await queryClient.cancelQueries({ queryKey: pollingStationsKeys.visits(electionRoundId) });
 
       // Snapshot the previous value
       const previousData = queryClient.getQueryData<PollingStationInformationAPIResponse>(
@@ -63,6 +65,25 @@ export const useMutatePollingStationGeneralData = ({
         // TODO: change with ...payload but first remove | null posibility from APIPayload
       });
 
+      // Update Visits query optimistic
+      const previousVisitsData =
+        queryClient
+          .getQueryData<PollingStationVisitVM[]>(pollingStationsKeys.visits(electionRoundId))
+          ?.map((visit) => {
+            if (visit.pollingStationId === pollingStationId) {
+              return {
+                ...visit,
+                visitedAt: new Date().toISOString(),
+              };
+            }
+            return visit;
+          }) ?? [];
+
+      queryClient.setQueryData<PollingStationVisitVM[]>(
+        pollingStationsKeys.visits(electionRoundId),
+        previousVisitsData,
+      );
+
       // Return a context object with the snapshotted value
       return { previousData };
     },
@@ -72,6 +93,7 @@ export const useMutatePollingStationGeneralData = ({
     },
     onSettled: () => {
       // TODO: we want to keep the mutation in pending until the refetch is done?
+      queryClient.invalidateQueries({ queryKey: pollingStationsKeys.visits(electionRoundId) }); // TODO: RQ
       return queryClient.invalidateQueries({ queryKey: pollingStationInformationQK }); // TODO: RQ
     },
   });

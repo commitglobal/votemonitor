@@ -30,7 +30,7 @@ import {
 import Input from "../../components/Inputs/Input";
 import Button from "../../components/Button";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useMutatePollingStationGeneralData } from "../../services/mutations.service";
+import { useMutatePollingStationGeneralData } from "../../services/mutations/psi-general.mutation";
 
 const PollingStationQuestionnaire = () => {
   const { t } = useTranslation("polling_station_information");

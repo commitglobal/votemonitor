@@ -9,13 +9,13 @@ import {
 } from "../services/definitions.api";
 import CardFooter from "./CardFooter";
 import Card from "./Card";
-import { useMutatePollingStationGeneralData } from "../services/mutations.service";
+import { useMutatePollingStationGeneralData } from "../services/mutations/psi-general.mutation";
 import { ApiFormAnswer } from "../services/interfaces/answer.type";
 
 interface PollingStationGeneralProps {
   electionRoundId: string;
   pollingStationId: string;
-  psiData: PollingStationInformationAPIResponse | null;
+  psiData: PollingStationInformationAPIResponse | null | undefined;
   psiFormQuestions: PollingStationInformationFormAPIResponse;
 }
 
@@ -54,7 +54,7 @@ export const PollingStationGeneral: React.FC<PollingStationGeneralProps> = ({
             setTime={(data: Date) =>
               updateArrivalDepartureTime({
                 arrivalTime: data?.toISOString(),
-                departureTime: psi?.departureTime || "",
+                ...(psi?.departureTime ? { departureTime: psi?.departureTime } : {}),
               })
             }
           />
@@ -66,7 +66,7 @@ export const PollingStationGeneral: React.FC<PollingStationGeneralProps> = ({
             setTime={(data: Date) =>
               updateArrivalDepartureTime({
                 departureTime: data?.toISOString(),
-                arrivalTime: psi?.arrivalTime || "",
+                ...(psi?.arrivalTime ? { arrivalTime: psi?.arrivalTime } : {}),
               })
             }
           />
