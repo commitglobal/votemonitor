@@ -2,7 +2,6 @@ import { Typography } from "../../components/Typography";
 import { Controller, useForm } from "react-hook-form";
 import { View, XStack, YStack } from "tamagui";
 import {
-  pollingStationsKeys,
   usePollingStationInformation,
   usePollingStationInformationForm,
 } from "../../services/queries.service";
@@ -15,12 +14,6 @@ import {
   FormQuestionAnswerTypeMapping,
 } from "../../services/interfaces/answer.type";
 import { useMemo, useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-  PollingStationInformationAPIPayload,
-  PollingStationInformationAPIResponse,
-  upsertPollingStationGeneralInformation,
-} from "../../services/definitions.api";
 import { router } from "expo-router";
 import FormInput from "../../components/FormInputs/FormInput";
 import DateFormInput from "../../components/FormInputs/DateFormInput";
@@ -37,10 +30,10 @@ import {
 import Input from "../../components/Inputs/Input";
 import Button from "../../components/Button";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useMutatePollingStationGeneralData } from "../../services/mutations/psi-general.mutation";
 import OptionsSheet from "../../components/OptionsSheet";
 
 const PollingStationQuestionnaire = () => {
-  const queryClient = useQueryClient();
   const { t } = useTranslation("polling_station_information");
   const [openContextualMenu, setOpenContextualMenu] = useState(false);
   const insets = useSafeAreaInsets();
@@ -62,52 +55,10 @@ const PollingStationQuestionnaire = () => {
     [formData],
   );
 
-  const pollingStationInformationQK = useMemo(
-    () =>
-      pollingStationsKeys.pollingStationInformation(
-        activeElectionRound?.id,
-        selectedPollingStation?.pollingStationId,
-      ),
-    [activeElectionRound, selectedPollingStation],
-  );
-
-  const { mutate } = useMutation({
-    mutationKey: [pollingStationsKeys.mutatePollingStationGeneralData()],
-    mutationFn: async (payload: PollingStationInformationAPIPayload) => {
-      return upsertPollingStationGeneralInformation(payload);
-    },
-    onMutate: async (payload: PollingStationInformationAPIPayload) => {
-      // Cancel any outgoing refetches
-      // (so they don't overwrite our optimistic update)
-      await queryClient.cancelQueries({ queryKey: pollingStationInformationQK });
-
-      // Snapshot the previous value
-      const previousData = queryClient.getQueryData<PollingStationInformationAPIResponse>(
-        pollingStationInformationQK,
-      );
-
-      // Optimistically update to the new value
-      queryClient.setQueryData<PollingStationInformationAPIResponse>(pollingStationInformationQK, {
-        ...(previousData || {
-          id: "-1",
-          pollingStationId: payload.pollingStationId,
-          arrivalTime: "",
-          departureTime: "",
-        }),
-        answers: payload?.answers || [],
-      });
-
-      // Return a context object with the snapshotted value
-      return { previousData };
-    },
-    onError: (err, newData, context) => {
-      console.log(err);
-      queryClient.setQueryData(pollingStationInformationQK, context?.previousData);
-    },
-    onSettled: () => {
-      // TODO: we want to keep the mutation in pending until the refetch is done?
-      return queryClient.invalidateQueries({ queryKey: pollingStationInformationQK });
-    },
+  const { mutate } = useMutatePollingStationGeneralData({
+    electionRoundId: activeElectionRound?.id,
+    pollingStationId: selectedPollingStation?.pollingStationId,
+    scopeId: `PS_General_${activeElectionRound?.id}_${selectedPollingStation?.pollingStationId}_answers`,
   });
 
   const onSubmit = (formData: Record<string, string | string[] | Record<string, any>>) => {
