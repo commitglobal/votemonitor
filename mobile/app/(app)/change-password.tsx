@@ -1,20 +1,20 @@
 import { ViewStyle } from "react-native";
-import { Screen } from "../../../components/Screen";
-import Header from "../../../components/Header";
-import { Icon } from "../../../components/Icon";
+import { Screen } from "../../components/Screen";
+import Header from "../../components/Header";
+import { Icon } from "../../components/Icon";
 import { router } from "expo-router";
 import { YStack } from "tamagui";
-import Card from "../../../components/Card";
-import Button from "../../../components/Button";
+import Card from "../../components/Card";
+import Button from "../../components/Button";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Control, Controller, FieldErrors, FieldValues, set, useForm } from "react-hook-form";
+import { Control, Controller, FieldErrors, FieldValues, useForm } from "react-hook-form";
 import React from "react";
-import { Typography } from "../../../components/Typography";
-import FormInput from "../../../components/FormInputs/FormInput";
+import { Typography } from "../../components/Typography";
+import FormInput from "../../components/FormInputs/FormInput";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import API from "../../../services/api";
+import API from "../../services/api";
 import ChangePasswordConfirmation from "./change-password-confirmation";
 
 interface FormData {
