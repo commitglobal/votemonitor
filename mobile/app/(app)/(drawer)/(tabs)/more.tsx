@@ -1,5 +1,5 @@
-import React from "react";
-import { View, XStack, YStack } from "tamagui";
+import React, { useState, useMemo } from "react";
+import { View, XStack, YStack, Sheet, Adapt, Select, styled, Input } from "tamagui";
 import Card from "../../../../components/Card";
 import { Screen } from "../../../../components/Screen";
 import { Typography } from "../../../../components/Typography";
@@ -14,32 +14,35 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Constants from "expo-constants";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CURRENT_USER_STORAGE_KEY } from "../../../../common/constants";
-// import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Select from "../../../../components/Select";
-import API from "../../../../services/api";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Keyboard } from "react-native";
+
+const languages = [
+  "Romanian",
+  "English",
+  "French",
+  "German",
+  "Spanish",
+  "Italian",
+  "Portuguese",
+  "Russian",
+  "Romanian",
+  "English",
+  "French",
+  "German",
+  "Spanish",
+  "Italian",
+  "Portuguese",
+  "Russian",
+];
 
 const More = () => {
   const navigation = useNavigation();
   const queryClient = useQueryClient();
   const [open, setOpen] = React.useState(false);
-  console.log("Open: ", open);
-  const options = [
-    { id: "1", value: "1", label: "Option 1" },
-    { id: "2", value: "2", label: "Option 2" },
-    { id: "3", value: "3", label: "Option 3" },
-  ];
+
   const { t } = useTranslation("more");
   const { signOut } = useAuth();
-
-  // API call
-  const getLanguages = async () => {
-    try {
-      const response = await API.get("languages");
-      console.log("Languages: ", response.data);
-    } catch (error) {
-      console.log("Error while trying to get languages", error);
-    }
-  };
 
   // TODO: Change these consts
   const appVersion = Constants.expoConfig?.version;
@@ -72,13 +75,11 @@ const More = () => {
         onLeftPress={() => navigation.dispatch(DrawerActions.openDrawer)}
       />
       <YStack paddingHorizontal="$md" paddingVertical="$xl" gap="$md">
-        <Select placeholder="Select" options={options}></Select>
         <MenuItem
           label={t("change-language")}
           icon="changeLanguage"
           onClick={() => {
             setOpen(!open);
-            getLanguages();
           }}
         ></MenuItem>
 
@@ -119,6 +120,8 @@ const More = () => {
           helper={currentUser ? `Logged in as ${currentUser}` : ""}
         ></MenuItem>
       </YStack>
+
+      <SelectLanguageSheet open={open} setOpen={setOpen} options={languages} />
     </Screen>
   );
 };
@@ -147,38 +150,59 @@ const MenuItem = ({ label, helper, icon, chevronRight, onClick }: MenuItemProps)
   </Card>
 );
 
-// interface SelectLanguageSheetProps {
-//   open: boolean;
-//   setOpen: (state: boolean) => void;
-// }
+interface SelectLanguageSheetProps {
+  open: boolean;
+  setOpen: (state: boolean) => void;
+  options: string[];
+}
 
-// const SelectLanguageSheet = (props: SelectLanguageSheetProps) => {
-//   const { open, setOpen } = props;
-//   const insets = useSafeAreaInsets();
+const SelectLanguageSheet = (props: SelectLanguageSheetProps) => {
+  const { open, setOpen, options } = props;
+  const insets = useSafeAreaInsets();
 
-//   return (
-//     <Sheet
-//       modal
-//       native
-//       open={open}
-//       onOpenChange={setOpen}
-//       zIndex={100_000}
-//       snapPointsMode="fit"
-//       dismissOnSnapToBottom
-//     >
-//       <Sheet.Overlay />
-//       <Sheet.Frame
-//         borderTopLeftRadius={28}
-//         borderTopRightRadius={28}
-//         gap="$sm"
-//         paddingHorizontal="$md"
-//         paddingBottom="$xl"
-//         marginBottom={insets.bottom}
-//       >
-//         <Typography> Hello! </Typography>
-//       </Sheet.Frame>
-//     </Sheet>
-//   );
-// };
+  return (
+    <Select open={open} onOpenChange={setOpen}>
+      <Adapt platform="touch">
+        <Sheet
+          native
+          modal
+          snapPoints={[40]}
+          open={open}
+          moveOnKeyboardChange={open || Keyboard.isVisible()}
+        >
+          <Sheet.Frame>
+            <Sheet.ScrollView paddingHorizontal="$sm">
+              <Adapt.Contents />
+            </Sheet.ScrollView>
+          </Sheet.Frame>
+          <Sheet.Overlay />
+        </Sheet>
+      </Adapt>
+
+      <Select.Content>
+        <Select.Viewport>
+          <Select.Group>
+            {options.map((entry, i) => {
+              return (
+                <Select.Item
+                  index={i}
+                  key={`${entry}_${i}`}
+                  value={entry}
+                  gap="$3"
+                  paddingBottom="$sm"
+                >
+                  <Select.ItemText>{entry}</Select.ItemText>
+                  <Select.ItemIndicator>
+                    <Icon icon="chevronLeft" />
+                  </Select.ItemIndicator>
+                </Select.Item>
+              );
+            })}
+          </Select.Group>
+        </Select.Viewport>
+      </Select.Content>
+    </Select>
+  );
+};
 
 export default More;
