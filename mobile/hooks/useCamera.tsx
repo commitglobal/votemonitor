@@ -44,7 +44,7 @@ export const useCamera = () => {
   const [status, requestPermission] = ImagePicker.useCameraPermissions();
 
   const uploadCameraOrMedia = async (
-    type: "library" | "camera",
+    type: "library" | "cameraPhoto" | "cameraVideo",
   ): Promise<CameraResult | undefined> => {
     if (!status?.granted) {
       const requestedPermisison = await requestPermission();
@@ -57,13 +57,23 @@ export const useCamera = () => {
     const luncher =
       type === "library" ? ImagePicker.launchImageLibraryAsync : ImagePicker.launchCameraAsync;
 
+    const specifiedMediaType = { mediaTypes: ImagePicker.MediaTypeOptions.All };
+
+    if (type === "cameraPhoto") {
+      specifiedMediaType.mediaTypes = ImagePicker.MediaTypeOptions.Images;
+    }
+
+    if (type === "cameraVideo") {
+      specifiedMediaType.mediaTypes = ImagePicker.MediaTypeOptions.Videos;
+    }
+
     const result = await luncher({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      ...(specifiedMediaType || { mediaTypes: ImagePicker.MediaTypeOptions.All }),
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
       allowsMultipleSelection: false,
-      videoQuality: ImagePicker.UIImagePickerControllerQualityType.Medium,
+      videoQuality: ImagePicker.UIImagePickerControllerQualityType.Medium, // TODO: careful here, Medium might be enough
       cameraType: ImagePicker.CameraType.back,
     });
 

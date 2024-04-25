@@ -5,6 +5,7 @@ import { Icon } from "../../../components/Icon";
 import {
   useElectionRoundAllForms,
   useFormSubmissions,
+  addAttachmentMutation,
   useNotesForPollingStation,
 } from "../../../services/queries.service";
 import { Typography } from "../../../components/Typography";
@@ -34,6 +35,8 @@ import WizardRatingFormInput from "../../../components/WizardFormInputs/WizardRa
 import { useFormSubmissionMutation } from "../../../services/mutations/form-submission.mutation";
 import OptionsSheet from "../../../components/OptionsSheet";
 import AddAttachment from "../../../components/AddAttachment";
+
+import { useCamera } from "../../../hooks/useCamera";
 import AddNoteModal from "../../../components/AddNoteModal";
 import Card from "../../../components/Card";
 import { Note } from "../../../common/models/note";
@@ -178,6 +181,39 @@ const FormQuestionnaire = () => {
   if (formsError || answersError) {
     return <Typography>Form Error</Typography>;
   }
+
+  const { uploadCameraOrMedia } = useCamera();
+
+  const { mutate: addAttachment } = addAttachmentMutation();
+
+  const handleUpload = async (type: "library" | "cameraPhoto" | "cameraVideo") => {
+    const cameraResult = await uploadCameraOrMedia(type);
+
+    if (!cameraResult) {
+      return;
+    }
+
+    if (
+      activeElectionRound &&
+      selectedPollingStation?.pollingStationId &&
+      formId &&
+      activeQuestion.question.id
+    ) {
+      addAttachment(
+        {
+          electionRoundId: activeElectionRound.id,
+          pollingStationId: selectedPollingStation.pollingStationId,
+          formId: formId as string,
+          questionId: activeQuestion.question.id,
+          cameraResult,
+        },
+        {
+          onSuccess: console.log,
+          onError: console.log,
+        },
+      );
+    }
+  };
 
   return (
     <Screen
@@ -455,13 +491,28 @@ const FormQuestionnaire = () => {
           >
             Add note
           </Typography>
-          <Typography preset="body1" paddingVertical="$md" pressStyle={{ color: "$purple5" }}>
+          <Typography
+            onPress={handleUpload.bind(null, "library")}
+            preset="body1"
+            paddingVertical="$md"
+            pressStyle={{ color: "$purple5" }}
+          >
             Load from gallery
           </Typography>
-          <Typography preset="body1" paddingVertical="$md" pressStyle={{ color: "$purple5" }}>
+          <Typography
+            onPress={handleUpload.bind(null, "cameraPhoto")}
+            preset="body1"
+            paddingVertical="$md"
+            pressStyle={{ color: "$purple5" }}
+          >
             Take a photo
           </Typography>
-          <Typography preset="body1" paddingVertical="$md" pressStyle={{ color: "$purple5" }}>
+          <Typography
+            onPress={handleUpload.bind(null, "cameraVideo")}
+            preset="body1"
+            paddingVertical="$md"
+            pressStyle={{ color: "$purple5" }}
+          >
             Record a video
           </Typography>
         </YStack>

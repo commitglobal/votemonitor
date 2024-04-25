@@ -283,6 +283,8 @@ export const getFormSubmissions = (
 export type AddAttachmentAPIPayload = {
   electionRoundId: string;
   pollingStationId: string;
+  formId: string;
+  questionId: string;
   cameraResult: CameraResult;
 };
 
@@ -319,23 +321,26 @@ export const addAttachment = ({
   electionRoundId,
   pollingStationId,
   cameraResult,
+  formId,
+  questionId,
 }: AddAttachmentAPIPayload): Promise<AddAttachmentAPIResponse> => {
   const formData = new FormData();
+
   formData.append("attachment", {
     uri: cameraResult.uri,
     name: cameraResult.name,
     type: cameraResult.type,
   } as unknown as Blob);
 
-  return API.post(
-    `election-rounds/${electionRoundId}/polling-stations/${pollingStationId}/attachments`,
-    formData,
-    {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
+  formData.append("pollingStationId", pollingStationId);
+  formData.append("formId", formId);
+  formData.append("questionId", questionId);
+
+  return API.postForm(`election-rounds/${electionRoundId}/attachments`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
     },
-  ).then((res) => res.data);
+  }).then((res) => res.data);
 };
 
 /** ========================================================================
