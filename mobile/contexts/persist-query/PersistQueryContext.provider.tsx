@@ -110,62 +110,71 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
     return children;
   }
 
+  const runPendingMutations = async () => {
+    console.log(
+      "PersistQueryClientProvider onSuccess - Successfully get data from AsyncStorage and put in MutationCache",
+    );
+    const pausedMutation = queryClient
+      .getMutationCache()
+      .getAll()
+      .filter((mutation) => mutation.state.isPaused);
+
+    console.log("🆕🆕🆕🆕🆕", SuperJSON.stringify(pausedMutation));
+
+    const mergedMutations = pausedMutation.reduce(
+      (acc: Record<string, Mutation<unknown, Error, void, unknown>>, mutation) => {
+        const scopeId = mutation.options.scope?.id;
+
+        if (!scopeId) {
+          // Use mutationId as key if scope was not defined (nothing will merge here)
+          acc[mutation.mutationId] = mutation;
+          return acc;
+        }
+
+        if (scopeId && !acc[scopeId]) {
+          acc[scopeId] = mutation;
+          return acc;
+        }
+
+        if (mutation.state.submittedAt > acc[scopeId].state.submittedAt) {
+          acc[scopeId] = mutation;
+        }
+
+        return acc;
+      },
+      {},
+    );
+
+    queryClient.getMutationCache().clear();
+
+    Object.values(mergedMutations).forEach((mutation) => {
+      queryClient.getMutationCache().add(mutation);
+    });
+
+    // const newPausedMutations = queryClient
+    //   .getMutationCache()
+    //   .getAll()
+    //   .filter((mutation) => mutation.state.isPaused);
+
+    // console.log("📍📍📍📍📍📍", SuperJSON.stringify(newPausedMutations));
+
+    if (pausedMutation?.length) {
+      await queryClient.resumePausedMutations(); // Looks in the inmemory cache
+      queryClient.invalidateQueries(); // TODO RQ - why not to return?
+      console.log("✅ Resume Paused Mutation & Invalidate Quries");
+    }
+
+    // await new Promise((resolve, _reject) => {
+    //   setTimeout(() => {
+    //     resolve(undefined);
+    //   }, 10000);
+    // });
+  };
+
   return (
     <PersistQueryClientProvider
       onSuccess={async () => {
-        console.log(
-          "PersistQueryClientProvider onSuccess - Successfully get data from AsyncStorage and put in MutationCache",
-        );
-
-        const pausedMutation = queryClient
-          .getMutationCache()
-          .getAll()
-          .filter((mutation) => mutation.state.isPaused);
-
-        console.log("🆕🆕🆕🆕🆕", SuperJSON.stringify(pausedMutation));
-
-        const mergedMutations = pausedMutation.reduce(
-          (acc: Record<string, Mutation<unknown, Error, void, unknown>>, mutation) => {
-            const scopeId = mutation.options.scope?.id;
-
-            if (!scopeId) {
-              // Use mutationId as key if scope was not defined (nothing will merge here)
-              acc[mutation.mutationId] = mutation;
-              return acc;
-            }
-
-            if (scopeId && !acc[scopeId]) {
-              acc[scopeId] = mutation;
-              return acc;
-            }
-
-            if (mutation.state.submittedAt > acc[scopeId].state.submittedAt) {
-              acc[scopeId] = mutation;
-            }
-
-            return acc;
-          },
-          {},
-        );
-
-        queryClient.getMutationCache().clear();
-
-        Object.values(mergedMutations).forEach((mutation) => {
-          queryClient.getMutationCache().add(mutation);
-        });
-
-        // const newPausedMutations = queryClient
-        //   .getMutationCache()
-        //   .getAll()
-        //   .filter((mutation) => mutation.state.isPaused);
-
-        // console.log("📍📍📍📍📍📍", SuperJSON.stringify(newPausedMutations));
-
-        if (pausedMutation?.length) {
-          await queryClient.resumePausedMutations(); // Looks in the inmemory cache
-          queryClient.invalidateQueries();
-          console.log("✅ Resume Paused Mutation & Invalidate Quries");
-        }
+        await runPendingMutations();
       }}
       persistOptions={{
         persister,
@@ -187,7 +196,6 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
       client={queryClient}
     >
       <PersistGate>{children}</PersistGate>
-      {/* {children} */}
     </PersistQueryClientProvider>
   );
 };
