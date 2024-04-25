@@ -12,6 +12,7 @@ import {
 import { Icon } from "./Icon";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Typography } from "./Typography";
+import { Keyboard } from "react-native";
 
 interface StyledSelectProps extends SelectProps {
   placeholder?: string;
@@ -21,6 +22,7 @@ interface StyledSelectProps extends SelectProps {
 const Select = ({ placeholder = "Select", options, ...props }: StyledSelectProps) => {
   const insets = useSafeAreaInsets();
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [isOpen, setIsOpen] = useState(false);
 
   // Filter options based on search term
   const filteredOptions = useMemo(() => {
@@ -31,11 +33,19 @@ const Select = ({ placeholder = "Select", options, ...props }: StyledSelectProps
   }, [options, searchTerm]);
 
   return (
-    <TamaguiSelect disablePreventBodyScroll native {...props}>
+    <TamaguiSelect
+      disablePreventBodyScroll
+      native
+      onOpenChange={(open) => {
+        Keyboard.dismiss();
+        return setIsOpen(open);
+      }}
+      {...props}
+    >
       <TamaguiSelect.Trigger
         backgroundColor="white"
         paddingHorizontal="$md"
-        borderColor="$gray1"
+        borderColor="$gray3"
         borderWidth={1}
         iconAfter={<Icon icon="chevronRight" size={20} transform="rotate(90deg)" color="$gray7" />}
       >
@@ -43,12 +53,19 @@ const Select = ({ placeholder = "Select", options, ...props }: StyledSelectProps
           width={"90%"}
           color="$gray5"
           placeholder={placeholder}
-          fontWeight="500"
+          fontSize={16}
+          // fontWeight="500"
         ></TamaguiSelect.Value>
       </TamaguiSelect.Trigger>
 
       <Adapt platform="touch">
-        <Sheet native modal snapPoints={[50]} moveOnKeyboardChange={true}>
+        <Sheet
+          native
+          modal
+          snapPoints={[50]}
+          open={isOpen}
+          moveOnKeyboardChange={isOpen || Keyboard.isVisible()}
+        >
           <Sheet.Frame>
             <YStack
               borderBottomWidth={1}

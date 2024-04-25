@@ -22,8 +22,6 @@ import { FormStatus, mapFormStateStatus } from "../../../../../services/form.par
 import { useTranslation } from "react-i18next";
 import RadioFormInput from "../../../../../components/FormInputs/RadioFormInput";
 import { Controller, FieldError, FieldErrorsImpl, Merge, useForm } from "react-hook-form";
-import { Dimensions } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import NoVisitsExist from "../../../../../components/NoVisitsExist";
 import { PollingStationGeneral } from "../../../../../components/PollingStationGeneral";
 
@@ -49,7 +47,6 @@ const FormList = ({
   const { activeElectionRound, selectedPollingStation } = useUserData();
   const [selectedForm, setSelectedForm] = useState<FormListItem | null>(null);
   const { t } = useTranslation("form_overview");
-  const insets = useSafeAreaInsets();
 
   const {
     data: allForms,
@@ -117,10 +114,8 @@ const FormList = ({
 
   return (
     <YStack gap="$xxs">
-      {/* height = screen height - tabs height (50 + insets.bottom) - header (70 + insets.top) - select polling station component (66) - margin (20) */}
-      <YStack
-        height={Dimensions.get("screen").height - 50 - insets.bottom - 60 - insets.top - 66 - 20}
-      >
+      {/* height = number of forms * formCard max height + ListHeaderComponent height  */}
+      <YStack height={formList.length * 140 + 400}>
         <ListView<FormListItem>
           data={formList}
           ListHeaderComponent={ListHeaderComponent}

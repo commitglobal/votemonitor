@@ -1,8 +1,8 @@
 import React, { ReactNode } from "react";
-import { Stack, XStack, YStack } from "tamagui";
+import { Stack, YStack } from "tamagui";
 import { Typography } from "../Typography";
 import { Keyboard } from "react-native";
-import { Icon } from "../Icon";
+// import AddAttachment from "../AddAttachment";
 
 export interface FormElementProps {
   //   question title
@@ -14,7 +14,7 @@ export interface FormElementProps {
   //   children elements
   children: ReactNode;
 
-  allowAttachment?: boolean;
+  // allowAttachment?: boolean;
 }
 
 const WizardFormElement: React.FC<FormElementProps> = ({
@@ -22,7 +22,7 @@ const WizardFormElement: React.FC<FormElementProps> = ({
   label,
   paragraph,
   helper,
-  allowAttachment,
+  // allowAttachment,
 }) => {
   return (
     <YStack gap="$xxs" onPress={Keyboard.dismiss}>
@@ -36,19 +36,8 @@ const WizardFormElement: React.FC<FormElementProps> = ({
       <Stack paddingTop="$md" gap="$md">
         {children}
       </Stack>
-
       {/* helper text */}
       {helper && <Typography color="$gray5">{helper}</Typography>}
-
-      {/* attach element */}
-      {allowAttachment && (
-        <XStack alignItems="center" paddingTop="$md" onPress={() => console.log("attach")}>
-          <Icon icon="attachment" />
-          <Typography color="$purple5" marginLeft="$xs">
-            Add Note, Photo or Video
-          </Typography>
-        </XStack>
-      )}
     </YStack>
   );
 };

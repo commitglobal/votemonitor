@@ -18,7 +18,6 @@ const StyledTextArea = styled(TamaguiTextArea, {
   minHeight: 98,
   paddingVertical: "$xs",
   paddingHorizontal: 14,
-  borderColor: "$gray3",
   textAlignVertical: "top",
   fontSize: 16,
   lineHeight: 24,
@@ -28,13 +27,21 @@ const StyledTextArea = styled(TamaguiTextArea, {
   },
 });
 
-const Input: React.FC<InputProps> = ({ type, value, iconRight, onIconRightPress, ...rest }) => {
+const Input: React.FC<InputProps> = ({
+  type,
+  value,
+  iconRight,
+  borderColor,
+  onIconRightPress,
+  ...rest
+}) => {
+  console.log(borderColor);
   return (
     <>
       {type === "textarea" ? (
-        <StyledTextArea value={value} {...rest} />
+        <StyledTextArea value={value} borderColor={borderColor || "$gray3"} {...rest} />
       ) : (
-        <InputWrapper>
+        <InputWrapper borderColor={borderColor || "$gray3"}>
           <SearchInput
             value={value}
             secureTextEntry={type === "password"}
@@ -54,9 +61,8 @@ const InputWrapper = styled(XStack, {
   height: 42,
   alignItems: "center",
   justifyContent: "space-between",
-  // paddingHorizontal: 14,
   borderWidth: 1,
-  borderColor: "$gray3",
+  // borderColor: "$gray3",
   borderRadius: 8,
   focusStyle: {
     borderColor: "$purple5",
