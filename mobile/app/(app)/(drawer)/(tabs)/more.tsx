@@ -1,5 +1,5 @@
-import React, { useState, useMemo } from "react";
-import { View, XStack, YStack, Sheet, Adapt, Select, styled, Input } from "tamagui";
+import React from "react";
+import { View, XStack, YStack } from "tamagui";
 import Card from "../../../../components/Card";
 import { Screen } from "../../../../components/Screen";
 import { Typography } from "../../../../components/Typography";
@@ -14,33 +14,13 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Constants from "expo-constants";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CURRENT_USER_STORAGE_KEY } from "../../../../common/constants";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Keyboard } from "react-native";
-
-const languages = [
-  "Romanian",
-  "English",
-  "French",
-  "German",
-  "Spanish",
-  "Italian",
-  "Portuguese",
-  "Russian",
-  "Romanian",
-  "English",
-  "French",
-  "German",
-  "Spanish",
-  "Italian",
-  "Portuguese",
-  "Russian",
-];
+import SelectAppLanguage from "../../../../components/SelectAppLanguage";
 
 const More = () => {
   const navigation = useNavigation();
   const queryClient = useQueryClient();
   const [openLanguageSheet, setOpenLanguageSheet] = React.useState(false);
-  const [language, setLanguage] = useState("");
+  const [language, setLanguage] = React.useState<string>("Romanian");
 
   const { t } = useTranslation("more");
   const { signOut } = useAuth();
@@ -81,10 +61,9 @@ const More = () => {
           It is visible only when open===true as a bottom sheet. 
           Otherwise, no select element is rendered.
          */}
-        <SelectLanguage
+        <SelectAppLanguage
           open={openLanguageSheet}
           setOpen={setOpenLanguageSheet}
-          options={languages}
           language={language}
           setLanguage={setLanguage}
         />
@@ -162,66 +141,5 @@ const MenuItem = ({ label, helper, icon, chevronRight, onClick }: MenuItemProps)
     </XStack>
   </Card>
 );
-
-interface SelectLanguageProps {
-  open: boolean;
-  setOpen: (state: boolean) => void;
-  options: string[];
-  language: string;
-  setLanguage: (state: string) => void;
-}
-
-const SelectLanguage = (props: SelectLanguageProps) => {
-  const { open, setOpen, options, language, setLanguage } = props;
-  console.log("language: ", language);
-
-  return (
-    <Select open={open} onOpenChange={setOpen} onValueChange={setLanguage}>
-      <Adapt platform="touch">
-        <Sheet
-          native
-          modal
-          snapPoints={[40]}
-          open={open}
-          moveOnKeyboardChange={open || Keyboard.isVisible()}
-        >
-          <Sheet.Frame>
-            <Sheet.ScrollView paddingHorizontal="$sm">
-              <Adapt.Contents />
-            </Sheet.ScrollView>
-          </Sheet.Frame>
-          <Sheet.Overlay />
-        </Sheet>
-      </Adapt>
-
-      <Select.Content>
-        <Select.Viewport>
-          <Select.Group>
-            {useMemo(
-              () =>
-                options?.map((entry, i) => {
-                  return (
-                    <Select.Item
-                      index={i}
-                      key={`${entry}_${i}`}
-                      value={entry}
-                      gap="$3"
-                      paddingBottom="$sm"
-                    >
-                      <Select.ItemText>{entry}</Select.ItemText>
-                      <Select.ItemIndicator>
-                        <Icon icon="chevronLeft" />
-                      </Select.ItemIndicator>
-                    </Select.Item>
-                  );
-                }),
-              [options, language],
-            )}
-          </Select.Group>
-        </Select.Viewport>
-      </Select.Content>
-    </Select>
-  );
-};
 
 export default More;
