@@ -16,6 +16,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import API from "../../services/api";
 import ChangePasswordConfirmation from "./change-password-confirmation";
+import { useMutation } from "@tanstack/react-query";
 
 interface FormData {
   currentPassword: string;
@@ -55,19 +56,34 @@ const ChangePassowrd = () => {
   });
   const { errors } = formState;
 
+  // Mutation Function
+  const changePassword = async (data: FormData) => {
+    return API.post("auth/change-password", {
+      password: data.currentPassword,
+      newPassword: data.newPassword,
+      confirmNewPassword: data.confirmPassword,
+    }).catch((err) => {
+      return err;
+      // console.log(err);
+    });
+  };
+
+  const { mutate: updatePassword } = useMutation({
+    mutationKey: ["changePassword"],
+    mutationFn: changePassword,
+    onError: (err) => {
+      setCredentialsError(true);
+      console.error(err);
+    },
+    onSuccess: () => {
+      setSuccesfullyChanged(true);
+    },
+  });
+
   // Submit handler - change password
   const onSubmit = async (data: FormData) => {
-    try {
-      await API.post("auth/change-password", {
-        password: data.currentPassword,
-        newPassword: data.newPassword,
-        confirmNewPassword: data.confirmPassword,
-      });
-      setSuccesfullyChanged(true);
-    } catch (err) {
-      console.log("Error while changing password...", err);
-      setCredentialsError(true);
-    }
+    console.log("Submitting form...", data);
+    updatePassword(data);
   };
 
   // Render either form or confirmation screen
@@ -90,64 +106,48 @@ const ChangePassowrd = () => {
         onLeftPress={() => router.back()}
       />
 
-      <Form control={control} errors={errors} credentialsError={credentialsError}></Form>
+      <YStack gap="$xl" paddingHorizontal={16} paddingVertical={40}>
+        <PasswordInput
+          formKey="currentPassword"
+          control={control}
+          helper={""}
+          error={
+            (errors?.currentPassword?.message?.toString() ?? "") ||
+            (credentialsError ? t("form.current_password.credentials_error") : "")
+          }
+          label={t("form.current_password.label")}
+          placeholder={t("form.current_password.placeholder")}
+          hasError={!!errors?.currentPassword || credentialsError}
+          name="currentPassword"
+        />
+
+        <PasswordInput
+          formKey="newPassword"
+          control={control}
+          helper={t("form.new_password.helper")}
+          error={errors?.newPassword?.message?.toString() ?? ""}
+          label={t("form.new_password.label")}
+          placeholder={t("form.new_password.placeholder")}
+          hasError={!!errors?.newPassword}
+          name="newPassword"
+        />
+
+        <PasswordInput
+          formKey="confirmPassword"
+          control={control}
+          helper={t("form.confirm_password.helper")}
+          error={errors?.confirmPassword?.message?.toString() ?? ""}
+          label={t("form.confirm_password.label")}
+          placeholder={t("form.confirm_password.placeholder")}
+          hasError={!!errors?.confirmPassword}
+          name="confirmPassword"
+        />
+      </YStack>
 
       <Card width="100%" paddingBottom={16 + insets.bottom} marginTop="auto">
         <Button onPress={handleSubmit(onSubmit)}>{t("form.actions.save_password")}</Button>
       </Card>
     </Screen>
-  );
-};
-
-const Form = ({
-  control,
-  errors,
-  credentialsError,
-}: {
-  control: Control<FormData, any>;
-  errors: FieldErrors<FieldValues>;
-  credentialsError: boolean;
-}) => {
-  const { t } = useTranslation("change_password");
-
-  return (
-    <YStack gap="$xl" paddingHorizontal={16} paddingVertical={40}>
-      <PasswordInput
-        formKey="currentPassword"
-        control={control}
-        helper={""}
-        error={
-          (errors?.currentPassword?.message?.toString() ?? "") ||
-          (credentialsError ? t("form.current_password.credentials_error") : "")
-        }
-        label={t("form.current_password.label")}
-        placeholder={t("form.current_password.placeholder")}
-        hasError={!!errors?.currentPassword || credentialsError}
-        name="currentPassword"
-      />
-
-      <PasswordInput
-        formKey="newPassword"
-        control={control}
-        helper={t("form.new_password.helper")}
-        error={errors?.newPassword?.message?.toString() ?? ""}
-        label={t("form.new_password.label")}
-        placeholder={t("form.new_password.placeholder")}
-        hasError={!!errors?.newPassword}
-        name="newPassword"
-      />
-
-      <PasswordInput
-        formKey="confirmPassword"
-        control={control}
-        helper={t("form.confirm_password.helper")}
-        error={errors?.confirmPassword?.message?.toString() ?? ""}
-        label={t("form.confirm_password.label")}
-        placeholder={t("form.confirm_password.placeholder")}
-        hasError={!!errors?.confirmPassword}
-        name="confirmPassword"
-      />
-    </YStack>
   );
 };
 
