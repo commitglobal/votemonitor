@@ -40,10 +40,10 @@ public class Endpoint : Endpoint<Request, Results<Ok<List<AttachmentModel>>, Not
             return TypedResults.NotFound();
         }
 
-        var specification = new GetObserverAttachmentsSpecification(req.ElectionRoundId, req.PollingStationId, req.ObserverId,req.FormId);
+        var specification = new GetObserverAttachmentsSpecification(req.ElectionRoundId, req.PollingStationId, req.ObserverId, req.FormId);
         var attachments = await _repository.ListAsync(specification, ct);
 
-        var attachmentModels = attachments
+        var tasks = attachments
             .Select(async attachment =>
             {
                 var presignedUrl = await _fileStorageService.GetPresignedUrlAsync(
@@ -63,10 +63,10 @@ public class Endpoint : Endpoint<Request, Results<Ok<List<AttachmentModel>>, Not
                     FormId = attachment.FormId,
                     QuestionId = attachment.QuestionId,
                 };
-            })
-            .Select(t => t.Result)
-            .ToList();
+            });
 
-        return TypedResults.Ok(attachmentModels);
+        var result = await Task.WhenAll(tasks);
+
+        return TypedResults.Ok(result.ToList());
     }
 }
