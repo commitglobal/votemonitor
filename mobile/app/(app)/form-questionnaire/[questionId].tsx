@@ -2,7 +2,11 @@ import { router, useLocalSearchParams } from "expo-router";
 import { Screen } from "../../../components/Screen";
 import Header from "../../../components/Header";
 import { Icon } from "../../../components/Icon";
-import { useElectionRoundAllForms, useFormSubmissions } from "../../../services/queries.service";
+import {
+  addAttachmentMutation,
+  useElectionRoundAllForms,
+  useFormSubmissions,
+} from "../../../services/queries.service";
 import { Typography } from "../../../components/Typography";
 import { XStack, YStack, ScrollView } from "tamagui";
 import LinearProgress from "../../../components/LinearProgress";
@@ -31,6 +35,7 @@ import OptionsSheet from "../../../components/OptionsSheet";
 import AddAttachment from "../../../components/AddAttachment";
 import { Dialog } from "../../../components/Dialog";
 import Button from "../../../components/Button";
+import { useCamera } from "../../../hooks/useCamera";
 
 const FormQuestionnaire = () => {
   const { questionId, formId, language } = useLocalSearchParams();
@@ -162,6 +167,39 @@ const FormQuestionnaire = () => {
   if (formsError || answersError) {
     return <Typography>Form Error</Typography>;
   }
+
+  const { uploadCameraOrMedia } = useCamera();
+
+  const { mutate: addAttachment } = addAttachmentMutation();
+
+  const handleUpload = async (type: "library" | "cameraPhoto" | "cameraVideo") => {
+    const cameraResult = await uploadCameraOrMedia(type);
+
+    if (!cameraResult) {
+      return;
+    }
+
+    if (
+      activeElectionRound &&
+      selectedPollingStation?.pollingStationId &&
+      formId &&
+      activeQuestion.question.id
+    ) {
+      addAttachment(
+        {
+          electionRoundId: activeElectionRound.id,
+          pollingStationId: selectedPollingStation.pollingStationId,
+          formId: formId as string,
+          questionId: activeQuestion.question.id,
+          cameraResult,
+        },
+        {
+          onSuccess: console.log,
+          onError: console.log,
+        },
+      );
+    }
+  };
 
   return (
     <Screen
@@ -367,13 +405,28 @@ const FormQuestionnaire = () => {
           >
             Add note
           </Typography>
-          <Typography preset="body1" paddingVertical="$md" pressStyle={{ color: "$purple5" }}>
+          <Typography
+            onPress={handleUpload.bind(null, "library")}
+            preset="body1"
+            paddingVertical="$md"
+            pressStyle={{ color: "$purple5" }}
+          >
             Load from gallery
           </Typography>
-          <Typography preset="body1" paddingVertical="$md" pressStyle={{ color: "$purple5" }}>
+          <Typography
+            onPress={handleUpload.bind(null, "cameraPhoto")}
+            preset="body1"
+            paddingVertical="$md"
+            pressStyle={{ color: "$purple5" }}
+          >
             Take a photo
           </Typography>
-          <Typography preset="body1" paddingVertical="$md" pressStyle={{ color: "$purple5" }}>
+          <Typography
+            onPress={handleUpload.bind(null, "cameraVideo")}
+            preset="body1"
+            paddingVertical="$md"
+            pressStyle={{ color: "$purple5" }}
+          >
             Record a video
           </Typography>
         </YStack>
