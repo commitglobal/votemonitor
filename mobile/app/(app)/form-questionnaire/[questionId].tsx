@@ -33,9 +33,10 @@ import WizardRatingFormInput from "../../../components/WizardFormInputs/WizardRa
 import { useFormSubmissionMutation } from "../../../services/mutations/form-submission.mutation";
 import OptionsSheet from "../../../components/OptionsSheet";
 import AddAttachment from "../../../components/AddAttachment";
-import { Dialog } from "../../../components/Dialog";
-import Button from "../../../components/Button";
+
 import { useCamera } from "../../../hooks/useCamera";
+import AddNoteModal from "../../../components/AddNoteModal";
+import Card from "../../../components/Card";
 
 const FormQuestionnaire = () => {
   const { questionId, formId, language } = useLocalSearchParams();
@@ -374,6 +375,52 @@ const FormQuestionnaire = () => {
               }
             }}
           />
+
+          {/* notes section */}
+          <YStack marginTop="$lg" gap="$xxs">
+            <XStack justifyContent="space-between" alignItems="center">
+              <Typography fontWeight="500">Notes</Typography>
+              <Icon icon="pencilAlt" />
+            </XStack>
+
+            <Card>
+              <Typography>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+                incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+                exercitation
+              </Typography>
+            </Card>
+          </YStack>
+
+          {/* attachments */}
+          <YStack marginTop="$lg" gap="$xxs">
+            <Typography fontWeight="500">Uploaded media</Typography>
+            <YStack gap="$xxs">
+              {mockUploadedMedia.map((mockMedia) => {
+                return (
+                  <Card
+                    padding="$0"
+                    paddingLeft="$md"
+                    key={mockMedia}
+                    flexDirection="row"
+                    justifyContent="space-between"
+                    alignItems="center"
+                  >
+                    <Typography>{mockMedia}</Typography>
+                    <Icon
+                      icon="xCircle"
+                      size={18}
+                      color="$gray5"
+                      onPress={() => console.log("delete media action")}
+                      pressStyle={{ opacity: 0.5 }}
+                      padding="$md"
+                    />
+                  </Card>
+                );
+              })}
+            </YStack>
+          </YStack>
+
           <AddAttachment
             marginTop="$lg"
             onPress={() => {
@@ -381,8 +428,17 @@ const FormQuestionnaire = () => {
               return setIsOptionsSheetOpen(true);
             }}
           />
+
+          <AddNoteModal
+            open={isNoteModalOpen}
+            setOpen={setIsNoteModalOpen}
+            pollingStationId={selectedPollingStation?.pollingStationId as string}
+            formId={formId as string}
+            questionId={questionId as string}
+          />
         </YStack>
       </ScrollView>
+
       <WizzardControls
         isFirstElement={activeQuestion?.index === 0}
         isLastElement={
@@ -431,27 +487,11 @@ const FormQuestionnaire = () => {
           </Typography>
         </YStack>
       </OptionsSheet>
-
-      <Dialog
-        open={isNoteModalOpen}
-        header={<Typography preset="heading">Add a note</Typography>}
-        content={
-          <>
-            <Input type="textarea" placeholder="Add any relevant notes to this question." />
-          </>
-        }
-        footer={
-          <XStack gap="$md">
-            <Button preset="chromeless" onPress={() => setIsNoteModalOpen(false)}>
-              Cancel
-            </Button>
-            <Button flex={1}>Save</Button>
-          </XStack>
-        }
-      />
     </Screen>
   );
 };
+
+const mockUploadedMedia = ["123456667.jpg", "339829348392.jpg"];
 
 const $screenStyle: ViewStyle = {
   backgroundColor: "white",
