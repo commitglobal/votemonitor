@@ -7,7 +7,7 @@ import { YStack } from "tamagui";
 import Card from "../../components/Card";
 import Button from "../../components/Button";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Control, Controller, FieldErrors, FieldValues, useForm } from "react-hook-form";
+import { Control, Controller, useForm } from "react-hook-form";
 import React from "react";
 import { Typography } from "../../components/Typography";
 import FormInput from "../../components/FormInputs/FormInput";

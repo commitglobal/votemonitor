@@ -23,7 +23,7 @@ export const useAddNoteMutation = (
     },
     onMutate: async (_payload: NotePayload) => {
       await queryClient.cancelQueries({ queryKey: getNotesQK });
-      //TODO: optimistic updates
+      // TODO: optimistic updates
     },
     onError: (err) => {
       console.log("🔴🔴🔴 ERROR 🔴🔴🔴", err);
