@@ -59,7 +59,7 @@ public class FormSubmissionsDataTableHeaderGenerator
         // TODO: add observers tags?!
     }
 
-    public FormSubmissionsDataTableHeaderGenerator WithQuestion(BaseQuestion question)
+    public FormSubmissionsDataTableHeaderGenerator ForQuestion(BaseQuestion question)
     {
         _questionIndexMap.Add(_questionIndexMap.Count, question.Id);
         _questions.Add(question.Id, question);
@@ -102,14 +102,14 @@ public class FormSubmissionsDataTableGenerator
         return new FormSubmissionsDataTableGenerator(dataTable, defaultLanguage, questions, questionIndexMap);
     }
 
-    public FormSubmissionsDataTableGenerator WithSubmission(SubmissionModel submission)
+    public FormSubmissionsDataTableGenerator ForSubmission(SubmissionModel submission)
     {
         _submissions.Add(submission);
 
         var row = _dataTable.NewRow();
 
         row[0] = submission.SubmissionId.ToString();
-        row[1] = submission.TimeSubmitted.ToString("O");
+        row[1] = submission.TimeSubmitted.ToString("s");
         row[2] = submission.Level1;
         row[3] = submission.Level2;
         row[4] = submission.Level3;
@@ -185,40 +185,42 @@ public class FormSubmissionsDataTableGenerator
             .GroupBy(x => x.QuestionId)
             .ToDictionary(x => x.Key, y => y.ToList());
 
-        List<ValuesColumnHeader> longestValuesHeaders = [];
-        List<string> longestNotesColumnHeaders = [];
-        List<string> longestAttachmentUrlsColumnHeaders = [];
+        Dictionary<Guid, List<ValuesColumnHeader>> longestValuesHeadersMap = new();
+        Dictionary<Guid, List<string>> longestNotesColumnHeadersMap = new();
+        Dictionary<Guid, List<string>> longestAttachmentUrlsColumnHeadersMap = new();
 
         // get the longest column headers
         foreach (var (_, questionId) in _questionIndexMap)
         {
-            longestValuesHeaders = questionAnswers[questionId]
+            var longestValuesColumnHeader = questionAnswers[questionId]
                 .MaxBy(x => x.ValuesColumnHeaders.Count)
                 ?.ValuesColumnHeaders ?? [];
 
-            longestNotesColumnHeaders = questionAnswers[questionId]
+            var longestNotesHeader = questionAnswers[questionId]
                 .MaxBy(x => x.NotesColumnHeaders.Count)
                 ?.NotesColumnHeaders ?? [];
 
-            longestAttachmentUrlsColumnHeaders = questionAnswers[questionId]
+            var longestAttachmentUrlsColumnHeader = questionAnswers[questionId]
                 .MaxBy(x => x.AttachmentUrlsColumnHeaders.Count)
                 ?.AttachmentUrlsColumnHeaders ?? [];
         }
 
-        // Add longest columns to data table
-        foreach (var valuesHeader in longestValuesHeaders)
-        {
-            _dataTable.Columns.Add(valuesHeader.ColumnName, valuesHeader.ColumnType);
-        }
+            foreach (var header in longestValuesColumnHeader)
+            {
+                _dataTable.Columns.Add(header.ColumnName, header.ColumnType);
+            }
+            foreach (var header in longestNotesHeader)
+            {
+                _dataTable.Columns.Add(header);
+            }
+            foreach (var header in longestAttachmentUrlsColumnHeader)
+            {
+                _dataTable.Columns.Add(header);
+            }
 
-        foreach (var noteColumnHeader in longestNotesColumnHeaders)
-        {
-            _dataTable.Columns.Add(noteColumnHeader, typeof(string));
-        }
-
-        foreach (var attachmentUrlsColumnHeader in longestAttachmentUrlsColumnHeaders)
-        {
-            _dataTable.Columns.Add(attachmentUrlsColumnHeader, typeof(string));
+            longestValuesHeadersMap.Add(questionId, longestValuesColumnHeader);
+            longestNotesColumnHeadersMap.Add(questionId, longestNotesHeader);
+            longestAttachmentUrlsColumnHeadersMap.Add(questionId, longestAttachmentUrlsColumnHeader);
         }
 
         var submissionDataMap = answersData
@@ -231,30 +233,35 @@ public class FormSubmissionsDataTableGenerator
             var row = _dataTable.Rows[i];
             var submissionData = submissionDataMap[submissionId];
             var questionDataMap = submissionData.ToDictionary(x => x.QuestionId);
+            var currentIndex = 13;
+
             foreach (var (_, questionId) in _questionIndexMap)
             {
                 var questionsData = questionDataMap[questionId];
 
-                var values = PadListToTheRight(questionsData.Values, longestValuesHeaders.Count, string.Empty);
-                var notes = PadListToTheRight(questionsData.Notes, longestNotesColumnHeaders.Count, string.Empty);
-                var attachmentsUrls = PadListToTheRight(questionsData.AttachmentUrls, longestAttachmentUrlsColumnHeaders.Count, string.Empty);
+                var values = PadListToTheRight(questionsData.Values, longestValuesHeadersMap[questionId].Count, string.Empty);
+                var notes = PadListToTheRight(questionsData.Notes, longestNotesColumnHeadersMap[questionId].Count, string.Empty);
+                var attachmentsUrls = PadListToTheRight(questionsData.AttachmentUrls, longestAttachmentUrlsColumnHeadersMap[questionId].Count, string.Empty);
 
-                var startIndex = row.ItemArray.Length;
+                // First cell after submission details
                 for (int j = 0; j < values.Count; j++)
                 {
-                    row[startIndex + j] = values[j];
+                    row[currentIndex] = values[j];
+                    ++currentIndex;
                 }
 
                 startIndex = row.ItemArray.Length;
                 for (int j = 0; j < notes.Count; j++)
                 {
-                    row[startIndex + j] = notes[j];
-                }   
-                
+                    row[currentIndex] = notes[j];
+                    ++currentIndex;
+                }
+
                 startIndex = row.ItemArray.Length;
                 for (int j = 0; j < attachmentsUrls.Count; j++)
                 {
-                    row[startIndex + j] = attachmentsUrls[j];
+                    row[currentIndex] = attachmentsUrls[j];
+                    ++currentIndex;
                 }
             }
 
@@ -267,7 +274,8 @@ public class FormSubmissionsDataTableGenerator
     {
         if (list.Count < desiredLength)
         {
-            for (int i = 0; i < desiredLength - list.Count; i++)
+            var numberOfMissingElements = desiredLength - list.Count;
+            for (int i = 0; i < numberOfMissingElements; i++)
             {
                 list.Add(padValue);
             }
@@ -355,7 +363,7 @@ public class FormSubmissionsDataTableGenerator
             List<AttachmentModel> attachments)
         {
             var answerData = new AnswerData(submissionId, dateQuestion);
-            var columnHeader = dateQuestion.Code + dateQuestion.Text[defaultLanguage];
+            var columnHeader = dateQuestion.Code + " - " + dateQuestion.Text[defaultLanguage];
 
             answerData.WithValue(columnHeader, dateAnswer.Date);
             answerData.WithNotes(notes.Select(x => x.Text).ToList());
@@ -373,7 +381,7 @@ public class FormSubmissionsDataTableGenerator
         {
             var answerData = new AnswerData(submissionId, textQuestion);
 
-            var columnHeader = textQuestion.Code + textQuestion.Text[defaultLanguage];
+            var columnHeader = textQuestion.Code + " - " + textQuestion.Text[defaultLanguage];
 
             answerData.WithValue(columnHeader, textAnswer.Text);
             answerData.WithNotes(notes.Select(x => x.Text).ToList());
@@ -390,7 +398,7 @@ public class FormSubmissionsDataTableGenerator
             List<AttachmentModel> attachments)
         {
             var answerData = new AnswerData(submissionId, ratingQuestion);
-            var columnHeader = ratingQuestion.Code + ratingQuestion.Text[defaultLanguage];
+            var columnHeader = ratingQuestion.Code + " - " + ratingQuestion.Text[defaultLanguage];
 
             answerData.WithValue(columnHeader, ratingAnswer.Value);
             answerData.WithNotes(notes.Select(x => x.Text).ToList());
@@ -407,7 +415,7 @@ public class FormSubmissionsDataTableGenerator
             List<AttachmentModel> attachments)
         {
             var answerData = new AnswerData(submissionId, numberQuestion);
-            var columnHeader = numberQuestion.Code + numberQuestion.Text[defaultLanguage];
+            var columnHeader = numberQuestion.Code + " - " + numberQuestion.Text[defaultLanguage];
 
             answerData.WithValue(columnHeader, numberAnswer.Value);
             answerData.WithNotes(notes.Select(x => x.Text).ToList());
@@ -424,7 +432,7 @@ public class FormSubmissionsDataTableGenerator
             List<AttachmentModel> attachments)
         {
             var answerData = new AnswerData(submissionId, singleSelectQuestion);
-            var columnHeader = singleSelectQuestion.Code + singleSelectQuestion.Text[defaultLanguage];
+            var columnHeader = singleSelectQuestion.Code + " - " + singleSelectQuestion.Text[defaultLanguage];
 
             answerData.WithValue(columnHeader, string.Empty);
 
@@ -453,7 +461,7 @@ public class FormSubmissionsDataTableGenerator
             List<AttachmentModel> attachments)
         {
             var answerData = new AnswerData(submissionId, multiSelectQuestion);
-            var columnHeader = multiSelectQuestion.Code + multiSelectQuestion.Text[defaultLanguage];
+            var columnHeader = multiSelectQuestion.Code + " - " + multiSelectQuestion.Text[defaultLanguage];
 
             answerData.WithValue(columnHeader, string.Empty);
 
