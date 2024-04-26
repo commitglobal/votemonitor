@@ -38,7 +38,6 @@ public class DeleteEndpointTests
         var fakeElectionRound = new ElectionRoundAggregateFaker().Generate();
         var fakeMonitoringObserver = new MonitoringObserverFaker().Generate();
         var fakeAttachment = new AttachmentFaker(attachmentId, fileName).Generate();
-        var pollingStationId = Guid.NewGuid();
 
         _authorizationService.AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object?>(), Arg.Any<IEnumerable<IAuthorizationRequirement>>())
             .Returns(AuthorizationResult.Success());
@@ -50,7 +49,6 @@ public class DeleteEndpointTests
         var request = new Request
         {
             ElectionRoundId = fakeElectionRound.Id,
-            PollingStationId = pollingStationId,
             ObserverId = fakeMonitoringObserver.Id,
             Id = attachmentId
         };
@@ -69,7 +67,6 @@ public class DeleteEndpointTests
         // Arrange
         var fakeElectionRound = new ElectionRoundAggregateFaker().Generate();
         var fakeMonitoringObserver = new MonitoringObserverFaker().Generate();
-        var pollingStationId = Guid.NewGuid();
 
         _authorizationService.AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object?>(), Arg.Any<IEnumerable<IAuthorizationRequirement>>())
             .Returns(AuthorizationResult.Failed());
@@ -78,7 +75,6 @@ public class DeleteEndpointTests
         var request = new Request
         {
             ElectionRoundId = fakeElectionRound.Id,
-            PollingStationId = pollingStationId,
             ObserverId = fakeMonitoringObserver.Id,
         };
         var result = await _endpoint.ExecuteAsync(request, default);
@@ -97,7 +93,6 @@ public class DeleteEndpointTests
         // Arrange
         var fakeElectionRound = new ElectionRoundAggregateFaker().Generate();
         var fakeMonitoringObserver = new MonitoringObserverFaker().Generate();
-        var pollingStationId = Guid.NewGuid();
 
         _authorizationService.AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object?>(), Arg.Any<IEnumerable<IAuthorizationRequirement>>())
             .Returns(AuthorizationResult.Success());
@@ -114,7 +109,6 @@ public class DeleteEndpointTests
         var request = new Request
         {
             ElectionRoundId = fakeElectionRound.Id,
-            PollingStationId = pollingStationId,
             ObserverId = fakeMonitoringObserver.Id,
         };
         var result = await _endpoint.ExecuteAsync(request, default);
