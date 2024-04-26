@@ -14,9 +14,8 @@ import FormInput from "../../components/FormInputs/FormInput";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import API from "../../services/api";
 import ChangePasswordConfirmation from "./change-password-confirmation";
-import { useMutation } from "@tanstack/react-query";
+import { useChangePasswordMutation } from "../../services/mutations/change-password.mutation";
 
 interface FormData {
   currentPassword: string;
@@ -27,8 +26,6 @@ interface FormData {
 const ChangePassowrd = () => {
   const insets = useSafeAreaInsets();
   const { t } = useTranslation("change_password");
-  const [credentialsError, setCredentialsError] = React.useState(false);
-  const [succesfullyChanged, setSuccesfullyChanged] = React.useState(false);
 
   // Form validation schema
   const formSchema = z
@@ -56,33 +53,14 @@ const ChangePassowrd = () => {
   });
   const { errors } = formState;
 
-  // Mutation Function
-  const changePassword = async (data: FormData) => {
-    return API.post("auth/change-password", {
-      password: data.currentPassword,
-      newPassword: data.newPassword,
-      confirmNewPassword: data.confirmPassword,
-    }).catch((err) => {
-      return err;
-      // console.log(err);
-    });
-  };
-
-  const { mutate: updatePassword } = useMutation({
-    mutationKey: ["changePassword"],
-    mutationFn: changePassword,
-    onError: (err) => {
-      setCredentialsError(true);
-      console.error(err);
-    },
-    onSuccess: () => {
-      setSuccesfullyChanged(true);
-    },
-  });
-
   // Submit handler - change password
+  const {
+    mutate: updatePassword,
+    isError: credentialsError,
+    isSuccess: succesfullyChanged,
+  } = useChangePasswordMutation();
+
   const onSubmit = async (data: FormData) => {
-    console.log("Submitting form...", data);
     updatePassword(data);
   };
 
