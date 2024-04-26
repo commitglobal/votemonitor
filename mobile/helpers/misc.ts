@@ -1,6 +1,3 @@
-import { FormListItem } from "../app/(app)/(drawer)/(tabs)/(observation)/index";
-import { FormStatus } from "../services/form.parser";
-
 export const performanceLog = async (func: any, funcName = "Unnamed function") => {
   console.log("🚀🚀🚀🚀🚀[PERFORMANCE CHECK STARTED FOR] ", funcName);
   const startTime = performance.now();
@@ -18,19 +15,16 @@ export const performanceLog = async (func: any, funcName = "Unnamed function") =
   }
 };
 
-// Function to generate a random status
-function getRandomStatus(): FormStatus {
-  const statuses = ["not started", "in progress", "completed"];
-  const randomIndex = Math.floor(Math.random() * statuses.length);
-  return statuses[randomIndex] as FormStatus;
-}
-
-// Generate an array of 25 elements
-export const formList: FormListItem[] = Array.from({ length: 25 }, (_, index) => ({
-  id: `id_${index + 1}`,
-  name: `Form ${index + 1}`,
-  options: `Option ${index + 1}`,
-  numberOfQuestions: Math.floor(Math.random() * 10) + 1,
-  numberOfCompletedQuestions: Math.floor(Math.random() * 10),
-  status: getRandomStatus(),
-}));
+// Convert array to object with specified key
+// CAUTION: will remove duplicate objects from array if the key matches
+type StringKeys<T> = {
+  [K in keyof T]: T[K] extends string | number | symbol ? K : never;
+}[keyof T];
+export const arrayToKeyObject = <
+  T extends Record<StringKeys<T>, string | number | symbol>,
+  TKeyName extends keyof Record<StringKeys<T>, string | number | symbol>,
+>(
+  array: T[],
+  key: TKeyName,
+): Record<T[TKeyName], T> =>
+  Object.fromEntries(array.map((a) => [a[key], a])) as Record<T[TKeyName], T>;

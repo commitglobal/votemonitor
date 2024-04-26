@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Slot } from "expo-router";
+import { Slot, SplashScreen } from "expo-router";
 import AuthContextProvider from "../contexts/auth/AuthContext.provider";
 import { TamaguiProvider } from "@tamagui/core";
 import { tamaguiConfig } from "../tamagui.config";
@@ -10,6 +10,8 @@ import PersistQueryContextProvider from "../contexts/persist-query/PersistQueryC
 import { PortalProvider } from "tamagui";
 import { NetInfoProvider } from "../contexts/net-info-banner/NetInfoContext";
 import NetInfoBanner from "../components/NetInfoBanner";
+
+SplashScreen.preventAutoHideAsync();
 
 export default function Root() {
   const [loaded] = useFonts({

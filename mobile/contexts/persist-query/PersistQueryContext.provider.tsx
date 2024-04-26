@@ -1,18 +1,24 @@
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
-import { MutationCache, QueryClient } from "@tanstack/react-query";
+import { Mutation, MutationCache, QueryClient } from "@tanstack/react-query";
 import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useAuth } from "../../hooks/useAuth";
 import { pollingStationsKeys } from "../../services/queries.service";
 import * as API from "../../services/definitions.api";
 import { performanceLog } from "../../helpers/misc";
+import { PersistGate } from "../../components/PersistGate";
+import SuperJSON from "superjson";
+import { AddAttachmentAPIPayload, addAttachment } from "../../services/api/add-attachment.api";
 
 const queryClient = new QueryClient({
   mutationCache: new MutationCache({
+    // There is also QueryCache
     onSuccess: (data: unknown) => {
       console.log("MutationCache ", data);
     },
     onError: (error: Error) => {
+      // Will always fire, is not tied to a mutation
+      // TODO: Send the error to Sentry
       console.log("MutationCache error ", error);
     },
   }),
@@ -46,7 +52,7 @@ const queryClient = new QueryClient({
         console.log(err);
         console.log("QueryClient - mutations: ", JSON.stringify(err));
       },
-      throwOnError: true,
+      // throwOnError: true,
     },
     queries: {
       /*
@@ -79,21 +85,25 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
   // console.log("isRestoring persistQueryClient", isRestoring);
   const { isAuthenticated } = useAuth();
 
+  // queryClient.getMutationCache().subscribe((event) => {
+  //   console.log("👀", event);
+  // });
+
   queryClient.setMutationDefaults([pollingStationsKeys.mutatePollingStationGeneralData()], {
     mutationFn: (payload: API.PollingStationInformationAPIPayload) => {
       return API.upsertPollingStationGeneralInformation(payload);
     },
   });
 
-  // queryClient.setMutationDefaults(["upsertFormSubmission"], {
-  //   mutationFn: (payload: API.FormSubmissionAPIPayload) => {
-  //     return API.upsertFormSubmission(payload);
-  //   },
-  // });
+  queryClient.setMutationDefaults(["upsertFormSubmission"], {
+    mutationFn: (payload: API.FormSubmissionAPIPayload) => {
+      return API.upsertFormSubmission(payload);
+    },
+  });
 
   queryClient.setMutationDefaults(pollingStationsKeys.addAttachmentMutation(), {
-    mutationFn: async (payload: API.AddAttachmentAPIPayload) => {
-      return performanceLog(() => API.addAttachment(payload));
+    mutationFn: async (payload: AddAttachmentAPIPayload) => {
+      return performanceLog(() => addAttachment(payload));
     },
   });
 
@@ -101,34 +111,92 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
     return children;
   }
 
+  const runPendingMutations = async () => {
+    console.log(
+      "PersistQueryClientProvider onSuccess - Successfully get data from AsyncStorage and put in MutationCache",
+    );
+    const pausedMutation = queryClient
+      .getMutationCache()
+      .getAll()
+      .filter((mutation) => mutation.state.isPaused);
+
+    console.log("🆕🆕🆕🆕🆕", SuperJSON.stringify(pausedMutation));
+
+    const mergedMutations = pausedMutation.reduce(
+      (acc: Record<string, Mutation<unknown, Error, void, unknown>>, mutation) => {
+        const scopeId = mutation.options.scope?.id;
+
+        if (!scopeId) {
+          // Use mutationId as key if scope was not defined (nothing will merge here)
+          acc[mutation.mutationId] = mutation;
+          return acc;
+        }
+
+        if (scopeId && !acc[scopeId]) {
+          acc[scopeId] = mutation;
+          return acc;
+        }
+
+        if (mutation.state.submittedAt > acc[scopeId].state.submittedAt) {
+          acc[scopeId] = mutation;
+        }
+
+        return acc;
+      },
+      {},
+    );
+
+    queryClient.getMutationCache().clear();
+
+    Object.values(mergedMutations).forEach((mutation) => {
+      queryClient.getMutationCache().add(mutation);
+    });
+
+    // const newPausedMutations = queryClient
+    //   .getMutationCache()
+    //   .getAll()
+    //   .filter((mutation) => mutation.state.isPaused);
+
+    // console.log("📍📍📍📍📍📍", SuperJSON.stringify(newPausedMutations));
+
+    if (pausedMutation?.length) {
+      await queryClient.resumePausedMutations(); // Looks in the inmemory cache
+      queryClient.invalidateQueries(); // TODO RQ - why not to return?
+      console.log("✅ Resume Paused Mutation & Invalidate Quries");
+    }
+
+    // await new Promise((resolve, _reject) => {
+    //   setTimeout(() => {
+    //     resolve(undefined);
+    //   }, 10000);
+    // });
+  };
+
   return (
     <PersistQueryClientProvider
       onSuccess={async () => {
-        console.log(
-          "PersistQueryClientProvider onSuccess - Successfully get data from AsyncStorage",
-        );
-
-        queryClient.resumePausedMutations().then(() => {
-          // console.log("❌❌❌❌❌❌❌❌❌ PersistQueryClientProvider invalidateQueries");
-          // queryClient.invalidateQueries(); // TODO: should we?
-        });
+        await runPendingMutations();
       }}
       persistOptions={{
         persister,
         maxAge: 5 * 24 * 60 * 60 * 1000,
         dehydrateOptions: {
-          shouldDehydrateQuery: ({ queryKey }) => {
+          shouldDehydrateQuery: (query) => {
             // SELECTIVELY PERSIST QUERY KEYS https://github.com/TanStack/query/discussions/3568
-            if (queryKey.includes("polling-stations-nomenclator")) return false;
-            if (queryKey.includes(null)) return false;
-            if (queryKey.includes(undefined)) return false;
+            if (query.queryKey.includes("polling-stations-nomenclator")) return false;
+            if (query.queryKey.includes(null)) return false;
+            if (query.queryKey.includes(undefined)) return false;
+
+            // if (query.meta?.dontPersist) return false;
+
+            // return defaultShouldDehydrateQuery(query);
             return true;
           },
         },
       }}
       client={queryClient}
     >
-      {children}
+      <PersistGate>{children}</PersistGate>
     </PersistQueryClientProvider>
   );
 };

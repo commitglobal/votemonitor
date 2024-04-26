@@ -12,7 +12,7 @@ import ChevronLeft from "../assets/icons/Chevron left.svg";
 import AddNote from "../assets/icons/add-note.svg";
 import Trash from "../assets/icons/Trash.svg";
 import Logout from "../assets/icons/logout.svg";
-import PencilAlt from "../assets/icons/Pencil alt.svg";
+import PencilAlt from "../assets/icons/Pencil-alt.svg";
 import XCircle from "../assets/icons/x-circle.svg";
 import MenuAlt2 from "../assets/icons/menu-alt-2.svg";
 import DotsVertical from "../assets/icons/dots-vertical.svg";
@@ -42,11 +42,11 @@ import UndrawReading from "../assets/icons/undraw_reading_book.svg";
 import UndrawFlag from "../assets/icons/undraw_report_flag.svg";
 import LoginError from "../assets/icons/LoginError.svg";
 
-import { styled, View } from "tamagui";
+import { styled, View, ViewProps } from "tamagui";
 import { StyleProp, ViewStyle } from "react-native";
 import { Ref } from "react";
 
-interface IconProps {
+interface IconProps extends ViewProps {
   /**
    * The name of the icon
    */

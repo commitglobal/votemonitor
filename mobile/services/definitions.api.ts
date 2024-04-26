@@ -1,6 +1,6 @@
 import { ElectionRoundVM } from "../common/models/election-round.model";
+import { Note } from "../common/models/note";
 import { PollingStationVisitVM } from "../common/models/polling-station.model";
-import { CameraResult } from "../hooks/useCamera";
 import API from "./api";
 import { ApiFormAnswer } from "./interfaces/answer.type";
 import { ApiFormQuestion } from "./interfaces/question.type";
@@ -212,6 +212,33 @@ export const getElectionRoundAllForms = (
 };
 
 /** ========================================================================
+    ================= GET NotesForPollingStation ====================
+    ========================================================================
+    @description Get all the possible notes for a given polling station
+    @param {string} electionRoundId 
+    @param {string} pollingStationId
+    @param {string} formId 
+    @returns {Note[]} 
+*/
+
+export const getNotesForPollingStation = (
+  electionRoundId: string,
+  pollingStationId: string,
+  formId: string,
+): Promise<Note[]> => {
+  return API.get(`election-rounds/${electionRoundId}/notes`, {
+    params: {
+      electionRoundId: [electionRoundId],
+      pollingStationId: [pollingStationId],
+      formId: [formId],
+    },
+    paramsSerializer: {
+      indexes: null,
+    },
+  }).then((res) => res.data);
+};
+
+/** ========================================================================
     ================= GET FORM SUBMISSIONS ====================
     ========================================================================
     @description Get form submissions for a given >polling station< in an >election round<
@@ -245,27 +272,6 @@ export const getFormSubmissions = (
   }).then((res) => res.data);
 };
 
-/** ========================================================================
-    ================= POST addAttachment ====================
-    ========================================================================
-    @description Sends a photo/video to the backend to be saved
-    @param {AddAttachmentAPIPayload} payload 
-    @returns {AddAttachmentAPIResponse} 
-*/
-export type AddAttachmentAPIPayload = {
-  electionRoundId: string;
-  pollingStationId: string;
-  cameraResult: CameraResult;
-};
-
-export type AddAttachmentAPIResponse = {
-  id: string;
-  fileName: string;
-  mimeType: string;
-  presignedUrl: string;
-  urlValidityInSeconds: number;
-};
-
 /**
     ========================================================================
     ================= POST form submission ====================
@@ -287,25 +293,22 @@ export const upsertFormSubmission = ({
     .catch(console.log);
 };
 
-export const addAttachment = ({
-  electionRoundId,
-  pollingStationId,
-  cameraResult,
-}: AddAttachmentAPIPayload): Promise<AddAttachmentAPIResponse> => {
-  const formData = new FormData();
-  formData.append("attachment", {
-    uri: cameraResult.uri,
-    name: cameraResult.name,
-    type: cameraResult.type,
-  } as unknown as Blob);
+/** ========================================================================
+    ================= POST addNote ====================
+    ========================================================================
+    @description Get all the possible notes for a given polling station
+    @param {string} electionRoundId 
+    @returns {Note} 
+*/
 
-  return API.post(
-    `election-rounds/${electionRoundId}/polling-stations/${pollingStationId}/attachments`,
-    formData,
-    {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    },
-  ).then((res) => res.data);
+export type NotePayload = {
+  electionRoundId: string | undefined;
+  pollingStationId: string;
+  text: string;
+  formId: string;
+  questionId: string;
+};
+
+export const addNote = ({ electionRoundId, ...notePayload }: NotePayload): Promise<Note> => {
+  return API.post(`election-rounds/${electionRoundId}/notes`, notePayload).then((res) => res.data);
 };

@@ -3,9 +3,9 @@ import { Screen } from "../../../components/Screen";
 import Header from "../../../components/Header";
 import { Icon } from "../../../components/Icon";
 import {
-  pollingStationsKeys,
   useElectionRoundAllForms,
   useFormSubmissions,
+  useNotesForPollingStation,
 } from "../../../services/queries.service";
 import { Typography } from "../../../components/Typography";
 import { XStack, YStack, ScrollView } from "tamagui";
@@ -17,14 +17,9 @@ import WizzardControls from "../../../components/WizzardControls";
 import { ViewStyle } from "react-native";
 import { Controller, useForm } from "react-hook-form";
 import WizardFormInput from "../../../components/WizardFormInputs/WizardFormInput";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-  FormSubmissionAPIPayload,
-  FormSubmissionsApiResponse,
-  upsertFormSubmission,
-} from "../../../services/definitions.api";
 import {
   mapAPIAnswersToFormAnswers,
+  mapAPINotesToQuestionNote,
   mapAPIQuestionsToFormQuestions,
   mapFormSubmissionDataToAPIFormSubmissionAnswer,
   setFormDefaultValues,
@@ -36,15 +31,20 @@ import WizardFormElement from "../../../components/WizardFormInputs/WizardFormEl
 import CheckboxInput from "../../../components/Inputs/CheckboxInput";
 import Input from "../../../components/Inputs/Input";
 import WizardRatingFormInput from "../../../components/WizardFormInputs/WizardRatingFormInput";
+import { useFormSubmissionMutation } from "../../../services/mutations/form-submission.mutation";
 import OptionsSheet from "../../../components/OptionsSheet";
 import AddAttachment from "../../../components/AddAttachment";
-import { Dialog } from "../../../components/Dialog";
-import Button from "../../../components/Button";
+
+import { useCamera } from "../../../hooks/useCamera";
+import AddNoteModal from "../../../components/AddNoteModal";
+import Card from "../../../components/Card";
+import { Note } from "../../../common/models/note";
+import { addAttachmentMutation } from "../../../services/mutations/add-attachment.mutation";
+import QuestionAttachments from "../../../components/QuestionAttachments";
 
 const FormQuestionnaire = () => {
   const { questionId, formId, language } = useLocalSearchParams();
   const { activeElectionRound, selectedPollingStation } = useUserData();
-  const queryClient = useQueryClient();
   const [isOptionsSheetOpen, setIsOptionsSheetOpen] = useState(false);
   const [isNoteModalOpen, setIsNoteModalOpen] = useState(false);
 
@@ -64,8 +64,18 @@ const FormQuestionnaire = () => {
     const formSubmission = formSubmissions?.submissions.find(
       (sub) => sub.formId === (formId as string),
     );
-    return mapAPIAnswersToFormAnswers(formSubmission?.answers);
+    return mapAPIAnswersToFormAnswers(formSubmission?.answers); // TODO @birloiflorian do it in query select
   }, [formSubmissions]);
+
+  const { data: formNotes } = useNotesForPollingStation(
+    activeElectionRound?.id,
+    selectedPollingStation?.pollingStationId,
+    formId as string,
+  );
+
+  const notes: Record<string, Note[]> | undefined = useMemo(() => {
+    return mapAPINotesToQuestionNote(formNotes); // TODO @birloiflorian do it in query select
+  }, [formNotes]);
 
   const {
     control,
@@ -76,22 +86,13 @@ const FormQuestionnaire = () => {
     defaultValues: setFormDefaultValues(questionId as string, answers[questionId as string]) as any,
   });
 
-  const formSubmissionsQK = useMemo(
-    () =>
-      pollingStationsKeys.formSubmissions(
-        activeElectionRound?.id,
-        selectedPollingStation?.pollingStationId as string,
-      ),
-    [activeElectionRound, selectedPollingStation],
-  );
-
   const currentForm = useMemo(() => {
     const form = allForms?.forms.find((form) => form.id === formId);
     return form;
   }, [allForms]);
 
   const questions: Record<string, ApiFormQuestion> = useMemo(
-    () => mapAPIQuestionsToFormQuestions(currentForm?.questions),
+    () => mapAPIQuestionsToFormQuestions(currentForm?.questions), // TODO @birloiflorian do it in query select
     [currentForm],
   );
 
@@ -110,46 +111,10 @@ const FormQuestionnaire = () => {
     return `${currentForm?.code} - ${currentForm?.name[(language as string) || currentForm.defaultLanguage]} (${(language as string) || currentForm?.defaultLanguage})`;
   }, [currentForm]);
 
-  const { mutate: updateSubmission } = useMutation({
-    mutationKey: ["upsertFormSubmission"],
-    mutationFn: async (payload: FormSubmissionAPIPayload) => {
-      return upsertFormSubmission(payload);
-    },
-    onMutate: async (payload: FormSubmissionAPIPayload) => {
-      // Cancel any outgoing refetches
-      // (so they don't overwrite our optimistic update)
-      await queryClient.cancelQueries({ queryKey: formSubmissionsQK });
-
-      // Snapshot the previous value
-      const previousData = queryClient.getQueryData<FormSubmissionsApiResponse>(formSubmissionsQK);
-
-      // // Optimistically update to the new value
-      if (previousData && payload.answers) {
-        const updatedSubmission = previousData.submissions.find((s) => s.formId === formId);
-
-        queryClient.setQueryData<FormSubmissionsApiResponse>(formSubmissionsQK, {
-          submissions: [
-            ...previousData.submissions.filter((s) => s.formId !== formId),
-            {
-              ...payload,
-              id: (updatedSubmission?.id as string) || "-1",
-            },
-          ],
-        });
-        return;
-      }
-
-      // Return a context object with the snapshotted value
-      return { previousData };
-    },
-    onError: (err, newData, context) => {
-      console.log(err);
-      queryClient.setQueryData(formSubmissionsQK, context?.previousData);
-    },
-    onSettled: () => {
-      // TODO: we want to keep the mutation in pending until the refetch is done?
-      return queryClient.invalidateQueries({ queryKey: formSubmissionsQK });
-    },
+  const { mutate: updateSubmission } = useFormSubmissionMutation({
+    electionRoundId: activeElectionRound?.id,
+    pollingStationId: selectedPollingStation?.pollingStationId,
+    scopeId: `Submit_Answers_${activeElectionRound?.id}_${selectedPollingStation?.pollingStationId}_${formId}`,
   });
 
   const onSubmitAnswer = (formValues: any) => {
@@ -170,8 +135,8 @@ const FormQuestionnaire = () => {
 
       // update the api
       updateSubmission({
-        pollingStationId: selectedPollingStation?.pollingStationId as string,
-        electionRoundId: activeElectionRound?.id as string,
+        pollingStationId: selectedPollingStation?.pollingStationId,
+        electionRoundId: activeElectionRound?.id,
         formId: currentForm?.id as string,
         answers: Object.values(updatedAnswers).filter(Boolean) as ApiFormAnswer[],
       });
@@ -217,6 +182,39 @@ const FormQuestionnaire = () => {
   if (formsError || answersError) {
     return <Typography>Form Error</Typography>;
   }
+
+  const { uploadCameraOrMedia } = useCamera();
+
+  const { mutate: addAttachment } = addAttachmentMutation();
+
+  const handleUpload = async (type: "library" | "cameraPhoto" | "cameraVideo") => {
+    const cameraResult = await uploadCameraOrMedia(type);
+
+    if (!cameraResult) {
+      return;
+    }
+
+    if (
+      activeElectionRound &&
+      selectedPollingStation?.pollingStationId &&
+      formId &&
+      activeQuestion.question.id
+    ) {
+      addAttachment(
+        {
+          electionRoundId: activeElectionRound.id,
+          pollingStationId: selectedPollingStation.pollingStationId,
+          formId: formId as string,
+          questionId: activeQuestion.question.id,
+          cameraResult,
+        },
+        {
+          onSuccess: console.log,
+          onError: console.log,
+        },
+      );
+    }
+  };
 
   return (
     <Screen
@@ -314,7 +312,7 @@ const FormQuestionnaire = () => {
                         if (option.isFreeText && option.id === value.radioValue) {
                           return (
                             <Input
-                              key={option.id}
+                              key={option.id + "free"}
                               type="textarea"
                               marginTop="$md"
                               value={value.textValue || ""}
@@ -325,7 +323,7 @@ const FormQuestionnaire = () => {
                             />
                           );
                         }
-                        return <></>;
+                        return false;
                       })}
                     </>
                   );
@@ -391,6 +389,48 @@ const FormQuestionnaire = () => {
               }
             }}
           />
+
+          {/* notes section */}
+          {notes && notes[questionId as string] && (
+            <YStack marginTop="$lg" gap="$xxs">
+              <Typography fontWeight="500">Notes</Typography>
+              {notes[questionId as string].map((note) => {
+                return (
+                  <Card
+                    key={note.id}
+                    flexDirection="row"
+                    justifyContent="space-between"
+                    padding="$0"
+                    paddingLeft="$md"
+                    pressStyle={{ opacity: 1 }}
+                  >
+                    <Typography paddingVertical="$md" maxWidth="85%">
+                      {note.text}
+                    </Typography>
+                    <YStack>
+                      <Icon
+                        icon="pencilAlt"
+                        size={24}
+                        padding="$md"
+                        pressStyle={{ opacity: 0.5 }}
+                      />
+                    </YStack>
+                  </Card>
+                );
+              })}
+            </YStack>
+          )}
+
+          {/* attachments */}
+          {activeElectionRound?.id && selectedPollingStation?.pollingStationId && formId && (
+            <QuestionAttachments
+              electionRoundId={activeElectionRound.id}
+              pollingStationId={selectedPollingStation.pollingStationId}
+              formId={formId as string}
+              questionId={questionId as string}
+            />
+          )}
+
           <AddAttachment
             marginTop="$lg"
             onPress={() => {
@@ -398,8 +438,18 @@ const FormQuestionnaire = () => {
               return setIsOptionsSheetOpen(true);
             }}
           />
+
+          <AddNoteModal
+            open={isNoteModalOpen}
+            setOpen={setIsNoteModalOpen}
+            pollingStationId={selectedPollingStation?.pollingStationId as string}
+            formId={formId as string}
+            questionId={questionId as string}
+            electionRoundId={activeElectionRound?.id}
+          />
         </YStack>
       </ScrollView>
+
       <WizzardControls
         isFirstElement={activeQuestion?.index === 0}
         isLastElement={
@@ -422,35 +472,32 @@ const FormQuestionnaire = () => {
           >
             Add note
           </Typography>
-          <Typography preset="body1" paddingVertical="$md" pressStyle={{ color: "$purple5" }}>
+          <Typography
+            onPress={handleUpload.bind(null, "library")}
+            preset="body1"
+            paddingVertical="$md"
+            pressStyle={{ color: "$purple5" }}
+          >
             Load from gallery
           </Typography>
-          <Typography preset="body1" paddingVertical="$md" pressStyle={{ color: "$purple5" }}>
+          <Typography
+            onPress={handleUpload.bind(null, "cameraPhoto")}
+            preset="body1"
+            paddingVertical="$md"
+            pressStyle={{ color: "$purple5" }}
+          >
             Take a photo
           </Typography>
-          <Typography preset="body1" paddingVertical="$md" pressStyle={{ color: "$purple5" }}>
+          <Typography
+            onPress={handleUpload.bind(null, "cameraVideo")}
+            preset="body1"
+            paddingVertical="$md"
+            pressStyle={{ color: "$purple5" }}
+          >
             Record a video
           </Typography>
         </YStack>
       </OptionsSheet>
-
-      <Dialog
-        open={isNoteModalOpen}
-        header={<Typography preset="heading">Add a note</Typography>}
-        content={
-          <>
-            <Input type="textarea" placeholder="Add any relevant notes to this question." />
-          </>
-        }
-        footer={
-          <XStack gap="$md">
-            <Button preset="chromeless" onPress={() => setIsNoteModalOpen(false)}>
-              Cancel
-            </Button>
-            <Button flex={1}>Save</Button>
-          </XStack>
-        }
-      />
     </Screen>
   );
 };
