@@ -3,8 +3,8 @@ import { Adapt, Input, Select, Sheet, XStack, YStack, styled } from "tamagui";
 import { LanguageContext } from "../contexts/language/LanguageContext.provider";
 import { Keyboard } from "react-native";
 import { Icon } from "./Icon";
-import { Typography } from "./Typography";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import * as SecureStore from "expo-secure-store";
 
 // TODO: Maybe this should be provided via LanguageContext provider
 type LanguageOption = {
@@ -30,17 +30,12 @@ interface SelectLanguageProps {
    */
   open: boolean;
   setOpen: (state: boolean) => void;
-
-  /**
-   * The currently selected language.
-   */
-  language: string;
-  setLanguage: (state: string) => void;
 }
 
 const SelectAppLanguage = (props: SelectLanguageProps) => {
   const insets = useSafeAreaInsets();
-  const { open, setOpen, language, setLanguage } = props;
+  const { open, setOpen } = props;
+  const appLanguage = SecureStore.getItem("app_language");
 
   // TODO: generalize this for all languages
   const { changeLanguage } = useContext(LanguageContext);
@@ -70,7 +65,7 @@ const SelectAppLanguage = (props: SelectLanguageProps) => {
       onValueChange={(value) => {
         Keyboard.dismiss();
         changeLanguageCallback(value);
-        setLanguage(value);
+        SecureStore.setItem("app_language", value);
       }}
     >
       <Adapt platform="touch">
@@ -86,21 +81,19 @@ const SelectAppLanguage = (props: SelectLanguageProps) => {
             <YStack
               borderBottomWidth={1}
               borderBottomColor="$gray3"
-              padding="$md"
+              paddingHorizontal="$md"
+              paddingVertical="$lg"
               backgroundColor="white"
-              gap="$sm"
             >
               <XStack backgroundColor="$purple1" borderRadius={8} alignItems="center">
                 <Icon icon="search" color="transparent" size={20} marginLeft="$sm" />
                 <SearchInput flex={1} value={searchTerm} onChangeText={setSearchTerm} />
               </XStack>
-              <Typography preset="body2" color="$gray5">
-                Language options:{" "}
-              </Typography>
             </YStack>
             <Sheet.ScrollView
               marginBottom={insets.bottom}
               paddingHorizontal="$sm"
+              paddingTop="$sm"
               keyboardShouldPersistTaps="handled"
             >
               <Adapt.Contents />
@@ -123,14 +116,16 @@ const SelectAppLanguage = (props: SelectLanguageProps) => {
                       gap="$3"
                       paddingBottom="$sm"
                     >
-                      <Select.ItemText>{entry.label}</Select.ItemText>
+                      <Select.ItemText color={entry.label === appLanguage ? "$purple5" : "$gray9"}>
+                        {entry.label}
+                      </Select.ItemText>
                       <Select.ItemIndicator>
                         <Icon icon="chevronLeft" color="$purple5" />
                       </Select.ItemIndicator>
                     </Select.Item>
                   );
                 }),
-              [filteredLanguages, language],
+              [filteredLanguages, appLanguage],
             )}
           </Select.Group>
         </Select.Viewport>

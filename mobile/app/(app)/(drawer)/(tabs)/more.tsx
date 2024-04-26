@@ -15,12 +15,13 @@ import Constants from "expo-constants";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CURRENT_USER_STORAGE_KEY } from "../../../../common/constants";
 import SelectAppLanguage from "../../../../components/SelectAppLanguage";
+import * as SecureStore from "expo-secure-store";
 
 const More = () => {
   const navigation = useNavigation();
   const queryClient = useQueryClient();
   const [openLanguageSheet, setOpenLanguageSheet] = React.useState(false);
-  const [language, setLanguage] = React.useState<string>("Romanian");
+  const appLanguage = SecureStore.getItem("app_language");
 
   const { t } = useTranslation("more");
   const { signOut } = useAuth();
@@ -61,12 +62,7 @@ const More = () => {
           It is visible only when open===true as a bottom sheet. 
           Otherwise, no select element is rendered.
          */}
-        <SelectAppLanguage
-          open={openLanguageSheet}
-          setOpen={setOpenLanguageSheet}
-          language={language}
-          setLanguage={setLanguage}
-        />
+        <SelectAppLanguage open={openLanguageSheet} setOpen={setOpenLanguageSheet} />
 
         <MenuItem
           label={t("change-language")}
@@ -74,7 +70,7 @@ const More = () => {
           onClick={() => {
             setOpenLanguageSheet(!openLanguageSheet);
           }}
-          helper={language}
+          helper={appLanguage ? `${appLanguage}` : ""}
         ></MenuItem>
 
         <MenuItem
