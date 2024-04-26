@@ -314,6 +314,33 @@ export const addNote = ({ electionRoundId, ...notePayload }: NotePayload): Promi
 };
 
 /** ========================================================================
+    ================= PUT updateNote ====================
+    ========================================================================
+    @description Update a note for a question in form wizard 
+    @param {string} electionRoundId 
+    @param {string} id 
+    @returns {Note} 
+*/
+
+export type UpdateNotePayload = {
+  electionRoundId: string;
+  pollingStationId: string;
+  formId: string;
+  id: string;
+  text: string;
+};
+
+export const updateNote = ({
+  electionRoundId,
+  id,
+  ...updateNotePayload
+}: UpdateNotePayload): Promise<Note> => {
+  return API.put(`election-rounds/${electionRoundId}/notes/${id}`, updateNotePayload).then(
+    (res) => res.data,
+  );
+};
+
+/** ========================================================================
     ================= POST changePassword ====================
     ========================================================================
     @description Change the password for the current user

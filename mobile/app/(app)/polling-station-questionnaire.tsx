@@ -415,10 +415,7 @@ const PollingStationQuestionnaire = () => {
         padding="$xs"
         justifyContent="center"
         paddingBottom={insets.bottom + 10}
-        shadowColor="$gray13"
-        shadowOffset={{ width: 0, height: -5 }}
-        shadowRadius={3}
-        shadowOpacity={0.1}
+        elevation={2}
       >
         <Button flex={1} onPress={handleSubmit(onSubmit)}>
           Submit answer
