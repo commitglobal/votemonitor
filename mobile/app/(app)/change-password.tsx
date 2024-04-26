@@ -63,9 +63,9 @@ const ChangePassowrd = () => {
 
   const onSubmit = async (data: FormData) => {
     const payload: ChangePasswordPayload = {
-      password: data.currentPassword,
-      newPassword: data.newPassword,
-      confirmNewPassword: data.confirmPassword,
+      password: data.currentPassword.trim(),
+      newPassword: data.newPassword.trim(),
+      confirmNewPassword: data.confirmPassword.trim(),
     };
     updatePassword(payload);
   };
