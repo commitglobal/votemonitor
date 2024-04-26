@@ -17,16 +17,14 @@ import { Keyboard } from "react-native";
 import OptionsSheet from "../../components/OptionsSheet";
 import { Typography } from "../../components/Typography";
 
-const mapVisitsToSelectPollingStations = (visits: PollingStationVisitVM[] | undefined) => {
-  const pollingStationsForSelect = visits
-    ? visits.map((visit) => {
-        return {
-          id: visit.pollingStationId,
-          value: visit.pollingStationId,
-          label: `${visit.number} - ${visit.address}`,
-        };
-      })
-    : [];
+const mapVisitsToSelectPollingStations = (visits: PollingStationVisitVM[] = []) => {
+  const pollingStationsForSelect = visits.map((visit) => {
+    return {
+      id: visit.pollingStationId,
+      value: visit.pollingStationId,
+      label: `${visit.number} - ${visit.address}`,
+    };
+  });
 
   //   adding the 'other' and 'not related to a polling station' options
   pollingStationsForSelect.push(
@@ -61,6 +59,7 @@ const ReportIssue = () => {
   });
 
   const onSubmit = (formData: Record<string, string | Record<string, string>>) => {
+    // TODO: waiting for API to be ready
     console.log("💞💞💞💞💞💞 FORM DATA 💞💞💞💞💞", formData);
     router.back();
   };
@@ -93,6 +92,11 @@ const ReportIssue = () => {
               key="polling_station"
               name="polling_station"
               control={control}
+              rules={{
+                validate: ({ id, details }) => {
+                  if (id === "other" && !details) return "This field is required";
+                },
+              }}
               render={({ field: { onChange, value = { id: "", details: "" } } }) => (
                 <>
                   {/* select polling station */}
@@ -106,20 +110,26 @@ const ReportIssue = () => {
                     />
                   </FormElement>
                   {/* polling station details */}
+                  {console.log(errors)}
                   {value.id === "other" && (
-                    <FormInput
-                      title="Polling station details *"
-                      type="textarea"
-                      placeholder="Please write here some identification details for this polling station (such as address, name, number, etc.)"
-                      value={value.details}
-                      onChangeText={(details) => onChange({ ...value, details })}
-                    />
+                    <YStack gap="$xxs">
+                      <FormInput
+                        title="Polling station details *"
+                        type="textarea"
+                        placeholder="Please write here some identification details for this polling station (such as address, name, number, etc.)"
+                        value={value.details}
+                        onChangeText={(details) => onChange({ ...value, details })}
+                        error={errors.polling_station}
+                      />
+                      {errors.polling_station && (
+                        <Typography color="$red5">{errors.polling_station.message}</Typography>
+                      )}
+                    </YStack>
                   )}
                 </>
               )}
             />
 
-            {/* //TODO: does the '*' need to be red? */}
             {/* issue title */}
             <Controller
               key="issue_title"
@@ -136,8 +146,7 @@ const ReportIssue = () => {
                     type="text"
                     value={value}
                     onChangeText={onChange}
-                    borderColor={errors.issue_title && "$red5"}
-                    titleProps={errors.issue_title && { color: "hsl(347, 77%, 40%)" }}
+                    error={errors.issue_title}
                   />
                   {errors.issue_title && (
                     <Typography color="$red5">{errors.issue_title.message}</Typography>
@@ -162,8 +171,7 @@ const ReportIssue = () => {
                     placeholder="Describe the situation in detail here."
                     value={value}
                     onChangeText={onChange}
-                    borderColor={errors.issue_description && "$red5"}
-                    titleProps={errors.issue_description && { color: "hsl(347, 77%, 40%)" }}
+                    error={errors.issue_description}
                   />
                   {errors.issue_description && (
                     <Typography color="$red5">{errors.issue_description.message}</Typography>

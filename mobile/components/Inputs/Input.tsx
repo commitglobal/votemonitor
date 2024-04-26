@@ -21,6 +21,7 @@ const StyledTextArea = styled(TamaguiTextArea, {
   textAlignVertical: "top",
   fontSize: 16,
   lineHeight: 24,
+  borderColor: "$gray3",
   fontWeight: "400",
   focusStyle: {
     borderColor: "$purple5",
@@ -35,7 +36,6 @@ const Input: React.FC<InputProps> = ({
   onIconRightPress,
   ...rest
 }) => {
-  console.log(borderColor);
   return (
     <>
       {type === "textarea" ? (

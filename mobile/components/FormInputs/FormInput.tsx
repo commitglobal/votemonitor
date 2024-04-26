@@ -1,7 +1,8 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import Input, { InputProps } from "../Inputs/Input";
 import FormElement from "./FormElement";
 import { StyleProp, TextStyle } from "react-native";
+import { FieldError, FieldErrorsImpl, Merge } from "react-hook-form";
 
 interface FormInputProps extends InputProps {
   //   question title
@@ -10,6 +11,11 @@ interface FormInputProps extends InputProps {
   titleProps?: StyleProp<TextStyle>;
   // placeholder
   placeholder?: string;
+  //error
+  error?:
+    | FieldError
+    | Merge<FieldError, FieldErrorsImpl<{ details: string; id: string }>>
+    | undefined;
 }
 
 const FormInput: React.FC<FormInputProps> = ({
@@ -17,11 +23,12 @@ const FormInput: React.FC<FormInputProps> = ({
   title,
   placeholder = "",
   titleProps,
+  error,
   ...rest
 }) => {
   return (
-    <FormElement title={title} titleProps={titleProps}>
-      <Input type={type} placeholder={placeholder} {...rest} />
+    <FormElement title={title} titleProps={titleProps} error={error}>
+      <Input type={type} placeholder={placeholder} borderColor={error && "$red5"} {...rest} />
     </FormElement>
   );
 };
