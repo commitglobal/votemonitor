@@ -1,41 +1,51 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { updateNote, UpdateNotePayload } from "../definitions.api";
 import { useMemo } from "react";
 import { pollingStationsKeys } from "../queries.service";
-import { addNote, NotePayload } from "../definitions.api";
 import { Note } from "../../common/models/note";
-import * as Crypto from "expo-crypto";
 
-export const useAddNoteMutation = (
-  electionRoundId: string | undefined,
-  pollingStationId: string | undefined,
-  formId: string | undefined,
+export const useUpdateNote = (
+  electionRoundId: string,
+  pollingStationId: string,
+  formId: string,
+  id: string,
 ) => {
   const queryClient = useQueryClient();
 
-  // this is the GET notes key - we need it in order to invalidate that query after adding the new note
+  // this is the GET notes key - we need it in order to invalidate that query after updating the note
   const getNotesQK = useMemo(
     () => pollingStationsKeys.notes(electionRoundId, pollingStationId, formId),
     [electionRoundId],
   );
 
   return useMutation({
-    mutationKey: ["addNote"],
-    mutationFn: async (payload: NotePayload) => {
-      return addNote(payload);
+    mutationKey: [`updateNote_${id}`],
+    mutationFn: async (payload: UpdateNotePayload) => {
+      return updateNote(payload);
     },
-    onMutate: async (payload: NotePayload) => {
+    onMutate: async (payload: UpdateNotePayload) => {
       // Cancel any outgoing refetches
       // (so they don't overwrite our optimistic update)
       await queryClient.cancelQueries({ queryKey: getNotesQK });
 
       // Snapshot the previous value
-      const previousNotes = queryClient.getQueryData(getNotesQK);
+      const previousNotes: Note[] | undefined = queryClient.getQueryData(getNotesQK);
+
+      if (!previousNotes) {
+        return;
+      }
 
       // Optimistically update to the new value
-      queryClient.setQueryData(getNotesQK, (old: Note[]) => [
-        ...old,
-        { id: Crypto.randomUUID(), ...payload },
-      ]);
+      const updatedNotes = previousNotes.map((note) => {
+        if (note.id === id) {
+          // update the text for the edited note
+          return { ...note, text: payload.text };
+        }
+        return note;
+      });
+
+      // Optimistically update to the new value
+      queryClient.setQueryData(getNotesQK, [...updatedNotes]);
 
       // Return a context object with the snapshotted value
       return { previousNotes };

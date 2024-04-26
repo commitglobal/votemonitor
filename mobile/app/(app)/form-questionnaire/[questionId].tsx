@@ -37,10 +37,10 @@ import AddAttachment from "../../../components/AddAttachment";
 
 import { useCamera } from "../../../hooks/useCamera";
 import AddNoteModal from "../../../components/AddNoteModal";
-import Card from "../../../components/Card";
 import { Note } from "../../../common/models/note";
 import { addAttachmentMutation } from "../../../services/mutations/add-attachment.mutation";
 import QuestionAttachments from "../../../components/QuestionAttachments";
+import QuestionNotes from "../../../components/QuestionNotes";
 
 const FormQuestionnaire = () => {
   const { questionId, formId, language } = useLocalSearchParams();
@@ -391,35 +391,17 @@ const FormQuestionnaire = () => {
           />
 
           {/* notes section */}
-          {notes && notes[questionId as string] && (
-            <YStack marginTop="$lg" gap="$xxs">
-              <Typography fontWeight="500">Notes</Typography>
-              {notes[questionId as string].map((note) => {
-                return (
-                  <Card
-                    key={note.id}
-                    flexDirection="row"
-                    justifyContent="space-between"
-                    padding="$0"
-                    paddingLeft="$md"
-                    pressStyle={{ opacity: 1 }}
-                  >
-                    <Typography paddingVertical="$md" maxWidth="85%">
-                      {note.text}
-                    </Typography>
-                    <YStack>
-                      <Icon
-                        icon="pencilAlt"
-                        size={24}
-                        padding="$md"
-                        pressStyle={{ opacity: 0.5 }}
-                      />
-                    </YStack>
-                  </Card>
-                );
-              })}
-            </YStack>
-          )}
+          {notes &&
+            notes[questionId as string] &&
+            activeElectionRound?.id &&
+            selectedPollingStation?.pollingStationId && (
+              <QuestionNotes
+                notes={notes[questionId as string]}
+                electionRoundId={activeElectionRound.id}
+                pollingStationId={selectedPollingStation.pollingStationId}
+                formId={formId as string}
+              />
+            )}
 
           {/* attachments */}
           {activeElectionRound?.id && selectedPollingStation?.pollingStationId && formId && (

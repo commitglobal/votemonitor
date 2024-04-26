@@ -37,14 +37,13 @@ const QuestionAttachments: React.FC<QuestionAttachmentsProps> = ({
                 <Typography preset="body1" fontWeight="700" maxWidth="85%" numberOfLines={1}>
                   {attachment.fileName}
                 </Typography>
-                <Icon
-                  icon="xCircle"
-                  size={24}
-                  color="$gray5"
+                <YStack
+                  padding="$md"
                   onPress={() => console.log("delete media action")}
                   pressStyle={{ opacity: 0.5 }}
-                  padding="$md"
-                />
+                >
+                  <Icon icon="xCircle" size={24} color="$gray5" />
+                </YStack>
               </Card>
             );
           })}
