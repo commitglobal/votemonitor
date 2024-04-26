@@ -8,7 +8,7 @@ import {
   useNotesForPollingStation,
 } from "../../../services/queries.service";
 import { Typography } from "../../../components/Typography";
-import { XStack, YStack, ScrollView } from "tamagui";
+import { XStack, YStack, ScrollView, Spinner } from "tamagui";
 import LinearProgress from "../../../components/LinearProgress";
 import { useMemo, useState } from "react";
 import { useUserData } from "../../../contexts/user/UserContext.provider";
@@ -185,7 +185,7 @@ const FormQuestionnaire = () => {
 
   const { uploadCameraOrMedia } = useCamera();
 
-  const { mutate: addAttachment } = addAttachmentMutation();
+  const { mutate: addAttachment, isPending: isLoadingAddAttachmentt } = addAttachmentMutation();
 
   const handleUpload = async (type: "library" | "cameraPhoto" | "cameraVideo") => {
     const cameraResult = await uploadCameraOrMedia(type);
@@ -209,8 +209,8 @@ const FormQuestionnaire = () => {
           cameraResult,
         },
         {
-          onSuccess: console.log,
-          onError: console.log,
+          onSettled: () => setIsOptionsSheetOpen(false),
+          onError: () => console.log("🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴ERORR🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴"),
         },
       );
     }
@@ -442,43 +442,47 @@ const FormQuestionnaire = () => {
         onPreviousButtonPress={onBackButtonPress}
       />
       <OptionsSheet open={isOptionsSheetOpen} setOpen={setIsOptionsSheetOpen}>
-        <YStack paddingHorizontal="$sm" gap="$xxs">
-          <Typography
-            preset="body1"
-            paddingVertical="$md"
-            pressStyle={{ color: "$purple5" }}
-            onPress={() => {
-              setIsOptionsSheetOpen(false);
-              setIsNoteModalOpen(true);
-            }}
-          >
-            Add note
-          </Typography>
-          <Typography
-            onPress={handleUpload.bind(null, "library")}
-            preset="body1"
-            paddingVertical="$md"
-            pressStyle={{ color: "$purple5" }}
-          >
-            Load from gallery
-          </Typography>
-          <Typography
-            onPress={handleUpload.bind(null, "cameraPhoto")}
-            preset="body1"
-            paddingVertical="$md"
-            pressStyle={{ color: "$purple5" }}
-          >
-            Take a photo
-          </Typography>
-          <Typography
-            onPress={handleUpload.bind(null, "cameraVideo")}
-            preset="body1"
-            paddingVertical="$md"
-            pressStyle={{ color: "$purple5" }}
-          >
-            Record a video
-          </Typography>
-        </YStack>
+        {isLoadingAddAttachmentt ? (
+          <MediaLoading />
+        ) : (
+          <YStack paddingHorizontal="$sm" gap="$xxs">
+            <Typography
+              preset="body1"
+              paddingVertical="$md"
+              pressStyle={{ color: "$purple5" }}
+              onPress={() => {
+                setIsOptionsSheetOpen(false);
+                setIsNoteModalOpen(true);
+              }}
+            >
+              Add note
+            </Typography>
+            <Typography
+              onPress={handleUpload.bind(null, "library")}
+              preset="body1"
+              paddingVertical="$md"
+              pressStyle={{ color: "$purple5" }}
+            >
+              Load from gallery
+            </Typography>
+            <Typography
+              onPress={handleUpload.bind(null, "cameraPhoto")}
+              preset="body1"
+              paddingVertical="$md"
+              pressStyle={{ color: "$purple5" }}
+            >
+              Take a photo
+            </Typography>
+            <Typography
+              onPress={handleUpload.bind(null, "cameraVideo")}
+              preset="body1"
+              paddingVertical="$md"
+              pressStyle={{ color: "$purple5" }}
+            >
+              Record a video
+            </Typography>
+          </YStack>
+        )}
       </OptionsSheet>
     </Screen>
   );
@@ -494,3 +498,14 @@ const $containerStyle: ViewStyle = {
 };
 
 export default FormQuestionnaire;
+
+const MediaLoading = () => {
+  return (
+    <YStack alignItems="center" gap="$lg" paddingHorizontal="$lg">
+      <Spinner size="large" color="$purple5" />
+      <Typography preset="subheading" fontWeight="500" color="$purple5">
+        Adding attachment...
+      </Typography>
+    </YStack>
+  );
+};
