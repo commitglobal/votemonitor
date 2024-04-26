@@ -312,3 +312,22 @@ export type NotePayload = {
 export const addNote = ({ electionRoundId, ...notePayload }: NotePayload): Promise<Note> => {
   return API.post(`election-rounds/${electionRoundId}/notes`, notePayload).then((res) => res.data);
 };
+
+/** ========================================================================
+    ================= POST changePassword ====================
+    ========================================================================
+    @description Change the password for the current user
+    @param {ChangePasswordPayload} data includes current, new and confirmed passwords
+*/
+export type ChangePasswordPayload = {
+  password: string;
+  newPassword: string;
+  confirmNewPassword: string;
+};
+
+export const changePassword = (data: ChangePasswordPayload) => {
+  return API.post("auth/change-password", data).catch((err) => {
+    console.log(err);
+    throw err;
+  });
+};

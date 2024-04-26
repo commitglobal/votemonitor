@@ -1,33 +1,17 @@
 import { useMutation } from "@tanstack/react-query";
-import API from "../../services/api";
-
-interface FormData {
-  currentPassword: string;
-  newPassword: string;
-  confirmPassword: string;
-}
-
-// Mutation Function
-const changePassword = async (data: FormData) => {
-  return API.post("auth/change-password", {
-    password: data.currentPassword,
-    newPassword: data.newPassword,
-    confirmNewPassword: data.confirmPassword,
-  }).catch((err) => {
-    throw err;
-  });
-};
+import { changePassword, ChangePasswordPayload } from "../definitions.api";
 
 export const useChangePasswordMutation = () => {
   return useMutation({
     mutationKey: ["changePassword"],
-    mutationFn: changePassword,
+    mutationFn: async (payload: ChangePasswordPayload) => {
+      return changePassword(payload);
+    },
     onError: (err) => {
-      //   setCredentialsError(true);
-      console.log(err);
+      console.log("🔒🔒 ERROR 🔒🔒", err);
     },
     onSuccess: () => {
-      //   setSuccesfullyChanged(true);
+      console.log("Password changed successfully");
     },
   });
 };

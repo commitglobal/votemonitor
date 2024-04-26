@@ -16,6 +16,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import ChangePasswordConfirmation from "./change-password-confirmation";
 import { useChangePasswordMutation } from "../../services/mutations/change-password.mutation";
+import { ChangePasswordPayload } from "../../services/definitions.api";
 
 interface FormData {
   currentPassword: string;
@@ -61,7 +62,12 @@ const ChangePassowrd = () => {
   } = useChangePasswordMutation();
 
   const onSubmit = async (data: FormData) => {
-    updatePassword(data);
+    const payload: ChangePasswordPayload = {
+      password: data.currentPassword,
+      newPassword: data.newPassword,
+      confirmNewPassword: data.confirmPassword,
+    };
+    updatePassword(payload);
   };
 
   // Render either form or confirmation screen
