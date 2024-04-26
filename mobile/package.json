@@ -26,9 +26,9 @@
     "@shopify/flash-list": "1.6.3",
     "@tamagui/babel-plugin": "^1.93.2",
     "@tamagui/config": "^1.93.2",
-    "@tanstack/query-async-storage-persister": "^5.28.8",
-    "@tanstack/react-query": "^5.28.8",
-    "@tanstack/react-query-persist-client": "^5.28.8",
+    "@tanstack/query-async-storage-persister": "^5.32.0",
+    "@tanstack/react-query": "^5.32.0",
+    "@tanstack/react-query-persist-client": "^5.32.0",
     "axios": "^1.6.8",
     "expo": "~50.0.17",
     "expo-application": "~5.8.4",
@@ -55,7 +55,9 @@
     "react-native-safe-area-context": "4.8.2",
     "react-native-screens": "~3.29.0",
     "react-native-svg": "14.1.0",
+    "superjson": "^2.2.1",
     "tamagui": "^1.93.2",
+    "expo-crypto": "~12.8.1",
     "zod": "^3.23.3"
   },
   "devDependencies": {
