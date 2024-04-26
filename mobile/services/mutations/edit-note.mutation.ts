@@ -37,7 +37,7 @@ export const useUpdateNote = (
 
       // Optimistically update to the new value
       const updatedNotes = previousNotes.map((note) => {
-        if (note.id === id) {
+        if (note.id === payload.id) {
           // update the text for the edited note
           return { ...note, text: payload.text };
         }
