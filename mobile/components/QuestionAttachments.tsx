@@ -34,10 +34,12 @@ const QuestionAttachments: React.FC<QuestionAttachmentsProps> = ({
                 justifyContent="space-between"
                 alignItems="center"
               >
-                <Typography>{attachment.fileName}</Typography>
+                <Typography preset="body1" fontWeight="700" maxWidth="85%" numberOfLines={1}>
+                  {attachment.fileName}
+                </Typography>
                 <Icon
                   icon="xCircle"
-                  size={18}
+                  size={24}
                   color="$gray5"
                   onPress={() => console.log("delete media action")}
                   pressStyle={{ opacity: 0.5 }}
