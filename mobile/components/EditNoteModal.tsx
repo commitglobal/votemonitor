@@ -7,6 +7,7 @@ import { XStack } from "tamagui";
 import Button from "./Button";
 import { Note } from "../common/models/note";
 import { useUpdateNote } from "../services/mutations/edit-note.mutation";
+import { useDeleteNote } from "../services/mutations/delete-note.mutation";
 
 const EditNoteModal = ({
   selectedNote,
@@ -34,6 +35,26 @@ const EditNoteModal = ({
     selectedNote!.id,
   );
 
+  const { mutate: deleteNote } = useDeleteNote(
+    electionRoundId,
+    pollingStationId,
+    formId,
+    selectedNote!.id,
+  );
+
+  const onDelete = () => {
+    const deleteNotePayload = {
+      electionRoundId,
+      pollingStationId,
+      formId,
+      id: selectedNote!.id,
+    };
+    // delete note
+    deleteNote(deleteNotePayload);
+    // close dialog
+    setSelectedNote(null);
+  };
+
   const onSubmit = (formData: any) => {
     const updateNotePayload = {
       electionRoundId,
@@ -60,6 +81,7 @@ const EditNoteModal = ({
             paddingVertical="$xxxs"
             paddingLeft="$xs"
             pressStyle={{ opacity: 0.5 }}
+            onPress={onDelete}
           >
             Delete note
           </Typography>

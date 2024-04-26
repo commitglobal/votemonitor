@@ -339,3 +339,23 @@ export const updateNote = ({
     (res) => res.data,
   );
 };
+
+/** ========================================================================
+    ================= DELETE deleteNote ====================
+    ========================================================================
+    @description delete a note 
+    @param {string} electionRoundId 
+    @param {string} id 
+    @returns {Note} 
+*/
+
+export type DeleteNotePayload = {
+  electionRoundId: string;
+  id: string;
+  pollingStationId: string;
+  formId: string;
+};
+
+export const deleteNote = ({ electionRoundId, id }: DeleteNotePayload) => {
+  return API.delete(`election-rounds/${electionRoundId}/notes/${id}`).then((res) => res.data);
+};
