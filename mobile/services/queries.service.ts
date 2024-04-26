@@ -1,4 +1,4 @@
-import { skipToken, useMutation, useQuery } from "@tanstack/react-query";
+import { skipToken, useQuery } from "@tanstack/react-query";
 import {
   getElectionRounds,
   getPollingStationInformation,
@@ -13,7 +13,6 @@ import * as API from "./definitions.api";
 
 import { PollingStationNomenclatorNodeVM } from "../common/models/polling-station.model";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { performanceLog } from "../helpers/misc";
 
 const electionRoundsKeys = {
   all: ["election-rounds"] as const,
@@ -69,15 +68,32 @@ export const pollingStationsKeys = {
     electionRoundId: string | undefined,
     pollingStationId: string | undefined,
     formId: string | undefined,
-  ) => [
-    ...pollingStationsKeys.all,
-    "electionRoundId",
-    electionRoundId,
-    "pollingStationId",
-    pollingStationId,
-    "formId",
-    formId,
-  ],
+  ) =>
+    [
+      ...pollingStationsKeys.all,
+      "electionRoundId",
+      electionRoundId,
+      "pollingStationId",
+      pollingStationId,
+      "formId",
+      formId,
+      "notes",
+    ] as const,
+  attachments: (
+    electionRoundId: string | undefined,
+    pollingStationId: string | undefined,
+    formId: string | undefined,
+  ) =>
+    [
+      ...pollingStationsKeys.all,
+      "electionRoundId",
+      electionRoundId,
+      "pollingStationId",
+      pollingStationId,
+      "formId",
+      formId,
+      "attachments",
+    ] as const,
   mutatePollingStationGeneralData: () =>
     [...pollingStationsKeys.all, "mutate-general-data"] as const,
 };
@@ -260,18 +276,5 @@ export const useNotesForPollingStation = (
       electionRoundId && pollingStationId && formId
         ? () => getNotesForPollingStation(electionRoundId, pollingStationId, formId)
         : skipToken,
-  });
-};
-
-// ================== Mutations =====================
-
-export const addAttachmentMutation = () => {
-  return useMutation({
-    mutationKey: pollingStationsKeys.addAttachmentMutation(),
-    mutationFn: async (
-      payload: API.AddAttachmentAPIPayload,
-    ): Promise<API.AddAttachmentAPIResponse> => {
-      return performanceLog(() => API.addAttachment(payload));
-    },
   });
 };

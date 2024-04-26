@@ -5,7 +5,6 @@ import { Icon } from "../../../components/Icon";
 import {
   useElectionRoundAllForms,
   useFormSubmissions,
-  addAttachmentMutation,
   useNotesForPollingStation,
 } from "../../../services/queries.service";
 import { Typography } from "../../../components/Typography";
@@ -40,6 +39,8 @@ import { useCamera } from "../../../hooks/useCamera";
 import AddNoteModal from "../../../components/AddNoteModal";
 import Card from "../../../components/Card";
 import { Note } from "../../../common/models/note";
+import { addAttachmentMutation } from "../../../services/mutations/add-attachment.mutation";
+import QuestionAttachments from "../../../components/QuestionAttachments";
 
 const FormQuestionnaire = () => {
   const { questionId, formId, language } = useLocalSearchParams();
@@ -63,7 +64,7 @@ const FormQuestionnaire = () => {
     const formSubmission = formSubmissions?.submissions.find(
       (sub) => sub.formId === (formId as string),
     );
-    return mapAPIAnswersToFormAnswers(formSubmission?.answers);
+    return mapAPIAnswersToFormAnswers(formSubmission?.answers); // TODO @birloiflorian do it in query select
   }, [formSubmissions]);
 
   const { data: formNotes } = useNotesForPollingStation(
@@ -73,7 +74,7 @@ const FormQuestionnaire = () => {
   );
 
   const notes: Record<string, Note[]> | undefined = useMemo(() => {
-    return mapAPINotesToQuestionNote(formNotes);
+    return mapAPINotesToQuestionNote(formNotes); // TODO @birloiflorian do it in query select
   }, [formNotes]);
 
   const {
@@ -91,7 +92,7 @@ const FormQuestionnaire = () => {
   }, [allForms]);
 
   const questions: Record<string, ApiFormQuestion> = useMemo(
-    () => mapAPIQuestionsToFormQuestions(currentForm?.questions),
+    () => mapAPIQuestionsToFormQuestions(currentForm?.questions), // TODO @birloiflorian do it in query select
     [currentForm],
   );
 
@@ -421,34 +422,14 @@ const FormQuestionnaire = () => {
           )}
 
           {/* attachments */}
-          <YStack marginTop="$lg" gap="$xxs">
-            <Typography fontWeight="500">Uploaded media</Typography>
-            <YStack gap="$xxs">
-              {mockUploadedMedia.map((mockMedia) => {
-                return (
-                  <Card
-                    padding="$0"
-                    paddingLeft="$md"
-                    key={mockMedia}
-                    flexDirection="row"
-                    justifyContent="space-between"
-                    alignItems="center"
-                  >
-                    <Typography>{mockMedia}</Typography>
-                    <Icon
-                      icon="xCircle"
-                      size={18}
-                      color="$gray5"
-                      // TODO: delete media action
-                      onPress={() => console.log("delete media action")}
-                      pressStyle={{ opacity: 0.5 }}
-                      padding="$md"
-                    />
-                  </Card>
-                );
-              })}
-            </YStack>
-          </YStack>
+          {activeElectionRound?.id && selectedPollingStation?.pollingStationId && formId && (
+            <QuestionAttachments
+              electionRoundId={activeElectionRound.id}
+              pollingStationId={selectedPollingStation.pollingStationId}
+              formId={formId as string}
+              questionId={questionId as string}
+            />
+          )}
 
           <AddAttachment
             marginTop="$lg"
@@ -520,8 +501,6 @@ const FormQuestionnaire = () => {
     </Screen>
   );
 };
-
-const mockUploadedMedia = ["123456667.jpg", "339829348392.jpg"];
 
 const $screenStyle: ViewStyle = {
   backgroundColor: "white",

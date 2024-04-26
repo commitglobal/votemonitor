@@ -8,6 +8,7 @@ import * as API from "../../services/definitions.api";
 import { performanceLog } from "../../helpers/misc";
 import { PersistGate } from "../../components/PersistGate";
 import SuperJSON from "superjson";
+import { AddAttachmentAPIPayload, addAttachment } from "../../services/api/add-attachment.api";
 
 const queryClient = new QueryClient({
   mutationCache: new MutationCache({
@@ -101,8 +102,8 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
   });
 
   queryClient.setMutationDefaults(pollingStationsKeys.addAttachmentMutation(), {
-    mutationFn: async (payload: API.AddAttachmentAPIPayload) => {
-      return performanceLog(() => API.addAttachment(payload));
+    mutationFn: async (payload: AddAttachmentAPIPayload) => {
+      return performanceLog(() => addAttachment(payload));
     },
   });
 
