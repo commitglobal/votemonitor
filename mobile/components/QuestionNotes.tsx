@@ -36,14 +36,12 @@ const QuestionNotes = ({
               <Typography paddingVertical="$md" maxWidth="85%">
                 {note.text}
               </Typography>
-              <YStack>
-                <Icon
-                  icon="pencilAlt"
-                  size={24}
-                  padding="$md"
-                  pressStyle={{ opacity: 0.5 }}
-                  onPress={() => setSelectedNote(note)}
-                />
+              <YStack
+                onPress={() => setSelectedNote(note)}
+                pressStyle={{ opacity: 0.5 }}
+                padding="$md"
+              >
+                <Icon icon="pencilAlt" size={24} />
               </YStack>
             </Card>
           );

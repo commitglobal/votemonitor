@@ -54,7 +54,13 @@ const EditNoteModal = ({
       header={
         <XStack justifyContent="space-between" alignItems="center">
           <Typography preset="heading">Edit note</Typography>
-          <Typography preset="body2" color="$red10">
+          <Typography
+            preset="body2"
+            color="$red10"
+            paddingVertical="$xxxs"
+            paddingLeft="$xs"
+            pressStyle={{ opacity: 0.5 }}
+          >
             Delete note
           </Typography>
         </XStack>

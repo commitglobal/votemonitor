@@ -2,6 +2,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { pollingStationsKeys } from "../queries.service";
 import { addNote, NotePayload } from "../definitions.api";
+import { Note } from "../../common/models/note";
+import * as Crypto from "expo-crypto";
 
 export const useAddNoteMutation = (
   electionRoundId: string | undefined,
@@ -21,9 +23,22 @@ export const useAddNoteMutation = (
     mutationFn: async (payload: NotePayload) => {
       return addNote(payload);
     },
-    onMutate: async (_payload: NotePayload) => {
+    onMutate: async (payload: NotePayload) => {
+      // Cancel any outgoing refetches
+      // (so they don't overwrite our optimistic update)
       await queryClient.cancelQueries({ queryKey: getNotesQK });
-      // TODO: optimistic updates
+
+      // Snapshot the previous value
+      const previousNotes = queryClient.getQueryData(getNotesQK);
+
+      // Optimistically update to the new value
+      queryClient.setQueryData(getNotesQK, (old: Note[]) => [
+        ...old,
+        { id: Crypto.randomUUID(), ...payload },
+      ]);
+
+      // Return a context object with the snapshotted value
+      return { previousNotes };
     },
     onError: (err) => {
       console.log("🔴🔴🔴 ERROR 🔴🔴🔴", err);
