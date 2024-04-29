@@ -36,6 +36,9 @@ export const useDeleteAttachment = (
         );
         return updatedAttachments;
       });
+
+      // Return a context object with the snapshotted value
+      return { prevAttachments };
     },
     onError: (err) => {
       console.log("🔴🔴🔴 ERROR 🔴🔴🔴", err);
