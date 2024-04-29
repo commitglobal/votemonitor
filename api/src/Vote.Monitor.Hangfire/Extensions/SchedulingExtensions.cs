@@ -13,7 +13,11 @@ public static class SchedulingExtensions
 
         recurringJobManager
             .AddOrUpdate<IAuditLogCleanerJob>(RecurringJobNames.AuditLogCleaner, x => x.Run(), Cron.Daily);
+
         recurringJobManager
-            .AddOrUpdate<IExportedDataCleanerJob>(RecurringJobNames.AuditLogCleaner, x => x.Run(), Cron.Daily);
+            .AddOrUpdate<IExportedDataCleanerJob>(RecurringJobNames.ExportedDataCleaner, x => x.Run(), Cron.Daily);
+
+        recurringJobManager
+            .AddOrUpdate<IImportValidationErrorsCleanerJob>(RecurringJobNames.ImportValidationErrorsCleaner, x => x.Run(), Cron.Daily);
     }
 }

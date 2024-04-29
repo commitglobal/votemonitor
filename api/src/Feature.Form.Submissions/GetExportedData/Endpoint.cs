@@ -2,7 +2,6 @@
 using Authorization.Policies.Requirements;
 using Dapper;
 using Microsoft.AspNetCore.Authorization;
-using Vote.Monitor.Core.Extensions;
 using Vote.Monitor.Domain;
 
 namespace Feature.Form.Submissions.GetExportedData;
@@ -16,7 +15,7 @@ public class Endpoint(IAuthorizationService authorizationService, VoteMonitorCon
         Options(x => x.WithTags("form-submissions"));
         Summary(s =>
         {
-            s.Summary = "Enqueues a job to export data and returns job id to poll for results";
+            s.Summary = "Gets exported data excel";
         });
         Policies(PolicyNames.NgoAdminsOnly);
     }
@@ -50,7 +49,7 @@ public class Endpoint(IAuthorizationService authorizationService, VoteMonitorCon
             return;
         }
 
-        var stream = exportedData.Base64EncodedData.ToMemoryStream();
-        await SendStreamAsync(stream, exportedData.FileName, stream.Length, cancellation: ct);
+        var bytes = Convert.FromBase64String(exportedData.Base64EncodedData);
+        await SendBytesAsync(bytes, fileName: exportedData.FileName, contentType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", cancellation: ct);
     }
 }

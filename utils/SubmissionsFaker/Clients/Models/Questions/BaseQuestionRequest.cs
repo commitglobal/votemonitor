@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 using PolyJson;
 
-namespace SubmissionsFaker.Clients.NgoAdmin.Models;
+namespace SubmissionsFaker.Clients.Models.Questions;
 
 [PolyJsonConverter(distriminatorPropertyName: "$questionType")]
 

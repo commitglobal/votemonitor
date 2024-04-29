@@ -1,6 +1,6 @@
 ﻿namespace Vote.Monitor.Hangfire.RecurringJobs;
 
-public interface IAttachmentsRemoverJob
+public interface IImportValidationErrorsCleanerJob
 {
     Task Run();
 }

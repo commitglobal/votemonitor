@@ -1,4 +1,6 @@
 ﻿using Refit;
+using SubmissionsFaker.Clients.Models;
+using SubmissionsFaker.Clients.PlatformAdmin.Models;
 
 namespace SubmissionsFaker.Clients.PlatformAdmin;
 
@@ -25,5 +27,8 @@ public interface IPlatformAdminApi
 
     [Post("/api/election-rounds/{electionRoundId}/monitoring-ngos/{monitoringNgoId}/monitoring-observers")]
     Task<CreateResponse> AssignObserverToMonitoring([AliasAs("electionRoundId")] Guid electionRoundId, [AliasAs("monitoringNgoId")] Guid monitoringNgoId, [Body]AssignObserverRequest request, [Authorize] string token);
+
+    [Post("/api/election-rounds/{electionRoundId}/polling-station-information-form")]
+    Task CreatePSIForm([AliasAs("electionRoundId")] Guid electionRoundId, [Body] UpsertPSIFormRequest psiFormRequest, [Authorize] string token);
 
 }

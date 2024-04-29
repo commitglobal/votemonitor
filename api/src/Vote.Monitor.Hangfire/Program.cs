@@ -12,7 +12,14 @@ using Vote.Monitor.Hangfire.Jobs;
 using Vote.Monitor.Core.Services.Serialization;
 using Vote.Monitor.Core.Services.Time;
 using Vote.Monitor.Hangfire.Extensions;
+using Vote.Monitor.Hangfire.Jobs.ExportData;
 using Vote.Monitor.Hangfire.Services;
+using Dapper;
+using Vote.Monitor.Core.Converters;
+using Vote.Monitor.Core.Services.FileStorage;
+using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
+using Vote.Monitor.Domain.Entities.FormBase.Questions;
+using Vote.Monitor.Hangfire.Jobs.ExportData.ReadModels;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOptions();
@@ -33,6 +40,12 @@ builder.Services.AddLogging(logging =>
     logging.AddSerilog(logger);
 });
 
+// Register type handlers;
+SqlMapper.AddTypeHandler(typeof(BaseQuestion[]), new JsonToObjectConverter<BaseQuestion[]>());
+SqlMapper.AddTypeHandler(typeof(BaseAnswer[]), new JsonToObjectConverter<BaseAnswer[]>());
+SqlMapper.AddTypeHandler(typeof(NoteModel[]), new JsonToObjectConverter<NoteModel[]>());
+SqlMapper.AddTypeHandler(typeof(AttachmentModel[]), new JsonToObjectConverter<AttachmentModel[]>());
+
 
 builder.Services.AddSingleton<ISerializerService, SerializerService>();
 
@@ -49,10 +62,16 @@ builder.Services.AddSingleton<ICurrentUserIdProvider, MockCurrentUserIdProvider>
 // Register jobs
 builder.Services.AddScoped<IRecurringJobManager, RecurringJobManager>();
 builder.Services.AddScoped<IAuditLogCleanerJob, AuditLogCleanerJob>();
+builder.Services.AddScoped<IExportedDataCleanerJob, ExportedDataCleanerJob>();
+builder.Services.AddScoped<IImportValidationErrorsCleanerJob, ImportValidationErrorsCleanerJob>();
+
 builder.Services.AddScoped<ISendEmailJob, SendEmailJob>();
+builder.Services.AddScoped<IExportFormSubmissionsJob, ExportFormSubmissionsJob>();
 
 builder.Services.AddApplicationDomain(builder.Configuration.GetRequiredSection(DomainInstaller.SectionKey));
 builder.Services.AddMailing(builder.Configuration.GetRequiredSection(MailingInstaller.SectionKey));
+builder.Services.AddFileStorage(builder.Configuration.GetRequiredSection(FileStorageInstaller.SectionKey));
+
 var builtProvider = builder.Services.BuildServiceProvider();
 
 builder.Services.AddHangfire(config =>
@@ -85,7 +104,6 @@ app.UseHangfireDashboard("/hangfire", new DashboardOptions
         }
     }
 });
-
 
 app.ScheduleRecurringJobs();
 

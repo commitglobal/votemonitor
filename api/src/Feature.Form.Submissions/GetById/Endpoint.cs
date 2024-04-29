@@ -85,6 +85,7 @@ public class Endpoint(VoteMonitorContext context, IFileStorageService fileStorag
                ps.""Number"",
                s.""MonitoringObserverId"",
                u.""FirstName"",
+               u.""LastName"",
                u.""Email"",
                u.""PhoneNumber"",
                mo.""Tags"",

@@ -11,40 +11,47 @@ public class PollingStationInformationForm : AuditableBaseEntity, IAggregateRoot
 {
     public Guid ElectionRoundId { get; private set; }
     public ElectionRound ElectionRound { get; private set; }
+    public string DefaultLanguage { get; private set; }
     public string[] Languages { get; private set; }
     public IReadOnlyList<BaseQuestion> Questions { get; private set; } = new List<BaseQuestion>().AsReadOnly();
     public int NumberOfQuestions { get; private set; }
 
     private PollingStationInformationForm(
         ElectionRound electionRound,
+        string defaultLanguage,
         IEnumerable<string> languages,
         List<BaseQuestion> questions) : base(Guid.NewGuid())
     {
         ElectionRound = electionRound;
         ElectionRoundId = electionRound.Id;
+        DefaultLanguage = defaultLanguage;
         Languages = languages.ToArray();
         Questions = questions.ToList().AsReadOnly();
         NumberOfQuestions = Questions.Count;
     }
     private PollingStationInformationForm(
         ElectionRound electionRound,
-        IEnumerable<string> languages) : this(electionRound, languages, [])
+        string defaultLanguage,
+        IEnumerable<string> languages) : this(electionRound, defaultLanguage, languages, [])
     {
     }
 
     public static PollingStationInformationForm Create(
         ElectionRound electionRound,
+        string defaultLanguage,
         IEnumerable<string> languages) =>
-        new(electionRound, languages);
+        new(electionRound, defaultLanguage, languages);
 
     public static PollingStationInformationForm Create(
         ElectionRound electionRound,
+        string defaultLanguage,
         IEnumerable<string> languages,
         List<BaseQuestion> questions) =>
-        new(electionRound, languages, questions);
+        new(electionRound, defaultLanguage, languages, questions);
 
-    public void UpdateDetails(IEnumerable<string> languages, IEnumerable<BaseQuestion> questions)
+    public void UpdateDetails(string defaultLanguage, IEnumerable<string> languages, IEnumerable<BaseQuestion> questions)
     {
+        DefaultLanguage = defaultLanguage;
         Languages = languages.ToArray();
         Questions = questions.ToList().AsReadOnly();
         NumberOfQuestions = Questions.Count;

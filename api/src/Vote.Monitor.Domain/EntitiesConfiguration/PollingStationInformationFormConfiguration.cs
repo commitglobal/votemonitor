@@ -17,6 +17,7 @@ public class PollingStationInformationFormConfiguration : IEntityTypeConfigurati
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
 
+        builder.Property(x => x.DefaultLanguage).HasMaxLength(256).IsRequired();
         builder.Property(x => x.Languages).IsRequired();
         builder.Property(x => x.NumberOfQuestions).IsRequired();
 

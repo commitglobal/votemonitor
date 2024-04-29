@@ -8,7 +8,7 @@ public class ExportedData : BaseEntity, IAggregateRoot
     public Guid NgoId { get; private set; }
     public Ngo Ngo { get; private set; }
     public ExportedDataStatus ExportStatus { get; private set; }
-    public string FileName { get; private set; }
+    public string? FileName { get; private set; }
     public string? Base64EncodedData { get; private set; }
     public DateTime StartedAt { get; private set; }
     public DateTime? CompletedAt { get; private set; }

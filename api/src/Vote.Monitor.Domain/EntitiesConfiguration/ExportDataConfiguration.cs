@@ -13,11 +13,11 @@ public class ExportedDataConfiguration : IEntityTypeConfiguration<ExportedData>
         builder.HasIndex(e => e.Id);
 
         builder.Property(e => e.Id).IsRequired();
-        builder.Property(e => e.FileName).HasMaxLength(256).IsRequired();
+        builder.Property(e => e.FileName).HasMaxLength(256);
         builder.Property(e => e.StartedAt).IsRequired();
         builder.Property(e => e.ExportStatus).IsRequired();
         builder.Property(e => e.Base64EncodedData);
-        builder.Property(e => e.CompletedAt).IsRequired();
+        builder.Property(e => e.CompletedAt);
 
         builder.HasOne(x => x.ElectionRound)
             .WithMany()

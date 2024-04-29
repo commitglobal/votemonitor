@@ -1,4 +1,4 @@
-﻿namespace SubmissionsFaker.Clients;
+﻿namespace SubmissionsFaker.Clients.Models;
 
 public class CreateResponse
 {

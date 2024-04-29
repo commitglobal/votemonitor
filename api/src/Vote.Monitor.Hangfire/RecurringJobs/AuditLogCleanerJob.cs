@@ -8,7 +8,7 @@ public class AuditLogCleanerJob(VoteMonitorContext context) : IAuditLogCleanerJo
     public async Task Run()
     {
         await context.AuditTrails
-             .Where(x => x.Timestamp < DateTime.UtcNow.AddDays(-90))
+             .Where(x => x.Timestamp < DateTime.UtcNow.AddDays(-30))
              .ExecuteDeleteAsync();
     }
 }

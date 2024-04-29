@@ -1,27 +1,16 @@
 ﻿using SubmissionsFaker.Clients.Models.Questions;
 using SubmissionsFaker.Clients.Models;
 using SubmissionsFaker.Clients.NgoAdmin.Models;
+using SubmissionsFaker.Clients.PlatformAdmin.Models;
 
 namespace SubmissionsFaker.Forms;
 
-public class FormData
+public class PSIFormData
 {
-    public static UpdateForm OpeningForm = new()
+    public static UpsertPSIFormRequest PSIForm = new()
     {
-        Code = "A2",
         DefaultLanguage = "RO",
         Languages = new List<string> { "RO", "EN" },
-        Name = new TranslatedString
-        {
-            { "EN", "test form" },
-            { "RO", "formular de test" }
-        },
-        Description = new TranslatedString
-        {
-            { "EN", "test form" },
-            { "RO", "formular de test" }
-        },
-        FormType = "Opening",
         Questions = [
         new NumberQuestionRequest
         {
@@ -242,13 +231,5 @@ public class FormData
                 }
             }
         ]
-    };
-    public static UpdateForm VotingForm = new()
-    {
-
-    };
-    public static UpdateForm ClosingForm = new()
-    {
-
     };
 }

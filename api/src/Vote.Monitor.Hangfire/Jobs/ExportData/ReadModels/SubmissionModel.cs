@@ -5,6 +5,7 @@ namespace Vote.Monitor.Hangfire.Jobs.ExportData.ReadModels;
 public class SubmissionModel
 {
     public Guid SubmissionId { get; init; }
+    public Guid FormId { get; set; }
     public DateTime TimeSubmitted { get; init; }
     public Guid PollingStationId { get; init; }
     public string Level1 { get; init; } = default!;

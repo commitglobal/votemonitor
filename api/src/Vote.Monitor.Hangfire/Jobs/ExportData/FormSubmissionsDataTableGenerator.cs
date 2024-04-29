@@ -1,273 +1,229 @@
-﻿using System.Data;
-using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
+﻿using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Domain.Entities.FormBase.Questions;
 using Vote.Monitor.Hangfire.Jobs.ExportData.ReadModels;
-using static Vote.Monitor.Hangfire.Jobs.ExportData.FormSubmissionsDataTableGenerator;
 
 namespace Vote.Monitor.Hangfire.Jobs.ExportData;
 
-public class FormSubmissionsDataTable
-{
-    private readonly DataTable _dataTable;
-    private readonly string _defaultLanguage;
-    private FormSubmissionsDataTable(string formName, string defaultLanguage)
-    {
-        _dataTable = new DataTable(formName);
-        _defaultLanguage = defaultLanguage;
-    }
-
-    public static FormSubmissionsDataTable CreateFor(string formName, string defaultLanguage)
-    {
-        return new FormSubmissionsDataTable(formName, defaultLanguage);
-    }
-
-    public FormSubmissionsDataTableHeaderGenerator WithHeader()
-    {
-        return FormSubmissionsDataTableHeaderGenerator.New(_dataTable, _defaultLanguage);
-    }
-}
-
-public class FormSubmissionsDataTableHeaderGenerator
-{
-    private readonly DataTable _dataTable;
-    private readonly string _defaultLanguage;
-
-    private readonly SortedDictionary<int, Guid> _questionIndexMap = new();
-    private readonly Dictionary<Guid, BaseQuestion> _questions = new();
-
-    internal static FormSubmissionsDataTableHeaderGenerator New(DataTable dataTable, string defaultLanguage) => new(dataTable, defaultLanguage);
-
-    private FormSubmissionsDataTableHeaderGenerator(DataTable dataTable, string defaultLanguage)
-    {
-        _dataTable = dataTable;
-        _defaultLanguage = defaultLanguage;
-
-        _dataTable.Columns.Add("SubmissionId", typeof(string));
-        _dataTable.Columns.Add("TimeSubmitted", typeof(string));
-        _dataTable.Columns.Add("Level1", typeof(string));
-        _dataTable.Columns.Add("Level2", typeof(string));
-        _dataTable.Columns.Add("Level3", typeof(string));
-        _dataTable.Columns.Add("Level4", typeof(string));
-        _dataTable.Columns.Add("Level5", typeof(string));
-        _dataTable.Columns.Add("Number", typeof(string));
-        _dataTable.Columns.Add("MonitoringObserverId", typeof(string));
-        _dataTable.Columns.Add("FirstName", typeof(string));
-        _dataTable.Columns.Add("LastName", typeof(string));
-        _dataTable.Columns.Add("Email", typeof(string));
-        _dataTable.Columns.Add("PhoneNumber", typeof(string));
-        // TODO: add polling stations tags!
-        // TODO: add observers tags?!
-    }
-
-    public FormSubmissionsDataTableHeaderGenerator ForQuestion(BaseQuestion question)
-    {
-        _questionIndexMap.Add(_questionIndexMap.Count, question.Id);
-        _questions.Add(question.Id, question);
-
-        return this;
-    }
-
-    public FormSubmissionsDataTableGenerator WithData()
-    {
-        return For(_dataTable, _defaultLanguage, _questions, _questionIndexMap);
-    }
-}
-
 public class FormSubmissionsDataTableGenerator
 {
-    private readonly DataTable _dataTable;
+    private readonly List<string> _header;
+    private readonly List<List<object>> _dataTable;
+    private readonly Guid _formId;
     private readonly string _defaultLanguage;
 
-    private readonly Dictionary<Guid, BaseQuestion> _questions;
-    private readonly SortedDictionary<int, Guid> _questionIndexMap;
-    private readonly List<SubmissionModel> _submissions;
+    private readonly Dictionary<Guid, BaseQuestion> _questionsMap;
+    private readonly IReadOnlyList<BaseQuestion> _questions;
+    private readonly List<SubmissionModel> _submissions = [];
+    private readonly List<AnswerData> _answersData = [];
 
-    private FormSubmissionsDataTableGenerator(DataTable dataTable,
+    private FormSubmissionsDataTableGenerator(List<string> header,
+        List<List<object>> dataTable,
+        Guid formId,
         string defaultLanguage,
-        Dictionary<Guid, BaseQuestion> questions,
-        SortedDictionary<int, Guid> questionIndexMap)
+        Dictionary<Guid, BaseQuestion> questionsMap,
+        IReadOnlyList<BaseQuestion> questions)
     {
+        _header = header;
         _dataTable = dataTable;
+        _formId = formId;
         _defaultLanguage = defaultLanguage;
+        _questionsMap = questionsMap;
         _questions = questions;
-        _questionIndexMap = questionIndexMap;
-        _submissions = new List<SubmissionModel>();
     }
 
-    internal static FormSubmissionsDataTableGenerator For(DataTable dataTable,
+    internal static FormSubmissionsDataTableGenerator For(List<string> header,
+        List<List<object>> dataTable,
+        Guid formId,
         string defaultLanguage,
-        Dictionary<Guid, BaseQuestion> questions,
-        SortedDictionary<int, Guid> questionIndexMap)
+        Dictionary<Guid, BaseQuestion> questionsMap,
+        IReadOnlyList<BaseQuestion> questions)
     {
-        return new FormSubmissionsDataTableGenerator(dataTable, defaultLanguage, questions, questionIndexMap);
+        return new FormSubmissionsDataTableGenerator(header, dataTable, formId, defaultLanguage, questionsMap, questions);
     }
 
     public FormSubmissionsDataTableGenerator ForSubmission(SubmissionModel submission)
     {
+        if (submission.FormId != _formId)
+        {
+            // ignore submission if it is not for the current form
+            return this;
+        }
+
+        MapToAnswerData(submission);
+
         _submissions.Add(submission);
 
-        var row = _dataTable.NewRow();
+        var row = new List<object>
+        {
+           submission.SubmissionId.ToString(),
+           submission.TimeSubmitted.ToString("s"),
+           submission.Level1,
+           submission.Level2,
+           submission.Level3,
+           submission.Level4,
+           submission.Level5,
+           submission.Number,
+           submission.MonitoringObserverId.ToString(),
+           submission.FirstName,
+           submission.LastName,
+           submission.Email,
+           submission.PhoneNumber
+        };
 
-        row[0] = submission.SubmissionId.ToString();
-        row[1] = submission.TimeSubmitted.ToString("s");
-        row[2] = submission.Level1;
-        row[3] = submission.Level2;
-        row[4] = submission.Level3;
-        row[5] = submission.Level4;
-        row[6] = submission.Level5;
-        row[7] = submission.Number;
-        row[8] = submission.MonitoringObserverId.ToString();
-        row[9] = submission.FirstName;
-        row[10] = submission.LastName;
-        row[11] = submission.Email;
-        row[12] = submission.PhoneNumber;
-
-        _dataTable.Rows.Add(row);
+        _dataTable.Add(row);
         return this;
     }
 
-    public DataTable Please()
+    public FormSubmissionsDataTableGenerator ForSubmissions(List<SubmissionModel> submissions)
     {
-        List<AnswerData> answersData = new List<AnswerData>();
-
-        foreach (var submission in _submissions)
+        foreach (var submission in submissions)
         {
-            var answerNotes = submission
-                .Notes
-                .GroupBy(x => x.QuestionId)
-                .ToDictionary(x => x.Key, y => y.ToList());
 
-            var answerAttachments = submission
-                .Attachments
-                .GroupBy(x => x.QuestionId)
-                .ToDictionary(x => x.Key, y => y.ToList());
-
-            foreach (var answer in submission.Answers)
+            if (submission.FormId != _formId)
             {
-                var notes = answerNotes.GetValueOrDefault(answer.QuestionId, []);
-                var attachments = answerAttachments.GetValueOrDefault(answer.QuestionId, []);
-                AnswerData answerData;
-                switch (answer)
-                {
-                    case DateAnswer dateAnswer:
-                        var dateQuestion = _questions[dateAnswer.QuestionId] as DateQuestion;
-                        answerData = AnswerData.For(submission.SubmissionId, dateQuestion!, _defaultLanguage, dateAnswer, notes, attachments);
-                        break;
-                    case MultiSelectAnswer multiSelectAnswer:
-                        var multiSelectQuestion = _questions[multiSelectAnswer.QuestionId] as MultiSelectQuestion;
-                        answerData = AnswerData.For(submission.SubmissionId, multiSelectQuestion!, _defaultLanguage, multiSelectAnswer, notes, attachments);
-                        break;
-                    case NumberAnswer numberAnswer:
-                        var numberQuestion = _questions[numberAnswer.QuestionId] as NumberQuestion;
-                        answerData = AnswerData.For(submission.SubmissionId, numberQuestion!, _defaultLanguage, numberAnswer, notes, attachments);
-                        break;
-                    case RatingAnswer ratingAnswer:
-                        var ratingQuestion = _questions[ratingAnswer.QuestionId] as RatingQuestion;
-                        answerData = AnswerData.For(submission.SubmissionId, ratingQuestion!, _defaultLanguage, ratingAnswer, notes, attachments);
-                        break;
-                    case SingleSelectAnswer singleSelectAnswer:
-                        var singleSelectQuestion = _questions[singleSelectAnswer.QuestionId] as SingleSelectQuestion;
-                        answerData = AnswerData.For(submission.SubmissionId, singleSelectQuestion!, _defaultLanguage, singleSelectAnswer, notes, attachments);
-                        break;
-                    case TextAnswer textAnswer:
-                        var textQuestion = _questions[textAnswer.QuestionId] as TextQuestion;
-                        answerData = AnswerData.For(submission.SubmissionId, textQuestion!, _defaultLanguage, textAnswer, notes, attachments);
-                        break;
-                    default:
-                        throw new ArgumentException($"Unknown answer type received {answer.Discriminator} in {submission.SubmissionId}", nameof(answer));
-                }
-
-                answersData.Add(answerData);
+                // ignore submission if it is not for the current form
+                return this;
             }
+
+            MapToAnswerData(submission);
+
+            _submissions.Add(submission);
+
+            var row = new List<object>
+            {
+                submission.SubmissionId.ToString(),
+                submission.TimeSubmitted.ToString("s"),
+                submission.Level1,
+                submission.Level2,
+                submission.Level3,
+                submission.Level4,
+                submission.Level5,
+                submission.Number,
+                submission.MonitoringObserverId.ToString(),
+                submission.FirstName,
+                submission.LastName,
+                submission.Email,
+                submission.PhoneNumber
+            };
+
+            _dataTable.Add(row);
         }
 
-        var questionAnswers = answersData
+        return this;
+    }
+
+    private void MapToAnswerData(SubmissionModel submission)
+    {
+        var answerNotes = submission
+            .Notes
             .GroupBy(x => x.QuestionId)
             .ToDictionary(x => x.Key, y => y.ToList());
 
-        Dictionary<Guid, List<ValuesColumnHeader>> longestValuesHeadersMap = new();
+        var answerAttachments = submission
+            .Attachments
+            .GroupBy(x => x.QuestionId)
+            .ToDictionary(x => x.Key, y => y.ToList());
+
+        foreach (var answer in submission.Answers)
+        {
+            var notes = answerNotes.GetValueOrDefault(answer.QuestionId, []);
+            var attachments = answerAttachments.GetValueOrDefault(answer.QuestionId, []);
+            AnswerData answerData;
+            switch (answer)
+            {
+                case DateAnswer dateAnswer:
+                    var dateQuestion = _questionsMap[dateAnswer.QuestionId] as DateQuestion;
+                    answerData = AnswerData.For(submission.SubmissionId, dateQuestion!, _defaultLanguage, dateAnswer, notes, attachments);
+                    break;
+                case MultiSelectAnswer multiSelectAnswer:
+                    var multiSelectQuestion = _questionsMap[multiSelectAnswer.QuestionId] as MultiSelectQuestion;
+                    answerData = AnswerData.For(submission.SubmissionId, multiSelectQuestion!, _defaultLanguage, multiSelectAnswer, notes, attachments);
+                    break;
+                case NumberAnswer numberAnswer:
+                    var numberQuestion = _questionsMap[numberAnswer.QuestionId] as NumberQuestion;
+                    answerData = AnswerData.For(submission.SubmissionId, numberQuestion!, _defaultLanguage, numberAnswer, notes, attachments);
+                    break;
+                case RatingAnswer ratingAnswer:
+                    var ratingQuestion = _questionsMap[ratingAnswer.QuestionId] as RatingQuestion;
+                    answerData = AnswerData.For(submission.SubmissionId, ratingQuestion!, _defaultLanguage, ratingAnswer, notes, attachments);
+                    break;
+                case SingleSelectAnswer singleSelectAnswer:
+                    var singleSelectQuestion = _questionsMap[singleSelectAnswer.QuestionId] as SingleSelectQuestion;
+                    answerData = AnswerData.For(submission.SubmissionId, singleSelectQuestion!, _defaultLanguage, singleSelectAnswer, notes, attachments);
+                    break;
+                case TextAnswer textAnswer:
+                    var textQuestion = _questionsMap[textAnswer.QuestionId] as TextQuestion;
+                    answerData = AnswerData.For(submission.SubmissionId, textQuestion!, _defaultLanguage, textAnswer, notes, attachments);
+                    break;
+                default:
+                    throw new ArgumentException($"Unknown answer type received {answer.Discriminator} in {submission.SubmissionId}", nameof(answer));
+            }
+
+            _answersData.Add(answerData);
+        }
+    }
+
+    public (List<string> header, List<List<object>> dataTable) Please()
+    {
+        var questionAnswers = _answersData
+            .GroupBy(x => x.QuestionId)
+            .ToDictionary(x => x.Key, y => y.ToList());
+
+        Dictionary<Guid, List<string>> longestValuesHeadersMap = new();
         Dictionary<Guid, List<string>> longestNotesColumnHeadersMap = new();
         Dictionary<Guid, List<string>> longestAttachmentUrlsColumnHeadersMap = new();
 
         // get the longest column headers
-        foreach (var (_, questionId) in _questionIndexMap)
+        foreach (var question in _questions)
         {
-            var longestValuesColumnHeader = questionAnswers[questionId]
+            var longestValuesColumnHeader = questionAnswers[question.Id]
                 .MaxBy(x => x.ValuesColumnHeaders.Count)
                 ?.ValuesColumnHeaders ?? [];
 
-            var longestNotesHeader = questionAnswers[questionId]
+            var longestNotesHeader = questionAnswers[question.Id]
                 .MaxBy(x => x.NotesColumnHeaders.Count)
                 ?.NotesColumnHeaders ?? [];
 
-            var longestAttachmentUrlsColumnHeader = questionAnswers[questionId]
+            var longestAttachmentUrlsColumnHeader = questionAnswers[question.Id]
                 .MaxBy(x => x.AttachmentUrlsColumnHeaders.Count)
                 ?.AttachmentUrlsColumnHeaders ?? [];
+
+            _header.AddRange(longestValuesColumnHeader);
+            _header.AddRange(longestNotesHeader);
+            _header.AddRange(longestAttachmentUrlsColumnHeader);
+
+            longestValuesHeadersMap.Add(question.Id, longestValuesColumnHeader);
+            longestNotesColumnHeadersMap.Add(question.Id, longestNotesHeader);
+            longestAttachmentUrlsColumnHeadersMap.Add(question.Id, longestAttachmentUrlsColumnHeader);
         }
 
-            foreach (var header in longestValuesColumnHeader)
-            {
-                _dataTable.Columns.Add(header.ColumnName, header.ColumnType);
-            }
-            foreach (var header in longestNotesHeader)
-            {
-                _dataTable.Columns.Add(header);
-            }
-            foreach (var header in longestAttachmentUrlsColumnHeader)
-            {
-                _dataTable.Columns.Add(header);
-            }
-
-            longestValuesHeadersMap.Add(questionId, longestValuesColumnHeader);
-            longestNotesColumnHeadersMap.Add(questionId, longestNotesHeader);
-            longestAttachmentUrlsColumnHeadersMap.Add(questionId, longestAttachmentUrlsColumnHeader);
-        }
-
-        var submissionDataMap = answersData
+        var submissionDataMap = _answersData
             .GroupBy(x => x.SubmissionId)
             .ToDictionary(x => x.Key, y => y.ToList());
 
         for (int i = 0; i < _submissions.Count; i++)
         {
             var submissionId = _submissions[i].SubmissionId;
-            var row = _dataTable.Rows[i];
+            var row = _dataTable[i];
             var submissionData = submissionDataMap[submissionId];
             var questionDataMap = submissionData.ToDictionary(x => x.QuestionId);
-            var currentIndex = 13;
 
-            foreach (var (_, questionId) in _questionIndexMap)
+            foreach (var question in _questions)
             {
-                var questionsData = questionDataMap[questionId];
+                var questionsData = questionDataMap[question.Id];
 
-                var values = PadListToTheRight(questionsData.Values, longestValuesHeadersMap[questionId].Count, string.Empty);
-                var notes = PadListToTheRight(questionsData.Notes, longestNotesColumnHeadersMap[questionId].Count, string.Empty);
-                var attachmentsUrls = PadListToTheRight(questionsData.AttachmentUrls, longestAttachmentUrlsColumnHeadersMap[questionId].Count, string.Empty);
+                var values = PadListToTheRight(questionsData.Values, longestValuesHeadersMap[question.Id].Count, string.Empty);
+                var notes = PadListToTheRight(questionsData.Notes, longestNotesColumnHeadersMap[question.Id].Count, string.Empty);
+                var attachmentsUrls = PadListToTheRight(questionsData.AttachmentUrls, longestAttachmentUrlsColumnHeadersMap[question.Id].Count, string.Empty);
 
-                // First cell after submission details
-                for (int j = 0; j < values.Count; j++)
-                {
-                    row[currentIndex] = values[j];
-                    ++currentIndex;
-                }
-
-                startIndex = row.ItemArray.Length;
-                for (int j = 0; j < notes.Count; j++)
-                {
-                    row[currentIndex] = notes[j];
-                    ++currentIndex;
-                }
-
-                startIndex = row.ItemArray.Length;
-                for (int j = 0; j < attachmentsUrls.Count; j++)
-                {
-                    row[currentIndex] = attachmentsUrls[j];
-                    ++currentIndex;
-                }
+                row.AddRange(values);
+                row.AddRange(notes);
+                row.AddRange(attachmentsUrls);
             }
 
         }
 
-        return _dataTable;
+        return (_header, _dataTable);
     }
 
     private List<T> PadListToTheRight<T>(List<T> list, int desiredLength, T padValue)
@@ -291,7 +247,7 @@ public class FormSubmissionsDataTableGenerator
         public List<object> Values { get; } = [];
         public List<string> Notes { get; } = [];
         public List<string> AttachmentUrls { get; } = [];
-        public List<ValuesColumnHeader> ValuesColumnHeaders { get; } = [];
+        public List<string> ValuesColumnHeaders { get; } = [];
         public List<string> NotesColumnHeaders { get; } = [];
         public List<string> AttachmentUrlsColumnHeaders { get; } = [];
 
@@ -333,25 +289,25 @@ public class FormSubmissionsDataTableGenerator
 
         private void WithValue(string columnHeader, string value)
         {
-            ValuesColumnHeaders.Add(new(columnHeader, typeof(string)));
+            ValuesColumnHeaders.Add(columnHeader);
             Values.Add(value);
         }
 
         private void WithValue(string columnHeader, int value)
         {
-            ValuesColumnHeaders.Add(new(columnHeader, typeof(int)));
+            ValuesColumnHeaders.Add(columnHeader);
             Values.Add(value);
         }
 
         private void WithValue(string columnHeader, bool value)
         {
-            ValuesColumnHeaders.Add(new(columnHeader, typeof(bool)));
+            ValuesColumnHeaders.Add(columnHeader);
             Values.Add(value);
         }
 
         private void WithValue(string columnHeader, DateTime date)
         {
-            ValuesColumnHeaders.Add(new(columnHeader, typeof(string)));
+            ValuesColumnHeaders.Add(columnHeader);
             Values.Add(date.ToString("s"));
         }
 
@@ -406,7 +362,6 @@ public class FormSubmissionsDataTableGenerator
 
             return answerData;
         }
-
         public static AnswerData For(Guid submissionId,
             NumberQuestion numberQuestion,
             string defaultLanguage,
@@ -482,6 +437,4 @@ public class FormSubmissionsDataTableGenerator
             return answerData;
         }
     }
-
-    internal record ValuesColumnHeader(string ColumnName, Type ColumnType);
 }

@@ -8,5 +8,5 @@ public class Request
 
     [FromClaim(ApplicationClaimTypes.NgoId)]
     public Guid NgoId { get; set; }
-    public string ExportedDataId { get; set; }
+    public Guid ExportedDataId { get; set; }
 }

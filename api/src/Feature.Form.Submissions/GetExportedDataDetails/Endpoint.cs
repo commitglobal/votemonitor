@@ -1,8 +1,6 @@
 ﻿using Authorization.Policies;
 using Authorization.Policies.Requirements;
-using Dapper;
 using Microsoft.AspNetCore.Authorization;
-using Vote.Monitor.Domain;
 using Vote.Monitor.Domain.Entities.ExportedDataAggregate;
 
 namespace Feature.Form.Submissions.GetExportedDataDetails;
@@ -16,7 +14,7 @@ public class Endpoint(IAuthorizationService authorizationService, IReadRepositor
         Options(x => x.WithTags("form-submissions"));
         Summary(s =>
         {
-            s.Summary = "Enqueues a job to export data and returns job id to poll for results";
+            s.Summary = "Gets details about an exported data";
         });
         Policies(PolicyNames.NgoAdminsOnly);
     }

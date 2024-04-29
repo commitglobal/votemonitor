@@ -1,4 +1,4 @@
-﻿namespace SubmissionsFaker.Clients.NgoAdmin.Models;
+﻿namespace SubmissionsFaker.Clients.Models.Questions;
 
 public class MultiSelectQuestionRequest : BaseQuestionRequest
 {

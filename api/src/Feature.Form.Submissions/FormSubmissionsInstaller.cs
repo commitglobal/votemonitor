@@ -1,26 +1,11 @@
-﻿using System.Text.Json;
-using Ardalis.SmartEnum.Dapper;
-using Dapper;
+﻿using Dapper;
 using Feature.Form.Submissions.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Vote.Monitor.Answer.Module.Models;
-using Vote.Monitor.Domain.Entities.ExportedDataAggregate;
+using Vote.Monitor.Core.Converters;
 using Vote.Monitor.Form.Module.Models;
 
 namespace Feature.Form.Submissions;
-
-public class JsonToObjectConverter<T> : SqlMapper.TypeHandler<T> where T : class
-{
-    public override T Parse(object value)
-    {
-        return JsonSerializer.Deserialize<T>(value.ToString());
-    }
-
-    public override void SetValue(System.Data.IDbDataParameter parameter, T value)
-    {
-        parameter.Value = JsonSerializer.Serialize(value);
-    }
-}
 
 public static class FormSubmissionsInstaller
 {

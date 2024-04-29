@@ -15,8 +15,10 @@ public class Endpoint(IJobService jobService,
     public override void Configure()
     {
         Post("/api/election-rounds/{electionRoundId}/form-submissions:export");
+        Description(x => x.Accepts<Request>());
         DontAutoTag();
         Options(x => x.WithTags("form-submissions"));
+
         Summary(s =>
         {
             s.Summary = "Enqueues a job to export data and returns job id to poll for results";
@@ -33,10 +35,10 @@ public class Endpoint(IJobService jobService,
         }
 
         var exportedData = ExportedData.Create(req.ElectionRoundId, req.NgoId, timeProvider.UtcNow);
-        jobService.ExportFormSubmissions(req.ElectionRoundId, req.NgoId, exportedData.Id);
 
         await repository.AddAsync(exportedData, ct);
 
+        jobService.ExportFormSubmissions(req.ElectionRoundId, req.NgoId, exportedData.Id);
         return TypedResults.Ok(new JobDetails
         {
             ExportedDataId = exportedData.Id,

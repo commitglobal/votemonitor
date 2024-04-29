@@ -3,6 +3,7 @@ using System;
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Vote.Monitor.Domain;
@@ -12,9 +13,11 @@ using Vote.Monitor.Domain;
 namespace Vote.Monitor.Domain.Migrations
 {
     [DbContext(typeof(VoteMonitorContext))]
-    partial class VoteMonitorContextModelSnapshot : ModelSnapshot
+    [Migration("20240426160612_ReworkExportData")]
+    partial class ReworkExportData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -5268,11 +5271,6 @@ namespace Vote.Monitor.Domain.Migrations
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("DefaultLanguage")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
 
                     b.Property<Guid>("ElectionRoundId")
                         .HasColumnType("uuid");

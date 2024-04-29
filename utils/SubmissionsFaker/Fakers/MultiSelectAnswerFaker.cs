@@ -1,6 +1,6 @@
 ﻿using Bogus;
+using SubmissionsFaker.Clients.Models.Questions;
 using SubmissionsFaker.Clients.MonitoringObserver.Models;
-using SubmissionsFaker.Clients.NgoAdmin.Models;
 
 namespace SubmissionsFaker.Fakers;
 
