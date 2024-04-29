@@ -43,14 +43,8 @@ const EditNoteModal = ({
   );
 
   const onDelete = () => {
-    const deleteNotePayload = {
-      electionRoundId,
-      pollingStationId,
-      formId,
-      id: selectedNote!.id,
-    };
     // delete note
-    deleteNote(deleteNotePayload);
+    deleteNote({ electionRoundId, id: selectedNote!.id });
     // close dialog
     setSelectedNote(null);
   };
