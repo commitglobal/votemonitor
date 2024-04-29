@@ -33,7 +33,7 @@ const QuestionNotes = ({
               paddingLeft="$md"
               pressStyle={{ opacity: 1 }}
             >
-              <Typography paddingVertical="$md" maxWidth="85%">
+              <Typography paddingVertical="$md" maxWidth="85%" numberOfLines={5}>
                 {note.text}
               </Typography>
               <YStack
