@@ -23,7 +23,7 @@ const AddNoteModal: React.FC<AddNoteModalProps> = ({
   pollingStationId,
   formId,
   questionId,
-  electionRoundId,
+  electionRoundId = "",
 }) => {
   const { control, handleSubmit, reset } = useForm({
     defaultValues: {
@@ -31,7 +31,12 @@ const AddNoteModal: React.FC<AddNoteModalProps> = ({
     },
   });
 
-  const { mutate: addNote } = useAddNoteMutation(electionRoundId, pollingStationId, formId);
+  const { mutate: addNote } = useAddNoteMutation(
+    electionRoundId,
+    pollingStationId,
+    formId,
+    `Note_${electionRoundId}_${pollingStationId}_${formId}_${questionId}`,
+  );
 
   const onSubmitNote = (note: any) => {
     const notePayload = {

@@ -9,6 +9,7 @@ export const useAddNoteMutation = (
   electionRoundId: string | undefined,
   pollingStationId: string | undefined,
   formId: string | undefined,
+  scopeId: string,
 ) => {
   const queryClient = useQueryClient();
 
@@ -20,6 +21,9 @@ export const useAddNoteMutation = (
 
   return useMutation({
     mutationKey: pollingStationsKeys.addNote(),
+    scope: {
+      id: scopeId,
+    },
     mutationFn: async (payload: NotePayload) => {
       return addNote(payload);
     },
@@ -32,16 +36,21 @@ export const useAddNoteMutation = (
       const previousNotes = queryClient.getQueryData(getNotesQK);
 
       // Optimistically update to the new value
-      queryClient.setQueryData(getNotesQK, (old: Note[]) => [
+      queryClient.setQueryData<Note[]>(getNotesQK, (old: Note[] = []) => [
         ...old,
-        { id: Crypto.randomUUID(), ...payload },
+        {
+          id: Crypto.randomUUID(),
+          ...payload,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        },
       ]);
 
       // Return a context object with the snapshotted value
       return { previousNotes };
     },
     onError: (err) => {
-      console.log("🔴🔴🔴 ERROR 🔴🔴🔴", err);
+      console.log("🔴🔴🔴 ERROR IN ADD NOTE MUTATION 🔴🔴🔴", err);
     },
     onSettled: () => {
       return queryClient.invalidateQueries({ queryKey: getNotesQK });

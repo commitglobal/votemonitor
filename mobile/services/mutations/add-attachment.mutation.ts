@@ -36,7 +36,7 @@ export const addAttachmentMutation = () => {
           pollingStationId: payload.pollingStationId,
           formId: payload.formId,
           questionId: payload.questionId,
-          fileName: `🛜${payload.cameraResult.name}`,
+          fileName: `🛜 ${payload.cameraResult.name}`,
           mimeType: payload.cameraResult.type,
           presignedUrl: payload.cameraResult.uri, // TODO @radulescuandrew is this working to display the media?
           urlValidityInSeconds: 3600,

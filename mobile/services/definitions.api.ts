@@ -302,7 +302,7 @@ export const upsertFormSubmission = ({
 */
 
 export type NotePayload = {
-  electionRoundId: string | undefined;
+  electionRoundId: string;
   pollingStationId: string;
   text: string;
   formId: string;

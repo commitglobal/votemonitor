@@ -8,7 +8,7 @@ export const useDeleteNote = (
   electionRoundId: string | undefined,
   pollingStationId: string | undefined,
   formId: string | undefined,
-  id: string | undefined,
+  scopeId: string,
 ) => {
   const queryClient = useQueryClient();
 
@@ -22,13 +22,16 @@ export const useDeleteNote = (
     mutationFn: async (payload: DeleteNotePayload) => {
       return deleteNote(payload);
     },
+    scope: {
+      id: scopeId,
+    },
     onMutate: async (payload: DeleteNotePayload) => {
       // Cancel any outgoing refetches
       // (so they don't overwrite our optimistic update)
       await queryClient.cancelQueries({ queryKey: getNotesQK });
 
       // Snapshot the previous value
-      const previousNotes = queryClient.getQueryData(getNotesQK);
+      const prevNotes = queryClient.getQueryData(getNotesQK);
 
       // Optimistically update to the new value (remove the note to delete)
       queryClient.setQueryData(getNotesQK, (prevNotes: Note[]) => {
@@ -37,10 +40,10 @@ export const useDeleteNote = (
       });
 
       // Return a context object with the snapshotted value
-      return { previousNotes };
+      return { prevNotes };
     },
     onError: (err) => {
-      console.log("🔴🔴🔴 ERROR 🔴🔴🔴", err);
+      console.log("🔴🔴🔴 ERROR IN DELETE NOTE MUTATION 🔴🔴🔴", err);
     },
     onSettled: () => {
       return queryClient.invalidateQueries({ queryKey: getNotesQK });

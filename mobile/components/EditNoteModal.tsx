@@ -15,12 +15,14 @@ const EditNoteModal = ({
   electionRoundId,
   pollingStationId,
   formId,
+  questionId,
 }: {
   selectedNote: Note | null;
   setSelectedNote: React.Dispatch<React.SetStateAction<Note | null>>;
   electionRoundId: string;
   pollingStationId: string;
   formId: string;
+  questionId: string;
 }) => {
   const { control, handleSubmit } = useForm({
     defaultValues: {
@@ -33,14 +35,14 @@ const EditNoteModal = ({
     pollingStationId,
     formId,
     selectedNote!.id,
-    `${electionRoundId}_note_${selectedNote!.id}`, //scope id
+    `Note_${electionRoundId}_${pollingStationId}_${formId}_${questionId}`,
   );
 
   const { mutate: deleteNote } = useDeleteNote(
     electionRoundId,
     pollingStationId,
     formId,
-    selectedNote!.id,
+    `Note_${electionRoundId}_${pollingStationId}_${formId}_${questionId}`,
   );
 
   const onDelete = () => {

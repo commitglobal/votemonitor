@@ -55,7 +55,7 @@ export const useUpdateNote = (
       return { previousNotes };
     },
     onError: (err) => {
-      console.log("🔴🔴🔴 ERROR 🔴🔴🔴", err);
+      console.log("🔴🔴🔴 ERROR IN EDIT NOTE MUTATION 🔴🔴🔴", err);
     },
     onSettled: () => {
       return queryClient.invalidateQueries({ queryKey: getNotesQK });
