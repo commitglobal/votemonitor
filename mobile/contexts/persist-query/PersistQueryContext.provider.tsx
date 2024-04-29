@@ -1,5 +1,10 @@
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
-import { Mutation, MutationCache, QueryClient } from "@tanstack/react-query";
+import {
+  Mutation,
+  MutationCache,
+  QueryClient,
+  defaultShouldDehydrateQuery,
+} from "@tanstack/react-query";
 import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useAuth } from "../../hooks/useAuth";
@@ -161,7 +166,7 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
 
     if (pausedMutation?.length) {
       await queryClient.resumePausedMutations(); // Looks in the inmemory cache
-      queryClient.invalidateQueries(); // TODO RQ - why not to return?
+      queryClient.invalidateQueries(); // Avoid using await, not to wait for queries to refetch (maybe not the case here as there are no active queries)
       console.log("✅ Resume Paused Mutation & Invalidate Quries");
     }
 
@@ -183,14 +188,13 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
         dehydrateOptions: {
           shouldDehydrateQuery: (query) => {
             // SELECTIVELY PERSIST QUERY KEYS https://github.com/TanStack/query/discussions/3568
-            if (query.queryKey.includes("polling-stations-nomenclator")) return false;
-            if (query.queryKey.includes(null)) return false;
-            if (query.queryKey.includes(undefined)) return false;
+            // if (query.queryKey.includes("polling-stations-nomenclator")) return false;
+            // if (query.queryKey.includes(null)) return false;
+            // if (query.queryKey.includes(undefined)) return false;
 
             // if (query.meta?.dontPersist) return false;
 
-            // return defaultShouldDehydrateQuery(query);
-            return true;
+            return defaultShouldDehydrateQuery(query);
           },
         },
       }}
