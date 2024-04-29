@@ -32,6 +32,7 @@ export const pollingStationsKeys = {
     pollingStationId,
     "form-submissions",
   ],
+  upsertFormSubmission: () => [...pollingStationsKeys.all, "upsertFormSubmission"] as const,
   nomenclatorList: (parentId: number | null = -1) =>
     [...pollingStationsKeys.all, "node", parentId] as const,
   one: (id: string) => [...pollingStationsKeys.all, "DB.getOneById", id] as const,
@@ -79,6 +80,9 @@ export const pollingStationsKeys = {
       formId,
       "notes",
     ] as const,
+  addNote: () => [...pollingStationsKeys.all, "addNote"] as const,
+  updateNote: () => [...pollingStationsKeys.all, "updateNote"] as const,
+  deleteNote: () => [...pollingStationsKeys.all, "deleteNote"] as const,
   attachments: (
     electionRoundId: string | undefined,
     pollingStationId: string | undefined,
@@ -94,6 +98,7 @@ export const pollingStationsKeys = {
       formId,
       "attachments",
     ] as const,
+  deleteAttachment: () => [...pollingStationsKeys.all, "deleteAttachment"] as const,
   mutatePollingStationGeneralData: () =>
     [...pollingStationsKeys.all, "mutate-general-data"] as const,
 };

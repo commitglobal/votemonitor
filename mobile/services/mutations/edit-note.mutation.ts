@@ -20,7 +20,7 @@ export const useUpdateNote = (
   );
 
   return useMutation({
-    mutationKey: [`updateNote_${id}`],
+    mutationKey: pollingStationsKeys.updateNote(),
     scope: {
       id: scopeId,
     },

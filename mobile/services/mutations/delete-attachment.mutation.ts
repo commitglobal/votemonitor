@@ -17,7 +17,7 @@ export const useDeleteAttachment = (
   );
 
   return useMutation({
-    mutationKey: [`deleteAttachment`],
+    mutationKey: pollingStationsKeys.deleteAttachment(),
     mutationFn: async (payload: DeleteAttachmentAPIPayload) => {
       return deleteAttachment(payload);
     },

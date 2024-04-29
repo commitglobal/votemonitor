@@ -18,7 +18,7 @@ export const useDeleteNote = (
   );
 
   return useMutation({
-    mutationKey: [`deleteNote_${id}`],
+    mutationKey: pollingStationsKeys.deleteNote(),
     mutationFn: async (payload: DeleteNotePayload) => {
       return deleteNote(payload);
     },

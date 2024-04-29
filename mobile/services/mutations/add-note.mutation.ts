@@ -19,7 +19,7 @@ export const useAddNoteMutation = (
   );
 
   return useMutation({
-    mutationKey: ["addNote"],
+    mutationKey: pollingStationsKeys.addNote(),
     mutationFn: async (payload: NotePayload) => {
       return addNote(payload);
     },
