@@ -13,11 +13,13 @@ interface OptionsSheetProps {
   /* For future: Triggered action for pressing "Clear form" */
   onClear?: () => void;
 
+  isLoading?: boolean;
+
   children?: ReactNode;
 }
 
 const OptionsSheet = (props: OptionsSheetProps) => {
-  const { open, setOpen, children } = props;
+  const { open, setOpen, isLoading = false, children } = props;
   const insets = useSafeAreaInsets();
 
   return (
@@ -28,7 +30,7 @@ const OptionsSheet = (props: OptionsSheetProps) => {
       onOpenChange={setOpen}
       zIndex={100_000}
       snapPointsMode="fit"
-      dismissOnSnapToBottom
+      dismissOnSnapToBottom={!isLoading}
     >
       <Sheet.Overlay />
       <Sheet.Frame

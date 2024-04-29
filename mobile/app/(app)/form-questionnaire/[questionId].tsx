@@ -441,7 +441,11 @@ const FormQuestionnaire = () => {
         onNextButtonPress={handleSubmit(onSubmitAnswer)}
         onPreviousButtonPress={onBackButtonPress}
       />
-      <OptionsSheet open={isOptionsSheetOpen} setOpen={setIsOptionsSheetOpen}>
+      <OptionsSheet
+        open={isOptionsSheetOpen}
+        setOpen={setIsOptionsSheetOpen}
+        isLoading={isLoadingAddAttachmentt}
+      >
         {isLoadingAddAttachmentt ? (
           <MediaLoading />
         ) : (
