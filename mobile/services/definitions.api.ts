@@ -346,14 +346,11 @@ export const updateNote = ({
     @description delete a note 
     @param {string} electionRoundId 
     @param {string} id 
-    @returns {Note} 
 */
 
 export type DeleteNotePayload = {
   electionRoundId: string;
   id: string;
-  pollingStationId: string;
-  formId: string;
 };
 
 export const deleteNote = ({ electionRoundId, id }: DeleteNotePayload) => {

@@ -18,7 +18,7 @@ export const useDeleteNote = (
   );
 
   return useMutation({
-    mutationKey: [`deleteNote_${id}`],
+    mutationKey: pollingStationsKeys.deleteNote(),
     mutationFn: async (payload: DeleteNotePayload) => {
       return deleteNote(payload);
     },
@@ -32,9 +32,7 @@ export const useDeleteNote = (
 
       // Optimistically update to the new value (remove the note to delete)
       queryClient.setQueryData(getNotesQK, (prevNotes: Note[]) => {
-        const index = prevNotes.findIndex((note) => note.id === payload.id);
-        if (index === -1) return prevNotes;
-        const updatedNotes = [...prevNotes.slice(0, index), ...prevNotes.slice(index + 1)];
+        const updatedNotes = prevNotes.filter((note) => note.id !== payload.id);
         return updatedNotes;
       });
 
