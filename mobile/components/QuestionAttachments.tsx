@@ -3,6 +3,7 @@ import { Typography } from "./Typography";
 import Card from "./Card";
 import { Icon } from "./Icon";
 import { useAttachments } from "../services/queries/attachments.query";
+import { useDeleteAttachment } from "../services/mutations/delete-attachment.mutation";
 
 interface QuestionAttachmentsProps {
   electionRoundId: string;
@@ -18,6 +19,12 @@ const QuestionAttachments: React.FC<QuestionAttachmentsProps> = ({
   questionId,
 }) => {
   const { data: attachments } = useAttachments(electionRoundId, pollingStationId, formId);
+
+  const { mutate: deleteAttachment } = useDeleteAttachment(
+    electionRoundId,
+    pollingStationId,
+    formId,
+  );
 
   return (
     attachments?.[questionId]?.length && (
@@ -39,7 +46,7 @@ const QuestionAttachments: React.FC<QuestionAttachmentsProps> = ({
                 </Typography>
                 <YStack
                   padding="$md"
-                  onPress={() => console.log("delete media action")}
+                  onPress={() => deleteAttachment({ electionRoundId, id: attachment.id })}
                   pressStyle={{ opacity: 0.5 }}
                 >
                   <Icon icon="xCircle" size={24} color="$gray5" />
