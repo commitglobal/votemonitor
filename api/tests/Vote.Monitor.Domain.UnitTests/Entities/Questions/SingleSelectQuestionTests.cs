@@ -24,7 +24,7 @@ public record SingleSelectQuestionTests
         SelectOption[] options = [.. new SelectOptionFaker().Generate(3)];
 
         var id = Guid.NewGuid();
-        var singleSelectQuestion1 = SingleSelectQuestion.Create(id, "C!", text, helptext, options);
+        var singleSelectQuestion1 = SingleSelectQuestion.Create(id, "C!", text, options, helptext);
         var singleSelectQuestion2 = singleSelectQuestion1.DeepClone();
 
         // Act
@@ -63,8 +63,8 @@ public record SingleSelectQuestionTests
 
         var id = Guid.NewGuid();
 
-        var textQuestion1 = SingleSelectQuestion.Create(id, "C!", text1, helptext1, options1);
-        var textQuestion2 = SingleSelectQuestion.Create(id, "C!", text2, helptext2, options2);
+        var textQuestion1 = SingleSelectQuestion.Create(id, "C!", text1, options1, helptext1);
+        var textQuestion2 = SingleSelectQuestion.Create(id, "C!", text2, options2, helptext2);
 
         // Act
         var result = textQuestion1 == textQuestion2;

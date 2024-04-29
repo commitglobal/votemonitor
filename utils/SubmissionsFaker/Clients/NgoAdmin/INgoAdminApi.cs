@@ -1,4 +1,5 @@
 ﻿using Refit;
+using SubmissionsFaker.Clients.Models;
 using SubmissionsFaker.Clients.NgoAdmin.Models;
 
 namespace SubmissionsFaker.Clients.NgoAdmin;

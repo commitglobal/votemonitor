@@ -38,7 +38,6 @@ public class Endpoint(VoteMonitorContext context, IFileStorageService fileStorag
         FROM ""PollingStationInformation"" psi
         inner join ""MonitoringObservers"" mo ON mo.""Id"" = psi.""MonitoringObserverId""
         inner join ""MonitoringNgos"" mn ON mn.""Id"" = mo.""MonitoringNgoId""
-        inner join ""PollingStationInformationForms"" psf on psf.""ElectionRoundId"" = @electionRoundId
         WHERE mn.""ElectionRoundId"" = @electionRoundId
             and mn.""NgoId"" = @ngoId
             and psi.""Id"" = @submissionId
@@ -86,6 +85,7 @@ public class Endpoint(VoteMonitorContext context, IFileStorageService fileStorag
                ps.""Number"",
                s.""MonitoringObserverId"",
                u.""FirstName"",
+               u.""LastName"",
                u.""Email"",
                u.""PhoneNumber"",
                mo.""Tags"",

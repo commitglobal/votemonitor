@@ -25,6 +25,7 @@ using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 using Vote.Monitor.Domain.Entities.NgoAggregate;
 using Vote.Monitor.Api.Extensions;
+using Vote.Monitor.Domain.Entities.ExportedDataAggregate;
 using Vote.Monitor.Domain.Entities.FormAggregate;
 using Vote.Monitor.Module.Notifications;
 
@@ -158,6 +159,7 @@ app.UseFastEndpoints(x =>
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<MonitoringObserverStatus, string>());
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<RatingScale, string>());
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<FormType, string>());
+    x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<ExportedDataStatus, string>());
 
     x.Serializer.Options.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
 });

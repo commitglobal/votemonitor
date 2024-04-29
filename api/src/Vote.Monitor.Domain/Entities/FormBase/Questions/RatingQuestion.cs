@@ -19,7 +19,7 @@ public record RatingQuestion : BaseQuestion
         Scale = scale;
     }
 
-    public static RatingQuestion Create(Guid id, string code, TranslatedString text, TranslatedString? helptext, RatingScale scale) =>
+    public static RatingQuestion Create(Guid id, string code, TranslatedString text, RatingScale scale, TranslatedString? helptext = null) =>
         new(id, code, text, helptext, scale);
 
     protected override void AddTranslationsInternal(string languageCode) { }

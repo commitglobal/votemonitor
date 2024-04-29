@@ -16,7 +16,7 @@ public record DateQuestion : BaseQuestion
     public static DateQuestion Create(Guid id,
         string code,
         TranslatedString text,
-        TranslatedString? helptext)
+        TranslatedString? helptext = null)
         => new(id, code, text, helptext);
 
     protected override void AddTranslationsInternal(string languageCode) { }
