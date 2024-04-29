@@ -185,7 +185,13 @@ const FormQuestionnaire = () => {
 
   const { uploadCameraOrMedia } = useCamera();
 
-  const { mutate: addAttachment, isPending: isLoadingAddAttachmentt } = addAttachmentMutation();
+  const {
+    mutate: addAttachment,
+    isPending: isLoadingAddAttachmentt,
+    isPaused,
+  } = addAttachmentMutation(
+    `Attachment_${questionId}_${selectedPollingStation?.pollingStationId}_${formId}_${questionId}`,
+  );
 
   const handleUpload = async (type: "library" | "cameraPhoto" | "cameraVideo") => {
     const cameraResult = await uploadCameraOrMedia(type);
@@ -400,6 +406,7 @@ const FormQuestionnaire = () => {
                 electionRoundId={activeElectionRound.id}
                 pollingStationId={selectedPollingStation.pollingStationId}
                 formId={formId as string}
+                questionId={questionId as string}
               />
             )}
 
@@ -444,9 +451,9 @@ const FormQuestionnaire = () => {
       <OptionsSheet
         open={isOptionsSheetOpen}
         setOpen={setIsOptionsSheetOpen}
-        isLoading={isLoadingAddAttachmentt}
+        isLoading={isLoadingAddAttachmentt && !isPaused}
       >
-        {isLoadingAddAttachmentt ? (
+        {isLoadingAddAttachmentt && !isPaused ? (
           <MediaLoading />
         ) : (
           <YStack paddingHorizontal="$sm" gap="$xxs">

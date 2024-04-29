@@ -9,11 +9,14 @@ import { performanceLog } from "../../helpers/misc";
 import { AttachmentApiResponse } from "../api/get-attachments.api";
 import * as Crypto from "expo-crypto";
 
-export const addAttachmentMutation = () => {
+export const addAttachmentMutation = (scopeId: string) => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationKey: pollingStationsKeys.addAttachmentMutation(),
+    scope: {
+      id: scopeId,
+    },
     mutationFn: async (payload: AddAttachmentAPIPayload): Promise<AddAttachmentAPIResponse> => {
       return performanceLog(() => addAttachment(payload));
     },

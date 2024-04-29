@@ -24,6 +24,7 @@ const QuestionAttachments: React.FC<QuestionAttachmentsProps> = ({
     electionRoundId,
     pollingStationId,
     formId,
+    `Attachment_${questionId}_${pollingStationId}_${formId}_${questionId}`,
   );
 
   return (

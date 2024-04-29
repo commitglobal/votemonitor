@@ -8,6 +8,7 @@ export const useDeleteAttachment = (
   electionRoundId: string | undefined,
   pollingStationId: string | undefined,
   formId: string | undefined,
+  scopeId: string,
 ) => {
   const queryClient = useQueryClient();
 
@@ -18,6 +19,9 @@ export const useDeleteAttachment = (
 
   return useMutation({
     mutationKey: pollingStationsKeys.deleteAttachment(),
+    scope: {
+      id: scopeId,
+    },
     mutationFn: async (payload: DeleteAttachmentAPIPayload) => {
       return deleteAttachment(payload);
     },
