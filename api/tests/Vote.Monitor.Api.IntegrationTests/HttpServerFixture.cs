@@ -1,7 +1,5 @@
 ﻿using System.Security.Claims;
-using DotNet.Testcontainers.Builders;
 using MartinCostello.Logging.XUnit;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Logging;
 using Vote.Monitor.Api.Feature.Auth.Login;
@@ -19,11 +17,7 @@ namespace Vote.Monitor.Api.IntegrationTests;
 public class HttpServerFixture<TDataSeeder> : WebApplicationFactory<Program>, IAsyncLifetime, ITestOutputHelperAccessor where TDataSeeder : class, IDataSeeder
 {
     private static readonly Faker _faker = new();
-    private readonly PostgreSqlContainer _postgresContainer = new PostgreSqlBuilder()
-        .WithDatabase(Guid.NewGuid().ToString())
-        .WithCleanUp(true)
-        .WithWaitStrategy(Wait.ForUnixContainer().UntilContainerIsHealthy())
-        .Build();
+    private PostgreSqlContainer _postgresContainer = default!;
 
     public ITestOutputHelper? OutputHelper { get; set; }
 
@@ -64,6 +58,10 @@ public class HttpServerFixture<TDataSeeder> : WebApplicationFactory<Program>, IA
 
     public async Task InitializeAsync()
     {
+        _postgresContainer = new PostgreSqlBuilder()
+            .WithDatabase(Guid.NewGuid().ToString())
+            .Build();
+
         await _postgresContainer.StartAsync();
 
         var currentUserInitializer = Services.GetRequiredService<ICurrentUserInitializer>();
