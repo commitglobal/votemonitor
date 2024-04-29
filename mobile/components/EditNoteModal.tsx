@@ -33,6 +33,7 @@ const EditNoteModal = ({
     pollingStationId,
     formId,
     selectedNote!.id,
+    `${electionRoundId}_note_${selectedNote!.id}`, //scope id
   );
 
   const { mutate: deleteNote } = useDeleteNote(

@@ -9,6 +9,7 @@ export const useUpdateNote = (
   pollingStationId: string,
   formId: string,
   id: string,
+  scopeId: string,
 ) => {
   const queryClient = useQueryClient();
 
@@ -20,6 +21,9 @@ export const useUpdateNote = (
 
   return useMutation({
     mutationKey: [`updateNote_${id}`],
+    scope: {
+      id: scopeId,
+    },
     mutationFn: async (payload: UpdateNotePayload) => {
       return updateNote(payload);
     },
