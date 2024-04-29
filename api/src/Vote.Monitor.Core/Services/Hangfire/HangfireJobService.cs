@@ -11,8 +11,8 @@ public class HangfireJobService(IBackgroundJobClient backgroundJobClient) : IJob
         backgroundJobClient.Enqueue<ISendEmailJob>(job => job.SendAsync(to, subject, body));
     }
 
-    public string ExportFormSubmissions(Guid electionRoundId, Guid ngoId, Guid exportedDataId)
+    public void ExportFormSubmissions(Guid electionRoundId, Guid ngoId, Guid exportedDataId)
     {
-        return backgroundJobClient.Enqueue<IExportFormSubmissionsJob>(job => job.ExportFormSubmissions(electionRoundId, ngoId, exportedDataId));
+        backgroundJobClient.Enqueue<IExportFormSubmissionsJob>(job => job.ExportFormSubmissions(electionRoundId, ngoId, exportedDataId));
     }
 }

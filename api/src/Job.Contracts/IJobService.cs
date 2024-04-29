@@ -3,5 +3,5 @@
 public interface IJobService
 {
     void SendEmail(string to, string subject, string body);
-    string ExportFormSubmissions(Guid electionRoundId, Guid ngoId, Guid exportedDataId);
+    void ExportFormSubmissions(Guid electionRoundId, Guid ngoId, Guid exportedDataId);
 }

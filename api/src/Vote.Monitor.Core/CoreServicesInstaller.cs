@@ -64,9 +64,8 @@ public static class CoreServicesInstaller
         {
         }
 
-        public string ExportFormSubmissions(Guid electionRoundId, Guid ngoId, Guid exportedDataId)
+        public void ExportFormSubmissions(Guid electionRoundId, Guid ngoId, Guid exportedDataId)
         {
-            return $"noop-job-{Guid.NewGuid()}";
         }
     }
 
