@@ -24,6 +24,7 @@ import RadioFormInput from "../../../../../components/FormInputs/RadioFormInput"
 import { Controller, FieldError, FieldErrorsImpl, Merge, useForm } from "react-hook-form";
 import NoVisitsExist from "../../../../../components/NoVisitsExist";
 import { PollingStationGeneral } from "../../../../../components/PollingStationGeneral";
+import useAudio from "../../../../../hooks/useAudio";
 
 export type FormListItem = {
   id: string;
@@ -193,6 +194,8 @@ const Index = () => {
     return <NoVisitsExist />;
   }
 
+  const { startRecording, isRecording, stopRecording, playSound } = useAudio();
+
   return (
     <Screen
       preset="scroll"
@@ -210,6 +213,18 @@ const Index = () => {
           leftIcon={<Icon icon="menuAlt2" color="white" />}
           onLeftPress={() => navigation.dispatch(DrawerActions.openDrawer)}
         />
+        <Button onPress={isRecording ? stopRecording : startRecording}>
+          {isRecording ? "Stop Recording" : "Start Recording"}
+        </Button>
+        <Button
+          onPress={() =>
+            playSound(
+              "file:///var/mobile/Containers/Data/Application/1BBF93F7-1E73-436A-879C-6E02F03C99CC/Library/Caches/AV/recording-FE828959-FDD2-49E6-BE2E-3B8552DD7F6A.m4a",
+            )
+          }
+        >
+          Start playing
+        </Button>
         <SelectPollingStation />
       </YStack>
 

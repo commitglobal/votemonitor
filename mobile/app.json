@@ -82,7 +82,13 @@
           "cameraPermission": "The app accesses your camera to let you take photos or videos and upload them."
         }
       ],
-      "expo-secure-store"
+      "expo-secure-store",
+      [
+        "expo-av",
+        {
+          "microphonePermission": "Allow VotMonitor to access your microphone."
+        }
+      ]
     ]
   }
 }
