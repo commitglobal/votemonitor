@@ -20,7 +20,6 @@ function PreviewForm({ languageCode, localQuestions, activeQuestionId, setActive
   const [currentQuestion, setCurrentQuestion] = useState<BaseQuestion | undefined>();
   const [responseData, setResponseData] = useState<ResponseData>({});
   const [progress, setProgress] = useState(0);
-console.log(localQuestions);
   useEffect(() => {
     if (activeQuestionId === localQuestions[localQuestions.length - 1]?.id) {
       setProgress(100);

@@ -1,10 +1,12 @@
 import { ILoginResponse, LoginDTO, authApi } from '@/common/auth-api';
 import { useToast } from '@/components/ui/use-toast';
 import { parseJwt } from '@/lib/utils';
+import { useNavigate } from '@tanstack/react-router';
 import { createContext, useEffect, useState } from 'react';
 
 export type AuthContextType = {
   signIn: (user: LoginDTO) => Promise<boolean>;
+  signOut: () => void;
   isAuthenticated: boolean;
   isLoading: boolean;
   token: string | undefined;
@@ -13,6 +15,7 @@ export type AuthContextType = {
 
 export const AuthContext = createContext<AuthContextType>({
   signIn: () => new Promise(() => false),
+  signOut: () => { },
   isAuthenticated: true,
   isLoading: false,
   token: undefined,
@@ -48,7 +51,7 @@ const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
       if (error.response.status === 400) {
         toast({
           title: 'Error',
-        description: 'You have tered an invalid email or password',
+          description: 'You have tered an invalid email or password',
           variant: 'destructive',
         });
       }
@@ -56,10 +59,18 @@ const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
     }
   };
 
+  const signOut = (): void => {
+    localStorage.removeItem('token');
+    setIsAuthenticated(false);
+    setToken('');
+    setUserRole('');
+  };
+
   return (
     <AuthContext.Provider
       value={{
         signIn,
+        signOut,
         isAuthenticated,
         isLoading,
         token,

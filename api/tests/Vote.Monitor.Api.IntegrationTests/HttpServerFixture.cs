@@ -1,6 +1,5 @@
 ﻿using System.Security.Claims;
 using MartinCostello.Logging.XUnit;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Logging;
 using Vote.Monitor.Api.Feature.Auth.Login;
@@ -9,7 +8,7 @@ using Vote.Monitor.Api.Feature.ElectionRound;
 using Vote.Monitor.Core.Security;
 using Vote.Monitor.Core.Services.Security;
 using Vote.Monitor.Domain.Constants;
-using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
+
 using ElectionRoundCreateEndpoint = Vote.Monitor.Api.Feature.ElectionRound.Create.Endpoint;
 using ElectionRoundCreateRequest = Vote.Monitor.Api.Feature.ElectionRound.Create.Request;
 
@@ -18,10 +17,7 @@ namespace Vote.Monitor.Api.IntegrationTests;
 public class HttpServerFixture<TDataSeeder> : WebApplicationFactory<Program>, IAsyncLifetime, ITestOutputHelperAccessor where TDataSeeder : class, IDataSeeder
 {
     private static readonly Faker _faker = new();
-    private readonly PostgreSqlContainer _postgresContainer = new PostgreSqlBuilder()
-        .WithDatabase(Guid.NewGuid().ToString())
-        .WithCleanUp(true)
-        .Build();
+    private PostgreSqlContainer _postgresContainer = default!;
 
     public ITestOutputHelper? OutputHelper { get; set; }
 
@@ -62,20 +58,23 @@ public class HttpServerFixture<TDataSeeder> : WebApplicationFactory<Program>, IA
 
     public async Task InitializeAsync()
     {
+        _postgresContainer = new PostgreSqlBuilder()
+            .WithDatabase(Guid.NewGuid().ToString())
+            .Build();
+
         await _postgresContainer.StartAsync();
 
         var currentUserInitializer = Services.GetRequiredService<ICurrentUserInitializer>();
         currentUserInitializer.SetCurrentUser(_integrationTestingUser);
 
-        using var userManager = Services.GetRequiredService<UserManager<ApplicationUser>>();
         Client = CreateClient();
 
-        var ( tokenResult, tokenResponse) = await Client.POSTAsync<Endpoint, Request, TokenResponse>(new()
+        var (tokenResult, tokenResponse) = await Client.POSTAsync<Endpoint, Request, TokenResponse>(new()
         {
             Email = AdminEmail,
             Password = AdminPassword
         });
-        
+
         tokenResult.IsSuccessStatusCode.Should().BeTrue();
 
         PlatformAdmin = CreateClient();

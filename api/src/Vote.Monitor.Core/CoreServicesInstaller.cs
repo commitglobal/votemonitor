@@ -63,6 +63,10 @@ public static class CoreServicesInstaller
         public void SendEmail(string to, string subject, string body)
         {
         }
+
+        public void ExportFormSubmissions(Guid electionRoundId, Guid ngoId, Guid exportedDataId)
+        {
+        }
     }
 
 }

@@ -48,6 +48,6 @@ public sealed class PollingStationInformationFormFaker : PrivateFaker<PollingSta
             new MultiSelectQuestion(Guid.NewGuid(), "c6", multiSelectQuestionText, null, multiSelectOptions)
         ];
         CustomInstantiator(_ =>
-            PollingStationInformationForm.Create(electionRound, languages, questions));
+            PollingStationInformationForm.Create(electionRound, languages.First(), languages, questions));
     }
 }

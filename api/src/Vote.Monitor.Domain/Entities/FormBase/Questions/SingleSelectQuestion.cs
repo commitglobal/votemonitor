@@ -20,8 +20,8 @@ public record SingleSelectQuestion : BaseQuestion
     public static SingleSelectQuestion Create(Guid id,
         string code,
         TranslatedString text,
-        TranslatedString? helptext,
-        IReadOnlyList<SelectOption> options) =>
+        IReadOnlyList<SelectOption> options,
+        TranslatedString? helptext = null) =>
         new(id, code, text, helptext, options);
 
     public virtual bool Equals(SingleSelectQuestion? other)

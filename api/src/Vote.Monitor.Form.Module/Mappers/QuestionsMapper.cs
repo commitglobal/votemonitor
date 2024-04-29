@@ -62,8 +62,8 @@ public static class QuestionsMapper
                 return SingleSelectQuestion.Create(singleSelectQuestion.Id,
                     singleSelectQuestion.Code,
                     singleSelectQuestion.Text,
-                    singleSelectQuestion.Helptext,
-                    singleSelectQuestionOptions);
+                    singleSelectQuestionOptions,
+                    singleSelectQuestion.Helptext);
 
             case MultiSelectQuestionRequest multiSelectQuestion:
                 var multiSelectQuestionOptions = ToEntities(multiSelectQuestion.Options);
@@ -71,8 +71,8 @@ public static class QuestionsMapper
                 var multiSelectQuestionEntity = MultiSelectQuestion.Create(multiSelectQuestion.Id,
                     multiSelectQuestion.Code,
                     multiSelectQuestion.Text,
-                    multiSelectQuestion.Helptext,
-                    multiSelectQuestionOptions);
+                    multiSelectQuestionOptions,
+                    multiSelectQuestion.Helptext);
 
                 return multiSelectQuestionEntity;
 
@@ -80,8 +80,8 @@ public static class QuestionsMapper
                 return RatingQuestion.Create(ratingQuestion.Id,
                      ratingQuestion.Code,
                      ratingQuestion.Text,
-                     ratingQuestion.Helptext,
-                     RatingScale.FromValue(ratingQuestion.Scale.Value));
+                     RatingScale.FromValue(ratingQuestion.Scale.Value),
+                     ratingQuestion.Helptext);
 
             default: throw new ApplicationException("Unknown question type received");
         }

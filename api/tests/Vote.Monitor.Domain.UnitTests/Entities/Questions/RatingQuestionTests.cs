@@ -21,7 +21,7 @@ public class RatingQuestionTests
         };
 
         var id = Guid.NewGuid();
-        var ratingQuestion1 = RatingQuestion.Create(id, "C!", text, helptext, RatingScale.OneTo10);
+        var ratingQuestion1 = RatingQuestion.Create(id, "C!", text, RatingScale.OneTo10, helptext);
         var ratingQuestion2 = ratingQuestion1.DeepClone();
 
         // Act
@@ -57,8 +57,8 @@ public class RatingQuestionTests
 
         var id = Guid.NewGuid();
 
-        var ratingQuestion1 = RatingQuestion.Create(id, "C!", text1, helptext1, RatingScale.OneTo10);
-        var ratingQuestion2 = RatingQuestion.Create(id, "C!", text2, helptext2, RatingScale.OneTo10);
+        var ratingQuestion1 = RatingQuestion.Create(id, "C!", text1, RatingScale.OneTo10, helptext1);
+        var ratingQuestion2 = RatingQuestion.Create(id, "C!", text2, RatingScale.OneTo10, helptext2);
 
         // Act
         var result = ratingQuestion1 == ratingQuestion2;

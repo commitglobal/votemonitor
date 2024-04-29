@@ -69,6 +69,43 @@ public class UpsertValidatorTests
     [Theory]
     [MemberData(nameof(TestData.EmptyAndNullStringsTestCases), MemberType = typeof(TestData))]
     [InlineData("UnknownIso")]
+    public void Validation_ShouldFail_When_InvalidDefaultLanguage(string invalidLanguageCode)
+    {
+        // Arrange
+        var request = new Upsert.Request
+        {
+            DefaultLanguage = invalidLanguageCode
+        };
+
+        // Act
+        var validationResult = _validator.TestValidate(request);
+
+        // Assert
+        validationResult
+            .ShouldHaveValidationErrorFor(x => x.DefaultLanguage);
+    }
+
+    [Fact]
+    public void Validation_ShouldFail_When_DefaultLanguageNotInLanguageList()
+    {
+        // Arrange
+        var request = new Upsert.Request
+        {
+            DefaultLanguage = LanguagesList.EN.Iso1,
+            Languages = [LanguagesList.RO.Iso1]
+        };
+
+        // Act
+        var validationResult = _validator.TestValidate(request);
+
+        // Assert
+        validationResult
+            .ShouldHaveValidationErrorFor(x => x.DefaultLanguage).WithErrorMessage("Languages should contain declared default language.");
+    }
+
+    [Theory]
+    [MemberData(nameof(TestData.EmptyAndNullStringsTestCases), MemberType = typeof(TestData))]
+    [InlineData("UnknownIso")]
     public void Validation_ShouldFail_When_InvalidLanguageCodes(string invalidLanguageCode)
     {
         // Arrange
@@ -92,7 +129,8 @@ public class UpsertValidatorTests
         var request = new Upsert.Request
         {
             ElectionRoundId = Guid.NewGuid(),
-            Languages = [LanguagesList.RO.Iso1, LanguagesList.EN.Iso1]
+            DefaultLanguage = LanguagesList.EN.Iso1,
+            Languages = [LanguagesList.RO.Iso1, LanguagesList.EN.Iso1],
         };
 
         // Act

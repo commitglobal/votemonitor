@@ -24,7 +24,7 @@ public class MultiSelectQuestionTests
         SelectOption[] options = [.. new SelectOptionFaker().Generate(3)];
 
         var id = Guid.NewGuid();
-        var multiSelectQuestion1 = MultiSelectQuestion.Create(id, "C!", text, helptext, options);
+        var multiSelectQuestion1 = MultiSelectQuestion.Create(id, "C!", text, options, helptext);
         var multiSelectQuestion2 = multiSelectQuestion1.DeepClone();
 
         // Act
@@ -63,8 +63,8 @@ public class MultiSelectQuestionTests
 
         var id = Guid.NewGuid();
 
-        var textQuestion1 = MultiSelectQuestion.Create(id, "C!", text1, helptext1, options1);
-        var textQuestion2 = MultiSelectQuestion.Create(id, "C!", text2, helptext2, options2);
+        var textQuestion1 = MultiSelectQuestion.Create(id, "C!", text1, options1, helptext1);
+        var textQuestion2 = MultiSelectQuestion.Create(id, "C!", text2, options2, helptext2);
 
         // Act
         var result = textQuestion1 == textQuestion2;

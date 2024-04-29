@@ -18,22 +18,24 @@ public class Endpoint(IRepository<PollingStationInfoFormAggregate> repository,
         var questions = req.Questions.Select(QuestionsMapper.ToEntity).ToList();
 
         return form is null
-            ? await AddPollingStationInfoFormAsync(req.ElectionRoundId, req.Languages, questions, ct)
-            : await UpdateForm(form, req.Languages, questions, ct);
+            ? await AddPollingStationInfoFormAsync(req.ElectionRoundId, req.DefaultLanguage, req.Languages, questions, ct)
+            : await UpdateForm(form, req.DefaultLanguage, req.Languages, questions, ct);
     }
 
     private async Task<Results<Ok<PollingStationInformationFormModel>, NotFound>> UpdateForm(PollingStationInfoFormAggregate pollingStationInformationForm,
+        string defaultLanguage,
         List<string> languages,
         List<BaseQuestion> questions,
         CancellationToken ct)
     {
-        pollingStationInformationForm.UpdateDetails(languages, questions);
+        pollingStationInformationForm.UpdateDetails(defaultLanguage, languages, questions);
         await repository.UpdateAsync(pollingStationInformationForm, ct);
 
         return TypedResults.Ok(PollingStationInformationFormModel.FromEntity(pollingStationInformationForm));
     }
 
     private async Task<Results<Ok<PollingStationInformationFormModel>, NotFound>> AddPollingStationInfoFormAsync(Guid electionRoundId,
+        string defaultLanguage,
         List<string> languages,
         List<BaseQuestion> questions,
         CancellationToken ct)
@@ -44,7 +46,7 @@ public class Endpoint(IRepository<PollingStationInfoFormAggregate> repository,
             return TypedResults.NotFound();
         }
 
-        var pollingStationInformationForm = PollingStationInfoFormAggregate.Create(electionRound, languages, questions);
+        var pollingStationInformationForm = PollingStationInfoFormAggregate.Create(electionRound, defaultLanguage, languages, questions);
         await repository.AddAsync(pollingStationInformationForm, ct);
 
         return TypedResults.Ok(PollingStationInformationFormModel.FromEntity(pollingStationInformationForm));

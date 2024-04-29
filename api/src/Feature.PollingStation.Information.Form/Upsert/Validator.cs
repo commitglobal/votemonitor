@@ -9,6 +9,11 @@ public class Validator : Validator<Request>
     {
         RuleFor(x => x.ElectionRoundId).NotEmpty();
         RuleFor(x => x.Languages).NotEmpty();
+        RuleFor(x => x.DefaultLanguage)
+            .IsValidLanguageCode()
+            .Must((request, iso) => request.Languages.Contains(iso))
+            .WithMessage("Languages should contain declared default language.");
+
 
         RuleForEach(x => x.Languages)
             .IsValidLanguageCode();

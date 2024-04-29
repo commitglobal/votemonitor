@@ -1,5 +1,5 @@
 ﻿using Spectre.Console;
-using SubmissionsFaker.Clients;
+using SubmissionsFaker.Clients.Models;
 using SubmissionsFaker.Clients.NgoAdmin;
 using SubmissionsFaker.Clients.Token;
 using SubmissionsFaker.Forms;
