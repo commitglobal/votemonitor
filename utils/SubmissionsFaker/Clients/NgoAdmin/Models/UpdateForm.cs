@@ -1,4 +1,6 @@
-﻿namespace SubmissionsFaker.Clients.NgoAdmin.Models;
+﻿using SubmissionsFaker.Clients.Models.Questions;
+
+namespace SubmissionsFaker.Clients.NgoAdmin.Models;
 
 public class UpdateForm : NewForm
 {

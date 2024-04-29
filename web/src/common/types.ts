@@ -187,14 +187,49 @@ export type UserPayload = {
  * @param value value to set for required languageCode
  * @returns new instance of @see {@link TranslatedString}
  */
-export const newTranslatedString: (availableLanguages: string[], languageCode: string, value?: string) => TranslatedString = (availableLanguages, languageCode, value) => {
+export const newTranslatedString = (availableLanguages: string[], languageCode: string, value: string = ''): TranslatedString => {
   const translatedString: TranslatedString = {};
   availableLanguages.forEach(language => {
     translatedString[language] = '';
   });
 
-  translatedString[languageCode] = value ?? '';
-  
+  translatedString[languageCode] = value;
+
+  return translatedString;
+};
+
+/**
+ * Adds translation for a given language code in a TranslatedString
+ * @param translatedString a instance of @see {@link TranslatedString}
+ * @param languageCode language code for which to add value
+ * @param value value to set if translation does not exists
+ * @returns new instance of @see {@link TranslatedString}
+ */
+export const addTranslation = (translatedString: TranslatedString | undefined, languageCode: string, value: string = ''): TranslatedString | undefined => {
+  if (translatedString) {
+    if (translatedString[languageCode]) {
+      return translatedString;
+    }
+
+    translatedString[languageCode] = value;
+  }
+
+  return translatedString;
+};
+
+/**
+ * Clones translation from a language code to a language code in @see {@link TranslatedString} instance
+ * @param translatedString a instance of @see {@link TranslatedString}
+ * @param fromLanguageCode language code from which to borrow translation
+ * @param toLanguageCode destination
+ * @param defaultValue default value
+ * @returns new instance of @see {@link TranslatedString}
+ */
+export const cloneTranslation = (translatedString: TranslatedString | undefined, fromLanguageCode: string, toLanguageCode: string, defaultValue?: string): TranslatedString | undefined => {
+  if (translatedString) {
+    translatedString[toLanguageCode] = translatedString[fromLanguageCode] ?? '';
+  }
+
   return translatedString;
 };
 

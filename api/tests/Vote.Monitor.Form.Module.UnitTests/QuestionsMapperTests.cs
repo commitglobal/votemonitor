@@ -145,7 +145,7 @@ public class QuestionsMapperTests
     public void ToModel_ShouldReturnNumberQuestionModel_WhenGivenSingleSelectQuestion()
     {
         // Arrange
-        var singleSelectQuestion = SingleSelectQuestion.Create(Guid.NewGuid(), _code, _text, _helptext, _options);
+        var singleSelectQuestion = SingleSelectQuestion.Create(Guid.NewGuid(), _code, _text, _options, _helptext);
 
         // Act
         var result = QuestionsMapper.ToModel(singleSelectQuestion);
@@ -159,7 +159,7 @@ public class QuestionsMapperTests
     public void ToModel_ShouldReturnNumberQuestionModel_WhenGivenMultiSelectQuestion()
     {
         // Arrange
-        var multiSelectQuestion = MultiSelectQuestion.Create(Guid.NewGuid(), _code, _text, _helptext, _options);
+        var multiSelectQuestion = MultiSelectQuestion.Create(Guid.NewGuid(), _code, _text, _options, _helptext);
 
         // Act
         var result = QuestionsMapper.ToModel(multiSelectQuestion);
@@ -173,7 +173,7 @@ public class QuestionsMapperTests
     public void ToModel_ShouldReturnNumberQuestionModel_WhenGivenRatingQuestion()
     {
         // Arrange
-        var ratingQuestion = RatingQuestion.Create(Guid.NewGuid(), _code, _text, _helptext, RatingScale.OneTo10);
+        var ratingQuestion = RatingQuestion.Create(Guid.NewGuid(), _code, _text, RatingScale.OneTo10, _helptext);
 
         // Act
         var result = QuestionsMapper.ToModel(ratingQuestion);

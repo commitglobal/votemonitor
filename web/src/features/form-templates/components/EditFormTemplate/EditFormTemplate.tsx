@@ -1,5 +1,4 @@
 import { authApi } from '@/common/auth-api';
-import Layout from '@/components/layout/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ErrorMessage, Field, FieldGroup, Fieldset, Label } from '@/components/ui/fieldset';
 import { Form, FormControl, FormField, FormMessage } from '@/components/ui/form';
@@ -10,12 +9,13 @@ import { useToast } from '@/components/ui/use-toast';
 import LanguageSelect from '@/containers/LanguageSelect';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
-import { useLoaderData, useNavigate } from '@tanstack/react-router';
+import { useLoaderData } from '@tanstack/react-router';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 import { FormTemplateFull, FormTemplateType, mapFormTemplateType } from '../../models/formTemplate';
 
+import { BaseQuestion, MultiSelectQuestion, NumberQuestion, QuestionType, SingleSelectQuestion, TextQuestion, cloneTranslation } from '@/common/types';
 import FormQuestionsEditor from '@/components/questionsEditor/FormQuestionsEditor';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -25,10 +25,12 @@ import { formTemplatesKeys } from '../../queries';
 import EditFormTemplateFooter from './EditFormTemplateFooter';
 
 export default function EditFormTemplate() {
-  const navigate = useNavigate();
   const { t } = useTranslation();
   const formTemplate: FormTemplateFull = useLoaderData({ strict: false });
   const [localQuestions, setLocalQuestions] = useState(formTemplate.questions);
+  const [defaultLanguage, setDefaultLanguage] = useState(formTemplate.defaultLanguage);
+  const [languages, setLanguages] = useState(formTemplate.languages);
+
   const { toast } = useToast();
 
   const editFormTemplateFormSchema = z.object({
@@ -54,10 +56,11 @@ export default function EditFormTemplate() {
 
   function onSubmit(values: z.infer<typeof editFormTemplateFormSchema>) {
     formTemplate.code = values.code;
-    formTemplate.name[formTemplate.defaultLanguage] = values.name;
-    formTemplate.description[formTemplate.defaultLanguage] = values.description ?? '';
+    formTemplate.name[defaultLanguage] = values.name;
+    formTemplate.description[defaultLanguage] = values.description ?? '';
     formTemplate.formTemplateType = values.formTemplateType;
-    formTemplate.defaultLanguage = values.defaultLanguage;
+    formTemplate.defaultLanguage = defaultLanguage;
+    formTemplate.languages = languages;
 
     const updatedFormTemplate: FormTemplateFull = {
       ...formTemplate,
@@ -83,6 +86,50 @@ export default function EditFormTemplate() {
       queryClient.invalidateQueries({ queryKey: formTemplatesKeys.all });
     },
   });
+
+
+
+  const updateTranslations = (question: BaseQuestion, previousLanguageCode: string, newLanguageCode: string): BaseQuestion => {
+    question.text = cloneTranslation(question.text, previousLanguageCode, newLanguageCode)!;
+    question.helptext = cloneTranslation(question.helptext, previousLanguageCode, newLanguageCode);
+
+    if (question.$questionType === QuestionType.TextQuestionType) {
+      const textQuestion: TextQuestion = question as TextQuestion;
+      textQuestion.inputPlaceholder = cloneTranslation(textQuestion.inputPlaceholder, previousLanguageCode, newLanguageCode);
+
+      return { ...textQuestion };
+    }
+
+    if (question.$questionType === QuestionType.NumberQuestionType) {
+      const numberQuestion: NumberQuestion = question as NumberQuestion;
+      numberQuestion.inputPlaceholder = cloneTranslation(numberQuestion.inputPlaceholder, previousLanguageCode, newLanguageCode);
+
+      return { ...numberQuestion };
+    }
+
+    if (question.$questionType === QuestionType.SingleSelectQuestionType) {
+      const singleSelectQuestion: SingleSelectQuestion = question as SingleSelectQuestion;
+      singleSelectQuestion.options = singleSelectQuestion.options.map(option => ({ ...option, text: cloneTranslation(option.text, previousLanguageCode, newLanguageCode)! }))
+
+      return { ...singleSelectQuestion };
+    }
+
+    if (question.$questionType === QuestionType.MultiSelectQuestionType) {
+      const MultiSelectQuestion: MultiSelectQuestion = question as MultiSelectQuestion;
+      MultiSelectQuestion.options = MultiSelectQuestion.options.map(option => ({ ...option, text: cloneTranslation(option.text, previousLanguageCode, newLanguageCode)! }))
+
+      return { ...MultiSelectQuestion };
+    }
+
+    return { ...question };
+  }
+
+  const handleLanguageChange = (newLanguageCode: string): void => {
+    const previousLanguageCode = defaultLanguage;
+    setDefaultLanguage(newLanguageCode);
+    setLanguages(Array.from(new Set([...languages, newLanguageCode])));
+    setLocalQuestions([...localQuestions.map(question => updateTranslations(question, previousLanguageCode, newLanguageCode))]);
+  }
 
   return (
     <div>
@@ -162,7 +209,7 @@ export default function EditFormTemplate() {
                         render={({ field }) => (
                           <Field>
                             <Label>{t('form-template.field.defaultLanguage')}</Label>
-                            <LanguageSelect languageCode={field.value} onSelect={field.onChange} />
+                            <LanguageSelect languageCode={field.value} onSelect={(value) => { handleLanguageChange(value); field.onChange(value) }} />
                           </Field>
                         )}
                       />
@@ -198,8 +245,8 @@ export default function EditFormTemplate() {
                 </CardHeader>
                 <CardContent className='flex flex-1'>
                   <FormQuestionsEditor
-                    availableLanguages={formTemplate.languages}
-                    languageCode={formTemplate.defaultLanguage}
+                    availableLanguages={languages}
+                    languageCode={defaultLanguage}
                     localQuestions={localQuestions}
                     setLocalQuestions={setLocalQuestions}
                   />

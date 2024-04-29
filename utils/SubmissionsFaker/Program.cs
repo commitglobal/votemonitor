@@ -3,7 +3,7 @@
 using Bogus;
 using Refit;
 using Spectre.Console;
-using SubmissionsFaker.Clients;
+using SubmissionsFaker.Clients.Models;
 using SubmissionsFaker.Clients.MonitoringObserver;
 using SubmissionsFaker.Clients.NgoAdmin;
 using SubmissionsFaker.Clients.PlatformAdmin;
@@ -31,9 +31,6 @@ const int NUMBER_OF_OBSERVERS = 100;
 const int NUMBER_OF_SUBMISSIONS = 100;
 const string platformAdminUsername = "john.doe@example.com";
 const string platformAdminPassword = "password123";
-
-const string ngoAdminUsername = "admin@demo.com";
-const string ngoAdminPassword = "string";
 #endregion
 
 
@@ -54,8 +51,8 @@ var observerApi = RestService.For<IMonitoringObserverApi>(client);
 var platformAdminToken = await tokenApi.GetToken(new Credentials(platformAdminUsername, platformAdminPassword));
 #endregion
 
-CreateResponse electionRound = new CreateResponse(){Id = Guid.Parse("f331a1e8-b888-4d7b-bb5f-a1e64ff43210") };
-CreateResponse ngo = new CreateResponse(){ Id = Guid.Parse("85fc1300-7046-43bb-9814-7a4fd67bec96 ") };
+CreateResponse electionRound = default!;
+CreateResponse ngo = new CreateResponse() { Id = Guid.Parse("85fc1300-7046-43bb-9814-7a4fd67bec96 ") };
 CreateResponse monitoringNgo = default!;
 LoginResponse ngoAdminToken = default!;
 List<LocationNode> pollingStations = [];
@@ -71,18 +68,21 @@ await AnsiConsole.Progress()
     .Columns(progressColumns)
     .StartAsync(async ctx =>
     {
-        var setupTask = ctx.AddTask("[green]Setup election round and NGO [/]", maxValue: 6);
+        var setupTask = ctx.AddTask("[green]Setup election round and NGO [/]", maxValue: 7);
 
-        // electionRound = await platformAdminApi.CreateElectionRound(new ElectionRoundFaker().Generate(), platformAdminToken.Token);
+        electionRound = await platformAdminApi.CreateElectionRound(new ElectionRoundFaker().Generate(), platformAdminToken.Token);
         setupTask.Increment(1);
 
-            //ngo = await platformAdminApi.CreateNgo(new NgoFaker().Generate(), platformAdminToken.Token);
+        await platformAdminApi.CreatePSIForm(electionRound.Id, PSIFormData.PSIForm, platformAdminToken.Token);
+        setupTask.Increment(1);
+
+        ngo = await platformAdminApi.CreateNgo(new NgoFaker().Generate(), platformAdminToken.Token);
         setupTask.Increment(1);
 
         monitoringNgo = await platformAdminApi.AssignNgoToElectionRound(electionRound.Id, new AssignNgoRequest(ngo.Id), platformAdminToken.Token);
         setupTask.Increment(1);
 
-        var ngoAdmin = new ApplicationUserFaker(ngoAdminUsername, ngoAdminPassword).Generate();
+        var ngoAdmin = new ApplicationUserFaker().Generate();
         await platformAdminApi.CreateNgoAdmin(ngoAdmin, ngo.Id, platformAdminToken.Token);
         setupTask.Increment(1);
 

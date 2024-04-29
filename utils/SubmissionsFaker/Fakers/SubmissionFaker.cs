@@ -1,5 +1,7 @@
 ﻿using Bogus;
 using SubmissionsFaker.Clients;
+using SubmissionsFaker.Clients.Models;
+using SubmissionsFaker.Clients.Models.Questions;
 using SubmissionsFaker.Clients.MonitoringObserver.Models;
 using SubmissionsFaker.Clients.NgoAdmin.Models;
 using SubmissionsFaker.Clients.PollingStations;

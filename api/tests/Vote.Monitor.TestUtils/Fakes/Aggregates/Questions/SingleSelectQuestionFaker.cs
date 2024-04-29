@@ -8,6 +8,6 @@ public sealed class SingleSelectQuestionFaker : Faker<SingleSelectQuestion>
     public SingleSelectQuestionFaker(List<SelectOption>? options = null, string[]? languageList = null)
     {
         CustomInstantiator(f => SingleSelectQuestion.Create(f.Random.Guid(), f.Random.AlphaNumeric(2),
-            new TranslatedStringFaker(languageList), new TranslatedStringFaker(languageList), options ?? new SelectOptionFaker(languageList: languageList).Generate(4)));
+            new TranslatedStringFaker(languageList), options ?? new SelectOptionFaker(languageList: languageList).Generate(4), new TranslatedStringFaker(languageList)));
     }
 }

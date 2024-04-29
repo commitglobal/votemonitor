@@ -35,7 +35,6 @@ export default function PlatformAdminDashboard(): ReactElement {
 
   function saveChart(chartRef: any, chartName: string): void {
     const base64Image = chartRef.current.toBase64Image().replace('data:image/png;base64,', '');
-    console.log(base64Image);
 
     const binaryString = atob(base64Image);
     const arrayBuffer = new ArrayBuffer(binaryString.length);
