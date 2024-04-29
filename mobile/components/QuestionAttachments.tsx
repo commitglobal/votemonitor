@@ -3,6 +3,7 @@ import { Typography } from "./Typography";
 import Card from "./Card";
 import { Icon } from "./Icon";
 import { useAttachments } from "../services/queries/attachments.query";
+import { useDeleteAttachment } from "../services/mutations/delete-attachment.mutation";
 
 interface QuestionAttachmentsProps {
   electionRoundId: string;
@@ -19,6 +20,12 @@ const QuestionAttachments: React.FC<QuestionAttachmentsProps> = ({
 }) => {
   const { data: attachments } = useAttachments(electionRoundId, pollingStationId, formId);
 
+  const { mutate: deleteAttachment } = useDeleteAttachment(
+    electionRoundId,
+    pollingStationId,
+    formId,
+  );
+
   return (
     attachments?.[questionId]?.length && (
       <YStack marginTop="$lg" gap="$xxs">
@@ -34,15 +41,16 @@ const QuestionAttachments: React.FC<QuestionAttachmentsProps> = ({
                 justifyContent="space-between"
                 alignItems="center"
               >
-                <Typography>{attachment.fileName}</Typography>
-                <Icon
-                  icon="xCircle"
-                  size={18}
-                  color="$gray5"
-                  onPress={() => console.log("delete media action")}
-                  pressStyle={{ opacity: 0.5 }}
+                <Typography preset="body1" fontWeight="700" maxWidth="85%" numberOfLines={1}>
+                  {attachment.fileName}
+                </Typography>
+                <YStack
                   padding="$md"
-                />
+                  onPress={() => deleteAttachment({ electionRoundId, id: attachment.id })}
+                  pressStyle={{ opacity: 0.5 }}
+                >
+                  <Icon icon="xCircle" size={24} color="$gray5" />
+                </YStack>
               </Card>
             );
           })}

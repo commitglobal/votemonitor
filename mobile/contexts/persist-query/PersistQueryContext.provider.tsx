@@ -9,6 +9,10 @@ import { performanceLog } from "../../helpers/misc";
 import { PersistGate } from "../../components/PersistGate";
 import SuperJSON from "superjson";
 import { AddAttachmentAPIPayload, addAttachment } from "../../services/api/add-attachment.api";
+import {
+  deleteAttachment,
+  DeleteAttachmentAPIPayload,
+} from "../../services/api/delete-attachment.api";
 
 const queryClient = new QueryClient({
   mutationCache: new MutationCache({
@@ -95,7 +99,7 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
     },
   });
 
-  queryClient.setMutationDefaults(["upsertFormSubmission"], {
+  queryClient.setMutationDefaults(pollingStationsKeys.upsertFormSubmission(), {
     mutationFn: (payload: API.FormSubmissionAPIPayload) => {
       return API.upsertFormSubmission(payload);
     },
@@ -104,6 +108,30 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
   queryClient.setMutationDefaults(pollingStationsKeys.addAttachmentMutation(), {
     mutationFn: async (payload: AddAttachmentAPIPayload) => {
       return performanceLog(() => addAttachment(payload));
+    },
+  });
+
+  queryClient.setMutationDefaults(pollingStationsKeys.deleteAttachment(), {
+    mutationFn: async (payload: DeleteAttachmentAPIPayload) => {
+      return deleteAttachment(payload);
+    },
+  });
+
+  queryClient.setMutationDefaults(pollingStationsKeys.addNote(), {
+    mutationFn: (payload: API.NotePayload) => {
+      return API.addNote(payload);
+    },
+  });
+
+  queryClient.setMutationDefaults(pollingStationsKeys.updateNote(), {
+    mutationFn: (payload: API.UpdateNotePayload) => {
+      return API.updateNote(payload);
+    },
+  });
+
+  queryClient.setMutationDefaults(pollingStationsKeys.deleteNote(), {
+    mutationFn: (payload: API.DeleteNotePayload) => {
+      return API.deleteNote(payload);
     },
   });
 

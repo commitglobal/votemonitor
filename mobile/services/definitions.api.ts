@@ -312,3 +312,47 @@ export type NotePayload = {
 export const addNote = ({ electionRoundId, ...notePayload }: NotePayload): Promise<Note> => {
   return API.post(`election-rounds/${electionRoundId}/notes`, notePayload).then((res) => res.data);
 };
+
+/** ========================================================================
+    ================= PUT updateNote ====================
+    ========================================================================
+    @description Update a note for a question in form wizard 
+    @param {string} electionRoundId 
+    @param {string} id 
+    @returns {Note} 
+*/
+
+export type UpdateNotePayload = {
+  electionRoundId: string;
+  pollingStationId: string;
+  formId: string;
+  id: string;
+  text: string;
+};
+
+export const updateNote = ({
+  electionRoundId,
+  id,
+  ...updateNotePayload
+}: UpdateNotePayload): Promise<Note> => {
+  return API.put(`election-rounds/${electionRoundId}/notes/${id}`, updateNotePayload).then(
+    (res) => res.data,
+  );
+};
+
+/** ========================================================================
+    ================= DELETE deleteNote ====================
+    ========================================================================
+    @description delete a note 
+    @param {string} electionRoundId 
+    @param {string} id 
+*/
+
+export type DeleteNotePayload = {
+  electionRoundId: string;
+  id: string;
+};
+
+export const deleteNote = ({ electionRoundId, id }: DeleteNotePayload) => {
+  return API.delete(`election-rounds/${electionRoundId}/notes/${id}`).then((res) => res.data);
+};
