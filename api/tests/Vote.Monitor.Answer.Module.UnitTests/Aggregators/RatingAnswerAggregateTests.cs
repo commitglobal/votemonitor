@@ -15,7 +15,7 @@ public class RatingAnswerAggregateTests
 
     public RatingAnswerAggregateTests()
     {
-        _aggregate = new RatingAnswerAggregate(_question);
+        _aggregate = new RatingAnswerAggregate(_question, 0);
     }
 
     [Theory]
@@ -26,7 +26,7 @@ public class RatingAnswerAggregateTests
         var question = new RatingQuestionFaker(scale).Generate();
 
         // Act
-        var aggregate = new RatingAnswerAggregate(question);
+        var aggregate = new RatingAnswerAggregate(question, 0);
 
         // Assert
         aggregate.AnswersHistogram.Should().HaveCount(count);

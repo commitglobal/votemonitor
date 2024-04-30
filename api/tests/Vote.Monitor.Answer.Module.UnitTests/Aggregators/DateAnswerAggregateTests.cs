@@ -14,7 +14,7 @@ public class DateAnswerAggregateTests
 
     public DateAnswerAggregateTests()
     {
-        _aggregate = new DateAnswerAggregate(_question);
+        _aggregate = new DateAnswerAggregate(_question, 0);
     }
 
     [Fact]

@@ -14,7 +14,7 @@ public class BaseAnswerAggregateTests
     public void Aggregate_ShouldIncrementAnswersAggregated()
     {
         // Arrange
-        var aggregate = new TestAnswerAggregate(new TextQuestionFaker().Generate());
+        var aggregate = new TestAnswerAggregate(new TextQuestionFaker().Generate(), 0);
 
         // Act
         aggregate.Aggregate(Guid.NewGuid(), new TestAnswer());
@@ -29,7 +29,7 @@ public class BaseAnswerAggregateTests
     public void Aggregate_ShouldAddResponderIdToResponders()
     {
         // Arrange
-        var aggregate = new TestAnswerAggregate(new TextQuestionFaker().Generate());
+        var aggregate = new TestAnswerAggregate(new TextQuestionFaker().Generate(), 0);
         var responderId1 = Guid.NewGuid();
         var responderId2 = Guid.NewGuid();
 
@@ -47,7 +47,7 @@ public class BaseAnswerAggregateTests
     public void Aggregate_ShouldInvokeQuestionSpecificAggregate()
     {
         // Arrange
-        var aggregate = new TestAnswerAggregate(new TextQuestionFaker().Generate());
+        var aggregate = new TestAnswerAggregate(new TextQuestionFaker().Generate(), 0);
         var responderId = Guid.NewGuid();
 
         // Act
@@ -62,7 +62,7 @@ public class TestAnswerAggregate : BaseAnswerAggregate
 {
     public bool QuestionSpecificAggregateInvoked { get; private set; }
 
-    public TestAnswerAggregate(BaseQuestion question) : base(question)
+    public TestAnswerAggregate(BaseQuestion question, int displayOrder) : base(question, displayOrder)
     {
     }
 

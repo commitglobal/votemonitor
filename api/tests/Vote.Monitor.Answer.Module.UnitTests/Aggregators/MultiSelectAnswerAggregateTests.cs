@@ -20,7 +20,7 @@ public class MultiSelectAnswerAggregateTests
     {
         _options = new SelectOptionFaker().Generate(_optionsCount);
         _question = new MultiSelectQuestionFaker(options: _options).Generate();
-        _aggregate = new MultiSelectAnswerAggregate(_question);
+        _aggregate = new MultiSelectAnswerAggregate(_question, 0);
     }
 
     [Fact]
