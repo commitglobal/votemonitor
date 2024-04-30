@@ -5,6 +5,7 @@ import Card from "./Card";
 import { Icon } from "./Icon";
 import { Note } from "../common/models/note";
 import EditNoteModal from "./EditNoteModal";
+import EditNoteSheet from "./EditNoteSheet";
 
 const QuestionNotes = ({
   notes,
@@ -49,7 +50,7 @@ const QuestionNotes = ({
           );
         })}
       </YStack>
-      {selectedNote && (
+      {/* {selectedNote && (
         <EditNoteModal
           questionId={questionId}
           selectedNote={selectedNote}
@@ -58,7 +59,17 @@ const QuestionNotes = ({
           pollingStationId={pollingStationId}
           formId={formId as string}
         />
-      )}
+       
+      )} */}
+      <EditNoteSheet
+        open={!!selectedNote}
+        setOpen={(_open: boolean) => !_open && setSelectedNote(null)}
+        selectedNote={selectedNote}
+        electionRoundId={electionRoundId}
+        pollingStationId={pollingStationId}
+        formId={formId as string}
+        questionId={questionId}
+      />
     </>
   );
 };
