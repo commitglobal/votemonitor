@@ -15,7 +15,7 @@ public class NumberAnswerAggregateTests
 
     public NumberAnswerAggregateTests()
     {
-        _aggregate = new NumberAnswerAggregate(_question);
+        _aggregate = new NumberAnswerAggregate(_question, 0);
     }
 
     [Fact]

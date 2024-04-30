@@ -11,6 +11,7 @@ using Feature.ObserverGuide;
 using Feature.PollingStation.Information;
 using Feature.PollingStation.Information.Form;
 using Feature.PollingStation.Visit;
+using Feature.QuickReports;
 using Microsoft.AspNetCore.ResponseCompression;
 using NSwag;
 using Vote.Monitor.Api.Feature.Ngo;
@@ -27,6 +28,7 @@ using Vote.Monitor.Domain.Entities.NgoAggregate;
 using Vote.Monitor.Api.Extensions;
 using Vote.Monitor.Domain.Entities.ExportedDataAggregate;
 using Vote.Monitor.Domain.Entities.FormAggregate;
+using Vote.Monitor.Domain.Entities.QuickReportAggregate;
 using Vote.Monitor.Module.Notifications;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -119,6 +121,7 @@ builder.Services.AddObserverGuideFeature();
 builder.Services.AddPollingStationVisitFeature();
 builder.Services.AddMonitoringObserversFeature();
 builder.Services.AddFormSubmissionsFeature();
+builder.Services.AddQuickReportsFeature();
 
 builder.Services.AddAuthorization();
 
@@ -160,6 +163,7 @@ app.UseFastEndpoints(x =>
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<RatingScale, string>());
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<FormType, string>());
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<ExportedDataStatus, string>());
+    x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<QuickReportLocationType, string>());
 
     x.Serializer.Options.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
 });

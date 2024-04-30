@@ -19,7 +19,6 @@ Authorization: Bearer {{$dotenv JWT_TOKEN}}
 ###
 
 # import polling stations
-# @name newPollingStation
 POST {{$dotenv HOST }}/api/election-rounds/{{electionRoundId}}/polling-stations:import
 Authorization: Bearer {{$dotenv JWT_TOKEN}}
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW

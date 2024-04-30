@@ -1,0 +1,90 @@
+@electionRoundId=9edce401-8732-422b-b8ad-cf3e930d991f
+@pollingStationId=3c3ec98d-6bc4-45f4-b026-96135e8bfa58
+# List quick reports for a given user
+GET {{$dotenv HOST }}/api/election-rounds/{{electionRoundId}}/quick-reports
+Authorization: Bearer {{$dotenv JWT_TOKEN}}
+
+###
+
+
+@quickReportId=8781d2f1-8cab-42da-a5df-158d6830e660
+
+# Upserts a quick report not related to a polling station
+POST {{$dotenv HOST }}/api/election-rounds/{{electionRoundId}}/quick-reports
+Content-Type: application/json
+Authorization: Bearer {{$dotenv JWT_TOKEN}}
+
+{
+  "id": "{{quickReportId}}",
+  "quickReportLocationType": "NotRelatedToAPollingStation",
+  "title": "Something bad happened",
+  "description": "The bad description"
+}
+###
+
+# Upserts a quick report related to a polling station
+POST {{$dotenv HOST }}/api/election-rounds/{{electionRoundId}}/quick-reports
+Content-Type: application/json
+Authorization: Bearer {{$dotenv JWT_TOKEN}}
+
+{
+  "id": "{{quickReportId}}",
+  "quickReportLocationType": "VisitedPollingStation",
+  "title": "Something bad happened",
+  "description": "The bad description",
+  "pollingStationId": "{{pollingStationId}}" 
+}
+
+###
+
+# Upserts a quick report not related to other polling station
+POST {{$dotenv HOST }}/api/election-rounds/{{electionRoundId}}/quick-reports
+Content-Type: application/json
+Authorization: Bearer {{$dotenv JWT_TOKEN}}
+
+{
+  "id": "{{quickReportId}}",
+  "quickReportLocationType": "OtherPollingStation",
+  "title": "Something bad happened",
+  "description": "The bad description",
+  "pollingStationDetails": "do two lefts and a right" 
+}
+###
+
+# Get a quick report
+GET {{$dotenv HOST }}/api/election-rounds/{{electionRoundId}}/quick-reports/{{quickReportId}}
+Authorization: Bearer {{$dotenv JWT_TOKEN}}
+
+###
+
+# Delete a quick report
+DELETE {{$dotenv HOST }}/api/election-rounds/{{electionRoundId}}/quick-reports/{{quickReportId}}
+Authorization: Bearer {{$dotenv JWT_TOKEN}}
+
+###
+
+@attachmentId=984e89da-9fd1-43cd-8d62-94e4fb344bce
+
+# Add an attachment for a quick report
+POST {{$dotenv HOST }}/api/election-rounds/{{electionRoundId}}/quick-reports/{{quickReportId}}/attachments/
+Authorization: Bearer {{$dotenv JWT_TOKEN}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="Id"
+
+{{attachmentId}}
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="Attachment"; filename="test_attachment.jpg"
+Content-Type: image/jpg
+
+< files/test_attachment.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+###
+
+# Delete an attachment for a quick report
+DELETE {{$dotenv HOST }}/api/election-rounds/{{electionRoundId}}/quick-reports/{{quickReportId}}/attachments/{{attachmentId}}
+Authorization: Bearer {{$dotenv JWT_TOKEN}}
+
+###
+

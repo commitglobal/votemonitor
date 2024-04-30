@@ -8,7 +8,7 @@ using NSubstitute;
 using Vote.Monitor.Domain.Repository;
 using Vote.Monitor.TestUtils.Fakes.Aggregates;
 
-namespace Feature.Notes.UnitTests;
+namespace Feature.Notes.UnitTests.Endpoints;
 
 public class UpdateEndpointTests
 {

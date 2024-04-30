@@ -19,6 +19,8 @@ using Vote.Monitor.Domain.Entities.ObserverAggregate;
 using Vote.Monitor.Domain.Entities.ObserverGuideAggregate;
 using Vote.Monitor.Domain.Entities.PollingStationInfoAggregate;
 using Vote.Monitor.Domain.Entities.PollingStationInfoFormAggregate;
+using Vote.Monitor.Domain.Entities.QuickReportAggregate;
+using Vote.Monitor.Domain.Entities.QuickReportAttachmentAggregate;
 
 namespace Vote.Monitor.Domain;
 
@@ -61,6 +63,8 @@ public class VoteMonitorContext : IdentityDbContext<ApplicationUser, IdentityRol
     public DbSet<Note> Notes { set; get; }
     public DbSet<NotificationStub> NotificationStubs { get; set; }
     public DbSet<ExportedData> ExportedData { get; set; }
+    public DbSet<QuickReport> QuickReports { get; set; }
+    public DbSet<QuickReportAttachment> QuickReportAttachments { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -127,6 +131,8 @@ public class VoteMonitorContext : IdentityDbContext<ApplicationUser, IdentityRol
         builder.ApplyConfiguration(new RoleConfiguration());
         builder.ApplyConfiguration(new NotificationStubConfiguration());
         builder.ApplyConfiguration(new ExportedDataConfiguration());
+        builder.ApplyConfiguration(new QuickReportConfiguration());
+        builder.ApplyConfiguration(new QuickReportAttachmentConfiguration());
     }
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
