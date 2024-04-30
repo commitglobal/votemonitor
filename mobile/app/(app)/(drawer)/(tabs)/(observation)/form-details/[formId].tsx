@@ -2,10 +2,6 @@ import { router, useLocalSearchParams } from "expo-router";
 import { Screen } from "../../../../../../components/Screen";
 import Header from "../../../../../../components/Header";
 import { Icon } from "../../../../../../components/Icon";
-import {
-  useElectionRoundAllForms,
-  useFormSubmissions,
-} from "../../../../../../services/queries.service";
 import { useUserData } from "../../../../../../contexts/user/UserContext.provider";
 import { Typography } from "../../../../../../components/Typography";
 import { Card, XStack, YStack } from "tamagui";
@@ -25,6 +21,8 @@ import { Dimensions, Platform } from "react-native";
 import { useTranslation } from "react-i18next";
 import { FormStateToTextMapper } from "../../../../../../components/FormCard";
 import OptionsSheet from "../../../../../../components/OptionsSheet";
+import { useElectionRoundAllForms } from "../../../../../../services/queries/forms.query";
+import { useFormSubmissions } from "../../../../../../services/queries/form-submissions.query";
 
 interface FormOverviewProps {
   completedAnswers: number;
@@ -112,9 +110,14 @@ const FormQuestionListItem = ({
     <CardFooter text="No attached notes"></CardFooter>
   </Card>
 );
+type SearchParamType = {
+  formId: string;
+  language: string;
+};
 
 const FormDetails = () => {
-  const { formId, language } = useLocalSearchParams();
+  const { formId, language } = useLocalSearchParams<SearchParamType>();
+
   const { activeElectionRound, selectedPollingStation } = useUserData();
   const [optionSheetOpen, setOptionSheetOpen] = useState(false);
 
@@ -138,7 +141,7 @@ const FormDetails = () => {
   }, [formSubmissions]);
 
   const { questions, numberOfAnswers } = useMemo(() => {
-    const form = allForms?.forms.find((form) => form.id === formId);
+    const form = allForms?.[formId as string];
     const submission = formSubmissions?.submissions.find(
       (submission) => submission.formId === formId,
     );
@@ -153,7 +156,7 @@ const FormDetails = () => {
   }, [allForms, formSubmissions]);
 
   const { numberOfQuestions, formTitle } = useMemo(() => {
-    const form = allForms?.forms.find((form) => form.id === formId);
+    const form = allForms?.[formId as string];
     return {
       numberOfQuestions: form ? form.questions.length : 0,
       formTitle: `${form?.code} - ${form?.name[language as string]} (${language as string})`,
@@ -166,7 +169,7 @@ const FormDetails = () => {
 
   const onFormOverviewActionClick = () => {
     // find first unanswered question
-    const form = allForms?.forms.find((form) => form.id === formId);
+    const form = allForms?.[formId as string];
     // do not navigate if the form has no questions or not found
     if (!form || form.questions.length === 0) return;
     // get the first unanswered question

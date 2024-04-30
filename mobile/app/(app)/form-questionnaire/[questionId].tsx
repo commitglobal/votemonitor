@@ -2,11 +2,6 @@ import { router, useLocalSearchParams } from "expo-router";
 import { Screen } from "../../../components/Screen";
 import Header from "../../../components/Header";
 import { Icon } from "../../../components/Icon";
-import {
-  useElectionRoundAllForms,
-  useFormSubmissions,
-  useNotesForPollingStation,
-} from "../../../services/queries.service";
 import { Typography } from "../../../components/Typography";
 import { XStack, YStack, ScrollView, Spinner } from "tamagui";
 import LinearProgress from "../../../components/LinearProgress";
@@ -37,14 +32,22 @@ import AddAttachment from "../../../components/AddAttachment";
 
 import { FileMetadata, useCamera } from "../../../hooks/useCamera";
 import AddNoteModal from "../../../components/AddNoteModal";
-import { Note } from "../../../common/models/note";
 import { addAttachmentMutation } from "../../../services/mutations/add-attachment.mutation";
 import QuestionAttachments from "../../../components/QuestionAttachments";
 import QuestionNotes from "../../../components/QuestionNotes";
 import * as DocumentPicker from "expo-document-picker";
+import { useElectionRoundAllForms } from "../../../services/queries/forms.query";
+import { useFormSubmissions } from "../../../services/queries/form-submissions.query";
+import { useNotesForPollingStation } from "../../../services/queries/notes.query";
+
+type SearchParamType = {
+  questionId: string;
+  formId: string;
+  language: string;
+};
 
 const FormQuestionnaire = () => {
-  const { questionId, formId, language } = useLocalSearchParams();
+  const { questionId, formId, language } = useLocalSearchParams<SearchParamType>();
   const { activeElectionRound, selectedPollingStation } = useUserData();
   const [isOptionsSheetOpen, setIsOptionsSheetOpen] = useState(false);
   const [isNoteModalOpen, setIsNoteModalOpen] = useState(false);
@@ -68,15 +71,11 @@ const FormQuestionnaire = () => {
     return mapAPIAnswersToFormAnswers(formSubmission?.answers); // TODO @birloiflorian do it in query select
   }, [formSubmissions]);
 
-  const { data: formNotes } = useNotesForPollingStation(
+  const { data: notes } = useNotesForPollingStation(
     activeElectionRound?.id,
     selectedPollingStation?.pollingStationId,
     formId as string,
   );
-
-  const notes: Record<string, Note[]> | undefined = useMemo(() => {
-    return mapAPINotesToQuestionNote(formNotes); // TODO @birloiflorian do it in query select
-  }, [formNotes]);
 
   const {
     control,
@@ -88,7 +87,7 @@ const FormQuestionnaire = () => {
   });
 
   const currentForm = useMemo(() => {
-    const form = allForms?.forms.find((form) => form.id === formId);
+    const form = allForms?.[formId as string];
     return form;
   }, [allForms]);
 
