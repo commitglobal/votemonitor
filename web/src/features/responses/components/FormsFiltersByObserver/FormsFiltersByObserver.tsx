@@ -1,0 +1,84 @@
+import { ChevronDownIcon } from '@heroicons/react/24/outline';
+import { getRouteApi } from '@tanstack/react-router';
+import { useCallback } from 'react';
+import type { FunctionComponent } from '@/common/types';
+import { FilterBadge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { useMonitoringObserversTags } from '../../hooks/tags-queries';
+import type { FormSubmissionsSearchParams } from '../../models/search-params';
+
+const routeApi = getRouteApi('/responses/');
+
+export function FormsFiltersByObserver(): FunctionComponent {
+  const navigate = routeApi.useNavigate();
+  const search = routeApi.useSearch();
+
+  const { data } = useMonitoringObserversTags();
+
+  const onTagsFilterChange = useCallback(
+    (tag: string) => () => {
+      void navigate({
+        search: (prev: FormSubmissionsSearchParams) => {
+          const prevTagsFilter = prev.tagsFilter ?? [];
+          const newTags = prevTagsFilter.includes(tag)
+            ? prevTagsFilter.filter((t) => t !== tag)
+            : [...prevTagsFilter, tag];
+
+          return { ...prev, tagsFilter: newTags.length > 0 ? newTags : undefined };
+        },
+      });
+    },
+    [navigate]
+  );
+
+  return (
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger>
+          <Button className='w-full inline-flex border-gray-200 gap-1 hover:bg-white text-black' variant='outline'>
+            <span>Observer tags</span>
+            {search.tagsFilter && (
+              <span className='bg-purple-50 text-purple-600 rounded-full inline-block px-2'>
+                {search.tagsFilter.length}
+              </span>
+            )}
+            <ChevronDownIcon className='w-[20px] ml-auto' />
+          </Button>
+        </DropdownMenuTrigger>
+
+        <DropdownMenuContent>
+          {data?.tags.map((tag) => (
+            <DropdownMenuCheckboxItem
+              checked={search.tagsFilter?.includes(tag)}
+              onCheckedChange={onTagsFilterChange(tag)}
+              key={tag}>
+              {tag}
+            </DropdownMenuCheckboxItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      <Button
+        onClick={() => {
+          void navigate({});
+        }}
+        variant='ghost-primary'>
+        Reset filters
+      </Button>
+
+      {Object.entries(search).length > 0 && (
+        <div className='col-span-full flex gap-2 flex-wrap'>
+          {search.tagsFilter?.map((tag) => (
+            <FilterBadge label={`Observer tags: ${tag}`} onClear={onTagsFilterChange(tag)} />
+          ))}
+        </div>
+      )}
+    </>
+  );
+}

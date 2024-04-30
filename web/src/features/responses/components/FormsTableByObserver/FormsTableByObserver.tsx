@@ -5,30 +5,25 @@ import { useMemo } from 'react';
 import type { FunctionComponent } from '@/common/types';
 import { CardContent } from '@/components/ui/card';
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
-import { useFormSubmissionsByEntry } from '../../hooks/form-submissions-queries';
+import { useFormSubmissionsByObserver } from '../../hooks/form-submissions-queries';
 import type { FormSubmissionsSearchParams } from '../../models/search-params';
-import { formSubmissionsByEntryColumnDefs } from '../../utils/column-defs';
+import { formSubmissionsByObserverColumnDefs } from '../../utils/column-defs';
 
 const routeApi = getRouteApi('/responses/');
 
-type FormsTableByEntryProps = {
+type FormsTableByObserverProps = {
   columnsVisibility: VisibilityState;
   searchText: string;
 };
 
-export function FormsTableByEntry({ columnsVisibility, searchText }: FormsTableByEntryProps): FunctionComponent {
+export function FormsTableByObserver({ columnsVisibility, searchText }: FormsTableByObserverProps): FunctionComponent {
   const search = routeApi.useSearch();
   const debouncedSearch = useDebounce(search, 300);
 
   const queryParams = useMemo(() => {
     const params = [
-      ['formCodeFilter', searchText],
-      ['pollingStationNumberFilter', debouncedSearch.pollingStationNumberFilter],
-      ['formTypeFilter', debouncedSearch.formTypeFilter],
-      ['hasFlaggedAnswers', debouncedSearch.hasFlaggedAnswers],
-      ['level1Filter', debouncedSearch.level1Filter],
-      ['level2Filter', debouncedSearch.level2Filter],
-      ['level3Filter', debouncedSearch.level3Filter],
+      ['observerNameFilter', searchText],
+      ['tagsFilter', debouncedSearch.tagsFilter],
     ].filter(([_, value]) => value);
 
     return Object.fromEntries(params) as FormSubmissionsSearchParams;
@@ -38,8 +33,8 @@ export function FormsTableByEntry({ columnsVisibility, searchText }: FormsTableB
     <CardContent>
       <QueryParamsDataTable
         columnVisibility={columnsVisibility}
-        columns={formSubmissionsByEntryColumnDefs}
-        useQuery={useFormSubmissionsByEntry}
+        columns={formSubmissionsByObserverColumnDefs}
+        useQuery={useFormSubmissionsByObserver}
         queryParams={queryParams}
       />
     </CardContent>

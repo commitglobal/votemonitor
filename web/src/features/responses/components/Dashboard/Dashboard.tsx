@@ -21,8 +21,8 @@ import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataT
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useFormSubmissionsByForm, useFormSubmissionsByObserver } from '../../hooks/form-submissions-queries';
-import { formSubmissionsByFormColumnDefs, formSubmissionsByObserverColumnDefs } from '../../utils/column-defs';
+import { useFormSubmissionsByForm } from '../../hooks/form-submissions-queries';
+import { formSubmissionsByFormColumnDefs } from '../../utils/column-defs';
 import {
   columnVisibilityOptions,
   formSubmissionsDefaultColumns,
@@ -30,6 +30,8 @@ import {
 } from '../../utils/column-visibility-options';
 import { FormsTableByEntry } from '../FormsTableByEntry/FormsTableByEntry';
 import { FormsFiltersByEntry } from '../FormsFiltersByEntry/FormsFiltersByEntry';
+import { FormsFiltersByObserver } from '../FormsFiltersByObserver/FormsFiltersByObserver';
+import { FormsTableByObserver } from '../FormsTableByObserver/FormsTableByObserver';
 
 const routeApi = getRouteApi('/responses/');
 
@@ -91,6 +93,8 @@ export default function ResponsesDashboard(): ReactElement {
                         onValueChange={(value) => {
                           setByFilter(value as FilterBy);
                           setColumnsVisibility(formSubmissionsDefaultColumns[value as FilterBy]);
+                          void navigate({});
+                          setIsFiltering(false);
                         }}
                         value={byFilter}>
                         {Object.entries(viewBy).map(([value, label]) => (
@@ -146,13 +150,7 @@ export default function ResponsesDashboard(): ReactElement {
                 <div className='grid grid-cols-6 gap-4 items-center'>
                   {byFilter === 'byEntry' && <FormsFiltersByEntry />}
 
-                  <Button
-                    onClick={() => {
-                      void navigate({});
-                    }}
-                    variant='ghost-primary'>
-                    Reset filters
-                  </Button>
+                  {byFilter === 'byObserver' && <FormsFiltersByObserver />}
                 </div>
               )}
             </CardHeader>
@@ -161,16 +159,11 @@ export default function ResponsesDashboard(): ReactElement {
               <FormsTableByEntry columnsVisibility={columnsVisibility} searchText={debouncedSearchText} />
             )}
 
-            <CardContent>
-              {byFilter === 'byObserver' && (
-                <QueryParamsDataTable
-                  columnVisibility={columnsVisibility}
-                  columns={formSubmissionsByObserverColumnDefs}
-                  useQuery={useFormSubmissionsByObserver}
-                  queryParams={{ observerNameFilter: debouncedSearchText }}
-                />
-              )}
+            {byFilter === 'byObserver' && (
+              <FormsTableByObserver columnsVisibility={columnsVisibility} searchText={debouncedSearchText} />
+            )}
 
+            <CardContent>
               {byFilter === 'byForm' && (
                 <QueryParamsDataTable
                   columnVisibility={columnsVisibility}
