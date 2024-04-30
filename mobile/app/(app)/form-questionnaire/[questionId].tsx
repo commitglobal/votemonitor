@@ -14,7 +14,7 @@ import { useMemo, useState } from "react";
 import { useUserData } from "../../../contexts/user/UserContext.provider";
 import { ApiFormQuestion } from "../../../services/interfaces/question.type";
 import WizzardControls from "../../../components/WizzardControls";
-import { ViewStyle } from "react-native";
+import { Platform, ViewStyle } from "react-native";
 import { Controller, useForm } from "react-hook-form";
 import WizardFormInput from "../../../components/WizardFormInputs/WizardFormInput";
 import {
@@ -489,7 +489,7 @@ const FormQuestionnaire = () => {
         onNextButtonPress={handleSubmit(onSubmitAnswer)}
         onPreviousButtonPress={onBackButtonPress}
       />
-      {isOptionsSheetOpen && (
+      {(isOptionsSheetOpen || Platform.OS === "ios") && (
         <OptionsSheet
           open={isOptionsSheetOpen}
           setOpen={setIsOptionsSheetOpen}
