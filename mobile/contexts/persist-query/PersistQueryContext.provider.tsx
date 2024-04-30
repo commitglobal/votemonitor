@@ -90,7 +90,7 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
   const { isAuthenticated } = useAuth();
 
   // queryClient.getMutationCache().subscribe((event) => {
-  //   console.log("👀", event);
+  //   if (event.type === "updated") console.log("👀", SuperJSON.stringify(event));
   // });
 
   queryClient.setMutationDefaults([pollingStationsKeys.mutatePollingStationGeneralData()], {
@@ -150,35 +150,35 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
 
     console.log("🆕🆕🆕🆕🆕", SuperJSON.stringify(pausedMutation));
 
-    const mergedMutations = pausedMutation.reduce(
-      (acc: Record<string, Mutation<unknown, Error, void, unknown>>, mutation) => {
-        const scopeId = mutation.options.scope?.id;
+    // const mergedMutations = pausedMutation.reduce(
+    //   (acc: Record<string, Mutation<unknown, Error, void, unknown>>, mutation) => {
+    //     const scopeId = mutation.options.scope?.id;
 
-        if (!scopeId) {
-          // Use mutationId as key if scope was not defined (nothing will merge here)
-          acc[mutation.mutationId] = mutation;
-          return acc;
-        }
+    //     if (!scopeId) {
+    //       // Use mutationId as key if scope was not defined (nothing will merge here)
+    //       acc[mutation.mutationId] = mutation;
+    //       return acc;
+    //     }
 
-        if (scopeId && !acc[scopeId]) {
-          acc[scopeId] = mutation;
-          return acc;
-        }
+    //     if (scopeId && !acc[scopeId]) {
+    //       acc[scopeId] = mutation; // TODO: @andrewradulescu use http verb to merge
+    //       return acc;
+    //     }
 
-        if (mutation.state.submittedAt > acc[scopeId].state.submittedAt) {
-          acc[scopeId] = mutation;
-        }
+    //     if (mutation.state.submittedAt > acc[scopeId].state.submittedAt) {
+    //       acc[scopeId] = mutation;
+    //     }
 
-        return acc;
-      },
-      {},
-    );
+    //     return acc;
+    //   },
+    //   {},
+    // );
 
-    queryClient.getMutationCache().clear();
+    // queryClient.getMutationCache().clear();
 
-    Object.values(mergedMutations).forEach((mutation) => {
-      queryClient.getMutationCache().add(mutation);
-    });
+    // Object.values(mergedMutations).forEach((mutation) => {
+    //   queryClient.getMutationCache().add(mutation);
+    // });
 
     // const newPausedMutations = queryClient
     //   .getMutationCache()
