@@ -254,13 +254,15 @@ const DialogContent = ({
   const languageMapping: { [key: string]: string } = {
     RO: "Romanian",
     EN: "English",
+    PL: "Polish",
+    BG: "Bulgarian",
   };
 
   const transformedLanguages = languages.map((language) => ({
     id: language,
     value: language,
     // TODO: decide if we add the name to the label as well
-    label: languageMapping[language],
+    label: languageMapping[language] || language,
   }));
 
   return (

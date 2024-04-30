@@ -11,7 +11,10 @@
     "web": "expo start --web",
     "format": "prettier --write \"app/**/*.{js,jsx,json,md,ts,tsx}\"",
     "lint": "eslint . --fix && npm run format",
-    "build-ios-local": "eas build --platform ios --local",
+    "build-ios-local-production": "eas build --platform ios --local",
+    "build-android-local-production": "eas build --platform android --local",
+    "build-android-local-development-build": "eas build --platform android --profile development --local",
+    "build-ios-local-development-build": "eas build --platform ios --profile development --local",
     "run-ios-simulator": "eas build:run -p ios"
   },
   "dependencies": {
