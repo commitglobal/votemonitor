@@ -7,6 +7,7 @@ import { XStack } from "tamagui";
 import Button from "./Button";
 import { Note } from "../common/models/note";
 import { useUpdateNote } from "../services/mutations/edit-note.mutation";
+import { useDeleteNote } from "../services/mutations/delete-note.mutation";
 
 const EditNoteModal = ({
   selectedNote,
@@ -14,12 +15,14 @@ const EditNoteModal = ({
   electionRoundId,
   pollingStationId,
   formId,
+  questionId,
 }: {
   selectedNote: Note | null;
   setSelectedNote: React.Dispatch<React.SetStateAction<Note | null>>;
   electionRoundId: string;
   pollingStationId: string;
   formId: string;
+  questionId: string;
 }) => {
   const { control, handleSubmit } = useForm({
     defaultValues: {
@@ -32,7 +35,22 @@ const EditNoteModal = ({
     pollingStationId,
     formId,
     selectedNote!.id,
+    `Note_${electionRoundId}_${pollingStationId}_${formId}_${questionId}`,
   );
+
+  const { mutate: deleteNote } = useDeleteNote(
+    electionRoundId,
+    pollingStationId,
+    formId,
+    `Note_${electionRoundId}_${pollingStationId}_${formId}_${questionId}`,
+  );
+
+  const onDelete = () => {
+    // delete note
+    deleteNote({ electionRoundId, id: selectedNote!.id });
+    // close dialog
+    setSelectedNote(null);
+  };
 
   const onSubmit = (formData: any) => {
     const updateNotePayload = {
@@ -60,6 +78,7 @@ const EditNoteModal = ({
             paddingVertical="$xxxs"
             paddingLeft="$xs"
             pressStyle={{ opacity: 0.5 }}
+            onPress={onDelete}
           >
             Delete note
           </Typography>

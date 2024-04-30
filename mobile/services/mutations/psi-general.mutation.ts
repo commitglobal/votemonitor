@@ -1,7 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   PollingStationInformationAPIPayload,
-  upsertPollingStationGeneralInformation,
   PollingStationInformationAPIResponse,
 } from "../definitions.api";
 import { pollingStationsKeys } from "../queries.service";
@@ -26,10 +25,7 @@ export const useMutatePollingStationGeneralData = ({
 
   return useMutation({
     mutationKey: [pollingStationsKeys.mutatePollingStationGeneralData()],
-    mutationFn: async (payload: PollingStationInformationAPIPayload) => {
-      // TODO: RQ refactor, allow only variables here
-      return upsertPollingStationGeneralInformation(payload);
-    },
+    // mutationFn is set as default // TODO do for all
     scope: {
       id: scopeId,
     },
@@ -92,9 +88,10 @@ export const useMutatePollingStationGeneralData = ({
       queryClient.setQueryData(pollingStationInformationQK, context?.previousData);
     },
     onSettled: () => {
-      // TODO: we want to keep the mutation in pending until the refetch is done?
-      queryClient.invalidateQueries({ queryKey: pollingStationsKeys.visits(electionRoundId) }); // TODO: RQ
-      return queryClient.invalidateQueries({ queryKey: pollingStationInformationQK }); // TODO: RQ
+      queryClient.invalidateQueries({ queryKey: pollingStationsKeys.visits(electionRoundId) });
+      queryClient.invalidateQueries({ queryKey: pollingStationInformationQK });
+
+      // Can await invalidateQuries if I want to keep the mutation in pending until refetch is done
     },
   });
 };

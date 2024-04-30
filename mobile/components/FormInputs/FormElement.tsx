@@ -10,7 +10,7 @@ export interface FormElementProps {
   titleProps?: StyleProp<TextStyle>;
   //   children elements
   children: ReactNode;
-  //error
+  // error
   error?:
     | FieldError
     | Merge<FieldError, FieldErrorsImpl<{ details: string; id: string }>>

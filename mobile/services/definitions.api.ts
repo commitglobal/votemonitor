@@ -302,7 +302,7 @@ export const upsertFormSubmission = ({
 */
 
 export type NotePayload = {
-  electionRoundId: string | undefined;
+  electionRoundId: string;
   pollingStationId: string;
   text: string;
   formId: string;
@@ -357,4 +357,20 @@ export const changePassword = (data: ChangePasswordPayload) => {
     console.log(err);
     throw err;
   });
+};
+
+/**  ================= DELETE deleteNote ====================
+    ========================================================================
+    @description delete a note 
+    @param {string} electionRoundId 
+    @param {string} id 
+*/
+
+export type DeleteNotePayload = {
+  electionRoundId: string;
+  id: string;
+};
+
+export const deleteNote = ({ electionRoundId, id }: DeleteNotePayload) => {
+  return API.delete(`election-rounds/${electionRoundId}/notes/${id}`).then((res) => res.data);
 };

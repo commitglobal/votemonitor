@@ -11,11 +11,13 @@ const QuestionNotes = ({
   electionRoundId,
   pollingStationId,
   formId,
+  questionId,
 }: {
   notes: Note[];
   electionRoundId: string;
   pollingStationId: string;
   formId: string;
+  questionId: string;
 }) => {
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
 
@@ -33,7 +35,7 @@ const QuestionNotes = ({
               paddingLeft="$md"
               pressStyle={{ opacity: 1 }}
             >
-              <Typography paddingVertical="$md" maxWidth="85%">
+              <Typography paddingVertical="$md" maxWidth="85%" numberOfLines={5}>
                 {note.text}
               </Typography>
               <YStack
@@ -49,6 +51,7 @@ const QuestionNotes = ({
       </YStack>
       {selectedNote && (
         <EditNoteModal
+          questionId={questionId}
           selectedNote={selectedNote}
           setSelectedNote={setSelectedNote}
           electionRoundId={electionRoundId}

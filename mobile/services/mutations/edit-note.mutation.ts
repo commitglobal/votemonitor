@@ -9,6 +9,7 @@ export const useUpdateNote = (
   pollingStationId: string,
   formId: string,
   id: string,
+  scopeId: string,
 ) => {
   const queryClient = useQueryClient();
 
@@ -19,7 +20,10 @@ export const useUpdateNote = (
   );
 
   return useMutation({
-    mutationKey: [`updateNote_${id}`],
+    mutationKey: pollingStationsKeys.updateNote(),
+    scope: {
+      id: scopeId,
+    },
     mutationFn: async (payload: UpdateNotePayload) => {
       return updateNote(payload);
     },
@@ -37,7 +41,7 @@ export const useUpdateNote = (
 
       // Optimistically update to the new value
       const updatedNotes = previousNotes.map((note) => {
-        if (note.id === id) {
+        if (note.id === payload.id) {
           // update the text for the edited note
           return { ...note, text: payload.text };
         }
@@ -51,7 +55,7 @@ export const useUpdateNote = (
       return { previousNotes };
     },
     onError: (err) => {
-      console.log("🔴🔴🔴 ERROR 🔴🔴🔴", err);
+      console.log("🔴🔴🔴 ERROR IN EDIT NOTE MUTATION 🔴🔴🔴", err);
     },
     onSettled: () => {
       return queryClient.invalidateQueries({ queryKey: getNotesQK });

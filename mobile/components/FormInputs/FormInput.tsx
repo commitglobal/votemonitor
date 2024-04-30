@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React from "react";
 import Input, { InputProps } from "../Inputs/Input";
 import FormElement from "./FormElement";
 import { StyleProp, TextStyle } from "react-native";
@@ -11,7 +11,7 @@ interface FormInputProps extends InputProps {
   titleProps?: StyleProp<TextStyle>;
   // placeholder
   placeholder?: string;
-  //error
+  // error
   error?:
     | FieldError
     | Merge<FieldError, FieldErrorsImpl<{ details: string; id: string }>>
