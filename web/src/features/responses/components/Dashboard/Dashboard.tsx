@@ -38,7 +38,7 @@ const routeApi = getRouteApi('/responses/');
 const viewBy: Record<FilterBy, string> = {
   byEntry: 'View by entry',
   byObserver: 'View by observer',
-  byForm: 'View by form',
+  byForm: 'View by responses',
 };
 
 export default function ResponsesDashboard(): ReactElement {

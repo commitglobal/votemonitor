@@ -184,6 +184,19 @@ export const formSubmissionsByObserverColumnDefs: ColumnDef<FormSubmissionByObse
     enableGlobalFilter: true,
     cell: ({ row }) => row.original?.status ?? 'N/A',
   },
+  {
+    header: '',
+    accessorKey: 'action',
+    enableSorting: false,
+    cell: ({ row }) => (
+      <Link
+        className='hover:bg-purple-100 inline-flex h-6 w-6 rounded-full items-center justify-center'
+        params={{ monitoringObserverId: row.original.monitoringObserverId }}
+        to='/monitoring-observers/$monitoringObserverId'>
+        <ChevronRightIcon className='w-4 text-purple-600' />
+      </Link>
+    ),
+  },
 ];
 
 export const formSubmissionsByFormColumnDefs: ColumnDef<FormSubmissionByForm>[] = [
