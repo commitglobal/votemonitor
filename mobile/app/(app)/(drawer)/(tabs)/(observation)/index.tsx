@@ -1,4 +1,4 @@
-import React, { ComponentType, JSXElementConstructor, ReactElement, useState } from "react";
+import React, { ComponentType, JSXElementConstructor, memo, ReactElement, useState } from "react";
 import { router, useNavigation } from "expo-router";
 import { Screen } from "../../../../../components/Screen";
 import { useUserData } from "../../../../../contexts/user/UserContext.provider";
@@ -109,16 +109,24 @@ const FormList = ({
     }
   };
 
-  if (isLoadingAnswers || isLoadingForms) {
-    return <Typography>Loading...</Typography>;
-  }
+  const ListHeader = memo(() => ListHeaderComponent as JSX.Element);
 
-  if (allForms?.forms.length === 0) {
-    return <Typography>No data to display</Typography>;
+  if (isLoadingAnswers || isLoadingForms) {
+    return (
+      <>
+        {ListHeader}
+        <Typography>Loading...</Typography>;
+      </>
+    );
   }
 
   if (formsError || answersError) {
-    return <Typography>Error while showing form data</Typography>;
+    return (
+      <>
+        {ListHeader}
+        <Typography>Error while showing form data</Typography>
+      </>
+    );
   }
 
   return (
@@ -126,8 +134,9 @@ const FormList = ({
       {/* height = number of forms * formCard max height + ListHeaderComponent height  */}
       <YStack height={formList.length * 140 + 400}>
         <ListView<FormListItem>
-          data={formList}
-          ListHeaderComponent={ListHeaderComponent}
+          data={[] || formList}
+          ListHeaderComponent={ListHeader}
+          ListEmptyComponent={<Typography>No data to display</Typography>}
           showsVerticalScrollIndicator={false}
           bounces={false}
           renderItem={({ item, index }) => {
