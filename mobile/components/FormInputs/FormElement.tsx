@@ -14,6 +14,7 @@ export interface FormElementProps {
   error?:
     | FieldError
     | Merge<FieldError, FieldErrorsImpl<{ details: string; id: string }>>
+    | string
     | undefined;
 }
 

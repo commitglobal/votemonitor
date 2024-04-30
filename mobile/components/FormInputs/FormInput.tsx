@@ -15,6 +15,7 @@ interface FormInputProps extends InputProps {
   error?:
     | FieldError
     | Merge<FieldError, FieldErrorsImpl<{ details: string; id: string }>>
+    | string
     | undefined;
 }
 
@@ -28,7 +29,7 @@ const FormInput: React.FC<FormInputProps> = ({
 }) => {
   return (
     <FormElement title={title} titleProps={titleProps} error={error}>
-      <Input type={type} placeholder={placeholder} borderColor={error && "$red5"} {...rest} />
+      <Input type={type} placeholder={placeholder} borderColor={error && "$red7"} {...rest} />
     </FormElement>
   );
 };

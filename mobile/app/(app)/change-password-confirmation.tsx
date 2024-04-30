@@ -36,7 +36,7 @@ const ChangePasswordConfirmation = () => {
         <Typography preset="heading" fontWeight="700" color="$purple5">
           {t("success_page.title")}
         </Typography>
-        <Typography preset="body1" color="black">
+        <Typography preset="body1" color="black" textAlign="center">
           {t("success_page.paragraph")}
         </Typography>
       </YStack>

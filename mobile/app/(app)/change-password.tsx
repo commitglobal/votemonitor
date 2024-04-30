@@ -94,10 +94,9 @@ const ChangePassowrd = () => {
         <PasswordInput
           formKey="currentPassword"
           control={control}
-          helper={""}
           error={
-            (errors?.currentPassword?.message?.toString() ?? "") ||
-            (credentialsError ? t("form.current_password.credentials_error") : "")
+            errors?.currentPassword?.message?.toString() ||
+            (credentialsError ? t("form.current_password.credentials_error") : undefined)
           }
           label={t("form.current_password.label")}
           placeholder={t("form.current_password.placeholder")}
@@ -109,7 +108,7 @@ const ChangePassowrd = () => {
           formKey="newPassword"
           control={control}
           helper={t("form.new_password.helper")}
-          error={errors?.newPassword?.message?.toString() ?? ""}
+          error={errors?.newPassword?.message?.toString()}
           label={t("form.new_password.label")}
           placeholder={t("form.new_password.placeholder")}
           hasError={!!errors?.newPassword}
@@ -120,7 +119,7 @@ const ChangePassowrd = () => {
           formKey="confirmPassword"
           control={control}
           helper={t("form.confirm_password.helper")}
-          error={errors?.confirmPassword?.message?.toString() ?? ""}
+          error={errors?.confirmPassword?.message?.toString()}
           label={t("form.confirm_password.label")}
           placeholder={t("form.confirm_password.placeholder")}
           hasError={!!errors?.confirmPassword}
@@ -137,8 +136,8 @@ const ChangePassowrd = () => {
 
 interface PasswordInputProps {
   control: Control<FormData, any>;
-  helper: string;
-  error: string;
+  helper?: string;
+  error?: string | undefined;
   label: string;
   placeholder: string;
   hasError: boolean;
@@ -147,7 +146,7 @@ interface PasswordInputProps {
 }
 
 const PasswordInput = (props: PasswordInputProps) => {
-  const { control, helper, error, label, placeholder, hasError, name, formKey } = props;
+  const { control, helper, error, label, placeholder, name, formKey, hasError } = props;
 
   const [secureTextEntry, setSecureTextEntry] = React.useState(false);
   const passIcon = secureTextEntry === false ? "eye" : "eyeOff";
@@ -158,9 +157,9 @@ const PasswordInput = (props: PasswordInputProps) => {
       name={name}
       control={control}
       render={({ field: { onChange, value } }) => (
-        <YStack>
+        <YStack gap={6}>
           <FormInput
-            borderColor={hasError ? "$red7" : "$gray11"}
+            error={error}
             key="currentPassword"
             type="password"
             secureTextEntry={secureTextEntry}
@@ -174,7 +173,9 @@ const PasswordInput = (props: PasswordInputProps) => {
             }}
           ></FormInput>
 
-          {!hasError && <Typography color="gray">{helper}</Typography>}
+          {(!hasError || error === undefined) && helper && (
+            <Typography color="gray">{helper}</Typography>
+          )}
           {hasError && <Typography color="$red7">{error}</Typography>}
         </YStack>
       )}
