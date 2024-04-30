@@ -5,7 +5,7 @@ import Button from "./Button";
 import { Controller, useForm } from "react-hook-form";
 import Input from "./Inputs/Input";
 import { useAddNoteMutation } from "../services/mutations/add-note.mutation";
-import { Keyboard, TextInput } from "react-native";
+import { Keyboard } from "react-native";
 
 const AddNoteSheetContent = ({
   setAddingNote,
