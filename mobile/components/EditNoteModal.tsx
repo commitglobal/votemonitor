@@ -47,9 +47,11 @@ const EditNoteModal = ({
 
   const onDelete = () => {
     // delete note
-    deleteNote({ electionRoundId, id: selectedNote!.id });
-    // close dialog
-    setSelectedNote(null);
+    if (selectedNote) {
+      deleteNote(selectedNote);
+      // close dialog
+      setSelectedNote(null);
+    }
   };
 
   const onSubmit = (formData: any) => {

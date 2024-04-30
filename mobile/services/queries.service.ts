@@ -65,24 +65,6 @@ export const pollingStationsKeys = {
       electionRoundId,
       "polling-station-information-form",
     ] as const,
-  notes: (
-    electionRoundId: string | undefined,
-    pollingStationId: string | undefined,
-    formId: string | undefined,
-  ) =>
-    [
-      ...pollingStationsKeys.all,
-      "electionRoundId",
-      electionRoundId,
-      "pollingStationId",
-      pollingStationId,
-      "formId",
-      formId,
-      "notes",
-    ] as const,
-  addNote: () => [...pollingStationsKeys.all, "addNote"] as const,
-  updateNote: () => [...pollingStationsKeys.all, "updateNote"] as const,
-  deleteNote: () => [...pollingStationsKeys.all, "deleteNote"] as const,
   attachments: (
     electionRoundId: string | undefined,
     pollingStationId: string | undefined,
@@ -101,6 +83,28 @@ export const pollingStationsKeys = {
   deleteAttachment: () => [...pollingStationsKeys.all, "deleteAttachment"] as const,
   mutatePollingStationGeneralData: () =>
     [...pollingStationsKeys.all, "mutate-general-data"] as const,
+};
+
+export const notesKeys = {
+  all: ["notes"] as const,
+  notes: (
+    electionRoundId: string | undefined,
+    pollingStationId: string | undefined,
+    formId: string | undefined,
+  ) =>
+    [
+      ...pollingStationsKeys.all,
+      "electionRoundId",
+      electionRoundId,
+      "pollingStationId",
+      pollingStationId,
+      "formId",
+      formId,
+      "notes",
+    ] as const,
+  addNote: () => [...notesKeys.all, "add"] as const,
+  updateNote: () => [...notesKeys.all, "update"] as const,
+  deleteNote: () => [...notesKeys.all, "delete"] as const,
 };
 
 export const useElectionRoundsQuery = () => {
@@ -275,7 +279,7 @@ export const useNotesForPollingStation = (
   formId: string | undefined,
 ) => {
   return useQuery({
-    queryKey: pollingStationsKeys.notes(electionRoundId, pollingStationId, formId),
+    queryKey: notesKeys.notes(electionRoundId, pollingStationId, formId),
     queryFn:
       electionRoundId && pollingStationId && formId
         ? () => getNotesForPollingStation(electionRoundId, pollingStationId, formId)

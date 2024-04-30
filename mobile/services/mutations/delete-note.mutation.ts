@@ -1,7 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deleteNote, DeleteNotePayload } from "../definitions.api";
 import { useMemo } from "react";
-import { pollingStationsKeys } from "../queries.service";
+import { notesKeys } from "../queries.service";
 import { Note } from "../../common/models/note";
 
 export const useDeleteNote = (
@@ -13,19 +12,16 @@ export const useDeleteNote = (
   const queryClient = useQueryClient();
 
   const getNotesQK = useMemo(
-    () => pollingStationsKeys.notes(electionRoundId, pollingStationId, formId),
+    () => notesKeys.notes(electionRoundId, pollingStationId, formId),
     [electionRoundId],
   );
 
   return useMutation({
-    mutationKey: pollingStationsKeys.deleteNote(),
-    mutationFn: async (payload: DeleteNotePayload) => {
-      return deleteNote(payload);
-    },
+    mutationKey: notesKeys.deleteNote(),
     scope: {
       id: scopeId,
     },
-    onMutate: async (payload: DeleteNotePayload) => {
+    onMutate: async (payload: Note) => {
       // Cancel any outgoing refetches
       // (so they don't overwrite our optimistic update)
       await queryClient.cancelQueries({ queryKey: getNotesQK });
@@ -39,10 +35,25 @@ export const useDeleteNote = (
         return updatedNotes;
       });
 
+      // Need to remove the CREATE mutation if the Note was not synched yet
+      // TODO: need to send the ID from Frontend to be able to remove it
+      // if (payload.isNotSynched) {
+      //   queryClient
+      //     .getMutationCache()
+      //     .findAll({
+      //       mutationKey: notesKeys.all,
+      //     })
+      //     .filter((mutation) => {
+      //       console.log("✅ Mutation ", mutation);
+      //       return true;
+      //     });
+      // }
+
       // Return a context object with the snapshotted value
       return { prevNotes };
     },
     onError: (err) => {
+      // TODO restore previous state
       console.log("🔴🔴🔴 ERROR IN DELETE NOTE MUTATION 🔴🔴🔴", err);
     },
     onSettled: () => {

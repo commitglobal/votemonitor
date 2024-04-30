@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useMemo } from "react";
-import { pollingStationsKeys } from "../queries.service";
+import { notesKeys } from "../queries.service";
 import { addNote, NotePayload } from "../definitions.api";
 import { Note } from "../../common/models/note";
 import * as Crypto from "expo-crypto";
@@ -15,12 +15,12 @@ export const useAddNoteMutation = (
 
   // this is the GET notes key - we need it in order to invalidate that query after adding the new note
   const getNotesQK = useMemo(
-    () => pollingStationsKeys.notes(electionRoundId, pollingStationId, formId),
+    () => notesKeys.notes(electionRoundId, pollingStationId, formId),
     [electionRoundId],
   );
 
   return useMutation({
-    mutationKey: pollingStationsKeys.addNote(),
+    mutationKey: notesKeys.addNote(),
     scope: {
       id: scopeId,
     },
@@ -43,6 +43,7 @@ export const useAddNoteMutation = (
           ...payload,
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
+          isNotSynched: true,
         },
       ]);
 

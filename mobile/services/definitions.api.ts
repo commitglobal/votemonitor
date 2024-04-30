@@ -348,11 +348,6 @@ export const updateNote = ({
     @param {string} id 
 */
 
-export type DeleteNotePayload = {
-  electionRoundId: string;
-  id: string;
-};
-
-export const deleteNote = ({ electionRoundId, id }: DeleteNotePayload) => {
+export const deleteNote = ({ electionRoundId, id }: Note) => {
   return API.delete(`election-rounds/${electionRoundId}/notes/${id}`).then((res) => res.data);
 };
