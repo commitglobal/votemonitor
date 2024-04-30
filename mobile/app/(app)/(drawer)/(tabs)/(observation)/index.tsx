@@ -134,7 +134,7 @@ const FormList = ({
       {/* height = number of forms * formCard max height + ListHeaderComponent height  */}
       <YStack height={formList.length * 140 + 400}>
         <ListView<FormListItem>
-          data={[] || formList}
+          data={formList}
           ListHeaderComponent={ListHeader}
           ListEmptyComponent={<Typography>No data to display</Typography>}
           showsVerticalScrollIndicator={false}
