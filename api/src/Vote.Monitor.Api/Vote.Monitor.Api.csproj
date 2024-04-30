@@ -46,6 +46,7 @@
     <ProjectReference Include="..\Feature.PollingStation.Information.Form\Feature.PollingStation.Information.Form.csproj" />
     <ProjectReference Include="..\Feature.PollingStation.Information\Feature.PollingStation.Information.csproj" />
     <ProjectReference Include="..\Feature.PollingStation.Visit\Feature.PollingStation.Visit.csproj" />
+    <ProjectReference Include="..\Feature.QuickReports\Feature.QuickReports.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Api.Feature.Auth\Vote.Monitor.Api.Feature.Auth.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Api.Feature.Country\Vote.Monitor.Api.Feature.Country.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Api.Feature.ElectionRound\Vote.Monitor.Api.Feature.ElectionRound.csproj" />

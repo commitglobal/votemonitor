@@ -4,7 +4,7 @@ using Vote.Monitor.Domain.Entities.FormBase.Questions;
 
 namespace Vote.Monitor.Answer.Module.Aggregators;
 
-public class NumberAnswerAggregate(NumberQuestion question) : BaseAnswerAggregate(question)
+public class NumberAnswerAggregate(NumberQuestion question, int displayOrder) : BaseAnswerAggregate(question, displayOrder)
 {
     private readonly List<Response<int>> _answers = new();
     public IReadOnlyList<Response<int>> Answers => _answers.AsReadOnly();

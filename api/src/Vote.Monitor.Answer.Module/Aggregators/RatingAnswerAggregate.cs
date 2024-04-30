@@ -16,7 +16,7 @@ public class RatingAnswerAggregate : BaseAnswerAggregate
     public int Max { get; set; } = int.MinValue;
     public decimal Average { get; set; }
 
-    public RatingAnswerAggregate(RatingQuestion question) : base(question)
+    public RatingAnswerAggregate(RatingQuestion question, int displayOrder) : base(question, displayOrder)
     {
         _answersHistogram = question.Scale.ToRange().ToDictionary(x => x, _ => 0);
     }

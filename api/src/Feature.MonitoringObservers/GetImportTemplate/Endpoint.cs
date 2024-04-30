@@ -1,6 +1,5 @@
 ﻿using System.Text;
 using Authorization.Policies;
-using Vote.Monitor.Core.Extensions;
 
 namespace Feature.MonitoringObservers.GetImportTemplate;
 

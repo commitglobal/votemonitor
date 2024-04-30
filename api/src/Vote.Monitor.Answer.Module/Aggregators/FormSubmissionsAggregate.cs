@@ -34,6 +34,9 @@ public class FormSubmissionsAggregate
     public int SubmissionCount { get; private set; }
     public int TotalNumberOfQuestionsAnswered { get; private set; }
     public int TotalNumberOfFlaggedAnswers { get; private set; }
+    /// <summary>
+    /// Aggregated answers per question id
+    /// </summary>
     public IReadOnlyDictionary<Guid, BaseAnswerAggregate> Aggregates { get; }
 
     public FormSubmissionsAggregate(Form form)
