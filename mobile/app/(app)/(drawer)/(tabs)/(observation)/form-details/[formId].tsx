@@ -25,6 +25,8 @@ import { Dimensions, Platform } from "react-native";
 import { useTranslation } from "react-i18next";
 import { FormStateToTextMapper } from "../../../../../../components/FormCard";
 import OptionsSheet from "../../../../../../components/OptionsSheet";
+import ChangeLanguageDialog from "../../../../../../components/ChangeLanguageDialog";
+import { setFormLanguagePreference } from "../../../../../../common/language.preferences";
 
 interface FormOverviewProps {
   completedAnswers: number;
@@ -116,6 +118,7 @@ const FormQuestionListItem = ({
 const FormDetails = () => {
   const { formId, language } = useLocalSearchParams();
   const { activeElectionRound, selectedPollingStation } = useUserData();
+  const [isChangeLanguageModalOpen, setIsChangeLanguageModalOpen] = useState<boolean>(false);
   const [optionSheetOpen, setOptionSheetOpen] = useState(false);
 
   const {
@@ -152,11 +155,12 @@ const FormDetails = () => {
     };
   }, [allForms, formSubmissions]);
 
-  const { numberOfQuestions, formTitle } = useMemo(() => {
+  const { numberOfQuestions, formTitle, languages } = useMemo(() => {
     const form = allForms?.forms.find((form) => form.id === formId);
     return {
       numberOfQuestions: form ? form.questions.length : 0,
       formTitle: `${form?.code} - ${form?.name[language as string]} (${language as string})`,
+      languages: form?.languages,
     };
   }, [allForms]);
 
@@ -174,6 +178,22 @@ const FormDetails = () => {
     // if all questions are answered get the last question
     const lastQId = lastQ?.id || form?.questions[form.questions.length - 1].id;
     return router.push(`/form-questionnaire/${lastQId}?formId=${formId}&language=${language}`);
+  };
+
+  const onChangeLanguagePress = () => {
+    setOptionSheetOpen(false);
+    setIsChangeLanguageModalOpen(true);
+  };
+
+  const onConfirmFormLanguage = (formId: string, language: string) => {
+    setFormLanguagePreference({ formId, language });
+
+    router.replace(`/form-details/${formId}?language=${language}`);
+    setIsChangeLanguageModalOpen(false);
+  };
+
+  const onClearAnswersPress = () => {
+    console.log("clear data");
   };
 
   if (isLoadingForms || isLoadingAnswers) {
@@ -200,7 +220,9 @@ const FormDetails = () => {
         leftIcon={<Icon icon="chevronLeft" color="white" />}
         onLeftPress={() => router.back()}
         rightIcon={<Icon icon="dotsVertical" color="white" />}
-        onRightPress={() => setOptionSheetOpen(true)}
+        onRightPress={() => {
+          setOptionSheetOpen(true);
+        }}
       />
       <YStack
         paddingTop={28}
@@ -242,20 +264,20 @@ const FormDetails = () => {
           estimatedItemSize={100}
         />
       </YStack>
+      {isChangeLanguageModalOpen && languages && (
+        <ChangeLanguageDialog
+          formId={formId as string}
+          languages={languages}
+          onCancel={setIsChangeLanguageModalOpen.bind(null, false)}
+          onSelectLanguage={onConfirmFormLanguage}
+        />
+      )}
       <OptionsSheet open={optionSheetOpen} setOpen={setOptionSheetOpen}>
         <YStack paddingHorizontal="$sm" gap="$xxs">
-          <Typography
-            preset="body1"
-            paddingVertical="$md"
-            onPress={() => console.log("language action")}
-          >
+          <Typography preset="body1" paddingVertical="$md" onPress={onChangeLanguagePress}>
             Change language
           </Typography>
-          <Typography
-            preset="body1"
-            paddingVertical="$md"
-            onPress={() => console.log("clear form action")}
-          >
+          <Typography preset="body1" paddingVertical="$md" onPress={onClearAnswersPress}>
             Clear form (delete all answers)
           </Typography>
         </YStack>
