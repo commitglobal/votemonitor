@@ -24,6 +24,10 @@ import RadioFormInput from "../../../../../components/FormInputs/RadioFormInput"
 import { Controller, FieldError, FieldErrorsImpl, Merge, useForm } from "react-hook-form";
 import NoVisitsExist from "../../../../../components/NoVisitsExist";
 import { PollingStationGeneral } from "../../../../../components/PollingStationGeneral";
+import {
+  getFormLanguagePreference,
+  setFormLanguagePreference,
+} from "../../../../../common/language.preferences";
 
 export type FormListItem = {
   id: string;
@@ -82,18 +86,23 @@ const FormList = ({
   } = useForm({});
 
   const onConfirmFormLanguage = (formItem: FormListItem, language: string) => {
-    // navigate to the language
+    setFormLanguagePreference({ formId: formItem.id, language });
+
     router.push(`/form-details/${formItem?.id}?language=${language}`);
     setSelectedForm(null);
   };
 
-  const openForm = (formItem: FormListItem) => {
+  const openForm = async (formItem: FormListItem) => {
     if (!formItem?.languages?.length) {
       // TODO: Display error toast
       console.log("No language exists");
     }
 
-    if (formItem?.languages?.length === 1) {
+    const preferedLanguage = await getFormLanguagePreference({ formId: formItem.id });
+
+    if (preferedLanguage && formItem.languages.includes(preferedLanguage)) {
+      onConfirmFormLanguage(formItem, preferedLanguage);
+    } else if (formItem?.languages?.length === 1) {
       onConfirmFormLanguage(formItem, formItem.languages[0]);
     } else {
       setSelectedForm(formItem);
