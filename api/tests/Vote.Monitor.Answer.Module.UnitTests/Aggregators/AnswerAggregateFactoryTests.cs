@@ -12,7 +12,7 @@ public class AnswerAggregateFactoryTests
     [MemberData(nameof(AggregatorFactoryTestCases))]
     public void Map_Should_Return_CorrectAggregator(BaseQuestion question, Type expectedAggregatorType)
     {
-        var aggregator = AnswerAggregateFactory.Map(question);
+        var aggregator = AnswerAggregateFactory.Map(question, 0);
         aggregator
             .Should()
             .BeOfType(expectedAggregatorType)

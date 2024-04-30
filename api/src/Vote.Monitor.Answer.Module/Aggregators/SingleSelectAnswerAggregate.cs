@@ -12,7 +12,7 @@ public class SingleSelectAnswerAggregate : BaseAnswerAggregate
     private readonly Dictionary<Guid, int> _answersHistogram;
     public IReadOnlyDictionary<Guid, int> AnswersHistogram => _answersHistogram.AsReadOnly();
 
-    public SingleSelectAnswerAggregate(SingleSelectQuestion question) : base(question)
+    public SingleSelectAnswerAggregate(SingleSelectQuestion question, int displayOrder) : base(question, displayOrder)
     {
         _answersHistogram = question.Options.ToDictionary(o => o.Id, _ => 0);
     }

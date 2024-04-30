@@ -20,7 +20,7 @@ public class SingleSelectAnswerAggregateTests
     {
         _options = new SelectOptionFaker().Generate(_optionsCount);
         _question = new SingleSelectQuestionFaker(options: _options).Generate();
-        _aggregate = new SingleSelectAnswerAggregate(_question);
+        _aggregate = new SingleSelectAnswerAggregate(_question, 0);
     }
 
     [Fact]
