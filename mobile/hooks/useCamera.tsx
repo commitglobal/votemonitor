@@ -34,7 +34,7 @@ import * as ImagePicker from "expo-image-picker";
  * 
  */
 
-export type CameraResult = {
+export type FileMetadata = {
   uri: string;
   name: string;
   type: string;
@@ -45,7 +45,7 @@ export const useCamera = () => {
 
   const uploadCameraOrMedia = async (
     type: "library" | "cameraPhoto" | "cameraVideo",
-  ): Promise<CameraResult | undefined> => {
+  ): Promise<FileMetadata | undefined> => {
     if (!status?.granted) {
       const requestedPermisison = await requestPermission();
       if (!requestedPermisison.granted) {

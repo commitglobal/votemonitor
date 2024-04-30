@@ -1,14 +1,9 @@
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
-import {
-  Mutation,
-  MutationCache,
-  QueryClient,
-  defaultShouldDehydrateQuery,
-} from "@tanstack/react-query";
+import { MutationCache, QueryClient, defaultShouldDehydrateQuery } from "@tanstack/react-query";
 import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useAuth } from "../../hooks/useAuth";
-import { pollingStationsKeys } from "../../services/queries.service";
+import { notesKeys, pollingStationsKeys } from "../../services/queries.service";
 import * as API from "../../services/definitions.api";
 import { performanceLog } from "../../helpers/misc";
 import { PersistGate } from "../../components/PersistGate";
@@ -18,6 +13,7 @@ import {
   deleteAttachment,
   DeleteAttachmentAPIPayload,
 } from "../../services/api/delete-attachment.api";
+import { Note } from "../../common/models/note";
 
 const queryClient = new QueryClient({
   mutationCache: new MutationCache({
@@ -122,21 +118,21 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
     },
   });
 
-  queryClient.setMutationDefaults(pollingStationsKeys.addNote(), {
+  queryClient.setMutationDefaults(notesKeys.addNote(), {
     mutationFn: (payload: API.NotePayload) => {
       return API.addNote(payload);
     },
   });
 
-  queryClient.setMutationDefaults(pollingStationsKeys.updateNote(), {
+  queryClient.setMutationDefaults(notesKeys.updateNote(), {
     mutationFn: (payload: API.UpdateNotePayload) => {
       return API.updateNote(payload);
     },
   });
 
-  queryClient.setMutationDefaults(pollingStationsKeys.deleteNote(), {
-    mutationFn: (payload: API.DeleteNotePayload) => {
-      return API.deleteNote(payload);
+  queryClient.setMutationDefaults(notesKeys.deleteNote(), {
+    mutationFn: async (payload: Note) => {
+      return payload.isNotSynched ? () => {} : API.deleteNote(payload);
     },
   });
 
