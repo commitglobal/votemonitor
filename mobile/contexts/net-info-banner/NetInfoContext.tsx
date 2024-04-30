@@ -30,7 +30,9 @@ export const NetInfoProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const unsubscribe = NetInfo.addEventListener((state) => {
-      const status = !!state.isConnected;
+      // TODO: look into isInternetReachable implementation
+      // TODO: https://github.com/react-native-netinfo/react-native-netinfo/issues/572#issuecomment-1113635792 (maybe use this instead if we have problems)
+      const status = state.isConnected ?? true;
       onlineManager.setOnline(status);
       setIsOnline(status);
     });

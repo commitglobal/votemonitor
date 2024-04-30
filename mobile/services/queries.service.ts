@@ -162,7 +162,6 @@ export const usePollingStationsNomenclatorQuery = (electionRoundId: string | und
     retry: 0, // to avoid waiting 25s to fail the promise
     staleTime: 0,
     networkMode: "always",
-    // meta: { dontPersist: true }, // TODO: will set isLoading true all the time
   });
 };
 
