@@ -1,9 +1,9 @@
 import React, { ReactNode } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Sheet } from "tamagui";
+import { Sheet, SheetProps } from "tamagui";
 import { Icon } from "./Icon";
 
-interface OptionsSheetProps {
+interface OptionsSheetProps extends SheetProps {
   /* The current state of the sheet */
   open: boolean;
 
@@ -19,7 +19,7 @@ interface OptionsSheetProps {
 }
 
 const OptionsSheet = (props: OptionsSheetProps) => {
-  const { open, setOpen, isLoading = false, children } = props;
+  const { open, setOpen, isLoading = false, children, ...rest } = props;
   const insets = useSafeAreaInsets();
 
   return (
@@ -31,6 +31,7 @@ const OptionsSheet = (props: OptionsSheetProps) => {
       zIndex={100_000}
       snapPointsMode="fit"
       dismissOnSnapToBottom={!isLoading}
+      {...rest}
     >
       <Sheet.Overlay />
       <Sheet.Frame

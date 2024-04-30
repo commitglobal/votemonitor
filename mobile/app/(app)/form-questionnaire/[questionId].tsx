@@ -36,18 +36,18 @@ import OptionsSheet from "../../../components/OptionsSheet";
 import AddAttachment from "../../../components/AddAttachment";
 
 import { FileMetadata, useCamera } from "../../../hooks/useCamera";
-import AddNoteModal from "../../../components/AddNoteModal";
 import { Note } from "../../../common/models/note";
 import { addAttachmentMutation } from "../../../services/mutations/add-attachment.mutation";
 import QuestionAttachments from "../../../components/QuestionAttachments";
 import QuestionNotes from "../../../components/QuestionNotes";
 import * as DocumentPicker from "expo-document-picker";
+import AddNoteSheetContent from "../../../components/AddNoteSheetContent";
 
 const FormQuestionnaire = () => {
   const { questionId, formId, language } = useLocalSearchParams();
   const { activeElectionRound, selectedPollingStation } = useUserData();
   const [isOptionsSheetOpen, setIsOptionsSheetOpen] = useState(false);
-  const [isNoteModalOpen, setIsNoteModalOpen] = useState(false);
+  const [addingNote, setAddingNote] = useState(false);
 
   const {
     data: allForms,
@@ -183,7 +183,6 @@ const FormQuestionnaire = () => {
   if (formsError || answersError) {
     return <Typography>Form Error</Typography>;
   }
-
   const { uploadCameraOrMedia } = useCamera();
 
   const {
@@ -468,15 +467,6 @@ const FormQuestionnaire = () => {
               return setIsOptionsSheetOpen(true);
             }}
           />
-
-          <AddNoteModal
-            open={isNoteModalOpen}
-            setOpen={setIsNoteModalOpen}
-            pollingStationId={selectedPollingStation?.pollingStationId as string}
-            formId={formId as string}
-            questionId={questionId as string}
-            electionRoundId={activeElectionRound?.id}
-          />
         </YStack>
       </ScrollView>
 
@@ -494,9 +484,19 @@ const FormQuestionnaire = () => {
           open={isOptionsSheetOpen}
           setOpen={setIsOptionsSheetOpen}
           isLoading={isLoadingAddAttachmentt && !isPaused}
+          moveOnKeyboardChange={true}
         >
           {isLoadingAddAttachmentt && !isPaused ? (
             <MediaLoading />
+          ) : addingNote ? (
+            <AddNoteSheetContent
+              setAddingNote={setAddingNote}
+              questionId={questionId as string}
+              pollingStationId={selectedPollingStation?.pollingStationId as string}
+              formId={formId as string}
+              electionRoundId={activeElectionRound?.id}
+              setIsOptionsSheetOpen={setIsOptionsSheetOpen}
+            />
           ) : (
             <YStack paddingHorizontal="$sm" gap="$xxs">
               <Typography
@@ -504,8 +504,9 @@ const FormQuestionnaire = () => {
                 paddingVertical="$md"
                 pressStyle={{ color: "$purple5" }}
                 onPress={() => {
-                  setIsOptionsSheetOpen(false);
-                  setIsNoteModalOpen(true);
+                  // setIsOptionsSheetOpen(false);
+                  // setIsNoteModalOpen(true);
+                  setAddingNote(true);
                 }}
               >
                 Add note
