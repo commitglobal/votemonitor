@@ -1,4 +1,4 @@
-import { CameraResult } from "../../hooks/useCamera";
+import { FileMetadata } from "../../hooks/useCamera";
 import API from "../api";
 
 /** ========================================================================
@@ -13,7 +13,7 @@ export type AddAttachmentAPIPayload = {
   pollingStationId: string;
   formId: string;
   questionId: string;
-  cameraResult: CameraResult;
+  fileMetadata: FileMetadata;
 };
 
 export type AddAttachmentAPIResponse = {
@@ -27,7 +27,7 @@ export type AddAttachmentAPIResponse = {
 export const addAttachment = ({
   electionRoundId,
   pollingStationId,
-  cameraResult,
+  fileMetadata: cameraResult,
   formId,
   questionId,
 }: AddAttachmentAPIPayload): Promise<AddAttachmentAPIResponse> => {

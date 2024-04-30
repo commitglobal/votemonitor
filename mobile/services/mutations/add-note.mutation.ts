@@ -1,32 +1,57 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useMemo } from "react";
-import { pollingStationsKeys } from "../queries.service";
+import { notesKeys } from "../queries.service";
 import { addNote, NotePayload } from "../definitions.api";
+import { Note } from "../../common/models/note";
+import * as Crypto from "expo-crypto";
 
 export const useAddNoteMutation = (
   electionRoundId: string | undefined,
   pollingStationId: string | undefined,
   formId: string | undefined,
+  scopeId: string,
 ) => {
   const queryClient = useQueryClient();
 
   // this is the GET notes key - we need it in order to invalidate that query after adding the new note
   const getNotesQK = useMemo(
-    () => pollingStationsKeys.notes(electionRoundId, pollingStationId, formId),
+    () => notesKeys.notes(electionRoundId, pollingStationId, formId),
     [electionRoundId],
   );
 
   return useMutation({
-    mutationKey: ["addNote"],
+    mutationKey: notesKeys.addNote(),
+    scope: {
+      id: scopeId,
+    },
     mutationFn: async (payload: NotePayload) => {
       return addNote(payload);
     },
-    onMutate: async (_payload: NotePayload) => {
+    onMutate: async (payload: NotePayload) => {
+      // Cancel any outgoing refetches
+      // (so they don't overwrite our optimistic update)
       await queryClient.cancelQueries({ queryKey: getNotesQK });
-      //TODO: optimistic updates
+
+      // Snapshot the previous value
+      const previousNotes = queryClient.getQueryData(getNotesQK);
+
+      // Optimistically update to the new value
+      queryClient.setQueryData<Note[]>(getNotesQK, (old: Note[] = []) => [
+        ...old,
+        {
+          id: Crypto.randomUUID(),
+          ...payload,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          isNotSynched: true,
+        },
+      ]);
+
+      // Return a context object with the snapshotted value
+      return { previousNotes };
     },
     onError: (err) => {
-      console.log("🔴🔴🔴 ERROR 🔴🔴🔴", err);
+      console.log("🔴🔴🔴 ERROR IN ADD NOTE MUTATION 🔴🔴🔴", err);
     },
     onSettled: () => {
       return queryClient.invalidateQueries({ queryKey: getNotesQK });

@@ -1,14 +1,19 @@
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
-import { Mutation, MutationCache, QueryClient } from "@tanstack/react-query";
+import { MutationCache, QueryClient, defaultShouldDehydrateQuery } from "@tanstack/react-query";
 import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useAuth } from "../../hooks/useAuth";
-import { pollingStationsKeys } from "../../services/queries.service";
+import { notesKeys, pollingStationsKeys } from "../../services/queries.service";
 import * as API from "../../services/definitions.api";
 import { performanceLog } from "../../helpers/misc";
 import { PersistGate } from "../../components/PersistGate";
 import SuperJSON from "superjson";
 import { AddAttachmentAPIPayload, addAttachment } from "../../services/api/add-attachment.api";
+import {
+  deleteAttachment,
+  DeleteAttachmentAPIPayload,
+} from "../../services/api/delete-attachment.api";
+import { Note } from "../../common/models/note";
 
 const queryClient = new QueryClient({
   mutationCache: new MutationCache({
@@ -86,7 +91,7 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
   const { isAuthenticated } = useAuth();
 
   // queryClient.getMutationCache().subscribe((event) => {
-  //   console.log("👀", event);
+  //   if (event.type === "updated") console.log("👀", SuperJSON.stringify(event));
   // });
 
   queryClient.setMutationDefaults([pollingStationsKeys.mutatePollingStationGeneralData()], {
@@ -95,7 +100,7 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
     },
   });
 
-  queryClient.setMutationDefaults(["upsertFormSubmission"], {
+  queryClient.setMutationDefaults(pollingStationsKeys.upsertFormSubmission(), {
     mutationFn: (payload: API.FormSubmissionAPIPayload) => {
       return API.upsertFormSubmission(payload);
     },
@@ -104,6 +109,30 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
   queryClient.setMutationDefaults(pollingStationsKeys.addAttachmentMutation(), {
     mutationFn: async (payload: AddAttachmentAPIPayload) => {
       return performanceLog(() => addAttachment(payload));
+    },
+  });
+
+  queryClient.setMutationDefaults(pollingStationsKeys.deleteAttachment(), {
+    mutationFn: async (payload: DeleteAttachmentAPIPayload) => {
+      return deleteAttachment(payload);
+    },
+  });
+
+  queryClient.setMutationDefaults(notesKeys.addNote(), {
+    mutationFn: (payload: API.NotePayload) => {
+      return API.addNote(payload);
+    },
+  });
+
+  queryClient.setMutationDefaults(notesKeys.updateNote(), {
+    mutationFn: (payload: API.UpdateNotePayload) => {
+      return API.updateNote(payload);
+    },
+  });
+
+  queryClient.setMutationDefaults(notesKeys.deleteNote(), {
+    mutationFn: async (payload: Note) => {
+      return payload.isNotSynched ? () => {} : API.deleteNote(payload);
     },
   });
 
@@ -122,35 +151,35 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
 
     console.log("🆕🆕🆕🆕🆕", SuperJSON.stringify(pausedMutation));
 
-    const mergedMutations = pausedMutation.reduce(
-      (acc: Record<string, Mutation<unknown, Error, void, unknown>>, mutation) => {
-        const scopeId = mutation.options.scope?.id;
+    // const mergedMutations = pausedMutation.reduce(
+    //   (acc: Record<string, Mutation<unknown, Error, void, unknown>>, mutation) => {
+    //     const scopeId = mutation.options.scope?.id;
 
-        if (!scopeId) {
-          // Use mutationId as key if scope was not defined (nothing will merge here)
-          acc[mutation.mutationId] = mutation;
-          return acc;
-        }
+    //     if (!scopeId) {
+    //       // Use mutationId as key if scope was not defined (nothing will merge here)
+    //       acc[mutation.mutationId] = mutation;
+    //       return acc;
+    //     }
 
-        if (scopeId && !acc[scopeId]) {
-          acc[scopeId] = mutation;
-          return acc;
-        }
+    //     if (scopeId && !acc[scopeId]) {
+    //       acc[scopeId] = mutation; // TODO: @andrewradulescu use http verb to merge
+    //       return acc;
+    //     }
 
-        if (mutation.state.submittedAt > acc[scopeId].state.submittedAt) {
-          acc[scopeId] = mutation;
-        }
+    //     if (mutation.state.submittedAt > acc[scopeId].state.submittedAt) {
+    //       acc[scopeId] = mutation;
+    //     }
 
-        return acc;
-      },
-      {},
-    );
+    //     return acc;
+    //   },
+    //   {},
+    // );
 
-    queryClient.getMutationCache().clear();
+    // queryClient.getMutationCache().clear();
 
-    Object.values(mergedMutations).forEach((mutation) => {
-      queryClient.getMutationCache().add(mutation);
-    });
+    // Object.values(mergedMutations).forEach((mutation) => {
+    //   queryClient.getMutationCache().add(mutation);
+    // });
 
     // const newPausedMutations = queryClient
     //   .getMutationCache()
@@ -161,7 +190,7 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
 
     if (pausedMutation?.length) {
       await queryClient.resumePausedMutations(); // Looks in the inmemory cache
-      queryClient.invalidateQueries(); // TODO RQ - why not to return?
+      queryClient.invalidateQueries(); // Avoid using await, not to wait for queries to refetch (maybe not the case here as there are no active queries)
       console.log("✅ Resume Paused Mutation & Invalidate Quries");
     }
 
@@ -183,14 +212,13 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
         dehydrateOptions: {
           shouldDehydrateQuery: (query) => {
             // SELECTIVELY PERSIST QUERY KEYS https://github.com/TanStack/query/discussions/3568
-            if (query.queryKey.includes("polling-stations-nomenclator")) return false;
-            if (query.queryKey.includes(null)) return false;
-            if (query.queryKey.includes(undefined)) return false;
+            // if (query.queryKey.includes("polling-stations-nomenclator")) return false;
+            // if (query.queryKey.includes(null)) return false;
+            // if (query.queryKey.includes(undefined)) return false;
 
             // if (query.meta?.dontPersist) return false;
 
-            // return defaultShouldDehydrateQuery(query);
-            return true;
+            return defaultShouldDehydrateQuery(query);
           },
         },
       }}

@@ -39,7 +39,9 @@ import InfoCircle from "../assets/icons/Information circle.svg";
 import EmailSent from "../assets/icons/Email sent.svg";
 import UndrawInbox from "../assets/icons/undraw_inbox_oppv.svg";
 import UndrawReading from "../assets/icons/undraw_reading_book.svg";
+import UndrawFlag from "../assets/icons/undraw_report_flag.svg";
 import LoginError from "../assets/icons/LoginError.svg";
+import SplashLogo from "../assets/icons/splash-logo.svg";
 
 import { styled, View, ViewProps } from "tamagui";
 import { StyleProp, ViewStyle } from "react-native";
@@ -123,7 +125,9 @@ export const defaultIcon = React.forwardRef(
       emailSent: <EmailSent fill={color} width={size} height={size} />,
       undrawInbox: <UndrawInbox fill={color} width={size} height={size} />,
       undrawReading: <UndrawReading fill={color} width={size} height={size} />,
+      undrawFlag: <UndrawFlag fill={color} width={size | 187} height={170 | size} />,
       loginError: <LoginError fill={color} width={size} height={size} />,
+      splashLogo: <SplashLogo width={315.6} height={72} />,
     };
 
     return (

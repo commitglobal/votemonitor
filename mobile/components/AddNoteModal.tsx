@@ -23,16 +23,25 @@ const AddNoteModal: React.FC<AddNoteModalProps> = ({
   pollingStationId,
   formId,
   questionId,
-  electionRoundId,
+  electionRoundId = "",
 }) => {
-  const { control, handleSubmit } = useForm({});
+  const { control, handleSubmit, reset } = useForm({
+    defaultValues: {
+      noteText: "",
+    },
+  });
 
-  const { mutate: addNote } = useAddNoteMutation(electionRoundId, pollingStationId, formId);
+  const { mutate: addNote } = useAddNoteMutation(
+    electionRoundId,
+    pollingStationId,
+    formId,
+    `Note_${electionRoundId}_${pollingStationId}_${formId}_${questionId}`,
+  );
 
   const onSubmitNote = (note: any) => {
     const notePayload = {
       pollingStationId,
-      text: note.note_text,
+      text: note.noteText,
       formId,
       questionId,
     };
@@ -40,6 +49,7 @@ const AddNoteModal: React.FC<AddNoteModalProps> = ({
     addNote({ electionRoundId, ...notePayload });
     Keyboard.dismiss();
     setOpen(false);
+    reset();
   };
 
   return (
@@ -49,12 +59,13 @@ const AddNoteModal: React.FC<AddNoteModalProps> = ({
       content={
         <Controller
           key={questionId + "_note"}
-          name={"note_text"}
+          name={"noteText"}
           control={control}
           render={({ field: { value: noteValue, onChange: onNoteChange } }) => {
             return (
               <Input
                 type="textarea"
+                maxHeight={150}
                 placeholder="Add any relevant notes to this question."
                 value={noteValue}
                 onChangeText={onNoteChange}

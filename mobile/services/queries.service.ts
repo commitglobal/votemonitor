@@ -32,6 +32,7 @@ export const pollingStationsKeys = {
     pollingStationId,
     "form-submissions",
   ],
+  upsertFormSubmission: () => [...pollingStationsKeys.all, "upsertFormSubmission"] as const,
   nomenclatorList: (parentId: number | null = -1) =>
     [...pollingStationsKeys.all, "node", parentId] as const,
   one: (id: string) => [...pollingStationsKeys.all, "DB.getOneById", id] as const,
@@ -64,21 +65,6 @@ export const pollingStationsKeys = {
       electionRoundId,
       "polling-station-information-form",
     ] as const,
-  notes: (
-    electionRoundId: string | undefined,
-    pollingStationId: string | undefined,
-    formId: string | undefined,
-  ) =>
-    [
-      ...pollingStationsKeys.all,
-      "electionRoundId",
-      electionRoundId,
-      "pollingStationId",
-      pollingStationId,
-      "formId",
-      formId,
-      "notes",
-    ] as const,
   attachments: (
     electionRoundId: string | undefined,
     pollingStationId: string | undefined,
@@ -94,8 +80,31 @@ export const pollingStationsKeys = {
       formId,
       "attachments",
     ] as const,
+  deleteAttachment: () => [...pollingStationsKeys.all, "deleteAttachment"] as const,
   mutatePollingStationGeneralData: () =>
     [...pollingStationsKeys.all, "mutate-general-data"] as const,
+};
+
+export const notesKeys = {
+  all: ["notes"] as const,
+  notes: (
+    electionRoundId: string | undefined,
+    pollingStationId: string | undefined,
+    formId: string | undefined,
+  ) =>
+    [
+      ...pollingStationsKeys.all,
+      "electionRoundId",
+      electionRoundId,
+      "pollingStationId",
+      pollingStationId,
+      "formId",
+      formId,
+      "notes",
+    ] as const,
+  addNote: () => [...notesKeys.all, "add"] as const,
+  updateNote: () => [...notesKeys.all, "update"] as const,
+  deleteNote: () => [...notesKeys.all, "delete"] as const,
 };
 
 export const useElectionRoundsQuery = () => {
@@ -157,7 +166,6 @@ export const usePollingStationsNomenclatorQuery = (electionRoundId: string | und
     retry: 0, // to avoid waiting 25s to fail the promise
     staleTime: 0,
     networkMode: "always",
-    // meta: { dontPersist: true }, // TODO: will set isLoading true all the time
   });
 };
 
@@ -271,7 +279,7 @@ export const useNotesForPollingStation = (
   formId: string | undefined,
 ) => {
   return useQuery({
-    queryKey: pollingStationsKeys.notes(electionRoundId, pollingStationId, formId),
+    queryKey: notesKeys.notes(electionRoundId, pollingStationId, formId),
     queryFn:
       electionRoundId && pollingStationId && formId
         ? () => getNotesForPollingStation(electionRoundId, pollingStationId, formId)

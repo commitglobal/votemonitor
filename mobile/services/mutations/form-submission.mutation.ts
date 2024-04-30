@@ -26,7 +26,7 @@ export const useFormSubmissionMutation = ({
   console.log("🚬 ScopeID: ", scopeId);
 
   return useMutation({
-    mutationKey: ["upsertFormSubmission"],
+    mutationKey: pollingStationsKeys.upsertFormSubmission(),
     mutationFn: async (payload: FormSubmissionAPIPayload) => {
       return upsertFormSubmission(payload);
     },

@@ -1,5 +1,5 @@
 import React from "react";
-import { Redirect, Stack } from "expo-router";
+import { Redirect, SplashScreen, Stack } from "expo-router";
 import { PortalProvider } from "tamagui";
 import { useAuth } from "../../hooks/useAuth";
 import UserContextProvider from "../../contexts/user/UserContext.provider";
@@ -11,6 +11,7 @@ const AppLayout = () => {
   if (!isAuthenticated) {
     // On web, static rendering will stop here as the user is not authenticated
     // in the headless Node process that the pages are rendered in.
+    SplashScreen.hideAsync();
     return <Redirect href="/login" />;
   }
 
@@ -22,6 +23,7 @@ const AppLayout = () => {
           <Stack.Screen name="polling-station-wizzard" options={{ headerShown: false }} />
           <Stack.Screen name="form-questionnaire" options={{ headerShown: false }} />
           <Stack.Screen name="polling-station-questionnaire" options={{ headerShown: false }} />
+          <Stack.Screen name="report-issue" options={{ headerShown: false }} />
         </Stack>
       </UserContextProvider>
     </PortalProvider>
