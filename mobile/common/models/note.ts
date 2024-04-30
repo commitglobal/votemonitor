@@ -7,4 +7,7 @@ export type Note = {
   text: string;
   createdAt: string;
   updatedAt: string | null;
+
+  // Offline flag
+  isNotSynched?: boolean;
 };

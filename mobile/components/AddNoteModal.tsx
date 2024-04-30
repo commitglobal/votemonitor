@@ -65,6 +65,7 @@ const AddNoteModal: React.FC<AddNoteModalProps> = ({
             return (
               <Input
                 type="textarea"
+                maxHeight={150}
                 placeholder="Add any relevant notes to this question."
                 value={noteValue}
                 onChangeText={onNoteChange}
