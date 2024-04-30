@@ -489,61 +489,63 @@ const FormQuestionnaire = () => {
         onNextButtonPress={handleSubmit(onSubmitAnswer)}
         onPreviousButtonPress={onBackButtonPress}
       />
-      <OptionsSheet
-        open={isOptionsSheetOpen}
-        setOpen={setIsOptionsSheetOpen}
-        isLoading={isLoadingAddAttachmentt && !isPaused}
-      >
-        {isLoadingAddAttachmentt && !isPaused ? (
-          <MediaLoading />
-        ) : (
-          <YStack paddingHorizontal="$sm" gap="$xxs">
-            <Typography
-              preset="body1"
-              paddingVertical="$md"
-              pressStyle={{ color: "$purple5" }}
-              onPress={() => {
-                setIsOptionsSheetOpen(false);
-                setIsNoteModalOpen(true);
-              }}
-            >
-              Add note
-            </Typography>
-            <Typography
-              onPress={handleCameraUpload.bind(null, "library")}
-              preset="body1"
-              paddingVertical="$md"
-              pressStyle={{ color: "$purple5" }}
-            >
-              Load from gallery
-            </Typography>
-            <Typography
-              onPress={handleCameraUpload.bind(null, "cameraPhoto")}
-              preset="body1"
-              paddingVertical="$md"
-              pressStyle={{ color: "$purple5" }}
-            >
-              Take a photo
-            </Typography>
-            <Typography
-              onPress={handleCameraUpload.bind(null, "cameraVideo")}
-              preset="body1"
-              paddingVertical="$md"
-              pressStyle={{ color: "$purple5" }}
-            >
-              Record a video
-            </Typography>
-            <Typography
-              onPress={handleUploadAudio.bind(null)}
-              preset="body1"
-              paddingVertical="$md"
-              pressStyle={{ color: "$purple5" }}
-            >
-              Upload audio file
-            </Typography>
-          </YStack>
-        )}
-      </OptionsSheet>
+      {isOptionsSheetOpen && (
+        <OptionsSheet
+          open={isOptionsSheetOpen}
+          setOpen={setIsOptionsSheetOpen}
+          isLoading={isLoadingAddAttachmentt && !isPaused}
+        >
+          {isLoadingAddAttachmentt && !isPaused ? (
+            <MediaLoading />
+          ) : (
+            <YStack paddingHorizontal="$sm" gap="$xxs">
+              <Typography
+                preset="body1"
+                paddingVertical="$md"
+                pressStyle={{ color: "$purple5" }}
+                onPress={() => {
+                  setIsOptionsSheetOpen(false);
+                  setIsNoteModalOpen(true);
+                }}
+              >
+                Add note
+              </Typography>
+              <Typography
+                onPress={handleCameraUpload.bind(null, "library")}
+                preset="body1"
+                paddingVertical="$md"
+                pressStyle={{ color: "$purple5" }}
+              >
+                Load from gallery
+              </Typography>
+              <Typography
+                onPress={handleCameraUpload.bind(null, "cameraPhoto")}
+                preset="body1"
+                paddingVertical="$md"
+                pressStyle={{ color: "$purple5" }}
+              >
+                Take a photo
+              </Typography>
+              <Typography
+                onPress={handleCameraUpload.bind(null, "cameraVideo")}
+                preset="body1"
+                paddingVertical="$md"
+                pressStyle={{ color: "$purple5" }}
+              >
+                Record a video
+              </Typography>
+              <Typography
+                onPress={handleUploadAudio.bind(null)}
+                preset="body1"
+                paddingVertical="$md"
+                pressStyle={{ color: "$purple5" }}
+              >
+                Upload audio file
+              </Typography>
+            </YStack>
+          )}
+        </OptionsSheet>
+      )}
     </Screen>
   );
 };
