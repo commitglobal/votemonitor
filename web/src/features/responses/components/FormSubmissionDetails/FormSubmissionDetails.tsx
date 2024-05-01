@@ -1,7 +1,7 @@
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
 import { FlagIcon } from '@heroicons/react/24/solid';
 import { Link, useLoaderData } from '@tanstack/react-router';
-import { format } from 'date-fns';
+import { format, isEqual } from 'date-fns';
 import { Fragment } from 'react';
 import {
   isDateAnswer,
@@ -24,6 +24,9 @@ import { RatingGroup } from '@/components/ui/ratings';
 import { Separator } from '@/components/ui/separator';
 import type { FunctionComponent } from '@/common/types';
 import { cn, ratingScaleToNumber } from '@/lib/utils';
+import { Attachment } from '../../models/form-submission';
+import { QuestionExtraData } from '../../types';
+import { QuestionExtraDataSection } from '../QuestionExtraDataSection/QuestionExtraDataSection';
 
 export default function FormSubmissionDetails(): FunctionComponent {
   const formSubmission = useLoaderData({ from: '/responses/$submissionId' });
@@ -90,9 +93,36 @@ export default function FormSubmissionDetails(): FunctionComponent {
           <CardContent className='flex flex-col gap-10'>
             {formSubmission.questions.map((question, index) => {
               const answer = formSubmission.answers.find(({ questionId }) => questionId === question.id);
+              const notes = formSubmission.notes.filter(({ questionId }) => questionId === question.id);
+              const attachments = formSubmission.attachments.filter(({ questionId }) => questionId === question.id);
+              const groupedAttachments = attachments.reduce<Record<string, Attachment[]>>(
+                (grouped, attachment) => ({
+                  ...grouped,
+                  [attachment.timeSubmitted]: [...(grouped[attachment.timeSubmitted] ?? []), attachment],
+                }),
+                {}
+              );
+              const mediaFiles: QuestionExtraData[] = Object.entries(groupedAttachments)
+                .filter(([key]) => !notes.find((note) => isEqual(note.timeSubmitted, key)))
+                .flatMap(([_, attachments]) => ({
+                  questionId: attachments[0]?.questionId ?? '',
+                  text: '',
+                  monitoringObserverId: attachments[0]?.monitoringObserverId ?? '',
+                  timeSubmitted: attachments[0]?.timeSubmitted ?? '',
+                  attachments,
+                }));
+
+              const extraData = notes
+                .map((note) => {
+                  return {
+                    ...note,
+                    attachments: groupedAttachments[note.timeSubmitted] ?? [],
+                  };
+                })
+                .concat(mediaFiles);
 
               return (
-                <div className='flex flex-col gap-4'>
+                <div key={question.id} className='flex flex-col gap-4'>
                   <p className='text-gray-700 font-medium'>
                     {index + 1}: {question.text['EN']}
                   </p>
@@ -156,11 +186,16 @@ export default function FormSubmissionDetails(): FunctionComponent {
                   ) : (
                     '-'
                   )}
+                  {extraData.length > 0 && (
+                    <QuestionExtraDataSection
+                      attachmentCount={attachments.length}
+                      extraData={extraData}
+                      notesCount={notes.length}
+                    />
+                  )}
                 </div>
               );
             })}
-
-            {/* @todo add notes and media files table */}
           </CardContent>
         </Card>
       </div>
