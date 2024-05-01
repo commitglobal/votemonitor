@@ -19,7 +19,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { FormItem } from '@/components/ui/form';
 import { Label } from '@/components/ui/label';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Radio, RadioGroup } from '@/components/ui/radio-group';
 import { RatingGroup } from '@/components/ui/ratings';
 import { Separator } from '@/components/ui/separator';
 import type { FunctionComponent } from '@/common/types';
@@ -105,9 +105,7 @@ export default function FormSubmissionDetails(): FunctionComponent {
                       {question.options.map((option) => (
                         <Fragment key={option.id}>
                           <FormItem className='flex items-center space-x-3 space-y-0'>
-                            {/* <FormControl> */}
-                            <RadioGroupItem disabled value={option.id} />
-                            {/* </FormControl> */}
+                            <Radio disabled value={option.id} />
                             <Label className='font-normal'>
                               {option.text['EN']}
                               {option.isFlagged && <> (Flagged)</>}

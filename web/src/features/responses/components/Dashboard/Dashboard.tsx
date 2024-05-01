@@ -1,6 +1,6 @@
 import { ChevronDownIcon, Cog8ToothIcon, FunnelIcon } from '@heroicons/react/24/outline';
 import { useDebounce } from '@uidotdev/usehooks';
-import { type ChangeEvent, useState, type ReactElement } from 'react';
+import { type ChangeEvent, useState, type ReactElement, useMemo } from 'react';
 import { CsvFileIcon } from '@/components/icons/CsvFileIcon';
 import Layout from '@/components/layout/Layout';
 import { Badge } from '@/components/ui/badge';
@@ -35,6 +35,7 @@ import {
   formSubmissionsDefaultColumns,
   type FilterBy,
 } from '../../utils/column-visibility-options';
+import { getRouteApi } from '@tanstack/react-router';
 
 const viewBy: Record<FilterBy, string> = {
   byEntry: 'View by entry',
@@ -42,8 +43,15 @@ const viewBy: Record<FilterBy, string> = {
   byForm: 'View by form',
 };
 
+const routeApi = getRouteApi('/responses/');
+
 export default function ResponsesDashboard(): ReactElement {
   const [byFilter, setByFilter] = useState<FilterBy>('byEntry');
+
+  const navigate = routeApi.useNavigate();
+  const search = routeApi.useSearch();
+  const [isFiltering, setIsFiltering] = useState(() => Object.entries(search).length > 0);
+  console.log(search);
 
   const [submissionsByEntryColumnVisibility, setSubmissionsByEntryColumnVisibility] = useState(
     formSubmissionsDefaultColumns.byEntry
@@ -56,6 +64,16 @@ export default function ResponsesDashboard(): ReactElement {
     const value = ev.currentTarget.value;
     if (!value || value.length >= 2) setSearchText(ev.currentTarget.value);
   };
+
+  const debouncedPollingStationNumberFilter = useDebounce(search.pollingStationNumberFilter, 300);
+  const byEntryQueryParams = useMemo(() => {
+    const params = [
+      ['formCodeFilter', debouncedSearchText],
+      ['pollingStationNumberFilter', debouncedPollingStationNumberFilter],
+    ].filter(([_, value]) => value);
+
+    return Object.fromEntries(params);
+  }, [debouncedSearchText, debouncedPollingStationNumberFilter]);
 
   return (
     <Layout title='Responses' subtitle='View all form answers and other issues reported by your observers.  '>
@@ -109,7 +127,11 @@ export default function ResponsesDashboard(): ReactElement {
                 {byFilter !== 'byForm' && (
                   <>
                     <Input className='w-[400px]' onChange={handleSearchInput} placeholder='Search' />
-                    <FunnelIcon className='w-[20px] text-purple-900 cursor-pointer' />
+                    <FunnelIcon
+                      className='w-[20px] text-purple-900 cursor-pointer'
+                      fill={isFiltering ? '#5F288D' : 'rgba(0,0,0,0)'}
+                      onClick={() => setIsFiltering(true)}
+                    />
                   </>
                 )}
 
@@ -134,6 +156,23 @@ export default function ResponsesDashboard(): ReactElement {
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
+
+              <Separator />
+
+              {isFiltering && (
+                <div className='tab-filters flex gap-4 items-center'>
+                  <Input
+                    className='max-w-xs'
+                    defaultValue={search.pollingStationNumberFilter}
+                    placeholder='Station number'
+                    onChange={(e) =>
+                      navigate({ search: (prev) => ({ ...prev, pollingStationNumberFilter: e.target.value }) })
+                    }
+                    value={search.pollingStationNumberFilter ?? ''}
+                  />
+                  <Button onClick={() => navigate({})}>Reset filters</Button>
+                </div>
+              )}
             </CardHeader>
 
             <CardContent>
@@ -142,7 +181,7 @@ export default function ResponsesDashboard(): ReactElement {
                   columnVisibility={submissionsByEntryColumnVisibility}
                   columns={formSubmissionsByEntryColumnDefs}
                   useQuery={useFormSubmissionsByEntry}
-                  queryParams={{ formCodeFilter: debouncedSearchText }}
+                  queryParams={byEntryQueryParams}
                 />
               )}
 
