@@ -78,7 +78,8 @@
 				"cases": {
 					"kebabCase": true,
 					"pascalCase": true
-				}
+				},
+        "ignore": ["^\\$"]
 			}
 		],
 		"unicorn/prevent-abbreviations": "off"

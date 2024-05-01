@@ -1,3 +1,13 @@
+import type {
+  BaseQuestion,
+  DateAnswer,
+  MultiSelectAnswer,
+  NumberAnswer,
+  RatingAnswer,
+  SingleSelectAnswer,
+  TextAnswer,
+} from '@/common/types';
+
 export enum FormType {
   ClosingAndCounting = 'ClosingAndCounting',
   Opening = 'Opening',
@@ -33,6 +43,15 @@ export interface FormSubmissionByEntry {
   tags: string[];
   timeSubmitted: string;
   status?: string;
+}
+
+export interface FormSubmission
+  extends Omit<
+    FormSubmissionByEntry,
+    'numberOfFlaggedAnswers' | 'numberOfQuestionAnswered' | 'mediaFilesCount' | 'notesCount'
+  > {
+  answers: (NumberAnswer | TextAnswer | DateAnswer | RatingAnswer | SingleSelectAnswer | MultiSelectAnswer)[];
+  questions: BaseQuestion[];
 }
 
 export interface FormSubmissionByObserver {

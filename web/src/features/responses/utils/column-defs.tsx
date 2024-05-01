@@ -1,6 +1,8 @@
 import type { ColumnDef } from '@tanstack/react-table';
 import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
 import type { FormSubmissionByEntry, FormSubmissionByForm, FormSubmissionByObserver } from '../models/form-submission';
+import { ChevronRightIcon } from '@heroicons/react/24/outline';
+import { Link } from '@tanstack/react-router';
 
 export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry>[] = [
   {
@@ -137,6 +139,19 @@ export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry>[
     enableSorting: true,
     enableGlobalFilter: true,
     cell: ({ row }) => row.original?.status ?? 'N/A',
+  },
+  {
+    header: '',
+    accessorKey: 'action',
+    enableSorting: false,
+    cell: ({ row }) => (
+      <Link
+        className='hover:bg-purple-100 inline-flex h-6 w-6 rounded-full items-center justify-center'
+        params={{ submissionId: row.original.submissionId }}
+        to='/responses/$submissionId'>
+        <ChevronRightIcon className='w-4 text-purple-600' />
+      </Link>
+    ),
   },
 ];
 
