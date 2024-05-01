@@ -94,6 +94,7 @@ export interface FormSubmission
   > {
   answers: (NumberAnswer | TextAnswer | DateAnswer | RatingAnswer | SingleSelectAnswer | MultiSelectAnswer)[];
   attachments: Attachment[];
+  needsFollowup?: boolean;
   notes: Note[];
   questions: BaseQuestion[];
 }

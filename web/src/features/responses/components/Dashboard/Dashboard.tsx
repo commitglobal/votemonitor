@@ -1,4 +1,5 @@
 import { ChevronDownIcon, Cog8ToothIcon, FunnelIcon } from '@heroicons/react/24/outline';
+import { getRouteApi } from '@tanstack/react-router';
 import { useDebounce } from '@uidotdev/usehooks';
 import { type ChangeEvent, useState, type ReactElement, useMemo } from 'react';
 import { CsvFileIcon } from '@/components/icons/CsvFileIcon';
@@ -25,6 +26,7 @@ import {
   useFormSubmissionsByForm,
   useFormSubmissionsByObserver,
 } from '../../hooks/form-submissions-queries';
+import type { FormSubmissionsByEntrySearchParams } from '../../models/search-params';
 import {
   formSubmissionsByEntryColumnDefs,
   formSubmissionsByFormColumnDefs,
@@ -35,7 +37,6 @@ import {
   formSubmissionsDefaultColumns,
   type FilterBy,
 } from '../../utils/column-visibility-options';
-import { getRouteApi } from '@tanstack/react-router';
 
 const viewBy: Record<FilterBy, string> = {
   byEntry: 'View by entry',
@@ -72,7 +73,7 @@ export default function ResponsesDashboard(): ReactElement {
       ['pollingStationNumberFilter', debouncedPollingStationNumberFilter],
     ].filter(([_, value]) => value);
 
-    return Object.fromEntries(params);
+    return Object.fromEntries(params) as FormSubmissionsByEntrySearchParams;
   }, [debouncedSearchText, debouncedPollingStationNumberFilter]);
 
   return (
@@ -126,11 +127,13 @@ export default function ResponsesDashboard(): ReactElement {
               <div className='px-6 flex justify-end gap-4'>
                 {byFilter !== 'byForm' && (
                   <>
-                    <Input className='w-[400px]' onChange={handleSearchInput} placeholder='Search' />
+                    <Input className='max-w-md' onChange={handleSearchInput} placeholder='Search' />
                     <FunnelIcon
                       className='w-[20px] text-purple-900 cursor-pointer'
                       fill={isFiltering ? '#5F288D' : 'rgba(0,0,0,0)'}
-                      onClick={() => setIsFiltering(true)}
+                      onClick={() => {
+                        setIsFiltering((prev) => !prev);
+                      }}
                     />
                   </>
                 )}
@@ -165,12 +168,18 @@ export default function ResponsesDashboard(): ReactElement {
                     className='max-w-xs'
                     defaultValue={search.pollingStationNumberFilter}
                     placeholder='Station number'
-                    onChange={(e) =>
-                      navigate({ search: (prev) => ({ ...prev, pollingStationNumberFilter: e.target.value }) })
-                    }
+                    onChange={(e) => {
+                      void navigate({ search: (prev) => ({ ...prev, pollingStationNumberFilter: e.target.value }) });
+                    }}
                     value={search.pollingStationNumberFilter ?? ''}
                   />
-                  <Button onClick={() => navigate({})}>Reset filters</Button>
+                  <Button
+                    onClick={() => {
+                      void navigate({});
+                    }}
+                    variant='ghost-primary'>
+                    Reset filters
+                  </Button>
                 </div>
               )}
             </CardHeader>

@@ -22,10 +22,11 @@ import { Label } from '@/components/ui/label';
 import { Radio, RadioGroup } from '@/components/ui/radio-group';
 import { RatingGroup } from '@/components/ui/ratings';
 import { Separator } from '@/components/ui/separator';
+import { Switch } from '@/components/ui/switch';
 import type { FunctionComponent } from '@/common/types';
 import { cn, ratingScaleToNumber } from '@/lib/utils';
-import { Attachment } from '../../models/form-submission';
-import { QuestionExtraData } from '../../types';
+import type { Attachment } from '../../models/form-submission';
+import type { QuestionExtraData } from '../../types';
 import { QuestionExtraDataSection } from '../QuestionExtraDataSection/QuestionExtraDataSection';
 
 export default function FormSubmissionDetails(): FunctionComponent {
@@ -39,7 +40,7 @@ export default function FormSubmissionDetails(): FunctionComponent {
             <div className='flex gap-2'>
               <p>Observer:</p>
               <Link
-                className='text-purple-900 font-bold flex gap-1'
+                className='text-purple-500 font-bold flex gap-1'
                 to='/monitoring-observers/$monitoringObserverId'
                 params={{ monitoringObserverId: formSubmission.monitoringObserverId }}
                 target='_blank'
@@ -57,7 +58,7 @@ export default function FormSubmissionDetails(): FunctionComponent {
             <div className='flex gap-2'>
               <p>Station:</p>
               <Link
-                className='text-purple-900 font-bold'
+                className='text-purple-500 font-bold'
                 to='/responses'
                 search={{ pollingStationNumberFilter: formSubmission.number }}>
                 #{formSubmission.number}
@@ -83,9 +84,11 @@ export default function FormSubmissionDetails(): FunctionComponent {
 
         <Card className='max-w-4xl'>
           <CardHeader>
-            <CardTitle className='mb-4'>
-              {formSubmission.formCode}: {formSubmission.formType}
-              {/* @todo add needs follow-up switch */}
+            <CardTitle className='mb-4 flex justify-between'>
+              <div>
+                {formSubmission.formCode}: {formSubmission.formType}
+              </div>
+              <Switch id='needs-followup'>Needs follow-up</Switch>
             </CardTitle>
             <Separator />
           </CardHeader>
@@ -103,7 +106,7 @@ export default function FormSubmissionDetails(): FunctionComponent {
                 {}
               );
               const mediaFiles: QuestionExtraData[] = Object.entries(groupedAttachments)
-                .filter(([key]) => !notes.find((note) => isEqual(note.timeSubmitted, key)))
+                .filter(([key]) => !notes.some((note) => isEqual(note.timeSubmitted, key)))
                 .flatMap(([_, attachments]) => ({
                   questionId: attachments[0]?.questionId ?? '',
                   text: '',
@@ -112,14 +115,15 @@ export default function FormSubmissionDetails(): FunctionComponent {
                   attachments,
                 }));
 
-              const extraData = notes
-                .map((note) => {
+              const extraData = [
+                ...notes.map((note) => {
                   return {
                     ...note,
                     attachments: groupedAttachments[note.timeSubmitted] ?? [],
                   };
-                })
-                .concat(mediaFiles);
+                }),
+                ...mediaFiles,
+              ];
 
               return (
                 <div key={question.id} className='flex flex-col gap-4'>
@@ -131,10 +135,10 @@ export default function FormSubmissionDetails(): FunctionComponent {
                     <RadioGroup
                       defaultChecked
                       defaultValue={answer && isSingleSelectAnswer(answer) ? answer.selection?.optionId : ''}
-                      className='flex gap-8'>
+                      className='flex gap-8 items-center'>
                       {question.options.map((option) => (
                         <Fragment key={option.id}>
-                          <FormItem className='flex items-center space-x-3 space-y-0'>
+                          <FormItem className='flex items-center gap-2 !mt-0'>
                             <Radio disabled value={option.id} />
                             <Label className='font-normal'>
                               {option.text['EN']}
