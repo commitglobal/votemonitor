@@ -17,6 +17,7 @@ import { Dialog } from "./Dialog";
 import RadioFormInput from "./FormInputs/RadioFormInput";
 import Button from "./Button";
 import { useFormSubmissions } from "../services/queries/form-submissions.query";
+import { arrayToKeyObject } from "../helpers/misc";
 
 export type FormListItem = {
   id: string;
@@ -45,7 +46,9 @@ const FormList = ({
     data: allForms,
     isLoading: isLoadingForms,
     error: formsError,
-  } = useElectionRoundAllForms(activeElectionRound?.id);
+  } = useElectionRoundAllForms(activeElectionRound?.id, (data) =>
+    arrayToKeyObject(data.forms || [], "id"),
+  );
 
   const {
     data: formSubmissions,
@@ -68,7 +71,7 @@ const FormList = ({
   const onConfirmFormLanguage = (formItem: FormListItem, language: string) => {
     setFormLanguagePreference({ formId: formItem.id, language });
 
-    router.push(`/form-details/${formItem?.id}?language=${language}`);
+    router.push(`/form-details/${formItem?.id}?language=${language}`); // TODO @birloiflorian we can pass formTitle
     setSelectedForm(null);
   };
 

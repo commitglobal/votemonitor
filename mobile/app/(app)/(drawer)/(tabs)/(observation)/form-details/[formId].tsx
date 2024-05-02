@@ -23,6 +23,7 @@ import { FormStateToTextMapper } from "../../../../../../components/FormCard";
 import OptionsSheet from "../../../../../../components/OptionsSheet";
 import { useElectionRoundAllForms } from "../../../../../../services/queries/forms.query";
 import { useFormSubmissions } from "../../../../../../services/queries/form-submissions.query";
+import { arrayToKeyObject } from "../../../../../../helpers/misc";
 
 interface FormOverviewProps {
   completedAnswers: number;
@@ -125,7 +126,9 @@ const FormDetails = () => {
     data: allForms,
     isLoading: isLoadingForms,
     error: formsError,
-  } = useElectionRoundAllForms(activeElectionRound?.id);
+  } = useElectionRoundAllForms(activeElectionRound?.id, (data) =>
+    arrayToKeyObject(data.forms || [], "id"),
+  );
 
   const {
     data: formSubmissions,
