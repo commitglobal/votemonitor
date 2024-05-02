@@ -13,7 +13,7 @@ import { Dimensions, Platform } from "react-native";
 import OptionsSheet from "../../../../../../components/OptionsSheet";
 import ChangeLanguageDialog from "../../../../../../components/ChangeLanguageDialog";
 import { setFormLanguagePreference } from "../../../../../../common/language.preferences";
-import { useElectionRoundAllForms } from "../../../../../../services/queries/forms.query";
+import { useFormById } from "../../../../../../services/queries/forms.query";
 import { useFormSubmissions } from "../../../../../../services/queries/form-submissions.query";
 import FormQuestionListItem, {
   FormQuestionListItemProps,
@@ -21,17 +21,27 @@ import FormQuestionListItem, {
 } from "../../../../../../components/FormQuestionListItem";
 import FormOverview from "../../../../../../components/FormOverview";
 
+type SearchParamsType = {
+  formId: string;
+  language: string;
+};
+
 const FormDetails = () => {
-  const { formId, language } = useLocalSearchParams();
+  const { formId, language } = useLocalSearchParams<SearchParamsType>();
+
+  if (!formId || !language) {
+    return <Typography>Incorrect page params</Typography>;
+  }
+
   const { activeElectionRound, selectedPollingStation } = useUserData();
   const [isChangeLanguageModalOpen, setIsChangeLanguageModalOpen] = useState<boolean>(false);
   const [optionSheetOpen, setOptionSheetOpen] = useState(false);
 
   const {
-    data: allForms,
-    isLoading: isLoadingForms,
-    error: formsError,
-  } = useElectionRoundAllForms(activeElectionRound?.id);
+    data: currentForm,
+    isLoading: isLoadingCurrentForm,
+    error: currentFormError,
+  } = useFormById(activeElectionRound?.id, formId);
 
   const {
     data: formSubmissions,
@@ -40,35 +50,31 @@ const FormDetails = () => {
   } = useFormSubmissions(activeElectionRound?.id, selectedPollingStation?.pollingStationId);
 
   const answers: Record<string, ApiFormAnswer> = useMemo(() => {
-    const formSubmission = formSubmissions?.submissions.find(
-      (sub) => sub.formId === (formId as string),
-    );
+    const formSubmission = formSubmissions?.submissions.find((sub) => sub.formId === formId);
     return mapAPIAnswersToFormAnswers(formSubmission?.answers);
   }, [formSubmissions]);
 
   const { questions, numberOfAnswers } = useMemo(() => {
-    const form = allForms?.forms.find((form) => form.id === formId);
     const submission = formSubmissions?.submissions.find(
       (submission) => submission.formId === formId,
     );
     return {
-      questions: form?.questions.map((q) => ({
+      questions: currentForm?.questions.map((q) => ({
         status: answers[q.id] ? QuestionStatus.ANSWERED : QuestionStatus.NOT_ANSWERED,
-        question: q.text[language as string],
+        question: q.text[language],
         id: q.id,
       })),
       numberOfAnswers: submission ? submission.answers.length : 0,
     };
-  }, [allForms, formSubmissions]);
+  }, [currentForm, formSubmissions]);
 
   const { numberOfQuestions, formTitle, languages } = useMemo(() => {
-    const form = allForms?.forms.find((form) => form.id === formId);
     return {
-      numberOfQuestions: form ? form.questions.length : 0,
-      formTitle: `${form?.code} - ${form?.name[language as string]} (${language as string})`,
-      languages: form?.languages,
+      numberOfQuestions: currentForm ? currentForm.questions.length : 0,
+      formTitle: `${currentForm?.code} - ${currentForm?.name[language]} (${language})`,
+      languages: currentForm?.languages,
     };
-  }, [allForms]);
+  }, [currentForm]);
 
   const onQuestionItemClick = (questionId: string) => {
     router.push(`/form-questionnaire/${questionId}?formId=${formId}&language=${language}`);
@@ -76,13 +82,12 @@ const FormDetails = () => {
 
   const onFormOverviewActionClick = () => {
     // find first unanswered question
-    const form = allForms?.forms.find((form) => form.id === formId);
     // do not navigate if the form has no questions or not found
-    if (!form || form.questions.length === 0) return;
+    if (!currentForm || currentForm.questions.length === 0) return;
     // get the first unanswered question
     const lastQ = questions?.find((q) => !answers[q.id]);
     // if all questions are answered get the last question
-    const lastQId = lastQ?.id || form?.questions[form.questions.length - 1].id;
+    const lastQId = lastQ?.id || currentForm?.questions[currentForm.questions.length - 1].id;
     return router.push(`/form-questionnaire/${lastQId}?formId=${formId}&language=${language}`);
   };
 
@@ -102,11 +107,11 @@ const FormDetails = () => {
     console.log("clear data");
   };
 
-  if (isLoadingForms || isLoadingAnswers) {
+  if (isLoadingCurrentForm || isLoadingAnswers) {
     return <Typography>Loading</Typography>;
   }
 
-  if (formsError || answersError) {
+  if (currentFormError || answersError) {
     return <Typography>Form Error</Typography>;
   }
 
