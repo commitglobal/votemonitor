@@ -1,4 +1,6 @@
 import { Note } from "../common/models/note";
+import { FormListItem } from "../components/FormList";
+import { FormAPIModel, FormSubmissionsApiResponse } from "./definitions.api";
 import { ApiFormAnswer, FormQuestionAnswerTypeMapping } from "./interfaces/answer.type";
 import { ApiFormQuestion, FormQuestionType } from "./interfaces/question.type";
 
@@ -136,4 +138,23 @@ export const mapAPINotesToQuestionNote = (apiNotes: Note[] | undefined) => {
     acc[curr.questionId].push(curr);
     return acc;
   }, {});
+};
+
+export const mapFormToFormListItem = (
+  forms: FormAPIModel[],
+  formSubmissions: FormSubmissionsApiResponse,
+): FormListItem[] => {
+  return forms.map((form) => {
+    const numberOfAnswers =
+      formSubmissions?.submissions.find((sub) => sub.formId === form.id)?.answers.length || 0;
+    return {
+      id: form.id,
+      name: `${form.code} - ${form.name.RO}`,
+      numberOfCompletedQuestions: numberOfAnswers,
+      numberOfQuestions: form.questions.length,
+      options: `Available in ${Object.keys(form.name).join(", ")}`,
+      status: mapFormStateStatus(numberOfAnswers, form.questions.length),
+      languages: form.languages,
+    };
+  });
 };

@@ -9,12 +9,11 @@ import {
   getNotesForPollingStation,
 } from "./definitions.api";
 import * as DB from "../database/DAO/PollingStationsNomenclatorDAO";
-import * as API from "./definitions.api";
 
 import { PollingStationNomenclatorNodeVM } from "../common/models/polling-station.model";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const electionRoundsKeys = {
+export const electionRoundsKeys = {
   all: ["election-rounds"] as const,
   one: (id: string) => [...electionRoundsKeys.all, id] as const,
   forms: () => [...electionRoundsKeys.all, "forms"] as const,
@@ -231,26 +230,6 @@ export const usePollingStationInformationForm = (electionRoundId: string | undef
   return useQuery({
     queryKey: pollingStationsKeys.informationForm(electionRoundId),
     queryFn: electionRoundId ? () => getPollingStationInformationForm(electionRoundId) : skipToken,
-  });
-};
-
-export const useElectionRoundAllForms = (electionRoundId: string | undefined) => {
-  return useQuery({
-    queryKey: electionRoundsKeys.forms(),
-    queryFn: electionRoundId ? () => API.getElectionRoundAllForms(electionRoundId) : skipToken,
-  });
-};
-
-export const useFormSubmissions = (
-  electionRoundId: string | undefined,
-  pollingStationId: string | undefined,
-) => {
-  return useQuery({
-    queryKey: pollingStationsKeys.formSubmissions(electionRoundId, pollingStationId),
-    queryFn:
-      electionRoundId && pollingStationId
-        ? () => API.getFormSubmissions(electionRoundId, pollingStationId)
-        : skipToken,
   });
 };
 
