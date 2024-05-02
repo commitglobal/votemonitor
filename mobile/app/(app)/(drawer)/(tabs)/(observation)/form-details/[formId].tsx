@@ -2,118 +2,24 @@ import { router, useLocalSearchParams } from "expo-router";
 import { Screen } from "../../../../../../components/Screen";
 import Header from "../../../../../../components/Header";
 import { Icon } from "../../../../../../components/Icon";
-import {
-  useElectionRoundAllForms,
-  useFormSubmissions,
-} from "../../../../../../services/queries.service";
 import { useUserData } from "../../../../../../contexts/user/UserContext.provider";
 import { Typography } from "../../../../../../components/Typography";
-import { Card, XStack, YStack } from "tamagui";
-import CircularProgress from "../../../../../../components/CircularProgress";
-import Button from "../../../../../../components/Button";
+import { YStack } from "tamagui";
 import { useMemo, useState } from "react";
 import { ListView } from "../../../../../../components/ListView";
-import CardFooter from "../../../../../../components/CardFooter";
-import Badge from "../../../../../../components/Badge";
-import {
-  FormStatus,
-  mapAPIAnswersToFormAnswers,
-  mapFormStateStatus,
-} from "../../../../../../services/form.parser";
+import { mapAPIAnswersToFormAnswers } from "../../../../../../services/form.parser";
 import { ApiFormAnswer } from "../../../../../../services/interfaces/answer.type";
 import { Dimensions, Platform } from "react-native";
-import { useTranslation } from "react-i18next";
-import { FormStateToTextMapper } from "../../../../../../components/FormCard";
 import OptionsSheet from "../../../../../../components/OptionsSheet";
 import ChangeLanguageDialog from "../../../../../../components/ChangeLanguageDialog";
 import { setFormLanguagePreference } from "../../../../../../common/language.preferences";
-
-interface FormOverviewProps {
-  completedAnswers: number;
-  numberOfQuestions: number;
-  onFormActionClick: () => void;
-}
-
-const FormOverview = ({
-  completedAnswers,
-  numberOfQuestions,
-  onFormActionClick,
-}: FormOverviewProps) => {
-  const formStatus = useMemo(
-    () => mapFormStateStatus(completedAnswers, numberOfQuestions),
-    [completedAnswers, numberOfQuestions],
-  );
-  const { t } = useTranslation("form_overview");
-
-  return (
-    <Card padding="$md">
-      {/* //TODO: translations */}
-      <Typography preset="body1" fontWeight="700">
-        {t("form_overview.title")}
-      </Typography>
-      <XStack alignItems="center" justifyContent="space-between">
-        <YStack gap="$sm">
-          <Typography fontWeight="500" color="$gray5">
-            {t("form_overview.status")}:{" "}
-            <Typography fontWeight="700">{FormStateToTextMapper[formStatus]}</Typography>
-          </Typography>
-          <Typography fontWeight="500" color="$gray5">
-            Answered questions:{" "}
-            <Typography fontWeight="700">
-              {completedAnswers}/{numberOfQuestions}
-            </Typography>
-          </Typography>
-        </YStack>
-        {/* TODO: This doesn't look good */}
-        <CircularProgress progress={(completedAnswers / numberOfQuestions) * 100} size={98} />
-      </XStack>
-      <Button
-        preset="outlined"
-        marginTop="$md"
-        disabled={completedAnswers === numberOfQuestions}
-        onPress={onFormActionClick}
-      >
-        {formStatus === FormStatus.NOT_STARTED ? "Start form" : "Resume form"}
-      </Button>
-    </Card>
-  );
-};
-
-enum QuestionStatus {
-  ANSWERED = "answered",
-  NOT_ANSWERED = "not answered",
-}
-
-const QuestionStatusToTextWrapper = {
-  [QuestionStatus.ANSWERED]: "Answered",
-  [QuestionStatus.NOT_ANSWERED]: "Not Answered",
-};
-interface FormQuestionListItemProps {
-  index: number;
-  numberOfQuestions: number;
-  status: QuestionStatus;
-  question: string;
-  onClick: () => void;
-}
-
-const FormQuestionListItem = ({
-  index,
-  numberOfQuestions,
-  status,
-  question,
-  onClick,
-}: FormQuestionListItemProps) => (
-  <Card gap="$md" padding="$md" marginBottom="$xxs" onPress={onClick}>
-    <YStack gap="$xxs">
-      <XStack justifyContent="space-between">
-        <Typography color="$gray5">{`${index}/${numberOfQuestions}`}</Typography>
-        <Badge status={status}>{QuestionStatusToTextWrapper[status]}</Badge>
-      </XStack>
-      <Typography preset="body2">{question}</Typography>
-    </YStack>
-    <CardFooter text="No attached notes"></CardFooter>
-  </Card>
-);
+import { useElectionRoundAllForms } from "../../../../../../services/queries/forms.query";
+import { useFormSubmissions } from "../../../../../../services/queries/form-submissions.query";
+import FormQuestionListItem, {
+  FormQuestionListItemProps,
+  QuestionStatus,
+} from "../../../../../../components/FormQuestionListItem";
+import FormOverview from "../../../../../../components/FormOverview";
 
 const FormDetails = () => {
   const { formId, language } = useLocalSearchParams();

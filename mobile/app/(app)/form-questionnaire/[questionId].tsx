@@ -2,11 +2,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import { Screen } from "../../../components/Screen";
 import Header from "../../../components/Header";
 import { Icon } from "../../../components/Icon";
-import {
-  useElectionRoundAllForms,
-  useFormSubmissions,
-  useNotesForPollingStation,
-} from "../../../services/queries.service";
+import { useNotesForPollingStation } from "../../../services/queries.service";
 import { Typography } from "../../../components/Typography";
 import { XStack, YStack, ScrollView, Spinner } from "tamagui";
 import LinearProgress from "../../../components/LinearProgress";
@@ -42,6 +38,8 @@ import QuestionAttachments from "../../../components/QuestionAttachments";
 import QuestionNotes from "../../../components/QuestionNotes";
 import * as DocumentPicker from "expo-document-picker";
 import AddNoteSheetContent from "../../../components/AddNoteSheetContent";
+import { useElectionRoundAllForms } from "../../../services/queries/forms.query";
+import { useFormSubmissions } from "../../../services/queries/form-submissions.query";
 
 const FormQuestionnaire = () => {
   const { questionId, formId, language } = useLocalSearchParams();
