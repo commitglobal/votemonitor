@@ -1,5 +1,6 @@
 import { Note } from "../common/models/note";
 import { FormListItem } from "../components/FormList";
+import { arrayToKeyObject } from "../helpers/misc";
 import { FormAPIModel, FormSubmissionsApiResponse } from "./definitions.api";
 import { ApiFormAnswer, FormQuestionAnswerTypeMapping } from "./interfaces/answer.type";
 import { ApiFormQuestion, FormQuestionType } from "./interfaces/question.type";
@@ -144,9 +145,9 @@ export const mapFormToFormListItem = (
   forms: FormAPIModel[],
   formSubmissions: FormSubmissionsApiResponse,
 ): FormListItem[] => {
+  const submissions = arrayToKeyObject(formSubmissions.submissions, "formId");
   return forms.map((form) => {
-    const numberOfAnswers =
-      formSubmissions?.submissions.find((sub) => sub.formId === form.id)?.answers.length || 0;
+    const numberOfAnswers = submissions[form.id]?.answers.length || 0;
     return {
       id: form.id,
       name: `${form.code} - ${form.name.RO}`,

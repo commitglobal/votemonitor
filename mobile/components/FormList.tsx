@@ -28,15 +28,13 @@ export type FormListItem = {
   status: FormStatus;
 };
 
-const FormList = ({
-  ListHeaderComponent,
-}: {
-  ListHeaderComponent:
-    | ComponentType<any>
-    | ReactElement<any, string | JSXElementConstructor<any>>
-    | null
-    | undefined;
-}) => {
+type ListHeaderComponentType =
+  | ComponentType<any>
+  | ReactElement<any, string | JSXElementConstructor<any>>
+  | null
+  | undefined;
+
+const FormList = ({ ListHeaderComponent }: { ListHeaderComponent: ListHeaderComponentType }) => {
   const { activeElectionRound, selectedPollingStation } = useUserData();
   const [selectedForm, setSelectedForm] = useState<FormListItem | null>(null);
   const { t } = useTranslation("form_overview");
