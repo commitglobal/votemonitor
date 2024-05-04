@@ -14,7 +14,6 @@ import { Platform, ViewStyle } from "react-native";
 import { Controller, useForm } from "react-hook-form";
 import WizardFormInput from "../../../components/WizardFormInputs/WizardFormInput";
 import {
-  mapAPIAnswersToFormAnswers,
   mapAPINotesToQuestionNote,
   mapAPIQuestionsToFormQuestions,
   mapFormSubmissionDataToAPIFormSubmissionAnswer,
@@ -38,8 +37,8 @@ import QuestionAttachments from "../../../components/QuestionAttachments";
 import QuestionNotes from "../../../components/QuestionNotes";
 import * as DocumentPicker from "expo-document-picker";
 import AddNoteSheetContent from "../../../components/AddNoteSheetContent";
-import { useElectionRoundAllForms } from "../../../services/queries/forms.query";
-import { useFormSubmissions } from "../../../services/queries/form-submissions.query";
+import { useFormById } from "../../../services/queries/forms.query";
+import { useFormAnswers } from "../../../services/queries/form-submissions.query";
 
 type SearchParamType = {
   questionId: string;
@@ -59,21 +58,16 @@ const FormQuestionnaire = () => {
   const [addingNote, setAddingNote] = useState(false);
 
   const {
-    data: allForms,
-    isLoading: isLoadingForms,
-    error: formsError,
-  } = useElectionRoundAllForms(activeElectionRound?.id);
+    data: currentForm,
+    isLoading: isLoadingCurrentForm,
+    error: currentFormError,
+  } = useFormById(activeElectionRound?.id, formId);
 
   const {
-    data: formSubmissions,
+    data: answers,
     isLoading: isLoadingAnswers,
     error: answersError,
-  } = useFormSubmissions(activeElectionRound?.id, selectedPollingStation?.pollingStationId);
-
-  const answers: Record<string, ApiFormAnswer> = useMemo(() => {
-    const formSubmission = formSubmissions?.submissions.find((sub) => sub.formId === formId);
-    return mapAPIAnswersToFormAnswers(formSubmission?.answers); // TODO @birloiflorian do it in query select
-  }, [formSubmissions]);
+  } = useFormAnswers(activeElectionRound?.id, selectedPollingStation?.pollingStationId, formId);
 
   const { data: formNotes } = useNotesForPollingStation(
     activeElectionRound?.id,
@@ -91,13 +85,8 @@ const FormQuestionnaire = () => {
     reset,
     formState: { isValid },
   } = useForm({
-    defaultValues: setFormDefaultValues(questionId, answers[questionId]) as any,
+    defaultValues: setFormDefaultValues(questionId, answers?.[questionId]) as any,
   });
-
-  const currentForm = useMemo(() => {
-    const form = allForms?.forms.find((form) => form.id === formId);
-    return form;
-  }, [allForms]);
 
   const questions: Record<string, ApiFormQuestion> = useMemo(
     () => mapAPIQuestionsToFormQuestions(currentForm?.questions), // TODO @birloiflorian do it in query select
@@ -183,11 +172,11 @@ const FormQuestionnaire = () => {
     reset(formState);
   };
 
-  if (isLoadingForms || isLoadingAnswers) {
+  if (isLoadingCurrentForm || isLoadingAnswers) {
     return <Typography>Loading</Typography>;
   }
 
-  if (formsError || answersError) {
+  if (currentFormError || answersError) {
     return <Typography>Form Error</Typography>;
   }
   const { uploadCameraOrMedia } = useCamera();
@@ -217,7 +206,7 @@ const FormQuestionnaire = () => {
         {
           electionRoundId: activeElectionRound.id,
           pollingStationId: selectedPollingStation.pollingStationId,
-          formId: formId,
+          formId,
           questionId: activeQuestion.question.id,
           fileMetadata: cameraResult,
         },
@@ -254,7 +243,7 @@ const FormQuestionnaire = () => {
           {
             electionRoundId: activeElectionRound.id,
             pollingStationId: selectedPollingStation.pollingStationId,
-            formId: formId,
+            formId,
             questionId: activeQuestion.question.id,
             fileMetadata,
           },
