@@ -14,6 +14,7 @@ import { Control, Controller, FieldErrors, FieldValues, useForm } from "react-ho
 import Card from "../components/Card";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CURRENT_USER_STORAGE_KEY } from "../common/constants";
+import Constants from "expo-constants";
 
 interface FormData {
   email: string;
@@ -65,7 +66,6 @@ const Login = () => {
         </XStack>
         <LoginForm control={control} errors={errors} authError={authError} />
       </YStack>
-
       <Card width="100%" paddingBottom={16 + insets.bottom} marginTop="auto">
         <Button onPress={handleSubmit(onLogin)}>Log in</Button>
       </Card>
@@ -167,6 +167,9 @@ const LoginForm = ({
         }}
       >
         {t("actions.forgot_password")}
+      </Typography>
+      <Typography fontSize={"$1"} style={{ position: "absolute", bottom: 0 }}>
+        {`v${Constants.expoConfig?.version}(${Constants.expoConfig?.extra?.updateVersion})`}
       </Typography>
     </View>
   );
