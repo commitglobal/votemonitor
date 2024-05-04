@@ -7,14 +7,12 @@ import { Typography } from "../../../../../../components/Typography";
 import { YStack } from "tamagui";
 import { useMemo, useState } from "react";
 import { ListView } from "../../../../../../components/ListView";
-import { mapAPIAnswersToFormAnswers } from "../../../../../../services/form.parser";
-import { ApiFormAnswer } from "../../../../../../services/interfaces/answer.type";
 import { Dimensions, Platform } from "react-native";
 import OptionsSheet from "../../../../../../components/OptionsSheet";
 import ChangeLanguageDialog from "../../../../../../components/ChangeLanguageDialog";
 import { setFormLanguagePreference } from "../../../../../../common/language.preferences";
 import { useFormById } from "../../../../../../services/queries/forms.query";
-import { useFormSubmissions } from "../../../../../../services/queries/form-submissions.query";
+import { useFormAnswers } from "../../../../../../services/queries/form-submissions.query";
 import FormQuestionListItem, {
   FormQuestionListItemProps,
   QuestionStatus,
@@ -44,29 +42,21 @@ const FormDetails = () => {
   } = useFormById(activeElectionRound?.id, formId);
 
   const {
-    data: formSubmissions,
+    data: answers,
     isLoading: isLoadingAnswers,
     error: answersError,
-  } = useFormSubmissions(activeElectionRound?.id, selectedPollingStation?.pollingStationId);
-
-  const answers: Record<string, ApiFormAnswer> = useMemo(() => {
-    const formSubmission = formSubmissions?.submissions.find((sub) => sub.formId === formId);
-    return mapAPIAnswersToFormAnswers(formSubmission?.answers);
-  }, [formSubmissions]);
+  } = useFormAnswers(activeElectionRound?.id, selectedPollingStation?.pollingStationId, formId);
 
   const { questions, numberOfAnswers } = useMemo(() => {
-    const submission = formSubmissions?.submissions.find(
-      (submission) => submission.formId === formId,
-    );
     return {
       questions: currentForm?.questions.map((q) => ({
-        status: answers[q.id] ? QuestionStatus.ANSWERED : QuestionStatus.NOT_ANSWERED,
+        status: answers?.[q.id] ? QuestionStatus.ANSWERED : QuestionStatus.NOT_ANSWERED,
         question: q.text[language],
         id: q.id,
       })),
-      numberOfAnswers: submission ? submission.answers.length : 0,
+      numberOfAnswers: Object.keys(answers || {}).length,
     };
-  }, [currentForm, formSubmissions]);
+  }, [currentForm, answers]);
 
   const { numberOfQuestions, formTitle, languages } = useMemo(() => {
     return {
@@ -85,7 +75,7 @@ const FormDetails = () => {
     // do not navigate if the form has no questions or not found
     if (!currentForm || currentForm.questions.length === 0) return;
     // get the first unanswered question
-    const lastQ = questions?.find((q) => !answers[q.id]);
+    const lastQ = questions?.find((q) => !answers?.[q.id]);
     // if all questions are answered get the last question
     const lastQId = lastQ?.id || currentForm?.questions[currentForm.questions.length - 1].id;
     return router.push(`/form-questionnaire/${lastQId}?formId=${formId}&language=${language}`);
