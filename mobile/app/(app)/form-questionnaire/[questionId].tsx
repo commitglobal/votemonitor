@@ -2,7 +2,6 @@ import { router, useLocalSearchParams } from "expo-router";
 import { Screen } from "../../../components/Screen";
 import Header from "../../../components/Header";
 import { Icon } from "../../../components/Icon";
-import { useNotesForPollingStation } from "../../../services/queries.service";
 import { Typography } from "../../../components/Typography";
 import { XStack, YStack, ScrollView, Spinner } from "tamagui";
 import LinearProgress from "../../../components/LinearProgress";
@@ -14,7 +13,6 @@ import { Platform, ViewStyle } from "react-native";
 import { Controller, useForm } from "react-hook-form";
 import WizardFormInput from "../../../components/WizardFormInputs/WizardFormInput";
 import {
-  mapAPINotesToQuestionNote,
   mapAPIQuestionsToFormQuestions,
   mapFormSubmissionDataToAPIFormSubmissionAnswer,
   setFormDefaultValues,
@@ -31,7 +29,6 @@ import OptionsSheet from "../../../components/OptionsSheet";
 import AddAttachment from "../../../components/AddAttachment";
 
 import { FileMetadata, useCamera } from "../../../hooks/useCamera";
-import { Note } from "../../../common/models/note";
 import { addAttachmentMutation } from "../../../services/mutations/add-attachment.mutation";
 import QuestionAttachments from "../../../components/QuestionAttachments";
 import QuestionNotes from "../../../components/QuestionNotes";
@@ -39,6 +36,7 @@ import * as DocumentPicker from "expo-document-picker";
 import AddNoteSheetContent from "../../../components/AddNoteSheetContent";
 import { useFormById } from "../../../services/queries/forms.query";
 import { useFormAnswers } from "../../../services/queries/form-submissions.query";
+import { useNotesForQuestionId } from "../../../services/queries/notes.query";
 
 type SearchParamType = {
   questionId: string;
@@ -69,15 +67,12 @@ const FormQuestionnaire = () => {
     error: answersError,
   } = useFormAnswers(activeElectionRound?.id, selectedPollingStation?.pollingStationId, formId);
 
-  const { data: formNotes } = useNotesForPollingStation(
+  const { data: notes } = useNotesForQuestionId(
     activeElectionRound?.id,
     selectedPollingStation?.pollingStationId,
     formId,
+    questionId,
   );
-
-  const notes: Record<string, Note[]> | undefined = useMemo(() => {
-    return mapAPINotesToQuestionNote(formNotes); // TODO @birloiflorian do it in query select
-  }, [formNotes]);
 
   const {
     control,
@@ -433,18 +428,15 @@ const FormQuestionnaire = () => {
           />
 
           {/* notes section */}
-          {notes &&
-            notes[questionId] &&
-            activeElectionRound?.id &&
-            selectedPollingStation?.pollingStationId && (
-              <QuestionNotes
-                notes={notes[questionId]}
-                electionRoundId={activeElectionRound.id}
-                pollingStationId={selectedPollingStation.pollingStationId}
-                formId={formId}
-                questionId={questionId}
-              />
-            )}
+          {notes && activeElectionRound?.id && selectedPollingStation?.pollingStationId && (
+            <QuestionNotes // TODO: @luciatugui add loading and error state for Notes and Attachments
+              notes={notes}
+              electionRoundId={activeElectionRound.id}
+              pollingStationId={selectedPollingStation.pollingStationId}
+              formId={formId}
+              questionId={questionId}
+            />
+          )}
 
           {/* attachments */}
           {activeElectionRound?.id && selectedPollingStation?.pollingStationId && formId && (

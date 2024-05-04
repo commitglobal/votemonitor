@@ -6,7 +6,6 @@ import {
   getPollingStationNomenclator,
   getPollingStationNomenclatorVersion,
   getPollingStationsVisits,
-  getNotesForPollingStation,
 } from "./definitions.api";
 import * as DB from "../database/DAO/PollingStationsNomenclatorDAO";
 
@@ -248,20 +247,6 @@ export const usePollingStationInformation = (
     queryFn:
       electionRoundId && pollingStationId
         ? () => pollingStationInformationQueryFn(electionRoundId, pollingStationId)
-        : skipToken,
-  });
-};
-
-export const useNotesForPollingStation = (
-  electionRoundId: string | undefined,
-  pollingStationId: string | undefined,
-  formId: string | undefined,
-) => {
-  return useQuery({
-    queryKey: notesKeys.notes(electionRoundId, pollingStationId, formId),
-    queryFn:
-      electionRoundId && pollingStationId && formId
-        ? () => getNotesForPollingStation(electionRoundId, pollingStationId, formId)
         : skipToken,
   });
 };

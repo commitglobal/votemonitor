@@ -1,4 +1,3 @@
-import { Note } from "../common/models/note";
 import { FormListItem } from "../components/FormList";
 import { arrayToKeyObject } from "../helpers/misc";
 import { FormAPIModel, FormSubmissionsApiResponse } from "./definitions.api";
@@ -129,16 +128,6 @@ export const mapFormStateStatus = (
   if (numberOfAnswers < numberOfQuestions) return FormStatus.IN_PROGRESS;
   if (numberOfAnswers === numberOfQuestions) return FormStatus.COMPLETED;
   return FormStatus.NOT_STARTED;
-};
-
-export const mapAPINotesToQuestionNote = (apiNotes: Note[] | undefined) => {
-  return apiNotes?.reduce((acc: Record<string, Note[]>, curr: Note) => {
-    if (!acc[curr.questionId]) {
-      acc[curr.questionId] = [];
-    }
-    acc[curr.questionId].push(curr);
-    return acc;
-  }, {});
 };
 
 export const mapFormToFormListItem = (
