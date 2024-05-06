@@ -19,11 +19,11 @@ const routingInstrumentation = new Sentry.ReactNavigationInstrumentation();
 
 Sentry.init({
   dsn: process.env.EXPO_PUBLIC_SENTRY_DSN,
-  debug: process.env.EXPO_PUBLIC_ENVIRONMENT === "local",
+  debug: __DEV__,
   enableNative: true,
   environment: process.env.EXPO_PUBLIC_ENVIRONMENT,
   attachScreenshot: true,
-  enabled: process.env.EXPO_PUBLIC_ENVIRONMENT !== "local",
+  enabled: !__DEV__,
   // Set tracesSampleRate to 1.0 to capture 100%
   // of transactions for performance monitoring.
   // We recommend adjusting this value in production

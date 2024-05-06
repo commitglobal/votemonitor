@@ -171,7 +171,10 @@ const LoginForm = ({
         {t("actions.forgot_password")}
       </Typography>
       <Typography fontSize={"$1"} style={{ position: "absolute", bottom: 0 }}>
-        {`v${Constants.expoConfig?.version}(${Constants.expoConfig?.extra?.updateVersion})`}
+        {`v${Constants.expoConfig?.version}(${Constants.expoConfig?.extra?.updateVersion}) `}
+        {process.env.EXPO_PUBLIC_ENVIRONMENT !== "production"
+          ? process.env.EXPO_PUBLIC_ENVIRONMENT
+          : ""}
       </Typography>
     </View>
   );

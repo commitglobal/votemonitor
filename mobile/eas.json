@@ -6,13 +6,19 @@
     "development": {
       "developmentClient": true,
       "distribution": "internal",
-      "channel": "development"
+      "channel": "development",
+      "env": {
+        "EXPO_PUBLIC_ENVIRONMENT": "development"
+      }
     },
     "development-simulator": {
       "developmentClient": true,
       "distribution": "internal",
       "ios": {
         "simulator": true
+      },
+      "env": {
+        "EXPO_PUBLIC_ENVIRONMENT": "development-simulator"
       }
     },
     "android-apk": {
@@ -22,13 +28,25 @@
     },
     "preview": {
       "distribution": "internal",
-      "channel": "testing" // https://github.com/expo/eas-cli#eas-channeledit-name
+      "channel": "testing", // https://github.com/expo/eas-cli#eas-channeledit-name
+      "env": {
+        "EXPO_PUBLIC_ENVIRONMENT": "preview",
+        "EXPO_PUBLIC_SENTRY_DSN": "https://aedea7f2c5b9366705dc6a1f3b3fafe1@o375441.ingest.us.sentry.io/4506978112765952"
+      }
     },
     "production": {
-      "channel": "production"
+      "channel": "production",
+      "env": {
+        "EXPO_PUBLIC_ENVIRONMENT": "production",
+        "EXPO_PUBLIC_SENTRY_DSN": "https://aedea7f2c5b9366705dc6a1f3b3fafe1@o375441.ingest.us.sentry.io/4506978112765952"
+      }
     },
     "staging": {
-      "channel": "staging"
+      "channel": "staging",
+      "env": {
+        "EXPO_PUBLIC_ENVIRONMENT": "staging",
+        "EXPO_PUBLIC_SENTRY_DSN": "https://aedea7f2c5b9366705dc6a1f3b3fafe1@o375441.ingest.us.sentry.io/4506978112765952"
+      }
     }
   }
 }
