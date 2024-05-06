@@ -38,7 +38,10 @@
     "extra": {
       "eas": {
         "projectId": "93e17628-ddcd-4e67-849c-b356a18a6082"
-      }
+      },
+      "message": "No update yet",
+      "updateCritical": 0,
+      "updateVersion": 0
     },
     "owner": "commit-global",
     "runtimeVersion": {

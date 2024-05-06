@@ -86,7 +86,7 @@ const More = () => {
         ></MenuItem>
         <MenuItem
           label={t("about")}
-          helper={t("app_version", { value: appVersion })}
+          helper={`${t("app_version", { value: appVersion })} (${Constants.expoConfig?.extra?.updateVersion})`}
           icon="aboutVM"
           chevronRight={true}
         ></MenuItem>
