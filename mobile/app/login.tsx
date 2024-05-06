@@ -15,6 +15,7 @@ import Card from "../components/Card";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CURRENT_USER_STORAGE_KEY } from "../common/constants";
 import Constants from "expo-constants";
+import * as Sentry from "@sentry/react-native";
 
 interface FormData {
   email: string;
@@ -36,6 +37,7 @@ const Login = () => {
       router.replace("/");
     } catch (err) {
       setAuthError(true);
+      Sentry.captureException(err);
     }
   };
   const { handleSubmit, control, formState } = useForm({
