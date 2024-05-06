@@ -12,6 +12,14 @@ module.exports = (() => {
     ...transformer,
     babelTransformerPath: require.resolve("react-native-svg-transformer"),
   };
+
+  // https://docs.expo.dev/guides/minify/#remove-console-logs
+  config.transformer.minifierConfig = {
+    compress: {
+      // The option below removes all console logs statements in production.
+      drop_console: true,
+    },
+  };
   config.resolver = {
     ...resolver,
     assetExts: resolver.assetExts.filter((ext) => ext !== "svg"),
