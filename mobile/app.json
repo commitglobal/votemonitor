@@ -85,7 +85,14 @@
           "cameraPermission": "The app accesses your camera to let you take photos or videos and upload them."
         }
       ],
-      "expo-secure-store"
+      "expo-secure-store",
+      [
+        "@sentry/react-native/expo",
+        {
+          "organization": "code4romania",
+          "project": "votemonitor-mobile"
+        }
+      ]
     ]
   }
 }
