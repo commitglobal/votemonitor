@@ -6,15 +6,13 @@ import {
   getPollingStationNomenclator,
   getPollingStationNomenclatorVersion,
   getPollingStationsVisits,
-  getNotesForPollingStation,
 } from "./definitions.api";
 import * as DB from "../database/DAO/PollingStationsNomenclatorDAO";
-import * as API from "./definitions.api";
 
 import { PollingStationNomenclatorNodeVM } from "../common/models/polling-station.model";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const electionRoundsKeys = {
+export const electionRoundsKeys = {
   all: ["election-rounds"] as const,
   one: (id: string) => [...electionRoundsKeys.all, id] as const,
   forms: () => [...electionRoundsKeys.all, "forms"] as const,
@@ -234,26 +232,6 @@ export const usePollingStationInformationForm = (electionRoundId: string | undef
   });
 };
 
-export const useElectionRoundAllForms = (electionRoundId: string | undefined) => {
-  return useQuery({
-    queryKey: electionRoundsKeys.forms(),
-    queryFn: electionRoundId ? () => API.getElectionRoundAllForms(electionRoundId) : skipToken,
-  });
-};
-
-export const useFormSubmissions = (
-  electionRoundId: string | undefined,
-  pollingStationId: string | undefined,
-) => {
-  return useQuery({
-    queryKey: pollingStationsKeys.formSubmissions(electionRoundId, pollingStationId),
-    queryFn:
-      electionRoundId && pollingStationId
-        ? () => API.getFormSubmissions(electionRoundId, pollingStationId)
-        : skipToken,
-  });
-};
-
 export const pollingStationInformationQueryFn = (
   electionRoundId: string | undefined,
   pollingStationId: string,
@@ -269,20 +247,6 @@ export const usePollingStationInformation = (
     queryFn:
       electionRoundId && pollingStationId
         ? () => pollingStationInformationQueryFn(electionRoundId, pollingStationId)
-        : skipToken,
-  });
-};
-
-export const useNotesForPollingStation = (
-  electionRoundId: string | undefined,
-  pollingStationId: string | undefined,
-  formId: string | undefined,
-) => {
-  return useQuery({
-    queryKey: notesKeys.notes(electionRoundId, pollingStationId, formId),
-    queryFn:
-      electionRoundId && pollingStationId && formId
-        ? () => getNotesForPollingStation(electionRoundId, pollingStationId, formId)
         : skipToken,
   });
 };

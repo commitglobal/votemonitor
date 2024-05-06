@@ -2,11 +2,6 @@ import { router, useLocalSearchParams } from "expo-router";
 import { Screen } from "../../../components/Screen";
 import Header from "../../../components/Header";
 import { Icon } from "../../../components/Icon";
-import {
-  useElectionRoundAllForms,
-  useFormSubmissions,
-  useNotesForPollingStation,
-} from "../../../services/queries.service";
 import { Typography } from "../../../components/Typography";
 import { XStack, YStack, ScrollView, Spinner } from "tamagui";
 import LinearProgress from "../../../components/LinearProgress";
@@ -18,8 +13,6 @@ import { Platform, ViewStyle } from "react-native";
 import { Controller, useForm } from "react-hook-form";
 import WizardFormInput from "../../../components/WizardFormInputs/WizardFormInput";
 import {
-  mapAPIAnswersToFormAnswers,
-  mapAPINotesToQuestionNote,
   mapAPIQuestionsToFormQuestions,
   mapFormSubmissionDataToAPIFormSubmissionAnswer,
   setFormDefaultValues,
@@ -36,47 +29,50 @@ import OptionsSheet from "../../../components/OptionsSheet";
 import AddAttachment from "../../../components/AddAttachment";
 
 import { FileMetadata, useCamera } from "../../../hooks/useCamera";
-import { Note } from "../../../common/models/note";
 import { addAttachmentMutation } from "../../../services/mutations/add-attachment.mutation";
 import QuestionAttachments from "../../../components/QuestionAttachments";
 import QuestionNotes from "../../../components/QuestionNotes";
 import * as DocumentPicker from "expo-document-picker";
 import AddNoteSheetContent from "../../../components/AddNoteSheetContent";
+import { useFormById } from "../../../services/queries/forms.query";
+import { useFormAnswers } from "../../../services/queries/form-submissions.query";
+import { useNotesForQuestionId } from "../../../services/queries/notes.query";
+
+type SearchParamType = {
+  questionId: string;
+  formId: string;
+  language: string;
+};
 
 const FormQuestionnaire = () => {
-  const { questionId, formId, language } = useLocalSearchParams();
+  const { questionId, formId, language } = useLocalSearchParams<SearchParamType>();
+
+  if (!questionId || !formId || !language) {
+    return <Typography>Incorrect page params</Typography>;
+  }
+
   const { activeElectionRound, selectedPollingStation } = useUserData();
   const [isOptionsSheetOpen, setIsOptionsSheetOpen] = useState(false);
   const [addingNote, setAddingNote] = useState(false);
 
   const {
-    data: allForms,
-    isLoading: isLoadingForms,
-    error: formsError,
-  } = useElectionRoundAllForms(activeElectionRound?.id);
+    data: currentForm,
+    isLoading: isLoadingCurrentForm,
+    error: currentFormError,
+  } = useFormById(activeElectionRound?.id, formId);
 
   const {
-    data: formSubmissions,
+    data: answers,
     isLoading: isLoadingAnswers,
     error: answersError,
-  } = useFormSubmissions(activeElectionRound?.id, selectedPollingStation?.pollingStationId);
+  } = useFormAnswers(activeElectionRound?.id, selectedPollingStation?.pollingStationId, formId);
 
-  const answers: Record<string, ApiFormAnswer> = useMemo(() => {
-    const formSubmission = formSubmissions?.submissions.find(
-      (sub) => sub.formId === (formId as string),
-    );
-    return mapAPIAnswersToFormAnswers(formSubmission?.answers); // TODO @birloiflorian do it in query select
-  }, [formSubmissions]);
-
-  const { data: formNotes } = useNotesForPollingStation(
+  const { data: notes } = useNotesForQuestionId(
     activeElectionRound?.id,
     selectedPollingStation?.pollingStationId,
-    formId as string,
+    formId,
+    questionId,
   );
-
-  const notes: Record<string, Note[]> | undefined = useMemo(() => {
-    return mapAPINotesToQuestionNote(formNotes); // TODO @birloiflorian do it in query select
-  }, [formNotes]);
 
   const {
     control,
@@ -84,13 +80,8 @@ const FormQuestionnaire = () => {
     reset,
     formState: { isValid },
   } = useForm({
-    defaultValues: setFormDefaultValues(questionId as string, answers[questionId as string]) as any,
+    defaultValues: setFormDefaultValues(questionId, answers?.[questionId]) as any,
   });
-
-  const currentForm = useMemo(() => {
-    const form = allForms?.forms.find((form) => form.id === formId);
-    return form;
-  }, [allForms]);
 
   const questions: Record<string, ApiFormQuestion> = useMemo(
     () => mapAPIQuestionsToFormQuestions(currentForm?.questions), // TODO @birloiflorian do it in query select
@@ -103,13 +94,13 @@ const FormQuestionnaire = () => {
   } = useMemo(
     () => ({
       index: Object.keys(questions).findIndex((key) => key === questionId) || 0,
-      question: questions[questionId as string],
+      question: questions[questionId],
     }),
     [questions],
   );
 
   const formTitle = useMemo(() => {
-    return `${currentForm?.code} - ${currentForm?.name[(language as string) || currentForm.defaultLanguage]} (${(language as string) || currentForm?.defaultLanguage})`;
+    return `${currentForm?.code} - ${currentForm?.name[language || currentForm.defaultLanguage]} (${language || currentForm?.defaultLanguage})`;
   }, [currentForm]);
 
   const { mutate: updateSubmission } = useFormSubmissionMutation({
@@ -172,15 +163,15 @@ const FormQuestionnaire = () => {
   };
 
   const onClearForm = () => {
-    const formState = setFormDefaultValues(questionId as string);
+    const formState = setFormDefaultValues(questionId);
     reset(formState);
   };
 
-  if (isLoadingForms || isLoadingAnswers) {
+  if (isLoadingCurrentForm || isLoadingAnswers) {
     return <Typography>Loading</Typography>;
   }
 
-  if (formsError || answersError) {
+  if (currentFormError || answersError) {
     return <Typography>Form Error</Typography>;
   }
   const { uploadCameraOrMedia } = useCamera();
@@ -210,7 +201,7 @@ const FormQuestionnaire = () => {
         {
           electionRoundId: activeElectionRound.id,
           pollingStationId: selectedPollingStation.pollingStationId,
-          formId: formId as string,
+          formId,
           questionId: activeQuestion.question.id,
           fileMetadata: cameraResult,
         },
@@ -247,7 +238,7 @@ const FormQuestionnaire = () => {
           {
             electionRoundId: activeElectionRound.id,
             pollingStationId: selectedPollingStation.pollingStationId,
-            formId: formId as string,
+            formId,
             questionId: activeQuestion.question.id,
             fileMetadata,
           },
@@ -307,9 +298,9 @@ const FormQuestionnaire = () => {
                   return (
                     <WizardFormInput
                       type="numeric"
-                      label={`${question.code}. ${question.text[language as string]}`}
-                      placeholder={question.inputPlaceholder[language as string]}
-                      paragraph={question.helptext[language as string]}
+                      label={`${question.code}. ${question.text[language]}`}
+                      placeholder={question.inputPlaceholder[language]}
+                      paragraph={question.helptext[language]}
                       onChangeText={onChange}
                       value={value}
                       // onAttachPress={() => setIsOptionsSheetOpen(true)}
@@ -319,9 +310,9 @@ const FormQuestionnaire = () => {
                   return (
                     <WizardFormInput
                       type="textarea"
-                      label={`${question.code}. ${question.text[language as string]}`}
-                      placeholder={question.inputPlaceholder[language as string]}
-                      paragraph={question.helptext[language as string]}
+                      label={`${question.code}. ${question.text[language]}`}
+                      placeholder={question.inputPlaceholder[language]}
+                      paragraph={question.helptext[language]}
                       onChangeText={onChange}
                       maxLength={1000}
                       helper="1000 characters"
@@ -331,9 +322,9 @@ const FormQuestionnaire = () => {
                 case "dateQuestion":
                   return (
                     <WizardDateFormInput
-                      label={`${question.code}. ${question.text[language as string]}`}
+                      label={`${question.code}. ${question.text[language]}`}
                       placeholder="Please enter a date"
-                      paragraph={question.helptext[language as string]}
+                      paragraph={question.helptext[language]}
                       onChange={onChange}
                       value={value}
                     />
@@ -342,12 +333,12 @@ const FormQuestionnaire = () => {
                   return (
                     <>
                       <WizardRadioFormInput
-                        label={`${question.code}. ${question.text[language as string]}`}
-                        paragraph={question.helptext[language as string]}
+                        label={`${question.code}. ${question.text[language]}`}
+                        paragraph={question.helptext[language]}
                         options={question.options.map((option) => ({
                           id: option.id,
                           value: option.id,
-                          label: option.text[language as string],
+                          label: option.text[language],
                         }))}
                         onValueChange={(radioValue) =>
                           onChange({ ...value, radioValue, textValue: null })
@@ -377,7 +368,7 @@ const FormQuestionnaire = () => {
                   return (
                     <WizardFormElement
                       key={question.id}
-                      label={`${question.code}. ${question.text[language as string]}`}
+                      label={`${question.code}. ${question.text[language]}`}
                     >
                       {question.options.map((option) => {
                         const selections: Record<string, { optionId: string; text: string }> =
@@ -387,7 +378,7 @@ const FormQuestionnaire = () => {
                             <CheckboxInput
                               marginBottom="$md"
                               id={option.id}
-                              label={option.text[language as string]}
+                              label={option.text[language]}
                               checked={selections[option.id]?.optionId === option.id}
                               onCheckedChange={(checked) => {
                                 if (checked) {
@@ -425,8 +416,8 @@ const FormQuestionnaire = () => {
                     <WizardRatingFormInput
                       type="single"
                       id={question.id}
-                      label={`${question.code}. ${question.text[language as string]}`}
-                      paragraph={question.helptext[language as string]}
+                      label={`${question.code}. ${question.text[language]}`}
+                      paragraph={question.helptext[language]}
                       scale={question.scale}
                       onValueChange={onChange}
                       value={value}
@@ -437,26 +428,23 @@ const FormQuestionnaire = () => {
           />
 
           {/* notes section */}
-          {notes &&
-            notes[questionId as string] &&
-            activeElectionRound?.id &&
-            selectedPollingStation?.pollingStationId && (
-              <QuestionNotes
-                notes={notes[questionId as string]}
-                electionRoundId={activeElectionRound.id}
-                pollingStationId={selectedPollingStation.pollingStationId}
-                formId={formId as string}
-                questionId={questionId as string}
-              />
-            )}
+          {notes && activeElectionRound?.id && selectedPollingStation?.pollingStationId && (
+            <QuestionNotes // TODO: @luciatugui add loading and error state for Notes and Attachments
+              notes={notes}
+              electionRoundId={activeElectionRound.id}
+              pollingStationId={selectedPollingStation.pollingStationId}
+              formId={formId}
+              questionId={questionId}
+            />
+          )}
 
           {/* attachments */}
           {activeElectionRound?.id && selectedPollingStation?.pollingStationId && formId && (
             <QuestionAttachments
               electionRoundId={activeElectionRound.id}
               pollingStationId={selectedPollingStation.pollingStationId}
-              formId={formId as string}
-              questionId={questionId as string}
+              formId={formId}
+              questionId={questionId}
             />
           )}
 
@@ -491,9 +479,9 @@ const FormQuestionnaire = () => {
           ) : addingNote ? (
             <AddNoteSheetContent
               setAddingNote={setAddingNote}
-              questionId={questionId as string}
+              questionId={questionId}
               pollingStationId={selectedPollingStation?.pollingStationId as string}
-              formId={formId as string}
+              formId={formId}
               electionRoundId={activeElectionRound?.id}
               setIsOptionsSheetOpen={setIsOptionsSheetOpen}
             />
