@@ -3,34 +3,31 @@ import { YStack } from "tamagui";
 import Card, { CardProps } from "./Card";
 import { Typography } from "./Typography";
 import CardFooter from "./CardFooter";
-
-export interface Report {
-  key: string;
-  title?: string;
-  description?: string;
-  attachments?: number;
-}
+import { QuickReportsAPIResponse } from "../services/definitions.api";
 
 export interface ReportCardProps extends CardProps {
-  // report: Report;
   key: string;
-  title?: string;
-  description?: string;
-  attachments?: number;
+  report: QuickReportsAPIResponse;
   onPress?: () => void;
 }
 
 const ReportCard = (props: ReportCardProps): JSX.Element => {
-  const { title, description, onPress } = props;
+  const { report, onPress } = props;
+
+  let attachmentText = `${report.attachments.length} attachment files`;
+
+  if (report.attachments.length === 0) {
+    attachmentText = "No attachments files";
+  }
 
   return (
     <Card onPress={onPress}>
       <YStack gap={16}>
         <Typography fontSize={16} color="$gray9" fontWeight="500">
-          {title}
+          {report.title}
         </Typography>
-        <Typography>{description}</Typography>
-        <CardFooter text={"Att"} />
+        <Typography>{report.description}</Typography>
+        <CardFooter text={attachmentText} />
       </YStack>
     </Card>
   );

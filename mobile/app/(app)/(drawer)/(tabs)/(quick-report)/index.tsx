@@ -14,12 +14,13 @@ import ReportCard from "../../../../../components/ReportCard";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const QuickReport = () => {
+  const insets = useSafeAreaInsets();
   const navigation = useNavigation();
   const [openContextualMenu, setOpenContextualMenu] = useState(false);
   const { activeElectionRound } = useUserData();
   const { data: quickReports } = useQuickReports(activeElectionRound?.id);
+
   console.log(quickReports);
-  const insets = useSafeAreaInsets();
 
   if (quickReports === undefined || (quickReports && quickReports.length === 0)) {
     return <NoQuickReportsExist />;
@@ -52,15 +53,13 @@ const QuickReport = () => {
 
       <YStack paddingHorizontal={16} gap={8} justifyContent="center" paddingVertical={32}>
         <Typography preset="body1" textAlign="left" color="$gray7" fontWeight="700">
-          {" "}
           My reported issues{" "}
         </Typography>
 
         {quickReports.map((report) => (
           <ReportCard
             key={report.id}
-            title={report.title}
-            description={report.description}
+            report={report}
             onPress={() => router.push(`/report-details/${report.id}?reportTitle=${report.title}`)}
           />
         ))}
