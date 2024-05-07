@@ -1,4 +1,11 @@
-import type { DateQuestion, NumberQuestion, RatingQuestion, SingleSelectQuestion, TextQuestion } from '@/common/types';
+import type {
+  BaseQuestion,
+  DateQuestion,
+  NumberQuestion,
+  RatingQuestion,
+  SingleSelectQuestion,
+  TextQuestion,
+} from '@/common/types';
 import type { Attachment, FormType, Note } from './form-submission';
 
 interface Responder {
@@ -18,12 +25,13 @@ export enum QuestionTypeAggregate {
   MultiSelectAnswerAggregate = 'multiSelectAnswerAggregate',
 }
 
-interface BaseQuestionAggregate {
+export interface BaseQuestionAggregate {
   questionId: string;
   displayOrder: number;
   answersAggregated: number;
   responders: string[];
   $questionType: QuestionTypeAggregate;
+  question: BaseQuestion;
 }
 
 export interface NumberQuestionAggregate extends BaseQuestionAggregate {
