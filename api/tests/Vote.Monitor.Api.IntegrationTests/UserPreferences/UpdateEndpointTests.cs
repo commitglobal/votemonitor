@@ -6,6 +6,8 @@ using UpdateRequest = Vote.Monitor.Api.Feature.UserPreferences.Update.Request;
 using UserPreferencesModel = Vote.Monitor.Api.Feature.UserPreferences.UserPreferencesModel;
 
 namespace Vote.Monitor.Api.IntegrationTests.UserPreferences;
+
+[Collection("IntegrationTests")]
 public class UpdateEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeeder>>
 {
     public HttpServerFixture<NoopDataSeeder> Fixture { get; }

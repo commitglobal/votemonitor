@@ -1,5 +1,7 @@
 ﻿namespace Vote.Monitor.Api.IntegrationTests.PollingStation;
 
+
+[Collection("IntegrationTests")]
 public class ListEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeeder>>
 {
     public HttpServerFixture<NoopDataSeeder> Fixture { get; }
