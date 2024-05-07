@@ -19,8 +19,8 @@ export const ngoQueryOptions = (ngoId: string) =>
   });
 
 export const Route = createFileRoute('/ngos/$ngoId')({
-  beforeLoad: ({ context }) => {
-    redirectIfNotAuth(context.authContext.isAuthenticated);
+  beforeLoad: () => {
+    redirectIfNotAuth();
   },
   component: NgoDetails,
   loader: ({ context: { queryClient }, params: { ngoId } }) => queryClient.ensureQueryData(ngoQueryOptions(ngoId)),

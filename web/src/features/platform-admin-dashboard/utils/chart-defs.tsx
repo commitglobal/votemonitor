@@ -1,6 +1,5 @@
 
-import { ChartData, ChartOptions, ScriptableContext } from 'chart.js';
-import { Context } from 'vitest';
+import type { ChartData, ScriptableContext } from 'chart.js';
 
 export const observersAccountsDataConfig: ChartData<"doughnut"> = {
   labels: ['Active', 'Pending', 'Suspended'],
@@ -60,7 +59,7 @@ export const timeSpentObservingDataConfig: ChartData<"doughnut"> = {
 
 
 // NOTE!! server returns dates in UTC extract local hour part
-export const startedFormsDataConfig: ChartData<"line"> = {
+export const startedFormsDataConfig: ChartData<"line", number[]> = {
   labels: ['8:00', '9:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00'],
   datasets: [
     {
@@ -82,7 +81,7 @@ export const startedFormsDataConfig: ChartData<"line"> = {
 };
 
 // NOTE!! server returns dates in UTC extract local hour part
-export const questionsAnsweredDataConfig: ChartData<"line"> = {
+export const questionsAnsweredDataConfig: ChartData<"line", number[]> = {
   labels: ['8:00', '9:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00'],
   datasets: [
     {
@@ -103,7 +102,7 @@ export const questionsAnsweredDataConfig: ChartData<"line"> = {
   ]
 };
 // NOTE!! server returns dates in UTC extract local hour part
-export const flaggedAnswersDataConfig: ChartData<"line"> = {
+export const flaggedAnswersDataConfig: ChartData<"line", number[]> = {
   labels: ['8:00', '9:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00'],
   datasets: [
     {
@@ -125,7 +124,7 @@ export const flaggedAnswersDataConfig: ChartData<"line"> = {
 };
 
 // NOTE!! server returns dates in UTC extract local hour part
-export const quickReportsDataConfig: ChartData<"line"> = {
+export const quickReportsDataConfig: ChartData<"line", number[]> = {
   labels: ['8:00', '9:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00'],
   datasets: [
     {

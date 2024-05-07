@@ -1,3 +1,13 @@
+import type {
+  BaseQuestion,
+  DateAnswer,
+  MultiSelectAnswer,
+  NumberAnswer,
+  RatingAnswer,
+  SingleSelectAnswer,
+  TextAnswer,
+} from '@/common/types';
+
 export enum FormType {
   ClosingAndCounting = 'ClosingAndCounting',
   Opening = 'Opening',
@@ -56,4 +66,35 @@ export interface FormSubmissionByForm {
   numberOfFlaggedAnswers: number;
   numberOfNotes: number;
   numberOfMediaFiles: number;
+}
+
+interface BaseQuestionExtraData {
+  monitoringObserverId: string;
+  questionId: string;
+  timeSubmitted: string;
+}
+
+export interface Note extends BaseQuestionExtraData {
+  text: string;
+}
+
+export interface Attachment extends BaseQuestionExtraData {
+  fileName: string;
+  filePath: string;
+  mimeType: string;
+  presignedUrl: string;
+  uploadedFileName: string;
+  urlValidityInSeconds: string;
+}
+
+export interface FormSubmission
+  extends Omit<
+    FormSubmissionByEntry,
+    'numberOfFlaggedAnswers' | 'numberOfQuestionAnswered' | 'mediaFilesCount' | 'notesCount'
+  > {
+  answers: (NumberAnswer | TextAnswer | DateAnswer | RatingAnswer | SingleSelectAnswer | MultiSelectAnswer)[];
+  attachments: Attachment[];
+  needsFollowup?: boolean;
+  notes: Note[];
+  questions: BaseQuestion[];
 }

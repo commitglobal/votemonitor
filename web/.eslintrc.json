@@ -56,7 +56,12 @@
 		"@typescript-eslint/no-confusing-void-expression": "error",
 		"@typescript-eslint/no-import-type-side-effects": "error",
 		"@typescript-eslint/no-require-imports": "error",
-		"@typescript-eslint/no-unused-vars": "error",
+		"@typescript-eslint/no-unused-vars": [
+			"error",
+			{
+				"argsIgnorePattern": "^_"
+			}
+		],
 		"@typescript-eslint/no-useless-empty-export": "error",
 		"@typescript-eslint/prefer-enum-initializers": "error",
 		"@typescript-eslint/prefer-readonly": "error",
@@ -78,7 +83,8 @@
 				"cases": {
 					"kebabCase": true,
 					"pascalCase": true
-				}
+				},
+        "ignore": ["^\\$"]
 			}
 		],
 		"unicorn/prevent-abbreviations": "off"

@@ -143,7 +143,7 @@ export type RatingAnswer = z.infer<typeof RatingAnswerSchema>;
 
 export const SelectedOptionSchema = z.object({
   optionId: z.string().optional(),
-  text: z.string().optional(),
+  text: z.string().optional().nullable(),
 });
 export type SelectedOption = z.infer<typeof SelectedOptionSchema>;
 
