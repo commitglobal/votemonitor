@@ -1,6 +1,10 @@
+import { ChevronRightIcon } from '@heroicons/react/24/outline';
+import { Link } from '@tanstack/react-router';
 import type { ColumnDef } from '@tanstack/react-table';
 import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
+import { MediaFilesCell } from '../components/MediaFilesCell/MediaFilesCell';
 import type { FormSubmissionByEntry, FormSubmissionByForm, FormSubmissionByObserver } from '../models/form-submission';
+import type { QuestionExtraData } from '../types';
 
 export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry>[] = [
   {
@@ -38,57 +42,35 @@ export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry>[
     accessorKey: 'level1',
     enableSorting: true,
     enableGlobalFilter: true,
-    cell: ({ row }) => (
-      <div>
-        {row.original.level1 ?? '-'}
-      </div>
-    ),
+    cell: ({ row }) => <div>{row.original.level1 ?? '-'}</div>,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Location - L2' column={column} />,
     accessorKey: 'level2',
     enableSorting: true,
     enableGlobalFilter: true,
-    cell: ({ row }) => (
-      <div>
-        {row.original.level2 ?? '-'}
-
-      </div>
-    ),
+    cell: ({ row }) => <div>{row.original.level2 ?? '-'}</div>,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Location - L3' column={column} />,
     accessorKey: 'level3',
     enableSorting: true,
     enableGlobalFilter: true,
-    cell: ({ row }) => (
-      <div>
-        {row.original.level3 ?? '-'}
-
-      </div>
-    ),
+    cell: ({ row }) => <div>{row.original.level3 ?? '-'}</div>,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Location - L4' column={column} />,
     accessorKey: 'level4',
     enableSorting: true,
     enableGlobalFilter: true,
-    cell: ({ row }) => (
-      <div>
-        {row.original.level4 ?? '-'}
-      </div>
-    ),
+    cell: ({ row }) => <div>{row.original.level4 ?? '-'}</div>,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Location - L5' column={column} />,
     accessorKey: 'level5',
     enableSorting: true,
     enableGlobalFilter: true,
-    cell: ({ row }) => (
-      <div>
-        {row.original.level5 ?? '-'}
-      </div>
-    ),
+    cell: ({ row }) => <div>{row.original.level5 ?? '-'}</div>,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Observer' column={column} />,
@@ -137,6 +119,19 @@ export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry>[
     enableSorting: true,
     enableGlobalFilter: true,
     cell: ({ row }) => row.original?.status ?? 'N/A',
+  },
+  {
+    header: '',
+    accessorKey: 'action',
+    enableSorting: false,
+    cell: ({ row }) => (
+      <Link
+        className='hover:bg-purple-100 inline-flex h-6 w-6 rounded-full items-center justify-center'
+        params={{ submissionId: row.original.submissionId }}
+        to='/responses/$submissionId'>
+        <ChevronRightIcon className='w-4 text-purple-600' />
+      </Link>
+    ),
   },
 ];
 
@@ -189,6 +184,19 @@ export const formSubmissionsByObserverColumnDefs: ColumnDef<FormSubmissionByObse
     enableGlobalFilter: true,
     cell: ({ row }) => row.original?.status ?? 'N/A',
   },
+  {
+    header: '',
+    accessorKey: 'action',
+    enableSorting: false,
+    cell: ({ row }) => (
+      <Link
+        className='hover:bg-purple-100 inline-flex h-6 w-6 rounded-full items-center justify-center'
+        params={{ monitoringObserverId: row.original.monitoringObserverId }}
+        to='/monitoring-observers/$monitoringObserverId'>
+        <ChevronRightIcon className='w-4 text-purple-600' />
+      </Link>
+    ),
+  },
 ];
 
 export const formSubmissionsByFormColumnDefs: ColumnDef<FormSubmissionByForm>[] = [
@@ -227,5 +235,42 @@ export const formSubmissionsByFormColumnDefs: ColumnDef<FormSubmissionByForm>[] 
     accessorKey: 'numberOfMediaFiles',
     enableSorting: true,
     enableGlobalFilter: true,
+  },
+  {
+    header: '',
+    accessorKey: 'action',
+    enableSorting: false,
+    cell: ({ row }) => (
+      <Link
+        className='hover:bg-purple-100 inline-flex h-6 w-6 rounded-full items-center justify-center'
+        params={{ formId: row.original.formId }}
+        to='/responses/$formId/aggregated'>
+        <ChevronRightIcon className='w-4 text-purple-600' />
+      </Link>
+    ),
+  },
+];
+
+export const questionExtraInfoColumnDefs: ColumnDef<QuestionExtraData>[] = [
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Time submitted' column={column} />,
+    accessorKey: 'timeSubmitted',
+    enableSorting: true,
+    enableGlobalFilter: true,
+  },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Note' column={column} />,
+    accessorKey: 'text',
+    enableSorting: true,
+    enableGlobalFilter: true,
+    minSize: 260,
+  },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Media files' column={column} />,
+    accessorKey: 'attachments',
+    enableSorting: false,
+    enableGlobalFilter: false,
+    cell: MediaFilesCell,
+    size: 200,
   },
 ];

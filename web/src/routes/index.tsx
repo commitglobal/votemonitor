@@ -13,8 +13,8 @@ const Index = (): FunctionComponent => {
 };
 
 export const Route = createFileRoute('/')({
-  beforeLoad: ({ context }) => {
-    redirectIfNotAuth(context.authContext.isAuthenticated);
+  beforeLoad: () => {
+    redirectIfNotAuth();
   },
   component: Index,
 });

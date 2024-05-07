@@ -1,4 +1,5 @@
 import { ChevronDownIcon, Cog8ToothIcon, FunnelIcon } from '@heroicons/react/24/outline';
+import { getRouteApi } from '@tanstack/react-router';
 import { useDebounce } from '@uidotdev/usehooks';
 import { type ChangeEvent, useState, type ReactElement } from 'react';
 import { CsvFileIcon } from '@/components/icons/CsvFileIcon';
@@ -20,34 +21,34 @@ import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataT
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import {
-  useFormSubmissionsByEntry,
-  useFormSubmissionsByForm,
-  useFormSubmissionsByObserver,
-} from '../../hooks/form-submissions-queries';
-import {
-  formSubmissionsByEntryColumnDefs,
-  formSubmissionsByFormColumnDefs,
-  formSubmissionsByObserverColumnDefs,
-} from '../../utils/column-defs';
+import { useFormSubmissionsByForm } from '../../hooks/form-submissions-queries';
+import { formSubmissionsByFormColumnDefs } from '../../utils/column-defs';
 import {
   columnVisibilityOptions,
   formSubmissionsDefaultColumns,
   type FilterBy,
 } from '../../utils/column-visibility-options';
+import { FormsTableByEntry } from '../FormsTableByEntry/FormsTableByEntry';
+import { FormsFiltersByEntry } from '../FormsFiltersByEntry/FormsFiltersByEntry';
+import { FormsFiltersByObserver } from '../FormsFiltersByObserver/FormsFiltersByObserver';
+import { FormsTableByObserver } from '../FormsTableByObserver/FormsTableByObserver';
+
+const routeApi = getRouteApi('/responses/');
 
 const viewBy: Record<FilterBy, string> = {
   byEntry: 'View by entry',
   byObserver: 'View by observer',
-  byForm: 'View by form',
+  byForm: 'View by responses',
 };
 
 export default function ResponsesDashboard(): ReactElement {
   const [byFilter, setByFilter] = useState<FilterBy>('byEntry');
 
-  const [submissionsByEntryColumnVisibility, setSubmissionsByEntryColumnVisibility] = useState(
-    formSubmissionsDefaultColumns.byEntry
-  );
+  const navigate = routeApi.useNavigate();
+  const search = routeApi.useSearch();
+  const [isFiltering, setIsFiltering] = useState(() => Object.entries(search).length > 0);
+
+  const [columnsVisibility, setColumnsVisibility] = useState(formSubmissionsDefaultColumns.byEntry);
 
   const [searchText, setSearchText] = useState<string>('');
   const debouncedSearchText = useDebounce(searchText, 300);
@@ -91,11 +92,13 @@ export default function ResponsesDashboard(): ReactElement {
                       <DropdownMenuRadioGroup
                         onValueChange={(value) => {
                           setByFilter(value as FilterBy);
-                          setSubmissionsByEntryColumnVisibility(formSubmissionsDefaultColumns[value as FilterBy]);
+                          setColumnsVisibility(formSubmissionsDefaultColumns[value as FilterBy]);
+                          void navigate({});
+                          setIsFiltering(false);
                         }}
                         value={byFilter}>
                         {Object.entries(viewBy).map(([value, label]) => (
-                          <DropdownMenuRadioItem value={value}>{label}</DropdownMenuRadioItem>
+                          <DropdownMenuRadioItem key={value} value={value}>{label}</DropdownMenuRadioItem>
                         ))}
                       </DropdownMenuRadioGroup>
                     </DropdownMenuContent>
@@ -108,8 +111,14 @@ export default function ResponsesDashboard(): ReactElement {
               <div className='px-6 flex justify-end gap-4'>
                 {byFilter !== 'byForm' && (
                   <>
-                    <Input className='w-[400px]' onChange={handleSearchInput} placeholder='Search' />
-                    <FunnelIcon className='w-[20px] text-purple-900 cursor-pointer' />
+                    <Input className='max-w-md' onChange={handleSearchInput} placeholder='Search' />
+                    <FunnelIcon
+                      className='w-[20px] text-purple-900 cursor-pointer'
+                      fill={isFiltering ? '#5F288D' : 'rgba(0,0,0,0)'}
+                      onClick={() => {
+                        setIsFiltering((prev) => !prev);
+                      }}
+                    />
                   </>
                 )}
 
@@ -123,10 +132,10 @@ export default function ResponsesDashboard(): ReactElement {
                     {columnVisibilityOptions[byFilter].map((option) => (
                       <DropdownMenuCheckboxItem
                         key={option.id}
-                        checked={submissionsByEntryColumnVisibility[option.id]}
+                        checked={columnsVisibility[option.id]}
                         disabled={!option.enableHiding}
                         onCheckedChange={(checked) => {
-                          setSubmissionsByEntryColumnVisibility((prev) => ({ ...prev, [option.id]: checked }));
+                          setColumnsVisibility((prev) => ({ ...prev, [option.id]: checked }));
                         }}>
                         {option.label}
                       </DropdownMenuCheckboxItem>
@@ -134,30 +143,30 @@ export default function ResponsesDashboard(): ReactElement {
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
+
+              <Separator />
+
+              {isFiltering && (
+                <div className='grid grid-cols-6 gap-4 items-center'>
+                  {byFilter === 'byEntry' && <FormsFiltersByEntry />}
+
+                  {byFilter === 'byObserver' && <FormsFiltersByObserver />}
+                </div>
+              )}
             </CardHeader>
 
+            {byFilter === 'byEntry' && (
+              <FormsTableByEntry columnsVisibility={columnsVisibility} searchText={debouncedSearchText} />
+            )}
+
+            {byFilter === 'byObserver' && (
+              <FormsTableByObserver columnsVisibility={columnsVisibility} searchText={debouncedSearchText} />
+            )}
+
             <CardContent>
-              {byFilter === 'byEntry' && (
-                <QueryParamsDataTable
-                  columnVisibility={submissionsByEntryColumnVisibility}
-                  columns={formSubmissionsByEntryColumnDefs}
-                  useQuery={useFormSubmissionsByEntry}
-                  queryParams={{ formCodeFilter: debouncedSearchText }}
-                />
-              )}
-
-              {byFilter === 'byObserver' && (
-                <QueryParamsDataTable
-                  columnVisibility={submissionsByEntryColumnVisibility}
-                  columns={formSubmissionsByObserverColumnDefs}
-                  useQuery={useFormSubmissionsByObserver}
-                  queryParams={{ observerNameFilter: debouncedSearchText }}
-                />
-              )}
-
               {byFilter === 'byForm' && (
                 <QueryParamsDataTable
-                  columnVisibility={submissionsByEntryColumnVisibility}
+                  columnVisibility={columnsVisibility}
                   columns={formSubmissionsByFormColumnDefs}
                   useQuery={useFormSubmissionsByForm}
                 />

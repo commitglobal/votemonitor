@@ -25,8 +25,8 @@ export const monitoringObserverQueryOptions = (monitoringObserverId: string) =>
   });
 
 export const Route = createFileRoute('/monitoring-observers/$monitoringObserverId')({
-  beforeLoad: ({ context }) => {
-    redirectIfNotAuth(context.authContext.isAuthenticated);
+  beforeLoad: () => {
+    redirectIfNotAuth();
   },
   component: Details,
   loader: ({ context: { queryClient }, params: { monitoringObserverId } }) =>

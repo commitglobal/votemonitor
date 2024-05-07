@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowDownTrayIcon } from '@heroicons/react/24/solid';
 import { ArcElement, Chart as ChartJS, Legend, Tooltip } from 'chart.js';
-import { ReactElement, useRef } from 'react';
+import { type ReactElement, useRef } from 'react';
 
 import {
   observersAccountsDataConfig,
@@ -19,7 +19,7 @@ import {
   flaggedAnswersDataConfig,
   quickReportsDataConfig,
 } from '../../utils/chart-defs';
-
+import { saveChart } from '@/components/charts/utils/save-chart';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -33,31 +33,6 @@ export default function PlatformAdminDashboard(): ReactElement {
   const flaggedAnswersChartRef = useRef(null);
   const quickReportsChartRef = useRef(null);
 
-  function saveChart(chartRef: any, chartName: string): void {
-    const base64Image = chartRef.current.toBase64Image().replace('data:image/png;base64,', '');
-
-    const binaryString = atob(base64Image);
-    const arrayBuffer = new ArrayBuffer(binaryString.length);
-    const uintArray = new Uint8Array(arrayBuffer);
-
-    for (let i = 0; i < binaryString.length; i++) {
-      uintArray[i] = binaryString.charCodeAt(i);
-    }
-
-    const blob = new Blob([uintArray], { type: 'image/png' });
-    const url = window.URL.createObjectURL(blob);
-
-    const a = document.createElement('a');
-    a.style.display = 'none';
-    a.href = url;
-    a.download = chartName;
-
-    document.body.appendChild(a);
-    a.click();
-
-    window.URL.revokeObjectURL(url);
-  }
-
   return (
     <Layout title='Dashboard' subtitle='Key indicators.'>
       <div className="flex-col md:flex">
@@ -68,7 +43,7 @@ export default function PlatformAdminDashboard(): ReactElement {
                 <CardTitle className="text-sm font-medium">
                   Observers accounts
                 </CardTitle>
-                <Button type='button' variant='ghost' onClick={() => saveChart(observersAccountsChartRef, 'observers-accounts.png')}>
+                <Button type='button' variant='ghost' onClick={() => {saveChart(observersAccountsChartRef, 'observers-accounts.png')}}>
                   <ArrowDownTrayIcon className='w-6 h-6 fill-gray-400' />
                 </Button>
               </CardHeader>
@@ -81,7 +56,7 @@ export default function PlatformAdminDashboard(): ReactElement {
                 <CardTitle className="text-sm font-medium">
                   Observers on field
                 </CardTitle>
-                <Button type='button' variant='ghost' onClick={() => saveChart(observersOnFieldChartRef, 'observers-on-field.png')}>
+                <Button type='button' variant='ghost' onClick={() => {saveChart(observersOnFieldChartRef, 'observers-on-field.png')}}>
                   <ArrowDownTrayIcon className='w-6 h-6 fill-gray-400' />
                 </Button>
               </CardHeader>
@@ -98,7 +73,7 @@ export default function PlatformAdminDashboard(): ReactElement {
                 <CardTitle className="text-sm font-medium">
                   Polling stations
                 </CardTitle>
-                <Button type='button' variant='ghost' onClick={() => saveChart(pollingStationsChartRef, 'polling-stations-covered.png')}>
+                <Button type='button' variant='ghost' onClick={() => {saveChart(pollingStationsChartRef, 'polling-stations-covered.png')}}>
                   <ArrowDownTrayIcon className='w-6 h-6 fill-gray-400' />
                 </Button>
               </CardHeader>
@@ -115,7 +90,7 @@ export default function PlatformAdminDashboard(): ReactElement {
                 <CardTitle className="text-sm font-medium">
                   Time spent observing
                 </CardTitle>
-                <Button type='button' variant='ghost' onClick={() => saveChart(timeSpentObservingChartRef, 'time-spent-observing.png')}>
+                <Button type='button' variant='ghost' onClick={() => {saveChart(timeSpentObservingChartRef, 'time-spent-observing.png')}}>
                   <ArrowDownTrayIcon className='w-6 h-6 fill-gray-400' />
                 </Button>
               </CardHeader>
@@ -135,12 +110,12 @@ export default function PlatformAdminDashboard(): ReactElement {
                 <CardTitle className="text-sm font-medium">
                   Started forms
                 </CardTitle>
-                <Button type='button' variant='ghost' onClick={() => saveChart(startedFormsChartRef, 'started-forms.png')}>
+                <Button type='button' variant='ghost' onClick={() => {saveChart(startedFormsChartRef, 'started-forms.png')}}>
                   <ArrowDownTrayIcon className='w-6 h-6 fill-gray-400' />
                 </Button>
               </CardHeader>
               <CardContent>
-                <LineChart title='forms started between 08:00 - 20:00' data={startedFormsDataConfig} ref={startedFormsChartRef} />
+                <LineChart title='forms started between 08:00 - 20:00' data={startedFormsDataConfig} ref={startedFormsChartRef} showTotal/>
               </CardContent>
             </Card>
             <Card>
@@ -148,7 +123,7 @@ export default function PlatformAdminDashboard(): ReactElement {
                 <CardTitle className="text-sm font-medium">
                   Questions answered
                 </CardTitle>
-                <Button type='button' variant='ghost' onClick={() => saveChart(questionsAnsweredChartRef, 'questions-answered.png')}>
+                <Button type='button' variant='ghost' onClick={() => {saveChart(questionsAnsweredChartRef, 'questions-answered.png')}}>
                   <ArrowDownTrayIcon className='w-6 h-6 fill-gray-400' />
                 </Button>
               </CardHeader>
@@ -156,7 +131,8 @@ export default function PlatformAdminDashboard(): ReactElement {
                 <LineChart
                   title='questions answered between 08:00 - 20:00'
                   data={questionsAnsweredDataConfig}
-                  ref={questionsAnsweredChartRef} />
+                  ref={questionsAnsweredChartRef} 
+                  showTotal />
               </CardContent>
             </Card>
             <Card>
@@ -164,7 +140,7 @@ export default function PlatformAdminDashboard(): ReactElement {
                 <CardTitle className="text-sm font-medium">
                   Flagged answers
                 </CardTitle>
-                <Button type='button' variant='ghost' onClick={() => saveChart(flaggedAnswersChartRef, 'flagged-answers.png')}>
+                <Button type='button' variant='ghost' onClick={() => {saveChart(flaggedAnswersChartRef, 'flagged-answers.png')}}>
                   <ArrowDownTrayIcon className='w-6 h-6 fill-gray-400' />
                 </Button>
               </CardHeader>
@@ -172,7 +148,8 @@ export default function PlatformAdminDashboard(): ReactElement {
                 <LineChart
                   title='answers were flagged through forms'
                   data={flaggedAnswersDataConfig}
-                  ref={flaggedAnswersChartRef} />
+                  ref={flaggedAnswersChartRef}
+                  showTotal />
               </CardContent>
             </Card>
             <Card>
@@ -180,7 +157,7 @@ export default function PlatformAdminDashboard(): ReactElement {
                 <CardTitle className="text-sm font-medium">
                   Quick reports
                 </CardTitle>
-                <Button type='button' variant='ghost' onClick={() => saveChart(quickReportsChartRef, 'quick-reports.png')}>
+                <Button type='button' variant='ghost' onClick={() => {saveChart(quickReportsChartRef, 'quick-reports.png')}}>
                   <ArrowDownTrayIcon className='w-6 h-6 fill-gray-400' />
                 </Button>
               </CardHeader>
@@ -188,7 +165,8 @@ export default function PlatformAdminDashboard(): ReactElement {
                 <LineChart
                   title='quick reports were signalled '
                   data={quickReportsDataConfig}
-                  ref={quickReportsChartRef} />
+                  ref={quickReportsChartRef} 
+                  showTotal />
               </CardContent>
             </Card>
           </div>
