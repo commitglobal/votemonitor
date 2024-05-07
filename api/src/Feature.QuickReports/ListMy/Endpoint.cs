@@ -1,4 +1,5 @@
-﻿using Authorization.Policies.Requirements;
+﻿using Authorization.Policies;
+using Authorization.Policies.Requirements;
 using Feature.QuickReports.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
@@ -24,6 +25,8 @@ public class Endpoint(
             s.Summary = "Gets all quick-reports an observer has uploaded for an election round";
             s.Description = "All attachments will have freshly generated presigned urls";
         });
+
+        Policies(PolicyNames.ObserversOnly);
     }
 
     public override async Task<Results<Ok<List<QuickReportModel>>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
