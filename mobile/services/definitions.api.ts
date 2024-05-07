@@ -413,5 +413,5 @@ export type QuickReportsAPIResponse = {
 export const getQuickReports = (
   electionRoundId: string,
 ): Promise<Array<QuickReportsAPIResponse>> => {
-  return API.get(`election-rounds/${electionRoundId}/quick-reports`).then((res) => res.data);
+  return API.get(`election-rounds/${electionRoundId}/quick-reports:my`).then((res) => res.data);
 };
