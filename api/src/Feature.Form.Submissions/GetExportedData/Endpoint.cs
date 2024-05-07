@@ -1,12 +1,12 @@
-﻿using Authorization.Policies;
+﻿using System.Data;
+using Authorization.Policies;
 using Authorization.Policies.Requirements;
 using Dapper;
 using Microsoft.AspNetCore.Authorization;
-using Vote.Monitor.Domain;
 
 namespace Feature.Form.Submissions.GetExportedData;
 
-public class Endpoint(IAuthorizationService authorizationService, VoteMonitorContext context) : Endpoint<Request>
+public class Endpoint(IAuthorizationService authorizationService, IDbConnection dbConnection) : Endpoint<Request>
 {
     public override void Configure()
     {
@@ -41,7 +41,7 @@ public class Endpoint(IAuthorizationService authorizationService, VoteMonitorCon
             exportedDataId = req.ExportedDataId
         };
 
-        var exportedData = await context.Connection.QueryFirstOrDefaultAsync<ExportedDataView>(sql, queryParams);
+        var exportedData = await dbConnection.QueryFirstOrDefaultAsync<ExportedDataView>(sql, queryParams);
 
         if (string.IsNullOrWhiteSpace(exportedData.Base64EncodedData))
         {

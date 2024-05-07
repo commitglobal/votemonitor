@@ -21,27 +21,27 @@ public class Endpoint(
         Options(x => x.WithTags("quick-reports", "mobile"));
         Summary(s =>
         {
-            s.Summary = "Gets a quick report";
+            s.Summary = "Gets details regarding a quick report";
             s.Description = "Gets a quick report with it's attachments and refreshed presigned urls";
         });
     }
 
     public override async Task<Results<Ok<QuickReportModel>, BadRequest<ProblemDetails>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var authorizationResult = await authorizationService.AuthorizeAsync(User, new MonitoringObserverRequirement(req.ElectionRoundId));
+        var authorizationResult = await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminOrObserverRequirement(req.ElectionRoundId));
         if (!authorizationResult.Succeeded)
         {
             return TypedResults.NotFound();
         }
 
-        var quickReport = await quickReportRepository.FirstOrDefaultAsync(new GetQuickReportByIdSpecification(req.ElectionRoundId, req.ObserverId, req.Id), ct);
+        var quickReport = await quickReportRepository.FirstOrDefaultAsync(new GetQuickReportByIdSpecification(req.ElectionRoundId, req.Id), ct);
 
         if (quickReport is null)
         {
             return TypedResults.NotFound();
         }
 
-        var quickReportAttachments = await quickReportAttachmentRepository.ListAsync(new ListQuickReportAttachmentsForUserSpecification(req.ElectionRoundId, req.ObserverId, quickReport.Id), ct);
+        var quickReportAttachments = await quickReportAttachmentRepository.ListAsync(new ListQuickReportAttachmentsSpecification(req.ElectionRoundId, quickReport.Id), ct);
 
         var tasks = quickReportAttachments
             .Select(async attachment =>
@@ -58,6 +58,7 @@ public class Endpoint(
                     MimeType = attachment.MimeType,
                     UrlValidityInSeconds = (presignedUrl as GetPresignedUrlResult.Ok)?.UrlValidityInSeconds ?? 0,
                     Id = attachment.Id,
+                    QuickReportId = attachment.QuickReportId
                 };
             });
 

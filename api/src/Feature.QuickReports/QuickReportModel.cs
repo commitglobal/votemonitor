@@ -19,7 +19,7 @@ public record QuickReportModel
 
     public static QuickReportModel FromEntity(QuickReport quickReport, IEnumerable<QuickReportAttachmentModel> attachments)
     {
-        return new QuickReportModel()
+        return new QuickReportModel
         {
             Id = quickReport.Id,
             ElectionRoundId = quickReport.ElectionRoundId,

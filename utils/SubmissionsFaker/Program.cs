@@ -29,10 +29,10 @@ AnsiConsole.Write(
 #region constants
 const int NUMBER_OF_OBSERVERS = 100;
 const int NUMBER_OF_SUBMISSIONS = 100;
+
 const string platformAdminUsername = "john.doe@example.com";
 const string platformAdminPassword = "password123";
 #endregion
-
 
 #region setup clients
 var client = new HttpClient
@@ -52,7 +52,7 @@ var platformAdminToken = await tokenApi.GetToken(new Credentials(platformAdminUs
 #endregion
 
 CreateResponse electionRound = default!;
-CreateResponse ngo = new CreateResponse() { Id = Guid.Parse("85fc1300-7046-43bb-9814-7a4fd67bec96 ") };
+CreateResponse ngo = default!;
 CreateResponse monitoringNgo = default!;
 LoginResponse ngoAdminToken = default!;
 List<LocationNode> pollingStations = [];
@@ -68,7 +68,7 @@ await AnsiConsole.Progress()
     .Columns(progressColumns)
     .StartAsync(async ctx =>
     {
-        var setupTask = ctx.AddTask("[green]Setup election round and NGO [/]", maxValue: 7);
+        var setupTask = ctx.AddTask("[green] Setup election round and NGO [/]", maxValue: 7);
 
         electionRound = await platformAdminApi.CreateElectionRound(new ElectionRoundFaker().Generate(), platformAdminToken.Token);
         setupTask.Increment(1);
@@ -114,8 +114,6 @@ await AnsiConsole.Progress()
         formIds = ids[0];
     });
 
-
-
 await AnsiConsole.Progress()
     .AutoRefresh(true)
     .AutoClear(false)
@@ -142,7 +140,6 @@ await AnsiConsole.Progress()
         #endregion
     });
 
-
 await AnsiConsole.Progress()
     .AutoRefresh(true)
     .AutoClear(false)
@@ -157,6 +154,7 @@ await AnsiConsole.Progress()
         foreach (var submissionsChunk in submissionRequests.Chunk(2))
         {
             var observer = faker.PickRandom(observersTokens)!;
+
             var tasks = submissionsChunk.Select(submissionRequest => observerApi.SubmitForm(electionRound.Id, submissionRequest, observer.Token)).ToList();
             await Task.WhenAll(tasks);
             progressTask.Increment(2);

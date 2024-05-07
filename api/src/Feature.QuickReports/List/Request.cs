@@ -1,11 +1,12 @@
-﻿using Vote.Monitor.Core.Security;
+﻿using Vote.Monitor.Core.Models;
+using Vote.Monitor.Core.Security;
 
 namespace Feature.QuickReports.List;
 
-public class Request
+public class Request : BaseSortPaginatedRequest
 {
     public Guid ElectionRoundId { get; set; }
 
-    [FromClaim(ApplicationClaimTypes.UserId)]
-    public Guid ObserverId { get; set; }
+    [FromClaim(ApplicationClaimTypes.NgoId)]
+    public Guid NgoId { get; set; }
 }

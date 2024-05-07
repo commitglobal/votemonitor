@@ -100,7 +100,7 @@ public class CreateValidatorTests
     public void Validation_ShouldFail_When_FormTypeEmpty()
     {
         // Arrange
-        var request = new Create.Request(){};
+        var request = new Create.Request {};
 
         // Act
         var validationResult = _validator.TestValidate(request);

@@ -10,6 +10,8 @@ using DeleteRequest = Vote.Monitor.Api.Feature.PollingStation.Delete.Request;
 
 namespace Vote.Monitor.Api.IntegrationTests.PollingStation;
 
+
+[Collection("IntegrationTests")]
 public class DeleteEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeeder>>
 {
     public HttpServerFixture<NoopDataSeeder> Fixture { get; }

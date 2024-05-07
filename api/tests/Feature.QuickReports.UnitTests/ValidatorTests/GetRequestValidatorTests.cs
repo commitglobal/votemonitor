@@ -1,63 +1,49 @@
-﻿//namespace Feature.QuickReports.UnitTests.ValidatorTests;
+﻿namespace Feature.QuickReports.UnitTests.ValidatorTests;
 
-//public class GetRequestValidatorTests
-//{
-//    private readonly Get.Validator _validator = new();
+public class GetRequestValidatorTests
+{
+    private readonly Get.Validator _validator = new();
 
-//    [Fact]
-//    public void Validation_ShouldFail_When_ElectionRoundId_Empty()
-//    {
-//        // Arrange
-//        var request = new Get.Request { ElectionRoundId = Guid.Empty };
+    [Fact]
+    public void Validation_ShouldFail_When_Id_Empty()
+    {
+        // Arrange
+        var request = new Get.Request { Id = Guid.Empty };
 
-//        // Act
-//        var result = _validator.TestValidate(request);
+        // Act
+        var result = _validator.TestValidate(request);
 
-//        // Assert
-//        result.ShouldHaveValidationErrorFor(x => x.ElectionRoundId);
-//    }
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.Id);
+    }
 
-//    [Fact]
-//    public void Validation_ShouldFail_When_MonitoringNgoId_Empty()
-//    {
-//        // Arrange
-//        var request = new Get.Request { MonitoringNgoId = Guid.Empty };
+    [Fact]
+    public void Validation_ShouldFail_When_ElectionRoundId_Empty()
+    {
+        // Arrange
+        var request = new Get.Request { ElectionRoundId = Guid.Empty };
 
-//        // Act
-//        var result = _validator.TestValidate(request);
+        // Act
+        var result = _validator.TestValidate(request);
 
-//        // Assert
-//        result.ShouldHaveValidationErrorFor(x => x.MonitoringNgoId);
-//    }
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.ElectionRoundId);
+    }
 
-//    [Fact]
-//    public void Validation_ShouldFail_When_Id_Empty()
-//    {
-//        // Arrange
-//        var request = new Get.Request { Id = Guid.Empty };
+    [Fact]
+    public void Validation_ShouldPass_When_ValidRequest()
+    {
+        // Arrange
+        var request = new Get.Request
+        {
+            ElectionRoundId = Guid.NewGuid(),
+            Id = Guid.NewGuid()
+        };
 
-//        // Act
-//        var result = _validator.TestValidate(request);
+        // Act
+        var result = _validator.TestValidate(request);
 
-//        // Assert
-//        result.ShouldHaveValidationErrorFor(x => x.Id);
-//    }
-
-//    [Fact]
-//    public void Validation_ShouldPass_When_ValidRequest()
-//    {
-//        // Arrange
-//        var request = new Get.Request
-//        {
-//            ElectionRoundId = Guid.NewGuid(),
-//            MonitoringNgoId = Guid.NewGuid(),
-//            Id = Guid.NewGuid()
-//        };
-
-//        // Act
-//        var result = _validator.TestValidate(request);
-
-//        // Assert
-//        result.ShouldNotHaveAnyValidationErrors();
-//    }
-//}
+        // Assert
+        result.ShouldNotHaveAnyValidationErrors();
+    }
+}

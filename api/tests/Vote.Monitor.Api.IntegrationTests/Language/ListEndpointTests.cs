@@ -2,6 +2,7 @@
 
 namespace Vote.Monitor.Api.IntegrationTests.Language;
 
+[Collection("IntegrationTests")]
 public class ListEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeeder>>
 {
     public HttpServerFixture<NoopDataSeeder> Fixture { get; }
