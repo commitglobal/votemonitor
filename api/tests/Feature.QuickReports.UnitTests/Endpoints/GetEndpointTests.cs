@@ -35,7 +35,6 @@ public class GetEndpointTests
         var quickReportId = Guid.NewGuid();
 
         var fakeElectionRound = new ElectionRoundAggregateFaker().Generate();
-        var fakeMonitoringObserver = new MonitoringObserverFaker().Generate();
         var quickReport = new QuickReportFaker(quickReportId).Generate();
 
         _authorizationService.AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object?>(), Arg.Any<IEnumerable<IAuthorizationRequirement>>())
@@ -79,7 +78,6 @@ public class GetEndpointTests
         var quickReportId = Guid.NewGuid();
 
         var fakeElectionRound = new ElectionRoundAggregateFaker().Generate();
-        var fakeMonitoringObserver = new MonitoringObserverFaker().Generate();
         var fakeQuickReport = new QuickReportFaker(quickReportId).Generate();
 
         _authorizationService
@@ -120,7 +118,6 @@ public class GetEndpointTests
     {
         // Arrange
         var fakeElectionRound = new ElectionRoundAggregateFaker().Generate();
-        var fakeMonitoringObserver = new MonitoringObserverFaker().Generate();
         var quickReportId = Guid.NewGuid();
 
         _authorizationService.AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object?>(), Arg.Any<IEnumerable<IAuthorizationRequirement>>())
@@ -146,7 +143,6 @@ public class GetEndpointTests
     {
         // Arrange
         var fakeElectionRound = new ElectionRoundAggregateFaker().Generate();
-        var fakeMonitoringObserver = new MonitoringObserverFaker().Generate();
         var quickReportId = Guid.NewGuid();
 
         _authorizationService.AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object?>(), Arg.Any<IEnumerable<IAuthorizationRequirement>>())
