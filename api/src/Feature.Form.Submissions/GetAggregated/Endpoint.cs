@@ -54,7 +54,7 @@ public class Endpoint(VoteMonitorContext context, IFileStorageService fileStorag
         var notes = await context
             .Notes
             .Where(x => x.ElectionRoundId == req.ElectionRoundId && x.FormId == req.FormId)
-            .Select(x => new NoteModel()
+            .Select(x => new NoteModel
             {
                 MonitoringObserverId = x.MonitoringObserverId,
                 QuestionId = x.QuestionId,
@@ -67,7 +67,7 @@ public class Endpoint(VoteMonitorContext context, IFileStorageService fileStorag
         var attachments = await context
             .Attachments
             .Where(x => x.ElectionRoundId == req.ElectionRoundId && x.FormId == req.FormId)
-            .Select(x => new AttachmentModel()
+            .Select(x => new AttachmentModel
             {
                 MonitoringObserverId = x.MonitoringObserverId,
                 QuestionId = x.QuestionId,
@@ -90,7 +90,7 @@ public class Endpoint(VoteMonitorContext context, IFileStorageService fileStorag
             }
         }
 
-        return TypedResults.Ok(new Response()
+        return TypedResults.Ok(new Response
         {
             SubmissionsAggregate = formSubmissionsAggregate,
             Notes = notes,

@@ -1,28 +1,14 @@
-﻿
-namespace Feature.QuickReports.UnitTests.ValidatorTests;
+﻿namespace Feature.QuickReports.UnitTests.ValidatorTests;
 
-public class DeleteRequestValidatorTests
+public class ListMyRequestValidatorTests
 {
-    private readonly Delete.Validator _validator = new();
-    
-    [Fact]
-    public void Validation_ShouldFail_When_Id_Empty()
-    {
-        // Arrange
-        var request = new Delete.Request { Id = Guid.Empty };
-
-        // Act
-        var result = _validator.TestValidate(request);
-
-        // Assert
-        result.ShouldHaveValidationErrorFor(x => x.Id);
-    }
+    private readonly ListMy.Validator _validator = new();
 
     [Fact]
     public void Validation_ShouldFail_When_ObserverId_Empty()
     {
         // Arrange
-        var request = new Delete.Request { ObserverId = Guid.Empty };
+        var request = new ListMy.Request { ObserverId = Guid.Empty };
 
         // Act
         var result = _validator.TestValidate(request);
@@ -35,7 +21,7 @@ public class DeleteRequestValidatorTests
     public void Validation_ShouldFail_When_ElectionRoundId_Empty()
     {
         // Arrange
-        var request = new Delete.Request { ElectionRoundId = Guid.Empty };
+        var request = new ListMy.Request { ElectionRoundId = Guid.Empty };
 
         // Act
         var result = _validator.TestValidate(request);
@@ -48,11 +34,10 @@ public class DeleteRequestValidatorTests
     public void Validation_ShouldPass_When_ValidRequest()
     {
         // Arrange
-        var request = new Delete.Request
+        var request = new ListMy.Request
         {
             ElectionRoundId = Guid.NewGuid(),
             ObserverId = Guid.NewGuid(),
-            Id = Guid.NewGuid()
         };
 
         // Act

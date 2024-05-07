@@ -52,10 +52,8 @@ public class QuickReportAttachment : AuditableBaseEntity, IAggregateRoot
 
 #pragma warning disable CS8618 // Required by Entity Framework
 
-    internal QuickReportAttachment(string uploadedFileName, string filePath)
+    internal QuickReportAttachment()
     {
-        UploadedFileName = uploadedFileName;
-        FilePath = filePath;
     }
 
 #pragma warning restore CS8618

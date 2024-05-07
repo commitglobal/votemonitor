@@ -1,38 +1,34 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
-using Vote.Monitor.Domain.Entities.QuickReportAggregate;
 
 namespace Feature.QuickReports.UnitTests.Endpoints;
 
-public class DeleteEndpointTests
+public class DeleteAttachmentEndpointTests
 {
     private readonly IAuthorizationService _authorizationService;
-    private readonly Delete.Endpoint _endpoint;
+    private readonly DeleteAttachment.Endpoint _endpoint;
 
-    public DeleteEndpointTests()
+    public DeleteAttachmentEndpointTests()
     {
         _authorizationService = Substitute.For<IAuthorizationService>();
-        IRepository<QuickReport> repository = Substitute.For<IRepository<QuickReport>>();
-        _endpoint = Factory.Create<Delete.Endpoint>(_authorizationService, repository, TestContext.Fake());
+        _endpoint = Factory.Create<DeleteAttachment.Endpoint>(_authorizationService, TestContext.Fake());
     }
 
     [Fact]
     public async Task ShouldReturnNotFound_WhenNotAuthorised()
     {
         // Arrange
-        var electionRoundId = Guid.NewGuid();
-        var monitoringObserverId = Guid.NewGuid();
-        var attachmentId = Guid.NewGuid();
+        var fakeElectionRound = new ElectionRoundAggregateFaker().Generate();
+        var fakeMonitoringObserver = new MonitoringObserverFaker().Generate();
 
         _authorizationService.AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object?>(), Arg.Any<IEnumerable<IAuthorizationRequirement>>())
             .Returns(AuthorizationResult.Failed());
 
         // Act
-        var request = new Delete.Request
+        var request = new DeleteAttachment.Request
         {
-            ElectionRoundId = electionRoundId,
-            ObserverId = monitoringObserverId,
-            Id = attachmentId,
+            ElectionRoundId = fakeElectionRound.Id,
+            ObserverId = fakeMonitoringObserver.Id,
         };
         var result = await _endpoint.ExecuteAsync(request, default);
 

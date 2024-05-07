@@ -1,23 +1,39 @@
 ﻿using Authorization.Policies.Requirements;
+using Authorization.Policies.Specifications;
 
 namespace Authorization.Policies.RequirementHandlers;
 
-internal class IsResourceOwnerRequirementHandler(ICurrentUserIdProvider currentUserIdProvider) : AuthorizationHandler<IsResourceOwnerRequirement>
+internal class IsResourceOwnerRequirementHandler(ICurrentUserIdProvider currentUserIdProvider, ICurrentUserRoleProvider currentUserRoleProvider,
+    IReadRepository<MonitoringObserver> monitoringObserverRepository) : AuthorizationHandler<IsResourceOwnerRequirement>
 {
     protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, IsResourceOwnerRequirement requirement)
     {
-        if (currentUserIdProvider.GetUserId() == null)
+        // When a ngo admin tries to access a resource check if they are monitoring ngo, and that resource was created by a monitoring observer
+        if (currentUserRoleProvider.IsNgoAdmin())
         {
-            context.Fail();
-            return;
+            var ngoId = await currentUserRoleProvider.GetNgoId();
+
+            var specification = new GetMonitoringObserverSpecification(requirement.ElectionRoundId,
+                ngoId,
+                requirement.Resource.CreatedBy);
+            var result = await monitoringObserverRepository
+                .FirstOrDefaultAsync(specification);
+
+            if (result != null)
+            {
+                context.Succeed(requirement);
+                return;
+            }
         }
 
-        if (currentUserIdProvider.GetUserId().Value != requirement.Resource.CreatedBy)
+        if (currentUserRoleProvider.IsObserver())
         {
-            context.Fail();
-            return;
+            if (currentUserIdProvider.GetUserId() == requirement.Resource.CreatedBy)
+            {
+                context.Succeed(requirement);
+            }
         }
 
-        context.Succeed(requirement);
+        context.Fail();
     }
 }

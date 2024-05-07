@@ -5,43 +5,39 @@ using Vote.Monitor.Core.Services.FileStorage.Contracts;
 using Vote.Monitor.Domain.Entities.QuickReportAggregate;
 using Vote.Monitor.Domain.Entities.QuickReportAttachmentAggregate;
 
-namespace Feature.QuickReports.Get;
+namespace Feature.QuickReports.ListMy;
 
 public class Endpoint(
     IAuthorizationService authorizationService,
     IReadRepository<QuickReport> quickReportRepository,
     IReadRepository<QuickReportAttachment> quickReportAttachmentRepository,
     IFileStorageService fileStorageService)
-    : Endpoint<Request, Results<Ok<QuickReportModel>, BadRequest<ProblemDetails>, NotFound>>
+    : Endpoint<Request, Results<Ok<List<QuickReportModel>>, NotFound>>
 {
     public override void Configure()
     {
-        Get("/api/election-rounds/{electionRoundId}/quick-reports/{id}");
+        Get("/api/election-rounds/{electionRoundId}/quick-reports:my");
         DontAutoTag();
         Options(x => x.WithTags("quick-reports", "mobile"));
         Summary(s =>
         {
-            s.Summary = "Gets details regarding a quick report";
-            s.Description = "Gets a quick report with it's attachments and refreshed presigned urls";
+            s.Summary = "Gets all quick-reports an observer has uploaded for an election round";
+            s.Description = "All attachments will have freshly generated presigned urls";
         });
     }
 
-    public override async Task<Results<Ok<QuickReportModel>, BadRequest<ProblemDetails>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<Results<Ok<List<QuickReportModel>>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var authorizationResult = await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminOrObserverRequirement(req.ElectionRoundId));
+        var authorizationResult = await authorizationService.AuthorizeAsync(User, new MonitoringObserverRequirement(req.ElectionRoundId));
         if (!authorizationResult.Succeeded)
         {
             return TypedResults.NotFound();
         }
 
-        var quickReport = await quickReportRepository.FirstOrDefaultAsync(new GetQuickReportByIdSpecification(req.ElectionRoundId, req.Id), ct);
+        var quickReports = await quickReportRepository.ListAsync(new ListObserverQuickReportsSpecification(req.ElectionRoundId, req.ObserverId), ct);
+        var quickReportIds = quickReports.Select(x => x.Id).ToArray();
 
-        if (quickReport is null)
-        {
-            return TypedResults.NotFound();
-        }
-
-        var quickReportAttachments = await quickReportAttachmentRepository.ListAsync(new ListQuickReportAttachmentsSpecification(req.ElectionRoundId, quickReport.Id), ct);
+        var quickReportAttachments = await quickReportAttachmentRepository.ListAsync(new ListQuickReportAttachmentsSpecification(req.ElectionRoundId, quickReportIds), ct);
 
         var tasks = quickReportAttachments
             .Select(async attachment =>
@@ -63,7 +59,14 @@ public class Endpoint(
             });
 
         var attachments = await Task.WhenAll(tasks);
+        var attachmentsPerQuickReport = attachments
+            .GroupBy(x => x.QuickReportId)
+            .ToDictionary(x => x.Key, v => v.ToList());
 
-        return TypedResults.Ok(QuickReportModel.FromEntity(quickReport, attachments));
+        var result = quickReports
+            .Select(quickReport => QuickReportModel.FromEntity(quickReport, attachmentsPerQuickReport.GetValueOrDefault(quickReport.Id, [])))
+            .ToList();
+
+        return TypedResults.Ok(result);
     }
 }

@@ -20,4 +20,10 @@ public class TestData
             new object[] { "     " },
             new object[] { "\t" }
         };
+    public static IEnumerable<object[]> EmptyNullableGuidTestCases =>
+        new List<object[]>
+        {
+            new object[] { Guid.Empty },
+            new object[] { null as Guid? },
+        };
 }

@@ -1,15 +1,15 @@
 ﻿
 namespace Feature.QuickReports.UnitTests.ValidatorTests;
 
-public class DeleteRequestValidatorTests
+public class DeleteAttachmentRequestValidatorTests
 {
-    private readonly Delete.Validator _validator = new();
+    private readonly DeleteAttachment.Validator _validator = new();
     
     [Fact]
     public void Validation_ShouldFail_When_Id_Empty()
     {
         // Arrange
-        var request = new Delete.Request { Id = Guid.Empty };
+        var request = new DeleteAttachment.Request { Id = Guid.Empty };
 
         // Act
         var result = _validator.TestValidate(request);
@@ -22,7 +22,7 @@ public class DeleteRequestValidatorTests
     public void Validation_ShouldFail_When_ObserverId_Empty()
     {
         // Arrange
-        var request = new Delete.Request { ObserverId = Guid.Empty };
+        var request = new DeleteAttachment.Request { ObserverId = Guid.Empty };
 
         // Act
         var result = _validator.TestValidate(request);
@@ -35,7 +35,7 @@ public class DeleteRequestValidatorTests
     public void Validation_ShouldFail_When_ElectionRoundId_Empty()
     {
         // Arrange
-        var request = new Delete.Request { ElectionRoundId = Guid.Empty };
+        var request = new DeleteAttachment.Request { ElectionRoundId = Guid.Empty };
 
         // Act
         var result = _validator.TestValidate(request);
@@ -45,13 +45,27 @@ public class DeleteRequestValidatorTests
     }
 
     [Fact]
+    public void Validation_ShouldFail_When_QuickReportId_Empty()
+    {
+        // Arrange
+        var request = new DeleteAttachment.Request { QuickReportId = Guid.Empty };
+
+        // Act
+        var result = _validator.TestValidate(request);
+
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.QuickReportId);
+    }
+
+    [Fact]
     public void Validation_ShouldPass_When_ValidRequest()
     {
         // Arrange
-        var request = new Delete.Request
+        var request = new DeleteAttachment.Request
         {
             ElectionRoundId = Guid.NewGuid(),
             ObserverId = Guid.NewGuid(),
+            QuickReportId = Guid.NewGuid(),
             Id = Guid.NewGuid()
         };
 
