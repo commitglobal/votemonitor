@@ -13,8 +13,8 @@ const ngoRouteSearchSchema = z.object({
 });
 
 export const Route = createFileRoute('/ngos/')({
-  beforeLoad: ({ context }) => {
-    redirectIfNotAuth(context.authContext.isAuthenticated);
+  beforeLoad: () => {
+    redirectIfNotAuth();
   },
   component: Ngos,
   validateSearch: ngoRouteSearchSchema,

@@ -20,8 +20,8 @@ export const observerQueryOptions = (observerId: string) =>
   });
 
 export const Route = createFileRoute('/observers/$observerId')({
-  beforeLoad: ({ context }) => {
-    redirectIfNotAuth(context.authContext.isAuthenticated);
+  beforeLoad: () => {
+    redirectIfNotAuth();
   },
   component: Details,
   loader: ({ context: { queryClient }, params: { observerId } }) =>

@@ -3,8 +3,8 @@ import { redirectIfNotAuth } from '@/lib/utils';
 import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/observers/')({
-  beforeLoad: ({ context }) => {
-    redirectIfNotAuth(context.authContext.isAuthenticated);
+  beforeLoad: () => {
+    redirectIfNotAuth();
   },
   component: Observers,
 });

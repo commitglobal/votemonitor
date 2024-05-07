@@ -1,4 +1,4 @@
-import { UserPayload } from '@/common/types';
+import { RatingScaleType, UserPayload } from '@/common/types';
 import { redirect } from '@tanstack/react-router';
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -28,7 +28,7 @@ export function stringToText(str: string) {
   return colour;
 }
 
-export function redirectIfNotAuth(isAuthenticated: boolean) {
+export function redirectIfNotAuth(): void {
   const token = localStorage.getItem('token');
   if (!token) {
     throw redirect({
@@ -51,4 +51,36 @@ export function parseJwt(token: string | undefined): UserPayload {
   );
 
   return JSON.parse(jsonPayload) as UserPayload;
+}
+
+export function ratingScaleToNumber(scale: RatingScaleType): number {
+  switch (scale) {
+    case RatingScaleType.OneTo3: {
+      return 3;
+    }
+    case RatingScaleType.OneTo4: {
+      return 4;
+    }
+    case RatingScaleType.OneTo5: {
+      return 5;
+    }
+    case RatingScaleType.OneTo6: {
+      return 6;
+    }
+    case RatingScaleType.OneTo7: {
+      return 7;
+    }
+    case RatingScaleType.OneTo8: {
+      return 8;
+    }
+    case RatingScaleType.OneTo9: {
+      return 9;
+    }
+    case RatingScaleType.OneTo10: {
+      return 10;
+    }
+    default: {
+      return 5;
+    }
+  }
 }
