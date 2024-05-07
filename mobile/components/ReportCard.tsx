@@ -5,26 +5,31 @@ import { Typography } from "./Typography";
 import CardFooter from "./CardFooter";
 
 export interface Report {
+  key: string;
   title?: string;
   description?: string;
   attachments?: number;
 }
 
 export interface ReportCardProps extends CardProps {
-  report: Report;
-  onPress: () => void;
+  // report: Report;
+  key: string;
+  title?: string;
+  description?: string;
+  attachments?: number;
+  onPress?: () => void;
 }
 
 const ReportCard = (props: ReportCardProps): JSX.Element => {
-  const { report, onPress } = props;
+  const { title, description, onPress } = props;
 
   return (
     <Card onPress={onPress}>
       <YStack gap={16}>
         <Typography fontSize={16} color="$gray9" fontWeight="500">
-          {report.title}
+          {title}
         </Typography>
-        <Typography>{report.description}</Typography>
+        <Typography>{description}</Typography>
         <CardFooter text={"Att"} />
       </YStack>
     </Card>
