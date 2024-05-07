@@ -3,7 +3,7 @@ import { Typography } from "../../../../../components/Typography";
 import { View, YStack } from "tamagui";
 import { Icon } from "../../../../../components/Icon";
 import { Screen } from "../../../../../components/Screen";
-import { useNavigation } from "expo-router";
+import { useNavigation, router } from "expo-router";
 import Header from "../../../../../components/Header";
 import { DrawerActions } from "@react-navigation/native";
 // import Button from "../../../../components/Button";
@@ -13,6 +13,12 @@ import ReportCard from "../../../../../components/ReportCard";
 const QuickReport = () => {
   const navigation = useNavigation();
   const [openContextualMenu, setOpenContextualMenu] = useState(false);
+  const report = {
+    id: "1",
+    title: "Report 1",
+    description: "Description 1",
+    attachments: 1,
+  };
 
   return (
     <Screen
@@ -39,7 +45,7 @@ const QuickReport = () => {
       <YStack flex={1} alignItems="center" justifyContent="center" gap="$md">
         <ReportCard
           report={{ title: "Report 1", description: "Description 1", attachments: 1 }}
-          onPress={() => {}}
+          onPress={() => router.push(`/report-details/${report.id}?reportTitle=${report.title}`)}
         />
       </YStack>
 
