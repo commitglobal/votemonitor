@@ -1,5 +1,5 @@
 import React from "react";
-import { View, styled } from "tamagui";
+import { View, YStack, styled } from "tamagui";
 import Card, { CardProps } from "./Card";
 import { Typography } from "./Typography";
 import CardFooter from "./CardFooter";
@@ -20,9 +20,13 @@ const ReportCard = (props: ReportCardProps): JSX.Element => {
 
   return (
     <Card>
-      <Typography>{report.title}</Typography>
-      <Typography>{report.description}</Typography>
-      <Typography>{report.attachments}</Typography>
+      <YStack gap={16}>
+        <Typography fontSize={16} color="$gray9" fontWeight="500">
+          {report.title}
+        </Typography>
+        <Typography>{report.description}</Typography>
+        <CardFooter text={"Att"} />
+      </YStack>
     </Card>
   );
 };
