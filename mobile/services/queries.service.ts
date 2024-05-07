@@ -6,15 +6,15 @@ import {
   getPollingStationNomenclator,
   getPollingStationNomenclatorVersion,
   getPollingStationsVisits,
-  getNotesForPollingStation,
 } from "./definitions.api";
 import * as DB from "../database/DAO/PollingStationsNomenclatorDAO";
-import * as API from "./definitions.api";
 
 import { PollingStationNomenclatorNodeVM } from "../common/models/polling-station.model";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as Sentry from "@sentry/react-native";
+import { exists } from "i18next";
 
-const electionRoundsKeys = {
+export const electionRoundsKeys = {
   all: ["election-rounds"] as const,
   one: (id: string) => [...electionRoundsKeys.all, id] as const,
   forms: () => [...electionRoundsKeys.all, "forms"] as const,
@@ -119,8 +119,6 @@ export const usePollingStationsNomenclatorQuery = (electionRoundId: string | und
     queryKey: pollingStationsKeys.nomenclator(electionRoundId!),
     queryFn: electionRoundId
       ? async () => {
-          console.log("usePollingStationsNomenclatorQuery");
-
           const localVersionKey = await AsyncStorage.getItem(
             pollingStationsKeys.nomenclatorCacheKey(electionRoundId).join(),
           );
@@ -134,6 +132,7 @@ export const usePollingStationsNomenclatorQuery = (electionRoundId: string | und
             // Sentry log
             serverVersionKey = localVersionKey ?? "";
             console.log("usePollingStationsNomenclatorQuery", err);
+            Sentry.captureMessage("Fetching PS Nomenclator failed (no internet, or server error");
           }
 
           try {
@@ -157,8 +156,11 @@ export const usePollingStationsNomenclatorQuery = (electionRoundId: string | und
               return "RETRIEVED FROM DB";
             }
           } catch (err) {
-            // TODO: Add Sentry
             console.warn("usePollingStationsNomenclatorQuery", err);
+            Sentry.captureMessage(
+              `Failed to save nomenclator. Exists: ${exists}, LocalVersionKey: ${localVersionKey}, ServerVersionKey: ${serverVersionKey}`,
+            );
+            Sentry.captureException(err);
             throw err;
           }
         }
@@ -234,26 +236,6 @@ export const usePollingStationInformationForm = (electionRoundId: string | undef
   });
 };
 
-export const useElectionRoundAllForms = (electionRoundId: string | undefined) => {
-  return useQuery({
-    queryKey: electionRoundsKeys.forms(),
-    queryFn: electionRoundId ? () => API.getElectionRoundAllForms(electionRoundId) : skipToken,
-  });
-};
-
-export const useFormSubmissions = (
-  electionRoundId: string | undefined,
-  pollingStationId: string | undefined,
-) => {
-  return useQuery({
-    queryKey: pollingStationsKeys.formSubmissions(electionRoundId, pollingStationId),
-    queryFn:
-      electionRoundId && pollingStationId
-        ? () => API.getFormSubmissions(electionRoundId, pollingStationId)
-        : skipToken,
-  });
-};
-
 export const pollingStationInformationQueryFn = (
   electionRoundId: string | undefined,
   pollingStationId: string,
@@ -269,20 +251,6 @@ export const usePollingStationInformation = (
     queryFn:
       electionRoundId && pollingStationId
         ? () => pollingStationInformationQueryFn(electionRoundId, pollingStationId)
-        : skipToken,
-  });
-};
-
-export const useNotesForPollingStation = (
-  electionRoundId: string | undefined,
-  pollingStationId: string | undefined,
-  formId: string | undefined,
-) => {
-  return useQuery({
-    queryKey: notesKeys.notes(electionRoundId, pollingStationId, formId),
-    queryFn:
-      electionRoundId && pollingStationId && formId
-        ? () => getNotesForPollingStation(electionRoundId, pollingStationId, formId)
         : skipToken,
   });
 };

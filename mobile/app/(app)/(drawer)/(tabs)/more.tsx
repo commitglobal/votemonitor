@@ -97,7 +97,11 @@ const More = () => {
         ></MenuItem>
         <MenuItem
           label={t("about")}
-          helper={t("app_version", { value: appVersion })}
+          helper={`${t("app_version", { value: appVersion })} (${Constants.expoConfig?.extra?.updateVersion}) ${
+            process.env.EXPO_PUBLIC_ENVIRONMENT !== "production"
+              ? process.env.EXPO_PUBLIC_ENVIRONMENT
+              : ""
+          }`}
           icon="aboutVM"
           chevronRight={true}
         ></MenuItem>
