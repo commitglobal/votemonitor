@@ -1,12 +1,12 @@
-﻿using Authorization.Policies;
+﻿using System.Data;
+using Authorization.Policies;
 using Dapper;
 using Vote.Monitor.Core.Models;
-using Vote.Monitor.Domain;
 using Vote.Monitor.Domain.Specifications;
 
 namespace Feature.Form.Submissions.ListEntries;
 
-public class Endpoint(VoteMonitorContext context) : Endpoint<Request, PagedResponse<FormSubmissionEntry>>
+public class Endpoint(IDbConnection dbConnection) : Endpoint<Request, PagedResponse<FormSubmissionEntry>>
 {
     public override void Configure()
     {
@@ -135,7 +135,7 @@ public class Endpoint(VoteMonitorContext context) : Endpoint<Request, PagedRespo
             hasFlaggedAnswers = req.HasFlaggedAnswers,
         };
 
-        var multi = await context.Connection.QueryMultipleAsync(sql, queryArgs);
+        var multi = await dbConnection.QueryMultipleAsync(sql, queryArgs);
         var totalRowCount = multi.Read<int>().Single();
         var entries = multi.Read<FormSubmissionEntry>().ToList();
 

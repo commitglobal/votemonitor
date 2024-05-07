@@ -1,10 +1,9 @@
-﻿
+﻿using System.Data;
 using Dapper;
-using Vote.Monitor.Domain;
 
 namespace Feature.Statistics.Get;
 
-public class Endpoint(VoteMonitorContext context) : Endpoint<Request, Response>
+public class Endpoint(IDbConnection dbConnection) : Endpoint<Request, Response>
 {
     public override void Configure()
     {
@@ -65,7 +64,7 @@ public class Endpoint(VoteMonitorContext context) : Endpoint<Request, Response>
 
         var queryArgs = new { electionRoundId = req.ElectionRoundId , ngoId = req.NgoId};
 
-        var histogramData = await context.Connection.QueryAsync<BucketView>(commandText, queryArgs);
+        var histogramData = await dbConnection.QueryAsync<BucketView>(commandText, queryArgs);
 
         return new Response { Histogram = histogramData.ToList() };
     }

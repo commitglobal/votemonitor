@@ -9,8 +9,9 @@ using GetRequest = Vote.Monitor.Api.Feature.Ngo.Get.Request;
 using DeactivateEndpoint = Vote.Monitor.Api.Feature.Ngo.Deactivate.Endpoint;
 using DeactivateRequest = Vote.Monitor.Api.Feature.Ngo.Deactivate.Request;
 
-
 namespace Vote.Monitor.Api.IntegrationTests.Ngo;
+
+[Collection("IntegrationTests")]
 public class ActivateEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeeder>>
 {
     public HttpServerFixture<NoopDataSeeder> Fixture { get; }
