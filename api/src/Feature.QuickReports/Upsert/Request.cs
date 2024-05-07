@@ -10,9 +10,9 @@ public class Request
     [FromClaim(ApplicationClaimTypes.UserId)]
     public Guid ObserverId { get; set; }
     public Guid Id { get; set; }
-    public QuickReportLocationType QuickReportLocationType { get;  set; }
-    public string Title { get;  set; }
-    public string Description { get;  set; }
-    public Guid? PollingStationId {  set; get; }
-    public string? PollingStationDetails { get;  set; }
+    public QuickReportLocationType QuickReportLocationType { get; set; }
+    public string Title { get; set; }
+    public string Description { get; set; }
+    public Guid? PollingStationId { set; get; }
+    public string? PollingStationDetails { get; set; }
 }

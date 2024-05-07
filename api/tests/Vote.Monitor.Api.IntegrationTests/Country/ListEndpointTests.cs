@@ -1,6 +1,8 @@
 ﻿using Vote.Monitor.Api.Feature.Country;
 
 namespace Vote.Monitor.Api.IntegrationTests.Country;
+
+[Collection("IntegrationTests")]
 public class ListEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeeder>>
 {
     public HttpServerFixture<NoopDataSeeder> Fixture { get; }

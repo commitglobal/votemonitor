@@ -1,4 +1,5 @@
-﻿using Dapper;
+﻿using System.Data;
+using Dapper;
 using Job.Contracts.Jobs;
 using Microsoft.EntityFrameworkCore;
 using Vote.Monitor.Core.FileGenerators;
@@ -12,15 +13,17 @@ using Vote.Monitor.Hangfire.Jobs.ExportData.ReadModels;
 namespace Vote.Monitor.Hangfire.Jobs.ExportData;
 
 public class ExportFormSubmissionsJob(VoteMonitorContext context,
+    IDbConnection dbConnection,
     IFileStorageService fileStorageService,
-    ILogger<ExportFormSubmissionsJob> logger, 
+    ILogger<ExportFormSubmissionsJob> logger,
     ITimeProvider timeProvider) : IExportFormSubmissionsJob
 {
     public async Task ExportFormSubmissions(Guid electionRoundId, Guid ngoId, Guid exportedDataId)
     {
         var exportedData = await context
             .ExportedData
-            .FirstOrDefaultAsync(x => x.ElectionRoundId == electionRoundId && x.NgoId == ngoId && x.Id == exportedDataId);
+            .Where(x => x.ElectionRoundId == electionRoundId && x.NgoId == ngoId && x.Id == exportedDataId)
+            .FirstOrDefaultAsync();
 
         try
         {
@@ -193,7 +196,7 @@ public class ExportFormSubmissionsJob(VoteMonitorContext context,
 
         var queryParams = new { electionRoundId, ngoId };
 
-        var submissions = await context.Connection.QueryAsync<SubmissionModel>(sql, queryParams);
+        var submissions = await dbConnection.QueryAsync<SubmissionModel>(sql, queryParams);
         var submissionsData = submissions.ToList();
         return submissionsData;
     }

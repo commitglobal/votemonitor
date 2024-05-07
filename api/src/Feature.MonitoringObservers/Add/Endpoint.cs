@@ -35,6 +35,15 @@ public class Endpoint(
 
     public override async Task<Results<Ok<Response>, NotFound<string>, Conflict<ProblemDetails>, ValidationProblem>> ExecuteAsync(Request req, CancellationToken ct)
     {
+        var specification = new GetMonitoringObserverForElectionRound(req.ElectionRoundId, req.ObserverId);
+        var isAlreadyMonitoring = await monitoringObserverRepository.AnyAsync(specification, ct);
+        if (isAlreadyMonitoring)
+        {
+            AddError(x => x.ObserverId, "Observer is already monitoring for another ngo.");
+            return TypedResults.Conflict(new ProblemDetails(ValidationFailures));
+        }
+
+
         var electionRound = await repository.GetByIdAsync(req.ElectionRoundId, ct);
         if (electionRound is null)
         {

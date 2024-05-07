@@ -3,6 +3,7 @@ using Vote.Monitor.Api.Feature.Language.Get;
 
 namespace Vote.Monitor.Api.IntegrationTests.Language;
 
+[Collection("IntegrationTests")]
 public class GetEndpointTest : IClassFixture<HttpServerFixture<NoopDataSeeder>>
 {
     public HttpServerFixture<NoopDataSeeder> Fixture { get; }

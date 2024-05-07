@@ -1,10 +1,10 @@
-﻿using Authorization.Policies;
+﻿using System.Data;
+using Authorization.Policies;
 using Dapper;
-using Vote.Monitor.Domain;
 
 namespace Feature.Form.Submissions.ListByForm;
 
-public class Endpoint(VoteMonitorContext context) : Endpoint<Request, Response>
+public class Endpoint(IDbConnection dbConnection) : Endpoint<Request, Response>
 {
     public override void Configure()
     {
@@ -47,8 +47,8 @@ public class Endpoint(VoteMonitorContext context) : Endpoint<Request, Response>
             ngoId = req.NgoId
         };
 
-        var aggregatedFormOverviews = await context.Connection.QueryAsync<AggregatedFormOverview>(sql, queryArgs);
+        var aggregatedFormOverviews = await dbConnection.QueryAsync<AggregatedFormOverview>(sql, queryArgs);
 
-        return new Response() { AggregatedForms = aggregatedFormOverviews.ToList() };
+        return new Response { AggregatedForms = aggregatedFormOverviews.ToList() };
     }
 }

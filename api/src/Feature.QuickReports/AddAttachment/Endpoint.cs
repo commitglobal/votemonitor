@@ -10,9 +10,9 @@ namespace Feature.QuickReports.AddAttachment;
 
 public class Endpoint(
     IAuthorizationService authorizationService,
+    IReadRepository<MonitoringObserver> monitoringObserverRepository,
     IRepository<QuickReportAttachment> repository,
-    IFileStorageService fileStorageService,
-    IReadRepository<MonitoringObserver> monitoringObserverRepository)
+    IFileStorageService fileStorageService)
     : Endpoint<Request, Results<Ok<QuickReportAttachmentModel>, NotFound, BadRequest<ProblemDetails>, StatusCodeHttpResult>>
 {
     public override void Configure()
@@ -67,15 +67,13 @@ public class Endpoint(
 
         var result = uploadResult as UploadFileResult.Ok;
 
-        return TypedResults.Ok(new QuickReportAttachmentModel()
+        return TypedResults.Ok(new QuickReportAttachmentModel
         {
             Id = attachment.Id,
             FileName = attachment.FileName,
             PresignedUrl = result!.Url,
             MimeType = attachment.MimeType,
             UrlValidityInSeconds = result.UrlValidityInSeconds,
-            ElectionRoundId = attachment.ElectionRoundId,
-            QuickReportId = attachment.QuickReportId,
         });
     }
 }

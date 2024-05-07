@@ -29,7 +29,7 @@ public class DeleteEndpointTests
     }
 
     [Fact]
-    public async Task ShouldReturnOkWithNoteModel_WhenAllIdsExist()
+    public async Task ShouldReturnNoContent_WhenAllIdsExist()
     {
         // Arrange
         var attachmentId = Guid.NewGuid();

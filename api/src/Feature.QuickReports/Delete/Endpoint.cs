@@ -18,7 +18,8 @@ public class Endpoint(
         Delete("/api/election-rounds/{electionRoundId}/quick-reports/{id}");
         DontAutoTag();
         Options(x => x.WithTags("quick-reports", "mobile"));
-        Summary(s => {
+        Summary(s =>
+        {
             s.Summary = "Deletes a quick report and it's attachments";
         });
     }
@@ -31,8 +32,25 @@ public class Endpoint(
             return TypedResults.NotFound();
         }
 
-        var quickReport = await repository.FirstOrDefaultAsync(new GetQuickReportByIdSpecification(req.ElectionRoundId, req.ObserverId, req.Id), ct);
+        await DeleteQuickReportAsync(req, ct);
+        await DeleteAttachmentsAsync(req, ct);
 
+        return TypedResults.NoContent();
+    }
+
+    private async Task DeleteQuickReportAsync(Request req, CancellationToken ct)
+    {
+        var quickReport = await repository.FirstOrDefaultAsync(new GetQuickReportByIdSpecification(req.ElectionRoundId, req.Id), ct);
+        if (quickReport is null)
+        {
+            return;
+        }
+
+        await repository.DeleteAsync(quickReport, ct);
+    }
+
+    private async Task DeleteAttachmentsAsync(Request req, CancellationToken ct)
+    {
         // Mark as deleted so our background job will delete it. also change the id in order to allow recreation with same id
         await context.QuickReportAttachments
             .Where(x => x.ElectionRoundId == req.ElectionRoundId
@@ -41,14 +59,5 @@ public class Endpoint(
             .ExecuteUpdateAsync(setters => setters
                 .SetProperty(qra => qra.IsDeleted, true)
                 .SetProperty(qra => qra.Id, Guid.NewGuid()), cancellationToken: ct);
-
-        if (quickReport is null)
-        {
-            return TypedResults.NotFound();
-        }
-
-        await repository.DeleteAsync(quickReport, ct);
-
-        return TypedResults.NoContent();
     }
 }
