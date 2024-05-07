@@ -1,4 +1,6 @@
 # Forms
+## Questions display logic
+[read more](questions-display-logic.md)
 ## Question types
 Questions are represented using polymorphic json and the type is specified in the `$questionType` property.
 
