@@ -1,4 +1,4 @@
-﻿namespace Feature.QuickReports.UnitTests.ValidatorTests;
+namespace Feature.QuickReports.UnitTests.ValidatorTests;
 
 public class ListRequestValidatorTests
 {
