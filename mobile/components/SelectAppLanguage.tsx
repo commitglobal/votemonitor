@@ -1,15 +1,14 @@
 import React, { useState, useMemo, useContext } from "react";
 import { Adapt, Input, Select, Sheet, XStack, YStack, styled } from "tamagui";
-import { LanguageContext } from "../contexts/language/LanguageContext.provider";
+import { Language, LanguageContext } from "../contexts/language/LanguageContext.provider";
 import { Keyboard } from "react-native";
 import { Icon } from "./Icon";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import * as SecureStore from "expo-secure-store";
 
-// TODO: Maybe this should be provided via LanguageContext provider
 type LanguageOption = {
   label: string;
-  value: string;
+  value: Language;
 };
 
 const languages: LanguageOption[] = [
@@ -39,14 +38,6 @@ const SelectAppLanguage = (props: SelectLanguageProps) => {
 
   // TODO: generalize this for all languages
   const { changeLanguage } = useContext(LanguageContext);
-  const changeLanguageCallback = (value: string) => {
-    if (value === "Romanian") {
-      changeLanguage("ro");
-    }
-    if (value === "English") {
-      changeLanguage("en");
-    }
-  };
 
   // Filter languages based on search term
   const [searchTerm, setSearchTerm] = useState("");
@@ -64,7 +55,7 @@ const SelectAppLanguage = (props: SelectLanguageProps) => {
       onOpenChange={setOpen}
       onValueChange={(value) => {
         Keyboard.dismiss();
-        changeLanguageCallback(value);
+        changeLanguage(value as Language);
         SecureStore.setItem("app_language", value);
       }}
     >
@@ -112,7 +103,7 @@ const SelectAppLanguage = (props: SelectLanguageProps) => {
                     <Select.Item
                       index={i}
                       key={`${entry}_${i}`}
-                      value={entry.label}
+                      value={entry.value}
                       gap="$3"
                       paddingBottom="$sm"
                     >
