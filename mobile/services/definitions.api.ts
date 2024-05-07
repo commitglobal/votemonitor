@@ -353,3 +353,65 @@ export const updateNote = ({
 export const deleteNote = ({ electionRoundId, id }: Note) => {
   return API.delete(`election-rounds/${electionRoundId}/notes/${id}`).then((res) => res.data);
 };
+
+/** ========================================================================
+    ================= POST quickReport ====================
+    ========================================================================
+    @description Upsert a Quick Report
+    @param {AddQuickReportAPIPayload} payload 
+*/
+export enum QuickReportLocationType {
+  NotRelatedToAPollingStation = "NotRelatedToAPollingStation",
+  OtherPollingStation = "OtherPollingStation",
+  VisitedPollingStation = "VisitedPollingStation",
+}
+export type AddQuickReportAPIPayload = {
+  id: string;
+  electionRoundId: string;
+
+  title: string;
+  description: string;
+
+  quickReportLocationType: QuickReportLocationType;
+  pollingStationId?: string;
+  pollingStationDetails?: string;
+};
+
+export const addQuickReport = ({ electionRoundId, ...payload }: AddQuickReportAPIPayload) => {
+  return API.post(`election-rounds/${electionRoundId}/quick-reports`, payload).then(
+    (res) => res.data,
+  );
+};
+
+/** ========================================================================
+    ================= GET quickReports ====================
+    ========================================================================
+    @description Retrieves all Quick Reports for an Election Round ID
+    @param {string} electionRoundId 
+    @returns {QuickReportsAPIResponse} 
+*/
+export type QuickReportAttachmentAPIResponse = {
+  id: string;
+  quickReportId: string;
+  electionRoundId: string;
+  fileName: string;
+  mimeType: string;
+  presignedUrl: string;
+  urlValidityInSeconds: number;
+};
+export type QuickReportsAPIResponse = {
+  id: string;
+  electionRoundId: string;
+  quickReportLocationType: QuickReportLocationType;
+  title: string;
+  description: string;
+  pollingStationId?: string | null;
+  pollingStationDetails?: string;
+  attachments: Array<QuickReportAttachmentAPIResponse>;
+};
+
+export const getQuickReports = (
+  electionRoundId: string,
+): Promise<Array<QuickReportsAPIResponse>> => {
+  return API.get(`election-rounds/${electionRoundId}/quick-reports`).then((res) => res.data);
+};
