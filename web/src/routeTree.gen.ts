@@ -28,6 +28,7 @@ import { Route as NgosNgoIdImport } from './routes/ngos/$ngoId'
 import { Route as MonitoringObserversCreateNewMessageImport } from './routes/monitoring-observers/create-new-message'
 import { Route as MonitoringObserversMonitoringObserverIdImport } from './routes/monitoring-observers/$monitoringObserverId'
 import { Route as ElectionRoundsElectionRoundIdImport } from './routes/election-rounds/$electionRoundId'
+import { Route as ResponsesFormIdAggregatedImport } from './routes/responses/$formId.aggregated'
 import { Route as ObserversObserverIdEditImport } from './routes/observers_.$observerId.edit'
 import { Route as MonitoringObserversMonitoringObserverIdEditImport } from './routes/monitoring-observers_.$monitoringObserverId.edit'
 import { Route as FormTemplatesFormTemplateIdEditImport } from './routes/form-templates_.$formTemplateId.edit'
@@ -123,6 +124,11 @@ const ElectionRoundsElectionRoundIdRoute =
     path: '/election-rounds/$electionRoundId',
     getParentRoute: () => rootRoute,
   } as any)
+
+const ResponsesFormIdAggregatedRoute = ResponsesFormIdAggregatedImport.update({
+  path: '/responses/$formId/aggregated',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const ObserversObserverIdEditRoute = ObserversObserverIdEditImport.update({
   path: '/observers/$observerId/edit',
@@ -241,6 +247,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ObserversObserverIdEditImport
       parentRoute: typeof rootRoute
     }
+    '/responses/$formId/aggregated': {
+      preLoaderRoute: typeof ResponsesFormIdAggregatedImport
+      parentRoute: typeof rootRoute
+    }
     '/form-templates/$formTemplateId/edit-translation/$languageCode': {
       preLoaderRoute: typeof FormTemplatesFormTemplateIdEditTranslationLanguageCodeImport
       parentRoute: typeof rootRoute
@@ -272,6 +282,7 @@ export const routeTree = rootRoute.addChildren([
   FormTemplatesFormTemplateIdEditRoute,
   MonitoringObserversMonitoringObserverIdEditRoute,
   ObserversObserverIdEditRoute,
+  ResponsesFormIdAggregatedRoute,
   FormTemplatesFormTemplateIdEditTranslationLanguageCodeRoute,
 ])
 
