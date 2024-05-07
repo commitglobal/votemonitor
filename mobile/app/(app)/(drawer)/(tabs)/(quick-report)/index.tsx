@@ -1,14 +1,14 @@
 import React, { useState } from "react";
-import { Typography } from "../../../../components/Typography";
+import { Typography } from "../../../../../components/Typography";
 import { View, YStack } from "tamagui";
-import { Icon } from "../../../../components/Icon";
-import { Screen } from "../../../../components/Screen";
-import { router, useNavigation } from "expo-router";
-import Header from "../../../../components/Header";
+import { Icon } from "../../../../../components/Icon";
+import { Screen } from "../../../../../components/Screen";
+import { useNavigation } from "expo-router";
+import Header from "../../../../../components/Header";
 import { DrawerActions } from "@react-navigation/native";
-import Button from "../../../../components/Button";
-import OptionsSheet from "../../../../components/OptionsSheet";
-import ReportCard from "../../../../components/ReportCard";
+// import Button from "../../../../components/Button";
+import OptionsSheet from "../../../../../components/OptionsSheet";
+import ReportCard from "../../../../../components/ReportCard";
 
 const QuickReport = () => {
   const navigation = useNavigation();
@@ -61,26 +61,26 @@ const OptionsSheetContent = () => {
   );
 };
 
-const NoReports = () => {
-  return (
-    <YStack flex={1} alignItems="center" justifyContent="center" gap="$md">
-      <Icon icon="undrawFlag" />
+// const NoReports = () => {
+//   return (
+//     <YStack flex={1} alignItems="center" justifyContent="center" gap="$md">
+//       <Icon icon="undrawFlag" />
 
-      <YStack gap="$md" paddingHorizontal="$xl">
-        <Typography preset="body1" textAlign="center" color="$gray12" lineHeight={24}>
-          Start sending quick reports to the organization if you notice irregularities inside,
-          outside the polling station or whenever needed.
-        </Typography>
-        <Button
-          preset="outlined"
-          onPress={router.push.bind(null, "/report-issue")}
-          backgroundColor="white"
-        >
-          Report new issue
-        </Button>
-      </YStack>
-    </YStack>
-  );
-};
+//       <YStack gap="$md" paddingHorizontal="$xl">
+//         <Typography preset="body1" textAlign="center" color="$gray12" lineHeight={24}>
+//           Start sending quick reports to the organization if you notice irregularities inside,
+//           outside the polling station or whenever needed.
+//         </Typography>
+//         <Button
+//           preset="outlined"
+//           onPress={router.push.bind(null, "/report-issue")}
+//           backgroundColor="white"
+//         >
+//           Report new issue
+//         </Button>
+//       </YStack>
+//     </YStack>
+//   );
+// };
 
 export default QuickReport;

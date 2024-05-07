@@ -1,5 +1,5 @@
 import React from "react";
-import { View, YStack, styled } from "tamagui";
+import { YStack } from "tamagui";
 import Card, { CardProps } from "./Card";
 import { Typography } from "./Typography";
 import CardFooter from "./CardFooter";
@@ -16,10 +16,10 @@ export interface ReportCardProps extends CardProps {
 }
 
 const ReportCard = (props: ReportCardProps): JSX.Element => {
-  const { report, onPress, ...rest } = props;
+  const { report, onPress } = props;
 
   return (
-    <Card>
+    <Card onPress={onPress}>
       <YStack gap={16}>
         <Typography fontSize={16} color="$gray9" fontWeight="500">
           {report.title}

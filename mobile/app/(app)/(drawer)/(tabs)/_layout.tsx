@@ -38,13 +38,14 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="quick-report"
+        name="(quick-report)"
         options={{
           title: "Quick Report",
           tabBarIcon: ({ color }) => <Icon icon="quickReport" color={color} />,
           href: electionRounds?.length ? "/quick-report" : null,
         }}
       />
+
       <Tabs.Screen
         name="guides"
         options={{
