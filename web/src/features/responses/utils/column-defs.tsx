@@ -236,6 +236,19 @@ export const formSubmissionsByFormColumnDefs: ColumnDef<FormSubmissionByForm>[] 
     enableSorting: true,
     enableGlobalFilter: true,
   },
+  {
+    header: '',
+    accessorKey: 'action',
+    enableSorting: false,
+    cell: ({ row }) => (
+      <Link
+        className='hover:bg-purple-100 inline-flex h-6 w-6 rounded-full items-center justify-center'
+        params={{ formId: row.original.formId }}
+        to='/responses/$formId/aggregated'>
+        <ChevronRightIcon className='w-4 text-purple-600' />
+      </Link>
+    ),
+  },
 ];
 
 export const questionExtraInfoColumnDefs: ColumnDef<QuestionExtraData>[] = [

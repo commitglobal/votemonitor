@@ -98,7 +98,7 @@ export default function ResponsesDashboard(): ReactElement {
                         }}
                         value={byFilter}>
                         {Object.entries(viewBy).map(([value, label]) => (
-                          <DropdownMenuRadioItem value={value}>{label}</DropdownMenuRadioItem>
+                          <DropdownMenuRadioItem key={value} value={value}>{label}</DropdownMenuRadioItem>
                         ))}
                       </DropdownMenuRadioGroup>
                     </DropdownMenuContent>
