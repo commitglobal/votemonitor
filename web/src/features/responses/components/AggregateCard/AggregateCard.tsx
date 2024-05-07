@@ -1,4 +1,5 @@
 import { Square2StackIcon } from '@heroicons/react/24/solid';
+import { useLoaderData } from '@tanstack/react-router';
 import { useRef } from 'react';
 import type { FunctionComponent } from '@/common/types';
 import { saveChart } from '@/components/charts/utils/save-chart';
@@ -19,6 +20,7 @@ import { NumberAggregateContent } from '../NumberAggregateContent/NumberAggregat
 import { RatingAggregateContent } from '../RatingAggregateContent/RatingAggregateContent';
 import { SingleSelectAggregateContent } from '../SingleSelectAggregateContent/SingleSelectAggregateContent';
 import { TextAggregateContent } from '../TextAggregateContent/TextAggregateContent';
+import { QuestionExtraDataSection } from '../QuestionExtraDataSection/QuestionExtraDataSection';
 
 type AggregateCardProps = {
   aggregate: BaseQuestionAggregate;
@@ -27,6 +29,11 @@ type AggregateCardProps = {
 
 export function AggregateCard({ aggregate, language }: AggregateCardProps): FunctionComponent {
   const chartRef = useRef(null);
+
+  const formSubmission = useLoaderData({ from: '/responses/$formId/aggregated' });
+
+  const notes = formSubmission.notes.filter((note) => note.questionId === aggregate.questionId);
+  const attachments = formSubmission.attachments.filter((attachment) => attachment.questionId === aggregate.questionId);
 
   return (
     <Card key={aggregate.questionId} className='max-w-4xl'>
@@ -63,6 +70,10 @@ export function AggregateCard({ aggregate, language }: AggregateCardProps): Func
         )}
 
         {isTextAggregate(aggregate) && <TextAggregateContent aggregate={aggregate} />}
+
+        {(notes.length > 0 || attachments.length > 0) && (
+          <QuestionExtraDataSection attachments={attachments} notes={notes} />
+        )}
       </CardContent>
     </Card>
   );
