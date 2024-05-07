@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Slot, SplashScreen } from "expo-router";
+import { Slot, SplashScreen, useNavigationContainerRef } from "expo-router";
 import AuthContextProvider from "../contexts/auth/AuthContext.provider";
 import { TamaguiProvider } from "@tamagui/core";
 import { tamaguiConfig } from "../tamagui.config";
@@ -10,10 +10,37 @@ import PersistQueryContextProvider from "../contexts/persist-query/PersistQueryC
 import { PortalProvider } from "tamagui";
 import { NetInfoProvider } from "../contexts/net-info-banner/NetInfoContext";
 import NetInfoBanner from "../components/NetInfoBanner";
+import { EasUpdateMonitorContextProvider } from "../contexts/eas-update/EasUpdateMonitorContextProvider";
+import * as Sentry from "@sentry/react-native";
+import { isRunningInExpoGo } from "expo";
+
+// Construct a new instrumentation instance. This is needed to communicate between the integration and React
+const routingInstrumentation = new Sentry.ReactNavigationInstrumentation();
+
+Sentry.init({
+  dsn: process.env.EXPO_PUBLIC_SENTRY_DSN,
+  debug: __DEV__,
+  enableNative: true,
+  environment: process.env.EXPO_PUBLIC_ENVIRONMENT,
+  attachScreenshot: true,
+  enabled: !__DEV__,
+  // Set tracesSampleRate to 1.0 to capture 100%
+  // of transactions for performance monitoring.
+  // We recommend adjusting this value in production
+  tracesSampleRate: process.env.EXPO_PUBLIC_ENVIRONMENT === "production" ? 0.2 : 0,
+  integrations: [
+    new Sentry.ReactNativeTracing({
+      // Pass instrumentation to be used as `routingInstrumentation`
+      routingInstrumentation,
+      enableNativeFramesTracking: !isRunningInExpoGo(),
+      // ...
+    }),
+  ],
+});
 
 SplashScreen.preventAutoHideAsync();
 
-export default function Root() {
+function RootLayout() {
   const [loaded] = useFonts({
     Roboto: require("../assets/fonts/Roboto-Medium.ttf"),
     RobotoRegular: require("../assets/fonts/Roboto-Regular.ttf"),
@@ -22,6 +49,15 @@ export default function Root() {
     DMSansRegular: require("../assets/fonts/DMSans-Regular.ttf"),
     DMSansBold: require("../assets/fonts/DMSans-Bold.ttf"),
   });
+
+  // Capture the NavigationContainer ref and register it with the instrumentation.
+  const ref = useNavigationContainerRef();
+
+  React.useEffect(() => {
+    if (ref) {
+      routingInstrumentation.registerNavigationContainer(ref);
+    }
+  }, [ref]);
 
   useEffect(() => {
     if (loaded) {
@@ -40,8 +76,10 @@ export default function Root() {
           <AuthContextProvider>
             <PersistQueryContextProvider>
               <LanguageContextProvider>
-                <Slot />
-                <NetInfoBanner />
+                <EasUpdateMonitorContextProvider>
+                  <Slot />
+                  <NetInfoBanner />
+                </EasUpdateMonitorContextProvider>
               </LanguageContextProvider>
             </PersistQueryContextProvider>
           </AuthContextProvider>
@@ -50,3 +88,6 @@ export default function Root() {
     </TamaguiProvider>
   );
 }
+
+// Wrap the Root Layout route component with `Sentry.wrap` to capture gesture info and profiling data.
+export default Sentry.wrap(RootLayout);

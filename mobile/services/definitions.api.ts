@@ -188,21 +188,23 @@ export const getPollingStationInformation = (
     @returns {PollingStationInformationAPIResponse} 
 */
 
+export type FormAPIModel = {
+  id: string;
+  formType: string; // "ClosingAndCounting",
+  code: string; // "A1",
+  name: Record<string, string>; // { "EN": "test form", "RO": "formular de test" },
+  status: string; // "Published",
+  defaultLanguage: string; // "RO",
+  languages: string[]; // [ "RO", "EN" ],
+  createdOn: string;
+  lastModifiedOn: string; // "2024-04-12T11:45:38.589445Z"
+  questions: ApiFormQuestion[];
+};
+
 export type ElectionRoundsAllFormsAPIResponse = {
   electionRoundId: string;
   version: string;
-  forms: {
-    id: string;
-    formType: string; // "ClosingAndCounting",
-    code: string; // "A1",
-    name: Record<string, string>; // { "EN": "test form", "RO": "formular de test" },
-    status: string; // "Published",
-    defaultLanguage: string; // "RO",
-    languages: string[]; // [ "RO", "EN" ],
-    createdOn: string;
-    lastModifiedOn: string; // "2024-04-12T11:45:38.589445Z"
-    questions: ApiFormQuestion[];
-  }[];
+  forms: FormAPIModel[];
 };
 
 export const getElectionRoundAllForms = (

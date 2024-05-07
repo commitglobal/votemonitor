@@ -1,6 +1,7 @@
 import * as SecureStore from "expo-secure-store";
 import axios, { AxiosRequestHeaders } from "axios";
 import { reloadAsync } from "expo-updates";
+import * as Sentry from "@sentry/react-native";
 
 // https://vitejs.dev/guide/env-and-mode.html
 const API = axios.create({
@@ -26,6 +27,7 @@ API.interceptors.request.use(async (request) => {
   } catch (err) {
     // User not authenticated. May be a public API.
     // Catches "The user is not authenticated".
+    Sentry.captureException(err);
     return request;
   }
 

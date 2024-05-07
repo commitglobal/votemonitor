@@ -5,6 +5,7 @@ import * as SecureStore from "expo-secure-store";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { QueryClient } from "@tanstack/react-query";
 import * as DB from "../../database/DAO/PollingStationsNomenclatorDAO";
+import * as Sentry from "@sentry/react-native";
 
 const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -19,7 +20,6 @@ const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
   const signIn = async (email: string, password: string) => {
     try {
       setIsLoading(true);
-      // const { token } = await dummyLogin();
       const {
         data: { token },
       } = await API.post("auth/login", {
@@ -29,6 +29,7 @@ const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
       SecureStore.setItem("access_token", token);
       setIsAuthenticated(true);
     } catch (err: unknown) {
+      Sentry.captureException(err);
       console.log("Error while trying to sign in", err);
       throw new Error("Error while trying to sign in");
     } finally {

@@ -1,15 +1,34 @@
 import React from "react";
-import { router } from "expo-router";
-import { Stack, YStack } from "tamagui";
+import { router, useNavigation } from "expo-router";
+import { YStack } from "tamagui";
 import { Screen } from "./Screen";
 import { Icon } from "./Icon";
 import { Typography } from "./Typography";
 import Button from "./Button";
+import Header from "./Header";
+import { DrawerActions } from "@react-navigation/native";
 
-const NoVisitsExist = () => (
-  <Screen preset="fixed">
-    <Stack height="100%" backgroundColor="white" justifyContent="center" alignItems="center">
-      <YStack width={312} alignItems="center" gap="$md">
+const NoVisitsExist = () => {
+  const navigation = useNavigation();
+
+  return (
+    <Screen preset="fixed">
+      <Header
+        title={"Observation"}
+        titleColor="white"
+        barStyle="light-content"
+        leftIcon={<Icon icon="menuAlt2" color="white" />}
+        onLeftPress={() => navigation.dispatch(DrawerActions.openDrawer)}
+      />
+      <YStack
+        width="100%"
+        display="flex"
+        backgroundColor="white"
+        alignItems="center"
+        justifyContent="center"
+        gap="$md"
+        paddingHorizontal="$md"
+      >
         <Icon icon="missingPollingStation" />
         <YStack gap="$xxxs">
           <Typography preset="subheading" textAlign="center">
@@ -28,8 +47,8 @@ const NoVisitsExist = () => (
           Add your first polling station
         </Button>
       </YStack>
-    </Stack>
-  </Screen>
-);
+    </Screen>
+  );
+};
 
 export default NoVisitsExist;
