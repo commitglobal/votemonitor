@@ -7,6 +7,8 @@ using GetRequest = Vote.Monitor.Api.Feature.PollingStation.Get.Request;
 
 namespace Vote.Monitor.Api.IntegrationTests.PollingStation;
 
+
+[Collection("IntegrationTests")]
 public class CreateEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeeder>>
 {
     public HttpServerFixture<NoopDataSeeder> Fixture { get; }

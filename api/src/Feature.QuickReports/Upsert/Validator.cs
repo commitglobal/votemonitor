@@ -15,11 +15,11 @@ public class Validator : Validator<Request>
 
         RuleFor(x => x.PollingStationId)
             .NotEmpty()
+            .NotEqual(Guid.Empty)
             .When(x => x.QuickReportLocationType == QuickReportLocationType.VisitedPollingStation);
 
         RuleFor(x => x.PollingStationDetails)
             .NotEmpty()
-            .When(x => x.QuickReportLocationType == QuickReportLocationType.OtherPollingStation)
             .MaximumLength(1024)
             .When(x => x.QuickReportLocationType == QuickReportLocationType.OtherPollingStation);
 

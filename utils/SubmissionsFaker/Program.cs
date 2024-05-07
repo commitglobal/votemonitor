@@ -1,6 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
 using Bogus;
+using Dumpify;
 using Refit;
 using Spectre.Console;
 using SubmissionsFaker.Clients.Models;
@@ -29,10 +30,10 @@ AnsiConsole.Write(
 #region constants
 const int NUMBER_OF_OBSERVERS = 100;
 const int NUMBER_OF_SUBMISSIONS = 100;
+
 const string platformAdminUsername = "john.doe@example.com";
 const string platformAdminPassword = "password123";
 #endregion
-
 
 #region setup clients
 var client = new HttpClient
@@ -52,7 +53,7 @@ var platformAdminToken = await tokenApi.GetToken(new Credentials(platformAdminUs
 #endregion
 
 CreateResponse electionRound = default!;
-CreateResponse ngo = new CreateResponse() { Id = Guid.Parse("85fc1300-7046-43bb-9814-7a4fd67bec96 ") };
+CreateResponse ngo = default!;
 CreateResponse monitoringNgo = default!;
 LoginResponse ngoAdminToken = default!;
 List<LocationNode> pollingStations = [];
@@ -114,8 +115,6 @@ await AnsiConsole.Progress()
         formIds = ids[0];
     });
 
-
-
 await AnsiConsole.Progress()
     .AutoRefresh(true)
     .AutoClear(false)
@@ -157,6 +156,9 @@ await AnsiConsole.Progress()
         foreach (var submissionsChunk in submissionRequests.Chunk(2))
         {
             var observer = faker.PickRandom(observersTokens)!;
+
+            submissionsChunk.DumpConsole();
+
             var tasks = submissionsChunk.Select(submissionRequest => observerApi.SubmitForm(electionRound.Id, submissionRequest, observer.Token)).ToList();
             await Task.WhenAll(tasks);
             progressTask.Increment(2);

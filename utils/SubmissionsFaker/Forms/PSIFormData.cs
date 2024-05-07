@@ -1,6 +1,4 @@
 ﻿using SubmissionsFaker.Clients.Models.Questions;
-using SubmissionsFaker.Clients.Models;
-using SubmissionsFaker.Clients.NgoAdmin.Models;
 using SubmissionsFaker.Clients.PlatformAdmin.Models;
 
 namespace SubmissionsFaker.Forms;

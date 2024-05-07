@@ -9,16 +9,18 @@ public sealed class SingleSelectAnswerFaker : Faker<SingleSelectAnswerRequest>
     public SingleSelectAnswerFaker(Guid questionId, List<SelectOptionRequest> options)
     {
         RuleFor(x => x.QuestionId, questionId);
-        var selectedOption = FakerHub.PickRandom(options);
-
-        string? text = null;
-        if (selectedOption.IsFreeText)
+        RuleFor(x => x.Selection, f =>
         {
-            text = FakerHub.Lorem.Sentence(100);
-        }
+            var selectedOption = f.PickRandom(options);
 
-        var selection = new SelectedOptionRequest() { OptionId = selectedOption.Id, Text = text };
+            string? text = null;
+            if (selectedOption.IsFreeText)
+            {
+                text = f.Lorem.Sentence(100);
+            }
 
-        RuleFor(x => x.Selection, f => selection);
+            var selection = new SelectedOptionRequest() { OptionId = selectedOption.Id, Text = text };
+            return selection;
+        });
     }
 }

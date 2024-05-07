@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.Data;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Npgsql;
@@ -32,7 +33,7 @@ public static class DomainInstaller
 
             options.EnableSensitiveDataLogging();
         });
-
+        services.AddTransient<IDbConnection>(_ => new NpgsqlConnection(connectionString));
         services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
         services.AddScoped(typeof(IReadRepository<>), typeof(EfRepository<>));
 

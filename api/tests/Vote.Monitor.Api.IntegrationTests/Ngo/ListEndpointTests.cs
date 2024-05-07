@@ -6,6 +6,8 @@ using ListRequest = Vote.Monitor.Api.Feature.Ngo.List.Request;
 using SortOrder = Vote.Monitor.Core.Models.SortOrder;
 
 namespace Vote.Monitor.Api.IntegrationTests.Ngo;
+
+[Collection("IntegrationTests")]
 public class ListEndpointTests : IClassFixture<HttpServerFixture<NgoDataSeeder>>
 {
     public HttpServerFixture<NgoDataSeeder> Fixture { get; }

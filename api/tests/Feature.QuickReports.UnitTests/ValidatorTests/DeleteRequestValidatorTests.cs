@@ -1,64 +1,64 @@
 ﻿
-//namespace Feature.QuickReports.UnitTests.ValidatorTests;
+namespace Feature.QuickReports.UnitTests.ValidatorTests;
 
-//public class DeleteRequestValidatorTests
-//{
-//    private readonly Delete.Validator _validator = new();
+public class DeleteRequestValidatorTests
+{
+    private readonly Delete.Validator _validator = new();
+    
+    [Fact]
+    public void Validation_ShouldFail_When_Id_Empty()
+    {
+        // Arrange
+        var request = new Delete.Request { Id = Guid.Empty };
 
-//    [Fact]
-//    public void Validation_ShouldFail_When_ElectionRoundId_Empty()
-//    {
-//        // Arrange
-//        var request = new Delete.Request { ElectionRoundId = Guid.Empty };
+        // Act
+        var result = _validator.TestValidate(request);
 
-//        // Act
-//        var result = _validator.TestValidate(request);
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.Id);
+    }
 
-//        // Assert
-//        result.ShouldHaveValidationErrorFor(x => x.ElectionRoundId);
-//    }
+    [Fact]
+    public void Validation_ShouldFail_When_ObserverId_Empty()
+    {
+        // Arrange
+        var request = new Delete.Request { ObserverId = Guid.Empty };
 
-//    [Fact]
-//    public void Validation_ShouldFail_When_MonitoringNgoId_Empty()
-//    {
-//        // Arrange
-//        var request = new Delete.Request { MonitoringNgoId = Guid.Empty };
+        // Act
+        var result = _validator.TestValidate(request);
 
-//        // Act
-//        var result = _validator.TestValidate(request);
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.ObserverId);
+    }
 
-//        // Assert
-//        result.ShouldHaveValidationErrorFor(x => x.MonitoringNgoId);
-//    }
+    [Fact]
+    public void Validation_ShouldFail_When_ElectionRoundId_Empty()
+    {
+        // Arrange
+        var request = new Delete.Request { ElectionRoundId = Guid.Empty };
 
-//    [Fact]
-//    public void Validation_ShouldFail_When_Id_Empty()
-//    {
-//        // Arrange
-//        var request = new Delete.Request { Id = Guid.Empty };
+        // Act
+        var result = _validator.TestValidate(request);
 
-//        // Act
-//        var result = _validator.TestValidate(request);
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.ElectionRoundId);
+    }
 
-//        // Assert
-//        result.ShouldHaveValidationErrorFor(x => x.Id);
-//    }
+    [Fact]
+    public void Validation_ShouldPass_When_ValidRequest()
+    {
+        // Arrange
+        var request = new Delete.Request
+        {
+            ElectionRoundId = Guid.NewGuid(),
+            ObserverId = Guid.NewGuid(),
+            Id = Guid.NewGuid()
+        };
 
-//    [Fact]
-//    public void Validation_ShouldPass_When_ValidRequest()
-//    {
-//        // Arrange
-//        var request = new Delete.Request
-//        {
-//            ElectionRoundId = Guid.NewGuid(),
-//            MonitoringNgoId = Guid.NewGuid(),
-//            Id = Guid.NewGuid()
-//        };
+        // Act
+        var result = _validator.TestValidate(request);
 
-//        // Act
-//        var result = _validator.TestValidate(request);
-
-//        // Assert
-//        result.ShouldNotHaveAnyValidationErrors();
-//    }
-//}
+        // Assert
+        result.ShouldNotHaveAnyValidationErrors();
+    }
+}

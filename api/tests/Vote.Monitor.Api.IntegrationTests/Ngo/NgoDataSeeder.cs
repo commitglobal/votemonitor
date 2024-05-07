@@ -3,6 +3,8 @@ using Vote.Monitor.Domain.Repository;
 
 namespace Vote.Monitor.Api.IntegrationTests.Ngo;
 
+
+[Collection("IntegrationTests")]
 public class NgoDataSeeder(
     ILogger<NgoDataSeeder> logger,
     IRepository<Domain.Entities.NgoAggregate.Ngo> repository)

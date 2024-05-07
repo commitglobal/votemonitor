@@ -7,6 +7,8 @@ using GetEndpoint = Vote.Monitor.Api.Feature.Ngo.Get.Endpoint;
 using GetRequest = Vote.Monitor.Api.Feature.Ngo.Get.Request;
 
 namespace Vote.Monitor.Api.IntegrationTests.Ngo;
+
+[Collection("IntegrationTests")]
 public class UpdateEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeeder>>
 {
     public HttpServerFixture<NoopDataSeeder> Fixture { get; }

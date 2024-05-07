@@ -114,7 +114,7 @@ public class ListRequestValidatorTests
     public void Validation_ShouldPass_When_ValidRequest()
     {
         // Arrange
-        var request = new List.Request()
+        var request = new List.Request
         {
             ElectionRoundId = Guid.NewGuid(),
             NgoId = Guid.NewGuid()

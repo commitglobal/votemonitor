@@ -3,6 +3,8 @@ using GetEndpoint = Vote.Monitor.Api.Feature.UserPreferences.Get.Endpoint;
 using GetRequest = Vote.Monitor.Api.Feature.UserPreferences.Get.Request;
 
 namespace Vote.Monitor.Api.IntegrationTests.UserPreferences;
+
+[Collection("IntegrationTests")]
 public class GetEndpointTests : IClassFixture<HttpServerFixture<NoopDataSeeder>>
 {
     public HttpServerFixture<NoopDataSeeder> Fixture { get; }

@@ -1,5 +1,4 @@
-﻿using System.Data;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Vote.Monitor.Domain.Constants;
 using Vote.Monitor.Domain.Entities.AttachmentAggregate;
@@ -39,8 +38,6 @@ public class VoteMonitorContext : IdentityDbContext<ApplicationUser, IdentityRol
         _currentUserIdProvider = currentUserIdProvider;
     }
 
-    // Used by Dapper
-    public IDbConnection Connection => Database.GetDbConnection();
     public DbSet<Country> Countries { get; set; }
     public DbSet<Ngo> Ngos { get; set; }
     public DbSet<NgoAdmin> NgoAdmins { get; set; }
