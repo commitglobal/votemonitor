@@ -16,6 +16,9 @@ import AddAttachment from "../../components/AddAttachment";
 import { Keyboard } from "react-native";
 import OptionsSheet from "../../components/OptionsSheet";
 import { Typography } from "../../components/Typography";
+import { useAddQuickReport } from "../../services/mutations/add-quick-report.mutation";
+import * as Crypto from "expo-crypto";
+import { QuickReportLocationType } from "../../services/definitions.api";
 
 const mapVisitsToSelectPollingStations = (visits: PollingStationVisitVM[] = []) => {
   const pollingStationsForSelect = visits.map((visit) => {
@@ -28,20 +31,32 @@ const mapVisitsToSelectPollingStations = (visits: PollingStationVisitVM[] = []) 
 
   //   adding the 'other' and 'not related to a polling station' options
   pollingStationsForSelect.push(
-    { id: "other", value: "other", label: "Other polling station" },
+    {
+      id: "other",
+      value: QuickReportLocationType.OtherPollingStation,
+      label: "Other polling station",
+    },
     {
       id: "not_related_to_polling_station",
-      value: "not_related_to_polling_station",
+      value: QuickReportLocationType.NotRelatedToAPollingStation,
       label: "Not related to a polling station",
     },
   );
   return pollingStationsForSelect;
 };
 
+type ReportIssueFormType = {
+  polling_station: { details: string; id: string };
+  issue_title: string;
+  issue_description: string;
+};
+
 const ReportIssue = () => {
-  const { visits } = useUserData();
+  const { visits, activeElectionRound } = useUserData();
   const pollingStations = useMemo(() => mapVisitsToSelectPollingStations(visits), [visits]);
   const [optionsSheetOpen, setOptionsSheetOpen] = useState(false);
+
+  const { mutate } = useAddQuickReport(activeElectionRound?.id);
 
   const insets = useSafeAreaInsets();
 
@@ -50,7 +65,7 @@ const ReportIssue = () => {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm({
+  } = useForm<ReportIssueFormType>({
     defaultValues: {
       polling_station: { details: "", id: "" },
       issue_title: "",
@@ -58,9 +73,44 @@ const ReportIssue = () => {
     },
   });
 
-  const onSubmit = (formData: Record<string, string | Record<string, string>>) => {
-    // TODO: waiting for API to be ready
+  const onSubmit = (formData: ReportIssueFormType) => {
     console.log("💞💞💞💞💞💞 FORM DATA 💞💞💞💞💞", formData);
+
+    if (!visits || !activeElectionRound) {
+      return;
+    }
+
+    let quickReportLocationType = QuickReportLocationType.VisitedPollingStation;
+    let pollingStationId: string | null = formData.polling_station.id;
+
+    if (
+      [
+        QuickReportLocationType.OtherPollingStation,
+        QuickReportLocationType.NotRelatedToAPollingStation,
+      ].includes(pollingStationId as QuickReportLocationType)
+    ) {
+      quickReportLocationType = pollingStationId as QuickReportLocationType;
+      pollingStationId = null;
+    }
+
+    mutate(
+      {
+        id: Crypto.randomUUID(),
+        electionRoundId: activeElectionRound?.id,
+        description: formData.issue_description,
+        title: formData.issue_title,
+        quickReportLocationType,
+        pollingStationDetails: formData.polling_station.details,
+        ...(pollingStationId ? { pollingStationId } : {}),
+      },
+      {
+        onError: (err) => {
+          // TODO: Display toast
+          console.log(err);
+        },
+      },
+    );
+
     router.back();
   };
 
@@ -94,7 +144,8 @@ const ReportIssue = () => {
               control={control}
               rules={{
                 validate: ({ id, details }) => {
-                  if (id === "other" && !details) return "This field is required";
+                  if (id === QuickReportLocationType.OtherPollingStation && !details)
+                    return "This field is required";
                 },
               }}
               render={({ field: { onChange, value = { id: "", details: "" } } }) => (
@@ -111,7 +162,7 @@ const ReportIssue = () => {
                   </FormElement>
                   {/* polling station details */}
                   {console.log(errors)}
-                  {value.id === "other" && (
+                  {value.id === QuickReportLocationType.OtherPollingStation && (
                     <YStack gap="$xxs">
                       <FormInput
                         title="Polling station details *"
