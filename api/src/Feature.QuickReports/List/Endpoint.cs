@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using Authorization.Policies;
 using Dapper;
 using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.Specifications;
@@ -12,11 +13,12 @@ public class Endpoint(IDbConnection dbConnection)
     {
         Get("/api/election-rounds/{electionRoundId}/quick-reports");
         DontAutoTag();
-        Options(x => x.WithTags("quick-reports", "mobile"));
+        Options(x => x.WithTags("quick-reports"));
         Summary(s =>
         {
             s.Summary = "Gets all quick-reports submitted by observers for a monitoring ngo";
         });
+        Policies(PolicyNames.NgoAdminsOnly);
     }
 
     public override async Task<PagedResponse<QuickReportOverviewModel>> ExecuteAsync(Request req, CancellationToken ct)

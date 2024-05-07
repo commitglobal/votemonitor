@@ -1,7 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
 using Bogus;
-using Dumpify;
 using Refit;
 using Spectre.Console;
 using SubmissionsFaker.Clients.Models;
@@ -69,7 +68,7 @@ await AnsiConsole.Progress()
     .Columns(progressColumns)
     .StartAsync(async ctx =>
     {
-        var setupTask = ctx.AddTask("[green]Setup election round and NGO [/]", maxValue: 7);
+        var setupTask = ctx.AddTask("[green] Setup election round and NGO [/]", maxValue: 7);
 
         electionRound = await platformAdminApi.CreateElectionRound(new ElectionRoundFaker().Generate(), platformAdminToken.Token);
         setupTask.Increment(1);
@@ -141,7 +140,6 @@ await AnsiConsole.Progress()
         #endregion
     });
 
-
 await AnsiConsole.Progress()
     .AutoRefresh(true)
     .AutoClear(false)
@@ -156,8 +154,6 @@ await AnsiConsole.Progress()
         foreach (var submissionsChunk in submissionRequests.Chunk(2))
         {
             var observer = faker.PickRandom(observersTokens)!;
-
-            submissionsChunk.DumpConsole();
 
             var tasks = submissionsChunk.Select(submissionRequest => observerApi.SubmitForm(electionRound.Id, submissionRequest, observer.Token)).ToList();
             await Task.WhenAll(tasks);
