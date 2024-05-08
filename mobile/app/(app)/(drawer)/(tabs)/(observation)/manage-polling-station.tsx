@@ -1,9 +1,10 @@
 import { Screen } from "../../../../../components/Screen";
 import Header from "../../../../../components/Header";
 import { Icon } from "../../../../../components/Icon";
-import { YStack } from "tamagui";
+import { YStack, XStack } from "tamagui";
 import { Typography } from "../../../../../components/Typography";
 import { router } from "expo-router";
+import Card from "../../../../../components/Card";
 
 const ManagePollingStation = () => {
   return (
@@ -14,6 +15,7 @@ const ManagePollingStation = () => {
         stickyHeaderIndices: [0],
         bounces: false,
       }}
+      backgroundColor="white"
     >
       <Header
         title={"Manage my polling station"}
@@ -23,10 +25,34 @@ const ManagePollingStation = () => {
         onLeftPress={() => router.back()}
       />
 
-      <YStack>
-        <Typography>My polling stations!</Typography>
+      <YStack gap={24} paddingTop={24} paddingHorizontal={16}>
+        <PollingStationCard />
+        <PollingStationCard />
+        <PollingStationCard />
+        <PollingStationCard />
       </YStack>
     </Screen>
+  );
+};
+
+const PollingStationCard = () => {
+  return (
+    <Card>
+      <YStack gap={16}>
+        <XStack justifyContent="space-between" alignItems="center">
+          <Typography preset="body1" fontWeight="700">
+            Polling station #:{" "}
+          </Typography>
+          <Icon icon="bin" color="white"></Icon>
+        </XStack>
+
+        <Typography>[Location L1]: </Typography>
+        <Typography>[Location L2]: </Typography>
+        <Typography>[Location L3]: </Typography>
+        <Typography>[Street]: </Typography>
+        <Typography> Polling station number: </Typography>
+      </YStack>
+    </Card>
   );
 };
 

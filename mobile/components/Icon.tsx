@@ -43,6 +43,7 @@ import UndrawFlag from "../assets/icons/undraw_report_flag.svg";
 import LoginError from "../assets/icons/LoginError.svg";
 import PasswordConfirmation from "../assets/icons/password confirmation.svg";
 import SplashLogo from "../assets/icons/splash-logo.svg";
+import Bin from "../assets/icons/Trash2.svg";
 import { styled, View, ViewProps } from "tamagui";
 import { StyleProp, ViewStyle } from "react-native";
 import { Ref } from "react";
@@ -129,6 +130,7 @@ export const defaultIcon = React.forwardRef(
       loginError: <LoginError fill={color} width={size} height={size} />,
       passwordConfirmation: <PasswordConfirmation fill={color} width={size} height={size} />,
       splashLogo: <SplashLogo width={315.6} height={72} />,
+      bin: <Bin fill={color} width={size} height={size} />,
     };
 
     return (
