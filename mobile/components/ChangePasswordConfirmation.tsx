@@ -1,11 +1,11 @@
-import { Screen } from "../../components/Screen";
+import { Screen } from "../components/Screen";
 import { useTranslation } from "react-i18next";
-import { Icon } from "../../components/Icon";
+import { Icon } from "../components/Icon";
 import { YStack, XStack, styled } from "tamagui";
-import { Typography } from "../../components/Typography";
+import { Typography } from "../components/Typography";
 import { StatusBar } from "react-native";
-import Card from "../../components/Card";
-import Button from "../../components/Button";
+import Card from "../components/Card";
+import Button from "../components/Button";
 import { router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 

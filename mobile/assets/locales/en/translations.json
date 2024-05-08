@@ -30,25 +30,25 @@
       "general": "Error while trying to log in"
     }
   },
-  "reset":{
+  "reset": {
     "header": {
-        "title": "Forgot password"
+      "title": "Forgot password"
     },
     "title": "Forgot your password?",
     "paragraph": "Please enter the email address associated with your account and we'll send you a verification code.",
     "form": {
-        "email": {
-          "label": "E-mail *",
-          "placeholder": "E-mail",
-          "required": "E-mail is mandatory",
-          "format": "E-mail format is not valid"
-        }
+      "email": {
+        "label": "E-mail *",
+        "placeholder": "E-mail",
+        "required": "E-mail is mandatory",
+        "format": "E-mail format is not valid"
+      }
     },
-    "actions" : {
-        "send": "Send"
+    "actions": {
+      "send": "Send"
     }
   },
-  "email-confirmation" : {
+  "email-confirmation": {
     "title": "Email sent",
     "paragraph": "Check your email and open the link we sent to continue. Check your spam filter if you did not receive the email."
   },
@@ -138,38 +138,39 @@
   },
   "change_password": {
     "header": {
-        "title": "Change password"
+      "title": "Change password"
     },
     "form": {
-        "current_password": {
-            "label": "Current password *",
-            "placeholder": "Insert current password",
-            "required": "Password is mandatory",
-            "credentials_error": "The current password is incorrect"
-        },
-        "new_password": {
-            "label": "New password *",
-            "placeholder": "Insert new password",
-            "helper": "Must be at least 8 characters",
-            "required": "Password is mandatory",
-            "pattern": "Password should have at least one uppercase character, one number, one special character and to be minimum 8 character long without spaces"
-        },
-        "confirm_password": {
-            "label": "Confirm new password *",
-            "placeholder": "Confirm password",
-            "helper": "Both passwords must match.",
-            "no_match": "Passwords do not match"
-        },
-        "actions": {
-            "save_password": "Save new password"
-        }
+      "current_password": {
+        "label": "Current password *",
+        "placeholder": "Insert current password",
+        "required": "Password is mandatory",
+        "credentials_error": "The current password is incorrect"
+      },
+      "new_password": {
+        "label": "New password *",
+        "placeholder": "Insert new password",
+        "helper": "Must be at least 8 characters",
+        "required": "Password is mandatory",
+        "pattern": "Password should have at least one uppercase character, one number, one special character and to be minimum 8 character long without spaces"
+      },
+      "confirm_password": {
+        "label": "Confirm new password *",
+        "placeholder": "Confirm password",
+        "helper": "Both passwords must match.",
+        "required": "Password is mandatory",
+        "no_match": "Passwords do not match"
+      },
+      "actions": {
+        "save_password": "Save new password"
+      }
     },
     "success_page": {
-        "title": "Password changed!",
-        "paragraph": "Your password has been successfully changed.",
-        "actions": {
-            "back": "Back to app"
-        }
+      "title": "Password changed!",
+      "paragraph": "Your password has been successfully changed.",
+      "actions": {
+        "back": "Back to app"
+      }
     }
   }
 }

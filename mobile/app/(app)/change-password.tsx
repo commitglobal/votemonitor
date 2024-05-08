@@ -7,16 +7,15 @@ import { YStack } from "tamagui";
 import Card from "../../components/Card";
 import Button from "../../components/Button";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Control, Controller, useForm } from "react-hook-form";
-import React from "react";
-import { Typography } from "../../components/Typography";
-import FormInput from "../../components/FormInputs/FormInput";
+import { Controller, useForm } from "react-hook-form";
+import React, { useState } from "react";
+import FormInput, { FormInputProps } from "../../components/FormInputs/FormInput";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import ChangePasswordConfirmation from "./change-password-confirmation";
 import { useChangePasswordMutation } from "../../services/mutations/change-password.mutation";
 import { ChangePasswordPayload } from "../../services/definitions.api";
+import ChangePasswordConfirmation from "../../components/ChangePasswordConfirmation";
 
 interface FormData {
   currentPassword: string;
@@ -24,19 +23,40 @@ interface FormData {
   confirmPassword: string;
 }
 
-const ChangePassowrd = () => {
+const PasswordInput = (props: FormInputProps): JSX.Element => {
+  const [secureTextEntry, setSecureTextEntry] = useState(true);
+  return (
+    <FormInput
+      {...props}
+      secureTextEntry={secureTextEntry}
+      iconRight={
+        <Icon icon={secureTextEntry === false ? "eye" : "eyeOff"} size={20} color="$gray11" />
+      }
+      onIconRightPress={() => {
+        setSecureTextEntry(!secureTextEntry);
+      }}
+    />
+  );
+};
+
+const ChangePassword = () => {
   const insets = useSafeAreaInsets();
   const { t } = useTranslation("change_password");
-
   // Form validation schema
   const formSchema = z
     .object({
-      currentPassword: z.string().min(1, t("form.current_password.required")),
+      currentPassword: z.string({
+        required_error: t("form.current_password.required"),
+      }),
       newPassword: z
-        .string()
+        .string({
+          required_error: t("form.new_password.required"),
+        })
         .min(8, t("form.new_password.helper"))
         .regex(/^(?=.*[A-Z])(?=.*[0-9])(?=.*[^a-zA-Z0-9]).*$/, t("form.new_password.pattern")),
-      confirmPassword: z.string(),
+      confirmPassword: z.string({
+        required_error: t("form.confirm_password.required"),
+      }),
     })
     .refine((data) => data.newPassword === data.confirmPassword, {
       message: t("form.confirm_password.no_match"),
@@ -44,22 +64,16 @@ const ChangePassowrd = () => {
     });
 
   // React Hook Form setup
-  const { handleSubmit, control, formState } = useForm<FormData>({
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm<FormData>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      currentPassword: "Votemonitor1*",
-      newPassword: "Votemonitor1*",
-      confirmPassword: "Votemonitor1*",
-    },
   });
-  const { errors } = formState;
 
   // Submit handler - change password
-  const {
-    mutate: updatePassword,
-    isError: credentialsError,
-    isSuccess: succesfullyChanged,
-  } = useChangePasswordMutation();
+  const { mutate: updatePassword, isSuccess: successfullyChanged } = useChangePasswordMutation();
 
   const onSubmit = async (data: FormData) => {
     const payload: ChangePasswordPayload = {
@@ -67,13 +81,19 @@ const ChangePassowrd = () => {
       newPassword: data.newPassword.trim(),
       confirmNewPassword: data.confirmPassword.trim(),
     };
-    updatePassword(payload);
+    updatePassword(payload, {
+      onError(error) {
+        console.error("error", error);
+      },
+    });
   };
 
+  if (successfullyChanged) {
+    return <ChangePasswordConfirmation />;
+  }
+
   // Render either form or confirmation screen
-  return succesfullyChanged ? (
-    <ChangePasswordConfirmation />
-  ) : (
+  return (
     <Screen
       preset="auto"
       backgroundColor="white"
@@ -89,44 +109,58 @@ const ChangePassowrd = () => {
         leftIcon={<Icon icon="chevronLeft" color="white" />}
         onLeftPress={() => router.back()}
       />
-
-      <YStack gap="$xl" paddingHorizontal={16} paddingVertical={40}>
-        <PasswordInput
-          formKey="currentPassword"
-          control={control}
-          error={
-            errors?.currentPassword?.message?.toString() ||
-            (credentialsError ? t("form.current_password.credentials_error") : undefined)
-          }
-          label={t("form.current_password.label")}
-          placeholder={t("form.current_password.placeholder")}
-          hasError={!!errors?.currentPassword || credentialsError}
+      <YStack gap="$xl" paddingHorizontal="$md" paddingTop={40}>
+        <Controller
+          key="currentPassword"
           name="currentPassword"
-        />
-
-        <PasswordInput
-          formKey="newPassword"
           control={control}
-          helper={t("form.new_password.helper")}
-          error={errors?.newPassword?.message?.toString()}
-          label={t("form.new_password.label")}
-          placeholder={t("form.new_password.placeholder")}
-          hasError={!!errors?.newPassword}
+          render={({ field: { onChange, value } }) => (
+            <PasswordInput
+              error={errors.currentPassword?.message}
+              key="currentPassword"
+              type="password"
+              title={t("form.current_password.label")}
+              placeholder={t("form.current_password.placeholder")}
+              value={value}
+              onChangeText={onChange}
+            />
+          )}
+        />
+        <Controller
+          key="newPassword"
           name="newPassword"
-        />
-
-        <PasswordInput
-          formKey="confirmPassword"
           control={control}
-          helper={t("form.confirm_password.helper")}
-          error={errors?.confirmPassword?.message?.toString()}
-          label={t("form.confirm_password.label")}
-          placeholder={t("form.confirm_password.placeholder")}
-          hasError={!!errors?.confirmPassword}
+          render={({ field: { onChange, value } }) => (
+            <PasswordInput
+              error={errors.newPassword?.message}
+              key="newPassword"
+              type="password"
+              title={t("form.new_password.label")}
+              placeholder={t("form.new_password.placeholder")}
+              helper={t("form.new_password.helper")}
+              value={value}
+              onChangeText={onChange}
+            />
+          )}
+        />
+        <Controller
+          key="confirmPassword"
           name="confirmPassword"
+          control={control}
+          render={({ field: { onChange, value } }) => (
+            <PasswordInput
+              error={errors.confirmPassword?.message}
+              key="confirmPassword"
+              type="password"
+              title={t("form.confirm_password.label")}
+              placeholder={t("form.confirm_password.placeholder")}
+              helper={t("form.confirm_password.helper")}
+              value={value}
+              onChangeText={onChange}
+            />
+          )}
         />
       </YStack>
-
       <Card width="100%" paddingBottom={16 + insets.bottom} marginTop="auto">
         <Button onPress={handleSubmit(onSubmit)}>{t("form.actions.save_password")}</Button>
       </Card>
@@ -134,57 +168,8 @@ const ChangePassowrd = () => {
   );
 };
 
-interface PasswordInputProps {
-  control: Control<FormData, any>;
-  helper?: string;
-  error?: string | undefined;
-  label: string;
-  placeholder: string;
-  hasError: boolean;
-  name: keyof FormData;
-  formKey: string;
-}
-
-const PasswordInput = (props: PasswordInputProps) => {
-  const { control, helper, error, label, placeholder, name, formKey, hasError } = props;
-
-  const [secureTextEntry, setSecureTextEntry] = React.useState(false);
-  const passIcon = secureTextEntry === false ? "eye" : "eyeOff";
-
-  return (
-    <Controller
-      key={formKey}
-      name={name}
-      control={control}
-      render={({ field: { onChange, value } }) => (
-        <YStack gap={6}>
-          <FormInput
-            error={error}
-            key="currentPassword"
-            type="password"
-            secureTextEntry={secureTextEntry}
-            title={label}
-            placeholder={placeholder}
-            value={value}
-            onChangeText={onChange}
-            iconRight={<Icon icon={passIcon} size={20} color="$gray11" />}
-            onIconRightPress={() => {
-              setSecureTextEntry(!secureTextEntry);
-            }}
-          ></FormInput>
-
-          {(!hasError || error === undefined) && helper && (
-            <Typography color="gray">{helper}</Typography>
-          )}
-          {hasError && <Typography color="$red7">{error}</Typography>}
-        </YStack>
-      )}
-    />
-  );
-};
-
 const $containerStyle: ViewStyle = {
   flexGrow: 1,
 };
 
-export default ChangePassowrd;
+export default ChangePassword;
