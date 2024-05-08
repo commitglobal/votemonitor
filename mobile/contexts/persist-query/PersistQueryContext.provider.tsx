@@ -14,6 +14,15 @@ import {
   DeleteAttachmentAPIPayload,
 } from "../../services/api/delete-attachment.api";
 import { Note } from "../../common/models/note";
+import { QuickReportKeys } from "../../services/queries/quick-reports.query";
+import {
+  AddQuickReportAPIPayload,
+  addQuickReport,
+} from "../../services/api/quick-report/post-quick-report.api";
+import {
+  AddAttachmentQuickReportAPIPayload,
+  addAttachmentQuickReport,
+} from "../../services/api/quick-report/add-attachment-quick-report.api";
 
 const queryClient = new QueryClient({
   mutationCache: new MutationCache({
@@ -133,6 +142,21 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
   queryClient.setMutationDefaults(notesKeys.deleteNote(), {
     mutationFn: async (payload: Note) => {
       return payload.isNotSynched ? () => {} : API.deleteNote(payload);
+    },
+  });
+
+  queryClient.setMutationDefaults(QuickReportKeys.add(), {
+    mutationFn: async ({
+      attachments: _,
+      ...payload
+    }: AddQuickReportAPIPayload & { attachments: AddAttachmentQuickReportAPIPayload[] }) => {
+      return addQuickReport(payload);
+    },
+  });
+
+  queryClient.setMutationDefaults(QuickReportKeys.addAttachment(), {
+    mutationFn: async (payload: AddAttachmentQuickReportAPIPayload) => {
+      return performanceLog(() => addAttachmentQuickReport(payload));
     },
   });
 

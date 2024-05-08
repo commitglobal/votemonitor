@@ -22875,7 +22875,7 @@
         "red4": "hsl(360, 97.9%, 94.8%)",
         "red5": "hsl(347, 77%, 40%)",
         "red6": "hsl(0, 70%, 35%)",
-        "red7": "hsl(359, 74.2%, 81.7%)",
+        "red7": "hsl(347, 78%, 50%)",
         "red8": "hsl(359, 69.5%, 74.3%)",
         "red9": "hsl(358, 75.0%, 59.0%)",
         "red10": "hsl(0, 74%, 56%)",
@@ -23126,7 +23126,7 @@
         "color4": "hsl(360, 97.9%, 94.8%)",
         "color5": "hsl(347, 77%, 40%)",
         "color6": "hsl(0, 70%, 35%)",
-        "color7": "hsl(359, 74.2%, 81.7%)",
+        "color7": "hsl(347, 78%, 50%)",
         "color8": "hsl(359, 69.5%, 74.3%)",
         "color9": "hsl(358, 75.0%, 59.0%)",
         "color10": "hsl(0, 74%, 56%)",
@@ -23690,10 +23690,10 @@
         "backgroundHover": "hsl(347, 77%, 40%)",
         "backgroundPress": "hsl(0, 70%, 35%)",
         "backgroundFocus": "hsl(360, 97.9%, 94.8%)",
-        "borderColor": "hsl(359, 74.2%, 81.7%)",
+        "borderColor": "hsl(347, 78%, 50%)",
         "borderColorHover": "hsl(359, 69.5%, 74.3%)",
         "borderColorFocus": "hsl(347, 77%, 40%)",
-        "borderColorPress": "hsl(359, 74.2%, 81.7%)",
+        "borderColorPress": "hsl(347, 78%, 50%)",
         "id": "light_red_active"
       },
       "light_red_Button": {
@@ -23701,10 +23701,10 @@
         "backgroundHover": "hsl(347, 77%, 40%)",
         "backgroundPress": "hsl(0, 70%, 35%)",
         "backgroundFocus": "hsl(360, 97.9%, 94.8%)",
-        "borderColor": "hsl(359, 74.2%, 81.7%)",
+        "borderColor": "hsl(347, 78%, 50%)",
         "borderColorHover": "hsl(359, 69.5%, 74.3%)",
         "borderColorFocus": "hsl(347, 77%, 40%)",
-        "borderColorPress": "hsl(359, 74.2%, 81.7%)",
+        "borderColorPress": "hsl(347, 78%, 50%)",
         "id": "light_red_Button"
       },
       "light_red_SliderTrackActive": {
@@ -23712,10 +23712,10 @@
         "backgroundHover": "hsl(347, 77%, 40%)",
         "backgroundPress": "hsl(0, 70%, 35%)",
         "backgroundFocus": "hsl(360, 97.9%, 94.8%)",
-        "borderColor": "hsl(359, 74.2%, 81.7%)",
+        "borderColor": "hsl(347, 78%, 50%)",
         "borderColorHover": "hsl(359, 69.5%, 74.3%)",
         "borderColorFocus": "hsl(347, 77%, 40%)",
-        "borderColorPress": "hsl(359, 74.2%, 81.7%)",
+        "borderColorPress": "hsl(347, 78%, 50%)",
         "id": "light_red_SliderTrackActive"
       },
       "light_red_active_SliderTrackActive": {
@@ -23723,10 +23723,10 @@
         "backgroundHover": "hsl(347, 77%, 40%)",
         "backgroundPress": "hsl(0, 70%, 35%)",
         "backgroundFocus": "hsl(360, 97.9%, 94.8%)",
-        "borderColor": "hsl(359, 74.2%, 81.7%)",
+        "borderColor": "hsl(347, 78%, 50%)",
         "borderColorHover": "hsl(359, 69.5%, 74.3%)",
         "borderColorFocus": "hsl(347, 77%, 40%)",
-        "borderColorPress": "hsl(359, 74.2%, 81.7%)",
+        "borderColorPress": "hsl(347, 78%, 50%)",
         "id": "light_red_active_SliderTrackActive"
       },
       "light_gray_alt1": {
@@ -25815,7 +25815,7 @@
         "backgroundPress": "hsl(347, 77%, 40%)",
         "backgroundFocus": "hsl(360, 100%, 96.8%)",
         "borderColor": "hsl(0, 70%, 35%)",
-        "borderColorHover": "hsl(359, 74.2%, 81.7%)",
+        "borderColorHover": "hsl(347, 78%, 50%)",
         "borderColorFocus": "hsl(360, 97.9%, 94.8%)",
         "borderColorPress": "hsl(0, 70%, 35%)",
         "id": "light_red_Checkbox"
@@ -25826,7 +25826,7 @@
         "backgroundPress": "hsl(347, 77%, 40%)",
         "backgroundFocus": "hsl(360, 100%, 96.8%)",
         "borderColor": "hsl(0, 70%, 35%)",
-        "borderColorHover": "hsl(359, 74.2%, 81.7%)",
+        "borderColorHover": "hsl(347, 78%, 50%)",
         "borderColorFocus": "hsl(360, 97.9%, 94.8%)",
         "borderColorPress": "hsl(0, 70%, 35%)",
         "id": "light_red_Switch"
@@ -25837,7 +25837,7 @@
         "backgroundPress": "hsl(347, 77%, 40%)",
         "backgroundFocus": "hsl(360, 100%, 96.8%)",
         "borderColor": "hsl(0, 70%, 35%)",
-        "borderColorHover": "hsl(359, 74.2%, 81.7%)",
+        "borderColorHover": "hsl(347, 78%, 50%)",
         "borderColorFocus": "hsl(360, 97.9%, 94.8%)",
         "borderColorPress": "hsl(0, 70%, 35%)",
         "id": "light_red_TooltipContent"
@@ -25848,7 +25848,7 @@
         "backgroundPress": "hsl(347, 77%, 40%)",
         "backgroundFocus": "hsl(360, 100%, 96.8%)",
         "borderColor": "hsl(0, 70%, 35%)",
-        "borderColorHover": "hsl(359, 74.2%, 81.7%)",
+        "borderColorHover": "hsl(347, 78%, 50%)",
         "borderColorFocus": "hsl(360, 97.9%, 94.8%)",
         "borderColorPress": "hsl(0, 70%, 35%)",
         "id": "light_red_RadioGroupItem"
@@ -25865,7 +25865,7 @@
         "borderColor": "hsl(0, 74%, 56%)",
         "borderColorHover": "hsl(358, 75.0%, 59.0%)",
         "borderColorFocus": "hsl(359, 69.5%, 74.3%)",
-        "borderColorPress": "hsl(359, 74.2%, 81.7%)",
+        "borderColorPress": "hsl(347, 78%, 50%)",
         "id": "light_red_SwitchThumb"
       },
       "light_red_SliderThumb": {
@@ -25880,7 +25880,7 @@
         "borderColor": "hsl(0, 74%, 56%)",
         "borderColorHover": "hsl(358, 75.0%, 59.0%)",
         "borderColorFocus": "hsl(359, 69.5%, 74.3%)",
-        "borderColorPress": "hsl(359, 74.2%, 81.7%)",
+        "borderColorPress": "hsl(347, 78%, 50%)",
         "id": "light_red_SliderThumb"
       },
       "light_red_Tooltip": {
@@ -25895,7 +25895,7 @@
         "borderColor": "hsl(0, 74%, 56%)",
         "borderColorHover": "hsl(358, 75.0%, 59.0%)",
         "borderColorFocus": "hsl(359, 69.5%, 74.3%)",
-        "borderColorPress": "hsl(359, 74.2%, 81.7%)",
+        "borderColorPress": "hsl(347, 78%, 50%)",
         "id": "light_red_Tooltip"
       },
       "light_red_ProgressIndicator": {
@@ -25910,7 +25910,7 @@
         "borderColor": "hsl(0, 74%, 56%)",
         "borderColorHover": "hsl(358, 75.0%, 59.0%)",
         "borderColorFocus": "hsl(359, 69.5%, 74.3%)",
-        "borderColorPress": "hsl(359, 74.2%, 81.7%)",
+        "borderColorPress": "hsl(347, 78%, 50%)",
         "id": "light_red_ProgressIndicator"
       },
       "light_gray_ListItem": {
@@ -28263,7 +28263,7 @@
         "backgroundFocus": "hsl(0, 70%, 35%)",
         "borderColor": "hsl(358, 75.0%, 59.0%)",
         "borderColorHover": "hsl(358, 75.0%, 59.0%)",
-        "borderColorFocus": "hsl(359, 74.2%, 81.7%)",
+        "borderColorFocus": "hsl(347, 78%, 50%)",
         "borderColorPress": "hsl(358, 75.0%, 59.0%)",
         "id": "light_red_active_SelectTrigger"
       },
@@ -28274,7 +28274,7 @@
         "backgroundFocus": "hsl(0, 70%, 35%)",
         "borderColor": "hsl(358, 75.0%, 59.0%)",
         "borderColorHover": "hsl(358, 75.0%, 59.0%)",
-        "borderColorFocus": "hsl(359, 74.2%, 81.7%)",
+        "borderColorFocus": "hsl(347, 78%, 50%)",
         "borderColorPress": "hsl(358, 75.0%, 59.0%)",
         "id": "light_red_active_Card"
       },
@@ -28285,7 +28285,7 @@
         "backgroundFocus": "hsl(0, 70%, 35%)",
         "borderColor": "hsl(358, 75.0%, 59.0%)",
         "borderColorHover": "hsl(358, 75.0%, 59.0%)",
-        "borderColorFocus": "hsl(359, 74.2%, 81.7%)",
+        "borderColorFocus": "hsl(347, 78%, 50%)",
         "borderColorPress": "hsl(358, 75.0%, 59.0%)",
         "id": "light_red_active_Button"
       },
@@ -28296,7 +28296,7 @@
         "backgroundFocus": "hsl(0, 70%, 35%)",
         "borderColor": "hsl(358, 75.0%, 59.0%)",
         "borderColorHover": "hsl(358, 75.0%, 59.0%)",
-        "borderColorFocus": "hsl(359, 74.2%, 81.7%)",
+        "borderColorFocus": "hsl(347, 78%, 50%)",
         "borderColorPress": "hsl(358, 75.0%, 59.0%)",
         "id": "light_red_active_Checkbox"
       },
@@ -28307,7 +28307,7 @@
         "backgroundFocus": "hsl(0, 70%, 35%)",
         "borderColor": "hsl(358, 75.0%, 59.0%)",
         "borderColorHover": "hsl(358, 75.0%, 59.0%)",
-        "borderColorFocus": "hsl(359, 74.2%, 81.7%)",
+        "borderColorFocus": "hsl(347, 78%, 50%)",
         "borderColorPress": "hsl(358, 75.0%, 59.0%)",
         "id": "light_red_active_Switch"
       },
@@ -28318,7 +28318,7 @@
         "backgroundFocus": "hsl(0, 70%, 35%)",
         "borderColor": "hsl(358, 75.0%, 59.0%)",
         "borderColorHover": "hsl(358, 75.0%, 59.0%)",
-        "borderColorFocus": "hsl(359, 74.2%, 81.7%)",
+        "borderColorFocus": "hsl(347, 78%, 50%)",
         "borderColorPress": "hsl(358, 75.0%, 59.0%)",
         "id": "light_red_active_TooltipContent"
       },
@@ -28329,7 +28329,7 @@
         "backgroundFocus": "hsl(0, 70%, 35%)",
         "borderColor": "hsl(358, 75.0%, 59.0%)",
         "borderColorHover": "hsl(358, 75.0%, 59.0%)",
-        "borderColorFocus": "hsl(359, 74.2%, 81.7%)",
+        "borderColorFocus": "hsl(347, 78%, 50%)",
         "borderColorPress": "hsl(358, 75.0%, 59.0%)",
         "id": "light_red_active_RadioGroupItem"
       },
@@ -28340,7 +28340,7 @@
         "backgroundFocus": "hsl(0, 70%, 35%)",
         "borderColor": "hsl(358, 75.0%, 59.0%)",
         "borderColorHover": "hsl(358, 75.0%, 59.0%)",
-        "borderColorFocus": "hsl(359, 74.2%, 81.7%)",
+        "borderColorFocus": "hsl(347, 78%, 50%)",
         "borderColorPress": "hsl(358, 75.0%, 59.0%)",
         "id": "light_red_active_Input"
       },
@@ -28351,7 +28351,7 @@
         "backgroundFocus": "hsl(0, 70%, 35%)",
         "borderColor": "hsl(358, 75.0%, 59.0%)",
         "borderColorHover": "hsl(358, 75.0%, 59.0%)",
-        "borderColorFocus": "hsl(359, 74.2%, 81.7%)",
+        "borderColorFocus": "hsl(347, 78%, 50%)",
         "borderColorPress": "hsl(358, 75.0%, 59.0%)",
         "id": "light_red_active_TextArea"
       },
@@ -28365,7 +28365,7 @@
         "backgroundPress": "hsl(0, 74%, 56%)",
         "backgroundFocus": "hsl(358, 75.0%, 59.0%)",
         "borderColor": "hsl(359, 69.5%, 74.3%)",
-        "borderColorHover": "hsl(359, 74.2%, 81.7%)",
+        "borderColorHover": "hsl(347, 78%, 50%)",
         "borderColorFocus": "hsl(0, 70%, 35%)",
         "borderColorPress": "hsl(347, 77%, 40%)",
         "id": "light_red_active_SwitchThumb"
@@ -28380,7 +28380,7 @@
         "backgroundPress": "hsl(0, 74%, 56%)",
         "backgroundFocus": "hsl(358, 75.0%, 59.0%)",
         "borderColor": "hsl(359, 69.5%, 74.3%)",
-        "borderColorHover": "hsl(359, 74.2%, 81.7%)",
+        "borderColorHover": "hsl(347, 78%, 50%)",
         "borderColorFocus": "hsl(0, 70%, 35%)",
         "borderColorPress": "hsl(347, 77%, 40%)",
         "id": "light_red_active_SliderThumb"
@@ -28395,7 +28395,7 @@
         "backgroundPress": "hsl(0, 74%, 56%)",
         "backgroundFocus": "hsl(358, 75.0%, 59.0%)",
         "borderColor": "hsl(359, 69.5%, 74.3%)",
-        "borderColorHover": "hsl(359, 74.2%, 81.7%)",
+        "borderColorHover": "hsl(347, 78%, 50%)",
         "borderColorFocus": "hsl(0, 70%, 35%)",
         "borderColorPress": "hsl(347, 77%, 40%)",
         "id": "light_red_active_Tooltip"
@@ -28410,7 +28410,7 @@
         "backgroundPress": "hsl(0, 74%, 56%)",
         "backgroundFocus": "hsl(358, 75.0%, 59.0%)",
         "borderColor": "hsl(359, 69.5%, 74.3%)",
-        "borderColorHover": "hsl(359, 74.2%, 81.7%)",
+        "borderColorHover": "hsl(347, 78%, 50%)",
         "borderColorFocus": "hsl(0, 70%, 35%)",
         "borderColorPress": "hsl(347, 77%, 40%)",
         "id": "light_red_active_ProgressIndicator"

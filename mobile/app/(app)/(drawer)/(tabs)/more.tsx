@@ -17,6 +17,30 @@ import { CURRENT_USER_STORAGE_KEY } from "../../../../common/constants";
 import SelectAppLanguage from "../../../../components/SelectAppLanguage";
 import * as SecureStore from "expo-secure-store";
 
+interface MenuItemProps {
+  label: string;
+  helper?: string;
+  icon: string;
+  chevronRight?: boolean;
+  onClick?: () => void;
+}
+
+const MenuItem = ({ label, helper, icon, chevronRight, onClick }: MenuItemProps) => (
+  <Card onPress={onClick}>
+    <XStack alignItems="center" justifyContent="space-between">
+      <XStack alignItems="center" gap="$xxs">
+        <Icon size={24} icon={icon} color="black" />
+        <View alignContent="center" gap="$xxxs">
+          <Typography preset="body2"> {label} </Typography>
+          {helper && <Typography color="$gray8"> {helper}</Typography>}
+        </View>
+      </XStack>
+
+      {chevronRight && <Icon size={32} icon="chevronRight" color="$purple7" />}
+    </XStack>
+  </Card>
+);
+
 const More = () => {
   const navigation = useNavigation();
   const queryClient = useQueryClient();
@@ -72,13 +96,6 @@ const More = () => {
           }}
           helper={appLanguage ? `${appLanguage}` : ""}
         ></MenuItem>
-
-        <MenuItem
-          label={t("change-password")}
-          icon="changePassword"
-          chevronRight={true}
-          onClick={() => router.push("/forgot-password")}
-        ></MenuItem>
         <MenuItem
           label={t("terms")}
           icon="termsConds"
@@ -106,6 +123,12 @@ const More = () => {
           chevronRight={true}
         ></MenuItem>
         <MenuItem label={t("support")} icon="contactNGO"></MenuItem>
+        <MenuItem
+          label={t("change-password")}
+          icon="changePassword"
+          chevronRight={true}
+          onClick={() => router.push("/change-password")}
+        ></MenuItem>
         <MenuItem label={t("feedback")} icon="feedback"></MenuItem>
         <MenuItem
           label={t("logout")}
@@ -117,29 +140,5 @@ const More = () => {
     </Screen>
   );
 };
-
-interface MenuItemProps {
-  label: string;
-  helper?: string;
-  icon: string;
-  chevronRight?: boolean;
-  onClick?: () => void;
-}
-
-const MenuItem = ({ label, helper, icon, chevronRight, onClick }: MenuItemProps) => (
-  <Card onPress={onClick}>
-    <XStack alignItems="center" justifyContent="space-between">
-      <XStack alignItems="center" gap="$xxs">
-        <Icon size={24} icon={icon} color="black" />
-        <View alignContent="center" gap="$xxxs">
-          <Typography preset="body2"> {label} </Typography>
-          {helper && <Typography color="$gray8"> {helper}</Typography>}
-        </View>
-      </XStack>
-
-      {chevronRight && <Icon size={32} icon="chevronRight" color="$purple7" />}
-    </XStack>
-  </Card>
-);
 
 export default More;

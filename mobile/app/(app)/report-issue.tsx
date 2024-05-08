@@ -16,6 +16,17 @@ import AddAttachment from "../../components/AddAttachment";
 import { Keyboard } from "react-native";
 import OptionsSheet from "../../components/OptionsSheet";
 import { Typography } from "../../components/Typography";
+import { useAddQuickReport } from "../../services/mutations/quick-report/add-quick-report.mutation";
+import * as Crypto from "expo-crypto";
+import { FileMetadata, useCamera } from "../../hooks/useCamera";
+import { addAttachmentQuickReportMutation } from "../../services/mutations/quick-report/add-attachment-quick-report.mutation";
+import { QuickReportLocationType } from "../../services/api/quick-report/post-quick-report.api";
+import * as DocumentPicker from "expo-document-picker";
+import { onlineManager, useMutationState, useQueryClient } from "@tanstack/react-query";
+import Card from "../../components/Card";
+import { QuickReportKeys } from "../../services/queries/quick-reports.query";
+import * as Sentry from "@sentry/react-native";
+import { AddAttachmentQuickReportAPIPayload } from "../../services/api/quick-report/add-attachment-quick-report.api";
 
 const mapVisitsToSelectPollingStations = (visits: PollingStationVisitVM[] = []) => {
   const pollingStationsForSelect = visits.map((visit) => {
@@ -28,29 +39,63 @@ const mapVisitsToSelectPollingStations = (visits: PollingStationVisitVM[] = []) 
 
   //   adding the 'other' and 'not related to a polling station' options
   pollingStationsForSelect.push(
-    { id: "other", value: "other", label: "Other polling station" },
+    {
+      id: "other",
+      value: QuickReportLocationType.OtherPollingStation,
+      label: "Other polling station",
+    },
     {
       id: "not_related_to_polling_station",
-      value: "not_related_to_polling_station",
+      value: QuickReportLocationType.NotRelatedToAPollingStation,
       label: "Not related to a polling station",
     },
   );
   return pollingStationsForSelect;
 };
 
+type ReportIssueFormType = {
+  polling_station: { details: string; id: string };
+  issue_title: string;
+  issue_description: string;
+};
+
 const ReportIssue = () => {
-  const { visits } = useUserData();
+  const insets = useSafeAreaInsets();
+  const queryClient = useQueryClient();
+  const { visits, activeElectionRound } = useUserData();
   const pollingStations = useMemo(() => mapVisitsToSelectPollingStations(visits), [visits]);
   const [optionsSheetOpen, setOptionsSheetOpen] = useState(false);
 
-  const insets = useSafeAreaInsets();
+  const [attachments, setAttachments] = useState<Array<{ fileMetadata: FileMetadata; id: string }>>(
+    [],
+  );
+
+  const {
+    mutate,
+    isPending: isPendingAddQuickReport,
+    isPaused: isPausedAddQuickReport,
+  } = useAddQuickReport();
+  const { mutateAsync: addAttachmentQReport } = addAttachmentQuickReportMutation();
+
+  const addAttachmentsMutationState = useMutationState({
+    filters: { mutationKey: QuickReportKeys.addAttachment() },
+    select: (mutation) => mutation.state,
+  });
+
+  const isUploadingAttachments = useMemo(
+    () =>
+      addAttachmentsMutationState.some(
+        (mutation) => mutation.status === "pending" && !mutation.isPaused,
+      ),
+    [addAttachmentsMutationState],
+  );
 
   const {
     control,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm({
+  } = useForm<ReportIssueFormType>({
     defaultValues: {
       polling_station: { details: "", id: "" },
       issue_title: "",
@@ -58,10 +103,122 @@ const ReportIssue = () => {
     },
   });
 
-  const onSubmit = (formData: Record<string, string | Record<string, string>>) => {
-    // TODO: waiting for API to be ready
-    console.log("💞💞💞💞💞💞 FORM DATA 💞💞💞💞💞", formData);
-    router.back();
+  const { uploadCameraOrMedia } = useCamera();
+
+  const handleCameraUpload = async (type: "library" | "cameraPhoto" | "cameraVideo") => {
+    const cameraResult = await uploadCameraOrMedia(type);
+
+    if (!cameraResult || !activeElectionRound) {
+      return;
+    }
+
+    setOptionsSheetOpen(false);
+    setAttachments((attachments) => [
+      ...attachments,
+      { fileMetadata: cameraResult, id: Crypto.randomUUID() },
+    ]);
+  };
+
+  const handleUploadAudio = async () => {
+    const doc = await DocumentPicker.getDocumentAsync({
+      type: "audio/*",
+      multiple: false,
+    });
+
+    if (doc?.assets?.[0]) {
+      const file = doc?.assets?.[0];
+
+      const fileMetadata: FileMetadata = {
+        name: file.name,
+        type: file.mimeType || "audio/mpeg",
+        uri: file.uri,
+      };
+
+      setOptionsSheetOpen(false);
+      setAttachments((attachments) => [...attachments, { fileMetadata, id: Crypto.randomUUID() }]);
+    } else {
+      // Cancelled
+    }
+  };
+
+  const onSubmit = async (formData: ReportIssueFormType) => {
+    if (!visits || !activeElectionRound) {
+      return;
+    }
+
+    let quickReportLocationType = QuickReportLocationType.VisitedPollingStation;
+    let pollingStationId: string | null = formData.polling_station.id;
+
+    if (
+      [
+        QuickReportLocationType.OtherPollingStation,
+        QuickReportLocationType.NotRelatedToAPollingStation,
+      ].includes(pollingStationId as QuickReportLocationType)
+    ) {
+      quickReportLocationType = pollingStationId as QuickReportLocationType;
+      pollingStationId = null;
+    }
+
+    const uuid = Crypto.randomUUID();
+
+    // Use the attachments to optimistically update the UI
+    const optimisticAttachments: AddAttachmentQuickReportAPIPayload[] = [];
+
+    if (attachments.length > 0) {
+      const attachmentsMutations = attachments.map(
+        ({ fileMetadata, id }: { fileMetadata: FileMetadata; id: string }) => {
+          const payload: AddAttachmentQuickReportAPIPayload = {
+            id,
+            fileMetadata,
+            electionRoundId: activeElectionRound.id,
+            quickReportId: uuid,
+          };
+          optimisticAttachments.push(payload);
+          return addAttachmentQReport(payload);
+        },
+      );
+      try {
+        Promise.all(attachmentsMutations).then(() => {
+          queryClient.invalidateQueries({
+            queryKey: QuickReportKeys.byElectionRound(activeElectionRound.id),
+          });
+        });
+      } catch (err) {
+        Sentry.captureMessage("Failed to upload some attachments");
+        Sentry.captureException(err);
+      }
+    }
+
+    mutate(
+      {
+        id: uuid,
+        electionRoundId: activeElectionRound?.id,
+        description: formData.issue_description,
+        title: formData.issue_title,
+        quickReportLocationType,
+        pollingStationDetails: formData.polling_station.details,
+        ...(pollingStationId ? { pollingStationId } : {}),
+        attachments: optimisticAttachments,
+      },
+      {
+        onError: (err) => {
+          // TODO: Display toast
+          console.log("❌❌❌❌❌❌❌❌❌❌");
+          console.log(err);
+        },
+        onSuccess: () => {
+          router.back();
+        },
+      },
+    );
+
+    if (!onlineManager.isOnline()) {
+      router.back();
+    }
+  };
+
+  const removeAttachmentLocal = (id: string): void => {
+    setAttachments((attachments) => attachments.filter((attachment) => attachment.id !== id));
   };
 
   return (
@@ -94,7 +251,8 @@ const ReportIssue = () => {
               control={control}
               rules={{
                 validate: ({ id, details }) => {
-                  if (id === "other" && !details) return "This field is required";
+                  if (id === QuickReportLocationType.OtherPollingStation && !details)
+                    return "This field is required";
                 },
               }}
               render={({ field: { onChange, value = { id: "", details: "" } } }) => (
@@ -110,21 +268,15 @@ const ReportIssue = () => {
                     />
                   </FormElement>
                   {/* polling station details */}
-                  {console.log(errors)}
-                  {value.id === "other" && (
-                    <YStack gap="$xxs">
-                      <FormInput
-                        title="Polling station details *"
-                        type="textarea"
-                        placeholder="Please write here some identification details for this polling station (such as address, name, number, etc.)"
-                        value={value.details}
-                        onChangeText={(details) => onChange({ ...value, details })}
-                        error={errors.polling_station}
-                      />
-                      {errors.polling_station && (
-                        <Typography color="$red5">{errors.polling_station.message}</Typography>
-                      )}
-                    </YStack>
+                  {value.id === QuickReportLocationType.OtherPollingStation && (
+                    <FormInput
+                      title="Polling station details *"
+                      type="textarea"
+                      placeholder="Please write here some identification details for this polling station (such as address, name, number, etc.)"
+                      value={value.details}
+                      onChangeText={(details) => onChange({ ...value, details })}
+                      error={errors.polling_station?.message}
+                    />
                   )}
                 </>
               )}
@@ -139,19 +291,14 @@ const ReportIssue = () => {
                 required: { value: true, message: "This field is required." },
               }}
               render={({ field: { onChange, value } }) => (
-                <YStack gap="$xxs">
-                  <FormInput
-                    title="Title of issue *"
-                    placeholder="Write a title for this issue."
-                    type="text"
-                    value={value}
-                    onChangeText={onChange}
-                    error={errors.issue_title}
-                  />
-                  {errors.issue_title && (
-                    <Typography color="$red5">{errors.issue_title.message}</Typography>
-                  )}
-                </YStack>
+                <FormInput
+                  title="Title of issue *"
+                  placeholder="Write a title for this issue."
+                  type="text"
+                  value={value}
+                  onChangeText={onChange}
+                  error={errors.issue_title?.message}
+                />
               )}
             />
 
@@ -164,22 +311,53 @@ const ReportIssue = () => {
                 required: { value: true, message: "This field is required." },
               }}
               render={({ field: { onChange, value } }) => (
-                <YStack gap="$xxs">
-                  <FormInput
-                    title="Description *"
-                    type="textarea"
-                    placeholder="Describe the situation in detail here."
-                    value={value}
-                    onChangeText={onChange}
-                    error={errors.issue_description}
-                  />
-                  {errors.issue_description && (
-                    <Typography color="$red5">{errors.issue_description.message}</Typography>
-                  )}
-                </YStack>
+                <FormInput
+                  title="Description *"
+                  type="textarea"
+                  placeholder="Describe the situation in detail here."
+                  value={value}
+                  onChangeText={onChange}
+                  error={errors.issue_description?.message}
+                />
               )}
             />
-
+            {attachments.length ? (
+              <YStack marginTop="$lg" gap="$xxs">
+                <Typography fontWeight="500">Uploaded media</Typography>
+                <YStack gap="$xxs">
+                  {attachments.map((attachment) => {
+                    return (
+                      <Card
+                        padding="$0"
+                        paddingLeft="$md"
+                        key={attachment.id}
+                        flexDirection="row"
+                        justifyContent="space-between"
+                        alignItems="center"
+                      >
+                        <Typography
+                          preset="body1"
+                          fontWeight="700"
+                          maxWidth="85%"
+                          numberOfLines={1}
+                        >
+                          {attachment.fileMetadata.name}
+                        </Typography>
+                        <YStack
+                          padding="$md"
+                          onPress={removeAttachmentLocal.bind(null, attachment.id)}
+                          pressStyle={{ opacity: 0.5 }}
+                        >
+                          <Icon icon="xCircle" size={24} color="$gray5" />
+                        </YStack>
+                      </Card>
+                    );
+                  })}
+                </YStack>
+              </YStack>
+            ) : (
+              false
+            )}
             <AddAttachment
               paddingVertical="$xxs"
               onPress={() => {
@@ -190,32 +368,39 @@ const ReportIssue = () => {
           </YStack>
         </YStack>
 
-        {/* //TODO: handle press on options */}
         <OptionsSheet open={optionsSheetOpen} setOpen={setOptionsSheetOpen}>
           <YStack paddingHorizontal="$sm">
             <Typography
+              onPress={handleCameraUpload.bind(null, "library")}
               preset="body1"
-              marginBottom="$md"
-              paddingVertical="$sm"
-              onPress={() => setOptionsSheetOpen(false)}
+              paddingVertical="$md"
+              pressStyle={{ color: "$purple5" }}
             >
               Load from gallery
             </Typography>
             <Typography
+              onPress={handleCameraUpload.bind(null, "cameraPhoto")}
               preset="body1"
-              marginBottom="$md"
-              paddingVertical="$sm"
-              onPress={() => setOptionsSheetOpen(false)}
+              paddingVertical="$md"
+              pressStyle={{ color: "$purple5" }}
             >
               Take a photo
             </Typography>
             <Typography
+              onPress={handleCameraUpload.bind(null, "cameraVideo")}
               preset="body1"
-              marginBottom="$md"
-              paddingVertical="$sm"
-              onPress={() => setOptionsSheetOpen(false)}
+              paddingVertical="$md"
+              pressStyle={{ color: "$purple5" }}
             >
               Record a video
+            </Typography>
+            <Typography
+              onPress={handleUploadAudio.bind(null)}
+              preset="body1"
+              paddingVertical="$md"
+              pressStyle={{ color: "$purple5" }}
+            >
+              Upload audio file
             </Typography>
           </YStack>
         </OptionsSheet>
@@ -235,8 +420,14 @@ const ReportIssue = () => {
         <Button preset="chromeless" onPress={() => reset()}>
           Clear
         </Button>
-        <Button flex={1} onPress={handleSubmit(onSubmit)}>
-          Submit issue
+        <Button
+          flex={1}
+          onPress={handleSubmit(onSubmit)}
+          disabled={(isPendingAddQuickReport && !isPausedAddQuickReport) || isUploadingAttachments}
+        >
+          {(!isPendingAddQuickReport && !isPausedAddQuickReport) || !isUploadingAttachments
+            ? "Submit issue"
+            : "Processing..."}
         </Button>
       </XStack>
     </>

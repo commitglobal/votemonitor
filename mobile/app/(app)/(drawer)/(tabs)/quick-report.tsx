@@ -8,10 +8,17 @@ import Header from "../../../../components/Header";
 import { DrawerActions } from "@react-navigation/native";
 import Button from "../../../../components/Button";
 import OptionsSheet from "../../../../components/OptionsSheet";
+import { useQuickReports } from "../../../../services/queries/quick-reports.query";
+import { useUserData } from "../../../../contexts/user/UserContext.provider";
 
 const QuickReport = () => {
   const navigation = useNavigation();
   const [openContextualMenu, setOpenContextualMenu] = useState(false);
+  const { activeElectionRound } = useUserData();
+
+  const { data: quickReports } = useQuickReports(activeElectionRound?.id);
+
+  console.log(quickReports);
 
   return (
     <Screen
