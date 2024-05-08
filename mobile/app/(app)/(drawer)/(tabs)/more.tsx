@@ -15,7 +15,7 @@ import Constants from "expo-constants";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CURRENT_USER_STORAGE_KEY } from "../../../../common/constants";
 import SelectAppLanguage from "../../../../components/SelectAppLanguage";
-import * as SecureStore from "expo-secure-store";
+import i18n from "../../../../common/config/i18n";
 
 interface MenuItemProps {
   label: string;
@@ -44,10 +44,9 @@ const MenuItem = ({ label, helper, icon, chevronRight, onClick }: MenuItemProps)
 const More = () => {
   const navigation = useNavigation();
   const queryClient = useQueryClient();
-  const [openLanguageSheet, setOpenLanguageSheet] = React.useState(false);
-  const appLanguage = SecureStore.getItem("app_language");
+  const [isLanguageSelectSheetOpen, setIsLanguageSelectSheetOpen] = React.useState(false);
 
-  const { t } = useTranslation("more");
+  const { t } = useTranslation(["more", "languages"]);
   const { signOut } = useAuth();
 
   // TODO: Change these consts
@@ -81,20 +80,11 @@ const More = () => {
         onLeftPress={() => navigation.dispatch(DrawerActions.openDrawer)}
       />
       <YStack paddingHorizontal="$md" paddingVertical="$xl" gap="$md">
-        {/* 
-          This element is controlled via the MenuItem change-language component.
-          It is visible only when open===true as a bottom sheet. 
-          Otherwise, no select element is rendered.
-         */}
-        <SelectAppLanguage open={openLanguageSheet} setOpen={setOpenLanguageSheet} />
-
         <MenuItem
           label={t("change-language")}
           icon="language"
-          onClick={() => {
-            setOpenLanguageSheet(!openLanguageSheet);
-          }}
-          helper={appLanguage ? `${appLanguage}` : ""}
+          onClick={setIsLanguageSelectSheetOpen.bind(null, true)}
+          helper={t(i18n.language, { ns: "languages" })}
         ></MenuItem>
         <MenuItem
           label={t("terms")}
@@ -137,6 +127,12 @@ const More = () => {
           helper={currentUser ? `Logged in as ${currentUser}` : ""}
         ></MenuItem>
       </YStack>
+      {/* 
+          This element is controlled via the MenuItem change-language component.
+          It is visible only when open===true as a bottom sheet. 
+          Otherwise, no select element is rendered.
+         */}
+      <SelectAppLanguage open={isLanguageSelectSheetOpen} setOpen={setIsLanguageSelectSheetOpen} />
     </Screen>
   );
 };

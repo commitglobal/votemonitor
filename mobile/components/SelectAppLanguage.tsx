@@ -1,86 +1,45 @@
-import React, { useState, useMemo, useContext } from "react";
-import { Adapt, Input, Select, Sheet, XStack, YStack, styled } from "tamagui";
+import React, { useContext } from "react";
+import { Adapt, Select, Sheet } from "tamagui";
 import { Language, LanguageContext } from "../contexts/language/LanguageContext.provider";
 import { Keyboard } from "react-native";
 import { Icon } from "./Icon";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import * as SecureStore from "expo-secure-store";
+import { useTranslation } from "react-i18next";
+import i18n from "../common/config/i18n";
 
-type LanguageOption = {
-  label: string;
-  value: Language;
-};
-
-const languages: LanguageOption[] = [
-  {
-    label: "Romanian",
-    value: "ro",
-  },
-  {
-    label: "English",
-    value: "en",
-  },
-];
-
+const languages = ["ro", "en"];
 interface SelectLanguageProps {
-  /**
-   * Determines whether the language selection is open or closed.
-   * This is direclty controlled by the parent component.
-   */
   open: boolean;
-  setOpen: (state: boolean) => void;
+  setOpen: (isOpen: boolean) => void;
 }
 
-const SelectAppLanguage = (props: SelectLanguageProps) => {
+const SelectAppLanguage = ({ open, setOpen }: SelectLanguageProps) => {
   const insets = useSafeAreaInsets();
-  const { open, setOpen } = props;
-  const appLanguage = SecureStore.getItem("app_language");
-
-  // TODO: generalize this for all languages
+  const { t } = useTranslation("languages");
   const { changeLanguage } = useContext(LanguageContext);
 
-  // Filter languages based on search term
-  const [searchTerm, setSearchTerm] = useState("");
-  const filteredLanguages = useMemo(() => {
-    if (!searchTerm) return languages;
-    return languages.filter((language) =>
-      language.label.toLowerCase().includes(searchTerm.toLowerCase()),
-    );
-  }, [languages, searchTerm]);
+  const onChangeLanguage = (language: Language) => {
+    Keyboard.dismiss();
+    changeLanguage(language);
+  };
 
   return (
     <Select
       disablePreventBodyScroll
       open={open}
       onOpenChange={setOpen}
-      onValueChange={(value) => {
-        Keyboard.dismiss();
-        changeLanguage(value as Language);
-        SecureStore.setItem("app_language", value);
-      }}
+      onValueChange={onChangeLanguage}
     >
       <Adapt platform="touch">
         <Sheet
           native
           modal
-          snapPoints={[40]}
+          snapPoints={[25]}
           open={open}
           moveOnKeyboardChange={open || Keyboard.isVisible()}
         >
           <Sheet.Overlay />
           <Sheet.Frame>
-            <YStack
-              borderBottomWidth={1}
-              borderBottomColor="$gray3"
-              paddingHorizontal="$md"
-              paddingVertical="$lg"
-              backgroundColor="white"
-            >
-              <XStack backgroundColor="$purple1" borderRadius={8} alignItems="center">
-                <Icon icon="search" color="transparent" size={20} marginLeft="$sm" />
-                <SearchInput flex={1} value={searchTerm} onChangeText={setSearchTerm} />
-              </XStack>
-            </YStack>
             <Sheet.ScrollView
               marginBottom={insets.bottom}
               paddingHorizontal="$sm"
@@ -96,43 +55,21 @@ const SelectAppLanguage = (props: SelectLanguageProps) => {
       <Select.Content>
         <Select.Viewport>
           <Select.Group>
-            {useMemo(
-              () =>
-                filteredLanguages?.map((entry, i) => {
-                  return (
-                    <Select.Item
-                      index={i}
-                      key={`${entry}_${i}`}
-                      value={entry.value}
-                      gap="$3"
-                      paddingBottom="$sm"
-                    >
-                      <Select.ItemText color={entry.label === appLanguage ? "$purple5" : "$gray9"}>
-                        {entry.label}
-                      </Select.ItemText>
-                      <Select.ItemIndicator>
-                        <Icon icon="chevronLeft" color="$purple5" />
-                      </Select.ItemIndicator>
-                    </Select.Item>
-                  );
-                }),
-              [filteredLanguages, appLanguage],
-            )}
+            {languages?.map((lang, i) => (
+              <Select.Item index={i} key={lang} value={lang} gap="$3" paddingBottom="$sm">
+                <Select.ItemText color={lang === i18n.language ? "$purple5" : "$gray9"}>
+                  {t(lang)}
+                </Select.ItemText>
+                <Select.ItemIndicator>
+                  <Icon icon="chevronLeft" color="$purple5" />
+                </Select.ItemIndicator>
+              </Select.Item>
+            ))}
           </Select.Group>
         </Select.Viewport>
       </Select.Content>
     </Select>
   );
 };
-
-const SearchInput = styled(Input, {
-  backgroundColor: "$purple1",
-  placeholder: "Search",
-  color: "$purple5",
-  placeholderTextColor: "$purple5",
-  focusStyle: {
-    borderColor: "transparent",
-  },
-});
 
 export default SelectAppLanguage;
