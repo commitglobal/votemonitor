@@ -41,7 +41,7 @@ const Login = () => {
     }
   };
   const { handleSubmit, control, formState } = useForm({
-    defaultValues: { email: "charlie@example.com", password: "Votemonitor1*" },
+    defaultValues: { email: "alice@example.com", password: "string" },
   });
   const { errors } = formState;
 

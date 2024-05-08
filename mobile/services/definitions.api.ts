@@ -355,10 +355,7 @@ export type ChangePasswordPayload = {
 };
 
 export const changePassword = (data: ChangePasswordPayload) => {
-  return API.post("auth/change-password", data).catch((err) => {
-    console.log(err);
-    throw err;
-  });
+  return API.post("auth/change-password", data).then((res) => res.data);
 };
 
 /**  ================= DELETE deleteNote ====================

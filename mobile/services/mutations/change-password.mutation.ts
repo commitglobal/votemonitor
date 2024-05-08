@@ -8,11 +8,5 @@ export const useChangePasswordMutation = () => {
     mutationFn: async (payload: ChangePasswordPayload) => {
       return changePassword(payload);
     },
-    onError: (err) => {
-      console.log("🔒🔒 ERROR 🔒🔒", err);
-    },
-    onSuccess: () => {
-      console.log("Password changed successfully");
-    },
   });
 };
