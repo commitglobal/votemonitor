@@ -14,18 +14,43 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Constants from "expo-constants";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CURRENT_USER_STORAGE_KEY } from "../../../../common/constants";
+import SelectAppLanguage from "../../../../components/SelectAppLanguage";
+import i18n from "../../../../common/config/i18n";
+
+interface MenuItemProps {
+  label: string;
+  helper?: string;
+  icon: string;
+  chevronRight?: boolean;
+  onClick?: () => void;
+}
+
+const MenuItem = ({ label, helper, icon, chevronRight, onClick }: MenuItemProps) => (
+  <Card onPress={onClick}>
+    <XStack alignItems="center" justifyContent="space-between">
+      <XStack alignItems="center" gap="$xxs">
+        <Icon size={24} icon={icon} color="black" />
+        <View alignContent="center" gap="$xxxs">
+          <Typography preset="body2"> {label} </Typography>
+          {helper && <Typography color="$gray8"> {helper}</Typography>}
+        </View>
+      </XStack>
+
+      {chevronRight && <Icon size={32} icon="chevronRight" color="$purple7" />}
+    </XStack>
+  </Card>
+);
 
 const More = () => {
   const navigation = useNavigation();
   const queryClient = useQueryClient();
+  const [isLanguageSelectSheetOpen, setIsLanguageSelectSheetOpen] = React.useState(false);
 
-  const { t } = useTranslation("more");
-
+  const { t } = useTranslation(["more", "languages"]);
   const { signOut } = useAuth();
 
   // TODO: Change these consts
   const appVersion = Constants.expoConfig?.version;
-  const appLanguage = "English (United States)";
   const URL = "https://www.google.com/";
 
   const { data: currentUser } = useQuery({
@@ -57,16 +82,9 @@ const More = () => {
       <YStack paddingHorizontal="$md" paddingVertical="$xl" gap="$md">
         <MenuItem
           label={t("change-language")}
-          helper={appLanguage}
           icon="language"
-          chevronRight={true}
-          onClick={() => router.push("/change-language")}
-        ></MenuItem>
-        <MenuItem
-          label={t("change-password")}
-          icon="changePassword"
-          chevronRight={true}
-          onClick={() => router.push("/forgot-password")}
+          onClick={setIsLanguageSelectSheetOpen.bind(null, true)}
+          helper={t(i18n.language, { ns: "languages" })}
         ></MenuItem>
         <MenuItem
           label={t("terms")}
@@ -95,6 +113,12 @@ const More = () => {
           chevronRight={true}
         ></MenuItem>
         <MenuItem label={t("support")} icon="contactNGO"></MenuItem>
+        <MenuItem
+          label={t("change-password")}
+          icon="changePassword"
+          chevronRight={true}
+          onClick={() => router.push("/change-password")}
+        ></MenuItem>
         <MenuItem label={t("feedback")} icon="feedback"></MenuItem>
         <MenuItem
           label={t("logout")}
@@ -103,32 +127,14 @@ const More = () => {
           helper={currentUser ? `Logged in as ${currentUser}` : ""}
         ></MenuItem>
       </YStack>
+      {/* 
+          This element is controlled via the MenuItem change-language component.
+          It is visible only when open===true as a bottom sheet. 
+          Otherwise, no select element is rendered.
+         */}
+      <SelectAppLanguage open={isLanguageSelectSheetOpen} setOpen={setIsLanguageSelectSheetOpen} />
     </Screen>
   );
 };
-
-interface MenuItemProps {
-  label: string;
-  helper?: string;
-  icon: string;
-  chevronRight?: boolean;
-  onClick?: () => void;
-}
-
-const MenuItem = ({ label, helper, icon, chevronRight, onClick }: MenuItemProps) => (
-  <Card onPress={onClick}>
-    <XStack alignItems="center" justifyContent="space-between">
-      <XStack alignItems="center" gap="$xxs">
-        <Icon size={24} icon={icon} color="black" />
-        <View alignContent="center" gap="$xxxs">
-          <Typography preset="body2"> {label} </Typography>
-          {helper && <Typography color="$gray8"> {helper}</Typography>}
-        </View>
-      </XStack>
-
-      {chevronRight && <Icon size={32} icon="chevronRight" color="$purple7" />}
-    </XStack>
-  </Card>
-);
 
 export default More;

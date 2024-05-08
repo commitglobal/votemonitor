@@ -1,5 +1,8 @@
 import { skipToken, useQuery } from "@tanstack/react-query";
-import { QuickReportsAPIResponse, getQuickReports } from "../definitions.api";
+import {
+  getQuickReports,
+  QuickReportsAPIResponse,
+} from "../api/quick-report/get-quick-reports.api";
 import { useCallback } from "react";
 
 export const QuickReportKeys = {
@@ -10,6 +13,7 @@ export const QuickReportKeys = {
     electionRoundId,
   ],
   add: () => [...QuickReportKeys.all, "add"] as const,
+  addAttachment: () => [...QuickReportKeys.all, "addAttachment"],
 };
 
 export const useQuickReports = <TResult = QuickReportsAPIResponse[]>(
