@@ -26,6 +26,7 @@ import { onlineManager, useMutationState, useQueryClient } from "@tanstack/react
 import Card from "../../components/Card";
 import { QuickReportKeys } from "../../services/queries/quick-reports.query";
 import * as Sentry from "@sentry/react-native";
+import { AddAttachmentQuickReportAPIPayload } from "../../services/api/quick-report/add-attachment-quick-report.api";
 
 const mapVisitsToSelectPollingStations = (visits: PollingStationVisitVM[] = []) => {
   const pollingStationsForSelect = visits.map((visit) => {
@@ -73,7 +74,7 @@ const ReportIssue = () => {
     mutate,
     isPending: isPendingAddQuickReport,
     isPaused: isPausedAddQuickReport,
-  } = useAddQuickReport(activeElectionRound?.id);
+  } = useAddQuickReport();
   const { mutateAsync: addAttachmentQReport } = addAttachmentQuickReportMutation();
 
   const addAttachmentsMutationState = useMutationState({
@@ -160,15 +161,20 @@ const ReportIssue = () => {
 
     const uuid = Crypto.randomUUID();
 
+    // Use the attachments to optimistically update the UI
+    const optimisticAttachments: AddAttachmentQuickReportAPIPayload[] = [];
+
     if (attachments.length > 0) {
       const attachmentsMutations = attachments.map(
         ({ fileMetadata, id }: { fileMetadata: FileMetadata; id: string }) => {
-          return addAttachmentQReport({
+          const payload: AddAttachmentQuickReportAPIPayload = {
             id,
             fileMetadata,
             electionRoundId: activeElectionRound.id,
             quickReportId: uuid,
-          });
+          };
+          optimisticAttachments.push(payload);
+          return addAttachmentQReport(payload);
         },
       );
       try {
@@ -192,6 +198,7 @@ const ReportIssue = () => {
         quickReportLocationType,
         pollingStationDetails: formData.polling_station.details,
         ...(pollingStationId ? { pollingStationId } : {}),
+        attachments: optimisticAttachments,
       },
       {
         onError: (err) => {

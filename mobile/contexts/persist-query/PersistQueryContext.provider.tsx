@@ -146,7 +146,10 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
   });
 
   queryClient.setMutationDefaults(QuickReportKeys.add(), {
-    mutationFn: async (payload: AddQuickReportAPIPayload) => {
+    mutationFn: async ({
+      attachments: _,
+      ...payload
+    }: AddQuickReportAPIPayload & { attachments: AddAttachmentQuickReportAPIPayload[] }) => {
       return addQuickReport(payload);
     },
   });
