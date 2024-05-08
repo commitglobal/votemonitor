@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using FastEndpoints;
 using Feature.Notes.Get;
+using Feature.Notes.Specifications;
 using FluentAssertions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -38,7 +39,7 @@ public class GetEndpointTests
         _authorizationService.AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object?>(), Arg.Any<IEnumerable<IAuthorizationRequirement>>())
             .Returns(AuthorizationResult.Success());
 
-        _repository.GetByIdAsync(noteId)
+        _repository.FirstOrDefaultAsync(Arg.Any<GetNoteByIdSpecification>())
             .Returns(fakeNote);
 
         // Act

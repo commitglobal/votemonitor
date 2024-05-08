@@ -1,4 +1,5 @@
 ﻿using Authorization.Policies.Requirements;
+using Feature.Notes.Specifications;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Feature.Notes.Get;
@@ -27,7 +28,7 @@ public class Endpoint(
             return TypedResults.NotFound();
         }
 
-        var note = await repository.GetByIdAsync(req.Id, ct);
+        var note = await repository.FirstOrDefaultAsync(new GetNoteByIdSpecification(req.ElectionRoundId, req.ObserverId, req.Id), ct);
         if (note is null)
         {
             return TypedResults.NotFound();

@@ -47,6 +47,7 @@ public class CreateEndpointTests
         var pollingStationId = Guid.NewGuid();
         var formId = Guid.NewGuid();
         var questionId = Guid.NewGuid();
+        var attachmentId = Guid.NewGuid();
 
         _authorizationService.AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object?>(), Arg.Any<IEnumerable<IAuthorizationRequirement>>())
             .Returns(AuthorizationResult.Success());
@@ -77,7 +78,8 @@ public class CreateEndpointTests
             FormId = formId,
             QuestionId = questionId,
             ObserverId = fakeMonitoringObserver.Id,
-            Attachment = formFile
+            Attachment = formFile,
+            Id = attachmentId
         };
         var result = await _endpoint.ExecuteAsync(request, default);
 
@@ -87,7 +89,8 @@ public class CreateEndpointTests
             .AddAsync(Arg.Is<AttachmentAggregate>(x => x.ElectionRoundId == fakeElectionRound.Id
                                                                       && x.MonitoringObserverId == fakeMonitoringObserver.Id
                                                                       && x.FormId == formId
-                                                                      && x.QuestionId == questionId));
+                                                                      && x.QuestionId == questionId
+                                                                      && x.Id == attachmentId));
 
         var model = result.Result.As<Ok<AttachmentModel>>();
         model.Value!.PresignedUrl.Should().Be(url);

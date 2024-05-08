@@ -1,4 +1,5 @@
 ﻿using Authorization.Policies.Requirements;
+using Feature.Notes.Specifications;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Feature.Notes.Delete;
@@ -25,15 +26,14 @@ public class Endpoint(
         {
             return TypedResults.NotFound();
         }
-        
-        var pollingStationNote = await repository.GetByIdAsync(req.Id, ct);
-        
-        if (pollingStationNote == null)
+
+        var note = await repository.FirstOrDefaultAsync(new GetNoteByIdSpecification(req.ElectionRoundId, req.ObserverId, req.Id), ct);
+        if (note == null)
         {
             return TypedResults.NotFound();
         }
 
-        await repository.DeleteAsync(pollingStationNote, ct);
+        await repository.DeleteAsync(note, ct);
 
         return TypedResults.NoContent();
     }
