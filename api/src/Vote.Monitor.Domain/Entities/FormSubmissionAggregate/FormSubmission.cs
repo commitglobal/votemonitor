@@ -19,13 +19,14 @@ public class FormSubmission : AuditableBaseEntity, IAggregateRoot
     public IReadOnlyList<BaseAnswer> Answers { get; private set; } = new List<BaseAnswer>().AsReadOnly();
 
     private FormSubmission(
+        Guid id,
         ElectionRound electionRound,
         PollingStation pollingStation,
         MonitoringObserver monitoringObserver,
         Form form,
         List<BaseAnswer> answers,
         int numberOfQuestionsAnswered,
-        int numberOfFlaggedAnswers) : base(Guid.NewGuid())
+        int numberOfFlaggedAnswers) : base(id)
     {
         ElectionRound = electionRound;
         ElectionRoundId = electionRound.Id;
@@ -41,6 +42,7 @@ public class FormSubmission : AuditableBaseEntity, IAggregateRoot
     }
 
     internal static FormSubmission Create(
+        Guid id,
         ElectionRound electionRound,
         PollingStation pollingStation,
         MonitoringObserver monitoringObserver,
@@ -48,7 +50,7 @@ public class FormSubmission : AuditableBaseEntity, IAggregateRoot
         List<BaseAnswer> answers,
         int numberOfQuestionAnswered,
         int numberOfFlaggedAnswers) =>
-        new(electionRound, pollingStation, monitoringObserver, form, answers, numberOfQuestionAnswered, numberOfFlaggedAnswers);
+        new(id, electionRound, pollingStation, monitoringObserver, form, answers, numberOfQuestionAnswered, numberOfFlaggedAnswers);
 
     internal void UpdateAnswers(int numberOfQuestionsAnswered, int numberOfFlaggedAnswers, IEnumerable<BaseAnswer> answers)
     {

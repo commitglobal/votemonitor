@@ -21,14 +21,15 @@ public class Attachment : AuditableBaseEntity, IAggregateRoot
     public string MimeType { get; private set; }
     public bool IsDeleted { get; private set; }
 
-    public Attachment(Guid electionRoundId,
+    public Attachment(Guid id,
+        Guid electionRoundId,
         Guid pollingStationId,
         Guid monitoringObserverId,
         Guid formId,
         Guid questionId,
         string fileName,
         string filePath,
-        string mimeType) : base(Guid.NewGuid())
+        string mimeType) : base(id)
     {
         ElectionRoundId = electionRoundId;
         PollingStationId = pollingStationId;

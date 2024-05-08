@@ -22,6 +22,7 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
     public IReadOnlyList<BaseAnswer> Answers { get; private set; } = new List<BaseAnswer>().AsReadOnly();
 
     private PollingStationInformation(
+        Guid id,
         ElectionRound electionRound,
         PollingStation pollingStation,
         MonitoringObserver monitoringObserver,
@@ -29,7 +30,7 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
         DateTime? arrivalTime,
         DateTime? departureTime,
         List<BaseAnswer> answers,
-        int numberOfQuestionsAnswered) : base(Guid.NewGuid())
+        int numberOfQuestionsAnswered) : base(id)
     {
         ElectionRound = electionRound;
         ElectionRoundId = electionRound.Id;
@@ -46,6 +47,7 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
     }
 
     internal static PollingStationInformation Create(
+        Guid id,
         ElectionRound electionRound,
         PollingStation pollingStation,
         MonitoringObserver monitoringObserver,
@@ -54,7 +56,7 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
         DateTime? departureTime,
         List<BaseAnswer> answers,
         int numberOfQuestionsAnswered) =>
-        new(electionRound, pollingStation, monitoringObserver, pollingStationInformationForm, arrivalTime, departureTime, answers, numberOfQuestionsAnswered);
+        new(id, electionRound, pollingStation, monitoringObserver, pollingStationInformationForm, arrivalTime, departureTime, answers, numberOfQuestionsAnswered);
 
     internal void UpdateAnswers(IEnumerable<BaseAnswer> answers, int numberOfQuestionsAnswered)
     {

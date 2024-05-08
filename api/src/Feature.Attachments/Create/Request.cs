@@ -11,6 +11,7 @@ public class Request
     [FromClaim(ApplicationClaimTypes.UserId)]
     public Guid ObserverId { get; set; }
 
+    public Guid Id { get; set; }
     public Guid FormId { get; set; }
     public Guid QuestionId { get; set; }
 

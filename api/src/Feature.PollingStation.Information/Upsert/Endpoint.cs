@@ -42,7 +42,7 @@ public class Endpoint(IRepository<PollingStationInformation> repository,
             return TypedResults.NotFound();
         }
 
-        var specification = new GetPollingStationInformationSpecification(req.ElectionRoundId, req.PollingStationId, req.ObserverId);
+        var specification = new GetPollingStationInformationByIdSpecification(req.ElectionRoundId, req.ObserverId, req.Id);
         var pollingStationInformation = await repository.FirstOrDefaultAsync(specification, ct);
 
         List<BaseAnswer>? answers = null;
@@ -94,7 +94,7 @@ public class Endpoint(IRepository<PollingStationInformation> repository,
             return TypedResults.NotFound();
         }
 
-        var pollingStationInformation = form.CreatePollingStationInformation(pollingStation, monitoringObserver, req.ArrivalTime, req.DepartureTime, answers);
+        var pollingStationInformation = form.CreatePollingStationInformation(req.Id, pollingStation, monitoringObserver, req.ArrivalTime, req.DepartureTime, answers);
         await repository.AddAsync(pollingStationInformation, ct);
 
         return TypedResults.Ok(PollingStationInformationModel.FromEntity(pollingStationInformation));
