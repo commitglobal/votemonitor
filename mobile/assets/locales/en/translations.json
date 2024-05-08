@@ -3,6 +3,10 @@
     "yes": "Yes",
     "no": "No"
   },
+  "languages": {
+    "ro": "Romanian",
+    "en": "English"
+  },
   "login": {
     "submit": "Sign In",
     "informative-text": "If you are not accredited by an organization as an independent observer, you cannot use Vote Monitor app. Please refer to Vot Corect to learn what steps you need to take to become an electoral observer.",

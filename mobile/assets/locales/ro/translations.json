@@ -3,6 +3,10 @@
     "yes": "Da",
     "no": "Nu"
   },
+  "languages": {
+    "ro": "Română",
+    "en": "Engleză"
+  },
   "login": {
     "submit": "Intra in aplicatie",
     "informative-text": "Dacă nu sunteți acreditat de către o organizație ca observator independent, nu puteți utiliza aplicația Vote Monitor. Vă rugăm să consultați Votați corect pentru a afla ce pași trebuie să urmați pentru a deveni observator electoral.",
