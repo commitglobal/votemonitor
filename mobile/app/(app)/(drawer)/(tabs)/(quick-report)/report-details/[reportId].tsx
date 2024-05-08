@@ -58,10 +58,17 @@ const ReportDetails = () => {
         leftIcon={<Icon icon="chevronLeft" color="white" />}
         onLeftPress={() => router.back()}
       />
-      <YStack gap={32} paddingHorizontal={16}>
-        <Typography> {quickReport?.title} </Typography>
-        <Typography> {quickReport?.description}</Typography>
-        <Typography> Attachments </Typography>
+      <YStack gap={16} paddingHorizontal={16} paddingTop={32} justifyContent="center">
+        <Typography preset="subheading" fontWeight="500">
+          {quickReport?.title}
+        </Typography>
+        <Typography preset="body1" lineHeight={24} color="$gray8">
+          {quickReport?.description}
+        </Typography>
+
+        {quickReport?.attachments?.length == 0 && (
+          <Typography fontWeight="500"> No attached files </Typography>
+        )}
       </YStack>
     </Screen>
   );
