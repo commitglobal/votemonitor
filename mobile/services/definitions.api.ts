@@ -298,7 +298,7 @@ export const upsertFormSubmission = ({
 /** ========================================================================
     ================= POST addNote ====================
     ========================================================================
-    @description Get all the possible notes for a given polling station
+    @description Add new note into the formId 
     @param {string} electionRoundId 
     @returns {Note} 
 */
