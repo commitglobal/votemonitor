@@ -83,6 +83,7 @@ export const pollingStationsKeys = {
   deleteAttachment: () => [...pollingStationsKeys.all, "deleteAttachment"] as const,
   mutatePollingStationGeneralData: () =>
     [...pollingStationsKeys.all, "mutate-general-data"] as const,
+  changePassword: () => [...pollingStationsKeys.all, "changePassword"] as const,
 };
 
 export const notesKeys = {

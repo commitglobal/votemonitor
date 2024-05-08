@@ -25,6 +25,7 @@ const AppLayout = () => {
           <Stack.Screen name="polling-station-questionnaire" options={{ headerShown: false }} />
           <Stack.Screen name="report-issue" options={{ headerShown: false }} />
           <Stack.Screen name="change-language" options={{ headerShown: false }} />
+          <Stack.Screen name="change-password" options={{ headerShown: false }} />
         </Stack>
       </UserContextProvider>
     </PortalProvider>

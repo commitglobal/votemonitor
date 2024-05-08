@@ -343,7 +343,22 @@ export const updateNote = ({
 };
 
 /** ========================================================================
-    ================= DELETE deleteNote ====================
+    ================= POST changePassword ====================
+    ========================================================================
+    @description Change the password for the current user
+    @param {ChangePasswordPayload} data includes current, new and confirmed passwords
+*/
+export type ChangePasswordPayload = {
+  password: string;
+  newPassword: string;
+  confirmNewPassword: string;
+};
+
+export const changePassword = (data: ChangePasswordPayload) => {
+  return API.post("auth/change-password", data).then((res) => res.data);
+};
+
+/**  ================= DELETE deleteNote ====================
     ========================================================================
     @description delete a note 
     @param {string} electionRoundId 

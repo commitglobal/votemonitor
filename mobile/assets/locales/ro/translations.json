@@ -135,5 +135,42 @@
   "guides_empty": {
     "title": "Nu există ghiduri de citit încă",
     "paragraph": "Ghidurile și resursele de la organizația dvs. sunt la îndemâna dumneavoastră."
+  },
+  "change_password": {
+    "header": {
+      "title": "Schimbare parola"
+    },
+    "form": {
+      "current_password": {
+        "label": "Parola curenta*",
+        "placeholder": "Inserati parola curenta",
+        "required": "Parola este obligatorie",
+        "credentials_error": "Parola curenta nu este corecta"
+      },
+      "new_password": {
+        "label": "Parola noua*",
+        "placeholder": "Iserati noua parola",
+        "helper": "Trebuie sa contina cel putin 8 caractere",
+        "required": "Parola este obligatorie",
+        "pattern": "Parola trebuie să aibă cel puțin un caracter majuscul, un număr, un caracter special și să aibă minimum 8 caractere fără spații"
+      },
+      "confirm_password": {
+        "label": "Confirmati noua parola *",
+        "placeholder": "Confirmati parola",
+        "required": "Parola este obligatorie",
+        "helper": "Ambele parole trebuie să se potrivească.",
+        "no_match": "Parolele nu se potrivesc"
+      },
+      "actions": {
+        "save_password": "Salvati noua parola"
+      }
+    },
+    "success_page": {
+      "title": "Parola a fost schimbata!",
+      "paragraph": "Parola ta a fost schimbată cu succes.",
+      "actions": {
+        "back": "Inapoi in aplicatie"
+      }
+    }
   }
 }

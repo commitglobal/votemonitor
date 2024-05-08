@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { View } from "react-native";
-import { LanguageContext } from "../../../contexts/language/LanguageContext.provider";
-import Button from "../../../components/Button";
+import { LanguageContext } from "../../contexts/language/LanguageContext.provider";
+import Button from "../../components/Button";
 
 const ChangeLanguage = () => {
   const { changeLanguage } = useContext(LanguageContext);
