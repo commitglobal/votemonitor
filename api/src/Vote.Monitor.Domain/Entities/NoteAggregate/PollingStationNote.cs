@@ -16,12 +16,13 @@ public class Note : AuditableBaseEntity, IAggregateRoot
     public PollingStation PollingStation { get; private set; }
     public MonitoringObserver MonitoringObserver { get; private set; }
 
-    public Note(Guid electionRoundId,
+    public Note(Guid id,
+        Guid electionRoundId,
         Guid pollingStationId,
         Guid monitoringObserverId,
         Guid formId,
         Guid questionId,
-        string text) : base(Guid.NewGuid())
+        string text) : base(id)
     {
         ElectionRoundId = electionRoundId;
         PollingStationId = pollingStationId;
