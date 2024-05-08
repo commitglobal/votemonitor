@@ -8,14 +8,10 @@ import Header from "../../../../../components/Header";
 import { DrawerActions } from "@react-navigation/native";
 import Button from "../../../../../components/Button";
 import OptionsSheet from "../../../../../components/OptionsSheet";
-import {
-  useQuickReports,
-  useQuickReportById,
-} from "../../../../../services/queries/quick-reports.query";
+import { useQuickReports } from "../../../../../services/queries/quick-reports.query";
 import { useUserData } from "../../../../../contexts/user/UserContext.provider";
 import ReportCard from "../../../../../components/ReportCard";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { use } from "i18next";
 
 const QuickReport = () => {
   const insets = useSafeAreaInsets();
@@ -24,16 +20,11 @@ const QuickReport = () => {
   const { activeElectionRound } = useUserData();
   const { data: quickReports } = useQuickReports(activeElectionRound?.id);
 
-  if (quickReports === undefined || (quickReports && quickReports.length === 0)) {
+  if (quickReports === undefined || quickReports.length === 0) {
     return <NoQuickReportsExist />;
   }
 
-  console.log(quickReports[0].id);
-
-  const quickReport = useQuickReportById(activeElectionRound?.id, quickReports[0].id);
-  console.log(quickReport);
-
-  const id = 1;
+  console.log(quickReports);
 
   return (
     <Screen
@@ -69,7 +60,7 @@ const QuickReport = () => {
           <ReportCard
             key={report.id}
             report={report}
-            onPress={() => router.push(`/report-details/${id}?reportTitle=${report.title}`)}
+            onPress={() => router.push(`/report-details/${report.id}?reportTitle=${report.title}`)}
           />
         ))}
       </YStack>

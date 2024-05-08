@@ -12,9 +12,9 @@ export const QuickReportKeys = {
   add: () => [...QuickReportKeys.all, "add"] as const,
 };
 
-export const useQuickReports = (
+export const useQuickReports = <TResult = QuickReportsAPIResponse[]>(
   electionRoundId: string | undefined,
-  select?: (data: QuickReportsAPIResponse[]) => QuickReportsAPIResponse[],
+  select?: (data: QuickReportsAPIResponse[]) => TResult,
 ) => {
   return useQuery({
     queryKey: QuickReportKeys.byElectionRound(electionRoundId),
@@ -29,7 +29,7 @@ export const useQuickReportById = (electionRoundId: string | undefined, quickRep
     useCallback(
       (data: QuickReportsAPIResponse[]) => {
         const selectedQuickReport = data.find((quickReport) => quickReport.id === quickReportId);
-        return selectedQuickReport ? [selectedQuickReport] : [];
+        return selectedQuickReport;
       },
       [electionRoundId, quickReportId],
     ),
