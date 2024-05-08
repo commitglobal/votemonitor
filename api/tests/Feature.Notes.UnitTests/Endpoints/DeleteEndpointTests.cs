@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using FastEndpoints;
 using Feature.Notes.Delete;
+using Feature.Notes.Specifications;
 using FluentAssertions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -37,7 +38,7 @@ public class DeleteEndpointTests
         _authorizationService.AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object?>(), Arg.Any<IEnumerable<IAuthorizationRequirement>>())
             .Returns(AuthorizationResult.Success());
 
-        _repository.GetByIdAsync(noteId)
+        _repository.FirstOrDefaultAsync(Arg.Any<GetNoteByIdSpecification>())
             .Returns(fakeNote);
 
         // Act
@@ -47,6 +48,7 @@ public class DeleteEndpointTests
             ObserverId = fakeMonitoringObserver.ObserverId,
             Id = fakeNote.Id,
         };
+
         var result = await _endpoint.ExecuteAsync(request, default);
 
         // Assert
@@ -54,6 +56,8 @@ public class DeleteEndpointTests
             .Should().BeOfType<Results<NoContent, NotFound, BadRequest<ProblemDetails>>>()
             .Which
             .Result.Should().BeOfType<NoContent>();
+
+        await _repository.Received(1).DeleteAsync(fakeNote);
     }
 
     [Fact]

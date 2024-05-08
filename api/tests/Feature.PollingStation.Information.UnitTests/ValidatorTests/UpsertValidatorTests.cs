@@ -78,6 +78,7 @@ public class UpsertValidatorTests
         // Arrange
         var request = new Request
         {
+            Id = Guid.NewGuid(),
             ElectionRoundId = Guid.NewGuid(),
             PollingStationId = Guid.NewGuid(),
             ObserverId = Guid.NewGuid()
@@ -96,6 +97,7 @@ public class UpsertValidatorTests
         // Arrange
         var request = new Request
         {
+            Id = Guid.NewGuid(),
             ElectionRoundId = Guid.NewGuid(),
             PollingStationId = Guid.NewGuid(),
             ObserverId = Guid.NewGuid(),
@@ -115,6 +117,7 @@ public class UpsertValidatorTests
         // Arrange
         var request = new Request
         {
+            Id = Guid.NewGuid(),
             ElectionRoundId = Guid.NewGuid(),
             PollingStationId = Guid.NewGuid(),
             ObserverId = Guid.NewGuid(),

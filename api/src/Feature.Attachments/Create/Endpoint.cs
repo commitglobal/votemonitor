@@ -44,7 +44,8 @@ public class Endpoint(
 
         var uploadPath = $"elections/{req.ElectionRoundId}/polling-stations/{req.PollingStationId}/form/{req.FormId}/attachments";
 
-        var attachment = new AttachmentAggregate(req.ElectionRoundId,
+        var attachment = new AttachmentAggregate(req.Id,
+            req.ElectionRoundId,
             req.PollingStationId,
             monitoringObserver.Id,
             req.FormId,

@@ -1,6 +1,6 @@
 ﻿using Vote.Monitor.Core.Security;
 
-namespace Feature.Notes.Update;
+namespace Feature.Notes.Upsert;
 
 public class Request
 {
@@ -10,7 +10,8 @@ public class Request
 
     [FromClaim(ApplicationClaimTypes.UserId)]
     public Guid ObserverId { get; set; }
-
+    public Guid FormId { get; set; }
+    public Guid QuestionId { get; set; }
     public Guid Id { get; set; }
     public string Text { get; set; } = string.Empty;
 }
