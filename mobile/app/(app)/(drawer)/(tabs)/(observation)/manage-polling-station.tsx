@@ -5,8 +5,16 @@ import { YStack, XStack } from "tamagui";
 import { Typography } from "../../../../../components/Typography";
 import { router } from "expo-router";
 import Card from "../../../../../components/Card";
+import { useUserData } from "../../../../../contexts/user/UserContext.provider";
 
 const ManagePollingStation = () => {
+  const { visits } = useUserData();
+  if (visits === undefined || visits.length === 0) {
+    return <Typography>No visits</Typography>;
+  }
+
+  console.log(visits[0]);
+
   return (
     <Screen
       preset="scroll"
@@ -26,31 +34,46 @@ const ManagePollingStation = () => {
       />
 
       <YStack gap={24} paddingTop={24} paddingHorizontal={16}>
-        <PollingStationCard />
-        <PollingStationCard />
-        <PollingStationCard />
-        <PollingStationCard />
+        {visits.map((visit) => (
+          <PollingStationCard key={visit.pollingStationId} visit={visit} />
+        ))}
       </YStack>
     </Screen>
   );
 };
 
-const PollingStationCard = () => {
+interface PollingStationCardProps {
+  visit: any;
+}
+
+const PollingStationCard = (props: PollingStationCardProps) => {
+  const { visit } = props;
+
   return (
     <Card>
       <YStack gap={16}>
         <XStack justifyContent="space-between" alignItems="center">
           <Typography preset="body1" fontWeight="700">
-            Polling station #:{" "}
+            Polling station #: {visit.number}
           </Typography>
           <Icon icon="bin" color="white"></Icon>
         </XStack>
 
-        <Typography>[Location L1]: </Typography>
-        <Typography>[Location L2]: </Typography>
-        <Typography>[Location L3]: </Typography>
-        <Typography>[Street]: </Typography>
-        <Typography> Polling station number: </Typography>
+        <Typography>
+          [Location L1]: <Typography fontWeight="500">{visit.level1}</Typography>{" "}
+        </Typography>
+        <Typography>
+          [Location L2]: <Typography fontWeight="500"> {visit.level2} </Typography>{" "}
+        </Typography>
+        <Typography>
+          [Location L3]: <Typography fontWeight="500">{visit.level3}</Typography>
+        </Typography>
+        <Typography>
+          [Street]: <Typography fontWeight="500">{visit.address}</Typography>
+        </Typography>
+        <Typography>
+          Polling station number: <Typography fontWeight="500">{visit.number}</Typography>
+        </Typography>
       </YStack>
     </Card>
   );
