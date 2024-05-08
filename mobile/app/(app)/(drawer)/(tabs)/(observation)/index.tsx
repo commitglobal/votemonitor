@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigation } from "expo-router";
 import { Screen } from "../../../../../components/Screen";
 import { useUserData } from "../../../../../contexts/user/UserContext.provider";
 import { Typography } from "../../../../../components/Typography";
-import { YStack } from "tamagui";
+import { View, YStack } from "tamagui";
 import {
   usePollingStationInformation,
   usePollingStationInformationForm,
@@ -15,9 +15,12 @@ import { DrawerActions } from "@react-navigation/native";
 import NoVisitsExist from "../../../../../components/NoVisitsExist";
 import { PollingStationGeneral } from "../../../../../components/PollingStationGeneral";
 import FormList from "../../../../../components/FormList";
+import OptionsSheet from "../../../../../components/OptionsSheet";
+import { router } from "expo-router";
 
 const Index = () => {
   const navigation = useNavigation();
+  const [openContextualMenu, setOpenContextualMenu] = useState(false);
 
   const { isLoading, visits, selectedPollingStation, activeElectionRound } = useUserData();
 
@@ -48,6 +51,8 @@ const Index = () => {
           barStyle="light-content"
           leftIcon={<Icon icon="menuAlt2" color="white" />}
           onLeftPress={() => navigation.dispatch(DrawerActions.openDrawer)}
+          rightIcon={<Icon icon="dotsVertical" color="white" />}
+          onRightPress={() => setOpenContextualMenu(true)}
         />
         <SelectPollingStation />
       </YStack>
@@ -73,7 +78,25 @@ const Index = () => {
           }
         />
       </YStack>
+      <OptionsSheet open={openContextualMenu} setOpen={setOpenContextualMenu}>
+        <OptionSheetContent
+          onPress={() => {
+            setOpenContextualMenu(false);
+            router.push("/manage-polling-station");
+          }}
+        />
+      </OptionsSheet>
     </Screen>
+  );
+};
+
+const OptionSheetContent = ({ onPress }: { onPress: () => void }) => {
+  return (
+    <View paddingVertical="$xxs" paddingHorizontal="$sm">
+      <Typography preset="body1" color="$gray7" lineHeight={24} onPress={onPress}>
+        Manage polling stations.
+      </Typography>
+    </View>
   );
 };
 
