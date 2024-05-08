@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { QuickReportKeys } from "../queries/quick-reports.query";
-import { AddQuickReportAPIPayload, QuickReportsAPIResponse } from "../definitions.api";
+import { QuickReportKeys } from "../../queries/quick-reports.query";
+import { QuickReportsAPIResponse } from "../../api/quick-report/get-quick-reports.api";
+import { AddQuickReportAPIPayload } from "../../api/quick-report/post-quick-report.api";
 
 export const useAddQuickReport = (electionRoundId: string | undefined) => {
   const queryClient = useQueryClient();
