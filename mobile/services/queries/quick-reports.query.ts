@@ -1,5 +1,5 @@
 import { skipToken, useQuery } from "@tanstack/react-query";
-import { getQuickReports } from "../definitions.api";
+import { getQuickReports } from "../api/quick-report/get-quick-reports.api";
 
 export const QuickReportKeys = {
   all: ["quick-reports"] as const,
@@ -9,6 +9,7 @@ export const QuickReportKeys = {
     electionRoundId,
   ],
   add: () => [...QuickReportKeys.all, "add"] as const,
+  addAttachment: () => [...QuickReportKeys.all, "addAttachment"],
 };
 
 export const useQuickReports = (electionRoundId: string | undefined) => {

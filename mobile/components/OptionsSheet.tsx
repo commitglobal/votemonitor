@@ -31,6 +31,7 @@ const OptionsSheet = (props: OptionsSheetProps) => {
       zIndex={100_000}
       snapPointsMode="fit"
       dismissOnSnapToBottom={!isLoading}
+      dismissOnOverlayPress={!isLoading}
       {...rest}
     >
       <Sheet.Overlay />
