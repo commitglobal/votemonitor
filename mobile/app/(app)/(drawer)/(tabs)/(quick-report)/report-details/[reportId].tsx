@@ -37,8 +37,6 @@ const dummyAttachments: QuickReportAttachmentAPIResponse[] = [
 
 const ReportDetails = () => {
   const { reportTitle, reportId } = useLocalSearchParams<SearchParamsType>();
-  console.log(reportTitle);
-  console.log(reportId);
 
   if (!reportId || !reportTitle) {
     return <Typography>Incorrect page params</Typography>;
@@ -60,8 +58,6 @@ const ReportDetails = () => {
   if (currentReportError) {
     return <Typography>Report Error</Typography>;
   }
-
-  console.log(quickReport);
 
   return (
     <Screen

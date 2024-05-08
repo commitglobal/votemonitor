@@ -24,8 +24,6 @@ const QuickReport = () => {
     return <NoQuickReportsExist />;
   }
 
-  console.log(quickReports);
-
   return (
     <Screen
       preset="scroll"
