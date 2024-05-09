@@ -17,13 +17,14 @@ export const QuickReportKeys = {
 };
 
 export const useQuickReports = <TResult = QuickReportsAPIResponse[]>(
-  electionRoundId: string | undefined,
+  electionRoundId?: string,
   select?: (data: QuickReportsAPIResponse[]) => TResult,
 ) => {
   return useQuery({
     queryKey: QuickReportKeys.byElectionRound(electionRoundId),
     queryFn: electionRoundId ? () => getQuickReports(electionRoundId) : skipToken,
     select,
+    initialData: [],
   });
 };
 

@@ -6,8 +6,8 @@ import { Typography } from "../../../../../../components/Typography";
 import { YStack } from "tamagui";
 import { useQuickReportById } from "../../../../../../services/queries/quick-reports.query";
 import { useUserData } from "../../../../../../contexts/user/UserContext.provider";
-import { QuickReportAttachmentAPIResponse } from "../../../../../../services/definitions.api";
 import Card from "../../../../../../components/Card";
+import { QuickReportAttachmentAPIResponse } from "../../../../../../services/api/quick-report/get-quick-reports.api";
 
 type SearchParamsType = {
   reportId: string;
@@ -43,6 +43,7 @@ const ReportDetails = () => {
   }
 
   const { activeElectionRound } = useUserData();
+
   const {
     data: quickReport,
     isLoading: isLoadingCurrentReport,
@@ -96,8 +97,8 @@ const ReportDetails = () => {
             <Typography fontWeight="500" color="$gray10">
               Uploaded media
             </Typography>
-            {attachments.map((attachment) => (
-              <Card>
+            {attachments.map((attachment, key) => (
+              <Card key={key}>
                 <Typography preset="body1" fontWeight="700" key={attachment.id}>
                   {attachment.fileName}
                 </Typography>
