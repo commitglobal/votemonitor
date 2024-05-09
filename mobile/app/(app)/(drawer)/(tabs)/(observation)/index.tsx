@@ -16,6 +16,7 @@ import NoVisitsExist from "../../../../../components/NoVisitsExist";
 import { PollingStationGeneral } from "../../../../../components/PollingStationGeneral";
 import FormList from "../../../../../components/FormList";
 import OptionsSheet from "../../../../../components/OptionsSheet";
+import { useTranslation } from "react-i18next";
 
 const Index = () => {
   const navigation = useNavigation();
@@ -90,10 +91,12 @@ const Index = () => {
 };
 
 const OptionSheetContent = ({ onPress }: { onPress: () => void }) => {
+  const { t } = useTranslation("bottom_sheets");
+
   return (
     <View paddingVertical="$xxs" paddingHorizontal="$sm">
       <Typography preset="body1" color="$gray7" lineHeight={24} onPress={onPress}>
-        Manage polling stations.
+        {t("observations.actions.manage_polling_stations")}
       </Typography>
     </View>
   );

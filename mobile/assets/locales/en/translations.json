@@ -115,7 +115,8 @@
   "bottom_sheets": {
     "observations": {
       "actions": {
-        "clear_form": "Clear form (delete all answers)"
+        "clear_form": "Clear form (delete all answers)",
+        "manage_polling_stations": "Manage my polling stations"
       }
     }
   },
@@ -174,6 +175,30 @@
       "paragraph": "Your password has been successfully changed.",
       "actions": {
         "back": "Back to app"
+      }
+    }
+  },
+  "manage_polling_stations": {
+    "header": {
+        "title": "Manage my polling stations"
+    },
+    "station_card": {
+        "title": "Polling station #{{value}}",
+        "level_1": "[Location L1]:",
+        "level_2": "[Location L2]:",
+        "level_3": "[Location L3]:",
+        "street": "Street:",
+        "number": "Polling station number:"
+    }
+  },
+  "modals" : {
+    "delete_station" : {
+      "title": "Delete Polling station #{{value}}",
+      "paragraph_1": "This action will delete al answers entered so far for this polling station (including polling station information , form answers, notes and media files).",
+      "paragraph_2": "To avoid unintended information loss, please ensure you check the polling station details before performing this action.",
+      "actions": {
+          "delete": "Delete",
+          "cancel": "Cancel"
       }
     }
   }

@@ -115,7 +115,8 @@
   "bottom_sheets": {
     "observations": {
       "actions": {
-        "clear_form": "Ștergeți formularul (ștergeți toate răspunsurile)"
+        "clear_form": "Ștergeți formularul (ștergeți toate răspunsurile)",
+        "manage_polling_stations": "Gestionați secțiile de votare"
       }
     }
   },
@@ -174,6 +175,30 @@
       "paragraph": "Parola ta a fost schimbată cu succes.",
       "actions": {
         "back": "Inapoi in aplicatie"
+      }
+    }
+  },
+  "manage_polling_stations": {
+    "header": {
+        "title": "Gestionați secțiile de votare"
+    },
+    "station_card": {
+        "title": "Secție de votare #{{value}}",
+        "level_1": "[Locatia L1]:",
+        "level_2": "[Locatia L2]:",
+        "level_3": "[Locatia L3]:",
+        "street": "Strada:",
+        "number": "Numărul secției de votare:"
+    }
+  },
+  "modals" : {
+    "delete_station" : {
+      "title": "Șterge secția de votare #{{value}}",
+      "paragraph_1": "Această acțiune va șterge toate răspunsurile introduse până acum pentru această secție de votare (inclusiv informații despre secția de votare, răspunsuri la formular, note și fișiere media).",
+      "paragraph_2": "Pentru a evita pierderea neintenționată a informațiilor, vă rugăm să verificați detaliile secției de votare înainte de a efectua această acțiune.",
+      "actions": {
+          "delete": "Sterge",
+          "cancel": "Anuleaza"
       }
     }
   }
