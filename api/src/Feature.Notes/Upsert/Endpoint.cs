@@ -13,7 +13,7 @@ public class Endpoint(
 {
     public override void Configure()
     {
-        Put("/api/election-rounds/{electionRoundId}/notes");
+        Post("/api/election-rounds/{electionRoundId}/notes");
         DontAutoTag();
         Options(x => x.WithTags("notes", "mobile"));
         Summary(s =>
