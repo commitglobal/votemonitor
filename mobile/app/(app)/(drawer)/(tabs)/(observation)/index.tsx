@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigation } from "expo-router";
+import { useNavigation, router } from "expo-router";
 import { Screen } from "../../../../../components/Screen";
 import { useUserData } from "../../../../../contexts/user/UserContext.provider";
 import { Typography } from "../../../../../components/Typography";
@@ -16,7 +16,6 @@ import NoVisitsExist from "../../../../../components/NoVisitsExist";
 import { PollingStationGeneral } from "../../../../../components/PollingStationGeneral";
 import FormList from "../../../../../components/FormList";
 import OptionsSheet from "../../../../../components/OptionsSheet";
-import { router } from "expo-router";
 
 const Index = () => {
   const navigation = useNavigation();
