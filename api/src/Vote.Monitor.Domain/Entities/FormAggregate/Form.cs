@@ -161,14 +161,13 @@ public class Form : AuditableBaseEntity, IAggregateRoot
     }
 
     public FormSubmission CreateFormSubmission(
-        Guid formSubmissionId,
         PollingStation pollingStation,
         MonitoringObserver monitoringObserver,
         List<BaseAnswer>? answers)
     {
         if (answers == null)
         {
-            return FormSubmission.Create(formSubmissionId, ElectionRound, pollingStation, monitoringObserver, this, [], 0, 0);
+            return FormSubmission.Create(ElectionRound, pollingStation, monitoringObserver, this, [], 0, 0);
         }
 
         var numberOfQuestionAnswered = CountNumberOfQuestionsAnswered(answers);
@@ -181,7 +180,7 @@ public class Form : AuditableBaseEntity, IAggregateRoot
             throw new ValidationException(validationResult.Errors);
         }
 
-        return FormSubmission.Create(formSubmissionId, ElectionRound, pollingStation, monitoringObserver, this, answers, numberOfQuestionAnswered, numberOfFlaggedAnswers);
+        return FormSubmission.Create(ElectionRound, pollingStation, monitoringObserver, this, answers, numberOfQuestionAnswered, numberOfFlaggedAnswers);
     }
 
     private int CountNumberOfFlaggedAnswers(List<BaseAnswer> answers)

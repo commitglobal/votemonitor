@@ -39,7 +39,7 @@ public class Endpoint(IRepository<FormSubmission> repository,
             return TypedResults.NotFound();
         }
 
-        var specification = new GetFormSubmissionSpecification(req.ElectionRoundId, req.ObserverId, req.Id);
+        var specification = new GetFormSubmissionSpecification(req.ElectionRoundId, req.PollingStationId, req.FormId, req.ObserverId);
         var formSubmission = await repository.FirstOrDefaultAsync(specification, ct);
 
         List<BaseAnswer>? answers = null;
@@ -86,7 +86,7 @@ public class Endpoint(IRepository<FormSubmission> repository,
             return TypedResults.NotFound();
         }
 
-        var submission = form.CreateFormSubmission(req.Id, pollingStation, monitoringObserver, answers);
+        var submission = form.CreateFormSubmission(pollingStation, monitoringObserver, answers);
         await repository.AddAsync(submission, ct);
 
         return TypedResults.Ok(FormSubmissionModel.FromEntity(submission));
