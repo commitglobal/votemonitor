@@ -57,6 +57,15 @@ const pushUpdateAsync = async (message, branch, critical, projectRoot) => {
     },
   );
 
+  await spawnAsync(
+    'npx',
+    ['sentry-expo-upload-sourcemaps', 'dist'],
+    {
+      stdio: 'inherit',
+      path: projectRoot,
+    },
+  );
+
   console.log('Done.');
   process.exit(0);
 };
