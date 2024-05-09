@@ -60,7 +60,7 @@ public class FormAggregateTests
             ]),
         ];
 
-        var submission = form.CreateFormSubmission(Guid.NewGuid(), pollingStation, monitoringObserver, answers);
+        var submission = form.CreateFormSubmission(pollingStation, monitoringObserver, answers);
 
         // Assert
         submission.NumberOfFlaggedAnswers.Should().Be(3);
@@ -109,7 +109,7 @@ public class FormAggregateTests
             new SingleSelectAnswer(singleSelectQuestion.Id, SelectedOption.Create(flaggedOptionId1, ""))
         ];
 
-        var submission = form.CreateFormSubmission(Guid.NewGuid(), pollingStation, monitoringObserver, initialAnswers);
+        var submission = form.CreateFormSubmission(pollingStation, monitoringObserver, initialAnswers);
 
         // Act
         List<BaseAnswer> updatedAnswers = [
@@ -165,7 +165,7 @@ public class FormAggregateTests
         ];
 
         // Act
-        var submission = form.CreateFormSubmission(Guid.NewGuid(), pollingStation, monitoringObserver, answers);
+        var submission = form.CreateFormSubmission(pollingStation, monitoringObserver, answers);
 
         // Assert
         submission.NumberOfQuestionsAnswered.Should().Be(6);
@@ -203,7 +203,7 @@ public class FormAggregateTests
             new SingleSelectAnswerFaker(singleSelectQuestion)
         ];
 
-        var submission = form.CreateFormSubmission(Guid.NewGuid(), pollingStation, monitoringObserver, initialAnswers);
+        var submission = form.CreateFormSubmission(pollingStation, monitoringObserver, initialAnswers);
 
         // Act
         List<BaseAnswer> updatedAnswers = [
@@ -258,7 +258,7 @@ public class FormAggregateTests
             new DateAnswerFaker(dateQuestion.Id),
         ];
 
-        var submission = form.CreateFormSubmission(Guid.NewGuid(), pollingStation, monitoringObserver, initialAnswers);
+        var submission = form.CreateFormSubmission(pollingStation, monitoringObserver, initialAnswers);
 
         // Act
         form.FillIn(submission, []);
@@ -305,7 +305,7 @@ public class FormAggregateTests
             new DateAnswerFaker(dateQuestion.Id),
         ];
 
-        var submission = form.CreateFormSubmission(Guid.NewGuid(), pollingStation, monitoringObserver, initialAnswers);
+        var submission = form.CreateFormSubmission(pollingStation, monitoringObserver, initialAnswers);
 
         // Act
         form.FillIn(submission, null);

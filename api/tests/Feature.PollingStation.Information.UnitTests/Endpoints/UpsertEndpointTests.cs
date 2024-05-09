@@ -90,7 +90,7 @@ public class UpsertEndpointTests
             .Returns(pollingStationInformationForm);
 
         var pollingStationInformation = new PollingStationInformationFaker().Generate();
-        _repository.FirstOrDefaultAsync(Arg.Any<GetPollingStationInformationByIdSpecification>())
+        _repository.FirstOrDefaultAsync(Arg.Any<GetPollingStationInformationSpecification>())
             .Returns(pollingStationInformation);
 
         // Act
