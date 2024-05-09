@@ -1,5 +1,6 @@
 import {
     BaseQuestion,
+    DisplayLogic,
     DisplayLogicCondition,
     MultiSelectQuestion,
     QuestionType,
@@ -45,17 +46,18 @@ const conditions: {
     ],
 };
 
-export default function DisplayLogicEditor({ formQuestions,
+export default function DisplayLogicEditor({
+    formQuestions,
     questionIndex,
     question,
     languageCode,
     updateQuestion,
 }: DisplayLogicEditorProps) {
-    const [hasDisplayLogic, setHasDisplayLogic] = useState(false);
+    const [hasDisplayLogic, setHasDisplayLogic] = useState(!!question?.displayLogic);
 
-    const [parentQuestion, setParentQuestion] = useState<BaseQuestion | undefined>(undefined);
-    const [condition, setCondition] = useState<DisplayLogicCondition | undefined>(question?.displayLogic?.condition);
-    const [value, setValue] = useState<string | undefined>(question?.displayLogic?.value);
+    const parentQuestion = useMemo(() => {
+        return formQuestions.find(q => q.id === question?.displayLogic?.parentQuestionId);
+    }, [formQuestions, question?.displayLogic?.parentQuestionId]);
 
     const availableParentQuestions = useMemo(() => {
         return formQuestions
@@ -68,64 +70,61 @@ export default function DisplayLogicEditor({ formQuestions,
     }, [formQuestions, questionIndex]);
 
     function handleHasDisplayLogicChanged(value: boolean) {
+        updateQuestion(questionIndex, {
+            ...question,
+            displayLogic: value ? {} : undefined
+        });
+
         setHasDisplayLogic(value);
     }
 
     function handleParentQuestionSelected(questionId: string) {
-        const currentParentQuestion = parentQuestion;
-        const newParentQuestion = availableParentQuestions.find(q => q.id === questionId)!;
-        setParentQuestion(newParentQuestion);
-        debugger;
-        if (newParentQuestion?.$questionType !== currentParentQuestion?.$questionType) {
-            if (newParentQuestion?.$questionType === QuestionType.RatingQuestionType) {
-                setCondition('equals');
-                setValue('1');
-            }
-            if (newParentQuestion?.$questionType === QuestionType.NumberQuestionType) {
-                setCondition('equals');
-                setValue('0');
-            }
+        const parentQuestion = availableParentQuestions.find(q => q.id === questionId)!;
 
-            if (newParentQuestion?.$questionType === QuestionType.SingleSelectQuestionType
-                || newParentQuestion?.$questionType === QuestionType.MultiSelectQuestionType) {
-                setCondition('includes');
-                setCondition('includes');
-                const optionId = (newParentQuestion as SingleSelectQuestion | MultiSelectQuestion)!.options[0]?.id
-                setValue(optionId);
-            }
+        const displayLogic: DisplayLogic = {
+            parentQuestionId: questionId
+        };
+
+        if (parentQuestion?.$questionType === QuestionType.RatingQuestionType) {
+            displayLogic.condition = 'equals';
+            displayLogic.value = '1';
+        }
+        if (parentQuestion?.$questionType === QuestionType.NumberQuestionType) {
+            displayLogic.condition = 'equals';
+            displayLogic.value = '0';
+        }
+
+        if (parentQuestion?.$questionType === QuestionType.SingleSelectQuestionType
+            || parentQuestion?.$questionType === QuestionType.MultiSelectQuestionType) {
+
+            const optionId = (parentQuestion as SingleSelectQuestion | MultiSelectQuestion)!.options[0]?.id
+            displayLogic.condition = 'includes';
+            displayLogic.value = optionId;
         }
 
         updateQuestion(questionIndex, {
             ...question,
-            displayLogic: hasDisplayLogic ? {
-                parentQuestionId: parentQuestion?.id,
-                condition: condition,
-                value: value
-            } : undefined
+            displayLogic: {...displayLogic}
         });
     }
 
     function handleConditionChanged(condition: DisplayLogicCondition) {
-        setCondition(condition);
         updateQuestion(questionIndex, {
             ...question,
-            displayLogic: hasDisplayLogic ? {
-                parentQuestionId: parentQuestion?.id,
-                condition: condition,
-                value: value
-            } : undefined
+            displayLogic: {
+                ...question.displayLogic,
+                condition
+            }
         });
     }
 
     function handleValueChanged(value: string) {
-        setValue(value);
         updateQuestion(questionIndex, {
             ...question,
-            displayLogic: hasDisplayLogic ? {
-                parentQuestionId: parentQuestion?.id,
-                condition: condition,
-                value: value
-            } : undefined
+            displayLogic: {
+                ...question.displayLogic,
+                value
+            }
         });
     }
 
@@ -143,7 +142,7 @@ export default function DisplayLogicEditor({ formQuestions,
                         <Select
                             name='question'
                             onValueChange={handleParentQuestionSelected}
-                            value={question?.displayLogic?.parentQuestionId}
+                            value={parentQuestion?.id}
                         >
                             <SelectTrigger className="min-w-fit flex-1">
                                 <SelectValue placeholder='Select question' className="text-xs lg:text-sm" />
@@ -162,7 +161,7 @@ export default function DisplayLogicEditor({ formQuestions,
                         {
                             parentQuestion &&
                             <Select
-                                value={condition}
+                                value={question?.displayLogic?.condition}
                                 onValueChange={handleConditionChanged}>
                                 <SelectTrigger className="min-w-fit flex-1">
                                     <SelectValue placeholder="Select condition" className="text-xs lg:text-sm" />
@@ -198,7 +197,7 @@ export default function DisplayLogicEditor({ formQuestions,
                     {parentQuestion?.$questionType === QuestionType.RatingQuestionType &&
                         <div className="justify-left flex flex-col mt-3">
                             <span>Value:</span>
-                            <Select value={value} onValueChange={handleValueChanged}>
+                            <Select value={question?.displayLogic?.value} onValueChange={handleValueChanged}>
                                 <SelectTrigger className="min-w-fit flex-1">
                                     <SelectValue placeholder="Select rating" className="text-xs lg:text-sm" />
                                 </SelectTrigger>
@@ -221,7 +220,7 @@ export default function DisplayLogicEditor({ formQuestions,
                     {(parentQuestion?.$questionType === QuestionType.MultiSelectQuestionType ||
                         parentQuestion?.$questionType === QuestionType.SingleSelectQuestionType) &&
                         <div className="justify-left flex flex-col mt-3">
-                            <Select value={value} onValueChange={handleValueChanged}>
+                            <Select value={question?.displayLogic?.value} onValueChange={handleValueChanged}>
                                 <SelectTrigger className=" min-w-fit flex-1">
                                     <SelectValue placeholder="Select option" className="text-xs lg:text-sm" />
                                 </SelectTrigger>

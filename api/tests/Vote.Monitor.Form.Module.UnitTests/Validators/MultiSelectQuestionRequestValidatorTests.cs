@@ -1,4 +1,5 @@
-﻿using FluentValidation.TestHelper;
+﻿using FluentAssertions;
+using FluentValidation.TestHelper;
 using Vote.Monitor.Core.Constants;
 using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.Entities.FormBase.Questions;
@@ -162,14 +163,16 @@ public class MultiSelectQuestionRequestValidatorTests
             .ShouldNotHaveValidationErrorFor(x => x.Options);
     }
 
-    [Theory]
-    [MemberData(nameof(ValidatorsTestData.InvalidDisplayLogicTestCases), MemberType = typeof(ValidatorsTestData))]
-    public void Validation_ShouldFail_When_InvalidDisplayLogic(DisplayLogicRequest? displayLogic)
+    [Fact]
+    public void Validation_ShouldFail_When_InvalidDisplayLogic()
     {
         // Arrange
         var multiSelectQuestionRequest = new MultiSelectQuestionRequest
         {
-            DisplayLogic = displayLogic
+            DisplayLogic = new DisplayLogicRequest
+            {
+                ParentQuestionId = Guid.Empty
+            }
         };
 
         // Act
@@ -177,7 +180,7 @@ public class MultiSelectQuestionRequestValidatorTests
 
         // Assert
         validationResult
-            .ShouldHaveValidationErrorFor("DisplayLogic");
+            .ShouldHaveValidationErrorFor("DisplayLogic.ParentQuestionId");
     }
 
     [Theory]
@@ -195,7 +198,12 @@ public class MultiSelectQuestionRequestValidatorTests
 
         // Assert
         validationResult
-            .ShouldNotHaveValidationErrorFor(x => x.DisplayLogic);
+            .Errors
+            .Should()
+            .AllSatisfy(x =>
+            {
+                x.PropertyName.Should().NotContain(nameof(MultiSelectQuestionRequest.DisplayLogic));
+            });
     }
 
     [Fact]

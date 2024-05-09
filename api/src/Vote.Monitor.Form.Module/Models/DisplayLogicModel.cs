@@ -1,10 +1,14 @@
-﻿using Vote.Monitor.Domain.Entities.FormBase.Questions;
+﻿using System.Text.Json.Serialization;
+using Ardalis.SmartEnum.SystemTextJson;
+using Vote.Monitor.Domain.Entities.FormBase.Questions;
 
 namespace Vote.Monitor.Form.Module.Models;
 
 public class DisplayLogicModel
 {
     public Guid ParentQuestionId { get; init; }
+
+    [JsonConverter(typeof(SmartEnumNameConverter<DisplayLogicCondition, string>))]
     public DisplayLogicCondition Condition { get; init; }
     public string Value { get; init; }
 
