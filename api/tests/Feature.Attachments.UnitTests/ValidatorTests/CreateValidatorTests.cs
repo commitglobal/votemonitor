@@ -73,6 +73,19 @@ public class CreateValidatorTests
     }
 
     [Fact]
+    public void Validation_ShouldFail_When_Id_Empty()
+    {
+        // Arrange
+        var request = new Request { Id = Guid.Empty };
+
+        // Act
+        var result = _validator.TestValidate(request);
+
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.Id);
+    }
+
+    [Fact]
     public void Validation_ShouldFail_When_Attachment_Empty()
     {
         // Arrange
@@ -110,6 +123,7 @@ public class CreateValidatorTests
             ElectionRoundId = Guid.NewGuid(),
             PollingStationId = Guid.NewGuid(),
             ObserverId = Guid.NewGuid(),
+            Id = Guid.NewGuid(),
             FormId = Guid.NewGuid(),
             QuestionId = Guid.NewGuid(),
             Attachment = FakeFormFile.New().HavingFileName("image.jpg").HavingLength(256).Please()

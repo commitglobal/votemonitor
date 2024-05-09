@@ -10,4 +10,17 @@ public record NoteModel
     public required string Text { get; init; }
     public required DateTime CreatedAt { get; init; }
     public required DateTime? UpdatedAt { get; init; }
+
+    public static NoteModel FromEntity(NoteAggregate note)
+        => new ()
+        {
+            Id = note.Id,
+            ElectionRoundId = note.ElectionRoundId,
+            PollingStationId = note.PollingStationId,
+            FormId = note.FormId,
+            QuestionId = note.QuestionId,
+            Text = note.Text,
+            CreatedAt = note.CreatedOn,
+            UpdatedAt = note.LastModifiedOn
+        };
 }

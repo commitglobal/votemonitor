@@ -12,4 +12,12 @@ public sealed class GetFormSubmissionSpecification : SingleResultSpecification<F
             && x.PollingStationId == pollingStationId
             && x.FormId == formId);
     }
+
+    public GetFormSubmissionSpecification(Guid electionRoundId, Guid observerId, Guid id)
+    {
+        Query.Where(x =>
+            x.ElectionRoundId == electionRoundId
+            && x.MonitoringObserver.ObserverId == observerId
+            && x.Id == id);
+    }
 }
