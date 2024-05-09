@@ -22,9 +22,10 @@ public abstract record BaseQuestion
     public string Code { get; private set; }
     public TranslatedString Text { get; private set; }
     public TranslatedString? Helptext { get; private set; }
+    public DisplayLogic? DisplayLogic { get; private set; }
 
     [JsonConstructor]
-    internal BaseQuestion(Guid id, string code, TranslatedString text, TranslatedString? helptext)
+    internal BaseQuestion(Guid id, string code, TranslatedString text, TranslatedString? helptext, DisplayLogic? displayLogic)
     {
         Id = id;
         Code = code;

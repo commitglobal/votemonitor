@@ -13,6 +13,7 @@ public class DateQuestionModel : BaseQuestionModel
             Id = question.Id,
             Code = question.Code,
             Text = question.Text,
-            Helptext = question.Helptext
+            Helptext = question.Helptext,
+            DisplayLogic = DisplayLogicModel.FromEntity(question.DisplayLogic)
         };
 }

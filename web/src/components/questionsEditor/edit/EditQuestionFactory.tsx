@@ -1,17 +1,28 @@
-import { BaseQuestion, DateQuestion, MultiSelectQuestion, NumberQuestion, QuestionType, RatingQuestion, SingleSelectAnswer, SingleSelectQuestion, TextQuestion } from "@/common/types";
-import EditDateQuestion from "./EditDateQuestion";
-import EditSelectQuestion from "./EditSelectQuestion";
-import EditNumberQuestion from "./EditNumberQuestion";
-import EditRatingQuestion from "./EditRatingQuestion";
-import EditTextQuestion from "./EditTextQuestion";
-import { MoveDirection } from "../QuestionsEdit";
-import { Draggable } from "react-beautiful-dnd";
-import { cn } from "@/lib/utils";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { useTranslation } from "react-i18next";
-import QuestionActions from "./QuestionActions";
+import {
+  BaseQuestion,
+  DateQuestion,
+  MultiSelectQuestion,
+  NumberQuestion,
+  QuestionType,
+  RatingQuestion,
+  SingleSelectQuestion,
+  TextQuestion,
+} from '@/common/types';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { cn } from '@/lib/utils';
+import { Draggable } from 'react-beautiful-dnd';
+import { useTranslation } from 'react-i18next';
+
+import { MoveDirection } from '../QuestionsEdit';
+import EditDateQuestion from './EditDateQuestion';
+import EditNumberQuestion from './EditNumberQuestion';
+import EditRatingQuestion from './EditRatingQuestion';
+import EditSelectQuestion from './EditSelectQuestion';
+import EditTextQuestion from './EditTextQuestion';
+import QuestionActions from './QuestionActions';
 
 interface EditQuestionFactoryProps {
+  formQuestions: BaseQuestion[];
   availableLanguages: string[];
   languageCode: string;
   questionIdx: number;
@@ -27,6 +38,7 @@ interface EditQuestionFactoryProps {
 }
 
 export default function EditQuestionFactory({
+  formQuestions,
   availableLanguages,
   languageCode,
   questionIdx,
@@ -52,10 +64,9 @@ export default function EditQuestionFactory({
       case QuestionType.SingleSelectQuestionType: return t("questionEditor.questionType.singleSelectQuestion");
       case QuestionType.MultiSelectQuestionType: return t("questionEditor.questionType.multiSelectQuestion");
       case QuestionType.RatingQuestionType: return t("questionEditor.questionType.ratingQuestion");
-      default: "Unknown"
     }
-    
-    return "";
+
+    return "Unknown";
   }
 
   return (
@@ -114,6 +125,7 @@ export default function EditQuestionFactory({
             <CollapsibleContent className="px-4 pb-4">
               {question.$questionType === QuestionType.TextQuestionType ? (
                 <EditTextQuestion
+                  formQuestions={formQuestions}
                   availableLanguages={availableLanguages}
                   languageCode={languageCode}
                   question={question as TextQuestion}
@@ -123,6 +135,7 @@ export default function EditQuestionFactory({
                 />
               ) : question.$questionType === QuestionType.DateQuestionType ? (
                 <EditDateQuestion
+                  formQuestions={formQuestions}
                   availableLanguages={availableLanguages}
                   languageCode={languageCode}
                   question={question as DateQuestion}
@@ -132,6 +145,7 @@ export default function EditQuestionFactory({
                 />
               ) : question.$questionType === QuestionType.NumberQuestionType ? (
                 <EditNumberQuestion
+                  formQuestions={formQuestions}
                   availableLanguages={availableLanguages}
                   languageCode={languageCode}
                   question={question as NumberQuestion}
@@ -141,6 +155,7 @@ export default function EditQuestionFactory({
                 />
               ) : question.$questionType === QuestionType.MultiSelectQuestionType ? (
                 <EditSelectQuestion
+                  formQuestions={formQuestions}
                   availableLanguages={availableLanguages}
                   languageCode={languageCode}
                   question={question as MultiSelectQuestion}
@@ -150,6 +165,7 @@ export default function EditQuestionFactory({
                 />
               ) : question.$questionType === QuestionType.SingleSelectQuestionType ? (
                 <EditSelectQuestion
+                  formQuestions={formQuestions}
                   availableLanguages={availableLanguages}
                   languageCode={languageCode}
                   question={question as SingleSelectQuestion}
@@ -158,6 +174,7 @@ export default function EditQuestionFactory({
                   isInValid={isInValid} />
               ) : question.$questionType === QuestionType.RatingQuestionType ? (
                 <EditRatingQuestion
+                  formQuestions={formQuestions}
                   availableLanguages={availableLanguages}
                   languageCode={languageCode}
                   question={question as RatingQuestion}

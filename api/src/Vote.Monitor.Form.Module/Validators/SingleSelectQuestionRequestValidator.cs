@@ -14,10 +14,10 @@ public class SingleSelectQuestionRequestValidator : Validator<SingleSelectQuesti
         RuleFor(x => x.QuestionType).NotEmpty();
 
         RuleFor(x => x.Text)
-            .SetValidator(new PartiallyTranslatedStringValidator(languages, 3, 256));
+            .SetValidator(new PartiallyTranslatedStringValidator(languages));
 
         RuleFor(x => x.Helptext)
-            .SetValidator(new PartiallyTranslatedStringValidator(languages, 3, 256))
+            .SetValidator(new PartiallyTranslatedStringValidator(languages))
             .When(x => x.Helptext != null);
 
         RuleFor(x => x.Code)
@@ -30,10 +30,13 @@ public class SingleSelectQuestionRequestValidator : Validator<SingleSelectQuesti
         RuleFor(x => x.Options)
             .Must(options =>
             {
-                var groupedOptionIds = Enumerable.GroupBy(options, o => o.Id, (id, group) => new { id, count = group.Count() });
+                var groupedOptionIds = options.GroupBy(o => o.Id, (id, group) => new { id, count = group.Count() });
 
                 return groupedOptionIds.All(g => g.count == 1);
             })
             .WithMessage("Duplicated id found");
+
+        RuleFor(x => x.DisplayLogic)
+            .SetValidator(new DisplayLogicRequestValidator());
     }
 }

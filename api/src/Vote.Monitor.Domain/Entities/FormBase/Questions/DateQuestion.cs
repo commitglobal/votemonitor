@@ -9,15 +9,17 @@ public record DateQuestion : BaseQuestion
     internal DateQuestion(Guid id,
         string code,
         TranslatedString text,
-        TranslatedString? helptext) : base(id, code, text, helptext)
+        TranslatedString? helptext,
+        DisplayLogic? displayLogic) : base(id, code, text, helptext, displayLogic)
     {
     }
 
     public static DateQuestion Create(Guid id,
         string code,
         TranslatedString text,
-        TranslatedString? helptext = null)
-        => new(id, code, text, helptext);
+        TranslatedString? helptext = null,
+        DisplayLogic? displayLogic = null)
+        => new(id, code, text, helptext, displayLogic);
 
     protected override void AddTranslationsInternal(string languageCode) { }
     protected override void RemoveTranslationInternal(string languageCode) { }

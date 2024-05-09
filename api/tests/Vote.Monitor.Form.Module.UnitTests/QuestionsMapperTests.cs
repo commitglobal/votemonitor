@@ -185,7 +185,7 @@ public class QuestionsMapperTests
 
     internal record UnknownQuestion : BaseQuestion
     {
-        public UnknownQuestion(Guid id, string code, TranslatedString text, TranslatedString? helptext) : base(id, code, text, helptext)
+        public UnknownQuestion(Guid id, string code, TranslatedString text, TranslatedString? helptext) : base(id, code, text, helptext, null)
         {
         }
 

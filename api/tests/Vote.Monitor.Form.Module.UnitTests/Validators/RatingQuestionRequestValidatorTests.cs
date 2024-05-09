@@ -142,7 +142,13 @@ public class RatingQuestionRequestValidatorTests
             Helptext = ValidatorsTestData.ValidPartiallyTranslatedTestData.First(),
             Text = ValidatorsTestData.ValidPartiallyTranslatedTestData.First(),
             Code = "A code",
-            Id = Guid.NewGuid()
+            Id = Guid.NewGuid(),
+            DisplayLogic = new DisplayLogicRequest
+            {
+                ParentQuestionId = Guid.NewGuid(),
+                Condition = DisplayLogicCondition.GreaterEqual,
+                Value = "1"
+            }
         };
 
         // Act

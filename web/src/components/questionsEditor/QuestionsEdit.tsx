@@ -1,10 +1,11 @@
-import { BaseQuestion } from "@/common/types"
-import { DragDropContext, DropResult } from "react-beautiful-dnd";
-import EditQuestionFactory from "./edit/EditQuestionFactory";
-import { StrictModeDroppable } from "./StrictModeDroppable";
-import { validateQuestion } from "./edit/Validation";
-import AddQuestionButton from "./edit/AddQuestionButton";
+import { BaseQuestion } from '@/common/types';
+import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import { v4 as uuidv4 } from 'uuid';
+
+import AddQuestionButton from './edit/AddQuestionButton';
+import EditQuestionFactory from './edit/EditQuestionFactory';
+import { validateQuestion } from './edit/Validation';
+import { StrictModeDroppable } from './StrictModeDroppable';
 
 export interface QuestionsEditProps {
   availableLanguages: string[];
@@ -66,7 +67,7 @@ function QuestionsEdit({
 
   function duplicateQuestion(questionIndex: number) {
     const question = localQuestions[questionIndex]; // Get the element to duplicate
-    localQuestions.splice(questionIndex, 0, {...question!, id: uuidv4()}); // Insert a copy of the element at the specified index
+    localQuestions.splice(questionIndex, 0, { ...question!, id: uuidv4() }); // Insert a copy of the element at the specified index
     const updatedQuestions = Array.from(localQuestions);
 
     setLocalQuestions(updatedQuestions);
@@ -107,6 +108,7 @@ function QuestionsEdit({
                 {localQuestions.map((question, questionIdx) => (
                   <EditQuestionFactory
                     key={question.id}
+                    formQuestions={localQuestions}
                     availableLanguages={availableLanguages}
                     languageCode={languageCode}
                     question={question}

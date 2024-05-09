@@ -49,12 +49,25 @@ export enum QuestionType {
   RatingQuestionType = 'ratingQuestion',
 }
 
+export type DisplayLogicCondition = "equals" |
+  "notEquals" |
+  "lessThan" |
+  "lessEqual" |
+  "greaterThan" |
+  "greaterEqual" |
+  "includes";
+export interface DisplayLogic {
+  parentQuestionId?: string;
+  condition?: DisplayLogicCondition;
+  value?: string;
+}
 export interface BaseQuestion {
   id: string;
   $questionType: QuestionType;
   code: string;
   text: TranslatedString;
   helptext?: TranslatedString;
+  displayLogic?: DisplayLogic;
 }
 
 export interface DateQuestion extends BaseQuestion {

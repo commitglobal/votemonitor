@@ -26,15 +26,15 @@ public class FormAggregateTests
 
         List<SelectOption> singleSelectQuestions = [
             SelectOption.Create(flaggedOptionId1, new TranslatedString(), false, true),
-            SelectOption.Create(Guid.NewGuid(), new TranslatedString(), false, false),
-            SelectOption.Create(Guid.NewGuid(), new TranslatedString(), false, false),
-            SelectOption.Create(Guid.NewGuid(), new TranslatedString(), false, false),
+            SelectOption.Create(Guid.NewGuid(), new TranslatedString()),
+            SelectOption.Create(Guid.NewGuid(), new TranslatedString()),
+            SelectOption.Create(Guid.NewGuid(), new TranslatedString()),
         ];
 
         List<SelectOption> multiSelectQuestions = [
             SelectOption.Create(flaggedOptionId2, new TranslatedString(), false, true),
-            SelectOption.Create(Guid.NewGuid(), new TranslatedString(), false, false),
-            SelectOption.Create(regularOptionId, new TranslatedString(), false, false),
+            SelectOption.Create(Guid.NewGuid(), new TranslatedString()),
+            SelectOption.Create(regularOptionId, new TranslatedString()),
             SelectOption.Create(flaggedOptionId3, new TranslatedString(), false, true),
         ];
 
@@ -82,15 +82,15 @@ public class FormAggregateTests
 
         List<SelectOption> singleSelectQuestions = [
             SelectOption.Create(flaggedOptionId1, new TranslatedString(), false, true),
-            SelectOption.Create(Guid.NewGuid(), new TranslatedString(), false, false),
-            SelectOption.Create(Guid.NewGuid(), new TranslatedString(), false, false),
-            SelectOption.Create(Guid.NewGuid(), new TranslatedString(), false, false),
+            SelectOption.Create(Guid.NewGuid(), new TranslatedString()),
+            SelectOption.Create(Guid.NewGuid(), new TranslatedString()),
+            SelectOption.Create(Guid.NewGuid(), new TranslatedString()),
         ];
 
         List<SelectOption> multiSelectQuestions = [
             SelectOption.Create(flaggedOptionId2, new TranslatedString(), false, true),
-            SelectOption.Create(Guid.NewGuid(), new TranslatedString(), false, false),
-            SelectOption.Create(regularOptionId, new TranslatedString(), false, false),
+            SelectOption.Create(Guid.NewGuid(), new TranslatedString()),
+            SelectOption.Create(regularOptionId, new TranslatedString()),
             SelectOption.Create(flaggedOptionId3, new TranslatedString(), false, true),
         ];
 

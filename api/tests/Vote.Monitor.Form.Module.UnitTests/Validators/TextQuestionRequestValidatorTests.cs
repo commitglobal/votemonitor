@@ -1,6 +1,7 @@
 ﻿using FluentValidation.TestHelper;
 using Vote.Monitor.Core.Constants;
 using Vote.Monitor.Core.Models;
+using Vote.Monitor.Domain.Entities.FormBase.Questions;
 using Vote.Monitor.Form.Module.Requests;
 using Vote.Monitor.Form.Module.Validators;
 
@@ -145,7 +146,13 @@ public class TextQuestionRequestValidatorTests
             Text = ValidatorsTestData.ValidPartiallyTranslatedTestData.First(),
             Code = "A code",
             Id = Guid.NewGuid(),
-            InputPlaceholder = ValidatorsTestData.ValidPartiallyTranslatedTestData.First()
+            InputPlaceholder = ValidatorsTestData.ValidPartiallyTranslatedTestData.First(),
+            DisplayLogic = new DisplayLogicRequest
+            {
+                ParentQuestionId = Guid.NewGuid(),
+                Condition = DisplayLogicCondition.GreaterEqual,
+                Value = "1"
+            }
         };
 
         // Act

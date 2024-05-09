@@ -1,6 +1,7 @@
 ﻿using FluentValidation.TestHelper;
 using Vote.Monitor.Core.Constants;
 using Vote.Monitor.Core.Models;
+using Vote.Monitor.Domain.Entities.FormBase.Questions;
 using Vote.Monitor.Form.Module.Requests;
 using Vote.Monitor.Form.Module.Validators;
 
@@ -29,7 +30,7 @@ public class MultiSelectQuestionRequestValidatorTests
     }
 
     [Theory]
-    [MemberData(nameof(ValidatorTests.ValidatorsTestData.InvalidPartiallyTranslatedTestCases), MemberType = typeof(ValidatorTests.ValidatorsTestData))]
+    [MemberData(nameof(ValidatorsTestData.InvalidPartiallyTranslatedTestCases), MemberType = typeof(ValidatorsTestData))]
     public void Validation_ShouldFail_When_EmptyText(TranslatedString invalidText)
     {
         // Arrange
@@ -47,7 +48,7 @@ public class MultiSelectQuestionRequestValidatorTests
     }
 
     [Theory]
-    [MemberData(nameof(ValidatorTests.ValidatorsTestData.InvalidPartiallyTranslatedTestCases), MemberType = typeof(ValidatorTests.ValidatorsTestData))]
+    [MemberData(nameof(ValidatorsTestData.InvalidPartiallyTranslatedTestCases), MemberType = typeof(ValidatorsTestData))]
     public void Validation_ShouldFail_When_EmptyHelptext(TranslatedString invalidHelptext)
     {
         // Arrange
@@ -101,7 +102,7 @@ public class MultiSelectQuestionRequestValidatorTests
     }
 
     [Theory]
-    [MemberData(nameof(ValidatorTests.ValidatorsTestData.InvalidCodeTestCases), MemberType = typeof(ValidatorTests.ValidatorsTestData))]
+    [MemberData(nameof(ValidatorsTestData.InvalidCodeTestCases), MemberType = typeof(ValidatorsTestData))]
     public void Validation_ShouldFail_When_CodeHasInvalidLength(string code)
     {
         // Arrange
@@ -127,11 +128,11 @@ public class MultiSelectQuestionRequestValidatorTests
             Options = [
                 new SelectOptionRequest
                 {
-                    Text = ValidatorTests.ValidatorsTestData.ValidPartiallyTranslatedTestData.Last()
+                    Text = ValidatorsTestData.ValidPartiallyTranslatedTestData.Last()
                 },
                 new SelectOptionRequest
                 {
-                    Text = ValidatorTests.ValidatorsTestData.InvalidPartiallyTranslatedTestData.Last()
+                    Text = ValidatorsTestData.InvalidPartiallyTranslatedTestData.Last()
                 }
             ]
         };
@@ -161,6 +162,42 @@ public class MultiSelectQuestionRequestValidatorTests
             .ShouldNotHaveValidationErrorFor(x => x.Options);
     }
 
+    [Theory]
+    [MemberData(nameof(ValidatorsTestData.InvalidDisplayLogicTestCases), MemberType = typeof(ValidatorsTestData))]
+    public void Validation_ShouldFail_When_InvalidDisplayLogic(DisplayLogicRequest? displayLogic)
+    {
+        // Arrange
+        var multiSelectQuestionRequest = new MultiSelectQuestionRequest
+        {
+            DisplayLogic = displayLogic
+        };
+
+        // Act
+        var validationResult = _sut.TestValidate(multiSelectQuestionRequest);
+
+        // Assert
+        validationResult
+            .ShouldHaveValidationErrorFor("DisplayLogic");
+    }
+
+    [Theory]
+    [MemberData(nameof(ValidatorsTestData.ValidDisplayLogicTestCases), MemberType = typeof(ValidatorsTestData))]
+    public void Validation_ShouldPass_When_ValidDisplayLogic(DisplayLogicRequest? displayLogic)
+    {
+        // Arrange
+        var multiSelectQuestionRequest = new MultiSelectQuestionRequest
+        {
+            DisplayLogic = displayLogic
+        };
+
+        // Act
+        var validationResult = _sut.TestValidate(multiSelectQuestionRequest);
+
+        // Assert
+        validationResult
+            .ShouldNotHaveValidationErrorFor(x => x.DisplayLogic);
+    }
+
     [Fact]
     public void Validation_ShouldPass_When_ValidRequest()
     {
@@ -169,16 +206,22 @@ public class MultiSelectQuestionRequestValidatorTests
         {
 
             Id = Guid.NewGuid(),
-            Helptext = ValidatorTests.ValidatorsTestData.ValidPartiallyTranslatedTestData.First(),
-            Text = ValidatorTests.ValidatorsTestData.ValidPartiallyTranslatedTestData.First(),
+            Helptext = ValidatorsTestData.ValidPartiallyTranslatedTestData.First(),
+            Text = ValidatorsTestData.ValidPartiallyTranslatedTestData.First(),
             Code = "A code",
             Options = [
                 new SelectOptionRequest
                 {
                     Id = Guid.NewGuid(),
-                    Text = ValidatorTests.ValidatorsTestData.ValidPartiallyTranslatedTestData.Last()
+                    Text = ValidatorsTestData.ValidPartiallyTranslatedTestData.Last()
                 }
-            ]
+            ],
+            DisplayLogic = new DisplayLogicRequest
+            {
+                ParentQuestionId = Guid.NewGuid(),
+                Condition = DisplayLogicCondition.GreaterEqual,
+                Value = "1"
+            }
         };
 
         // Act
