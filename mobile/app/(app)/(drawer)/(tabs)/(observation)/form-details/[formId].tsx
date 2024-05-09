@@ -132,7 +132,7 @@ const FormDetails = () => {
         height={
           Platform.OS === "ios"
             ? Dimensions.get("screen").height - 120
-            : Dimensions.get("screen").height * 1.4 // TODO: need to do something about this
+            : numberOfQuestions * 165 + 300
         }
       >
         <ListView<Pick<FormQuestionListItemProps, "question" | "status"> & { id: string }>
