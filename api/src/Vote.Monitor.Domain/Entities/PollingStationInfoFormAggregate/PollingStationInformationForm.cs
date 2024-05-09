@@ -58,7 +58,6 @@ public class PollingStationInformationForm : AuditableBaseEntity, IAggregateRoot
     }
 
     public PollingStationInformation CreatePollingStationInformation(
-        Guid pollingStationInformationId,
         PollingStation pollingStation,
         MonitoringObserver monitoringObserver,
         DateTime? arrivalTime,
@@ -67,7 +66,7 @@ public class PollingStationInformationForm : AuditableBaseEntity, IAggregateRoot
     {
         if (answers == null)
         {
-            return PollingStationInformation.Create(pollingStationInformationId, ElectionRound, pollingStation, monitoringObserver, this, arrivalTime, departureTime, [], 0);
+            return PollingStationInformation.Create(ElectionRound, pollingStation, monitoringObserver, this, arrivalTime, departureTime, [], 0);
         }
 
         var validationResult = AnswersValidator.GetValidationResults(answers, Questions);
@@ -78,7 +77,7 @@ public class PollingStationInformationForm : AuditableBaseEntity, IAggregateRoot
         }
         var numberOfQuestionsAnswered = CountNumberOfQuestionsAnswered(answers);
 
-        return PollingStationInformation.Create(pollingStationInformationId, ElectionRound, pollingStation, monitoringObserver, this, arrivalTime, departureTime, answers, numberOfQuestionsAnswered);
+        return PollingStationInformation.Create(ElectionRound, pollingStation, monitoringObserver, this, arrivalTime, departureTime, answers, numberOfQuestionsAnswered);
     }
 
     public PollingStationInformation FillIn(PollingStationInformation filledInForm, List<BaseAnswer>? answers)
