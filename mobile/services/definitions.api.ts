@@ -97,7 +97,6 @@ export const getPollingStationsVisits = (
     ========================================================================
     ================= POST pollingStationInformation ====================
     ======== The general form to be completed for each polling station =====
-    // TODO: Needs to send all data, Ion will create PATCH
     ========================================================================
     @description Updates: Arrival/Departure Time and Polling Station Information Form
     @param {PollingStationInformationAPIPayload} payload 
@@ -304,6 +303,7 @@ export const upsertFormSubmission = ({
 */
 
 export type NotePayload = {
+  id: string;
   electionRoundId: string;
   pollingStationId: string;
   text: string;

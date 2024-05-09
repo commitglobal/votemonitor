@@ -9,6 +9,7 @@ import API from "../api";
     @returns {AddAttachmentAPIResponse} 
 */
 export type AddAttachmentAPIPayload = {
+  id: string;
   electionRoundId: string;
   pollingStationId: string;
   formId: string;
@@ -25,6 +26,7 @@ export type AddAttachmentAPIResponse = {
 };
 
 export const addAttachment = ({
+  id,
   electionRoundId,
   pollingStationId,
   fileMetadata: cameraResult,
@@ -39,6 +41,7 @@ export const addAttachment = ({
     type: cameraResult.type,
   } as unknown as Blob);
 
+  formData.append("id", id);
   formData.append("pollingStationId", pollingStationId);
   formData.append("formId", formId);
   formData.append("questionId", questionId);
