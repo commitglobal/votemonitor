@@ -39,7 +39,18 @@ const TimeSelect: React.FC<TimeSelectProps> = memo(({ type, time, setTime }) => 
       // press OK - set the time
       if (event.type === "set") {
         onClose();
-        setTime(selectedTime);
+        DateTimePickerAndroid.open({
+          mode: "time",
+          value: time || new Date(),
+          onChange: (event, eventTime) => {
+            if (event.type === 'set' && selectedTime && eventTime) {
+              selectedTime.setHours(eventTime?.getHours())
+              selectedTime.setMinutes(eventTime?.getMinutes())
+              setTime(selectedTime);
+            }
+          },
+          is24Hour: true,
+        })
       } else if (event.type === "dismissed") {
         // press Cancel - close modal
         onClose();
@@ -73,7 +84,15 @@ const TimeSelect: React.FC<TimeSelectProps> = memo(({ type, time, setTime }) => 
         }}
       >
         <Stack paddingVertical="$sm" marginBottom="$xxs">
-          {time ? (
+          {time ? (<React.Fragment>
+            <Typography preset="body2" fontWeight="500" paddingBottom="$xxs">
+              {time &&
+                time.toLocaleDateString(['en-GB'], {
+                  month: '2-digit',
+                  day: '2-digit',
+                  year: 'numeric'
+                })}
+            </Typography>
             <Typography preset="heading" fontWeight="500">
               {time &&
                 time.toLocaleTimeString([], {
@@ -81,6 +100,7 @@ const TimeSelect: React.FC<TimeSelectProps> = memo(({ type, time, setTime }) => 
                   minute: "2-digit",
                 })}
             </Typography>
+          </React.Fragment>
           ) : (
             <Typography preset="heading" fontWeight="500" color="$gray5">
               Not defined
@@ -113,10 +133,9 @@ const TimeSelect: React.FC<TimeSelectProps> = memo(({ type, time, setTime }) => 
             </XStack>
             <XStack flex={1} justifyContent="center" alignItems="center">
               <RNDateTimePicker
-                mode="time"
+                mode="datetime"
                 display="spinner"
                 value={tempTime}
-                is24Hour={true}
                 onChange={onChange}
               />
             </XStack>
@@ -126,7 +145,7 @@ const TimeSelect: React.FC<TimeSelectProps> = memo(({ type, time, setTime }) => 
         open &&
         // using imperative API for android
         DateTimePickerAndroid.open({
-          mode: "time",
+          mode: "date",
           value: time || new Date(),
           onChange,
           is24Hour: true,
