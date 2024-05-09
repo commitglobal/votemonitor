@@ -16,6 +16,8 @@ export type AttachmentApiResponse = {
   mimeType: string;
   presignedUrl: string;
   urlValidityInSeconds: number;
+
+  isNotSynched?: boolean;
 };
 
 export const getAttachments = ({

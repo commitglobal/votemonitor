@@ -3,7 +3,6 @@ import { useMemo } from "react";
 import { notesKeys } from "../queries.service";
 import { addNote, NotePayload } from "../definitions.api";
 import { Note } from "../../common/models/note";
-import * as Crypto from "expo-crypto";
 
 export const useAddNoteMutation = (
   electionRoundId: string | undefined,
@@ -39,7 +38,6 @@ export const useAddNoteMutation = (
       queryClient.setQueryData<Note[]>(getNotesQK, (old: Note[] = []) => [
         ...old,
         {
-          id: Crypto.randomUUID(),
           ...payload,
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),

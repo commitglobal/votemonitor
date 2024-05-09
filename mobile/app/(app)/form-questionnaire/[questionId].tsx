@@ -37,6 +37,7 @@ import AddNoteSheetContent from "../../../components/AddNoteSheetContent";
 import { useFormById } from "../../../services/queries/forms.query";
 import { useFormAnswers } from "../../../services/queries/form-submissions.query";
 import { useNotesForQuestionId } from "../../../services/queries/notes.query";
+import * as Crypto from "expo-crypto";
 
 type SearchParamType = {
   questionId: string;
@@ -199,6 +200,7 @@ const FormQuestionnaire = () => {
     ) {
       addAttachment(
         {
+          id: Crypto.randomUUID(),
           electionRoundId: activeElectionRound.id,
           pollingStationId: selectedPollingStation.pollingStationId,
           formId,
@@ -236,6 +238,7 @@ const FormQuestionnaire = () => {
       ) {
         addAttachment(
           {
+            id: Crypto.randomUUID(),
             electionRoundId: activeElectionRound.id,
             pollingStationId: selectedPollingStation.pollingStationId,
             formId,
