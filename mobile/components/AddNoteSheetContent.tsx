@@ -6,6 +6,7 @@ import { Controller, useForm } from "react-hook-form";
 import Input from "./Inputs/Input";
 import { useAddNoteMutation } from "../services/mutations/add-note.mutation";
 import { Keyboard } from "react-native";
+import * as Crypto from "expo-crypto";
 
 const AddNoteSheetContent = ({
   setAddingNote,
@@ -35,8 +36,9 @@ const AddNoteSheetContent = ({
     `Note_${electionRoundId}_${pollingStationId}_${formId}_${questionId}`,
   );
 
-  const onSubmitNote = (note: any) => {
+  const onSubmitNote = (note: { noteText: string }) => {
     const notePayload = {
+      id: Crypto.randomUUID(),
       pollingStationId,
       text: note.noteText,
       formId,

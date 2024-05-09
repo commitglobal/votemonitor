@@ -7,7 +7,6 @@ import {
 } from "../api/add-attachment.api";
 import { performanceLog } from "../../helpers/misc";
 import { AttachmentApiResponse } from "../api/get-attachments.api";
-import * as Crypto from "expo-crypto";
 
 export const addAttachmentMutation = (scopeId: string) => {
   const queryClient = useQueryClient();
@@ -34,7 +33,7 @@ export const addAttachmentMutation = (scopeId: string) => {
       queryClient.setQueryData<AttachmentApiResponse[]>(attachmentsQK, [
         ...(previousData || []),
         {
-          id: Crypto.randomUUID(),
+          id: payload.id,
           electionRoundId: payload.electionRoundId,
           pollingStationId: payload.pollingStationId,
           formId: payload.formId,
@@ -43,6 +42,7 @@ export const addAttachmentMutation = (scopeId: string) => {
           mimeType: payload.fileMetadata.type,
           presignedUrl: payload.fileMetadata.uri, // TODO @radulescuandrew is this working to display the media?
           urlValidityInSeconds: 3600,
+          isNotSynched: true,
         },
       ]);
 
