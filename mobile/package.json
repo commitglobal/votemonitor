@@ -20,6 +20,7 @@
     "eas-update": "dotenv -e .env -- node scripts/publish-update.js"
   },
   "dependencies": {
+    "@hookform/resolvers": "^3.3.4",
     "@morrowdigital/watermelondb-expo-plugin": "^2.3.1",
     "@nozbe/watermelondb": "^0.27.1",
     "@react-native-async-storage/async-storage": "1.21.0",
@@ -63,7 +64,8 @@
     "react-native-screens": "~3.29.0",
     "react-native-svg": "14.1.0",
     "superjson": "^2.2.1",
-    "tamagui": "^1.93.2"
+    "tamagui": "^1.93.2",
+    "zod": "^3.23.3"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

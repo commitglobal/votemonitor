@@ -269,19 +269,14 @@ const ReportIssue = () => {
                   </FormElement>
                   {/* polling station details */}
                   {value.id === QuickReportLocationType.OtherPollingStation && (
-                    <YStack gap="$xxs">
-                      <FormInput
-                        title="Polling station details *"
-                        type="textarea"
-                        placeholder="Please write here some identification details for this polling station (such as address, name, number, etc.)"
-                        value={value.details}
-                        onChangeText={(details) => onChange({ ...value, details })}
-                        error={errors.polling_station}
-                      />
-                      {errors.polling_station && (
-                        <Typography color="$red5">{errors.polling_station.message}</Typography>
-                      )}
-                    </YStack>
+                    <FormInput
+                      title="Polling station details *"
+                      type="textarea"
+                      placeholder="Please write here some identification details for this polling station (such as address, name, number, etc.)"
+                      value={value.details}
+                      onChangeText={(details) => onChange({ ...value, details })}
+                      error={errors.polling_station?.message}
+                    />
                   )}
                 </>
               )}
@@ -296,19 +291,14 @@ const ReportIssue = () => {
                 required: { value: true, message: "This field is required." },
               }}
               render={({ field: { onChange, value } }) => (
-                <YStack gap="$xxs">
-                  <FormInput
-                    title="Title of issue *"
-                    placeholder="Write a title for this issue."
-                    type="text"
-                    value={value}
-                    onChangeText={onChange}
-                    error={errors.issue_title}
-                  />
-                  {errors.issue_title && (
-                    <Typography color="$red5">{errors.issue_title.message}</Typography>
-                  )}
-                </YStack>
+                <FormInput
+                  title="Title of issue *"
+                  placeholder="Write a title for this issue."
+                  type="text"
+                  value={value}
+                  onChangeText={onChange}
+                  error={errors.issue_title?.message}
+                />
               )}
             />
 
@@ -321,19 +311,14 @@ const ReportIssue = () => {
                 required: { value: true, message: "This field is required." },
               }}
               render={({ field: { onChange, value } }) => (
-                <YStack gap="$xxs">
-                  <FormInput
-                    title="Description *"
-                    type="textarea"
-                    placeholder="Describe the situation in detail here."
-                    value={value}
-                    onChangeText={onChange}
-                    error={errors.issue_description}
-                  />
-                  {errors.issue_description && (
-                    <Typography color="$red5">{errors.issue_description.message}</Typography>
-                  )}
-                </YStack>
+                <FormInput
+                  title="Description *"
+                  type="textarea"
+                  placeholder="Describe the situation in detail here."
+                  value={value}
+                  onChangeText={onChange}
+                  error={errors.issue_description?.message}
+                />
               )}
             />
             {attachments.length ? (

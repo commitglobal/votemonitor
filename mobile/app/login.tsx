@@ -113,19 +113,14 @@ const LoginForm = ({
           },
         }}
         render={({ field: { onChange, value } }) => (
-          <YStack>
-            <FormInput
-              type="text"
-              title={t("form.email.label")}
-              placeholder={t("form.email.placeholder")}
-              value={value}
-              onChangeText={onChange}
-            ></FormInput>
-
-            <Typography color="$red5" marginTop="$xs">
-              {errors?.email?.message?.toString() ?? ""}
-            </Typography>
-          </YStack>
+          <FormInput
+            type="text"
+            title={t("form.email.label")}
+            placeholder={t("form.email.placeholder")}
+            value={value}
+            onChangeText={onChange}
+            error={errors?.email?.message?.toString()}
+          />
         )}
       />
 
@@ -140,24 +135,19 @@ const LoginForm = ({
           },
         }}
         render={({ field: { onChange, value } }) => (
-          <YStack>
-            <FormInput
-              type="password"
-              secureTextEntry={secureTextEntry}
-              title={t("form.password.label")}
-              placeholder={t("form.password.placeholder")}
-              value={value}
-              onChangeText={onChange}
-              iconRight={<Icon icon={passIcon} size={20} color="$gray11" />}
-              onIconRightPress={() => {
-                setSecureTextEntry(!secureTextEntry);
-              }}
-            ></FormInput>
-
-            <Typography color="$red5" marginTop="$xs">
-              {errors?.password?.message?.toString() ?? ""}
-            </Typography>
-          </YStack>
+          <FormInput
+            type="password"
+            secureTextEntry={secureTextEntry}
+            title={t("form.password.label")}
+            placeholder={t("form.password.placeholder")}
+            value={value}
+            onChangeText={onChange}
+            iconRight={<Icon icon={passIcon} size={20} color="$gray11" />}
+            onIconRightPress={() => {
+              setSecureTextEntry(!secureTextEntry);
+            }}
+            error={errors?.password?.message?.toString()}
+          />
         )}
       />
 

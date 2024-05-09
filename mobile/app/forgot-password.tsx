@@ -71,19 +71,14 @@ const ForgotPassword = () => {
             },
           }}
           render={({ field: { onChange, value } }) => (
-            <YStack>
-              <FormInput
-                type="text"
-                title={t("form.email.label")}
-                placeholder={t("form.email.placeholder")}
-                value={value}
-                onChangeText={onChange}
-              ></FormInput>
-
-              <Typography color="$red5" marginTop="$xs">
-                {errors?.email?.message?.toString() ?? ""}
-              </Typography>
-            </YStack>
+            <FormInput
+              type="text"
+              title={t("form.email.label")}
+              placeholder={t("form.email.placeholder")}
+              value={value}
+              onChangeText={onChange}
+              error={errors?.email?.message?.toString()}
+            />
           )}
         />
       </YStack>

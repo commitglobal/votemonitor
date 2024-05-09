@@ -2,22 +2,22 @@ import React, { ReactNode } from "react";
 import { Stack, YStack } from "tamagui";
 import { Typography } from "../Typography";
 import { Keyboard, StyleProp, TextStyle } from "react-native";
-import { FieldError, FieldErrorsImpl, Merge } from "react-hook-form";
 
 export interface FormElementProps {
-  //   question title
   title?: string;
   titleProps?: StyleProp<TextStyle>;
-  //   children elements
   children: ReactNode;
-  // error
-  error?:
-    | FieldError
-    | Merge<FieldError, FieldErrorsImpl<{ details: string; id: string }>>
-    | undefined;
+  error?: string;
+  helper?: string;
 }
 
-const FormElement: React.FC<FormElementProps> = ({ children, title, titleProps, error }) => {
+const FormElement: React.FC<FormElementProps> = ({
+  children,
+  title,
+  titleProps,
+  error,
+  helper,
+}) => {
   return (
     <YStack gap="$xxs" onPress={Keyboard.dismiss}>
       {/* title */}
@@ -28,6 +28,8 @@ const FormElement: React.FC<FormElementProps> = ({ children, title, titleProps, 
       )}
       {/* input place */}
       <Stack gap="$md">{children}</Stack>
+      {helper && !error && <Typography color="gray">{helper}</Typography>}
+      {error && <Typography color="$red7">{error}</Typography>}
     </YStack>
   );
 };
