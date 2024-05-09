@@ -84,52 +84,56 @@ const QuickReportContent = ({ quickReports, isLoading, error }: QuickReportConte
   }
 
   return (
-    <>
-      <YStack padding="$md" height={Dimensions.get("screen").height * 1.4}>
-        <ListView<any>
-          data={quickReports}
-          showsVerticalScrollIndicator={false}
-          ListHeaderComponent={
-            quickReports.length > 0 ? (
-              <Typography preset="body1" textAlign="left" color="$gray7" fontWeight="700">
-                My reported issues
+    <YStack padding="$md" height={Dimensions.get("screen").height * 1.4}>
+      <ListView<any>
+        data={quickReports}
+        showsVerticalScrollIndicator={false}
+        ListHeaderComponent={
+          quickReports.length > 0 ? (
+            <Typography
+              marginBottom="$xxs"
+              preset="body1"
+              textAlign="left"
+              color="$gray7"
+              fontWeight="700"
+            >
+              My reported issues
+            </Typography>
+          ) : (
+            <></>
+          )
+        }
+        ListEmptyComponent={
+          <YStack flex={1} alignItems="center" justifyContent="center" gap="$md" marginTop="50%">
+            <Icon icon="undrawFlag" />
+            <YStack gap="$md" paddingHorizontal="$xl">
+              <Typography preset="body1" textAlign="center" color="$gray12" lineHeight={24}>
+                Start sending quick reports to the organization if you notice irregularities inside,
+                outside the polling station or whenever needed.
               </Typography>
-            ) : (
-              <></>
-            )
-          }
-          ListEmptyComponent={
-            <YStack flex={1} alignItems="center" justifyContent="center" gap="$md" marginTop="50%">
-              <Icon icon="undrawFlag" />
-              <YStack gap="$md" paddingHorizontal="$xl">
-                <Typography preset="body1" textAlign="center" color="$gray12" lineHeight={24}>
-                  Start sending quick reports to the organization if you notice irregularities
-                  inside, outside the polling station or whenever needed.
-                </Typography>
-                <Button
-                  preset="outlined"
-                  onPress={router.push.bind(null, "/report-issue")}
-                  backgroundColor="white"
-                >
-                  Report new issue
-                </Button>
-              </YStack>
+              <Button
+                preset="outlined"
+                onPress={router.push.bind(null, "/report-issue")}
+                backgroundColor="white"
+              >
+                Report new issue
+              </Button>
             </YStack>
-          }
-          bounces={false}
-          renderItem={({ item, index }) => (
-            <ReportCard
-              key={`${index}`}
-              title={item.title}
-              description={item.description}
-              numberOfAttachments={item.attachments.length}
-              onPress={() => router.push(`/report-details/${item.id}?reportTitle=${item.title}`)}
-            />
-          )}
-          estimatedItemSize={100}
-        />
-      </YStack>
-    </>
+          </YStack>
+        }
+        bounces={false}
+        renderItem={({ item, index }) => (
+          <ReportCard
+            key={`${index}`}
+            title={item.title}
+            description={item.description}
+            numberOfAttachments={item.attachments.length}
+            onPress={() => router.push(`/report-details/${item.id}?reportTitle=${item.title}`)}
+          />
+        )}
+        estimatedItemSize={100}
+      />
+    </YStack>
   );
 };
 
