@@ -1,23 +1,22 @@
+import { Badge } from '@/components/ui/badge';
+import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
+import { cn } from '@/lib/utils';
 import { ChevronRightIcon } from '@heroicons/react/24/outline';
 import { Link } from '@tanstack/react-router';
-import type { ColumnDef } from '@tanstack/react-table';
-import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
+import { format } from 'date-fns';
+
 import { MediaFilesCell } from '../components/MediaFilesCell/MediaFilesCell';
+
+import type { ColumnDef } from '@tanstack/react-table';
 import type { FormSubmissionByEntry, FormSubmissionByForm, FormSubmissionByObserver } from '../models/form-submission';
 import type { QuestionExtraData } from '../types';
-
 export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry>[] = [
-  {
-    header: ({ column }) => <DataTableColumnHeader title='Entry ID' column={column} />,
-    accessorKey: 'submissionId',
-    enableSorting: true,
-    enableGlobalFilter: true,
-  },
   {
     header: ({ column }) => <DataTableColumnHeader title='Time submitted' column={column} />,
     accessorKey: 'timeSubmitted',
     enableSorting: true,
     enableGlobalFilter: true,
+    cell: ({ row }) => <div>{format(row.original.timeSubmitted, 'u-MM-dd KK:mm')}</div>
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Form name' column={column} />,
@@ -79,7 +78,7 @@ export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry>[
     enableGlobalFilter: true,
     cell: ({ row }) => (
       <div>
-        {row.original.firstName} {row.original.lastName}
+        {row.original.observerName}
       </div>
     ),
   },
@@ -116,9 +115,16 @@ export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry>[
   {
     header: ({ column }) => <DataTableColumnHeader title='Status' column={column} />,
     accessorKey: 'status',
-    enableSorting: true,
+    enableSorting: false,
     enableGlobalFilter: true,
-    cell: ({ row }) => row.original?.status ?? 'N/A',
+    cell: ({ row }) => <Badge
+      className={cn({
+        'text-slate-700 bg-slate-200': row.original?.needsFollowUp === undefined,
+        'text-red-600 bg-red-200': row.original?.needsFollowUp === true,
+        'text-yellow-600 bg-yellow-200': row.original?.needsFollowUp === false
+      })}>
+      {row.original?.needsFollowUp === undefined ? 'N/A' : row.original?.needsFollowUp? 'Needs followup': 'Followed up'} 
+    </Badge>
   },
   {
     header: '',
@@ -143,7 +149,7 @@ export const formSubmissionsByObserverColumnDefs: ColumnDef<FormSubmissionByObse
     enableGlobalFilter: true,
     cell: ({ row }) => (
       <div>
-        {row.original.firstName} {row.original.lastName}
+        {row.original.observerName}
       </div>
     ),
   },
@@ -180,9 +186,16 @@ export const formSubmissionsByObserverColumnDefs: ColumnDef<FormSubmissionByObse
   {
     header: ({ column }) => <DataTableColumnHeader title='Status' column={column} />,
     accessorKey: 'status',
-    enableSorting: true,
+    enableSorting: false,
     enableGlobalFilter: true,
-    cell: ({ row }) => row.original?.status ?? 'N/A',
+    cell: ({ row }) => <Badge
+      className={cn({
+        'text-slate-700 bg-slate-200': row.original?.needsFollowUp === undefined,
+        'text-red-600 bg-red-200': row.original?.needsFollowUp === true,
+        'text-yellow-600 bg-yellow-200': row.original?.needsFollowUp === false
+      })}>
+      {row.original?.needsFollowUp === undefined ? 'N/A' : row.original?.needsFollowUp? 'Needs followup': 'Followed up'} 
+    </Badge>
   },
   {
     header: '',
@@ -257,6 +270,7 @@ export const questionExtraInfoColumnDefs: ColumnDef<QuestionExtraData>[] = [
     accessorKey: 'timeSubmitted',
     enableSorting: true,
     enableGlobalFilter: true,
+    cell: ({ row }) => <div>{format(row.original.timeSubmitted, 'u-MM-dd KK:mm')}</div>
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Note' column={column} />,

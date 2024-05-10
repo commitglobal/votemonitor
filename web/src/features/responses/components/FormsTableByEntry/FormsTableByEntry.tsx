@@ -29,6 +29,8 @@ export function FormsTableByEntry({ columnsVisibility, searchText }: FormsTableB
       ['level1Filter', debouncedSearch.level1Filter],
       ['level2Filter', debouncedSearch.level2Filter],
       ['level3Filter', debouncedSearch.level3Filter],
+      ['level4Filter', debouncedSearch.level4Filter],
+      ['level5Filter', debouncedSearch.level5Filter],
     ].filter(([_, value]) => value);
 
     return Object.fromEntries(params) as FormSubmissionsSearchParams;

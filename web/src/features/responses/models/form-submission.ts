@@ -12,6 +12,7 @@ export enum FormType {
   ClosingAndCounting = 'ClosingAndCounting',
   Opening = 'Opening',
   Voting = 'Voting',
+  PSI = 'PSI',
 }
 
 export enum FormStatus {
@@ -22,10 +23,10 @@ export enum FormStatus {
 
 export interface FormSubmissionByEntry {
   email: string;
-  firstName: string;
+  observerName: string;
   formCode: string;
   formType: FormType;
-  lastName: string;
+  defaultLanguage: string;
   monitoringObserverId: string;
   numberOfFlaggedAnswers: number;
   numberOfQuestionsAnswered: number;
@@ -42,20 +43,19 @@ export interface FormSubmissionByEntry {
   submissionId: string;
   tags: string[];
   timeSubmitted: string;
-  status?: string;
+  needsFollowUp?: boolean;
 }
 
 export interface FormSubmissionByObserver {
   email: string;
-  firstName: string;
-  lastName: string;
+  observerName: string;
   monitoringObserverId: string;
   numberOfFlaggedAnswers: number;
   numberOfFormsSubmitted: number;
   numberOfLocations: number;
   phoneNumber: string;
   tags: string[];
-  status?: string;
+  needsFollowUp?: boolean;
 }
 
 export interface FormSubmissionByForm {

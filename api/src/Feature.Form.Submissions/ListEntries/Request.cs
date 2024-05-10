@@ -37,6 +37,9 @@ public class Request : BaseSortPaginatedRequest
 
     [QueryParam]
     public bool? HasFlaggedAnswers { get; set; }
+
+    [QueryParam]
+    public bool? FollowUpStatus { get; set; }
     
     [QueryParam]
     public Guid? MonitoringObserverId { get; set; }

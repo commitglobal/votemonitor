@@ -22,9 +22,9 @@ public class Endpoint(IDbConnection dbConnection) : Endpoint<Request, Response>
     public override async Task<Response> ExecuteAsync(Request req, CancellationToken ct)
     {
         var sql = @"
-            select f.""Id"" as ""FormId"",
-                   f.""Code"" as ""FormCode"",
-                   f.""FormType"" as ""FormType"",
+            select f.""Id"" AS ""FormId"",
+                   f.""Code"" AS ""FormCode"",
+                   f.""FormType"" AS ""FormType"",
                    count(distinct fs.""Id"") ""NumberOfSubmissions"",
                    sum(fs.""NumberOfFlaggedAnswers"") ""NumberOfFlaggedAnswers"",
                    count(distinct n.""Id"") ""NumberOfNotes"",

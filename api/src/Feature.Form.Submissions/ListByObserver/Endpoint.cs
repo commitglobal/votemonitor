@@ -33,6 +33,7 @@ public class Endpoint(IDbConnection dbConnection) : Endpoint<Request, PagedRespo
              INNER JOIN ""MonitoringNgos"" mn ON mn.""Id"" = mo.""MonitoringNgoId""
              WHERE mn.""ElectionRoundId"" = @electionRoundId
                  AND mn.""NgoId"" =@ngoId
+                 AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR  mo.""Tags"" && @tagsFilter)
              UNION ALL SELECT fs.""Id"" AS ""SubmissionId"",
                               fs.""PollingStationId"",
                               fs.""MonitoringObserverId"",
@@ -42,9 +43,10 @@ public class Endpoint(IDbConnection dbConnection) : Endpoint<Request, PagedRespo
              INNER JOIN ""MonitoringNgos"" mn ON mn.""Id"" = mo.""MonitoringNgoId""
              INNER JOIN ""Forms"" f on f.""Id"" = fs.""FormId""
              WHERE mn.""ElectionRoundId"" = @electionRoundId
-                 AND mn.""NgoId"" =@ngoId)
-        select count(DISTINCT s.""MonitoringObserverId"") count
-        from submissions s;
+                 AND mn.""NgoId"" =@ngoId
+                 AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR  mo.""Tags"" && @tagsFilter))
+        SELECT count(DISTINCT s.""MonitoringObserverId"") count
+        FROM submissions s;
 
         WITH submissions AS
         (SELECT psi.""Id"" AS ""SubmissionId"",
@@ -56,6 +58,7 @@ public class Endpoint(IDbConnection dbConnection) : Endpoint<Request, PagedRespo
          INNER JOIN ""MonitoringNgos"" mn ON mn.""Id"" = mo.""MonitoringNgoId""
          WHERE mn.""ElectionRoundId"" = @electionRoundId
              AND mn.""NgoId"" =@ngoId
+             AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR  mo.""Tags"" && @tagsFilter)
          UNION ALL SELECT fs.""Id"" AS ""SubmissionId"",
                           fs.""PollingStationId"",
                           fs.""MonitoringObserverId"",
@@ -65,24 +68,56 @@ public class Endpoint(IDbConnection dbConnection) : Endpoint<Request, PagedRespo
          INNER JOIN ""MonitoringNgos"" mn ON mn.""Id"" = mo.""MonitoringNgoId""
          INNER JOIN ""Forms"" f on f.""Id"" = fs.""FormId""
          WHERE mn.""ElectionRoundId"" = @electionRoundId
-             AND mn.""NgoId"" =@ngoId)
-        select mo.""Id"" as ""MonitoringObserverId"",
-               u.""FirstName"",
-               u.""LastName"",
-               u.""PhoneNumber"",
-               u.""Email"",
-               mo.""Tags"",
-               sum(s.""NumberOfFlaggedAnswers"") as ""NumberOfFlaggedAnswers"",
-               count(distinct s.""PollingStationId"") ""NumberOfLocations"",
-               count(distinct s.""SubmissionId"") ""NumberOfFormsSubmitted""
-        from submissions s
-        inner join ""MonitoringObservers"" mo on mo.""Id"" = s.""MonitoringObserverId""
-        inner join ""AspNetUsers"" u on u.""Id"" = mo.""ObserverId""
-        group by mo.""Id"",
-                 u.""FirstName"",
-                 u.""LastName"",
-                 u.""PhoneNumber"",
-                 u.""Email""
+             AND mn.""NgoId"" =@ngoId
+             AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR  mo.""Tags"" && @tagsFilter))
+
+        SELECT
+            ""MonitoringObserverId"",
+            ""ObserverName"",
+            ""PhoneNumber"",
+            ""Email"",
+            ""Tags"",
+            ""NumberOfFlaggedAnswers"",
+            ""NumberOfLocations"",
+            ""NumberOfFormsSubmitted""
+            FROM(
+                Select 
+                MO.""Id"" AS ""MonitoringObserverId"",
+                U.""FirstName"" || ' ' || U.""LastName"" ""ObserverName"",
+                U.""PhoneNumber"",
+                U.""Email"",
+                MO.""Tags"",
+                SUM(S.""NumberOfFlaggedAnswers"") AS ""NumberOfFlaggedAnswers"",
+                COUNT(DISTINCT S.""PollingStationId"") ""NumberOfLocations"",
+                COUNT(DISTINCT S.""SubmissionId"") ""NumberOfFormsSubmitted""
+            FROM
+                SUBMISSIONS S
+                INNER JOIN ""MonitoringObservers"" MO ON MO.""Id"" = S.""MonitoringObserverId""
+                INNER JOIN ""AspNetUsers"" U ON U.""Id"" = MO.""ObserverId""
+            GROUP BY
+                MO.""Id"",
+                U.""Id"") t
+            ORDER BY
+              CASE WHEN @sortExpression = 'ObserverName ASC' THEN ""ObserverName"" END ASC,
+              CASE WHEN @sortExpression = 'ObserverName DESC' THEN ""ObserverName"" END DESC,
+
+              CASE WHEN @sortExpression = 'PhoneNumber ASC' THEN ""PhoneNumber"" END ASC,
+              CASE WHEN @sortExpression = 'PhoneNumber DESC' THEN ""PhoneNumber"" END DESC,
+
+              CASE WHEN @sortExpression = 'Email ASC' THEN ""Email"" END ASC,
+              CASE WHEN @sortExpression = 'Email DESC' THEN ""Email"" END DESC,
+
+              CASE WHEN @sortExpression = 'Tags ASC' THEN ""Tags"" END ASC,
+              CASE WHEN @sortExpression = 'Tags DESC' THEN ""Tags"" END DESC,
+              
+              CASE WHEN @sortExpression = 'NumberOfFlaggedAnswers ASC' THEN ""NumberOfFlaggedAnswers"" END ASC,
+              CASE WHEN @sortExpression = 'NumberOfFlaggedAnswers DESC' THEN ""NumberOfFlaggedAnswers"" END DESC,
+              
+              CASE WHEN @sortExpression = 'NumberOfLocations ASC' THEN ""NumberOfLocations"" END ASC,
+              CASE WHEN @sortExpression = 'NumberOfLocations DESC' THEN ""NumberOfLocations"" END DESC,
+              
+              CASE WHEN @sortExpression = 'NumberOfFormsSubmitted ASC' THEN ""NumberOfFormsSubmitted"" END ASC,
+              CASE WHEN @sortExpression = 'NumberOfFormsSubmitted DESC' THEN ""NumberOfFormsSubmitted"" END DESC
         OFFSET @offset ROWS
         FETCH NEXT @pageSize ROWS ONLY;";
 
@@ -92,6 +127,8 @@ public class Endpoint(IDbConnection dbConnection) : Endpoint<Request, PagedRespo
             ngoId = req.NgoId,
             offset = PaginationHelper.CalculateSkip(req.PageSize, req.PageNumber),
             pageSize = req.PageSize,
+            tagsFilter = req.TagsFilter ?? [],
+            sortExpression = GetSortExpression(req.SortColumnName, req.IsAscendingSorting),
         };
 
         var multi = await dbConnection.QueryMultipleAsync(sql, queryArgs);
@@ -99,5 +136,47 @@ public class Endpoint(IDbConnection dbConnection) : Endpoint<Request, PagedRespo
         var entries = multi.Read<ObserverSubmissionOverview>().ToList();
 
         return new PagedResponse<ObserverSubmissionOverview>(entries, totalRowCount, req.PageNumber, req.PageSize);
+    }
+
+    private static string GetSortExpression(string? sortColumnName, bool isAscendingSorting)
+    {
+        if (string.IsNullOrWhiteSpace(sortColumnName))
+        {
+            return $"{nameof(ObserverSubmissionOverview.ObserverName)} ASC";
+        }
+
+        var sortOrder = isAscendingSorting ? "ASC" : "DESC";
+
+        if (string.Equals(sortColumnName, nameof(ObserverSubmissionOverview.Email), StringComparison.InvariantCultureIgnoreCase))
+        {
+            return $"{nameof(ObserverSubmissionOverview.Email)} {sortOrder}";
+        }
+
+        if (string.Equals(sortColumnName, nameof(ObserverSubmissionOverview.PhoneNumber), StringComparison.InvariantCultureIgnoreCase))
+        {
+            return $"{nameof(ObserverSubmissionOverview.PhoneNumber)} {sortOrder}";
+        }
+
+        if (string.Equals(sortColumnName, nameof(ObserverSubmissionOverview.Tags), StringComparison.InvariantCultureIgnoreCase))
+        {
+            return $"{nameof(ObserverSubmissionOverview.Tags)} {sortOrder}";
+        }
+
+        if (string.Equals(sortColumnName, nameof(ObserverSubmissionOverview.NumberOfFlaggedAnswers), StringComparison.InvariantCultureIgnoreCase))
+        {
+            return $"{nameof(ObserverSubmissionOverview.NumberOfFlaggedAnswers)} {sortOrder}";
+        }
+
+        if (string.Equals(sortColumnName, nameof(ObserverSubmissionOverview.NumberOfLocations), StringComparison.InvariantCultureIgnoreCase))
+        {
+            return $"{nameof(ObserverSubmissionOverview.NumberOfLocations)} {sortOrder}";
+        }
+
+        if (string.Equals(sortColumnName, nameof(ObserverSubmissionOverview.NumberOfFormsSubmitted), StringComparison.InvariantCultureIgnoreCase))
+        {
+            return $"{nameof(ObserverSubmissionOverview.NumberOfFormsSubmitted)} {sortOrder}";
+        }
+
+        return $"{nameof(ObserverSubmissionOverview.ObserverName)} ASC";
     }
 }

@@ -84,3 +84,19 @@ export function ratingScaleToNumber(scale: RatingScaleType): number {
     }
   }
 }
+
+export function buildURLSearchParams(data: any) {
+  const params = new URLSearchParams()
+  
+  Object.entries(data).forEach(([key, value]) => {
+    if (Array.isArray(value)) {
+      // @ts-ignore 
+      value.forEach(value => params.append(key, value.toString()))
+    } else {
+      // @ts-ignore 
+      params.append(key, value.toString())
+    }
+  });
+
+  return params
+}
