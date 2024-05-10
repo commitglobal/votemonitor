@@ -49,13 +49,14 @@ export enum QuestionType {
   RatingQuestionType = 'ratingQuestion',
 }
 
-export type DisplayLogicCondition = "equals" |
-  "notEquals" |
-  "lessThan" |
-  "lessEqual" |
-  "greaterThan" |
-  "greaterEqual" |
-  "includes";
+export type DisplayLogicCondition = 
+  "Equals" |
+  "NotEquals" |
+  "LessThan" |
+  "LessEqual" |
+  "GreaterThan" |
+  "GreaterEqual" |
+  "Includes";
 export interface DisplayLogic {
   parentQuestionId?: string;
   condition?: DisplayLogicCondition;

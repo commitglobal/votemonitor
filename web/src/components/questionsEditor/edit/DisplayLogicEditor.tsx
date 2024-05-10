@@ -26,23 +26,23 @@ interface DisplayLogicEditorProps {
 const conditions: {
     [questionType: string]: DisplayLogicCondition[];
 } = {
-    "multiSelectQuestion": ["includes"],
-    "singleSelectQuestion": ["includes"],
+    "multiSelectQuestion": ["Includes"],
+    "singleSelectQuestion": ["Includes"],
     "numberQuestion": [
-        "equals",
-        "notEquals",
-        "lessThan",
-        "lessEqual",
-        "greaterThan",
-        "greaterEqual",
+        "Equals",
+        "NotEquals",
+        "LessThan",
+        "LessEqual",
+        "GreaterThan",
+        "GreaterEqual",
     ],
     "ratingQuestion": [
-        "equals",
-        "notEquals",
-        "lessThan",
-        "lessEqual",
-        "greaterThan",
-        "greaterEqual",
+        "Equals",
+        "NotEquals",
+        "LessThan",
+        "LessEqual",
+        "GreaterThan",
+        "GreaterEqual",
     ],
 };
 
@@ -86,11 +86,11 @@ export default function DisplayLogicEditor({
         };
 
         if (parentQuestion?.$questionType === QuestionType.RatingQuestionType) {
-            displayLogic.condition = 'equals';
+            displayLogic.condition = 'Equals';
             displayLogic.value = '1';
         }
         if (parentQuestion?.$questionType === QuestionType.NumberQuestionType) {
-            displayLogic.condition = 'equals';
+            displayLogic.condition = 'Equals';
             displayLogic.value = '0';
         }
 
@@ -98,13 +98,13 @@ export default function DisplayLogicEditor({
             || parentQuestion?.$questionType === QuestionType.MultiSelectQuestionType) {
 
             const optionId = (parentQuestion as SingleSelectQuestion | MultiSelectQuestion)!.options[0]?.id
-            displayLogic.condition = 'includes';
+            displayLogic.condition = 'Includes';
             displayLogic.value = optionId;
         }
 
         updateQuestion(questionIndex, {
             ...question,
-            displayLogic: {...displayLogic}
+            displayLogic: { ...displayLogic }
         });
     }
 
