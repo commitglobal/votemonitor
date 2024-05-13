@@ -49,12 +49,26 @@ export enum QuestionType {
   RatingQuestionType = 'ratingQuestion',
 }
 
+export type DisplayLogicCondition =
+  "Equals" |
+  "NotEquals" |
+  "LessThan" |
+  "LessEqual" |
+  "GreaterThan" |
+  "GreaterEqual" |
+  "Includes";
+export interface DisplayLogic {
+  parentQuestionId?: string;
+  condition?: DisplayLogicCondition;
+  value?: string;
+}
 export interface BaseQuestion {
   id: string;
   $questionType: QuestionType;
   code: string;
   text: TranslatedString;
   helptext?: TranslatedString;
+  displayLogic?: DisplayLogic;
 }
 
 export interface DateQuestion extends BaseQuestion {
@@ -198,21 +212,13 @@ export const newTranslatedString = (availableLanguages: string[], languageCode: 
   return translatedString;
 };
 
-/**
- * Adds translation for a given language code in a TranslatedString
- * @param translatedString a instance of @see {@link TranslatedString}
- * @param languageCode language code for which to add value
- * @param value value to set if translation does not exists
- * @returns new instance of @see {@link TranslatedString}
- */
-export const addTranslation = (translatedString: TranslatedString | undefined, languageCode: string, value: string = ''): TranslatedString | undefined => {
-  if (translatedString) {
-    if (translatedString[languageCode]) {
-      return translatedString;
-    }
 
-    translatedString[languageCode] = value;
+export const updateTranslationString = (translatedString: TranslatedString | undefined, availableLanguages: string[], languageCode: string, value: string): TranslatedString=> {
+  if (translatedString === undefined) {
+    translatedString = newTranslatedString(availableLanguages, languageCode);
   }
+
+  translatedString[languageCode] = value;
 
   return translatedString;
 };
@@ -225,9 +231,9 @@ export const addTranslation = (translatedString: TranslatedString | undefined, l
  * @param defaultValue default value
  * @returns new instance of @see {@link TranslatedString}
  */
-export const cloneTranslation = (translatedString: TranslatedString | undefined, fromLanguageCode: string, toLanguageCode: string, defaultValue?: string): TranslatedString | undefined => {
+export const cloneTranslation = (translatedString: TranslatedString | undefined, fromLanguageCode: string, toLanguageCode: string, defaultValue: string = ''): TranslatedString | undefined => {
   if (translatedString) {
-    translatedString[toLanguageCode] = translatedString[fromLanguageCode] ?? '';
+    translatedString[toLanguageCode] = translatedString[fromLanguageCode] ?? defaultValue;
   }
 
   return translatedString;
@@ -235,4 +241,26 @@ export const cloneTranslation = (translatedString: TranslatedString | undefined,
 
 export type HistogramData = {
   [bucket: string]: number;
+};
+
+
+/**
+ * Gets translation from a translated string.
+ * If translation string is undefined or it does not contain translation for the requested language code then it will return a default value
+ * @param translatedString a instance of @see {@link TranslatedString}
+ * @param languageCode language code for which to get translation
+ * @param value value to set for required languageCode
+ * @returns translation or a default value
+ */
+export const getTranslationOrDefault = (translatedString: TranslatedString | undefined, languageCode: string, value: string = ''): string => {
+  if (translatedString === undefined) {
+    return value;
+  }
+
+  const translation = translatedString[languageCode];
+  if (translation === undefined) {
+    return value;
+  }
+
+  return translation;
 };

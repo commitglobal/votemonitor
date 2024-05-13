@@ -1,24 +1,25 @@
 import { authApi } from '@/common/auth-api';
+import { getTranslationOrDefault, updateTranslationString } from '@/common/types';
 import Layout from '@/components/layout/Layout';
+import FormQuestionsEditor from '@/components/questionsEditor/FormQuestionsEditor';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ErrorMessage, Field, FieldGroup, Fieldset, Label } from '@/components/ui/fieldset';
 import { Form, FormField } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
+import { queryClient } from '@/main';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { useLoaderData, useNavigate } from '@tanstack/react-router';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
-import { FormTemplateFull } from '../../models/formTemplate';
 
-import FormQuestionsEditor from '@/components/questionsEditor/FormQuestionsEditor';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { queryClient } from '@/main';
-import { useState } from 'react';
+import { FormTemplateFull } from '../../models/formTemplate';
 import { formTemplatesKeys } from '../../queries';
 import EditFormTemplateFooter from '../EditFormTemplate/EditFormTemplateFooter';
 
@@ -38,13 +39,13 @@ export default function EditFormTemplateTranslation() {
     resolver: zodResolver(editFormTemplateFormSchema),
     defaultValues: {
       name: formTemplate.name[formTemplate.defaultLanguage],
-      description: formTemplate.description[formTemplate.defaultLanguage],
+      description: getTranslationOrDefault(formTemplate.description, formTemplate.defaultLanguage),
     },
   });
 
   function onSubmit(values: z.infer<typeof editFormTemplateFormSchema>) {
     formTemplate.name[formTemplate.defaultLanguage] = values.name;
-    formTemplate.description[formTemplate.defaultLanguage] = values.description ?? '';
+    formTemplate.description =  updateTranslationString(formTemplate.description, formTemplate.languages, formTemplate.defaultLanguage, values.description ?? '');
 
     const updatedFormTemplate: FormTemplateFull = {
       ...formTemplate,

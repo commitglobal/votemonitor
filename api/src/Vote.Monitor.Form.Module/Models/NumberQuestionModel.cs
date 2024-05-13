@@ -16,6 +16,7 @@ public class NumberQuestionModel : BaseQuestionModel
             Code = question.Code,
             Text = question.Text,
             Helptext = question.Helptext,
-            InputPlaceholder = question.InputPlaceholder
+            InputPlaceholder = question.InputPlaceholder,
+            DisplayLogic = DisplayLogicModel.FromEntity(question.DisplayLogic)
         };
 }

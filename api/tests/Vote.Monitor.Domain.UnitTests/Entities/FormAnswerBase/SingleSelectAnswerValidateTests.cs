@@ -8,11 +8,12 @@ public class SingleSelectAnswerValidateTests
     private readonly Guid _optionId = Guid.NewGuid();
     private readonly SingleSelectQuestion _singleSelectQuestion;
 
-    readonly NumberQuestion _numberQuestion = new(Guid.NewGuid(), "A", new(), new(), new());
+    readonly NumberQuestion _numberQuestion = NumberQuestion.Create(Guid.NewGuid(), "A", new());
 
     public SingleSelectAnswerValidateTests()
     {
-        _singleSelectQuestion = new(Guid.NewGuid(), "A", new(), new(), [new SelectOption(_optionId, new(), false, false)]);
+        IReadOnlyList<SelectOption> options = [new SelectOption(_optionId, new(), false, false)];
+        _singleSelectQuestion = SingleSelectQuestion.Create(Guid.NewGuid(), "A", new(), options);
     }
 
     [Fact]

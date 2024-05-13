@@ -9,16 +9,16 @@ namespace Feature.Forms.Update;
 public class Endpoint(
     IAuthorizationService authorizationService,
     IRepository<MonitoringNgo> monitoringNgoRepository,
-    IRepository<FormAggregate> formsRepository) : Endpoint<Request, Results<NoContent, NotFound, Conflict<ProblemDetails>>>
+    IRepository<FormAggregate> formsRepository) : Endpoint<Request, Results<NoContent, NotFound>>
 {
     public override void Configure()
     {
-        Put("/api/election-rounds/{electionRoundId}/monitoring-ngo/{monitoringNgoId}/forms/{id}");
+        Put("/api/election-rounds/{electionRoundId}/forms/{id}");
         DontAutoTag();
         Options(x => x.WithTags("forms"));
     }
 
-    public override async Task<Results<NoContent, NotFound, Conflict<ProblemDetails>>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<Results<NoContent, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
         var requirement = new MonitoringNgoAdminRequirement(req.ElectionRoundId);
         var authorizationResult = await authorizationService.AuthorizeAsync(User, requirement);
@@ -27,21 +27,12 @@ public class Endpoint(
             return TypedResults.NotFound();
         }
 
-        var specification = new GetFormByIdSpecification(req.ElectionRoundId, req.MonitoringNgoId, req.Id);
+        var specification = new GetFormByIdSpecification(req.ElectionRoundId, req.NgoId, req.Id);
         var form = await formsRepository.FirstOrDefaultAsync(specification, ct);
 
         if (form is null)
         {
             return TypedResults.NotFound();
-        }
-
-        var exitingFormsSpecification = new GetExistingFormsByCodeAndTypeSpecification(req.ElectionRoundId, req.MonitoringNgoId, req.Id, req.Code, req.FormType);
-        var duplicatedFormTemplate = await formsRepository.AnyAsync(exitingFormsSpecification, ct);
-
-        if (duplicatedFormTemplate)
-        {
-            AddError(r => r.Name, "A form template with same parameters already exists");
-            return TypedResults.Conflict(new ProblemDetails(ValidationFailures));
         }
 
         var questions = req.Questions
@@ -53,7 +44,7 @@ public class Endpoint(
 
         await formsRepository.UpdateAsync(form, ct);
 
-        var monitoringNgo = await monitoringNgoRepository.GetByIdAsync(req.MonitoringNgoId, ct);
+        var monitoringNgo = await monitoringNgoRepository.FirstOrDefaultAsync(new GetMonitoringNgoSpecification(req.ElectionRoundId, req.NgoId), ct);
         monitoringNgo!.UpdatePollingStationsVersion();
         await monitoringNgoRepository.UpdateAsync(monitoringNgo, ct);
 

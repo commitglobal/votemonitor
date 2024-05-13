@@ -18,6 +18,7 @@ import { Route as ObserversIndexImport } from './routes/observers/index'
 import { Route as NgosIndexImport } from './routes/ngos/index'
 import { Route as MonitoringObserversIndexImport } from './routes/monitoring-observers/index'
 import { Route as LoginIndexImport } from './routes/login/index'
+import { Route as FormsIndexImport } from './routes/forms/index'
 import { Route as FormTemplatesIndexImport } from './routes/form-templates/index'
 import { Route as ForgotPasswordIndexImport } from './routes/forgot-password/index'
 import { Route as ElectionRoundsIndexImport } from './routes/election-rounds/index'
@@ -31,8 +32,11 @@ import { Route as ElectionRoundsElectionRoundIdImport } from './routes/election-
 import { Route as ResponsesFormIdAggregatedImport } from './routes/responses/$formId.aggregated'
 import { Route as ObserversObserverIdEditImport } from './routes/observers_.$observerId.edit'
 import { Route as MonitoringObserversMonitoringObserverIdEditImport } from './routes/monitoring-observers_.$monitoringObserverId.edit'
+import { Route as FormsFormIdEditImport } from './routes/forms_.$formId.edit'
+import { Route as FormsFormIdLanguageCodeImport } from './routes/forms/$formId_.$languageCode'
 import { Route as FormTemplatesFormTemplateIdEditImport } from './routes/form-templates_.$formTemplateId.edit'
 import { Route as FormTemplatesFormTemplateIdLanguageCodeImport } from './routes/form-templates/$formTemplateId_.$languageCode'
+import { Route as FormsFormIdEditTranslationLanguageCodeImport } from './routes/forms_.$formId.edit-translation.$languageCode'
 import { Route as FormTemplatesFormTemplateIdEditTranslationLanguageCodeImport } from './routes/form-templates_.$formTemplateId.edit-translation.$languageCode'
 
 // Create/Update Routes
@@ -69,6 +73,11 @@ const MonitoringObserversIndexRoute = MonitoringObserversIndexImport.update({
 
 const LoginIndexRoute = LoginIndexImport.update({
   path: '/login/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const FormsIndexRoute = FormsIndexImport.update({
+  path: '/forms/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -141,6 +150,16 @@ const MonitoringObserversMonitoringObserverIdEditRoute =
     getParentRoute: () => rootRoute,
   } as any)
 
+const FormsFormIdEditRoute = FormsFormIdEditImport.update({
+  path: '/forms/$formId/edit',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const FormsFormIdLanguageCodeRoute = FormsFormIdLanguageCodeImport.update({
+  path: '/forms/$formId/$languageCode',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const FormTemplatesFormTemplateIdEditRoute =
   FormTemplatesFormTemplateIdEditImport.update({
     path: '/form-templates/$formTemplateId/edit',
@@ -150,6 +169,12 @@ const FormTemplatesFormTemplateIdEditRoute =
 const FormTemplatesFormTemplateIdLanguageCodeRoute =
   FormTemplatesFormTemplateIdLanguageCodeImport.update({
     path: '/form-templates/$formTemplateId/$languageCode',
+    getParentRoute: () => rootRoute,
+  } as any)
+
+const FormsFormIdEditTranslationLanguageCodeRoute =
+  FormsFormIdEditTranslationLanguageCodeImport.update({
+    path: '/forms/$formId/edit-translation/$languageCode',
     getParentRoute: () => rootRoute,
   } as any)
 
@@ -207,6 +232,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FormTemplatesIndexImport
       parentRoute: typeof rootRoute
     }
+    '/forms/': {
+      preLoaderRoute: typeof FormsIndexImport
+      parentRoute: typeof rootRoute
+    }
     '/login/': {
       preLoaderRoute: typeof LoginIndexImport
       parentRoute: typeof rootRoute
@@ -239,6 +268,14 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FormTemplatesFormTemplateIdEditImport
       parentRoute: typeof rootRoute
     }
+    '/forms/$formId/$languageCode': {
+      preLoaderRoute: typeof FormsFormIdLanguageCodeImport
+      parentRoute: typeof rootRoute
+    }
+    '/forms/$formId/edit': {
+      preLoaderRoute: typeof FormsFormIdEditImport
+      parentRoute: typeof rootRoute
+    }
     '/monitoring-observers/$monitoringObserverId/edit': {
       preLoaderRoute: typeof MonitoringObserversMonitoringObserverIdEditImport
       parentRoute: typeof rootRoute
@@ -253,6 +290,10 @@ declare module '@tanstack/react-router' {
     }
     '/form-templates/$formTemplateId/edit-translation/$languageCode': {
       preLoaderRoute: typeof FormTemplatesFormTemplateIdEditTranslationLanguageCodeImport
+      parentRoute: typeof rootRoute
+    }
+    '/forms/$formId/edit-translation/$languageCode': {
+      preLoaderRoute: typeof FormsFormIdEditTranslationLanguageCodeImport
       parentRoute: typeof rootRoute
     }
   }
@@ -272,6 +313,7 @@ export const routeTree = rootRoute.addChildren([
   ElectionRoundsIndexRoute,
   ForgotPasswordIndexRoute,
   FormTemplatesIndexRoute,
+  FormsIndexRoute,
   LoginIndexRoute,
   MonitoringObserversIndexRoute,
   NgosIndexRoute,
@@ -280,10 +322,13 @@ export const routeTree = rootRoute.addChildren([
   ResponsesIndexRoute,
   FormTemplatesFormTemplateIdLanguageCodeRoute,
   FormTemplatesFormTemplateIdEditRoute,
+  FormsFormIdLanguageCodeRoute,
+  FormsFormIdEditRoute,
   MonitoringObserversMonitoringObserverIdEditRoute,
   ObserversObserverIdEditRoute,
   ResponsesFormIdAggregatedRoute,
   FormTemplatesFormTemplateIdEditTranslationLanguageCodeRoute,
+  FormsFormIdEditTranslationLanguageCodeRoute,
 ])
 
 /* prettier-ignore-end */

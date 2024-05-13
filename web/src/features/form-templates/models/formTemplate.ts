@@ -19,7 +19,7 @@ export interface FormTemplateBase {
     code: string;
     defaultLanguage: string;
     name: TranslatedString;
-    description: TranslatedString;
+    description?: TranslatedString;
     status: FormTemplateStatus;
     languages: string[];
     createdOn: string;

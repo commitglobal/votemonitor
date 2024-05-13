@@ -1,7 +1,6 @@
 ﻿using System.Data;
 using Authorization.Policies;
 using Dapper;
-using Feature.Form.Submissions.ListByObserver;
 using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.Specifications;
 

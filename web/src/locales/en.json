@@ -88,9 +88,28 @@
       "noResults": "No country found."
     }
   },
-  "formTemplateType":{
+  "formTemplateType": {
     "opening": "Opening",
     "voting": "Voting",
     "closingAndCounting": "Closing And Counting"
+  },
+  "formType": {
+    "opening": "Opening",
+    "voting": "Voting",
+    "closingAndCounting": "Closing And Counting"
+  },
+  "form": {
+    "field.code": "Form Code",
+    "field.name": "Form Name",
+    "field.description": "Description",
+    "field.defaultLanguage": "Base language",
+    "field.formType": "Form template type",
+    "field.languages": "Available languages",
+    "field.status": "Status",
+    "placeholder.code": "Form code",
+    "placeholder.name": "Form name",
+    "placeholder.description": "Form description",
+    "placeholder.defaultLanguage": "Select a default language",
+    "placeholder.languages": "Select available languages"
   }
 }

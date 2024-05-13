@@ -25,4 +25,6 @@ public abstract class BaseQuestionRequest
     public TranslatedString Text { get; set; }
 
     public TranslatedString? Helptext { get; set; }
+
+    public DisplayLogicRequest? DisplayLogic { get; set; }
 }

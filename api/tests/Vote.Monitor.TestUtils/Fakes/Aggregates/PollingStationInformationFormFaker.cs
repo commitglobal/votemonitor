@@ -24,29 +24,30 @@ public sealed class PollingStationInformationFormFaker : PrivateFaker<PollingSta
 
         SelectOption[] singleSelectOptions =
         [
-            new SelectOption(Guid.NewGuid(), translatedStringFaker.Generate(), false, false),
-            new SelectOption(Guid.NewGuid(), translatedStringFaker.Generate(), true, false),
-            new SelectOption(Guid.NewGuid(), translatedStringFaker.Generate(), false, true),
-            new SelectOption(Guid.NewGuid(), translatedStringFaker.Generate(), true, true),
+            SelectOption.Create(Guid.NewGuid(), translatedStringFaker.Generate()),
+            SelectOption.Create(Guid.NewGuid(), translatedStringFaker.Generate(), true),
+            SelectOption.Create(Guid.NewGuid(), translatedStringFaker.Generate(), false, true),
+            SelectOption.Create(Guid.NewGuid(), translatedStringFaker.Generate(), true, true),
         ];
 
         SelectOption[] multiSelectOptions =
         [
-            new SelectOption(Guid.NewGuid(), translatedStringFaker.Generate(), false, false),
-            new SelectOption(Guid.NewGuid(), translatedStringFaker.Generate(), true, false),
-            new SelectOption(Guid.NewGuid(), translatedStringFaker.Generate(), false, true),
-            new SelectOption(Guid.NewGuid(), translatedStringFaker.Generate(), true, true),
+            SelectOption.Create(Guid.NewGuid(), translatedStringFaker.Generate()),
+            SelectOption.Create(Guid.NewGuid(), translatedStringFaker.Generate(), true),
+            SelectOption.Create(Guid.NewGuid(), translatedStringFaker.Generate(), false, true),
+            SelectOption.Create(Guid.NewGuid(), translatedStringFaker.Generate(), true, true),
         ];
 
         questions ??=
         [
-            new NumberQuestion(Guid.NewGuid(), "c1", numberQuestionText, null, null),
-            new DateQuestion(Guid.NewGuid(), "c2", dateQuestionText, null),
-            new TextQuestion(Guid.NewGuid(), "c3", textQuestionText, null, null),
-            new RatingQuestion(Guid.NewGuid(), "c4", ratingQuestionText, null, RatingScale.OneTo10),
-            new SingleSelectQuestion(Guid.NewGuid(), "c5", singleSelectQuestionText, null, singleSelectOptions),
-            new MultiSelectQuestion(Guid.NewGuid(), "c6", multiSelectQuestionText, null, multiSelectOptions)
+            NumberQuestion.Create(Guid.NewGuid(), "c1", numberQuestionText),
+            DateQuestion.Create(Guid.NewGuid(), "c2", dateQuestionText),
+            TextQuestion.Create(Guid.NewGuid(), "c3", textQuestionText),
+            RatingQuestion.Create(Guid.NewGuid(), "c4", ratingQuestionText, RatingScale.OneTo10),
+            SingleSelectQuestion.Create(Guid.NewGuid(), "c5", singleSelectQuestionText, singleSelectOptions),
+            MultiSelectQuestion.Create(Guid.NewGuid(), "c6", multiSelectQuestionText, multiSelectOptions)
         ];
+
         CustomInstantiator(_ =>
             PollingStationInformationForm.Create(electionRound, languages.First(), languages, questions));
     }

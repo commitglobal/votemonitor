@@ -7,6 +7,6 @@ public sealed class SelectOptionFaker : Faker<SelectOption>
 {
     public SelectOptionFaker(Guid? id = null, string[]? languageList = null)
     {
-        CustomInstantiator(f => SelectOption.Create(id ?? f.Random.Guid(), new TranslatedStringFaker(languageList), false, false));
+        CustomInstantiator(f => SelectOption.Create(id ?? f.Random.Guid(), new TranslatedStringFaker(languageList)));
     }
 }

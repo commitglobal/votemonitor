@@ -5,8 +5,8 @@ namespace Vote.Monitor.Domain.UnitTests.Entities.FormAnswerBase;
 
 public class NumberAnswerValidateTests
 {
-    readonly NumberQuestion _numberQuestion = new(Guid.NewGuid(), "A", new(), new(), new());
-    private readonly RatingQuestion _ratingQuestion = new(Guid.NewGuid(), "A", new(), new(), RatingScale.OneTo3);
+    readonly NumberQuestion _numberQuestion = NumberQuestion.Create(Guid.NewGuid(), "A", new(), new(), new());
+    private readonly RatingQuestion _ratingQuestion = RatingQuestion.Create(Guid.NewGuid(), "A", new(), RatingScale.OneTo3, new());
 
     [Fact]
     public void Validate_WithValidQuestion_ReturnsValidationResultWithoutErrors()
