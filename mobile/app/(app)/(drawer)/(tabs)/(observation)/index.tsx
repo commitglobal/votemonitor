@@ -15,11 +15,13 @@ import { DrawerActions } from "@react-navigation/native";
 import NoVisitsExist from "../../../../../components/NoVisitsExist";
 import { PollingStationGeneral } from "../../../../../components/PollingStationGeneral";
 import FormList from "../../../../../components/FormList";
+import NoElectionRounds from "../../../../../components/NoElectionRounds";
 
 const Index = () => {
   const navigation = useNavigation();
 
-  const { isLoading, visits, selectedPollingStation, activeElectionRound } = useUserData();
+  const { isLoading, visits, selectedPollingStation, activeElectionRound, electionRounds } =
+    useUserData();
 
   const { data: psiData } = usePollingStationInformation(
     activeElectionRound?.id,
@@ -27,6 +29,10 @@ const Index = () => {
   );
 
   const { data: psiFormQuestions } = usePollingStationInformationForm(activeElectionRound?.id);
+
+  if (!isLoading && electionRounds && !electionRounds.length) {
+    return <NoElectionRounds />;
+  }
 
   if (!isLoading && visits && !visits.length) {
     return <NoVisitsExist />;
