@@ -22,13 +22,15 @@ export function FormsTableByEntry({ columnsVisibility, searchText }: FormsTableB
 
   const queryParams = useMemo(() => {
     const params = [
-      ['formCodeFilter', searchText],
+      ['searchText', searchText],
       ['pollingStationNumberFilter', debouncedSearch.pollingStationNumberFilter],
       ['formTypeFilter', debouncedSearch.formTypeFilter],
       ['hasFlaggedAnswers', debouncedSearch.hasFlaggedAnswers],
       ['level1Filter', debouncedSearch.level1Filter],
       ['level2Filter', debouncedSearch.level2Filter],
       ['level3Filter', debouncedSearch.level3Filter],
+      ['level4Filter', debouncedSearch.level4Filter],
+      ['level5Filter', debouncedSearch.level5Filter],
     ].filter(([_, value]) => value);
 
     return Object.fromEntries(params) as FormSubmissionsSearchParams;

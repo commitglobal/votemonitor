@@ -2,7 +2,7 @@
 import { z } from 'zod';
 
 export const FormSubmissionsSearchParamsSchema = z.object({
-  formCodeFilter: z.string().catch('').optional(),
+  searchText: z.string().catch('').optional(),
   formTypeFilter: z.string().catch('').optional(),
   level1Filter: z.string().catch('').optional(),
   level2Filter: z.string().catch('').optional(),

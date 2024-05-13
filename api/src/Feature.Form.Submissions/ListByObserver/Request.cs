@@ -12,4 +12,7 @@ public class Request : BaseSortPaginatedRequest
 
     [QueryParam] 
     public string[]? TagsFilter { get; set; } = [];
+
+    [QueryParam]
+    public string? SearchText { get; set; }
 }

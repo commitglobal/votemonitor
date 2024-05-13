@@ -21,6 +21,12 @@ public class FormSubmissionConfiguration : IEntityTypeConfiguration<FormSubmissi
             x.FormId
         }).IsUnique();
 
+        builder.Property(x => x.NumberOfFlaggedAnswers).IsRequired();
+        builder.Property(x => x.NumberOfQuestionsAnswered).IsRequired();
+        builder.Property(x => x.NeedsFollowUp)
+            .IsRequired(false)
+            .HasDefaultValue(null);
+
         builder.HasOne(x => x.ElectionRound)
             .WithMany()
             .HasForeignKey(x => x.ElectionRoundId);

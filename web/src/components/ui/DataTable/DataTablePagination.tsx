@@ -10,6 +10,10 @@ interface DataTablePaginationProps<TData> {
 }
 
 const DataTablePaginationProgress = ({ pagination, totalCount }: { pagination: PaginationState, totalCount?: number }): ReactElement => {
+  if(totalCount === 0 || totalCount === undefined){
+    return <p className="text-sm text-gray-700 ps-2"></p>;
+  }
+
   return (
     <p className="text-sm text-gray-700 ps-2">
       Showing{' '}
