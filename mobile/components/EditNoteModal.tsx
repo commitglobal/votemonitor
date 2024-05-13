@@ -59,6 +59,7 @@ const EditNoteModal = ({
       electionRoundId,
       pollingStationId,
       formId,
+      questionId,
       id: selectedNote!.id,
       text: formData.noteEditedText,
     };
