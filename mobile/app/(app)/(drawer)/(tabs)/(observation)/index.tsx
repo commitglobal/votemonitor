@@ -15,8 +15,10 @@ import { DrawerActions } from "@react-navigation/native";
 import NoVisitsExist from "../../../../../components/NoVisitsExist";
 import { PollingStationGeneral } from "../../../../../components/PollingStationGeneral";
 import FormList from "../../../../../components/FormList";
+import { useTranslation } from "react-i18next";
 
 const Index = () => {
+  const { t } = useTranslation("observations_polling_station");
   const navigation = useNavigation();
 
   const { isLoading, visits, selectedPollingStation, activeElectionRound } = useUserData();
@@ -43,7 +45,7 @@ const Index = () => {
     >
       <YStack marginBottom={20}>
         <Header
-          title={"Observation"}
+          title={t("title")}
           titleColor="white"
           barStyle="light-content"
           leftIcon={<Icon icon="menuAlt2" color="white" />}
@@ -67,7 +69,7 @@ const Index = () => {
                   />
                 )}
               <Typography preset="body1" fontWeight="700" marginTop="$lg" marginBottom="$xxs">
-                Forms
+                {t("forms.title")}
               </Typography>
             </YStack>
           }

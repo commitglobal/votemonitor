@@ -180,5 +180,33 @@
         "back": "Back to app"
       }
     }
+  },
+  "observations_polling_station": {
+    "title": "Observation",
+    "arrival_timer": {
+      "undefined_time": "Not defined",
+      "arrival_time": "Arrival time"
+    },
+    "departure_timer": {
+      "undefined_time": "Not defined",
+      "departure_time": "Departure time"
+    },
+    "polling_station_card": {
+      "title": "Answer a few quick questions about the polling station.",
+      "polling_station_information": "Polling station information",
+      "questions": "{{value}} questions",
+      "badge_status": {
+        "completed": "Completed",
+        "in_progress": "In progress",
+        "not_started": "Not started"
+      },
+      "actions": {
+          "answer_questions": "Answer questions"
+      }
+    },
+    "forms": {
+      "title": "Forms"
+    } 
   }
+  
 }

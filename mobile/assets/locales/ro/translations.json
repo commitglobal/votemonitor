@@ -180,5 +180,32 @@
         "back": "Inapoi in aplicatie"
       }
     }
+  },
+  "observations_polling_station": {
+    "title": "Observare",
+    "arrival_timer": {
+      "undefined_time": "Nu este definită",
+      "arrival_time": "Ora sosirii"
+    },
+    "departure_timer": {
+      "undefined_time": "Nu este definită",
+      "departure_time": "Ora plecării"
+    },
+    "polling_station_card": {
+      "title": "Răspunde la câteva întrebări rapide despre secția de votare.",
+      "polling_station_information": "Informații despre secția de votare",
+      "questions": "{{value}} intrebari",
+      "badge_status": {
+        "completed": "Completat",
+        "in_progress": "In desfasurare",
+        "not_started": "Neinceput"
+      },
+      "actions": {
+          "answer_questions": "Răspundeți la întrebări"
+      }
+    },
+    "forms": {
+      "title": "Formulare"
+    } 
   }
 }
