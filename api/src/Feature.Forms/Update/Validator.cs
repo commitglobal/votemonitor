@@ -8,7 +8,7 @@ public class Validator : Validator<Request>
     public Validator()
     {
         RuleFor(x => x.ElectionRoundId).NotEmpty();
-        RuleFor(x => x.MonitoringNgoId).NotEmpty();
+        RuleFor(x => x.NgoId).NotEmpty();
         RuleFor(x => x.Id).NotEmpty();
 
         RuleFor(x => x.DefaultLanguage)
@@ -27,10 +27,10 @@ public class Validator : Validator<Request>
             .MaximumLength(256);
 
         RuleFor(x => x.Name)
-            .SetValidator(x => new PartiallyTranslatedStringValidator(x.Languages, 3, 256));
+            .SetValidator(x => new PartiallyTranslatedStringValidator(x.Languages));
 
         RuleFor(x => x.Description)
-            .SetValidator(x => new PartiallyTranslatedStringValidator(x.Languages, 3, 256));
+            .SetValidator(x => new PartiallyTranslatedStringValidator(x.Languages));
 
         RuleFor(x => x.FormType)
             .NotEmpty();

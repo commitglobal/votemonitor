@@ -45,17 +45,17 @@ public sealed class FormAggregateFaker : PrivateFaker<Form>
 
         questions ??=
         [
-            new NumberQuestion(Guid.NewGuid(), "c1", numberQuestionText, null, null),
-            new DateQuestion(Guid.NewGuid(), "c2", dateQuestionText, null),
-            new TextQuestion(Guid.NewGuid(), "c3", textQuestionText, null, null),
-            new RatingQuestion(Guid.NewGuid(), "c4", ratingQuestionText, null, RatingScale.OneTo10),
-            new SingleSelectQuestion(Guid.NewGuid(), "c5", singleSelectQuestionText, null, singleSelectOptions),
-            new MultiSelectQuestion(Guid.NewGuid(), "c6", multiSelectQuestionText, null, multiSelectOptions)
+            NumberQuestion.Create(Guid.NewGuid(), "c1", numberQuestionText),
+            DateQuestion.Create(Guid.NewGuid(), "c2", dateQuestionText),
+            TextQuestion.Create(Guid.NewGuid(), "c3", textQuestionText),
+            RatingQuestion.Create(Guid.NewGuid(), "c4", ratingQuestionText, RatingScale.OneTo10),
+            SingleSelectQuestion.Create(Guid.NewGuid(), "c5", singleSelectQuestionText, singleSelectOptions),
+            MultiSelectQuestion.Create(Guid.NewGuid(), "c6", multiSelectQuestionText, multiSelectOptions)
         ];
 
         CustomInstantiator(_ =>
         {
-            var form = Form.Create(electionRound, monitoringNgo, FormType.ClosingAndCounting, "C1", new TranslatedString(),new TranslatedString(),
+            var form = Form.Create(electionRound, monitoringNgo, FormType.ClosingAndCounting, "C1", new TranslatedString(), new TranslatedString(),
                 languages.First(), languages, questions);
 
             if (status == FormStatus.Obsolete)

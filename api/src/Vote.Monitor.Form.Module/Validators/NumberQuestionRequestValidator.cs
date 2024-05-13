@@ -14,10 +14,10 @@ public class NumberQuestionRequestValidator : Validator<NumberQuestionRequest>
         RuleFor(x => x.QuestionType).NotEmpty();
 
         RuleFor(x => x.Text)
-            .SetValidator(new PartiallyTranslatedStringValidator(languages, 3, 256));
+            .SetValidator(new PartiallyTranslatedStringValidator(languages));
 
         RuleFor(x => x.Helptext)
-            .SetValidator(new PartiallyTranslatedStringValidator(languages, 3, 256))
+            .SetValidator(new PartiallyTranslatedStringValidator(languages))
             .When(x => x.Helptext != null);
 
         RuleFor(x => x.Code)
@@ -25,7 +25,10 @@ public class NumberQuestionRequestValidator : Validator<NumberQuestionRequest>
             .MaximumLength(256);
 
         RuleFor(x => x.InputPlaceholder)
-            .SetValidator(new PartiallyTranslatedStringValidator(languages, 3, 256))
+            .SetValidator(new PartiallyTranslatedStringValidator(languages))
             .When(x => x.InputPlaceholder != null);
+
+        RuleFor(x => x.DisplayLogic)
+            .SetValidator(new DisplayLogicRequestValidator());
     }
 }

@@ -271,7 +271,7 @@ export default function FormTemplatesDashboard(): ReactElement {
                       <span
                         onClick={() => handleFormTypeFilter('')}
                         className='rounded-full cursor-pointer py-1 px-4 bg-purple-100 text-sm text-purple-900 font-medium flex items-center gap-2'>
-                        Observer status: {formTypeFilter}
+                        Form type: {formTypeFilter}
                         <X size={14} />
                       </span>
                     )}

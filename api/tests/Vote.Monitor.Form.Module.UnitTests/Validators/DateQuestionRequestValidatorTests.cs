@@ -1,6 +1,8 @@
-﻿using FluentValidation.TestHelper;
+﻿using FluentAssertions;
+using FluentValidation.TestHelper;
 using Vote.Monitor.Core.Constants;
 using Vote.Monitor.Core.Models;
+using Vote.Monitor.Domain.Entities.FormBase.Questions;
 using Vote.Monitor.Form.Module.Requests;
 using Vote.Monitor.Form.Module.Validators;
 
@@ -28,7 +30,7 @@ public class DateQuestionRequestValidatorTests
     }
 
     [Theory]
-    [MemberData(nameof(ValidatorTests.ValidatorsTestData.InvalidPartiallyTranslatedTestCases), MemberType = typeof(ValidatorTests.ValidatorsTestData))]
+    [MemberData(nameof(ValidatorsTestData.InvalidPartiallyTranslatedTestCases), MemberType = typeof(ValidatorsTestData))]
     public void Validation_ShouldFail_When_EmptyText(TranslatedString invalidText)
     {
         // Arrange
@@ -46,7 +48,7 @@ public class DateQuestionRequestValidatorTests
     }
 
     [Theory]
-    [MemberData(nameof(ValidatorTests.ValidatorsTestData.InvalidPartiallyTranslatedTestCases), MemberType = typeof(ValidatorTests.ValidatorsTestData))]
+    [MemberData(nameof(ValidatorsTestData.InvalidPartiallyTranslatedTestCases), MemberType = typeof(ValidatorsTestData))]
     public void Validation_ShouldFail_When_EmptyHelptext(TranslatedString invalidHelptext)
     {
         // Arrange
@@ -100,7 +102,7 @@ public class DateQuestionRequestValidatorTests
     }
 
     [Theory]
-    [MemberData(nameof(ValidatorTests.ValidatorsTestData.InvalidCodeTestCases), MemberType = typeof(ValidatorTests.ValidatorsTestData))]
+    [MemberData(nameof(ValidatorsTestData.InvalidCodeTestCases), MemberType = typeof(ValidatorsTestData))]
     public void Validation_ShouldFail_When_CodeHasInvalidLength(string code)
     {
         // Arrange
@@ -117,6 +119,51 @@ public class DateQuestionRequestValidatorTests
             .ShouldHaveValidationErrorFor(x => x.Code);
     }
 
+
+    [Fact]
+    public void Validation_ShouldFail_When_InvalidDisplayLogic()
+    {
+        // Arrange
+        var dateInputQuestionRequest = new DateQuestionRequest
+        {
+            DisplayLogic = new DisplayLogicRequest
+            {
+                ParentQuestionId = Guid.Empty
+            }
+        };
+
+        // Act
+        var validationResult = _sut.TestValidate(dateInputQuestionRequest);
+
+        // Assert
+        validationResult
+            .ShouldHaveValidationErrorFor("DisplayLogic.ParentQuestionId");
+    }
+
+    [Theory]
+    [MemberData(nameof(ValidatorsTestData.ValidDisplayLogicTestCases), MemberType = typeof(ValidatorsTestData))]
+    public void Validation_ShouldPass_When_ValidDisplayLogic(DisplayLogicRequest? displayLogic)
+    {
+        // Arrange
+        var dateInputQuestionRequest = new DateQuestionRequest
+        {
+            DisplayLogic = displayLogic
+        };
+
+        // Act
+        var validationResult = _sut.TestValidate(dateInputQuestionRequest);
+
+        // Assert
+        validationResult
+            .Errors
+            .Should()
+            .AllSatisfy(x =>
+            {
+                x.PropertyName.Should().NotContain(nameof(MultiSelectQuestionRequest.DisplayLogic));
+            });
+    }
+
+
     [Fact]
     public void Validation_ShouldPass_When_ValidRequest()
     {
@@ -124,9 +171,15 @@ public class DateQuestionRequestValidatorTests
         var dateInputQuestionRequest = new DateQuestionRequest
         {
             Code = "code",
-            Helptext = ValidatorTests.ValidatorsTestData.ValidPartiallyTranslatedTestData.First(),
-            Text = ValidatorTests.ValidatorsTestData.ValidPartiallyTranslatedTestData.Last(),
-            Id = Guid.NewGuid()
+            Helptext = ValidatorsTestData.ValidPartiallyTranslatedTestData.First(),
+            Text = ValidatorsTestData.ValidPartiallyTranslatedTestData.Last(),
+            Id = Guid.NewGuid(),
+            DisplayLogic = new DisplayLogicRequest
+            {
+                ParentQuestionId = Guid.NewGuid(),
+                Condition = DisplayLogicCondition.GreaterEqual,
+                Value = "1"
+            }
         };
 
         // Act

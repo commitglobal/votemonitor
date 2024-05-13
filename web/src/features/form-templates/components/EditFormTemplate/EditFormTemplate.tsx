@@ -1,26 +1,36 @@
 import { authApi } from '@/common/auth-api';
+import {
+  BaseQuestion,
+  cloneTranslation,
+  getTranslationOrDefault,
+  MultiSelectQuestion,
+  NumberQuestion,
+  QuestionType,
+  SingleSelectQuestion,
+  TextQuestion,
+  updateTranslationString,
+} from '@/common/types';
+import FormQuestionsEditor from '@/components/questionsEditor/FormQuestionsEditor';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ErrorMessage, Field, FieldGroup, Fieldset, Label } from '@/components/ui/fieldset';
 import { Form, FormControl, FormField, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
 import LanguageSelect from '@/containers/LanguageSelect';
+import { queryClient } from '@/main';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { useLoaderData } from '@tanstack/react-router';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
-import { FormTemplateFull, FormTemplateType, mapFormTemplateType } from '../../models/formTemplate';
 
-import { BaseQuestion, MultiSelectQuestion, NumberQuestion, QuestionType, SingleSelectQuestion, TextQuestion, cloneTranslation } from '@/common/types';
-import FormQuestionsEditor from '@/components/questionsEditor/FormQuestionsEditor';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { queryClient } from '@/main';
-import { useState } from 'react';
+import { FormTemplateFull, FormTemplateType, mapFormTemplateType } from '../../models/formTemplate';
 import { formTemplatesKeys } from '../../queries';
 import EditFormTemplateFooter from './EditFormTemplateFooter';
 
@@ -48,7 +58,7 @@ export default function EditFormTemplate() {
     defaultValues: {
       code: formTemplate.code,
       name: formTemplate.name[formTemplate.defaultLanguage],
-      description: formTemplate.description[formTemplate.defaultLanguage],
+      description: getTranslationOrDefault(formTemplate.description, formTemplate.defaultLanguage),
       formTemplateType: formTemplate.formTemplateType,
       defaultLanguage: formTemplate.defaultLanguage,
     },
@@ -57,7 +67,7 @@ export default function EditFormTemplate() {
   function onSubmit(values: z.infer<typeof editFormTemplateFormSchema>) {
     formTemplate.code = values.code;
     formTemplate.name[defaultLanguage] = values.name;
-    formTemplate.description[defaultLanguage] = values.description ?? '';
+    formTemplate.description = updateTranslationString(formTemplate.description, formTemplate.languages, formTemplate.defaultLanguage, values.description ?? '');
     formTemplate.formTemplateType = values.formTemplateType;
     formTemplate.defaultLanguage = defaultLanguage;
     formTemplate.languages = languages;

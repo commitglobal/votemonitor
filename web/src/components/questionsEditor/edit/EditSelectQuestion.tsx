@@ -16,10 +16,12 @@ import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { v4 as uuidv4 } from 'uuid';
 
+import DisplayLogicEditor from './DisplayLogicEditor';
 import QuestionHeader from './QuestionHeader';
 
 export interface EditMultiSelectQuestionProps {
-    availableLanguages: string[],
+    formQuestions: BaseQuestion[];
+    availableLanguages: string[];
     languageCode: string;
     questionIdx: number;
     isInValid: boolean;
@@ -28,6 +30,7 @@ export interface EditMultiSelectQuestionProps {
 }
 
 function EditSelectQuestion({
+    formQuestions,
     availableLanguages,
     languageCode,
     questionIdx,
@@ -185,7 +188,7 @@ function EditSelectQuestion({
                                 <div className="mr-2 h-4 w-4">
                                     {option.isFreeText ? <PencilLine className="h-full w-full text-slate-700" />
                                         : question.$questionType === QuestionType.SingleSelectQuestionType
-                                            ? <CheckCircle className="h-full w-full text-slate-700" /> : <CheckSquare className="h-full w-full text-slate-700"  />}
+                                            ? <CheckCircle className="h-full w-full text-slate-700" /> : <CheckSquare className="h-full w-full text-slate-700" />}
                                 </div>
                                 <Input
                                     ref={optionIdx === question.options.length - 1 ? lastOptionRef : null}
@@ -258,6 +261,13 @@ function EditSelectQuestion({
                     </div>
                 </div>
             </div>
+
+            <DisplayLogicEditor
+                formQuestions={formQuestions}
+                questionIndex={questionIdx}
+                question={question}
+                languageCode={languageCode}
+                updateQuestion={updateQuestion} />
         </div>
     )
 }

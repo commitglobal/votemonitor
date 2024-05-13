@@ -21,16 +21,16 @@ public class CreateValidatorTests
     }
 
     [Fact]
-    public void Validation_ShouldFail_When_MonitoringNgoId_Empty()
+    public void Validation_ShouldFail_When_NgoId_Empty()
     {
         // Arrange
-        var request = new Create.Request { MonitoringNgoId = Guid.Empty };
+        var request = new Create.Request { NgoId = Guid.Empty };
 
         // Act
         var result = _validator.TestValidate(request);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.MonitoringNgoId);
+        result.ShouldHaveValidationErrorFor(x => x.NgoId);
     }
 
     [Theory]
@@ -190,7 +190,7 @@ public class CreateValidatorTests
         var request = new Create.Request
         {
             ElectionRoundId = Guid.NewGuid(),
-            MonitoringNgoId = Guid.NewGuid(),
+            NgoId = Guid.NewGuid(),
             Languages = [LanguagesList.EN.Iso1, LanguagesList.RO.Iso1],
             DefaultLanguage = LanguagesList.EN.Iso1,
             Code = "A code",

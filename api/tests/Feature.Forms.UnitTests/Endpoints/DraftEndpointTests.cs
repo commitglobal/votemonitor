@@ -16,7 +16,7 @@ public class DraftEndpointTests
 
     public DraftEndpointTests()
     {
-        _endpoint = Factory.Create<Draft.Endpoint>(_authorizationService,_monitoringNgoRepository, _repository);
+        _endpoint = Factory.Create<Draft.Endpoint>(_authorizationService, _monitoringNgoRepository, _repository);
         _authorizationService
             .AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object>(),
                 Arg.Any<IEnumerable<IAuthorizationRequirement>>()).Returns(AuthorizationResult.Success());
@@ -53,10 +53,14 @@ public class DraftEndpointTests
             .FirstOrDefaultAsync(Arg.Any<GetFormByIdSpecification>())
             .Returns(form);
 
+        _monitoringNgoRepository
+            .FirstOrDefaultAsync(Arg.Any<GetMonitoringNgoSpecification>())
+            .Returns(_monitoringNgo);
+
         // Act
         var request = new Draft.Request
         {
-            MonitoringNgoId = _monitoringNgo.Id,
+            NgoId = _monitoringNgo.NgoId,
             Id = form.Id
         };
         var result = await _endpoint.ExecuteAsync(request, default);
@@ -82,10 +86,14 @@ public class DraftEndpointTests
             .FirstOrDefaultAsync(Arg.Any<GetFormByIdSpecification>())
             .Returns(form);
 
+        _monitoringNgoRepository
+            .FirstOrDefaultAsync(Arg.Any<GetMonitoringNgoSpecification>())
+            .Returns(_monitoringNgo);
+
         // Act
         var request = new Draft.Request
         {
-            MonitoringNgoId = _monitoringNgo.Id,
+            NgoId = _monitoringNgo.NgoId,
             Id = form.Id
         };
         await _endpoint.ExecuteAsync(request, default);

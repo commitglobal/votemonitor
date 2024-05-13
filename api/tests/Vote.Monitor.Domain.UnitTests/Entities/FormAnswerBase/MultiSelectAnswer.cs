@@ -8,11 +8,12 @@ public class MultiSelectAnswerValidateTests
     private readonly Guid _optionId = Guid.NewGuid();
     private readonly MultiSelectQuestion _multiSelectQuestion;
 
-    readonly NumberQuestion _numberQuestion = new(Guid.NewGuid(), "A", new(), new(), new());
+    private readonly NumberQuestion _numberQuestion = NumberQuestion.Create(Guid.NewGuid(), "A", new(), new(), new());
 
     public MultiSelectAnswerValidateTests()
     {
-        _multiSelectQuestion = new(Guid.NewGuid(), "A", new(), new(), [new SelectOption(_optionId, new(), false, false)]);
+        IReadOnlyList<SelectOption> options = [new SelectOption(_optionId, new(), false, false)];
+        _multiSelectQuestion = MultiSelectQuestion.Create(Guid.NewGuid(), "A", new(), options, new());
     }
 
     [Fact]

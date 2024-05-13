@@ -13,6 +13,6 @@ public class SelectOptionRequestValidator : Validator<SelectOptionRequest>
             .NotEmpty();
 
         RuleFor(x => x.Text)
-            .SetValidator(new PartiallyTranslatedStringValidator(languages, 1, 256));
+            .SetValidator(new PartiallyTranslatedStringValidator(languages));
     }
 }

@@ -18,6 +18,7 @@ public class RatingQuestionModel : BaseQuestionModel
             Code = question.Code,
             Text = question.Text,
             Helptext = question.Helptext,
-            Scale = question.Scale
+            Scale = question.Scale,
+            DisplayLogic = DisplayLogicModel.FromEntity(question.DisplayLogic)
         };
 }

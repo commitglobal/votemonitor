@@ -3,9 +3,12 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+
+import DisplayLogicEditor from './DisplayLogicEditor';
 import QuestionHeader from './QuestionHeader';
 
 export interface EditRatingQuestionProps {
+    formQuestions: BaseQuestion[];
     availableLanguages: string[];
     languageCode: string;
     questionIdx: number;
@@ -16,6 +19,7 @@ export interface EditRatingQuestionProps {
 
 
 function EditRatingQuestion({
+    formQuestions,
     availableLanguages,
     languageCode,
     questionIdx,
@@ -43,7 +47,7 @@ function EditRatingQuestion({
     }
 
     return (
-        <form>
+        <div>
             <QuestionHeader
                 availableLanguages={availableLanguages}
                 languageCode={languageCode}
@@ -73,7 +77,14 @@ function EditRatingQuestion({
                     </SelectContent>
                 </Select>
             </div>
-        </form>
+
+            <DisplayLogicEditor
+                formQuestions={formQuestions}
+                questionIndex={questionIdx}
+                question={question}
+                languageCode={languageCode}
+                updateQuestion={updateQuestion} />
+        </div>
     )
 }
 

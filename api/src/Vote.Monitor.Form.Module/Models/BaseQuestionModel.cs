@@ -22,4 +22,5 @@ public abstract class BaseQuestionModel
     public TranslatedString Text { get; init; }
 
     public TranslatedString? Helptext { get; init; }
+    public DisplayLogicModel? DisplayLogic { get; init; }
 }

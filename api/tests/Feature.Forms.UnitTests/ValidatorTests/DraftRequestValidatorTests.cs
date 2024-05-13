@@ -17,16 +17,16 @@ public class DraftRequestValidatorTests
     }
 
     [Fact]
-    public void Validation_ShouldFail_When_MonitoringNgoId_Empty()
+    public void Validation_ShouldFail_When_NgoId_Empty()
     {
         // Arrange
-        var request = new Draft.Request { MonitoringNgoId = Guid.Empty };
+        var request = new Draft.Request { NgoId = Guid.Empty };
 
         // Act
         var result = _validator.TestValidate(request);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.MonitoringNgoId);
+        result.ShouldHaveValidationErrorFor(x => x.NgoId);
     }
 
     [Fact]
@@ -49,7 +49,7 @@ public class DraftRequestValidatorTests
         var request = new Draft.Request
         {
             ElectionRoundId = Guid.NewGuid(),
-            MonitoringNgoId = Guid.NewGuid(),
+            NgoId = Guid.NewGuid(),
             Id = Guid.NewGuid()
         };
 

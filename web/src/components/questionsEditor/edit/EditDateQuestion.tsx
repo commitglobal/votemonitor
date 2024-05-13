@@ -1,8 +1,10 @@
 import { BaseQuestion, DateQuestion } from '@/common/types';
-import { MoveDirection } from '../QuestionsEdit';
+
+import DisplayLogicEditor from './DisplayLogicEditor';
 import QuestionHeader from './QuestionHeader';
 
 export interface EditDateQuestionProps {
+  formQuestions: BaseQuestion[];
   languageCode: string;
   availableLanguages: string[];
   questionIdx: number;
@@ -12,13 +14,13 @@ export interface EditDateQuestionProps {
 }
 
 function EditDateQuestion({
+  formQuestions,
   availableLanguages,
   languageCode,
   questionIdx,
   isInValid,
   question,
   updateQuestion }: EditDateQuestionProps) {
-
 
   return (
     <div>
@@ -30,6 +32,13 @@ function EditDateQuestion({
         questionIdx={questionIdx}
         updateQuestion={updateQuestion}
       />
+
+      <DisplayLogicEditor
+        formQuestions={formQuestions}
+        questionIndex={questionIdx}
+        question={question}
+        languageCode={languageCode}
+        updateQuestion={updateQuestion} />
     </div>
   )
 }
