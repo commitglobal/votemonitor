@@ -50,9 +50,8 @@ export const formSubmissionsDefaultColumns: Record<FilterBy, VisibilityState> = 
 type ColumnOption = { id: string; label: string; enableHiding: boolean };
 
 const byEntryColumnVisibilityOptions: ColumnOption[] = [
-  { id: 'submissionId', label: 'Entry ID', enableHiding: true },
   { id: 'timeSubmitted', label: 'Time submitted', enableHiding: true },
-  { id: 'formCode', label: 'Form name', enableHiding: true },
+  { id: 'formCode', label: 'Form code', enableHiding: true },
   { id: 'formType', label: 'Form type', enableHiding: true },
   { id: 'number', label: 'Station number', enableHiding: true },
   { id: 'level1', label: 'Location - L1', enableHiding: true },
@@ -80,7 +79,7 @@ const byObserverColumnVisibilityOptions: ColumnOption[] = [
 ];
 
 const byFormColumnVisibilityOptions: ColumnOption[] = [
-  { id: 'formCode', label: 'Form name', enableHiding: false },
+  { id: 'formCode', label: 'Form code', enableHiding: false },
   { id: 'formType', label: 'Form type', enableHiding: false },
   { id: 'numberOfSubmissions', label: 'Responses', enableHiding: true },
   { id: 'numberOfFlaggedAnswers', label: 'Flagged answers', enableHiding: true },
