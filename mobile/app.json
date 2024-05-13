@@ -44,9 +44,9 @@
       "eas": {
         "projectId": "93e17628-ddcd-4e67-849c-b356a18a6082"
       },
-      "message": "Bugfixing",
-      "updateCritical": 2,
-      "updateVersion": 2
+      "message": "Handle notes offline",
+      "updateCritical": 4,
+      "updateVersion": 4
     },
     "owner": "commit-global",
     "runtimeVersion": {
