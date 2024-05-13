@@ -44,9 +44,9 @@
       "eas": {
         "projectId": "93e17628-ddcd-4e67-849c-b356a18a6082"
       },
-      "message": "Client generated ids",
-      "updateCritical": 1,
-      "updateVersion": 1
+      "message": "Bugfixing",
+      "updateCritical": 2,
+      "updateVersion": 2
     },
     "owner": "commit-global",
     "runtimeVersion": {
