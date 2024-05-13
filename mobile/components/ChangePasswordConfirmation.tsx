@@ -9,9 +9,22 @@ import Button from "../components/Button";
 import { router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-const ChangePasswordConfirmation = () => {
-  const { t } = useTranslation("change_password");
+interface ChangePasswordConfirmationProps {
+  emailConfirmation: boolean;
+}
+
+const ChangePasswordConfirmation = (props: ChangePasswordConfirmationProps) => {
+  const { emailConfirmation } = props;
+  const { t } = useTranslation(["change_password", "email-confirmation"]);
   const insets = useSafeAreaInsets();
+
+  const icon = emailConfirmation === true ? "emailSent" : "passwordConfirmation";
+  const header =
+    emailConfirmation === true ? t("title", { ns: "email-confirmation" }) : t("success_page.title");
+  const paragraph =
+    emailConfirmation === true
+      ? t("paragraph", { ns: "email-confirmation" })
+      : t("success_page.paragraph");
 
   return (
     <Screen
@@ -32,12 +45,12 @@ const ChangePasswordConfirmation = () => {
         flexGrow={1}
         gap="$xxs"
       >
-        <Icon icon="passwordConfirmation" size={126} marginBottom="$md" />
+        <Icon icon={icon} size={126} marginBottom="$md" color="yellow" />
         <Typography preset="heading" fontWeight="700" color="$purple5">
-          {t("success_page.title")}
+          {header}
         </Typography>
         <Typography preset="body1" color="black" textAlign="center">
-          {t("success_page.paragraph")}
+          {paragraph}
         </Typography>
       </YStack>
 
