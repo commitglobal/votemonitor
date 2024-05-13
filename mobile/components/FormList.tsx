@@ -52,9 +52,7 @@ const FormList = ({ ListHeaderComponent }: { ListHeaderComponent: ListHeaderComp
   } = useFormSubmissions(activeElectionRound?.id, selectedPollingStation?.pollingStationId);
 
   const formList: FormListItem[] = useMemo(() => {
-    return allForms && formSubmissions
-      ? mapFormToFormListItem(allForms.forms, formSubmissions)
-      : [];
+    return mapFormToFormListItem(allForms?.forms, formSubmissions);
   }, [allForms, formSubmissions]);
 
   const {
