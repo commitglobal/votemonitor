@@ -45,7 +45,6 @@ export const pollingStationsKeys = {
     ...pollingStationsKeys.nomenclator(electionRoundId),
     "cacheKey",
   ],
-  addAttachmentMutation: () => [...pollingStationsKeys.all, "addAttachment"],
   pollingStationInformation: (
     electionRoundId: string | undefined,
     pollingStationId: string | undefined,
@@ -65,22 +64,6 @@ export const pollingStationsKeys = {
       electionRoundId,
       "polling-station-information-form",
     ] as const,
-  attachments: (
-    electionRoundId: string | undefined,
-    pollingStationId: string | undefined,
-    formId: string | undefined,
-  ) =>
-    [
-      ...pollingStationsKeys.all,
-      "electionRoundId",
-      electionRoundId,
-      "pollingStationId",
-      pollingStationId,
-      "formId",
-      formId,
-      "attachments",
-    ] as const,
-  deleteAttachment: () => [...pollingStationsKeys.all, "deleteAttachment"] as const,
   mutatePollingStationGeneralData: () =>
     [...pollingStationsKeys.all, "mutate-general-data"] as const,
   changePassword: () => [...pollingStationsKeys.all, "changePassword"] as const,

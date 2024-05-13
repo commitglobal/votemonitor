@@ -3,7 +3,7 @@ import { Typography } from "./Typography";
 import Card from "./Card";
 import { Icon } from "./Icon";
 import { useAttachments } from "../services/queries/attachments.query";
-import { useDeleteAttachment } from "../services/mutations/delete-attachment.mutation";
+import { useDeleteAttachment } from "../services/mutations/attachments/delete-attachment.mutation";
 
 interface QuestionAttachmentsProps {
   electionRoundId: string;
@@ -47,7 +47,7 @@ const QuestionAttachments: React.FC<QuestionAttachmentsProps> = ({
                 </Typography>
                 <YStack
                   padding="$md"
-                  onPress={() => deleteAttachment({ electionRoundId, id: attachment.id })}
+                  onPress={() => deleteAttachment(attachment)}
                   pressStyle={{ opacity: 0.5 }}
                 >
                   <Icon icon="xCircle" size={24} color="$gray5" />

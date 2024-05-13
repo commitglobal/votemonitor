@@ -1,8 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useMemo } from "react";
-import { pollingStationsKeys } from "../queries.service";
-import { deleteAttachment, DeleteAttachmentAPIPayload } from "../api/delete-attachment.api";
-import { AttachmentApiResponse } from "../api/get-attachments.api";
+import { deleteAttachment } from "../../api/delete-attachment.api";
+import { AttachmentApiResponse } from "../../api/get-attachments.api";
+import { AttachmentsKeys } from "../../queries/attachments.query";
 
 export const useDeleteAttachment = (
   electionRoundId: string | undefined,
@@ -13,19 +13,19 @@ export const useDeleteAttachment = (
   const queryClient = useQueryClient();
 
   const getAttachmentsQK = useMemo(
-    () => pollingStationsKeys.attachments(electionRoundId, pollingStationId, formId),
+    () => AttachmentsKeys.attachments(electionRoundId, pollingStationId, formId),
     [electionRoundId, pollingStationId, formId],
   );
 
   return useMutation({
-    mutationKey: pollingStationsKeys.deleteAttachment(),
+    mutationKey: AttachmentsKeys.deleteAttachment(),
     scope: {
       id: scopeId,
     },
-    mutationFn: async (payload: DeleteAttachmentAPIPayload) => {
+    mutationFn: async (payload: AttachmentApiResponse) => {
       return deleteAttachment(payload);
     },
-    onMutate: async (payload: DeleteAttachmentAPIPayload) => {
+    onMutate: async (payload: AttachmentApiResponse) => {
       // Cancel any outgoing refetches
       // (so they don't overwrite our optimistic update)
       await queryClient.cancelQueries({ queryKey: getAttachmentsQK });
@@ -40,6 +40,22 @@ export const useDeleteAttachment = (
         );
         return updatedAttachments;
       });
+
+      if (payload.isNotSynched) {
+        const mutationsToRemove = queryClient
+          .getMutationCache()
+          .findAll({
+            mutationKey: AttachmentsKeys.all,
+          })
+          .filter((mutation) => {
+            // @ts-ignore
+            return mutation?.state?.variables?.id === payload.id;
+          });
+
+        for (const mutationToRemove of mutationsToRemove) {
+          queryClient.getMutationCache().remove(mutationToRemove);
+        }
+      }
 
       // Return a context object with the snapshotted value
       return { prevAttachments };

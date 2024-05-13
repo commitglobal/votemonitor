@@ -1,18 +1,18 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { pollingStationsKeys } from "../queries.service";
 import {
   AddAttachmentAPIPayload,
   AddAttachmentAPIResponse,
   addAttachment,
-} from "../api/add-attachment.api";
-import { performanceLog } from "../../helpers/misc";
-import { AttachmentApiResponse } from "../api/get-attachments.api";
+} from "../../api/add-attachment.api";
+import { performanceLog } from "../../../helpers/misc";
+import { AttachmentApiResponse } from "../../api/get-attachments.api";
+import { AttachmentsKeys } from "../../queries/attachments.query";
 
 export const addAttachmentMutation = (scopeId: string) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationKey: pollingStationsKeys.addAttachmentMutation(),
+    mutationKey: AttachmentsKeys.addAttachmentMutation(),
     scope: {
       id: scopeId,
     },
@@ -20,7 +20,7 @@ export const addAttachmentMutation = (scopeId: string) => {
       return performanceLog(() => addAttachment(payload));
     },
     onMutate: async (payload: AddAttachmentAPIPayload) => {
-      const attachmentsQK = pollingStationsKeys.attachments(
+      const attachmentsQK = AttachmentsKeys.attachments(
         payload.electionRoundId,
         payload.pollingStationId,
         payload.formId,
@@ -50,7 +50,7 @@ export const addAttachmentMutation = (scopeId: string) => {
     },
     onError: (err, payload, context) => {
       console.log(err);
-      const attachmentsQK = pollingStationsKeys.attachments(
+      const attachmentsQK = AttachmentsKeys.attachments(
         payload.electionRoundId,
         payload.pollingStationId,
         payload.formId,
@@ -59,7 +59,7 @@ export const addAttachmentMutation = (scopeId: string) => {
     },
     onSettled: (_data, _err, variables) => {
       return queryClient.invalidateQueries({
-        queryKey: pollingStationsKeys.attachments(
+        queryKey: AttachmentsKeys.attachments(
           variables.electionRoundId,
           variables.pollingStationId,
           variables.formId,
