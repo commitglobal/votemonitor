@@ -127,7 +127,8 @@
       "title": "Form Overview",
       "status": "Form status",
       "answered_questions": "Answered questions",
-      "resume": "Resume form"
+      "resume": "Resume form",
+      "start_form": "Start form"
     },
     "language_modal": {
       "header": "Select form language",

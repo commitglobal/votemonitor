@@ -27,7 +27,6 @@ const FormOverview = ({
 
   return (
     <Card padding="$md">
-      {/* //TODO: translations */}
       <Typography preset="body1" fontWeight="700">
         {t("form_overview.title")}
       </Typography>
@@ -38,7 +37,7 @@ const FormOverview = ({
             <Typography fontWeight="700">{FormStateToTextMapper[formStatus]}</Typography>
           </Typography>
           <Typography fontWeight="500" color="$gray5">
-            Answered questions:{" "}
+            {t("form_overview.answered_questions")}:{" "}
             <Typography fontWeight="700">
               {completedAnswers}/{numberOfQuestions}
             </Typography>
@@ -53,7 +52,9 @@ const FormOverview = ({
         disabled={completedAnswers === numberOfQuestions}
         onPress={onFormActionClick}
       >
-        {formStatus === FormStatus.NOT_STARTED ? "Start form" : "Resume form"}
+        {formStatus === FormStatus.NOT_STARTED
+          ? t("form_overview.start_form")
+          : t("form_overview.resume")}
       </Button>
     </Card>
   );

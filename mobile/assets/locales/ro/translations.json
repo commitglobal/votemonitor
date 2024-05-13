@@ -127,7 +127,8 @@
       "title": "Informații formular",
       "status": "Statusul formularului",
       "answered_questions": "Întrebări completate",
-      "resume": "Reia formularul"
+      "resume": "Reia formularul",
+      "start_form": "Incepe formularul"
     },
     "language_modal": {
       "header": "Selecteaza limba formularului",
