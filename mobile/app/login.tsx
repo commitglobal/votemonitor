@@ -91,7 +91,7 @@ const LoginForm = ({
   authError: boolean;
 }) => {
   const { t } = useTranslation("login");
-  const [secureTextEntry, setSecureTextEntry] = React.useState(false);
+  const [secureTextEntry, setSecureTextEntry] = React.useState(true);
   const passIcon = secureTextEntry === false ? "eye" : "eyeOff";
 
   return (
@@ -157,15 +157,16 @@ const LoginForm = ({
         )}
       />
 
-      <Typography
-        textAlign="right"
-        color="$purple5"
-        onPress={() => {
-          router.push("./forgot-password");
-        }}
-      >
-        {t("actions.forgot_password")}
-      </Typography>
+      <View alignSelf="flex-end">
+        <Typography
+          color="$purple5"
+          onPress={() => {
+            router.push("./forgot-password");
+          }}
+        >
+          {t("actions.forgot_password")}
+        </Typography>
+      </View>
       <Typography fontSize={"$1"} style={{ position: "absolute", bottom: 0 }}>
         {`v${Constants.expoConfig?.version}(${Constants.expoConfig?.extra?.updateVersion}) `}
         {process.env.EXPO_PUBLIC_ENVIRONMENT !== "production"
