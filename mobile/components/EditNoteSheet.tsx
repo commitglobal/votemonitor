@@ -117,7 +117,11 @@ const EditNoteSheet = (props: EditNoteSheetProps) => {
             name={"noteEditedText"}
             control={control}
             render={({ field: { value, onChange } }) => {
-              return <Input type="textarea" value={value} onChangeText={onChange} />;
+              return (
+                <YStack height={150}>
+                  <Input type="textarea" value={value} onChangeText={onChange} height={150} />
+                </YStack>
+              );
             }}
           />
 
