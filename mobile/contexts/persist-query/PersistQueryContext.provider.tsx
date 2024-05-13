@@ -133,6 +133,12 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
     },
   });
 
+  queryClient.setMutationDefaults(notesKeys.updateNote(), {
+    mutationFn: (payload: API.UpsertNotePayload) => {
+      return API.upsertNote(payload);
+    },
+  });
+
   queryClient.setMutationDefaults(notesKeys.deleteNote(), {
     mutationFn: async (payload: Note) => {
       return payload.isNotSynched ? () => {} : API.deleteNote(payload);
