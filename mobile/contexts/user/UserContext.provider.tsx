@@ -15,7 +15,6 @@ import {
 import { ElectionRoundVM } from "../../common/models/election-round.model";
 import { useQueries } from "@tanstack/react-query";
 import LoadingScreen from "../../components/LoadingScreen";
-import NoElectionRounds from "../../components/NoElectionRounds";
 import GenericErrorScreen from "../../components/GenericErrorScreen";
 
 type UserContextType = {
@@ -129,9 +128,6 @@ const UserContextProvider = ({ children }: React.PropsWithChildren) => {
   if (isLoading) {
     return <LoadingScreen />;
   } else {
-    if (rounds && !rounds.length) {
-      return <NoElectionRounds />;
-    }
     if (!rounds) {
       // No internet and no data available in cache (restoration already happeened here)
       return <GenericErrorScreen />;
