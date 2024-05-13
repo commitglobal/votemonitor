@@ -14,6 +14,7 @@ interface TimeSelectProps {
   type: "arrival" | "departure";
   time: Date | undefined;
   setTime: any;
+  arrivalTime?: Date | undefined;
 }
 
 enum CardFooterDisplay {
@@ -21,7 +22,7 @@ enum CardFooterDisplay {
   DEPARTURE = "Departure",
 }
 
-const TimeSelect: React.FC<TimeSelectProps> = memo(({ type, time, setTime }) => {
+const TimeSelect: React.FC<TimeSelectProps> = memo(({ type, time, setTime, arrivalTime }) => {
   const [open, setOpen] = useState(false);
 
   // on ios we use a temporary time, as the onChange function gets triggered every time the user picks a new time
@@ -41,16 +42,17 @@ const TimeSelect: React.FC<TimeSelectProps> = memo(({ type, time, setTime }) => 
         onClose();
         DateTimePickerAndroid.open({
           mode: "time",
+          minimumDate: type === "departure" && arrivalTime ? arrivalTime : undefined,
           value: time || new Date(),
           onChange: (event, eventTime) => {
-            if (event.type === 'set' && selectedTime && eventTime) {
-              selectedTime.setHours(eventTime?.getHours())
-              selectedTime.setMinutes(eventTime?.getMinutes())
+            if (event.type === "set" && selectedTime && eventTime) {
+              selectedTime.setHours(eventTime?.getHours());
+              selectedTime.setMinutes(eventTime?.getMinutes());
               setTime(selectedTime);
             }
           },
           is24Hour: true,
-        })
+        });
       } else if (event.type === "dismissed") {
         // press Cancel - close modal
         onClose();
@@ -84,23 +86,24 @@ const TimeSelect: React.FC<TimeSelectProps> = memo(({ type, time, setTime }) => 
         }}
       >
         <Stack paddingVertical="$sm" marginBottom="$xxs">
-          {time ? (<React.Fragment>
-            <Typography preset="body2" fontWeight="500" paddingBottom="$xxs">
-              {time &&
-                time.toLocaleDateString(['en-GB'], {
-                  month: '2-digit',
-                  day: '2-digit',
-                  year: 'numeric'
-                })}
-            </Typography>
-            <Typography preset="heading" fontWeight="500">
-              {time &&
-                time.toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-            </Typography>
-          </React.Fragment>
+          {time ? (
+            <React.Fragment>
+              <Typography preset="body2" fontWeight="500" paddingBottom="$xxs">
+                {time &&
+                  time.toLocaleDateString(["en-GB"], {
+                    month: "2-digit",
+                    day: "2-digit",
+                    year: "numeric",
+                  })}
+              </Typography>
+              <Typography preset="heading" fontWeight="500">
+                {time &&
+                  time.toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+              </Typography>
+            </React.Fragment>
           ) : (
             <Typography preset="heading" fontWeight="500" color="$gray5">
               Not defined
@@ -137,6 +140,7 @@ const TimeSelect: React.FC<TimeSelectProps> = memo(({ type, time, setTime }) => 
                 display="spinner"
                 value={tempTime}
                 onChange={onChange}
+                minimumDate={type === "departure" && arrivalTime ? arrivalTime : undefined}
               />
             </XStack>
           </Sheet.Frame>
@@ -149,6 +153,7 @@ const TimeSelect: React.FC<TimeSelectProps> = memo(({ type, time, setTime }) => 
           value: time || new Date(),
           onChange,
           is24Hour: true,
+          minimumDate: type === "departure" && arrivalTime ? arrivalTime : undefined,
         })
       )}
     </>
