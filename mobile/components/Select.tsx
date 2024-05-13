@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Adapt,
   Select as TamaguiSelect,
@@ -13,6 +13,8 @@ import { Icon } from "./Icon";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Typography } from "./Typography";
 import { Keyboard } from "react-native";
+import { ListView } from "./ListView";
+import { number } from "zod";
 
 interface StyledSelectProps extends SelectProps {
   placeholder?: string;
@@ -23,14 +25,37 @@ const Select = ({ placeholder = "Select", options, ...props }: StyledSelectProps
   const insets = useSafeAreaInsets();
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [isOpen, setIsOpen] = useState(false);
+  const [numberOfItems, setNumberOfItems] = useState(10);
 
   // Filter options based on search term
   const filteredOptions = useMemo(() => {
-    if (!searchTerm) return options;
+    if (!searchTerm) return options.slice(0, numberOfItems);
     return options.filter((option) =>
       option.label.toLowerCase().includes(searchTerm.toLowerCase()),
-    );
-  }, [options, searchTerm]);
+    ).slice(0, numberOfItems);;
+  }, [options, searchTerm, numberOfItems]);
+
+  const loadMore = () => {
+    console.log('🙈 🙈 🙈 🙈 🙈 🙈 ......loading more......')
+    setNumberOfItems((num) => num + 10)
+  }
+
+  // if (!onValueChange) {
+  //   return;
+  // }
+
+  // return (
+  //   <YStack
+  //     height={45 * filteredOptions.length}>
+  //     <ListView<{ id: string | number; value: string; label: string }>
+  //       data={filteredOptions}
+  //       showsVerticalScrollIndicator={false}
+  //       bounces={false}
+  //       estimatedItemSize={50}
+  //       renderItem={({ item, index }) => <Typography onPress={() => { onValueChange(item.value) }}>{item.label}</Typography>}
+  //     />
+  //   </YStack>
+  // );
 
   return (
     <TamaguiSelect
@@ -54,7 +79,7 @@ const Select = ({ placeholder = "Select", options, ...props }: StyledSelectProps
           color="$gray5"
           placeholder={placeholder}
           fontSize={16}
-          // fontWeight="500"
+        // fontWeight="500"
         ></TamaguiSelect.Value>
       </TamaguiSelect.Trigger>
 
@@ -91,7 +116,33 @@ const Select = ({ placeholder = "Select", options, ...props }: StyledSelectProps
         </Sheet>
       </Adapt>
 
+
       <TamaguiSelect.Content>
+        <TamaguiSelect.Viewport >
+          <TamaguiSelect.Group
+            height={
+              50 * filteredOptions.length
+            }
+          >
+
+            {filteredOptions.length === 0 ? (
+              <Typography padding="$md">No data found for current search.</Typography>
+            ) : (
+              <ListView<{ id: string | number; value: string; label: string }>
+                data={filteredOptions}
+                onEndReached={loadMore}
+                onEndReachedThreshold={0.1}
+                showsVerticalScrollIndicator={false}
+                bounces={false}
+                estimatedItemSize={50}
+                renderItem={({ item, index }) => <SelectItem item={item} index={index} />}
+              />
+            )}
+          </TamaguiSelect.Group>
+        </TamaguiSelect.Viewport>
+      </TamaguiSelect.Content>
+
+      {/* <TamaguiSelect.Content>
         <TamaguiSelect.Viewport>
           <TamaguiSelect.Group>
             {filteredOptions.length === 0 ? (
@@ -118,8 +169,8 @@ const Select = ({ placeholder = "Select", options, ...props }: StyledSelectProps
             )}
           </TamaguiSelect.Group>
         </TamaguiSelect.Viewport>
-      </TamaguiSelect.Content>
-    </TamaguiSelect>
+      </TamaguiSelect.Content> */}
+    </TamaguiSelect >
   );
 };
 
@@ -134,3 +185,28 @@ const SearchInput = styled(Input, {
     borderColor: "transparent",
   },
 });
+
+
+const SelectItem = ({ item, index }: { item: any, index: number }) => {
+  return (
+    <TamaguiSelect.Item
+      index={index}
+      value={item?.value}
+      gap="$3"
+      paddingBottom="$sm"
+    >
+      <TamaguiSelect.ItemText width={"90%"} numberOfLines={1}>
+        {item?.label}
+      </TamaguiSelect.ItemText>
+      <TamaguiSelect.ItemIndicator>
+        <Icon icon="chevronLeft" />
+      </TamaguiSelect.ItemIndicator>
+    </TamaguiSelect.Item>
+  )
+};
+
+// const SelectItem2 = ({ item, index }: { item: any, index: number }) => {
+//   return (
+//     <Typography>{item.label{</Typography>
+//   )
+// };

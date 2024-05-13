@@ -3,11 +3,11 @@ import { Screen } from "../../components/Screen";
 import Header from "../../components/Header";
 import { Icon } from "../../components/Icon";
 import { Keyboard, TextStyle, ViewStyle } from "react-native";
-import { ScrollView, YStack } from "tamagui";
+import { Input, ScrollView, View, XStack, YStack, styled } from "tamagui";
 import { Typography } from "../../components/Typography";
 import Select from "../../components/Select";
 import { pollingStationsKeys, usePollingStationByParentID } from "../../services/queries.service";
-import { useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   PollingStationNomenclatorNodeVM,
   PollingStationVisitVM,
@@ -16,6 +16,7 @@ import { useTranslation } from "react-i18next";
 import { useUserData } from "../../contexts/user/UserContext.provider";
 import { useQueryClient } from "@tanstack/react-query";
 import WizzardControls from "../../components/WizzardControls";
+import { ListView } from "../../components/ListView";
 
 const mapPollingStationOptionsToSelectValues = (
   options: PollingStationNomenclatorNodeVM[],
@@ -84,6 +85,7 @@ const PollingStationWizzardContent = ({
   const { t } = useTranslation("add_polling_station");
   const [selectedOption, setSelectedOption] = useState<PollingStationStep>();
   const { activeElectionRound } = useUserData();
+  const [searchTerm, setSearchTerm] = useState<string>("");
 
   const queryClient = useQueryClient();
 
@@ -97,10 +99,19 @@ const PollingStationWizzardContent = ({
     activeElectionRound?.id,
   );
 
+
   const pollingStationsMappedOptions = useMemo(
     () => mapPollingStationOptionsToSelectValues(pollingStationOptions),
     [pollingStationOptions],
   );
+
+  const filteredOptions = useMemo(() => {
+    if (!searchTerm) return pollingStationsMappedOptions;
+    return pollingStationsMappedOptions.filter((option) =>
+      option.label.toLowerCase().includes(searchTerm.toLowerCase()),
+    )
+  }, [pollingStationsMappedOptions, searchTerm]);
+
 
   const isLastElement: boolean = useMemo(
     () => !!pollingStationOptions[0]?.pollingStationId,
@@ -180,30 +191,48 @@ const PollingStationWizzardContent = ({
 
   return (
     <>
-      <YStack paddingHorizontal="$md" paddingTop="$xl">
-        <YStack gap="$md" minHeight="$xxl">
+      <YStack paddingHorizontal="$md" gap={'$1'}>
+        <YStack gap="$md" minHeight="$xl">
           {activeStep && (
             <Typography color="$gray5">{t("progress.location", { value: locations })}</Typography>
           )}
         </YStack>
-      </YStack>
+
+        <XStack backgroundColor="$purple1" borderRadius={8} alignItems="center">
+          <Icon icon="search" color="transparent" size={20} marginLeft="$sm" />
+          <SearchInput flex={1} value={searchTerm} onChangeText={setSearchTerm} />
+        </XStack>
+
+        <Typography preset="body2" style={$labelStyle}>
+          {t("form.region.title")}
+        </Typography>
+
+      </YStack >
       <ScrollView
-        paddingTop={140}
         contentContainerStyle={{ flexGrow: 1 }}
         centerContent
         keyboardShouldPersistTaps="handled"
       >
-        <YStack paddingHorizontal="$md" gap="$lg">
-          <Typography preset="body2" style={$labelStyle}>
-            {t("form.region.title")}
-          </Typography>
+        <YStack paddingHorizontal="$lg" paddingTop="$lg" height={filteredOptions.length * 35}>
+
+          {isFetchingPollingStations &&
+            <Typography>Loading...</Typography>
+          }
           {!isFetchingPollingStations && (
-            <Select
-              key={activeStep?.id}
-              options={pollingStationsMappedOptions}
-              placeholder={t("form.region.placeholder")}
-              onValueChange={onSelectOption}
-              value={selectedOption ? `${selectedOption.id}_${selectedOption.name}` : undefined}
+            // <Select
+            //   key={activeStep?.id}
+            //   options={pollingStationsMappedOptions}
+            //   placeholder={t("form.region.placeholder")}
+            //   onValueChange={onSelectOption}
+            //   value={selectedOption ? `${selectedOption.id}_${selectedOption.name}` : undefined}
+            // />
+
+            <ListView<{ id: string | number; value: string; label: string }>
+              data={filteredOptions}
+              showsVerticalScrollIndicator={false}
+              bounces={false}
+              estimatedItemSize={25}
+              renderItem={({ item, index }) => <SelectItem onPress={onSelectOption} item={item} />}
             />
           )}
         </YStack>
@@ -228,5 +257,28 @@ const $labelStyle: TextStyle = {
   color: "black",
   fontWeight: "700",
 };
+
+const SearchInput = styled(Input, {
+  backgroundColor: "$purple1",
+  placeholder: "Search",
+  color: "$purple5",
+  placeholderTextColor: "$purple5",
+  focusStyle: {
+    borderColor: "transparent",
+  },
+});
+
+const SelectItem = ({ item, onPress }: { item: any, onPress: (option: string) => void }) => {
+  return (
+    <View
+      gap="$3"
+      paddingBottom="$sm"
+    >
+      <Typography width={"90%"} fontSize={"$6"} onPress={() => onPress(item.value)}>{item.label}</Typography>
+    </View>
+
+  )
+};
+
 
 export default PollingStationWizzard;
