@@ -29,7 +29,7 @@ import OptionsSheet from "../../../components/OptionsSheet";
 import AddAttachment from "../../../components/AddAttachment";
 
 import { FileMetadata, useCamera } from "../../../hooks/useCamera";
-import { addAttachmentMutation } from "../../../services/mutations/add-attachment.mutation";
+import { addAttachmentMutation } from "../../../services/mutations/attachments/add-attachment.mutation";
 import QuestionAttachments from "../../../components/QuestionAttachments";
 import QuestionNotes from "../../../components/QuestionNotes";
 import * as DocumentPicker from "expo-document-picker";
@@ -38,6 +38,7 @@ import { useFormById } from "../../../services/queries/forms.query";
 import { useFormAnswers } from "../../../services/queries/form-submissions.query";
 import { useNotesForQuestionId } from "../../../services/queries/notes.query";
 import * as Crypto from "expo-crypto";
+import { onlineManager } from "@tanstack/react-query";
 
 type SearchParamType = {
   questionId: string;
@@ -212,6 +213,10 @@ const FormQuestionnaire = () => {
           onError: () => console.log("🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴ERORR🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴"),
         },
       );
+
+      if (!onlineManager.isOnline()) {
+        setIsOptionsSheetOpen(false);
+      }
     }
   };
 
@@ -250,6 +255,10 @@ const FormQuestionnaire = () => {
             onError: () => console.log("🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴ERORR🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴"),
           },
         );
+
+        if (!onlineManager.isOnline()) {
+          setIsOptionsSheetOpen(false);
+        }
       }
     } else {
       // Cancelled
@@ -504,8 +513,6 @@ const FormQuestionnaire = () => {
                 paddingVertical="$md"
                 pressStyle={{ color: "$purple5" }}
                 onPress={() => {
-                  // setIsOptionsSheetOpen(false);
-                  // setIsNoteModalOpen(true);
                   setAddingNote(true);
                 }}
               >
