@@ -22,7 +22,7 @@ export function FormsTableByObserver({ columnsVisibility, searchText }: FormsTab
 
   const queryParams = useMemo(() => {
     const params = [
-      ['observerNameFilter', searchText],
+      ['searchText', searchText],
       ['tagsFilter', debouncedSearch.tagsFilter],
     ].filter(([_, value]) => value);
 

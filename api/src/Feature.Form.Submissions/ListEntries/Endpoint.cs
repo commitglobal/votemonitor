@@ -36,7 +36,7 @@ public class Endpoint(IDbConnection dbConnection) : Endpoint<Request, PagedRespo
              WHERE mn.""ElectionRoundId"" = @electionRoundId
                  AND mn.""NgoId"" = @ngoId
                  AND (@monitoringObserverId IS NULL OR mo.""Id"" = @monitoringObserverId)
-                 AND (@formCode IS NULL OR 'PSI' = @formCode) 
+                 AND (@searchText IS NULL OR @searchText = '' OR u.""FirstName"" ILIKE @searchText OR u.""LastName"" ILIKE @searchText OR u.""Email"" ILIKE @searchText OR u.""PhoneNumber"" ILIKE @searchText)
                  AND (@formType IS NULL OR 'PSI' = @formType)
                  AND (@level1 IS NULL OR ps.""Level1"" = @level1)
                  AND (@level2 IS NULL OR ps.""Level2"" = @level2)
@@ -57,7 +57,7 @@ public class Endpoint(IDbConnection dbConnection) : Endpoint<Request, PagedRespo
              WHERE mn.""ElectionRoundId"" = @electionRoundId
                  AND mn.""NgoId"" = @ngoId
                  AND (@monitoringObserverId IS NULL OR mo.""Id"" = @monitoringObserverId)
-                 AND (@formCode IS NULL OR f.""Code"" = @formCode) 
+                 AND (@searchText IS NULL OR @searchText = '' OR u.""FirstName"" ILIKE @searchText OR u.""LastName"" ILIKE @searchText OR u.""Email"" ILIKE @searchText OR u.""PhoneNumber"" ILIKE @searchText)
                  AND (@formType IS NULL OR f.""FormType"" = @formType)
                  AND (@level1 IS NULL OR ps.""Level1"" = @level1)
                  AND (@level2 IS NULL OR ps.""Level2"" = @level2)
@@ -136,7 +136,7 @@ public class Endpoint(IDbConnection dbConnection) : Endpoint<Request, PagedRespo
         WHERE mn.""ElectionRoundId"" = @electionRoundId
             AND mn.""NgoId"" = @ngoId
             AND (@monitoringObserverId IS NULL OR mo.""Id"" = @monitoringObserverId)
-            AND (@formCode IS NULL OR s.""FormCode"" = @formCode)
+            AND (@searchText IS NULL OR @searchText = '' OR u.""FirstName"" ILIKE @searchText OR u.""LastName"" ILIKE @searchText OR u.""Email"" ILIKE @searchText OR u.""PhoneNumber"" ILIKE @searchText)
             AND (@formType IS NULL OR s.""FormType"" = @formType)
             AND (@level1 IS NULL OR ps.""Level1"" = @level1)
             AND (@level2 IS NULL OR ps.""Level2"" = @level2)
@@ -207,7 +207,7 @@ public class Endpoint(IDbConnection dbConnection) : Endpoint<Request, PagedRespo
             offset = PaginationHelper.CalculateSkip(req.PageSize, req.PageNumber),
             pageSize = req.PageSize,
             monitoringObserverId = req.MonitoringObserverId,
-            formCode = string.IsNullOrWhiteSpace(req.FormCodeFilter) ? null : req.FormCodeFilter,
+            searchText = $"%{req.SearchText?.Trim() ?? string.Empty}%",
             formType = req.FormTypeFilter?.ToString(),
             level1 = req.Level1Filter,
             level2 = req.Level2Filter,

@@ -12,7 +12,7 @@ public class Request : BaseSortPaginatedRequest
     public Guid NgoId { get; set; }
 
     [QueryParam]
-    public string? FormCodeFilter { get; set; }
+    public string? SearchText { get; set; }
 
     [QueryParam]
     public FormType? FormTypeFilter { get; set; }

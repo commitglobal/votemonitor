@@ -1,3 +1,4 @@
+import TableTagList from '@/components/table-tag-list/TableTagList';
 import { Badge } from '@/components/ui/badge';
 import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
 import { cn } from '@/lib/utils';
@@ -19,7 +20,7 @@ export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry>[
     cell: ({ row }) => <div>{format(row.original.timeSubmitted, 'u-MM-dd KK:mm')}</div>
   },
   {
-    header: ({ column }) => <DataTableColumnHeader title='Form name' column={column} />,
+    header: ({ column }) => <DataTableColumnHeader title='Form code' column={column} />,
     accessorKey: 'formCode',
     enableSorting: true,
     enableGlobalFilter: true,
@@ -87,6 +88,11 @@ export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry>[
     accessorKey: 'tags',
     enableSorting: true,
     enableGlobalFilter: true,
+    cell: ({
+      row: {
+        original: { tags },
+      },
+    }) => <TableTagList tags={tags} />,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Responses' column={column} />,
@@ -123,7 +129,7 @@ export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry>[
         'text-red-600 bg-red-200': row.original?.needsFollowUp === true,
         'text-yellow-600 bg-yellow-200': row.original?.needsFollowUp === false
       })}>
-      {row.original?.needsFollowUp === undefined ? 'N/A' : row.original?.needsFollowUp? 'Needs followup': 'Followed up'} 
+      {row.original?.needsFollowUp === undefined ? 'N/A' : row.original?.needsFollowUp ? 'Needs followup' : 'Followed up'}
     </Badge>
   },
   {
@@ -164,6 +170,11 @@ export const formSubmissionsByObserverColumnDefs: ColumnDef<FormSubmissionByObse
     accessorKey: 'tags',
     enableSorting: true,
     enableGlobalFilter: true,
+    cell: ({
+      row: {
+        original: { tags },
+      },
+    }) => <TableTagList tags={tags} />,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Locations' column={column} />,
@@ -188,14 +199,12 @@ export const formSubmissionsByObserverColumnDefs: ColumnDef<FormSubmissionByObse
     accessorKey: 'status',
     enableSorting: false,
     enableGlobalFilter: true,
-    cell: ({ row }) => <Badge
-      className={cn({
-        'text-slate-700 bg-slate-200': row.original?.needsFollowUp === undefined,
-        'text-red-600 bg-red-200': row.original?.needsFollowUp === true,
-        'text-yellow-600 bg-yellow-200': row.original?.needsFollowUp === false
-      })}>
-      {row.original?.needsFollowUp === undefined ? 'N/A' : row.original?.needsFollowUp? 'Needs followup': 'Followed up'} 
-    </Badge>
+    cell: ({ row }) => {
+      return row.original?.needsFollowUp === true ? <Badge
+        className={cn({
+          'text-red-600 bg-red-200': row.original?.needsFollowUp === true,
+        })}>Needs followup</Badge> : <span>-</span>
+    }
   },
   {
     header: '',
