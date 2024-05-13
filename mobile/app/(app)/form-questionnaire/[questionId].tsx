@@ -285,7 +285,11 @@ const FormQuestionnaire = () => {
           </Typography>
         </XStack>
       </YStack>
-      <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }} centerContent>
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
+        centerContent
+        keyboardShouldPersistTaps="handled"
+      >
         <YStack paddingHorizontal="$md" paddingBottom="$md" justifyContent="center">
           <Controller
             key={activeQuestion?.question.id}
@@ -306,7 +310,6 @@ const FormQuestionnaire = () => {
                       paragraph={question.helptext[language]}
                       onChangeText={onChange}
                       value={value}
-                      // onAttachPress={() => setIsOptionsSheetOpen(true)}
                     />
                   );
                 case "textQuestion":
@@ -404,7 +407,10 @@ const FormQuestionnaire = () => {
                                 value={selections[option.id]?.text}
                                 placeholder="Please enter a text..."
                                 onChangeText={(textValue) => {
-                                  selections[option.id] = { optionId: option.id, text: textValue };
+                                  selections[option.id] = {
+                                    optionId: option.id,
+                                    text: textValue,
+                                  };
                                   onChange(selections);
                                 }}
                               />
@@ -431,15 +437,18 @@ const FormQuestionnaire = () => {
           />
 
           {/* notes section */}
-          {notes && activeElectionRound?.id && selectedPollingStation?.pollingStationId && (
-            <QuestionNotes // TODO: @luciatugui add loading and error state for Notes and Attachments
-              notes={notes}
-              electionRoundId={activeElectionRound.id}
-              pollingStationId={selectedPollingStation.pollingStationId}
-              formId={formId}
-              questionId={questionId}
-            />
-          )}
+          {notes &&
+            notes?.length !== 0 &&
+            activeElectionRound?.id &&
+            selectedPollingStation?.pollingStationId && (
+              <QuestionNotes // TODO: @luciatugui add loading and error state for Notes and Attachments
+                notes={notes}
+                electionRoundId={activeElectionRound.id}
+                pollingStationId={selectedPollingStation.pollingStationId}
+                formId={formId}
+                questionId={questionId}
+              />
+            )}
 
           {/* attachments */}
           {activeElectionRound?.id && selectedPollingStation?.pollingStationId && formId && (

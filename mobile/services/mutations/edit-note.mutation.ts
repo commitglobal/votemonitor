@@ -8,7 +8,6 @@ export const useUpdateNote = (
   electionRoundId: string,
   pollingStationId: string,
   formId: string,
-  id: string,
   scopeId: string,
 ) => {
   const queryClient = useQueryClient();
