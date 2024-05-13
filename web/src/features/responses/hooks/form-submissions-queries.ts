@@ -2,6 +2,7 @@ import { useQuery, type UseQueryResult } from '@tanstack/react-query';
 import type { DataTableParameters, PageResponse } from '@/common/types';
 import type { FormSubmissionByEntry, FormSubmissionByForm, FormSubmissionByObserver } from '../models/form-submission';
 import { authApi } from '@/common/auth-api';
+import { buildURLSearchParams } from '@/lib/utils';
 
 const STALE_TIME = 1000 * 60; // one minute
 
@@ -22,7 +23,7 @@ export function useFormSubmissionsByEntry(queryParams: DataTableParameters): Use
         SortColumnName: queryParams.sortColumnName,
         SortOrder: queryParams.sortOrder,
       };
-      const searchParams = new URLSearchParams(params);
+      const searchParams = buildURLSearchParams(params);
 
       const response = await authApi.get<FormSubmissionsByEntryResponse>(
         `/election-rounds/${electionRoundId}/form-submissions:byEntry`,
@@ -57,7 +58,7 @@ export function useFormSubmissionsByObserver(queryParams: DataTableParameters): 
         SortColumnName: queryParams.sortColumnName,
         SortOrder: queryParams.sortOrder,
       };
-      const searchParams = new URLSearchParams(params);
+      const searchParams = buildURLSearchParams(params);
 
       const response = await authApi.get<FormSubmissionsByObserverResponse>(
         `/election-rounds/${electionRoundId}/form-submissions:byObserver`,
@@ -92,7 +93,7 @@ export function useFormSubmissionsByForm(queryParams: DataTableParameters): UseF
         SortColumnName: queryParams.sortColumnName,
         SortOrder: queryParams.sortOrder,
       };
-      const searchParams = new URLSearchParams(params);
+      const searchParams = buildURLSearchParams(params);
 
       const response = await authApi.get<{ aggregatedForms: FormSubmissionByForm[] }>(
         `/election-rounds/${electionRoundId}/form-submissions:byForm`,
