@@ -114,8 +114,11 @@
   },
   "bottom_sheets": {
     "observations": {
+      "title": "My polling stations",
+      "paragraph": "You can switch between polling stations if you want to revisit form answers or polling stations information.",
       "actions": {
-        "clear_form": "Clear form (delete all answers)"
+        "clear_form": "Clear form (delete all answers)",
+        "add_station": "Add new polling station"
       }
     }
   },
