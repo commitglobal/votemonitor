@@ -14,13 +14,19 @@ public record RatingQuestion : BaseQuestion
         string code,
         TranslatedString text,
         TranslatedString? helptext,
-        RatingScale scale) : base(id, code, text, helptext)
+        RatingScale scale,
+        DisplayLogic? displayLogic) : base(id, code, text, helptext, displayLogic)
     {
         Scale = scale;
     }
 
-    public static RatingQuestion Create(Guid id, string code, TranslatedString text, RatingScale scale, TranslatedString? helptext = null) =>
-        new(id, code, text, helptext, scale);
+    public static RatingQuestion Create(Guid id,
+        string code,
+        TranslatedString text,
+        RatingScale scale,
+        TranslatedString? helptext = null,
+        DisplayLogic? displayLogic = null) =>
+        new(id, code, text, helptext, scale, displayLogic);
 
     protected override void AddTranslationsInternal(string languageCode) { }
     protected override void RemoveTranslationInternal(string languageCode) { }

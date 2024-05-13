@@ -19,7 +19,7 @@ public record SelectOption
         IsFreeText = isFreeText;
     }
 
-    public static SelectOption Create(Guid id, TranslatedString text, bool isFreeText, bool isFlagged) =>
+    public static SelectOption Create(Guid id, TranslatedString text, bool isFreeText = false, bool isFlagged = false) =>
         new(id, text, isFreeText, isFlagged);
 
     public void AddTranslation(string languageCode)

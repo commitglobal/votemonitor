@@ -166,6 +166,7 @@ app.UseFastEndpoints(x =>
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<FormType, string>());
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<ExportedDataStatus, string>());
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<QuickReportLocationType, string>());
+    x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<DisplayLogicCondition, string>());
 
     x.Serializer.Options.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
 });
@@ -184,6 +185,7 @@ SqlMapper.AddTypeHandler(typeof(RatingScale), new SmartEnumByValueTypeHandler<Ra
 SqlMapper.AddTypeHandler(typeof(FormType), new SmartEnumByValueTypeHandler<FormType, string>());
 SqlMapper.AddTypeHandler(typeof(ExportedDataStatus), new SmartEnumByValueTypeHandler<ExportedDataStatus, string>());
 SqlMapper.AddTypeHandler(typeof(QuickReportLocationType), new SmartEnumByValueTypeHandler<QuickReportLocationType, string>());
+SqlMapper.AddTypeHandler(typeof(DisplayLogicCondition), new SmartEnumByValueTypeHandler<DisplayLogicCondition, string>());
 // Register conversions for Dapper
 
 #endregion

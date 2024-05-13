@@ -41,20 +41,23 @@ public static class QuestionsMapper
                     textInputQuestion.Code,
                     textInputQuestion.Text,
                     textInputQuestion.Helptext,
-                    textInputQuestion.InputPlaceholder);
+                    textInputQuestion.InputPlaceholder,
+                    ToEntity(textInputQuestion.DisplayLogic));
 
             case NumberQuestionRequest numberInputQuestion:
                 return NumberQuestion.Create(numberInputQuestion.Id,
                      numberInputQuestion.Code,
                      numberInputQuestion.Text,
                      numberInputQuestion.Helptext,
-                     numberInputQuestion.InputPlaceholder);
+                     numberInputQuestion.InputPlaceholder,
+                     ToEntity(numberInputQuestion.DisplayLogic));
 
             case DateQuestionRequest dateInputQuestion:
                 return DateQuestion.Create(dateInputQuestion.Id,
                     dateInputQuestion.Code,
                     dateInputQuestion.Text,
-                    dateInputQuestion.Helptext);
+                    dateInputQuestion.Helptext,
+                    ToEntity(dateInputQuestion.DisplayLogic));
 
             case SingleSelectQuestionRequest singleSelectQuestion:
                 var singleSelectQuestionOptions = ToEntities(singleSelectQuestion.Options);
@@ -63,7 +66,8 @@ public static class QuestionsMapper
                     singleSelectQuestion.Code,
                     singleSelectQuestion.Text,
                     singleSelectQuestionOptions,
-                    singleSelectQuestion.Helptext);
+                    singleSelectQuestion.Helptext,
+                    ToEntity(singleSelectQuestion.DisplayLogic));
 
             case MultiSelectQuestionRequest multiSelectQuestion:
                 var multiSelectQuestionOptions = ToEntities(multiSelectQuestion.Options);
@@ -72,7 +76,8 @@ public static class QuestionsMapper
                     multiSelectQuestion.Code,
                     multiSelectQuestion.Text,
                     multiSelectQuestionOptions,
-                    multiSelectQuestion.Helptext);
+                    multiSelectQuestion.Helptext,
+                    ToEntity(multiSelectQuestion.DisplayLogic));
 
                 return multiSelectQuestionEntity;
 
@@ -81,7 +86,8 @@ public static class QuestionsMapper
                      ratingQuestion.Code,
                      ratingQuestion.Text,
                      RatingScale.FromValue(ratingQuestion.Scale.Value),
-                     ratingQuestion.Helptext);
+                     ratingQuestion.Helptext,
+                     ToEntity(ratingQuestion.DisplayLogic));
 
             default: throw new ApplicationException("Unknown question type received");
         }
@@ -93,5 +99,12 @@ public static class QuestionsMapper
             .Select(o => SelectOption.Create(o.Id, o.Text, o.IsFreeText, o.IsFlagged))
             .ToList()
             .AsReadOnly();
+    }
+
+    private static DisplayLogic? ToEntity(DisplayLogicRequest? displayLogic)
+    {
+        return displayLogic == null
+            ? null
+            : DisplayLogic.Create(displayLogic.ParentQuestionId, displayLogic.Condition, displayLogic.Value);
     }
 }

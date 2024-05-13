@@ -5,9 +5,9 @@ namespace Vote.Monitor.Domain.UnitTests.Entities.FormAnswerBase;
 
 public class DateAnswerValidateTests
 {
-    private readonly DateQuestion _dateQuestion = new(Guid.NewGuid(), "A", new(), new());
+    private readonly DateQuestion _dateQuestion = DateQuestion.Create(Guid.NewGuid(), "A", new(), new());
 
-    readonly NumberQuestion _numberQuestion = new(Guid.NewGuid(), "A", new(), new(), new());
+    readonly NumberQuestion _numberQuestion = NumberQuestion.Create(Guid.NewGuid(), "A", new(), new(), new());
 
     [Fact]
     public void Validate_WithValidQuestion_ReturnsValidationResultWithoutErrors()

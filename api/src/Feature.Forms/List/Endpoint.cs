@@ -12,7 +12,7 @@ public class Endpoint(
 {
     public override void Configure()
     {
-        Get("/api/election-rounds/{electionRoundId}/monitoring-ngo/{monitoringNgoId}/forms");
+        Get("/api/election-rounds/{electionRoundId}/forms");
         DontAutoTag();
         Options(x => x.WithTags("forms"));
         Policies(PolicyNames.NgoAdminsOnly);

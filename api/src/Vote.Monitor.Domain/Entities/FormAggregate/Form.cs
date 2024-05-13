@@ -245,6 +245,38 @@ public class Form : AuditableBaseEntity, IAggregateRoot
         return submission;
     }
 
+    public void AddTranslations(string[] languageCodes)
+    {
+        var newLanguages = languageCodes.Except(Languages);
+        Languages = Languages.Union(languageCodes).ToArray();
+
+        foreach (var languageCode in newLanguages)
+        {
+            Description.AddTranslation(languageCode);
+            Name.AddTranslation(languageCode);
+
+            foreach (var question in Questions)
+            {
+                question.AddTranslation(languageCode);
+            }
+        }
+    }
+
+    public bool HasTranslation(string languageCode)
+    {
+        return Languages.Contains(languageCode);
+    }
+
+    public void SetDefaultLanguage(string languageCode)
+    {
+        if (!HasTranslation(languageCode))
+        {
+            throw new ArgumentException("Form does not have translations for language code");
+        }
+
+        DefaultLanguage = languageCode;
+    }
+
 #pragma warning disable CS8618 // Required by Entity Framework
     private Form()
     {

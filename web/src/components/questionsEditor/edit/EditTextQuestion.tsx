@@ -3,8 +3,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useTranslation } from 'react-i18next';
 import QuestionHeader from './QuestionHeader';
+import DisplayLogicEditor from './DisplayLogicEditor';
 
 export interface EditTextQuestionProps {
+    formQuestions: BaseQuestion[];
     languageCode: string;
     availableLanguages: string[];
     questionIdx: number;
@@ -14,6 +16,7 @@ export interface EditTextQuestionProps {
 }
 
 function EditTextQuestion({
+    formQuestions,
     availableLanguages,
     languageCode,
     questionIdx,
@@ -57,6 +60,13 @@ function EditTextQuestion({
                     </div>
                 </div>
             </div>
+
+            <DisplayLogicEditor
+                formQuestions={formQuestions}
+                questionIndex={questionIdx}
+                question={question}
+                languageCode={languageCode}
+                updateQuestion={updateQuestion} />
         </div>
     )
 }

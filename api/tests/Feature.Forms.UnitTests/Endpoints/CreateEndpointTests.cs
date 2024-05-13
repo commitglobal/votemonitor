@@ -40,7 +40,7 @@ public class CreateEndpointTests
 
         // Assert
         result
-            .Should().BeOfType<Results<Ok<FormFullModel>, NotFound, Conflict<ProblemDetails>>>()
+            .Should().BeOfType<Results<Ok<FormFullModel>, NotFound>>()
             .Which
             .Result.Should().BeOfType<NotFound>();
     }
@@ -51,14 +51,14 @@ public class CreateEndpointTests
         // Arrange
         var form = new TranslatedString { [LanguagesList.RO.Iso1] = "UniqueName" };
 
-        _repository
-            .AnyAsync(Arg.Any<GetExistingFormsByCodeAndTypeSpecification>())
-            .Returns(false);
+        _monitoringNgoRepository
+            .FirstOrDefaultAsync(Arg.Any<GetMonitoringNgoSpecification>())
+            .Returns(_monitoringNgo);
 
         // Act
         var request = new Create.Request
         {
-            MonitoringNgoId = _monitoringNgo.Id,
+            NgoId = _monitoringNgo.NgoId,
             Name = form,
             Code = "a code",
             Languages = [LanguagesList.RO.Iso1]
@@ -74,19 +74,18 @@ public class CreateEndpointTests
     }
 
     [Fact]
-    public async Task ShouldReturnOkWithAttachmentModel_WhenNoConflict()
+    public async Task ShouldReturnOkWithFormModel_WhenNoConflict()
     {
         // Arrange
         var form = new TranslatedString { [LanguagesList.RO.Iso1] = "UniqueName" };
-
-        _repository
-            .AnyAsync(Arg.Any<GetExistingFormsByCodeAndTypeSpecification>())
-            .Returns(false);
+        _monitoringNgoRepository
+            .FirstOrDefaultAsync(Arg.Any<GetMonitoringNgoSpecification>())
+            .Returns(_monitoringNgo);
 
         // Act
         var request = new Create.Request
         {
-            MonitoringNgoId = _monitoringNgo.Id,
+            NgoId = _monitoringNgo.NgoId,
             Name = form,
             Code = "a code",
             Languages = [LanguagesList.RO.Iso1]
@@ -99,28 +98,9 @@ public class CreateEndpointTests
                .AddAsync(Arg.Is<Form>(x => x.Name == form));
 
         result
-            .Should().BeOfType<Results<Ok<FormFullModel>, NotFound, Conflict<ProblemDetails>>>()!
+            .Should().BeOfType<Results<Ok<FormFullModel>, NotFound>>()!
             .Which!
             .Result.Should().BeOfType<Ok<FormFullModel>>()!
             .Which!.Value!.Name.Should().BeEquivalentTo(form);
-    }
-
-    [Fact]
-    public async Task ShouldReturnConflict_WhenFormWithSameCodeExists()
-    {
-        // Arrange
-        _repository
-            .AnyAsync(Arg.Any<GetExistingFormsByCodeAndTypeSpecification>())
-            .Returns(true);
-
-        // Act
-        var request = new Create.Request();
-        var result = await _endpoint.ExecuteAsync(request, default);
-
-        // Assert
-        result
-            .Should().BeOfType<Results<Ok<FormFullModel>, NotFound, Conflict<ProblemDetails>>>()
-            .Which
-            .Result.Should().BeOfType<Conflict<ProblemDetails>>();
     }
 }

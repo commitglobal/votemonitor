@@ -35,6 +35,7 @@ const navigation = [
   { name: 'Monitoring Observers', to: '/monitoring-observers', roles: ['NgoAdmin'] },
   { name: 'Form templates', to: '/form-templates', roles: 'PlatformAdmin' },
   { name: 'Responses', to: '/responses', roles: ['NgoAdmin'] },
+  { name: 'Forms', to: '/forms', roles: ['NgoAdmin'] },
 ];
 const userNavigation: { name: string, to: string }[] = [];
 

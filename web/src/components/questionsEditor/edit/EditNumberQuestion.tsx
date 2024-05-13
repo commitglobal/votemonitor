@@ -1,10 +1,13 @@
-import { BaseQuestion, NumberQuestion, newTranslatedString } from '@/common/types';
+import { BaseQuestion, newTranslatedString, NumberQuestion } from '@/common/types';
 import { Label } from '@/components/ui/label';
 import { useTranslation } from 'react-i18next';
+
 import { Input } from '../../ui/input';
+import DisplayLogicEditor from './DisplayLogicEditor';
 import QuestionHeader from './QuestionHeader';
 
 export interface EditNumberQuestionProps {
+  formQuestions: BaseQuestion[];
   languageCode: string;
   availableLanguages: string[];
   questionIdx: number;
@@ -14,6 +17,7 @@ export interface EditNumberQuestionProps {
 }
 
 function EditNumberQuestion({
+  formQuestions,
   availableLanguages,
   languageCode,
   questionIdx,
@@ -57,6 +61,14 @@ function EditNumberQuestion({
           </div>
         </div>
       </div>
+
+      <DisplayLogicEditor
+        formQuestions={formQuestions}
+        questionIndex={questionIdx}
+        question={question}
+        languageCode={languageCode}
+        updateQuestion={updateQuestion} />
+
     </div>
   )
 }

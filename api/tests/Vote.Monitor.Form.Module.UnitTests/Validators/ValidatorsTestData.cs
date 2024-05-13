@@ -1,5 +1,7 @@
 ﻿using Vote.Monitor.Core.Constants;
 using Vote.Monitor.Core.Models;
+using Vote.Monitor.Domain.Entities.FormBase.Questions;
+using Vote.Monitor.Form.Module.Requests;
 using Vote.Monitor.TestUtils.Utils;
 
 namespace Vote.Monitor.Form.Module.UnitTests.Validators;
@@ -57,4 +59,13 @@ public class ValidatorsTestData
         {
             new object[] { "a".Repeat(257) }
         };
+
+    public static IEnumerable<object?[]> ValidDisplayLogicTestCases =>
+        new List<object?[]>
+        {
+            new object?[] { new DisplayLogicRequest{ParentQuestionId= Guid.NewGuid(), Condition = DisplayLogicCondition.GreaterEqual, Value = "1"} },
+            new object?[] { null },
+        };
+
+
 }

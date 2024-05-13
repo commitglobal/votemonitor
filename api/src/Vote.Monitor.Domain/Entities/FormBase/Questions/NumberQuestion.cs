@@ -12,7 +12,8 @@ public record NumberQuestion : BaseQuestion
         string code,
         TranslatedString text,
         TranslatedString? helptext,
-        TranslatedString? inputPlaceholder) : base(id, code, text, helptext)
+        TranslatedString? inputPlaceholder,
+    DisplayLogic? displayLogic) : base(id, code, text, helptext, displayLogic)
     {
         InputPlaceholder = inputPlaceholder;
     }
@@ -21,8 +22,9 @@ public record NumberQuestion : BaseQuestion
         string code,
         TranslatedString text,
         TranslatedString? helptext = null,
-        TranslatedString? inputPlaceholder = null)
-        => new(id, code, text, helptext, inputPlaceholder);
+        TranslatedString? inputPlaceholder = null,
+        DisplayLogic? displayLogic = null)
+        => new(id, code, text, helptext, inputPlaceholder, displayLogic);
 
     protected override void AddTranslationsInternal(string languageCode)
     {

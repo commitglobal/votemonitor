@@ -14,10 +14,10 @@ public class RatingQuestionRequestValidator : Validator<RatingQuestionRequest>
         RuleFor(x => x.QuestionType).NotEmpty();
 
         RuleFor(x => x.Text)
-            .SetValidator(new PartiallyTranslatedStringValidator(languages, 3, 256));
+            .SetValidator(new PartiallyTranslatedStringValidator(languages));
 
         RuleFor(x => x.Helptext)
-            .SetValidator(new PartiallyTranslatedStringValidator(languages, 3, 256))
+            .SetValidator(new PartiallyTranslatedStringValidator(languages))
             .When(x => x.Helptext != null);
 
         RuleFor(x => x.Code)
@@ -25,5 +25,8 @@ public class RatingQuestionRequestValidator : Validator<RatingQuestionRequest>
             .MaximumLength(256);
 
         RuleFor(x => x.Scale).NotEmpty();
+
+        RuleFor(x => x.DisplayLogic)
+            .SetValidator(new DisplayLogicRequestValidator());
     }
 }

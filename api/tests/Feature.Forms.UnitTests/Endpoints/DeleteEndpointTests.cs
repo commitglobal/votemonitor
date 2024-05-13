@@ -56,10 +56,14 @@ public class DeleteEndpointTests
             .FirstOrDefaultAsync(Arg.Any<GetFormByIdSpecification>())
             .Returns(form);
 
+        _monitoringNgoRepository
+                 .FirstOrDefaultAsync(Arg.Any<GetMonitoringNgoSpecification>())
+                 .Returns(_monitoringNgo);
+
         // Act
         var request = new Delete.Request
         {
-            MonitoringNgoId = _monitoringNgo.Id,
+            NgoId = _monitoringNgo.NgoId,
             Id = form.Id
         };
         var result = await _endpoint.ExecuteAsync(request, default);
@@ -83,10 +87,14 @@ public class DeleteEndpointTests
             .FirstOrDefaultAsync(Arg.Any<GetFormByIdSpecification>())
             .Returns(form);
 
+        _monitoringNgoRepository
+            .FirstOrDefaultAsync(Arg.Any<GetMonitoringNgoSpecification>())
+            .Returns(_monitoringNgo);
+
         // Act
         var request = new Delete.Request
         {
-            MonitoringNgoId = _monitoringNgo.Id,
+            NgoId = _monitoringNgo.NgoId,
             Id = form.Id
         };
         await _endpoint.ExecuteAsync(request, default);

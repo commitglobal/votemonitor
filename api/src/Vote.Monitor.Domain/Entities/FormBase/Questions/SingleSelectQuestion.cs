@@ -12,7 +12,8 @@ public record SingleSelectQuestion : BaseQuestion
         string code,
         TranslatedString text,
         TranslatedString? helptext,
-        IReadOnlyList<SelectOption> options) : base(id, code, text, helptext)
+        IReadOnlyList<SelectOption> options,
+        DisplayLogic? displayLogic) : base(id, code, text, helptext, displayLogic)
     {
         Options = options.ToList().AsReadOnly();
     }
@@ -21,8 +22,9 @@ public record SingleSelectQuestion : BaseQuestion
         string code,
         TranslatedString text,
         IReadOnlyList<SelectOption> options,
-        TranslatedString? helptext = null) =>
-        new(id, code, text, helptext, options);
+        TranslatedString? helptext = null,
+        DisplayLogic? displayLogic = null) =>
+        new(id, code, text, helptext, options, displayLogic);
 
     public virtual bool Equals(SingleSelectQuestion? other)
     {

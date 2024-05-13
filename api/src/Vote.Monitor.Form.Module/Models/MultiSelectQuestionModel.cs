@@ -15,6 +15,7 @@ public class MultiSelectQuestionModel : BaseQuestionModel
             Code = question.Code,
             Text = question.Text,
             Helptext = question.Helptext,
-            Options = Enumerable.ToList<SelectOptionModel>(question.Options.Select(SelectOptionModel.FromEntity))
+            Options = question.Options.Select(SelectOptionModel.FromEntity).ToList(),
+            DisplayLogic = DisplayLogicModel.FromEntity(question.DisplayLogic)
         };
 }

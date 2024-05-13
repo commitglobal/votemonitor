@@ -10,7 +10,7 @@ public class Endpoint(
 {
     public override void Configure()
     {
-        Get("/api/election-rounds/{electionRoundId}/monitoring-ngo/{monitoringNgoId}/forms/{id}");
+        Get("/api/election-rounds/{electionRoundId}/forms/{id}");
         DontAutoTag();
         Options(x => x.WithTags("forms"));
     }
@@ -24,7 +24,7 @@ public class Endpoint(
             return TypedResults.NotFound();
         }
 
-        var specification = new GetFormByIdSpecification(req.ElectionRoundId, req.MonitoringNgoId, req.Id);
+        var specification = new GetFormByIdSpecification(req.ElectionRoundId, req.NgoId, req.Id);
         var form = await repository.FirstOrDefaultAsync(specification, ct);
 
         if (form is null)

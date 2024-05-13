@@ -11,6 +11,7 @@ import { PencilIcon } from '@heroicons/react/24/outline';
 import { useLoaderData, useNavigate } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
 import { FormTemplateFull, mapFormTemplateType } from '../../models/formTemplate';
+import { getTranslationOrDefault } from '@/common/types';
 
 export default function FormTemplateDetails() {
   const formTemplate: FormTemplateFull = useLoaderData({ strict: false });
@@ -75,7 +76,7 @@ export default function FormTemplateDetails() {
                 <div className='flex flex-col gap-1'>
                   <dt className='text-sm font-medium leading-6 text-gray-900'>{t('form-template.field.description')}</dt>
                   <dd className='mt-1 text-sm leading-6 px-2 py-2 text-gray-700 sm:col-span-2 sm:mt-0 rounded-md border border-gray-200 min-h-[100px]'>
-                    {formTemplate.description[languageCode]}
+                    {getTranslationOrDefault(formTemplate.description, languageCode)}
                   </dd>
                 </div>
               </dl>

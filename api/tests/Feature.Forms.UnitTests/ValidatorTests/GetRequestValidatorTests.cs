@@ -21,13 +21,13 @@ public class GetRequestValidatorTests
     public void Validation_ShouldFail_When_MonitoringNgoId_Empty()
     {
         // Arrange
-        var request = new Get.Request { MonitoringNgoId = Guid.Empty };
+        var request = new Get.Request { NgoId = Guid.Empty };
 
         // Act
         var result = _validator.TestValidate(request);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.MonitoringNgoId);
+        result.ShouldHaveValidationErrorFor(x => x.NgoId);
     }
 
     [Fact]
@@ -50,7 +50,7 @@ public class GetRequestValidatorTests
         var request = new Get.Request
         {
             ElectionRoundId = Guid.NewGuid(),
-            MonitoringNgoId = Guid.NewGuid(),
+            NgoId = Guid.NewGuid(),
             Id = Guid.NewGuid()
         };
 

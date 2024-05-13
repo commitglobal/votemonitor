@@ -5,19 +5,18 @@ namespace Vote.Monitor.Core.Validators;
 
 public class PartiallyTranslatedStringValidator : Validator<TranslatedString>
 {
-    public PartiallyTranslatedStringValidator() : this([], 3, 256)
+    public PartiallyTranslatedStringValidator() : this([])
     {
 
     }
 
-    public PartiallyTranslatedStringValidator(List<string> supportedLanguages, int minimumLength, int maximumLength)
+    public PartiallyTranslatedStringValidator(List<string> supportedLanguages, int maximumLength = 256)
     {
         Func<string, bool> isNotEmpty = str => !string.IsNullOrWhiteSpace(str);
-        Func<KeyValuePair<string, string>, bool> isValidTranslation = translation
-            => isNotEmpty(translation.Value) && isNotEmpty(translation.Key);
+        Func<KeyValuePair<string, string>, bool> isValidTranslation = translation => isNotEmpty(translation.Key);
 
         RuleFor(x => x)
-            .Must(ts => Enumerable.Any(ts, isValidTranslation))
+            .Must(ts => ts.Any(isValidTranslation))
             .WithMessage("Provide at least one translation")
             .Must((ts, _, context) =>
             {
@@ -40,7 +39,7 @@ public class PartiallyTranslatedStringValidator : Validator<TranslatedString>
         RuleForEach(x => x)
             .OverrideIndexer((_, _, element, _) => $@"[""{element.Key}""]")
             .SetValidator(new InvalidLanguageCodeFormatValidator())
-            .SetValidator(new TranslationLengthValidator(minimumLength, maximumLength))
+            .SetValidator(new TranslationLengthValidator(maximumLength))
             .SetValidator(new UnsupportedLanguageValidator(supportedLanguages));
     }
 }
