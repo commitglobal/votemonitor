@@ -31,6 +31,7 @@ public abstract record BaseQuestion
         Code = code;
         Text = text;
         Helptext = helptext;
+        DisplayLogic = displayLogic;
     }
 
     public void AddTranslation(string languageCode)

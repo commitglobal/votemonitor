@@ -63,7 +63,7 @@ function PreviewMultiSelectQuestion({
                         handleOptionSelected(freeTextOption.id);
                         setFreeTextSelected(checked);
                     }} />
-                    <Label>{freeTextOption.text[languageCode]}.</Label>
+                    <Label>{freeTextOption.text[languageCode]}</Label>
                 </CheckboxField>}
             </CheckboxGroup>
             {freeTextSelected && <Field><Textarea /></Field>}

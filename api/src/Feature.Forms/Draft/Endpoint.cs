@@ -12,7 +12,7 @@ public class Endpoint(
 {
     public override void Configure()
     {
-        Post("/api/election-rounds/{electionRoundId}/monitoring-ngo/{monitoringNgoId}/forms/{id}:draft");
+        Post("/api/election-rounds/{electionRoundId}/forms/{id}:draft");
         Description(x => x.Accepts<Request>());
         DontAutoTag();
         Options(x => x.WithTags("forms"));
@@ -27,7 +27,7 @@ public class Endpoint(
             return TypedResults.NotFound();
         }
 
-        var specification = new GetFormByIdSpecification(req.ElectionRoundId, req.MonitoringNgoId, req.Id);
+        var specification = new GetFormByIdSpecification(req.ElectionRoundId, req.NgoId, req.Id);
         var form = await formsRepository.FirstOrDefaultAsync(specification, ct);
 
         if (form is null)
@@ -39,7 +39,7 @@ public class Endpoint(
 
         await formsRepository.UpdateAsync(form, ct);
 
-        var monitoringNgo = await monitoringNgoRepository.GetByIdAsync(req.MonitoringNgoId, ct);
+        var monitoringNgo = await monitoringNgoRepository.FirstOrDefaultAsync(new GetMonitoringNgoSpecification(req.ElectionRoundId, req.NgoId), ct);
         monitoringNgo!.UpdatePollingStationsVersion();
         await monitoringNgoRepository.UpdateAsync(monitoringNgo, ct);
 

@@ -1,8 +1,12 @@
-﻿namespace Feature.Forms.Obsolete;
+﻿using Vote.Monitor.Core.Security;
+
+namespace Feature.Forms.Obsolete;
 
 public class Request
 {
     public Guid ElectionRoundId { get; set; }
-    public Guid MonitoringNgoId { get; set; }
+
+    [FromClaim(ApplicationClaimTypes.NgoId)]
+    public Guid NgoId { get; set; }
     public Guid Id { get; set; }
 }
