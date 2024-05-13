@@ -44,9 +44,9 @@
       "eas": {
         "projectId": "93e17628-ddcd-4e67-849c-b356a18a6082"
       },
-      "message": "Handle notes offline - fix",
-      "updateCritical": 5,
-      "updateVersion": 5
+      "message": "Handle attachments offline",
+      "updateCritical": 6,
+      "updateVersion": 6
     },
     "owner": "commit-global",
     "runtimeVersion": {
