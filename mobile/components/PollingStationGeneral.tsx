@@ -62,6 +62,7 @@ export const PollingStationGeneral: React.FC<PollingStationGeneralProps> = ({
         <Card flex={0.5} paddingVertical="$xs">
           <TimeSelect
             type="departure"
+            arrivalTime={psi?.arrivalTime ? new Date(psi.arrivalTime) : undefined}
             time={psi?.departureTime ? new Date(psi?.departureTime) : undefined}
             setTime={(data: Date) =>
               updateArrivalDepartureTime({
