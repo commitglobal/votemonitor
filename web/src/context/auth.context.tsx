@@ -51,7 +51,7 @@ const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
       if (error.response.status === 400) {
         toast({
           title: 'Error',
-          description: 'You have tered an invalid email or password',
+          description: 'You have entered an invalid email or password',
           variant: 'destructive',
         });
       }

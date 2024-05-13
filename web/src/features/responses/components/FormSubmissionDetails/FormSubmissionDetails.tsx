@@ -43,7 +43,7 @@ export default function FormSubmissionDetails(): FunctionComponent {
                 params={{ monitoringObserverId: formSubmission.monitoringObserverId }}
                 target='_blank'
                 preload={false}>
-                {formSubmission.firstName} {formSubmission.lastName}
+                {formSubmission.observerName}
                 <ArrowTopRightOnSquareIcon className='w-4' />
               </Link>
             </div>
@@ -68,14 +68,22 @@ export default function FormSubmissionDetails(): FunctionComponent {
                 <p>Location - L1:</p>
                 {formSubmission.level1}
               </div>
-              <div className='flex gap-2'>
+              {formSubmission.level2 && <div className='flex gap-2'>
                 <p>Location - L2:</p>
                 {formSubmission.level2}
-              </div>
-              <div className='flex gap-2'>
+              </div>}
+              {formSubmission.level3 && <div className='flex gap-2'>
                 <p>Location - L3:</p>
                 {formSubmission.level3}
-              </div>
+              </div>}
+              {formSubmission.level4 && <div className='flex gap-2'>
+                <p>Location - L4:</p>
+                {formSubmission.level4}
+              </div>}
+              {formSubmission.level5 && <div className='flex gap-2'>
+                <p>Location - L5:</p>
+                {formSubmission.level5}
+              </div>}
             </div>
           </CardContent>
         </Card>
@@ -100,7 +108,7 @@ export default function FormSubmissionDetails(): FunctionComponent {
               return (
                 <div key={question.id} className='flex flex-col gap-4'>
                   <p className='text-gray-700 font-medium'>
-                    {index + 1}: {question.text['EN']}
+                    {index + 1}: {question.text[formSubmission.defaultLanguage]}
                   </p>
 
                   {isSingleSelectQuestion(question) && (
@@ -113,7 +121,7 @@ export default function FormSubmissionDetails(): FunctionComponent {
                           <FormItem className='flex items-center gap-2 !mt-0'>
                             <Radio disabled value={option.id} />
                             <Label className='font-normal'>
-                              {option.text['EN']}
+                              {option.text[formSubmission.defaultLanguage]}
                               {option.isFlagged && <> (Flagged)</>}
                             </Label>
                             {option.isFlagged && <FlagIcon className={cn('text-destructive', 'w-4')} />}
@@ -137,7 +145,7 @@ export default function FormSubmissionDetails(): FunctionComponent {
                       return (
                         <FormItem key={option.id} className='flex flex-row items-start space-x-3 space-y-0'>
                           <Checkbox checked={isOptionChecked} disabled />
-                          <Label>{option.text['EN']}</Label>
+                          <Label>{option.text[formSubmission.defaultLanguage]}</Label>
                         </FormItem>
                       );
                     })}

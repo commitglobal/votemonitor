@@ -1,7 +1,7 @@
 import { X } from 'lucide-react';
 import { Button } from '../ui/button';
 import { TagInputProps, type Tag as TagType } from './tag-input';
-import { cn, stringToText } from '@/lib/utils';
+import { cn, getTagColor } from '@/lib/utils';
 import { cva } from 'class-variance-authority';
 
 export const tagVariants = cva('transition-all border inline-flex items-center text-sm pl-2 rounded-md', {
@@ -95,9 +95,7 @@ export const Tag: React.FC<TagProps> = ({
       key={tagObj.id}
       draggable={draggable}
       style={{
-        backgroundColor: stringToText(tagObj.text),
-        filter: 'brightness(130%)',
-        color: '#000',
+        backgroundColor: getTagColor(tagObj.text),
       }}
       className={cn(
         tagVariants({
