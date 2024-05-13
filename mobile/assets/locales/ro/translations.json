@@ -118,7 +118,8 @@
       "paragraph": "Puteți comuta între secțiile de votare dacă doriți să revizuiți răspunsurile din formulare sau informațiile despre secțiile de votare.",
       "actions": {
         "clear_form": "Ștergeți formularul (ștergeți toate răspunsurile)",
-        "add_station": "Adăugați o nouă secție de votare."
+        "add_station": "Adăugați o nouă secție de votare.",
+        "change_language": "Schimba limba formularului"
       }
     }
   },
@@ -128,12 +129,16 @@
       "status": "Statusul formularului",
       "answered_questions": "Întrebări completate",
       "resume": "Reia formularul",
-      "start_form": "Incepe formularul"
+      "start_form": "Incepe formularul",
+      "progress": "progres"
     },
     "language_modal": {
       "header": "Selecteaza limba formularului",
       "helper": "Formularul selectat este disponibil în mai multe limbi. Vă rugăm selectați limba cu care doriți să continuați.",
       "error": "Vă rugăm selectați una din opțiuni."
+    },
+    "questions": {
+      "title": "Intrebari"
     }
   },
   "inbox_empty": {

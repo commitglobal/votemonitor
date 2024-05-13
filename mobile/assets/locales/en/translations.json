@@ -118,7 +118,8 @@
       "paragraph": "You can switch between polling stations if you want to revisit form answers or polling stations information.",
       "actions": {
         "clear_form": "Clear form (delete all answers)",
-        "add_station": "Add new polling station"
+        "add_station": "Add new polling station",
+        "change_language": "Change language"
       }
     }
   },
@@ -128,13 +129,18 @@
       "status": "Form status",
       "answered_questions": "Answered questions",
       "resume": "Resume form",
-      "start_form": "Start form"
+      "start_form": "Start form",
+      "progress": "progress"
     },
     "language_modal": {
       "header": "Select form language",
       "helper": "The selected form is available in multiple languages. Please select which one you would like to continue with.",
       "error": "Please select one of the options"
+    }, 
+    "questions": {
+      "title": "Intrebari"
     }
+
   },
   "inbox_empty": {
     "title": "No message received yet",
