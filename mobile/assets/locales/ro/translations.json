@@ -117,11 +117,11 @@
   },
   "bottom_sheets": {
     "observations": {
-      "title": "Sectile mele de votare",
+      "title": "Secțiile mele de votare",
       "paragraph": "Puteți comuta între secțiile de votare dacă doriți să revizuiți răspunsurile din formulare sau informațiile despre secțiile de votare.",
       "actions": {
         "clear_form": "Ștergeți formularul (ștergeți toate răspunsurile)",
-        "add_station": "Adăugați o nouă secție de votare.",
+        "add_station": "Adăugați o nouă secție de votare",
         "change_language": "Schimba limba formularului"
       }
     }

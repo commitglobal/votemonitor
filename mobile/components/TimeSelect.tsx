@@ -8,7 +8,6 @@ import RNDateTimePicker, {
   DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
 import CardFooter from "../components/CardFooter";
-import { useTranslation } from "react-i18next";
 import Toast from "react-native-toast-message";
 
 interface TimeSelectProps {
