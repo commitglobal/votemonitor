@@ -17,7 +17,8 @@ import { ElectionRoundVM } from "../../common/models/election-round.model";
 import { skipToken, useQueries } from "@tanstack/react-query";
 import LoadingScreen from "../../components/LoadingScreen";
 import GenericErrorScreen from "../../components/GenericErrorScreen";
-import { getElectionRoundAllForms } from "../../services/definitions.api";
+import { getElectionRoundAllForms, getFormSubmissions } from "../../services/definitions.api";
+import { formSubmissionsQueryFn } from "../../services/queries/form-submissions.query";
 
 type UserContextType = {
   electionRounds: ElectionRoundVM[] | undefined;
@@ -89,7 +90,14 @@ const UserContextProvider = ({ children }: React.PropsWithChildren) => {
               pollingStationInformationQueryFn(activeElectionRound?.id, visit.pollingStationId),
             staleTime: 5 * 60 * 1000,
           };
-          return [nodes, informations];
+          const submissions = {
+            queryKey: pollingStationsKeys.formSubmissions(
+              activeElectionRound?.id,
+              visit.pollingStationId,
+            ),
+            queryFn: () => formSubmissionsQueryFn(activeElectionRound?.id, visit.pollingStationId),
+          };
+          return [nodes, informations, submissions];
         })
         ?.flat() || []),
       {

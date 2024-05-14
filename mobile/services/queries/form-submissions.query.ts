@@ -4,6 +4,11 @@ import { FormSubmissionsApiResponse, getFormSubmissions } from "../definitions.a
 import { useCallback } from "react";
 import { arrayToKeyObject } from "../../helpers/misc";
 
+export const formSubmissionsQueryFn = (
+  electionRoundId: string | undefined,
+  pollingStationId: string,
+) => getFormSubmissions(electionRoundId!, pollingStationId);
+
 export const useFormSubmissions = <TResult = FormSubmissionsApiResponse>(
   electionRoundId: string | undefined,
   pollingStationId: string | undefined,
@@ -13,7 +18,7 @@ export const useFormSubmissions = <TResult = FormSubmissionsApiResponse>(
     queryKey: pollingStationsKeys.formSubmissions(electionRoundId, pollingStationId),
     queryFn:
       electionRoundId && pollingStationId
-        ? () => getFormSubmissions(electionRoundId, pollingStationId)
+        ? () => formSubmissionsQueryFn(electionRoundId, pollingStationId)
         : skipToken,
     select,
   });
