@@ -7,33 +7,11 @@ import { YStack } from "tamagui";
 import { useQuickReportById } from "../../../../../../services/queries/quick-reports.query";
 import { useUserData } from "../../../../../../contexts/user/UserContext.provider";
 import Card from "../../../../../../components/Card";
-import { QuickReportAttachmentAPIResponse } from "../../../../../../services/api/quick-report/get-quick-reports.api";
 
 type SearchParamsType = {
   reportId: string;
   reportTitle: string;
 };
-
-const dummyAttachments: QuickReportAttachmentAPIResponse[] = [
-  {
-    id: "1",
-    quickReportId: "1",
-    electionRoundId: "1",
-    fileName: "Attachment 1.jpg",
-    mimeType: "image/jpeg",
-    presignedUrl: "https://via.placeholder.com/150",
-    urlValidityInSeconds: 3600,
-  },
-  {
-    id: "2",
-    quickReportId: "1",
-    electionRoundId: "1",
-    fileName: "Attachment 1.jpg",
-    mimeType: "image/jpeg",
-    presignedUrl: "https://via.placeholder.com/150",
-    urlValidityInSeconds: 3600,
-  },
-];
 
 const ReportDetails = () => {
   const { reportTitle, reportId } = useLocalSearchParams<SearchParamsType>();
@@ -50,7 +28,7 @@ const ReportDetails = () => {
     error: currentReportError,
   } = useQuickReportById(activeElectionRound?.id, reportId);
 
-  const attachments = dummyAttachments;
+  console.log("data", quickReport);
 
   if (isLoadingCurrentReport) {
     return <Typography>Loading</Typography>;
@@ -58,6 +36,12 @@ const ReportDetails = () => {
 
   if (currentReportError) {
     return <Typography>Report Error</Typography>;
+  }
+
+  const attachments = quickReport?.attachments || [];
+  if (attachments.length !== 0) {
+    console.log("attachments", attachments[0]);
+    console.log("attachments", attachments[1]);
   }
 
   return (
