@@ -19,13 +19,9 @@ interface TimeSelectProps {
   departureTime?: Date | undefined;
 }
 
-enum CardFooterDisplay {
-  ARRIVAL = "Arrival",
-  DEPARTURE = "Departure",
-}
-
 const TimeSelect: React.FC<TimeSelectProps> = memo(
   ({ type, time, setTime, arrivalTime, departureTime }) => {
+    const { t, i18n } = useTranslation("observations_polling_station");
     const [open, setOpen] = useState(false);
     // on ios we use a temporary time, as the onChange function gets triggered every time the user picks a new time
     // therefore, we will update the FINAL time state (that comes from the outside), only onDonePress
@@ -46,7 +42,7 @@ const TimeSelect: React.FC<TimeSelectProps> = memo(
             onClose();
             return Toast.show({
               type: "error",
-              text2: "Please select an arrival time first. ",
+              text2: t("time_select.toast.error.arrival_first"),
               visibilityTime: 5000,
             });
           }
@@ -62,8 +58,7 @@ const TimeSelect: React.FC<TimeSelectProps> = memo(
                     onClose();
                     return Toast.show({
                       type: "error",
-                      text2:
-                        "Please select a departure time that is at a later time than the arrival.",
+                      text2: t("time_select.toast.error.later_departure"),
                       visibilityTime: 5000,
                     });
                   }
@@ -73,8 +68,7 @@ const TimeSelect: React.FC<TimeSelectProps> = memo(
                     onClose();
                     return Toast.show({
                       type: "error",
-                      text2:
-                        "Please select an arrival time that is at an earlier time than the departure.",
+                      text2: t("time_select.toast.error.earlier_arrival"),
                       visibilityTime: 5000,
                     });
                   }
@@ -98,7 +92,7 @@ const TimeSelect: React.FC<TimeSelectProps> = memo(
       if (type === "departure" && !arrivalTime) {
         Toast.show({
           type: "error",
-          text2: "Please select an arrival time first.",
+          text2: t("time_select.toast.error.arrival_first"),
           visibilityTime: 5000,
         });
         return onClose();
@@ -149,13 +143,15 @@ const TimeSelect: React.FC<TimeSelectProps> = memo(
               </React.Fragment>
             ) : (
               <Typography preset="heading" fontWeight="500" color="$gray5">
-                Not defined
+                {t("time_select.undefined_time")}
               </Typography>
             )}
           </Stack>
 
           <CardFooter
-            text={`${type === "arrival" ? CardFooterDisplay.ARRIVAL : CardFooterDisplay.DEPARTURE} time`}
+            text={
+              type === "arrival" ? t("time_select.arrival_time") : t("time_select.departure_time")
+            }
             marginTop="auto"
           ></CardFooter>
         </YStack>
@@ -176,7 +172,7 @@ const TimeSelect: React.FC<TimeSelectProps> = memo(
                 {/* <Button preset="outlined" onPress={onResetTime}>
                 Reset
               </Button> */}
-                <Button onPress={onDonePress}>Done</Button>
+                <Button onPress={onDonePress}>{t("time_select.actions.save")}</Button>
               </XStack>
               <XStack flex={1} justifyContent="center" alignItems="center">
                 <RNDateTimePicker
@@ -188,6 +184,7 @@ const TimeSelect: React.FC<TimeSelectProps> = memo(
                   minimumDate={type === "departure" && arrivalTime ? arrivalTime : undefined}
                   // if setting arrival time and departure time has already been set -> don't allow a later time
                   maximumDate={type === "arrival" && departureTime ? departureTime : undefined}
+                  locale={i18n.language}
                 />
               </XStack>
             </Sheet.Frame>

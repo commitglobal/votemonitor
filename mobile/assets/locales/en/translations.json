@@ -110,7 +110,7 @@
   "polling_station_information": {
     "header": {
       "title": "Polling station information"
-    }, 
+    },
     "actions": {
       "submit": "Submit answers"
     }
@@ -139,11 +139,10 @@
       "header": "Select form language",
       "helper": "The selected form is available in multiple languages. Please select which one you would like to continue with.",
       "error": "Please select one of the options"
-    }, 
+    },
     "questions": {
       "title": "Intrebari"
     }
-
   },
   "inbox_empty": {
     "title": "No message received yet",
@@ -198,6 +197,13 @@
       "departure_time": "Departure time",
       "actions": {
         "save": "Done"
+      },
+      "toast": {
+        "error": {
+          "arrival_first": "Please select an arrival time first.",
+          "later_departure": "Please select a departure time that is at a later time than the arrival.",
+          "earlier_arrival": "Please select an arrival time that is at an earlier time than the departure."
+        }
       }
     },
     "polling_station_card": {
@@ -210,18 +216,18 @@
         "not_started": "Not started"
       },
       "actions": {
-          "answer_questions": "Answer questions"
+        "answer_questions": "Answer questions"
       }
     },
     "forms": {
       "title": "Forms"
-    } 
+    }
   },
-  "observations_empty" : {
+  "observations_empty": {
     "title": "Nicio secție de votare vizitată încă",
     "paragraph": "Începeți să configurați prima secție de votare înainte de a completa formularele de observație.",
     "actions": {
-        "add_station": "Adăugați prima secție de votare."
+      "add_station": "Adăugați prima secție de votare."
     }
   },
   "question_page": {
