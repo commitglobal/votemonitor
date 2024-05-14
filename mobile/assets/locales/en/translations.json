@@ -176,10 +176,5 @@
         "back": "Back to app"
       }
     }
-  },
-  "question_page": {
-    "actions": {
-      "add_media": "Add Note or Media"
-    }
   }
 }

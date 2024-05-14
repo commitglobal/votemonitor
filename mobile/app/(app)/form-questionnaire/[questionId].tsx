@@ -470,6 +470,7 @@ const FormQuestionnaire = () => {
           )}
 
           <AddAttachment
+            label="Add Note or Media"
             marginTop="$lg"
             onPress={() => {
               console.log("doing stuff for question", activeQuestion);

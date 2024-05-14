@@ -359,6 +359,7 @@ const ReportIssue = () => {
               false
             )}
             <AddAttachment
+              label="Add Media"
               paddingVertical="$xxs"
               onPress={() => {
                 Keyboard.dismiss();
