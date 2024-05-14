@@ -9,6 +9,7 @@ import RNDateTimePicker, {
 } from "@react-native-community/datetimepicker";
 
 import CardFooter from "../components/CardFooter";
+import { useTranslation } from "react-i18next";
 
 interface TimeSelectProps {
   type: "arrival" | "departure";
@@ -16,12 +17,8 @@ interface TimeSelectProps {
   setTime: any;
 }
 
-enum CardFooterDisplay {
-  ARRIVAL = "Arrival",
-  DEPARTURE = "Departure",
-}
-
 const TimeSelect: React.FC<TimeSelectProps> = memo(({ type, time, setTime }) => {
+  const { t } = useTranslation("observations_polling_station");
   const [open, setOpen] = useState(false);
 
   // on ios we use a temporary time, as the onChange function gets triggered every time the user picks a new time
@@ -43,14 +40,14 @@ const TimeSelect: React.FC<TimeSelectProps> = memo(({ type, time, setTime }) => 
           mode: "time",
           value: time || new Date(),
           onChange: (event, eventTime) => {
-            if (event.type === 'set' && selectedTime && eventTime) {
-              selectedTime.setHours(eventTime?.getHours())
-              selectedTime.setMinutes(eventTime?.getMinutes())
+            if (event.type === "set" && selectedTime && eventTime) {
+              selectedTime.setHours(eventTime?.getHours());
+              selectedTime.setMinutes(eventTime?.getMinutes());
               setTime(selectedTime);
             }
           },
           is24Hour: true,
-        })
+        });
       } else if (event.type === "dismissed") {
         // press Cancel - close modal
         onClose();
@@ -84,32 +81,33 @@ const TimeSelect: React.FC<TimeSelectProps> = memo(({ type, time, setTime }) => 
         }}
       >
         <Stack paddingVertical="$sm" marginBottom="$xxs">
-          {time ? (<React.Fragment>
-            <Typography preset="body2" fontWeight="500" paddingBottom="$xxs">
-              {time &&
-                time.toLocaleDateString(['en-GB'], {
-                  month: '2-digit',
-                  day: '2-digit',
-                  year: 'numeric'
-                })}
-            </Typography>
-            <Typography preset="heading" fontWeight="500">
-              {time &&
-                time.toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-            </Typography>
-          </React.Fragment>
+          {time ? (
+            <React.Fragment>
+              <Typography preset="body2" fontWeight="500" paddingBottom="$xxs">
+                {time &&
+                  time.toLocaleDateString(["en-GB"], {
+                    month: "2-digit",
+                    day: "2-digit",
+                    year: "numeric",
+                  })}
+              </Typography>
+              <Typography preset="heading" fontWeight="500">
+                {time &&
+                  time.toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+              </Typography>
+            </React.Fragment>
           ) : (
             <Typography preset="heading" fontWeight="500" color="$gray5">
-              Not defined
+              {t("time_select.undefined")}
             </Typography>
           )}
         </Stack>
 
         <CardFooter
-          text={`${type === "arrival" ? CardFooterDisplay.ARRIVAL : CardFooterDisplay.DEPARTURE} time`}
+          text={`${type === "arrival" ? t("time_select.arrival_time") : t("time_select.departure_time")}`}
         ></CardFooter>
       </YStack>
 
@@ -129,7 +127,7 @@ const TimeSelect: React.FC<TimeSelectProps> = memo(({ type, time, setTime }) => 
               {/* <Button preset="outlined" onPress={onResetTime}>
                 Reset
               </Button> */}
-              <Button onPress={onDonePress}>Done</Button>
+              <Button onPress={onDonePress}>{t("time_select.actions.save")}</Button>
             </XStack>
             <XStack flex={1} justifyContent="center" alignItems="center">
               <RNDateTimePicker

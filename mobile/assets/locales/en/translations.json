@@ -192,13 +192,13 @@
   },
   "observations_polling_station": {
     "title": "Observation",
-    "arrival_timer": {
+    "time_select": {
       "undefined_time": "Not defined",
-      "arrival_time": "Arrival time"
-    },
-    "departure_timer": {
-      "undefined_time": "Not defined",
-      "departure_time": "Departure time"
+      "arrival_time": "Arrival time",
+      "departure_time": "Departure time",
+      "actions": {
+        "save": "Done"
+      }
     },
     "polling_station_card": {
       "title": "Answer a few quick questions about the polling station.",
@@ -217,6 +217,13 @@
       "title": "Forms"
     } 
   },
+  "observations_empty" : {
+    "title": "Nicio secție de votare vizitată încă",
+    "paragraph": "Începeți să configurați prima secție de votare înainte de a completa formularele de observație.",
+    "actions": {
+        "add_station": "Adăugați prima secție de votare."
+    }
+  },
   "question_page": {
     "notes": "Notes",
     "uploaded_media": "Uploaded media",
@@ -231,7 +238,7 @@
       "add_note": "Add note",
       "load": "Load from gallery",
       "take_picture": "Take a photo",
-      "record_audio": "Record audio",
+      "record_video": "Record audio",
       "upload_audio": "Upload audio file"
     }
   }
