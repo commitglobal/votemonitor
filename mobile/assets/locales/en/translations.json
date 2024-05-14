@@ -216,6 +216,23 @@
     "forms": {
       "title": "Forms"
     } 
+  },
+  "question_page": {
+    "notes": "Notes",
+    "uploaded_media": "Uploaded media",
+    "progress": "Form progress",
+    "min": "The field must be at least {{value}} characters long",
+    "max": "The field must have a maximum of {{value}} characters",
+    "actions": {
+      "clear_answer": "Clear answer",
+      "add_attachments": "Add notes and media"
+    },
+    "options_sheet": {
+      "add_note": "Add note",
+      "load": "Load from gallery",
+      "take_picture": "Take a photo",
+      "record_audio": "Record audio",
+      "upload_audio": "Upload audio file"
+    }
   }
-  
 }

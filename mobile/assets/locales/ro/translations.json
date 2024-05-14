@@ -101,10 +101,10 @@
       }
     },
     "actions": {
-      "next_step": "Next step",
-      "back": "Back",
-      "skip": "Skip this step",
-      "finalize": "Finalize"
+      "next_step": "Pasul urmator",
+      "back": "Inapoi",
+      "skip": "Sari peste acest pas",
+      "finalize": "Finalizeaza"
     }
   },
   "polling_station_information": {
@@ -215,5 +215,23 @@
     "forms": {
       "title": "Formulare"
     } 
+  },
+  "question_page": {
+    "notes": "Notite",
+    "uploaded_media": "Media incarcata",
+    "progress": "Progresul formularului",
+    "min": "Field-ul trebuie sa aiba maxim {{value}} caractere",
+    "max": "Field-ul trebuie sa aiba minim {{value}} caractere",
+    "actions": {
+      "clear_answer": "Sterge raspunsul",
+      "add_attachments": "Add notite si fisiere media"
+    },
+    "options_sheet": {
+      "add_note": "Adauga notite",
+      "load": "Incarca din galerie",
+      "take_picture": "Fa o poza",
+      "record_video": "Inregistreaza video",
+      "upload_audio": "Incarca audio"
+    }
   }
 }
