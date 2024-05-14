@@ -125,6 +125,7 @@ const TimeSelect: React.FC<TimeSelectProps> = memo(
           onPress={() => {
             setOpen(true);
           }}
+          flex={1}
         >
           <Stack paddingVertical="$sm" marginBottom="$xxs">
             {time ? (
@@ -154,6 +155,7 @@ const TimeSelect: React.FC<TimeSelectProps> = memo(
 
           <CardFooter
             text={`${type === "arrival" ? CardFooterDisplay.ARRIVAL : CardFooterDisplay.DEPARTURE} time`}
+            marginTop="auto"
           ></CardFooter>
         </YStack>
 
