@@ -110,6 +110,9 @@
   "polling_station_information": {
     "header": {
       "title": "Informații despre secția de votare"
+    },
+    "actions": {
+      "submit": "Submiteti raspunsurile"
     }
   },
   "bottom_sheets": {

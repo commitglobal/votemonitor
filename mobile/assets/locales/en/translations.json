@@ -110,6 +110,9 @@
   "polling_station_information": {
     "header": {
       "title": "Polling station information"
+    }, 
+    "actions": {
+      "submit": "Submit answers"
     }
   },
   "bottom_sheets": {

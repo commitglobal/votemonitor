@@ -418,7 +418,7 @@ const PollingStationQuestionnaire = () => {
         elevation={2}
       >
         <Button flex={1} onPress={handleSubmit(onSubmit)}>
-          Submit answer
+          {t("actions.submit")}
         </Button>
       </XStack>
     </>
