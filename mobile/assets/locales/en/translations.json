@@ -141,7 +141,11 @@
       "error": "Please select one of the options"
     }, 
     "questions": {
-      "title": "Intrebari"
+      "title": "Intrebari",
+      "not_asnwered": "Not Answered",
+      "asnwered": "Answered",
+      "no_notes": "No attached notes",
+      "notes": "Includes attached notes"
     }
 
   },
