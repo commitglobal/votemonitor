@@ -9,7 +9,7 @@ public class QuickReportOverviewModel
     public DateTime Timestamp { get; set; }
     public string Title { get; set; }
     public string Description { get; set; }
-    public int NumberOfSubmissions { get; set; }
+    public int NumberOfAttachments { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public string Email { get; set; }
