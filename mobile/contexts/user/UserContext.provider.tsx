@@ -1,5 +1,6 @@
 import { createContext, useContext, useMemo, useState } from "react";
 import {
+  electionRoundsKeys,
   pollingStationByIdQueryFn,
   pollingStationInformationQueryFn,
   pollingStationsKeys,
@@ -13,9 +14,10 @@ import {
   PollingStationVisitVM,
 } from "../../common/models/polling-station.model";
 import { ElectionRoundVM } from "../../common/models/election-round.model";
-import { useQueries } from "@tanstack/react-query";
+import { skipToken, useQueries } from "@tanstack/react-query";
 import LoadingScreen from "../../components/LoadingScreen";
 import GenericErrorScreen from "../../components/GenericErrorScreen";
+import { getElectionRoundAllForms } from "../../services/definitions.api";
 
 type UserContextType = {
   electionRounds: ElectionRoundVM[] | undefined;
@@ -70,8 +72,8 @@ const UserContextProvider = ({ children }: React.PropsWithChildren) => {
   } = usePollingStationById(currentSelectedPollingStationId);
 
   useQueries({
-    queries:
-      visits
+    queries: [
+      ...(visits
         ?.map((visit) => {
           const nodes = {
             queryKey: pollingStationsKeys.one(visit.pollingStationId),
@@ -89,7 +91,14 @@ const UserContextProvider = ({ children }: React.PropsWithChildren) => {
           };
           return [nodes, informations];
         })
-        ?.flat() || [],
+        ?.flat() || []),
+      {
+        queryKey: electionRoundsKeys.forms(activeElectionRound?.id),
+        queryFn: activeElectionRound?.id
+          ? () => getElectionRoundAllForms(activeElectionRound.id)
+          : skipToken,
+      },
+    ],
   });
 
   const error =

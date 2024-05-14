@@ -8,7 +8,7 @@ export const useElectionRoundAllForms = <TResult = ElectionRoundsAllFormsAPIResp
   select?: (data: ElectionRoundsAllFormsAPIResponse) => TResult,
 ) => {
   return useQuery({
-    queryKey: electionRoundsKeys.forms(),
+    queryKey: electionRoundsKeys.forms(electionRoundId),
     queryFn: electionRoundId ? () => getElectionRoundAllForms(electionRoundId) : skipToken,
     select,
   });
