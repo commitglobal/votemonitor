@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { Slot, SplashScreen, useNavigationContainerRef } from "expo-router";
 import AuthContextProvider from "../contexts/auth/AuthContext.provider";
 import { TamaguiProvider } from "@tamagui/core";
+import { ToastProvider } from "@tamagui/toast";
 import { tamaguiConfig } from "../tamagui.config";
 import { useFonts } from "expo-font";
 import "../common/config/i18n";
@@ -71,20 +72,22 @@ function RootLayout() {
 
   return (
     <TamaguiProvider config={tamaguiConfig}>
-      <NetInfoProvider>
-        <PortalProvider>
-          <AuthContextProvider>
-            <PersistQueryContextProvider>
-              <LanguageContextProvider>
-                <EasUpdateMonitorContextProvider>
-                  <Slot />
-                  <NetInfoBanner />
-                </EasUpdateMonitorContextProvider>
-              </LanguageContextProvider>
-            </PersistQueryContextProvider>
-          </AuthContextProvider>
-        </PortalProvider>
-      </NetInfoProvider>
+      <ToastProvider>
+        <NetInfoProvider>
+          <PortalProvider>
+            <AuthContextProvider>
+              <PersistQueryContextProvider>
+                <LanguageContextProvider>
+                  <EasUpdateMonitorContextProvider>
+                    <Slot />
+                    <NetInfoBanner />
+                  </EasUpdateMonitorContextProvider>
+                </LanguageContextProvider>
+              </PersistQueryContextProvider>
+            </AuthContextProvider>
+          </PortalProvider>
+        </NetInfoProvider>
+      </ToastProvider>
     </TamaguiProvider>
   );
 }
