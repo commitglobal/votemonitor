@@ -5,7 +5,7 @@ namespace SubmissionsFaker.Clients.NgoAdmin.Models;
 
 public class UpdateFormResponse : CreateResponse
 {
-    public Guid Id { get; set; }
+    public string Id { get; set; }
     public List<BaseQuestionRequest> Questions { get; set; } = new();
 
 }

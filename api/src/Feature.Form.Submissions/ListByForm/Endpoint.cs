@@ -22,21 +22,21 @@ public class Endpoint(IDbConnection dbConnection) : Endpoint<Request, Response>
     public override async Task<Response> ExecuteAsync(Request req, CancellationToken ct)
     {
         var sql = @"
-            select f.""Id"" AS ""FormId"",
+            SELECT f.""Id"" AS ""FormId"",
                    f.""Code"" AS ""FormCode"",
                    f.""FormType"" AS ""FormType"",
                    count(distinct fs.""Id"") ""NumberOfSubmissions"",
                    sum(fs.""NumberOfFlaggedAnswers"") ""NumberOfFlaggedAnswers"",
                    count(distinct n.""Id"") ""NumberOfNotes"",
                    count(distinct a.""Id"") ""NumberOfMediaFiles""
-            from ""Forms"" f
-            inner join ""MonitoringNgos"" mn on mn.""Id"" = f.""MonitoringNgoId""
-            inner join ""FormSubmissions"" fs on fs.""FormId"" = f.""Id""
-            left JOIN ""Notes"" n on n.""FormId"" = f.""Id""
-            left JOIN ""Attachments"" a on a.""FormId"" = f.""Id""
+            FROM ""Forms"" f
+            INNER JOIN ""MonitoringNgos"" mn ON mn.""Id"" = f.""MonitoringNgoId""
+            INNER JOIN ""FormSubmissions"" fs ON fs.""FormId"" = f.""Id""
+            LEFT JOIN ""Notes"" n ON n.""FormId"" = f.""Id""
+            LEFT JOIN ""Attachments"" a ON a.""FormId"" = f.""Id""
             WHERE f.""ElectionRoundId"" = @electionRoundId
                 AND mn.""NgoId"" = @ngoId
-            group by f.""Id"",
+            GROUP BY f.""Id"",
                      f.""Code"",
                      f.""FormType"";
         ";
