@@ -199,13 +199,19 @@
   "observations_polling_station": {
     "title": "Observare",
     "time_select": {
-      "undefined": "Nedefinit",
+      "undefined_time": "Nedefinit",
       "arrival_time": "Timpul sosirii",
       "departure_time": "Timpul plecarii",
       "actions": {
         "save": "Salveaza"
+      },
+      "toast": {
+        "error": {
+          "arrival_first": "Vă rugăm selectați timpul sosirii mai întâi",
+          "later_departure": "Vă rugăm selectați un timp al plecării mai târziu decât cel al sosirii.",
+          "earlier_arrival": "Vă rugăm selectați un timp al sosirii mai devreme decât cel al plecării."
+        }
       }
-      
     },
     "polling_station_card": {
       "title": "Răspunde la câteva întrebări rapide despre secția de votare.",
@@ -217,18 +223,18 @@
         "not_started": "Neinceput"
       },
       "actions": {
-          "answer_questions": "Răspundeți la întrebări"
+        "answer_questions": "Răspundeți la întrebări"
       }
     },
     "forms": {
       "title": "Formulare"
-    } 
+    }
   },
-  "observations_empty" : {
+  "observations_empty": {
     "title": "No visited polling stations yet",
     "paragraph": "Start configuring your first polling station before completing observation forms.",
     "actions": {
-        "add_station": "Add your first polling station"
+      "add_station": "Add your first polling station"
     }
   },
   "question_page": {
