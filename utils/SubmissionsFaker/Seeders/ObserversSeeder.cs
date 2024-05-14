@@ -1,6 +1,7 @@
 ﻿using Spectre.Console;
 using SubmissionsFaker.Clients.Models;
 using SubmissionsFaker.Clients.PlatformAdmin;
+using SubmissionsFaker.Clients.PlatformAdmin.Models;
 using SubmissionsFaker.Clients.Token;
 
 namespace SubmissionsFaker.Seeders;
@@ -10,8 +11,8 @@ public class ObserversSeeder
     public static async Task<List<CreateResponse>> Seed(IPlatformAdminApi platformAdminApi,
         LoginResponse platformAdminToken,
         List<ApplicationUser> observers,
-        Guid electionRoundId,
-        Guid monitoringNgoId,
+        string electionRoundId,
+        string monitoringNgoId,
         ProgressTask progressTask)
     {
         progressTask.StartTask();
