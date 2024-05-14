@@ -3,15 +3,9 @@ using Vote.Monitor.Core.Models;
 
 namespace Vote.Monitor.Api.Feature.NgoAdmin.List;
 
-public class Endpoint : Endpoint<Request, Results<Ok<PagedResponse<NgoAdminModel>>, ProblemDetails>>
+public class Endpoint(IReadRepository<NgoAdminAggregate> repository)
+    : Endpoint<Request, Results<Ok<PagedResponse<NgoAdminModel>>, ProblemDetails>>
 {
-     readonly IReadRepository<Domain.Entities.NgoAdminAggregate.NgoAdmin> _repository;
-
-    public Endpoint(IReadRepository<Domain.Entities.NgoAdminAggregate.NgoAdmin> repository)
-    {
-        _repository = repository;
-    }
-
     public override void Configure()
     {
         Get("/api/ngos/{ngoId}/admins");
@@ -22,8 +16,8 @@ public class Endpoint : Endpoint<Request, Results<Ok<PagedResponse<NgoAdminModel
     public override async Task<Results<Ok<PagedResponse<NgoAdminModel>>, ProblemDetails>> ExecuteAsync(Request req, CancellationToken ct)
     {
         var specification = new ListNgoAdminsSpecification(req);
-        var admins = await _repository.ListAsync(specification, ct);
-        var adminsCount = await _repository.CountAsync(specification, ct);
+        var admins = await repository.ListAsync(specification, ct);
+        var adminsCount = await repository.CountAsync(specification, ct);
 
         var result = admins.Select(x => new NgoAdminModel
         {

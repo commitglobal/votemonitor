@@ -2,7 +2,7 @@
 
 namespace Vote.Monitor.Api.Feature.NgoAdmin.Get;
 
-public class Endpoint(IRepository<Domain.Entities.NgoAdminAggregate.NgoAdmin> _repository) : Endpoint<Request, Results<Ok<NgoAdminModel>, NotFound>>
+public class Endpoint(IRepository<NgoAdminAggregate> _repository) : Endpoint<Request, Results<Ok<NgoAdminModel>, NotFound>>
 {
     public override void Configure()
     {

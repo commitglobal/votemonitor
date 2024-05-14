@@ -10,7 +10,7 @@ public class FormsSeeder
 {
     public static async Task<List<UpdateFormResponse>> Seed(INgoAdminApi ngoAdminApi,
         LoginResponse ngoAdminToken,
-        Guid electionRoundId,
+        string electionRoundId,
         ProgressTask progressTask)
     {
         progressTask.StartTask();

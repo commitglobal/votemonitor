@@ -1,24 +1,21 @@
 ﻿using Bogus;
 using SubmissionsFaker.Clients.MonitoringObserver.Models;
-using SubmissionsFaker.Clients.NgoAdmin.Models;
-using SubmissionsFaker.Clients.PollingStations;
-using SubmissionsFaker.Clients.Token;
 
 namespace SubmissionsFaker.Fakers;
 
 public sealed class AttachmentFaker : Faker<AttachmentRequest>
 {
-    public AttachmentFaker(List<UpdateFormResponse> forms, List<LocationNode> pollingStations, List<LoginResponse> observers)
+    public AttachmentFaker(List<SubmissionRequest> submissions)
     {
-        RuleFor(x => x.PollingStationId, f => f.PickRandom(pollingStations).PollingStationId!);
         Rules((f, x) =>
         {
-            var form = f.PickRandom(forms);
+            var submission = f.PickRandom(submissions);
 
-            x.FormId = form.Id;
-            x.QuestionId = f.PickRandom(form.Questions).Id;
+            x.Id = f.Random.Guid();
+            x.FormId = submission.FormId;
+            x.QuestionId = f.PickRandom(submission.Answers).QuestionId;
+            x.PollingStationId = submission.PollingStationId;
+            x.ObserverToken = submission.ObserverToken;
         });
-        RuleFor(x => x.Id, f => f.Random.Guid());
-        RuleFor(x => x.ObserverToken, f=>f.PickRandom(observers).Token);
     }
 }

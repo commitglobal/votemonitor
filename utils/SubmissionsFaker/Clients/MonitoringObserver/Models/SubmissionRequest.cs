@@ -1,13 +1,11 @@
-﻿using Bogus.DataSets;
-
-namespace SubmissionsFaker.Clients.MonitoringObserver.Models;
+﻿namespace SubmissionsFaker.Clients.MonitoringObserver.Models;
 
 public class SubmissionRequest
 {
     public string ObserverToken { get; set; }
     public Guid PollingStationId { get; set; }
 
-    public Guid FormId { get; set; }
+    public string FormId { get; set; }
     public List<BaseAnswerRequest> Answers { get; set; } = [];
 
 
