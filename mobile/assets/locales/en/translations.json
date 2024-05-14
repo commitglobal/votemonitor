@@ -143,7 +143,7 @@
     "questions": {
       "title": "Intrebari",
       "not_asnwered": "Not Answered",
-      "asnwered": "Answered",
+      "answered": "Answered",
       "no_notes": "No attached notes",
       "notes": "Includes attached notes"
     }

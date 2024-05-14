@@ -143,7 +143,7 @@
     "questions": {
       "title": "Intrebari",
       "not_answered": "Fara raspuns",
-      "asnwered": "Raspuns",
+      "answered": "Raspuns",
       "no_notes": "Nu exista fisiere atasate",
       "notes": "Include fisiere atasate"
     }
