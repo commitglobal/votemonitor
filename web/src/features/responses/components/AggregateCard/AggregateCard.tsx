@@ -1,33 +1,36 @@
-import { Square2StackIcon } from '@heroicons/react/24/solid';
-import { useLoaderData } from '@tanstack/react-router';
-import { useRef } from 'react';
-import type { FunctionComponent } from '@/common/types';
 import { saveChart } from '@/components/charts/utils/save-chart';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Square2StackIcon } from '@heroicons/react/24/solid';
+import { useLoaderData } from '@tanstack/react-router';
+import { useRef } from 'react';
+
 import {
-  type BaseQuestionAggregate,
+  BaseQuestionAggregate,
   isDateAggregate,
   isMultiSelectAggregate,
   isNumberAggregate,
   isRatingAggregate,
   isSingleSelectAggregate,
   isTextAggregate,
+  Responder,
 } from '../../models/form-aggregated';
 import { DateAggregateContent } from '../DateAggregateContent/DateAggregateContent';
 import { MultiSelectAggregateContent } from '../MultiSelectAggregateContent/MultiSelectAggregateContent';
 import { NumberAggregateContent } from '../NumberAggregateContent/NumberAggregateContent';
+import { QuestionExtraDataSection } from '../QuestionExtraDataSection/QuestionExtraDataSection';
 import { RatingAggregateContent } from '../RatingAggregateContent/RatingAggregateContent';
 import { SingleSelectAggregateContent } from '../SingleSelectAggregateContent/SingleSelectAggregateContent';
 import { TextAggregateContent } from '../TextAggregateContent/TextAggregateContent';
-import { QuestionExtraDataSection } from '../QuestionExtraDataSection/QuestionExtraDataSection';
 
+import type { FunctionComponent } from '@/common/types';
 type AggregateCardProps = {
   aggregate: BaseQuestionAggregate;
   language: string;
+  responders: Record<string, Responder>;
 };
 
-export function AggregateCard({ aggregate, language }: AggregateCardProps): FunctionComponent {
+export function AggregateCard({ aggregate, language, responders }: AggregateCardProps): FunctionComponent {
   const chartRef = useRef(null);
 
   const formSubmission = useLoaderData({ from: '/responses/$formId/aggregated' });
@@ -40,7 +43,7 @@ export function AggregateCard({ aggregate, language }: AggregateCardProps): Func
       <CardHeader>
         <CardTitle className='text-xl flex justify-between items-center'>
           {aggregate.question.code}. {aggregate.question.text[language]}
-          {!isTextAggregate(aggregate) && !isRatingAggregate(aggregate) && (
+          {!isTextAggregate(aggregate) && !isNumberAggregate(aggregate) && (
             <Button
               className='gap-1'
               onClick={() => {
@@ -63,13 +66,13 @@ export function AggregateCard({ aggregate, language }: AggregateCardProps): Func
 
         {isNumberAggregate(aggregate) && <NumberAggregateContent ref={chartRef} aggregate={aggregate} />}
 
-        {isRatingAggregate(aggregate) && <RatingAggregateContent aggregate={aggregate} />}
+        {isRatingAggregate(aggregate) && <RatingAggregateContent ref={chartRef} aggregate={aggregate} />}
 
         {isSingleSelectAggregate(aggregate) && (
           <SingleSelectAggregateContent ref={chartRef} aggregate={aggregate} language={language} />
         )}
 
-        {isTextAggregate(aggregate) && <TextAggregateContent aggregate={aggregate} />}
+        {isTextAggregate(aggregate) && <TextAggregateContent aggregate={aggregate} responders={responders} />}
 
         {(notes.length > 0 || attachments.length > 0) && (
           <QuestionExtraDataSection attachments={attachments} notes={notes} />

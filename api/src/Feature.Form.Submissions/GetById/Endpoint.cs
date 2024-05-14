@@ -53,14 +53,14 @@ public class Endpoint(IDbConnection dbConnection, IFileStorageService fileStorag
                fs.""Answers"",
                f.""Questions"",
                f.""DefaultLanguage"",
-            COALESCE((select jsonb_build_array(jsonb_build_object('QuestionId', ""QuestionId"", 'FileName', ""FileName"", 'MimeType', ""MimeType"", 'FilePath', ""FilePath"", 'UploadedFileName', ""UploadedFileName"", 'TimeSubmitted', COALESCE(""LastModifiedOn"", ""CreatedOn"")))
+            COALESCE((select jsonb_agg(jsonb_build_object('QuestionId', ""QuestionId"", 'FileName', ""FileName"", 'MimeType', ""MimeType"", 'FilePath', ""FilePath"", 'UploadedFileName', ""UploadedFileName"", 'TimeSubmitted', COALESCE(""LastModifiedOn"", ""CreatedOn"")))
              FROM ""Attachments"" a
              WHERE a.""ElectionRoundId"" = @electionRoundId
                  AND a.""FormId"" = fs.""FormId""
                  AND a.""MonitoringObserverId"" = fs.""MonitoringObserverId""
                  AND fs.""PollingStationId"" = a.""PollingStationId""),'[]'::JSONB) AS ""Attachments"",
 
-            COALESCE((select jsonb_build_array(jsonb_build_object('QuestionId', ""QuestionId"", 'Text', ""Text"", 'TimeSubmitted', COALESCE(""LastModifiedOn"", ""CreatedOn"")))
+            COALESCE((select jsonb_agg(jsonb_build_object('QuestionId', ""QuestionId"", 'Text', ""Text"", 'TimeSubmitted', COALESCE(""LastModifiedOn"", ""CreatedOn"")))
              FROM ""Notes"" n
              WHERE n.""ElectionRoundId"" = @electionRoundId
                  AND n.""FormId"" = fs.""FormId""

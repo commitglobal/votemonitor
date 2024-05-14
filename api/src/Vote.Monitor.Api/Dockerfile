@@ -31,7 +31,7 @@ COPY ["src/Vote.Monitor.Api.Feature.Language/Vote.Monitor.Api.Feature.Language.c
 COPY ["src/Vote.Monitor.Api.Feature.Monitoring/Vote.Monitor.Api.Feature.Monitoring.csproj", "src/Vote.Monitor.Api.Feature.Monitoring/"]
 COPY ["src/Vote.Monitor.Api.Feature.NgoAdmin/Vote.Monitor.Api.Feature.NgoAdmin.csproj", "src/Vote.Monitor.Api.Feature.NgoAdmin/"]
 COPY ["src/Vote.Monitor.Api.Feature.Ngo/Vote.Monitor.Api.Feature.Ngo.csproj", "src/Vote.Monitor.Api.Feature.Ngo/"]
-COPY ["src/Vote.Monitor.Api.Feature.Notifications/Vote.Monitor.Api.Feature.Notifications.csproj", "src/Vote.Monitor.Api.Feature.Notifications/"]
+COPY ["src/Feature.Notifications/Feature.Notifications.csproj", "src/Feature.Notifications/"]
 COPY ["src/Vote.Monitor.Module.Notifications/Vote.Monitor.Module.Notifications.csproj", "src/Vote.Monitor.Module.Notifications/"]
 COPY ["src/Vote.Monitor.Api.Feature.Observer/Vote.Monitor.Api.Feature.Observer.csproj", "src/Vote.Monitor.Api.Feature.Observer/"]
 COPY ["src/Feature.Attachments/Feature.Attachments.csproj", "src/Feature.Attachments/"]
