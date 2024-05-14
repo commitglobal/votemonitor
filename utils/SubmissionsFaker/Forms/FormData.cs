@@ -167,7 +167,7 @@ public class FormData
                     }
 
             },
-            new MultiSelectQuestionRequest()
+            new MultiSelectQuestionRequest
             {
                 Id = Guid.NewGuid(),
                 Code = "B2",
