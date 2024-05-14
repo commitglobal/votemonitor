@@ -27,13 +27,13 @@ type UserContextType = {
   isLoading: boolean;
 
   error: Error | null;
-  setSelectedPollingStationId: (pollingStationId: string) => void;
+  setSelectedPollingStationId: (pollingStationId: string | null) => void;
 };
 
 export const UserContext = createContext<UserContextType | null>(null);
 
 const UserContextProvider = ({ children }: React.PropsWithChildren) => {
-  const [selectedPollingStationId, setSelectedPollingStationId] = useState<string>();
+  const [selectedPollingStationId, setSelectedPollingStationId] = useState<string | null>();
 
   const {
     data: rounds,

@@ -44,9 +44,9 @@
       "eas": {
         "projectId": "93e17628-ddcd-4e67-849c-b356a18a6082"
       },
-      "message": "Display forms when adding new polling station offline",
-      "updateCritical": 7,
-      "updateVersion": 7
+      "message": "User is not redirected correctly when adding the same polling station twice",
+      "updateCritical": 8,
+      "updateVersion": 8
     },
     "owner": "commit-global",
     "runtimeVersion": {
