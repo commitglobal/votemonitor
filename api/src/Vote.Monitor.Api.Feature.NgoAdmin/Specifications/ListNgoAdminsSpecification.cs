@@ -7,6 +7,7 @@ public sealed class ListNgoAdminsSpecification : Specification<NgoAdminAggregate
     public ListNgoAdminsSpecification(List.Request request)
     {
         Query
+            .Where(x => x.NgoId == request.NgoId)
             .Include(x => x.ApplicationUser)
             .Search(x => x.ApplicationUser.FirstName, "%" + request.NameFilter + "%", !string.IsNullOrEmpty(request.NameFilter))
             .Search(x => x.ApplicationUser.LastName, "%" + request.NameFilter + "%", !string.IsNullOrEmpty(request.NameFilter))

@@ -6,10 +6,10 @@ using Spectre.Console;
 using SubmissionsFaker;
 using SubmissionsFaker.Clients.Models;
 using SubmissionsFaker.Clients.MonitoringObserver;
-using SubmissionsFaker.Clients.MonitoringObserver.Models;
 using SubmissionsFaker.Clients.NgoAdmin;
 using SubmissionsFaker.Clients.NgoAdmin.Models;
 using SubmissionsFaker.Clients.PlatformAdmin;
+using SubmissionsFaker.Clients.PlatformAdmin.Models;
 using SubmissionsFaker.Clients.PollingStations;
 using SubmissionsFaker.Clients.Token;
 using SubmissionsFaker.Fakers;
@@ -116,7 +116,7 @@ await AnsiConsole.Progress()
         await platformAdminApi.CreateNgoAdmin(ngoAdmin, ngo.Id, platformAdminToken.Token);
         setupTask.Increment(1);
 
-        ngoAdminToken = await tokenApi.GetToken(new Credentials(ngoAdmin.Email, ngoAdmin.Password));
+        ngoAdminToken = await tokenApi.GetToken(new Credentials(ngoAdminUsername, ngoAdminPassword));
         setupTask.Increment(1);
 
         using var pollingStationsStream = File.OpenRead("polling-stations.csv");
@@ -179,6 +179,21 @@ await AnsiConsole.Progress()
         }
     });
 
+var submissionRequests = new SubmissionFaker(formIds, pollingStations, observersTokens)
+    .GenerateUnique(NUMBER_OF_SUBMISSIONS);
+
+var noteRequests = new NoteFaker(submissionRequests)
+    .Generate(NUMBER_OF_NOTES);
+
+var attachmentRequests = new AttachmentFaker(submissionRequests)
+    .Generate(NUMBER_OF_ATTACHMENTS);
+
+var quickReportRequests = new QuickReportFaker(pollingStations, observersTokens)
+    .Generate(NUMBER_OF_QUICK_REPORTS);
+
+var quickReportAttachmentRequests = new QuickReportAttachmentFaker(quickReportRequests)
+    .GenerateUnique(NUMBER_OF_QUICK_REPORTS_ATTACHMENTS);
+
 await AnsiConsole.Progress()
     .AutoRefresh(true)
     .AutoClear(false)
@@ -187,9 +202,6 @@ await AnsiConsole.Progress()
     .StartAsync(async ctx =>
     {
         var progressTask = ctx.AddTask("[green]Faking submissions [/]", maxValue: NUMBER_OF_SUBMISSIONS);
-        var submissionRequests = new SubmissionFaker(formIds, pollingStations, observersTokens)
-            .GenerateUnique(NUMBER_OF_SUBMISSIONS);
-
         foreach (var submissionRequestChunk in submissionRequests.Chunk(25))
         {
             var tasks = submissionRequestChunk.Select(sr => observerApi.SubmitForm(electionRound.Id, sr, sr.ObserverToken));
@@ -207,8 +219,6 @@ await AnsiConsole.Progress()
     .StartAsync(async ctx =>
     {
         var progressTask = ctx.AddTask("[green]Faking notes[/]", maxValue: NUMBER_OF_NOTES);
-        var noteRequests = new NoteFaker(formIds, pollingStations, observersTokens)
-            .Generate(NUMBER_OF_NOTES);
 
         foreach (var notesChunk in noteRequests.Chunk(25))
         {
@@ -226,8 +236,6 @@ await AnsiConsole.Progress()
     .StartAsync(async ctx =>
     {
         var progressTask = ctx.AddTask("[green]Faking attachments[/]", maxValue: NUMBER_OF_ATTACHMENTS);
-        var attachmentRequests = new AttachmentFaker(formIds, pollingStations, observersTokens)
-            .Generate(NUMBER_OF_ATTACHMENTS);
 
         foreach (var ar in attachmentRequests)
         {
@@ -245,10 +253,6 @@ await AnsiConsole.Progress()
         }
     });
 
-
-
-List<QuickReportRequest> quickReports = [];
-
 await AnsiConsole.Progress()
     .AutoRefresh(true)
     .AutoClear(false)
@@ -258,17 +262,12 @@ await AnsiConsole.Progress()
     {
         var progressTask = ctx.AddTask("[green]Faking quick reports[/]", maxValue: NUMBER_OF_QUICK_REPORTS);
 
-        var quickReportRequests = new QuickReportFaker(pollingStations, observersTokens)
-            .Generate(NUMBER_OF_QUICK_REPORTS);
-
         foreach (var quickReportChunk in quickReportRequests.Chunk(25))
         {
             var tasks = quickReportChunk.Select(qr => observerApi.SubmitQuickReport(electionRound.Id, qr, qr.ObserverToken));
             await Task.WhenAll(tasks);
             progressTask.Increment(25);
         }
-
-        quickReports.AddRange(quickReportRequests);
     });
 
 await AnsiConsole.Progress()
@@ -279,9 +278,6 @@ await AnsiConsole.Progress()
     .StartAsync(async ctx =>
     {
         var progressTask = ctx.AddTask("[green]Faking quick report attachments[/]", maxValue: NUMBER_OF_QUICK_REPORTS_ATTACHMENTS);
-
-        var quickReportAttachmentRequests = new QuickReportAttachmentFaker(quickReports, observersTokens)
-            .GenerateUnique(NUMBER_OF_QUICK_REPORTS_ATTACHMENTS);
 
         foreach (var qar in quickReportAttachmentRequests)
         {

@@ -1,5 +1,5 @@
 ﻿using Bogus;
-using SubmissionsFaker.Clients.PlatformAdmin;
+using SubmissionsFaker.Clients.PlatformAdmin.Models;
 
 namespace SubmissionsFaker.Fakers;
 

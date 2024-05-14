@@ -1,4 +1,4 @@
-﻿namespace SubmissionsFaker.Clients.PlatformAdmin;
+﻿namespace SubmissionsFaker.Clients.PlatformAdmin.Models;
 
 public record Ngo
 {

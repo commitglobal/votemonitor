@@ -1,4 +1,4 @@
-﻿namespace SubmissionsFaker.Clients.PlatformAdmin;
+﻿namespace SubmissionsFaker.Clients.PlatformAdmin.Models;
 
-public record AssignNgoRequest(Guid NgoId);
-public record AssignObserverRequest(Guid ObserverId);
+public record AssignNgoRequest(string NgoId);
+public record AssignObserverRequest(string ObserverId);
