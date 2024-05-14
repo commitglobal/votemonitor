@@ -130,6 +130,9 @@
     "form_overview": {
       "title": "Informații formular",
       "status": "Statusul formularului",
+      "not_started": "Neinceput",
+      "in_progress": "In desfasurare",
+      "completed": "Completat",
       "answered_questions": "Întrebări completate",
       "resume": "Reia formularul",
       "start_form": "Incepe formularul",

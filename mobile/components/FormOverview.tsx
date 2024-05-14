@@ -34,7 +34,7 @@ const FormOverview = ({
         <YStack gap="$sm">
           <Typography fontWeight="500" color="$gray5">
             {t("form_overview.status")}:{" "}
-            <Typography fontWeight="700">{FormStateToTextMapper[formStatus]}</Typography>
+            <Typography fontWeight="700">{FormStateToTextMapper(t)[formStatus]}</Typography>
           </Typography>
           <Typography fontWeight="500" color="$gray5">
             {t("form_overview.answered_questions")}:{" "}

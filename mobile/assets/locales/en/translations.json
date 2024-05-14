@@ -130,6 +130,9 @@
     "form_overview": {
       "title": "Form Overview",
       "status": "Form status",
+      "not_started": "Not started",
+      "in_progress": "In progress",
+      "completed": "Completed",
       "answered_questions": "Answered questions",
       "resume": "Resume form",
       "start_form": "Start form",
