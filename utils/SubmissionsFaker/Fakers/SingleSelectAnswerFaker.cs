@@ -19,7 +19,7 @@ public sealed class SingleSelectAnswerFaker : Faker<SingleSelectAnswerRequest>
                 text = f.Lorem.Sentence(100);
             }
 
-            var selection = new SelectedOptionRequest() { OptionId = selectedOption.Id, Text = text };
+            var selection = new SelectedOptionRequest { OptionId = selectedOption.Id, Text = text };
             return selection;
         });
     }
