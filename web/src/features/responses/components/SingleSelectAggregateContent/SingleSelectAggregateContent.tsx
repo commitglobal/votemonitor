@@ -1,13 +1,13 @@
-import { FlagIcon } from '@heroicons/react/24/solid';
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+import { round } from '@/lib/utils';
+import { ArcElement, Chart as ChartJS, Legend, Tooltip } from 'chart.js';
 import { forwardRef } from 'react';
 import { Pie } from 'react-chartjs-2';
-import type { ChartJSOrUndefined } from 'node_modules/react-chartjs-2/dist/types';
-import type { FunctionComponent } from '@/common/types';
-import { cn, round } from '@/lib/utils';
-import type { SingleSelectQuestionAggregate } from '../../models/form-aggregated';
+
 import { getColorsForSelectChart } from '../../utils/chart-colors';
 
+import type { ChartJSOrUndefined } from 'node_modules/react-chartjs-2/dist/types';
+import type { FunctionComponent } from '@/common/types';
+import type { SingleSelectQuestionAggregate } from '../../models/form-aggregated';
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 type SingleSelectAggregateContentProps = {

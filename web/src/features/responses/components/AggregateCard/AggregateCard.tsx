@@ -64,7 +64,7 @@ export function AggregateCard({ aggregate, language, responders }: AggregateCard
           <MultiSelectAggregateContent ref={chartRef} aggregate={aggregate} language={language} />
         )}
 
-        {isNumberAggregate(aggregate) && <NumberAggregateContent ref={chartRef} aggregate={aggregate} />}
+        {isNumberAggregate(aggregate) && <NumberAggregateContent aggregate={aggregate} />}
 
         {isRatingAggregate(aggregate) && <RatingAggregateContent ref={chartRef} aggregate={aggregate} />}
 
