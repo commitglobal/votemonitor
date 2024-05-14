@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { Slot, SplashScreen, useNavigationContainerRef } from "expo-router";
 import AuthContextProvider from "../contexts/auth/AuthContext.provider";
 import { TamaguiProvider } from "@tamagui/core";
-import { ToastProvider } from "@tamagui/toast";
 import { tamaguiConfig } from "../tamagui.config";
 import { useFonts } from "expo-font";
 import "../common/config/i18n";
@@ -14,6 +13,8 @@ import NetInfoBanner from "../components/NetInfoBanner";
 import { EasUpdateMonitorContextProvider } from "../contexts/eas-update/EasUpdateMonitorContextProvider";
 import * as Sentry from "@sentry/react-native";
 import { isRunningInExpoGo } from "expo";
+import Toast from "react-native-toast-message";
+import { toastConfig } from "../toast.config";
 
 // Construct a new instrumentation instance. This is needed to communicate between the integration and React
 const routingInstrumentation = new Sentry.ReactNavigationInstrumentation();
@@ -72,22 +73,21 @@ function RootLayout() {
 
   return (
     <TamaguiProvider config={tamaguiConfig}>
-      <ToastProvider>
-        <NetInfoProvider>
-          <PortalProvider>
-            <AuthContextProvider>
-              <PersistQueryContextProvider>
-                <LanguageContextProvider>
-                  <EasUpdateMonitorContextProvider>
-                    <Slot />
-                    <NetInfoBanner />
-                  </EasUpdateMonitorContextProvider>
-                </LanguageContextProvider>
-              </PersistQueryContextProvider>
-            </AuthContextProvider>
-          </PortalProvider>
-        </NetInfoProvider>
-      </ToastProvider>
+      <NetInfoProvider>
+        <PortalProvider>
+          <AuthContextProvider>
+            <PersistQueryContextProvider>
+              <LanguageContextProvider>
+                <EasUpdateMonitorContextProvider>
+                  <Slot />
+                  <Toast config={toastConfig} position="top" />
+                  <NetInfoBanner />
+                </EasUpdateMonitorContextProvider>
+              </LanguageContextProvider>
+            </PersistQueryContextProvider>
+          </AuthContextProvider>
+        </PortalProvider>
+      </NetInfoProvider>
     </TamaguiProvider>
   );
 }
