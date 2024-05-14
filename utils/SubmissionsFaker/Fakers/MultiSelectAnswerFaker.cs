@@ -9,7 +9,6 @@ public sealed class MultiSelectAnswerFaker : Faker<MultiSelectAnswerRequest>
     public MultiSelectAnswerFaker(Guid questionId, List<SelectOptionRequest> options)
     {
         RuleFor(x => x.QuestionId, questionId);
-
         RuleFor(x => x.Selection, f =>
         {
             var optionsToPick = f.Random.Number(1, options.Count);
@@ -25,7 +24,7 @@ public sealed class MultiSelectAnswerFaker : Faker<MultiSelectAnswerRequest>
                     text = FakerHub.Lorem.Sentence(100);
                 }
 
-                selection.Add(new SelectedOptionRequest() { OptionId = selectedOption.Id, Text = text });
+                selection.Add(new SelectedOptionRequest { OptionId = selectedOption.Id, Text = text });
             }
 
             return selection;

@@ -155,7 +155,7 @@ public class PSIFormData
                     }
 
             },
-            new MultiSelectQuestionRequest()
+            new MultiSelectQuestionRequest
             {
                 Id = Guid.NewGuid(),
                 Code = "B2",
