@@ -54,6 +54,7 @@ export const PollingStationGeneral: React.FC<PollingStationGeneralProps> = ({
           <TimeSelect
             type="arrival"
             time={psi?.arrivalTime ? new Date(psi.arrivalTime) : undefined}
+            departureTime={psi?.departureTime ? new Date(psi?.departureTime) : undefined}
             setTime={(data: Date) =>
               updateArrivalDepartureTime({
                 arrivalTime: data?.toISOString(),
@@ -66,6 +67,7 @@ export const PollingStationGeneral: React.FC<PollingStationGeneralProps> = ({
           <TimeSelect
             type="departure"
             time={psi?.departureTime ? new Date(psi?.departureTime) : undefined}
+            arrivalTime={psi?.arrivalTime ? new Date(psi.arrivalTime) : undefined}
             setTime={(data: Date) =>
               updateArrivalDepartureTime({
                 departureTime: data?.toISOString(),

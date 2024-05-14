@@ -1,6 +1,25 @@
 import { skipToken, useQuery } from "@tanstack/react-query";
-import { pollingStationsKeys } from "../queries.service";
 import { AttachmentApiResponse, getAttachments } from "../api/get-attachments.api";
+
+export const AttachmentsKeys = {
+  all: ["attachments"] as const,
+  attachments: (
+    electionRoundId: string | undefined,
+    pollingStationId: string | undefined,
+    formId: string | undefined,
+  ) =>
+    [
+      ...AttachmentsKeys.all,
+      "electionRoundId",
+      electionRoundId,
+      "pollingStationId",
+      pollingStationId,
+      "formId",
+      formId,
+    ] as const,
+  addAttachmentMutation: () => [...AttachmentsKeys.all, "add"] as const,
+  deleteAttachment: () => [...AttachmentsKeys.all, "delete"] as const,
+};
 
 // TODO: make generic fn
 const mapAttachmentsToQuestionId = (attachments: AttachmentApiResponse[]) => {
@@ -22,7 +41,7 @@ export const useAttachments = (
   formId: string | undefined,
 ) => {
   return useQuery({
-    queryKey: pollingStationsKeys.attachments(electionRoundId, pollingStationId, formId),
+    queryKey: AttachmentsKeys.attachments(electionRoundId, pollingStationId, formId),
     queryFn:
       electionRoundId && pollingStationId && formId
         ? () => getAttachments({ electionRoundId, pollingStationId, formId })

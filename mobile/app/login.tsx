@@ -73,7 +73,9 @@ const Login = () => {
         <LoginForm control={control} errors={errors} authError={authError} />
       </YStack>
       <Card width="100%" paddingBottom={16 + insets.bottom} marginTop="auto">
-        <Button onPress={handleSubmit(onLogin)} disabled={isLoading}>{isLoading ? 'Log in...' : 'Log in'}</Button>
+        <Button onPress={handleSubmit(onLogin)} disabled={isLoading}>
+          {isLoading ? "Log in..." : "Log in"}
+        </Button>
       </Card>
     </Screen>
   );

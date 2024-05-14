@@ -36,18 +36,21 @@ export const useDeleteNote = (
       });
 
       // Need to remove the CREATE mutation if the Note was not synched yet
-      // TODO: need to send the ID from Frontend to be able to remove it
-      // if (payload.isNotSynched) {
-      //   queryClient
-      //     .getMutationCache()
-      //     .findAll({
-      //       mutationKey: notesKeys.all,
-      //     })
-      //     .filter((mutation) => {
-      //       console.log("✅ Mutation ", mutation);
-      //       return true;
-      //     });
-      // }
+      if (payload.isNotSynched) {
+        const mutationsToRemove = queryClient
+          .getMutationCache()
+          .findAll({
+            mutationKey: notesKeys.all, // matching ['notes', 'add' | 'update' | 'delete']
+          })
+          .filter((mutation) => {
+            // @ts-ignore
+            return mutation?.state?.variables?.id === payload.id;
+          });
+
+        for (const mutationToRemove of mutationsToRemove) {
+          queryClient.getMutationCache().remove(mutationToRemove);
+        }
+      }
 
       // Return a context object with the snapshotted value
       return { prevNotes };

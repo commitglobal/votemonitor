@@ -25,7 +25,6 @@ export const useMutatePollingStationGeneralData = ({
 
   return useMutation({
     mutationKey: [pollingStationsKeys.mutatePollingStationGeneralData()],
-    // mutationFn is set as default // TODO do for all
     scope: {
       id: scopeId,
     },

@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { notesKeys } from "../queries.service";
-import { addNote, NotePayload } from "../definitions.api";
+import { upsertNote, UpsertNotePayload } from "../definitions.api";
 import { Note } from "../../common/models/note";
 
 export const useAddNoteMutation = (
@@ -23,10 +23,10 @@ export const useAddNoteMutation = (
     scope: {
       id: scopeId,
     },
-    mutationFn: async (payload: NotePayload) => {
-      return addNote(payload);
+    mutationFn: async (payload: UpsertNotePayload) => {
+      return upsertNote(payload);
     },
-    onMutate: async (payload: NotePayload) => {
+    onMutate: async (payload: UpsertNotePayload) => {
       // Cancel any outgoing refetches
       // (so they don't overwrite our optimistic update)
       await queryClient.cancelQueries({ queryKey: getNotesQK });
