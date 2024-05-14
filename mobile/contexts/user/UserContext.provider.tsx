@@ -17,7 +17,7 @@ import { ElectionRoundVM } from "../../common/models/election-round.model";
 import { skipToken, useQueries } from "@tanstack/react-query";
 import LoadingScreen from "../../components/LoadingScreen";
 import GenericErrorScreen from "../../components/GenericErrorScreen";
-import { getElectionRoundAllForms, getFormSubmissions } from "../../services/definitions.api";
+import { getElectionRoundAllForms } from "../../services/definitions.api";
 import { formSubmissionsQueryFn } from "../../services/queries/form-submissions.query";
 
 type UserContextType = {

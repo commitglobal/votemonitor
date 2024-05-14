@@ -44,9 +44,9 @@
       "eas": {
         "projectId": "93e17628-ddcd-4e67-849c-b356a18a6082"
       },
-      "message": "Preload form submissions",
-      "updateCritical": 9,
-      "updateVersion": 9
+      "message": "Fix optimistic update for form submissions",
+      "updateCritical": 10,
+      "updateVersion": 10
     },
     "owner": "commit-global",
     "runtimeVersion": {
