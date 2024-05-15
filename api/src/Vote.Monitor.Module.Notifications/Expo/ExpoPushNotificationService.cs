@@ -48,21 +48,29 @@ public class ExpoPushNotificationService(
                         };
 
                         var response = await expoApi.SendNotificationAsync(request).ConfigureAwait(false);
-
-                        if (response.ErrorInformation != null && response.ErrorInformation.Any())
+                        if (response.IsSuccessStatusCode)
                         {
-                            logger.LogError("Error received when sending push notification {@request} {@error}",
-                                request, response.ErrorInformation);
+                            if (response.Content.PushTicketErrors != null && response.Content.PushTicketErrors.Any())
+                            {
+                                logger.LogError("Error received when sending push notification {@request} {@response}",
+                                    request, response);
+
+                                failedCount += identifiersBatch.Length;
+                                continue;
+                            }
+
+                            var serializedData = serializerService.Serialize(response.Content);
+
+                            context.NotificationStubs.Add(NotificationStub.CreateExpoNotificationStub(serializedData));
+                            context.SaveChanges();
+                            successCount += identifiersBatch.Length;
+                        }
+                        else
+                        {
+                            logger.LogError("Error received in expo response {@request} {@response}", request, response);
 
                             failedCount += identifiersBatch.Length;
-                            continue;
                         }
-
-                        var serializedData = serializerService.Serialize(response);
-
-                        context.NotificationStubs.Add(NotificationStub.CreateExpoNotificationStub(serializedData));
-
-                        successCount += identifiersBatch.Length;
                     }
                 }
             }

@@ -22,7 +22,7 @@ const Layout = ({ title, subtitle, actions, backButton, breadcrumbs, children }:
             {backButton || <BackButton />}
             {title}
           </h1>
-          {subtitle ?? <h3 className='text-lg font-light	'>{subtitle}</h3>}
+          {subtitle ?? <h3 className='text-lg font-light'>{subtitle}</h3>}
 
           {!!actions && <div className='flex shrink-0'>{actions}</div>}
         </div>

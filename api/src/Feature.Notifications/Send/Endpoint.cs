@@ -1,4 +1,5 @@
-﻿using Feature.Notifications.Specifications;
+﻿using Authorization.Policies;
+using Feature.Notifications.Specifications;
 using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 using Vote.Monitor.Domain.Entities.NotificationTokenAggregate;
 using Vote.Monitor.Module.Notifications.Contracts;
@@ -16,6 +17,7 @@ public class Endpoint(IRepository<NotificationAggregate> repository,
         Post("/api/election-rounds/{electionRoundId}/notifications:send");
         DontAutoTag();
         Options(x => x.WithTags("notifications"));
+        Policies(PolicyNames.NgoAdminsOnly);
     }
 
     public override async Task<Results<Ok<Response>, ProblemHttpResult>> ExecuteAsync(Request req, CancellationToken ct)
