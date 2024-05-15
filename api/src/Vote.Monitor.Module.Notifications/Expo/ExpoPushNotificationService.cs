@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Vote.Monitor.Core.Services.Serialization;
@@ -10,7 +11,7 @@ using Vote.Monitor.Module.Notifications.Expo.Models;
 namespace Vote.Monitor.Module.Notifications.Expo;
 
 public class ExpoPushNotificationService(
-    VoteMonitorContext context,
+    IServiceScopeFactory serviceScopeFactory,
     IExpoApi expoApi,
     ISerializerService serializerService,
     IOptions<ExpoOptions> options,
@@ -26,37 +27,43 @@ public class ExpoPushNotificationService(
             var successCount = 0;
             var failedCount = 0;
 
-            foreach (var identifiersBatch in userIdentifiers.Chunk(_options.BatchSize))
+            using (var scope = serviceScopeFactory.CreateScope())
             {
-                foreach (var userIdentifier in identifiersBatch)
+                var context = scope.ServiceProvider.GetRequiredService<VoteMonitorContext>();
+
+                foreach (var identifiersBatch in userIdentifiers.Chunk(_options.BatchSize))
                 {
-                    if (!IsExpoPushToken(userIdentifier))
+                    foreach (var userIdentifier in identifiersBatch)
                     {
-                        continue;
+                        if (!IsExpoPushToken(userIdentifier))
+                        {
+                            continue;
+                        }
+
+                        var request = new PushTicketRequest
+                        {
+                            PushTo = identifiersBatch.ToList(),
+                            PushTitle = title,
+                            PushBody = body
+                        };
+
+                        var response = await expoApi.SendNotificationAsync(request).ConfigureAwait(false);
+
+                        if (response.ErrorInformation != null && response.ErrorInformation.Any())
+                        {
+                            logger.LogError("Error received when sending push notification {@request} {@error}",
+                                request, response.ErrorInformation);
+
+                            failedCount += identifiersBatch.Length;
+                            continue;
+                        }
+
+                        var serializedData = serializerService.Serialize(response);
+
+                        context.NotificationStubs.Add(NotificationStub.CreateExpoNotificationStub(serializedData));
+
+                        successCount += identifiersBatch.Length;
                     }
-
-                    var request = new PushTicketRequest
-                    {
-                        PushTo = identifiersBatch.ToList(),
-                        PushTitle = title,
-                        PushBody = body
-                    };
-
-                    var response = await expoApi.SendNotificationAsync(request).ConfigureAwait(false);
-
-                    if (response.ErrorInformation != null && response.ErrorInformation.Any())
-                    {
-                        logger.LogError("Error received when sending push notification {@request} {@error}", request, response.ErrorInformation);
-
-                        failedCount += identifiersBatch.Length;
-                        continue;
-                    }
-
-                    var serializedData = serializerService.Serialize(response);
-
-                    context.NotificationStubs.Add(NotificationStub.CreateExpoNotificationStub(serializedData));
-                    successCount += identifiersBatch.Length;
-
                 }
             }
 
