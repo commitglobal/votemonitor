@@ -14,6 +14,7 @@ public record QuickReportModel
     public DateTime Timestamp { get; init; }
     public string Title { get; init; }
     public string Description { get; init; }
+    public Guid MonitoringObserverId { get; init; }
     public string FirstName { get; init; }
     public string LastName { get; init; }
     public Guid? PollingStationId { get; init; }
@@ -26,7 +27,7 @@ public record QuickReportModel
     public string? Address { get; init; }
     public string? PollingStationDetails { get; init; }
     public List<QuickReportAttachmentModel> Attachments { get; init; }
-    
+
     public static QuickReportModel FromEntity(QuickReport quickReport, IEnumerable<QuickReportAttachmentModel> attachments)
     {
         return new QuickReportModel
@@ -52,4 +53,5 @@ public record QuickReportModel
             Attachments = attachments.ToList()
         };
     }
+
 }
