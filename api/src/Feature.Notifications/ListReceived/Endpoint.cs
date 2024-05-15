@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using Authorization.Policies;
 using Dapper;
 
 namespace Feature.Notifications.ListReceived;
@@ -8,9 +9,10 @@ public class Endpoint(IDbConnection dbConnection) :
 {
     public override void Configure()
     {
-        Post("/api/election-rounds/{electionRoundId}/notifications:listReceived");
+        Get("/api/election-rounds/{electionRoundId}/notifications:listReceived");
         DontAutoTag();
         Options(x => x.WithTags("notifications", "mobile"));
+        Policies(PolicyNames.ObserversOnly);
     }
 
     public override async Task<Ok<Response>> ExecuteAsync(Request req, CancellationToken ct)

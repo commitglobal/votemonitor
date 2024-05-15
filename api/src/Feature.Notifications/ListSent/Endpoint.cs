@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using Authorization.Policies;
 using Dapper;
 
 namespace Feature.Notifications.ListSent;
@@ -7,9 +8,10 @@ public class Endpoint(IDbConnection dbConnection) : Endpoint<Request, Ok<Respons
 {
     public override void Configure()
     {
-        Post("/api/election-rounds/{electionRoundId}/notifications:listSent");
+        Get("/api/election-rounds/{electionRoundId}/notifications:listSent");
         DontAutoTag();
         Options(x => x.WithTags("notifications"));
+        Policies(PolicyNames.NgoAdminsOnly);
     }
 
     public override async Task<Ok<Response>> ExecuteAsync(Request req, CancellationToken ct)

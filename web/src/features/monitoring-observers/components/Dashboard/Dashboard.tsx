@@ -1,16 +1,12 @@
-import { type MonitoringObserver } from '../../models/MonitoringObserver';
-import { useState, type ReactElement, useRef } from 'react';
-import { type UseQueryResult, useQuery, useMutation } from '@tanstack/react-query';
-import { type DataTableParameters, type PageResponse } from '@/common/types';
 import { authApi } from '@/common/auth-api';
-import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
+import { DataTableParameters, PageResponse } from '@/common/types';
 import Layout from '@/components/layout/Layout';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import TableTagList from '@/components/table-tag-list/TableTagList';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { ColumnDef } from '@tanstack/react-table';
-import { EllipsisVerticalIcon, FunnelIcon, Cog8ToothIcon, ArrowDownTrayIcon } from '@heroicons/react/24/outline';
-import { X } from 'lucide-react';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
+import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -18,25 +14,24 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Separator } from '@/components/ui/separator';
-import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
-import { queryClient } from '@/main';
-import { useNavigate } from '@tanstack/react-router';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import TableTagList from '@/components/table-tag-list/TableTagList';
+import { Separator } from '@/components/ui/separator';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useDialog } from '@/components/ui/use-dialog';
+import { queryClient } from '@/main';
+import { Cog8ToothIcon, EllipsisVerticalIcon, FunnelIcon } from '@heroicons/react/24/outline';
+import { useMutation, useQuery, UseQueryResult } from '@tanstack/react-query';
+import { useNavigate } from '@tanstack/react-router';
+import { ColumnDef } from '@tanstack/react-table';
+import { X } from 'lucide-react';
+import { ReactElement, useRef, useState } from 'react';
+
+import { downloadImportExample } from '../../helpers';
+import { MonitoringObserver } from '../../models/MonitoringObserver';
+import { useTags } from '../../queries';
 import PushMessages from '../PushMessages/PushMessages';
-import { toast } from '@/components/ui/use-toast';
+import ImportMonitoringObserversDialog from './ImportMonitoringObserversDialog';
 
 export default function MonitoringObserversDashboard(): ReactElement {
   const monitoringObserverColDefs: ColumnDef<MonitoringObserver>[] = [
@@ -106,63 +101,14 @@ export default function MonitoringObserversDashboard(): ReactElement {
   ];
 
   const [searchText, setSearchText] = useState('');
-  const [fileName, setFileName] = useState('');
   const [isFiltering, setFiltering] = useState(false);
   const [statusFilter, setStatusFilter] = useState('');
   const [tagsFilter, setTagsFilter] = useState<string[]>([]);
-  const [isImportDialogOpen, setIsImportDialogOpen] = useState(false);
-  
+  const importMonitoringObserversDialog = useDialog();
+
   const navigate = useNavigate();
   const handleSearchInput = (ev: React.FormEvent<HTMLInputElement>) => {
     setSearchText(ev.currentTarget.value);
-  };
-
-  const hiddenFileInput: React.Ref<any> = useRef(null);
-
-  const handleClick = () => {
-    hiddenFileInput?.current?.click();
-  };
-
-
-  const importObserversMutation = useMutation({
-    mutationFn: () => {
-      const electionRoundId: string | null = localStorage.getItem('electionRoundId');
-      const monitoringNgoId: string | null = localStorage.getItem('monitoringNgoId');
-
-      // get the selected file from the input
-      const file = hiddenFileInput.current.files[0];
-      // create a new FormData object and append the file to it
-      const formData = new FormData();
-      formData.append("file", file);
-
-      return authApi.post(
-        `/election-rounds/${electionRoundId}/monitoring-ngos/${monitoringNgoId}/monitoring-observers:import`,
-        formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        }
-      });
-    },
-
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['monitoring-observers'] });
-      queryClient.invalidateQueries({ queryKey: ['tags'] });
-
-      toast({
-        title: 'Success',
-        description: 'Import was successful',
-      });
-    },
-  });
-
-  const handleImport = () => {
-    setIsImportDialogOpen(false);
-    importObserversMutation.mutate();
-  }
-
-  const handleChange = (event: any) => {
-    const fileUploaded = event.target.files[0];
-    setFileName(fileUploaded.name);
   };
 
   const handleDelete = (monitoringObserverId: string) => {
@@ -176,40 +122,7 @@ export default function MonitoringObserversDashboard(): ReactElement {
     navigate({ to: '/monitoring-observers/$monitoringObserverId/edit', params: { monitoringObserverId } });
   };
 
-  const downloadImportExample = async () => {
-    const res = await authApi.get('/monitoring-observers:import-template');
-    const csvData = res.data;
-
-    const blob = new Blob([csvData], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-
-    const a = document.createElement('a');
-    a.style.display = 'none';
-    a.href = url;
-    a.download = 'import-template.csv';
-
-    document.body.appendChild(a);
-    a.click();
-
-    window.URL.revokeObjectURL(url);
-  };
-
-  const { data } = useQuery({
-    queryKey: ['tags'],
-    queryFn: async () => {
-      const electionRoundId: string | null = localStorage.getItem('electionRoundId');
-      const monitoringNgoId: string | null = localStorage.getItem('monitoringNgoId');
-
-      const response = await authApi.get<{ tags: string[] }>(
-        `/election-rounds/${electionRoundId}/monitoring-ngos/${monitoringNgoId}/monitoring-observers:tags`
-      );
-
-      if (response.status !== 200) {
-        throw new Error('Failed to fetch monitoring observers');
-      }
-      return response.data;
-    },
-  });
+  const { data: tags } = useTags();
 
   const useMonitoringObservers = (p: DataTableParameters): UseQueryResult<PageResponse<MonitoringObserver>, Error> => {
     return useQuery({
@@ -310,78 +223,25 @@ export default function MonitoringObserversDashboard(): ReactElement {
               <div className='flex flex-row justify-between items-center px-6'>
                 <CardTitle className='text-xl'>Monitoring observers list</CardTitle>
                 <div className='table-actions flex flex-row-reverse flex-row- gap-4'>
-                  <Dialog open={isImportDialogOpen}>
-                    <DialogTrigger>
-                      <Button className='bg-purple-900 hover:bg-purple-600' onClick={()=>setIsImportDialogOpen(true)}>
-                        <svg
-                          className='mr-1.5'
-                          xmlns='http://www.w3.org/2000/svg'
-                          width='18'
-                          height='18'
-                          viewBox='0 0 18 18'
-                          fill='none'>
-                          <path
-                            d='M3 12L3 12.75C3 13.9926 4.00736 15 5.25 15L12.75 15C13.9926 15 15 13.9926 15 12.75L15 12M12 6L9 3M9 3L6 6M9 3L9 12'
-                            stroke='white'
-                            strokeWidth='2'
-                            strokeLinecap='round'
-                            strokeLinejoin='round'
-                          />
-                        </svg>
-                        Import observer list
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className='min-w-[650px]'>
-                      <DialogHeader>
-                        <DialogTitle className='mb-3.5'>Import monitoring observer list</DialogTitle>
-                        <Separator />
-                        <DialogDescription>
-                          <div className='mt-3.5 text-base'>
-                            In order to successfully import a list of monitoring observers, please use the template
-                            provided below. Download the template, fill it in with the observer information and then
-                            upload it. No other format is accepted for import.
-                          </div>
-                        </DialogDescription>
-                      </DialogHeader>
-                      <div className='flex flex-col gap-3'>
-                        <p className='text-sm text-gray-700'>
-                          Download template <span className='text-red-500'>*</span>
-                        </p>
-                        <div
-                          onClick={downloadImportExample}
-                          className='px-3 py-1 bg-purple-50 rounded-lg cursor-pointer'>
-                          <div className='text-sm text-purple-900 flex flex-row gap-1'>
-                            <ArrowDownTrayIcon className='w-[15px]' />
-                            monitoring_observers_template.csv
-                          </div>
-                          <div className='text-xs text-purple-900'>28kb</div>
-                        </div>
-                        <div className='text-sm text-gray-500 font-normal	'>
-                          Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                        </div>
-                        <input type='file' ref={hiddenFileInput} onChange={handleChange} style={{ display: 'none' }} />
-                        <Button onClick={handleClick} variant='outline'>
-                          <span className='text-gray-500 font-normal'>
-                            {fileName || (
-                              <div>
-                                Drag & drop your files or <span className='underline'>Browse</span>
-                              </div>
-                            )}
-                          </span>
-                        </Button>
-                        <div className='text-sm text-gray-500 font-normal	'>
-                          Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                        </div>
-                        <Separator />
-                      </div>
-                      <DialogFooter>
-                        <Button className='border border-input border-purple-900 bg-background hover:bg-purple-50 text-purple-900 hover:text-purple-600'>
-                          Cancel
-                        </Button>
-                        <Button className='bg-purple-900 hover:bg-purple-600' onClick={handleImport}>Import list</Button>
-                      </DialogFooter>
-                    </DialogContent>
-                  </Dialog>
+                  <ImportMonitoringObserversDialog {...importMonitoringObserversDialog.dialogProps} />
+                  <Button className='bg-purple-900 hover:bg-purple-600' onClick={() => importMonitoringObserversDialog.trigger()}>
+                    <svg
+                      className='mr-1.5'
+                      xmlns='http://www.w3.org/2000/svg'
+                      width='18'
+                      height='18'
+                      viewBox='0 0 18 18'
+                      fill='none'>
+                      <path
+                        d='M3 12L3 12.75C3 13.9926 4.00736 15 5.25 15L12.75 15C13.9926 15 15 13.9926 15 12.75L15 12M12 6L9 3M9 3L6 6M9 3L9 12'
+                        stroke='white'
+                        strokeWidth='2'
+                        strokeLinecap='round'
+                        strokeLinejoin='round'
+                      />
+                    </svg>
+                    Import observer list
+                  </Button>
                   <Button className='bg-background hover:bg-purple-50 hover:text-purple-500 text-purple-900'>
                     <svg
                       className='mr-1.5'
@@ -453,12 +313,12 @@ export default function MonitoringObserversDashboard(): ReactElement {
                       </div>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className='w-56'>
-                      {data?.tags.map((tag) => (
+                      {tags?.map((tag) => (
                         <DropdownMenuCheckboxItem
-                          checked={tagsFilter.includes(tag)}
-                          onCheckedChange={() => toggleTagsFilter(tag)}
-                          key={tag}>
-                          {tag}
+                          checked={tagsFilter.includes(tag.text)}
+                          onCheckedChange={() => toggleTagsFilter(tag.text)}
+                          key={tag.id}>
+                          {tag.text}
                         </DropdownMenuCheckboxItem>
                       ))}
                     </DropdownMenuContent>
