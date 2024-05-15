@@ -44,9 +44,9 @@
       "eas": {
         "projectId": "93e17628-ddcd-4e67-849c-b356a18a6082"
       },
-      "message": "Invalidate queries after all similar mutations are done",
-      "updateCritical": 11,
-      "updateVersion": 11
+      "message": "Fix quick reports and transform ps wizzard in list",
+      "updateCritical": 12,
+      "updateVersion": 12
     },
     "owner": "commit-global",
     "runtimeVersion": {
