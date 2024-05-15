@@ -95,7 +95,7 @@ const LoginForm = ({
   const passIcon = secureTextEntry === false ? "eye" : "eyeOff";
 
   return (
-    <View gap={12}>
+    <View gap="$sm">
       <Typography preset="heading" fontWeight="700">
         {t("title")}
       </Typography>
@@ -157,13 +157,16 @@ const LoginForm = ({
         )}
       />
 
-      <View alignSelf="flex-end">
-        <Typography
-          color="$purple5"
-          onPress={() => {
-            router.push("./forgot-password");
-          }}
-        >
+      <View
+        alignSelf="flex-end"
+        paddingTop="$sm"
+        paddingLeft="$lg"
+        onPress={() => {
+          router.push("./forgot-password");
+        }}
+        pressStyle={{ opacity: 0.5 }}
+      >
+        <Typography color="$purple5" textDecorationLine="underline">
           {t("actions.forgot_password")}
         </Typography>
       </View>
