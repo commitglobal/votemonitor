@@ -228,7 +228,7 @@ export default function ObserversDashboard(): ReactElement {
                           </div>
                           <div className='text-xs text-purple-900'>28kb</div>
                         </div>
-                        <div className='text-sm text-gray-500 font-normal	'>
+                        <div className='text-sm text-gray-500 font-normal'>
                           Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                         </div>
                         <input
@@ -246,7 +246,7 @@ export default function ObserversDashboard(): ReactElement {
                             )}
                           </span>
                         </Button>
-                        <div className='text-sm text-gray-500 font-normal	'>
+                        <div className='text-sm text-gray-500 font-norma'>
                           Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                         </div>
                         <Separator />

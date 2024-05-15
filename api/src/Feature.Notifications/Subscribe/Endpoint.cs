@@ -1,4 +1,5 @@
-﻿using Feature.Notifications.Specifications;
+﻿using Authorization.Policies;
+using Feature.Notifications.Specifications;
 using Vote.Monitor.Domain.Entities.NotificationTokenAggregate;
 
 namespace Feature.Notifications.Subscribe;
@@ -10,6 +11,7 @@ public class Endpoint(IRepository<NotificationToken> repository) : Endpoint<Requ
         Post("/api/notifications:subscribe");
         DontAutoTag();
         Options(x => x.WithTags("notifications", "mobile"));
+        Policies(PolicyNames.ObserversOnly);
     }
 
     public override async Task<NoContent> ExecuteAsync(Request req, CancellationToken ct)

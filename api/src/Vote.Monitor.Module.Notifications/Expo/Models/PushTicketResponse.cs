@@ -6,10 +6,10 @@ namespace Vote.Monitor.Module.Notifications.Expo.Models;
 public class PushTicketResponse
 {
     [JsonPropertyName("data")]
-    public List<PushTicketStatus> PushTicketStatuses { get; set; }
+    public List<PushTicketStatus>? PushTicketStatuses { get; set; }
 
     [JsonPropertyName("errors")]
-    public List<PushTicketErrors> PushTicketErrors { get; set; }
+    public List<PushTicketErrors>? PushTicketErrors { get; set; }
 
 }
 

@@ -189,6 +189,7 @@ public class Endpoint(
         string csv = failedResult.Items.ConstructErrorFileContent();
         var importValidationErrors = new ImportValidationErrors(ImportType.MonitoringObserver, fileName, csv);
         var errorSaved = await context.ImportValidationErrors.AddAsync(importValidationErrors, ct);
+        await context.SaveChangesAsync(ct);
 
         var errorResponse = new ImportValidationErrorModel
         {
@@ -196,6 +197,6 @@ public class Endpoint(
             Message = ParsingFailedErrorMessage
         };
 
-        await SendAsync(errorResponse, cancellation: ct);
+        await SendAsync(errorResponse, statusCode: 400, cancellation: ct);
     }
 }
