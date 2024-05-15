@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { FormType } from '../../models/form-submission';
 import type { FormSubmissionsSearchParams } from '../../models/search-params';
+import { PollingStationsFilters } from '../PollingStationsFilters/PollingStationsFilters';
 
 const routeApi = getRouteApi('/responses/');
 
@@ -15,11 +16,16 @@ export function FormsFiltersByEntry(): FunctionComponent {
   const search = routeApi.useSearch();
 
   const onClearFilter = useCallback(
-    (filter: keyof FormSubmissionsSearchParams) => () => {
-      void navigate({ search: (prev) => ({ ...prev, [filter]: undefined }) });
+    (filter: keyof FormSubmissionsSearchParams | (keyof FormSubmissionsSearchParams)[]) => () => {
+      const filters = Array.isArray(filter)
+        ? Object.fromEntries(filter.map((key) => [key, undefined]))
+        : { [filter]: undefined };
+      void navigate({ search: (prev) => ({ ...prev, ...filters }) });
     },
     [navigate]
   );
+
+  const isFiltered = Object.keys(search).some((key) => key !== 'tab');
 
   return (
     <>
@@ -65,31 +71,10 @@ export function FormsFiltersByEntry(): FunctionComponent {
         </SelectContent>
       </Select>
 
-      <Input
-        placeholder='Location - L1'
-        onChange={(e) => {
-          void navigate({ search: (prev) => ({ ...prev, level1Filter: e.target.value }) });
-        }}
-        value={search.level1Filter ?? ''}
-      />
-
-      <Input
-        placeholder='Location - L2'
-        onChange={(e) => {
-          void navigate({ search: (prev) => ({ ...prev, level2Filter: e.target.value }) });
-        }}
-        value={search.level2Filter ?? ''}
-      />
-
-      <Input
-        placeholder='Location - L3'
-        onChange={(e) => {
-          void navigate({ search: (prev) => ({ ...prev, level3Filter: e.target.value }) });
-        }}
-        value={search.level3Filter ?? ''}
-      />
+      <PollingStationsFilters />
 
       <Button
+        disabled={!isFiltered}
         onClick={() => {
           void navigate({});
         }}
@@ -97,7 +82,7 @@ export function FormsFiltersByEntry(): FunctionComponent {
         Reset filters
       </Button>
 
-      {Object.entries(search).length > 0 && (
+      {isFiltered && (
         <div className='col-span-full flex gap-2 flex-wrap'>
           {search.formTypeFilter && (
             <FilterBadge label={`Form type: ${search.formTypeFilter}`} onClear={onClearFilter('formTypeFilter')} />
@@ -118,15 +103,35 @@ export function FormsFiltersByEntry(): FunctionComponent {
           )}
 
           {search.level1Filter && (
-            <FilterBadge label={`Location - L1: ${search.level1Filter}`} onClear={onClearFilter('level1Filter')} />
+            <FilterBadge
+              label={`Location - L1: ${search.level1Filter}`}
+              onClear={onClearFilter(['level1Filter', 'level2Filter', 'level3Filter', 'level4Filter', 'level5Filter'])}
+            />
           )}
 
           {search.level2Filter && (
-            <FilterBadge label={`Location - L2: ${search.level2Filter}`} onClear={onClearFilter('level2Filter')} />
+            <FilterBadge
+              label={`Location - L2: ${search.level2Filter}`}
+              onClear={onClearFilter(['level2Filter', 'level3Filter', 'level4Filter', 'level5Filter'])}
+            />
           )}
 
           {search.level3Filter && (
-            <FilterBadge label={`Location - L3: ${search.level3Filter}`} onClear={onClearFilter('level3Filter')} />
+            <FilterBadge
+              label={`Location - L3: ${search.level3Filter}`}
+              onClear={onClearFilter(['level3Filter', 'level4Filter', 'level5Filter'])}
+            />
+          )}
+
+          {search.level4Filter && (
+            <FilterBadge
+              label={`Location - L4: ${search.level4Filter}`}
+              onClear={onClearFilter(['level4Filter', 'level5Filter'])}
+            />
+          )}
+
+          {search.level5Filter && (
+            <FilterBadge label={`Location - L5: ${search.level5Filter}`} onClear={onClearFilter('level5Filter')} />
           )}
         </div>
       )}

@@ -19,7 +19,12 @@ export const FormSubmissionsSearchParamsSchema = z.object({
 export type FormSubmissionsSearchParams = z.infer<typeof FormSubmissionsSearchParamsSchema>;
 
 export const QuickReportsSearchParamsSchema = z.object({
-  title: z.string().catch('').optional()
-})
+  title: z.string().catch('').optional(),
+  level1Filter: z.string().catch('').optional(),
+  level2Filter: z.string().catch('').optional(),
+  level3Filter: z.string().catch('').optional(),
+  level4Filter: z.string().catch('').optional(),
+  level5Filter: z.string().catch('').optional(),
+});
 
 export type QuickReportsSearchParams = z.infer<typeof QuickReportsSearchParamsSchema>
