@@ -68,7 +68,7 @@ const UserContextProvider = ({ children }: React.PropsWithChildren) => {
 
   const {
     data: lastVisitedPollingStation,
-    isLoading: isLoadingCurrentPS,
+    // isLoading: isLoadingCurrentPS,
     error: PollingStationNomenclatorNodeDBError,
   } = usePollingStationById(currentSelectedPollingStationId);
 
