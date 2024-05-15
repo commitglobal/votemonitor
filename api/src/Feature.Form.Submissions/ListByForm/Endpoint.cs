@@ -22,23 +22,39 @@ public class Endpoint(IDbConnection dbConnection) : Endpoint<Request, Response>
     public override async Task<Response> ExecuteAsync(Request req, CancellationToken ct)
     {
         var sql = @"
-            SELECT f.""Id"" AS ""FormId"",
-                   f.""Code"" AS ""FormCode"",
-                   f.""FormType"" AS ""FormType"",
-                   count(distinct fs.""Id"") ""NumberOfSubmissions"",
-                   sum(fs.""NumberOfFlaggedAnswers"") ""NumberOfFlaggedAnswers"",
-                   count(distinct n.""Id"") ""NumberOfNotes"",
-                   count(distinct a.""Id"") ""NumberOfMediaFiles""
-            FROM ""Forms"" f
-            INNER JOIN ""MonitoringNgos"" mn ON mn.""Id"" = f.""MonitoringNgoId""
-            INNER JOIN ""FormSubmissions"" fs ON fs.""FormId"" = f.""Id""
-            LEFT JOIN ""Notes"" n ON n.""FormId"" = f.""Id""
-            LEFT JOIN ""Attachments"" a ON a.""FormId"" = f.""Id""
-            WHERE f.""ElectionRoundId"" = @electionRoundId
-                AND mn.""NgoId"" = @ngoId
-            GROUP BY f.""Id"",
-                     f.""Code"",
-                     f.""FormType"";
+        SELECT
+            F.""Id"" AS ""FormId"",
+            F.""Code"" AS ""FormCode"",
+            F.""FormType"" AS ""FormType"",
+            COUNT(DISTINCT FS.""Id"") ""NumberOfSubmissions"",
+            SUM(FS.""NumberOfFlaggedAnswers"") ""NumberOfFlaggedAnswers"",
+            (
+                SELECT
+                    COUNT(1)
+                FROM
+                    ""Attachments""
+                WHERE
+                    ""FormId"" = F.""Id""
+            ) AS ""NumberOfMediaFiles"",
+            (
+                SELECT
+                    COUNT(1)
+                FROM
+                    ""Notes""
+                WHERE
+                    ""FormId"" = F.""Id""
+            ) AS ""NumberOfNotes""
+        FROM
+            ""Forms"" F
+            INNER JOIN ""MonitoringNgos"" MN ON MN.""Id"" = F.""MonitoringNgoId""
+            INNER JOIN ""FormSubmissions"" FS ON FS.""FormId"" = F.""Id""
+        WHERE
+            F.""ElectionRoundId"" = @electionRoundId
+            AND MN.""NgoId"" = @ngoId
+        GROUP BY
+            F.""Id"",
+            F.""Code"",
+            F.""FormType"";
         ";
 
         var queryArgs = new

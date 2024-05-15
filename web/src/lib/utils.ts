@@ -260,3 +260,8 @@ export function buildURLSearchParams(data: any) {
 
   return params
 }
+
+export function round(value: number, decimals: number): number {
+  //@ts-ignore
+  return Number(Math.round(value + 'e' + decimals) + 'e-' + decimals);
+}

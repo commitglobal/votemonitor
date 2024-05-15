@@ -8,7 +8,7 @@ import type {
 } from '@/common/types';
 import type { Attachment, FormType, Note } from './form-submission';
 
-interface Responder {
+export interface Responder {
   responderId: string;
   firstName: string;
   lastName: string;
