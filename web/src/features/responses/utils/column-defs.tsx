@@ -18,7 +18,7 @@ export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry>[
     accessorKey: 'timeSubmitted',
     enableSorting: true,
     enableGlobalFilter: true,
-    cell: ({ row }) => <div>{format(row.original.timeSubmitted, 'u-MM-dd KK:mm')}</div>
+    cell: ({ row }) => <div>{format(row.original.timeSubmitted, 'u-MM-dd KK:mm')}</div>,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Form code' column={column} />,
@@ -78,11 +78,7 @@ export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry>[
     accessorKey: 'observerName',
     enableSorting: true,
     enableGlobalFilter: true,
-    cell: ({ row }) => (
-      <div>
-        {row.original.observerName}
-      </div>
-    ),
+    cell: ({ row }) => <div>{row.original.observerName}</div>,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Tags' column={column} />,
@@ -124,14 +120,20 @@ export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry>[
     accessorKey: 'status',
     enableSorting: false,
     enableGlobalFilter: true,
-    cell: ({ row }) => <Badge
-      className={cn({
-        'text-slate-700 bg-slate-200': row.original?.needsFollowUp === undefined,
-        'text-red-600 bg-red-200': row.original?.needsFollowUp === true,
-        'text-yellow-600 bg-yellow-200': row.original?.needsFollowUp === false
-      })}>
-      {row.original?.needsFollowUp === undefined ? 'N/A' : row.original?.needsFollowUp ? 'Needs followup' : 'Followed up'}
-    </Badge>
+    cell: ({ row }) => (
+      <Badge
+        className={cn({
+          'text-slate-700 bg-slate-200': row.original?.needsFollowUp === undefined,
+          'text-red-600 bg-red-200': row.original?.needsFollowUp === true,
+          'text-yellow-600 bg-yellow-200': row.original?.needsFollowUp === false,
+        })}>
+        {row.original?.needsFollowUp === undefined
+          ? 'N/A'
+          : row.original?.needsFollowUp
+          ? 'Needs followup'
+          : 'Followed up'}
+      </Badge>
+    ),
   },
   {
     header: '',
@@ -154,11 +156,7 @@ export const formSubmissionsByObserverColumnDefs: ColumnDef<FormSubmissionByObse
     accessorKey: 'observerName',
     enableSorting: true,
     enableGlobalFilter: true,
-    cell: ({ row }) => (
-      <div>
-        {row.original.observerName}
-      </div>
-    ),
+    cell: ({ row }) => <div>{row.original.observerName}</div>,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Observer contact' column={column} />,
@@ -200,12 +198,17 @@ export const formSubmissionsByObserverColumnDefs: ColumnDef<FormSubmissionByObse
     accessorKey: 'status',
     enableSorting: false,
     enableGlobalFilter: true,
-    cell: ({ row }) => {
-      return row.original?.needsFollowUp === true ? <Badge
-        className={cn({
-          'text-red-600 bg-red-200': row.original?.needsFollowUp === true,
-        })}>Needs followup</Badge> : <span>-</span>
-    }
+    cell: ({ row }) =>
+      row.original?.needsFollowUp === true ? (
+        <Badge
+          className={cn({
+            'text-red-600 bg-red-200': row.original?.needsFollowUp === true,
+          })}>
+          Needs followup
+        </Badge>
+      ) : (
+        <span>-</span>
+      ),
   },
   {
     header: '',
@@ -281,7 +284,7 @@ export const questionExtraInfoColumnDefs: ColumnDef<QuestionExtraData>[] = [
     accessorKey: 'timeSubmitted',
     enableSorting: true,
     enableGlobalFilter: true,
-    cell: ({ row }) => <div>{format(row.original.timeSubmitted, 'u-MM-dd KK:mm')}</div>
+    cell: ({ row }) => <div>{format(row.original.timeSubmitted, 'u-MM-dd KK:mm')}</div>,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Note' column={column} />,
@@ -318,18 +321,21 @@ export const quickReportsColumnDefs: ColumnDef<QuickReport>[] = [
     accessorKey: 'description',
     enableSorting: true,
     enableGlobalFilter: true,
+    size: 200,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Medial files' column={column} />,
     accessorKey: 'mediaFilesCount',
     enableSorting: true,
     enableGlobalFilter: true,
+    size: 80
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Station number' column={column} />,
     accessorKey: 'number',
     enableSorting: true,
     enableGlobalFilter: true,
+    size: 100
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Observer' column={column} />,
@@ -347,5 +353,19 @@ export const quickReportsColumnDefs: ColumnDef<QuickReport>[] = [
     accessorKey: 'email',
     enableSorting: true,
     enableGlobalFilter: true,
+  },
+  {
+    header: '',
+    accessorKey: 'action',
+    enableSorting: false,
+    cell: ({ row }) => (
+      <Link
+        className='hover:bg-purple-100 inline-flex h-6 w-6 rounded-full items-center justify-center'
+        params={{ formId: row.original.id }}
+        to='/responses/$formId/quick-reports'>
+        <ChevronRightIcon className='w-4 text-purple-600' />
+      </Link>
+    ),
+    size: 46
   },
 ];
