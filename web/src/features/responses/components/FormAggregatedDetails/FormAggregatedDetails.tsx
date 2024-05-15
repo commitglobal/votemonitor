@@ -2,11 +2,20 @@ import { Link, useLoaderData } from '@tanstack/react-router';
 import type { FunctionComponent } from '@/common/types';
 import Layout from '@/components/layout/Layout';
 import { AggregateCard } from '../AggregateCard/AggregateCard';
+import { Responder } from '../../models/form-aggregated';
 
 export default function FormAggregatedDetails(): FunctionComponent {
   const formSubmission = useLoaderData({ from: '/responses/$formId/aggregated' });
   const { submissionsAggregate } = formSubmission;
-  const { defaultLanguage, formCode, formType, aggregates, formId } = submissionsAggregate;
+  const { defaultLanguage, formCode, formType, aggregates, formId, responders } = submissionsAggregate;
+
+  const groupedAttachments = responders.reduce<Record<string, Responder>>(
+    (grouped, responder) => ({
+      ...grouped,
+      [responder.responderId]: responder,
+    }),
+    {}
+  );
 
   return (
     <Layout
@@ -33,7 +42,7 @@ export default function FormAggregatedDetails(): FunctionComponent {
       title={`${formCode} - ${formType.name}`}>
       <div className='flex flex-col gap-10'>
         {Object.values(aggregates).map((aggregate) => {
-          return <AggregateCard key={aggregate.questionId} aggregate={aggregate} language={defaultLanguage} />;
+          return <AggregateCard key={aggregate.questionId} aggregate={aggregate} language={defaultLanguage} responders={groupedAttachments} />;
         })}
       </div>
     </Layout>

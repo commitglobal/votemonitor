@@ -16,7 +16,7 @@ using Microsoft.AspNetCore.ResponseCompression;
 using NSwag;
 using Vote.Monitor.Api.Feature.Ngo;
 using Vote.Monitor.Api.Feature.NgoAdmin;
-using Vote.Monitor.Api.Feature.Notifications;
+using Feature.Notifications;
 using Vote.Monitor.Core.Models;
 using Vote.Monitor.Core.Security;
 using Vote.Monitor.Core.Services.FileStorage;

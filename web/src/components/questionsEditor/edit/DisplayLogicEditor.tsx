@@ -131,7 +131,7 @@ export default function DisplayLogicEditor({
     return (
         <div className="mt-3">
             <div className="flex items-center space-x-2">
-                <Switch id="has-displayLogic" onCheckedChange={handleHasDisplayLogicChanged} />
+                <Switch id="has-displayLogic" onCheckedChange={handleHasDisplayLogicChanged} checked={hasDisplayLogic} />
                 <Label htmlFor="has-displayLogic">Display logic</Label>
             </div>
 

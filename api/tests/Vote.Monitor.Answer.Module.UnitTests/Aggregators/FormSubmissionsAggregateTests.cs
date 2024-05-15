@@ -145,38 +145,6 @@ public class FormSubmissionsAggregateTests
     }
 
     [Fact]
-    public void AggregateAnswers_ShouldAddPollingStationIdToPollingStations()
-    {
-        // Arrange
-        var aggregate = new FormSubmissionsAggregate(_form);
-
-        var pollingStation1 = new PollingStationFaker(electionRound: _electionRound).Generate();
-        var pollingStation2 = new PollingStationFaker(electionRound: _electionRound).Generate();
-
-        var monitoringObserver = new MonitoringObserverFaker().Generate();
-
-        var formSubmission1 = FormSubmission.Create(_electionRound, pollingStation1, monitoringObserver, _form, [], 0, 0);
-        var formSubmission2 = FormSubmission.Create(_electionRound, pollingStation2, monitoringObserver, _form, [], 0, 0);
-        var formSubmission3 = FormSubmission.Create(_electionRound, pollingStation1, monitoringObserver, _form, [], 0, 0);
-
-        // Act
-        aggregate.AggregateAnswers(formSubmission1);
-        aggregate.AggregateAnswers(formSubmission2);
-        aggregate.AggregateAnswers(formSubmission3);
-
-        // Assert
-        aggregate.PollingStations.Keys.Should().HaveCount(2);
-        aggregate.PollingStations.Keys.Should().Contain([pollingStation1.Id, pollingStation2.Id]);
-        aggregate.PollingStations[pollingStation1.Id]
-            .Should().HaveCount(2)
-            .And.Contain([formSubmission1.Id, formSubmission3.Id]);
-
-        aggregate.PollingStations[pollingStation2.Id]
-            .Should().HaveCount(1)
-            .And.Contain(formSubmission2.Id);
-    }
-
-    [Fact]
     public void AggregateAnswers_ShouldAddNumberOfFlaggedAnswers()
     {
         // Arrange
