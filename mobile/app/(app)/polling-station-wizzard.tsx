@@ -2,10 +2,9 @@ import { router } from "expo-router";
 import { Screen } from "../../components/Screen";
 import Header from "../../components/Header";
 import { Icon } from "../../components/Icon";
-import { Keyboard, TextStyle, ViewStyle } from "react-native";
-import { Input, ScrollView, View, XStack, YStack, styled } from "tamagui";
+import { Keyboard, TextStyle, ViewStyle, useWindowDimensions } from "react-native";
+import { Input, ListItem, ScrollView, View, XStack, YStack, styled } from "tamagui";
 import { Typography } from "../../components/Typography";
-import Select from "../../components/Select";
 import { pollingStationsKeys, usePollingStationByParentID } from "../../services/queries.service";
 import React, { useMemo, useState } from "react";
 import {
@@ -86,6 +85,8 @@ const PollingStationWizzardContent = ({
   const [selectedOption, setSelectedOption] = useState<PollingStationStep>();
   const { activeElectionRound } = useUserData();
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [sliceNumber, setSliceNumber] = useState(30);
+  const { height } = useWindowDimensions();
 
   const queryClient = useQueryClient();
 
@@ -99,18 +100,21 @@ const PollingStationWizzardContent = ({
     activeElectionRound?.id,
   );
 
-
   const pollingStationsMappedOptions = useMemo(
     () => mapPollingStationOptionsToSelectValues(pollingStationOptions),
     [pollingStationOptions],
   );
 
   const filteredOptions = useMemo(() => {
-    if (!searchTerm) return pollingStationsMappedOptions;
+    if (!searchTerm) return pollingStationsMappedOptions.slice(0, sliceNumber);
     return pollingStationsMappedOptions.filter((option) =>
-      option.label.toLowerCase().includes(searchTerm.toLowerCase()),
-    )
-  }, [pollingStationsMappedOptions, searchTerm]);
+      option.label.toLowerCase().includes(searchTerm.toLowerCase())
+    ).slice(0, sliceNumber);
+  }, [pollingStationsMappedOptions, searchTerm, sliceNumber]);
+
+  const loadMore = () => {
+    setSliceNumber((sliceNum) => sliceNum + 50);
+  }
 
 
   const isLastElement: boolean = useMemo(
@@ -130,6 +134,8 @@ const PollingStationWizzardContent = ({
   const onNextButtonPress = () => {
     if (selectedOption) {
       onNextPress(selectedOption);
+      setSearchTerm('');
+      setSliceNumber(30);
       setSelectedOption(undefined);
     }
   };
@@ -137,6 +143,7 @@ const PollingStationWizzardContent = ({
   const onBackButtonPress = () => {
     const lastStep = onPreviousPress();
     setSelectedOption(lastStep);
+    setSearchTerm('');
   };
 
   const onFinishButtonPress = async () => {
@@ -192,51 +199,42 @@ const PollingStationWizzardContent = ({
   return (
     <>
       <YStack paddingHorizontal="$md" gap={'$1'}>
-        <YStack gap="$md" minHeight="$xl">
-          {activeStep && (
-            <Typography color="$gray5">{t("progress.location", { value: locations })}</Typography>
-          )}
-        </YStack>
 
-        <XStack backgroundColor="$purple1" borderRadius={8} alignItems="center">
+        <XStack backgroundColor="$purple1" marginTop={'$sm'} borderRadius={8} alignItems="center">
           <Icon icon="search" color="transparent" size={20} marginLeft="$sm" />
           <SearchInput flex={1} value={searchTerm} onChangeText={setSearchTerm} />
         </XStack>
 
-        <Typography preset="body2" style={$labelStyle}>
-          {t("form.region.title")}
-        </Typography>
-
       </YStack >
-      <ScrollView
+      {/* <View
         contentContainerStyle={{ flexGrow: 1 }}
         centerContent
         keyboardShouldPersistTaps="handled"
-      >
-        <YStack paddingHorizontal="$lg" paddingTop="$lg" height={filteredOptions.length * 35}>
+      > */}
+      <YStack paddingHorizontal="$md" paddingTop="$sm" height={height - 250} paddingBottom={'$md'}>
 
-          {isFetchingPollingStations &&
-            <Typography>Loading...</Typography>
-          }
-          {!isFetchingPollingStations && (
-            // <Select
-            //   key={activeStep?.id}
-            //   options={pollingStationsMappedOptions}
-            //   placeholder={t("form.region.placeholder")}
-            //   onValueChange={onSelectOption}
-            //   value={selectedOption ? `${selectedOption.id}_${selectedOption.name}` : undefined}
-            // />
-
-            <ListView<{ id: string | number; value: string; label: string }>
-              data={filteredOptions}
-              showsVerticalScrollIndicator={false}
-              bounces={false}
-              estimatedItemSize={25}
-              renderItem={({ item, index }) => <SelectItem onPress={onSelectOption} item={item} />}
-            />
-          )}
-        </YStack>
-      </ScrollView>
+        {isFetchingPollingStations &&
+          <Typography>Loading...</Typography>
+        }
+        {!isFetchingPollingStations && (
+          <ListView<{ id: string | number; value: string; label: string }>
+            data={filteredOptions}
+            showsVerticalScrollIndicator={false}
+            bounces={false}
+            estimatedItemSize={64}
+            extraData={selectedOption}
+            keyExtractor={(item) => item.value}
+            onEndReached={loadMore}
+            onEndReachedThreshold={0.5}
+            renderItem={({ item, extraData }: any) => {
+              return (
+                <SelectItem onPress={onSelectOption} item={item} selected={`${extraData?.id}_${extraData?.name}` === item.value} />
+              )
+            }}
+          />
+        )}
+      </YStack>
+      {/* </ScrollView> */}
       <WizzardControls
         isFirstElement={!activeStep?.id}
         isLastElement={isLastElement}
@@ -247,6 +245,7 @@ const PollingStationWizzardContent = ({
     </>
   );
 };
+
 
 const $containerStyle: ViewStyle = {
   flex: 1,
@@ -268,17 +267,18 @@ const SearchInput = styled(Input, {
   },
 });
 
-const SelectItem = ({ item, onPress }: { item: any, onPress: (option: string) => void }) => {
+const SelectItem = React.memo(({ item, onPress, selected }: { item: any, onPress: (option: string) => void, selected: boolean }) => {
   return (
-    <View
-      gap="$3"
-      paddingBottom="$sm"
-    >
-      <Typography width={"90%"} fontSize={"$6"} onPress={() => onPress(item.value)}>{item.label}</Typography>
-    </View>
+    <Typography
+      style={{ borderRadius: 8 }}
+      padding="$xs"
+      backgroundColor={selected ? '$purple1' : 'white'}
+      pressStyle={{ opacity: 0.85, backgroundColor: '$purple1' }}
+      onPress={() => onPress(item.value)}
+    >{item.label}</Typography>
 
   )
-};
+});
 
 
 export default PollingStationWizzard;
