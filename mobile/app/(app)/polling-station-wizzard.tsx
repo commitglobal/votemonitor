@@ -201,6 +201,11 @@ const PollingStationWizzardContent = ({
   return (
     <>
       <YStack paddingHorizontal="$md" gap={'$1'}>
+        {activeStep &&
+          <YStack paddingTop={'$sm'} minHeight="$xl">
+            <Typography color="$gray5">{t("progress.location", { value: locations })}</Typography>
+          </YStack>
+        }
 
         <XStack backgroundColor="$purple1" marginTop={'$sm'} borderRadius={8} alignItems="center">
           <Icon icon="search" color="transparent" size={20} marginLeft="$sm" />
@@ -208,7 +213,7 @@ const PollingStationWizzardContent = ({
         </XStack>
 
       </YStack >
-      <YStack paddingHorizontal="$md" paddingTop="$sm" height={height - 250} paddingBottom={'$md'}>
+      <YStack paddingHorizontal="$md" paddingTop="$sm" height={height - 275} paddingBottom={'$md'}>
 
         {isFetchingPollingStations &&
           <Spinner size="large" color="$purple5" />
