@@ -29,6 +29,7 @@ import { Route as NgosNgoIdImport } from './routes/ngos/$ngoId'
 import { Route as MonitoringObserversCreateNewMessageImport } from './routes/monitoring-observers/create-new-message'
 import { Route as MonitoringObserversMonitoringObserverIdImport } from './routes/monitoring-observers/$monitoringObserverId'
 import { Route as ElectionRoundsElectionRoundIdImport } from './routes/election-rounds/$electionRoundId'
+import { Route as ResponsesFormIdQuickReportsImport } from './routes/responses/$formId.quick-reports'
 import { Route as ResponsesFormIdAggregatedImport } from './routes/responses/$formId.aggregated'
 import { Route as ObserversObserverIdEditImport } from './routes/observers_.$observerId.edit'
 import { Route as MonitoringObserversMonitoringObserverIdEditImport } from './routes/monitoring-observers_.$monitoringObserverId.edit'
@@ -131,6 +132,12 @@ const MonitoringObserversMonitoringObserverIdRoute =
 const ElectionRoundsElectionRoundIdRoute =
   ElectionRoundsElectionRoundIdImport.update({
     path: '/election-rounds/$electionRoundId',
+    getParentRoute: () => rootRoute,
+  } as any)
+
+const ResponsesFormIdQuickReportsRoute =
+  ResponsesFormIdQuickReportsImport.update({
+    path: '/responses/$formId/quick-reports',
     getParentRoute: () => rootRoute,
   } as any)
 
@@ -288,6 +295,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResponsesFormIdAggregatedImport
       parentRoute: typeof rootRoute
     }
+    '/responses/$formId/quick-reports': {
+      preLoaderRoute: typeof ResponsesFormIdQuickReportsImport
+      parentRoute: typeof rootRoute
+    }
     '/form-templates/$formTemplateId/edit-translation/$languageCode': {
       preLoaderRoute: typeof FormTemplatesFormTemplateIdEditTranslationLanguageCodeImport
       parentRoute: typeof rootRoute
@@ -327,6 +338,7 @@ export const routeTree = rootRoute.addChildren([
   MonitoringObserversMonitoringObserverIdEditRoute,
   ObserversObserverIdEditRoute,
   ResponsesFormIdAggregatedRoute,
+  ResponsesFormIdQuickReportsRoute,
   FormTemplatesFormTemplateIdEditTranslationLanguageCodeRoute,
   FormsFormIdEditTranslationLanguageCodeRoute,
 ])

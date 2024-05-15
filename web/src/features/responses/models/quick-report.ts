@@ -23,4 +23,5 @@ export interface QuickReport {
   quickReportLocationType: QuickReportLocationType;
   timestamp: string;
   title: string;
+  monitoringObserverId: string;
 }
