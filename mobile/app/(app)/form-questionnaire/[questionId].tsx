@@ -475,7 +475,7 @@ const FormQuestionnaire = () => {
 
           <AddAttachment
             label={t("actions.add_attachments")}
-            marginTop="$lg"
+            marginTop="$sm"
             onPress={() => {
               console.log("doing stuff for question", activeQuestion);
               return setIsOptionsSheetOpen(true);

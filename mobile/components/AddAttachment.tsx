@@ -10,7 +10,13 @@ interface AddAttachmentProps extends XStackProps {
 const AddAttachment = (props: AddAttachmentProps) => {
   const { label, ...rest } = props;
   return (
-    <XStack alignItems="center" pressStyle={{ opacity: 0.5 }} {...rest}>
+    <XStack
+      pressStyle={{ opacity: 0.5 }}
+      {...rest}
+      alignSelf="flex-start"
+      paddingRight="$lg"
+      paddingVertical="$sm"
+    >
       <Icon icon="attachment" />
       <Typography color="$purple5" marginLeft="$xs">
         {label}
