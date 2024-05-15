@@ -20,13 +20,13 @@ const ChangeLanguageDialog = ({
   onSelectLanguage,
   onCancel,
 }: ChangeLanguageDialogProps) => {
-  const { t } = useTranslation("form_overview");
+  const { t } = useTranslation(["form_overview", "languages"]);
 
   const languageMapping: { [key: string]: string } = {
-    RO: "Romanian",
-    EN: "English",
-    PL: "Polish",
-    BG: "Bulgarian",
+    RO: t("ro", { ns: "languages" }),
+    EN: t("en", { ns: "languages" }),
+    PL: t("pl", { ns: "languages" }),
+    BG: t("bg", { ns: "languages" }),
   };
 
   const {
@@ -78,10 +78,10 @@ const ChangeLanguageDialog = ({
           footer={
             <XStack gap="$md">
               <Button preset="chromeless" onPress={onCancel}>
-                Cancel
+                {t("language_modal.actions.cancel")}
               </Button>
               <Button onPress={handleSubmit(onSubmit)} flex={1}>
-                Save
+                {t("language_modal.actions.save")}
               </Button>
             </XStack>
           }

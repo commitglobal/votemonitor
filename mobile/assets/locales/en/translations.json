@@ -5,7 +5,9 @@
   },
   "languages": {
     "ro": "Romanian",
-    "en": "English"
+    "en": "English",
+    "pl": "Polish",
+    "bg": "Bulgarian"
   },
   "login": {
     "submit": "Sign In",
@@ -141,11 +143,15 @@
     "language_modal": {
       "header": "Select form language",
       "helper": "The selected form is available in multiple languages. Please select which one you would like to continue with.",
-      "error": "Please select one of the options"
+      "error": "Please select one of the options",
+      "actions": {
+        "save": "Save",
+        "cancel": "Cancel"
+      }  
     },
     "questions": {
       "title": "Intrebari",
-      "not_asnwered": "Not Answered",
+      "not_answered": "Not Answered",
       "answered": "Answered",
       "no_notes": "No attached notes",
       "notes": "Includes attached notes"

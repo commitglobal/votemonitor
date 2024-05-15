@@ -5,7 +5,9 @@
   },
   "languages": {
     "ro": "Română",
-    "en": "Engleză"
+    "en": "Engleză",
+    "pl": "Poloneză",
+    "bg": "Bulgară"
   },
   "login": {
     "submit": "Intra in aplicatie",
@@ -141,7 +143,11 @@
     "language_modal": {
       "header": "Selecteaza limba formularului",
       "helper": "Formularul selectat este disponibil în mai multe limbi. Vă rugăm selectați limba cu care doriți să continuați.",
-      "error": "Vă rugăm selectați una din opțiuni."
+      "error": "Vă rugăm selectați una din opțiuni.",
+      "actions": {
+        "save": "Salveaza",
+        "cancel": "Anuleaza"
+      }  
     },
     "questions": {
       "title": "Intrebari",
