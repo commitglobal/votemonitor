@@ -136,6 +136,12 @@
           "cancel": "Cancel",
           "delete_note": "Delete note"
       }
+    },
+    "select_option": {
+      "no_data": "No data found for current search.",
+      "actions": {
+        "search": "Search"
+      }
     }
   },
   "form_overview": {

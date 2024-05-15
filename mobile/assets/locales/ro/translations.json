@@ -136,6 +136,12 @@
           "cancel": "Anulează",
           "delete_note": "Șterge notiță"
       }
+    },
+    "select_option": {
+      "no_data": "Nu s-au găsit date pentru căutarea curentă.",
+      "actions": {
+        "search": "Căutare"
+      }
     }
   },
   "form_overview": {
