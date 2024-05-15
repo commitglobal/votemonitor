@@ -9,7 +9,6 @@ import RNDateTimePicker, {
 } from "@react-native-community/datetimepicker";
 import CardFooter from "../components/CardFooter";
 import Toast from "react-native-toast-message";
-import { useTranslation } from "react-i18next";
 
 interface TimeSelectProps {
   type: "arrival" | "departure";
