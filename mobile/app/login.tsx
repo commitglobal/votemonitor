@@ -1,11 +1,35 @@
+import React from "react";
 import { View } from "react-native";
 import { router } from "expo-router";
 import { useAuth } from "../hooks/useAuth";
-import { Button, Text } from "tamagui";
-import { Typography } from "../theme/Typography";
+import { Button as TamaguiButton } from "tamagui";
+import { Typography } from "../components/Typography";
+import { useTranslation } from "react-i18next";
+import { useLanguage } from "../contexts/language/LanguageContext.provider";
+import Button from "../components/Button";
 
 const Login = () => {
   const { signIn } = useAuth();
+  const { t } = useTranslation("login");
+  const { changeLanguage } = useLanguage();
+
+  const switchToEnglish = () => {
+    changeLanguage("en");
+  };
+
+  const switchToRomanian = () => {
+    changeLanguage("ro");
+  };
+
+  const onLogin = async () => {
+    try {
+      await signIn();
+      router.replace("/");
+    } catch (err) {
+      console.error("Error while logging in...");
+    }
+  };
+
   return (
     <View
       style={{
@@ -13,31 +37,14 @@ const Login = () => {
         justifyContent: "center",
         alignItems: "center",
         gap: 20,
+        paddingHorizontal: 16,
       }}
     >
-      <Button
-        onPress={() => {
-          signIn();
-          // Navigate after signing in. You may want to tweak this to ensure sign-in is
-          // successful before navigating.
-          router.replace("/");
-        }}
-      >
-        Sign In
-      </Button>
-      <Button
-        onPress={() => {
-          router.push("/forgot-password");
-        }}
-      >
-        Forgot Password
-      </Button>
-      <Typography preset="heading">Heading</Typography>
-      <Typography preset="subheading">Subheading</Typography>
-      <Typography preset="default">default</Typography>
-      <Typography preset="body1">body1</Typography>
-      <Typography preset="body2">body2</Typography>
-      <Typography preset="helper">helper</Typography>
+      <TamaguiButton onPress={onLogin}>
+        <Typography>{t("submit")}</Typography>
+      </TamaguiButton>
+      <Button onPress={switchToEnglish}>English</Button>
+      <Button onPress={switchToRomanian}>Romanian</Button>
     </View>
   );
 };

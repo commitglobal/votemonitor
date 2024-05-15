@@ -1,104 +1,188 @@
-import { Fragment } from 'react';
+import { authApi } from '@/common/auth-api';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Skeleton } from '@/components/ui/skeleton';
+import { AuthContext } from '@/context/auth.context';
+import { queryClient } from '@/main';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
-import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
-import type { FunctionComponent } from '../../../common/types';
-import logoUrl from '../../../assets/icons/logo.svg';
-import { Link } from '@tanstack/router';
+import { Bars3Icon, ChevronDownIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { UserCircleIcon } from '@heroicons/react/24/solid';
+import { useQuery } from '@tanstack/react-query';
+import { Link, useNavigate } from '@tanstack/react-router';
+import clsx from 'clsx';
+import { Fragment, useContext, useState } from 'react';
+import type { ElectionRoundMonitoring, FunctionComponent } from '../../../common/types';
+import Logo from './Logo';
 
 const user = {
   name: 'Tom Cook',
   email: 'tom@example.com',
   imageUrl:
     'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-}
+};
 const navigation = [
-  { name: 'Dashboard', to: '/' },
-  { name: 'Election Events', to: '#' },
-  { name: 'NGOs', to: '#' },
-  { name: 'Observers', to: '/observers' },
-  { name: 'Forms', to: '#' },
+  { name: 'Dashboard', to: '/', roles: ['PlatformAdmin'] },
+  { name: 'Election rounds', to: '/election-rounds', roles: ['NgoAdmin'] },
+  { name: 'NGOs', to: '/ngos', roles: ['PlatformAdmin'] },
+  { name: 'Observers', to: '/observers', roles: ['PlatformAdmin'] },
+  { name: 'Monitoring Observers', to: '/monitoring-observers', roles: ['NgoAdmin'] },
+  { name: 'Form templates', to: '/form-templates', roles: 'PlatformAdmin' },
+  { name: 'Responses', to: '/responses', roles: ['NgoAdmin'] },
+  { name: 'Forms', to: '/forms', roles: ['NgoAdmin'] },
 ];
-const userNavigation = [
-  { name: 'Sign out', to: '#' },
-];
+const userNavigation: { name: string, to: string }[] = [];
 
 const Header = (): FunctionComponent => {
+  const [selectedElection, setSelectedElection] = useState<ElectionRoundMonitoring>();
+
+  const handleSelectElection = (ev?: ElectionRoundMonitoring): void => {
+    setSelectedElection(ev);
+    localStorage.setItem('electionRoundId', ev?.electionRoundId ?? '');
+    localStorage.setItem('monitoringNgoId', ev?.monitoringNgoId ?? '');
+
+    void queryClient.invalidateQueries({ queryKey: ['observers'] });
+    void queryClient.invalidateQueries({ queryKey: ['tags'] });
+    void queryClient.invalidateQueries({ queryKey: ['form-submissions'] });
+  };
+
+  const { userRole, signOut } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const { status, data } = useQuery({
+    queryKey: ['electionRounds'],
+    queryFn: async () => {
+      const response = await authApi.get<{ electionRounds: ElectionRoundMonitoring[] }>('/election-rounds:monitoring');
+
+      if (response.status !== 200) {
+        throw new Error('Failed to fetch observers');
+      }
+
+      handleSelectElection(response.data.electionRounds[0]);
+
+      return response.data;
+    },
+    staleTime: 0,
+    refetchOnWindowFocus: false,
+  });
+
   return (
-    <Disclosure as='nav' className='bg-gray-200'>
+    <Disclosure as='nav' className='bg-white shadow-sm mb-10'>
       {({ open }) => (
         <>
-          <div className='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
-            <div className='flex h-16 items-center justify-between'>
-              <div className='flex items-center'>
-                <div className='flex-shrink-0'>
-                  <img
-                    className='h-10 w-10'
-                    src={logoUrl}
-                    alt='Vote Monitor Logo'
-                  />
-                </div>
-                <div className='hidden md:block'>
-                  <div className='ml-10 flex items-baseline space-x-4'>
-                    {navigation.map((item) => (
-                      <Link
-                        to={item.to}
-                        search={{}}
-                        params={{}}
-                        key={item.name}
-                        className='rounded-md px-3 py-2 text-sm font-medium'
-                        activeProps={{className: 'bg-gray-900 text-white', "aria-current": 'page'}}
-                        inactiveProps={{className: 'text-gray-900 hover:bg-gray-700 hover:text-white'}}>
-                        {item.name}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
+          <div className='container'>
+            <div className='flex items-center justify-between h-16 gap-6 md:gap-10'>
+              <Logo width={48} height={48} />
+
+              <div className='items-baseline flex-1 hidden gap-4 md:flex'>
+                {navigation
+                  .filter((nav) => nav.roles.includes(userRole ?? 'Unknown'))
+                  .map((item) => (
+                    <Link
+                      to={item.to}
+                      search={{}}
+                      params={{}}
+                      key={item.name}
+                      className='px-3 py-2 text-sm font-medium rounded-md'
+                      activeProps={{
+                        className: 'bg-primary-100 text-primary-600 cursor-default',
+                        'aria-current': 'page',
+                      }}
+                      inactiveProps={{
+                        className:
+                          'hover:text-primary-600 hover:bg-secondary-300 focus:text-primary-600 focus:bg-secondary-300',
+                      }}>
+                      {item.name}
+                    </Link>
+                  ))}
               </div>
-              <div className='hidden md:block'>
-                <div className='ml-4 flex items-center md:ml-6'>
-                  {/* Profile dropdown */}
-                  <Menu as='div' className='relative ml-3'>
-                    <div>
-                      <Menu.Button className='relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800'>
-                        <span className='absolute -inset-1.5' />
-                        <span className='sr-only'>Open user menu</span>
-                        <img className='h-8 w-8 rounded-full' src={user.imageUrl} alt='' />
-                      </Menu.Button>
-                    </div>
-                    <Transition
-                      as={Fragment}
-                      enter='transition ease-out duration-100'
-                      enterFrom='transform opacity-0 scale-95'
-                      enterTo='transform opacity-100 scale-100'
-                      leave='transition ease-in duration-75'
-                      leaveFrom='transform opacity-100 scale-100'
-                      leaveTo='transform opacity-0 scale-95'>
-                      <Menu.Items className='absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none'>
-                        {userNavigation.map((item) => (
-                          <Menu.Item key={item.name}>
-                            <Link
-                              to={item.to}
-                              search={{}}
-                              params={{}}
-                              className='block px-4 py-2 text-sm text-gray-700'>
-                              {item.name}
-                            </Link>
-                          </Menu.Item>
+
+              <div className='items-center gap-2 hidden md:flex'>
+                {status === 'pending' ? (
+                  <Skeleton className='w-[160px] h-[26px] mr-2 rounded-lg bg-secondary-300 text-secondary-900 hover:bg-secondary-300/90' />
+                ) : (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger>
+                      <Badge className='bg-secondary-300 text-secondary-900 hover:bg-secondary-300/90'>
+                        <span className='election-text'>{selectedElection?.englishTitle}</span>
+                        <ChevronDownIcon className='w-[20px] ml-2' />
+                      </Badge>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      <DropdownMenuRadioGroup
+                        value={selectedElection?.electionRoundId ?? ''}
+                        onValueChange={(value) => {
+                          const electionRound = data?.electionRounds.find((er) => er.electionRoundId === value);
+                          handleSelectElection(electionRound);
+                        }}>
+                        {data?.electionRounds?.map((electionRound) => (
+                          <DropdownMenuRadioItem
+                            key={electionRound.electionRoundId}
+                            value={electionRound.electionRoundId}>
+                            {electionRound.englishTitle}
+                          </DropdownMenuRadioItem>
                         ))}
-                      </Menu.Items>
-                    </Transition>
-                  </Menu>
-                </div>
+                      </DropdownMenuRadioGroup>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                )}
+                <Menu as='div' className='relative'>
+                  <div>
+                    <Menu.Button className='relative flex text-sm bg-white rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'>
+                      <span className='absolute -inset-1.5' />
+                      <span className='sr-only'>Open user menu</span>
+                      <UserCircleIcon className='w-8 h-8 fill-gray-400' />
+                    </Menu.Button>
+                  </div>
+                  <Transition
+                    as={Fragment}
+                    enter='transition ease-out duration-100'
+                    enterFrom='transform opacity-0 scale-95'
+                    enterTo='transform opacity-100 scale-100'
+                    leave='transition ease-in duration-75'
+                    leaveFrom='transform opacity-100 scale-100'
+                    leaveTo='transform opacity-0 scale-95'>
+                    <Menu.Items className='absolute right-0 z-10 w-48 py-1 mt-2 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none'>
+                      {userNavigation.map((item) => (
+                        <Menu.Item key={item.name}>
+                          <Link
+                            to={item.to}
+                            search={{}}
+                            params={{}}
+                            className='block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 focus:bg-gray-100'>
+                            {item.name}
+                          </Link>
+                        </Menu.Item>
+                      ))}
+                      <Menu.Item key='sign-out'>
+
+                        <Button type='button' variant='link' onClick={() => { signOut(); navigate({ to: '/login' }) }}>Sign out</Button>
+                      </Menu.Item>
+
+                    </Menu.Items>
+                  </Transition>
+                </Menu>
               </div>
-              <div className='-mr-2 flex md:hidden'>
+
+              <div className='flex -mr-2 md:hidden'>
                 {/* Mobile menu button */}
-                <Disclosure.Button className='relative inline-flex items-center justify-center rounded-md bg-gray-800 p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800'>
+                <Disclosure.Button
+                  className={clsx(
+                    'relative inline-flex items-center justify-center p-2 text-gray-400 bg-white rounded-md hover:text-primary-600 hover:bg-secondary-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',
+                    { 'bg-secondary-300': open }
+                  )}>
                   <span className='absolute -inset-0.5' />
                   <span className='sr-only'>Open main menu</span>
                   {open ? (
-                    <XMarkIcon className='block h-6 w-6' aria-hidden='true' />
+                    <XMarkIcon className='block w-6 h-6' aria-hidden='true' />
                   ) : (
-                    <Bars3Icon className='block h-6 w-6' aria-hidden='true' />
+                    <Bars3Icon className='block w-6 h-6' aria-hidden='true' />
                   )}
                 </Disclosure.Button>
               </div>
@@ -106,32 +190,37 @@ const Header = (): FunctionComponent => {
           </div>
 
           <Disclosure.Panel className='md:hidden'>
-            <div className='space-y-1 px-2 pb-3 pt-2 sm:px-3'>
-              {navigation.map((item) => (
-                <Disclosure.Button
-                  key={item.name}
-                  as={Link}
-                  to={item.to}
-                  search={{}}
-                  params={{}}
-                  className='block rounded-md px-3 py-2 text-base font-medium'
-                  activeProps={{className: 'bg-gray-900 text-white', "aria-current": 'page'}}
-                  inactiveProps={{className: 'text-gray-900 hover:bg-gray-700 hover:text-white'}}>
-                  {item.name}
-                </Disclosure.Button>
-              ))}
+            <div className='px-2 pt-2 pb-3 space-y-1 sm:px-3'>
+              {navigation
+                .filter((nav) => nav.roles.includes(userRole ?? 'Unknown'))
+                .map((item) => (
+                  <Disclosure.Button
+                    key={item.name}
+                    as={Link}
+                    to={item.to}
+                    search={{}}
+                    params={{}}
+                    className='block px-3 py-2 text-base font-medium rounded-md'
+                    activeProps={{ className: 'bg-primary-100 text-primary-600 cursor-default', 'aria-current': 'page' }}
+                    inactiveProps={{
+                      className:
+                        'hover:text-primary-600 hover:bg-secondary-300 focus:text-primary-600 focus:bg-secondary-300',
+                    }}>
+                    {item.name}
+                  </Disclosure.Button>
+                ))}
             </div>
-            <div className='border-t border-gray-700 pb-3 pt-4'>
+            <div className='pt-4 pb-3 border-t border-gray-700'>
               <div className='flex items-center px-5'>
                 <div className='flex-shrink-0'>
-                  <img className='h-10 w-10 rounded-full' src={user.imageUrl} alt='' />
+                  <UserCircleIcon className='w-10 h-10 fill-gray-400' />
                 </div>
                 <div className='ml-3'>
-                  <div className='text-base font-medium leading-none text-white'>{user.name}</div>
-                  <div className='text-sm font-medium leading-none text-gray-400'>{user.email}</div>
+                  <div className='text-base font-medium leading-none text-gray-800'>{user.name}</div>
+                  <div className='text-sm font-medium text-gray-500'>{user.email}</div>
                 </div>
               </div>
-              <div className='mt-3 space-y-1 px-2'>
+              <div className='px-2 mt-3 space-y-1'>
                 {userNavigation.map((item) => (
                   <Disclosure.Button
                     key={item.name}
@@ -139,10 +228,18 @@ const Header = (): FunctionComponent => {
                     to={item.to}
                     search={{}}
                     params={{}}
-                    className='block rounded-md px-3 py-2 text-base font-medium text-gray-900 hover:bg-gray-700 hover:text-white'>
+                    className='block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800'>
                     {item.name}
                   </Disclosure.Button>
                 ))}
+                <Disclosure.Button
+                  key='Sign Out'
+                  as={Button}
+                  onClick={() => { signOut(); navigate({ to: '/login' }); }}
+                  variant='link'
+                  className='block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800'>
+                  Sign Out
+                </Disclosure.Button>
               </div>
             </div>
           </Disclosure.Panel>

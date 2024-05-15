@@ -3,29 +3,22 @@
 
 import axios from 'axios';
 
-interface ILoginResponse {
+export interface ILoginResponse {
   token: string;
+  role: string;
 }
 
-const BASE_URL = 'https://localhost:7123/api';
+export interface LoginDTO {
+  email: string;
+  password: string;
+}
 
 export const authApi = axios.create({
-  baseURL: BASE_URL,
-  // withCredentials: true, // TODO Enable this when using a real login and authentication system
+  baseURL: import.meta.env.VITE_API_URL
 });
 
 authApi.defaults.headers.common['Content-Type'] = 'application/json';
 authApi.defaults.headers.common['Access-Control-Allow-Credentials'] = 'true';
-
-/**
- * WARNING: This uses a mock user and is for DEMO PURPOSES ONLY.
- * TODO Upgrade to a real login and authentication system for production.
- */
-export const getAccessTokenFn = async (): Promise<string> => {
-  const mockUser = { username: "user", password: "pass" };
-  const response = await authApi.post<ILoginResponse>('auth', mockUser);
-  return response.data.token;
-};
 
 authApi.interceptors.response.use(
   (response) => {
@@ -36,7 +29,7 @@ authApi.interceptors.response.use(
     if (error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
-      const accessToken = await getAccessTokenFn();
+      const accessToken = localStorage.getItem('token');
       authApi.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument

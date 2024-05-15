@@ -1,11 +1,9 @@
-@hostAddress=https://localhost:7123
-
 # Login
-POST {{hostAddress}}/api/auth
+POST {{$dotenv HOST }}/api/auth/login
 Content-Type: application/json
 
 {
-  "username": "string",
-  "password": "string"
+  "email": "{{$dotenv USERNAME}}",
+  "password": "{{$dotenv PASSWORD}}"
 }
 ###

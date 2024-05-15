@@ -1,0 +1,62 @@
+@electionRoundId=ec618650-b83d-4969-ae18-f638edeedae4
+@pollingStationId=5d00b66f-d874-4936-9eca-5eac0d4baf7c
+
+# get election round forms
+GET {{$dotenv HOST }}/api/election-rounds/{{electionRoundId}}/forms:fetchAll
+Authorization: Bearer {{$dotenv JWT_TOKEN}}
+
+###
+
+###
+# upsert a form submission
+POST {{$dotenv HOST }}/api/election-rounds/{{electionRoundId}}/form-submissions
+Content-Type: application/json
+Authorization: Bearer {{$dotenv JWT_TOKEN}}
+
+{
+  "formId": "cc61c97d-b512-448f-b385-0cb783ac91fd",
+  "pollingStationId": "{{pollingStationId}}",
+  "answers": [
+    {
+      "$answerType": "textAnswer",
+      "questionId": "ff951f9b-024f-43d1-ac63-941922cf6150",
+      "Text": "this is a text answer"
+    }
+  ]
+}
+
+###
+
+###
+# upsert with empty array does nothing
+POST {{$dotenv HOST }}/api/election-rounds/{{electionRoundId}}/form-submissions
+Content-Type: application/json
+Authorization: Bearer {{$dotenv JWT_TOKEN}}
+
+{
+  "formId": "cc61c97d-b512-448f-b385-0cb783ac91fd",
+  "pollingStationId": "{{pollingStationId}}",
+  "answers": [
+  ]
+}
+
+###
+
+###
+# upsert with null/undefined removes answers
+POST {{$dotenv HOST }}/api/election-rounds/{{electionRoundId}}/form-submissions
+Content-Type: application/json
+Authorization: Bearer {{$dotenv JWT_TOKEN}}
+
+{
+  "formId": "cc61c97d-b512-448f-b385-0cb783ac91fd",
+  "pollingStationId": "{{pollingStationId}}"
+}
+
+###
+
+# Delete a form template
+DELETE {{$dotenv HOST }}/api/election-rounds/{{electionRoundId}}/form-submissions/{}
+Authorization: Bearer {{$dotenv JWT_TOKEN}}
+
+###

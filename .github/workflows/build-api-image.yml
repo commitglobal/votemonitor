@@ -1,0 +1,19 @@
+name: Build and push votemonitor image to registry
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - v*
+
+jobs:
+  build:
+    uses: commitglobal/.github/.github/workflows/build-push-image.yml@main
+    with:
+      images: commitglobal/votemonitor
+      dockerfile: ./api/src/Vote.Monitor.Api/Dockerfile
+      context: ./api
+    secrets:
+      username: ${{ secrets.DOCKER_HUB_USERNAME }}
+      token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
