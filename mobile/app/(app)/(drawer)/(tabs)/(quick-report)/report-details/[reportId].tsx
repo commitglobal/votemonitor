@@ -3,10 +3,11 @@ import { router, useLocalSearchParams } from "expo-router";
 import Header from "../../../../../../components/Header";
 import { Icon } from "../../../../../../components/Icon";
 import { Typography } from "../../../../../../components/Typography";
-import { YStack } from "tamagui";
+import { Image, View, YStack } from "tamagui";
 import { useQuickReportById } from "../../../../../../services/queries/quick-reports.query";
 import { useUserData } from "../../../../../../contexts/user/UserContext.provider";
 import Card from "../../../../../../components/Card";
+import { useState } from "react";
 
 type SearchParamsType = {
   reportId: string;
@@ -15,6 +16,8 @@ type SearchParamsType = {
 
 const ReportDetails = () => {
   const { reportTitle, reportId } = useLocalSearchParams<SearchParamsType>();
+  const [displayAttachment, setDisplayAttachment] = useState(false);
+  console.log("displayAttachment", displayAttachment);
 
   if (!reportId || !reportTitle) {
     return <Typography>Incorrect page params</Typography>;
@@ -28,7 +31,7 @@ const ReportDetails = () => {
     error: currentReportError,
   } = useQuickReportById(activeElectionRound?.id, reportId);
 
-  console.log("data", quickReport);
+  // console.log("data", quickReport);
 
   if (isLoadingCurrentReport) {
     return <Typography>Loading</Typography>;
@@ -39,10 +42,10 @@ const ReportDetails = () => {
   }
 
   const attachments = quickReport?.attachments || [];
-  if (attachments.length !== 0) {
-    console.log("attachments", attachments[0]);
-    console.log("attachments", attachments[1]);
-  }
+  // if (attachments.length !== 0) {
+  //   console.log("attachments", attachments[0]);
+  //   console.log("attachments", attachments[1]);
+  // }
 
   return (
     <Screen
@@ -82,7 +85,11 @@ const ReportDetails = () => {
               Uploaded media
             </Typography>
             {attachments.map((attachment, key) => (
-              <Card key={key}>
+              <Card
+                key={key}
+                onPressIn={() => setDisplayAttachment(true)}
+                onPressOut={() => setDisplayAttachment(false)}
+              >
                 <Typography preset="body1" fontWeight="700" key={attachment.id}>
                   {attachment.fileName}
                 </Typography>
@@ -91,7 +98,27 @@ const ReportDetails = () => {
           </YStack>
         )}
       </YStack>
+
+      {displayAttachment === true && <ImageAttachment presignedUrl={attachments[0].presignedUrl} />}
     </Screen>
+  );
+};
+
+interface AttachmentProps {
+  presignedUrl: string;
+}
+
+const ImageAttachment = (props: AttachmentProps) => {
+  const { presignedUrl } = props;
+
+  return (
+    <View>
+      <Image
+        source={{ uri: presignedUrl, width: 100, height: 100 }}
+        width="100%"
+        resizeMode="contain"
+      />
+    </View>
   );
 };
 
