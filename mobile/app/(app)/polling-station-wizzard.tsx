@@ -83,7 +83,7 @@ const PollingStationWizzardContent = ({
 }: PollingStationWizzardContentProps) => {
   const { t } = useTranslation("add_polling_station");
   const [selectedOption, setSelectedOption] = useState<PollingStationStep>();
-  const { activeElectionRound } = useUserData();
+  const { activeElectionRound, setSelectedPollingStationId } = useUserData();
 
   const queryClient = useQueryClient();
 
@@ -163,6 +163,8 @@ const PollingStationWizzardContent = ({
           },
         ],
       );
+
+      setSelectedPollingStationId(null);
     }
 
     router.back();

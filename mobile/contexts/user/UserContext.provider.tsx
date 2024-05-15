@@ -1,5 +1,6 @@
 import { createContext, useContext, useMemo, useState } from "react";
 import {
+  electionRoundsKeys,
   pollingStationByIdQueryFn,
   pollingStationInformationQueryFn,
   pollingStationsKeys,
@@ -13,9 +14,11 @@ import {
   PollingStationVisitVM,
 } from "../../common/models/polling-station.model";
 import { ElectionRoundVM } from "../../common/models/election-round.model";
-import { useQueries } from "@tanstack/react-query";
+import { skipToken, useQueries } from "@tanstack/react-query";
 import LoadingScreen from "../../components/LoadingScreen";
 import GenericErrorScreen from "../../components/GenericErrorScreen";
+import { getElectionRoundAllForms } from "../../services/definitions.api";
+import { formSubmissionsQueryFn } from "../../services/queries/form-submissions.query";
 
 type UserContextType = {
   electionRounds: ElectionRoundVM[] | undefined;
@@ -27,13 +30,13 @@ type UserContextType = {
   isLoading: boolean;
 
   error: Error | null;
-  setSelectedPollingStationId: (pollingStationId: string) => void;
+  setSelectedPollingStationId: (pollingStationId: string | null) => void;
 };
 
 export const UserContext = createContext<UserContextType | null>(null);
 
 const UserContextProvider = ({ children }: React.PropsWithChildren) => {
-  const [selectedPollingStationId, setSelectedPollingStationId] = useState<string>();
+  const [selectedPollingStationId, setSelectedPollingStationId] = useState<string | null>();
 
   const {
     data: rounds,
@@ -70,8 +73,8 @@ const UserContextProvider = ({ children }: React.PropsWithChildren) => {
   } = usePollingStationById(currentSelectedPollingStationId);
 
   useQueries({
-    queries:
-      visits
+    queries: [
+      ...(visits
         ?.map((visit) => {
           const nodes = {
             queryKey: pollingStationsKeys.one(visit.pollingStationId),
@@ -87,9 +90,23 @@ const UserContextProvider = ({ children }: React.PropsWithChildren) => {
               pollingStationInformationQueryFn(activeElectionRound?.id, visit.pollingStationId),
             staleTime: 5 * 60 * 1000,
           };
-          return [nodes, informations];
+          const submissions = {
+            queryKey: pollingStationsKeys.formSubmissions(
+              activeElectionRound?.id,
+              visit.pollingStationId,
+            ),
+            queryFn: () => formSubmissionsQueryFn(activeElectionRound?.id, visit.pollingStationId),
+          };
+          return [nodes, informations, submissions];
         })
-        ?.flat() || [],
+        ?.flat() || []),
+      {
+        queryKey: electionRoundsKeys.forms(activeElectionRound?.id),
+        queryFn: activeElectionRound?.id
+          ? () => getElectionRoundAllForms(activeElectionRound.id)
+          : skipToken,
+      },
+    ],
   });
 
   const error =
