@@ -3,7 +3,7 @@ import { Screen } from "../../components/Screen";
 import Header from "../../components/Header";
 import { Icon } from "../../components/Icon";
 import { Keyboard, TextStyle, ViewStyle, useWindowDimensions } from "react-native";
-import { Input, ListItem, ScrollView, View, XStack, YStack, styled } from "tamagui";
+import { Input, Spinner, XStack, YStack, styled } from "tamagui";
 import { Typography } from "../../components/Typography";
 import { pollingStationsKeys, usePollingStationByParentID } from "../../services/queries.service";
 import React, { useMemo, useState } from "react";
@@ -206,15 +206,10 @@ const PollingStationWizzardContent = ({
         </XStack>
 
       </YStack >
-      {/* <View
-        contentContainerStyle={{ flexGrow: 1 }}
-        centerContent
-        keyboardShouldPersistTaps="handled"
-      > */}
       <YStack paddingHorizontal="$md" paddingTop="$sm" height={height - 250} paddingBottom={'$md'}>
 
         {isFetchingPollingStations &&
-          <Typography>Loading...</Typography>
+          <Spinner size="large" color="$purple5" />
         }
         {!isFetchingPollingStations && (
           <ListView<{ id: string | number; value: string; label: string }>
@@ -234,7 +229,6 @@ const PollingStationWizzardContent = ({
           />
         )}
       </YStack>
-      {/* </ScrollView> */}
       <WizzardControls
         isFirstElement={!activeStep?.id}
         isLastElement={isLastElement}
