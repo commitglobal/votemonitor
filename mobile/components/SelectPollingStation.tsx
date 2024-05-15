@@ -36,7 +36,11 @@ const SelectPollingStation = () => {
           <Select.Value
             width={"90%"}
             color="$purple5"
-            placeholder={`${selectedPollingStation?.number} - ${selectedPollingStation?.name}`}
+            placeholder={
+              selectedPollingStation
+                ? `${selectedPollingStation?.number} - ${selectedPollingStation?.name}`
+                : "Loading..."
+            }
             fontWeight="500"
           ></Select.Value>
         </Select.Trigger>
