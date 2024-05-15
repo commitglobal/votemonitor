@@ -11,6 +11,7 @@ import CardFooter from "./CardFooter";
 import Card from "./Card";
 import { useMutatePollingStationGeneralData } from "../services/mutations/psi-general.mutation";
 import { ApiFormAnswer } from "../services/interfaces/answer.type";
+import { useTranslation } from "react-i18next";
 
 interface PollingStationGeneralProps {
   electionRoundId: string;
@@ -32,6 +33,8 @@ export const PollingStationGeneral: React.FC<PollingStationGeneralProps> = ({
   psiData: psi,
   psiFormQuestions,
 }) => {
+  const { t } = useTranslation("observations_polling_station");
+
   const { mutate } = useMutatePollingStationGeneralData({
     electionRoundId,
     pollingStationId,
@@ -90,7 +93,7 @@ export const PollingStationGeneral: React.FC<PollingStationGeneralProps> = ({
             nrOfQuestions={psiFormQuestions?.questions?.length}
           />
         )}
-        <CardFooter text="Polling station information"></CardFooter>
+        <CardFooter text={t("polling_station_card.polling_station_information")}></CardFooter>
       </Card>
     </>
   );

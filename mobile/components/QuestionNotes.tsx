@@ -4,6 +4,7 @@ import { Typography } from "./Typography";
 import Card from "./Card";
 import { Icon } from "./Icon";
 import { Note } from "../common/models/note";
+import { useTranslation } from "react-i18next";
 import EditNoteSheet from "./EditNoteSheet";
 import { Platform } from "react-native";
 
@@ -20,11 +21,12 @@ const QuestionNotes = ({
   formId: string;
   questionId: string;
 }) => {
+  const { t } = useTranslation("question_page");
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
 
   return (
     <YStack marginTop="$lg" gap="$xxs">
-      <Typography fontWeight="500">Notes</Typography>
+      <Typography fontWeight="500">{t("notes")}</Typography>
       {notes.map((note) => {
         return (
           <Card

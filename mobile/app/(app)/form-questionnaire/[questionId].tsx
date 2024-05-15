@@ -38,6 +38,7 @@ import { useFormById } from "../../../services/queries/forms.query";
 import { useFormAnswers } from "../../../services/queries/form-submissions.query";
 import { useNotesForQuestionId } from "../../../services/queries/notes.query";
 import * as Crypto from "expo-crypto";
+import { useTranslation } from "react-i18next";
 import { onlineManager } from "@tanstack/react-query";
 
 type SearchParamType = {
@@ -47,6 +48,7 @@ type SearchParamType = {
 };
 
 const FormQuestionnaire = () => {
+  const { t } = useTranslation("question_page");
   const { questionId, formId, language } = useLocalSearchParams<SearchParamType>();
 
   if (!questionId || !formId || !language) {
@@ -281,7 +283,7 @@ const FormQuestionnaire = () => {
       />
       <YStack gap="$xxs" padding="$md">
         <XStack justifyContent="space-between">
-          <Typography>Form progress</Typography>
+          <Typography>{t("progress")}</Typography>
           <Typography justifyContent="space-between">{`${activeQuestion?.index + 1}/${currentForm?.questions.length}`}</Typography>
         </XStack>
         <LinearProgress
@@ -290,7 +292,7 @@ const FormQuestionnaire = () => {
         />
         <XStack justifyContent="flex-end">
           <Typography onPress={onClearForm} color="$red10">
-            Clear answer
+            {t("actions.clear_answer")}
           </Typography>
         </XStack>
       </YStack>
@@ -330,7 +332,9 @@ const FormQuestionnaire = () => {
                       paragraph={question.helptext[language]}
                       onChangeText={onChange}
                       maxLength={1000}
-                      helper="1000 characters"
+                      helper={t("max", {
+                        value: 1000,
+                      })}
                       value={value}
                     />
                   );
@@ -470,7 +474,7 @@ const FormQuestionnaire = () => {
           )}
 
           <AddAttachment
-            label="Add Note or Media"
+            label={t("actions.add_attachments")}
             marginTop="$sm"
             onPress={() => {
               console.log("doing stuff for question", activeQuestion);
@@ -517,7 +521,7 @@ const FormQuestionnaire = () => {
                   setAddingNote(true);
                 }}
               >
-                Add note
+                {t("options_sheet.add_note")}
               </Typography>
               <Typography
                 onPress={handleCameraUpload.bind(null, "library")}
@@ -525,7 +529,7 @@ const FormQuestionnaire = () => {
                 paddingVertical="$md"
                 pressStyle={{ color: "$purple5" }}
               >
-                Load from gallery
+                {t("options_sheet.load")}
               </Typography>
               <Typography
                 onPress={handleCameraUpload.bind(null, "cameraPhoto")}
@@ -533,7 +537,7 @@ const FormQuestionnaire = () => {
                 paddingVertical="$md"
                 pressStyle={{ color: "$purple5" }}
               >
-                Take a photo
+                {t("options_sheet.take_picture")}
               </Typography>
               <Typography
                 onPress={handleCameraUpload.bind(null, "cameraVideo")}
@@ -541,7 +545,7 @@ const FormQuestionnaire = () => {
                 paddingVertical="$md"
                 pressStyle={{ color: "$purple5" }}
               >
-                Record a video
+                {t("options_sheet.record_video")}
               </Typography>
               <Typography
                 onPress={handleUploadAudio.bind(null)}
@@ -549,7 +553,7 @@ const FormQuestionnaire = () => {
                 paddingVertical="$md"
                 pressStyle={{ color: "$purple5" }}
               >
-                Upload audio file
+                {t("options_sheet.upload_audio")}
               </Typography>
             </YStack>
           )}
