@@ -34,16 +34,6 @@ const Select = ({ placeholder = "Select", options, ...props }: StyledSelectProps
     );
   }, [options, searchTerm]);
 
-  const SearchInput = styled(Input, {
-    backgroundColor: "$purple1",
-    placeholder: t("select_option.actions.search"),
-    color: "$purple5",
-    placeholderTextColor: "$purple5",
-    focusStyle: {
-      borderColor: "transparent",
-    },
-  });
-
   return (
     <TamaguiSelect
       disablePreventBodyScroll
@@ -87,7 +77,12 @@ const Select = ({ placeholder = "Select", options, ...props }: StyledSelectProps
             >
               <XStack backgroundColor="$purple1" borderRadius={8} alignItems="center">
                 <Icon icon="search" color="transparent" size={20} marginLeft="$sm" />
-                <SearchInput flex={1} value={searchTerm} onChangeText={setSearchTerm} />
+                <SearchInput
+                  flex={1}
+                  placeholder={t("select_option.actions.search")}
+                  value={searchTerm}
+                  onChangeText={setSearchTerm}
+                />
               </XStack>
             </YStack>
 
@@ -134,5 +129,14 @@ const Select = ({ placeholder = "Select", options, ...props }: StyledSelectProps
     </TamaguiSelect>
   );
 };
+
+const SearchInput = styled(Input, {
+  backgroundColor: "$purple1",
+  color: "$purple5",
+  placeholderTextColor: "$purple5",
+  focusStyle: {
+    borderColor: "transparent",
+  },
+});
 
 export default Select;
