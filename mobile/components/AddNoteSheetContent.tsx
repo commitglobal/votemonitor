@@ -7,6 +7,7 @@ import Input from "./Inputs/Input";
 import { useAddNoteMutation } from "../services/mutations/add-note.mutation";
 import { Keyboard } from "react-native";
 import * as Crypto from "expo-crypto";
+import { useTranslation } from "react-i18next";
 
 const AddNoteSheetContent = ({
   setAddingNote,
@@ -23,6 +24,8 @@ const AddNoteSheetContent = ({
   electionRoundId: string | undefined;
   setIsOptionsSheetOpen: Dispatch<SetStateAction<boolean>>;
 }) => {
+  const { t } = useTranslation("bottom_sheets");
+
   const { control, handleSubmit, reset } = useForm({
     defaultValues: {
       noteText: "",
@@ -54,7 +57,7 @@ const AddNoteSheetContent = ({
 
   return (
     <YStack marginHorizontal={12} gap="$md">
-      <Typography preset="heading">Add a note</Typography>
+      <Typography preset="heading">{t("add_note.title")}</Typography>
 
       <Controller
         key={questionId + "_note"}
@@ -65,7 +68,7 @@ const AddNoteSheetContent = ({
             <YStack height={150}>
               <Input
                 type="textarea"
-                placeholder="Add any relevant notes to this question."
+                placeholder={t("add_note.placeholder")}
                 value={noteValue}
                 height={150}
                 onChangeText={onNoteChange}
@@ -77,10 +80,10 @@ const AddNoteSheetContent = ({
 
       <XStack gap="$md">
         <Button preset="chromeless" onPress={() => setAddingNote(false)}>
-          Cancel
+          {t("add_note.actions.cancel")}
         </Button>
         <Button flex={1} onPress={handleSubmit(onSubmitNote)}>
-          Save
+          {t("add_note.actions.save")}
         </Button>
       </XStack>
     </YStack>

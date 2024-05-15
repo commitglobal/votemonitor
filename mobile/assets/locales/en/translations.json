@@ -126,6 +126,16 @@
         "add_station": "Add new polling station",
         "change_language": "Change language"
       }
+    },
+    "add_note": {
+      "title": "Add a note",
+      "title_edit": "Edit note",
+      "placeholder": "Add any relevant notes to this question.",
+      "actions": {
+          "save": "Save",
+          "cancel": "Cancel",
+          "delete_note": "Delete note"
+      }
     }
   },
   "form_overview": {
@@ -261,4 +271,5 @@
       "upload_audio": "Upload audio file"
     }
   }
+  
 }

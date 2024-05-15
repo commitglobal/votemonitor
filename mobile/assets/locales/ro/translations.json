@@ -126,6 +126,16 @@
         "add_station": "Adăugați o nouă secție de votare",
         "change_language": "Schimba limba formularului"
       }
+    },
+    "add_note": {
+      "title": "Adauga o notita",
+      "title_edit": "Editeaza notita",
+      "placeholder": "Adauga orice notita relevanta",
+      "actions": {
+          "save": "Salveaza",
+          "cancel": "Anuleaza",
+          "delete_note": "Sterge notita"
+      }
     }
   },
   "form_overview": {
