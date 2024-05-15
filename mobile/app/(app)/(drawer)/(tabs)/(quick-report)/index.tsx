@@ -43,7 +43,11 @@ const QuickReport = () => {
             setOpenContextualMenu(true);
           }}
         />
-        <QuickReportContent quickReports={quickReports} isLoading={isLoading} error={error} />
+        {quickReports ? (
+          <QuickReportContent quickReports={quickReports} isLoading={isLoading} error={error} />
+        ) : (
+          false
+        )}
         <OptionsSheet open={openContextualMenu} setOpen={setOpenContextualMenu}>
           {/* //TODO: what do we need to add here? */}
           <View paddingVertical="$xxs" paddingHorizontal="$sm">
@@ -53,7 +57,7 @@ const QuickReport = () => {
           </View>
         </OptionsSheet>
       </Screen>
-      {quickReports.length > 0 && (
+      {quickReports?.length && (
         <YStack width="100%" paddingHorizontal="$md" marginVertical="$xxs">
           <Button
             preset="outlined"
