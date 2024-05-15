@@ -87,7 +87,7 @@ builder.Services.AddHangfire(config =>
 
     config.UseActivator(new ContainerJobActivator(builtProvider));
 
-    config.UseColouredConsoleLogProvider();
+    config.UseSerilogLogProvider();
 });
 builder.Services.AddHangfireServer();
 
