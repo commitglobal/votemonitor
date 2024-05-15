@@ -17,12 +17,15 @@ import { PollingStationGeneral } from "../../../../../components/PollingStationG
 import FormList from "../../../../../components/FormList";
 import OptionsSheet from "../../../../../components/OptionsSheet";
 import { useTranslation } from "react-i18next";
+import NoElectionRounds from "../../../../../components/NoElectionRounds";
 
 const Index = () => {
+  const { t } = useTranslation("observations_polling_station");
   const navigation = useNavigation();
   const [openContextualMenu, setOpenContextualMenu] = useState(false);
 
-  const { isLoading, visits, selectedPollingStation, activeElectionRound } = useUserData();
+  const { isLoading, visits, selectedPollingStation, activeElectionRound, electionRounds } =
+    useUserData();
 
   const { data: psiData } = usePollingStationInformation(
     activeElectionRound?.id,
@@ -30,6 +33,10 @@ const Index = () => {
   );
 
   const { data: psiFormQuestions } = usePollingStationInformationForm(activeElectionRound?.id);
+
+  if (!isLoading && electionRounds && !electionRounds.length) {
+    return <NoElectionRounds />;
+  }
 
   if (!isLoading && visits && !visits.length) {
     return <NoVisitsExist />;
@@ -46,7 +53,7 @@ const Index = () => {
     >
       <YStack marginBottom={20}>
         <Header
-          title={"Observation"}
+          title={t("title")}
           titleColor="white"
           barStyle="light-content"
           leftIcon={<Icon icon="menuAlt2" color="white" />}
@@ -72,7 +79,7 @@ const Index = () => {
                   />
                 )}
               <Typography preset="body1" fontWeight="700" marginTop="$lg" marginBottom="$xxs">
-                Forms
+                {t("forms.title")}
               </Typography>
             </YStack>
           }

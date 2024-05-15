@@ -3,7 +3,8 @@ import { Typography } from "./Typography";
 import Card from "./Card";
 import { Icon } from "./Icon";
 import { useAttachments } from "../services/queries/attachments.query";
-import { useDeleteAttachment } from "../services/mutations/delete-attachment.mutation";
+import { useDeleteAttachment } from "../services/mutations/attachments/delete-attachment.mutation";
+import { useTranslation } from "react-i18next";
 
 interface QuestionAttachmentsProps {
   electionRoundId: string;
@@ -18,6 +19,7 @@ const QuestionAttachments: React.FC<QuestionAttachmentsProps> = ({
   formId,
   questionId,
 }) => {
+  const { t } = useTranslation("question_page");
   const { data: attachments } = useAttachments(electionRoundId, pollingStationId, formId);
 
   const { mutate: deleteAttachment } = useDeleteAttachment(
@@ -30,7 +32,7 @@ const QuestionAttachments: React.FC<QuestionAttachmentsProps> = ({
   return (
     attachments?.[questionId]?.length && (
       <YStack marginTop="$lg" gap="$xxs">
-        <Typography fontWeight="500">Uploaded media</Typography>
+        <Typography fontWeight="500">{t("uploaded_media")}</Typography>
         <YStack gap="$xxs">
           {attachments[questionId]?.map((attachment) => {
             return (
@@ -47,7 +49,7 @@ const QuestionAttachments: React.FC<QuestionAttachmentsProps> = ({
                 </Typography>
                 <YStack
                   padding="$md"
-                  onPress={() => deleteAttachment({ electionRoundId, id: attachment.id })}
+                  onPress={() => deleteAttachment(attachment)}
                   pressStyle={{ opacity: 0.5 }}
                 >
                   <Icon icon="xCircle" size={24} color="$gray5" />

@@ -5,7 +5,9 @@
   },
   "languages": {
     "ro": "Romanian",
-    "en": "English"
+    "en": "English",
+    "pl": "Polish",
+    "bg": "Bulgarian"
   },
   "login": {
     "submit": "Sign In",
@@ -110,13 +112,36 @@
   "polling_station_information": {
     "header": {
       "title": "Polling station information"
+    },
+    "actions": {
+      "submit": "Submit answers"
     }
   },
   "bottom_sheets": {
     "observations": {
+      "title": "My polling stations",
+      "paragraph": "You can switch between polling stations if you want to revisit form answers or polling stations information.",
       "actions": {
         "clear_form": "Clear form (delete all answers)",
-        "manage_polling_stations": "Manage my polling stations"
+        "manage_polling_stations": "Manage my polling stations",
+        "add_station": "Add new polling station",
+        "change_language": "Change language"
+      }
+    },
+    "add_note": {
+      "title": "Add a note",
+      "title_edit": "Edit note",
+      "placeholder": "Add any relevant notes to this question.",
+      "actions": {
+        "save": "Save",
+        "cancel": "Cancel",
+        "delete_note": "Delete note"
+      }
+    },
+    "select_option": {
+      "no_data": "No data found for current search.",
+      "actions": {
+        "search": "Search"
       }
     }
   },
@@ -124,13 +149,29 @@
     "form_overview": {
       "title": "Form Overview",
       "status": "Form status",
+      "not_started": "Not started",
+      "in_progress": "In progress",
+      "completed": "Completed",
       "answered_questions": "Answered questions",
-      "resume": "Resume form"
+      "resume": "Resume form",
+      "start_form": "Start form",
+      "progress": "progress"
     },
     "language_modal": {
       "header": "Select form language",
       "helper": "The selected form is available in multiple languages. Please select which one you would like to continue with.",
-      "error": "Please select one of the options"
+      "error": "Please select one of the options",
+      "actions": {
+        "save": "Save",
+        "cancel": "Cancel"
+      }
+    },
+    "questions": {
+      "title": "Intrebari",
+      "not_answered": "Not Answered",
+      "answered": "Answered",
+      "no_notes": "No attached notes",
+      "notes": "Includes attached notes"
     }
   },
   "inbox_empty": {
@@ -180,26 +221,85 @@
   },
   "manage_polling_stations": {
     "header": {
-        "title": "Manage my polling stations"
+      "title": "Manage my polling stations"
     },
     "station_card": {
-        "title": "Polling station #{{value}}",
-        "level_1": "[Location L1]:",
-        "level_2": "[Location L2]:",
-        "level_3": "[Location L3]:",
-        "street": "Street:",
-        "number": "Polling station number:"
+      "title": "Polling station #{{value}}",
+      "level_1": "[Location L1]:",
+      "level_2": "[Location L2]:",
+      "level_3": "[Location L3]:",
+      "street": "Street:",
+      "number": "Polling station number:"
     }
   },
-  "modals" : {
-    "delete_station" : {
+  "modals": {
+    "delete_station": {
       "title": "Delete Polling station #{{value}}",
       "paragraph_1": "This action will delete al answers entered so far for this polling station (including polling station information , form answers, notes and media files).",
       "paragraph_2": "To avoid unintended information loss, please ensure you check the polling station details before performing this action.",
       "actions": {
-          "delete": "Delete",
-          "cancel": "Cancel"
+        "delete": "Delete",
+        "cancel": "Cancel"
       }
+    }
+  },
+  "observations_polling_station": {
+    "title": "Observation",
+    "time_select": {
+      "undefined_time": "Not defined",
+      "arrival_time": "Arrival time",
+      "departure_time": "Departure time",
+      "actions": {
+        "save": "Done"
+      },
+      "toast": {
+        "error": {
+          "arrival_first": "Please select an arrival time first.",
+          "later_departure": "Please select a departure time that is at a later time than the arrival.",
+          "earlier_arrival": "Please select an arrival time that is at an earlier time than the departure."
+        }
+      }
+    },
+    "polling_station_card": {
+      "title": "Answer a few quick questions about the polling station.",
+      "polling_station_information": "Polling station information",
+      "questions": "{{value}} questions",
+      "badge_status": {
+        "completed": "Completed",
+        "in_progress": "In progress",
+        "not_started": "Not started"
+      },
+      "actions": {
+        "answer_questions": "Answer questions"
+      }
+    },
+    "forms": {
+      "title": "Forms"
+    }
+  },
+  "observations_empty": {
+    "title": "Nicio secție de votare vizitată încă",
+    "paragraph": "Începeți să configurați prima secție de votare înainte de a completa formularele de observație.",
+    "actions": {
+      "add_station": "Adăugați prima secție de votare."
+    }
+  },
+  "question_page": {
+    "notes": "Notes",
+    "uploaded_media": "Uploaded media",
+    "progress": "Form progress",
+    "min": "The field must be at least {{value}} characters long",
+    "max": "The field must have a maximum of {{value}} characters",
+    "actions": {
+      "clear_answer": "Clear answer",
+      "add_attachments": "Add notes and media"
+    },
+    "options_sheet": {
+      "add_note": "Add note",
+      "load": "Load from gallery",
+      "take_picture": "Take a photo",
+      "record_video": "Record audio",
+      "upload_audio": "Upload audio file"
     }
   }
 }

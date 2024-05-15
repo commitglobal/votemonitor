@@ -18,6 +18,7 @@ import FormQuestionListItem, {
   QuestionStatus,
 } from "../../../../../../components/FormQuestionListItem";
 import FormOverview from "../../../../../../components/FormOverview";
+import { useTranslation } from "react-i18next";
 
 type SearchParamsType = {
   formId: string;
@@ -25,6 +26,7 @@ type SearchParamsType = {
 };
 
 const FormDetails = () => {
+  const { t } = useTranslation(["form_overview", "bottom_sheets"]);
   const { formId, language } = useLocalSearchParams<SearchParamsType>();
 
   if (!formId || !language) {
@@ -132,7 +134,7 @@ const FormDetails = () => {
         height={
           Platform.OS === "ios"
             ? Dimensions.get("screen").height - 120
-            : Dimensions.get("screen").height * 1.4 // TODO: need to do something about this
+            : numberOfQuestions * 165 + 300
         }
       >
         <ListView<Pick<FormQuestionListItemProps, "question" | "status"> & { id: string }>
@@ -145,7 +147,7 @@ const FormDetails = () => {
                 onFormActionClick={onFormOverviewActionClick}
               />
               <Typography preset="body1" fontWeight="700" gap="$xxs">
-                Questions
+                {t("questions.title")}
               </Typography>
             </YStack>
           }
@@ -176,10 +178,10 @@ const FormDetails = () => {
       <OptionsSheet open={optionSheetOpen} setOpen={setOptionSheetOpen}>
         <YStack paddingHorizontal="$sm" gap="$xxs">
           <Typography preset="body1" paddingVertical="$md" onPress={onChangeLanguagePress}>
-            Change language
+            {t("observations.actions.change_language", { ns: "bottom_sheets" })}
           </Typography>
           <Typography preset="body1" paddingVertical="$md" onPress={onClearAnswersPress}>
-            Clear form (delete all answers)
+            {t("observations.actions.clear_form", { ns: "bottom_sheets" })}
           </Typography>
         </YStack>
       </OptionsSheet>

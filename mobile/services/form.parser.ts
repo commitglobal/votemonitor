@@ -131,10 +131,10 @@ export const mapFormStateStatus = (
 };
 
 export const mapFormToFormListItem = (
-  forms: FormAPIModel[],
-  formSubmissions: FormSubmissionsApiResponse,
+  forms: FormAPIModel[] = [],
+  formSubmissions: FormSubmissionsApiResponse | undefined,
 ): FormListItem[] => {
-  const submissions = arrayToKeyObject(formSubmissions.submissions, "formId");
+  const submissions = arrayToKeyObject(formSubmissions?.submissions || [], "formId");
   return forms.map((form) => {
     const numberOfAnswers = submissions[form.id]?.answers.length || 0;
     return {

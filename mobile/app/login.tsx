@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { router } from "expo-router";
 import { useAuth } from "../hooks/useAuth";
 import { View, XStack, YStack, styled } from "tamagui";
@@ -25,10 +25,12 @@ interface FormData {
 const Login = () => {
   const { t } = useTranslation("login");
   const { signIn } = useAuth();
-  const [authError, setAuthError] = React.useState(false);
+  const [authError, setAuthError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const onLogin = async (formData: FormData) => {
     try {
+      setIsLoading(true);
       const email = formData.email.trim().toLocaleLowerCase();
       const password = formData.password.trim();
 
@@ -38,6 +40,8 @@ const Login = () => {
     } catch (err) {
       setAuthError(true);
       Sentry.captureException(err);
+    } finally {
+      setIsLoading(false);
     }
   };
   const { handleSubmit, control, formState } = useForm({
@@ -69,7 +73,9 @@ const Login = () => {
         <LoginForm control={control} errors={errors} authError={authError} />
       </YStack>
       <Card width="100%" paddingBottom={16 + insets.bottom} marginTop="auto">
-        <Button onPress={handleSubmit(onLogin)}>Log in</Button>
+        <Button onPress={handleSubmit(onLogin)} disabled={isLoading}>
+          {isLoading ? "Log in..." : "Log in"}
+        </Button>
       </Card>
     </Screen>
   );
@@ -85,11 +91,11 @@ const LoginForm = ({
   authError: boolean;
 }) => {
   const { t } = useTranslation("login");
-  const [secureTextEntry, setSecureTextEntry] = React.useState(false);
+  const [secureTextEntry, setSecureTextEntry] = React.useState(true);
   const passIcon = secureTextEntry === false ? "eye" : "eyeOff";
 
   return (
-    <View gap={12}>
+    <View gap="$sm">
       <Typography preset="heading" fontWeight="700">
         {t("title")}
       </Typography>
@@ -151,15 +157,19 @@ const LoginForm = ({
         )}
       />
 
-      <Typography
-        textAlign="right"
-        color="$purple5"
+      <View
+        alignSelf="flex-end"
+        paddingTop="$sm"
+        paddingLeft="$lg"
         onPress={() => {
           router.push("./forgot-password");
         }}
+        pressStyle={{ opacity: 0.5 }}
       >
-        {t("actions.forgot_password")}
-      </Typography>
+        <Typography color="$purple5" textDecorationLine="underline">
+          {t("actions.forgot_password")}
+        </Typography>
+      </View>
       <Typography fontSize={"$1"} style={{ position: "absolute", bottom: 0 }}>
         {`v${Constants.expoConfig?.version}(${Constants.expoConfig?.extra?.updateVersion}) `}
         {process.env.EXPO_PUBLIC_ENVIRONMENT !== "production"
