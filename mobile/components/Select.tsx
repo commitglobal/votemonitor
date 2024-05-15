@@ -13,6 +13,7 @@ import { Icon } from "./Icon";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Typography } from "./Typography";
 import { Keyboard } from "react-native";
+import { useTranslation } from "react-i18next";
 
 interface StyledSelectProps extends SelectProps {
   placeholder?: string;
@@ -23,6 +24,7 @@ const Select = ({ placeholder = "Select", options, ...props }: StyledSelectProps
   const insets = useSafeAreaInsets();
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [isOpen, setIsOpen] = useState(false);
+  const { t } = useTranslation("bottom_sheets");
 
   // Filter options based on search term
   const filteredOptions = useMemo(() => {
@@ -75,7 +77,12 @@ const Select = ({ placeholder = "Select", options, ...props }: StyledSelectProps
             >
               <XStack backgroundColor="$purple1" borderRadius={8} alignItems="center">
                 <Icon icon="search" color="transparent" size={20} marginLeft="$sm" />
-                <SearchInput flex={1} value={searchTerm} onChangeText={setSearchTerm} />
+                <SearchInput
+                  flex={1}
+                  placeholder={t("select_option.actions.search")}
+                  value={searchTerm}
+                  onChangeText={setSearchTerm}
+                />
               </XStack>
             </YStack>
 
@@ -95,7 +102,7 @@ const Select = ({ placeholder = "Select", options, ...props }: StyledSelectProps
         <TamaguiSelect.Viewport>
           <TamaguiSelect.Group>
             {filteredOptions.length === 0 ? (
-              <Typography padding="$md">No data found for current search.</Typography>
+              <Typography padding="$md"> {t("select_option.no_data")}</Typography>
             ) : (
               filteredOptions.map((entry, i) => {
                 return (
@@ -123,14 +130,13 @@ const Select = ({ placeholder = "Select", options, ...props }: StyledSelectProps
   );
 };
 
-export default Select;
-
 const SearchInput = styled(Input, {
   backgroundColor: "$purple1",
-  placeholder: "Search",
   color: "$purple5",
   placeholderTextColor: "$purple5",
   focusStyle: {
     borderColor: "transparent",
   },
 });
+
+export default Select;

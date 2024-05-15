@@ -6,11 +6,14 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Button from "../components/Button";
 import { useUserData } from "../contexts/user/UserContext.provider";
 import { router } from "expo-router";
+import { useTranslation } from "react-i18next";
 
 const SelectPollingStation = () => {
   const { visits, selectedPollingStation, setSelectedPollingStationId } = useUserData();
   const [open, setOpen] = useState(false);
   const insets = useSafeAreaInsets();
+
+  const { t } = useTranslation("bottom_sheets");
 
   return (
     <YStack paddingVertical="$xs" paddingHorizontal="$md" backgroundColor="white">
@@ -49,13 +52,12 @@ const SelectPollingStation = () => {
                 borderBottomColor="$gray3"
               >
                 <Typography preset="body2" color="$gray5">
-                  My polling stations
+                  {t("observations.title")}
                 </Typography>
                 {/* //TODO: not sure how many nroflines we should leave here */}
                 <Typography numberOfLines={7} color="$gray5" marginTop="$xxs">
                   {/* //TODO: translation here */}
-                  You can switch between polling stations if you want to revisit form answers or
-                  polling station information.
+                  {t("observations.paragraph")}
                 </Typography>
               </YStack>
 
@@ -77,7 +79,7 @@ const SelectPollingStation = () => {
                     router.push.bind(null, "/polling-station-wizzard")();
                   }}
                 >
-                  Add new polling station
+                  {t("observations.actions.add_station")}
                 </Button>
               </View>
             </Sheet.Frame>
