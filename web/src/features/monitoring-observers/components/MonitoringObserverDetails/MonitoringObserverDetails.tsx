@@ -1,24 +1,37 @@
-import { Outlet, useLoaderData, useNavigate } from '@tanstack/react-router';
-import { MonitoringObserver } from '../../models/MonitoringObserver';
-import Layout from '@/components/layout/Layout';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
-import { Button } from '@/components/ui/button';
 import { PencilIcon } from '@heroicons/react/24/outline';
+import { useLoaderData, useNavigate } from '@tanstack/react-router';
+import type { FunctionComponent } from '@/common/types';
+import Layout from '@/components/layout/Layout';
 import TableTagList from '@/components/table-tag-list/TableTagList';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import type { MonitoringObserver } from '../../models/MonitoringObserver';
+import { MonitoringObserverForms } from '../MonitoringObserverForms/MonitoringObserverForms';
 
-export default function MonitoringObserverDetails() {
+export default function MonitoringObserverDetails(): FunctionComponent {
   const observer: MonitoringObserver = useLoaderData({ strict: false });
   const navigate = useNavigate();
-  const navigateToEdit = () => {
-    navigate({ to: '/monitoring-observers/$monitoringObserverId/edit', params: { monitoringObserverId: observer.id } });
+  const navigateToEdit = (): void => {
+    void navigate({
+      to: '/monitoring-observers/$monitoringObserverId/edit',
+      params: { monitoringObserverId: observer.id },
+    });
   };
 
   return (
     <Layout title={`${observer.firstName} ${observer.lastName}`}>
-      <Tabs defaultValue='observer-details'>
+      <Tabs
+        defaultValue='observer-details'
+        onValueChange={(tab) => {
+          void navigate({
+            search(prev) {
+              return { ...prev, tab };
+            },
+          });
+        }}>
         <TabsList className='grid grid-cols-2 bg-gray-200 w-[400px] mb-4'>
           <TabsTrigger value='observer-details'>Observer details</TabsTrigger>
           <TabsTrigger value='responses'>Responses/forms</TabsTrigger>
@@ -66,7 +79,9 @@ export default function MonitoringObserverDetails() {
             <CardFooter className='flex justify-between'></CardFooter>
           </Card>
         </TabsContent>
-        <TabsContent value='responses'>Change your password here.</TabsContent>
+        <TabsContent value='responses'>
+          <MonitoringObserverForms />
+        </TabsContent>
       </Tabs>
     </Layout>
   );

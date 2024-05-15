@@ -23,3 +23,19 @@ export const monitoringObserverRouteSearchSchema = z.object({
   pageSize: z.number().catch(10),
   status: z.enum(['Active', 'Inactive', 'Suspended']).catch('Active'),
 });
+
+export const monitoringObserverDetailsRouteSearchSchema = z.object({
+  tab: z.enum(['observer-details', 'responses']).catch('observer-details'),
+  formCodeFilter: z.string().catch('').optional(),
+  formTypeFilter: z.string().catch('').optional(),
+  level1Filter: z.string().catch('').optional(),
+  level2Filter: z.string().catch('').optional(),
+  level3Filter: z.string().catch('').optional(),
+  level4Filter: z.string().catch('').optional(),
+  level5Filter: z.string().catch('').optional(),
+  pollingStationNumberFilter: z.string().catch('').optional(),
+  hasFlaggedAnswers: z.string().catch('').optional(),
+  monitoringObserverId: z.string().catch('').optional(),
+});
+
+export type MonitoringObserverDetailsRouteSearch = z.infer<typeof monitoringObserverDetailsRouteSearchSchema>;
