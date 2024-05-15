@@ -16,7 +16,7 @@ const NotificationContextProvider = ({
   children: React.ReactNode;
   navigation?: any;
 }) => {
-  const [pushToken, setPushToken] = useState<string>();
+  const [pushToken, setPushToken] = useState<string | undefined>();
 
   // notifications
   const notificationListener = useRef<Notifications.Subscription>();
@@ -24,11 +24,10 @@ const NotificationContextProvider = ({
 
   const { isAuthenticated } = useAuth();
 
-  const [isRegistered, setIsRegistered] = useState<boolean>(false);
-
   const initNotifications = async () => {
     if (pushToken) {
       // Already registered
+      // TODO: save token in storage?
       return;
     }
 
@@ -47,8 +46,6 @@ const NotificationContextProvider = ({
       throw err;
     }
 
-    setIsRegistered(true);
-
     responseListener.current = Notifications.addNotificationResponseReceivedListener(
       (response: any) => {
         const {
@@ -62,38 +59,33 @@ const NotificationContextProvider = ({
         console.log("🚀🚀🚀🚀 NOTIFICATION payload", payload);
       },
     ) as any;
-
-    return () => {
-      Notifications.removeNotificationSubscription(
-        notificationListener.current as Notifications.Subscription,
-      );
-      Notifications.removeNotificationSubscription(
-        responseListener.current as Notifications.Subscription,
-      );
-    };
   };
 
   const init = useCallback(initNotifications, [initNotifications]);
 
   useEffect(() => {
-    // const state = navigation.getRootState();
-    // if (isAuthenticated && !isRegistered && state?.routeNames?.includes('home')) {
     if (isAuthenticated) {
       init();
     }
-  }, [navigation, init, isAuthenticated, isRegistered]);
 
-  useEffect(() => {
-    if (!isAuthenticated) {
-      setIsRegistered(false);
-    }
-  }, [isAuthenticated]);
+    return () => {
+      notificationListener.current &&
+        Notifications.removeNotificationSubscription(
+          notificationListener.current as Notifications.Subscription,
+        );
+      responseListener.current &&
+        Notifications.removeNotificationSubscription(
+          responseListener.current as Notifications.Subscription,
+        );
+    };
+  }, [navigation, isAuthenticated]);
 
   const unsubscribe = () => {
     try {
       if (pushToken) {
         // TODO: call api to unsubscribe
         // unregisterPushToken(pushToken);
+        setPushToken(undefined);
       }
     } catch (error) {
       console.error("Error while unregistering push token");
