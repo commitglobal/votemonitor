@@ -6,6 +6,7 @@ import {
 } from "../definitions.api";
 import { useMemo } from "react";
 import { pollingStationsKeys } from "../queries.service";
+import * as Crypto from "expo-crypto";
 
 export const useFormSubmissionMutation = ({
   electionRoundId,
@@ -41,17 +42,18 @@ export const useFormSubmissionMutation = ({
       // Snapshot the previous value
       const previousData = queryClient.getQueryData<FormSubmissionsApiResponse>(formSubmissionsQK);
 
-      // Optimistically update to the new value
-      // TODO @radulescuandrew will not set the data if previousData does not exist, refactor
-      if (previousData && payload.answers) {
-        const updatedSubmission = previousData.submissions.find((s) => s.formId === payload.formId);
+      // Optimistically update to the new valuer
+      if (payload.answers) {
+        const updatedSubmission = previousData?.submissions?.find(
+          (s) => s.formId === payload.formId,
+        );
 
         queryClient.setQueryData<FormSubmissionsApiResponse>(formSubmissionsQK, {
           submissions: [
-            ...previousData.submissions.filter((s) => s.formId !== payload.formId),
+            ...(previousData?.submissions?.filter((s) => s.formId !== payload.formId) || []),
             {
               ...payload,
-              id: (updatedSubmission?.id as string) || "-1",
+              id: updatedSubmission?.id || Crypto.randomUUID(),
             },
           ],
         });

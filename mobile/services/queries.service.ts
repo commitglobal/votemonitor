@@ -17,7 +17,8 @@ import { exists } from "i18next";
 export const electionRoundsKeys = {
   all: ["election-rounds"] as const,
   one: (id: string) => [...electionRoundsKeys.all, id] as const,
-  forms: () => [...electionRoundsKeys.all, "forms"] as const,
+  forms: (electionRoundId: string | undefined) =>
+    [...electionRoundsKeys.all, "forms", electionRoundId] as const,
 };
 
 export const pollingStationsKeys = {

@@ -13,6 +13,8 @@ import NetInfoBanner from "../components/NetInfoBanner";
 import { EasUpdateMonitorContextProvider } from "../contexts/eas-update/EasUpdateMonitorContextProvider";
 import * as Sentry from "@sentry/react-native";
 import { isRunningInExpoGo } from "expo";
+import Toast from "react-native-toast-message";
+import { toastConfig } from "../toast.config";
 
 // Construct a new instrumentation instance. This is needed to communicate between the integration and React
 const routingInstrumentation = new Sentry.ReactNavigationInstrumentation();
@@ -78,6 +80,7 @@ function RootLayout() {
               <LanguageContextProvider>
                 <EasUpdateMonitorContextProvider>
                   <Slot />
+                  <Toast config={toastConfig} position="top" />
                   <NetInfoBanner />
                 </EasUpdateMonitorContextProvider>
               </LanguageContextProvider>
