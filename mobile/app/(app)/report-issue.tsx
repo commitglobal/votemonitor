@@ -322,7 +322,7 @@ const ReportIssue = () => {
               )}
             />
             {attachments.length ? (
-              <YStack marginTop="$lg" gap="$xxs">
+              <YStack gap="$xxs">
                 <Typography fontWeight="500">Uploaded media</Typography>
                 <YStack gap="$xxs">
                   {attachments.map((attachment) => {
@@ -359,7 +359,7 @@ const ReportIssue = () => {
               false
             )}
             <AddAttachment
-              paddingVertical="$xxs"
+              label="Add Media"
               onPress={() => {
                 Keyboard.dismiss();
                 setOptionsSheetOpen(true);

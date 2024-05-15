@@ -29,7 +29,7 @@ import OptionsSheet from "../../../components/OptionsSheet";
 import AddAttachment from "../../../components/AddAttachment";
 
 import { FileMetadata, useCamera } from "../../../hooks/useCamera";
-import { addAttachmentMutation } from "../../../services/mutations/add-attachment.mutation";
+import { addAttachmentMutation } from "../../../services/mutations/attachments/add-attachment.mutation";
 import QuestionAttachments from "../../../components/QuestionAttachments";
 import QuestionNotes from "../../../components/QuestionNotes";
 import * as DocumentPicker from "expo-document-picker";
@@ -38,6 +38,8 @@ import { useFormById } from "../../../services/queries/forms.query";
 import { useFormAnswers } from "../../../services/queries/form-submissions.query";
 import { useNotesForQuestionId } from "../../../services/queries/notes.query";
 import * as Crypto from "expo-crypto";
+import { useTranslation } from "react-i18next";
+import { onlineManager } from "@tanstack/react-query";
 
 type SearchParamType = {
   questionId: string;
@@ -46,6 +48,7 @@ type SearchParamType = {
 };
 
 const FormQuestionnaire = () => {
+  const { t } = useTranslation("question_page");
   const { questionId, formId, language } = useLocalSearchParams<SearchParamType>();
 
   if (!questionId || !formId || !language) {
@@ -212,6 +215,10 @@ const FormQuestionnaire = () => {
           onError: () => console.log("🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴ERORR🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴"),
         },
       );
+
+      if (!onlineManager.isOnline()) {
+        setIsOptionsSheetOpen(false);
+      }
     }
   };
 
@@ -250,6 +257,10 @@ const FormQuestionnaire = () => {
             onError: () => console.log("🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴ERORR🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴"),
           },
         );
+
+        if (!onlineManager.isOnline()) {
+          setIsOptionsSheetOpen(false);
+        }
       }
     } else {
       // Cancelled
@@ -272,7 +283,7 @@ const FormQuestionnaire = () => {
       />
       <YStack gap="$xxs" padding="$md">
         <XStack justifyContent="space-between">
-          <Typography>Form progress</Typography>
+          <Typography>{t("progress")}</Typography>
           <Typography justifyContent="space-between">{`${activeQuestion?.index + 1}/${currentForm?.questions.length}`}</Typography>
         </XStack>
         <LinearProgress
@@ -281,11 +292,15 @@ const FormQuestionnaire = () => {
         />
         <XStack justifyContent="flex-end">
           <Typography onPress={onClearForm} color="$red10">
-            Clear answer
+            {t("actions.clear_answer")}
           </Typography>
         </XStack>
       </YStack>
-      <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }} centerContent>
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
+        centerContent
+        keyboardShouldPersistTaps="handled"
+      >
         <YStack paddingHorizontal="$md" paddingBottom="$md" justifyContent="center">
           <Controller
             key={activeQuestion?.question.id}
@@ -306,7 +321,6 @@ const FormQuestionnaire = () => {
                       paragraph={question.helptext[language]}
                       onChangeText={onChange}
                       value={value}
-                      // onAttachPress={() => setIsOptionsSheetOpen(true)}
                     />
                   );
                 case "textQuestion":
@@ -318,7 +332,9 @@ const FormQuestionnaire = () => {
                       paragraph={question.helptext[language]}
                       onChangeText={onChange}
                       maxLength={1000}
-                      helper="1000 characters"
+                      helper={t("max", {
+                        value: 1000,
+                      })}
                       value={value}
                     />
                   );
@@ -404,7 +420,10 @@ const FormQuestionnaire = () => {
                                 value={selections[option.id]?.text}
                                 placeholder="Please enter a text..."
                                 onChangeText={(textValue) => {
-                                  selections[option.id] = { optionId: option.id, text: textValue };
+                                  selections[option.id] = {
+                                    optionId: option.id,
+                                    text: textValue,
+                                  };
                                   onChange(selections);
                                 }}
                               />
@@ -431,15 +450,18 @@ const FormQuestionnaire = () => {
           />
 
           {/* notes section */}
-          {notes && activeElectionRound?.id && selectedPollingStation?.pollingStationId && (
-            <QuestionNotes // TODO: @luciatugui add loading and error state for Notes and Attachments
-              notes={notes}
-              electionRoundId={activeElectionRound.id}
-              pollingStationId={selectedPollingStation.pollingStationId}
-              formId={formId}
-              questionId={questionId}
-            />
-          )}
+          {notes &&
+            notes?.length !== 0 &&
+            activeElectionRound?.id &&
+            selectedPollingStation?.pollingStationId && (
+              <QuestionNotes // TODO: @luciatugui add loading and error state for Notes and Attachments
+                notes={notes}
+                electionRoundId={activeElectionRound.id}
+                pollingStationId={selectedPollingStation.pollingStationId}
+                formId={formId}
+                questionId={questionId}
+              />
+            )}
 
           {/* attachments */}
           {activeElectionRound?.id && selectedPollingStation?.pollingStationId && formId && (
@@ -452,7 +474,8 @@ const FormQuestionnaire = () => {
           )}
 
           <AddAttachment
-            marginTop="$lg"
+            label={t("actions.add_attachments")}
+            marginTop="$sm"
             onPress={() => {
               console.log("doing stuff for question", activeQuestion);
               return setIsOptionsSheetOpen(true);
@@ -495,12 +518,10 @@ const FormQuestionnaire = () => {
                 paddingVertical="$md"
                 pressStyle={{ color: "$purple5" }}
                 onPress={() => {
-                  // setIsOptionsSheetOpen(false);
-                  // setIsNoteModalOpen(true);
                   setAddingNote(true);
                 }}
               >
-                Add note
+                {t("options_sheet.add_note")}
               </Typography>
               <Typography
                 onPress={handleCameraUpload.bind(null, "library")}
@@ -508,7 +529,7 @@ const FormQuestionnaire = () => {
                 paddingVertical="$md"
                 pressStyle={{ color: "$purple5" }}
               >
-                Load from gallery
+                {t("options_sheet.load")}
               </Typography>
               <Typography
                 onPress={handleCameraUpload.bind(null, "cameraPhoto")}
@@ -516,7 +537,7 @@ const FormQuestionnaire = () => {
                 paddingVertical="$md"
                 pressStyle={{ color: "$purple5" }}
               >
-                Take a photo
+                {t("options_sheet.take_picture")}
               </Typography>
               <Typography
                 onPress={handleCameraUpload.bind(null, "cameraVideo")}
@@ -524,7 +545,7 @@ const FormQuestionnaire = () => {
                 paddingVertical="$md"
                 pressStyle={{ color: "$purple5" }}
               >
-                Record a video
+                {t("options_sheet.record_video")}
               </Typography>
               <Typography
                 onPress={handleUploadAudio.bind(null)}
@@ -532,7 +553,7 @@ const FormQuestionnaire = () => {
                 paddingVertical="$md"
                 pressStyle={{ color: "$purple5" }}
               >
-                Upload audio file
+                {t("options_sheet.upload_audio")}
               </Typography>
             </YStack>
           )}

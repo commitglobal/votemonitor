@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   Adapt,
   Select as TamaguiSelect,
@@ -13,8 +13,7 @@ import { Icon } from "./Icon";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Typography } from "./Typography";
 import { Keyboard } from "react-native";
-import { ListView } from "./ListView";
-import { number } from "zod";
+import { useTranslation } from "react-i18next";
 
 interface StyledSelectProps extends SelectProps {
   placeholder?: string;
@@ -25,37 +24,15 @@ const Select = ({ placeholder = "Select", options, ...props }: StyledSelectProps
   const insets = useSafeAreaInsets();
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [isOpen, setIsOpen] = useState(false);
-  const [numberOfItems, setNumberOfItems] = useState(10);
+  const { t } = useTranslation("bottom_sheets");
 
   // Filter options based on search term
   const filteredOptions = useMemo(() => {
-    if (!searchTerm) return options.slice(0, numberOfItems);
+    if (!searchTerm) return options;
     return options.filter((option) =>
       option.label.toLowerCase().includes(searchTerm.toLowerCase()),
-    ).slice(0, numberOfItems);;
-  }, [options, searchTerm, numberOfItems]);
-
-  const loadMore = () => {
-    console.log('🙈 🙈 🙈 🙈 🙈 🙈 ......loading more......')
-    setNumberOfItems((num) => num + 10)
-  }
-
-  // if (!onValueChange) {
-  //   return;
-  // }
-
-  // return (
-  //   <YStack
-  //     height={45 * filteredOptions.length}>
-  //     <ListView<{ id: string | number; value: string; label: string }>
-  //       data={filteredOptions}
-  //       showsVerticalScrollIndicator={false}
-  //       bounces={false}
-  //       estimatedItemSize={50}
-  //       renderItem={({ item, index }) => <Typography onPress={() => { onValueChange(item.value) }}>{item.label}</Typography>}
-  //     />
-  //   </YStack>
-  // );
+    )
+  }, [options, searchTerm]);
 
   return (
     <TamaguiSelect
@@ -100,7 +77,12 @@ const Select = ({ placeholder = "Select", options, ...props }: StyledSelectProps
             >
               <XStack backgroundColor="$purple1" borderRadius={8} alignItems="center">
                 <Icon icon="search" color="transparent" size={20} marginLeft="$sm" />
-                <SearchInput flex={1} value={searchTerm} onChangeText={setSearchTerm} />
+                <SearchInput
+                  flex={1}
+                  placeholder={t("select_option.actions.search")}
+                  value={searchTerm}
+                  onChangeText={setSearchTerm}
+                />
               </XStack>
             </YStack>
 
@@ -116,37 +98,11 @@ const Select = ({ placeholder = "Select", options, ...props }: StyledSelectProps
         </Sheet>
       </Adapt>
 
-
       <TamaguiSelect.Content>
-        <TamaguiSelect.Viewport >
-          <TamaguiSelect.Group
-            height={
-              50 * filteredOptions.length
-            }
-          >
-
-            {filteredOptions.length === 0 ? (
-              <Typography padding="$md">No data found for current search.</Typography>
-            ) : (
-              <ListView<{ id: string | number; value: string; label: string }>
-                data={filteredOptions}
-                onEndReached={loadMore}
-                onEndReachedThreshold={0.1}
-                showsVerticalScrollIndicator={false}
-                bounces={false}
-                estimatedItemSize={50}
-                renderItem={({ item, index }) => <SelectItem item={item} index={index} />}
-              />
-            )}
-          </TamaguiSelect.Group>
-        </TamaguiSelect.Viewport>
-      </TamaguiSelect.Content>
-
-      {/* <TamaguiSelect.Content>
         <TamaguiSelect.Viewport>
           <TamaguiSelect.Group>
             {filteredOptions.length === 0 ? (
-              <Typography padding="$md">No data found for current search.</Typography>
+              <Typography padding="$md"> {t("select_option.no_data")}</Typography>
             ) : (
               filteredOptions.map((entry, i) => {
                 return (
@@ -169,16 +125,13 @@ const Select = ({ placeholder = "Select", options, ...props }: StyledSelectProps
             )}
           </TamaguiSelect.Group>
         </TamaguiSelect.Viewport>
-      </TamaguiSelect.Content> */}
+      </TamaguiSelect.Content>
     </TamaguiSelect >
   );
 };
 
-export default Select;
-
 const SearchInput = styled(Input, {
   backgroundColor: "$purple1",
-  placeholder: "Search",
   color: "$purple5",
   placeholderTextColor: "$purple5",
   focusStyle: {
@@ -186,27 +139,4 @@ const SearchInput = styled(Input, {
   },
 });
 
-
-const SelectItem = ({ item, index }: { item: any, index: number }) => {
-  return (
-    <TamaguiSelect.Item
-      index={index}
-      value={item?.value}
-      gap="$3"
-      paddingBottom="$sm"
-    >
-      <TamaguiSelect.ItemText width={"90%"} numberOfLines={1}>
-        {item?.label}
-      </TamaguiSelect.ItemText>
-      <TamaguiSelect.ItemIndicator>
-        <Icon icon="chevronLeft" />
-      </TamaguiSelect.ItemIndicator>
-    </TamaguiSelect.Item>
-  )
-};
-
-// const SelectItem2 = ({ item, index }: { item: any, index: number }) => {
-//   return (
-//     <Typography>{item.label{</Typography>
-//   )
-// };
+export default Select;

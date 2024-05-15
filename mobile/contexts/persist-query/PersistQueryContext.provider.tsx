@@ -9,10 +9,7 @@ import { performanceLog } from "../../helpers/misc";
 import { PersistGate } from "../../components/PersistGate";
 import SuperJSON from "superjson";
 import { AddAttachmentAPIPayload, addAttachment } from "../../services/api/add-attachment.api";
-import {
-  deleteAttachment,
-  DeleteAttachmentAPIPayload,
-} from "../../services/api/delete-attachment.api";
+import { deleteAttachment } from "../../services/api/delete-attachment.api";
 import { Note } from "../../common/models/note";
 import { QuickReportKeys } from "../../services/queries/quick-reports.query";
 import {
@@ -23,6 +20,8 @@ import {
   AddAttachmentQuickReportAPIPayload,
   addAttachmentQuickReport,
 } from "../../services/api/quick-report/add-attachment-quick-report.api";
+import { AttachmentApiResponse } from "../../services/api/get-attachments.api";
+import { AttachmentsKeys } from "../../services/queries/attachments.query";
 
 const queryClient = new QueryClient({
   mutationCache: new MutationCache({
@@ -115,19 +114,25 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
     },
   });
 
-  queryClient.setMutationDefaults(pollingStationsKeys.addAttachmentMutation(), {
+  queryClient.setMutationDefaults(AttachmentsKeys.addAttachmentMutation(), {
     mutationFn: async (payload: AddAttachmentAPIPayload) => {
       return performanceLog(() => addAttachment(payload));
     },
   });
 
-  queryClient.setMutationDefaults(pollingStationsKeys.deleteAttachment(), {
-    mutationFn: async (payload: DeleteAttachmentAPIPayload) => {
-      return deleteAttachment(payload);
+  queryClient.setMutationDefaults(AttachmentsKeys.deleteAttachment(), {
+    mutationFn: async (payload: AttachmentApiResponse) => {
+      return payload.isNotSynched ? () => {} : deleteAttachment(payload);
     },
   });
 
   queryClient.setMutationDefaults(notesKeys.addNote(), {
+    mutationFn: (payload: API.UpsertNotePayload) => {
+      return API.upsertNote(payload);
+    },
+  });
+
+  queryClient.setMutationDefaults(notesKeys.updateNote(), {
     mutationFn: (payload: API.UpsertNotePayload) => {
       return API.upsertNote(payload);
     },

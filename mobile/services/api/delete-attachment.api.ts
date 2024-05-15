@@ -8,7 +8,7 @@ import API from "../api";
     @param {string} id 
 */
 
-export type DeleteAttachmentAPIPayload = {
+type DeleteAttachmentAPIPayload = {
   electionRoundId: string;
   id: string;
 };
