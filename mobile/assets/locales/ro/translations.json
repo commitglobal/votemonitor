@@ -132,9 +132,9 @@
       "title_edit": "Editează notiță",
       "placeholder": "Adăugă orice notiță relevantă",
       "actions": {
-          "save": "Salvează",
-          "cancel": "Anulează",
-          "delete_note": "Șterge notiță"
+        "save": "Salvează",
+        "cancel": "Anulează",
+        "delete_note": "Șterge notiță"
       }
     },
     "select_option": {
@@ -163,7 +163,7 @@
       "actions": {
         "save": "Salvează",
         "cancel": "Anulează"
-      }  
+      }
     },
     "questions": {
       "title": "Întrebări",
@@ -261,7 +261,7 @@
   },
   "question_page": {
     "notes": "Notițe",
-    "uploaded_media": "Media încărcată",
+    "uploaded_media": "Fișiere încărcate",
     "progress": "Progresul formularului",
     "min": "Field-ul trebuie să aibă maxim {{value}} caractere",
     "max": "Field-ul trebuie să aibă minim {{value}} caractere",
