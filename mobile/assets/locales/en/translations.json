@@ -132,9 +132,9 @@
       "title_edit": "Edit note",
       "placeholder": "Add any relevant notes to this question.",
       "actions": {
-          "save": "Save",
-          "cancel": "Cancel",
-          "delete_note": "Delete note"
+        "save": "Save",
+        "cancel": "Cancel",
+        "delete_note": "Delete note"
       }
     },
     "select_option": {
@@ -163,7 +163,7 @@
       "actions": {
         "save": "Save",
         "cancel": "Cancel"
-      }  
+      }
     },
     "questions": {
       "title": "Intrebari",
@@ -253,10 +253,10 @@
     }
   },
   "observations_empty": {
-    "title": "Nicio secție de votare vizitată încă",
-    "paragraph": "Începeți să configurați prima secție de votare înainte de a completa formularele de observație.",
+    "title": "No visited polling stations yet",
+    "paragraph": "Start configuring your first polling station before completing observation forms.",
     "actions": {
-      "add_station": "Adăugați prima secție de votare."
+      "add_station": "Add your first polling station"
     }
   },
   "question_page": {
@@ -277,5 +277,4 @@
       "upload_audio": "Upload audio file"
     }
   }
-  
 }
