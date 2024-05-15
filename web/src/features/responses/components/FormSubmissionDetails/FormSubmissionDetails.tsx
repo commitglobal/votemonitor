@@ -162,7 +162,7 @@ export default function FormSubmissionDetails(): FunctionComponent {
 
                   {answer ? (
                     <>
-                      {isDateAnswer(answer) && <p>{answer.date ? format(answer.date, 'PPpp') : '-'}</p>}
+                      {isDateAnswer(answer) && <p>{answer.date ? format(answer.date, 'u-MM-dd KK:mm') : '-'}</p>}
 
                       {isNumberAnswer(answer) && <p>{answer.value ?? '-'}</p>}
 

@@ -36,8 +36,7 @@ export default function QuickReportDetails(): FunctionComponent {
       title={quickReport.id}>
       <Card className='max-w-4xl'>
         <CardHeader>
-          <CardTitle className='mb-4 flex justify-between'>
-            <div>{quickReport.title}</div>
+          <CardTitle className='mb-4 flex flex-row-reverse'>
             <Switch id='needs-followup'>Needs follow-up</Switch>
           </CardTitle>
           <Separator />
@@ -46,7 +45,7 @@ export default function QuickReportDetails(): FunctionComponent {
         <CardContent className='text-[#374151] flex flex-col gap-6'>
           <div>
             <p className='font-bold'>Time submitted</p>
-            {quickReport.timestamp && <p>{format(quickReport.timestamp, 'HH:mm:ss')}</p>}
+            {quickReport.timestamp && <p>{format(quickReport.timestamp, 'u-MM-dd KK:mm')}</p>}
           </div>
 
           <div>
@@ -96,9 +95,15 @@ export default function QuickReportDetails(): FunctionComponent {
           </div>
 
           <div>
-            <p className='font-bold'>Station</p>
-            <p>{quickReport.number}</p>
+            <p className='font-bold'>Location type</p>
+            <p>{quickReport.quickReportLocationType}</p>
           </div>
+
+          {quickReport.pollingStationDetails && (
+            <div>
+              <p className='font-bold'>Polling station details</p>
+              <p>{quickReport.pollingStationDetails}</p>
+            </div>)}
 
           {quickReport.level1 && (
             <div className='flex gap-4'>
@@ -130,6 +135,10 @@ export default function QuickReportDetails(): FunctionComponent {
                   {quickReport.level5}
                 </div>
               )}
+              <div>
+                <p className='font-bold'>Station</p>
+                <p>{quickReport.number}</p>
+              </div>
             </div>
           )}
         </CardContent>

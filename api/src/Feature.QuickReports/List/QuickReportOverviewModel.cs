@@ -14,6 +14,7 @@ public class QuickReportOverviewModel
     public string LastName { get; set; }
     public string Email { get; set; }
     public string PhoneNumber { get; set; }
+    public string? PollingStationDetails { get; set; }
     public Guid? PollingStationId { get; set; }
     public string? Level1 { get; set; }
     public string? Level2 { get; set; }

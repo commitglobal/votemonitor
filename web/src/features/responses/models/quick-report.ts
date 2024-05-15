@@ -29,6 +29,7 @@ export interface QuickReport {
   numberOfAttachments: number;
   phoneNumber: string;
   pollingStationId: string;
+  pollingStationDetails: string;
   quickReportLocationType: QuickReportLocationType;
   timestamp: string;
   title: string;
