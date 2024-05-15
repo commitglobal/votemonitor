@@ -71,35 +71,35 @@
   },
   "add_polling_station": {
     "header": {
-      "title": "Add polling station"
+      "title": "Adăugă o nouă secție de votare"
     },
     "progress": {
-      "location": "Add polling station from the {{value}}"
+      "location": "Adăugă secția de votare din {{value}}"
     },
     "form": {
       "region": {
-        "title": "Select one of the options",
-        "placeholder": "Tap to select",
-        "required": "A selection is mandatory"
+        "title": "Selectează una dintre opțiunile",
+        "placeholder": "Apăsă pentru a selecta",
+        "required": "Selecția este obligatorie"
       },
       "county": {
-        "title": "Select the [Location - L2] of the polling station",
-        "placeholder": "Select county",
-        "required": "County is mandatory"
+        "title": "Selectează [Locatia - L2] a secției de votare",
+        "placeholder": "Selectează regiunea",
+        "required": "Regiunea este obligatorie"
       },
       "municipality": {
-        "title": "Select the [Location - L3] of the polling station",
-        "place_holder": "Select municipality",
-        "required": "Municipality is mandatory"
+        "title": "Selectează [Locatia - L3] a secției de votare",
+        "place_holder": "Selectează orasul",
+        "required": "Orasul este obligatoriu"
       },
       "street": {
-        "title": "Select the [Street] of the polling station",
-        "placeholder": "Select street"
+        "title": "Selectează [Strada] secției de votare",
+        "placeholder": "Selectează strada"
       },
       "number": {
-        "title": "Select the [Number] of the polling station",
-        "placeholder": "Select number",
-        "required": "Number is mandatory"
+        "title": "Selectează [Numarul] secției de votare",
+        "placeholder": "Selectează numărul",
+        "required": "Numărul este obligatoriu"
       }
     },
     "actions": {
@@ -114,7 +114,7 @@
       "title": "Informații despre secția de votare"
     },
     "actions": {
-      "submit": "Submiteti raspunsurile"
+      "submit": "Submiteți răspunsurile"
     }
   },
   "bottom_sheets": {
@@ -128,13 +128,13 @@
       }
     },
     "add_note": {
-      "title": "Adauga o notita",
-      "title_edit": "Editeaza notita",
-      "placeholder": "Adauga orice notita relevanta",
+      "title": "Adaugă o notiță",
+      "title_edit": "Editează notiță",
+      "placeholder": "Adăugă orice notiță relevantă",
       "actions": {
-          "save": "Salveaza",
-          "cancel": "Anuleaza",
-          "delete_note": "Sterge notita"
+          "save": "Salvează",
+          "cancel": "Anulează",
+          "delete_note": "Șterge notiță"
       }
     }
   },
@@ -142,29 +142,29 @@
     "form_overview": {
       "title": "Informații formular",
       "status": "Statusul formularului",
-      "not_started": "Neinceput",
-      "in_progress": "In desfasurare",
+      "not_started": "Neînceput",
+      "in_progress": "În desfășurare",
       "completed": "Completat",
       "answered_questions": "Întrebări completate",
       "resume": "Reia formularul",
-      "start_form": "Incepe formularul",
+      "start_form": "Începe formularul",
       "progress": "progres"
     },
     "language_modal": {
-      "header": "Selecteaza limba formularului",
+      "header": "Selectează limba formularului",
       "helper": "Formularul selectat este disponibil în mai multe limbi. Vă rugăm selectați limba cu care doriți să continuați.",
       "error": "Vă rugăm selectați una din opțiuni.",
       "actions": {
-        "save": "Salveaza",
-        "cancel": "Anuleaza"
+        "save": "Salvează",
+        "cancel": "Anulează"
       }  
     },
     "questions": {
-      "title": "Intrebari",
-      "not_answered": "Fara raspuns",
-      "answered": "Raspuns",
-      "no_notes": "Nu exista fisiere atasate",
-      "notes": "Include fisiere atasate"
+      "title": "Întrebări",
+      "not_answered": "Fără răspuns",
+      "answered": "Răspuns",
+      "no_notes": "Nu există fișiere atasate",
+      "notes": "Include fișiere atasate"
     }
   },
   "inbox_empty": {
@@ -177,38 +177,38 @@
   },
   "change_password": {
     "header": {
-      "title": "Schimbare parola"
+      "title": "Schimbare parolă"
     },
     "form": {
       "current_password": {
-        "label": "Parola curenta*",
-        "placeholder": "Inserati parola curenta",
+        "label": "Parola curentă*",
+        "placeholder": "Inserati parola curentă",
         "required": "Parola este obligatorie",
-        "credentials_error": "Parola curenta nu este corecta"
+        "credentials_error": "Parola curentă nu este corectă"
       },
       "new_password": {
         "label": "Parola noua*",
         "placeholder": "Iserati noua parola",
-        "helper": "Trebuie sa contina cel putin 8 caractere",
+        "helper": "Trebuie să conțină cel puțin 8 caractere",
         "required": "Parola este obligatorie",
         "pattern": "Parola trebuie să aibă cel puțin un caracter majuscul, un număr, un caracter special și să aibă minimum 8 caractere fără spații"
       },
       "confirm_password": {
-        "label": "Confirmati noua parola *",
-        "placeholder": "Confirmati parola",
+        "label": "Confirmați noua parola *",
+        "placeholder": "Confirmați parola",
         "required": "Parola este obligatorie",
         "helper": "Ambele parole trebuie să se potrivească.",
         "no_match": "Parolele nu se potrivesc"
       },
       "actions": {
-        "save_password": "Salvati noua parola"
+        "save_password": "Salvați noua parolă"
       }
     },
     "success_page": {
       "title": "Parola a fost schimbata!",
       "paragraph": "Parola ta a fost schimbată cu succes.",
       "actions": {
-        "back": "Inapoi in aplicatie"
+        "back": "Înapoi în aplicație"
       }
     }
   },
@@ -217,9 +217,9 @@
     "time_select": {
       "undefined_time": "Nedefinit",
       "arrival_time": "Timpul sosirii",
-      "departure_time": "Timpul plecarii",
+      "departure_time": "Timpul plecării",
       "actions": {
-        "save": "Salveaza"
+        "save": "Salvează"
       },
       "toast": {
         "error": {
@@ -232,11 +232,11 @@
     "polling_station_card": {
       "title": "Răspunde la câteva întrebări rapide despre secția de votare.",
       "polling_station_information": "Informații despre secția de votare",
-      "questions": "{{value}} intrebari",
+      "questions": "{{value}} întrebări",
       "badge_status": {
         "completed": "Completat",
-        "in_progress": "In desfasurare",
-        "not_started": "Neinceput"
+        "in_progress": "În desfășurare",
+        "not_started": "Neînceput"
       },
       "actions": {
         "answer_questions": "Răspundeți la întrebări"
@@ -247,28 +247,28 @@
     }
   },
   "observations_empty": {
-    "title": "No visited polling stations yet",
-    "paragraph": "Start configuring your first polling station before completing observation forms.",
+    "title": "Nicio secție de votare vizitată încă",
+    "paragraph": "Începeți să configurați prima secție de votare înainte de a completa formularele de observație.",
     "actions": {
-      "add_station": "Add your first polling station"
+      "add_station": "Adăugați prima secție de votare"
     }
   },
   "question_page": {
-    "notes": "Notite",
-    "uploaded_media": "Media incarcata",
+    "notes": "Notițe",
+    "uploaded_media": "Media încărcată",
     "progress": "Progresul formularului",
-    "min": "Field-ul trebuie sa aiba maxim {{value}} caractere",
-    "max": "Field-ul trebuie sa aiba minim {{value}} caractere",
+    "min": "Field-ul trebuie să aibă maxim {{value}} caractere",
+    "max": "Field-ul trebuie să aibă minim {{value}} caractere",
     "actions": {
-      "clear_answer": "Sterge raspunsul",
-      "add_attachments": "Add notite si fisiere media"
+      "clear_answer": "Șterge răspunsul",
+      "add_attachments": "Adaugă notițe și fișiere media"
     },
     "options_sheet": {
-      "add_note": "Adauga notite",
-      "load": "Incarca din galerie",
-      "take_picture": "Fa o poza",
-      "record_video": "Inregistreaza video",
-      "upload_audio": "Incarca audio"
+      "add_note": "Adaugă notițe",
+      "load": "Încarcă din galerie",
+      "take_picture": "Fă o poză",
+      "record_video": "Înregistrează video",
+      "upload_audio": "Încarcă audio"
     }
   }
 }
