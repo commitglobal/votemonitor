@@ -93,8 +93,8 @@ public class Endpoint(IDbConnection dbConnection) : Endpoint<Request, PagedRespo
                               fs.""MonitoringObserverId"",
                               fs.""NumberOfQuestionsAnswered"",
                               fs.""NumberOfFlaggedAnswers"",
-                              (SELECT COUNT(1) FROM ""Attachments"" WHERE ""FormId"" = fs.""FormId"" AND ""MonitoringObserverId"" = fs.""MonitoringObserverId"") AS ""MediaFilesCount"",
-                              (SELECT COUNT(1) FROM ""Notes"" WHERE ""FormId"" = fs.""FormId"" AND ""MonitoringObserverId"" = fs.""MonitoringObserverId"") AS ""NotesCount"",
+                              (SELECT COUNT(1) FROM ""Attachments"" WHERE ""FormId"" = fs.""FormId"" AND ""MonitoringObserverId"" = fs.""MonitoringObserverId"" AND  fs.""PollingStationId"" = ""PollingStationId"") AS ""MediaFilesCount"",
+                              (SELECT COUNT(1) FROM ""Notes"" WHERE ""FormId"" = fs.""FormId"" AND ""MonitoringObserverId"" = fs.""MonitoringObserverId"" AND  fs.""PollingStationId"" = ""PollingStationId"") AS ""NotesCount"",
                               COALESCE(fs.""LastModifiedOn"", fs.""CreatedOn"") ""TimeSubmitted"",
                               fs.""NeedsFollowUp""
              FROM ""FormSubmissions"" fs

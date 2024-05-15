@@ -14,7 +14,7 @@ type DateAggregateContentProps = {
 const DateAggregateContent = forwardRef<ChartJSOrUndefined<'line', number[]>, DateAggregateContentProps>(
   ({ aggregate }, ref): FunctionComponent => {
     const dataset = aggregate.answers.reduce<Record<string, number>>((data, { value }) => {
-      const time = format(value, 'HH:mm');
+      const time = format(new Date(value), 'u-MM-dd KK:00');
       return { ...data, [time]: (data?.[time] ?? 0) + 1 };
     }, {});
 
@@ -30,6 +30,8 @@ const DateAggregateContent = forwardRef<ChartJSOrUndefined<'line', number[]>, Da
               backgroundColor: getChartBackgroundColorGradient(purple500),
               fill: 'origin',
               borderWidth: 1,
+              cubicInterpolationMode: 'monotone',
+              tension: 0.4
             },
           ],
         }}

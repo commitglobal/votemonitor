@@ -1,5 +1,4 @@
-﻿using Vote.Monitor.Core.Extensions;
-using Vote.Monitor.Core.Models;
+﻿using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.Entities.FormAggregate;
 using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
 
@@ -21,15 +20,6 @@ public class FormSubmissionsAggregate
 
     private readonly HashSet<Responder> _responders = new();
     public IReadOnlyList<Responder> Responders => _responders.ToList().AsReadOnly();
-
-    private readonly Dictionary<Guid, HashSet<Guid>> _pollingStations = new();
-
-    /// <summary>
-    /// Filled in forms grouped by polling station id
-    /// </summary>
-    public IReadOnlyDictionary<Guid, List<Guid>> PollingStations => _pollingStations
-        .ToDictionary(x => x.Key, v => v.Value.ToList())
-        .AsReadOnly();
 
     public int SubmissionCount { get; private set; }
     public int TotalNumberOfQuestionsAnswered { get; private set; }
@@ -64,11 +54,7 @@ public class FormSubmissionsAggregate
 
         var observer= formSubmission.MonitoringObserver.Observer.ApplicationUser;
         _responders.Add(new Responder(responderId, observer.FirstName, observer.LastName, observer.Email, observer.PhoneNumber));
-
-        _pollingStations.AddOrUpdate(formSubmission.PollingStationId,
-            createFunc: () => [formSubmission.Id],
-            updateFunc: set => set.Add(formSubmission.Id));
-
+        
         SubmissionCount++;
         TotalNumberOfFlaggedAnswers += formSubmission.NumberOfFlaggedAnswers;
         TotalNumberOfQuestionsAnswered += formSubmission.NumberOfQuestionsAnswered;

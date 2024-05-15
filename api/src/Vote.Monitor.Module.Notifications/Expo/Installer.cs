@@ -20,7 +20,11 @@ internal static class Installer
             .ConfigureHttpClient(c =>
             {
                 c.BaseAddress = new Uri("https://exp.host/--/api/v2/push/");
-                c.DefaultRequestHeaders.Authorization = new("Bearer", expoOptions.Token);
+
+                if (!string.IsNullOrWhiteSpace(expoOptions.Token))
+                {
+                    c.DefaultRequestHeaders.Authorization = new("Bearer", expoOptions.Token);
+                }
             });
 
         services.AddSingleton<IPushNotificationService, ExpoPushNotificationService>();
