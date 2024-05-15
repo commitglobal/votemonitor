@@ -50,6 +50,7 @@ const Header = (): FunctionComponent => {
     void queryClient.invalidateQueries({ queryKey: ['observers'] });
     void queryClient.invalidateQueries({ queryKey: ['tags'] });
     void queryClient.invalidateQueries({ queryKey: ['form-submissions'] });
+    void queryClient.invalidateQueries({ queryKey: ['quick-reports'] });
   };
 
   const { userRole, signOut } = useContext(AuthContext);

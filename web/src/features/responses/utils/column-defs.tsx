@@ -325,17 +325,17 @@ export const quickReportsColumnDefs: ColumnDef<QuickReport>[] = [
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Medial files' column={column} />,
-    accessorKey: 'mediaFilesCount',
+    accessorKey: 'numberOfAttachments',
     enableSorting: true,
     enableGlobalFilter: true,
-    size: 80
+    size: 80,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Station number' column={column} />,
     accessorKey: 'number',
     enableSorting: true,
     enableGlobalFilter: true,
-    size: 100
+    size: 100,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Observer' column={column} />,
@@ -366,6 +366,6 @@ export const quickReportsColumnDefs: ColumnDef<QuickReport>[] = [
         <ChevronRightIcon className='w-4 text-purple-600' />
       </Link>
     ),
-    size: 46
+    size: 46,
   },
 ];

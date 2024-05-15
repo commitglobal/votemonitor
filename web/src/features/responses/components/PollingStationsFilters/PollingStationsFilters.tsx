@@ -62,7 +62,13 @@ export function PollingStationsFilters(): FunctionComponent {
           <SelectValue placeholder='Location - L1' />
         </SelectTrigger>
         <SelectContent>
-          <SelectGroup>{data?.[1]?.map((node) => <SelectItem value={node.name}>{node.name}</SelectItem>)}</SelectGroup>
+          <SelectGroup>
+            {data?.[1]?.map((node) => (
+              <SelectItem key={node.id} value={node.name}>
+                {node.name}
+              </SelectItem>
+            ))}
+          </SelectGroup>
         </SelectContent>
       </Select>
 
@@ -77,7 +83,11 @@ export function PollingStationsFilters(): FunctionComponent {
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
-            {filteredLevel2Nodes?.map((node) => <SelectItem value={node.name}>{node.name}</SelectItem>)}
+            {filteredLevel2Nodes?.map((node) => (
+              <SelectItem key={node.id} value={node.name}>
+                {node.name}
+              </SelectItem>
+            ))}
           </SelectGroup>
         </SelectContent>
       </Select>
@@ -93,7 +103,11 @@ export function PollingStationsFilters(): FunctionComponent {
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
-            {filteredLevel3Nodes?.map((node) => <SelectItem value={node.name}>{node.name}</SelectItem>)}
+            {filteredLevel3Nodes?.map((node) => (
+              <SelectItem key={node.id} value={node.name}>
+                {node.name}
+              </SelectItem>
+            ))}
           </SelectGroup>
         </SelectContent>
       </Select>
@@ -109,7 +123,11 @@ export function PollingStationsFilters(): FunctionComponent {
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
-            {filteredLevel4Nodes?.map((node) => <SelectItem value={node.name}>{node.name}</SelectItem>)}
+            {filteredLevel4Nodes?.map((node) => (
+              <SelectItem key={node.id} value={node.name}>
+                {node.name}
+              </SelectItem>
+            ))}
           </SelectGroup>
         </SelectContent>
       </Select>
@@ -125,7 +143,11 @@ export function PollingStationsFilters(): FunctionComponent {
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
-            {filteredLevel5Nodes?.map((node) => <SelectItem value={node.name}>{node.name}</SelectItem>)}
+            {filteredLevel5Nodes?.map((node) => (
+              <SelectItem key={node.id} value={node.name}>
+                {node.name}
+              </SelectItem>
+            ))}
           </SelectGroup>
         </SelectContent>
       </Select>

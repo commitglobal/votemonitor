@@ -6,6 +6,7 @@ import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
 import { format } from 'date-fns';
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 
 export default function QuickReportDetails(): FunctionComponent {
   const quickReport = useLoaderData({ from: '/responses/$formId/quick-reports' });
@@ -13,7 +14,7 @@ export default function QuickReportDetails(): FunctionComponent {
   return (
     <Layout
       backButton={
-        <Link to='/responses' preload='intent'>
+        <Link to='/responses' preload='intent' search={{ tab: 'quick-reports' }}>
           <svg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30' fill='none'>
             <path
               fillRule='evenodd'
@@ -26,7 +27,7 @@ export default function QuickReportDetails(): FunctionComponent {
       }
       breadcrumbs={
         <div className='breadcrumbs flex flex-row gap-2 mb-4'>
-          <Link className='crumb' to='/responses' preload='intent'>
+          <Link className='crumb' to='/responses' preload='intent' search={{ tab: 'quick-reports' }}>
             responses
           </Link>
           <Link className='crumb'>{quickReport.id}</Link>
@@ -45,7 +46,7 @@ export default function QuickReportDetails(): FunctionComponent {
         <CardContent className='text-[#374151] flex flex-col gap-6'>
           <div>
             <p className='font-bold'>Time submitted</p>
-            <p>{format(quickReport.timestamp, 'HH:mm:ss')}</p>
+            {quickReport.timestamp && <p>{format(quickReport.timestamp, 'HH:mm:ss')}</p>}
           </div>
 
           <div>
@@ -58,9 +59,27 @@ export default function QuickReportDetails(): FunctionComponent {
             <p>{quickReport.description}</p>
           </div>
 
-          <div>
-            <p className='font-bold'>Media files</p>
-          </div>
+          {quickReport.attachments.length > 0 && (
+            <div>
+              <p className='font-bold pb-2'>Media files</p>
+              <div className='flex flex-wrap gap-4'>
+                {quickReport.attachments.map((attachment) => (
+                  <Dialog>
+                    <DialogTrigger>
+                      <button type='button'>
+                        <img alt={attachment.fileName} className='rounded-lg h-44 w-44' src={attachment.presignedUrl} />
+                      </button>
+                    </DialogTrigger>
+                    <DialogContent className='max-w-5xl'>
+                      <div className='flex justify-center'>
+                        <img alt={attachment.fileName} src={attachment.presignedUrl} />
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+                ))}
+              </div>
+            </div>
+          )}
 
           <div>
             <p className='font-bold'>Observer</p>
@@ -81,20 +100,38 @@ export default function QuickReportDetails(): FunctionComponent {
             <p>{quickReport.number}</p>
           </div>
 
-          <div className='flex gap-4'>
-            <div>
-              <p className='font-bold'>Location - L1</p>
-              {quickReport.level1}
+          {quickReport.level1 && (
+            <div className='flex gap-4'>
+              <div>
+                <p className='font-bold'>Location - L1</p>
+                {quickReport.level1}
+              </div>
+              {quickReport.level2 && (
+                <div>
+                  <p className='font-bold'>Location - L2</p>
+                  {quickReport.level2}
+                </div>
+              )}
+              {quickReport.level3 && (
+                <div>
+                  <p className='font-bold'>Location - L3</p>
+                  {quickReport.level3}
+                </div>
+              )}
+              {quickReport.level4 && (
+                <div>
+                  <p className='font-bold'>Location - L4</p>
+                  {quickReport.level4}
+                </div>
+              )}
+              {quickReport.level5 && (
+                <div>
+                  <p className='font-bold'>Location - L5</p>
+                  {quickReport.level5}
+                </div>
+              )}
             </div>
-            <div>
-              <p className='font-bold'>Location - L2</p>
-              {quickReport.level2}
-            </div>
-            <div>
-              <p className='font-bold'>Location - L3</p>
-              {quickReport.level3}
-            </div>
-          </div>
+          )}
         </CardContent>
       </Card>
     </Layout>

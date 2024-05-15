@@ -3,6 +3,8 @@ import type { QuickReport } from '../models/quick-report';
 import { type UseQueryResult, useQuery } from '@tanstack/react-query';
 import { authApi } from '@/common/auth-api';
 
+const STALE_TIME = 1000 * 60; // one minute
+
 type QuickReportsResponse = PageResponse<QuickReport>;
 
 type UseQuickReportsResult = UseQueryResult<QuickReportsResponse, Error>;
@@ -29,5 +31,6 @@ export function useQuickReports(queryParams: DataTableParameters): UseQuickRepor
 
       return response.data;
     },
+    staleTime: STALE_TIME,
   });
 }

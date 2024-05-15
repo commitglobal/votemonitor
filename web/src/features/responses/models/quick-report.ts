@@ -4,6 +4,15 @@ enum QuickReportLocationType {
   VisitedPollingStation = 'VisitedPollingStation ',
 }
 
+export interface Attachment {
+  id: string;
+  quickReportId: string;
+  fileName: string;
+  mimeType: string;
+  presignedUrl: string;
+  urlValidityInSeconds: number;
+}
+
 export interface QuickReport {
   id: string;
   address: string;
@@ -17,11 +26,12 @@ export interface QuickReport {
   level4: string;
   level5: string;
   number: string;
-  numberOfSubmissions: number;
+  numberOfAttachments: number;
   phoneNumber: string;
   pollingStationId: string;
   quickReportLocationType: QuickReportLocationType;
   timestamp: string;
   title: string;
   monitoringObserverId: string;
+  attachments: Attachment[];
 }

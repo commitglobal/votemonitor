@@ -1,5 +1,5 @@
 import { type EnsureQueryDataOptions, type QueryKey, queryOptions } from '@tanstack/react-query';
-import { createFileRoute, notFound } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 import { authApi } from '@/common/auth-api';
 import QuickReportDetails from '@/features/responses/components/QuickReportDetails/QuickReportDetails';
 import type { QuickReport } from '@/features/responses/models/quick-report';
@@ -13,14 +13,6 @@ function quickReportDetailsQueryOptions(formId: string): EnsureQueryDataOptions<
       const electionRoundId: string | null = localStorage.getItem('electionRoundId');
 
       const response = await authApi.get<QuickReport>(`/election-rounds/${electionRoundId}/quick-reports/${formId}`);
-
-      console.log(response);
-
-      if (!response.data) {
-        console.log(notFound);
-
-        throw notFound();
-      }
 
       return response.data;
     },
