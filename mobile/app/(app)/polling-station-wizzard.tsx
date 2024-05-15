@@ -230,7 +230,7 @@ const PollingStationWizzardContent = ({
           <SearchInput flex={1} value={searchTerm} onChangeText={setSearchTerm} />
         </XStack>
       </YStack>
-      <YStack paddingHorizontal="$md" paddingTop="$sm" height={height - 275} paddingBottom={"$md"}>
+      <YStack paddingHorizontal="$md" paddingTop="$sm" height={height - 300} paddingBottom={"$md"}>
         {isFetchingPollingStations && <Spinner size="large" color="$purple5" />}
         {!isFetchingPollingStations && (
           <ListView<{ id: string | number; value: string; label: string }>
