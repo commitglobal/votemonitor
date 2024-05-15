@@ -32,6 +32,7 @@ import { FormsTableByEntry } from '../FormsTableByEntry/FormsTableByEntry';
 import { FormsFiltersByEntry } from '../FormsFiltersByEntry/FormsFiltersByEntry';
 import { FormsFiltersByObserver } from '../FormsFiltersByObserver/FormsFiltersByObserver';
 import { FormsTableByObserver } from '../FormsTableByObserver/FormsTableByObserver';
+import { QuickReports } from '../QuickReports/QuickReports';
 
 const routeApi = getRouteApi('/responses/');
 
@@ -46,7 +47,7 @@ export default function ResponsesDashboard(): ReactElement {
 
   const navigate = routeApi.useNavigate();
   const search = routeApi.useSearch();
-  const [isFiltering, setIsFiltering] = useState(() => Object.entries(search).length > 0);
+  const [isFiltering, setIsFiltering] = useState(() => Object.keys(search).some((key) => key !== 'tab'));
 
   const [columnsVisibility, setColumnsVisibility] = useState(formSubmissionsDefaultColumns.byEntry);
 
@@ -60,7 +61,15 @@ export default function ResponsesDashboard(): ReactElement {
 
   return (
     <Layout title='Responses' subtitle='View all form answers and other issues reported by your observers.  '>
-      <Tabs defaultValue='form-answers'>
+      <Tabs
+        defaultValue='form-answers'
+        onValueChange={(tab) => {
+          void navigate({
+            search(prev) {
+              return { ...prev, tab };
+            },
+          });
+        }}>
         <TabsList className='grid grid-cols-2 bg-gray-200 w-[400px] mb-4'>
           <TabsTrigger value='form-answers'>Form answers</TabsTrigger>
           <TabsTrigger value='quick-reports'>Quick reports</TabsTrigger>
@@ -98,7 +107,9 @@ export default function ResponsesDashboard(): ReactElement {
                         }}
                         value={byFilter}>
                         {Object.entries(viewBy).map(([value, label]) => (
-                          <DropdownMenuRadioItem key={value} value={value}>{label}</DropdownMenuRadioItem>
+                          <DropdownMenuRadioItem key={value} value={value}>
+                            {label}
+                          </DropdownMenuRadioItem>
                         ))}
                       </DropdownMenuRadioGroup>
                     </DropdownMenuContent>
@@ -175,7 +186,9 @@ export default function ResponsesDashboard(): ReactElement {
           </Card>
         </TabsContent>
 
-        <TabsContent value='quick-reports'>TBD</TabsContent>
+        <TabsContent value='quick-reports'>
+          <QuickReports />
+        </TabsContent>
       </Tabs>
     </Layout>
   );

@@ -10,9 +10,9 @@ export const formSubmissionsByEntryDefaultColumns: VisibilityState = {
   number: true,
   level1: false,
   level2: false,
-  level3: false, 
-  level4: false, 
-  level5: false, 
+  level3: false,
+  level4: false,
+  level5: false,
   observerName: false,
   tags: false,
   numberOfQuestionsAnswered: true,
@@ -91,4 +91,35 @@ export const columnVisibilityOptions: Record<FilterBy, ColumnOption[]> = {
   byEntry: byEntryColumnVisibilityOptions,
   byObserver: byObserverColumnVisibilityOptions,
   byForm: byFormColumnVisibilityOptions,
+};
+
+export const quickReportsColumnVisibilityOptions: ColumnOption[] = [
+  { id: 'id', label: 'Entry ID', enableHiding: true },
+  { id: 'timestamp', label: 'Time submitted', enableHiding: true },
+  { id: 'title', label: 'Issue title', enableHiding: true },
+  { id: 'description', label: 'Description', enableHiding: true },
+  { id: 'mediaFilesCount', label: 'Medial files', enableHiding: true },
+  { id: 'number', label: 'Station number', enableHiding: true },
+  { id: 'level1', label: 'Location - L1', enableHiding: true },
+  { id: 'level2', label: 'Location - L2', enableHiding: true },
+  { id: 'level3', label: 'Location - L3', enableHiding: true },
+  { id: 'level4', label: 'Location - L4', enableHiding: true },
+  { id: 'level5', label: 'Location - L5', enableHiding: true },
+  { id: 'observerName', label: 'Observer', enableHiding: true },
+];
+
+export const quickReportsDefaultColumns: VisibilityState = {
+  id: false,
+  timestamp: true,
+  title: true,
+  description: true,
+  mediaFilesCount: true,
+  number: true,
+  level1: false,
+  level2: false,
+  level3: false,
+  level4: false,
+  level5: false,
+  observerName: true,
+  email: false,
 };
