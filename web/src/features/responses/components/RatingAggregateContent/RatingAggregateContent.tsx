@@ -1,6 +1,5 @@
 import { ratingScaleToNumber, round } from '@/lib/utils';
 import { BarElement, CategoryScale, Chart as ChartJS, ChartData, Legend, LinearScale, Title, Tooltip } from 'chart.js';
-import annotationPlugin from 'chartjs-plugin-annotation';
 import { forwardRef } from 'react';
 import { Bar } from 'react-chartjs-2';
 
@@ -13,7 +12,7 @@ type RatingAggregateContentProps = {
   aggregate: RatingQuestionAggregate;
 };
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, annotationPlugin);
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const RatingAggregateContent = forwardRef<ChartJSOrUndefined<'bar', number[]>, RatingAggregateContentProps>(
   ({ aggregate }, ref) => {
