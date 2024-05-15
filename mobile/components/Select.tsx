@@ -31,7 +31,7 @@ const Select = ({ placeholder = "Select", options, ...props }: StyledSelectProps
     if (!searchTerm) return options;
     return options.filter((option) =>
       option.label.toLowerCase().includes(searchTerm.toLowerCase()),
-    )
+    );
   }, [options, searchTerm]);
 
   return (
@@ -56,7 +56,6 @@ const Select = ({ placeholder = "Select", options, ...props }: StyledSelectProps
           color="$gray5"
           placeholder={placeholder}
           fontSize={16}
-        // fontWeight="500"
         ></TamaguiSelect.Value>
       </TamaguiSelect.Trigger>
 
@@ -126,7 +125,7 @@ const Select = ({ placeholder = "Select", options, ...props }: StyledSelectProps
           </TamaguiSelect.Group>
         </TamaguiSelect.Viewport>
       </TamaguiSelect.Content>
-    </TamaguiSelect >
+    </TamaguiSelect>
   );
 };
 
