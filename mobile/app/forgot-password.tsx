@@ -26,10 +26,13 @@ const ForgotPassword = () => {
   const [authError, setAuthError] = useState(false);
 
   // React Hook form
-  const { handleSubmit, control, formState } = useForm<FormData>({
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm<FormData>({
     defaultValues: { email: "charlie@example.com" },
   });
-  const { errors } = formState;
 
   // Submit handler - forgot password
   const onSubmit = async (data: FormData) => {
