@@ -3,7 +3,7 @@ import { Screen } from "../components/Screen";
 import { useTranslation } from "react-i18next";
 import { Icon } from "../components/Icon";
 import { router } from "expo-router";
-import { YStack } from "tamagui";
+import { XStack, YStack } from "tamagui";
 import { Typography } from "../components/Typography";
 import { useForm, Controller } from "react-hook-form";
 import FormInput from "../components/FormInputs/FormInput";
@@ -23,6 +23,7 @@ const ForgotPassword = () => {
   const insets = useSafeAreaInsets();
   const { t } = useTranslation("reset");
   const [emailConfirmation, setEmailConfirmation] = useState(false);
+  const [authError, setAuthError] = useState(false);
 
   // React Hook form
   const { handleSubmit, control, formState } = useForm<FormData>({
@@ -38,8 +39,7 @@ const ForgotPassword = () => {
       setEmailConfirmation(true);
     } catch (error) {
       Sentry.captureException(error);
-      console.log("Error while trying to reset password", error);
-      throw new Error("Error while trying to reset password");
+      setAuthError(true);
     }
   };
 
@@ -71,6 +71,7 @@ const ForgotPassword = () => {
         </Typography>
 
         <Typography>{t("paragraph")}</Typography>
+        {authError && <CredentialsError />}
 
         <Controller
           key="email"
@@ -103,6 +104,24 @@ const ForgotPassword = () => {
         <Button onPress={handleSubmit(onSubmit)}>{t("actions.send")}</Button>
       </Card>
     </Screen>
+  );
+};
+
+const CredentialsError = () => {
+  const { t } = useTranslation("login");
+  return (
+    <XStack
+      backgroundColor="$red1"
+      borderRadius={6}
+      justifyContent="flex-start"
+      padding="$md"
+      alignItems="flex-start"
+    >
+      <Icon icon="loginError" size={20} />
+      <Typography paddingHorizontal="$md" color="$red6" fontWeight="500">
+        Email incorect
+      </Typography>
+    </XStack>
   );
 };
 

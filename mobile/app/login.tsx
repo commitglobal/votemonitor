@@ -209,7 +209,7 @@ const CredentialsError = () => {
       padding="$md"
       alignItems="flex-start"
     >
-      <Icon icon="loginError" size={16} />
+      <Icon icon="loginError" size={20} />
       <Typography paddingHorizontal="$md" color="$red6" fontWeight="500">
         {t("errors.credentials")}
       </Typography>
