@@ -177,6 +177,9 @@
     "title": "No message received yet",
     "paragraph": "Push messages and alerts from your organization will appear here."
   },
+  "inbox": {
+    "today": "Today"
+  },
   "guides_empty": {
     "title": "No guides to read yet",
     "paragraph": "Guides and resources from your organization at your hands."

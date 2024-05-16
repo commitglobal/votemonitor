@@ -177,6 +177,9 @@
     "title": "Nu s-a primit încă niciun mesaj",
     "paragraph": "Mesajele push și alertele de la organizația dvs. vor apărea aici."
   },
+  "inbox": {
+    "today": "Azi"
+  },
   "guides_empty": {
     "title": "Nu există ghiduri de citit încă",
     "paragraph": "Ghidurile și resursele de la organizația dvs. sunt la îndemâna dumneavoastră."
