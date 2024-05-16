@@ -14,6 +14,7 @@ import { useUserData } from "../../../../contexts/user/UserContext.provider";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import NotificationListItem from "../../../../components/NotificationListItem";
+import OptionsSheet from "../../../../components/OptionsSheet";
 
 const Inbox = () => {
   const { i18n } = useTranslation("inbox");
@@ -28,6 +29,7 @@ const Inbox = () => {
   const notifications = data?.notifications;
 
   const [sliceNumber, setSliceNumber] = useState(10);
+  const [openContextualMenu, setOpenContextualMenu] = useState(false);
   const loadMore = () => {
     setSliceNumber((sliceNum) => sliceNum + 10);
   };
@@ -51,9 +53,7 @@ const Inbox = () => {
         leftIcon={<Icon icon="menuAlt2" color="white" />}
         onLeftPress={() => navigation.dispatch(DrawerActions.openDrawer)}
         rightIcon={<Icon icon="dotsVertical" color="white" />}
-        onRightPress={() => {
-          console.log("Right icon pressed");
-        }}
+        onRightPress={() => setOpenContextualMenu(true)}
       />
 
       {isLoading ? (
@@ -85,6 +85,22 @@ const Inbox = () => {
           </YStack>
         </>
       )}
+      <OptionsSheet open={openContextualMenu} setOpen={setOpenContextualMenu}>
+        <YStack
+          paddingVertical="$xxs"
+          paddingHorizontal="$sm"
+          onPress={() => {
+            setOpenContextualMenu(false);
+            //todo: router.push to manage my polling stations
+            // return router.push("change-password");
+          }}
+        >
+          <Typography preset="body1" color="$gray7" lineHeight={24}>
+            {/* //todo: translations here */}
+            Manage my polling stations
+          </Typography>
+        </YStack>
+      </OptionsSheet>
     </Screen>
   );
 };
