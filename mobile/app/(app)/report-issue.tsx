@@ -27,6 +27,7 @@ import Card from "../../components/Card";
 import { QuickReportKeys } from "../../services/queries/quick-reports.query";
 import * as Sentry from "@sentry/react-native";
 import { AddAttachmentQuickReportAPIPayload } from "../../services/api/quick-report/add-attachment-quick-report.api";
+import { useTranslation } from "react-i18next";
 
 const mapVisitsToSelectPollingStations = (visits: PollingStationVisitVM[] = []) => {
   const pollingStationsForSelect = visits.map((visit) => {
@@ -65,6 +66,7 @@ const ReportIssue = () => {
   const { visits, activeElectionRound } = useUserData();
   const pollingStations = useMemo(() => mapVisitsToSelectPollingStations(visits), [visits]);
   const [optionsSheetOpen, setOptionsSheetOpen] = useState(false);
+  const { t } = useTranslation("report_new_issue");
 
   const [attachments, setAttachments] = useState<Array<{ fileMetadata: FileMetadata; id: string }>>(
     [],
@@ -234,7 +236,7 @@ const ReportIssue = () => {
         }}
       >
         <Header
-          title="Report new issue"
+          title={t("header.title")}
           titleColor="white"
           barStyle="light-content"
           leftIcon={<Icon icon="chevronLeft" color="white" />}
@@ -258,11 +260,11 @@ const ReportIssue = () => {
               render={({ field: { onChange, value = { id: "", details: "" } } }) => (
                 <>
                   {/* select polling station */}
-                  <FormElement title="Polling station">
+                  <FormElement title={t("form.polling_station.label")}>
                     <Select
                       value={value.id}
                       options={pollingStations}
-                      placeholder="Select polling station"
+                      placeholder={t("form.polling_station.placeholder")}
                       onValueChange={(id) => onChange({ ...value, id, details: "" })}
                       // onOpenChange={(open) => open && Keyboard.dismiss()}
                     />
@@ -270,9 +272,9 @@ const ReportIssue = () => {
                   {/* polling station details */}
                   {value.id === QuickReportLocationType.OtherPollingStation && (
                     <FormInput
-                      title="Polling station details *"
+                      title={t("form.polling_station.label")}
                       type="textarea"
-                      placeholder="Please write here some identification details for this polling station (such as address, name, number, etc.)"
+                      placeholder={t("form.polling_station.extra")}
                       value={value.details}
                       onChangeText={(details) => onChange({ ...value, details })}
                       error={errors.polling_station?.message}
@@ -288,12 +290,12 @@ const ReportIssue = () => {
               name="issue_title"
               control={control}
               rules={{
-                required: { value: true, message: "This field is required." },
+                required: { value: true, message: t("form.issue_title.required") },
               }}
               render={({ field: { onChange, value } }) => (
                 <FormInput
-                  title="Title of issue *"
-                  placeholder="Write a title for this issue."
+                  title={t("form.issue_title.label")}
+                  placeholder={t("form.issue_title.placeholder")}
                   type="text"
                   value={value}
                   onChangeText={onChange}
@@ -308,13 +310,13 @@ const ReportIssue = () => {
               name="issue_description"
               control={control}
               rules={{
-                required: { value: true, message: "This field is required." },
+                required: { value: true, message: t("form.description.required") },
               }}
               render={({ field: { onChange, value } }) => (
                 <FormInput
-                  title="Description *"
+                  title={t("form.description.label")}
                   type="textarea"
-                  placeholder="Describe the situation in detail here."
+                  placeholder={t("form.description.placeholder")}
                   value={value}
                   onChangeText={onChange}
                   error={errors.issue_description?.message}
@@ -323,7 +325,7 @@ const ReportIssue = () => {
             />
             {attachments.length ? (
               <YStack gap="$xxs">
-                <Typography fontWeight="500">Uploaded media</Typography>
+                <Typography fontWeight="500">{t("media.title")}</Typography>
                 <YStack gap="$xxs">
                   {attachments.map((attachment) => {
                     return (
@@ -359,7 +361,7 @@ const ReportIssue = () => {
               false
             )}
             <AddAttachment
-              label="Add Media"
+              label={t("form.actions.add_media")}
               onPress={() => {
                 Keyboard.dismiss();
                 setOptionsSheetOpen(true);
@@ -376,7 +378,7 @@ const ReportIssue = () => {
               paddingVertical="$md"
               pressStyle={{ color: "$purple5" }}
             >
-              Load from gallery
+              {t("form.actions.load")}
             </Typography>
             <Typography
               onPress={handleCameraUpload.bind(null, "cameraPhoto")}
@@ -384,7 +386,7 @@ const ReportIssue = () => {
               paddingVertical="$md"
               pressStyle={{ color: "$purple5" }}
             >
-              Take a photo
+              {t("form.actions.take_picture")}
             </Typography>
             <Typography
               onPress={handleCameraUpload.bind(null, "cameraVideo")}
@@ -392,7 +394,7 @@ const ReportIssue = () => {
               paddingVertical="$md"
               pressStyle={{ color: "$purple5" }}
             >
-              Record a video
+              {t("form.actions.record_video")}
             </Typography>
             <Typography
               onPress={handleUploadAudio.bind(null)}
@@ -400,7 +402,7 @@ const ReportIssue = () => {
               paddingVertical="$md"
               pressStyle={{ color: "$purple5" }}
             >
-              Upload audio file
+              {t("form.actions.upload_audio")}
             </Typography>
           </YStack>
         </OptionsSheet>
@@ -418,7 +420,7 @@ const ReportIssue = () => {
       >
         {/* this will reset form to defaultValues */}
         <Button preset="chromeless" onPress={() => reset()}>
-          Clear
+          {t("form.actions.clear")}
         </Button>
         <Button
           flex={1}
@@ -426,8 +428,8 @@ const ReportIssue = () => {
           disabled={(isPendingAddQuickReport && !isPausedAddQuickReport) || isUploadingAttachments}
         >
           {(!isPendingAddQuickReport && !isPausedAddQuickReport) || !isUploadingAttachments
-            ? "Submit issue"
-            : "Processing..."}
+            ? t("form.actions.submit")
+            : t("form.actions.loading")}
         </Button>
       </XStack>
     </>

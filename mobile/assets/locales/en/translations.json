@@ -279,5 +279,40 @@
       "record_video": "Record audio",
       "upload_audio": "Upload audio file"
     }
+  },
+  "report_new_issue": {
+    "header": {
+      "title": "Report new issue"
+    },
+    "media": {
+      "title": "Uploaded media"
+    },
+    "form": {
+      "polling_station": {
+        "label": "Polling station",
+        "placeholder": "Select polling station",
+        "extra": "Please write here some identification details for this polling station (such as address, name, number, etc.)"
+      },
+      "issue_title": {
+        "label": "Title of issue *",
+        "placeholder": "Write a title for the issue.",
+        "required": "Title of issue is required"
+      },
+      "description": {
+        "label": "Description *",
+        "placeholder": "Describe the situation in detail here.",
+        "required": "Description is required"
+      },
+      "actions": {
+        "submit": "Submit issue",
+        "clear": "Clear",
+        "add_media": "Add media",
+        "load": "Load from gallery",
+        "take_picture": "Take a photo",
+        "record_video": "Record video",
+        "upload_audio": "Upload audio file",
+        "loading": "Processing..."
+      }
+    }
   }
 }

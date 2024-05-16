@@ -279,5 +279,40 @@
       "record_video": "Înregistrează video",
       "upload_audio": "Încarcă audio"
     }
+  },
+  "report_new_issue": {
+    "header": {
+      "title": "Raportează o problemă nouă"
+    },
+    "media": {
+      "title": "Media încărcată"
+    },
+    "form": {
+      "polling_station": {
+        "label": " Secție de votare *",
+        "placeholder": "Selectează secția de votare",
+        "extra": "Te rog să scrii aici câteva detalii de identificare pentru această secție de votare (precum adresă, nume, număr etc.)."
+      },
+      "issue_title": {
+        "label": "Titlul problemei *",
+        "placeholder": " Scrie un titlu pentru problemă.",
+        "required": "Titlul problemei este obligatoriu"
+      },
+      "description": {
+        "label": "Descriere *",
+        "placeholder": "Descrieți situația în detaliu aici.",
+        "required": "Descrierea este obligatorie"
+      },
+      "actions": {
+        "submit": "Trimite problema",
+        "clear": "Șterge",
+        "add_media": "Adaugă fișiere media",
+        "load": "Încarcă din galerie",
+        "take_picture": "Fă o poză",
+        "record_video": "Înregistrează un videoclip",
+        "upload_audio": "Încărcați un fișier audio",
+        "loading": "Se încarcă..."
+      }
+    }
   }
 }
