@@ -1,7 +1,6 @@
 ﻿using System.Data;
 using Authorization.Policies;
 using Dapper;
-using NPOI.SS.Formula.Functions;
 
 namespace Feature.Notifications.ListReceived;
 
@@ -22,16 +21,12 @@ public class Endpoint(IDbConnection dbConnection) :
         SELECT
             NGO.""Name"" AS ""NgoName""
         FROM
-            ""MonitoringObserverNotification"" MON
-            INNER JOIN ""Notifications"" N ON MON.""NotificationId"" = N.""Id""
-            INNER JOIN ""NgoAdmins"" NA ON N.""SenderId"" = NA.""Id""
-            INNER JOIN ""MonitoringNgos"" MN ON NA.""NgoId"" = MN.""NgoId""
+            ""MonitoringObservers"" MO
+            INNER JOIN ""MonitoringNgos"" MN ON MN.""Id"" = MO.""MonitoringNgoId""
             INNER JOIN ""Ngos"" NGO ON NGO.""Id"" = MN.""NgoId""
-            INNER JOIN ""AspNetUsers"" U ON U.""Id"" = NA.""Id""
-            INNER JOIN ""MonitoringObservers"" MO ON MO.""Id"" = MON.""TargetedObserversId""
         WHERE
             MO.""ObserverId"" = @observerId
-            AND N.""ElectionRoundId"" = @electionRoundId
+            AND MO.""ElectionRoundId"" = @electionRoundId
         FETCH FIRST
             1 ROWS ONLY;
 
@@ -40,18 +35,15 @@ public class Endpoint(IDbConnection dbConnection) :
             N.""Title"",
             N.""Body"",
             U.""FirstName"" || ' ' || U.""LastName"" ""Sender"",
-            N.""CreatedOn"" ""SentAt"",
-            NGO.""Name"" as ""NgoName""
+            N.""CreatedOn"" ""SentAt""
         FROM
-            ""MonitoringObserverNotification"" MON
+            ""Observers"" O
+            INNER JOIN ""MonitoringObservers"" MO ON MO.""ObserverId"" = O.""Id""
+            INNER JOIN ""MonitoringObserverNotification"" MON ON MON.""TargetedObserversId"" = MO.""Id""
             INNER JOIN ""Notifications"" N ON MON.""NotificationId"" = N.""Id""
             INNER JOIN ""NgoAdmins"" NA ON N.""SenderId"" = NA.""Id""
-            INNER JOIN ""MonitoringNgos"" MN ON NA.""NgoId"" = MN.""NgoId""
-            INNER JOIN ""Ngos"" NGO ON NGO.""Id"" = MN.""NgoId""
-            INNER JOIN ""AspNetUsers"" U ON U.""Id"" = NA.""Id""
-            INNER JOIN ""MonitoringObservers"" MO ON MO.""Id"" = MON.""TargetedObserversId""
         WHERE
-            MO.""ObserverId"" = @observerId
+            O.""Id"" = @observerId
             AND N.""ElectionRoundId"" = @electionRoundId
         ORDER BY
             N.""CreatedOn"" DESC;";
