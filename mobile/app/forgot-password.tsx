@@ -27,7 +27,7 @@ const ForgotPassword = () => {
 
   // React Hook form
   const { handleSubmit, control, formState } = useForm<FormData>({
-    defaultValues: { email: "avant.arnez@milkgitter.com" },
+    defaultValues: { email: "charlie@example.com" },
   });
   const { errors } = formState;
 
