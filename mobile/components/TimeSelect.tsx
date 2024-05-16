@@ -35,7 +35,6 @@ const TimeSelect: React.FC<TimeSelectProps> = memo(
       if (Platform.OS === "ios") {
         selectedTime ? setTempTime(selectedTime) : setTempTime(tempTime);
       } else {
-        // press OK - set the time
         if (event.type === "set") {
           // if we're trying to set a departure time before having set the arrival time -> close picker and display error toast
           if (type === "departure" && !arrivalTime) {
@@ -46,15 +45,19 @@ const TimeSelect: React.FC<TimeSelectProps> = memo(
               visibilityTime: 5000,
             });
           }
+          // after setting the date, close date picker and open time picker
           onClose();
           DateTimePickerAndroid.open({
             mode: "time",
             value: time || new Date(),
             onChange: (event, eventTime) => {
               if (event.type === "set" && selectedTime && eventTime) {
-                // if arrivalTime is set -> don't allow an earlier departure time
+                // we need to set the date of the time picker, as it uses the current date as default
+                eventTime.setDate(selectedTime.getDate());
+                // setting departure time and we have an arrival time set
                 if (type === "departure" && arrivalTime) {
-                  if (eventTime < arrivalTime) {
+                  // setting time for the same day -> don't allow an earlier departure time
+                  if (eventTime.getDate() === selectedTime.getDate() && eventTime < arrivalTime) {
                     onClose();
                     return Toast.show({
                       type: "error",
@@ -63,8 +66,8 @@ const TimeSelect: React.FC<TimeSelectProps> = memo(
                     });
                   }
                 } else if (type === "arrival" && departureTime) {
-                  // if departureTime is set -> don't allow a later arrival time
-                  if (eventTime > departureTime) {
+                  // if departureTime is set and we're setting the time for the same day -> don't allow a later arrival time
+                  if (eventTime.getDate() === selectedTime.getDate() && eventTime > departureTime) {
                     onClose();
                     return Toast.show({
                       type: "error",
@@ -199,6 +202,7 @@ const TimeSelect: React.FC<TimeSelectProps> = memo(
             is24Hour: true,
             // if setting departure date and arrival date has already been set -> don't allow an earlier date
             minimumDate: type === "departure" && arrivalTime ? arrivalTime : undefined,
+            maximumDate: type === "arrival" && departureTime ? departureTime : undefined,
           })
         )}
       </>
