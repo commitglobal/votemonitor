@@ -15,20 +15,18 @@ interface ChangePasswordConfirmationProps {
 
 const ChangePasswordConfirmation = (props: ChangePasswordConfirmationProps) => {
   const { emailConfirmation } = props;
-  const { t } = useTranslation(["change_password", "email_confirmation"]);
+  const { t } = useTranslation("change_password");
   const insets = useSafeAreaInsets();
 
   const icon = emailConfirmation === true ? "emailSent" : "passwordConfirmation";
   const header =
-    emailConfirmation === true ? t("title", { ns: "email_confirmation" }) : t("success_page.title");
+    emailConfirmation === true ? t("email_confirmation.title") : t("success_page.title");
   const paragraph =
-    emailConfirmation === true
-      ? t("paragraph", { ns: "email_confirmation" })
-      : t("success_page.paragraph");
+    emailConfirmation === true ? t("email_confirmation.paragraph") : t("success_page.paragraph");
 
   const actionButtonText =
     emailConfirmation === true
-      ? t("actions.back", { ns: "email_confirmation" })
+      ? t("email_confirmation.actions.back")
       : t("success_page.actions.back");
 
   return (

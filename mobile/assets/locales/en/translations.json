@@ -217,7 +217,7 @@
       "title": "Email sent",
       "paragraph": "Check your email and open the link we sent to continue. Check your spam filter if you did not receive the email.",
       "actions" : {
-        "back": "Back to loginn"
+        "back": "Back to login"
       }
     }
   },

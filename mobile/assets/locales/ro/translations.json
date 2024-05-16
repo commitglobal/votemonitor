@@ -212,6 +212,13 @@
       "actions": {
         "back": "Înapoi în aplicație"
       }
+    },
+    "email_confirmation": {
+      "title": "Email-ul a fost trimis",
+      "paragraph": "Verifica e-mailul și deschide linkul pe care l-am trimis pentru a continua. Verifica filtrul de spam dacă nu ai primit e-mailul.",
+      "actions" : {
+        "back": "Înapoi la pagina de autentificare"
+      }
     }
   },
   "observations_polling_station": {
@@ -271,13 +278,6 @@
       "take_picture": "Fă o poză",
       "record_video": "Înregistrează video",
       "upload_audio": "Încarcă audio"
-    }
-  },
-  "email_confirmation": {
-    "title": "Email-ul a fost trimis",
-    "paragraph": "Verifica e-mailul și deschide linkul pe care l-am trimis pentru a continua. Verifica filtrul de spam dacă nu ai primit e-mailul.",
-    "actions" : {
-      "back": "Inapoi in login"
     }
   }
 }
