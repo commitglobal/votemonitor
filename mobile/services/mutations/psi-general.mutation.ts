@@ -6,6 +6,7 @@ import {
 import { pollingStationsKeys } from "../queries.service";
 import { useMemo } from "react";
 import { PollingStationVisitVM } from "../../common/models/polling-station.model";
+import * as Crypto from "expo-crypto";
 
 export const useMutatePollingStationGeneralData = ({
   electionRoundId,
@@ -24,7 +25,7 @@ export const useMutatePollingStationGeneralData = ({
   );
 
   return useMutation({
-    mutationKey: [pollingStationsKeys.mutatePollingStationGeneralData()],
+    mutationKey: pollingStationsKeys.mutatePollingStationGeneralData(),
     scope: {
       id: scopeId,
     },
@@ -44,7 +45,7 @@ export const useMutatePollingStationGeneralData = ({
 
       // In case there is no other existing value in cache
       const defaultValues = {
-        id: "-1",
+        id: Crypto.randomUUID(),
         pollingStationId: payload.pollingStationId,
         arrivalTime: "",
         departureTime: "",
@@ -57,7 +58,6 @@ export const useMutatePollingStationGeneralData = ({
         ...(payload?.answers ? { answers: payload?.answers } : {}),
         ...(payload?.arrivalTime ? { arrivalTime: payload?.arrivalTime } : {}),
         ...(payload?.departureTime ? { departureTime: payload?.departureTime } : {}),
-        // TODO: change with ...payload but first remove | null posibility from APIPayload
       });
 
       // Update Visits query optimistic
@@ -87,8 +87,14 @@ export const useMutatePollingStationGeneralData = ({
       queryClient.setQueryData(pollingStationInformationQK, context?.previousData);
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: pollingStationsKeys.visits(electionRoundId) });
-      queryClient.invalidateQueries({ queryKey: pollingStationInformationQK });
+      if (
+        queryClient.isMutating({
+          mutationKey: pollingStationsKeys.mutatePollingStationGeneralData(),
+        }) === 1
+      ) {
+        queryClient.invalidateQueries({ queryKey: pollingStationsKeys.visits(electionRoundId) });
+        queryClient.invalidateQueries({ queryKey: pollingStationInformationQK });
+      }
 
       // Can await invalidateQuries if I want to keep the mutation in pending until refetch is done
     },

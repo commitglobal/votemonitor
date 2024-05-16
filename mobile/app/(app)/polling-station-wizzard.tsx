@@ -2,12 +2,11 @@ import { router } from "expo-router";
 import { Screen } from "../../components/Screen";
 import Header from "../../components/Header";
 import { Icon } from "../../components/Icon";
-import { Keyboard, TextStyle, ViewStyle } from "react-native";
-import { ScrollView, YStack } from "tamagui";
+import { Keyboard, ViewStyle, useWindowDimensions } from "react-native";
+import { Input, Spinner, XStack, YStack, styled } from "tamagui";
 import { Typography } from "../../components/Typography";
-import Select from "../../components/Select";
 import { pollingStationsKeys, usePollingStationByParentID } from "../../services/queries.service";
-import { useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import {
   PollingStationNomenclatorNodeVM,
   PollingStationVisitVM,
@@ -16,6 +15,7 @@ import { useTranslation } from "react-i18next";
 import { useUserData } from "../../contexts/user/UserContext.provider";
 import { useQueryClient } from "@tanstack/react-query";
 import WizzardControls from "../../components/WizzardControls";
+import { ListView } from "../../components/ListView";
 
 const mapPollingStationOptionsToSelectValues = (
   options: PollingStationNomenclatorNodeVM[],
@@ -83,6 +83,9 @@ const PollingStationWizzardContent = ({
 }: PollingStationWizzardContentProps) => {
   const { t } = useTranslation("add_polling_station");
   const [selectedOption, setSelectedOption] = useState<PollingStationStep>();
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [sliceNumber, setSliceNumber] = useState(30);
+  const { height } = useWindowDimensions();
   const { activeElectionRound, setSelectedPollingStationId } = useUserData();
 
   const queryClient = useQueryClient();
@@ -102,6 +105,17 @@ const PollingStationWizzardContent = ({
     [pollingStationOptions],
   );
 
+  const filteredOptions = useMemo(() => {
+    if (!searchTerm) return pollingStationsMappedOptions.slice(0, sliceNumber);
+    return pollingStationsMappedOptions
+      .filter((option) => option.label.toLowerCase().includes(searchTerm.toLowerCase()))
+      .slice(0, sliceNumber);
+  }, [pollingStationsMappedOptions, searchTerm, sliceNumber]);
+
+  const loadMore = () => {
+    setSliceNumber((sliceNum) => sliceNum + 50);
+  };
+
   const isLastElement: boolean = useMemo(
     () => !!pollingStationOptions[0]?.pollingStationId,
     [pollingStationOptions],
@@ -119,6 +133,8 @@ const PollingStationWizzardContent = ({
   const onNextButtonPress = () => {
     if (selectedOption) {
       onNextPress(selectedOption);
+      setSearchTerm("");
+      setSliceNumber(30);
       setSelectedOption(undefined);
     }
   };
@@ -126,6 +142,7 @@ const PollingStationWizzardContent = ({
   const onBackButtonPress = () => {
     const lastStep = onPreviousPress();
     setSelectedOption(lastStep);
+    setSearchTerm("");
   };
 
   const onFinishButtonPress = async () => {
@@ -177,39 +194,58 @@ const PollingStationWizzardContent = ({
 
   // TODO: To be handled
   if (pollingStationsError) {
-    return <Typography>Error handling here...</Typography>;
+    return <Typography>Something went wrong!</Typography>;
   }
+
+  const SelectItem = useCallback(
+    ({ item, extraData }: any) => {
+      return (
+        <Typography
+          style={{ borderRadius: 8 }}
+          padding="$xs"
+          backgroundColor={
+            `${extraData?.id}_${extraData?.name}` === item.value ? "$purple1" : "white"
+          }
+          pressStyle={{ opacity: 0.85, backgroundColor: "$purple1" }}
+          onPress={() => onSelectOption(item.value)}
+        >
+          {item.label}
+        </Typography>
+      );
+    },
+    [selectedOption],
+  );
 
   return (
     <>
-      <YStack paddingHorizontal="$md" paddingTop="$xl">
-        <YStack gap="$md" minHeight="$xxl">
-          {activeStep && (
+      <YStack paddingHorizontal="$md" gap={"$1"}>
+        {activeStep && (
+          <YStack paddingTop={"$sm"} minHeight="$xl">
             <Typography color="$gray5">{t("progress.location", { value: locations })}</Typography>
-          )}
-        </YStack>
+          </YStack>
+        )}
+
+        <XStack backgroundColor="$purple1" marginTop={"$sm"} borderRadius={8} alignItems="center">
+          <Icon icon="search" color="transparent" size={20} marginLeft="$sm" />
+          <SearchInput flex={1} value={searchTerm} onChangeText={setSearchTerm} />
+        </XStack>
       </YStack>
-      <ScrollView
-        paddingTop={140}
-        contentContainerStyle={{ flexGrow: 1 }}
-        centerContent
-        keyboardShouldPersistTaps="handled"
-      >
-        <YStack paddingHorizontal="$md" gap="$lg">
-          <Typography preset="body2" style={$labelStyle}>
-            {t("form.region.title")}
-          </Typography>
-          {!isFetchingPollingStations && (
-            <Select
-              key={activeStep?.id}
-              options={pollingStationsMappedOptions}
-              placeholder={t("form.region.placeholder")}
-              onValueChange={onSelectOption}
-              value={selectedOption ? `${selectedOption.id}_${selectedOption.name}` : undefined}
-            />
-          )}
-        </YStack>
-      </ScrollView>
+      <YStack paddingHorizontal="$md" paddingTop="$sm" height={height - 300} paddingBottom={"$md"}>
+        {isFetchingPollingStations && <Spinner size="large" color="$purple5" />}
+        {!isFetchingPollingStations && (
+          <ListView<{ id: string | number; value: string; label: string }>
+            data={filteredOptions}
+            showsVerticalScrollIndicator={false}
+            bounces={false}
+            estimatedItemSize={64}
+            extraData={selectedOption}
+            keyExtractor={(item) => item.value}
+            onEndReached={loadMore}
+            onEndReachedThreshold={0.5}
+            renderItem={SelectItem}
+          />
+        )}
+      </YStack>
       <WizzardControls
         isFirstElement={!activeStep?.id}
         isLastElement={isLastElement}
@@ -226,9 +262,14 @@ const $containerStyle: ViewStyle = {
   justifyContent: "space-between",
 };
 
-const $labelStyle: TextStyle = {
-  color: "black",
-  fontWeight: "700",
-};
+const SearchInput = styled(Input, {
+  backgroundColor: "$purple1",
+  placeholder: "Search",
+  color: "$purple5",
+  placeholderTextColor: "$purple5",
+  focusStyle: {
+    borderColor: "transparent",
+  },
+});
 
 export default PollingStationWizzard;

@@ -44,9 +44,9 @@
       "eas": {
         "projectId": "93e17628-ddcd-4e67-849c-b356a18a6082"
       },
-      "message": "Fix optimistic update for form submissions",
-      "updateCritical": 10,
-      "updateVersion": 10
+      "message": "Fix quick reports and transform ps wizzard in list",
+      "updateCritical": 12,
+      "updateVersion": 12
     },
     "owner": "commit-global",
     "runtimeVersion": {

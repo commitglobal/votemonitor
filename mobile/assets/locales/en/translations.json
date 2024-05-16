@@ -178,6 +178,9 @@
     "title": "No message received yet",
     "paragraph": "Push messages and alerts from your organization will appear here."
   },
+  "inbox": {
+    "today": "Today"
+  },
   "guides_empty": {
     "title": "No guides to read yet",
     "paragraph": "Guides and resources from your organization at your hands."
@@ -278,10 +281,10 @@
     }
   },
   "observations_empty": {
-    "title": "Nicio secție de votare vizitată încă",
-    "paragraph": "Începeți să configurați prima secție de votare înainte de a completa formularele de observație.",
+    "title": "No visited polling stations yet",
+    "paragraph": "Start configuring your first polling station before completing observation forms.",
     "actions": {
-      "add_station": "Adăugați prima secție de votare."
+      "add_station": "Add your first polling station"
     }
   },
   "question_page": {

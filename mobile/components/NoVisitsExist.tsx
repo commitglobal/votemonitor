@@ -14,7 +14,7 @@ const NoVisitsExist = () => {
   const { t } = useTranslation("observations_empty");
 
   return (
-    <Screen preset="fixed">
+    <Screen preset="fixed" contentContainerStyle={{ flexGrow: 1 }}>
       <Header
         title={"Observation"}
         titleColor="white"
@@ -29,7 +29,8 @@ const NoVisitsExist = () => {
         alignItems="center"
         justifyContent="center"
         gap="$md"
-        paddingHorizontal="$md"
+        paddingHorizontal="$lg"
+        flex={1}
       >
         <Icon icon="missingPollingStation" />
         <YStack gap="$xxxs">

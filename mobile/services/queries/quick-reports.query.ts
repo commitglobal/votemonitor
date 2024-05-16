@@ -24,7 +24,6 @@ export const useQuickReports = <TResult = QuickReportsAPIResponse[]>(
     queryKey: QuickReportKeys.byElectionRound(electionRoundId),
     queryFn: electionRoundId ? () => getQuickReports(electionRoundId) : skipToken,
     select,
-    initialData: [],
   });
 };
 

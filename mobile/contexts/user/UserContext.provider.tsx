@@ -68,7 +68,7 @@ const UserContextProvider = ({ children }: React.PropsWithChildren) => {
 
   const {
     data: lastVisitedPollingStation,
-    isLoading: isLoadingCurrentPS,
+    // isLoading: isLoadingCurrentPS,
     error: PollingStationNomenclatorNodeDBError,
   } = usePollingStationById(currentSelectedPollingStationId);
 
@@ -115,8 +115,7 @@ const UserContextProvider = ({ children }: React.PropsWithChildren) => {
     NomenclatureError ||
     PollingStationNomenclatorNodeDBError;
 
-  const isLoading =
-    isLoadingRounds || isLoadingVisits || isLoadingNomenclature || isLoadingCurrentPS; // will be false while offline, because the queryFn is not running. isPending will be true
+  const isLoading = isLoadingRounds || isLoadingVisits || isLoadingNomenclature; // will be false while offline, because the queryFn is not running. isPending will be true
 
   const contextValues = useMemo(() => {
     return {

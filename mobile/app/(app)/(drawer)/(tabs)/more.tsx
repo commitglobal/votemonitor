@@ -16,6 +16,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CURRENT_USER_STORAGE_KEY } from "../../../../common/constants";
 import SelectAppLanguage from "../../../../components/SelectAppLanguage";
 import i18n from "../../../../common/config/i18n";
+import { useNotification } from "../../../../hooks/useNotifications";
 
 interface MenuItemProps {
   label: string;
@@ -46,6 +47,8 @@ const More = () => {
   const queryClient = useQueryClient();
   const [isLanguageSelectSheetOpen, setIsLanguageSelectSheetOpen] = React.useState(false);
 
+  const { unsubscribe: unsubscribePushNotifications } = useNotification();
+
   const { t } = useTranslation(["more", "languages"]);
   const { signOut } = useAuth();
 
@@ -58,7 +61,8 @@ const More = () => {
     queryFn: () => AsyncStorage.getItem(CURRENT_USER_STORAGE_KEY),
   });
 
-  const logout = () => {
+  const logout = async () => {
+    await unsubscribePushNotifications();
     signOut(queryClient);
   };
 

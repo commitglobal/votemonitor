@@ -56,7 +56,6 @@ const Select = ({ placeholder = "Select", options, ...props }: StyledSelectProps
           color="$gray5"
           placeholder={placeholder}
           fontSize={16}
-          // fontWeight="500"
         ></TamaguiSelect.Value>
       </TamaguiSelect.Trigger>
 
