@@ -141,42 +141,6 @@ public class ListPollingStationsSpecificationTests
         result.Should().Contain(pollingStation1);
         result.Should().Contain(pollingStation2);
     }
-
-    [Fact]
-    public void ListPollingStationsSpecification_AppliesSortOrderCorrectly()
-    {
-        // Arrange
-        var electionRound = new ElectionRoundAggregateFaker().Generate();
-        var pollingStation1 = new PollingStationAggregateFaker(electionRound: electionRound, displayOrder: 1, address: DefaultAddress).Generate();
-        var pollingStation2 = new PollingStationAggregateFaker(electionRound: electionRound, displayOrder: 2, address: DefaultAddress).Generate();
-
-        var testCollection = Enumerable
-            .Range(100, 100)
-            .Select(displayOrder => new PollingStationAggregateFaker(electionRound: electionRound, displayOrder: displayOrder, address: DefaultAddress).Generate())
-            .Union(new[] { pollingStation1, pollingStation2 })
-            .Reverse()
-            .ToList();
-
-        var request = new List.Request
-        {
-            ElectionRoundId = electionRound.Id,
-            SortOrder = SortOrder.Desc,
-            SortColumnName = "DisplayOrder",
-            PageSize = 100,
-            PageNumber = 2
-        };
-
-        var spec = new ListPollingStationsSpecification(request);
-
-        // Act
-        var result = spec.Evaluate(testCollection).ToList();
-
-        // Assert
-        result.Should().HaveCount(2);
-        result.Should().Contain(pollingStation1);
-        result.Should().Contain(pollingStation2);
-    }
-
     public static IEnumerable<object[]> SortingTestCases =>
         new List<object[]>
         {

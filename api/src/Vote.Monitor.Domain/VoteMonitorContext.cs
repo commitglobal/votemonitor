@@ -27,15 +27,15 @@ public class VoteMonitorContext : IdentityDbContext<ApplicationUser, IdentityRol
 {
     private readonly ISerializerService _serializerService;
     private readonly ITimeProvider _timeProvider;
-    private readonly ICurrentUserIdProvider _currentUserIdProvider;
+    private readonly ICurrentUserProvider _currentUserProvider;
     public VoteMonitorContext(DbContextOptions<VoteMonitorContext> options,
         ISerializerService serializerService,
         ITimeProvider timeProvider,
-        ICurrentUserIdProvider currentUserIdProvider) : base(options)
+        ICurrentUserProvider currentUserProvider) : base(options)
     {
         _serializerService = serializerService;
         _timeProvider = timeProvider;
-        _currentUserIdProvider = currentUserIdProvider;
+        _currentUserProvider = currentUserProvider;
     }
 
     public DbSet<Country> Countries { get; set; }
@@ -139,7 +139,7 @@ public class VoteMonitorContext : IdentityDbContext<ApplicationUser, IdentityRol
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.AddInterceptors(new AuditingInterceptor(_currentUserIdProvider, _timeProvider));
-        optionsBuilder.AddInterceptors(new AuditTrailInterceptor(_serializerService, _currentUserIdProvider, _timeProvider));
+        optionsBuilder.AddInterceptors(new AuditingInterceptor(_currentUserProvider, _timeProvider));
+        optionsBuilder.AddInterceptors(new AuditTrailInterceptor(_serializerService, _currentUserProvider, _timeProvider));
     }
 }

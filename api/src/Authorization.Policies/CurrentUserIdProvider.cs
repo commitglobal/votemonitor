@@ -3,7 +3,7 @@ using Vote.Monitor.Core.Security;
 
 namespace Authorization.Policies;
 
-public class CurrentUserIdProvider : ICurrentUserIdProvider, ICurrentUserInitializer
+public class CurrentUserProvider : ICurrentUserProvider, ICurrentUserInitializer
 {
     public ClaimsPrincipal? User { get; private set; }
 
@@ -29,6 +29,23 @@ public class CurrentUserIdProvider : ICurrentUserIdProvider, ICurrentUserInitial
         }
 
         return Guid.Parse(userIdClaimsValue);
+    }
+
+    public Guid? GetNgoId()
+    {
+        if (!IsAuthenticated())
+        {
+            return null;
+        }
+
+        var ngoIdClaimValue = GetClaimValue(ApplicationClaimTypes.NgoId);
+
+        if (!string.IsNullOrWhiteSpace(ngoIdClaimValue))
+        {
+            return Guid.Parse(ngoIdClaimValue);
+        }
+
+        return null;
     }
 
     public void SetCurrentUser(ClaimsPrincipal user)

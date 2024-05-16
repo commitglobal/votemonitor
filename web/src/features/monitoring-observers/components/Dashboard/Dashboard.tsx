@@ -32,6 +32,7 @@ import { MonitoringObserver } from '../../models/MonitoringObserver';
 import { useTags } from '../../queries';
 import PushMessages from '../PushMessages/PushMessages';
 import ImportMonitoringObserversDialog from './ImportMonitoringObserversDialog';
+import ImportMonitoringObserversErrorsDialog from './ImportMonitoringObserversErrorsDialog';
 
 export default function MonitoringObserversDashboard(): ReactElement {
   const monitoringObserverColDefs: ColumnDef<MonitoringObserver>[] = [
@@ -104,7 +105,10 @@ export default function MonitoringObserversDashboard(): ReactElement {
   const [isFiltering, setFiltering] = useState(false);
   const [statusFilter, setStatusFilter] = useState('');
   const [tagsFilter, setTagsFilter] = useState<string[]>([]);
+  const [importErrorsFileId, setImportErrorsFileId] = useState<string | undefined>();
+
   const importMonitoringObserversDialog = useDialog();
+  const importMonitoringObserverErrorsDialog = useDialog();
 
   const navigate = useNavigate();
   const handleSearchInput = (ev: React.FormEvent<HTMLInputElement>) => {
@@ -223,7 +227,8 @@ export default function MonitoringObserversDashboard(): ReactElement {
               <div className='flex flex-row justify-between items-center px-6'>
                 <CardTitle className='text-xl'>Monitoring observers list</CardTitle>
                 <div className='table-actions flex flex-row-reverse flex-row- gap-4'>
-                  <ImportMonitoringObserversDialog {...importMonitoringObserversDialog.dialogProps} />
+                  {!!importErrorsFileId && <ImportMonitoringObserversErrorsDialog fileId={importErrorsFileId} {...importMonitoringObserverErrorsDialog.dialogProps} />}
+                  <ImportMonitoringObserversDialog {...importMonitoringObserversDialog.dialogProps} onImportError={(fileId) => { setImportErrorsFileId(fileId); importMonitoringObserverErrorsDialog.trigger(); }} />
                   <Button className='bg-purple-900 hover:bg-purple-600' onClick={() => importMonitoringObserversDialog.trigger()}>
                     <svg
                       className='mr-1.5'

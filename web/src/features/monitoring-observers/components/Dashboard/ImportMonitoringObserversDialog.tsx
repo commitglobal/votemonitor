@@ -18,22 +18,20 @@ import { AxiosError } from 'axios';
 import { useRef, useState } from 'react';
 
 import { downloadImportExample } from '../../helpers';
-import { useDialog } from '@/components/ui/use-dialog';
-import ImportMonitoringObserversErrorsDialog from './ImportMonitoringObserversErrorsDialog';
 
 export interface ImportMonitoringObserversDialogProps {
+    onImportError: (fileId: string) => void;
     open: boolean;
     onOpenChange: (open: any) => void;
 }
 
 function ImportMonitoringObserversDialog({
+    onImportError,
     open,
     onOpenChange
 }: ImportMonitoringObserversDialogProps) {
     const [fileName, setFileName] = useState('');
-    const [importErrorsFileId, setImportErrorsFileId] = useState<string | undefined>();
     const hiddenFileInput: React.Ref<any> = useRef(null);
-    const importMonitoringObserversErrorsDialog = useDialog();
 
     const handleClick = () => {
         hiddenFileInput?.current?.click();
@@ -75,8 +73,7 @@ function ImportMonitoringObserversDialog({
                 // @ts-ignore
                 const importErrorsFileId = error.response.data.id;
                 if (importErrorsFileId) {
-                    setImportErrorsFileId(importErrorsFileId);
-                    importMonitoringObserversErrorsDialog.trigger();
+                    onImportError(importErrorsFileId);
                 } else {
                     toast({
                         title: 'Error importing monitoring observers',
@@ -131,9 +128,6 @@ function ImportMonitoringObserversDialog({
                         </div>
                         <div className='text-xs text-purple-900'>28kb</div>
                     </div>
-                    <div className='text-sm text-gray-500 font-normal	'>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    </div>
                     <input type='file' ref={hiddenFileInput} onChange={handleChange} style={{ display: 'none' }} />
                     <Button onClick={handleClick} variant='outline'>
                         <span className='text-gray-500 font-normal'>
@@ -144,18 +138,14 @@ function ImportMonitoringObserversDialog({
                             )}
                         </span>
                     </Button>
-                    <div className='text-sm text-gray-500 font-normal'>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    </div>
                     <Separator />
                 </div>
                 <DialogFooter>
-                    <DialogClose>
+                    <DialogClose asChild>
                         <Button className='border border-input border-purple-900 bg-background hover:bg-purple-50 text-purple-900 hover:text-purple-600'>
                             Cancel
                         </Button>
                     </DialogClose>
-                    {!!importErrorsFileId && (<ImportMonitoringObserversErrorsDialog fileId={importErrorsFileId} {...importMonitoringObserversErrorsDialog.dialogProps} />)}
                     <Button className='bg-purple-900 hover:bg-purple-600' onClick={handleImport} disabled={!(!!hiddenFileInput?.current?.files?.length)}>Import list</Button>
                 </DialogFooter>
             </DialogContent>

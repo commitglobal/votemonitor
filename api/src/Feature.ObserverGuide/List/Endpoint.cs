@@ -1,14 +1,17 @@
 ﻿using Authorization.Policies.Requirements;
-using Feature.ObserverGuide.Specifications;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
 using Vote.Monitor.Core.Services.Security;
+using Vote.Monitor.Domain;
+using Vote.Monitor.Domain.Entities.ObserverGuideAggregate;
 
 namespace Feature.ObserverGuide.List;
 
 public class Endpoint(IAuthorizationService authorizationService,
+    ICurrentUserProvider currentUserProvider,
     ICurrentUserRoleProvider currentUserRoleProvider,
-    IReadRepository<ObserverGuideAggregate> repository,
+    VoteMonitorContext context,
     IFileStorageService fileStorageService)
     : Endpoint<Request, Results<Ok<Response>, NotFound>>
 {
@@ -27,31 +30,77 @@ public class Endpoint(IAuthorizationService authorizationService,
             return TypedResults.NotFound();
         }
 
-        var ngoId = await currentUserRoleProvider.GetNgoId();
-        var  specification =  new GetObserverGuidesSpecification(ngoId);
-        var observerGuides = await repository.ListAsync(specification, ct);
+        List<ObserverGuideAggregate> observerGuides;
+        if (currentUserRoleProvider.IsNgoAdmin())
+        {
+            var ngoId = currentUserProvider.GetNgoId()!.Value;
+            // ReSharper disable once EntityFramework.NPlusOne.IncompleteDataQuery
+            observerGuides = await context
+                .ObserversGuides
+                .Where(x => x.MonitoringNgo.NgoId == ngoId
+                            && x.MonitoringNgo.ElectionRoundId == req.ElectionRoundId
+                                                           && !x.IsDeleted)
+                .ToListAsync(ct);
+        }
+        else if (currentUserRoleProvider.IsObserver())
+        {
+            var observerId = currentUserProvider.GetUserId()!.Value;
 
-        var observerGuideModels = observerGuides
-            .Select(async observerGuide =>
+            // ReSharper disable once EntityFramework.NPlusOne.IncompleteDataQuery
+            observerGuides = await context
+                .ObserversGuides
+                .Where(x => x.MonitoringNgo.ElectionRoundId == req.ElectionRoundId
+                            && x.MonitoringNgo.MonitoringObservers.Any(mo => mo.ObserverId == observerId)
+                            && !x.IsDeleted)
+                .ToListAsync(ct);
+        }
+        else
+        {
+            return TypedResults.NotFound();
+        }
+
+        var tasks = observerGuides
+            .Where(x => x.GuideType == ObserverGuideType.Document)
+            .Select(async guide =>
             {
                 var presignedUrl = await fileStorageService.GetPresignedUrlAsync(
-                    observerGuide.FilePath,
-                    observerGuide.UploadedFileName,
+                    guide.FilePath!,
+                    guide.UploadedFileName!,
                     ct);
 
                 return new ObserverGuideModel
                 {
-                    Title = observerGuide.Title,
-                    FileName = observerGuide.FileName,
+                    Id = guide.Id,
+                    Title = guide.Title,
+                    FileName = guide.FileName,
                     PresignedUrl = (presignedUrl as GetPresignedUrlResult.Ok)?.Url ?? string.Empty,
-                    MimeType = observerGuide.MimeType,
+                    MimeType = guide.MimeType,
                     UrlValidityInSeconds = (presignedUrl as GetPresignedUrlResult.Ok)?.UrlValidityInSeconds ?? 0,
-                    Id = observerGuide.Id
+                    GuideType = ObserverGuideType.Document,
+                    CreatedOn = guide.CreatedOn,
+                    CreatedBy = "-" // TODO: use dapper to do the joinery
                 };
-            })
-            .Select(t => t.Result)
-            .ToList();
+            });
 
-        return TypedResults.Ok(new Response { Guides = observerGuideModels });
+        var documentObserverGuides = await Task.WhenAll(tasks);
+
+        var websiteObserverGuides = observerGuides
+            // ReSharper disable once EntityFramework.NPlusOne.IncompleteDataUsage
+            .Where(x => x.GuideType == ObserverGuideType.Website)
+            .Select(guide => new ObserverGuideModel
+            {
+                Id = guide.Id,
+                Title = guide.Title,
+                WebsiteUrl = guide.WebsiteUrl,
+                GuideType = ObserverGuideType.Website,
+                CreatedOn = guide.CreatedOn,
+                CreatedBy = "-" // TODO: use dapper to do the joinery
+            });
+
+        var guides = documentObserverGuides
+            .Concat(websiteObserverGuides)
+            .OrderBy(x => x.Title);
+
+        return TypedResults.Ok(new Response { Guides = guides.ToList() });
     }
 }

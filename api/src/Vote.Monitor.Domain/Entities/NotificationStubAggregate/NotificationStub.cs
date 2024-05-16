@@ -10,6 +10,7 @@ public class NotificationStub : BaseEntity
     {
         StubType = stubType;
         SerializedData = serializedData;
+        CreatedOn = DateTime.UtcNow;
     }
 
     public static NotificationStub CreateExpoNotificationStub(string serializedData)

@@ -5,7 +5,7 @@ namespace Authorization.Policies.UnitTests.RequirementsHandlers;
 
 public class MonitoringNgoAdminOrObserverAuthorizationHandlerTests
 {
-    private readonly ICurrentUserIdProvider _currentUserIdProvider = Substitute.For<ICurrentUserIdProvider>();
+    private readonly ICurrentUserProvider _currentUserProvider = Substitute.For<ICurrentUserProvider>();
     private readonly ICurrentUserRoleProvider _currentUserRoleProvider = Substitute.For<ICurrentUserRoleProvider>();
     private readonly IReadRepository<MonitoringNgo> _monitoringNgoRepository = Substitute.For<IReadRepository<MonitoringNgo>>();
     private readonly IReadRepository<MonitoringObserver> _monitoringObserverRepository = Substitute.For<IReadRepository<MonitoringObserver>>();
@@ -21,7 +21,7 @@ public class MonitoringNgoAdminOrObserverAuthorizationHandlerTests
     {
         var requirement = new MonitoringNgoAdminOrObserverRequirement(_electionRoundId);
         _context = new AuthorizationHandlerContext([requirement], null!, null);
-        _handler = new MonitoringNgoAdminOrObserverAuthorizationHandler(_currentUserIdProvider,
+        _handler = new MonitoringNgoAdminOrObserverAuthorizationHandler(_currentUserProvider,
             _currentUserRoleProvider,
             _monitoringObserverRepository,
             _monitoringNgoRepository);
@@ -47,8 +47,8 @@ public class MonitoringNgoAdminOrObserverAuthorizationHandlerTests
         // Arrange
         _currentUserRoleProvider.IsNgoAdmin().Returns(true);
         _currentUserRoleProvider.IsObserver().Returns(false);
-        _currentUserIdProvider.GetUserId().Returns(_observerId);
-        _currentUserRoleProvider.GetNgoId().Returns(_ngoId);
+        _currentUserProvider.GetUserId().Returns(_observerId);
+        _currentUserProvider.GetNgoId().Returns(_ngoId);
 
         _monitoringNgoRepository
             .FirstOrDefaultAsync(Arg.Any<GetMonitoringNgoSpecification>())
@@ -67,8 +67,8 @@ public class MonitoringNgoAdminOrObserverAuthorizationHandlerTests
         // Arrange
         _currentUserRoleProvider.IsNgoAdmin().Returns(true);
         _currentUserRoleProvider.IsObserver().Returns(false);
-        _currentUserIdProvider.GetUserId().Returns(_observerId);
-        _currentUserRoleProvider.GetNgoId().Returns(_ngoId);
+        _currentUserProvider.GetUserId().Returns(_observerId);
+        _currentUserProvider.GetNgoId().Returns(_ngoId);
 
         _monitoringNgoRepository
             .FirstOrDefaultAsync(Arg.Any<GetMonitoringNgoSpecification>())
@@ -87,8 +87,8 @@ public class MonitoringNgoAdminOrObserverAuthorizationHandlerTests
         // Arrange
         _currentUserRoleProvider.IsNgoAdmin().Returns(true);
         _currentUserRoleProvider.IsObserver().Returns(false);
-        _currentUserIdProvider.GetUserId().Returns(_observerId);
-        _currentUserRoleProvider.GetNgoId().Returns(_ngoId);
+        _currentUserProvider.GetUserId().Returns(_observerId);
+        _currentUserProvider.GetNgoId().Returns(_ngoId);
 
         _monitoringNgoRepository
             .FirstOrDefaultAsync(Arg.Any<GetMonitoringNgoSpecification>())
@@ -107,8 +107,8 @@ public class MonitoringNgoAdminOrObserverAuthorizationHandlerTests
         // Arrange
         _currentUserRoleProvider.IsNgoAdmin().Returns(true);
         _currentUserRoleProvider.IsObserver().Returns(false);
-        _currentUserIdProvider.GetUserId().Returns(_observerId);
-        _currentUserRoleProvider.GetNgoId().Returns(_ngoId);
+        _currentUserProvider.GetUserId().Returns(_observerId);
+        _currentUserProvider.GetNgoId().Returns(_ngoId);
 
         _monitoringNgoRepository
             .FirstOrDefaultAsync(Arg.Any<GetMonitoringNgoSpecification>())
@@ -127,8 +127,8 @@ public class MonitoringNgoAdminOrObserverAuthorizationHandlerTests
         // Arrange
         _currentUserRoleProvider.IsNgoAdmin().Returns(true);
         _currentUserRoleProvider.IsObserver().Returns(false);
-        _currentUserIdProvider.GetUserId().Returns(_observerId);
-        _currentUserRoleProvider.GetNgoId().Returns(_ngoId);
+        _currentUserProvider.GetUserId().Returns(_observerId);
+        _currentUserProvider.GetNgoId().Returns(_ngoId);
 
         _monitoringNgoRepository
             .FirstOrDefaultAsync(Arg.Any<GetMonitoringNgoSpecification>())
@@ -147,8 +147,8 @@ public class MonitoringNgoAdminOrObserverAuthorizationHandlerTests
         // Arrange
         _currentUserRoleProvider.IsObserver().Returns(true);
         _currentUserRoleProvider.IsNgoAdmin().Returns(false);
-        _currentUserIdProvider.GetUserId().Returns(_observerId);
-        _currentUserRoleProvider.GetNgoId().Returns(_ngoId);
+        _currentUserProvider.GetUserId().Returns(_observerId);
+        _currentUserProvider.GetNgoId().Returns(_ngoId);
 
         _monitoringObserverRepository
             .FirstOrDefaultAsync(Arg.Any<GetMonitoringObserverSpecification>())
@@ -167,7 +167,7 @@ public class MonitoringNgoAdminOrObserverAuthorizationHandlerTests
         // Arrange
         _currentUserRoleProvider.IsObserver().Returns(true);
         _currentUserRoleProvider.IsNgoAdmin().Returns(false);
-        _currentUserIdProvider.GetUserId().Returns(_observerId);
+        _currentUserProvider.GetUserId().Returns(_observerId);
 
         _monitoringObserverRepository
             .FirstOrDefaultAsync(Arg.Any<GetMonitoringObserverSpecification>())
@@ -186,7 +186,7 @@ public class MonitoringNgoAdminOrObserverAuthorizationHandlerTests
         // Arrange
         _currentUserRoleProvider.IsObserver().Returns(true);
         _currentUserRoleProvider.IsNgoAdmin().Returns(false);
-        _currentUserIdProvider.GetUserId().Returns(_observerId);
+        _currentUserProvider.GetUserId().Returns(_observerId);
 
         _monitoringObserverRepository
             .FirstOrDefaultAsync(Arg.Any<GetMonitoringObserverSpecification>())
@@ -205,7 +205,7 @@ public class MonitoringNgoAdminOrObserverAuthorizationHandlerTests
         // Arrange
         _currentUserRoleProvider.IsObserver().Returns(true);
         _currentUserRoleProvider.IsNgoAdmin().Returns(false);
-        _currentUserIdProvider.GetUserId().Returns(_observerId);
+        _currentUserProvider.GetUserId().Returns(_observerId);
 
         _monitoringObserverRepository
             .FirstOrDefaultAsync(Arg.Any<GetMonitoringObserverSpecification>())
@@ -224,7 +224,7 @@ public class MonitoringNgoAdminOrObserverAuthorizationHandlerTests
         // Arrange
         _currentUserRoleProvider.IsObserver().Returns(true);
         _currentUserRoleProvider.IsNgoAdmin().Returns(false);
-        _currentUserIdProvider.GetUserId().Returns(_observerId);
+        _currentUserProvider.GetUserId().Returns(_observerId);
 
         _monitoringObserverRepository
             .FirstOrDefaultAsync(Arg.Any<GetMonitoringObserverSpecification>())
@@ -243,7 +243,7 @@ public class MonitoringNgoAdminOrObserverAuthorizationHandlerTests
         // Arrange
         _currentUserRoleProvider.IsObserver().Returns(true);
         _currentUserRoleProvider.IsNgoAdmin().Returns(false);
-        _currentUserIdProvider.GetUserId().Returns(_observerId);
+        _currentUserProvider.GetUserId().Returns(_observerId);
 
         _monitoringObserverRepository
             .FirstOrDefaultAsync(Arg.Any<GetMonitoringObserverSpecification>())
@@ -262,7 +262,7 @@ public class MonitoringNgoAdminOrObserverAuthorizationHandlerTests
         // Arrange
         _currentUserRoleProvider.IsObserver().Returns(true);
         _currentUserRoleProvider.IsNgoAdmin().Returns(false);
-        _currentUserIdProvider.GetUserId().Returns(_observerId);
+        _currentUserProvider.GetUserId().Returns(_observerId);
 
         _monitoringObserverRepository
             .FirstOrDefaultAsync(Arg.Any<GetMonitoringObserverSpecification>())

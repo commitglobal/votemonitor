@@ -3,7 +3,7 @@ using Authorization.Policies.Specifications;
 
 namespace Authorization.Policies.RequirementHandlers;
 
-internal class IsResourceOwnerRequirementHandler(ICurrentUserIdProvider currentUserIdProvider, ICurrentUserRoleProvider currentUserRoleProvider,
+internal class IsResourceOwnerRequirementHandler(ICurrentUserProvider currentUserProvider, ICurrentUserRoleProvider currentUserRoleProvider,
     IReadRepository<MonitoringObserver> monitoringObserverRepository) : AuthorizationHandler<IsResourceOwnerRequirement>
 {
     protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, IsResourceOwnerRequirement requirement)
@@ -11,7 +11,7 @@ internal class IsResourceOwnerRequirementHandler(ICurrentUserIdProvider currentU
         // When a ngo admin tries to access a resource check if they are monitoring ngo, and that resource was created by a monitoring observer
         if (currentUserRoleProvider.IsNgoAdmin())
         {
-            var ngoId = await currentUserRoleProvider.GetNgoId();
+            var ngoId = currentUserProvider.GetNgoId();
 
             var specification = new GetMonitoringObserverSpecification(requirement.ElectionRoundId,
                 ngoId,
@@ -28,7 +28,7 @@ internal class IsResourceOwnerRequirementHandler(ICurrentUserIdProvider currentU
 
         if (currentUserRoleProvider.IsObserver())
         {
-            if (currentUserIdProvider.GetUserId() == requirement.Resource.CreatedBy)
+            if (currentUserProvider.GetUserId() == requirement.Resource.CreatedBy)
             {
                 context.Succeed(requirement);
             }
