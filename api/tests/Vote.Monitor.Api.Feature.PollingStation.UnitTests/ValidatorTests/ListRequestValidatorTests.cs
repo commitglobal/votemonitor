@@ -16,7 +16,6 @@ public class ListRequestValidatorTests
             ElectionRoundId = Guid.NewGuid(),
             PageSize = pageSize,
             PageNumber = 1, 
-            Filter = null
         };
 
         // Act
@@ -38,7 +37,6 @@ public class ListRequestValidatorTests
             ElectionRoundId = Guid.NewGuid(),
             PageSize = pageSize, 
             PageNumber = 1, 
-            Filter = null
         };
 
         // Act
@@ -60,7 +58,6 @@ public class ListRequestValidatorTests
             ElectionRoundId = Guid.NewGuid(),
             PageSize = 10, 
             PageNumber = pageNumber, 
-            Filter = null
         };
 
         // Act
@@ -81,7 +78,6 @@ public class ListRequestValidatorTests
             ElectionRoundId = Guid.NewGuid(),
             PageSize = 10, 
             PageNumber = pageNumber,
-            Filter = null
         };
 
         // Act
@@ -89,71 +85,5 @@ public class ListRequestValidatorTests
 
         // Assert
         result.ShouldHaveValidationErrorFor(x => x.PageNumber);
-    }
-
-    [Fact]
-    public void Validation_ShouldPass_When_Filter_Valid()
-    {
-        // Arrange
-        var request = new List.Request
-        {
-            ElectionRoundId = Guid.NewGuid(),
-            PageSize = 10, 
-            PageNumber = 1,
-            Filter = new Dictionary<string, string>
-            {
-                { "tag1", "value1" }, 
-                { "tag2", "value2" }
-            }
-        };
-
-        // Act
-        var result = _validator.TestValidate(request);
-
-        // Assert
-        result.ShouldNotHaveValidationErrorFor(x => x.Filter);
-    }
-
-    [Theory]
-    [MemberData(nameof(TestData.EmptyStringsTestCases), MemberType = typeof(TestData))]
-    public void Validation_ShouldFail_When_Filter_HasEmptyTag(string key)
-    {
-        // Arrange
-        var request = new List.Request
-        {
-            ElectionRoundId = Guid.NewGuid(),
-            PageSize = 10,
-            PageNumber = 1,
-            Filter = new Dictionary<string, string>
-            {
-                { "tag1", "value1" },
-                { key, "tag2" }
-            }
-        };
-
-        // Act
-        var result = _validator.TestValidate(request);
-
-        // Assert
-        result.ShouldHaveValidationErrorFor(x => x.Filter);
-    }
-
-    [Fact]
-    public void Validation_ShouldPass_When_Filter_Null()
-    {
-        // Arrange
-        var request = new List.Request
-        {
-            ElectionRoundId = Guid.NewGuid(),
-            PageSize = 10, 
-            PageNumber = 1,
-            Filter = null
-        };
-
-        // Act
-        var result = _validator.TestValidate(request);
-
-        // Assert
-        result.ShouldNotHaveValidationErrorFor(x => x.Filter);
     }
 }

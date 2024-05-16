@@ -8,6 +8,15 @@ public class Validator : Validator<Request>
     {
         RuleFor(x => x.ElectionRoundId).NotEmpty();
         RuleFor(x => x.Title).NotEmpty().MaximumLength(256);
-        RuleFor(x => x.Attachment).FileSmallerThan(50 * 1024 * 1024); // 50 MB upload limit
+
+        RuleFor(x => x.Attachment)
+            .NotEmpty()!
+            .FileSmallerThan(50 * 1024 * 1024)
+            .When(x => string.IsNullOrEmpty(x.WebsiteUrl)); // 50 MB upload limit
+
+        RuleFor(x => x.WebsiteUrl)
+            .NotEmpty()!
+            .MaximumLength(2048)
+            .When(x => x.Attachment == null);
     }
 }

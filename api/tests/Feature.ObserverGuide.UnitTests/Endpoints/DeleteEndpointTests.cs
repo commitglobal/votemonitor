@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using NSubstitute;
 using NSubstitute.ReturnsExtensions;
-using Vote.Monitor.Core.Services.Security;
 using Vote.Monitor.Domain.Repository;
 using Vote.Monitor.TestUtils.Fakes.Aggregates;
 
@@ -23,10 +22,8 @@ public class DeleteEndpointTests
     {
         _repository = Substitute.For<IRepository<ObserverGuideAggregate>>();
         _authorizationService = Substitute.For<IAuthorizationService>();
-        var currentUserRoleProvider = Substitute.For<ICurrentUserRoleProvider>();
 
         _endpoint = Factory.Create<Endpoint>(_authorizationService,
-            currentUserRoleProvider,
             _repository);
     }
 
@@ -43,7 +40,7 @@ public class DeleteEndpointTests
         _authorizationService.AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object?>(), Arg.Any<IEnumerable<IAuthorizationRequirement>>())
             .Returns(AuthorizationResult.Success());
 
-        _repository.FirstOrDefaultAsync(Arg.Any<GetObserverGuideSpecification>())
+        _repository.FirstOrDefaultAsync(Arg.Any<GetObserverGuideByIdSpecification>())
             .Returns(fakeObserverGuide);
 
         // Act
@@ -68,7 +65,7 @@ public class DeleteEndpointTests
     }
 
     [Fact]
-    public async Task ShouldReturnNotFound_WhenNotAuthorised()
+    public async Task ShouldReturnNotFound_WhenNotAuthorized()
     {
         // Arrange
         var observerGuideId = Guid.NewGuid();
@@ -80,7 +77,7 @@ public class DeleteEndpointTests
         _authorizationService.AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object?>(), Arg.Any<IEnumerable<IAuthorizationRequirement>>())
             .Returns(AuthorizationResult.Failed());
 
-        _repository.FirstOrDefaultAsync(Arg.Any<GetObserverGuideSpecification>())
+        _repository.FirstOrDefaultAsync(Arg.Any<GetObserverGuideByIdSpecification>())
             .Returns(fakeObserverGuide);
 
         // Act
@@ -109,7 +106,7 @@ public class DeleteEndpointTests
         _authorizationService.AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object?>(), Arg.Any<IEnumerable<IAuthorizationRequirement>>())
             .Returns(AuthorizationResult.Success());
 
-        _repository.FirstOrDefaultAsync(Arg.Any<GetObserverGuideSpecification>())
+        _repository.FirstOrDefaultAsync(Arg.Any<GetObserverGuideByIdSpecification>())
             .ReturnsNull();
 
         // Act

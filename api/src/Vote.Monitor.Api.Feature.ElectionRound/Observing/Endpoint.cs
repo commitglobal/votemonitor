@@ -3,7 +3,7 @@
 namespace Vote.Monitor.Api.Feature.ElectionRound.Observing;
 
 public class Endpoint(IReadRepository<ElectionRoundAggregate> repository,
-    ICurrentUserIdProvider currentUserIdProvider)
+    ICurrentUserProvider currentUserProvider)
     : EndpointWithoutRequest<Results<Ok<Result>, ProblemDetails>>
 {
     public override void Configure()
@@ -21,7 +21,7 @@ public class Endpoint(IReadRepository<ElectionRoundAggregate> repository,
 
     public override async Task<Results<Ok<Result>, ProblemDetails>> ExecuteAsync(CancellationToken ct)
     {
-        List<ElectionRoundModel> electionRounds = await repository.ListAsync(new GetObserverElectionSpecification(currentUserIdProvider.GetUserId()!.Value), ct);
+        List<ElectionRoundModel> electionRounds = await repository.ListAsync(new GetObserverElectionSpecification(currentUserProvider.GetUserId()!.Value), ct);
 
         return TypedResults.Ok(new Result { ElectionRounds = electionRounds });
     }

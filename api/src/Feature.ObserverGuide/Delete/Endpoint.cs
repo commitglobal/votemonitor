@@ -1,18 +1,16 @@
 ﻿using Authorization.Policies.Requirements;
 using Feature.ObserverGuide.Specifications;
 using Microsoft.AspNetCore.Authorization;
-using Vote.Monitor.Core.Services.Security;
 
 namespace Feature.ObserverGuide.Delete;
 
 public class Endpoint(IAuthorizationService authorizationService,
-    ICurrentUserRoleProvider currentUserRoleProvider, 
     IRepository<ObserverGuideAggregate> repository)
     : Endpoint<Request, Results<NoContent, NotFound>>
 {
     public override void Configure()
     {
-        Delete("/api/election-rounds/{electionRoundId}/monitoring-ngos/{monitoringNgoId}/observer-guide/{id}");
+        Delete("/api/election-rounds/{electionRoundId}/observer-guide/{id}");
         DontAutoTag();
         Options(x => x.WithTags("observer-guide"));
     }
@@ -25,8 +23,7 @@ public class Endpoint(IAuthorizationService authorizationService,
             return TypedResults.NotFound();
         }
 
-        var ngoId = await currentUserRoleProvider.GetNgoId();
-        var specification = new GetObserverGuideSpecification(ngoId, req.Id);
+        var specification = new GetObserverGuideByIdSpecification(req.ElectionRoundId, req.NgoId, req.Id);
         var observerGuide = await repository.FirstOrDefaultAsync(specification, ct);
 
         if (observerGuide == null)

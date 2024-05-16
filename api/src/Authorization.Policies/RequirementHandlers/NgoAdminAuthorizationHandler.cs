@@ -4,7 +4,7 @@ using Vote.Monitor.Domain.Entities.NgoAdminAggregate;
 
 namespace Authorization.Policies.RequirementHandlers;
 
-internal class NgoAdminAuthorizationHandler(ICurrentUserIdProvider currentUserIdProvider,
+internal class NgoAdminAuthorizationHandler(ICurrentUserProvider currentUserProvider,
     ICurrentUserRoleProvider currentUserRoleProvider,
     IReadRepository<NgoAdmin> ngoAdminRepository) : AuthorizationHandler<NgoAdminRequirement>
 {
@@ -16,8 +16,8 @@ internal class NgoAdminAuthorizationHandler(ICurrentUserIdProvider currentUserId
             return;
         }
 
-        var ngoId = await currentUserRoleProvider.GetNgoId();
-        var ngoAdminId = currentUserIdProvider.GetUserId()!.Value;
+        var ngoId = currentUserProvider.GetNgoId();
+        var ngoAdminId = currentUserProvider.GetUserId()!.Value;
 
         var result = await ngoAdminRepository.FirstOrDefaultAsync(new GetNgoAdminSpecification(ngoId!.Value, ngoAdminId));
 
