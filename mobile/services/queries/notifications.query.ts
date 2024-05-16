@@ -1,7 +1,7 @@
 import { skipToken, useQuery } from "@tanstack/react-query";
 import { getNotifications } from "../api/get-notifications.api";
 
-const NotificationsKeys = {
+export const NotificationsKeys = {
   notifications: (electionRoundId: string | undefined) =>
     ["notifications", "electionRoundId", electionRoundId] as const,
 };
