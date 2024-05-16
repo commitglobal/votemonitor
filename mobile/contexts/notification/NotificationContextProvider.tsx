@@ -13,6 +13,9 @@ import {
 import * as Sentry from "@sentry/react-native";
 
 import { router } from "expo-router";
+import { useQueryClient } from "@tanstack/react-query";
+import { useUserData } from "../user/UserContext.provider";
+import { NotificationsKeys } from "../../services/queries/notifications.query";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -29,6 +32,8 @@ const NotificationContextProvider = ({ children }: { children: React.ReactNode }
   const responseListener = useRef<Notifications.Subscription>();
 
   const { isAuthenticated } = useAuth();
+  const queryClient = useQueryClient();
+  const { activeElectionRound } = useUserData();
 
   const initNotifications = async () => {
     if (pushToken) {
@@ -72,7 +77,9 @@ const NotificationContextProvider = ({ children }: { children: React.ReactNode }
       (response: any) => {
         console.log("🚀🚀🚀🚀 NOTIFICATION payload", response);
         router.push("/inbox");
-        // TODO @radulescuandrew invalidate inbox query to refetchd
+        queryClient.invalidateQueries({
+          queryKey: NotificationsKeys.notifications(activeElectionRound?.id),
+        });
       },
     ) as any;
 
