@@ -12,26 +12,38 @@ import Button from "../components/Button";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useState } from "react";
 import ChangePasswordConfirmation from "../components/ChangePasswordConfirmation";
+import { ForgotPasswwordPayload, forgotPassword } from "../services/definitions.api";
+import * as Sentry from "@sentry/react-native";
 
 type FormData = {
   email: string;
 };
 
 const ForgotPassword = () => {
-  const [emailConfirmation, setEmailConfirmation] = useState(false);
-  const { handleSubmit, control, formState } = useForm<FormData>({
-    defaultValues: { email: "alice@example.com" },
-  });
-
+  const insets = useSafeAreaInsets();
   const { t } = useTranslation("reset");
+  const [emailConfirmation, setEmailConfirmation] = useState(false);
+
+  // React Hook form
+  const { handleSubmit, control, formState } = useForm<FormData>({
+    defaultValues: { email: "avant.arnez@milkgitter.com" },
+  });
   const { errors } = formState;
 
-  const insets = useSafeAreaInsets();
-
-  // TODO: Implement the onSubmit function
-  const onSubmit = (data: FormData) => {
-    console.log("Forgot password for email: ", data.email);
-    setEmailConfirmation(true);
+  // Submit handler - forgot password
+  const onSubmit = async (data: FormData) => {
+    try {
+      const payload: ForgotPasswwordPayload = { email: data.email };
+      await forgotPassword(payload);
+      setEmailConfirmation(true);
+    } catch (error) {
+      Sentry.captureException(error);
+      console.log("Error while trying to reset password", error);
+      throw new Error("Error while trying to reset password");
+    } finally {
+      // TODO: Remove this, just for testing the confirmation screen
+      setEmailConfirmation(true);
+    }
   };
 
   if (emailConfirmation) {
