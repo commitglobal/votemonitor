@@ -57,7 +57,7 @@ const QuickReport = () => {
           </View>
         </OptionsSheet>
       </Screen>
-      {quickReports?.length && (
+      {quickReports?.length ? (
         <YStack width="100%" paddingHorizontal="$md" marginVertical="$xxs">
           <Button
             preset="outlined"
@@ -67,6 +67,8 @@ const QuickReport = () => {
             Report new issue
           </Button>
         </YStack>
+      ) : (
+        false
       )}
     </>
   );
