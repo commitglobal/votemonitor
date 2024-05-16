@@ -24,9 +24,9 @@ public static class AuthorizationPoliciesInstaller
         });
 
         services
-            .AddScoped<ICurrentUserIdProvider, CurrentUserIdProvider>()
+            .AddScoped<ICurrentUserProvider, CurrentUserProvider>()
             .AddScoped<ICurrentUserRoleProvider, CurrentUserRoleProvider>()
-            .AddScoped(sp => (ICurrentUserInitializer)sp.GetRequiredService<ICurrentUserIdProvider>());
+            .AddScoped(sp => (ICurrentUserInitializer)sp.GetRequiredService<ICurrentUserProvider>());
 
         return services;
     }

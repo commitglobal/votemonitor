@@ -11,22 +11,26 @@ internal class ObserverGuideConfiguration : IEntityTypeConfiguration<ObserverGui
         builder.Property(x => x.Id).IsRequired();
 
         builder.Property(x => x.FileName)
-            .HasMaxLength(256)
-            .IsRequired();
+            .HasMaxLength(256);
 
         builder.Property(x => x.UploadedFileName)
-            .HasMaxLength(256)
-            .IsRequired();
+            .HasMaxLength(256);
 
         builder.Property(x => x.FilePath)
-            .HasMaxLength(256)
-            .IsRequired();
+            .HasMaxLength(256);
 
         builder.Property(x => x.MimeType)
+            .HasMaxLength(256);
+
+        builder.Property(x => x.IsDeleted);
+
+        builder.Property(x => x.Title)
             .HasMaxLength(256)
             .IsRequired();
 
-        builder.Property(x => x.IsDeleted);
+        builder
+            .Property(x => x.WebsiteUrl)
+            .HasMaxLength(2048);
 
         builder.HasOne(x => x.MonitoringNgo)
             .WithMany()

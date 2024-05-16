@@ -5,7 +5,7 @@ namespace Authorization.Policies.UnitTests.RequirementsHandlers;
 
 public class MonitoringObserverAuthorizationHandlerTests
 {
-    private readonly ICurrentUserIdProvider _currentUserIdProvider = Substitute.For<ICurrentUserIdProvider>();
+    private readonly ICurrentUserProvider _currentUserProvider = Substitute.For<ICurrentUserProvider>();
     private readonly ICurrentUserRoleProvider _currentUserRoleProvider = Substitute.For<ICurrentUserRoleProvider>();
     private readonly IReadRepository<MonitoringObserver> _monitoringObserverRepository = Substitute.For<IReadRepository<MonitoringObserver>>();
 
@@ -19,7 +19,7 @@ public class MonitoringObserverAuthorizationHandlerTests
     {
         var requirement = new MonitoringObserverRequirement(_electionRoundId);
         _context = new AuthorizationHandlerContext([requirement], null!, null);
-        _handler = new MonitoringObserverAuthorizationHandler(_currentUserIdProvider, 
+        _handler = new MonitoringObserverAuthorizationHandler(_currentUserProvider, 
             _currentUserRoleProvider,
             _monitoringObserverRepository);
     }
@@ -29,7 +29,7 @@ public class MonitoringObserverAuthorizationHandlerTests
     {
         // Arrange
         _currentUserRoleProvider.IsObserver().Returns(false);
-        _currentUserIdProvider.GetUserId().Returns(_observerId);
+        _currentUserProvider.GetUserId().Returns(_observerId);
 
         // Act
         await _handler.HandleAsync(_context);
@@ -43,7 +43,7 @@ public class MonitoringObserverAuthorizationHandlerTests
     {
         // Arrange
         _currentUserRoleProvider.IsObserver().Returns(true);
-        _currentUserIdProvider.GetUserId().Returns(_observerId);
+        _currentUserProvider.GetUserId().Returns(_observerId);
 
         _monitoringObserverRepository
             .FirstOrDefaultAsync(Arg.Any<GetMonitoringObserverSpecification>())
@@ -61,7 +61,7 @@ public class MonitoringObserverAuthorizationHandlerTests
     {
         // Arrange
         _currentUserRoleProvider.IsObserver().Returns(true);
-        _currentUserIdProvider.GetUserId().Returns(_observerId);
+        _currentUserProvider.GetUserId().Returns(_observerId);
 
         _monitoringObserverRepository
             .FirstOrDefaultAsync(Arg.Any<GetMonitoringObserverSpecification>())
@@ -79,7 +79,7 @@ public class MonitoringObserverAuthorizationHandlerTests
     {
         // Arrange
         _currentUserRoleProvider.IsObserver().Returns(true);
-        _currentUserIdProvider.GetUserId().Returns(_observerId);
+        _currentUserProvider.GetUserId().Returns(_observerId);
 
         _monitoringObserverRepository
             .FirstOrDefaultAsync(Arg.Any<GetMonitoringObserverSpecification>())
@@ -97,7 +97,7 @@ public class MonitoringObserverAuthorizationHandlerTests
     {
         // Arrange
         _currentUserRoleProvider.IsObserver().Returns(true);
-        _currentUserIdProvider.GetUserId().Returns(_observerId);
+        _currentUserProvider.GetUserId().Returns(_observerId);
 
         _monitoringObserverRepository
             .FirstOrDefaultAsync(Arg.Any<GetMonitoringObserverSpecification>())
@@ -115,7 +115,7 @@ public class MonitoringObserverAuthorizationHandlerTests
     {
         // Arrange
         _currentUserRoleProvider.IsObserver().Returns(true);
-        _currentUserIdProvider.GetUserId().Returns(_observerId);
+        _currentUserProvider.GetUserId().Returns(_observerId);
 
         _monitoringObserverRepository
             .FirstOrDefaultAsync(Arg.Any<GetMonitoringObserverSpecification>())
@@ -133,7 +133,7 @@ public class MonitoringObserverAuthorizationHandlerTests
     {
         // Arrange
         _currentUserRoleProvider.IsObserver().Returns(true);
-        _currentUserIdProvider.GetUserId().Returns(_observerId);
+        _currentUserProvider.GetUserId().Returns(_observerId);
 
         _monitoringObserverRepository
             .FirstOrDefaultAsync(Arg.Any<GetMonitoringObserverSpecification>())
@@ -151,7 +151,7 @@ public class MonitoringObserverAuthorizationHandlerTests
     {
         // Arrange
         _currentUserRoleProvider.IsObserver().Returns(true);
-        _currentUserIdProvider.GetUserId().Returns(_observerId);
+        _currentUserProvider.GetUserId().Returns(_observerId);
 
         _monitoringObserverRepository
             .FirstOrDefaultAsync(Arg.Any<GetMonitoringObserverSpecification>())

@@ -11,7 +11,6 @@ import {
 } from '@/components/ui/dialog';
 import { Separator } from '@/components/ui/separator';
 import { ArrowDownTrayIcon } from '@heroicons/react/24/outline';
-import { useRef, useState } from 'react';
 
 export interface ImportMonitoringObserversErrorsDialogProps {
     fileId: string;
@@ -80,7 +79,7 @@ function ImportMonitoringObserversErrorsDialog({
                     <Separator />
                 </div>
                 <DialogFooter>
-                    <DialogClose>
+                    <DialogClose asChild>
                         <Button className='bg-purple-900 hover:bg-purple-600'>
                             Ok
                         </Button>

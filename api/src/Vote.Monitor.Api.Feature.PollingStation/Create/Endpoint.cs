@@ -7,7 +7,7 @@ namespace Vote.Monitor.Api.Feature.PollingStation.Create;
 public class Endpoint(IRepository<PollingStationAggregate> repository,
     IRepository<ElectionRoundAggregate> electionRoundRepository,
     ITimeProvider timeProvider,
-    ICurrentUserIdProvider userProvider)
+    ICurrentUserProvider userProvider)
     : Endpoint<Request, Results<Ok<PollingStationModel>, Conflict<ProblemDetails>, NotFound<ProblemDetails>>>
 {
     public override void Configure()
