@@ -496,9 +496,13 @@ const FormQuestionnaire = () => {
       {(isOptionsSheetOpen || Platform.OS === "ios") && (
         <OptionsSheet
           open={isOptionsSheetOpen}
-          setOpen={setIsOptionsSheetOpen}
+          setOpen={(open) => {
+            setIsOptionsSheetOpen(open);
+            addingNote && setAddingNote(false);
+          }}
           isLoading={isLoadingAddAttachmentt && !isPaused}
           moveOnKeyboardChange={true}
+          disableDrag={addingNote}
         >
           {isLoadingAddAttachmentt && !isPaused ? (
             <MediaLoading />
