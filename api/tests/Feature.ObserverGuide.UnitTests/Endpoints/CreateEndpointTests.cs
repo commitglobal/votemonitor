@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using NSubstitute;
 using NSubstitute.ReturnsExtensions;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
-using Vote.Monitor.Core.Services.Security;
 using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
 using Vote.Monitor.Domain.Repository;
 using Vote.Monitor.TestUtils.Fakes.Aggregates;
@@ -31,12 +30,10 @@ public class CreateEndpointTests
         _repository = Substitute.For<IRepository<ObserverGuideAggregate>>();
         _fileStorageService = Substitute.For<IFileStorageService>();
         _authorizationService = Substitute.For<IAuthorizationService>();
-        var currentUserRoleProvider = Substitute.For<ICurrentUserRoleProvider>();
         _monitoringNgoRepository = Substitute.For<IReadRepository<MonitoringNgo>>();
 
         _endpoint = Factory.Create<Create.Endpoint>(_authorizationService,
             _repository,
-            currentUserRoleProvider,
             _monitoringNgoRepository,
             _fileStorageService);
     }

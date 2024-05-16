@@ -6,7 +6,7 @@ namespace Authorization.Policies.UnitTests.RequirementsHandlers;
 
 public class NgoAdminAuthorizationHandlerTests
 {
-    private readonly ICurrentUserIdProvider _currentUserIdProvider = Substitute.For<ICurrentUserIdProvider>();
+    private readonly ICurrentUserProvider _currentUserProvider = Substitute.For<ICurrentUserProvider>();
     private readonly ICurrentUserRoleProvider _currentUserRoleProvider = Substitute.For<ICurrentUserRoleProvider>();
     private readonly IReadRepository<NgoAdmin> _ngoAdminRepository = Substitute.For<IReadRepository<NgoAdmin>>();
 
@@ -20,7 +20,7 @@ public class NgoAdminAuthorizationHandlerTests
     {
         var requirement = new NgoAdminRequirement(_ngoId);
         _context = new AuthorizationHandlerContext([requirement], null!, null);
-        _handler = new NgoAdminAuthorizationHandler(_currentUserIdProvider,
+        _handler = new NgoAdminAuthorizationHandler(_currentUserProvider,
             _currentUserRoleProvider,
             _ngoAdminRepository);
     }
@@ -30,8 +30,8 @@ public class NgoAdminAuthorizationHandlerTests
     {
         // Arrange
         _currentUserRoleProvider.IsNgoAdmin().Returns(false);
-        _currentUserRoleProvider.GetNgoId().Returns(_ngoId);
-        _currentUserIdProvider.GetUserId().Returns(_ngoAdminId);
+        _currentUserProvider.GetNgoId().Returns(_ngoId);
+        _currentUserProvider.GetUserId().Returns(_ngoAdminId);
 
         // Act
         await _handler.HandleAsync(_context);
@@ -45,8 +45,8 @@ public class NgoAdminAuthorizationHandlerTests
     {
         // Arrange
         _currentUserRoleProvider.IsNgoAdmin().Returns(true);
-        _currentUserRoleProvider.GetNgoId().Returns(_ngoId);
-        _currentUserIdProvider.GetUserId().Returns(_ngoAdminId);
+        _currentUserProvider.GetNgoId().Returns(_ngoId);
+        _currentUserProvider.GetUserId().Returns(_ngoAdminId);
 
         _ngoAdminRepository
             .FirstOrDefaultAsync(Arg.Any<GetNgoAdminSpecification>())
@@ -64,8 +64,8 @@ public class NgoAdminAuthorizationHandlerTests
     {
         // Arrange
         _currentUserRoleProvider.IsNgoAdmin().Returns(true);
-        _currentUserRoleProvider.GetNgoId().Returns(_ngoId);
-        _currentUserIdProvider.GetUserId().Returns(_ngoAdminId);
+        _currentUserProvider.GetNgoId().Returns(_ngoId);
+        _currentUserProvider.GetUserId().Returns(_ngoAdminId);
 
         _ngoAdminRepository
             .FirstOrDefaultAsync(Arg.Any<GetNgoAdminSpecification>())
@@ -89,8 +89,8 @@ public class NgoAdminAuthorizationHandlerTests
     {
         // Arrange
         _currentUserRoleProvider.IsNgoAdmin().Returns(true);
-        _currentUserRoleProvider.GetNgoId().Returns(_ngoId);
-        _currentUserIdProvider.GetUserId().Returns(_ngoAdminId);
+        _currentUserProvider.GetNgoId().Returns(_ngoId);
+        _currentUserProvider.GetUserId().Returns(_ngoAdminId);
 
         _ngoAdminRepository
             .FirstOrDefaultAsync(Arg.Any<GetNgoAdminSpecification>())
@@ -114,8 +114,8 @@ public class NgoAdminAuthorizationHandlerTests
     {
         // Arrange
         _currentUserRoleProvider.IsNgoAdmin().Returns(true);
-        _currentUserRoleProvider.GetNgoId().Returns(_ngoId);
-        _currentUserIdProvider.GetUserId().Returns(_ngoAdminId);
+        _currentUserProvider.GetNgoId().Returns(_ngoId);
+        _currentUserProvider.GetUserId().Returns(_ngoAdminId);
 
         _ngoAdminRepository
             .FirstOrDefaultAsync(Arg.Any<GetNgoAdminSpecification>())

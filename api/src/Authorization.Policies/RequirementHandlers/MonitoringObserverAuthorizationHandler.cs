@@ -5,7 +5,7 @@ using Vote.Monitor.Domain.Entities.ElectionRoundAggregate;
 namespace Authorization.Policies.RequirementHandlers;
 
 internal class MonitoringObserverAuthorizationHandler(
-    ICurrentUserIdProvider currentUserIdProvider,
+    ICurrentUserProvider currentUserProvider,
     ICurrentUserRoleProvider currentUserRoleProvider,
     IReadRepository<MonitoringObserver> monitoringObserverRepository)
     : AuthorizationHandler<MonitoringObserverRequirement>
@@ -18,7 +18,7 @@ internal class MonitoringObserverAuthorizationHandler(
             return;
         }
 
-        var observerId = currentUserIdProvider.GetUserId()!.Value;
+        var observerId = currentUserProvider.GetUserId()!.Value;
         var specification = new GetMonitoringObserverSpecification(requirement.ElectionRoundId, observerId);
         var result = await monitoringObserverRepository.FirstOrDefaultAsync(specification);
 

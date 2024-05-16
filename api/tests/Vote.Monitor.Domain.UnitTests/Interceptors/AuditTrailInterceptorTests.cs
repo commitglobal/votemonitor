@@ -10,19 +10,19 @@ namespace Vote.Monitor.Domain.UnitTests.Interceptors;
 public class AuditTrailInterceptorTests
 {
     private readonly ITimeProvider _fakeTimeProvider;
-    private readonly ICurrentUserIdProvider _fakeCurrentUserIdProvider;
+    private readonly ICurrentUserProvider _fakeCurrentUserProvider;
     private readonly TestContext _context;
 
     public AuditTrailInterceptorTests()
     {
         _fakeTimeProvider = Substitute.For<ITimeProvider>();
-        _fakeCurrentUserIdProvider = Substitute.For<ICurrentUserIdProvider>();
+        _fakeCurrentUserProvider = Substitute.For<ICurrentUserProvider>();
         DbContextOptionsBuilder<VoteMonitorContext> dbContextOptions = new DbContextOptionsBuilder<VoteMonitorContext>()
             .UseInMemoryDatabase(Guid.NewGuid().ToString());
         _context = new TestContext(dbContextOptions.Options,
             new SerializerService(),
             _fakeTimeProvider,
-            _fakeCurrentUserIdProvider);
+            _fakeCurrentUserProvider);
     }
 
     [Fact]
@@ -33,7 +33,7 @@ public class AuditTrailInterceptorTests
         var createdOn = new DateTime(2024, 03, 22, 12, 35, 46);
 
         _fakeTimeProvider.UtcNow.Returns(createdOn);
-        _fakeCurrentUserIdProvider.GetUserId().Returns(userId);
+        _fakeCurrentUserProvider.GetUserId().Returns(userId);
 
         //Act 
         var ngoName = "my ngo";
@@ -62,7 +62,7 @@ public class AuditTrailInterceptorTests
         var createdOn = new DateTime(2024, 03, 22, 12, 35, 46);
         
         _fakeTimeProvider.UtcNow.Returns(createdOn);
-        _fakeCurrentUserIdProvider.GetUserId().Returns(userId);
+        _fakeCurrentUserProvider.GetUserId().Returns(userId);
 
         //Act 
         var ngoName = "my ngo";
@@ -93,7 +93,7 @@ public class AuditTrailInterceptorTests
         var lastModifiedOn = new DateTime(2024, 03, 24, 0, 0, 0);
 
         _fakeTimeProvider.UtcNow.Returns(createdOn, lastModifiedOn);
-        _fakeCurrentUserIdProvider.GetUserId().Returns(userId, anotherUserId);
+        _fakeCurrentUserProvider.GetUserId().Returns(userId, anotherUserId);
 
         var ngoName = "my ngo";
         var testEntity = new Ngo(ngoName);
@@ -129,7 +129,7 @@ public class AuditTrailInterceptorTests
         var lastModifiedOn = new DateTime(2024, 03, 24, 0, 0, 0);
         
         _fakeTimeProvider.UtcNow.Returns(createdOn, lastModifiedOn);
-        _fakeCurrentUserIdProvider.GetUserId().Returns(userId, anotherUserId);
+        _fakeCurrentUserProvider.GetUserId().Returns(userId, anotherUserId);
         
         var ngoName = "my ngo";
         var testEntity = new Ngo(ngoName);
@@ -165,7 +165,7 @@ public class AuditTrailInterceptorTests
         var lastModifiedOn = new DateTime(2024, 03, 24, 0, 0, 0);
 
         _fakeTimeProvider.UtcNow.Returns(createdOn, lastModifiedOn);
-        _fakeCurrentUserIdProvider.GetUserId().Returns(userId, anotherUserId);
+        _fakeCurrentUserProvider.GetUserId().Returns(userId, anotherUserId);
 
         var ngoName = "my ngo";
         var testEntity = new Ngo(ngoName);
@@ -199,7 +199,7 @@ public class AuditTrailInterceptorTests
         var lastModifiedOn = new DateTime(2024, 03, 24, 0, 0, 0);
 
         _fakeTimeProvider.UtcNow.Returns(createdOn, lastModifiedOn);
-        _fakeCurrentUserIdProvider.GetUserId().Returns(userId, anotherUserId);
+        _fakeCurrentUserProvider.GetUserId().Returns(userId, anotherUserId);
 
         var ngoName = "my ngo";
         var testEntity = new Ngo(ngoName);

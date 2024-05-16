@@ -7,6 +7,4 @@ public class Request: BaseSortPaginatedRequest
 
     [QueryParam]
     public string? AddressFilter { get; set; }
-
-    public Dictionary<string, string>? Filter { get; set; }
 }

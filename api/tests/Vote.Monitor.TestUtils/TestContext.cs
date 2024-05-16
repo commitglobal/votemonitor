@@ -12,8 +12,8 @@ public class TestContext : VoteMonitorContext
     public TestContext(DbContextOptions<VoteMonitorContext> options,
         ISerializerService serializerService,
         ITimeProvider timeProvider,
-        ICurrentUserIdProvider currentUserIdProvider)
-        : base(options, serializerService, timeProvider, currentUserIdProvider)
+        ICurrentUserProvider currentUserProvider)
+        : base(options, serializerService, timeProvider, currentUserProvider)
     {
 
     }
@@ -30,7 +30,7 @@ public class TestContext : VoteMonitorContext
     {
         var timeProvider = Substitute.For<ITimeProvider>();
         var serializationService = Substitute.For<ISerializerService>();
-        var currentUserIdProvider = Substitute.For<ICurrentUserIdProvider>();
+        var currentUserIdProvider = Substitute.For<ICurrentUserProvider>();
 
         var dbContextOptions = new DbContextOptionsBuilder<VoteMonitorContext>()
             .UseInMemoryDatabase(Guid.NewGuid().ToString());
