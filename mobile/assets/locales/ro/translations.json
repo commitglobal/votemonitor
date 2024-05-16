@@ -52,7 +52,8 @@
     },
     "actions": {
       "send": "Send"
-    }
+    },
+    "error": "Email-ul nu este inregistrat in sistem."
   },
   "more": {
     "change-language": "Schimba limba aplicației",

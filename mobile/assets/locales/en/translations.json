@@ -52,7 +52,8 @@
     },
     "actions": {
       "send": "Send"
-    }
+    },
+    "error": "The current email is not registerd in the system. Please try again."
   },
   "more": {
     "change-language": "Change app language",

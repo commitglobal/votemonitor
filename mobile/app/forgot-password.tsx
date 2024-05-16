@@ -108,7 +108,7 @@ const ForgotPassword = () => {
 };
 
 const CredentialsError = () => {
-  const { t } = useTranslation("login");
+  const { t } = useTranslation("reset");
   return (
     <XStack
       backgroundColor="$red1"
@@ -119,7 +119,7 @@ const CredentialsError = () => {
     >
       <Icon icon="loginError" size={20} />
       <Typography paddingHorizontal="$md" color="$red6" fontWeight="500">
-        Email incorect
+        {t("error")}
       </Typography>
     </XStack>
   );
