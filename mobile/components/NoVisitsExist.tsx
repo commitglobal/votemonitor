@@ -7,12 +7,14 @@ import { Typography } from "./Typography";
 import Button from "./Button";
 import Header from "./Header";
 import { DrawerActions } from "@react-navigation/native";
+import { useTranslation } from "react-i18next";
 
 const NoVisitsExist = () => {
   const navigation = useNavigation();
+  const { t } = useTranslation("observations_empty");
 
   return (
-    <Screen preset="fixed">
+    <Screen preset="fixed" contentContainerStyle={{ flexGrow: 1 }}>
       <Header
         title={"Observation"}
         titleColor="white"
@@ -27,15 +29,16 @@ const NoVisitsExist = () => {
         alignItems="center"
         justifyContent="center"
         gap="$md"
-        paddingHorizontal="$md"
+        paddingHorizontal="$lg"
+        flex={1}
       >
         <Icon icon="missingPollingStation" />
         <YStack gap="$xxxs">
           <Typography preset="subheading" textAlign="center">
-            No visited polling stations yet
+            {t("title")}
           </Typography>
           <Typography preset="body1" textAlign="center" color="$gray5">
-            Start configuring your first polling station before completing observation forms.
+            {t("paragraph")}
           </Typography>
         </YStack>
         <Button
@@ -44,7 +47,7 @@ const NoVisitsExist = () => {
           width="100%"
           onPress={router.push.bind(null, "/polling-station-wizzard")}
         >
-          Add your first polling station
+          {t("actions.add_station")}
         </Button>
       </YStack>
     </Screen>

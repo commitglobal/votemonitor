@@ -1,4 +1,5 @@
 import * as ImagePicker from "expo-image-picker";
+import Toast from "react-native-toast-message";
 
 /**
  * 
@@ -45,12 +46,15 @@ export const useCamera = () => {
 
   const uploadCameraOrMedia = async (
     type: "library" | "cameraPhoto" | "cameraVideo",
-  ): Promise<FileMetadata | undefined> => {
+  ): Promise<FileMetadata | undefined | void> => {
     if (!status?.granted) {
       const requestedPermisison = await requestPermission();
       if (!requestedPermisison.granted) {
-        console.error("Need permission to open camera");
-        return;
+        return Toast.show({
+          type: "error",
+          text2: "Need permission to open camera. Go to Settings -> VoteMonitor -> Camera.",
+          visibilityTime: 5000,
+        });
       }
     }
 
@@ -78,11 +82,8 @@ export const useCamera = () => {
     });
 
     if (result.canceled) {
-      console.log("Closing camera... no picture");
       return;
     }
-
-    console.log(result);
 
     if (result.assets[0]) {
       const file = result.assets[0];

@@ -9,6 +9,7 @@ import Input from "./Inputs/Input";
 import Button from "./Button";
 import { useDeleteNote } from "../services/mutations/delete-note.mutation";
 import { useUpdateNote } from "../services/mutations/edit-note.mutation";
+import { useTranslation } from "react-i18next";
 
 interface EditNoteSheetProps extends SheetProps {
   selectedNote: Note | null;
@@ -23,6 +24,7 @@ const EditNoteSheet = (props: EditNoteSheetProps) => {
   const { selectedNote, setSelectedNote, questionId, electionRoundId, pollingStationId, formId } =
     props;
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation("bottom_sheets");
 
   const { control, handleSubmit, setValue } = useForm({
     defaultValues: {
@@ -99,7 +101,7 @@ const EditNoteSheet = (props: EditNoteSheetProps) => {
         <Icon paddingVertical="$md" alignSelf="center" icon="dragHandle" />
         <YStack marginHorizontal={12} gap="$md">
           <XStack justifyContent="space-between" alignItems="center">
-            <Typography preset="heading">Edit note</Typography>
+            <Typography preset="heading">{t("add_note.title_edit")}</Typography>
             <Typography
               preset="body2"
               color="$red10"
@@ -108,7 +110,7 @@ const EditNoteSheet = (props: EditNoteSheetProps) => {
               pressStyle={{ opacity: 0.5 }}
               onPress={onDelete}
             >
-              Delete note
+              {t("add_note.actions.delete_note")}
             </Typography>
           </XStack>
 
@@ -127,11 +129,11 @@ const EditNoteSheet = (props: EditNoteSheetProps) => {
 
           <XStack gap="$md">
             <Button preset="chromeless" onPress={() => setSelectedNote(null)}>
-              Cancel
+              {t("add_note.actions.cancel")}
             </Button>
 
             <Button flex={1} onPress={handleSubmit(onSubmit)}>
-              Save
+              {t("add_note.actions.save")}
             </Button>
           </XStack>
         </YStack>

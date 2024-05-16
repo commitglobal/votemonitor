@@ -34,7 +34,8 @@ import { useMutatePollingStationGeneralData } from "../../services/mutations/psi
 import OptionsSheet from "../../components/OptionsSheet";
 
 const PollingStationQuestionnaire = () => {
-  const { t } = useTranslation("polling_station_information");
+  const { t, i18n } = useTranslation("polling_station_information");
+  const currentLanguage = i18n.language.toLocaleUpperCase();
   const [openContextualMenu, setOpenContextualMenu] = useState(false);
   const insets = useSafeAreaInsets();
 
@@ -193,6 +194,7 @@ const PollingStationQuestionnaire = () => {
   const { control, handleSubmit, reset } = useForm({
     defaultValues: setFormDefaultValues(),
   });
+
   return (
     <>
       <Screen
@@ -214,8 +216,8 @@ const PollingStationQuestionnaire = () => {
         />
         <YStack padding="$md" gap="$lg">
           {formStructure?.questions.map((question: ApiFormQuestion) => {
-            const _label = `${question.code}. ${question.text.EN}`;
-            const _helper = question.helptext.EN;
+            const _label = `${question.code}. ${question.text[currentLanguage]}`;
+            const _helper = question.helptext[currentLanguage];
 
             if (question.$questionType === "numberQuestion") {
               return (
@@ -225,8 +227,8 @@ const PollingStationQuestionnaire = () => {
                   control={control}
                   render={({ field: { onChange, value } }) => (
                     <FormInput
-                      title={question.text.EN}
-                      placeholder={question.helptext?.EN}
+                      title={question.text[currentLanguage]}
+                      placeholder={question.helptext[currentLanguage]}
                       type="numeric"
                       value={value}
                       onChangeText={onChange}
@@ -246,8 +248,8 @@ const PollingStationQuestionnaire = () => {
                     <YStack>
                       <FormInput
                         type="textarea"
-                        title={question.text.EN}
-                        placeholder={question.helptext?.EN}
+                        title={question.text[currentLanguage]}
+                        placeholder={question.helptext[currentLanguage]}
                         onChangeText={onChange}
                         value={value}
                       />
@@ -266,10 +268,10 @@ const PollingStationQuestionnaire = () => {
                   render={({ field: { onChange, value } }) => (
                     <YStack>
                       <DateFormInput
-                        title={question.text.EN}
+                        title={question.text[currentLanguage]}
                         onChange={onChange}
                         value={value}
-                        placeholder={question.helptext?.EN}
+                        placeholder={question.helptext[currentLanguage]}
                       />
                     </YStack>
                   )}
@@ -291,10 +293,10 @@ const PollingStationQuestionnaire = () => {
                         <RadioFormInput
                           options={question.options.map((option) => ({
                             id: option.id,
-                            label: option.text.EN,
+                            label: option.text[currentLanguage],
                             value: option.id,
                           }))}
-                          title={question.text.EN}
+                          title={question.text[currentLanguage]}
                           value={value.radioValue}
                           onValueChange={(radioValue) =>
                             onChange({ ...value, radioValue, textValue: null })
@@ -333,7 +335,7 @@ const PollingStationQuestionnaire = () => {
                       <RatingFormInput
                         id={question.id}
                         type="single"
-                        title={question.text.EN}
+                        title={question.text[currentLanguage]}
                         value={value}
                         scale={question.scale}
                         onValueChange={onChange}
@@ -346,7 +348,10 @@ const PollingStationQuestionnaire = () => {
 
             if (question.$questionType === "multiSelectQuestion") {
               return (
-                <FormElement key={question.id} title={`${question.code}. ${question.text.EN}`}>
+                <FormElement
+                  key={question.id}
+                  title={`${question.code}. ${question.text[currentLanguage]}`}
+                >
                   <Controller
                     key={question.id}
                     name={question.id}
@@ -362,7 +367,7 @@ const PollingStationQuestionnaire = () => {
                               <CheckboxInput
                                 marginBottom="$md"
                                 id={option.id}
-                                label={option.text.EN}
+                                label={option.text[currentLanguage]}
                                 checked={selections[option.id]?.optionId === option.id}
                                 onCheckedChange={(checked) => {
                                   if (checked) {
@@ -418,7 +423,7 @@ const PollingStationQuestionnaire = () => {
         elevation={2}
       >
         <Button flex={1} onPress={handleSubmit(onSubmit)}>
-          Submit answer
+          {t("actions.submit")}
         </Button>
       </XStack>
     </>

@@ -12,6 +12,7 @@ import Animated, {
   processColor,
 } from "react-native-reanimated";
 import { View } from "tamagui";
+import { useTranslation } from "react-i18next";
 
 export interface CircularProgressProps {
   progress: number;
@@ -184,6 +185,7 @@ const AnimatedText = ({
   maxProgress: number;
   inputProgress: number;
 }) => {
+  const { t } = useTranslation("form_overview");
   const animatedStyle = useAnimatedStyle(() => {
     return {
       color: interpolateColor(
@@ -200,7 +202,7 @@ const AnimatedText = ({
         {Math.round(inputProgress)} %
       </Animated.Text>
       <Animated.Text style={[animatedStyle, { fontSize: 12, fontWeight: "700" }]}>
-        {"progress"}
+        {t("form_overview.progress")}
       </Animated.Text>
     </View>
   );

@@ -102,7 +102,7 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
   //   if (event.type === "updated") console.log("👀", SuperJSON.stringify(event));
   // });
 
-  queryClient.setMutationDefaults([pollingStationsKeys.mutatePollingStationGeneralData()], {
+  queryClient.setMutationDefaults(pollingStationsKeys.mutatePollingStationGeneralData(), {
     mutationFn: (payload: API.PollingStationInformationAPIPayload) => {
       return API.upsertPollingStationGeneralInformation(payload);
     },
