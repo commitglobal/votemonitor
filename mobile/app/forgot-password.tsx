@@ -40,9 +40,6 @@ const ForgotPassword = () => {
       Sentry.captureException(error);
       console.log("Error while trying to reset password", error);
       throw new Error("Error while trying to reset password");
-    } finally {
-      // TODO: Remove this, just for testing the confirmation screen
-      setEmailConfirmation(true);
     }
   };
 
