@@ -41,7 +41,7 @@ public class Endpoint(IDbConnection dbConnection) :
             INNER JOIN ""MonitoringObservers"" MO ON MO.""ObserverId"" = O.""Id""
             INNER JOIN ""MonitoringObserverNotification"" MON ON MON.""TargetedObserversId"" = MO.""Id""
             INNER JOIN ""Notifications"" N ON MON.""NotificationId"" = N.""Id""
-            INNER JOIN ""NgoAdmins"" NA ON N.""SenderId"" = NA.""Id""
+            INNER JOIN ""AspNetUsers"" U on U.""Id"" =  N.""SenderId""
         WHERE
             O.""Id"" = @observerId
             AND N.""ElectionRoundId"" = @electionRoundId
