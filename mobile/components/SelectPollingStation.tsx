@@ -19,6 +19,7 @@ const SelectPollingStation = () => {
         disablePreventBodyScroll
         open={open}
         onOpenChange={setOpen}
+        value={selectedPollingStation?.pollingStationId}
       >
         <Select.Trigger
           justifyContent="center"
