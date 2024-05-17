@@ -8,10 +8,10 @@ import {
   useReactTable,
   type VisibilityState,
   getExpandedRowModel,
-  Row,
+  type Row,
 } from '@tanstack/react-table';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { CSSProperties, useState, type ReactElement } from 'react';
+import { useState, type ReactElement } from 'react';
 import { SortOrder, type DataTableParameters, type PageResponse } from '@/common/types';
 import { DataTablePagination } from './DataTablePagination';
 import type { UseQueryResult } from '@tanstack/react-query';
@@ -67,17 +67,18 @@ export interface DataTableProps<TData, TValue, TQueryParams = object> {
   /**
    * Externalize subrows creation
    * Used by DataTable
-   * @param originalRow 
-   * @param index 
-   * @returns 
+   * @param originalRow
+   * @param index
+   * @returns
    */
   getSubrows?: (originalRow: TData, index: number) => undefined | TData[];
+  
   /**
    * Externalize row styling
    * Used by DataTable
-   * @param originalRow 
-   * @param index 
-   * @returns 
+   * @param originalRow
+   * @param index
+   * @returns
    */
   getRowClassName?: (row: Row<TData>) => string | undefined;
 }
@@ -92,7 +93,7 @@ export function DataTable<TData, TValue, TQueryParams = object>({
   useQuery,
   queryParams,
   getSubrows,
-  getRowClassName
+  getRowClassName,
 }: DataTableProps<TData, TValue, TQueryParams>): ReactElement {
   let [pagination, setPagination]: [PaginationState, (p: PaginationState) => void] = useState({
     pageIndex: 0,
@@ -153,7 +154,7 @@ export function DataTable<TData, TValue, TQueryParams = object>({
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id}>
+                    <TableHead key={header.id} style={{ maxWidth: header.getSize() }}>
                       {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                     </TableHead>
                   );
@@ -174,9 +175,14 @@ export function DataTable<TData, TValue, TQueryParams = object>({
               ))
             ) : table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'} className={getRowClassName ? getRowClassName(row): ''}>
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && 'selected'}
+                  className={getRowClassName ? getRowClassName(row) : ''}>
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+                    <TableCell key={cell.id} className='truncate' style={{ maxWidth: cell.column.getSize() }}>
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </TableCell>
                   ))}
                 </TableRow>
               ))

@@ -3,7 +3,7 @@ import { forwardRef } from 'react';
 
 const Switch = forwardRef<HTMLButtonElement, SwitchPrimitive.SwitchProps>((props, ref) => {
   return (
-    <div className='flex gap-2'>
+    <div className='flex gap-2 shrink-0'>
       <SwitchPrimitive.Root
         {...props}
         ref={ref}
