@@ -344,3 +344,20 @@ export const changePassword = (data: ChangePasswordPayload) => {
 export const deleteNote = ({ electionRoundId, id }: Note) => {
   return API.delete(`election-rounds/${electionRoundId}/notes/${id}`).then((res) => res.data);
 };
+
+/** ================= DELETE pollingStation ====================
+ * ========================================================================
+ * @description delete a polling station
+ * @param {DeletePollingStationPayload} data includes electionRoundId and pollingStationId
+ */
+
+export type DeletePollingStationPayload = {
+  electionRoundId: string;
+  pollingStationId: string;
+};
+
+export const deletePollingStation = (data: DeletePollingStationPayload) => {
+  return API.delete(
+    `election-rounds/${data.electionRoundId}/polling-stations/${data.pollingStationId}/information`,
+  ).then((res) => res.data);
+};

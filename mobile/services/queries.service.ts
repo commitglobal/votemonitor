@@ -1,5 +1,6 @@
 import { skipToken, useQuery } from "@tanstack/react-query";
 import {
+  deletePollingStation,
   getElectionRounds,
   getPollingStationInformation,
   getPollingStationInformationForm,
@@ -68,6 +69,7 @@ export const pollingStationsKeys = {
   mutatePollingStationGeneralData: () =>
     [...pollingStationsKeys.all, "mutate-general-data"] as const,
   changePassword: () => [...pollingStationsKeys.all, "changePassword"] as const,
+  deletePollingStation: () => [...pollingStationsKeys.all, "deletePollingStation"] as const,
 };
 
 export const notesKeys = {

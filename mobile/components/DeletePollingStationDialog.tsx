@@ -5,6 +5,8 @@ import { Typography } from "./Typography";
 import Button from "./Button";
 import { useTranslation } from "react-i18next";
 import { useUserData } from "../contexts/user/UserContext.provider";
+import { useDeletePollingStationMutation } from "../services/mutations/delete-polling-station.mutation";
+import { DeletePollingStationPayload } from "../services/definitions.api";
 
 interface DeletePollingStationDialogProps {
   pollingStationNumber: string;
@@ -16,10 +18,25 @@ const DeletePollingStationDialog = (props: DeletePollingStationDialogProps) => {
   const { pollingStationNumber, pollingStationId } = props;
   const { activeElectionRound } = useUserData();
 
-  console.log("Polling Station ID: ", pollingStationId);
-  console.log("Active Election Round: ", activeElectionRound);
-  console.log("Election Round ID: ", activeElectionRound?.id);
-  console.log("\n");
+  // console.log("Polling Station ID: ", pollingStationId);
+  // console.log("Active Election Round: ", activeElectionRound);
+  // console.log("Election Round ID: ", activeElectionRound?.id);
+  // console.log("\n");
+
+  if (!activeElectionRound) {
+    return <Typography> Problem with electionRoundId! </Typography>;
+  }
+
+  // React Query Mutation
+  const { mutate: deletePS, isSuccess, isError } = useDeletePollingStationMutation();
+  const payload: DeletePollingStationPayload = {
+    electionRoundId: activeElectionRound.id,
+    pollingStationId: pollingStationId,
+  };
+
+  console.log("Payload: ", payload);
+  console.log("isSuccess: ", isSuccess);
+  console.log("isError: ", isError);
 
   return (
     <Dialog
@@ -50,10 +67,11 @@ const DeletePollingStationDialog = (props: DeletePollingStationDialogProps) => {
           <AlertDialog.Cancel asChild>
             <Button
               preset="red"
+              flex={1}
               onPress={() => {
                 console.log("TODO: Deelete API CALL!");
+                deletePS(payload);
               }}
-              flex={1}
             >
               {t("delete_station.actions.delete")}
             </Button>
