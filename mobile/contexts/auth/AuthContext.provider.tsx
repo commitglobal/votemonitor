@@ -12,9 +12,14 @@ const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
   useEffect(() => {
-    const token = SecureStore.getItem("access_token");
-    setIsAuthenticated(!!token);
-    setIsLoading(false);
+    try {
+      const token = SecureStore.getItem("access_token");
+      setIsAuthenticated(!!token);
+      setIsLoading(false);
+    } catch (err) {
+      Sentry.captureException(err);
+      SecureStore.deleteItemAsync("access_token");
+    }
   }, []);
 
   const signIn = async (email: string, password: string) => {
@@ -26,7 +31,12 @@ const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
         email,
         password,
       });
-      SecureStore.setItem("access_token", token);
+      try {
+        SecureStore.setItem("access_token", token);
+      } catch (err) {
+        console.error("Could not set Aceess Token in secure storage");
+        throw err;
+      }
       setIsAuthenticated(true);
     } catch (err: unknown) {
       Sentry.captureException(err);
