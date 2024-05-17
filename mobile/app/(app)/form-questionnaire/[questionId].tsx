@@ -7,15 +7,14 @@ import { XStack, YStack, ScrollView, Spinner } from "tamagui";
 import LinearProgress from "../../../components/LinearProgress";
 import { useMemo, useState } from "react";
 import { useUserData } from "../../../contexts/user/UserContext.provider";
-import { ApiFormQuestion } from "../../../services/interfaces/question.type";
 import WizzardControls from "../../../components/WizzardControls";
 import { Platform, ViewStyle } from "react-native";
 import { Controller, useForm } from "react-hook-form";
 import WizardFormInput from "../../../components/WizardFormInputs/WizardFormInput";
 import {
-  mapAPIQuestionsToFormQuestions,
   mapFormSubmissionDataToAPIFormSubmissionAnswer,
   setFormDefaultValues,
+  shouldDisplayQuestion,
 } from "../../../services/form.parser";
 import { ApiFormAnswer } from "../../../services/interfaces/answer.type";
 import WizardDateFormInput from "../../../components/WizardFormInputs/WizardDateFormInput";
@@ -40,6 +39,8 @@ import { useNotesForQuestionId } from "../../../services/queries/notes.query";
 import * as Crypto from "expo-crypto";
 import { useTranslation } from "react-i18next";
 import { onlineManager } from "@tanstack/react-query";
+import { ApiFormQuestion } from "../../../services/interfaces/question.type";
+import * as Sentry from "@sentry/react-native";
 
 type SearchParamType = {
   questionId: string;
@@ -87,21 +88,22 @@ const FormQuestionnaire = () => {
     defaultValues: setFormDefaultValues(questionId, answers?.[questionId]) as any,
   });
 
-  const questions: Record<string, ApiFormQuestion> = useMemo(
-    () => mapAPIQuestionsToFormQuestions(currentForm?.questions), // TODO @birloiflorian do it in query select
-    [currentForm],
+  const displayedQuestions: ApiFormQuestion[] = useMemo(
+    () => currentForm?.questions?.filter((q) => shouldDisplayQuestion(q, answers)) || [],
+    [currentForm, answers],
   );
 
   const activeQuestion: {
-    index: number;
+    indexInAllQuestions: number;
+    indexInDisplayedQuestions: number;
     question: ApiFormQuestion;
-  } = useMemo(
-    () => ({
-      index: Object.keys(questions).findIndex((key) => key === questionId) || 0,
-      question: questions[questionId],
-    }),
-    [questions],
-  );
+  } = useMemo(() => {
+    return {
+      indexInAllQuestions: currentForm?.questions.findIndex((q) => q.id === questionId) || 0,
+      indexInDisplayedQuestions: displayedQuestions.findIndex((q) => q.id === questionId) || 0,
+      question: currentForm?.questions.find((q) => q.id === questionId) as ApiFormQuestion,
+    };
+  }, [displayedQuestions]);
 
   const formTitle = useMemo(() => {
     return `${currentForm?.code} - ${currentForm?.name[language || currentForm.defaultLanguage]} (${language || currentForm?.defaultLanguage})`;
@@ -123,13 +125,27 @@ const FormQuestionnaire = () => {
         formValues[questionId],
       );
 
-      // update the answer to the question key
+      if (!updatedAnswer) {
+        Sentry.captureMessage(
+          `Could not map QuestionType to Answer ${questionId}, ${activeQuestion?.question.$questionType}, ${formValues[questionId]}`,
+        );
+        return;
+      }
+
+      // Find dependent questions for the current one and remove their answers
+      const dependentQuestionsIds = currentForm?.questions
+        ?.filter((q) => q.displayLogic?.parentQuestionId === questionId)
+        .map((q) => q.id);
+
+      dependentQuestionsIds?.forEach((qId) => {
+        if (answers) delete answers[qId];
+      });
+
       const updatedAnswers = {
         ...answers,
         [activeQuestion.question.id]: updatedAnswer,
       };
 
-      // update the api
       updateSubmission({
         pollingStationId: selectedPollingStation?.pollingStationId,
         electionRoundId: activeElectionRound?.id,
@@ -137,32 +153,63 @@ const FormQuestionnaire = () => {
         answers: Object.values(updatedAnswers).filter(Boolean) as ApiFormAnswer[],
       });
 
-      // get next question
-      if (currentForm?.questions && activeQuestion.index === currentForm?.questions.length - 1) {
-        // if last question go back
-        return router.back();
-      }
-      const nextQuestionId = currentForm?.questions[activeQuestion.index + 1].id;
-      if (nextQuestionId) {
+      const nextQuestion = findNextQuestion(activeQuestion.indexInAllQuestions, updatedAnswers);
+
+      if (nextQuestion) {
         router.replace(
-          `/form-questionnaire/${questions[nextQuestionId].id}?formId=${formId}&language=${language}`,
+          `/form-questionnaire/${nextQuestion.id}?formId=${formId}&language=${language}`,
         );
+      } else {
+        return router.back();
       }
     }
   };
 
-  // TODO: DO we save the data on back button press
-  // TODO: Same with the header back button press
+  const findNextQuestion = (
+    index: number,
+    updatedAnswers: Record<string, ApiFormAnswer> | undefined,
+  ): ApiFormQuestion | null => {
+    if (index + 1 === currentForm?.questions.length) {
+      // No more questions
+      return null;
+    }
+
+    const nextQuestion = currentForm?.questions[index + 1];
+
+    if (nextQuestion && shouldDisplayQuestion(nextQuestion, updatedAnswers)) {
+      return nextQuestion;
+    }
+
+    return findNextQuestion(index + 1, updatedAnswers);
+  };
+
+  const findPreviousQuestion = (
+    index: number,
+    answers: Record<string, ApiFormAnswer> | undefined,
+  ): ApiFormQuestion | null => {
+    if (index - 1 < 0) {
+      // No more questions
+      return null;
+    }
+
+    const prevQ = currentForm?.questions[index - 1];
+
+    if (prevQ && shouldDisplayQuestion(prevQ, answers)) {
+      return prevQ;
+    }
+
+    return findPreviousQuestion(index - 1, answers);
+  };
+
   const onBackButtonPress = () => {
-    // get next question
-    if (currentForm?.questions && activeQuestion.index === 0) {
+    if (currentForm?.questions && activeQuestion.indexInAllQuestions === 0) {
       return;
     }
-    const previousQuestionId = currentForm?.questions[activeQuestion.index - 1].id;
-    if (previousQuestionId) {
-      router.replace(
-        `/form-questionnaire/${questions[previousQuestionId].id}?formId=${formId}&language=${language}`,
-      );
+
+    const prevQ = findPreviousQuestion(activeQuestion.indexInAllQuestions, answers);
+
+    if (prevQ) {
+      router.replace(`/form-questionnaire/${prevQ.id}?formId=${formId}&language=${language}`);
     }
   };
 
@@ -284,11 +331,11 @@ const FormQuestionnaire = () => {
       <YStack gap="$xxs" padding="$md">
         <XStack justifyContent="space-between">
           <Typography>{t("progress")}</Typography>
-          <Typography justifyContent="space-between">{`${activeQuestion?.index + 1}/${currentForm?.questions.length}`}</Typography>
+          <Typography justifyContent="space-between">{`${activeQuestion?.indexInDisplayedQuestions + 1}/${displayedQuestions.length}`}</Typography>
         </XStack>
         <LinearProgress
-          current={activeQuestion?.index + 1}
-          total={currentForm?.questions.length || 0}
+          current={activeQuestion?.indexInDisplayedQuestions + 1}
+          total={displayedQuestions?.length || 0}
         />
         <XStack justifyContent="flex-end">
           <Typography onPress={onClearForm} color="$red10">
@@ -303,8 +350,8 @@ const FormQuestionnaire = () => {
       >
         <YStack paddingHorizontal="$md" paddingBottom="$md" justifyContent="center">
           <Controller
-            key={activeQuestion?.question.id}
-            name={activeQuestion?.question.id as string}
+            key={activeQuestion?.question?.id}
+            name={activeQuestion?.question?.id}
             rules={{ required: true }}
             control={control}
             render={({ field: { value, onChange } }) => {
@@ -317,8 +364,8 @@ const FormQuestionnaire = () => {
                     <WizardFormInput
                       type="numeric"
                       label={`${question.code}. ${question.text[language]}`}
-                      placeholder={question.inputPlaceholder[language]}
-                      paragraph={question.helptext[language]}
+                      placeholder={question?.inputPlaceholder?.[language] || ""}
+                      paragraph={question.helptext?.[language] || ""}
                       onChangeText={onChange}
                       value={value}
                     />
@@ -328,8 +375,8 @@ const FormQuestionnaire = () => {
                     <WizardFormInput
                       type="textarea"
                       label={`${question.code}. ${question.text[language]}`}
-                      placeholder={question.inputPlaceholder[language]}
-                      paragraph={question.helptext[language]}
+                      placeholder={question?.inputPlaceholder?.[language] || ""}
+                      paragraph={question.helptext?.[language] || ""}
                       onChangeText={onChange}
                       maxLength={1000}
                       helper={t("max", {
@@ -343,7 +390,7 @@ const FormQuestionnaire = () => {
                     <WizardDateFormInput
                       label={`${question.code}. ${question.text[language]}`}
                       placeholder="Please enter a date"
-                      paragraph={question.helptext[language]}
+                      paragraph={question.helptext?.[language] || ""}
                       onChange={onChange}
                       value={value}
                     />
@@ -353,7 +400,7 @@ const FormQuestionnaire = () => {
                     <>
                       <WizardRadioFormInput
                         label={`${question.code}. ${question.text[language]}`}
-                        paragraph={question.helptext[language]}
+                        paragraph={question.helptext?.[language] || ""}
                         options={question.options.map((option) => ({
                           id: option.id,
                           value: option.id,
@@ -439,7 +486,7 @@ const FormQuestionnaire = () => {
                       type="single"
                       id={question.id}
                       label={`${question.code}. ${question.text[language]}`}
-                      paragraph={question.helptext[language]}
+                      paragraph={question.helptext?.[language] || ""}
                       scale={question.scale}
                       onValueChange={onChange}
                       value={value}
@@ -477,7 +524,6 @@ const FormQuestionnaire = () => {
             label={t("actions.add_attachments")}
             marginTop="$sm"
             onPress={() => {
-              console.log("doing stuff for question", activeQuestion);
               return setIsOptionsSheetOpen(true);
             }}
           />
@@ -485,9 +531,10 @@ const FormQuestionnaire = () => {
       </ScrollView>
 
       <WizzardControls
-        isFirstElement={activeQuestion?.index === 0}
+        isFirstElement={activeQuestion?.indexInAllQuestions === 0}
         isLastElement={
-          currentForm?.questions && activeQuestion?.index === currentForm?.questions?.length - 1
+          currentForm?.questions &&
+          activeQuestion?.indexInAllQuestions === currentForm?.questions?.length - 1
         }
         isNextDisabled={!isValid}
         onNextButtonPress={handleSubmit(onSubmitAnswer)}

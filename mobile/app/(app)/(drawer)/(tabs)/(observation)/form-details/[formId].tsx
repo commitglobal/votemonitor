@@ -19,6 +19,8 @@ import FormQuestionListItem, {
 } from "../../../../../../components/FormQuestionListItem";
 import FormOverview from "../../../../../../components/FormOverview";
 import { useTranslation } from "react-i18next";
+import { useFormSubmissionMutation } from "../../../../../../services/mutations/form-submission.mutation";
+import { shouldDisplayQuestion } from "../../../../../../services/form.parser";
 
 type SearchParamsType = {
   formId: string;
@@ -37,6 +39,12 @@ const FormDetails = () => {
   const [isChangeLanguageModalOpen, setIsChangeLanguageModalOpen] = useState<boolean>(false);
   const [optionSheetOpen, setOptionSheetOpen] = useState(false);
 
+  const { mutate: updateSubmission } = useFormSubmissionMutation({
+    electionRoundId: activeElectionRound?.id,
+    pollingStationId: selectedPollingStation?.pollingStationId,
+    scopeId: `Submit_Answers_${activeElectionRound?.id}_${selectedPollingStation?.pollingStationId}_${formId}`,
+  });
+
   const {
     data: currentForm,
     isLoading: isLoadingCurrentForm,
@@ -49,24 +57,23 @@ const FormDetails = () => {
     error: answersError,
   } = useFormAnswers(activeElectionRound?.id, selectedPollingStation?.pollingStationId, formId);
 
-  const { questions, numberOfAnswers } = useMemo(() => {
-    return {
-      questions: currentForm?.questions.map((q) => ({
+  const questions = useMemo(() => {
+    return currentForm?.questions
+      .filter((q) => shouldDisplayQuestion(q, answers))
+      .map((q) => ({
         status: answers?.[q.id] ? QuestionStatus.ANSWERED : QuestionStatus.NOT_ANSWERED,
         question: q.text[language],
         id: q.id,
-      })),
-      numberOfAnswers: Object.keys(answers || {}).length,
-    };
+      }));
   }, [currentForm, answers]);
 
   const { numberOfQuestions, formTitle, languages } = useMemo(() => {
     return {
-      numberOfQuestions: currentForm ? currentForm.questions.length : 0,
+      numberOfQuestions: questions?.length || 0,
       formTitle: `${currentForm?.code} - ${currentForm?.name[language]} (${language})`,
       languages: currentForm?.languages,
     };
-  }, [currentForm]);
+  }, [currentForm, questions]);
 
   const onQuestionItemClick = (questionId: string) => {
     router.push(`/form-questionnaire/${questionId}?formId=${formId}&language=${language}`);
@@ -96,7 +103,15 @@ const FormDetails = () => {
   };
 
   const onClearAnswersPress = () => {
-    console.log("clear data");
+    if (selectedPollingStation?.pollingStationId && activeElectionRound) {
+      updateSubmission({
+        pollingStationId: selectedPollingStation?.pollingStationId,
+        electionRoundId: activeElectionRound?.id,
+        formId: currentForm?.id as string,
+        answers: [],
+      });
+      setOptionSheetOpen(false);
+    }
   };
 
   if (isLoadingCurrentForm || isLoadingAnswers) {
@@ -137,12 +152,16 @@ const FormDetails = () => {
             : numberOfQuestions * 165 + 300
         }
       >
-        <ListView<Pick<FormQuestionListItemProps, "question" | "status"> & { id: string }>
+        <ListView<
+          Pick<FormQuestionListItemProps, "question" | "status"> & {
+            id: string;
+          }
+        >
           data={questions}
           ListHeaderComponent={
             <YStack gap="$xl" paddingBottom="$xxs">
               <FormOverview
-                completedAnswers={numberOfAnswers}
+                completedAnswers={Object.keys(answers || {}).length}
                 numberOfQuestions={numberOfQuestions}
                 onFormActionClick={onFormOverviewActionClick}
               />
