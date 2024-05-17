@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { router } from "expo-router";
 import { useAuth } from "../hooks/useAuth";
 import { View, XStack, YStack, styled } from "tamagui";
 import { useTranslation } from "react-i18next";
 import { Screen } from "../components/Screen";
-import { StatusBar } from "react-native";
+import { StatusBar, Animated, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Icon } from "../components/Icon";
 import { Typography } from "../components/Typography";
@@ -16,6 +16,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CURRENT_USER_STORAGE_KEY } from "../common/constants";
 import Constants from "expo-constants";
 import * as Sentry from "@sentry/react-native";
+import * as SecureStore from "expo-secure-store";
+import ChooseOnboardingLanguage from "../components/ChooseOnboardingLanguage";
+import OnboardingViewPager from "../components/OnboardingViewPager";
+import Pagination from "../components/Pagination";
 
 interface FormData {
   email: string;
@@ -24,9 +28,29 @@ interface FormData {
 
 const Login = () => {
   const { t } = useTranslation("login");
+  const insets = useSafeAreaInsets();
+
   const { signIn } = useAuth();
   const [authError, setAuthError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [languageSelectionApplied, setLanguageSelectionApplied] = useState(false);
+  const [onboardingComplete, setOnboardingComplete] = useState(true);
+
+  const scrollOffsetAnimatedValue = React.useRef(new Animated.Value(0)).current;
+  const positionAnimatedValue = React.useRef(new Animated.Value(0)).current;
+  const [currentPage, setCurrentPage] = useState(0);
+  const pagerViewRef = useRef(null);
+
+  useEffect(() => {
+    try {
+      const onboardingComplete = SecureStore.getItem("onboardingComplete");
+      if (onboardingComplete !== "true") {
+        setOnboardingComplete(false);
+      }
+    } catch (err) {
+      Sentry.captureException(err);
+    }
+  }, []);
 
   const onLogin = async (formData: FormData) => {
     try {
@@ -49,7 +73,80 @@ const Login = () => {
   });
   const { errors } = formState;
 
-  const insets = useSafeAreaInsets();
+  // const AnimatedPagerView = Animated.createAnimatedComponent(PagerView);
+
+  const onOnboardingComplete = () => {
+    try {
+      SecureStore.setItem("onboardingComplete", "true");
+      setOnboardingComplete(true);
+    } catch (err) {
+      console.log(err);
+      Sentry.captureException(err);
+    }
+  };
+  const data = [1, 2, 3];
+
+  if (!onboardingComplete) {
+    if (!languageSelectionApplied) {
+      return <ChooseOnboardingLanguage setLanguageSelectionApplied={setLanguageSelectionApplied} />;
+    }
+    return (
+      <>
+        <OnboardingViewPager
+          scrollOffsetAnimatedValue={scrollOffsetAnimatedValue}
+          positionAnimatedValue={positionAnimatedValue}
+          pagerViewRef={pagerViewRef}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+        />
+
+        <XStack
+          justifyContent="center"
+          alignItems="center"
+          backgroundColor="$purple6"
+          paddingHorizontal="$md"
+          paddingBottom={insets.bottom + 32}
+        >
+          <XStack flex={1}></XStack>
+          <XStack justifyContent="center" flex={1}>
+            <Pagination
+              scrollOffsetAnimatedValue={scrollOffsetAnimatedValue}
+              positionAnimatedValue={positionAnimatedValue}
+              data={data}
+            />
+          </XStack>
+
+          {currentPage !== data.length - 1 ? (
+            <XStack
+              onPress={() => {
+                // @ts-ignore
+                currentPage !== data.length - 1 && pagerViewRef?.current?.setPage(currentPage + 1);
+              }}
+              pressStyle={{ opacity: 0.5 }}
+              flex={1}
+              justifyContent="flex-end"
+            >
+              <Typography color="white" preset="body2" paddingVertical="$xs" paddingRight="$md">
+                Skip
+              </Typography>
+            </XStack>
+          ) : (
+            <XStack
+              onPress={() => onOnboardingComplete()}
+              pressStyle={{ opacity: 0.5 }}
+              flex={1}
+              justifyContent="flex-end"
+            >
+              <Typography color="white" preset="body2" paddingVertical="$xs" paddingRight="$md">
+                {/* //!this might cause problems if the translation is too long */}
+                Go to app
+              </Typography>
+            </XStack>
+          )}
+        </XStack>
+      </>
+    );
+  }
 
   return (
     <Screen
