@@ -33,6 +33,8 @@ export function MonitoringObserverFormsTable({
       ['level1Filter', debouncedSearch.level1Filter],
       ['level2Filter', debouncedSearch.level2Filter],
       ['level3Filter', debouncedSearch.level3Filter],
+      ['level4Filter', debouncedSearch.level4Filter],
+      ['level5Filter', debouncedSearch.level5Filter],
       ['monitoringObserverId', monitoringObserverId],
     ].filter(([_, value]) => value);
 

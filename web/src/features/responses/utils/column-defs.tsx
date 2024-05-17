@@ -361,8 +361,8 @@ export const quickReportsColumnDefs: ColumnDef<QuickReport>[] = [
     cell: ({ row }) => (
       <Link
         className='hover:bg-purple-100 inline-flex h-6 w-6 rounded-full items-center justify-center'
-        params={{ formId: row.original.id }}
-        to='/responses/$formId/quick-reports'>
+        params={{ quickReportId: row.original.id }}
+        to='/responses/quick-reports/$quickReportId'>
         <ChevronRightIcon className='w-4 text-purple-600' />
       </Link>
     ),

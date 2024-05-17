@@ -4,7 +4,7 @@ import type { FunctionComponent } from '@/common/types';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { usePollingStations } from '@/common/polling-stations';
 
-const routeApi = getRouteApi('/responses/');
+const routeApi = getRouteApi('/monitoring-observers/$monitoringObserverId');
 
 export function PollingStationsFilters(): FunctionComponent {
   const navigate = routeApi.useNavigate();

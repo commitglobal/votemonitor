@@ -1,6 +1,6 @@
 import { type UseQueryResult, useQuery } from '@tanstack/react-query';
-import { authApi } from '@/common/auth-api';
-import type { LevelNode } from '@/common/types';
+import { authApi } from './auth-api';
+import type { LevelNode } from './types';
 
 type PollingStationsResponse = { nodes: LevelNode[] };
 

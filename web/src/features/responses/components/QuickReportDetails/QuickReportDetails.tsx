@@ -9,7 +9,7 @@ import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 
 export default function QuickReportDetails(): FunctionComponent {
-  const quickReport = useLoaderData({ from: '/responses/$formId/quick-reports' });
+  const quickReport = useLoaderData({ from: '/responses/quick-reports/$quickReportId' });
 
   return (
     <Layout
