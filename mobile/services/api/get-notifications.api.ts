@@ -1,5 +1,4 @@
 import API from "../api";
-import * as Crypto from "expo-crypto";
 
 type GetNotificationsApiPayload = {
   electionRoundId: string;
@@ -14,18 +13,14 @@ export type Notification = {
 };
 
 export type NotificationsApiResponse = {
+  ngoName: string;
   notifications: Notification[];
 };
 
 export const getNotifications = ({
   electionRoundId,
 }: GetNotificationsApiPayload): Promise<NotificationsApiResponse> => {
-  return API.get(`election-rounds/${electionRoundId}/notifications:listReceived`).then((res) => {
-    res.data.notifications = res.data.notifications.map((not: any) => ({
-      id: Crypto.randomUUID(),
-      ...not,
-    }));
-
-    return res.data;
-  });
+  return API.get(`election-rounds/${electionRoundId}/notifications:listReceived`).then(
+    (res) => res.data,
+  );
 };

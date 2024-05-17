@@ -14,9 +14,10 @@ import { useUserData } from "../../../../contexts/user/UserContext.provider";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import NotificationListItem from "../../../../components/NotificationListItem";
+import OptionsSheet from "../../../../components/OptionsSheet";
 
 const Inbox = () => {
-  const { i18n } = useTranslation("inbox");
+  const { t, i18n } = useTranslation("inbox");
   const navigation = useNavigation();
   const { height } = useWindowDimensions();
   const insets = useSafeAreaInsets();
@@ -26,15 +27,16 @@ const Inbox = () => {
   const { activeElectionRound } = useUserData();
   const { data, isLoading } = useNotifications(activeElectionRound?.id);
   const notifications = data?.notifications;
+  const ngoName = data?.ngoName;
 
   const [sliceNumber, setSliceNumber] = useState(10);
+  const [openContextualMenu, setOpenContextualMenu] = useState(false);
   const loadMore = () => {
     setSliceNumber((sliceNum) => sliceNum + 10);
   };
 
   const displayedNotifications = useMemo(
     () => notifications?.slice(0, sliceNumber),
-    // todo: is this ok, to add the language for displayed notifications?
     [notifications, sliceNumber, i18n.language],
   );
 
@@ -51,9 +53,7 @@ const Inbox = () => {
         leftIcon={<Icon icon="menuAlt2" color="white" />}
         onLeftPress={() => navigation.dispatch(DrawerActions.openDrawer)}
         rightIcon={<Icon icon="dotsVertical" color="white" />}
-        onRightPress={() => {
-          console.log("Right icon pressed");
-        }}
+        onRightPress={() => setOpenContextualMenu(true)}
       />
 
       {isLoading ? (
@@ -62,18 +62,16 @@ const Inbox = () => {
         </YStack>
       ) : (
         <>
-          <YStack backgroundColor="$yellow6" paddingVertical="$xxs">
-            {/* //todo: ngo name */}
+          <YStack backgroundColor="$yellow6" paddingVertical="$xxs" paddingHorizontal="$md">
             <Typography textAlign="center" color="$purple5" fontWeight="500">
-              Messages from [NGO Name]
+              {`${t("messages_from")} ${ngoName ? ngoName : t("your_organization")}`}
             </Typography>
           </YStack>
           <YStack paddingHorizontal="$md" height={scrollHeight}>
             <ListView<any>
               data={displayedNotifications}
               showsVerticalScrollIndicator={false}
-              // todo: keyextractor with the right key
-              // keyExtractor={(item) => item.id}
+              keyExtractor={(item) => item.id}
               bounces={false}
               renderItem={({ item }) => {
                 return <NotificationListItem notification={item} />;
@@ -85,6 +83,22 @@ const Inbox = () => {
           </YStack>
         </>
       )}
+      <OptionsSheet open={openContextualMenu} setOpen={setOpenContextualMenu}>
+        <YStack
+          paddingVertical="$xxs"
+          paddingHorizontal="$sm"
+          onPress={() => {
+            setOpenContextualMenu(false);
+            //todo: router.push to manage my polling stations
+            // return router.push("change-password");
+          }}
+        >
+          <Typography preset="body1" color="$gray7" lineHeight={24}>
+            {/* //todo: translations here */}
+            Manage my polling stations
+          </Typography>
+        </YStack>
+      </OptionsSheet>
     </Screen>
   );
 };
