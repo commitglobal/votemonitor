@@ -50,37 +50,41 @@ export const shouldDisplayQuestion = (
     const condition: DisplayLogicCondition = q.displayLogic.condition;
     const parentAnswerType = answers?.[q.displayLogic?.parentQuestionId].$answerType;
     const parentAnswer = answers?.[q.displayLogic?.parentQuestionId];
+    const value = q.displayLogic?.value;
 
     let shouldDisplay = false;
+
+    if (!condition || !parentAnswerType || !value) {
+      return shouldDisplay;
+    }
 
     switch (parentAnswerType) {
       case "multiSelectAnswer":
         shouldDisplay = !!(parentAnswer as MultiSelectAnswer).selection.find(
-          (option) => option.optionId === q.displayLogic?.value,
+          (option) => option.optionId === value,
         );
         break;
       case "singleSelectAnswer":
-        shouldDisplay =
-          (parentAnswer as SingleSelectAnswer).selection.optionId === q.displayLogic?.value;
+        shouldDisplay = (parentAnswer as SingleSelectAnswer).selection.optionId === value;
         break;
       case "numberAnswer":
         shouldDisplay = mapDisplayConditionToMath(
           (parentAnswer as NumberAnswer).value.toString(),
-          q.displayLogic.value,
+          value,
           condition,
         );
         break;
       case "textAnswer":
         shouldDisplay = mapDisplayConditionToMath(
           (parentAnswer as TextAnswer).text,
-          q.displayLogic.value,
+          value,
           condition,
         );
         break;
       case "ratingAnswer":
         shouldDisplay = mapDisplayConditionToMath(
           (parentAnswer as RatingAnswer).value.toString(),
-          q.displayLogic.value,
+          value,
           condition,
         );
         break;
