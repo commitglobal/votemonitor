@@ -52,8 +52,6 @@ const FormQuestionnaire = () => {
   const { t } = useTranslation("question_page");
   const { questionId, formId, language } = useLocalSearchParams<SearchParamType>();
 
-  console.log(questionId, formId, language);
-
   if (!questionId || !formId || !language) {
     return <Typography>Incorrect page params</Typography>;
   }
@@ -526,7 +524,6 @@ const FormQuestionnaire = () => {
             label={t("actions.add_attachments")}
             marginTop="$sm"
             onPress={() => {
-              console.log("doing stuff for question", activeQuestion);
               return setIsOptionsSheetOpen(true);
             }}
           />
