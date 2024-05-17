@@ -24,7 +24,7 @@ export const useFormSubmissionMutation = ({
     [electionRoundId, pollingStationId],
   );
 
-  console.log("🚬 ScopeID: ", scopeId);
+  // console.log("🚬 ScopeID: ", scopeId);
 
   return useMutation({
     mutationKey: pollingStationsKeys.upsertFormSubmission(),

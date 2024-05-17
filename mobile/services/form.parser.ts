@@ -39,50 +39,118 @@ const mapDisplayConditionToMath = (
   }
 };
 
+export const shouldDisplayQuestion = (
+  q: ApiFormQuestion,
+  answers: Record<string, ApiFormAnswer> | undefined,
+) => {
+  if (q.displayLogic) {
+    if (!answers?.[q.displayLogic?.parentQuestionId]) {
+      return false;
+    }
+    const condition: DisplayLogicCondition = q.displayLogic.condition;
+    const parentAnswerType = answers?.[q.displayLogic?.parentQuestionId].$answerType;
+    const parentAnswer = answers?.[q.displayLogic?.parentQuestionId];
+
+    let shouldDisplay = false;
+
+    switch (parentAnswerType) {
+      case "multiSelectAnswer":
+        shouldDisplay = !!(parentAnswer as MultiSelectAnswer).selection.find(
+          (option) => option.optionId === q.displayLogic?.value,
+        );
+        break;
+      case "singleSelectAnswer":
+        shouldDisplay =
+          (parentAnswer as SingleSelectAnswer).selection.optionId === q.displayLogic?.value;
+        break;
+      case "numberAnswer":
+        shouldDisplay = mapDisplayConditionToMath(
+          (parentAnswer as NumberAnswer).value.toString(),
+          q.displayLogic.value,
+          condition,
+        );
+        break;
+      case "textAnswer":
+        shouldDisplay = mapDisplayConditionToMath(
+          (parentAnswer as TextAnswer).text,
+          q.displayLogic.value,
+          condition,
+        );
+        break;
+      case "ratingAnswer":
+        shouldDisplay = mapDisplayConditionToMath(
+          (parentAnswer as RatingAnswer).value.toString(),
+          q.displayLogic.value,
+          condition,
+        );
+        break;
+      default:
+        shouldDisplay = false;
+    }
+
+    return shouldDisplay;
+  }
+
+  return true;
+};
+
 export const filterQuestionsByDisplayLogic = (
   apiQuestions: ApiFormQuestion[] = [],
   answers: Record<string, ApiFormAnswer> | undefined,
-): ApiFormQuestion[] => {
-  return apiQuestions.filter((q) => {
+): (ApiFormQuestion & { shouldDisplay: boolean })[] => {
+  return apiQuestions.map((q) => {
     if (q.displayLogic) {
       if (!answers?.[q.displayLogic?.parentQuestionId]) {
-        return false;
+        return { ...q, shouldDisplay: false };
       }
       const condition: DisplayLogicCondition = q.displayLogic.condition;
       const parentAnswerType = answers?.[q.displayLogic?.parentQuestionId].$answerType;
       const parentAnswer = answers?.[q.displayLogic?.parentQuestionId];
 
+      let shouldDisplay = false;
+
       switch (parentAnswerType) {
         case "multiSelectAnswer":
-          return (parentAnswer as MultiSelectAnswer).selection.find(
+          shouldDisplay = !!(parentAnswer as MultiSelectAnswer).selection.find(
             (option) => option.optionId === q.displayLogic?.value,
           );
+          break;
         case "singleSelectAnswer":
-          return (parentAnswer as SingleSelectAnswer).selection.optionId === q.displayLogic?.value;
+          shouldDisplay =
+            (parentAnswer as SingleSelectAnswer).selection.optionId === q.displayLogic?.value;
+          break;
         case "numberAnswer":
-          return mapDisplayConditionToMath(
+          shouldDisplay = mapDisplayConditionToMath(
             (parentAnswer as NumberAnswer).value.toString(),
             q.displayLogic.value,
             condition,
           );
+          break;
         case "textAnswer":
-          return mapDisplayConditionToMath(
+          shouldDisplay = mapDisplayConditionToMath(
             (parentAnswer as TextAnswer).text,
             q.displayLogic.value,
             condition,
           );
+          break;
         case "ratingAnswer":
-          return mapDisplayConditionToMath(
+          shouldDisplay = mapDisplayConditionToMath(
             (parentAnswer as RatingAnswer).value.toString(),
             q.displayLogic.value,
             condition,
           );
+          break;
         default:
-          return false;
+          shouldDisplay = false;
       }
+
+      return {
+        ...q,
+        shouldDisplay,
+      };
     }
 
-    return true;
+    return { ...q, shouldDisplay: true };
   });
 };
 
