@@ -40,8 +40,8 @@ export default function FormSubmissionDetails(): FunctionComponent {
               <Link
                 search
                 className='text-purple-500 font-bold flex gap-1'
-                to='/monitoring-observers/$monitoringObserverId'
-                params={{ monitoringObserverId: formSubmission.monitoringObserverId }}
+                to='/monitoring-observers/$monitoringObserverId/view/$tab'
+                params={{ monitoringObserverId: formSubmission.monitoringObserverId, tab: 'details' }}
                 target='_blank'
                 preload={false}>
                 {formSubmission.observerName}
@@ -121,7 +121,7 @@ export default function FormSubmissionDetails(): FunctionComponent {
                         <Fragment key={option.id}>
                           <FormItem className='flex items-center gap-2 !mt-0'>
                             <Radio disabled value={option.id} />
-                            <Label className='font-normal'>
+                            <Label className='font-normal' key={option.id}>
                               {option.text[formSubmission.defaultLanguage]}
                               {option.isFlagged && <> (Flagged)</>}
                             </Label>

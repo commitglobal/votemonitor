@@ -25,7 +25,6 @@ function ImportMonitoringObserversErrorsDialog({
 }: ImportMonitoringObserversErrorsDialogProps) {
 
     const downloadImportErrorsFile = async () => {
-        debugger;
         const res = await authApi.get(`/import-errors/${fileId}`);
         const csvData = res.data;
 

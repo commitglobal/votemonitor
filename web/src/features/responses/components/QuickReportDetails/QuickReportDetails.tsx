@@ -86,8 +86,8 @@ export default function QuickReportDetails(): FunctionComponent {
             <Link
               search
               className='text-purple-500 flex gap-1'
-              to='/monitoring-observers/$monitoringObserverId'
-              params={{ monitoringObserverId: quickReport.monitoringObserverId }}
+              to='/monitoring-observers/$monitoringObserverId/view/$tab'
+              params={{ monitoringObserverId: quickReport.monitoringObserverId, tab: 'details' }}
               target='_blank'
               preload={false}>
               {quickReport.firstName} {quickReport.lastName}

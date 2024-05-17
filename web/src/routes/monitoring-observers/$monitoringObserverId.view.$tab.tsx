@@ -1,5 +1,5 @@
 import { type EnsureQueryDataOptions, queryOptions, type QueryKey } from '@tanstack/react-query';
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, redirect } from '@tanstack/react-router';
 import { authApi } from '@/common/auth-api';
 import type { FunctionComponent } from '@/common/types';
 import MonitoringObserverDetails from '@/features/monitoring-observers/components/MonitoringObserverDetails/MonitoringObserverDetails';
@@ -30,6 +30,28 @@ export const monitoringObserverQueryOptions = (
     },
   });
 
+export const Route = createFileRoute('/monitoring-observers/$monitoringObserverId/view/$tab')({
+  beforeLoad: ({ params: { monitoringObserverId, tab } }) => {
+    redirectIfNotAuth();
+
+    const coercedTab = coerceTabSlug(tab);
+    if (tab !== coercedTab) {
+      throw redirect({ to: `/monitoring-observers/$monitoringObserverId/view/$tab`, params: { monitoringObserverId, tab: coercedTab } })
+    }
+  },
+  component: Details,
+  loader: ({ context: { queryClient }, params: { monitoringObserverId } }) =>
+    queryClient.ensureQueryData(monitoringObserverQueryOptions(monitoringObserverId)),
+  validateSearch: monitoringObserverDetailsRouteSearchSchema,
+});
+
+const coerceTabSlug = (slug: string) => {
+  if (slug?.toLowerCase()?.trim() === 'details') return 'details';
+  if (slug?.toLowerCase()?.trim() === 'responses') return 'responses';
+
+  return 'details'
+};
+
 function Details(): FunctionComponent {
   return (
     <div className='p-2'>
@@ -37,13 +59,3 @@ function Details(): FunctionComponent {
     </div>
   );
 }
-
-export const Route = createFileRoute('/monitoring-observers/$monitoringObserverId')({
-  beforeLoad: () => {
-    redirectIfNotAuth();
-  },
-  component: Details,
-  loader: ({ context: { queryClient }, params: { monitoringObserverId } }) =>
-    queryClient.ensureQueryData(monitoringObserverQueryOptions(monitoringObserverId)),
-  validateSearch: monitoringObserverDetailsRouteSearchSchema,
-});

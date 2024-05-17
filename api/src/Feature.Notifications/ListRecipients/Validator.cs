@@ -1,4 +1,4 @@
-﻿namespace Feature.Notifications.ListSent;
+﻿namespace Feature.Notifications.ListRecipients;
 
 public class Validator : Validator<Request>
 {
@@ -11,6 +11,6 @@ public class Validator : Validator<Request>
             .GreaterThanOrEqualTo(1);
 
         RuleFor(x => x.PageSize).InclusiveBetween(1, 100);
+
     }
 }
-

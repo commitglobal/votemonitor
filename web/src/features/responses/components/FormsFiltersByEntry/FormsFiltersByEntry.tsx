@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { FormType } from '../../models/form-submission';
 import type { FormSubmissionsSearchParams } from '../../models/search-params';
-import { PollingStationsFilters } from '../PollingStationsFilters/PollingStationsFilters';
+import { PollingStationsFilters } from '@/components/PollingStationsFilters/PollingStationsFilters';
 
 const routeApi = getRouteApi('/responses/');
 

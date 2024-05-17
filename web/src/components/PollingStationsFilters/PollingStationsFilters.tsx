@@ -1,16 +1,17 @@
-import { getRouteApi } from '@tanstack/react-router';
+import { getRouteApi, useNavigate, useSearch } from '@tanstack/react-router';
 import { useMemo } from 'react';
 import type { FunctionComponent } from '@/common/types';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { usePollingStations } from '@/common/polling-stations';
-
-const routeApi = getRouteApi('/monitoring-observers/$monitoringObserverId');
+import { usePollingStationsLocationLevels } from '@/hooks/polling-stations-levels';
 
 export function PollingStationsFilters(): FunctionComponent {
-  const navigate = routeApi.useNavigate();
-  const search = routeApi.useSearch();
-  const { data } = usePollingStations();
+  const navigate = useNavigate();
 
+  const search: any = useSearch({
+    strict: false,
+  });
+
+  const { data } = usePollingStationsLocationLevels();
   const selectedLevel1Node = useMemo(
     () => data?.[1]?.find((node) => node.name === search.level1Filter),
     [data, search.level1Filter]

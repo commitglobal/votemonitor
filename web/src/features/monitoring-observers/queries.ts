@@ -3,7 +3,7 @@ import { Tag } from "@/components/tag/tag-input";
 import { UseQueryResult, useQuery } from "@tanstack/react-query";
 import { v4 as uuid } from 'uuid';
 
-export function useTags(): UseQueryResult<Tag[], Error> {
+export function useMonitoringObserversTags(): UseQueryResult<Tag[], Error> {
    return useQuery({
         queryKey: ['tags'],
         queryFn: async () => {
