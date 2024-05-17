@@ -3,7 +3,7 @@ import { Screen } from "../components/Screen";
 import { useTranslation } from "react-i18next";
 import { Icon } from "../components/Icon";
 import { router } from "expo-router";
-import { XStack, YStack } from "tamagui";
+import { YStack } from "tamagui";
 import { Typography } from "../components/Typography";
 import { useForm, Controller } from "react-hook-form";
 import FormInput from "../components/FormInputs/FormInput";
