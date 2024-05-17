@@ -22,6 +22,7 @@ import { Route as FormsIndexImport } from './routes/forms/index'
 import { Route as FormTemplatesIndexImport } from './routes/form-templates/index'
 import { Route as ForgotPasswordIndexImport } from './routes/forgot-password/index'
 import { Route as ElectionRoundsIndexImport } from './routes/election-rounds/index'
+import { Route as ElectionEventIndexImport } from './routes/election-event/index'
 import { Route as AcceptInviteIndexImport } from './routes/accept-invite/index'
 import { Route as ResponsesSubmissionIdImport } from './routes/responses/$submissionId'
 import { Route as ObserversObserverIdImport } from './routes/observers/$observerId'
@@ -29,6 +30,8 @@ import { Route as NgosNgoIdImport } from './routes/ngos/$ngoId'
 import { Route as MonitoringObserversCreateNewMessageImport } from './routes/monitoring-observers/create-new-message'
 import { Route as MonitoringObserversMonitoringObserverIdImport } from './routes/monitoring-observers/$monitoringObserverId'
 import { Route as ElectionRoundsElectionRoundIdImport } from './routes/election-rounds/$electionRoundId'
+import { Route as ElectionEventTabImport } from './routes/election-event/$tab'
+import { Route as ResponsesQuickReportsQuickReportIdImport } from './routes/responses/quick-reports/$quickReportId'
 import { Route as ResponsesFormIdQuickReportsImport } from './routes/responses/$formId.quick-reports'
 import { Route as ResponsesFormIdAggregatedImport } from './routes/responses/$formId.aggregated'
 import { Route as ObserversObserverIdEditImport } from './routes/observers_.$observerId.edit'
@@ -97,6 +100,11 @@ const ElectionRoundsIndexRoute = ElectionRoundsIndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const ElectionEventIndexRoute = ElectionEventIndexImport.update({
+  path: '/election-event/',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const AcceptInviteIndexRoute = AcceptInviteIndexImport.update({
   path: '/accept-invite/',
   getParentRoute: () => rootRoute,
@@ -132,6 +140,17 @@ const MonitoringObserversMonitoringObserverIdRoute =
 const ElectionRoundsElectionRoundIdRoute =
   ElectionRoundsElectionRoundIdImport.update({
     path: '/election-rounds/$electionRoundId',
+    getParentRoute: () => rootRoute,
+  } as any)
+
+const ElectionEventTabRoute = ElectionEventTabImport.update({
+  path: '/election-event/$tab',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ResponsesQuickReportsQuickReportIdRoute =
+  ResponsesQuickReportsQuickReportIdImport.update({
+    path: '/responses/quick-reports/$quickReportId',
     getParentRoute: () => rootRoute,
   } as any)
 
@@ -199,6 +218,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
+    '/election-event/$tab': {
+      preLoaderRoute: typeof ElectionEventTabImport
+      parentRoute: typeof rootRoute
+    }
     '/election-rounds/$electionRoundId': {
       preLoaderRoute: typeof ElectionRoundsElectionRoundIdImport
       parentRoute: typeof rootRoute
@@ -225,6 +248,10 @@ declare module '@tanstack/react-router' {
     }
     '/accept-invite/': {
       preLoaderRoute: typeof AcceptInviteIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/election-event/': {
+      preLoaderRoute: typeof ElectionEventIndexImport
       parentRoute: typeof rootRoute
     }
     '/election-rounds/': {
@@ -299,6 +326,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResponsesFormIdQuickReportsImport
       parentRoute: typeof rootRoute
     }
+    '/responses/quick-reports/$quickReportId': {
+      preLoaderRoute: typeof ResponsesQuickReportsQuickReportIdImport
+      parentRoute: typeof rootRoute
+    }
     '/form-templates/$formTemplateId/edit-translation/$languageCode': {
       preLoaderRoute: typeof FormTemplatesFormTemplateIdEditTranslationLanguageCodeImport
       parentRoute: typeof rootRoute
@@ -314,6 +345,7 @@ declare module '@tanstack/react-router' {
 
 export const routeTree = rootRoute.addChildren([
   IndexRoute,
+  ElectionEventTabRoute,
   ElectionRoundsElectionRoundIdRoute,
   MonitoringObserversMonitoringObserverIdRoute,
   MonitoringObserversCreateNewMessageRoute,
@@ -321,6 +353,7 @@ export const routeTree = rootRoute.addChildren([
   ObserversObserverIdRoute,
   ResponsesSubmissionIdRoute,
   AcceptInviteIndexRoute,
+  ElectionEventIndexRoute,
   ElectionRoundsIndexRoute,
   ForgotPasswordIndexRoute,
   FormTemplatesIndexRoute,
@@ -339,6 +372,7 @@ export const routeTree = rootRoute.addChildren([
   ObserversObserverIdEditRoute,
   ResponsesFormIdAggregatedRoute,
   ResponsesFormIdQuickReportsRoute,
+  ResponsesQuickReportsQuickReportIdRoute,
   FormTemplatesFormTemplateIdEditTranslationLanguageCodeRoute,
   FormsFormIdEditTranslationLanguageCodeRoute,
 ])
