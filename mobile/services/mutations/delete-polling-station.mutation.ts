@@ -8,5 +8,8 @@ export const useDeletePollingStationMutation = () => {
     mutationFn: async (payload: DeletePollingStationPayload) => {
       return deletePollingStation(payload);
     },
+    onError: (err) => {
+      console.log("🏠🏠🏠 ERROR IN DELETE POLLING STATION MUTATION 🏠🏠🏠", err);
+    },
   });
 };

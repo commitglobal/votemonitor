@@ -28,10 +28,8 @@ const DeletePollingStationDialog = (props: DeletePollingStationDialogProps) => {
     electionRoundId: activeElectionRound.id,
     pollingStationId: pollingStationId,
   };
-
   console.log("Payload: ", payload);
-  console.log("isSuccess: ", isSuccess);
-  console.log("isError: ", isError);
+  console.log("isSuccess:", isSuccess);
   console.log("\n");
 
   return (
@@ -65,7 +63,6 @@ const DeletePollingStationDialog = (props: DeletePollingStationDialogProps) => {
               preset="red"
               flex={1}
               onPress={() => {
-                console.log("TODO: Deelete API CALL!");
                 deletePS(payload);
               }}
             >
