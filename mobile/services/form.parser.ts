@@ -1,8 +1,90 @@
 import { FormListItem } from "../components/FormList";
 import { arrayToKeyObject } from "../helpers/misc";
 import { FormAPIModel, FormSubmissionsApiResponse } from "./definitions.api";
-import { ApiFormAnswer, FormQuestionAnswerTypeMapping } from "./interfaces/answer.type";
-import { ApiFormQuestion, FormQuestionType } from "./interfaces/question.type";
+import {
+  ApiFormAnswer,
+  FormQuestionAnswerTypeMapping,
+  MultiSelectAnswer,
+  NumberAnswer,
+  RatingAnswer,
+  SingleSelectAnswer,
+  TextAnswer,
+} from "./interfaces/answer.type";
+import {
+  ApiFormQuestion,
+  DisplayLogicCondition,
+  FormQuestionType,
+} from "./interfaces/question.type";
+
+const mapDisplayConditionToMath = (
+  operand1: string,
+  operand2: string,
+  condition: DisplayLogicCondition,
+) => {
+  switch (condition) {
+    case "Equals":
+      return operand1 === operand2;
+    case "GreaterEqual":
+      return operand1 >= operand2;
+    case "GreaterThan":
+      return operand1 > operand2;
+    case "LessEqual":
+      return operand1 <= operand2;
+    case "LessThan":
+      return operand1 < operand2;
+    case "NotEquals":
+      return operand1 !== operand2;
+    default:
+      return false;
+  }
+};
+
+export const filterQuestionsByDisplayLogic = (
+  apiQuestions: ApiFormQuestion[] = [],
+  answers: Record<string, ApiFormAnswer> | undefined,
+): ApiFormQuestion[] => {
+  return apiQuestions.filter((q) => {
+    if (q.displayLogic) {
+      if (!answers?.[q.displayLogic?.parentQuestionId]) {
+        return false;
+      }
+      const condition: DisplayLogicCondition = q.displayLogic.condition;
+      const parentAnswerType = answers?.[q.displayLogic?.parentQuestionId].$answerType;
+      const parentAnswer = answers?.[q.displayLogic?.parentQuestionId];
+
+      switch (parentAnswerType) {
+        case "multiSelectAnswer":
+          return (parentAnswer as MultiSelectAnswer).selection.find(
+            (option) => option.optionId === q.displayLogic?.value,
+          );
+        case "singleSelectAnswer":
+          return (parentAnswer as SingleSelectAnswer).selection.optionId === q.displayLogic?.value;
+        case "numberAnswer":
+          return mapDisplayConditionToMath(
+            (parentAnswer as NumberAnswer).value.toString(),
+            q.displayLogic.value,
+            condition,
+          );
+        case "textAnswer":
+          return mapDisplayConditionToMath(
+            (parentAnswer as TextAnswer).text,
+            q.displayLogic.value,
+            condition,
+          );
+        case "ratingAnswer":
+          return mapDisplayConditionToMath(
+            (parentAnswer as RatingAnswer).value.toString(),
+            q.displayLogic.value,
+            condition,
+          );
+        default:
+          return false;
+      }
+    }
+
+    return true;
+  });
+};
 
 export const mapAPIQuestionsToFormQuestions = (
   apiQuestions: ApiFormQuestion[] = [],

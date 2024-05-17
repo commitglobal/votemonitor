@@ -20,6 +20,7 @@ import FormQuestionListItem, {
 import FormOverview from "../../../../../../components/FormOverview";
 import { useTranslation } from "react-i18next";
 import { useFormSubmissionMutation } from "../../../../../../services/mutations/form-submission.mutation";
+import { filterQuestionsByDisplayLogic } from "../../../../../../services/form.parser";
 
 type SearchParamsType = {
   formId: string;
@@ -58,20 +59,12 @@ const FormDetails = () => {
 
   const { questions, numberOfAnswers } = useMemo(() => {
     return {
-      questions: currentForm?.questions
-        .map((q) => ({
-          status: answers?.[q.id] ? QuestionStatus.ANSWERED : QuestionStatus.NOT_ANSWERED,
-          question: q.text[language],
-          displayLogic: q.displayLogic,
-          id: q.id,
-        }))
-        .filter((q) => {
-          if (q.displayLogic?.parentQuestionId) {
-            return answers?.[q.displayLogic?.parentQuestionId];
-          }
-
-          return true;
-        }),
+      questions: filterQuestionsByDisplayLogic(currentForm?.questions, answers).map((q) => ({
+        status: answers?.[q.id] ? QuestionStatus.ANSWERED : QuestionStatus.NOT_ANSWERED,
+        question: q.text[language],
+        displayLogic: q.displayLogic,
+        id: q.id,
+      })),
       numberOfAnswers: Object.keys(answers || {}).length,
     };
   }, [currentForm, answers]);

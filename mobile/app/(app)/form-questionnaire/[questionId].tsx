@@ -13,7 +13,7 @@ import { Platform, ViewStyle } from "react-native";
 import { Controller, useForm } from "react-hook-form";
 import WizardFormInput from "../../../components/WizardFormInputs/WizardFormInput";
 import {
-  mapAPIQuestionsToFormQuestions,
+  filterQuestionsByDisplayLogic,
   mapFormSubmissionDataToAPIFormSubmissionAnswer,
   setFormDefaultValues,
 } from "../../../services/form.parser";
@@ -87,23 +87,23 @@ const FormQuestionnaire = () => {
     defaultValues: setFormDefaultValues(questionId, answers?.[questionId]) as any,
   });
 
-  const questions: Record<string, ApiFormQuestion> = useMemo(
-    () => mapAPIQuestionsToFormQuestions(currentForm?.questions), // TODO @birloiflorian do it in query select
-    [currentForm],
+  const questions: ApiFormQuestion[] = useMemo(
+    () => filterQuestionsByDisplayLogic(currentForm?.questions, answers),
+    [currentForm, answers],
   );
 
-  console.log("✅Questions", questions);
+  // console.log("✅Questions", SuperJSON.stringify(questions));
 
   const activeQuestion: {
     index: number;
     question: ApiFormQuestion;
-  } = useMemo(
-    () => ({
-      index: Object.keys(questions).findIndex((key) => key === questionId) || 0,
-      question: questions[questionId],
-    }),
-    [questions],
-  );
+  } = useMemo(() => {
+    console.log("Calling ActiveQuestion");
+    return {
+      index: questions.findIndex((q) => q.id === questionId) || 0,
+      question: questions.find((q) => q.id === questionId) || ({} as ApiFormQuestion), // TODO CHANGE THIS
+    };
+  }, [questions]);
 
   const formTitle = useMemo(() => {
     return `${currentForm?.code} - ${currentForm?.name[language || currentForm.defaultLanguage]} (${language || currentForm?.defaultLanguage})`;
@@ -139,17 +139,23 @@ const FormQuestionnaire = () => {
         answers: Object.values(updatedAnswers).filter(Boolean) as ApiFormAnswer[],
       });
 
-      // get next question
-      if (currentForm?.questions && activeQuestion.index === currentForm?.questions.length - 1) {
-        // if last question go back
-        return router.back();
-      }
-      const nextQuestionId = currentForm?.questions[activeQuestion.index + 1].id;
-      if (nextQuestionId) {
-        router.replace(
-          `/form-questionnaire/${questions[nextQuestionId].id}?formId=${formId}&language=${language}`,
-        );
-      }
+      // TODO: DISPLAY-LOGIC: get the next question and check if has display logic conditions met
+      // 1. There is any question depending on this one?
+
+      // // get next question
+      // if (currentForm?.questions && activeQuestion.index === currentForm?.questions.length - 1) {
+      //   // if last question go back
+      //   return router.back();
+      // }
+
+      // const nextQuestion = questions[activeQuestion.index + 1];
+
+      // // const nextQuestionId = currentForm?.questions[activeQuestion.index + 1].id;
+      // if (nextQuestion) {
+      //   router.replace(
+      //     `/form-questionnaire/${nextQuestion.id}?formId=${formId}&language=${language}`,
+      //   );
+      // }
     }
   };
 
@@ -160,11 +166,11 @@ const FormQuestionnaire = () => {
     if (currentForm?.questions && activeQuestion.index === 0) {
       return;
     }
-    const previousQuestionId = currentForm?.questions[activeQuestion.index - 1].id;
-    if (previousQuestionId) {
-      router.replace(
-        `/form-questionnaire/${questions[previousQuestionId].id}?formId=${formId}&language=${language}`,
-      );
+
+    const prevQ = questions[activeQuestion.index - 1];
+
+    if (prevQ) {
+      router.replace(`/form-questionnaire/${prevQ.id}?formId=${formId}&language=${language}`);
     }
   };
 
@@ -286,11 +292,11 @@ const FormQuestionnaire = () => {
       <YStack gap="$xxs" padding="$md">
         <XStack justifyContent="space-between">
           <Typography>{t("progress")}</Typography>
-          <Typography justifyContent="space-between">{`${activeQuestion?.index + 1}/${currentForm?.questions.length}`}</Typography>
+          <Typography justifyContent="space-between">{`${activeQuestion?.index + 1}/${Object.keys(questions || {})?.length || 0}`}</Typography>
         </XStack>
         <LinearProgress
           current={activeQuestion?.index + 1}
-          total={currentForm?.questions.length || 0}
+          total={Object.keys(questions || {})?.length || 0}
         />
         <XStack justifyContent="flex-end">
           <Typography onPress={onClearForm} color="$red10">
@@ -319,7 +325,7 @@ const FormQuestionnaire = () => {
                     <WizardFormInput
                       type="numeric"
                       label={`${question.code}. ${question.text[language]}`}
-                      placeholder={question.inputPlaceholder[language]}
+                      placeholder={question?.inputPlaceholder?.[language] || ""}
                       paragraph={question.helptext?.[language] || ""}
                       onChangeText={onChange}
                       value={value}
@@ -330,7 +336,7 @@ const FormQuestionnaire = () => {
                     <WizardFormInput
                       type="textarea"
                       label={`${question.code}. ${question.text[language]}`}
-                      placeholder={question.inputPlaceholder[language]}
+                      placeholder={question?.inputPlaceholder?.[language] || ""}
                       paragraph={question.helptext?.[language] || ""}
                       onChangeText={onChange}
                       maxLength={1000}
