@@ -280,6 +280,20 @@
       "upload_audio": "Upload audio file"
     }
   },
+  "report": {
+    "header": "Quick Report",
+    "list_title": "My reported issues",
+    "no_files": "No attached files",
+    "1_file": "{{value}} attached file",
+    "files": "{{value}} attached files",
+    "actions": {
+      "report_new_issue": "Report new issue"
+    },
+    "empty_report": {
+      "paragraph": "Start sending quick reports to the organization if you notice irregularities inside, outside the polling station or whenever needed."
+    }
+
+  },
   "report_new_issue": {
     "header": {
       "title": "Report new issue"

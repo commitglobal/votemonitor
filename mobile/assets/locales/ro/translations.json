@@ -280,6 +280,19 @@
       "upload_audio": "Încarcă audio"
     }
   },
+  "report": {
+    "header": "Raportare rapidă",
+    "list_title": "Problemele mele raportate",
+    "no_files": "Fără fișiere atașate",
+    "1_file": "{{value}} fișier atașat",
+    "files": "{{value}} fișiere atașate",
+    "actions": {
+      "report_new_issue": "Raportează o problemă nouă"
+    },
+    "empty_report": {
+      "paragraph": "Începe să trimiți rapoarte rapide organizației dacă observi nereguli în interiorul sau în afara secției de votare sau ori de câte ori este necesar."
+    }
+  },
   "report_new_issue": {
     "header": {
       "title": "Raportează o problemă nouă"
