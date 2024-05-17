@@ -16,12 +16,7 @@ interface DeletePollingStationDialogProps {
 const DeletePollingStationDialog = (props: DeletePollingStationDialogProps) => {
   const { t } = useTranslation("modals");
   const { pollingStationNumber, pollingStationId } = props;
-  const { activeElectionRound } = useUserData();
-
-  // console.log("Polling Station ID: ", pollingStationId);
-  // console.log("Active Election Round: ", activeElectionRound);
-  // console.log("Election Round ID: ", activeElectionRound?.id);
-  // console.log("\n");
+  const { activeElectionRound, visits } = useUserData();
 
   if (!activeElectionRound) {
     return <Typography> Problem with electionRoundId! </Typography>;
@@ -37,6 +32,7 @@ const DeletePollingStationDialog = (props: DeletePollingStationDialogProps) => {
   console.log("Payload: ", payload);
   console.log("isSuccess: ", isSuccess);
   console.log("isError: ", isError);
+  console.log("\n");
 
   return (
     <Dialog
