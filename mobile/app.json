@@ -2,7 +2,7 @@
   "expo": {
     "name": "VoteMonitor",
     "slug": "vote-monitor",
-    "version": "0.0.36",
+    "version": "0.0.38",
     "scheme": "mobile",
     "orientation": "portrait",
     "icon": "./assets/icons/icon.png",
@@ -18,7 +18,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "org.commitglobal.votemonitor",
-      "buildNumber": "37",
+      "buildNumber": "38",
       "config": {
         "usesNonExemptEncryption": false
       },
@@ -30,7 +30,7 @@
       }
     },
     "android": {
-      "versionCode": 37,
+      "versionCode": 38,
       "adaptiveIcon": {
         "foregroundImage": "./assets/icons/adaptive-icon.png",
         "backgroundColor": "#5F288D"
@@ -44,9 +44,9 @@
       "eas": {
         "projectId": "93e17628-ddcd-4e67-849c-b356a18a6082"
       },
-      "message": "Fix quick reports and transform ps wizzard in list",
-      "updateCritical": 12,
-      "updateVersion": 12
+      "message": "Bugfixing",
+      "updateCritical": 13,
+      "updateVersion": 13
     },
     "owner": "commit-global",
     "runtimeVersion": {

@@ -88,6 +88,7 @@ const EditNoteSheet = (props: EditNoteSheetProps) => {
       snapPointsMode="fit"
       moveOnKeyboardChange={true}
       dismissOnSnapToBottom={true}
+      disableDrag
     >
       <Sheet.Overlay />
       <Sheet.Frame
