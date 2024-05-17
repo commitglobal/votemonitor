@@ -12,7 +12,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#5F288D"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "org.commitglobal.votemonitor",
@@ -21,7 +23,10 @@
         "usesNonExemptEncryption": false
       },
       "infoPlist": {
-        "UIBackgroundModes": ["fetch", "remote-notification"]
+        "UIBackgroundModes": [
+          "fetch",
+          "remote-notification"
+        ]
       }
     },
     "android": {
@@ -39,9 +44,9 @@
       "eas": {
         "projectId": "93e17628-ddcd-4e67-849c-b356a18a6082"
       },
-      "message": "Fix quick reports and transform ps wizzard in list",
-      "updateCritical": 12,
-      "updateVersion": 12
+      "message": "Bugfixing",
+      "updateCritical": 13,
+      "updateVersion": 13
     },
     "owner": "commit-global",
     "runtimeVersion": {
@@ -65,14 +70,18 @@
           ]
         }
       ],
-      ["@morrowdigital/watermelondb-expo-plugin"],
+      [
+        "@morrowdigital/watermelondb-expo-plugin"
+      ],
       [
         "expo-build-properties",
         {
           "android": {
             "kotlinVersion": "1.6.10",
             "packagingOptions": {
-              "pickFirst": ["**/libc++_shared.so"]
+              "pickFirst": [
+                "**/libc++_shared.so"
+              ]
             }
           }
         }
