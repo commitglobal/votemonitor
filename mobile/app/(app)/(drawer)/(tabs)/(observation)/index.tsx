@@ -86,26 +86,20 @@ const Index = () => {
         />
       </YStack>
       <OptionsSheet open={openContextualMenu} setOpen={setOpenContextualMenu}>
-        <OptionSheetContent
+        <YStack
+          paddingVertical="$xxs"
+          paddingHorizontal="$sm"
           onPress={() => {
             setOpenContextualMenu(false);
             router.push("manage-polling-station");
           }}
-        />
+        >
+          <Typography preset="body1" color="$gray7" lineHeight={24}>
+            {t("observations.actions.manage_polling_stations", { ns: "bottom_sheets" })}
+          </Typography>
+        </YStack>
       </OptionsSheet>
     </Screen>
-  );
-};
-
-const OptionSheetContent = ({ onPress }: { onPress: () => void }) => {
-  const { t } = useTranslation("bottom_sheets");
-
-  return (
-    <View paddingVertical="$xxs" paddingHorizontal="$sm">
-      <Typography preset="body1" color="$gray7" lineHeight={24} onPress={onPress}>
-        {t("observations.actions.manage_polling_stations")}
-      </Typography>
-    </View>
   );
 };
 
