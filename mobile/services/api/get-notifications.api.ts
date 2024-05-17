@@ -1,5 +1,4 @@
 import API from "../api";
-import * as Crypto from "expo-crypto";
 
 type GetNotificationsApiPayload = {
   electionRoundId: string;
