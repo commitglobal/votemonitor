@@ -19,7 +19,7 @@ import FormQuestionListItem, {
 } from "../../../../../../components/FormQuestionListItem";
 import FormOverview from "../../../../../../components/FormOverview";
 import { useTranslation } from "react-i18next";
-import SuperJSON from "superjson";
+import { useFormSubmissionMutation } from "../../../../../../services/mutations/form-submission.mutation";
 
 type SearchParamsType = {
   formId: string;
@@ -37,6 +37,12 @@ const FormDetails = () => {
   const { activeElectionRound, selectedPollingStation } = useUserData();
   const [isChangeLanguageModalOpen, setIsChangeLanguageModalOpen] = useState<boolean>(false);
   const [optionSheetOpen, setOptionSheetOpen] = useState(false);
+
+  const { mutate: updateSubmission } = useFormSubmissionMutation({
+    electionRoundId: activeElectionRound?.id,
+    pollingStationId: selectedPollingStation?.pollingStationId,
+    scopeId: `Submit_Answers_${activeElectionRound?.id}_${selectedPollingStation?.pollingStationId}_${formId}`,
+  });
 
   const {
     data: currentForm,
@@ -78,7 +84,7 @@ const FormDetails = () => {
     };
   }, [currentForm, questions]);
 
-  console.log("❓ Questions ", SuperJSON.stringify(questions));
+  // console.log("❓ Questions ", SuperJSON.stringify(questions));
 
   const onQuestionItemClick = (questionId: string) => {
     router.push(`/form-questionnaire/${questionId}?formId=${formId}&language=${language}`);
@@ -108,7 +114,15 @@ const FormDetails = () => {
   };
 
   const onClearAnswersPress = () => {
-    console.log("clear data");
+    if (selectedPollingStation?.pollingStationId && activeElectionRound) {
+      updateSubmission({
+        pollingStationId: selectedPollingStation?.pollingStationId,
+        electionRoundId: activeElectionRound?.id,
+        formId: currentForm?.id as string,
+        answers: [],
+      });
+      setOptionSheetOpen(false);
+    }
   };
 
   if (isLoadingCurrentForm || isLoadingAnswers) {
