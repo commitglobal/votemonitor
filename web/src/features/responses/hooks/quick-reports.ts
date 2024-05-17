@@ -1,0 +1,36 @@
+import type { DataTableParameters, PageResponse } from '@/common/types';
+import type { QuickReport } from '../models/quick-report';
+import { type UseQueryResult, useQuery } from '@tanstack/react-query';
+import { authApi } from '@/common/auth-api';
+
+const STALE_TIME = 1000 * 60; // one minute
+
+type QuickReportsResponse = PageResponse<QuickReport>;
+
+type UseQuickReportsResult = UseQueryResult<QuickReportsResponse, Error>;
+
+export function useQuickReports(queryParams: DataTableParameters): UseQuickReportsResult {
+  return useQuery({
+    queryKey: ['quick-reports', queryParams],
+    queryFn: async () => {
+      const electionRoundId = localStorage.getItem('electionRoundId');
+
+      const params = {
+        ...queryParams.otherParams,
+        PageNumber: String(queryParams.pageNumber),
+        PageSize: String(queryParams.pageSize),
+        SortColumnName: queryParams.sortColumnName,
+        SortOrder: queryParams.sortOrder,
+      };
+
+      const searchParams = new URLSearchParams(params);
+
+      const response = await authApi.get<QuickReportsResponse>(`/election-rounds/${electionRoundId}/quick-reports`, {
+        params: searchParams,
+      });
+
+      return response.data;
+    },
+    staleTime: STALE_TIME,
+  });
+}

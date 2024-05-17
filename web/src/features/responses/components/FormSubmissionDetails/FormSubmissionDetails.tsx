@@ -38,6 +38,7 @@ export default function FormSubmissionDetails(): FunctionComponent {
             <div className='flex gap-2'>
               <p>Observer:</p>
               <Link
+                search
                 className='text-purple-500 font-bold flex gap-1'
                 to='/monitoring-observers/$monitoringObserverId'
                 params={{ monitoringObserverId: formSubmission.monitoringObserverId }}
@@ -161,7 +162,7 @@ export default function FormSubmissionDetails(): FunctionComponent {
 
                   {answer ? (
                     <>
-                      {isDateAnswer(answer) && <p>{answer.date ? format(answer.date, 'PPpp') : '-'}</p>}
+                      {isDateAnswer(answer) && <p>{answer.date ? format(answer.date, 'u-MM-dd KK:mm') : '-'}</p>}
 
                       {isNumberAnswer(answer) && <p>{answer.value ?? '-'}</p>}
 

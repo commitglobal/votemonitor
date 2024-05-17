@@ -120,7 +120,7 @@ export default function MonitoringObserversDashboard(): ReactElement {
   };
 
   const navigateToObserver = (monitoringObserverId: string) => {
-    navigate({ to: '/monitoring-observers/$monitoringObserverId', params: { monitoringObserverId } });
+    navigate({ to: '/monitoring-observers/$monitoringObserverId', params: { monitoringObserverId }, search: {tab: 'observer-details'} });
   };
   const navigateToEdit = (monitoringObserverId: string) => {
     navigate({ to: '/monitoring-observers/$monitoringObserverId/edit', params: { monitoringObserverId } });
