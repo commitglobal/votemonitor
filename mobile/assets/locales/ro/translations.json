@@ -293,6 +293,10 @@
       "paragraph": "Începe să trimiți rapoarte rapide organizației dacă observi nereguli în interiorul sau în afara secției de votare sau ori de câte ori este necesar."
     }
   },
+  "report-details": {
+    "uploaded_media": "Fișiere atașate",
+    "no_files": "Nu există fișiere atașate"
+  },
   "report_new_issue": {
     "header": {
       "title": "Raportează o problemă nouă"

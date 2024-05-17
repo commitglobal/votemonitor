@@ -292,7 +292,10 @@
     "empty_report": {
       "paragraph": "Start sending quick reports to the organization if you notice irregularities inside, outside the polling station or whenever needed."
     }
-
+  },
+  "report-details": {
+    "uploaded_media": "Uploaded media",
+    "no_files": "No attached files"
   },
   "report_new_issue": {
     "header": {
