@@ -14,6 +14,7 @@ import { useState } from "react";
 import ChangePasswordConfirmation from "../components/ChangePasswordConfirmation";
 import { ForgotPasswwordPayload, forgotPassword } from "../services/definitions.api";
 import * as Sentry from "@sentry/react-native";
+import CredentialsError from "../components/CredentialsError";
 
 type FormData = {
   email: string;
@@ -74,7 +75,7 @@ const ForgotPassword = () => {
         </Typography>
 
         <Typography>{t("paragraph")}</Typography>
-        {authError && <CredentialsError />}
+        {authError && <CredentialsError error={t("error")} />}
 
         <Controller
           key="email"
@@ -107,24 +108,6 @@ const ForgotPassword = () => {
         <Button onPress={handleSubmit(onSubmit)}>{t("actions.send")}</Button>
       </Card>
     </Screen>
-  );
-};
-
-const CredentialsError = () => {
-  const { t } = useTranslation("reset");
-  return (
-    <XStack
-      backgroundColor="$red1"
-      borderRadius={6}
-      justifyContent="flex-start"
-      padding="$md"
-      alignItems="flex-start"
-    >
-      <Icon icon="loginError" size={20} />
-      <Typography paddingHorizontal="$md" color="$red6" fontWeight="500">
-        {t("error")}
-      </Typography>
-    </XStack>
   );
 };
 
