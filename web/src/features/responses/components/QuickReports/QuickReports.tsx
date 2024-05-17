@@ -1,7 +1,7 @@
 import { Cog8ToothIcon, FunnelIcon } from '@heroicons/react/24/outline';
 import { getRouteApi } from '@tanstack/react-router';
 import { useDebounce } from '@uidotdev/usehooks';
-import { type ChangeEvent, useState, useMemo } from 'react';
+import { type ChangeEvent, useState, useMemo, useCallback } from 'react';
 import type { FunctionComponent } from '@/common/types';
 import { CsvFileIcon } from '@/components/icons/CsvFileIcon';
 import { Button } from '@/components/ui/button';
@@ -21,11 +21,15 @@ import { useQuickReports } from '../../hooks/quick-reports';
 import type { QuickReportsSearchParams } from '../../models/search-params';
 import { quickReportsColumnDefs } from '../../utils/column-defs';
 import { quickReportsColumnVisibilityOptions, quickReportsDefaultColumns } from '../../utils/column-visibility-options';
+import { PollingStationsFilters } from '../PollingStationsFilters/PollingStationsFilters';
+import { FilterBadge } from '@/components/ui/badge';
 
 const routeApi = getRouteApi('/responses/');
 
 export function QuickReports(): FunctionComponent {
+  const navigate = routeApi.useNavigate();
   const search = routeApi.useSearch();
+  const debouncedSearch = useDebounce(search, 300);
 
   const [columnsVisibility, setColumnsVisibility] = useState(quickReportsDefaultColumns);
   const [isFiltering, setIsFiltering] = useState(() => Object.keys(search).some((key) => key !== 'tab'));
@@ -39,10 +43,29 @@ export function QuickReports(): FunctionComponent {
   };
 
   const queryParams = useMemo(() => {
-    const params = [['title', debouncedSearchText]].filter(([_, value]) => value);
+    const params = [
+      ['title', debouncedSearchText],
+      ['level1Filter', debouncedSearch.level1Filter],
+      ['level2Filter', debouncedSearch.level2Filter],
+      ['level3Filter', debouncedSearch.level3Filter],
+      ['level4Filter', debouncedSearch.level4Filter],
+      ['level5Filter', debouncedSearch.level5Filter],
+    ].filter(([_, value]) => value);
 
     return Object.fromEntries(params) as QuickReportsSearchParams;
-  }, [debouncedSearchText]);
+  }, [debouncedSearch, debouncedSearchText]);
+
+  const onClearFilter = useCallback(
+    (filter: keyof QuickReportsSearchParams | (keyof QuickReportsSearchParams)[]) => () => {
+      const filters = Array.isArray(filter)
+        ? Object.fromEntries(filter.map((key) => [key, undefined]))
+        : { [filter]: undefined };
+      void navigate({ search: (prev) => ({ ...prev, ...filters }) });
+    },
+    [navigate]
+  );
+
+  const isFiltered = Object.keys(search).some((key) => key !== 'tab');
 
   return (
     <Card>
@@ -95,7 +118,62 @@ export function QuickReports(): FunctionComponent {
         <Separator />
 
         {isFiltering && (
-          <div className='grid grid-cols-6 gap-4 items-center'>{/* @todo add filters and filter badges */}</div>
+          <div className='grid grid-cols-6 gap-4 items-center'>
+            <PollingStationsFilters />
+            <Button
+              disabled={!isFiltered}
+              onClick={() => {
+                void navigate({});
+              }}
+              variant='ghost-primary'>
+              Reset filters
+            </Button>
+
+            {isFiltered && (
+              <div className='col-span-full flex gap-2 flex-wrap'>
+                {search.level1Filter && (
+                  <FilterBadge
+                    label={`Location - L1: ${search.level1Filter}`}
+                    onClear={onClearFilter([
+                      'level1Filter',
+                      'level2Filter',
+                      'level3Filter',
+                      'level4Filter',
+                      'level5Filter',
+                    ])}
+                  />
+                )}
+
+                {search.level2Filter && (
+                  <FilterBadge
+                    label={`Location - L2: ${search.level2Filter}`}
+                    onClear={onClearFilter(['level2Filter', 'level3Filter', 'level4Filter', 'level5Filter'])}
+                  />
+                )}
+
+                {search.level3Filter && (
+                  <FilterBadge
+                    label={`Location - L3: ${search.level3Filter}`}
+                    onClear={onClearFilter(['level3Filter', 'level4Filter', 'level5Filter'])}
+                  />
+                )}
+
+                {search.level4Filter && (
+                  <FilterBadge
+                    label={`Location - L4: ${search.level4Filter}`}
+                    onClear={onClearFilter(['level4Filter', 'level5Filter'])}
+                  />
+                )}
+
+                {search.level5Filter && (
+                  <FilterBadge
+                    label={`Location - L5: ${search.level5Filter}`}
+                    onClear={onClearFilter('level5Filter')}
+                  />
+                )}
+              </div>
+            )}
+          </div>
         )}
       </CardHeader>
 
