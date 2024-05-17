@@ -89,7 +89,7 @@ const Index = () => {
         <OptionSheetContent
           onPress={() => {
             setOpenContextualMenu(false);
-            router.push("/manage-polling-station");
+            router.push("manage-polling-station");
           }}
         />
       </OptionsSheet>

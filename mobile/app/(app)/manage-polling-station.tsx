@@ -1,14 +1,14 @@
-import { Screen } from "../../../../../components/Screen";
-import Header from "../../../../../components/Header";
-import { Icon } from "../../../../../components/Icon";
+import { Screen } from "../../components/Screen";
+import Header from "../../components/Header";
+import { Icon } from "../../components/Icon";
 import { YStack, XStack, View, AlertDialog } from "tamagui";
-import { Typography } from "../../../../../components/Typography";
+import { Typography } from "../../components/Typography";
 import { router } from "expo-router";
-import Card from "../../../../../components/Card";
-import { useUserData } from "../../../../../contexts/user/UserContext.provider";
-import { Dialog } from "../../../../../components/Dialog";
-import Button from "../../../../../components/Button";
-import { PollingStationVisitVM } from "../../../../../common/models/polling-station.model";
+import Card from "../../components/Card";
+import { useUserData } from "../../contexts/user/UserContext.provider";
+import { Dialog } from "../../components/Dialog";
+import Button from "../../components/Button";
+import { PollingStationVisitVM } from "../../common/models/polling-station.model";
 import { useTranslation } from "react-i18next";
 
 const ManagePollingStation = () => {
