@@ -179,7 +179,9 @@
     "paragraph": "Push messages and alerts from your organization will appear here."
   },
   "inbox": {
-    "today": "Today"
+    "today": "Today",
+    "messages_from": "Messages from",
+    "your_organization": "your organization"
   },
   "guides_empty": {
     "title": "No guides to read yet",

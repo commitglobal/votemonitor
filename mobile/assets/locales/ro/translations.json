@@ -179,7 +179,9 @@
     "paragraph": "Mesajele push și alertele de la organizația dvs. vor apărea aici."
   },
   "inbox": {
-    "today": "Azi"
+    "today": "Azi",
+    "messages_from": "Mesaje de la",
+    "your_organization": "organizația dumneavoastră"
   },
   "guides_empty": {
     "title": "Nu există ghiduri de citit încă",
