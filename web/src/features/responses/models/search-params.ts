@@ -2,6 +2,7 @@
 import { z } from 'zod';
 
 export const FormSubmissionsSearchParamsSchema = z.object({
+  tab: z.enum(['form-answers', 'quick-reports']).catch('form-answers').optional(),
   searchText: z.string().catch('').optional(),
   formTypeFilter: z.string().catch('').optional(),
   level1Filter: z.string().catch('').optional(),
@@ -16,3 +17,9 @@ export const FormSubmissionsSearchParamsSchema = z.object({
 });
 
 export type FormSubmissionsSearchParams = z.infer<typeof FormSubmissionsSearchParamsSchema>;
+
+export const QuickReportsSearchParamsSchema = z.object({
+  title: z.string().catch('').optional()
+})
+
+export type QuickReportsSearchParams = z.infer<typeof QuickReportsSearchParamsSchema>

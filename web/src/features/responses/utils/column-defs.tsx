@@ -10,6 +10,7 @@ import { MediaFilesCell } from '../components/MediaFilesCell/MediaFilesCell';
 
 import type { ColumnDef } from '@tanstack/react-table';
 import type { FormSubmissionByEntry, FormSubmissionByForm, FormSubmissionByObserver } from '../models/form-submission';
+import type { QuickReport } from '../models/quick-report';
 import type { QuestionExtraData } from '../types';
 export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry>[] = [
   {
@@ -212,6 +213,7 @@ export const formSubmissionsByObserverColumnDefs: ColumnDef<FormSubmissionByObse
     enableSorting: false,
     cell: ({ row }) => (
       <Link
+        search
         className='hover:bg-purple-100 inline-flex h-6 w-6 rounded-full items-center justify-center'
         params={{ monitoringObserverId: row.original.monitoringObserverId }}
         to='/monitoring-observers/$monitoringObserverId'>
@@ -295,5 +297,55 @@ export const questionExtraInfoColumnDefs: ColumnDef<QuestionExtraData>[] = [
     enableGlobalFilter: false,
     cell: MediaFilesCell,
     size: 200,
+  },
+];
+
+export const quickReportsColumnDefs: ColumnDef<QuickReport>[] = [
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Time submitted' column={column} />,
+    accessorKey: 'timestamp',
+    enableSorting: true,
+    enableGlobalFilter: true,
+  },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Issue title' column={column} />,
+    accessorKey: 'title',
+    enableSorting: true,
+    enableGlobalFilter: true,
+  },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Description' column={column} />,
+    accessorKey: 'description',
+    enableSorting: true,
+    enableGlobalFilter: true,
+  },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Medial files' column={column} />,
+    accessorKey: 'mediaFilesCount',
+    enableSorting: true,
+    enableGlobalFilter: true,
+  },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Station number' column={column} />,
+    accessorKey: 'number',
+    enableSorting: true,
+    enableGlobalFilter: true,
+  },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Observer' column={column} />,
+    accessorKey: 'observerName',
+    enableSorting: true,
+    enableGlobalFilter: true,
+    cell: ({ row }) => (
+      <div>
+        {row.original.firstName} {row.original.lastName}
+      </div>
+    ),
+  },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Observer contact' column={column} />,
+    accessorKey: 'email',
+    enableSorting: true,
+    enableGlobalFilter: true,
   },
 ];

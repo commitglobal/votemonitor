@@ -1,7 +1,10 @@
 import { Cog8ToothIcon, FunnelIcon } from '@heroicons/react/24/outline';
 import { getRouteApi } from '@tanstack/react-router';
-import { type ChangeEvent, useState } from 'react';
+import { useDebounce } from '@uidotdev/usehooks';
+import { type ChangeEvent, useState, useMemo } from 'react';
 import type { FunctionComponent } from '@/common/types';
+import { CsvFileIcon } from '@/components/icons/CsvFileIcon';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   DropdownMenu,
@@ -11,23 +14,21 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
-import {
-  columnVisibilityOptions,
-  formSubmissionsDefaultColumns,
-} from '@/features/responses/utils/column-visibility-options';
-import { useDebounce } from '@uidotdev/usehooks';
-import { MonitoringObserverFormsFilters } from '../MonitoringObserverFormsFilters/MonitoringObserverFormsFilters';
-import { MonitoringObserverFormsTable } from '../MonitoringObserverFormsTable/MonitoringObserverFormsTable';
+import { useQuickReports } from '../../hooks/quick-reports';
+import type { QuickReportsSearchParams } from '../../models/search-params';
+import { quickReportsColumnDefs } from '../../utils/column-defs';
+import { quickReportsColumnVisibilityOptions, quickReportsDefaultColumns } from '../../utils/column-visibility-options';
 
-const routeApi = getRouteApi('/monitoring-observers/$monitoringObserverId');
+const routeApi = getRouteApi('/responses/');
 
-export function MonitoringObserverForms(): FunctionComponent {
+export function QuickReports(): FunctionComponent {
   const search = routeApi.useSearch();
 
+  const [columnsVisibility, setColumnsVisibility] = useState(quickReportsDefaultColumns);
   const [isFiltering, setIsFiltering] = useState(() => Object.keys(search).some((key) => key !== 'tab'));
-  const [columnsVisibility, setColumnsVisibility] = useState(formSubmissionsDefaultColumns.byEntry);
 
   const [searchText, setSearchText] = useState<string>('');
   const debouncedSearchText = useDebounce(searchText, 300);
@@ -37,10 +38,25 @@ export function MonitoringObserverForms(): FunctionComponent {
     if (!value || value.length >= 2) setSearchText(ev.currentTarget.value);
   };
 
+  const queryParams = useMemo(() => {
+    const params = [['title', debouncedSearchText]].filter(([_, value]) => value);
+
+    return Object.fromEntries(params) as QuickReportsSearchParams;
+  }, [debouncedSearchText]);
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>All forms submitted by observer</CardTitle>
+        <div className='flex justify-between items-center px-6'>
+          <CardTitle>Quick reports</CardTitle>
+
+          <Button
+            className='bg-background hover:bg-purple-50 hover:text-purple-500 text-purple-900 flex gap-2'
+            variant='outline'>
+            <CsvFileIcon />
+            Export to csv
+          </Button>
+        </div>
 
         <Separator />
 
@@ -61,7 +77,7 @@ export function MonitoringObserverForms(): FunctionComponent {
             <DropdownMenuContent>
               <DropdownMenuLabel>Table columns</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              {columnVisibilityOptions.byEntry.map((option) => (
+              {quickReportsColumnVisibilityOptions.map((option) => (
                 <DropdownMenuCheckboxItem
                   key={option.id}
                   checked={columnsVisibility[option.id]}
@@ -79,14 +95,17 @@ export function MonitoringObserverForms(): FunctionComponent {
         <Separator />
 
         {isFiltering && (
-          <div className='grid grid-cols-6 gap-4 items-center'>
-            <MonitoringObserverFormsFilters />
-          </div>
+          <div className='grid grid-cols-6 gap-4 items-center'>{/* @todo add filters and filter badges */}</div>
         )}
       </CardHeader>
 
       <CardContent>
-        <MonitoringObserverFormsTable columnsVisibility={columnsVisibility} searchText={debouncedSearchText} />
+        <QueryParamsDataTable
+          columnVisibility={columnsVisibility}
+          columns={quickReportsColumnDefs}
+          useQuery={useQuickReports}
+          queryParams={queryParams}
+        />
       </CardContent>
     </Card>
   );
