@@ -11,7 +11,7 @@ export function QueryParamsDataTable<TData, TValue>({
   useQuery: pagedQuery,
   queryParams: otherQueryParams,
   getSubrows,
-  getRowClassName
+  getRowClassName,
 }: DataTableProps<TData, TValue>): ReactElement {
   const queryParams: DataTableParameters = useSearch({
     strict: false,

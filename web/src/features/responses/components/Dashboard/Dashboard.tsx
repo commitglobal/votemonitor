@@ -62,7 +62,7 @@ export default function ResponsesDashboard(): ReactElement {
   return (
     <Layout title='Responses' subtitle='View all form answers and other issues reported by your observers.  '>
       <Tabs
-        defaultValue='form-answers'
+        defaultValue={search.tab ?? 'form-answers'}
         onValueChange={(tab) => {
           void navigate({
             search(prev) {
