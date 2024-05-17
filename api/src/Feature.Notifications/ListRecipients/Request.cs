@@ -11,6 +11,9 @@ public class Request : BaseSortPaginatedRequest
     public Guid NgoId { get; set; }
 
     [QueryParam]
+    public string? SearchText { get; set; }
+
+    [QueryParam]
     public string? Level1Filter { get; set; }
 
     [QueryParam]
@@ -27,5 +30,4 @@ public class Request : BaseSortPaginatedRequest
 
     [QueryParam]
     public string[] TagsFilter { get; set; }
-    public string[] PollingStationNumberFilter { get; set; }
 }

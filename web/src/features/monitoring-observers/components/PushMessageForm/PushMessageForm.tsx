@@ -18,13 +18,14 @@ import { buildURLSearchParams } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
 import { X } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { MonitoringObserver } from '../../models/MonitoringObserver';
 import { useMonitoringObserversTags } from '../../queries';
 import { targetedMonitoringObserverColDefs } from '../../utils/column-defs';
+import { PollingStationsFilters } from '@/components/PollingStationsFilters/PollingStationsFilters';
 
 const createPushMessageSchema = z.object({
   title: z.string().min(1, { message: 'Your message must have a title before sending.' }),
@@ -49,7 +50,6 @@ function PushMessageForm() {
   const [tagsFilter, setTagsFilter] = useState<string[]>([]);
   const [searchText, setSearchText] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
-  const [isFiltering, setFiltering] = useState(false);
   const { data: tags } = useMonitoringObserversTags();
 
   const useTargetedMonitoringObservers = (p: DataTableParameters): UseTargetedMonitoringObserversResult => {
@@ -94,12 +94,6 @@ function PushMessageForm() {
     });
   };
 
-  const changeIsFiltering = () => {
-    setFiltering((prev) => {
-      return !prev;
-    });
-  };
-
   const handleStatusFilter = (status: string) => {
     setStatusFilter(status);
   };
@@ -124,7 +118,6 @@ function PushMessageForm() {
   const form = useForm<z.infer<typeof createPushMessageSchema>>({
     resolver: zodResolver(createPushMessageSchema),
   });
-
 
 
   function onSubmit(values: z.infer<typeof createPushMessageSchema>) {
@@ -204,11 +197,16 @@ function PushMessageForm() {
                     ))}
                   </DropdownMenuContent>
                 </DropdownMenu>
-                <Button variant='ghost-primary'>
-                  <span onClick={resetFilters} className='text-base text-purple-900'>
-                    Reset filters
-                  </span>
+                <PollingStationsFilters />
+
+                <Button
+                  onClick={() => {
+                    void navigate({});
+                  }}
+                  variant='ghost-primary'>
+                  Reset filters
                 </Button>
+
                 <div className='flex flex-row gap-2 flex-wrap'>
 
                   {tagsFilter.map((tag) => (

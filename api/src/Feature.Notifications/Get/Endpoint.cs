@@ -1,6 +1,5 @@
 ﻿using System.Data;
 using Dapper;
-using Microsoft.AspNetCore.Authorization;
 
 namespace Feature.Notifications.Get;
 

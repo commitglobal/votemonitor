@@ -1,11 +1,13 @@
 ﻿using System.Data;
 using Authorization.Policies;
 using Dapper;
+using Vote.Monitor.Core.Models;
+using Vote.Monitor.Domain.Specifications;
 
 namespace Feature.Notifications.ListRecipients;
 
 public class Endpoint(IDbConnection dbConnection) :
-        Endpoint<Request, Ok<Response>>
+        Endpoint<Request, PagedResponse<MonitoringObserverModel>>
 {
     public override void Configure()
     {
@@ -15,59 +17,111 @@ public class Endpoint(IDbConnection dbConnection) :
         Policies(PolicyNames.NgoAdminsOnly);
     }
 
-    public override async Task<Ok<Response>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<PagedResponse<MonitoringObserverModel>> ExecuteAsync(Request req, CancellationToken ct)
     {
         var sql = @"
-        SELECT
-            NGO.""Name"" AS ""NgoName""
+        SELECT COUNT(*) count
         FROM
             ""MonitoringObservers"" MO
             INNER JOIN ""MonitoringNgos"" MN ON MN.""Id"" = MO.""MonitoringNgoId""
-            INNER JOIN ""Ngos"" NGO ON NGO.""Id"" = MN.""NgoId""
+            INNER JOIN ""Observers"" O ON O.""Id"" = MO.""ObserverId""
+            INNER JOIN ""AspNetUsers"" U ON U.""Id"" = O.""ApplicationUserId""
         WHERE
-            MO.""ObserverId"" = @observerId
-            AND MO.""ElectionRoundId"" = @electionRoundId
-        FETCH FIRST
-            1 ROWS ONLY;
+            MN.""ElectionRoundId"" = @electionRoundId
+            AND MN.""NgoId"" = @ngoId
+            AND (@searchText IS NULL OR @searchText = '' OR u.""FirstName"" ILIKE @searchText OR u.""LastName"" ILIKE @searchText OR u.""Email"" ILIKE @searchText OR u.""PhoneNumber"" ILIKE @searchText)
+            AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR  mo.""Tags"" @> @tagsFilter);
 
-        SELECT
-            N.""Id"",
-            N.""Title"",
-            N.""Body"",
-            U.""FirstName"" || ' ' || U.""LastName"" ""Sender"",
-            N.""CreatedOn"" ""SentAt""
-        FROM
-            ""Observers"" O
-            INNER JOIN ""MonitoringObservers"" MO ON MO.""ObserverId"" = O.""Id""
-            INNER JOIN ""MonitoringObserverNotification"" MON ON MON.""TargetedObserversId"" = MO.""Id""
-            INNER JOIN ""Notifications"" N ON MON.""NotificationId"" = N.""Id""
-            INNER JOIN ""AspNetUsers"" U on U.""Id"" =  N.""SenderId""
-        WHERE
-            O.""Id"" = @observerId
-            AND N.""ElectionRoundId"" = @electionRoundId
+        SELECT 
+            ""MonitoringObserverId"",
+            ""ObserverName"",
+            ""PhoneNumber"",
+            ""Email"",
+            ""Tags"",
+            ""Status""
+            
+        FROM (
+            SELECT
+                MO.""Id"" ""MonitoringObserverId"",
+                U.""FirstName"" || ' ' || U.""LastName"" ""ObserverName"",
+                U.""PhoneNumber"",
+                U.""Email"",
+                MO.""Tags"",
+                MO.""Status""
+            FROM
+                ""MonitoringObservers"" MO
+                INNER JOIN ""MonitoringNgos"" MN ON MN.""Id"" = MO.""MonitoringNgoId""
+                INNER JOIN ""Observers"" O ON O.""Id"" = MO.""ObserverId""
+                INNER JOIN ""AspNetUsers"" U ON U.""Id"" = O.""ApplicationUserId""
+            WHERE
+                MN.""ElectionRoundId"" = @electionRoundId
+                AND MN.""NgoId"" = @ngoId
+                AND (@searchText IS NULL OR @searchText = '' OR u.""FirstName"" ILIKE @searchText OR    u.""LastName"" ILIKE @searchText OR u.""Email"" ILIKE @searchText OR u.""PhoneNumber"" ILIKE   @searchText)
+                AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR  mo.""Tags"" @> @tagsFilter)
+            ) T
+
         ORDER BY
-            N.""CreatedOn"" DESC;";
+            CASE WHEN @sortExpression = 'ObserverName ASC' THEN ""ObserverName"" END ASC,
+            CASE WHEN @sortExpression = 'ObserverName DESC' THEN ""ObserverName"" END DESC,
+
+            CASE WHEN @sortExpression = 'PhoneNumber ASC' THEN ""PhoneNumber"" END ASC,
+            CASE WHEN @sortExpression = 'PhoneNumber DESC' THEN ""PhoneNumber"" END DESC,
+
+            CASE WHEN @sortExpression = 'Email ASC' THEN ""Email"" END ASC,
+            CASE WHEN @sortExpression = 'Email DESC' THEN ""Email"" END DESC,
+
+            CASE WHEN @sortExpression = 'Tags ASC' THEN ""Tags"" END ASC,
+            CASE WHEN @sortExpression = 'Tags DESC' THEN ""Tags"" END DESC
+         
+        OFFSET @offset ROWS
+        FETCH NEXT @pageSize ROWS ONLY;";
 
         var queryArgs = new
         {
             electionRoundId = req.ElectionRoundId,
             ngoId = req.NgoId,
-            location1Filter =req.Level1Filter,
-            location2Filter =req.Level2Filter,
-            location3Filter =req.Level3Filter,
-            location4Filter =req.Level4Filter,
-            location5Filter =req.Level5Filter,
-            pollingStationNumberFilter = req.PollingStationNumberFilter,
+            offset = PaginationHelper.CalculateSkip(req.PageSize, req.PageNumber),
+            pageSize = req.PageSize,
+            tagsFilter = req.TagsFilter ?? [],
+            searchText = $"%{req.SearchText?.Trim() ?? string.Empty}%",
+            sortExpression = GetSortExpression(req.SortColumnName, req.IsAscendingSorting),
         };
 
         var multi = await dbConnection.QueryMultipleAsync(sql, queryArgs);
-        var ngoName = multi.Read<string>().SingleOrDefault();
-        var notifications = multi.Read<ReceivedNotificationModel>().ToList();
+        var totalRowCount = multi.Read<int>().Single();
+        var entries = multi.Read<MonitoringObserverModel>().ToList();
 
-        return TypedResults.Ok(new Response
+        return new PagedResponse<MonitoringObserverModel>(entries, totalRowCount, req.PageNumber, req.PageSize);
+    }
+
+    private static string GetSortExpression(string? sortColumnName, bool isAscendingSorting)
+    {
+        if (string.IsNullOrWhiteSpace(sortColumnName))
         {
-            NgoName = ngoName,
-            Notifications = notifications.ToList()
-        });
+            return $"{nameof(MonitoringObserverModel.ObserverName)} ASC";
+        }
+
+        var sortOrder = isAscendingSorting ? "ASC" : "DESC";
+
+        if (string.Equals(sortColumnName, nameof(MonitoringObserverModel.ObserverName), StringComparison.InvariantCultureIgnoreCase))
+        {
+            return $"{nameof(MonitoringObserverModel.ObserverName)} {sortOrder}";
+        }
+        if (string.Equals(sortColumnName, nameof(MonitoringObserverModel.Email), StringComparison.InvariantCultureIgnoreCase))
+        {
+            return $"{nameof(MonitoringObserverModel.Email)} {sortOrder}";
+        }
+
+        if (string.Equals(sortColumnName, nameof(MonitoringObserverModel.PhoneNumber), StringComparison.InvariantCultureIgnoreCase))
+        {
+            return $"{nameof(MonitoringObserverModel.PhoneNumber)} {sortOrder}";
+        }
+
+        if (string.Equals(sortColumnName, nameof(MonitoringObserverModel.Tags), StringComparison.InvariantCultureIgnoreCase))
+        {
+            return $"{nameof(MonitoringObserverModel.Tags)} {sortOrder}";
+        }
+
+        return $"{nameof(MonitoringObserverModel.ObserverName)} ASC";
     }
 }
