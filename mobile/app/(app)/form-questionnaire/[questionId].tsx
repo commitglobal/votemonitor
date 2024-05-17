@@ -134,13 +134,20 @@ const FormQuestionnaire = () => {
         return;
       }
 
-      // update the answer to the question key
+      // Find dependent questions for the current one and remove their answers
+      const dependentQuestionsIds = currentForm?.questions
+        ?.filter((q) => q.displayLogic?.parentQuestionId === questionId)
+        .map((q) => q.id);
+
+      dependentQuestionsIds?.forEach((qId) => {
+        if (answers) delete answers[qId];
+      });
+
       const updatedAnswers = {
         ...answers,
         [activeQuestion.question.id]: updatedAnswer,
       };
 
-      // update the api
       updateSubmission({
         pollingStationId: selectedPollingStation?.pollingStationId,
         electionRoundId: activeElectionRound?.id,

@@ -20,6 +20,7 @@ import FormQuestionListItem, {
 import FormOverview from "../../../../../../components/FormOverview";
 import { useTranslation } from "react-i18next";
 import { useFormSubmissionMutation } from "../../../../../../services/mutations/form-submission.mutation";
+import { shouldDisplayQuestion } from "../../../../../../services/form.parser";
 
 type SearchParamsType = {
   formId: string;
@@ -56,16 +57,14 @@ const FormDetails = () => {
     error: answersError,
   } = useFormAnswers(activeElectionRound?.id, selectedPollingStation?.pollingStationId, formId);
 
-  const { questions, numberOfAnswers } = useMemo(() => {
-    return {
-      questions: currentForm?.questions.map((q) => ({
+  const questions = useMemo(() => {
+    return currentForm?.questions
+      .filter((q) => shouldDisplayQuestion(q, answers))
+      .map((q) => ({
         status: answers?.[q.id] ? QuestionStatus.ANSWERED : QuestionStatus.NOT_ANSWERED,
         question: q.text[language],
-        displayLogic: q.displayLogic,
         id: q.id,
-      })),
-      numberOfAnswers: Object.keys(answers || {}).length,
-    };
+      }));
   }, [currentForm, answers]);
 
   const { numberOfQuestions, formTitle, languages } = useMemo(() => {
@@ -75,8 +74,6 @@ const FormDetails = () => {
       languages: currentForm?.languages,
     };
   }, [currentForm, questions]);
-
-  // console.log("❓ Questions ", SuperJSON.stringify(questions));
 
   const onQuestionItemClick = (questionId: string) => {
     router.push(`/form-questionnaire/${questionId}?formId=${formId}&language=${language}`);
@@ -164,7 +161,7 @@ const FormDetails = () => {
           ListHeaderComponent={
             <YStack gap="$xl" paddingBottom="$xxs">
               <FormOverview
-                completedAnswers={numberOfAnswers}
+                completedAnswers={Object.keys(answers || {}).length}
                 numberOfQuestions={numberOfQuestions}
                 onFormActionClick={onFormOverviewActionClick}
               />
