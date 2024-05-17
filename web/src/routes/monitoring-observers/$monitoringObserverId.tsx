@@ -1,13 +1,19 @@
-import { authApi } from '@/common/auth-api';
-import MonitoringObserverDetails from '@/features/monitoring-observers/components/MonitoringObserverDetails/MonitoringObserverDetails';
-import { MonitoringObserver } from '@/features/monitoring-observers/models/MonitoringObserver';
-import { redirectIfNotAuth } from '@/lib/utils';
-import { queryOptions } from '@tanstack/react-query';
+import { type EnsureQueryDataOptions, queryOptions, type QueryKey } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
+import { authApi } from '@/common/auth-api';
+import type { FunctionComponent } from '@/common/types';
+import MonitoringObserverDetails from '@/features/monitoring-observers/components/MonitoringObserverDetails/MonitoringObserverDetails';
+import {
+  type MonitoringObserver,
+  monitoringObserverDetailsRouteSearchSchema,
+} from '@/features/monitoring-observers/models/MonitoringObserver';
+import { redirectIfNotAuth } from '@/lib/utils';
 
-export const monitoringObserverQueryOptions = (monitoringObserverId: string) =>
+export const monitoringObserverQueryOptions = (
+  monitoringObserverId: string
+): EnsureQueryDataOptions<MonitoringObserver> =>
   queryOptions({
-    queryKey: ['monitoring-observer', { monitoringObserverId }],
+    queryKey: ['monitoring-observer', { monitoringObserverId }] as QueryKey,
     queryFn: async () => {
       const electionRoundId: string | null = localStorage.getItem('electionRoundId');
       const monitoringNgoId: string | null = localStorage.getItem('monitoringNgoId');
@@ -24,6 +30,14 @@ export const monitoringObserverQueryOptions = (monitoringObserverId: string) =>
     },
   });
 
+function Details(): FunctionComponent {
+  return (
+    <div className='p-2'>
+      <MonitoringObserverDetails />
+    </div>
+  );
+}
+
 export const Route = createFileRoute('/monitoring-observers/$monitoringObserverId')({
   beforeLoad: () => {
     redirectIfNotAuth();
@@ -31,12 +45,5 @@ export const Route = createFileRoute('/monitoring-observers/$monitoringObserverI
   component: Details,
   loader: ({ context: { queryClient }, params: { monitoringObserverId } }) =>
     queryClient.ensureQueryData(monitoringObserverQueryOptions(monitoringObserverId)),
+  validateSearch: monitoringObserverDetailsRouteSearchSchema,
 });
-
-function Details() {
-  return (
-    <div className='p-2'>
-      <MonitoringObserverDetails />
-    </div>
-  );
-}

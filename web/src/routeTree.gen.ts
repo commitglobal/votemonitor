@@ -31,6 +31,8 @@ import { Route as MonitoringObserversCreateNewMessageImport } from './routes/mon
 import { Route as MonitoringObserversMonitoringObserverIdImport } from './routes/monitoring-observers/$monitoringObserverId'
 import { Route as ElectionRoundsElectionRoundIdImport } from './routes/election-rounds/$electionRoundId'
 import { Route as ElectionEventTabImport } from './routes/election-event/$tab'
+import { Route as ResponsesQuickReportsQuickReportIdImport } from './routes/responses/quick-reports/$quickReportId'
+import { Route as ResponsesFormIdQuickReportsImport } from './routes/responses/$formId.quick-reports'
 import { Route as ResponsesFormIdAggregatedImport } from './routes/responses/$formId.aggregated'
 import { Route as ObserversObserverIdEditImport } from './routes/observers_.$observerId.edit'
 import { Route as MonitoringObserversMonitoringObserverIdEditImport } from './routes/monitoring-observers_.$monitoringObserverId.edit'
@@ -145,6 +147,18 @@ const ElectionEventTabRoute = ElectionEventTabImport.update({
   path: '/election-event/$tab',
   getParentRoute: () => rootRoute,
 } as any)
+
+const ResponsesQuickReportsQuickReportIdRoute =
+  ResponsesQuickReportsQuickReportIdImport.update({
+    path: '/responses/quick-reports/$quickReportId',
+    getParentRoute: () => rootRoute,
+  } as any)
+
+const ResponsesFormIdQuickReportsRoute =
+  ResponsesFormIdQuickReportsImport.update({
+    path: '/responses/$formId/quick-reports',
+    getParentRoute: () => rootRoute,
+  } as any)
 
 const ResponsesFormIdAggregatedRoute = ResponsesFormIdAggregatedImport.update({
   path: '/responses/$formId/aggregated',
@@ -308,6 +322,14 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResponsesFormIdAggregatedImport
       parentRoute: typeof rootRoute
     }
+    '/responses/$formId/quick-reports': {
+      preLoaderRoute: typeof ResponsesFormIdQuickReportsImport
+      parentRoute: typeof rootRoute
+    }
+    '/responses/quick-reports/$quickReportId': {
+      preLoaderRoute: typeof ResponsesQuickReportsQuickReportIdImport
+      parentRoute: typeof rootRoute
+    }
     '/form-templates/$formTemplateId/edit-translation/$languageCode': {
       preLoaderRoute: typeof FormTemplatesFormTemplateIdEditTranslationLanguageCodeImport
       parentRoute: typeof rootRoute
@@ -349,6 +371,8 @@ export const routeTree = rootRoute.addChildren([
   MonitoringObserversMonitoringObserverIdEditRoute,
   ObserversObserverIdEditRoute,
   ResponsesFormIdAggregatedRoute,
+  ResponsesFormIdQuickReportsRoute,
+  ResponsesQuickReportsQuickReportIdRoute,
   FormTemplatesFormTemplateIdEditTranslationLanguageCodeRoute,
   FormsFormIdEditTranslationLanguageCodeRoute,
 ])

@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 
 import axios from 'axios';
+import { config } from 'process';
 
 export interface ILoginResponse {
   token: string;
@@ -19,6 +20,17 @@ export const authApi = axios.create({
 
 authApi.defaults.headers.common['Content-Type'] = 'application/json';
 authApi.defaults.headers.common['Access-Control-Allow-Credentials'] = 'true';
+
+authApi.interceptors.request.use(
+  config => {
+    const accessToken = localStorage.getItem('token');
+    if (!!accessToken) {
+      config.headers['Authorization'] = `Bearer ${accessToken}`;
+    }
+
+    return config;
+  },
+);
 
 authApi.interceptors.response.use(
   (response) => {

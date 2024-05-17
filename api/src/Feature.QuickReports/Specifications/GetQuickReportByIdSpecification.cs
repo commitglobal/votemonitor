@@ -6,6 +6,11 @@ public sealed class GetQuickReportByIdSpecification : SingleResultSpecification<
 {
     public GetQuickReportByIdSpecification(Guid electionRoundId, Guid quickReportId)
     {
-        Query.Where(qr => qr.ElectionRoundId == electionRoundId && qr.Id == quickReportId);
+        Query
+            .Where(qr => qr.ElectionRoundId == electionRoundId && qr.Id == quickReportId)
+            .Include(x => x.PollingStation)
+            .Include(x => x.MonitoringObserver)
+            .ThenInclude(x => x.Observer)
+            .ThenInclude(x => x.ApplicationUser);
     }
 }

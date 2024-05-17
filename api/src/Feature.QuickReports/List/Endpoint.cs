@@ -45,6 +45,7 @@ public class Endpoint(IDbConnection dbConnection)
             O.""LastName"",
             O.""Email"",
             O.""PhoneNumber"",
+            QR.""PollingStationDetails"",
             PS.""Id"" AS ""PollingStationId"",
             PS.""Level1"",
             PS.""Level2"",
