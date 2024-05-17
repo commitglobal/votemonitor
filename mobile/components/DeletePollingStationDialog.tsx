@@ -4,15 +4,22 @@ import { Icon } from "./Icon";
 import { Typography } from "./Typography";
 import Button from "./Button";
 import { useTranslation } from "react-i18next";
+import { useUserData } from "../contexts/user/UserContext.provider";
 
 interface DeletePollingStationDialogProps {
   pollingStationNumber: string;
-  onDelete: () => void;
+  pollingStationId: string;
 }
 
 const DeletePollingStationDialog = (props: DeletePollingStationDialogProps) => {
   const { t } = useTranslation("modals");
-  const { onDelete, pollingStationNumber } = props;
+  const { pollingStationNumber, pollingStationId } = props;
+  const { activeElectionRound } = useUserData();
+
+  console.log("Polling Station ID: ", pollingStationId);
+  console.log("Active Election Round: ", activeElectionRound);
+  console.log("Election Round ID: ", activeElectionRound?.id);
+  console.log("\n");
 
   return (
     <Dialog
@@ -41,7 +48,13 @@ const DeletePollingStationDialog = (props: DeletePollingStationDialogProps) => {
             </Button>
           </AlertDialog.Cancel>
           <AlertDialog.Cancel asChild>
-            <Button preset="red" onPress={onDelete} flex={1}>
+            <Button
+              preset="red"
+              onPress={() => {
+                console.log("TODO: Deelete API CALL!");
+              }}
+              flex={1}
+            >
               {t("delete_station.actions.delete")}
             </Button>
           </AlertDialog.Cancel>

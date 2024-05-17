@@ -21,12 +21,9 @@ const PollingStationCard = (props: PollingStationCardProps) => {
             {t("station_card.title", { value: visit.number })}
           </Typography>
 
-          {/* TODO: api call for delete polling station */}
           <DeletePollingStationDialog
             pollingStationNumber={visit.number}
-            onDelete={() => {
-              console.log("TODO: API call for delete polling station!");
-            }}
+            pollingStationId={visit.pollingStationId}
           />
         </XStack>
 
