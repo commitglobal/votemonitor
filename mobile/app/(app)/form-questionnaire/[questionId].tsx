@@ -92,6 +92,8 @@ const FormQuestionnaire = () => {
     [currentForm],
   );
 
+  console.log("✅Questions", questions);
+
   const activeQuestion: {
     index: number;
     question: ApiFormQuestion;
@@ -318,7 +320,7 @@ const FormQuestionnaire = () => {
                       type="numeric"
                       label={`${question.code}. ${question.text[language]}`}
                       placeholder={question.inputPlaceholder[language]}
-                      paragraph={question.helptext[language]}
+                      paragraph={question.helptext?.[language] || ""}
                       onChangeText={onChange}
                       value={value}
                     />
@@ -329,7 +331,7 @@ const FormQuestionnaire = () => {
                       type="textarea"
                       label={`${question.code}. ${question.text[language]}`}
                       placeholder={question.inputPlaceholder[language]}
-                      paragraph={question.helptext[language]}
+                      paragraph={question.helptext?.[language] || ""}
                       onChangeText={onChange}
                       maxLength={1000}
                       helper={t("max", {
@@ -343,7 +345,7 @@ const FormQuestionnaire = () => {
                     <WizardDateFormInput
                       label={`${question.code}. ${question.text[language]}`}
                       placeholder="Please enter a date"
-                      paragraph={question.helptext[language]}
+                      paragraph={question.helptext?.[language] || ""}
                       onChange={onChange}
                       value={value}
                     />
@@ -353,7 +355,7 @@ const FormQuestionnaire = () => {
                     <>
                       <WizardRadioFormInput
                         label={`${question.code}. ${question.text[language]}`}
-                        paragraph={question.helptext[language]}
+                        paragraph={question.helptext?.[language] || ""}
                         options={question.options.map((option) => ({
                           id: option.id,
                           value: option.id,
@@ -439,7 +441,7 @@ const FormQuestionnaire = () => {
                       type="single"
                       id={question.id}
                       label={`${question.code}. ${question.text[language]}`}
-                      paragraph={question.helptext[language]}
+                      paragraph={question.helptext?.[language] || ""}
                       scale={question.scale}
                       onValueChange={onChange}
                       value={value}

@@ -217,7 +217,7 @@ const PollingStationQuestionnaire = () => {
         <YStack padding="$md" gap="$lg">
           {formStructure?.questions.map((question: ApiFormQuestion) => {
             const _label = `${question.code}. ${question.text[currentLanguage]}`;
-            const _helper = question.helptext[currentLanguage];
+            const _helper = question.helptext?.[currentLanguage] || "";
 
             if (question.$questionType === "numberQuestion") {
               return (
@@ -228,7 +228,7 @@ const PollingStationQuestionnaire = () => {
                   render={({ field: { onChange, value } }) => (
                     <FormInput
                       title={question.text[currentLanguage]}
-                      placeholder={question.helptext[currentLanguage]}
+                      placeholder={question.helptext?.[currentLanguage] || ""}
                       type="numeric"
                       value={value}
                       onChangeText={onChange}
@@ -249,7 +249,7 @@ const PollingStationQuestionnaire = () => {
                       <FormInput
                         type="textarea"
                         title={question.text[currentLanguage]}
-                        placeholder={question.helptext[currentLanguage]}
+                        placeholder={question.helptext?.[currentLanguage] || ""}
                         onChangeText={onChange}
                         value={value}
                       />
@@ -271,7 +271,7 @@ const PollingStationQuestionnaire = () => {
                         title={question.text[currentLanguage]}
                         onChange={onChange}
                         value={value}
-                        placeholder={question.helptext[currentLanguage]}
+                        placeholder={question.helptext?.[currentLanguage] || ""}
                       />
                     </YStack>
                   )}

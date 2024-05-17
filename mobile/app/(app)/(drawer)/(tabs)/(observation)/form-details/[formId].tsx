@@ -19,6 +19,7 @@ import FormQuestionListItem, {
 } from "../../../../../../components/FormQuestionListItem";
 import FormOverview from "../../../../../../components/FormOverview";
 import { useTranslation } from "react-i18next";
+import SuperJSON from "superjson";
 
 type SearchParamsType = {
   formId: string;
@@ -51,22 +52,33 @@ const FormDetails = () => {
 
   const { questions, numberOfAnswers } = useMemo(() => {
     return {
-      questions: currentForm?.questions.map((q) => ({
-        status: answers?.[q.id] ? QuestionStatus.ANSWERED : QuestionStatus.NOT_ANSWERED,
-        question: q.text[language],
-        id: q.id,
-      })),
+      questions: currentForm?.questions
+        .map((q) => ({
+          status: answers?.[q.id] ? QuestionStatus.ANSWERED : QuestionStatus.NOT_ANSWERED,
+          question: q.text[language],
+          displayLogic: q.displayLogic,
+          id: q.id,
+        }))
+        .filter((q) => {
+          if (q.displayLogic?.parentQuestionId) {
+            return answers?.[q.displayLogic?.parentQuestionId];
+          }
+
+          return true;
+        }),
       numberOfAnswers: Object.keys(answers || {}).length,
     };
   }, [currentForm, answers]);
 
   const { numberOfQuestions, formTitle, languages } = useMemo(() => {
     return {
-      numberOfQuestions: currentForm ? currentForm.questions.length : 0,
+      numberOfQuestions: questions?.length || 0,
       formTitle: `${currentForm?.code} - ${currentForm?.name[language]} (${language})`,
       languages: currentForm?.languages,
     };
-  }, [currentForm]);
+  }, [currentForm, questions]);
+
+  console.log("❓ Questions ", SuperJSON.stringify(questions));
 
   const onQuestionItemClick = (questionId: string) => {
     router.push(`/form-questionnaire/${questionId}?formId=${formId}&language=${language}`);
@@ -137,7 +149,11 @@ const FormDetails = () => {
             : numberOfQuestions * 165 + 300
         }
       >
-        <ListView<Pick<FormQuestionListItemProps, "question" | "status"> & { id: string }>
+        <ListView<
+          Pick<FormQuestionListItemProps, "question" | "status"> & {
+            id: string;
+          }
+        >
           data={questions}
           ListHeaderComponent={
             <YStack gap="$xl" paddingBottom="$xxs">

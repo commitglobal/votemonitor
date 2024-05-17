@@ -13,11 +13,27 @@ export type ApiFormQuestionSelectOption = {
   isFreeText: boolean;
 };
 
+export type DisplayLogicCondition =
+  | "Equals"
+  | "NotEquals"
+  | "LessThan"
+  | "LessEqual"
+  | "GreaterThan"
+  | "GreaterEqual"
+  | "Includes";
+
+type ApiFormQuestionDisplayLogic = {
+  condition: DisplayLogicCondition;
+  parentQuestionId: string;
+  value: string;
+};
+
 export type ApiFormQuestion = {
   id: string; // "f5cc674f-48b3-4918-8f9e-67dec35f1009";
   code: string; // "A2"; // A - deschidere, B - in timpul zilei, C - la numarare
   text: Record<string, string>; // { EN: string; // "mood"; RO: string; // "dispozitie";};
   helptext: Record<string, string>; // { EN: string; // "mood"; RO: string; // "dispozitie";};
+  displayLogic: ApiFormQuestionDisplayLogic | null;
 } & (
   | {
       $questionType: "textQuestion" | "numberQuestion";
