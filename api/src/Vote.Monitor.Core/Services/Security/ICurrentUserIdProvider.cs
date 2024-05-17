@@ -2,9 +2,10 @@
 
 namespace Vote.Monitor.Core.Services.Security;
 
-public interface ICurrentUserIdProvider
+public interface ICurrentUserProvider
 {
     ClaimsPrincipal? User { get; }
     Guid? GetUserId();
+    Guid? GetNgoId();
     string? GetClaimValue(string type);
 }

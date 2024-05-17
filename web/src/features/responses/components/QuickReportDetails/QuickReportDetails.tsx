@@ -9,7 +9,7 @@ import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 
 export default function QuickReportDetails(): FunctionComponent {
-  const quickReport = useLoaderData({ from: '/responses/$formId/quick-reports' });
+  const quickReport = useLoaderData({ from: '/responses/quick-reports/$quickReportId' });
 
   return (
     <Layout
@@ -36,7 +36,8 @@ export default function QuickReportDetails(): FunctionComponent {
       title={quickReport.id}>
       <Card className='max-w-4xl'>
         <CardHeader>
-          <CardTitle className='mb-4 flex flex-row-reverse'>
+          <CardTitle className='mb-4 flex justify-between'>
+            <div>{quickReport.title}</div>
             <Switch id='needs-followup'>Needs follow-up</Switch>
           </CardTitle>
           <Separator />

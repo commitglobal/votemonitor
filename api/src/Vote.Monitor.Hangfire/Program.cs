@@ -57,7 +57,7 @@ builder.Services.AddScoped<ITimeProvider>(sp =>
     return new FreezeTimeProvider(currentUtc);
 });
 
-builder.Services.AddSingleton<ICurrentUserIdProvider, MockCurrentUserIdProvider>();
+builder.Services.AddSingleton<ICurrentUserProvider, MockCurrentUserProvider>();
 
 // Register jobs
 builder.Services.AddScoped<IRecurringJobManager, RecurringJobManager>();
@@ -87,7 +87,7 @@ builder.Services.AddHangfire(config =>
 
     config.UseActivator(new ContainerJobActivator(builtProvider));
 
-    config.UseColouredConsoleLogProvider();
+    config.UseSerilogLogProvider();
 });
 builder.Services.AddHangfireServer();
 

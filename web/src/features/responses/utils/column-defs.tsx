@@ -12,6 +12,7 @@ import type { ColumnDef } from '@tanstack/react-table';
 import type { FormSubmissionByEntry, FormSubmissionByForm, FormSubmissionByObserver } from '../models/form-submission';
 import type { QuickReport } from '../models/quick-report';
 import type { QuestionExtraData } from '../types';
+
 export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry>[] = [
   {
     header: ({ column }) => <DataTableColumnHeader title='Time submitted' column={column} />,
@@ -140,12 +141,14 @@ export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry>[
     accessorKey: 'action',
     enableSorting: false,
     cell: ({ row }) => (
-      <Link
-        className='hover:bg-purple-100 inline-flex h-6 w-6 rounded-full items-center justify-center'
-        params={{ submissionId: row.original.submissionId }}
-        to='/responses/$submissionId'>
-        <ChevronRightIcon className='w-4 text-purple-600' />
-      </Link>
+      <div className='text-right'>
+        <Link
+          className='hover:bg-purple-100 inline-flex h-6 w-6 rounded-full items-center justify-center'
+          params={{ submissionId: row.original.submissionId }}
+          to='/responses/$submissionId'>
+          <ChevronRightIcon className='w-4 text-purple-600' />
+        </Link>
+      </div>
     ),
   },
 ];
@@ -215,13 +218,15 @@ export const formSubmissionsByObserverColumnDefs: ColumnDef<FormSubmissionByObse
     accessorKey: 'action',
     enableSorting: false,
     cell: ({ row }) => (
-      <Link
-        search
-        className='hover:bg-purple-100 inline-flex h-6 w-6 rounded-full items-center justify-center'
-        params={{ monitoringObserverId: row.original.monitoringObserverId }}
-        to='/monitoring-observers/$monitoringObserverId'>
-        <ChevronRightIcon className='w-4 text-purple-600' />
-      </Link>
+      <div className='text-right'>
+        <Link
+          search
+          className='hover:bg-purple-100 inline-flex h-6 w-6 rounded-full items-center justify-center'
+          params={{ monitoringObserverId: row.original.monitoringObserverId }}
+          to='/monitoring-observers/$monitoringObserverId'>
+          <ChevronRightIcon className='w-4 text-purple-600' />
+        </Link>
+      </div>
     ),
   },
 ];
@@ -268,12 +273,14 @@ export const formSubmissionsByFormColumnDefs: ColumnDef<FormSubmissionByForm>[] 
     accessorKey: 'action',
     enableSorting: false,
     cell: ({ row }) => (
-      <Link
-        className='hover:bg-purple-100 inline-flex h-6 w-6 rounded-full items-center justify-center'
-        params={{ formId: row.original.formId }}
-        to='/responses/$formId/aggregated'>
-        <ChevronRightIcon className='w-4 text-purple-600' />
-      </Link>
+      <div className='text-right'>
+        <Link
+          className='hover:bg-purple-100 inline-flex h-6 w-6 rounded-full items-center justify-center'
+          params={{ formId: row.original.formId }}
+          to='/responses/$formId/aggregated'>
+          <ChevronRightIcon className='w-4 text-purple-600' />
+        </Link>
+      </div>
     ),
   },
 ];
@@ -305,6 +312,12 @@ export const questionExtraInfoColumnDefs: ColumnDef<QuestionExtraData>[] = [
 
 export const quickReportsColumnDefs: ColumnDef<QuickReport>[] = [
   {
+    header: ({ column }) => <DataTableColumnHeader title='Entry ID' column={column} />,
+    accessorKey: 'id',
+    enableSorting: true,
+    enableGlobalFilter: true,
+  },
+  {
     header: ({ column }) => <DataTableColumnHeader title='Time submitted' column={column} />,
     accessorKey: 'timestamp',
     enableSorting: true,
@@ -328,14 +341,47 @@ export const quickReportsColumnDefs: ColumnDef<QuickReport>[] = [
     accessorKey: 'numberOfAttachments',
     enableSorting: true,
     enableGlobalFilter: true,
-    size: 80,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Station number' column={column} />,
     accessorKey: 'number',
     enableSorting: true,
     enableGlobalFilter: true,
-    size: 100,
+  },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Location - L1' column={column} />,
+    accessorKey: 'level1',
+    enableSorting: true,
+    enableGlobalFilter: true,
+    cell: ({ row }) => <div>{row.original.level1 ?? '-'}</div>,
+  },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Location - L2' column={column} />,
+    accessorKey: 'level2',
+    enableSorting: true,
+    enableGlobalFilter: true,
+    cell: ({ row }) => <div>{row.original.level2 ?? '-'}</div>,
+  },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Location - L3' column={column} />,
+    accessorKey: 'level3',
+    enableSorting: true,
+    enableGlobalFilter: true,
+    cell: ({ row }) => <div>{row.original.level3 ?? '-'}</div>,
+  },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Location - L4' column={column} />,
+    accessorKey: 'level4',
+    enableSorting: true,
+    enableGlobalFilter: true,
+    cell: ({ row }) => <div>{row.original.level4 ?? '-'}</div>,
+  },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Location - L5' column={column} />,
+    accessorKey: 'level5',
+    enableSorting: true,
+    enableGlobalFilter: true,
+    cell: ({ row }) => <div>{row.original.level5 ?? '-'}</div>,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Observer' column={column} />,
@@ -359,13 +405,14 @@ export const quickReportsColumnDefs: ColumnDef<QuickReport>[] = [
     accessorKey: 'action',
     enableSorting: false,
     cell: ({ row }) => (
-      <Link
-        className='hover:bg-purple-100 inline-flex h-6 w-6 rounded-full items-center justify-center'
-        params={{ formId: row.original.id }}
-        to='/responses/$formId/quick-reports'>
-        <ChevronRightIcon className='w-4 text-purple-600' />
-      </Link>
+      <div className='text-right'>
+        <Link
+          className='hover:bg-purple-100 inline-flex h-6 w-6 rounded-full items-center justify-center'
+          params={{ quickReportId: row.original.id }}
+          to='/responses/quick-reports/$quickReportId'>
+          <ChevronRightIcon className='w-4 text-purple-600' />
+        </Link>
+      </div>
     ),
-    size: 46,
   },
 ];

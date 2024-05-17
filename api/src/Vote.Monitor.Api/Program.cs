@@ -16,7 +16,7 @@ using Microsoft.AspNetCore.ResponseCompression;
 using NSwag;
 using Vote.Monitor.Api.Feature.Ngo;
 using Vote.Monitor.Api.Feature.NgoAdmin;
-using Vote.Monitor.Api.Feature.Notifications;
+using Feature.Notifications;
 using Vote.Monitor.Core.Models;
 using Vote.Monitor.Core.Security;
 using Vote.Monitor.Core.Services.FileStorage;
@@ -32,6 +32,7 @@ using Vote.Monitor.Domain.Entities.QuickReportAggregate;
 using Vote.Monitor.Module.Notifications;
 using Ardalis.SmartEnum.Dapper;
 using Dapper;
+using Feature.ImportErrors;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -124,6 +125,7 @@ builder.Services.AddPollingStationVisitFeature();
 builder.Services.AddMonitoringObserversFeature();
 builder.Services.AddFormSubmissionsFeature();
 builder.Services.AddQuickReportsFeature();
+builder.Services.AddImportErrorsFeature();
 
 builder.Services.AddAuthorization();
 

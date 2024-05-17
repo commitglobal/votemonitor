@@ -5,9 +5,9 @@ namespace Vote.Monitor.Module.Notifications.Expo;
 
 public interface IExpoApi
 {
-    [Post("send")]
-    Task<PushReceiptResponse> SendNotificationAsync([Body] PushTicketRequest request);
+    [Post("/send")]
+    Task<ApiResponse<PushTicketResponse>> SendNotificationAsync([Body] PushTicketRequest request);
 
-    [Post("getReceipts")]
-    Task<IApiResponse<PushTicketResponse>> GetReceiptsAsync([Body] PushReceiptRequest request);
+    [Post("/getReceipts")]
+    Task<IApiResponse<PushReceiptResponse>> GetReceiptsAsync([Body] PushReceiptRequest request);
 }

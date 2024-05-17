@@ -10,12 +10,12 @@ export function MediaFilesCell({ row }: CellContext<QuestionExtraData, unknown>)
         <Dialog>
           <DialogTrigger>
             <button type='button'>
-              <img alt={attachment.uploadedFileName} className='w-10 h-10' src={attachment.filePath} />
+              <img alt={attachment.fileName} className='w-10 h-10' src={attachment.presignedUrl} />
             </button>
           </DialogTrigger>
           <DialogContent className='max-w-5xl'>
             <div className='flex justify-center'>
-              <img alt={attachment.uploadedFileName} src={attachment.filePath} />
+              <img alt={attachment.fileName} src={attachment.presignedUrl} />
             </div>
           </DialogContent>
         </Dialog>

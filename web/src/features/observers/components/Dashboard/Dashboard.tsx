@@ -1,26 +1,11 @@
-import { type Observer } from '../../models/Observer';
-import { useState, type ReactElement, useRef } from 'react';
-import { type UseQueryResult, useQuery, useMutation } from '@tanstack/react-query';
-import { type DataTableParameters, type PageResponse } from '@/common/types';
 import { authApi } from '@/common/auth-api';
-import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
+import { DataTableParameters, PageResponse } from '@/common/types';
 import Layout from '@/components/layout/Layout';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { ColumnDef } from '@tanstack/react-table';
-import { EllipsisVerticalIcon, FunnelIcon, Cog8ToothIcon, ArrowDownTrayIcon } from '@heroicons/react/24/outline';
-
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
+import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
 import {
   Dialog,
   DialogContent,
@@ -30,9 +15,19 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { queryClient } from '@/main';
-import { useNavigate } from '@tanstack/react-router';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Separator } from '@/components/ui/separator';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { queryClient } from '@/main';
+import { ArrowDownTrayIcon, Cog8ToothIcon, EllipsisVerticalIcon, FunnelIcon } from '@heroicons/react/24/outline';
+import { useMutation, useQuery, UseQueryResult } from '@tanstack/react-query';
+import { useNavigate } from '@tanstack/react-router';
+import { ColumnDef } from '@tanstack/react-table';
+import { ReactElement, useRef, useState } from 'react';
+
+import { Observer } from '../../models/Observer';
 
 export default function ObserversDashboard(): ReactElement {
   const observerColDefs: ColumnDef<Observer>[] = [
@@ -83,14 +78,14 @@ export default function ObserversDashboard(): ReactElement {
     },
   ];
 
-  const [searchText, setSerachText] = useState('');
+  const [searchText, setSearchText] = useState('');
   const [fileName, setFileName] = useState('');
   const [isFiltering, setFiltering] = useState(false);
   const [statusFilter, setStatusFilter] = useState('');
 
   const navigate = useNavigate();
   const handleSearchInput = (ev: React.FormEvent<HTMLInputElement>) => {
-    setSerachText(ev.currentTarget.value);
+    setSearchText(ev.currentTarget.value);
   };
 
   const hiddenFileInput: React.Ref<any> = useRef(null);
@@ -228,7 +223,7 @@ export default function ObserversDashboard(): ReactElement {
                           </div>
                           <div className='text-xs text-purple-900'>28kb</div>
                         </div>
-                        <div className='text-sm text-gray-500 font-normal	'>
+                        <div className='text-sm text-gray-500 font-normal'>
                           Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                         </div>
                         <input
@@ -246,7 +241,7 @@ export default function ObserversDashboard(): ReactElement {
                             )}
                           </span>
                         </Button>
-                        <div className='text-sm text-gray-500 font-normal	'>
+                        <div className='text-sm text-gray-500 font-norma'>
                           Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                         </div>
                         <Separator />

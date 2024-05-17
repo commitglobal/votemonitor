@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Refit;
 using Vote.Monitor.Module.Notifications.Contracts;
@@ -16,11 +18,21 @@ internal static class Installer
 
         services.Configure<ExpoOptions>(configuration);
         services
-            .AddRefitClient<IExpoApi>()
+            .AddRefitClient<IExpoApi>((sp) => new RefitSettings
+            {
+                ContentSerializer = new SystemTextJsonContentSerializer(new JsonSerializerOptions(JsonSerializerDefaults.Web)
+                {
+                    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+                })
+            })
             .ConfigureHttpClient(c =>
             {
-                c.BaseAddress = new Uri("https://exp.host/--/api/v2/push/");
-                c.DefaultRequestHeaders.Authorization = new("Bearer", expoOptions.Token);
+                c.BaseAddress = new Uri("https://exp.host/--/api/v2/push");
+
+                if (!string.IsNullOrWhiteSpace(expoOptions.Token))
+                {
+                    c.DefaultRequestHeaders.Authorization = new("Bearer", expoOptions.Token);
+                }
             });
 
         services.AddSingleton<IPushNotificationService, ExpoPushNotificationService>();

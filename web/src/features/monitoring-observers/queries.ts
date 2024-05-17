@@ -20,5 +20,4 @@ export function useTags(): UseQueryResult<Tag[], Error> {
             return response.data?.tags.map((tag) => ({ id: uuid(), text: tag }));
         },
     });
-
 }

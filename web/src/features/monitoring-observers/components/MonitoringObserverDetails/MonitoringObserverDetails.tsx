@@ -48,7 +48,7 @@ export default function MonitoringObserverDetails(): FunctionComponent {
               </div>
               <Separator />
             </CardHeader>
-            <CardContent className='flex flex-col gap-6 items-baseline	'>
+            <CardContent className='flex flex-col gap-6 items-baseline'>
               <div className='flex flex-col gap-1'>
                 <p className='text-gray-700 font-bold'>Name</p>
                 <p className='text-gray-900 font-normal'>

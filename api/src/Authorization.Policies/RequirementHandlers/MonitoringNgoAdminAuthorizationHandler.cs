@@ -5,6 +5,7 @@ using Vote.Monitor.Domain.Entities.ElectionRoundAggregate;
 namespace Authorization.Policies.RequirementHandlers;
 
 internal class MonitoringNgoAdminAuthorizationHandler(
+    ICurrentUserProvider currentUserProvider,
     ICurrentUserRoleProvider currentUserRoleProvider,
     IReadRepository<MonitoringNgo> monitoringNgoRepository)
     : AuthorizationHandler<MonitoringNgoAdminRequirement>
@@ -17,7 +18,7 @@ internal class MonitoringNgoAdminAuthorizationHandler(
             return;
         }
 
-        var ngoId = await currentUserRoleProvider.GetNgoId();
+        var ngoId = currentUserProvider.GetNgoId();
         var getMonitoringNgoSpecification = new GetMonitoringNgoSpecification(adminRequirement.ElectionRoundId, ngoId!.Value);
         var result = await monitoringNgoRepository.FirstOrDefaultAsync(getMonitoringNgoSpecification);
 

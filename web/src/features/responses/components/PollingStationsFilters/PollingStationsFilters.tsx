@@ -2,7 +2,7 @@ import { getRouteApi } from '@tanstack/react-router';
 import { useMemo } from 'react';
 import type { FunctionComponent } from '@/common/types';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { usePollingStations } from '../../hooks/polling-stations';
+import { usePollingStations } from '@/common/polling-stations';
 
 const routeApi = getRouteApi('/responses/');
 
@@ -55,7 +55,16 @@ export function PollingStationsFilters(): FunctionComponent {
     <>
       <Select
         onValueChange={(value) => {
-          void navigate({ search: (prev) => ({ ...prev, level1Filter: value }) });
+          void navigate({
+            search: (prev) => ({
+              ...prev,
+              level1Filter: value,
+              level2Filter: undefined,
+              level3Filter: undefined,
+              level4Filter: undefined,
+              level5Filter: undefined,
+            }),
+          });
         }}
         value={search.level1Filter ?? ''}>
         <SelectTrigger>
@@ -75,7 +84,15 @@ export function PollingStationsFilters(): FunctionComponent {
       <Select
         disabled={!search.level1Filter || !filteredLevel2Nodes?.length}
         onValueChange={(value) => {
-          void navigate({ search: (prev) => ({ ...prev, level2Filter: value }) });
+          void navigate({
+            search: (prev) => ({
+              ...prev,
+              level2Filter: value,
+              level3Filter: undefined,
+              level4Filter: undefined,
+              level5Filter: undefined,
+            }),
+          });
         }}
         value={search.level2Filter ?? ''}>
         <SelectTrigger>
@@ -95,7 +112,9 @@ export function PollingStationsFilters(): FunctionComponent {
       <Select
         disabled={!search.level2Filter || !filteredLevel3Nodes?.length}
         onValueChange={(value) => {
-          void navigate({ search: (prev) => ({ ...prev, level3Filter: value }) });
+          void navigate({
+            search: (prev) => ({ ...prev, level3Filter: value, level4Filter: undefined, level5Filter: undefined }),
+          });
         }}
         value={search.level3Filter ?? ''}>
         <SelectTrigger>
@@ -115,7 +134,7 @@ export function PollingStationsFilters(): FunctionComponent {
       <Select
         disabled={!search.level3Filter || !filteredLevel4Nodes?.length}
         onValueChange={(value) => {
-          void navigate({ search: (prev) => ({ ...prev, level4Filter: value }) });
+          void navigate({ search: (prev) => ({ ...prev, level4Filter: value, level5Filter: undefined }) });
         }}
         value={search.level4Filter ?? ''}>
         <SelectTrigger>

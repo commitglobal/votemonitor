@@ -43,7 +43,7 @@ public static class CoreServicesInstaller
                     .UsePostgreSqlStorage(c =>
                         c.UseNpgsqlConnection(configuration.GetNpgsqlConnectionString("HangfireConnectionConfig")), new PostgreSqlStorageOptions { PrepareSchemaIfNecessary = false });
 
-                config.UseColouredConsoleLogProvider();
+                config.UseSerilogLogProvider();
             });
 
             services.AddTransient<IJobService, HangfireJobService>();
