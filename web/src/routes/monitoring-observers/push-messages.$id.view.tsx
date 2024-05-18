@@ -1,20 +1,21 @@
 import { authApi } from '@/common/auth-api';
 import PushMessageDetails from '@/features/monitoring-observers/components/PushMessageDetails/PushMessageDetails';
-import { MonitoringObserver } from '@/features/monitoring-observers/models/MonitoringObserver';
+import { TargetedMonitoringObserver } from '@/features/monitoring-observers/models/targeted-monitoring-observer';
 import { redirectIfNotAuth } from '@/lib/utils';
 import { EnsureQueryDataOptions, QueryKey, queryOptions } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 
 import type { FunctionComponent } from '@/common/types';
+
 export const pushMessageDetailsQueryOptions = (
   pushMessageId: string
-): EnsureQueryDataOptions<MonitoringObserver> =>
+): EnsureQueryDataOptions<TargetedMonitoringObserver> =>
   queryOptions({
-    queryKey: ['monitoring-observer', { monitoringObserverId: pushMessageId }] as QueryKey,
+    queryKey: ['monitoring-observer', { pushMessageId }] as QueryKey,
     queryFn: async () => {
       const electionRoundId: string | null = localStorage.getItem('electionRoundId');
 
-      const response = await authApi.get<MonitoringObserver>(
+      const response = await authApi.get<TargetedMonitoringObserver>(
         `/election-rounds/${electionRoundId}/notifications/${pushMessageId}`
       );
 

@@ -7,7 +7,7 @@ import { PencilIcon } from '@heroicons/react/24/outline';
 import { useLoaderData, useNavigate } from '@tanstack/react-router';
 
 import type { FunctionComponent } from '@/common/types';
-import type { MonitoringObserver } from '../../models/MonitoringObserver';
+import type { MonitoringObserver } from '../../models/monitoring-observer';
 export default function MonitoringObserverDetailsView(): FunctionComponent {
   const monitoringObserver: MonitoringObserver = useLoaderData({ strict: false });
   const navigate = useNavigate();

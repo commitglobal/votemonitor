@@ -25,8 +25,8 @@ import { X } from 'lucide-react';
 import { useState } from 'react';
 
 import { downloadImportExample } from '../../helpers';
-import { MonitoringObserver } from '../../models/MonitoringObserver';
-import { useMonitoringObserversTags } from '../../queries';
+import { MonitoringObserver } from '../../models/monitoring-observer';
+import { useMonitoringObserversTags } from '../../../../hooks/tags-queries';
 import ImportMonitoringObserversDialog from '../MonitoringObserversList/ImportMonitoringObserversDialog';
 import ImportMonitoringObserversErrorsDialog from '../MonitoringObserversList/ImportMonitoringObserversErrorsDialog';
 

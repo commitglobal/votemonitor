@@ -6,7 +6,7 @@ import MonitoringObserverDetails from '@/features/monitoring-observers/component
 import {
   type MonitoringObserver,
   monitoringObserverDetailsRouteSearchSchema,
-} from '@/features/monitoring-observers/models/MonitoringObserver';
+} from '@/features/monitoring-observers/models/monitoring-observer';
 import { redirectIfNotAuth } from '@/lib/utils';
 
 export const monitoringObserverQueryOptions = (
@@ -23,7 +23,7 @@ export const monitoringObserverQueryOptions = (
       );
 
       if (response.status !== 200) {
-        throw new Error('Failed to fetch ngo');
+        throw new Error('Failed to fetch monitoring observer details');
       }
 
       return response.data;

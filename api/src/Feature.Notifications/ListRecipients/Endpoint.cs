@@ -7,7 +7,7 @@ using Vote.Monitor.Domain.Specifications;
 namespace Feature.Notifications.ListRecipients;
 
 public class Endpoint(IDbConnection dbConnection) :
-        Endpoint<Request, PagedResponse<MonitoringObserverModel>>
+        Endpoint<Request, PagedResponse<TargetedMonitoringObserverModel>>
 {
     public override void Configure()
     {
@@ -17,7 +17,7 @@ public class Endpoint(IDbConnection dbConnection) :
         Policies(PolicyNames.NgoAdminsOnly);
     }
 
-    public override async Task<PagedResponse<MonitoringObserverModel>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<PagedResponse<TargetedMonitoringObserverModel>> ExecuteAsync(Request req, CancellationToken ct)
     {
         var sql = @"
         SELECT COUNT(*) count
@@ -30,7 +30,10 @@ public class Endpoint(IDbConnection dbConnection) :
             MN.""ElectionRoundId"" = @electionRoundId
             AND MN.""NgoId"" = @ngoId
             AND (@searchText IS NULL OR @searchText = '' OR u.""FirstName"" ILIKE @searchText OR u.""LastName"" ILIKE @searchText OR u.""Email"" ILIKE @searchText OR u.""PhoneNumber"" ILIKE @searchText)
-            AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR  mo.""Tags"" @> @tagsFilter);
+            AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR  mo.""Tags"" @> @tagsFilter)
+            AND (@status IS NULL OR  mo.""Status"" = @status)
+
+;
 
         SELECT 
             ""MonitoringObserverId"",
@@ -56,8 +59,9 @@ public class Endpoint(IDbConnection dbConnection) :
             WHERE
                 MN.""ElectionRoundId"" = @electionRoundId
                 AND MN.""NgoId"" = @ngoId
-                AND (@searchText IS NULL OR @searchText = '' OR u.""FirstName"" ILIKE @searchText OR    u.""LastName"" ILIKE @searchText OR u.""Email"" ILIKE @searchText OR u.""PhoneNumber"" ILIKE   @searchText)
+                AND (@searchText IS NULL OR @searchText = '' OR u.""FirstName"" ILIKE @searchText OR u.""LastName"" ILIKE @searchText OR u.""Email"" ILIKE @searchText OR u.""PhoneNumber"" ILIKE   @searchText)
                 AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR  mo.""Tags"" @> @tagsFilter)
+                AND (@status IS NULL OR  mo.""Status"" = @status)
             ) T
 
         ORDER BY
@@ -84,44 +88,46 @@ public class Endpoint(IDbConnection dbConnection) :
             pageSize = req.PageSize,
             tagsFilter = req.TagsFilter ?? [],
             searchText = $"%{req.SearchText?.Trim() ?? string.Empty}%",
+            status= req.StatusFilter,
+
             sortExpression = GetSortExpression(req.SortColumnName, req.IsAscendingSorting),
         };
 
         var multi = await dbConnection.QueryMultipleAsync(sql, queryArgs);
         var totalRowCount = multi.Read<int>().Single();
-        var entries = multi.Read<MonitoringObserverModel>().ToList();
+        var entries = multi.Read<TargetedMonitoringObserverModel>().ToList();
 
-        return new PagedResponse<MonitoringObserverModel>(entries, totalRowCount, req.PageNumber, req.PageSize);
+        return new PagedResponse<TargetedMonitoringObserverModel>(entries, totalRowCount, req.PageNumber, req.PageSize);
     }
 
     private static string GetSortExpression(string? sortColumnName, bool isAscendingSorting)
     {
         if (string.IsNullOrWhiteSpace(sortColumnName))
         {
-            return $"{nameof(MonitoringObserverModel.ObserverName)} ASC";
+            return $"{nameof(TargetedMonitoringObserverModel.ObserverName)} ASC";
         }
 
         var sortOrder = isAscendingSorting ? "ASC" : "DESC";
 
-        if (string.Equals(sortColumnName, nameof(MonitoringObserverModel.ObserverName), StringComparison.InvariantCultureIgnoreCase))
+        if (string.Equals(sortColumnName, nameof(TargetedMonitoringObserverModel.ObserverName), StringComparison.InvariantCultureIgnoreCase))
         {
-            return $"{nameof(MonitoringObserverModel.ObserverName)} {sortOrder}";
+            return $"{nameof(TargetedMonitoringObserverModel.ObserverName)} {sortOrder}";
         }
-        if (string.Equals(sortColumnName, nameof(MonitoringObserverModel.Email), StringComparison.InvariantCultureIgnoreCase))
+        if (string.Equals(sortColumnName, nameof(TargetedMonitoringObserverModel.Email), StringComparison.InvariantCultureIgnoreCase))
         {
-            return $"{nameof(MonitoringObserverModel.Email)} {sortOrder}";
-        }
-
-        if (string.Equals(sortColumnName, nameof(MonitoringObserverModel.PhoneNumber), StringComparison.InvariantCultureIgnoreCase))
-        {
-            return $"{nameof(MonitoringObserverModel.PhoneNumber)} {sortOrder}";
+            return $"{nameof(TargetedMonitoringObserverModel.Email)} {sortOrder}";
         }
 
-        if (string.Equals(sortColumnName, nameof(MonitoringObserverModel.Tags), StringComparison.InvariantCultureIgnoreCase))
+        if (string.Equals(sortColumnName, nameof(TargetedMonitoringObserverModel.PhoneNumber), StringComparison.InvariantCultureIgnoreCase))
         {
-            return $"{nameof(MonitoringObserverModel.Tags)} {sortOrder}";
+            return $"{nameof(TargetedMonitoringObserverModel.PhoneNumber)} {sortOrder}";
         }
 
-        return $"{nameof(MonitoringObserverModel.ObserverName)} ASC";
+        if (string.Equals(sortColumnName, nameof(TargetedMonitoringObserverModel.Tags), StringComparison.InvariantCultureIgnoreCase))
+        {
+            return $"{nameof(TargetedMonitoringObserverModel.Tags)} {sortOrder}";
+        }
+
+        return $"{nameof(TargetedMonitoringObserverModel.ObserverName)} ASC";
     }
 }

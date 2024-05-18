@@ -1,30 +1,31 @@
 import { DataTableParameters, PageResponse } from '@/common/types';
 import { ColumnDef } from '@tanstack/react-table';
-import { MonitoringObserver } from '../models/MonitoringObserver';
+import { MonitoringObserver } from '../models/monitoring-observer';
 import TableTagList from '@/components/table-tag-list/TableTagList';
 import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
-import { Badge } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { TargetedMonitoringObserver } from '../models/targeted-monitoring-observer';
 
-export const targetedMonitoringObserverColDefs: ColumnDef<MonitoringObserver>[] = [
+export const targetedMonitoringObserverColDefs: ColumnDef<TargetedMonitoringObserver>[] = [
   {
     header: ({ column }) => <DataTableColumnHeader title='Name' column={column} />,
-    accessorKey: 'name',
-    enableSorting: false,
+    accessorKey: 'observerName',
+    enableSorting: true,
     enableGlobalFilter: false,
     cell: ({
       row: {
-        original: { firstName, lastName },
+        original: { observerName },
       },
     }) => (
       <p>
-        {firstName} {lastName}
+        {observerName}
       </p>
     ),
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Email' column={column} />,
     accessorKey: 'email',
-    enableSorting: false,
+    enableSorting: true,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Tags' column={column} />,
@@ -38,12 +39,12 @@ export const targetedMonitoringObserverColDefs: ColumnDef<MonitoringObserver>[] 
   {
     header: ({ column }) => <DataTableColumnHeader title='Phone' column={column} />,
     accessorKey: 'phoneNumber',
-    enableSorting: false,
+    enableSorting: true,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Observer status' column={column} />,
     accessorKey: 'status',
-    enableSorting: false,
+    enableSorting: true,
     cell: ({
       row: {
         original: { status },

@@ -6,7 +6,7 @@ import MonitoringObserverDetailsView from '../MonitoringObserverDetailsView/Moni
 import { MonitoringObserverForms } from '../MonitoringObserverForms/MonitoringObserverForms';
 
 import type { FunctionComponent } from '@/common/types';
-import type { MonitoringObserver } from '../../models/MonitoringObserver';
+import type { MonitoringObserver } from '../../models/monitoring-observer';
 import { Route } from '@/routes/monitoring-observers/$monitoringObserverId.view.$tab';
 import { useState } from 'react';
 export default function MonitoringObserverDetails(): FunctionComponent {

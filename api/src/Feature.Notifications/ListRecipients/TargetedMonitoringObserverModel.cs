@@ -4,10 +4,11 @@ using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 
 namespace Feature.Notifications.ListRecipients;
 
-public class MonitoringObserverModel
+public class TargetedMonitoringObserverModel
 {
     public Guid Id { get; init; }
     public string ObserverName { get; init; }
+
     public string Email { get; init; }
     public string PhoneNumber { get; init; }
     public string[] Tags { get; init; } = [];

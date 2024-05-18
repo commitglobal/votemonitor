@@ -1,5 +1,6 @@
 ﻿using Vote.Monitor.Core.Models;
 using Vote.Monitor.Core.Security;
+using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 
 namespace Feature.Notifications.ListRecipients;
 
@@ -9,6 +10,7 @@ public class Request : BaseSortPaginatedRequest
 
     [FromClaim(ApplicationClaimTypes.NgoId)]
     public Guid NgoId { get; set; }
+
 
     [QueryParam]
     public string? SearchText { get; set; }
@@ -29,5 +31,8 @@ public class Request : BaseSortPaginatedRequest
     public string? Level5Filter { get; set; }
 
     [QueryParam]
-    public string[] TagsFilter { get; set; }
+    public MonitoringObserverStatus? StatusFilter { get; set; }
+
+    [QueryParam]
+    public string[]? TagsFilter { get; set; }
 }

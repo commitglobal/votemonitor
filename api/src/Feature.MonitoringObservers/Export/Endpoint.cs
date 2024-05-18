@@ -1,8 +1,11 @@
 ﻿using System.Globalization;
+using System.IO;
 using System.Text;
 using Authorization.Policies;
+using CsvHelper;
 using Microsoft.EntityFrameworkCore;
 using Vote.Monitor.Domain;
+using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 
 namespace Feature.MonitoringObservers.Export;
 
@@ -40,30 +43,41 @@ public class Endpoint(VoteMonitorContext context) : Endpoint<Request>
             .OrderBy(x => x)
             .ToList();
 
-        using var stream = new MemoryStream();
-        await using var writer = new StreamWriter(stream, Encoding.UTF8, 1024, true);
-        await using var csvWriter = new CsvHelper.CsvWriter(writer, CultureInfo.InvariantCulture);
-        csvWriter.WriteHeader<MonitoringObserverModel>();
-        foreach (var monitoringObserver in monitoringObservers)
+        using (var memoryStream = new MemoryStream())
         {
-            csvWriter.WriteField(monitoringObserver.Id.ToString());
-            csvWriter.WriteField(monitoringObserver.FirstName);
-            csvWriter.WriteField(monitoringObserver.LastName);
-            csvWriter.WriteField(monitoringObserver.PhoneNumber);
-            csvWriter.WriteField(monitoringObserver.Email);
-            csvWriter.WriteField(monitoringObserver.Status);
-
-            var tags = MergeTags(monitoringObserver.Tags, availableTags);
-            foreach (var tag in tags)
+            using (var streamWriter = new StreamWriter(memoryStream, leaveOpen: true))
             {
-                await csvWriter.NextRecordAsync();
+                using (var csvWriter = new CsvWriter(streamWriter, CultureInfo.InvariantCulture))
+                {
+                    csvWriter.WriteField(nameof(MonitoringObserverModel.Id));
+                    csvWriter.WriteField(nameof(MonitoringObserverModel.FirstName));
+                    csvWriter.WriteField(nameof(MonitoringObserverModel.LastName));
+                    csvWriter.WriteField(nameof(MonitoringObserverModel.PhoneNumber));
+                    csvWriter.WriteField(nameof(MonitoringObserverModel.Email));
+                    csvWriter.WriteField(nameof(MonitoringObserverModel.Status));
 
+                    foreach (var monitoringObserver in monitoringObservers)
+                    {
+                        csvWriter.WriteField(monitoringObserver.Id.ToString());
+                        csvWriter.WriteField(monitoringObserver.FirstName);
+                        csvWriter.WriteField(monitoringObserver.LastName);
+                        csvWriter.WriteField(monitoringObserver.PhoneNumber);
+                        csvWriter.WriteField(monitoringObserver.Email);
+                        csvWriter.WriteField(monitoringObserver.Status);
+
+                        var tags = MergeTags(monitoringObserver.Tags, availableTags);
+                        foreach (var tag in tags)
+                        {
+                            csvWriter.WriteField(tag);
+                        }
+
+                        csvWriter.NextRecord();
+                    }
+                }
+
+                await SendBytesAsync(memoryStream.ToArray(), "monitoring-observers.csv", contentType: "text/csv", cancellation: ct);
             }
         }
-
-        stream.Seek(0, SeekOrigin.Begin);
-
-        await SendStreamAsync(stream, "monitoring-observers.csv", stream.Length, "text/csv", cancellation: ct);
     }
 
     private IReadOnlyList<string> MergeTags(IReadOnlyList<string> tags, List<string> availableTags)

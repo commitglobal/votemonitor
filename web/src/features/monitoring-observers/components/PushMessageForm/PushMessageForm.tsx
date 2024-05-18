@@ -1,9 +1,6 @@
-import { authApi } from '@/common/auth-api';
-import { DataTableParameters, PageResponse } from '@/common/types';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { DataTable } from '@/components/ui/DataTable/DataTable';
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -12,20 +9,30 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { buildURLSearchParams } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useQuery, UseQueryResult } from '@tanstack/react-query';
-import { X } from 'lucide-react';
-import { useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { MonitoringObserver } from '../../models/MonitoringObserver';
-import { useMonitoringObserversTags } from '../../queries';
+import { useMonitoringObserversTags } from '../../../../hooks/tags-queries';
 import { targetedMonitoringObserverColDefs } from '../../utils/column-defs';
+import { useNavigate } from '@tanstack/react-router';
+import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
+import { Route } from '@/routes/monitoring-observers/create-new-message';
+import { ChevronDownIcon } from '@heroicons/react/24/outline';
+import { PushMessageTargetedObserversSearchParams } from '../../models/search-params';
+import { FilterBadge } from '@/components/ui/badge';
+import { targetedObserversKeys, useTargetedMonitoringObservers } from '../../hooks/push-messages-queries';
 import { PollingStationsFilters } from '@/components/PollingStationsFilters/PollingStationsFilters';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { MonitoringObserverStatus } from '../../models/monitoring-observer';
+import { UseQueryResult, useQuery } from '@tanstack/react-query';
+import { authApi } from '@/common/auth-api';
+import { buildURLSearchParams } from '@/lib/utils';
+import { PageResponse, DataTableParameters } from '@/common/types';
+import { TargetedMonitoringObserver } from '../../models/targeted-monitoring-observer';
+import { useDebounce } from '@uidotdev/usehooks';
 
 const createPushMessageSchema = z.object({
   title: z.string().min(1, { message: 'Your message must have a title before sending.' }),
@@ -42,92 +49,73 @@ const createPushMessageSchema = z.object({
   tags: z.array(z.string()).optional().catch([]),
 });
 
-type ListTargetedMonitoringObserverResponse = PageResponse<MonitoringObserver>;
-
-type UseTargetedMonitoringObserversResult = UseQueryResult<ListTargetedMonitoringObserverResponse, Error>;
-
 function PushMessageForm() {
-  const [tagsFilter, setTagsFilter] = useState<string[]>([]);
-  const [searchText, setSearchText] = useState('');
-  const [statusFilter, setStatusFilter] = useState('');
+  const navigate = useNavigate();
+  const search = Route.useSearch();
+  const [totalRowsCount, setTotalRowsCount] = useState(0);
+  const [searchText, setSearchText] = useState<string>('');
+  const debouncedSearchText = useDebounce(searchText, 300);
+
   const { data: tags } = useMonitoringObserversTags();
 
-  const useTargetedMonitoringObservers = (p: DataTableParameters): UseTargetedMonitoringObserversResult => {
-    return useQuery({
-      queryKey: [
-        'monitoring-observers',
-        p.pageNumber,
-        p.pageSize,
-        p.sortColumnName,
-        p.sortOrder,
-        searchText,
-        statusFilter,
-        tagsFilter,
-      ],
-      queryFn: async () => {
-        const params: any = {
-          PageNumber: p.pageNumber,
-          PageSize: p.pageSize,
-          SortColumnName: p.sortColumnName,
-          SortOrder: p.sortOrder,
-          nameFilter: searchText,
-          statusFilter,
-          tagsFilter
-        };
+  const onTagsFilterChange = useCallback(
+    (tag: string) => () => {
+      void navigate({
+        search: (prev: PushMessageTargetedObserversSearchParams) => {
+          const prevTagsFilter = prev.tagsFilter ?? [];
+          const newTags = prevTagsFilter.includes(tag)
+            ? prevTagsFilter.filter((t) => t !== tag)
+            : [...prevTagsFilter, tag];
 
-        const electionRoundId: string | null = localStorage.getItem('electionRoundId');
-        const searchParams = buildURLSearchParams(params);
+          return { ...prev, tagsFilter: newTags.length > 0 ? newTags : undefined };
+        },
+      });
+    },
+    [navigate]
+  );
 
-        const response = await authApi
-          .get<PageResponse<MonitoringObserver>>(`election-rounds/${electionRoundId}/notifications:listRecipients`,
-            {
-              params: searchParams,
-            }
-          );
+  const onClearFilter = useCallback(
+    (filter: keyof PushMessageTargetedObserversSearchParams | (keyof PushMessageTargetedObserversSearchParams)[]) => () => {
+      const filters = Array.isArray(filter)
+        ? Object.fromEntries(filter.map((key) => [key, undefined]))
+        : { [filter]: undefined };
+      void navigate({ search: (prev) => ({ ...prev, ...filters }) });
+    },
+    [navigate]
+  );
 
-        if (response.status !== 200) {
-          throw new Error('Failed to fetch monitoring observers');
-        }
+  const debouncedSearch = useDebounce(search, 300);
 
-        return response.data;
-      },
-    });
-  };
+  const queryParams = useMemo(() => {
+    const params = [
+      ['searchText', debouncedSearchText],
+      ['statusFilter', debouncedSearch.statusFilter],
+      ['tagsFilter', debouncedSearch.tagsFilter],
+      ['level1Filter', debouncedSearch.level1Filter],
+      ['level2Filter', debouncedSearch.level2Filter],
+      ['level3Filter', debouncedSearch.level3Filter],
+      ['level4Filter', debouncedSearch.level4Filter],
+      ['level5Filter', debouncedSearch.level5Filter],
+    ].filter(([_, value]) => value);
 
-  const handleStatusFilter = (status: string) => {
-    setStatusFilter(status);
-  };
+    return Object.fromEntries(params) as PushMessageTargetedObserversSearchParams;
+  }, [searchText, debouncedSearch]);
 
-  const resetFilters = () => {
-    setStatusFilter('');
-    setTagsFilter([]);
-  };
-
-  const toggleTagsFilter = (tag: string) => {
-    setTagsFilter((prevTags: any) => {
-      if (!prevTags.includes(tag)) {
-        return [...prevTags, tag];
-      } else {
-        return prevTags.filter((tagText: string) => tagText !== tag);
-      }
-    });
-  };
-
-
+  const handleDataFetchinSucceed = (pageSize: number, currentPage: number, totalCount: number) => {
+    setTotalRowsCount(totalCount);
+  }
 
   const form = useForm<z.infer<typeof createPushMessageSchema>>({
     resolver: zodResolver(createPushMessageSchema),
   });
 
-
   function onSubmit(values: z.infer<typeof createPushMessageSchema>) {
     console.log(values);
-
   }
 
   return (
     <Layout title='Create new message'>
-      <Card className='w-[800px] py-6'>
+      <Card className='py-6'>
         <CardContent className='flex flex-col gap-6 items-baseline'>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
@@ -166,65 +154,108 @@ function PushMessageForm() {
                   </FormItem>
                 )}
               />
+              <div className='flex flex-col gap-2 items-start'>
+                <div className='flex flex-col md:flex-row gap-2'>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger>
+                      <Button className='border-gray-200 gap-1 hover:bg-white w-[180px]' variant='outline'>
+                        <span className='text-sm font-normal text-slate-700'>Observer tags</span>
+                        {search.tagsFilter && (
+                          <span className='bg-purple-50 text-purple-600 rounded-full inline-block px-2'>
+                            {search.tagsFilter.length}
+                          </span>
+                        )}
+                        <ChevronDownIcon className='w-[20px] ml-auto' />
+                      </Button>
+                    </DropdownMenuTrigger>
 
-              <div className='table-filters flex flex-row gap-4 items-center'>
-                <Select value={statusFilter} onValueChange={handleStatusFilter}>
-                  <SelectTrigger className='w-[180px]'>
-                    <SelectValue placeholder='Observer status' />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectItem value='Active'>Active</SelectItem>
-                      <SelectItem value='Pending'>Pending</SelectItem>
-                      <SelectItem value='Suspended'>Suspended</SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <div className='flex h-10 w-48 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50'>
-                      Tags
-                    </div>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className='w-56'>
-                    {tags?.map((tag) => (
-                      <DropdownMenuCheckboxItem
-                        checked={tagsFilter.includes(tag.text)}
-                        onCheckedChange={() => toggleTagsFilter(tag.text)}
-                        key={tag.id}>
-                        {tag.text}
-                      </DropdownMenuCheckboxItem>
-                    ))}
-                  </DropdownMenuContent>
-                </DropdownMenu>
-                <PollingStationsFilters />
+                    <DropdownMenuContent>
+                      {tags?.map((tag) => (
+                        <DropdownMenuCheckboxItem
+                          checked={search.tagsFilter?.includes(tag.text)}
+                          onCheckedChange={onTagsFilterChange(tag.text)}
+                          key={tag.id}>
+                          {tag.text}
+                        </DropdownMenuCheckboxItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
 
-                <Button
-                  onClick={() => {
-                    void navigate({});
-                  }}
-                  variant='ghost-primary'>
-                  Reset filters
-                </Button>
-
-                <div className='flex flex-row gap-2 flex-wrap'>
-
-                  {tagsFilter.map((tag) => (
-                    <span
-                      key={tag}
-                      onClick={() => toggleTagsFilter(tag)}
-                      className='rounded-full cursor-pointer py-1 px-4 bg-purple-100 text-sm text-purple-900 font-medium flex items-center gap-2'>
-                      Tags: {tag}
-                      <X size={14} />
-                    </span>
-                  ))}
+                  <Select
+                    onValueChange={(value) => {
+                      void navigate({ search: (prev) => ({ ...prev, statusFilter: value }) });
+                    }}
+                    value={search.statusFilter ?? ''}>
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder='Observer status' />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        {Object.values(MonitoringObserverStatus).map((value) => (
+                          <SelectItem value={value} key={value}>{value}</SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
                 </div>
+                <PollingStationsFilters className='flex flex-col md:flex-row gap-2' />
               </div>
 
-              <DataTable columns={targetedMonitoringObserverColDefs} useQuery={useTargetedMonitoringObservers} />
+              {Object.entries(search).length > 0 && (
+                <div className='col-span-full flex gap-2 flex-wrap'>
+                  {search.tagsFilter?.map((tag) => (
+                    <FilterBadge label={`Observer tags: ${tag}`} onClear={onTagsFilterChange(tag)} />
+                  ))}
+
+
+                  {search.level1Filter && (
+                    <FilterBadge
+                      label={`Location - L1: ${search.level1Filter}`}
+                      onClear={onClearFilter(['level1Filter', 'level2Filter', 'level3Filter', 'level4Filter', 'level5Filter'])}
+                    />
+                  )}
+
+                  {search.level2Filter && (
+                    <FilterBadge
+                      label={`Location - L2: ${search.level2Filter}`}
+                      onClear={onClearFilter(['level2Filter', 'level3Filter', 'level4Filter', 'level5Filter'])}
+                    />
+                  )}
+
+                  {search.level3Filter && (
+                    <FilterBadge
+                      label={`Location - L3: ${search.level3Filter}`}
+                      onClear={onClearFilter(['level3Filter', 'level4Filter', 'level5Filter'])}
+                    />
+                  )}
+
+                  {search.level4Filter && (
+                    <FilterBadge
+                      label={`Location - L4: ${search.level4Filter}`}
+                      onClear={onClearFilter(['level4Filter', 'level5Filter'])}
+                    />
+                  )}
+
+                  {search.level5Filter && (
+                    <FilterBadge label={`Location - L5: ${search.level5Filter}`} onClear={onClearFilter('level5Filter')} />
+                  )}
+
+                  <Button
+                    type='button'
+                    onClick={() => {
+                      void navigate({});
+                    }}
+                    variant='ghost-primary'
+                    className="w-[180px]">
+                    Reset filters
+                  </Button>
+                </div>
+              )}
+
+              <QueryParamsDataTable columns={targetedMonitoringObserverColDefs} useQuery={useTargetedMonitoringObservers} onDataFetchingSucceed={handleDataFetchinSucceed} queryParams={queryParams}/>
 
               <div className='fixed bottom-0 left-0 bg-white py-4 px-12 flex justify-end w-screen'>
-                <Button>Send message to 152 observers</Button>
+                <Button>Send message to {totalRowsCount} observers</Button>
               </div>
             </form>
           </Form>

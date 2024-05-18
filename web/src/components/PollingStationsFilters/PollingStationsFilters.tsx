@@ -4,7 +4,11 @@ import type { FunctionComponent } from '@/common/types';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { usePollingStationsLocationLevels } from '@/hooks/polling-stations-levels';
 
-export function PollingStationsFilters(): FunctionComponent {
+export interface PollingStationsFiltersProps extends React.ButtonHTMLAttributes<HTMLDivElement> {
+}
+
+
+export function PollingStationsFilters(props: PollingStationsFiltersProps): FunctionComponent {
   const navigate = useNavigate();
 
   const search: any = useSearch({
@@ -53,7 +57,7 @@ export function PollingStationsFilters(): FunctionComponent {
   );
 
   return (
-    <>
+    <div {...props}>
       <Select
         onValueChange={(value) => {
           void navigate({
@@ -68,7 +72,7 @@ export function PollingStationsFilters(): FunctionComponent {
           });
         }}
         value={search.level1Filter ?? ''}>
-        <SelectTrigger>
+        <SelectTrigger className="w-[180px]">
           <SelectValue placeholder='Location - L1' />
         </SelectTrigger>
         <SelectContent>
@@ -96,7 +100,7 @@ export function PollingStationsFilters(): FunctionComponent {
           });
         }}
         value={search.level2Filter ?? ''}>
-        <SelectTrigger>
+        <SelectTrigger className="w-[180px]">
           <SelectValue placeholder='Location - L2' />
         </SelectTrigger>
         <SelectContent>
@@ -118,7 +122,7 @@ export function PollingStationsFilters(): FunctionComponent {
           });
         }}
         value={search.level3Filter ?? ''}>
-        <SelectTrigger>
+        <SelectTrigger className="w-[180px]">
           <SelectValue placeholder='Location - L3' />
         </SelectTrigger>
         <SelectContent>
@@ -138,7 +142,7 @@ export function PollingStationsFilters(): FunctionComponent {
           void navigate({ search: (prev) => ({ ...prev, level4Filter: value, level5Filter: undefined }) });
         }}
         value={search.level4Filter ?? ''}>
-        <SelectTrigger>
+        <SelectTrigger className="w-[180px]">
           <SelectValue placeholder='Location - L4' />
         </SelectTrigger>
         <SelectContent>
@@ -158,7 +162,7 @@ export function PollingStationsFilters(): FunctionComponent {
           void navigate({ search: (prev) => ({ ...prev, level5Filter: value }) });
         }}
         value={search.level5Filter ?? ''}>
-        <SelectTrigger>
+        <SelectTrigger className="w-[180px]">
           <SelectValue placeholder='Location - L5' />
         </SelectTrigger>
         <SelectContent>
@@ -171,6 +175,6 @@ export function PollingStationsFilters(): FunctionComponent {
           </SelectGroup>
         </SelectContent>
       </Select>
-    </>
+    </div>
   );
 }

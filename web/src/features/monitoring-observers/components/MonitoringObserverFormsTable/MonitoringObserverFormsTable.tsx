@@ -7,7 +7,7 @@ import { CardContent } from '@/components/ui/card';
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
 import { useFormSubmissionsByEntry } from '@/features/responses/hooks/form-submissions-queries';
 import { formSubmissionsByEntryColumnDefs } from '@/features/responses/utils/column-defs';
-import type { MonitoringObserverDetailsRouteSearch } from '../../models/MonitoringObserver';
+import type { MonitoringObserverDetailsRouteSearch } from '../../models/monitoring-observer';
 
 const routeApi = getRouteApi('/monitoring-observers/$monitoringObserverId/view/$tab');
 
