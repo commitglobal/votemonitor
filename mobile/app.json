@@ -10,7 +10,7 @@
     "splash": {
       "image": "./assets/icons/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#5F288D"
+      "backgroundColor": "#FDD20C"
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
@@ -28,7 +28,7 @@
       "versionCode": 42,
       "adaptiveIcon": {
         "foregroundImage": "./assets/icons/adaptive-icon.png",
-        "backgroundColor": "#5F288D"
+        "backgroundColor": "#FDD20C"
       },
       "package": "org.commitglobal.votemonitor",
       "googleServicesFile": "./google-services.json"
