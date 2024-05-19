@@ -121,20 +121,24 @@ export const mapAPIAnswersToFormAnswers = (
 export const mapFormSubmissionDataToAPIFormSubmissionAnswer = (
   questionId: string,
   questionType: FormQuestionType,
-  answer: string | Record<string, string> | Record<string, { optionId: string; text: string }>,
+  answer:
+    | string
+    | number
+    | Record<string, string>
+    | Record<string, { optionId: string; text: string }>,
 ): ApiFormAnswer | undefined => {
   switch (FormQuestionAnswerTypeMapping[questionType]) {
     case "numberAnswer":
       return {
         $answerType: "numberAnswer",
         questionId,
-        value: answer,
+        value: +answer,
       } as ApiFormAnswer;
     case "ratingAnswer":
       return {
         $answerType: "ratingAnswer",
         questionId,
-        value: answer,
+        value: +answer,
       } as ApiFormAnswer;
     case "textAnswer":
       return {

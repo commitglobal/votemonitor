@@ -41,6 +41,7 @@ import { useTranslation } from "react-i18next";
 import { onlineManager } from "@tanstack/react-query";
 import { ApiFormQuestion } from "../../../services/interfaces/question.type";
 import * as Sentry from "@sentry/react-native";
+import deepEql from "fast-deep-equal";
 
 type SearchParamType = {
   questionId: string;
@@ -117,6 +118,7 @@ const FormQuestionnaire = () => {
 
   const onSubmitAnswer = (formValues: any) => {
     const questionId = activeQuestion?.question.id as string;
+
     if (activeElectionRound?.id && selectedPollingStation?.pollingStationId && activeQuestion) {
       // map the answer values
       const updatedAnswer = mapFormSubmissionDataToAPIFormSubmissionAnswer(
@@ -132,26 +134,28 @@ const FormQuestionnaire = () => {
         return;
       }
 
-      // Find dependent questions for the current one and remove their answers
-      const dependentQuestionsIds = currentForm?.questions
-        ?.filter((q) => q.displayLogic?.parentQuestionId === questionId)
-        .map((q) => q.id);
-
-      dependentQuestionsIds?.forEach((qId) => {
-        if (answers) delete answers[qId];
-      });
-
       const updatedAnswers = {
         ...answers,
         [activeQuestion.question.id]: updatedAnswer,
       };
 
-      updateSubmission({
-        pollingStationId: selectedPollingStation?.pollingStationId,
-        electionRoundId: activeElectionRound?.id,
-        formId: currentForm?.id as string,
-        answers: Object.values(updatedAnswers).filter(Boolean) as ApiFormAnswer[],
-      });
+      // Send to server only if the answer is different then the saved one
+      if (!deepEql(answers?.[questionId], updatedAnswer)) {
+        // Find dependent questions for the current one and remove their answers
+        currentForm?.questions
+          ?.filter((q) => q.displayLogic?.parentQuestionId === questionId)
+          .map((q) => q.id)
+          .forEach((qId) => {
+            if (answers) delete answers[qId];
+          });
+
+        updateSubmission({
+          pollingStationId: selectedPollingStation?.pollingStationId,
+          electionRoundId: activeElectionRound?.id,
+          formId: currentForm?.id as string,
+          answers: Object.values(updatedAnswers).filter(Boolean) as ApiFormAnswer[],
+        });
+      }
 
       const nextQuestion = findNextQuestion(activeQuestion.indexInAllQuestions, updatedAnswers);
 
