@@ -44,9 +44,7 @@ const Login = () => {
       setIsLoading(false);
     }
   };
-  const { handleSubmit, control, formState } = useForm({
-    defaultValues: { email: "alice@example.com", password: "string" },
-  });
+  const { handleSubmit, control, formState } = useForm<FormData>();
   const { errors } = formState;
 
   const insets = useSafeAreaInsets();
