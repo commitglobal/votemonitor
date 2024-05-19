@@ -7,7 +7,6 @@ import { notesKeys, pollingStationsKeys } from "../../services/queries.service";
 import * as API from "../../services/definitions.api";
 import { performanceLog } from "../../helpers/misc";
 import { PersistGate } from "../../components/PersistGate";
-import SuperJSON from "superjson";
 import { AddAttachmentAPIPayload, addAttachment } from "../../services/api/add-attachment.api";
 import { deleteAttachment } from "../../services/api/delete-attachment.api";
 import { Note } from "../../common/models/note";
@@ -172,7 +171,7 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
       .getAll()
       .filter((mutation) => mutation.state.isPaused);
 
-    console.log("🆕🆕🆕🆕🆕", SuperJSON.stringify(pausedMutation));
+    // console.log("🆕🆕🆕🆕🆕", SuperJSON.stringify(pausedMutation));
 
     // const mergedMutations = pausedMutation.reduce(
     //   (acc: Record<string, Mutation<unknown, Error, void, unknown>>, mutation) => {
