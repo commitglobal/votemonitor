@@ -3,6 +3,7 @@ import { Animated } from "react-native";
 import PagerView, { PagerViewOnPageScrollEventData } from "react-native-pager-view";
 
 import OnboardingItem from "./OnboardingItem";
+import { useTranslation } from "react-i18next";
 
 type OnboardingViewPager = {
   scrollOffsetAnimatedValue: Animated.Value;
@@ -19,6 +20,7 @@ const OnboardingViewPager = ({
   currentPage,
   setCurrentPage,
 }: OnboardingViewPager) => {
+  const { t } = useTranslation("login");
   const AnimatedPagerView = Animated.createAnimatedComponent(PagerView);
 
   return (
@@ -46,21 +48,20 @@ const OnboardingViewPager = ({
       <OnboardingItem
         key="1"
         icon="monitorPollingStations"
-        title="Monitor polling stations"
-        helper="and document in real-time the entire election process, on forms which your accrediting
-              NGO has set up"
+        title={t("onboarding.monitor_polling_stations.title")}
+        helper={t("onboarding.monitor_polling_stations.description")}
       />
       <OnboardingItem
         key="2"
         icon="observationForms"
-        title="Fill in observation forms"
-        helper="and track their progress during each monitoring stage"
+        title={t("onboarding.observation_forms.title")}
+        helper={t("onboarding.observation_forms.description")}
       />
       <OnboardingItem
         key="3"
         icon="notesOrMedia"
-        title="Add notes or media files"
-        helper="if you notice any problems to further support your answers"
+        title={t("onboarding.notes_media.title")}
+        helper={t("onboarding.notes_media.description")}
       />
     </AnimatedPagerView>
   );

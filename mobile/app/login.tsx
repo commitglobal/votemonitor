@@ -73,8 +73,6 @@ const Login = () => {
   });
   const { errors } = formState;
 
-  // const AnimatedPagerView = Animated.createAnimatedComponent(PagerView);
-
   const onOnboardingComplete = () => {
     try {
       SecureStore.setItem("onboardingComplete", "true");
@@ -84,6 +82,8 @@ const Login = () => {
       Sentry.captureException(err);
     }
   };
+
+  //todo: refactor this (nr of pages in the view pager) @luciatugui
   const data = [1, 2, 3];
 
   if (!onboardingComplete) {
@@ -127,7 +127,7 @@ const Login = () => {
               justifyContent="flex-end"
             >
               <Typography color="white" preset="body2" paddingVertical="$xs" paddingRight="$md">
-                Skip
+                {t("onboarding.skip")}
               </Typography>
             </XStack>
           ) : (
@@ -137,9 +137,15 @@ const Login = () => {
               flex={1}
               justifyContent="flex-end"
             >
-              <Typography color="white" preset="body2" paddingVertical="$xs" paddingRight="$md">
+              <Typography
+                color="white"
+                preset="body2"
+                paddingVertical="$xs"
+                paddingRight="$md"
+                textAlign="center"
+              >
                 {/* //!this might cause problems if the translation is too long */}
-                Go to app
+                {t("onboarding.go_to_app")}
               </Typography>
             </XStack>
           )}

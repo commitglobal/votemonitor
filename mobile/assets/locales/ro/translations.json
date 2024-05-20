@@ -34,8 +34,30 @@
     "errors": {
       "credentials": "Credentialele nu sunt corecte. Vă rugăm să încercați din nou.",
       "general": "Eroare la încercarea de conectare"
+    },
+    "onboarding": {
+      "choose_language": {
+        "title": "Alegeți limba",
+        "description": "Aceasta va fi limba afișată în aplicație și va putea fi schimbată în orice moment din secțiunea 'Mai Multe' a aplicației.",
+        "action_button": "Confirmați selecția"
+      },
+      "monitor_polling_stations": {
+        "title": "Monitorizați stațiile de votare",
+        "description": "și documentați în timp real întregul proces de votare prin formulare acreditate de organizația dumneavoastră"
+      },
+      "observation_forms": {
+        "title": "Completați formulare de observație",
+        "description": "și urmăriți progresul lor în timpul fiecărei etape de monitorizare"
+      },
+      "notes_media": {
+        "title": "Adăugați notițe și fișiere media",
+        "description": "dacă sesizați probleme, pentru a întări răspunsul dumneavoastră"
+      },
+      "skip": "Sari peste",
+      "go_to_app": "Intră în aplicatie"
     }
   },
+
   "reset": {
     "header": {
       "title": "Resetare parola"

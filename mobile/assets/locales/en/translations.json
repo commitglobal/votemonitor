@@ -34,6 +34,27 @@
     "errors": {
       "credentials": "There was a problem with your credentials. Please try again.",
       "general": "Error while trying to log in"
+    },
+    "onboarding": {
+      "choose_language": {
+        "title": "Choose your language",
+        "description": "This will be the language in which your app will be displayed, and can be changed at any time from the More Section of the application.",
+        "action_button": "Apply selection"
+      },
+      "monitor_polling_stations": {
+        "title": "Monitor polling stations",
+        "description": "and document in real-time the entire election process, on forms which your accrediting NGO has set up"
+      },
+      "observation_forms": {
+        "title": "Fill in observation forms",
+        "description": "and track their progress during each monitoring stage"
+      },
+      "notes_media": {
+        "title": "Add notes or media files",
+        "description": "if you notice any problems to further support your answers"
+      },
+      "skip": "Skip",
+      "go_to_app": "Go to app"
     }
   },
   "reset": {
