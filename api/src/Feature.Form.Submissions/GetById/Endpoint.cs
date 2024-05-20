@@ -45,28 +45,33 @@ public class Endpoint(IDbConnection dbConnection, IFileStorageService fileStorag
             AND mn.""NgoId"" = @ngoId
             AND psi.""Id"" = @submissionId
         UNION ALL
-        SELECT fs.""Id"" AS ""SubmissionId"",
-               f.""FormType"" AS ""FormType"",
-               f.""Code"" AS ""FormCode"",
-               fs.""PollingStationId"",
-               fs.""MonitoringObserverId"",
-               fs.""Answers"",
-               f.""Questions"",
-               f.""DefaultLanguage"",
-            COALESCE((select jsonb_agg(jsonb_build_object('QuestionId', ""QuestionId"", 'FileName', ""FileName"", 'MimeType', ""MimeType"", 'FilePath', ""FilePath"", 'UploadedFileName', ""UploadedFileName"", 'TimeSubmitted', COALESCE(""LastModifiedOn"", ""CreatedOn"")))
-             FROM ""Attachments"" a
-             WHERE a.""ElectionRoundId"" = @electionRoundId
-                 AND a.""FormId"" = fs.""FormId""
-                 AND a.""MonitoringObserverId"" = fs.""MonitoringObserverId""
-                 AND fs.""PollingStationId"" = a.""PollingStationId""),'[]'::JSONB) AS ""Attachments"",
+        SELECT 
+                fs.""Id"" AS ""SubmissionId"",
+                f.""FormType"" AS ""FormType"",
+                f.""Code"" AS ""FormCode"",
+                fs.""PollingStationId"",
+                fs.""MonitoringObserverId"",
+                fs.""Answers"",
+                f.""Questions"",
+                f.""DefaultLanguage"",
 
-            COALESCE((select jsonb_agg(jsonb_build_object('QuestionId', ""QuestionId"", 'Text', ""Text"", 'TimeSubmitted', COALESCE(""LastModifiedOn"", ""CreatedOn"")))
-             FROM ""Notes"" n
-             WHERE n.""ElectionRoundId"" = @electionRoundId
-                 AND n.""FormId"" = fs.""FormId""
-                 AND n.""MonitoringObserverId"" = fs.""MonitoringObserverId""
-                 AND fs.""PollingStationId"" = n.""PollingStationId""), '[]'::JSONB) AS ""Notes"",
-               COALESCE(fs.""LastModifiedOn"", fs.""CreatedOn"") ""TimeSubmitted""
+                COALESCE((select jsonb_agg(jsonb_build_object('QuestionId', ""QuestionId"", 'FileName', ""FileName"", 'MimeType', ""MimeType"", 'FilePath', ""FilePath"", 'UploadedFileName', ""UploadedFileName"", 'TimeSubmitted', COALESCE(""LastModifiedOn"", ""CreatedOn"")))
+                FROM ""Attachments"" a
+                WHERE 
+                    a.""ElectionRoundId"" = @electionRoundId
+                    AND a.""FormId"" = fs.""FormId""
+                    AND a.""MonitoringObserverId"" = fs.""MonitoringObserverId""
+                    AND fs.""PollingStationId"" = a.""PollingStationId""),'[]'::JSONB) AS ""Attachments"",
+
+                COALESCE((select jsonb_agg(jsonb_build_object('QuestionId', ""QuestionId"", 'Text', ""Text"", 'TimeSubmitted', COALESCE(""LastModifiedOn"", ""CreatedOn"")))
+                FROM ""Notes"" n
+                WHERE 
+                    n.""ElectionRoundId"" = @electionRoundId
+                    AND n.""FormId"" = fs.""FormId""
+                    AND n.""MonitoringObserverId"" = fs.""MonitoringObserverId""
+                    AND fs.""PollingStationId"" = n.""PollingStationId""), '[]'::JSONB) AS ""Notes"",
+
+                COALESCE(fs.""LastModifiedOn"", fs.""CreatedOn"") ""TimeSubmitted""
         FROM ""FormSubmissions"" fs
         INNER JOIN ""MonitoringObservers"" mo ON fs.""MonitoringObserverId"" = mo.""Id""
         INNER JOIN ""MonitoringNgos"" mn ON mn.""Id"" = mo.""MonitoringNgoId""
