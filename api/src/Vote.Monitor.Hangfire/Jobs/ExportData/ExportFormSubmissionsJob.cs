@@ -197,7 +197,7 @@ public class ExportFormSubmissionsJob(VoteMonitorContext context,
             INNER JOIN ""MonitoringNgos"" mn ON mn.""Id"" = mo.""MonitoringNgoId""
             INNER JOIN ""Observers"" o ON o.""Id"" = mo.""ObserverId""
             INNER JOIN ""AspNetUsers"" u ON u.""Id"" = o.""ApplicationUserId""
-            WHERE mn.""ElectionRoundId"" = @electionRoundIdAND mn.""NgoId"" = @ngoId";
+            WHERE mn.""ElectionRoundId"" = @electionRoundId AND mn.""NgoId"" = @ngoId";
 
         var queryParams = new { electionRoundId, ngoId };
 
