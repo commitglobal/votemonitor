@@ -70,9 +70,9 @@ public class Endpoint(IAuthorizationService authorizationService, IDbConnection 
                          WHERE a.""ElectionRoundId"" = @electionRoundId
                          UNION
                          SELECT
-                         a.""{nameof(QuickReport.ElectionRoundId)}"", 
-                         a.""{nameof(QuickReport.PollingStationId)}"", 
-                         a.""{nameof(QuickReport.MonitoringObserverId)}"", 
+                         qr.""{nameof(QuickReport.ElectionRoundId)}"", 
+                         qr.""{nameof(QuickReport.PollingStationId)}"", 
+                         qr.""{nameof(QuickReport.MonitoringObserverId)}"", 
                          COALESCE(qr.""LastModifiedOn"", qr.""CreatedOn"") ""LatestTimestamp""
                          FROM ""{Tables.QuickReports}"" qr
                          WHERE qr.""ElectionRoundId"" = @electionRoundId

@@ -1,4 +1,7 @@
-﻿using OpenTelemetry.Metrics;
+﻿using Amazon.Runtime.Internal;
+using Microsoft.AspNetCore.Diagnostics;
+using System.Net;
+using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
 using Sentry.Extensibility;
 using Sentry.OpenTelemetry;
@@ -67,6 +70,7 @@ public static class SentryExtensions
 
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddSingleton<ISentryUserFactory, CustomSentryUserFactory>();
+
         return builder;
     }
 
@@ -74,12 +78,56 @@ public static class SentryExtensions
     {
         var sentryConfig = app.ApplicationServices.GetRequiredService<IConfiguration>().GetSection(SentryConfigurationSection);
         var isSentryEnabled = sentryConfig.GetValue<bool?>("Enabled") ?? false;
+
         if (!isSentryEnabled)
         {
+            app.UseDefaultExceptionHandler(logStructuredException: true, useGenericReason: true);
             return app;
         }
 
-        return app.UseSentryTracing();
+        app.UseSentryExceptionHandler();
+        app.UseSentryTracing();
+
+        return app;
+    }
+
+    class SentryExceptionHandler;
+
+    private static IApplicationBuilder UseSentryExceptionHandler(this IApplicationBuilder app)
+    {
+        app.UseExceptionHandler(
+            errApp =>
+            {
+                errApp.Run(
+                    async ctx =>
+                    {
+                        var exHandlerFeature = ctx.Features.Get<IExceptionHandlerFeature>();
+
+                        if (exHandlerFeature is not null)
+                        {
+                            var logger = ctx.Resolve<ILogger<SentryExceptionHandler>>();
+                            var route = exHandlerFeature.Endpoint?.DisplayName?.Split(" => ")[0];
+                            var exceptionType = exHandlerFeature.Error.GetType().Name;
+                            var reason = exHandlerFeature.Error.Message;
+
+                            logger.LogError(exHandlerFeature.Error, "Unhandled exception at: {@route}{@exceptionType}{@reason}{@exception}", route, exceptionType, reason, exHandlerFeature.Error);
+
+                            SentrySdk.CaptureException(exHandlerFeature.Error);
+
+                            ctx.Response.ContentType = "application/problem+json";
+                            await ctx.Response.WriteAsJsonAsync(
+                                new InternalErrorResponse
+                                {
+                                    Status = "Internal Server Error!",
+                                    Code = ctx.Response.StatusCode,
+                                    Reason = "An unexpected error has occurred.",
+                                    Note = "See application log for stack trace."
+                                });
+                        }
+                    });
+            });
+
+        return app;
     }
 
     private static MeterProviderBuilder AddBuiltInMeters(this MeterProviderBuilder meterProviderBuilder) =>
