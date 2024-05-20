@@ -28,13 +28,13 @@ interface MenuItemProps {
 
 const MenuItem = ({ label, helper, icon, chevronRight, onClick }: MenuItemProps) => (
   <Card onPress={onClick}>
-    <XStack alignItems="center" justifyContent="space-between">
-      <XStack alignItems="center" gap="$xxs">
+    <XStack alignItems="center" justifyContent="space-between" gap="$xxxs">
+      <XStack alignItems="center" gap="$xxs" maxWidth="80%">
         <Icon size={24} icon={icon} color="black" />
-        <View alignContent="center" gap="$xxxs">
-          <Typography preset="body2"> {label} </Typography>
-          {helper && <Typography color="$gray8"> {helper}</Typography>}
-        </View>
+        <YStack alignContent="center" gap="$xxxs">
+          <Typography preset="body2">{label} </Typography>
+          {helper && <Typography color="$gray8">{helper}</Typography>}
+        </YStack>
       </XStack>
 
       {chevronRight && <Icon size={32} icon="chevronRight" color="$purple7" />}
