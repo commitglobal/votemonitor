@@ -12,7 +12,7 @@ public class Endpoint(
     IReadRepository<QuickReport> quickReportRepository,
     IReadRepository<QuickReportAttachment> quickReportAttachmentRepository,
     IFileStorageService fileStorageService)
-    : Endpoint<Request, Results<Ok<QuickReportModel>, BadRequest<ProblemDetails>, NotFound>>
+    : Endpoint<Request, Results<Ok<QuickReportDetailedModel>, NotFound>>
 {
     public override void Configure()
     {
@@ -26,7 +26,7 @@ public class Endpoint(
         });
     }
 
-    public override async Task<Results<Ok<QuickReportModel>, BadRequest<ProblemDetails>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<Results<Ok<QuickReportDetailedModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
         var authorizationResult = await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminOrObserverRequirement(req.ElectionRoundId));
         if (!authorizationResult.Succeeded)
@@ -64,6 +64,6 @@ public class Endpoint(
 
         var attachments = await Task.WhenAll(tasks);
 
-        return TypedResults.Ok(QuickReportModel.FromEntity(quickReport, attachments));
+        return TypedResults.Ok(QuickReportDetailedModel.FromEntity(quickReport, attachments));
     }
 }
