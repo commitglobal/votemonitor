@@ -28,7 +28,7 @@ const user = {
     'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
 };
 const navigation = [
-  { name: 'Dashboard', to: '/', roles: ['PlatformAdmin'] },
+  { name: 'Dashboard', to: '/', roles: ['PlatformAdmin', 'NgoAdmin'] },
   { name: 'Election rounds', to: '/election-rounds', roles: ['PlatformAdmin'] },
   { name: 'NGOs', to: '/ngos', roles: ['PlatformAdmin'] },
   { name: 'Observers', to: '/observers', roles: ['PlatformAdmin'] },
@@ -38,7 +38,7 @@ const navigation = [
   { name: 'Responses', to: '/responses', roles: ['NgoAdmin'] },
   { name: 'Forms', to: '/forms', roles: ['NgoAdmin'] },
 ];
-const userNavigation: { name: string, to: string }[] = [];
+const userNavigation: { name: string; to: string }[] = [];
 
 const Header = (): FunctionComponent => {
   const [selectedElection, setSelectedElection] = useState<ElectionRoundMonitoring>();
@@ -80,7 +80,9 @@ const Header = (): FunctionComponent => {
         <>
           <div className='container'>
             <div className='flex items-center justify-between h-16 gap-6 md:gap-10'>
-              <Logo width={48} height={48} />
+              <Link to='/'>
+                <Logo width={48} height={48} />
+              </Link>
 
               <div className='items-baseline flex-1 hidden gap-4 md:flex'>
                 {navigation
@@ -163,10 +165,16 @@ const Header = (): FunctionComponent => {
                         </Menu.Item>
                       ))}
                       <Menu.Item key='sign-out'>
-
-                        <Button type='button' variant='link' onClick={() => { signOut(); navigate({ to: '/login' }) }}>Sign out</Button>
+                        <Button
+                          type='button'
+                          variant='link'
+                          onClick={() => {
+                            signOut();
+                            void navigate({ to: '/login' });
+                          }}>
+                          Sign out
+                        </Button>
                       </Menu.Item>
-
                     </Menu.Items>
                   </Transition>
                 </Menu>
@@ -203,7 +211,10 @@ const Header = (): FunctionComponent => {
                     search={{}}
                     params={{}}
                     className='block px-3 py-2 text-base font-medium rounded-md'
-                    activeProps={{ className: 'bg-primary-100 text-primary-600 cursor-default', 'aria-current': 'page' }}
+                    activeProps={{
+                      className: 'bg-primary-100 text-primary-600 cursor-default',
+                      'aria-current': 'page',
+                    }}
                     inactiveProps={{
                       className:
                         'hover:text-primary-600 hover:bg-secondary-300 focus:text-primary-600 focus:bg-secondary-300',
@@ -237,7 +248,10 @@ const Header = (): FunctionComponent => {
                 <Disclosure.Button
                   key='Sign Out'
                   as={Button}
-                  onClick={() => { signOut(); navigate({ to: '/login' }); }}
+                  onClick={() => {
+                    signOut();
+                    void navigate({ to: '/login' });
+                  }}
                   variant='link'
                   className='block px-4 py-2 text-base font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-800'>
                   Sign Out
