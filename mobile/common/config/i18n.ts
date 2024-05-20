@@ -9,7 +9,7 @@ const systemLocale = Localization.getLocales()[0];
 export const isRTL = systemLocale?.textDirection === "rtl";
 
 i18n.use(initReactI18next).init<ResourceLanguage>({
-  //default language app is currently the system locale or english
+  // default language app is currently the system locale or english
   lng: systemLocale.languageCode || "en",
   fallbackLng: ["en", "ro"],
   compatibilityJSON: "v3",

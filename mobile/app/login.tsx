@@ -4,7 +4,7 @@ import { useAuth } from "../hooks/useAuth";
 import { View, XStack, YStack, styled } from "tamagui";
 import { useTranslation } from "react-i18next";
 import { Screen } from "../components/Screen";
-import { StatusBar, Animated, StyleSheet } from "react-native";
+import { StatusBar, Animated } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Icon } from "../components/Icon";
 import { Typography } from "../components/Typography";
@@ -82,7 +82,7 @@ const Login = () => {
     }
   };
 
-  //todo: refactor this (nr of pages in the view pager) @luciatugui
+  // todo: refactor this (nr of pages in the view pager) @luciatugui
   const data = [1, 2, 3];
 
   if (!onboardingComplete) {

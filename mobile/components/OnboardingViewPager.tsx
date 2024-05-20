@@ -5,7 +5,7 @@ import PagerView, { PagerViewOnPageScrollEventData } from "react-native-pager-vi
 import OnboardingItem from "./OnboardingItem";
 import { useTranslation } from "react-i18next";
 
-type OnboardingViewPager = {
+type OnboardingViewPagerProps = {
   scrollOffsetAnimatedValue: Animated.Value;
   positionAnimatedValue: Animated.Value;
   pagerViewRef: React.MutableRefObject<null>;
@@ -19,7 +19,7 @@ const OnboardingViewPager = ({
   pagerViewRef,
   currentPage,
   setCurrentPage,
-}: OnboardingViewPager) => {
+}: OnboardingViewPagerProps) => {
   const { t } = useTranslation("login");
   const AnimatedPagerView = Animated.createAnimatedComponent(PagerView);
 
