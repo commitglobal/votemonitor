@@ -226,7 +226,6 @@ uiConfig: cfg =>
 });
 app.UseResponseCompression();
 app.UseSentryMiddleware();
-app.UseDefaultExceptionHandler(logStructuredException: true);
 
 app.Run();
 
