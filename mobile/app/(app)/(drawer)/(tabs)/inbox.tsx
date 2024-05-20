@@ -64,7 +64,7 @@ const Inbox = () => {
         <>
           <YStack backgroundColor="$yellow6" paddingVertical="$xxs" paddingHorizontal="$md">
             <Typography textAlign="center" color="$purple5" fontWeight="500">
-              {`${t("messages_from")} ${ngoName ? ngoName : t("your_organization")}`}
+              {`${t("messages_from")} ${ngoName || t("your_organization")}`}
             </Typography>
           </YStack>
           <YStack paddingHorizontal="$md" height={scrollHeight}>
@@ -89,7 +89,7 @@ const Inbox = () => {
           paddingHorizontal="$sm"
           onPress={() => {
             setOpenContextualMenu(false);
-            //todo: router.push to manage my polling stations
+            // todo: router.push to manage my polling stations
             // return router.push("change-password");
           }}
         >
