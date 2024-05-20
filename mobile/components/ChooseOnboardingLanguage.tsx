@@ -22,7 +22,10 @@ const ChooseOnboardingLanguage = ({
 
   const { control, handleSubmit } = useForm({
     defaultValues: {
-      selectedLanguage: (systemLocale.languageCode as Language) || ("en" as Language),
+      selectedLanguage:
+        systemLocale?.languageCode && i18n.languages.includes(systemLocale.languageCode)
+          ? (systemLocale.languageCode as Language)
+          : ("en" as Language),
     },
   });
 
