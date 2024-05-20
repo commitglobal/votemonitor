@@ -8,7 +8,6 @@ import { Icon } from "./Icon";
 
 export function PersistGate({ children }: React.PropsWithChildren) {
   const isRestoring = useIsRestoring();
-  console.log("🔂 IS RESTORING ", isRestoring);
 
   useEffect(() => {
     if (!isRestoring) {
@@ -16,14 +15,14 @@ export function PersistGate({ children }: React.PropsWithChildren) {
     }
   }, [isRestoring]);
 
-  return isRestoring ? <ComponentToRename /> : children;
+  return isRestoring ? <PersistGateLoadingScreen /> : children;
 }
 
-const ComponentToRename = () => {
+const PersistGateLoadingScreen = () => {
   return (
     <Screen
       preset="fixed"
-      backgroundColor="#7833B3"
+      backgroundColor="#FDD20C"
       contentContainerStyle={{
         flexGrow: 1,
       }}
