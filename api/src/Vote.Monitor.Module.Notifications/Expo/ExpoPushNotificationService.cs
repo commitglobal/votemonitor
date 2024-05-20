@@ -33,44 +33,42 @@ public class ExpoPushNotificationService(
 
                 foreach (var identifiersBatch in userIdentifiers.Chunk(_options.BatchSize))
                 {
-                    foreach (var userIdentifier in identifiersBatch)
+                    var expoIdentifiers = identifiersBatch.Where(IsExpoPushToken).ToList();
+                    if (!expoIdentifiers.Any())
                     {
-                        if (!IsExpoPushToken(userIdentifier))
+                        continue;
+                    }
+
+                    var request = new PushTicketRequest
+                    {
+                        PushTo = expoIdentifiers,
+                        PushTitle = title,
+                        PushBody = body
+                    };
+
+                    var response = await expoApi.SendNotificationAsync(request).ConfigureAwait(false);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        if (response.Content.PushTicketErrors != null && response.Content.PushTicketErrors.Any())
                         {
+                            logger.LogError("Error received when sending push notification {@request} {@response}",
+                                request, response);
+
+                            failedCount += identifiersBatch.Length;
                             continue;
                         }
 
-                        var request = new PushTicketRequest
-                        {
-                            PushTo = identifiersBatch.ToList(),
-                            PushTitle = title,
-                            PushBody = body
-                        };
+                        var serializedData = serializerService.Serialize(response.Content);
 
-                        var response = await expoApi.SendNotificationAsync(request).ConfigureAwait(false);
-                        if (response.IsSuccessStatusCode)
-                        {
-                            if (response.Content.PushTicketErrors != null && response.Content.PushTicketErrors.Any())
-                            {
-                                logger.LogError("Error received when sending push notification {@request} {@response}",
-                                    request, response);
+                        context.NotificationStubs.Add(NotificationStub.CreateExpoNotificationStub(serializedData));
+                        context.SaveChanges();
+                        successCount += identifiersBatch.Length;
+                    }
+                    else
+                    {
+                        logger.LogError("Error received in expo response {@request} {@response}", request, response);
 
-                                failedCount += identifiersBatch.Length;
-                                continue;
-                            }
-
-                            var serializedData = serializerService.Serialize(response.Content);
-
-                            context.NotificationStubs.Add(NotificationStub.CreateExpoNotificationStub(serializedData));
-                            context.SaveChanges();
-                            successCount += identifiersBatch.Length;
-                        }
-                        else
-                        {
-                            logger.LogError("Error received in expo response {@request} {@response}", request, response);
-
-                            failedCount += identifiersBatch.Length;
-                        }
+                        failedCount += identifiersBatch.Length;
                     }
                 }
             }

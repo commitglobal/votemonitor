@@ -126,6 +126,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feature.QuickReports.UnitTe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feature.ImportErrors", "src\Feature.ImportErrors\Feature.ImportErrors.csproj", "{19366F64-093A-4A2F-B6EB-EA5E90A97F6E}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Module.Notifications.UnitTests", "tests\Vote.Monitor.Module.Notifications.UnitTests\Vote.Monitor.Module.Notifications.UnitTests.csproj", "{15A339AF-DAB4-4733-BBFC-C2F4D1D19B49}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -356,6 +358,10 @@ Global
 		{19366F64-093A-4A2F-B6EB-EA5E90A97F6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{19366F64-093A-4A2F-B6EB-EA5E90A97F6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{19366F64-093A-4A2F-B6EB-EA5E90A97F6E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{15A339AF-DAB4-4733-BBFC-C2F4D1D19B49}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15A339AF-DAB4-4733-BBFC-C2F4D1D19B49}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15A339AF-DAB4-4733-BBFC-C2F4D1D19B49}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15A339AF-DAB4-4733-BBFC-C2F4D1D19B49}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -417,6 +423,7 @@ Global
 		{E5DCBEC6-B0A0-453D-9CAC-B15E44BB7B3A} = {17945B3C-5A4C-4279-8022-65ABC606A510}
 		{7CE7CD4F-9DFE-4F43-8816-CDB5A2C7D38C} = {3441EE1D-E3C6-45BE-A020-553816015081}
 		{19366F64-093A-4A2F-B6EB-EA5E90A97F6E} = {17945B3C-5A4C-4279-8022-65ABC606A510}
+		{15A339AF-DAB4-4733-BBFC-C2F4D1D19B49} = {3441EE1D-E3C6-45BE-A020-553816015081}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {50C20C9F-F2AF-45D8-994A-06661772B31C}
