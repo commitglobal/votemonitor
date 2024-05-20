@@ -31,9 +31,7 @@ const ForgotPassword = () => {
     handleSubmit,
     control,
     formState: { errors },
-  } = useForm<FormData>({
-    defaultValues: { email: "charlie@example.com" },
-  });
+  } = useForm<FormData>({});
 
   // Submit handler - forgot password
   const onSubmit = async (data: FormData) => {
