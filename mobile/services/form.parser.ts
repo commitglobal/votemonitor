@@ -236,12 +236,16 @@ export const mapFormToFormListItem = (
 ): FormListItem[] => {
   const submissions = arrayToKeyObject(formSubmissions?.submissions || [], "formId");
   return forms.map((form) => {
+    const answers = arrayToKeyObject(submissions[form?.id]?.answers || [], "questionId");
+    const questions = form.questions.filter((q) => shouldDisplayQuestion(q, answers));
+
     const numberOfAnswers = submissions[form.id]?.answers.length || 0;
+
     return {
       id: form.id,
       name: `${form.code} - ${form.name.RO}`,
       numberOfCompletedQuestions: numberOfAnswers,
-      numberOfQuestions: form.questions.length,
+      numberOfQuestions: questions.length,
       options: `Available in ${Object.keys(form.name).join(", ")}`,
       status: mapFormStateStatus(numberOfAnswers, form.questions.length),
       languages: form.languages,
