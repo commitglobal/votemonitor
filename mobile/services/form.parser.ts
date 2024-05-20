@@ -41,14 +41,14 @@ const mapDisplayConditionToMath = (
 
 export const shouldDisplayQuestion = (
   q: ApiFormQuestion,
-  answers: Record<string, ApiFormAnswer> | undefined,
+  answers: Record<string, ApiFormAnswer | undefined> | undefined,
 ) => {
   if (q.displayLogic) {
     if (!answers?.[q.displayLogic?.parentQuestionId]) {
       return false;
     }
     const condition: DisplayLogicCondition = q.displayLogic.condition;
-    const parentAnswerType = answers?.[q.displayLogic?.parentQuestionId].$answerType;
+    const parentAnswerType = answers?.[q.displayLogic?.parentQuestionId]?.$answerType;
     const parentAnswer = answers?.[q.displayLogic?.parentQuestionId];
     const value = q.displayLogic?.value;
 
@@ -127,6 +127,8 @@ export const mapFormSubmissionDataToAPIFormSubmissionAnswer = (
     | Record<string, string>
     | Record<string, { optionId: string; text: string }>,
 ): ApiFormAnswer | undefined => {
+  if (!answer) return undefined;
+
   switch (FormQuestionAnswerTypeMapping[questionType]) {
     case "numberAnswer":
       return {
