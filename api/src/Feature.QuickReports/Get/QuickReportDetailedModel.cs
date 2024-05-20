@@ -2,7 +2,7 @@
 using Ardalis.SmartEnum.SystemTextJson;
 using Vote.Monitor.Domain.Entities.QuickReportAggregate;
 
-namespace Feature.QuickReports;
+namespace Feature.QuickReports.Get;
 
 public record QuickReportDetailedModel
 {
