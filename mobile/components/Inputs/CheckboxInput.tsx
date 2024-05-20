@@ -11,7 +11,7 @@ export interface CheckboxInputProps extends CheckboxProps {
 const CheckboxInput: React.FC<CheckboxInputProps> = ({ label, id, checked, onCheckedChange }) => {
   return (
     <XStack
-      height={42}
+      minHeight={42}
       alignItems="center"
       backgroundColor="white"
       borderWidth={1}
