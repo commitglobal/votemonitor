@@ -76,8 +76,7 @@ const NotificationContextProvider = ({ children }: { children: React.ReactNode }
     );
 
     responseListener.current = Notifications.addNotificationResponseReceivedListener(
-      (response: any) => {
-        console.log("🚀🚀🚀🚀 NOTIFICATION payload", response);
+      (_response: any) => {
         router.push("/inbox");
         queryClient.invalidateQueries({
           queryKey: NotificationsKeys.notifications(activeElectionRound?.id),
@@ -98,7 +97,6 @@ const NotificationContextProvider = ({ children }: { children: React.ReactNode }
   }, []);
 
   const unsubscribe = async () => {
-    console.log("Unsubscribe", pushToken);
     try {
       if (pushToken) {
         await unsubscribePushNotifications();
