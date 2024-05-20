@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using Feature.QuickReports.Get;
 using Feature.QuickReports.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using NSubstitute.ReturnsExtensions;
@@ -29,7 +30,7 @@ public class GetEndpointTests
     }
 
     [Fact]
-    public async Task ShouldReturnOkWithQuickReportModel_WhenAllIdsExist()
+    public async Task ShouldReturnOkWithQuickReportDetailedModel_WhenAllIdsExist()
     {
         // Arrange
         var quickReportId = Guid.NewGuid();
@@ -58,7 +59,7 @@ public class GetEndpointTests
         var result = await _endpoint.ExecuteAsync(request, default);
 
         // Assert
-        var model = result.Result.As<Ok<QuickReportModel>>().Value!;
+        var model = result.Result.As<Ok<QuickReportDetailedModel>>().Value!;
 
         model.Id.Should().Be(quickReport.Id);
         model.ElectionRoundId.Should().Be(quickReport.ElectionRoundId);
@@ -133,7 +134,7 @@ public class GetEndpointTests
 
         // Assert
         result
-            .Should().BeOfType<Results<Ok<QuickReportModel>, BadRequest<ProblemDetails>, NotFound>>()
+            .Should().BeOfType<Results<Ok<QuickReportDetailedModel>, NotFound>>()
             .Which
             .Result.Should().BeOfType<NotFound>();
     }
@@ -162,7 +163,7 @@ public class GetEndpointTests
 
         // Assert
         result
-            .Should().BeOfType<Results<Ok<QuickReportModel>, BadRequest<ProblemDetails>, NotFound>>()
+            .Should().BeOfType<Results<Ok<QuickReportDetailedModel>, NotFound>>()
             .Which
             .Result.Should().BeOfType<NotFound>();
     }
