@@ -7,7 +7,7 @@ public class Endpoint(IRepository<PollingStationInformation> repository) : Endpo
 {
     public override void Configure()
     {
-        Delete("/api/election-rounds/{electionRoundId}/polling-stations/{pollingStationId}/information/{id}");
+        Delete("/api/election-rounds/{electionRoundId}/polling-stations/{pollingStationId}/information");
         DontAutoTag();
         Options(x => x.WithTags("polling-station-information", "mobile"));
         Summary(s => {
