@@ -40,7 +40,6 @@ import * as Crypto from "expo-crypto";
 import { useTranslation } from "react-i18next";
 import { onlineManager } from "@tanstack/react-query";
 import { ApiFormQuestion } from "../../../services/interfaces/question.type";
-import * as Sentry from "@sentry/react-native";
 
 type SearchParamType = {
   questionId: string;
@@ -82,8 +81,8 @@ const FormQuestionnaire = () => {
   const {
     control,
     handleSubmit,
-    reset,
-    formState: { isValid },
+    formState: { isDirty },
+    setValue,
   } = useForm({
     defaultValues: setFormDefaultValues(questionId, answers?.[questionId]) as any,
   });
@@ -117,6 +116,7 @@ const FormQuestionnaire = () => {
 
   const onSubmitAnswer = (formValues: any) => {
     const questionId = activeQuestion?.question.id as string;
+
     if (activeElectionRound?.id && selectedPollingStation?.pollingStationId && activeQuestion) {
       // map the answer values
       const updatedAnswer = mapFormSubmissionDataToAPIFormSubmissionAnswer(
@@ -125,33 +125,28 @@ const FormQuestionnaire = () => {
         formValues[questionId],
       );
 
-      if (!updatedAnswer) {
-        Sentry.captureMessage(
-          `Could not map QuestionType to Answer ${questionId}, ${activeQuestion?.question.$questionType}, ${formValues[questionId]}`,
-        );
-        return;
-      }
-
-      // Find dependent questions for the current one and remove their answers
-      const dependentQuestionsIds = currentForm?.questions
-        ?.filter((q) => q.displayLogic?.parentQuestionId === questionId)
-        .map((q) => q.id);
-
-      dependentQuestionsIds?.forEach((qId) => {
-        if (answers) delete answers[qId];
-      });
-
       const updatedAnswers = {
         ...answers,
         [activeQuestion.question.id]: updatedAnswer,
       };
 
-      updateSubmission({
-        pollingStationId: selectedPollingStation?.pollingStationId,
-        electionRoundId: activeElectionRound?.id,
-        formId: currentForm?.id as string,
-        answers: Object.values(updatedAnswers).filter(Boolean) as ApiFormAnswer[],
-      });
+      // Send to server only if the answer is different then the saved one
+      if (isDirty) {
+        // Find dependent questions for the current one and remove their answers
+        currentForm?.questions
+          ?.filter((q) => q.displayLogic?.parentQuestionId === questionId)
+          .map((q) => q.id)
+          .forEach((qId) => {
+            if (updatedAnswers) delete updatedAnswers[qId];
+          });
+
+        updateSubmission({
+          pollingStationId: selectedPollingStation?.pollingStationId,
+          electionRoundId: activeElectionRound?.id,
+          formId: currentForm?.id as string,
+          answers: Object.values(updatedAnswers).filter(Boolean) as ApiFormAnswer[],
+        });
+      }
 
       const nextQuestion = findNextQuestion(activeQuestion.indexInAllQuestions, updatedAnswers);
 
@@ -167,7 +162,7 @@ const FormQuestionnaire = () => {
 
   const findNextQuestion = (
     index: number,
-    updatedAnswers: Record<string, ApiFormAnswer> | undefined,
+    updatedAnswers: Record<string, ApiFormAnswer | undefined> | undefined,
   ): ApiFormQuestion | null => {
     if (index + 1 === currentForm?.questions.length) {
       // No more questions
@@ -214,8 +209,7 @@ const FormQuestionnaire = () => {
   };
 
   const onClearForm = () => {
-    const formState = setFormDefaultValues(questionId);
-    reset(formState);
+    setValue(activeQuestion?.question?.id, "", { shouldDirty: true });
   };
 
   if (isLoadingCurrentForm || isLoadingAnswers) {
@@ -352,7 +346,7 @@ const FormQuestionnaire = () => {
           <Controller
             key={activeQuestion?.question?.id}
             name={activeQuestion?.question?.id}
-            rules={{ required: true }}
+            rules={{ required: false }}
             control={control}
             render={({ field: { value, onChange } }) => {
               if (!activeQuestion) return <></>;
@@ -536,7 +530,7 @@ const FormQuestionnaire = () => {
           currentForm?.questions &&
           activeQuestion?.indexInAllQuestions === currentForm?.questions?.length - 1
         }
-        isNextDisabled={!isValid}
+        isNextDisabled={false}
         onNextButtonPress={handleSubmit(onSubmitAnswer)}
         onPreviousButtonPress={onBackButtonPress}
       />

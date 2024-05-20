@@ -67,15 +67,16 @@ const NotificationContextProvider = ({ children }: { children: React.ReactNode }
   }, [isAuthenticated]);
 
   useEffect(() => {
-    // notificationListener.current = Notifications.addNotificationReceivedListener(
-    //   async (notification) => {
-    //     console.log(notification);
-    //   },
-    // );
+    notificationListener.current = Notifications.addNotificationReceivedListener(
+      async (_notification) => {
+        queryClient.invalidateQueries({
+          queryKey: NotificationsKeys.notifications(activeElectionRound?.id),
+        });
+      },
+    );
 
     responseListener.current = Notifications.addNotificationResponseReceivedListener(
-      (response: any) => {
-        console.log("🚀🚀🚀🚀 NOTIFICATION payload", response);
+      (_response: any) => {
         router.push("/inbox");
         queryClient.invalidateQueries({
           queryKey: NotificationsKeys.notifications(activeElectionRound?.id),
@@ -96,7 +97,6 @@ const NotificationContextProvider = ({ children }: { children: React.ReactNode }
   }, []);
 
   const unsubscribe = async () => {
-    console.log("Unsubscribe", pushToken);
     try {
       if (pushToken) {
         await unsubscribePushNotifications();

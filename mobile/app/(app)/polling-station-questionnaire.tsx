@@ -75,13 +75,13 @@ const PollingStationQuestionnaire = () => {
             return {
               $answerType: "numberAnswer",
               questionId,
-              value: formData[questionId],
+              value: +formData[questionId],
             } as ApiFormAnswer;
           case "ratingAnswer":
             return {
               $answerType: "ratingAnswer",
               questionId,
-              value: formData[questionId],
+              value: +formData[questionId],
             } as ApiFormAnswer;
           case "textAnswer":
             return {

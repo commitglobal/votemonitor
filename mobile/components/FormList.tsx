@@ -17,6 +17,7 @@ import RadioFormInput from "./FormInputs/RadioFormInput";
 import Button from "./Button";
 import { useFormSubmissions } from "../services/queries/form-submissions.query";
 import { useElectionRoundAllForms } from "../services/queries/forms.query";
+import FormListErrorScreen from "./FormListError";
 
 export type FormListItem = {
   id: string;
@@ -94,7 +95,7 @@ const FormList = ({ ListHeaderComponent }: { ListHeaderComponent: ListHeaderComp
   }
 
   if (formsError || answersError) {
-    return <Typography>Error while showing form data</Typography>;
+    return <FormListErrorScreen />;
   }
 
   return (

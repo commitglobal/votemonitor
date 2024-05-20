@@ -19,6 +19,13 @@ import { toastConfig } from "../toast.config";
 // Construct a new instrumentation instance. This is needed to communicate between the integration and React
 const routingInstrumentation = new Sentry.ReactNavigationInstrumentation();
 
+// replace console.* for disable log on production
+if (process.env.NODE_ENV === "production") {
+  console.log = () => {};
+  console.error = () => {};
+  console.debug = () => {};
+}
+
 Sentry.init({
   dsn: process.env.EXPO_PUBLIC_SENTRY_DSN,
   debug: __DEV__,

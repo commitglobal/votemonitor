@@ -20,6 +20,7 @@ import * as SecureStore from "expo-secure-store";
 import ChooseOnboardingLanguage from "../components/ChooseOnboardingLanguage";
 import OnboardingViewPager from "../components/OnboardingViewPager";
 import Pagination from "../components/Pagination";
+import CredentialsError from "../components/CredentialsError";
 
 interface FormData {
   email: string;
@@ -68,9 +69,7 @@ const Login = () => {
       setIsLoading(false);
     }
   };
-  const { handleSubmit, control, formState } = useForm({
-    defaultValues: { email: "alice@example.com", password: "string" },
-  });
+  const { handleSubmit, control, formState } = useForm<FormData>();
   const { errors } = formState;
 
   const onOnboardingComplete = () => {
@@ -205,7 +204,7 @@ const LoginForm = ({
 
       <Typography>{t("paragraph")}</Typography>
 
-      {authError && <CredentialsError />}
+      {authError && <CredentialsError error={t("errors.credentials")} />}
 
       <Controller
         key="email"
@@ -299,24 +298,6 @@ const Header = () => {
       <StatusBar barStyle="light-content"></StatusBar>
       <Icon icon="loginLogo" />
     </StyledWrapper>
-  );
-};
-
-const CredentialsError = () => {
-  const { t } = useTranslation("login");
-  return (
-    <XStack
-      backgroundColor="$red1"
-      borderRadius={6}
-      justifyContent="center"
-      padding="$md"
-      alignItems="flex-start"
-    >
-      <Icon icon="loginError" size={16} />
-      <Typography paddingHorizontal="$md" color="$red6" fontWeight="500">
-        {t("errors.credentials")}
-      </Typography>
-    </XStack>
   );
 };
 
