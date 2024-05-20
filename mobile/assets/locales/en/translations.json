@@ -52,11 +52,8 @@
     },
     "actions": {
       "send": "Send"
-    }
-  },
-  "email-confirmation": {
-    "title": "Email sent",
-    "paragraph": "Check your email and open the link we sent to continue. Check your spam filter if you did not receive the email."
+    },
+    "error": "The current email is not registerd in the system. Please try again."
   },
   "more": {
     "change-language": "Change app language",
@@ -220,6 +217,13 @@
       "paragraph": "Your password has been successfully changed.",
       "actions": {
         "back": "Back to app"
+      }
+    },
+    "email_confirmation": {
+      "title": "Email sent",
+      "paragraph": "Check your email and open the link we sent to continue. Check your spam filter if you did not receive the email.",
+      "actions" : {
+        "back": "Back to login"
       }
     }
   },

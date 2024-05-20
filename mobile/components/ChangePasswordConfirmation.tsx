@@ -9,9 +9,25 @@ import Button from "../components/Button";
 import { router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-const ChangePasswordConfirmation = () => {
+interface ChangePasswordConfirmationProps {
+  emailConfirmation: boolean;
+}
+
+const ChangePasswordConfirmation = (props: ChangePasswordConfirmationProps) => {
+  const { emailConfirmation } = props;
   const { t } = useTranslation("change_password");
   const insets = useSafeAreaInsets();
+
+  const icon = emailConfirmation === true ? "emailSent" : "passwordConfirmation";
+  const header =
+    emailConfirmation === true ? t("email_confirmation.title") : t("success_page.title");
+  const paragraph =
+    emailConfirmation === true ? t("email_confirmation.paragraph") : t("success_page.paragraph");
+
+  const actionButtonText =
+    emailConfirmation === true
+      ? t("email_confirmation.actions.back")
+      : t("success_page.actions.back");
 
   return (
     <Screen
@@ -32,17 +48,17 @@ const ChangePasswordConfirmation = () => {
         flexGrow={1}
         gap="$xxs"
       >
-        <Icon icon="passwordConfirmation" size={126} marginBottom="$md" />
+        <Icon icon={icon} size={126} marginBottom="$md" color="yellow" />
         <Typography preset="heading" fontWeight="700" color="$purple5">
-          {t("success_page.title")}
+          {header}
         </Typography>
         <Typography preset="body1" color="black" textAlign="center">
-          {t("success_page.paragraph")}
+          {paragraph}
         </Typography>
       </YStack>
 
       <Card width="100%" paddingBottom={16 + insets.bottom} marginTop="auto">
-        <Button onPress={() => router.back()}>{t("success_page.actions.back")}</Button>
+        <Button onPress={() => router.back()}>{actionButtonText}</Button>
       </Card>
     </Screen>
   );

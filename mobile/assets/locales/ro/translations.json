@@ -52,11 +52,8 @@
     },
     "actions": {
       "send": "Send"
-    }
-  },
-  "email-confirmation": {
-    "title": "Email-ul a fost trimis",
-    "paragraph": "Verifica e-mailul și deschide linkul pe care l-am trimis pentru a continua. Verifica filtrul de spam dacă nu ai primit e-mailul."
+    },
+    "error": "Email-ul nu este inregistrat in sistem."
   },
   "more": {
     "change-language": "Schimba limba aplicației",
@@ -220,6 +217,13 @@
       "paragraph": "Parola ta a fost schimbată cu succes.",
       "actions": {
         "back": "Înapoi în aplicație"
+      }
+    },
+    "email_confirmation": {
+      "title": "Email-ul a fost trimis",
+      "paragraph": "Verifica e-mailul și deschide linkul pe care l-am trimis pentru a continua. Verifica filtrul de spam dacă nu ai primit e-mailul.",
+      "actions" : {
+        "back": "Înapoi la pagina de autentificare"
       }
     }
   },

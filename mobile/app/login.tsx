@@ -16,6 +16,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CURRENT_USER_STORAGE_KEY } from "../common/constants";
 import Constants from "expo-constants";
 import * as Sentry from "@sentry/react-native";
+import CredentialsError from "../components/CredentialsError";
 
 interface FormData {
   email: string;
@@ -100,7 +101,7 @@ const LoginForm = ({
 
       <Typography>{t("paragraph")}</Typography>
 
-      {authError && <CredentialsError />}
+      {authError && <CredentialsError error={t("errors.credentials")} />}
 
       <Controller
         key="email"
@@ -194,24 +195,6 @@ const Header = () => {
       <StatusBar barStyle="light-content"></StatusBar>
       <Icon icon="loginLogo" />
     </StyledWrapper>
-  );
-};
-
-const CredentialsError = () => {
-  const { t } = useTranslation("login");
-  return (
-    <XStack
-      backgroundColor="$red1"
-      borderRadius={6}
-      justifyContent="center"
-      padding="$md"
-      alignItems="flex-start"
-    >
-      <Icon icon="loginError" size={16} />
-      <Typography paddingHorizontal="$md" color="$red6" fontWeight="500">
-        {t("errors.credentials")}
-      </Typography>
-    </XStack>
   );
 };
 
