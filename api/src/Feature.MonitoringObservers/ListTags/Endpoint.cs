@@ -10,7 +10,7 @@ public class Endpoint(IAuthorizationService authorizationService,
 {
     public override void Configure()
     {
-        Get("/api/election-rounds/{electionRoundId}/monitoring-ngos/{monitoringNgoId}/monitoring-observers:tags");
+        Get("/api/election-rounds/{electionRoundId}/monitoring-observers:tags");
         DontAutoTag();
         Options(x => x.WithTags("monitoring-observers"));
     }
@@ -26,9 +26,9 @@ public class Endpoint(IAuthorizationService authorizationService,
 
         var tags = await context
             .MonitoringObservers
-            .Where(x => x.MonitoringNgoId == request.MonitoringNgoId 
+            .Where(x => x.MonitoringNgo.NgoId == request.NgoId
                         && x.MonitoringNgo.ElectionRoundId == request.ElectionRoundId)
-            .Where(x=>x.Tags.Any())
+            .Where(x => x.Tags.Any())
             .Select(x => Postgres.Functions.Unnest(x.Tags))
             .Distinct()
             .ToListAsync(cancellationToken: ct);

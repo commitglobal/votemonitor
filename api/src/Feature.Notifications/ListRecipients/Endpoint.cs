@@ -29,11 +29,88 @@ public class Endpoint(IDbConnection dbConnection) :
         WHERE
             MN.""ElectionRoundId"" = @electionRoundId
             AND MN.""NgoId"" = @ngoId
-            AND (@searchText IS NULL OR @searchText = '' OR u.""FirstName"" ILIKE @searchText OR u.""LastName"" ILIKE @searchText OR u.""Email"" ILIKE @searchText OR u.""PhoneNumber"" ILIKE @searchText)
+            AND (@searchText IS NULL OR @searchText = '' OR (U.""FirstName"" || ' ' || U.""LastName"") ILIKE @searchText OR U.""Email"" ILIKE @searchText OR u.""PhoneNumber"" ILIKE @searchText)
             AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR  mo.""Tags"" @> @tagsFilter)
             AND (@status IS NULL OR  mo.""Status"" = @status)
-
-;
+            AND (@level1 IS NULL OR EXISTS (
+                SELECT
+                    1
+                FROM
+                    (
+                        SELECT
+                            PSI.""PollingStationId"" ""PollingStationId""
+                        FROM
+                            ""PollingStationInformation"" PSI
+                            INNER JOIN ""PollingStations"" PS ON PS.""Id"" = PSI.""PollingStationId""
+                        WHERE
+                            PSI.""MonitoringObserverId"" = MO.""Id""
+                            AND PS.""ElectionRoundId"" = @electionRoundId
+                            AND PSI.""ElectionRoundId"" = @electionRoundId
+                        UNION
+                        SELECT
+                            N.""PollingStationId"" ""PollingStationId""
+                        FROM
+                            ""Notes"" N
+                            INNER JOIN ""PollingStations"" PS ON PS.""Id"" = N.""PollingStationId""
+                        WHERE
+                            N.""MonitoringObserverId"" = MO.""Id""
+                            AND PS.""ElectionRoundId"" = @electionRoundId
+                            AND N.""ElectionRoundId"" = @electionRoundId
+                        UNION
+                        SELECT
+                            A.""PollingStationId"" ""PollingStationId""
+                        FROM
+                            ""Attachments"" A
+                            INNER JOIN ""PollingStations"" PS ON PS.""Id"" = A.""PollingStationId""
+                        WHERE
+                            A.""MonitoringObserverId"" = MO.""Id""
+                            AND PS.""ElectionRoundId"" = @electionRoundId
+                            AND A.""ElectionRoundId"" = @electionRoundId
+                        UNION
+                        SELECT
+                            QR.""PollingStationId"" ""PollingStationId""
+                        FROM
+                            ""QuickReports"" QR
+                            INNER JOIN ""PollingStations"" PS ON PS.""Id"" = QR.""PollingStationId""
+                        WHERE
+                            QR.""PollingStationId"" IS NOT NULL
+                            AND QR.""MonitoringObserverId"" = MO.""Id""
+                            AND PS.""ElectionRoundId"" = @electionRoundId
+                            AND QR.""ElectionRoundId"" = @electionRoundId
+                        UNION
+                        SELECT
+                            FS.""PollingStationId"" ""PollingStationId""
+                        FROM
+                            ""FormSubmissions"" FS
+                            INNER JOIN ""PollingStations"" PS ON PS.""Id"" = FS.""PollingStationId""
+                        WHERE
+                            FS.""MonitoringObserverId"" = MO.""Id""
+                            AND PS.""ElectionRoundId"" = @electionRoundId
+                            AND FS.""ElectionRoundId"" = @electionRoundId
+                    ) psVisits
+                    INNER JOIN ""PollingStations"" PS ON psVisits.""PollingStationId"" = PS.""Id""
+                WHERE
+                    ""ElectionRoundId"" = @electionRoundId
+                    AND (
+                        @level1 IS NULL
+                        OR PS.""Level1"" = @level1
+                    )
+                    AND (
+                        @level2 IS NULL
+                        OR PS.""Level2"" = @level2
+                    )
+                    AND (
+                        @level3 IS NULL
+                        OR PS.""Level3"" = @level3
+                    )
+                    AND (
+                        @level4 IS NULL
+                        OR PS.""Level3"" = @level4
+                    )
+                    AND (
+                        @level5 IS NULL
+                        OR PS.""Level3"" = @level5
+                    )));
 
         SELECT 
             ""MonitoringObserverId"",
@@ -42,7 +119,6 @@ public class Endpoint(IDbConnection dbConnection) :
             ""Email"",
             ""Tags"",
             ""Status""
-            
         FROM (
             SELECT
                 MO.""Id"" ""MonitoringObserverId"",
@@ -59,9 +135,88 @@ public class Endpoint(IDbConnection dbConnection) :
             WHERE
                 MN.""ElectionRoundId"" = @electionRoundId
                 AND MN.""NgoId"" = @ngoId
-                AND (@searchText IS NULL OR @searchText = '' OR u.""FirstName"" ILIKE @searchText OR u.""LastName"" ILIKE @searchText OR u.""Email"" ILIKE @searchText OR u.""PhoneNumber"" ILIKE   @searchText)
+                AND (@searchText IS NULL OR @searchText = '' OR (U.""FirstName"" || ' ' || U.""LastName"") ILIKE @searchText OR u.""Email"" ILIKE @searchText OR u.""PhoneNumber"" ILIKE   @searchText)
                 AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR  mo.""Tags"" @> @tagsFilter)
                 AND (@status IS NULL OR  mo.""Status"" = @status)
+                AND (@level1 IS NULL OR EXISTS (
+                    SELECT
+                        1
+                    FROM
+                        (
+                            SELECT
+                                PSI.""PollingStationId"" ""PollingStationId""
+                            FROM
+                                ""PollingStationInformation"" PSI
+                                INNER JOIN ""PollingStations"" PS ON PS.""Id"" = PSI.""PollingStationId""
+                            WHERE
+                                PSI.""MonitoringObserverId"" = MO.""Id""
+                                AND PS.""ElectionRoundId"" = @electionRoundId
+                                AND PSI.""ElectionRoundId"" = @electionRoundId
+                            UNION
+                            SELECT
+                                N.""PollingStationId"" ""PollingStationId""
+                            FROM
+                                ""Notes"" N
+                                INNER JOIN ""PollingStations"" PS ON PS.""Id"" = N.""PollingStationId""
+                            WHERE
+                                N.""MonitoringObserverId"" = MO.""Id""
+                                AND PS.""ElectionRoundId"" = @electionRoundId
+                                AND N.""ElectionRoundId"" = @electionRoundId
+                            UNION
+                            SELECT
+                                A.""PollingStationId"" ""PollingStationId""
+                            FROM
+                                ""Attachments"" A
+                                INNER JOIN ""PollingStations"" PS ON PS.""Id"" = A.""PollingStationId""
+                            WHERE
+                                A.""MonitoringObserverId"" = MO.""Id""
+                                AND PS.""ElectionRoundId"" = @electionRoundId
+                                AND A.""ElectionRoundId"" = @electionRoundId
+                            UNION
+                            SELECT
+                                QR.""PollingStationId"" ""PollingStationId""
+                            FROM
+                                ""QuickReports"" QR
+                                INNER JOIN ""PollingStations"" PS ON PS.""Id"" = QR.""PollingStationId""
+                            WHERE
+                                QR.""PollingStationId"" IS NOT NULL
+                                AND QR.""MonitoringObserverId"" = MO.""Id""
+                                AND PS.""ElectionRoundId"" = @electionRoundId
+                                AND QR.""ElectionRoundId"" = @electionRoundId
+                            UNION
+                            SELECT
+                                FS.""PollingStationId"" ""PollingStationId""
+                            FROM
+                                ""FormSubmissions"" FS
+                                INNER JOIN ""PollingStations"" PS ON PS.""Id"" = FS.""PollingStationId""
+                            WHERE
+                                FS.""MonitoringObserverId"" = MO.""Id""
+                                AND PS.""ElectionRoundId"" = @electionRoundId
+                                AND FS.""ElectionRoundId"" = @electionRoundId
+                        ) psVisits
+                        INNER JOIN ""PollingStations"" PS ON psVisits.""PollingStationId"" = PS.""Id""
+                    WHERE
+                        ""ElectionRoundId"" = @electionRoundId
+                        AND (
+                            @level1 IS NULL
+                            OR PS.""Level1"" = @level1
+                        )
+                        AND (
+                            @level2 IS NULL
+                            OR PS.""Level2"" = @level2
+                        )
+                        AND (
+                            @level3 IS NULL
+                            OR PS.""Level3"" = @level3
+                        )
+                        AND (
+                            @level4 IS NULL
+                            OR PS.""Level3"" = @level4
+                        )
+                        AND (
+                            @level5 IS NULL
+                            OR PS.""Level3"" = @level5
+                        )))
             ) T
 
         ORDER BY
@@ -88,8 +243,12 @@ public class Endpoint(IDbConnection dbConnection) :
             pageSize = req.PageSize,
             tagsFilter = req.TagsFilter ?? [],
             searchText = $"%{req.SearchText?.Trim() ?? string.Empty}%",
-            status= req.StatusFilter,
-
+            status= req.StatusFilter?.ToString(),
+            level1 = req.Level1Filter,
+            level2 = req.Level2Filter,
+            level3 = req.Level3Filter,
+            level4 = req.Level4Filter,
+            level5 = req.Level5Filter,
             sortExpression = GetSortExpression(req.SortColumnName, req.IsAscendingSorting),
         };
 

@@ -127,7 +127,7 @@ export function DataTable<TData, TValue, TQueryParams = object>({
     if (isSuccess && onDataFetchingSucceed) {
       onDataFetchingSucceed(data.pageSize, data.currentPage, data.totalCount);
     }
-  }, [isSuccess]);
+  }, [isSuccess, queryParams]);
 
 
   const table = useReactTable({

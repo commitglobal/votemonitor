@@ -11,7 +11,7 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useCallback, useMemo, useState } from 'react';
+import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -23,15 +23,10 @@ import { Route } from '@/routes/monitoring-observers/create-new-message';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { PushMessageTargetedObserversSearchParams } from '../../models/search-params';
 import { FilterBadge } from '@/components/ui/badge';
-import { targetedObserversKeys, useTargetedMonitoringObservers } from '../../hooks/push-messages-queries';
+import { useTargetedMonitoringObservers } from '../../hooks/push-messages-queries';
 import { PollingStationsFilters } from '@/components/PollingStationsFilters/PollingStationsFilters';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { MonitoringObserverStatus } from '../../models/monitoring-observer';
-import { UseQueryResult, useQuery } from '@tanstack/react-query';
-import { authApi } from '@/common/auth-api';
-import { buildURLSearchParams } from '@/lib/utils';
-import { PageResponse, DataTableParameters } from '@/common/types';
-import { TargetedMonitoringObserver } from '../../models/targeted-monitoring-observer';
 import { useDebounce } from '@uidotdev/usehooks';
 
 const createPushMessageSchema = z.object({
@@ -39,14 +34,7 @@ const createPushMessageSchema = z.object({
   messageBody: z
     .string()
     .min(1, { message: 'Your message must have a detailed description before sending.' })
-    .max(1000),
-
-  location1: z.string().optional().catch(''),
-  location2: z.string().optional().catch(''),
-  location3: z.string().optional().catch(''),
-  location4: z.string().optional().catch(''),
-  location5: z.string().optional().catch(''),
-  tags: z.array(z.string()).optional().catch([]),
+    .max(1000)
 });
 
 function PushMessageForm() {
@@ -84,7 +72,11 @@ function PushMessageForm() {
     [navigate]
   );
 
-  const debouncedSearch = useDebounce(search, 300);
+  useEffect(() => {
+    navigate({ search: (prev) => ({ ...prev, searchText: debouncedSearchText }) })
+  }, [debouncedSearchText]);
+
+  const debouncedSearch = useDebounce(search, 300,);
 
   const queryParams = useMemo(() => {
     const params = [
@@ -99,7 +91,13 @@ function PushMessageForm() {
     ].filter(([_, value]) => value);
 
     return Object.fromEntries(params) as PushMessageTargetedObserversSearchParams;
-  }, [searchText, debouncedSearch]);
+
+  }, [debouncedSearchText, debouncedSearch]);
+
+  const handleSearchInput = (ev: ChangeEvent<HTMLInputElement>): void => {
+    const value = ev.currentTarget.value;
+    if (!value || value.length >= 2) setSearchText(ev.currentTarget.value);
+  };
 
   const handleDataFetchinSucceed = (pageSize: number, currentPage: number, totalCount: number) => {
     setTotalRowsCount(totalCount);
@@ -107,6 +105,10 @@ function PushMessageForm() {
 
   const form = useForm<z.infer<typeof createPushMessageSchema>>({
     resolver: zodResolver(createPushMessageSchema),
+    defaultValues: {
+      title: '',
+      messageBody: ''
+    }
   });
 
   function onSubmit(values: z.infer<typeof createPushMessageSchema>) {
@@ -118,7 +120,7 @@ function PushMessageForm() {
       <Card className='py-6'>
         <CardContent className='flex flex-col gap-6 items-baseline'>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
+            <form onSubmit={form.handleSubmit(onSubmit)} className=''>
               <FormField
                 control={form.control}
                 name='title'
@@ -155,9 +157,11 @@ function PushMessageForm() {
                 )}
               />
               <div className='flex flex-col gap-2 items-start'>
+                <Input className='max-w-md' onChange={handleSearchInput} placeholder='Search' />
+
                 <div className='flex flex-col md:flex-row gap-2'>
                   <DropdownMenu>
-                    <DropdownMenuTrigger>
+                    <DropdownMenuTrigger asChild>
                       <Button className='border-gray-200 gap-1 hover:bg-white w-[180px]' variant='outline'>
                         <span className='text-sm font-normal text-slate-700'>Observer tags</span>
                         {search.tagsFilter && (
@@ -252,7 +256,7 @@ function PushMessageForm() {
                 </div>
               )}
 
-              <QueryParamsDataTable columns={targetedMonitoringObserverColDefs} useQuery={useTargetedMonitoringObservers} onDataFetchingSucceed={handleDataFetchinSucceed} queryParams={queryParams}/>
+              <QueryParamsDataTable columns={targetedMonitoringObserverColDefs} useQuery={useTargetedMonitoringObservers} onDataFetchingSucceed={handleDataFetchinSucceed} queryParams={queryParams} />
 
               <div className='fixed bottom-0 left-0 bg-white py-4 px-12 flex justify-end w-screen'>
                 <Button>Send message to {totalRowsCount} observers</Button>

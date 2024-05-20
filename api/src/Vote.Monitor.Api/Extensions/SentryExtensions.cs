@@ -1,6 +1,4 @@
-﻿using Amazon.Runtime.Internal;
-using Microsoft.AspNetCore.Diagnostics;
-using System.Net;
+﻿using Microsoft.AspNetCore.Diagnostics;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
 using Sentry.Extensibility;

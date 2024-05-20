@@ -11,7 +11,6 @@ public class Request : BaseSortPaginatedRequest
     [FromClaim(ApplicationClaimTypes.NgoId)]
     public Guid NgoId { get; set; }
 
-
     [QueryParam]
     public string? SearchText { get; set; }
 

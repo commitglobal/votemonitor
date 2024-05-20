@@ -145,10 +145,9 @@ function MonitoringObserversList() {
           status: statusFilter,
         };
         const electionRoundId: string | null = localStorage.getItem('electionRoundId');
-        const monitoringNgoId: string | null = localStorage.getItem('monitoringNgoId');
 
         const response = await authApi.get<PageResponse<MonitoringObserver>>(
-          `/election-rounds/${electionRoundId}/monitoring-ngos/${monitoringNgoId}/monitoring-observers?${tagsFilter
+          `/election-rounds/${electionRoundId}/monitoring-observers?${tagsFilter
             .map((n) => `tags=${n}`)
             .join('&')}`,
           {

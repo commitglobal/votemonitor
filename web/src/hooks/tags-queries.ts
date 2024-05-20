@@ -8,10 +8,9 @@ export function useMonitoringObserversTags(): UseQueryResult<Tag[], Error> {
         queryKey: ['tags'],
         queryFn: async () => {
             const electionRoundId: string | null = localStorage.getItem('electionRoundId');
-            const monitoringNgoId: string | null = localStorage.getItem('monitoringNgoId');
 
             const response = await authApi.get<{ tags: string[] }>(
-                `/election-rounds/${electionRoundId}/monitoring-ngos/${monitoringNgoId}/monitoring-observers:tags`
+                `/election-rounds/${electionRoundId}/monitoring-observers:tags`
             );
 
             if (response.status !== 200) {

@@ -1,12 +1,12 @@
-﻿using System.Globalization;
+﻿using System.Data;
+using System.Globalization;
 using Authorization.Policies;
 using CsvHelper;
-using Microsoft.EntityFrameworkCore;
-using Vote.Monitor.Domain;
+using Dapper;
 
 namespace Feature.MonitoringObservers.Export;
 
-public class Endpoint(VoteMonitorContext context) : Endpoint<Request>
+public class Endpoint(IDbConnection dbConnection) : Endpoint<Request>
 {
     public override void Configure()
     {
@@ -27,14 +27,35 @@ public class Endpoint(VoteMonitorContext context) : Endpoint<Request>
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        var monitoringObservers = await context.MonitoringObservers
-            .Include(x => x.Observer)
-            .ThenInclude(x => x.ApplicationUser)
-            .Where(x => x.MonitoringNgo.NgoId == req.NgoId && x.ElectionRoundId == req.ElectionRoundId)
-            .Select(x => MonitoringObserverModel.FromEntity(x))
-            .ToListAsync(ct);
+        var sql = @"
+            SELECT
+                MO.""Id"" ""MonitoringObserverId"",
+                U.""FirstName"",
+                U.""LastName"",
+                U.""PhoneNumber"",
+                U.""Email"",
+                MO.""Tags"",
+                MO.""Status""
+            FROM
+                ""MonitoringObservers"" MO
+                INNER JOIN ""MonitoringNgos"" MN ON MN.""Id"" = MO.""MonitoringNgoId""
+                INNER JOIN ""Observers"" O ON O.""Id"" = MO.""ObserverId""
+                INNER JOIN ""AspNetUsers"" U ON U.""Id"" = O.""ApplicationUserId""
+            WHERE
+                MN.""ElectionRoundId"" = @electionRoundId
+                AND MN.""NgoId"" = @ngoId";
 
-        var availableTags = monitoringObservers
+        var queryArgs = new
+        {
+            electionRoundId = req.ElectionRoundId,
+            ngoId = req.NgoId,
+        };
+
+        var monitoringObservers = await dbConnection.QueryAsync<MonitoringObserverModel>(sql, queryArgs);
+
+        var monitoringObserverModels = monitoringObservers.ToArray();
+
+        var availableTags = monitoringObserverModels
             .SelectMany(x => x.Tags)
             .ToHashSet()
             .OrderBy(x => x)
@@ -44,11 +65,11 @@ public class Endpoint(VoteMonitorContext context) : Endpoint<Request>
         await using var streamWriter = new StreamWriter(memoryStream, leaveOpen: true);
         await using var csvWriter = new CsvWriter(streamWriter, CultureInfo.InvariantCulture);
         WriteHeader(csvWriter, availableTags);
-        WriteData(monitoringObservers, csvWriter, availableTags);
+        WriteData(monitoringObserverModels, csvWriter, availableTags);
         await SendBytesAsync(memoryStream.ToArray(), "monitoring-observers.csv", contentType: "text/csv", cancellation: ct);
     }
 
-    private void WriteData(List<MonitoringObserverModel> monitoringObservers, CsvWriter csvWriter, List<string> availableTags)
+    private void WriteData(MonitoringObserverModel[] monitoringObservers, CsvWriter csvWriter, List<string> availableTags)
     {
         foreach (var monitoringObserver in monitoringObservers)
         {

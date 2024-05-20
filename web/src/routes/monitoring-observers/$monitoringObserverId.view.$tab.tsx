@@ -16,10 +16,9 @@ export const monitoringObserverQueryOptions = (
     queryKey: ['monitoring-observer', { monitoringObserverId }] as QueryKey,
     queryFn: async () => {
       const electionRoundId: string | null = localStorage.getItem('electionRoundId');
-      const monitoringNgoId: string | null = localStorage.getItem('monitoringNgoId');
 
       const response = await authApi.get<MonitoringObserver>(
-        `/election-rounds/${electionRoundId}/monitoring-ngos/${monitoringNgoId}/monitoring-observers/${monitoringObserverId}`
+        `/election-rounds/${electionRoundId}/monitoring-observers/${monitoringObserverId}`
       );
 
       if (response.status !== 200) {

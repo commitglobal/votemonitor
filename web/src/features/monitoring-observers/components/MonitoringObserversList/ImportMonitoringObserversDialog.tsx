@@ -40,7 +40,6 @@ function ImportMonitoringObserversDialog({
     const importObserversMutation = useMutation({
         mutationFn: () => {
             const electionRoundId: string | null = localStorage.getItem('electionRoundId');
-            const monitoringNgoId: string | null = localStorage.getItem('monitoringNgoId');
 
             // get the selected file from the input
             const file = hiddenFileInput.current.files[0];
@@ -49,7 +48,7 @@ function ImportMonitoringObserversDialog({
             formData.append("file", file);
 
             return authApi.post(
-                `/election-rounds/${electionRoundId}/monitoring-ngos/${monitoringNgoId}/monitoring-observers:import`,
+                `/election-rounds/${electionRoundId}/monitoring-observers:import`,
                 formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
