@@ -534,6 +534,7 @@ const FormQuestionnaire = () => {
         onNextButtonPress={handleSubmit(onSubmitAnswer)}
         onPreviousButtonPress={onBackButtonPress}
       />
+      {/* //todo: remove this once tamagui fixes sheet issue #2585 */}
       {(isOptionsSheetOpen || Platform.OS === "ios") && (
         <OptionsSheet
           open={isOptionsSheetOpen}

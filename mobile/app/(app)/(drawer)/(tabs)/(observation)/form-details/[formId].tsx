@@ -194,16 +194,19 @@ const FormDetails = () => {
           onSelectLanguage={onConfirmFormLanguage}
         />
       )}
-      <OptionsSheet open={optionSheetOpen} setOpen={setOptionSheetOpen}>
-        <YStack paddingHorizontal="$sm" gap="$xxs">
-          <Typography preset="body1" paddingVertical="$md" onPress={onChangeLanguagePress}>
-            {t("observations.actions.change_language", { ns: "bottom_sheets" })}
-          </Typography>
-          <Typography preset="body1" paddingVertical="$md" onPress={onClearAnswersPress}>
-            {t("observations.actions.clear_form", { ns: "bottom_sheets" })}
-          </Typography>
-        </YStack>
-      </OptionsSheet>
+      {/* //todo: change this once tamagui fixes sheet issue #2585 */}
+      {(optionSheetOpen || Platform.OS === "ios") && (
+        <OptionsSheet open={optionSheetOpen} setOpen={setOptionSheetOpen}>
+          <YStack paddingHorizontal="$sm" gap="$xxs">
+            <Typography preset="body1" paddingVertical="$md" onPress={onChangeLanguagePress}>
+              {t("observations.actions.change_language", { ns: "bottom_sheets" })}
+            </Typography>
+            <Typography preset="body1" paddingVertical="$md" onPress={onClearAnswersPress}>
+              {t("observations.actions.clear_form", { ns: "bottom_sheets" })}
+            </Typography>
+          </YStack>
+        </OptionsSheet>
+      )}
     </Screen>
   );
 };
