@@ -77,7 +77,6 @@ const EditNoteSheet = (props: EditNoteSheetProps) => {
   return (
     <Sheet
       modal
-      native
       open={!!selectedNote}
       zIndex={100_000}
       onOpenChange={(open: boolean) => {

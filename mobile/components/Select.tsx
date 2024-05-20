@@ -61,7 +61,6 @@ const Select = ({ placeholder = "Select", options, ...props }: StyledSelectProps
 
       <Adapt platform="touch">
         <Sheet
-          native
           modal
           snapPoints={[50]}
           open={isOpen}

@@ -4,15 +4,14 @@ import { Icon } from "./Icon";
 import { Typography } from "./Typography";
 
 type OnboardingItemProps = {
-  key: string;
   icon: string;
   title: string;
   helper: string;
 };
 
-const OnboardingItem = ({ key, icon, title, helper }: OnboardingItemProps) => {
+const OnboardingItem = ({ icon, title, helper, ...rest }: OnboardingItemProps) => {
   return (
-    <Page key={key}>
+    <Page {...rest}>
       <YStack gap="$xl" alignItems="center">
         <Icon icon={icon} />
         <YStack gap="$md">

@@ -102,7 +102,6 @@ export const DateInput: React.FC<DateInputProps> = ({
       {Platform.OS === "ios" ? (
         <Sheet
           modal
-          native
           open={open}
           onOpenChange={setOpen}
           zIndex={100_000}
