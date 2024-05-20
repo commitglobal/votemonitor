@@ -25,12 +25,14 @@ public class Endpoint(IRepository<NotificationAggregate> repository,
     {
         var sql = @"
             SELECT
-                MO.""Id""
+                MO.""Id"",
+                NT.""Token""
             FROM
                 ""MonitoringObservers"" MO
                 INNER JOIN ""MonitoringNgos"" MN ON MN.""Id"" = MO.""MonitoringNgoId""
                 INNER JOIN ""Observers"" O ON O.""Id"" = MO.""ObserverId""
                 INNER JOIN ""AspNetUsers"" U ON U.""Id"" = O.""ApplicationUserId""
+                LEFT JOIN ""NotificationTokens"" NT ON NT.""ObserverId"" = MO.""ObserverId""
             WHERE
                 MN.""ElectionRoundId"" = @electionRoundId
                 AND MN.""NgoId"" = @ngoId
@@ -131,13 +133,18 @@ public class Endpoint(IRepository<NotificationAggregate> repository,
             level5 = req.Level5Filter
         };
 
-        var multi = await dbConnection.QueryMultipleAsync(sql, queryArgs);
-        var monitoringObserverIds = multi.Read<Guid>().ToList();
-        var pushNotificationTokens = multi.Read<string>().ToList();
+        var result = await dbConnection.QueryAsync<NotificationRecipient>(sql, queryArgs);
+        var recipients = result.ToList();
+
+        var monitoringObserverIds = recipients.Select(x => x.Id).ToList();
+        var pushNotificationTokens = recipients
+            .Select(x => x.Token)
+            .Where(x => !string.IsNullOrWhiteSpace(x))
+            .ToList();
 
         var monitoringObservers = await monitoringObserverRepository.ListAsync(new GetMonitoringObserverSpecification(req.ElectionRoundId, req.NgoId, monitoringObserverIds), ct);
 
-        var result = await notificationService.SendNotificationAsync(pushNotificationTokens, req.Title, req.Body, ct);
+        var sendResultNotification = await notificationService.SendNotificationAsync(pushNotificationTokens, req.Title, req.Body, ct);
 
         var notification = NotificationAggregate.Create(req.ElectionRoundId,
             req.UserId,
@@ -147,7 +154,7 @@ public class Endpoint(IRepository<NotificationAggregate> repository,
 
         await repository.AddAsync(notification, ct);
 
-        if (result is SendNotificationResult.Ok success)
+        if (sendResultNotification is SendNotificationResult.Ok success)
         {
             return TypedResults.Ok(new Response
             {

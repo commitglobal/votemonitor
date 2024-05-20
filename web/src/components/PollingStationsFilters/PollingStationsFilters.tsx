@@ -57,7 +57,7 @@ export function PollingStationsFilters(props: PollingStationsFiltersProps): Func
   );
 
   return (
-    <div {...props}>
+    <>
       <Select
         onValueChange={(value) => {
           void navigate({
@@ -175,6 +175,6 @@ export function PollingStationsFilters(props: PollingStationsFiltersProps): Func
           </SelectGroup>
         </SelectContent>
       </Select>
-    </div>
+    </>
   );
 }

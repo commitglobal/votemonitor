@@ -15,9 +15,5 @@ internal class RatingQuestionValidator : Validator<RatingQuestion>
 
         RuleFor(x => x.Text)
             .SetValidator(new TranslatedStringValidator());
-
-        RuleFor(x => x.Helptext)
-            .SetValidator(new TranslatedStringValidator())
-            .When(x => x.Helptext != null);
     }
 }

@@ -21,7 +21,7 @@ import { useDebounce } from '@uidotdev/usehooks';
 import { MonitoringObserverFormsFilters } from '../MonitoringObserverFormsFilters/MonitoringObserverFormsFilters';
 import { MonitoringObserverFormsTable } from '../MonitoringObserverFormsTable/MonitoringObserverFormsTable';
 
-const routeApi = getRouteApi('/monitoring-observers/$monitoringObserverId/view/$tab');
+const routeApi = getRouteApi('/monitoring-observers/view/$monitoringObserverId');
 
 export function MonitoringObserverForms(): FunctionComponent {
   const search = routeApi.useSearch();

@@ -28,6 +28,10 @@ import { PollingStationsFilters } from '@/components/PollingStationsFilters/Poll
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { MonitoringObserverStatus } from '../../models/monitoring-observer';
 import { useDebounce } from '@uidotdev/usehooks';
+import { toast } from '@/components/ui/use-toast';
+import { useMutation } from '@tanstack/react-query';
+import { authApi } from '@/common/auth-api';
+import { SendPushNotificationRequest } from '../../models/push-message';
 
 const createPushMessageSchema = z.object({
   title: z.string().min(1, { message: 'Your message must have a title before sending.' }),
@@ -111,16 +115,38 @@ function PushMessageForm() {
     }
   });
 
+  const sendNotificationMutation = useMutation({
+    mutationFn: (obj:SendPushNotificationRequest) => {
+      const electionRoundId: string | null = localStorage.getItem('electionRoundId');
+
+      return authApi.post<SendPushNotificationRequest>(
+        `/election-rounds/${electionRoundId}/notifications:send`,
+        obj
+      );
+    },
+
+    onSuccess: () => {
+      toast({
+        title: 'Success',
+        description: 'Notification sent',
+      });
+    },
+  });
+
   function onSubmit(values: z.infer<typeof createPushMessageSchema>) {
-    console.log(values);
+    sendNotificationMutation.mutate({
+      title: values.title,
+      body: values.messageBody,
+      ...queryParams
+    })
   }
 
   return (
     <Layout title='Create new message'>
       <Card className='py-6'>
-        <CardContent className='flex flex-col gap-6 items-baseline'>
+        <CardContent >
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className=''>
+            <form onSubmit={form.handleSubmit(onSubmit)}>
               <FormField
                 control={form.control}
                 name='title'
@@ -156,53 +182,62 @@ function PushMessageForm() {
                   </FormItem>
                 )}
               />
-              <div className='flex flex-col gap-2 items-start'>
-                <Input className='max-w-md' onChange={handleSearchInput} placeholder='Search' />
 
-                <div className='flex flex-col md:flex-row gap-2'>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button className='border-gray-200 gap-1 hover:bg-white w-[180px]' variant='outline'>
-                        <span className='text-sm font-normal text-slate-700'>Observer tags</span>
-                        {search.tagsFilter && (
-                          <span className='bg-purple-50 text-purple-600 rounded-full inline-block px-2'>
-                            {search.tagsFilter.length}
-                          </span>
-                        )}
-                        <ChevronDownIcon className='w-[20px] ml-auto' />
-                      </Button>
-                    </DropdownMenuTrigger>
+              <div className='grid grid-cols-6 gap-4 items-center mb-4'>
+                <Input onChange={handleSearchInput} placeholder='Search' />
 
-                    <DropdownMenuContent>
-                      {tags?.map((tag) => (
-                        <DropdownMenuCheckboxItem
-                          checked={search.tagsFilter?.includes(tag.text)}
-                          onCheckedChange={onTagsFilterChange(tag.text)}
-                          key={tag.id}>
-                          {tag.text}
-                        </DropdownMenuCheckboxItem>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button className='border-gray-200 gap-1 hover:bg-white w-[180px]' variant='outline'>
+                      <span className='text-sm font-normal text-slate-700'>Observer tags</span>
+                      {search.tagsFilter && (
+                        <span className='bg-purple-50 text-purple-600 rounded-full inline-block px-2'>
+                          {search.tagsFilter.length}
+                        </span>
+                      )}
+                      <ChevronDownIcon className='w-[20px] ml-auto' />
+                    </Button>
+                  </DropdownMenuTrigger>
+
+                  <DropdownMenuContent>
+                    {tags?.map((tag) => (
+                      <DropdownMenuCheckboxItem
+                        checked={search.tagsFilter?.includes(tag.text)}
+                        onCheckedChange={onTagsFilterChange(tag.text)}
+                        key={tag.id}>
+                        {tag.text}
+                      </DropdownMenuCheckboxItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                <Select
+                  onValueChange={(value) => {
+                    void navigate({ search: (prev) => ({ ...prev, statusFilter: value }) });
+                  }}
+                  value={search.statusFilter ?? ''}>
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder='Observer status' />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      {Object.values(MonitoringObserverStatus).map((value) => (
+                        <SelectItem value={value} key={value}>{value}</SelectItem>
                       ))}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+                <PollingStationsFilters />
 
-                  <Select
-                    onValueChange={(value) => {
-                      void navigate({ search: (prev) => ({ ...prev, statusFilter: value }) });
-                    }}
-                    value={search.statusFilter ?? ''}>
-                    <SelectTrigger className="w-[180px]">
-                      <SelectValue placeholder='Observer status' />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        {Object.values(MonitoringObserverStatus).map((value) => (
-                          <SelectItem value={value} key={value}>{value}</SelectItem>
-                        ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <PollingStationsFilters className='flex flex-col md:flex-row gap-2' />
+                <Button
+                  type='button'
+                  onClick={() => {
+                    void navigate({});
+                  }}
+                  variant='ghost-primary'
+                  className="w-[180px]">
+                  Reset filters
+                </Button>
               </div>
 
               {Object.entries(search).length > 0 && (
@@ -243,16 +278,6 @@ function PushMessageForm() {
                   {search.level5Filter && (
                     <FilterBadge label={`Location - L5: ${search.level5Filter}`} onClear={onClearFilter('level5Filter')} />
                   )}
-
-                  <Button
-                    type='button'
-                    onClick={() => {
-                      void navigate({});
-                    }}
-                    variant='ghost-primary'
-                    className="w-[180px]">
-                    Reset filters
-                  </Button>
                 </div>
               )}
 

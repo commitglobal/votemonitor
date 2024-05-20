@@ -115,7 +115,7 @@ function MonitoringObserversList() {
   };
 
   const navigateToObserver = (monitoringObserverId: string) => {
-    navigate({ to: '/monitoring-observers/$monitoringObserverId/view', params: { monitoringObserverId }, search: { tab: 'observer-details' } });
+    navigate({ to: '/monitoring-observers/view/$monitoringObserverId', params: { monitoringObserverId }});
   };
   const navigateToEdit = (monitoringObserverId: string) => {
     navigate({ to: '/monitoring-observers/edit/$monitoringObserverId', params: { monitoringObserverId } });

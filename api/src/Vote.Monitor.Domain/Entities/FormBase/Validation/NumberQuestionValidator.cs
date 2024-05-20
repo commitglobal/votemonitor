@@ -15,13 +15,5 @@ internal class NumberQuestionValidator : Validator<NumberQuestion>
 
         RuleFor(x => x.Text)
             .SetValidator(new TranslatedStringValidator());
-
-        RuleFor(x => x.Helptext)
-            .SetValidator(new TranslatedStringValidator())
-            .When(x => x.Helptext != null);
-
-        RuleFor(x => x.InputPlaceholder)
-            .SetValidator(new TranslatedStringValidator())
-            .When(x => x.InputPlaceholder != null);
     }
 }

@@ -1,4 +1,6 @@
-interface PushMessageModel {
+import { MonitoringObserverStatus } from "./monitoring-observer";
+
+export interface PushMessageModel {
     id: string;
     title: string;
     body: string;
@@ -6,12 +8,12 @@ interface PushMessageModel {
     sentAt: Date;
     numberOfTargetedObservers: number;
 }
-interface PushMessageReceiverModel{
+export interface PushMessageReceiverModel{
     id: string;
     name: string;
 }
 
-interface PushMessageDetailedModel {
+export interface PushMessageDetailedModel {
     id: string;
     title: string;
     body: string;
@@ -19,3 +21,16 @@ interface PushMessageDetailedModel {
     sentAt: Date;
     receivers: PushMessageReceiverModel[];
 }
+
+export interface SendPushNotificationRequest {
+    title: string;
+    body: string;
+    searchText?: string;
+    level1Filter?: string;
+    level2Filter?: string;
+    level3Filter?: string;
+    level4Filter?: string;
+    level5Filter?: string;
+    statusFilter?: string;
+    tagsFilter?: string[];
+  }

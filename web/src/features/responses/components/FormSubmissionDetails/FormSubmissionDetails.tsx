@@ -40,8 +40,8 @@ export default function FormSubmissionDetails(): FunctionComponent {
               <Link
                 search
                 className='text-purple-500 font-bold flex gap-1'
-                to='/monitoring-observers/$monitoringObserverId/view/$tab'
-                params={{ monitoringObserverId: formSubmission.monitoringObserverId, tab: 'details' }}
+                to='/monitoring-observers/view/$monitoringObserverId'
+                params={{ monitoringObserverId: formSubmission.monitoringObserverId }}
                 target='_blank'
                 preload={false}>
                 {formSubmission.observerName}

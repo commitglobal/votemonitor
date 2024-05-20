@@ -9,7 +9,7 @@ import { useFormSubmissionsByEntry } from '@/features/responses/hooks/form-submi
 import { formSubmissionsByEntryColumnDefs } from '@/features/responses/utils/column-defs';
 import type { MonitoringObserverDetailsRouteSearch } from '../../models/monitoring-observer';
 
-const routeApi = getRouteApi('/monitoring-observers/$monitoringObserverId/view/$tab');
+const routeApi = getRouteApi('/monitoring-observers/view/$monitoringObserverId');
 
 type FormsTableByEntryProps = {
   columnsVisibility: VisibilityState;
