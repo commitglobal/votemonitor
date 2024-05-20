@@ -67,11 +67,13 @@ const NotificationContextProvider = ({ children }: { children: React.ReactNode }
   }, [isAuthenticated]);
 
   useEffect(() => {
-    // notificationListener.current = Notifications.addNotificationReceivedListener(
-    //   async (notification) => {
-    //     console.log(notification);
-    //   },
-    // );
+    notificationListener.current = Notifications.addNotificationReceivedListener(
+      async (_notification) => {
+        queryClient.invalidateQueries({
+          queryKey: NotificationsKeys.notifications(activeElectionRound?.id),
+        });
+      },
+    );
 
     responseListener.current = Notifications.addNotificationResponseReceivedListener(
       (response: any) => {
