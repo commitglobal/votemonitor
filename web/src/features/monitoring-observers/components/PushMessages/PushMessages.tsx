@@ -10,6 +10,7 @@ import { ChevronRightIcon } from '@heroicons/react/24/outline';
 
 import { usePushMessages } from '../../hooks/push-messages-queries';
 import { format } from 'date-fns';
+import { PushMessageModel } from '../../models/push-message';
 
 function PushMessages() {
   const pushMessagesColDefs: ColumnDef<PushMessageModel>[] = [

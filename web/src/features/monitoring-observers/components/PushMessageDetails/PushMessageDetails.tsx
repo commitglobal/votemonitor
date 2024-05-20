@@ -5,6 +5,7 @@ import { useLoaderData } from '@tanstack/react-router';
 import { format } from 'date-fns';
 
 import type { FunctionComponent } from '@/common/types';
+import { PushMessageDetailedModel } from '../../models/push-message';
 export default function PushMessageDetails(): FunctionComponent {
   const pushMessage: PushMessageDetailedModel = useLoaderData({ strict: false });
 

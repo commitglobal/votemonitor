@@ -1,18 +1,29 @@
 import { BaseQuestion, DateQuestion, MultiSelectQuestion, NumberQuestion, QuestionType, RatingQuestion, SingleSelectQuestion, TextQuestion } from "@/common/types";
 
 
-function validateTextQuestion(question: TextQuestion, languageCode: string): boolean { return true; }
+function validateTextQuestion(question: TextQuestion, languageCode: string): boolean {
+    if (!!question.code && !!question.text[languageCode]) { return true; }
+    return false;
+}
 
-function validateNumberQuestion(question: NumberQuestion, languageCode: string): boolean { return true; }
+function validateNumberQuestion(question: NumberQuestion, languageCode: string): boolean {
+    if (!!question.code && !!question.text[languageCode]) { return true; }
+    return false;
+}
 
-function validateDateQuestion(question: DateQuestion, languageCode: string): boolean { return true; }
+function validateDateQuestion(question: DateQuestion, languageCode: string): boolean  {
+    if (!!question.code && !!question.text[languageCode]) { return true; }
+    return false;
+}
 
 function validateSingleSelectQuestion(question: SingleSelectQuestion, languageCode: string): boolean { return true; }
 
 function validateMultiSelectQuestion(question: MultiSelectQuestion, languageCode: string): boolean { return true; }
 
-function validateRatingQuestion(question: RatingQuestion, languageCode: string): boolean { return true; }
-
+function validateRatingQuestion(question: RatingQuestion, languageCode: string): boolean  {
+    if (!!question.code && !!question.text[languageCode]) { return true; }
+    return false;
+}
 
 const validateQuestion = (question: BaseQuestion, languageCode: string) => {
     switch (question.$questionType) {
