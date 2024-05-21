@@ -233,7 +233,7 @@ const LoginForm = ({
         }}
         render={({ field: { onChange, value } }) => (
           <FormInput
-            type="text"
+            type="email-address"
             title={t("form.email.label")}
             placeholder={t("form.email.placeholder")}
             value={value}
