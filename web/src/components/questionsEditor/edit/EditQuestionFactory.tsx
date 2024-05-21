@@ -160,7 +160,7 @@ export default function EditQuestionFactory({
                     duplicateQuestion={duplicateQuestion}
                     deleteQuestion={deleteQuestion}
                     moveQuestion={moveQuestion}
-                    disabled={true}
+                    disabled={!!params['languageCode']}
                   />
                 </div>
               </div>

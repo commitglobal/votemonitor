@@ -6,6 +6,7 @@ import AddQuestionButton from './edit/AddQuestionButton';
 import EditQuestionFactory from './edit/EditQuestionFactory';
 import { validateQuestion } from './edit/Validation';
 import { StrictModeDroppable } from './StrictModeDroppable';
+import { useParams } from '@tanstack/react-router';
 
 export interface QuestionsEditProps {
   availableLanguages: string[];
@@ -100,6 +101,10 @@ function QuestionsEdit({
     setLocalQuestions([...newQuestions]);
   }
 
+  const params: any = useParams({
+    strict: false,
+  });
+
   return (
     <div>
       <DragDropContext onDragEnd={onDragEnd}>
@@ -131,11 +136,13 @@ function QuestionsEdit({
           </StrictModeDroppable>
         </div>
       </DragDropContext>
-      <AddQuestionButton
-        availableLanguages={availableLanguages}
-        languageCode={languageCode}
-        addQuestion={addQuestion}
-      />
+      {!params['languageCode'] && (
+        <AddQuestionButton
+          availableLanguages={availableLanguages}
+          languageCode={languageCode}
+          addQuestion={addQuestion}
+        />
+      )}
     </div>
   );
 }
