@@ -52,9 +52,8 @@ const More = () => {
   const { t } = useTranslation(["more", "languages"]);
   const { signOut } = useAuth();
 
-  // TODO: Change these consts
   const appVersion = Constants.expoConfig?.version;
-  const URL = "https://www.google.com/";
+  const URL = "https://www.code4.ro/ro/privacy-policy-vote-monitor";
 
   const { data: currentUser } = useQuery({
     queryKey: [CURRENT_USER_STORAGE_KEY],
