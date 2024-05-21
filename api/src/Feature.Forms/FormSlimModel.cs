@@ -17,7 +17,8 @@ public class FormSlimModel
         Languages = form.Languages,
         Name = form.Name,
         CreatedOn = form.CreatedOn,
-        LastModifiedOn = form.LastModifiedOn
+        LastModifiedOn = form.LastModifiedOn,
+        NumberOfQuestions = form.NumberOfQuestions
     };
 
     public required Guid Id { get; init; }

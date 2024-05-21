@@ -1,5 +1,5 @@
 import { useLoaderData, useNavigate } from '@tanstack/react-router';
-import { MonitoringObserver } from '../../models/MonitoringObserver';
+import { MonitoringObserver } from '../../models/monitoring-observer';
 import Layout from '@/components/layout/Layout';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
@@ -16,7 +16,6 @@ import { Tag, TagInput } from '@/components/tag/tag-input';
 import { useState } from 'react';
 import { v4 as uuid } from 'uuid';
 import { useToast } from '@/components/ui/use-toast';
-import { useTags } from '../../queries';
 
 export default function EditObserver() {
   const navigate = useNavigate();
@@ -57,10 +56,9 @@ export default function EditObserver() {
   const editMutation = useMutation({
     mutationFn: (obj) => {
       const electionRoundId: string | null = localStorage.getItem('electionRoundId');
-      const monitoringNgoId: string | null = localStorage.getItem('monitoringNgoId');
 
       return authApi.post<void>(
-        `/election-rounds/${electionRoundId}/monitoring-ngos/${monitoringNgoId}/monitoring-observers/${observer.id}`,
+        `/election-rounds/${electionRoundId}/monitoring-observers/${observer.id}`,
         obj
       );
     },

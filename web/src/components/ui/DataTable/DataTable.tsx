@@ -11,7 +11,7 @@ import {
   type Row,
 } from '@tanstack/react-table';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { useState, type ReactElement } from 'react';
+import { useEffect, useState, type ReactElement } from 'react';
 import { SortOrder, type DataTableParameters, type PageResponse } from '@/common/types';
 import { DataTablePagination } from './DataTablePagination';
 import type { UseQueryResult } from '@tanstack/react-query';
@@ -81,6 +81,8 @@ export interface DataTableProps<TData, TValue, TQueryParams = object> {
    * @returns
    */
   getRowClassName?: (row: Row<TData>) => string | undefined;
+
+  onDataFetchingSucceed?: (pageSize: number, currentPage: number, totalCount: number) => void;
 }
 
 export function DataTable<TData, TValue, TQueryParams = object>({
@@ -94,6 +96,7 @@ export function DataTable<TData, TValue, TQueryParams = object>({
   queryParams,
   getSubrows,
   getRowClassName,
+  onDataFetchingSucceed
 }: DataTableProps<TData, TValue, TQueryParams>): ReactElement {
   let [pagination, setPagination]: [PaginationState, (p: PaginationState) => void] = useState({
     pageIndex: 0,
@@ -112,13 +115,20 @@ export function DataTable<TData, TValue, TQueryParams = object>({
     [sorting, setSorting] = [sortingExt, setSortingExt];
   }
 
-  const { data, isFetching } = useQuery({
+  const { data, isFetching , isSuccess} = useQuery({
     pageNumber: pagination.pageIndex + 1,
     pageSize: pagination.pageSize,
     sortColumnName: sorting[0]?.id || 'id',
     sortOrder: sorting[0]?.desc ? SortOrder.desc : SortOrder.asc,
     otherParams: queryParams,
   });
+
+  useEffect(() => {
+    if (isSuccess && onDataFetchingSucceed) {
+      onDataFetchingSucceed(data.pageSize, data.currentPage, data.totalCount);
+    }
+  }, [isSuccess, queryParams]);
+
 
   const table = useReactTable({
     data: data?.items || [],

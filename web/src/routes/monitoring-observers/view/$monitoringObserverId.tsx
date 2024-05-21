@@ -6,7 +6,7 @@ import MonitoringObserverDetails from '@/features/monitoring-observers/component
 import {
   type MonitoringObserver,
   monitoringObserverDetailsRouteSearchSchema,
-} from '@/features/monitoring-observers/models/MonitoringObserver';
+} from '@/features/monitoring-observers/models/monitoring-observer';
 import { redirectIfNotAuth } from '@/lib/utils';
 
 export const monitoringObserverQueryOptions = (
@@ -16,19 +16,28 @@ export const monitoringObserverQueryOptions = (
     queryKey: ['monitoring-observer', { monitoringObserverId }] as QueryKey,
     queryFn: async () => {
       const electionRoundId: string | null = localStorage.getItem('electionRoundId');
-      const monitoringNgoId: string | null = localStorage.getItem('monitoringNgoId');
 
       const response = await authApi.get<MonitoringObserver>(
-        `/election-rounds/${electionRoundId}/monitoring-ngos/${monitoringNgoId}/monitoring-observers/${monitoringObserverId}`
+        `/election-rounds/${electionRoundId}/monitoring-observers/${monitoringObserverId}`
       );
 
       if (response.status !== 200) {
-        throw new Error('Failed to fetch ngo');
+        throw new Error('Failed to fetch monitoring observer details');
       }
 
       return response.data;
     },
   });
+
+export const Route = createFileRoute('/monitoring-observers/view/$monitoringObserverId')({
+  beforeLoad: () => {
+    redirectIfNotAuth();
+  },
+  component: Details,
+  loader: ({ context: { queryClient }, params: { monitoringObserverId } }) =>
+    queryClient.ensureQueryData(monitoringObserverQueryOptions(monitoringObserverId)),
+  validateSearch: monitoringObserverDetailsRouteSearchSchema
+});
 
 function Details(): FunctionComponent {
   return (
@@ -37,13 +46,3 @@ function Details(): FunctionComponent {
     </div>
   );
 }
-
-export const Route = createFileRoute('/monitoring-observers/$monitoringObserverId')({
-  beforeLoad: () => {
-    redirectIfNotAuth();
-  },
-  component: Details,
-  loader: ({ context: { queryClient }, params: { monitoringObserverId } }) =>
-    queryClient.ensureQueryData(monitoringObserverQueryOptions(monitoringObserverId)),
-  validateSearch: monitoringObserverDetailsRouteSearchSchema,
-});

@@ -1,8 +1,12 @@
-﻿namespace Feature.MonitoringObservers.Get;
+﻿using Vote.Monitor.Core.Security;
+
+namespace Feature.MonitoringObservers.Get;
 
 public class Request
 {
     public Guid ElectionRoundId { get; set; }
-    public Guid MonitoringNgoId { get; set; }
+
+    [FromClaim(ApplicationClaimTypes.NgoId)]
+    public Guid NgoId { get; set; }
     public Guid Id { get; set; }
 }

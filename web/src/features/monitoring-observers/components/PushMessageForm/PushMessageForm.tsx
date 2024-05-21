@@ -1,144 +1,152 @@
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
+
+import { useMonitoringObserversTags } from '../../../../hooks/tags-queries';
+import { targetedMonitoringObserverColDefs } from '../../utils/column-defs';
+import { useNavigate } from '@tanstack/react-router';
+import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
+import { Route } from '@/routes/monitoring-observers/create-new-message';
+import { ChevronDownIcon } from '@heroicons/react/24/outline';
+import { PushMessageTargetedObserversSearchParams } from '../../models/search-params';
+import { FilterBadge } from '@/components/ui/badge';
+import { useTargetedMonitoringObservers } from '../../hooks/push-messages-queries';
+import { PollingStationsFilters } from '@/components/PollingStationsFilters/PollingStationsFilters';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { MonitoringObserverStatus } from '../../models/monitoring-observer';
+import { useDebounce } from '@uidotdev/usehooks';
+import { toast } from '@/components/ui/use-toast';
+import { useMutation } from '@tanstack/react-query';
 import { authApi } from '@/common/auth-api';
-import { useQuery } from '@tanstack/react-query';
-import { LevelNode } from '@/common/types';
-import { useEffect, useState } from 'react';
-import { useTags } from '../../queries';
+import { SendPushNotificationRequest } from '../../models/push-message';
+
+const createPushMessageSchema = z.object({
+  title: z.string().min(1, { message: 'Your message must have a title before sending.' }),
+  messageBody: z
+    .string()
+    .min(1, { message: 'Your message must have a detailed description before sending.' })
+    .max(1000)
+});
 
 function PushMessageForm() {
-  const createPushMessageSchema = z.object({
-    title: z.string().min(1, { message: 'Your message must have a title before sending.' }),
-    messageBody: z
-      .string()
-      .min(1, { message: 'Your message must have a detailed description before sending.' })
-      .max(1000),
-    recipientsSelection: z.enum(['subgroup', 'individual']).catch('subgroup'),
-    subgroupFilter: z.object({
-      filterObserversBy: z.enum(['tags', 'location']).catch('location'),
-      tagsFilter: z.object({
-        tags: z.array(z.string()).optional(),
-      }),
-      locationFilter: z.object({
-        location1: z.string().optional(),
-        location2: z.string().optional(),
-        location3: z.string().optional(),
-        location4: z.string().optional(),
-        location5: z.string().optional()
-      }).optional()
+  const navigate = useNavigate();
+  const search = Route.useSearch();
+  const [totalRowsCount, setTotalRowsCount] = useState(0);
+  const [searchText, setSearchText] = useState<string>('');
+  const debouncedSearchText = useDebounce(searchText, 300);
 
-    }),
-    individualFilter: z.object({
-      monitoringObserverIds: z.array(z.string()).optional()
-    })
-  });
+  const { data: tags } = useMonitoringObserversTags();
+
+  const onTagsFilterChange = useCallback(
+    (tag: string) => () => {
+      void navigate({
+        search: (prev: PushMessageTargetedObserversSearchParams) => {
+          const prevTagsFilter = prev.tagsFilter ?? [];
+          const newTags = prevTagsFilter.includes(tag)
+            ? prevTagsFilter.filter((t) => t !== tag)
+            : [...prevTagsFilter, tag];
+
+          return { ...prev, tagsFilter: newTags.length > 0 ? newTags : undefined };
+        },
+      });
+    },
+    [navigate]
+  );
+
+  const onClearFilter = useCallback(
+    (filter: keyof PushMessageTargetedObserversSearchParams | (keyof PushMessageTargetedObserversSearchParams)[]) => () => {
+      const filters = Array.isArray(filter)
+        ? Object.fromEntries(filter.map((key) => [key, undefined]))
+        : { [filter]: undefined };
+      void navigate({ search: (prev) => ({ ...prev, ...filters }) });
+    },
+    [navigate]
+  );
+
+  useEffect(() => {
+    navigate({ search: (prev) => ({ ...prev, searchText: debouncedSearchText }) })
+  }, [debouncedSearchText]);
+
+  const debouncedSearch = useDebounce(search, 300,);
+
+  const queryParams = useMemo(() => {
+    const params = [
+      ['searchText', debouncedSearchText],
+      ['statusFilter', debouncedSearch.statusFilter],
+      ['tagsFilter', debouncedSearch.tagsFilter],
+      ['level1Filter', debouncedSearch.level1Filter],
+      ['level2Filter', debouncedSearch.level2Filter],
+      ['level3Filter', debouncedSearch.level3Filter],
+      ['level4Filter', debouncedSearch.level4Filter],
+      ['level5Filter', debouncedSearch.level5Filter],
+    ].filter(([_, value]) => value);
+
+    return Object.fromEntries(params) as PushMessageTargetedObserversSearchParams;
+
+  }, [debouncedSearchText, debouncedSearch]);
+
+  const handleSearchInput = (ev: ChangeEvent<HTMLInputElement>): void => {
+    const value = ev.currentTarget.value;
+    if (!value || value.length >= 2) setSearchText(ev.currentTarget.value);
+  };
+
+  const handleDataFetchinSucceed = (pageSize: number, currentPage: number, totalCount: number) => {
+    setTotalRowsCount(totalCount);
+  }
 
   const form = useForm<z.infer<typeof createPushMessageSchema>>({
     resolver: zodResolver(createPushMessageSchema),
+    defaultValues: {
+      title: '',
+      messageBody: ''
+    }
   });
 
-  const watchRecipientSelection = form.watch('recipientsSelection');
-  const watchFilterObserversBy = form.watch('subgroupFilter.filterObserversBy');
-
-  useEffect(() => {
-    if (watchRecipientSelection === 'individual') {
-      form.register('individualFilter');
-      form.unregister('subgroupFilter');
-    } else {
-      form.unregister('individualFilter');
-      form.register('subgroupFilter');
-    }
-  }, [form.register, form.unregister, watchRecipientSelection]);
-
-  useEffect(() => {
-    if (watchFilterObserversBy === 'tags') {
-      form.register('subgroupFilter.tagsFilter');
-      form.unregister('subgroupFilter.locationFilter');
-    } else {
-      form.unregister('subgroupFilter.tagsFilter');
-      form.register('subgroupFilter.locationFilter');
-    }
-  }, [form.register, form.unregister, watchFilterObserversBy]);
-
-
-  const { data: nodes } = useQuery({
-    queryKey: ['levels'],
-    queryFn: async () => {
+  const sendNotificationMutation = useMutation({
+    mutationFn: (obj:SendPushNotificationRequest) => {
       const electionRoundId: string | null = localStorage.getItem('electionRoundId');
 
-      const response = await authApi.get<{ nodes: LevelNode[] }>(
-        `/election-rounds/${electionRoundId}/polling-stations:fetchLevels`
+      return authApi.post<SendPushNotificationRequest>(
+        `/election-rounds/${electionRoundId}/notifications:send`,
+        obj
       );
+    },
 
-      if (response.status !== 200) {
-        throw new Error('Failed to fetch levels');
-      }
-
-      return response.data.nodes;
-    }
+    onSuccess: () => {
+      toast({
+        title: 'Success',
+        description: 'Notification sent',
+      });
+    },
   });
 
-  const { data:tags } = useTags();
-
-
-  const [level1Options, setLevel1Options] = useState<LevelNode[]>([]);
-  const [level2Options, setLevel2Options] = useState<LevelNode[]>([]);
-  const [level3Options, setLevel3Options] = useState<LevelNode[]>([]);
-  const [level4Options, setLevel4Options] = useState<LevelNode[]>([]);
-  const [level5Options, setLevel5Options] = useState<LevelNode[]>([]);
-
-  const [level1Map, setLevel1Map] = useState<{[name:string]: number}>({});
-  const [level2Map, setLevel2Map] = useState<{[name:string]: number}>({});
-  const [level3Map, setLevel3Map] = useState<{[name:string]: number}>({});
-  const [level4Map, setLevel4Map] = useState<{[name:string]: number}>({});
-
-  useEffect(() => {
-    const level1Nodes = nodes?.filter(x => x.depth === 1) ?? [];
-    const level2Nodes = nodes?.filter(x => x.depth === 2) ?? [];
-    const level3Nodes = nodes?.filter(x => x.depth === 3) ?? [];
-    const level4Nodes = nodes?.filter(x => x.depth === 4) ?? [];
-
-    setLevel1Map(level1Nodes.reduce((acc: { [name: string]: number }, node) => {
-      acc[node.name] = node.id;
-      return acc;
-    }, {}));
-
-    setLevel2Map(level2Nodes.reduce((acc: { [name: string]: number }, node) => {
-      acc[node.name] = node.id;
-      return acc;
-    }, {}));
-
-    setLevel3Map(level3Nodes.reduce((acc: { [name: string]: number }, node) => {
-      acc[node.name] = node.id;
-      return acc;
-    }, {}));
-
-    setLevel4Map(level4Nodes.reduce((acc: { [name: string]: number }, node) => {
-      acc[node.name] = node.id;
-      return acc;
-    }, {}));
-
-    setLevel1Options(level1Nodes);
-  }, [nodes]);
-
   function onSubmit(values: z.infer<typeof createPushMessageSchema>) {
-    console.log(values);
+    sendNotificationMutation.mutate({
+      title: values.title,
+      body: values.messageBody,
+      ...queryParams
+    })
   }
 
   return (
     <Layout title='Create new message'>
-      <Card className='w-[800px] py-6'>
-        <CardContent className='flex flex-col gap-6 items-baseline'>
+      <Card className='py-6'>
+        <CardContent >
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
+            <form onSubmit={form.handleSubmit(onSubmit)}>
               <FormField
                 control={form.control}
                 name='title'
@@ -175,200 +183,108 @@ function PushMessageForm() {
                 )}
               />
 
-              <FormField
-                control={form.control}
-                name='recipientsSelection'
-                render={({ field }) => (
-                  <FormItem className='w-[540px]'>
-                    <FormLabel>
-                      Recipients <span className='text-red-500'>*</span>
-                    </FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder='A subgroup of observers' />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value='subgroup'>A subgroup of observers</SelectItem>
-                        <SelectItem value='individual'>Individual observers</SelectItem>
-                      </SelectContent>
-                    </Select>
+              <div className='grid grid-cols-6 gap-4 items-center mb-4'>
+                <Input onChange={handleSearchInput} placeholder='Search' />
 
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button className='border-gray-200 gap-1 hover:bg-white w-[180px]' variant='outline'>
+                      <span className='text-sm font-normal text-slate-700'>Observer tags</span>
+                      {search.tagsFilter && (
+                        <span className='bg-purple-50 text-purple-600 rounded-full inline-block px-2'>
+                          {search.tagsFilter.length}
+                        </span>
+                      )}
+                      <ChevronDownIcon className='w-[20px] ml-auto' />
+                    </Button>
+                  </DropdownMenuTrigger>
+
+                  <DropdownMenuContent>
+                    {tags?.map((tag) => (
+                      <DropdownMenuCheckboxItem
+                        checked={search.tagsFilter?.includes(tag.text)}
+                        onCheckedChange={onTagsFilterChange(tag.text)}
+                        key={tag.id}>
+                        {tag.text}
+                      </DropdownMenuCheckboxItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                <Select
+                  onValueChange={(value) => {
+                    void navigate({ search: (prev) => ({ ...prev, statusFilter: value }) });
+                  }}
+                  value={search.statusFilter ?? ''}>
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder='Observer status' />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      {Object.values(MonitoringObserverStatus).map((value) => (
+                        <SelectItem value={value} key={value}>{value}</SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+                <PollingStationsFilters />
+
+                <Button
+                  type='button'
+                  onClick={() => {
+                    void navigate({});
+                  }}
+                  variant='ghost-primary'
+                  className="w-[180px]">
+                  Reset filters
+                </Button>
+              </div>
+
+              {Object.entries(search).length > 0 && (
+                <div className='col-span-full flex gap-2 flex-wrap'>
+                  {search.tagsFilter?.map((tag) => (
+                    <FilterBadge label={`Observer tags: ${tag}`} onClear={onTagsFilterChange(tag)} />
+                  ))}
 
 
-              {watchRecipientSelection === 'individual' ?
-                <>
-                </> : <>
-                  <FormField
-                    control={form.control}
-                    name='subgroupFilter.filterObserversBy'
-                    render={({ field }) => (
-                      <FormItem className='w-[540px]'>
-                        <FormLabel>
-                          Filter recipients by <span className='text-red-500'>*</span>
-                        </FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder='Filter observers by' />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value='tags'>Tags</SelectItem>
-                            <SelectItem value='location'>Location</SelectItem>
-                          </SelectContent>
-                        </Select>
+                  {search.level1Filter && (
+                    <FilterBadge
+                      label={`Location - L1: ${search.level1Filter}`}
+                      onClear={onClearFilter(['level1Filter', 'level2Filter', 'level3Filter', 'level4Filter', 'level5Filter'])}
+                    />
+                  )}
 
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  {watchFilterObserversBy === 'tags' ? <>
-                    <div>TBD</div>
-                  </> :
-                    <>
-                      {level1Options.length > 0 && <FormField
-                        control={form.control}
-                        name='subgroupFilter.locationFilter.location1'
-                        render={({ field }) => (
-                          <FormItem className='w-[540px]'>
-                            <FormLabel>
-                              Location (Level 1) <span className='text-red-500'>*</span>
-                            </FormLabel>
-                            <Select onValueChange={(value) => {
-                              field.onChange(value);
-                              setLevel2Options(nodes?.filter(n => n.parentId === level1Map[value]) ?? []);
-                              setLevel3Options([]);
-                              setLevel4Options([]);
-                              setLevel5Options([]);
-                            }} defaultValue={field.value}>
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue placeholder='Location' />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                {level1Options.map(level => <SelectItem value={level.name}>{level.name}</SelectItem>)}
-                              </SelectContent>
-                            </Select>
+                  {search.level2Filter && (
+                    <FilterBadge
+                      label={`Location - L2: ${search.level2Filter}`}
+                      onClear={onClearFilter(['level2Filter', 'level3Filter', 'level4Filter', 'level5Filter'])}
+                    />
+                  )}
 
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />}
+                  {search.level3Filter && (
+                    <FilterBadge
+                      label={`Location - L3: ${search.level3Filter}`}
+                      onClear={onClearFilter(['level3Filter', 'level4Filter', 'level5Filter'])}
+                    />
+                  )}
 
-                      {level2Options.length > 0 && <FormField
-                        control={form.control}
-                        name='subgroupFilter.locationFilter.location2'
-                        render={({ field }) => (
-                          <FormItem className='w-[540px]'>
-                            <FormLabel>Location (Level 2)</FormLabel>
-                            <Select onValueChange={(value) => {
-                              field.onChange(value);
-                              setLevel3Options(nodes?.filter(n => n.parentId === level2Map[value]) ?? []);
-                              setLevel4Options([]);
-                              setLevel5Options([]);
-                            }} defaultValue={field.value}>
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue placeholder='Location' />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                {level2Options.map(level => <SelectItem value={level.name}>{level.name}</SelectItem>)}
-                              </SelectContent>
-                            </Select>
+                  {search.level4Filter && (
+                    <FilterBadge
+                      label={`Location - L4: ${search.level4Filter}`}
+                      onClear={onClearFilter(['level4Filter', 'level5Filter'])}
+                    />
+                  )}
 
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />}
+                  {search.level5Filter && (
+                    <FilterBadge label={`Location - L5: ${search.level5Filter}`} onClear={onClearFilter('level5Filter')} />
+                  )}
+                </div>
+              )}
 
-                      {level3Options.length > 0 && <FormField
-                        control={form.control}
-                        name='subgroupFilter.locationFilter.location3'
-                        render={({ field }) => (
-                          <FormItem className='w-[540px]'>
-                            <FormLabel>Location (Level 3)</FormLabel>
-                            <Select onValueChange={(value) => {
-                              field.onChange(value);
-                              setLevel4Options(nodes?.filter(n => n.parentId === level3Map[value]) ?? []);
-                              setLevel5Options([]);
-                            }} defaultValue={field.value}>
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue placeholder='Location' />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                {level3Options.map(level => <SelectItem value={level.name}>{level.name}</SelectItem>)}
-                              </SelectContent>
-                            </Select>
-
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />}
-
-                      {level4Options.length > 0 && <FormField
-                        control={form.control}
-                        name='subgroupFilter.locationFilter.location4'
-                        render={({ field }) => (
-                          <FormItem className='w-[540px]'>
-                            <FormLabel>Location (Level 4)</FormLabel>
-                            <Select onValueChange={(value) => {
-                              field.onChange(value);
-                              setLevel5Options(nodes?.filter(n => n.parentId === level4Map[value]) ?? []);
-                            }} defaultValue={field.value}>
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue placeholder='Location' />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                {level4Options.map(level => <SelectItem value={level.name}>{level.name}</SelectItem>)}
-                              </SelectContent>
-                            </Select>
-
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />}
-
-                      {level5Options.length > 0 && <FormField
-                        control={form.control}
-                        name='subgroupFilter.locationFilter.location5'
-                        render={({ field }) => (
-                          <FormItem className='w-[540px]'>
-                            <FormLabel>Location (Level 5)</FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue placeholder='Location' />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                {level5Options.map(level => (<SelectItem value={level.name}>{level.name}</SelectItem>))}
-                              </SelectContent>
-                            </Select>
-
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />}
-                    </>
-                  }
-                </>
-              }
-
+              <QueryParamsDataTable columns={targetedMonitoringObserverColDefs} useQuery={useTargetedMonitoringObservers} onDataFetchingSucceed={handleDataFetchinSucceed} queryParams={queryParams} />
 
               <div className='fixed bottom-0 left-0 bg-white py-4 px-12 flex justify-end w-screen'>
-                <Button>Send message to 152 observers</Button>
+                <Button>Send message to {totalRowsCount} observers</Button>
               </div>
             </form>
           </Form>

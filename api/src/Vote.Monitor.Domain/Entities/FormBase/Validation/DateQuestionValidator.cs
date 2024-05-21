@@ -15,9 +15,5 @@ internal class DateQuestionValidator : Validator<DateQuestion>
 
         RuleFor(x => x.Text)
             .SetValidator(new TranslatedStringValidator());
-
-        RuleFor(x => x.Helptext)
-            .SetValidator(new TranslatedStringValidator())
-            .When(x => x.Helptext != null);
     }
 }
