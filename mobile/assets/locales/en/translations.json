@@ -236,6 +236,9 @@
         "save_password": "Save new password"
       }
     },
+    "error": {
+      "offline": "Cannot perform this action while offline."
+    },
     "success_page": {
       "title": "Password changed!",
       "paragraph": "Your password has been successfully changed.",

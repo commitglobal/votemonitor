@@ -233,9 +233,13 @@
         "helper": "Ambele parole trebuie să se potrivească.",
         "no_match": "Parolele nu se potrivesc"
       },
+
       "actions": {
         "save_password": "Salvați noua parolă"
       }
+    },
+    "error": {
+      "offline": "Această acțiune nu este posibilă fără conexiune la internet."
     },
     "success_page": {
       "title": "Parola a fost schimbata!",
