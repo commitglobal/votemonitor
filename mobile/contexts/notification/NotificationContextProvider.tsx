@@ -59,6 +59,15 @@ const NotificationContextProvider = ({ children }: { children: React.ReactNode }
   }, [isAuthenticated]);
 
   useEffect(() => {
+    Notifications.getLastNotificationResponseAsync().then((notification) => {
+      if (notification) {
+        router.push("/inbox");
+        queryClient.invalidateQueries({
+          queryKey: NotificationsKeys.notifications(activeElectionRound?.id),
+        });
+      }
+    });
+
     notificationListener.current = Notifications.addNotificationReceivedListener(
       async (_notification) => {
         queryClient.invalidateQueries({
