@@ -9,14 +9,20 @@ import NoNotificationsReceived from "../../../../components/NoNotificationsRecei
 import { ListView } from "../../../../components/ListView";
 import { useWindowDimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useNotifications } from "../../../../services/queries/notifications.query";
+import {
+  NotificationsKeys,
+  useNotifications,
+} from "../../../../services/queries/notifications.query";
 import { useUserData } from "../../../../contexts/user/UserContext.provider";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import NotificationListItem from "../../../../components/NotificationListItem";
 import OptionsSheet from "../../../../components/OptionsSheet";
+import { useAppState } from "../../../../hooks/useAppState";
+import { useQueryClient } from "@tanstack/react-query";
 
 const Inbox = () => {
+  const queryClient = useQueryClient();
   const { t, i18n } = useTranslation("inbox");
   const navigation = useNavigation();
   const { height } = useWindowDimensions();
@@ -43,6 +49,14 @@ const Inbox = () => {
   if (!isLoading && (!notifications || !notifications.length)) {
     return <NoNotificationsReceived />;
   }
+
+  useAppState((activating: boolean) => {
+    if (activating) {
+      queryClient.invalidateQueries({
+        queryKey: NotificationsKeys.notifications(activeElectionRound?.id),
+      });
+    }
+  });
 
   return (
     <Screen preset="fixed" contentContainerStyle={{ flexGrow: 1 }}>

@@ -49,6 +49,7 @@ const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
 
   const signOut = async (queryClient: QueryClient) => {
     queryClient.clear();
+    setIsAuthenticated(false);
     try {
       await SecureStore.deleteItemAsync("access_token");
       await AsyncStorage.clear();
@@ -57,8 +58,6 @@ const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
       Sentry.captureMessage(`Logout error`);
       Sentry.captureException(err);
     }
-
-    setIsAuthenticated(false);
   };
 
   return (
