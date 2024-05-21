@@ -8,7 +8,7 @@ import LinearProgress from "../../../components/LinearProgress";
 import { useMemo, useState } from "react";
 import { useUserData } from "../../../contexts/user/UserContext.provider";
 import WizzardControls from "../../../components/WizzardControls";
-import { Platform, ViewStyle } from "react-native";
+import { Keyboard, Platform, ViewStyle } from "react-native";
 import { Controller, useForm } from "react-hook-form";
 import WizardFormInput from "../../../components/WizardFormInputs/WizardFormInput";
 import {
@@ -518,6 +518,7 @@ const FormQuestionnaire = () => {
             label={t("actions.add_attachments")}
             marginTop="$sm"
             onPress={() => {
+              Keyboard.dismiss();
               return setIsOptionsSheetOpen(true);
             }}
           />
@@ -543,7 +544,8 @@ const FormQuestionnaire = () => {
             addingNote && setAddingNote(false);
           }}
           isLoading={isLoadingAddAttachmentt && !isPaused}
-          moveOnKeyboardChange={true}
+          // seems that this behaviour is handled differently and the sheet will move with keyboard even if this props is set to false on android
+          moveOnKeyboardChange={Platform.OS === "android"}
           disableDrag={addingNote}
         >
           {isLoadingAddAttachmentt && !isPaused ? (

@@ -24,7 +24,7 @@ const ReportCard = ({
         text={
           numberOfAttachments === 0
             ? "No attachments files"
-            : `${numberOfAttachments} attachment files`
+            : `${numberOfAttachments} attachment ${numberOfAttachments === 1 ? "file" : "files"}`
         }
       />
     </YStack>

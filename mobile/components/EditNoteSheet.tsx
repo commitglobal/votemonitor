@@ -10,6 +10,8 @@ import Button from "./Button";
 import { useDeleteNote } from "../services/mutations/delete-note.mutation";
 import { useUpdateNote } from "../services/mutations/edit-note.mutation";
 import { useTranslation } from "react-i18next";
+import { Keyboard, Platform } from "react-native";
+import { useKeyboardVisible } from "@tamagui/use-keyboard-visible";
 
 interface EditNoteSheetProps extends SheetProps {
   selectedNote: Note | null;
@@ -23,10 +25,16 @@ interface EditNoteSheetProps extends SheetProps {
 const EditNoteSheet = (props: EditNoteSheetProps) => {
   const { selectedNote, setSelectedNote, questionId, electionRoundId, pollingStationId, formId } =
     props;
-  const insets = useSafeAreaInsets();
   const { t } = useTranslation("bottom_sheets");
+  const insets = useSafeAreaInsets();
+  const keyboardIsVisible = useKeyboardVisible();
 
-  const { control, handleSubmit, setValue } = useForm({
+  const {
+    control,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm({
     defaultValues: {
       noteEditedText: selectedNote?.text,
     },
@@ -85,7 +93,8 @@ const EditNoteSheet = (props: EditNoteSheetProps) => {
         }
       }}
       snapPointsMode="fit"
-      moveOnKeyboardChange={true}
+      // seems that this behaviour is handled differently and the sheet will move with keyboard even if this props is set to false on android
+      moveOnKeyboardChange={Platform.OS === "android"}
       dismissOnSnapToBottom={true}
       disableDrag
     >
@@ -99,7 +108,17 @@ const EditNoteSheet = (props: EditNoteSheetProps) => {
         marginBottom={insets.bottom}
       >
         <Icon paddingVertical="$md" alignSelf="center" icon="dragHandle" />
-        <YStack marginHorizontal={12} gap="$md">
+        <YStack
+          marginHorizontal={12}
+          gap="$md"
+          paddingBottom={
+            // add padding if keyboard is visible
+            Platform.OS === "ios" && keyboardIsVisible && Keyboard.metrics()?.height
+              ? //@ts-ignore: it will not be undefined because we're checking above
+                Keyboard.metrics()?.height - insets.bottom
+              : 0
+          }
+        >
           <XStack justifyContent="space-between" alignItems="center">
             <Typography preset="heading">{t("add_note.title_edit")}</Typography>
             <Typography
@@ -118,6 +137,12 @@ const EditNoteSheet = (props: EditNoteSheetProps) => {
             key={selectedNote?.id + "_edit_note"}
             name={"noteEditedText"}
             control={control}
+            rules={{
+              maxLength: {
+                value: 10000,
+                message: t("add_note.errors.note_input"),
+              },
+            }}
             render={({ field: { value, onChange } }) => {
               return (
                 <YStack height={150}>
@@ -126,7 +151,9 @@ const EditNoteSheet = (props: EditNoteSheetProps) => {
               );
             }}
           />
-
+          {errors.noteEditedText && (
+            <Typography color="$red12">{errors.noteEditedText.message}</Typography>
+          )}
           <XStack gap="$md">
             <Button preset="chromeless" onPress={() => setSelectedNote(null)}>
               {t("add_note.actions.cancel")}

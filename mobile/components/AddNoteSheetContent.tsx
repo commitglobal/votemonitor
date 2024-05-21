@@ -5,9 +5,11 @@ import Button from "./Button";
 import { Controller, useForm } from "react-hook-form";
 import Input from "./Inputs/Input";
 import { useAddNoteMutation } from "../services/mutations/add-note.mutation";
-import { Keyboard } from "react-native";
+import { Keyboard, Platform } from "react-native";
 import * as Crypto from "expo-crypto";
 import { useTranslation } from "react-i18next";
+import { useKeyboardVisible } from "@tamagui/use-keyboard-visible";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const AddNoteSheetContent = ({
   setAddingNote,
@@ -25,8 +27,15 @@ const AddNoteSheetContent = ({
   setIsOptionsSheetOpen: Dispatch<SetStateAction<boolean>>;
 }) => {
   const { t } = useTranslation("bottom_sheets");
+  const insets = useSafeAreaInsets();
+  const keyboardIsVisible = useKeyboardVisible();
 
-  const { control, handleSubmit, reset } = useForm({
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
     defaultValues: {
       noteText: "",
     },
@@ -56,13 +65,29 @@ const AddNoteSheetContent = ({
   };
 
   return (
-    <YStack marginHorizontal={12} gap="$md">
+    <YStack
+      marginHorizontal={12}
+      gap="$md"
+      paddingBottom={
+        // add padding if keyboard is visible
+        Platform.OS === "ios" && keyboardIsVisible && Keyboard.metrics()?.height
+          ? //@ts-ignore: it will not be undefined because we're checking above
+            Keyboard.metrics()?.height - insets.bottom
+          : 0
+      }
+    >
       <Typography preset="heading">{t("add_note.title")}</Typography>
 
       <Controller
         key={questionId + "_note"}
         name={"noteText"}
         control={control}
+        rules={{
+          maxLength: {
+            value: 10000,
+            message: t("add_note.errors.note_input"),
+          },
+        }}
         render={({ field: { value: noteValue, onChange: onNoteChange } }) => {
           return (
             <YStack height={150}>
@@ -77,7 +102,7 @@ const AddNoteSheetContent = ({
           );
         }}
       />
-
+      {errors.noteText && <Typography color="$red12">{errors.noteText.message}</Typography>}
       <XStack gap="$md">
         <Button preset="chromeless" onPress={() => setAddingNote(false)}>
           {t("add_note.actions.cancel")}
