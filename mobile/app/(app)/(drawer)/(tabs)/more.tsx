@@ -1,5 +1,5 @@
 import React from "react";
-import { View, XStack, YStack } from "tamagui";
+import { XStack, YStack } from "tamagui";
 import Card from "../../../../components/Card";
 import { Screen } from "../../../../components/Screen";
 import { Typography } from "../../../../components/Typography";

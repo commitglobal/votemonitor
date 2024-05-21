@@ -154,6 +154,9 @@
         "save": "Salvează",
         "cancel": "Anulează",
         "delete_note": "Șterge notiță"
+      },
+      "errors": {
+        "note_input": "Textul nu poate depăși 10,000 caractere"
       }
     },
     "select_option": {
@@ -244,7 +247,7 @@
     "email_confirmation": {
       "title": "Email-ul a fost trimis",
       "paragraph": "Verifica e-mailul și deschide linkul pe care l-am trimis pentru a continua. Verifica filtrul de spam dacă nu ai primit e-mailul.",
-      "actions" : {
+      "actions": {
         "back": "Înapoi la pagina de autentificare"
       }
     }
