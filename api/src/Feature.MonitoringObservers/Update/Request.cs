@@ -1,11 +1,14 @@
-﻿using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
+﻿using Vote.Monitor.Core.Security;
+using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 
 namespace Feature.MonitoringObservers.Update;
 
 public class Request
 {
     public Guid ElectionRoundId { get; set; }
-    public Guid MonitoringNgoId { get; set; }
+
+    [FromClaim(ApplicationClaimTypes.NgoId)]
+    public Guid NgoId { get; set; }
     public Guid Id { get; set; }
     public string[] Tags { get; set; }
     public MonitoringObserverStatus Status { get; set; }

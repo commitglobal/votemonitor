@@ -10,7 +10,6 @@ public class FormValidator : Validator<Form>
     public FormValidator()
     {
         RuleFor(x => x.Name).SetValidator(new TranslatedStringValidator());
-        RuleFor(x => x.Description).SetValidator(new TranslatedStringValidator());
 
         RuleForEach(x => x.Questions)
             .SetInheritanceValidator(v =>

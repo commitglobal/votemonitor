@@ -57,6 +57,7 @@ function QuestionHeader({
                             name="code"
                             value={question.code}
                             onChange={(e) => updateQuestion(questionIdx, { ...question, code: e.target.value })}
+                            
                             className={isInValid && question.code.trim() === "" ? "border-red-300 focus:border-red-300" : ""}
                         />
                     </div>

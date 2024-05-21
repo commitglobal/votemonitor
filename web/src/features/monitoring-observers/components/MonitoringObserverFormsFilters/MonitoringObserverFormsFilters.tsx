@@ -6,9 +6,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { FormType } from '@/features/responses/models/form-submission';
-import type { MonitoringObserverDetailsRouteSearch } from '../../models/MonitoringObserver';
+import type { MonitoringObserverDetailsRouteSearch } from '../../models/monitoring-observer';
 
-const routeApi = getRouteApi('/monitoring-observers/$monitoringObserverId');
+const routeApi = getRouteApi('/monitoring-observers/view/$monitoringObserverId');
 
 export function MonitoringObserverFormsFilters(): FunctionComponent {
   const navigate = routeApi.useNavigate();
@@ -127,6 +127,14 @@ export function MonitoringObserverFormsFilters(): FunctionComponent {
 
           {search.level3Filter && (
             <FilterBadge label={`Location - L3: ${search.level3Filter}`} onClear={onClearFilter('level3Filter')} />
+          )}
+
+          {search.level4Filter && (
+            <FilterBadge label={`Location - L4: ${search.level4Filter}`} onClear={onClearFilter('level4Filter')} />
+          )}
+
+          {search.level5Filter && (
+            <FilterBadge label={`Location - L5: ${search.level5Filter}`} onClear={onClearFilter('level5Filter')} />
           )}
         </div>
       )}

@@ -19,7 +19,7 @@ public static class CoreServicesInstaller
     public static IServiceCollection AddCoreServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddSingleton(typeof(ICsvReader<>), typeof(CsvReader<>));
-        services.AddSingleton(typeof(ICsvWriter<>), typeof(CsvWriter<>));
+        services.AddSingleton(typeof(ICsvWriter), typeof(CsvWriter));
 
         services.AddSingleton<ISerializerService, SerializerService>();
 

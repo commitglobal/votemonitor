@@ -76,7 +76,7 @@ public class UpsertRequestValidatorTests
     public void Validation_ShouldFail_When_Text_ExceedsLimits()
     {
         // Arrange
-        var request = new Upsert.Request { Text = "a".Repeat(1025) };
+        var request = new Upsert.Request { Text = "a".Repeat(10_001) };
 
         // Act
         var result = _validator.TestValidate(request);

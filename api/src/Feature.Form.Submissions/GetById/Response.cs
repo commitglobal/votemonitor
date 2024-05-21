@@ -25,8 +25,7 @@ public class Response
     public string Level5 { get; init; } = default!;
     public string Number { get; init; } = default!;
     public Guid MonitoringObserverId { get; init; }
-    public string FirstName { get; init; } = default!;
-    public string LastName { get; init; } = default!;
+    public string ObserverName { get; init; } = default!;
     public string Email { get; init; } = default!;
     public string PhoneNumber { get; init; } = default!;
     public string[] Tags { get; init; }

@@ -7,7 +7,7 @@ public class Validator : Validator<Request>
         RuleFor(x => x.ElectionRoundId)
             .NotEmpty();
 
-        RuleFor(x => x.MonitoringNgoId)
+        RuleFor(x => x.NgoId)
             .NotEmpty();
 
         RuleFor(x => x.Id)

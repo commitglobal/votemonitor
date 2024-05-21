@@ -8,8 +8,7 @@ import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataT
 import { useFormSubmissionsByEntry } from '../../hooks/form-submissions-queries';
 import type { FormSubmissionsSearchParams } from '../../models/search-params';
 import { formSubmissionsByEntryColumnDefs } from '../../utils/column-defs';
-
-const routeApi = getRouteApi('/responses/');
+import { Route } from '@/routes/responses';
 
 type FormsTableByEntryProps = {
   columnsVisibility: VisibilityState;
@@ -17,7 +16,7 @@ type FormsTableByEntryProps = {
 };
 
 export function FormsTableByEntry({ columnsVisibility, searchText }: FormsTableByEntryProps): FunctionComponent {
-  const search = routeApi.useSearch();
+  const search = Route.useSearch();
   const debouncedSearch = useDebounce(search, 300);
 
   const queryParams = useMemo(() => {
