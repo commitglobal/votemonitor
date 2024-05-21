@@ -33,7 +33,8 @@
     },
     "errors": {
       "credentials": "Credentialele nu sunt corecte. Vă rugăm să încercați din nou.",
-      "general": "Eroare la încercarea de conectare"
+      "general": "Eroare la încercarea de conectare",
+      "offline": "Această acțiune nu este posibilă fără conexiune la internet."
     },
     "onboarding": {
       "choose_language": {
