@@ -16,6 +16,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useChangePasswordMutation } from "../../services/mutations/change-password.mutation";
 import { ChangePasswordPayload } from "../../services/definitions.api";
 import ChangePasswordConfirmation from "../../components/ChangePasswordConfirmation";
+import { useNetInfoContext } from "../../contexts/net-info-banner/NetInfoContext";
+import Toast from "react-native-toast-message";
 
 interface FormData {
   currentPassword: string;
@@ -74,6 +76,7 @@ const ChangePassword = () => {
 
   // Submit handler - change password
   const { mutate: updatePassword, isSuccess: successfullyChanged } = useChangePasswordMutation();
+  const { isOnline } = useNetInfoContext();
 
   const onSubmit = async (data: FormData) => {
     const payload: ChangePasswordPayload = {
@@ -81,8 +84,17 @@ const ChangePassword = () => {
       newPassword: data.newPassword.trim(),
       confirmNewPassword: data.confirmPassword.trim(),
     };
+    if (!isOnline) {
+      router.back();
+      return Toast.show({
+        type: "error",
+        text2: t("error.offline"),
+        visibilityTime: 5000,
+        text2Style: { textAlign: "center" },
+      });
+    }
     updatePassword(payload, {
-      onError(error) {
+      onError: (error) => {
         console.error("error", error);
       },
     });

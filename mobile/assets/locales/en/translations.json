@@ -33,7 +33,8 @@
     },
     "errors": {
       "credentials": "There was a problem with your credentials. Please try again.",
-      "general": "Error while trying to log in"
+      "general": "Error while trying to log in",
+      "offline": "Cannot perform this action while offline."
     },
     "onboarding": {
       "choose_language": {
@@ -235,6 +236,9 @@
       "actions": {
         "save_password": "Save new password"
       }
+    },
+    "error": {
+      "offline": "Cannot perform this action while offline."
     },
     "success_page": {
       "title": "Password changed!",

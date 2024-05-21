@@ -21,6 +21,8 @@ import ChooseOnboardingLanguage from "../components/ChooseOnboardingLanguage";
 import OnboardingViewPager from "../components/OnboardingViewPager";
 import Pagination from "../components/Pagination";
 import CredentialsError from "../components/CredentialsError";
+import Toast from "react-native-toast-message";
+import { useNetInfoContext } from "../contexts/net-info-banner/NetInfoContext";
 
 interface FormData {
   email: string;
@@ -36,6 +38,7 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [languageSelectionApplied, setLanguageSelectionApplied] = useState(false);
   const [onboardingComplete, setOnboardingComplete] = useState(true);
+  const { isOnline } = useNetInfoContext();
 
   const scrollOffsetAnimatedValue = React.useRef(new Animated.Value(0)).current;
   const positionAnimatedValue = React.useRef(new Animated.Value(0)).current;
@@ -59,6 +62,14 @@ const Login = () => {
       const email = formData.email.trim().toLocaleLowerCase();
       const password = formData.password.trim();
 
+      if (!isOnline) {
+        return Toast.show({
+          type: "error",
+          text2: t("errors.offline"),
+          visibilityTime: 5000,
+          text2Style: { textAlign: "center" },
+        });
+      }
       await signIn(email, password);
       await AsyncStorage.setItem(CURRENT_USER_STORAGE_KEY, email);
       router.replace("/");
@@ -222,7 +233,7 @@ const LoginForm = ({
         }}
         render={({ field: { onChange, value } }) => (
           <FormInput
-            type="text"
+            type="email-address"
             title={t("form.email.label")}
             placeholder={t("form.email.placeholder")}
             value={value}
