@@ -362,6 +362,10 @@ const FormQuestionnaire = () => {
                       paragraph={question.helptext?.[language] || ""}
                       onChangeText={onChange}
                       value={value}
+                      maxLength={10}
+                      helper={t("max", {
+                        value: 10,
+                      })}
                     />
                   );
                 case "textQuestion":
@@ -372,9 +376,9 @@ const FormQuestionnaire = () => {
                       placeholder={question?.inputPlaceholder?.[language] || ""}
                       paragraph={question.helptext?.[language] || ""}
                       onChangeText={onChange}
-                      maxLength={1000}
+                      maxLength={10024}
                       helper={t("max", {
-                        value: 1000,
+                        value: 1024,
                       })}
                       value={value}
                     />
