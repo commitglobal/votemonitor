@@ -18,16 +18,16 @@ public class ClearTagsValidatorTags
     }
 
     [Fact]
-    public void Validation_ShouldFail_When_MonitoringNgoId_Empty()
+    public void Validation_ShouldFail_When_NgoId_Empty()
     {
         // Arrange
-        var request = new ClearTags.Request { MonitoringNgoId = Guid.Empty };
+        var request = new ClearTags.Request { NgoId = Guid.Empty };
 
         // Act
         var result = _validator.TestValidate(request);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.MonitoringNgoId);
+        result.ShouldHaveValidationErrorFor(x => x.NgoId);
     }
 
     [Fact]
@@ -69,7 +69,7 @@ public class ClearTagsValidatorTags
         var request = new ClearTags.Request
         {
             ElectionRoundId = Guid.NewGuid(),
-            MonitoringNgoId = Guid.NewGuid(),
+            NgoId = Guid.NewGuid(),
             MonitoringObserverIds = [
                 Guid.NewGuid(),
             ]

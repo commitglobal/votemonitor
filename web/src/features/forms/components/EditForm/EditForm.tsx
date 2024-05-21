@@ -82,7 +82,7 @@ export default function EditForm() {
   const editMutation = useMutation({
     mutationFn: (form: FormFull) => {
       const electionRoundId: string | null = localStorage.getItem('electionRoundId');
-      debugger;
+
       return authApi.put<void>(`/election-rounds/${electionRoundId}/forms/${formData.id}`, {
         ...form,
         questions: localQuestions,

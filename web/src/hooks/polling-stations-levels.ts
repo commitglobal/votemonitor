@@ -1,18 +1,18 @@
 import { type UseQueryResult, useQuery } from '@tanstack/react-query';
-import { authApi } from './auth-api';
-import type { LevelNode } from './types';
+import { authApi } from '@/common/auth-api';
+import type { LevelNode } from '@/common/types';
 
-type PollingStationsResponse = { nodes: LevelNode[] };
+type PollingStationsLocationLevelsResponse = { nodes: LevelNode[] };
 
-type UsePollingStationsResult = UseQueryResult<Record<string, LevelNode[]>, Error>;
+type UsePollingStationsLocationLevelsResult = UseQueryResult<Record<string, LevelNode[]>, Error>;
 
-export function usePollingStations(): UsePollingStationsResult {
+export function usePollingStationsLocationLevels(): UsePollingStationsLocationLevelsResult {
   return useQuery({
     queryKey: ['polling-stations', 'levels'],
     queryFn: async () => {
       const electionRoundId: string | null = localStorage.getItem('electionRoundId');
 
-      const response = await authApi.get<PollingStationsResponse>(
+      const response = await authApi.get<PollingStationsLocationLevelsResponse>(
         `/election-rounds/${electionRoundId}/polling-stations:fetchLevels`
       );
 

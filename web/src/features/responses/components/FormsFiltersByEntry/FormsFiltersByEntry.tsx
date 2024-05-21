@@ -1,4 +1,4 @@
-import { getRouteApi } from '@tanstack/react-router';
+import { getRouteApi, useNavigate } from '@tanstack/react-router';
 import { useCallback } from 'react';
 import type { FunctionComponent } from '@/common/types';
 import { FilterBadge } from '@/components/ui/badge';
@@ -7,13 +7,12 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { FormType } from '../../models/form-submission';
 import type { FormSubmissionsSearchParams } from '../../models/search-params';
-import { PollingStationsFilters } from '../PollingStationsFilters/PollingStationsFilters';
-
-const routeApi = getRouteApi('/responses/');
+import { PollingStationsFilters } from '@/components/PollingStationsFilters/PollingStationsFilters';
+import { Route } from '@/routes/responses';
 
 export function FormsFiltersByEntry(): FunctionComponent {
-  const navigate = routeApi.useNavigate();
-  const search = routeApi.useSearch();
+  const navigate = useNavigate({from: '/responses/'});
+  const search = Route.useSearch();
 
   const onClearFilter = useCallback(
     (filter: keyof FormSubmissionsSearchParams | (keyof FormSubmissionsSearchParams)[]) => () => {

@@ -26,7 +26,7 @@ export default function ElectionEventDashboard(): ReactElement {
   const { data: electionEvent } = useElectionRound();
 
   return (
-      <Layout title={electionEvent?.title ?? ''} breadcrumbs={<></>} backButton={<></>}>
+    <Layout title={electionEvent?.title ?? ''} breadcrumbs={<></>} backButton={<></>}>
       <Tabs defaultValue='event-details' value={currentTab} onValueChange={handleTabChange}>
         <TabsList className='grid grid-cols-4 bg-gray-200 w-[800px] mb-4'>
           <TabsTrigger value='event-details'>Event Details</TabsTrigger>
@@ -38,9 +38,7 @@ export default function ElectionEventDashboard(): ReactElement {
         <TabsContent value='event-details'><ElectionEventDetails /></TabsContent>
         <TabsContent value='polling-stations'><PollingStationsDashboard /></TabsContent>
         <TabsContent value='observer-guides'><ObserversGuides /></TabsContent>
-        <TabsContent value='observer-forms'>
-          <Outlet />
-        </TabsContent>
+        <TabsContent value='observer-forms'><h1>tbd</h1></TabsContent>
       </Tabs>
     </Layout>
   );

@@ -36,7 +36,7 @@ public class Endpoint(
 
     public override void Configure()
     {
-        Post("/api/election-rounds/{electionRoundId}/monitoring-ngos/{monitoringNgoId}/monitoring-observers:import");
+        Post("/api/election-rounds/{electionRoundId}/monitoring-observers:import");
         DontAutoTag();
         Options(x => x
             .WithTags("monitoring-observers")
@@ -91,12 +91,13 @@ public class Endpoint(
             .Where(x => normalizedEmails.Contains(x.ApplicationUser.NormalizedEmail))
             .ToListAsync(ct);
 
-        var ngoName = await context
+        var monitoringNgo = await context
             .MonitoringNgos
-            .Include(x => x.Ngo)
-            .Where(x => x.Id == req.MonitoringNgoId)
-            .Select(x => x.Ngo.Name)
+            .Include(x=>x.Ngo)
+            .Where(x => x.NgoId == req.NgoId && x.ElectionRoundId == req.ElectionRoundId)
             .FirstAsync(ct);
+        
+        var ngoName = monitoringNgo.Ngo.Name;
 
         var electionRoundName = await context.ElectionRounds
             .Where(x => x.Id == req.ElectionRoundId)
@@ -137,7 +138,7 @@ public class Endpoint(
                     // has an account but we failed to create the observer 
                     existingAccount.NewInvite();
                     var newObserver = ObserverAggregate.Create(existingAccount);
-                    var newMonitoringObserver = MonitoringObserver.CreateForExisting(req.ElectionRoundId, req.MonitoringNgoId, newObserver.Id, observer.Tags);
+                    var newMonitoringObserver = MonitoringObserver.CreateForExisting(req.ElectionRoundId, monitoringNgo.Id, newObserver.Id, observer.Tags);
                     await context.Observers.AddAsync(newObserver, ct);
                     await context.MonitoringObservers.AddAsync(newMonitoringObserver, ct);
 
@@ -150,7 +151,7 @@ public class Endpoint(
                 else
                 {
                     var newMonitoringObserver = MonitoringObserverAggregate.CreateForExisting(req.ElectionRoundId,
-                        req.MonitoringNgoId, existingObserver.Id,
+                        monitoringNgo.Id, existingObserver.Id,
                         observer.Tags);
 
                     await context.MonitoringObservers.AddAsync(newMonitoringObserver, ct);
@@ -170,7 +171,7 @@ public class Endpoint(
                     logger.LogError("Errors when importing monitoring observer {email} {@errors}", user.Email, result.Errors);
                 }
                 var newObserver = ObserverAggregate.Create(user);
-                var newMonitoringObserver = MonitoringObserver.Create(req.ElectionRoundId, req.MonitoringNgoId, newObserver.Id, observer.Tags);
+                var newMonitoringObserver = MonitoringObserver.Create(req.ElectionRoundId, monitoringNgo.Id, newObserver.Id, observer.Tags);
                 await context.Observers.AddAsync(newObserver, ct);
                 await context.MonitoringObservers.AddAsync(newMonitoringObserver, ct);
                 var endpointUri = new Uri(Path.Combine($"{_apiConfig.WebAppUrl}", "accept-invite"));

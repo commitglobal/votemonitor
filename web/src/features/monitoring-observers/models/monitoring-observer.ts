@@ -25,7 +25,6 @@ export const monitoringObserverRouteSearchSchema = z.object({
 });
 
 export const monitoringObserverDetailsRouteSearchSchema = z.object({
-  tab: z.enum(['observer-details', 'responses']).catch('observer-details'),
   formCodeFilter: z.string().catch('').optional(),
   formTypeFilter: z.string().catch('').optional(),
   level1Filter: z.string().catch('').optional(),

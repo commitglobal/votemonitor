@@ -8,7 +8,7 @@ public class Endpoint(IAuthorizationService authorizationService, IRepository<Mo
 {
     public override void Configure()
     {
-        Post("/api/election-rounds/{electionRoundId}/monitoring-ngos/{monitoringNgoId}/monitoring-observers/{id}");
+        Post("/api/election-rounds/{electionRoundId}/monitoring-observers/{id}");
         Description(x => x.Accepts<Request>());
         DontAutoTag();
         Options(x => x.WithTags("monitoring-observers"));
@@ -28,7 +28,7 @@ public class Endpoint(IAuthorizationService authorizationService, IRepository<Mo
             return TypedResults.NotFound();
         }
 
-        var monitoringObserver = await repository.FirstOrDefaultAsync(new GetMonitoringObserverSpecification(req.ElectionRoundId, req.MonitoringNgoId, req.Id), ct);
+        var monitoringObserver = await repository.FirstOrDefaultAsync(new GetMonitoringObserverSpecification(req.ElectionRoundId, req.NgoId, req.Id), ct);
 
         if (monitoringObserver is null)
         {

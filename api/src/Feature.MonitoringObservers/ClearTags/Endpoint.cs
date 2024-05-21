@@ -10,7 +10,7 @@ public class Endpoint(IAuthorizationService authorizationService,
 {
     public override void Configure()
     {
-        Delete("/api/election-rounds/{electionRoundId}/monitoring-ngos/{monitoringNgoId}/monitoring-observers:tags");
+        Delete("/api/election-rounds/{electionRoundId}/monitoring-observers:tags");
         Description(x => x.Accepts<Request>());
         DontAutoTag();
         Options(x => x.WithTags("monitoring-observers"));
@@ -33,7 +33,7 @@ public class Endpoint(IAuthorizationService authorizationService,
             .MonitoringObservers
             .Where(x => req.MonitoringObserverIds.Contains(x.Id))
             .Where(x => x.MonitoringNgo.ElectionRoundId == req.ElectionRoundId)
-            .Where(x => x.MonitoringNgoId == req.MonitoringNgoId)
+            .Where(x => x.MonitoringNgo.NgoId == req.NgoId)
             .ExecuteUpdateAsync(x => x.SetProperty(p => p.Tags, b => Array.Empty<string>()), cancellationToken: ct);
 
         return TypedResults.NoContent();

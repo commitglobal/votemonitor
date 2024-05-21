@@ -22,8 +22,8 @@ const questionTypes: QuestionTypeConfig[] = [
             const newTextQuestion: TextQuestion = {
                 id: uuidv4(),
                 $questionType: QuestionType.TextQuestionType,
-                code: '',
-                text: newTranslatedString(availableLanguages, languageCode)
+                code: 'TQ',
+                text: newTranslatedString(availableLanguages, languageCode, 'Text question text')
             };
 
             return newTextQuestion;
@@ -37,8 +37,8 @@ const questionTypes: QuestionTypeConfig[] = [
             const newNumberQuestion: NumberQuestion = {
                 id: uuidv4(),
                 $questionType: QuestionType.NumberQuestionType,
-                code: '',
-                text: newTranslatedString(availableLanguages, languageCode)
+                code: 'NQ',
+                text: newTranslatedString(availableLanguages, languageCode, 'Number question text')
             };
 
             return newNumberQuestion;
@@ -52,8 +52,8 @@ const questionTypes: QuestionTypeConfig[] = [
             const newDateQuestion: DateQuestion = {
                 id: uuidv4(),
                 $questionType: QuestionType.DateQuestionType,
-                code: '',
-                text: newTranslatedString(availableLanguages, languageCode)
+                code: 'DQ',
+                text: newTranslatedString(availableLanguages, languageCode, 'Date question text')
             };
 
             return newDateQuestion;
@@ -67,8 +67,8 @@ const questionTypes: QuestionTypeConfig[] = [
             const newRatingQuestion: RatingQuestion = {
                 id: uuidv4(),
                 $questionType: QuestionType.RatingQuestionType,
-                code: '',
-                text: newTranslatedString(availableLanguages, languageCode),
+                code: 'RQ',
+                text: newTranslatedString(availableLanguages, languageCode, 'Rating question text'),
                 scale: RatingScaleType.OneTo5
             };
 
@@ -83,12 +83,18 @@ const questionTypes: QuestionTypeConfig[] = [
             const newSingleSelectQuestion: SingleSelectQuestion = {
                 id: uuidv4(),
                 $questionType: QuestionType.SingleSelectQuestionType,
-                code: '',
-                text: newTranslatedString(availableLanguages, languageCode),
+                code: 'SC',
+                text: newTranslatedString(availableLanguages, languageCode, 'Single choice question text'),
                 options: [
                     {
                         id: uuidv4(),
-                        text: newTranslatedString(availableLanguages, languageCode),
+                        text: newTranslatedString(availableLanguages, languageCode, 'Option 1'),
+                        isFlagged: false,
+                        isFreeText: false
+                    },
+                    {
+                        id: uuidv4(),
+                        text: newTranslatedString(availableLanguages, languageCode, 'Option 2'),
                         isFlagged: false,
                         isFreeText: false
                     }
@@ -106,8 +112,8 @@ const questionTypes: QuestionTypeConfig[] = [
             const newMultiSelectQuestion: MultiSelectQuestion = {
                 id: uuidv4(),
                 $questionType: QuestionType.MultiSelectQuestionType,
-                code: '',
-                text: newTranslatedString(availableLanguages, languageCode),
+                code: 'MC',
+                text: newTranslatedString(availableLanguages, languageCode, 'Multi choice question text'),
                 options: [
                     {
                         id: uuidv4(),

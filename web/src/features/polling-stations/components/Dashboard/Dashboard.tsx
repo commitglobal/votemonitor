@@ -1,15 +1,15 @@
-import { type PollingStation } from '../../models/PollingStation';
-import type { ReactElement } from 'react';
-import { DataTable } from '@/components/ui/DataTable/DataTable';
-import { type UseQueryResult, useQuery } from '@tanstack/react-query';
-import type { DataTableParameters, PageParameters, PageResponse } from '@/common/types';
 import { authApi } from '@/common/auth-api';
-import { ColumnDef } from '@tanstack/react-table';
-import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
 import TableTagList from '@/components/table-tag-list/TableTagList';
+import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
 import { buildURLSearchParams } from '@/lib/utils';
+import { useQuery, UseQueryResult } from '@tanstack/react-query';
+import { ColumnDef } from '@tanstack/react-table';
 
+import { PollingStation } from '../../models/PollingStation';
+
+import type { ReactElement } from 'react';
+import type { DataTableParameters, PageParameters, PageResponse } from '@/common/types';
 function usePollingStations(queryParams: DataTableParameters): UseQueryResult<PageResponse<PollingStation>, Error> {
   return useQuery({
     queryKey: ['pollingStations', queryParams],
