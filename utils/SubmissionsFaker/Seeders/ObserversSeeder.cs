@@ -16,10 +16,10 @@ public class ObserversSeeder
         ProgressTask progressTask)
     {
         progressTask.StartTask();
-        
+
         var observerIds = new List<CreateResponse>();
 
-        foreach (var observersChunk in observers.Chunk(25))
+        foreach (var observersChunk in observers.Chunk(Consts.CHUNK_SIZE))
         {
             var tasks = new List<Task<CreateResponse>>();
             foreach (var observer in observersChunk)
@@ -33,7 +33,7 @@ public class ObserversSeeder
             observerIds.AddRange(observersChunkIds);
         }
 
-        foreach (var observersIdsChunk in observerIds.Chunk(25))
+        foreach (var observersIdsChunk in observerIds.Chunk(Consts.CHUNK_SIZE))
         {
             var tasks = new List<Task<CreateResponse>>();
             foreach (var observer in observersIdsChunk)

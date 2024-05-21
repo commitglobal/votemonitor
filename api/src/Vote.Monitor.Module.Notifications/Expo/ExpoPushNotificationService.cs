@@ -43,7 +43,10 @@ public class ExpoPushNotificationService(
                     {
                         PushTo = expoIdentifiers,
                         PushTitle = title,
-                        PushBody = body
+                        PushBody = body,
+                        PushChannelId = _options.ChannelId,
+                        PushTTL = _options.TtlSeconds,
+                        PushPriority = _options.Priority
                     };
 
                     var response = await expoApi.SendNotificationAsync(request).ConfigureAwait(false);
