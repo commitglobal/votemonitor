@@ -48,13 +48,17 @@ const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
   };
 
   const signOut = async (queryClient: QueryClient) => {
-    setIsAuthenticated(false);
-
     queryClient.clear();
+    try {
+      await SecureStore.deleteItemAsync("access_token");
+      await AsyncStorage.clear();
+      await DB.deleteEverything();
+    } catch (err) {
+      Sentry.captureMessage(`Logout error`);
+      Sentry.captureException(err);
+    }
 
-    await SecureStore.deleteItemAsync("access_token");
-    await AsyncStorage.clear();
-    await DB.deleteEverything();
+    setIsAuthenticated(false);
   };
 
   return (

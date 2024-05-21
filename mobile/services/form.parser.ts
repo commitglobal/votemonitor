@@ -247,7 +247,7 @@ export const mapFormToFormListItem = (
       numberOfCompletedQuestions: numberOfAnswers,
       numberOfQuestions: questions.length,
       options: `Available in ${Object.keys(form.name).join(", ")}`,
-      status: mapFormStateStatus(numberOfAnswers, form.questions.length),
+      status: mapFormStateStatus(numberOfAnswers, questions.length),
       languages: form.languages,
     };
   });

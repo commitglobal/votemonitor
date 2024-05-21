@@ -66,6 +66,13 @@
           ]
         }
       ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/icons/icon.png",
+          "color": "#FDD20C"
+        }
+      ],
       ["@morrowdigital/watermelondb-expo-plugin"],
       [
         "expo-build-properties",
