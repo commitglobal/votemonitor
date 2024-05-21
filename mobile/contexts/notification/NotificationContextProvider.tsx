@@ -17,14 +17,6 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useUserData } from "../user/UserContext.provider";
 import { NotificationsKeys } from "../../services/queries/notifications.query";
 
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: false,
-  }),
-});
-
 const NotificationContextProvider = ({ children }: { children: React.ReactNode }) => {
   const [pushToken, setPushToken] = useState<string | undefined>();
 
