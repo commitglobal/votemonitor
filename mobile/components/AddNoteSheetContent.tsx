@@ -71,7 +71,7 @@ const AddNoteSheetContent = ({
       paddingBottom={
         // add padding if keyboard is visible
         Platform.OS === "ios" && keyboardIsVisible && Keyboard.metrics()?.height
-          ? //@ts-ignore: it will not be undefined because we're checking above
+          ? // @ts-ignore: it will not be undefined because we're checking above
             Keyboard.metrics()?.height - insets.bottom
           : 0
       }
