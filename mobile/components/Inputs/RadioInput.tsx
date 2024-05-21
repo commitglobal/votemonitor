@@ -15,7 +15,7 @@ const RadioInput: React.FC<RadioInputProps> = ({ id, value, label, selectedValue
   return (
     <XStack
       alignItems="center"
-      height={42}
+      minHeight={42}
       borderWidth={1}
       backgroundColor="white"
       borderColor={isSelected ? "$purple5" : "$gray3"}

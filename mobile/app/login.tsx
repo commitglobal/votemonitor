@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { router } from "expo-router";
 import { useAuth } from "../hooks/useAuth";
 import { View, XStack, YStack, styled } from "tamagui";
 import { useTranslation } from "react-i18next";
 import { Screen } from "../components/Screen";
-import { StatusBar } from "react-native";
+import { StatusBar, Animated } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Icon } from "../components/Icon";
 import { Typography } from "../components/Typography";
@@ -16,6 +16,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CURRENT_USER_STORAGE_KEY } from "../common/constants";
 import Constants from "expo-constants";
 import * as Sentry from "@sentry/react-native";
+import * as SecureStore from "expo-secure-store";
+import ChooseOnboardingLanguage from "../components/ChooseOnboardingLanguage";
+import OnboardingViewPager from "../components/OnboardingViewPager";
+import Pagination from "../components/Pagination";
+import CredentialsError from "../components/CredentialsError";
 
 interface FormData {
   email: string;
@@ -24,9 +29,29 @@ interface FormData {
 
 const Login = () => {
   const { t } = useTranslation("login");
+  const insets = useSafeAreaInsets();
+
   const { signIn } = useAuth();
   const [authError, setAuthError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [languageSelectionApplied, setLanguageSelectionApplied] = useState(false);
+  const [onboardingComplete, setOnboardingComplete] = useState(true);
+
+  const scrollOffsetAnimatedValue = React.useRef(new Animated.Value(0)).current;
+  const positionAnimatedValue = React.useRef(new Animated.Value(0)).current;
+  const [currentPage, setCurrentPage] = useState(0);
+  const pagerViewRef = useRef(null);
+
+  useEffect(() => {
+    try {
+      const onboardingComplete = SecureStore.getItem("onboardingComplete");
+      if (onboardingComplete !== "true") {
+        setOnboardingComplete(false);
+      }
+    } catch (err) {
+      Sentry.captureException(err);
+    }
+  }, []);
 
   const onLogin = async (formData: FormData) => {
     try {
@@ -44,12 +69,89 @@ const Login = () => {
       setIsLoading(false);
     }
   };
-  const { handleSubmit, control, formState } = useForm({
-    defaultValues: { email: "alice@example.com", password: "string" },
-  });
+  const { handleSubmit, control, formState } = useForm<FormData>();
   const { errors } = formState;
 
-  const insets = useSafeAreaInsets();
+  const onOnboardingComplete = () => {
+    try {
+      SecureStore.setItem("onboardingComplete", "true");
+      setOnboardingComplete(true);
+    } catch (err) {
+      console.log(err);
+      Sentry.captureException(err);
+    }
+  };
+
+  // todo: refactor this (nr of pages in the view pager) @luciatugui
+  const data = [1, 2, 3];
+
+  if (!onboardingComplete) {
+    if (!languageSelectionApplied) {
+      return <ChooseOnboardingLanguage setLanguageSelectionApplied={setLanguageSelectionApplied} />;
+    }
+    return (
+      <>
+        <OnboardingViewPager
+          scrollOffsetAnimatedValue={scrollOffsetAnimatedValue}
+          positionAnimatedValue={positionAnimatedValue}
+          pagerViewRef={pagerViewRef}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+        />
+
+        <XStack
+          justifyContent="center"
+          alignItems="center"
+          backgroundColor="$purple6"
+          paddingHorizontal="$md"
+          paddingBottom={insets.bottom + 32}
+        >
+          <XStack flex={1}></XStack>
+          <XStack justifyContent="center" flex={1}>
+            <Pagination
+              scrollOffsetAnimatedValue={scrollOffsetAnimatedValue}
+              positionAnimatedValue={positionAnimatedValue}
+              data={data}
+            />
+          </XStack>
+
+          {currentPage !== data.length - 1 ? (
+            <XStack
+              onPress={() => {
+                // @ts-ignore
+                currentPage !== data.length - 1 && pagerViewRef?.current?.setPage(currentPage + 1);
+              }}
+              pressStyle={{ opacity: 0.5 }}
+              flex={1}
+              justifyContent="flex-end"
+            >
+              <Typography color="white" preset="body2" paddingVertical="$xs" paddingRight="$md">
+                {t("onboarding.skip")}
+              </Typography>
+            </XStack>
+          ) : (
+            <XStack
+              onPress={() => onOnboardingComplete()}
+              pressStyle={{ opacity: 0.5 }}
+              flex={1}
+              justifyContent="flex-end"
+            >
+              <Typography
+                color="white"
+                preset="body2"
+                paddingVertical="$xs"
+                paddingRight="$md"
+                textAlign="center"
+              >
+                {/* //!this might cause problems if the translation is too long */}
+                {t("onboarding.go_to_app")}
+              </Typography>
+            </XStack>
+          )}
+        </XStack>
+      </>
+    );
+  }
 
   return (
     <Screen
@@ -102,7 +204,7 @@ const LoginForm = ({
 
       <Typography>{t("paragraph")}</Typography>
 
-      {authError && <CredentialsError />}
+      {authError && <CredentialsError error={t("errors.credentials")} />}
 
       <Controller
         key="email"
@@ -196,24 +298,6 @@ const Header = () => {
       <StatusBar barStyle="light-content"></StatusBar>
       <Icon icon="loginLogo" />
     </StyledWrapper>
-  );
-};
-
-const CredentialsError = () => {
-  const { t } = useTranslation("login");
-  return (
-    <XStack
-      backgroundColor="$red1"
-      borderRadius={6}
-      justifyContent="center"
-      padding="$md"
-      alignItems="flex-start"
-    >
-      <Icon icon="loginError" size={16} />
-      <Typography paddingHorizontal="$md" color="$red6" fontWeight="500">
-        {t("errors.credentials")}
-      </Typography>
-    </XStack>
   );
 };
 

@@ -55,7 +55,8 @@ const mapVisitsToSelectPollingStations = (visits: PollingStationVisitVM[] = []) 
 };
 
 type ReportIssueFormType = {
-  polling_station: { details: string; id: string };
+  polling_station_id: string;
+  polling_station_details: string;
   issue_title: string;
   issue_description: string;
 };
@@ -96,14 +97,18 @@ const ReportIssue = () => {
     control,
     handleSubmit,
     reset,
+    watch,
     formState: { errors },
   } = useForm<ReportIssueFormType>({
     defaultValues: {
-      polling_station: { details: "", id: "" },
+      polling_station_id: "",
+      polling_station_details: "",
       issue_title: "",
       issue_description: "",
     },
   });
+
+  const pollingStationIdWatch = watch("polling_station_id");
 
   const { uploadCameraOrMedia } = useCamera();
 
@@ -149,7 +154,7 @@ const ReportIssue = () => {
     }
 
     let quickReportLocationType = QuickReportLocationType.VisitedPollingStation;
-    let pollingStationId: string | null = formData.polling_station.id;
+    let pollingStationId: string | null = formData.polling_station_id;
 
     if (
       [
@@ -190,7 +195,6 @@ const ReportIssue = () => {
         Sentry.captureException(err);
       }
     }
-
     mutate(
       {
         id: uuid,
@@ -198,7 +202,7 @@ const ReportIssue = () => {
         description: formData.issue_description,
         title: formData.issue_title,
         quickReportLocationType,
-        pollingStationDetails: formData.polling_station.details,
+        pollingStationDetails: formData.polling_station_details,
         ...(pollingStationId ? { pollingStationId } : {}),
         attachments: optimisticAttachments,
       },
@@ -245,44 +249,59 @@ const ReportIssue = () => {
         <YStack paddingVertical="$lg" paddingHorizontal="$md">
           {/* questions container */}
 
-          {/* //TODO: is the polling station required? */}
           <YStack gap="$lg">
             <Controller
-              key="polling_station"
-              name="polling_station"
+              key="polling_station_id"
+              name="polling_station_id"
               control={control}
               rules={{
-                validate: ({ id, details }) => {
-                  if (id === QuickReportLocationType.OtherPollingStation && !details)
-                    return "This field is required";
+                required: {
+                  value: true,
+                  message: "This field is required.",
                 },
               }}
-              render={({ field: { onChange, value = { id: "", details: "" } } }) => (
+              render={({ field: { onChange, value } }) => (
                 <>
                   {/* select polling station */}
-                  <FormElement title={t("form.polling_station.label")}>
+                  <FormElement title="Polling station *" error={errors.polling_station_id?.message}>
                     <Select
-                      value={value.id}
+                      value={value}
                       options={pollingStations}
-                      placeholder={t("form.polling_station.placeholder")}
-                      onValueChange={(id) => onChange({ ...value, id, details: "" })}
-                      // onOpenChange={(open) => open && Keyboard.dismiss()}
+                      placeholder="Select polling station"
+                      onValueChange={onChange}
+                      error={errors.polling_station_id?.message}
                     />
                   </FormElement>
-                  {/* polling station details */}
-                  {value.id === QuickReportLocationType.OtherPollingStation && (
-                    <FormInput
-                      title={t("form.polling_station.label")}
-                      type="textarea"
-                      placeholder={t("form.polling_station.extra")}
-                      value={value.details}
-                      onChangeText={(details) => onChange({ ...value, details })}
-                      error={errors.polling_station?.message}
-                    />
-                  )}
                 </>
               )}
             />
+
+            {/* polling station details */}
+            {pollingStationIdWatch === QuickReportLocationType.OtherPollingStation && (
+              <Controller
+                key="polling_station_details"
+                name="polling_station_details"
+                control={control}
+                rules={{
+                  required: { value: true, message: "This field is required." },
+                  maxLength: {
+                    value: 1024,
+                    // todo: translation
+                    message: "Input cannot exceed 1024 characters",
+                  },
+                }}
+                render={({ field: { onChange, value } }) => (
+                  <FormInput
+                    title="Polling station details *"
+                    type="textarea"
+                    placeholder="Please write here some identification details for this polling station (such as address, name, number, etc.)"
+                    value={value}
+                    onChangeText={onChange}
+                    error={errors.polling_station_details?.message}
+                  />
+                )}
+              />
+            )}
 
             {/* issue title */}
             <Controller
@@ -290,7 +309,11 @@ const ReportIssue = () => {
               name="issue_title"
               control={control}
               rules={{
-                required: { value: true, message: t("form.issue_title.required") },
+                required: { value: true, message: "This field is required." },
+                maxLength: {
+                  value: 1024,
+                  message: "Input cannot exceed 1024 characters",
+                },
               }}
               render={({ field: { onChange, value } }) => (
                 <FormInput
@@ -310,7 +333,11 @@ const ReportIssue = () => {
               name="issue_description"
               control={control}
               rules={{
-                required: { value: true, message: t("form.description.required") },
+                required: { value: true, message: "This field is required." },
+                maxLength: {
+                  value: 10000,
+                  message: "Input cannot exceed 10,000 characters",
+                },
               }}
               render={({ field: { onChange, value } }) => (
                 <FormInput

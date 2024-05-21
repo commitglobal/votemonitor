@@ -34,8 +34,30 @@
     "errors": {
       "credentials": "Credentialele nu sunt corecte. Vă rugăm să încercați din nou.",
       "general": "Eroare la încercarea de conectare"
+    },
+    "onboarding": {
+      "choose_language": {
+        "title": "Alegeți limba",
+        "description": "Aceasta va fi limba afișată în aplicație și va putea fi schimbată în orice moment din secțiunea 'Mai Multe' a aplicației.",
+        "action_button": "Confirmați selecția"
+      },
+      "monitor_polling_stations": {
+        "title": "Monitorizați stațiile de votare",
+        "description": "și documentați în timp real întregul proces de votare prin formulare acreditate de organizația dumneavoastră"
+      },
+      "observation_forms": {
+        "title": "Completați formulare de observație",
+        "description": "și urmăriți progresul lor în timpul fiecărei etape de monitorizare"
+      },
+      "notes_media": {
+        "title": "Adăugați notițe și fișiere media",
+        "description": "dacă sesizați probleme, pentru a întări răspunsul dumneavoastră"
+      },
+      "skip": "Sari peste",
+      "go_to_app": "Intră în aplicatie"
     }
   },
+
   "reset": {
     "header": {
       "title": "Resetare parola"
@@ -52,11 +74,8 @@
     },
     "actions": {
       "send": "Send"
-    }
-  },
-  "email-confirmation": {
-    "title": "Email-ul a fost trimis",
-    "paragraph": "Verifica e-mailul și deschide linkul pe care l-am trimis pentru a continua. Verifica filtrul de spam dacă nu ai primit e-mailul."
+    },
+    "error": "Email-ul nu este inregistrat in sistem."
   },
   "more": {
     "change-language": "Schimba limba aplicației",
@@ -135,6 +154,9 @@
         "save": "Salvează",
         "cancel": "Anulează",
         "delete_note": "Șterge notiță"
+      },
+      "errors": {
+        "note_input": "Textul nu poate depăși 10,000 caractere"
       }
     },
     "select_option": {
@@ -220,6 +242,13 @@
       "paragraph": "Parola ta a fost schimbată cu succes.",
       "actions": {
         "back": "Înapoi în aplicație"
+      }
+    },
+    "email_confirmation": {
+      "title": "Email-ul a fost trimis",
+      "paragraph": "Verifica e-mailul și deschide linkul pe care l-am trimis pentru a continua. Verifica filtrul de spam dacă nu ai primit e-mailul.",
+      "actions": {
+        "back": "Înapoi la pagina de autentificare"
       }
     }
   },

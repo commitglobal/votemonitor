@@ -34,6 +34,27 @@
     "errors": {
       "credentials": "There was a problem with your credentials. Please try again.",
       "general": "Error while trying to log in"
+    },
+    "onboarding": {
+      "choose_language": {
+        "title": "Choose your language",
+        "description": "This will be the language in which your app will be displayed, and can be changed at any time from the More Section of the application.",
+        "action_button": "Apply selection"
+      },
+      "monitor_polling_stations": {
+        "title": "Monitor polling stations",
+        "description": "and document in real-time the entire election process, on forms which your accrediting NGO has set up"
+      },
+      "observation_forms": {
+        "title": "Fill in observation forms",
+        "description": "and track their progress during each monitoring stage"
+      },
+      "notes_media": {
+        "title": "Add notes or media files",
+        "description": "if you notice any problems to further support your answers"
+      },
+      "skip": "Skip",
+      "go_to_app": "Go to app"
     }
   },
   "reset": {
@@ -52,11 +73,8 @@
     },
     "actions": {
       "send": "Send"
-    }
-  },
-  "email-confirmation": {
-    "title": "Email sent",
-    "paragraph": "Check your email and open the link we sent to continue. Check your spam filter if you did not receive the email."
+    },
+    "error": "The current email is not registerd in the system. Please try again."
   },
   "more": {
     "change-language": "Change app language",
@@ -135,6 +153,9 @@
         "save": "Save",
         "cancel": "Cancel",
         "delete_note": "Delete note"
+      },
+      "errors": {
+        "note_input": "Input cannot exceed 10,000 characters"
       }
     },
     "select_option": {
@@ -220,6 +241,13 @@
       "paragraph": "Your password has been successfully changed.",
       "actions": {
         "back": "Back to app"
+      }
+    },
+    "email_confirmation": {
+      "title": "Email sent",
+      "paragraph": "Check your email and open the link we sent to continue. Check your spam filter if you did not receive the email.",
+      "actions": {
+        "back": "Back to login"
       }
     }
   },

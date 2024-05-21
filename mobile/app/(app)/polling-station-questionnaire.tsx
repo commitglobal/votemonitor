@@ -75,13 +75,13 @@ const PollingStationQuestionnaire = () => {
             return {
               $answerType: "numberAnswer",
               questionId,
-              value: formData[questionId],
+              value: +formData[questionId],
             } as ApiFormAnswer;
           case "ratingAnswer":
             return {
               $answerType: "ratingAnswer",
               questionId,
-              value: formData[questionId],
+              value: +formData[questionId],
             } as ApiFormAnswer;
           case "textAnswer":
             return {
@@ -191,7 +191,12 @@ const PollingStationQuestionnaire = () => {
     return formFields;
   };
 
-  const { control, handleSubmit, reset } = useForm({
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
     defaultValues: setFormDefaultValues(),
   });
 
@@ -217,7 +222,7 @@ const PollingStationQuestionnaire = () => {
         <YStack padding="$md" gap="$lg">
           {formStructure?.questions.map((question: ApiFormQuestion) => {
             const _label = `${question.code}. ${question.text[currentLanguage]}`;
-            const _helper = question.helptext[currentLanguage];
+            const _helper = question.helptext?.[currentLanguage] || "";
 
             if (question.$questionType === "numberQuestion") {
               return (
@@ -225,13 +230,20 @@ const PollingStationQuestionnaire = () => {
                   key={question.id}
                   name={question.id}
                   control={control}
+                  rules={{
+                    maxLength: {
+                      value: 10,
+                      message: "Input cannot exceed 10 characters",
+                    },
+                  }}
                   render={({ field: { onChange, value } }) => (
                     <FormInput
                       title={question.text[currentLanguage]}
-                      placeholder={question.helptext[currentLanguage]}
+                      placeholder={question.helptext?.[currentLanguage] || ""}
                       type="numeric"
                       value={value}
                       onChangeText={onChange}
+                      error={errors[question.id]?.message as string}
                     />
                   )}
                 />
@@ -244,14 +256,18 @@ const PollingStationQuestionnaire = () => {
                   key={question.id}
                   name={question.id}
                   control={control}
+                  rules={{
+                    maxLength: { value: 1024, message: "Input cannot exceed 1024 characters" },
+                  }}
                   render={({ field: { onChange, value } }) => (
                     <YStack>
                       <FormInput
                         type="textarea"
                         title={question.text[currentLanguage]}
-                        placeholder={question.helptext[currentLanguage]}
+                        placeholder={question.helptext?.[currentLanguage] || ""}
                         onChangeText={onChange}
                         value={value}
+                        error={errors[question.id]?.message as string}
                       />
                     </YStack>
                   )}
@@ -271,7 +287,7 @@ const PollingStationQuestionnaire = () => {
                         title={question.text[currentLanguage]}
                         onChange={onChange}
                         value={value}
-                        placeholder={question.helptext[currentLanguage]}
+                        placeholder={question.helptext?.[currentLanguage] || ""}
                       />
                     </YStack>
                   )}

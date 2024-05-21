@@ -1,5 +1,5 @@
 import React from "react";
-import { View, XStack, YStack } from "tamagui";
+import { XStack, YStack } from "tamagui";
 import Card from "../../../../components/Card";
 import { Screen } from "../../../../components/Screen";
 import { Typography } from "../../../../components/Typography";
@@ -28,13 +28,13 @@ interface MenuItemProps {
 
 const MenuItem = ({ label, helper, icon, chevronRight, onClick }: MenuItemProps) => (
   <Card onPress={onClick}>
-    <XStack alignItems="center" justifyContent="space-between">
-      <XStack alignItems="center" gap="$xxs">
+    <XStack alignItems="center" justifyContent="space-between" gap="$xxxs">
+      <XStack alignItems="center" gap="$xxs" maxWidth="80%">
         <Icon size={24} icon={icon} color="black" />
-        <View alignContent="center" gap="$xxxs">
-          <Typography preset="body2"> {label} </Typography>
-          {helper && <Typography color="$gray8"> {helper}</Typography>}
-        </View>
+        <YStack alignContent="center" gap="$xxxs">
+          <Typography preset="body2">{label} </Typography>
+          {helper && <Typography color="$gray8">{helper}</Typography>}
+        </YStack>
       </XStack>
 
       {chevronRight && <Icon size={32} icon="chevronRight" color="$purple7" />}
@@ -52,9 +52,8 @@ const More = () => {
   const { t } = useTranslation(["more", "languages"]);
   const { signOut } = useAuth();
 
-  // TODO: Change these consts
   const appVersion = Constants.expoConfig?.version;
-  const URL = "https://www.google.com/";
+  const URL = "https://www.code4.ro/ro/privacy-policy-vote-monitor";
 
   const { data: currentUser } = useQuery({
     queryKey: [CURRENT_USER_STORAGE_KEY],

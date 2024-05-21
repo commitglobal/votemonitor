@@ -89,7 +89,7 @@ const ChangePassword = () => {
   };
 
   if (successfullyChanged) {
-    return <ChangePasswordConfirmation />;
+    return <ChangePasswordConfirmation emailConfirmation={false} />;
   }
 
   // Render either form or confirmation screen
