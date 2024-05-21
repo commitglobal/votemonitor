@@ -10,7 +10,7 @@ public class Endpoint(IAuthorizationService authorizationService,
 {
     public override void Configure()
     {
-        Post("/api/election-rounds/{electionRoundId}/monitoring-ngos/{monitoringNgoId}/monitoring-observers:tags");
+        Post("/api/election-rounds/{electionRoundId}/monitoring-observers:tags");
         Description(x => x.Accepts<Request>());
         DontAutoTag();
         Options(x => x.WithTags("monitoring-observers"));

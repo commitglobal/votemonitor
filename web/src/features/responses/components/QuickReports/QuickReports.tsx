@@ -21,8 +21,8 @@ import { useQuickReports } from '../../hooks/quick-reports';
 import type { QuickReportsSearchParams } from '../../models/search-params';
 import { quickReportsColumnDefs } from '../../utils/column-defs';
 import { quickReportsColumnVisibilityOptions, quickReportsDefaultColumns } from '../../utils/column-visibility-options';
-import { PollingStationsFilters } from '../PollingStationsFilters/PollingStationsFilters';
 import { FilterBadge } from '@/components/ui/badge';
+import { PollingStationsFilters } from '@/components/PollingStationsFilters/PollingStationsFilters';
 
 const routeApi = getRouteApi('/responses/');
 

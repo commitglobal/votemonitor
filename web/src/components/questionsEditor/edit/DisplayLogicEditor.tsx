@@ -79,6 +79,7 @@ export default function DisplayLogicEditor({
     }
 
     function handleParentQuestionSelected(questionId: string) {
+        debugger;
         const parentQuestion = availableParentQuestions.find(q => q.id === questionId)!;
 
         const displayLogic: DisplayLogic = {
@@ -109,13 +110,15 @@ export default function DisplayLogicEditor({
     }
 
     function handleConditionChanged(condition: DisplayLogicCondition) {
-        updateQuestion(questionIndex, {
-            ...question,
-            displayLogic: {
-                ...question.displayLogic,
-                condition
-            }
-        });
+        if (!!condition) {
+            updateQuestion(questionIndex, {
+                ...question,
+                displayLogic: {
+                    ...question.displayLogic,
+                    condition
+                }
+            });
+        }
     }
 
     function handleValueChanged(value: string) {

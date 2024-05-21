@@ -1,5 +1,5 @@
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
-import { getRouteApi } from '@tanstack/react-router';
+import { useNavigate } from '@tanstack/react-router';
 import { useCallback } from 'react';
 import type { FunctionComponent } from '@/common/types';
 import { FilterBadge } from '@/components/ui/badge';
@@ -10,16 +10,15 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useMonitoringObserversTags } from '../../hooks/tags-queries';
 import type { FormSubmissionsSearchParams } from '../../models/search-params';
-
-const routeApi = getRouteApi('/responses/');
+import { Route } from '@/routes/responses';
+import { useMonitoringObserversTags } from '@/hooks/tags-queries';
 
 export function FormsFiltersByObserver(): FunctionComponent {
-  const navigate = routeApi.useNavigate();
-  const search = routeApi.useSearch();
+  const navigate = useNavigate({ from: '/responses/' });
+  const search = Route.useSearch();
 
-  const { data } = useMonitoringObserversTags();
+  const { data: tags } = useMonitoringObserversTags();
 
   const onTagsFilterChange = useCallback(
     (tag: string) => () => {
@@ -53,12 +52,12 @@ export function FormsFiltersByObserver(): FunctionComponent {
         </DropdownMenuTrigger>
 
         <DropdownMenuContent>
-          {data?.tags.map((tag) => (
+          {tags?.map((tag) => (
             <DropdownMenuCheckboxItem
-              checked={search.tagsFilter?.includes(tag)}
-              onCheckedChange={onTagsFilterChange(tag)}
-              key={tag}>
-              {tag}
+              checked={search.tagsFilter?.includes(tag.text)}
+              onCheckedChange={onTagsFilterChange(tag.text)}
+              key={tag.id}>
+              {tag.text}
             </DropdownMenuCheckboxItem>
           ))}
         </DropdownMenuContent>

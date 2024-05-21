@@ -20,16 +20,16 @@ public class ListValidatorTests
     }
 
     [Fact]
-    public void Validation_ShouldFail_When_MonitoringNgoId_Empty()
+    public void Validation_ShouldFail_When_NgoId_Empty()
     {
         // Arrange
-        var request = new List.Request { MonitoringNgoId = Guid.Empty };
+        var request = new List.Request { NgoId = Guid.Empty };
 
         // Act
         var result = _validator.TestValidate(request);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.MonitoringNgoId);
+        result.ShouldHaveValidationErrorFor(x => x.NgoId);
     }
 
 
@@ -62,7 +62,7 @@ public class ListValidatorTests
         var request = new List.Request
         {
             ElectionRoundId = Guid.NewGuid(),
-            MonitoringNgoId = Guid.NewGuid(),
+            NgoId = Guid.NewGuid(),
             Tags = tags
         };
 

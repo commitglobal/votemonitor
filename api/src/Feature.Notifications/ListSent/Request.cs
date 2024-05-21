@@ -1,8 +1,9 @@
-﻿using Vote.Monitor.Core.Security;
+﻿using Vote.Monitor.Core.Models;
+using Vote.Monitor.Core.Security;
 
 namespace Feature.Notifications.ListSent;
 
-public class Request
+public class Request: BasePaginatedRequest
 {
     public Guid ElectionRoundId { get; set; }
 

@@ -1,10 +1,9 @@
-import { BaseQuestion, NumberQuestion, TextQuestion, newTranslatedString } from '@/common/types';
+import { BaseQuestion, newTranslatedString } from '@/common/types';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useParams } from '@tanstack/react-router';
 import { RefObject } from 'react';
 import { useTranslation } from 'react-i18next';
-import { LanguageIcon } from '@heroicons/react/24/outline';
 
 interface QuestionHeaderProps {
   availableLanguages: string[];
