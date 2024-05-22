@@ -13,7 +13,8 @@ import { useToast } from '@/components/ui/use-toast';
 import { queryClient } from '@/main';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
-import { useLoaderData, useNavigate } from '@tanstack/react-router';
+import { useLoaderData, useNavigate, useParams } from '@tanstack/react-router';
+import { Route as EditFormRoute } from '@/routes/form-templates_.$formTemplateId.edit-translation.$languageCode';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -29,6 +30,7 @@ export default function EditFormTranslation() {
   const formData: FormFull = useLoaderData({ strict: false });
   const [localQuestions, setLocalQuestions] = useState(formData.questions);
   const { toast } = useToast();
+  const { languageCode } = EditFormRoute.useParams();
 
   const editFormFormSchema = z.object({
     name: z.string().nonempty(),
@@ -39,13 +41,18 @@ export default function EditFormTranslation() {
     resolver: zodResolver(editFormFormSchema),
     defaultValues: {
       name: formData.name[formData.defaultLanguage],
-      description: getTranslationOrDefault(formData.description, formData.defaultLanguage)
+      description: getTranslationOrDefault(formData.description, formData.defaultLanguage),
     },
   });
 
   function onSubmit(values: z.infer<typeof editFormFormSchema>) {
     formData.name[formData.defaultLanguage] = values.name;
-    formData.description = updateTranslationString(formData.description, formData.languages, formData.defaultLanguage, values.description ?? '');
+    formData.description = updateTranslationString(
+      formData.description,
+      formData.languages,
+      formData.defaultLanguage,
+      values.description ?? ''
+    );
 
     const updatedForm: FormFull = {
       ...formData,
@@ -85,6 +92,8 @@ export default function EditFormTranslation() {
             </TabsList>
             <TabsContent value='form-details'>
               <Card className='pt-0'>
+                <p>asd</p>
+                {languageCode}
                 <CardHeader className='flex flex-column gap-2'>
                   <div className='flex flex-row justify-between items-center'>
                     <CardTitle className='text-xl'>Form details</CardTitle>
@@ -112,12 +121,7 @@ export default function EditFormTranslation() {
                         render={({ field }) => (
                           <Field>
                             <Label>{t('form.field.description')}</Label>
-                            <Textarea
-                              rows={10}
-                              cols={100}
-                              {...field}
-                              placeholder={t('form.placeholder.description')}
-                            />
+                            <Textarea rows={10} cols={100} {...field} placeholder={t('form.placeholder.description')} />
                           </Field>
                         )}
                       />

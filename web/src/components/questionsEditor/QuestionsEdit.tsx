@@ -6,6 +6,7 @@ import AddQuestionButton from './edit/AddQuestionButton';
 import EditQuestionFactory from './edit/EditQuestionFactory';
 import { validateQuestion } from './edit/Validation';
 import { StrictModeDroppable } from './StrictModeDroppable';
+import { useParams } from '@tanstack/react-router';
 
 export interface QuestionsEditProps {
   availableLanguages: string[];
@@ -16,6 +17,7 @@ export interface QuestionsEditProps {
   setActiveQuestionId: (questionId: string | undefined) => void;
   invalidQuestions: string[] | null;
   setInvalidQuestions: (questions: string[]) => void;
+  editLanguageCode?: string;
 }
 
 export enum MoveDirection {
@@ -31,14 +33,15 @@ function QuestionsEdit({
   activeQuestionId,
   setActiveQuestionId,
   invalidQuestions,
-  setInvalidQuestions }: QuestionsEditProps) {
-
+  editLanguageCode,
+  setInvalidQuestions,
+}: QuestionsEditProps) {
   function handleValidation(question: BaseQuestion) {
     if (invalidQuestions === null) {
       return;
     }
 
-    let temp: string[] = [...invalidQuestions]
+    let temp: string[] = [...invalidQuestions];
 
     if (validateQuestion(question, languageCode)) {
       temp = invalidQuestions.filter((id) => id !== question.id);
@@ -47,7 +50,7 @@ function QuestionsEdit({
       temp.push(question.id);
       setInvalidQuestions(temp);
     }
-  };
+  }
 
   function addQuestion(question: BaseQuestion) {
     localQuestions.push(question);
@@ -98,6 +101,10 @@ function QuestionsEdit({
     setLocalQuestions([...newQuestions]);
   }
 
+  const params: any = useParams({
+    strict: false,
+  });
+
   return (
     <div>
       <DragDropContext onDragEnd={onDragEnd}>
@@ -129,7 +136,13 @@ function QuestionsEdit({
           </StrictModeDroppable>
         </div>
       </DragDropContext>
-      <AddQuestionButton availableLanguages={availableLanguages} languageCode={languageCode} addQuestion={addQuestion} />
+      {!params['languageCode'] && (
+        <AddQuestionButton
+          availableLanguages={availableLanguages}
+          languageCode={languageCode}
+          addQuestion={addQuestion}
+        />
+      )}
     </div>
   );
 }
