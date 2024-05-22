@@ -8,7 +8,6 @@ import { DrawerActions } from "@react-navigation/native";
 import NoNotificationsReceived from "../../../../components/NoNotificationsReceived";
 import { ListView } from "../../../../components/ListView";
 import { useWindowDimensions } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   NotificationsKeys,
   useNotifications,
@@ -26,9 +25,6 @@ const Inbox = () => {
   const { t, i18n } = useTranslation("inbox");
   const navigation = useNavigation();
   const { height } = useWindowDimensions();
-  const insets = useSafeAreaInsets();
-  // height for the scrollview with the notifications received
-  const scrollHeight = height - 100 - 60 - insets.top - insets.bottom;
 
   const { activeElectionRound } = useUserData();
   const { data, isLoading } = useNotifications(activeElectionRound?.id);
@@ -59,7 +55,7 @@ const Inbox = () => {
   });
 
   return (
-    <Screen preset="fixed" contentContainerStyle={{ flexGrow: 1 }}>
+    <Screen preset="fixed" contentContainerStyle={{ flexGrow: 1 }} >
       <Header
         title={"Inbox"}
         titleColor="white"
@@ -71,7 +67,7 @@ const Inbox = () => {
       />
 
       {isLoading ? (
-        <YStack flex={1} justifyContent="center" alignItems="center">
+        <YStack flex={1} justifyContent="center" alignItems="center" >
           <Spinner size="large" color="$purple5" />
         </YStack>
       ) : (
@@ -81,7 +77,7 @@ const Inbox = () => {
               {`${t("messages_from")} ${ngoName || t("your_organization")}`}
             </Typography>
           </YStack>
-          <YStack paddingHorizontal="$md" height={scrollHeight}>
+          <YStack padding="$md" style={{ flex: 1 }}>
             <ListView<any>
               data={displayedNotifications}
               showsVerticalScrollIndicator={false}

@@ -16,7 +16,6 @@ import { useUserData } from "../../contexts/user/UserContext.provider";
 import { useQueryClient } from "@tanstack/react-query";
 import WizzardControls from "../../components/WizzardControls";
 import { ListView } from "../../components/ListView";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const mapPollingStationOptionsToSelectValues = (
   options: PollingStationNomenclatorNodeVM[],
@@ -86,8 +85,6 @@ const PollingStationWizzardContent = ({
   const [selectedOption, setSelectedOption] = useState<PollingStationStep>();
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [sliceNumber, setSliceNumber] = useState(30);
-  const { height } = useWindowDimensions();
-  const insets = useSafeAreaInsets();
   const { activeElectionRound, setSelectedPollingStationId } = useUserData();
 
   const queryClient = useQueryClient();
@@ -235,7 +232,7 @@ const PollingStationWizzardContent = ({
       <YStack
         paddingHorizontal="$md"
         paddingTop="$sm"
-        height={height - 300 - insets.top - insets.bottom}
+        style={{ flex: 1 }}
         paddingBottom={"$md"}
       >
         {isFetchingPollingStations && <Spinner size="large" color="$purple5" />}

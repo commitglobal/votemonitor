@@ -7,7 +7,7 @@ import { Typography } from "../../../../../../components/Typography";
 import { YStack } from "tamagui";
 import { useMemo, useState } from "react";
 import { ListView } from "../../../../../../components/ListView";
-import { Dimensions, Platform } from "react-native";
+import { Platform } from "react-native";
 import OptionsSheet from "../../../../../../components/OptionsSheet";
 import ChangeLanguageDialog from "../../../../../../components/ChangeLanguageDialog";
 import { setFormLanguagePreference } from "../../../../../../common/language.preferences";
@@ -146,11 +146,7 @@ const FormDetails = () => {
         paddingTop={28}
         gap="$xl"
         paddingHorizontal="$md"
-        height={
-          Platform.OS === "ios"
-            ? Dimensions.get("screen").height - 120
-            : numberOfQuestions * 165 + 300
-        }
+        style={{ flex: 1 }}
       >
         <ListView<
           Pick<FormQuestionListItemProps, "question" | "status"> & {

@@ -90,7 +90,7 @@ const QuickReportContent = ({ quickReports, isLoading, error }: QuickReportConte
   }
 
   return (
-    <YStack padding="$md" height={Dimensions.get("screen").height * 1.4}>
+    <YStack padding="$md" style={{ flex: 1 }}>
       <ListView<any>
         data={quickReports}
         showsVerticalScrollIndicator={false}

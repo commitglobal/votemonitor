@@ -101,7 +101,7 @@ const FormList = ({ ListHeaderComponent }: { ListHeaderComponent: ListHeaderComp
   return (
     <YStack gap="$xxs">
       {/* height = number of forms * formCard max height + ListHeaderComponent height  */}
-      <YStack height={formList.length * 140 + 400}>
+      <YStack style={{ flex: 1 }}>
         <ListView<FormListItem>
           data={formList}
           ListHeaderComponent={ListHeaderComponent}
