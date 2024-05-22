@@ -22,7 +22,7 @@ import { useQuery, UseQueryResult } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { ColumnDef } from '@tanstack/react-table';
 import { X } from 'lucide-react';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import { downloadImportExample } from '../../helpers';
 import { MonitoringObserver } from '../../models/monitoring-observer';
@@ -191,7 +191,12 @@ function MonitoringObserversList() {
     });
   };
 
-
+  const rowClickHandler = useCallback(
+    (monitoringObserverId: string) => {
+      navigateToObserver(monitoringObserverId);
+    },
+    [navigateToObserver]
+  );
 
   return (
     <Card className='w-full pt-0'>
@@ -331,7 +336,11 @@ function MonitoringObserversList() {
         )}
       </CardHeader>
       <CardContent>
-        <QueryParamsDataTable columns={monitoringObserverColDefs} useQuery={useMonitoringObservers} />
+        <QueryParamsDataTable
+          columns={monitoringObserverColDefs}
+          useQuery={useMonitoringObservers}
+          onRowClick={rowClickHandler}
+        />
       </CardContent>
     </Card>
   );

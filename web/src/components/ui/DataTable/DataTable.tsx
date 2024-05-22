@@ -17,7 +17,12 @@ import { DataTablePagination } from './DataTablePagination';
 import type { UseQueryResult } from '@tanstack/react-query';
 import { Skeleton } from '../skeleton';
 
-export interface DataTableProps<TData, TValue, TQueryParams = object> {
+export interface RowData {
+  id: string;
+  defaultLanguage?: string;
+}
+
+export interface DataTableProps<TData extends RowData, TValue, TQueryParams = object> {
   /**
    * Tanstack table column definitions.
    */
@@ -83,9 +88,11 @@ export interface DataTableProps<TData, TValue, TQueryParams = object> {
   getRowClassName?: (row: Row<TData>) => string | undefined;
 
   onDataFetchingSucceed?: (pageSize: number, currentPage: number, totalCount: number) => void;
+
+  onRowClick?: (id: string, defaultLanguage?: string) => void;
 }
 
-export function DataTable<TData, TValue, TQueryParams = object>({
+export function DataTable<TData extends RowData, TValue, TQueryParams = object>({
   columnVisibility,
   columns,
   paginationExt,
@@ -96,7 +103,8 @@ export function DataTable<TData, TValue, TQueryParams = object>({
   queryParams,
   getSubrows,
   getRowClassName,
-  onDataFetchingSucceed
+  onDataFetchingSucceed,
+  onRowClick,
 }: DataTableProps<TData, TValue, TQueryParams>): ReactElement {
   let [pagination, setPagination]: [PaginationState, (p: PaginationState) => void] = useState({
     pageIndex: 0,
@@ -115,7 +123,7 @@ export function DataTable<TData, TValue, TQueryParams = object>({
     [sorting, setSorting] = [sortingExt, setSortingExt];
   }
 
-  const { data, isFetching , isSuccess} = useQuery({
+  const { data, isFetching, isSuccess } = useQuery({
     pageNumber: pagination.pageIndex + 1,
     pageSize: pagination.pageSize,
     sortColumnName: sorting[0]?.id || 'id',
@@ -128,7 +136,6 @@ export function DataTable<TData, TValue, TQueryParams = object>({
       onDataFetchingSucceed(data.pageSize, data.currentPage, data.totalCount);
     }
   }, [isSuccess, queryParams]);
-
 
   const table = useReactTable({
     data: data?.items || [],
@@ -188,7 +195,11 @@ export function DataTable<TData, TValue, TQueryParams = object>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && 'selected'}
-                  className={getRowClassName ? getRowClassName(row) : ''}>
+                  className={getRowClassName ? getRowClassName(row) : ''}
+                  onClick={() => {
+                    onRowClick?.(row.original.id, row.original.defaultLanguage);
+                  }}
+                  style={{ cursor: onRowClick ? 'pointer' : undefined }}>
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id} className='truncate' style={{ maxWidth: cell.column.getSize() }}>
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
