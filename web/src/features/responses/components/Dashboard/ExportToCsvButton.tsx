@@ -1,14 +1,15 @@
-import { useCallback, useEffect, useState } from 'react';
+import { authApi } from '@/common/auth-api';
+import type { FunctionComponent } from '@/common/types';
 import { CsvFileIcon } from '@/components/icons/CsvFileIcon';
 import { Button } from '@/components/ui/button';
+import { toast } from '@/components/ui/use-toast';
+import { buildURLSearchParams } from '@/lib/utils';
+import { useCallback, useEffect, useState } from 'react';
 import {
   useFormSubmissionsExport,
-  useFormSubmissionsExportedData,
   useFormSubmissionsExportedDataDetails,
 } from '../../hooks/form-export';
-import type { FunctionComponent } from '@/common/types';
 import { ExportStatus } from '../../models/form-export';
-import { toast } from '@/components/ui/use-toast';
 
 export function ExportToCsvButton(): FunctionComponent {
   const [exportedDataId, setExportedDataId] = useState('');
@@ -29,6 +30,7 @@ export function ExportToCsvButton(): FunctionComponent {
     useFormSubmissionsExportedDataDetails(exportedDataId, {
       enabled: !isCreatingExportData,
     });
+
   const exportStatus = exportedDataDetails?.exportStatus;
 
   const { data: exportData } = useFormSubmissionsExportedData(exportedDataId, {
@@ -37,10 +39,42 @@ export function ExportToCsvButton(): FunctionComponent {
 
   const isLoading = isCreatingExportData || isFetchingExportedDataDetails || exportStatus === ExportStatus.Started;
 
+
+  const downloadExportedData = async () => {
+    const params = buildURLSearchParams({ exportedDataId });
+
+    const electionRoundId = localStorage.getItem('electionRoundId');
+
+    const response = await authApi.get(
+      `/election-rounds/${electionRoundId}/form-submissions:getExportedData`,
+      { params }
+    );
+
+    const csvData = response.data;
+
+    const blob = new Blob([csvData], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.style.display = 'none';
+    a.href = url;
+    a.download = 'exported-data-errors.csv';
+
+    document.body.appendChild(a);
+    a.click();
+
+    window.URL.revokeObjectURL(url);
+  };
+
   useEffect(() => {
     if (exportStatus === ExportStatus.Failed) {
       toast({ title: 'Export failed, please try again later', variant: 'default' });
     }
+
+    if (exportStatus === ExportStatus.Completed) {
+      downloadExportedData();
+    }
+
   }, [exportStatus]);
 
   console.log(exportData);

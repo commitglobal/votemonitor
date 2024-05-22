@@ -60,27 +60,3 @@ export function useFormSubmissionsExportedDataDetails(
     refetchInterval: ({ state }) => (state.data?.exportStatus === ExportStatus.Started ? 5 * 1000 : undefined),
   });
 }
-
-type UseFormSubmissionsExportedDataOptions = Omit<UseQueryOptions<unknown>, 'queryKey'>;
-
-export function useFormSubmissionsExportedData(
-  exportedDataId: string,
-  options?: UseFormSubmissionsExportedDataOptions
-): UseQueryResult<unknown> {
-  const params = buildURLSearchParams({ exportedDataId });
-
-  return useQuery({
-    queryKey: ['form-submissions-exported-data'],
-    queryFn: async () => {
-      const electionRoundId = localStorage.getItem('electionRoundId');
-
-      const response = await authApi.get<unknown>(
-        `/election-rounds/${electionRoundId}/form-submissions:getExportedData`,
-        { params }
-      );
-
-      return response.data;
-    },
-    enabled: options?.enabled && Boolean(exportedDataId),
-  });
-}
