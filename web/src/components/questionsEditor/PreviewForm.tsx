@@ -4,8 +4,8 @@ import PreviewQuestionFactory from './preview/PreviewQuestionFactory';
 import { Progress } from '../ui/progress';
 import { z } from 'zod';
 import { Button } from '../ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../ui/card';
-
+import { Card, CardContent, CardHeader } from '../ui/card';
+import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 export interface PreviewFormProps {
   languageCode: string;
   localQuestions: BaseQuestion[];
@@ -57,7 +57,12 @@ function PreviewForm({ languageCode, localQuestions, activeQuestionId, setActive
     setActiveQuestionId(previousQuestionId);
   }
 
-  function getNextQuestionId(questionId: string): string {
+  function onNextButtonClicked() {
+    var previousQuestionId = getNextQuestionId(activeQuestionId);
+    setActiveQuestionId(previousQuestionId);
+  }
+
+  function getNextQuestionId(questionId?: string): string {
     const currentQuestionIndex = localQuestions.findIndex((q) => q.id === questionId);
 
     if (currentQuestionIndex === -1) throw new Error('Question not found');
@@ -74,34 +79,61 @@ function PreviewForm({ languageCode, localQuestions, activeQuestionId, setActive
   }
 
   return (
-    <Card className='w-[480px]'>
-      <CardContent>
-        <div className='flex h-full w-full flex-col justify-between px-6 pb-3 pt-6'>
-          <Button className='mb-4' type='button' onClick={resetProgress}>
+    <Card className='w-full'>
+      <CardHeader className='p-4 bg-neutral-900 rounded-t-md'>
+        <h3 className='text-white'>Question preview</h3>
+      </CardHeader>
+      <CardContent className='p-12'>
+        {currentQuestion ? (
+          <div className='flex h-full w-full flex-col justify-between px-6 pb-3 pt-6 '>
+            {/* <Button className='mb-4' type='button' onClick={resetProgress}>
             Start from the beginning
-          </Button>
-          <div>
-            {!!currentQuestion ? (
-              <PreviewQuestionFactory
-                languageCode={languageCode}
-                question={currentQuestion}
-                answer={responseData[activeQuestionId!]!}
-                isFirstQuestion={currentQuestion.id === localQuestions[0]?.id}
-                isLastQuestion={currentQuestion.id === localQuestions[localQuestions.length - 1]?.id}
-                onSubmitAnswer={onSubmitAnswer}
-                onBackButtonClicked={onBackButtonClicked}
-              />
-            ) : activeQuestionId === 'end' ? (
-              <div>Done!</div>
-            ) : (
-
-              localQuestions.length ? <div></div> : <div>No questions available.</div>
+          </Button> */}
+            <div>
+              {!!currentQuestion ? (
+                <PreviewQuestionFactory
+                  languageCode={languageCode}
+                  question={currentQuestion}
+                  answer={responseData[activeQuestionId!]!}
+                  isFirstQuestion={currentQuestion.id === localQuestions[0]?.id}
+                  isLastQuestion={currentQuestion.id === localQuestions[localQuestions.length - 1]?.id}
+                  onSubmitAnswer={onSubmitAnswer}
+                  onBackButtonClicked={onBackButtonClicked}
+                />
+              ) : activeQuestionId === 'end' ? (
+                <div>Done!</div>
+              ) : localQuestions.length ? (
+                <div></div>
+              ) : (
+                <div>No questions available.</div>
+              )}
+            </div>
+            <div className='nav-buttons flex gap-4 mt-4 justify-end'>
+              <Button
+                variant='outline'
+                className='mb-4 flex justify-center items-center gap-2'
+                type='button'
+                onClick={onBackButtonClicked}>
+                <ChevronLeftIcon width={18} />
+                Back
+              </Button>
+              <Button
+                className='mb-4 flex justify-center items-center gap-2'
+                type='button'
+                onClick={onNextButtonClicked}>
+                Next
+                <ChevronRightIcon width={18} />
+              </Button>
+            </div>
+            {!!localQuestions.length && (
+              <div className='mt-8'>
+                <Progress value={progress} max={100} />
+              </div>
             )}
           </div>
-          {!!localQuestions.length && <div className='mt-8'>
-            <Progress value={progress} max={100} />
-          </div>}
-        </div>
+        ) : (
+          <h2 className='text-2xl text-center'>Please select a question</h2>
+        )}
       </CardContent>
     </Card>
   );

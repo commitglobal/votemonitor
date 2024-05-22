@@ -33,6 +33,7 @@ import { z } from 'zod';
 import { FormTemplateFull, FormTemplateType, mapFormTemplateType } from '../../models/formTemplate';
 import { formTemplatesKeys } from '../../queries';
 import EditFormTemplateFooter from './EditFormTemplateFooter';
+import Layout from '@/components/layout/Layout';
 
 export default function EditFormTemplate() {
   const { t } = useTranslation();
@@ -67,7 +68,12 @@ export default function EditFormTemplate() {
   function onSubmit(values: z.infer<typeof editFormTemplateFormSchema>) {
     formTemplate.code = values.code;
     formTemplate.name[defaultLanguage] = values.name;
-    formTemplate.description = updateTranslationString(formTemplate.description, formTemplate.languages, formTemplate.defaultLanguage, values.description ?? '');
+    formTemplate.description = updateTranslationString(
+      formTemplate.description,
+      formTemplate.languages,
+      formTemplate.defaultLanguage,
+      values.description ?? ''
+    );
     formTemplate.formTemplateType = values.formTemplateType;
     formTemplate.defaultLanguage = defaultLanguage;
     formTemplate.languages = languages;
@@ -97,52 +103,70 @@ export default function EditFormTemplate() {
     },
   });
 
-
-
-  const updateTranslations = (question: BaseQuestion, previousLanguageCode: string, newLanguageCode: string): BaseQuestion => {
+  const updateTranslations = (
+    question: BaseQuestion,
+    previousLanguageCode: string,
+    newLanguageCode: string
+  ): BaseQuestion => {
     question.text = cloneTranslation(question.text, previousLanguageCode, newLanguageCode)!;
     question.helptext = cloneTranslation(question.helptext, previousLanguageCode, newLanguageCode);
 
     if (question.$questionType === QuestionType.TextQuestionType) {
       const textQuestion: TextQuestion = question as TextQuestion;
-      textQuestion.inputPlaceholder = cloneTranslation(textQuestion.inputPlaceholder, previousLanguageCode, newLanguageCode);
+      textQuestion.inputPlaceholder = cloneTranslation(
+        textQuestion.inputPlaceholder,
+        previousLanguageCode,
+        newLanguageCode
+      );
 
       return { ...textQuestion };
     }
 
     if (question.$questionType === QuestionType.NumberQuestionType) {
       const numberQuestion: NumberQuestion = question as NumberQuestion;
-      numberQuestion.inputPlaceholder = cloneTranslation(numberQuestion.inputPlaceholder, previousLanguageCode, newLanguageCode);
+      numberQuestion.inputPlaceholder = cloneTranslation(
+        numberQuestion.inputPlaceholder,
+        previousLanguageCode,
+        newLanguageCode
+      );
 
       return { ...numberQuestion };
     }
 
     if (question.$questionType === QuestionType.SingleSelectQuestionType) {
       const singleSelectQuestion: SingleSelectQuestion = question as SingleSelectQuestion;
-      singleSelectQuestion.options = singleSelectQuestion.options.map(option => ({ ...option, text: cloneTranslation(option.text, previousLanguageCode, newLanguageCode)! }))
+      singleSelectQuestion.options = singleSelectQuestion.options.map((option) => ({
+        ...option,
+        text: cloneTranslation(option.text, previousLanguageCode, newLanguageCode)!,
+      }));
 
       return { ...singleSelectQuestion };
     }
 
     if (question.$questionType === QuestionType.MultiSelectQuestionType) {
       const MultiSelectQuestion: MultiSelectQuestion = question as MultiSelectQuestion;
-      MultiSelectQuestion.options = MultiSelectQuestion.options.map(option => ({ ...option, text: cloneTranslation(option.text, previousLanguageCode, newLanguageCode)! }))
+      MultiSelectQuestion.options = MultiSelectQuestion.options.map((option) => ({
+        ...option,
+        text: cloneTranslation(option.text, previousLanguageCode, newLanguageCode)!,
+      }));
 
       return { ...MultiSelectQuestion };
     }
 
     return { ...question };
-  }
+  };
 
   const handleLanguageChange = (newLanguageCode: string): void => {
     const previousLanguageCode = defaultLanguage;
     setDefaultLanguage(newLanguageCode);
     setLanguages(Array.from(new Set([...languages, newLanguageCode])));
-    setLocalQuestions([...localQuestions.map(question => updateTranslations(question, previousLanguageCode, newLanguageCode))]);
-  }
+    setLocalQuestions([
+      ...localQuestions.map((question) => updateTranslations(question, previousLanguageCode, newLanguageCode)),
+    ]);
+  };
 
   return (
-    <div>
+    <Layout title={formTemplate.code}>
       <Form {...form}>
         <form className='flex flex-col flex-1' onSubmit={form.handleSubmit(onSubmit)}>
           <Tabs className='flex flex-col flex-1' defaultValue='form-details'>
@@ -151,7 +175,7 @@ export default function EditFormTemplate() {
               <TabsTrigger value='questions'>Questions</TabsTrigger>
             </TabsList>
             <TabsContent value='form-details'>
-              <Card className='pt-0'>
+              <Card className='pt-0 h-[calc(100vh+360px)]'>
                 <CardHeader className='flex flex-column gap-2'>
                   <div className='flex flex-row justify-between items-center'>
                     <CardTitle className='text-xl'>Template form details</CardTitle>
@@ -219,7 +243,13 @@ export default function EditFormTemplate() {
                         render={({ field }) => (
                           <Field>
                             <Label>{t('form-template.field.defaultLanguage')}</Label>
-                            <LanguageSelect languageCode={field.value} onSelect={(value) => { handleLanguageChange(value); field.onChange(value) }} />
+                            <LanguageSelect
+                              languageCode={field.value}
+                              onSelect={(value) => {
+                                handleLanguageChange(value);
+                                field.onChange(value);
+                              }}
+                            />
                           </Field>
                         )}
                       />
@@ -267,6 +297,6 @@ export default function EditFormTemplate() {
           <EditFormTemplateFooter />
         </form>
       </Form>
-    </div>
+    </Layout>
   );
 }
