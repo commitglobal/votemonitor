@@ -142,12 +142,7 @@ const FormDetails = () => {
           setOptionSheetOpen(true);
         }}
       />
-      <YStack
-        paddingTop={28}
-        gap="$xl"
-        paddingHorizontal="$md"
-        style={{ flex: 1 }}
-      >
+      <YStack paddingTop={28} gap="$xl" paddingHorizontal="$md" style={{ flex: 1 }}>
         <ListView<
           Pick<FormQuestionListItemProps, "question" | "status"> & {
             id: string;

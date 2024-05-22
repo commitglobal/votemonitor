@@ -2,7 +2,7 @@ import { router } from "expo-router";
 import { Screen } from "../../components/Screen";
 import Header from "../../components/Header";
 import { Icon } from "../../components/Icon";
-import { Keyboard, ViewStyle, useWindowDimensions } from "react-native";
+import { Keyboard, ViewStyle } from "react-native";
 import { Input, Spinner, XStack, YStack, styled } from "tamagui";
 import { Typography } from "../../components/Typography";
 import { pollingStationsKeys, usePollingStationByParentID } from "../../services/queries.service";
@@ -229,12 +229,7 @@ const PollingStationWizzardContent = ({
           <SearchInput flex={1} value={searchTerm} onChangeText={setSearchTerm} />
         </XStack>
       </YStack>
-      <YStack
-        paddingHorizontal="$md"
-        paddingTop="$sm"
-        style={{ flex: 1 }}
-        paddingBottom={"$md"}
-      >
+      <YStack paddingHorizontal="$md" paddingTop="$sm" style={{ flex: 1 }} paddingBottom={"$md"}>
         {isFetchingPollingStations && <Spinner size="large" color="$purple5" />}
         {!isFetchingPollingStations && (
           <ListView<{ id: string | number; value: string; label: string }>

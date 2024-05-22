@@ -18,7 +18,7 @@ const GenericErrorScreen = () => {
             We could not recover after this error. Please check your internet connection and restart
             the application!
           </Typography>
-          <Button style={{ marginTop: 10 }} onPress={() => reloadAsync().catch((_error) => {})}>
+          <Button style={{ marginTop: 16 }} onPress={() => reloadAsync().catch((_error) => {})}>
             Retry
           </Button>
         </YStack>
