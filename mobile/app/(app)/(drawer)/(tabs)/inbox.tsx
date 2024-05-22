@@ -46,10 +46,6 @@ const Inbox = () => {
     [notifications, sliceNumber, i18n.language],
   );
 
-  if (!isLoading && (!notifications || !notifications.length)) {
-    return <NoNotificationsReceived />;
-  }
-
   useAppState((activating: boolean) => {
     if (activating) {
       queryClient.invalidateQueries({
@@ -57,6 +53,10 @@ const Inbox = () => {
       });
     }
   });
+
+  if (!isLoading && (!notifications || !notifications.length)) {
+    return <NoNotificationsReceived />;
+  }
 
   return (
     <Screen preset="fixed" contentContainerStyle={{ flexGrow: 1 }}>
