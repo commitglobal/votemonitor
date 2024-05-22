@@ -93,7 +93,7 @@
       "title": "Add polling station"
     },
     "progress": {
-      "location": "Add polling station from the {{value}}"
+      "location": "Add polling station from {{value}}"
     },
     "form": {
       "region": {
@@ -126,6 +126,9 @@
       "back": "Back",
       "skip": "Skip this step",
       "finalize": "Finalize"
+    },
+    "list": {
+      "empty": "No data found for current search."
     }
   },
   "polling_station_information": {
@@ -310,7 +313,7 @@
       "add_note": "Add note",
       "load": "Load from gallery",
       "take_picture": "Take a photo",
-      "record_video": "Record audio",
+      "record_video": "Record a video",
       "upload_audio": "Upload audio file"
     }
   }

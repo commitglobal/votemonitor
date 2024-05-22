@@ -24,7 +24,6 @@ const Inbox = () => {
   const queryClient = useQueryClient();
   const { t, i18n } = useTranslation("inbox");
   const navigation = useNavigation();
-  const { height } = useWindowDimensions();
 
   const { activeElectionRound } = useUserData();
   const { data, isLoading } = useNotifications(activeElectionRound?.id);
@@ -42,10 +41,6 @@ const Inbox = () => {
     [notifications, sliceNumber, i18n.language],
   );
 
-  if (!isLoading && (!notifications || !notifications.length)) {
-    return <NoNotificationsReceived />;
-  }
-
   useAppState((activating: boolean) => {
     if (activating) {
       queryClient.invalidateQueries({
@@ -53,6 +48,10 @@ const Inbox = () => {
       });
     }
   });
+
+  if (!isLoading && (!notifications || !notifications.length)) {
+    return <NoNotificationsReceived />;
+  }
 
   return (
     <Screen preset="fixed" contentContainerStyle={{ flexGrow: 1 }} >
