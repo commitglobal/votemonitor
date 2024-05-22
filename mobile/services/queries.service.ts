@@ -1,6 +1,5 @@
 import { skipToken, useQuery } from "@tanstack/react-query";
 import {
-  deletePollingStation,
   getElectionRounds,
   getPollingStationInformation,
   getPollingStationInformationForm,

@@ -3,7 +3,7 @@ import { useNavigation, router } from "expo-router";
 import { Screen } from "../../../../../components/Screen";
 import { useUserData } from "../../../../../contexts/user/UserContext.provider";
 import { Typography } from "../../../../../components/Typography";
-import { View, YStack } from "tamagui";
+import { YStack } from "tamagui";
 import {
   usePollingStationInformation,
   usePollingStationInformationForm,
