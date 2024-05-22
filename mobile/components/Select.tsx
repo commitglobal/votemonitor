@@ -18,9 +18,10 @@ import { useTranslation } from "react-i18next";
 interface StyledSelectProps extends SelectProps {
   placeholder?: string;
   options: { id: string | number; value: string; label: string }[];
+  error?: string;
 }
 
-const Select = ({ placeholder = "Select", options, ...props }: StyledSelectProps) => {
+const Select = ({ placeholder = "Select", options, error, ...props }: StyledSelectProps) => {
   const insets = useSafeAreaInsets();
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [isOpen, setIsOpen] = useState(false);
@@ -47,7 +48,7 @@ const Select = ({ placeholder = "Select", options, ...props }: StyledSelectProps
       <TamaguiSelect.Trigger
         backgroundColor="white"
         paddingHorizontal="$md"
-        borderColor="$gray3"
+        borderColor={error ? "$red12" : "$gray3"}
         borderWidth={1}
         iconAfter={<Icon icon="chevronRight" size={20} transform="rotate(90deg)" color="$gray7" />}
       >
@@ -61,7 +62,6 @@ const Select = ({ placeholder = "Select", options, ...props }: StyledSelectProps
 
       <Adapt platform="touch">
         <Sheet
-          native
           modal
           snapPoints={[50]}
           open={isOpen}

@@ -10,26 +10,44 @@ import FormInput from "../components/FormInputs/FormInput";
 import Card from "../components/Card";
 import Button from "../components/Button";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useState } from "react";
+import ChangePasswordConfirmation from "../components/ChangePasswordConfirmation";
+import { ForgotPasswwordPayload, forgotPassword } from "../services/definitions.api";
+import * as Sentry from "@sentry/react-native";
+import CredentialsError from "../components/CredentialsError";
 
 type FormData = {
   email: string;
 };
 
 const ForgotPassword = () => {
-  const { handleSubmit, control, formState } = useForm<FormData>({
-    defaultValues: { email: "alice@example.com" },
-  });
-
-  const { t } = useTranslation("reset");
-  const { errors } = formState;
-
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation("reset");
+  const [emailConfirmation, setEmailConfirmation] = useState(false);
+  const [authError, setAuthError] = useState(false);
 
-  // TODO: Implement the onSubmit function
-  const onSubmit = (data: FormData) => {
-    console.log("Forgot password for email: ", data.email);
-    router.push("/email-confirmation");
+  // React Hook form
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm<FormData>({});
+
+  // Submit handler - forgot password
+  const onSubmit = async (data: FormData) => {
+    try {
+      const payload: ForgotPasswwordPayload = { email: data.email };
+      await forgotPassword(payload);
+      setEmailConfirmation(true);
+    } catch (error) {
+      Sentry.captureException(error);
+      setAuthError(true);
+    }
   };
+
+  if (emailConfirmation) {
+    return <ChangePasswordConfirmation emailConfirmation={true} />;
+  }
 
   return (
     <Screen
@@ -55,6 +73,7 @@ const ForgotPassword = () => {
         </Typography>
 
         <Typography>{t("paragraph")}</Typography>
+        {authError && <CredentialsError error={t("error")} />}
 
         <Controller
           key="email"

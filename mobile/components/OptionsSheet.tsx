@@ -25,7 +25,6 @@ const OptionsSheet = (props: OptionsSheetProps) => {
   return (
     <Sheet
       modal
-      native
       open={open}
       onOpenChange={setOpen}
       zIndex={100_000}

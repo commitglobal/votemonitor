@@ -43,6 +43,11 @@ import UndrawFlag from "../assets/icons/undraw_report_flag.svg";
 import LoginError from "../assets/icons/LoginError.svg";
 import PasswordConfirmation from "../assets/icons/password confirmation.svg";
 import SplashLogo from "../assets/icons/splash-logo.svg";
+import OnboardingLanguage from "../assets/icons/onboarding/onboarding-language.svg";
+import MonitorPollingStations from "../assets/icons/onboarding/monitor-p-s.svg";
+import ObservationForms from "../assets/icons/onboarding/forms.svg";
+import NotesOrMedia from "../assets/icons/onboarding/notes-media.svg";
+
 import Bin from "../assets/icons/Trash2.svg";
 import { styled, View, ViewProps } from "tamagui";
 import { StyleProp, ViewStyle } from "react-native";
@@ -130,6 +135,10 @@ export const defaultIcon = React.forwardRef(
       loginError: <LoginError fill={color} width={size} height={size} />,
       passwordConfirmation: <PasswordConfirmation fill={color} width={size} height={size} />,
       splashLogo: <SplashLogo width={315.6} height={72} />,
+      onboardingLanguage: <OnboardingLanguage width={243} height={187} />,
+      monitorPollingStations: <MonitorPollingStations width={202} height={188} />,
+      observationForms: <ObservationForms width={202} height={188} />,
+      notesOrMedia: <NotesOrMedia width={202} height={188} />,
       bin: <Bin fill={color} width={size} height={size} />,
     };
 

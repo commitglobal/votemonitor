@@ -162,7 +162,6 @@ const TimeSelect: React.FC<TimeSelectProps> = memo(
         {Platform.OS === "ios" ? (
           <Sheet
             modal
-            native
             open={open}
             onOpenChange={setOpen}
             zIndex={100_000}

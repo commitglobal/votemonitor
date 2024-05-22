@@ -32,7 +32,6 @@ const SelectAppLanguage = ({ open, setOpen }: SelectLanguageProps) => {
     >
       <Adapt platform="touch">
         <Sheet
-          native
           modal
           snapPoints={[25]}
           open={open}

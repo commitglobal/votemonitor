@@ -345,6 +345,20 @@ export const deleteNote = ({ electionRoundId, id }: Note) => {
   return API.delete(`election-rounds/${electionRoundId}/notes/${id}`).then((res) => res.data);
 };
 
+/** ========================================================================
+    ================= POST forgotPassword ====================
+    ========================================================================
+    @description Change the forgotten password for the current user, sends an email with a reset link
+    @param {ForgotPasswwordPayload} data includes the user's email to send the reset link
+*/
+export type ForgotPasswwordPayload = {
+  email: string;
+};
+
+export const forgotPassword = async (data: ForgotPasswwordPayload) => {
+  return API.post("auth/forgot-password", data).then((res) => res.data);
+};
+
 /** ================= DELETE pollingStation ====================
  * ========================================================================
  * @description delete a polling station

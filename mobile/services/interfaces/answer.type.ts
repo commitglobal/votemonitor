@@ -25,13 +25,13 @@ export type TextAnswer = {
 export type NumberAnswer = {
   questionId: string;
   $answerType: "numberAnswer";
-  value: string;
+  value: number;
 };
 
 export type RatingAnswer = {
   questionId: string;
   $answerType: "ratingAnswer";
-  value: string;
+  value: number;
 };
 
 export type DateAnswer = {

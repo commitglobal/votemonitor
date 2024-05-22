@@ -15,9 +15,25 @@ import * as Sentry from "@sentry/react-native";
 import { isRunningInExpoGo } from "expo";
 import Toast from "react-native-toast-message";
 import { toastConfig } from "../toast.config";
+import * as Notifications from "expo-notifications";
 
 // Construct a new instrumentation instance. This is needed to communicate between the integration and React
 const routingInstrumentation = new Sentry.ReactNavigationInstrumentation();
+
+// replace console.* for disable log on production
+if (process.env.NODE_ENV === "production") {
+  console.log = () => {};
+  console.error = () => {};
+  console.debug = () => {};
+}
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+});
 
 Sentry.init({
   dsn: process.env.EXPO_PUBLIC_SENTRY_DSN,

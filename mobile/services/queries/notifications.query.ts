@@ -10,5 +10,8 @@ export const useNotifications = (electionRoundId: string | undefined) => {
   return useQuery({
     queryKey: NotificationsKeys.notifications(electionRoundId),
     queryFn: electionRoundId ? () => getNotifications({ electionRoundId }) : skipToken,
+    staleTime: 0,
+    refetchOnReconnect: "always",
+    refetchOnWindowFocus: "always",
   });
 };

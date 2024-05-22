@@ -8,7 +8,7 @@ import {
 } from "tamagui";
 
 export interface InputProps extends TamaguiInputProps {
-  type: "text" | "numeric" | "textarea" | "password";
+  type: "text" | "numeric" | "textarea" | "password" | "email-address";
   iconRight?: ReactNode;
   onIconRightPress?: () => void;
 }
@@ -46,7 +46,7 @@ const Input: React.FC<InputProps> = ({
           <SearchInput
             value={value}
             secureTextEntry={type === "password"}
-            keyboardType={type === "numeric" ? type : "default"}
+            keyboardType={type === "numeric" || type === 'email-address' ? type : "default"}
             {...rest}
           />
           {iconRight && <IconWrapper onPress={onIconRightPress}>{iconRight}</IconWrapper>}

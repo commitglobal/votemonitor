@@ -8,10 +8,8 @@ import NotificationContextProvider from "../../contexts/notification/Notificatio
 const AppLayout = () => {
   const { isAuthenticated } = useAuth();
 
-  // TODO: This will be logout
   if (!isAuthenticated) {
-    // On web, static rendering will stop here as the user is not authenticated
-    // in the headless Node process that the pages are rendered in.
+    // TODO: @birloiflorian isAuthenticated is always false here
     SplashScreen.hideAsync();
     return <Redirect href="/login" />;
   }

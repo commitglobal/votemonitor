@@ -24,8 +24,6 @@ export const useFormSubmissionMutation = ({
     [electionRoundId, pollingStationId],
   );
 
-  console.log("🚬 ScopeID: ", scopeId);
-
   return useMutation({
     mutationKey: pollingStationsKeys.upsertFormSubmission(),
     mutationFn: async (payload: FormSubmissionAPIPayload) => {
