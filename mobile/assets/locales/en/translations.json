@@ -126,6 +126,9 @@
       "back": "Back",
       "skip": "Skip this step",
       "finalize": "Finalize"
+    },
+    "list": {
+      "empty": "No data found for current search."
     }
   },
   "polling_station_information": {

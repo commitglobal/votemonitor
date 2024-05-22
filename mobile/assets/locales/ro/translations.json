@@ -127,6 +127,9 @@
       "back": "Inapoi",
       "skip": "Sari peste acest pas",
       "finalize": "Finalizeaza"
+    },
+    "list": {
+      "empty": "Nu s-au găsit date pentru căutarea curentă."
     }
   },
   "polling_station_information": {
