@@ -20,6 +20,7 @@ import { queryClient } from '@/main';
 import { useMutation } from '@tanstack/react-query';
 import { toast } from '@/components/ui/use-toast';
 import { Link } from '@tanstack/react-router';
+import { DateTimeFormat } from '@/common/formats';
 
 export default function ObserversGuides() {
   const uploadObserverGuideDialog = useDialog();
@@ -106,7 +107,7 @@ export default function ObserversGuides() {
         row: {
           original: { createdOn },
         },
-      }) => <p>{format(createdOn, 'u-MM-dd KK:mm')}</p>
+      }) => <p>{format(createdOn, DateTimeFormat)}</p>
     },
     {
       header: ({ column }) => <DataTableColumnHeader title='Created by' column={column} />,

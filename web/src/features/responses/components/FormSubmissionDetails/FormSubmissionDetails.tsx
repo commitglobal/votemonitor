@@ -26,6 +26,7 @@ import { Switch } from '@/components/ui/switch';
 import type { FunctionComponent } from '@/common/types';
 import { cn, ratingScaleToNumber } from '@/lib/utils';
 import { QuestionExtraDataSection } from '../QuestionExtraDataSection/QuestionExtraDataSection';
+import { DateTimeFormat } from '@/common/formats';
 
 export default function FormSubmissionDetails(): FunctionComponent {
   const formSubmission = useLoaderData({ from: '/responses/$submissionId' });
@@ -40,8 +41,8 @@ export default function FormSubmissionDetails(): FunctionComponent {
               <Link
                 search
                 className='text-purple-500 font-bold flex gap-1'
-                to='/monitoring-observers/view/$monitoringObserverId'
-                params={{ monitoringObserverId: formSubmission.monitoringObserverId }}
+                to='/monitoring-observers/view/$monitoringObserverId/$tab'
+                params={{ monitoringObserverId: formSubmission.monitoringObserverId, tab: 'details' }}
                 target='_blank'
                 preload={false}>
                 {formSubmission.observerName}
@@ -162,7 +163,7 @@ export default function FormSubmissionDetails(): FunctionComponent {
 
                   {answer ? (
                     <>
-                      {isDateAnswer(answer) && <p>{answer.date ? format(answer.date, 'u-MM-dd KK:mm') : '-'}</p>}
+                      {isDateAnswer(answer) && <p>{answer.date ? format(answer.date, DateTimeFormat) : '-'}</p>}
 
                       {isNumberAnswer(answer) && <p>{answer.value ?? '-'}</p>}
 

@@ -50,7 +50,7 @@ export default function EditFormTemplate() {
     description: z.string().optional(),
     defaultLanguage: z.string().nonempty(),
     formTemplateType: z
-      .enum([FormTemplateType.Opening, FormTemplateType.Voting, FormTemplateType.ClosingAndCounting])
+      .enum([FormTemplateType.Opening, FormTemplateType.Voting, FormTemplateType.ClosingAndCounting, FormTemplateType.Other])
       .catch(FormTemplateType.Opening),
   });
 
@@ -218,6 +218,9 @@ export default function EditFormTemplate() {
                                 </SelectItem>
                                 <SelectItem value={FormTemplateType.ClosingAndCounting}>
                                   {mapFormTemplateType(FormTemplateType.ClosingAndCounting)}
+                                </SelectItem>
+                                <SelectItem value={FormTemplateType.Other}>
+                                  {mapFormTemplateType(FormTemplateType.Other)}
                                 </SelectItem>
                               </SelectContent>
                             </Select>

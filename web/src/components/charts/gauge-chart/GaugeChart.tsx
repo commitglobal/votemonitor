@@ -20,6 +20,7 @@ const GaugeChart = forwardRef<ChartJSOrUndefined<"doughnut">, GaugeProps>((props
     const options: ChartOptions<"doughnut"> = {
         maintainAspectRatio: false,
         responsive: true,
+        devicePixelRatio: 1.5,
         plugins: {
             datalabels: {
                 color: '#DADADA',

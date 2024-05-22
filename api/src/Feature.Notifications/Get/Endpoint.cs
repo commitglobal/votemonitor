@@ -1,9 +1,9 @@
-﻿using System.Data;
-using Dapper;
+﻿using Dapper;
+using Vote.Monitor.Domain.ConnectionFactory;
 
 namespace Feature.Notifications.Get;
 
-public class Endpoint(IDbConnection dbConnection) : Endpoint<Request, Results<Ok<NotificationDetailedModel>, NotFound>>
+public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<Request, Results<Ok<NotificationDetailedModel>, NotFound>>
 {
     public override void Configure()
     {
@@ -55,7 +55,7 @@ public class Endpoint(IDbConnection dbConnection) : Endpoint<Request, Results<Ok
             id = req.Id,
         };
 
-        var notification = await dbConnection.QueryFirstOrDefaultAsync<NotificationDetailedModel>(sql, queryArgs);
+        var notification = await dbConnectionFactory.GetOpenConnection().QueryFirstOrDefaultAsync<NotificationDetailedModel>(sql, queryArgs);
 
         return notification == null ? TypedResults.NotFound() : TypedResults.Ok(notification);
     }

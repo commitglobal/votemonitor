@@ -1,26 +1,25 @@
 import { authApi } from '@/common/auth-api';
 import PushMessageDetails from '@/features/monitoring-observers/components/PushMessageDetails/PushMessageDetails';
-import { TargetedMonitoringObserver } from '@/features/monitoring-observers/models/targeted-monitoring-observer';
 import { redirectIfNotAuth } from '@/lib/utils';
 import { EnsureQueryDataOptions, QueryKey, queryOptions } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 
 import type { FunctionComponent } from '@/common/types';
+import { PushMessageDetailedModel } from '@/features/monitoring-observers/models/push-message';
+import { pushMessagesKeys } from '@/features/monitoring-observers/hooks/push-messages-queries';
 
-export const pushMessageDetailsQueryOptions = (
-  pushMessageId: string
-): EnsureQueryDataOptions<TargetedMonitoringObserver> =>
+export const pushMessageDetailsQueryOptions = (pushMessageId: string) =>
   queryOptions({
-    queryKey: ['monitoring-observer', { pushMessageId }] as QueryKey,
+    queryKey: pushMessagesKeys.detail(pushMessageId),
     queryFn: async () => {
       const electionRoundId: string | null = localStorage.getItem('electionRoundId');
 
-      const response = await authApi.get<TargetedMonitoringObserver>(
+      const response = await authApi.get<PushMessageDetailedModel>(
         `/election-rounds/${electionRoundId}/notifications/${pushMessageId}`
       );
 
       if (response.status !== 200) {
-        throw new Error('Failed to fetch ngo');
+        throw new Error('Failed to fetch notification details');
       }
 
       return response.data;
@@ -29,7 +28,7 @@ export const pushMessageDetailsQueryOptions = (
 
 function Details(): FunctionComponent {
   return (
-      <PushMessageDetails />
+    <PushMessageDetails />
   );
 }
 

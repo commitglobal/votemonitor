@@ -1,11 +1,11 @@
-﻿using System.Data;
-using Authorization.Policies;
+﻿using Authorization.Policies;
 using Dapper;
 using Vote.Monitor.Core.Models;
+using Vote.Monitor.Domain.ConnectionFactory;
 using Vote.Monitor.Domain.Specifications;
 
 namespace Feature.MonitoringObservers.List;
-public class Endpoint(IDbConnection dbConnection) : Endpoint<Request, PagedResponse<MonitoringObserverModel>>
+public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<Request, PagedResponse<MonitoringObserverModel>>
 {
     public override void Configure()
     {
@@ -43,7 +43,8 @@ public class Endpoint(IDbConnection dbConnection) : Endpoint<Request, PagedRespo
             ""PhoneNumber"",
             ""Email"",
             ""Tags"",
-            ""Status""
+            ""Status"",
+            ""LatestActivityAt""
         FROM (
             SELECT
                 MO.""Id"",
@@ -52,18 +53,76 @@ public class Endpoint(IDbConnection dbConnection) : Endpoint<Request, PagedRespo
                 U.""PhoneNumber"",
                 U.""Email"",
                 MO.""Tags"",
-                MO.""Status""
+                MO.""Status"",
+                MAX(LATESTACTIVITY.""LatestActivityAt"") AS ""LatestActivityAt""
             FROM
                 ""MonitoringObservers"" MO
                 INNER JOIN ""MonitoringNgos"" MN ON MN.""Id"" = MO.""MonitoringNgoId""
                 INNER JOIN ""Observers"" O ON O.""Id"" = MO.""ObserverId""
                 INNER JOIN ""AspNetUsers"" U ON U.""Id"" = O.""ApplicationUserId""
+                LEFT JOIN (
+                    SELECT
+                        ""MonitoringObserverId"",
+                        MAX(""LatestActivityAt"") AS ""LatestActivityAt""
+                    FROM
+                        (
+                            SELECT
+                                PSI.""MonitoringObserverId"",
+                                MAX(COALESCE(PSI.""LastModifiedOn"", PSI.""CreatedOn"")) AS ""LatestActivityAt""
+                            FROM
+                                ""PollingStationInformation"" PSI
+                            WHERE
+                                PSI.""ElectionRoundId"" = '9edce401-8732-422b-b8ad-cf3e930d991f'
+                            GROUP BY
+                                PSI.""MonitoringObserverId""
+                            UNION ALL
+                            SELECT
+                                N.""MonitoringObserverId"",
+                                MAX(COALESCE(N.""LastModifiedOn"", N.""CreatedOn"")) AS ""LatestActivityAt""
+                            FROM
+                                ""Notes"" N
+                            WHERE
+                                N.""ElectionRoundId"" = '9edce401-8732-422b-b8ad-cf3e930d991f'
+                            GROUP BY
+                                N.""MonitoringObserverId""
+                            UNION ALL
+                            SELECT
+                                A.""MonitoringObserverId"",
+                                MAX(COALESCE(A.""LastModifiedOn"", A.""CreatedOn"")) AS ""LatestActivityAt""
+                            FROM
+                                ""Attachments"" A
+                            WHERE
+                                A.""ElectionRoundId"" = '9edce401-8732-422b-b8ad-cf3e930d991f'
+                            GROUP BY
+                                A.""MonitoringObserverId""
+                            UNION ALL
+                            SELECT
+                                QR.""MonitoringObserverId"",
+                                MAX(COALESCE(QR.""LastModifiedOn"", QR.""CreatedOn"")) AS ""LatestActivityAt""
+                            FROM
+                                ""QuickReports"" QR
+                            WHERE
+                                QR.""ElectionRoundId"" = '9edce401-8732-422b-b8ad-cf3e930d991f'
+                            GROUP BY
+                                QR.""MonitoringObserverId""
+                        ) AS LATESTACTIVITYSUBQUERY
+                    GROUP BY
+                        ""MonitoringObserverId""
+                ) AS LATESTACTIVITY ON LATESTACTIVITY.""MonitoringObserverId"" = MO.""Id""
             WHERE
                 MN.""ElectionRoundId"" = @electionRoundId
                 AND MN.""NgoId"" = @ngoId
                 AND (@searchText IS NULL OR @searchText = '' OR (U.""FirstName"" || ' ' || U.""LastName"") ILIKE @searchText OR U.""Email"" ILIKE @searchText OR u.""PhoneNumber"" ILIKE @searchText)
                 AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR mo.""Tags"" @> @tagsFilter)
                 AND (@status IS NULL OR  mo.""Status"" = @status)
+            GROUP BY
+                MO.""Id"",
+                U.""FirstName"",
+                U.""LastName"",
+                U.""PhoneNumber"",
+                U.""Email"",
+                MO.""Tags"",
+                MO.""Status""
             ) T
 
         ORDER BY
@@ -83,7 +142,10 @@ public class Endpoint(IDbConnection dbConnection) : Endpoint<Request, PagedRespo
             CASE WHEN @sortExpression = 'Email DESC' THEN ""Email"" END DESC,
 
             CASE WHEN @sortExpression = 'Tags ASC' THEN ""Tags"" END ASC,
-            CASE WHEN @sortExpression = 'Tags DESC' THEN ""Tags"" END DESC
+            CASE WHEN @sortExpression = 'Tags DESC' THEN ""Tags"" END DESC,
+
+            CASE WHEN @sortExpression = 'LatestActivityAt ASC' THEN ""LatestActivityAt"" END ASC,
+            CASE WHEN @sortExpression = 'LatestActivityAt DESC' THEN ""LatestActivityAt"" END DESC
          
         OFFSET @offset ROWS
         FETCH NEXT @pageSize ROWS ONLY;"
@@ -101,7 +163,7 @@ public class Endpoint(IDbConnection dbConnection) : Endpoint<Request, PagedRespo
             sortExpression = GetSortExpression(req.SortColumnName, req.IsAscendingSorting),
         };
 
-        var multi = await dbConnection.QueryMultipleAsync(sql, queryArgs);
+        var multi = await dbConnectionFactory.GetOpenConnection().QueryMultipleAsync(sql, queryArgs);
         var totalRowCount = multi.Read<int>().Single();
         var entries = multi.Read<MonitoringObserverModel>().ToList();
 
@@ -116,6 +178,11 @@ public class Endpoint(IDbConnection dbConnection) : Endpoint<Request, PagedRespo
         }
 
         var sortOrder = isAscendingSorting ? "ASC" : "DESC";
+
+        if (string.Equals(sortColumnName, "name", StringComparison.InvariantCultureIgnoreCase))
+        {
+            return $"ObserverName {sortOrder}";
+        }
 
         if (string.Equals(sortColumnName, nameof(MonitoringObserverModel.FirstName), StringComparison.InvariantCultureIgnoreCase))
         {
@@ -140,6 +207,11 @@ public class Endpoint(IDbConnection dbConnection) : Endpoint<Request, PagedRespo
         if (string.Equals(sortColumnName, nameof(MonitoringObserverModel.Tags), StringComparison.InvariantCultureIgnoreCase))
         {
             return $"{nameof(MonitoringObserverModel.Tags)} {sortOrder}";
+        }
+
+        if (string.Equals(sortColumnName, nameof(MonitoringObserverModel.LatestActivityAt), StringComparison.InvariantCultureIgnoreCase))
+        {
+            return $"{nameof(MonitoringObserverModel.LatestActivityAt)} {sortOrder}";
         }
 
         return "ObserverName ASC";

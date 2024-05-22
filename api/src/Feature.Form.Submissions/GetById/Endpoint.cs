@@ -1,11 +1,11 @@
-﻿using System.Data;
-using Authorization.Policies;
+﻿using Authorization.Policies;
 using Dapper;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
+using Vote.Monitor.Domain.ConnectionFactory;
 
 namespace Feature.Form.Submissions.GetById;
 
-public class Endpoint(IDbConnection dbConnection, IFileStorageService fileStorageService) : Endpoint<Request, Results<Ok<Response>, NotFound>>
+public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IFileStorageService fileStorageService) : Endpoint<Request, Results<Ok<Response>, NotFound>>
 {
     public override void Configure()
     {
@@ -118,7 +118,7 @@ public class Endpoint(IDbConnection dbConnection, IFileStorageService fileStorag
             submissionId = req.SubmissionId,
         };
 
-        var submission = await dbConnection.QueryFirstOrDefaultAsync<Response>(sql, queryArgs);
+        var submission = await dbConnectionFactory.GetOpenConnection().QueryFirstOrDefaultAsync<Response>(sql, queryArgs);
         if (submission is null)
         {
             return TypedResults.NotFound();

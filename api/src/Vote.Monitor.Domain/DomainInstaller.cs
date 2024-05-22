@@ -1,9 +1,9 @@
-﻿using System.Data;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Npgsql;
 using Vote.Monitor.Core.Extensions;
+using Vote.Monitor.Domain.ConnectionFactory;
 using Vote.Monitor.Domain.Repository;
 using Vote.Monitor.Domain.Seeders;
 
@@ -33,7 +33,7 @@ public static class DomainInstaller
 
             options.EnableSensitiveDataLogging();
         });
-        services.AddTransient<IDbConnection>(_ => new NpgsqlConnection(connectionString));
+        services.AddTransient<INpgsqlConnectionFactory>(_ => new NpgsqlConnectionFactory(connectionString));
         services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
         services.AddScoped(typeof(IReadRepository<>), typeof(EfRepository<>));
 

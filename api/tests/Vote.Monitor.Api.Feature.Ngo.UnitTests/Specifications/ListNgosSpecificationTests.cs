@@ -56,7 +56,7 @@ public class ListNgosSpecificationTests
 
         var request = new Request
         {
-            NameFilter = DefaultName
+            SearchText = DefaultName
         };
 
         var spec = new ListNgosSpecification(request);
@@ -116,7 +116,7 @@ public class ListNgosSpecificationTests
 
         var request = new Request
         {
-            NameFilter = searchString,
+            SearchText = searchString,
             PageSize = 100,
             PageNumber = 2
         };

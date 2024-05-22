@@ -19,6 +19,7 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
 
 const defaultOptions: ChartOptions<'line'> = {
   maintainAspectRatio: false,
+  devicePixelRatio: 1.5,
   plugins: {
     legend: {
       display: false,

@@ -12,4 +12,7 @@ public class Request
     public Guid Id { get; set; }
     public string[] Tags { get; set; }
     public MonitoringObserverStatus Status { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public string PhoneNumber { get; set; }
 }

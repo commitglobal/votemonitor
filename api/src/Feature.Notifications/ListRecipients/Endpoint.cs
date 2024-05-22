@@ -1,12 +1,12 @@
-﻿using System.Data;
-using Authorization.Policies;
+﻿using Authorization.Policies;
 using Dapper;
 using Vote.Monitor.Core.Models;
+using Vote.Monitor.Domain.ConnectionFactory;
 using Vote.Monitor.Domain.Specifications;
 
 namespace Feature.Notifications.ListRecipients;
 
-public class Endpoint(IDbConnection dbConnection) :
+public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) :
         Endpoint<Request, PagedResponse<TargetedMonitoringObserverModel>>
 {
     public override void Configure()
@@ -252,7 +252,7 @@ public class Endpoint(IDbConnection dbConnection) :
             sortExpression = GetSortExpression(req.SortColumnName, req.IsAscendingSorting),
         };
 
-        var multi = await dbConnection.QueryMultipleAsync(sql, queryArgs);
+        var multi = await dbConnectionFactory.GetOpenConnection().QueryMultipleAsync(sql, queryArgs);
         var totalRowCount = multi.Read<int>().Single();
         var entries = multi.Read<TargetedMonitoringObserverModel>().ToList();
 

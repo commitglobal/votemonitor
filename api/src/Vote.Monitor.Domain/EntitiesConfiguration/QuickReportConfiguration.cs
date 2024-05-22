@@ -15,6 +15,10 @@ public class QuickReportConfiguration : IEntityTypeConfiguration<QuickReport>
         builder.Property(e => e.Title).IsRequired().HasMaxLength(1024);
         builder.Property(e => e.Description).IsRequired().HasMaxLength(10000);
 
+        builder.Property(x => x.FollowUpStatus)
+            .IsRequired()
+            .HasDefaultValue(QuickReportFollowUpStatus.NotApplicable);
+
         builder
             .Property(e => e.PollingStationDetails)
             .IsRequired(false)

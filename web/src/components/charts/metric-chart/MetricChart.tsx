@@ -1,7 +1,7 @@
 import { ArcElement, CategoryScale, Chart, ChartData, ChartOptions, Legend, Plugin, Tooltip } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { ChartJSOrUndefined } from 'node_modules/react-chartjs-2/dist/types';
-import React, { forwardRef, useEffect, useRef, useState } from 'react';
+import { forwardRef } from 'react';
 import { Doughnut } from 'react-chartjs-2';
 
 export interface MetricChartProps {
@@ -15,6 +15,7 @@ Chart.register(ArcElement, CategoryScale, ChartDataLabels, Tooltip, Legend);
 const MetricChart = forwardRef<ChartJSOrUndefined<"doughnut">, MetricChartProps>((props, chartRef) => {
     const options: ChartOptions<"doughnut"> = {
         maintainAspectRatio: false,
+        devicePixelRatio: 1.5,
         plugins: {
             datalabels: {
                 display: false

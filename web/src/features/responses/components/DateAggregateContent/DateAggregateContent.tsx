@@ -6,6 +6,7 @@ import LineChart from '@/components/charts/line-chart/LineChart';
 import { getChartBackgroundColorGradient } from '@/components/charts/utils/chart-options';
 import type { DateQuestionAggregate } from '../../models/form-aggregated';
 import { purple500 } from '../../utils/chart-colors';
+import { DateTimeHourBucketFormat } from '@/common/formats';
 
 type DateAggregateContentProps = {
   aggregate: DateQuestionAggregate;
@@ -14,7 +15,7 @@ type DateAggregateContentProps = {
 const DateAggregateContent = forwardRef<ChartJSOrUndefined<'line', number[]>, DateAggregateContentProps>(
   ({ aggregate }, ref): FunctionComponent => {
     const dataset = aggregate.answers.reduce<Record<string, number>>((data, { value }) => {
-      const time = format(new Date(value), 'u-MM-dd KK:00');
+      const time = format(new Date(value), DateTimeHourBucketFormat);
       return { ...data, [time]: (data?.[time] ?? 0) + 1 };
     }, {});
 
@@ -22,10 +23,10 @@ const DateAggregateContent = forwardRef<ChartJSOrUndefined<'line', number[]>, Da
       <LineChart
         ref={ref}
         data={{
-          labels: Object.keys(dataset),
+          labels: Object.keys(dataset).sort(),
           datasets: [
             {
-              data: Object.values(dataset),
+              data: Object.keys(dataset).sort().map(key => dataset[key]!),
               borderColor: purple500,
               backgroundColor: getChartBackgroundColorGradient(purple500),
               fill: 'origin',

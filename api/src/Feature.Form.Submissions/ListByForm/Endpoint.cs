@@ -1,10 +1,10 @@
-﻿using System.Data;
-using Authorization.Policies;
+﻿using Authorization.Policies;
 using Dapper;
+using Vote.Monitor.Domain.ConnectionFactory;
 
 namespace Feature.Form.Submissions.ListByForm;
 
-public class Endpoint(IDbConnection dbConnection) : Endpoint<Request, Response>
+public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<Request, Response>
 {
     public override void Configure()
     {
@@ -63,7 +63,7 @@ public class Endpoint(IDbConnection dbConnection) : Endpoint<Request, Response>
             ngoId = req.NgoId
         };
 
-        var aggregatedFormOverviews = await dbConnection.QueryAsync<AggregatedFormOverview>(sql, queryArgs);
+        var aggregatedFormOverviews = await dbConnectionFactory.GetOpenConnection().QueryAsync<AggregatedFormOverview>(sql, queryArgs);
 
         return new Response { AggregatedForms = aggregatedFormOverviews.ToList() };
     }

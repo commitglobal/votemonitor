@@ -27,7 +27,7 @@ function CreateTemplateForm() {
         name: z.string().nonempty(),
         description: z.string().optional(),
         defaultLanguage: z.string().nonempty(),
-        formTemplateType: z.enum([FormTemplateType.Opening, FormTemplateType.Voting, FormTemplateType.ClosingAndCounting]).catch(FormTemplateType.Opening)
+        formTemplateType: z.enum([FormTemplateType.Opening, FormTemplateType.Voting, FormTemplateType.ClosingAndCounting, FormTemplateType.Other]).catch(FormTemplateType.Opening)
     });
 
     const form = useForm<z.infer<typeof newFormTemplateFormSchema>>({
@@ -104,6 +104,7 @@ function CreateTemplateForm() {
                                             <SelectItem value={FormTemplateType.Opening}>{mapFormTemplateType(FormTemplateType.Opening)}</SelectItem>
                                             <SelectItem value={FormTemplateType.Voting}>{mapFormTemplateType(FormTemplateType.Voting)}</SelectItem>
                                             <SelectItem value={FormTemplateType.ClosingAndCounting}>{mapFormTemplateType(FormTemplateType.ClosingAndCounting)}</SelectItem>
+                                            <SelectItem value={FormTemplateType.Other}>{mapFormTemplateType(FormTemplateType.Other)}</SelectItem>
                                         </SelectContent>
                                     </Select>
                                 </Field>

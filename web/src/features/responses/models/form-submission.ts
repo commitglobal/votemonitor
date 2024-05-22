@@ -13,12 +13,19 @@ export enum FormType {
   Opening = 'Opening',
   Voting = 'Voting',
   PSI = 'PSI',
+  Other = 'Other',
 }
 
 export enum FormStatus {
   Drafted = 'Drafted',
   Obsolete = 'Obsolete',
   Published = 'Published',
+}
+
+export enum SubmissionFollowUpStatus {
+  NotApplicable = 'NotApplicable',
+  NeedsFollowUp = 'NeedsFollowUp',
+  Resolved = 'Resolved',
 }
 
 export interface FormSubmissionByEntry {
@@ -43,7 +50,7 @@ export interface FormSubmissionByEntry {
   submissionId: string;
   tags: string[];
   timeSubmitted: string;
-  needsFollowUp?: boolean;
+  followUpStatus: SubmissionFollowUpStatus;
 }
 
 export interface FormSubmissionByObserver {
@@ -55,7 +62,7 @@ export interface FormSubmissionByObserver {
   numberOfLocations: number;
   phoneNumber: string;
   tags: string[];
-  needsFollowUp?: boolean;
+  followUpStatus?: SubmissionFollowUpStatus;
 }
 
 export interface FormSubmissionByForm {

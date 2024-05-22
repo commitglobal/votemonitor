@@ -116,7 +116,7 @@ export default function ObserversDashboard(): ReactElement {
           PageSize: p.pageSize,
           SortColumnName: p.sortColumnName,
           SortOrder: p.sortOrder,
-          nameFilter: searchText,
+          searchText: searchText,
           status: statusFilter,
         };
         const electionRoundId: string | null = localStorage.getItem('electionRoundId');

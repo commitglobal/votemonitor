@@ -3,7 +3,7 @@
 public class Request: BaseSortPaginatedRequest
 {
     [QueryParam]
-    public string? NameFilter { get; set; }
+    public string? SearchText { get; set; }
 
     [QueryParam]
     [JsonConverter(typeof(SmartEnumNameConverter<UserStatus, string>))]

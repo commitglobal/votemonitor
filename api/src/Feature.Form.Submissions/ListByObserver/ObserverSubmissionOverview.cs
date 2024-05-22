@@ -1,4 +1,7 @@
-﻿namespace Feature.Form.Submissions.ListByObserver;
+﻿using System.Text.Json.Serialization;
+using Ardalis.SmartEnum.SystemTextJson;
+
+namespace Feature.Form.Submissions.ListByObserver;
 
 public record ObserverSubmissionOverview
 {
@@ -10,5 +13,7 @@ public record ObserverSubmissionOverview
     public int NumberOfFlaggedAnswers { get; init; }
     public int NumberOfLocations { get; init; }
     public int NumberOfFormsSubmitted { get; init; }
-    public bool? NeedsFollowUp { get; init; }
+
+    [JsonConverter(typeof(SmartEnumNameConverter<SubmissionFollowUpStatus, string>))]
+    public SubmissionFollowUpStatus? FollowUpStatus { get; init; }
 }
