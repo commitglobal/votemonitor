@@ -216,13 +216,6 @@ export default function FormsDashboard(): ReactElement {
 
   const getRowClassName = (row: Row<FormBase>): string => cn({ 'bg-secondary-300 bg-opacity-[.15]': row.depth === 1 });
 
-  const rowClickHandler = useCallback(
-    (formId: string, defaultLanguage?: string) => {
-      navigateToForm(formId, defaultLanguage ?? '');
-    },
-    [navigateToForm]
-  );
-
   return (
     <Layout
       title={'Forms'}
@@ -291,7 +284,6 @@ export default function FormsDashboard(): ReactElement {
             useQuery={useForms}
             getSubrows={getSubrows}
             getRowClassName={getRowClassName}
-            onRowClick={rowClickHandler}
           />
           {!!currentForm && (
             <AddTranslationsDialog
