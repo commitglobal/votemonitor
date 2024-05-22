@@ -326,12 +326,16 @@ const PollingStationQuestionnaire = () => {
                         {question.options.map((option) => {
                           if (value.radioValue === option.id && option.isFreeText) {
                             return (
-                              <Input
+                              <FormInput
                                 type="textarea"
                                 marginTop="$md"
                                 key={option.id}
                                 value={value.textValue}
                                 onChangeText={(textValue) => onChange({ ...value, textValue })}
+                                maxLength={1024}
+                                helper={t("char_limit.max", {
+                                  value: 1024,
+                                })}
                               />
                             );
                           }
@@ -403,10 +407,14 @@ const PollingStationQuestionnaire = () => {
                               />
                               {selections[option.id]?.optionId === option.id &&
                                 option.isFreeText && (
-                                  <Input
+                                  <FormInput
                                     type="textarea"
                                     marginTop="$md"
                                     value={selections[option.id]?.text}
+                                    maxLength={1024}
+                                    helper={t("char_limit.max", {
+                                      value: 1024,
+                                    })}
                                     placeholder="Please enter a text..."
                                     onChangeText={(textValue) => {
                                       selections[option.id] = {

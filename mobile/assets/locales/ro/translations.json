@@ -305,8 +305,8 @@
     "notes": "Notițe",
     "uploaded_media": "Fișiere încărcate",
     "progress": "Progresul formularului",
-    "min": "Field-ul trebuie să aibă maxim {{value}} caractere",
-    "max": "Field-ul trebuie să aibă minim {{value}} caractere",
+    "min": "Field-ul trebuie să aibă minim {{value}} caractere",
+    "max": "Field-ul trebuie să aibă maxim {{value}} caractere",
     "actions": {
       "clear_answer": "Șterge răspunsul",
       "add_attachments": "Adaugă notițe și fișiere media"

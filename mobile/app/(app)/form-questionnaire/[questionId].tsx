@@ -40,6 +40,7 @@ import * as Crypto from "expo-crypto";
 import { useTranslation } from "react-i18next";
 import { onlineManager } from "@tanstack/react-query";
 import { ApiFormQuestion } from "../../../services/interfaces/question.type";
+import FormInput from "../../../components/FormInputs/FormInput";
 
 type SearchParamType = {
   questionId: string;
@@ -376,7 +377,7 @@ const FormQuestionnaire = () => {
                       placeholder={question?.inputPlaceholder?.[language] || ""}
                       paragraph={question.helptext?.[language] || ""}
                       onChangeText={onChange}
-                      maxLength={10024}
+                      maxLength={1024}
                       helper={t("max", {
                         value: 1024,
                       })}
@@ -412,7 +413,7 @@ const FormQuestionnaire = () => {
                       {question.options.map((option) => {
                         if (option.isFreeText && option.id === value.radioValue) {
                           return (
-                            <Input
+                            <FormInput
                               key={option.id + "free"}
                               type="textarea"
                               marginTop="$md"
@@ -421,6 +422,10 @@ const FormQuestionnaire = () => {
                               onChangeText={(textValue) => {
                                 onChange({ ...value, textValue });
                               }}
+                              maxLength={1024}
+                              helper={t("max", {
+                                value: 1024,
+                              })}
                             />
                           );
                         }
@@ -459,7 +464,7 @@ const FormQuestionnaire = () => {
                               }}
                             />
                             {selections[option.id]?.optionId === option.id && option.isFreeText && (
-                              <Input
+                              <FormInput
                                 type="textarea"
                                 marginTop="$md"
                                 value={selections[option.id]?.text}
@@ -471,6 +476,10 @@ const FormQuestionnaire = () => {
                                   };
                                   onChange(selections);
                                 }}
+                                maxLength={1024}
+                                helper={t("max", {
+                                  value: 1024,
+                                })}
                               />
                             )}
                           </YStack>

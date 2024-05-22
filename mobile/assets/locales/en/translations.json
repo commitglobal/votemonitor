@@ -137,6 +137,10 @@
     },
     "actions": {
       "submit": "Submit answers"
+    },
+    "char_limit": {
+      "min": "The field must be at least {{value}} characters long",
+      "max": "The field must have a maximum of {{value}} characters"
     }
   },
   "bottom_sheets": {
