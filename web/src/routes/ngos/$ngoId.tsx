@@ -11,7 +11,7 @@ export const ngoQueryOptions = (ngoId: string) =>
       const response = await authApi.get<NGO>(`/ngos/${ngoId}`);
 
       if (response.status !== 200) {
-        throw new Error('Failed to fetch ngo');
+        throw new Error('Failed to fetch ngo details');
       }
 
       return response.data;

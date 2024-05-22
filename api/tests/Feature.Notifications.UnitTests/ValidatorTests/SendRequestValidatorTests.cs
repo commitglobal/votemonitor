@@ -21,32 +21,6 @@ public class SendRequestValidatorTests
         result.ShouldHaveValidationErrorFor(x => x.ElectionRoundId);
     }
 
-    [Fact]
-    public void Validation_ShouldFail_When_ObserverIds_Empty()
-    {
-        // Arrange
-        var request = new Request { MonitoringObserverIds = [] };
-
-        // Act
-        var result = _validator.TestValidate(request);
-
-        // Assert
-        result.ShouldHaveValidationErrorFor(x => x.MonitoringObserverIds);
-    }
-
-    [Fact]
-    public void Validation_ShouldFail_When_ObserverIds_ContainsEmpty()
-    {
-        // Arrange
-        var request = new Request { MonitoringObserverIds = [Guid.NewGuid(), Guid.Empty,] };
-
-        // Act
-        var result = _validator.TestValidate(request);
-
-        // Assert
-        result.ShouldHaveValidationErrorFor(x => x.MonitoringObserverIds);
-    }
-
     [Theory]
     [MemberData(nameof(TestData.EmptyStringsTestCases), MemberType = typeof(TestData))]
     public void Validation_ShouldFail_When_Title_Empty(string title)
@@ -109,7 +83,6 @@ public class SendRequestValidatorTests
         {
             ElectionRoundId = Guid.NewGuid(),
             NgoId = Guid.NewGuid(),
-            MonitoringObserverIds = [Guid.NewGuid()],
             Title = "a title",
             Body = "a body"
         };

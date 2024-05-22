@@ -28,18 +28,20 @@ import { Route as ResponsesSubmissionIdImport } from './routes/responses/$submis
 import { Route as ObserversObserverIdImport } from './routes/observers/$observerId'
 import { Route as NgosNgoIdImport } from './routes/ngos/$ngoId'
 import { Route as MonitoringObserversCreateNewMessageImport } from './routes/monitoring-observers/create-new-message'
-import { Route as MonitoringObserversMonitoringObserverIdImport } from './routes/monitoring-observers/$monitoringObserverId'
+import { Route as MonitoringObserversTabImport } from './routes/monitoring-observers/$tab'
 import { Route as ElectionRoundsElectionRoundIdImport } from './routes/election-rounds/$electionRoundId'
 import { Route as ElectionEventTabImport } from './routes/election-event/$tab'
 import { Route as ResponsesQuickReportsQuickReportIdImport } from './routes/responses/quick-reports/$quickReportId'
 import { Route as ResponsesFormIdQuickReportsImport } from './routes/responses/$formId.quick-reports'
 import { Route as ResponsesFormIdAggregatedImport } from './routes/responses/$formId.aggregated'
 import { Route as ObserversObserverIdEditImport } from './routes/observers_.$observerId.edit'
-import { Route as MonitoringObserversMonitoringObserverIdEditImport } from './routes/monitoring-observers_.$monitoringObserverId.edit'
+import { Route as MonitoringObserversViewMonitoringObserverIdImport } from './routes/monitoring-observers/view/$monitoringObserverId'
+import { Route as MonitoringObserversEditMonitoringObserverIdImport } from './routes/monitoring-observers/edit.$monitoringObserverId'
 import { Route as FormsFormIdEditImport } from './routes/forms_.$formId.edit'
 import { Route as FormsFormIdLanguageCodeImport } from './routes/forms/$formId_.$languageCode'
 import { Route as FormTemplatesFormTemplateIdEditImport } from './routes/form-templates_.$formTemplateId.edit'
 import { Route as FormTemplatesFormTemplateIdLanguageCodeImport } from './routes/form-templates/$formTemplateId_.$languageCode'
+import { Route as MonitoringObserversPushMessagesIdViewImport } from './routes/monitoring-observers/push-messages.$id.view'
 import { Route as FormsFormIdEditTranslationLanguageCodeImport } from './routes/forms_.$formId.edit-translation.$languageCode'
 import { Route as FormTemplatesFormTemplateIdEditTranslationLanguageCodeImport } from './routes/form-templates_.$formTemplateId.edit-translation.$languageCode'
 
@@ -131,11 +133,10 @@ const MonitoringObserversCreateNewMessageRoute =
     getParentRoute: () => rootRoute,
   } as any)
 
-const MonitoringObserversMonitoringObserverIdRoute =
-  MonitoringObserversMonitoringObserverIdImport.update({
-    path: '/monitoring-observers/$monitoringObserverId',
-    getParentRoute: () => rootRoute,
-  } as any)
+const MonitoringObserversTabRoute = MonitoringObserversTabImport.update({
+  path: '/monitoring-observers/$tab',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const ElectionRoundsElectionRoundIdRoute =
   ElectionRoundsElectionRoundIdImport.update({
@@ -170,9 +171,15 @@ const ObserversObserverIdEditRoute = ObserversObserverIdEditImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const MonitoringObserversMonitoringObserverIdEditRoute =
-  MonitoringObserversMonitoringObserverIdEditImport.update({
-    path: '/monitoring-observers/$monitoringObserverId/edit',
+const MonitoringObserversViewMonitoringObserverIdRoute =
+  MonitoringObserversViewMonitoringObserverIdImport.update({
+    path: '/monitoring-observers/view/$monitoringObserverId',
+    getParentRoute: () => rootRoute,
+  } as any)
+
+const MonitoringObserversEditMonitoringObserverIdRoute =
+  MonitoringObserversEditMonitoringObserverIdImport.update({
+    path: '/monitoring-observers/edit/$monitoringObserverId',
     getParentRoute: () => rootRoute,
   } as any)
 
@@ -195,6 +202,12 @@ const FormTemplatesFormTemplateIdEditRoute =
 const FormTemplatesFormTemplateIdLanguageCodeRoute =
   FormTemplatesFormTemplateIdLanguageCodeImport.update({
     path: '/form-templates/$formTemplateId/$languageCode',
+    getParentRoute: () => rootRoute,
+  } as any)
+
+const MonitoringObserversPushMessagesIdViewRoute =
+  MonitoringObserversPushMessagesIdViewImport.update({
+    path: '/monitoring-observers/push-messages/$id/view',
     getParentRoute: () => rootRoute,
   } as any)
 
@@ -226,8 +239,8 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ElectionRoundsElectionRoundIdImport
       parentRoute: typeof rootRoute
     }
-    '/monitoring-observers/$monitoringObserverId': {
-      preLoaderRoute: typeof MonitoringObserversMonitoringObserverIdImport
+    '/monitoring-observers/$tab': {
+      preLoaderRoute: typeof MonitoringObserversTabImport
       parentRoute: typeof rootRoute
     }
     '/monitoring-observers/create-new-message': {
@@ -310,8 +323,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FormsFormIdEditImport
       parentRoute: typeof rootRoute
     }
-    '/monitoring-observers/$monitoringObserverId/edit': {
-      preLoaderRoute: typeof MonitoringObserversMonitoringObserverIdEditImport
+    '/monitoring-observers/edit/$monitoringObserverId': {
+      preLoaderRoute: typeof MonitoringObserversEditMonitoringObserverIdImport
+      parentRoute: typeof rootRoute
+    }
+    '/monitoring-observers/view/$monitoringObserverId': {
+      preLoaderRoute: typeof MonitoringObserversViewMonitoringObserverIdImport
       parentRoute: typeof rootRoute
     }
     '/observers/$observerId/edit': {
@@ -338,6 +355,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FormsFormIdEditTranslationLanguageCodeImport
       parentRoute: typeof rootRoute
     }
+    '/monitoring-observers/push-messages/$id/view': {
+      preLoaderRoute: typeof MonitoringObserversPushMessagesIdViewImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -347,7 +368,7 @@ export const routeTree = rootRoute.addChildren([
   IndexRoute,
   ElectionEventTabRoute,
   ElectionRoundsElectionRoundIdRoute,
-  MonitoringObserversMonitoringObserverIdRoute,
+  MonitoringObserversTabRoute,
   MonitoringObserversCreateNewMessageRoute,
   NgosNgoIdRoute,
   ObserversObserverIdRoute,
@@ -368,13 +389,15 @@ export const routeTree = rootRoute.addChildren([
   FormTemplatesFormTemplateIdEditRoute,
   FormsFormIdLanguageCodeRoute,
   FormsFormIdEditRoute,
-  MonitoringObserversMonitoringObserverIdEditRoute,
+  MonitoringObserversEditMonitoringObserverIdRoute,
+  MonitoringObserversViewMonitoringObserverIdRoute,
   ObserversObserverIdEditRoute,
   ResponsesFormIdAggregatedRoute,
   ResponsesFormIdQuickReportsRoute,
   ResponsesQuickReportsQuickReportIdRoute,
   FormTemplatesFormTemplateIdEditTranslationLanguageCodeRoute,
   FormsFormIdEditTranslationLanguageCodeRoute,
+  MonitoringObserversPushMessagesIdViewRoute,
 ])
 
 /* prettier-ignore-end */

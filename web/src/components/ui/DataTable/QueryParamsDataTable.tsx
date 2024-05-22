@@ -1,17 +1,19 @@
 import type { ReactElement } from 'react';
-import { DataTable, type DataTableProps } from './DataTable';
+import { DataTable, type RowData, type DataTableProps } from './DataTable';
 import { SortOrder, type DataTableParameters } from '@/common/types';
 import type { PaginationState, SortingState } from '@tanstack/react-table';
 import { useNavigate, useSearch } from '@tanstack/react-router';
 import { valueOrDefault } from '@/lib/utils';
 
-export function QueryParamsDataTable<TData, TValue>({
+export function QueryParamsDataTable<TData extends RowData, TValue>({
   columnVisibility,
   columns,
   useQuery: pagedQuery,
   queryParams: otherQueryParams,
   getSubrows,
   getRowClassName,
+  onDataFetchingSucceed,
+  onRowClick,
 }: DataTableProps<TData, TValue>): ReactElement {
   const queryParams: DataTableParameters = useSearch({
     strict: false,
@@ -71,6 +73,8 @@ export function QueryParamsDataTable<TData, TValue>({
         queryParams={otherQueryParams}
         getSubrows={getSubrows}
         getRowClassName={getRowClassName}
+        onDataFetchingSucceed={onDataFetchingSucceed}
+        onRowClick={onRowClick}
       />
     </div>
   );

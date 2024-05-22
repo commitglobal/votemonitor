@@ -3,9 +3,9 @@ using CsvHelper.Configuration;
 
 namespace Vote.Monitor.Core.Services.Csv;
 
-public class CsvWriter<T> : ICsvWriter<T>
+public class CsvWriter : ICsvWriter
 {
-    public void Write(IEnumerable<T> collection, Stream stream)
+    public void Write<T>(IEnumerable<T> collection, Stream stream)
     {
         using var writer = new StreamWriter(stream);
         using var csv = new CsvHelper.CsvWriter(writer, CultureInfo.InvariantCulture);
@@ -13,7 +13,7 @@ public class CsvWriter<T> : ICsvWriter<T>
         csv.WriteRecords(collection);
     }
 
-    public void Write<TMap>(IEnumerable<T> collection, Stream stream) where TMap : ClassMap<T>
+    public void Write<T, TMap>(IEnumerable<T> collection, Stream stream) where TMap : ClassMap<T>
     {
         using var writer = new StreamWriter(stream);
         using var csv = new CsvHelper.CsvWriter(writer, CultureInfo.InvariantCulture);

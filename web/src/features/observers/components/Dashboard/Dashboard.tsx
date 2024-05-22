@@ -120,10 +120,9 @@ export default function ObserversDashboard(): ReactElement {
           status: statusFilter,
         };
         const electionRoundId: string | null = localStorage.getItem('electionRoundId');
-        const monitoringNgId: string | null = localStorage.getItem('monitoringNgoId');
 
         const response = await authApi.get<PageResponse<Observer>>(
-          `/election-rounds/${electionRoundId}/monitoring-ngos/${monitoringNgId}/monitoring-observers`,
+          `/election-rounds/${electionRoundId}/monitoring-observers`,
           {
             params: Object.keys(paramsObject)
               .filter((k) => paramsObject[k] !== null && paramsObject[k] !== '')
@@ -320,7 +319,7 @@ export default function ObserversDashboard(): ReactElement {
               )}
             </CardHeader>
             <CardContent>
-              <QueryParamsDataTable columns={observerColDefs} useQuery={useObservers} />
+              <QueryParamsDataTable columns={observerColDefs} useQuery={useObservers} onRowClick={navigateToObserver} />
             </CardContent>
             <CardFooter className='flex justify-between'></CardFooter>
           </Card>

@@ -22,8 +22,5 @@ public class Validator : Validator<Request>
             .NotEmpty()
             .MaximumLength(1024)
             .When(x => x.QuickReportLocationType == QuickReportLocationType.OtherPollingStation);
-
-
-        RuleFor(x => x.Description).NotEmpty().MaximumLength(10000);
     }
 }

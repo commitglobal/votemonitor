@@ -12,8 +12,9 @@ import type { ColumnDef } from '@tanstack/react-table';
 import type { FormSubmissionByEntry, FormSubmissionByForm, FormSubmissionByObserver } from '../models/form-submission';
 import type { QuickReport } from '../models/quick-report';
 import type { QuestionExtraData } from '../types';
+import type { RowData } from '@/components/ui/DataTable/DataTable';
 
-export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry>[] = [
+export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry & RowData>[] = [
   {
     header: ({ column }) => <DataTableColumnHeader title='Time submitted' column={column} />,
     accessorKey: 'timeSubmitted',
@@ -153,7 +154,7 @@ export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry>[
   },
 ];
 
-export const formSubmissionsByObserverColumnDefs: ColumnDef<FormSubmissionByObserver>[] = [
+export const formSubmissionsByObserverColumnDefs: ColumnDef<FormSubmissionByObserver & RowData>[] = [
   {
     header: ({ column }) => <DataTableColumnHeader title='Observer name' column={column} />,
     accessorKey: 'observerName',
@@ -223,7 +224,7 @@ export const formSubmissionsByObserverColumnDefs: ColumnDef<FormSubmissionByObse
           search
           className='hover:bg-purple-100 inline-flex h-6 w-6 rounded-full items-center justify-center'
           params={{ monitoringObserverId: row.original.monitoringObserverId }}
-          to='/monitoring-observers/$monitoringObserverId'>
+          to='/monitoring-observers/view/$monitoringObserverId'>
           <ChevronRightIcon className='w-4 text-purple-600' />
         </Link>
       </div>
@@ -231,7 +232,7 @@ export const formSubmissionsByObserverColumnDefs: ColumnDef<FormSubmissionByObse
   },
 ];
 
-export const formSubmissionsByFormColumnDefs: ColumnDef<FormSubmissionByForm>[] = [
+export const formSubmissionsByFormColumnDefs: ColumnDef<FormSubmissionByForm & RowData>[] = [
   {
     header: ({ column }) => <DataTableColumnHeader title='Form code' column={column} />,
     accessorKey: 'formCode',

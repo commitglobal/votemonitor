@@ -16,10 +16,6 @@ internal class MultiSelectQuestionValidator : Validator<MultiSelectQuestion>
         RuleFor(x => x.Text)
             .SetValidator(new TranslatedStringValidator());
 
-        RuleFor(x => x.Helptext)
-            .SetValidator(new TranslatedStringValidator())
-            .When(x => x.Helptext != null);
-
         RuleForEach(x => x.Options)
             .SetValidator(new SelectOptionValidator());
     }

@@ -31,16 +31,16 @@ public class SuspendValidatorTests
     }
 
     [Fact]
-    public void Validation_ShouldFail_When_MonitoringNgoId_Empty()
+    public void Validation_ShouldFail_When_NgoId_Empty()
     {
         // Arrange
-        var request = new Suspend.Request { MonitoringNgoId = Guid.Empty };
+        var request = new Suspend.Request { NgoId = Guid.Empty };
 
         // Act
         var result = _validator.TestValidate(request);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.MonitoringNgoId);
+        result.ShouldHaveValidationErrorFor(x => x.NgoId);
     }
 
     [Fact]
@@ -50,7 +50,7 @@ public class SuspendValidatorTests
         var request = new Suspend.Request
         {
             ElectionRoundId = Guid.NewGuid(),
-            MonitoringNgoId = Guid.NewGuid(),
+            NgoId = Guid.NewGuid(),
             Id = Guid.NewGuid(),
         };
 

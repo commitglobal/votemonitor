@@ -6,6 +6,7 @@ using Vote.Monitor.Domain.Constants;
 using Vote.Monitor.Domain.Entities.AttachmentAggregate;
 using Vote.Monitor.Domain.Entities.NoteAggregate;
 using Vote.Monitor.Domain.Entities.PollingStationInfoAggregate;
+using Vote.Monitor.Domain.Entities.QuickReportAggregate;
 
 namespace Feature.PollingStation.Visit.ListMy;
 
@@ -31,7 +32,7 @@ public class Endpoint(IAuthorizationService authorizationService, IDbConnection 
             return TypedResults.NotFound();
         }
 
-        var sql = @$" SELECT t.""ElectionRoundId"",
+        var sql = @$"SELECT t.""ElectionRoundId"",
                      t.""PollingStationId"",
                      ps.""Level1"",
                      ps.""Level2"",
@@ -41,16 +42,16 @@ public class Endpoint(IAuthorizationService authorizationService, IDbConnection 
                      ps.""Address"",
                      ps.""Number"",
                      mo.""MonitoringNgoId"",
-                     mn.""NgoId"",
                      t.""MonitoringObserverId"",
                      mo.""ObserverId"",
-                     MIN(t.""LatestTimestamp"") ""VisitedAt""
+                     MAX(t.""LatestTimestamp"") ""VisitedAt""
                      FROM (
                          SELECT psi.""{nameof(PollingStationInformation.ElectionRoundId)}"",
                          psi.""{nameof(PollingStationInformation.PollingStationId)}"",
                          psi.""{nameof(PollingStationInformation.MonitoringObserverId)}"",
                          COALESCE(psi.""LastModifiedOn"", psi.""CreatedOn"") ""LatestTimestamp""
                          FROM ""{Tables.PollingStationInformation}"" psi
+                         WHERE psi.""ElectionRoundId"" = @electionRoundId
                          UNION
                          SELECT
                          n.""{nameof(Note.ElectionRoundId)}"", 
@@ -58,6 +59,7 @@ public class Endpoint(IAuthorizationService authorizationService, IDbConnection 
                          n.""{nameof(Note.MonitoringObserverId)}"", 
                          COALESCE(n.""LastModifiedOn"", n.""CreatedOn"") ""LatestTimestamp""
                          FROM ""{Tables.Notes}"" n
+                         WHERE n.""ElectionRoundId"" = @electionRoundId
                          UNION
                          SELECT
                          a.""{nameof(Attachment.ElectionRoundId)}"", 
@@ -65,11 +67,19 @@ public class Endpoint(IAuthorizationService authorizationService, IDbConnection 
                          a.""{nameof(Attachment.MonitoringObserverId)}"", 
                          COALESCE(a.""LastModifiedOn"", a.""CreatedOn"") ""LatestTimestamp""
                          FROM ""{Tables.Attachments}"" a
+                         WHERE a.""ElectionRoundId"" = @electionRoundId
+                         UNION
+                         SELECT
+                         qr.""{nameof(QuickReport.ElectionRoundId)}"", 
+                         qr.""{nameof(QuickReport.PollingStationId)}"", 
+                         qr.""{nameof(QuickReport.MonitoringObserverId)}"", 
+                         COALESCE(qr.""LastModifiedOn"", qr.""CreatedOn"") ""LatestTimestamp""
+                         FROM ""{Tables.QuickReports}"" qr
+                         WHERE qr.""ElectionRoundId"" = @electionRoundId
                      ) t 
                      INNER JOIN ""{Tables.MonitoringObservers}"" mo ON mo.""Id"" = t.""MonitoringObserverId""
-                     INNER JOIN ""{Tables.MonitoringNgos}"" mn ON mo.""MonitoringNgoId"" = mn.""Id""
                      INNER JOIN ""{Tables.PollingStations}"" ps ON ps.""Id"" = t.""PollingStationId""
-                     WHERE t.""ElectionRoundId"" =@electionRoundId AND mo.""ObserverId"" = @observerId
+                     WHERE t.""ElectionRoundId"" = @electionRoundId AND mo.""ObserverId"" = @observerId
                      GROUP BY 
                            t.""ElectionRoundId"",
                            t.""PollingStationId"",
@@ -81,9 +91,9 @@ public class Endpoint(IAuthorizationService authorizationService, IDbConnection 
                            ps.""Address"",
                            ps.""Number"",
                            mo.""MonitoringNgoId"",
-                           mn.""NgoId"", 
                            t.""MonitoringObserverId"",
                            mo.""ObserverId"";";
+
         var queryArgs = new { electionRoundId = req.ElectionRoundId, observerId = req.ObserverId };
 
         var visits = await dbConnection.QueryAsync<VisitModel>(sql, queryArgs);

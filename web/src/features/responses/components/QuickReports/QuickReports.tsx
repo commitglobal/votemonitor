@@ -21,8 +21,8 @@ import { useQuickReports } from '../../hooks/quick-reports';
 import type { QuickReportsSearchParams } from '../../models/search-params';
 import { quickReportsColumnDefs } from '../../utils/column-defs';
 import { quickReportsColumnVisibilityOptions, quickReportsDefaultColumns } from '../../utils/column-visibility-options';
-import { PollingStationsFilters } from '../PollingStationsFilters/PollingStationsFilters';
 import { FilterBadge } from '@/components/ui/badge';
+import { PollingStationsFilters } from '@/components/PollingStationsFilters/PollingStationsFilters';
 
 const routeApi = getRouteApi('/responses/');
 
@@ -66,6 +66,13 @@ export function QuickReports(): FunctionComponent {
   );
 
   const isFiltered = Object.keys(search).some((key) => key !== 'tab');
+
+  const navigateToQuickReport = useCallback(
+    (quickReportId: string) => {
+      void navigate({ to: '/responses/quick-reports/$quickReportId', params: { quickReportId } });
+    },
+    [navigate]
+  );
 
   return (
     <Card>
@@ -183,6 +190,7 @@ export function QuickReports(): FunctionComponent {
           columns={quickReportsColumnDefs}
           useQuery={useQuickReports}
           queryParams={queryParams}
+          onRowClick={navigateToQuickReport}
         />
       </CardContent>
     </Card>

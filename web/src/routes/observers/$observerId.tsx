@@ -12,7 +12,7 @@ export const observerQueryOptions = (observerId: string) =>
       const response = await authApi.get<Observer>(`/observers/${observerId}`);
 
       if (response.status !== 200) {
-        throw new Error('Failed to fetch ngo');
+        throw new Error('Failed to fetch observer details');
       }
 
       return response.data;

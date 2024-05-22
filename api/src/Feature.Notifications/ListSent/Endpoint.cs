@@ -1,10 +1,12 @@
 ﻿using System.Data;
 using Authorization.Policies;
 using Dapper;
+using Vote.Monitor.Core.Models;
+using Vote.Monitor.Domain.Specifications;
 
 namespace Feature.Notifications.ListSent;
 
-public class Endpoint(IDbConnection dbConnection) : Endpoint<Request, Ok<Response>>
+public class Endpoint(IDbConnection dbConnection) : Endpoint<Request, PagedResponse<NotificationModel>>
 {
     public override void Configure()
     {
@@ -14,32 +16,30 @@ public class Endpoint(IDbConnection dbConnection) : Endpoint<Request, Ok<Respons
         Policies(PolicyNames.NgoAdminsOnly);
     }
 
-    public override async Task<Ok<Response>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<PagedResponse<NotificationModel>> ExecuteAsync(Request req, CancellationToken ct)
     {
         var sql = @"
+        SELECT count(*) as count
+        FROM
+            ""Notifications"" N
+            INNER JOIN ""NgoAdmins"" NA ON N.""SenderId"" = NA.""Id""
+            INNER JOIN ""MonitoringNgos"" MN ON NA.""NgoId"" = MN.""NgoId""
+        WHERE
+            MN.""NgoId"" = @ngoId
+            AND N.""ElectionRoundId"" = @electionRoundId;
+
         SELECT
             N.""Id"",
             N.""Title"",
             N.""Body"",
             N.""CreatedOn"" ""SentAt"",
             U.""FirstName"" || ' ' || U.""LastName"" ""Sender"",
-            (
-                SELECT
-                    JSONB_AGG(
-                        JSONB_BUILD_OBJECT(
-                            'Id',
-                            ""TargetedObserversId"",
-                            'Name',
-                            MOU.""FirstName"" || ' ' || MOU.""LastName""
-                        )
-                    )
+            (SELECT COUNT(*)
                 FROM
                     ""MonitoringObserverNotification"" MON
-                    INNER JOIN ""MonitoringObservers"" MO ON MO.""Id"" = MON.""TargetedObserversId""
-                    INNER JOIN ""AspNetUsers"" MOU ON MOU.""Id"" = MO.""ObserverId""
                 WHERE
                     MON.""NotificationId"" = N.""Id""
-            ) ""Receivers""
+            ) ""NumberOfTargetedObservers""
         FROM
             ""Notifications"" N
             INNER JOIN ""NgoAdmins"" NA ON N.""SenderId"" = NA.""Id""
@@ -48,19 +48,23 @@ public class Endpoint(IDbConnection dbConnection) : Endpoint<Request, Ok<Respons
         WHERE
             MN.""NgoId"" = @ngoId
             AND N.""ElectionRoundId"" = @electionRoundId
-        ORDER BY N.""CreatedOn"" DESC";
+        ORDER BY N.""CreatedOn"" DESC
+        FETCH NEXT
+            @pageSize ROWS ONLY;";
 
         var queryArgs = new
         {
             electionRoundId = req.ElectionRoundId,
             ngoId = req.NgoId,
+            offset = PaginationHelper.CalculateSkip(req.PageSize, req.PageNumber),
+            pageSize = req.PageSize,
         };
 
-        var notifications = await dbConnection.QueryAsync<NotificationModel>(sql, queryArgs);
+        var multi = await dbConnection.QueryMultipleAsync(sql, queryArgs);
 
-        return TypedResults.Ok(new Response
-        {
-            Notifications = notifications.ToList()
-        });
+        var totalRowCount = multi.Read<int>().Single();
+        var entries = multi.Read<NotificationModel>().ToList();
+
+        return new PagedResponse<NotificationModel>(entries, totalRowCount, req.PageNumber, req.PageSize);
     }
 }

@@ -1,10 +1,98 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
+import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
 import { Separator } from '@/components/ui/separator';
-import { Link } from '@tanstack/react-router';
+import { Link, useNavigate } from '@tanstack/react-router';
+import { ColumnDef } from '@tanstack/react-table';
 import { Plus } from 'lucide-react';
+import { ChevronRightIcon } from '@heroicons/react/24/outline';
+
+import { usePushMessages } from '../../hooks/push-messages-queries';
+import { format } from 'date-fns';
+import { PushMessageModel } from '../../models/push-message';
+import { useCallback } from 'react';
 
 function PushMessages() {
+  const pushMessagesColDefs: ColumnDef<PushMessageModel>[] = [
+    {
+      header: ({ column }) => <DataTableColumnHeader title='Sent at' column={column} />,
+      accessorKey: 'sentAt',
+      enableSorting: false,
+      enableGlobalFilter: false,
+      cell: ({ row }) => <div>{format(row.original.sentAt, 'u-MM-dd KK:mm')}</div>
+    },
+    {
+      header: ({ column }) => <DataTableColumnHeader title='Sender name' column={column} />,
+      accessorKey: 'sender',
+      enableSorting: false,
+      enableGlobalFilter: false,
+      cell: ({
+        row: {
+          original: { sender },
+        },
+      }) => (
+        <p>
+          {sender}
+        </p>
+      ),
+    },
+    {
+      header: ({ column }) => <DataTableColumnHeader title='Title' column={column} />,
+      accessorKey: 'title',
+      enableSorting: false,
+      enableGlobalFilter: false,
+      cell: ({
+        row: {
+          original: { title },
+        },
+      }) => (
+        <p>
+          {title}
+        </p>
+      ),
+    },
+    {
+      header: ({ column }) => <DataTableColumnHeader title='Body' column={column} />,
+      accessorKey: 'body',
+      enableSorting: false,
+      enableGlobalFilter: false,
+      cell: ({
+        row: {
+          original: { body },
+        },
+      }) => (
+        <p>
+          {body}
+        </p>
+      ),
+    },
+    {
+      header: '',
+      accessorKey: 'action',
+      enableSorting: false,
+      cell: ({ row }) => (
+        <div className='text-right'>
+          <Link
+            className='hover:bg-purple-100 inline-flex h-6 w-6 rounded-full items-center justify-center'
+            params={{ id: row.original.id }}
+            to='/monitoring-observers/push-messages/$id/view'>
+            <ChevronRightIcon className='w-4 text-purple-600' />
+          </Link>
+        </div>
+      ),
+    },
+  ];
+
+  const navigate = useNavigate();
+
+  const navigateToPushMessage = useCallback(
+    (id: string) => {
+      void navigate({ to: '/monitoring-observers/push-messages/$id/view', params: { id } });
+    },
+    [navigate]
+  );
+
   return (
     <Card className='w-full pt-0'>
       <CardHeader className='flex flex-column gap-2'>
@@ -22,20 +110,7 @@ function PushMessages() {
         <Separator />
       </CardHeader>
       <CardContent>
-        <div className='no-data flex flex-col gap-4 justify-center items-center p-48'>
-          <svg xmlns='http://www.w3.org/2000/svg' width='120' height='121' viewBox='0 0 120 121' fill='none'>
-            <g opacity='0.5'>
-              <path
-                d='M47.5311 24.7252L52.1436 30.0502C53.4561 31.569 55.1998 32.3752 56.9998 32.3752C57.7123 32.3752 58.4436 32.2439 59.156 31.9814C61.9498 30.9314 63.7685 28.1376 63.7685 24.8564V23.4126C64.9123 22.3814 65.6435 20.9001 65.6435 19.2501C65.6435 17.6001 64.9122 16.1189 63.7685 15.0876V13.6438C63.7685 10.3626 61.9685 7.55004 59.156 6.51884C56.6622 5.58134 53.981 6.33134 52.1435 8.45004L47.531 13.775C45.0185 14.3375 43.1248 16.5688 43.1248 19.25C43.1248 21.9312 45.0186 24.1625 47.531 24.725L47.5311 24.7252ZM61.8751 19.2502C61.8751 20.2814 61.0313 21.1252 60.0001 21.1252H48.7501C47.7189 21.1252 46.8751 20.2814 46.8751 19.2502C46.8751 18.2189 47.7188 17.3752 48.7501 17.3752H60.0001C61.0313 17.3752 61.8751 18.2189 61.8751 19.2502ZM57.8251 28.4752C57.2251 28.7002 56.0626 28.8877 54.9563 27.6127L52.5938 24.8752H59.9813C59.9813 26.9377 58.8188 28.1002 57.8063 28.4752H57.8251ZM54.9563 10.9062C56.0438 9.63119 57.2251 9.81869 57.8251 10.0437C58.8188 10.4187 59.9813 11.5812 60.0001 13.6437H52.6126L54.9751 10.9062H54.9563ZM103.125 58.6252V47.4132C103.125 45.3507 101.438 43.6632 99.3753 43.6632H46.0693L41.5505 36.1444C40.8755 34.9819 39.6755 34.2882 38.3067 34.2882H20.6257C18.5632 34.2882 16.8757 35.9757 16.8757 38.0382V58.6262C15.8069 59.8074 15.3007 61.4012 15.4507 62.9762L20.3069 109.851C20.6069 112.72 23.0069 114.895 25.8944 114.895H94.1254C97.0129 114.895 99.4316 112.72 99.7129 109.851L104.569 62.9762C104.738 61.4012 104.213 59.8074 103.144 58.6262L103.125 58.6252ZM20.6253 38.0002H38.3063L42.8251 45.519C43.5001 46.6815 44.7001 47.3752 46.0689 47.3752H99.3749V56.7877C99.2436 56.7877 99.1124 56.7502 98.9624 56.7502H21.0374C20.9061 56.7502 20.7749 56.7877 20.6249 56.7877L20.6253 38.0002ZM95.9813 109.438C95.8875 110.394 95.0813 111.126 94.1251 111.126H25.8751C24.9188 111.126 24.1126 110.394 24.0189 109.438L19.1627 62.5632C19.1064 62.0194 19.2752 61.5132 19.6314 61.1194C19.9877 60.7256 20.4939 60.5006 21.0189 60.5006H98.9439C99.4877 60.5006 99.9751 60.7256 100.331 61.1194C100.688 61.5131 100.856 62.0381 100.8 62.5632L95.944 109.438H95.9813ZM46.8753 94.2502C46.8753 95.2814 46.0315 96.1252 45.0003 96.1252H32.3063C31.2751 96.1252 30.4313 95.2814 30.4313 94.2502C30.4313 93.2189 31.275 92.3752 32.3063 92.3752H45.0003C46.0315 92.3752 46.8753 93.2189 46.8753 94.2502ZM40.7815 101.75C40.7815 102.781 39.9377 103.625 38.9065 103.625H32.3253C31.2941 103.625 30.4503 102.781 30.4503 101.75C30.4503 100.719 31.294 99.8752 32.3253 99.8752H38.9065C39.9377 99.8752 40.7815 100.719 40.7815 101.75ZM71.0065 19.2502C71.0065 18.219 71.8502 17.3752 72.8815 17.3752H73.819C74.8502 17.3752 75.694 18.2189 75.694 19.2502C75.694 20.2814 74.8502 21.1252 73.819 21.1252H72.8815C71.8503 21.1252 71.0065 20.2814 71.0065 19.2502ZM89.3625 19.0439C89.5312 18.0127 90.4875 17.3189 91.5187 17.5064C92.3249 17.6377 93.0937 17.8627 93.8249 18.2002C94.7624 18.6314 95.1937 19.7377 94.7624 20.6752C94.4436 21.3689 93.7686 21.7814 93.0562 21.7814C92.7937 21.7814 92.5312 21.7251 92.2874 21.6126C91.8562 21.4251 91.3874 21.2751 90.8999 21.2001C89.8874 21.0314 89.1938 20.0751 89.3625 19.0439ZM89.25 34.4749C89.1 33.4437 89.7937 32.5061 90.825 32.3374C91.2937 32.2624 91.7625 32.1312 92.2125 31.9437C93.1687 31.5312 94.275 31.9624 94.6875 32.9187C95.1 33.8749 94.6687 34.9812 93.7125 35.3937C92.9625 35.7124 92.1937 35.9374 91.3875 36.0687C91.2937 36.0687 91.2 36.0874 91.1062 36.0874C90.1875 36.0874 89.4 35.4124 89.25 34.4936L89.25 34.4749ZM95.5688 27.5374C95.6063 27.2937 95.625 27.0312 95.625 26.7687C95.625 26.5437 95.625 26.2999 95.5875 26.0937C95.4563 25.0625 96.1875 24.1249 97.2187 24.0125C98.2687 23.8625 99.1875 24.6125 99.2999 25.6437C99.3374 26.0187 99.3749 26.3937 99.3749 26.7875C99.3749 27.2187 99.3374 27.6312 99.2999 28.0437C99.1687 28.9812 98.3624 29.6749 97.4437 29.6749H97.2C96.1688 29.5436 95.4562 28.6061 95.5875 27.5749L95.5688 27.5374ZM76.7068 38.5814C77.5505 39.2002 77.7193 40.3626 77.1193 41.2064C76.8005 41.6564 76.5005 42.1252 76.238 42.6126C75.9005 43.2501 75.2443 43.6064 74.588 43.6064C74.288 43.6064 73.988 43.5314 73.7068 43.3814C72.788 42.8939 72.4506 41.7502 72.938 40.8502C73.2755 40.2127 73.6693 39.594 74.1005 38.994C74.7193 38.1502 75.8817 37.9815 76.7255 38.5815L76.7068 38.5814ZM85.238 34.2689C85.5005 35.2627 84.9005 36.2939 83.9068 36.5564C83.363 36.7064 82.838 36.8752 82.313 37.1002C82.088 37.1939 81.8442 37.2502 81.6005 37.2502C80.8692 37.2502 80.1567 36.8189 79.8755 36.0877C79.4817 35.1314 79.9317 34.0252 80.888 33.6315C81.563 33.3502 82.2568 33.1252 82.9505 32.9377C83.9442 32.6752 84.9755 33.2752 85.238 34.2689ZM79.688 19.2499C79.688 18.2187 80.5317 17.3749 81.563 17.3749H83.4942C84.5254 17.3749 85.3692 18.2187 85.3692 19.2499C85.3692 20.2812 84.5254 21.1249 83.4942 21.1249H81.563C80.5318 21.1249 79.688 20.2812 79.688 19.2499ZM72.9005 47.3749C73.9317 47.3749 74.7755 48.2187 74.7755 49.2499V50.1874C74.7755 51.2186 73.9317 52.0624 72.9005 52.0624C71.8692 52.0624 71.0255 51.2187 71.0255 50.1874V49.2499C71.0255 48.2187 71.8692 47.3749 72.9005 47.3749Z'
-                fill='#E0B700'
-              />
-            </g>
-          </svg>
-          <h3 className='no-data-title font-bold text-2xl text-center'>No push messages created yet</h3>
-          <p className='no-data-text text-center w-[400px]'>
-            Communicate instantly with observers by creating and sending push messages directly to their mobile app.
-          </p>
-        </div>
+        <QueryParamsDataTable columns={pushMessagesColDefs} useQuery={usePushMessages} onRowClick={navigateToPushMessage} />
       </CardContent>
     </Card>
   );

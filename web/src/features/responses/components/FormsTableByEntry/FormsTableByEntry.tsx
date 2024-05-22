@@ -1,15 +1,14 @@
-import { getRouteApi } from '@tanstack/react-router';
+import { useNavigate } from '@tanstack/react-router';
 import type { VisibilityState } from '@tanstack/react-table';
 import { useDebounce } from '@uidotdev/usehooks';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import type { FunctionComponent } from '@/common/types';
 import { CardContent } from '@/components/ui/card';
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
 import { useFormSubmissionsByEntry } from '../../hooks/form-submissions-queries';
 import type { FormSubmissionsSearchParams } from '../../models/search-params';
 import { formSubmissionsByEntryColumnDefs } from '../../utils/column-defs';
-
-const routeApi = getRouteApi('/responses/');
+import { Route } from '@/routes/responses';
 
 type FormsTableByEntryProps = {
   columnsVisibility: VisibilityState;
@@ -17,7 +16,8 @@ type FormsTableByEntryProps = {
 };
 
 export function FormsTableByEntry({ columnsVisibility, searchText }: FormsTableByEntryProps): FunctionComponent {
-  const search = routeApi.useSearch();
+  const navigate = useNavigate();
+  const search = Route.useSearch();
   const debouncedSearch = useDebounce(search, 300);
 
   const queryParams = useMemo(() => {
@@ -36,6 +36,13 @@ export function FormsTableByEntry({ columnsVisibility, searchText }: FormsTableB
     return Object.fromEntries(params) as FormSubmissionsSearchParams;
   }, [searchText, debouncedSearch]);
 
+  const navigateToFormSubmission = useCallback(
+    (submissionId: string) => {
+      void navigate({ to: '/responses/$submissionId', params: { submissionId } });
+    },
+    [navigate]
+  );
+
   return (
     <CardContent>
       <QueryParamsDataTable
@@ -43,6 +50,7 @@ export function FormsTableByEntry({ columnsVisibility, searchText }: FormsTableB
         columns={formSubmissionsByEntryColumnDefs}
         useQuery={useFormSubmissionsByEntry}
         queryParams={queryParams}
+        onRowClick={navigateToFormSubmission}
       />
     </CardContent>
   );
