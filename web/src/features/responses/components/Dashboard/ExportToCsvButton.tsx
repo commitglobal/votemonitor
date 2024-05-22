@@ -33,12 +33,7 @@ export function ExportToCsvButton(): FunctionComponent {
 
   const exportStatus = exportedDataDetails?.exportStatus;
 
-  const { data: exportData } = useFormSubmissionsExportedData(exportedDataId, {
-    enabled: exportStatus === ExportStatus.Completed,
-  });
-
   const isLoading = isCreatingExportData || isFetchingExportedDataDetails || exportStatus === ExportStatus.Started;
-
 
   const downloadExportedData = async () => {
     const params = buildURLSearchParams({ exportedDataId });
