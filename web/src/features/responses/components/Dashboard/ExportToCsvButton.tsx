@@ -47,13 +47,13 @@ export function ExportToCsvButton(): FunctionComponent {
 
     const csvData = response.data;
 
-    const blob = new Blob([csvData], { type: 'text/csv' });
+    const blob = new Blob([csvData], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
     const url = window.URL.createObjectURL(blob);
 
     const a = document.createElement('a');
     a.style.display = 'none';
     a.href = url;
-    a.download = 'exported-data-errors.csv';
+    a.download = 'exported-data.xlsx';
 
     document.body.appendChild(a);
     a.click();
@@ -79,7 +79,7 @@ export function ExportToCsvButton(): FunctionComponent {
       variant='outline'
       onClick={downloadHandler}>
       <CsvFileIcon />
-      {isLoading ? 'Please wait...' : 'Export to csv'}
+      {isLoading ? 'Please wait...' : 'Export data'}
     </Button>
   );
 }
