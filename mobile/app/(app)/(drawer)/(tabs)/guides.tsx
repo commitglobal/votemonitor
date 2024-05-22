@@ -9,7 +9,7 @@ import { useTranslation } from "react-i18next";
 
 const Guides = () => {
   const navigation = useNavigation();
-  const { t } = useTranslation("guides_empty");
+  const { t } = useTranslation(["guides_empty", "guides"]);
 
   return (
     <Screen
@@ -22,7 +22,7 @@ const Guides = () => {
       }}
     >
       <Header
-        title={"Inbox"}
+        title={t("header.title", { ns: "guides" })}
         titleColor="white"
         barStyle="light-content"
         leftIcon={<Icon icon="menuAlt2" color="white" />}

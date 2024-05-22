@@ -208,6 +208,11 @@
     "messages_from": "Mesaje de la",
     "your_organization": "organizația dumneavoastră"
   },
+  "guides": {
+    "header": {
+      "title": "Ghiduri"
+    }
+  },
   "guides_empty": {
     "title": "Nu există ghiduri de citit încă",
     "paragraph": "Ghidurile și resursele de la organizația dvs. sunt la îndemâna dumneavoastră."
