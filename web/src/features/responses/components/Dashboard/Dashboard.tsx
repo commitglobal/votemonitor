@@ -1,7 +1,7 @@
 import { ChevronDownIcon, Cog8ToothIcon, FunnelIcon } from '@heroicons/react/24/outline';
 import { getRouteApi } from '@tanstack/react-router';
 import { useDebounce } from '@uidotdev/usehooks';
-import { type ChangeEvent, useState, type ReactElement } from 'react';
+import { type ChangeEvent, useState, type ReactElement, useCallback } from 'react';
 import { CsvFileIcon } from '@/components/icons/CsvFileIcon';
 import Layout from '@/components/layout/Layout';
 import { Badge } from '@/components/ui/badge';
@@ -58,6 +58,13 @@ export default function ResponsesDashboard(): ReactElement {
     const value = ev.currentTarget.value;
     if (!value || value.length >= 2) setSearchText(ev.currentTarget.value);
   };
+
+  const navigateToAggregatedForm = useCallback(
+    (formId: string) => {
+      void navigate({ to: '/responses/$formId/aggregated', params: { formId } });
+    },
+    [navigate]
+  );
 
   return (
     <Layout title='Responses' subtitle='View all form answers and other issues reported by your observers.  '>
@@ -180,6 +187,7 @@ export default function ResponsesDashboard(): ReactElement {
                   columnVisibility={columnsVisibility}
                   columns={formSubmissionsByFormColumnDefs}
                   useQuery={useFormSubmissionsByForm}
+                  onRowClick={navigateToAggregatedForm}
                 />
               )}
             </CardContent>

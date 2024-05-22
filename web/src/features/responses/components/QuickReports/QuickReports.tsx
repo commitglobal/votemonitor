@@ -67,6 +67,13 @@ export function QuickReports(): FunctionComponent {
 
   const isFiltered = Object.keys(search).some((key) => key !== 'tab');
 
+  const navigateToQuickReport = useCallback(
+    (quickReportId: string) => {
+      void navigate({ to: '/responses/quick-reports/$quickReportId', params: { quickReportId } });
+    },
+    [navigate]
+  );
+
   return (
     <Card>
       <CardHeader>
@@ -183,6 +190,7 @@ export function QuickReports(): FunctionComponent {
           columns={quickReportsColumnDefs}
           useQuery={useQuickReports}
           queryParams={queryParams}
+          onRowClick={navigateToQuickReport}
         />
       </CardContent>
     </Card>

@@ -1,7 +1,7 @@
 import { getRouteApi } from '@tanstack/react-router';
 import type { VisibilityState } from '@tanstack/react-table';
 import { useDebounce } from '@uidotdev/usehooks';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import type { FunctionComponent } from '@/common/types';
 import { CardContent } from '@/components/ui/card';
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
@@ -17,6 +17,7 @@ type FormsTableByObserverProps = {
 };
 
 export function FormsTableByObserver({ columnsVisibility, searchText }: FormsTableByObserverProps): FunctionComponent {
+  const navigate = routeApi.useNavigate();
   const search = routeApi.useSearch();
   const debouncedSearch = useDebounce(search, 300);
 
@@ -29,6 +30,13 @@ export function FormsTableByObserver({ columnsVisibility, searchText }: FormsTab
     return Object.fromEntries(params) as FormSubmissionsSearchParams;
   }, [searchText, debouncedSearch]);
 
+  const navigateToMonitoringObserver = useCallback(
+    (monitoringObserverId: string) => {
+      void navigate({ to: '/monitoring-observers/view/$monitoringObserverId', params: { monitoringObserverId } });
+    },
+    [navigate]
+  );
+
   return (
     <CardContent>
       <QueryParamsDataTable
@@ -36,6 +44,7 @@ export function FormsTableByObserver({ columnsVisibility, searchText }: FormsTab
         columns={formSubmissionsByObserverColumnDefs}
         useQuery={useFormSubmissionsByObserver}
         queryParams={queryParams}
+        onRowClick={navigateToMonitoringObserver}
       />
     </CardContent>
   );
