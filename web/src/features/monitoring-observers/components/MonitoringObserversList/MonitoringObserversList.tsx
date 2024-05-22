@@ -22,7 +22,7 @@ import { useQuery, UseQueryResult } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { ColumnDef } from '@tanstack/react-table';
 import { X } from 'lucide-react';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import { useMonitoringObserversTags } from '../../../../hooks/tags-queries';
 import { MonitoringObserver } from '../../models/monitoring-observer';
@@ -202,7 +202,12 @@ function MonitoringObserversList() {
     });
   };
 
-  const exportMonitoringObservers = async () => {
+  const rowClickHandler = useCallback(
+    (monitoringObserverId: string) => {
+      navigateToObserver(monitoringObserverId);
+    },
+    [navigateToObserver]
+  );  const exportMonitoringObservers = async () => {
     const electionRoundId: string | null = localStorage.getItem('electionRoundId');
 
     const res = await authApi.get(`/election-rounds/${electionRoundId}/monitoring-observers:export`);
@@ -344,7 +349,11 @@ function MonitoringObserversList() {
         )}
       </CardHeader>
       <CardContent>
-        <QueryParamsDataTable columns={monitoringObserverColDefs} useQuery={useMonitoringObservers} />
+        <QueryParamsDataTable
+          columns={monitoringObserverColDefs}
+          useQuery={useMonitoringObservers}
+          onRowClick={rowClickHandler}
+        />
       </CardContent>
     </Card>
   );

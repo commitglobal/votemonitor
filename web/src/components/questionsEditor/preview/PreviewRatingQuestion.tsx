@@ -2,6 +2,7 @@ import type { FunctionComponent, RatingAnswer, RatingQuestion } from '@/common/t
 import { RatingGroup } from '../../ui/ratings';
 import { Description, Field, Label } from '@/components/ui/fieldset';
 import { ratingScaleToNumber } from '@/lib/utils';
+import { useParams } from '@tanstack/react-router';
 
 export interface PreviewRatingQuestionProps {
   languageCode: string;
@@ -11,12 +12,17 @@ export interface PreviewRatingQuestionProps {
 }
 
 function PreviewRatingQuestion({ languageCode, question }: PreviewRatingQuestionProps): FunctionComponent {
+  const params: any = useParams({
+    strict: false,
+  });
   return (
     <Field>
       <Label>
-        {question.code} - {question.text[languageCode]}
+        {question.code} - {question.text[params['languageCode'] ? params['languageCode'] : languageCode]}
       </Label>
-      {!!question.helptext && <Description>{question.helptext[languageCode]}</Description>}
+      {!!question.helptext && (
+        <Description>{question.helptext[params['languageCode'] ? params['languageCode'] : languageCode]}</Description>
+      )}
       <RatingGroup className='my-2' scale={ratingScaleToNumber(question.scale)} name='value' />
     </Field>
   );

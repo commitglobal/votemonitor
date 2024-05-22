@@ -13,7 +13,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { queryClient } from '@/main';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
-import { useLoaderData, useNavigate } from '@tanstack/react-router';
+import { useLoaderData, useParams } from '@tanstack/react-router';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -22,14 +22,17 @@ import { z } from 'zod';
 import { FormTemplateFull } from '../../models/formTemplate';
 import { formTemplatesKeys } from '../../queries';
 import EditFormTemplateFooter from '../EditFormTemplate/EditFormTemplateFooter';
-
+import { Route as FormTemplateEditRouter } from '@/routes/form-templates_.$formTemplateId.edit-translation.$languageCode';
+import { Badge } from '@/components/ui/badge';
+import { useLanguages } from '@/features/languages/queries';
 export default function EditFormTemplateTranslation() {
-  const navigate = useNavigate();
   const { t } = useTranslation();
   const formTemplate: FormTemplateFull = useLoaderData({ strict: false });
   const [localQuestions, setLocalQuestions] = useState(formTemplate.questions);
   const { toast } = useToast();
+  const { data: languages } = useLanguages();
 
+  const { languageCode } = FormTemplateEditRouter.useParams();
   const editFormTemplateFormSchema = z.object({
     name: z.string().nonempty(),
     description: z.string().optional(),
@@ -45,7 +48,12 @@ export default function EditFormTemplateTranslation() {
 
   function onSubmit(values: z.infer<typeof editFormTemplateFormSchema>) {
     formTemplate.name[formTemplate.defaultLanguage] = values.name;
-    formTemplate.description =  updateTranslationString(formTemplate.description, formTemplate.languages, formTemplate.defaultLanguage, values.description ?? '');
+    formTemplate.description = updateTranslationString(
+      formTemplate.description,
+      formTemplate.languages,
+      formTemplate.defaultLanguage,
+      values.description ?? ''
+    );
 
     const updatedFormTemplate: FormTemplateFull = {
       ...formTemplate,
@@ -125,14 +133,24 @@ export default function EditFormTemplateTranslation() {
               </Card>
             </TabsContent>
             <TabsContent value='questions'>
-              <Card className='pt-0'>
+              <Card className='pt-0  h-[calc(100vh-380px)] overflow-hidden'>
                 <CardHeader className='flex flex-column gap-2'>
                   <div className='flex flex-row justify-between items-center'>
-                    <CardTitle className='text-xl'>Template form questions</CardTitle>
+                    <CardTitle className='text-xl'>
+                      Template form questions
+                      {languageCode && (
+                        <div className='flex gap-2'>
+                          <span className='text-sm'>Language for translation</span>
+                          <Badge className='bg-purple-100 text-purple-500'>
+                            {languages?.find((lang) => lang.code === languageCode)?.name} ({languageCode})
+                          </Badge>
+                        </div>
+                      )}
+                    </CardTitle>
                   </div>
                   <Separator />
                 </CardHeader>
-                <CardContent className='-mx-6 flex items-start justify-left px-6 sm:mx-0 sm:px-8'>
+                <CardContent className='-mx-6 flex items-start justify-left px-6 sm:mx-0 sm:px-8 h-[100%]'>
                   <FormQuestionsEditor
                     availableLanguages={formTemplate.languages}
                     languageCode={formTemplate.defaultLanguage}

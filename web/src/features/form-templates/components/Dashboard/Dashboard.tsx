@@ -24,7 +24,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { ColumnDef, Row } from '@tanstack/react-table';
 import { X } from 'lucide-react';
-import { useState, type ReactElement } from 'react';
+import { useState, type ReactElement, useCallback } from 'react';
 import { FormTemplateBase, mapFormTemplateType } from '../../models/formTemplate';
 import { formTemplatesKeys, useFormTemplates } from '../../queries';
 import AddTranslationsDialog from './AddTranslationsDialog';
@@ -210,9 +210,14 @@ export default function FormTemplatesDashboard(): ReactElement {
         code: `${originalRow.code} - ${languageCode}`,
         defaultLanguage: languageCode
       }));
-  }
+  };
 
-  const getRowClassName = (row: Row<FormTemplateBase>): string => (cn({ 'bg-secondary-300 bg-opacity-[.15]': row.depth === 1 }));
+  const getRowClassName = (row: Row<FormTemplateBase>): string =>
+    cn({ 'bg-secondary-300 bg-opacity-[.15]': row.depth === 1 });
+
+  const rowClickHandler = useCallback((formTemplateId: string, defaultLanguage?: string) => {
+    navigateToFormTemplate(formTemplateId, defaultLanguage ?? '');
+  }, [navigateToFormTemplate]);
 
   return (
     <Layout
@@ -283,17 +288,32 @@ export default function FormTemplatesDashboard(): ReactElement {
               )}
             </CardHeader>
             <CardContent>
-              <QueryParamsDataTable columns={formTemplateColDefs} useQuery={useFormTemplates} getSubrows={getSubrows} getRowClassName={getRowClassName} />
-              {!!currentFormTemplate && <AddTranslationsDialog {...addTranslationsDialog.dialogProps}
-                formTemplateId={currentFormTemplate.id}
-                languages={currentFormTemplate.languages}
-              />}
+              <QueryParamsDataTable
+                columns={formTemplateColDefs}
+                useQuery={useFormTemplates}
+                getSubrows={getSubrows}
+                getRowClassName={getRowClassName}
+                onRowClick={rowClickHandler}
+              />
+              {!!currentFormTemplate && (
+                <AddTranslationsDialog
+                  {...addTranslationsDialog.dialogProps}
+                  formTemplateId={currentFormTemplate.id}
+                  languages={currentFormTemplate.languages}
+                />
+              )}
             </CardContent>
             <CardFooter className='flex justify-between'></CardFooter>
           </Card>
         </TabsContent>
         <TabsContent value='psi-forms'>
-          <QueryParamsDataTable columns={formTemplateColDefs} useQuery={useFormTemplates} getSubrows={getSubrows} getRowClassName={getRowClassName} />
+          <QueryParamsDataTable
+            columns={formTemplateColDefs}
+            useQuery={useFormTemplates}
+            getSubrows={getSubrows}
+            getRowClassName={getRowClassName}
+            onRowClick={rowClickHandler}
+          />
         </TabsContent>
       </Tabs>
 

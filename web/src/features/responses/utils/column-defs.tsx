@@ -13,8 +13,9 @@ import type { ColumnDef } from '@tanstack/react-table';
 import { SubmissionFollowUpStatus, type FormSubmissionByEntry, type FormSubmissionByForm, type FormSubmissionByObserver } from '../models/form-submission';
 import { QuickReportFollowUpStatus, type QuickReport } from '../models/quick-report';
 import type { QuestionExtraData } from '../types';
+import type { RowData } from '@/components/ui/DataTable/DataTable';
 
-export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry>[] = [
+export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry & RowData>[] = [
   {
     header: ({ column }) => <DataTableColumnHeader title='Time submitted' column={column} />,
     accessorKey: 'timeSubmitted',
@@ -154,7 +155,7 @@ export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry>[
   },
 ];
 
-export const formSubmissionsByObserverColumnDefs: ColumnDef<FormSubmissionByObserver>[] = [
+export const formSubmissionsByObserverColumnDefs: ColumnDef<FormSubmissionByObserver & RowData>[] = [
   {
     header: ({ column }) => <DataTableColumnHeader title='Observer name' column={column} />,
     accessorKey: 'observerName',
@@ -232,7 +233,7 @@ export const formSubmissionsByObserverColumnDefs: ColumnDef<FormSubmissionByObse
   },
 ];
 
-export const formSubmissionsByFormColumnDefs: ColumnDef<FormSubmissionByForm>[] = [
+export const formSubmissionsByFormColumnDefs: ColumnDef<FormSubmissionByForm & RowData>[] = [
   {
     header: ({ column }) => <DataTableColumnHeader title='Form code' column={column} />,
     accessorKey: 'formCode',

@@ -11,6 +11,7 @@ import { ChevronRightIcon } from '@heroicons/react/24/outline';
 import { usePushMessages } from '../../hooks/push-messages-queries';
 import { format } from 'date-fns';
 import { PushMessageModel } from '../../models/push-message';
+import { useCallback } from 'react';
 import { DateTimeFormat } from '@/common/formats';
 
 function PushMessages() {
@@ -84,6 +85,15 @@ function PushMessages() {
     },
   ];
 
+  const navigate = useNavigate();
+
+  const navigateToPushMessage = useCallback(
+    (id: string) => {
+      void navigate({ to: '/monitoring-observers/push-messages/$id/view', params: { id } });
+    },
+    [navigate]
+  );
+
   return (
     <Card className='w-full pt-0'>
       <CardHeader className='flex flex-column gap-2'>
@@ -101,7 +111,7 @@ function PushMessages() {
         <Separator />
       </CardHeader>
       <CardContent>
-        <QueryParamsDataTable columns={pushMessagesColDefs} useQuery={usePushMessages} />
+        <QueryParamsDataTable columns={pushMessagesColDefs} useQuery={usePushMessages} onRowClick={navigateToPushMessage} />
       </CardContent>
     </Card>
   );

@@ -3,10 +3,11 @@ import type { DataTableParameters, PageResponse } from '@/common/types';
 import type { FormSubmissionByEntry, FormSubmissionByForm, FormSubmissionByObserver } from '../models/form-submission';
 import { authApi } from '@/common/auth-api';
 import { buildURLSearchParams } from '@/lib/utils';
+import type { RowData } from '@/components/ui/DataTable/DataTable';
 
 const STALE_TIME = 1000 * 60; // one minute
 
-type FormSubmissionsByEntryResponse = PageResponse<FormSubmissionByEntry>;
+type FormSubmissionsByEntryResponse = PageResponse<FormSubmissionByEntry & RowData>;
 
 type UseFormSubmissionsByEntryResult = UseQueryResult<FormSubmissionsByEntryResponse, Error>;
 
@@ -41,7 +42,7 @@ export function useFormSubmissionsByEntry(queryParams: DataTableParameters): Use
   });
 }
 
-type FormSubmissionsByObserverResponse = PageResponse<FormSubmissionByObserver>;
+type FormSubmissionsByObserverResponse = PageResponse<FormSubmissionByObserver & RowData>;
 
 type UseFormSubmissionsByObserverResult = UseQueryResult<FormSubmissionsByObserverResponse, Error>;
 
@@ -76,7 +77,7 @@ export function useFormSubmissionsByObserver(queryParams: DataTableParameters): 
   });
 }
 
-type FormSubmissionsByFormResponse = PageResponse<FormSubmissionByForm>;
+type FormSubmissionsByFormResponse = PageResponse<FormSubmissionByForm & RowData>;
 
 type UseFormSubmissionsByFormResult = UseQueryResult<FormSubmissionsByFormResponse, Error>;
 

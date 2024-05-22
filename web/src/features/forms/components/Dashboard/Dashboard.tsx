@@ -23,7 +23,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { ColumnDef, Row } from '@tanstack/react-table';
 import { X } from 'lucide-react';
-import { useState, type ReactElement } from 'react';
+import { useState, type ReactElement, useCallback } from 'react';
 import { FormBase, mapFormType } from '../../models/form';
 import { formsKeys, useForms } from '../../queries';
 import AddTranslationsDialog from './AddTranslationsDialog';
@@ -212,9 +212,16 @@ export default function FormsDashboard(): ReactElement {
         code: `${originalRow.code} - ${languageCode}`,
         defaultLanguage: languageCode
       }));
-  }
+  };
 
-  const getRowClassName = (row: Row<FormBase>): string => (cn({ 'bg-secondary-300 bg-opacity-[.15]': row.depth === 1 }));
+  const getRowClassName = (row: Row<FormBase>): string => cn({ 'bg-secondary-300 bg-opacity-[.15]': row.depth === 1 });
+
+  const rowClickHandler = useCallback(
+    (formId: string, defaultLanguage?: string) => {
+      navigateToForm(formId, defaultLanguage ?? '');
+    },
+    [navigateToForm]
+  );
 
   return (
     <Layout
@@ -279,11 +286,20 @@ export default function FormsDashboard(): ReactElement {
           )}
         </CardHeader>
         <CardContent>
-          <QueryParamsDataTable columns={formColDefs} useQuery={useForms} getSubrows={getSubrows} getRowClassName={getRowClassName} />
-          {!!currentForm && <AddTranslationsDialog {...addTranslationsDialog.dialogProps}
-            formId={currentForm.id}
-            languages={currentForm.languages}
-          />}
+          <QueryParamsDataTable
+            columns={formColDefs}
+            useQuery={useForms}
+            getSubrows={getSubrows}
+            getRowClassName={getRowClassName}
+            onRowClick={rowClickHandler}
+          />
+          {!!currentForm && (
+            <AddTranslationsDialog
+              {...addTranslationsDialog.dialogProps}
+              formId={currentForm.id}
+              languages={currentForm.languages}
+            />
+          )}
         </CardContent>
         <CardFooter className='flex justify-between'></CardFooter>
       </Card>
