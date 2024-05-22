@@ -72,8 +72,6 @@ export function ExportToCsvButton(): FunctionComponent {
 
   }, [exportStatus]);
 
-  console.log(exportData);
-
   return (
     <Button
       disabled={isLoading}
