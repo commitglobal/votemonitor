@@ -15,6 +15,8 @@ const ManagePollingStation = () => {
     return <Typography>No visits</Typography>;
   }
 
+  console.log("visits", visits.length);
+
   return (
     <Screen
       preset="scroll"

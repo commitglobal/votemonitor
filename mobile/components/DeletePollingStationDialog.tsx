@@ -16,21 +16,30 @@ interface DeletePollingStationDialogProps {
 const DeletePollingStationDialog = (props: DeletePollingStationDialogProps) => {
   const { t } = useTranslation("modals");
   const { pollingStationNumber, pollingStationId } = props;
-  const { activeElectionRound, visits } = useUserData();
+  const { activeElectionRound } = useUserData();
 
   if (!activeElectionRound) {
     return <Typography> Problem with electionRoundId! </Typography>;
   }
 
   // React Query Mutation
-  const { mutate: deletePS, isSuccess, isError } = useDeletePollingStationMutation();
+  const {
+    mutate: deletePS,
+    isSuccess,
+    isError,
+  } = useDeletePollingStationMutation(activeElectionRound.id);
   const payload: DeletePollingStationPayload = {
     electionRoundId: activeElectionRound.id,
-    pollingStationId: pollingStationId,
+    pollingStationId,
   };
-  console.log("Payload: ", payload);
-  console.log("isSuccess:", isSuccess);
-  console.log("\n");
+
+  const deleteHandler = () => {
+    deletePS(payload);
+    console.log("Delete Polling Station");
+    console.log("Payload: ", payload);
+    console.log("isSuccess: ", isSuccess);
+    console.log("isError: ", isError);
+  };
 
   return (
     <Dialog
@@ -63,7 +72,7 @@ const DeletePollingStationDialog = (props: DeletePollingStationDialogProps) => {
               preset="red"
               flex={1}
               onPress={() => {
-                deletePS(payload);
+                deleteHandler();
               }}
             >
               {t("delete_station.actions.delete")}
