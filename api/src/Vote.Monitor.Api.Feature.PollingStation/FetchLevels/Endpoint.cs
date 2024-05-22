@@ -35,7 +35,6 @@ public class Endpoint(VoteMonitorContext context, IMemoryCache memoryCache) : En
         {
             var pollingStations = await context.PollingStations
                 .Where(x => x.ElectionRoundId == request.ElectionRoundId)
-                .OrderBy(x => x.DisplayOrder)
                 .Select(x => new 
                 {
                     x.Level1,
