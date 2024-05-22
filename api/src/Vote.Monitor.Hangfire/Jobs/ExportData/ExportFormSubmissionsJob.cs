@@ -6,6 +6,7 @@ using Vote.Monitor.Core.FileGenerators;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
 using Vote.Monitor.Core.Services.Time;
 using Vote.Monitor.Domain;
+using Vote.Monitor.Domain.ConnectionFactory;
 using Vote.Monitor.Domain.Entities.ExportedDataAggregate;
 using Vote.Monitor.Domain.Entities.FormAggregate;
 using Vote.Monitor.Hangfire.Jobs.ExportData.ReadModels;
@@ -13,7 +14,7 @@ using Vote.Monitor.Hangfire.Jobs.ExportData.ReadModels;
 namespace Vote.Monitor.Hangfire.Jobs.ExportData;
 
 public class ExportFormSubmissionsJob(VoteMonitorContext context,
-    IDbConnection dbConnection,
+    INpgsqlConnectionFactory dbConnectionFactory,
     IFileStorageService fileStorageService,
     ILogger<ExportFormSubmissionsJob> logger,
     ITimeProvider timeProvider) : IExportFormSubmissionsJob
@@ -201,7 +202,7 @@ public class ExportFormSubmissionsJob(VoteMonitorContext context,
 
         var queryParams = new { electionRoundId, ngoId };
 
-        var submissions = await dbConnection.QueryAsync<SubmissionModel>(sql, queryParams);
+        var submissions = await dbConnectionFactory.GetOpenConnection().QueryAsync<SubmissionModel>(sql, queryParams);
         var submissionsData = submissions.ToList();
         return submissionsData;
     }

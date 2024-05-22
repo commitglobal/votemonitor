@@ -6,11 +6,11 @@ export enum FormTemplateStatus {
     Published = 'Published',
 }
 
-
 export enum FormTemplateType {
     Opening = 'Opening',
     Voting = 'Voting',
     ClosingAndCounting = 'ClosingAndCounting',
+    Other = 'Other',
 }
 
 export interface FormTemplateBase {
@@ -37,6 +37,7 @@ export function mapFormTemplateType(formType: FormTemplateType): string {
         case FormTemplateType.Opening: return i18n.t('formTemplateType.opening');
         case FormTemplateType.Voting: return i18n.t('formTemplateType.voting');
         case FormTemplateType.ClosingAndCounting: return i18n.t('formTemplateType.closingAndCounting');
+        case FormTemplateType.Other: return i18n.t('formTemplateType.other');
         default: return "Unknown";
     }
 }

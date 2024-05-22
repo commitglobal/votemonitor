@@ -1,10 +1,12 @@
 ﻿using Authorization.Policies.Requirements;
 using Feature.MonitoringObservers.Specifications;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
 
 namespace Feature.MonitoringObservers.Update;
 
-public class Endpoint(IAuthorizationService authorizationService, IRepository<MonitoringObserverAggregate> repository) : Endpoint<Request, Results<NoContent, NotFound>>
+public class Endpoint(IAuthorizationService authorizationService, IRepository<MonitoringObserverAggregate> repository, IUserStore<ApplicationUser> userStore) : Endpoint<Request, Results<NoContent, NotFound>>
 {
     public override void Configure()
     {
@@ -37,6 +39,15 @@ public class Endpoint(IAuthorizationService authorizationService, IRepository<Mo
 
         monitoringObserver.Update(req.Status, req.Tags);
         await repository.UpdateAsync(monitoringObserver, ct);
+
+        var applicationUser = await userStore.FindByIdAsync(monitoringObserver.ObserverId.ToString(), ct);
+        if (applicationUser is null)
+        {
+            return TypedResults.NotFound();
+        }
+        applicationUser.UpdateDetails(req.FirstName, req.LastName, req.PhoneNumber);
+
+        await userStore.UpdateAsync(applicationUser, ct);
 
         return TypedResults.NoContent();
     }

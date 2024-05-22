@@ -14,6 +14,7 @@ public class QuickReport : AuditableBaseEntity, IAggregateRoot
     public Guid? PollingStationId { private set; get; }
     public PollingStation? PollingStation { get; private set; }
     public string? PollingStationDetails { get; private set; }
+    public QuickReportFollowUpStatus FollowUpStatus { get; private set; }
 
     public static QuickReport Create(Guid id,
         Guid electionRoundId,
@@ -26,6 +27,24 @@ public class QuickReport : AuditableBaseEntity, IAggregateRoot
     {
         return new QuickReport(id, electionRoundId, monitoringObserverId, locationType, title,
             description, pollingStationId, pollingStationDetails);
+    }
+
+    public void Update(string title,
+        string description,
+        QuickReportLocationType locationType,
+        Guid? pollingStationId,
+        string? pollingStationDetails)
+    {
+        Title = title;
+        QuickReportLocationType = locationType;
+        Description = description;
+        PollingStationId = pollingStationId;
+        PollingStationDetails = pollingStationDetails;
+    }
+
+    public void UpdateFollowUpStatus(QuickReportFollowUpStatus followUpStatus)
+    {
+        FollowUpStatus = followUpStatus;
     }
 
     private QuickReport(Guid id,
@@ -44,6 +63,7 @@ public class QuickReport : AuditableBaseEntity, IAggregateRoot
         Description = description;
         PollingStationId = pollingStationId;
         PollingStationDetails = pollingStationDetails;
+        FollowUpStatus = QuickReportFollowUpStatus.NotApplicable;
     }
 
 #pragma warning disable CS8618 // Required by Entity Framework
@@ -52,16 +72,4 @@ public class QuickReport : AuditableBaseEntity, IAggregateRoot
     {
     }
 #pragma warning restore CS8618
-
-    public void Update(string title,
-        string description,
-        QuickReportLocationType locationType,
-        Guid? pollingStationId,
-        string? pollingStationDetails)
-    {
-        Title = title;
-        Description = description;
-        PollingStationId = pollingStationId;
-        PollingStationDetails = pollingStationDetails;
-    }
 }

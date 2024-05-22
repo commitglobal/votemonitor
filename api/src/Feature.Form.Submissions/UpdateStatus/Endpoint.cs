@@ -1,12 +1,12 @@
 ﻿using Authorization.Policies;
 
-namespace Feature.Form.Submissions.UpdateNeedsFollowUpStatus;
+namespace Feature.Form.Submissions.UpdateStatus;
 
-public class Endpoint(IRepository<FormSubmission> repository) : Endpoint<Request, Results<Ok<FormSubmissionModel>, NotFound>>
+public class Endpoint(IRepository<FormSubmission> repository) : Endpoint<Request, Results<NoContent, NotFound>>
 {
     public override void Configure()
     {
-        Post("/api/election-rounds/{electionRoundId}/form-submissions/{id}:followUpStatus");
+        Put("/api/election-rounds/{electionRoundId}/form-submissions/{id}:status");
         DontAutoTag();
         Options(x => x.WithTags("form-submissions"));
         Summary(s =>
@@ -17,7 +17,7 @@ public class Endpoint(IRepository<FormSubmission> repository) : Endpoint<Request
         Policies(PolicyNames.NgoAdminsOnly);
     }
 
-    public override async Task<Results<Ok<FormSubmissionModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<Results<NoContent, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
         var specification = new GetFormSubmissionSpecification(req.ElectionRoundId, req.NgoId, req.Id);
         var formSubmission = await repository.FirstOrDefaultAsync(specification, ct);
@@ -27,9 +27,9 @@ public class Endpoint(IRepository<FormSubmission> repository) : Endpoint<Request
             return TypedResults.NotFound();
         }
 
-        formSubmission.UpdateNeedsFollowUpStatus(req.NeedsFollowUp);
+        formSubmission.UpdateFollowUpStatus(req.FollowUpStatus);
 
         await repository.UpdateAsync(formSubmission, ct);
-        return TypedResults.Ok(FormSubmissionModel.FromEntity(formSubmission));
+        return TypedResults.NoContent();
     }
 }

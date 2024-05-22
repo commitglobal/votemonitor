@@ -19,7 +19,7 @@ export const formSubmissionsByEntryDefaultColumns: VisibilityState = {
   numberOfFlaggedAnswers: true,
   notesCount: false,
   mediaFilesCount: false,
-  status: true,
+  followUpStatus: true,
 };
 
 export const formSubmissionsByObserverDefaultColumns: VisibilityState = {
@@ -29,7 +29,7 @@ export const formSubmissionsByObserverDefaultColumns: VisibilityState = {
   numberOfLocations: true,
   numberOfFormsSubmitted: true,
   numberOfFlaggedAnswers: true,
-  status: true,
+  followUpStatus: true,
 };
 
 export const formSubmissionsByFormDefaultColumns: VisibilityState = {
@@ -65,7 +65,7 @@ const byEntryColumnVisibilityOptions: ColumnOption[] = [
   { id: 'numberOfFlaggedAnswers', label: 'Flagged answers', enableHiding: true },
   { id: 'notesCount', label: 'Question notes', enableHiding: true },
   { id: 'mediaFilesCount', label: 'Media files', enableHiding: true },
-  { id: 'status', label: 'Status', enableHiding: true },
+  { id: 'followUpStatus', label: 'Follow-up status', enableHiding: true },
 ];
 
 const byObserverColumnVisibilityOptions: ColumnOption[] = [
@@ -75,7 +75,7 @@ const byObserverColumnVisibilityOptions: ColumnOption[] = [
   { id: 'numberOfLocations', label: 'Locations', enableHiding: false },
   { id: 'numberOfFormsSubmitted', label: 'Forms', enableHiding: false },
   { id: 'numberOfFlaggedAnswers', label: 'Flagged answers', enableHiding: true },
-  { id: 'status', label: 'Status', enableHiding: true },
+  { id: 'followUpStatus', label: 'Follow-up status', enableHiding: true },
 ];
 
 const byFormColumnVisibilityOptions: ColumnOption[] = [
@@ -94,7 +94,6 @@ export const columnVisibilityOptions: Record<FilterBy, ColumnOption[]> = {
 };
 
 export const quickReportsColumnVisibilityOptions: ColumnOption[] = [
-  { id: 'id', label: 'Entry ID', enableHiding: true },
   { id: 'timestamp', label: 'Time submitted', enableHiding: true },
   { id: 'title', label: 'Issue title', enableHiding: true },
   { id: 'description', label: 'Description', enableHiding: true },
@@ -106,6 +105,7 @@ export const quickReportsColumnVisibilityOptions: ColumnOption[] = [
   { id: 'level4', label: 'Location - L4', enableHiding: true },
   { id: 'level5', label: 'Location - L5', enableHiding: true },
   { id: 'observerName', label: 'Observer', enableHiding: true },
+  { id: 'followUpStatus', label: 'Follow-up status', enableHiding: true },
 ];
 
 export const quickReportsDefaultColumns: VisibilityState = {
@@ -122,4 +122,5 @@ export const quickReportsDefaultColumns: VisibilityState = {
   level5: false,
   observerName: true,
   email: false,
+  followUpStatus: true
 };

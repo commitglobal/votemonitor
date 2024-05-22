@@ -14,6 +14,7 @@ export interface DoughnutProps {
 const DoughnutChart = forwardRef<ChartJSOrUndefined<"doughnut">, DoughnutProps>((props, chartRef) => {
     const options: ChartOptions<"doughnut"> = {
         maintainAspectRatio: false,
+        devicePixelRatio: 1.5,
         plugins: {
             datalabels: {
                 color: '#FFFFFF',

@@ -23,7 +23,7 @@ export enum SortOrder {
 export type SortParameters = {
   sortColumnName: string;
   sortOrder: SortOrder;
-  nameFilter?: string;
+  searchText?: string;
 };
 
 export type PageResponse<T> = {
@@ -145,7 +145,7 @@ export type NumberAnswer = z.infer<typeof NumberAnswerSchema>;
 
 export const DateAnswerSchema = BaseAnswerSchema.extend({
   $answerType: z.literal(AnswerType.DateAnswerType),
-  date: z.string().optional(),
+  date: z.date().optional(),
 });
 export type DateAnswer = z.infer<typeof DateAnswerSchema>;
 

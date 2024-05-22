@@ -8,9 +8,9 @@ public sealed class ListObserversSpecification : Specification<ObserverAggregate
     {
         Query
             .Include(x => x.ApplicationUser)
-            .Search(x => x.ApplicationUser.FirstName, "%" + request.NameFilter + "%", !string.IsNullOrEmpty(request.NameFilter))
+            .Search(x => x.ApplicationUser.FirstName, "%" + request.SearchText + "%", !string.IsNullOrEmpty(request.SearchText))
 
-            .Search(x => x.ApplicationUser.LastName, "%" + request.NameFilter + "%", !string.IsNullOrEmpty(request.NameFilter))
+            .Search(x => x.ApplicationUser.LastName, "%" + request.SearchText + "%", !string.IsNullOrEmpty(request.SearchText))
             .Where(x => x.ApplicationUser.Status == request.Status, request.Status != null)
             .ApplyOrdering(request)
             .Paginate(request);

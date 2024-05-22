@@ -25,6 +25,7 @@ export default function PreviewQuestionFactory({
   onSubmitAnswer,
   onBackButtonClicked
 }: PreviewQuestionFactoryProps) {
+
   return question.$questionType === QuestionType.TextQuestionType ? (
     <PreviewTextQuestion
       languageCode={languageCode}

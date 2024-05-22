@@ -8,9 +8,10 @@ import { format } from 'date-fns';
 
 import { MediaFilesCell } from '../components/MediaFilesCell/MediaFilesCell';
 
+import { DateTimeFormat } from '@/common/formats';
 import type { ColumnDef } from '@tanstack/react-table';
-import type { FormSubmissionByEntry, FormSubmissionByForm, FormSubmissionByObserver } from '../models/form-submission';
-import type { QuickReport } from '../models/quick-report';
+import { SubmissionFollowUpStatus, type FormSubmissionByEntry, type FormSubmissionByForm, type FormSubmissionByObserver } from '../models/form-submission';
+import { QuickReportFollowUpStatus, type QuickReport } from '../models/quick-report';
 import type { QuestionExtraData } from '../types';
 
 export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry>[] = [
@@ -19,7 +20,7 @@ export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry>[
     accessorKey: 'timeSubmitted',
     enableSorting: true,
     enableGlobalFilter: true,
-    cell: ({ row }) => <div>{format(row.original.timeSubmitted, 'u-MM-dd KK:mm')}</div>,
+    cell: ({ row }) => <div>{format(row.original.timeSubmitted, DateTimeFormat)}</div>,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Form code' column={column} />,
@@ -117,22 +118,22 @@ export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry>[
     enableGlobalFilter: true,
   },
   {
-    header: ({ column }) => <DataTableColumnHeader title='Status' column={column} />,
-    accessorKey: 'status',
+    header: ({ column }) => <DataTableColumnHeader title='Follow-up status' column={column} />,
+    accessorKey: 'followUpStatus',
     enableSorting: false,
     enableGlobalFilter: true,
     cell: ({ row }) => (
       <Badge
         className={cn({
-          'text-slate-700 bg-slate-200': row.original?.needsFollowUp === undefined,
-          'text-red-600 bg-red-200': row.original?.needsFollowUp === true,
-          'text-yellow-600 bg-yellow-200': row.original?.needsFollowUp === false,
+          'text-slate-700 bg-slate-200': row.original.followUpStatus === SubmissionFollowUpStatus.NotApplicable,
+          'text-red-600 bg-red-200': row.original.followUpStatus === SubmissionFollowUpStatus.NeedsFollowUp,
+          'text-green-600 bg-green-200': row.original.followUpStatus === SubmissionFollowUpStatus.Resolved,
         })}>
-        {row.original?.needsFollowUp === undefined
-          ? 'N/A'
-          : row.original?.needsFollowUp
-          ? 'Needs followup'
-          : 'Followed up'}
+        {row.original.followUpStatus === SubmissionFollowUpStatus.NotApplicable
+          ? 'Not Applicable'
+          : row.original.followUpStatus === SubmissionFollowUpStatus.NeedsFollowUp
+            ? 'Needs follow-up'
+            : 'Resolved'}
       </Badge>
     ),
   },
@@ -197,15 +198,15 @@ export const formSubmissionsByObserverColumnDefs: ColumnDef<FormSubmissionByObse
     enableGlobalFilter: true,
   },
   {
-    header: ({ column }) => <DataTableColumnHeader title='Status' column={column} />,
-    accessorKey: 'status',
+    header: ({ column }) => <DataTableColumnHeader title='Follow-up status' column={column} />,
+    accessorKey: 'followUpStatus',
     enableSorting: false,
     enableGlobalFilter: true,
     cell: ({ row }) =>
-      row.original?.needsFollowUp === true ? (
+      row.original.followUpStatus === SubmissionFollowUpStatus.NeedsFollowUp ? (
         <Badge
           className={cn({
-            'text-red-600 bg-red-200': row.original?.needsFollowUp === true,
+            'text-red-600 bg-red-200': row.original.followUpStatus === SubmissionFollowUpStatus.NeedsFollowUp,
           })}>
           Needs followup
         </Badge>
@@ -222,8 +223,8 @@ export const formSubmissionsByObserverColumnDefs: ColumnDef<FormSubmissionByObse
         <Link
           search
           className='hover:bg-purple-100 inline-flex h-6 w-6 rounded-full items-center justify-center'
-          params={{ monitoringObserverId: row.original.monitoringObserverId}}
-          to='/monitoring-observers/view/$monitoringObserverId'>
+          params={{ monitoringObserverId: row.original.monitoringObserverId, tab: 'details' }}
+          to='/monitoring-observers/view/$monitoringObserverId/$tab'>
           <ChevronRightIcon className='w-4 text-purple-600' />
         </Link>
       </div>
@@ -291,7 +292,7 @@ export const questionExtraInfoColumnDefs: ColumnDef<QuestionExtraData>[] = [
     accessorKey: 'timeSubmitted',
     enableSorting: true,
     enableGlobalFilter: true,
-    cell: ({ row }) => <div>{format(row.original.timeSubmitted, 'u-MM-dd KK:mm')}</div>,
+    cell: ({ row }) => <div>{format(row.original.timeSubmitted, DateTimeFormat)}</div>,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Note' column={column} />,
@@ -312,16 +313,11 @@ export const questionExtraInfoColumnDefs: ColumnDef<QuestionExtraData>[] = [
 
 export const quickReportsColumnDefs: ColumnDef<QuickReport>[] = [
   {
-    header: ({ column }) => <DataTableColumnHeader title='Entry ID' column={column} />,
-    accessorKey: 'id',
-    enableSorting: true,
-    enableGlobalFilter: true,
-  },
-  {
     header: ({ column }) => <DataTableColumnHeader title='Time submitted' column={column} />,
     accessorKey: 'timestamp',
     enableSorting: true,
     enableGlobalFilter: true,
+    cell: ({ row }) => <div>{format(row.original.timestamp, DateTimeFormat)}</div>,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Issue title' column={column} />,
@@ -400,6 +396,27 @@ export const quickReportsColumnDefs: ColumnDef<QuickReport>[] = [
     enableSorting: true,
     enableGlobalFilter: true,
   },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Follow-up status' column={column} />,
+    accessorKey: 'followUpStatus',
+    enableSorting: true,
+    enableGlobalFilter: true,
+    cell: ({ row }) => (
+      <Badge
+        className={cn({
+          'text-slate-700 bg-slate-200': row.original.followUpStatus === QuickReportFollowUpStatus.NotApplicable,
+          'text-red-600 bg-red-200': row.original.followUpStatus === QuickReportFollowUpStatus.NeedsFollowUp,
+          'text-green-600 bg-green-200': row.original.followUpStatus === QuickReportFollowUpStatus.Resolved,
+        })}>
+        {row.original.followUpStatus === QuickReportFollowUpStatus.NotApplicable
+          ? 'Not Applicable'
+          : row.original.followUpStatus === QuickReportFollowUpStatus.NeedsFollowUp
+            ? 'Needs follow-up'
+            : 'Resolved'}
+      </Badge>
+    ),
+  },
+
   {
     header: '',
     accessorKey: 'action',

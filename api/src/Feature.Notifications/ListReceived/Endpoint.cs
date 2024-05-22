@@ -1,10 +1,10 @@
-﻿using System.Data;
-using Authorization.Policies;
+﻿using Authorization.Policies;
 using Dapper;
+using Vote.Monitor.Domain.ConnectionFactory;
 
 namespace Feature.Notifications.ListReceived;
 
-public class Endpoint(IDbConnection dbConnection) :
+public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) :
         Endpoint<Request, Ok<Response>>
 {
     public override void Configure()
@@ -54,7 +54,7 @@ public class Endpoint(IDbConnection dbConnection) :
             observerId = req.ObserverId,
         };
 
-        var multi = await dbConnection.QueryMultipleAsync(sql, queryArgs);
+        var multi = await dbConnectionFactory.GetOpenConnection().QueryMultipleAsync(sql, queryArgs);
         var ngoName = multi.Read<string>().SingleOrDefault();
         var notifications = multi.Read<ReceivedNotificationModel>().ToList();
 

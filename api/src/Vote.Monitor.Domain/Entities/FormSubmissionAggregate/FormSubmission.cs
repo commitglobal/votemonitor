@@ -17,7 +17,7 @@ public class FormSubmission : AuditableBaseEntity, IAggregateRoot
     public int NumberOfQuestionsAnswered { get; private set; }
     public int NumberOfFlaggedAnswers { get; private set; }
     public IReadOnlyList<BaseAnswer> Answers { get; private set; } = new List<BaseAnswer>().AsReadOnly();
-    public bool? NeedsFollowUp { get; private set; }
+    public SubmissionFollowUpStatus FollowUpStatus { get; private set; }
 
     private FormSubmission(
         ElectionRound electionRound,
@@ -39,6 +39,7 @@ public class FormSubmission : AuditableBaseEntity, IAggregateRoot
         Answers = answers.ToList().AsReadOnly();
         NumberOfQuestionsAnswered = numberOfQuestionsAnswered;
         NumberOfFlaggedAnswers = numberOfFlaggedAnswers;
+        FollowUpStatus = SubmissionFollowUpStatus.NotApplicable;
     }
 
     internal static FormSubmission Create(
@@ -65,9 +66,9 @@ public class FormSubmission : AuditableBaseEntity, IAggregateRoot
         NumberOfQuestionsAnswered = 0;
     }
 
-    public void UpdateNeedsFollowUpStatus(bool needsFollowUp)
+    public void UpdateFollowUpStatus(SubmissionFollowUpStatus followUpStatus)
     {
-        NeedsFollowUp = needsFollowUp;
+        FollowUpStatus = followUpStatus;
     }
 
 #pragma warning disable CS8618 // Required by Entity Framework

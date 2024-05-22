@@ -39,7 +39,7 @@ export function FormsFiltersByEntry(): FunctionComponent {
         <SelectContent>
           <SelectGroup>
             {Object.values(FormType).map((value) => (
-              <SelectItem value={value}>{value}</SelectItem>
+              <SelectItem value={value} key={value}>{value}</SelectItem>
             ))}
           </SelectGroup>
         </SelectContent>
@@ -64,8 +64,8 @@ export function FormsFiltersByEntry(): FunctionComponent {
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
-            <SelectItem value='true'>Yes</SelectItem>
-            <SelectItem value='false'>No</SelectItem>
+            <SelectItem key={'true'} value='true'>Yes</SelectItem>
+            <SelectItem key={'false'} value='false'>No</SelectItem>
           </SelectGroup>
         </SelectContent>
       </Select>

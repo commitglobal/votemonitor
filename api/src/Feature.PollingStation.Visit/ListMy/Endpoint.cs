@@ -1,7 +1,7 @@
-﻿using System.Data;
-using Authorization.Policies.Requirements;
+﻿using Authorization.Policies.Requirements;
 using Dapper;
 using Microsoft.AspNetCore.Authorization;
+using Vote.Monitor.Domain.ConnectionFactory;
 using Vote.Monitor.Domain.Constants;
 using Vote.Monitor.Domain.Entities.AttachmentAggregate;
 using Vote.Monitor.Domain.Entities.NoteAggregate;
@@ -10,7 +10,7 @@ using Vote.Monitor.Domain.Entities.QuickReportAggregate;
 
 namespace Feature.PollingStation.Visit.ListMy;
 
-public class Endpoint(IAuthorizationService authorizationService, IDbConnection dbConnection) : Endpoint<Request, Results<Ok<Response>, NotFound>>
+public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<Request, Results<Ok<Response>, NotFound>>
 {
     public override void Configure()
     {
@@ -96,7 +96,7 @@ public class Endpoint(IAuthorizationService authorizationService, IDbConnection 
 
         var queryArgs = new { electionRoundId = req.ElectionRoundId, observerId = req.ObserverId };
 
-        var visits = await dbConnection.QueryAsync<VisitModel>(sql, queryArgs);
+        var visits = await dbConnectionFactory.GetOpenConnection().QueryAsync<VisitModel>(sql, queryArgs);
 
         return TypedResults.Ok(new Response { Visits = visits.ToList() });
     }

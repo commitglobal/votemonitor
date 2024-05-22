@@ -49,7 +49,7 @@ export default function EditForm() {
     description: z.string().optional(),
     defaultLanguage: z.string().nonempty(),
     formType: z
-      .enum([FormType.Opening, FormType.Voting, FormType.ClosingAndCounting])
+      .enum([FormType.Opening, FormType.Voting, FormType.ClosingAndCounting, FormType.Other])
       .catch(FormType.Opening),
   });
 
@@ -196,6 +196,9 @@ export default function EditForm() {
                                 </SelectItem>
                                 <SelectItem value={FormType.ClosingAndCounting}>
                                   {mapFormType(FormType.ClosingAndCounting)}
+                                </SelectItem>
+                                <SelectItem value={FormType.Other}>
+                                  {mapFormType(FormType.Other)}
                                 </SelectItem>
                               </SelectContent>
                             </Select>

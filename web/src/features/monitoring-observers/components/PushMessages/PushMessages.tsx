@@ -11,6 +11,7 @@ import { ChevronRightIcon } from '@heroicons/react/24/outline';
 import { usePushMessages } from '../../hooks/push-messages-queries';
 import { format } from 'date-fns';
 import { PushMessageModel } from '../../models/push-message';
+import { DateTimeFormat } from '@/common/formats';
 
 function PushMessages() {
   const pushMessagesColDefs: ColumnDef<PushMessageModel>[] = [
@@ -19,7 +20,7 @@ function PushMessages() {
       accessorKey: 'sentAt',
       enableSorting: false,
       enableGlobalFilter: false,
-      cell: ({ row }) => <div>{format(row.original.sentAt, 'u-MM-dd KK:mm')}</div>
+      cell: ({ row }) => <div>{format(row.original.sentAt, DateTimeFormat)}</div>
     },
     {
       header: ({ column }) => <DataTableColumnHeader title='Sender name' column={column} />,

@@ -45,7 +45,7 @@ function PreviewForm({ languageCode, localQuestions, activeQuestionId, setActive
   function onSubmitAnswer(answer: BaseAnswer) {
     setResponseData({
       ...responseData,
-      questionId: answer,
+      [answer.questionId]: answer,
     });
 
     const nextQuestionId = getNextQuestionId(answer.questionId);

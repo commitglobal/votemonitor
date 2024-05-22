@@ -12,6 +12,11 @@ export interface Attachment {
   presignedUrl: string;
   urlValidityInSeconds: number;
 }
+export enum QuickReportFollowUpStatus {
+  NotApplicable = 'NotApplicable',
+  NeedsFollowUp = 'NeedsFollowUp',
+  Resolved = 'Resolved',
+}
 
 export interface QuickReport {
   id: string;
@@ -35,4 +40,5 @@ export interface QuickReport {
   title: string;
   monitoringObserverId: string;
   attachments: Attachment[];
+  followUpStatus: QuickReportFollowUpStatus;
 }

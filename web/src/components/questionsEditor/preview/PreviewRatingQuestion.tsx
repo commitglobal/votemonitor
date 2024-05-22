@@ -12,7 +12,7 @@ export interface PreviewRatingQuestionProps {
 
 function PreviewRatingQuestion({ languageCode, question }: PreviewRatingQuestionProps): FunctionComponent {
   return (
-    <Field className='flex flex-col'>
+    <Field>
       <Label>
         {question.code} - {question.text[languageCode]}
       </Label>

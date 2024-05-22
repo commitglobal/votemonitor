@@ -144,7 +144,7 @@
 //     accessorKey: 'timeSubmitted',
 //     enableSorting: true,
 //     enableGlobalFilter: true,
-//     cell: ({ row }) => <div>{format(row.original.timeSubmitted, 'u-MM-dd KK:mm')}</div>
+//     cell: ({ row }) => <div>{format(row.original.timeSubmitted, DateTimeFormat)}</div>
 //   },
 //   {
 //     header: ({ column }) => <DataTableColumnHeader title='Note' column={column} />,

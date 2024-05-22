@@ -7,7 +7,7 @@ public class Request : BaseSortPaginatedRequest
     public Guid NgoId { get; set; }
 
     [QueryParam]
-    public string? NameFilter { get; set; }
+    public string? SearchText { get; set; }
 
     [QueryParam]
     [JsonConverter(typeof(SmartEnumNameConverter<UserStatus, string>))]

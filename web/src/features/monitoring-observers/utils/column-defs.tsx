@@ -1,9 +1,7 @@
-import { DataTableParameters, PageResponse } from '@/common/types';
-import { ColumnDef } from '@tanstack/react-table';
-import { MonitoringObserver } from '../models/monitoring-observer';
 import TableTagList from '@/components/table-tag-list/TableTagList';
 import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
 import { Badge } from '@/components/ui/badge';
+import { ColumnDef } from '@tanstack/react-table';
 import { TargetedMonitoringObserver } from '../models/targeted-monitoring-observer';
 
 export const targetedMonitoringObserverColDefs: ColumnDef<TargetedMonitoringObserver>[] = [

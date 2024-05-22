@@ -24,7 +24,7 @@ public class ListEndpointTests : IClassFixture<HttpServerFixture<NgoDataSeeder>>
         // Arrange
         var listRequest = new ListRequest
         {
-            NameFilter = "",
+            SearchText = "",
             Status = null,
             PageNumber = 1,
             PageSize = 100,
@@ -51,7 +51,7 @@ public class ListEndpointTests : IClassFixture<HttpServerFixture<NgoDataSeeder>>
         // Arrange
         var listRequest = new ListRequest
         {
-            NameFilter = "",
+            SearchText = "",
             Status = null,
             PageNumber = 1,
             PageSize = 10,
@@ -79,7 +79,7 @@ public class ListEndpointTests : IClassFixture<HttpServerFixture<NgoDataSeeder>>
         // Arrange
         var listRequest = new ListRequest
         {
-            NameFilter = "",
+            SearchText = "",
             Status = null,
             PageNumber = 3,
             PageSize = 16,
@@ -105,7 +105,7 @@ public class ListEndpointTests : IClassFixture<HttpServerFixture<NgoDataSeeder>>
         // Arrange
         var listRequest = new ListRequest
         {
-            NameFilter = "18",
+            SearchText = "18",
             Status = null,
             PageNumber = 1,
             PageSize = 10,
@@ -131,7 +131,7 @@ public class ListEndpointTests : IClassFixture<HttpServerFixture<NgoDataSeeder>>
         // Arrange
         var listRequest = new ListRequest
         {
-            NameFilter = "Act",
+            SearchText = "Act",
             Status = null,
             PageNumber = 1,
             PageSize = 10,
@@ -158,7 +158,7 @@ public class ListEndpointTests : IClassFixture<HttpServerFixture<NgoDataSeeder>>
         // Arrange
         var listRequest = new ListRequest
         {
-            NameFilter = "Act",
+            SearchText = "Act",
             Status = null,
             PageNumber = 1,
             PageSize = 10,
@@ -184,7 +184,7 @@ public class ListEndpointTests : IClassFixture<HttpServerFixture<NgoDataSeeder>>
         // Arrange
         var listRequest = new ListRequest
         {
-            NameFilter = "Act",
+            SearchText = "Act",
             Status = null,
             PageNumber = 1,
             PageSize = 10,
@@ -212,7 +212,7 @@ public class ListEndpointTests : IClassFixture<HttpServerFixture<NgoDataSeeder>>
         // Arrange
         var listRequest = new ListRequest
         {
-            NameFilter = "1",
+            SearchText = "1",
             Status = null,
             PageNumber = 1,
             PageSize = 10,
@@ -244,7 +244,7 @@ public class ListEndpointTests : IClassFixture<HttpServerFixture<NgoDataSeeder>>
         // Arrange
         var listRequest = new ListRequest
         {
-            NameFilter = "1",
+            SearchText = "1",
             Status = null,
             PageNumber = 1,
             PageSize = 10,
@@ -279,7 +279,7 @@ public class ListEndpointTests : IClassFixture<HttpServerFixture<NgoDataSeeder>>
 
         var listRequest = new ListRequest
         {
-            NameFilter = null,
+            SearchText = null,
             Status = NgoStatus.Activated,
             PageNumber = 1,
             PageSize = 10,
@@ -312,7 +312,7 @@ public class ListEndpointTests : IClassFixture<HttpServerFixture<NgoDataSeeder>>
         // Arrange
         var listRequest = new ListRequest
         {
-            NameFilter = null,
+            SearchText = null,
             Status = NgoStatus.Activated,
             PageNumber = 1,
             PageSize = 10,

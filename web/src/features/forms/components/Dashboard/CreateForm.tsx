@@ -27,7 +27,7 @@ function CreateForm() {
         name: z.string().nonempty(),
         description: z.string().optional(),
         defaultLanguage: z.string().nonempty(),
-        formType: z.enum([FormType.Opening, FormType.Voting, FormType.ClosingAndCounting]).catch(FormType.Opening)
+        formType: z.enum([FormType.Opening, FormType.Voting, FormType.ClosingAndCounting, FormType.Other]).catch(FormType.Opening)
     });
 
     const form = useForm<z.infer<typeof newFormFormSchema>>({
@@ -106,6 +106,7 @@ function CreateForm() {
                                             <SelectItem value={FormType.Opening}>{mapFormType(FormType.Opening)}</SelectItem>
                                             <SelectItem value={FormType.Voting}>{mapFormType(FormType.Voting)}</SelectItem>
                                             <SelectItem value={FormType.ClosingAndCounting}>{mapFormType(FormType.ClosingAndCounting)}</SelectItem>
+                                            <SelectItem value={FormType.Other}>{mapFormType(FormType.Other)}</SelectItem>
                                         </SelectContent>
                                     </Select>
                                 </Field>

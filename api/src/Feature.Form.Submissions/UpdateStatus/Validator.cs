@@ -1,4 +1,4 @@
-﻿namespace Feature.Form.Submissions.UpdateNeedsFollowUpStatus;
+﻿namespace Feature.Form.Submissions.UpdateStatus;
 
 public class Validator : Validator<Request>
 {
