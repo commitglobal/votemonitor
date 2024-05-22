@@ -44,7 +44,7 @@ export function MonitoringObserverFormsTable({
 
   const navigateToMonitoringObserver = useCallback(
     (monitoringObserverId: string) => {
-      void navigate({ to: '/monitoring-observers/view/$monitoringObserverId', params: { monitoringObserverId } });
+      void navigate({ to: '/monitoring-observers/view/$monitoringObserverId/$tab', params: { monitoringObserverId, tab: 'details' } });
     },
     [navigate]
   );
