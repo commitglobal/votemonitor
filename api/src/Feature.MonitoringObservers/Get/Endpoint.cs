@@ -1,12 +1,12 @@
-﻿using System.Data;
-using Authorization.Policies;
+﻿using Authorization.Policies;
 using Authorization.Policies.Requirements;
 using Dapper;
 using Microsoft.AspNetCore.Authorization;
+using Vote.Monitor.Domain.ConnectionFactory;
 
 namespace Feature.MonitoringObservers.Get;
 
-public class Endpoint(IAuthorizationService authorizationService, IDbConnection dbConnection) : Endpoint<Request, Results<Ok<MonitoringObserverModel>, NotFound>>
+public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<Request, Results<Ok<MonitoringObserverModel>, NotFound>>
 {
     public override void Configure()
     {
@@ -31,23 +31,98 @@ public class Endpoint(IAuthorizationService authorizationService, IDbConnection 
         }
 
         var sql = @"
+            WITH
+                MONITORINGOBSERVER AS (
+                    SELECT
+                        MO.""Id"",
+                        U.""FirstName"",
+                        U.""LastName"",
+                        U.""PhoneNumber"",
+                        U.""Email"",
+                        MO.""Tags"",
+                        MO.""Status""
+                    FROM
+                        ""MonitoringObservers"" MO
+                        INNER JOIN ""MonitoringNgos"" MN ON MN.""Id"" = MO.""MonitoringNgoId""
+                        INNER JOIN ""Observers"" O ON O.""Id"" = MO.""ObserverId""
+                        INNER JOIN ""AspNetUsers"" U ON U.""Id"" = O.""ApplicationUserId""
+                    WHERE
+                        MO.""Id"" = @id
+                        AND MO.""ElectionRoundId"" = @electionRoundId
+                ),
+                LATESTTIMESTAMPS AS (
+                    SELECT
+                        MAX(COALESCE(PSI.""LastModifiedOn"", PSI.""CreatedOn"")) AS ""LatestActivityAt""
+                    FROM
+                        ""PollingStationInformation"" PSI
+                    WHERE
+                        PSI.""ElectionRoundId"" = @electionRoundId
+                        AND PSI.""MonitoringObserverId"" = (
+                            SELECT
+                                ""Id""
+                            FROM
+                                MONITORINGOBSERVER
+                        )
+                    UNION ALL
+                    SELECT
+                        MAX(COALESCE(N.""LastModifiedOn"", N.""CreatedOn"")) AS ""LatestActivityAt""
+                    FROM
+                        ""Notes"" N
+                    WHERE
+                        N.""ElectionRoundId"" = @electionRoundId
+                        AND N.""MonitoringObserverId"" = (
+                            SELECT
+                                ""Id""
+                            FROM
+                                MONITORINGOBSERVER
+                        )
+                    UNION ALL
+                    SELECT
+                        MAX(COALESCE(A.""LastModifiedOn"", A.""CreatedOn"")) AS ""LatestActivityAt""
+                    FROM
+                        ""Attachments"" A
+                    WHERE
+                        A.""ElectionRoundId"" = @electionRoundId
+                        AND A.""MonitoringObserverId"" = (
+                            SELECT
+                                ""Id""
+                            FROM
+                                MONITORINGOBSERVER
+                        )
+                    UNION ALL
+                    SELECT
+                        MAX(COALESCE(QR.""LastModifiedOn"", QR.""CreatedOn"")) AS ""LatestActivityAt""
+                    FROM
+                        ""QuickReports"" QR
+                    WHERE
+                        QR.""ElectionRoundId"" = @electionRoundId
+                        AND QR.""MonitoringObserverId"" = (
+                            SELECT
+                                ""Id""
+                            FROM
+                                MONITORINGOBSERVER
+                        )
+                )
             SELECT
                 MO.""Id"",
-                U.""FirstName"",
-                U.""LastName"",
-                U.""PhoneNumber"",
-                U.""Email"",
+                MO.""FirstName"",
+                MO.""LastName"",
+                MO.""PhoneNumber"",
+                MO.""Email"",
                 MO.""Tags"",
-                MO.""Status""
+                MO.""Status"",
+                MAX(LT.""LatestActivityAt"") AS ""LatestActivityAt""
             FROM
-                ""MonitoringObservers"" MO
-                INNER JOIN ""MonitoringNgos"" MN ON MN.""Id"" = MO.""MonitoringNgoId""
-                INNER JOIN ""Observers"" O ON O.""Id"" = MO.""ObserverId""
-                INNER JOIN ""AspNetUsers"" U ON U.""Id"" = O.""ApplicationUserId""
-            WHERE
-                MN.""ElectionRoundId"" = @electionRoundId
-                AND MN.""NgoId"" = @ngoId
-                AND MO.""Id"" = @id";
+                MONITORINGOBSERVER MO,
+                LATESTTIMESTAMPS LT
+            GROUP BY
+                MO.""Id"",
+                MO.""FirstName"",
+                MO.""LastName"",
+                MO.""PhoneNumber"",
+                MO.""Email"",
+                MO.""Tags"",
+                MO.""Status"";";
 
         var queryArgs = new
         {
@@ -56,7 +131,7 @@ public class Endpoint(IAuthorizationService authorizationService, IDbConnection 
             id = req.Id
         };
 
-        var monitoringObserver = await dbConnection.QuerySingleAsync<MonitoringObserverModel>(sql, queryArgs);
+        var monitoringObserver = await dbConnectionFactory.GetOpenConnection().QuerySingleOrDefaultAsync<MonitoringObserverModel>(sql, queryArgs);
         if (monitoringObserver is null)
         {
             return TypedResults.NotFound();

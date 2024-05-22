@@ -1,7 +1,7 @@
-﻿using System.Data;
-using Authorization.Policies;
+﻿using Authorization.Policies;
 using Dapper;
 using Feature.Notifications.Specifications;
+using Vote.Monitor.Domain.ConnectionFactory;
 using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 using Vote.Monitor.Module.Notifications.Contracts;
 
@@ -9,7 +9,7 @@ namespace Feature.Notifications.Send;
 
 public class Endpoint(IRepository<NotificationAggregate> repository,
     IReadRepository<MonitoringObserver> monitoringObserverRepository,
-    IDbConnection dbConnection,
+    INpgsqlConnectionFactory dbConnectionFactory,
     IPushNotificationService notificationService) :
         Endpoint<Request, Results<Ok<Response>, ProblemHttpResult>>
 {
@@ -133,7 +133,7 @@ public class Endpoint(IRepository<NotificationAggregate> repository,
             level5 = req.Level5Filter
         };
 
-        var result = await dbConnection.QueryAsync<NotificationRecipient>(sql, queryArgs);
+        var result = await dbConnectionFactory.GetOpenConnection().QueryAsync<NotificationRecipient>(sql, queryArgs);
         var recipients = result.ToList();
 
         var monitoringObserverIds = recipients.Select(x => x.Id).ToList();

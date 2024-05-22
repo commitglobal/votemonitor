@@ -9,7 +9,7 @@ import { useFormSubmissionsByEntry } from '@/features/responses/hooks/form-submi
 import { formSubmissionsByEntryColumnDefs } from '@/features/responses/utils/column-defs';
 import type { MonitoringObserverDetailsRouteSearch } from '../../models/monitoring-observer';
 
-const routeApi = getRouteApi('/monitoring-observers/view/$monitoringObserverId');
+const routeApi = getRouteApi('/monitoring-observers/view/$monitoringObserverId/$tab');
 
 type FormsTableByEntryProps = {
   columnsVisibility: VisibilityState;
@@ -44,7 +44,7 @@ export function MonitoringObserverFormsTable({
 
   const navigateToMonitoringObserver = useCallback(
     (monitoringObserverId: string) => {
-      void navigate({ to: '/monitoring-observers/view/$monitoringObserverId', params: { monitoringObserverId } });
+      void navigate({ to: '/monitoring-observers/view/$monitoringObserverId/$tab', params: { monitoringObserverId, tab: 'details' } });
     },
     [navigate]
   );

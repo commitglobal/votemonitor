@@ -4,12 +4,20 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { PencilIcon } from '@heroicons/react/24/outline';
-import { useLoaderData, useNavigate } from '@tanstack/react-router';
+import { useNavigate } from '@tanstack/react-router';
 
 import type { FunctionComponent } from '@/common/types';
-import type { MonitoringObserver } from '../../models/monitoring-observer';
+import { Route } from '@/routes/monitoring-observers/view/$monitoringObserverId.$tab';
+import { useSuspenseQuery } from '@tanstack/react-query';
+import { monitoringObserverDetailsQueryOptions } from '@/common/queryOptions';
+import { DateTimeFormat } from '@/common/formats';
+import { format } from 'date-fns';
+
 export default function MonitoringObserverDetailsView(): FunctionComponent {
-  const monitoringObserver: MonitoringObserver = useLoaderData({ strict: false });
+  const { monitoringObserverId } = Route.useParams();
+  const monitoringObserverQuery = useSuspenseQuery(monitoringObserverDetailsQueryOptions(monitoringObserverId));
+  const monitoringObserver = monitoringObserverQuery.data;
+
   const navigate = useNavigate();
   const navigateToEdit = (): void => {
     void navigate({
@@ -51,7 +59,7 @@ export default function MonitoringObserverDetailsView(): FunctionComponent {
         </div>
         <div className='flex flex-col gap-1'>
           <p className='text-gray-700 font-bold'>Last activity</p>
-          <p className='text-gray-900 font-normal'>Oct 16, 2023, 4:32:53 AM</p>
+          <p className='text-gray-900 font-normal'> {monitoringObserver.latestActivityAt ? format(monitoringObserver.latestActivityAt, DateTimeFormat) : '-'}</p>
         </div>
         <div className='flex flex-col gap-1'>
           <p className='text-gray-700 font-bold'>Status</p>

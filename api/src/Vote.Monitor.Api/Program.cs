@@ -33,6 +33,7 @@ using Vote.Monitor.Module.Notifications;
 using Ardalis.SmartEnum.Dapper;
 using Dapper;
 using Feature.ImportErrors;
+using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -169,6 +170,8 @@ app.UseFastEndpoints(x =>
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<ExportedDataStatus, string>());
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<QuickReportLocationType, string>());
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<DisplayLogicCondition, string>());
+    x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<SubmissionFollowUpStatus, string>());
+    x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<QuickReportFollowUpStatus, string>());
 
     x.Serializer.Options.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
 });
@@ -188,7 +191,8 @@ SqlMapper.AddTypeHandler(typeof(FormType), new SmartEnumByValueTypeHandler<FormT
 SqlMapper.AddTypeHandler(typeof(ExportedDataStatus), new SmartEnumByValueTypeHandler<ExportedDataStatus, string>());
 SqlMapper.AddTypeHandler(typeof(QuickReportLocationType), new SmartEnumByValueTypeHandler<QuickReportLocationType, string>());
 SqlMapper.AddTypeHandler(typeof(DisplayLogicCondition), new SmartEnumByValueTypeHandler<DisplayLogicCondition, string>());
-// Register conversions for Dapper
+SqlMapper.AddTypeHandler(typeof(SubmissionFollowUpStatus), new SmartEnumByValueTypeHandler<SubmissionFollowUpStatus, string>());
+SqlMapper.AddTypeHandler(typeof(QuickReportFollowUpStatus), new SmartEnumByValueTypeHandler<QuickReportFollowUpStatus, string>());
 
 #endregion
 app.UseSwaggerGen(

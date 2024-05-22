@@ -19,5 +19,9 @@ public class Validator : Validator<Request>
 
         RuleForEach(x => x.Tags)
             .NotEmpty();
+
+        RuleFor(x => x.FirstName).NotEmpty().MaximumLength(256);
+        RuleFor(x => x.LastName).NotEmpty().MaximumLength(256);
+        RuleFor(x => x.PhoneNumber).NotEmpty().MaximumLength(256);
     }
 }

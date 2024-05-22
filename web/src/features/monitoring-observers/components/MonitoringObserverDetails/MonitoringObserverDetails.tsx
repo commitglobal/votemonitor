@@ -1,15 +1,19 @@
 import Layout from '@/components/layout/Layout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useLoaderData, useNavigate } from '@tanstack/react-router';
+import { useLoaderData } from '@tanstack/react-router';
 
 import MonitoringObserverDetailsView from '../MonitoringObserverDetailsView/MonitoringObserverDetailsView';
 import { MonitoringObserverForms } from '../MonitoringObserverForms/MonitoringObserverForms';
 
 import type { FunctionComponent } from '@/common/types';
-import type { MonitoringObserver } from '../../models/monitoring-observer';
+import { useSuspenseQuery } from '@tanstack/react-query';
+import { Route } from '@/routes/monitoring-observers/view/$monitoringObserverId.$tab';
+import { monitoringObserverDetailsQueryOptions } from '@/common/queryOptions';
 
 export default function MonitoringObserverDetails(): FunctionComponent {
-  const monitoringObserver: MonitoringObserver = useLoaderData({ strict: false });
+  const { monitoringObserverId } = Route.useParams();
+  const monitoringObserverQuery = useSuspenseQuery(monitoringObserverDetailsQueryOptions(monitoringObserverId));
+  const monitoringObserver = monitoringObserverQuery.data;
 
   return (
     <Layout title={`${monitoringObserver.firstName} ${monitoringObserver.lastName}`}>

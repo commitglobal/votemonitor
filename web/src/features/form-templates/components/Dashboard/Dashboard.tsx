@@ -263,6 +263,7 @@ export default function FormTemplatesDashboard(): ReactElement {
                         <SelectItem value='Opening'>Opening</SelectItem>
                         <SelectItem value='Voting'>Voting</SelectItem>
                         <SelectItem value='ClosingAndCounting'>Closing And Counting</SelectItem>
+                        <SelectItem value='Other'>Other</SelectItem>
                       </SelectGroup>
                     </SelectContent>
                   </Select>

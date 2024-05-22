@@ -1,11 +1,11 @@
-﻿using System.Data;
-using Authorization.Policies;
+﻿using Authorization.Policies;
 using Dapper;
 using Vote.Monitor.Core.Models;
+using Vote.Monitor.Domain.ConnectionFactory;
 using Vote.Monitor.Domain.Specifications;
 namespace Feature.Form.Submissions.ListByObserver;
 
-public class Endpoint(IDbConnection dbConnection) : Endpoint<Request, PagedResponse<ObserverSubmissionOverview>>
+public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<Request, PagedResponse<ObserverSubmissionOverview>>
 {
     public override void Configure()
     {
@@ -44,8 +44,7 @@ public class Endpoint(IDbConnection dbConnection) : Endpoint<Request, PagedRespo
             ""NumberOfFlaggedAnswers"",
             ""NumberOfLocations"",
             ""NumberOfFormsSubmitted"",
-            ""NeedsFollowUp""
-            
+            ""FollowUpStatus""
         FROM (
             SELECT
                 MO.""Id"" ""MonitoringObserverId"",
@@ -110,17 +109,14 @@ public class Endpoint(IDbConnection dbConnection) : Endpoint<Request, PagedRespo
                 ) AS ""NumberOfFormsSubmitted"",
                 (
                     SELECT
-                        EXISTS (
-                            SELECT
-                                1
-                            FROM
-                                ""FormSubmissions"" FS
-                            WHERE
-                                ""NeedsFollowUp"" = TRUE
-                                AND FS.""MonitoringObserverId"" = MO.""Id""
-                                AND FS.""ElectionRoundId"" = @electionRoundId
-                        )
-                ) ""NeedsFollowUp""
+                        1
+                    FROM
+                        ""FormSubmissions"" FS
+                    WHERE
+                        FS.""FollowUpStatus"" = 'NeedsFollowUp'
+                        AND FS.""MonitoringObserverId"" = MO.""Id""
+                        AND FS.""ElectionRoundId"" = @electionRoundId
+                ) AS ""FollowUpStatus""
             FROM
                 ""MonitoringObservers"" MO
                 INNER JOIN ""MonitoringNgos"" MN ON MN.""Id"" = MO.""MonitoringNgoId""
@@ -129,8 +125,8 @@ public class Endpoint(IDbConnection dbConnection) : Endpoint<Request, PagedRespo
             WHERE
                 MN.""ElectionRoundId"" = @electionRoundId
                 AND MN.""NgoId"" = @ngoId
-                AND (@searchText IS NULL OR @searchText = '' OR u.""FirstName"" ILIKE @searchText OR    u.""LastName"" ILIKE @searchText OR u.""Email"" ILIKE @searchText OR u.""PhoneNumber"" ILIKE   @searchText)
-                AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR  mo.""Tags"" @> @tagsFilter)
+                AND (@searchText IS NULL OR @searchText = '' OR u.""FirstName"" ILIKE @searchText OR u.""LastName"" ILIKE @searchText OR u.""Email"" ILIKE @searchText OR u.""PhoneNumber"" ILIKE @searchText)
+                AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR mo.""Tags"" @> @tagsFilter)
             ) T
 
         ORDER BY
@@ -169,7 +165,7 @@ public class Endpoint(IDbConnection dbConnection) : Endpoint<Request, PagedRespo
             sortExpression = GetSortExpression(req.SortColumnName, req.IsAscendingSorting),
         };
 
-        var multi = await dbConnection.QueryMultipleAsync(sql, queryArgs);
+        var multi = await dbConnectionFactory.GetOpenConnection().QueryMultipleAsync(sql, queryArgs);
         var totalRowCount = multi.Read<int>().Single();
         var entries = multi.Read<ObserverSubmissionOverview>().ToList();
 

@@ -39,7 +39,7 @@ export function FormsFiltersByObserver(): FunctionComponent {
   return (
     <>
       <DropdownMenu>
-        <DropdownMenuTrigger>
+        <DropdownMenuTrigger asChild>
           <Button className='w-full inline-flex border-gray-200 gap-1 hover:bg-white text-black' variant='outline'>
             <span>Observer tags</span>
             {search.tagsFilter && (

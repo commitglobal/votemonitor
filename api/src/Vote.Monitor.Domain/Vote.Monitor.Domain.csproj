@@ -33,7 +33,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Entities\FormSubmissionAggregate\" />
     <Folder Include="Entities\NgoAdminAggregate\" />
     <Folder Include="Entities\ObserverAggregate\" />
     <Folder Include="ValueConverters\" />

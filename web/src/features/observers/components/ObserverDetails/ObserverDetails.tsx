@@ -1,12 +1,12 @@
+import Layout from '@/components/layout/Layout';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { PencilIcon } from '@heroicons/react/24/outline';
 import { useLoaderData, useNavigate } from '@tanstack/react-router';
 import { Observer } from '../../models/Observer';
-import Layout from '@/components/layout/Layout';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
-import { Button } from '@/components/ui/button';
-import { PencilIcon } from '@heroicons/react/24/outline';
 
 export default function ObserverDetails() {
   const observer: Observer = useLoaderData({ strict: false });

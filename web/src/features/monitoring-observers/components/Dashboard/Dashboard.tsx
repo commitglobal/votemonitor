@@ -2,7 +2,7 @@ import Layout from '@/components/layout/Layout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Route } from '@/routes/monitoring-observers/$tab';
 import { useNavigate } from '@tanstack/react-router';
-import { ReactElement, useRef, useState } from 'react';
+import { ReactElement, useState } from 'react';
 
 import MonitoringObserversList from '../MonitoringObserversList/MonitoringObserversList';
 import PushMessages from '../PushMessages/PushMessages';

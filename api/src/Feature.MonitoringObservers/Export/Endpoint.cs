@@ -1,12 +1,12 @@
-﻿using System.Data;
-using System.Globalization;
+﻿using System.Globalization;
 using Authorization.Policies;
 using CsvHelper;
 using Dapper;
+using Vote.Monitor.Domain.ConnectionFactory;
 
 namespace Feature.MonitoringObservers.Export;
 
-public class Endpoint(IDbConnection dbConnection) : Endpoint<Request>
+public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<Request>
 {
     public override void Configure()
     {
@@ -29,7 +29,7 @@ public class Endpoint(IDbConnection dbConnection) : Endpoint<Request>
     {
         var sql = @"
             SELECT
-                MO.""Id"" ""MonitoringObserverId"",
+                MO.""Id"",
                 U.""FirstName"",
                 U.""LastName"",
                 U.""PhoneNumber"",
@@ -51,7 +51,7 @@ public class Endpoint(IDbConnection dbConnection) : Endpoint<Request>
             ngoId = req.NgoId,
         };
 
-        var monitoringObservers = await dbConnection.QueryAsync<MonitoringObserverModel>(sql, queryArgs);
+        var monitoringObservers = await dbConnectionFactory.GetOpenConnection().QueryAsync<MonitoringObserverModel>(sql, queryArgs);
 
         var monitoringObserverModels = monitoringObservers.ToArray();
 
@@ -61,12 +61,23 @@ public class Endpoint(IDbConnection dbConnection) : Endpoint<Request>
             .OrderBy(x => x)
             .ToList();
 
-        using var memoryStream = new MemoryStream();
-        await using var streamWriter = new StreamWriter(memoryStream, leaveOpen: true);
-        await using var csvWriter = new CsvWriter(streamWriter, CultureInfo.InvariantCulture);
-        WriteHeader(csvWriter, availableTags);
-        WriteData(monitoringObserverModels, csvWriter, availableTags);
-        await SendBytesAsync(memoryStream.ToArray(), "monitoring-observers.csv", contentType: "text/csv", cancellation: ct);
+        using (var memoryStream = new MemoryStream())
+        {
+            using (var streamWriter = new StreamWriter(memoryStream, leaveOpen: true))
+            {
+                using (var csvWriter = new CsvWriter(streamWriter, CultureInfo.InvariantCulture))
+                {
+                    WriteHeader(csvWriter, availableTags);
+                    WriteData(monitoringObserverModels, csvWriter, availableTags);
+
+                    streamWriter.Flush();
+
+                    await SendBytesAsync(memoryStream.ToArray(), "monitoring-observers.csv",
+                        contentType: "text/csv",
+                        cancellation: ct);
+                }
+            }
+        }
     }
 
     private void WriteData(MonitoringObserverModel[] monitoringObservers, CsvWriter csvWriter, List<string> availableTags)

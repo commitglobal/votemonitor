@@ -1,12 +1,12 @@
-﻿using System.Data;
-using Authorization.Policies;
+﻿using Authorization.Policies;
 using Dapper;
 using Vote.Monitor.Core.Models;
+using Vote.Monitor.Domain.ConnectionFactory;
 using Vote.Monitor.Domain.Specifications;
 
 namespace Feature.QuickReports.List;
 
-public class Endpoint(IDbConnection dbConnection)
+public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
     : Endpoint<Request, PagedResponse<QuickReportOverviewModel>>
 {
     public override void Configure()
@@ -40,6 +40,7 @@ public class Endpoint(IDbConnection dbConnection)
             COALESCE(QR.""LastModifiedOn"", QR.""CreatedOn"") AS  ""Timestamp"",
             QR.""Title"",
             QR.""Description"",
+            QR.""FollowUpStatus"",
             COUNT(QRA.""Id"") AS ""NumberOfAttachments"",
             O.""FirstName"",
             O.""LastName"",
@@ -84,7 +85,7 @@ public class Endpoint(IDbConnection dbConnection)
             pageSize = req.PageSize,
         };
 
-        var multi = await dbConnection.QueryMultipleAsync(sql, queryArgs);
+        var multi = await dbConnectionFactory.GetOpenConnection().QueryMultipleAsync(sql, queryArgs);
         var totalRowCount = multi.Read<int>().Single();
         var entries = multi.Read<QuickReportOverviewModel>().ToList();
 

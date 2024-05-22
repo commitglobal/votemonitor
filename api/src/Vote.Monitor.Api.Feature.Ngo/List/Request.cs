@@ -8,7 +8,7 @@ namespace Vote.Monitor.Api.Feature.Ngo.List;
 public class Request: BaseSortPaginatedRequest
 {
     [QueryParam]
-    public string? NameFilter { get; set; }
+    public string? SearchText { get; set; }
 
     [QueryParam]
     [JsonConverter(typeof(SmartEnumNameConverter<NgoStatus, string>))]

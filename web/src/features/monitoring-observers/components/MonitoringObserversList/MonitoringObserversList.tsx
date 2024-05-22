@@ -24,11 +24,12 @@ import { ColumnDef } from '@tanstack/react-table';
 import { X } from 'lucide-react';
 import { useCallback, useState } from 'react';
 
-import { downloadImportExample } from '../../helpers';
-import { MonitoringObserver } from '../../models/monitoring-observer';
 import { useMonitoringObserversTags } from '../../../../hooks/tags-queries';
+import { MonitoringObserver } from '../../models/monitoring-observer';
 import ImportMonitoringObserversDialog from '../MonitoringObserversList/ImportMonitoringObserversDialog';
 import ImportMonitoringObserversErrorsDialog from '../MonitoringObserversList/ImportMonitoringObserversErrorsDialog';
+import { format } from 'date-fns';
+import { DateTimeFormat } from '@/common/formats';
 
 
 type ListMonitoringObserverResponse = PageResponse<MonitoringObserver>;
@@ -85,6 +86,16 @@ function MonitoringObserversList() {
       }) => <Badge className={'badge-' + status}>{status}</Badge>,
     },
     {
+      header: ({ column }) => <DataTableColumnHeader title='Latest activity at' column={column} />,
+      accessorKey: 'latestActivityAt',
+      enableSorting: true,
+      cell: ({
+        row: {
+          original: { latestActivityAt },
+        },
+      }) => <p>{latestActivityAt ? format(latestActivityAt, DateTimeFormat) : '-'}</p>,
+    },
+    {
       header: '',
       accessorKey: 'action',
       enableSorting: true,
@@ -115,7 +126,7 @@ function MonitoringObserversList() {
   };
 
   const navigateToObserver = (monitoringObserverId: string) => {
-    navigate({ to: '/monitoring-observers/view/$monitoringObserverId', params: { monitoringObserverId }});
+    navigate({ to: '/monitoring-observers/view/$monitoringObserverId/$tab', params: { monitoringObserverId, tab: 'details' } });
   };
   const navigateToEdit = (monitoringObserverId: string) => {
     navigate({ to: '/monitoring-observers/edit/$monitoringObserverId', params: { monitoringObserverId } });
@@ -141,7 +152,7 @@ function MonitoringObserversList() {
           PageSize: p.pageSize,
           SortColumnName: p.sortColumnName,
           SortOrder: p.sortOrder,
-          nameFilter: searchText,
+          searchText: searchText,
           status: statusFilter,
         };
         const electionRoundId: string | null = localStorage.getItem('electionRoundId');
@@ -196,8 +207,26 @@ function MonitoringObserversList() {
       navigateToObserver(monitoringObserverId);
     },
     [navigateToObserver]
-  );
+  );  const exportMonitoringObservers = async () => {
+    const electionRoundId: string | null = localStorage.getItem('electionRoundId');
 
+    const res = await authApi.get(`/election-rounds/${electionRoundId}/monitoring-observers:export`);
+    const csvData = res.data;
+  
+    const blob = new Blob([csvData], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+  
+    const a = document.createElement('a');
+    a.style.display = 'none';
+    a.href = url;
+    a.download = 'exported-monitoring-observers vc.csv';
+  
+    document.body.appendChild(a);
+    a.click();
+  
+    window.URL.revokeObjectURL(url);
+  };
+  
   return (
     <Card className='w-full pt-0'>
       <CardHeader className='flex flex-column gap-2'>
@@ -224,7 +253,9 @@ function MonitoringObserversList() {
               </svg>
               Import observer list
             </Button>
-            <Button className='bg-background hover:bg-purple-50 hover:text-purple-500 text-purple-900'>
+            <Button 
+              className='bg-background hover:bg-purple-50 hover:text-purple-500 text-purple-900' 
+              onClick={exportMonitoringObservers}>
               <svg
                 className='mr-1.5'
                 xmlns='http://www.w3.org/2000/svg'
@@ -241,37 +272,19 @@ function MonitoringObserversList() {
               </svg>
               Export monitoring observer list
             </Button>
-            <Button
-              onClick={downloadImportExample}
-              className='bg-background hover:bg-purple-50 hover:text-purple-500 text-purple-900'>
-              <svg
-                className='mr-1.5'
-                xmlns='http://www.w3.org/2000/svg'
-                width='18'
-                height='18'
-                viewBox='0 0 18 18'
-                fill='none'>
-                <path
-                  d='M3 12L3 12.75C3 13.9926 4.00736 15 5.25 15L12.75 15C13.9926 15 15 13.9926 15 12.75L15 12M12 9L9 12M9 12L6 9M9 12L9 3'
-                  stroke='#5F288D'
-                  strokeWidth='2'
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                />
-              </svg>
-              Download template
-            </Button>
           </div>
         </div>
         <Separator />
         <div className='filters px-6 flex flex-row justify-end gap-4'>
-          <Input onChange={handleSearchInput} className='w-[400px]' placeholder='Search' />
-          <FunnelIcon
-            onClick={changeIsFiltering}
-            className='w-[20px] text-purple-900 cursor-pointer'
-            fill={isFiltering ? '#5F288D' : 'rgba(0,0,0,0)'}
-          />
-          <Cog8ToothIcon className='w-[20px] text-purple-900' />
+          <>
+            <Input onChange={handleSearchInput} className='max-w-md' placeholder='Search' />
+            <FunnelIcon
+              onClick={changeIsFiltering}
+              className='w-[20px] text-purple-900 cursor-pointer'
+              fill={isFiltering ? '#5F288D' : 'rgba(0,0,0,0)'}
+            />
+            <Cog8ToothIcon className='w-[20px] text-purple-900' />
+          </>
         </div>
         <Separator />
         {isFiltering ? (

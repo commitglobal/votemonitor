@@ -21,12 +21,12 @@ import { useDebounce } from '@uidotdev/usehooks';
 import { MonitoringObserverFormsFilters } from '../MonitoringObserverFormsFilters/MonitoringObserverFormsFilters';
 import { MonitoringObserverFormsTable } from '../MonitoringObserverFormsTable/MonitoringObserverFormsTable';
 
-const routeApi = getRouteApi('/monitoring-observers/view/$monitoringObserverId');
+const routeApi = getRouteApi('/monitoring-observers/view/$monitoringObserverId/$tab');
 
 export function MonitoringObserverForms(): FunctionComponent {
   const search = routeApi.useSearch();
 
-  const [isFiltering, setIsFiltering] = useState(() => Object.keys(search).some((key) => key !== 'tab'));
+  const [isFiltering, setIsFiltering] = useState(() => Object.keys(search).length !== 0);
   const [columnsVisibility, setColumnsVisibility] = useState(formSubmissionsDefaultColumns.byEntry);
 
   const [searchText, setSearchText] = useState<string>('');
