@@ -319,7 +319,7 @@ export default function ObserversDashboard(): ReactElement {
               )}
             </CardHeader>
             <CardContent>
-              <QueryParamsDataTable columns={observerColDefs} useQuery={useObservers} />
+              <QueryParamsDataTable columns={observerColDefs} useQuery={useObservers} onRowClick={navigateToObserver} />
             </CardContent>
             <CardFooter className='flex justify-between'></CardFooter>
           </Card>
