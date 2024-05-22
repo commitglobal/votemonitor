@@ -32,6 +32,7 @@ import Button from "../../components/Button";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useMutatePollingStationGeneralData } from "../../services/mutations/psi-general.mutation";
 import OptionsSheet from "../../components/OptionsSheet";
+import { Keyboard } from "react-native";
 
 const PollingStationQuestionnaire = () => {
   const { t, i18n } = useTranslation("polling_station_information");
@@ -217,7 +218,10 @@ const PollingStationQuestionnaire = () => {
           leftIcon={<Icon icon="chevronLeft" color="white" />}
           rightIcon={<Icon icon="dotsVertical" color="white" />}
           onLeftPress={() => router.back()}
-          onRightPress={() => setOpenContextualMenu(true)}
+          onRightPress={() => {
+            Keyboard.dismiss();
+            setOpenContextualMenu(true);
+          }}
         />
         <YStack padding="$md" gap="$lg">
           {formStructure?.questions.map((question: ApiFormQuestion) => {
