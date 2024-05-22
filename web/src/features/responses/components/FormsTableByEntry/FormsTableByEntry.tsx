@@ -1,7 +1,7 @@
-import { getRouteApi } from '@tanstack/react-router';
+import { useNavigate } from '@tanstack/react-router';
 import type { VisibilityState } from '@tanstack/react-table';
 import { useDebounce } from '@uidotdev/usehooks';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import type { FunctionComponent } from '@/common/types';
 import { CardContent } from '@/components/ui/card';
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
@@ -16,6 +16,7 @@ type FormsTableByEntryProps = {
 };
 
 export function FormsTableByEntry({ columnsVisibility, searchText }: FormsTableByEntryProps): FunctionComponent {
+  const navigate = useNavigate();
   const search = Route.useSearch();
   const debouncedSearch = useDebounce(search, 300);
 
@@ -35,6 +36,13 @@ export function FormsTableByEntry({ columnsVisibility, searchText }: FormsTableB
     return Object.fromEntries(params) as FormSubmissionsSearchParams;
   }, [searchText, debouncedSearch]);
 
+  const navigateToFormSubmission = useCallback(
+    (submissionId: string) => {
+      void navigate({ to: '/responses/$submissionId', params: { submissionId } });
+    },
+    [navigate]
+  );
+
   return (
     <CardContent>
       <QueryParamsDataTable
@@ -42,6 +50,7 @@ export function FormsTableByEntry({ columnsVisibility, searchText }: FormsTableB
         columns={formSubmissionsByEntryColumnDefs}
         useQuery={useFormSubmissionsByEntry}
         queryParams={queryParams}
+        onRowClick={navigateToFormSubmission}
       />
     </CardContent>
   );
