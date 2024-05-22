@@ -93,7 +93,7 @@
       "title": "Add polling station"
     },
     "progress": {
-      "location": "Add polling station from the {{value}}"
+      "location": "Add polling station from {{value}}"
     },
     "form": {
       "region": {
