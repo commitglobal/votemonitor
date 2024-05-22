@@ -20,7 +20,7 @@ export default function MonitoringObserverDetails(): FunctionComponent {
       <Tabs defaultValue='details'>
         <TabsList className='grid grid-cols-2 bg-gray-200 w-[400px] mb-4'>
           <TabsTrigger value='details'>Observer details</TabsTrigger>
-          <TabsTrigger value='responses'>Responses/forms</TabsTrigger>
+          <TabsTrigger value='responses'>Form responses</TabsTrigger>
         </TabsList>
         <TabsContent value='details'>
           <MonitoringObserverDetailsView />
