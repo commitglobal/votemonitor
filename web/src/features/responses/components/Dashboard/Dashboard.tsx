@@ -5,7 +5,6 @@ import { type ChangeEvent, useState, type ReactElement, useCallback } from 'reac
 import { CsvFileIcon } from '@/components/icons/CsvFileIcon';
 import Layout from '@/components/layout/Layout';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   DropdownMenu,
@@ -28,6 +27,7 @@ import {
   formSubmissionsDefaultColumns,
   type FilterBy,
 } from '../../utils/column-visibility-options';
+import { ExportToCsvButton } from './ExportToCsvButton';
 import { FormsTableByEntry } from '../FormsTableByEntry/FormsTableByEntry';
 import { FormsFiltersByEntry } from '../FormsFiltersByEntry/FormsFiltersByEntry';
 import { FormsFiltersByObserver } from '../FormsFiltersByObserver/FormsFiltersByObserver';
@@ -88,13 +88,8 @@ export default function ResponsesDashboard(): ReactElement {
               <div className='flex justify-between items-center px-6'>
                 <CardTitle>All forms</CardTitle>
 
-                <div className='flex gap-4'>
-                  <Button
-                    className='bg-background hover:bg-purple-50 hover:text-purple-500 text-purple-900 flex gap-2'
-                    variant='outline'>
-                    <CsvFileIcon />
-                    Export to csv
-                  </Button>
+                <div className='flex gap-4 items-center'>
+                  <ExportToCsvButton />
 
                   <DropdownMenu>
                     <DropdownMenuTrigger>
