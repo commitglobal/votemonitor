@@ -30,5 +30,7 @@ public record FormSubmissionEntry
     public int NumberOfFlaggedAnswers { get; init; }
     public int MediaFilesCount { get; init; }
     public int NotesCount { get; init; }
-    public bool? NeedsFollowUp { get; init; }
+
+    [JsonConverter(typeof(SmartEnumNameConverter<SubmissionFollowUpStatus, string>))]
+    public SubmissionFollowUpStatus FollowUpStatus { get; init; }
 }

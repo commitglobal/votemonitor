@@ -1,12 +1,12 @@
-﻿using System.Data;
-using Authorization.Policies;
+﻿using Authorization.Policies;
 using Dapper;
 using Vote.Monitor.Core.Models;
+using Vote.Monitor.Domain.ConnectionFactory;
 using Vote.Monitor.Domain.Specifications;
 
 namespace Feature.Form.Submissions.ListEntries;
 
-public class Endpoint(IDbConnection dbConnection) : Endpoint<Request, PagedResponse<FormSubmissionEntry>>
+public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<Request, PagedResponse<FormSubmissionEntry>>
 {
     public override void Configure()
     {
@@ -65,7 +65,7 @@ public class Endpoint(IDbConnection dbConnection) : Endpoint<Request, PagedRespo
                  AND (@level5 IS NULL OR ps.""Level5"" = @level5)
                  AND (@pollingStationNumber IS NULL OR ps.""Number"" = @pollingStationNumber)
                  AND (@hasFlaggedAnswers is NULL OR (fs.""NumberOfFlaggedAnswers"" = 0 AND @hasFlaggedAnswers = false) OR (""NumberOfFlaggedAnswers"" > 0 AND @hasFlaggedAnswers = true))
-                 AND (@followUpStatus is NULL OR ""NeedsFollowUp"" = @followUpStatus)
+                 AND (@followUpStatus is NULL OR ""FollowUpStatus"" = @followUpStatus)
         ) c;
 
         WITH submissions AS
@@ -79,7 +79,7 @@ public class Endpoint(IDbConnection dbConnection) : Endpoint<Request, PagedRespo
                     0 AS ""MediaFilesCount"",
                     0 AS ""NotesCount"",
                     COALESCE(psi.""LastModifiedOn"", psi.""CreatedOn"") ""TimeSubmitted"",
-                    NULL AS ""NeedsFollowUp""
+                    'NotApplicable' AS ""FollowUpStatus""
              FROM ""PollingStationInformation"" psi
              INNER JOIN ""MonitoringObservers"" mo ON mo.""Id"" = psi.""MonitoringObserverId""
              INNER JOIN ""MonitoringNgos"" mn ON mn.""Id"" = mo.""MonitoringNgoId""
@@ -96,7 +96,7 @@ public class Endpoint(IDbConnection dbConnection) : Endpoint<Request, PagedRespo
                               (SELECT COUNT(1) FROM ""Attachments"" WHERE ""FormId"" = fs.""FormId"" AND ""MonitoringObserverId"" = fs.""MonitoringObserverId"" AND  fs.""PollingStationId"" = ""PollingStationId"") AS ""MediaFilesCount"",
                               (SELECT COUNT(1) FROM ""Notes"" WHERE ""FormId"" = fs.""FormId"" AND ""MonitoringObserverId"" = fs.""MonitoringObserverId"" AND  fs.""PollingStationId"" = ""PollingStationId"") AS ""NotesCount"",
                               COALESCE(fs.""LastModifiedOn"", fs.""CreatedOn"") ""TimeSubmitted"",
-                              fs.""NeedsFollowUp""
+                              fs.""FollowUpStatus""
              FROM ""FormSubmissions"" fs
              INNER JOIN ""MonitoringObservers"" mo ON fs.""MonitoringObserverId"" = mo.""Id""
              INNER JOIN ""MonitoringNgos"" mn ON mn.""Id"" = mo.""MonitoringNgoId""
@@ -125,7 +125,7 @@ public class Endpoint(IDbConnection dbConnection) : Endpoint<Request, PagedRespo
                s.""NumberOfFlaggedAnswers"",
                s.""MediaFilesCount"",
                s.""NotesCount"",
-               s.""NeedsFollowUp""
+               s.""FollowUpStatus""
         FROM submissions s
         INNER JOIN ""PollingStations"" ps ON ps.""Id"" = s.""PollingStationId""
         INNER JOIN ""MonitoringObservers"" mo ON mo.""Id"" = s.""MonitoringObserverId""
@@ -144,7 +144,7 @@ public class Endpoint(IDbConnection dbConnection) : Endpoint<Request, PagedRespo
             AND (@level5 IS NULL OR ps.""Level5"" = @level5)
             AND (@pollingStationNumber IS NULL OR ps.""Number"" = @pollingStationNumber)
             AND (@hasFlaggedAnswers is NULL OR (""NumberOfFlaggedAnswers"" = 0 AND @hasFlaggedAnswers = false) OR (""NumberOfFlaggedAnswers"" > 0 AND @hasFlaggedAnswers = true))
-            AND (@followUpStatus is NULL OR ""NeedsFollowUp"" = @followUpStatus)
+            AND (@followUpStatus is NULL OR ""FollowUpStatus"" = @followUpStatus)
         ORDER BY
               CASE WHEN @sortExpression = 'TimeSubmitted ASC' THEN s.""TimeSubmitted"" END ASC,
               CASE WHEN @sortExpression = 'TimeSubmitted DESC' THEN s.""TimeSubmitted"" END DESC,
@@ -215,11 +215,11 @@ public class Endpoint(IDbConnection dbConnection) : Endpoint<Request, PagedRespo
             level5 = req.Level5Filter,
             pollingStationNumber = req.PollingStationNumberFilter,
             hasFlaggedAnswers = req.HasFlaggedAnswers,
-            followUpStatus = req.FollowUpStatus,
+            followUpStatus = req.FollowUpStatus?.ToString(),
             sortExpression = GetSortExpression(req.SortColumnName, req.IsAscendingSorting)
         };
 
-        var multi = await dbConnection.QueryMultipleAsync(sql, queryArgs);
+        var multi = await dbConnectionFactory.GetOpenConnection().QueryMultipleAsync(sql, queryArgs);
         var totalRowCount = multi.Read<int>().Single();
         var entries = multi.Read<FormSubmissionEntry>().ToList();
 

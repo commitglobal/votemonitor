@@ -3110,6 +3110,12 @@ namespace Vote.Monitor.Domain.Migrations
                     b.Property<Guid>("ElectionRoundId")
                         .HasColumnType("uuid");
 
+                    b.Property<string>("FollowUpStatus")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("text")
+                        .HasDefaultValue("NotApplicable");
+
                     b.Property<Guid>("FormId")
                         .HasColumnType("uuid");
 
@@ -3121,9 +3127,6 @@ namespace Vote.Monitor.Domain.Migrations
 
                     b.Property<Guid>("MonitoringObserverId")
                         .HasColumnType("uuid");
-
-                    b.Property<bool?>("NeedsFollowUp")
-                        .HasColumnType("boolean");
 
                     b.Property<int>("NumberOfFlaggedAnswers")
                         .HasColumnType("integer");
@@ -5329,6 +5332,12 @@ namespace Vote.Monitor.Domain.Migrations
 
                     b.Property<Guid>("ElectionRoundId")
                         .HasColumnType("uuid");
+
+                    b.Property<string>("FollowUpStatus")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("text")
+                        .HasDefaultValue("NotApplicable");
 
                     b.Property<Guid>("LastModifiedBy")
                         .HasColumnType("uuid");

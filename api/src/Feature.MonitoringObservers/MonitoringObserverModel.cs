@@ -12,6 +12,7 @@ public class MonitoringObserverModel
     public string Email { get; init; }
     public string PhoneNumber { get; init; }
     public string[] Tags { get; init; }
+    public DateTime? LatestActivityAt { get; init; }
 
     [JsonConverter(typeof(SmartEnumNameConverter<MonitoringObserverStatus, string>))]
     public MonitoringObserverStatus Status { get; init; }

@@ -10,6 +10,7 @@ export enum FormType {
     Opening = 'Opening',
     Voting = 'Voting',
     ClosingAndCounting = 'ClosingAndCounting',
+    Other = 'Other',
 }
 
 export interface FormBase {
@@ -34,6 +35,7 @@ export function mapFormType(formType: FormType): string {
         case FormType.Opening: return i18n.t('formType.opening');
         case FormType.Voting: return i18n.t('formType.voting');
         case FormType.ClosingAndCounting: return i18n.t('formType.closingAndCounting');
+        case FormType.Other: return i18n.t('formType.other');
         default: return "Unknown";
     }
 }

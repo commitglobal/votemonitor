@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { FormType } from '@/features/responses/models/form-submission';
 import type { MonitoringObserverDetailsRouteSearch } from '../../models/monitoring-observer';
 
-const routeApi = getRouteApi('/monitoring-observers/view/$monitoringObserverId');
+const routeApi = getRouteApi('/monitoring-observers/view/$monitoringObserverId/$tab');
 
 export function MonitoringObserverFormsFilters(): FunctionComponent {
   const navigate = routeApi.useNavigate();

@@ -79,7 +79,6 @@ export default function DisplayLogicEditor({
     }
 
     function handleParentQuestionSelected(questionId: string) {
-        debugger;
         const parentQuestion = availableParentQuestions.find(q => q.id === questionId)!;
 
         const displayLogic: DisplayLogic = {

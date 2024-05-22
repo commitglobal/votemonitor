@@ -176,15 +176,17 @@ public class FormSubmissionsDataTableGenerator
         // get the longest column headers
         foreach (var question in _questions)
         {
-            var longestValuesColumnHeader = questionAnswers[question.Id]
+            var answers = questionAnswers.GetValueOrDefault(question.Id, []);
+
+            var longestValuesColumnHeader = answers
                 .MaxBy(x => x.ValuesColumnHeaders.Count)
                 ?.ValuesColumnHeaders ?? [];
 
-            var longestNotesHeader = questionAnswers[question.Id]
+            var longestNotesHeader = answers
                 .MaxBy(x => x.NotesColumnHeaders.Count)
                 ?.NotesColumnHeaders ?? [];
 
-            var longestAttachmentUrlsColumnHeader = questionAnswers[question.Id]
+            var longestAttachmentUrlsColumnHeader = answers
                 .MaxBy(x => x.AttachmentUrlsColumnHeaders.Count)
                 ?.AttachmentUrlsColumnHeaders ?? [];
 

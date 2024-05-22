@@ -16,7 +16,7 @@ function PreviewRatingQuestion({ languageCode, question }: PreviewRatingQuestion
     strict: false,
   });
   return (
-    <Field className='flex flex-col'>
+    <Field>
       <Label>
         {question.code} - {question.text[params['languageCode'] ? params['languageCode'] : languageCode]}
       </Label>

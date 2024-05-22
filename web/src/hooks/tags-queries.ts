@@ -14,7 +14,7 @@ export function useMonitoringObserversTags(): UseQueryResult<Tag[], Error> {
             );
 
             if (response.status !== 200) {
-                throw new Error('Failed to fetch monitoring observers');
+                throw new Error('Failed to fetch monitoring observers tags');
             }
             return response.data?.tags.map((tag) => ({ id: uuid(), text: tag }));
         },

@@ -13,4 +13,13 @@ public sealed class GetQuickReportByIdSpecification : SingleResultSpecification<
             .ThenInclude(x => x.Observer)
             .ThenInclude(x => x.ApplicationUser);
     }
+
+    public GetQuickReportByIdSpecification(Guid electionRoundId, Guid ngoId, Guid quickReportId)
+    {
+        Query
+            .Where(qr =>
+                qr.ElectionRoundId == electionRoundId
+                && qr.Id == quickReportId
+                && qr.MonitoringObserver.MonitoringNgo.NgoId == ngoId);
+    }
 }

@@ -50,7 +50,7 @@ public class ListObserversSpecificationTests
 
         var request = new List.Request
         {
-            NameFilter = DefaultName
+            SearchText = DefaultName
         };
 
         var spec = new ListObserversSpecification(request);
@@ -81,7 +81,7 @@ public class ListObserversSpecificationTests
 
         var request = new List.Request
         {
-            NameFilter = searchString
+            SearchText = searchString
         };
 
         var spec = new ListObserversSpecification(request);

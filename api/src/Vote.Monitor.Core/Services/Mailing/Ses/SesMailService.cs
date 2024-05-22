@@ -7,7 +7,7 @@ using Vote.Monitor.Core.Services.Mailing.Contracts;
 namespace Vote.Monitor.Core.Services.Mailing.Ses;
 
 public class SesMailService(IOptions<SesOptions> settings,
-    IAmazonSimpleEmailService sesMailService, 
+    IAmazonSimpleEmailService sesMailService,
     ILogger<SesMailService> logger)
     : IMailService
 {
@@ -17,7 +17,10 @@ public class SesMailService(IOptions<SesOptions> settings,
     {
         try
         {
-            var mailBody = new Body(new Content(mailRequest.Body));
+            var mailBody = new Body
+            {
+                Html = new Content(mailRequest.Body)
+            };
             var message = new Message(new Content(mailRequest.Subject), mailBody);
             var destination = new Destination([mailRequest.To]);
             var request = new SendEmailRequest(_options.SenderEmail, destination, message);

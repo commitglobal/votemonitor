@@ -34,6 +34,6 @@ public class Endpoint : EndpointWithoutRequest
 
     private static MemoryStream GenerateStreamFromString(string value)
     {
-        return new MemoryStream(Encoding.UTF8.GetBytes(value ?? ""));
+        return new MemoryStream(Encoding.UTF8.GetBytes(value));
     }
 }

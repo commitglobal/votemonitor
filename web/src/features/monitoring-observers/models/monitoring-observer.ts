@@ -15,10 +15,11 @@ export interface MonitoringObserver {
   status: MonitoringObserverStatus;
   phoneNumber: string;
   tags: string[];
+  latestActivityAt?: string;
 }
 
 export const monitoringObserverRouteSearchSchema = z.object({
-  nameFilter: z.string().catch(''),
+  searchText: z.string().catch(''),
   pageNumber: z.number().catch(1),
   pageSize: z.number().catch(10),
   status: z.enum(['Active', 'Inactive', 'Suspended']).catch('Active'),
@@ -38,3 +39,12 @@ export const monitoringObserverDetailsRouteSearchSchema = z.object({
 });
 
 export type MonitoringObserverDetailsRouteSearch = z.infer<typeof monitoringObserverDetailsRouteSearchSchema>;
+
+
+export interface UpdateMonitoringObserverRequest {
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+  status: string;
+  tags: string[];
+}

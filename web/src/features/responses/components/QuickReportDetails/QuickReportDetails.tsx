@@ -7,6 +7,7 @@ import { Separator } from '@/components/ui/separator';
 import { format } from 'date-fns';
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import { DateTimeFormat } from '@/common/formats';
 
 export default function QuickReportDetails(): FunctionComponent {
   const quickReport = useLoaderData({ from: '/responses/quick-reports/$quickReportId' });
@@ -46,7 +47,7 @@ export default function QuickReportDetails(): FunctionComponent {
         <CardContent className='text-[#374151] flex flex-col gap-6'>
           <div>
             <p className='font-bold'>Time submitted</p>
-            {quickReport.timestamp && <p>{format(quickReport.timestamp, 'u-MM-dd KK:mm')}</p>}
+            {quickReport.timestamp && <p>{format(quickReport.timestamp, DateTimeFormat)}</p>}
           </div>
 
           <div>
@@ -86,8 +87,8 @@ export default function QuickReportDetails(): FunctionComponent {
             <Link
               search
               className='text-purple-500 flex gap-1'
-              to='/monitoring-observers/view/$monitoringObserverId'
-              params={{ monitoringObserverId: quickReport.monitoringObserverId}}
+              to='/monitoring-observers/view/$monitoringObserverId/$tab'
+              params={{ monitoringObserverId: quickReport.monitoringObserverId, tab: 'details' }}
               target='_blank'
               preload={false}>
               {quickReport.firstName} {quickReport.lastName}

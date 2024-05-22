@@ -1,12 +1,12 @@
-﻿using System.Data;
-using Authorization.Policies;
+﻿using Authorization.Policies;
 using Dapper;
 using Vote.Monitor.Core.Models;
+using Vote.Monitor.Domain.ConnectionFactory;
 using Vote.Monitor.Domain.Specifications;
 
 namespace Feature.Notifications.ListSent;
 
-public class Endpoint(IDbConnection dbConnection) : Endpoint<Request, PagedResponse<NotificationModel>>
+public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<Request, PagedResponse<NotificationModel>>
 {
     public override void Configure()
     {
@@ -60,7 +60,7 @@ public class Endpoint(IDbConnection dbConnection) : Endpoint<Request, PagedRespo
             pageSize = req.PageSize,
         };
 
-        var multi = await dbConnection.QueryMultipleAsync(sql, queryArgs);
+        var multi = await dbConnectionFactory.GetOpenConnection().QueryMultipleAsync(sql, queryArgs);
 
         var totalRowCount = multi.Read<int>().Single();
         var entries = multi.Read<NotificationModel>().ToList();

@@ -4,10 +4,10 @@ import { Separator } from '@/components/ui/separator';
 import { useLoaderData } from '@tanstack/react-router';
 import { format } from 'date-fns';
 
+import { DateTimeFormat } from '@/common/formats';
 import type { FunctionComponent } from '@/common/types';
-import { PushMessageDetailedModel } from '../../models/push-message';
 export default function PushMessageDetails(): FunctionComponent {
-  const pushMessage: PushMessageDetailedModel = useLoaderData({ strict: false });
+  const pushMessage = useLoaderData({ from: '/monitoring-observers/push-messages/$id/view' });
 
   return (
     <Layout title=''>
@@ -35,7 +35,7 @@ export default function PushMessageDetails(): FunctionComponent {
             <div className='flex flex-col gap-1'>
               <p className='text-gray-700 font-bold'>Sent at</p>
               <p className='text-gray-900 font-normal'>
-                {format(pushMessage.sentAt, 'u-MM-dd KK:mm')}
+                {format(pushMessage.sentAt, DateTimeFormat)}
               </p>
             </div>
             <div className='flex flex-col gap-1'>
