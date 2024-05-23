@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Feature.Form.Submissions.Models;
+using Feature.Form.Submissions.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Vote.Monitor.Answer.Module.Models;
 using Vote.Monitor.Core.Converters;
@@ -15,6 +16,8 @@ public static class FormSubmissionsInstaller
         SqlMapper.AddTypeHandler(typeof(BaseAnswerModel[]), new JsonToObjectConverter<BaseAnswerModel[]>());
         SqlMapper.AddTypeHandler(typeof(NoteModel[]), new JsonToObjectConverter<NoteModel[]>());
         SqlMapper.AddTypeHandler(typeof(AttachmentModel[]), new JsonToObjectConverter<AttachmentModel[]>());
+
+        services.AddScoped<IOrphanedDataCleanerService, OrphanedDataCleanerService>();
 
         return services;
     }

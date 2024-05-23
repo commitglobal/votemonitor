@@ -1,13 +1,14 @@
 import { authApi } from '@/common/auth-api';
 import {
-  BaseQuestion,
+  type BaseQuestion,
   cloneTranslation,
+  type FunctionComponent,
   getTranslationOrDefault,
-  MultiSelectQuestion,
-  NumberQuestion,
+  type MultiSelectQuestion,
+  type NumberQuestion,
   QuestionType,
-  SingleSelectQuestion,
-  TextQuestion,
+  type SingleSelectQuestion,
+  type TextQuestion,
   updateTranslationString,
 } from '@/common/types';
 import FormQuestionsEditor from '@/components/questionsEditor/FormQuestionsEditor';
@@ -33,8 +34,10 @@ import { Route } from '@/routes/forms_.$formId.edit';
 import { FormFull, FormType, mapFormType } from '../../models/form';
 import { formDetailsQueryOptions, formsKeys } from '../../queries';
 import EditFormFooter from './EditFormFooter';
+import Layout from '@/components/layout/Layout';
+import { Link } from '@tanstack/react-router';
 
-export default function EditForm() {
+export default function EditForm(): FunctionComponent {
   const { t } = useTranslation();
   const { formId } = Route.useParams();
   const formQuery = useSuspenseQuery(formDetailsQueryOptions(formId));
@@ -67,21 +70,6 @@ export default function EditForm() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof editFormFormSchema>) {
-    formData.code = values.code;
-    formData.name[defaultLanguage] = values.name;
-    formData.description = updateTranslationString(formData.description, formData.languages, formData.defaultLanguage, values.description ?? '');
-    formData.formType = values.formType;
-    formData.defaultLanguage = defaultLanguage;
-    formData.languages = languages;
-
-    const updatedForm: FormFull = {
-      ...formData,
-    };
-
-    editMutation.mutate(updatedForm);
-  }
-
   const editMutation = useMutation({
     mutationFn: (form: FormFull) => {
       const electionRoundId: string | null = localStorage.getItem('electionRoundId');
@@ -98,56 +86,107 @@ export default function EditForm() {
         description: 'Form updated successfully updated',
       });
 
-      queryClient.invalidateQueries({ queryKey: formsKeys.all });
+      void queryClient.invalidateQueries({ queryKey: formsKeys.all });
     },
   });
 
+  function onSubmit(values: z.infer<typeof editFormFormSchema>): void {
+    formData.code = values.code;
+    formData.name[defaultLanguage] = values.name;
+    formData.description = updateTranslationString(
+      formData.description,
+      formData.languages,
+      formData.defaultLanguage,
+      values.description ?? ''
+    );
+    formData.formType = values.formType;
+    formData.defaultLanguage = defaultLanguage;
+    formData.languages = languages;
 
+    const updatedForm: FormFull = {
+      ...formData,
+    };
 
-  const updateTranslations = (question: BaseQuestion, previousLanguageCode: string, newLanguageCode: string): BaseQuestion => {
+    editMutation.mutate(updatedForm);
+  }
+
+  const updateTranslations = (
+    question: BaseQuestion,
+    previousLanguageCode: string,
+    newLanguageCode: string
+  ): BaseQuestion => {
     question.text = cloneTranslation(question.text, previousLanguageCode, newLanguageCode)!;
     question.helptext = cloneTranslation(question.helptext, previousLanguageCode, newLanguageCode);
 
     if (question.$questionType === QuestionType.TextQuestionType) {
       const textQuestion: TextQuestion = question as TextQuestion;
-      textQuestion.inputPlaceholder = cloneTranslation(textQuestion.inputPlaceholder, previousLanguageCode, newLanguageCode);
+      textQuestion.inputPlaceholder = cloneTranslation(
+        textQuestion.inputPlaceholder,
+        previousLanguageCode,
+        newLanguageCode
+      );
 
       return { ...textQuestion };
     }
 
     if (question.$questionType === QuestionType.NumberQuestionType) {
       const numberQuestion: NumberQuestion = question as NumberQuestion;
-      numberQuestion.inputPlaceholder = cloneTranslation(numberQuestion.inputPlaceholder, previousLanguageCode, newLanguageCode);
+      numberQuestion.inputPlaceholder = cloneTranslation(
+        numberQuestion.inputPlaceholder,
+        previousLanguageCode,
+        newLanguageCode
+      );
 
       return { ...numberQuestion };
     }
 
     if (question.$questionType === QuestionType.SingleSelectQuestionType) {
       const singleSelectQuestion: SingleSelectQuestion = question as SingleSelectQuestion;
-      singleSelectQuestion.options = singleSelectQuestion.options.map(option => ({ ...option, text: cloneTranslation(option.text, previousLanguageCode, newLanguageCode)! }))
+      singleSelectQuestion.options = singleSelectQuestion.options.map((option) => ({
+        ...option,
+        text: cloneTranslation(option.text, previousLanguageCode, newLanguageCode)!,
+      }));
 
       return { ...singleSelectQuestion };
     }
 
     if (question.$questionType === QuestionType.MultiSelectQuestionType) {
       const MultiSelectQuestion: MultiSelectQuestion = question as MultiSelectQuestion;
-      MultiSelectQuestion.options = MultiSelectQuestion.options.map(option => ({ ...option, text: cloneTranslation(option.text, previousLanguageCode, newLanguageCode)! }))
+      MultiSelectQuestion.options = MultiSelectQuestion.options.map((option) => ({
+        ...option,
+        text: cloneTranslation(option.text, previousLanguageCode, newLanguageCode)!,
+      }));
 
       return { ...MultiSelectQuestion };
     }
 
     return { ...question };
-  }
+  };
 
   const handleLanguageChange = (newLanguageCode: string): void => {
     const previousLanguageCode = defaultLanguage;
     setDefaultLanguage(newLanguageCode);
-    setLanguages(Array.from(new Set([...languages, newLanguageCode])));
-    setLocalQuestions([...localQuestions.map(question => updateTranslations(question, previousLanguageCode, newLanguageCode))]);
-  }
+    setLanguages([...new Set([...languages, newLanguageCode])]);
+    setLocalQuestions(
+      localQuestions.map((question) => updateTranslations(question, previousLanguageCode, newLanguageCode))
+    );
+  };
 
   return (
-    <div>
+    <Layout
+      backButton={
+        <Link to='/forms' preload='intent' search>
+          <svg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30' fill='none'>
+            <path
+              fillRule='evenodd'
+              clipRule='evenodd'
+              d='M19.0607 7.93934C19.6464 8.52513 19.6464 9.47487 19.0607 10.0607L14.1213 15L19.0607 19.9393C19.6464 20.5251 19.6464 21.4749 19.0607 22.0607C18.4749 22.6464 17.5251 22.6464 16.9393 22.0607L10.9393 16.0607C10.3536 15.4749 10.3536 14.5251 10.9393 13.9393L16.9393 7.93934C17.5251 7.35355 18.4749 7.35355 19.0607 7.93934Z'
+              fill='#7833B3'
+            />
+          </svg>
+        </Link>
+      }
+      title={`${formData.code} - ${formData.name[formData.defaultLanguage]}`}>
       <Form {...form}>
         <form className='flex flex-col flex-1' onSubmit={form.handleSubmit(onSubmit)}>
           <Tabs className='flex flex-col flex-1' defaultValue='form-details'>
@@ -191,18 +230,12 @@ export default function EditForm() {
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
-                                <SelectItem value={FormType.Opening}>
-                                  {mapFormType(FormType.Opening)}
-                                </SelectItem>
-                                <SelectItem value={FormType.Voting}>
-                                  {mapFormType(FormType.Voting)}
-                                </SelectItem>
+                                <SelectItem value={FormType.Opening}>{mapFormType(FormType.Opening)}</SelectItem>
+                                <SelectItem value={FormType.Voting}>{mapFormType(FormType.Voting)}</SelectItem>
                                 <SelectItem value={FormType.ClosingAndCounting}>
                                   {mapFormType(FormType.ClosingAndCounting)}
                                 </SelectItem>
-                                <SelectItem value={FormType.Other}>
-                                  {mapFormType(FormType.Other)}
-                                </SelectItem>
+                                <SelectItem value={FormType.Other}>{mapFormType(FormType.Other)}</SelectItem>
                               </SelectContent>
                             </Select>
                             <FormMessage />
@@ -227,7 +260,13 @@ export default function EditForm() {
                         render={({ field }) => (
                           <Field>
                             <Label>{t('form.field.defaultLanguage')}</Label>
-                            <LanguageSelect languageCode={field.value} onSelect={(value) => { handleLanguageChange(value); field.onChange(value) }} />
+                            <LanguageSelect
+                              languageCode={field.value}
+                              onSelect={(value) => {
+                                handleLanguageChange(value);
+                                field.onChange(value);
+                              }}
+                            />
                           </Field>
                         )}
                       />
@@ -239,12 +278,7 @@ export default function EditForm() {
                         render={({ field }) => (
                           <Field>
                             <Label>{t('form.field.description')}</Label>
-                            <Textarea
-                              rows={10}
-                              cols={100}
-                              {...field}
-                              placeholder={t('form.placeholder.description')}
-                            />
+                            <Textarea rows={10} cols={100} {...field} placeholder={t('form.placeholder.description')} />
                           </Field>
                         )}
                       />
@@ -275,6 +309,6 @@ export default function EditForm() {
           <EditFormFooter />
         </form>
       </Form>
-    </div>
+    </Layout>
   );
 }
