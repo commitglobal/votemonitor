@@ -3,7 +3,7 @@ import { Screen } from "../../../components/Screen";
 import Header from "../../../components/Header";
 import { Icon } from "../../../components/Icon";
 import { Typography } from "../../../components/Typography";
-import { XStack, YStack, ScrollView, Spinner, AlertDialog } from "tamagui";
+import { XStack, YStack, ScrollView, Spinner } from "tamagui";
 import LinearProgress from "../../../components/LinearProgress";
 import { useMemo, useState } from "react";
 import { useUserData } from "../../../contexts/user/UserContext.provider";
@@ -375,10 +375,10 @@ const FormQuestionnaire = () => {
         {/* delete answer button */}
         {deletingAnswer && (
           <WarningDialog
-            title={t("warning_modal.title", { value: activeQuestion.question.code })}
-            description={t("warning_modal.description")}
-            actionBtnText={t("warning_modal.actions.clear")}
-            cancelBtnText={t("warning_modal.actions.cancel")}
+            title={t("warning_modal.question.title", { value: activeQuestion.question.code })}
+            description={t("warning_modal.question.description")}
+            actionBtnText={t("warning_modal.question.actions.clear")}
+            cancelBtnText={t("warning_modal.question.actions.cancel")}
             action={onClearForm}
             onCancel={() => setDeletingAnswer(false)}
           />
@@ -682,11 +682,12 @@ const $containerStyle: ViewStyle = {
 export default FormQuestionnaire;
 
 const MediaLoading = () => {
+  const { t } = useTranslation("question_page");
   return (
     <YStack alignItems="center" gap="$lg" paddingHorizontal="$lg">
       <Spinner size="large" color="$purple5" />
       <Typography preset="subheading" fontWeight="500" color="$purple5">
-        Adding attachment...
+        {t("adding_attachment")}
       </Typography>
     </YStack>
   );

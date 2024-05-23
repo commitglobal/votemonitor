@@ -138,6 +138,15 @@
     },
     "actions": {
       "submit": "Submiteți răspunsurile"
+    },
+    "char_limit": {
+      "min": "Textul trebuie să conțină minim {{value}} caractere",
+      "max": "Textul nu trebuie să depășească {{value}} caractere"
+    },
+    "warning_modal": {
+      "title": "Ștergeți informațiile secției de votare",
+      "description": "Aceasă acțiune va șterge toate răspunsurile introduse până acum în acest formular. Pentru a evita pierderea neintenționată a informațiilor, asigurați-vă că ați verificat formularul înaintea acestei acțiuni.",
+      "actions": { "cancel": "Renunță", "clear": "Șterge formularul" }
     }
   },
   "bottom_sheets": {
@@ -161,6 +170,14 @@
       },
       "errors": {
         "note_input": "Textul nu poate depăși 10,000 caractere"
+      }
+    },
+    "delete_note": {
+      "title": "Ștergeți notița",
+      "description": "Această acțiune este ireversibilă. Odată ștearsă, o notiță nu poate fi recuperată.",
+      "actions": {
+        "cancel": "Renunță",
+        "delete": "Șterge"
       }
     },
     "select_option": {
@@ -189,6 +206,14 @@
       "actions": {
         "save": "Salvează",
         "cancel": "Anulează"
+      }
+    },
+    "clear_answers_modal": {
+      "title": "Ștergeți formularul {{value}}",
+      "description": "Aceasă acțiune va șterge toate răspunsurile introduse până acum (incluzând notițele și fișierele media). Statusul tuturor întrebărilor va reveni la 'Neînceput'. \n\nPentru a evita pierderea neintenționată a informațiilor, asigurați-vă că ați verificat formularul înaintea acestei acțiuni.",
+      "actions": {
+        "clear": "Șterge formularul",
+        "cancel": "Renunță"
       }
     },
     "questions": {
@@ -311,12 +336,25 @@
       "clear_answer": "Șterge răspunsul",
       "add_attachments": "Adaugă notițe și fișiere media"
     },
+    "warning_modal": {
+      "question": {
+        "title": "Ștergeți răspunsul la întrebarea {{value}}",
+        "description": "Ștergerea răspunsului la această întrebare va șterge permanent toate informațiile (incluzând notițele și fișierele media), cât și toate întrebările conectate cu aceasta. Statusul întrebărilor va reveni la 'Neînceput'",
+        "actions": { "cancel": "Renunță", "clear": "Șterge răspunsul" }
+      },
+      "attachment": {
+        "title": "Ștergeți fișierul media",
+        "description": "Această acțiune este ireversibilă. Odată șters, un fișier media nu poate fi recuperat.",
+        "actions": { "cancel": "Renunță", "clear": "Șterge" }
+      }
+    },
     "options_sheet": {
       "add_note": "Adaugă notițe",
       "load": "Încarcă din galerie",
       "take_picture": "Fă o poză",
       "record_video": "Înregistrează video",
       "upload_audio": "Încarcă audio"
-    }
+    },
+    "adding_attachment": "Se adaugă fișierul media..."
   }
 }

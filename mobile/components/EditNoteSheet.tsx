@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Sheet, SheetProps, XStack, YStack } from "tamagui";
 import { Icon } from "./Icon";
@@ -25,6 +25,7 @@ interface EditNoteSheetProps extends SheetProps {
 const EditNoteSheet = (props: EditNoteSheetProps) => {
   const { selectedNote, setSelectedNote, questionId, electionRoundId, pollingStationId, formId } =
     props;
+  const [deletingNote, setDeletingNote] = useState(false);
   const { t } = useTranslation("bottom_sheets");
   const insets = useSafeAreaInsets();
   const keyboardIsVisible = useKeyboardVisible();
@@ -108,6 +109,7 @@ const EditNoteSheet = (props: EditNoteSheetProps) => {
         marginBottom={insets.bottom}
       >
         <Icon paddingVertical="$md" alignSelf="center" icon="dragHandle" />
+
         <YStack
           marginHorizontal={12}
           gap="$md"
@@ -119,50 +121,82 @@ const EditNoteSheet = (props: EditNoteSheetProps) => {
               : 0
           }
         >
-          <XStack justifyContent="space-between" alignItems="center">
-            <Typography preset="heading">{t("add_note.title_edit")}</Typography>
-            <Typography
-              preset="body2"
-              color="$red10"
-              paddingVertical="$xxxs"
-              paddingLeft="$xs"
-              pressStyle={{ opacity: 0.5 }}
-              onPress={onDelete}
-            >
-              {t("add_note.actions.delete_note")}
-            </Typography>
-          </XStack>
+          {deletingNote ? (
+            <>
+              <YStack gap="$lg">
+                <Typography preset="heading">{t("delete_note.title")}</Typography>
+                <Typography preset="body1" color="$gray6">
+                  {t("delete_note.description")}
+                </Typography>
+                <XStack gap="$sm" justifyContent="center">
+                  <Button
+                    preset="chromeless"
+                    textStyle={{ color: "black" }}
+                    onPress={() => setDeletingNote(false)}
+                  >
+                    {t("delete_note.actions.cancel")}
+                  </Button>
 
-          <Controller
-            key={selectedNote?.id + "_edit_note"}
-            name={"noteEditedText"}
-            control={control}
-            rules={{
-              maxLength: {
-                value: 10000,
-                message: t("add_note.errors.note_input"),
-              },
-            }}
-            render={({ field: { value, onChange } }) => {
-              return (
-                <YStack height={150}>
-                  <Input type="textarea" value={value} onChangeText={onChange} height={150} />
-                </YStack>
-              );
-            }}
-          />
-          {errors.noteEditedText && (
-            <Typography color="$red12">{errors.noteEditedText.message}</Typography>
+                  <Button
+                    backgroundColor="$red10"
+                    flex={1}
+                    onPress={() => {
+                      setDeletingNote(false);
+                      onDelete();
+                    }}
+                  >
+                    {t("delete_note.actions.delete")}
+                  </Button>
+                </XStack>
+              </YStack>
+            </>
+          ) : (
+            <>
+              <XStack justifyContent="space-between" alignItems="center">
+                <Typography preset="heading">{t("add_note.title_edit")}</Typography>
+                <Typography
+                  preset="body2"
+                  color="$red10"
+                  paddingVertical="$xxxs"
+                  paddingLeft="$xs"
+                  pressStyle={{ opacity: 0.5 }}
+                  onPress={() => setDeletingNote(true)}
+                >
+                  {t("add_note.actions.delete_note")}
+                </Typography>
+              </XStack>
+              <Controller
+                key={selectedNote?.id + "_edit_note"}
+                name={"noteEditedText"}
+                control={control}
+                rules={{
+                  maxLength: {
+                    value: 10000,
+                    message: t("add_note.errors.note_input"),
+                  },
+                }}
+                render={({ field: { value, onChange } }) => {
+                  return (
+                    <YStack height={150}>
+                      <Input type="textarea" value={value} onChangeText={onChange} height={150} />
+                    </YStack>
+                  );
+                }}
+              />
+              {errors.noteEditedText && (
+                <Typography color="$red12">{errors.noteEditedText.message}</Typography>
+              )}
+              <XStack gap="$md">
+                <Button preset="chromeless" onPress={() => setSelectedNote(null)}>
+                  {t("add_note.actions.cancel")}
+                </Button>
+
+                <Button flex={1} onPress={handleSubmit(onSubmit)}>
+                  {t("add_note.actions.save")}
+                </Button>
+              </XStack>
+            </>
           )}
-          <XStack gap="$md">
-            <Button preset="chromeless" onPress={() => setSelectedNote(null)}>
-              {t("add_note.actions.cancel")}
-            </Button>
-
-            <Button flex={1} onPress={handleSubmit(onSubmit)}>
-              {t("add_note.actions.save")}
-            </Button>
-          </XStack>
         </YStack>
       </Sheet.Frame>
     </Sheet>

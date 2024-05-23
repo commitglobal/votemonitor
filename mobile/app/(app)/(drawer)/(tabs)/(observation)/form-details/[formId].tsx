@@ -7,7 +7,7 @@ import { Typography } from "../../../../../../components/Typography";
 import { YStack } from "tamagui";
 import { useMemo, useState } from "react";
 import { ListView } from "../../../../../../components/ListView";
-import { Keyboard, Platform } from "react-native";
+import { Platform } from "react-native";
 import OptionsSheet from "../../../../../../components/OptionsSheet";
 import ChangeLanguageDialog from "../../../../../../components/ChangeLanguageDialog";
 import { setFormLanguagePreference } from "../../../../../../common/language.preferences";
@@ -29,7 +29,7 @@ type SearchParamsType = {
 };
 
 const FormDetails = () => {
-  const { t, i18n } = useTranslation(["form_overview", "bottom_sheets"]);
+  const { t } = useTranslation(["form_overview", "bottom_sheets"]);
   const { formId, language } = useLocalSearchParams<SearchParamsType>();
 
   if (!formId || !language) {

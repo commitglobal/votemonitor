@@ -27,17 +27,18 @@ import {
   mapAPIAnswersToFormAnswers,
   mapAPIQuestionsToFormQuestions,
 } from "../../services/form.parser";
-import Input from "../../components/Inputs/Input";
 import Button from "../../components/Button";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useMutatePollingStationGeneralData } from "../../services/mutations/psi-general.mutation";
 import OptionsSheet from "../../components/OptionsSheet";
 import { Keyboard } from "react-native";
+import WarningDialog from "../../components/WarningDialog";
 
 const PollingStationQuestionnaire = () => {
   const { t, i18n } = useTranslation("polling_station_information");
   const currentLanguage = i18n.language.toLocaleUpperCase();
   const [openContextualMenu, setOpenContextualMenu] = useState(false);
+  const [clearingForm, setClearingForm] = useState(false);
   const insets = useSafeAreaInsets();
 
   const { activeElectionRound, selectedPollingStation } = useUserData();
@@ -152,6 +153,7 @@ const PollingStationQuestionnaire = () => {
     if (openContextualMenu) {
       setOpenContextualMenu(false);
     }
+    setClearingForm(false);
   };
 
   const setFormDefaultValues = () => {
@@ -439,8 +441,23 @@ const PollingStationQuestionnaire = () => {
           })}
         </YStack>
         <OptionsSheet open={openContextualMenu} setOpen={setOpenContextualMenu}>
-          <OptionSheetContent onClear={() => resetFormValues()} />
+          <OptionSheetContent
+            onClear={() => {
+              setOpenContextualMenu(false);
+              setClearingForm(true);
+            }}
+          />
         </OptionsSheet>
+        {clearingForm && (
+          <WarningDialog
+            title={t("warning_modal.title")}
+            description={t("warning_modal.description")}
+            action={resetFormValues}
+            onCancel={() => setClearingForm(false)}
+            actionBtnText={t("warning_modal.actions.clear")}
+            cancelBtnText={t("warning_modal.actions.cancel")}
+          />
+        )}
       </Screen>
 
       <XStack

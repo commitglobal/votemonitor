@@ -6,7 +6,7 @@ import { Icon } from "./Icon";
 import { Note } from "../common/models/note";
 import { useTranslation } from "react-i18next";
 import EditNoteSheet from "./EditNoteSheet";
-import { Platform } from "react-native";
+import { Keyboard, Platform } from "react-native";
 
 const QuestionNotes = ({
   notes,
@@ -42,6 +42,7 @@ const QuestionNotes = ({
             </Typography>
             <YStack
               onPress={() => {
+                Keyboard.dismiss();
                 setSelectedNote(note);
               }}
               pressStyle={{ opacity: 0.5 }}

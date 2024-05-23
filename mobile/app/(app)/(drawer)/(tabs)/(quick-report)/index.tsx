@@ -81,8 +81,6 @@ interface QuickReportContentProps {
 }
 
 const QuickReportContent = ({ quickReports, isLoading, error }: QuickReportContentProps) => {
-
-
   if (isLoading) {
     return <Typography>Loading...</Typography>;
   }

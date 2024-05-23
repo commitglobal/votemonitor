@@ -1,8 +1,7 @@
 import React from "react";
-
 import { Typography } from "./Typography";
 import { Dialog } from "./Dialog";
-import { AlertDialog, XStack, YStack } from "tamagui";
+import { XStack, YStack } from "tamagui";
 import Button from "./Button";
 
 type WarningDialogProps = {
@@ -35,8 +34,6 @@ const WarningDialog = ({
       }
       footer={
         <XStack gap="$sm" justifyContent="center">
-          {/*  !this 'asChild' is necessary in order to close the modal */}
-
           <Button preset="chromeless" textStyle={{ color: "black" }} onPress={onCancel}>
             {cancelBtnText}
           </Button>
