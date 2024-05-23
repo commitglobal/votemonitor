@@ -200,6 +200,10 @@
       "no_notes": "No attached notes",
       "notes": "Includes attached notes"
     },
+    "attachments": {
+      "notes": "{{count}} Note(s)",
+      "media": "{{count}} Media file(s)"
+    },
     "error": "Error while loading the form data!",
     "menu": {
       "clear": "Clear form (delete all answers)",

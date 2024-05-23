@@ -38,8 +38,9 @@ const FormQuestionListItem = ({
   };
 
   const footerText = () => {
-    const note = numberOfNotes > 0 ? `${numberOfNotes} Note(s)` : "";
-    const attachments = numberOfAttachments > 0 ? `${numberOfAttachments} Media File(s)` : "";
+    const note = numberOfNotes > 0 ? t("attachments.notes", { count: numberOfNotes }) : "";
+    const attachments =
+      numberOfAttachments > 0 ? t("attachments.media", { count: numberOfAttachments }) : "";
 
     return [note, attachments].filter(Boolean).join(", ") || t("questions.no_notes");
   };

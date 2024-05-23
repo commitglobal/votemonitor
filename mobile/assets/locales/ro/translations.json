@@ -200,6 +200,10 @@
       "no_notes": "Fără note atașate",
       "notes": "Include note atașate"
     },
+    "attachments": {
+      "notes": "{{count}} Note(s)",
+      "media": "{{count}} Media file(s)"
+    },
     "error": "Eroare la încărcarea datelor formularului!",
     "menu": {
       "clear": "Ștergeți formularul (ștergeți toate răspunsurile)",
