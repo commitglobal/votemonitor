@@ -38,7 +38,6 @@ function EditTextQuestion({
           [params.languageCode ? params.languageCode : languageCode]: inputPlaceholder,
         }
       : newTranslatedString(availableLanguages, languageCode);
-
     const updatedTextQuestion: TextQuestion = { ...question, inputPlaceholder: updatedInputPlaceholder };
     updateQuestion(questionIdx, updatedTextQuestion);
   }

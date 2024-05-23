@@ -62,8 +62,12 @@ export default function EditQuestionFactory({
   });
 
   function checkIfMissingTranslations() {
-    console.log(question);
-    const genericProperties = question.text[params['languageCode']] && question.helptext?.[params['languageCode']];
+    const textRequired = question.text[params['languageCode']] !== '';
+    const helpTextRule = question.helptext?.[params['languageCode']]
+      ? question.helptext?.[params['languageCode']] !== ''
+      : true;
+    const genericProperties = textRequired && helpTextRule;
+
     switch (question.$questionType) {
       case 'numberQuestion' || 'textQuestion':
         return (

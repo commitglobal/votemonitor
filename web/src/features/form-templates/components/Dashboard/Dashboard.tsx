@@ -19,7 +19,13 @@ import { useDialog } from '@/components/ui/use-dialog';
 import { toast } from '@/components/ui/use-toast';
 import { cn } from '@/lib/utils';
 import { queryClient } from '@/main';
-import { ChevronDownIcon, ChevronUpIcon, Cog8ToothIcon, EllipsisVerticalIcon, FunnelIcon } from '@heroicons/react/24/outline';
+import {
+  ChevronDownIcon,
+  ChevronUpIcon,
+  Cog8ToothIcon,
+  EllipsisVerticalIcon,
+  FunnelIcon,
+} from '@heroicons/react/24/outline';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { ColumnDef, Row } from '@tanstack/react-table';
@@ -44,9 +50,12 @@ export default function FormTemplatesDashboard(): ReactElement {
               {...{
                 onClick: row.getToggleExpandedHandler(),
                 style: { cursor: 'pointer' },
-              }}
-            >
-              {row.getIsExpanded() ? <ChevronUpIcon className='w-4 h-4 ml-auto opacity-50' /> : <ChevronDownIcon className='w-4 h-4 ml-auto opacity-50' />}
+              }}>
+              {row.getIsExpanded() ? (
+                <ChevronUpIcon className='w-4 h-4 ml-auto opacity-50' />
+              ) : (
+                <ChevronDownIcon className='w-4 h-4 ml-auto opacity-50' />
+              )}
             </button>
           ) : (
             ''
@@ -92,37 +101,45 @@ export default function FormTemplatesDashboard(): ReactElement {
             <EllipsisVerticalIcon className='w-[24px] h-[24px] tex t-purple-600' />
           </DropdownMenuTrigger>
           <DropdownMenuContent>
+            <DropdownMenuItem onClick={() => navigateToFormTemplate(row.original.id, row.original.defaultLanguage)}>
+              View
+            </DropdownMenuItem>
 
-            <DropdownMenuItem onClick={() => navigateToFormTemplate(row.original.id, row.original.defaultLanguage)}>View</DropdownMenuItem>
+            {row.depth === 0 ? (
+              <DropdownMenuItem onClick={() => navigateToEdit(row.original.id, row.original.defaultLanguage)}>
+                Edit
+              </DropdownMenuItem>
+            ) : (
+              <DropdownMenuItem
+                onClick={() => navigateToEditTranslation(row.original.id, row.original.defaultLanguage)}>
+                Edit
+              </DropdownMenuItem>
+            )}
 
-            {
-              row.depth === 0 ?
-                <DropdownMenuItem onClick={() => navigateToEdit(row.original.id, row.original.defaultLanguage)}>Edit</DropdownMenuItem>
-                : <DropdownMenuItem onClick={() => navigateToEditTranslation(row.original.id, row.original.defaultLanguage)}>Edit</DropdownMenuItem>
-            }
-
-            {
-              row.depth === 0 ?
-                <DropdownMenuItem onClick={() => handleEditTranslations(row.original)}>Add translations</DropdownMenuItem>
-                : null
-            }
-            {row.depth === 0 ?
+            {row.depth === 0 ? (
+              <DropdownMenuItem onClick={() => handleEditTranslations(row.original)}>Add translations</DropdownMenuItem>
+            ) : null}
+            {row.depth === 0 ? (
               <DropdownMenuItem className='text-red-600' onClick={() => handleDeleteFormTemplate(row.original.id)}>
                 Delete template form
               </DropdownMenuItem>
-              :
-              <DropdownMenuItem className='text-red-600' onClick={() => handleDeleteTranslation(row.original.id, row.original.defaultLanguage)}>
+            ) : (
+              <DropdownMenuItem
+                className='text-red-600'
+                onClick={() => handleDeleteTranslation(row.original.id, row.original.defaultLanguage)}>
                 Delete translation
-              </DropdownMenuItem>}
+              </DropdownMenuItem>
+            )}
           </DropdownMenuContent>
-        </DropdownMenu>)
-    }
+        </DropdownMenu>
+      ),
+    },
   ];
 
   const [searchText, setSearchText] = useState('');
   const [isFiltering, setFiltering] = useState(false);
   const [formTypeFilter, setFormType] = useState('');
-  const [currentFormTemplate, setCurrentFormTemplate] = useState<FormTemplateBase | null>(null)
+  const [currentFormTemplate, setCurrentFormTemplate] = useState<FormTemplateBase | null>(null);
   const navigate = useNavigate();
   const handleSearchInput = (ev: React.FormEvent<HTMLInputElement>) => {
     setSearchText(ev.currentTarget.value);
@@ -135,7 +152,7 @@ export default function FormTemplatesDashboard(): ReactElement {
   const handleEditTranslations = (formTemplate: FormTemplateBase) => {
     setCurrentFormTemplate(formTemplate);
     addTranslationsDialog.trigger();
-  }
+  };
 
   const handleDeleteTranslation = (formTemplateId: string, translationToDelete: string) => {
     deleteTranslationMutation.mutate({ formTemplateId, languageCode: translationToDelete });
@@ -150,11 +167,14 @@ export default function FormTemplatesDashboard(): ReactElement {
   };
 
   const navigateToEditTranslation = (formTemplateId: string, languageCode: string) => {
-    navigate({ to: '/form-templates/$formTemplateId/edit-translation/$languageCode', params: { formTemplateId, languageCode } });
+    navigate({
+      to: '/form-templates/$formTemplateId/edit-translation/$languageCode',
+      params: { formTemplateId, languageCode },
+    });
   };
 
   const deleteTranslationMutation = useMutation({
-    mutationFn: ({ formTemplateId, languageCode }: { formTemplateId: string; languageCode: string; }) => {
+    mutationFn: ({ formTemplateId, languageCode }: { formTemplateId: string; languageCode: string }) => {
       return authApi.delete<void>(`/form-templates/${formTemplateId}/${languageCode}`);
     },
 
@@ -170,10 +190,7 @@ export default function FormTemplatesDashboard(): ReactElement {
 
   const deleteFormTemplateMutation = useMutation({
     mutationFn: (formTemplateId: string) => {
-
-      return authApi.delete<void>(
-        `/form-templates/${formTemplateId}`
-      );
+      return authApi.delete<void>(`/form-templates/${formTemplateId}`);
     },
     onSuccess: () => {
       toast({
@@ -203,21 +220,24 @@ export default function FormTemplatesDashboard(): ReactElement {
 
     // we need to have subrows only for translations
     return originalRow.languages
-      .filter(languageCode => originalRow.defaultLanguage !== languageCode)
-      .map(languageCode => ({
+      .filter((languageCode) => originalRow.defaultLanguage !== languageCode)
+      .map((languageCode) => ({
         ...originalRow,
         languages: [],
         code: `${originalRow.code} - ${languageCode}`,
-        defaultLanguage: languageCode
+        defaultLanguage: languageCode,
       }));
   };
 
   const getRowClassName = (row: Row<FormTemplateBase>): string =>
     cn({ 'bg-secondary-300 bg-opacity-[.15]': row.depth === 1 });
 
-  const rowClickHandler = useCallback((formTemplateId: string, defaultLanguage?: string) => {
-    navigateToFormTemplate(formTemplateId, defaultLanguage ?? '');
-  }, [navigateToFormTemplate]);
+  const rowClickHandler = useCallback(
+    (formTemplateId: string, defaultLanguage?: string) => {
+      navigateToFormTemplate(formTemplateId, defaultLanguage ?? '');
+    },
+    [navigateToFormTemplate]
+  );
 
   return (
     <Layout
@@ -232,9 +252,7 @@ export default function FormTemplatesDashboard(): ReactElement {
           <Card className='w-full pt-0'>
             <CardHeader className='flex flex-column gap-2'>
               <CardTitle className='flex flex-row justify-between items-center px-6'>
-                <div className='text-xl'>
-                  Observation template forms
-                </div>
+                <div className='text-xl'>Observation template forms</div>
                 <div>
                   <CreateDialog title='Create template form'>
                     <CreateTemplateForm />
@@ -243,7 +261,9 @@ export default function FormTemplatesDashboard(): ReactElement {
               </CardTitle>
               <Separator />
               <div className='filters px-6 flex flex-row justify-end gap-4'>
-                <div className='w-[400px]'><Input onChange={handleSearchInput} placeholder='Search' /></div>
+                <div className='w-[400px]'>
+                  <Input onChange={handleSearchInput} placeholder='Search' />
+                </div>
                 <FunnelIcon
                   onClick={changeIsFiltering}
                   className='w-[20px] text-purple-900 cursor-pointer'
@@ -293,7 +313,6 @@ export default function FormTemplatesDashboard(): ReactElement {
                 useQuery={useFormTemplates}
                 getSubrows={getSubrows}
                 getRowClassName={getRowClassName}
-                onRowClick={rowClickHandler}
               />
               {!!currentFormTemplate && (
                 <AddTranslationsDialog
@@ -312,11 +331,9 @@ export default function FormTemplatesDashboard(): ReactElement {
             useQuery={useFormTemplates}
             getSubrows={getSubrows}
             getRowClassName={getRowClassName}
-            onRowClick={rowClickHandler}
           />
         </TabsContent>
       </Tabs>
-
     </Layout>
   );
 }
