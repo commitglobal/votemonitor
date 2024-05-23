@@ -12,22 +12,27 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
 import { queryClient } from '@/main';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation } from '@tanstack/react-query';
-import { useLoaderData, useParams } from '@tanstack/react-router';
+import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 
-import { FormTemplateFull } from '../../models/formTemplate';
-import { formTemplatesKeys } from '../../queries';
-import EditFormTemplateFooter from '../EditFormTemplate/EditFormTemplateFooter';
-import { Route as FormTemplateEditRouter } from '@/routes/form-templates_.$formTemplateId.edit-translation.$languageCode';
 import { Badge } from '@/components/ui/badge';
 import { useLanguages } from '@/features/languages/queries';
+import { Route as FormTemplateEditRouter } from '@/routes/form-templates_.$formTemplateId.edit-translation.$languageCode';
+import { FormTemplateFull } from '../../models/formTemplate';
+import { formTemplateDetailsQueryOptions, formTemplatesKeys } from '../../queries';
+import EditFormTemplateFooter from '../EditFormTemplate/EditFormTemplateFooter';
+import { Route } from '@/routes/form-templates_.$formTemplateId.edit';
 export default function EditFormTemplateTranslation() {
   const { t } = useTranslation();
-  const formTemplate: FormTemplateFull = useLoaderData({ strict: false });
+  
+  const { formTemplateId } = Route.useParams();
+  const formTemplateQuery = useSuspenseQuery(formTemplateDetailsQueryOptions(formTemplateId));
+  const formTemplate = formTemplateQuery.data;
+
+
   const [localQuestions, setLocalQuestions] = useState(formTemplate.questions);
   const { toast } = useToast();
   const { data: languages } = useLanguages();

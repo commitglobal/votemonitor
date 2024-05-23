@@ -16,8 +16,8 @@ public class FormSubmission : AuditableBaseEntity, IAggregateRoot
     public Form Form { get; private set; }
     public int NumberOfQuestionsAnswered { get; private set; }
     public int NumberOfFlaggedAnswers { get; private set; }
-    public IReadOnlyList<BaseAnswer> Answers { get; private set; } = new List<BaseAnswer>().AsReadOnly();
     public SubmissionFollowUpStatus FollowUpStatus { get; private set; }
+    public IReadOnlyList<BaseAnswer> Answers { get; private set; } = new List<BaseAnswer>().AsReadOnly();
 
     private FormSubmission(
         ElectionRound electionRound,

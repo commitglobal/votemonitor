@@ -63,7 +63,12 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
             ngoId = req.NgoId
         };
 
-        var aggregatedFormOverviews = await dbConnectionFactory.GetOpenConnection().QueryAsync<AggregatedFormOverview>(sql, queryArgs);
+        IEnumerable<AggregatedFormOverview> aggregatedFormOverviews = [];
+
+        using (var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct))
+        {
+            aggregatedFormOverviews = await dbConnection.QueryAsync<AggregatedFormOverview>(sql, queryArgs);
+        }
 
         return new Response { AggregatedForms = aggregatedFormOverviews.ToList() };
     }

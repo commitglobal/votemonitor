@@ -1,4 +1,4 @@
-﻿namespace Job.Contracts.Jobs;
+﻿namespace Vote.Monitor.Core.Services.Hangfire;
 
 public interface ISendEmailJob
 {

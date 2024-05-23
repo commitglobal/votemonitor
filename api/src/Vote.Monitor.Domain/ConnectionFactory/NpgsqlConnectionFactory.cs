@@ -3,32 +3,12 @@ using Npgsql;
 
 namespace Vote.Monitor.Domain.ConnectionFactory;
 
-public class NpgsqlConnectionFactory : INpgsqlConnectionFactory, IDisposable
+public class NpgsqlConnectionFactory(string connectionString) : INpgsqlConnectionFactory
 {
-    private readonly string _connectionString;
-    private IDbConnection _connection;
-
-    public NpgsqlConnectionFactory(string connectionString)
+    public async Task<IDbConnection> GetOpenConnectionAsync(CancellationToken ct)
     {
-        _connectionString = connectionString;
-    }
-
-    public IDbConnection GetOpenConnection()
-    {
-        if (_connection == null || _connection.State != ConnectionState.Open)
-        {
-            _connection = new NpgsqlConnection(_connectionString);
-            _connection.Open();
-        }
-
-        return _connection;
-    }
-
-    public void Dispose()
-    {
-        if (_connection != null && _connection.State == ConnectionState.Open)
-        {
-            _connection.Dispose();
-        }
+        var connection = new NpgsqlConnection(connectionString);
+        await connection.OpenAsync(ct);
+        return connection;
     }
 }

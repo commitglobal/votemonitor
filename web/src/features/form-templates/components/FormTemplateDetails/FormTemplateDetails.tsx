@@ -1,3 +1,4 @@
+import { getTranslationOrDefault } from '@/common/types';
 import Layout from '@/components/layout/Layout';
 import PreviewQuestionFactory from '@/components/questionsEditor/preview/PreviewQuestionFactory';
 import { Badge } from '@/components/ui/badge';
@@ -8,14 +9,17 @@ import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Route as FormTemplateDetailsRoute } from '@/routes/form-templates/$formTemplateId_.$languageCode';
 import { PencilIcon } from '@heroicons/react/24/outline';
-import { useLoaderData, useNavigate } from '@tanstack/react-router';
+import { useSuspenseQuery } from '@tanstack/react-query';
+import { useNavigate } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
-import { FormTemplateFull, mapFormTemplateType } from '../../models/formTemplate';
-import { getTranslationOrDefault } from '@/common/types';
+import { mapFormTemplateType } from '../../models/formTemplate';
+import { formTemplateDetailsQueryOptions } from '../../queries';
 
 export default function FormTemplateDetails() {
-  const formTemplate: FormTemplateFull = useLoaderData({ strict: false });
   const { formTemplateId, languageCode } = FormTemplateDetailsRoute.useParams();
+  const formTemplateQuery = useSuspenseQuery(formTemplateDetailsQueryOptions(formTemplateId));
+  const formTemplate = formTemplateQuery.data;
+
   const navigate = useNavigate();
   const { t } = useTranslation();
   const navigateToEdit = () => {

@@ -33,7 +33,6 @@ import { Route as FormsFormIdImport } from './routes/forms/$formId'
 import { Route as ElectionRoundsElectionRoundIdImport } from './routes/election-rounds/$electionRoundId'
 import { Route as ElectionEventTabImport } from './routes/election-event/$tab'
 import { Route as ResponsesQuickReportsQuickReportIdImport } from './routes/responses/quick-reports/$quickReportId'
-import { Route as ResponsesFormIdQuickReportsImport } from './routes/responses/$formId.quick-reports'
 import { Route as ResponsesFormIdAggregatedImport } from './routes/responses/$formId.aggregated'
 import { Route as ObserversObserverIdEditImport } from './routes/observers_.$observerId.edit'
 import { Route as MonitoringObserversEditMonitoringObserverIdImport } from './routes/monitoring-observers/edit.$monitoringObserverId'
@@ -158,12 +157,6 @@ const ElectionEventTabRoute = ElectionEventTabImport.update({
 const ResponsesQuickReportsQuickReportIdRoute =
   ResponsesQuickReportsQuickReportIdImport.update({
     path: '/responses/quick-reports/$quickReportId',
-    getParentRoute: () => rootRoute,
-  } as any)
-
-const ResponsesFormIdQuickReportsRoute =
-  ResponsesFormIdQuickReportsImport.update({
-    path: '/responses/$formId/quick-reports',
     getParentRoute: () => rootRoute,
   } as any)
 
@@ -345,10 +338,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResponsesFormIdAggregatedImport
       parentRoute: typeof rootRoute
     }
-    '/responses/$formId/quick-reports': {
-      preLoaderRoute: typeof ResponsesFormIdQuickReportsImport
-      parentRoute: typeof rootRoute
-    }
     '/responses/quick-reports/$quickReportId': {
       preLoaderRoute: typeof ResponsesQuickReportsQuickReportIdImport
       parentRoute: typeof rootRoute
@@ -403,7 +392,6 @@ export const routeTree = rootRoute.addChildren([
   MonitoringObserversEditMonitoringObserverIdRoute,
   ObserversObserverIdEditRoute,
   ResponsesFormIdAggregatedRoute,
-  ResponsesFormIdQuickReportsRoute,
   ResponsesQuickReportsQuickReportIdRoute,
   FormTemplatesFormTemplateIdEditTranslationLanguageCodeRoute,
   FormsFormIdEditTranslationLanguageCodeRoute,

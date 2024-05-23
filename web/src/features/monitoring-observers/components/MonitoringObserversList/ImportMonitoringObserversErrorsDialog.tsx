@@ -25,7 +25,7 @@ function ImportMonitoringObserversErrorsDialog({
 }: ImportMonitoringObserversErrorsDialogProps) {
 
     const downloadImportErrorsFile = async () => {
-        const res = await authApi.get(`/import-errors/${fileId}`);
+        const res = await authApi.get(`/import-errors/${fileId}`, { responseType: "blob" });
         const csvData = res.data;
 
         const blob = new Blob([csvData], { type: 'text/csv' });

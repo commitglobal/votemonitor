@@ -31,6 +31,7 @@ const MultiSelectAggregateContent = forwardRef<ChartJSOrUndefined<'bar', number[
           data={data}
           options={{
             maintainAspectRatio: false,
+            devicePixelRatio: 1.5,
             datasets: { bar: { barThickness: 10, backgroundColor: getColorsForSelectChart(aggregate.question.options) } },
             indexAxis: 'y',
             plugins: {

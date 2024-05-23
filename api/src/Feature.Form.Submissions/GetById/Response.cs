@@ -16,6 +16,9 @@ public class Response
 
     [JsonConverter(typeof(SmartEnumNameConverter<FormType, string>))]
     public FormType FormType { get; init; } = default!;
+    
+    [JsonConverter(typeof(SmartEnumNameConverter<SubmissionFollowUpStatus, string>))]
+    public SubmissionFollowUpStatus FollowUpStatus { get; init; } = default!;
 
     public Guid PollingStationId { get; init; }
     public string Level1 { get; init; } = default!;

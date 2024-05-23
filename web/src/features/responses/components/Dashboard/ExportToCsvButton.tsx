@@ -42,12 +42,12 @@ export function ExportToCsvButton(): FunctionComponent {
 
     const response = await authApi.get(
       `/election-rounds/${electionRoundId}/form-submissions:getExportedData`,
-      { params }
+      { params, responseType: "blob" }
     );
 
-    const csvData = response.data;
+    const excelData = response.data;
+    const blob = new Blob([excelData], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;' });
 
-    const blob = new Blob([csvData], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
     const url = window.URL.createObjectURL(blob);
 
     const a = document.createElement('a');

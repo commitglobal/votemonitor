@@ -1,24 +1,26 @@
-import { useLoaderData, useNavigate } from '@tanstack/react-router';
-import { Observer } from '../../models/Observer';
+import { authApi } from '@/common/auth-api';
 import Layout from '@/components/layout/Layout';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
-import { useForm } from 'react-hook-form';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Separator } from '@/components/ui/separator';
+import { observerDetailsQueryOptions } from '@/routes/observers/$observerId';
+import { Route } from '@/routes/observers_.$observerId.edit';
 import { TrashIcon } from '@heroicons/react/24/outline';
-import { authApi } from '@/common/auth-api';
-import { useMutation } from '@tanstack/react-query';
-
-const phoneRegex = new RegExp(/^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/);
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
+import { useNavigate } from '@tanstack/react-router';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 
 export default function EditObserver() {
   const navigate = useNavigate();
-  const observer: Observer = useLoaderData({ strict: false });
+  const { observerId } = Route.useParams();
+  const observerQuery = useSuspenseQuery(observerDetailsQueryOptions(observerId));
+  const observer = observerQuery.data;
+
   const editObserverFormSchema = z.object({
     name: z.string().min(2, {
       message: 'This field is mandatory',
@@ -26,8 +28,7 @@ export default function EditObserver() {
     login: z.string().min(1, { message: 'This field is mandatory' }).email('Email is not valid'),
     phoneNumber: z
       .string()
-      .min(1, { message: 'This field is required' })
-      .regex(phoneRegex, 'Phone number is not valid'),
+      .min(1, { message: 'This field is required' }),
     status: z.string(),
   });
 

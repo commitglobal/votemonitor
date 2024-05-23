@@ -9,14 +9,18 @@ import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Route as FormDetailsRoute } from '@/routes/forms/$formId_.$languageCode';
 import { PencilIcon } from '@heroicons/react/24/outline';
-import { Link, useLoaderData, useNavigate } from '@tanstack/react-router';
+import { Link, useNavigate } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
 
-import {type FormFull, mapFormType } from '../../models/form';
+import { useSuspenseQuery } from '@tanstack/react-query';
+import { mapFormType } from '../../models/form';
+import { formDetailsQueryOptions } from '../../queries';
 
 export default function FormDetails(): FunctionComponent {
-  const form: FormFull = useLoaderData({ strict: false });
   const { formId, languageCode } = FormDetailsRoute.useParams();
+  const formQuery = useSuspenseQuery(formDetailsQueryOptions(formId));
+  const form = formQuery.data;
+  
   const navigate = useNavigate();
   const { t } = useTranslation();
   const navigateToEdit = (): void => {

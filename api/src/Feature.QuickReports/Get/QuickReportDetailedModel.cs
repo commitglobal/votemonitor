@@ -26,6 +26,9 @@ public record QuickReportDetailedModel
     public string? Number { get; init; }
     public string? Address { get; init; }
     public string? PollingStationDetails { get; init; }
+
+    [JsonConverter(typeof(SmartEnumNameConverter<QuickReportFollowUpStatus, string>))]
+    public QuickReportFollowUpStatus FollowUpStatus { get; set; }
     public List<QuickReportAttachmentModel> Attachments { get; init; }
 
     public static QuickReportDetailedModel FromEntity(QuickReport quickReport, IEnumerable<QuickReportAttachmentModel> attachments)
@@ -50,7 +53,8 @@ public record QuickReportDetailedModel
             Address = quickReport.PollingStation?.Address,
             PollingStationDetails = quickReport.PollingStationDetails,
             Timestamp = quickReport.LastModifiedOn ?? quickReport.CreatedOn,
-            Attachments = attachments.ToList()
+            Attachments = attachments.ToList(),
+            FollowUpStatus = quickReport.FollowUpStatus
         };
     }
 
