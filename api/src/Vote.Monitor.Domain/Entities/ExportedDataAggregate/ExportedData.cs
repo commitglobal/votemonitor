@@ -7,23 +7,25 @@ public class ExportedData : BaseEntity, IAggregateRoot
     public ElectionRound ElectionRound { get; private set; }
     public Guid NgoId { get; private set; }
     public Ngo Ngo { get; private set; }
+    public ExportedDataType ExportedDataType { get; private set; }
     public ExportedDataStatus ExportStatus { get; private set; }
     public string? FileName { get; private set; }
     public string? Base64EncodedData { get; private set; }
     public DateTime StartedAt { get; private set; }
     public DateTime? CompletedAt { get; private set; }
 
-    private ExportedData(Guid electionRoundId, Guid ngoId, DateTime startedAt) : base(Guid.NewGuid())
+    private ExportedData(Guid electionRoundId, Guid ngoId, ExportedDataType exportedDataType, DateTime startedAt) : base(Guid.NewGuid())
     {
         ElectionRoundId = electionRoundId;
         NgoId = ngoId;
         ExportStatus = ExportedDataStatus.Started;
         StartedAt = startedAt;
+        ExportedDataType = exportedDataType;
     }
 
-    public static ExportedData Create(Guid electionRoundId, Guid ngoId, DateTime startedAt)
+    public static ExportedData Create(Guid electionRoundId, Guid ngoId, ExportedDataType dataType, DateTime startedAt)
     {
-        return new ExportedData(electionRoundId, ngoId, startedAt);
+        return new ExportedData(electionRoundId, ngoId, dataType, startedAt);
     }
 
     public void Fail()

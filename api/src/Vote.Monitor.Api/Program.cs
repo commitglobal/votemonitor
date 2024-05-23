@@ -32,6 +32,7 @@ using Vote.Monitor.Domain.Entities.QuickReportAggregate;
 using Vote.Monitor.Module.Notifications;
 using Ardalis.SmartEnum.Dapper;
 using Dapper;
+using Feature.DataExport;
 using Feature.ImportErrors;
 using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
 
@@ -127,6 +128,7 @@ builder.Services.AddMonitoringObserversFeature();
 builder.Services.AddFormSubmissionsFeature();
 builder.Services.AddQuickReportsFeature();
 builder.Services.AddImportErrorsFeature();
+builder.Services.AddDataExportFeature();
 
 builder.Services.AddAuthorization();
 

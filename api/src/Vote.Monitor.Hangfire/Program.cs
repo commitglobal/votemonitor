@@ -11,7 +11,6 @@ using Vote.Monitor.Hangfire.Jobs;
 using Vote.Monitor.Core.Services.Serialization;
 using Vote.Monitor.Core.Services.Time;
 using Vote.Monitor.Hangfire.Extensions;
-using Vote.Monitor.Hangfire.Jobs.ExportData;
 using Vote.Monitor.Hangfire.Services;
 using Dapper;
 using Vote.Monitor.Core.Converters;
@@ -31,8 +30,11 @@ using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 using Vote.Monitor.Domain.Entities.NgoAggregate;
 using Vote.Monitor.Domain.Entities.QuickReportAggregate;
-using Vote.Monitor.Hangfire.Jobs.ExportData.ReadModels;
 using Ardalis.SmartEnum.Dapper;
+using Vote.Monitor.Hangfire.Jobs.Export.FormSubmissions;
+using Vote.Monitor.Hangfire.Jobs.Export.FormSubmissions.ReadModels;
+using Vote.Monitor.Hangfire.Jobs.Export.QuickReports;
+using Vote.Monitor.Hangfire.Jobs.Export.QuickReports.ReadModels;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOptions();
@@ -57,7 +59,8 @@ builder.Services.AddLogging(logging =>
 SqlMapper.AddTypeHandler(typeof(BaseQuestion[]), new JsonToObjectConverter<BaseQuestion[]>());
 SqlMapper.AddTypeHandler(typeof(BaseAnswer[]), new JsonToObjectConverter<BaseAnswer[]>());
 SqlMapper.AddTypeHandler(typeof(NoteModel[]), new JsonToObjectConverter<NoteModel[]>());
-SqlMapper.AddTypeHandler(typeof(AttachmentModel[]), new JsonToObjectConverter<AttachmentModel[]>());
+SqlMapper.AddTypeHandler(typeof(SubmissionAttachmentModel[]), new JsonToObjectConverter<SubmissionAttachmentModel[]>());
+SqlMapper.AddTypeHandler(typeof(QuickReportAttachmentModel[]), new JsonToObjectConverter<QuickReportAttachmentModel[]>());
 
 #region Register type handleers for Dapper
 SqlMapper.AddTypeHandler(typeof(UserStatus), new SmartEnumByValueTypeHandler<UserStatus, string>());
@@ -99,10 +102,12 @@ builder.Services.AddFileStorage(builder.Configuration.GetRequiredSection(FileSto
 builder.Services.AddScoped<IRecurringJobManager, RecurringJobManager>();
 builder.Services.AddScoped<AuditLogCleanerJob>();
 builder.Services.AddScoped<ExportedDataCleanerJob>();
+builder.Services.AddScoped<ExportedDataFailerJob>();
 builder.Services.AddScoped<ImportValidationErrorsCleanerJob>();
 
 builder.Services.AddScoped<ISendEmailJob, SendEmailJob>();
 builder.Services.AddScoped<IExportFormSubmissionsJob, ExportFormSubmissionsJob>();
+builder.Services.AddScoped<IExportQuickReportsJob, ExportQuickReportsJob>();
 #endregion
 
 builder.Services.AddHangfire((sp,config) =>
@@ -122,7 +127,10 @@ builder.Services.AddHangfire((sp,config) =>
     config.UseSerilogLogProvider();
 });
 
-builder.Services.AddHangfireServer();
+builder.Services.AddHangfireServer(options=>
+{
+    options.WorkerCount = 5;
+});
 
 var app = builder.Build();
 

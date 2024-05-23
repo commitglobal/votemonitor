@@ -1,8 +1,8 @@
 ﻿using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Domain.Entities.FormBase.Questions;
-using Vote.Monitor.Hangfire.Jobs.ExportData;
-using Vote.Monitor.Hangfire.Jobs.ExportData.ReadModels;
+using Vote.Monitor.Hangfire.Jobs.Export.FormSubmissions;
+using Vote.Monitor.Hangfire.Jobs.Export.FormSubmissions.ReadModels;
 
 namespace Vote.Monitor.Hangfire.UnitTests.Jobs.ExportData;
 
@@ -98,6 +98,7 @@ public class FormSubmissionsDataTableGeneratorTests
     [
         "SubmissionId",
         "TimeSubmitted",
+        "FollowUpStatus",
         "Level1",
         "Level2",
         "Level3",
@@ -123,11 +124,9 @@ public class FormSubmissionsDataTableGeneratorTests
         var result = generator.Please();
 
         // Assert
-        var expectedColumns = new[] { "SubmissionId","TimeSubmitted", "Level1", "Level2", "Level3", "Level4", "Level5",
-            "Number", "MonitoringObserverId", "FirstName", "LastName", "Email", "PhoneNumber" };
         result.Should().NotBeNull();
-        result.header.Should().ContainInOrder(expectedColumns);
-        result.header.Should().HaveSameCount(expectedColumns);
+        result.header.Should().ContainInOrder(_submissionColumns);
+        result.header.Should().HaveSameCount(_submissionColumns);
     }
 
     [Fact]
@@ -613,6 +612,7 @@ public class FormSubmissionsDataTableGeneratorTests
         [
             submission.SubmissionId.ToString(),
             submission.TimeSubmitted.ToString("s"),
+            submission.FollowUpStatus.Value,
             submission.Level1,
             submission.Level2,
             submission.Level3,
@@ -636,12 +636,12 @@ public class FormSubmissionsDataTableGeneratorTests
         ];
     }
 
-    private AttachmentModel[] FakeAttachmentsFor(Guid questionId)
+    private SubmissionAttachmentModel[] FakeAttachmentsFor(Guid questionId)
     {
         return
         [
-            new AttachmentModel { QuestionId = questionId, PresignedUrl = Attachment1Url },
-            new AttachmentModel { QuestionId = questionId, PresignedUrl = Attachment2Url },
+            new SubmissionAttachmentModel { QuestionId = questionId, PresignedUrl = Attachment1Url },
+            new SubmissionAttachmentModel { QuestionId = questionId, PresignedUrl = Attachment2Url },
         ];
     }
 }

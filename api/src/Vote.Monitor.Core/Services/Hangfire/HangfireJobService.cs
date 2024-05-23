@@ -12,6 +12,11 @@ public class HangfireJobService(IBackgroundJobClient backgroundJobClient) : IJob
 
     public void ExportFormSubmissions(Guid electionRoundId, Guid ngoId, Guid exportedDataId)
     {
-        backgroundJobClient.Enqueue<IExportFormSubmissionsJob>(job => job.ExportFormSubmissions(electionRoundId, ngoId, exportedDataId, CancellationToken.None));
+        backgroundJobClient.Enqueue<IExportFormSubmissionsJob>(job => job.Run(electionRoundId, ngoId, exportedDataId, CancellationToken.None));
+    }
+
+    public void ExportQuickReportsSubmissions(Guid electionRoundId, Guid ngoId, Guid exportedDataId)
+    {
+        backgroundJobClient.Enqueue<IExportQuickReportsJob>(job => job.Run(electionRoundId, ngoId, exportedDataId, CancellationToken.None));
     }
 }
