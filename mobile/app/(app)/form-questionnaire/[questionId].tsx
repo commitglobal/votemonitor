@@ -209,6 +209,30 @@ const FormQuestionnaire = () => {
   };
 
   const onClearForm = () => {
+    if (selectedPollingStation?.pollingStationId && activeElectionRound?.id) {
+      // Remove current answer
+      const updatedAnswers = {
+        ...answers,
+      };
+
+      delete updatedAnswers[questionId];
+
+      // 1. Find dependent questions for the current one and remove their answers
+      currentForm?.questions
+        ?.filter((q) => q.displayLogic?.parentQuestionId === questionId)
+        .forEach((q) => {
+          if (updatedAnswers) delete updatedAnswers[q.id];
+        });
+
+      updateSubmission({
+        pollingStationId: selectedPollingStation?.pollingStationId,
+        electionRoundId: activeElectionRound?.id,
+        formId: currentForm?.id as string,
+        answers: Object.values(updatedAnswers).filter(Boolean) as ApiFormAnswer[],
+      });
+    }
+
+    // TODO: @radulescuandrew maybe we can get rid of this, or at least shouldDirty: false. To be checked after API is ready
     setValue(activeQuestion?.question?.id, "", { shouldDirty: true });
   };
 
