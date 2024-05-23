@@ -16,6 +16,7 @@ public class ExportedDataConfiguration : IEntityTypeConfiguration<ExportedData>
         builder.Property(e => e.FileName).HasMaxLength(256);
         builder.Property(e => e.StartedAt).IsRequired();
         builder.Property(e => e.ExportStatus).IsRequired();
+        builder.Property(e => e.ExportedDataType).IsRequired();
         builder.Property(e => e.Base64EncodedData);
         builder.Property(e => e.CompletedAt);
 

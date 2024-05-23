@@ -18,7 +18,7 @@ namespace Vote.Monitor.Domain.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.5")
+                .HasAnnotation("ProductVersion", "8.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.HasPostgresExtension(modelBuilder, "uuid-ossp");
@@ -2997,6 +2997,10 @@ namespace Vote.Monitor.Domain.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("ExportStatus")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ExportedDataType")
                         .IsRequired()
                         .HasColumnType("text");
 

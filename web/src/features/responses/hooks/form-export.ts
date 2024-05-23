@@ -8,23 +8,28 @@ import {
   type UseQueryOptions,
 } from '@tanstack/react-query';
 import {
-  type FormSubmissionsExportedDataDetails,
-  type FormSubmissionsExport,
+  type ExportedDataDetails,
+  type DataExport,
   ExportStatus,
-} from '../models/form-export';
+  ExportedDataType,
+} from '../models/data-export';
 import { buildURLSearchParams } from '@/lib/utils';
 
-type UseFormSubmissionsExportOptions = UseMutationOptions<FormSubmissionsExport, Error, void>;
+type UseFormSubmissionsExportOptions = UseMutationOptions<DataExport, Error, void>;
 
-export function useFormSubmissionsExport(
+export function useStartDataExport(
+  exportedDataType: ExportedDataType,
   options?: UseFormSubmissionsExportOptions
-): UseMutationResult<FormSubmissionsExport, Error, void> {
+): UseMutationResult<DataExport, Error, void> {
   return useMutation({
     mutationFn: async () => {
       const electionRoundId = localStorage.getItem('electionRoundId');
 
-      const response = await authApi.post<FormSubmissionsExport>(
-        `/election-rounds/${electionRoundId}/form-submissions:export`
+      const response = await authApi.post<DataExport>(
+        `/election-rounds/${electionRoundId}/exported-data`,
+        {
+          exportedDataType
+        }
       );
 
       return response.data;
@@ -34,24 +39,21 @@ export function useFormSubmissionsExport(
 }
 
 type UseFormSubmissionsExportedDataDetailsOptions = Omit<
-  UseQueryOptions<FormSubmissionsExportedDataDetails>,
+  UseQueryOptions<ExportedDataDetails>,
   'queryKey'
 >;
 
 export function useFormSubmissionsExportedDataDetails(
   exportedDataId: string,
   options?: UseFormSubmissionsExportedDataDetailsOptions
-): UseQueryResult<FormSubmissionsExportedDataDetails> {
-  const params = buildURLSearchParams({ exportedDataId });
-
+): UseQueryResult<ExportedDataDetails> {
   return useQuery({
-    queryKey: ['form-submissions-exported-data-details'],
+    queryKey: ['exported-data-details', exportedDataId],
     queryFn: async () => {
       const electionRoundId = localStorage.getItem('electionRoundId');
 
-      const response = await authApi.get<FormSubmissionsExportedDataDetails>(
-        `/election-rounds/${electionRoundId}/form-submissions:getExportedDataDetails`,
-        { params }
+      const response = await authApi.get<ExportedDataDetails>(
+        `/election-rounds/${electionRoundId}/exported-data/${exportedDataId}:details`,
       );
 
       return response.data;
