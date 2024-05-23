@@ -459,7 +459,7 @@ const FormQuestionnaire = () => {
                                 onChange({ ...value, textValue });
                               }}
                               maxLength={1024}
-                              helper={t("max", {
+                              helper={t("form.max", {
                                 value: 1024,
                               })}
                             />
@@ -513,7 +513,7 @@ const FormQuestionnaire = () => {
                                   onChange(selections);
                                 }}
                                 maxLength={1024}
-                                helper={t("max", {
+                                helper={t("form.max", {
                                   value: 1024,
                                 })}
                               />
