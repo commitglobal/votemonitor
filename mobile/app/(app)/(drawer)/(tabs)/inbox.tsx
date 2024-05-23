@@ -1,4 +1,4 @@
-import { Spinner, YStack } from "tamagui";
+import { Spinner, YStack, useWindowDimensions } from "tamagui";
 import { Screen } from "../../../../components/Screen";
 import Header from "../../../../components/Header";
 import { Typography } from "../../../../components/Typography";
@@ -18,11 +18,17 @@ import NotificationListItem from "../../../../components/NotificationListItem";
 import OptionsSheet from "../../../../components/OptionsSheet";
 import { useAppState } from "../../../../hooks/useAppState";
 import { useQueryClient } from "@tanstack/react-query";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const Inbox = () => {
   const queryClient = useQueryClient();
   const { t, i18n } = useTranslation("inbox");
   const navigation = useNavigation();
+
+  const { height } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
+  // height for the scrollview with the notifications received
+  const scrollHeight = height - 100 - 60 - insets.top - insets.bottom;
 
   const { activeElectionRound } = useUserData();
   const { data, isLoading } = useNotifications(activeElectionRound?.id);
@@ -75,7 +81,7 @@ const Inbox = () => {
               {`${t("banner", { ngoName: ngoName || t("your_organization") })}`}
             </Typography>
           </YStack>
-          <YStack padding="$md" style={{ flex: 1 }}>
+          <YStack padding="$md" style={{ flex: 1 }} height={scrollHeight}>
             <ListView<any>
               data={displayedNotifications}
               showsVerticalScrollIndicator={false}

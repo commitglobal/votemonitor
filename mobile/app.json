@@ -45,9 +45,9 @@
       "eas": {
         "projectId": "93e17628-ddcd-4e67-849c-b356a18a6082"
       },
-      "message": "Fix PS wizard - 3",
-      "updateCritical": 20,
-      "updateVersion": 20
+      "message": "Inbox fix",
+      "updateCritical": 21,
+      "updateVersion": 21
     },
     "owner": "commit-global",
     "runtimeVersion": {
