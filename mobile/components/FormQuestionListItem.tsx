@@ -11,16 +11,21 @@ export enum QuestionStatus {
 }
 
 export interface FormQuestionListItemProps {
+  id: string;
   index: number;
   numberOfQuestions: number;
   status: QuestionStatus;
   question: string;
+  numberOfNotes: number;
+  numberOfAttachments: number;
   onClick: () => void;
 }
 
 const FormQuestionListItem = ({
   index,
   numberOfQuestions,
+  numberOfNotes,
+  numberOfAttachments,
   status,
   question,
   onClick,
@@ -30,6 +35,13 @@ const FormQuestionListItem = ({
   const QuestionStatusToTextWrapper = {
     [QuestionStatus.ANSWERED]: t("questions.answered"),
     [QuestionStatus.NOT_ANSWERED]: t("questions.not_answered"),
+  };
+
+  const footerText = () => {
+    const note = numberOfNotes > 0 ? `${numberOfNotes} Note(s)` : "";
+    const attachments = numberOfAttachments > 0 ? `${numberOfAttachments} Media File(s)` : "";
+
+    return [note, attachments].filter(Boolean).join(", ") || t("questions.no_notes");
   };
 
   return (
@@ -42,8 +54,7 @@ const FormQuestionListItem = ({
         <Typography preset="body2">{question}</Typography>
       </YStack>
 
-      {/* TODO: change this text in case there are attached notes */}
-      <CardFooter text={t("questions.no_notes")}></CardFooter>
+      <CardFooter text={footerText()}></CardFooter>
     </Card>
   );
 };

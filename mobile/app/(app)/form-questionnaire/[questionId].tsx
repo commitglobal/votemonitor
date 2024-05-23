@@ -21,7 +21,6 @@ import WizardDateFormInput from "../../../components/WizardFormInputs/WizardDate
 import WizardRadioFormInput from "../../../components/WizardFormInputs/WizardRadioFormInput";
 import WizardFormElement from "../../../components/WizardFormInputs/WizardFormElement";
 import CheckboxInput from "../../../components/Inputs/CheckboxInput";
-import Input from "../../../components/Inputs/Input";
 import WizardRatingFormInput from "../../../components/WizardFormInputs/WizardRatingFormInput";
 import { useFormSubmissionMutation } from "../../../services/mutations/form-submission.mutation";
 import OptionsSheet from "../../../components/OptionsSheet";

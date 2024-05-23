@@ -21,6 +21,8 @@ import FormOverview from "../../../../../../components/FormOverview";
 import { useTranslation } from "react-i18next";
 import { useFormSubmissionMutation } from "../../../../../../services/mutations/form-submission.mutation";
 import { shouldDisplayQuestion } from "../../../../../../services/form.parser";
+import { useAttachments } from "../../../../../../services/queries/attachments.query";
+import { useNotesForFormId } from "../../../../../../services/queries/notes.query";
 
 type SearchParamsType = {
   formId: string;
@@ -57,15 +59,29 @@ const FormDetails = () => {
     error: answersError,
   } = useFormAnswers(activeElectionRound?.id, selectedPollingStation?.pollingStationId, formId);
 
+  const { data: attachments } = useAttachments(
+    activeElectionRound?.id,
+    selectedPollingStation?.pollingStationId,
+    formId,
+  );
+
+  const { data: notes } = useNotesForFormId(
+    activeElectionRound?.id,
+    selectedPollingStation?.pollingStationId,
+    formId,
+  );
+
   const questions = useMemo(() => {
     return currentForm?.questions
       .filter((q) => shouldDisplayQuestion(q, answers))
       .map((q) => ({
         status: answers?.[q.id] ? QuestionStatus.ANSWERED : QuestionStatus.NOT_ANSWERED,
         question: q.text[language],
+        numberOfNotes: notes?.[q.id]?.length || 0,
+        numberOfAttachments: attachments?.[q.id]?.length || 0,
         id: q.id,
       }));
-  }, [currentForm, answers]);
+  }, [currentForm, answers, attachments, notes]);
 
   const { numberOfQuestions, formTitle, languages } = useMemo(() => {
     return {
@@ -142,15 +158,12 @@ const FormDetails = () => {
           setOptionSheetOpen(true);
         }}
       />
-      <YStack
-        paddingTop={28}
-        gap="$xl"
-        paddingHorizontal="$md"
-        style={{ flex: 1 }}
-      >
+      <YStack paddingTop={28} gap="$xl" paddingHorizontal="$md" style={{ flex: 1 }}>
         <ListView<
           Pick<FormQuestionListItemProps, "question" | "status"> & {
             id: string;
+            numberOfAttachments: number;
+            numberOfNotes: number;
           }
         >
           data={questions}
