@@ -27,7 +27,7 @@ public class OrphanedDataCleanerService(INpgsqlConnectionFactory connectionFacto
                     AND "MonitoringObserverId" = @monitoringObserverId
                     AND a."PollingStationId" = @pollingStationId
                     AND a."FormId"= @formId
-                    AND a."QuestionId" in ANY(@questionIds)
+                    AND a."QuestionId" = ANY(@questionIds)
                 )
                 """;
 
@@ -41,7 +41,7 @@ public class OrphanedDataCleanerService(INpgsqlConnectionFactory connectionFacto
                     AND "MonitoringObserverId" = @monitoringObserverId
                     AND n."PollingStationId" = @pollingStationId
                     AND n."FormId"= @formId
-                    AND n."QuestionId" in ANY(@questionIds)
+                    AND n."QuestionId" = ANY(@questionIds)
                 )
                 """;
 
