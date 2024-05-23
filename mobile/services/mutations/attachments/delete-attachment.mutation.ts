@@ -31,11 +31,11 @@ export const useDeleteAttachment = (
       await queryClient.cancelQueries({ queryKey: getAttachmentsQK });
 
       // Snapshot the previous value
-      const prevAttachments = queryClient.getQueryData(getAttachmentsQK);
+      const prevAttachments = queryClient.getQueryData<AttachmentApiResponse[]>(getAttachmentsQK);
 
       // Optimistically update to the new value (remove the attachment to delete)
       queryClient.setQueryData(getAttachmentsQK, (prevAttachments: AttachmentApiResponse[]) => {
-        const updatedAttachments = prevAttachments.filter(
+        const updatedAttachments = prevAttachments?.filter(
           (attachment) => attachment.id !== payload.id,
         );
         return updatedAttachments;
