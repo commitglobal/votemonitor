@@ -38,6 +38,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Authorization.Policies\Authorization.Policies.csproj" />
+    <ProjectReference Include="..\Feature.DataExport\Feature.DataExport.csproj" />
     <ProjectReference Include="..\Feature.Form.Submissions\Feature.Form.Submissions.csproj" />
     <ProjectReference Include="..\Feature.Forms\Feature.Forms.csproj" />
     <ProjectReference Include="..\Feature.FormTemplates\Feature.FormTemplates.csproj" />
