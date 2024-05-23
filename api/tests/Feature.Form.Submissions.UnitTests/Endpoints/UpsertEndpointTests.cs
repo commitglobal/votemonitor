@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using Feature.Form.Submissions.Services;
 using Microsoft.AspNetCore.Authorization;
 using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
 
@@ -11,6 +12,7 @@ public class UpsertEndpointTests
     private readonly IReadRepository<MonitoringObserver> _monitoringObserverRepository;
     private readonly IReadRepository<FormAggregate> _formRepository;
     private readonly IAuthorizationService _authorizationService;
+    private readonly IOrphanedDataCleanerService _cleanerService;
 
     private readonly Upsert.Endpoint _endpoint;
 
@@ -21,8 +23,14 @@ public class UpsertEndpointTests
         _monitoringObserverRepository = Substitute.For<IReadRepository<MonitoringObserver>>();
         _formRepository = Substitute.For<IReadRepository<FormAggregate>>();
         _authorizationService = Substitute.For<IAuthorizationService>();
+        _cleanerService = Substitute.For<IOrphanedDataCleanerService>();
 
-        _endpoint = Factory.Create<Upsert.Endpoint>(_repository, _pollingStationRepository, _monitoringObserverRepository, _formRepository, _authorizationService);
+        _endpoint = Factory.Create<Upsert.Endpoint>(_repository,
+            _pollingStationRepository,
+            _monitoringObserverRepository,
+            _formRepository,
+            _authorizationService,
+            _cleanerService);
 
         _authorizationService
             .AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object>(),
@@ -112,6 +120,51 @@ public class UpsertEndpointTests
 
         // Assert
         await _repository.Received(1).UpdateAsync(formSubmission);
+
+        result
+            .Should().BeOfType<Results<Ok<FormSubmissionModel>, NotFound>>()
+            .Which
+            .Result.Should().BeOfType<Ok<FormSubmissionModel>>();
+    }
+
+    [Fact]
+    public async Task ShouldDeleteOrphanedData_WhenFormSubmissionExists()
+    {
+        // Arrange
+        var form = new FormAggregateFaker().Generate();
+        _formRepository
+            .FirstOrDefaultAsync(Arg.Any<GetFormSpecification>())
+            .Returns(form);
+
+        var formSubmission = new FormSubmissionFaker().Generate();
+        _repository.FirstOrDefaultAsync(Arg.Any<GetFormSubmissionSpecification>())
+            .Returns(formSubmission);
+
+        // Act
+        var numberQuestionId = form.Questions.First(x => x.Discriminator == QuestionTypes.NumberQuestionType).Id;
+
+        var request = new Upsert.Request
+        {
+            ElectionRoundId = formSubmission.ElectionRoundId,
+            PollingStationId = formSubmission.PollingStationId,
+            ObserverId = Guid.NewGuid(),
+            Answers = [
+                new NumberAnswerRequest
+                {
+                    QuestionId = numberQuestionId,
+                    Value = 69420
+                }
+            ]
+        };
+
+        var result = await _endpoint.ExecuteAsync(request, default);
+
+        // Assert
+        var orphanedQuestionIds = form.Questions.Skip(1).Select(x => x.Id).ToArray();
+
+        await _cleanerService
+            .Received(1)
+            .CleanupAsync(formSubmission.ElectionRoundId, formSubmission.MonitoringObserverId, formSubmission.PollingStationId, formSubmission.FormId, Arg.Is<Guid[]>(x => x.SequenceEqual(orphanedQuestionIds)));
 
         result
             .Should().BeOfType<Results<Ok<FormSubmissionModel>, NotFound>>()
