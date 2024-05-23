@@ -2,7 +2,7 @@ import { router } from "expo-router";
 import { Screen } from "../../components/Screen";
 import Header from "../../components/Header";
 import { Icon } from "../../components/Icon";
-import { Keyboard, ViewStyle, useWindowDimensions } from "react-native";
+import { Keyboard, ViewStyle } from "react-native";
 import { Input, Spinner, XStack, YStack, styled } from "tamagui";
 import { Typography } from "../../components/Typography";
 import { pollingStationsKeys, usePollingStationByParentID } from "../../services/queries.service";
@@ -16,7 +16,6 @@ import { useUserData } from "../../contexts/user/UserContext.provider";
 import { useQueryClient } from "@tanstack/react-query";
 import WizzardControls from "../../components/WizzardControls";
 import { ListView } from "../../components/ListView";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import i18n from "../../common/config/i18n";
 
 const mapPollingStationOptionsToSelectValues = (
@@ -87,8 +86,6 @@ const PollingStationWizzardContent = ({
   const [selectedOption, setSelectedOption] = useState<PollingStationStep>();
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [sliceNumber, setSliceNumber] = useState(30);
-  const { height } = useWindowDimensions();
-  const insets = useSafeAreaInsets();
   const { activeElectionRound, setSelectedPollingStationId } = useUserData();
 
   const queryClient = useQueryClient();
@@ -227,12 +224,7 @@ const PollingStationWizzardContent = ({
           <SearchInput flex={1} value={searchTerm} onChangeText={setSearchTerm} />
         </XStack>
       </YStack>
-      <YStack
-        paddingHorizontal="$md"
-        paddingTop="$sm"
-        height={height - 300 - insets.top - insets.bottom}
-        paddingBottom={"$md"}
-      >
+      <YStack paddingHorizontal="$md" paddingTop="$sm" style={{ flex: 1 }} paddingBottom={"$md"}>
         {isFetchingPollingStations && <Spinner size="large" color="$purple5" />}
         {!isFetchingPollingStations && (
           <ListView<{ id: string | number; value: string; label: string }>
@@ -241,6 +233,7 @@ const PollingStationWizzardContent = ({
             bounces={false}
             estimatedItemSize={64}
             extraData={selectedOption}
+            ListEmptyComponent={<Typography>{t("list.empty")}</Typography>}
             keyExtractor={(item) => item.value}
             onEndReached={loadMore}
             onEndReachedThreshold={0.5}

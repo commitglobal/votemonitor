@@ -83,7 +83,7 @@ const Header = ({
         </TouchableOpacity>
 
         {/* header title */}
-        <Typography preset="body2" color={titleColor} flex={6} textAlign="center">
+        <Typography preset="body2" color={titleColor} flex={6} textAlign="center" numberOfLines={2}>
           {title}
         </Typography>
 

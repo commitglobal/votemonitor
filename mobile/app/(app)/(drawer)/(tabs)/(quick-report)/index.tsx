@@ -12,7 +12,7 @@ import { useQuickReports } from "../../../../../services/queries/quick-reports.q
 import { useUserData } from "../../../../../contexts/user/UserContext.provider";
 import { ListView } from "../../../../../components/ListView";
 import ReportCard from "../../../../../components/ReportCard";
-import { Dimensions, ViewStyle } from "react-native";
+import { ViewStyle } from "react-native";
 import { QuickReportsAPIResponse } from "../../../../../services/api/quick-report/get-quick-reports.api";
 import { useTranslation } from "react-i18next";
 
@@ -94,7 +94,7 @@ const QuickReportContent = ({ quickReports, isLoading, error }: QuickReportConte
   }
 
   return (
-    <YStack padding="$md" height={Dimensions.get("screen").height * 1.4}>
+    <YStack padding="$md" style={{ flex: 1 }}>
       <ListView<any>
         data={quickReports}
         showsVerticalScrollIndicator={false}
@@ -114,7 +114,7 @@ const QuickReportContent = ({ quickReports, isLoading, error }: QuickReportConte
           )
         }
         ListEmptyComponent={
-          <YStack flex={1} alignItems="center" justifyContent="center" gap="$md" marginTop="50%">
+          <YStack flex={1} alignItems="center" justifyContent="center" gap="$md" marginTop="40%">
             <Icon icon="undrawFlag" />
             <YStack gap="$md" paddingHorizontal="$xl">
               <Typography preset="body1" textAlign="center" color="$gray12" lineHeight={24}>

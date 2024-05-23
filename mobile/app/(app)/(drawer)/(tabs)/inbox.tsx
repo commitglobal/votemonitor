@@ -8,21 +8,22 @@ import { DrawerActions } from "@react-navigation/native";
 import NoNotificationsReceived from "../../../../components/NoNotificationsReceived";
 import { ListView } from "../../../../components/ListView";
 import { useWindowDimensions } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useNotifications } from "../../../../services/queries/notifications.query";
+import {
+  NotificationsKeys,
+  useNotifications,
+} from "../../../../services/queries/notifications.query";
 import { useUserData } from "../../../../contexts/user/UserContext.provider";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import NotificationListItem from "../../../../components/NotificationListItem";
 import OptionsSheet from "../../../../components/OptionsSheet";
+import { useAppState } from "../../../../hooks/useAppState";
+import { useQueryClient } from "@tanstack/react-query";
 
 const Inbox = () => {
+  const queryClient = useQueryClient();
   const { t, i18n } = useTranslation("inbox");
   const navigation = useNavigation();
-  const { height } = useWindowDimensions();
-  const insets = useSafeAreaInsets();
-  // height for the scrollview with the notifications received
-  const scrollHeight = height - 100 - 60 - insets.top - insets.bottom;
 
   const { activeElectionRound } = useUserData();
   const { data, isLoading } = useNotifications(activeElectionRound?.id);
@@ -40,12 +41,20 @@ const Inbox = () => {
     [notifications, sliceNumber, i18n.language],
   );
 
+  useAppState((activating: boolean) => {
+    if (activating) {
+      queryClient.invalidateQueries({
+        queryKey: NotificationsKeys.notifications(activeElectionRound?.id),
+      });
+    }
+  });
+
   if (!isLoading && (!notifications || !notifications.length)) {
     return <NoNotificationsReceived />;
   }
 
   return (
-    <Screen preset="fixed" contentContainerStyle={{ flexGrow: 1 }}>
+    <Screen preset="fixed" contentContainerStyle={{ flexGrow: 1 }} >
       <Header
         title={t("title")}
         titleColor="white"
@@ -57,7 +66,7 @@ const Inbox = () => {
       />
 
       {isLoading ? (
-        <YStack flex={1} justifyContent="center" alignItems="center">
+        <YStack flex={1} justifyContent="center" alignItems="center" >
           <Spinner size="large" color="$purple5" />
         </YStack>
       ) : (
@@ -67,7 +76,7 @@ const Inbox = () => {
               {`${t("banner", { ngoName: ngoName || t("your_organization") })}`}
             </Typography>
           </YStack>
-          <YStack paddingHorizontal="$md" height={scrollHeight}>
+          <YStack padding="$md" style={{ flex: 1 }}>
             <ListView<any>
               data={displayedNotifications}
               showsVerticalScrollIndicator={false}

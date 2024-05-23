@@ -378,6 +378,9 @@
       "title": "Password changed!",
       "paragraph": "Your password has been successfully changed.",
       "back": "Back to app"
+    },
+    "error": {
+      "offline": "App is offline and cannot do the request"
     }
   },
   "generic_error_screen": {

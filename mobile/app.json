@@ -2,7 +2,7 @@
   "expo": {
     "name": "VoteMonitor",
     "slug": "vote-monitor",
-    "version": "0.1.1",
+    "version": "0.1.4",
     "scheme": "mobile",
     "orientation": "portrait",
     "icon": "./assets/icons/icon.png",
@@ -16,7 +16,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "org.commitglobal.votemonitor",
-      "buildNumber": "44",
+      "buildNumber": "47",
       "config": {
         "usesNonExemptEncryption": false
       },
@@ -25,7 +25,7 @@
       }
     },
     "android": {
-      "versionCode": 44,
+      "versionCode": 47,
       "adaptiveIcon": {
         "foregroundImage": "./assets/icons/adaptive-icon.png",
         "backgroundColor": "#FDD20C"
@@ -40,9 +40,9 @@
       "eas": {
         "projectId": "93e17628-ddcd-4e67-849c-b356a18a6082"
       },
-      "message": "Bugfixing",
-      "updateCritical": 13,
-      "updateVersion": 13
+      "message": "Notification cold start fix",
+      "updateCritical": 15,
+      "updateVersion": 15
     },
     "owner": "commit-global",
     "runtimeVersion": {
@@ -89,8 +89,8 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "The app accesses your photos to let you upload them.",
-          "cameraPermission": "The app accesses your camera to let you take photos or videos and upload them."
+          "photosPermission": "Allow access to your photos to upload images or videos to attach in support of your observation notes or quick reports.",
+          "cameraPermission": "Allow access to your camera to take photos or videos to attach in support of your observation notes or quick reports."
         }
       ],
       "expo-secure-store",

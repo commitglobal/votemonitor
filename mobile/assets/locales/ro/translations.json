@@ -379,6 +379,9 @@
       "title": "Parolă schimbată!",
       "paragraph": "Parola ta a fost schimbată cu succes.",
       "back": "Înapoi la aplicație"
+    },
+    "error": {
+      "offline": "Aplicatia este offline si nu s-a putut face requestul."
     }
   },
   "generic_error_screen": {

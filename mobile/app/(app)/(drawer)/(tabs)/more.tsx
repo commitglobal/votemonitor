@@ -58,6 +58,7 @@ const More = () => {
   const { data: currentUser } = useQuery({
     queryKey: [CURRENT_USER_STORAGE_KEY],
     queryFn: () => AsyncStorage.getItem(CURRENT_USER_STORAGE_KEY),
+    staleTime: 0,
   });
 
   const logout = async () => {

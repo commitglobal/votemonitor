@@ -27,11 +27,11 @@ import {
   mapAPIAnswersToFormAnswers,
   mapAPIQuestionsToFormQuestions,
 } from "../../services/form.parser";
-import Input from "../../components/Inputs/Input";
 import Button from "../../components/Button";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useMutatePollingStationGeneralData } from "../../services/mutations/psi-general.mutation";
 import OptionsSheet from "../../components/OptionsSheet";
+import { Keyboard } from "react-native";
 
 const PollingStationQuestionnaire = () => {
   const { t, i18n } = useTranslation("polling_station_information_form");
@@ -217,7 +217,10 @@ const PollingStationQuestionnaire = () => {
           leftIcon={<Icon icon="chevronLeft" color="white" />}
           rightIcon={<Icon icon="dotsVertical" color="white" />}
           onLeftPress={() => router.back()}
-          onRightPress={() => setOpenContextualMenu(true)}
+          onRightPress={() => {
+            Keyboard.dismiss();
+            setOpenContextualMenu(true);
+          }}
         />
         <YStack padding="$md" gap="$lg">
           {formStructure?.questions.map((question: ApiFormQuestion) => {
@@ -322,13 +325,17 @@ const PollingStationQuestionnaire = () => {
                         {question.options.map((option) => {
                           if (value.radioValue === option.id && option.isFreeText) {
                             return (
-                              <Input
+                              <FormInput
                                 type="textarea"
                                 marginTop="$md"
                                 key={option.id}
                                 value={value.textValue}
                                 placeholder={t("form.placeholder")}
                                 onChangeText={(textValue) => onChange({ ...value, textValue })}
+                                maxLength={1024}
+                                helper={t("char_limit.max", {
+                                  value: 1024,
+                                })}
                               />
                             );
                           }
@@ -400,11 +407,15 @@ const PollingStationQuestionnaire = () => {
                               />
                               {selections[option.id]?.optionId === option.id &&
                                 option.isFreeText && (
-                                  <Input
+                                  <FormInput
                                     type="textarea"
                                     marginTop="$md"
                                     value={selections[option.id]?.text}
                                     placeholder={t("form.placeholder")}
+                                    maxLength={1024}
+                                    helper={t("form.max", {
+                                      value: 1024,
+                                    })}
                                     onChangeText={(textValue) => {
                                       selections[option.id] = {
                                         optionId: option.id,
