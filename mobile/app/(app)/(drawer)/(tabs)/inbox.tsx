@@ -7,7 +7,6 @@ import { useNavigation } from "expo-router";
 import { DrawerActions } from "@react-navigation/native";
 import NoNotificationsReceived from "../../../../components/NoNotificationsReceived";
 import { ListView } from "../../../../components/ListView";
-import { useWindowDimensions } from "react-native";
 import {
   NotificationsKeys,
   useNotifications,
@@ -54,7 +53,7 @@ const Inbox = () => {
   }
 
   return (
-    <Screen preset="fixed" contentContainerStyle={{ flexGrow: 1 }} >
+    <Screen preset="fixed" contentContainerStyle={{ flexGrow: 1 }}>
       <Header
         title={t("title")}
         titleColor="white"
@@ -66,7 +65,7 @@ const Inbox = () => {
       />
 
       {isLoading ? (
-        <YStack flex={1} justifyContent="center" alignItems="center" >
+        <YStack flex={1} justifyContent="center" alignItems="center">
           <Spinner size="large" color="$purple5" />
         </YStack>
       ) : (
