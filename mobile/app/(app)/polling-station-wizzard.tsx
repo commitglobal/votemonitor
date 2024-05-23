@@ -82,7 +82,7 @@ const PollingStationWizzardContent = ({
   activeStep,
   locations,
 }: PollingStationWizzardContentProps) => {
-  const { t } = useTranslation("add_polling_station");
+  const { t } = useTranslation(["add_polling_station", "common"]);
   const [selectedOption, setSelectedOption] = useState<PollingStationStep>();
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [sliceNumber, setSliceNumber] = useState(30);
@@ -233,7 +233,7 @@ const PollingStationWizzardContent = ({
             bounces={false}
             estimatedItemSize={64}
             extraData={selectedOption}
-            ListEmptyComponent={<Typography>{t("list.empty")}</Typography>}
+            ListEmptyComponent={<Typography>{t("no_data", { ns: "common" })}</Typography>}
             keyExtractor={(item) => item.value}
             onEndReached={loadMore}
             onEndReachedThreshold={0.5}
