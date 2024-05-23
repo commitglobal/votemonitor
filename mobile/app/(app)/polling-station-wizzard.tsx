@@ -3,7 +3,7 @@ import { Screen } from "../../components/Screen";
 import Header from "../../components/Header";
 import { Icon } from "../../components/Icon";
 import { Keyboard, ViewStyle } from "react-native";
-import { Input, Spinner, XStack, YStack, styled } from "tamagui";
+import { Input, Spinner, XStack, YStack, styled, useWindowDimensions } from "tamagui";
 import { Typography } from "../../components/Typography";
 import { pollingStationsKeys, usePollingStationByParentID } from "../../services/queries.service";
 import React, { useCallback, useMemo, useState } from "react";
@@ -17,6 +17,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import WizzardControls from "../../components/WizzardControls";
 import { ListView } from "../../components/ListView";
 import i18n from "../../common/config/i18n";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const mapPollingStationOptionsToSelectValues = (
   options: PollingStationNomenclatorNodeVM[],
@@ -210,6 +211,9 @@ const PollingStationWizzardContent = ({
     [selectedOption],
   );
 
+  const { height } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
+
   return (
     <>
       <YStack paddingHorizontal="$md" gap={"$1"}>
@@ -224,7 +228,13 @@ const PollingStationWizzardContent = ({
           <SearchInput flex={1} value={searchTerm} onChangeText={setSearchTerm} />
         </XStack>
       </YStack>
-      <YStack paddingHorizontal="$md" paddingTop="$sm" style={{ flex: 1 }} paddingBottom={"$md"}>
+      <YStack
+        paddingHorizontal="$md"
+        paddingTop="$sm"
+        height={height - 300 - insets.top - insets.bottom}
+        style={{ flex: 1, flexGrow: 1, flexDirection: "row" }}
+        paddingBottom={"$md"}
+      >
         {isFetchingPollingStations && <Spinner size="large" color="$purple5" />}
         {!isFetchingPollingStations && (
           <ListView<{ id: string | number; value: string; label: string }>
