@@ -67,75 +67,9 @@
         "invalid_credentials": "Credenţialele nu sunt corecte. "
       }
     },
-     "actions": {
+    "actions": {
       "forgot_password": "Ați uitat parola?"
-    },
-    "delete_note": {
-      "title": "Ștergeți notița",
-      "description": "Această acțiune este ireversibilă. Odată ștearsă, o notiță nu poate fi recuperată.",
-      "actions": {
-        "cancel": "Renunță",
-        "delete": "Șterge"
-      }
-    },
-    "select_option": {
-      "no_data": "Nu s-au găsit date pentru căutarea curentă.",
-      "actions": {
-        "search": "Căutare"
-      }
     }
-  },
-    "form_overview": {
-      "title": "Informații formular",
-      "status": "Statusul formularului",
-      "not_started": "Neînceput",
-      "in_progress": "În desfășurare",
-      "completed": "Completat",
-      "answered_questions": "Întrebări completate",
-      "resume": "Reia formularul",
-      "start_form": "Începe formularul",
-      "progress": "progres"
-    },
-    "language_modal": {
-      "header": "Selectează limba formularului",
-      "helper": "Formularul selectat este disponibil în mai multe limbi. Vă rugăm selectați limba cu care doriți să continuați.",
-      "error": "Vă rugăm selectați una din opțiuni.",
-      "actions": {
-        "save": "Salvează",
-        "cancel": "Anulează"
-      }
-    },
-    "clear_answers_modal": {
-      "title": "Ștergeți formularul {{value}}",
-      "description": "Aceasă acțiune va șterge toate răspunsurile introduse până acum (incluzând notițele și fișierele media). Statusul tuturor întrebărilor va reveni la 'Neînceput'. \n\nPentru a evita pierderea neintenționată a informațiilor, asigurați-vă că ați verificat formularul înaintea acestei acțiuni.",
-      "actions": {
-        "clear": "Șterge formularul",
-        "cancel": "Renunță"
-      }
-    },
-    "questions": {
-      "title": "Întrebări",
-      "not_answered": "Fără răspuns",
-      "answered": "Răspuns",
-      "no_notes": "Nu există fișiere atasate",
-      "notes": "Include fișiere atasate"
-    }
-  },
-  "inbox_empty": {
-    "title": "Nu s-a primit încă niciun mesaj",
-    "paragraph": "Mesajele push și alertele de la organizația dvs. vor apărea aici."
-  },
-  "inbox": {
-    "today": "Azi",
-    "messages_from": "Mesaje de la",
-    "your_organization": "organizația dumneavoastră"
-  },
-  "guides_empty": {
-    "title": "Nu există ghiduri de citit încă",
-    "paragraph": "Ghidurile și resursele de la organizația dvs. sunt la îndemâna dumneavoastră."
-  },
-  "change_password": {
-   
   },
   "forgot_password": {
     "header": {
@@ -246,26 +180,6 @@
       "max": "Intrarea nu poate depăși {{value}} personaje",
       "placeholder": "Vă rugăm să introduceți un text.."
     },
-    "warning_modal": {
-      "question": {
-        "title": "Ștergeți răspunsul la întrebarea {{value}}",
-        "description": "Ștergerea răspunsului la această întrebare va șterge permanent toate informațiile (incluzând notițele și fișierele media), cât și toate întrebările conectate cu aceasta. Statusul întrebărilor va reveni la 'Neînceput'",
-        "actions": { "cancel": "Renunță", "clear": "Șterge răspunsul" }
-      },
-      "attachment": {
-        "title": "Ștergeți fișierul media",
-        "description": "Această acțiune este ireversibilă. Odată șters, un fișier media nu poate fi recuperat.",
-        "actions": { "cancel": "Renunță", "clear": "Șterge" }
-      }
-    },
-    "options_sheet": {
-      "add_note": "Adaugă notițe",
-      "load": "Încarcă din galerie",
-      "take_picture": "Fă o poză",
-      "record_video": "Înregistrează video",
-      "upload_audio": "Încarcă audio"
-    },
-    "adding_attachment": "Se adaugă fișierul media..."
     "menu": {
       "clear": "Ștergeți formularul (ștergeți toate răspunsurile)"
     }
