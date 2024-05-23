@@ -124,9 +124,9 @@ const EditNoteSheet = (props: EditNoteSheetProps) => {
           {deletingNote ? (
             <>
               <YStack gap="$lg">
-                <Typography preset="heading">{t("delete_note.title")}</Typography>
+                <Typography preset="heading">{t("notes.delete.title")}</Typography>
                 <Typography preset="body1" color="$gray6">
-                  {t("delete_note.description")}
+                  {t("notes.delete.description")}
                 </Typography>
                 <XStack gap="$sm" justifyContent="center">
                   <Button
@@ -134,7 +134,7 @@ const EditNoteSheet = (props: EditNoteSheetProps) => {
                     textStyle={{ color: "black" }}
                     onPress={() => setDeletingNote(false)}
                   >
-                    {t("notes.edit.delete")}
+                    {t("notes.delete.actions.cancel")}
                   </Button>
 
                   <Button
@@ -145,7 +145,7 @@ const EditNoteSheet = (props: EditNoteSheetProps) => {
                       onDelete();
                     }}
                   >
-                    {t("delete_note.actions.delete")}
+                    {t("notes.delete.actions.delete")}
                   </Button>
                 </XStack>
               </YStack>
@@ -153,7 +153,7 @@ const EditNoteSheet = (props: EditNoteSheetProps) => {
           ) : (
             <>
               <XStack justifyContent="space-between" alignItems="center">
-                <Typography preset="heading">{t("add_note.title_edit")}</Typography>
+                <Typography preset="heading">{t("notes.edit.heading")}</Typography>
                 <Typography
                   preset="body2"
                   color="$red10"
@@ -162,7 +162,7 @@ const EditNoteSheet = (props: EditNoteSheetProps) => {
                   pressStyle={{ opacity: 0.5 }}
                   onPress={() => setDeletingNote(true)}
                 >
-                  {t("add_note.actions.delete_note")}
+                  {t("notes.edit.delete")}
                 </Typography>
               </XStack>
               <Controller

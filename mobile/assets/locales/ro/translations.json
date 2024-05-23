@@ -182,6 +182,11 @@
     },
     "menu": {
       "clear": "Ștergeți formularul (ștergeți toate răspunsurile)"
+    },
+    "warning_modal": {
+      "title": "Ștergeți formularul de informații pentru secția de votare",
+      "description": "Această acțiune va șterge toate răspunsurile introduse până acum pentru acest formular. Pentru a evita pierderea neintenționată a informațiilor, vă rugăm să verificați formularul înainte de a efectua această acțiune.",
+      "actions": { "cancel": "Anulare", "clear": "Ștergeți formularul" }
     }
   },
   "form_overview": {
@@ -208,6 +213,14 @@
     "menu": {
       "clear": "Ștergeți formularul (ștergeți toate răspunsurile)",
       "change_language": "Schimbați limba"
+    },
+    "clear_answers_modal": {
+      "title": "Ștergeți formularul {{value}}",
+      "description": "Această acțiune va șterge toate răspunsurile introduse până acum pentru acest formular (inclusiv notițele și fișierele media). Statusul tuturor întrebărilor va reveni la la ‘Fără răspuns’.\n\nPentru a evita pierderea neintenționată a informațiilor, asigurați-vă că verificați formularul înainte de a efectua această acțiune.",
+      "actions": {
+        "clear": "Ștergeți formularul",
+        "cancel": "Anulare"
+      }
     }
   },
   "polling_station_form_wizard": {
@@ -247,6 +260,26 @@
       "edit": {
         "heading": "Editați nota",
         "delete": "Ștergeți nota"
+      },
+      "delete": {
+        "title": "Ștergeți notița",
+        "description": "Această acțiune este ireversibilă. Odată ștearsă, o notiță nu poate fi recuperată.",
+        "actions": {
+          "cancel": "Anulare",
+          "delete": "Șterge"
+        }
+      }
+    },
+    "warning_modal": {
+      "question": {
+        "title": "Ștergeți răspunsul la întrebarea {{value}}",
+        "description": "Ștergerea răspunsului la această întrebare va șterge definitiv toate informațiile acesteia (inclusiv notițele și fișierele media), precum și toate întrebările asociate. Statusul întrebărilor va reveni la „Fără răspuns”.",
+        "actions": { "cancel": "Anulare", "clear": "Șterge răspunsul" }
+      },
+      "attachment": {
+        "title": "Ștergeți fișierul media",
+        "description": "Această acțiune este ireversibilă. Odată șters, un fișier media nu poate fi recuperat.",
+        "actions": { "cancel": "Anulare", "clear": "Șterge" }
       }
     },
     "error": "Eroare la încărcarea datelor întrebărilor!"
