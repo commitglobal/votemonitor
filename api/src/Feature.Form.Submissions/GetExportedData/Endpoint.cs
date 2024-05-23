@@ -41,15 +41,25 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
             exportedDataId = req.ExportedDataId
         };
 
-        var exportedData = await dbConnectionFactory.GetOpenConnection().QueryFirstOrDefaultAsync<ExportedDataView>(sql, queryParams);
+        ExportedDataView exportedData = null;
+        using (var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct))
+        {
+            exportedData = await dbConnection.QueryFirstOrDefaultAsync<ExportedDataView>(sql, queryParams);
+        }
 
-        if (string.IsNullOrWhiteSpace(exportedData.Base64EncodedData))
+        if (string.IsNullOrWhiteSpace(exportedData?.Base64EncodedData))
         {
             await SendNoContentAsync(ct);
             return;
         }
 
-        var bytes = Convert.FromBase64String(exportedData.Base64EncodedData);
-        await SendBytesAsync(bytes, fileName: exportedData.FileName, contentType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", cancellation: ct);
+        var stream = GenerateStreamFromString(exportedData.Base64EncodedData);
+
+        await SendStreamAsync(stream, "import-template.xlsx", stream.Length, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", cancellation: ct);
+    }
+
+    private static MemoryStream GenerateStreamFromString(string value)
+    {
+        return new MemoryStream(Convert.FromBase64String(value));
     }
 }

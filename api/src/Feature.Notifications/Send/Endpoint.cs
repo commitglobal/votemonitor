@@ -133,7 +133,11 @@ public class Endpoint(IRepository<NotificationAggregate> repository,
             level5 = req.Level5Filter
         };
 
-        var result = await dbConnectionFactory.GetOpenConnection().QueryAsync<NotificationRecipient>(sql, queryArgs);
+        IEnumerable<NotificationRecipient> result = [];
+        using (var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct))
+        {
+            result = await dbConnection.QueryAsync<NotificationRecipient>(sql, queryArgs);
+        }
         var recipients = result.ToList();
 
         var monitoringObserverIds = recipients.Select(x => x.Id).ToList();

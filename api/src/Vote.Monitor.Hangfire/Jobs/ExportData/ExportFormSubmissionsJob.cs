@@ -1,9 +1,8 @@
-﻿using System.Data;
-using Dapper;
-using Job.Contracts.Jobs;
+﻿using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Vote.Monitor.Core.FileGenerators;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
+using Vote.Monitor.Core.Services.Hangfire;
 using Vote.Monitor.Core.Services.Time;
 using Vote.Monitor.Domain;
 using Vote.Monitor.Domain.ConnectionFactory;
@@ -19,7 +18,7 @@ public class ExportFormSubmissionsJob(VoteMonitorContext context,
     ILogger<ExportFormSubmissionsJob> logger,
     ITimeProvider timeProvider) : IExportFormSubmissionsJob
 {
-    public async Task ExportFormSubmissions(Guid electionRoundId, Guid ngoId, Guid exportedDataId)
+    public async Task ExportFormSubmissions(Guid electionRoundId, Guid ngoId, Guid exportedDataId, CancellationToken ct)
     {
         var exportedData = await context
             .ExportedData
@@ -58,7 +57,7 @@ public class ExportFormSubmissionsJob(VoteMonitorContext context,
                 .AsNoTracking()
                 .ToListAsync();
 
-            var submissions = await GetSubmissions(electionRoundId, ngoId);
+            var submissions = await GetSubmissions(electionRoundId, ngoId, ct);
 
             foreach (var submission in submissions)
             {
@@ -116,7 +115,7 @@ public class ExportFormSubmissionsJob(VoteMonitorContext context,
         }
     }
 
-    private async Task<List<SubmissionModel>> GetSubmissions(Guid electionRoundId, Guid ngoId)
+    private async Task<List<SubmissionModel>> GetSubmissions(Guid electionRoundId, Guid ngoId, CancellationToken ct)
     {
         var sql = @"
             WITH submissions AS
@@ -202,7 +201,11 @@ public class ExportFormSubmissionsJob(VoteMonitorContext context,
 
         var queryParams = new { electionRoundId, ngoId };
 
-        var submissions = await dbConnectionFactory.GetOpenConnection().QueryAsync<SubmissionModel>(sql, queryParams);
+        IEnumerable<SubmissionModel> submissions = [];
+        using (var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct))
+        {
+            submissions = await dbConnection.QueryAsync<SubmissionModel>(sql, queryParams);
+        }
         var submissionsData = submissions.ToList();
         return submissionsData;
     }

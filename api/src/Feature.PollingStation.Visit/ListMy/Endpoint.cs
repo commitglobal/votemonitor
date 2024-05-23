@@ -96,7 +96,11 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
 
         var queryArgs = new { electionRoundId = req.ElectionRoundId, observerId = req.ObserverId };
 
-        var visits = await dbConnectionFactory.GetOpenConnection().QueryAsync<VisitModel>(sql, queryArgs);
+        IEnumerable<VisitModel> visits = [];
+        using (var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct))
+        {
+            visits = await dbConnection.QueryAsync<VisitModel>(sql, queryArgs);
+        }
 
         return TypedResults.Ok(new Response { Visits = visits.ToList() });
     }

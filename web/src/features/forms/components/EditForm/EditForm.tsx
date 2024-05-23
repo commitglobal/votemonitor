@@ -23,20 +23,23 @@ import { useToast } from '@/components/ui/use-toast';
 import LanguageSelect from '@/containers/LanguageSelect';
 import { queryClient } from '@/main';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation } from '@tanstack/react-query';
-import { useLoaderData } from '@tanstack/react-router';
+import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 
+import { Route } from '@/routes/forms_.$formId.edit';
 import { FormFull, FormType, mapFormType } from '../../models/form';
-import { formsKeys } from '../../queries';
+import { formDetailsQueryOptions, formsKeys } from '../../queries';
 import EditFormFooter from './EditFormFooter';
 
 export default function EditForm() {
   const { t } = useTranslation();
-  const formData: FormFull = useLoaderData({ strict: false });
+  const { formId } = Route.useParams();
+  const formQuery = useSuspenseQuery(formDetailsQueryOptions(formId));
+  const formData = formQuery.data;
+
   const [localQuestions, setLocalQuestions] = useState(formData.questions);
   const [defaultLanguage, setDefaultLanguage] = useState(formData.defaultLanguage);
   const [languages, setLanguages] = useState(formData.languages);

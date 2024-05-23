@@ -60,11 +60,15 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
             pageSize = req.PageSize,
         };
 
-        var multi = await dbConnectionFactory.GetOpenConnection().QueryMultipleAsync(sql, queryArgs);
+        int totalRowCount;
+        List<NotificationModel> entries = [];
+        using (var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct))
+        {
+            using var multi = await dbConnection.QueryMultipleAsync(sql, queryArgs);
 
-        var totalRowCount = multi.Read<int>().Single();
-        var entries = multi.Read<NotificationModel>().ToList();
-
+            totalRowCount = multi.Read<int>().Single();
+            entries = multi.Read<NotificationModel>().ToList();
+        }
         return new PagedResponse<NotificationModel>(entries, totalRowCount, req.PageNumber, req.PageSize);
     }
 }

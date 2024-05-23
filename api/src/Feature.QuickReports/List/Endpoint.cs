@@ -85,9 +85,14 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
             pageSize = req.PageSize,
         };
 
-        var multi = await dbConnectionFactory.GetOpenConnection().QueryMultipleAsync(sql, queryArgs);
-        var totalRowCount = multi.Read<int>().Single();
-        var entries = multi.Read<QuickReportOverviewModel>().ToList();
+        int totalRowCount;
+        List<QuickReportOverviewModel> entries = [];
+        using (var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct))
+        {
+            using var multi = await dbConnection.QueryMultipleAsync(sql, queryArgs);
+            totalRowCount = multi.Read<int>().Single();
+            entries = multi.Read<QuickReportOverviewModel>().ToList();
+        }
 
         return new PagedResponse<QuickReportOverviewModel>(entries, totalRowCount, req.PageNumber, req.PageSize);
     }
