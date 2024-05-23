@@ -22,13 +22,8 @@ import clsx from 'clsx';
 import { Fragment, useContext, useState } from 'react';
 import type { ElectionRoundMonitoring, FunctionComponent } from '../../../common/types';
 import Logo from './Logo';
+import { formsKeys } from '@/features/forms/queries';
 
-const user = {
-  name: 'Tom Cook',
-  email: 'tom@example.com',
-  imageUrl:
-    'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-};
 const navigation = [
   { name: 'Dashboard', to: '/', roles: ['PlatformAdmin', 'NgoAdmin'] },
   { name: 'Election rounds', to: '/election-rounds', roles: ['PlatformAdmin'] },
@@ -58,6 +53,7 @@ const Header = (): FunctionComponent => {
     void queryClient.invalidateQueries({ queryKey: [formSubmissionsByObserverKeys.all] });
     void queryClient.invalidateQueries({ queryKey: [formSubmissionsAggregtedKeys.all] });
     void queryClient.invalidateQueries({ queryKey: [quickReportKeys.all] });
+    void queryClient.invalidateQueries({ queryKey: formsKeys.lists() });
   };
 
   const { userRole, signOut } = useContext(AuthContext);
@@ -235,8 +231,8 @@ const Header = (): FunctionComponent => {
                   <UserCircleIcon className='w-10 h-10 fill-gray-400' />
                 </div>
                 <div className='ml-3'>
-                  <div className='text-base font-medium leading-none text-gray-800'>{user.name}</div>
-                  <div className='text-sm font-medium text-gray-500'>{user.email}</div>
+                  <div className='text-base font-medium leading-none text-gray-800'>{'your name'}</div>
+                  <div className='text-sm font-medium text-gray-500'>{'your email'}</div>
                 </div>
               </div>
               <div className='px-2 mt-3 space-y-1'>
