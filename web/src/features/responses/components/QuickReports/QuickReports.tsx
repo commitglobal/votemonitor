@@ -23,6 +23,8 @@ import { quickReportsColumnDefs } from '../../utils/column-defs';
 import { quickReportsColumnVisibilityOptions, quickReportsDefaultColumns } from '../../utils/column-visibility-options';
 import { FilterBadge } from '@/components/ui/badge';
 import { PollingStationsFilters } from '@/components/PollingStationsFilters/PollingStationsFilters';
+import { ExportDataButton } from '../Dashboard/ExportDataButton';
+import { ExportedDataType } from '../../models/data-export';
 
 const routeApi = getRouteApi('/responses/');
 
@@ -80,12 +82,7 @@ export function QuickReports(): FunctionComponent {
         <div className='flex justify-between items-center px-6'>
           <CardTitle>Quick reports</CardTitle>
 
-          <Button
-            className='bg-background hover:bg-purple-50 hover:text-purple-500 text-purple-900 flex gap-2'
-            variant='outline'>
-            <CsvFileIcon />
-            Export to csv
-          </Button>
+          <ExportDataButton exportedDataType={ExportedDataType.QuickReports} />
         </div>
 
         <Separator />

@@ -44,6 +44,7 @@ public static class CoreServicesInstaller
                         c.UseNpgsqlConnection(configuration.GetNpgsqlConnectionString("HangfireConnectionConfig")), new PostgreSqlStorageOptions { PrepareSchemaIfNecessary = false });
 
                 config.UseSerilogLogProvider();
+
             });
 
             services.AddTransient<IJobService, HangfireJobService>();
@@ -66,6 +67,11 @@ public static class CoreServicesInstaller
 
         public void ExportFormSubmissions(Guid electionRoundId, Guid ngoId, Guid exportedDataId)
         {
+        }
+
+        public void ExportQuickReportsSubmissions(Guid electionRoundId, Guid ngoId, Guid exportedDataId)
+        {
+
         }
     }
 
