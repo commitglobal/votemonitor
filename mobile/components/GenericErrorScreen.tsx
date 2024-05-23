@@ -19,7 +19,7 @@ const GenericErrorScreen = () => {
           <Typography preset="body1" textAlign="center" color="$gray5">
             {t("paragraph2")}
           </Typography>
-          <Button style={{ marginTop: 10 }} onPress={() => reloadAsync().catch((_error) => {})}>
+          <Button marginTop="$md" onPress={() => reloadAsync().catch((_error) => {})}>
             {t("retry")}
           </Button>
         </YStack>
