@@ -5,13 +5,21 @@ import { authApi } from '@/common/auth-api';
 
 const STALE_TIME = 1000 * 60; // one minute
 
+export const quickReportKeys = {
+  all: ['quick-reports'] as const,
+  lists: () => [...quickReportKeys.all, 'list'] as const,
+  list: (params: DataTableParameters) => [...quickReportKeys.lists(), { ...params }] as const,
+  details: () => [...quickReportKeys.all, 'detail'] as const,
+  detail: (id: string) => [...quickReportKeys.details(), id] as const,
+}
+
 type QuickReportsResponse = PageResponse<QuickReport>;
 
 type UseQuickReportsResult = UseQueryResult<QuickReportsResponse, Error>;
 
 export function useQuickReports(queryParams: DataTableParameters): UseQuickReportsResult {
   return useQuery({
-    queryKey: ['quick-reports', queryParams],
+    queryKey: quickReportKeys.list(queryParams),
     queryFn: async () => {
       const electionRoundId = localStorage.getItem('electionRoundId');
 

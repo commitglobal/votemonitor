@@ -33,6 +33,8 @@ const SingleSelectAggregateContent = forwardRef<ChartJSOrUndefined<'pie', number
             ],
           }}
           options={{
+            maintainAspectRatio: false,
+            devicePixelRatio: 1.5,
             plugins: {
               legend: {
                 position: 'right' as const,

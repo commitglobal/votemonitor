@@ -7,13 +7,37 @@ import type { RowData } from '@/components/ui/DataTable/DataTable';
 
 const STALE_TIME = 1000 * 60; // one minute
 
+export const formSubmissionsByEntryKeys = {
+  all: ['form-submissions-by-entry'] as const,
+  lists: () => [...formSubmissionsByEntryKeys.all, 'list'] as const,
+  list: (params: DataTableParameters) => [...formSubmissionsByEntryKeys.lists(), { ...params }] as const,
+  details: () => [...formSubmissionsByEntryKeys.all, 'detail'] as const,
+  detail: (id: string) => [...formSubmissionsByEntryKeys.details(), id] as const,
+}
+
+export const formSubmissionsByObserverKeys = {
+  all: ['form-submissions-by-observer'] as const,
+  lists: () => [...formSubmissionsByObserverKeys.all, 'list'] as const,
+  list: (params: DataTableParameters) => [...formSubmissionsByObserverKeys.lists(), { ...params }] as const,
+  details: () => [...formSubmissionsByObserverKeys.all, 'detail'] as const,
+  detail: (id: string) => [...formSubmissionsByObserverKeys.details(), id] as const,
+}
+
+export const formSubmissionsAggregtedKeys = {
+  all: ['aggregated-form-submissions'] as const,
+  lists: () => [...formSubmissionsAggregtedKeys.all, 'list'] as const,
+  list: (params: DataTableParameters) => [...formSubmissionsAggregtedKeys.lists(), { ...params }] as const,
+  details: () => [...formSubmissionsAggregtedKeys.all, 'detail'] as const,
+  detail: (id: string) => [...formSubmissionsAggregtedKeys.details(), id] as const,
+}
+
 type FormSubmissionsByEntryResponse = PageResponse<FormSubmissionByEntry & RowData>;
 
 type UseFormSubmissionsByEntryResult = UseQueryResult<FormSubmissionsByEntryResponse, Error>;
 
 export function useFormSubmissionsByEntry(queryParams: DataTableParameters): UseFormSubmissionsByEntryResult {
   return useQuery({
-    queryKey: ['form-submissions', 'by-entry', queryParams],
+    queryKey: formSubmissionsByEntryKeys.list(queryParams),
     queryFn: async () => {
       const electionRoundId = localStorage.getItem('electionRoundId');
 
@@ -48,7 +72,7 @@ type UseFormSubmissionsByObserverResult = UseQueryResult<FormSubmissionsByObserv
 
 export function useFormSubmissionsByObserver(queryParams: DataTableParameters): UseFormSubmissionsByObserverResult {
   return useQuery({
-    queryKey: ['form-submissions', 'by-observer', queryParams],
+    queryKey: formSubmissionsByObserverKeys.list(queryParams),
     queryFn: async () => {
       const electionRoundId = localStorage.getItem('electionRoundId');
 
@@ -83,7 +107,7 @@ type UseFormSubmissionsByFormResult = UseQueryResult<FormSubmissionsByFormRespon
 
 export function useFormSubmissionsByForm(queryParams: DataTableParameters): UseFormSubmissionsByFormResult {
   return useQuery({
-    queryKey: ['form-submissions', 'by-form', queryParams],
+    queryKey: formSubmissionsAggregtedKeys.all,
     queryFn: async () => {
       const electionRoundId = localStorage.getItem('electionRoundId');
 

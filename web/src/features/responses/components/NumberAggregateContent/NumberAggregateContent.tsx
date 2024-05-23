@@ -1,11 +1,7 @@
-import type { ChartJSOrUndefined } from 'node_modules/react-chartjs-2/dist/types';
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
-import { forwardRef } from 'react';
-import { Bar } from 'react-chartjs-2';
-import type { NumberQuestionAggregate } from '../../models/form-aggregated';
-import { purple500 } from '../../utils/chart-colors';
-import { round } from '@/lib/utils';
 import { FunctionComponent } from '@/common/types';
+import { round } from '@/lib/utils';
+import { BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip } from 'chart.js';
+import type { NumberQuestionAggregate } from '../../models/form-aggregated';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 

@@ -184,7 +184,6 @@ export default function EditObserver() {
                           <SelectGroup>
                             <SelectItem value='Active'>Active</SelectItem>
                             <SelectItem value='Suspended'>Suspended</SelectItem>
-                            <SelectItem value='Pending'>Pending</SelectItem>
                           </SelectGroup>
                         </SelectContent>
                       </Select>
