@@ -258,11 +258,9 @@
       "error": "Error while loading the reports!",
       "empty": "Start sending quick reports to the organization if you notice irregularities inside, outside the polling station or whenever needed.",
       "add": "Report new issue",
-      "list": {
-        "no_files": "No attached files",
-        "attachment_one": "{{count}} attachment file",
-        "attachment_other": "{{count}} attachment files"
-      }
+      "no_files": "No attached files",
+      "attachment_one": "{{count}} attachment file",
+      "attachment_other": "{{count}} attachment files"
     }
   },
   "report_new_issue": {

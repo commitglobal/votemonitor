@@ -258,12 +258,9 @@
       "error": "Eroare la încărcarea rapoartelor!",
       "empty": "Începeți să trimiteți rapoarte rapide către organizație dacă observați nereguli în interiorul, în afara secției de votare sau ori de câte ori este nevoie.",
       "add": "Raportați o problemă nouă",
-      "list": {
-        "no_files": "Nu există fișiere atașate",
-        "attachment_one": "{{count}} fisier atasat",
-        "attachment_few": "{{count}} fișiere atașate",
-        "attachment_other": "{{count}} fișiere atașate"
-      }
+      "no_files": "Nu există fișiere atașate",
+      "attachment_one": "{{count}} fisier atasat",
+      "attachment_other": "{{count}} fișiere atașate"
     }
   },
   "report_new_issue": {
