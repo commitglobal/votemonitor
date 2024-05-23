@@ -50,15 +50,15 @@ builder.Services.AddApiConfiguration(builder.Configuration);
 builder.Services.SwaggerDocument(o =>
 {
     o.FlattenSchema = true;
-    //o.AutoTagPathSegmentIndex = 2;
+    o.AutoTagPathSegmentIndex = 2;
     o.TagCase = TagCase.LowerCase;
 
     o.DocumentSettings = s =>
     {
         s.Title = "Vote Monitor API";
         s.Version = "v2";
-        //s.SchemaSettings.SchemaProcessors.Add(new SmartEnumSchemaProcessor());
-        //s.SchemaSettings.SchemaProcessors.Add(new GuidSchemaProcessor());
+        s.SchemaSettings.SchemaProcessors.Add(new SmartEnumSchemaProcessor());
+        s.SchemaSettings.SchemaProcessors.Add(new GuidSchemaProcessor());
     };
 });
 
