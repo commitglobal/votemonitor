@@ -3,7 +3,7 @@ import { Screen } from "../../../components/Screen";
 import Header from "../../../components/Header";
 import { Icon } from "../../../components/Icon";
 import { Typography } from "../../../components/Typography";
-import { XStack, YStack, ScrollView, Spinner } from "tamagui";
+import { XStack, YStack, ScrollView, Spinner, AlertDialog } from "tamagui";
 import LinearProgress from "../../../components/LinearProgress";
 import { useMemo, useState } from "react";
 import { useUserData } from "../../../contexts/user/UserContext.provider";
@@ -40,6 +40,7 @@ import { useTranslation } from "react-i18next";
 import { onlineManager } from "@tanstack/react-query";
 import { ApiFormQuestion } from "../../../services/interfaces/question.type";
 import FormInput from "../../../components/FormInputs/FormInput";
+import WarningDialog from "../../../components/WarningDialog";
 
 type SearchParamType = {
   questionId: string;
@@ -58,6 +59,7 @@ const FormQuestionnaire = () => {
   const { activeElectionRound, selectedPollingStation } = useUserData();
   const [isOptionsSheetOpen, setIsOptionsSheetOpen] = useState(false);
   const [addingNote, setAddingNote] = useState(false);
+  const [deletingAnswer, setDeletingAnswer] = useState(false);
 
   const {
     data: currentForm,
@@ -234,6 +236,7 @@ const FormQuestionnaire = () => {
 
     // TODO: @radulescuandrew maybe we can get rid of this, or at least shouldDirty: false. To be checked after API is ready
     setValue(activeQuestion?.question?.id, "", { shouldDirty: true });
+    setDeletingAnswer(false);
   };
 
   if (isLoadingCurrentForm || isLoadingAnswers) {
@@ -355,11 +358,31 @@ const FormQuestionnaire = () => {
           current={activeQuestion?.indexInDisplayedQuestions + 1}
           total={displayedQuestions?.length || 0}
         />
-        <XStack justifyContent="flex-end">
-          <Typography onPress={onClearForm} color="$red10">
-            {t("actions.clear_answer")}
-          </Typography>
+
+        <XStack
+          justifyContent="flex-end"
+          alignSelf="flex-end"
+          paddingLeft="$md"
+          paddingBottom="$md"
+          pressStyle={{ opacity: 0.5 }}
+          onPress={() => {
+            Keyboard.dismiss();
+            setDeletingAnswer(true);
+          }}
+        >
+          <Typography color="$red10">{t("actions.clear_answer")}</Typography>
         </XStack>
+        {/* delete answer button */}
+        {deletingAnswer && (
+          <WarningDialog
+            title={t("warning_modal.title", { value: activeQuestion.question.code })}
+            description={t("warning_modal.description")}
+            actionBtnText={t("warning_modal.actions.clear")}
+            cancelBtnText={t("warning_modal.actions.cancel")}
+            action={onClearForm}
+            onCancel={() => setDeletingAnswer(false)}
+          />
+        )}
       </YStack>
       <ScrollView
         contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}

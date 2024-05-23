@@ -7,7 +7,7 @@ import { Typography } from "../../../../../../components/Typography";
 import { YStack } from "tamagui";
 import { useMemo, useState } from "react";
 import { ListView } from "../../../../../../components/ListView";
-import { Platform } from "react-native";
+import { Keyboard, Platform } from "react-native";
 import OptionsSheet from "../../../../../../components/OptionsSheet";
 import ChangeLanguageDialog from "../../../../../../components/ChangeLanguageDialog";
 import { setFormLanguagePreference } from "../../../../../../common/language.preferences";
@@ -21,6 +21,7 @@ import FormOverview from "../../../../../../components/FormOverview";
 import { useTranslation } from "react-i18next";
 import { useFormSubmissionMutation } from "../../../../../../services/mutations/form-submission.mutation";
 import { shouldDisplayQuestion } from "../../../../../../services/form.parser";
+import WarningDialog from "../../../../../../components/WarningDialog";
 
 type SearchParamsType = {
   formId: string;
@@ -28,7 +29,7 @@ type SearchParamsType = {
 };
 
 const FormDetails = () => {
-  const { t } = useTranslation(["form_overview", "bottom_sheets"]);
+  const { t, i18n } = useTranslation(["form_overview", "bottom_sheets"]);
   const { formId, language } = useLocalSearchParams<SearchParamsType>();
 
   if (!formId || !language) {
@@ -38,6 +39,7 @@ const FormDetails = () => {
   const { activeElectionRound, selectedPollingStation } = useUserData();
   const [isChangeLanguageModalOpen, setIsChangeLanguageModalOpen] = useState<boolean>(false);
   const [optionSheetOpen, setOptionSheetOpen] = useState(false);
+  const [clearingForm, setClearingForm] = useState(false);
 
   const { mutate: updateSubmission } = useFormSubmissionMutation({
     electionRoundId: activeElectionRound?.id,
@@ -102,6 +104,11 @@ const FormDetails = () => {
     setIsChangeLanguageModalOpen(false);
   };
 
+  const onClearFormPress = () => {
+    setOptionSheetOpen(false);
+    setClearingForm(true);
+  };
+
   const onClearAnswersPress = () => {
     if (selectedPollingStation?.pollingStationId && activeElectionRound) {
       updateSubmission({
@@ -110,7 +117,7 @@ const FormDetails = () => {
         formId: currentForm?.id as string,
         answers: [],
       });
-      setOptionSheetOpen(false);
+      setClearingForm(false);
     }
   };
 
@@ -142,12 +149,7 @@ const FormDetails = () => {
           setOptionSheetOpen(true);
         }}
       />
-      <YStack
-        paddingTop={28}
-        gap="$xl"
-        paddingHorizontal="$md"
-        style={{ flex: 1 }}
-      >
+      <YStack paddingTop={28} gap="$xl" paddingHorizontal="$md" style={{ flex: 1 }}>
         <ListView<
           Pick<FormQuestionListItemProps, "question" | "status"> & {
             id: string;
@@ -190,6 +192,16 @@ const FormDetails = () => {
           onSelectLanguage={onConfirmFormLanguage}
         />
       )}
+      {clearingForm && (
+        <WarningDialog
+          title={t("clear_answers_modal.title", { value: formTitle })}
+          description={t("clear_answers_modal.description")}
+          actionBtnText={t("clear_answers_modal.actions.clear")}
+          cancelBtnText={t("clear_answers_modal.actions.cancel")}
+          onCancel={setClearingForm.bind(null, false)}
+          action={onClearAnswersPress}
+        />
+      )}
       {/* //todo: change this once tamagui fixes sheet issue #2585 */}
       {(optionSheetOpen || Platform.OS === "ios") && (
         <OptionsSheet open={optionSheetOpen} setOpen={setOptionSheetOpen}>
@@ -197,9 +209,11 @@ const FormDetails = () => {
             <Typography preset="body1" paddingVertical="$md" onPress={onChangeLanguagePress}>
               {t("observations.actions.change_language", { ns: "bottom_sheets" })}
             </Typography>
-            <Typography preset="body1" paddingVertical="$md" onPress={onClearAnswersPress}>
-              {t("observations.actions.clear_form", { ns: "bottom_sheets" })}
-            </Typography>
+            <YStack>
+              <Typography preset="body1" paddingVertical="$md" onPress={onClearFormPress}>
+                {t("observations.actions.clear_form", { ns: "bottom_sheets" })}
+              </Typography>
+            </YStack>
           </YStack>
         </OptionsSheet>
       )}
