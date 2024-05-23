@@ -19,7 +19,7 @@ import { useTranslation } from "react-i18next";
 import NoElectionRounds from "../../../../../components/NoElectionRounds";
 
 const Index = () => {
-  const { t } = useTranslation("observations_polling_station");
+  const { t } = useTranslation("observation");
   const navigation = useNavigation();
 
   const { isLoading, visits, selectedPollingStation, activeElectionRound, electionRounds } =
@@ -75,7 +75,7 @@ const Index = () => {
                   />
                 )}
               <Typography preset="body1" fontWeight="700" marginTop="$lg" marginBottom="$xxs">
-                {t("forms.title")}
+                {t("forms.heading")}
               </Typography>
             </YStack>
           }

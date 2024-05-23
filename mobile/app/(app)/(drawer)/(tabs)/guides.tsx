@@ -10,7 +10,7 @@ import { useUserData } from "../../../../contexts/user/UserContext.provider";
 
 const Guides = () => {
   const navigation = useNavigation();
-  const { t } = useTranslation("guides_empty");
+  const { t } = useTranslation("guides");
   const { activeElectionRound } = useUserData();
 
   return (
@@ -40,10 +40,10 @@ const Guides = () => {
 
         <YStack gap="$xxxs" paddingHorizontal="$lg">
           <Typography preset="subheading" textAlign="center">
-            {t("title")}
+            {t("empty.heading")}
           </Typography>
           <Typography preset="body1" textAlign="center" color="$gray12">
-            {t("paragraph")}
+            {t("empty.paragraph")}
           </Typography>
         </YStack>
       </YStack>

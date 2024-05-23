@@ -5,9 +5,11 @@ import { Typography } from "./Typography";
 import Header from "./Header";
 import { useNavigation } from "expo-router";
 import { DrawerActions } from "@react-navigation/native";
+import { useTranslation } from "react-i18next";
 
 const NoElectionRounds = () => {
   const navigation = useNavigation();
+  const { t } = useTranslation("observation");
 
   return (
     <Screen preset="fixed" contentContainerStyle={{ flexGrow: 1 }}>
@@ -20,11 +22,10 @@ const NoElectionRounds = () => {
         <YStack width={312} alignItems="center">
           <Icon icon="peopleAddingVote" marginBottom="$md" />
           <Typography preset="subheading" textAlign="center" marginBottom="$xxxs">
-            No election event to observe yet
+            {t("no_election_round.heading")}
           </Typography>
           <Typography preset="body1" textAlign="center" color="$gray5">
-            You will be able to use the app once you will be assigned to an election event by your
-            organization
+            {t("no_election_round.paragraph")}
           </Typography>
         </YStack>
       </Stack>
