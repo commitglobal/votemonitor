@@ -35,6 +35,7 @@ import { FormFull, FormType, mapFormType } from '../../models/form';
 import { formDetailsQueryOptions, formsKeys } from '../../queries';
 import EditFormFooter from './EditFormFooter';
 import Layout from '@/components/layout/Layout';
+import { Link } from '@tanstack/react-router';
 
 export default function EditForm(): FunctionComponent {
   const { t } = useTranslation();
