@@ -1,8 +1,10 @@
 ﻿using Authorization.Policies;
+using Microsoft.EntityFrameworkCore;
+using Vote.Monitor.Domain;
 
 namespace Feature.Form.Submissions.UpdateStatus;
 
-public class Endpoint(IRepository<FormSubmission> repository) : Endpoint<Request, Results<NoContent, NotFound>>
+public class Endpoint(VoteMonitorContext context) : Endpoint<Request, Results<NoContent, NotFound>>
 {
     public override void Configure()
     {
@@ -19,17 +21,18 @@ public class Endpoint(IRepository<FormSubmission> repository) : Endpoint<Request
 
     public override async Task<Results<NoContent, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var specification = new GetFormSubmissionSpecification(req.ElectionRoundId, req.NgoId, req.Id);
-        var formSubmission = await repository.FirstOrDefaultAsync(specification, ct);
+        await context.PollingStationInformation
+            .Where(x => x.MonitoringObserver.MonitoringNgo.NgoId == req.NgoId
+                        && x.ElectionRoundId == req.ElectionRoundId
+                        && x.Id == req.Id)
+            .ExecuteUpdateAsync(x => x.SetProperty(p => p.FollowUpStatus, req.FollowUpStatus), cancellationToken: ct);
 
-        if (formSubmission is null)
-        {
-            return TypedResults.NotFound();
-        }
+        await context.FormSubmissions
+            .Where(x => x.MonitoringObserver.MonitoringNgo.NgoId == req.NgoId
+                        && x.ElectionRoundId == req.ElectionRoundId
+                        && x.Id == req.Id)
+            .ExecuteUpdateAsync(x => x.SetProperty(p => p.FollowUpStatus, req.FollowUpStatus), cancellationToken: ct);
 
-        formSubmission.UpdateFollowUpStatus(req.FollowUpStatus);
-
-        await repository.UpdateAsync(formSubmission, ct);
         return TypedResults.NoContent();
     }
 }

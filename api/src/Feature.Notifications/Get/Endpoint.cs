@@ -55,8 +55,12 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
             id = req.Id,
         };
 
-        var notification = await dbConnectionFactory.GetOpenConnection().QueryFirstOrDefaultAsync<NotificationDetailedModel>(sql, queryArgs);
-
+        NotificationDetailedModel notification;
+        using (var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct))
+        {
+            notification = await dbConnection
+                .QueryFirstOrDefaultAsync<NotificationDetailedModel>(sql, queryArgs);
+        }
         return notification == null ? TypedResults.NotFound() : TypedResults.Ok(notification);
     }
 }

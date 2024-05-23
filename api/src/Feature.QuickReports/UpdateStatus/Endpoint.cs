@@ -1,10 +1,10 @@
 ﻿using Authorization.Policies;
-using Feature.QuickReports.Specifications;
-using Vote.Monitor.Domain.Entities.QuickReportAggregate;
+using Microsoft.EntityFrameworkCore;
+using Vote.Monitor.Domain;
 
 namespace Feature.QuickReports.UpdateStatus;
 
-public class Endpoint(IRepository<QuickReport> repository) : Endpoint<Request, Results<NoContent, NotFound>>
+public class Endpoint(VoteMonitorContext context) : Endpoint<Request, NoContent>
 {
     public override void Configure()
     {
@@ -19,19 +19,14 @@ public class Endpoint(IRepository<QuickReport> repository) : Endpoint<Request, R
         Policies(PolicyNames.NgoAdminsOnly);
     }
 
-    public override async Task<Results<NoContent, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<NoContent> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var specification = new GetQuickReportByIdSpecification(req.ElectionRoundId, req.NgoId, req.Id);
-        var quickReport = await repository.FirstOrDefaultAsync(specification, ct);
+        await context.QuickReports
+            .Where(x => x.MonitoringObserver.MonitoringNgo.NgoId == req.NgoId
+                        && x.ElectionRoundId == req.ElectionRoundId
+                        && x.Id == req.Id)
+            .ExecuteUpdateAsync(x => x.SetProperty(p => p.FollowUpStatus, req.FollowUpStatus), cancellationToken: ct);
 
-        if (quickReport is null)
-        {
-            return TypedResults.NotFound();
-        }
-
-        quickReport.UpdateFollowUpStatus(req.FollowUpStatus);
-
-        await repository.UpdateAsync(quickReport, ct);
         return TypedResults.NoContent();
     }
 }

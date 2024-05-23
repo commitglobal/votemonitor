@@ -12,25 +12,26 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
 import { queryClient } from '@/main';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { useLoaderData, useNavigate, useParams } from '@tanstack/react-router';
-import { Route as EditFormRoute } from '@/routes/form-templates_.$formTemplateId.edit-translation.$languageCode';
+import { Route as EditFormRoute } from '@/routes/forms_.$formId.edit-translation.$languageCode';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 
 import { FormFull } from '../../models/form';
-import { formsKeys } from '../../queries';
+import { formDetailsQueryOptions, formsKeys } from '../../queries';
 import EditFormFooter from '../EditForm/EditFormFooter';
 
 export default function EditFormTranslation() {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const formData: FormFull = useLoaderData({ strict: false });
+  const { languageCode, formId } = EditFormRoute.useParams();
+  const formQuery = useSuspenseQuery(formDetailsQueryOptions(formId));
+  const formData = formQuery.data;
   const [localQuestions, setLocalQuestions] = useState(formData.questions);
   const { toast } = useToast();
-  const { languageCode } = EditFormRoute.useParams();
 
   const editFormFormSchema = z.object({
     name: z.string().nonempty(),

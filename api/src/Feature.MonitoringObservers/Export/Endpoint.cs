@@ -50,8 +50,11 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
             electionRoundId = req.ElectionRoundId,
             ngoId = req.NgoId,
         };
-
-        var monitoringObservers = await dbConnectionFactory.GetOpenConnection().QueryAsync<MonitoringObserverModel>(sql, queryArgs);
+        IEnumerable<MonitoringObserverModel> monitoringObservers = [];
+        using (var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct))
+        {
+            monitoringObservers = await dbConnection.QueryAsync<MonitoringObserverModel>(sql, queryArgs);
+        }
 
         var monitoringObserverModels = monitoringObservers.ToArray();
 

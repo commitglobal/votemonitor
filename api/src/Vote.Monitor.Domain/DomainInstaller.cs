@@ -33,7 +33,7 @@ public static class DomainInstaller
 
             options.EnableSensitiveDataLogging();
         });
-        services.AddTransient<INpgsqlConnectionFactory>(_ => new NpgsqlConnectionFactory(connectionString));
+        services.AddSingleton<INpgsqlConnectionFactory>(_ => new NpgsqlConnectionFactory(connectionString));
         services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
         services.AddScoped(typeof(IReadRepository<>), typeof(EfRepository<>));
 

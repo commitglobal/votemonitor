@@ -4,15 +4,19 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Route, observerDetailsQueryOptions } from '@/routes/observers/$observerId';
 import { PencilIcon } from '@heroicons/react/24/outline';
-import { useLoaderData, useNavigate } from '@tanstack/react-router';
-import { Observer } from '../../models/Observer';
+import { useSuspenseQuery } from '@tanstack/react-query';
+import { useNavigate } from '@tanstack/react-router';
 
 export default function ObserverDetails() {
-  const observer: Observer = useLoaderData({ strict: false });
+  const { observerId } = Route.useParams();
+  const observerQuery = useSuspenseQuery(observerDetailsQueryOptions(observerId));
+  const observer = observerQuery.data;
+
   const navigate = useNavigate();
   const navigateToEdit = () => {
-    navigate({ to: `/observers/$observerId/edit`, params: { observerId: observer.id } });
+    navigate({ to: `/observers/$observerId/edit`, params: { observerId } });
   };
 
   return (

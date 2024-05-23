@@ -6,6 +6,6 @@ public class ContainerJobActivator(IServiceProvider serviceProvider) : JobActiva
 {
     public override object ActivateJob(Type type)
     {
-        return serviceProvider.GetRequiredService(type);
+        return serviceProvider.CreateScope().ServiceProvider.GetRequiredService(type);
     }
 }
