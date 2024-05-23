@@ -25,7 +25,7 @@ interface EditNoteSheetProps extends SheetProps {
 const EditNoteSheet = (props: EditNoteSheetProps) => {
   const { selectedNote, setSelectedNote, questionId, electionRoundId, pollingStationId, formId } =
     props;
-  const { t } = useTranslation("bottom_sheets");
+  const { t } = useTranslation(["polling_station_form_wizard", "common"]);
   const insets = useSafeAreaInsets();
   const keyboardIsVisible = useKeyboardVisible();
 
@@ -120,7 +120,7 @@ const EditNoteSheet = (props: EditNoteSheetProps) => {
           }
         >
           <XStack justifyContent="space-between" alignItems="center">
-            <Typography preset="heading">{t("add_note.title_edit")}</Typography>
+            <Typography preset="heading">{t("notes.edit.heading")}</Typography>
             <Typography
               preset="body2"
               color="$red10"
@@ -129,7 +129,7 @@ const EditNoteSheet = (props: EditNoteSheetProps) => {
               pressStyle={{ opacity: 0.5 }}
               onPress={onDelete}
             >
-              {t("add_note.actions.delete_note")}
+              {t("notes.edit.delete")}
             </Typography>
           </XStack>
 
@@ -140,13 +140,19 @@ const EditNoteSheet = (props: EditNoteSheetProps) => {
             rules={{
               maxLength: {
                 value: 10000,
-                message: t("add_note.errors.note_input"),
+                message: t("notes.add.form.input.max"),
               },
             }}
             render={({ field: { value, onChange } }) => {
               return (
                 <YStack height={150}>
-                  <Input type="textarea" value={value} onChangeText={onChange} height={150} />
+                  <Input
+                    type="textarea"
+                    placeholder={t("notes.add.form.input.placeholder")}
+                    value={value}
+                    onChangeText={onChange}
+                    height={150}
+                  />
                 </YStack>
               );
             }}
@@ -156,11 +162,11 @@ const EditNoteSheet = (props: EditNoteSheetProps) => {
           )}
           <XStack gap="$md">
             <Button preset="chromeless" onPress={() => setSelectedNote(null)}>
-              {t("add_note.actions.cancel")}
+              {t("cancel", { ns: "common" })}
             </Button>
 
             <Button flex={1} onPress={handleSubmit(onSubmit)}>
-              {t("add_note.actions.save")}
+              {t("save", { ns: "common" })}
             </Button>
           </XStack>
         </YStack>

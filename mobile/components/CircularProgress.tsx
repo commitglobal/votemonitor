@@ -202,7 +202,7 @@ const AnimatedText = ({
         {Math.round(inputProgress)} %
       </Animated.Text>
       <Animated.Text style={[animatedStyle, { fontSize: 12, fontWeight: "700" }]}>
-        {t("form_overview.progress")}
+        {t("overview.progress")}
       </Animated.Text>
     </View>
   );

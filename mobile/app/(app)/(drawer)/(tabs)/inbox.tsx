@@ -7,7 +7,6 @@ import { useNavigation } from "expo-router";
 import { DrawerActions } from "@react-navigation/native";
 import NoNotificationsReceived from "../../../../components/NoNotificationsReceived";
 import { ListView } from "../../../../components/ListView";
-import { useWindowDimensions } from "react-native";
 import {
   NotificationsKeys,
   useNotifications,
@@ -54,9 +53,9 @@ const Inbox = () => {
   }
 
   return (
-    <Screen preset="fixed" contentContainerStyle={{ flexGrow: 1 }} >
+    <Screen preset="fixed" contentContainerStyle={{ flexGrow: 1 }}>
       <Header
-        title={"Inbox"}
+        title={t("title")}
         titleColor="white"
         barStyle="light-content"
         leftIcon={<Icon icon="menuAlt2" color="white" />}
@@ -66,14 +65,14 @@ const Inbox = () => {
       />
 
       {isLoading ? (
-        <YStack flex={1} justifyContent="center" alignItems="center" >
+        <YStack flex={1} justifyContent="center" alignItems="center">
           <Spinner size="large" color="$purple5" />
         </YStack>
       ) : (
         <>
           <YStack backgroundColor="$yellow6" paddingVertical="$xxs" paddingHorizontal="$md">
             <Typography textAlign="center" color="$purple5" fontWeight="500">
-              {`${t("messages_from")} ${ngoName || t("your_organization")}`}
+              {`${t("banner", { ngoName: ngoName || t("your_organization") })}`}
             </Typography>
           </YStack>
           <YStack padding="$md" style={{ flex: 1 }}>
@@ -103,8 +102,7 @@ const Inbox = () => {
           }}
         >
           <Typography preset="body1" color="$gray7" lineHeight={24}>
-            {/* //todo: translations here */}
-            Manage my polling stations
+            {t("menu.manage_polling_stations")}
           </Typography>
         </YStack>
       </OptionsSheet>

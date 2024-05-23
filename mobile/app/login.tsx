@@ -30,7 +30,7 @@ interface FormData {
 }
 
 const Login = () => {
-  const { t } = useTranslation("login");
+  const { t } = useTranslation(["login", "common", "onboarding"]);
   const insets = useSafeAreaInsets();
 
   const { signIn } = useAuth();
@@ -96,101 +96,103 @@ const Login = () => {
   // todo: refactor this (nr of pages in the view pager) @luciatugui
   const data = [1, 2, 3];
 
-  if (!onboardingComplete) {
-    if (!languageSelectionApplied) {
-      return <ChooseOnboardingLanguage setLanguageSelectionApplied={setLanguageSelectionApplied} />;
-    }
+  if (onboardingComplete) {
     return (
-      <>
-        <OnboardingViewPager
-          scrollOffsetAnimatedValue={scrollOffsetAnimatedValue}
-          positionAnimatedValue={positionAnimatedValue}
-          pagerViewRef={pagerViewRef}
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
-        />
+      <Screen
+        preset="auto"
+        ScrollViewProps={{
+          bounces: false,
+        }}
+        contentContainerStyle={{
+          flexGrow: 1,
+        }}
+      >
+        <Header />
 
-        <XStack
-          justifyContent="center"
-          alignItems="center"
-          backgroundColor="$purple6"
-          paddingHorizontal="$md"
-          paddingBottom={insets.bottom + 32}
-        >
-          <XStack flex={1}></XStack>
-          <XStack justifyContent="center" flex={1}>
-            <Pagination
-              scrollOffsetAnimatedValue={scrollOffsetAnimatedValue}
-              positionAnimatedValue={positionAnimatedValue}
-              data={data}
-            />
+        <YStack paddingHorizontal="$md" gap="$md">
+          <XStack marginTop="$md" justifyContent="flex-start" gap="$xxs">
+            <Icon icon="infoCircle" size={18} color="white" style={{ marginTop: 2 }} />
+            <YStack gap="$xs">
+              <Typography>{t("disclaimer.paragraph1")}</Typography>
+              <Typography>{t("disclaimer.paragraph2")}</Typography>
+            </YStack>
           </XStack>
-
-          {currentPage !== data.length - 1 ? (
-            <XStack
-              onPress={() => {
-                // @ts-ignore
-                currentPage !== data.length - 1 && pagerViewRef?.current?.setPage(currentPage + 1);
-              }}
-              pressStyle={{ opacity: 0.5 }}
-              flex={1}
-              justifyContent="flex-end"
-            >
-              <Typography color="white" preset="body2" paddingVertical="$xs" paddingRight="$md">
-                {t("onboarding.skip")}
-              </Typography>
-            </XStack>
-          ) : (
-            <XStack
-              onPress={() => onOnboardingComplete()}
-              pressStyle={{ opacity: 0.5 }}
-              flex={1}
-              justifyContent="flex-end"
-            >
-              <Typography
-                color="white"
-                preset="body2"
-                paddingVertical="$xs"
-                paddingRight="$md"
-                textAlign="center"
-              >
-                {/* //!this might cause problems if the translation is too long */}
-                {t("onboarding.go_to_app")}
-              </Typography>
-            </XStack>
-          )}
-        </XStack>
-      </>
+          <LoginForm control={control} errors={errors} authError={authError} />
+        </YStack>
+        <Card width="100%" paddingBottom={16 + insets.bottom} marginTop="auto">
+          <Button onPress={handleSubmit(onLogin)} disabled={isLoading}>
+            {isLoading ? t("form.submit.loading") : t("form.submit.save")}
+          </Button>
+        </Card>
+      </Screen>
     );
   }
 
-  return (
-    <Screen
-      preset="auto"
-      ScrollViewProps={{
-        bounces: false,
-      }}
-      contentContainerStyle={{
-        flexGrow: 1,
-      }}
-    >
-      <Header />
+  if (!languageSelectionApplied) {
+    return <ChooseOnboardingLanguage setLanguageSelectionApplied={setLanguageSelectionApplied} />;
+  }
 
-      <YStack paddingHorizontal="$md" gap="$md">
-        <XStack marginTop="$md" justifyContent="flex-start" gap="$xxs">
-          <Icon icon="infoCircle" size={18} color="white" style={{ marginTop: 2 }} />
-          <XStack flex={1}>
-            <Typography>{t("informative-text")}</Typography>
-          </XStack>
+  return (
+    <>
+      <OnboardingViewPager
+        scrollOffsetAnimatedValue={scrollOffsetAnimatedValue}
+        positionAnimatedValue={positionAnimatedValue}
+        pagerViewRef={pagerViewRef}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+      />
+
+      <XStack
+        justifyContent="center"
+        alignItems="center"
+        backgroundColor="$purple6"
+        paddingHorizontal="$md"
+        paddingBottom={insets.bottom + 32}
+      >
+        <XStack flex={1}></XStack>
+        <XStack justifyContent="center" flex={1}>
+          <Pagination
+            scrollOffsetAnimatedValue={scrollOffsetAnimatedValue}
+            positionAnimatedValue={positionAnimatedValue}
+            data={data}
+          />
         </XStack>
-        <LoginForm control={control} errors={errors} authError={authError} />
-      </YStack>
-      <Card width="100%" paddingBottom={16 + insets.bottom} marginTop="auto">
-        <Button onPress={handleSubmit(onLogin)} disabled={isLoading}>
-          {isLoading ? "Log in..." : "Log in"}
-        </Button>
-      </Card>
-    </Screen>
+
+        {currentPage !== data.length - 1 ? (
+          <XStack
+            onPress={() => {
+              // @ts-ignore
+              currentPage !== data.length - 1 && pagerViewRef?.current?.setPage(currentPage + 1);
+            }}
+            pressStyle={{ opacity: 0.5 }}
+            flex={1}
+            justifyContent="flex-end"
+          >
+            <Typography color="white" preset="body2" paddingVertical="$xs" paddingRight="$md">
+              {t("skip", { ns: "common" })}
+            </Typography>
+          </XStack>
+        ) : (
+          <XStack
+            onPress={() => onOnboardingComplete()}
+            pressStyle={{ opacity: 0.5 }}
+            flex={1}
+            justifyContent="flex-end"
+          >
+            <Typography
+              color="white"
+              preset="body2"
+              paddingVertical="$xs"
+              paddingRight="$md"
+              textAlign="center"
+            >
+              {/* //!this might cause problems if the translation is too long */}
+              {t("media.save", { ns: "onboarding" })}
+            </Typography>
+          </XStack>
+        )}
+      </XStack>
+    </>
   );
 };
 
@@ -210,12 +212,12 @@ const LoginForm = ({
   return (
     <View gap="$sm">
       <Typography preset="heading" fontWeight="700">
-        {t("title")}
+        {t("heading")}
       </Typography>
 
       <Typography>{t("paragraph")}</Typography>
 
-      {authError && <CredentialsError error={t("errors.credentials")} />}
+      {authError && <CredentialsError error={t("form.errors.invalid_credentials")} />}
 
       <Controller
         key="email"
@@ -228,7 +230,7 @@ const LoginForm = ({
           },
           pattern: {
             value: /\S+@\S+\.\S+/,
-            message: t("form.email.format"),
+            message: t("form.email.pattern"),
           },
         }}
         render={({ field: { onChange, value } }) => (

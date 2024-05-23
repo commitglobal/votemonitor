@@ -13,20 +13,20 @@ const PollingStationInfo: React.FC<PollingStationInfoProps> = ({
   nrOfAnswers = 0,
   nrOfQuestions = 0,
 }) => {
-  const { t } = useTranslation("observations_polling_station");
+  const { t } = useTranslation(["observation", "common"]);
 
   return (
     <>
       <XStack justifyContent="space-between">
         <Typography preset="heading" fontWeight="500">
-          {t("polling_station_card.questions", {
+          {t("polling_stations_information.polling_station_form.number_of_questions", {
             value: `${nrOfAnswers}/${nrOfQuestions}`,
           })}
         </Typography>
         <Badge status={nrOfAnswers === nrOfQuestions ? Status.COMPLETED : Status.IN_PROGRESS}>
           {nrOfAnswers === nrOfQuestions
-            ? t("polling_station_card.badge_status.completed")
-            : t("polling_station_card.badge_status.in_progress")}
+            ? t("status.completed", { ns: "common" })
+            : t("status.in_progress", { ns: "common" })}
         </Badge>
       </XStack>
     </>
