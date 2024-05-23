@@ -17,6 +17,7 @@ import { CURRENT_USER_STORAGE_KEY } from "../../../../common/constants";
 import SelectAppLanguage from "../../../../components/SelectAppLanguage";
 import i18n from "../../../../common/config/i18n";
 import { useNotification } from "../../../../hooks/useNotifications";
+import { useUserData } from "../../../../contexts/user/UserContext.provider";
 
 interface MenuItemProps {
   label: string;
@@ -46,6 +47,7 @@ const More = () => {
   const navigation = useNavigation();
   const queryClient = useQueryClient();
   const [isLanguageSelectSheetOpen, setIsLanguageSelectSheetOpen] = React.useState(false);
+  const { activeElectionRound } = useUserData();
 
   const { unsubscribe: unsubscribePushNotifications } = useNotification();
 
@@ -77,7 +79,7 @@ const More = () => {
       }}
     >
       <Header
-        title={"More"}
+        title={activeElectionRound?.title}
         titleColor="white"
         barStyle="light-content"
         leftIcon={<Icon icon="menuAlt2" color="white" />}
