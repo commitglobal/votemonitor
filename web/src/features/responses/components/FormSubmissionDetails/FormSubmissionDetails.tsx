@@ -1,6 +1,6 @@
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
 import { FlagIcon } from '@heroicons/react/24/solid';
-import { Link, useLoaderData } from '@tanstack/react-router';
+import { Link, useLoaderData, useRouter } from '@tanstack/react-router';
 import { format } from 'date-fns';
 import { Fragment } from 'react';
 import {
@@ -27,9 +27,57 @@ import type { FunctionComponent } from '@/common/types';
 import { cn, ratingScaleToNumber } from '@/lib/utils';
 import { QuestionExtraDataSection } from '../QuestionExtraDataSection/QuestionExtraDataSection';
 import { DateTimeFormat } from '@/common/formats';
+import { Route, formSubmissionDetailsQueryOptions } from '@/routes/responses/$submissionId';
+import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
+import { formSubmissionsByEntryKeys, formSubmissionsByObserverKeys } from '../../hooks/form-submissions-queries';
+import { toast } from '@/components/ui/use-toast';
+import { authApi } from '@/common/auth-api';
+import { FormType, SubmissionFollowUpStatus } from '../../models/form-submission';
+import { queryClient } from '@/main';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export default function FormSubmissionDetails(): FunctionComponent {
-  const formSubmission = useLoaderData({ from: '/responses/$submissionId' });
+  const { submissionId } = Route.useParams();
+  const submissionQuery = useSuspenseQuery(formSubmissionDetailsQueryOptions(submissionId));
+  const formSubmission = submissionQuery.data;
+  const router = useRouter();
+
+  const updateSubmissionFollowUpStatusMutation = useMutation({
+    mutationKey: formSubmissionsByEntryKeys.detail(submissionId),
+    mutationFn: (followUpStatus: SubmissionFollowUpStatus) => {
+      const electionRoundId: string | null = localStorage.getItem('electionRoundId');
+
+      return authApi.put<void>(
+        `/election-rounds/${electionRoundId}/form-submissions/${submissionId}:status`,
+        {
+          followUpStatus
+        }
+      );
+    },
+
+    onSuccess: () => {
+      toast({
+        title: 'Success',
+        description: 'Follow-up status updated',
+      });
+
+      router.invalidate();
+      queryClient.invalidateQueries({ queryKey: formSubmissionsByEntryKeys.all });
+      queryClient.invalidateQueries({ queryKey: formSubmissionsByObserverKeys.all });
+    },
+
+    onError: () => {
+      toast({
+        title: 'Error updating follow up status',
+        description: 'Please contact tech support',
+        variant: 'destructive'
+      });
+    }
+  });
+
+  function handleFolowUpStatusChange(followUpStatus: SubmissionFollowUpStatus): void {
+    updateSubmissionFollowUpStatusMutation.mutate(followUpStatus);
+  }
 
   return (
     <Layout title={`#${formSubmission.submissionId}`}>
@@ -96,7 +144,18 @@ export default function FormSubmissionDetails(): FunctionComponent {
               <div>
                 {formSubmission.formCode}: {formSubmission.formType}
               </div>
-              <Switch id='needs-followup'>Needs follow-up</Switch>
+              <Select onValueChange={handleFolowUpStatusChange} defaultValue={formSubmission.followUpStatus} value={formSubmission.followUpStatus}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder='Follow-up status' />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value={SubmissionFollowUpStatus.NotApplicable}>Not Applicable</SelectItem>
+                    <SelectItem value={SubmissionFollowUpStatus.NeedsFollowUp}>Needs Follow-Up</SelectItem>
+                    <SelectItem value={SubmissionFollowUpStatus.Resolved}>Resolved</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
             </CardTitle>
             <Separator />
           </CardHeader>

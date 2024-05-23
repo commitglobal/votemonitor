@@ -10,6 +10,8 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Skeleton } from '@/components/ui/skeleton';
 import { AuthContext } from '@/context/auth.context';
+import { formSubmissionsAggregtedKeys, formSubmissionsByEntryKeys, formSubmissionsByObserverKeys } from '@/features/responses/hooks/form-submissions-queries';
+import { quickReportKeys } from '@/features/responses/hooks/quick-reports';
 import { queryClient } from '@/main';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { Bars3Icon, ChevronDownIcon, XMarkIcon } from '@heroicons/react/24/outline';
@@ -33,8 +35,8 @@ const navigation = [
   { name: 'NGOs', to: '/ngos', roles: ['PlatformAdmin'] },
   { name: 'Observers', to: '/observers', roles: ['PlatformAdmin'] },
   { name: 'Form templates', to: '/form-templates', roles: 'PlatformAdmin' },
-  { name: 'Monitoring Observers', to: '/monitoring-observers', roles: ['NgoAdmin'] },
   { name: 'Election event', to: '/election-event', roles: ['NgoAdmin'] },
+  { name: 'Monitoring Observers', to: '/monitoring-observers', roles: ['NgoAdmin'] },
   { name: 'Responses', to: '/responses', roles: ['NgoAdmin'] },
   { name: 'Forms', to: '/forms', roles: ['NgoAdmin'] },
 ];
@@ -49,9 +51,13 @@ const Header = (): FunctionComponent => {
     localStorage.setItem('monitoringNgoId', ev?.monitoringNgoId ?? '');
 
     void queryClient.invalidateQueries({ queryKey: ['observers'] });
+    void queryClient.invalidateQueries({ queryKey: ['monitoring-observers'] });
     void queryClient.invalidateQueries({ queryKey: ['tags'] });
-    void queryClient.invalidateQueries({ queryKey: ['form-submissions'] });
-    void queryClient.invalidateQueries({ queryKey: ['quick-reports'] });
+
+    void queryClient.invalidateQueries({ queryKey: [formSubmissionsByEntryKeys.all] });
+    void queryClient.invalidateQueries({ queryKey: [formSubmissionsByObserverKeys.all] });
+    void queryClient.invalidateQueries({ queryKey: [formSubmissionsAggregtedKeys.all] });
+    void queryClient.invalidateQueries({ queryKey: [quickReportKeys.all] });
   };
 
   const { userRole, signOut } = useContext(AuthContext);

@@ -3,9 +3,9 @@ import ObserverDetails from '@/features/observers/components/ObserverDetails/Obs
 import { Observer } from '@/features/observers/models/Observer';
 import { redirectIfNotAuth } from '@/lib/utils';
 import { queryOptions } from '@tanstack/react-query';
-import { Outlet, createFileRoute } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 
-export const observerQueryOptions = (observerId: string) =>
+export const observerDetailsQueryOptions = (observerId: string) =>
   queryOptions({
     queryKey: ['observer', { observerId }],
     queryFn: async () => {
@@ -25,7 +25,7 @@ export const Route = createFileRoute('/observers/$observerId')({
   },
   component: Details,
   loader: ({ context: { queryClient }, params: { observerId } }) =>
-    queryClient.ensureQueryData(observerQueryOptions(observerId)),
+    queryClient.ensureQueryData(observerDetailsQueryOptions(observerId)),
 });
 
 function Details() {

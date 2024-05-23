@@ -24,26 +24,27 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IFileStorage
         var sql = @"
         WITH submissions AS
         (SELECT psi.""Id"" AS ""SubmissionId"",
-        'PSI' AS ""FormType"",
-        'PSI' AS ""FormCode"",
-        psi.""PollingStationId"",
-        psi.""MonitoringObserverId"",
-        psi.""Answers"",
-        (SELECT ""Questions""
-        FROM ""PollingStationInformationForms""
-        WHERE ""ElectionRoundId"" = @electionRoundId) AS ""Questions"",
-        (SELECT ""DefaultLanguage""
-        FROM ""PollingStationInformationForms""
-        WHERE ""ElectionRoundId"" = @electionRoundId) AS ""DefaultLanguage"",
-        '[]'::jsonb AS ""Attachments"",
-        '[]'::jsonb AS ""Notes"",
-        COALESCE(psi.""LastModifiedOn"", psi.""CreatedOn"") ""TimeSubmitted""
-        FROM ""PollingStationInformation"" psi
-        INNER JOIN ""MonitoringObservers"" mo ON mo.""Id"" = psi.""MonitoringObserverId""
-        INNER JOIN ""MonitoringNgos"" mn ON mn.""Id"" = mo.""MonitoringNgoId""
-        WHERE mn.""ElectionRoundId"" = @electionRoundId
-            AND mn.""NgoId"" = @ngoId
-            AND psi.""Id"" = @submissionId
+            'PSI' AS ""FormType"",
+            'PSI' AS ""FormCode"",
+            psi.""PollingStationId"",
+            psi.""MonitoringObserverId"",
+            psi.""Answers"",
+            (SELECT ""Questions""
+            FROM ""PollingStationInformationForms""
+            WHERE ""ElectionRoundId"" = @electionRoundId) AS ""Questions"",
+            (SELECT ""DefaultLanguage""
+            FROM ""PollingStationInformationForms""
+            WHERE ""ElectionRoundId"" = @electionRoundId) AS ""DefaultLanguage"",
+            psi.""FollowUpStatus"" as ""FollowUpStatus"",
+            '[]'::jsonb AS ""Attachments"",
+            '[]'::jsonb AS ""Notes"",
+            COALESCE(psi.""LastModifiedOn"", psi.""CreatedOn"") ""TimeSubmitted""
+            FROM ""PollingStationInformation"" psi
+            INNER JOIN ""MonitoringObservers"" mo ON mo.""Id"" = psi.""MonitoringObserverId""
+            INNER JOIN ""MonitoringNgos"" mn ON mn.""Id"" = mo.""MonitoringNgoId""
+            WHERE mn.""ElectionRoundId"" = @electionRoundId
+                AND mn.""NgoId"" = @ngoId
+                AND psi.""Id"" = @submissionId
         UNION ALL
         SELECT 
                 fs.""Id"" AS ""SubmissionId"",
@@ -54,6 +55,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IFileStorage
                 fs.""Answers"",
                 f.""Questions"",
                 f.""DefaultLanguage"",
+                fs.""FollowUpStatus"",
 
                 COALESCE((select jsonb_agg(jsonb_build_object('QuestionId', ""QuestionId"", 'FileName', ""FileName"", 'MimeType', ""MimeType"", 'FilePath', ""FilePath"", 'UploadedFileName', ""UploadedFileName"", 'TimeSubmitted', COALESCE(""LastModifiedOn"", ""CreatedOn"")))
                 FROM ""Attachments"" a
@@ -100,7 +102,8 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IFileStorage
                s.""Notes"",
                s.""Answers"",
                s.""Questions"",
-               s.""DefaultLanguage""
+               s.""DefaultLanguage"",
+               s.""FollowUpStatus""
         FROM submissions s
         INNER JOIN ""PollingStations"" ps ON ps.""Id"" = s.""PollingStationId""
         INNER JOIN ""MonitoringObservers"" mo ON mo.""Id"" = s.""MonitoringObserverId""
@@ -118,12 +121,18 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IFileStorage
             submissionId = req.SubmissionId,
         };
 
-        var submission = await dbConnectionFactory.GetOpenConnection().QueryFirstOrDefaultAsync<Response>(sql, queryArgs);
+        Response submission = null;
+
+        using (var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct))
+        {
+            submission = await dbConnection.QueryFirstOrDefaultAsync<Response>(sql, queryArgs);
+        }
+
         if (submission is null)
         {
             return TypedResults.NotFound();
         }
-        
+
         foreach (var attachment in submission.Attachments)
         {
             var result = await fileStorageService.GetPresignedUrlAsync(attachment.FilePath, attachment.UploadedFileName, ct);

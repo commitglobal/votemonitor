@@ -23,21 +23,25 @@ import { useToast } from '@/components/ui/use-toast';
 import LanguageSelect from '@/containers/LanguageSelect';
 import { queryClient } from '@/main';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation } from '@tanstack/react-query';
-import { useLoaderData } from '@tanstack/react-router';
+import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 
-import { FormTemplateFull, FormTemplateType, mapFormTemplateType } from '../../models/formTemplate';
-import { formTemplatesKeys } from '../../queries';
-import EditFormTemplateFooter from './EditFormTemplateFooter';
 import Layout from '@/components/layout/Layout';
+import { Route } from '@/routes/form-templates_.$formTemplateId.edit';
+import { FormTemplateFull, FormTemplateType, mapFormTemplateType } from '../../models/formTemplate';
+import { formTemplateDetailsQueryOptions, formTemplatesKeys } from '../../queries';
+import EditFormTemplateFooter from './EditFormTemplateFooter';
 
 export default function EditFormTemplate() {
   const { t } = useTranslation();
-  const formTemplate: FormTemplateFull = useLoaderData({ strict: false });
+
+  const { formTemplateId } = Route.useParams();
+  const formTemplateQuery = useSuspenseQuery(formTemplateDetailsQueryOptions(formTemplateId));
+  const formTemplate = formTemplateQuery.data;
+
   const [localQuestions, setLocalQuestions] = useState(formTemplate.questions);
   const [defaultLanguage, setDefaultLanguage] = useState(formTemplate.defaultLanguage);
   const [languages, setLanguages] = useState(formTemplate.languages);

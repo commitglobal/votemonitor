@@ -12,12 +12,12 @@ public static class SchedulingExtensions
         var recurringJobManager = scope.ServiceProvider.GetRequiredService<IRecurringJobManager>();
 
         recurringJobManager
-            .AddOrUpdate<IAuditLogCleanerJob>(RecurringJobNames.AuditLogCleaner, x => x.Run(), Cron.Daily);
+            .AddOrUpdate<AuditLogCleanerJob>(RecurringJobNames.AuditLogCleaner, x => x.Run(), Cron.Daily);
 
         recurringJobManager
-            .AddOrUpdate<IExportedDataCleanerJob>(RecurringJobNames.ExportedDataCleaner, x => x.Run(), Cron.Daily);
+            .AddOrUpdate<ExportedDataCleanerJob>(RecurringJobNames.ExportedDataCleaner, x => x.Run(), Cron.Daily);
 
         recurringJobManager
-            .AddOrUpdate<IImportValidationErrorsCleanerJob>(RecurringJobNames.ImportValidationErrorsCleaner, x => x.Run(), Cron.Daily);
+            .AddOrUpdate<ImportValidationErrorsCleanerJob>(RecurringJobNames.ImportValidationErrorsCleaner, x => x.Run(), Cron.Daily);
     }
 }

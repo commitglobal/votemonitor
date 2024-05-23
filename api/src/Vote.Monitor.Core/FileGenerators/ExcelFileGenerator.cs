@@ -44,7 +44,7 @@ public class ExcelFileGenerator
             for (int colIndex = 0; colIndex < data[rowIndex].Count; colIndex++)
             {
                 var cell = dataRow.CreateCell(colIndex);
-                var cellValue = data[rowIndex][colIndex].ToString();
+                var cellValue = data[rowIndex][colIndex]?.ToString();
                 cell.SetCellValue(cellValue);
 
                 if ((cellValue?.StartsWith("https://") ?? false) || (cellValue?.StartsWith("http://") ?? false))
@@ -68,7 +68,8 @@ public class ExcelFileGenerator
         {
             _workbook.Write(memoryStream);
 
-            return Convert.ToBase64String(memoryStream.ToArray());
+            var bytes = memoryStream.ToArray();
+            return Convert.ToBase64String(bytes);
         }
     }
 }

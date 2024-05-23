@@ -1,16 +1,62 @@
-import { Link, useLoaderData } from '@tanstack/react-router';
+import { authApi } from '@/common/auth-api';
+import { DateTimeFormat } from '@/common/formats';
 import type { FunctionComponent } from '@/common/types';
 import Layout from '@/components/layout/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Switch } from '@/components/ui/switch';
-import { Separator } from '@/components/ui/separator';
-import { format } from 'date-fns';
-import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
-import { DateTimeFormat } from '@/common/formats';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Separator } from '@/components/ui/separator';
+import { toast } from '@/components/ui/use-toast';
+import { queryClient } from '@/main';
+import { Route, quickReportDetailsQueryOptions } from '@/routes/responses/quick-reports/$quickReportId';
+import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
+import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
+import { Link, useRouter } from '@tanstack/react-router';
+import { format } from 'date-fns';
+import { quickReportKeys } from '../../hooks/quick-reports';
+import { QuickReportFollowUpStatus } from '../../models/quick-report';
 
 export default function QuickReportDetails(): FunctionComponent {
-  const quickReport = useLoaderData({ from: '/responses/quick-reports/$quickReportId' });
+  const { quickReportId } = Route.useParams();
+  const quickReportQuery = useSuspenseQuery(quickReportDetailsQueryOptions(quickReportId));
+  const quickReport = quickReportQuery.data;
+  const router = useRouter();
+
+  const updateQuickReportFollowUpStatusMutation = useMutation({
+    mutationKey: quickReportKeys.all,
+    mutationFn: (followUpStatus: QuickReportFollowUpStatus) => {
+      const electionRoundId: string | null = localStorage.getItem('electionRoundId');
+
+      return authApi.put<void>(
+        `/election-rounds/${electionRoundId}/quick-reports/${quickReportId}:status`,
+        {
+          followUpStatus
+        }
+      );
+    },
+
+    onSuccess: () => {
+      toast({
+        title: 'Success',
+        description: 'Follow-up status updated',
+      });
+
+      router.invalidate();
+      queryClient.invalidateQueries({queryKey: quickReportKeys.all})
+    },
+
+    onError: () => {
+      toast({
+        title: 'Error updating follow up status',
+        description: 'Please contact tech support',
+        variant: 'destructive'
+      });
+    }
+  });
+
+  function handleFolowUpStatusChange(followUpStatus: QuickReportFollowUpStatus): void {
+    updateQuickReportFollowUpStatusMutation.mutate(followUpStatus);
+  }
 
   return (
     <Layout
@@ -38,8 +84,19 @@ export default function QuickReportDetails(): FunctionComponent {
       <Card className='max-w-4xl'>
         <CardHeader>
           <CardTitle className='mb-4 flex justify-between'>
-            <div>{quickReport.title}</div>
-            <Switch id='needs-followup'>Needs follow-up</Switch>
+            <div>Quick report</div>
+            <Select onValueChange={handleFolowUpStatusChange} defaultValue={quickReport.followUpStatus} value={quickReport.followUpStatus}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder='Follow-up status' />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem value={QuickReportFollowUpStatus.NotApplicable}>Not Applicable</SelectItem>
+                  <SelectItem value={QuickReportFollowUpStatus.NeedsFollowUp}>Needs Follow-Up</SelectItem>
+                  <SelectItem value={QuickReportFollowUpStatus.Resolved}>Resolved</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
           </CardTitle>
           <Separator />
         </CardHeader>

@@ -1,4 +1,6 @@
-﻿using Vote.Monitor.Answer.Module.Mappers;
+﻿using System.Text.Json.Serialization;
+using Ardalis.SmartEnum.SystemTextJson;
+using Vote.Monitor.Answer.Module.Mappers;
 using Vote.Monitor.Answer.Module.Models;
 
 namespace Feature.Form.Submissions;
@@ -9,6 +11,7 @@ public record FormSubmissionModel
     public required Guid FormId { get; init; }
     public required Guid PollingStationId { get; init; }
 
+    [JsonConverter(typeof(SmartEnumNameConverter<SubmissionFollowUpStatus, string>))]
     public SubmissionFollowUpStatus FollowUpStatus { get; private set; }
     public IReadOnlyList<BaseAnswerModel> Answers { get; set; }
 

@@ -4,5 +4,5 @@ namespace Vote.Monitor.Domain.ConnectionFactory;
 
 public interface INpgsqlConnectionFactory
 {
-    IDbConnection GetOpenConnection();
+   Task< IDbConnection> GetOpenConnectionAsync(CancellationToken ct);
 }

@@ -1,5 +1,6 @@
 import Header from '@/components/layout/Header/Header';
 import { Toaster } from '@/components/ui/toaster';
+import { TanStackReactQueryDevelopmentTools } from '@/components/utils/development-tools/TanStackReactQueryDevelopmentTools';
 import { AuthContext } from '@/context/auth.context';
 import { RouterContext } from '@/routerContext';
 import { createRootRouteWithContext, Outlet } from '@tanstack/react-router';
@@ -12,13 +13,13 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 function RootComponent() {
   const { isAuthenticated } = useContext(AuthContext);
   return (
-    <>
+    <Suspense>
       <Toaster />
       <div className='flex flex-col min-h-screen pb-20'>
         {isAuthenticated && <Header />}
         <Outlet />
-        {/* <TanStackReactQueryDevelopmentTools /> */}
+        <TanStackReactQueryDevelopmentTools />
       </div>
-    </>
+    </Suspense>
   );
 }
