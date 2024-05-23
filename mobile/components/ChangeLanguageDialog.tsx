@@ -20,7 +20,7 @@ const ChangeLanguageDialog = ({
   onSelectLanguage,
   onCancel,
 }: ChangeLanguageDialogProps) => {
-  const { t } = useTranslation(["form_overview", "languages"]);
+  const { t } = useTranslation(["form_overview", "languages", "observation"]);
 
   const languageMapping: { [key: string]: string } = {
     RO: t("ro", { ns: "languages" }),
@@ -52,16 +52,23 @@ const ChangeLanguageDialog = ({
       name={formId}
       control={control}
       rules={{
-        required: { value: true, message: t("language_modal.error") },
+        required: {
+          value: true,
+          message: t("forms.select_language_modal.error", { ns: "observation" }),
+        },
       }}
       render={({ field: { onChange, value } }) => (
         <Dialog
           open
-          header={<Typography preset="heading">{t("language_modal.header")}</Typography>}
+          header={
+            <Typography preset="heading">
+              {t("forms.select_language_modal.header", { ns: "observation" })}
+            </Typography>
+          }
           content={
             <YStack>
               <Typography preset="body1" marginBottom="$lg">
-                {t("language_modal.helper")}
+                {t("forms.select_language_modal.helper", { ns: "observation" })}
               </Typography>
               <RadioFormInput
                 options={transformedLanguages}
@@ -78,10 +85,10 @@ const ChangeLanguageDialog = ({
           footer={
             <XStack gap="$md">
               <Button preset="chromeless" onPress={onCancel}>
-                {t("language_modal.actions.cancel")}
+                {t("cancel", { ns: "common" })}
               </Button>
               <Button onPress={handleSubmit(onSubmit)} flex={1}>
-                {t("language_modal.actions.save")}
+                {t("save", { ns: "common" })}
               </Button>
             </XStack>
           }

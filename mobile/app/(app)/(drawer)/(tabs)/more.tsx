@@ -130,7 +130,7 @@ const More = () => {
           label={t("logout")}
           icon="logoutNoBackground"
           onClick={logout}
-          helper={currentUser ? `Logged in as ${currentUser}` : ""}
+          helper={currentUser ? t("logged_in", { user: currentUser }) : ""}
         ></MenuItem>
       </YStack>
       {/* 

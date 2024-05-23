@@ -21,12 +21,12 @@ const QuestionNotes = ({
   formId: string;
   questionId: string;
 }) => {
-  const { t } = useTranslation("question_page");
+  const { t } = useTranslation("polling_station_form_wizard");
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
 
   return (
     <YStack marginTop="$lg" gap="$xxs">
-      <Typography fontWeight="500">{t("notes")}</Typography>
+      <Typography fontWeight="500">{t("notes.heading")}</Typography>
       {notes.map((note) => {
         return (
           <Card
