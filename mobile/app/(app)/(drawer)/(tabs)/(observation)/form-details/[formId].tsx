@@ -28,7 +28,7 @@ type SearchParamsType = {
 };
 
 const FormDetails = () => {
-  const { t } = useTranslation(["form_overview", "bottom_sheets"]);
+  const { t } = useTranslation(["form_overview", "common"]);
   const { formId, language } = useLocalSearchParams<SearchParamsType>();
 
   if (!formId || !language) {
@@ -115,11 +115,24 @@ const FormDetails = () => {
   };
 
   if (isLoadingCurrentForm || isLoadingAnswers) {
-    return <Typography>Loading</Typography>;
+    return <Typography>{t("loading", { ns: "common" })}</Typography>;
   }
 
   if (currentFormError || answersError) {
-    return <Typography>Form Error</Typography>;
+    return (
+      <Screen preset="fixed">
+        <Header
+          title={`${formId}`}
+          titleColor="white"
+          barStyle="light-content"
+          leftIcon={<Icon icon="chevronLeft" color="white" />}
+          onLeftPress={() => router.back()}
+        />
+        <YStack paddingVertical="$xxl" alignItems="center">
+          <Typography>{t("error")}</Typography>
+        </YStack>
+      </Screen>
+    );
   }
 
   return (
@@ -199,10 +212,10 @@ const FormDetails = () => {
         <OptionsSheet open={optionSheetOpen} setOpen={setOptionSheetOpen}>
           <YStack paddingHorizontal="$sm" gap="$xxs">
             <Typography preset="body1" paddingVertical="$md" onPress={onChangeLanguagePress}>
-              {t("observations.actions.change_language", { ns: "bottom_sheets" })}
+              {t("menu.change_language")}
             </Typography>
             <Typography preset="body1" paddingVertical="$md" onPress={onClearAnswersPress}>
-              {t("observations.actions.clear_form", { ns: "bottom_sheets" })}
+              {t("menu.clear")}
             </Typography>
           </YStack>
         </OptionsSheet>

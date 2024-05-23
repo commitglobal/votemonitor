@@ -76,7 +76,7 @@ const More = () => {
       }}
     >
       <Header
-        title={"More"}
+        title={t("title")}
         titleColor="white"
         barStyle="light-content"
         leftIcon={<Icon icon="menuAlt2" color="white" />}
@@ -127,7 +127,7 @@ const More = () => {
           label={t("logout")}
           icon="logoutNoBackground"
           onClick={logout}
-          helper={currentUser ? `Logged in as ${currentUser}` : ""}
+          helper={currentUser ? t("logged_in", { user: currentUser }) : ""}
         ></MenuItem>
       </YStack>
       {/* 

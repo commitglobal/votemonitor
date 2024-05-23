@@ -9,7 +9,7 @@ import { useTranslation } from "react-i18next";
 
 const Guides = () => {
   const navigation = useNavigation();
-  const { t } = useTranslation("guides_empty");
+  const { t } = useTranslation("guides");
 
   return (
     <Screen
@@ -22,7 +22,7 @@ const Guides = () => {
       }}
     >
       <Header
-        title={"Inbox"}
+        title={t("title")}
         titleColor="white"
         barStyle="light-content"
         leftIcon={<Icon icon="menuAlt2" color="white" />}
@@ -38,10 +38,10 @@ const Guides = () => {
 
         <YStack gap="$xxxs" paddingHorizontal="$lg">
           <Typography preset="subheading" textAlign="center">
-            {t("title")}
+            {t("empty.heading")}
           </Typography>
           <Typography preset="body1" textAlign="center" color="$gray12">
-            {t("paragraph")}
+            {t("empty.paragraph")}
           </Typography>
         </YStack>
       </YStack>

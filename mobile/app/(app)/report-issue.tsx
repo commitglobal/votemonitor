@@ -28,6 +28,7 @@ import { QuickReportKeys } from "../../services/queries/quick-reports.query";
 import * as Sentry from "@sentry/react-native";
 import { AddAttachmentQuickReportAPIPayload } from "../../services/api/quick-report/add-attachment-quick-report.api";
 import { useTranslation } from "react-i18next";
+import i18n from "../../common/config/i18n";
 
 const mapVisitsToSelectPollingStations = (visits: PollingStationVisitVM[] = []) => {
   const pollingStationsForSelect = visits.map((visit) => {
@@ -43,12 +44,12 @@ const mapVisitsToSelectPollingStations = (visits: PollingStationVisitVM[] = []) 
     {
       id: "other",
       value: QuickReportLocationType.OtherPollingStation,
-      label: "Other polling station",
+      label: i18n.t("form.polling_station_id.options.other", { ns: "report_new_issue" }),
     },
     {
       id: "not_related_to_polling_station",
       value: QuickReportLocationType.NotRelatedToAPollingStation,
-      label: "Not related to a polling station",
+      label: i18n.t("form.polling_station_id.options.not_related", { ns: "report_new_issue" }),
     },
   );
   return pollingStationsForSelect;
@@ -240,7 +241,7 @@ const ReportIssue = () => {
         }}
       >
         <Header
-          title={t("header.title")}
+          title={t("title")}
           titleColor="white"
           barStyle="light-content"
           leftIcon={<Icon icon="chevronLeft" color="white" />}
@@ -257,17 +258,20 @@ const ReportIssue = () => {
               rules={{
                 required: {
                   value: true,
-                  message: "This field is required.",
+                  message: t("form.polling_station_id.required"),
                 },
               }}
               render={({ field: { onChange, value } }) => (
                 <>
                   {/* select polling station */}
-                  <FormElement title="Polling station *" error={errors.polling_station_id?.message}>
+                  <FormElement
+                    title={t("form.polling_station_id.label")}
+                    error={errors.polling_station_id?.message}
+                  >
                     <Select
                       value={value}
                       options={pollingStations}
-                      placeholder="Select polling station"
+                      placeholder={t("form.polling_station_id.placeholder")}
                       onValueChange={onChange}
                       error={errors.polling_station_id?.message}
                     />
@@ -283,18 +287,17 @@ const ReportIssue = () => {
                 name="polling_station_details"
                 control={control}
                 rules={{
-                  required: { value: true, message: "This field is required." },
+                  required: { value: true, message: t("form.polling_station_details.required") },
                   maxLength: {
                     value: 1024,
-                    // todo: translation
-                    message: "Input cannot exceed 1024 characters",
+                    message: t("form.polling_station_details.max", { value: 1024 }),
                   },
                 }}
                 render={({ field: { onChange, value } }) => (
                   <FormInput
-                    title="Polling station details *"
+                    title={t("form.polling_station_details.label")}
                     type="textarea"
-                    placeholder="Please write here some identification details for this polling station (such as address, name, number, etc.)"
+                    placeholder={t("form.polling_station_details.placeholder")}
                     value={value}
                     onChangeText={onChange}
                     error={errors.polling_station_details?.message}
@@ -309,10 +312,10 @@ const ReportIssue = () => {
               name="issue_title"
               control={control}
               rules={{
-                required: { value: true, message: "This field is required." },
+                required: { value: true, message: t("form.issue_title.required") },
                 maxLength: {
                   value: 1024,
-                  message: "Input cannot exceed 1024 characters",
+                  message: t("form.issue_title.max", { value: 1024 }),
                 },
               }}
               render={({ field: { onChange, value } }) => (
@@ -333,17 +336,17 @@ const ReportIssue = () => {
               name="issue_description"
               control={control}
               rules={{
-                required: { value: true, message: "This field is required." },
+                required: { value: true, message: t("form.issue_description.required") },
                 maxLength: {
                   value: 10000,
-                  message: "Input cannot exceed 10,000 characters",
+                  message: t("form.issue_description.max", { value: 10000 }),
                 },
               }}
               render={({ field: { onChange, value } }) => (
                 <FormInput
-                  title={t("form.description.label")}
+                  title={t("form.issue_description.label")}
                   type="textarea"
-                  placeholder={t("form.description.placeholder")}
+                  placeholder={t("form.issue_description.placeholder")}
                   value={value}
                   onChangeText={onChange}
                   error={errors.issue_description?.message}
@@ -352,7 +355,7 @@ const ReportIssue = () => {
             />
             {attachments.length ? (
               <YStack gap="$xxs">
-                <Typography fontWeight="500">{t("media.title")}</Typography>
+                <Typography fontWeight="500">{t("media.heading")}</Typography>
                 <YStack gap="$xxs">
                   {attachments.map((attachment) => {
                     return (
@@ -388,7 +391,7 @@ const ReportIssue = () => {
               false
             )}
             <AddAttachment
-              label={t("form.actions.add_media")}
+              label={t("media.add")}
               onPress={() => {
                 Keyboard.dismiss();
                 setOptionsSheetOpen(true);
@@ -405,7 +408,7 @@ const ReportIssue = () => {
               paddingVertical="$md"
               pressStyle={{ color: "$purple5" }}
             >
-              {t("form.actions.load")}
+              {t("media.menu.load")}
             </Typography>
             <Typography
               onPress={handleCameraUpload.bind(null, "cameraPhoto")}
@@ -413,7 +416,7 @@ const ReportIssue = () => {
               paddingVertical="$md"
               pressStyle={{ color: "$purple5" }}
             >
-              {t("form.actions.take_picture")}
+              {t("media.menu.take_picture")}
             </Typography>
             <Typography
               onPress={handleCameraUpload.bind(null, "cameraVideo")}
@@ -421,7 +424,7 @@ const ReportIssue = () => {
               paddingVertical="$md"
               pressStyle={{ color: "$purple5" }}
             >
-              {t("form.actions.record_video")}
+              {t("media.menu.record_video")}
             </Typography>
             <Typography
               onPress={handleUploadAudio.bind(null)}
@@ -429,7 +432,7 @@ const ReportIssue = () => {
               paddingVertical="$md"
               pressStyle={{ color: "$purple5" }}
             >
-              {t("form.actions.upload_audio")}
+              {t("media.menu.upload_audio")}
             </Typography>
           </YStack>
         </OptionsSheet>
@@ -447,7 +450,7 @@ const ReportIssue = () => {
       >
         {/* this will reset form to defaultValues */}
         <Button preset="chromeless" onPress={() => reset()}>
-          {t("form.actions.clear")}
+          {t("form.clear")}
         </Button>
         <Button
           flex={1}
@@ -455,8 +458,8 @@ const ReportIssue = () => {
           disabled={(isPendingAddQuickReport && !isPausedAddQuickReport) || isUploadingAttachments}
         >
           {(!isPendingAddQuickReport && !isPausedAddQuickReport) || !isUploadingAttachments
-            ? t("form.actions.submit")
-            : t("form.actions.loading")}
+            ? t("form.submit")
+            : t("form.loading")}
         </Button>
       </XStack>
     </>

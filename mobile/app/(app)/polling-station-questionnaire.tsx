@@ -34,7 +34,7 @@ import { useMutatePollingStationGeneralData } from "../../services/mutations/psi
 import OptionsSheet from "../../components/OptionsSheet";
 
 const PollingStationQuestionnaire = () => {
-  const { t, i18n } = useTranslation("polling_station_information");
+  const { t, i18n } = useTranslation("polling_station_information_form");
   const currentLanguage = i18n.language.toLocaleUpperCase();
   const [openContextualMenu, setOpenContextualMenu] = useState(false);
   const insets = useSafeAreaInsets();
@@ -211,7 +211,7 @@ const PollingStationQuestionnaire = () => {
         }}
       >
         <Header
-          title={t("header.title")}
+          title={t("title")}
           titleColor="white"
           barStyle="light-content"
           leftIcon={<Icon icon="chevronLeft" color="white" />}
@@ -233,7 +233,7 @@ const PollingStationQuestionnaire = () => {
                   rules={{
                     maxLength: {
                       value: 10,
-                      message: "Input cannot exceed 10 characters",
+                      message: t("form.max", { value: 10 }),
                     },
                   }}
                   render={({ field: { onChange, value } }) => (
@@ -257,7 +257,7 @@ const PollingStationQuestionnaire = () => {
                   name={question.id}
                   control={control}
                   rules={{
-                    maxLength: { value: 1024, message: "Input cannot exceed 1024 characters" },
+                    maxLength: { value: 1024, message: t("form.max", { value: 1024 }) },
                   }}
                   render={({ field: { onChange, value } }) => (
                     <YStack>
@@ -327,6 +327,7 @@ const PollingStationQuestionnaire = () => {
                                 marginTop="$md"
                                 key={option.id}
                                 value={value.textValue}
+                                placeholder={t("form.placeholder")}
                                 onChangeText={(textValue) => onChange({ ...value, textValue })}
                               />
                             );
@@ -403,7 +404,7 @@ const PollingStationQuestionnaire = () => {
                                     type="textarea"
                                     marginTop="$md"
                                     value={selections[option.id]?.text}
-                                    placeholder="Please enter a text..."
+                                    placeholder={t("form.placeholder")}
                                     onChangeText={(textValue) => {
                                       selections[option.id] = {
                                         optionId: option.id,
@@ -439,7 +440,7 @@ const PollingStationQuestionnaire = () => {
         elevation={2}
       >
         <Button flex={1} onPress={handleSubmit(onSubmit)}>
-          {t("actions.submit")}
+          {t("submit")}
         </Button>
       </XStack>
     </>
@@ -447,12 +448,12 @@ const PollingStationQuestionnaire = () => {
 };
 
 const OptionSheetContent = ({ onClear }: { onClear: () => void }) => {
-  const { t } = useTranslation("bottom_sheets");
+  const { t } = useTranslation("polling_station_information_form");
 
   return (
     <View paddingVertical="$xxs" paddingHorizontal="$sm">
       <Typography preset="body1" color="$gray7" lineHeight={24} onPress={onClear}>
-        {t("observations.actions.clear_form")}
+        {t("menu.clear")}
       </Typography>
     </View>
   );

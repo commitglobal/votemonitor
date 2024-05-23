@@ -48,7 +48,7 @@ type SearchParamType = {
 };
 
 const FormQuestionnaire = () => {
-  const { t } = useTranslation("question_page");
+  const { t } = useTranslation(["polling_station_form_wizard", "common"]);
   const { questionId, formId, language } = useLocalSearchParams<SearchParamType>();
 
   if (!questionId || !formId || !language) {
@@ -213,11 +213,24 @@ const FormQuestionnaire = () => {
   };
 
   if (isLoadingCurrentForm || isLoadingAnswers) {
-    return <Typography>Loading</Typography>;
+    return <Typography>{t("loading", { ns: "common" })}</Typography>;
   }
 
   if (currentFormError || answersError) {
-    return <Typography>Form Error</Typography>;
+    return (
+      <Screen preset="fixed">
+        <Header
+          title={`${questionId}`}
+          titleColor="white"
+          barStyle="light-content"
+          leftIcon={<Icon icon="chevronLeft" color="white" />}
+          onLeftPress={() => router.back()}
+        />
+        <YStack paddingVertical="$xxl" alignItems="center">
+          <Typography>{t("error")}</Typography>
+        </YStack>
+      </Screen>
+    );
   }
   const { uploadCameraOrMedia } = useCamera();
 
@@ -324,7 +337,7 @@ const FormQuestionnaire = () => {
       />
       <YStack gap="$xxs" padding="$md">
         <XStack justifyContent="space-between">
-          <Typography>{t("progress")}</Typography>
+          <Typography>{t("progress_bar.label")}</Typography>
           <Typography justifyContent="space-between">{`${activeQuestion?.indexInDisplayedQuestions + 1}/${displayedQuestions.length}`}</Typography>
         </XStack>
         <LinearProgress
@@ -333,7 +346,7 @@ const FormQuestionnaire = () => {
         />
         <XStack justifyContent="flex-end">
           <Typography onPress={onClearForm} color="$red10">
-            {t("actions.clear_answer")}
+            {t("progress_bar.clear_answer")}
           </Typography>
         </XStack>
       </YStack>
@@ -363,7 +376,7 @@ const FormQuestionnaire = () => {
                       onChangeText={onChange}
                       value={value}
                       maxLength={10}
-                      helper={t("max", {
+                      helper={t("form.max", {
                         value: 10,
                       })}
                     />
@@ -377,7 +390,7 @@ const FormQuestionnaire = () => {
                       paragraph={question.helptext?.[language] || ""}
                       onChangeText={onChange}
                       maxLength={10024}
-                      helper={t("max", {
+                      helper={t("form.max", {
                         value: 1024,
                       })}
                       value={value}
@@ -387,7 +400,7 @@ const FormQuestionnaire = () => {
                   return (
                     <WizardDateFormInput
                       label={`${question.code}. ${question.text[language]}`}
-                      placeholder="Please enter a date"
+                      placeholder={t("form.date_placeholder")}
                       paragraph={question.helptext?.[language] || ""}
                       onChange={onChange}
                       value={value}
@@ -417,7 +430,7 @@ const FormQuestionnaire = () => {
                               type="textarea"
                               marginTop="$md"
                               value={value.textValue || ""}
-                              placeholder="Please enter a text..."
+                              placeholder={t("form.text_placeholder")}
                               onChangeText={(textValue) => {
                                 onChange({ ...value, textValue });
                               }}
@@ -463,7 +476,7 @@ const FormQuestionnaire = () => {
                                 type="textarea"
                                 marginTop="$md"
                                 value={selections[option.id]?.text}
-                                placeholder="Please enter a text..."
+                                placeholder={"form.text_placeholder"}
                                 onChangeText={(textValue) => {
                                   selections[option.id] = {
                                     optionId: option.id,
@@ -519,7 +532,7 @@ const FormQuestionnaire = () => {
           )}
 
           <AddAttachment
-            label={t("actions.add_attachments")}
+            label={t("attachments.add")}
             marginTop="$sm"
             onPress={() => {
               Keyboard.dismiss();
@@ -573,7 +586,7 @@ const FormQuestionnaire = () => {
                   setAddingNote(true);
                 }}
               >
-                {t("options_sheet.add_note")}
+                {t("attachments.menu.add_note")}
               </Typography>
               <Typography
                 onPress={handleCameraUpload.bind(null, "library")}
@@ -581,7 +594,7 @@ const FormQuestionnaire = () => {
                 paddingVertical="$md"
                 pressStyle={{ color: "$purple5" }}
               >
-                {t("options_sheet.load")}
+                {t("attachments.menu.load")}
               </Typography>
               <Typography
                 onPress={handleCameraUpload.bind(null, "cameraPhoto")}
@@ -589,7 +602,7 @@ const FormQuestionnaire = () => {
                 paddingVertical="$md"
                 pressStyle={{ color: "$purple5" }}
               >
-                {t("options_sheet.take_picture")}
+                {t("attachments.menu.take_picture")}
               </Typography>
               <Typography
                 onPress={handleCameraUpload.bind(null, "cameraVideo")}
@@ -597,7 +610,7 @@ const FormQuestionnaire = () => {
                 paddingVertical="$md"
                 pressStyle={{ color: "$purple5" }}
               >
-                {t("options_sheet.record_video")}
+                {t("attachments.menu.record_video")}
               </Typography>
               <Typography
                 onPress={handleUploadAudio.bind(null)}
@@ -605,7 +618,7 @@ const FormQuestionnaire = () => {
                 paddingVertical="$md"
                 pressStyle={{ color: "$purple5" }}
               >
-                {t("options_sheet.upload_audio")}
+                {t("attachments.menu.upload_audio")}
               </Typography>
             </YStack>
           )}
@@ -627,11 +640,12 @@ const $containerStyle: ViewStyle = {
 export default FormQuestionnaire;
 
 const MediaLoading = () => {
+  const { t } = useTranslation("polling_station_form_wizard");
   return (
     <YStack alignItems="center" gap="$lg" paddingHorizontal="$lg">
       <Spinner size="large" color="$purple5" />
       <Typography preset="subheading" fontWeight="500" color="$purple5">
-        Adding attachment...
+        {t("attachments.loading")}
       </Typography>
     </YStack>
   );

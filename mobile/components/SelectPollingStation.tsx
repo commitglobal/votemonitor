@@ -13,7 +13,7 @@ const SelectPollingStation = () => {
   const [open, setOpen] = useState(false);
   const insets = useSafeAreaInsets();
 
-  const { t } = useTranslation("bottom_sheets");
+  const { t } = useTranslation(["observation", "common"]);
 
   return (
     <YStack paddingVertical="$xs" paddingHorizontal="$md" backgroundColor="white">
@@ -39,7 +39,7 @@ const SelectPollingStation = () => {
             placeholder={
               selectedPollingStation
                 ? `${selectedPollingStation?.number} - ${selectedPollingStation?.name}`
-                : "Loading..."
+                : t("loading", { ns: "common" })
             }
             fontWeight="500"
           ></Select.Value>
@@ -56,12 +56,12 @@ const SelectPollingStation = () => {
                 borderBottomColor="$gray3"
               >
                 <Typography preset="body2" color="$gray5">
-                  {t("observations.title")}
+                  {t("my_polling_stations.heading")}
                 </Typography>
                 {/* //TODO: not sure how many nroflines we should leave here */}
                 <Typography numberOfLines={7} color="$gray5" marginTop="$xxs">
                   {/* //TODO: translation here */}
-                  {t("observations.paragraph")}
+                  {t("my_polling_stations.paragraph")}
                 </Typography>
               </YStack>
 
@@ -83,7 +83,7 @@ const SelectPollingStation = () => {
                     router.push.bind(null, "/polling-station-wizzard")();
                   }}
                 >
-                  {t("observations.actions.add_station")}
+                  {t("my_polling_stations.add")}
                 </Button>
               </View>
             </Sheet.Frame>

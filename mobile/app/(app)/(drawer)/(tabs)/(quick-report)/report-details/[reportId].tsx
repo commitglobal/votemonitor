@@ -16,7 +16,7 @@ type SearchParamsType = {
 
 const ReportDetails = () => {
   const { reportTitle, reportId } = useLocalSearchParams<SearchParamsType>();
-  const { t } = useTranslation("report-details");
+  const { t } = useTranslation(["report_details", "common"]);
 
   if (!reportId || !reportTitle) {
     return <Typography>Incorrect page params</Typography>;
@@ -31,11 +31,24 @@ const ReportDetails = () => {
   } = useQuickReportById(activeElectionRound?.id, reportId);
 
   if (isLoadingCurrentReport) {
-    return <Typography>Loading</Typography>;
+    return <Typography>{t("loading", { ns: "common" })}</Typography>;
   }
 
   if (currentReportError) {
-    return <Typography>Report Error</Typography>;
+    return (
+      <Screen preset="fixed">
+        <Header
+          title={`${reportTitle}`}
+          titleColor="white"
+          barStyle="light-content"
+          leftIcon={<Icon icon="chevronLeft" color="white" />}
+          onLeftPress={() => router.back()}
+        />
+        <YStack paddingVertical="$xxl" alignItems="center">
+          <Typography>{t("error")}</Typography>
+        </YStack>
+      </Screen>
+    );
   }
 
   const attachments = quickReport?.attachments || [];

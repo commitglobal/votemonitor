@@ -11,7 +11,7 @@ import Card from "../components/Card";
 import Button from "../components/Button";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useState } from "react";
-import ChangePasswordConfirmation from "../components/ChangePasswordConfirmation";
+import PasswordConfirmationScreen from "../components/PasswordConfirmationScreen";
 import { ForgotPasswwordPayload, forgotPassword } from "../services/definitions.api";
 import * as Sentry from "@sentry/react-native";
 import CredentialsError from "../components/CredentialsError";
@@ -22,7 +22,8 @@ type FormData = {
 
 const ForgotPassword = () => {
   const insets = useSafeAreaInsets();
-  const { t } = useTranslation("reset");
+  const { t } = useTranslation("forgot_password");
+  const [isLoading, setIsLoading] = useState(false);
   const [emailConfirmation, setEmailConfirmation] = useState(false);
   const [authError, setAuthError] = useState(false);
 
@@ -36,17 +37,20 @@ const ForgotPassword = () => {
   // Submit handler - forgot password
   const onSubmit = async (data: FormData) => {
     try {
+      setIsLoading(true);
       const payload: ForgotPasswwordPayload = { email: data.email };
       await forgotPassword(payload);
       setEmailConfirmation(true);
     } catch (error) {
       Sentry.captureException(error);
       setAuthError(true);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   if (emailConfirmation) {
-    return <ChangePasswordConfirmation emailConfirmation={true} />;
+    return <PasswordConfirmationScreen icon="emailSent" translationKey="forgot_password" />;
   }
 
   return (
@@ -69,11 +73,11 @@ const ForgotPassword = () => {
 
       <YStack paddingHorizontal="$md" gap="$md" paddingTop={10 + insets.top}>
         <Typography preset="heading" fontWeight="700">
-          {t("title")}
+          {t("heading")}
         </Typography>
 
         <Typography>{t("paragraph")}</Typography>
-        {authError && <CredentialsError error={t("error")} />}
+        {authError && <CredentialsError error={t("form.errors.invalid_email")} />}
 
         <Controller
           key="email"
@@ -86,7 +90,7 @@ const ForgotPassword = () => {
             },
             pattern: {
               value: /\S+@\S+\.\S+/,
-              message: t("form.email.format"),
+              message: t("form.email.pattern"),
             },
           }}
           render={({ field: { onChange, value } }) => (
@@ -103,7 +107,9 @@ const ForgotPassword = () => {
       </YStack>
 
       <Card width="100%" paddingBottom={16 + insets.bottom} marginTop="auto">
-        <Button onPress={handleSubmit(onSubmit)}>{t("actions.send")}</Button>
+        <Button disabled={isLoading} onPress={handleSubmit(onSubmit)}>
+          {isLoading ? t("form.submit.loading") : t("form.submit.save")}
+        </Button>
       </Card>
     </Screen>
   );

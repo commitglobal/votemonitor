@@ -47,7 +47,7 @@ const Inbox = () => {
   return (
     <Screen preset="fixed" contentContainerStyle={{ flexGrow: 1 }}>
       <Header
-        title={"Inbox"}
+        title={t("title")}
         titleColor="white"
         barStyle="light-content"
         leftIcon={<Icon icon="menuAlt2" color="white" />}
@@ -64,7 +64,7 @@ const Inbox = () => {
         <>
           <YStack backgroundColor="$yellow6" paddingVertical="$xxs" paddingHorizontal="$md">
             <Typography textAlign="center" color="$purple5" fontWeight="500">
-              {`${t("messages_from")} ${ngoName || t("your_organization")}`}
+              {`${t("banner", { ngoName: ngoName || t("your_organization") })}`}
             </Typography>
           </YStack>
           <YStack paddingHorizontal="$md" height={scrollHeight}>
@@ -94,8 +94,7 @@ const Inbox = () => {
           }}
         >
           <Typography preset="body1" color="$gray7" lineHeight={24}>
-            {/* //todo: translations here */}
-            Manage my polling stations
+            {t("menu.manage_polling_stations")}
           </Typography>
         </YStack>
       </OptionsSheet>

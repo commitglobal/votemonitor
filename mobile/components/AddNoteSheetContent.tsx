@@ -26,7 +26,7 @@ const AddNoteSheetContent = ({
   electionRoundId: string | undefined;
   setIsOptionsSheetOpen: Dispatch<SetStateAction<boolean>>;
 }) => {
-  const { t } = useTranslation("bottom_sheets");
+  const { t } = useTranslation(["polling_station_form_wizard", "common"]);
   const insets = useSafeAreaInsets();
   const keyboardIsVisible = useKeyboardVisible();
 
@@ -76,7 +76,7 @@ const AddNoteSheetContent = ({
           : 0
       }
     >
-      <Typography preset="heading">{t("add_note.title")}</Typography>
+      <Typography preset="heading">{t("notes.add.heading")}</Typography>
 
       <Controller
         key={questionId + "_note"}
@@ -85,7 +85,7 @@ const AddNoteSheetContent = ({
         rules={{
           maxLength: {
             value: 10000,
-            message: t("add_note.errors.note_input"),
+            message: t("notes.add.form.input.max"),
           },
         }}
         render={({ field: { value: noteValue, onChange: onNoteChange } }) => {
@@ -93,7 +93,7 @@ const AddNoteSheetContent = ({
             <YStack height={150}>
               <Input
                 type="textarea"
-                placeholder={t("add_note.placeholder")}
+                placeholder={t("notes.add.form.input.placeholder")}
                 value={noteValue}
                 height={150}
                 onChangeText={onNoteChange}
@@ -105,10 +105,10 @@ const AddNoteSheetContent = ({
       {errors.noteText && <Typography color="$red12">{errors.noteText.message}</Typography>}
       <XStack gap="$md">
         <Button preset="chromeless" onPress={() => setAddingNote(false)}>
-          {t("add_note.actions.cancel")}
+          {t("cancel", { ns: "common" })}
         </Button>
         <Button flex={1} onPress={handleSubmit(onSubmitNote)}>
-          {t("add_note.actions.save")}
+          {t("save", { ns: "common" })}
         </Button>
       </XStack>
     </YStack>

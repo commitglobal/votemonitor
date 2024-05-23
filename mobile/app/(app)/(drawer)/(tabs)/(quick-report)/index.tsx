@@ -21,7 +21,7 @@ const QuickReport = () => {
   const [openContextualMenu, setOpenContextualMenu] = useState(false);
   const { activeElectionRound } = useUserData();
   const { data: quickReports, isLoading, error } = useQuickReports(activeElectionRound?.id);
-  const { t } = useTranslation("report");
+  const { t } = useTranslation("quick_report");
 
   return (
     <>
@@ -35,7 +35,7 @@ const QuickReport = () => {
         contentContainerStyle={$containerStyle}
       >
         <Header
-          title={t("header")}
+          title={t("list.title")}
           titleColor="white"
           barStyle="light-content"
           leftIcon={<Icon icon="menuAlt2" color="white" />}
@@ -66,7 +66,7 @@ const QuickReport = () => {
             backgroundColor="white"
             onPress={router.push.bind(null, "/report-issue")}
           >
-            {t("actions.report_new_issue")}
+            {t("list.add")}
           </Button>
         </YStack>
       ) : (
@@ -83,14 +83,14 @@ interface QuickReportContentProps {
 }
 
 const QuickReportContent = ({ quickReports, isLoading, error }: QuickReportContentProps) => {
-  const { t } = useTranslation("report");
+  const { t } = useTranslation(["quick_report", "common"]);
 
   if (isLoading) {
-    return <Typography>Loading...</Typography>;
+    return <Typography>{t("loading", { ns: "common" })}</Typography>;
   }
 
   if (error) {
-    return <Typography>Error...</Typography>;
+    return <Typography>{t("list.error")}</Typography>;
   }
 
   return (
@@ -107,7 +107,7 @@ const QuickReportContent = ({ quickReports, isLoading, error }: QuickReportConte
               color="$gray7"
               fontWeight="700"
             >
-              {t("list_title")}
+              {t("list.heading")}
             </Typography>
           ) : (
             <></>
@@ -118,14 +118,14 @@ const QuickReportContent = ({ quickReports, isLoading, error }: QuickReportConte
             <Icon icon="undrawFlag" />
             <YStack gap="$md" paddingHorizontal="$xl">
               <Typography preset="body1" textAlign="center" color="$gray12" lineHeight={24}>
-                {t("report_empty.paragraph")}
+                {t("list.empty")}
               </Typography>
               <Button
                 preset="outlined"
                 onPress={router.push.bind(null, "/report-issue")}
                 backgroundColor="white"
               >
-                {t("actions.report_new_issue")}
+                {t("list.add")}
               </Button>
             </YStack>
           </YStack>
