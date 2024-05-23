@@ -7,6 +7,7 @@ import { YStack } from "tamagui";
 import { useQuickReportById } from "../../../../../../services/queries/quick-reports.query";
 import { useUserData } from "../../../../../../contexts/user/UserContext.provider";
 import Card from "../../../../../../components/Card";
+import { useTranslation } from "react-i18next";
 
 type SearchParamsType = {
   reportId: string;
@@ -15,6 +16,7 @@ type SearchParamsType = {
 
 const ReportDetails = () => {
   const { reportTitle, reportId } = useLocalSearchParams<SearchParamsType>();
+  const { t } = useTranslation(["report_details", "common"]);
 
   if (!reportId || !reportTitle) {
     return <Typography>Incorrect page params</Typography>;
@@ -29,11 +31,24 @@ const ReportDetails = () => {
   } = useQuickReportById(activeElectionRound?.id, reportId);
 
   if (isLoadingCurrentReport) {
-    return <Typography>Loading</Typography>;
+    return <Typography>{t("loading", { ns: "common" })}</Typography>;
   }
 
   if (currentReportError) {
-    return <Typography>Report Error</Typography>;
+    return (
+      <Screen preset="fixed">
+        <Header
+          title={`${reportTitle}`}
+          titleColor="white"
+          barStyle="light-content"
+          leftIcon={<Icon icon="chevronLeft" color="white" />}
+          onLeftPress={() => router.back()}
+        />
+        <YStack paddingVertical="$xxl" alignItems="center">
+          <Typography>{t("error")}</Typography>
+        </YStack>
+      </Screen>
+    );
   }
 
   const attachments = quickReport?.attachments || [];
@@ -68,11 +83,11 @@ const ReportDetails = () => {
         </YStack>
 
         {attachments.length === 0 ? (
-          <Typography fontWeight="500">No attached files</Typography>
+          <Typography fontWeight="500">{t("no_files")}</Typography>
         ) : (
           <YStack gap={16}>
             <Typography fontWeight="500" color="$gray10">
-              Uploaded media
+              {t("uploaded_media")}
             </Typography>
             {attachments.map((attachment, key) => (
               <Card key={key}>

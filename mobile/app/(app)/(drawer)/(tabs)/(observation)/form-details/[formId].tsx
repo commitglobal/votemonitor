@@ -22,6 +22,8 @@ import { useTranslation } from "react-i18next";
 import { useFormSubmissionMutation } from "../../../../../../services/mutations/form-submission.mutation";
 import { shouldDisplayQuestion } from "../../../../../../services/form.parser";
 import WarningDialog from "../../../../../../components/WarningDialog";
+import { useAttachments } from "../../../../../../services/queries/attachments.query";
+import { useNotesForFormId } from "../../../../../../services/queries/notes.query";
 
 type SearchParamsType = {
   formId: string;
@@ -29,7 +31,7 @@ type SearchParamsType = {
 };
 
 const FormDetails = () => {
-  const { t } = useTranslation(["form_overview", "bottom_sheets"]);
+  const { t } = useTranslation(["form_overview", "common"]);
   const { formId, language } = useLocalSearchParams<SearchParamsType>();
 
   if (!formId || !language) {
@@ -59,15 +61,29 @@ const FormDetails = () => {
     error: answersError,
   } = useFormAnswers(activeElectionRound?.id, selectedPollingStation?.pollingStationId, formId);
 
+  const { data: attachments } = useAttachments(
+    activeElectionRound?.id,
+    selectedPollingStation?.pollingStationId,
+    formId,
+  );
+
+  const { data: notes } = useNotesForFormId(
+    activeElectionRound?.id,
+    selectedPollingStation?.pollingStationId,
+    formId,
+  );
+
   const questions = useMemo(() => {
     return currentForm?.questions
       .filter((q) => shouldDisplayQuestion(q, answers))
       .map((q) => ({
         status: answers?.[q.id] ? QuestionStatus.ANSWERED : QuestionStatus.NOT_ANSWERED,
         question: q.text[language],
+        numberOfNotes: notes?.[q.id]?.length || 0,
+        numberOfAttachments: attachments?.[q.id]?.length || 0,
         id: q.id,
       }));
-  }, [currentForm, answers]);
+  }, [currentForm, answers, attachments, notes]);
 
   const { numberOfQuestions, formTitle, languages } = useMemo(() => {
     return {
@@ -122,11 +138,24 @@ const FormDetails = () => {
   };
 
   if (isLoadingCurrentForm || isLoadingAnswers) {
-    return <Typography>Loading</Typography>;
+    return <Typography>{t("loading", { ns: "common" })}</Typography>;
   }
 
   if (currentFormError || answersError) {
-    return <Typography>Form Error</Typography>;
+    return (
+      <Screen preset="fixed">
+        <Header
+          title={`${formId}`}
+          titleColor="white"
+          barStyle="light-content"
+          leftIcon={<Icon icon="chevronLeft" color="white" />}
+          onLeftPress={() => router.back()}
+        />
+        <YStack paddingVertical="$xxl" alignItems="center">
+          <Typography>{t("error")}</Typography>
+        </YStack>
+      </Screen>
+    );
   }
 
   return (
@@ -153,6 +182,8 @@ const FormDetails = () => {
         <ListView<
           Pick<FormQuestionListItemProps, "question" | "status"> & {
             id: string;
+            numberOfAttachments: number;
+            numberOfNotes: number;
           }
         >
           data={questions}
@@ -207,13 +238,11 @@ const FormDetails = () => {
         <OptionsSheet open={optionSheetOpen} setOpen={setOptionSheetOpen}>
           <YStack paddingHorizontal="$sm" gap="$xxs">
             <Typography preset="body1" paddingVertical="$md" onPress={onChangeLanguagePress}>
-              {t("observations.actions.change_language", { ns: "bottom_sheets" })}
+              {t("menu.change_language")}
             </Typography>
-            <YStack>
-              <Typography preset="body1" paddingVertical="$md" onPress={onClearFormPress}>
-                {t("observations.actions.clear_form", { ns: "bottom_sheets" })}
-              </Typography>
-            </YStack>
+            <Typography preset="body1" paddingVertical="$md" onPress={onClearFormPress}>
+              {t("menu.clear")}
+            </Typography>
           </YStack>
         </OptionsSheet>
       )}

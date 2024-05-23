@@ -9,26 +9,14 @@ import Button from "../components/Button";
 import { router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-interface ChangePasswordConfirmationProps {
-  emailConfirmation: boolean;
+interface PasswordConfirmationScreenProps {
+  translationKey: string;
+  icon: string;
 }
 
-const ChangePasswordConfirmation = (props: ChangePasswordConfirmationProps) => {
-  const { emailConfirmation } = props;
-  const { t } = useTranslation("change_password");
+const PasswordConfirmationScreen = ({ translationKey, icon }: PasswordConfirmationScreenProps) => {
+  const { t } = useTranslation(translationKey);
   const insets = useSafeAreaInsets();
-
-  const icon = emailConfirmation === true ? "emailSent" : "passwordConfirmation";
-  const header =
-    emailConfirmation === true ? t("email_confirmation.title") : t("success_page.title");
-  const paragraph =
-    emailConfirmation === true ? t("email_confirmation.paragraph") : t("success_page.paragraph");
-
-  const actionButtonText =
-    emailConfirmation === true
-      ? t("email_confirmation.actions.back")
-      : t("success_page.actions.back");
-
   return (
     <Screen
       preset="auto"
@@ -50,15 +38,15 @@ const ChangePasswordConfirmation = (props: ChangePasswordConfirmationProps) => {
       >
         <Icon icon={icon} size={126} marginBottom="$md" color="yellow" />
         <Typography preset="heading" fontWeight="700" color="$purple5">
-          {header}
+          {t("confirmation.heading")}
         </Typography>
         <Typography preset="body1" color="black" textAlign="center">
-          {paragraph}
+          {t("confirmation.paragraph")}
         </Typography>
       </YStack>
 
       <Card width="100%" paddingBottom={16 + insets.bottom} marginTop="auto">
-        <Button onPress={() => router.back()}>{actionButtonText}</Button>
+        <Button onPress={() => router.back()}>{t("confirmation.confirm")}</Button>
       </Card>
     </Screen>
   );
@@ -82,4 +70,4 @@ const Header = () => {
   );
 };
 
-export default ChangePasswordConfirmation;
+export default PasswordConfirmationScreen;

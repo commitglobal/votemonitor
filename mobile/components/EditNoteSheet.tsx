@@ -26,7 +26,7 @@ const EditNoteSheet = (props: EditNoteSheetProps) => {
   const { selectedNote, setSelectedNote, questionId, electionRoundId, pollingStationId, formId } =
     props;
   const [deletingNote, setDeletingNote] = useState(false);
-  const { t } = useTranslation("bottom_sheets");
+  const { t } = useTranslation(["polling_station_form_wizard", "common"]);
   const insets = useSafeAreaInsets();
   const keyboardIsVisible = useKeyboardVisible();
 
@@ -134,7 +134,7 @@ const EditNoteSheet = (props: EditNoteSheetProps) => {
                     textStyle={{ color: "black" }}
                     onPress={() => setDeletingNote(false)}
                   >
-                    {t("delete_note.actions.cancel")}
+                    {t("notes.edit.delete")}
                   </Button>
 
                   <Button
@@ -172,13 +172,19 @@ const EditNoteSheet = (props: EditNoteSheetProps) => {
                 rules={{
                   maxLength: {
                     value: 10000,
-                    message: t("add_note.errors.note_input"),
+                    message: t("notes.add.form.input.max"),
                   },
                 }}
                 render={({ field: { value, onChange } }) => {
                   return (
                     <YStack height={150}>
-                      <Input type="textarea" value={value} onChangeText={onChange} height={150} />
+                      <Input
+                        type="textarea"
+                        value={value}
+                        onChangeText={onChange}
+                        height={150}
+                        placeholder={t("notes.add.form.input.placeholder")}
+                      />
                     </YStack>
                   );
                 }}
@@ -188,11 +194,11 @@ const EditNoteSheet = (props: EditNoteSheetProps) => {
               )}
               <XStack gap="$md">
                 <Button preset="chromeless" onPress={() => setSelectedNote(null)}>
-                  {t("add_note.actions.cancel")}
+                  {t("cancel", { ns: "common" })}
                 </Button>
 
                 <Button flex={1} onPress={handleSubmit(onSubmit)}>
-                  {t("add_note.actions.save")}
+                  {t("save", { ns: "common" })}
                 </Button>
               </XStack>
             </>

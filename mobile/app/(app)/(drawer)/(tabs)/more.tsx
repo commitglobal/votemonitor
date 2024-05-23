@@ -17,6 +17,7 @@ import { CURRENT_USER_STORAGE_KEY } from "../../../../common/constants";
 import SelectAppLanguage from "../../../../components/SelectAppLanguage";
 import i18n from "../../../../common/config/i18n";
 import { useNotification } from "../../../../hooks/useNotifications";
+import { useUserData } from "../../../../contexts/user/UserContext.provider";
 
 interface MenuItemProps {
   label: string;
@@ -27,7 +28,7 @@ interface MenuItemProps {
 }
 
 const MenuItem = ({ label, helper, icon, chevronRight, onClick }: MenuItemProps) => (
-  <Card onPress={onClick}>
+  <Card onPress={onClick} style={{ minHeight: 64, justifyContent: "center" }}>
     <XStack alignItems="center" justifyContent="space-between" gap="$xxxs">
       <XStack alignItems="center" gap="$xxs" maxWidth="80%">
         <Icon size={24} icon={icon} color="black" />
@@ -46,6 +47,7 @@ const More = () => {
   const navigation = useNavigation();
   const queryClient = useQueryClient();
   const [isLanguageSelectSheetOpen, setIsLanguageSelectSheetOpen] = React.useState(false);
+  const { activeElectionRound } = useUserData();
 
   const { unsubscribe: unsubscribePushNotifications } = useNotification();
 
@@ -77,7 +79,7 @@ const More = () => {
       }}
     >
       <Header
-        title={"More"}
+        title={activeElectionRound?.title}
         titleColor="white"
         barStyle="light-content"
         leftIcon={<Icon icon="menuAlt2" color="white" />}
@@ -128,7 +130,7 @@ const More = () => {
           label={t("logout")}
           icon="logoutNoBackground"
           onClick={logout}
-          helper={currentUser ? `Logged in as ${currentUser}` : ""}
+          helper={currentUser ? t("logged_in", { user: currentUser }) : ""}
         ></MenuItem>
       </YStack>
       {/* 
