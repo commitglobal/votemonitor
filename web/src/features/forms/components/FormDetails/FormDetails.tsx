@@ -1,4 +1,4 @@
-import { getTranslationOrDefault } from '@/common/types';
+import {type FunctionComponent, getTranslationOrDefault } from '@/common/types';
 import Layout from '@/components/layout/Layout';
 import PreviewQuestionFactory from '@/components/questionsEditor/preview/PreviewQuestionFactory';
 import { Badge } from '@/components/ui/badge';
@@ -9,22 +9,35 @@ import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Route as FormDetailsRoute } from '@/routes/forms/$formId_.$languageCode';
 import { PencilIcon } from '@heroicons/react/24/outline';
-import { useLoaderData, useNavigate } from '@tanstack/react-router';
+import { Link, useLoaderData, useNavigate } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
 
-import { FormFull, mapFormType } from '../../models/form';
+import {type FormFull, mapFormType } from '../../models/form';
 
-export default function FormDetails() {
+export default function FormDetails(): FunctionComponent {
   const form: FormFull = useLoaderData({ strict: false });
   const { formId, languageCode } = FormDetailsRoute.useParams();
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const navigateToEdit = () => {
-    navigate({ to: '/forms/$formId/edit', params: { formId } });
+  const navigateToEdit = (): void => {
+    void navigate({ to: '/forms/$formId/edit', params: { formId } });
   };
 
   return (
-    <Layout title={`${form.code} - ${form.name[form.defaultLanguage]}`}>
+    <Layout
+      backButton={
+        <Link to='/forms' preload='intent' search>
+          <svg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30' fill='none'>
+            <path
+              fillRule='evenodd'
+              clipRule='evenodd'
+              d='M19.0607 7.93934C19.6464 8.52513 19.6464 9.47487 19.0607 10.0607L14.1213 15L19.0607 19.9393C19.6464 20.5251 19.6464 21.4749 19.0607 22.0607C18.4749 22.6464 17.5251 22.6464 16.9393 22.0607L10.9393 16.0607C10.3536 15.4749 10.3536 14.5251 10.9393 13.9393L16.9393 7.93934C17.5251 7.35355 18.4749 7.35355 19.0607 7.93934Z'
+              fill='#7833B3'
+            />
+          </svg>
+        </Link>
+      }
+      title={`${form.code} - ${form.name[form.defaultLanguage]}`}>
       <Tabs defaultValue='form-details'>
         <TabsList className='grid grid-cols-2 bg-gray-200 w-[400px] mb-4'>
           <TabsTrigger value='form-details'>Form details</TabsTrigger>
@@ -50,11 +63,15 @@ export default function FormDetails() {
                 </div>
                 <div className='px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0'>
                   <dt className='text-sm font-medium leading-6 text-gray-900'>{t('form.field.name')}</dt>
-                  <dd className='mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0'>{form.name[form.defaultLanguage]}</dd>
+                  <dd className='mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0'>
+                    {form.name[form.defaultLanguage]}
+                  </dd>
                 </div>
                 <div className='px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0'>
                   <dt className='text-sm font-medium leading-6 text-gray-900'>{t('form.field.formType')}</dt>
-                  <dd className='mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0'>{mapFormType(form.formType)}</dd>
+                  <dd className='mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0'>
+                    {mapFormType(form.formType)}
+                  </dd>
                 </div>
                 <div className='px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0'>
                   <dt className='text-sm font-medium leading-6 text-gray-900'>{t('form.field.defaultLanguage')}</dt>
@@ -99,12 +116,9 @@ export default function FormDetails() {
             </CardHeader>
             <CardContent className='-mx-6 flex items-start justify-left px-6 sm:mx-0 sm:px-8'>
               <Fieldset className='grid gap-3 divide-y divide-gray-700'>
-                {
-                  form.questions.map(q => <PreviewQuestionFactory
-                    languageCode={form.defaultLanguage}
-                    question={q}
-                    key={q.id} />)
-                }
+                {form.questions.map((q) => (
+                  <PreviewQuestionFactory languageCode={form.defaultLanguage} question={q} key={q.id} />
+                ))}
               </Fieldset>
             </CardContent>
           </Card>

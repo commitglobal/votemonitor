@@ -29,6 +29,7 @@ import { Route as ObserversObserverIdImport } from './routes/observers/$observer
 import { Route as NgosNgoIdImport } from './routes/ngos/$ngoId'
 import { Route as MonitoringObserversCreateNewMessageImport } from './routes/monitoring-observers/create-new-message'
 import { Route as MonitoringObserversTabImport } from './routes/monitoring-observers/$tab'
+import { Route as FormsFormIdImport } from './routes/forms/$formId'
 import { Route as ElectionRoundsElectionRoundIdImport } from './routes/election-rounds/$electionRoundId'
 import { Route as ElectionEventTabImport } from './routes/election-event/$tab'
 import { Route as ResponsesQuickReportsQuickReportIdImport } from './routes/responses/quick-reports/$quickReportId'
@@ -138,6 +139,11 @@ const MonitoringObserversTabRoute = MonitoringObserversTabImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const FormsFormIdRoute = FormsFormIdImport.update({
+  path: '/forms/$formId',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const ElectionRoundsElectionRoundIdRoute =
   ElectionRoundsElectionRoundIdImport.update({
     path: '/election-rounds/$electionRoundId',
@@ -237,6 +243,10 @@ declare module '@tanstack/react-router' {
     }
     '/election-rounds/$electionRoundId': {
       preLoaderRoute: typeof ElectionRoundsElectionRoundIdImport
+      parentRoute: typeof rootRoute
+    }
+    '/forms/$formId': {
+      preLoaderRoute: typeof FormsFormIdImport
       parentRoute: typeof rootRoute
     }
     '/monitoring-observers/$tab': {
@@ -368,6 +378,7 @@ export const routeTree = rootRoute.addChildren([
   IndexRoute,
   ElectionEventTabRoute,
   ElectionRoundsElectionRoundIdRoute,
+  FormsFormIdRoute,
   MonitoringObserversTabRoute,
   MonitoringObserversCreateNewMessageRoute,
   NgosNgoIdRoute,

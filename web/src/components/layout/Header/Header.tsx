@@ -20,6 +20,7 @@ import clsx from 'clsx';
 import { Fragment, useContext, useState } from 'react';
 import type { ElectionRoundMonitoring, FunctionComponent } from '../../../common/types';
 import Logo from './Logo';
+import { formsKeys } from '@/features/forms/queries';
 
 const user = {
   name: 'Tom Cook',
@@ -52,6 +53,7 @@ const Header = (): FunctionComponent => {
     void queryClient.invalidateQueries({ queryKey: ['tags'] });
     void queryClient.invalidateQueries({ queryKey: ['form-submissions'] });
     void queryClient.invalidateQueries({ queryKey: ['quick-reports'] });
+    void queryClient.invalidateQueries({ queryKey: formsKeys.lists() });
   };
 
   const { userRole, signOut } = useContext(AuthContext);
