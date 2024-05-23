@@ -24,12 +24,6 @@ import type { ElectionRoundMonitoring, FunctionComponent } from '../../../common
 import Logo from './Logo';
 import { formsKeys } from '@/features/forms/queries';
 
-const user = {
-  name: 'Tom Cook',
-  email: 'tom@example.com',
-  imageUrl:
-    'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-};
 const navigation = [
   { name: 'Dashboard', to: '/', roles: ['PlatformAdmin', 'NgoAdmin'] },
   { name: 'Election rounds', to: '/election-rounds', roles: ['PlatformAdmin'] },
@@ -37,7 +31,7 @@ const navigation = [
   { name: 'Observers', to: '/observers', roles: ['PlatformAdmin'] },
   { name: 'Form templates', to: '/form-templates', roles: 'PlatformAdmin' },
   { name: 'Election event', to: '/election-event', roles: ['NgoAdmin'] },
-  { name: 'Monitoring Observers', to: '/monitoring-observers', roles: ['NgoAdmin'] },
+  { name: 'Observers', to: '/monitoring-observers', roles: ['NgoAdmin'] },
   { name: 'Responses', to: '/responses', roles: ['NgoAdmin'] },
   { name: 'Forms', to: '/forms', roles: ['NgoAdmin'] },
 ];
@@ -237,8 +231,8 @@ const Header = (): FunctionComponent => {
                   <UserCircleIcon className='w-10 h-10 fill-gray-400' />
                 </div>
                 <div className='ml-3'>
-                  <div className='text-base font-medium leading-none text-gray-800'>{user.name}</div>
-                  <div className='text-sm font-medium text-gray-500'>{user.email}</div>
+                  <div className='text-base font-medium leading-none text-gray-800'>{'your name'}</div>
+                  <div className='text-sm font-medium text-gray-500'>{'your email'}</div>
                 </div>
               </div>
               <div className='px-2 mt-3 space-y-1'>
