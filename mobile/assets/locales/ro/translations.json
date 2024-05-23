@@ -227,8 +227,7 @@
         "label": "Parola noua*",
         "placeholder": "Iserati noua parola",
         "helper": "Trebuie să conțină cel puțin 8 caractere",
-        "required": "Parola este obligatorie",
-        "pattern": "Parola trebuie să aibă cel puțin un caracter majuscul, un număr, un caracter special și să aibă minimum 8 caractere fără spații"
+        "required": "Parola este obligatorie"
       },
       "confirm_password": {
         "label": "Confirmați noua parola *",

@@ -230,8 +230,7 @@
         "label": "New password *",
         "placeholder": "Insert new password",
         "helper": "Must be at least 8 characters",
-        "required": "Password is mandatory",
-        "pattern": "Password should have at least one uppercase character, one number, one special character and to be minimum 8 character long without spaces"
+        "required": "Password is mandatory"
       },
       "confirm_password": {
         "label": "Confirm new password *",
