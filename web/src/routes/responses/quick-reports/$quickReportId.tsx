@@ -1,14 +1,14 @@
-import { type EnsureQueryDataOptions, type QueryKey, queryOptions } from '@tanstack/react-query';
-import { createFileRoute } from '@tanstack/react-router';
 import { authApi } from '@/common/auth-api';
 import QuickReportDetails from '@/features/responses/components/QuickReportDetails/QuickReportDetails';
+import { quickReportKeys } from '@/features/responses/hooks/quick-reports';
 import type { QuickReport } from '@/features/responses/models/quick-report';
 import { redirectIfNotAuth } from '@/lib/utils';
+import { queryOptions } from '@tanstack/react-query';
+import { createFileRoute } from '@tanstack/react-router';
 
-function quickReportDetailsQueryOptions(quickReportId: string): EnsureQueryDataOptions<QuickReport> {
-  const queryKey: QueryKey = ['quick-report', quickReportId];
+export function quickReportDetailsQueryOptions(quickReportId: string) {
   return queryOptions({
-    queryKey,
+    queryKey: quickReportKeys.detail(quickReportId),
     queryFn: async () => {
       const electionRoundId: string | null = localStorage.getItem('electionRoundId');
 

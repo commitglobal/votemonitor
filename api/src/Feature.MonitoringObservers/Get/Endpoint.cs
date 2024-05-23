@@ -131,7 +131,12 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
             id = req.Id
         };
 
-        var monitoringObserver = await dbConnectionFactory.GetOpenConnection().QuerySingleOrDefaultAsync<MonitoringObserverModel>(sql, queryArgs);
+        MonitoringObserverModel monitoringObserver = null;
+        using (var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct))
+        {
+            monitoringObserver = await dbConnection.QuerySingleOrDefaultAsync<MonitoringObserverModel>(sql, queryArgs);
+        }
+
         if (monitoringObserver is null)
         {
             return TypedResults.NotFound();

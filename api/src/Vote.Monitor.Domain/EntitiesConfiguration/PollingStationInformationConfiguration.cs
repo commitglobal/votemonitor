@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Vote.Monitor.Domain.Constants;
+using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
 using Vote.Monitor.Domain.Entities.PollingStationInfoAggregate;
 using Vote.Monitor.Domain.ValueComparers;
 using Vote.Monitor.Domain.ValueConverters;
@@ -20,6 +21,10 @@ public class PollingStationInformationConfiguration : IEntityTypeConfiguration<P
             x.MonitoringObserverId,
             x.PollingStationInformationFormId
         }).IsUnique();
+
+        builder.Property(x => x.FollowUpStatus)
+            .IsRequired()
+            .HasDefaultValue(SubmissionFollowUpStatus.NotApplicable);
 
         builder.HasOne(x => x.ElectionRound)
             .WithMany()

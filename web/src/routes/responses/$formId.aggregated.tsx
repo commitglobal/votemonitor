@@ -1,14 +1,14 @@
 import { authApi } from '@/common/auth-api';
 import FormAggregatedDetails from '@/features/responses/components/FormAggregatedDetails/FormAggregatedDetails';
+import { formSubmissionsAggregtedKeys } from '@/features/responses/hooks/form-submissions-queries';
 import type { FormAggregated } from '@/features/responses/models/form-aggregated';
 import { redirectIfNotAuth } from '@/lib/utils';
-import { type EnsureQueryDataOptions, type QueryKey, queryOptions } from '@tanstack/react-query';
+import { queryOptions } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 
-function formAggregatedDetailsQueryOptions(formId: string): EnsureQueryDataOptions<FormAggregated> {
-  const queryKey: QueryKey = ['form-submission', formId];
+export function formAggregatedDetailsQueryOptions(formId: string) {
   return queryOptions({
-    queryKey ,
+    queryKey: formSubmissionsAggregtedKeys.detail(formId),
     queryFn: async () => {
       const electionRoundId: string | null = localStorage.getItem('electionRoundId');
 

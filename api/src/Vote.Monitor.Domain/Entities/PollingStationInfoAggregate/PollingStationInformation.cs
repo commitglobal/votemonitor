@@ -1,4 +1,5 @@
 ﻿using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
+using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 using Vote.Monitor.Domain.Entities.PollingStationInfoFormAggregate;
 
@@ -17,8 +18,9 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
     public DateTime? ArrivalTime { get; private set; }
     public DateTime? DepartureTime { get; private set; }
     public double? MinutesMonitoring { get; private set; }
-
     public int NumberOfQuestionsAnswered { get; private set; }
+    public SubmissionFollowUpStatus FollowUpStatus { get; private set; }
+
     public IReadOnlyList<BaseAnswer> Answers { get; private set; } = new List<BaseAnswer>().AsReadOnly();
 
     private PollingStationInformation(
@@ -43,6 +45,7 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
         DepartureTime = departureTime;
         Answers = answers.ToList().AsReadOnly();
         NumberOfQuestionsAnswered = numberOfQuestionsAnswered;
+        FollowUpStatus = SubmissionFollowUpStatus.NotApplicable;
     }
 
     internal static PollingStationInformation Create(
@@ -85,6 +88,12 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
         Answers = [];
         NumberOfQuestionsAnswered = 0;
     }
+
+    public void UpdateFollowUpStatus(SubmissionFollowUpStatus followUpStatus)
+    {
+        FollowUpStatus = followUpStatus;
+    }
+
 
 #pragma warning disable CS8618 // Required by Entity Framework
 

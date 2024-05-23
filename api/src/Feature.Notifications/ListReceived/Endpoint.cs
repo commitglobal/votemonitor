@@ -54,10 +54,14 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) :
             observerId = req.ObserverId,
         };
 
-        var multi = await dbConnectionFactory.GetOpenConnection().QueryMultipleAsync(sql, queryArgs);
-        var ngoName = multi.Read<string>().SingleOrDefault();
-        var notifications = multi.Read<ReceivedNotificationModel>().ToList();
-
+        string? ngoName;
+        List<ReceivedNotificationModel> notifications;
+        using (var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct))
+        {
+            using var multi = await dbConnection.QueryMultipleAsync(sql, queryArgs);
+            ngoName = multi.Read<string>().SingleOrDefault();
+            notifications = multi.Read<ReceivedNotificationModel>().ToList();
+        }
         return TypedResults.Ok(new Response
         {
             NgoName = ngoName,

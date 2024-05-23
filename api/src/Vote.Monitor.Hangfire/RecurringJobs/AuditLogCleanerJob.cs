@@ -3,7 +3,7 @@ using Vote.Monitor.Domain;
 
 namespace Vote.Monitor.Hangfire.RecurringJobs;
 
-public class AuditLogCleanerJob(VoteMonitorContext context) : IAuditLogCleanerJob
+public class AuditLogCleanerJob(VoteMonitorContext context)
 {
     public async Task Run()
     {

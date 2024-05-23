@@ -3,7 +3,7 @@ using Vote.Monitor.Domain;
 
 namespace Vote.Monitor.Hangfire.RecurringJobs;
 
-public class ImportValidationErrorsCleanerJob(VoteMonitorContext context) : IImportValidationErrorsCleanerJob
+public class ImportValidationErrorsCleanerJob(VoteMonitorContext context)
 {
     public async Task Run()
     {

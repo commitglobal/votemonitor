@@ -210,7 +210,7 @@ function MonitoringObserversList() {
   );  const exportMonitoringObservers = async () => {
     const electionRoundId: string | null = localStorage.getItem('electionRoundId');
 
-    const res = await authApi.get(`/election-rounds/${electionRoundId}/monitoring-observers:export`);
+    const res = await authApi.get(`/election-rounds/${electionRoundId}/monitoring-observers:export`, {responseType: "blob"});
     const csvData = res.data;
   
     const blob = new Blob([csvData], { type: 'text/csv' });

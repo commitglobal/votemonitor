@@ -64,7 +64,11 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
 
         var queryArgs = new { electionRoundId = req.ElectionRoundId , ngoId = req.NgoId};
 
-        var histogramData = await dbConnectionFactory.GetOpenConnection().QueryAsync<BucketView>(commandText, queryArgs);
+        IEnumerable<BucketView> histogramData = [];
+        using (var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct))
+        {
+            histogramData = await dbConnection.QueryAsync<BucketView>(commandText, queryArgs);
+        }
 
         return new Response { Histogram = histogramData.ToList() };
     }

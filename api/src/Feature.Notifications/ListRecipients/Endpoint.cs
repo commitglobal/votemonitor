@@ -252,9 +252,14 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) :
             sortExpression = GetSortExpression(req.SortColumnName, req.IsAscendingSorting),
         };
 
-        var multi = await dbConnectionFactory.GetOpenConnection().QueryMultipleAsync(sql, queryArgs);
-        var totalRowCount = multi.Read<int>().Single();
-        var entries = multi.Read<TargetedMonitoringObserverModel>().ToList();
+        int totalRowCount;
+        List<TargetedMonitoringObserverModel> entries;
+        using (var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct))
+        {
+            using var multi = await dbConnection.QueryMultipleAsync(sql, queryArgs);
+            totalRowCount = multi.Read<int>().Single();
+            entries = multi.Read<TargetedMonitoringObserverModel>().ToList();
+        }
 
         return new PagedResponse<TargetedMonitoringObserverModel>(entries, totalRowCount, req.PageNumber, req.PageSize);
     }
