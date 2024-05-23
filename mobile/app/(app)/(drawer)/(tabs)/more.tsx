@@ -28,7 +28,7 @@ interface MenuItemProps {
 }
 
 const MenuItem = ({ label, helper, icon, chevronRight, onClick }: MenuItemProps) => (
-  <Card onPress={onClick} style={{ height: 64, justifyContent: "center" }}>
+  <Card onPress={onClick} style={{ minHeight: 64, justifyContent: "center" }}>
     <XStack alignItems="center" justifyContent="space-between" gap="$xxxs">
       <XStack alignItems="center" gap="$xxs" maxWidth="80%">
         <Icon size={24} icon={icon} color="black" />
