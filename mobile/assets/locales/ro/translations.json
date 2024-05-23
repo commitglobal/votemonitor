@@ -364,8 +364,7 @@
         "label": "Parolă Nouă *",
         "placeholder": "Introduceți o nouă parolă",
         "helper": "Trebuie să aibă cel puțin 8 caractere",
-        "required": "Parola este obligatorie",
-        "pattern": "Parola trebuie să aibă cel puțin un caracter majuscul, un număr, un caracter special și să aibă minimum 8 caractere fără spații"
+        "required": "Parola este obligatorie"
       },
       "confirm_password": {
         "label": "Confirmă noua parolă *",

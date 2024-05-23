@@ -54,8 +54,7 @@ const ChangePassword = () => {
         .string({
           required_error: t("form.new_password.required"),
         })
-        .min(8, t("form.new_password.helper"))
-        .regex(/^(?=.*[A-Z])(?=.*[0-9])(?=.*[^a-zA-Z0-9]).*$/, t("form.new_password.pattern")),
+        .min(8, t("form.new_password.helper")),
       confirmPassword: z.string({
         required_error: t("form.confirm_password.required"),
       }),
