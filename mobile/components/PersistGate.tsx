@@ -5,6 +5,7 @@ import { Spinner, YStack } from "tamagui";
 import { Typography } from "./Typography";
 import { Screen } from "./Screen";
 import { Icon } from "./Icon";
+import { useTranslation } from "react-i18next";
 
 export function PersistGate({ children }: React.PropsWithChildren) {
   const isRestoring = useIsRestoring();
@@ -19,6 +20,7 @@ export function PersistGate({ children }: React.PropsWithChildren) {
 }
 
 const PersistGateLoadingScreen = () => {
+  const { t } = useTranslation("sync");
   return (
     <Screen
       preset="fixed"
@@ -32,10 +34,10 @@ const PersistGateLoadingScreen = () => {
         <YStack height={200} paddingTop="$lg">
           <Spinner size="large" color="white" />
           <Typography preset="body2" color="white" textAlign="center" marginTop="$lg">
-            Synchronizing data...
+            {t("sync_data")}
           </Typography>
           <Typography preset="body2" color="white" textAlign="center" marginTop="$sm">
-            Please DO NOT CLOSE the app or the data will be lost.
+            {t("warning")}
           </Typography>
         </YStack>
       </YStack>

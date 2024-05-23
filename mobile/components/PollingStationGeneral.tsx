@@ -33,7 +33,7 @@ export const PollingStationGeneral: React.FC<PollingStationGeneralProps> = ({
   psiData: psi,
   psiFormQuestions,
 }) => {
-  const { t } = useTranslation("observations_polling_station");
+  const { t } = useTranslation("observation");
 
   const { mutate } = useMutatePollingStationGeneralData({
     electionRoundId,
@@ -93,7 +93,9 @@ export const PollingStationGeneral: React.FC<PollingStationGeneralProps> = ({
             nrOfQuestions={psiFormQuestions?.questions?.length}
           />
         )}
-        <CardFooter text={t("polling_station_card.polling_station_information")}></CardFooter>
+        <CardFooter
+          text={t("polling_stations_information.polling_station_form.form_details_button_label")}
+        ></CardFooter>
       </Card>
     </>
   );

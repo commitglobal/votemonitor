@@ -16,6 +16,7 @@ import { useUserData } from "../../contexts/user/UserContext.provider";
 import { useQueryClient } from "@tanstack/react-query";
 import WizzardControls from "../../components/WizzardControls";
 import { ListView } from "../../components/ListView";
+import i18n from "../../common/config/i18n";
 
 const mapPollingStationOptionsToSelectValues = (
   options: PollingStationNomenclatorNodeVM[],
@@ -54,7 +55,7 @@ const PollingStationWizzard = () => {
   return (
     <Screen backgroundColor="white" contentContainerStyle={$containerStyle} preset="fixed">
       <Header
-        title={t("header.title")}
+        title={t("title")}
         leftIcon={<Icon icon="chevronLeft" color="white" />}
         onLeftPress={router.back}
       />
@@ -91,7 +92,6 @@ const PollingStationWizzardContent = ({
 
   const {
     data: pollingStationOptions,
-    isLoading: isLoadingPollingStations,
     isFetching: isFetchingPollingStations,
     error: pollingStationsError,
   } = usePollingStationByParentID(
@@ -187,13 +187,8 @@ const PollingStationWizzardContent = ({
   };
 
   // TODO: To be handled
-  if (isLoadingPollingStations) {
-    return <Typography>Loading...</Typography>;
-  }
-
-  // TODO: To be handled
   if (pollingStationsError) {
-    return <Typography>Something went wrong!</Typography>;
+    return <Typography>{t("error")}</Typography>;
   }
 
   const SelectItem = useCallback(
@@ -264,7 +259,7 @@ const $containerStyle: ViewStyle = {
 
 const SearchInput = styled(Input, {
   backgroundColor: "$purple1",
-  placeholder: "Search",
+  placeholder: i18n.t("search", { ns: "common" }),
   color: "$purple5",
   placeholderTextColor: "$purple5",
   focusStyle: {

@@ -6,10 +6,12 @@ import { useTheme } from "tamagui";
 import { Icon } from "../../../../components/Icon";
 import { useUserData } from "../../../../contexts/user/UserContext.provider";
 import { useNetInfoContext } from "../../../../contexts/net-info-banner/NetInfoContext";
+import { useTranslation } from "react-i18next";
 
 export default function TabLayout() {
   const insets = useSafeAreaInsets();
   const theme = useTheme();
+  const { t } = useTranslation("tabs");
 
   const { electionRounds } = useUserData();
   const { shouldDisplayBanner } = useNetInfoContext();
@@ -33,14 +35,14 @@ export default function TabLayout() {
       <Tabs.Screen
         name="(observation)"
         options={{
-          title: "Observation",
+          title: t("observation"),
           tabBarIcon: ({ color }) => <Icon icon="observation" color={color} />,
         }}
       />
       <Tabs.Screen
         name="(quick-report)"
         options={{
-          title: "Quick Report",
+          title: t("quick_report"),
           tabBarIcon: ({ color }) => <Icon icon="quickReport" color={color} />,
           href: electionRounds?.length ? "/(quick-report)" : null,
         }}
@@ -49,7 +51,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="guides"
         options={{
-          title: "Guides",
+          title: t("guides"),
           tabBarIcon: ({ color }) => <Icon icon="learning" color={color} />,
           href: electionRounds?.length ? "/guides" : null,
         }}
@@ -57,7 +59,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="inbox"
         options={{
-          title: "Inbox",
+          title: t("inbox"),
           tabBarIcon: ({ color }) => <Icon icon="inbox" color={color} />,
           href: electionRounds?.length ? "/inbox" : null,
         }}
@@ -65,7 +67,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="more"
         options={{
-          title: "More",
+          title: t("more"),
           tabBarIcon: ({ color }) => <Icon icon="more" color={color} />,
         }}
       />

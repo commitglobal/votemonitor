@@ -4,22 +4,23 @@ import { Icon } from "./Icon";
 import { Typography } from "./Typography";
 import { reloadAsync } from "expo-updates";
 import Button from "./Button";
+import { useTranslation } from "react-i18next";
 
 const GenericErrorScreen = () => {
+  const { t } = useTranslation("generic_error_screen");
   return (
     <Screen preset="fixed">
       <Stack height="100%" backgroundColor="white" justifyContent="center" alignItems="center">
         <YStack width={312} alignItems="center">
           <Icon icon="loadingScreenDevice" marginBottom="$md" />
           <Typography preset="subheading" textAlign="center" marginBottom="$xxxs">
-            Oops, something went wrong!
+            {t("paragraph1")}
           </Typography>
           <Typography preset="body1" textAlign="center" color="$gray5">
-            We could not recover after this error. Please check your internet connection and restart
-            the application!
+            {t("paragraph2")}
           </Typography>
-          <Button style={{ marginTop: 16 }} onPress={() => reloadAsync().catch((_error) => {})}>
-            Retry
+          <Button marginTop="$md" onPress={() => reloadAsync().catch((_error) => {})}>
+            {t("retry")}
           </Button>
         </YStack>
       </Stack>

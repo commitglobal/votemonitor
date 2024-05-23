@@ -9,6 +9,7 @@ import { Typography } from "../Typography";
 import { Icon } from "../Icon";
 import Button from "../Button";
 import { useLocalSearchParams } from "expo-router";
+import { useTranslation } from "react-i18next";
 
 export interface DateInputProps extends XStackProps {
   value: Date;
@@ -31,6 +32,7 @@ export const DateInput: React.FC<DateInputProps> = ({
   // on ios we use a temporary date, as the onChange function gets triggered every time the user picks a new date
   // therefore, we will update the FINAL date state (that comes from the outside), only onDonePress
   const [tempDate, setTempDate] = useState(value || new Date());
+  const { t } = useTranslation("common");
 
   const handleSheetOpen = () => {
     Keyboard.dismiss();
@@ -111,7 +113,7 @@ export const DateInput: React.FC<DateInputProps> = ({
           <Sheet.Overlay />
           <Sheet.Frame padding="$md">
             <XStack gap="$sm" justifyContent="flex-end" width="100%">
-              <Button onPress={onDonePress}>Done</Button>
+              <Button onPress={onDonePress}>{t("done")}</Button>
             </XStack>
             <XStack flex={1} justifyContent="center" alignItems="center">
               <RNDateTimePicker
