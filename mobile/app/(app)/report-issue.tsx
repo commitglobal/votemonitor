@@ -284,7 +284,7 @@ const ReportIssue = () => {
                   required: { value: true, message: "This field is required." },
                   maxLength: {
                     value: 1024,
-                    //todo: translation
+                    // todo: translation
                     message: "Input cannot exceed 1024 characters",
                   },
                 }}
