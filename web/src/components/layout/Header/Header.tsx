@@ -36,7 +36,7 @@ const navigation = [
   { name: 'Observers', to: '/observers', roles: ['PlatformAdmin'] },
   { name: 'Form templates', to: '/form-templates', roles: 'PlatformAdmin' },
   { name: 'Election event', to: '/election-event', roles: ['NgoAdmin'] },
-  { name: 'Monitoring Observers', to: '/monitoring-observers', roles: ['NgoAdmin'] },
+  { name: 'Observers', to: '/monitoring-observers', roles: ['NgoAdmin'] },
   { name: 'Responses', to: '/responses', roles: ['NgoAdmin'] },
   { name: 'Forms', to: '/forms', roles: ['NgoAdmin'] },
 ];

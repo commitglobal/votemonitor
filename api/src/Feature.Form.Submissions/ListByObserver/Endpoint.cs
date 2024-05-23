@@ -33,7 +33,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
             MN.""ElectionRoundId"" = @electionRoundId
             AND MN.""NgoId"" = @ngoId
             AND (@searchText IS NULL OR @searchText = '' OR u.""FirstName"" ILIKE @searchText OR u.""LastName"" ILIKE @searchText OR u.""Email"" ILIKE @searchText OR u.""PhoneNumber"" ILIKE @searchText)
-            AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR  mo.""Tags"" @> @tagsFilter);
+            AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR  mo.""Tags"" && @tagsFilter);
 
         SELECT 
             ""MonitoringObserverId"",
@@ -126,7 +126,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
                 MN.""ElectionRoundId"" = @electionRoundId
                 AND MN.""NgoId"" = @ngoId
                 AND (@searchText IS NULL OR @searchText = '' OR u.""FirstName"" ILIKE @searchText OR u.""LastName"" ILIKE @searchText OR u.""Email"" ILIKE @searchText OR u.""PhoneNumber"" ILIKE @searchText)
-                AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR mo.""Tags"" @> @tagsFilter)
+                AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR mo.""Tags"" && @tagsFilter)
             ) T
 
         ORDER BY

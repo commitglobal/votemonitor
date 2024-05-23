@@ -18,6 +18,9 @@ public static class SchedulingExtensions
             .AddOrUpdate<ExportedDataCleanerJob>(RecurringJobNames.ExportedDataCleaner, x => x.Run(), Cron.Daily);
 
         recurringJobManager
+            .AddOrUpdate<ExportedDataFailerJob>(RecurringJobNames.ExportedDataFailer, x => x.Run(), "*/15 * * * *");
+
+        recurringJobManager
             .AddOrUpdate<ImportValidationErrorsCleanerJob>(RecurringJobNames.ImportValidationErrorsCleaner, x => x.Run(), Cron.Daily);
     }
 }

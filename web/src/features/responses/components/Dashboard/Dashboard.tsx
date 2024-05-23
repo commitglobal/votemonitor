@@ -27,12 +27,13 @@ import {
   formSubmissionsDefaultColumns,
   type FilterBy,
 } from '../../utils/column-visibility-options';
-import { ExportToCsvButton } from './ExportToCsvButton';
 import { FormsTableByEntry } from '../FormsTableByEntry/FormsTableByEntry';
 import { FormsFiltersByEntry } from '../FormsFiltersByEntry/FormsFiltersByEntry';
 import { FormsFiltersByObserver } from '../FormsFiltersByObserver/FormsFiltersByObserver';
 import { FormsTableByObserver } from '../FormsTableByObserver/FormsTableByObserver';
 import { QuickReports } from '../QuickReports/QuickReports';
+import { ExportDataButton } from './ExportDataButton';
+import { ExportedDataType } from '../../models/data-export';
 
 const routeApi = getRouteApi('/responses/');
 
@@ -89,7 +90,7 @@ export default function ResponsesDashboard(): ReactElement {
                 <CardTitle>All forms</CardTitle>
 
                 <div className='flex gap-4 items-center'>
-                  <ExportToCsvButton />
+                  <ExportDataButton exportedDataType={ExportedDataType.FormSubmissions} />
 
                   <DropdownMenu>
                     <DropdownMenuTrigger>

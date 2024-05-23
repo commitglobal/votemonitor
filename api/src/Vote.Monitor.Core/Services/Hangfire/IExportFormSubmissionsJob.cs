@@ -2,5 +2,5 @@
 
 public interface IExportFormSubmissionsJob
 {
-    Task ExportFormSubmissions(Guid electionRoundId, Guid ngoId, Guid exportedDataId, CancellationToken ct);
+    Task Run(Guid electionRoundId, Guid ngoId, Guid exportedDataId, CancellationToken ct);
 }

@@ -37,7 +37,7 @@ public class Endpoint(IRepository<NotificationAggregate> repository,
                 MN.""ElectionRoundId"" = @electionRoundId
                 AND MN.""NgoId"" = @ngoId
                 AND (@searchText IS NULL OR @searchText = '' OR (U.""FirstName"" || ' ' || U.""LastName"") ILIKE @searchText OR u.""Email"" ILIKE @searchText OR u.""PhoneNumber"" ILIKE @searchText)
-                AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR  mo.""Tags"" @> @tagsFilter)
+                AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR  mo.""Tags"" && @tagsFilter)
                 AND (@status IS NULL OR  mo.""Status"" = @status)
                 AND (@level1 IS NULL OR EXISTS (
                     SELECT
@@ -140,10 +140,12 @@ public class Endpoint(IRepository<NotificationAggregate> repository,
         }
         var recipients = result.ToList();
 
-        var monitoringObserverIds = recipients.Select(x => x.Id).ToList();
+        var monitoringObserverIds = recipients.Select(x => x.Id).Distinct().ToList();
         var pushNotificationTokens = recipients
             .Select(x => x.Token)
             .Where(x => !string.IsNullOrWhiteSpace(x))
+            .Select(x=>x!)
+            .Distinct()
             .ToList();
 
         var monitoringObservers = await monitoringObserverRepository.ListAsync(new GetMonitoringObserverSpecification(req.ElectionRoundId, req.NgoId, monitoringObserverIds), ct);
