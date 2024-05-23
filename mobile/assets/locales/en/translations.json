@@ -207,11 +207,6 @@
     "messages_from": "Messages from",
     "your_organization": "your organization"
   },
-  "guides": {
-    "header": {
-      "title": "Guides"
-    }
-  },
   "guides_empty": {
     "title": "No guides to read yet",
     "paragraph": "Guides and resources from your organization at your hands."

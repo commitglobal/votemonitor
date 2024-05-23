@@ -6,10 +6,12 @@ import { Icon } from "../../../../components/Icon";
 import { useNavigation } from "expo-router";
 import { DrawerActions } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
+import { useUserData } from "../../../../contexts/user/UserContext.provider";
 
 const Guides = () => {
   const navigation = useNavigation();
-  const { t } = useTranslation(["guides_empty", "guides"]);
+  const { t } = useTranslation("guides_empty");
+  const { activeElectionRound } = useUserData();
 
   return (
     <Screen
@@ -22,7 +24,7 @@ const Guides = () => {
       }}
     >
       <Header
-        title={t("header.title", { ns: "guides" })}
+        title={activeElectionRound?.title}
         titleColor="white"
         barStyle="light-content"
         leftIcon={<Icon icon="menuAlt2" color="white" />}
