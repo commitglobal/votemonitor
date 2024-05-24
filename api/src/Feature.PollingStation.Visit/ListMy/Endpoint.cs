@@ -32,69 +32,83 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
             return TypedResults.NotFound();
         }
 
-        var sql = @$"SELECT t.""ElectionRoundId"",
-                     t.""PollingStationId"",
-                     ps.""Level1"",
-                     ps.""Level2"",
-                     ps.""Level3"",
-                     ps.""Level4"",
-                     ps.""Level5"",
-                     ps.""Address"",
-                     ps.""Number"",
-                     mo.""MonitoringNgoId"",
-                     t.""MonitoringObserverId"",
-                     mo.""ObserverId"",
-                     MAX(t.""LatestTimestamp"") ""VisitedAt""
-                     FROM (
-                         SELECT psi.""{nameof(PollingStationInformation.ElectionRoundId)}"",
-                         psi.""{nameof(PollingStationInformation.PollingStationId)}"",
-                         psi.""{nameof(PollingStationInformation.MonitoringObserverId)}"",
-                         COALESCE(psi.""LastModifiedOn"", psi.""CreatedOn"") ""LatestTimestamp""
-                         FROM ""{Tables.PollingStationInformation}"" psi
-                         WHERE psi.""ElectionRoundId"" = @electionRoundId
+        var sql ="""
+                 SELECT
+                     T."PollingStationId",
+                     PS."Level1",
+                     PS."Level2",
+                     PS."Level3",
+                     PS."Level4",
+                     PS."Level5",
+                     PS."Address",
+                     PS."Number",
+                     T."MonitoringObserverId",
+                     MAX(T."LatestTimestamp") "VisitedAt"
+                 FROM
+                     (
+                         SELECT
+                             PSI."ElectionRoundId",
+                             PSI."PollingStationId",
+                             PSI."MonitoringObserverId",
+                             COALESCE(PSI."LastModifiedOn", PSI."CreatedOn") "LatestTimestamp"
+                         FROM
+                             "PollingStationInformation" PSI
+                         WHERE
+                             PSI."ElectionRoundId" = @electionRoundId
                          UNION
                          SELECT
-                         n.""{nameof(Note.ElectionRoundId)}"", 
-                         n.""{nameof(Note.PollingStationId)}"", 
-                         n.""{nameof(Note.MonitoringObserverId)}"", 
-                         COALESCE(n.""LastModifiedOn"", n.""CreatedOn"") ""LatestTimestamp""
-                         FROM ""{Tables.Notes}"" n
-                         WHERE n.""ElectionRoundId"" = @electionRoundId
+                             FS."ElectionRoundId",
+                             FS."PollingStationId",
+                             FS."MonitoringObserverId",
+                             COALESCE(FS."LastModifiedOn", FS."CreatedOn") "LatestTimestamp"
+                         FROM
+                             "FormSubmissions" FS
+                         WHERE
+                             FS."ElectionRoundId" = @electionRoundId
                          UNION
                          SELECT
-                         a.""{nameof(Attachment.ElectionRoundId)}"", 
-                         a.""{nameof(Attachment.PollingStationId)}"", 
-                         a.""{nameof(Attachment.MonitoringObserverId)}"", 
-                         COALESCE(a.""LastModifiedOn"", a.""CreatedOn"") ""LatestTimestamp""
-                         FROM ""{Tables.Attachments}"" a
-                         WHERE a.""ElectionRoundId"" = @electionRoundId
+                             N."ElectionRoundId",
+                             N."PollingStationId",
+                             N."MonitoringObserverId",
+                             COALESCE(N."LastModifiedOn", N."CreatedOn") "LatestTimestamp"
+                         FROM
+                             "Notes" N
+                         WHERE
+                             N."ElectionRoundId" = @electionRoundId
                          UNION
                          SELECT
-                         qr.""{nameof(QuickReport.ElectionRoundId)}"", 
-                         qr.""{nameof(QuickReport.PollingStationId)}"", 
-                         qr.""{nameof(QuickReport.MonitoringObserverId)}"", 
-                         COALESCE(qr.""LastModifiedOn"", qr.""CreatedOn"") ""LatestTimestamp""
-                         FROM ""{Tables.QuickReports}"" qr
-                         WHERE qr.""ElectionRoundId"" = @electionRoundId
-                     ) t 
-                     INNER JOIN ""{Tables.MonitoringObservers}"" mo ON mo.""Id"" = t.""MonitoringObserverId""
-                     INNER JOIN ""{Tables.PollingStations}"" ps ON ps.""Id"" = t.""PollingStationId""
-                     WHERE t.""ElectionRoundId"" = @electionRoundId AND mo.""ObserverId"" = @observerId
-                     GROUP BY 
-                           t.""ElectionRoundId"",
-                           t.""PollingStationId"",
-                           ps.""Level1"",
-                           ps.""Level2"",
-                           ps.""Level3"",
-                           ps.""Level4"",
-                           ps.""Level5"",
-                           ps.""Address"",
-                           ps.""Number"",
-                           mo.""MonitoringNgoId"",
-                           t.""MonitoringObserverId"",
-                           mo.""ObserverId"";";
+                             A."ElectionRoundId",
+                             A."PollingStationId",
+                             A."MonitoringObserverId",
+                             COALESCE(A."LastModifiedOn", A."CreatedOn") "LatestTimestamp"
+                         FROM
+                             "Attachments" A
+                         WHERE
+                             A."ElectionRoundId" = @electionRoundId
+                         UNION
+                         SELECT
+                             QR."ElectionRoundId",
+                             QR."PollingStationId",
+                             QR."MonitoringObserverId",
+                             COALESCE(QR."LastModifiedOn", QR."CreatedOn") "LatestTimestamp"
+                         FROM
+                             "QuickReports" QR
+                         WHERE
+                             QR."ElectionRoundId" = @electionRoundId
+                     ) T
+                     INNER JOIN "MonitoringObservers" MO ON MO."Id" = T."MonitoringObserverId"
+                     INNER JOIN "PollingStations" PS ON PS."Id" = T."PollingStationId"
+                 WHERE
+                     T."ElectionRoundId" = @electionRoundId
+                     AND MO."ObserverId" = @observerId
+                 GROUP BY
+                     T."ElectionRoundId",
+                     T."PollingStationId",
+                     T."MonitoringObserverId",
+                     PS."Id"
+                 """;
 
-        var queryArgs = new { electionRoundId = req.ElectionRoundId, observerId = req.ObserverId };
+        var queryArgs = new {electionRoundId = req.ElectionRoundId,observerId = req.ObserverId };
 
         IEnumerable<VisitModel> visits = [];
         using (var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct))
