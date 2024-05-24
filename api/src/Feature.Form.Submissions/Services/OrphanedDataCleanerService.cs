@@ -18,7 +18,7 @@ public class OrphanedDataCleanerService(INpgsqlConnectionFactory connectionFacto
             {
                 string deleteAttachmentsSql = """
                 UPDATE "Attachments"
-                SET "IsDeleted" = FALSE
+                SET "IsDeleted" = TRUE
                 WHERE "Id" IN 
                 (
                     SELECT "Id" 
@@ -52,6 +52,59 @@ public class OrphanedDataCleanerService(INpgsqlConnectionFactory connectionFacto
                     pollingStationId,
                     formId,
                     questionIds 
+                };
+
+                await connection.ExecuteAsync(deleteAttachmentsSql, queryParams, transaction);
+                await connection.ExecuteAsync(deleteNotesSql, queryParams, transaction);
+
+                transaction.Commit();
+            }
+        }
+    }    
+    
+    public async Task CleanupAsync(Guid electionRoundId,
+        Guid monitoringObserverId,
+        Guid pollingStationId,
+        Guid formId,
+        CancellationToken cancellationToken = default)
+    {
+        using (var connection = await connectionFactory.GetOpenConnectionAsync(cancellationToken))
+        {
+            using (var transaction = connection.BeginTransaction())
+            {
+                string deleteAttachmentsSql = """
+                UPDATE "Attachments"
+                SET "IsDeleted" = TRUE
+                WHERE "Id" IN 
+                (
+                    SELECT "Id" 
+                    FROM "Attachments" a
+                    WHERE a."ElectionRoundId" = @electionRoundId 
+                    AND "MonitoringObserverId" = @monitoringObserverId
+                    AND a."PollingStationId" = @pollingStationId
+                    AND a."FormId"= @formId
+                )
+                """;
+
+                string deleteNotesSql = """
+                DELETE FROM "Notes"
+                WHERE "Id" in 
+                (
+                    SELECT "Id" 
+                    FROM "Notes" n
+                    WHERE n."ElectionRoundId" = @electionRoundId 
+                    AND "MonitoringObserverId" = @monitoringObserverId
+                    AND n."PollingStationId" = @pollingStationId
+                    AND n."FormId"= @formId
+                )
+                """;
+
+                var queryParams = new
+                {
+                    electionRoundId,
+                    monitoringObserverId,
+                    pollingStationId,
+                    formId
                 };
 
                 await connection.ExecuteAsync(deleteAttachmentsSql, queryParams, transaction);

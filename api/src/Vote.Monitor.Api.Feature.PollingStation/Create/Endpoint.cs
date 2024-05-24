@@ -1,5 +1,4 @@
 ﻿using Vote.Monitor.Api.Feature.PollingStation.Helpers;
-using Vote.Monitor.Api.Feature.PollingStation.Specifications;
 using Vote.Monitor.Core.Services.Security;
 using Vote.Monitor.Core.Services.Time;
 
@@ -15,6 +14,7 @@ public class Endpoint(IRepository<PollingStationAggregate> repository,
         Post("api/election-rounds/{electionRoundId}/polling-stations");
         DontAutoTag();
         Options(x => x.WithTags("polling-stations"));
+        Policies(PolicyNames.PlatformAdminsOnly);
     }
 
     public override async Task<Results<Ok<PollingStationModel>, Conflict<ProblemDetails>, NotFound<ProblemDetails>>> ExecuteAsync(Request req, CancellationToken ct)

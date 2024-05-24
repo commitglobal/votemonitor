@@ -1,6 +1,4 @@
-﻿using Vote.Monitor.Api.Feature.PollingStation.Specifications;
-
-namespace Vote.Monitor.Api.Feature.PollingStation.Delete;
+﻿namespace Vote.Monitor.Api.Feature.PollingStation.Delete;
 public class Endpoint(IRepository<PollingStationAggregate> repository,
     IRepository<ElectionRoundAggregate> electionRoundRepository)
     : Endpoint<Request, Results<NoContent, NotFound<ProblemDetails>, ProblemDetails>>
@@ -10,6 +8,7 @@ public class Endpoint(IRepository<PollingStationAggregate> repository,
         Delete("/api/election-rounds/{electionRoundId}/polling-stations/{id}");
         DontAutoTag();
         Options(x => x.WithTags("polling-stations"));
+        Policies(PolicyNames.PlatformAdminsOnly);
     }
 
     public override async Task<Results<NoContent, NotFound<ProblemDetails>, ProblemDetails>> ExecuteAsync(Request req, CancellationToken ct)
