@@ -4,7 +4,7 @@ import Layout from '@/components/layout/Layout';
 import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -30,7 +30,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { ColumnDef, Row } from '@tanstack/react-table';
 import { X } from 'lucide-react';
-import { useState, type ReactElement, useCallback } from 'react';
+import { useCallback, useState, type ReactElement } from 'react';
 import { FormTemplateBase, mapFormTemplateType } from '../../models/formTemplate';
 import { formTemplatesKeys, useFormTemplates } from '../../queries';
 import AddTranslationsDialog from './AddTranslationsDialog';
@@ -322,7 +322,6 @@ export default function FormTemplatesDashboard(): ReactElement {
                 />
               )}
             </CardContent>
-            <CardFooter className='flex justify-between'></CardFooter>
           </Card>
         </TabsContent>
         <TabsContent value='psi-forms'>

@@ -115,7 +115,7 @@ export default function EditQuestionFactory({
           {...provided.dragHandleProps}>
           <div
             className={cn(
-              open ? 'bg-slate-700' : 'bg-purple-300',
+              open ? 'bg-slate-600' : 'bg-purple-900',
               'top-0 w-10 rounded-l-lg p-2 text-center text-sm text-white hover:bg-slate-600',
               isInValid && 'bg-red-400  hover:bg-red-600'
             )}>

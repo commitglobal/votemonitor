@@ -3,7 +3,7 @@ import Layout from '@/components/layout/Layout';
 import PreviewQuestionFactory from '@/components/questionsEditor/preview/PreviewQuestionFactory';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Fieldset } from '@/components/ui/fieldset';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -85,7 +85,6 @@ export default function FormTemplateDetails() {
                 </div>
               </dl>
             </CardContent>
-            <CardFooter className='flex justify-between'></CardFooter>
           </Card>
         </TabsContent>
         <TabsContent value='questions'>

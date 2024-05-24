@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Skeleton } from '@/components/ui/skeleton';
 import { AuthContext } from '@/context/auth.context';
+import { formsKeys } from '@/features/forms/queries';
 import { formSubmissionsAggregtedKeys, formSubmissionsByEntryKeys, formSubmissionsByObserverKeys } from '@/features/responses/hooks/form-submissions-queries';
 import { quickReportKeys } from '@/features/responses/hooks/quick-reports';
 import { queryClient } from '@/main';
@@ -22,7 +23,6 @@ import clsx from 'clsx';
 import { Fragment, useContext, useState } from 'react';
 import type { ElectionRoundMonitoring, FunctionComponent } from '../../../common/types';
 import Logo from './Logo';
-import { formsKeys } from '@/features/forms/queries';
 
 const navigation = [
   { name: 'Dashboard', to: '/', roles: ['PlatformAdmin', 'NgoAdmin'] },
@@ -33,7 +33,6 @@ const navigation = [
   { name: 'Election event', to: '/election-event', roles: ['NgoAdmin'] },
   { name: 'Observers', to: '/monitoring-observers', roles: ['NgoAdmin'] },
   { name: 'Responses', to: '/responses', roles: ['NgoAdmin'] },
-  { name: 'Forms', to: '/forms', roles: ['NgoAdmin'] },
 ];
 const userNavigation: { name: string; to: string }[] = [];
 
@@ -68,7 +67,14 @@ const Header = (): FunctionComponent => {
         throw new Error('Failed to fetch observers');
       }
 
-      handleSelectElection(response.data.electionRounds[0]);
+      const electionRoundId: string | null = localStorage.getItem('electionRoundId');
+
+      const electionRound = response
+        .data
+        .electionRounds
+        .find(er => er.electionRoundId === electionRoundId) ?? response.data.electionRounds[0];
+
+      handleSelectElection(electionRound);
 
       return response.data;
     },

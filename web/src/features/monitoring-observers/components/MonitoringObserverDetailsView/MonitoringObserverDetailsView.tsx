@@ -1,16 +1,16 @@
 import TableTagList from '@/components/table-tag-list/TableTagList';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { PencilIcon } from '@heroicons/react/24/outline';
 import { useNavigate } from '@tanstack/react-router';
 
+import { DateTimeFormat } from '@/common/formats';
+import { monitoringObserverDetailsQueryOptions } from '@/common/queryOptions';
 import type { FunctionComponent } from '@/common/types';
 import { Route } from '@/routes/monitoring-observers/view/$monitoringObserverId.$tab';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { monitoringObserverDetailsQueryOptions } from '@/common/queryOptions';
-import { DateTimeFormat } from '@/common/formats';
 import { format } from 'date-fns';
 
 export default function MonitoringObserverDetailsView(): FunctionComponent {
@@ -66,7 +66,6 @@ export default function MonitoringObserverDetailsView(): FunctionComponent {
           <Badge className={'badge-' + monitoringObserver.status}>{monitoringObserver.status}</Badge>
         </div>
       </CardContent>
-      <CardFooter className='flex justify-between'></CardFooter>
     </Card>
   );
 }
