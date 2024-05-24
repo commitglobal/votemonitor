@@ -2,6 +2,7 @@
 
 global using System.Text.Json;
 global using Ardalis.Specification;
+global using Authorization.Policies;
 global using CsvHelper;
 global using EFCore.BulkExtensions;
 global using FastEndpoints;
@@ -12,6 +13,7 @@ global using Microsoft.AspNetCore.Http.HttpResults;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Logging;
 global using Microsoft.Extensions.Options;
+global using Vote.Monitor.Api.Feature.PollingStation.Specifications;
 global using Vote.Monitor.Core.Services.Csv;
 global using Vote.Monitor.Domain;
 global using Vote.Monitor.Domain.Repository;

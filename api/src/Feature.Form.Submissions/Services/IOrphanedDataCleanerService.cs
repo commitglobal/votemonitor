@@ -8,4 +8,10 @@ public interface IOrphanedDataCleanerService
         Guid formId,
         Guid[] questionIds,
         CancellationToken cancellationToken = default);
+
+    Task CleanupAsync(Guid electionRoundId,
+        Guid monitoringObserverId,
+        Guid pollingStationId,
+        Guid formId,
+        CancellationToken cancellationToken = default);
 }
