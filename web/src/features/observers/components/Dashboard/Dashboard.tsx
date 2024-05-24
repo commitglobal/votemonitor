@@ -3,7 +3,7 @@ import { DataTableParameters, PageResponse } from '@/common/types';
 import Layout from '@/components/layout/Layout';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
 import {
@@ -321,7 +321,6 @@ export default function ObserversDashboard(): ReactElement {
             <CardContent>
               <QueryParamsDataTable columns={observerColDefs} useQuery={useObservers} onRowClick={navigateToObserver} />
             </CardContent>
-            <CardFooter className='flex justify-between'></CardFooter>
           </Card>
         </TabsContent>
         <TabsContent value='password'></TabsContent>

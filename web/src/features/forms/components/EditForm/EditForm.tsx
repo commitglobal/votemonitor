@@ -1,15 +1,15 @@
 import { authApi } from '@/common/auth-api';
 import {
-  type BaseQuestion,
+  QuestionType,
   cloneTranslation,
-  type FunctionComponent,
   getTranslationOrDefault,
+  updateTranslationString,
+  type BaseQuestion,
+  type FunctionComponent,
   type MultiSelectQuestion,
   type NumberQuestion,
-  QuestionType,
   type SingleSelectQuestion,
   type TextQuestion,
-  updateTranslationString,
 } from '@/common/types';
 import FormQuestionsEditor from '@/components/questionsEditor/FormQuestionsEditor';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -25,17 +25,17 @@ import LanguageSelect from '@/containers/LanguageSelect';
 import { queryClient } from '@/main';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 
+import Layout from '@/components/layout/Layout';
 import { Route } from '@/routes/forms_.$formId.edit';
+import { Link } from '@tanstack/react-router';
 import { FormFull, FormType, mapFormType } from '../../models/form';
 import { formDetailsQueryOptions, formsKeys } from '../../queries';
 import EditFormFooter from './EditFormFooter';
-import Layout from '@/components/layout/Layout';
-import { Link } from '@tanstack/react-router';
 
 export default function EditForm(): FunctionComponent {
   const { t } = useTranslation();
@@ -46,6 +46,7 @@ export default function EditForm(): FunctionComponent {
   const [localQuestions, setLocalQuestions] = useState(formData.questions);
   const [defaultLanguage, setDefaultLanguage] = useState(formData.defaultLanguage);
   const [languages, setLanguages] = useState(formData.languages);
+	const formRef = useRef(null)
 
   const { toast } = useToast();
 
@@ -71,6 +72,7 @@ export default function EditForm(): FunctionComponent {
   });
 
   const editMutation = useMutation({
+    mutationKey: formsKeys.all,
     mutationFn: (form: FormFull) => {
       const electionRoundId: string | null = localStorage.getItem('electionRoundId');
 
@@ -86,7 +88,7 @@ export default function EditForm(): FunctionComponent {
         description: 'Form updated successfully updated',
       });
 
-      void queryClient.invalidateQueries({ queryKey: formsKeys.all });
+      queryClient.invalidateQueries({ queryKey: formsKeys.all });
     },
   });
 
@@ -172,10 +174,29 @@ export default function EditForm(): FunctionComponent {
     );
   };
 
+  const submit = () => {
+    if (formRef.current) {
+      // @ts-ignore
+      formRef.current.dispatchEvent(
+        new Event('submit', { cancelable: true, bubbles: true })
+      )
+    }
+  }
+
+  const submitAndExitEditor = () => {
+    
+    if (formRef.current) {
+      // @ts-ignore
+      formRef.current.dispatchEvent(
+        new Event('submit', { cancelable: true, bubbles: true })
+      )
+    }
+  }
+
   return (
     <Layout
       backButton={
-        <Link to='/forms' preload='intent' search>
+        <Link to='/election-event/$tab' params={{ tab: 'observer-forms' }}>
           <svg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30' fill='none'>
             <path
               fillRule='evenodd'
@@ -188,7 +209,7 @@ export default function EditForm(): FunctionComponent {
       }
       title={`${formData.code} - ${formData.name[formData.defaultLanguage]}`}>
       <Form {...form}>
-        <form className='flex flex-col flex-1' onSubmit={form.handleSubmit(onSubmit)}>
+        <form className='flex flex-col flex-1' onSubmit={form.handleSubmit(onSubmit)} ref={formRef}>
           <Tabs className='flex flex-col flex-1' defaultValue='form-details'>
             <TabsList className='grid grid-cols-2 bg-gray-200 w-[400px] mb-4'>
               <TabsTrigger value='form-details'>Form details</TabsTrigger>
@@ -306,7 +327,7 @@ export default function EditForm(): FunctionComponent {
               </Card>
             </TabsContent>
           </Tabs>
-          <EditFormFooter />
+          <EditFormFooter onSaveProgress={submit} onSaveAndExit={submitAndExitEditor} />
         </form>
       </Form>
     </Layout>

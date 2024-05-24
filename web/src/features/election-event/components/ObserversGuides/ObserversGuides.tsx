@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
@@ -10,17 +10,17 @@ import { ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { useState } from 'react';
 
+import { authApi } from '@/common/auth-api';
+import { DateTimeFormat } from '@/common/formats';
+import { toast } from '@/components/ui/use-toast';
+import { queryClient } from '@/main';
+import { useMutation } from '@tanstack/react-query';
+import { Link } from '@tanstack/react-router';
 import { useObserverGuides } from '../../hooks/election-event-hooks';
 import { ObserverGuide } from '../../models/observer-guide';
 import ConfirmDeleteDialog from './ConfirmDeleteDialog';
 import EditObserversGuideDialog from './EditObserversGuideDialog';
 import UploadObserversGuideDialog from './UploadObserversGuideDialog';
-import { authApi } from '@/common/auth-api';
-import { queryClient } from '@/main';
-import { useMutation } from '@tanstack/react-query';
-import { toast } from '@/components/ui/use-toast';
-import { Link } from '@tanstack/react-router';
-import { DateTimeFormat } from '@/common/formats';
 
 export default function ObserversGuides() {
   const uploadObserverGuideDialog = useDialog();
@@ -181,7 +181,6 @@ export default function ObserversGuides() {
       <CardContent>
         <QueryParamsDataTable columns={observerGuideColDefs} useQuery={useObserverGuides} />
       </CardContent>
-      <CardFooter className='flex justify-between'></CardFooter>
     </Card>
   );
 }

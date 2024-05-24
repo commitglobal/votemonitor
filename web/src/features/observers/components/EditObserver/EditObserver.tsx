@@ -1,7 +1,7 @@
 import { authApi } from '@/common/auth-api';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -170,7 +170,6 @@ export default function EditObserver() {
             </form>
           </Form>
         </CardContent>
-        <CardFooter className='flex justify-between'></CardFooter>
       </Card>
     </Layout>
   );

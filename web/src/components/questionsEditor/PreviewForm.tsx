@@ -80,7 +80,7 @@ function PreviewForm({ languageCode, localQuestions, activeQuestionId, setActive
 
   return (
     <Card className='w-full'>
-      <CardHeader className='p-4 bg-neutral-900 rounded-t-md'>
+      <CardHeader className='p-4 bg-slate-600 rounded-t-md'>
         <h3 className='text-white'>Question preview</h3>
       </CardHeader>
       <CardContent className='p-12'>
