@@ -1,5 +1,4 @@
 ﻿using Vote.Monitor.Api.Feature.PollingStation.Helpers;
-using Vote.Monitor.Api.Feature.PollingStation.Specifications;
 using Vote.Monitor.Core.Models;
 
 namespace Vote.Monitor.Api.Feature.PollingStation.List;
