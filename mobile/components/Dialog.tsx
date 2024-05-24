@@ -9,7 +9,7 @@ interface DialogProps extends AlertDialogProps {
   // content inside dialog
   content?: ReactNode;
   // dialog footer
-  footer: ReactNode;
+  footer?: ReactNode;
 }
 
 export const Dialog: React.FC<DialogProps> = ({ header, content, trigger, footer, ...props }) => {
