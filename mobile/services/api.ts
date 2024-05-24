@@ -2,6 +2,7 @@ import axios, { AxiosRequestHeaders } from "axios";
 import * as Sentry from "@sentry/react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ASYNC_STORAGE_KEYS } from "../common/constants";
+import { reloadAsync } from "expo-updates";
 
 // https://vitejs.dev/guide/env-and-mode.html
 const API = axios.create({
@@ -51,6 +52,7 @@ API.interceptors.response.use(
 
       if (error.response.status === 401) {
         await AsyncStorage.removeItem(ASYNC_STORAGE_KEYS.ACCESS_TOKEN);
+        reloadAsync();
       }
     } else if (error.request) {
       // The request was made but no response was received
