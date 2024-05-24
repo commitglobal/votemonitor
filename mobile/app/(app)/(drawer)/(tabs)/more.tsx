@@ -13,11 +13,11 @@ import { DrawerActions } from "@react-navigation/native";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Constants from "expo-constants";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { CURRENT_USER_STORAGE_KEY } from "../../../../common/constants";
 import SelectAppLanguage from "../../../../components/SelectAppLanguage";
 import i18n from "../../../../common/config/i18n";
 import { useNotification } from "../../../../hooks/useNotifications";
 import { useUserData } from "../../../../contexts/user/UserContext.provider";
+import { ASYNC_STORAGE_KEYS } from "../../../../common/constants";
 
 interface MenuItemProps {
   label: string;
@@ -58,8 +58,8 @@ const More = () => {
   const URL = "https://www.code4.ro/ro/privacy-policy-vote-monitor";
 
   const { data: currentUser } = useQuery({
-    queryKey: [CURRENT_USER_STORAGE_KEY],
-    queryFn: () => AsyncStorage.getItem(CURRENT_USER_STORAGE_KEY),
+    queryKey: [ASYNC_STORAGE_KEYS.CURRENT_USER_STORAGE_KEY],
+    queryFn: () => AsyncStorage.getItem(ASYNC_STORAGE_KEYS.CURRENT_USER_STORAGE_KEY),
     staleTime: 0,
   });
 

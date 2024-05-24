@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { AuthContext } from "./auth-context";
 import API from "../../services/api";
-import * as SecureStore from "expo-secure-store";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { QueryClient } from "@tanstack/react-query";
 import * as DB from "../../database/DAO/PollingStationsNomenclatorDAO";
 import * as Sentry from "@sentry/react-native";
+import { ASYNC_STORAGE_KEYS } from "../../common/constants";
+import { clearAsyncStorage } from "../../common/utils/utils";
 
 const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -13,12 +14,12 @@ const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
 
   useEffect(() => {
     try {
-      const token = SecureStore.getItem("access_token");
+      const token = AsyncStorage.getItem(ASYNC_STORAGE_KEYS.ACCESS_TOKEN);
       setIsAuthenticated(!!token);
       setIsLoading(false);
     } catch (err) {
       Sentry.captureException(err);
-      SecureStore.deleteItemAsync("access_token");
+      AsyncStorage.removeItem(ASYNC_STORAGE_KEYS.ACCESS_TOKEN);
     }
   }, []);
 
@@ -32,9 +33,9 @@ const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
         password,
       });
       try {
-        SecureStore.setItem("access_token", token);
+        AsyncStorage.setItem(ASYNC_STORAGE_KEYS.ACCESS_TOKEN, token);
       } catch (err) {
-        console.error("Could not set Aceess Token in secure storage");
+        console.error("Could not set Aceess Token in AsyncStorage");
         throw err;
       }
       setIsAuthenticated(true);
@@ -51,8 +52,7 @@ const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
     queryClient.clear();
     setIsAuthenticated(false);
     try {
-      await SecureStore.deleteItemAsync("access_token");
-      await AsyncStorage.clear();
+      await clearAsyncStorage();
       await DB.deleteEverything();
     } catch (err) {
       Sentry.captureMessage(`Logout error`);
