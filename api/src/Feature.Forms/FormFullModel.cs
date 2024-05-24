@@ -17,7 +17,8 @@ public class FormFullModel: FormSlimModel
         Questions = form.Questions.Select(QuestionsMapper.ToModel).ToList(),
         NumberOfQuestions = form.NumberOfQuestions,
         CreatedOn = form.CreatedOn,
-        LastModifiedOn = form.LastModifiedOn
+        LastModifiedOn = form.LastModifiedOn,
+        Description = form.Description
     };
 
     public IReadOnlyList<BaseQuestionModel> Questions { get; init; } = [];
