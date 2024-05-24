@@ -528,7 +528,7 @@ const FormQuestionnaire = () => {
                                 type="textarea"
                                 marginTop="$md"
                                 value={selections[option.id]?.text}
-                                placeholder={"form.text_placeholder"}
+                                placeholder={t("form.text_placeholder")}
                                 onChangeText={(textValue) => {
                                   selections[option.id] = {
                                     optionId: option.id,
