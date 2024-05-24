@@ -27,7 +27,9 @@ const ReportCard = ({
           text={
             numberOfAttachments === 0
               ? t("list.no_files")
-              : t("list.attachment", { count: numberOfAttachments })
+              : numberOfAttachments === 1
+                ? t("list.attachment_one", { count: numberOfAttachments })
+                : t("list.attachment_other", { count: numberOfAttachments })
           }
         />
       </YStack>
