@@ -13,7 +13,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
         Summary(s =>
         {
             s.Summary = "Deletes a polling stations visit of an observer";
-            s.Description = "Polling station visits are based on polling station information / form answers / notes / attachments";
+            s.Description = "Polling station visits are based on polling station information / form answers / notes / attachments/ quick reports/ quick report attachments";
         });
     }
 
