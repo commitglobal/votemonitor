@@ -64,7 +64,7 @@ const Header = ({
   const StyledWrapper = styled(XStack, {
     name: "StyledWrapper",
     backgroundColor,
-    height: 50 + insets.top,
+    minHeight: 50 + insets.top,
     paddingTop: insets.top,
   });
 

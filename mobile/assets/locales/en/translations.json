@@ -182,6 +182,11 @@
     },
     "menu": {
       "clear": "Clear form (delete all answers)"
+    },
+    "warning_modal": {
+      "title": "Clear Polling station information form",
+      "description": "This action will delete all answers entered so far for this form. To avoid unintended information loss, please ensure you check the form before performing this action.",
+      "actions": { "cancel": "Cancel", "clear": "Clear form" }
     }
   },
   "form_overview": {
@@ -208,6 +213,14 @@
     "menu": {
       "clear": "Clear form (delete all answers)",
       "change_language": "Change language"
+    },
+    "clear_answers_modal": {
+      "title": "Clear form {{value}}",
+      "description": "This action will delete all answers entered so far for this form (including notes and media files). Status of all questions will be reverted to Not Answered.\n\nTo avoid unintended information loss, please ensure you check the form before performing this action.",
+      "actions": {
+        "clear": "Clear form",
+        "cancel": "Cancel"
+      }
     }
   },
   "polling_station_form_wizard": {
@@ -229,7 +242,7 @@
         "add_note": "Add note",
         "load": "Load from gallery",
         "take_picture": "Take a photo",
-        "record_video": "Record audio",
+        "record_video": "Record a video",
         "upload_audio": "Upload audio file"
       }
     },
@@ -247,6 +260,26 @@
       "edit": {
         "heading": "Edit note",
         "delete": "Delete note"
+      },
+      "delete": {
+        "title": "Delete note",
+        "description": "This action cannot be undone. Once deleted, a note cannot be retrieved.",
+        "actions": {
+          "cancel": "Cancel",
+          "delete": "Delete"
+        }
+      }
+    },
+    "warning_modal": {
+      "question": {
+        "title": "Clear answer to question {{value}}",
+        "description": "Clearing the answer to this question will permanently delete all its information (including notes and media files), as well as all its connected questions. Question statuses will be reverted to Not Answered.",
+        "actions": { "cancel": "Cancel", "clear": "Clear answer" }
+      },
+      "attachment": {
+        "title": "Delete media file",
+        "description": "This action cannot be undone. Once deleted, a media file cannot be retrieved.",
+        "actions": { "cancel": "Cancel", "clear": "Delete" }
       }
     },
     "error": "Error while loading question data!"

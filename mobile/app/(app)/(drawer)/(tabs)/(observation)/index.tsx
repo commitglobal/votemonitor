@@ -51,7 +51,7 @@ const Index = () => {
     >
       <YStack marginBottom={20}>
         <Header
-          title={t("title")}
+          title={activeElectionRound?.title}
           titleColor="white"
           barStyle="light-content"
           leftIcon={<Icon icon="menuAlt2" color="white" />}
