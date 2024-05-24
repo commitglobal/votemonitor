@@ -248,6 +248,7 @@ const PollingStationWizzardContent = ({
             onEndReached={loadMore}
             onEndReachedThreshold={0.5}
             renderItem={SelectItem}
+            keyboardShouldPersistTaps="handled"
           />
         )}
       </YStack>
