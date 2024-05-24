@@ -2,11 +2,6 @@
 using Dapper;
 using Microsoft.AspNetCore.Authorization;
 using Vote.Monitor.Domain.ConnectionFactory;
-using Vote.Monitor.Domain.Constants;
-using Vote.Monitor.Domain.Entities.AttachmentAggregate;
-using Vote.Monitor.Domain.Entities.NoteAggregate;
-using Vote.Monitor.Domain.Entities.PollingStationInfoAggregate;
-using Vote.Monitor.Domain.Entities.QuickReportAggregate;
 
 namespace Feature.PollingStation.Visit.ListMy;
 

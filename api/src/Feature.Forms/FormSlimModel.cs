@@ -18,8 +18,11 @@ public class FormSlimModel
         Name = form.Name,
         CreatedOn = form.CreatedOn,
         LastModifiedOn = form.LastModifiedOn,
-        NumberOfQuestions = form.NumberOfQuestions
+        NumberOfQuestions = form.NumberOfQuestions,
+        Description = form.Description,
     };
+
+    public TranslatedString Description { get; set; }
 
     public required Guid Id { get; init; }
     [JsonConverter(typeof(SmartEnumNameConverter<FormType, string>))]
