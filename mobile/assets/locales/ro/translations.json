@@ -98,6 +98,19 @@
       "confirm": "Înapoi la autentificare"
     }
   },
+  "about_app": {
+    "title": "Despre Vote Monitor",
+    "general": "Vote Monitor este un instrument digital dedicat observatorilor independenți și organizațiilor internaționale implicate în monitorizarea alegerilor. Vote Monitor este dezvoltat și gestionat de Code for Romania/Commit Global.",
+    "purpose": "Aplicația ajută observatorii independenți să monitorizeze secțiile de votare și să documenteze procesul de votare în timp real pentru un anumit tur electoral. Toate datele colectate prin aplicația mobilă sunt trimise în timp real organizațiilor de acreditare pentru a identifica potențiale semnale de alarmă care pot indica fraudă sau alte nereguli. În cele din urmă, scopul nostru este să oferim o imagine clară, simplă și realistă a procedurilor procesului de votare.",
+    "app_provides": {
+      "paragraph": "Aplicația oferă observatorilor:",
+      "item1": "O modalitate de a gestiona mai multe secții de votare vizitate",
+      "item2": "O metodă eficientă de monitorizare a procesului de votare prin formulare stabilite de organizațiile de acreditare",
+      "item3": "Un mijloc de raportare rapidă a altor probleme în afara formularelor standard"
+    },
+    "usage": "Aplicația Vote Monitor poate fi utilizată în timpul oricărui tip de alegeri în orice țară din întreaga lume. Din 2016, acesta a fost folosită în mai multe tururi electorale în România și Polonia.",
+    "version": "Vote Monitor versiunea {{value}}"
+  },
   "loading_screen": {
     "heading": "Se încarcă...",
     "paragraph": "Pregătim toate datele, vă rugăm să așteptați!"
