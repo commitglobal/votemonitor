@@ -65,7 +65,7 @@
         "loading": "Log in..."
       },
       "errors": {
-        "invalid_credentials": "Credentialele nu sunt corecte. Vă rugăm să încercați din nou."
+        "invalid_credentials": "There was an error with your credentials. Please try again."
       }
     },
     "actions": {
@@ -90,7 +90,7 @@
         "save": "Send"
       },
       "errors": {
-        "invalid_email": "The current email is not registerd in the system. Please try again."
+        "invalid_email": "The current email is not registered in the system. Please try again."
       }
     },
     "confirmation": {
@@ -176,7 +176,7 @@
         "empty": "No data to display",
         "error": {
           "paragraph1": "Something went wrong!",
-          "paragraph2": " We could not fetch the data. Press the retry button to try again!",
+          "paragraph2": "We could not fetch the data. Press the retry button to try again!",
           "retry": "Retry"
         }
       },
@@ -342,13 +342,13 @@
       "issue_title": {
         "label": "Title of issue *",
         "placeholder": "Write a title for the issue.",
-        "required": "Title of issue is required",
+        "required": "Title of the issue is required",
         "max": "Input cannot exceed {{value}} characters"
       },
       "issue_description": {
         "label": "Description *",
         "placeholder": "Describe the situation in detail here.",
-        "required": "Title of issue is required",
+        "required": "Description of the issue is required",
         "max": "Input cannot exceed {{value}} characters"
       },
       "submit": "Submit issue",
@@ -440,7 +440,7 @@
     "online": "App online. All answers sent to server.",
     "offline": "Offline mode. Saving answers locally.",
     "more_details": "More Details",
-    "offline_warning": "It looks like you're currently offline. Don't worry, your answers are safely stored locally and will b synced with our servers once your connection is restored. Feel free to continue filling out the observation forms and submitting quick reports."
+    "offline_warning": "It looks like you're currently offline. Don't worry, your answers are safely stored locally and will be synced with our servers once your connection is restored. Feel free to continue filling out the observation forms and submitting quick reports."
   },
   "sync": {
     "sync_data": "Synchronizing data...",
