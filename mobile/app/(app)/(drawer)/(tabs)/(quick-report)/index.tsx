@@ -35,7 +35,7 @@ const QuickReport = () => {
         contentContainerStyle={$containerStyle}
       >
         <Header
-          title={t("list.title")}
+          title={activeElectionRound?.title}
           titleColor="white"
           barStyle="light-content"
           leftIcon={<Icon icon="menuAlt2" color="white" />}
