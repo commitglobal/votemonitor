@@ -277,10 +277,36 @@ public class Form : AuditableBaseEntity, IAggregateRoot
         DefaultLanguage = languageCode;
     }
 
+    public void RemoveTranslation(string languageCode)
+    {
+        bool hasLanguageCode = languageCode.Contains(languageCode);
+
+        if (!hasLanguageCode)
+        {
+            return;
+        }
+
+        if (DefaultLanguage == languageCode)
+        {
+            throw new ArgumentException("Cannot remove default language");
+        }
+
+        Languages = Languages.Except([languageCode]).ToArray();
+        Description.RemoveTranslation(languageCode);
+        Name.RemoveTranslation(languageCode);
+
+        foreach (var question in Questions)
+        {
+            question.RemoveTranslation(languageCode);
+        }
+    }
+
+
 #pragma warning disable CS8618 // Required by Entity Framework
     private Form()
     {
 
     }
 #pragma warning restore CS8618
+
 }
