@@ -1,5 +1,4 @@
 import axios, { AxiosRequestHeaders } from "axios";
-import { reloadAsync } from "expo-updates";
 import * as Sentry from "@sentry/react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ASYNC_STORAGE_KEYS } from "../common/constants";
@@ -16,7 +15,7 @@ const API = axios.create({
 API.interceptors.request.use(async (request) => {
   // add auth header with jwt if account is logged in and request is to the api url
   try {
-    const token = AsyncStorage.getItem(ASYNC_STORAGE_KEYS.ACCESS_TOKEN);
+    const token = await AsyncStorage.getItem(ASYNC_STORAGE_KEYS.ACCESS_TOKEN);
 
     if (!request.headers) {
       request.headers = {} as AxiosRequestHeaders;
@@ -52,7 +51,6 @@ API.interceptors.response.use(
 
       if (error.response.status === 401) {
         await AsyncStorage.removeItem(ASYNC_STORAGE_KEYS.ACCESS_TOKEN);
-        reloadAsync();
       }
     } else if (error.request) {
       // The request was made but no response was received

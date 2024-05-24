@@ -13,15 +13,19 @@ const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
   useEffect(() => {
+    init();
+  }, []);
+
+  const init = async () => {
     try {
-      const token = AsyncStorage.getItem(ASYNC_STORAGE_KEYS.ACCESS_TOKEN);
+      const token = await AsyncStorage.getItem(ASYNC_STORAGE_KEYS.ACCESS_TOKEN);
       setIsAuthenticated(!!token);
       setIsLoading(false);
     } catch (err) {
       Sentry.captureException(err);
-      AsyncStorage.removeItem(ASYNC_STORAGE_KEYS.ACCESS_TOKEN);
+      await AsyncStorage.removeItem(ASYNC_STORAGE_KEYS.ACCESS_TOKEN);
     }
-  }, []);
+  };
 
   const signIn = async (email: string, password: string) => {
     try {
@@ -33,7 +37,7 @@ const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
         password,
       });
       try {
-        AsyncStorage.setItem(ASYNC_STORAGE_KEYS.ACCESS_TOKEN, token);
+        await AsyncStorage.setItem(ASYNC_STORAGE_KEYS.ACCESS_TOKEN, token);
       } catch (err) {
         console.error("Could not set Aceess Token in AsyncStorage");
         throw err;
