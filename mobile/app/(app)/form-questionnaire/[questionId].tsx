@@ -497,6 +497,7 @@ const FormQuestionnaire = () => {
                     <WizardFormElement
                       key={question.id}
                       label={`${question.code}. ${question.text[language]}`}
+                      paragraph={question.helptext?.[language] || ""}
                     >
                       {question.options.map((option) => {
                         const selections: Record<string, { optionId: string; text: string }> =
