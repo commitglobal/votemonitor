@@ -13,7 +13,7 @@ import FormInput from "../components/FormInputs/FormInput";
 import { Control, Controller, FieldErrors, FieldValues, useForm } from "react-hook-form";
 import Card from "../components/Card";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { CURRENT_USER_STORAGE_KEY } from "../common/constants";
+import { ASYNC_STORAGE_KEYS, SECURE_STORAGE_KEYS } from "../common/constants";
 import Constants from "expo-constants";
 import * as Sentry from "@sentry/react-native";
 import * as SecureStore from "expo-secure-store";
@@ -47,7 +47,7 @@ const Login = () => {
 
   useEffect(() => {
     try {
-      const onboardingComplete = SecureStore.getItem("onboardingComplete");
+      const onboardingComplete = SecureStore.getItem(SECURE_STORAGE_KEYS.ONBOARDING_COMPLETE);
       if (onboardingComplete !== "true") {
         setOnboardingComplete(false);
       }
@@ -71,7 +71,7 @@ const Login = () => {
         });
       }
       await signIn(email, password);
-      await AsyncStorage.setItem(CURRENT_USER_STORAGE_KEY, email);
+      await AsyncStorage.setItem(ASYNC_STORAGE_KEYS.CURRENT_USER_STORAGE_KEY, email);
       router.replace("/");
     } catch (err) {
       setAuthError(true);
@@ -85,7 +85,7 @@ const Login = () => {
 
   const onOnboardingComplete = () => {
     try {
-      SecureStore.setItem("onboardingComplete", "true");
+      SecureStore.setItem(SECURE_STORAGE_KEYS.ONBOARDING_COMPLETE, "true");
       setOnboardingComplete(true);
     } catch (err) {
       console.log(err);

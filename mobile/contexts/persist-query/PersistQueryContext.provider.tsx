@@ -21,6 +21,7 @@ import {
 } from "../../services/api/quick-report/add-attachment-quick-report.api";
 import { AttachmentApiResponse } from "../../services/api/get-attachments.api";
 import { AttachmentsKeys } from "../../services/queries/attachments.query";
+import { ASYNC_STORAGE_KEYS } from "../../common/constants";
 
 const queryClient = new QueryClient({
   mutationCache: new MutationCache({
@@ -87,8 +88,8 @@ const queryClient = new QueryClient({
 // https://tanstack.com/query/v4/docs/framework/react/plugins/createAsyncStoragePersister
 const persister = createAsyncStoragePersister({
   storage: AsyncStorage,
-  // throttleTime: 3000, // TODO: check what implications are here
-  // key: "REACT_QUERY_OFFLINE_CACHE" // t  his is the default key
+  throttleTime: 1000,
+  key: ASYNC_STORAGE_KEYS.REACT_QUERY_OFFLINE_CACHE,
 });
 
 const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
