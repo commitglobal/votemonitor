@@ -8,7 +8,7 @@ export const languagesQuery = {
         const response = await authApi.get<Language[]>('/languages');
 
         if (response.status !== 200) {
-            throw new Error('Failed to fetch countries');
+            throw new Error('Failed to fetch languages');
         }
 
         return response.data;

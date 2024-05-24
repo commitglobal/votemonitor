@@ -1,10 +1,10 @@
 import { authApi } from '@/common/auth-api';
 import CreateDialog from '@/components/dialogs/CreateDialog';
-import Layout from '@/components/layout/Layout';
 import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,8 +23,8 @@ import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { ColumnDef, Row } from '@tanstack/react-table';
 import { X } from 'lucide-react';
-import { useState, type ReactElement, useCallback } from 'react';
-import { FormBase, mapFormType } from '../../models/form';
+import { useState, type ReactElement } from 'react';
+import { FormBase, FormStatus, mapFormType } from '../../models/form';
 import { formsKeys, useForms } from '../../queries';
 import AddTranslationsDialog from './AddTranslationsDialog';
 import CreateForm from './CreateForm';
@@ -77,9 +77,24 @@ export default function FormsDashboard(): ReactElement {
       header: ({ column }) => <DataTableColumnHeader title='Language' column={column} />,
     },
     {
+      accessorKey: 'numberOfQuestions',
+      enableSorting: false,
+      header: ({ column }) => <DataTableColumnHeader title='Questions' column={column} />,
+    },
+    {
       accessorKey: 'status',
       enableSorting: false,
       header: ({ column }) => <DataTableColumnHeader title='Status' column={column} />,
+      cell: ({ row }) => (
+        <Badge
+          className={cn({
+            'text-slate-700 bg-slate-200': row.original.status === FormStatus.Drafted,
+            'text-green-600 bg-green-200': row.original.status === FormStatus.Published,
+            'text-yellow-600 bg-yellow-200': row.original.status === FormStatus.Archived,
+          })}>
+          {row.original.status}
+        </Badge>
+      ),
     },
     {
       header: '',
@@ -153,6 +168,7 @@ export default function FormsDashboard(): ReactElement {
   };
 
   const deleteTranslationMutation = useMutation({
+    mutationKey: formsKeys.all,
     mutationFn: ({ formId, languageCode }: { formId: string; languageCode: string; }) => {
       const electionRoundId: string | null = localStorage.getItem('electionRoundId');
 
@@ -170,6 +186,7 @@ export default function FormsDashboard(): ReactElement {
   });
 
   const deleteFormMutation = useMutation({
+    mutationKey: formsKeys.all,
     mutationFn: (formId: string) => {
       const electionRoundId: string | null = localStorage.getItem('electionRoundId');
 
@@ -217,9 +234,6 @@ export default function FormsDashboard(): ReactElement {
   const getRowClassName = (row: Row<FormBase>): string => cn({ 'bg-secondary-300 bg-opacity-[.15]': row.depth === 1 });
 
   return (
-    <Layout
-      title={'Forms'}
-      subtitle='Create forms for observation forms. These forms will be assigned to election events.'>
       <Card className='w-full pt-0'>
         <CardHeader className='flex flex-column gap-2'>
           <CardTitle className='flex flex-row justify-between items-center px-6'>
@@ -293,8 +307,6 @@ export default function FormsDashboard(): ReactElement {
             />
           )}
         </CardContent>
-        <CardFooter className='flex justify-between'></CardFooter>
       </Card>
-    </Layout>
   );
 }

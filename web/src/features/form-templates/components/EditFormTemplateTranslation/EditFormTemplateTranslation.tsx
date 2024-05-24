@@ -20,24 +20,21 @@ import { z } from 'zod';
 
 import { Badge } from '@/components/ui/badge';
 import { useLanguages } from '@/features/languages/queries';
-import { Route as FormTemplateEditRouter } from '@/routes/form-templates_.$formTemplateId.edit-translation.$languageCode';
+import { Route } from '@/routes/form-templates_.$formTemplateId.edit-translation.$languageCode';
 import { FormTemplateFull } from '../../models/formTemplate';
 import { formTemplateDetailsQueryOptions, formTemplatesKeys } from '../../queries';
 import EditFormTemplateFooter from '../EditFormTemplate/EditFormTemplateFooter';
-import { Route } from '@/routes/form-templates_.$formTemplateId.edit';
+
 export default function EditFormTemplateTranslation() {
   const { t } = useTranslation();
-  
-  const { formTemplateId } = Route.useParams();
+  const { formTemplateId, languageCode } = Route.useParams();
   const formTemplateQuery = useSuspenseQuery(formTemplateDetailsQueryOptions(formTemplateId));
   const formTemplate = formTemplateQuery.data;
-
 
   const [localQuestions, setLocalQuestions] = useState(formTemplate.questions);
   const { toast } = useToast();
   const { data: languages } = useLanguages();
 
-  const { languageCode } = FormTemplateEditRouter.useParams();
   const editFormTemplateFormSchema = z.object({
     name: z.string().nonempty(),
     description: z.string().optional(),

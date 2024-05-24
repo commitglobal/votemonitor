@@ -1,10 +1,11 @@
 import Layout from '@/components/layout/Layout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { getRouteApi, Outlet } from '@tanstack/react-router';
-import { ChangeEvent, ReactElement, useState } from 'react';
-import ElectionEventDetails from '../ElectionEventDetails/ElectionEventDetails';
+import FormsDashboard from '@/features/forms/components/Dashboard/Dashboard';
 import PollingStationsDashboard from '@/features/polling-stations/components/Dashboard/Dashboard';
+import { getRouteApi } from '@tanstack/react-router';
+import { ReactElement, useState } from 'react';
 import { useElectionRound } from '../../hooks/election-event-hooks';
+import ElectionEventDetails from '../ElectionEventDetails/ElectionEventDetails';
 import ObserversGuides from '../ObserversGuides/ObserversGuides';
 
 const routeApi = getRouteApi('/election-event/$tab');
@@ -38,7 +39,7 @@ export default function ElectionEventDashboard(): ReactElement {
         <TabsContent value='event-details'><ElectionEventDetails /></TabsContent>
         <TabsContent value='polling-stations'><PollingStationsDashboard /></TabsContent>
         <TabsContent value='observer-guides'><ObserversGuides /></TabsContent>
-        <TabsContent value='observer-forms'><h1>tbd</h1></TabsContent>
+        <TabsContent value='observer-forms'><FormsDashboard /></TabsContent>
       </Tabs>
     </Layout>
   );

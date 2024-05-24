@@ -70,11 +70,6 @@ export default function DisplayLogicEditor({
     }, [formQuestions, questionIndex]);
 
     function handleHasDisplayLogicChanged(value: boolean) {
-        updateQuestion(questionIndex, {
-            ...question,
-            displayLogic: value ? {} : undefined
-        });
-
         setHasDisplayLogic(value);
     }
 
@@ -133,7 +128,7 @@ export default function DisplayLogicEditor({
     return (
         <div className="mt-3">
             <div className="flex items-center space-x-2">
-                <Switch id="has-displayLogic" onCheckedChange={handleHasDisplayLogicChanged} checked={hasDisplayLogic} />
+                <Switch id="has-displayLogic" onCheckedChange={handleHasDisplayLogicChanged} checked={hasDisplayLogic} disabled={availableParentQuestions.length === 0}/>
                 <Label htmlFor="has-displayLogic">Display logic</Label>
             </div>
 

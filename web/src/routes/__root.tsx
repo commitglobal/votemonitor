@@ -18,7 +18,7 @@ function RootComponent() {
       <div className='flex flex-col min-h-screen pb-20'>
         {isAuthenticated && <Header />}
         <Outlet />
-        <TanStackReactQueryDevelopmentTools />
+        {/* <TanStackReactQueryDevelopmentTools /> */}
       </div>
     </Suspense>
   );

@@ -1,7 +1,7 @@
 import Layout from '@/components/layout/Layout';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Route, observerDetailsQueryOptions } from '@/routes/observers/$observerId';
@@ -64,7 +64,6 @@ export default function ObserverDetails() {
                 <Badge className={'badge-' + observer.status}>{observer.status}</Badge>
               </div>
             </CardContent>
-            <CardFooter className='flex justify-between'></CardFooter>
           </Card>
         </TabsContent>
         <TabsContent value='responses'>Change your password here.</TabsContent>

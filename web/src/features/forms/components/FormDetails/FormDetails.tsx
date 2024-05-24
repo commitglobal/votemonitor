@@ -1,9 +1,9 @@
-import {type FunctionComponent, getTranslationOrDefault } from '@/common/types';
+import { getTranslationOrDefault, type FunctionComponent } from '@/common/types';
 import Layout from '@/components/layout/Layout';
 import PreviewQuestionFactory from '@/components/questionsEditor/preview/PreviewQuestionFactory';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Fieldset } from '@/components/ui/fieldset';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -15,12 +15,13 @@ import { useTranslation } from 'react-i18next';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { mapFormType } from '../../models/form';
 import { formDetailsQueryOptions } from '../../queries';
+import LanguageBadge from '../LanguageBadge/LanguageBadge';
 
 export default function FormDetails(): FunctionComponent {
   const { formId, languageCode } = FormDetailsRoute.useParams();
   const formQuery = useSuspenseQuery(formDetailsQueryOptions(formId));
   const form = formQuery.data;
-  
+
   const navigate = useNavigate();
   const { t } = useTranslation();
   const navigateToEdit = (): void => {
@@ -30,7 +31,7 @@ export default function FormDetails(): FunctionComponent {
   return (
     <Layout
       backButton={
-        <Link to='/forms' preload='intent' search>
+        <Link to='/election-event/$tab' params={{ tab: 'observer-forms' }}>
           <svg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30' fill='none'>
             <path
               fillRule='evenodd'
@@ -51,7 +52,10 @@ export default function FormDetails(): FunctionComponent {
           <Card className='pt-0'>
             <CardHeader className='flex flex-column gap-2'>
               <div className='flex flex-row justify-between items-center'>
-                <CardTitle className='text-xl'>Form details</CardTitle>
+                <CardTitle className='flex  gap-1'>
+                  <span className='text-xl'>Form details</span>
+                  <LanguageBadge languageCode={languageCode} />
+                </CardTitle>
                 <Button onClick={navigateToEdit} variant='ghost-primary'>
                   <PencilIcon className='w-[18px] mr-2 text-purple-900' />
                   <span className='text-base text-purple-900'>Edit</span>
@@ -103,7 +107,6 @@ export default function FormDetails(): FunctionComponent {
                 </div>
               </dl>
             </CardContent>
-            <CardFooter className='flex justify-between'></CardFooter>
           </Card>
         </TabsContent>
         <TabsContent value='questions'>
