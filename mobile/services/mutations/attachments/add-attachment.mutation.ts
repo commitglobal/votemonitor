@@ -38,7 +38,7 @@ export const addAttachmentMutation = (scopeId: string) => {
           pollingStationId: payload.pollingStationId,
           formId: payload.formId,
           questionId: payload.questionId,
-          fileName: `🛜 ${payload.fileMetadata.name}`,
+          fileName: `${payload.fileMetadata.name}`,
           mimeType: payload.fileMetadata.type,
           presignedUrl: payload.fileMetadata.uri, // TODO @radulescuandrew is this working to display the media?
           urlValidityInSeconds: 3600,
