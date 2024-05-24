@@ -1,5 +1,4 @@
 ﻿using Vote.Monitor.Api.Feature.PollingStation.Helpers;
-using Vote.Monitor.Api.Feature.PollingStation.Specifications;
 
 namespace Vote.Monitor.Api.Feature.PollingStation.Update;
 
@@ -12,6 +11,7 @@ public class Endpoint(IRepository<PollingStationAggregate> repository,
         Put("/api/election-rounds/{electionRoundId}/polling-stations/{id}");
         DontAutoTag();
         Options(x => x.WithTags("polling-stations"));
+        Policies(PolicyNames.PlatformAdminsOnly);
     }
 
     public override async Task<Results<NoContent, NotFound<ProblemDetails>, Conflict<ProblemDetails>>> ExecuteAsync(Request req, CancellationToken ct)

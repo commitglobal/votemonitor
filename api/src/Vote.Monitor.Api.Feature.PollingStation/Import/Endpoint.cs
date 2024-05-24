@@ -18,6 +18,7 @@ public class Endpoint(
         DontAutoTag();
         Options(x => x.WithTags("polling-stations"));
         AllowFileUploads();
+        Policies(PolicyNames.PlatformAdminsOnly);
     }
 
     public override async Task<Results<Ok<Response>, NotFound<ProblemDetails>, ProblemDetails>> ExecuteAsync(Request req, CancellationToken ct)
