@@ -563,18 +563,15 @@ const FormQuestionnaire = () => {
           />
 
           {/* notes section */}
-          {notes &&
-            notes?.length !== 0 &&
-            activeElectionRound?.id &&
-            selectedPollingStation?.pollingStationId && (
-              <QuestionNotes // TODO: @luciatugui add loading and error state for Notes and Attachments
-                notes={notes}
-                electionRoundId={activeElectionRound.id}
-                pollingStationId={selectedPollingStation.pollingStationId}
-                formId={formId}
-                questionId={questionId}
-              />
-            )}
+          {notes && activeElectionRound?.id && selectedPollingStation?.pollingStationId && (
+            <QuestionNotes // TODO: @luciatugui add loading and error state for Notes and Attachments
+              notes={notes}
+              electionRoundId={activeElectionRound.id}
+              pollingStationId={selectedPollingStation.pollingStationId}
+              formId={formId}
+              questionId={questionId}
+            />
+          )}
 
           {/* attachments */}
           {activeElectionRound?.id && selectedPollingStation?.pollingStationId && formId && (

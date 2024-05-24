@@ -78,9 +78,10 @@ const EditNoteSheet = (props: EditNoteSheetProps) => {
     // delete note
     if (selectedNote) {
       deleteNote(selectedNote);
-      // close dialog
-      setSelectedNote(null);
     }
+    // close dialog
+    setSelectedNote(null);
+    setDeletingNote(false);
   };
 
   return (
@@ -141,7 +142,6 @@ const EditNoteSheet = (props: EditNoteSheetProps) => {
                     backgroundColor="$red10"
                     flex={1}
                     onPress={() => {
-                      setDeletingNote(false);
                       onDelete();
                     }}
                   >

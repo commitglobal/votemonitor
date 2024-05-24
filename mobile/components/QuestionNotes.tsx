@@ -25,34 +25,39 @@ const QuestionNotes = ({
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
 
   return (
-    <YStack marginTop="$lg" gap="$xxs">
-      <Typography fontWeight="500">{t("notes.heading")}</Typography>
-      {notes.map((note) => {
-        return (
-          <Card
-            key={note.id}
-            flexDirection="row"
-            justifyContent="space-between"
-            padding="$0"
-            paddingLeft="$md"
-            pressStyle={{ opacity: 1 }}
-          >
-            <Typography paddingVertical="$md" maxWidth="85%" numberOfLines={5}>
-              {note.text}
-            </Typography>
-            <YStack
-              onPress={() => {
-                Keyboard.dismiss();
-                setSelectedNote(note);
-              }}
-              pressStyle={{ opacity: 0.5 }}
-              padding="$md"
-            >
-              <Icon icon="pencilAlt" size={24} />
-            </YStack>
-          </Card>
-        );
-      })}
+    <>
+      {notes.length !== 0 && (
+        <YStack marginTop="$lg" gap="$xxs">
+          <Typography fontWeight="500">{t("notes.heading")}</Typography>
+          {notes.map((note) => {
+            return (
+              <Card
+                key={note.id}
+                flexDirection="row"
+                justifyContent="space-between"
+                padding="$0"
+                paddingLeft="$md"
+                pressStyle={{ opacity: 1 }}
+              >
+                <Typography paddingVertical="$md" maxWidth="85%" numberOfLines={5}>
+                  {note.text}
+                </Typography>
+                <YStack
+                  onPress={() => {
+                    Keyboard.dismiss();
+                    setSelectedNote(note);
+                  }}
+                  pressStyle={{ opacity: 0.5 }}
+                  padding="$md"
+                >
+                  <Icon icon="pencilAlt" size={24} />
+                </YStack>
+              </Card>
+            );
+          })}
+        </YStack>
+      )}
+
       {/* this weird condition is a workaround for fixing bottomsheet jump on ios/ sheet not opening on android on back button press */}
       {(selectedNote || Platform.OS === "ios") && (
         <EditNoteSheet
@@ -64,7 +69,7 @@ const QuestionNotes = ({
           formId={formId as string}
         />
       )}
-    </YStack>
+    </>
   );
 };
 
