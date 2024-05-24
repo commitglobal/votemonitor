@@ -34,9 +34,9 @@ function EditTextQuestion({
   function updateInputPlaceholder(inputPlaceholder: string) {
     const updatedInputPlaceholder = question.inputPlaceholder
       ? {
-          ...question.inputPlaceholder,
-          [params.languageCode ? params.languageCode : languageCode]: inputPlaceholder,
-        }
+        ...question.inputPlaceholder,
+        [params.languageCode ? params.languageCode : languageCode]: inputPlaceholder,
+      }
       : newTranslatedString(availableLanguages, languageCode);
     const updatedTextQuestion: TextQuestion = { ...question, inputPlaceholder: updatedInputPlaceholder };
     updateQuestion(questionIdx, updatedTextQuestion);
@@ -76,15 +76,14 @@ function EditTextQuestion({
           </div>
         </div>
       </div>
-      {!!params[languageCode] && (
-        <DisplayLogicEditor
-          formQuestions={formQuestions}
-          questionIndex={questionIdx}
-          question={question}
-          languageCode={languageCode}
-          updateQuestion={updateQuestion}
-        />
-      )}
+      
+      <DisplayLogicEditor
+        formQuestions={formQuestions}
+        questionIndex={questionIdx}
+        question={question}
+        languageCode={languageCode}
+        updateQuestion={updateQuestion}
+      />
     </div>
   );
 }

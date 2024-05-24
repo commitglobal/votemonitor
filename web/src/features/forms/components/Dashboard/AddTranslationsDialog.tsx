@@ -37,7 +37,7 @@ function AddTranslationsDialog({
         mutationFn: ({ formId, languageCodes }: { formId: string; languageCodes: string[]; }) => {
             const electionRoundId: string | null = localStorage.getItem('electionRoundId');
 
-            return authApi.put<void>(`/api/election-rounds/${electionRoundId}/forms/${formId}:addTranslations`, {
+            return authApi.put<void>(`/election-rounds/${electionRoundId}/forms/${formId}:addTranslations`, {
                 languageCodes
             });
         },

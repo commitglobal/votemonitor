@@ -1,5 +1,5 @@
 import Layout from '@/components/layout/Layout';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { useLoaderData } from '@tanstack/react-router';
 import { format } from 'date-fns';
@@ -54,7 +54,6 @@ export default function PushMessageDetails(): FunctionComponent {
             </div>
           </div>
         </CardContent>
-        <CardFooter className='flex justify-between'></CardFooter>
       </Card>
     </Layout>
   );

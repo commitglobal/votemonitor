@@ -11,11 +11,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
 import { queryClient } from '@/main';
+import { Route as EditFormRoute } from '@/routes/forms_.$formId.edit-translation.$languageCode';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
-import { useLoaderData, useNavigate, useParams } from '@tanstack/react-router';
-import { Route as EditFormRoute } from '@/routes/forms_.$formId.edit-translation.$languageCode';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
@@ -23,15 +22,16 @@ import { z } from 'zod';
 import { FormFull } from '../../models/form';
 import { formDetailsQueryOptions, formsKeys } from '../../queries';
 import EditFormFooter from '../EditForm/EditFormFooter';
+import LanguageBadge from '../LanguageBadge/LanguageBadge';
 
 export default function EditFormTranslation() {
-  const navigate = useNavigate();
   const { t } = useTranslation();
   const { languageCode, formId } = EditFormRoute.useParams();
   const formQuery = useSuspenseQuery(formDetailsQueryOptions(formId));
   const formData = formQuery.data;
   const [localQuestions, setLocalQuestions] = useState(formData.questions);
   const { toast } = useToast();
+  const formRef = useRef(null);
 
   const editFormFormSchema = z.object({
     name: z.string().nonempty(),
@@ -82,10 +82,19 @@ export default function EditFormTranslation() {
     },
   });
 
+  const submit = () => {
+    if (formRef.current) {
+      // @ts-ignore
+      formRef.current.dispatchEvent(
+        new Event('submit', { cancelable: true, bubbles: true })
+      )
+    }
+  }
+
   return (
     <Layout title={`${formData.code} - ${formData.name[formData.defaultLanguage]}`}>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
+        <form onSubmit={form.handleSubmit(onSubmit)} ref={formRef}>
           <Tabs defaultValue='form-details'>
             <TabsList className='grid grid-cols-2 bg-gray-200 w-[400px] mb-4'>
               <TabsTrigger value='form-details'>Form details</TabsTrigger>
@@ -93,11 +102,12 @@ export default function EditFormTranslation() {
             </TabsList>
             <TabsContent value='form-details'>
               <Card className='pt-0'>
-                <p>asd</p>
-                {languageCode}
                 <CardHeader className='flex flex-column gap-2'>
                   <div className='flex flex-row justify-between items-center'>
-                    <CardTitle className='text-xl'>Form details</CardTitle>
+                    <CardTitle className='flex  gap-1'>
+                      <span className='text-xl'>Form details</span>
+                      <LanguageBadge languageCode={languageCode} />
+                    </CardTitle>
                   </div>
                   <Separator />
                 </CardHeader>
@@ -150,7 +160,7 @@ export default function EditFormTranslation() {
               </Card>
             </TabsContent>
           </Tabs>
-          <EditFormFooter />
+          <EditFormFooter onSaveProgress={submit} onSaveAndExit={submit} />
         </form>
       </Form>
     </Layout>

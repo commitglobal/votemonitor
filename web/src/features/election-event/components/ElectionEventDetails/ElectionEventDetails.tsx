@@ -1,5 +1,5 @@
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 
@@ -49,7 +49,6 @@ export default function ElectionEventDetails() {
     </Badge>
         </div>
       </CardContent>
-      <CardFooter className='flex justify-between'></CardFooter>
     </Card>
   );
 }
