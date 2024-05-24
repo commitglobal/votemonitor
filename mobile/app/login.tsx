@@ -109,15 +109,21 @@ const Login = () => {
       >
         <Header />
 
-        <YStack paddingHorizontal="$md" gap="$md">
+        <YStack padding="$md" gap="$md">
+          <LoginForm control={control} errors={errors} authError={authError} />
+
           <XStack marginTop="$md" justifyContent="flex-start" gap="$xxs">
             <Icon icon="infoCircle" size={18} color="white" style={{ marginTop: 2 }} />
-            <YStack gap="$xs">
+
+            {/* info text */}
+            <YStack gap="$lg" maxWidth="90%">
               <Typography>{t("disclaimer.paragraph1")}</Typography>
-              <Typography>{t("disclaimer.paragraph2")}</Typography>
+              <Typography>
+                {t("disclaimer.paragraph2")}
+                <Typography color="$purple5"> {t("disclaimer.email")}</Typography>.
+              </Typography>
             </YStack>
           </XStack>
-          <LoginForm control={control} errors={errors} authError={authError} />
         </YStack>
         <Card width="100%" paddingBottom={16 + insets.bottom} marginTop="auto">
           <Button onPress={handleSubmit(onLogin)} disabled={isLoading}>

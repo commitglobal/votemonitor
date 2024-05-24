@@ -42,8 +42,9 @@
   },
   "login": {
     "disclaimer": {
-      "paragraph1": "Dacă nu sunteți acreditat de către o organizație ca observator independent, nu puteți utiliza aplicația Vote Monitor",
-      "paragraph2": "Vă rugăm să consultați Votați corect pentru a afla ce pași trebuie să urmați pentru a deveni observator electoral."
+      "paragraph1": "Vă rugăm să rețineți că, dacă nu sunteți acreditat ca observator independent de către o organizație care monitorizează procesele electorale din țara dvs., nu puteți utiliza aplicația Vote Monitor.",
+      "paragraph2": "Vă rugăm să consultați astfel de organizații pentru a afla ce pași trebuie să luați pentru a deveni observator electoral sau contactați-ne pentru informații suplimentare la adresa",
+      "email": "info@commitglobal.org"
     },
     "heading": "Log in",
     "paragraph": "Vă rugăm să utilizați adresa de e-mail cu care v-ați înregistrat ca observator independent:",
