@@ -117,6 +117,7 @@ const More = () => {
           }`}
           icon="aboutVM"
           chevronRight={true}
+          onClick={() => router.push("/about-votemonitor")}
         ></MenuItem>
         <MenuItem label={t("support")} icon="contactNGO"></MenuItem>
         <MenuItem

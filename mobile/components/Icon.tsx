@@ -47,6 +47,7 @@ import OnboardingLanguage from "../assets/icons/onboarding/onboarding-language.s
 import MonitorPollingStations from "../assets/icons/onboarding/monitor-p-s.svg";
 import ObservationForms from "../assets/icons/onboarding/forms.svg";
 import NotesOrMedia from "../assets/icons/onboarding/notes-media.svg";
+import CommitGlobal from "../assets/icons/commit-global.svg";
 
 import { styled, View, ViewProps } from "tamagui";
 import { StyleProp, ViewStyle } from "react-native";
@@ -138,6 +139,7 @@ export const defaultIcon = React.forwardRef(
       monitorPollingStations: <MonitorPollingStations width={202} height={188} />,
       observationForms: <ObservationForms width={202} height={188} />,
       notesOrMedia: <NotesOrMedia width={202} height={188} />,
+      commitGlobal: <CommitGlobal fill={color} />,
     };
 
     return (
