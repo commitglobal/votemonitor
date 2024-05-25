@@ -252,6 +252,7 @@ paket-files/
 
 # JetBrains Rider
 .idea/
+*.iml
 *.sln.iml
 *.sqlite
 *.sqlite-shm
