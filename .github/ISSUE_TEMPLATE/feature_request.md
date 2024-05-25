@@ -1,7 +1,7 @@
 ---
 name: Feature request
 about: Suggest an idea for this project
-
+labels: 'enhancement'
 ---
 
 <!-- ⚠️⚠️ Do Not Delete This! feature_request_template ⚠️⚠️ -->
