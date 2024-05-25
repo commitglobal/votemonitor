@@ -14,6 +14,7 @@ export function QueryParamsDataTable<TData extends RowData, TValue>({
   getRowClassName,
   onDataFetchingSucceed,
   onRowClick,
+  getCellProps
 }: DataTableProps<TData, TValue>): ReactElement {
   const queryParams: DataTableParameters = useSearch({
     strict: false,
@@ -75,6 +76,7 @@ export function QueryParamsDataTable<TData extends RowData, TValue>({
         getRowClassName={getRowClassName}
         onDataFetchingSucceed={onDataFetchingSucceed}
         onRowClick={onRowClick}
+        getCellProps={getCellProps}
       />
     </div>
   );
