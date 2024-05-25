@@ -6,7 +6,8 @@ public class SerializerService : ISerializerService
 {
     private readonly JsonSerializerOptions _serializerOptions = new(JsonSerializerDefaults.Web)
     {
-        WriteIndented = true
+        WriteIndented = true,
+        MaxDepth = 3
     };
 
     public string Serialize<T>(T obj) => JsonSerializer.Serialize(obj, _serializerOptions);

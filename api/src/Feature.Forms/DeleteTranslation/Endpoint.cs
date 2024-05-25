@@ -17,6 +17,8 @@ public class Endpoint(IRepository<MonitoringNgo> monitoringNgoRepository,
             x.Description = "Removes supported language from a form";
             x.Description = "Translations for removed language will be removed as well.";
         });
+        DontAutoTag();
+        Options(x => x.WithTags("forms"));
     }
 
     public override async Task<Results<NoContent, NotFound, ProblemDetails>> ExecuteAsync(Request req, CancellationToken ct)

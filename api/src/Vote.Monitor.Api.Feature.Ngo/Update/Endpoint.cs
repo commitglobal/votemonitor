@@ -18,7 +18,7 @@ public class Endpoint(IRepository<NgoAggregate> repository) : Endpoint<Request, 
             return TypedResults.NotFound();
         }
 
-        var hasNgoWithSameName = await repository.AnyAsync(new GetNgoByNameSpecification(req.Name), ct);
+        var hasNgoWithSameName = await repository.AnyAsync(new GetNgoWithSameNameSpecification(req.Id, req.Name), ct);
 
         if (hasNgoWithSameName)
         {
