@@ -310,10 +310,10 @@ function MonitoringObserversList() {
               <DropdownMenuContent className='w-56'>
                 {tags?.map((tag) => (
                   <DropdownMenuCheckboxItem
-                    checked={tagsFilter.includes(tag.text)}
-                    onCheckedChange={() => toggleTagsFilter(tag.text)}
-                    key={tag.id}>
-                    {tag.text}
+                    checked={tagsFilter.includes(tag)}
+                    onCheckedChange={() => toggleTagsFilter(tag)}
+                    key={tag}>
+                    {tag}
                   </DropdownMenuCheckboxItem>
                 ))}
               </DropdownMenuContent>
