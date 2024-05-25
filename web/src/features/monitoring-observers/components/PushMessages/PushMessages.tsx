@@ -39,6 +39,21 @@ function PushMessages() {
       ),
     },
     {
+      header: ({ column }) => <DataTableColumnHeader title='Targeted Observers' column={column} />,
+      accessorKey: 'numberOfTargetedObservers',
+      enableSorting: false,
+      enableGlobalFilter: false,
+      cell: ({
+        row: {
+          original: { numberOfTargetedObservers },
+        },
+      }) => (
+        <p>
+          {numberOfTargetedObservers}
+        </p>
+      ),
+    },
+    {
       header: ({ column }) => <DataTableColumnHeader title='Title' column={column} />,
       accessorKey: 'title',
       enableSorting: false,

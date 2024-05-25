@@ -21,10 +21,4 @@
     <ProjectReference Include="..\..\src\Vote.Monitor.Api\Vote.Monitor.Api.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="PollingStation\test-data.csv">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
 </Project>

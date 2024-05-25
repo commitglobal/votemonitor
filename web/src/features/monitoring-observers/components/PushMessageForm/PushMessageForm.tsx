@@ -202,10 +202,10 @@ function PushMessageForm() {
                   <DropdownMenuContent>
                     {tags?.map((tag) => (
                       <DropdownMenuCheckboxItem
-                        checked={search.tagsFilter?.includes(tag.text)}
-                        onCheckedChange={onTagsFilterChange(tag.text)}
-                        key={tag.id}>
-                        {tag.text}
+                        checked={search.tagsFilter?.includes(tag)}
+                        onCheckedChange={onTagsFilterChange(tag)}
+                        key={tag}>
+                        {tag}
                       </DropdownMenuCheckboxItem>
                     ))}
                   </DropdownMenuContent>

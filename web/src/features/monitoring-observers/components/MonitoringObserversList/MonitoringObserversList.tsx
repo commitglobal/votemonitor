@@ -20,7 +20,7 @@ import { useDialog } from '@/components/ui/use-dialog';
 import { Cog8ToothIcon, EllipsisVerticalIcon, FunnelIcon } from '@heroicons/react/24/outline';
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
-import { ColumnDef } from '@tanstack/react-table';
+import { CellContext, ColumnDef } from '@tanstack/react-table';
 import { X } from 'lucide-react';
 import { useCallback, useState } from 'react';
 
@@ -30,6 +30,7 @@ import ImportMonitoringObserversDialog from '../MonitoringObserversList/ImportMo
 import ImportMonitoringObserversErrorsDialog from '../MonitoringObserversList/ImportMonitoringObserversErrorsDialog';
 import { format } from 'date-fns';
 import { DateTimeFormat } from '@/common/formats';
+import { TableCellProps } from '@/components/ui/DataTable/DataTable';
 
 
 type ListMonitoringObserverResponse = PageResponse<MonitoringObserver>;
@@ -226,7 +227,18 @@ function MonitoringObserversList() {
   
     window.URL.revokeObjectURL(url);
   };
-  
+
+  // Func to provide props to table cell
+  const getCellProps = (context: CellContext<MonitoringObserver, unknown>): TableCellProps | void => {
+    if (context.column.id === 'tags') {
+      console.log(context.column)
+
+      return {
+        className: 'flex-wrap',
+      }
+    }
+  }
+
   return (
     <Card className='w-full pt-0'>
       <CardHeader className='flex flex-column gap-2'>
@@ -310,10 +322,10 @@ function MonitoringObserversList() {
               <DropdownMenuContent className='w-56'>
                 {tags?.map((tag) => (
                   <DropdownMenuCheckboxItem
-                    checked={tagsFilter.includes(tag.text)}
-                    onCheckedChange={() => toggleTagsFilter(tag.text)}
-                    key={tag.id}>
-                    {tag.text}
+                    checked={tagsFilter.includes(tag)}
+                    onCheckedChange={() => toggleTagsFilter(tag)}
+                    key={tag}>
+                    {tag}
                   </DropdownMenuCheckboxItem>
                 ))}
               </DropdownMenuContent>
@@ -353,6 +365,7 @@ function MonitoringObserversList() {
           columns={monitoringObserverColDefs}
           useQuery={useMonitoringObservers}
           onRowClick={rowClickHandler}
+          getCellProps={getCellProps}
         />
       </CardContent>
     </Card>

@@ -120,6 +120,16 @@ export default function FormsDashboard(): ReactElement {
                 <DropdownMenuItem onClick={() => handleEditTranslations(row.original)}>Add translations</DropdownMenuItem>
                 : null
             }
+            {
+              row.depth === 0 && row.original.status === FormStatus.Published ?
+                <DropdownMenuItem onClick={() => hangleDraftForm(row.original)}>Draft</DropdownMenuItem>
+                : null
+            }
+            {
+              row.depth === 0 && row.original.status === FormStatus.Drafted ?
+                <DropdownMenuItem onClick={() => handlePublishForm(row.original)}>Publish</DropdownMenuItem>
+                : null
+            }
             {row.depth === 0 ?
               <DropdownMenuItem className='text-red-600' onClick={() => handleDeleteForm(row.original.id)}>
                 Delete form
@@ -149,6 +159,13 @@ export default function FormsDashboard(): ReactElement {
   const handleEditTranslations = (form: FormBase) => {
     setCurrentForm(form);
     addTranslationsDialog.trigger();
+  }
+  const hangleDraftForm = (form: FormBase) => {
+    draftFormMutation.mutate(form.id);
+  }
+
+  const handlePublishForm = (form: FormBase) => {
+    publishFormMutation.mutate(form.id);
   }
 
   const handleDeleteTranslation = (formId: string, translationToDelete: string) => {
@@ -183,6 +200,78 @@ export default function FormsDashboard(): ReactElement {
 
       queryClient.invalidateQueries({ queryKey: formsKeys.all });
     },
+  });
+
+  const publishFormMutation = useMutation({
+    mutationKey: formsKeys.all,
+    mutationFn: (formId: string) => {
+      const electionRoundId: string | null = localStorage.getItem('electionRoundId');
+
+      return authApi.post<void>(`/election-rounds/${electionRoundId}/forms/${formId}:publish`);
+    },
+
+    onSuccess: () => {
+      toast({
+        title: 'Success',
+        description: 'Form published',
+      });
+
+      queryClient.invalidateQueries({ queryKey: formsKeys.all });
+    },
+
+    onError: (error)=>{
+      debugger;
+      // @ts-ignore
+      if(error.response.status === 400){
+        toast({
+          title: 'Error publishing form',
+          description: 'You are missing translations. Please translate all fields and try again',
+          variant: 'destructive'
+        });
+
+       return  
+      }
+      toast({
+        title: 'Error publishing form',
+        description: 'Please contact tech support',
+        variant: 'destructive'
+      });
+    }
+  });
+
+  const draftFormMutation = useMutation({
+    mutationKey: formsKeys.all,
+    mutationFn: (formId: string) => {
+      const electionRoundId: string | null = localStorage.getItem('electionRoundId');
+
+      return authApi.post<void>(`/election-rounds/${electionRoundId}/forms/${formId}:draft`);
+    },
+
+    onSuccess: () => {
+      toast({
+        title: 'Success',
+        description: 'Form drafted',
+      });
+
+      queryClient.invalidateQueries({ queryKey: formsKeys.all });
+    },
+    onError: (error)=>{
+      // @ts-ignore
+      if(error.response.status === 409){
+        toast({
+          title: 'Error drafting form',
+          description: 'Cannot draft a form with answers submitted',
+          variant: 'destructive'
+        });
+
+       return  
+      }
+      toast({
+        title: 'Error publishing form',
+        description: 'Please contact tech support',
+        variant: 'destructive'
+      });
+    }
   });
 
   const deleteFormMutation = useMutation({

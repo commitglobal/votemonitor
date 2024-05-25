@@ -37,7 +37,7 @@ public class UpdateEndpointTests
             .Returns(ngo);
 
         repository
-            .AnyAsync(Arg.Any<GetNgoByNameSpecification>())
+            .AnyAsync(Arg.Any<GetNgoWithSameNameSpecification>())
             .Returns(true);
 
         var endpoint = Factory.Create<Endpoint>(repository);

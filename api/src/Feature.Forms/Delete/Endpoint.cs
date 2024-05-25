@@ -1,13 +1,15 @@
 ﻿using Authorization.Policies.Requirements;
 using Feature.Forms.Specifications;
 using Microsoft.AspNetCore.Authorization;
+using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
 
 namespace Feature.Forms.Delete;
 
 public class Endpoint(IAuthorizationService authorizationService,
     IRepository<MonitoringNgo> monitoringNgoRepository,
-    IRepository<FormAggregate> formsRepository) : Endpoint<Request, Results<NoContent, NotFound, ProblemDetails>>
+    IRepository<FormAggregate> formsRepository,
+    IRepository<FormSubmission> formSubmissionsRepository) : Endpoint<Request, Results<NoContent, NotFound, Conflict>>
 {
     public override void Configure()
     {
@@ -16,7 +18,7 @@ public class Endpoint(IAuthorizationService authorizationService,
         Options(x => x.WithTags("forms"));
     }
 
-    public override async Task<Results<NoContent, NotFound, ProblemDetails>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<Results<NoContent, NotFound, Conflict>> ExecuteAsync(Request req, CancellationToken ct)
     {
         var requirement = new MonitoringNgoAdminRequirement(req.ElectionRoundId);
         var authorizationResult = await authorizationService.AuthorizeAsync(User, requirement);
@@ -31,6 +33,12 @@ public class Endpoint(IAuthorizationService authorizationService,
         if (form is null)
         {
             return TypedResults.NotFound();
+        }
+        var hasSubmittedAnswers = await formSubmissionsRepository
+            .AnyAsync(new GetSubmissionsForFormSpecification(req.ElectionRoundId, req.NgoId, req.Id), ct);
+        if (hasSubmittedAnswers)
+        {
+            return TypedResults.Conflict();
         }
 
         await formsRepository.DeleteAsync(form, ct);

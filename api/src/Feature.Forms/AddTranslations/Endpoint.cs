@@ -14,6 +14,8 @@ public class Endpoint(IRepository<FormAggregate> repository) : Endpoint<Request,
             x.Description = "For each new language a default value will be set in all form template. No duplicated translations will be added.";
         });
         Policies(PolicyNames.NgoAdminsOnly);
+        DontAutoTag();
+        Options(x => x.WithTags("forms"));
     }
 
     public override async Task<Results<NoContent, NotFound, ProblemDetails>> ExecuteAsync(Request req, CancellationToken ct)

@@ -31,6 +31,7 @@ import { Route as MonitoringObserversTabImport } from './routes/monitoring-obser
 import { Route as FormsFormIdImport } from './routes/forms/$formId'
 import { Route as ElectionRoundsElectionRoundIdImport } from './routes/election-rounds/$electionRoundId'
 import { Route as ElectionEventTabImport } from './routes/election-event/$tab'
+import { Route as AcceptInviteSuccessImport } from './routes/accept-invite/success'
 import { Route as ResponsesQuickReportsQuickReportIdImport } from './routes/responses/quick-reports/$quickReportId'
 import { Route as ResponsesFormIdAggregatedImport } from './routes/responses/$formId.aggregated'
 import { Route as ObserversObserverIdEditImport } from './routes/observers_.$observerId.edit'
@@ -148,6 +149,11 @@ const ElectionEventTabRoute = ElectionEventTabImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const AcceptInviteSuccessRoute = AcceptInviteSuccessImport.update({
+  path: '/accept-invite/success',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const ResponsesQuickReportsQuickReportIdRoute =
   ResponsesQuickReportsQuickReportIdImport.update({
     path: '/responses/quick-reports/$quickReportId',
@@ -222,6 +228,10 @@ declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
     '/': {
       preLoaderRoute: typeof IndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/accept-invite/success': {
+      preLoaderRoute: typeof AcceptInviteSuccessImport
       parentRoute: typeof rootRoute
     }
     '/election-event/$tab': {
@@ -355,6 +365,7 @@ declare module '@tanstack/react-router' {
 
 export const routeTree = rootRoute.addChildren([
   IndexRoute,
+  AcceptInviteSuccessRoute,
   ElectionEventTabRoute,
   ElectionRoundsElectionRoundIdRoute,
   FormsFormIdRoute,

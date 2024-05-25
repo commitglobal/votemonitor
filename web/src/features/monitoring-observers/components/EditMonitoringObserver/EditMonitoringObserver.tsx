@@ -18,6 +18,8 @@ import { z } from 'zod';
 import { UpdateMonitoringObserverRequest } from '../../models/monitoring-observer';
 import { Route } from '@/routes/monitoring-observers/edit.$monitoringObserverId';
 import { monitoringObserverDetailsQueryOptions } from '@/common/queryOptions';
+import { useMonitoringObserversTags } from '@/hooks/tags-queries';
+import TagsSelectFormField from '@/components/ui/tag-selector';
 
 export default function EditObserver() {
   const navigate = useNavigate();
@@ -28,7 +30,9 @@ export default function EditObserver() {
   const monitoringObserverQuery = useSuspenseQuery(monitoringObserverDetailsQueryOptions(monitoringObserverId));
   const monitoringObserver = monitoringObserverQuery.data;
 
-  const observerTags = monitoringObserver.tags.map((tag) => ({ id: uuid(), text: tag }));
+  const { data: availableTags } = useMonitoringObserversTags();
+  console.log(monitoringObserver.tags);
+
   const { toast } = useToast();
 
   const editObserverFormSchema = z.object({
@@ -43,7 +47,7 @@ export default function EditObserver() {
     resolver: zodResolver(editObserverFormSchema),
     defaultValues: {
       status: monitoringObserver.status,
-      tags: observerTags,
+      tags: monitoringObserver.tags,
       firstName: monitoringObserver.firstName,
       lastName: monitoringObserver.lastName,
       phoneNumber: monitoringObserver.phoneNumber,
@@ -52,7 +56,7 @@ export default function EditObserver() {
 
   function onSubmit(values: z.infer<typeof editObserverFormSchema>) {
     const newObj: UpdateMonitoringObserverRequest = {
-      tags: values.tags.map((tag: Tag) => tag.text),
+      tags: values.tags,
       status: values.status,
       firstName: values.firstName,
       lastName: values.lastName,
@@ -84,10 +88,6 @@ export default function EditObserver() {
       navigate({ to: '/monitoring-observers/view/$monitoringObserverId/$tab', params: { monitoringObserverId: monitoringObserver.id, tab: 'details' } })
     },
   });
-
-  const [tags, setTags] = useState<Tag[]>(observerTags);
-
-  const { setValue } = form;
 
   return (
     <Layout title={`Edit ${monitoringObserver.firstName} ${monitoringObserver.lastName}`}>
@@ -151,15 +151,12 @@ export default function EditObserver() {
                   <FormItem>
                     <FormLabel className='text-left'>Tags</FormLabel>
                     <FormControl>
-                      <TagInput
-                        {...field}
-                        placeholder='Add user tags'
-                        tags={tags}
-                        className='sm:min-w-[450px]'
-                        setTags={(newTags) => {
-                          setTags(newTags);
-                          setValue('tags', newTags as [Tag, ...Tag[]]);
-                        }}
+                      <TagsSelectFormField
+                        options={availableTags?.filter(tag => !field.value.includes(tag)) ?? []}
+                        defaultValue={field.value}
+                        onValueChange={field.onChange}
+                        placeholder="Select options"
+                        variant="inverted"
                       />
                     </FormControl>
                     <FormMessage />

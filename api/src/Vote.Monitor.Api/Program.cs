@@ -76,7 +76,8 @@ builder.Services.AddLogging(logging =>
             .Enrich.FromLogContext()
             .Enrich.WithMachineName()
             .Enrich.WithEnvironmentUserName()
-            .WriteToSentry(builder.Configuration);
+            .WriteToSentry(builder.Configuration)
+            .Destructure.ToMaximumDepth(3);
 
         var logger = Log.Logger = loggerConfiguration.CreateLogger();
 
