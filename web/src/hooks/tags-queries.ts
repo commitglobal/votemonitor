@@ -3,7 +3,7 @@ import { Tag } from "@/components/tag/tag-input";
 import { UseQueryResult, useQuery } from "@tanstack/react-query";
 import { v4 as uuid } from 'uuid';
 
-export function useMonitoringObserversTags(): UseQueryResult<Tag[], Error> {
+export function useMonitoringObserversTags(): UseQueryResult<string[], Error> {
    return useQuery({
         queryKey: ['tags'],
         queryFn: async () => {
@@ -16,7 +16,7 @@ export function useMonitoringObserversTags(): UseQueryResult<Tag[], Error> {
             if (response.status !== 200) {
                 throw new Error('Failed to fetch monitoring observers tags');
             }
-            return response.data?.tags.map((tag) => ({ id: uuid(), text: tag }));
+            return response.data?.tags ?? [];
         },
     });
 }

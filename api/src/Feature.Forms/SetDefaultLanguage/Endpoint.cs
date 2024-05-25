@@ -14,6 +14,8 @@ public class Endpoint(IAuthorizationService authorizationService,
     {
         Post("/api/election-rounds/{electionRoundId}/forms/{id}:setDefaultLanguage");
         Policies(PolicyNames.NgoAdminsOnly);
+        DontAutoTag();
+        Options(x => x.WithTags("forms"));
     }
 
     public override async Task<Results<NoContent, NotFound, ProblemDetails>> ExecuteAsync(Request req, CancellationToken ct)

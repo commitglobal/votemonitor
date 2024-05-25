@@ -9,6 +9,7 @@ import {
   type VisibilityState,
   getExpandedRowModel,
   type Row,
+  CellContext,
 } from '@tanstack/react-table';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useEffect, useState, type ReactElement } from 'react';
@@ -20,6 +21,17 @@ import { Skeleton } from '../skeleton';
 export interface RowData {
   id: string;
   defaultLanguage?: string;
+}
+
+declare module '@tanstack/react-table' {
+  interface ColumnMeta<TData, TValue> {
+      // Your additional properties here
+      getCellContext: (context: CellContext<TData, TValue>) => TableCellProps | void
+  }
+}
+
+export interface TableCellProps{
+  className: string;
 }
 
 export interface DataTableProps<TData extends RowData, TValue, TQueryParams = object> {
@@ -90,6 +102,8 @@ export interface DataTableProps<TData extends RowData, TValue, TQueryParams = ob
   onDataFetchingSucceed?: (pageSize: number, currentPage: number, totalCount: number) => void;
 
   onRowClick?: (id: string, defaultLanguage?: string) => void;
+
+  getCellProps?:  (context: CellContext<TData, unknown>)=> TableCellProps | void
 }
 
 export function DataTable<TData extends RowData, TValue, TQueryParams = object>({
@@ -105,6 +119,7 @@ export function DataTable<TData extends RowData, TValue, TQueryParams = object>(
   getRowClassName,
   onDataFetchingSucceed,
   onRowClick,
+  getCellProps
 }: DataTableProps<TData, TValue, TQueryParams>): ReactElement {
   let [pagination, setPagination]: [PaginationState, (p: PaginationState) => void] = useState({
     pageIndex: 0,
@@ -201,7 +216,7 @@ export function DataTable<TData extends RowData, TValue, TQueryParams = object>(
                   }}
                   style={{ cursor: onRowClick ? 'pointer' : undefined }}>
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className='truncate' style={{ maxWidth: cell.column.getSize() }}>
+                    <TableCell key={cell.id} className='truncate' style={{ maxWidth: cell.column.getSize() }} {...(getCellProps ? getCellProps(cell.getContext()) : {})}>
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   ))}
