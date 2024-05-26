@@ -10,7 +10,12 @@ import { MediaFilesCell } from '../components/MediaFilesCell/MediaFilesCell';
 
 import { DateTimeFormat } from '@/common/formats';
 import type { ColumnDef } from '@tanstack/react-table';
-import { SubmissionFollowUpStatus, type FormSubmissionByEntry, type FormSubmissionByForm, type FormSubmissionByObserver } from '../models/form-submission';
+import {
+  SubmissionFollowUpStatus,
+  type FormSubmissionByEntry,
+  type FormSubmissionByForm,
+  type FormSubmissionByObserver,
+} from '../models/form-submission';
 import { QuickReportFollowUpStatus, type QuickReport } from '../models/quick-report';
 import type { QuestionExtraData } from '../types';
 import type { RowData } from '@/components/ui/DataTable/DataTable';
@@ -84,7 +89,7 @@ export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry &
     cell: ({ row }) => <div>{row.original.observerName}</div>,
   },
   {
-    header: ({ column }) => <DataTableColumnHeader title='Tags' column={column} />,
+    header: ({ column }) => <DataTableColumnHeader title='Station tags' column={column} />,
     accessorKey: 'tags',
     enableSorting: true,
     enableGlobalFilter: true,
@@ -95,7 +100,7 @@ export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry &
     }) => <TableTagList tags={tags} />,
   },
   {
-    header: ({ column }) => <DataTableColumnHeader title='Responses' column={column} />,
+    header: ({ column }) => <DataTableColumnHeader title='Questions answered' column={column} />,
     accessorKey: 'numberOfQuestionsAnswered',
     enableSorting: true,
     enableGlobalFilter: true,
@@ -133,8 +138,8 @@ export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry &
         {row.original.followUpStatus === SubmissionFollowUpStatus.NotApplicable
           ? 'Not Applicable'
           : row.original.followUpStatus === SubmissionFollowUpStatus.NeedsFollowUp
-            ? 'Needs follow-up'
-            : 'Resolved'}
+          ? 'Needs follow-up'
+          : 'Resolved'}
       </Badge>
     ),
   },
@@ -412,8 +417,8 @@ export const quickReportsColumnDefs: ColumnDef<QuickReport>[] = [
         {row.original.followUpStatus === QuickReportFollowUpStatus.NotApplicable
           ? 'Not Applicable'
           : row.original.followUpStatus === QuickReportFollowUpStatus.NeedsFollowUp
-            ? 'Needs follow-up'
-            : 'Resolved'}
+          ? 'Needs follow-up'
+          : 'Resolved'}
       </Badge>
     ),
   },
