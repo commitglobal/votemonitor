@@ -11,7 +11,6 @@ const coerceTabSlug = (slug: string) => {
   return 'event-details'
 };
 
-
 export const Route = createFileRoute('/election-event/$tab')({
   component: ElectionEventDashboard,
   beforeLoad: ({ params: { tab } }) => {
