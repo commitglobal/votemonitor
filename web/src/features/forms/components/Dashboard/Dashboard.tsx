@@ -220,7 +220,6 @@ export default function FormsDashboard(): ReactElement {
     },
 
     onError: (error)=>{
-      debugger;
       // @ts-ignore
       if(error.response.status === 400){
         toast({

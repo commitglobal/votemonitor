@@ -31,7 +31,6 @@ export default function EditObserver() {
   const monitoringObserver = monitoringObserverQuery.data;
 
   const { data: availableTags } = useMonitoringObserversTags();
-  console.log(monitoringObserver.tags);
 
   const { toast } = useToast();
 
@@ -155,8 +154,7 @@ export default function EditObserver() {
                         options={availableTags?.filter(tag => !field.value.includes(tag)) ?? []}
                         defaultValue={field.value}
                         onValueChange={field.onChange}
-                        placeholder="Select options"
-                        variant="inverted"
+                        placeholder="Observer tags"
                       />
                     </FormControl>
                     <FormMessage />

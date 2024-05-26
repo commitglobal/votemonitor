@@ -1,7 +1,6 @@
 import { cva, type VariantProps } from "class-variance-authority";
 import {
   ChevronDown,
-  XCircle,
   XIcon
 } from "lucide-react";
 import * as React from "react";
@@ -25,29 +24,9 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { cn, getTagColor } from "@/lib/utils";
 
-const tagsSelectVariants = cva(
-  "m-1 text-slate-600",
-  {
-    variants: {
-      variant: {
-        default:
-          "border-slate-600/10 drop-shadow-md text-slate-600 bg-card hover:bg-card/80",
-        secondary:
-          "border-foreground/10 bg-secondary text-secondary-foreground hover:bg-secondary/80",
-        destructive:
-          "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
-        inverted: "inverted",
-      },
-    },
-    defaultVariants: {
-      variant: "default",
-    },
-  }
-);
 
 interface TagsSelectFormFieldProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-  VariantProps<typeof tagsSelectVariants> {
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   asChild?: boolean;
   options: string[];
   defaultValue?: string[];
@@ -64,7 +43,6 @@ const TagsSelectFormField = React.forwardRef<
   (
     {
       className,
-      variant,
       asChild = false,
       options,
       defaultValue,
@@ -122,13 +100,11 @@ const TagsSelectFormField = React.forwardRef<
                     return (
                       <Badge
                         key={value}
-                        className={cn(
-                          tagsSelectVariants({ variant, className })
-                        )}
+                        className="m-1 text-slate-600"
                         style={{ backgroundColor: getTagColor(value) }} 
                       >
                         {value}
-                        <XCircle
+                        <XIcon
                           className="ml-2 h-4 w-4 cursor-pointer"
                           onClick={(event) => {
                             event.stopPropagation();
@@ -182,9 +158,6 @@ const TagsSelectFormField = React.forwardRef<
               <CommandEmpty>Click here to create this tag.</CommandEmpty>
               <CommandGroup>
                 {options.map((option) => {
-                  const isSelected = selectedValuesSet.current.has(
-                    option
-                  );
                   return (
                     <CommandItem
                       key={option}
