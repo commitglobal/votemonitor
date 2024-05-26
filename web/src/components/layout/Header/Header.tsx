@@ -10,15 +10,13 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Skeleton } from '@/components/ui/skeleton';
 import { AuthContext } from '@/context/auth.context';
-import { formsKeys } from '@/features/forms/queries';
-import { formSubmissionsAggregtedKeys, formSubmissionsByEntryKeys, formSubmissionsByObserverKeys } from '@/features/responses/hooks/form-submissions-queries';
-import { quickReportKeys } from '@/features/responses/hooks/quick-reports';
+import { electionRoundKeys } from '@/features/election-round/queries';
 import { queryClient } from '@/main';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { Bars3Icon, ChevronDownIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { UserCircleIcon } from '@heroicons/react/24/solid';
 import { useQuery } from '@tanstack/react-query';
-import { Link, useNavigate } from '@tanstack/react-router';
+import { Link, useNavigate, useRouter } from '@tanstack/react-router';
 import clsx from 'clsx';
 import { Fragment, useContext, useState } from 'react';
 import type { ElectionRoundMonitoring, FunctionComponent } from '../../../common/types';
@@ -37,29 +35,27 @@ const navigation = [
 const userNavigation: { name: string; to: string }[] = [];
 
 const Header = (): FunctionComponent => {
+  const { userRole, signOut } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [selectedElection, setSelectedElection] = useState<ElectionRoundMonitoring>();
+  const router = useRouter();
 
   const handleSelectElection = (ev?: ElectionRoundMonitoring): void => {
     setSelectedElection(ev);
     localStorage.setItem('electionRoundId', ev?.electionRoundId ?? '');
     localStorage.setItem('monitoringNgoId', ev?.monitoringNgoId ?? '');
 
-    void queryClient.invalidateQueries({ queryKey: ['observers'] });
-    void queryClient.invalidateQueries({ queryKey: ['monitoring-observers'] });
-    void queryClient.invalidateQueries({ queryKey: ['tags'] });
+    void queryClient.invalidateQueries({
+      predicate: (query) => query.queryKey !== electionRoundKeys.all
+    });
 
-    void queryClient.invalidateQueries({ queryKey: [formSubmissionsByEntryKeys.all] });
-    void queryClient.invalidateQueries({ queryKey: [formSubmissionsByObserverKeys.all] });
-    void queryClient.invalidateQueries({ queryKey: [formSubmissionsAggregtedKeys.all] });
-    void queryClient.invalidateQueries({ queryKey: [quickReportKeys.all] });
-    void queryClient.invalidateQueries({ queryKey: formsKeys.lists() });
-  };
+    router.invalidate();
+  }
 
-  const { userRole, signOut } = useContext(AuthContext);
-  const navigate = useNavigate();
+
 
   const { status, data } = useQuery({
-    queryKey: ['electionRounds'],
+    queryKey: electionRoundKeys.all,
     queryFn: async () => {
       const response = await authApi.get<{ electionRounds: ElectionRoundMonitoring[] }>('/election-rounds:monitoring');
 
