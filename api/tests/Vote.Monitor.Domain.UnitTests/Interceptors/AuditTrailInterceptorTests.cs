@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using Vote.Monitor.Core.Services.Security;
 using Vote.Monitor.Core.Services.Serialization;
@@ -20,7 +21,7 @@ public class AuditTrailInterceptorTests
         DbContextOptionsBuilder<VoteMonitorContext> dbContextOptions = new DbContextOptionsBuilder<VoteMonitorContext>()
             .UseInMemoryDatabase(Guid.NewGuid().ToString());
         _context = new TestContext(dbContextOptions.Options,
-            new SerializerService(),
+            new SerializerService(NullLogger<SerializerService>.Instance),
             _fakeTimeProvider,
             _fakeCurrentUserProvider);
     }
