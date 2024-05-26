@@ -231,7 +231,6 @@ function MonitoringObserversList() {
   // Func to provide props to table cell
   const getCellProps = (context: CellContext<MonitoringObserver, unknown>): TableCellProps | void => {
     if (context.column.id === 'tags') {
-      console.log(context.column)
 
       return {
         className: 'flex-wrap',
