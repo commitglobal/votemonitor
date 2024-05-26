@@ -60,8 +60,8 @@ const byEntryColumnVisibilityOptions: ColumnOption[] = [
   { id: 'level4', label: 'Location - L4', enableHiding: true },
   { id: 'level5', label: 'Location - L5', enableHiding: true },
   { id: 'observerName', label: 'Observer', enableHiding: true },
-  { id: 'tags', label: 'Tags', enableHiding: true },
-  { id: 'numberOfQuestionsAnswered', label: 'Responses', enableHiding: true },
+  { id: 'tags', label: 'Station tags', enableHiding: true },
+  { id: 'numberOfQuestionsAnswered', label: 'Questions answered', enableHiding: true },
   { id: 'numberOfFlaggedAnswers', label: 'Flagged answers', enableHiding: true },
   { id: 'notesCount', label: 'Question notes', enableHiding: true },
   { id: 'mediaFilesCount', label: 'Media files', enableHiding: true },
@@ -122,5 +122,5 @@ export const quickReportsDefaultColumns: VisibilityState = {
   level5: false,
   observerName: true,
   email: false,
-  followUpStatus: true
+  followUpStatus: true,
 };
