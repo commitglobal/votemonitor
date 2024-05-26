@@ -122,7 +122,7 @@ const Header = (): FunctionComponent => {
                   <DropdownMenu>
                     <DropdownMenuTrigger>
                       <Badge className='bg-secondary-300 text-secondary-900 hover:bg-secondary-300/90'>
-                        <span className='election-text'>{selectedElection?.englishTitle}</span>
+                        <span className='election-text'>{selectedElection?.title}</span>
                         <ChevronDownIcon className='w-[20px] ml-2' />
                       </Badge>
                     </DropdownMenuTrigger>
@@ -137,7 +137,7 @@ const Header = (): FunctionComponent => {
                           <DropdownMenuRadioItem
                             key={electionRound.electionRoundId}
                             value={electionRound.electionRoundId}>
-                            {electionRound.englishTitle}
+                            {electionRound.title}
                           </DropdownMenuRadioItem>
                         ))}
                       </DropdownMenuRadioGroup>
