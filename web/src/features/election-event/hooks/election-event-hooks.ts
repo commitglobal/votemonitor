@@ -4,15 +4,17 @@ import { useQuery, UseQueryResult } from '@tanstack/react-query';
 
 import { ElectionEvent } from '../models/election-event';
 import { ObserverGuide } from '../models/observer-guide';
+import { electionRoundKeys } from '@/features/election-round/queries';
 
 const STALE_TIME = 1000 * 60; // one minute
 
 type ElectionEventResult = UseQueryResult<ElectionEvent, Error>;
 export function useElectionRound(): ElectionEventResult {
+  const electionRoundId = localStorage.getItem('electionRoundId') ?? '';
+
   return useQuery({
-    queryKey: ['election-rounds', 'details'],
+    queryKey: electionRoundKeys.detail(electionRoundId),
     queryFn: async () => {
-      const electionRoundId = localStorage.getItem('electionRoundId');
 
       const response = await authApi.get<ElectionEvent>(`/election-rounds/${electionRoundId}`);
 

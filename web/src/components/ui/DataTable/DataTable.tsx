@@ -216,7 +216,7 @@ export function DataTable<TData extends RowData, TValue, TQueryParams = object>(
                   }}
                   style={{ cursor: onRowClick ? 'pointer' : undefined }}>
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className='truncate' style={{ maxWidth: cell.column.getSize() }} {...(getCellProps ? getCellProps(cell.getContext()) : {})}>
+                    <TableCell key={cell.id} style={{ maxWidth: cell.column.getSize() }} {...(getCellProps ? getCellProps(cell.getContext()) : {})}>
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   ))}
