@@ -12,57 +12,44 @@ import {
   Text
 } from "@react-email/components";
 import * as React from "react";
+import { Layout } from "./components/Layout";
 
 interface ExistingUserInvitationEmailProps {
+  name: string;
+  confirmUrl: string;
   cdnUrl: string;
   ngoName: string;
   electionRoundDetails: string;
 }
 
 export const ExistingUserInvitationEmail = ({
+  name = '~$name$~',
+  confirmUrl = '~$confirmUrl$~',
   cdnUrl = '~$cdnUrl$~',
   ngoName = '~$ngoName$~',
   electionRoundDetails = '~$electionRoundDetails$~',
 }: ExistingUserInvitationEmailProps) => (
-  <Html>
-    <Head />
-    <Preview>{ngoName} has invited you to be an observer for {electionRoundDetails}.</Preview>
-    <Body style={main}>
-      <Container style={container}>
-        <Heading style={heading}>{ngoName} has invited you to be an observer for {electionRoundDetails}.</Heading>
-        <Section style={body}>
-          <Text style={paragraph}>
-            Hello,
-          </Text>
-          <Text style={paragraph}>
-            Thank you for your service as an observer. We are glad to have you back.
-          </Text>
-          <Text style={paragraph}>
-            {ngoName} has invited you to be an observer for {electionRoundDetails}.
-          </Text>
-          <Text style={paragraph}>
-            Go to the Vote Monitor app and reactivate your account. Please make sure you have the latest version installed on your phone.
-          </Text>
-          <Text style={paragraph}>
-            If you no longer have the app on your device, you may install it from:
-            <ul>
-              <li key="google"><Link style={link} href="https://google.com/">Google play</Link></li>
-              <li key="apple"><Link style={link} href="https://apple.com/">Apple Store</Link></li>
-            </ul>
-          </Text>
-          <Text style={paragraph}>
-            Should you require additional support you may call +…………….
-          </Text>
-        </Section>
-        <Text style={paragraph}>
-          Thank you,
-          <br />- Vote Monitor Team
-        </Text>
-        <Hr style={hr} />
-        <Text style={footer}>Commit Global.</Text>
-      </Container>
-    </Body>
-  </Html>
+  <Layout name={name}
+    preview={`${ngoName} has invited you to be an observer for ${electionRoundDetails}.`}
+  >
+    <Text className="text-base">
+      Thank you for your decision to be an independent observer! We are very glad and grateful to have you here.
+    </Text>
+
+    <Text className="text-base">
+      {ngoName} has invited you to be an observer for {electionRoundDetails}.
+    </Text>
+
+    <Text className="text-base">
+      Please follow <Link href={confirmUrl}>this link</Link> to complete your registration and to set your password in order to use the application.
+    </Text>
+
+    <Text className="text-base">
+      You may install the app from <Link href="#">Google Play</Link> or <Link href="#">Apple Store</Link>.
+    </Text>
+
+  </Layout>
+
 );
 
 ExistingUserInvitationEmail.PreviewProps = {
