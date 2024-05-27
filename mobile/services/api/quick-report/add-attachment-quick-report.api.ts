@@ -1,3 +1,4 @@
+import axios from "axios";
 import { FileMetadata } from "../../../hooks/useCamera";
 import API from "../../api";
 import { QuickReportAttachmentAPIResponse } from "./get-quick-reports.api";
@@ -43,4 +44,56 @@ export const addAttachmentQuickReport = ({
       },
     },
   ).then((res) => res.data);
+};
+
+export const addAttachmentQuickReportMultipartStart = ({
+  fileMetadata,
+}: AddAttachmentQuickReportAPIPayload): Promise<any> => {
+  const filePartsNo = Math.ceil((fileMetadata.size! / 10) * 1024 * 1024);
+
+  return axios
+    .post(
+      `http://localhost:3001/api/dossier/${145}/file/start`,
+      { fileMimeType: fileMetadata.type, fileName: fileMetadata.name, filePartsNo },
+      {},
+    )
+    .then((res) => res.data);
+};
+
+export const addAttachmentQuickReportMultipartComplete = async (
+  uploadId: string,
+  key: string,
+  fileName: string,
+  uploadedParts: { ETag: string; PartNumber: number }[],
+): Promise<string[]> => {
+  return axios
+    .post(
+      `http://localhost:3001/api/dossier/${145}/file/complete`,
+      { uploadId, key, fileName, uploadedParts },
+      {},
+    )
+    .then((res) => res.data);
+};
+
+export const addAttachmentQuickReportMultipartAbort = async (
+  uploadId: string,
+  key: string,
+): Promise<string[]> => {
+  return axios
+    .post(`http://localhost:3001/api/dossier/${145}/file/abort`, { uploadId, key }, {})
+    .then((res) => res.data);
+};
+
+// S3
+export const uploadChunk = async (url: string, chunk: Blob): Promise<{ ETag: string }> => {
+  return axios
+    .put(url, chunk, {
+      timeout: 100000,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+    .then((res) => {
+      return { ETag: res.headers["etag"] };
+    });
 };

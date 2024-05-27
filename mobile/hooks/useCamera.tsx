@@ -39,6 +39,7 @@ export type FileMetadata = {
   uri: string;
   name: string;
   type: string;
+  size?: number;
 };
 
 export const useCamera = () => {
@@ -75,9 +76,9 @@ export const useCamera = () => {
       ...(specifiedMediaType || { mediaTypes: ImagePicker.MediaTypeOptions.All }),
       allowsEditing: true,
       aspect: [4, 3],
-      quality: 1,
+      // quality: 1,
       allowsMultipleSelection: false,
-      videoQuality: ImagePicker.UIImagePickerControllerQualityType.Medium, // TODO: careful here, Medium might be enough
+      videoQuality: ImagePicker.UIImagePickerControllerQualityType.Low, // TODO: careful here, Medium might be enough
       cameraType: ImagePicker.CameraType.back,
     });
 
@@ -94,6 +95,7 @@ export const useCamera = () => {
         uri: result.assets[0].uri,
         name: filename,
         type: file.mimeType || "",
+        size: file.fileSize,
       };
       return toReturn;
     }
