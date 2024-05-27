@@ -15,6 +15,7 @@ import { Link, useRouter } from '@tanstack/react-router';
 import { format } from 'date-fns';
 import { quickReportKeys } from '../../hooks/quick-reports';
 import { QuickReportFollowUpStatus } from '../../models/quick-report';
+import { NavigateBack } from '@/components/NavigateBack/NavigateBack';
 
 export default function QuickReportDetails(): FunctionComponent {
   const { quickReportId } = Route.useParams();
@@ -27,12 +28,9 @@ export default function QuickReportDetails(): FunctionComponent {
     mutationFn: (followUpStatus: QuickReportFollowUpStatus) => {
       const electionRoundId: string | null = localStorage.getItem('electionRoundId');
 
-      return authApi.put<void>(
-        `/election-rounds/${electionRoundId}/quick-reports/${quickReportId}:status`,
-        {
-          followUpStatus
-        }
-      );
+      return authApi.put<void>(`/election-rounds/${electionRoundId}/quick-reports/${quickReportId}:status`, {
+        followUpStatus,
+      });
     },
 
     onSuccess: () => {
@@ -42,16 +40,16 @@ export default function QuickReportDetails(): FunctionComponent {
       });
 
       router.invalidate();
-      queryClient.invalidateQueries({queryKey: quickReportKeys.all})
+      void queryClient.invalidateQueries({ queryKey: quickReportKeys.all });
     },
 
     onError: () => {
       toast({
         title: 'Error updating follow up status',
         description: 'Please contact tech support',
-        variant: 'destructive'
+        variant: 'destructive',
       });
-    }
+    },
   });
 
   function handleFolowUpStatusChange(followUpStatus: QuickReportFollowUpStatus): void {
@@ -60,18 +58,7 @@ export default function QuickReportDetails(): FunctionComponent {
 
   return (
     <Layout
-      backButton={
-        <Link to='/responses' preload='intent' search={{ tab: 'quick-reports' }}>
-          <svg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30' fill='none'>
-            <path
-              fillRule='evenodd'
-              clipRule='evenodd'
-              d='M19.0607 7.93934C19.6464 8.52513 19.6464 9.47487 19.0607 10.0607L14.1213 15L19.0607 19.9393C19.6464 20.5251 19.6464 21.4749 19.0607 22.0607C18.4749 22.6464 17.5251 22.6464 16.9393 22.0607L10.9393 16.0607C10.3536 15.4749 10.3536 14.5251 10.9393 13.9393L16.9393 7.93934C17.5251 7.35355 18.4749 7.35355 19.0607 7.93934Z'
-              fill='#7833B3'
-            />
-          </svg>
-        </Link>
-      }
+      backButton={<NavigateBack to='/responses' search={{ tab: 'quick-reports' }} />}
       breadcrumbs={
         <div className='breadcrumbs flex flex-row gap-2 mb-4'>
           <Link className='crumb' to='/responses' preload='intent' search={{ tab: 'quick-reports' }}>
@@ -85,8 +72,11 @@ export default function QuickReportDetails(): FunctionComponent {
         <CardHeader>
           <CardTitle className='mb-4 flex justify-between'>
             <div>Quick report</div>
-            <Select onValueChange={handleFolowUpStatusChange} defaultValue={quickReport.followUpStatus} value={quickReport.followUpStatus}>
-              <SelectTrigger className="w-[180px]">
+            <Select
+              onValueChange={handleFolowUpStatusChange}
+              defaultValue={quickReport.followUpStatus}
+              value={quickReport.followUpStatus}>
+              <SelectTrigger className='w-[180px]'>
                 <SelectValue placeholder='Follow-up status' />
               </SelectTrigger>
               <SelectContent>
@@ -162,7 +152,8 @@ export default function QuickReportDetails(): FunctionComponent {
             <div>
               <p className='font-bold'>Polling station details</p>
               <p>{quickReport.pollingStationDetails}</p>
-            </div>)}
+            </div>
+          )}
 
           {quickReport.level1 && (
             <div className='flex gap-4'>

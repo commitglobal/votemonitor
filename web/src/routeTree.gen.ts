@@ -35,13 +35,14 @@ import { Route as AcceptInviteSuccessImport } from './routes/accept-invite/succe
 import { Route as ResponsesQuickReportsQuickReportIdImport } from './routes/responses/quick-reports/$quickReportId'
 import { Route as ResponsesFormIdAggregatedImport } from './routes/responses/$formId.aggregated'
 import { Route as ObserversObserverIdEditImport } from './routes/observers_.$observerId.edit'
+import { Route as MonitoringObserversPushMessagesIdImport } from './routes/monitoring-observers/push-messages.$id'
 import { Route as MonitoringObserversEditMonitoringObserverIdImport } from './routes/monitoring-observers/edit.$monitoringObserverId'
 import { Route as FormsFormIdEditImport } from './routes/forms_.$formId.edit'
 import { Route as FormsFormIdLanguageCodeImport } from './routes/forms/$formId_.$languageCode'
 import { Route as FormTemplatesFormTemplateIdEditImport } from './routes/form-templates_.$formTemplateId.edit'
 import { Route as FormTemplatesFormTemplateIdLanguageCodeImport } from './routes/form-templates/$formTemplateId_.$languageCode'
 import { Route as MonitoringObserversViewMonitoringObserverIdTabImport } from './routes/monitoring-observers/view/$monitoringObserverId.$tab'
-import { Route as MonitoringObserversPushMessagesIdViewImport } from './routes/monitoring-observers/push-messages.$id.view'
+import { Route as MonitoringObserversPushMessagesIdViewImport } from './routes/monitoring-observers/push-messages.$id_.view'
 import { Route as FormsFormIdEditTranslationLanguageCodeImport } from './routes/forms_.$formId.edit-translation.$languageCode'
 import { Route as FormTemplatesFormTemplateIdEditTranslationLanguageCodeImport } from './routes/form-templates_.$formTemplateId.edit-translation.$languageCode'
 
@@ -169,6 +170,12 @@ const ObserversObserverIdEditRoute = ObserversObserverIdEditImport.update({
   path: '/observers/$observerId/edit',
   getParentRoute: () => rootRoute,
 } as any)
+
+const MonitoringObserversPushMessagesIdRoute =
+  MonitoringObserversPushMessagesIdImport.update({
+    path: '/monitoring-observers/push-messages/$id',
+    getParentRoute: () => rootRoute,
+  } as any)
 
 const MonitoringObserversEditMonitoringObserverIdRoute =
   MonitoringObserversEditMonitoringObserverIdImport.update({
@@ -330,6 +337,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MonitoringObserversEditMonitoringObserverIdImport
       parentRoute: typeof rootRoute
     }
+    '/monitoring-observers/push-messages/$id': {
+      preLoaderRoute: typeof MonitoringObserversPushMessagesIdImport
+      parentRoute: typeof rootRoute
+    }
     '/observers/$observerId/edit': {
       preLoaderRoute: typeof ObserversObserverIdEditImport
       parentRoute: typeof rootRoute
@@ -390,6 +401,7 @@ export const routeTree = rootRoute.addChildren([
   FormsFormIdLanguageCodeRoute,
   FormsFormIdEditRoute,
   MonitoringObserversEditMonitoringObserverIdRoute,
+  MonitoringObserversPushMessagesIdRoute,
   ObserversObserverIdEditRoute,
   ResponsesFormIdAggregatedRoute,
   ResponsesQuickReportsQuickReportIdRoute,
