@@ -434,7 +434,8 @@
   "generic_error_screen": {
     "paragraph1": "Ups, ceva nu a mers bine!",
     "paragraph2": "Nu am putut recupera după această eroare. Te rugăm să verifici conexiunea la internet și să repornești aplicația!",
-    "retry": "Încearcă din nou"
+    "retry": "Încearcă din nou",
+    "logout": "Deconectează-te"
   },
   "network_banner": {
     "online": "Aplicația este online. Toate răspunsurile au fost trimise către server.",
@@ -444,7 +445,6 @@
   },
   "sync": {
     "sync_data": "Datele se sincronizează...",
-    "warning": "Vă rugăm să NU ÎNCHIDEȚI aplicația sau datele se vor pierde.",
-    "pending_items": "Au mai ramas: "
+    "warning": "Vă rugăm să NU ÎNCHIDEȚI aplicația sau datele se vor pierde."
   }
 }
