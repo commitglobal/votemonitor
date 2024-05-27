@@ -1,3 +1,3 @@
 import type { Attachment, Note } from './models/form-submission';
 
-export type QuestionExtraData = Note & { attachments: Attachment[] };
+export type QuestionExtraData = Note | Attachment;

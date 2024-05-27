@@ -19,6 +19,7 @@ import {
 import { QuickReportFollowUpStatus, type QuickReport } from '../models/quick-report';
 import type { QuestionExtraData } from '../types';
 import type { RowData } from '@/components/ui/DataTable/DataTable';
+import { Button } from '@/components/ui/button';
 
 export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry & RowData>[] = [
   {
@@ -138,8 +139,8 @@ export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry &
         {row.original.followUpStatus === SubmissionFollowUpStatus.NotApplicable
           ? 'Not Applicable'
           : row.original.followUpStatus === SubmissionFollowUpStatus.NeedsFollowUp
-          ? 'Needs follow-up'
-          : 'Resolved'}
+            ? 'Needs follow-up'
+            : 'Resolved'}
       </Badge>
     ),
   },
@@ -294,6 +295,26 @@ export const formSubmissionsByFormColumnDefs: ColumnDef<FormSubmissionByForm & R
 
 export const questionExtraInfoColumnDefs: ColumnDef<QuestionExtraData>[] = [
   {
+    header: ({ column }) => <DataTableColumnHeader title='EntryID' column={column} />,
+    accessorKey: 'submissionId',
+    enableSorting: true,
+    enableGlobalFilter: true,
+    cell: ({ row }) => <div>
+      {
+        <Link to='/responses/$submissionId' params={{ submissionId: row.original.submissionId }} preload='intent'>
+          <Button type='button' variant={'link'} className='text-purple-500'> {row.original.submissionId.substring(0, 8)}</Button>
+        </Link>
+      }
+    </div>,
+  },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Type' column={column} />,
+    accessorKey: 'type',
+    enableSorting: true,
+    enableGlobalFilter: true,
+    cell: ({ row }) => <div>{row.original.type}</div>,
+  },
+  {
     header: ({ column }) => <DataTableColumnHeader title='Time submitted' column={column} />,
     accessorKey: 'timeSubmitted',
     enableSorting: true,
@@ -301,19 +322,11 @@ export const questionExtraInfoColumnDefs: ColumnDef<QuestionExtraData>[] = [
     cell: ({ row }) => <div>{format(row.original.timeSubmitted, DateTimeFormat)}</div>,
   },
   {
-    header: ({ column }) => <DataTableColumnHeader title='Note' column={column} />,
-    accessorKey: 'text',
-    enableSorting: true,
-    enableGlobalFilter: true,
-    minSize: 260,
-  },
-  {
-    header: ({ column }) => <DataTableColumnHeader title='Media files' column={column} />,
-    accessorKey: 'attachments',
+    header: ({ column }) => <DataTableColumnHeader title='Details' column={column} />,
+    accessorKey: 'details',
     enableSorting: false,
     enableGlobalFilter: false,
-    cell: MediaFilesCell,
-    size: 200,
+    cell: ({ row }) => <div>{row.original.type === "Note" ? row.original.text : <MediaFilesCell attachment={row.original} />}</div>,
   },
 ];
 
@@ -417,8 +430,8 @@ export const quickReportsColumnDefs: ColumnDef<QuickReport>[] = [
         {row.original.followUpStatus === QuickReportFollowUpStatus.NotApplicable
           ? 'Not Applicable'
           : row.original.followUpStatus === QuickReportFollowUpStatus.NeedsFollowUp
-          ? 'Needs follow-up'
-          : 'Resolved'}
+            ? 'Needs follow-up'
+            : 'Resolved'}
       </Badge>
     ),
   },

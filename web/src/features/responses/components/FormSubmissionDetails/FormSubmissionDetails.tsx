@@ -1,8 +1,5 @@
-import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
-import { FlagIcon } from '@heroicons/react/24/solid';
-import { Link, useLoaderData, useRouter } from '@tanstack/react-router';
-import { format } from 'date-fns';
-import { Fragment } from 'react';
+import { authApi } from '@/common/auth-api';
+import { DateTimeFormat } from '@/common/formats';
 import {
   isDateAnswer,
   isMultiSelectAnswer,
@@ -14,6 +11,7 @@ import {
   isSingleSelectQuestion,
   isTextAnswer,
 } from '@/common/guards';
+import type { FunctionComponent } from '@/common/types';
 import Layout from '@/components/layout/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -21,20 +19,21 @@ import { FormItem } from '@/components/ui/form';
 import { Label } from '@/components/ui/label';
 import { Radio, RadioGroup } from '@/components/ui/radio-group';
 import { RatingGroup } from '@/components/ui/ratings';
-import { Separator } from '@/components/ui/separator';
-import { Switch } from '@/components/ui/switch';
-import type { FunctionComponent } from '@/common/types';
-import { cn, ratingScaleToNumber } from '@/lib/utils';
-import { QuestionExtraDataSection } from '../QuestionExtraDataSection/QuestionExtraDataSection';
-import { DateTimeFormat } from '@/common/formats';
-import { Route, formSubmissionDetailsQueryOptions } from '@/routes/responses/$submissionId';
-import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
-import { formSubmissionsByEntryKeys, formSubmissionsByObserverKeys } from '../../hooks/form-submissions-queries';
-import { toast } from '@/components/ui/use-toast';
-import { authApi } from '@/common/auth-api';
-import { FormType, SubmissionFollowUpStatus } from '../../models/form-submission';
-import { queryClient } from '@/main';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Separator } from '@/components/ui/separator';
+import { toast } from '@/components/ui/use-toast';
+import { cn, ratingScaleToNumber } from '@/lib/utils';
+import { queryClient } from '@/main';
+import { Route, formSubmissionDetailsQueryOptions } from '@/routes/responses/$submissionId';
+import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
+import { FlagIcon } from '@heroicons/react/24/solid';
+import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
+import { Link, useRouter } from '@tanstack/react-router';
+import { format } from 'date-fns';
+import { Fragment } from 'react';
+import { formSubmissionsByEntryKeys, formSubmissionsByObserverKeys } from '../../hooks/form-submissions-queries';
+import { SubmissionFollowUpStatus } from '../../models/form-submission';
+import { ResponseExtraDataSection } from '../ReponseExtraDataSection/ResponseExtraDataSection';
 
 export default function FormSubmissionDetails(): FunctionComponent {
   const { submissionId } = Route.useParams();
@@ -232,7 +231,7 @@ export default function FormSubmissionDetails(): FunctionComponent {
                     '-'
                   )}
                   {(attachments.length > 0 || notes.length > 0) && (
-                    <QuestionExtraDataSection attachments={attachments} notes={notes} />
+                    <ResponseExtraDataSection attachments={attachments} notes={notes} />
                   )}
                 </div>
               );

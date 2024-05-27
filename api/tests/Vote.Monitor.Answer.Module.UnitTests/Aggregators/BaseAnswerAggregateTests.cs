@@ -2,11 +2,12 @@
 using Vote.Monitor.Answer.Module.Aggregators;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Domain.Entities.FormBase.Questions;
+using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
+using Vote.Monitor.TestUtils.Fakes.Aggregates;
 using Vote.Monitor.TestUtils.Fakes.Aggregates.Questions;
 using Xunit;
 
 namespace Vote.Monitor.Answer.Module.UnitTests.Aggregators;
-
 
 public class BaseAnswerAggregateTests
 {
@@ -17,9 +18,9 @@ public class BaseAnswerAggregateTests
         var aggregate = new TestAnswerAggregate(new TextQuestionFaker().Generate(), 0);
 
         // Act
-        aggregate.Aggregate(Guid.NewGuid(), new TestAnswer());
-        aggregate.Aggregate(Guid.NewGuid(), new TestAnswer());
-        aggregate.Aggregate(Guid.NewGuid(), new TestAnswer());
+        aggregate.Aggregate(new FormSubmissionFaker().Generate(), new TestAnswer());
+        aggregate.Aggregate(new FormSubmissionFaker().Generate(), new TestAnswer());
+        aggregate.Aggregate(new FormSubmissionFaker().Generate(), new TestAnswer());
 
         // Assert
         aggregate.AnswersAggregated.Should().Be(3);
@@ -30,17 +31,17 @@ public class BaseAnswerAggregateTests
     {
         // Arrange
         var aggregate = new TestAnswerAggregate(new TextQuestionFaker().Generate(), 0);
-        var responderId1 = Guid.NewGuid();
-        var responderId2 = Guid.NewGuid();
+        var submission1 = new FormSubmissionFaker().Generate();
+        var submission2 = new FormSubmissionFaker().Generate();
 
         // Act
-        aggregate.Aggregate(responderId1, new TestAnswer());
-        aggregate.Aggregate(responderId2, new TestAnswer());
+        aggregate.Aggregate(submission1, new TestAnswer());
+        aggregate.Aggregate(submission2, new TestAnswer());
 
         // Assert
         aggregate.Responders.Should().HaveCount(2);
-        aggregate.Responders.Should().Contain(responderId1);
-        aggregate.Responders.Should().Contain(responderId2);
+        aggregate.Responders.Should().Contain(submission1.MonitoringObserverId);
+        aggregate.Responders.Should().Contain(submission2.MonitoringObserverId);
     }
 
     [Fact]
@@ -48,10 +49,9 @@ public class BaseAnswerAggregateTests
     {
         // Arrange
         var aggregate = new TestAnswerAggregate(new TextQuestionFaker().Generate(), 0);
-        var responderId = Guid.NewGuid();
 
         // Act
-        aggregate.Aggregate(responderId, new TestAnswer());
+        aggregate.Aggregate(new FormSubmissionFaker().Generate(), new TestAnswer());
 
         // Assert
         aggregate.QuestionSpecificAggregateInvoked.Should().BeTrue();
@@ -66,7 +66,7 @@ public class TestAnswerAggregate : BaseAnswerAggregate
     {
     }
 
-    protected override void QuestionSpecificAggregate(Guid responder, BaseAnswer answer)
+    protected override void QuestionSpecificAggregate(FormSubmission submission, BaseAnswer answer)
     {
         QuestionSpecificAggregateInvoked = true;
     }

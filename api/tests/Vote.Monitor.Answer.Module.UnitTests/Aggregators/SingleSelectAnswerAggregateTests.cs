@@ -3,6 +3,8 @@ using Vote.Monitor.Answer.Module.Aggregators;
 using Vote.Monitor.Answer.Module.UnitTests.Aggregators.Extensions;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Domain.Entities.FormBase.Questions;
+using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
+using Vote.Monitor.TestUtils.Fakes.Aggregates;
 using Vote.Monitor.TestUtils.Fakes.Aggregates.Questions;
 using Xunit;
 
@@ -14,7 +16,8 @@ public class SingleSelectAnswerAggregateTests
     private readonly List<SelectOption> _options;
     private readonly SingleSelectQuestion _question;
     private readonly SingleSelectAnswerAggregate _aggregate;
-    private readonly Guid _responderId = Guid.NewGuid();
+    private readonly FormSubmission _submission = new FormSubmissionFaker().Generate();
+
 
     public SingleSelectAnswerAggregateTests()
     {
@@ -33,23 +36,6 @@ public class SingleSelectAnswerAggregateTests
     }
 
     [Fact]
-    public void Aggregate_ShouldAddSingleSelectAnswer()
-    {
-        // Arrange
-        var selection = _options[4].Select();
-        var answer = SingleSelectAnswer.Create(_question.Id, selection);
-
-        // Act
-        _aggregate.Aggregate(_responderId, answer);
-
-        // Assert
-        _aggregate.Answers.Should().ContainSingle()
-            .Which.Responder.Should().Be(_responderId);
-        _aggregate.Answers.Should().ContainSingle()
-            .Which.Value.Should().Be(selection);
-    }
-
-    [Fact]
     public void Aggregate_ShouldUpdateHistogram()
     {
         // Arrange
@@ -63,10 +49,10 @@ public class SingleSelectAnswerAggregateTests
         var answer4 = SingleSelectAnswer.Create(_question.Id, option5.Select());
 
         // Act
-        _aggregate.Aggregate(_responderId, answer1);
-        _aggregate.Aggregate(_responderId, answer2);
-        _aggregate.Aggregate(_responderId, answer3);
-        _aggregate.Aggregate(_responderId, answer4);
+        _aggregate.Aggregate(_submission, answer1);
+        _aggregate.Aggregate(_submission, answer2);
+        _aggregate.Aggregate(_submission, answer3);
+        _aggregate.Aggregate(_submission, answer4);
 
         // Assert
         _aggregate.AnswersHistogram[option1.Id].Should().Be(2);
@@ -82,7 +68,7 @@ public class SingleSelectAnswerAggregateTests
         var answer = new TestAnswer(); // Not a SingleSelectAnswer
 
         // Act & Assert
-        _aggregate.Invoking(a => a.Aggregate(_responderId, answer))
+        _aggregate.Invoking(a => a.Aggregate(_submission, answer))
             .Should().Throw<ArgumentException>()
             .WithMessage($"Invalid answer received: {answer.Discriminator} (Parameter 'answer')");
     }

@@ -75,17 +75,20 @@ export interface FormSubmissionByForm {
   numberOfMediaFiles: number;
 }
 
-interface BaseQuestionExtraData {
-  monitoringObserverId: string;
-  questionId: string;
+type AttachmentsAndNotesData = {
+  submissionId: string;
   timeSubmitted: string;
+  questionId: string;
 }
 
-export interface Note extends BaseQuestionExtraData {
+export interface Note extends AttachmentsAndNotesData {
+  type: "Note";
+  monitoringObserverId: string;
   text: string;
 }
 
-export interface Attachment extends BaseQuestionExtraData {
+export interface Attachment extends AttachmentsAndNotesData {
+  type: "Attachment";
   fileName: string;
   filePath: string;
   mimeType: string;

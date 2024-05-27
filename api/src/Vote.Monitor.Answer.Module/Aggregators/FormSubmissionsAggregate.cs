@@ -50,18 +50,16 @@ public class FormSubmissionsAggregate
 
     public FormSubmissionsAggregate AggregateAnswers(FormSubmission formSubmission)
     {
-        var responderId = formSubmission.MonitoringObserverId;
+        var observer = formSubmission.MonitoringObserver.Observer.ApplicationUser;
+        _responders.Add(new Responder(formSubmission.MonitoringObserverId, observer.FirstName, observer.LastName, observer.Email, observer.PhoneNumber));
 
-        var observer= formSubmission.MonitoringObserver.Observer.ApplicationUser;
-        _responders.Add(new Responder(responderId, observer.FirstName, observer.LastName, observer.Email, observer.PhoneNumber));
-        
         SubmissionCount++;
         TotalNumberOfFlaggedAnswers += formSubmission.NumberOfFlaggedAnswers;
         TotalNumberOfQuestionsAnswered += formSubmission.NumberOfQuestionsAnswered;
 
         foreach (var answer in formSubmission.Answers)
         {
-            Aggregates[answer.QuestionId].Aggregate(responderId, answer);
+            Aggregates[answer.QuestionId].Aggregate(formSubmission, answer);
         }
 
         return this;
