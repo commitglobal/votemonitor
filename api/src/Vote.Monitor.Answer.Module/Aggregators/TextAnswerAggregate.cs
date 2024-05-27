@@ -1,20 +1,23 @@
 ﻿using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Domain.Entities.FormBase.Questions;
+using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
 
 namespace Vote.Monitor.Answer.Module.Aggregators;
 
+public record TextResponse(Guid SubmissionId, Guid ResponderId, string Value);
+
 public class TextAnswerAggregate(TextQuestion question, int displayOrder) : BaseAnswerAggregate(question, displayOrder)
 {
-    private readonly List<Response<string>> _answers = new();
-    public IReadOnlyList<Response<string>> Answers => _answers.AsReadOnly();
+    private readonly List<TextResponse> _answers = new();
+    public IReadOnlyList<TextResponse> Answers => _answers.AsReadOnly();
 
-    protected override void QuestionSpecificAggregate(Guid responderId, BaseAnswer answer)
+    protected override void QuestionSpecificAggregate(FormSubmission submission, BaseAnswer answer)
     {
         if (answer is not TextAnswer textAnswer)
         {
             throw new ArgumentException($"Invalid answer received: {answer.Discriminator}", nameof(answer));
         }
 
-        _answers.Add(new Response<string>(responderId, textAnswer.Text));
+        _answers.Add(new TextResponse(submission.Id, submission.MonitoringObserverId, textAnswer.Text));
     }
 }

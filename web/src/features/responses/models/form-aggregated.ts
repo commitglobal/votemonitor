@@ -47,7 +47,7 @@ export interface TextQuestionAggregate extends BaseQuestionAggregate {
 }
 
 export interface DateQuestionAggregate extends BaseQuestionAggregate {
-  answers: { responder: string; value: string }[];
+  answersHistogram: Record<string, number>;
   question: DateQuestion;
 }
 

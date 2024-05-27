@@ -1,13 +1,18 @@
 ﻿using Authorization.Policies;
+using Dapper;
 using Feature.Form.Submissions.Models;
 using Microsoft.EntityFrameworkCore;
 using Vote.Monitor.Answer.Module.Aggregators;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
 using Vote.Monitor.Domain;
+using Vote.Monitor.Domain.ConnectionFactory;
 
 namespace Feature.Form.Submissions.GetAggregated;
 
-public class Endpoint(VoteMonitorContext context, IFileStorageService fileStorageService) : Endpoint<Request, Results<Ok<Response>, NotFound>>
+public class Endpoint(
+    VoteMonitorContext context,
+    INpgsqlConnectionFactory connectionFactory,
+    IFileStorageService fileStorageService) : Endpoint<Request, Results<Ok<Response>, NotFound>>
 {
     public override void Configure()
     {
@@ -44,41 +49,77 @@ public class Endpoint(VoteMonitorContext context, IFileStorageService fileStorag
                         && x.FormId == req.FormId)
             .ToListAsync(ct);
 
-
         var formSubmissionsAggregate = new FormSubmissionsAggregate(form);
         foreach (var formSubmission in submissions)
         {
             formSubmissionsAggregate.AggregateAnswers(formSubmission);
         }
 
-        var notes = await context
-            .Notes
-            .Where(x => x.ElectionRoundId == req.ElectionRoundId && x.FormId == req.FormId)
-            .Select(x => new NoteModel
-            {
-                MonitoringObserverId = x.MonitoringObserverId,
-                QuestionId = x.QuestionId,
-                Text = x.Text,
-                TimeSubmitted = x.CreatedOn
-            })
-            .AsNoTracking()
-            .ToListAsync(ct);
+        var sql = """
+                SELECT
+                    N."Id",
+                    N."MonitoringObserverId",
+                    N."QuestionId",
+                    N."Text",
+                    COALESCE(N."LastModifiedOn", N."CreatedOn") "TimeSubmitted",
+                    (
+                        SELECT
+                            FS."Id"
+                        FROM
+                            "FormSubmissions" FS
+                        WHERE
+                            FS."MonitoringObserverId" = N."MonitoringObserverId"
+                            AND FS."FormId" = N."FormId"
+                            AND FS."PollingStationId" = N."PollingStationId"
+                            AND FS."ElectionRoundId" = N."ElectionRoundId"
+                    ) "SubmissionId"
+                FROM
+                    "Notes" N
+                WHERE
+                    N."ElectionRoundId" = @electionRoundId
+                    AND N."FormId" = @formId;
 
-        var attachments = await context
-            .Attachments
-            .Where(x => x.ElectionRoundId == req.ElectionRoundId && x.FormId == req.FormId)
-            .Select(x => new AttachmentModel
-            {
-                MonitoringObserverId = x.MonitoringObserverId,
-                QuestionId = x.QuestionId,
-                TimeSubmitted = x.CreatedOn,
-                FileName = x.FileName,
-                MimeType = x.MimeType,
-                FilePath = x.FilePath,
-                UploadedFileName = x.UploadedFileName
-            })
-            .AsNoTracking()
-            .ToListAsync(ct);
+                SELECT
+                    A."MonitoringObserverId",
+                    A."QuestionId",
+                    A."FileName",
+                    A."MimeType",
+                    A."FilePath",
+                    A."UploadedFileName",
+                    COALESCE(A."LastModifiedOn", A."CreatedOn") "TimeSubmitted",
+                    (
+                        SELECT
+                            FS."Id"
+                        FROM
+                            "FormSubmissions" FS
+                        WHERE
+                            FS."MonitoringObserverId" = A."MonitoringObserverId"
+                            AND FS."FormId" = A."FormId"
+                            AND FS."PollingStationId" = A."PollingStationId"
+                            AND FS."ElectionRoundId" = A."ElectionRoundId"
+                    ) "SubmissionId"
+                FROM
+                    "Attachments" A
+                WHERE
+                    A."ElectionRoundId" = @electionRoundId
+                    AND A."FormId" = @formId;
+                """;
+
+        var queryArgs = new
+        {
+            electionRoundId = req.ElectionRoundId,
+            formId = req.FormId
+        };
+
+        List<NoteModel> notes = [];
+        List<AttachmentModel> attachments = [];
+
+        using (var dbConnection = await connectionFactory.GetOpenConnectionAsync(ct))
+        {
+            using var multi = await dbConnection.QueryMultipleAsync(sql, queryArgs);
+            notes = multi.Read<NoteModel>().ToList();
+            attachments = multi.Read<AttachmentModel>().ToList();
+        }
 
         foreach (var attachment in attachments)
         {

@@ -4,11 +4,11 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import type { QuestionExtraData } from '../../types';
 import { questionExtraInfoColumnDefs } from '../../utils/column-defs';
 
-type NotesMediaTableProps = {
+type ReponseExtraDataTableProps = {
   data: QuestionExtraData[];
 };
 
-export function QuestionExtraDataTable({ data }: NotesMediaTableProps): FunctionComponent {
+export function ReponseExtraDataTable({ data }: ReponseExtraDataTableProps): FunctionComponent {
   const table = useReactTable({
     columns: questionExtraInfoColumnDefs,
     data,

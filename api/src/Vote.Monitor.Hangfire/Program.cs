@@ -109,6 +109,12 @@ builder.Services.AddScoped<ISendEmailJob, SendEmailJob>();
 builder.Services.AddScoped<IExportFormSubmissionsJob, ExportFormSubmissionsJob>();
 builder.Services.AddScoped<IExportQuickReportsJob, ExportQuickReportsJob>();
 #endregion
+var dbConnectionString = builder.Configuration.GetNpgsqlConnectionString("Core:HangfireConnectionConfig");
+
+builder.Services
+    .AddHealthChecks()
+    .AddNpgSql(name: "hangfire-db", connectionString: dbConnectionString)
+    .AddHangfire(name: "hangfire", setup: options => { options.MinimumAvailableServers = 1; });
 
 builder.Services.AddHangfire((sp,config) =>
 {
@@ -118,7 +124,7 @@ builder.Services.AddHangfire((sp,config) =>
         .UseRecommendedSerializerSettings()
         .UsePostgreSqlStorage(c =>
         {
-            c.UseNpgsqlConnection(builder.Configuration.GetNpgsqlConnectionString("Core:HangfireConnectionConfig"));
+            c.UseNpgsqlConnection(dbConnectionString);
         });
 
     config.UseActivator(new ContainerJobActivator(sp));
@@ -147,6 +153,6 @@ app.UseHangfireDashboard("/hangfire", new DashboardOptions
 });
 
 app.ScheduleRecurringJobs();
-
+app.MapHealthChecks("health");
 
 app.Run();
