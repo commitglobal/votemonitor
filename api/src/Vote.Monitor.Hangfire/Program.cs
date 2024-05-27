@@ -153,6 +153,7 @@ app.UseHangfireDashboard("/hangfire", new DashboardOptions
 });
 
 app.ScheduleRecurringJobs();
-app.MapHealthChecks("health");
+app.MapHealthChecks("/healthz");
+app.MapGet("/health", () => "healthy");
 
 app.Run();

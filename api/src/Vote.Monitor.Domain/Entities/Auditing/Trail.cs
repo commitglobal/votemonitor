@@ -2,6 +2,10 @@
 
 public class Trail : BaseEntity
 {
+    public Trail() : base(Guid.NewGuid())
+    {
+    }
+
     public Guid UserId { get; set; }
     public string? Type { get; set; }
     public string? TableName { get; set; }
