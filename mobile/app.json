@@ -45,9 +45,9 @@
       "eas": {
         "projectId": "93e17628-ddcd-4e67-849c-b356a18a6082"
       },
-      "message": "Display remaining sync items, send API errors to sentry",
-      "updateCritical": 26,
-      "updateVersion": 26
+      "message": "Allow throw error for attachments",
+      "updateCritical": 28,
+      "updateVersion": 28
     },
     "owner": "commit-global",
     "runtimeVersion": {

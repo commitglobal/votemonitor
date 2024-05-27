@@ -4,13 +4,12 @@ import {
   AddAttachmentQuickReportAPIPayload,
   addAttachmentQuickReport,
 } from "../../api/quick-report/add-attachment-quick-report.api";
-import { performanceLog } from "../../../helpers/misc";
 
 export const addAttachmentQuickReportMutation = () => {
   return useMutation({
     mutationKey: QuickReportKeys.addAttachment(),
     mutationFn: async (payload: AddAttachmentQuickReportAPIPayload) => {
-      return performanceLog(() => addAttachmentQuickReport(payload));
+      return addAttachmentQuickReport(payload);
     },
     onError: (err, _variables, _context) => {
       console.log(err);

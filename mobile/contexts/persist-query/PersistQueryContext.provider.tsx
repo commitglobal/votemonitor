@@ -5,7 +5,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useAuth } from "../../hooks/useAuth";
 import { notesKeys, pollingStationsKeys } from "../../services/queries.service";
 import * as API from "../../services/definitions.api";
-import { performanceLog } from "../../helpers/misc";
 import { PersistGate } from "../../components/PersistGate";
 import { AddAttachmentAPIPayload, addAttachment } from "../../services/api/add-attachment.api";
 import { deleteAttachment } from "../../services/api/delete-attachment.api";
@@ -23,6 +22,7 @@ import { AttachmentApiResponse } from "../../services/api/get-attachments.api";
 import { AttachmentsKeys } from "../../services/queries/attachments.query";
 import { ASYNC_STORAGE_KEYS } from "../../common/constants";
 import * as Sentry from "@sentry/react-native";
+import SuperJSON from "superjson";
 
 const queryClient = new QueryClient({
   mutationCache: new MutationCache({
@@ -30,8 +30,12 @@ const queryClient = new QueryClient({
     onSuccess: (data: unknown) => {
       console.log("MutationCache ", data);
     },
-    onError: (error: Error) => {
+    onError: (error: Error, _vars, _context, mutation) => {
       console.log("MutationCache error ", error);
+      console.log(
+        `🔉🔉🔉🔉 MUTATION ${mutation.options.scope} ERRORED`,
+        SuperJSON.stringify(mutation),
+      );
       Sentry.captureException(error);
     },
   }),
@@ -111,7 +115,7 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
 
   queryClient.setMutationDefaults(AttachmentsKeys.addAttachmentMutation(), {
     mutationFn: async (payload: AddAttachmentAPIPayload) => {
-      return performanceLog(() => addAttachment(payload));
+      return addAttachment(payload);
     },
   });
 
@@ -150,7 +154,7 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
 
   queryClient.setMutationDefaults(QuickReportKeys.addAttachment(), {
     mutationFn: async (payload: AddAttachmentQuickReportAPIPayload) => {
-      return performanceLog(() => addAttachmentQuickReport(payload));
+      return addAttachmentQuickReport(payload);
     },
   });
 
