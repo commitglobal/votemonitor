@@ -1,11 +1,11 @@
 import { authApi } from '@/common/auth-api';
 import PushMessageDetails from '@/features/monitoring-observers/components/PushMessageDetails/PushMessageDetails';
 import { redirectIfNotAuth } from '@/lib/utils';
-import { EnsureQueryDataOptions, QueryKey, queryOptions } from '@tanstack/react-query';
+import { queryOptions } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 
 import type { FunctionComponent } from '@/common/types';
-import { PushMessageDetailedModel } from '@/features/monitoring-observers/models/push-message';
+import type { PushMessageDetailedModel } from '@/features/monitoring-observers/models/push-message';
 import { pushMessagesKeys } from '@/features/monitoring-observers/hooks/push-messages-queries';
 
 export const pushMessageDetailsQueryOptions = (pushMessageId: string) =>
@@ -27,9 +27,7 @@ export const pushMessageDetailsQueryOptions = (pushMessageId: string) =>
   });
 
 function Details(): FunctionComponent {
-  return (
-    <PushMessageDetails />
-  );
+  return <PushMessageDetails />;
 }
 
 export const Route = createFileRoute('/monitoring-observers/push-messages/$id/view')({
