@@ -33,23 +33,6 @@ public class MultiSelectAnswerAggregateTests
     }
 
     [Fact]
-    public void Aggregate_ShouldAddMultiSelectAnswer()
-    {
-        // Arrange
-        var selection = new[] { _options[4].Select(), _options[2].Select() };
-        var answer = MultiSelectAnswer.Create(_question.Id, selection);
-
-        // Act
-        _aggregate.Aggregate(_responderId, answer);
-
-        // Assert
-        _aggregate.Answers.Should().ContainSingle()
-            .Which.Responder.Should().Be(_responderId);
-        _aggregate.Answers.Should().ContainSingle()
-            .Which.Value.Should().BeEquivalentTo(selection);
-    }
-
-    [Fact]
     public void Aggregate_ShouldUpdateHistogram()
     {
         // Arrange

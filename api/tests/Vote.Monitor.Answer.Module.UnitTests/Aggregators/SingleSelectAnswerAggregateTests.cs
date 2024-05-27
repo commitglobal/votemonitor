@@ -33,23 +33,6 @@ public class SingleSelectAnswerAggregateTests
     }
 
     [Fact]
-    public void Aggregate_ShouldAddSingleSelectAnswer()
-    {
-        // Arrange
-        var selection = _options[4].Select();
-        var answer = SingleSelectAnswer.Create(_question.Id, selection);
-
-        // Act
-        _aggregate.Aggregate(_responderId, answer);
-
-        // Assert
-        _aggregate.Answers.Should().ContainSingle()
-            .Which.Responder.Should().Be(_responderId);
-        _aggregate.Answers.Should().ContainSingle()
-            .Which.Value.Should().Be(selection);
-    }
-
-    [Fact]
     public void Aggregate_ShouldUpdateHistogram()
     {
         // Arrange

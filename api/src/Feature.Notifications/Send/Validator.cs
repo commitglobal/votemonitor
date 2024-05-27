@@ -10,4 +10,3 @@ public class Validator : Validator<Request>
         RuleFor(x => x.Body).NotEmpty().MaximumLength(1024);
     }
 }
-

@@ -1,12 +1,13 @@
-﻿using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
+﻿using Vote.Monitor.Answer.Module.Aggregators.Extensions;
+using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Domain.Entities.FormBase.Questions;
 
 namespace Vote.Monitor.Answer.Module.Aggregators;
 
 public class DateAnswerAggregate(DateQuestion question, int displayOrder) : BaseAnswerAggregate(question, displayOrder)
 {
-    private readonly List<Response<DateTime>> _answers = new();
-    public IReadOnlyList<Response<DateTime>> Answers => _answers.AsReadOnly();
+    private readonly Dictionary<string, int> _answersHistogram = new();
+    public IReadOnlyDictionary<string, int> AnswersHistogram => _answersHistogram.AsReadOnly();
 
     protected override void QuestionSpecificAggregate(Guid responderId, BaseAnswer answer)
     {
@@ -15,6 +16,21 @@ public class DateAnswerAggregate(DateQuestion question, int displayOrder) : Base
             throw new ArgumentException($"Invalid answer received: {answer.Discriminator}", nameof(answer));
         }
 
-        _answers.Add(new Response<DateTime>(responderId, dateAnswer.Date));
+        _answersHistogram.IncrementFor(GetBucketName(dateAnswer.Date));
+    }
+
+    private string GetBucketName(DateTime date)
+    {
+        // Truncate minutes, seconds, and milliseconds by creating a new DateTime
+        var truncatedDate = new DateTime(
+            date.Year,
+            date.Month,
+            date.Day,
+            date.Hour,
+            0, 0, 0,
+            date.Kind
+        );
+
+        return truncatedDate.ToString("o");
     }
 }

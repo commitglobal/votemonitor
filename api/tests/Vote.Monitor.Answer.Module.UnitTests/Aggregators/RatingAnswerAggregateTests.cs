@@ -11,7 +11,6 @@ public class RatingAnswerAggregateTests
 {
     private readonly RatingQuestion _question = new RatingQuestionFaker(RatingScale.OneTo10).Generate();
     private readonly RatingAnswerAggregate _aggregate;
-    private readonly Guid _responderId = Guid.NewGuid();
 
     public RatingAnswerAggregateTests()
     {
@@ -46,22 +45,6 @@ public class RatingAnswerAggregateTests
             new object[] { RatingScale.OneTo9, 9 },
             new object[] { RatingScale.OneTo10, 10 }
         };
-
-    [Fact]
-    public void Aggregate_ShouldAddRatingAnswer()
-    {
-        // Arrange
-        var answer = RatingAnswer.Create(_question.Id, 10);
-
-        // Act
-        _aggregate.Aggregate(_responderId, answer);
-
-        // Assert
-        _aggregate.Answers.Should().ContainSingle()
-            .Which.Responder.Should().Be(_responderId);
-        _aggregate.Answers.Should().ContainSingle()
-            .Which.Value.Should().Be(10);
-    }
 
     [Fact]
     public void Aggregate_ShouldUpdateHistogram()

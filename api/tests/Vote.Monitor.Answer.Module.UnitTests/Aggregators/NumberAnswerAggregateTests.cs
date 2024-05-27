@@ -19,22 +19,6 @@ public class NumberAnswerAggregateTests
     }
 
     [Fact]
-    public void Aggregate_ShouldAddNumberAnswer()
-    {
-        // Arrange
-        var answer = NumberAnswer.Create(_question.Id, 10);
-
-        // Act
-        _aggregate.Aggregate(_responderId, answer);
-
-        // Assert
-        _aggregate.Answers.Should().ContainSingle()
-            .Which.Responder.Should().Be(_responderId);
-        _aggregate.Answers.Should().ContainSingle()
-            .Which.Value.Should().Be(10);
-    }
-
-    [Fact]
     public void Aggregate_ShouldUpdateMin()
     {
         // Arrange

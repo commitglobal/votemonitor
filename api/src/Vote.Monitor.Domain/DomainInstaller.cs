@@ -37,6 +37,8 @@ public static class DomainInstaller
         services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
         services.AddScoped(typeof(IReadRepository<>), typeof(EfRepository<>));
 
+        services.AddHealthChecks().AddNpgSql(name: "domain-db", connectionString: connectionString);
+
         return services;
     }
 

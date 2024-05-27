@@ -6,15 +6,14 @@ namespace Vote.Monitor.Answer.Module.Aggregators;
 
 public class RatingAnswerAggregate : BaseAnswerAggregate
 {
-    private readonly List<Response<int>> _answers = new();
-    public IReadOnlyList<Response<int>> Answers => _answers.AsReadOnly();
-
+    private int _numberOfAnswersAggregated = 0;
     private readonly Dictionary<int, int> _answersHistogram;
     public IReadOnlyDictionary<int, int> AnswersHistogram => _answersHistogram.AsReadOnly();
 
-    public int Min { get; set; } = int.MaxValue;
-    public int Max { get; set; } = int.MinValue;
-    public decimal Average { get; set; }
+    public int Min { get; private set; } = int.MaxValue;
+    public int Max { get; private set; } = int.MinValue;
+    public decimal Average { get; private set; }
+
 
     public RatingAnswerAggregate(RatingQuestion question, int displayOrder) : base(question, displayOrder)
     {
@@ -27,14 +26,13 @@ public class RatingAnswerAggregate : BaseAnswerAggregate
         {
             throw new ArgumentException($"Invalid answer received: {answer.Discriminator}", nameof(answer));
         }
+        _numberOfAnswersAggregated++;
 
-        _answers.Add(new Response<int>(responderId, ratingAnswer.Value));
         _answersHistogram.IncrementFor(ratingAnswer.Value);
-
 
         Min = Math.Min(ratingAnswer.Value, Min);
         Max = Math.Max(ratingAnswer.Value, Max);
 
-        Average = Average.RecomputeAverage(ratingAnswer.Value, _answers.Count);
+        Average = Average.RecomputeAverage(ratingAnswer.Value, _numberOfAnswersAggregated);
     }
 }
