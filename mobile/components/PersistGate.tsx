@@ -1,4 +1,4 @@
-import { useIsRestoring } from "@tanstack/react-query";
+import { useIsMutating, useIsRestoring } from "@tanstack/react-query";
 import { SplashScreen } from "expo-router";
 import { useEffect } from "react";
 import { Spinner, YStack } from "tamagui";
@@ -21,6 +21,9 @@ export function PersistGate({ children }: React.PropsWithChildren) {
 
 const PersistGateLoadingScreen = () => {
   const { t } = useTranslation("sync");
+
+  const runningMutations = useIsMutating();
+
   return (
     <Screen
       preset="fixed"
@@ -38,6 +41,9 @@ const PersistGateLoadingScreen = () => {
           </Typography>
           <Typography preset="body2" color="white" textAlign="center" marginTop="$sm">
             {t("warning")}
+          </Typography>
+          <Typography preset="body2" color="white" textAlign="center" marginTop="$sm">
+            Items left: {runningMutations}
           </Typography>
         </YStack>
       </YStack>

@@ -18,6 +18,8 @@ import Button from "./Button";
 import { useFormSubmissions } from "../services/queries/form-submissions.query";
 import { useElectionRoundAllForms } from "../services/queries/forms.query";
 import FormListErrorScreen from "./FormListError";
+import { useQueryClient } from "@tanstack/react-query";
+import { electionRoundsKeys, pollingStationsKeys } from "../services/queries.service";
 
 export type FormListItem = {
   id: string;
@@ -39,6 +41,7 @@ const FormList = ({ ListHeaderComponent }: { ListHeaderComponent: ListHeaderComp
   const { activeElectionRound, selectedPollingStation } = useUserData();
   const [selectedForm, setSelectedForm] = useState<FormListItem | null>(null);
   const { t } = useTranslation(["observation", "common"]);
+  const queryClient = useQueryClient();
 
   const {
     data: allForms,
@@ -95,7 +98,21 @@ const FormList = ({ ListHeaderComponent }: { ListHeaderComponent: ListHeaderComp
   }
 
   if (formsError || answersError) {
-    return <FormListErrorScreen />;
+    return (
+      <FormListErrorScreen
+        onPress={() => {
+          queryClient.invalidateQueries({
+            queryKey: electionRoundsKeys.forms(activeElectionRound?.id),
+          });
+          queryClient.invalidateQueries({
+            queryKey: pollingStationsKeys.formSubmissions(
+              activeElectionRound?.id,
+              selectedPollingStation?.pollingStationId,
+            ),
+          });
+        }}
+      />
+    );
   }
 
   return (

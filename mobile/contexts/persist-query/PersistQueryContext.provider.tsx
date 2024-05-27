@@ -22,6 +22,7 @@ import {
 import { AttachmentApiResponse } from "../../services/api/get-attachments.api";
 import { AttachmentsKeys } from "../../services/queries/attachments.query";
 import { ASYNC_STORAGE_KEYS } from "../../common/constants";
+import * as Sentry from "@sentry/react-native";
 
 const queryClient = new QueryClient({
   mutationCache: new MutationCache({
@@ -30,9 +31,8 @@ const queryClient = new QueryClient({
       console.log("MutationCache ", data);
     },
     onError: (error: Error) => {
-      // Will always fire, is not tied to a mutation
-      // TODO: Send the error to Sentry
       console.log("MutationCache error ", error);
+      Sentry.captureException(error);
     },
   }),
   defaultOptions: {
@@ -61,11 +61,6 @@ const queryClient = new QueryClient({
 
       */
       gcTime: 5 * 24 * 60 * 60 * 1000, // 5 days
-      onError: (err: Error) => {
-        console.log(err);
-        console.log("QueryClient - mutations: ", JSON.stringify(err));
-      },
-      // throwOnError: true,
     },
     queries: {
       /*
@@ -216,12 +211,6 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
       queryClient.invalidateQueries(); // Avoid using await, not to wait for queries to refetch (maybe not the case here as there are no active queries)
       console.log("✅ Resume Paused Mutation & Invalidate Quries");
     }
-
-    // await new Promise((resolve, _reject) => {
-    //   setTimeout(() => {
-    //     resolve(undefined);
-    //   }, 10000);
-    // });
   };
 
   return (

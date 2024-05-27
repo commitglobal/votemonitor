@@ -444,6 +444,7 @@
   },
   "sync": {
     "sync_data": "Synchronizing data...",
-    "warning": "Please DO NOT CLOSE the app or the data will be lost."
+    "warning": "Please DO NOT CLOSE the app or the data will be lost.",
+    "pending_items": "Remaining items: "
   }
 }

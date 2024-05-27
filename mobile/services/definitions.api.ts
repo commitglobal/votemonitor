@@ -129,9 +129,7 @@ export const upsertPollingStationGeneralInformation = ({
     {
       ...rest,
     },
-  )
-    .then((res) => res.data)
-    .catch(console.log);
+  ).then((res) => res.data);
 };
 
 /** ========================================================================
@@ -289,9 +287,9 @@ export const upsertFormSubmission = ({
   electionRoundId,
   ...payload
 }: FormSubmissionAPIPayload): Promise<FormSubmission> => {
-  return API.post(`election-rounds/${electionRoundId}/form-submissions`, payload)
-    .then((res) => res.data)
-    .catch(console.log);
+  return API.post(`election-rounds/${electionRoundId}/form-submissions`, payload).then(
+    (res) => res.data,
+  );
 };
 
 /** ========================================================================
