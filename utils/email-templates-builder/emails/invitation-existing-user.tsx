@@ -1,39 +1,33 @@
-import {
-  Body,
-  Container,
-  Head,
-  Heading,
-  Hr,
-  Html,
-  Img,
-  Link,
-  Preview,
-  Section,
-  Text
-} from "@react-email/components";
+import { Link, Text } from "@react-email/components";
 import * as React from "react";
 import { Layout } from "./components/Layout";
 
 interface ExistingUserInvitationEmailProps {
   name: string;
-  confirmUrl: string;
+  phoneNumber: string;
   cdnUrl: string;
   ngoName: string;
   electionRoundDetails: string;
+  googlePlayUrl: string;
+  appleStoreUrl: string;
 }
 
 export const ExistingUserInvitationEmail = ({
   name = '~$name$~',
-  confirmUrl = '~$confirmUrl$~',
+  phoneNumber = '~$phoneNumber$~',
   cdnUrl = '~$cdnUrl$~',
   ngoName = '~$ngoName$~',
   electionRoundDetails = '~$electionRoundDetails$~',
+  googlePlayUrl = '~$googlePlayUrl$~',
+  appleStoreUrl = '~$appleStoreUrl$~',
 }: ExistingUserInvitationEmailProps) => (
-  <Layout name={name}
+  <Layout
+    name={name}
+    cdnUrl={cdnUrl}
     preview={`${ngoName} has invited you to be an observer for ${electionRoundDetails}.`}
   >
     <Text className="text-base">
-      Thank you for your decision to be an independent observer! We are very glad and grateful to have you here.
+      Thank you for your service as an observer. We are glad to have you back.
     </Text>
 
     <Text className="text-base">
@@ -41,64 +35,27 @@ export const ExistingUserInvitationEmail = ({
     </Text>
 
     <Text className="text-base">
-      Please follow <Link href={confirmUrl}>this link</Link> to complete your registration and to set your password in order to use the application.
+      Go to the Vote Monitor app and reactivate your account. Please make sure you have the latest version installed on your phone.
     </Text>
 
     <Text className="text-base">
-      You may install the app from <Link href="#">Google Play</Link> or <Link href="#">Apple Store</Link>.
+      If you no longer have the app on your device, you may install it from <Link href={googlePlayUrl}>Google Play</Link> or <Link href={appleStoreUrl}>Apple Store</Link>.
     </Text>
 
+    <Text className="text-base">
+      Should you require additional support you may call {phoneNumber}
+    </Text>
   </Layout>
-
 );
 
 ExistingUserInvitationEmail.PreviewProps = {
-  cdnUrl: "",
+  cdnUrl: "/static",
+  name: "John Doe",
   ngoName: "NGO name",
   electionRoundDetails: "Example election round 2024",
+  googlePlayUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+  appleStoreUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+  phoneNumber: "+1234567890"
 } as ExistingUserInvitationEmailProps;
 
 export default ExistingUserInvitationEmail;
-
-const main = {
-  backgroundColor: "#ffffff",
-  fontFamily:
-    '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif',
-};
-
-const container = {
-  margin: "0 auto",
-  padding: "20px 25px 48px",
-  backgroundPosition: "bottom",
-  backgroundRepeat: "no-repeat, no-repeat",
-};
-
-const heading = {
-  fontSize: "28px",
-  fontWeight: "bold",
-  marginTop: "48px",
-};
-
-const body = {
-  margin: "24px 0",
-};
-
-const paragraph = {
-  fontSize: "16px",
-  lineHeight: "26px",
-};
-
-const link = {
-  color: "#FF6363",
-};
-
-const hr = {
-  borderColor: "#dddddd",
-  marginTop: "48px",
-};
-
-const footer = {
-  color: "#8898aa",
-  fontSize: "12px",
-  marginLeft: "4px",
-};

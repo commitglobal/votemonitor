@@ -8,8 +8,6 @@ interface ConfirmEmailProps {
   confirmUrl: string;
 }
 
-
-
 export const ConfirmEmail = ({
   name = '~$name$~',
   confirmUrl = '~$confirmUrl$~',
