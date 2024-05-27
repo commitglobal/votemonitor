@@ -3,11 +3,13 @@ import { router, useLocalSearchParams } from "expo-router";
 import Header from "../../../../../../components/Header";
 import { Icon } from "../../../../../../components/Icon";
 import { Typography } from "../../../../../../components/Typography";
-import { YStack } from "tamagui";
+import { YStack, Image, View, XStack, AlertDialog } from "tamagui";
 import { useQuickReportById } from "../../../../../../services/queries/quick-reports.query";
 import { useUserData } from "../../../../../../contexts/user/UserContext.provider";
 import Card from "../../../../../../components/Card";
 import { useTranslation } from "react-i18next";
+import { Dialog } from "../../../../../../components/Dialog";
+import React from "react";
 
 type SearchParamsType = {
   reportId: string;
@@ -52,6 +54,7 @@ const ReportDetails = () => {
   }
 
   const attachments = quickReport?.attachments || [];
+  console.log(attachments[0]);
   return (
     <Screen
       preset="scroll"
@@ -90,16 +93,41 @@ const ReportDetails = () => {
               {t("uploaded_media")}
             </Typography>
             {attachments.map((attachment, key) => (
-              <Card key={key}>
+              <View key={key} backgroundColor="blue">
                 <Typography preset="body1" fontWeight="700" key={attachment.id}>
                   {attachment.fileName}
                 </Typography>
-              </Card>
+                <ImagePreview attachment={attachment} />
+              </View>
             ))}
           </YStack>
         )}
       </YStack>
     </Screen>
+  );
+};
+
+interface attachementProps {
+  attachment: any;
+}
+
+const ImagePreview = (props: attachementProps) => {
+  const { attachment } = props;
+  console.log(attachment);
+
+  return (
+    <Dialog
+      trigger={<Icon icon="attachment" color="red" />}
+      header={
+        <XStack justifyContent="space-between">
+          <Typography>Here an attachment will be displayed</Typography>
+          <AlertDialog.Cancel>
+            <Icon icon="x" color="red" />
+          </AlertDialog.Cancel>
+        </XStack>
+      }
+      content={<Image source={{ uri: attachment.presignedUrl, width: 200, height: 300 }}></Image>}
+    />
   );
 };
 
