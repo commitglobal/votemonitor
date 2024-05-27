@@ -1,6 +1,6 @@
 import React from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { AlertDialog, XStack } from "tamagui";
+import { AlertDialog, XStack, YStack } from "tamagui";
 import { Typography } from "./Typography";
 import { Dialog } from "./Dialog";
 import Button from "./Button";
@@ -43,13 +43,15 @@ const NetInfoBanner = () => {
           width="100%"
           zIndex={100_000}
         >
-          <Typography fontWeight="500" color="white" paddingLeft="$md">
-            {t("offline")}
-          </Typography>
+          <YStack paddingLeft="$md" maxWidth="65%" paddingVertical="$xxs">
+            <Typography fontWeight="500" color="white" numberOfLines={2}>
+              {t("offline")}
+            </Typography>
+          </YStack>
 
           <Dialog
             trigger={
-              <XStack gap="$sm" justifyContent="center" onPress={() => console.log("open modal")}>
+              <XStack gap="$sm" justifyContent="center" pressStyle={{ opacity: 0.5 }}>
                 <Typography
                   fontWeight="700"
                   color="white"
