@@ -18,7 +18,7 @@ import {
 import { DateAggregateContent } from '../DateAggregateContent/DateAggregateContent';
 import { MultiSelectAggregateContent } from '../MultiSelectAggregateContent/MultiSelectAggregateContent';
 import { NumberAggregateContent } from '../NumberAggregateContent/NumberAggregateContent';
-import { QuestionExtraDataSection } from '../QuestionExtraDataSection/QuestionExtraDataSection';
+import { ResponseExtraDataSection } from '../ReponseExtraDataSection/ResponseExtraDataSection';
 import { RatingAggregateContent } from '../RatingAggregateContent/RatingAggregateContent';
 import { SingleSelectAggregateContent } from '../SingleSelectAggregateContent/SingleSelectAggregateContent';
 import { TextAggregateContent } from '../TextAggregateContent/TextAggregateContent';
@@ -75,7 +75,7 @@ export function AggregateCard({ aggregate, language, responders }: AggregateCard
         {isTextAggregate(aggregate) && <TextAggregateContent aggregate={aggregate} responders={responders} />}
 
         {(notes.length > 0 || attachments.length > 0) && (
-          <QuestionExtraDataSection attachments={attachments} notes={notes} />
+          <ResponseExtraDataSection attachments={attachments} notes={notes} />
         )}
       </CardContent>
     </Card>

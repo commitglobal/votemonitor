@@ -138,27 +138,4 @@
 //   },
 // ];
 
-// export const questionExtraInfoColumnDefs: ColumnDef<QuestionExtraData>[] = [
-//   {
-//     header: ({ column }) => <DataTableColumnHeader title='Time submitted' column={column} />,
-//     accessorKey: 'timeSubmitted',
-//     enableSorting: true,
-//     enableGlobalFilter: true,
-//     cell: ({ row }) => <div>{format(row.original.timeSubmitted, DateTimeFormat)}</div>
-//   },
-//   {
-//     header: ({ column }) => <DataTableColumnHeader title='Note' column={column} />,
-//     accessorKey: 'text',
-//     enableSorting: true,
-//     enableGlobalFilter: true,
-//     minSize: 260,
-//   },
-//   {
-//     header: ({ column }) => <DataTableColumnHeader title='Media files' column={column} />,
-//     accessorKey: 'attachments',
-//     enableSorting: false,
-//     enableGlobalFilter: false,
-//     cell: MediaFilesCell,
-//     size: 200,
-//   },
-// ];
+

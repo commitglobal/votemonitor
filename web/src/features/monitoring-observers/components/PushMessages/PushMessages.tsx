@@ -4,7 +4,7 @@ import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumn
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
 import { Separator } from '@/components/ui/separator';
 import { Link, useNavigate } from '@tanstack/react-router';
-import { ColumnDef } from '@tanstack/react-table';
+import { CellContext, ColumnDef } from '@tanstack/react-table';
 import { Plus } from 'lucide-react';
 import { ChevronRightIcon } from '@heroicons/react/24/outline';
 
@@ -13,6 +13,7 @@ import { format } from 'date-fns';
 import { PushMessageModel } from '../../models/push-message';
 import { useCallback } from 'react';
 import { DateTimeFormat } from '@/common/formats';
+import { TableCellProps } from '@/components/ui/DataTable/DataTable';
 
 function PushMessages() {
   const pushMessagesColDefs: ColumnDef<PushMessageModel>[] = [
@@ -100,6 +101,15 @@ function PushMessages() {
     },
   ];
 
+  const getCellProps = (context: CellContext<PushMessageModel, unknown>): TableCellProps | void => {
+    if (context.column.id === 'body' || context.column.id === 'title') {
+
+      return {
+        className: 'truncate hover:text-clip',
+      }
+    }
+  }
+
   const navigate = useNavigate();
 
   const navigateToPushMessage = useCallback(
@@ -126,7 +136,11 @@ function PushMessages() {
         <Separator />
       </CardHeader>
       <CardContent>
-        <QueryParamsDataTable columns={pushMessagesColDefs} useQuery={usePushMessages} onRowClick={navigateToPushMessage} />
+        <QueryParamsDataTable
+          columns={pushMessagesColDefs}
+          useQuery={usePushMessages}
+          onRowClick={navigateToPushMessage}
+          getCellProps={getCellProps} />
       </CardContent>
     </Card>
   );
