@@ -2,6 +2,7 @@
 using Vote.Monitor.Answer.Module.Aggregators;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Domain.Entities.FormBase.Questions;
+using Vote.Monitor.TestUtils.Fakes.Aggregates;
 using Vote.Monitor.TestUtils.Fakes.Aggregates.Questions;
 using Xunit;
 
@@ -9,7 +10,6 @@ namespace Vote.Monitor.Answer.Module.UnitTests.Aggregators;
 
 public class DateAnswerAggregateTests
 {
-    private readonly Guid _responderId = Guid.NewGuid();
     private readonly DateQuestion _question = new DateQuestionFaker().Generate();
     private readonly DateAnswerAggregate _aggregate;
 
@@ -23,7 +23,7 @@ public class DateAnswerAggregateTests
     public void Aggregate_ShouldUpdateHistogram()
     {
         // Arrange
-        var responderId = Guid.NewGuid();
+        var submission = new FormSubmissionFaker().Generate();
 
         var answer1 = DateAnswer.Create(_question.Id, new DateTime(2024, 01, 02, 01, 01, 34, DateTimeKind.Utc)); // bucket 1
         var answer2 = DateAnswer.Create(_question.Id, new DateTime(2024, 01, 02, 01, 02, 50, DateTimeKind.Utc)); // bucket 1
@@ -34,11 +34,11 @@ public class DateAnswerAggregateTests
         var answer5 = DateAnswer.Create(_question.Id, new DateTime(2024, 01, 02, 03, 01, 34, DateTimeKind.Utc)); // bucket 3
 
         // Act
-        _aggregate.Aggregate(responderId, answer1);
-        _aggregate.Aggregate(responderId, answer2);
-        _aggregate.Aggregate(responderId, answer3);
-        _aggregate.Aggregate(responderId, answer4);
-        _aggregate.Aggregate(responderId, answer5);
+        _aggregate.Aggregate(submission, answer1);
+        _aggregate.Aggregate(submission, answer2);
+        _aggregate.Aggregate(submission, answer3);
+        _aggregate.Aggregate(submission, answer4);
+        _aggregate.Aggregate(submission, answer5);
 
         // Assert
         _aggregate.AnswersHistogram["2024-01-02T01:00:00.0000000Z"].Should().Be(2);
@@ -53,7 +53,7 @@ public class DateAnswerAggregateTests
         var answer = new TestAnswer(); // Not a DateAnswer
 
         // Act & Assert
-        _aggregate.Invoking(a => a.Aggregate(_responderId, answer))
+        _aggregate.Invoking(a => a.Aggregate(new FormSubmissionFaker().Generate(), answer))
             .Should().Throw<ArgumentException>()
             .WithMessage($"Invalid answer received: {answer.Discriminator} (Parameter 'answer')");
     }
