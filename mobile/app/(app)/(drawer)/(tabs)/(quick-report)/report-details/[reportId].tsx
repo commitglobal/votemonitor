@@ -6,10 +6,13 @@ import { Typography } from "../../../../../../components/Typography";
 import { YStack, Image, View, XStack, AlertDialog } from "tamagui";
 import { useQuickReportById } from "../../../../../../services/queries/quick-reports.query";
 import { useUserData } from "../../../../../../contexts/user/UserContext.provider";
-import Card from "../../../../../../components/Card";
+// import Card from "../../../../../../components/Card";
 import { useTranslation } from "react-i18next";
 import { Dialog } from "../../../../../../components/Dialog";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { set } from "react-hook-form";
+// import { Audio } from "expo-av";
+// import Button from "../../../../../../components/Button";
 
 type SearchParamsType = {
   reportId: string;
@@ -112,8 +115,17 @@ interface attachementProps {
 }
 
 const ImagePreview = (props: attachementProps) => {
+  const [mediaType, setMediaType] = useState("");
   const { attachment } = props;
   console.log(attachment);
+
+  useEffect(() => {
+    if (attachment.mimeType.includes("image")) {
+      setMediaType("image");
+    } else {
+      setMediaType("audio");
+    }
+  }, [attachment.mimeType]);
 
   return (
     <Dialog
@@ -126,9 +138,46 @@ const ImagePreview = (props: attachementProps) => {
           </AlertDialog.Cancel>
         </XStack>
       }
-      content={<Image source={{ uri: attachment.presignedUrl, width: 200, height: 300 }}></Image>}
+      content={
+        <View>
+          {mediaType === "image" ? (
+            <Image
+              source={{ uri: attachment.presignedUrl }}
+              width="100%"
+              height={200}
+              resizeMode="contain"
+            />
+          ) : (
+            <Typography>Audio</Typography>
+          )}
+        </View>
+      }
     />
   );
 };
+
+// const AudioPreview = (props: attachementProps) => {
+//   const { attachment } = props;
+//   const [sound, setSound] = useState<Audio.Sound | null>(null);
+
+//   async function playSound() {
+//     const { sound } = await Audio.Sound.createAsync({ uri: attachment.presignedUrl });
+
+//     setSound(sound);
+//     await sound.playAsync();
+//   }
+
+//   return (
+//     <View>
+//       <Button onPress={playSound}> Play </Button>
+//     </View>
+//   );
+// };
+
+// const ImagePreview2 = (props: attachementProps) => {
+//   const { attachment } = props;
+//   console.log(attachment);
+//   return <Typography> WWOW </Typography>;
+// };
 
 export default ReportDetails;
