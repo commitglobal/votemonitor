@@ -60,3 +60,9 @@ variable "seed_admin_phone" {
   description = "Initial administrator phone"
   type        = string
 }
+
+variable "web_app_url" {
+  description = "Public app url"
+  type        = string
+  default     = "https://app.votemonitor.org"
+}
