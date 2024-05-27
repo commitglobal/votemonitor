@@ -35,7 +35,6 @@ export interface BaseQuestionAggregate {
 }
 
 export interface NumberQuestionAggregate extends BaseQuestionAggregate {
-  answers: { responder: string; value: number }[];
   question: NumberQuestion;
   min: number;
   max: number;
@@ -43,7 +42,7 @@ export interface NumberQuestionAggregate extends BaseQuestionAggregate {
 }
 
 export interface TextQuestionAggregate extends BaseQuestionAggregate {
-  answers: { responder: string; value: string }[];
+  answers: { submissionId: string; responderId: string; value: string }[];
   question: TextQuestion;
 }
 
@@ -53,7 +52,6 @@ export interface DateQuestionAggregate extends BaseQuestionAggregate {
 }
 
 export interface RatingQuestionAggregate extends BaseQuestionAggregate {
-  answers: { responder: string; value: number }[];
   answersHistogram: Record<string, number>;
   question: RatingQuestion;
   min: number;
@@ -62,13 +60,11 @@ export interface RatingQuestionAggregate extends BaseQuestionAggregate {
 }
 
 export interface SingleSelectQuestionAggregate extends BaseQuestionAggregate {
-  answers: { responder: string; value: { optionId: string; text: string | null } }[];
   answersHistogram: Record<string, number>;
   question: SingleSelectQuestion;
 }
 
 export interface MultiSelectQuestionAggregate extends BaseQuestionAggregate {
-  answers: { responder: string; value: { optionId: string; text: string | null }[] }[];
   answersHistogram: Record<string, number>;
   question: SingleSelectQuestion;
 }
