@@ -55,9 +55,14 @@ module "ecs_hangfire" {
     {
       name  = "ASPNETCORE_ENVIRONMENT"
       value = var.env
-      }, {
+      }, 
+    {
       name  = "FileStorage__FileStorageType"
       value = "S3"
+    },
+    {
+      name = "ASPNETCORE_URLS",
+      value = "http://+:80"
     },
     {
       name  = "FileStorage__S3__BucketName"

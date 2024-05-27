@@ -57,6 +57,10 @@ module "ecs_api" {
       value = var.env
     },
     {
+      name = "ASPNETCORE_URLS",
+      value = "http://+:80"
+    },
+    {
       name  = "Sentry__Enabled"
       value = tostring(true)
     },
