@@ -20,8 +20,8 @@ module "ecs_hangfire" {
   lb_listener_arn         = aws_lb_listener.https.arn
   lb_hosts                = ["hangfire.${var.domain_name}"]
   lb_domain_zone_id       = data.aws_route53_zone.main.zone_id
-  lb_health_check_enabled = false
-  # lb_path                 = "/"
+  lb_health_check_enabled = true
+  lb_path                 = "/hangfire"
 
   container_memory_soft_limit = 512
   container_memory_hard_limit = 1024
