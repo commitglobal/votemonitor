@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { router } from "expo-router";
 import { useAuth } from "../hooks/useAuth";
-import { View, XStack, YStack, styled } from "tamagui";
+import { ScrollView, View, XStack, YStack, styled } from "tamagui";
 import { useTranslation } from "react-i18next";
 import { Screen } from "../components/Screen";
 import { StatusBar, Animated } from "react-native";
@@ -23,6 +23,7 @@ import Pagination from "../components/Pagination";
 import CredentialsError from "../components/CredentialsError";
 import Toast from "react-native-toast-message";
 import { useNetInfoContext } from "../contexts/net-info-banner/NetInfoContext";
+import Header from "../components/Header";
 
 interface FormData {
   email: string;
@@ -99,32 +100,33 @@ const Login = () => {
   if (onboardingComplete) {
     return (
       <Screen
-        preset="auto"
-        ScrollViewProps={{
-          bounces: false,
-        }}
+        preset="fixed"
         contentContainerStyle={{
           flexGrow: 1,
         }}
       >
-        <Header />
+        <Header barStyle="light-content">
+          <Icon icon="loginLogo" paddingBottom="$md" />
+        </Header>
 
-        <YStack padding="$md" gap="$md">
-          <LoginForm control={control} errors={errors} authError={authError} />
+        <ScrollView>
+          <YStack padding="$md" gap="$md">
+            <LoginForm control={control} errors={errors} authError={authError} />
+            <XStack marginTop="$md" justifyContent="flex-start" gap="$xxs">
+              <Icon icon="infoCircle" size={18} color="white" style={{ marginTop: 2 }} />
 
-          <XStack marginTop="$md" justifyContent="flex-start" gap="$xxs">
-            <Icon icon="infoCircle" size={18} color="white" style={{ marginTop: 2 }} />
+              {/* info text */}
+              <YStack gap="$lg" maxWidth="90%">
+                <Typography>{t("disclaimer.paragraph1")}</Typography>
+                <Typography>
+                  {t("disclaimer.paragraph2")}
+                  <Typography color="$purple5"> {t("disclaimer.email")}</Typography>.
+                </Typography>
+              </YStack>
+            </XStack>
+          </YStack>
+        </ScrollView>
 
-            {/* info text */}
-            <YStack gap="$lg" maxWidth="90%">
-              <Typography>{t("disclaimer.paragraph1")}</Typography>
-              <Typography>
-                {t("disclaimer.paragraph2")}
-                <Typography color="$purple5"> {t("disclaimer.email")}</Typography>.
-              </Typography>
-            </YStack>
-          </XStack>
-        </YStack>
         <Card width="100%" paddingBottom={16 + insets.bottom} marginTop="auto">
           <Button onPress={handleSubmit(onLogin)} disabled={isLoading}>
             {isLoading ? t("form.submit.loading") : t("form.submit.save")}
@@ -298,25 +300,6 @@ const LoginForm = ({
           : ""}
       </Typography>
     </View>
-  );
-};
-
-const Header = () => {
-  const insets = useSafeAreaInsets();
-  const StyledWrapper = styled(XStack, {
-    name: "StyledWrapper",
-    backgroundColor: "$purple5",
-    height: "20%",
-    paddingTop: insets.top,
-    alignItems: "center",
-    justifyContent: "center",
-  });
-
-  return (
-    <StyledWrapper>
-      <StatusBar barStyle="light-content"></StatusBar>
-      <Icon icon="loginLogo" />
-    </StyledWrapper>
   );
 };
 
