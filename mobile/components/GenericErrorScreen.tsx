@@ -37,7 +37,7 @@ const GenericErrorScreen = () => {
             {t("retry")}
           </Button>
           <Button marginTop="$md" preset="outlined" onPress={logout}>
-            Logout
+            {t("logout")}
           </Button>
         </YStack>
       </Stack>
