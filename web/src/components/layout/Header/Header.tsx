@@ -52,8 +52,6 @@ const Header = (): FunctionComponent => {
     router.invalidate();
   }
 
-
-
   const { status, data } = useQuery({
     queryKey: electionRoundKeys.all,
     queryFn: async () => {

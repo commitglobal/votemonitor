@@ -233,6 +233,7 @@ uiConfig: cfg =>
 });
 app.UseResponseCompression();
 app.UseSentryMiddleware();
+app.MapHealthChecks("health");
 
 app.Run();
 

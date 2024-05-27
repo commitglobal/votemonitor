@@ -156,7 +156,7 @@ function PushMessageForm() {
                       Title of message <span className='text-red-500'>*</span>
                     </FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input {...field} maxLength={256} />
                     </FormControl>
                     <FormDescription>
                       Create a short title for your message that will appear in the push notification.
@@ -175,7 +175,7 @@ function PushMessageForm() {
                       Message body <span className='text-red-500'>*</span>
                     </FormLabel>
                     <FormControl>
-                      <Textarea rows={8} className='resize-none' {...field} />
+                      <Textarea rows={8} className='resize-none' {...field} maxLength={1000}/>
                     </FormControl>
                     <FormDescription>1000 characters</FormDescription>
                     <FormMessage />

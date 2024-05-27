@@ -2,6 +2,8 @@
 using Vote.Monitor.Answer.Module.Aggregators;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Domain.Entities.FormBase.Questions;
+using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
+using Vote.Monitor.TestUtils.Fakes.Aggregates;
 using Vote.Monitor.TestUtils.Fakes.Aggregates.Questions;
 using Xunit;
 
@@ -11,7 +13,7 @@ public class RatingAnswerAggregateTests
 {
     private readonly RatingQuestion _question = new RatingQuestionFaker(RatingScale.OneTo10).Generate();
     private readonly RatingAnswerAggregate _aggregate;
-    private readonly Guid _responderId = Guid.NewGuid();
+    private readonly FormSubmission _submission = new FormSubmissionFaker().Generate();
 
     public RatingAnswerAggregateTests()
     {
@@ -48,37 +50,19 @@ public class RatingAnswerAggregateTests
         };
 
     [Fact]
-    public void Aggregate_ShouldAddRatingAnswer()
-    {
-        // Arrange
-        var answer = RatingAnswer.Create(_question.Id, 10);
-
-        // Act
-        _aggregate.Aggregate(_responderId, answer);
-
-        // Assert
-        _aggregate.Answers.Should().ContainSingle()
-            .Which.Responder.Should().Be(_responderId);
-        _aggregate.Answers.Should().ContainSingle()
-            .Which.Value.Should().Be(10);
-    }
-
-    [Fact]
     public void Aggregate_ShouldUpdateHistogram()
     {
         // Arrange
-        var responderId = Guid.NewGuid();
-
         var answer1 = RatingAnswer.Create(_question.Id, 10);
         var answer2 = RatingAnswer.Create(_question.Id, 10);
         var answer3 = RatingAnswer.Create(_question.Id, 2);
         var answer4 = RatingAnswer.Create(_question.Id, 3);
 
         // Act
-        _aggregate.Aggregate(responderId, answer1);
-        _aggregate.Aggregate(responderId, answer2);
-        _aggregate.Aggregate(responderId, answer3);
-        _aggregate.Aggregate(responderId, answer4);
+        _aggregate.Aggregate(_submission, answer1);
+        _aggregate.Aggregate(_submission, answer2);
+        _aggregate.Aggregate(_submission, answer3);
+        _aggregate.Aggregate(_submission, answer4);
 
         // Assert
         _aggregate.AnswersHistogram[1].Should().Be(0);
@@ -97,13 +81,12 @@ public class RatingAnswerAggregateTests
     public void Aggregate_ShouldUpdateMin()
     {
         // Arrange
-        var responderId = Guid.NewGuid();
         var answer1 = RatingAnswer.Create(_question.Id, 10);
         var answer2 = RatingAnswer.Create(_question.Id, 5);
 
         // Act
-        _aggregate.Aggregate(responderId, answer1);
-        _aggregate.Aggregate(responderId, answer2);
+        _aggregate.Aggregate(_submission, answer1);
+        _aggregate.Aggregate(_submission, answer2);
 
         // Assert
         _aggregate.Min.Should().Be(5);
@@ -113,13 +96,12 @@ public class RatingAnswerAggregateTests
     public void Aggregate_ShouldUpdateMax()
     {
         // Arrange
-        var responderId = Guid.NewGuid();
         var answer1 = RatingAnswer.Create(_question.Id, 10);
         var answer2 = RatingAnswer.Create(_question.Id, 2);
 
         // Act
-        _aggregate.Aggregate(responderId, answer1);
-        _aggregate.Aggregate(responderId, answer2);
+        _aggregate.Aggregate(_submission, answer1);
+        _aggregate.Aggregate(_submission, answer2);
 
         // Assert
         _aggregate.Max.Should().Be(10);
@@ -129,13 +111,12 @@ public class RatingAnswerAggregateTests
     public void Aggregate_ShouldUpdateAverage()
     {
         // Arrange
-        var responderId = Guid.NewGuid();
         var answer1 = RatingAnswer.Create(_question.Id, 10);
         var answer2 = RatingAnswer.Create(_question.Id, 2);
 
         // Act
-        _aggregate.Aggregate(responderId, answer1);
-        _aggregate.Aggregate(responderId, answer2);
+        _aggregate.Aggregate(_submission, answer1);
+        _aggregate.Aggregate(_submission, answer2);
 
         // Assert
         _aggregate.Average.Should().Be(6);
@@ -145,11 +126,10 @@ public class RatingAnswerAggregateTests
     public void Aggregate_ShouldThrowException_WhenInvalidAnswerReceived()
     {
         // Arrange
-        var responderId = Guid.NewGuid();
         var answer = new TestAnswer(); // Not a RatingAnswer
 
         // Act & Assert
-        _aggregate.Invoking(a => a.Aggregate(responderId, answer))
+        _aggregate.Invoking(a => a.Aggregate(_submission, answer))
             .Should().Throw<ArgumentException>()
             .WithMessage($"Invalid answer received: {answer.Discriminator} (Parameter 'answer')");
     }
