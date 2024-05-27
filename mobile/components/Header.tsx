@@ -71,6 +71,7 @@ const Header = ({
     backgroundColor,
     minHeight: 50 + insets.top,
     paddingTop: insets.top,
+    justifyContent: "center",
     alignItems: "center",
   });
 
@@ -88,18 +89,13 @@ const Header = ({
           >
             {leftIcon || null}
           </TouchableOpacity>
-
           {/* header title */}
-          <Typography
-            preset="body2"
-            color={titleColor}
-            flex={6}
-            textAlign="center"
-            numberOfLines={2}
-          >
-            {title}
-          </Typography>
 
+          <YStack flex={6} justifyContent="center" alignItems="center">
+            <Typography preset="body2" color={titleColor} textAlign="center" numberOfLines={2}>
+              {title}
+            </Typography>
+          </YStack>
           {/* right icon */}
           <TouchableOpacity
             onPress={rightIcon && onRightPress ? onRightPress : undefined}
