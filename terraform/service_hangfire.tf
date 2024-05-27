@@ -21,7 +21,7 @@ module "ecs_hangfire" {
   lb_hosts                = ["hangfire.${var.domain_name}"]
   lb_domain_zone_id       = data.aws_route53_zone.main.zone_id
   lb_health_check_enabled = true
-  lb_path                 = "/hangfire"
+  lb_path                 = "/health"
 
   container_memory_soft_limit = 256
   container_memory_hard_limit = 768
