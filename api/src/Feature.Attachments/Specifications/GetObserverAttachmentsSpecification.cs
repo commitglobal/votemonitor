@@ -11,6 +11,7 @@ public sealed class GetObserverAttachmentsSpecification : Specification<Attachme
                         && x.PollingStationId == pollingStationId
                         && x.MonitoringObserver.ObserverId == observerId
                         && x.FormId == formId
-                        && x.IsDeleted == false);
+                        && x.IsDeleted == false
+                        && x.IsCompleted == true);
     }
 }

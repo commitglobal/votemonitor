@@ -30,99 +30,100 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
             return TypedResults.NotFound();
         }
 
-        var sql = @"
+        var sql = """
             WITH
                 MONITORINGOBSERVER AS (
                     SELECT
-                        MO.""Id"",
-                        U.""FirstName"",
-                        U.""LastName"",
-                        U.""PhoneNumber"",
-                        U.""Email"",
-                        MO.""Tags"",
-                        MO.""Status""
+                        MO."Id",
+                        U."FirstName",
+                        U."LastName",
+                        U."PhoneNumber",
+                        U."Email",
+                        MO."Tags",
+                        MO."Status"
                     FROM
-                        ""MonitoringObservers"" MO
-                        INNER JOIN ""MonitoringNgos"" MN ON MN.""Id"" = MO.""MonitoringNgoId""
-                        INNER JOIN ""Observers"" O ON O.""Id"" = MO.""ObserverId""
-                        INNER JOIN ""AspNetUsers"" U ON U.""Id"" = O.""ApplicationUserId""
+                        "MonitoringObservers" MO
+                        INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
+                        INNER JOIN "Observers" O ON O."Id" = MO."ObserverId"
+                        INNER JOIN "AspNetUsers" U ON U."Id" = O."ApplicationUserId"
                     WHERE
-                        MO.""Id"" = @id
-                        AND MO.""ElectionRoundId"" = @electionRoundId
+                        MO."Id" = @id
+                        AND MO."ElectionRoundId" = @electionRoundId
                 ),
                 LATESTTIMESTAMPS AS (
                     SELECT
-                        MAX(COALESCE(PSI.""LastModifiedOn"", PSI.""CreatedOn"")) AS ""LatestActivityAt""
+                        MAX(COALESCE(PSI."LastModifiedOn", PSI."CreatedOn")) AS "LatestActivityAt"
                     FROM
-                        ""PollingStationInformation"" PSI
+                        "PollingStationInformation" PSI
                     WHERE
-                        PSI.""ElectionRoundId"" = @electionRoundId
-                        AND PSI.""MonitoringObserverId"" = (
+                        PSI."ElectionRoundId" = @electionRoundId
+                        AND PSI."MonitoringObserverId" = (
                             SELECT
-                                ""Id""
+                                "Id"
                             FROM
                                 MONITORINGOBSERVER
                         )
                     UNION ALL
                     SELECT
-                        MAX(COALESCE(N.""LastModifiedOn"", N.""CreatedOn"")) AS ""LatestActivityAt""
+                        MAX(COALESCE(N."LastModifiedOn", N."CreatedOn")) AS "LatestActivityAt"
                     FROM
-                        ""Notes"" N
+                        "Notes" N
                     WHERE
-                        N.""ElectionRoundId"" = @electionRoundId
-                        AND N.""MonitoringObserverId"" = (
+                        N."ElectionRoundId" = @electionRoundId
+                        AND N."MonitoringObserverId" = (
                             SELECT
-                                ""Id""
+                                "Id"
                             FROM
                                 MONITORINGOBSERVER
                         )
                     UNION ALL
                     SELECT
-                        MAX(COALESCE(A.""LastModifiedOn"", A.""CreatedOn"")) AS ""LatestActivityAt""
+                        MAX(COALESCE(A."LastModifiedOn", A."CreatedOn")) AS "LatestActivityAt"
                     FROM
-                        ""Attachments"" A
+                        "Attachments" A
                     WHERE
-                        A.""ElectionRoundId"" = @electionRoundId
-                        AND A.""MonitoringObserverId"" = (
+                        A."ElectionRoundId" = @electionRoundId
+                        AND A."MonitoringObserverId" = (
                             SELECT
-                                ""Id""
+                                "Id"
                             FROM
                                 MONITORINGOBSERVER
                         )
                     UNION ALL
                     SELECT
-                        MAX(COALESCE(QR.""LastModifiedOn"", QR.""CreatedOn"")) AS ""LatestActivityAt""
+                        MAX(COALESCE(QR."LastModifiedOn", QR."CreatedOn")) AS "LatestActivityAt"
                     FROM
-                        ""QuickReports"" QR
+                        "QuickReports" QR
                     WHERE
-                        QR.""ElectionRoundId"" = @electionRoundId
-                        AND QR.""MonitoringObserverId"" = (
+                        QR."ElectionRoundId" = @electionRoundId
+                        AND QR."MonitoringObserverId" = (
                             SELECT
-                                ""Id""
+                                "Id"
                             FROM
                                 MONITORINGOBSERVER
                         )
                 )
             SELECT
-                MO.""Id"",
-                MO.""FirstName"",
-                MO.""LastName"",
-                MO.""PhoneNumber"",
-                MO.""Email"",
-                MO.""Tags"",
-                MO.""Status"",
-                MAX(LT.""LatestActivityAt"") AS ""LatestActivityAt""
+                MO."Id",
+                MO."FirstName",
+                MO."LastName",
+                MO."PhoneNumber",
+                MO."Email",
+                MO."Tags",
+                MO."Status",
+                MAX(LT."LatestActivityAt") AS "LatestActivityAt"
             FROM
                 MONITORINGOBSERVER MO,
                 LATESTTIMESTAMPS LT
             GROUP BY
-                MO.""Id"",
-                MO.""FirstName"",
-                MO.""LastName"",
-                MO.""PhoneNumber"",
-                MO.""Email"",
-                MO.""Tags"",
-                MO.""Status"";";
+                MO."Id",
+                MO."FirstName",
+                MO."LastName",
+                MO."PhoneNumber",
+                MO."Email",
+                MO."Tags",
+                MO."Status";
+        """;
 
         var queryArgs = new
         {

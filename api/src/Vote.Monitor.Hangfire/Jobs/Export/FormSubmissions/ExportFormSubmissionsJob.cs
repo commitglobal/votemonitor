@@ -63,7 +63,7 @@ public class ExportFormSubmissionsJob(VoteMonitorContext context,
             {
                 foreach (var attachment in submission.Attachments)
                 {
-                    var result = await fileStorageService.GetPresignedUrlAsync(attachment.FilePath, attachment.UploadedFileName, ct);
+                    var result = await fileStorageService.GetPresignedUrlAsync(attachment.FilePath, attachment.UploadedFileName);
 
                     if (result is GetPresignedUrlResult.Ok okResult)
                     {

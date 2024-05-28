@@ -21,41 +21,41 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
 
     public override async Task<Response> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var sql = @"
+        var sql = """
         SELECT
-            F.""Id"" AS ""FormId"",
-            F.""Code"" AS ""FormCode"",
-            F.""FormType"" AS ""FormType"",
-            COUNT(DISTINCT FS.""Id"") ""NumberOfSubmissions"",
-            SUM(FS.""NumberOfFlaggedAnswers"") ""NumberOfFlaggedAnswers"",
+            F."Id" AS "FormId",
+            F."Code" AS "FormCode",
+            F."FormType" AS "FormType",
+            COUNT(DISTINCT FS."Id") "NumberOfSubmissions",
+            SUM(FS."NumberOfFlaggedAnswers") "NumberOfFlaggedAnswers",
             (
                 SELECT
                     COUNT(1)
                 FROM
-                    ""Attachments""
+                    "Attachments"
                 WHERE
-                    ""FormId"" = F.""Id""
-            ) AS ""NumberOfMediaFiles"",
+                    "FormId" = F."Id"
+            ) AS "NumberOfMediaFiles",
             (
                 SELECT
                     COUNT(1)
                 FROM
-                    ""Notes""
+                    "Notes"
                 WHERE
-                    ""FormId"" = F.""Id""
-            ) AS ""NumberOfNotes""
+                    "FormId" = F."Id"
+            ) AS "NumberOfNotes"
         FROM
-            ""Forms"" F
-            INNER JOIN ""MonitoringNgos"" MN ON MN.""Id"" = F.""MonitoringNgoId""
-            INNER JOIN ""FormSubmissions"" FS ON FS.""FormId"" = F.""Id""
+            "Forms" F
+            INNER JOIN "MonitoringNgos" MN ON MN."Id" = F."MonitoringNgoId"
+            INNER JOIN "FormSubmissions" FS ON FS."FormId" = F."Id"
         WHERE
-            F.""ElectionRoundId"" = @electionRoundId
-            AND MN.""NgoId"" = @ngoId
+            F."ElectionRoundId" = @electionRoundId
+            AND MN."NgoId" = @ngoId
         GROUP BY
-            F.""Id"",
-            F.""Code"",
-            F.""FormType"";
-        ";
+            F."Id",
+            F."Code",
+            F."FormType";
+        """;
 
         var queryArgs = new
         {

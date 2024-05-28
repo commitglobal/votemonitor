@@ -23,101 +23,103 @@ public class Endpoint(IRepository<NotificationAggregate> repository,
 
     public override async Task<Results<Ok<Response>, ProblemHttpResult>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var sql = @"
+        var sql = """
             SELECT
-                MO.""Id"",
-                NT.""Token""
+                MO."Id",
+                NT."Token"
             FROM
-                ""MonitoringObservers"" MO
-                INNER JOIN ""MonitoringNgos"" MN ON MN.""Id"" = MO.""MonitoringNgoId""
-                INNER JOIN ""Observers"" O ON O.""Id"" = MO.""ObserverId""
-                INNER JOIN ""AspNetUsers"" U ON U.""Id"" = O.""ApplicationUserId""
-                LEFT JOIN ""NotificationTokens"" NT ON NT.""ObserverId"" = MO.""ObserverId""
+                "MonitoringObservers" MO
+                INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
+                INNER JOIN "Observers" O ON O."Id" = MO."ObserverId"
+                INNER JOIN "AspNetUsers" U ON U."Id" = O."ApplicationUserId"
+                LEFT JOIN "NotificationTokens" NT ON NT."ObserverId" = MO."ObserverId"
             WHERE
-                MN.""ElectionRoundId"" = @electionRoundId
-                AND MN.""NgoId"" = @ngoId
-                AND (@searchText IS NULL OR @searchText = '' OR (U.""FirstName"" || ' ' || U.""LastName"") ILIKE @searchText OR u.""Email"" ILIKE @searchText OR u.""PhoneNumber"" ILIKE @searchText)
-                AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR  mo.""Tags"" && @tagsFilter)
-                AND (@status IS NULL OR  mo.""Status"" = @status)
+                MN."ElectionRoundId" = @electionRoundId
+                AND MN."NgoId" = @ngoId
+                AND (@searchText IS NULL OR @searchText = '' OR (U."FirstName" || ' ' || U."LastName") ILIKE @searchText OR u."Email" ILIKE @searchText OR u."PhoneNumber" ILIKE @searchText)
+                AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR  mo."Tags" && @tagsFilter)
+                AND (@status IS NULL OR  mo."Status" = @status)
                 AND (@level1 IS NULL OR EXISTS (
                     SELECT
                         1
                     FROM
                         (
                             SELECT
-                                PSI.""PollingStationId"" ""PollingStationId""
+                                PSI."PollingStationId" "PollingStationId"
                             FROM
-                                ""PollingStationInformation"" PSI
-                                INNER JOIN ""PollingStations"" PS ON PS.""Id"" = PSI.""PollingStationId""
+                                "PollingStationInformation" PSI
+                                INNER JOIN "PollingStations" PS ON PS."Id" = PSI."PollingStationId"
                             WHERE
-                                PSI.""MonitoringObserverId"" = MO.""Id""
-                                AND PS.""ElectionRoundId"" = @electionRoundId
-                                AND PSI.""ElectionRoundId"" = @electionRoundId
+                                PSI."MonitoringObserverId" = MO."Id"
+                                AND PS."ElectionRoundId" = @electionRoundId
+                                AND PSI."ElectionRoundId" = @electionRoundId
                             UNION
                             SELECT
-                                N.""PollingStationId"" ""PollingStationId""
+                                N."PollingStationId" "PollingStationId"
                             FROM
-                                ""Notes"" N
-                                INNER JOIN ""PollingStations"" PS ON PS.""Id"" = N.""PollingStationId""
+                                "Notes" N
+                                INNER JOIN "PollingStations" PS ON PS."Id" = N."PollingStationId"
                             WHERE
-                                N.""MonitoringObserverId"" = MO.""Id""
-                                AND PS.""ElectionRoundId"" = @electionRoundId
-                                AND N.""ElectionRoundId"" = @electionRoundId
+                                N."MonitoringObserverId" = MO."Id"
+                                AND PS."ElectionRoundId" = @electionRoundId
+                                AND N."ElectionRoundId" = @electionRoundId
                             UNION
                             SELECT
-                                A.""PollingStationId"" ""PollingStationId""
+                                A."PollingStationId" "PollingStationId"
                             FROM
-                                ""Attachments"" A
-                                INNER JOIN ""PollingStations"" PS ON PS.""Id"" = A.""PollingStationId""
+                                "Attachments" A
+                                INNER JOIN "PollingStations" PS ON PS."Id" = A."PollingStationId"
                             WHERE
-                                A.""MonitoringObserverId"" = MO.""Id""
-                                AND PS.""ElectionRoundId"" = @electionRoundId
-                                AND A.""ElectionRoundId"" = @electionRoundId
+                                A."MonitoringObserverId" = MO."Id"
+                                AND PS."ElectionRoundId" = @electionRoundId
+                                AND A."ElectionRoundId" = @electionRoundId
+                                AND a."IsDeleted" = false AND a."IsCompleted" = true
                             UNION
                             SELECT
-                                QR.""PollingStationId"" ""PollingStationId""
+                                QR."PollingStationId" "PollingStationId"
                             FROM
-                                ""QuickReports"" QR
-                                INNER JOIN ""PollingStations"" PS ON PS.""Id"" = QR.""PollingStationId""
+                                "QuickReports" QR
+                                INNER JOIN "PollingStations" PS ON PS."Id" = QR."PollingStationId"
                             WHERE
-                                QR.""PollingStationId"" IS NOT NULL
-                                AND QR.""MonitoringObserverId"" = MO.""Id""
-                                AND PS.""ElectionRoundId"" = @electionRoundId
-                                AND QR.""ElectionRoundId"" = @electionRoundId
+                                QR."PollingStationId" IS NOT NULL
+                                AND QR."MonitoringObserverId" = MO."Id"
+                                AND PS."ElectionRoundId" = @electionRoundId
+                                AND QR."ElectionRoundId" = @electionRoundId
                             UNION
                             SELECT
-                                FS.""PollingStationId"" ""PollingStationId""
+                                FS."PollingStationId" "PollingStationId"
                             FROM
-                                ""FormSubmissions"" FS
-                                INNER JOIN ""PollingStations"" PS ON PS.""Id"" = FS.""PollingStationId""
+                                "FormSubmissions" FS
+                                INNER JOIN "PollingStations" PS ON PS."Id" = FS."PollingStationId"
                             WHERE
-                                FS.""MonitoringObserverId"" = MO.""Id""
-                                AND PS.""ElectionRoundId"" = @electionRoundId
-                                AND FS.""ElectionRoundId"" = @electionRoundId
+                                FS."MonitoringObserverId" = MO."Id"
+                                AND PS."ElectionRoundId" = @electionRoundId
+                                AND FS."ElectionRoundId" = @electionRoundId
                         ) psVisits
-                        INNER JOIN ""PollingStations"" PS ON psVisits.""PollingStationId"" = PS.""Id""
+                        INNER JOIN "PollingStations" PS ON psVisits."PollingStationId" = PS."Id"
                     WHERE
-                        ""ElectionRoundId"" = @electionRoundId
+                        "ElectionRoundId" = @electionRoundId
                         AND (
                             @level1 IS NULL
-                            OR PS.""Level1"" = @level1
+                            OR PS."Level1" = @level1
                         )
                         AND (
                             @level2 IS NULL
-                            OR PS.""Level2"" = @level2
+                            OR PS."Level2" = @level2
                         )
                         AND (
                             @level3 IS NULL
-                            OR PS.""Level3"" = @level3
+                            OR PS."Level3" = @level3
                         )
                         AND (
                             @level4 IS NULL
-                            OR PS.""Level3"" = @level4
+                            OR PS."Level3" = @level4
                         )
                         AND (
                             @level5 IS NULL
-                            OR PS.""Level3"" = @level5
-                        )))";
+                            OR PS."Level3" = @level5
+                        )))
+        """;
 
         var queryArgs = new
         {
@@ -144,7 +146,7 @@ public class Endpoint(IRepository<NotificationAggregate> repository,
         var pushNotificationTokens = recipients
             .Select(x => x.Token)
             .Where(x => !string.IsNullOrWhiteSpace(x))
-            .Select(x=>x!)
+            .Select(x => x!)
             .Distinct()
             .ToList();
 

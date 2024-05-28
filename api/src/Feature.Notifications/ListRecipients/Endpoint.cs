@@ -19,221 +19,224 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) :
 
     public override async Task<PagedResponse<TargetedMonitoringObserverModel>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var sql = @"
+        var sql = """
         SELECT COUNT(*) count
         FROM
-            ""MonitoringObservers"" MO
-            INNER JOIN ""MonitoringNgos"" MN ON MN.""Id"" = MO.""MonitoringNgoId""
-            INNER JOIN ""Observers"" O ON O.""Id"" = MO.""ObserverId""
-            INNER JOIN ""AspNetUsers"" U ON U.""Id"" = O.""ApplicationUserId""
+            "MonitoringObservers" MO
+            INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
+            INNER JOIN "Observers" O ON O."Id" = MO."ObserverId"
+            INNER JOIN "AspNetUsers" U ON U."Id" = O."ApplicationUserId"
         WHERE
-            MN.""ElectionRoundId"" = @electionRoundId
-            AND MN.""NgoId"" = @ngoId
-            AND (@searchText IS NULL OR @searchText = '' OR (U.""FirstName"" || ' ' || U.""LastName"") ILIKE @searchText OR U.""Email"" ILIKE @searchText OR u.""PhoneNumber"" ILIKE @searchText)
-            AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR  mo.""Tags"" && @tagsFilter)
-            AND (@status IS NULL OR  mo.""Status"" = @status)
+            MN."ElectionRoundId" = @electionRoundId
+            AND MN."NgoId" = @ngoId
+            AND (@searchText IS NULL OR @searchText = '' OR (U."FirstName" || ' ' || U."LastName") ILIKE @searchText OR U."Email" ILIKE @searchText OR u."PhoneNumber" ILIKE @searchText)
+            AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR  mo."Tags" && @tagsFilter)
+            AND (@status IS NULL OR  mo."Status" = @status)
             AND (@level1 IS NULL OR EXISTS (
                 SELECT
                     1
                 FROM
                     (
                         SELECT
-                            PSI.""PollingStationId"" ""PollingStationId""
+                            PSI."PollingStationId" "PollingStationId"
                         FROM
-                            ""PollingStationInformation"" PSI
-                            INNER JOIN ""PollingStations"" PS ON PS.""Id"" = PSI.""PollingStationId""
+                            "PollingStationInformation" PSI
+                            INNER JOIN "PollingStations" PS ON PS."Id" = PSI."PollingStationId"
                         WHERE
-                            PSI.""MonitoringObserverId"" = MO.""Id""
-                            AND PS.""ElectionRoundId"" = @electionRoundId
-                            AND PSI.""ElectionRoundId"" = @electionRoundId
+                            PSI."MonitoringObserverId" = MO."Id"
+                            AND PS."ElectionRoundId" = @electionRoundId
+                            AND PSI."ElectionRoundId" = @electionRoundId
                         UNION
                         SELECT
-                            N.""PollingStationId"" ""PollingStationId""
+                            N."PollingStationId" "PollingStationId"
                         FROM
-                            ""Notes"" N
-                            INNER JOIN ""PollingStations"" PS ON PS.""Id"" = N.""PollingStationId""
+                            "Notes" N
+                            INNER JOIN "PollingStations" PS ON PS."Id" = N."PollingStationId"
                         WHERE
-                            N.""MonitoringObserverId"" = MO.""Id""
-                            AND PS.""ElectionRoundId"" = @electionRoundId
-                            AND N.""ElectionRoundId"" = @electionRoundId
+                            N."MonitoringObserverId" = MO."Id"
+                            AND PS."ElectionRoundId" = @electionRoundId
+                            AND N."ElectionRoundId" = @electionRoundId
                         UNION
                         SELECT
-                            A.""PollingStationId"" ""PollingStationId""
+                            A."PollingStationId" "PollingStationId"
                         FROM
-                            ""Attachments"" A
-                            INNER JOIN ""PollingStations"" PS ON PS.""Id"" = A.""PollingStationId""
+                            "Attachments" A
+                            INNER JOIN "PollingStations" PS ON PS."Id" = A."PollingStationId"
                         WHERE
-                            A.""MonitoringObserverId"" = MO.""Id""
-                            AND PS.""ElectionRoundId"" = @electionRoundId
-                            AND A.""ElectionRoundId"" = @electionRoundId
+                            A."MonitoringObserverId" = MO."Id"
+                            AND PS."ElectionRoundId" = @electionRoundId
+                            AND A."ElectionRoundId" = @electionRoundId
+                            AND A."IsDeleted" = false AND A."IsCompleted" = true
                         UNION
                         SELECT
-                            QR.""PollingStationId"" ""PollingStationId""
+                            QR."PollingStationId" "PollingStationId"
                         FROM
-                            ""QuickReports"" QR
-                            INNER JOIN ""PollingStations"" PS ON PS.""Id"" = QR.""PollingStationId""
+                            "QuickReports" QR
+                            INNER JOIN "PollingStations" PS ON PS."Id" = QR."PollingStationId"
                         WHERE
-                            QR.""PollingStationId"" IS NOT NULL
-                            AND QR.""MonitoringObserverId"" = MO.""Id""
-                            AND PS.""ElectionRoundId"" = @electionRoundId
-                            AND QR.""ElectionRoundId"" = @electionRoundId
+                            QR."PollingStationId" IS NOT NULL
+                            AND QR."MonitoringObserverId" = MO."Id"
+                            AND PS."ElectionRoundId" = @electionRoundId
+                            AND QR."ElectionRoundId" = @electionRoundId
                         UNION
                         SELECT
-                            FS.""PollingStationId"" ""PollingStationId""
+                            FS."PollingStationId" "PollingStationId"
                         FROM
-                            ""FormSubmissions"" FS
-                            INNER JOIN ""PollingStations"" PS ON PS.""Id"" = FS.""PollingStationId""
+                            "FormSubmissions" FS
+                            INNER JOIN "PollingStations" PS ON PS."Id" = FS."PollingStationId"
                         WHERE
-                            FS.""MonitoringObserverId"" = MO.""Id""
-                            AND PS.""ElectionRoundId"" = @electionRoundId
-                            AND FS.""ElectionRoundId"" = @electionRoundId
+                            FS."MonitoringObserverId" = MO."Id"
+                            AND PS."ElectionRoundId" = @electionRoundId
+                            AND FS."ElectionRoundId" = @electionRoundId
                     ) psVisits
-                    INNER JOIN ""PollingStations"" PS ON psVisits.""PollingStationId"" = PS.""Id""
+                    INNER JOIN "PollingStations" PS ON psVisits."PollingStationId" = PS."Id"
                 WHERE
-                    ""ElectionRoundId"" = @electionRoundId
+                    "ElectionRoundId" = @electionRoundId
                     AND (
                         @level1 IS NULL
-                        OR PS.""Level1"" = @level1
+                        OR PS."Level1" = @level1
                     )
                     AND (
                         @level2 IS NULL
-                        OR PS.""Level2"" = @level2
+                        OR PS."Level2" = @level2
                     )
                     AND (
                         @level3 IS NULL
-                        OR PS.""Level3"" = @level3
+                        OR PS."Level3" = @level3
                     )
                     AND (
                         @level4 IS NULL
-                        OR PS.""Level3"" = @level4
+                        OR PS."Level3" = @level4
                     )
                     AND (
                         @level5 IS NULL
-                        OR PS.""Level3"" = @level5
+                        OR PS."Level3" = @level5
                     )));
 
         SELECT 
-            ""MonitoringObserverId"",
-            ""ObserverName"",
-            ""PhoneNumber"",
-            ""Email"",
-            ""Tags"",
-            ""Status""
+            "MonitoringObserverId",
+            "ObserverName",
+            "PhoneNumber",
+            "Email",
+            "Tags",
+            "Status"
         FROM (
             SELECT
-                MO.""Id"" ""MonitoringObserverId"",
-                U.""FirstName"" || ' ' || U.""LastName"" ""ObserverName"",
-                U.""PhoneNumber"",
-                U.""Email"",
-                MO.""Tags"",
-                MO.""Status""
+                MO."Id" "MonitoringObserverId",
+                U."FirstName" || ' ' || U."LastName" "ObserverName",
+                U."PhoneNumber",
+                U."Email",
+                MO."Tags",
+                MO."Status"
             FROM
-                ""MonitoringObservers"" MO
-                INNER JOIN ""MonitoringNgos"" MN ON MN.""Id"" = MO.""MonitoringNgoId""
-                INNER JOIN ""Observers"" O ON O.""Id"" = MO.""ObserverId""
-                INNER JOIN ""AspNetUsers"" U ON U.""Id"" = O.""ApplicationUserId""
+                "MonitoringObservers" MO
+                INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
+                INNER JOIN "Observers" O ON O."Id" = MO."ObserverId"
+                INNER JOIN "AspNetUsers" U ON U."Id" = O."ApplicationUserId"
             WHERE
-                MN.""ElectionRoundId"" = @electionRoundId
-                AND MN.""NgoId"" = @ngoId
-                AND (@searchText IS NULL OR @searchText = '' OR (U.""FirstName"" || ' ' || U.""LastName"") ILIKE @searchText OR u.""Email"" ILIKE @searchText OR u.""PhoneNumber"" ILIKE   @searchText)
-                AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR  mo.""Tags"" && @tagsFilter)
-                AND (@status IS NULL OR  mo.""Status"" = @status)
+                MN."ElectionRoundId" = @electionRoundId
+                AND MN."NgoId" = @ngoId
+                AND (@searchText IS NULL OR @searchText = '' OR (U."FirstName" || ' ' || U."LastName") ILIKE @searchText OR u."Email" ILIKE @searchText OR u."PhoneNumber" ILIKE   @searchText)
+                AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR  mo."Tags" && @tagsFilter)
+                AND (@status IS NULL OR  mo."Status" = @status)
                 AND (@level1 IS NULL OR EXISTS (
                     SELECT
                         1
                     FROM
                         (
                             SELECT
-                                PSI.""PollingStationId"" ""PollingStationId""
+                                PSI."PollingStationId" "PollingStationId"
                             FROM
-                                ""PollingStationInformation"" PSI
-                                INNER JOIN ""PollingStations"" PS ON PS.""Id"" = PSI.""PollingStationId""
+                                "PollingStationInformation" PSI
+                                INNER JOIN "PollingStations" PS ON PS."Id" = PSI."PollingStationId"
                             WHERE
-                                PSI.""MonitoringObserverId"" = MO.""Id""
-                                AND PS.""ElectionRoundId"" = @electionRoundId
-                                AND PSI.""ElectionRoundId"" = @electionRoundId
+                                PSI."MonitoringObserverId" = MO."Id"
+                                AND PS."ElectionRoundId" = @electionRoundId
+                                AND PSI."ElectionRoundId" = @electionRoundId
                             UNION
                             SELECT
-                                N.""PollingStationId"" ""PollingStationId""
+                                N."PollingStationId" "PollingStationId"
                             FROM
-                                ""Notes"" N
-                                INNER JOIN ""PollingStations"" PS ON PS.""Id"" = N.""PollingStationId""
+                                "Notes" N
+                                INNER JOIN "PollingStations" PS ON PS."Id" = N."PollingStationId"
                             WHERE
-                                N.""MonitoringObserverId"" = MO.""Id""
-                                AND PS.""ElectionRoundId"" = @electionRoundId
-                                AND N.""ElectionRoundId"" = @electionRoundId
+                                N."MonitoringObserverId" = MO."Id"
+                                AND PS."ElectionRoundId" = @electionRoundId
+                                AND N."ElectionRoundId" = @electionRoundId
                             UNION
                             SELECT
-                                A.""PollingStationId"" ""PollingStationId""
+                                A."PollingStationId" "PollingStationId"
                             FROM
-                                ""Attachments"" A
-                                INNER JOIN ""PollingStations"" PS ON PS.""Id"" = A.""PollingStationId""
+                                "Attachments" A
+                                INNER JOIN "PollingStations" PS ON PS."Id" = A."PollingStationId"
                             WHERE
-                                A.""MonitoringObserverId"" = MO.""Id""
-                                AND PS.""ElectionRoundId"" = @electionRoundId
-                                AND A.""ElectionRoundId"" = @electionRoundId
+                                A."MonitoringObserverId" = MO."Id"
+                                AND PS."ElectionRoundId" = @electionRoundId
+                                AND A."ElectionRoundId" = @electionRoundId
+                                AND a."IsDeleted" = false AND a."IsCompleted" = true
                             UNION
                             SELECT
-                                QR.""PollingStationId"" ""PollingStationId""
+                                QR."PollingStationId" "PollingStationId"
                             FROM
-                                ""QuickReports"" QR
-                                INNER JOIN ""PollingStations"" PS ON PS.""Id"" = QR.""PollingStationId""
+                                "QuickReports" QR
+                                INNER JOIN "PollingStations" PS ON PS."Id" = QR."PollingStationId"
                             WHERE
-                                QR.""PollingStationId"" IS NOT NULL
-                                AND QR.""MonitoringObserverId"" = MO.""Id""
-                                AND PS.""ElectionRoundId"" = @electionRoundId
-                                AND QR.""ElectionRoundId"" = @electionRoundId
+                                QR."PollingStationId" IS NOT NULL
+                                AND QR."MonitoringObserverId" = MO."Id"
+                                AND PS."ElectionRoundId" = @electionRoundId
+                                AND QR."ElectionRoundId" = @electionRoundId
                             UNION
                             SELECT
-                                FS.""PollingStationId"" ""PollingStationId""
+                                FS."PollingStationId" "PollingStationId"
                             FROM
-                                ""FormSubmissions"" FS
-                                INNER JOIN ""PollingStations"" PS ON PS.""Id"" = FS.""PollingStationId""
+                                "FormSubmissions" FS
+                                INNER JOIN "PollingStations" PS ON PS."Id" = FS."PollingStationId"
                             WHERE
-                                FS.""MonitoringObserverId"" = MO.""Id""
-                                AND PS.""ElectionRoundId"" = @electionRoundId
-                                AND FS.""ElectionRoundId"" = @electionRoundId
+                                FS."MonitoringObserverId" = MO."Id"
+                                AND PS."ElectionRoundId" = @electionRoundId
+                                AND FS."ElectionRoundId" = @electionRoundId
                         ) psVisits
-                        INNER JOIN ""PollingStations"" PS ON psVisits.""PollingStationId"" = PS.""Id""
+                        INNER JOIN "PollingStations" PS ON psVisits."PollingStationId" = PS."Id"
                     WHERE
-                        ""ElectionRoundId"" = @electionRoundId
+                        "ElectionRoundId" = @electionRoundId
                         AND (
                             @level1 IS NULL
-                            OR PS.""Level1"" = @level1
+                            OR PS."Level1" = @level1
                         )
                         AND (
                             @level2 IS NULL
-                            OR PS.""Level2"" = @level2
+                            OR PS."Level2" = @level2
                         )
                         AND (
                             @level3 IS NULL
-                            OR PS.""Level3"" = @level3
+                            OR PS."Level3" = @level3
                         )
                         AND (
                             @level4 IS NULL
-                            OR PS.""Level3"" = @level4
+                            OR PS."Level3" = @level4
                         )
                         AND (
                             @level5 IS NULL
-                            OR PS.""Level3"" = @level5
+                            OR PS."Level3" = @level5
                         )))
             ) T
 
         ORDER BY
-            CASE WHEN @sortExpression = 'ObserverName ASC' THEN ""ObserverName"" END ASC,
-            CASE WHEN @sortExpression = 'ObserverName DESC' THEN ""ObserverName"" END DESC,
+            CASE WHEN @sortExpression = 'ObserverName ASC' THEN "ObserverName" END ASC,
+            CASE WHEN @sortExpression = 'ObserverName DESC' THEN "ObserverName" END DESC,
 
-            CASE WHEN @sortExpression = 'PhoneNumber ASC' THEN ""PhoneNumber"" END ASC,
-            CASE WHEN @sortExpression = 'PhoneNumber DESC' THEN ""PhoneNumber"" END DESC,
+            CASE WHEN @sortExpression = 'PhoneNumber ASC' THEN "PhoneNumber" END ASC,
+            CASE WHEN @sortExpression = 'PhoneNumber DESC' THEN "PhoneNumber" END DESC,
 
-            CASE WHEN @sortExpression = 'Email ASC' THEN ""Email"" END ASC,
-            CASE WHEN @sortExpression = 'Email DESC' THEN ""Email"" END DESC,
+            CASE WHEN @sortExpression = 'Email ASC' THEN "Email" END ASC,
+            CASE WHEN @sortExpression = 'Email DESC' THEN "Email" END DESC,
 
-            CASE WHEN @sortExpression = 'Tags ASC' THEN ""Tags"" END ASC,
-            CASE WHEN @sortExpression = 'Tags DESC' THEN ""Tags"" END DESC
+            CASE WHEN @sortExpression = 'Tags ASC' THEN "Tags" END ASC,
+            CASE WHEN @sortExpression = 'Tags DESC' THEN "Tags" END DESC
          
         OFFSET @offset ROWS
-        FETCH NEXT @pageSize ROWS ONLY;";
+        FETCH NEXT @pageSize ROWS ONLY;
+        """;
 
         var queryArgs = new
         {
@@ -243,7 +246,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) :
             pageSize = req.PageSize,
             tagsFilter = req.TagsFilter ?? [],
             searchText = $"%{req.SearchText?.Trim() ?? string.Empty}%",
-            status= req.StatusFilter?.ToString(),
+            status = req.StatusFilter?.ToString(),
             level1 = req.Level1Filter,
             level2 = req.Level2Filter,
             level3 = req.Level3Filter,

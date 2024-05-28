@@ -87,8 +87,7 @@ public class Endpoint(
             {
                 var presignedUrl = await fileStorageService.GetPresignedUrlAsync(
                     attachment.FilePath,
-                    attachment.UploadedFileName,
-                    ct);
+                    attachment.UploadedFileName);
 
                 return new QuickReportAttachmentModel
                 {
