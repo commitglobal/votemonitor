@@ -46,7 +46,7 @@ export function ReponseExtraDataTable({ columns, data }: ReponseExtraDataTablePr
             ))
           ) : (
             <TableRow>
-              <TableCell className='h-24 text-center' colSpan={questionExtraInfoColumnDefs.length}>
+              <TableCell className='h-24 text-center' colSpan={columns.length}>
                 No results.
               </TableCell>
             </TableRow>
