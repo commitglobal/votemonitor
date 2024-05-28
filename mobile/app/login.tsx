@@ -94,6 +94,15 @@ const Login = () => {
     }
   };
 
+  const onNextButtonPress = () => {
+    if (currentPage !== data.length - 1) {
+      // @ts-ignore
+      pagerViewRef?.current?.setPage(currentPage + 1);
+    } else {
+      onOnboardingComplete();
+    }
+  };
+
   // todo: refactor this (nr of pages in the view pager) @luciatugui
   const data = [1, 2, 3];
 
@@ -141,7 +150,7 @@ const Login = () => {
   }
 
   return (
-    <>
+    <Screen preset="fixed">
       <OnboardingViewPager
         scrollOffsetAnimatedValue={scrollOffsetAnimatedValue}
         positionAnimatedValue={positionAnimatedValue}
@@ -151,56 +160,35 @@ const Login = () => {
       />
 
       <XStack
-        justifyContent="center"
-        alignItems="center"
         backgroundColor="$purple6"
-        paddingHorizontal="$md"
-        paddingBottom={insets.bottom + 32}
+        padding="$md"
+        paddingBottom={insets.bottom + 16}
+        position="absolute"
+        bottom={0}
+        justifyContent="center"
+        width="100%"
       >
-        <XStack flex={1}></XStack>
-        <XStack justifyContent="center" flex={1}>
-          <Pagination
-            scrollOffsetAnimatedValue={scrollOffsetAnimatedValue}
-            positionAnimatedValue={positionAnimatedValue}
-            data={data}
-          />
-        </XStack>
-
-        {currentPage !== data.length - 1 ? (
-          <XStack
-            onPress={() => {
-              // @ts-ignore
-              currentPage !== data.length - 1 && pagerViewRef?.current?.setPage(currentPage + 1);
-            }}
-            pressStyle={{ opacity: 0.5 }}
-            flex={1}
-            justifyContent="flex-end"
-          >
-            <Typography color="white" preset="body2" paddingVertical="$xs" paddingRight="$md">
-              {t("skip", { ns: "common" })}
-            </Typography>
-          </XStack>
-        ) : (
-          <XStack
-            onPress={() => onOnboardingComplete()}
-            pressStyle={{ opacity: 0.5 }}
-            flex={1}
-            justifyContent="flex-end"
-          >
-            <Typography
-              color="white"
-              preset="body2"
-              paddingVertical="$xs"
-              paddingRight="$md"
-              textAlign="center"
-            >
-              {/* //!this might cause problems if the translation is too long */}
-              {t("media.save", { ns: "onboarding" })}
-            </Typography>
-          </XStack>
-        )}
+        <Pagination
+          scrollOffsetAnimatedValue={scrollOffsetAnimatedValue}
+          positionAnimatedValue={positionAnimatedValue}
+          data={data}
+        />
+        <YStack
+          position="absolute"
+          right="$md"
+          top="$md"
+          padding="$xxs"
+          pressStyle={{ opacity: 0.5 }}
+          onPress={onNextButtonPress}
+        >
+          <Typography color="white" preset="body2" textAlign="center">
+            {currentPage !== data.length - 1
+              ? t("skip", { ns: "common" })
+              : t("media.save", { ns: "onboarding" })}
+          </Typography>
+        </YStack>
       </XStack>
-    </>
+    </Screen>
   );
 };
 
