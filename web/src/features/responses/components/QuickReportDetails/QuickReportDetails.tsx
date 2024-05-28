@@ -16,12 +16,13 @@ import { format } from 'date-fns';
 import { quickReportKeys } from '../../hooks/quick-reports';
 import { QuickReportFollowUpStatus } from '../../models/quick-report';
 import { NavigateBack } from '@/components/NavigateBack/NavigateBack';
+import { usePrevSearch } from '@/common/prev-search-store';
 
 export default function QuickReportDetails(): FunctionComponent {
   const { quickReportId } = Route.useParams();
   const quickReportQuery = useSuspenseQuery(quickReportDetailsQueryOptions(quickReportId));
   const quickReport = quickReportQuery.data;
-  const router = useRouter();
+  const { invalidate } = useRouter();
 
   const updateQuickReportFollowUpStatusMutation = useMutation({
     mutationKey: quickReportKeys.all,
@@ -39,7 +40,7 @@ export default function QuickReportDetails(): FunctionComponent {
         description: 'Follow-up status updated',
       });
 
-      router.invalidate();
+      invalidate();
       void queryClient.invalidateQueries({ queryKey: quickReportKeys.all });
     },
 
@@ -56,12 +57,14 @@ export default function QuickReportDetails(): FunctionComponent {
     updateQuickReportFollowUpStatusMutation.mutate(followUpStatus);
   }
 
+  const prevSearch = usePrevSearch();
+
   return (
     <Layout
-      backButton={<NavigateBack to='/responses' search={{ tab: 'quick-reports' }} />}
+      backButton={<NavigateBack to='/responses' search={prevSearch} />}
       breadcrumbs={
         <div className='breadcrumbs flex flex-row gap-2 mb-4'>
-          <Link className='crumb' to='/responses' preload='intent' search={{ tab: 'quick-reports' }}>
+          <Link className='crumb' to='/responses' preload='intent' search={prevSearch}>
             responses
           </Link>
           <Link className='crumb'>{quickReport.id}</Link>

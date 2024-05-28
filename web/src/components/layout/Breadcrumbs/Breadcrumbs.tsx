@@ -1,7 +1,10 @@
+import { usePrevSearch } from '@/common/prev-search-store';
+import type { FunctionComponent } from '@/common/types';
 import { Link, useRouter } from '@tanstack/react-router';
 
-const Breadcrumbs = () => {
+const Breadcrumbs = (): FunctionComponent => {
   const { latestLocation } = useRouter();
+  const prevSearch = usePrevSearch();
 
   let currentLink: string = '';
 
@@ -12,7 +15,7 @@ const Breadcrumbs = () => {
       currentLink += `/${crumb}`;
 
       return (
-        <Link className='crumb' key={crumb} to={currentLink} preload='intent'>
+        <Link className='crumb' key={crumb} search={prevSearch} to={currentLink} preload='intent'>
           {crumb}
         </Link>
       );

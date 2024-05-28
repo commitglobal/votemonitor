@@ -25,6 +25,7 @@ import { FormsTableByEntry } from '../FormsTableByEntry/FormsTableByEntry';
 import { FormsTableByForm } from '../FormsTableByForm/FormsTableByForm';
 import { FormsTableByObserver } from '../FormsTableByObserver/FormsTableByObserver';
 import { QuickReports } from '../QuickReports/QuickReports';
+import { useSetPrevSearch } from '@/common/prev-search-store';
 
 const routeApi = getRouteApi('/responses/');
 
@@ -35,11 +36,11 @@ const viewBy: Record<FilterBy, string> = {
 };
 
 export default function ResponsesDashboard(): ReactElement {
-  const [byFilter, setByFilter] = useState<FilterBy>('byEntry');
-
   const navigate = routeApi.useNavigate();
   const search = routeApi.useSearch();
-  const [isFiltering, setIsFiltering] = useState(() => Object.keys(search).some((key) => key !== 'tab'));
+  const [isFiltering, setIsFiltering] = useState(() =>
+    Object.keys(search).some((key) => key !== 'tab' && key !== 'viewBy')
+  );
 
   const [searchText, setSearchText] = useState<string>('');
   const debouncedSearchText = useDebounce(searchText, 300);
@@ -49,14 +50,20 @@ export default function ResponsesDashboard(): ReactElement {
     if (!value || value.length >= 2) setSearchText(ev.currentTarget.value);
   };
 
+  const { viewBy: byFilter, tab } = search;
+
+  const setPrevSearch = useSetPrevSearch();
+
   return (
     <Layout title='Responses' subtitle='View all form answers and other issues reported by your observers.  '>
       <Tabs
-        defaultValue={search.tab ?? 'form-answers'}
+        defaultValue={tab ?? 'form-answers'}
         onValueChange={(tab) => {
           void navigate({
             search(prev) {
-              return { ...prev, tab };
+              const newSearch = { ...prev, tab };
+              setPrevSearch(newSearch);
+              return newSearch;
             },
           });
         }}>
@@ -77,7 +84,7 @@ export default function ResponsesDashboard(): ReactElement {
                   <DropdownMenu>
                     <DropdownMenuTrigger>
                       <Badge className='text-purple-900 hover:bg-purple-50 hover:text-purple-500 h-8' variant='outline'>
-                        {viewBy[byFilter]}
+                        {viewBy[byFilter ?? 'byEntry']}
 
                         <ChevronDownIcon className='w-4 ml-2' />
                       </Badge>
@@ -85,8 +92,8 @@ export default function ResponsesDashboard(): ReactElement {
                     <DropdownMenuContent>
                       <DropdownMenuRadioGroup
                         onValueChange={(value) => {
-                          setByFilter(value as FilterBy);
-                          void navigate({});
+                          setPrevSearch({ viewBy: value });
+                          void navigate({ search: { viewBy: value } });
                           setIsFiltering(false);
                         }}
                         value={byFilter}>
@@ -117,7 +124,7 @@ export default function ResponsesDashboard(): ReactElement {
                   </>
                 )}
 
-                <ColumnsVisibilitySelector byFilter={byFilter} />
+                <ColumnsVisibilitySelector byFilter={byFilter ?? 'byEntry'} />
               </div>
 
               <Separator />

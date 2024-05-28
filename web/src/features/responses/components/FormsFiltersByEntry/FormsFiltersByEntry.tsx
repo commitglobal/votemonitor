@@ -1,36 +1,54 @@
-import { getRouteApi, useNavigate } from '@tanstack/react-router';
+import { useNavigate } from '@tanstack/react-router';
 import { useCallback } from 'react';
 import type { FunctionComponent } from '@/common/types';
 import { FilterBadge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { FormType } from '../../models/form-submission';
 import type { FormSubmissionsSearchParams } from '../../models/search-params';
 import { PollingStationsFilters } from '@/components/PollingStationsFilters/PollingStationsFilters';
 import { Route } from '@/routes/responses';
+import { ResetFiltersButton } from '../ResetFiltersButton/ResetFiltersButton';
+import { useSetPrevSearch } from '@/common/prev-search-store';
 
 export function FormsFiltersByEntry(): FunctionComponent {
-  const navigate = useNavigate({from: '/responses/'});
+  const navigate = useNavigate({ from: '/responses/' });
   const search = Route.useSearch();
+  const setPrevSearch = useSetPrevSearch();
+
+  const navigateHandler = useCallback(
+    (search: Record<string, string | undefined>) => {
+      void navigate({
+        search: (prev) => {
+          const newSearch: Record<string, string | undefined | string[] | number> = {
+            ...prev,
+            ...search,
+          };
+          setPrevSearch(newSearch);
+          return newSearch;
+        },
+      });
+    },
+    [navigate, setPrevSearch]
+  );
 
   const onClearFilter = useCallback(
     (filter: keyof FormSubmissionsSearchParams | (keyof FormSubmissionsSearchParams)[]) => () => {
       const filters = Array.isArray(filter)
         ? Object.fromEntries(filter.map((key) => [key, undefined]))
         : { [filter]: undefined };
-      void navigate({ search: (prev) => ({ ...prev, ...filters }) });
+      navigateHandler(filters);
     },
-    [navigate]
+    [navigateHandler]
   );
 
-  const isFiltered = Object.keys(search).some((key) => key !== 'tab');
+  const isFiltered = Object.keys(search).some((key) => key !== 'tab' && key !== 'viewBy');
 
   return (
     <>
       <Select
         onValueChange={(value) => {
-          void navigate({ search: (prev) => ({ ...prev, formTypeFilter: value }) });
+          navigateHandler({ formTypeFilter: value });
         }}
         value={search.formTypeFilter ?? ''}>
         <SelectTrigger>
@@ -39,7 +57,9 @@ export function FormsFiltersByEntry(): FunctionComponent {
         <SelectContent>
           <SelectGroup>
             {Object.values(FormType).map((value) => (
-              <SelectItem value={value} key={value}>{value}</SelectItem>
+              <SelectItem value={value} key={value}>
+                {value}
+              </SelectItem>
             ))}
           </SelectGroup>
         </SelectContent>
@@ -49,14 +69,14 @@ export function FormsFiltersByEntry(): FunctionComponent {
         defaultValue={search.pollingStationNumberFilter}
         placeholder='Station number'
         onChange={(e) => {
-          void navigate({ search: (prev) => ({ ...prev, pollingStationNumberFilter: e.target.value }) });
+          navigateHandler({ pollingStationNumberFilter: e.target.value });
         }}
         value={search.pollingStationNumberFilter ?? ''}
       />
 
       <Select
         onValueChange={(value) => {
-          void navigate({ search: (prev) => ({ ...prev, hasFlaggedAnswers: value }) });
+          navigateHandler({ hasFlaggedAnswers: value });
         }}
         value={search.hasFlaggedAnswers ?? ''}>
         <SelectTrigger>
@@ -64,22 +84,19 @@ export function FormsFiltersByEntry(): FunctionComponent {
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
-            <SelectItem key={'true'} value='true'>Yes</SelectItem>
-            <SelectItem key={'false'} value='false'>No</SelectItem>
+            <SelectItem key={'true'} value='true'>
+              Yes
+            </SelectItem>
+            <SelectItem key={'false'} value='false'>
+              No
+            </SelectItem>
           </SelectGroup>
         </SelectContent>
       </Select>
 
       <PollingStationsFilters />
 
-      <Button
-        disabled={!isFiltered}
-        onClick={() => {
-          void navigate({});
-        }}
-        variant='ghost-primary'>
-        Reset filters
-      </Button>
+      <ResetFiltersButton disabled={!isFiltered} />
 
       {isFiltered && (
         <div className='col-span-full flex gap-2 flex-wrap'>

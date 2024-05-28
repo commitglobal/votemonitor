@@ -4,7 +4,6 @@ import { useDebounce } from '@uidotdev/usehooks';
 import { type ChangeEvent, useState, useMemo, useCallback } from 'react';
 import type { FunctionComponent } from '@/common/types';
 import { FilterBadge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   DropdownMenu,
@@ -25,6 +24,8 @@ import { quickReportsColumnVisibilityOptions } from '../../utils/column-visibili
 import { ExportedDataType } from '../../models/data-export';
 import { useQuickReportsColumnsVisibility, useQuickReportsToggleColumn } from '../../store/column-visibility';
 import { ExportDataButton } from '../ExportDataButton/ExportDataButton';
+import { ResetFiltersButton } from '../ResetFiltersButton/ResetFiltersButton';
+import { useSetPrevSearch } from '@/common/prev-search-store';
 
 const routeApi = getRouteApi('/responses/');
 
@@ -36,7 +37,9 @@ export function QuickReports(): FunctionComponent {
   const columnsVisibility = useQuickReportsColumnsVisibility();
   const toggleColumns = useQuickReportsToggleColumn();
 
-  const [isFiltering, setIsFiltering] = useState(() => Object.keys(search).some((key) => key !== 'tab'));
+  const [isFiltering, setIsFiltering] = useState(() =>
+    Object.keys(search).some((key) => key !== 'tab' && key !== 'viewBy')
+  );
 
   const [searchText, setSearchText] = useState<string>('');
   const debouncedSearchText = useDebounce(searchText, 300);
@@ -59,17 +62,25 @@ export function QuickReports(): FunctionComponent {
     return Object.fromEntries(params) as QuickReportsSearchParams;
   }, [debouncedSearch, debouncedSearchText]);
 
+  const setPrevSearch = useSetPrevSearch();
+
   const onClearFilter = useCallback(
     (filter: keyof QuickReportsSearchParams | (keyof QuickReportsSearchParams)[]) => () => {
       const filters = Array.isArray(filter)
         ? Object.fromEntries(filter.map((key) => [key, undefined]))
         : { [filter]: undefined };
-      void navigate({ search: (prev) => ({ ...prev, ...filters }) });
+      void navigate({
+        search: (prev) => {
+          const newSearch = { ...prev, ...filters };
+          setPrevSearch(newSearch);
+          return newSearch;
+        },
+      });
     },
-    [navigate]
+    [navigate, setPrevSearch]
   );
 
-  const isFiltered = Object.keys(search).some((key) => key !== 'tab');
+  const isFiltered = Object.keys(search).some((key) => key !== 'tab' && key !== 'viewBy');
 
   const navigateToQuickReport = useCallback(
     (quickReportId: string) => {
@@ -126,14 +137,7 @@ export function QuickReports(): FunctionComponent {
         {isFiltering && (
           <div className='grid grid-cols-6 gap-4 items-center'>
             <PollingStationsFilters />
-            <Button
-              disabled={!isFiltered}
-              onClick={() => {
-                void navigate({});
-              }}
-              variant='ghost-primary'>
-              Reset filters
-            </Button>
+            <ResetFiltersButton disabled={!isFiltered} />
 
             {isFiltered && (
               <div className='col-span-full flex gap-2 flex-wrap'>
