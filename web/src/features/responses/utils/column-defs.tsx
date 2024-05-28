@@ -139,8 +139,8 @@ export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry &
         {row.original.followUpStatus === SubmissionFollowUpStatus.NotApplicable
           ? 'Not Applicable'
           : row.original.followUpStatus === SubmissionFollowUpStatus.NeedsFollowUp
-            ? 'Needs follow-up'
-            : 'Resolved'}
+          ? 'Needs follow-up'
+          : 'Resolved'}
       </Badge>
     ),
   },
@@ -228,10 +228,13 @@ export const formSubmissionsByObserverColumnDefs: ColumnDef<FormSubmissionByObse
     cell: ({ row }) => (
       <div className='text-right'>
         <Link
-          search
           className='hover:bg-purple-100 inline-flex h-6 w-6 rounded-full items-center justify-center'
           params={{ monitoringObserverId: row.original.monitoringObserverId, tab: 'details' }}
-          to='/monitoring-observers/view/$monitoringObserverId/$tab'>
+          to='/monitoring-observers/view/$monitoringObserverId/$tab'
+          target='_blank'
+          onClick={(e) => {
+            e.stopPropagation();
+          }}>
           <ChevronRightIcon className='w-4 text-purple-600' />
         </Link>
       </div>
@@ -430,8 +433,8 @@ export const quickReportsColumnDefs: ColumnDef<QuickReport>[] = [
         {row.original.followUpStatus === QuickReportFollowUpStatus.NotApplicable
           ? 'Not Applicable'
           : row.original.followUpStatus === QuickReportFollowUpStatus.NeedsFollowUp
-            ? 'Needs follow-up'
-            : 'Resolved'}
+          ? 'Needs follow-up'
+          : 'Resolved'}
       </Badge>
     ),
   },
