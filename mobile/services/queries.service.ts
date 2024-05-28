@@ -114,10 +114,8 @@ export const usePollingStationsNomenclatorQuery = (electionRoundId: string | und
               ?.cacheKey;
           } catch (err) {
             // Possible offline or backend has issues, let it pass
-            // Sentry log
             serverVersionKey = localVersionKey ?? "";
             console.log("usePollingStationsNomenclatorQuery", err);
-            Sentry.captureMessage("Fetching PS Nomenclator failed (no internet, or server error");
           }
 
           try {
@@ -190,7 +188,7 @@ export const usePollingStationByParentID = (
 };
 
 export const pollingStationByIdQueryFn = async (pollingStationId: string) => {
-  console.log("usePollingStationById", pollingStationId);
+  console.log("🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀 usePollingStationById", pollingStationId);
   const data = await DB.getPollingStationById(pollingStationId);
 
   if (!data)
@@ -205,10 +203,16 @@ export const pollingStationByIdQueryFn = async (pollingStationId: string) => {
   };
   return mapped;
 };
-export const usePollingStationById = (pollingStationId: string | undefined) => {
+export const usePollingStationById = (
+  pollingStationId: string | undefined,
+  hasNomenclator: string | undefined,
+) => {
   return useQuery({
     queryKey: pollingStationsKeys.one(pollingStationId!),
-    queryFn: pollingStationId ? () => pollingStationByIdQueryFn(pollingStationId) : skipToken,
+    queryFn:
+      pollingStationId && !!hasNomenclator
+        ? () => pollingStationByIdQueryFn(pollingStationId)
+        : skipToken,
     staleTime: 5 * 60 * 1000,
     networkMode: "always", // https://tanstack.com/query/v4/docs/framework/react/guides/network-mode#network-mode-always
   });
