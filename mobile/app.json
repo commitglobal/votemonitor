@@ -40,9 +40,9 @@
       "eas": {
         "projectId": "93e17628-ddcd-4e67-849c-b356a18a6082"
       },
-      "message": "Onboarding fixes",
-      "updateCritical": 30,
-      "updateVersion": 30
+      "message": "Enable logs",
+      "updateCritical": 31,
+      "updateVersion": 31
     },
     "owner": "commit-global",
     "runtimeVersion": {
