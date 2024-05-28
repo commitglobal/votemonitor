@@ -10,12 +10,13 @@ internal class InvitationNewUserEmailGenerator : IEmailGenerator<InvitationNewUs
         var template = EmailTemplateLoader.GetTemplate(EmailTemplateType.InvitationNewUser);
 
         var body = template
+            .Replace("~$name$~", props.FullName)
+            .Replace("~$confirmUrl$~", props.AcceptUrl)
             .Replace("~$cdnUrl$~", props.CdnUrl)
             .Replace("~$ngoName$~", props.NgoName)
-            .Replace("~$electionRoundDetails$~", props.ElectionRoundDetails)
-            .Replace("~$inviteUrl$~", props.AcceptUrl);
+            .Replace("~$electionRoundDetails$~", props.ElectionRoundDetails);
 
-        return new EmailModel("Register on VoteMonitor platform to monitor elections", body);
+        return new EmailModel($"{props.NgoName} has invited you to be an observer for {props.ElectionRoundDetails}.", body);
 
     }
 }
