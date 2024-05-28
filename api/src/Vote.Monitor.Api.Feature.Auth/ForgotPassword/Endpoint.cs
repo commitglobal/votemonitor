@@ -39,7 +39,7 @@ public class Endpoint(
         var endpointUri = new Uri(Path.Combine($"{_apiConfig.WebAppUrl}", "reset-password"));
         string passwordResetUrl = QueryHelpers.AddQueryString(endpointUri.ToString(), "token", code);
 
-        var emailProps = new ResetPasswordEmailProps(string.Empty, passwordResetUrl);
+        var emailProps = new ResetPasswordEmailProps(FullName: user.FirstName + " " + user.LastName, CdnUrl: _apiConfig.WebAppUrl, ResetPasswordUrl: passwordResetUrl);
         var mail = emailFactory.GenerateEmail(EmailTemplateType.ResetPassword, emailProps);
 
         jobService.SendEmail(request.Email, mail.Subject, mail.Body);

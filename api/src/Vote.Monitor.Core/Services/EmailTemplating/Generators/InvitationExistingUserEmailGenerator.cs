@@ -10,11 +10,11 @@ internal class InvitationExistingUserEmailGenerator : IEmailGenerator<Invitation
         var template = EmailTemplateLoader.GetTemplate(EmailTemplateType.InvitationExistingUser);
 
         var body = template
+            .Replace("~$name$~", props.FullName)
             .Replace("~$cdnUrl$~", props.CdnUrl)
             .Replace("~$ngoName$~", props.NgoName)
             .Replace("~$electionRoundDetails$~", props.ElectionRoundDetails);
 
-        return new EmailModel($"Accept invitation to monitor elections", body);
-
+        return new EmailModel($"{props.NgoName} has invited you to be an observer for {props.ElectionRoundDetails}.", body);
     }
 }
