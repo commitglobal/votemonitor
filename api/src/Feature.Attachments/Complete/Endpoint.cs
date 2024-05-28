@@ -16,7 +16,6 @@ public class Endpoint(
         Post("/api/election-rounds/{electionRoundId}/attachments/{id}:complete");
         DontAutoTag();
         Options(x => x.WithTags("attachments", "mobile"));
-        AllowFileUploads();
         Summary(s =>
         {
             s.Summary = "Completes upload for an attachment";

@@ -94,7 +94,8 @@ internal class S3FileStorageService(IAmazonS3 client,
                     UploadId = response.UploadId,
                     BucketName = _options.BucketName,
                     PartNumber = partNumber,
-                    Key = fileKey
+                    Key = fileKey,
+                    Expires = DateTime.UtcNow.AddHours(24)
                 });
 
                 presignedUrls.Add(partNumber, partPresignedUrl);

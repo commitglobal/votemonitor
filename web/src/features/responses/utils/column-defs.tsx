@@ -293,7 +293,31 @@ export const formSubmissionsByFormColumnDefs: ColumnDef<FormSubmissionByForm & R
   },
 ];
 
-export const questionExtraInfoColumnDefs: ColumnDef<QuestionExtraData>[] = [
+export const answerExtraInfoColumnDefs: ColumnDef<QuestionExtraData>[] = [
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Type' column={column} />,
+    accessorKey: 'type',
+    enableSorting: true,
+    enableGlobalFilter: true,
+    cell: ({ row }) => <div>{row.original.type}</div>,
+  },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Time submitted' column={column} />,
+    accessorKey: 'timeSubmitted',
+    enableSorting: true,
+    enableGlobalFilter: true,
+    cell: ({ row }) => <div>{format(row.original.timeSubmitted, DateTimeFormat)}</div>,
+  },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Details' column={column} />,
+    accessorKey: 'details',
+    enableSorting: false,
+    enableGlobalFilter: false,
+    cell: ({ row }) => <div>{row.original.type === "Note" ? row.original.text : <MediaFilesCell attachment={row.original} />}</div>,
+  },
+];
+
+export const aggregatedAnswerExtraInfoColumnDefs: ColumnDef<QuestionExtraData>[] = [
   {
     header: ({ column }) => <DataTableColumnHeader title='EntryID' column={column} />,
     accessorKey: 'submissionId',

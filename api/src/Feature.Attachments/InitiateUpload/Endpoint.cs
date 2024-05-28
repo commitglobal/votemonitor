@@ -11,21 +11,20 @@ public class Endpoint(
     IRepository<AttachmentAggregate> repository,
     IFileStorageService fileStorageService,
     IReadRepository<MonitoringObserver> monitoringObserverRepository)
-    : Endpoint<Request, Results<Ok<Response>, NotFound, BadRequest<ProblemDetails>, StatusCodeHttpResult>>
+    : Endpoint<Request, Results<Ok<Response>, NotFound, Conflict>>
 {
     public override void Configure()
     {
-        Post("/api/election-rounds/{electionRoundId}/attachments");
+        Post("/api/election-rounds/{electionRoundId}/attachments:init");
         DontAutoTag();
         Options(x => x.WithTags("attachments", "mobile"));
-        AllowFileUploads();
         Summary(s =>
         {
             s.Summary = "Creates an attachment for a specific polling station and gets back details for uploading it in the file storage";
         });
     }
 
-    public override async Task<Results<Ok<Response>, NotFound, BadRequest<ProblemDetails>, StatusCodeHttpResult>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<Results<Ok<Response>, NotFound, Conflict>> ExecuteAsync(Request req, CancellationToken ct)
     {
         var authorizationResult = await authorizationService.AuthorizeAsync(User, new MonitoringObserverRequirement(req.ElectionRoundId));
         if (!authorizationResult.Succeeded)
@@ -33,9 +32,16 @@ public class Endpoint(
             return TypedResults.NotFound();
         }
 
+        var specification = new GetAttachmentByIdSpecification(req.ElectionRoundId, req.ObserverId, req.Id);
+        var existingAttachment = await repository.FirstOrDefaultAsync(specification, ct);
+        if (existingAttachment != null)
+        {
+            return TypedResults.Conflict();
+        }
+
         var monitoringObserverSpecification = new GetMonitoringObserverSpecification(req.ElectionRoundId, req.ObserverId);
         var monitoringObserver = await monitoringObserverRepository.FirstOrDefaultAsync(monitoringObserverSpecification, ct);
-
+       
         var uploadPath = $"elections/{req.ElectionRoundId}/polling-stations/{req.PollingStationId}/form/{req.FormId}/attachments";
         var attachment = new AttachmentAggregate(req.Id,
             req.ElectionRoundId,

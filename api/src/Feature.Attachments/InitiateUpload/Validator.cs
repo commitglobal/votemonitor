@@ -10,5 +10,6 @@ public class Validator : Validator<Request>
         RuleFor(x => x.Id).NotEmpty();
         RuleFor(x => x.FormId).NotEmpty();
         RuleFor(x => x.QuestionId).NotEmpty();
+        RuleFor(x => x.NumberOfUploadParts).GreaterThan(0);
     }
 }

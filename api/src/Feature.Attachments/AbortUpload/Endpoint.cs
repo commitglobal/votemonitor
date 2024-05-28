@@ -15,7 +15,6 @@ public class Endpoint(IAuthorizationService authorizationService,
         Post("/api/election-rounds/{electionRoundId}/attachments/{id}:abort");
         DontAutoTag();
         Options(x => x.WithTags("attachments", "mobile"));
-        AllowFileUploads();
         Summary(s =>
         {
             s.Summary = "Aborts the upload and marks the attachment as deleted";

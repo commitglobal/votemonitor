@@ -1,16 +1,16 @@
-import { flexRender, useReactTable, getCoreRowModel, getSortedRowModel } from '@tanstack/react-table';
+import { flexRender, useReactTable, getCoreRowModel, getSortedRowModel, ColumnDef } from '@tanstack/react-table';
 import type { FunctionComponent } from '@/common/types';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import type { QuestionExtraData } from '../../types';
-import { questionExtraInfoColumnDefs } from '../../utils/column-defs';
 
 type ReponseExtraDataTableProps = {
+  columns: ColumnDef<QuestionExtraData>[]
   data: QuestionExtraData[];
 };
 
-export function ReponseExtraDataTable({ data }: ReponseExtraDataTableProps): FunctionComponent {
+export function ReponseExtraDataTable({ columns, data }: ReponseExtraDataTableProps): FunctionComponent {
   const table = useReactTable({
-    columns: questionExtraInfoColumnDefs,
+    columns,
     data,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
