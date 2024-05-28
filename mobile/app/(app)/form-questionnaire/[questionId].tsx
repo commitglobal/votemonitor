@@ -269,7 +269,7 @@ const FormQuestionnaire = () => {
     `Attachment_${questionId}_${selectedPollingStation?.pollingStationId}_${formId}_${questionId}`,
   );
 
-  const handleCameraUpload = async (type: "library" | "cameraPhoto" | "cameraVideo") => {
+  const handleCameraUpload = async (type: "library" | "cameraPhoto") => {
     const cameraResult = await uploadCameraOrMedia(type);
 
     if (!cameraResult) {

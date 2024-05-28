@@ -66,7 +66,7 @@ const Login = () => {
       if (!isOnline) {
         return Toast.show({
           type: "error",
-          text2: t("errors.offline"),
+          text2: t("form.errors.offline"),
           visibilityTime: 5000,
           text2Style: { textAlign: "center" },
         });

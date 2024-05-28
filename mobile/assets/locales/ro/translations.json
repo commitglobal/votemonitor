@@ -397,7 +397,15 @@
     "support": "Sună la call center",
     "feedback": "Trimite-ne feedback-ul tău",
     "logout": "Deconectează-te",
-    "logged_in": "Conectat ca {{user}}"
+    "logged_in": "Conectat ca {{user}}",
+    "warning_modal": {
+      "logout": {
+        "title": "Atenție: Ai date nesincronizate",
+        "description": "Momentan nu ai conexiune la internet. Dacă te deconectezi acum, toate formularele, atașamentele sau notițele pe care le-ai completat sau încărcat fără conexiune se vor pierde.\n\nPentru a evita pierderea datelor, te rugăm să te reconectezi la internet înainte de deconectarea din aplicație.",
+        "cancel": "Renunță",
+        "action": "Deconectează-te"
+      }
+    }
   },
   "change_password": {
     "title": "Schimbă parola",

@@ -397,7 +397,15 @@
     "support": "Call the NGO Hotline",
     "feedback": "Offer app feedback",
     "logout": "Logout",
-    "logged_in": "Logged in as {{user}}"
+    "logged_in": "Logged in as {{user}}",
+    "warning_modal": {
+      "logout": {
+        "title": "Attention: You have unsynced data",
+        "description": "You are currently offline. If you log out now, any forms, attachments, or notes you have completed or uploaded during the offline mode will be lost.\n\nTo avoid losing your data, please reconnect to the internet before logging out.",
+        "cancel": "Cancel",
+        "action": "Log out"
+      }
+    }
   },
   "change_password": {
     "title": "Change password",
