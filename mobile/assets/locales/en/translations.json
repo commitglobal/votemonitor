@@ -65,7 +65,8 @@
         "loading": "Log in..."
       },
       "errors": {
-        "invalid_credentials": "There was an error with your credentials. Please try again."
+        "invalid_credentials": "There was an error with your credentials. Please try again.",
+        "offline": "You need an internet connection in order to log in."
       }
     },
     "actions": {

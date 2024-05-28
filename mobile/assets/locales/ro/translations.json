@@ -65,7 +65,8 @@
         "loading": "Conectează-te..."
       },
       "errors": {
-        "invalid_credentials": "Credențialele nu sunt corecte. Te rugăm să încerci din nou."
+        "invalid_credentials": "Credențialele nu sunt corecte. Te rugăm să încerci din nou.",
+        "offline": "Pentru conectarea la aplicație este necesară o conexiune la internet."
       }
     },
     "actions": {
