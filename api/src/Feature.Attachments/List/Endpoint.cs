@@ -48,8 +48,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<List<AttachmentModel>>, Not
             {
                 var presignedUrl = await _fileStorageService.GetPresignedUrlAsync(
                     attachment.FilePath,
-                    attachment.UploadedFileName,
-                    ct);
+                    attachment.UploadedFileName);
 
                 return new AttachmentModel
                 {

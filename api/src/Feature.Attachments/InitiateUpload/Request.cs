@@ -1,6 +1,6 @@
 ﻿using Vote.Monitor.Core.Security;
 
-namespace Feature.Attachments.Create;
+namespace Feature.Attachments.InitiateUpload;
 
 public class Request
 {
@@ -14,6 +14,7 @@ public class Request
     public Guid Id { get; set; }
     public Guid FormId { get; set; }
     public Guid QuestionId { get; set; }
-
-    public IFormFile Attachment { get; set; }
+    public string FileName { get; set; }
+    public string ContentType { get; set; }
+    public int NumberOfUploadParts { get; set; }
 }

@@ -22,134 +22,134 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
 
     public override async Task<PagedResponse<MonitoringObserverModel>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var sql = @"
+        var sql = """
         SELECT COUNT(*) count
         FROM
-            ""MonitoringObservers"" MO
-            INNER JOIN ""MonitoringNgos"" MN ON MN.""Id"" = MO.""MonitoringNgoId""
-            INNER JOIN ""Observers"" O ON O.""Id"" = MO.""ObserverId""
-            INNER JOIN ""AspNetUsers"" U ON U.""Id"" = O.""ApplicationUserId""
+            "MonitoringObservers" MO
+            INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
+            INNER JOIN "Observers" O ON O."Id" = MO."ObserverId"
+            INNER JOIN "AspNetUsers" U ON U."Id" = O."ApplicationUserId"
         WHERE
-            MN.""ElectionRoundId"" = @electionRoundId
-            AND MN.""NgoId"" = @ngoId
-            AND (@searchText IS NULL OR @searchText = '' OR (U.""FirstName"" || ' ' || U.""LastName"") ILIKE @searchText OR U.""Email"" ILIKE @searchText OR U.""PhoneNumber"" ILIKE @searchText)
-            AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR mo.""Tags"" && @tagsFilter)
-            AND (@status IS NULL OR  mo.""Status"" = @status);
+            MN."ElectionRoundId" = @electionRoundId
+            AND MN."NgoId" = @ngoId
+            AND (@searchText IS NULL OR @searchText = '' OR (U."FirstName" || ' ' || U."LastName") ILIKE @searchText OR U."Email" ILIKE @searchText OR U."PhoneNumber" ILIKE @searchText)
+            AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR mo."Tags" && @tagsFilter)
+            AND (@status IS NULL OR  mo."Status" = @status);
 
         SELECT
-            ""Id"",
-            ""FirstName"",
-            ""LastName"",
-            ""PhoneNumber"",
-            ""Email"",
-            ""Tags"",
-            ""Status"",
-            ""LatestActivityAt""
+            "Id",
+            "FirstName",
+            "LastName",
+            "PhoneNumber",
+            "Email",
+            "Tags",
+            "Status",
+            "LatestActivityAt"
         FROM (
             SELECT
-                MO.""Id"",
-                U.""FirstName"",
-                U.""LastName"",
-                U.""PhoneNumber"",
-                U.""Email"",
-                MO.""Tags"",
-                MO.""Status"",
-                MAX(LATESTACTIVITY.""LatestActivityAt"") AS ""LatestActivityAt""
+                MO."Id",
+                U."FirstName",
+                U."LastName",
+                U."PhoneNumber",
+                U."Email",
+                MO."Tags",
+                MO."Status",
+                MAX(LATESTACTIVITY."LatestActivityAt") AS "LatestActivityAt"
             FROM
-                ""MonitoringObservers"" MO
-                INNER JOIN ""MonitoringNgos"" MN ON MN.""Id"" = MO.""MonitoringNgoId""
-                INNER JOIN ""Observers"" O ON O.""Id"" = MO.""ObserverId""
-                INNER JOIN ""AspNetUsers"" U ON U.""Id"" = O.""ApplicationUserId""
+                "MonitoringObservers" MO
+                INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
+                INNER JOIN "Observers" O ON O."Id" = MO."ObserverId"
+                INNER JOIN "AspNetUsers" U ON U."Id" = O."ApplicationUserId"
                 LEFT JOIN (
                     SELECT
-                        ""MonitoringObserverId"",
-                        MAX(""LatestActivityAt"") AS ""LatestActivityAt""
+                        "MonitoringObserverId",
+                        MAX("LatestActivityAt") AS "LatestActivityAt"
                     FROM
                         (
                             SELECT
-                                PSI.""MonitoringObserverId"",
-                                MAX(COALESCE(PSI.""LastModifiedOn"", PSI.""CreatedOn"")) AS ""LatestActivityAt""
+                                PSI."MonitoringObserverId",
+                                MAX(COALESCE(PSI."LastModifiedOn", PSI."CreatedOn")) AS "LatestActivityAt"
                             FROM
-                                ""PollingStationInformation"" PSI
+                                "PollingStationInformation" PSI
                             WHERE
-                                PSI.""ElectionRoundId"" = '9edce401-8732-422b-b8ad-cf3e930d991f'
+                                PSI."ElectionRoundId" = '9edce401-8732-422b-b8ad-cf3e930d991f'
                             GROUP BY
-                                PSI.""MonitoringObserverId""
+                                PSI."MonitoringObserverId"
                             UNION ALL
                             SELECT
-                                N.""MonitoringObserverId"",
-                                MAX(COALESCE(N.""LastModifiedOn"", N.""CreatedOn"")) AS ""LatestActivityAt""
+                                N."MonitoringObserverId",
+                                MAX(COALESCE(N."LastModifiedOn", N."CreatedOn")) AS "LatestActivityAt"
                             FROM
-                                ""Notes"" N
+                                "Notes" N
                             WHERE
-                                N.""ElectionRoundId"" = '9edce401-8732-422b-b8ad-cf3e930d991f'
+                                N."ElectionRoundId" = '9edce401-8732-422b-b8ad-cf3e930d991f'
                             GROUP BY
-                                N.""MonitoringObserverId""
+                                N."MonitoringObserverId"
                             UNION ALL
                             SELECT
-                                A.""MonitoringObserverId"",
-                                MAX(COALESCE(A.""LastModifiedOn"", A.""CreatedOn"")) AS ""LatestActivityAt""
+                                A."MonitoringObserverId",
+                                MAX(COALESCE(A."LastModifiedOn", A."CreatedOn")) AS "LatestActivityAt"
                             FROM
-                                ""Attachments"" A
+                                "Attachments" A
                             WHERE
-                                A.""ElectionRoundId"" = '9edce401-8732-422b-b8ad-cf3e930d991f'
+                                A."ElectionRoundId" = '9edce401-8732-422b-b8ad-cf3e930d991f'
                             GROUP BY
-                                A.""MonitoringObserverId""
+                                A."MonitoringObserverId"
                             UNION ALL
                             SELECT
-                                QR.""MonitoringObserverId"",
-                                MAX(COALESCE(QR.""LastModifiedOn"", QR.""CreatedOn"")) AS ""LatestActivityAt""
+                                QR."MonitoringObserverId",
+                                MAX(COALESCE(QR."LastModifiedOn", QR."CreatedOn")) AS "LatestActivityAt"
                             FROM
-                                ""QuickReports"" QR
+                                "QuickReports" QR
                             WHERE
-                                QR.""ElectionRoundId"" = '9edce401-8732-422b-b8ad-cf3e930d991f'
+                                QR."ElectionRoundId" = '9edce401-8732-422b-b8ad-cf3e930d991f'
                             GROUP BY
-                                QR.""MonitoringObserverId""
+                                QR."MonitoringObserverId"
                         ) AS LATESTACTIVITYSUBQUERY
                     GROUP BY
-                        ""MonitoringObserverId""
-                ) AS LATESTACTIVITY ON LATESTACTIVITY.""MonitoringObserverId"" = MO.""Id""
+                        "MonitoringObserverId"
+                ) AS LATESTACTIVITY ON LATESTACTIVITY."MonitoringObserverId" = MO."Id"
             WHERE
-                MN.""ElectionRoundId"" = @electionRoundId
-                AND MN.""NgoId"" = @ngoId
-                AND (@searchText IS NULL OR @searchText = '' OR (U.""FirstName"" || ' ' || U.""LastName"") ILIKE @searchText OR U.""Email"" ILIKE @searchText OR u.""PhoneNumber"" ILIKE @searchText)
-                AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR mo.""Tags"" && @tagsFilter)
-                AND (@status IS NULL OR  mo.""Status"" = @status)
+                MN."ElectionRoundId" = @electionRoundId
+                AND MN."NgoId" = @ngoId
+                AND (@searchText IS NULL OR @searchText = '' OR (U."FirstName" || ' ' || U."LastName") ILIKE @searchText OR U."Email" ILIKE @searchText OR u."PhoneNumber" ILIKE @searchText)
+                AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR mo."Tags" && @tagsFilter)
+                AND (@status IS NULL OR  mo."Status" = @status)
             GROUP BY
-                MO.""Id"",
-                U.""FirstName"",
-                U.""LastName"",
-                U.""PhoneNumber"",
-                U.""Email"",
-                MO.""Tags"",
-                MO.""Status""
+                MO."Id",
+                U."FirstName",
+                U."LastName",
+                U."PhoneNumber",
+                U."Email",
+                MO."Tags",
+                MO."Status"
             ) T
 
         ORDER BY
-            CASE WHEN @sortExpression = 'ObserverName ASC' THEN ""FirstName"" || ' ' || ""LastName"" END ASC,
-            CASE WHEN @sortExpression = 'ObserverName DESC' THEN ""FirstName"" || ' ' || ""LastName"" END DESC,
+            CASE WHEN @sortExpression = 'ObserverName ASC' THEN "FirstName" || ' ' || "LastName" END ASC,
+            CASE WHEN @sortExpression = 'ObserverName DESC' THEN "FirstName" || ' ' || "LastName" END DESC,
 
-            CASE WHEN @sortExpression = 'FirstName ASC' THEN ""FirstName"" END ASC,
-            CASE WHEN @sortExpression = 'FirstName DESC' THEN ""FirstName"" END DESC,
+            CASE WHEN @sortExpression = 'FirstName ASC' THEN "FirstName" END ASC,
+            CASE WHEN @sortExpression = 'FirstName DESC' THEN "FirstName" END DESC,
 
-            CASE WHEN @sortExpression = 'LastName ASC' THEN ""LastName"" END ASC,
-            CASE WHEN @sortExpression = 'LastName DESC' THEN ""LastName"" END DESC,
+            CASE WHEN @sortExpression = 'LastName ASC' THEN "LastName" END ASC,
+            CASE WHEN @sortExpression = 'LastName DESC' THEN "LastName" END DESC,
 
-            CASE WHEN @sortExpression = 'PhoneNumber ASC' THEN ""PhoneNumber"" END ASC,
-            CASE WHEN @sortExpression = 'PhoneNumber DESC' THEN ""PhoneNumber"" END DESC,
+            CASE WHEN @sortExpression = 'PhoneNumber ASC' THEN "PhoneNumber" END ASC,
+            CASE WHEN @sortExpression = 'PhoneNumber DESC' THEN "PhoneNumber" END DESC,
 
-            CASE WHEN @sortExpression = 'Email ASC' THEN ""Email"" END ASC,
-            CASE WHEN @sortExpression = 'Email DESC' THEN ""Email"" END DESC,
+            CASE WHEN @sortExpression = 'Email ASC' THEN "Email" END ASC,
+            CASE WHEN @sortExpression = 'Email DESC' THEN "Email" END DESC,
 
-            CASE WHEN @sortExpression = 'Tags ASC' THEN ""Tags"" END ASC,
-            CASE WHEN @sortExpression = 'Tags DESC' THEN ""Tags"" END DESC,
+            CASE WHEN @sortExpression = 'Tags ASC' THEN "Tags" END ASC,
+            CASE WHEN @sortExpression = 'Tags DESC' THEN "Tags" END DESC,
 
-            CASE WHEN @sortExpression = 'LatestActivityAt ASC' THEN ""LatestActivityAt"" END ASC,
-            CASE WHEN @sortExpression = 'LatestActivityAt DESC' THEN ""LatestActivityAt"" END DESC
+            CASE WHEN @sortExpression = 'LatestActivityAt ASC' THEN "LatestActivityAt" END ASC,
+            CASE WHEN @sortExpression = 'LatestActivityAt DESC' THEN "LatestActivityAt" END DESC
          
         OFFSET @offset ROWS
-        FETCH NEXT @pageSize ROWS ONLY;"
-        ;
+        FETCH NEXT @pageSize ROWS ONLY;
+        """;
 
         var queryArgs = new
         {

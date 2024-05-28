@@ -1,7 +1,6 @@
 ﻿using Authorization.Policies;
 using Feature.MonitoringObservers.Specifications;
 using Job.Contracts;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Options;
 using Vote.Monitor.Core.Extensions;
 using Vote.Monitor.Core.Options;

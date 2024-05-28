@@ -1,6 +1,4 @@
-﻿using Vote.Monitor.Core.Validators;
-
-namespace Feature.Attachments.Create;
+﻿namespace Feature.Attachments.InitiateUpload;
 
 public class Validator : Validator<Request>
 {
@@ -12,9 +10,5 @@ public class Validator : Validator<Request>
         RuleFor(x => x.Id).NotEmpty();
         RuleFor(x => x.FormId).NotEmpty();
         RuleFor(x => x.QuestionId).NotEmpty();
-        RuleFor(x => x.Attachment)
-            .NotNull()
-            .NotEmpty()
-            .FileSmallerThan(512 * 1024 * 1024); // 500 MB upload limit
     }
 }
