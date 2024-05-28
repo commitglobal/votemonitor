@@ -47,17 +47,18 @@ export const addAttachmentQuickReport = ({
 };
 
 export const addAttachmentQuickReportMultipartStart = ({
+  electionRoundId,
+  quickReportId,
+  id,
   fileMetadata,
 }: AddAttachmentQuickReportAPIPayload): Promise<any> => {
   const filePartsNo = Math.ceil(fileMetadata.size! / (10 * 1024 * 1024));
 
-  return axios
-    .post(
-      `https://72eb-79-115-230-202.ngrok-free.app/dossier/${145}/file/start`,
-      { fileMimeType: fileMetadata.type, fileName: fileMetadata.name, filePartsNo },
-      {},
-    )
-    .then((res) => res.data);
+  return API.post(
+    `election-rounds/${electionRoundId}/quick-reports/${quickReportId}/attachments`,
+    { fileMimeType: fileMetadata.type, fileName: fileMetadata.name, filePartsNo },
+    {},
+  ).then((res) => res.data);
 };
 
 export const addAttachmentQuickReportMultipartComplete = async (
@@ -88,8 +89,8 @@ export const addAttachmentQuickReportMultipartAbort = async (
     .then((res) => res.data);
 };
 
-// S3
-export const uploadChunk = async (url: string, chunk: any): Promise<{ ETag: string }> => {
+// Upload S3 Chunk of bytes (Buffer (array of bytes) - not Base64 - still bytes but written differently)
+export const uploadChunkDirectly = async (url: string, chunk: any): Promise<{ ETag: string }> => {
   return axios
     .put(url, chunk, {
       timeout: 100000,

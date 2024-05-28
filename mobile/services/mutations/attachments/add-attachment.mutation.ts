@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
-  AddAttachmentAPIPayload,
+  AddAttachmentStartAPIPayload,
   AddAttachmentAPIResponse,
   addAttachment,
 } from "../../api/add-attachment.api";
@@ -10,7 +10,7 @@ import {
   AddAttachmentQuickReportAPIPayload,
   addAttachmentQuickReportMultipartComplete,
   addAttachmentQuickReportMultipartStart,
-  uploadChunk,
+  // uploadChunk,
 } from "../../api/quick-report/add-attachment-quick-report.api";
 
 export const addAttachmentMutation = (scopeId: string) => {
@@ -21,10 +21,12 @@ export const addAttachmentMutation = (scopeId: string) => {
     scope: {
       id: scopeId,
     },
-    mutationFn: async (payload: AddAttachmentAPIPayload): Promise<AddAttachmentAPIResponse> => {
+    mutationFn: async (
+      payload: AddAttachmentStartAPIPayload,
+    ): Promise<AddAttachmentAPIResponse> => {
       return addAttachment(payload);
     },
-    onMutate: async (payload: AddAttachmentAPIPayload) => {
+    onMutate: async (payload: AddAttachmentStartAPIPayload) => {
       const attachmentsQK = AttachmentsKeys.attachments(
         payload.electionRoundId,
         payload.pollingStationId,
@@ -74,8 +76,7 @@ export const addAttachmentMutation = (scopeId: string) => {
   });
 };
 
-// Multipart Upload
-
+// Multipart Upload - Start
 export const useUploadAttachmentMutation = (scopeId: string) => {
   return useMutation({
     mutationKey: AttachmentsKeys.addAttachmentMutation(),
@@ -89,20 +90,7 @@ export const useUploadAttachmentMutation = (scopeId: string) => {
   });
 };
 
-export const useUploadS3ChunkMutation = (scopeId: string) => {
-  return useMutation({
-    mutationKey: AttachmentsKeys.addAttachmentMutation(),
-    scope: {
-      id: scopeId,
-    },
-    mutationFn: ({ url, data }: { url: string; data: any }) => uploadChunk(url, data),
-    onError: (error: any) => {
-      return Promise.resolve(error);
-    },
-    retry: 3,
-  });
-};
-
+// Multipart Upload - Complete
 export const useCompleteAddAttachmentUploadMutation = (scopeId: string) => {
   return useMutation({
     mutationKey: AttachmentsKeys.addAttachmentMutation(),
@@ -128,6 +116,7 @@ export const useCompleteAddAttachmentUploadMutation = (scopeId: string) => {
   });
 };
 
+// Multipart Upload - Abort
 // export const useAbortDossierFileUploadMutation = () => {
 //   return useMutation(
 //     ({ dossierId, uploadId, key }: { dossierId: number; uploadId: string; key: string }) =>

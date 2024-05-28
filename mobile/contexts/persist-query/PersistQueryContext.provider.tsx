@@ -6,7 +6,7 @@ import { useAuth } from "../../hooks/useAuth";
 import { notesKeys, pollingStationsKeys } from "../../services/queries.service";
 import * as API from "../../services/definitions.api";
 import { PersistGate } from "../../components/PersistGate";
-import { AddAttachmentAPIPayload, addAttachment } from "../../services/api/add-attachment.api";
+import { AddAttachmentStartAPIPayload, addAttachment } from "../../services/api/add-attachment.api";
 import { deleteAttachment } from "../../services/api/delete-attachment.api";
 import { Note } from "../../common/models/note";
 import { QuickReportKeys } from "../../services/queries/quick-reports.query";
@@ -114,14 +114,14 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
   });
 
   queryClient.setMutationDefaults(AttachmentsKeys.addAttachmentMutation(), {
-    mutationFn: async (payload: AddAttachmentAPIPayload) => {
+    mutationFn: async (payload: AddAttachmentStartAPIPayload) => {
       return addAttachment(payload);
     },
   });
 
   queryClient.setMutationDefaults(AttachmentsKeys.deleteAttachment(), {
     mutationFn: async (payload: AttachmentApiResponse) => {
-      return payload.isNotSynched ? () => {} : deleteAttachment(payload);
+      return payload.isNotSynched ? () => { } : deleteAttachment(payload);
     },
   });
 
@@ -139,7 +139,7 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
 
   queryClient.setMutationDefaults(notesKeys.deleteNote(), {
     mutationFn: async (payload: Note) => {
-      return payload.isNotSynched ? () => {} : API.deleteNote(payload);
+      return payload.isNotSynched ? () => { } : API.deleteNote(payload);
     },
   });
 

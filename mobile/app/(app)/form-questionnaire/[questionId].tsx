@@ -27,7 +27,7 @@ import OptionsSheet from "../../../components/OptionsSheet";
 import AddAttachment from "../../../components/AddAttachment";
 
 import { FileMetadata, useCamera } from "../../../hooks/useCamera";
-import { addAttachmentMutation, useCompleteAddAttachmentUploadMutation, useUploadAttachmentMutation, useUploadS3ChunkMutation } from "../../../services/mutations/attachments/add-attachment.mutation";
+import { addAttachmentMutation, useCompleteAddAttachmentUploadMutation, useUploadAttachmentMutation } from "../../../services/mutations/attachments/add-attachment.mutation";
 import QuestionAttachments from "../../../components/QuestionAttachments";
 import QuestionNotes from "../../../components/QuestionNotes";
 import * as DocumentPicker from "expo-document-picker";
@@ -42,6 +42,8 @@ import { ApiFormQuestion } from "../../../services/interfaces/question.type";
 import FormInput from "../../../components/FormInputs/FormInput";
 import WarningDialog from "../../../components/WarningDialog";
 import * as FileSystem from 'expo-file-system';
+import { uploadChunkDirectly } from "../../../services/api/quick-report/add-attachment-quick-report.api";
+import { Buffer } from 'buffer';
 
 type SearchParamType = {
   questionId: string;
@@ -271,12 +273,12 @@ const FormQuestionnaire = () => {
   );
 
   const {
-    mutate: addAttachmentMultipart,
+    mutateAsync: addAttachmentMultipart,
     isPending: isLoadingAttachment,
     isPaused
   } = useUploadAttachmentMutation(`Attachment_${questionId}_${selectedPollingStation?.pollingStationId}_${formId}_${questionId}`);
 
-  const { mutateAsync: uploadChunk } = useUploadS3ChunkMutation(`Attachment_${questionId}_${selectedPollingStation?.pollingStationId}_${formId}_${questionId}`);
+  // const { mutateAsync: uploadChunk } = useUploadS3ChunkMutation(`Attachment_${questionId}_${selectedPollingStation?.pollingStationId}_${formId}_${questionId}`);
   const { mutateAsync: completeFileUpload } = useCompleteAddAttachmentUploadMutation(`Attachment_${questionId}_${selectedPollingStation?.pollingStationId}_${formId}_${questionId}`);
 
   const handleCameraUpload = async (type: "library" | "cameraPhoto" | "cameraVideo") => {
@@ -292,7 +294,7 @@ const FormQuestionnaire = () => {
       formId &&
       activeQuestion.question.id
     ) {
-      addAttachmentMultipart(
+      const data = await addAttachmentMultipart(
         {
           id: Crypto.randomUUID(),
           electionRoundId: activeElectionRound.id,
@@ -304,12 +306,12 @@ const FormQuestionnaire = () => {
         },
         {
           onSuccess: (data) => {
-            handleChunkUpload(cameraResult, data.urls, data.key, data.uploadId);
           },
           onSettled: () => setIsOptionsSheetOpen(false),
           onError: () => console.log("🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴ERORR🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴"),
         },
       );
+      await handleChunkUpload(cameraResult, data.urls, data.key, data.uploadId);
 
       if (!onlineManager.isOnline()) {
         setIsOptionsSheetOpen(false);
@@ -370,27 +372,17 @@ const FormQuestionnaire = () => {
       console.log('start');
       for (const [index, url] of urls.entries()) {
         // Calculate the "slice" indexes
-        const start = index * 10 * 1024 * 1024;;
-        const end = start + 10 * 1024 * 1024;;
+        const start = index * 10 * 1024 * 1024;
+        const end = start + 10 * 1024 * 1024;
 
         // const chunk = await FileSystem.rea(file.uri, 10 * 1024 * 1024, start, 'buffer');
-        const chunk = await FileSystem.readAsStringAsync(file.uri, { position: start, length: 10 * 1024 * 1024, encoding: FileSystem.EncodingType.Base64 })
+        const chunk = await FileSystem.readAsStringAsync(file.uri, { length: 10 * 1024 * 1024, position: start, encoding: FileSystem.EncodingType.Base64 });
 
         const buffer = Buffer.from(chunk, 'base64');
 
-        if (index === 0) {
-
-          console.log(buffer.byteLength);
-        }
-
-        await uploadChunk({ url, data: buffer }, {
-          onSuccess: (data) => {
-            uploadedParts.push({ ETag: data.ETag, PartNumber: index + 1 });
-            // setUploadProgress(`${Math.round(((index + 1) / urls.length) * 100 * 10) / 10}`)
-            console.log(`${index + 1} / ${urls.length}`);
-          }
-
-        })
+        const data = await uploadChunkDirectly(url, buffer)
+        console.log(index + 1);
+        uploadedParts.push({ ETag: data.ETag, PartNumber: index + 1 });
       }
 
       await completeFileUpload({ uploadId, key, fileName: file.name, uploadedParts })
