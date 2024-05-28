@@ -3,13 +3,13 @@ import { router, useLocalSearchParams } from "expo-router";
 import Header from "../../../../../../components/Header";
 import { Icon } from "../../../../../../components/Icon";
 import { Typography } from "../../../../../../components/Typography";
-import { YStack, Image, View, XStack, AlertDialog } from "tamagui";
+import { YStack, Image, View, XStack, AlertDialog, AlertDialogProps } from "tamagui";
 import { useQuickReportById } from "../../../../../../services/queries/quick-reports.query";
 import { useUserData } from "../../../../../../contexts/user/UserContext.provider";
 // import Card from "../../../../../../components/Card";
 import { useTranslation } from "react-i18next";
 import { Dialog } from "../../../../../../components/Dialog";
-import React, { useEffect, useState } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import { set } from "react-hook-form";
 // import { Audio } from "expo-av";
 // import Button from "../../../../../../components/Button";
@@ -128,10 +128,10 @@ const ImagePreview = (props: attachementProps) => {
   }, [attachment.mimeType]);
 
   return (
-    <Dialog
+    <ImageDialog
       trigger={<Icon icon="attachment" color="red" />}
       header={
-        <XStack justifyContent="space-between">
+        <XStack justifyContent="space-between" backgroundColor="white" height="5%">
           <Typography>Here an attachment will be displayed</Typography>
           <AlertDialog.Cancel>
             <Icon icon="x" color="red" />
@@ -139,45 +139,80 @@ const ImagePreview = (props: attachementProps) => {
         </XStack>
       }
       content={
-        <View>
-          {mediaType === "image" ? (
-            <Image
-              source={{ uri: attachment.presignedUrl }}
-              width="100%"
-              height={200}
-              resizeMode="contain"
-            />
-          ) : (
-            <Typography>Audio</Typography>
-          )}
-        </View>
+        <Image
+          source={{ uri: attachment.presignedUrl }}
+          width="100%"
+          height="90%"
+          resizeMode="cover"
+        />
       }
     />
   );
 };
 
-// const AudioPreview = (props: attachementProps) => {
-//   const { attachment } = props;
-//   const [sound, setSound] = useState<Audio.Sound | null>(null);
+interface DialogProps extends AlertDialogProps {
+  // what you press on in order to open the dialog
+  trigger?: ReactNode;
+  // dialog header
+  header?: ReactNode;
+  // content inside dialog
+  content?: ReactNode;
+  // dialog footer
+  footer?: ReactNode;
+}
 
-//   async function playSound() {
-//     const { sound } = await Audio.Sound.createAsync({ uri: attachment.presignedUrl });
-
-//     setSound(sound);
-//     await sound.playAsync();
-//   }
-
-//   return (
-//     <View>
-//       <Button onPress={playSound}> Play </Button>
-//     </View>
-//   );
-// };
-
-// const ImagePreview2 = (props: attachementProps) => {
-//   const { attachment } = props;
-//   console.log(attachment);
-//   return <Typography> WWOW </Typography>;
-// };
+export const ImageDialog: React.FC<DialogProps> = ({
+  header,
+  content,
+  trigger,
+  footer,
+  ...props
+}) => {
+  return (
+    <AlertDialog {...props}>
+      {trigger && <AlertDialog.Trigger asChild>{trigger}</AlertDialog.Trigger>}
+      <AlertDialog.Portal>
+        {/* backdrop for the modal */}
+        <AlertDialog.Overlay
+          key="overlay"
+          animation="quick"
+          opacity={1}
+          enterStyle={{ opacity: 0 }}
+          exitStyle={{ opacity: 0 }}
+        />
+        {/* the actual content inside the modal */}
+        <AlertDialog.Content
+          backgroundColor="white"
+          // paddingTop="$lg"
+          // paddingHorizontal="$lg"
+          style={{ padding: 0 }}
+          width="90%"
+          maxHeight="70%"
+          elevate
+          key="content"
+          animation={[
+            "quick",
+            {
+              opacity: {
+                overshootClamping: true,
+              },
+            },
+          ]}
+          enterStyle={{ x: 0, y: -20, opacity: 0, scale: 0.9 }}
+          exitStyle={{ x: 0, y: 10, opacity: 0, scale: 0.95 }}
+          x={0}
+          scale={1}
+          opacity={1}
+          y={0}
+          gap="$md"
+        >
+          {header}
+          {content}
+          {/* <Stack marginTop="$sm">{footer}</Stack> */}
+        </AlertDialog.Content>
+      </AlertDialog.Portal>
+    </AlertDialog>
+  );
+};
 
 export default ReportDetails;
