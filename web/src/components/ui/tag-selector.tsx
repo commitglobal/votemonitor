@@ -74,13 +74,16 @@ const TagsSelectFormField = React.forwardRef<
     };
 
     const toggleOption = (value: string) => {
-      if (selectedValuesSet.current.has(value)) {
-        selectedValuesSet.current.delete(value);
-        setSelectedValues(selectedValues.filter((v) => v !== value));
+      const currentTag = selectedValues.find(t => t.toLocaleLowerCase() === value.trim().toLocaleLowerCase());
+
+      if (currentTag) {
+        selectedValuesSet.current.delete(currentTag);
+        setSelectedValues(selectedValues.filter((v) => v !== value.trim()));
       } else {
-        selectedValuesSet.current.add(value);
-        setSelectedValues([...selectedValues, value]);
+        selectedValuesSet.current.add(value.trim());
+        setSelectedValues([...selectedValues, value.trim()]);
       }
+      
       onValueChange(Array.from(selectedValuesSet.current));
     };
 
@@ -155,7 +158,7 @@ const TagsSelectFormField = React.forwardRef<
               onValueChange={setSearch} 
             />
             <CommandList className="w-full">
-              <CommandEmpty>Click here to create this tag.</CommandEmpty>
+              {/* <CommandEmpty>Press enter to create this tag.</CommandEmpty> */}
               <CommandGroup>
                 {options.map((option) => {
                   return (
