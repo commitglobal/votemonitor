@@ -16,6 +16,11 @@ internal class LocalDiskFileStorageService : IFileStorageService
         _options = options.Value;
     }
 
+    public Task<PresignedUploadLinkResult> GetPresignedUploadLinkAsync(string uploadPath, string fileName, CancellationToken ct = default)
+    {
+        return Task.FromResult<PresignedUploadLinkResult>(new PresignedUploadLinkResult.Ok(_options.Path, UrlValidityInSeconds));
+    }
+
     public async Task<UploadFileResult> UploadFileAsync(string uploadPath, string filename, Stream stream, CancellationToken ct = default)
     {
         try

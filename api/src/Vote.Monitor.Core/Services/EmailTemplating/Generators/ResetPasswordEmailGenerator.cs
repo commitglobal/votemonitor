@@ -10,9 +10,10 @@ internal class ResetPasswordEmailGenerator : IEmailGenerator<ResetPasswordEmailP
         var template = EmailTemplateLoader.GetTemplate(EmailTemplateType.ResetPassword);
 
         var body = template
+            .Replace("~$name$~", props.FullName)
+            .Replace("~$resetPasswordUrl$~", props.ResetPasswordUrl)
             .Replace("~$cdnUrl$~", props.CdnUrl)
-            .Replace("~$resetPasswordUrl$~", props.ResetPasswordUrl);
 
-        return new EmailModel("Reset your password on VoteMonitor platform", body);
+        return new EmailModel("Reset your password on VoteMonitor Platform", body);
     }
 }

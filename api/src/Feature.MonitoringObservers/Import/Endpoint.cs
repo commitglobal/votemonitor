@@ -93,10 +93,10 @@ public class Endpoint(
 
         var monitoringNgo = await context
             .MonitoringNgos
-            .Include(x=>x.Ngo)
+            .Include(x => x.Ngo)
             .Where(x => x.NgoId == req.NgoId && x.ElectionRoundId == req.ElectionRoundId)
             .FirstAsync(ct);
-        
+
         var ngoName = monitoringNgo.Ngo.Name;
 
         var electionRoundName = await context.ElectionRounds
@@ -106,6 +106,8 @@ public class Endpoint(
 
         foreach (var observer in observers)
         {
+            var fullName = GetFullName(observer);
+
             var normalizedEmail = observer.Email.ToUpperInvariant();
             // Has account in our system
             var existingAccount = existingAccounts.FirstOrDefault(x => x.NormalizedEmail == normalizedEmail);
@@ -145,18 +147,26 @@ public class Endpoint(
                     var endpointUri = new Uri(Path.Combine($"{_apiConfig.WebAppUrl}", "accept-invite"));
                     string acceptInviteUrl = QueryHelpers.AddQueryString(endpointUri.ToString(), "invitationToken", existingAccount.InvitationToken!);
 
-                    var email = emailFactory.GenerateEmail(EmailTemplateType.InvitationNewUser, new InvitationNewUserEmailProps("", acceptInviteUrl, ngoName, electionRoundName));
+                    var invitationNewUserEmailProps = new InvitationNewUserEmailProps(FullName: fullName,
+                        CdnUrl: _apiConfig.WebAppUrl,
+                        AcceptUrl: acceptInviteUrl,
+                        NgoName: ngoName,
+                        ElectionRoundDetails: electionRoundName);
+                    var email = emailFactory.GenerateEmail(EmailTemplateType.InvitationNewUser, invitationNewUserEmailProps);
                     jobService.SendEmail(observer.Email, email.Subject, email.Body);
                 }
                 else
                 {
                     var newMonitoringObserver = MonitoringObserverAggregate.CreateForExisting(req.ElectionRoundId,
-                        monitoringNgo.Id, existingObserver.Id,
+                        monitoringNgo.Id,
+                        existingObserver.Id,
                         observer.Tags);
 
                     await context.MonitoringObservers.AddAsync(newMonitoringObserver, ct);
+                    var invitationExistingUserEmailProps = new InvitationExistingUserEmailProps(FullName: fullName, CdnUrl: _apiConfig.WebAppUrl, NgoName: ngoName, ElectionRoundDetails: electionRoundName);
+
                     var email = emailFactory.GenerateEmail(EmailTemplateType.InvitationExistingUser,
-                        new InvitationExistingUserEmailProps("", ngoName, electionRoundName));
+                        invitationExistingUserEmailProps);
                     jobService.SendEmail(observer.Email, email.Subject, email.Body);
                 }
             }
@@ -177,12 +187,18 @@ public class Endpoint(
                 var endpointUri = new Uri(Path.Combine($"{_apiConfig.WebAppUrl}", "accept-invite"));
                 string acceptInviteUrl = QueryHelpers.AddQueryString(endpointUri.ToString(), "invitationToken", user.InvitationToken!);
 
-                var email = emailFactory.GenerateEmail(EmailTemplateType.InvitationNewUser, new InvitationNewUserEmailProps("", acceptInviteUrl, ngoName, electionRoundName));
+                var invitationNewUserEmailProps = new InvitationNewUserEmailProps(FullName: fullName, CdnUrl: _apiConfig.WebAppUrl, AcceptUrl: acceptInviteUrl, NgoName: ngoName, ElectionRoundDetails: electionRoundName);
+                var email = emailFactory.GenerateEmail(EmailTemplateType.InvitationNewUser, invitationNewUserEmailProps);
                 jobService.SendEmail(observer.Email, email.Subject, email.Body);
             }
         }
         await context.SaveChangesAsync(ct);
         await SendNoContentAsync(ct);
+    }
+
+    private static string GetFullName(MonitoringObserverImportModel observer)
+    {
+        return observer.FirstName + " " + observer.LastName;
     }
 
     private async Task HandleParsingFailedAsync(string fileName, ParsingResult<MonitoringObserverImportModel>.Fail failedResult, CancellationToken ct)
