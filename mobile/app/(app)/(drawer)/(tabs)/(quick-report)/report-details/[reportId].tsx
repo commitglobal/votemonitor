@@ -6,13 +6,10 @@ import { Typography } from "../../../../../../components/Typography";
 import { YStack, Image, View, XStack, AlertDialog, AlertDialogProps } from "tamagui";
 import { useQuickReportById } from "../../../../../../services/queries/quick-reports.query";
 import { useUserData } from "../../../../../../contexts/user/UserContext.provider";
-// import Card from "../../../../../../components/Card";
 import { useTranslation } from "react-i18next";
-import { Dialog } from "../../../../../../components/Dialog";
-import React, { ReactNode, useEffect, useState } from "react";
-import { set } from "react-hook-form";
-// import { Audio } from "expo-av";
-// import Button from "../../../../../../components/Button";
+import React, { ReactNode } from "react";
+import Card from "../../../../../../components/Card";
+import { QuickReportAttachmentAPIResponse } from "../../../../../../services/api/quick-report/get-quick-reports.api";
 
 type SearchParamsType = {
   reportId: string;
@@ -57,7 +54,6 @@ const ReportDetails = () => {
   }
 
   const attachments = quickReport?.attachments || [];
-  console.log(attachments[0]);
   return (
     <Screen
       preset="scroll"
@@ -96,12 +92,7 @@ const ReportDetails = () => {
               {t("uploaded_media")}
             </Typography>
             {attachments.map((attachment, key) => (
-              <View key={key} backgroundColor="blue">
-                <Typography preset="body1" fontWeight="700" key={attachment.id}>
-                  {attachment.fileName}
-                </Typography>
-                <ImagePreview attachment={attachment} />
-              </View>
+              <MediaPreview key={key} attachment={attachment} />
             ))}
           </YStack>
         )}
@@ -111,44 +102,51 @@ const ReportDetails = () => {
 };
 
 interface attachementProps {
-  attachment: any;
+  attachment: QuickReportAttachmentAPIResponse;
 }
 
-const ImagePreview = (props: attachementProps) => {
-  const [mediaType, setMediaType] = useState("");
+const MediaPreview = (props: attachementProps) => {
   const { attachment } = props;
-  console.log(attachment);
-
-  useEffect(() => {
-    if (attachment.mimeType.includes("image")) {
-      setMediaType("image");
-    } else {
-      setMediaType("audio");
-    }
-  }, [attachment.mimeType]);
-
   return (
-    <ImageDialog
-      trigger={<Icon icon="attachment" color="red" />}
+    <MediaDialog
+      trigger={
+        <Card>
+          <Typography preset="body1" fontWeight="700" key={attachment.id}>
+            {attachment.fileName}
+          </Typography>
+        </Card>
+      }
       header={
         <XStack justifyContent="space-between" backgroundColor="white" height="5%">
-          <Typography>Here an attachment will be displayed</Typography>
+          <Typography>{attachment.fileName}</Typography>
           <AlertDialog.Cancel>
-            <Icon icon="x" color="red" />
+            <Icon icon="x" />
           </AlertDialog.Cancel>
         </XStack>
       }
       content={
-        <Image
-          source={{ uri: attachment.presignedUrl }}
-          width="100%"
-          height="90%"
-          resizeMode="cover"
-        />
+        attachment.mimeType.includes("image") ? (
+          <Image
+            source={{ uri: attachment.presignedUrl }}
+            width="100%"
+            height="90%"
+            resizeMode="cover"
+          />
+        ) : (
+          <View>
+            <Typography>Not an image</Typography>
+          </View>
+        )
       }
     />
   );
 };
+
+/**
+ * This is similiar to Dialog component from /components,
+ * but with some modifications to fit the requirements of the ImagePreview component
+ * TODO: Move it to /components, in case is good for use.
+ */
 
 interface DialogProps extends AlertDialogProps {
   // what you press on in order to open the dialog
@@ -157,17 +155,9 @@ interface DialogProps extends AlertDialogProps {
   header?: ReactNode;
   // content inside dialog
   content?: ReactNode;
-  // dialog footer
-  footer?: ReactNode;
 }
 
-export const ImageDialog: React.FC<DialogProps> = ({
-  header,
-  content,
-  trigger,
-  footer,
-  ...props
-}) => {
+export const MediaDialog: React.FC<DialogProps> = ({ header, content, trigger, ...props }) => {
   return (
     <AlertDialog {...props}>
       {trigger && <AlertDialog.Trigger asChild>{trigger}</AlertDialog.Trigger>}
@@ -183,8 +173,6 @@ export const ImageDialog: React.FC<DialogProps> = ({
         {/* the actual content inside the modal */}
         <AlertDialog.Content
           backgroundColor="white"
-          // paddingTop="$lg"
-          // paddingHorizontal="$lg"
           style={{ padding: 0 }}
           width="90%"
           maxHeight="70%"
@@ -208,7 +196,6 @@ export const ImageDialog: React.FC<DialogProps> = ({
         >
           {header}
           {content}
-          {/* <Stack marginTop="$sm">{footer}</Stack> */}
         </AlertDialog.Content>
       </AlertDialog.Portal>
     </AlertDialog>
