@@ -1,39 +1,30 @@
-import { ChevronDownIcon, Cog8ToothIcon, FunnelIcon } from '@heroicons/react/24/outline';
+import { ChevronDownIcon, FunnelIcon } from '@heroicons/react/24/outline';
 import { getRouteApi } from '@tanstack/react-router';
 import { useDebounce } from '@uidotdev/usehooks';
-import { type ChangeEvent, useState, type ReactElement, useCallback } from 'react';
-import { CsvFileIcon } from '@/components/icons/CsvFileIcon';
+import { type ChangeEvent, useState, type ReactElement } from 'react';
 import Layout from '@/components/layout/Layout';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
-  DropdownMenuLabel,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useFormSubmissionsByForm } from '../../hooks/form-submissions-queries';
-import { formSubmissionsByFormColumnDefs } from '../../utils/column-defs';
-import {
-  columnVisibilityOptions,
-  formSubmissionsDefaultColumns,
-  type FilterBy,
-} from '../../utils/column-visibility-options';
-import { FormsTableByEntry } from '../FormsTableByEntry/FormsTableByEntry';
+import { ExportedDataType } from '../../models/data-export';
+import type { FilterBy } from '../../utils/column-visibility-options';
+import { ColumnsVisibilitySelector } from '../ColumnsVisibilitySelector/ColumnsVisibilitySelector';
+import { ExportDataButton } from '../ExportDataButton/ExportDataButton';
 import { FormsFiltersByEntry } from '../FormsFiltersByEntry/FormsFiltersByEntry';
 import { FormsFiltersByObserver } from '../FormsFiltersByObserver/FormsFiltersByObserver';
+import { FormsTableByEntry } from '../FormsTableByEntry/FormsTableByEntry';
+import { FormsTableByForm } from '../FormsTableByForm/FormsTableByForm';
 import { FormsTableByObserver } from '../FormsTableByObserver/FormsTableByObserver';
 import { QuickReports } from '../QuickReports/QuickReports';
-import { ExportDataButton } from './ExportDataButton';
-import { ExportedDataType } from '../../models/data-export';
 
 const routeApi = getRouteApi('/responses/');
 
@@ -50,8 +41,6 @@ export default function ResponsesDashboard(): ReactElement {
   const search = routeApi.useSearch();
   const [isFiltering, setIsFiltering] = useState(() => Object.keys(search).some((key) => key !== 'tab'));
 
-  const [columnsVisibility, setColumnsVisibility] = useState(formSubmissionsDefaultColumns.byEntry);
-
   const [searchText, setSearchText] = useState<string>('');
   const debouncedSearchText = useDebounce(searchText, 300);
 
@@ -59,13 +48,6 @@ export default function ResponsesDashboard(): ReactElement {
     const value = ev.currentTarget.value;
     if (!value || value.length >= 2) setSearchText(ev.currentTarget.value);
   };
-
-  const navigateToAggregatedForm = useCallback(
-    (formId: string) => {
-      void navigate({ to: '/responses/$formId/aggregated', params: { formId } });
-    },
-    [navigate]
-  );
 
   return (
     <Layout title='Responses' subtitle='View all form answers and other issues reported by your observers.  '>
@@ -104,7 +86,6 @@ export default function ResponsesDashboard(): ReactElement {
                       <DropdownMenuRadioGroup
                         onValueChange={(value) => {
                           setByFilter(value as FilterBy);
-                          setColumnsVisibility(formSubmissionsDefaultColumns[value as FilterBy]);
                           void navigate({});
                           setIsFiltering(false);
                         }}
@@ -136,26 +117,7 @@ export default function ResponsesDashboard(): ReactElement {
                   </>
                 )}
 
-                <DropdownMenu>
-                  <DropdownMenuTrigger>
-                    <Cog8ToothIcon className='w-[20px] text-purple-900 cursor-pointer' />
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent>
-                    <DropdownMenuLabel>Table columns</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    {columnVisibilityOptions[byFilter].map((option) => (
-                      <DropdownMenuCheckboxItem
-                        key={option.id}
-                        checked={columnsVisibility[option.id]}
-                        disabled={!option.enableHiding}
-                        onCheckedChange={(checked) => {
-                          setColumnsVisibility((prev) => ({ ...prev, [option.id]: checked }));
-                        }}>
-                        {option.label}
-                      </DropdownMenuCheckboxItem>
-                    ))}
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                <ColumnsVisibilitySelector byFilter={byFilter} />
               </div>
 
               <Separator />
@@ -169,24 +131,11 @@ export default function ResponsesDashboard(): ReactElement {
               )}
             </CardHeader>
 
-            {byFilter === 'byEntry' && (
-              <FormsTableByEntry columnsVisibility={columnsVisibility} searchText={debouncedSearchText} />
-            )}
+            {byFilter === 'byEntry' && <FormsTableByEntry searchText={debouncedSearchText} />}
 
-            {byFilter === 'byObserver' && (
-              <FormsTableByObserver columnsVisibility={columnsVisibility} searchText={debouncedSearchText} />
-            )}
+            {byFilter === 'byObserver' && <FormsTableByObserver searchText={debouncedSearchText} />}
 
-            <CardContent>
-              {byFilter === 'byForm' && (
-                <QueryParamsDataTable
-                  columnVisibility={columnsVisibility}
-                  columns={formSubmissionsByFormColumnDefs}
-                  useQuery={useFormSubmissionsByForm}
-                  onRowClick={navigateToAggregatedForm}
-                />
-              )}
-            </CardContent>
+            {byFilter === 'byForm' && <FormsTableByForm />}
           </Card>
         </TabsContent>
 

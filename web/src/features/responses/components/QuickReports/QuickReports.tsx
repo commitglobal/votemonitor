@@ -3,7 +3,6 @@ import { getRouteApi } from '@tanstack/react-router';
 import { useDebounce } from '@uidotdev/usehooks';
 import { type ChangeEvent, useState, useMemo, useCallback } from 'react';
 import type { FunctionComponent } from '@/common/types';
-import { CsvFileIcon } from '@/components/icons/CsvFileIcon';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -23,7 +22,7 @@ import { quickReportsColumnDefs } from '../../utils/column-defs';
 import { quickReportsColumnVisibilityOptions, quickReportsDefaultColumns } from '../../utils/column-visibility-options';
 import { FilterBadge } from '@/components/ui/badge';
 import { PollingStationsFilters } from '@/components/PollingStationsFilters/PollingStationsFilters';
-import { ExportDataButton } from '../Dashboard/ExportDataButton';
+import { ExportDataButton } from '../ExportDataButton/ExportDataButton';
 import { ExportedDataType } from '../../models/data-export';
 
 const routeApi = getRouteApi('/responses/');
