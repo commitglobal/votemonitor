@@ -65,7 +65,8 @@
         "loading": "Log in..."
       },
       "errors": {
-        "invalid_credentials": "There was an error with your credentials. Please try again."
+        "invalid_credentials": "There was an error with your credentials. Please try again.",
+        "offline": "You need an internet connection in order to log in."
       }
     },
     "actions": {
@@ -434,7 +435,8 @@
   "generic_error_screen": {
     "paragraph1": "Oops, something went wrong!",
     "paragraph2": "We could not recover after this error. Please check your internet connection and restart the application!",
-    "retry": "Retry"
+    "retry": "Retry",
+    "logout": "Logout"
   },
   "network_banner": {
     "online": "App online. All answers sent to server.",

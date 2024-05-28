@@ -658,14 +658,6 @@ const FormQuestionnaire = () => {
                 {t("attachments.menu.take_picture")}
               </Typography>
               <Typography
-                onPress={handleCameraUpload.bind(null, "cameraVideo")}
-                preset="body1"
-                paddingVertical="$md"
-                pressStyle={{ color: "$purple5" }}
-              >
-                {t("attachments.menu.record_video")}
-              </Typography>
-              <Typography
                 onPress={handleUploadAudio.bind(null)}
                 preset="body1"
                 paddingVertical="$md"

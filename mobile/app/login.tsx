@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import { router } from "expo-router";
 import { useAuth } from "../hooks/useAuth";
-import { ScrollView, View, XStack, YStack, styled } from "tamagui";
+import { ScrollView, View, XStack, YStack } from "tamagui";
 import { useTranslation } from "react-i18next";
 import { Screen } from "../components/Screen";
-import { StatusBar, Animated } from "react-native";
+import { Animated } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Icon } from "../components/Icon";
 import { Typography } from "../components/Typography";
