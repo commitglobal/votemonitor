@@ -293,14 +293,14 @@ export default function EditForm(): FunctionComponent {
               </Card>
             </TabsContent>
             <TabsContent className='flex flex-1 flex-col' value='questions'>
-              <Card className='pt-0 flex flex-col flex-1'>
+              <Card className='pt-0 h-[calc(100vh-380px)] overflow-hidden'>
                 <CardHeader className='flex flex-column gap-2'>
                   <div className='flex flex-row justify-between items-center'>
                     <CardTitle className='text-xl'>Form questions</CardTitle>
                   </div>
                   <Separator />
                 </CardHeader>
-                <CardContent className='flex flex-1'>
+                <CardContent className='-mx-6 flex items-start justify-left px-6 sm:mx-0 sm:px-8 h-[100%]'>
                   <FormQuestionsEditor
                     availableLanguages={languages}
                     languageCode={defaultLanguage}
