@@ -65,8 +65,7 @@ public class Endpoint(IAuthorizationService authorizationService,
             {
                 var presignedUrl = await fileStorageService.GetPresignedUrlAsync(
                     guide.FilePath!,
-                    guide.UploadedFileName!,
-                    ct);
+                    guide.UploadedFileName!);
 
                 return new ObserverGuideModel
                 {

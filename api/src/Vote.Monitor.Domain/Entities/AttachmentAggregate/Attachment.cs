@@ -19,7 +19,9 @@ public class Attachment : AuditableBaseEntity, IAggregateRoot
     public string UploadedFileName { get; private set; }
     public string FilePath { get; private set; }
     public string MimeType { get; private set; }
+
     public bool IsDeleted { get; private set; }
+    public bool IsCompleted { get; private set; }
 
     public Attachment(Guid id,
         Guid electionRoundId,
@@ -40,10 +42,21 @@ public class Attachment : AuditableBaseEntity, IAggregateRoot
         FilePath = filePath;
         MimeType = mimeType;
         IsDeleted = false;
+        IsCompleted = false;
 
         var extension = FileName.Split('.').Last();
         var uploadedFileName = $"{Id}.{extension}";
         UploadedFileName = uploadedFileName;
+    }
+
+    public void Delete()
+    {
+        IsDeleted = true;
+    }
+
+    public void Complete()
+    {
+        IsCompleted = true;
     }
 
 #pragma warning disable CS8618 // Required by Entity Framework
@@ -52,8 +65,4 @@ public class Attachment : AuditableBaseEntity, IAggregateRoot
     {
     }
 #pragma warning restore CS8618
-    public void Delete()
-    {
-        IsDeleted = true;
-    }
 }

@@ -102,6 +102,7 @@ public class Endpoint(
                     "Attachments" A
                 WHERE
                     A."ElectionRoundId" = @electionRoundId
+                    AND A."IsDeleted" = false AND A."IsCompleted" = true
                     AND A."FormId" = @formId;
                 """;
 
@@ -123,7 +124,7 @@ public class Endpoint(
 
         foreach (var attachment in attachments)
         {
-            var result = await fileStorageService.GetPresignedUrlAsync(attachment.FilePath, attachment.UploadedFileName, ct);
+            var result = await fileStorageService.GetPresignedUrlAsync(attachment.FilePath, attachment.UploadedFileName);
             if (result is GetPresignedUrlResult.Ok(var url, _, var urlValidityInSeconds))
             {
                 attachment.PresignedUrl = url;

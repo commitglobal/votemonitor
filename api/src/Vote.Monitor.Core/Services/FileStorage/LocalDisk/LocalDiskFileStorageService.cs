@@ -4,17 +4,13 @@ using Vote.Monitor.Core.Services.FileStorage.Contracts;
 
 namespace Vote.Monitor.Core.Services.FileStorage.LocalDisk;
 
-internal class LocalDiskFileStorageService : IFileStorageService
+internal class LocalDiskFileStorageService(
+    IOptions<LocalDiskOptions> options,
+    ILogger<LocalDiskFileStorageService> logger)
+    : IFileStorageService
 {
     private const int UrlValidityInSeconds = 99999;
-    private readonly ILogger<LocalDiskFileStorageService> _logger;
-    private readonly LocalDiskOptions _options;
-
-    public LocalDiskFileStorageService(IOptions<LocalDiskOptions> options, ILogger<LocalDiskFileStorageService> logger)
-    {
-        _logger = logger;
-        _options = options.Value;
-    }
+    private readonly LocalDiskOptions _options = options.Value;
 
     public async Task<UploadFileResult> UploadFileAsync(string uploadPath, string filename, Stream stream, CancellationToken ct = default)
     {
@@ -34,7 +30,7 @@ internal class LocalDiskFileStorageService : IFileStorageService
                 await stream.CopyToAsync(fileStream, ct);
             }
 
-            var result = await GetPresignedUrlAsync(uploadPath, filename, ct);
+            var result = await GetPresignedUrlAsync(uploadPath, filename);
             if (result is GetPresignedUrlResult.Ok file)
             {
                 return new UploadFileResult.Ok(file.Url, file.Filename, UrlValidityInSeconds);
@@ -45,12 +41,12 @@ internal class LocalDiskFileStorageService : IFileStorageService
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Could not upload file {uploadPath} {filename}", uploadPath, filename);
+            logger.LogError(e, "Could not upload file {uploadPath} {filename}", uploadPath, filename);
             return new UploadFileResult.Failed($"Failed to upload file to LocalDisk: {e.Message}");
         }
     }
 
-    public async Task<GetPresignedUrlResult> GetPresignedUrlAsync(string uploadPath, string fileName, CancellationToken ct = default)
+    public async Task<GetPresignedUrlResult> GetPresignedUrlAsync(string uploadPath, string fileName)
     {
         try
         {
@@ -68,8 +64,25 @@ internal class LocalDiskFileStorageService : IFileStorageService
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Could not get presigned url for file {uploadPath} {filename}", uploadPath, fileName);
+            logger.LogError(e, "Could not get presigned url for file {uploadPath} {filename}", uploadPath, fileName);
             return new GetPresignedUrlResult.Failed($"Failed to generate presigned url for LocalDisk: {e.Message}");
         }
+    }
+
+    public Task<MultipartUploadResult> CreateMultipartUploadAsync(string uploadPath, string fileName, string contentType, int numberOfUploadParts,
+        CancellationToken ct = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task CompleteUploadAsync(string uploadId, string uploadPath, string fileName, Dictionary<int, string> eTags,
+        CancellationToken ct = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task AbortUploadAsync(string uploadId, string uploadPath, string fileName, CancellationToken ct)
+    {
+        throw new NotImplementedException();
     }
 }

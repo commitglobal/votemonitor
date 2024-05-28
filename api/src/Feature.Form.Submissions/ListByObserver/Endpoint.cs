@@ -22,137 +22,138 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
 
     public override async Task<PagedResponse<ObserverSubmissionOverview>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var sql = @"
+        var sql = """
         SELECT COUNT(*) count
         FROM
-            ""MonitoringObservers"" MO
-            INNER JOIN ""MonitoringNgos"" MN ON MN.""Id"" = MO.""MonitoringNgoId""
-            INNER JOIN ""Observers"" O ON O.""Id"" = MO.""ObserverId""
-            INNER JOIN ""AspNetUsers"" U ON U.""Id"" = O.""ApplicationUserId""
+            "MonitoringObservers" MO
+            INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
+            INNER JOIN "Observers" O ON O."Id" = MO."ObserverId"
+            INNER JOIN "AspNetUsers" U ON U."Id" = O."ApplicationUserId"
         WHERE
-            MN.""ElectionRoundId"" = @electionRoundId
-            AND MN.""NgoId"" = @ngoId
-            AND (@searchText IS NULL OR @searchText = '' OR u.""FirstName"" ILIKE @searchText OR u.""LastName"" ILIKE @searchText OR u.""Email"" ILIKE @searchText OR u.""PhoneNumber"" ILIKE @searchText)
-            AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR  mo.""Tags"" && @tagsFilter);
+            MN."ElectionRoundId" = @electionRoundId
+            AND MN."NgoId" = @ngoId
+            AND (@searchText IS NULL OR @searchText = '' OR u."FirstName" ILIKE @searchText OR u."LastName" ILIKE @searchText OR u."Email" ILIKE @searchText OR u."PhoneNumber" ILIKE @searchText)
+            AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR  mo."Tags" && @tagsFilter);
 
         SELECT 
-            ""MonitoringObserverId"",
-            ""ObserverName"",
-            ""PhoneNumber"",
-            ""Email"",
-            ""Tags"",
-            ""NumberOfFlaggedAnswers"",
-            ""NumberOfLocations"",
-            ""NumberOfFormsSubmitted"",
-            ""FollowUpStatus""
+            "MonitoringObserverId",
+            "ObserverName",
+            "PhoneNumber",
+            "Email",
+            "Tags",
+            "NumberOfFlaggedAnswers",
+            "NumberOfLocations",
+            "NumberOfFormsSubmitted",
+            "FollowUpStatus"
         FROM (
             SELECT
-                MO.""Id"" ""MonitoringObserverId"",
-                U.""FirstName"" || ' ' || U.""LastName"" ""ObserverName"",
-                U.""PhoneNumber"",
-                U.""Email"",
-                MO.""Tags"",
+                MO."Id" "MonitoringObserverId",
+                U."FirstName" || ' ' || U."LastName" "ObserverName",
+                U."PhoneNumber",
+                U."Email",
+                MO."Tags",
                 COALESCE(
                     (
                         SELECT
-                            SUM(""NumberOfFlaggedAnswers"")
+                            SUM("NumberOfFlaggedAnswers")
                         FROM
-                            ""FormSubmissions"" FS
+                            "FormSubmissions" FS
                         WHERE
-                            FS.""MonitoringObserverId"" = MO.""Id""
+                            FS."MonitoringObserverId" = MO."Id"
                     ),
                     0
-                ) AS ""NumberOfFlaggedAnswers"",
+                ) AS "NumberOfFlaggedAnswers",
                 (
                     SELECT
                         COUNT(*)
                     FROM
                         (
                             SELECT
-                                PSI.""PollingStationId""
+                                PSI."PollingStationId"
                             FROM
-                                ""PollingStationInformation"" PSI
+                                "PollingStationInformation" PSI
                             WHERE
-                                PSI.""MonitoringObserverId"" = MO.""Id""
-                                AND PSI.""ElectionRoundId"" = @electionRoundId
+                                PSI."MonitoringObserverId" = MO."Id"
+                                AND PSI."ElectionRoundId" = @electionRoundId
                             UNION
                             SELECT
-                                FS.""PollingStationId""
+                                FS."PollingStationId"
                             FROM
-                                ""FormSubmissions"" FS
+                                "FormSubmissions" FS
                             WHERE
-                                FS.""MonitoringObserverId"" = MO.""Id""
-                                AND FS.""ElectionRoundId"" = @electionRoundId
+                                FS."MonitoringObserverId" = MO."Id"
+                                AND FS."ElectionRoundId" = @electionRoundId
                         ) TMP
-                ) AS ""NumberOfLocations"",
+                ) AS "NumberOfLocations",
                 (
                     SELECT
                         COUNT(*)
                     FROM
                         (
                             SELECT
-                                PSI.""Id""
+                                PSI."Id"
                             FROM
-                                ""PollingStationInformation"" PSI
+                                "PollingStationInformation" PSI
                             WHERE
-                                PSI.""MonitoringObserverId"" = MO.""Id""
-                                AND PSI.""ElectionRoundId"" = @electionRoundId
+                                PSI."MonitoringObserverId" = MO."Id"
+                                AND PSI."ElectionRoundId" = @electionRoundId
                             UNION
                             SELECT
-                                FS.""Id""
+                                FS."Id"
                             FROM
-                                ""FormSubmissions"" FS
+                                "FormSubmissions" FS
                             WHERE
-                                FS.""MonitoringObserverId"" = MO.""Id""
-                                AND FS.""ElectionRoundId"" = @electionRoundId
+                                FS."MonitoringObserverId" = MO."Id"
+                                AND FS."ElectionRoundId" = @electionRoundId
                         ) TMP
-                ) AS ""NumberOfFormsSubmitted"",
+                ) AS "NumberOfFormsSubmitted",
                 (
                     SELECT
                         1
                     FROM
-                        ""FormSubmissions"" FS
+                        "FormSubmissions" FS
                     WHERE
-                        FS.""FollowUpStatus"" = 'NeedsFollowUp'
-                        AND FS.""MonitoringObserverId"" = MO.""Id""
-                        AND FS.""ElectionRoundId"" = @electionRoundId
-                ) AS ""FollowUpStatus""
+                        FS."FollowUpStatus" = 'NeedsFollowUp'
+                        AND FS."MonitoringObserverId" = MO."Id"
+                        AND FS."ElectionRoundId" = @electionRoundId
+                ) AS "FollowUpStatus"
             FROM
-                ""MonitoringObservers"" MO
-                INNER JOIN ""MonitoringNgos"" MN ON MN.""Id"" = MO.""MonitoringNgoId""
-                INNER JOIN ""Observers"" O ON O.""Id"" = MO.""ObserverId""
-                INNER JOIN ""AspNetUsers"" U ON U.""Id"" = O.""ApplicationUserId""
+                "MonitoringObservers" MO
+                INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
+                INNER JOIN "Observers" O ON O."Id" = MO."ObserverId"
+                INNER JOIN "AspNetUsers" U ON U."Id" = O."ApplicationUserId"
             WHERE
-                MN.""ElectionRoundId"" = @electionRoundId
-                AND MN.""NgoId"" = @ngoId
-                AND (@searchText IS NULL OR @searchText = '' OR u.""FirstName"" ILIKE @searchText OR u.""LastName"" ILIKE @searchText OR u.""Email"" ILIKE @searchText OR u.""PhoneNumber"" ILIKE @searchText)
-                AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR mo.""Tags"" && @tagsFilter)
+                MN."ElectionRoundId" = @electionRoundId
+                AND MN."NgoId" = @ngoId
+                AND (@searchText IS NULL OR @searchText = '' OR u."FirstName" ILIKE @searchText OR u."LastName" ILIKE @searchText OR u."Email" ILIKE @searchText OR u."PhoneNumber" ILIKE @searchText)
+                AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR mo."Tags" && @tagsFilter)
             ) T
 
         ORDER BY
-            CASE WHEN @sortExpression = 'ObserverName ASC' THEN ""ObserverName"" END ASC,
-            CASE WHEN @sortExpression = 'ObserverName DESC' THEN ""ObserverName"" END DESC,
+            CASE WHEN @sortExpression = 'ObserverName ASC' THEN "ObserverName" END ASC,
+            CASE WHEN @sortExpression = 'ObserverName DESC' THEN "ObserverName" END DESC,
 
-            CASE WHEN @sortExpression = 'PhoneNumber ASC' THEN ""PhoneNumber"" END ASC,
-            CASE WHEN @sortExpression = 'PhoneNumber DESC' THEN ""PhoneNumber"" END DESC,
+            CASE WHEN @sortExpression = 'PhoneNumber ASC' THEN "PhoneNumber" END ASC,
+            CASE WHEN @sortExpression = 'PhoneNumber DESC' THEN "PhoneNumber" END DESC,
 
-            CASE WHEN @sortExpression = 'Email ASC' THEN ""Email"" END ASC,
-            CASE WHEN @sortExpression = 'Email DESC' THEN ""Email"" END DESC,
+            CASE WHEN @sortExpression = 'Email ASC' THEN "Email" END ASC,
+            CASE WHEN @sortExpression = 'Email DESC' THEN "Email" END DESC,
 
-            CASE WHEN @sortExpression = 'Tags ASC' THEN ""Tags"" END ASC,
-            CASE WHEN @sortExpression = 'Tags DESC' THEN ""Tags"" END DESC,
+            CASE WHEN @sortExpression = 'Tags ASC' THEN "Tags" END ASC,
+            CASE WHEN @sortExpression = 'Tags DESC' THEN "Tags" END DESC,
           
-            CASE WHEN @sortExpression = 'NumberOfFlaggedAnswers ASC' THEN ""NumberOfFlaggedAnswers"" END ASC,
-            CASE WHEN @sortExpression = 'NumberOfFlaggedAnswers DESC' THEN ""NumberOfFlaggedAnswers"" END DESC,
+            CASE WHEN @sortExpression = 'NumberOfFlaggedAnswers ASC' THEN "NumberOfFlaggedAnswers" END ASC,
+            CASE WHEN @sortExpression = 'NumberOfFlaggedAnswers DESC' THEN "NumberOfFlaggedAnswers" END DESC,
           
-            CASE WHEN @sortExpression = 'NumberOfLocations ASC' THEN ""NumberOfLocations"" END ASC,
-            CASE WHEN @sortExpression = 'NumberOfLocations DESC' THEN ""NumberOfLocations"" END DESC,
+            CASE WHEN @sortExpression = 'NumberOfLocations ASC' THEN "NumberOfLocations" END ASC,
+            CASE WHEN @sortExpression = 'NumberOfLocations DESC' THEN "NumberOfLocations" END DESC,
           
-            CASE WHEN @sortExpression = 'NumberOfFormsSubmitted ASC' THEN ""NumberOfFormsSubmitted"" END ASC,
-            CASE WHEN @sortExpression = 'NumberOfFormsSubmitted DESC' THEN ""NumberOfFormsSubmitted"" END DESC
+            CASE WHEN @sortExpression = 'NumberOfFormsSubmitted ASC' THEN "NumberOfFormsSubmitted" END ASC,
+            CASE WHEN @sortExpression = 'NumberOfFormsSubmitted DESC' THEN "NumberOfFormsSubmitted" END DESC
 
         OFFSET @offset ROWS
-        FETCH NEXT @pageSize ROWS ONLY;";
+        FETCH NEXT @pageSize ROWS ONLY;
+        """;
 
         var queryArgs = new
         {

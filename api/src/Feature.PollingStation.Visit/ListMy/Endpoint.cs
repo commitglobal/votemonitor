@@ -27,7 +27,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
             return TypedResults.NotFound();
         }
 
-        var sql ="""
+        var sql = """
                  SELECT
                      T."PollingStationId",
                      PS."Level1",
@@ -80,6 +80,7 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
                              "Attachments" A
                          WHERE
                              A."ElectionRoundId" = @electionRoundId
+                             AND a."IsDeleted" = false AND a."IsCompleted" = true
                          UNION
                          SELECT
                              QR."ElectionRoundId",

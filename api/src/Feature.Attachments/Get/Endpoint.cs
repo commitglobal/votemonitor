@@ -35,9 +35,7 @@ public class Endpoint(
             return TypedResults.NotFound();
         }
 
-        var presignedUrl = await fileStorageService.GetPresignedUrlAsync(attachment.FilePath, 
-            attachment.UploadedFileName,
-            ct);
+        var presignedUrl = await fileStorageService.GetPresignedUrlAsync(attachment.FilePath, attachment.UploadedFileName);
 
         return TypedResults.Ok(new AttachmentModel
         {
