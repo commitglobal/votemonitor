@@ -12,31 +12,6 @@ internal class S3FileStorageService(IAmazonS3 client, ILogger<S3FileStorageServi
 {
     private readonly S3Options _options = options.Value;
 
-    public async Task<PresignedUploadLinkResult> GetPresignedUploadLinkAsync(string uploadPath, string fileName, CancellationToken ct = default)
-    {
-        GetPreSignedUrlRequest request = new GetPreSignedUrlRequest
-        {
-            BucketName = _options.BucketName,
-            Key = GetFileKey(uploadPath, fileName),
-            Verb = HttpVerb.PUT,
-            Expires = DateTime.Now.AddSeconds(_options.PresignedUrlValidityInSeconds)
-        };
-
-        try
-        {
-            var urlString = await client.GetPreSignedURLAsync(request);
-
-            return new PresignedUploadLinkResult.Ok(urlString, _options.PresignedUrlValidityInSeconds);
-        }
-        catch (AmazonS3Exception ex)
-        {
-            SentrySdk.CaptureException(ex);
-            logger.LogError(ex, "Failed to generate presigned Url in S3 for {uploadPath} {fileName}", uploadPath, fileName);
-        }
-
-        return new PresignedUploadLinkResult.Failed("Failed to generate presigned Url");
-    }
-
     public async Task<UploadFileResult> UploadFileAsync(string uploadPath, string fileName, Stream stream, CancellationToken ct = default)
     {
         var request = new PutObjectRequest
