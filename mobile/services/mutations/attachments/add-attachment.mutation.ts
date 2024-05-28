@@ -6,6 +6,12 @@ import {
 } from "../../api/add-attachment.api";
 import { AttachmentApiResponse } from "../../api/get-attachments.api";
 import { AttachmentsKeys } from "../../queries/attachments.query";
+import {
+  AddAttachmentQuickReportAPIPayload,
+  addAttachmentQuickReportMultipartComplete,
+  addAttachmentQuickReportMultipartStart,
+  uploadChunk,
+} from "../../api/quick-report/add-attachment-quick-report.api";
 
 export const addAttachmentMutation = (scopeId: string) => {
   const queryClient = useQueryClient();
@@ -67,3 +73,71 @@ export const addAttachmentMutation = (scopeId: string) => {
     },
   });
 };
+
+// Multipart Upload
+
+export const useUploadAttachmentMutation = (scopeId: string) => {
+  return useMutation({
+    mutationKey: AttachmentsKeys.addAttachmentMutation(),
+    scope: {
+      id: scopeId,
+    },
+    mutationFn: (payload: AddAttachmentQuickReportAPIPayload) =>
+      addAttachmentQuickReportMultipartStart(payload),
+
+    onError: (error: any) => Promise.resolve(error),
+  });
+};
+
+export const useUploadS3ChunkMutation = (scopeId: string) => {
+  return useMutation({
+    mutationKey: AttachmentsKeys.addAttachmentMutation(),
+    scope: {
+      id: scopeId,
+    },
+    mutationFn: ({ url, data }: { url: string; data: any }) => uploadChunk(url, data),
+    onError: (error: any) => {
+      return Promise.resolve(error);
+    },
+    retry: 3,
+  });
+};
+
+export const useCompleteAddAttachmentUploadMutation = (scopeId: string) => {
+  return useMutation({
+    mutationKey: AttachmentsKeys.addAttachmentMutation(),
+    scope: {
+      id: scopeId,
+    },
+    mutationFn: ({
+      uploadId,
+      key,
+      fileName,
+      uploadedParts,
+    }: {
+      uploadId: string;
+      key: string;
+      fileName: string;
+      uploadedParts: { ETag: string; PartNumber: number }[];
+    }) => addAttachmentQuickReportMultipartComplete(uploadId, key, fileName, uploadedParts),
+    onError: (error: any) => {
+      console.log("err completing");
+      return Promise.resolve(error);
+    },
+    retry: 3,
+  });
+};
+
+// export const useAbortDossierFileUploadMutation = () => {
+//   return useMutation(
+//     ({ dossierId, uploadId, key }: { dossierId: number; uploadId: string; key: string }) =>
+//       abortUploadDossierFile(dossierId, uploadId, key),
+//     {
+//       onError: (error: AxiosError<IBusinessException<DOSSIER_FILES_ERRORS>>) => {
+//         console.log("err aborting");
+//         return Promise.resolve(error);
+//       },
+//       retry: 3,
+//     },
+//   );
+// };
