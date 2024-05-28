@@ -11,7 +11,7 @@ internal class ConfirmEmailGenerator : IEmailGenerator<ConfirmEmailProps>
 
         var body = template
             .Replace("~$cdnUrl$~", props.CdnUrl)
-            .Replace("~$email$~", props.Email)
+            .Replace("~$name$~", props.FullName)
             .Replace("~$confirmUrl$~", props.ConfirmUrl);
 
         return new EmailModel("Confirm your email on VoteMonitor platform", body);
