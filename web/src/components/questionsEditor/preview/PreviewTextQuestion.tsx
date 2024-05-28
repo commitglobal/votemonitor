@@ -2,6 +2,7 @@ import { TextAnswer, TextQuestion } from '@/common/types';
 import { Description, Field, Label } from '@/components/ui/fieldset';
 import { Textarea } from '../../ui/textarea';
 import { useParams } from '@tanstack/react-router';
+import { Input } from '@/components/ui/input';
 
 export interface PreviewTextQuestionProps {
   languageCode: string;
