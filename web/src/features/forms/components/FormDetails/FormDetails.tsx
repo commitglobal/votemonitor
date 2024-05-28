@@ -111,10 +111,12 @@ export default function FormDetails(): FunctionComponent {
               </div>
               <Separator />
             </CardHeader>
-            <CardContent className='-mx-6 flex items-start justify-left px-6 sm:mx-0 sm:px-8'>
-              <Fieldset className='grid gap-3 divide-y divide-gray-700'>
+            <CardContent className='mx-6 flex items-start justify-left px-6 sm:mx-0 sm:px-8'>
+              <Fieldset className='grid gap-4 w-[600px]'>
                 {form.questions.map((q) => (
-                  <PreviewQuestionFactory languageCode={form.defaultLanguage} question={q} key={q.id} />
+                  <div className='p-6 border-b-2'>
+                    <PreviewQuestionFactory languageCode={form.defaultLanguage} question={q} key={q.id} />
+                  </div>
                 ))}
               </Fieldset>
             </CardContent>

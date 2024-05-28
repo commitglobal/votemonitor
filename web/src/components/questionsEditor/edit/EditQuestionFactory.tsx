@@ -63,17 +63,35 @@ export default function EditQuestionFactory({
 
   function checkIfMissingTranslations() {
     const textRequired = question.text[params['languageCode']] !== '';
-    const helpTextRule = question.helptext?.[params['languageCode']]
-      ? question.helptext?.[params['languageCode']] !== ''
-      : true;
+    const helpTextRule =
+      question.helptext?.[languageCode] !== '' ? question.helptext?.[params['languageCode']] !== '' : true;
+
     const genericProperties = textRequired && helpTextRule;
 
     switch (question.$questionType) {
-      case 'numberQuestion' || 'textQuestion':
+      case 'textQuestion': {
         return (
-          genericProperties && (question as TextQuestion | NumberQuestion).inputPlaceholder?.[params['languageCode']]
+          genericProperties &&
+          ((question as TextQuestion | NumberQuestion).inputPlaceholder?.[languageCode] !== ''
+            ? (question as TextQuestion | NumberQuestion).inputPlaceholder?.[params['languageCode']] !== ''
+            : true)
         );
+      }
+      case 'numberQuestion': {
+        return (
+          genericProperties &&
+          ((question as NumberQuestion).inputPlaceholder?.[languageCode] !== ''
+            ? (question as NumberQuestion).inputPlaceholder?.[params['languageCode']] !== ''
+            : true)
+        );
+      }
       case 'singleSelectQuestion':
+        return (
+          genericProperties &&
+          (question as SingleSelectQuestion).options.every((option) => option.text[params['languageCode']] !== '')
+        );
+
+      case 'multiSelectQuestion':
         return (
           genericProperties &&
           (question as SingleSelectQuestion).options.every((option) => option.text[params['languageCode']] !== '')

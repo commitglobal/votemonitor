@@ -54,7 +54,12 @@ export default function EditFormTemplate() {
     description: z.string().optional(),
     defaultLanguage: z.string().nonempty(),
     formTemplateType: z
-      .enum([FormTemplateType.Opening, FormTemplateType.Voting, FormTemplateType.ClosingAndCounting, FormTemplateType.Other])
+      .enum([
+        FormTemplateType.Opening,
+        FormTemplateType.Voting,
+        FormTemplateType.ClosingAndCounting,
+        FormTemplateType.Other,
+      ])
       .catch(FormTemplateType.Opening),
   });
 
@@ -283,14 +288,14 @@ export default function EditFormTemplate() {
               </Card>
             </TabsContent>
             <TabsContent className='flex flex-1 flex-col' value='questions'>
-              <Card className='pt-0 flex flex-col flex-1'>
+              <Card className='pt-0 h-[calc(100vh-380px)] overflow-hidden'>
                 <CardHeader className='flex flex-column gap-2'>
                   <div className='flex flex-row justify-between items-center'>
                     <CardTitle className='text-xl'>Template form questions</CardTitle>
                   </div>
                   <Separator />
                 </CardHeader>
-                <CardContent className='flex flex-1'>
+                <CardContent className='-mx-6 flex items-start justify-left px-6 sm:mx-0 sm:px-8 h-[100%]'>
                   <FormQuestionsEditor
                     availableLanguages={languages}
                     languageCode={defaultLanguage}

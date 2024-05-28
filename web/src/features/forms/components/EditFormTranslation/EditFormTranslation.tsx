@@ -85,11 +85,9 @@ export default function EditFormTranslation() {
   const submit = () => {
     if (formRef.current) {
       // @ts-ignore
-      formRef.current.dispatchEvent(
-        new Event('submit', { cancelable: true, bubbles: true })
-      )
+      formRef.current.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
     }
-  }
+  };
 
   return (
     <Layout title={`${formData.code} - ${formData.name[formData.defaultLanguage]}`}>
@@ -142,14 +140,14 @@ export default function EditFormTranslation() {
               </Card>
             </TabsContent>
             <TabsContent value='questions'>
-              <Card className='pt-0'>
+              <Card className='pt-0 h-[calc(100vh-380px)] overflow-hidden'>
                 <CardHeader className='flex flex-column gap-2'>
                   <div className='flex flex-row justify-between items-center'>
                     <CardTitle className='text-xl'>Form questions</CardTitle>
                   </div>
                   <Separator />
                 </CardHeader>
-                <CardContent className='-mx-6 flex items-start justify-left px-6 sm:mx-0 sm:px-8'>
+                <CardContent className='-mx-6 flex items-start justify-left px-6 sm:mx-0 sm:px-8 h-[100%]'>
                   <FormQuestionsEditor
                     availableLanguages={formData.languages}
                     languageCode={formData.defaultLanguage}
