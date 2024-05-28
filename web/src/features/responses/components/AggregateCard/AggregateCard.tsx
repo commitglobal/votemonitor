@@ -75,7 +75,7 @@ export function AggregateCard({ aggregate, language, responders }: AggregateCard
         {isTextAggregate(aggregate) && <TextAggregateContent aggregate={aggregate} responders={responders} />}
 
         {(notes.length > 0 || attachments.length > 0) && (
-          <ResponseExtraDataSection attachments={attachments} notes={notes} />
+          <ResponseExtraDataSection attachments={attachments} notes={notes} aggregateDisplay={true} />
         )}
       </CardContent>
     </Card>
