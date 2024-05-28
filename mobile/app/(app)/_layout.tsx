@@ -1,5 +1,5 @@
 import React from "react";
-import { Redirect, SplashScreen, Stack } from "expo-router";
+import { Redirect, Stack } from "expo-router";
 import { PortalProvider } from "tamagui";
 import { useAuth } from "../../hooks/useAuth";
 import UserContextProvider from "../../contexts/user/UserContext.provider";
@@ -9,8 +9,6 @@ const AppLayout = () => {
   const { isAuthenticated } = useAuth();
 
   if (!isAuthenticated) {
-    // TODO: @birloiflorian isAuthenticated is always false here
-    SplashScreen.hideAsync();
     return <Redirect href="/login" />;
   }
 

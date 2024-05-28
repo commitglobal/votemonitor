@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { router } from "expo-router";
+import { SplashScreen, router } from "expo-router";
 import { useAuth } from "../hooks/useAuth";
 import { ScrollView, View, XStack, YStack } from "tamagui";
 import { useTranslation } from "react-i18next";
@@ -47,6 +47,8 @@ const Login = () => {
   const pagerViewRef = useRef(null);
 
   useEffect(() => {
+    SplashScreen.hideAsync();
+
     try {
       const onboardingComplete = SecureStore.getItem(SECURE_STORAGE_KEYS.ONBOARDING_COMPLETE);
       if (onboardingComplete !== "true") {

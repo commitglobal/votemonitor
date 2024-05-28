@@ -32,7 +32,9 @@ export function PersistGate({ children }: React.PropsWithChildren) {
 
   useEffect(() => {
     if (!isRestoring) {
-      SplashScreen.hideAsync();
+      setTimeout(() => {
+        SplashScreen.hideAsync();
+      }, 200);
     }
   }, [isRestoring]);
 
