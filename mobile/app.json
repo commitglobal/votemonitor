@@ -109,7 +109,8 @@
           "organization": "code4romania",
           "project": "votemonitor-mobile"
         }
-      ]
+      ],
+      "expo-av"
     ]
   }
 }

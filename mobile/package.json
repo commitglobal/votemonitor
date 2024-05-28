@@ -70,7 +70,8 @@
     "react-native-toast-message": "^2.2.0",
     "superjson": "^2.2.1",
     "tamagui": "^1.93.2",
-    "zod": "^3.23.3"
+    "zod": "^3.23.3",
+    "expo-av": "~13.10.6"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
