@@ -49,7 +49,7 @@ public class ExportQuickReportsJob(VoteMonitorContext context,
             {
                 foreach (var attachment in submission.Attachments)
                 {
-                    var result = await fileStorageService.GetPresignedUrlAsync(attachment.FilePath, attachment.UploadedFileName, ct);
+                    var result = await fileStorageService.GetPresignedUrlAsync(attachment.FilePath, attachment.UploadedFileName);
 
                     if (result is GetPresignedUrlResult.Ok okResult)
                     {
@@ -86,42 +86,43 @@ public class ExportQuickReportsJob(VoteMonitorContext context,
 
     private async Task<List<QuickReportModel>> GetQuickReports(Guid electionRoundId, Guid ngoId, CancellationToken ct)
     {
-        var sql = @"
+        var sql = """
         SELECT
-            QR.""Id"",
-            QR.""QuickReportLocationType"",
-            QR.""MonitoringObserverId"",
-            COALESCE(QR.""LastModifiedOn"", QR.""CreatedOn"") AS ""Timestamp"",
-            QR.""Title"",
-            QR.""Description"",
-            QR.""FollowUpStatus"",
-            COALESCE((select jsonb_agg(jsonb_build_object('QuickReportId', ""QuickReportId"", 'FileName', ""FileName"", 'MimeType', ""MimeType"", 'FilePath', ""FilePath"", 'UploadedFileName', ""UploadedFileName"", 'TimeSubmitted', COALESCE(""LastModifiedOn"", ""CreatedOn"")))
-            FROM ""QuickReportAttachments"" qra
-            WHERE qra.""ElectionRoundId"" = @electionRoundId AND qra.""QuickReportId"" = qr.""Id""),'[]'::JSONB) AS ""Attachments"",
-            O.""FirstName"",
-            O.""LastName"",
-            O.""Email"",
-            O.""PhoneNumber"",
-            QR.""PollingStationDetails"",
-            PS.""Id"" AS ""PollingStationId"",
-            PS.""Level1"",
-            PS.""Level2"",
-            PS.""Level3"",
-            PS.""Level4"",
-            PS.""Level5"",
-            PS.""Number"",
-            PS.""Address""
+            QR."Id",
+            QR."QuickReportLocationType",
+            QR."MonitoringObserverId",
+            COALESCE(QR."LastModifiedOn", QR."CreatedOn") AS "Timestamp",
+            QR."Title",
+            QR."Description",
+            QR."FollowUpStatus",
+            COALESCE((select jsonb_agg(jsonb_build_object('QuickReportId', "QuickReportId", 'FileName', "FileName", 'MimeType', "MimeType", 'FilePath', "FilePath", 'UploadedFileName', "UploadedFileName", 'TimeSubmitted', COALESCE("LastModifiedOn", "CreatedOn")))
+            FROM "QuickReportAttachments" qra
+            WHERE qra."ElectionRoundId" = @electionRoundId AND qra."QuickReportId" = qr."Id"),'[]'::JSONB) AS "Attachments",
+            O."FirstName",
+            O."LastName",
+            O."Email",
+            O."PhoneNumber",
+            QR."PollingStationDetails",
+            PS."Id" AS "PollingStationId",
+            PS."Level1",
+            PS."Level2",
+            PS."Level3",
+            PS."Level4",
+            PS."Level5",
+            PS."Number",
+            PS."Address"
         FROM
-            ""QuickReports"" QR
-            INNER JOIN ""MonitoringObservers"" MO ON MO.""Id"" = QR.""MonitoringObserverId""
-            INNER JOIN ""MonitoringNgos"" MN ON MN.""Id"" = MO.""MonitoringNgoId""
-            INNER JOIN ""AspNetUsers"" O ON MO.""ObserverId"" = O.""Id""
-            LEFT JOIN ""PollingStations"" PS ON PS.""Id"" = QR.""PollingStationId""
+            "QuickReports" QR
+            INNER JOIN "MonitoringObservers" MO ON MO."Id" = QR."MonitoringObserverId"
+            INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
+            INNER JOIN "AspNetUsers" O ON MO."ObserverId" = O."Id"
+            LEFT JOIN "PollingStations" PS ON PS."Id" = QR."PollingStationId"
         WHERE
-            QR.""ElectionRoundId"" = @electionRoundId
-            AND MN.""NgoId"" = @ngoId
+            QR."ElectionRoundId" = @electionRoundId
+            AND MN."NgoId" = @ngoId
         ORDER BY
-            COALESCE(QR.""LastModifiedOn"", QR.""CreatedOn"") DESC";
+            COALESCE(QR."LastModifiedOn", QR."CreatedOn") DESC
+        """;
 
         var queryArgs = new
         {

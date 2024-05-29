@@ -17,36 +17,37 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) :
 
     public override async Task<Ok<Response>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var sql = @"
+        var sql = """
         SELECT
-            NGO.""Name"" AS ""NgoName""
+            NGO."Name" AS "NgoName"
         FROM
-            ""MonitoringObservers"" MO
-            INNER JOIN ""MonitoringNgos"" MN ON MN.""Id"" = MO.""MonitoringNgoId""
-            INNER JOIN ""Ngos"" NGO ON NGO.""Id"" = MN.""NgoId""
+            "MonitoringObservers" MO
+            INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
+            INNER JOIN "Ngos" NGO ON NGO."Id" = MN."NgoId"
         WHERE
-            MO.""ObserverId"" = @observerId
-            AND MO.""ElectionRoundId"" = @electionRoundId
+            MO."ObserverId" = @observerId
+            AND MO."ElectionRoundId" = @electionRoundId
         FETCH FIRST
             1 ROWS ONLY;
 
         SELECT
-            N.""Id"",
-            N.""Title"",
-            N.""Body"",
-            U.""FirstName"" || ' ' || U.""LastName"" ""Sender"",
-            N.""CreatedOn"" ""SentAt""
+            N."Id",
+            N."Title",
+            N."Body",
+            U."FirstName" || ' ' || U."LastName" "Sender",
+            N."CreatedOn" "SentAt"
         FROM
-            ""Observers"" O
-            INNER JOIN ""MonitoringObservers"" MO ON MO.""ObserverId"" = O.""Id""
-            INNER JOIN ""MonitoringObserverNotification"" MON ON MON.""TargetedObserversId"" = MO.""Id""
-            INNER JOIN ""Notifications"" N ON MON.""NotificationId"" = N.""Id""
-            INNER JOIN ""AspNetUsers"" U on U.""Id"" =  N.""SenderId""
+            "Observers" O
+            INNER JOIN "MonitoringObservers" MO ON MO."ObserverId" = O."Id"
+            INNER JOIN "MonitoringObserverNotification" MON ON MON."TargetedObserversId" = MO."Id"
+            INNER JOIN "Notifications" N ON MON."NotificationId" = N."Id"
+            INNER JOIN "AspNetUsers" U on U."Id" =  N."SenderId"
         WHERE
-            O.""Id"" = @observerId
-            AND N.""ElectionRoundId"" = @electionRoundId
+            O."Id" = @observerId
+            AND N."ElectionRoundId" = @electionRoundId
         ORDER BY
-            N.""CreatedOn"" DESC;";
+            N."CreatedOn" DESC;
+        """;
 
         var queryArgs = new
         {

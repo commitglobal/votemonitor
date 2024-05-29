@@ -136,7 +136,6 @@ const colors = [
   "#e9edc9",
   "#fefae0",
   "#faedcd",
-  "#804674",
   "#a86464",
   "#b3e5be",
   "#f5ffc9",
@@ -179,6 +178,7 @@ const colors = [
 ];
 
 export function getTagColor(tag: string) {
+  tag = tag.toLocaleLowerCase();
   let hash = 0;
   for (let i = 0; i < tag.length; i++) {
     hash = tag.charCodeAt(i) + ((hash << 5) - hash);
@@ -263,4 +263,10 @@ export function buildURLSearchParams(data: any) {
 export function round(value: number, decimals: number): number {
   //@ts-ignore
   return Number(Math.round(value + 'e' + decimals) + 'e-' + decimals);
+}
+
+export function isQueryFiltered(queryParams: Record<string, string>): boolean {
+  return Object.entries(queryParams).some(
+    ([key, value]) => !['PageNumber', 'PageSize', 'SortColumnName', 'SortOrder'].includes(key) && Boolean(value)
+  );
 }

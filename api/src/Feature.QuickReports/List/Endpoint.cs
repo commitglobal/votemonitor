@@ -23,59 +23,60 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
 
     public override async Task<PagedResponse<QuickReportOverviewModel>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var sql = @"
+        var sql = """
         SELECT
-            COUNT(QR.""Id"") as ""TotalNumberOfRows""
+            COUNT(QR."Id") as "TotalNumberOfRows"
         FROM
-            ""QuickReports"" QR
-            INNER JOIN ""MonitoringObservers"" MO ON MO.""Id"" = QR.""MonitoringObserverId""
-            INNER JOIN ""MonitoringNgos"" MN ON MN.""Id"" = MO.""MonitoringNgoId""
+            "QuickReports" QR
+            INNER JOIN "MonitoringObservers" MO ON MO."Id" = QR."MonitoringObserverId"
+            INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
         WHERE
-            QR.""ElectionRoundId"" = @electionRoundId
-            AND MN.""NgoId"" = @ngoId;
+            QR."ElectionRoundId" = @electionRoundId
+            AND MN."NgoId" = @ngoId;
 
         SELECT
-            QR.""Id"",
-            QR.""QuickReportLocationType"",
-            COALESCE(QR.""LastModifiedOn"", QR.""CreatedOn"") AS  ""Timestamp"",
-            QR.""Title"",
-            QR.""Description"",
-            QR.""FollowUpStatus"",
-            COUNT(QRA.""Id"") AS ""NumberOfAttachments"",
-            O.""FirstName"",
-            O.""LastName"",
-            O.""Email"",
-            O.""PhoneNumber"",
-            QR.""PollingStationDetails"",
-            PS.""Id"" AS ""PollingStationId"",
-            PS.""Level1"",
-            PS.""Level2"",
-            PS.""Level3"",
-            PS.""Level4"",
-            PS.""Level5"",
-            PS.""Number"",
-            PS.""Address""
+            QR."Id",
+            QR."QuickReportLocationType",
+            COALESCE(QR."LastModifiedOn", QR."CreatedOn") AS  "Timestamp",
+            QR."Title",
+            QR."Description",
+            QR."FollowUpStatus",
+            COUNT(QRA."Id") AS "NumberOfAttachments",
+            O."FirstName",
+            O."LastName",
+            O."Email",
+            O."PhoneNumber",
+            QR."PollingStationDetails",
+            PS."Id" AS "PollingStationId",
+            PS."Level1",
+            PS."Level2",
+            PS."Level3",
+            PS."Level4",
+            PS."Level5",
+            PS."Number",
+            PS."Address"
         FROM
-            ""QuickReports"" QR
-            INNER JOIN ""MonitoringObservers"" MO ON MO.""Id"" = QR.""MonitoringObserverId""
-            INNER JOIN ""MonitoringNgos"" MN ON MN.""Id"" = MO.""MonitoringNgoId""
-            INNER JOIN ""AspNetUsers"" O ON MO.""ObserverId"" = O.""Id""
-            LEFT JOIN ""QuickReportAttachments"" QRA ON QR.""Id"" = QRA.""QuickReportId""
-            LEFT JOIN ""PollingStations"" PS ON PS.""Id"" = QR.""PollingStationId""
+            "QuickReports" QR
+            INNER JOIN "MonitoringObservers" MO ON MO."Id" = QR."MonitoringObserverId"
+            INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
+            INNER JOIN "AspNetUsers" O ON MO."ObserverId" = O."Id"
+            LEFT JOIN "QuickReportAttachments" QRA ON QR."Id" = QRA."QuickReportId"
+            LEFT JOIN "PollingStations" PS ON PS."Id" = QR."PollingStationId"
         WHERE
-            QR.""ElectionRoundId"" = @electionRoundId
-            AND MN.""NgoId"" = @ngoId
+            QR."ElectionRoundId" = @electionRoundId
+            AND MN."NgoId" = @ngoId
         GROUP BY
-            QR.""Id"",
-            O.""Id"",
-            PS.""Id"",
-            MN.""Id""
+            QR."Id",
+            O."Id",
+            PS."Id",
+            MN."Id"
         ORDER BY
-            COALESCE(QR.""LastModifiedOn"", QR.""CreatedOn"") DESC
+            COALESCE(QR."LastModifiedOn", QR."CreatedOn") DESC
         OFFSET
             @offset ROWS
         FETCH NEXT
-            @pageSize ROWS ONLY;";
+            @pageSize ROWS ONLY;
+        """;
 
         var queryArgs = new
         {

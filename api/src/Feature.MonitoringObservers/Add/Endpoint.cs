@@ -1,7 +1,9 @@
 ﻿using Authorization.Policies;
 using Feature.MonitoringObservers.Specifications;
 using Job.Contracts;
+using Microsoft.Extensions.Options;
 using Vote.Monitor.Core.Extensions;
+using Vote.Monitor.Core.Options;
 using Vote.Monitor.Core.Services.EmailTemplating;
 using Vote.Monitor.Core.Services.EmailTemplating.Props;
 using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
@@ -18,9 +20,12 @@ public class Endpoint(
     IRepository<ElectionRoundAggregate> repository,
     IRepository<MonitoringNgoAggregate> monitoringNgoRepository,
     IReadRepository<Observer> observerRepository,
-    IRepository<MonitoringObserver> monitoringObserverRepository)
+    IRepository<MonitoringObserver> monitoringObserverRepository,
+    IOptions<ApiConfiguration> options)
     : Endpoint<Request, Results<Ok<Response>, NotFound<string>, Conflict<ProblemDetails>, ValidationProblem>>
 {
+
+    private readonly ApiConfiguration _apiConfiguration = options.Value;
     public override void Configure()
     {
         Post("/api/election-rounds/{electionRoundId}/monitoring-ngos/{monitoringNgoId}/monitoring-observers");
@@ -83,8 +88,14 @@ public class Endpoint(
 
         await monitoringObserverRepository.AddAsync(monitoringObserver, ct);
 
+        var invitationExistingUserEmailProps = new InvitationExistingUserEmailProps(
+            FullName: observer.ApplicationUser.FirstName + " " + observer.ApplicationUser.LastName,
+            CdnUrl: _apiConfiguration.WebAppUrl,
+            NgoName: monitoringNgo.Ngo.Name,
+            ElectionRoundDetails: electionRound.Title);
+
         var email = emailFactory.GenerateEmail(EmailTemplateType.InvitationExistingUser,
-            new InvitationExistingUserEmailProps("", monitoringNgo.Ngo.Name, electionRound.Title));
+            invitationExistingUserEmailProps);
         jobService.SendEmail(observer.ApplicationUser.Email!, email.Subject, email.Body);
 
         return TypedResults.Ok(new Response

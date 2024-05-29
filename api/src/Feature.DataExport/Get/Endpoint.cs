@@ -20,9 +20,12 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        var sql = @"SELECT ""Base64EncodedData"", ""FileName""
-        FROM ""ExportedData""
-        WHERE ""ElectionRoundId"" = @electionRoundId AND ""NgoId"" = @ngoId AND ""Id"" =@exportedDataId";
+        var sql = """
+            SELECT "Base64EncodedData", "FileName"
+            FROM "ExportedData"
+            WHERE "ElectionRoundId" = @electionRoundId AND "NgoId" = @ngoId AND "Id" =@exportedDataId";
+        """;
+      
 
         var queryParams = new
         {

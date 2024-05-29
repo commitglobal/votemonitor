@@ -231,7 +231,7 @@ export default function FormSubmissionDetails(): FunctionComponent {
                     '-'
                   )}
                   {(attachments.length > 0 || notes.length > 0) && (
-                    <ResponseExtraDataSection attachments={attachments} notes={notes} />
+                    <ResponseExtraDataSection attachments={attachments} notes={notes} aggregateDisplay={false} />
                   )}
                 </div>
               );
