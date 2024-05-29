@@ -60,6 +60,7 @@
     "react-hook-form": "^7.51.2",
     "react-i18next": "^14.1.0",
     "react-native": "0.73.6",
+    "react-native-compressor": "^1.8.24",
     "react-native-date-picker": "^5.0.0",
     "react-native-gesture-handler": "~2.14.0",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",

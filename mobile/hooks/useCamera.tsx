@@ -1,5 +1,7 @@
 import * as ImagePicker from "expo-image-picker";
 import Toast from "react-native-toast-message";
+import { Video, Image } from "react-native-compressor";
+import * as Sentry from "@sentry/react-native";
 
 /**
  * 
@@ -52,7 +54,8 @@ export const useCamera = () => {
       if (!requestedPermisison.granted) {
         return Toast.show({
           type: "error",
-          text2: "Need permissions to open the camera or to use the photo library. Go to Settings -> VoteMonitor.",
+          text2:
+            "Need permissions to open the camera or to use the photo library. Go to Settings -> VoteMonitor.",
           visibilityTime: 5000,
         });
       }
@@ -75,9 +78,9 @@ export const useCamera = () => {
       ...(specifiedMediaType || { mediaTypes: ImagePicker.MediaTypeOptions.All }),
       allowsEditing: true,
       aspect: [4, 3],
-      quality: 1,
+      quality: 0.1,
       allowsMultipleSelection: false,
-      videoQuality: ImagePicker.UIImagePickerControllerQualityType.Medium, // TODO: careful here, Medium might be enough
+      videoQuality: ImagePicker.UIImagePickerControllerQualityType.Low, // TODO: careful here, Medium might be enough
       cameraType: ImagePicker.CameraType.back,
     });
 
@@ -85,13 +88,26 @@ export const useCamera = () => {
       return;
     }
 
-    if (result.assets[0]) {
-      const file = result.assets[0];
+    const file = result.assets[0];
+    if (file) {
+      let resultCompression = file.uri;
 
-      const filename = file.uri.split("/").pop() || "";
+      try {
+        if (file.type === "image") {
+          resultCompression = await Image.compress(file.uri);
+        } else if (file.type === "video") {
+          resultCompression = await Video.compress(file.uri, {}, (progress) => {
+            console.log("Compression Progress: ", progress);
+          });
+        }
+      } catch (err) {
+        Sentry.captureException(err);
+      }
+
+      const filename = resultCompression.split("/").pop() || "";
 
       const toReturn = {
-        uri: result.assets[0].uri,
+        uri: resultCompression,
         name: filename,
         type: file.mimeType || "",
       };

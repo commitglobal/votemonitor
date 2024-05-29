@@ -61,6 +61,7 @@ const FormQuestionnaire = () => {
   const [isOptionsSheetOpen, setIsOptionsSheetOpen] = useState(false);
   const [addingNote, setAddingNote] = useState(false);
   const [deletingAnswer, setDeletingAnswer] = useState(false);
+  const [isPreparingFile, setIsPreparingFile] = useState(false);
 
   const {
     data: currentForm,
@@ -271,9 +272,11 @@ const FormQuestionnaire = () => {
   );
 
   const handleCameraUpload = async (type: "library" | "cameraPhoto") => {
+    setIsPreparingFile(true);
     const cameraResult = await uploadCameraOrMedia(type);
 
     if (!cameraResult) {
+      setIsPreparingFile(false);
       return;
     }
 
@@ -297,6 +300,8 @@ const FormQuestionnaire = () => {
           onError: () => console.log("🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴ERORR🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴"),
         },
       );
+
+      setIsPreparingFile(false);
 
       if (!onlineManager.isOnline()) {
         setIsOptionsSheetOpen(false);
@@ -621,7 +626,7 @@ const FormQuestionnaire = () => {
           moveOnKeyboardChange={Platform.OS === "android"}
           disableDrag={addingNote}
         >
-          {isLoadingAddAttachmentt && !isPaused ? (
+          {(isLoadingAddAttachmentt && !isPaused) || isPreparingFile ? (
             <MediaLoading />
           ) : addingNote ? (
             <AddNoteSheetContent
