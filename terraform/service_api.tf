@@ -165,11 +165,11 @@ module "ecs_api" {
       },
      {
       name      = "Mailing__SES__AWSAccessKey"
-      valueFrom = "stagingn/ses:AWSAccessKey::"
+      valueFrom = "staging-ses:access-key::"
     },
     {
       name      = "Mailing__SES__AWSSecretKey"
-      valueFrom = "stagingn/ses:AWSSecretKey::"
+      valueFrom = "staging-ses:secret-key::"
     },
   ]
 
