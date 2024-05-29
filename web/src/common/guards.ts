@@ -17,10 +17,17 @@ import {
   type SingleSelectAnswer,
   type SingleSelectQuestion,
   type TextAnswer,
+  type TextQuestion,
+  type NumberQuestion,
+  type DateQuestion,
 } from './types';
 
 export function isDateAnswer(answer: BaseAnswer): answer is DateAnswer {
   return DateAnswerSchema.safeParse(answer).success;
+}
+
+export function isDateQuestion(question: BaseQuestion): question is DateQuestion {
+  return question.$questionType === QuestionType.DateQuestionType;
 }
 
 export function isMultiSelectAnswer(answer: BaseAnswer): answer is MultiSelectAnswer {
@@ -35,12 +42,16 @@ export function isNumberAnswer(answer: BaseAnswer): answer is NumberAnswer {
   return NumberAnswerSchema.safeParse(answer).success;
 }
 
+export function isNumberQuestion(question: BaseQuestion): question is NumberQuestion {
+  return question.$questionType === QuestionType.NumberQuestionType;
+}
+
 export function isRatingAnswer(answer: BaseAnswer): answer is RatingAnswer {
   return RatingAnswerSchema.safeParse(answer).success;
 }
 
 export function isRatingQuestion(question: BaseQuestion): question is RatingQuestion {
-  return question.$questionType === QuestionType.RatingQuestionType
+  return question.$questionType === QuestionType.RatingQuestionType;
 }
 
 export function isSingleSelectAnswer(answer: BaseAnswer): answer is SingleSelectAnswer {
@@ -53,4 +64,8 @@ export function isSingleSelectQuestion(question: BaseQuestion): question is Sing
 
 export function isTextAnswer(answer: BaseAnswer): answer is TextAnswer {
   return TextAnswerSchema.safeParse(answer).success;
+}
+
+export function isTextQuestion(question: BaseQuestion): question is TextQuestion {
+  return question.$questionType === QuestionType.TextQuestionType;
 }
