@@ -130,6 +130,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Module.Notific
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feature.DataExport", "src\Feature.DataExport\Feature.DataExport.csproj", "{CF53984A-9BCD-4B7A-8DAA-E29BCDFE966F}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feature.Feedback", "src\Feature.Feedback\Feature.Feedback.csproj", "{CECF7A46-6F58-469E-BAF1-AEC44A201786}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -368,6 +370,10 @@ Global
 		{CF53984A-9BCD-4B7A-8DAA-E29BCDFE966F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CF53984A-9BCD-4B7A-8DAA-E29BCDFE966F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CF53984A-9BCD-4B7A-8DAA-E29BCDFE966F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CECF7A46-6F58-469E-BAF1-AEC44A201786}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CECF7A46-6F58-469E-BAF1-AEC44A201786}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CECF7A46-6F58-469E-BAF1-AEC44A201786}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CECF7A46-6F58-469E-BAF1-AEC44A201786}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -431,6 +437,7 @@ Global
 		{19366F64-093A-4A2F-B6EB-EA5E90A97F6E} = {17945B3C-5A4C-4279-8022-65ABC606A510}
 		{15A339AF-DAB4-4733-BBFC-C2F4D1D19B49} = {3441EE1D-E3C6-45BE-A020-553816015081}
 		{CF53984A-9BCD-4B7A-8DAA-E29BCDFE966F} = {17945B3C-5A4C-4279-8022-65ABC606A510}
+		{CECF7A46-6F58-469E-BAF1-AEC44A201786} = {17945B3C-5A4C-4279-8022-65ABC606A510}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {50C20C9F-F2AF-45D8-994A-06661772B31C}

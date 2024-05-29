@@ -132,12 +132,12 @@ export default function DisplayLogicEditor({
           {t('questionEditor.question.displayLogic')}
           {availableParentQuestions.length === 0 && (
             <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger>
+              <Tooltip delayDuration={300}>
+                <TooltipTrigger type='button'>
                   <InformationCircleIcon width={18} />
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p className='w-[250px]'>{t('questionEditor.question.displayLogic.invalid')}</p>
+                  <p className='text-slate-700 text-sm w-[250px]'>{t('questionEditor.question.displayLogic.invalid')}</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>

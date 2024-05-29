@@ -41,7 +41,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
             QR."Title",
             QR."Description",
             QR."FollowUpStatus",
-            COUNT(QRA."Id") AS "NumberOfAttachments",
+            COUNT(QRA."Id") FILTER(QRA."IsDeleted" = FALSE AND QRA."IsCompleted" = TRUE) AS "NumberOfAttachments",
             O."FirstName",
             O."LastName",
             O."Email",

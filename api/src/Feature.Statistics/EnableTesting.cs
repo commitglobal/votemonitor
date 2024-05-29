@@ -1,5 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("Vote.Monitor.Api.Feature.PollingStation.Information.UnitTests")]
+[assembly: InternalsVisibleTo("Feature.Statistics.UnitTests")]
 [assembly: InternalsVisibleTo("Vote.Monitor.Api.IntegrationTests")]
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]

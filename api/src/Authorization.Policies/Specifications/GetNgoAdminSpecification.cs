@@ -9,7 +9,8 @@ internal sealed class GetNgoAdminSpecification : SingleResultSpecification<NgoAd
     {
         Query
             .Where(x => x.Id == adminId && x.NgoId == ngoId)
-            .Include(x => x.Ngo);
+            .Include(x => x.Ngo)
+            .AsNoTracking();
 
         Query.Select(x => new NgoAdminView
         {

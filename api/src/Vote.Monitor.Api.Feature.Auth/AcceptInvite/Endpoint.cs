@@ -21,7 +21,8 @@ public class Endpoint(IRepository<ApplicationUser> repository,
             return TypedResults.Problem();
         }
         user.AcceptInvite(request.Password);
-            // just in case they were invited multiple times
+        
+        // just in case they were invited multiple times
         var monitoringObservers = await monitoringObserverRepository.ListAsync(new ListMonitoringObserverSpecification(user.Id), ct);
 
         foreach (var monitoringObserver in monitoringObservers)

@@ -35,6 +35,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
                     "Attachments"
                 WHERE
                     "FormId" = F."Id"
+                    AND "IsCompleted" = TRUE AND "IsDeleted" = FALSE
             ) AS "NumberOfMediaFiles",
             (
                 SELECT

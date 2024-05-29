@@ -16,5 +16,5 @@ export const Route = createFileRoute('/')({
   beforeLoad: () => {
     redirectIfNotAuth();
   },
-  component: Index,
+  component: Index
 });

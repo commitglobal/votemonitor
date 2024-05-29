@@ -1,12 +1,16 @@
+import { usePrevSearch } from '@/common/prev-search-store';
+import type { FunctionComponent } from '@/common/types';
 import { Link, useRouter } from '@tanstack/react-router';
 
-const BackButton = () => {
+const BackButton = (): FunctionComponent => {
   const { latestLocation } = useRouter();
+  const prevSearch = usePrevSearch();
   const links = latestLocation.pathname.split('/').filter((crumb: string) => crumb !== '');
+
   return (
     <>
       {links.length > 1 ? (
-        <Link to={`../`} preload='intent'>
+        <Link search={prevSearch} to='../' preload='intent'>
           <svg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30' fill='none'>
             <path
               fillRule='evenodd'

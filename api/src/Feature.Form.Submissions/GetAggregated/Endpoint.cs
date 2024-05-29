@@ -9,8 +9,7 @@ using Vote.Monitor.Domain.ConnectionFactory;
 
 namespace Feature.Form.Submissions.GetAggregated;
 
-public class Endpoint(
-    VoteMonitorContext context,
+public class Endpoint(VoteMonitorContext context,
     INpgsqlConnectionFactory connectionFactory,
     IFileStorageService fileStorageService) : Endpoint<Request, Results<Ok<Response>, NotFound>>
 {

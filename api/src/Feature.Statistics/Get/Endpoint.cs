@@ -125,7 +125,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
         FROM
             "PollingStations"
         WHERE
-            "ElectionRoundId" = @electionRoundId
+            "ElectionRoundId" = @electionRoundId;
             
         -- get visited polling stations
         WITH
@@ -263,7 +263,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
                     TS."Bucket"
             )
         SELECT
-            TS."Bucket",
+            TS."Bucket"::timestamptz,
             COALESCE(FS."FormsSubmitted", 0) AS "FormsSubmitted",
             COALESCE(FS."NumberOfQuestionsAnswered", 0) AS "NumberOfQuestionsAnswered",
             COALESCE(FS."NumberOfFlaggedAnswers", 0) AS "NumberOfFlaggedAnswers",

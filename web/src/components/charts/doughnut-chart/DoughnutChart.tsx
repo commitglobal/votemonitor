@@ -7,6 +7,7 @@ import { Doughnut } from 'react-chartjs-2';
 ChartJS.register(ArcElement, CategoryScale, ChartDataLabels, Tooltip, Legend);
 export interface DoughnutProps {
     title: string;
+    total: number;
     data: ChartData<"doughnut">;
 };
 
@@ -52,7 +53,7 @@ const DoughnutChart = forwardRef<ChartJSOrUndefined<"doughnut">, DoughnutProps>(
     return (
         <div>
             <div>
-                <div className="text-2xl font-bold">{props.data.datasets.reduce((t, d) => t + d.data.reduce((a, b) => a + b), 0)}</div>
+                <div className="text-2xl font-bold">{props.total}</div>
                 <span className='text-sm text-slate-500'>{props.title}</span>
             </div>
             <div>

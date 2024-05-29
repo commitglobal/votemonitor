@@ -6,24 +6,19 @@ import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowDownTrayIcon } from '@heroicons/react/24/solid';
-import { ArcElement, Chart as ChartJS, Legend, Tooltip } from 'chart.js';
-import { type ReactElement, useRef } from 'react';
+import { useRef, type ReactElement } from 'react';
 
+import { saveChart } from '@/components/charts/utils/save-chart';
 import {
+  flaggedAnswersDataConfig,
   observersAccountsDataConfig,
   observersOnFieldDataConfig,
   pollingStationsDataConfig,
+  questionsAnsweredDataConfig,
+  quickReportsDataConfig,
   startedFormsDataConfig,
   timeSpentObservingDataConfig,
-  questionsAnsweredDataConfig,
-  flaggedAnswersDataConfig,
-  quickReportsDataConfig,
 } from '../../utils/chart-defs';
-import { saveChart } from '@/components/charts/utils/save-chart';
-
-
-ChartJS.register(ArcElement, Tooltip, Legend);
-
 export default function PlatformAdminDashboard(): ReactElement {
   const observersAccountsChartRef = useRef(null);
   const observersOnFieldChartRef = useRef(null);
@@ -49,7 +44,7 @@ export default function PlatformAdminDashboard(): ReactElement {
                 </Button>
               </CardHeader>
               <CardContent>
-                <DoughnutChart title='Total accounts' data={observersAccountsDataConfig} ref={observersAccountsChartRef} />
+                <DoughnutChart title='Total accounts' data={observersAccountsDataConfig} ref={observersAccountsChartRef} total={0} />
               </CardContent>
             </Card>
             <Card>
