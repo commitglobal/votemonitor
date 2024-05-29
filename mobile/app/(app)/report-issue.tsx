@@ -19,16 +19,17 @@ import { Typography } from "../../components/Typography";
 import { useAddQuickReport } from "../../services/mutations/quick-report/add-quick-report.mutation";
 import * as Crypto from "expo-crypto";
 import { FileMetadata, useCamera } from "../../hooks/useCamera";
-import { addAttachmentQuickReportMutation } from "../../services/mutations/quick-report/add-attachment-quick-report.mutation";
 import { QuickReportLocationType } from "../../services/api/quick-report/post-quick-report.api";
 import * as DocumentPicker from "expo-document-picker";
 import { onlineManager, useMutationState, useQueryClient } from "@tanstack/react-query";
 import Card from "../../components/Card";
 import { QuickReportKeys } from "../../services/queries/quick-reports.query";
 import * as Sentry from "@sentry/react-native";
-import { AddAttachmentQuickReportAPIPayload } from "../../services/api/quick-report/add-attachment-quick-report.api";
 import { useTranslation } from "react-i18next";
 import i18n from "../../common/config/i18n";
+import { AddAttachmentQuickReportStartAPIPayload } from "../../services/api/quick-report/add-attachment-quick-report.api";
+import { useUploadAttachmentQuickReportMutation } from "../../services/mutations/quick-report/add-attachment-quick-report.mutation";
+import { MULTIPART_FILE_UPLOAD_SIZE } from "../../common/constants";
 
 const mapVisitsToSelectPollingStations = (visits: PollingStationVisitVM[] = []) => {
   const pollingStationsForSelect = visits.map((visit) => {
@@ -70,7 +71,7 @@ const ReportIssue = () => {
   const [optionsSheetOpen, setOptionsSheetOpen] = useState(false);
   const { t } = useTranslation("report_new_issue");
 
-  const [attachments, setAttachments] = useState<Array<{ fileMetadata: FileMetadata; id: string }>>(
+  const [attachments, setAttachments] = useState<Array<{ fileMetadata: FileMetadata; id: string, }>>(
     [],
   );
 
@@ -79,7 +80,8 @@ const ReportIssue = () => {
     isPending: isPendingAddQuickReport,
     isPaused: isPausedAddQuickReport,
   } = useAddQuickReport();
-  const { mutateAsync: addAttachmentQReport } = addAttachmentQuickReportMutation();
+
+  const { mutateAsync: addAttachmentQReport } = useUploadAttachmentQuickReportMutation(`Quick_Report_${activeElectionRound?.id}}`);
 
   const addAttachmentsMutationState = useMutationState({
     filters: { mutationKey: QuickReportKeys.addAttachment() },
@@ -170,14 +172,17 @@ const ReportIssue = () => {
     const uuid = Crypto.randomUUID();
 
     // Use the attachments to optimistically update the UI
-    const optimisticAttachments: AddAttachmentQuickReportAPIPayload[] = [];
+    const optimisticAttachments: AddAttachmentQuickReportStartAPIPayload[] = [];
 
     if (attachments.length > 0) {
       const attachmentsMutations = attachments.map(
         ({ fileMetadata, id }: { fileMetadata: FileMetadata; id: string }) => {
-          const payload: AddAttachmentQuickReportAPIPayload = {
+          const payload: AddAttachmentQuickReportStartAPIPayload = {
             id,
-            fileMetadata,
+            fileName: fileMetadata.name,
+            filePath: fileMetadata.uri,
+            contentType: fileMetadata.type,
+            numberOfUploadParts: Math.ceil(fileMetadata.size! / MULTIPART_FILE_UPLOAD_SIZE), // DRAGOS CHECK AGAIN
             electionRoundId: activeElectionRound.id,
             quickReportId: uuid,
           };

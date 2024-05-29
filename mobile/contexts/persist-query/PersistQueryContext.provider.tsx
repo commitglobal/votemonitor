@@ -6,7 +6,7 @@ import { useAuth } from "../../hooks/useAuth";
 import { notesKeys, pollingStationsKeys } from "../../services/queries.service";
 import * as API from "../../services/definitions.api";
 import { PersistGate } from "../../components/PersistGate";
-import { AddAttachmentStartAPIPayload, addAttachment } from "../../services/api/add-attachment.api";
+import { AddAttachmentStartAPIPayload, addAttachmentMultipartStart } from "../../services/api/add-attachment.api";
 import { deleteAttachment } from "../../services/api/delete-attachment.api";
 import { Note } from "../../common/models/note";
 import { QuickReportKeys } from "../../services/queries/quick-reports.query";
@@ -14,10 +14,7 @@ import {
   AddQuickReportAPIPayload,
   addQuickReport,
 } from "../../services/api/quick-report/post-quick-report.api";
-import {
-  AddAttachmentQuickReportAPIPayload,
-  addAttachmentQuickReport,
-} from "../../services/api/quick-report/add-attachment-quick-report.api";
+import { AddAttachmentQuickReportStartAPIPayload, addAttachmentQuickReportMultipartStart } from "../../services/api/quick-report/add-attachment-quick-report.api";
 import { AttachmentApiResponse } from "../../services/api/get-attachments.api";
 import { AttachmentsKeys } from "../../services/queries/attachments.query";
 import { ASYNC_STORAGE_KEYS } from "../../common/constants";
@@ -28,7 +25,7 @@ const queryClient = new QueryClient({
   mutationCache: new MutationCache({
     // There is also QueryCache
     onSuccess: (data: unknown) => {
-      console.log("MutationCache ", data);
+      // console.log("MutationCache ", data);
     },
     onError: (error: Error, _vars, _context, mutation) => {
       console.log("MutationCache error ", error);
@@ -115,7 +112,7 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
 
   queryClient.setMutationDefaults(AttachmentsKeys.addAttachmentMutation(), {
     mutationFn: async (payload: AddAttachmentStartAPIPayload) => {
-      return addAttachment(payload);
+      return addAttachmentMultipartStart(payload);
     },
   });
 
@@ -147,14 +144,14 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
     mutationFn: async ({
       attachments: _,
       ...payload
-    }: AddQuickReportAPIPayload & { attachments: AddAttachmentQuickReportAPIPayload[] }) => {
+    }: AddQuickReportAPIPayload & { attachments: AddAttachmentQuickReportStartAPIPayload[] }) => {
       return addQuickReport(payload);
     },
   });
 
   queryClient.setMutationDefaults(QuickReportKeys.addAttachment(), {
-    mutationFn: async (payload: AddAttachmentQuickReportAPIPayload) => {
-      return addAttachmentQuickReport(payload);
+    mutationFn: async (payload: AddAttachmentQuickReportStartAPIPayload) => {
+      return addAttachmentQuickReportMultipartStart(payload);
     },
   });
 

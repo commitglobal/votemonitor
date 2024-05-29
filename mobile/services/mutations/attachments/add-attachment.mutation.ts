@@ -1,31 +1,20 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   AddAttachmentStartAPIPayload,
-  AddAttachmentAPIResponse,
-  addAttachment,
+  addAttachmentMultipartStart,
 } from "../../api/add-attachment.api";
 import { AttachmentApiResponse } from "../../api/get-attachments.api";
 import { AttachmentsKeys } from "../../queries/attachments.query";
-import {
-  AddAttachmentQuickReportAPIPayload,
-  addAttachmentQuickReportMultipartComplete,
-  addAttachmentQuickReportMultipartStart,
-  // uploadChunk,
-} from "../../api/quick-report/add-attachment-quick-report.api";
 
-export const addAttachmentMutation = (scopeId: string) => {
+// Multipart Upload - Start
+export const useUploadAttachmentMutation = (scopeId: string) => {
   const queryClient = useQueryClient();
-
   return useMutation({
     mutationKey: AttachmentsKeys.addAttachmentMutation(),
     scope: {
       id: scopeId,
     },
-    mutationFn: async (
-      payload: AddAttachmentStartAPIPayload,
-    ): Promise<AddAttachmentAPIResponse> => {
-      return addAttachment(payload);
-    },
+    mutationFn: (payload: AddAttachmentStartAPIPayload) => addAttachmentMultipartStart(payload),
     onMutate: async (payload: AddAttachmentStartAPIPayload) => {
       const attachmentsQK = AttachmentsKeys.attachments(
         payload.electionRoundId,
@@ -45,9 +34,9 @@ export const addAttachmentMutation = (scopeId: string) => {
           pollingStationId: payload.pollingStationId,
           formId: payload.formId,
           questionId: payload.questionId,
-          fileName: `${payload.fileMetadata.name}`,
-          mimeType: payload.fileMetadata.type,
-          presignedUrl: payload.fileMetadata.uri, // TODO @radulescuandrew is this working to display the media?
+          fileName: `${payload.fileName}`,
+          mimeType: payload.contentType,
+          presignedUrl: payload.filePath,
           urlValidityInSeconds: 3600,
           isNotSynched: true,
         },
@@ -75,58 +64,3 @@ export const addAttachmentMutation = (scopeId: string) => {
     },
   });
 };
-
-// Multipart Upload - Start
-export const useUploadAttachmentMutation = (scopeId: string) => {
-  return useMutation({
-    mutationKey: AttachmentsKeys.addAttachmentMutation(),
-    scope: {
-      id: scopeId,
-    },
-    mutationFn: (payload: AddAttachmentQuickReportAPIPayload) =>
-      addAttachmentQuickReportMultipartStart(payload),
-
-    onError: (error: any) => Promise.resolve(error),
-  });
-};
-
-// Multipart Upload - Complete
-export const useCompleteAddAttachmentUploadMutation = (scopeId: string) => {
-  return useMutation({
-    mutationKey: AttachmentsKeys.addAttachmentMutation(),
-    scope: {
-      id: scopeId,
-    },
-    mutationFn: ({
-      uploadId,
-      key,
-      fileName,
-      uploadedParts,
-    }: {
-      uploadId: string;
-      key: string;
-      fileName: string;
-      uploadedParts: { ETag: string; PartNumber: number }[];
-    }) => addAttachmentQuickReportMultipartComplete(uploadId, key, fileName, uploadedParts),
-    onError: (error: any) => {
-      console.log("err completing");
-      return Promise.resolve(error);
-    },
-    retry: 3,
-  });
-};
-
-// Multipart Upload - Abort
-// export const useAbortDossierFileUploadMutation = () => {
-//   return useMutation(
-//     ({ dossierId, uploadId, key }: { dossierId: number; uploadId: string; key: string }) =>
-//       abortUploadDossierFile(dossierId, uploadId, key),
-//     {
-//       onError: (error: AxiosError<IBusinessException<DOSSIER_FILES_ERRORS>>) => {
-//         console.log("err aborting");
-//         return Promise.resolve(error);
-//       },
-//       retry: 3,
-//     },
-//   );
-// };
