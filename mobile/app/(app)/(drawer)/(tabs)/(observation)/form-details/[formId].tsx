@@ -7,7 +7,7 @@ import { Typography } from "../../../../../../components/Typography";
 import { YStack } from "tamagui";
 import { useMemo, useState } from "react";
 import { ListView } from "../../../../../../components/ListView";
-import { Dimensions, Platform } from "react-native";
+import { Platform } from "react-native";
 import OptionsSheet from "../../../../../../components/OptionsSheet";
 import ChangeLanguageDialog from "../../../../../../components/ChangeLanguageDialog";
 import { setFormLanguagePreference } from "../../../../../../common/language.preferences";
@@ -21,6 +21,9 @@ import FormOverview from "../../../../../../components/FormOverview";
 import { useTranslation } from "react-i18next";
 import { useFormSubmissionMutation } from "../../../../../../services/mutations/form-submission.mutation";
 import { shouldDisplayQuestion } from "../../../../../../services/form.parser";
+import WarningDialog from "../../../../../../components/WarningDialog";
+import { useAttachments } from "../../../../../../services/queries/attachments.query";
+import { useNotesForFormId } from "../../../../../../services/queries/notes.query";
 
 type SearchParamsType = {
   formId: string;
@@ -28,7 +31,7 @@ type SearchParamsType = {
 };
 
 const FormDetails = () => {
-  const { t } = useTranslation(["form_overview", "bottom_sheets"]);
+  const { t } = useTranslation(["form_overview", "common"]);
   const { formId, language } = useLocalSearchParams<SearchParamsType>();
 
   if (!formId || !language) {
@@ -38,6 +41,7 @@ const FormDetails = () => {
   const { activeElectionRound, selectedPollingStation } = useUserData();
   const [isChangeLanguageModalOpen, setIsChangeLanguageModalOpen] = useState<boolean>(false);
   const [optionSheetOpen, setOptionSheetOpen] = useState(false);
+  const [clearingForm, setClearingForm] = useState(false);
 
   const { mutate: updateSubmission } = useFormSubmissionMutation({
     electionRoundId: activeElectionRound?.id,
@@ -57,15 +61,29 @@ const FormDetails = () => {
     error: answersError,
   } = useFormAnswers(activeElectionRound?.id, selectedPollingStation?.pollingStationId, formId);
 
+  const { data: attachments } = useAttachments(
+    activeElectionRound?.id,
+    selectedPollingStation?.pollingStationId,
+    formId,
+  );
+
+  const { data: notes } = useNotesForFormId(
+    activeElectionRound?.id,
+    selectedPollingStation?.pollingStationId,
+    formId,
+  );
+
   const questions = useMemo(() => {
     return currentForm?.questions
       .filter((q) => shouldDisplayQuestion(q, answers))
       .map((q) => ({
         status: answers?.[q.id] ? QuestionStatus.ANSWERED : QuestionStatus.NOT_ANSWERED,
         question: q.text[language],
+        numberOfNotes: notes?.[q.id]?.length || 0,
+        numberOfAttachments: attachments?.[q.id]?.length || 0,
         id: q.id,
       }));
-  }, [currentForm, answers]);
+  }, [currentForm, answers, attachments, notes]);
 
   const { numberOfQuestions, formTitle, languages } = useMemo(() => {
     return {
@@ -102,6 +120,11 @@ const FormDetails = () => {
     setIsChangeLanguageModalOpen(false);
   };
 
+  const onClearFormPress = () => {
+    setOptionSheetOpen(false);
+    setClearingForm(true);
+  };
+
   const onClearAnswersPress = () => {
     if (selectedPollingStation?.pollingStationId && activeElectionRound) {
       updateSubmission({
@@ -110,16 +133,29 @@ const FormDetails = () => {
         formId: currentForm?.id as string,
         answers: [],
       });
-      setOptionSheetOpen(false);
+      setClearingForm(false);
     }
   };
 
   if (isLoadingCurrentForm || isLoadingAnswers) {
-    return <Typography>Loading</Typography>;
+    return <Typography>{t("loading", { ns: "common" })}</Typography>;
   }
 
   if (currentFormError || answersError) {
-    return <Typography>Form Error</Typography>;
+    return (
+      <Screen preset="fixed">
+        <Header
+          title={`${formId}`}
+          titleColor="white"
+          barStyle="light-content"
+          leftIcon={<Icon icon="chevronLeft" color="white" />}
+          onLeftPress={() => router.back()}
+        />
+        <YStack paddingVertical="$xxl" alignItems="center">
+          <Typography>{t("error")}</Typography>
+        </YStack>
+      </Screen>
+    );
   }
 
   return (
@@ -142,19 +178,12 @@ const FormDetails = () => {
           setOptionSheetOpen(true);
         }}
       />
-      <YStack
-        paddingTop={28}
-        gap="$xl"
-        paddingHorizontal="$md"
-        height={
-          Platform.OS === "ios"
-            ? Dimensions.get("screen").height - 120
-            : numberOfQuestions * 165 + 300
-        }
-      >
+      <YStack paddingTop={28} gap="$xl" paddingHorizontal="$md" style={{ flex: 1 }}>
         <ListView<
           Pick<FormQuestionListItemProps, "question" | "status"> & {
             id: string;
+            numberOfAttachments: number;
+            numberOfNotes: number;
           }
         >
           data={questions}
@@ -194,15 +223,34 @@ const FormDetails = () => {
           onSelectLanguage={onConfirmFormLanguage}
         />
       )}
+      {clearingForm && (
+        <WarningDialog
+          title={t("clear_answers_modal.title", { value: formTitle })}
+          description={
+            <YStack gap="$md">
+              <Typography preset="body1" color="$gray6">
+                {t("clear_answers_modal.description.p1")}
+              </Typography>
+              <Typography preset="body1" color="$gray6">
+                {t("clear_answers_modal.description.p2")}
+              </Typography>
+            </YStack>
+          }
+          actionBtnText={t("clear_answers_modal.actions.clear")}
+          cancelBtnText={t("clear_answers_modal.actions.cancel")}
+          onCancel={setClearingForm.bind(null, false)}
+          action={onClearAnswersPress}
+        />
+      )}
       {/* //todo: change this once tamagui fixes sheet issue #2585 */}
       {(optionSheetOpen || Platform.OS === "ios") && (
         <OptionsSheet open={optionSheetOpen} setOpen={setOptionSheetOpen}>
           <YStack paddingHorizontal="$sm" gap="$xxs">
             <Typography preset="body1" paddingVertical="$md" onPress={onChangeLanguagePress}>
-              {t("observations.actions.change_language", { ns: "bottom_sheets" })}
+              {t("menu.change_language")}
             </Typography>
-            <Typography preset="body1" paddingVertical="$md" onPress={onClearAnswersPress}>
-              {t("observations.actions.clear_form", { ns: "bottom_sheets" })}
+            <Typography preset="body1" paddingVertical="$md" onPress={onClearFormPress}>
+              {t("menu.clear")}
             </Typography>
           </YStack>
         </OptionsSheet>

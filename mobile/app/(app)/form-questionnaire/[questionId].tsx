@@ -3,7 +3,7 @@ import { Screen } from "../../../components/Screen";
 import Header from "../../../components/Header";
 import { Icon } from "../../../components/Icon";
 import { Typography } from "../../../components/Typography";
-import { XStack, YStack, ScrollView, Spinner } from "tamagui";
+import { XStack, YStack, Spinner } from "tamagui";
 import LinearProgress from "../../../components/LinearProgress";
 import { useMemo, useState } from "react";
 import { useUserData } from "../../../contexts/user/UserContext.provider";
@@ -21,7 +21,6 @@ import WizardDateFormInput from "../../../components/WizardFormInputs/WizardDate
 import WizardRadioFormInput from "../../../components/WizardFormInputs/WizardRadioFormInput";
 import WizardFormElement from "../../../components/WizardFormInputs/WizardFormElement";
 import CheckboxInput from "../../../components/Inputs/CheckboxInput";
-import Input from "../../../components/Inputs/Input";
 import WizardRatingFormInput from "../../../components/WizardFormInputs/WizardRatingFormInput";
 import { useFormSubmissionMutation } from "../../../services/mutations/form-submission.mutation";
 import OptionsSheet from "../../../components/OptionsSheet";
@@ -40,6 +39,9 @@ import * as Crypto from "expo-crypto";
 import { useTranslation } from "react-i18next";
 import { onlineManager } from "@tanstack/react-query";
 import { ApiFormQuestion } from "../../../services/interfaces/question.type";
+import FormInput from "../../../components/FormInputs/FormInput";
+import WarningDialog from "../../../components/WarningDialog";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 type SearchParamType = {
   questionId: string;
@@ -48,7 +50,7 @@ type SearchParamType = {
 };
 
 const FormQuestionnaire = () => {
-  const { t } = useTranslation("question_page");
+  const { t } = useTranslation(["polling_station_form_wizard", "common"]);
   const { questionId, formId, language } = useLocalSearchParams<SearchParamType>();
 
   if (!questionId || !formId || !language) {
@@ -58,6 +60,7 @@ const FormQuestionnaire = () => {
   const { activeElectionRound, selectedPollingStation } = useUserData();
   const [isOptionsSheetOpen, setIsOptionsSheetOpen] = useState(false);
   const [addingNote, setAddingNote] = useState(false);
+  const [deletingAnswer, setDeletingAnswer] = useState(false);
 
   const {
     data: currentForm,
@@ -209,15 +212,53 @@ const FormQuestionnaire = () => {
   };
 
   const onClearForm = () => {
+    if (selectedPollingStation?.pollingStationId && activeElectionRound?.id) {
+      // Remove current answer
+      const updatedAnswers = {
+        ...answers,
+      };
+
+      delete updatedAnswers[questionId];
+
+      // 1. Find dependent questions for the current one and remove their answers
+      currentForm?.questions
+        ?.filter((q) => q.displayLogic?.parentQuestionId === questionId)
+        .forEach((q) => {
+          if (updatedAnswers) delete updatedAnswers[q.id];
+        });
+
+      updateSubmission({
+        pollingStationId: selectedPollingStation?.pollingStationId,
+        electionRoundId: activeElectionRound?.id,
+        formId: currentForm?.id as string,
+        answers: Object.values(updatedAnswers).filter(Boolean) as ApiFormAnswer[],
+      });
+    }
+
+    // TODO: @radulescuandrew maybe we can get rid of this, or at least shouldDirty: false. To be checked after API is ready
     setValue(activeQuestion?.question?.id, "", { shouldDirty: true });
+    setDeletingAnswer(false);
   };
 
   if (isLoadingCurrentForm || isLoadingAnswers) {
-    return <Typography>Loading</Typography>;
+    return <Typography>{t("loading", { ns: "common" })}</Typography>;
   }
 
   if (currentFormError || answersError) {
-    return <Typography>Form Error</Typography>;
+    return (
+      <Screen preset="fixed">
+        <Header
+          title={`${questionId}`}
+          titleColor="white"
+          barStyle="light-content"
+          leftIcon={<Icon icon="chevronLeft" color="white" />}
+          onLeftPress={() => router.back()}
+        />
+        <YStack paddingVertical="$xxl" alignItems="center">
+          <Typography>{t("error")}</Typography>
+        </YStack>
+      </Screen>
+    );
   }
   const { uploadCameraOrMedia } = useCamera();
 
@@ -229,7 +270,7 @@ const FormQuestionnaire = () => {
     `Attachment_${questionId}_${selectedPollingStation?.pollingStationId}_${formId}_${questionId}`,
   );
 
-  const handleCameraUpload = async (type: "library" | "cameraPhoto" | "cameraVideo") => {
+  const handleCameraUpload = async (type: "library" | "cameraPhoto") => {
     const cameraResult = await uploadCameraOrMedia(type);
 
     if (!cameraResult) {
@@ -322,27 +363,49 @@ const FormQuestionnaire = () => {
         leftIcon={<Icon icon="chevronLeft" color="white" />}
         onLeftPress={() => router.back()}
       />
-      <YStack gap="$xxs" padding="$md">
-        <XStack justifyContent="space-between">
-          <Typography>{t("progress")}</Typography>
-          <Typography justifyContent="space-between">{`${activeQuestion?.indexInDisplayedQuestions + 1}/${displayedQuestions.length}`}</Typography>
-        </XStack>
-        <LinearProgress
-          current={activeQuestion?.indexInDisplayedQuestions + 1}
-          total={displayedQuestions?.length || 0}
-        />
-        <XStack justifyContent="flex-end">
-          <Typography onPress={onClearForm} color="$red10">
-            {t("actions.clear_answer")}
-          </Typography>
-        </XStack>
-      </YStack>
-      <ScrollView
-        contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
-        centerContent
+
+      <KeyboardAwareScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
         keyboardShouldPersistTaps="handled"
+        // aproximate size of textarea
+        extraHeight={200}
       >
-        <YStack paddingHorizontal="$md" paddingBottom="$md" justifyContent="center">
+        <YStack gap="$xxs" padding="$md">
+          <XStack justifyContent="space-between">
+            <Typography>{t("progress_bar.label")}</Typography>
+            <Typography justifyContent="space-between">{`${activeQuestion?.indexInDisplayedQuestions + 1}/${displayedQuestions.length}`}</Typography>
+          </XStack>
+          <LinearProgress
+            current={activeQuestion?.indexInDisplayedQuestions + 1}
+            total={displayedQuestions?.length || 0}
+          />
+
+          <XStack
+            justifyContent="flex-end"
+            alignSelf="flex-end"
+            paddingLeft="$md"
+            paddingBottom="$md"
+            pressStyle={{ opacity: 0.5 }}
+            onPress={() => {
+              Keyboard.dismiss();
+              setDeletingAnswer(true);
+            }}
+          >
+            <Typography color="$red10"> {t("progress_bar.clear_answer")}</Typography>
+          </XStack>
+          {/* delete answer button */}
+          {deletingAnswer && (
+            <WarningDialog
+              title={t("warning_modal.question.title", { value: activeQuestion.question.code })}
+              description={t("warning_modal.question.description")}
+              actionBtnText={t("warning_modal.question.actions.clear")}
+              cancelBtnText={t("warning_modal.question.actions.cancel")}
+              action={onClearForm}
+              onCancel={() => setDeletingAnswer(false)}
+            />
+          )}
+        </YStack>
+        <YStack paddingHorizontal="$md" paddingBottom="$md" justifyContent="center" flex={1}>
           <Controller
             key={activeQuestion?.question?.id}
             name={activeQuestion?.question?.id}
@@ -363,7 +426,7 @@ const FormQuestionnaire = () => {
                       onChangeText={onChange}
                       value={value}
                       maxLength={10}
-                      helper={t("max", {
+                      helper={t("form.max", {
                         value: 10,
                       })}
                     />
@@ -376,8 +439,8 @@ const FormQuestionnaire = () => {
                       placeholder={question?.inputPlaceholder?.[language] || ""}
                       paragraph={question.helptext?.[language] || ""}
                       onChangeText={onChange}
-                      maxLength={10024}
-                      helper={t("max", {
+                      maxLength={1024}
+                      helper={t("form.max", {
                         value: 1024,
                       })}
                       value={value}
@@ -387,7 +450,7 @@ const FormQuestionnaire = () => {
                   return (
                     <WizardDateFormInput
                       label={`${question.code}. ${question.text[language]}`}
-                      placeholder="Please enter a date"
+                      placeholder={t("form.date_placeholder")}
                       paragraph={question.helptext?.[language] || ""}
                       onChange={onChange}
                       value={value}
@@ -412,15 +475,19 @@ const FormQuestionnaire = () => {
                       {question.options.map((option) => {
                         if (option.isFreeText && option.id === value.radioValue) {
                           return (
-                            <Input
+                            <FormInput
                               key={option.id + "free"}
                               type="textarea"
                               marginTop="$md"
                               value={value.textValue || ""}
-                              placeholder="Please enter a text..."
+                              placeholder={t("form.text_placeholder")}
                               onChangeText={(textValue) => {
                                 onChange({ ...value, textValue });
                               }}
+                              maxLength={1024}
+                              helper={t("form.max", {
+                                value: 1024,
+                              })}
                             />
                           );
                         }
@@ -433,6 +500,7 @@ const FormQuestionnaire = () => {
                     <WizardFormElement
                       key={question.id}
                       label={`${question.code}. ${question.text[language]}`}
+                      paragraph={question.helptext?.[language] || ""}
                     >
                       {question.options.map((option) => {
                         const selections: Record<string, { optionId: string; text: string }> =
@@ -459,11 +527,11 @@ const FormQuestionnaire = () => {
                               }}
                             />
                             {selections[option.id]?.optionId === option.id && option.isFreeText && (
-                              <Input
+                              <FormInput
                                 type="textarea"
                                 marginTop="$md"
                                 value={selections[option.id]?.text}
-                                placeholder="Please enter a text..."
+                                placeholder={t("form.text_placeholder")}
                                 onChangeText={(textValue) => {
                                   selections[option.id] = {
                                     optionId: option.id,
@@ -471,6 +539,10 @@ const FormQuestionnaire = () => {
                                   };
                                   onChange(selections);
                                 }}
+                                maxLength={1024}
+                                helper={t("form.max", {
+                                  value: 1024,
+                                })}
                               />
                             )}
                           </YStack>
@@ -495,18 +567,15 @@ const FormQuestionnaire = () => {
           />
 
           {/* notes section */}
-          {notes &&
-            notes?.length !== 0 &&
-            activeElectionRound?.id &&
-            selectedPollingStation?.pollingStationId && (
-              <QuestionNotes // TODO: @luciatugui add loading and error state for Notes and Attachments
-                notes={notes}
-                electionRoundId={activeElectionRound.id}
-                pollingStationId={selectedPollingStation.pollingStationId}
-                formId={formId}
-                questionId={questionId}
-              />
-            )}
+          {notes && activeElectionRound?.id && selectedPollingStation?.pollingStationId && (
+            <QuestionNotes // TODO: @luciatugui add loading and error state for Notes and Attachments
+              notes={notes}
+              electionRoundId={activeElectionRound.id}
+              pollingStationId={selectedPollingStation.pollingStationId}
+              formId={formId}
+              questionId={questionId}
+            />
+          )}
 
           {/* attachments */}
           {activeElectionRound?.id && selectedPollingStation?.pollingStationId && formId && (
@@ -519,7 +588,7 @@ const FormQuestionnaire = () => {
           )}
 
           <AddAttachment
-            label={t("actions.add_attachments")}
+            label={t("attachments.add")}
             marginTop="$sm"
             onPress={() => {
               Keyboard.dismiss();
@@ -527,7 +596,7 @@ const FormQuestionnaire = () => {
             }}
           />
         </YStack>
-      </ScrollView>
+      </KeyboardAwareScrollView>
 
       <WizzardControls
         isFirstElement={activeQuestion?.indexInAllQuestions === 0}
@@ -573,7 +642,7 @@ const FormQuestionnaire = () => {
                   setAddingNote(true);
                 }}
               >
-                {t("options_sheet.add_note")}
+                {t("attachments.menu.add_note")}
               </Typography>
               <Typography
                 onPress={handleCameraUpload.bind(null, "library")}
@@ -581,7 +650,7 @@ const FormQuestionnaire = () => {
                 paddingVertical="$md"
                 pressStyle={{ color: "$purple5" }}
               >
-                {t("options_sheet.load")}
+                {t("attachments.menu.load")}
               </Typography>
               <Typography
                 onPress={handleCameraUpload.bind(null, "cameraPhoto")}
@@ -589,15 +658,7 @@ const FormQuestionnaire = () => {
                 paddingVertical="$md"
                 pressStyle={{ color: "$purple5" }}
               >
-                {t("options_sheet.take_picture")}
-              </Typography>
-              <Typography
-                onPress={handleCameraUpload.bind(null, "cameraVideo")}
-                preset="body1"
-                paddingVertical="$md"
-                pressStyle={{ color: "$purple5" }}
-              >
-                {t("options_sheet.record_video")}
+                {t("attachments.menu.take_picture")}
               </Typography>
               <Typography
                 onPress={handleUploadAudio.bind(null)}
@@ -605,7 +666,7 @@ const FormQuestionnaire = () => {
                 paddingVertical="$md"
                 pressStyle={{ color: "$purple5" }}
               >
-                {t("options_sheet.upload_audio")}
+                {t("attachments.menu.upload_audio")}
               </Typography>
             </YStack>
           )}
@@ -627,11 +688,12 @@ const $containerStyle: ViewStyle = {
 export default FormQuestionnaire;
 
 const MediaLoading = () => {
+  const { t } = useTranslation("polling_station_form_wizard");
   return (
     <YStack alignItems="center" gap="$lg" paddingHorizontal="$lg">
       <Spinner size="large" color="$purple5" />
       <Typography preset="subheading" fontWeight="500" color="$purple5">
-        Adding attachment...
+        {t("attachments.loading")}
       </Typography>
     </YStack>
   );

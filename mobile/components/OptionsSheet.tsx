@@ -3,7 +3,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Sheet, SheetProps } from "tamagui";
 import { Icon } from "./Icon";
 
-interface OptionsSheetProps extends SheetProps {
+export interface OptionsSheetProps extends SheetProps {
   /* The current state of the sheet */
   open: boolean;
 

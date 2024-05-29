@@ -2,8 +2,8 @@ import { router } from "expo-router";
 import { Screen } from "../../components/Screen";
 import Header from "../../components/Header";
 import { Icon } from "../../components/Icon";
-import { Keyboard, ViewStyle, useWindowDimensions } from "react-native";
-import { Input, Spinner, XStack, YStack, styled } from "tamagui";
+import { Keyboard, ViewStyle } from "react-native";
+import { Input, Spinner, XStack, YStack, styled, useWindowDimensions } from "tamagui";
 import { Typography } from "../../components/Typography";
 import { pollingStationsKeys, usePollingStationByParentID } from "../../services/queries.service";
 import React, { useCallback, useMemo, useState } from "react";
@@ -16,6 +16,7 @@ import { useUserData } from "../../contexts/user/UserContext.provider";
 import { useQueryClient } from "@tanstack/react-query";
 import WizzardControls from "../../components/WizzardControls";
 import { ListView } from "../../components/ListView";
+import i18n from "../../common/config/i18n";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const mapPollingStationOptionsToSelectValues = (
@@ -55,7 +56,7 @@ const PollingStationWizzard = () => {
   return (
     <Screen backgroundColor="white" contentContainerStyle={$containerStyle} preset="fixed">
       <Header
-        title={t("header.title")}
+        title={t("title")}
         leftIcon={<Icon icon="chevronLeft" color="white" />}
         onLeftPress={router.back}
       />
@@ -82,19 +83,16 @@ const PollingStationWizzardContent = ({
   activeStep,
   locations,
 }: PollingStationWizzardContentProps) => {
-  const { t } = useTranslation("add_polling_station");
+  const { t } = useTranslation(["add_polling_station", "common"]);
   const [selectedOption, setSelectedOption] = useState<PollingStationStep>();
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [sliceNumber, setSliceNumber] = useState(30);
-  const { height } = useWindowDimensions();
-  const insets = useSafeAreaInsets();
   const { activeElectionRound, setSelectedPollingStationId } = useUserData();
 
   const queryClient = useQueryClient();
 
   const {
     data: pollingStationOptions,
-    isLoading: isLoadingPollingStations,
     isFetching: isFetchingPollingStations,
     error: pollingStationsError,
   } = usePollingStationByParentID(
@@ -190,13 +188,8 @@ const PollingStationWizzardContent = ({
   };
 
   // TODO: To be handled
-  if (isLoadingPollingStations) {
-    return <Typography>Loading...</Typography>;
-  }
-
-  // TODO: To be handled
   if (pollingStationsError) {
-    return <Typography>Something went wrong!</Typography>;
+    return <Typography>{t("error")}</Typography>;
   }
 
   const SelectItem = useCallback(
@@ -218,6 +211,9 @@ const PollingStationWizzardContent = ({
     [selectedOption],
   );
 
+  const { height } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
+
   return (
     <>
       <YStack paddingHorizontal="$md" gap={"$1"}>
@@ -236,6 +232,7 @@ const PollingStationWizzardContent = ({
         paddingHorizontal="$md"
         paddingTop="$sm"
         height={height - 300 - insets.top - insets.bottom}
+        style={{ flex: 1, flexGrow: 1, flexDirection: "row" }}
         paddingBottom={"$md"}
       >
         {isFetchingPollingStations && <Spinner size="large" color="$purple5" />}
@@ -246,10 +243,12 @@ const PollingStationWizzardContent = ({
             bounces={false}
             estimatedItemSize={64}
             extraData={selectedOption}
+            ListEmptyComponent={<Typography>{t("no_data", { ns: "common" })}</Typography>}
             keyExtractor={(item) => item.value}
             onEndReached={loadMore}
             onEndReachedThreshold={0.5}
             renderItem={SelectItem}
+            keyboardShouldPersistTaps="handled"
           />
         )}
       </YStack>
@@ -271,7 +270,7 @@ const $containerStyle: ViewStyle = {
 
 const SearchInput = styled(Input, {
   backgroundColor: "$purple1",
-  placeholder: "Search",
+  placeholder: i18n.t("search", { ns: "common" }),
   color: "$purple5",
   placeholderTextColor: "$purple5",
   focusStyle: {

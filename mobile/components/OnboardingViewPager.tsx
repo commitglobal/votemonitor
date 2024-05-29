@@ -20,7 +20,7 @@ const OnboardingViewPager = ({
   currentPage,
   setCurrentPage,
 }: OnboardingViewPagerProps) => {
-  const { t } = useTranslation("login");
+  const { t } = useTranslation("onboarding");
   const AnimatedPagerView = Animated.createAnimatedComponent(PagerView);
 
   return (
@@ -28,7 +28,7 @@ const OnboardingViewPager = ({
     <AnimatedPagerView
       ref={pagerViewRef}
       initialPage={currentPage}
-      style={{ flex: 1, backgroundColor: "#5F288D" }}
+      style={{ height: "100%", backgroundColor: "#5F288D" }}
       orientation="horizontal"
       onPageScroll={Animated.event<PagerViewOnPageScrollEventData>(
         [
@@ -48,20 +48,20 @@ const OnboardingViewPager = ({
       <OnboardingItem
         key="1"
         icon="monitorPollingStations"
-        title={t("onboarding.monitor_polling_stations.title")}
-        helper={t("onboarding.monitor_polling_stations.description")}
+        title={t("polling_stations.heading")}
+        helper={t("polling_stations.description")}
       />
       <OnboardingItem
         key="2"
         icon="observationForms"
-        title={t("onboarding.observation_forms.title")}
-        helper={t("onboarding.observation_forms.description")}
+        title={t("forms.heading")}
+        helper={t("forms.description")}
       />
       <OnboardingItem
         key="3"
         icon="notesOrMedia"
-        title={t("onboarding.notes_media.title")}
-        helper={t("onboarding.notes_media.description")}
+        title={t("media.heading")}
+        helper={t("media.description")}
       />
     </AnimatedPagerView>
   );

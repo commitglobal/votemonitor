@@ -19,6 +19,10 @@ import LoadingScreen from "../../components/LoadingScreen";
 import GenericErrorScreen from "../../components/GenericErrorScreen";
 import { getElectionRoundAllForms } from "../../services/definitions.api";
 import { formSubmissionsQueryFn } from "../../services/queries/form-submissions.query";
+import { NotificationsKeys } from "../../services/queries/notifications.query";
+import { getNotifications } from "../../services/api/get-notifications.api";
+import { QuickReportKeys } from "../../services/queries/quick-reports.query";
+import { getQuickReports } from "../../services/api/quick-report/get-quick-reports.api";
 
 type UserContextType = {
   electionRounds: ElectionRoundVM[] | undefined;
@@ -63,24 +67,28 @@ const UserContextProvider = ({ children }: React.PropsWithChildren) => {
     );
   }, [visits, selectedPollingStationId]);
 
-  const { isLoading: isLoadingNomenclature, error: NomenclatureError } =
-    usePollingStationsNomenclatorQuery(activeElectionRound?.id);
+  const {
+    data: nomenclatorData,
+    isLoading: isLoadingNomenclature,
+    error: NomenclatureError,
+  } = usePollingStationsNomenclatorQuery(activeElectionRound?.id);
 
   const {
     data: lastVisitedPollingStation,
     // isLoading: isLoadingCurrentPS,
     error: PollingStationNomenclatorNodeDBError,
-  } = usePollingStationById(currentSelectedPollingStationId);
+  } = usePollingStationById(currentSelectedPollingStationId, nomenclatorData);
 
   useQueries({
     queries: [
       ...(visits
         ?.map((visit) => {
-          const nodes = {
-            queryKey: pollingStationsKeys.one(visit.pollingStationId),
-            queryFn: () => pollingStationByIdQueryFn(visit.pollingStationId),
-            staleTime: 5 * 60 * 1000,
-          };
+          // const nodes = {
+          //   queryKey: pollingStationsKeys.one(visit.pollingStationId),
+          //   queryFn: () =>
+          //     nomenclatorData ? pollingStationByIdQueryFn(visit.pollingStationId) : skipToken,
+          //   staleTime: 5 * 60 * 1000,
+          // };
           const informations = {
             queryKey: pollingStationsKeys.pollingStationInformation(
               activeElectionRound?.id,
@@ -97,13 +105,25 @@ const UserContextProvider = ({ children }: React.PropsWithChildren) => {
             ),
             queryFn: () => formSubmissionsQueryFn(activeElectionRound?.id, visit.pollingStationId),
           };
-          return [nodes, informations, submissions];
+          return [informations, submissions];
         })
         ?.flat() || []),
       {
         queryKey: electionRoundsKeys.forms(activeElectionRound?.id),
         queryFn: activeElectionRound?.id
           ? () => getElectionRoundAllForms(activeElectionRound.id)
+          : skipToken,
+      },
+      {
+        queryKey: NotificationsKeys.notifications(activeElectionRound?.id),
+        queryFn: activeElectionRound?.id
+          ? () => getNotifications({ electionRoundId: activeElectionRound.id })
+          : skipToken,
+      },
+      {
+        queryKey: QuickReportKeys.byElectionRound(activeElectionRound?.id),
+        queryFn: activeElectionRound?.id
+          ? () => getQuickReports(activeElectionRound.id)
           : skipToken,
       },
     ],

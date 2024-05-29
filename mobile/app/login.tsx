@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
-import { router } from "expo-router";
+import { SplashScreen, router } from "expo-router";
 import { useAuth } from "../hooks/useAuth";
-import { View, XStack, YStack, styled } from "tamagui";
+import { ScrollView, View, XStack, YStack } from "tamagui";
 import { useTranslation } from "react-i18next";
 import { Screen } from "../components/Screen";
-import { StatusBar, Animated } from "react-native";
+import { Animated } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Icon } from "../components/Icon";
 import { Typography } from "../components/Typography";
@@ -13,7 +13,7 @@ import FormInput from "../components/FormInputs/FormInput";
 import { Control, Controller, FieldErrors, FieldValues, useForm } from "react-hook-form";
 import Card from "../components/Card";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { CURRENT_USER_STORAGE_KEY } from "../common/constants";
+import { ASYNC_STORAGE_KEYS, SECURE_STORAGE_KEYS } from "../common/constants";
 import Constants from "expo-constants";
 import * as Sentry from "@sentry/react-native";
 import * as SecureStore from "expo-secure-store";
@@ -23,6 +23,7 @@ import Pagination from "../components/Pagination";
 import CredentialsError from "../components/CredentialsError";
 import Toast from "react-native-toast-message";
 import { useNetInfoContext } from "../contexts/net-info-banner/NetInfoContext";
+import Header from "../components/Header";
 
 interface FormData {
   email: string;
@@ -30,7 +31,7 @@ interface FormData {
 }
 
 const Login = () => {
-  const { t } = useTranslation("login");
+  const { t } = useTranslation(["login", "common", "onboarding"]);
   const insets = useSafeAreaInsets();
 
   const { signIn } = useAuth();
@@ -46,8 +47,10 @@ const Login = () => {
   const pagerViewRef = useRef(null);
 
   useEffect(() => {
+    SplashScreen.hideAsync();
+
     try {
-      const onboardingComplete = SecureStore.getItem("onboardingComplete");
+      const onboardingComplete = SecureStore.getItem(SECURE_STORAGE_KEYS.ONBOARDING_COMPLETE);
       if (onboardingComplete !== "true") {
         setOnboardingComplete(false);
       }
@@ -65,13 +68,13 @@ const Login = () => {
       if (!isOnline) {
         return Toast.show({
           type: "error",
-          text2: t("errors.offline"),
+          text2: t("form.errors.offline"),
           visibilityTime: 5000,
           text2Style: { textAlign: "center" },
         });
       }
       await signIn(email, password);
-      await AsyncStorage.setItem(CURRENT_USER_STORAGE_KEY, email);
+      await AsyncStorage.setItem(ASYNC_STORAGE_KEYS.CURRENT_USER_STORAGE_KEY, email);
       router.replace("/");
     } catch (err) {
       setAuthError(true);
@@ -85,7 +88,7 @@ const Login = () => {
 
   const onOnboardingComplete = () => {
     try {
-      SecureStore.setItem("onboardingComplete", "true");
+      SecureStore.setItem(SECURE_STORAGE_KEYS.ONBOARDING_COMPLETE, "true");
       setOnboardingComplete(true);
     } catch (err) {
       console.log(err);
@@ -93,103 +96,100 @@ const Login = () => {
     }
   };
 
+  const onNextButtonPress = () => {
+    if (currentPage !== data.length - 1) {
+      // @ts-ignore
+      pagerViewRef?.current?.setPage(currentPage + 1);
+    } else {
+      onOnboardingComplete();
+    }
+  };
+
   // todo: refactor this (nr of pages in the view pager) @luciatugui
   const data = [1, 2, 3];
 
-  if (!onboardingComplete) {
-    if (!languageSelectionApplied) {
-      return <ChooseOnboardingLanguage setLanguageSelectionApplied={setLanguageSelectionApplied} />;
-    }
+  if (onboardingComplete) {
     return (
-      <>
-        <OnboardingViewPager
-          scrollOffsetAnimatedValue={scrollOffsetAnimatedValue}
-          positionAnimatedValue={positionAnimatedValue}
-          pagerViewRef={pagerViewRef}
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
-        />
+      <Screen
+        preset="fixed"
+        contentContainerStyle={{
+          flexGrow: 1,
+        }}
+      >
+        <Header barStyle="light-content">
+          <Icon icon="loginLogo" paddingBottom="$md" />
+        </Header>
 
-        <XStack
-          justifyContent="center"
-          alignItems="center"
-          backgroundColor="$purple6"
-          paddingHorizontal="$md"
-          paddingBottom={insets.bottom + 32}
-        >
-          <XStack flex={1}></XStack>
-          <XStack justifyContent="center" flex={1}>
-            <Pagination
-              scrollOffsetAnimatedValue={scrollOffsetAnimatedValue}
-              positionAnimatedValue={positionAnimatedValue}
-              data={data}
-            />
-          </XStack>
+        <ScrollView>
+          <YStack padding="$md" gap="$md">
+            <LoginForm control={control} errors={errors} authError={authError} />
+            <XStack marginTop="$md" justifyContent="flex-start" gap="$xxs">
+              <Icon icon="infoCircle" size={18} color="white" style={{ marginTop: 2 }} />
 
-          {currentPage !== data.length - 1 ? (
-            <XStack
-              onPress={() => {
-                // @ts-ignore
-                currentPage !== data.length - 1 && pagerViewRef?.current?.setPage(currentPage + 1);
-              }}
-              pressStyle={{ opacity: 0.5 }}
-              flex={1}
-              justifyContent="flex-end"
-            >
-              <Typography color="white" preset="body2" paddingVertical="$xs" paddingRight="$md">
-                {t("onboarding.skip")}
-              </Typography>
+              {/* info text */}
+              <YStack gap="$lg" maxWidth="90%">
+                <Typography>{t("disclaimer.paragraph1")}</Typography>
+                <Typography>
+                  {t("disclaimer.paragraph2")}
+                  <Typography color="$purple5"> {t("disclaimer.email")}</Typography>.
+                </Typography>
+              </YStack>
             </XStack>
-          ) : (
-            <XStack
-              onPress={() => onOnboardingComplete()}
-              pressStyle={{ opacity: 0.5 }}
-              flex={1}
-              justifyContent="flex-end"
-            >
-              <Typography
-                color="white"
-                preset="body2"
-                paddingVertical="$xs"
-                paddingRight="$md"
-                textAlign="center"
-              >
-                {/* //!this might cause problems if the translation is too long */}
-                {t("onboarding.go_to_app")}
-              </Typography>
-            </XStack>
-          )}
-        </XStack>
-      </>
+          </YStack>
+        </ScrollView>
+
+        <Card width="100%" paddingBottom={16 + insets.bottom} marginTop="auto">
+          <Button onPress={handleSubmit(onLogin)} disabled={isLoading}>
+            {isLoading ? t("form.submit.loading") : t("form.submit.save")}
+          </Button>
+        </Card>
+      </Screen>
     );
   }
 
-  return (
-    <Screen
-      preset="auto"
-      ScrollViewProps={{
-        bounces: false,
-      }}
-      contentContainerStyle={{
-        flexGrow: 1,
-      }}
-    >
-      <Header />
+  if (!languageSelectionApplied) {
+    return <ChooseOnboardingLanguage setLanguageSelectionApplied={setLanguageSelectionApplied} />;
+  }
 
-      <YStack paddingHorizontal="$md" gap="$md">
-        <XStack marginTop="$md" justifyContent="flex-start" gap="$xxs">
-          <Icon icon="infoCircle" size={18} color="white" style={{ marginTop: 2 }} />
-          <XStack flex={1}>
-            <Typography>{t("informative-text")}</Typography>
-          </XStack>
-        </XStack>
-        <LoginForm control={control} errors={errors} authError={authError} />
-      </YStack>
-      <Card width="100%" paddingBottom={16 + insets.bottom} marginTop="auto">
-        <Button onPress={handleSubmit(onLogin)} disabled={isLoading}>
-          {isLoading ? "Log in..." : "Log in"}
-        </Button>
-      </Card>
+  return (
+    <Screen preset="fixed">
+      <OnboardingViewPager
+        scrollOffsetAnimatedValue={scrollOffsetAnimatedValue}
+        positionAnimatedValue={positionAnimatedValue}
+        pagerViewRef={pagerViewRef}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+      />
+
+      <XStack
+        backgroundColor="$purple6"
+        padding="$md"
+        paddingBottom={insets.bottom + 16}
+        position="absolute"
+        bottom={0}
+        justifyContent="center"
+        width="100%"
+      >
+        <Pagination
+          scrollOffsetAnimatedValue={scrollOffsetAnimatedValue}
+          positionAnimatedValue={positionAnimatedValue}
+          data={data}
+        />
+        <YStack
+          position="absolute"
+          right="$md"
+          top="$md"
+          padding="$xxs"
+          pressStyle={{ opacity: 0.5 }}
+          onPress={onNextButtonPress}
+        >
+          <Typography color="white" preset="body2" textAlign="center">
+            {currentPage !== data.length - 1
+              ? t("skip", { ns: "common" })
+              : t("media.save", { ns: "onboarding" })}
+          </Typography>
+        </YStack>
+      </XStack>
     </Screen>
   );
 };
@@ -210,12 +210,12 @@ const LoginForm = ({
   return (
     <View gap="$sm">
       <Typography preset="heading" fontWeight="700">
-        {t("title")}
+        {t("heading")}
       </Typography>
 
       <Typography>{t("paragraph")}</Typography>
 
-      {authError && <CredentialsError error={t("errors.credentials")} />}
+      {authError && <CredentialsError error={t("form.errors.invalid_credentials")} />}
 
       <Controller
         key="email"
@@ -228,7 +228,7 @@ const LoginForm = ({
           },
           pattern: {
             value: /\S+@\S+\.\S+/,
-            message: t("form.email.format"),
+            message: t("form.email.pattern"),
           },
         }}
         render={({ field: { onChange, value } }) => (
@@ -290,25 +290,6 @@ const LoginForm = ({
           : ""}
       </Typography>
     </View>
-  );
-};
-
-const Header = () => {
-  const insets = useSafeAreaInsets();
-  const StyledWrapper = styled(XStack, {
-    name: "StyledWrapper",
-    backgroundColor: "$purple5",
-    height: "20%",
-    paddingTop: insets.top,
-    alignItems: "center",
-    justifyContent: "center",
-  });
-
-  return (
-    <StyledWrapper>
-      <StatusBar barStyle="light-content"></StatusBar>
-      <Icon icon="loginLogo" />
-    </StyledWrapper>
   );
 };
 

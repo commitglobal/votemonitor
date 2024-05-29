@@ -1,7 +1,8 @@
-import * as SecureStore from "expo-secure-store";
 import axios, { AxiosRequestHeaders } from "axios";
-import { reloadAsync } from "expo-updates";
 import * as Sentry from "@sentry/react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ASYNC_STORAGE_KEYS } from "../common/constants";
+import { reloadAsync } from "expo-updates";
 
 // https://vitejs.dev/guide/env-and-mode.html
 const API = axios.create({
@@ -15,7 +16,7 @@ const API = axios.create({
 API.interceptors.request.use(async (request) => {
   // add auth header with jwt if account is logged in and request is to the api url
   try {
-    const token = SecureStore.getItem("access_token");
+    const token = await AsyncStorage.getItem(ASYNC_STORAGE_KEYS.ACCESS_TOKEN);
 
     if (!request.headers) {
       request.headers = {} as AxiosRequestHeaders;
@@ -50,7 +51,7 @@ API.interceptors.response.use(
       console.log(error.response.headers);
 
       if (error.response.status === 401) {
-        await SecureStore.deleteItemAsync("access_token");
+        await AsyncStorage.removeItem(ASYNC_STORAGE_KEYS.ACCESS_TOKEN);
         reloadAsync();
       }
     } else if (error.request) {

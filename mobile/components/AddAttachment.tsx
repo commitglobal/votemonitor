@@ -14,6 +14,7 @@ const AddAttachment = (props: AddAttachmentProps) => {
       pressStyle={{ opacity: 0.5 }}
       {...rest}
       alignSelf="flex-start"
+      alignItems="center"
       paddingRight="$lg"
       paddingVertical="$sm"
     >

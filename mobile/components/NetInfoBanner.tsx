@@ -1,14 +1,16 @@
 import React from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { AlertDialog, XStack } from "tamagui";
+import { AlertDialog, XStack, YStack } from "tamagui";
 import { Typography } from "./Typography";
 import { Dialog } from "./Dialog";
 import Button from "./Button";
 import { useNetInfoContext } from "../contexts/net-info-banner/NetInfoContext";
+import { useTranslation } from "react-i18next";
 
 const NetInfoBanner = () => {
   const { isOnline, shouldDisplayBanner } = useNetInfoContext();
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation(["network_banner", "common"]);
 
   return (
     <>
@@ -28,7 +30,7 @@ const NetInfoBanner = () => {
               paddingBottom={insets.bottom}
               textAlign="center"
             >
-              App online. All answers sent to server.
+              {t("online")}
             </Typography>
           </XStack>
         )
@@ -41,13 +43,15 @@ const NetInfoBanner = () => {
           width="100%"
           zIndex={100_000}
         >
-          <Typography fontWeight="500" color="white" paddingLeft="$md">
-            Offline mode. Saving answers locally.
-          </Typography>
+          <YStack paddingLeft="$md" maxWidth="65%" paddingVertical="$xxs">
+            <Typography fontWeight="500" color="white" numberOfLines={2}>
+              {t("offline")}
+            </Typography>
+          </YStack>
 
           <Dialog
             trigger={
-              <XStack gap="$sm" justifyContent="center" onPress={() => console.log("open modal")}>
+              <XStack gap="$sm" justifyContent="center" pressStyle={{ opacity: 0.5 }}>
                 <Typography
                   fontWeight="700"
                   color="white"
@@ -55,17 +59,14 @@ const NetInfoBanner = () => {
                   paddingLeft="$lg"
                   paddingRight="$md"
                 >
-                  More Details
+                  {t("more_details")}
                 </Typography>
               </XStack>
             }
             content={
               <XStack gap="$sm" justifyContent="center">
                 <Typography preset="body1" color="$gray7" lineHeight={24}>
-                  It looks like you're currently offline. Don't worry, your answers are safely
-                  stored locally and will be synced with our servers once your connection is
-                  restored. Feel free to continue filling out the observation forms and submitting
-                  quick reports.
+                  {t("offline_warning")}
                 </Typography>
               </XStack>
             }
@@ -74,7 +75,7 @@ const NetInfoBanner = () => {
                 {/*  !this 'asChild' is necessary in order to close the modal */}
                 <AlertDialog.Cancel asChild>
                   <Button preset="chromeless" textStyle={{ color: "red" }}>
-                    Cancel
+                    {t("cancel", { ns: "common" })}
                   </Button>
                   {/* <Button title="Cancel" />  - WITH BUTTON FROM REACT NATIVE TO SUPPRES React.ForwardRef warning */}
                 </AlertDialog.Cancel>

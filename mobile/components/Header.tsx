@@ -6,7 +6,7 @@ import {
   ViewStyle,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { styled, XStack } from "tamagui";
+import { styled, XStack, YStack } from "tamagui";
 import { Typography } from "./Typography";
 import { tokens } from "../theme/tokens";
 
@@ -46,6 +46,10 @@ interface HeaderProps {
    * What happens when you press the right icon or text action.
    */
   onRightPress?: TouchableOpacityProps["onPress"];
+  /**
+   * children
+   */
+  children?: React.ReactNode;
 }
 
 const Header = ({
@@ -58,43 +62,50 @@ const Header = ({
   onLeftPress,
   rightIcon,
   onRightPress,
+  children,
 }: HeaderProps) => {
   const insets = useSafeAreaInsets();
 
-  const StyledWrapper = styled(XStack, {
+  const StyledWrapper = styled(YStack, {
     name: "StyledWrapper",
     backgroundColor,
-    height: 50 + insets.top,
+    minHeight: 50 + insets.top,
     paddingTop: insets.top,
+    justifyContent: "center",
+    alignItems: "center",
   });
 
   return (
     <>
-      <StyledWrapper style={[$headerContainer, $styleOverride]}>
-        {/* manipulating status bar icons to desired color */}
-        <StatusBar barStyle={barStyle} />
-        {/* left icon */}
-        <TouchableOpacity
-          onPress={leftIcon && onLeftPress ? onLeftPress : undefined}
-          style={$leftIconContainer}
-          disabled={!onLeftPress}
-        >
-          {leftIcon || null}
-        </TouchableOpacity>
+      <StyledWrapper>
+        <XStack style={[$headerContainer, $styleOverride]}>
+          {/* manipulating status bar icons to desired color */}
+          <StatusBar barStyle={barStyle} />
+          {/* left icon */}
+          <TouchableOpacity
+            onPress={leftIcon && onLeftPress ? onLeftPress : undefined}
+            style={$leftIconContainer}
+            disabled={!onLeftPress}
+          >
+            {leftIcon || null}
+          </TouchableOpacity>
+          {/* header title */}
 
-        {/* header title */}
-        <Typography preset="body2" color={titleColor} flex={6} textAlign="center">
-          {title}
-        </Typography>
-
-        {/* right icon */}
-        <TouchableOpacity
-          onPress={rightIcon && onRightPress ? onRightPress : undefined}
-          style={$rightIconContainer}
-          disabled={!onRightPress}
-        >
-          {rightIcon || null}
-        </TouchableOpacity>
+          <YStack flex={6} justifyContent="center" alignItems="center">
+            <Typography preset="body2" color={titleColor} textAlign="center" numberOfLines={2}>
+              {title}
+            </Typography>
+          </YStack>
+          {/* right icon */}
+          <TouchableOpacity
+            onPress={rightIcon && onRightPress ? onRightPress : undefined}
+            style={$rightIconContainer}
+            disabled={!onRightPress}
+          >
+            {rightIcon || null}
+          </TouchableOpacity>
+        </XStack>
+        {children}
       </StyledWrapper>
     </>
   );

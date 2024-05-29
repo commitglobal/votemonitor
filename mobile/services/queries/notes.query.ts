@@ -4,7 +4,7 @@ import { getNotesForPollingStation } from "../definitions.api";
 import { Note } from "../../common/models/note";
 import { useCallback } from "react";
 
-export const useNotesForPollingStation = <TResult = Note[]>(
+export const useNotes = <TResult = Note[]>(
   electionRoundId: string | undefined,
   pollingStationId: string | undefined,
   formId: string,
@@ -26,7 +26,7 @@ export const useNotesForQuestionId = (
   formId: string,
   questionId: string,
 ) => {
-  return useNotesForPollingStation(
+  return useNotes(
     electionRoundId,
     pollingStationId,
     formId,
@@ -35,6 +35,30 @@ export const useNotesForQuestionId = (
         return data.filter((note) => note.questionId === questionId);
       },
       [electionRoundId, pollingStationId, formId, questionId],
+    ),
+  );
+};
+
+export const useNotesForFormId = (
+  electionRoundId: string | undefined,
+  pollingStationId: string | undefined,
+  formId: string,
+) => {
+  return useNotes(
+    electionRoundId,
+    pollingStationId,
+    formId,
+    useCallback(
+      (data: Note[]) => {
+        return data?.reduce((acc: Record<string, Note[]>, curr: Note) => {
+          if (!acc[curr.questionId]) {
+            acc[curr.questionId] = [];
+          }
+          acc[curr.questionId].push(curr);
+          return acc;
+        }, {});
+      },
+      [electionRoundId, pollingStationId, formId],
     ),
   );
 };

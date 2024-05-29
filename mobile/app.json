@@ -2,7 +2,7 @@
   "expo": {
     "name": "VoteMonitor",
     "slug": "vote-monitor",
-    "version": "0.1.3",
+    "version": "0.1.9",
     "scheme": "mobile",
     "orientation": "portrait",
     "icon": "./assets/icons/icon.png",
@@ -12,20 +12,25 @@
       "resizeMode": "contain",
       "backgroundColor": "#FDD20C"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "org.commitglobal.votemonitor",
-      "buildNumber": "46",
+      "buildNumber": "52",
       "config": {
         "usesNonExemptEncryption": false
       },
       "infoPlist": {
-        "UIBackgroundModes": ["fetch", "remote-notification"]
+        "UIBackgroundModes": [
+          "fetch",
+          "remote-notification"
+        ]
       }
     },
     "android": {
-      "versionCode": 46,
+      "versionCode": 52,
       "adaptiveIcon": {
         "foregroundImage": "./assets/icons/adaptive-icon.png",
         "backgroundColor": "#FDD20C"
@@ -40,9 +45,9 @@
       "eas": {
         "projectId": "93e17628-ddcd-4e67-849c-b356a18a6082"
       },
-      "message": "Notification cold start fix",
-      "updateCritical": 15,
-      "updateVersion": 15
+      "message": "PersistGate display progress",
+      "updateCritical": 33,
+      "updateVersion": 33
     },
     "owner": "commit-global",
     "runtimeVersion": {
@@ -73,14 +78,18 @@
           "color": "#FDD20C"
         }
       ],
-      ["@morrowdigital/watermelondb-expo-plugin"],
+      [
+        "@morrowdigital/watermelondb-expo-plugin"
+      ],
       [
         "expo-build-properties",
         {
           "android": {
             "kotlinVersion": "1.6.10",
             "packagingOptions": {
-              "pickFirst": ["**/libc++_shared.so"]
+              "pickFirst": [
+                "**/libc++_shared.so"
+              ]
             }
           }
         }
@@ -89,8 +98,8 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "The app accesses your photos to let you upload them as attachments to a form question or report.",
-          "cameraPermission": "The app accesses your camera to let you take photos or videos and upload them as attachments to a form question or report."
+          "photosPermission": "Allow access to your photos to upload images or videos to attach in support of your observation notes or quick reports.",
+          "cameraPermission": "Allow access to your camera to take photos or videos to attach in support of your observation notes or quick reports."
         }
       ],
       "expo-secure-store",

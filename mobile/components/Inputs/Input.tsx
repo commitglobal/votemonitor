@@ -46,7 +46,9 @@ const Input: React.FC<InputProps> = ({
           <SearchInput
             value={value}
             secureTextEntry={type === "password"}
-            keyboardType={type === "numeric" || type === 'email-address' ? type : "default"}
+            keyboardType={type === "numeric" || type === "email-address" ? type : "default"}
+            // fix ios keyboard flicker bug
+            textContentType={"oneTimeCode"}
             {...rest}
           />
           {iconRight && <IconWrapper onPress={onIconRightPress}>{iconRight}</IconWrapper>}

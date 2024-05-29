@@ -16,7 +16,7 @@ const ChooseOnboardingLanguage = ({
   setLanguageSelectionApplied: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const insets = useSafeAreaInsets();
-  const { t, i18n } = useTranslation(["languages", "login"]);
+  const { t, i18n } = useTranslation(["onboarding", "languages"]);
   const systemLocale = Localization.getLocales()[0];
   const { changeLanguage } = useContext(LanguageContext);
 
@@ -39,7 +39,7 @@ const ChooseOnboardingLanguage = ({
       return {
         id: index,
         value: language,
-        label: t(language) || language,
+        label: t(language, { ns: "languages" }) || language,
       };
     });
     return mappedLanguages;
@@ -65,7 +65,7 @@ const ChooseOnboardingLanguage = ({
         <Icon icon="onboardingLanguage" />
 
         <Typography preset="heading" fontWeight="500" textAlign="center" color="white">
-          {t("onboarding.choose_language.title", { ns: "login" })}
+          {t("language.heading")}
         </Typography>
         <Controller
           control={control}
@@ -76,18 +76,18 @@ const ChooseOnboardingLanguage = ({
         />
 
         <Typography fontSize={18} lineHeight={24} textAlign="center" color="white" opacity={0.7}>
-          {t("onboarding.choose_language.description", { ns: "login" })}
+          {t("language.description")}
         </Typography>
       </YStack>
       <Button
         backgroundColor="$yellow6"
         paddingHorizontal="$xxxl"
-        textStyle={{ color: "#5F288D", fontSize: 16, fontWeight: "500" }}
+        textStyle={{ color: "#5F288D", fontSize: 16, fontWeight: "500" }} // TODO:@luciatugui - culoarea asta nu trebuie sa fie aici
         justifyContent="center"
         alignItems="center"
         onPress={handleSubmit(onSubmit)}
       >
-        {t("onboarding.choose_language.action_button", { ns: "login" })}
+        {t("language.save")}
       </Button>
     </YStack>
   );

@@ -1,4 +1,4 @@
-import { Spinner, YStack } from "tamagui";
+import { Spinner, YStack, useWindowDimensions } from "tamagui";
 import { Screen } from "../../../../components/Screen";
 import Header from "../../../../components/Header";
 import { Typography } from "../../../../components/Typography";
@@ -7,8 +7,6 @@ import { useNavigation } from "expo-router";
 import { DrawerActions } from "@react-navigation/native";
 import NoNotificationsReceived from "../../../../components/NoNotificationsReceived";
 import { ListView } from "../../../../components/ListView";
-import { useWindowDimensions } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   NotificationsKeys,
   useNotifications,
@@ -20,11 +18,13 @@ import NotificationListItem from "../../../../components/NotificationListItem";
 import OptionsSheet from "../../../../components/OptionsSheet";
 import { useAppState } from "../../../../hooks/useAppState";
 import { useQueryClient } from "@tanstack/react-query";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const Inbox = () => {
   const queryClient = useQueryClient();
   const { t, i18n } = useTranslation("inbox");
   const navigation = useNavigation();
+
   const { height } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   // height for the scrollview with the notifications received
@@ -46,10 +46,6 @@ const Inbox = () => {
     [notifications, sliceNumber, i18n.language],
   );
 
-  if (!isLoading && (!notifications || !notifications.length)) {
-    return <NoNotificationsReceived />;
-  }
-
   useAppState((activating: boolean) => {
     if (activating) {
       queryClient.invalidateQueries({
@@ -58,10 +54,14 @@ const Inbox = () => {
     }
   });
 
+  if (!isLoading && (!notifications || !notifications.length)) {
+    return <NoNotificationsReceived />;
+  }
+
   return (
     <Screen preset="fixed" contentContainerStyle={{ flexGrow: 1 }}>
       <Header
-        title={"Inbox"}
+        title={activeElectionRound?.title}
         titleColor="white"
         barStyle="light-content"
         leftIcon={<Icon icon="menuAlt2" color="white" />}
@@ -78,10 +78,10 @@ const Inbox = () => {
         <>
           <YStack backgroundColor="$yellow6" paddingVertical="$xxs" paddingHorizontal="$md">
             <Typography textAlign="center" color="$purple5" fontWeight="500">
-              {`${t("messages_from")} ${ngoName || t("your_organization")}`}
+              {`${t("banner", { ngoName: ngoName || t("your_organization") })}`}
             </Typography>
           </YStack>
-          <YStack paddingHorizontal="$md" height={scrollHeight}>
+          <YStack padding="$md" style={{ flex: 1 }} height={scrollHeight}>
             <ListView<any>
               data={displayedNotifications}
               showsVerticalScrollIndicator={false}
@@ -108,8 +108,7 @@ const Inbox = () => {
           }}
         >
           <Typography preset="body1" color="$gray7" lineHeight={24}>
-            {/* //todo: translations here */}
-            Manage my polling stations
+            {t("menu.manage_polling_stations")}
           </Typography>
         </YStack>
       </OptionsSheet>

@@ -18,6 +18,8 @@ import Button from "./Button";
 import { useFormSubmissions } from "../services/queries/form-submissions.query";
 import { useElectionRoundAllForms } from "../services/queries/forms.query";
 import FormListErrorScreen from "./FormListError";
+import { useQueryClient } from "@tanstack/react-query";
+import { electionRoundsKeys, pollingStationsKeys } from "../services/queries.service";
 
 export type FormListItem = {
   id: string;
@@ -38,7 +40,8 @@ type ListHeaderComponentType =
 const FormList = ({ ListHeaderComponent }: { ListHeaderComponent: ListHeaderComponentType }) => {
   const { activeElectionRound, selectedPollingStation } = useUserData();
   const [selectedForm, setSelectedForm] = useState<FormListItem | null>(null);
-  const { t } = useTranslation("form_overview");
+  const { t } = useTranslation(["observation", "common"]);
+  const queryClient = useQueryClient();
 
   const {
     data: allForms,
@@ -87,24 +90,35 @@ const FormList = ({ ListHeaderComponent }: { ListHeaderComponent: ListHeaderComp
   };
 
   if (isLoadingAnswers || isLoadingForms) {
-    return <Typography>Loading...</Typography>;
-  }
-
-  if (allForms?.forms.length === 0) {
-    return <Typography>No data to display</Typography>;
+    return <Typography>{t("loading", { ns: "common" })}</Typography>;
   }
 
   if (formsError || answersError) {
-    return <FormListErrorScreen />;
+    return (
+      <FormListErrorScreen
+        onPress={() => {
+          queryClient.invalidateQueries({
+            queryKey: electionRoundsKeys.forms(activeElectionRound?.id),
+          });
+          queryClient.invalidateQueries({
+            queryKey: pollingStationsKeys.formSubmissions(
+              activeElectionRound?.id,
+              selectedPollingStation?.pollingStationId,
+            ),
+          });
+        }}
+      />
+    );
   }
 
   return (
     <YStack gap="$xxs">
       {/* height = number of forms * formCard max height + ListHeaderComponent height  */}
-      <YStack height={formList.length * 140 + 400}>
+      <YStack style={{ flex: 1 }}>
         <ListView<FormListItem>
           data={formList}
           ListHeaderComponent={ListHeaderComponent}
+          ListEmptyComponent={<Typography>{t("forms.list.empty")}</Typography>}
           showsVerticalScrollIndicator={false}
           bounces={false}
           renderItem={({ item, index }) => {
@@ -127,12 +141,16 @@ const FormList = ({ ListHeaderComponent }: { ListHeaderComponent: ListHeaderComp
             name={selectedForm.name}
             control={control}
             rules={{
-              required: { value: true, message: t("language_modal.error") },
+              required: { value: true, message: t("forms.select_language_modal.error") },
             }}
             render={({ field: { onChange, value } }) => (
               <Dialog
                 open={!!selectedForm}
-                header={<Typography preset="heading">{t("language_modal.header")}</Typography>}
+                header={
+                  <Typography preset="heading">
+                    {t("forms.select_language_modal.header")}
+                  </Typography>
+                }
                 content={
                   <DialogContent
                     languages={selectedForm.languages}
@@ -144,13 +162,13 @@ const FormList = ({ ListHeaderComponent }: { ListHeaderComponent: ListHeaderComp
                 footer={
                   <XStack gap="$md">
                     <Button preset="chromeless" onPress={setSelectedForm.bind(null, null)}>
-                      Cancel
+                      {t("cancel", { ns: "common" })}
                     </Button>
                     <Button
                       onPress={handleSubmit(() => onConfirmFormLanguage(selectedForm, value))}
                       flex={1}
                     >
-                      Save
+                      {t("save", { ns: "common" })}
                     </Button>
                   </XStack>
                 }
@@ -174,13 +192,13 @@ const DialogContent = ({
   value: string;
   onChange: (...event: any[]) => void;
 }) => {
-  const { t } = useTranslation("form_overview");
+  const { t } = useTranslation(["observation", "languages"]);
 
   const languageMapping: { [key: string]: string } = {
-    RO: "Romanian",
-    EN: "English",
-    PL: "Polish",
-    BG: "Bulgarian",
+    RO: t("ro", { ns: "languages" }),
+    EN: t("en", { ns: "languages" }),
+    PL: t("pl", { ns: "languages" }),
+    BG: t("bg", { ns: "languages" }),
   };
 
   const transformedLanguages = languages.map((language) => ({
@@ -193,7 +211,7 @@ const DialogContent = ({
   return (
     <YStack>
       <Typography preset="body1" marginBottom="$lg">
-        {t("language_modal.helper")}
+        {t("forms.select_language_modal.helper")}
       </Typography>
       <RadioFormInput options={transformedLanguages} value={value} onValueChange={onChange} />
       {error && (

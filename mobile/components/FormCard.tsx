@@ -7,11 +7,11 @@ import CardFooter from "./CardFooter";
 import { FormStatus } from "../services/form.parser";
 import { useTranslation } from "react-i18next";
 
-export const FormStateToTextMapper = (t: (key: string) => string): Record<FormStatus, string> => ({
-  [FormStatus.NOT_STARTED]: t("form_overview.not_started"),
-  [FormStatus.IN_PROGRESS]: t("form_overview.in_progress"),
-  [FormStatus.COMPLETED]: t("form_overview.completed"),
-});
+export const FormStateToTextMapper: Record<FormStatus, string> = {
+  [FormStatus.NOT_STARTED]: "status.not_started",
+  [FormStatus.IN_PROGRESS]: "status.in_progress",
+  [FormStatus.COMPLETED]: "status.completed",
+};
 
 export interface Form {
   id?: string;
@@ -28,7 +28,7 @@ export interface FormCardProps extends CardProps {
 }
 
 const FormCard = (props: FormCardProps): JSX.Element => {
-  const { t } = useTranslation("form_overview");
+  const { t } = useTranslation("common");
   const { form, onPress, ...rest } = props;
 
   const CardHeader = styled(View, {
@@ -46,7 +46,7 @@ const FormCard = (props: FormCardProps): JSX.Element => {
           {form.name}
         </Typography>
 
-        <Badge status={form.status}>{FormStateToTextMapper(t)[form.status]}</Badge>
+        <Badge status={form.status}>{t(`${FormStateToTextMapper[form.status]}`)}</Badge>
       </CardHeader>
 
       {form.options && (

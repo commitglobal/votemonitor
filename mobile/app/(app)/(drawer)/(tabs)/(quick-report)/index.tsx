@@ -12,14 +12,16 @@ import { useQuickReports } from "../../../../../services/queries/quick-reports.q
 import { useUserData } from "../../../../../contexts/user/UserContext.provider";
 import { ListView } from "../../../../../components/ListView";
 import ReportCard from "../../../../../components/ReportCard";
-import { Dimensions, ViewStyle } from "react-native";
+import { ViewStyle } from "react-native";
 import { QuickReportsAPIResponse } from "../../../../../services/api/quick-report/get-quick-reports.api";
+import { useTranslation } from "react-i18next";
 
 const QuickReport = () => {
   const navigation = useNavigation();
   const [openContextualMenu, setOpenContextualMenu] = useState(false);
   const { activeElectionRound } = useUserData();
   const { data: quickReports, isLoading, error } = useQuickReports(activeElectionRound?.id);
+  const { t } = useTranslation("quick_report");
 
   return (
     <>
@@ -33,7 +35,7 @@ const QuickReport = () => {
         contentContainerStyle={$containerStyle}
       >
         <Header
-          title={"Quick Report"}
+          title={activeElectionRound?.title}
           titleColor="white"
           barStyle="light-content"
           leftIcon={<Icon icon="menuAlt2" color="white" />}
@@ -64,7 +66,7 @@ const QuickReport = () => {
             backgroundColor="white"
             onPress={router.push.bind(null, "/report-issue")}
           >
-            Report new issue
+            {t("list.add")}
           </Button>
         </YStack>
       ) : (
@@ -81,16 +83,18 @@ interface QuickReportContentProps {
 }
 
 const QuickReportContent = ({ quickReports, isLoading, error }: QuickReportContentProps) => {
+  const { t } = useTranslation(["quick_report", "common"]);
+
   if (isLoading) {
-    return <Typography>Loading...</Typography>;
+    return <Typography>{t("loading", { ns: "common" })}</Typography>;
   }
 
   if (error) {
-    return <Typography>Error...</Typography>;
+    return <Typography>{t("list.error")}</Typography>;
   }
 
   return (
-    <YStack padding="$md" height={Dimensions.get("screen").height * 1.4}>
+    <YStack padding="$md" style={{ flex: 1 }}>
       <ListView<any>
         data={quickReports}
         showsVerticalScrollIndicator={false}
@@ -103,26 +107,25 @@ const QuickReportContent = ({ quickReports, isLoading, error }: QuickReportConte
               color="$gray7"
               fontWeight="700"
             >
-              My reported issues
+              {t("list.heading")}
             </Typography>
           ) : (
             <></>
           )
         }
         ListEmptyComponent={
-          <YStack flex={1} alignItems="center" justifyContent="center" gap="$md" marginTop="50%">
+          <YStack flex={1} alignItems="center" justifyContent="center" gap="$md" marginTop="40%">
             <Icon icon="undrawFlag" />
             <YStack gap="$md" paddingHorizontal="$xl">
               <Typography preset="body1" textAlign="center" color="$gray12" lineHeight={24}>
-                Start sending quick reports to the organization if you notice irregularities inside,
-                outside the polling station or whenever needed.
+                {t("list.empty")}
               </Typography>
               <Button
                 preset="outlined"
                 onPress={router.push.bind(null, "/report-issue")}
                 backgroundColor="white"
               >
-                Report new issue
+                {t("list.add")}
               </Button>
             </YStack>
           </YStack>

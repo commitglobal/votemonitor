@@ -1,30 +1,33 @@
 import { useEffect, useState } from "react";
 import { AuthContext } from "./auth-context";
 import API from "../../services/api";
-import * as SecureStore from "expo-secure-store";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { QueryClient } from "@tanstack/react-query";
 import * as DB from "../../database/DAO/PollingStationsNomenclatorDAO";
 import * as Sentry from "@sentry/react-native";
+import { ASYNC_STORAGE_KEYS } from "../../common/constants";
+import { clearAsyncStorage } from "../../common/utils/utils";
+import { Typography } from "../../components/Typography";
 
 const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
   useEffect(() => {
+    init();
+  }, []);
+
+  const init = async () => {
     try {
-      const token = SecureStore.getItem("access_token");
+      const token = await AsyncStorage.getItem(ASYNC_STORAGE_KEYS.ACCESS_TOKEN);
       setIsAuthenticated(!!token);
-      setIsLoading(false);
     } catch (err) {
       Sentry.captureException(err);
-      SecureStore.deleteItemAsync("access_token");
+      await AsyncStorage.removeItem(ASYNC_STORAGE_KEYS.ACCESS_TOKEN);
     }
-  }, []);
+  };
 
   const signIn = async (email: string, password: string) => {
     try {
-      setIsLoading(true);
       const {
         data: { token },
       } = await API.post("auth/login", {
@@ -32,18 +35,17 @@ const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
         password,
       });
       try {
-        SecureStore.setItem("access_token", token);
+        await AsyncStorage.setItem(ASYNC_STORAGE_KEYS.ACCESS_TOKEN, token);
       } catch (err) {
-        console.error("Could not set Aceess Token in secure storage");
+        console.error("Could not set Aceess Token in AsyncStorage");
         throw err;
       }
       setIsAuthenticated(true);
     } catch (err: unknown) {
       Sentry.captureException(err);
       console.log("Error while trying to sign in", err);
+      setIsAuthenticated(false);
       throw new Error("Error while trying to sign in");
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -51,8 +53,7 @@ const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
     queryClient.clear();
     setIsAuthenticated(false);
     try {
-      await SecureStore.deleteItemAsync("access_token");
-      await AsyncStorage.clear();
+      await clearAsyncStorage();
       await DB.deleteEverything();
     } catch (err) {
       Sentry.captureMessage(`Logout error`);
@@ -60,13 +61,17 @@ const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
     }
   };
 
+  if (isAuthenticated === null) {
+    // Actually the SplashScreen will be displayed but we don't pass a wrong value down the chain
+    return <Typography>Loading...</Typography>;
+  }
+
   return (
     <AuthContext.Provider
       value={{
         signIn,
         signOut,
         isAuthenticated,
-        isLoading,
       }}
     >
       {children}

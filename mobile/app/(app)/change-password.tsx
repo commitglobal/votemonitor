@@ -15,7 +15,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useChangePasswordMutation } from "../../services/mutations/change-password.mutation";
 import { ChangePasswordPayload } from "../../services/definitions.api";
-import ChangePasswordConfirmation from "../../components/ChangePasswordConfirmation";
+import PasswordConfirmationScreen from "../../components/PasswordConfirmationScreen";
 import { useNetInfoContext } from "../../contexts/net-info-banner/NetInfoContext";
 import Toast from "react-native-toast-message";
 
@@ -54,8 +54,7 @@ const ChangePassword = () => {
         .string({
           required_error: t("form.new_password.required"),
         })
-        .min(8, t("form.new_password.helper"))
-        .regex(/^(?=.*[A-Z])(?=.*[0-9])(?=.*[^a-zA-Z0-9]).*$/, t("form.new_password.pattern")),
+        .min(8, t("form.new_password.helper")),
       confirmPassword: z.string({
         required_error: t("form.confirm_password.required"),
       }),
@@ -101,7 +100,12 @@ const ChangePassword = () => {
   };
 
   if (successfullyChanged) {
-    return <ChangePasswordConfirmation emailConfirmation={false} />;
+    return (
+      <PasswordConfirmationScreen
+        icon="passwordConfirmation"
+        translationKey="change_password.confirmation"
+      />
+    );
   }
 
   // Render either form or confirmation screen
@@ -115,7 +119,7 @@ const ChangePassword = () => {
       contentContainerStyle={$containerStyle}
     >
       <Header
-        title={t("header.title")}
+        title={t("title")}
         titleColor="white"
         barStyle="light-content"
         leftIcon={<Icon icon="chevronLeft" color="white" />}
@@ -174,7 +178,7 @@ const ChangePassword = () => {
         />
       </YStack>
       <Card width="100%" paddingBottom={16 + insets.bottom} marginTop="auto">
-        <Button onPress={handleSubmit(onSubmit)}>{t("form.actions.save_password")}</Button>
+        <Button onPress={handleSubmit(onSubmit)}>{t("form.save")}</Button>
       </Card>
     </Screen>
   );

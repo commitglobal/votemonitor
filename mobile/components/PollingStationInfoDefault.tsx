@@ -5,7 +5,7 @@ import { Typography } from "./Typography";
 import { useTranslation } from "react-i18next";
 
 const PollingStationInfoDefault = ({ onPress }: { onPress: () => void }) => {
-  const { t } = useTranslation("observations_polling_station");
+  const { t } = useTranslation("observation");
   return (
     <YStack
       backgroundColor="$gray1"
@@ -16,10 +16,10 @@ const PollingStationInfoDefault = ({ onPress }: { onPress: () => void }) => {
       gap={8}
     >
       <Typography textAlign="center" fontWeight="500" color="$gray5">
-        {t("polling_station_card.title")}
+        {t("polling_stations_information.polling_station_form.paragraph")}
       </Typography>
       <Button preset="outlined" backgroundColor="white" onPress={onPress}>
-        {t("polling_station_card.actions.answer_questions")}
+        {t("polling_stations_information.polling_station_form.answer_questions")}
       </Button>
     </YStack>
   );

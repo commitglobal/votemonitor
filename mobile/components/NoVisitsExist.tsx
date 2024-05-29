@@ -11,12 +11,12 @@ import { useTranslation } from "react-i18next";
 
 const NoVisitsExist = () => {
   const navigation = useNavigation();
-  const { t } = useTranslation("observations_empty");
+  const { t } = useTranslation("observation");
 
   return (
     <Screen preset="fixed" contentContainerStyle={{ flexGrow: 1 }}>
       <Header
-        title={"Observation"}
+        title={""}
         titleColor="white"
         barStyle="light-content"
         leftIcon={<Icon icon="menuAlt2" color="white" />}
@@ -35,10 +35,10 @@ const NoVisitsExist = () => {
         <Icon icon="missingPollingStation" />
         <YStack gap="$xxxs">
           <Typography preset="subheading" textAlign="center">
-            {t("title")}
+            {t("no_visited_polling_stations.heading")}
           </Typography>
           <Typography preset="body1" textAlign="center" color="$gray5">
-            {t("paragraph")}
+            {t("no_visited_polling_stations.paragraph")}
           </Typography>
         </YStack>
         <Button
@@ -47,7 +47,7 @@ const NoVisitsExist = () => {
           width="100%"
           onPress={router.push.bind(null, "/polling-station-wizzard")}
         >
-          {t("actions.add_station")}
+          {t("no_visited_polling_stations.add")}
         </Button>
       </YStack>
     </Screen>

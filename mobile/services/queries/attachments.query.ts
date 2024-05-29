@@ -21,6 +21,11 @@ export const AttachmentsKeys = {
   deleteAttachment: () => [...AttachmentsKeys.all, "delete"] as const,
 };
 
+export const GuidesKeys = {
+  guides: (electionRoundId: string | undefined) =>
+    ["guides", "electionRoundId", electionRoundId] as const,
+};
+
 // TODO: make generic fn
 const mapAttachmentsToQuestionId = (attachments: AttachmentApiResponse[]) => {
   return attachments?.reduce(

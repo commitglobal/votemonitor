@@ -47,6 +47,7 @@ import OnboardingLanguage from "../assets/icons/onboarding/onboarding-language.s
 import MonitorPollingStations from "../assets/icons/onboarding/monitor-p-s.svg";
 import ObservationForms from "../assets/icons/onboarding/forms.svg";
 import NotesOrMedia from "../assets/icons/onboarding/notes-media.svg";
+import CommitGlobal from "../assets/icons/commit-global.svg";
 
 import Bin from "../assets/icons/Trash2.svg";
 import { styled, View, ViewProps } from "tamagui";
@@ -140,6 +141,7 @@ export const defaultIcon = React.forwardRef(
       observationForms: <ObservationForms width={202} height={188} />,
       notesOrMedia: <NotesOrMedia width={202} height={188} />,
       bin: <Bin fill={color} width={size} height={size} />,
+      commitGlobal: <CommitGlobal fill={color} />,
     };
 
     return (

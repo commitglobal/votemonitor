@@ -52,7 +52,7 @@ export const useCamera = () => {
       if (!requestedPermisison.granted) {
         return Toast.show({
           type: "error",
-          text2: "Need permission to open camera. Go to Settings -> VoteMonitor -> Camera.",
+          text2: "Need permissions to open the camera or to use the photo library. Go to Settings -> VoteMonitor.",
           visibilityTime: 5000,
         });
       }

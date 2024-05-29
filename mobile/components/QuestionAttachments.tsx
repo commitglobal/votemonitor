@@ -5,6 +5,10 @@ import { Icon } from "./Icon";
 import { useAttachments } from "../services/queries/attachments.query";
 import { useDeleteAttachment } from "../services/mutations/attachments/delete-attachment.mutation";
 import { useTranslation } from "react-i18next";
+import { Keyboard } from "react-native";
+import { useState } from "react";
+import WarningDialog from "./WarningDialog";
+import { AttachmentApiResponse } from "../services/api/get-attachments.api";
 
 interface QuestionAttachmentsProps {
   electionRoundId: string;
@@ -19,8 +23,9 @@ const QuestionAttachments: React.FC<QuestionAttachmentsProps> = ({
   formId,
   questionId,
 }) => {
-  const { t } = useTranslation("question_page");
+  const { t } = useTranslation("polling_station_form_wizard");
   const { data: attachments } = useAttachments(electionRoundId, pollingStationId, formId);
+  const [selectedAttachment, setSelectedAttachment] = useState<AttachmentApiResponse | null>();
 
   const { mutate: deleteAttachment } = useDeleteAttachment(
     electionRoundId,
@@ -32,7 +37,7 @@ const QuestionAttachments: React.FC<QuestionAttachmentsProps> = ({
   return (
     attachments?.[questionId]?.length && (
       <YStack marginTop="$lg" gap="$xxs">
-        <Typography fontWeight="500">{t("uploaded_media")}</Typography>
+        <Typography fontWeight="500">{t("attachments.heading")}</Typography>
         <YStack gap="$xxs">
           {attachments[questionId]?.map((attachment) => {
             return (
@@ -49,8 +54,11 @@ const QuestionAttachments: React.FC<QuestionAttachmentsProps> = ({
                 </Typography>
                 <YStack
                   padding="$md"
-                  onPress={() => deleteAttachment(attachment)}
                   pressStyle={{ opacity: 0.5 }}
+                  onPress={() => {
+                    Keyboard.dismiss();
+                    setSelectedAttachment(attachment);
+                  }}
                 >
                   <Icon icon="xCircle" size={24} color="$gray5" />
                 </YStack>
@@ -58,6 +66,19 @@ const QuestionAttachments: React.FC<QuestionAttachmentsProps> = ({
             );
           })}
         </YStack>
+        {selectedAttachment && (
+          <WarningDialog
+            title={t("warning_modal.attachment.title")}
+            description={t("warning_modal.attachment.description")}
+            actionBtnText={t("warning_modal.attachment.actions.clear")}
+            cancelBtnText={t("warning_modal.attachment.actions.cancel")}
+            action={() => {
+              deleteAttachment(selectedAttachment);
+              setSelectedAttachment(null);
+            }}
+            onCancel={() => setSelectedAttachment(null)}
+          />
+        )}
       </YStack>
     )
   );

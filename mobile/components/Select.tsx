@@ -21,11 +21,11 @@ interface StyledSelectProps extends SelectProps {
   error?: string;
 }
 
-const Select = ({ placeholder = "Select", options, error, ...props }: StyledSelectProps) => {
+const Select = ({ placeholder, options, error, ...props }: StyledSelectProps) => {
   const insets = useSafeAreaInsets();
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [isOpen, setIsOpen] = useState(false);
-  const { t } = useTranslation("bottom_sheets");
+  const { t } = useTranslation("common");
 
   // Filter options based on search term
   const filteredOptions = useMemo(() => {
@@ -55,7 +55,7 @@ const Select = ({ placeholder = "Select", options, error, ...props }: StyledSele
         <TamaguiSelect.Value
           width={"90%"}
           color="$gray5"
-          placeholder={placeholder}
+          placeholder={placeholder || t("select")}
           fontSize={16}
         ></TamaguiSelect.Value>
       </TamaguiSelect.Trigger>
@@ -78,7 +78,7 @@ const Select = ({ placeholder = "Select", options, error, ...props }: StyledSele
                 <Icon icon="search" color="transparent" size={20} marginLeft="$sm" />
                 <SearchInput
                   flex={1}
-                  placeholder={t("select_option.actions.search")}
+                  placeholder={t("search")}
                   value={searchTerm}
                   onChangeText={setSearchTerm}
                 />
@@ -101,7 +101,7 @@ const Select = ({ placeholder = "Select", options, error, ...props }: StyledSele
         <TamaguiSelect.Viewport>
           <TamaguiSelect.Group>
             {filteredOptions.length === 0 ? (
-              <Typography padding="$md"> {t("select_option.no_data")}</Typography>
+              <Typography padding="$md"> {t("no_data")}</Typography>
             ) : (
               filteredOptions.map((entry, i) => {
                 return (

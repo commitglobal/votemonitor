@@ -5,9 +5,9 @@ import { Keyboard } from "react-native";
 import { Icon } from "./Icon";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTranslation } from "react-i18next";
-import i18n from "../common/config/i18n";
+import * as SecureStore from "expo-secure-store";
+import { I18N_LANGUAGE } from "../common/constants";
 
-const languages = ["ro", "en"];
 interface SelectLanguageProps {
   open: boolean;
   setOpen: (isOpen: boolean) => void;
@@ -15,12 +15,13 @@ interface SelectLanguageProps {
 
 const SelectAppLanguage = ({ open, setOpen }: SelectLanguageProps) => {
   const insets = useSafeAreaInsets();
-  const { t } = useTranslation("languages");
+  const { t, i18n } = useTranslation("languages");
   const { changeLanguage } = useContext(LanguageContext);
 
   const onChangeLanguage = (language: Language) => {
     Keyboard.dismiss();
     changeLanguage(language);
+    SecureStore.setItem(I18N_LANGUAGE, language);
   };
 
   return (
@@ -33,7 +34,7 @@ const SelectAppLanguage = ({ open, setOpen }: SelectLanguageProps) => {
       <Adapt platform="touch">
         <Sheet
           modal
-          snapPoints={[25]}
+          snapPointsMode="fit"
           open={open}
           moveOnKeyboardChange={open || Keyboard.isVisible()}
         >
@@ -54,7 +55,7 @@ const SelectAppLanguage = ({ open, setOpen }: SelectLanguageProps) => {
       <Select.Content>
         <Select.Viewport>
           <Select.Group>
-            {languages?.map((lang, i) => (
+            {i18n.languages?.map((lang, i) => (
               <Select.Item index={i} key={lang} value={lang} gap="$3" paddingBottom="$sm">
                 <Select.ItemText color={lang === i18n.language ? "$purple5" : "$gray9"}>
                   {t(lang)}

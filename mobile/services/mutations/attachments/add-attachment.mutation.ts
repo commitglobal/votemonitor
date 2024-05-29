@@ -4,7 +4,6 @@ import {
   AddAttachmentAPIResponse,
   addAttachment,
 } from "../../api/add-attachment.api";
-import { performanceLog } from "../../../helpers/misc";
 import { AttachmentApiResponse } from "../../api/get-attachments.api";
 import { AttachmentsKeys } from "../../queries/attachments.query";
 
@@ -17,7 +16,7 @@ export const addAttachmentMutation = (scopeId: string) => {
       id: scopeId,
     },
     mutationFn: async (payload: AddAttachmentAPIPayload): Promise<AddAttachmentAPIResponse> => {
-      return performanceLog(() => addAttachment(payload));
+      return addAttachment(payload);
     },
     onMutate: async (payload: AddAttachmentAPIPayload) => {
       const attachmentsQK = AttachmentsKeys.attachments(
@@ -38,7 +37,7 @@ export const addAttachmentMutation = (scopeId: string) => {
           pollingStationId: payload.pollingStationId,
           formId: payload.formId,
           questionId: payload.questionId,
-          fileName: `🛜 ${payload.fileMetadata.name}`,
+          fileName: `${payload.fileMetadata.name}`,
           mimeType: payload.fileMetadata.type,
           presignedUrl: payload.fileMetadata.uri, // TODO @radulescuandrew is this working to display the media?
           urlValidityInSeconds: 3600,

@@ -1,5 +1,5 @@
 import React from "react";
-import { Redirect, SplashScreen, Stack } from "expo-router";
+import { Redirect, Stack } from "expo-router";
 import { PortalProvider } from "tamagui";
 import { useAuth } from "../../hooks/useAuth";
 import UserContextProvider from "../../contexts/user/UserContext.provider";
@@ -9,8 +9,6 @@ const AppLayout = () => {
   const { isAuthenticated } = useAuth();
 
   if (!isAuthenticated) {
-    // TODO: @birloiflorian isAuthenticated is always false here
-    SplashScreen.hideAsync();
     return <Redirect href="/login" />;
   }
 
@@ -26,6 +24,7 @@ const AppLayout = () => {
             <Stack.Screen name="report-issue" options={{ headerShown: false }} />
             <Stack.Screen name="change-password" options={{ headerShown: false }} />
             <Stack.Screen name="manage-polling-station" options={{ headerShown: false }} />
+            <Stack.Screen name="about-votemonitor" options={{ headerShown: false }} />
           </Stack>
         </NotificationContextProvider>
       </UserContextProvider>

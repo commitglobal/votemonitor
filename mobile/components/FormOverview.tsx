@@ -23,21 +23,23 @@ const FormOverview = ({
     () => mapFormStateStatus(completedAnswers, numberOfQuestions),
     [completedAnswers, numberOfQuestions],
   );
-  const { t } = useTranslation("form_overview");
+  const { t } = useTranslation(["form_overview", "common"]);
 
   return (
     <Card padding="$md">
       <Typography preset="body1" fontWeight="700">
-        {t("form_overview.title")}
+        {t("overview.heading")}
       </Typography>
       <XStack alignItems="center" justifyContent="space-between">
         <YStack gap="$sm">
           <Typography fontWeight="500" color="$gray5">
-            {t("form_overview.status")}:{" "}
-            <Typography fontWeight="700">{FormStateToTextMapper(t)[formStatus]}</Typography>
+            {t("overview.status")}:{" "}
+            <Typography fontWeight="700">
+              {t(FormStateToTextMapper[formStatus], { ns: "common" })}
+            </Typography>
           </Typography>
           <Typography fontWeight="500" color="$gray5">
-            {t("form_overview.answered_questions")}:{" "}
+            {t("overview.answered_questions")}:{" "}
             <Typography fontWeight="700">
               {completedAnswers}/{numberOfQuestions}
             </Typography>
@@ -52,9 +54,7 @@ const FormOverview = ({
         disabled={completedAnswers === numberOfQuestions}
         onPress={onFormActionClick}
       >
-        {formStatus === FormStatus.NOT_STARTED
-          ? t("form_overview.start_form")
-          : t("form_overview.resume")}
+        {formStatus === FormStatus.NOT_STARTED ? t("overview.start_form") : t("overview.resume")}
       </Button>
     </Card>
   );

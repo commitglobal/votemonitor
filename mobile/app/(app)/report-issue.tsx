@@ -27,6 +27,9 @@ import Card from "../../components/Card";
 import { QuickReportKeys } from "../../services/queries/quick-reports.query";
 import * as Sentry from "@sentry/react-native";
 import { AddAttachmentQuickReportAPIPayload } from "../../services/api/quick-report/add-attachment-quick-report.api";
+import { useTranslation } from "react-i18next";
+import i18n from "../../common/config/i18n";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 const mapVisitsToSelectPollingStations = (visits: PollingStationVisitVM[] = []) => {
   const pollingStationsForSelect = visits.map((visit) => {
@@ -42,12 +45,12 @@ const mapVisitsToSelectPollingStations = (visits: PollingStationVisitVM[] = []) 
     {
       id: "other",
       value: QuickReportLocationType.OtherPollingStation,
-      label: "Other polling station",
+      label: i18n.t("form.polling_station_id.options.other", { ns: "report_new_issue" }),
     },
     {
       id: "not_related_to_polling_station",
       value: QuickReportLocationType.NotRelatedToAPollingStation,
-      label: "Not related to a polling station",
+      label: i18n.t("form.polling_station_id.options.not_related", { ns: "report_new_issue" }),
     },
   );
   return pollingStationsForSelect;
@@ -66,6 +69,7 @@ const ReportIssue = () => {
   const { visits, activeElectionRound } = useUserData();
   const pollingStations = useMemo(() => mapVisitsToSelectPollingStations(visits), [visits]);
   const [optionsSheetOpen, setOptionsSheetOpen] = useState(false);
+  const { t } = useTranslation("report_new_issue");
 
   const [attachments, setAttachments] = useState<Array<{ fileMetadata: FileMetadata; id: string }>>(
     [],
@@ -238,162 +242,167 @@ const ReportIssue = () => {
         }}
       >
         <Header
-          title="Report new issue"
+          title={t("title")}
           titleColor="white"
           barStyle="light-content"
           leftIcon={<Icon icon="chevronLeft" color="white" />}
           onLeftPress={() => router.back()}
         />
-        <YStack paddingVertical="$lg" paddingHorizontal="$md">
-          {/* questions container */}
+        <KeyboardAwareScrollView contentContainerStyle={{ flexGrow: 1 }}>
+          <YStack paddingVertical="$lg" paddingHorizontal="$md" flex={1}>
+            {/* questions container */}
 
-          <YStack gap="$lg">
-            <Controller
-              key="polling_station_id"
-              name="polling_station_id"
-              control={control}
-              rules={{
-                required: {
-                  value: true,
-                  message: "This field is required.",
-                },
-              }}
-              render={({ field: { onChange, value } }) => (
-                <>
-                  {/* select polling station */}
-                  <FormElement title="Polling station *" error={errors.polling_station_id?.message}>
-                    <Select
-                      value={value}
-                      options={pollingStations}
-                      placeholder="Select polling station"
-                      onValueChange={onChange}
-                      error={errors.polling_station_id?.message}
-                    />
-                  </FormElement>
-                </>
-              )}
-            />
-
-            {/* polling station details */}
-            {pollingStationIdWatch === QuickReportLocationType.OtherPollingStation && (
+            <YStack gap="$lg">
               <Controller
-                key="polling_station_details"
-                name="polling_station_details"
+                key="polling_station_id"
+                name="polling_station_id"
                 control={control}
                 rules={{
-                  required: { value: true, message: "This field is required." },
+                  required: {
+                    value: true,
+                    message: t("form.polling_station_id.required"),
+                  },
+                }}
+                render={({ field: { onChange, value } }) => (
+                  <>
+                    {/* select polling station */}
+                    <FormElement
+                      title={t("form.polling_station_id.label")}
+                      error={errors.polling_station_id?.message}
+                    >
+                      <Select
+                        value={value}
+                        options={pollingStations}
+                        placeholder={t("form.polling_station_id.placeholder")}
+                        onValueChange={onChange}
+                        error={errors.polling_station_id?.message}
+                      />
+                    </FormElement>
+                  </>
+                )}
+              />
+
+              {/* polling station details */}
+              {pollingStationIdWatch === QuickReportLocationType.OtherPollingStation && (
+                <Controller
+                  key="polling_station_details"
+                  name="polling_station_details"
+                  control={control}
+                  rules={{
+                    required: { value: true, message: t("form.polling_station_details.required") },
+                    maxLength: {
+                      value: 1024,
+                      message: t("form.polling_station_details.max", { value: 1024 }),
+                    },
+                  }}
+                  render={({ field: { onChange, value } }) => (
+                    <FormInput
+                      title={t("form.polling_station_details.label")}
+                      type="textarea"
+                      placeholder={t("form.polling_station_details.placeholder")}
+                      value={value}
+                      onChangeText={onChange}
+                      error={errors.polling_station_details?.message}
+                    />
+                  )}
+                />
+              )}
+
+              {/* issue title */}
+              <Controller
+                key="issue_title"
+                name="issue_title"
+                control={control}
+                rules={{
+                  required: { value: true, message: t("form.issue_title.required") },
                   maxLength: {
                     value: 1024,
                     // todo: translation
-                    message: "Input cannot exceed 1024 characters",
+                    message: t("form.issue_title.max", { value: 1024 }),
                   },
                 }}
                 render={({ field: { onChange, value } }) => (
                   <FormInput
-                    title="Polling station details *"
-                    type="textarea"
-                    placeholder="Please write here some identification details for this polling station (such as address, name, number, etc.)"
+                    title={t("form.issue_title.label")}
+                    placeholder={t("form.issue_title.placeholder")}
+                    type="text"
                     value={value}
                     onChangeText={onChange}
-                    error={errors.polling_station_details?.message}
+                    error={errors.issue_title?.message}
                   />
                 )}
               />
-            )}
 
-            {/* issue title */}
-            <Controller
-              key="issue_title"
-              name="issue_title"
-              control={control}
-              rules={{
-                required: { value: true, message: "This field is required." },
-                maxLength: {
-                  value: 1024,
-                  message: "Input cannot exceed 1024 characters",
-                },
-              }}
-              render={({ field: { onChange, value } }) => (
-                <FormInput
-                  title="Title of issue *"
-                  placeholder="Write a title for this issue."
-                  type="text"
-                  value={value}
-                  onChangeText={onChange}
-                  error={errors.issue_title?.message}
-                />
-              )}
-            />
-
-            {/* issue description */}
-            <Controller
-              key="issue_description"
-              name="issue_description"
-              control={control}
-              rules={{
-                required: { value: true, message: "This field is required." },
-                maxLength: {
-                  value: 10000,
-                  message: "Input cannot exceed 10,000 characters",
-                },
-              }}
-              render={({ field: { onChange, value } }) => (
-                <FormInput
-                  title="Description *"
-                  type="textarea"
-                  placeholder="Describe the situation in detail here."
-                  value={value}
-                  onChangeText={onChange}
-                  error={errors.issue_description?.message}
-                />
-              )}
-            />
-            {attachments.length ? (
-              <YStack gap="$xxs">
-                <Typography fontWeight="500">Uploaded media</Typography>
+              {/* issue description */}
+              <Controller
+                key="issue_description"
+                name="issue_description"
+                control={control}
+                rules={{
+                  required: { value: true, message: t("form.issue_description.required") },
+                  maxLength: {
+                    value: 10000,
+                    message: t("form.issue_description.max", { value: 10000 }),
+                  },
+                }}
+                render={({ field: { onChange, value } }) => (
+                  <FormInput
+                    title={t("form.issue_description.label")}
+                    type="textarea"
+                    placeholder={t("form.issue_description.placeholder")}
+                    value={value}
+                    onChangeText={onChange}
+                    error={errors.issue_description?.message}
+                  />
+                )}
+              />
+              {attachments.length ? (
                 <YStack gap="$xxs">
-                  {attachments.map((attachment) => {
-                    return (
-                      <Card
-                        padding="$0"
-                        paddingLeft="$md"
-                        key={attachment.id}
-                        flexDirection="row"
-                        justifyContent="space-between"
-                        alignItems="center"
-                      >
-                        <Typography
-                          preset="body1"
-                          fontWeight="700"
-                          maxWidth="85%"
-                          numberOfLines={1}
+                  <Typography fontWeight="500">{t("media.heading")}</Typography>
+                  <YStack gap="$xxs">
+                    {attachments.map((attachment) => {
+                      return (
+                        <Card
+                          padding="$0"
+                          paddingLeft="$md"
+                          key={attachment.id}
+                          flexDirection="row"
+                          justifyContent="space-between"
+                          alignItems="center"
                         >
-                          {attachment.fileMetadata.name}
-                        </Typography>
-                        <YStack
-                          padding="$md"
-                          onPress={removeAttachmentLocal.bind(null, attachment.id)}
-                          pressStyle={{ opacity: 0.5 }}
-                        >
-                          <Icon icon="xCircle" size={24} color="$gray5" />
-                        </YStack>
-                      </Card>
-                    );
-                  })}
+                          <Typography
+                            preset="body1"
+                            fontWeight="700"
+                            maxWidth="85%"
+                            numberOfLines={1}
+                          >
+                            {attachment.fileMetadata.name}
+                          </Typography>
+                          <YStack
+                            padding="$md"
+                            onPress={removeAttachmentLocal.bind(null, attachment.id)}
+                            pressStyle={{ opacity: 0.5 }}
+                          >
+                            <Icon icon="xCircle" size={24} color="$gray5" />
+                          </YStack>
+                        </Card>
+                      );
+                    })}
+                  </YStack>
                 </YStack>
-              </YStack>
-            ) : (
-              false
-            )}
-            <AddAttachment
-              label="Add Media"
-              onPress={() => {
-                Keyboard.dismiss();
-                setOptionsSheetOpen(true);
-              }}
-            />
+              ) : (
+                false
+              )}
+              <AddAttachment
+                label={t("media.add")}
+                onPress={() => {
+                  Keyboard.dismiss();
+                  setOptionsSheetOpen(true);
+                }}
+              />
+            </YStack>
           </YStack>
-        </YStack>
+        </KeyboardAwareScrollView>
 
         <OptionsSheet open={optionsSheetOpen} setOpen={setOptionsSheetOpen}>
           <YStack paddingHorizontal="$sm">
@@ -403,7 +412,7 @@ const ReportIssue = () => {
               paddingVertical="$md"
               pressStyle={{ color: "$purple5" }}
             >
-              Load from gallery
+              {t("media.menu.load")}
             </Typography>
             <Typography
               onPress={handleCameraUpload.bind(null, "cameraPhoto")}
@@ -411,15 +420,7 @@ const ReportIssue = () => {
               paddingVertical="$md"
               pressStyle={{ color: "$purple5" }}
             >
-              Take a photo
-            </Typography>
-            <Typography
-              onPress={handleCameraUpload.bind(null, "cameraVideo")}
-              preset="body1"
-              paddingVertical="$md"
-              pressStyle={{ color: "$purple5" }}
-            >
-              Record a video
+              {t("media.menu.take_picture")}
             </Typography>
             <Typography
               onPress={handleUploadAudio.bind(null)}
@@ -427,7 +428,7 @@ const ReportIssue = () => {
               paddingVertical="$md"
               pressStyle={{ color: "$purple5" }}
             >
-              Upload audio file
+              {t("media.menu.upload_audio")}
             </Typography>
           </YStack>
         </OptionsSheet>
@@ -445,7 +446,7 @@ const ReportIssue = () => {
       >
         {/* this will reset form to defaultValues */}
         <Button preset="chromeless" onPress={() => reset()}>
-          Clear
+          {t("form.clear")}
         </Button>
         <Button
           flex={1}
@@ -453,8 +454,8 @@ const ReportIssue = () => {
           disabled={(isPendingAddQuickReport && !isPausedAddQuickReport) || isUploadingAttachments}
         >
           {(!isPendingAddQuickReport && !isPausedAddQuickReport) || !isUploadingAttachments
-            ? "Submit issue"
-            : "Processing..."}
+            ? t("form.submit")
+            : t("form.loading")}
         </Button>
       </XStack>
     </>

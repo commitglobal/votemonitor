@@ -20,7 +20,7 @@ import { useTranslation } from "react-i18next";
 import NoElectionRounds from "../../../../../components/NoElectionRounds";
 
 const Index = () => {
-  const { t } = useTranslation("observations_polling_station");
+  const { t } = useTranslation("observation");
   const navigation = useNavigation();
   const [openContextualMenu, setOpenContextualMenu] = useState(false);
 
@@ -53,7 +53,7 @@ const Index = () => {
     >
       <YStack marginBottom={20}>
         <Header
-          title={t("title")}
+          title={activeElectionRound?.title}
           titleColor="white"
           barStyle="light-content"
           leftIcon={<Icon icon="menuAlt2" color="white" />}
@@ -79,7 +79,7 @@ const Index = () => {
                   />
                 )}
               <Typography preset="body1" fontWeight="700" marginTop="$lg" marginBottom="$xxs">
-                {t("forms.title")}
+                {t("forms.heading")}
               </Typography>
             </YStack>
           }
