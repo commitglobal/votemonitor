@@ -1,5 +1,5 @@
 import { authApi } from '@/common/auth-api';
-import { getTranslationOrDefault, updateTranslationString } from '@/common/types';
+import { type FunctionComponent, getTranslationOrDefault, updateTranslationString } from '@/common/types';
 import Layout from '@/components/layout/Layout';
 import FormQuestionsEditor from '@/components/questionsEditor/FormQuestionsEditor';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -19,19 +19,36 @@ import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 
-import { FormFull } from '../../models/form';
+import type { FormFull } from '../../models/form';
 import { formDetailsQueryOptions, formsKeys } from '../../queries';
 import EditFormFooter from '../EditForm/EditFormFooter';
 import LanguageBadge from '../LanguageBadge/LanguageBadge';
+import { useNavigate } from '@tanstack/react-router';
+import { isQuestionTranslated } from '@/components/questionsEditor/utils';
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { useDialog } from '@/components/ui/use-dialog';
 
-export default function EditFormTranslation() {
+export default function EditFormTranslation(): FunctionComponent {
   const { t } = useTranslation();
   const { languageCode, formId } = EditFormRoute.useParams();
   const formQuery = useSuspenseQuery(formDetailsQueryOptions(formId));
   const formData = formQuery.data;
   const [localQuestions, setLocalQuestions] = useState(formData.questions);
   const { toast } = useToast();
-  const formRef = useRef(null);
+  const formRef = useRef<HTMLFormElement>(null);
+  const navigate = useNavigate();
+  const {
+    dialogProps: { onOpenChange, open },
+  } = useDialog();
 
   const editFormFormSchema = z.object({
     name: z.string().nonempty(),
@@ -46,7 +63,29 @@ export default function EditFormTranslation() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof editFormFormSchema>) {
+  const editMutation = useMutation({
+    mutationFn: (form: FormFull) => {
+      const electionRoundId: string | null = localStorage.getItem('electionRoundId');
+
+      return authApi.put<void>(`/election-rounds/${electionRoundId}/forms/${formData.id}`, {
+        ...form,
+        questions: localQuestions,
+      });
+    },
+
+    onSuccess: () => {
+      toast({
+        title: 'Success',
+        description: 'Form updated successfully',
+      });
+
+      void queryClient.invalidateQueries({ queryKey: formsKeys.all });
+    },
+  });
+
+  function saveHandler(): void {
+    const values = form.getValues();
+
     formData.name[formData.defaultLanguage] = values.name;
     formData.description = updateTranslationString(
       formData.description,
@@ -62,29 +101,37 @@ export default function EditFormTranslation() {
     editMutation.mutate(updatedForm);
   }
 
-  const editMutation = useMutation({
-    mutationFn: (form: FormFull) => {
-      const electionRoundId: string | null = localStorage.getItem('electionRoundId');
+  function onSubmit(values: z.infer<typeof editFormFormSchema>): void {
+    formData.name[formData.defaultLanguage] = values.name;
+    formData.description = updateTranslationString(
+      formData.description,
+      formData.languages,
+      formData.defaultLanguage,
+      values.description ?? ''
+    );
 
-      return authApi.put<void>(`/election-rounds/${electionRoundId}/forms/${formData.id}`, {
-        ...form,
-        questions: localQuestions,
-      });
-    },
+    const updatedForm: FormFull = {
+      ...formData,
+    };
 
-    onSuccess: () => {
-      toast({
-        title: 'Success',
-        description: 'Form updated successfully updated',
-      });
+    editMutation.mutate(updatedForm, {
+      onSuccess: () => {
+        void navigate({ to: '/election-event/$tab', params: { tab: 'observer-forms' } });
+      },
+    });
+  }
 
-      queryClient.invalidateQueries({ queryKey: formsKeys.all });
-    },
-  });
+  const untranslatedQuestions = localQuestions.filter(
+    (question) => !isQuestionTranslated(question, formData.defaultLanguage, languageCode)
+  );
 
-  const submit = () => {
+  const submit = (checkTranslations?: boolean): void => {
+    if (checkTranslations && untranslatedQuestions.length > 0) {
+      onOpenChange(true);
+      return;
+    }
+
     if (formRef.current) {
-      // @ts-ignore
       formRef.current.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
     }
   };
@@ -92,6 +139,7 @@ export default function EditFormTranslation() {
   return (
     <Layout title={`${formData.code} - ${formData.name[formData.defaultLanguage]}`}>
       <Form {...form}>
+        {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
         <form onSubmit={form.handleSubmit(onSubmit)} ref={formRef}>
           <Tabs defaultValue='form-details'>
             <TabsList className='grid grid-cols-2 bg-gray-200 w-[400px] mb-4'>
@@ -140,7 +188,7 @@ export default function EditFormTranslation() {
               </Card>
             </TabsContent>
             <TabsContent value='questions'>
-              <Card className='pt-0 h-[calc(100vh-380px)] overflow-hidden'>
+              <Card className='pt-0 h-[calc(100vh)] overflow-hidden'>
                 <CardHeader className='flex flex-column gap-2'>
                   <div className='flex flex-row justify-between items-center'>
                     <CardTitle className='text-xl'>Form questions</CardTitle>
@@ -158,7 +206,48 @@ export default function EditFormTranslation() {
               </Card>
             </TabsContent>
           </Tabs>
-          <EditFormFooter onSaveProgress={submit} onSaveAndExit={submit} />
+          <EditFormFooter
+            onSaveProgress={saveHandler}
+            onSaveAndExit={() => {
+              submit(true);
+            }}
+          />
+          <Dialog open={open} onOpenChange={onOpenChange} modal={true}>
+            <DialogContent
+              className='min-w-[650px] min-h-[350px]'
+              onInteractOutside={(e) => {
+                e.preventDefault();
+              }}
+              onEscapeKeyDown={(e) => {
+                e.preventDefault();
+              }}>
+              <DialogHeader>
+                <DialogTitle className='mb-3.5'>Missing translations for {untranslatedQuestions.length} questions</DialogTitle>
+                <DialogDescription className='mt-3.5 text-base text-slate-900'>
+                  Please note that before publishing this form, all the questions must be translated in selected
+                  language.
+                </DialogDescription>
+              </DialogHeader>
+
+              <div className='grow-1'/>
+
+              <DialogFooter className='sm:items-end'>
+                <Button
+                  onClick={() => {
+                    submit();
+                  }}
+                  type='button'
+                  variant='secondary'>
+                  Save and exit anyway
+                </Button>
+                <DialogClose asChild>
+                  <Button type='button' variant='default'>
+                    Back to form editor
+                  </Button>
+                </DialogClose>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </form>
       </Form>
     </Layout>

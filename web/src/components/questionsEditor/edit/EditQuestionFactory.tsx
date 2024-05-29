@@ -1,19 +1,10 @@
-import {
-  BaseQuestion,
-  DateQuestion,
-  MultiSelectQuestion,
-  NumberQuestion,
-  QuestionType,
-  RatingQuestion,
-  SingleSelectQuestion,
-  TextQuestion,
-} from '@/common/types';
+import { type BaseQuestion, type FunctionComponent, QuestionType } from '@/common/types';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { cn } from '@/lib/utils';
 import { Draggable } from 'react-beautiful-dnd';
 import { useTranslation } from 'react-i18next';
 
-import { MoveDirection } from '../QuestionsEdit';
+import type { MoveDirection } from '../QuestionsEdit';
 import EditDateQuestion from './EditDateQuestion';
 import EditNumberQuestion from './EditNumberQuestion';
 import EditRatingQuestion from './EditRatingQuestion';
@@ -22,6 +13,16 @@ import EditTextQuestion from './EditTextQuestion';
 import QuestionActions from './QuestionActions';
 import { useParams } from '@tanstack/react-router';
 import { LanguageIcon } from '@heroicons/react/24/outline';
+import DisplayLogicEditor from './DisplayLogicEditor';
+import { isQuestionTranslated } from '../utils';
+import {
+  isDateQuestion,
+  isMultiSelectQuestion,
+  isNumberQuestion,
+  isRatingQuestion,
+  isSingleSelectQuestion,
+  isTextQuestion,
+} from '@/common/guards';
 
 interface EditQuestionFactoryProps {
   formQuestions: BaseQuestion[];
@@ -53,71 +54,38 @@ export default function EditQuestionFactory({
   updateQuestion,
   duplicateQuestion,
   deleteQuestion,
-}: EditQuestionFactoryProps) {
+}: EditQuestionFactoryProps): FunctionComponent {
   const { t } = useTranslation();
   const open = activeQuestionId === question.id;
 
-  const params: any = useParams({
+  const params: { languageCode?: string } = useParams({
     strict: false,
   });
 
-  function checkIfMissingTranslations() {
-    const textRequired = question.text[params['languageCode']] !== '';
-    const helpTextRule =
-      question.helptext?.[languageCode] !== '' ? question.helptext?.[params['languageCode']] !== '' : true;
-
-    const genericProperties = textRequired && helpTextRule;
-
-    switch (question.$questionType) {
-      case 'textQuestion': {
-        return (
-          genericProperties &&
-          ((question as TextQuestion | NumberQuestion).inputPlaceholder?.[languageCode] !== ''
-            ? (question as TextQuestion | NumberQuestion).inputPlaceholder?.[params['languageCode']] !== ''
-            : true)
-        );
-      }
-      case 'numberQuestion': {
-        return (
-          genericProperties &&
-          ((question as NumberQuestion).inputPlaceholder?.[languageCode] !== ''
-            ? (question as NumberQuestion).inputPlaceholder?.[params['languageCode']] !== ''
-            : true)
-        );
-      }
-      case 'singleSelectQuestion':
-        return (
-          genericProperties &&
-          (question as SingleSelectQuestion).options.every((option) => option.text[params['languageCode']] !== '')
-        );
-
-      case 'multiSelectQuestion':
-        return (
-          genericProperties &&
-          (question as SingleSelectQuestion).options.every((option) => option.text[params['languageCode']] !== '')
-        );
-      default:
-        return genericProperties;
-    }
-  }
-
   function getQuestionTypeName(questionType: QuestionType): string {
     switch (questionType) {
-      case QuestionType.TextQuestionType:
+      case QuestionType.TextQuestionType: {
         return t('questionEditor.questionType.textQuestion');
-      case QuestionType.NumberQuestionType:
+      }
+      case QuestionType.NumberQuestionType: {
         return t('questionEditor.questionType.numberQuestion');
-      case QuestionType.DateQuestionType:
+      }
+      case QuestionType.DateQuestionType: {
         return t('questionEditor.questionType.dateQuestion');
-      case QuestionType.SingleSelectQuestionType:
+      }
+      case QuestionType.SingleSelectQuestionType: {
         return t('questionEditor.questionType.singleSelectQuestion');
-      case QuestionType.MultiSelectQuestionType:
+      }
+      case QuestionType.MultiSelectQuestionType: {
         return t('questionEditor.questionType.multiSelectQuestion');
-      case QuestionType.RatingQuestionType:
+      }
+      case QuestionType.RatingQuestionType: {
         return t('questionEditor.questionType.ratingQuestion');
+      }
+      default: {
+        return 'Unknown';
+      }
     }
-
-    return 'Unknown';
   }
 
   return (
@@ -156,15 +124,15 @@ export default function EditQuestionFactory({
                 <div className='inline-flex'>
                   <div>
                     {!!params['languageCode'] &&
-                      (!checkIfMissingTranslations() ? (
-                        <div className='flex items-center 	 rounded-md text-yellow-700 bg-yellow-100 p-2 mb-2'>
-                          <LanguageIcon width={22} />
-                          This question is missing translations.
-                        </div>
-                      ) : (
+                      (isQuestionTranslated(question, languageCode, params['languageCode']) ? (
                         <div className='flex gap-2 	 items-center rounded-md text-green-700 bg-green-100 p-2 mb-2'>
                           <LanguageIcon width={22} />
                           This question is translated.
+                        </div>
+                      ) : (
+                        <div className='flex items-center 	 rounded-md text-yellow-700 bg-yellow-100 p-2 mb-2'>
+                          <LanguageIcon width={22} />
+                          This question is missing translations.
                         </div>
                       ))}
                     <p className='text-sm font-semibold'>
@@ -175,80 +143,80 @@ export default function EditQuestionFactory({
                   </div>
                 </div>
 
-                <div className='flex items-center space-x-2'>
-                  <QuestionActions
-                    questionIdx={questionIdx}
-                    isLastQuestion={isLastQuestion}
-                    duplicateQuestion={duplicateQuestion}
-                    deleteQuestion={deleteQuestion}
-                    moveQuestion={moveQuestion}
-                    disabled={!!params['languageCode']}
-                  />
-                </div>
+                {!params['languageCode'] && (
+                  <div className='flex items-center space-x-2'>
+                    <QuestionActions
+                      questionIdx={questionIdx}
+                      isLastQuestion={isLastQuestion}
+                      duplicateQuestion={duplicateQuestion}
+                      deleteQuestion={deleteQuestion}
+                      moveQuestion={moveQuestion}
+                    />
+                  </div>
+                )}
               </div>
             </CollapsibleTrigger>
             <CollapsibleContent className='px-4 pb-4'>
-              {question.$questionType === QuestionType.TextQuestionType ? (
+              {isTextQuestion(question) && (
                 <EditTextQuestion
-                  formQuestions={formQuestions}
                   availableLanguages={availableLanguages}
                   languageCode={languageCode}
-                  question={question as TextQuestion}
+                  question={question}
                   questionIdx={questionIdx}
                   updateQuestion={updateQuestion}
                   isInValid={isInValid}
                 />
-              ) : question.$questionType === QuestionType.DateQuestionType ? (
+              )}
+              {isDateQuestion(question) && (
                 <EditDateQuestion
-                  formQuestions={formQuestions}
                   availableLanguages={availableLanguages}
                   languageCode={languageCode}
-                  question={question as DateQuestion}
+                  question={question}
                   questionIdx={questionIdx}
                   updateQuestion={updateQuestion}
                   isInValid={isInValid}
                 />
-              ) : question.$questionType === QuestionType.NumberQuestionType ? (
+              )}
+              {isNumberQuestion(question) && (
                 <EditNumberQuestion
-                  formQuestions={formQuestions}
                   availableLanguages={availableLanguages}
                   languageCode={languageCode}
-                  question={question as NumberQuestion}
+                  question={question}
                   questionIdx={questionIdx}
                   updateQuestion={updateQuestion}
                   isInValid={isInValid}
                 />
-              ) : question.$questionType === QuestionType.MultiSelectQuestionType ? (
+              )}
+              {(isSingleSelectQuestion(question) || isMultiSelectQuestion(question)) && (
                 <EditSelectQuestion
-                  formQuestions={formQuestions}
                   availableLanguages={availableLanguages}
                   languageCode={languageCode}
-                  question={question as MultiSelectQuestion}
+                  question={question}
                   questionIdx={questionIdx}
                   updateQuestion={updateQuestion}
                   isInValid={isInValid}
                 />
-              ) : question.$questionType === QuestionType.SingleSelectQuestionType ? (
-                <EditSelectQuestion
-                  formQuestions={formQuestions}
-                  availableLanguages={availableLanguages}
-                  languageCode={languageCode}
-                  question={question as SingleSelectQuestion}
-                  questionIdx={questionIdx}
-                  updateQuestion={updateQuestion}
-                  isInValid={isInValid}
-                />
-              ) : question.$questionType === QuestionType.RatingQuestionType ? (
+              )}
+              {isRatingQuestion(question) && (
                 <EditRatingQuestion
-                  formQuestions={formQuestions}
                   availableLanguages={availableLanguages}
                   languageCode={languageCode}
-                  question={question as RatingQuestion}
+                  question={question}
                   questionIdx={questionIdx}
                   updateQuestion={updateQuestion}
                   isInValid={isInValid}
                 />
-              ) : null}
+              )}
+
+              {!params['languageCode'] && (
+                <DisplayLogicEditor
+                  formQuestions={formQuestions}
+                  questionIndex={questionIdx}
+                  question={question}
+                  languageCode={languageCode}
+                  updateQuestion={updateQuestion}
+                />
+              )}
             </CollapsibleContent>
           </Collapsible>
         </div>
