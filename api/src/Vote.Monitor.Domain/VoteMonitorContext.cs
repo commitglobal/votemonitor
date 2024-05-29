@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Vote.Monitor.Domain.Constants;
 using Vote.Monitor.Domain.Entities.AttachmentAggregate;
 using Vote.Monitor.Domain.Entities.ExportedDataAggregate;
+using Vote.Monitor.Domain.Entities.FeedbackAggregate;
 using Vote.Monitor.Domain.Entities.FormAggregate;
 using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
 using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
@@ -62,6 +63,7 @@ public class VoteMonitorContext : IdentityDbContext<ApplicationUser, IdentityRol
     public DbSet<ExportedData> ExportedData { get; set; }
     public DbSet<QuickReport> QuickReports { get; set; }
     public DbSet<QuickReportAttachment> QuickReportAttachments { get; set; }
+    public DbSet<Feedback> UserFeedback { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

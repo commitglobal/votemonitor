@@ -31,12 +31,18 @@ const defaultOptions: ChartOptions<'line'> = {
       display: false,
     },
   },
+  scales: {
+    y: {
+      min: 0
+    }
+  }
 };
 
 export interface LineProps {
   title?: string;
   data: ChartData<'line', number[]>;
   showTotal?: boolean;
+  total?: number
 }
 
 const LineChart = forwardRef<ChartJSOrUndefined<'line', number[]>, LineProps>((props, chartRef) => {
@@ -46,7 +52,7 @@ const LineChart = forwardRef<ChartJSOrUndefined<'line', number[]>, LineProps>((p
         <div>
           {props.showTotal && (
             <div className='text-2xl font-bold'>
-              {props.data.datasets.reduce((t, d) => t + d.data.reduce((a, b) => a + b), 0)}
+              {props.total ?? 0}
             </div>
           )}
           {props.title && <span className='text-sm text-slate-500'>{props.title}</span>}

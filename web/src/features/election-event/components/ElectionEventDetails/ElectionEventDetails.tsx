@@ -42,7 +42,7 @@ export default function ElectionEventDetails() {
           <Badge
       className={cn({
         'text-slate-700 bg-slate-200': electionEvent?.status === 'NotStarted',
-        'text-green-700 bg-red-200': electionEvent?.status === 'Started',
+        'text-green-700 bg-green-200': electionEvent?.status === 'Started',
         'text-yellow-700 bg-yellow-200': electionEvent?.status === 'Archived'
       })}>
       {electionEvent?.status}

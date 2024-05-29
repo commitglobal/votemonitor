@@ -23,7 +23,7 @@ public class Attachment : AuditableBaseEntity, IAggregateRoot
     public bool IsDeleted { get; private set; }
     public bool IsCompleted { get; private set; }
 
-    public Attachment(Guid id,
+    private Attachment(Guid id,
         Guid electionRoundId,
         Guid pollingStationId,
         Guid monitoringObserverId,
@@ -31,7 +31,8 @@ public class Attachment : AuditableBaseEntity, IAggregateRoot
         Guid questionId,
         string fileName,
         string filePath,
-        string mimeType) : base(id)
+        string mimeType,
+        bool isCompleted) : base(id)
     {
         ElectionRoundId = electionRoundId;
         PollingStationId = pollingStationId;
@@ -42,7 +43,7 @@ public class Attachment : AuditableBaseEntity, IAggregateRoot
         FilePath = filePath;
         MimeType = mimeType;
         IsDeleted = false;
-        IsCompleted = false;
+        IsCompleted = isCompleted;
 
         var extension = FileName.Split('.').Last();
         var uploadedFileName = $"{Id}.{extension}";
@@ -65,4 +66,23 @@ public class Attachment : AuditableBaseEntity, IAggregateRoot
     {
     }
 #pragma warning restore CS8618
+    public static Attachment Create(Guid id,
+        Guid electionRoundId,
+        Guid pollingStationId,
+        Guid monitoringObserverId,
+        Guid formId,
+        Guid questionId,
+        string fileName,
+        string filePath,
+        string mimeType) => new(id, electionRoundId, pollingStationId, monitoringObserverId, formId, questionId, fileName, filePath, mimeType, true);
+
+    public static Attachment CreateV2(Guid id,
+        Guid electionRoundId,
+        Guid pollingStationId,
+        Guid monitoringObserverId,
+        Guid formId,
+        Guid questionId,
+        string fileName,
+        string filePath,
+        string mimeType) => new(id, electionRoundId, pollingStationId, monitoringObserverId, formId, questionId, fileName, filePath, mimeType, false);
 }

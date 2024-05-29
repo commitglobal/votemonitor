@@ -31,7 +31,8 @@ internal sealed class GetMonitoringObserverSpecification : SingleResultSpecifica
         Query
             .Include(x => x.MonitoringNgo)
             .ThenInclude(x => x.ElectionRound)
-            .Where(x => x.ObserverId == observerId && x.MonitoringNgo.ElectionRoundId == electionRoundId);
+            .Where(x => x.ObserverId == observerId && x.MonitoringNgo.ElectionRoundId == electionRoundId)
+            .AsNoTracking();
 
         Query.Select(x => new MonitoringObserverView
         {

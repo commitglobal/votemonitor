@@ -56,6 +56,8 @@ function AcceptInvite() {
         title: 'Success',
         description: 'Password was set successfully',
       });
+      
+      navigate({to: '/accept-invite/success'});
     },
 
     onError: ()=>{
