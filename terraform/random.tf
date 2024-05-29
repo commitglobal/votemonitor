@@ -55,6 +55,7 @@ resource "aws_secretsmanager_secret" "seed_admin" {
   name = "${local.namespace}-seed_admin-${random_string.secrets_suffix.result}"
 }
 
+
 resource "aws_secretsmanager_secret_version" "seed_admin" {
   secret_id = aws_secretsmanager_secret.seed_admin.id
   secret_string = jsonencode({
@@ -64,4 +65,8 @@ resource "aws_secretsmanager_secret_version" "seed_admin" {
     phone     = var.seed_admin_phone
     password  = random_password.seed_admin_password.result
   })
+}
+
+resource "aws_secretsmanager_secret" "ses_staging" {
+  name = "ses-staging"
 }
