@@ -7,10 +7,10 @@ import * as DB from "../../database/DAO/PollingStationsNomenclatorDAO";
 import * as Sentry from "@sentry/react-native";
 import { ASYNC_STORAGE_KEYS } from "../../common/constants";
 import { clearAsyncStorage } from "../../common/utils/utils";
+import { Typography } from "../../components/Typography";
 
 const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
   useEffect(() => {
     init();
@@ -20,7 +20,6 @@ const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
     try {
       const token = await AsyncStorage.getItem(ASYNC_STORAGE_KEYS.ACCESS_TOKEN);
       setIsAuthenticated(!!token);
-      setIsLoading(false);
     } catch (err) {
       Sentry.captureException(err);
       await AsyncStorage.removeItem(ASYNC_STORAGE_KEYS.ACCESS_TOKEN);
@@ -29,7 +28,6 @@ const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
 
   const signIn = async (email: string, password: string) => {
     try {
-      setIsLoading(true);
       const {
         data: { token },
       } = await API.post("auth/login", {
@@ -46,9 +44,8 @@ const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
     } catch (err: unknown) {
       Sentry.captureException(err);
       console.log("Error while trying to sign in", err);
+      setIsAuthenticated(false);
       throw new Error("Error while trying to sign in");
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -64,13 +61,17 @@ const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
     }
   };
 
+  if (isAuthenticated === null) {
+    // Actually the SplashScreen will be displayed but we don't pass a wrong value down the chain
+    return <Typography>Loading...</Typography>;
+  }
+
   return (
     <AuthContext.Provider
       value={{
         signIn,
         signOut,
         isAuthenticated,
-        isLoading,
       }}
     >
       {children}
