@@ -1,11 +1,11 @@
 import { XStack, YStack } from "tamagui";
-import Card from "./Card";
+import Card, { CardProps } from "./Card";
 import { Typography } from "./Typography";
 import DeletePollingStationDialog from "./DeletePollingStationDialog";
 import { useTranslation } from "react-i18next";
 import { PollingStationVisitVM } from "../common/models/polling-station.model";
 
-interface PollingStationCardProps {
+interface PollingStationCardProps extends CardProps {
   visit: PollingStationVisitVM;
 }
 
@@ -21,10 +21,10 @@ const PollingStationCard = (props: PollingStationCardProps) => {
             {t("station_card.title", { value: visit.number })}
           </Typography>
 
-          <DeletePollingStationDialog
+          {/* <DeletePollingStationDialog
             pollingStationNumber={visit.number}
             pollingStationId={visit.pollingStationId}
-          />
+          /> */}
         </XStack>
 
         {visit.level1 !== "" && (

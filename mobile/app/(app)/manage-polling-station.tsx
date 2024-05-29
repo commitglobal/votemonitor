@@ -7,15 +7,19 @@ import { router } from "expo-router";
 import { useUserData } from "../../contexts/user/UserContext.provider";
 import { useTranslation } from "react-i18next";
 import PollingStationCard from "../../components/PollingStationCard";
+import { useState } from "react";
+import { PollingStationVisitVM } from "../../common/models/polling-station.model";
 
 const ManagePollingStation = () => {
   const { t } = useTranslation("manage_polling_stations");
   const { visits } = useUserData();
+  const [selectedPS, setSelectedPS] = useState<PollingStationVisitVM | null>(null);
+
   if (visits === undefined || visits.length === 0) {
     return <Typography>No visits</Typography>;
   }
 
-  console.log("visits", visits.length);
+  console.log("🛑visits", visits);
 
   return (
     <Screen
@@ -35,9 +39,14 @@ const ManagePollingStation = () => {
         onLeftPress={() => router.back()}
       />
 
-      <YStack gap="$lg" paddingTop="$lg" paddingHorizontal="$md">
+      {/* //todo: flashlist here */}
+      <YStack gap="$lg" paddingTop="$lg" paddingHorizontal="$md" backgroundColor={"red"}>
         {visits.map((visit) => (
-          <PollingStationCard visit={visit} key={visit.pollingStationId} />
+          <PollingStationCard
+            visit={visit}
+            key={visit.pollingStationId}
+            onPress={() => setSelectedPS(visit)}
+          />
         ))}
       </YStack>
     </Screen>
