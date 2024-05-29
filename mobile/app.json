@@ -12,7 +12,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#FDD20C"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "org.commitglobal.votemonitor",
@@ -21,7 +23,10 @@
         "usesNonExemptEncryption": false
       },
       "infoPlist": {
-        "UIBackgroundModes": ["fetch", "remote-notification"]
+        "UIBackgroundModes": [
+          "fetch",
+          "remote-notification"
+        ]
       }
     },
     "android": {
@@ -40,9 +45,9 @@
       "eas": {
         "projectId": "93e17628-ddcd-4e67-849c-b356a18a6082"
       },
-      "message": "Enable logs",
-      "updateCritical": 31,
-      "updateVersion": 31
+      "message": "PersistGate display progress",
+      "updateCritical": 33,
+      "updateVersion": 33
     },
     "owner": "commit-global",
     "runtimeVersion": {
@@ -73,14 +78,18 @@
           "color": "#FDD20C"
         }
       ],
-      ["@morrowdigital/watermelondb-expo-plugin"],
+      [
+        "@morrowdigital/watermelondb-expo-plugin"
+      ],
       [
         "expo-build-properties",
         {
           "android": {
             "kotlinVersion": "1.6.10",
             "packagingOptions": {
-              "pickFirst": ["**/libc++_shared.so"]
+              "pickFirst": [
+                "**/libc++_shared.so"
+              ]
             }
           }
         }
