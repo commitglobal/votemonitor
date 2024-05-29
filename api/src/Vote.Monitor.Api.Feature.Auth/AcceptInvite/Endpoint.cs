@@ -4,7 +4,7 @@ using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 namespace Vote.Monitor.Api.Feature.Auth.AcceptInvite;
 
 public class Endpoint(IRepository<ApplicationUser> repository,
-    IRepository<MonitoringObserver> monitoringObserverRepository) : Endpoint<Request, Results<Ok, ProblemHttpResult>>
+    IRepository<MonitoringObserver> monitoringObserverRepository) : Endpoint<Request, NoContent>
 {
     public override void Configure()
     {
@@ -12,16 +12,16 @@ public class Endpoint(IRepository<ApplicationUser> repository,
         AllowAnonymous();
     }
 
-    public override async Task<Results<Ok, ProblemHttpResult>> ExecuteAsync(Request request, CancellationToken ct)
+    public override async Task<NoContent> ExecuteAsync(Request request, CancellationToken ct)
     {
         var user = await repository.FirstOrDefaultAsync(new GetByInvitationCode(request.InvitationToken), ct);
 
         if (user is null)
         {
-            return TypedResults.Problem();
+            return TypedResults.NoContent();
         }
         user.AcceptInvite(request.Password);
-        
+
         // just in case they were invited multiple times
         var monitoringObservers = await monitoringObserverRepository.ListAsync(new ListMonitoringObserverSpecification(user.Id), ct);
 
@@ -32,6 +32,6 @@ public class Endpoint(IRepository<ApplicationUser> repository,
 
         await repository.UpdateAsync(user, ct);
         await monitoringObserverRepository.SaveChangesAsync(ct);
-        return TypedResults.Ok();
+        return TypedResults.NoContent();
     }
 }
