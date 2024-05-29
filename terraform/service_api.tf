@@ -57,7 +57,7 @@ module "ecs_api" {
       value = var.env
     },
     {
-      name = "ASPNETCORE_URLS",
+      name  = "ASPNETCORE_URLS",
       value = "http://+:80"
     },
     {
@@ -162,8 +162,8 @@ module "ecs_api" {
     {
       name      = "Core__HangfireConnectionConfig__Password"
       valueFrom = "${aws_secretsmanager_secret.rds.arn}:password::"
-      },
-     {
+    },
+    {
       name      = "Mailing__SES__AWSAccessKey"
       valueFrom = "${aws_secretsmanager_secret.ses_staging.arn}:access-key::"
     },
