@@ -165,11 +165,11 @@ module "ecs_api" {
     },
     {
       name      = "Mailing__SES__AWSAccessKey"
-      valueFrom = "${aws_secretsmanager_secret.ses_staging.arn}:access-key::"
+      valueFrom = "${aws_secretsmanager_secret.ses_hotfix.arn}:access_key::"
     },
     {
       name      = "Mailing__SES__AWSSecretKey"
-      valueFrom = "${aws_secretsmanager_secret.ses_staging.arn}:secret-key::"
+      valueFrom = "${aws_secretsmanager_secret.ses_hotfix.arn}:secret_key::"
     },
   ]
 
@@ -178,7 +178,7 @@ module "ecs_api" {
     aws_secretsmanager_secret.seed_admin.arn,
     aws_secretsmanager_secret.sentry_dsn.arn,
     aws_secretsmanager_secret.rds.arn,
-    aws_secretsmanager_secret.ses_staging.arn
+    aws_secretsmanager_secret.ses_hotfix.arn,
   ]
 }
 
