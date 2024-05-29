@@ -378,7 +378,6 @@ const FormQuestionnaire = () => {
         const chunk = await FileSystem.readAsStringAsync(filePath, { length: MULTIPART_FILE_UPLOAD_SIZE, position: index * MULTIPART_FILE_UPLOAD_SIZE, encoding: FileSystem.EncodingType.Base64 });
         const buffer = Buffer.from(chunk, 'base64');
         const data = await uploadS3Chunk(url, buffer)
-        console.log(data);
         etags = { ...etags, [index]: data.ETag }
       };
 
@@ -387,7 +386,6 @@ const FormQuestionnaire = () => {
         await addAttachmentMultipartComplete({ uploadId, etags, electionRoundId: activeElectionRound?.id, id: attachmentId })
       }
     } catch (err) {
-      console.log(err);
       // If error try to abort the upload
       if (activeElectionRound?.id) {
         await addAttachmentMultipartAbort({ id: attachmentId, uploadId, electionRoundId: activeElectionRound.id })
