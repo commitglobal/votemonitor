@@ -108,15 +108,20 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
                         ) TMP
                 ) AS "NumberOfFormsSubmitted",
                 (
-                    SELECT
-                        1
-                    FROM
-                        "FormSubmissions" FS
-                    WHERE
-                        FS."FollowUpStatus" = 'NeedsFollowUp'
-                        AND FS."MonitoringObserverId" = MO."Id"
-                        AND FS."ElectionRoundId" = @electionRoundId
-                ) AS "FollowUpStatus"
+                   CASE 
+                       WHEN EXISTS (
+                           SELECT 1 
+                           FROM 
+                               "FormSubmissions" FS 
+                           WHERE 
+                               FS."FollowUpStatus" = 'NeedsFollowUp'
+                               AND FS."MonitoringObserverId" = MO."Id"
+                               AND FS."ElectionRoundId" = 'a0a17fa8-7f69-443f-b115-9f2afaf0ef86'
+                           ) 
+                       THEN 'NeedsFollowUp'
+                       ELSE NULL
+                   END 
+               ) AS "FollowUpStatus"
             FROM
                 "MonitoringObservers" MO
                 INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"

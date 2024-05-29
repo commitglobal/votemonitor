@@ -43,7 +43,7 @@ public class Endpoint(
         var monitoringObserver = await monitoringObserverRepository.FirstOrDefaultAsync(monitoringObserverSpecification, ct);
        
         var uploadPath = $"elections/{req.ElectionRoundId}/polling-stations/{req.PollingStationId}/form/{req.FormId}/attachments";
-        var attachment = new AttachmentAggregate(req.Id,
+        var attachment = AttachmentAggregate.CreateV2(req.Id,
             req.ElectionRoundId,
             req.PollingStationId,
             monitoringObserver!.Id,

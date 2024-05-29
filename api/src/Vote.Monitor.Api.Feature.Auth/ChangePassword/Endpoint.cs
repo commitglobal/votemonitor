@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 using Vote.Monitor.Core.Extensions;
 
 namespace Vote.Monitor.Api.Feature.Auth.ChangePassword;
 
-public class Endpoint(UserManager<ApplicationUser> userManager) : Endpoint<Request, Results<Ok, ProblemHttpResult>>
+public class Endpoint(ILogger<Endpoint> logger, UserManager<ApplicationUser> userManager) : Endpoint<Request, Results<Ok, ProblemHttpResult>>
 {
     public override void Configure()
     {
@@ -16,7 +17,9 @@ public class Endpoint(UserManager<ApplicationUser> userManager) : Endpoint<Reque
 
         if (user is null)
         {
-            return TypedResults.Problem();
+            logger.LogWarning("Could not find user by id {userId}", request.UserId);
+            // Don't reveal that the user does not exist or is not confirmed
+            return TypedResults.Ok();
         }
 
         var result = await userManager.ChangePasswordAsync(user, request.Password, request.NewPassword);

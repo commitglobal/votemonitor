@@ -1,6 +1,4 @@
-﻿using Vote.Monitor.Core.Services.FileStorage.Contracts;
-
-namespace Feature.Attachments.InitiateUpload;
+﻿namespace Feature.Attachments.InitiateUpload;
 
 public class Response
 {

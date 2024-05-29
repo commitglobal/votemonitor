@@ -16,8 +16,7 @@ public class Endpoint(IAuthorizationService authorizationService, IRepository<Mo
         Options(x => x.WithTags("monitoring-observers"));
         Summary(s =>
         {
-            s.Summary = "Activates monitoring observer account";
-            s.Description = "Changes status of monitoring observer to Active";
+            s.Summary = "Updates monitoring observer account details";
         });
     }
 

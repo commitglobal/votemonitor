@@ -9,7 +9,8 @@ internal sealed class GetMonitoringNgoSpecification : SingleResultSpecification<
         Query
             .Include(x => x.ElectionRound)
             .Include(x => x.Ngo)
-            .Where(x => x.NgoId == ngoId && x.ElectionRoundId == electionRoundId);
+            .Where(x => x.NgoId == ngoId && x.ElectionRoundId == electionRoundId)
+            .AsNoTracking();
 
         Query.Select(x => new MonitoringNgoView
         {
