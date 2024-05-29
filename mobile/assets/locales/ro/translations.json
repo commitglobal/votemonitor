@@ -65,7 +65,8 @@
         "loading": "Conectează-te..."
       },
       "errors": {
-        "invalid_credentials": "Credențialele nu sunt corecte. Te rugăm să încerci din nou."
+        "invalid_credentials": "Credențialele nu sunt corecte. Te rugăm să încerci din nou.",
+        "offline": "Pentru conectarea la aplicație este necesară o conexiune la internet."
       }
     },
     "actions": {
@@ -101,7 +102,7 @@
   },
   "about_app": {
     "title": "Despre Vote Monitor",
-    "general": "Vote Monitor este un instrument digital dedicat observatorilor ndependenți și organizațiilor internaționale implicate în monitorizarea alegerilor. Vote Monitor este dezvoltată și administrată de Code for Romania/Commit Global",
+    "general": "Vote Monitor este un instrument digital dedicat observatorilor independenți și organizațiilor internaționale implicate în monitorizarea alegerilor. Vote Monitor este dezvoltată și administrată de Code for Romania/Commit Global",
     "purpose": "Aplicația asistă observatorii independenți în monitorizarea secțiilor de votare și în documentarea procesului de votare, în timp real, pentru un anumit tur de alegeri. Toate datele colectate prin intermediul aplicației mobile sunt trimise în timp real către organizații, pentru a identifica posibile semnale de alarmă care ar putea indica fraudă sau alte nereguli. În cele din urmă, obiectivul nostru este de a oferi o imagine clară, simplă și realistă a desfășurării procesului de votare.",
     "app_provides": {
       "paragraph": "Aplicația oferă observatorilor:",
@@ -369,7 +370,11 @@
       "paragraph": "Aici vei găsi la îndemână ghiduri și resurse din partea organizației tale. "
     },
     "list": {
-      "heading": "Ghiduri"
+      "heading": "Ghiduri",
+      "guide": {
+        "backup_title": "Document",
+        "created_on": "Creat la"
+      }
     }
   },
   "inbox": {
@@ -396,7 +401,15 @@
     "support": "Sună la call center",
     "feedback": "Trimite-ne feedback-ul tău",
     "logout": "Deconectează-te",
-    "logged_in": "Conectat ca {{user}}"
+    "logged_in": "Conectat ca {{user}}",
+    "warning_modal": {
+      "logout": {
+        "title": "Atenție: Ai date nesincronizate",
+        "description": "Momentan nu ai conexiune la internet. Dacă te deconectezi acum, toate formularele, atașamentele sau notițele pe care le-ai completat sau încărcat fără conexiune se vor pierde.\n\nPentru a evita pierderea datelor, te rugăm să te reconectezi la internet înainte de deconectarea din aplicație.",
+        "cancel": "Renunță",
+        "action": "Deconectează-te"
+      }
+    }
   },
   "change_password": {
     "title": "Schimbă parola",
@@ -434,7 +447,8 @@
   "generic_error_screen": {
     "paragraph1": "Ups, ceva nu a mers bine!",
     "paragraph2": "Nu am putut recupera după această eroare. Te rugăm să verifici conexiunea la internet și să repornești aplicația!",
-    "retry": "Încearcă din nou"
+    "retry": "Încearcă din nou",
+    "logout": "Deconectează-te"
   },
   "network_banner": {
     "online": "Aplicația este online. Toate răspunsurile au fost trimise către server.",
@@ -444,6 +458,7 @@
   },
   "sync": {
     "sync_data": "Datele se sincronizează...",
-    "warning": "Vă rugăm să NU ÎNCHIDEȚI aplicația sau datele se vor pierde."
+    "warning": "Vă rugăm să NU ÎNCHIDEȚI aplicația sau datele se vor pierde.",
+    "pending_items": "Au mai ramas: "
   }
 }

@@ -28,7 +28,7 @@ const OnboardingViewPager = ({
     <AnimatedPagerView
       ref={pagerViewRef}
       initialPage={currentPage}
-      style={{ flex: 1, backgroundColor: "#5F288D" }}
+      style={{ height: "100%", backgroundColor: "#5F288D" }}
       orientation="horizontal"
       onPageScroll={Animated.event<PagerViewOnPageScrollEventData>(
         [

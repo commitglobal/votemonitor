@@ -2,10 +2,8 @@ import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client
 import { MutationCache, QueryClient, defaultShouldDehydrateQuery } from "@tanstack/react-query";
 import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useAuth } from "../../hooks/useAuth";
 import { notesKeys, pollingStationsKeys } from "../../services/queries.service";
 import * as API from "../../services/definitions.api";
-import { performanceLog } from "../../helpers/misc";
 import { PersistGate } from "../../components/PersistGate";
 import { AddAttachmentAPIPayload, addAttachment } from "../../services/api/add-attachment.api";
 import { deleteAttachment } from "../../services/api/delete-attachment.api";
@@ -22,6 +20,8 @@ import {
 import { AttachmentApiResponse } from "../../services/api/get-attachments.api";
 import { AttachmentsKeys } from "../../services/queries/attachments.query";
 import { ASYNC_STORAGE_KEYS } from "../../common/constants";
+import * as Sentry from "@sentry/react-native";
+import SuperJSON from "superjson";
 
 const queryClient = new QueryClient({
   mutationCache: new MutationCache({
@@ -29,10 +29,13 @@ const queryClient = new QueryClient({
     onSuccess: (data: unknown) => {
       console.log("MutationCache ", data);
     },
-    onError: (error: Error) => {
-      // Will always fire, is not tied to a mutation
-      // TODO: Send the error to Sentry
+    onError: (error: Error, _vars, _context, mutation) => {
       console.log("MutationCache error ", error);
+      console.log(
+        `🔉🔉🔉🔉 MUTATION ${mutation.options.scope} ERRORED`,
+        SuperJSON.stringify(mutation),
+      );
+      Sentry.captureException(error);
     },
   }),
   defaultOptions: {
@@ -61,11 +64,6 @@ const queryClient = new QueryClient({
 
       */
       gcTime: 5 * 24 * 60 * 60 * 1000, // 5 days
-      onError: (err: Error) => {
-        console.log(err);
-        console.log("QueryClient - mutations: ", JSON.stringify(err));
-      },
-      // throwOnError: true,
     },
     queries: {
       /*
@@ -93,15 +91,6 @@ const persister = createAsyncStoragePersister({
 });
 
 const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
-  // https://tanstack.com/query/latest/docs/framework/react/plugins/persistQueryClient#useisrestoring
-  // const isRestoring = useIsRestoring();
-  // console.log("isRestoring persistQueryClient", isRestoring);
-  const { isAuthenticated } = useAuth();
-
-  // queryClient.getMutationCache().subscribe((event) => {
-  //   if (event.type === "updated") console.log("👀", SuperJSON.stringify(event));
-  // });
-
   queryClient.setMutationDefaults(pollingStationsKeys.mutatePollingStationGeneralData(), {
     mutationFn: (payload: API.PollingStationInformationAPIPayload) => {
       return API.upsertPollingStationGeneralInformation(payload);
@@ -116,7 +105,7 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
 
   queryClient.setMutationDefaults(AttachmentsKeys.addAttachmentMutation(), {
     mutationFn: async (payload: AddAttachmentAPIPayload) => {
-      return performanceLog(() => addAttachment(payload));
+      return addAttachment(payload);
     },
   });
 
@@ -155,13 +144,9 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
 
   queryClient.setMutationDefaults(QuickReportKeys.addAttachment(), {
     mutationFn: async (payload: AddAttachmentQuickReportAPIPayload) => {
-      return performanceLog(() => addAttachmentQuickReport(payload));
+      return addAttachmentQuickReport(payload);
     },
   });
-
-  if (!isAuthenticated) {
-    return children;
-  }
 
   const runPendingMutations = async () => {
     console.log(
@@ -216,12 +201,6 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
       queryClient.invalidateQueries(); // Avoid using await, not to wait for queries to refetch (maybe not the case here as there are no active queries)
       console.log("✅ Resume Paused Mutation & Invalidate Quries");
     }
-
-    // await new Promise((resolve, _reject) => {
-    //   setTimeout(() => {
-    //     resolve(undefined);
-    //   }, 10000);
-    // });
   };
 
   return (

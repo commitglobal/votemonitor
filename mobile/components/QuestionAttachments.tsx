@@ -8,6 +8,7 @@ import { useTranslation } from "react-i18next";
 import { Keyboard } from "react-native";
 import { useState } from "react";
 import WarningDialog from "./WarningDialog";
+import { AttachmentApiResponse } from "../services/api/get-attachments.api";
 
 interface QuestionAttachmentsProps {
   electionRoundId: string;
@@ -24,7 +25,7 @@ const QuestionAttachments: React.FC<QuestionAttachmentsProps> = ({
 }) => {
   const { t } = useTranslation("polling_station_form_wizard");
   const { data: attachments } = useAttachments(electionRoundId, pollingStationId, formId);
-  const [deletingAttachment, setDeletingAttachment] = useState(false);
+  const [selectedAttachment, setSelectedAttachment] = useState<AttachmentApiResponse | null>();
 
   const { mutate: deleteAttachment } = useDeleteAttachment(
     electionRoundId,
@@ -56,28 +57,28 @@ const QuestionAttachments: React.FC<QuestionAttachmentsProps> = ({
                   pressStyle={{ opacity: 0.5 }}
                   onPress={() => {
                     Keyboard.dismiss();
-                    setDeletingAttachment(true);
+                    setSelectedAttachment(attachment);
                   }}
                 >
                   <Icon icon="xCircle" size={24} color="$gray5" />
                 </YStack>
-                {deletingAttachment && (
-                  <WarningDialog
-                    title={t("warning_modal.attachment.title")}
-                    description={t("warning_modal.attachment.description")}
-                    actionBtnText={t("warning_modal.attachment.actions.clear")}
-                    cancelBtnText={t("warning_modal.attachment.actions.cancel")}
-                    action={() => {
-                      deleteAttachment(attachment);
-                      setDeletingAttachment(false);
-                    }}
-                    onCancel={() => setDeletingAttachment(false)}
-                  />
-                )}
               </Card>
             );
           })}
         </YStack>
+        {selectedAttachment && (
+          <WarningDialog
+            title={t("warning_modal.attachment.title")}
+            description={t("warning_modal.attachment.description")}
+            actionBtnText={t("warning_modal.attachment.actions.clear")}
+            cancelBtnText={t("warning_modal.attachment.actions.cancel")}
+            action={() => {
+              deleteAttachment(selectedAttachment);
+              setSelectedAttachment(null);
+            }}
+            onCancel={() => setSelectedAttachment(null)}
+          />
+        )}
       </YStack>
     )
   );

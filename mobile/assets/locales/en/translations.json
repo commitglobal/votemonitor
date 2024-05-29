@@ -65,7 +65,8 @@
         "loading": "Log in..."
       },
       "errors": {
-        "invalid_credentials": "There was an error with your credentials. Please try again."
+        "invalid_credentials": "There was an error with your credentials. Please try again.",
+        "offline": "You need an internet connection in order to log in."
       }
     },
     "actions": {
@@ -369,7 +370,11 @@
       "paragraph": "Guides and resources from your organization at your hands."
     },
     "list": {
-      "heading": "Guides"
+      "heading": "Guides",
+      "guide": {
+        "backup_title": "Document",
+        "created_on": "Created on"
+      }
     }
   },
   "inbox": {
@@ -396,7 +401,15 @@
     "support": "Call the NGO Hotline",
     "feedback": "Offer app feedback",
     "logout": "Logout",
-    "logged_in": "Logged in as {{user}}"
+    "logged_in": "Logged in as {{user}}",
+    "warning_modal": {
+      "logout": {
+        "title": "Attention: You have unsynced data",
+        "description": "You are currently offline. If you log out now, any forms, attachments, or notes you have completed or uploaded during the offline mode will be lost.\n\nTo avoid losing your data, please reconnect to the internet before logging out.",
+        "cancel": "Cancel",
+        "action": "Log out"
+      }
+    }
   },
   "change_password": {
     "title": "Change password",
@@ -434,7 +447,8 @@
   "generic_error_screen": {
     "paragraph1": "Oops, something went wrong!",
     "paragraph2": "We could not recover after this error. Please check your internet connection and restart the application!",
-    "retry": "Retry"
+    "retry": "Retry",
+    "logout": "Logout"
   },
   "network_banner": {
     "online": "App online. All answers sent to server.",
@@ -444,6 +458,7 @@
   },
   "sync": {
     "sync_data": "Synchronizing data...",
-    "warning": "Please DO NOT CLOSE the app or the data will be lost."
+    "warning": "Please DO NOT CLOSE the app or the data will be lost.",
+    "pending_items": "Remaining items: "
   }
 }

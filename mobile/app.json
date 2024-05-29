@@ -2,7 +2,7 @@
   "expo": {
     "name": "VoteMonitor",
     "slug": "vote-monitor",
-    "version": "0.1.8",
+    "version": "0.1.9",
     "scheme": "mobile",
     "orientation": "portrait",
     "icon": "./assets/icons/icon.png",
@@ -12,25 +12,20 @@
       "resizeMode": "contain",
       "backgroundColor": "#FDD20C"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "org.commitglobal.votemonitor",
-      "buildNumber": "51",
+      "buildNumber": "52",
       "config": {
         "usesNonExemptEncryption": false
       },
       "infoPlist": {
-        "UIBackgroundModes": [
-          "fetch",
-          "remote-notification"
-        ]
+        "UIBackgroundModes": ["fetch", "remote-notification"]
       }
     },
     "android": {
-      "versionCode": 51,
+      "versionCode": 52,
       "adaptiveIcon": {
         "foregroundImage": "./assets/icons/adaptive-icon.png",
         "backgroundColor": "#FDD20C"
@@ -45,9 +40,9 @@
       "eas": {
         "projectId": "93e17628-ddcd-4e67-849c-b356a18a6082"
       },
-      "message": "Fix infinite reload due to 401 error",
-      "updateCritical": 22,
-      "updateVersion": 22
+      "message": "Enable logs",
+      "updateCritical": 31,
+      "updateVersion": 31
     },
     "owner": "commit-global",
     "runtimeVersion": {
@@ -78,18 +73,14 @@
           "color": "#FDD20C"
         }
       ],
-      [
-        "@morrowdigital/watermelondb-expo-plugin"
-      ],
+      ["@morrowdigital/watermelondb-expo-plugin"],
       [
         "expo-build-properties",
         {
           "android": {
             "kotlinVersion": "1.6.10",
             "packagingOptions": {
-              "pickFirst": [
-                "**/libc++_shared.so"
-              ]
+              "pickFirst": ["**/libc++_shared.so"]
             }
           }
         }
@@ -109,7 +100,8 @@
           "organization": "code4romania",
           "project": "votemonitor-mobile"
         }
-      ]
+      ],
+      "expo-av"
     ]
   }
 }

@@ -18,6 +18,8 @@ import Button from "./Button";
 import { useFormSubmissions } from "../services/queries/form-submissions.query";
 import { useElectionRoundAllForms } from "../services/queries/forms.query";
 import FormListErrorScreen from "./FormListError";
+import { useQueryClient } from "@tanstack/react-query";
+import { electionRoundsKeys, pollingStationsKeys } from "../services/queries.service";
 
 export type FormListItem = {
   id: string;
@@ -39,6 +41,7 @@ const FormList = ({ ListHeaderComponent }: { ListHeaderComponent: ListHeaderComp
   const { activeElectionRound, selectedPollingStation } = useUserData();
   const [selectedForm, setSelectedForm] = useState<FormListItem | null>(null);
   const { t } = useTranslation(["observation", "common"]);
+  const queryClient = useQueryClient();
 
   const {
     data: allForms,
@@ -90,12 +93,22 @@ const FormList = ({ ListHeaderComponent }: { ListHeaderComponent: ListHeaderComp
     return <Typography>{t("loading", { ns: "common" })}</Typography>;
   }
 
-  if (allForms?.forms.length === 0) {
-    return <Typography>{"forms.list.empty"}</Typography>;
-  }
-
   if (formsError || answersError) {
-    return <FormListErrorScreen />;
+    return (
+      <FormListErrorScreen
+        onPress={() => {
+          queryClient.invalidateQueries({
+            queryKey: electionRoundsKeys.forms(activeElectionRound?.id),
+          });
+          queryClient.invalidateQueries({
+            queryKey: pollingStationsKeys.formSubmissions(
+              activeElectionRound?.id,
+              selectedPollingStation?.pollingStationId,
+            ),
+          });
+        }}
+      />
+    );
   }
 
   return (
@@ -105,6 +118,7 @@ const FormList = ({ ListHeaderComponent }: { ListHeaderComponent: ListHeaderComp
         <ListView<FormListItem>
           data={formList}
           ListHeaderComponent={ListHeaderComponent}
+          ListEmptyComponent={<Typography>{t("forms.list.empty")}</Typography>}
           showsVerticalScrollIndicator={false}
           bounces={false}
           renderItem={({ item, index }) => {

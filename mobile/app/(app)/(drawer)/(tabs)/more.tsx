@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { XStack, YStack } from "tamagui";
 import Card from "../../../../components/Card";
 import { Screen } from "../../../../components/Screen";
@@ -18,6 +18,8 @@ import i18n from "../../../../common/config/i18n";
 import { useNotification } from "../../../../hooks/useNotifications";
 import { useUserData } from "../../../../contexts/user/UserContext.provider";
 import { ASYNC_STORAGE_KEYS } from "../../../../common/constants";
+import { useNetInfoContext } from "../../../../contexts/net-info-banner/NetInfoContext";
+import WarningDialog from "../../../../components/WarningDialog";
 
 interface MenuItemProps {
   label: string;
@@ -47,11 +49,15 @@ const More = () => {
   const navigation = useNavigation();
   const queryClient = useQueryClient();
   const [isLanguageSelectSheetOpen, setIsLanguageSelectSheetOpen] = React.useState(false);
+  const [logoutLoading, setLogoutLoading] = useState(false);
   const { activeElectionRound } = useUserData();
+  const { isOnline } = useNetInfoContext();
+
+  const [showWarningModal, setShowWarningModal] = useState(false);
 
   const { unsubscribe: unsubscribePushNotifications } = useNotification();
 
-  const { t } = useTranslation(["more", "languages"]);
+  const { t } = useTranslation(["more", "languages", "common"]);
   const { signOut } = useAuth();
 
   const appVersion = Constants.expoConfig?.version;
@@ -64,8 +70,11 @@ const More = () => {
   });
 
   const logout = async () => {
+    setLogoutLoading(true);
     await unsubscribePushNotifications();
     signOut(queryClient);
+    setLogoutLoading(false);
+    setShowWarningModal(false);
   };
 
   return (
@@ -130,7 +139,9 @@ const More = () => {
         <MenuItem
           label={t("logout")}
           icon="logoutNoBackground"
-          onClick={logout}
+          onClick={() => {
+            !isOnline ? setShowWarningModal(true) : logout();
+          }}
           helper={currentUser ? t("logged_in", { user: currentUser }) : ""}
         ></MenuItem>
       </YStack>
@@ -140,6 +151,19 @@ const More = () => {
           Otherwise, no select element is rendered.
          */}
       <SelectAppLanguage open={isLanguageSelectSheetOpen} setOpen={setIsLanguageSelectSheetOpen} />
+      {showWarningModal && (
+        <WarningDialog
+          title={t("warning_modal.logout.title")}
+          description={t("warning_modal.logout.description")}
+          actionBtnText={
+            logoutLoading ? t("loading", { ns: "common" }) : t("warning_modal.logout.action")
+          }
+          cancelBtnText={t("warning_modal.logout.cancel")}
+          action={logout}
+          onCancel={() => setShowWarningModal(false)}
+          actionBtnStyle={{ backgroundColor: "hsl(272, 56%, 45%)" }}
+        />
+      )}
     </Screen>
   );
 };
