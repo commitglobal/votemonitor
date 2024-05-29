@@ -1,12 +1,13 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import { Typography } from "./Typography";
 import { Dialog } from "./Dialog";
 import { XStack, YStack } from "tamagui";
 import Button from "./Button";
+import { desc } from "@nozbe/watermelondb/QueryDescription";
 
 type WarningDialogProps = {
   title: string;
-  description: string;
+  description: string | ReactNode;
   actionBtnText: string;
   cancelBtnText: string;
   onCancel: () => void;
@@ -29,9 +30,13 @@ const WarningDialog = ({
       header={<Typography preset="heading">{title}</Typography>}
       content={
         <YStack gap="$lg">
-          <Typography preset="body1" color="$gray6">
-            {description}
-          </Typography>
+          {typeof description === "string" ? (
+            <Typography preset="body1" color="$gray6">
+              {description}
+            </Typography>
+          ) : (
+            description
+          )}
         </YStack>
       }
       footer={

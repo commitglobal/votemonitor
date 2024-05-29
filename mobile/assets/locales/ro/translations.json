@@ -18,7 +18,8 @@
     "ro": "Română",
     "en": "Engleză",
     "pl": "Poloneză",
-    "bg": "Bulgară"
+    "bg": "Bulgară",
+    "sr": "Sârbă"
   },
   "onboarding": {
     "language": {
@@ -232,7 +233,10 @@
     },
     "clear_answers_modal": {
       "title": "Golește formularul {{value}}",
-      "description": "Această acțiune va șterge toate răspunsurile introduse până acum pentru acest formular (inclusiv notițe și fișiere media). Toate întrebările își vor schimba statusul în 'Fără răspuns'. Pentru a evita orice pierdere neintenționată de date, te rugăm să verifici formularul înainte de a realiza această acțiune.",
+      "description": {
+        "p1": "Această acțiune va șterge toate răspunsurile introduse până acum pentru acest formular (inclusiv notițe și fișiere media). Toate întrebările își vor schimba statusul în 'Fără răspuns'.",
+        "p2": "Pentru a evita orice pierdere neintenționată de date, te rugăm să verifici formularul înainte de a realiza această acțiune."
+      },
       "actions": {
         "clear": "Golește formularul",
         "cancel": "Renunță"
@@ -410,6 +414,16 @@
         "cancel": "Renunță",
         "action": "Deconectează-te"
       }
+    },
+    "feedback_sheet": {
+      "heading": "Trimite-ne feedback-ul tău",
+      "p1": "Te rugăm să ne spui despre orice problemă pe care ai întâlnit-o în funcționarea aplicației sau orice sugestie pe care dorești să o împărtășești pentru a îmbunătăți Vote Monitor pe viitor. Apreciem orice feedback!",
+      "placeholder": "Scrie feedback-ul tău aici...",
+      "cancel": "Renunță",
+      "action": "Trimite",
+      "input": {
+        "max": "Câmpul nu poate depăși {{value}} caractere"
+      }
     }
   },
   "change_password": {
@@ -458,8 +472,8 @@
     "offline_warning": "Se pare că nu ai conexiune la internet în acest moment. Nu îți face griji, răspunsurile tale sunt stocate în siguranță local și se vor sincroniza cu serverele noastre odată ce revine conexiunea la internet. Poți continua să completezi formulare sau să trimiți alte raportări."
   },
   "sync": {
-    "sync_data": "Datele se sincronizează...",
-    "warning": "Vă rugăm să NU ÎNCHIDEȚI aplicația sau datele se vor pierde.",
-    "pending_items": "Au mai ramas: "
+    "sync_data": "Se sincronizează datele offline...",
+    "warning": "Vă rugăm să NU ÎNCHIDEȚI aplicația sau conexiunea la internet sau datele se vor pierde.",
+    "files": "Vă adaugăm fișierele, s-ar putea să dureze ceva..."
   }
 }

@@ -21,7 +21,7 @@ const SelectAppLanguage = ({ open, setOpen }: SelectLanguageProps) => {
   const onChangeLanguage = (language: Language) => {
     Keyboard.dismiss();
     changeLanguage(language);
-    SecureStore.setItem(I18N_LANGUAGE, language)
+    SecureStore.setItem(I18N_LANGUAGE, language);
   };
 
   return (
@@ -34,7 +34,7 @@ const SelectAppLanguage = ({ open, setOpen }: SelectLanguageProps) => {
       <Adapt platform="touch">
         <Sheet
           modal
-          snapPoints={[25]}
+          snapPointsMode="fit"
           open={open}
           moveOnKeyboardChange={open || Keyboard.isVisible()}
         >
