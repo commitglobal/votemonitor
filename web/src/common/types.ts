@@ -31,6 +31,7 @@ export type PageResponse<T> = {
   pageSize: number;
   totalCount: number;
   items: T[];
+  isEmpty?: boolean;
 };
 
 export type DataTableParameters<TQueryParams = object> = PageParameters &

@@ -1,39 +1,31 @@
-import { ChevronDownIcon, Cog8ToothIcon, FunnelIcon } from '@heroicons/react/24/outline';
+import { ChevronDownIcon, FunnelIcon } from '@heroicons/react/24/outline';
 import { getRouteApi } from '@tanstack/react-router';
 import { useDebounce } from '@uidotdev/usehooks';
-import { type ChangeEvent, useState, type ReactElement, useCallback } from 'react';
-import { CsvFileIcon } from '@/components/icons/CsvFileIcon';
+import { type ChangeEvent, useState, type ReactElement } from 'react';
 import Layout from '@/components/layout/Layout';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
-  DropdownMenuLabel,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useFormSubmissionsByForm } from '../../hooks/form-submissions-queries';
-import { formSubmissionsByFormColumnDefs } from '../../utils/column-defs';
-import {
-  columnVisibilityOptions,
-  formSubmissionsDefaultColumns,
-  type FilterBy,
-} from '../../utils/column-visibility-options';
-import { FormsTableByEntry } from '../FormsTableByEntry/FormsTableByEntry';
+import { ExportedDataType } from '../../models/data-export';
+import type { FilterBy } from '../../utils/column-visibility-options';
+import { ColumnsVisibilitySelector } from '../ColumnsVisibilitySelector/ColumnsVisibilitySelector';
+import { ExportDataButton } from '../ExportDataButton/ExportDataButton';
 import { FormsFiltersByEntry } from '../FormsFiltersByEntry/FormsFiltersByEntry';
 import { FormsFiltersByObserver } from '../FormsFiltersByObserver/FormsFiltersByObserver';
+import { FormsTableByEntry } from '../FormsTableByEntry/FormsTableByEntry';
+import { FormsTableByForm } from '../FormsTableByForm/FormsTableByForm';
 import { FormsTableByObserver } from '../FormsTableByObserver/FormsTableByObserver';
 import { QuickReports } from '../QuickReports/QuickReports';
-import { ExportDataButton } from './ExportDataButton';
-import { ExportedDataType } from '../../models/data-export';
+import { useSetPrevSearch } from '@/common/prev-search-store';
 
 const routeApi = getRouteApi('/responses/');
 
@@ -44,13 +36,11 @@ const viewBy: Record<FilterBy, string> = {
 };
 
 export default function ResponsesDashboard(): ReactElement {
-  const [byFilter, setByFilter] = useState<FilterBy>('byEntry');
-
   const navigate = routeApi.useNavigate();
   const search = routeApi.useSearch();
-  const [isFiltering, setIsFiltering] = useState(() => Object.keys(search).some((key) => key !== 'tab'));
-
-  const [columnsVisibility, setColumnsVisibility] = useState(formSubmissionsDefaultColumns.byEntry);
+  const [isFiltering, setIsFiltering] = useState(() =>
+    Object.keys(search).some((key) => key !== 'tab' && key !== 'viewBy')
+  );
 
   const [searchText, setSearchText] = useState<string>('');
   const debouncedSearchText = useDebounce(searchText, 300);
@@ -60,21 +50,20 @@ export default function ResponsesDashboard(): ReactElement {
     if (!value || value.length >= 2) setSearchText(ev.currentTarget.value);
   };
 
-  const navigateToAggregatedForm = useCallback(
-    (formId: string) => {
-      void navigate({ to: '/responses/$formId/aggregated', params: { formId } });
-    },
-    [navigate]
-  );
+  const { viewBy: byFilter, tab } = search;
+
+  const setPrevSearch = useSetPrevSearch();
 
   return (
     <Layout title='Responses' subtitle='View all form answers and other issues reported by your observers.  '>
       <Tabs
-        defaultValue={search.tab ?? 'form-answers'}
+        defaultValue={tab ?? 'form-answers'}
         onValueChange={(tab) => {
           void navigate({
             search(prev) {
-              return { ...prev, tab };
+              const newSearch = { ...prev, tab };
+              setPrevSearch(newSearch);
+              return newSearch;
             },
           });
         }}>
@@ -95,7 +84,7 @@ export default function ResponsesDashboard(): ReactElement {
                   <DropdownMenu>
                     <DropdownMenuTrigger>
                       <Badge className='text-purple-900 hover:bg-purple-50 hover:text-purple-500 h-8' variant='outline'>
-                        {viewBy[byFilter]}
+                        {viewBy[byFilter ?? 'byEntry']}
 
                         <ChevronDownIcon className='w-4 ml-2' />
                       </Badge>
@@ -103,9 +92,8 @@ export default function ResponsesDashboard(): ReactElement {
                     <DropdownMenuContent>
                       <DropdownMenuRadioGroup
                         onValueChange={(value) => {
-                          setByFilter(value as FilterBy);
-                          setColumnsVisibility(formSubmissionsDefaultColumns[value as FilterBy]);
-                          void navigate({});
+                          setPrevSearch({ viewBy: value });
+                          void navigate({ search: { viewBy: value } });
                           setIsFiltering(false);
                         }}
                         value={byFilter}>
@@ -136,26 +124,7 @@ export default function ResponsesDashboard(): ReactElement {
                   </>
                 )}
 
-                <DropdownMenu>
-                  <DropdownMenuTrigger>
-                    <Cog8ToothIcon className='w-[20px] text-purple-900 cursor-pointer' />
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent>
-                    <DropdownMenuLabel>Table columns</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    {columnVisibilityOptions[byFilter].map((option) => (
-                      <DropdownMenuCheckboxItem
-                        key={option.id}
-                        checked={columnsVisibility[option.id]}
-                        disabled={!option.enableHiding}
-                        onCheckedChange={(checked) => {
-                          setColumnsVisibility((prev) => ({ ...prev, [option.id]: checked }));
-                        }}>
-                        {option.label}
-                      </DropdownMenuCheckboxItem>
-                    ))}
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                <ColumnsVisibilitySelector byFilter={byFilter ?? 'byEntry'} />
               </div>
 
               <Separator />
@@ -169,24 +138,11 @@ export default function ResponsesDashboard(): ReactElement {
               )}
             </CardHeader>
 
-            {byFilter === 'byEntry' && (
-              <FormsTableByEntry columnsVisibility={columnsVisibility} searchText={debouncedSearchText} />
-            )}
+            {byFilter === 'byEntry' && <FormsTableByEntry searchText={debouncedSearchText} />}
 
-            {byFilter === 'byObserver' && (
-              <FormsTableByObserver columnsVisibility={columnsVisibility} searchText={debouncedSearchText} />
-            )}
+            {byFilter === 'byObserver' && <FormsTableByObserver searchText={debouncedSearchText} />}
 
-            <CardContent>
-              {byFilter === 'byForm' && (
-                <QueryParamsDataTable
-                  columnVisibility={columnsVisibility}
-                  columns={formSubmissionsByFormColumnDefs}
-                  useQuery={useFormSubmissionsByForm}
-                  onRowClick={navigateToAggregatedForm}
-                />
-              )}
-            </CardContent>
+            {byFilter === 'byForm' && <FormsTableByForm />}
           </Card>
         </TabsContent>
 

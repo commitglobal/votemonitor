@@ -47,7 +47,7 @@ export const formSubmissionsDefaultColumns: Record<FilterBy, VisibilityState> = 
   byForm: formSubmissionsByFormDefaultColumns,
 };
 
-type ColumnOption = { id: string; label: string; enableHiding: boolean };
+export type ColumnOption = { id: string; label: string; enableHiding: boolean };
 
 const byEntryColumnVisibilityOptions: ColumnOption[] = [
   { id: 'timeSubmitted', label: 'Time submitted', enableHiding: true },
