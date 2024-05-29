@@ -78,7 +78,7 @@ module "ecs_hangfire" {
     },
     {
       name  = "Mailing__SES__SenderEmail"
-      value = "votemonitor@heroesof.tech"
+      value = "no-reply@${var.domain_name}"
     },
     {
       name  = "Mailing__SES__AWSRegion"
