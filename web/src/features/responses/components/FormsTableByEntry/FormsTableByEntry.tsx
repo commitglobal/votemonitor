@@ -9,16 +9,18 @@ import { useFormSubmissionsByEntry } from '../../hooks/form-submissions-queries'
 import type { FormSubmissionsSearchParams } from '../../models/search-params';
 import { formSubmissionsByEntryColumnDefs } from '../../utils/column-defs';
 import { Route } from '@/routes/responses';
+import { useByEntryColumns } from '../../store/column-visibility';
 
 type FormsTableByEntryProps = {
-  columnsVisibility: VisibilityState;
   searchText: string;
 };
 
-export function FormsTableByEntry({ columnsVisibility, searchText }: FormsTableByEntryProps): FunctionComponent {
+export function FormsTableByEntry({ searchText }: FormsTableByEntryProps): FunctionComponent {
   const navigate = useNavigate();
   const search = Route.useSearch();
   const debouncedSearch = useDebounce(search, 300);
+
+  const columnsVisibility = useByEntryColumns();
 
   const queryParams = useMemo(() => {
     const params = [

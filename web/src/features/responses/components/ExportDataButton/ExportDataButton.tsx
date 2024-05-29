@@ -1,22 +1,20 @@
+import { useCallback, useEffect, useState } from 'react';
 import { authApi } from '@/common/auth-api';
 import type { FunctionComponent } from '@/common/types';
 import { CsvFileIcon } from '@/components/icons/CsvFileIcon';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
-import { useCallback, useEffect, useState } from 'react';
-import {
-  useFormSubmissionsExportedDataDetails,
-  useStartDataExport,
-} from '../../hooks/form-export';
-import { ExportStatus, ExportedDataType } from '../../models/data-export';
-export interface ExportDataButtonProps {
-  exportedDataType: ExportedDataType
+import { useFormSubmissionsExportedDataDetails, useStartDataExport } from '../../hooks/form-export';
+import { ExportStatus, type ExportedDataType } from '../../models/data-export';
+
+interface ExportDataButtonProps {
+  exportedDataType: ExportedDataType;
 }
+
 export function ExportDataButton({ exportedDataType }: ExportDataButtonProps): FunctionComponent {
   const [exportedDataId, setExportedDataId] = useState('');
 
   const { mutate: createExportData, isPending: isCreatingExportData } = useStartDataExport(exportedDataType, {
-
     onSuccess: (data) => {
       setExportedDataId(data.exportedDataId);
     },
@@ -24,6 +22,7 @@ export function ExportDataButton({ exportedDataType }: ExportDataButtonProps): F
       toast({ title: 'Export failed, please try again later', variant: 'default' });
     },
   });
+
   const downloadHandler = useCallback(() => {
     createExportData();
   }, [createExportData]);
@@ -37,16 +36,17 @@ export function ExportDataButton({ exportedDataType }: ExportDataButtonProps): F
 
   const isLoading = isCreatingExportData || isFetchingExportedDataDetails || exportStatus === ExportStatus.Started;
 
-  const downloadExportedData = async () => {
+  const downloadExportedData = useCallback(async (): Promise<void> => {
     const electionRoundId = localStorage.getItem('electionRoundId');
 
-    const response = await authApi.get(
-      `/election-rounds/${electionRoundId}/exported-data/${exportedDataId}`,
-      { responseType: "blob" }
-    );
+    const response = await authApi.get<Blob>(`/election-rounds/${electionRoundId}/exported-data/${exportedDataId}`, {
+      responseType: 'blob',
+    });
 
     const exportedData = response.data;
-    const blob = new Blob([exportedData], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;' });
+    const blob = new Blob([exportedData], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;',
+    });
 
     const url = window.URL.createObjectURL(blob);
 
@@ -55,11 +55,11 @@ export function ExportDataButton({ exportedDataType }: ExportDataButtonProps): F
     a.href = url;
     a.download = 'exported-data.xlsx';
 
-    document.body.appendChild(a);
+    document.body.append(a);
     a.click();
 
     window.URL.revokeObjectURL(url);
-  };
+  }, [exportedDataId]);
 
   useEffect(() => {
     if (exportStatus === ExportStatus.Failed) {
@@ -67,10 +67,9 @@ export function ExportDataButton({ exportedDataType }: ExportDataButtonProps): F
     }
 
     if (exportStatus === ExportStatus.Completed) {
-      downloadExportedData();
+      void downloadExportedData();
     }
-
-  }, [exportStatus]);
+  }, [downloadExportedData, exportStatus]);
 
   return (
     <Button
