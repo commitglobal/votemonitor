@@ -370,7 +370,11 @@
       "paragraph": "Aici vei găsi la îndemână ghiduri și resurse din partea organizației tale. "
     },
     "list": {
-      "heading": "Ghiduri"
+      "heading": "Ghiduri",
+      "guide": {
+        "backup_title": "Document",
+        "created_on": "Creat la"
+      }
     }
   },
   "inbox": {

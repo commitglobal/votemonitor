@@ -370,7 +370,11 @@
       "paragraph": "Guides and resources from your organization at your hands."
     },
     "list": {
-      "heading": "Guides"
+      "heading": "Guides",
+      "guide": {
+        "backup_title": "Document",
+        "created_on": "Created on"
+      }
     }
   },
   "inbox": {
