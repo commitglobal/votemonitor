@@ -69,6 +69,10 @@ module "ecs_hangfire" {
       value = module.s3_private.bucket
     },
     {
+      name  = "FileStorage__S3__AWSRegion"
+      value = var.region
+    },
+    {
       name  = "Mailing__MailSenderType"
       value = "SES"
     },
