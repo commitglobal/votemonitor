@@ -3,12 +3,10 @@ import { Label } from '@/components/ui/label';
 import { useTranslation } from 'react-i18next';
 
 import { Input } from '../../ui/input';
-import DisplayLogicEditor from './DisplayLogicEditor';
 import QuestionHeader from './QuestionHeader';
 import { useParams } from '@tanstack/react-router';
 
 export interface EditNumberQuestionProps {
-  formQuestions: BaseQuestion[];
   languageCode: string;
   availableLanguages: string[];
   questionIdx: number;
@@ -18,7 +16,6 @@ export interface EditNumberQuestionProps {
 }
 
 function EditNumberQuestion({
-  formQuestions,
   availableLanguages,
   languageCode,
   questionIdx,
@@ -78,14 +75,6 @@ function EditNumberQuestion({
           </div>
         </div>
       </div>
-
-      <DisplayLogicEditor
-        formQuestions={formQuestions}
-        questionIndex={questionIdx}
-        question={question}
-        languageCode={languageCode}
-        updateQuestion={updateQuestion}
-      />
     </div>
   );
 }

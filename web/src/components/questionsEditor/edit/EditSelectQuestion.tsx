@@ -16,12 +16,10 @@ import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { v4 as uuidv4 } from 'uuid';
 
-import DisplayLogicEditor from './DisplayLogicEditor';
 import QuestionHeader from './QuestionHeader';
 import { useParams } from '@tanstack/react-router';
 
 export interface EditMultiSelectQuestionProps {
-  formQuestions: BaseQuestion[];
   availableLanguages: string[];
   languageCode: string;
   questionIdx: number;
@@ -31,7 +29,6 @@ export interface EditMultiSelectQuestionProps {
 }
 
 function EditSelectQuestion({
-  formQuestions,
   availableLanguages,
   languageCode,
   questionIdx,
@@ -289,14 +286,6 @@ function EditSelectQuestion({
           </div>
         </div>
       </div>
-
-      <DisplayLogicEditor
-        formQuestions={formQuestions}
-        questionIndex={questionIdx}
-        question={question}
-        languageCode={languageCode}
-        updateQuestion={updateQuestion}
-      />
     </div>
   );
 }
