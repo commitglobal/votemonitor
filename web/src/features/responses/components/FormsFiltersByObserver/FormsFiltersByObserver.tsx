@@ -13,6 +13,7 @@ import {
 import type { FormSubmissionsSearchParams } from '../../models/search-params';
 import { Route } from '@/routes/responses';
 import { useMonitoringObserversTags } from '@/hooks/tags-queries';
+import { ResetFiltersButton } from '../ResetFiltersButton/ResetFiltersButton';
 
 export function FormsFiltersByObserver(): FunctionComponent {
   const navigate = useNavigate({ from: '/responses/' });
@@ -23,6 +24,7 @@ export function FormsFiltersByObserver(): FunctionComponent {
   const onTagsFilterChange = useCallback(
     (tag: string) => () => {
       void navigate({
+        // @ts-ignore
         search: (prev: FormSubmissionsSearchParams) => {
           const prevTagsFilter = prev.tagsFilter ?? [];
           const newTags = prevTagsFilter.includes(tag)
@@ -35,6 +37,8 @@ export function FormsFiltersByObserver(): FunctionComponent {
     },
     [navigate]
   );
+
+  const isFiltered = Object.keys(search).some((key) => key !== 'tab' && key !== 'viewBy');
 
   return (
     <>
@@ -63,15 +67,9 @@ export function FormsFiltersByObserver(): FunctionComponent {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <Button
-        onClick={() => {
-          void navigate({});
-        }}
-        variant='ghost-primary'>
-        Reset filters
-      </Button>
+      <ResetFiltersButton disabled={!isFiltered} />
 
-      {Object.entries(search).length > 0 && (
+      {isFiltered && (
         <div className='col-span-full flex gap-2 flex-wrap'>
           {search.tagsFilter?.map((tag) => (
             <FilterBadge label={`Observer tags: ${tag}`} onClear={onTagsFilterChange(tag)} />

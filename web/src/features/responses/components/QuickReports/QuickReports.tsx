@@ -3,8 +3,7 @@ import { getRouteApi } from '@tanstack/react-router';
 import { useDebounce } from '@uidotdev/usehooks';
 import { type ChangeEvent, useState, useMemo, useCallback } from 'react';
 import type { FunctionComponent } from '@/common/types';
-import { CsvFileIcon } from '@/components/icons/CsvFileIcon';
-import { Button } from '@/components/ui/button';
+import { FilterBadge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   DropdownMenu,
@@ -16,15 +15,17 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
 import { Input } from '@/components/ui/input';
+import { PollingStationsFilters } from '@/components/PollingStationsFilters/PollingStationsFilters';
 import { Separator } from '@/components/ui/separator';
 import { useQuickReports } from '../../hooks/quick-reports';
 import type { QuickReportsSearchParams } from '../../models/search-params';
 import { quickReportsColumnDefs } from '../../utils/column-defs';
-import { quickReportsColumnVisibilityOptions, quickReportsDefaultColumns } from '../../utils/column-visibility-options';
-import { FilterBadge } from '@/components/ui/badge';
-import { PollingStationsFilters } from '@/components/PollingStationsFilters/PollingStationsFilters';
-import { ExportDataButton } from '../Dashboard/ExportDataButton';
+import { quickReportsColumnVisibilityOptions } from '../../utils/column-visibility-options';
 import { ExportedDataType } from '../../models/data-export';
+import { useQuickReportsColumnsVisibility, useQuickReportsToggleColumn } from '../../store/column-visibility';
+import { ExportDataButton } from '../ExportDataButton/ExportDataButton';
+import { ResetFiltersButton } from '../ResetFiltersButton/ResetFiltersButton';
+import { useSetPrevSearch } from '@/common/prev-search-store';
 
 const routeApi = getRouteApi('/responses/');
 
@@ -33,8 +34,12 @@ export function QuickReports(): FunctionComponent {
   const search = routeApi.useSearch();
   const debouncedSearch = useDebounce(search, 300);
 
-  const [columnsVisibility, setColumnsVisibility] = useState(quickReportsDefaultColumns);
-  const [isFiltering, setIsFiltering] = useState(() => Object.keys(search).some((key) => key !== 'tab'));
+  const columnsVisibility = useQuickReportsColumnsVisibility();
+  const toggleColumns = useQuickReportsToggleColumn();
+
+  const [isFiltering, setIsFiltering] = useState(() =>
+    Object.keys(search).some((key) => key !== 'tab' && key !== 'viewBy')
+  );
 
   const [searchText, setSearchText] = useState<string>('');
   const debouncedSearchText = useDebounce(searchText, 300);
@@ -57,17 +62,25 @@ export function QuickReports(): FunctionComponent {
     return Object.fromEntries(params) as QuickReportsSearchParams;
   }, [debouncedSearch, debouncedSearchText]);
 
+  const setPrevSearch = useSetPrevSearch();
+
   const onClearFilter = useCallback(
     (filter: keyof QuickReportsSearchParams | (keyof QuickReportsSearchParams)[]) => () => {
       const filters = Array.isArray(filter)
         ? Object.fromEntries(filter.map((key) => [key, undefined]))
         : { [filter]: undefined };
-      void navigate({ search: (prev) => ({ ...prev, ...filters }) });
+      void navigate({
+        search: (prev) => {
+          const newSearch = { ...prev, ...filters };
+          setPrevSearch(newSearch);
+          return newSearch;
+        },
+      });
     },
-    [navigate]
+    [navigate, setPrevSearch]
   );
 
-  const isFiltered = Object.keys(search).some((key) => key !== 'tab');
+  const isFiltered = Object.keys(search).some((key) => key !== 'tab' && key !== 'viewBy');
 
   const navigateToQuickReport = useCallback(
     (quickReportId: string) => {
@@ -110,7 +123,7 @@ export function QuickReports(): FunctionComponent {
                   checked={columnsVisibility[option.id]}
                   disabled={!option.enableHiding}
                   onCheckedChange={(checked) => {
-                    setColumnsVisibility((prev) => ({ ...prev, [option.id]: checked }));
+                    toggleColumns(option.id, checked);
                   }}>
                   {option.label}
                 </DropdownMenuCheckboxItem>
@@ -124,14 +137,7 @@ export function QuickReports(): FunctionComponent {
         {isFiltering && (
           <div className='grid grid-cols-6 gap-4 items-center'>
             <PollingStationsFilters />
-            <Button
-              disabled={!isFiltered}
-              onClick={() => {
-                void navigate({});
-              }}
-              variant='ghost-primary'>
-              Reset filters
-            </Button>
+            <ResetFiltersButton disabled={!isFiltered} />
 
             {isFiltered && (
               <div className='col-span-full flex gap-2 flex-wrap'>
