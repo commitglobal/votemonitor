@@ -65,7 +65,8 @@
         "loading": "Conectează-te..."
       },
       "errors": {
-        "invalid_credentials": "Credențialele nu sunt corecte. Te rugăm să încerci din nou."
+        "invalid_credentials": "Credențialele nu sunt corecte. Te rugăm să încerci din nou.",
+        "offline": "Pentru conectarea la aplicație este necesară o conexiune la internet."
       }
     },
     "actions": {
@@ -369,7 +370,11 @@
       "paragraph": "Aici vei găsi la îndemână ghiduri și resurse din partea organizației tale. "
     },
     "list": {
-      "heading": "Ghiduri"
+      "heading": "Ghiduri",
+      "guide": {
+        "backup_title": "Document",
+        "created_on": "Creat la"
+      }
     }
   },
   "inbox": {
@@ -396,7 +401,15 @@
     "support": "Sună la call center",
     "feedback": "Trimite-ne feedback-ul tău",
     "logout": "Deconectează-te",
-    "logged_in": "Conectat ca {{user}}"
+    "logged_in": "Conectat ca {{user}}",
+    "warning_modal": {
+      "logout": {
+        "title": "Atenție: Ai date nesincronizate",
+        "description": "Momentan nu ai conexiune la internet. Dacă te deconectezi acum, toate formularele, atașamentele sau notițele pe care le-ai completat sau încărcat fără conexiune se vor pierde.\n\nPentru a evita pierderea datelor, te rugăm să te reconectezi la internet înainte de deconectarea din aplicație.",
+        "cancel": "Renunță",
+        "action": "Deconectează-te"
+      }
+    }
   },
   "change_password": {
     "title": "Schimbă parola",

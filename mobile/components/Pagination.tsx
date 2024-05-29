@@ -1,6 +1,8 @@
 import React from "react";
 import { Animated, StyleSheet } from "react-native";
-import { View } from "tamagui";
+import { View, XStack } from "tamagui";
+
+const DOT_SIZE = 30;
 
 const Pagination = ({
   scrollOffsetAnimatedValue,
@@ -12,15 +14,13 @@ const Pagination = ({
   data: number[];
 }) => {
   // todo: send the number of children of the AnimatedViewScroll?
-
-  const inputRange = [0, data.length];
   const translateX = Animated.add(scrollOffsetAnimatedValue, positionAnimatedValue).interpolate({
-    inputRange,
+    inputRange: [0, data.length],
     outputRange: [0, data.length * DOT_SIZE],
   });
 
   return (
-    <View style={styles.pagination}>
+    <XStack backgroundColor="$purple6" position="relative" height={DOT_SIZE}>
       <Animated.View
         style={[
           styles.paginationIndicator,
@@ -30,38 +30,23 @@ const Pagination = ({
           },
         ]}
       />
-      {data.map((item) => {
-        return (
-          <View key={item} style={styles.paginationDotContainer}>
-            <View style={styles.paginationDot} />
-          </View>
-        );
-      })}
-    </View>
+      {data.map((item) => (
+        <View width={DOT_SIZE} alignItems="center" justifyContent="center" key={item}>
+          <View
+            backgroundColor="white"
+            borderRadius={DOT_SIZE * 0.15}
+            height={DOT_SIZE * 0.3}
+            width={DOT_SIZE * 0.3}
+          />
+        </View>
+      ))}
+    </XStack>
   );
 };
 
 export default Pagination;
 
-const DOT_SIZE = 30;
-
 const styles = StyleSheet.create({
-  pagination: {
-    backgroundColor: "#5F288D",
-    flexDirection: "row",
-    height: DOT_SIZE,
-  },
-  paginationDot: {
-    backgroundColor: "white",
-    borderRadius: DOT_SIZE * 0.15,
-    height: DOT_SIZE * 0.3,
-    width: DOT_SIZE * 0.3,
-  },
-  paginationDotContainer: {
-    alignItems: "center",
-    justifyContent: "center",
-    width: DOT_SIZE,
-  },
   paginationIndicator: {
     borderColor: "#ddd",
     borderRadius: DOT_SIZE / 2,

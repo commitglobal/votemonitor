@@ -11,6 +11,7 @@ type WarningDialogProps = {
   cancelBtnText: string;
   onCancel: () => void;
   action: () => void;
+  actionBtnStyle?: object;
 };
 
 const WarningDialog = ({
@@ -20,6 +21,7 @@ const WarningDialog = ({
   cancelBtnText,
   action,
   onCancel,
+  actionBtnStyle,
 }: WarningDialogProps) => {
   return (
     <Dialog
@@ -33,12 +35,12 @@ const WarningDialog = ({
         </YStack>
       }
       footer={
-        <XStack gap="$sm" justifyContent="center">
+        <XStack gap="$sm" justifyContent="center" alignItems="center">
           <Button preset="chromeless" textStyle={{ color: "black" }} onPress={onCancel}>
             {cancelBtnText}
           </Button>
 
-          <Button backgroundColor="$red10" flex={1} onPress={action}>
+          <Button backgroundColor="$red10" flex={1} onPress={action} style={{ ...actionBtnStyle }}>
             {actionBtnText}
           </Button>
         </XStack>

@@ -32,7 +32,9 @@ export function PersistGate({ children }: React.PropsWithChildren) {
 
   useEffect(() => {
     if (!isRestoring) {
-      SplashScreen.hideAsync();
+      setTimeout(() => {
+        SplashScreen.hideAsync();
+      }, 200);
     }
   }, [isRestoring]);
 
@@ -73,7 +75,7 @@ const PersistGateLoadingScreen = () => {
             {t("warning")}
           </Typography>
           <Typography preset="body2" color="white" textAlign="center" marginTop="$sm">
-            Items left: {runningMutations} / {totalMutations}
+            {t("pending_items")}: {runningMutations} / {totalMutations}
           </Typography>
         </YStack>
       </YStack>

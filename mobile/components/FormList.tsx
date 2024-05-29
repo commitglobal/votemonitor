@@ -93,10 +93,6 @@ const FormList = ({ ListHeaderComponent }: { ListHeaderComponent: ListHeaderComp
     return <Typography>{t("loading", { ns: "common" })}</Typography>;
   }
 
-  if (allForms?.forms.length === 0) {
-    return <Typography>{"forms.list.empty"}</Typography>;
-  }
-
   if (formsError || answersError) {
     return (
       <FormListErrorScreen
@@ -122,6 +118,7 @@ const FormList = ({ ListHeaderComponent }: { ListHeaderComponent: ListHeaderComp
         <ListView<FormListItem>
           data={formList}
           ListHeaderComponent={ListHeaderComponent}
+          ListEmptyComponent={<Typography>{t("forms.list.empty")}</Typography>}
           showsVerticalScrollIndicator={false}
           bounces={false}
           renderItem={({ item, index }) => {

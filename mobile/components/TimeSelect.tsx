@@ -32,6 +32,9 @@ const TimeSelect: React.FC<TimeSelectProps> = memo(
     }, [time]);
 
     const onChange = (event: DateTimePickerEvent, selectedTime: Date | undefined) => {
+      // selectedTime = date picked from date picker
+      // eventTime = date picked from time picker
+
       if (Platform.OS === "ios") {
         selectedTime ? setTempTime(selectedTime) : setTempTime(tempTime);
       } else {
@@ -41,7 +44,7 @@ const TimeSelect: React.FC<TimeSelectProps> = memo(
             onClose();
             return Toast.show({
               type: "error",
-              text2: t("polling_stations_information.error.arrival_first"),
+              text2: t("polling_stations_information.time_select.error.arrival_first"),
               visibilityTime: 5000,
             });
           }
@@ -54,24 +57,28 @@ const TimeSelect: React.FC<TimeSelectProps> = memo(
               if (event.type === "set" && selectedTime && eventTime) {
                 // we need to set the date of the time picker, as it uses the current date as default
                 eventTime.setDate(selectedTime.getDate());
+
                 // setting departure time and we have an arrival time set
                 if (type === "departure" && arrivalTime) {
-                  // setting time for the same day -> don't allow an earlier departure time
-                  if (eventTime.getDate() === selectedTime.getDate() && eventTime < arrivalTime) {
+                  // setting time for the same day as the arrival date -> don't allow an earlier departure time
+                  if (eventTime.getDate() === arrivalTime.getDate() && eventTime < arrivalTime) {
                     onClose();
                     return Toast.show({
                       type: "error",
-                      text2: t("polling_stations_information.error.later_departure"),
+                      text2: t("polling_stations_information.time_select.error.later_departure"),
                       visibilityTime: 5000,
                     });
                   }
                 } else if (type === "arrival" && departureTime) {
                   // if departureTime is set and we're setting the time for the same day -> don't allow a later arrival time
-                  if (eventTime.getDate() === selectedTime.getDate() && eventTime > departureTime) {
+                  if (
+                    eventTime.getDate() === departureTime.getDate() &&
+                    eventTime > departureTime
+                  ) {
                     onClose();
                     return Toast.show({
                       type: "error",
-                      text2: t("polling_stations_information.error.earlier_arrival"),
+                      text2: t("polling_stations_information.time_select.error.earlier_arrival"),
                       visibilityTime: 5000,
                     });
                   }
