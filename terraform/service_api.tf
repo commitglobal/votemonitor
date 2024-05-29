@@ -162,6 +162,14 @@ module "ecs_api" {
     {
       name      = "Core__HangfireConnectionConfig__Password"
       valueFrom = "${aws_secretsmanager_secret.rds.arn}:password::"
+      },
+     {
+      name      = "Mailing__SES__AWSAccessKey"
+      valueFrom = "stagingn/ses:AWSAccessKey::"
+    },
+    {
+      name      = "Mailing__SES__AWSSecretKey"
+      valueFrom = "stagingn/ses:AWSSecretKey::"
     },
   ]
 
