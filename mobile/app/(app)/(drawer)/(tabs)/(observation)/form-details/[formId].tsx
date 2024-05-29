@@ -226,7 +226,16 @@ const FormDetails = () => {
       {clearingForm && (
         <WarningDialog
           title={t("clear_answers_modal.title", { value: formTitle })}
-          description={t("clear_answers_modal.description")}
+          description={
+            <YStack gap="$md">
+              <Typography preset="body1" color="$gray6">
+                {t("clear_answers_modal.description.p1")}
+              </Typography>
+              <Typography preset="body1" color="$gray6">
+                {t("clear_answers_modal.description.p2")}
+              </Typography>
+            </YStack>
+          }
           actionBtnText={t("clear_answers_modal.actions.clear")}
           cancelBtnText={t("clear_answers_modal.actions.cancel")}
           onCancel={setClearingForm.bind(null, false)}
