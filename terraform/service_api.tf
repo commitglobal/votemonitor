@@ -189,6 +189,17 @@ module "s3_private" {
   # policy = data.aws_iam_policy_document.s3_cloudfront_private.json
 }
 
+resource "aws_s3_bucket_cors_configuration" "s3_private" {
+  bucket = module.s3_private.bucket
+
+  cors_rule {
+    allowed_methods = ["PUT"]
+    allowed_origins = ["*"]
+    expose_headers  = ["ETag"]
+    max_age_seconds = 3000
+  }
+}
+
 resource "aws_secretsmanager_secret" "sentry_dsn" {
   name = "${local.namespace}-sentry_dns-${random_string.secrets_suffix.result}"
 }
