@@ -193,10 +193,22 @@ resource "aws_s3_bucket_cors_configuration" "s3_private" {
   bucket = module.s3_private.bucket
 
   cors_rule {
+    allowed_headers = ["*"]
     allowed_methods = ["PUT"]
     allowed_origins = ["*"]
     expose_headers  = ["ETag"]
     max_age_seconds = 3000
+  }
+}
+
+resource "aws_s3_bucket_lifecycle_configuration" "incomplete_multipart" {
+  bucket = module.s3_private.bucket
+  rule {
+    id     = "abort-incomplete-multipart-upload-lifecyle-rule"
+    status = "Enabled"
+    abort_incomplete_multipart_upload {
+      days_after_initiation = 1
+    }
   }
 }
 
