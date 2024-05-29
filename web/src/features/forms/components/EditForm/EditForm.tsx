@@ -36,17 +36,72 @@ import { type FormFull, FormType, mapFormType } from '../../models/form';
 import { formDetailsQueryOptions, formsKeys } from '../../queries';
 import EditFormFooter from './EditFormFooter';
 import { NavigateBack } from '@/components/NavigateBack/NavigateBack';
+import { useNavigate } from '@tanstack/react-router';
+
+function updateTranslations(
+  question: BaseQuestion,
+  previousLanguageCode: string,
+  newLanguageCode: string
+): BaseQuestion {
+  question.text = cloneTranslation(question.text, previousLanguageCode, newLanguageCode)!;
+  question.helptext = cloneTranslation(question.helptext, previousLanguageCode, newLanguageCode);
+
+  if (question.$questionType === QuestionType.TextQuestionType) {
+    const textQuestion: TextQuestion = question as TextQuestion;
+    textQuestion.inputPlaceholder = cloneTranslation(
+      textQuestion.inputPlaceholder,
+      previousLanguageCode,
+      newLanguageCode
+    );
+
+    return { ...textQuestion };
+  }
+
+  if (question.$questionType === QuestionType.NumberQuestionType) {
+    const numberQuestion: NumberQuestion = question as NumberQuestion;
+    numberQuestion.inputPlaceholder = cloneTranslation(
+      numberQuestion.inputPlaceholder,
+      previousLanguageCode,
+      newLanguageCode
+    );
+
+    return { ...numberQuestion };
+  }
+
+  if (question.$questionType === QuestionType.SingleSelectQuestionType) {
+    const singleSelectQuestion: SingleSelectQuestion = question as SingleSelectQuestion;
+    singleSelectQuestion.options = singleSelectQuestion.options.map((option) => ({
+      ...option,
+      text: cloneTranslation(option.text, previousLanguageCode, newLanguageCode)!,
+    }));
+
+    return { ...singleSelectQuestion };
+  }
+
+  if (question.$questionType === QuestionType.MultiSelectQuestionType) {
+    const MultiSelectQuestion: MultiSelectQuestion = question as MultiSelectQuestion;
+    MultiSelectQuestion.options = MultiSelectQuestion.options.map((option) => ({
+      ...option,
+      text: cloneTranslation(option.text, previousLanguageCode, newLanguageCode)!,
+    }));
+
+    return { ...MultiSelectQuestion };
+  }
+
+  return { ...question };
+}
 
 export default function EditForm(): FunctionComponent {
   const { t } = useTranslation();
   const { formId } = Route.useParams();
   const formQuery = useSuspenseQuery(formDetailsQueryOptions(formId));
   const formData = formQuery.data;
+  const navigate = useNavigate();
 
   const [localQuestions, setLocalQuestions] = useState(formData.questions);
   const [defaultLanguage, setDefaultLanguage] = useState(formData.defaultLanguage);
   const [languages, setLanguages] = useState(formData.languages);
-  const formRef = useRef(null);
+  const formRef = useRef<HTMLFormElement>(null);
 
   const { toast } = useToast();
 
@@ -85,14 +140,16 @@ export default function EditForm(): FunctionComponent {
     onSuccess: () => {
       toast({
         title: 'Success',
-        description: 'Form updated successfully updated',
+        description: 'Form updated successfully',
       });
 
-      queryClient.invalidateQueries({ queryKey: formsKeys.all });
+      void queryClient.invalidateQueries({ queryKey: formsKeys.all });
     },
   });
 
-  function onSubmit(values: z.infer<typeof editFormFormSchema>): void {
+  function saveHandler(): void {
+    const values = form.getValues();
+
     formData.code = values.code;
     formData.name[defaultLanguage] = values.name;
     formData.description = updateTranslationString(
@@ -112,58 +169,29 @@ export default function EditForm(): FunctionComponent {
     editMutation.mutate(updatedForm);
   }
 
-  const updateTranslations = (
-    question: BaseQuestion,
-    previousLanguageCode: string,
-    newLanguageCode: string
-  ): BaseQuestion => {
-    question.text = cloneTranslation(question.text, previousLanguageCode, newLanguageCode)!;
-    question.helptext = cloneTranslation(question.helptext, previousLanguageCode, newLanguageCode);
+  function onSubmit(values: z.infer<typeof editFormFormSchema>): void {
+    formData.code = values.code;
+    formData.name[defaultLanguage] = values.name;
+    formData.description = updateTranslationString(
+      formData.description,
+      formData.languages,
+      formData.defaultLanguage,
+      values.description ?? ''
+    );
+    formData.formType = values.formType;
+    formData.defaultLanguage = defaultLanguage;
+    formData.languages = languages;
 
-    if (question.$questionType === QuestionType.TextQuestionType) {
-      const textQuestion: TextQuestion = question as TextQuestion;
-      textQuestion.inputPlaceholder = cloneTranslation(
-        textQuestion.inputPlaceholder,
-        previousLanguageCode,
-        newLanguageCode
-      );
+    const updatedForm: FormFull = {
+      ...formData,
+    };
 
-      return { ...textQuestion };
-    }
-
-    if (question.$questionType === QuestionType.NumberQuestionType) {
-      const numberQuestion: NumberQuestion = question as NumberQuestion;
-      numberQuestion.inputPlaceholder = cloneTranslation(
-        numberQuestion.inputPlaceholder,
-        previousLanguageCode,
-        newLanguageCode
-      );
-
-      return { ...numberQuestion };
-    }
-
-    if (question.$questionType === QuestionType.SingleSelectQuestionType) {
-      const singleSelectQuestion: SingleSelectQuestion = question as SingleSelectQuestion;
-      singleSelectQuestion.options = singleSelectQuestion.options.map((option) => ({
-        ...option,
-        text: cloneTranslation(option.text, previousLanguageCode, newLanguageCode)!,
-      }));
-
-      return { ...singleSelectQuestion };
-    }
-
-    if (question.$questionType === QuestionType.MultiSelectQuestionType) {
-      const MultiSelectQuestion: MultiSelectQuestion = question as MultiSelectQuestion;
-      MultiSelectQuestion.options = MultiSelectQuestion.options.map((option) => ({
-        ...option,
-        text: cloneTranslation(option.text, previousLanguageCode, newLanguageCode)!,
-      }));
-
-      return { ...MultiSelectQuestion };
-    }
-
-    return { ...question };
-  };
+    editMutation.mutate(updatedForm, {
+      onSuccess: () => {
+        void navigate({ to: '/election-event/$tab', params: { tab: 'observer-forms' } });
+      },
+    });
+  }
 
   const handleLanguageChange = (newLanguageCode: string): void => {
     const previousLanguageCode = defaultLanguage;
@@ -174,16 +202,14 @@ export default function EditForm(): FunctionComponent {
     );
   };
 
-  const submit = () => {
+  const submit = (): void => {
     if (formRef.current) {
-      // @ts-ignore
-      formRef.current.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+      saveHandler();
     }
   };
 
-  const submitAndExitEditor = () => {
+  const submitAndExitEditor = (): void => {
     if (formRef.current) {
-      // @ts-ignore
       formRef.current.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
     }
   };
@@ -193,6 +219,7 @@ export default function EditForm(): FunctionComponent {
       backButton={<NavigateBack to='/election-event/$tab' params={{ tab: 'observer-forms' }} />}
       title={`${formData.code} - ${formData.name[formData.defaultLanguage]}`}>
       <Form {...form}>
+        {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
         <form className='flex flex-col flex-1' onSubmit={form.handleSubmit(onSubmit)} ref={formRef}>
           <Tabs className='flex flex-col flex-1' defaultValue='form-details'>
             <TabsList className='grid grid-cols-2 bg-gray-200 w-[400px] mb-4'>
