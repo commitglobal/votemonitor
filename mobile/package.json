@@ -38,7 +38,9 @@
     "axios": "^1.6.8",
     "expo": "~50.0.17",
     "expo-application": "~5.8.4",
+    "expo-av": "~13.10.6",
     "expo-build-properties": "~0.11.1",
+    "expo-clipboard": "^6.0.3",
     "expo-constants": "~15.4.6",
     "expo-crypto": "~12.8.1",
     "expo-dev-client": "~3.3.11",
@@ -71,8 +73,7 @@
     "react-native-toast-message": "^2.2.0",
     "superjson": "^2.2.1",
     "tamagui": "^1.93.2",
-    "zod": "^3.23.3",
-    "expo-av": "~13.10.6"
+    "zod": "^3.23.3"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
