@@ -55,13 +55,13 @@ module "ecs_hangfire" {
     {
       name  = "ASPNETCORE_ENVIRONMENT"
       value = var.env
-      }, 
+    },
     {
       name  = "FileStorage__FileStorageType"
       value = "S3"
     },
     {
-      name = "ASPNETCORE_URLS",
+      name  = "ASPNETCORE_URLS",
       value = "http://+:80"
     },
     {
@@ -139,7 +139,7 @@ module "ecs_hangfire" {
       name      = "DashboardAuth__Password"
       valueFrom = "${aws_secretsmanager_secret.seed_admin.arn}:password::"
     },
-      {
+    {
       name      = "Mailing__SES__AWSAccessKey"
       valueFrom = "${aws_secretsmanager_secret.ses_hotfix.arn}:access_key::"
     },

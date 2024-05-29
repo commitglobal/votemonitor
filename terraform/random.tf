@@ -66,7 +66,3 @@ resource "aws_secretsmanager_secret_version" "seed_admin" {
     password  = random_password.seed_admin_password.result
   })
 }
-
-resource "aws_secretsmanager_secret" "ses_staging" {
- name = "${local.namespace}-ses-staging-${random_string.secrets_suffix.result}"
-}
