@@ -24,6 +24,7 @@ import CredentialsError from "../components/CredentialsError";
 import Toast from "react-native-toast-message";
 import { useNetInfoContext } from "../contexts/net-info-banner/NetInfoContext";
 import Header from "../components/Header";
+import * as Clipboard from "expo-clipboard";
 
 interface FormData {
   email: string;
@@ -131,7 +132,13 @@ const Login = () => {
                 <Typography>{t("disclaimer.paragraph1")}</Typography>
                 <Typography>
                   {t("disclaimer.paragraph2")}
-                  <Typography color="$purple5"> {t("disclaimer.email")}</Typography>.
+                  <Typography
+                    color="$purple5"
+                    onPress={async () => await Clipboard.setStringAsync("TODO")}
+                  >
+                    {t("disclaimer.email")}
+                  </Typography>
+                  .
                 </Typography>
               </YStack>
             </XStack>
