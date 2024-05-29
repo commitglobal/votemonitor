@@ -31,7 +31,7 @@ import ImportMonitoringObserversErrorsDialog from '../MonitoringObserversList/Im
 import { format } from 'date-fns';
 import { DateTimeFormat } from '@/common/formats';
 import { TableCellProps } from '@/components/ui/DataTable/DataTable';
-
+import { isQueryFiltered } from '@/lib/utils';
 
 type ListMonitoringObserverResponse = PageResponse<MonitoringObserver>;
 
@@ -173,7 +173,7 @@ function MonitoringObserversList() {
           throw new Error('Failed to fetch monitoring observers');
         }
 
-        return response.data;
+        return { ...response.data, isEmpty: !isQueryFiltered(paramsObject) && response.data.items.length === 0 };
       },
     });
   };
@@ -365,6 +365,8 @@ function MonitoringObserversList() {
           useQuery={useMonitoringObservers}
           onRowClick={rowClickHandler}
           getCellProps={getCellProps}
+          emptySubtitle='Start adding a first list of observers for this election event by filling in the template and then uploading it in this section.'
+          emptyTitle='No observers added yet'
         />
       </CardContent>
     </Card>
