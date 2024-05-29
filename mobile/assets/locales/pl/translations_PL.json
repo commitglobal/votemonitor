@@ -471,8 +471,8 @@
     "offline_warning": "Wygląda na to, że jesteś offline. Uszy do góry, odpowiedzi, których udzieliłeś/aś zostały bezpiecznie zapisane na tym urządzeniu i zostaną zsynchronizowane, gdy tylko odzyskasz połączenie z siecią. Możesz dalej uzupełniać formularz i przygotowywać szybkie raporty."
   },
   "sync": {
-    "sync_data": "Synchronizowanie danych...",
-    "warning": "NIE ZAMKNIJ aplikacji, w przeciwnym razie dane zostaną utracone.",
-    "pending_items": "xxxxx"
+    "sync_data": "xxxxx",
+    "warning": "xxxxx",
+    "files": "xxxxx"
   }
 }

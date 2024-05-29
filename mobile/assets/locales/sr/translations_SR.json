@@ -471,8 +471,8 @@
     "offline_warning": "Trenutno niste povezani na internet. Bez brige, vaši odgovori su sačuvani lokalno i biće sinhronizovani čim budete ponovo povezani na internet. Slobodno nastavite sa korišćenjem aplikacije."
   },
   "sync": {
-    "sync_data": "Sinhronizacija podataka...",
-    "warning": "Molimo vas da NE ZATVARATE aplikaciju ili će podaci biti izgubljeni.",
-    "pending_items": "xxxxx "
+    "sync_data": "xxxxx",
+    "warning": "xxxxx",
+    "files": "xxxxx"
   }
 }
