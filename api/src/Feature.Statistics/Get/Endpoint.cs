@@ -9,67 +9,309 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
     {
         Get("/api/election-rounds/{electionRoundId}/statistics");
         DontAutoTag();
-        Options(x => x.WithTags("form-submissions", "mobile"));
+        Options(x => x.WithTags("statistics"));
         Summary(s =>
         {
-            s.Summary = "Gets submission f OR a polling station";
+            s.Summary = "Statistics for an election round";
         });
     }
 
     public override async Task<Response> ExecuteAsync(Request req, CancellationToken ct)
     {
-        string commandText = @"
-        select histogram.bucket,
-               coalesce(count(fs.""Id""), 0) as ""formsSubmitted"",
-               coalesce(sum(fs.""NumberOfQuestionAnswered""), 0) as ""numberOfQuestionAnswered"",
-               coalesce(sum(fs.""NumberOfFlaggedAnswers""), 0) as ""numberOfFlaggedAnswers"",
-               coalesce(count(psn.""Id""), 0) as ""pollingStationNotesCount"",
-               coalesce(count(psa.""Id""), 0) as ""pollingStationAttachmentsCount"",
-               coalesce(count(psi.""Id""), 0) as ""pollingStationsInformationCount"",
-               coalesce(count(DISTINCT ps.""Id""), 0) as ""visitedPollingStations"",
-               coalesce(count(DISTINCT ps.""Level1""), 0) as ""distinctLevel1"",
-               coalesce(count(DISTINCT ps.""Level2""), 0) as ""distinctLevel2"",
-               coalesce(count(DISTINCT ps.""Level3""), 0) as ""distinctLevel3"",
-               coalesce(count(DISTINCT ps.""Level4""), 0) as ""distinctLevel4"",
-               coalesce(count(DISTINCT ps.""Level5""), 0) as ""distinctLevel5""
-        from
-            (select *
-             from generate_series(date_trunc('hour', timezone('utc', now())+ interval '-12 hour'), date_trunc('hour', timezone('utc', now())), '1 hour')) as histogram(bucket)
-        left join ""FormSubmissions"" fs on coalesce(fs.""LastModifiedOn"", fs.""CreatedOn"") >= histogram.bucket
-        and coalesce(fs.""LastModifiedOn"", fs.""CreatedOn"") < histogram.bucket + interval '1 hour'
-        left join ""PollingStationNotes"" psn on coalesce(psn.""LastModifiedOn"", psn.""CreatedOn"") >= histogram.bucket
-        and coalesce(psn.""LastModifiedOn"", psn.""CreatedOn"") < histogram.bucket + interval '1 hour'
-        left join ""PollingStationAttachments"" psa on coalesce(psa.""LastModifiedOn"", psa.""CreatedOn"") >= histogram.bucket
-        and coalesce(psa.""LastModifiedOn"", psa.""CreatedOn"") < histogram.bucket + interval '1 hour'
-        left join ""PollingStationInformation"" psi on coalesce(psi.""LastModifiedOn"", psi.""CreatedOn"") >= histogram.bucket
-        and coalesce(psi.""LastModifiedOn"", psi.""CreatedOn"") < histogram.bucket + interval '1 hour'
-        left join ""PollingStations"" ps on ps.""Id"" = fs.""PollingStationId""
-        or ps.""Id"" = psn.""PollingStationId""
-        or ps.""Id"" = psa.""PollingStationId""
-        or ps.""Id"" = psi.""PollingStationId""
-        left join ""MonitoringObservers"" mo on mo.""Id"" = fs.""MonitoringObserverId""
-        or psa.""MonitoringObserverId"" = mo.""Id""
-        or psn.""MonitoringObserverId"" = mo.""Id""
-        or psi.""MonitoringObserverId"" = mo.""Id""
-        left join ""MonitoringNgos"" mn on mn.""Id"" = mo.""MonitoringNgoId""
-        where ps.""ElectionRoundId"" = @electionRoundId
-            and mn.""NgoId"" = @ngoId
-            and fs.""ElectionRoundId""= @electionRoundId
-            and psn.""ElectionRoundId""= @electionRoundId
-            and psi.""ElectionRoundId""= @electionRoundId
-            and psa.""ElectionRoundId""= @electionRoundId
-            and psa.IsDeleted = FALSE
-        group by histogram.bucket
-        order by histogram.bucket";
+        string sql = """
+        -- get observer stats
+        SELECT
+            COUNT(MO."Id") FILTER (
+                WHERE
+                    MO."Status" = 'Active'
+                    AND U."Status" = 'Active'
+            ) "ActiveObservers",
+            COUNT(MO."Id") FILTER (
+                WHERE
+                    MO."Status" = 'Pending'
+                    OR U."Status" = 'Pending'
+            ) "PendingObservers",
+            COUNT(MO."Id") FILTER (
+                WHERE
+                    MO."Status" = 'Suspended'
+                    OR U."Status" = 'Suspended'
+            ) "SuspendedObservers"
+        FROM
+            "MonitoringObservers" MO
+            INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
+            INNER JOIN "AspNetUsers" U ON MO."ObserverId" = U."Id"
+        WHERE
+            MN."ElectionRoundId" = @electionRoundId
+            AND MN."NgoId" = @ngoId;
+            
+        -- get active observers (minimum 1 interaction)
+        WITH
+            MONITORING_OBSERVERS AS (
+                SELECT
+                    MO."Id"
+                FROM
+                    "MonitoringObservers" MO
+                    JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
+                    JOIN "AspNetUsers" U ON MO."ObserverId" = U."Id"
+                WHERE
+                    MN."ElectionRoundId" = @electionRoundId
+                    AND MN."NgoId" = @ngoId
+            ),
+            ACTIVE_OBSERVERS AS (
+                SELECT
+                    "MonitoringObserverId",
+                    "PollingStationId"
+                FROM
+                    "FormSubmissions" FS
+                    INNER JOIN "MonitoringObservers" MO ON MO."Id" = FS."MonitoringObserverId"
+                    INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
+                WHERE
+                    FS."ElectionRoundId" = @electionRoundId
+                    AND MN."NgoId" = @ngoId
+                UNION ALL
+                SELECT
+                    "MonitoringObserverId",
+                    "PollingStationId"
+                FROM
+                    "QuickReports" QR
+                    INNER JOIN "MonitoringObservers" MO ON MO."Id" = QR."MonitoringObserverId"
+                    INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
+                WHERE
+                    QR."ElectionRoundId" = @electionRoundId
+                    AND MN."NgoId" = @ngoId
+                UNION ALL
+                SELECT
+                    "MonitoringObserverId",
+                    "PollingStationId"
+                FROM
+                    "Attachments" A
+                    INNER JOIN "MonitoringObservers" MO ON MO."Id" = A."MonitoringObserverId"
+                    INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
+                WHERE
+                    A."ElectionRoundId" = @electionRoundId
+                    AND MN."NgoId" = @ngoId
+                UNION ALL
+                SELECT
+                    "MonitoringObserverId",
+                    "PollingStationId"
+                FROM
+                    "Notes" N
+                    INNER JOIN "MonitoringObservers" MO ON MO."Id" = N."MonitoringObserverId"
+                    INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
+                WHERE
+                    N."ElectionRoundId" = @electionRoundId
+                    AND MN."NgoId" = @ngoId
+                UNION ALL
+                SELECT
+                    "MonitoringObserverId",
+                    "PollingStationId"
+                FROM
+                    "PollingStationInformation" PSI
+                    INNER JOIN "MonitoringObservers" MO ON MO."Id" = PSI."MonitoringObserverId"
+                    INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
+                WHERE
+                    PSI."ElectionRoundId" = @electionRoundId
+                    AND MN."NgoId" = @ngoId
+            )
+        SELECT
+            COUNT(DISTINCT MO."Id") AS "NumberOfObserversOnTheField"
+        FROM
+            MONITORING_OBSERVERS MO
+            JOIN ACTIVE_OBSERVERS AO ON MO."Id" = AO."MonitoringObserverId";
+            
+        -- get count of total polling stations
+        SELECT
+            COUNT("Id") "NumberOfPollingStations"
+        FROM
+            "PollingStations"
+        WHERE
+            "ElectionRoundId" = @electionRoundId
+            
+        -- get visited polling stations
+        WITH
+            MONITORING_OBSERVER AS (
+                SELECT
+                    MO."Id"
+                FROM
+                    "MonitoringObservers" MO
+                    JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
+                    JOIN "AspNetUsers" U ON MO."ObserverId" = U."Id"
+                WHERE
+                    MN."ElectionRoundId" = @electionRoundId
+                    AND MN."NgoId" = @ngoId
+            ),
+            POLLING_STATION_VISITS AS (
+                SELECT
+                    "MonitoringObserverId",
+                    "PollingStationId"
+                FROM
+                    "FormSubmissions" FS
+                    INNER JOIN "MonitoringObservers" MO ON MO."Id" = FS."MonitoringObserverId"
+                    INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
+                WHERE
+                    FS."ElectionRoundId" = @electionRoundId
+                    AND MN."NgoId" = @ngoId
+                UNION ALL
+                SELECT
+                    "MonitoringObserverId",
+                    "PollingStationId"
+                FROM
+                    "QuickReports" QR
+                    INNER JOIN "MonitoringObservers" MO ON MO."Id" = QR."MonitoringObserverId"
+                    INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
+                WHERE
+                    QR."ElectionRoundId" = @electionRoundId
+                    AND MN."NgoId" = @ngoId
+                UNION ALL
+                SELECT
+                    "MonitoringObserverId",
+                    "PollingStationId"
+                FROM
+                    "Attachments" A
+                    INNER JOIN "MonitoringObservers" MO ON MO."Id" = A."MonitoringObserverId"
+                    INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
+                WHERE
+                    A."ElectionRoundId" = @electionRoundId
+                    AND MN."NgoId" = @ngoId
+                UNION ALL
+                SELECT
+                    "MonitoringObserverId",
+                    "PollingStationId"
+                FROM
+                    "Notes" N
+                    INNER JOIN "MonitoringObservers" MO ON MO."Id" = N."MonitoringObserverId"
+                    INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
+                WHERE
+                    N."ElectionRoundId" = @electionRoundId
+                    AND MN."NgoId" = @ngoId
+                UNION ALL
+                SELECT
+                    "MonitoringObserverId",
+                    "PollingStationId"
+                FROM
+                    "PollingStationInformation" PSI
+                    INNER JOIN "MonitoringObservers" MO ON MO."Id" = PSI."MonitoringObserverId"
+                    INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
+                WHERE
+                    PSI."ElectionRoundId" = @electionRoundId
+                    AND MN."NgoId" = @ngoId
+            )
+        SELECT
+            COUNT(DISTINCT PSV."PollingStationId") AS "NumberOfVisitedPollingStations"
+        FROM
+            MONITORING_OBSERVER MO
+            JOIN POLLING_STATION_VISITS PSV ON MO."Id" = PSV."MonitoringObserverId";
+        
+        -- count total minutes observing
+        SELECT
+            COALESCE(SUM(COALESCE(PSI."MinutesMonitoring", 0)), 0) "MinutesMonitoring"
+        FROM
+            "MonitoringObservers" MO
+            INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
+            INNER JOIN "AspNetUsers" U ON MO."ObserverId" = U."Id"
+            INNER JOIN "PollingStationInformation" PSI ON PSI."MonitoringObserverId" = MO."Id"
+        WHERE
+            MN."ElectionRoundId" = @electionRoundId
+            AND MN."NgoId" = @ngoId;
+            
+            
+        -- read hourly histogram
+        WITH
+            TIME_SERIES AS (
+                SELECT
+                    GENERATE_SERIES(
+                        DATE_TRUNC(
+                            'hour',
+                            TIMEZONE ('utc', NOW()) + INTERVAL '-12 hour'
+                        ),
+                        DATE_TRUNC('hour', TIMEZONE ('utc', NOW())),
+                        '1 hour'
+                    ) AS "Bucket"
+            ),
+            FS_CTE AS (
+                SELECT
+                    TS."Bucket",
+                    COUNT(FS."Id") AS "FormsSubmitted",
+                    SUM(FS."NumberOfFlaggedAnswers") AS "NumberOfQuestionsAnswered",
+                    SUM(FS."NumberOfFlaggedAnswers") AS "NumberOfFlaggedAnswers"
+                FROM
+                    "FormSubmissions" FS
+                    INNER JOIN "MonitoringObservers" MO ON MO."Id" = FS."MonitoringObserverId"
+                    INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
+                    LEFT JOIN TIME_SERIES TS ON COALESCE(FS."LastModifiedOn", FS."CreatedOn") >= TS."Bucket"
+                    AND COALESCE(FS."LastModifiedOn", FS."CreatedOn") < TS."Bucket" + INTERVAL '1 hour'
+                WHERE
+                    FS."ElectionRoundId" = @electionRoundId
+                    AND MN."NgoId" = @ngoId
+                GROUP BY
+                    TS."Bucket"
+            ),
+            QR_CTE AS (
+                SELECT
+                    TS."Bucket",
+                    COUNT(QR."Id") AS "QuickReportsSubmitted"
+                FROM
+                    "QuickReports" QR
+                    INNER JOIN "MonitoringObservers" MO ON MO."Id" = QR."MonitoringObserverId"
+                    INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
+                    LEFT JOIN TIME_SERIES TS ON COALESCE(QR."LastModifiedOn", QR."CreatedOn") >= TS."Bucket"
+                    AND COALESCE(QR."LastModifiedOn", QR."CreatedOn") < TS."Bucket" + INTERVAL '1 hour'
+                WHERE
+                    QR."ElectionRoundId" = @electionRoundId
+                    AND MN."NgoId" = @ngoId
+                GROUP BY
+                    TS."Bucket"
+            )
+        SELECT
+            TS."Bucket",
+            COALESCE(FS."FormsSubmitted", 0) AS "FormsSubmitted",
+            COALESCE(FS."NumberOfQuestionsAnswered", 0) AS "NumberOfQuestionsAnswered",
+            COALESCE(FS."NumberOfFlaggedAnswers", 0) AS "NumberOfFlaggedAnswers",
+            COALESCE(QR."QuickReportsSubmitted", 0) AS "QuickReportsSubmitted"
+        FROM
+            TIME_SERIES TS
+            LEFT JOIN FS_CTE FS ON FS."Bucket" = TS."Bucket"
+            LEFT JOIN QR_CTE QR ON QR."Bucket" = TS."Bucket"
+        ORDER BY
+            TS."Bucket";
+        """;
 
-        var queryArgs = new { electionRoundId = req.ElectionRoundId , ngoId = req.NgoId};
+        var queryArgs = new { electionRoundId = req.ElectionRoundId, ngoId = req.NgoId };
 
-        IEnumerable<BucketView> histogramData = [];
+        ObserversStats observersStats;
+        int numberOfObserversOnTheField;
+        int totalNumberOfPollingStations;
+        int numberOfVisitedPollingStations;
+        decimal minutesMonitoring;
+        List<BucketView> histogram = [];
+
         using (var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct))
         {
-            histogramData = await dbConnection.QueryAsync<BucketView>(commandText, queryArgs);
+            using (var multi = await dbConnection.QueryMultipleAsync(sql, queryArgs))
+            {
+                observersStats = multi.ReadSingle<ObserversStats>();
+                numberOfObserversOnTheField = multi.ReadSingle<int>();
+                totalNumberOfPollingStations = multi.ReadSingle<int>();
+                numberOfVisitedPollingStations = multi.ReadSingle<int>();
+                minutesMonitoring = multi.ReadSingle<decimal>();
+                histogram = multi.Read<BucketView>().ToList();
+            }
         }
 
-        return new Response { Histogram = histogramData.ToList() };
+        return new Response
+        {
+            ObserversStats = observersStats,
+            NumberOfObserversOnTheField = numberOfObserversOnTheField,
+            PollingStationsStats = new()
+            {
+                TotalNumberOfPollingStations = totalNumberOfPollingStations,
+                NumberOfVisitedPollingStations = numberOfVisitedPollingStations
+            },
+            MinutesMonitoring = minutesMonitoring,
+            FormsHistogram = histogram.Select(x => new HistogramPoint(x.Bucket, x.FormsSubmitted)).ToArray(),
+            QuestionsHistogram = histogram.Select(x => new HistogramPoint(x.Bucket, x.NumberOfQuestionsAnswered)).ToArray(),
+            FlaggedAnswersHistogram = histogram.Select(x => new HistogramPoint(x.Bucket, x.NumberOfFlaggedAnswers)).ToArray(),
+            QuickReportsHistogram = histogram.Select(x => new HistogramPoint(x.Bucket, x.QuickReportsSubmitted)).ToArray(),
+        };
     }
 }

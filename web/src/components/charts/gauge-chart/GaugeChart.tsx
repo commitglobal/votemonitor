@@ -51,10 +51,6 @@ const GaugeChart = forwardRef<ChartJSOrUndefined<"doughnut">, GaugeProps>((props
             ctx.textAlign = 'center';
             var percentage = formatAsPercentage(data!.datasets[0]!.data[0]!, data.datasets.reduce((t, d) => t + d.data.reduce((a, b) => a + b), 0))
             ctx.fillText(percentage, xCoor!, yCoor!);
-            ctx.font = '16px ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"';
-            ctx.fillStyle = '#AEAEAE';
-            ctx.textAlign = 'center';
-            ctx.fillText(props.metricLabel, xCoor!, yCoor! + 20);
         }
     };
 
