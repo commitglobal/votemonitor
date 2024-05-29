@@ -22,6 +22,7 @@ import EditTextQuestion from './EditTextQuestion';
 import QuestionActions from './QuestionActions';
 import { useParams } from '@tanstack/react-router';
 import { LanguageIcon } from '@heroicons/react/24/outline';
+import DisplayLogicEditor from './DisplayLogicEditor';
 
 interface EditQuestionFactoryProps {
   formQuestions: BaseQuestion[];
@@ -175,22 +176,22 @@ export default function EditQuestionFactory({
                   </div>
                 </div>
 
-                <div className='flex items-center space-x-2'>
-                  <QuestionActions
-                    questionIdx={questionIdx}
-                    isLastQuestion={isLastQuestion}
-                    duplicateQuestion={duplicateQuestion}
-                    deleteQuestion={deleteQuestion}
-                    moveQuestion={moveQuestion}
-                    disabled={!!params['languageCode']}
-                  />
-                </div>
+                {!params['languageCode'] && (
+                  <div className='flex items-center space-x-2'>
+                    <QuestionActions
+                      questionIdx={questionIdx}
+                      isLastQuestion={isLastQuestion}
+                      duplicateQuestion={duplicateQuestion}
+                      deleteQuestion={deleteQuestion}
+                      moveQuestion={moveQuestion}
+                    />
+                  </div>
+                )}
               </div>
             </CollapsibleTrigger>
             <CollapsibleContent className='px-4 pb-4'>
               {question.$questionType === QuestionType.TextQuestionType ? (
                 <EditTextQuestion
-                  formQuestions={formQuestions}
                   availableLanguages={availableLanguages}
                   languageCode={languageCode}
                   question={question as TextQuestion}
@@ -200,7 +201,6 @@ export default function EditQuestionFactory({
                 />
               ) : question.$questionType === QuestionType.DateQuestionType ? (
                 <EditDateQuestion
-                  formQuestions={formQuestions}
                   availableLanguages={availableLanguages}
                   languageCode={languageCode}
                   question={question as DateQuestion}
@@ -210,7 +210,6 @@ export default function EditQuestionFactory({
                 />
               ) : question.$questionType === QuestionType.NumberQuestionType ? (
                 <EditNumberQuestion
-                  formQuestions={formQuestions}
                   availableLanguages={availableLanguages}
                   languageCode={languageCode}
                   question={question as NumberQuestion}
@@ -220,7 +219,6 @@ export default function EditQuestionFactory({
                 />
               ) : question.$questionType === QuestionType.MultiSelectQuestionType ? (
                 <EditSelectQuestion
-                  formQuestions={formQuestions}
                   availableLanguages={availableLanguages}
                   languageCode={languageCode}
                   question={question as MultiSelectQuestion}
@@ -230,7 +228,6 @@ export default function EditQuestionFactory({
                 />
               ) : question.$questionType === QuestionType.SingleSelectQuestionType ? (
                 <EditSelectQuestion
-                  formQuestions={formQuestions}
                   availableLanguages={availableLanguages}
                   languageCode={languageCode}
                   question={question as SingleSelectQuestion}
@@ -240,7 +237,6 @@ export default function EditQuestionFactory({
                 />
               ) : question.$questionType === QuestionType.RatingQuestionType ? (
                 <EditRatingQuestion
-                  formQuestions={formQuestions}
                   availableLanguages={availableLanguages}
                   languageCode={languageCode}
                   question={question as RatingQuestion}
@@ -249,6 +245,16 @@ export default function EditQuestionFactory({
                   isInValid={isInValid}
                 />
               ) : null}
+
+              {!params['languageCode'] && (
+                <DisplayLogicEditor
+                  formQuestions={formQuestions}
+                  questionIndex={questionIdx}
+                  question={question}
+                  languageCode={languageCode}
+                  updateQuestion={updateQuestion}
+                />
+              )}
             </CollapsibleContent>
           </Collapsible>
         </div>
