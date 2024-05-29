@@ -73,6 +73,10 @@ module "ecs_api" {
       value = module.s3_private.bucket
     },
     {
+      name  = "FileStorage__S3__AWSRegion"
+      value = var.region
+    },
+    {
       name  = "Mailing__MailSenderType"
       value = "SES"
     },
@@ -186,7 +190,6 @@ module "s3_private" {
   source = "./modules/s3"
 
   name = "${local.namespace}-private"
-  # policy = data.aws_iam_policy_document.s3_cloudfront_private.json
 }
 
 resource "aws_s3_bucket_cors_configuration" "s3_private" {
