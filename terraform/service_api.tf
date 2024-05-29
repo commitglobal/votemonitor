@@ -193,6 +193,7 @@ resource "aws_s3_bucket_cors_configuration" "s3_private" {
   bucket = module.s3_private.bucket
 
   cors_rule {
+    allowed_headers = ["*"]
     allowed_methods = ["PUT"]
     allowed_origins = ["*"]
     expose_headers  = ["ETag"]
