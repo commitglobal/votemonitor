@@ -409,6 +409,16 @@
         "cancel": "Renunță",
         "action": "Deconectează-te"
       }
+    },
+    "feedback_sheet": {
+      "heading": "Trimite-ne feedback-ul tău",
+      "p1": "Te rugăm să ne spui despre orice problemă pe care ai întâlnit-o în funcționarea aplicației sau orice sugestie pe care dorești să o împărtășești pentru a îmbunătăți Vote Monitor pe viitor. Apreciem orice feedback!",
+      "placeholder": "Scrie feedback-ul tău aici...",
+      "cancel": "Renunță",
+      "action": "Trimite",
+      "input": {
+        "max": "Câmpul nu poate depăși {{value}} caractere"
+      }
     }
   },
   "change_password": {

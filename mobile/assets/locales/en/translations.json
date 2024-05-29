@@ -409,6 +409,16 @@
         "cancel": "Cancel",
         "action": "Log out"
       }
+    },
+    "feedback_sheet": {
+      "heading": "Send us your feedback",
+      "p1": "Please tell us about any issues you might have encountered with the functioning of the app, or any suggestions you would like to share to improve Vote Monitor for the future. We appreciate every feedback!",
+      "placeholder": "Write your feedback here...",
+      "cancel": "Cancel",
+      "action": "Send",
+      "input": {
+        "max": "Input cannot exceed {{value}} characters"
+      }
     }
   },
   "change_password": {
