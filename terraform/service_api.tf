@@ -143,6 +143,26 @@ module "ecs_api" {
       name      = "Seeders__PlatformAdminSeeder__Password"
       valueFrom = "${aws_secretsmanager_secret.seed_admin.arn}:password::"
     },
+    {
+      name      = "Core__HangfireConnectionConfig__Server"
+      valueFrom = "${aws_secretsmanager_secret.rds.arn}:host::"
+    },
+    {
+      name      = "Core__HangfireConnectionConfig__Port"
+      valueFrom = "${aws_secretsmanager_secret.rds.arn}:port::"
+    },
+    {
+      name      = "Core__HangfireConnectionConfig__Database"
+      valueFrom = "${aws_secretsmanager_secret.rds.arn}:database::"
+    },
+    {
+      name      = "Core__HangfireConnectionConfig__UserId"
+      valueFrom = "${aws_secretsmanager_secret.rds.arn}:username::"
+    },
+    {
+      name      = "Core__HangfireConnectionConfig__Password"
+      valueFrom = "${aws_secretsmanager_secret.rds.arn}:password::"
+    },
   ]
 
   allowed_secrets = [
