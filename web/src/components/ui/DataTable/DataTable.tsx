@@ -9,8 +9,9 @@ import {
   type VisibilityState,
   getExpandedRowModel,
   type Row,
-  CellContext,
+  type CellContext,
 } from '@tanstack/react-table';
+import { EmptyCollectionIcon } from '@/components/icons/EmptyCollectionIcon';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useEffect, useState, type ReactElement } from 'react';
 import { SortOrder, type DataTableParameters, type PageResponse } from '@/common/types';
@@ -23,15 +24,15 @@ export interface RowData {
   defaultLanguage?: string;
 }
 
-declare module '@tanstack/react-table' {
-  interface ColumnMeta<TData, TValue> {
-      // Your additional properties here
-      getCellContext: (context: CellContext<TData, TValue>) => TableCellProps | void
-  }
+export interface TableCellProps {
+  className: string;
 }
 
-export interface TableCellProps{
-  className: string;
+declare module '@tanstack/react-table' {
+  interface ColumnMeta<TData, TValue> {
+    // Your additional properties here
+    getCellContext: (context: CellContext<TData, TValue>) => TableCellProps | void;
+  }
 }
 
 export interface DataTableProps<TData extends RowData, TValue, TQueryParams = object> {
@@ -89,7 +90,7 @@ export interface DataTableProps<TData extends RowData, TValue, TQueryParams = ob
    * @returns
    */
   getSubrows?: (originalRow: TData, index: number) => undefined | TData[];
-  
+
   /**
    * Externalize row styling
    * Used by DataTable
@@ -103,7 +104,11 @@ export interface DataTableProps<TData extends RowData, TValue, TQueryParams = ob
 
   onRowClick?: (id: string, defaultLanguage?: string) => void;
 
-  getCellProps?:  (context: CellContext<TData, unknown>)=> TableCellProps | void
+  getCellProps?: (context: CellContext<TData, unknown>) => TableCellProps | void;
+
+  emptyTitle?: string;
+
+  emptySubtitle?: string;
 }
 
 export function DataTable<TData extends RowData, TValue, TQueryParams = object>({
@@ -119,7 +124,9 @@ export function DataTable<TData extends RowData, TValue, TQueryParams = object>(
   getRowClassName,
   onDataFetchingSucceed,
   onRowClick,
-  getCellProps
+  getCellProps,
+  emptyTitle,
+  emptySubtitle,
 }: DataTableProps<TData, TValue, TQueryParams>): ReactElement {
   let [pagination, setPagination]: [PaginationState, (p: PaginationState) => void] = useState({
     pageIndex: 0,
@@ -179,60 +186,76 @@ export function DataTable<TData extends RowData, TValue, TQueryParams = object>(
 
   return (
     <div className='bg-white border border-gray-300 shadow-sm filament-tables-container rounded-xl'>
-      <div>
-        <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id} style={{ maxWidth: header.getSize() }}>
-                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                    </TableHead>
-                  );
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {isFetching ? (
-              Array.from({ length: pagination.pageSize }).map((_, index) => (
-                <TableRow key={index}>
-                  {table.getVisibleLeafColumns().map((_, index) => (
-                    <TableCell key={index}>
-                      <Skeleton className='w-[100px] h-[20px] rounded-full' />
+      {data?.isEmpty ? (
+        <div className='flex items-center justify-center py-52 flex-col gap-2 max-w-lg m-auto'>
+          <EmptyCollectionIcon />
+
+          <p className='text-2xl font-bold'>{emptyTitle ?? 'No data'}</p>
+          {emptySubtitle && <p className='text-lg text-[#606674] text-center'>{emptySubtitle}</p>}
+        </div>
+      ) : (
+        <>
+          <div>
+            <Table>
+              <TableHeader>
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <TableRow key={headerGroup.id}>
+                    {headerGroup.headers.map((header) => {
+                      return (
+                        <TableHead key={header.id} style={{ maxWidth: header.getSize() }}>
+                          {header.isPlaceholder
+                            ? null
+                            : flexRender(header.column.columnDef.header, header.getContext())}
+                        </TableHead>
+                      );
+                    })}
+                  </TableRow>
+                ))}
+              </TableHeader>
+              <TableBody>
+                {isFetching ? (
+                  Array.from({ length: pagination.pageSize }).map((_, index) => (
+                    <TableRow key={index}>
+                      {table.getVisibleLeafColumns().map((_, index) => (
+                        <TableCell key={index}>
+                          <Skeleton className='w-[100px] h-[20px] rounded-full' />
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))
+                ) : table.getRowModel().rows?.length ? (
+                  table.getRowModel().rows.map((row) => (
+                    <TableRow
+                      key={row.id}
+                      data-state={row.getIsSelected() && 'selected'}
+                      className={getRowClassName ? getRowClassName(row) : ''}
+                      onClick={() => {
+                        onRowClick?.(row.original.id, row.original.defaultLanguage);
+                      }}
+                      style={{ cursor: onRowClick ? 'pointer' : undefined }}>
+                      {row.getVisibleCells().map((cell) => (
+                        <TableCell
+                          key={cell.id}
+                          style={{ maxWidth: cell.column.getSize() }}
+                          {...(getCellProps ? getCellProps(cell.getContext()) : {})}>
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={columns.length} className='h-24 text-center'>
+                      No results.
                     </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && 'selected'}
-                  className={getRowClassName ? getRowClassName(row) : ''}
-                  onClick={() => {
-                    onRowClick?.(row.original.id, row.original.defaultLanguage);
-                  }}
-                  style={{ cursor: onRowClick ? 'pointer' : undefined }}>
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} style={{ maxWidth: cell.column.getSize() }} {...(getCellProps ? getCellProps(cell.getContext()) : {})}>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={columns.length} className='h-24 text-center'>
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
-      <DataTablePagination table={table} totalCount={data?.totalCount} />
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
+          <DataTablePagination table={table} totalCount={data?.totalCount} />
+        </>
+      )}
     </div>
   );
 }
