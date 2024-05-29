@@ -3,7 +3,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import Header from "../../../../../../components/Header";
 import { Icon } from "../../../../../../components/Icon";
 import { Typography } from "../../../../../../components/Typography";
-import { YStack, Image, View, XStack, AlertDialog, AlertDialogProps } from "tamagui";
+import { YStack, Image, View, AlertDialog, AlertDialogProps } from "tamagui";
 import { useQuickReportById } from "../../../../../../services/queries/quick-reports.query";
 import { useUserData } from "../../../../../../contexts/user/UserContext.provider";
 import { useTranslation } from "react-i18next";
@@ -107,6 +107,7 @@ interface attachementProps {
 
 const MediaPreview = (props: attachementProps) => {
   const { attachment } = props;
+
   return (
     <MediaDialog
       trigger={
@@ -117,24 +118,21 @@ const MediaPreview = (props: attachementProps) => {
         </Card>
       }
       header={
-        <XStack justifyContent="space-between" backgroundColor="white" height="5%">
-          <Typography>{attachment.fileName}</Typography>
-          <AlertDialog.Cancel>
-            <Icon icon="x" />
-          </AlertDialog.Cancel>
-        </XStack>
+        <AlertDialog.Cancel>
+          <Icon icon="x" alignSelf="flex-end" />
+        </AlertDialog.Cancel>
       }
       content={
         attachment.mimeType.includes("image") ? (
           <Image
             source={{ uri: attachment.presignedUrl }}
             width="100%"
-            height="90%"
-            resizeMode="cover"
+            height={350}
+            resizeMode="contain"
           />
         ) : (
           <View>
-            <Typography>Not an image</Typography>
+            <Typography>TODO: Audio/Video Preview</Typography>
           </View>
         )
       }
