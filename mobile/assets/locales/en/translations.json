@@ -18,7 +18,8 @@
     "ro": "Romanian",
     "en": "English",
     "pl": "Polish",
-    "bg": "Bulgarian"
+    "bg": "Bulgarian",
+    "sr": "Serbian"
   },
   "onboarding": {
     "language": {
@@ -231,7 +232,10 @@
     },
     "clear_answers_modal": {
       "title": "Clear form {{value}}",
-      "description": "This action will delete all answers entered so far for this form (including notes and media files). Status of all questions will be reverted to Not Answered.\n\nTo avoid unintended information loss, please ensure you check the form before performing this action.",
+      "description": {
+        "p1": "This action will delete all answers entered so far for this form (including notes and media files). Status of all questions will be reverted to 'Not Answered'.",
+        "p2": "To avoid unintended information loss, please ensure you check the form before performing this action"
+      },
       "actions": {
         "clear": "Clear form",
         "cancel": "Cancel"

@@ -18,7 +18,8 @@
     "ro": "Română",
     "en": "Engleză",
     "pl": "Poloneză",
-    "bg": "Bulgară"
+    "bg": "Bulgară",
+    "sr": "Sârbă"
   },
   "onboarding": {
     "language": {
@@ -231,7 +232,10 @@
     },
     "clear_answers_modal": {
       "title": "Golește formularul {{value}}",
-      "description": "Această acțiune va șterge toate răspunsurile introduse până acum pentru acest formular (inclusiv notițe și fișiere media). Toate întrebările își vor schimba statusul în 'Fără răspuns'. Pentru a evita orice pierdere neintenționată de date, te rugăm să verifici formularul înainte de a realiza această acțiune.",
+      "description": {
+        "p1": "Această acțiune va șterge toate răspunsurile introduse până acum pentru acest formular (inclusiv notițe și fișiere media). Toate întrebările își vor schimba statusul în 'Fără răspuns'.",
+        "p2": "Pentru a evita orice pierdere neintenționată de date, te rugăm să verifici formularul înainte de a realiza această acțiune."
+      },
       "actions": {
         "clear": "Golește formularul",
         "cancel": "Renunță"
