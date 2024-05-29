@@ -82,7 +82,7 @@ module "ecs_api" {
     },
     {
       name  = "Mailing__SES__SenderEmail"
-      value = "no-reply@${var.domain_name}"
+      value = "votemonitor@heroesof.tech"
     },
     {
       name  = "Mailing__SES__AWSRegion"

@@ -68,5 +68,5 @@ resource "aws_secretsmanager_secret_version" "seed_admin" {
 }
 
 resource "aws_secretsmanager_secret" "ses_staging" {
-  name = "ses-staging"
+ name = "${local.namespace}-ses-staging-${random_string.secrets_suffix.result}"
 }

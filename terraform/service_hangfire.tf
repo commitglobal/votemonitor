@@ -78,7 +78,7 @@ module "ecs_hangfire" {
     },
     {
       name  = "Mailing__SES__SenderEmail"
-      value = "no-reply@${var.domain_name}"
+      value = "votemonitor@heroesof.tech"
     },
     {
       name  = "Mailing__SES__AWSRegion"
@@ -139,10 +139,19 @@ module "ecs_hangfire" {
       name      = "DashboardAuth__Password"
       valueFrom = "${aws_secretsmanager_secret.seed_admin.arn}:password::"
     },
+      {
+      name      = "Mailing__SES__AWSAccessKey"
+      valueFrom = "${aws_secretsmanager_secret.ses_staging.arn}:access-key::"
+    },
+    {
+      name      = "Mailing__SES__AWSSecretKey"
+      valueFrom = "${aws_secretsmanager_secret.ses_staging.arn}:secret-key::"
+    },
   ]
 
   allowed_secrets = [
     aws_secretsmanager_secret.seed_admin.arn,
     aws_secretsmanager_secret.rds.arn,
+    aws_secretsmanager_secret.ses_staging.arn
   ]
 }
