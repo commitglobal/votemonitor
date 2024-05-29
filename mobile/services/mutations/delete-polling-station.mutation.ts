@@ -18,7 +18,7 @@ export const useDeletePollingStationMutation = (electionRoundId: string | undefi
     onError: (err) => {
       console.log("🏠🏠🏠 ERROR IN DELETE POLLING STATION MUTATION 🏠🏠🏠", err);
     },
-    onSettled: () => {
+    onSuccess: () => {
       return queryClient.invalidateQueries({
         queryKey: getPollingStationsQK,
       });

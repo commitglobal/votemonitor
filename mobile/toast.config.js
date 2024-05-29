@@ -6,7 +6,7 @@ export const toastConfig = {
       {...props}
       text2Style={{
         fontSize: 16,
-        color: "hsl(142, 71%, 27%)",
+        color: "white",
         lineHeight: 24,
         fontWeight: "500",
       }}
@@ -15,11 +15,10 @@ export const toastConfig = {
       style={{
         borderLeftColor: "hsl(142, 71%, 27%)",
         height: "auto",
-        backgroundColor: "white",
+        backgroundColor: "whsl(142, 71%, 27%)",
       }}
     />
   ),
-
   error: (props) => (
     <ErrorToast
       {...props}

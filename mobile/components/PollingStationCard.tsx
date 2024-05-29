@@ -1,55 +1,62 @@
 import { XStack, YStack } from "tamagui";
 import Card, { CardProps } from "./Card";
 import { Typography } from "./Typography";
-import DeletePollingStationDialog from "./DeletePollingStationDialog";
 import { useTranslation } from "react-i18next";
 import { PollingStationVisitVM } from "../common/models/polling-station.model";
+import { Icon } from "./Icon";
 
 interface PollingStationCardProps extends CardProps {
   visit: PollingStationVisitVM;
 }
 
 const PollingStationCard = (props: PollingStationCardProps) => {
-  const { t } = useTranslation("manage_polling_stations");
-  const { visit } = props;
+  const { t } = useTranslation("manage_my_polling_stations");
+  const { visit, onPress, ...rest } = props;
 
   return (
-    <Card pressStyle={{ opacity: 1 }}>
+    <Card pressStyle={{ opacity: 1 }} paddingTop="$0" paddingRight="$0" {...rest}>
       <YStack gap="$md">
-        <XStack justifyContent="space-between" alignItems="center">
+        {/* header */}
+        {/* the '-' margin is used in order to keep the alignment while having a big enough press area for the icon */}
+        <XStack justifyContent="space-between" alignItems="center" marginBottom={-16}>
           <Typography preset="body1" fontWeight="700">
-            {t("station_card.title", { value: visit.number })}
+            {t("ps_card.header", { value: visit.number })}
           </Typography>
 
-          {/* <DeletePollingStationDialog
-            pollingStationNumber={visit.number}
-            pollingStationId={visit.pollingStationId}
-          /> */}
+          <YStack
+            padding="$md"
+            onPress={onPress}
+            pressStyle={{ opacity: 0.5 }}
+            justifyContent="center"
+            alignItems="center"
+          >
+            <Icon icon="bin" color="transparent" />
+          </YStack>
         </XStack>
 
-        {visit.level1 !== "" && (
+        {visit.level1 && (
           <Typography>
-            {t("station_card.level_1")} <Typography fontWeight="500">{visit.level1}</Typography>{" "}
+            {t("ps_card.l1")}: <Typography fontWeight="500">{visit.level1}</Typography>{" "}
           </Typography>
         )}
 
-        {visit.level2 !== "" && (
+        {visit.level2 && (
           <Typography>
-            {t("station_card.level_2")} <Typography fontWeight="500"> {visit.level2} </Typography>{" "}
+            {t("ps_card.l2")}: <Typography fontWeight="500"> {visit.level2} </Typography>{" "}
           </Typography>
         )}
 
-        {visit.level3 !== "" && (
+        {visit.level3 && (
           <Typography>
-            {t("station_card.level_3")} <Typography fontWeight="500">{visit.level3}</Typography>
+            {t("ps_card.l3")}: <Typography fontWeight="500">{visit.level3}</Typography>
           </Typography>
         )}
 
         <Typography>
-          {t("station_card.street")} <Typography fontWeight="500">{visit.address}</Typography>
+          {t("ps_card.street")}: <Typography fontWeight="500">{visit.address}</Typography>
         </Typography>
         <Typography>
-          {t("station_card.number")} <Typography fontWeight="500">{visit.number}</Typography>
+          {t("ps_card.ps_number")}: <Typography fontWeight="500">{visit.number}</Typography>
         </Typography>
       </YStack>
     </Card>
