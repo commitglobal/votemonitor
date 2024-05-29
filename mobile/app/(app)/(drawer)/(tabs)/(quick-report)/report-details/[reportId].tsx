@@ -7,9 +7,11 @@ import { YStack, Image, View, AlertDialog, AlertDialogProps } from "tamagui";
 import { useQuickReportById } from "../../../../../../services/queries/quick-reports.query";
 import { useUserData } from "../../../../../../contexts/user/UserContext.provider";
 import { useTranslation } from "react-i18next";
-import React, { ReactNode } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import Card from "../../../../../../components/Card";
 import { QuickReportAttachmentAPIResponse } from "../../../../../../services/api/quick-report/get-quick-reports.api";
+import { Audio } from "expo-av";
+// import soundFile from "../../../../../../../../assets/sound.mp3";
 
 type SearchParamsType = {
   reportId: string;
@@ -108,6 +110,43 @@ interface attachementProps {
 const MediaPreview = (props: attachementProps) => {
   const { attachment } = props;
 
+  // Audio Set-up
+  // async function playSound() {
+  //   console.log("Loading Sound");
+  //   const { sound } = await Audio.Sound.createAsync(
+  //     { uri: attachment.presignedUrl },
+  //     { shouldPlay: true },
+  //   );
+
+  //   await sound.playAsync();
+  // }
+
+  const [sound, setSound] = useState<Audio.Sound | undefined>(undefined);
+  console.log(attachment.presignedUrl);
+
+  async function playSound() {
+    console.log("Loading Sound");
+    // const { sound } = await Audio.Sound.createAsync(require("../../../../../../assets/sound.mp3"));
+    const { sound } = await Audio.Sound.createAsync(
+      { uri: attachment.presignedUrl },
+      { shouldPlay: true },
+    );
+
+    setSound(sound);
+
+    console.log("Playing Sound");
+    await sound.playAsync();
+  }
+
+  useEffect(() => {
+    return sound
+      ? () => {
+          console.log("Unloading Sound");
+          sound.unloadAsync();
+        }
+      : undefined;
+  }, [sound]);
+
   return (
     <MediaDialog
       trigger={
@@ -131,8 +170,8 @@ const MediaPreview = (props: attachementProps) => {
             resizeMode="contain"
           />
         ) : (
-          <View>
-            <Typography>TODO: Audio/Video Preview</Typography>
+          <View onPress={playSound}>
+            <Typography onPress={() => console.log("PLAAAY")}>TODO: Audio/Video Preview</Typography>
           </View>
         )
       }
