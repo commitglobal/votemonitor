@@ -71,7 +71,8 @@
     },
     "actions": {
       "forgot_password": "Forgot your password?"
-    }
+    },
+    "email_toast": "Email address was copied to clipboard"
   },
   "forgot_password": {
     "header": {

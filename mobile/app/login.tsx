@@ -109,6 +109,16 @@ const Login = () => {
   // todo: refactor this (nr of pages in the view pager) @luciatugui
   const data = [1, 2, 3];
 
+  const copyToClipboard = async () => {
+    await Clipboard.setStringAsync(t("disclaimer.email"));
+    return Toast.show({
+      type: "success",
+      text2: t("email_toast"),
+      visibilityTime: 5000,
+      text2Style: { textAlign: "center" },
+    });
+  };
+
   if (onboardingComplete) {
     return (
       <Screen
@@ -131,11 +141,8 @@ const Login = () => {
               <YStack gap="$lg" maxWidth="90%">
                 <Typography>{t("disclaimer.paragraph1")}</Typography>
                 <Typography>
-                  {t("disclaimer.paragraph2")}
-                  <Typography
-                    color="$purple5"
-                    onPress={async () => await Clipboard.setStringAsync("TODO")}
-                  >
+                  {t("disclaimer.paragraph2")}{" "}
+                  <Typography color="$purple5" onPress={copyToClipboard}>
                     {t("disclaimer.email")}
                   </Typography>
                   .
