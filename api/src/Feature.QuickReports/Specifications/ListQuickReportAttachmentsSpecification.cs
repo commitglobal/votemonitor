@@ -7,6 +7,9 @@ public sealed class ListQuickReportAttachmentsSpecification : Specification<Quic
 {
     public ListQuickReportAttachmentsSpecification(Guid electionRoundId, params Guid[] quickReportIds)
     {
-        Query.Where(x => x.ElectionRoundId == electionRoundId && quickReportIds.Contains(x.QuickReportId));
+        Query
+            .Where(x => x.ElectionRoundId == electionRoundId && quickReportIds.Contains(x.QuickReportId))
+            .Where(x=>x.IsDeleted == false)
+            .Where(x=>x.IsCompleted);
     }
 }

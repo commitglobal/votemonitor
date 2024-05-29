@@ -42,9 +42,9 @@ export function MonitoringObserverFormsTable({
     return Object.fromEntries(params) as MonitoringObserverDetailsRouteSearch;
   }, [searchText, debouncedSearch, monitoringObserverId]);
 
-  const navigateToMonitoringObserver = useCallback(
-    (monitoringObserverId: string) => {
-      void navigate({ to: '/monitoring-observers/view/$monitoringObserverId/$tab', params: { monitoringObserverId, tab: 'details' } });
+  const navigateToFormSubmission = useCallback(
+    (submissionId: string) => {
+      void navigate({ to: '/responses/$submissionId', params: { submissionId } });
     },
     [navigate]
   );
@@ -56,7 +56,7 @@ export function MonitoringObserverFormsTable({
         columns={formSubmissionsByEntryColumnDefs}
         useQuery={useFormSubmissionsByEntry}
         queryParams={queryParams}
-        onRowClick={navigateToMonitoringObserver}
+        onRowClick={navigateToFormSubmission}
       />
     </CardContent>
   );

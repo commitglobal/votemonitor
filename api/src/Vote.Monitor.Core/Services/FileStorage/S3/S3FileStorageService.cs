@@ -2,7 +2,6 @@
 using Amazon.S3.Model;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using NPOI.HPSF;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
 
 namespace Vote.Monitor.Core.Services.FileStorage.S3;
@@ -89,13 +88,14 @@ internal class S3FileStorageService(IAmazonS3 client,
 
             for (int partNumber = 1; partNumber <= numberOfUploadParts; partNumber++)
             {
-                var partPresignedUrl = await client.GetPreSignedURLAsync(new GetPreSignedUrlRequest
+                var partPresignedUrl = client.GetPreSignedURL(new GetPreSignedUrlRequest
                 {
                     UploadId = response.UploadId,
                     BucketName = _options.BucketName,
                     PartNumber = partNumber,
                     Key = fileKey,
-                    Expires = DateTime.UtcNow.AddHours(24)
+                    Verb = HttpVerb.PUT,
+                    Expires = DateTime.UtcNow.AddHours(24),
                 });
 
                 presignedUrls.Add(partNumber, partPresignedUrl);

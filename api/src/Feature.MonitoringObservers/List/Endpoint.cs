@@ -72,7 +72,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
                             FROM
                                 "PollingStationInformation" PSI
                             WHERE
-                                PSI."ElectionRoundId" = '9edce401-8732-422b-b8ad-cf3e930d991f'
+                                PSI."ElectionRoundId" = @electionRoundId
                             GROUP BY
                                 PSI."MonitoringObserverId"
                             UNION ALL
@@ -82,7 +82,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
                             FROM
                                 "Notes" N
                             WHERE
-                                N."ElectionRoundId" = '9edce401-8732-422b-b8ad-cf3e930d991f'
+                                N."ElectionRoundId" = @electionRoundId
                             GROUP BY
                                 N."MonitoringObserverId"
                             UNION ALL
@@ -92,7 +92,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
                             FROM
                                 "Attachments" A
                             WHERE
-                                A."ElectionRoundId" = '9edce401-8732-422b-b8ad-cf3e930d991f'
+                                A."ElectionRoundId" = @electionRoundId
                             GROUP BY
                                 A."MonitoringObserverId"
                             UNION ALL
@@ -102,7 +102,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
                             FROM
                                 "QuickReports" QR
                             WHERE
-                                QR."ElectionRoundId" = '9edce401-8732-422b-b8ad-cf3e930d991f'
+                                QR."ElectionRoundId" = @electionRoundId
                             GROUP BY
                                 QR."MonitoringObserverId"
                         ) AS LATESTACTIVITYSUBQUERY

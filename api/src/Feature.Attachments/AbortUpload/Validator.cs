@@ -1,6 +1,4 @@
-﻿using Vote.Monitor.Core.Validators;
-
-namespace Feature.Attachments.AbortUpload;
+﻿namespace Feature.Attachments.AbortUpload;
 
 public class Validator : Validator<Request>
 {

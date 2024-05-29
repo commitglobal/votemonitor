@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Vote.Monitor.Api.Feature.Auth.Options;
 using Vote.Monitor.Core.Extensions;
@@ -15,7 +16,8 @@ namespace Vote.Monitor.Api.Feature.Auth.Services;
 internal class TokenService(UserManager<ApplicationUser> userManager,
     IReadRepository<NgoAdmin> ngoAdminRepository,
     IOptions<JWTConfig> jwtOptions,
-    ITimeProvider timeProvider) : ITokenService
+    ITimeProvider timeProvider,
+    ILogger<TokenService> logger) : ITokenService
 {
 
     private readonly JWTConfig _jwtConfig = jwtOptions.Value;
@@ -28,6 +30,7 @@ internal class TokenService(UserManager<ApplicationUser> userManager,
             || !await userManager.CheckPasswordAsync(user, password))
         {
             validationCtx.AddError("Invalid username or password");
+            logger.LogWarning("Authentication failed for {email}", email);
             return TypedResults.ValidationProblem(validationCtx.ValidationFailures.ToValidationErrorDictionary());
         }
 

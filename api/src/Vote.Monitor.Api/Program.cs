@@ -33,7 +33,9 @@ using Vote.Monitor.Module.Notifications;
 using Ardalis.SmartEnum.Dapper;
 using Dapper;
 using Feature.DataExport;
+using Feature.Feedback;
 using Feature.ImportErrors;
+using Feature.Statistics;
 using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -130,6 +132,8 @@ builder.Services.AddFormSubmissionsFeature();
 builder.Services.AddQuickReportsFeature();
 builder.Services.AddImportErrorsFeature();
 builder.Services.AddDataExportFeature();
+builder.Services.AddStatisticsFeature();
+builder.Services.AddFeedbackFeature();
 
 builder.Services.AddAuthorization();
 

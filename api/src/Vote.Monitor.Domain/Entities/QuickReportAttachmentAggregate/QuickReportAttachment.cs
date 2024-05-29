@@ -13,16 +13,18 @@ public class QuickReportAttachment : AuditableBaseEntity, IAggregateRoot
     public string UploadedFileName { get; private set; }
     public string FilePath { get; private set; }
     public string MimeType { get; private set; }
+    public bool IsCompleted { get; private set; }
     public bool IsDeleted { get; private set; }
 
-    internal QuickReportAttachment(
+    private QuickReportAttachment(
         Guid id,
         Guid electionRoundId,
         Guid monitoringObserverId,
         Guid quickReportId,
         string fileName,
         string filePath,
-        string mimeType) : base(id)
+        string mimeType,
+        bool isCompleted) : base(id)
     {
         ElectionRoundId = electionRoundId;
         MonitoringObserverId = monitoringObserverId;
@@ -31,6 +33,7 @@ public class QuickReportAttachment : AuditableBaseEntity, IAggregateRoot
         MimeType = mimeType;
         FilePath = filePath;
         IsDeleted = false;
+        IsCompleted = isCompleted;
 
         var extension = FileName.Split('.').Last();
         var uploadedFileName = $"{Id}.{extension}";
@@ -42,13 +45,26 @@ public class QuickReportAttachment : AuditableBaseEntity, IAggregateRoot
         IsDeleted = true;
     }
 
+    public void Complete()
+    {
+        IsCompleted = true;
+    }
+
     public static QuickReportAttachment Create(Guid id,
         Guid electionRoundId,
         Guid monitoringObserverId,
         Guid quickReportId,
         string fileName,
         string filePath,
-        string mimeType) => new(id, electionRoundId, monitoringObserverId, quickReportId, fileName, filePath, mimeType);
+        string mimeType) => new(id, electionRoundId, monitoringObserverId, quickReportId, fileName, filePath, mimeType, true);
+
+    public static QuickReportAttachment CreateV2(Guid id,
+        Guid electionRoundId,
+        Guid monitoringObserverId,
+        Guid quickReportId,
+        string fileName,
+        string filePath,
+        string mimeType) => new(id, electionRoundId, monitoringObserverId, quickReportId, fileName, filePath, mimeType, false);
 
 #pragma warning disable CS8618 // Required by Entity Framework
 
