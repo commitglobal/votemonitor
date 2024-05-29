@@ -188,7 +188,7 @@ export default function EditFormTranslation(): FunctionComponent {
               </Card>
             </TabsContent>
             <TabsContent value='questions'>
-              <Card className='pt-0 h-[calc(100vh-380px)] overflow-hidden'>
+              <Card className='pt-0 h-[calc(100vh)] overflow-hidden'>
                 <CardHeader className='flex flex-column gap-2'>
                   <div className='flex flex-row justify-between items-center'>
                     <CardTitle className='text-xl'>Form questions</CardTitle>
