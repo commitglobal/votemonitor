@@ -24,7 +24,7 @@ export default function FormAggregatedDetails(): FunctionComponent {
       backButton={<NavigateBack search={state.resolvedLocation.search} to='/responses' />}
       breadcrumbs={
         <div className='breadcrumbs flex flex-row gap-2 mb-4'>
-          <Link search={state.resolvedLocation.search} className='crumb' to='/responses' preload='intent'>
+          <Link search={state.resolvedLocation.search as any} className='crumb' to='/responses' preload='intent'>
             responses
           </Link>
           <Link className='crumb'>{formId}</Link>

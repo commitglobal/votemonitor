@@ -107,7 +107,7 @@ export default function FormSubmissionDetails(): FunctionComponent {
               <Link
                 className='text-purple-500 font-bold'
                 to='/responses'
-                search={{ pollingStationNumberFilter: formSubmission.number }}>
+                search={{ pollingStationNumberFilter: formSubmission.number } as any}>
                 #{formSubmission.number}
               </Link>
             </div>

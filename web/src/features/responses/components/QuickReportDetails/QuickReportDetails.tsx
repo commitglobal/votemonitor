@@ -64,7 +64,7 @@ export default function QuickReportDetails(): FunctionComponent {
       backButton={<NavigateBack to='/responses' search={prevSearch} />}
       breadcrumbs={
         <div className='breadcrumbs flex flex-row gap-2 mb-4'>
-          <Link className='crumb' to='/responses' preload='intent' search={prevSearch}>
+          <Link className='crumb' to='/responses' preload='intent' search={prevSearch as any}>
             responses
           </Link>
           <Link className='crumb'>{quickReport.id}</Link>

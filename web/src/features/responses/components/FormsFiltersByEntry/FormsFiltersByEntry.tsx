@@ -19,6 +19,7 @@ export function FormsFiltersByEntry(): FunctionComponent {
   const navigateHandler = useCallback(
     (search: Record<string, string | undefined>) => {
       void navigate({
+        // @ts-ignore
         search: (prev) => {
           const newSearch: Record<string, string | undefined | string[] | number> = {
             ...prev,

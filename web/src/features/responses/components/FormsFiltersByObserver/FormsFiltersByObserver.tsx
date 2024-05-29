@@ -24,6 +24,7 @@ export function FormsFiltersByObserver(): FunctionComponent {
   const onTagsFilterChange = useCallback(
     (tag: string) => () => {
       void navigate({
+        // @ts-ignore
         search: (prev: FormSubmissionsSearchParams) => {
           const prevTagsFilter = prev.tagsFilter ?? [];
           const newTags = prevTagsFilter.includes(tag)
