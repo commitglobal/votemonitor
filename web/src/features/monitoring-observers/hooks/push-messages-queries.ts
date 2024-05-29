@@ -1,9 +1,9 @@
 import { authApi } from "@/common/auth-api";
-import { DataTableParameters, PageResponse } from "@/common/types";
-import { buildURLSearchParams } from "@/lib/utils";
-import { UseQueryResult, useQuery } from "@tanstack/react-query";
-import { TargetedMonitoringObserver } from "../models/targeted-monitoring-observer";
-import { PushMessageModel } from "../models/push-message";
+import type { DataTableParameters, PageResponse } from "@/common/types";
+import { buildURLSearchParams, isQueryFiltered } from "@/lib/utils";
+import { type UseQueryResult, useQuery } from "@tanstack/react-query";
+import type { TargetedMonitoringObserver } from "../models/targeted-monitoring-observer";
+import type { PushMessageModel } from "../models/push-message";
 
 const STALE_TIME = 1000 * 5; // five minutes
 
@@ -49,6 +49,7 @@ export function usePushMessages(queryParams: DataTableParameters): UsePushMessag
 
       return {
         ...response.data,
+        isEmpty: !isQueryFiltered(params) && response.data.items.length === 0,
       };
     },
     staleTime: STALE_TIME,

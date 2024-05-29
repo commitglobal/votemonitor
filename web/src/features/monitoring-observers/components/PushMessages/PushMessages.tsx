@@ -4,18 +4,19 @@ import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumn
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
 import { Separator } from '@/components/ui/separator';
 import { Link, useNavigate } from '@tanstack/react-router';
-import { CellContext, ColumnDef } from '@tanstack/react-table';
+import type { CellContext, ColumnDef } from '@tanstack/react-table';
 import { Plus } from 'lucide-react';
 import { ChevronRightIcon } from '@heroicons/react/24/outline';
 
 import { usePushMessages } from '../../hooks/push-messages-queries';
 import { format } from 'date-fns';
-import { PushMessageModel } from '../../models/push-message';
+import type { PushMessageModel } from '../../models/push-message';
 import { useCallback } from 'react';
 import { DateTimeFormat } from '@/common/formats';
-import { TableCellProps } from '@/components/ui/DataTable/DataTable';
+import type { TableCellProps } from '@/components/ui/DataTable/DataTable';
+import type { FunctionComponent } from '@/common/types';
 
-function PushMessages() {
+function PushMessages(): FunctionComponent {
   const pushMessagesColDefs: ColumnDef<PushMessageModel>[] = [
     {
       header: ({ column }) => <DataTableColumnHeader title='Sent at' column={column} />,
@@ -140,7 +141,10 @@ function PushMessages() {
           columns={pushMessagesColDefs}
           useQuery={usePushMessages}
           onRowClick={navigateToPushMessage}
-          getCellProps={getCellProps} />
+          getCellProps={getCellProps}
+          emptySubtitle='Communicate instantly with observers by creating and sending push messages directly to their mobile app.'
+          emptyTitle='No push messages created yet '
+        />
       </CardContent>
     </Card>
   );
