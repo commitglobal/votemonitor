@@ -473,6 +473,6 @@
   "sync": {
     "sync_data": "Datele se sincronizează...",
     "warning": "Vă rugăm să NU ÎNCHIDEȚI aplicația sau datele se vor pierde.",
-    "pending_items": "Au mai ramas: "
+    "files": "We are uploading your files, it may take a while..."
   }
 }
