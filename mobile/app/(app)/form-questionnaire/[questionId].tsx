@@ -621,7 +621,7 @@ const FormQuestionnaire = () => {
             setIsOptionsSheetOpen(open);
             addingNote && setAddingNote(false);
           }}
-          isLoading={isLoadingAddAttachmentt && !isPaused}
+          isLoading={(isLoadingAddAttachmentt && !isPaused) || isPreparingFile}
           // seems that this behaviour is handled differently and the sheet will move with keyboard even if this props is set to false on android
           moveOnKeyboardChange={Platform.OS === "android"}
           disableDrag={addingNote}
