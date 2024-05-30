@@ -17,6 +17,7 @@ import { mapFormType } from '../../models/form';
 import { formDetailsQueryOptions } from '../../queries';
 import LanguageBadge from '../LanguageBadge/LanguageBadge';
 import { NavigateBack } from '@/components/NavigateBack/NavigateBack';
+import { FormDetailsBreadcrumbs } from '../FormDetailsBreadcrumbs/FormDetailsBreadcrumbs';
 
 export default function FormDetails(): FunctionComponent {
   const { formId, languageCode } = FormDetailsRoute.useParams();
@@ -32,6 +33,7 @@ export default function FormDetails(): FunctionComponent {
   return (
     <Layout
       backButton={<NavigateBack to='/election-event/$tab' params={{ tab: 'observer-forms' }} />}
+      breadcrumbs={<FormDetailsBreadcrumbs />}
       title={`${form.code} - ${form.name[form.defaultLanguage]}`}>
       <Tabs defaultValue='form-details'>
         <TabsList className='grid grid-cols-2 bg-gray-200 w-[400px] mb-4'>
