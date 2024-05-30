@@ -27,7 +27,7 @@ export function MonitoringObserverForms(): FunctionComponent {
   const search = routeApi.useSearch();
 
   const [isFiltering, setIsFiltering] = useState(() => Object.keys(search).length !== 0);
-  const [columnsVisibility, setColumnsVisibility] = useState(formSubmissionsDefaultColumns.byEntry);
+  const [columnsVisibility, setColumnsVisibility] = useState(formSubmissionsDefaultColumns.forObserver);
 
   const [searchText, setSearchText] = useState<string>('');
   const debouncedSearchText = useDebounce(searchText, 300);
@@ -61,7 +61,7 @@ export function MonitoringObserverForms(): FunctionComponent {
             <DropdownMenuContent>
               <DropdownMenuLabel>Table columns</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              {columnVisibilityOptions.byEntry.map((option) => (
+              {columnVisibilityOptions.forObserver.map((option) => (
                 <DropdownMenuCheckboxItem
                   key={option.id}
                   checked={columnsVisibility[option.id]}

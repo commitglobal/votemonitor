@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { FormType, SubmissionFollowUpStatus } from '@/features/responses/models/form-submission';
 import type { MonitoringObserverDetailsRouteSearch } from '../../models/monitoring-observer';
+import { PollingStationsFilters } from '@/components/PollingStationsFilters/PollingStationsFilters';
 
 const routeApi = getRouteApi('/monitoring-observers/view/$monitoringObserverId/$tab');
 
@@ -25,9 +26,9 @@ export function MonitoringObserverFormsFilters(): FunctionComponent {
     <>
       <Select
         onValueChange={(value) => {
-          void navigate({ search: (prev) => ({ ...prev, formTypeFilter: value }) });
+          void navigate({ search: (prev) => ({ ...prev, followUpStatus: value }) });
         }}
-        value={search.submissionFollowUpStatus ?? ''}>
+        value={search.followUpStatus ?? ''}>
         <SelectTrigger>
           <SelectValue placeholder='Follow up status' />
         </SelectTrigger>
@@ -39,7 +40,7 @@ export function MonitoringObserverFormsFilters(): FunctionComponent {
           </SelectGroup>
         </SelectContent>
       </Select>
-      
+
       <Select
         onValueChange={(value) => {
           void navigate({ search: (prev) => ({ ...prev, formTypeFilter: value }) });
@@ -82,30 +83,8 @@ export function MonitoringObserverFormsFilters(): FunctionComponent {
         </SelectContent>
       </Select>
 
-      <Input
-        placeholder='Location - L1'
-        onChange={(e) => {
-          void navigate({ search: (prev) => ({ ...prev, level1Filter: e.target.value }) });
-        }}
-        value={search.level1Filter ?? ''}
-      />
-
-      <Input
-        placeholder='Location - L2'
-        onChange={(e) => {
-          void navigate({ search: (prev) => ({ ...prev, level2Filter: e.target.value }) });
-        }}
-        value={search.level2Filter ?? ''}
-      />
-
-      <Input
-        placeholder='Location - L3'
-        onChange={(e) => {
-          void navigate({ search: (prev) => ({ ...prev, level3Filter: e.target.value }) });
-        }}
-        value={search.level3Filter ?? ''}
-      />
-
+      <PollingStationsFilters />
+      
       <Button
         onClick={() => {
           void navigate({});
@@ -118,13 +97,6 @@ export function MonitoringObserverFormsFilters(): FunctionComponent {
         <div className='col-span-full flex gap-2 flex-wrap'>
           {search.formTypeFilter && (
             <FilterBadge label={`Form type: ${search.formTypeFilter}`} onClear={onClearFilter('formTypeFilter')} />
-          )}
-
-          {search.pollingStationNumberFilter && (
-            <FilterBadge
-              label={`Station number: ${search.pollingStationNumberFilter}`}
-              onClear={onClearFilter('pollingStationNumberFilter')}
-            />
           )}
 
           {search.hasFlaggedAnswers && (
@@ -152,6 +124,13 @@ export function MonitoringObserverFormsFilters(): FunctionComponent {
 
           {search.level5Filter && (
             <FilterBadge label={`Location - L5: ${search.level5Filter}`} onClear={onClearFilter('level5Filter')} />
+          )}
+
+          {search.pollingStationNumberFilter && (
+            <FilterBadge
+              label={`Station number: ${search.pollingStationNumberFilter}`}
+              onClear={onClearFilter('pollingStationNumberFilter')}
+            />
           )}
         </div>
       )}

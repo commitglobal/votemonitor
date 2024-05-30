@@ -36,7 +36,7 @@ export const monitoringObserverDetailsRouteSearchSchema = z.object({
   pollingStationNumberFilter: z.string().catch('').optional(),
   hasFlaggedAnswers: z.string().catch('').optional(),
   monitoringObserverId: z.string().catch('').optional(),
-  submissionFollowUpStatus: z.enum(['', 'NotApplicable', 'NeedsFollowUp', 'Resolved']).optional().catch(''),
+  followUpStatus: z.enum(['', 'NotApplicable', 'NeedsFollowUp', 'Resolved']).optional().catch(''),
 });
 
 export type MonitoringObserverDetailsRouteSearch = z.infer<typeof monitoringObserverDetailsRouteSearchSchema>;

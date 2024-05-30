@@ -26,7 +26,7 @@ export const targetedMonitoringObserverColDefs: ColumnDef<TargetedMonitoringObse
     enableSorting: true,
   },
   {
-    header: ({ column }) => <DataTableColumnHeader title='Tags' column={column} />,
+    header: ({ column }) => <DataTableColumnHeader title='Observer tags' column={column} />,
     accessorKey: 'tags',
     cell: ({
       row: {

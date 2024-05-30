@@ -1,6 +1,6 @@
 import type { VisibilityState } from '@tanstack/react-table';
 
-export type FilterBy = 'byEntry' | 'byObserver' | 'byForm';
+export type FilterBy = 'byEntry' | 'byObserver' | 'byForm' | 'forObserver';
 
 export const formSubmissionsByEntryDefaultColumns: VisibilityState = {
   submissionId: false,
@@ -41,10 +41,29 @@ export const formSubmissionsByFormDefaultColumns: VisibilityState = {
   numberOfMediaFiles: true,
 };
 
+export const formSubmissionsByObserverColumns: VisibilityState = {
+  submissionId: false,
+  timeSubmitted: true,
+  formCode: true,
+  formType: true,
+  level1: false,
+  level2: false,
+  level3: false,
+  level4: false,
+  level5: false,
+  number: true,
+  numberOfQuestionsAnswered: true,
+  numberOfFlaggedAnswers: true,
+  notesCount: false,
+  mediaFilesCount: false,
+  followUpStatus: true,
+};
+
 export const formSubmissionsDefaultColumns: Record<FilterBy, VisibilityState> = {
   byEntry: formSubmissionsByEntryDefaultColumns,
   byObserver: formSubmissionsByObserverDefaultColumns,
   byForm: formSubmissionsByFormDefaultColumns,
+  forObserver: formSubmissionsByObserverColumns
 };
 
 export type ColumnOption = { id: string; label: string; enableHiding: boolean };
@@ -53,14 +72,14 @@ const byEntryColumnVisibilityOptions: ColumnOption[] = [
   { id: 'timeSubmitted', label: 'Time submitted', enableHiding: true },
   { id: 'formCode', label: 'Form code', enableHiding: true },
   { id: 'formType', label: 'Form type', enableHiding: true },
-  { id: 'number', label: 'Station number', enableHiding: true },
   { id: 'level1', label: 'Location - L1', enableHiding: true },
   { id: 'level2', label: 'Location - L2', enableHiding: true },
   { id: 'level3', label: 'Location - L3', enableHiding: true },
   { id: 'level4', label: 'Location - L4', enableHiding: true },
   { id: 'level5', label: 'Location - L5', enableHiding: true },
+  { id: 'number', label: 'Station number', enableHiding: true },
   { id: 'observerName', label: 'Observer', enableHiding: true },
-  { id: 'tags', label: 'Station tags', enableHiding: true },
+  { id: 'tags', label: 'Observer tags', enableHiding: true },
   { id: 'numberOfQuestionsAnswered', label: 'Questions answered', enableHiding: true },
   { id: 'numberOfFlaggedAnswers', label: 'Flagged answers', enableHiding: true },
   { id: 'notesCount', label: 'Question notes', enableHiding: true },
@@ -87,10 +106,28 @@ const byFormColumnVisibilityOptions: ColumnOption[] = [
   { id: 'numberOfMediaFiles', label: 'Media files', enableHiding: true },
 ];
 
+
+const forObserverColumnVisibilityOptions: ColumnOption[] = [
+  { id: 'timeSubmitted', label: 'Time submitted', enableHiding: true },
+  { id: 'formCode', label: 'Form code', enableHiding: true },
+  { id: 'formType', label: 'Form type', enableHiding: true },
+  { id: 'level1', label: 'Location - L1', enableHiding: true },
+  { id: 'level2', label: 'Location - L2', enableHiding: true },
+  { id: 'level3', label: 'Location - L3', enableHiding: true },
+  { id: 'level4', label: 'Location - L4', enableHiding: true },
+  { id: 'level5', label: 'Location - L5', enableHiding: true },
+  { id: 'number', label: 'Station number', enableHiding: true },
+  { id: 'numberOfQuestionsAnswered', label: 'Questions answered', enableHiding: true },
+  { id: 'numberOfFlaggedAnswers', label: 'Flagged answers', enableHiding: true },
+  { id: 'notesCount', label: 'Question notes', enableHiding: true },
+  { id: 'mediaFilesCount', label: 'Media files', enableHiding: true },
+  { id: 'followUpStatus', label: 'Follow-up status', enableHiding: true },
+];
 export const columnVisibilityOptions: Record<FilterBy, ColumnOption[]> = {
   byEntry: byEntryColumnVisibilityOptions,
   byObserver: byObserverColumnVisibilityOptions,
   byForm: byFormColumnVisibilityOptions,
+  forObserver: forObserverColumnVisibilityOptions
 };
 
 export const quickReportsColumnVisibilityOptions: ColumnOption[] = [
@@ -98,12 +135,12 @@ export const quickReportsColumnVisibilityOptions: ColumnOption[] = [
   { id: 'title', label: 'Issue title', enableHiding: true },
   { id: 'description', label: 'Description', enableHiding: true },
   { id: 'numberOfAttachments', label: 'Medial files', enableHiding: true },
-  { id: 'number', label: 'Station number', enableHiding: true },
   { id: 'level1', label: 'Location - L1', enableHiding: true },
   { id: 'level2', label: 'Location - L2', enableHiding: true },
   { id: 'level3', label: 'Location - L3', enableHiding: true },
   { id: 'level4', label: 'Location - L4', enableHiding: true },
   { id: 'level5', label: 'Location - L5', enableHiding: true },
+  { id: 'number', label: 'Station number', enableHiding: true },
   { id: 'observerName', label: 'Observer', enableHiding: true },
   { id: 'followUpStatus', label: 'Follow-up status', enableHiding: true },
 ];
@@ -114,12 +151,12 @@ export const quickReportsDefaultColumns: VisibilityState = {
   title: true,
   description: true,
   numberOfAttachments: true,
-  number: true,
   level1: false,
   level2: false,
   level3: false,
   level4: false,
   level5: false,
+  number: true,
   observerName: true,
   email: false,
   followUpStatus: true,
