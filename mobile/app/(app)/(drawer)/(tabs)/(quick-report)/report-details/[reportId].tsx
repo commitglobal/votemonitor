@@ -3,16 +3,15 @@ import { router, useLocalSearchParams } from "expo-router";
 import Header from "../../../../../../components/Header";
 import { Icon } from "../../../../../../components/Icon";
 import { Typography } from "../../../../../../components/Typography";
-import { YStack, Image, AlertDialog, AlertDialogProps } from "tamagui";
+import { YStack, Image, AlertDialog } from "tamagui";
 import { useQuickReportById } from "../../../../../../services/queries/quick-reports.query";
 import { useUserData } from "../../../../../../contexts/user/UserContext.provider";
 import { useTranslation } from "react-i18next";
-import React, { ReactNode } from "react";
+import React from "react";
 import Card from "../../../../../../components/Card";
 import { QuickReportAttachmentAPIResponse } from "../../../../../../services/api/quick-report/get-quick-reports.api";
-import AudioPlayer from "../../../../../../components/AudioPlayer";
 import VideoPlayer from "../../../../../../components/VideoPlayer";
-import { Video } from "expo-av";
+import MediaDialog from "../../../../../../components/MediaDialog";
 
 type SearchParamsType = {
   reportId: string;
@@ -139,71 +138,11 @@ const MediaPreview = (props: attachementProps) => {
         ) : attachment.mimeType.includes("video") ? (
           <VideoPlayer uri={attachment.presignedUrl} />
         ) : (
-          // <Typography>{attachment.presignedUrl}</Typography>
-          <AudioPlayer uri={attachment.presignedUrl} />
+          // TODO: This might be changed to AudioPlayer in the future
+          <VideoPlayer uri={attachment.presignedUrl} />
         )
       }
     />
-  );
-};
-
-/**
- * This is similiar to Dialog component from /components,
- * but with some modifications to fit the requirements of the ImagePreview component
- * TODO: Move it to /components, in case is good for use.
- */
-
-interface DialogProps extends AlertDialogProps {
-  // what you press on in order to open the dialog
-  trigger?: ReactNode;
-  // dialog header
-  header?: ReactNode;
-  // content inside dialog
-  content?: ReactNode;
-}
-
-export const MediaDialog: React.FC<DialogProps> = ({ header, content, trigger, ...props }) => {
-  return (
-    <AlertDialog {...props}>
-      {trigger && <AlertDialog.Trigger asChild>{trigger}</AlertDialog.Trigger>}
-      <AlertDialog.Portal>
-        {/* backdrop for the modal */}
-        <AlertDialog.Overlay
-          key="overlay"
-          animation="quick"
-          opacity={1}
-          enterStyle={{ opacity: 0 }}
-          exitStyle={{ opacity: 0 }}
-        />
-        {/* the actual content inside the modal */}
-        <AlertDialog.Content
-          backgroundColor="white"
-          style={{ padding: 0 }}
-          width="90%"
-          maxHeight="70%"
-          elevate
-          key="content"
-          animation={[
-            "quick",
-            {
-              opacity: {
-                overshootClamping: true,
-              },
-            },
-          ]}
-          enterStyle={{ x: 0, y: -20, opacity: 0, scale: 0.9 }}
-          exitStyle={{ x: 0, y: 10, opacity: 0, scale: 0.95 }}
-          x={0}
-          scale={1}
-          opacity={1}
-          y={0}
-          gap="$md"
-        >
-          {header}
-          {content}
-        </AlertDialog.Content>
-      </AlertDialog.Portal>
-    </AlertDialog>
   );
 };
 

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { TouchableOpacity } from "react-native";
 import { View } from "tamagui";
 import { Audio } from "expo-av";
 import { Icon } from "./Icon";
@@ -8,7 +7,11 @@ interface AudioPlayerProps {
   uri: string;
 }
 
-// TODO: Integrate react-native-track-player
+/**
+ * TODO: This component would need support for integrating plyaback controls.
+ * For now, it just plays the audio file.
+ * Recommended: react-native track player
+ */
 const AudioPlayer = (props: AudioPlayerProps) => {
   const { uri } = props;
   const [sound, setSound] = useState<Audio.Sound | undefined>(undefined);
@@ -40,14 +43,11 @@ const AudioPlayer = (props: AudioPlayerProps) => {
 
   return (
     <View>
-      <TouchableOpacity onPress={handlePlayPause}>
-        <Icon icon={status.isPlaying ? "eye" : "eyeOff"} />
-        {/* <Slider value={[status.positionMillis || 0]} max={status.durationMillis || 1}>
-          <Slider.Track>
-            <Slider.TrackActive />
-          </Slider.Track>
-        </Slider> */}
-      </TouchableOpacity>
+      {status.isPlaying ? (
+        <Icon icon="eye" onPress={handlePlayPause} />
+      ) : (
+        <Icon icon="eyeOff" onPress={handlePlayPause} />
+      )}
     </View>
   );
 };
