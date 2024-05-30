@@ -3,7 +3,7 @@ import { FormStatus, mapFormStateStatus } from "../services/form.parser";
 import { useTranslation } from "react-i18next";
 import Card from "./Card";
 import { Typography } from "./Typography";
-import { XStack, YStack } from "tamagui";
+import { XStack, YStack, useWindowDimensions } from "tamagui";
 import { FormStateToTextMapper } from "./FormCard";
 import CircularProgress from "./CircularProgress";
 import Button from "./Button";
@@ -24,6 +24,7 @@ const FormOverview = ({
     [completedAnswers, numberOfQuestions],
   );
   const { t } = useTranslation(["form_overview", "common"]);
+  const { width } = useWindowDimensions();
 
   return (
     <Card padding="$md">
@@ -46,7 +47,10 @@ const FormOverview = ({
           </Typography>
         </YStack>
         {/* TODO: This doesn't look good */}
-        <CircularProgress progress={(completedAnswers / numberOfQuestions) * 100} size={98} />
+        <CircularProgress
+          progress={(completedAnswers / numberOfQuestions) * 100}
+          size={width > 400 ? 98 : 90}
+        />
       </XStack>
       <Button
         preset="outlined"
