@@ -24,7 +24,7 @@ public class Endpoint(IRepository<PollingStationInformation> repository, IRelate
 
         if (pollingStationInformation is null)
         {
-            return TypedResults.NotFound();
+            return TypedResults.NoContent();
         }
 
         var hasData = await queryService.GetHasDataForCurrentPollingStationAsync(req.ElectionRoundId, req.PollingStationId, req.ObserverId, ct);

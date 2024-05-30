@@ -1,13 +1,14 @@
+import type { FunctionComponent } from '@/common/types';
+import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
+import { CardContent } from '@/components/ui/card';
+import { useFormSubmissionsByEntry } from '@/features/responses/hooks/form-submissions-queries';
+import { formSubmissionsForObserverColumnDefs } from '@/features/responses/utils/column-defs';
 import { getRouteApi } from '@tanstack/react-router';
 import type { VisibilityState } from '@tanstack/react-table';
 import { useDebounce } from '@uidotdev/usehooks';
 import { useCallback, useMemo } from 'react';
-import type { FunctionComponent } from '@/common/types';
-import { CardContent } from '@/components/ui/card';
-import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
-import { useFormSubmissionsByEntry } from '@/features/responses/hooks/form-submissions-queries';
-import { formSubmissionsByEntryColumnDefs } from '@/features/responses/utils/column-defs';
 import type { MonitoringObserverDetailsRouteSearch } from '../../models/monitoring-observer';
+import { formSubmissionsByObserverColumns } from '@/features/responses/utils/column-visibility-options';
 
 const routeApi = getRouteApi('/monitoring-observers/view/$monitoringObserverId/$tab');
 
@@ -37,6 +38,7 @@ export function MonitoringObserverFormsTable({
       ['level4Filter', debouncedSearch.level4Filter],
       ['level5Filter', debouncedSearch.level5Filter],
       ['monitoringObserverId', monitoringObserverId],
+      ['followUpStatus', debouncedSearch.followUpStatus],
     ].filter(([_, value]) => value);
 
     return Object.fromEntries(params) as MonitoringObserverDetailsRouteSearch;
@@ -53,7 +55,7 @@ export function MonitoringObserverFormsTable({
     <CardContent>
       <QueryParamsDataTable
         columnVisibility={columnsVisibility}
-        columns={formSubmissionsByEntryColumnDefs}
+        columns={formSubmissionsForObserverColumnDefs}
         useQuery={useFormSubmissionsByEntry}
         queryParams={queryParams}
         onRowClick={navigateToFormSubmission}

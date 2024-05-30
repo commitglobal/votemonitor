@@ -26,6 +26,8 @@ import { useQuickReportsColumnsVisibility, useQuickReportsToggleColumn } from '.
 import { ExportDataButton } from '../ExportDataButton/ExportDataButton';
 import { ResetFiltersButton } from '../ResetFiltersButton/ResetFiltersButton';
 import { useSetPrevSearch } from '@/common/prev-search-store';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { QuickReportFollowUpStatus, QuickReportLocationType } from '../../models/quick-report';
 
 const routeApi = getRouteApi('/responses/');
 
@@ -41,26 +43,20 @@ export function QuickReports(): FunctionComponent {
     Object.keys(search).some((key) => key !== 'tab' && key !== 'viewBy')
   );
 
-  const [searchText, setSearchText] = useState<string>('');
-  const debouncedSearchText = useDebounce(searchText, 300);
-
-  const handleSearchInput = (ev: ChangeEvent<HTMLInputElement>): void => {
-    const value = ev.currentTarget.value;
-    if (!value || value.length >= 2) setSearchText(ev.currentTarget.value);
-  };
-
   const queryParams = useMemo(() => {
     const params = [
-      ['title', debouncedSearchText],
+      ['level1Filter', debouncedSearch.level1Filter],
       ['level1Filter', debouncedSearch.level1Filter],
       ['level2Filter', debouncedSearch.level2Filter],
       ['level3Filter', debouncedSearch.level3Filter],
       ['level4Filter', debouncedSearch.level4Filter],
       ['level5Filter', debouncedSearch.level5Filter],
+      ['followUpStatus', debouncedSearch.followUpStatus],
+      ['quickReportLocationType', debouncedSearch.quickReportLocationType],
     ].filter(([_, value]) => value);
 
     return Object.fromEntries(params) as QuickReportsSearchParams;
-  }, [debouncedSearch, debouncedSearchText]);
+  }, [debouncedSearch]);
 
   const setPrevSearch = useSetPrevSearch();
 
@@ -101,7 +97,6 @@ export function QuickReports(): FunctionComponent {
         <Separator />
 
         <div className='px-6 flex justify-end gap-4'>
-          <Input className='max-w-md' onChange={handleSearchInput} placeholder='Search' />
           <FunnelIcon
             className='w-[20px] text-purple-900 cursor-pointer'
             fill={isFiltering ? '#5F288D' : 'rgba(0,0,0,0)'}
@@ -136,11 +131,57 @@ export function QuickReports(): FunctionComponent {
 
         {isFiltering && (
           <div className='grid grid-cols-6 gap-4 items-center'>
+            <Select
+              onValueChange={(value) => {
+                void navigate({ search: (prev) => ({ ...prev, quickReportLocationType: value }) });
+              }}
+              value={search.quickReportLocationType ?? ''}>
+              <SelectTrigger>
+                <SelectValue placeholder='Location type' />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem value='NotRelatedToAPollingStation'>Not related to a pollingStation</SelectItem>
+                  <SelectItem value='OtherPollingStation'>Other pollingStation</SelectItem>
+                  <SelectItem value='VisitedPollingStation'>Visited pollingStation</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+
+            <Select
+              onValueChange={(value) => {
+                void navigate({ search: (prev) => ({ ...prev, followUpStatus: value }) });
+              }}
+              value={search.followUpStatus ?? ''}>
+              <SelectTrigger>
+                <SelectValue placeholder='Follow up status' />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {Object.values(QuickReportFollowUpStatus).map((value) => (
+                    <SelectItem value={value} key={value}>{value}</SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+
             <PollingStationsFilters />
             <ResetFiltersButton disabled={!isFiltered} />
 
             {isFiltered && (
               <div className='col-span-full flex gap-2 flex-wrap'>
+                {search.followUpStatus && (
+                  <FilterBadge
+                    label={`Follow up status: ${search.followUpStatus}`}
+                    onClear={onClearFilter(['followUpStatus'])}
+                  />
+                )}
+                {search.quickReportLocationType && (
+                  <FilterBadge
+                    label={`Location Type: ${search.quickReportLocationType}`}
+                    onClear={onClearFilter(['quickReportLocationType',])}
+                  />
+                )}
                 {search.level1Filter && (
                   <FilterBadge
                     label={`Location - L1: ${search.level1Filter}`}
