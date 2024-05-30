@@ -36,6 +36,8 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { useDialog } from '@/components/ui/use-dialog';
+import { NavigateBack } from '@/components/NavigateBack/NavigateBack';
+import { FormDetailsBreadcrumbs } from '../FormDetailsBreadcrumbs/FormDetailsBreadcrumbs';
 
 export default function EditFormTranslation(): FunctionComponent {
   const { t } = useTranslation();
@@ -137,7 +139,10 @@ export default function EditFormTranslation(): FunctionComponent {
   };
 
   return (
-    <Layout title={`${formData.code} - ${formData.name[formData.defaultLanguage]}`}>
+    <Layout
+      backButton={<NavigateBack to='/election-event/$tab' params={{ tab: 'observer-forms' }} />}
+      breadcrumbs={<FormDetailsBreadcrumbs />}
+      title={`${formData.code} - ${formData.name[formData.defaultLanguage]}`}>
       <Form {...form}>
         {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
         <form onSubmit={form.handleSubmit(onSubmit)} ref={formRef}>
@@ -222,14 +227,25 @@ export default function EditFormTranslation(): FunctionComponent {
                 e.preventDefault();
               }}>
               <DialogHeader>
-                <DialogTitle className='mb-3.5'>Missing translations for {untranslatedQuestions.length} questions</DialogTitle>
-                <DialogDescription className='mt-3.5 text-base text-slate-900'>
+                <DialogTitle className='mb-3.5'>
+                  Missing translations for {untranslatedQuestions.length} questions
+                </DialogTitle>
+                <DialogDescription className='mt-3.5 text-base text-[#6B7280]'>
                   Please note that before publishing this form, all the questions must be translated in selected
                   language.
                 </DialogDescription>
               </DialogHeader>
 
-              <div className='grow-1'/>
+              <div className='grow-1 text-[#6B7280]'>
+                <div>The following questions are currently missing translations:</div>
+                <div className='overflow-y-auto max-h-[300px]'>
+                  <ul className='list-disc pl-6'>
+                    {untranslatedQuestions.map((question) => (
+                      <li key={question.id}>{question.code}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
 
               <DialogFooter className='sm:items-end'>
                 <Button
