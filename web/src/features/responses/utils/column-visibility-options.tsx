@@ -1,6 +1,6 @@
 import type { VisibilityState } from '@tanstack/react-table';
 
-export type FilterBy = 'byEntry' | 'byObserver' | 'byForm' | 'forObserver';
+export type FilterBy = 'byEntry' | 'byObserver' | 'byForm';
 
 export const formSubmissionsByEntryDefaultColumns: VisibilityState = {
   submissionId: false,
@@ -62,8 +62,7 @@ export const formSubmissionsByObserverColumns: VisibilityState = {
 export const formSubmissionsDefaultColumns: Record<FilterBy, VisibilityState> = {
   byEntry: formSubmissionsByEntryDefaultColumns,
   byObserver: formSubmissionsByObserverDefaultColumns,
-  byForm: formSubmissionsByFormDefaultColumns,
-  forObserver: formSubmissionsByObserverColumns
+  byForm: formSubmissionsByFormDefaultColumns
 };
 
 export type ColumnOption = { id: string; label: string; enableHiding: boolean };
@@ -107,7 +106,7 @@ const byFormColumnVisibilityOptions: ColumnOption[] = [
 ];
 
 
-const forObserverColumnVisibilityOptions: ColumnOption[] = [
+export const forObserverColumnVisibilityOptions: ColumnOption[] = [
   { id: 'timeSubmitted', label: 'Time submitted', enableHiding: true },
   { id: 'formCode', label: 'Form code', enableHiding: true },
   { id: 'formType', label: 'Form type', enableHiding: true },
@@ -126,8 +125,7 @@ const forObserverColumnVisibilityOptions: ColumnOption[] = [
 export const columnVisibilityOptions: Record<FilterBy, ColumnOption[]> = {
   byEntry: byEntryColumnVisibilityOptions,
   byObserver: byObserverColumnVisibilityOptions,
-  byForm: byFormColumnVisibilityOptions,
-  forObserver: forObserverColumnVisibilityOptions
+  byForm: byFormColumnVisibilityOptions
 };
 
 export const quickReportsColumnVisibilityOptions: ColumnOption[] = [

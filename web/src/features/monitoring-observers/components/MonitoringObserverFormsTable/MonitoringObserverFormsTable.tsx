@@ -8,6 +8,7 @@ import type { VisibilityState } from '@tanstack/react-table';
 import { useDebounce } from '@uidotdev/usehooks';
 import { useCallback, useMemo } from 'react';
 import type { MonitoringObserverDetailsRouteSearch } from '../../models/monitoring-observer';
+import { formSubmissionsByObserverColumns } from '@/features/responses/utils/column-visibility-options';
 
 const routeApi = getRouteApi('/monitoring-observers/view/$monitoringObserverId/$tab');
 

@@ -1,6 +1,3 @@
-import { Cog8ToothIcon, FunnelIcon } from '@heroicons/react/24/outline';
-import { getRouteApi } from '@tanstack/react-router';
-import { type ChangeEvent, useState } from 'react';
 import type { FunctionComponent } from '@/common/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -14,10 +11,15 @@ import {
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import {
-  columnVisibilityOptions,
-  formSubmissionsDefaultColumns,
+  forObserverColumnVisibilityOptions,
+  formSubmissionsByObserverColumns,
+  formSubmissionsByObserverDefaultColumns,
+  formSubmissionsDefaultColumns
 } from '@/features/responses/utils/column-visibility-options';
+import { Cog8ToothIcon, FunnelIcon } from '@heroicons/react/24/outline';
+import { getRouteApi } from '@tanstack/react-router';
 import { useDebounce } from '@uidotdev/usehooks';
+import { useState, type ChangeEvent } from 'react';
 import { MonitoringObserverFormsFilters } from '../MonitoringObserverFormsFilters/MonitoringObserverFormsFilters';
 import { MonitoringObserverFormsTable } from '../MonitoringObserverFormsTable/MonitoringObserverFormsTable';
 
@@ -27,7 +29,7 @@ export function MonitoringObserverForms(): FunctionComponent {
   const search = routeApi.useSearch();
 
   const [isFiltering, setIsFiltering] = useState(() => Object.keys(search).length !== 0);
-  const [columnsVisibility, setColumnsVisibility] = useState(formSubmissionsDefaultColumns.forObserver);
+  const [columnsVisibility, setColumnsVisibility] = useState(formSubmissionsByObserverColumns);
 
   const [searchText, setSearchText] = useState<string>('');
   const debouncedSearchText = useDebounce(searchText, 300);
@@ -61,7 +63,7 @@ export function MonitoringObserverForms(): FunctionComponent {
             <DropdownMenuContent>
               <DropdownMenuLabel>Table columns</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              {columnVisibilityOptions.forObserver.map((option) => (
+              {forObserverColumnVisibilityOptions.map((option) => (
                 <DropdownMenuCheckboxItem
                   key={option.id}
                   checked={columnsVisibility[option.id]}
