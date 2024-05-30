@@ -370,6 +370,7 @@ export const quickReportsColumnDefs: ColumnDef<QuickReport>[] = [
     accessorKey: 'title',
     enableSorting: true,
     enableGlobalFilter: true,
+    cell: ({ row }) => <div>{row.original.title.slice(0, 100) + '...'}</div>,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Description' column={column} />,
@@ -377,6 +378,7 @@ export const quickReportsColumnDefs: ColumnDef<QuickReport>[] = [
     enableSorting: true,
     enableGlobalFilter: true,
     size: 200,
+    cell: ({ row }) => <div>{row.original.description.slice(0, 100)+ '...'}</div>,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Medial files' column={column} />,

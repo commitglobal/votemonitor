@@ -5,7 +5,7 @@ import { FilterBadge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { FormType } from '@/features/responses/models/form-submission';
+import { FormType, SubmissionFollowUpStatus } from '@/features/responses/models/form-submission';
 import type { MonitoringObserverDetailsRouteSearch } from '../../models/monitoring-observer';
 
 const routeApi = getRouteApi('/monitoring-observers/view/$monitoringObserverId/$tab');
@@ -27,6 +27,23 @@ export function MonitoringObserverFormsFilters(): FunctionComponent {
         onValueChange={(value) => {
           void navigate({ search: (prev) => ({ ...prev, formTypeFilter: value }) });
         }}
+        value={search.submissionFollowUpStatus ?? ''}>
+        <SelectTrigger>
+          <SelectValue placeholder='Follow up status' />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            {Object.values(SubmissionFollowUpStatus).map((value) => (
+              <SelectItem value={value} key={value}>{value}</SelectItem>
+            ))}
+          </SelectGroup>
+        </SelectContent>
+      </Select>
+      
+      <Select
+        onValueChange={(value) => {
+          void navigate({ search: (prev) => ({ ...prev, formTypeFilter: value }) });
+        }}
         value={search.formTypeFilter ?? ''}>
         <SelectTrigger>
           <SelectValue placeholder='Form type' />
@@ -34,7 +51,7 @@ export function MonitoringObserverFormsFilters(): FunctionComponent {
         <SelectContent>
           <SelectGroup>
             {Object.values(FormType).map((value) => (
-              <SelectItem value={value}>{value}</SelectItem>
+              <SelectItem value={value} key={value}>{value}</SelectItem>
             ))}
           </SelectGroup>
         </SelectContent>
