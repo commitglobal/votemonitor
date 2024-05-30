@@ -187,6 +187,9 @@
         "helper": "The selected form is available in multiple languages. Please select which one you would like to continue with.",
         "error": "Please select one of the options"
       }
+    },
+    "options_menu": {
+      "manage_my_polling_stations": "Manage my polling stations"
     }
   },
   "polling_station_information_form": {
@@ -302,6 +305,31 @@
       }
     },
     "error": "Error while loading question data!"
+  },
+  "manage_my_polling_stations": {
+    "general_text": "Manage my polling stations",
+    "ps_card": {
+      "header": "Polling station #{{value}}",
+      "l1": "[Location L1]",
+      "l2": "[Location L2]",
+      "l3": "[Location L3]",
+      "street": "Street",
+      "ps_number": "Polling station number"
+    },
+    "warning_dialog": {
+      "title": "Remove Polling station #{{value}}",
+      "description": "This action will remove the polling station from your list of visited polling stations. You can add it again through the Add New Polling Station process.",
+      "actions": {
+        "cancel": "Cancel",
+        "remove": "Remove",
+        "loading": "Loading..."
+      }
+    },
+    "removal_unallowed_dialog": {
+      "title": "Removing polling station #{{value}} not allowed",
+      "description": "The polling station cannot be removed from your list because it contains data (Polling station information and/or Form answers) which cannot be deleted by the system on your behalf. If you want to remove this polling station, please clear polling station information and form answers manually, then retry this action."
+    },
+    "delete_success": "Polling station deleted successfully!"
   },
   "quick_report": {
     "list": {
