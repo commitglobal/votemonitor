@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View } from "tamagui";
-import { AVPlaybackStatus, AVPlaybackStatusSuccess, AVPlaybackStatusToSet, Audio } from "expo-av";
+import { AVPlaybackStatus, AVPlaybackStatusSuccess, Audio } from "expo-av";
 import { Icon } from "./Icon";
 import { Typography } from "./Typography";
 
