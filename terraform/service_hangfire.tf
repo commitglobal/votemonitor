@@ -151,7 +151,7 @@ module "ecs_hangfire" {
       name      = "Mailing__SES__AWSSecretKey"
       valueFrom = "${aws_secretsmanager_secret.ses_hotfix.arn}:secret_key::"
     },
-        {
+    {
       name      = "FileStorage__S3__AWSSecretKey"
       valueFrom = "${aws_secretsmanager_secret.ses_hotfix.arn}:access_key::"
     },
