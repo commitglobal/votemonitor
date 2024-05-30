@@ -27,7 +27,6 @@ const AudioPlayer = (props: AudioPlayerProps) => {
 
     return () => {
       if (sound) {
-        console.log("Unloading Sound");
         sound.unloadAsync();
       }
     };
