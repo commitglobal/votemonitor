@@ -176,11 +176,11 @@ module "ecs_api" {
       valueFrom = "${aws_secretsmanager_secret.ses_hotfix.arn}:secret_key::"
     },
     {
-      name      = "FileStorage__S3__AWSSecretKey"
+      name      = "FileStorage__S3__AWSAccessKey"
       valueFrom = "${aws_secretsmanager_secret.ses_hotfix.arn}:access_key::"
     },
     {
-      name      = "FileStorage__S3__AWSAccessKey"
+      name      = "FileStorage__S3__AWSSecretKey"
       valueFrom = "${aws_secretsmanager_secret.ses_hotfix.arn}:secret_key::"
     },
   ]
