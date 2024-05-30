@@ -178,7 +178,7 @@ export function QuickReports(): FunctionComponent {
                 )}
                 {search.quickReportLocationType && (
                   <FilterBadge
-                    label={`Location Type: ${mapQuickReportLocationType(search.quickReportLocationType as QuickReportLocationType)}`}
+                    label={`Location Type: ${mapQuickReportLocationType(search.quickReportLocationType)}`}
                     onClear={onClearFilter(['quickReportLocationType'])}
                   />
                 )}
