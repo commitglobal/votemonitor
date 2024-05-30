@@ -2,7 +2,6 @@
 using Dapper;
 using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.ConnectionFactory;
-using Vote.Monitor.Domain.Entities.QuickReportAggregate;
 using Vote.Monitor.Domain.Specifications;
 
 namespace Feature.QuickReports.List;
@@ -117,7 +116,8 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
             PS."Id",
             MN."Id"
         ORDER BY
-            COALESCE(QR."LastModifiedOn", QR."CreatedOn") DESC
+            CASE WHEN @sortExpression = 'Timestamp ASC' THEN COALESCE(QR."LastModifiedOn", QR."CreatedOn") END ASC,
+            CASE WHEN @sortExpression = 'Timestamp DESC' THEN COALESCE(QR."LastModifiedOn", QR."CreatedOn") END DESC
         OFFSET
             @offset ROWS
         FETCH NEXT
@@ -136,7 +136,8 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
             level4 = req.Level4Filter,
             level5 = req.Level5Filter,
             followUpStatus = req.FollowUpStatus?.ToString(),
-            quickReportLocationType = req.QuickReportLocationType?.ToString()
+            quickReportLocationType = req.QuickReportLocationType?.ToString(),
+            sortExpression = GetSortExpression(req.SortColumnName, req.IsAscendingSorting)
         };
 
         int totalRowCount;
@@ -149,5 +150,22 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
         }
 
         return new PagedResponse<QuickReportOverviewModel>(entries, totalRowCount, req.PageNumber, req.PageSize);
+    }
+
+    private static string GetSortExpression(string? sortColumnName, bool isAscendingSorting)
+    {
+        if (string.IsNullOrWhiteSpace(sortColumnName))
+        {
+            return $"{nameof(QuickReportOverviewModel.Timestamp)} DESC";
+        }
+
+        var sortOrder = isAscendingSorting ? "ASC" : "DESC";
+
+        if (string.Equals(sortColumnName, nameof(QuickReportOverviewModel.Timestamp), StringComparison.InvariantCultureIgnoreCase))
+        {
+            return $"{nameof(QuickReportOverviewModel.Timestamp)} {sortOrder}";
+        }
+
+        return $"{nameof(QuickReportOverviewModel.Timestamp)} ASC";
     }
 }

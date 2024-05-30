@@ -1,6 +1,8 @@
 import { authApi } from '@/common/auth-api';
 import { DateTimeFormat } from '@/common/formats';
-import type { FunctionComponent } from '@/common/types';
+import { usePrevSearch } from '@/common/prev-search-store';
+import { FollowUpStatus, type FunctionComponent } from '@/common/types';
+import { NavigateBack } from '@/components/NavigateBack/NavigateBack';
 import Layout from '@/components/layout/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
@@ -14,9 +16,7 @@ import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { Link, useRouter } from '@tanstack/react-router';
 import { format } from 'date-fns';
 import { quickReportKeys } from '../../hooks/quick-reports';
-import { QuickReportFollowUpStatus } from '../../models/quick-report';
-import { NavigateBack } from '@/components/NavigateBack/NavigateBack';
-import { usePrevSearch } from '@/common/prev-search-store';
+import { mapQuickReportLocationType } from '../../utils/helpers';
 
 export default function QuickReportDetails(): FunctionComponent {
   const { quickReportId } = Route.useParams();
@@ -26,7 +26,7 @@ export default function QuickReportDetails(): FunctionComponent {
 
   const updateQuickReportFollowUpStatusMutation = useMutation({
     mutationKey: quickReportKeys.all,
-    mutationFn: (followUpStatus: QuickReportFollowUpStatus) => {
+    mutationFn: (followUpStatus: FollowUpStatus) => {
       const electionRoundId: string | null = localStorage.getItem('electionRoundId');
 
       return authApi.put<void>(`/election-rounds/${electionRoundId}/quick-reports/${quickReportId}:status`, {
@@ -53,7 +53,7 @@ export default function QuickReportDetails(): FunctionComponent {
     },
   });
 
-  function handleFolowUpStatusChange(followUpStatus: QuickReportFollowUpStatus): void {
+  function handleFolowUpStatusChange(followUpStatus: FollowUpStatus): void {
     updateQuickReportFollowUpStatusMutation.mutate(followUpStatus);
   }
 
@@ -84,9 +84,9 @@ export default function QuickReportDetails(): FunctionComponent {
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectItem value={QuickReportFollowUpStatus.NotApplicable}>Not Applicable</SelectItem>
-                  <SelectItem value={QuickReportFollowUpStatus.NeedsFollowUp}>Needs Follow-Up</SelectItem>
-                  <SelectItem value={QuickReportFollowUpStatus.Resolved}>Resolved</SelectItem>
+                  <SelectItem value={FollowUpStatus.NotApplicable}>Not Applicable</SelectItem>
+                  <SelectItem value={FollowUpStatus.NeedsFollowUp}>Needs Follow-Up</SelectItem>
+                  <SelectItem value={FollowUpStatus.Resolved}>Resolved</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
@@ -148,7 +148,7 @@ export default function QuickReportDetails(): FunctionComponent {
 
           <div>
             <p className='font-bold'>Location type</p>
-            <p>{quickReport.quickReportLocationType}</p>
+            <p>{mapQuickReportLocationType(quickReport.quickReportLocationType)}</p>
           </div>
 
           {quickReport.pollingStationDetails && (
