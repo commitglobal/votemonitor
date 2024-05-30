@@ -37,6 +37,7 @@ import { formDetailsQueryOptions, formsKeys } from '../../queries';
 import EditFormFooter from './EditFormFooter';
 import { NavigateBack } from '@/components/NavigateBack/NavigateBack';
 import { useNavigate } from '@tanstack/react-router';
+import { FormDetailsBreadcrumbs } from '../FormDetailsBreadcrumbs/FormDetailsBreadcrumbs';
 
 function updateTranslations(
   question: BaseQuestion,
@@ -217,6 +218,7 @@ export default function EditForm(): FunctionComponent {
   return (
     <Layout
       backButton={<NavigateBack to='/election-event/$tab' params={{ tab: 'observer-forms' }} />}
+      breadcrumbs={<FormDetailsBreadcrumbs />}
       title={`${formData.code} - ${formData.name[formData.defaultLanguage]}`}>
       <Form {...form}>
         {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
