@@ -65,10 +65,6 @@ module "ecs_hangfire" {
       value = "http://+:80"
     },
     {
-      name  = "AWS_EC2_METADATA_DISABLED"
-      value = tostring(true)
-    },
-    {
       name  = "FileStorage__S3__BucketName"
       value = module.s3_private.bucket
     },
@@ -155,7 +151,7 @@ module "ecs_hangfire" {
       name      = "Mailing__SES__AWSSecretKey"
       valueFrom = "${aws_secretsmanager_secret.ses_hotfix.arn}:secret_key::"
     },
-    {
+        {
       name      = "FileStorage__S3__AWSSecretKey"
       valueFrom = "${aws_secretsmanager_secret.ses_hotfix.arn}:access_key::"
     },
