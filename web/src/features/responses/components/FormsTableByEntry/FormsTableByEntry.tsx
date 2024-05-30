@@ -33,6 +33,7 @@ export function FormsTableByEntry({ searchText }: FormsTableByEntryProps): Funct
       ['level3Filter', debouncedSearch.level3Filter],
       ['level4Filter', debouncedSearch.level4Filter],
       ['level5Filter', debouncedSearch.level5Filter],
+      ['followUpStatus', debouncedSearch.followUpStatus],
     ].filter(([_, value]) => value);
 
     return Object.fromEntries(params) as FormSubmissionsSearchParams;

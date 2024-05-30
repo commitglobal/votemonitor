@@ -15,17 +15,20 @@ export const FormSubmissionsSearchParamsSchema = z.object({
   hasFlaggedAnswers: z.string().catch('').optional(),
   monitoringObserverId: z.string().catch('').optional(),
   tagsFilter: z.array(z.string()).optional().catch([]).optional(),
+  followUpStatus: z.enum(['', 'NotApplicable', 'NeedsFollowUp', 'Resolved']).optional().catch(''),
+  quickReportLocationType: z.enum(['', 'NotRelatedToAPollingStation', 'OtherPollingStation', 'VisitedPollingStation']).optional().catch(''),
 });
 
 export type FormSubmissionsSearchParams = z.infer<typeof FormSubmissionsSearchParamsSchema>;
 
 export const QuickReportsSearchParamsSchema = z.object({
-  title: z.string().catch('').optional(),
   level1Filter: z.string().catch('').optional(),
   level2Filter: z.string().catch('').optional(),
   level3Filter: z.string().catch('').optional(),
   level4Filter: z.string().catch('').optional(),
   level5Filter: z.string().catch('').optional(),
+  quickReportLocationType: z.enum(['', 'NotRelatedToAPollingStation', 'OtherPollingStation', 'VisitedPollingStation']).optional().catch(''),
+  followUpStatus: z.enum(['', 'NotApplicable', 'NeedsFollowUp', 'Resolved']).optional().catch('')
 });
 
 export type QuickReportsSearchParams = z.infer<typeof QuickReportsSearchParamsSchema>;
