@@ -23,9 +23,8 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
         var sql = """
             SELECT "Base64EncodedData", "FileName"
             FROM "ExportedData"
-            WHERE "ElectionRoundId" = @electionRoundId AND "NgoId" = @ngoId AND "Id" =@exportedDataId";
+            WHERE "ElectionRoundId" = @electionRoundId AND "NgoId" = @ngoId AND "Id" =@exportedDataId;
         """;
-      
 
         var queryParams = new
         {
