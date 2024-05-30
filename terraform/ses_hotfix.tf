@@ -43,7 +43,8 @@ data "aws_iam_policy_document" "ses_hotfix" {
     ]
 
     resources = [
-      module.s3_private.arn
+      module.s3_private.arn,
+      "${module.s3_private.arn}/*"
     ]
   }
 }
