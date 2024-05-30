@@ -3,15 +3,15 @@ import { router, useLocalSearchParams } from "expo-router";
 import Header from "../../../../../../components/Header";
 import { Icon } from "../../../../../../components/Icon";
 import { Typography } from "../../../../../../components/Typography";
-import { YStack, Image, View, AlertDialog, AlertDialogProps } from "tamagui";
+import { YStack, Image, AlertDialog, AlertDialogProps } from "tamagui";
 import { useQuickReportById } from "../../../../../../services/queries/quick-reports.query";
 import { useUserData } from "../../../../../../contexts/user/UserContext.provider";
 import { useTranslation } from "react-i18next";
-import React, { ReactNode, useEffect, useState } from "react";
+import React, { ReactNode } from "react";
 import Card from "../../../../../../components/Card";
 import { QuickReportAttachmentAPIResponse } from "../../../../../../services/api/quick-report/get-quick-reports.api";
-import { Audio } from "expo-av";
-// import soundFile from "../../../../../../../../assets/sound.mp3";
+import AudioPlayer from "../../../../../../components/AudioPlayer";
+import VideoPlayer from "../../../../../../components/VideoPlayer";
 
 type SearchParamsType = {
   reportId: string;
@@ -110,42 +110,8 @@ interface attachementProps {
 const MediaPreview = (props: attachementProps) => {
   const { attachment } = props;
 
-  // Audio Set-up
-  // async function playSound() {
-  //   console.log("Loading Sound");
-  //   const { sound } = await Audio.Sound.createAsync(
-  //     { uri: attachment.presignedUrl },
-  //     { shouldPlay: true },
-  //   );
-
-  //   await sound.playAsync();
-  // }
-
-  const [sound, setSound] = useState<Audio.Sound | undefined>(undefined);
+  console.log(attachment);
   console.log(attachment.presignedUrl);
-
-  async function playSound() {
-    console.log("Loading Sound");
-    // const { sound } = await Audio.Sound.createAsync(require("../../../../../../assets/sound.mp3"));
-    const { sound } = await Audio.Sound.createAsync(
-      { uri: attachment.presignedUrl },
-      { shouldPlay: true },
-    );
-
-    setSound(sound);
-
-    console.log("Playing Sound");
-    await sound.playAsync();
-  }
-
-  useEffect(() => {
-    return sound
-      ? () => {
-          console.log("Unloading Sound");
-          sound.unloadAsync();
-        }
-      : undefined;
-  }, [sound]);
 
   return (
     <MediaDialog
@@ -169,10 +135,11 @@ const MediaPreview = (props: attachementProps) => {
             height={350}
             resizeMode="contain"
           />
+        ) : attachment.mimeType.includes("video") ? (
+          <VideoPlayer uri={attachment.presignedUrl} />
         ) : (
-          <View onPress={playSound}>
-            <Typography onPress={playSound}>TODO: Audio/Video Preview</Typography>
-          </View>
+          // <Typography>{attachment.presignedUrl}</Typography>
+          <AudioPlayer uri={attachment.presignedUrl} />
         )
       }
     />
