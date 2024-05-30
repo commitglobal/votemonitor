@@ -65,10 +65,6 @@ module "ecs_hangfire" {
       value = "http://+:80"
     },
     {
-      name  = "AWS_EC2_METADATA_DISABLED"
-      value = tostring(true)
-    },
-    {
       name  = "FileStorage__S3__BucketName"
       value = module.s3_private.bucket
     },
