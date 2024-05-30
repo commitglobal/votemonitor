@@ -35,7 +35,7 @@ data "aws_iam_policy_document" "ses_hotfix" {
     resources = [
       aws_sesv2_email_identity.main.arn,
       aws_sesv2_configuration_set.main.arn,
-      aws_s3_bucket.arn
+      module.s3_private.arn
     ]
   }
 }
