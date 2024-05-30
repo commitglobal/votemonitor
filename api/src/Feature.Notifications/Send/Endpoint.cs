@@ -113,11 +113,11 @@ public class Endpoint(IRepository<NotificationAggregate> repository,
                         )
                         AND (
                             @level4 IS NULL
-                            OR PS."Level3" = @level4
+                            OR PS."Level4" = @level4
                         )
                         AND (
                             @level5 IS NULL
-                            OR PS."Level3" = @level5
+                            OR PS."Level5" = @level5
                         )))
         """;
 

@@ -79,7 +79,7 @@ public class DeleteEndpointTests
     }
 
     [Fact]
-    public async Task ShouldReturnNotFound_WhenPollingStationInformationNotFound()
+    public async Task ShouldReturnNoContent_WhenPollingStationInformationNotFound()
     {
         // Arrange
         _repository
@@ -101,6 +101,6 @@ public class DeleteEndpointTests
         result
             .Should().BeOfType<Results<NoContent, BadRequest, NotFound>>()
             .Which
-            .Result.Should().BeOfType<NotFound>();
+            .Result.Should().BeOfType<NoContent>();
     }
 }

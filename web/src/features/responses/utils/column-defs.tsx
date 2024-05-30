@@ -90,7 +90,7 @@ export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry &
     cell: ({ row }) => <div>{row.original.observerName}</div>,
   },
   {
-    header: ({ column }) => <DataTableColumnHeader title='Station tags' column={column} />,
+    header: ({ column }) => <DataTableColumnHeader title='Observer tags' column={column} />,
     accessorKey: 'tags',
     enableSorting: true,
     enableGlobalFilter: true,
@@ -99,6 +99,128 @@ export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry &
         original: { tags },
       },
     }) => <TableTagList tags={tags} />,
+  },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Questions answered' column={column} />,
+    accessorKey: 'numberOfQuestionsAnswered',
+    enableSorting: true,
+    enableGlobalFilter: true,
+  },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Flagged answers' column={column} />,
+    accessorKey: 'numberOfFlaggedAnswers',
+    enableSorting: true,
+    enableGlobalFilter: true,
+  },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Question notes' column={column} />,
+    accessorKey: 'notesCount',
+    enableSorting: true,
+    enableGlobalFilter: true,
+  },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Medial files' column={column} />,
+    accessorKey: 'mediaFilesCount',
+    enableSorting: true,
+    enableGlobalFilter: true,
+  },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Follow-up status' column={column} />,
+    accessorKey: 'followUpStatus',
+    enableSorting: false,
+    enableGlobalFilter: true,
+    cell: ({ row }) => (
+      <Badge
+        className={cn({
+          'text-slate-700 bg-slate-200': row.original.followUpStatus === SubmissionFollowUpStatus.NotApplicable,
+          'text-red-600 bg-red-200': row.original.followUpStatus === SubmissionFollowUpStatus.NeedsFollowUp,
+          'text-green-600 bg-green-200': row.original.followUpStatus === SubmissionFollowUpStatus.Resolved,
+        })}>
+        {row.original.followUpStatus === SubmissionFollowUpStatus.NotApplicable
+          ? 'Not Applicable'
+          : row.original.followUpStatus === SubmissionFollowUpStatus.NeedsFollowUp
+          ? 'Needs follow-up'
+          : 'Resolved'}
+      </Badge>
+    ),
+  },
+  {
+    header: '',
+    accessorKey: 'action',
+    enableSorting: false,
+    cell: ({ row }) => (
+      <div className='text-right'>
+        <Link
+          className='hover:bg-purple-100 inline-flex h-6 w-6 rounded-full items-center justify-center'
+          params={{ submissionId: row.original.submissionId }}
+          to='/responses/$submissionId'>
+          <ChevronRightIcon className='w-4 text-purple-600' />
+        </Link>
+      </div>
+    ),
+  },
+];
+
+export const formSubmissionsForObserverColumnDefs: ColumnDef<FormSubmissionByEntry & RowData>[] = [
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Time submitted' column={column} />,
+    accessorKey: 'timeSubmitted',
+    enableSorting: true,
+    enableGlobalFilter: true,
+    cell: ({ row }) => <div>{format(row.original.timeSubmitted, DateTimeFormat)}</div>,
+  },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Form code' column={column} />,
+    accessorKey: 'formCode',
+    enableSorting: true,
+    enableGlobalFilter: true,
+  },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Form type' column={column} />,
+    accessorKey: 'formType',
+    enableSorting: true,
+    enableGlobalFilter: true,
+  },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Station number' column={column} />,
+    accessorKey: 'number',
+    enableSorting: true,
+    enableGlobalFilter: true,
+  },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Location - L1' column={column} />,
+    accessorKey: 'level1',
+    enableSorting: true,
+    enableGlobalFilter: true,
+    cell: ({ row }) => <div>{row.original.level1 ?? '-'}</div>,
+  },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Location - L2' column={column} />,
+    accessorKey: 'level2',
+    enableSorting: true,
+    enableGlobalFilter: true,
+    cell: ({ row }) => <div>{row.original.level2 ?? '-'}</div>,
+  },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Location - L3' column={column} />,
+    accessorKey: 'level3',
+    enableSorting: true,
+    enableGlobalFilter: true,
+    cell: ({ row }) => <div>{row.original.level3 ?? '-'}</div>,
+  },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Location - L4' column={column} />,
+    accessorKey: 'level4',
+    enableSorting: true,
+    enableGlobalFilter: true,
+    cell: ({ row }) => <div>{row.original.level4 ?? '-'}</div>,
+  },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Location - L5' column={column} />,
+    accessorKey: 'level5',
+    enableSorting: true,
+    enableGlobalFilter: true,
+    cell: ({ row }) => <div>{row.original.level5 ?? '-'}</div>,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Questions answered' column={column} />,
@@ -370,6 +492,7 @@ export const quickReportsColumnDefs: ColumnDef<QuickReport>[] = [
     accessorKey: 'title',
     enableSorting: true,
     enableGlobalFilter: true,
+    cell: ({ row }) => <div>{row.original.title.slice(0, 100) + '...'}</div>,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Description' column={column} />,
@@ -377,6 +500,7 @@ export const quickReportsColumnDefs: ColumnDef<QuickReport>[] = [
     enableSorting: true,
     enableGlobalFilter: true,
     size: 200,
+    cell: ({ row }) => <div>{row.original.description.slice(0, 100)+ '...'}</div>,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Medial files' column={column} />,

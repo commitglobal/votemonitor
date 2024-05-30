@@ -1,4 +1,4 @@
-enum QuickReportLocationType {
+export enum QuickReportLocationType {
   NotRelatedToAPollingStation = 'NotRelatedToAPollingStation',
   OtherPollingStation = 'OtherPollingStation',
   VisitedPollingStation = 'VisitedPollingStation ',

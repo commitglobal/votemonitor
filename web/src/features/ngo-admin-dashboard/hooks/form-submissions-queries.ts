@@ -5,37 +5,6 @@ const STALE_TIME = 1000 * 60 * 5; // one minute
 
 // type UseFormSubmissionsByEntryResult = UseQueryResult<FormSubmissionsByEntryResponse, Error>;
 
-// export function useFormSubmissionsByEntry(queryParams: DataTableParameters): UseFormSubmissionsByEntryResult {
-//   return useQuery({
-//     queryKey: ['form-submissions', 'by-entry', queryParams],
-//     queryFn: async () => {
-//       const electionRoundId = localStorage.getItem('electionRoundId');
-
-//       const params = {
-//         ...queryParams.otherParams,
-//         PageNumber: String(queryParams.pageNumber),
-//         PageSize: String(queryParams.pageSize),
-//         SortColumnName: queryParams.sortColumnName,
-//         SortOrder: queryParams.sortOrder,
-//       };
-//       const searchParams = new URLSearchParams(params);
-
-//       const response = await authApi.get<FormSubmissionsByEntryResponse>(
-//         `/election-rounds/${electionRoundId}/form-submissions:byEntry`,
-//         {
-//           params: searchParams,
-//         }
-//       );
-
-//       return {
-//         ...response.data,
-//         items: response.data.items.map((submission) => ({ ...submission, id: submission.submissionId })),
-//       };
-//     },
-//     staleTime: STALE_TIME,
-//   });
-// }
-
 // type FormSubmissionsByObserverResponse = PageResponse<FormSubmissionByObserver>;
 
 // type UseFormSubmissionsByObserverResult = UseQueryResult<FormSubmissionsByObserverResponse, Error>;

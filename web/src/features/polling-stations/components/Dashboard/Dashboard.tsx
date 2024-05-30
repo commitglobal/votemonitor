@@ -147,7 +147,7 @@ export const pollingStationColDefs: ColumnDef<PollingStation>[] = [
     ),
   },
   {
-    header: ({ column }) => <DataTableColumnHeader title='Tags' column={column} />,
+    header: ({ column }) => <DataTableColumnHeader title='Polling station tags' column={column} />,
     accessorKey: 'tags',
     enableSorting: false,
     enableGlobalFilter: true,

@@ -12,9 +12,6 @@ public class Request : BaseSortPaginatedRequest
     public Guid NgoId { get; set; }
 
     [QueryParam]
-    public string? SearchText { get; set; }
-
-    [QueryParam]
     public string? Level1Filter { get; set; }
 
     [QueryParam]
@@ -30,8 +27,8 @@ public class Request : BaseSortPaginatedRequest
     public string? Level5Filter { get; set; }
 
     [QueryParam]
-    public string? PollingStationNumberFilter { get; set; }
+    public QuickReportFollowUpStatus? FollowUpStatus { get; set; }
 
     [QueryParam]
-    public QuickReportFollowUpStatus? FollowUpStatus { get; set; }
+    public QuickReportLocationType? QuickReportLocationType { get; set; }
 }
