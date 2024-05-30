@@ -265,3 +265,10 @@ export const getTranslationOrDefault = (translatedString: TranslatedString | und
 
   return translation;
 };
+
+
+export enum FollowUpStatus {
+  NotApplicable = 'NotApplicable',
+  NeedsFollowUp = 'NeedsFollowUp',
+  Resolved = 'Resolved',
+}

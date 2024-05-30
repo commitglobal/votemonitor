@@ -1,13 +1,13 @@
-import { getRouteApi } from '@tanstack/react-router';
-import { useCallback } from 'react';
-import type { FunctionComponent } from '@/common/types';
+import { FollowUpStatus, type FunctionComponent } from '@/common/types';
+import { PollingStationsFilters } from '@/components/PollingStationsFilters/PollingStationsFilters';
 import { FilterBadge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { FormType, SubmissionFollowUpStatus } from '@/features/responses/models/form-submission';
+import { FormType } from '@/features/responses/models/form-submission';
+import { getRouteApi } from '@tanstack/react-router';
+import { useCallback } from 'react';
 import type { MonitoringObserverDetailsRouteSearch } from '../../models/monitoring-observer';
-import { PollingStationsFilters } from '@/components/PollingStationsFilters/PollingStationsFilters';
 
 const routeApi = getRouteApi('/monitoring-observers/view/$monitoringObserverId/$tab');
 
@@ -34,7 +34,7 @@ export function MonitoringObserverFormsFilters(): FunctionComponent {
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
-            {Object.values(SubmissionFollowUpStatus).map((value) => (
+            {Object.values(FollowUpStatus).map((value) => (
               <SelectItem value={value} key={value}>{value}</SelectItem>
             ))}
           </SelectGroup>
@@ -84,7 +84,7 @@ export function MonitoringObserverFormsFilters(): FunctionComponent {
       </Select>
 
       <PollingStationsFilters />
-      
+
       <Button
         onClick={() => {
           void navigate({});

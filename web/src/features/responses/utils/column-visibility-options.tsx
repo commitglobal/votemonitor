@@ -130,6 +130,7 @@ export const columnVisibilityOptions: Record<FilterBy, ColumnOption[]> = {
 
 export const quickReportsColumnVisibilityOptions: ColumnOption[] = [
   { id: 'timestamp', label: 'Time submitted', enableHiding: true },
+  { id: 'quickReportLocationType', label: 'Location type', enableHiding: true },
   { id: 'title', label: 'Issue title', enableHiding: true },
   { id: 'description', label: 'Description', enableHiding: true },
   { id: 'numberOfAttachments', label: 'Medial files', enableHiding: true },
@@ -139,23 +140,25 @@ export const quickReportsColumnVisibilityOptions: ColumnOption[] = [
   { id: 'level4', label: 'Location - L4', enableHiding: true },
   { id: 'level5', label: 'Location - L5', enableHiding: true },
   { id: 'number', label: 'Station number', enableHiding: true },
+  { id: 'pollingStationDetails', label: 'Polling station details', enableHiding: true },
   { id: 'observerName', label: 'Observer', enableHiding: true },
   { id: 'followUpStatus', label: 'Follow-up status', enableHiding: true },
 ];
 
 export const quickReportsDefaultColumns: VisibilityState = {
-  id: false,
   timestamp: true,
+  quickReportLocationType: true,
   title: true,
   description: true,
   numberOfAttachments: true,
+  observerName: true,
   level1: false,
   level2: false,
   level3: false,
   level4: false,
   level5: false,
-  number: true,
-  observerName: true,
+  number: false,
+  pollingStationDetails: false,
   email: false,
   followUpStatus: true,
 };
