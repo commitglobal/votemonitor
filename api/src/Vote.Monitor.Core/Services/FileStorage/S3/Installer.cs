@@ -18,6 +18,7 @@ internal static class Installer
         var region = Amazon.RegionEndpoint.GetBySystemName(awsRegion);
 
         Log.Warning($"amazon config: {awsRegion} - {awsAccessKey} - {awsSecretKey}");
+        Console.WriteLine($"amazon config: {awsRegion} - {awsAccessKey} - {awsSecretKey}");
 
         services.AddSingleton<IAmazonS3>(new AmazonS3Client(awsAccessKey, awsSecretKey, region));
         services.AddSingleton<IFileStorageService, S3FileStorageService>();
