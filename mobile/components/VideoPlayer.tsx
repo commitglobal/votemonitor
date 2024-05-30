@@ -15,7 +15,7 @@ const VideoPlayer = (props: VideoPlayerProps) => {
       <Video
         ref={video}
         style={{ width: "100%", height: 500, alignSelf: "center" }}
-        source={{ uri: uri }}
+        source={{ uri }}
         useNativeControls
         resizeMode={ResizeMode.CONTAIN}
         isLooping

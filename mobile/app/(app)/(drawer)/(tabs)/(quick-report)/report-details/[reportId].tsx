@@ -3,7 +3,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import Header from "../../../../../../components/Header";
 import { Icon } from "../../../../../../components/Icon";
 import { Typography } from "../../../../../../components/Typography";
-import { YStack, Image, AlertDialog } from "tamagui";
+import { AlertDialog, YStack, Image } from "tamagui";
 import { useQuickReportById } from "../../../../../../services/queries/quick-reports.query";
 import { useUserData } from "../../../../../../contexts/user/UserContext.provider";
 import { useTranslation } from "react-i18next";
@@ -12,6 +12,7 @@ import Card from "../../../../../../components/Card";
 import { QuickReportAttachmentAPIResponse } from "../../../../../../services/api/quick-report/get-quick-reports.api";
 import VideoPlayer from "../../../../../../components/VideoPlayer";
 import MediaDialog from "../../../../../../components/MediaDialog";
+import { ListView } from "../../../../../../components/ListView";
 
 type SearchParamsType = {
   reportId: string;
@@ -86,64 +87,80 @@ const ReportDetails = () => {
           </Typography>
         </YStack>
 
-        {attachments.length === 0 ? (
-          <Typography fontWeight="500">{t("no_files")}</Typography>
-        ) : (
-          <YStack gap={16}>
-            <Typography fontWeight="500" color="$gray10">
-              {t("uploaded_media")}
-            </Typography>
-            {attachments.map((attachment, key) => (
-              <MediaPreview key={key} attachment={attachment} />
-            ))}
-          </YStack>
-        )}
+        <Attachments attachments={attachments} />
       </YStack>
     </Screen>
   );
 };
 
-interface attachementProps {
-  attachment: QuickReportAttachmentAPIResponse;
+interface AttachmentsProps {
+  attachments: QuickReportAttachmentAPIResponse[];
 }
 
-const MediaPreview = (props: attachementProps) => {
-  const { attachment } = props;
+const Attachments = (props: AttachmentsProps) => {
+  const { attachments } = props;
+  const { t } = useTranslation(["report_details", "common"]);
 
-  console.log(attachment);
-  console.log(attachment.presignedUrl);
+  // No attachments
+  if (attachments.length === 0) {
+    return (
+      <Typography fontWeight="500" color="$gray10">
+        {t("no_files")}
+      </Typography>
+    );
+  }
+
+  // Attachment preview dialog will be displayed only for the selected file
+  const [selectedFile, setSelectedFile] = React.useState<QuickReportAttachmentAPIResponse | null>(
+    null,
+  );
 
   return (
-    <MediaDialog
-      trigger={
-        <Card>
-          <Typography preset="body1" fontWeight="700" key={attachment.id}>
-            {attachment.fileName}
-          </Typography>
-        </Card>
-      }
-      header={
-        <AlertDialog.Cancel>
-          <Icon icon="x" alignSelf="flex-end" />
-        </AlertDialog.Cancel>
-      }
-      content={
-        attachment.mimeType.includes("image") ? (
-          <Image
-            source={{ uri: attachment.presignedUrl }}
-            width="100%"
-            height={350}
-            resizeMode="contain"
-          />
-        ) : attachment.mimeType.includes("video") ? (
-          <VideoPlayer uri={attachment.presignedUrl} />
-        ) : (
-          // TODO: This might be changed to AudioPlayer in the future
-          <VideoPlayer uri={attachment.presignedUrl} />
-        )
-      }
-    />
+    <YStack gap={16}>
+      <Typography fontWeight="500" color="$gray10">
+        {t("uploaded_media")}
+      </Typography>
+      <ListView<QuickReportAttachmentAPIResponse>
+        data={attachments}
+        renderItem={({ item, index }) => {
+          return (
+            <Card onPress={() => setSelectedFile(item)} key={index}>
+              <Typography preset="body1" fontWeight="700" key={item.id}>
+                {item.fileName}
+              </Typography>
+            </Card>
+          );
+        }}
+        estimatedItemSize={225}
+      />
+
+      {/* Display dialog for the selected file */}
+      {selectedFile && (
+        <MediaDialog
+          open
+          header={
+            <AlertDialog.Cancel>
+              <Icon icon="x" alignSelf="flex-end" onPress={() => setSelectedFile(null)} />
+            </AlertDialog.Cancel>
+          }
+          content={
+            selectedFile.mimeType.includes("image") ? (
+              <Image
+                source={{ uri: selectedFile.presignedUrl }}
+                width="100%"
+                height={350}
+                resizeMode="contain"
+              />
+            ) : selectedFile.mimeType.includes("video") ? (
+              <VideoPlayer uri={selectedFile.presignedUrl} />
+            ) : (
+              // TODO: This might be changed to AudioPlayer in the future
+              <VideoPlayer uri={selectedFile.presignedUrl} />
+            )
+          }
+        />
+      )}
+    </YStack>
   );
 };
-
 export default ReportDetails;
