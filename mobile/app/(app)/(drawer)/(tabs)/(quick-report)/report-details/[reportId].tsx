@@ -12,6 +12,7 @@ import Card from "../../../../../../components/Card";
 import { QuickReportAttachmentAPIResponse } from "../../../../../../services/api/quick-report/get-quick-reports.api";
 import AudioPlayer from "../../../../../../components/AudioPlayer";
 import VideoPlayer from "../../../../../../components/VideoPlayer";
+import { Video } from "expo-av";
 
 type SearchParamsType = {
   reportId: string;
