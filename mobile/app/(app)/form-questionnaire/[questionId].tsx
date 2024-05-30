@@ -311,7 +311,7 @@ const FormQuestionnaire = () => {
       await handleChunkUpload(cameraResult.uri, data.uploadUrls, data.uploadId, attachmentId);
 
       if (!onlineManager.isOnline()) {
-        setIsOptionsSheetOpen(false);
+        // setIsOptionsSheetOpen(false);
       }
     }
   };
@@ -377,17 +377,20 @@ const FormQuestionnaire = () => {
       for (const [index, url] of urls.entries()) {
         const chunk = await FileSystem.readAsStringAsync(filePath, { length: MULTIPART_FILE_UPLOAD_SIZE, position: index * MULTIPART_FILE_UPLOAD_SIZE, encoding: FileSystem.EncodingType.Base64 });
         const buffer = Buffer.from(chunk, 'base64');
-        const data = await uploadS3Chunk(url, buffer)
-        etags = { ...etags, [index]: data.ETag }
+        const data = await uploadS3Chunk(url, chunk)
+        console.log(`uplodaded part - ${index + 1}`);
+        etags = { ...etags, [index + 1]: data.ETag }
       };
 
       // If everything went ok, send the complete upload command to the backend.
       if (activeElectionRound?.id) {
+        console.log('completing...')
         await addAttachmentMultipartComplete({ uploadId, etags, electionRoundId: activeElectionRound?.id, id: attachmentId })
       }
     } catch (err) {
       // If error try to abort the upload
       if (activeElectionRound?.id) {
+        console.log('abandoning...')
         await addAttachmentMultipartAbort({ id: attachmentId, uploadId, electionRoundId: activeElectionRound.id })
       }
     } finally {
