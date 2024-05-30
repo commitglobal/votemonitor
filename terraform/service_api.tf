@@ -65,6 +65,10 @@ module "ecs_api" {
       value = tostring(true)
     },
     {
+      name  = "AWS_EC2_METADATA_DISABLED"
+      value = tostring(true)
+    },
+    {
       name  = "FileStorage__FileStorageType"
       value = "S3"
     },
