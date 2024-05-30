@@ -171,7 +171,7 @@ const MediaPreview = (props: attachementProps) => {
           />
         ) : (
           <View onPress={playSound}>
-            <Typography onPress={() => console.log("PLAAAY")}>TODO: Audio/Video Preview</Typography>
+            <Typography onPress={playSound}>TODO: Audio/Video Preview</Typography>
           </View>
         )
       }
