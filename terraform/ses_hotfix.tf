@@ -23,18 +23,26 @@ data "aws_iam_policy_document" "ses_hotfix" {
     actions = [
       "ses:SendEmail",
       "ses:SendRawEmail",
-      "s3:ListBucket",
-			"s3:GetObject",
-			"s3:DeleteObject",
-			"s3:GetObjectAcl",
-			"s3:PutObjectAcl",
-			"s3:PutObject",
-			"s3:ListMultipartUploadParts"
     ]
 
     resources = [
       aws_sesv2_email_identity.main.arn,
       aws_sesv2_configuration_set.main.arn,
+    ]
+  }
+
+  statement {
+    actions = [
+      "s3:ListBucket",
+      "s3:GetObject",
+      "s3:DeleteObject",
+      "s3:GetObjectAcl",
+      "s3:PutObjectAcl",
+      "s3:PutObject",
+      "s3:ListMultipartUploadParts",
+    ]
+
+    resources = [
       module.s3_private.arn
     ]
   }
