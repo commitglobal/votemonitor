@@ -91,11 +91,11 @@ const Index = () => {
           paddingHorizontal="$sm"
           onPress={() => {
             setOpenContextualMenu(false);
-            router.push("manage-polling-station");
+            router.push("/manage-polling-stations");
           }}
         >
           <Typography preset="body1" color="$gray7" lineHeight={24}>
-            {t("observations.actions.manage_polling_stations", { ns: "bottom_sheets" })}
+            {t("options_menu.manage_my_polling_stations")}
           </Typography>
         </YStack>
       </OptionsSheet>

@@ -28,7 +28,9 @@ const Inbox = () => {
   const { height } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   // height for the scrollview with the notifications received
-  const scrollHeight = height - 100 - 60 - insets.top - insets.bottom;
+  // 60 = bottom navigation tabs
+  // 100 = header(60) + yellow banner (40)
+  const scrollHeight = height - insets.top - insets.bottom - 100 - 60;
 
   const { activeElectionRound } = useUserData();
   const { data, isLoading } = useNotifications(activeElectionRound?.id);

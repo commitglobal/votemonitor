@@ -3,7 +3,6 @@ import { Typography } from "./Typography";
 import { Dialog } from "./Dialog";
 import { XStack, YStack } from "tamagui";
 import Button from "./Button";
-import { desc } from "@nozbe/watermelondb/QueryDescription";
 
 type WarningDialogProps = {
   title: string;
