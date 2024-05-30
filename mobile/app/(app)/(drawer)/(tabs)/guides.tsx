@@ -3,7 +3,7 @@ import { Screen } from "../../../../components/Screen";
 import Header from "../../../../components/Header";
 import { Typography } from "../../../../components/Typography";
 import { Icon } from "../../../../components/Icon";
-import { useNavigation } from "expo-router";
+import { router, useNavigation } from "expo-router";
 import { DrawerActions } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
 import { useUserData } from "../../../../contexts/user/UserContext.provider";
@@ -14,10 +14,13 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useWindowDimensions } from "react-native";
 import GuideCard from "../../../../components/GuideCard";
 import * as Linking from "expo-linking";
+import { useState } from "react";
+import OptionsSheet from "../../../../components/OptionsSheet";
 
 const Guides = () => {
   const { activeElectionRound } = useUserData();
   const { data: guides, isLoading: isLoadingGuides } = useGuides(activeElectionRound?.id);
+  const [optionsSheetOpen, setOptionsSheetOpen] = useState(false);
 
   const { t } = useTranslation("guides");
   const navigation = useNavigation();
@@ -71,10 +74,7 @@ const Guides = () => {
         leftIcon={<Icon icon="menuAlt2" color="white" />}
         onLeftPress={() => navigation.dispatch(DrawerActions.openDrawer)}
         rightIcon={<Icon icon="dotsVertical" color="white" />}
-        // todo: manage my polling stations
-        onRightPress={() => {
-          console.log("Right icon pressed");
-        }}
+        onRightPress={() => setOptionsSheetOpen(true)}
       />
       {guides && guides.length !== 0 ? (
         <YStack paddingHorizontal="$md" paddingTop="$xl" paddingBottom="$md" height={scrollHeight}>
@@ -116,6 +116,20 @@ const Guides = () => {
           </YStack>
         </YStack>
       )}
+      <OptionsSheet open={optionsSheetOpen} setOpen={setOptionsSheetOpen}>
+        <YStack
+          paddingVertical="$xxs"
+          paddingHorizontal="$sm"
+          onPress={() => {
+            setOptionsSheetOpen(false);
+            router.push("/manage-polling-stations");
+          }}
+        >
+          <Typography preset="body1" color="$gray7" lineHeight={24}>
+            {t("options_sheet.manage_my_polling_stations")}
+          </Typography>
+        </YStack>
+      </OptionsSheet>
     </Screen>
   );
 };

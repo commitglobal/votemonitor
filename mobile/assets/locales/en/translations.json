@@ -341,6 +341,9 @@
       "no_files": "No attached files",
       "attachment_one": "{{count}} attachment file",
       "attachment_other": "{{count}} attachment files"
+    },
+    "options_menu": {
+      "manage_my_polling_stations": "Manage my polling stations"
     }
   },
   "report_new_issue": {
@@ -407,6 +410,9 @@
         "backup_title": "Document",
         "created_on": "Created on"
       }
+    },
+    "options_sheet": {
+      "manage_my_polling_stations": "Manage my polling stations"
     }
   },
   "inbox": {
@@ -451,6 +457,9 @@
       "input": {
         "max": "Input cannot exceed {{value}} characters"
       }
+    },
+    "options_sheet": {
+      "manage_my_polling_stations": "Manage my polling stations"
     }
   },
   "change_password": {
