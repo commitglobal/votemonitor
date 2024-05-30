@@ -1,6 +1,7 @@
 import type {
   BaseQuestion,
   DateAnswer,
+  FollowUpStatus,
   MultiSelectAnswer,
   NumberAnswer,
   RatingAnswer,
@@ -20,12 +21,6 @@ export enum FormStatus {
   Drafted = 'Drafted',
   Obsolete = 'Obsolete',
   Published = 'Published',
-}
-
-export enum SubmissionFollowUpStatus {
-  NotApplicable = 'NotApplicable',
-  NeedsFollowUp = 'NeedsFollowUp',
-  Resolved = 'Resolved',
 }
 
 export interface FormSubmissionByEntry {
@@ -50,7 +45,7 @@ export interface FormSubmissionByEntry {
   submissionId: string;
   tags: string[];
   timeSubmitted: string;
-  followUpStatus: SubmissionFollowUpStatus;
+  followUpStatus: FollowUpStatus;
 }
 
 export interface FormSubmissionByObserver {
@@ -62,7 +57,7 @@ export interface FormSubmissionByObserver {
   numberOfLocations: number;
   phoneNumber: string;
   tags: string[];
-  followUpStatus?: SubmissionFollowUpStatus;
+  followUpStatus?: FollowUpStatus;
 }
 
 export interface FormSubmissionByForm {

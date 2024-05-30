@@ -1,7 +1,9 @@
+import { FollowUpStatus } from "@/common/types";
+
 export enum QuickReportLocationType {
   NotRelatedToAPollingStation = 'NotRelatedToAPollingStation',
   OtherPollingStation = 'OtherPollingStation',
-  VisitedPollingStation = 'VisitedPollingStation ',
+  VisitedPollingStation = 'VisitedPollingStation',
 }
 
 export interface Attachment {
@@ -11,11 +13,6 @@ export interface Attachment {
   mimeType: string;
   presignedUrl: string;
   urlValidityInSeconds: number;
-}
-export enum QuickReportFollowUpStatus {
-  NotApplicable = 'NotApplicable',
-  NeedsFollowUp = 'NeedsFollowUp',
-  Resolved = 'Resolved',
 }
 
 export interface QuickReport {
@@ -40,5 +37,5 @@ export interface QuickReport {
   title: string;
   monitoringObserverId: string;
   attachments: Attachment[];
-  followUpStatus: QuickReportFollowUpStatus;
+  followUpStatus: FollowUpStatus;
 }

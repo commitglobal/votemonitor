@@ -11,7 +11,7 @@ import {
   isSingleSelectQuestion,
   isTextAnswer,
 } from '@/common/guards';
-import type { FunctionComponent } from '@/common/types';
+import { FollowUpStatus, FunctionComponent } from '@/common/types';
 import Layout from '@/components/layout/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -32,7 +32,6 @@ import { Link, useRouter } from '@tanstack/react-router';
 import { format } from 'date-fns';
 import { Fragment } from 'react';
 import { formSubmissionsByEntryKeys, formSubmissionsByObserverKeys } from '../../hooks/form-submissions-queries';
-import { SubmissionFollowUpStatus } from '../../models/form-submission';
 import { ResponseExtraDataSection } from '../ReponseExtraDataSection/ResponseExtraDataSection';
 
 export default function FormSubmissionDetails(): FunctionComponent {
@@ -43,7 +42,7 @@ export default function FormSubmissionDetails(): FunctionComponent {
 
   const updateSubmissionFollowUpStatusMutation = useMutation({
     mutationKey: formSubmissionsByEntryKeys.detail(submissionId),
-    mutationFn: (followUpStatus: SubmissionFollowUpStatus) => {
+    mutationFn: (followUpStatus: FollowUpStatus) => {
       const electionRoundId: string | null = localStorage.getItem('electionRoundId');
 
       return authApi.put<void>(
@@ -74,7 +73,7 @@ export default function FormSubmissionDetails(): FunctionComponent {
     }
   });
 
-  function handleFolowUpStatusChange(followUpStatus: SubmissionFollowUpStatus): void {
+  function handleFolowUpStatusChange(followUpStatus: FollowUpStatus): void {
     updateSubmissionFollowUpStatusMutation.mutate(followUpStatus);
   }
 
@@ -149,9 +148,9 @@ export default function FormSubmissionDetails(): FunctionComponent {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    <SelectItem value={SubmissionFollowUpStatus.NotApplicable}>Not Applicable</SelectItem>
-                    <SelectItem value={SubmissionFollowUpStatus.NeedsFollowUp}>Needs Follow-Up</SelectItem>
-                    <SelectItem value={SubmissionFollowUpStatus.Resolved}>Resolved</SelectItem>
+                    <SelectItem value={FollowUpStatus.NotApplicable}>Not Applicable</SelectItem>
+                    <SelectItem value={FollowUpStatus.NeedsFollowUp}>Needs Follow-Up</SelectItem>
+                    <SelectItem value={FollowUpStatus.Resolved}>Resolved</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>
