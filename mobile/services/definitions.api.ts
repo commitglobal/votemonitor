@@ -373,3 +373,30 @@ export const deletePollingStation = (data: DeletePollingStationPayload) => {
     `election-rounds/${data.electionRoundId}/polling-stations/${data.pollingStationId}/information`,
   ).then((res) => res.data);
 };
+
+/** ========================================================================
+    ================= POST feedback ====================
+    ========================================================================
+    @param {string} electionRoundId 
+*/
+
+type feedbackMetadata = {
+  appVersion: string | undefined;
+  sentAt: string;
+  platform: "ios" | "android" | "windows" | "macos" | "web";
+  modelName: string | null;
+  electionRoundId: string | undefined;
+  systemVersion: string | null;
+};
+
+export type AddFeedbackPayload = {
+  electionRoundId: string | undefined;
+  userFeedback: string;
+  metadata: feedbackMetadata;
+};
+
+export const addFeedback = ({ electionRoundId, ...feedbackPayload }: AddFeedbackPayload) => {
+  return API.post(`election-rounds/${electionRoundId}/feedback/`, feedbackPayload).then(
+    (res) => res.data,
+  );
+};

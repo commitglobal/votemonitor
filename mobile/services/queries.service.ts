@@ -93,6 +93,11 @@ export const notesKeys = {
   deleteNote: () => [...notesKeys.all, "delete"] as const,
 };
 
+export const feedbackKeys = {
+  addFeedback: (electionRoundId: string | undefined) =>
+    ["addFeedback", "electionRoundId", electionRoundId] as const,
+};
+
 export const useElectionRoundsQuery = () => {
   return useQuery({
     queryKey: electionRoundsKeys.all,

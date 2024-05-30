@@ -22,6 +22,7 @@ import { useNetInfoContext } from "../../../../contexts/net-info-banner/NetInfoC
 import WarningDialog from "../../../../components/WarningDialog";
 import FeedbackSheet from "../../../../components/FeedbackSheet";
 import OptionsSheet from "../../../../components/OptionsSheet";
+import Toast from "react-native-toast-message";
 
 interface MenuItemProps {
   label: string;
@@ -79,6 +80,18 @@ const More = () => {
     signOut(queryClient);
     setLogoutLoading(false);
     setShowWarningModal(false);
+  };
+
+  const onFeedbackPress = () => {
+    //don't allow adding feedback while offline -> we won't open the feedback sheet, just display error toast
+    if (!isOnline) {
+      return Toast.show({
+        type: "error",
+        text2: t("feedback_toast.offline"),
+      });
+    }
+    // display feedback sheet to enable adding feedback
+    return setFeedbackSheetOpen(true);
   };
 
   return (
@@ -141,11 +154,7 @@ const More = () => {
           chevronRight={true}
           onClick={() => router.push("/change-password")}
         ></MenuItem>
-        <MenuItem
-          label={t("feedback")}
-          icon="feedback"
-          onClick={() => setFeedbackSheetOpen(true)}
-        ></MenuItem>
+        <MenuItem label={t("feedback")} icon="feedback" onClick={onFeedbackPress}></MenuItem>
         <MenuItem
           label={t("logout")}
           icon="logoutNoBackground"
