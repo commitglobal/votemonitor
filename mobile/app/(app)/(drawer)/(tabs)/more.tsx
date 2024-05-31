@@ -83,7 +83,7 @@ const More = () => {
   };
 
   const onFeedbackPress = () => {
-    //don't allow adding feedback while offline -> we won't open the feedback sheet, just display error toast
+    // don't allow adding feedback while offline -> we won't open the feedback sheet, just display error toast
     if (!isOnline) {
       return Toast.show({
         type: "error",

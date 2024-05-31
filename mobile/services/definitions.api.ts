@@ -357,20 +357,40 @@ export const forgotPassword = async (data: ForgotPasswwordPayload) => {
   return API.post("auth/forgot-password", data).then((res) => res.data);
 };
 
-/** ================= DELETE pollingStation ====================
- * ========================================================================
- * @description delete a polling station
- * @param {DeletePollingStationPayload} data includes electionRoundId and pollingStationId
+/** ===================================================================================
+ * ================= GET does a polling station have form submissions? ================
+ * ====================================================================================
+ *  @param {string} electionRoundId
+ *  @param {string} pollingStationId
  */
 
-export type DeletePollingStationPayload = {
+export type GetPSHasFormSubmissionsPayload = {
   electionRoundId: string;
   pollingStationId: string;
 };
 
-export const deletePollingStation = (data: DeletePollingStationPayload) => {
+export const getPSHasFormSubmissions = (electionRoundId: string, pollingStationId: string) => {
+  return API.get(`/election-rounds/${electionRoundId}/form-submissions:any`, {
+    params: {
+      pollingStationId,
+    },
+  }).then((res) => res.data);
+};
+
+/** ================= DELETE pollingStation ====================
+ * ========================================================================
+ * @description delete a polling station
+ * @param {DeletePollingStationVisitPayload} data includes electionRoundId and pollingStationId
+ */
+
+export type DeletePollingStationVisitPayload = {
+  electionRoundId: string;
+  pollingStationId: string;
+};
+
+export const deletePollingStationVisit = (data: DeletePollingStationVisitPayload) => {
   return API.delete(
-    `election-rounds/${data.electionRoundId}/polling-stations/${data.pollingStationId}/information`,
+    `election-rounds/${data.electionRoundId}/polling-station-visits/${data.pollingStationId}`,
   ).then((res) => res.data);
 };
 

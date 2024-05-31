@@ -14,7 +14,6 @@ import { useUserData } from "../contexts/user/UserContext.provider";
 import Constants from "expo-constants";
 import * as Device from "expo-device";
 import Toast from "react-native-toast-message";
-import { useNetInfoContext } from "../contexts/net-info-banner/NetInfoContext";
 
 const FeedbackSheet = (props: OptionsSheetProps) => {
   const { t } = useTranslation("more");
@@ -68,7 +67,7 @@ const FeedbackSheet = (props: OptionsSheetProps) => {
           text2: t("feedback_toast.error"),
         });
       },
-      //mutation complete -> close feedback sheet and reset input value
+      // mutation complete -> close feedback sheet and reset input value
       onSettled: onSheetClose,
     });
   };

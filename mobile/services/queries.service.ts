@@ -33,6 +33,18 @@ export const pollingStationsKeys = {
     pollingStationId,
     "form-submissions",
   ],
+  psHasFormSubmissions: (
+    electionRoundId: string | undefined,
+    pollingStationId: string | undefined,
+  ) => [
+    ...pollingStationsKeys.all,
+    "electionRoundId",
+    electionRoundId,
+    "pollingStationId",
+    pollingStationId,
+    "form-submissions",
+    "hasFormSubmissions",
+  ],
   upsertFormSubmission: () => [...pollingStationsKeys.all, "upsertFormSubmission"] as const,
   nomenclatorList: (parentId: number | null = -1) =>
     [...pollingStationsKeys.all, "node", parentId] as const,

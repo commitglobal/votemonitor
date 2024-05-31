@@ -1,4 +1,4 @@
-import { skipToken, useMutation } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { feedbackKeys } from "../../queries.service";
 import { addFeedback, AddFeedbackPayload } from "../../definitions.api";
 

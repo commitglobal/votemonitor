@@ -2,7 +2,6 @@ import { Screen } from "../../components/Screen";
 import Header from "../../components/Header";
 import { Icon } from "../../components/Icon";
 import { YStack } from "tamagui";
-import { Typography } from "../../components/Typography";
 import { router } from "expo-router";
 import { useUserData } from "../../contexts/user/UserContext.provider";
 import { useTranslation } from "react-i18next";
@@ -13,79 +12,89 @@ import WarningDialog from "../../components/WarningDialog";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useWindowDimensions } from "react-native";
 import { ListView } from "../../components/ListView";
-import { useDeletePollingStationMutation } from "../../services/mutations/delete-polling-station.mutation";
-import { useQueryClient } from "@tanstack/react-query";
+import { useDeletePollingStationVisitMutation } from "../../services/mutations/delete-polling-station.mutation";
+import { usePSHasFormSubmissions } from "../../services/queries/form-submissions.query";
 import { pollingStationsKeys } from "../../services/queries.service";
+import { useQueryClient } from "@tanstack/react-query";
 import Toast from "react-native-toast-message";
+import NoVisitsMPS from "../../components/NoVisitsMPS";
 
 const ManagePollingStation = () => {
   const { t } = useTranslation("manage_my_polling_stations");
-  const { visits, activeElectionRound } = useUserData();
+  const [selectedPS, setSelectedPS] = useState<PollingStationVisitVM | null>(null);
+  const [removalAllowed, setRemovalAllowed] = useState(true);
+
   const queryClient = useQueryClient();
+  const { visits, activeElectionRound } = useUserData();
+
+  // get visits query key
   const getPollingStationsQK = useMemo(
     () => pollingStationsKeys.visits(activeElectionRound?.id),
     [activeElectionRound?.id],
   );
-  const { mutate: deletePS, isPending: isPendingDeletePS } = useDeletePollingStationMutation(
-    activeElectionRound?.id,
-  );
-  const [selectedPS, setSelectedPS] = useState<PollingStationVisitVM | null>(null);
-  const [removalAllowed, setRemovalAllowed] = useState(true);
-  console.log("🍇🍇🍇🍇 ps", selectedPS);
-  console.log("🍇 elect id", activeElectionRound?.id);
+
+  // mutations:
+  // check if a ps has form submissions
+  // delete a ps visit
+  const { mutate: checkPSHasFormSubmissions, isPending: isPendingPSHasFormSubmissions } =
+    usePSHasFormSubmissions(activeElectionRound?.id, selectedPS?.pollingStationId);
+  const { mutate: deletePSVisit, isPending: isPendingDeletePSVisit } =
+    useDeletePollingStationVisitMutation(activeElectionRound?.id);
 
   const insets = useSafeAreaInsets();
   const { height } = useWindowDimensions();
   const scrollHeight = height - insets.top - insets.bottom - 50;
 
   if (visits === undefined || visits.length === 0) {
-    return <Typography>No visits</Typography>;
+    return <NoVisitsMPS />;
   }
 
-  const onDelete = () => {
-    if (activeElectionRound?.id) {
-      deletePS(
-        {
-          // we enforce selectedPS because this function is called from the confirmation dialog, which is open only when selectedPS
-          pollingStationId: selectedPS!.pollingStationId,
-          electionRoundId: activeElectionRound?.id,
-        },
-        {
-          // if the PS has any information added to it and cannot be deleted -> display removal unallowed content in dialog
-          onError: (err) => {
-            console.log("", err);
-            // close dialog
-            setSelectedPS(null);
-            // fake successful deletion
-            return Toast.show({
-              type: "success",
-              text2: t("delete_success"),
-              visibilityTime: 3000,
-              text2Style: { textAlign: "center" },
-            });
-
-            return setRemovalAllowed(false);
-          },
-          // if deletion complete -> close dialog and show success toast
-          onSuccess: () => {
-            setSelectedPS(null);
-            // show toast
-            Toast.show({
-              type: "success",
-              text2: t("delete_success"),
-              visibilityTime: 3000,
-              text2Style: { textAlign: "center" },
-            });
-          },
-          onSettled: () => {
-            // if the ps is only local, just refetch the visits and it will disappear
-            queryClient.invalidateQueries({
-              queryKey: getPollingStationsQK,
-            });
-          },
-        },
-      );
+  const onConfirmDelete = () => {
+    if (!selectedPS?.pollingStationId || !activeElectionRound?.id) {
+      return;
     }
+
+    // check if ps has any form submissions
+    checkPSHasFormSubmissions(
+      { pollingStationId: selectedPS.pollingStationId, electionRoundId: activeElectionRound.id },
+      {
+        // if it has form submissions -> show removal not allowed modal
+        onSuccess: () => {
+          setRemovalAllowed(false);
+        },
+        // if it doesn't have form submissions -> delete the ps visit
+        onError: () => {
+          deletePSVisit(
+            {
+              electionRoundId: activeElectionRound.id,
+              pollingStationId: selectedPS.pollingStationId,
+            },
+            {
+              onSuccess: () => {
+                // after deletion -> get new visits (without the deleted one) to display in the list
+                queryClient.invalidateQueries({ queryKey: getPollingStationsQK });
+                // close dialog
+                setSelectedPS(null);
+                // show success toast
+                Toast.show({
+                  type: "success",
+                  text2: t("delete_success"),
+                });
+              },
+              onError: () => {
+                // close dialog
+                setSelectedPS(null);
+                // show success toast
+                Toast.show({
+                  type: "error",
+                  text2: t("delete_error"),
+                });
+              },
+            },
+          );
+        },
+      },
+    );
   };
 
   return (
@@ -105,12 +114,7 @@ const ManagePollingStation = () => {
         onLeftPress={() => router.back()}
       />
 
-      <YStack
-        height={scrollHeight}
-        paddingHorizontal="$md"
-        paddingVertical="$lg"
-        // backgroundColor={"pink"}
-      >
+      <YStack height={scrollHeight} paddingHorizontal="$md" paddingVertical="$lg">
         <ListView<PollingStationVisitVM>
           data={visits}
           showsVerticalScrollIndicator={false}
@@ -140,17 +144,17 @@ const ManagePollingStation = () => {
               ? t("warning_dialog.description")
               : t("removal_unallowed_dialog.description")
           }
-          action={onDelete}
+          action={onConfirmDelete}
           onCancel={() => {
             setSelectedPS(null);
             setRemovalAllowed(true);
           }}
           actionBtnText={
-            !isPendingDeletePS
-              ? removalAllowed
+            isPendingPSHasFormSubmissions || isPendingDeletePSVisit
+              ? t("warning_dialog.actions.loading")
+              : removalAllowed
                 ? t("warning_dialog.actions.remove")
                 : ""
-              : t("warning_dialog.actions.loading")
           }
           cancelBtnText={t("warning_dialog.actions.cancel")}
         />

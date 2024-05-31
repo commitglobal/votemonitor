@@ -1,6 +1,10 @@
-import { skipToken, useQuery } from "@tanstack/react-query";
+import { skipToken, useMutation, useQuery } from "@tanstack/react-query";
 import { pollingStationsKeys } from "../queries.service";
-import { FormSubmissionsApiResponse, getFormSubmissions } from "../definitions.api";
+import {
+  FormSubmissionsApiResponse,
+  getFormSubmissions,
+  getPSHasFormSubmissions,
+} from "../definitions.api";
 import { useCallback } from "react";
 import { arrayToKeyObject } from "../../helpers/misc";
 
@@ -40,3 +44,18 @@ export const useFormAnswers = (
       [electionRoundId, pollingStationId, formId],
     ),
   );
+
+export const usePSHasFormSubmissions = (electionRoundId?: string, pollingStationId?: string) => {
+  return useMutation({
+    mutationKey: pollingStationsKeys.psHasFormSubmissions(electionRoundId, pollingStationId),
+    mutationFn: ({
+      electionRoundId,
+      pollingStationId,
+    }: {
+      electionRoundId: string;
+      pollingStationId: string;
+    }) => {
+      return getPSHasFormSubmissions(electionRoundId, pollingStationId);
+    },
+  });
+};

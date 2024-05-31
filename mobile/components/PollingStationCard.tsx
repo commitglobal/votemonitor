@@ -4,6 +4,8 @@ import { Typography } from "./Typography";
 import { useTranslation } from "react-i18next";
 import { PollingStationVisitVM } from "../common/models/polling-station.model";
 import { Icon } from "./Icon";
+import { useNetInfoContext } from "../contexts/net-info-banner/NetInfoContext";
+import Toast from "react-native-toast-message";
 
 interface PollingStationCardProps extends CardProps {
   visit: PollingStationVisitVM;
@@ -12,6 +14,7 @@ interface PollingStationCardProps extends CardProps {
 const PollingStationCard = (props: PollingStationCardProps) => {
   const { t } = useTranslation("manage_my_polling_stations");
   const { visit, onPress, ...rest } = props;
+  const { isOnline } = useNetInfoContext();
 
   return (
     <Card pressStyle={{ opacity: 1 }} paddingTop="$0" paddingRight="$0" {...rest}>
@@ -25,7 +28,16 @@ const PollingStationCard = (props: PollingStationCardProps) => {
 
           <YStack
             padding="$md"
-            onPress={onPress}
+            onPress={
+              !isOnline
+                ? () =>
+                    // don't allow deletion of a polling station while offline
+                    Toast.show({
+                      type: "error",
+                      text2: t("offline_error_toast_msg"),
+                    })
+                : onPress
+            }
             pressStyle={{ opacity: 0.5 }}
             justifyContent="center"
             alignItems="center"

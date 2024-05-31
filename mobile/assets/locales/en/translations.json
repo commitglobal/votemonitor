@@ -307,6 +307,9 @@
     "error": "Error while loading question data!"
   },
   "manage_my_polling_stations": {
+    "empty": {
+      "title": "No visited polling stations yet"
+    },
     "general_text": "Manage my polling stations",
     "ps_card": {
       "header": "Polling station #{{value}}",
@@ -329,7 +332,9 @@
       "title": "Removing polling station #{{value}} not allowed",
       "description": "The polling station cannot be removed from your list because it contains data (Polling station information and/or Form answers) which cannot be deleted by the system on your behalf. If you want to remove this polling station, please clear polling station information and form answers manually, then retry this action."
     },
-    "delete_success": "Polling station deleted successfully!"
+    "delete_success": "Polling station deleted successfully!",
+    "delete_error": "We encountered a problem while deleting the polling station visit. Please try again.",
+    "offline_error_toast_msg": "You need an internet connection in order to perform this action."
   },
   "quick_report": {
     "list": {
