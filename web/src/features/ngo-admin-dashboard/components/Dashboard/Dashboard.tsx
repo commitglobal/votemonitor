@@ -98,6 +98,8 @@ export default function NgoAdminDashboard(): FunctionComponent {
                   title='Observers in polling stations'
                   metricLabel='With at least one question answered'
                   data={observersOnTheFieldDataConfig(statistics?.observersStats?.totalNumberOfObservers, statistics?.numberOfObserversOnTheField)}
+                  value={statistics?.numberOfObserversOnTheField ?? 0}
+                  total={statistics?.observersStats?.totalNumberOfObservers ?? 0}
                   ref={observersOnFieldChartRef} />
               </CardContent>
             </Card>
@@ -115,6 +117,8 @@ export default function NgoAdminDashboard(): FunctionComponent {
                   title='Stations visited by at least one observer'
                   metricLabel='coverage'
                   data={pollingStationsDataConfig(statistics?.pollingStationsStats)}
+                  total={statistics?.pollingStationsStats.totalNumberOfPollingStations ?? 0 }
+                  value={statistics?.pollingStationsStats.numberOfVisitedPollingStations ?? 0 }
                   ref={pollingStationsChartRef} />
               </CardContent>
             </Card>

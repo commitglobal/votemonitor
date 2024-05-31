@@ -55,6 +55,7 @@ public class FormSubmissionsDataTableGenerator
 
         var row = new List<object>
         {
+
            submission.SubmissionId.ToString(),
            submission.TimeSubmitted.ToString("s"),
            submission.FollowUpStatus.Value,
@@ -80,35 +81,7 @@ public class FormSubmissionsDataTableGenerator
         foreach (var submission in submissions)
         {
 
-            if (submission.FormId != _formId)
-            {
-                // ignore submission if it is not for the current form
-                return this;
-            }
-
-            MapToAnswerData(submission);
-
-            _submissions.Add(submission);
-
-            var row = new List<object>
-            {
-                submission.SubmissionId.ToString(),
-                submission.FollowUpStatus.Value,
-                submission.TimeSubmitted.ToString("s"),
-                submission.Level1,
-                submission.Level2,
-                submission.Level3,
-                submission.Level4,
-                submission.Level5,
-                submission.Number,
-                submission.MonitoringObserverId.ToString(),
-                submission.FirstName,
-                submission.LastName,
-                submission.Email,
-                submission.PhoneNumber
-            };
-
-            _dataTable.Add(row);
+            ForSubmission(submission);
         }
 
         return this;

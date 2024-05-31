@@ -23,9 +23,5 @@ public class ExportedDataConfiguration : IEntityTypeConfiguration<ExportedData>
         builder.HasOne(x => x.ElectionRound)
             .WithMany()
             .HasForeignKey(x => x.ElectionRoundId);
-
-        builder.HasOne(x => x.Ngo)
-            .WithMany()
-            .HasForeignKey(x => x.NgoId);
     }
 }

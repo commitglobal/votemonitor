@@ -13,7 +13,7 @@ public class ExportedDataWasNotFoundException : Exception
     {
     }
 
-    public ExportedDataWasNotFoundException(ExportedDataType exportedDataType, Guid electionRoundId, Guid ngoId, Guid exportedDataId) : base($"ExportData was not found for {exportedDataType.Name} {electionRoundId} {ngoId} {exportedDataId}")
+    public ExportedDataWasNotFoundException(ExportedDataType exportedDataType, Guid electionRoundId, Guid exportedDataId) : base($"ExportData was not found for {exportedDataType.Name} {electionRoundId} {exportedDataId}")
     {
     }
 }
