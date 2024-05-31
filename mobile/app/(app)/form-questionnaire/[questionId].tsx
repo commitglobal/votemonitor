@@ -304,7 +304,6 @@ const FormQuestionnaire = () => {
           filePath: cameraResult.uri,
         },
         {
-          // onSettled: () => setIsOptionsSheetOpen(false),
           onError: () => console.log("🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴ERORR🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴"),
         },
       );
@@ -312,7 +311,7 @@ const FormQuestionnaire = () => {
       await handleChunkUpload(cameraResult.uri, data.uploadUrls, data.uploadId, attachmentId);
 
       if (!onlineManager.isOnline()) {
-        // setIsOptionsSheetOpen(false);
+        setIsOptionsSheetOpen(false);
       }
     }
   };
@@ -372,57 +371,29 @@ const FormQuestionnaire = () => {
 
   const handleChunkUpload = async (filePath: string, uploadUrls: Record<string, string>, uploadId: string, attachmentId: string) => {
     setIsLoadingAttachment(true);
-    let currentIndex = 1;
     try {
       let etags: Record<number, string> = {};
       const urls = Object.values(uploadUrls);
-      // for (const [index, url] of urls.entries()) {
-      //   // const chunk = await FileSystem.readAsStringAsync(filePath, { length: MULTIPART_FILE_UPLOAD_SIZE, position: index * MULTIPART_FILE_UPLOAD_SIZE, encoding: FileSystem.EncodingType.Base64 });
-      //   // const buffer = Buffer.from(chunk, 'base64');
-
-      //   const data = await uploadS3Chunk(url, buffer)
-      //   etags = { ...etags, [index + 1]: data.ETag }
-      // };
-
-      ReactNativeBlobUtil.fs.readStream(
-        // file path
-        filePath,
-        // encoding, should be one of `base64`, `utf8`, `ascii`
-        'utf8',
-        // (optional) buffer size, default to 4096 (4095 for BASE64 encoded data)
-        // when reading file in BASE64 encoding, buffer size must be multiples of 3.
-        MULTIPART_FILE_UPLOAD_SIZE)
-        .then((ifstream) => {
-          ifstream.open()
-          ifstream.onData(async (chunk) => {
-            const data = await uploadS3Chunk(urls[currentIndex], chunk)
-            etags = { ...etags, [currentIndex + 1]: data.ETag }
-            currentIndex++;
-          })
-          ifstream.onError((err) => {
-            console.log('oops', err)
-          })
-          ifstream.onEnd(async () => {
-            // If everything went ok, send the complete upload command to the backend.
-            if (activeElectionRound?.id) {
-              console.log('completing...')
-              await addAttachmentMultipartComplete({ uploadId, etags, electionRoundId: activeElectionRound?.id, id: attachmentId })
-
-            }
-            setIsLoadingAttachment(false);
-            setIsOptionsSheetOpen(false);
-          })
-        })
+      for (const [index, url] of urls.entries()) {
+        const chunk = await FileSystem.readAsStringAsync(filePath, { length: MULTIPART_FILE_UPLOAD_SIZE, position: index * MULTIPART_FILE_UPLOAD_SIZE, encoding: FileSystem.EncodingType.Base64 });
+        const buffer = Buffer.from(chunk, 'base64');
+        const data = await uploadS3Chunk(url, buffer)
+        etags = { ...etags, [index + 1]: data.ETag }
+      };
 
 
+      if (activeElectionRound?.id) {
+        await addAttachmentMultipartComplete({ uploadId, etags, electionRoundId: activeElectionRound?.id, id: attachmentId })
+
+      }
     } catch (err) {
       // If error try to abort the upload
       if (activeElectionRound?.id) {
-        console.log('abandoning...')
         await addAttachmentMultipartAbort({ id: attachmentId, uploadId, electionRoundId: activeElectionRound.id })
       }
     } finally {
-
+      setIsLoadingAttachment(false);
+      setIsOptionsSheetOpen(false);
     }
   }
 
