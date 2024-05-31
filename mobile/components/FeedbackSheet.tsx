@@ -71,7 +71,7 @@ const FeedbackSheet = (props: OptionsSheetProps) => {
                     value={value}
                     height={100}
                     onChangeText={onChange}
-                    //use this in order to not allow dragging of the sheet while input is focused (causes trouble on android)
+                    // use this in order to not allow dragging of the sheet while input is focused (causes trouble on android)
                     onFocus={() => setWritingFeedback(true)}
                     onBlur={() => setWritingFeedback(false)}
                   />
