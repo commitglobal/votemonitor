@@ -14,7 +14,7 @@ public static class DomainInstaller
 {
     public const string SectionKey = "Domain";
 
-    public static IServiceCollection AddApplicationDomain(this IServiceCollection services, IConfiguration config)
+    public static IServiceCollection AddApplicationDomain(this IServiceCollection services, IConfiguration config, bool isProductionEnvironment)
     {
         var connectionString = config.GetNpgsqlConnectionString("DbConnectionConfig");
 
@@ -31,7 +31,7 @@ public static class DomainInstaller
                 );
             });
 
-            options.EnableSensitiveDataLogging();
+            options.EnableSensitiveDataLogging(!isProductionEnvironment);
         });
         services.AddSingleton<INpgsqlConnectionFactory>(_ => new NpgsqlConnectionFactory(connectionString));
         services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));

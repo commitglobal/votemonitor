@@ -21,7 +21,7 @@ public class Endpoint(IReadRepository<ExportedData> repository) : Endpoint<Reque
 
     public override async Task<Results<Ok<Response>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var specification = new GetExportedDataDetailsSpecification(req.ElectionRoundId, req.NgoId, req.Id);
+        var specification = new GetExportedDataDetailsSpecification(req.ElectionRoundId, req.Id);
 
         var exportedDataDetails = await repository.SingleOrDefaultAsync(specification, ct);
 

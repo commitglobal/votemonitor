@@ -22,14 +22,14 @@ public class ExportFormSubmissionsJob(VoteMonitorContext context,
     {
         var exportedData = await context
             .ExportedData
-            .Where(x => x.ElectionRoundId == electionRoundId && x.NgoId == ngoId && x.Id == exportedDataId)
+            .Where(x => x.ElectionRoundId == electionRoundId && x.Id == exportedDataId)
             .FirstOrDefaultAsync(ct);
 
         if (exportedData == null)
         {
-            logger.LogWarning("ExportData was not found for {electionRoundId} {ngoId} {exportedDataId}",
-                electionRoundId, ngoId, exportedDataId);
-            throw new ExportedDataWasNotFoundException(ExportedDataType.FormSubmissions, electionRoundId, ngoId, exportedDataId);
+            logger.LogWarning("ExportData was not found for {electionRoundId}  {exportedDataId}",
+                electionRoundId, exportedDataId);
+            throw new ExportedDataWasNotFoundException(ExportedDataType.FormSubmissions, electionRoundId, exportedDataId);
         }
 
         try

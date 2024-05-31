@@ -1,12 +1,8 @@
-﻿using Vote.Monitor.Domain.Entities.NgoAggregate;
-
-namespace Vote.Monitor.Domain.Entities.ExportedDataAggregate;
+﻿namespace Vote.Monitor.Domain.Entities.ExportedDataAggregate;
 public class ExportedData : BaseEntity, IAggregateRoot
 {
     public Guid ElectionRoundId { get; private set; }
     public ElectionRound ElectionRound { get; private set; }
-    public Guid NgoId { get; private set; }
-    public Ngo Ngo { get; private set; }
     public ExportedDataType ExportedDataType { get; private set; }
     public ExportedDataStatus ExportStatus { get; private set; }
     public string? FileName { get; private set; }
@@ -14,18 +10,17 @@ public class ExportedData : BaseEntity, IAggregateRoot
     public DateTime StartedAt { get; private set; }
     public DateTime? CompletedAt { get; private set; }
 
-    private ExportedData(Guid electionRoundId, Guid ngoId, ExportedDataType exportedDataType, DateTime startedAt) : base(Guid.NewGuid())
+    private ExportedData(Guid electionRoundId, ExportedDataType exportedDataType, DateTime startedAt) : base(Guid.NewGuid())
     {
         ElectionRoundId = electionRoundId;
-        NgoId = ngoId;
         ExportStatus = ExportedDataStatus.Started;
         StartedAt = startedAt;
         ExportedDataType = exportedDataType;
     }
 
-    public static ExportedData Create(Guid electionRoundId, Guid ngoId, ExportedDataType dataType, DateTime startedAt)
+    public static ExportedData Create(Guid electionRoundId, ExportedDataType dataType, DateTime startedAt)
     {
-        return new ExportedData(electionRoundId, ngoId, dataType, startedAt);
+        return new ExportedData(electionRoundId, dataType, startedAt);
     }
 
     public void Fail()

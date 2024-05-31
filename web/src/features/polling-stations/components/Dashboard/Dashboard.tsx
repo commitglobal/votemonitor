@@ -18,6 +18,8 @@ import { FunnelIcon } from '@heroicons/react/24/outline';
 import { useNavigate, useSearch } from '@tanstack/react-router';
 import { useDebounce } from '@uidotdev/usehooks';
 import { useCallback, useMemo, useState, type ReactElement } from 'react';
+import { ExportDataButton } from '@/features/responses/components/ExportDataButton/ExportDataButton';
+import { ExportedDataType } from '@/features/responses/models/data-export';
 
 
 function usePollingStations(queryParams: DataTableParameters): UseQueryResult<PageResponse<PollingStation>, Error> {
@@ -218,10 +220,14 @@ export default function PollingStationsDashboard(): ReactElement {
   return (
     <Card className='pt-0'>
       <CardHeader className='flex flex-column gap-2'>
-        <div className='flex flex-row justify-between items-center'>
-          <CardTitle className='text-xl'>Event details</CardTitle>
-        </div>
+        <div className='flex justify-between items-center px-6'>
+          <CardTitle>Polling stations</CardTitle>
 
+          <div className='flex gap-4 items-center'>
+            <ExportDataButton exportedDataType={ExportedDataType.PollingStations} />
+          </div>
+
+        </div>
         <Separator />
         <div className='filters px-6 flex flex-row justify-end gap-4'>
           <>
@@ -273,7 +279,7 @@ export default function PollingStationsDashboard(): ReactElement {
 
       </CardHeader>
       <CardContent className='flex flex-col gap-6 items-baseline'>
-        <QueryParamsDataTable columns={pollingStationColDefs} useQuery={usePollingStations}  queryParams={queryParams}/>
+        <QueryParamsDataTable columns={pollingStationColDefs} useQuery={usePollingStations} queryParams={queryParams} />
       </CardContent>
     </Card>
   );

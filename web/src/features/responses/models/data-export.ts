@@ -12,6 +12,7 @@ export enum ExportStatus {
 export enum ExportedDataType {
   FormSubmissions = "FormSubmissions",
   QuickReports = "QuickReports",
+  PollingStations = "PollingStations",
 }
 
 export interface ExportedDataDetails {
