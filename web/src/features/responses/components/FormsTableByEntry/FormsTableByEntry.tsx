@@ -25,7 +25,6 @@ export function FormsTableByEntry({ searchText }: FormsTableByEntryProps): Funct
   const queryParams = useMemo(() => {
     const params = [
       ['searchText', searchText],
-      ['pollingStationNumberFilter', debouncedSearch.pollingStationNumberFilter],
       ['formTypeFilter', debouncedSearch.formTypeFilter],
       ['hasFlaggedAnswers', debouncedSearch.hasFlaggedAnswers],
       ['level1Filter', debouncedSearch.level1Filter],

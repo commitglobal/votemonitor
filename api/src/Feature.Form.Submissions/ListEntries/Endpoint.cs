@@ -44,7 +44,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
                  AND (@level5 IS NULL OR ps."Level5" = @level5)
                  AND (@pollingStationNumber IS NULL OR ps."Number" = @pollingStationNumber)
                  AND (@hasFlaggedAnswers is NULL OR @hasFlaggedAnswers = false OR 1 = 2)
-                 AND (@followUpStatus is NULL OR 1 = 2)
+                 AND (@followUpStatus is NULL OR psi."FollowUpStatus" = @followUpStatus)
              UNION ALL SELECT count(*) AS count
              FROM "FormSubmissions" fs
              INNER JOIN "Forms" f ON f."Id" = fs."FormId"
@@ -65,7 +65,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
                  AND (@level5 IS NULL OR ps."Level5" = @level5)
                  AND (@pollingStationNumber IS NULL OR ps."Number" = @pollingStationNumber)
                  AND (@hasFlaggedAnswers is NULL OR (fs."NumberOfFlaggedAnswers" = 0 AND @hasFlaggedAnswers = false) OR ("NumberOfFlaggedAnswers" > 0 AND @hasFlaggedAnswers = true))
-                 AND (@followUpStatus is NULL OR "FollowUpStatus" = @followUpStatus)
+                 AND (@followUpStatus is NULL OR fs."FollowUpStatus" = @followUpStatus)
         ) c;
 
         WITH submissions AS
@@ -79,7 +79,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
                     0 AS "MediaFilesCount",
                     0 AS "NotesCount",
                     COALESCE(psi."LastModifiedOn", psi."CreatedOn") "TimeSubmitted",
-                    'NotApplicable' AS "FollowUpStatus"
+                    psi."FollowUpStatus"
              FROM "PollingStationInformation" psi
              INNER JOIN "MonitoringObservers" mo ON mo."Id" = psi."MonitoringObserverId"
              INNER JOIN "MonitoringNgos" mn ON mn."Id" = mo."MonitoringNgoId"

@@ -101,16 +101,6 @@ export default function FormSubmissionDetails(): FunctionComponent {
               {formSubmission.phoneNumber}
             </div>
 
-            <div className='flex gap-2'>
-              <p>Station:</p>
-              <Link
-                className='text-purple-500 font-bold'
-                to='/responses'
-                search={{ pollingStationNumberFilter: formSubmission.number } as any}>
-                #{formSubmission.number}
-              </Link>
-            </div>
-
             <div className='flex gap-4'>
               <div className='flex gap-2'>
                 <p>Location - L1:</p>
@@ -132,6 +122,8 @@ export default function FormSubmissionDetails(): FunctionComponent {
                 <p>Location - L5:</p>
                 {formSubmission.level5}
               </div>}
+              <p>Number:</p>
+              #{formSubmission.number}
             </div>
           </CardContent>
         </Card>
