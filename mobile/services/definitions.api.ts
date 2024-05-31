@@ -356,3 +356,67 @@ export type ForgotPasswwordPayload = {
 export const forgotPassword = async (data: ForgotPasswwordPayload) => {
   return API.post("auth/forgot-password", data).then((res) => res.data);
 };
+
+/** ===================================================================================
+ * ================= GET does a polling station have form submissions? ================
+ * ====================================================================================
+ *  @param {string} electionRoundId
+ *  @param {string} pollingStationId
+ */
+
+export type GetPSHasFormSubmissionsPayload = {
+  electionRoundId: string;
+  pollingStationId: string;
+};
+
+export const getPSHasFormSubmissions = (electionRoundId: string, pollingStationId: string) => {
+  return API.get(`/election-rounds/${electionRoundId}/form-submissions:any`, {
+    params: {
+      pollingStationId,
+    },
+  }).then((res) => res.data);
+};
+
+/** ================= DELETE pollingStation ====================
+ * ========================================================================
+ * @description delete a polling station
+ * @param {DeletePollingStationVisitPayload} data includes electionRoundId and pollingStationId
+ */
+
+export type DeletePollingStationVisitPayload = {
+  electionRoundId: string;
+  pollingStationId: string;
+};
+
+export const deletePollingStationVisit = (data: DeletePollingStationVisitPayload) => {
+  return API.delete(
+    `election-rounds/${data.electionRoundId}/polling-station-visits/${data.pollingStationId}`,
+  ).then((res) => res.data);
+};
+
+/** ========================================================================
+    ================= POST feedback ====================
+    ========================================================================
+    @param {string} electionRoundId 
+*/
+
+type feedbackMetadata = {
+  appVersion: string | undefined;
+  sentAt: string;
+  platform: "ios" | "android" | "windows" | "macos" | "web";
+  modelName: string | null;
+  electionRoundId: string | undefined;
+  systemVersion: string | null;
+};
+
+export type AddFeedbackPayload = {
+  electionRoundId: string | undefined;
+  userFeedback: string;
+  metadata: feedbackMetadata;
+};
+
+export const addFeedback = ({ electionRoundId, ...feedbackPayload }: AddFeedbackPayload) => {
+  return API.post(`election-rounds/${electionRoundId}/feedback/`, feedbackPayload).then(
+    (res) => res.data,
+  );
+};

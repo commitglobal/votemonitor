@@ -44,9 +44,16 @@ const WarningDialog = ({
             {cancelBtnText}
           </Button>
 
-          <Button backgroundColor="$red10" flex={1} onPress={action} style={{ ...actionBtnStyle }}>
-            {actionBtnText}
-          </Button>
+          {actionBtnText && (
+            <Button
+              backgroundColor="$red10"
+              flex={1}
+              onPress={action}
+              style={{ ...actionBtnStyle }}
+            >
+              {actionBtnText}
+            </Button>
+          )}
         </XStack>
       }
     />

@@ -67,12 +67,13 @@
       },
       "errors": {
         "invalid_credentials": "Wystąpił błąd z Twoimi danymi logowania. Spróbuj ponownie.",
-        "offline": "xxxxx"
+        "offline": "Aby się zalogować, potrzebujesz połączenia z Internetem."
       }
     },
     "actions": {
       "forgot_password": "Zapomniałeś/aś hasła?"
-    }
+    },
+    "email_toast": "xxxxx"
   },
   "forgot_password": {
     "header": {
@@ -187,6 +188,9 @@
         "helper": "Wybrany formularz dostępny jest w kilku językach. Wybierz proszę język, w którym chcesz kontynnuować pracę.",
         "error": "Proszę wybrać jedną z opcji"
       }
+    },
+    "options_menu": {
+      "manage_my_polling_stations": "xxxxx"
     }
   },
   "polling_station_information_form": {
@@ -233,8 +237,8 @@
     "clear_answers_modal": {
       "title": "Clear form {{value}}",
       "description": {
-        "p1": "xxxxx",
-        "p2": "xxxxx"
+        "p1": "Ta czynność usunie wszystkie odpowiedzi wprowadzone do tego formularza. Dotyczy to wprowadzonych informacji, notatek, jak i załączonych plików. Wszystkie pytania zostaną przywrócone do stanu 'Nie udzielono odpowiedzi'.",
+        "p2": "Aby uniknąć utraty danych, upewnij się proszę, że sprawdziłeś/aś dane dotyczące komisji wyborczej zanim wykonasz tę akcję."
       },
       "actions": {
         "clear": "Wyczyść formularz",
@@ -303,6 +307,36 @@
     },
     "error": "Błąd podczas ładowania danych pytania!"
   },
+  "manage_my_polling_stations": {
+    "empty": {
+      "title": "xxxxx"
+    },
+    "general_text": "xxxxx",
+    "ps_card": {
+      "header": "xxxxx",
+      "l1": "xxxxx",
+      "l2": "xxxxx",
+      "l3": "xxxxx",
+      "street": "xxxxx",
+      "ps_number": "xxxxx"
+    },
+    "warning_dialog": {
+      "title": "xxxxx",
+      "description": "xxxxx",
+      "actions": {
+        "cancel": "xxxxx",
+        "remove": "xxxxx",
+        "loading": "xxxxx"
+      }
+    },
+    "removal_unallowed_dialog": {
+      "title": "xxxxx",
+      "description": "xxxxx"
+    },
+    "delete_success": "xxxxx!",
+    "delete_error": "xxxxx",
+    "offline_error_toast_msg": "xxxxx"
+  },
   "quick_report": {
     "list": {
       "title": "Szybki raport",
@@ -313,6 +347,9 @@
       "no_files": "Brak załączonych plików",
       "attachment_one": "{{count}} plik załącznika",
       "attachment_other": "{{count}} pliki załączników"
+    },
+    "options_menu": {
+      "manage_my_polling_stations": "xxxxx"
     }
   },
   "report_new_issue": {
@@ -376,9 +413,12 @@
     "list": {
       "heading": "Podręczniki",
       "guide": {
-        "backup_title": "xxxxx",
-        "created_on": "xxxxx"
+        "backup_title": "Dokument",
+        "created_on": "Utworzono dnia"
       }
+    },
+    "options_sheet": {
+      "manage_my_polling_stations": "xxxxx"
     }
   },
   "inbox": {
@@ -408,21 +448,30 @@
     "logged_in": "Zalogowano jako {{user}}",
     "warning_modal": {
       "logout": {
-        "title": "xxxxx",
-        "description": "xxxxx",
-        "cancel": "xxxxx",
-        "action": "xxxxx"
+        "title": "Ostrzeżenie: Twoje dane nie są zsynchronizowane",
+        "description": "Aktualnie jesteś offline. Jeśli się teraz wylogujesz, wszystkie formularze, załączniki i notatki wypełnione lub przesłane offline zostaną utracone.\n\nAby uniknąć utraty danych, przed wylogowaniem połącz się ponownie z internetem.",
+        "cancel": "Anuluj",
+        "action": "Wyloguj"
       }
     },
+    "feedback_toast": {
+      "success": "xxxxx",
+      "offline": "xxxxx",
+      "error": "xxxxx",
+      "required": "xxxxx"
+    },
     "feedback_sheet": {
-      "heading": "xxxxx",
-      "p1": "xxxxx",
-      "placeholder": "xxxxx.",
-      "cancel": "xxxxx",
-      "action": "xxxxx",
+      "heading": "Prześlij nam swoją opinię",
+      "p1": "Podziel się z nami wszelkimi problemami, które napotkasz podczas korzystania z aplikacji lub sugestiami dotyczącymi ulepszenia Vote Monitor w przyszłości. Jesteśmy wdzięczni za każdą opinię!",
+      "placeholder": "Napisz tutaj swoją opinię...",
+      "cancel": "Anuluj",
+      "action": "Wysłać",
       "input": {
-        "max": "xxxxx"
+        "max": "Dane wejściowe nie mogą przekraczać {{value}} znaków"
       }
+    },
+    "options_sheet": {
+      "manage_my_polling_stations": "xxxxx"
     }
   },
   "change_password": {
@@ -462,7 +511,7 @@
     "paragraph1": "Coś poszło nie tak!",
     "paragraph2": "Nie mogliśmy odzyskać danych po tym błędzie. Sprawdź swoje połączenie internetowe i uruchom ponownie aplikację!",
     "retry": "Spróbować ponownie",
-    "logout": "xxxxx"
+    "logout": "Wyloguj"
   },
   "network_banner": {
     "online": "Aplikacja odzyskała połączenie z siecią. Wszystkie informacje pomyślnie zsynchronizowano.",
@@ -471,8 +520,8 @@
     "offline_warning": "Wygląda na to, że jesteś offline. Uszy do góry, odpowiedzi, których udzieliłeś/aś zostały bezpiecznie zapisane na tym urządzeniu i zostaną zsynchronizowane, gdy tylko odzyskasz połączenie z siecią. Możesz dalej uzupełniać formularz i przygotowywać szybkie raporty."
   },
   "sync": {
-    "sync_data": "xxxxx",
-    "warning": "xxxxx",
-    "files": "xxxxx"
+    "sync_data": "Synchronizowanie danych offline...",
+    "warning": "NIE ZAMKNIJ aplikacji ani połączenia internetowego, w przeciwnym razie dane zostaną utracone.",
+    "files": "Przesyłamy Twoje pliki, może to chwilę potrwać..."
   }
 }

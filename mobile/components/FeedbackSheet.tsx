@@ -9,32 +9,70 @@ import { Keyboard, Platform } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Button from "./Button";
 import { Controller, useForm } from "react-hook-form";
+import { useAddFeedbackMutation } from "../services/mutations/feedback/add-feedback.mutation";
+import { useUserData } from "../contexts/user/UserContext.provider";
+import Constants from "expo-constants";
+import * as Device from "expo-device";
+import Toast from "react-native-toast-message";
 
 const FeedbackSheet = (props: OptionsSheetProps) => {
   const { t } = useTranslation("more");
   const insets = useSafeAreaInsets();
   const keyboardIsVisible = useKeyboardVisible();
   const [writingFeedback, setWritingFeedback] = useState(false);
+  const { activeElectionRound } = useUserData();
+
+  const { mutate: addFeedback } = useAddFeedbackMutation(activeElectionRound?.id);
 
   const {
     control,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm({
     defaultValues: {
-      feedbackText: "",
+      userFeedback: "",
     },
   });
 
+  const onSheetClose = () => {
+    Keyboard.dismiss();
+    props.setOpen(false);
+    reset();
+  };
+
+  const onSubmit = ({ userFeedback }: { userFeedback: string }) => {
+    const feedbackPayload = {
+      electionRoundId: activeElectionRound?.id,
+      userFeedback,
+      metadata: {
+        appVersion: Constants.expoConfig?.version,
+        sentAt: new Date().toLocaleString(),
+        platform: Platform.OS,
+        modelName: Device.modelName,
+        electionRoundId: activeElectionRound?.id,
+        systemVersion: Device.osVersion,
+      },
+    };
+    addFeedback(feedbackPayload, {
+      onSuccess: () => {
+        Toast.show({
+          type: "success",
+          text2: t("feedback_toast.success"),
+        });
+      },
+      onError: () => {
+        Toast.show({
+          type: "error",
+          text2: t("feedback_toast.error"),
+        });
+      },
+    });
+    onSheetClose();
+  };
+
   return (
-    <OptionsSheet
-      {...props}
-      onOpenChange={(open: boolean) => {
-        if (!open) Keyboard.dismiss();
-        props.setOpen(open);
-      }}
-      disableDrag={writingFeedback}
-    >
+    <OptionsSheet {...props} disableDrag={writingFeedback}>
       <YStack
         padding="$md"
         paddingTop="$0"
@@ -51,14 +89,17 @@ const FeedbackSheet = (props: OptionsSheetProps) => {
           {t("feedback_sheet.heading")}
         </Typography>
         <Typography color="$gray6">{t("feedback_sheet.p1")}</Typography>
-        {/* <Input type="textarea" /> */}
         <Controller
-          name={"feedbackText"}
+          name={"userFeedback"}
           control={control}
           rules={{
+            required: {
+              value: true,
+              message: t("feedback_toast.required"),
+            },
             maxLength: {
-              value: 2,
-              message: t("feedback_sheet.input.max", { value: 2 }),
+              value: 10000,
+              message: t("feedback_sheet.input.max", { value: 10000 }),
             },
           }}
           render={({ field: { value, onChange } }) => {
@@ -76,8 +117,8 @@ const FeedbackSheet = (props: OptionsSheetProps) => {
                     onBlur={() => setWritingFeedback(false)}
                   />
                 </YStack>
-                {errors.feedbackText && (
-                  <Typography color="$red12">{errors.feedbackText.message}</Typography>
+                {errors.userFeedback && (
+                  <Typography color="$red12">{errors.userFeedback.message}</Typography>
                 )}
               </YStack>
             );
@@ -86,16 +127,10 @@ const FeedbackSheet = (props: OptionsSheetProps) => {
 
         {/* buttons */}
         <XStack gap="$md">
-          <Button
-            preset="chromeless"
-            onPress={() => {
-              Keyboard.dismiss();
-              props.setOpen(false);
-            }}
-          >
+          <Button preset="chromeless" onPress={onSheetClose}>
             {t("feedback_sheet.cancel")}
           </Button>
-          <Button flex={1} onPress={handleSubmit(() => console.log("send to backend"))}>
+          <Button flex={1} onPress={handleSubmit(onSubmit)}>
             {t("feedback_sheet.action")}
           </Button>
         </XStack>

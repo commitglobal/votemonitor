@@ -33,6 +33,18 @@ export const pollingStationsKeys = {
     pollingStationId,
     "form-submissions",
   ],
+  psHasFormSubmissions: (
+    electionRoundId: string | undefined,
+    pollingStationId: string | undefined,
+  ) => [
+    ...pollingStationsKeys.all,
+    "electionRoundId",
+    electionRoundId,
+    "pollingStationId",
+    pollingStationId,
+    "form-submissions",
+    "hasFormSubmissions",
+  ],
   upsertFormSubmission: () => [...pollingStationsKeys.all, "upsertFormSubmission"] as const,
   nomenclatorList: (parentId: number | null = -1) =>
     [...pollingStationsKeys.all, "node", parentId] as const,
@@ -68,6 +80,7 @@ export const pollingStationsKeys = {
   mutatePollingStationGeneralData: () =>
     [...pollingStationsKeys.all, "mutate-general-data"] as const,
   changePassword: () => [...pollingStationsKeys.all, "changePassword"] as const,
+  deletePollingStation: () => [...pollingStationsKeys.all, "deletePollingStation"] as const,
 };
 
 export const notesKeys = {
@@ -90,6 +103,11 @@ export const notesKeys = {
   addNote: () => [...notesKeys.all, "add"] as const,
   updateNote: () => [...notesKeys.all, "update"] as const,
   deleteNote: () => [...notesKeys.all, "delete"] as const,
+};
+
+export const feedbackKeys = {
+  addFeedback: (electionRoundId: string | undefined) =>
+    ["addFeedback", "electionRoundId", electionRoundId] as const,
 };
 
 export const useElectionRoundsQuery = () => {

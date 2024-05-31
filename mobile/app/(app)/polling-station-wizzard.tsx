@@ -177,6 +177,7 @@ const PollingStationWizzardContent = ({
             visitedAt: new Date().toISOString(),
             address: pollingStation.name,
             number: pollingStation?.number || "",
+            isNotSynced: true,
           },
         ],
       );

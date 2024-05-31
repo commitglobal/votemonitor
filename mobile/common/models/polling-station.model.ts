@@ -11,4 +11,10 @@ export type PollingStationVisitVM = {
   visitedAt: string; // ISO date
   address: string;
   number: string;
+  level1?: string;
+  level2?: string;
+  level3?: string;
+  level4?: string;
+  level5?: string;
+  isNotSynced?: boolean;
 };

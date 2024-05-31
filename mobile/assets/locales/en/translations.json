@@ -188,6 +188,9 @@
         "helper": "The selected form is available in multiple languages. Please select which one you would like to continue with.",
         "error": "Please select one of the options"
       }
+    },
+    "options_menu": {
+      "manage_my_polling_stations": "Manage my polling stations"
     }
   },
   "polling_station_information_form": {
@@ -304,6 +307,38 @@
     },
     "error": "Error while loading question data!"
   },
+  "manage_my_polling_stations": {
+    "empty": {
+      "title": "No visited polling stations yet"
+    },
+    "general_text": "Manage my polling stations",
+    "ps_card": {
+      "header": "Polling station #{{value}}",
+      "l1": "[Location L1]",
+      "l2": "[Location L2]",
+      "l3": "[Location L3]",
+      "l4": "[Location L4]",
+      "l5": "[Location L5]",
+      "street": "Street",
+      "ps_number": "Polling station number"
+    },
+    "warning_dialog": {
+      "title": "Remove Polling station #{{value}}",
+      "description": "This action will remove the polling station from your list of visited polling stations. You can add it again through the Add New Polling Station process.",
+      "actions": {
+        "cancel": "Cancel",
+        "remove": "Remove",
+        "loading": "Loading..."
+      }
+    },
+    "removal_unallowed_dialog": {
+      "title": "Removing polling station #{{value}} not allowed",
+      "description": "The polling station cannot be removed from your list because it contains data (Polling station information and/or Form answers) which cannot be deleted by the system on your behalf. If you want to remove this polling station, please clear polling station information and form answers manually, then retry this action."
+    },
+    "delete_success": "Polling station deleted successfully!",
+    "delete_error": "We encountered a problem while deleting the polling station visit. Please try again.",
+    "offline_error_toast_msg": "You need an internet connection in order to perform this action."
+  },
   "quick_report": {
     "list": {
       "title": "Quick Report",
@@ -314,6 +349,9 @@
       "no_files": "No attached files",
       "attachment_one": "{{count}} attachment file",
       "attachment_other": "{{count}} attachment files"
+    },
+    "options_menu": {
+      "manage_my_polling_stations": "Manage my polling stations"
     }
   },
   "report_new_issue": {
@@ -380,6 +418,9 @@
         "backup_title": "Document",
         "created_on": "Created on"
       }
+    },
+    "options_sheet": {
+      "manage_my_polling_stations": "Manage my polling stations"
     }
   },
   "inbox": {
@@ -412,8 +453,14 @@
         "title": "Attention: You have unsynced data",
         "description": "You are currently offline. If you log out now, any forms, attachments, or notes you have completed or uploaded during the offline mode will be lost.\n\nTo avoid losing your data, please reconnect to the internet before logging out.",
         "cancel": "Cancel",
-        "action": "Log out"
+        "action": "Logout"
       }
+    },
+    "feedback_toast": {
+      "success": "Feedback sent!",
+      "offline": "You need an internet connection in order to perform this action.",
+      "error": "Error while adding feedback!",
+      "required": "This field is required"
     },
     "feedback_sheet": {
       "heading": "Send us your feedback",
@@ -424,6 +471,9 @@
       "input": {
         "max": "Input cannot exceed {{value}} characters"
       }
+    },
+    "options_sheet": {
+      "manage_my_polling_stations": "Manage my polling stations"
     }
   },
   "change_password": {
