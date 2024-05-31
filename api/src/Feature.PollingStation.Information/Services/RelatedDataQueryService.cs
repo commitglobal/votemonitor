@@ -21,16 +21,7 @@ public class RelatedDataQueryService(INpgsqlConnectionFactory connectionFactory)
                         FS."ElectionRoundId" = @electionRoundId
                         AND MO."ObserverId" = @observerId
                         AND FS."PollingStationId" = @pollingStationId
-                    UNION
-                    SELECT
-                        1
-                    FROM
-                        "QuickReports" QR
-                        INNER JOIN "MonitoringObservers" MO ON QR."MonitoringObserverId" = MO."Id"
-                    WHERE
-                        QR."ElectionRoundId" = @electionRoundId
-                        AND MO."ObserverId" = @observerId
-                        AND QR."PollingStationId" = @pollingStationId
+                        AND JSONB_ARRAY_LENGTH(FS."Answers") > 0
                   )
                   """;
 

@@ -1,4 +1,5 @@
-﻿using Serilog;
+﻿using System.Text.Json;
+using Serilog;
 using Vote.Monitor.Core.Services.Mailing;
 using Vote.Monitor.Domain;
 using Hangfire;
@@ -33,6 +34,7 @@ using Vote.Monitor.Domain.Entities.QuickReportAggregate;
 using Ardalis.SmartEnum.Dapper;
 using Vote.Monitor.Hangfire.Jobs.Export.FormSubmissions;
 using Vote.Monitor.Hangfire.Jobs.Export.FormSubmissions.ReadModels;
+using Vote.Monitor.Hangfire.Jobs.Export.PollingStations;
 using Vote.Monitor.Hangfire.Jobs.Export.QuickReports;
 using Vote.Monitor.Hangfire.Jobs.Export.QuickReports.ReadModels;
 
@@ -55,14 +57,15 @@ builder.Services.AddLogging(logging =>
     logging.AddSerilog(logger);
 });
 
-// Register type handlers;
+#region Register type handleers for Dapper
+
 SqlMapper.AddTypeHandler(typeof(BaseQuestion[]), new JsonToObjectConverter<BaseQuestion[]>());
 SqlMapper.AddTypeHandler(typeof(BaseAnswer[]), new JsonToObjectConverter<BaseAnswer[]>());
 SqlMapper.AddTypeHandler(typeof(NoteModel[]), new JsonToObjectConverter<NoteModel[]>());
 SqlMapper.AddTypeHandler(typeof(SubmissionAttachmentModel[]), new JsonToObjectConverter<SubmissionAttachmentModel[]>());
 SqlMapper.AddTypeHandler(typeof(QuickReportAttachmentModel[]), new JsonToObjectConverter<QuickReportAttachmentModel[]>());
+SqlMapper.AddTypeHandler(typeof(JsonDocument), new JsonToObjectConverter<JsonDocument>());
 
-#region Register type handleers for Dapper
 SqlMapper.AddTypeHandler(typeof(UserStatus), new SmartEnumByValueTypeHandler<UserStatus, string>());
 SqlMapper.AddTypeHandler(typeof(UserRole), new SmartEnumByValueTypeHandler<UserRole, string>());
 SqlMapper.AddTypeHandler(typeof(NgoStatus), new SmartEnumByValueTypeHandler<NgoStatus, string>());
@@ -94,7 +97,7 @@ builder.Services.AddScoped<ITimeProvider>(sp =>
 
 builder.Services.AddSingleton<ICurrentUserProvider, MockCurrentUserProvider>();
 
-builder.Services.AddApplicationDomain(builder.Configuration.GetRequiredSection(DomainInstaller.SectionKey));
+builder.Services.AddApplicationDomain(builder.Configuration.GetRequiredSection(DomainInstaller.SectionKey), builder.Environment.IsProduction());
 builder.Services.AddMailing(builder.Configuration.GetRequiredSection(MailingInstaller.SectionKey));
 builder.Services.AddFileStorage(builder.Configuration.GetRequiredSection(FileStorageInstaller.SectionKey));
 
@@ -108,6 +111,7 @@ builder.Services.AddScoped<ImportValidationErrorsCleanerJob>();
 builder.Services.AddScoped<ISendEmailJob, SendEmailJob>();
 builder.Services.AddScoped<IExportFormSubmissionsJob, ExportFormSubmissionsJob>();
 builder.Services.AddScoped<IExportQuickReportsJob, ExportQuickReportsJob>();
+builder.Services.AddScoped<IExportPollingStationsJob, ExportPollingStationsJob>();
 #endregion
 var dbConnectionString = builder.Configuration.GetNpgsqlConnectionString("Core:HangfireConnectionConfig");
 

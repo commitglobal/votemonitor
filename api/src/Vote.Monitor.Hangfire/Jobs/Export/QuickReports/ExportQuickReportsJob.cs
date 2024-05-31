@@ -22,14 +22,14 @@ public class ExportQuickReportsJob(VoteMonitorContext context,
     {
         var exportedData = await context
             .ExportedData
-            .Where(x => x.ElectionRoundId == electionRoundId && x.NgoId == ngoId && x.Id == exportedDataId)
+            .Where(x => x.ElectionRoundId == electionRoundId && x.Id == exportedDataId)
             .FirstOrDefaultAsync(ct);
 
         if (exportedData == null)
         {
-            logger.LogWarning("ExportData was not found for {exportDataType} {electionRoundId} {ngoId} {exportedDataId}",
-                ExportedDataType.QuickReports, electionRoundId, ngoId, exportedDataId);
-            throw new ExportedDataWasNotFoundException(ExportedDataType.QuickReports, electionRoundId, ngoId, exportedDataId);
+            logger.LogWarning("ExportData was not found for {exportDataType} {electionRoundId} {exportedDataId}",
+                ExportedDataType.QuickReports, electionRoundId, exportedDataId);
+            throw new ExportedDataWasNotFoundException(ExportedDataType.QuickReports, electionRoundId, exportedDataId);
         }
 
         try

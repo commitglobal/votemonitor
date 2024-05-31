@@ -8,8 +8,20 @@ import { ColumnDef } from '@tanstack/react-table';
 
 import { PollingStation } from '../../models/PollingStation';
 
-import type { ReactElement } from 'react';
-import type { DataTableParameters, PageParameters, PageResponse } from '@/common/types';
+import type { DataTableParameters, PageResponse } from '@/common/types';
+import { PollingStationsFilters } from '@/components/PollingStationsFilters/PollingStationsFilters';
+import { FilterBadge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
+import { FunnelIcon } from '@heroicons/react/24/outline';
+import { useNavigate, useSearch } from '@tanstack/react-router';
+import { useDebounce } from '@uidotdev/usehooks';
+import { useCallback, useMemo, useState, type ReactElement } from 'react';
+import { ExportDataButton } from '@/features/responses/components/ExportDataButton/ExportDataButton';
+import { ExportedDataType } from '@/features/responses/models/data-export';
+
+
 function usePollingStations(queryParams: DataTableParameters): UseQueryResult<PageResponse<PollingStation>, Error> {
   return useQuery({
     queryKey: ['pollingStations', queryParams],
@@ -161,11 +173,114 @@ export const pollingStationColDefs: ColumnDef<PollingStation>[] = [
 
 
 export default function PollingStationsDashboard(): ReactElement {
+  const navigate = useNavigate();
+
+  const search = useSearch({ strict: false }) as {
+    level1Filter?: string;
+    level2Filter?: string;
+    level3Filter?: string;
+    level4Filter?: string;
+    level5Filter?: string;
+  };
+
+  const [isFiltering, setFiltering] = useState(Object.keys(search).some(k => k === 'level1Filter' || k === 'level2Filter' || k === 'level3Filter' || k === 'level4Filter' || k === 'level5Filter'));
+
+
+  const changeIsFiltering = () => {
+    setFiltering((prev) => {
+      return !prev;
+    });
+  };
+
+  const onClearFilter = useCallback(
+    (filter: string | string[]) => () => {
+      const filters = Array.isArray(filter)
+        ? Object.fromEntries(filter.map((key) => [key, undefined]))
+        : { [filter]: undefined };
+      void navigate({ search: (prev) => ({ ...prev, ...filters }) });
+    },
+    [navigate]
+  );
+
+
+  const debouncedSearch = useDebounce(search, 300);
+
+  const queryParams = useMemo(() => {
+    const params = [
+      ['level1Filter', debouncedSearch.level1Filter],
+      ['level2Filter', debouncedSearch.level2Filter],
+      ['level3Filter', debouncedSearch.level3Filter],
+      ['level4Filter', debouncedSearch.level4Filter],
+      ['level5Filter', debouncedSearch.level5Filter],
+    ].filter(([_, value]) => value);
+
+    return Object.fromEntries(params);
+  }, [debouncedSearch]);
+
   return (
-    <>
-      <div className='mt-6'>
-        <QueryParamsDataTable columns={pollingStationColDefs} useQuery={usePollingStations} />
-      </div>
-    </>
+    <Card className='pt-0'>
+      <CardHeader className='flex flex-column gap-2'>
+        <div className='flex justify-between items-center px-6'>
+          <CardTitle>Polling stations</CardTitle>
+
+          <div className='flex gap-4 items-center'>
+            <ExportDataButton exportedDataType={ExportedDataType.PollingStations} />
+          </div>
+
+        </div>
+        <Separator />
+        <div className='filters px-6 flex flex-row justify-end gap-4'>
+          <>
+            <FunnelIcon
+              onClick={changeIsFiltering}
+              className='w-[20px] text-purple-900 cursor-pointer'
+              fill={isFiltering ? '#5F288D' : 'rgba(0,0,0,0)'}
+            />
+          </>
+        </div>
+        <Separator />
+        {isFiltering && (<div className='grid grid-cols-6 gap-4 items-center mb-4'>
+
+          <PollingStationsFilters />
+
+          <Button
+            onClick={() => {
+              void navigate({});
+            }}
+            variant='ghost-primary'>
+            Reset filters
+          </Button>
+        </div>)}
+        {Object.entries(search).length > 0 && (
+          <div className='col-span-full flex gap-2 flex-wrap'>
+
+
+            {search.level1Filter && (
+              <FilterBadge label={`Location - L1: ${search.level1Filter}`} onClear={onClearFilter(['level1Filter', 'level2Filter', 'level3Filter', 'level4Filter', 'level5Filter'])} />
+            )}
+
+            {search.level2Filter && (
+              <FilterBadge label={`Location - L2: ${search.level2Filter}`} onClear={onClearFilter(['level2Filter', 'level3Filter', 'level4Filter', 'level5Filter'])} />
+            )}
+
+            {search.level3Filter && (
+              <FilterBadge label={`Location - L3: ${search.level3Filter}`} onClear={onClearFilter(['level3Filter', 'level4Filter', 'level5Filter'])} />
+            )}
+
+            {search.level4Filter && (
+              <FilterBadge label={`Location - L4: ${search.level4Filter}`} onClear={onClearFilter(['level4Filter', 'level5Filter'])} />
+            )}
+
+            {search.level5Filter && (
+              <FilterBadge label={`Location - L5: ${search.level5Filter}`} onClear={onClearFilter(['level5Filter'])} />
+            )}
+          </div>
+        )}
+
+      </CardHeader>
+      <CardContent className='flex flex-col gap-6 items-baseline'>
+        <QueryParamsDataTable columns={pollingStationColDefs} useQuery={usePollingStations} queryParams={queryParams} />
+      </CardContent>
+    </Card>
   );
 }

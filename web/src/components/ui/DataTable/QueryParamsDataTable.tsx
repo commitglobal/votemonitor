@@ -64,7 +64,7 @@ export function QueryParamsDataTable<TData extends RowData, TValue>({
   };
 
   return (
-    <div>
+    <div className='w-full'>
       <DataTable
         columns={columns}
         useQuery={pagedQuery}
