@@ -67,9 +67,8 @@ const FeedbackSheet = (props: OptionsSheetProps) => {
           text2: t("feedback_toast.error"),
         });
       },
-      // mutation complete -> close feedback sheet and reset input value
-      onSettled: onSheetClose,
     });
+    onSheetClose();
   };
 
   return (

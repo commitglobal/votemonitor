@@ -82,18 +82,6 @@ const More = () => {
     setShowWarningModal(false);
   };
 
-  const onFeedbackPress = () => {
-    // don't allow adding feedback while offline -> we won't open the feedback sheet, just display error toast
-    if (!isOnline) {
-      return Toast.show({
-        type: "error",
-        text2: t("feedback_toast.offline"),
-      });
-    }
-    // display feedback sheet to enable adding feedback
-    return setFeedbackSheetOpen(true);
-  };
-
   return (
     <Screen
       preset="auto"
@@ -154,7 +142,11 @@ const More = () => {
           chevronRight={true}
           onClick={() => router.push("/change-password")}
         ></MenuItem>
-        <MenuItem label={t("feedback")} icon="feedback" onClick={onFeedbackPress}></MenuItem>
+        <MenuItem
+          label={t("feedback")}
+          icon="feedback"
+          onClick={() => setFeedbackSheetOpen(true)}
+        ></MenuItem>
         <MenuItem
           label={t("logout")}
           icon="logoutNoBackground"
