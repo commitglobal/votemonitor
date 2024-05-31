@@ -24,8 +24,7 @@ const Index = () => {
   const navigation = useNavigation();
   const [openContextualMenu, setOpenContextualMenu] = useState(false);
 
-  const { isLoading, visits, selectedPollingStation, activeElectionRound, electionRounds } =
-    useUserData();
+  const { isLoading, visits, selectedPollingStation, activeElectionRound } = useUserData();
 
   const { data: psiData } = usePollingStationInformation(
     activeElectionRound?.id,
@@ -34,7 +33,7 @@ const Index = () => {
 
   const { data: psiFormQuestions } = usePollingStationInformationForm(activeElectionRound?.id);
 
-  if (!isLoading && electionRounds && !electionRounds.length) {
+  if (!isLoading && !activeElectionRound) {
     return <NoElectionRounds />;
   }
 

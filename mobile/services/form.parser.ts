@@ -1,3 +1,4 @@
+import i18n from "../common/config/i18n";
 import { FormListItem } from "../components/FormList";
 import { arrayToKeyObject } from "../helpers/misc";
 import { FormAPIModel, FormSubmissionsApiResponse } from "./definitions.api";
@@ -234,6 +235,8 @@ export const mapFormToFormListItem = (
   forms: FormAPIModel[] = [],
   formSubmissions: FormSubmissionsApiResponse | undefined,
 ): FormListItem[] => {
+  const currentLanguage = i18n.language.toLocaleUpperCase();
+
   const submissions = arrayToKeyObject(formSubmissions?.submissions || [], "formId");
   return forms.map((form) => {
     const answers = arrayToKeyObject(submissions[form?.id]?.answers || [], "questionId");
@@ -243,7 +246,7 @@ export const mapFormToFormListItem = (
 
     return {
       id: form.id,
-      name: `${form.code} - ${form.name.RO}`,
+      name: `${form.code} - ${form.name[currentLanguage] || form.name[Object.keys(form?.name)[0]]}`,
       numberOfCompletedQuestions: numberOfAnswers,
       numberOfQuestions: questions.length,
       options: `Available in ${Object.keys(form.name).join(", ")}`,

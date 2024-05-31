@@ -13,7 +13,7 @@ export default function TabLayout() {
   const theme = useTheme();
   const { t } = useTranslation("tabs");
 
-  const { electionRounds } = useUserData();
+  const { activeElectionRound } = useUserData();
   const { shouldDisplayBanner } = useNetInfoContext();
 
   return (
@@ -44,7 +44,7 @@ export default function TabLayout() {
         options={{
           title: t("quick_report"),
           tabBarIcon: ({ color }) => <Icon icon="quickReport" color={color} />,
-          href: electionRounds?.length ? "/(quick-report)" : null,
+          href: activeElectionRound ? "/(quick-report)" : null,
         }}
       />
 
@@ -53,7 +53,7 @@ export default function TabLayout() {
         options={{
           title: t("guides"),
           tabBarIcon: ({ color }) => <Icon icon="learning" color={color} />,
-          href: electionRounds?.length ? "/guides" : null,
+          href: activeElectionRound ? "/guides" : null,
         }}
       />
       <Tabs.Screen
@@ -61,7 +61,7 @@ export default function TabLayout() {
         options={{
           title: t("inbox"),
           tabBarIcon: ({ color }) => <Icon icon="inbox" color={color} />,
-          href: electionRounds?.length ? "/inbox" : null,
+          href: activeElectionRound ? "/inbox" : null,
         }}
       />
       <Tabs.Screen

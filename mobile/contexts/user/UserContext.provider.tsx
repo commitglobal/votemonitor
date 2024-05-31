@@ -1,7 +1,6 @@
 import { createContext, useContext, useMemo, useState } from "react";
 import {
   electionRoundsKeys,
-  // pollingStationByIdQueryFn,
   pollingStationInformationQueryFn,
   pollingStationsKeys,
   useElectionRoundsQuery,

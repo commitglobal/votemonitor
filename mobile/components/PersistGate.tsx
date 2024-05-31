@@ -70,18 +70,25 @@ const PersistGateLoadingScreen = ({ totalMutations }: { totalMutations: number }
         flexGrow={1}
         marginHorizontal={45}
       >
-        <YStack style={{ gap: 10 }}>
-          <Typography preset="body2" color="white" textAlign="center" marginTop="$lg">
+        <YStack>
+          <Typography
+            preset="body2"
+            color="white"
+            textAlign="center"
+            marginTop="$lg"
+            marginBottom="$md"
+          >
             {t("sync_data")}
           </Typography>
-          {totalMutations > 0 && (
-            <CircularProgress
-              progress={((totalMutations - runningMutations) / totalMutations) * 100}
-              size={98}
-              progressCircleColors={["#fff", "#A16207", "#10B981"]}
-              backgroundCircleColors={["#fff", "#fff", "#fff"]}
-            />
-          )}
+
+          <CircularProgress
+            progress={
+              totalMutations ? ((totalMutations - runningMutations) / totalMutations) * 100 : 0
+            }
+            size={98}
+            progressCircleColors={["#fff", "#A16207", "#10B981"]}
+            backgroundCircleColors={["#fff", "#fff", "#fff"]}
+          />
         </YStack>
         <Icon icon="splashLogo" marginTop={0} />
         <YStack height={200} paddingTop="$lg">

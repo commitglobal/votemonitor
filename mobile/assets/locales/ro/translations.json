@@ -72,7 +72,8 @@
     },
     "actions": {
       "forgot_password": "Ți-ai uitat parola?"
-    }
+    },
+    "email_toast": "Ai copiat adresa de email în clipboard"
   },
   "forgot_password": {
     "header": {
