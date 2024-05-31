@@ -79,11 +79,13 @@ export const useCamera = () => {
       ...(specifiedMediaType || { mediaTypes: ImagePicker.MediaTypeOptions.All }),
       allowsEditing: true,
       aspect: [4, 3],
-      quality: 0.1,
+      quality: 0.2,
       allowsMultipleSelection: false,
       videoQuality: ImagePicker.UIImagePickerControllerQualityType.Low, // TODO: careful here, Medium might be enough
       cameraType: ImagePicker.CameraType.back,
     });
+
+    console.log("FileSize Before Compression ", result?.assets?.[0].fileSize);
 
     if (result.canceled) {
       return;
@@ -93,8 +95,6 @@ export const useCamera = () => {
     if (file) {
       let resultCompression = file.uri;
       let fileSize = file.fileSize;
-
-      console.log("FileSize Before Compression ", fileSize);
 
       try {
         if (file.type === "image") {

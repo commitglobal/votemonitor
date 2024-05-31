@@ -5,7 +5,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { notesKeys, pollingStationsKeys } from "../../services/queries.service";
 import * as API from "../../services/definitions.api";
 import { PersistGate } from "../../components/PersistGate";
-import { AddAttachmentStartAPIPayload, addAttachmentMultipartStart } from "../../services/api/add-attachment.api";
+import {
+  AddAttachmentStartAPIPayload,
+  addAttachmentMultipartStart,
+} from "../../services/api/add-attachment.api";
 import { deleteAttachment } from "../../services/api/delete-attachment.api";
 import { Note } from "../../common/models/note";
 import { QuickReportKeys } from "../../services/queries/quick-reports.query";
@@ -13,19 +16,23 @@ import {
   AddQuickReportAPIPayload,
   addQuickReport,
 } from "../../services/api/quick-report/post-quick-report.api";
-import { AddAttachmentQuickReportStartAPIPayload, addAttachmentQuickReportMultipartStart } from "../../services/api/quick-report/add-attachment-quick-report.api";
+import {
+  AddAttachmentQuickReportStartAPIPayload,
+  addAttachmentQuickReportMultipartStart,
+} from "../../services/api/quick-report/add-attachment-quick-report.api";
 import { AttachmentApiResponse } from "../../services/api/get-attachments.api";
 import { AttachmentsKeys } from "../../services/queries/attachments.query";
 import { ASYNC_STORAGE_KEYS } from "../../common/constants";
 import * as Sentry from "@sentry/react-native";
 import SuperJSON from "superjson";
+import { handleChunkUpload } from "../../services/mutations/attachments/add-attachment.mutation";
 
 const queryClient = new QueryClient({
   mutationCache: new MutationCache({
     // There is also QueryCache
-    onSuccess: (data: unknown) => {
-      // console.log("MutationCache ", data);
-    },
+    // onSuccess: (data: unknown) => {
+    // console.log("MutationCache ", data);
+    // },
     onError: (error: Error, _vars, _context, mutation) => {
       console.log("MutationCache error ", error);
       console.log(
@@ -102,13 +109,21 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
 
   queryClient.setMutationDefaults(AttachmentsKeys.addAttachmentMutation(), {
     mutationFn: async (payload: AddAttachmentStartAPIPayload) => {
-      return addAttachmentMultipartStart(payload);
+      const data = await addAttachmentMultipartStart(payload);
+      console.log("Init ran");
+      return handleChunkUpload(
+        payload.electionRoundId,
+        payload.filePath,
+        data.uploadUrls,
+        data.uploadId,
+        payload.id,
+      );
     },
   });
 
   queryClient.setMutationDefaults(AttachmentsKeys.deleteAttachment(), {
     mutationFn: async (payload: AttachmentApiResponse) => {
-      return payload.isNotSynched ? () => { } : deleteAttachment(payload);
+      return payload.isNotSynched ? () => {} : deleteAttachment(payload);
     },
   });
 
@@ -126,7 +141,7 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
 
   queryClient.setMutationDefaults(notesKeys.deleteNote(), {
     mutationFn: async (payload: Note) => {
-      return payload.isNotSynched ? () => { } : API.deleteNote(payload);
+      return payload.isNotSynched ? () => {} : API.deleteNote(payload);
     },
   });
 
