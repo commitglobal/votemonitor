@@ -48,19 +48,31 @@ const PollingStationCard = (props: PollingStationCardProps) => {
 
         {visit.level1 && (
           <Typography>
-            {t("ps_card.l1")}: <Typography fontWeight="500">{visit.level1}</Typography>{" "}
+            {t("ps_card.l1")}: <Typography fontWeight="500">{visit.level1}</Typography>
           </Typography>
         )}
 
         {visit.level2 && (
           <Typography>
-            {t("ps_card.l2")}: <Typography fontWeight="500"> {visit.level2} </Typography>{" "}
+            {t("ps_card.l2")}: <Typography fontWeight="500"> {visit.level2} </Typography>
           </Typography>
         )}
 
         {visit.level3 && (
           <Typography>
             {t("ps_card.l3")}: <Typography fontWeight="500">{visit.level3}</Typography>
+          </Typography>
+        )}
+
+        {visit.level4 && (
+          <Typography>
+            {t("ps_card.l4")}: <Typography fontWeight="500">{visit.level4}</Typography>
+          </Typography>
+        )}
+
+        {visit.level5 && (
+          <Typography>
+            {t("ps_card.l5")}: <Typography fontWeight="500">{visit.level5}</Typography>
           </Typography>
         )}
 
