@@ -257,6 +257,13 @@
     "attachments": {
       "heading": "Uploaded media",
       "loading": "Adding attachment... ",
+      "upload": {
+        "preparing": "Preparing attachment...",
+        "starting": "Starting the upload...",
+        "progress": "Upload progress:",
+        "completed": "Upload completed.",
+        "aborted": "Upload aborted."
+      },
       "add": "Add notes and media",
       "menu": {
         "add_note": "Add note",

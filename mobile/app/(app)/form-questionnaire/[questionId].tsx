@@ -35,7 +35,7 @@ import { useFormAnswers } from "../../../services/queries/form-submissions.query
 import { useNotesForQuestionId } from "../../../services/queries/notes.query";
 import * as Crypto from "expo-crypto";
 import { useTranslation } from "react-i18next";
-import { onlineManager } from "@tanstack/react-query";
+import { onlineManager, useQueryClient } from "@tanstack/react-query";
 import { ApiFormQuestion } from "../../../services/interfaces/question.type";
 import FormInput from "../../../components/FormInputs/FormInput";
 import WarningDialog from "../../../components/WarningDialog";
@@ -45,6 +45,7 @@ import { MULTIPART_FILE_UPLOAD_SIZE } from "../../../common/constants";
 import { addAttachmentMultipartAbort, addAttachmentMultipartComplete, uploadS3Chunk } from "../../../services/api/add-attachment.api";
 import * as DocumentPicker from "expo-document-picker";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { AttachmentsKeys } from "../../../services/queries/attachments.query";
 
 type SearchParamType = {
   questionId: string;
@@ -56,6 +57,8 @@ const FormQuestionnaire = () => {
   const { t } = useTranslation(["polling_station_form_wizard", "common"]);
   const { questionId, formId, language } = useLocalSearchParams<SearchParamType>();
   const [isLoadingAttachment, setIsLoadingAttachment] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState('');
+  const queryClient = useQueryClient();
 
   if (!questionId || !formId || !language) {
     return <Typography>Incorrect page params</Typography>;
@@ -269,12 +272,12 @@ const FormQuestionnaire = () => {
 
   const {
     mutateAsync: addAttachmentMultipart,
-    isPending: isLoadingAttachmentStart,
     isPaused
   } = useUploadAttachmentMutation(`Attachment_${questionId}_${selectedPollingStation?.pollingStationId}_${formId}_${questionId}`);
 
   const handleCameraUpload = async (type: "library" | "cameraPhoto") => {
     setIsPreparingFile(true);
+
     const cameraResult = await uploadCameraOrMedia(type);
 
     if (!cameraResult) {
@@ -282,6 +285,7 @@ const FormQuestionnaire = () => {
       return;
     }
 
+    setUploadProgress(t("attachments.upload.preparing"))
     if (
       activeElectionRound &&
       selectedPollingStation?.pollingStationId &&
@@ -293,6 +297,7 @@ const FormQuestionnaire = () => {
       // Calculate the number of parts that will be sent to the S3 Bucket. It is +1 (thus we use ceil).
       const numberOfUploadParts: number = Math.ceil(cameraResult.size / MULTIPART_FILE_UPLOAD_SIZE);
       const attachmentId = Crypto.randomUUID();
+      setUploadProgress(t("attachments.upload.starting"))
 
       const data = await addAttachmentMultipart(
         {
@@ -313,6 +318,7 @@ const FormQuestionnaire = () => {
 
       await handleChunkUpload(cameraResult.uri, data.uploadUrls, data.uploadId, attachmentId);
       setIsPreparingFile(false);
+      setUploadProgress('')
 
       if (!onlineManager.isOnline()) {
         setIsOptionsSheetOpen(false);
@@ -321,10 +327,20 @@ const FormQuestionnaire = () => {
   };
 
   const handleUploadAudio = async () => {
+    setIsPreparingFile(true);
     const doc = await DocumentPicker.getDocumentAsync({
       type: "audio/*",
       multiple: false,
     });
+
+
+    if (doc?.canceled) {
+      console.log('canceling');
+      setIsPreparingFile(false);
+      return;
+    }
+
+    setUploadProgress(t("attachments.upload.preparing"))
 
     if (doc?.assets?.[0]) {
       const file = doc?.assets?.[0];
@@ -346,6 +362,7 @@ const FormQuestionnaire = () => {
         // Calculate the number of parts that will be sent to the S3 Bucket. It is +1 (thus we use ceil).
         const numberOfUploadParts: number = Math.ceil(fileMetadata.size / MULTIPART_FILE_UPLOAD_SIZE);
         const attachmentId = Crypto.randomUUID();
+        setUploadProgress(t("attachments.upload.starting"))
 
         const data = await addAttachmentMultipart(
           {
@@ -365,6 +382,8 @@ const FormQuestionnaire = () => {
         );
 
         await handleChunkUpload(fileMetadata.uri, data.uploadUrls, data.uploadId, attachmentId);
+        setIsPreparingFile(false);
+        setUploadProgress('')
 
         if (!onlineManager.isOnline()) {
           setIsOptionsSheetOpen(false);
@@ -382,20 +401,25 @@ const FormQuestionnaire = () => {
         const chunk = await FileSystem.readAsStringAsync(filePath, { length: MULTIPART_FILE_UPLOAD_SIZE, position: index * MULTIPART_FILE_UPLOAD_SIZE, encoding: FileSystem.EncodingType.Base64 });
         const buffer = Buffer.from(chunk, 'base64');
         const data = await uploadS3Chunk(url, buffer)
+        setUploadProgress(`${t("attachments.upload.progress")} ${Math.round(((index + 1) / urls.length) * 100 * 10) / 10} %`)
         etags = { ...etags, [index + 1]: data.ETag }
       };
 
 
       if (activeElectionRound?.id) {
+        setUploadProgress(t("attachments.upload.completed"));
         await addAttachmentMultipartComplete({ uploadId, etags, electionRoundId: activeElectionRound?.id, id: attachmentId })
-
       }
     } catch (err) {
       // If error try to abort the upload
       if (activeElectionRound?.id) {
+        setUploadProgress(t("attachments.upload.aborted"));
         await addAttachmentMultipartAbort({ id: attachmentId, uploadId, electionRoundId: activeElectionRound.id })
       }
     } finally {
+      if (activeElectionRound?.id) {
+        queryClient.invalidateQueries({ queryKey: AttachmentsKeys.attachments(activeElectionRound.id, selectedPollingStation?.pollingStationId, formId) });
+      }
       setIsLoadingAttachment(false);
       setIsOptionsSheetOpen(false);
     }
@@ -425,8 +449,8 @@ const FormQuestionnaire = () => {
         <YStack gap="$xxs" padding="$md">
           <XStack justifyContent="space-between">
             <Typography>{t("progress_bar.label")}</Typography>
-            <Typography justifyContent="space-between">{`${activeQuestion?.indexInDisplayedQuestions + 1}/${displayedQuestions.length}`}</Typography>
-          </XStack>
+            <Typography justifyContent="space-between">{`${activeQuestion?.indexInDisplayedQuestions + 1} /${displayedQuestions.length}`}</Typography >
+          </XStack >
           <LinearProgress
             current={activeQuestion?.indexInDisplayedQuestions + 1}
             total={displayedQuestions?.length || 0}
@@ -446,17 +470,19 @@ const FormQuestionnaire = () => {
             <Typography color="$red10"> {t("progress_bar.clear_answer")}</Typography>
           </XStack>
           {/* delete answer button */}
-          {deletingAnswer && (
-            <WarningDialog
-              title={t("warning_modal.question.title", { value: activeQuestion.question.code })}
-              description={t("warning_modal.question.description")}
-              actionBtnText={t("warning_modal.question.actions.clear")}
-              cancelBtnText={t("warning_modal.question.actions.cancel")}
-              action={onClearForm}
-              onCancel={() => setDeletingAnswer(false)}
-            />
-          )}
-        </YStack>
+          {
+            deletingAnswer && (
+              <WarningDialog
+                title={t("warning_modal.question.title", { value: activeQuestion.question.code })}
+                description={t("warning_modal.question.description")}
+                actionBtnText={t("warning_modal.question.actions.clear")}
+                cancelBtnText={t("warning_modal.question.actions.cancel")}
+                action={onClearForm}
+                onCancel={() => setDeletingAnswer(false)}
+              />
+            )
+          }
+        </YStack >
         <YStack paddingHorizontal="$md" paddingBottom="$md" justifyContent="center" flex={1}>
           <Controller
             key={activeQuestion?.question?.id}
@@ -648,7 +674,7 @@ const FormQuestionnaire = () => {
             }}
           />
         </YStack>
-      </KeyboardAwareScrollView>
+      </KeyboardAwareScrollView >
 
       <WizzardControls
         isFirstElement={activeQuestion?.indexInAllQuestions === 0}
@@ -661,70 +687,72 @@ const FormQuestionnaire = () => {
         onPreviousButtonPress={onBackButtonPress}
       />
       {/* //todo: remove this once tamagui fixes sheet issue #2585 */}
-      {(isOptionsSheetOpen || Platform.OS === "ios") && (
-        <OptionsSheet
-          open={isOptionsSheetOpen}
-          setOpen={(open) => {
-            setIsOptionsSheetOpen(open);
-            addingNote && setAddingNote(false);
-          }}
-          isLoading={(isLoadingAttachment && !isPaused) || isPreparingFile}
-          // seems that this behaviour is handled differently and the sheet will move with keyboard even if this props is set to false on android
-          moveOnKeyboardChange={Platform.OS === "android"}
-          disableDrag={addingNote}
-        >
-          {(isLoadingAttachment && !isPaused) || isPreparingFile ? (
-            <MediaLoading />
-          ) : addingNote ? (
-            <AddNoteSheetContent
-              setAddingNote={setAddingNote}
-              questionId={questionId}
-              pollingStationId={selectedPollingStation?.pollingStationId as string}
-              formId={formId}
-              electionRoundId={activeElectionRound?.id}
-              setIsOptionsSheetOpen={setIsOptionsSheetOpen}
-            />
-          ) : (
-            <YStack paddingHorizontal="$sm" gap="$xxs">
-              <Typography
-                preset="body1"
-                paddingVertical="$md"
-                pressStyle={{ color: "$purple5" }}
-                onPress={() => {
-                  setAddingNote(true);
-                }}
-              >
-                {t("attachments.menu.add_note")}
-              </Typography>
-              <Typography
-                onPress={handleCameraUpload.bind(null, "library")}
-                preset="body1"
-                paddingVertical="$md"
-                pressStyle={{ color: "$purple5" }}
-              >
-                {t("attachments.menu.load")}
-              </Typography>
-              <Typography
-                onPress={handleCameraUpload.bind(null, "cameraPhoto")}
-                preset="body1"
-                paddingVertical="$md"
-                pressStyle={{ color: "$purple5" }}
-              >
-                {t("attachments.menu.take_picture")}
-              </Typography>
-              <Typography
-                onPress={handleUploadAudio.bind(null)}
-                preset="body1"
-                paddingVertical="$md"
-                pressStyle={{ color: "$purple5" }}
-              >
-                {t("attachments.menu.upload_audio")}
-              </Typography>
-            </YStack>
-          )}
-        </OptionsSheet>
-      )}
-    </Screen>
+      {
+        (isOptionsSheetOpen || Platform.OS === "ios") && (
+          <OptionsSheet
+            open={isOptionsSheetOpen}
+            setOpen={(open) => {
+              setIsOptionsSheetOpen(open);
+              addingNote && setAddingNote(false);
+            }}
+            isLoading={(isLoadingAttachment && !isPaused) || isPreparingFile}
+            // seems that this behaviour is handled differently and the sheet will move with keyboard even if this props is set to false on android
+            moveOnKeyboardChange={Platform.OS === "android"}
+            disableDrag={addingNote}
+          >
+            {(isLoadingAttachment && !isPaused) || isPreparingFile ? (
+              <MediaLoading progress={uploadProgress} />
+            ) : addingNote ? (
+              <AddNoteSheetContent
+                setAddingNote={setAddingNote}
+                questionId={questionId}
+                pollingStationId={selectedPollingStation?.pollingStationId as string}
+                formId={formId}
+                electionRoundId={activeElectionRound?.id}
+                setIsOptionsSheetOpen={setIsOptionsSheetOpen}
+              />
+            ) : (
+              <YStack paddingHorizontal="$sm" gap="$xxs">
+                <Typography
+                  preset="body1"
+                  paddingVertical="$md"
+                  pressStyle={{ color: "$purple5" }}
+                  onPress={() => {
+                    setAddingNote(true);
+                  }}
+                >
+                  {t("attachments.menu.add_note")}
+                </Typography>
+                <Typography
+                  onPress={handleCameraUpload.bind(null, "library")}
+                  preset="body1"
+                  paddingVertical="$md"
+                  pressStyle={{ color: "$purple5" }}
+                >
+                  {t("attachments.menu.load")}
+                </Typography>
+                <Typography
+                  onPress={handleCameraUpload.bind(null, "cameraPhoto")}
+                  preset="body1"
+                  paddingVertical="$md"
+                  pressStyle={{ color: "$purple5" }}
+                >
+                  {t("attachments.menu.take_picture")}
+                </Typography>
+                <Typography
+                  onPress={handleUploadAudio.bind(null)}
+                  preset="body1"
+                  paddingVertical="$md"
+                  pressStyle={{ color: "$purple5" }}
+                >
+                  {t("attachments.menu.upload_audio")}
+                </Typography>
+              </YStack>
+            )}
+          </OptionsSheet>
+        )
+      }
+    </Screen >
   );
 };
 
@@ -739,13 +767,13 @@ const $containerStyle: ViewStyle = {
 
 export default FormQuestionnaire;
 
-const MediaLoading = () => {
+const MediaLoading = ({ progress }: { progress?: string }) => {
   const { t } = useTranslation("polling_station_form_wizard");
   return (
     <YStack alignItems="center" gap="$lg" paddingHorizontal="$lg">
       <Spinner size="large" color="$purple5" />
       <Typography preset="subheading" fontWeight="500" color="$purple5">
-        {t("attachments.loading")}
+        {progress ? progress : t("attachments.loading")}
       </Typography>
     </YStack>
   );

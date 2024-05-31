@@ -1,6 +1,6 @@
 import * as ImagePicker from "expo-image-picker";
 import Toast from "react-native-toast-message";
-import { Video, Image } from "react-native-compressor";
+import { Video, Image, getVideoMetaData } from "react-native-compressor";
 import * as Sentry from "@sentry/react-native";
 
 /**
@@ -106,12 +106,13 @@ export const useCamera = () => {
       }
 
       const filename = resultCompression.split("/").pop() || "";
+      const metaData = await getVideoMetaData(resultCompression);
 
       const toReturn = {
         uri: resultCompression,
         name: filename,
         type: file.mimeType || "",
-        size: file.fileSize,
+        size: metaData.size,
       };
       return toReturn;
     }
