@@ -71,9 +71,9 @@
       }
     },
     "actions": {
-      "forgot_password": "Забравихте Вашата парола?",
-      "email_toast": "xxxxx"
-    }
+      "forgot_password": "Забравихте Вашата парола?"
+    },
+    "email_toast": "E-mail адресът бе копиран в клипборда"
   },
   "forgot_password": {
     "header": {
@@ -190,7 +190,7 @@
       }
     },
     "options_menu": {
-      "manage_my_polling_stations": "xxxxx"
+      "manage_my_polling_stations": "Управление на изборните ми секции"
     }
   },
   "polling_station_information_form": {
@@ -309,33 +309,35 @@
   },
   "manage_my_polling_stations": {
     "empty": {
-      "title": "xxxxx"
+      "title": "Още няма посетени изборни секции"
     },
-    "general_text": "xxxxx",
+    "general_text": "Управление на изборните ми секции",
     "ps_card": {
-      "header": "xxxxx",
-      "l1": "xxxxx",
-      "l2": "xxxxx",
-      "l3": "xxxxx",
-      "street": "xxxxx",
-      "ps_number": "xxxxx"
+      "header": "Изборна секция #{{value}}",
+      "l1": "[Location L1]",
+      "l2": "[Location L2]",
+      "l3": "[Location L3]",
+      "l4": "[Location L4]",
+      "l5": "[Location L5]",
+      "street": "улица",
+      "ps_number": "Изборна секция номер"
     },
     "warning_dialog": {
-      "title": "xxxxx",
-      "description": "xxxxx",
+      "title": "Изтрийте изборна секция #{{value}}",
+      "description": "Това действие ще премахне избраната секция от вашия списък с посетени изборна секция. Можете да я добавите отново чрез процеса на добавяне на нова изборна секция.",
       "actions": {
-        "cancel": "xxxxx",
-        "remove": "xxxxx",
-        "loading": "xxxxx"
+        "cancel": "Откажи",
+        "remove": "Изтрий",
+        "loading": "Зареждане..."
       }
     },
     "removal_unallowed_dialog": {
-      "title": "xxxxx",
-      "description": "xxxxx"
+      "title": "Премахването на изборна секция #{{value}} не е разрешено",
+      "description": "Изборната секция не може да бъде премахната от вашия списък, тъй като съдържа данни (информация за изборна секция и/или отговори на формуляра), които не могат да бъдат изтрити от системата от ваше име. Ако искате да премахнете тази избирателна секция, моля, изчистете izborната раздел информация и отговори на формуляра ръчно, след което опитайте отново това действие."
     },
-    "delete_success": "xxxxx",
-    "delete_error": "xxxxx",
-    "offline_error_toast_msg": "xxxxx"
+    "delete_success": "Изборната секция е изтрита успешно!",
+    "delete_error": "Срещнахме проблем при изтриването на посещението на изборна секция. Моля, опитайте отново.",
+    "offline_error_toast_msg": "Имате нужда от интернет връзка, за да извършите това действие."
   },
   "quick_report": {
     "list": {
@@ -349,7 +351,7 @@
       "attachment_other": "{{count}} прикачени файлове"
     },
     "options_menu": {
-      "manage_my_polling_stations": "xxxxx"
+      "manage_my_polling_stations": "Управление на изборните ми секции"
     }
   },
   "report_new_issue": {
@@ -418,7 +420,7 @@
       }
     },
     "options_sheet": {
-      "manage_my_polling_stations": "xxxxx"
+      "manage_my_polling_stations": "Управление на изборните ми секции"
     }
   },
   "inbox": {
@@ -455,10 +457,10 @@
       }
     },
     "feedback_toast": {
-      "success": "xxxxx",
-      "offline": "xxxxx",
-      "error": "xxxxx",
-      "required": "xxxxx"
+      "success": "Отзивите са изпратени!",
+      "offline": "Имате нужда от интернет връзка, за да извършите това действие.",
+      "error": "Грешка при добавяне на обратна връзка!",
+      "required": "Това поле е задължително"
     },
     "feedback_sheet": {
       "heading": "Изпратете ни вашето мнение",
@@ -471,7 +473,7 @@
       }
     },
     "options_sheet": {
-      "manage_my_polling_stations": "xxxxx"
+      "manage_my_polling_stations": "Управление на изборните ми секции"
     }
   },
   "change_password": {

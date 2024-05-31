@@ -190,7 +190,7 @@
       }
     },
     "options_menu": {
-      "manage_my_polling_stations": "xxxxx"
+      "manage_my_polling_stations": "Vezi secțiile de votare vizitate"
     }
   },
   "polling_station_information_form": {
@@ -309,33 +309,35 @@
   },
   "manage_my_polling_stations": {
     "empty": {
-      "title": "xxxxx"
+      "title": "Momentan nu ai nicio secție de votare vizitată"
     },
-    "general_text": "xxxxx",
+    "general_text": "Vezi secțiile de votare vizitate",
     "ps_card": {
-      "header": "xxxxx",
-      "l1": "xxxxx",
-      "l2": "xxxxx",
-      "l3": "xxxxx",
-      "street": "xxxxx",
-      "ps_number": "xxxxx"
+      "header": "Secția de votare #{{value}}",
+      "l1": "[Location L1]",
+      "l2": "[Location L2]",
+      "l3": "[Location L3]",
+      "l4": "[Location L4]",
+      "l5": "[Location L5]",
+      "street": "Strada",
+      "ps_number": "Numărul secției"
     },
     "warning_dialog": {
-      "title": "xxxxx",
-      "description": "xxxxx",
+      "title": "Șterge secția de votare #{{value}}",
+      "description": "Această acțiune va șterge secția de votare din lista de secții vizitate. O poți adăuga din nou reluând pașii din procesul de 'Adaugă o secție nouă de votare'",
       "actions": {
-        "cancel": "xxxxx",
-        "remove": "xxxxx",
-        "loading": "xxxxx"
+        "cancel": "Renunță",
+        "remove": "Șterge",
+        "loading": "Se încarcă"
       }
     },
     "removal_unallowed_dialog": {
-      "title": "xxxxx",
-      "description": "xxxxx"
+      "title": "Ștergerea secției de votare #{{value}} nu este permisă",
+      "description": "Secția de votare nu poate fi ștearsă din listă deoarece conține date asociate (Informații despre secția de votare și sau Răspunsuri la formulare), care nu pot fi șterse de sistem în numele tău. Dacă dorești totuși să ștergi această secție, te rugăm să ștergi întâi manual răspunsurile de la formularele deja completate, apoi să încerci din nou această acțiune."
     },
-    "delete_success": "xxxxx",
-    "delete_error": "xxxxx",
-    "offline_error_toast_msg": "xxxxx"
+    "delete_success": "Secția de votare a fost ștearsă cu succes!",
+    "delete_error": "Am întâmpinat o problemă la ștergerea secției de votare. Te rugăm să încerci din nou.",
+    "offline_error_toast_msg": "Ai nevoie de conexiune la internet pentru a face acestă acțiune."
   },
   "quick_report": {
     "list": {
@@ -349,7 +351,7 @@
       "attachment_other": "{{count}} fișiere atașate"
     },
     "options_menu": {
-      "manage_my_polling_stations": "xxxxx"
+      "manage_my_polling_stations": "Vezi secțiile de votare vizitate"
     }
   },
   "report_new_issue": {
@@ -418,7 +420,7 @@
       }
     },
     "options_sheet": {
-      "manage_my_polling_stations": "xxxxx"
+      "manage_my_polling_stations": "Vezi secțiile de votare vizitate"
     }
   },
   "inbox": {
@@ -431,7 +433,7 @@
     "today": "Astăzi",
     "your_organization": "organizația ta",
     "menu": {
-      "manage_polling_stations": "Vezi secțiile vizitate "
+      "manage_polling_stations": "Vezi secțiile de votare vizitate"
     }
   },
   "more": {
@@ -455,10 +457,10 @@
       }
     },
     "feedback_toast": {
-      "success": "xxxxx",
-      "offline": "xxxxx",
-      "error": "xxxxx",
-      "required": "xxxxx"
+      "success": "Feedback-ul a fost trimis!",
+      "offline": "Ai nevoie de conexiune la internet pentru a face acestă acțiune.",
+      "error": "Am întâmpinat o eroare la adaugarea feedback-ului!",
+      "required": "Acest câmp este obligatoriu."
     },
     "feedback_sheet": {
       "heading": "Trimite-ne feedback-ul tău",
@@ -471,7 +473,7 @@
       }
     },
     "options_sheet": {
-      "manage_my_polling_stations": "xxxxx"
+      "manage_my_polling_stations": "Vezi secțiile de votare vizitate"
     }
   },
   "change_password": {

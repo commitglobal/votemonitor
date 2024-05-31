@@ -73,7 +73,7 @@
     "actions": {
       "forgot_password": "Zaboravljena lozinka?"
     },
-    "email_toast": "xxxxx"
+    "email_toast": "Adresa e-mail je kopirana u međuspremniku"
   },
   "forgot_password": {
     "header": {
@@ -190,7 +190,7 @@
       }
     },
     "options_menu": {
-      "manage_my_polling_stations": "xxxxx"
+      "manage_my_polling_stations": "Upravljanje mojim biračkim mestima"
     }
   },
   "polling_station_information_form": {
@@ -309,33 +309,35 @@
   },
   "manage_my_polling_stations": {
     "empty": {
-      "title": "xxxxx"
+      "title": "Nema posećenih biračkih mesta"
     },
-    "general_text": "xxxxx",
+    "general_text": "Upravljanje mojim biračkim mestima",
     "ps_card": {
-      "header": "Poxxxxx",
-      "l1": "xxxxx",
-      "l2": "xxxxx",
-      "l3": "xxxxx",
-      "street": "xxxxx",
-      "ps_number": "xxxxx"
+      "header": "Biračko mesto #{{value}}",
+      "l1": "[Location L1]",
+      "l2": "[Location L2]",
+      "l3": "[Location L3]",
+      "l4": "[Location L4]",
+      "l5": "[Location L5]",
+      "street": "Ulica",
+      "ps_number": "Broj biračkog mesta"
     },
     "warning_dialog": {
-      "title": "xxxxx",
-      "description": "xxxxx",
+      "title": "Izbriši biračko mesto #{{value}}",
+      "description": "Ova radnja će ukloniti biračko mesto sa vaše liste posećenih biračkih mesta. Možete ga ponovo dodati kroz proces Dodaj novo biračko mesto.",
       "actions": {
-        "cancel": "xxxxx",
-        "remove": "xxxxx",
-        "loading": "xxxxx"
+        "cancel": "Otkaži",
+        "remove": "Izbriši",
+        "loading": "Pošalji..."
       }
     },
     "removal_unallowed_dialog": {
-      "title": "xxxxx",
-      "description": "xxxxx"
+      "title": "Uklanjanje biračkog mesta #{{value}} nije dozvoljeno",
+      "description": "Biračko mesto ne može biti uklonjeno sa vaše liste jer sadrži podatke (informacije o biračkom mestu i/ili odgovore na obrascu) koje sistem ne može izbrisati u vaše ime. Ako želite da uklonite ovo biračko mesto, obrišite informacije o biračkom mestu i ručno formirajte odgovore, a zatim ponovite ovu radnju."
     },
-    "delete_success": "xxxxx",
-    "delete_error": "xxxxx",
-    "offline_error_toast_msg": "xxxxx"
+    "delete_success": "Biračko mesto uspešno obrisano!",
+    "delete_error": "Naišli smo na problem prilikom brisanja posete biračkom mestu. Pokušajte ponovo.",
+    "offline_error_toast_msg": "Potrebna vam je internet veza da biste izvršili ovu radnju"
   },
   "quick_report": {
     "list": {
@@ -349,7 +351,7 @@
       "attachment_other": "{{count}} prilozi"
     },
     "options_menu": {
-      "manage_my_polling_stations": "xxxxx"
+      "manage_my_polling_stations": "Upravljanje mojim biračkim mestima"
     }
   },
   "report_new_issue": {
@@ -418,7 +420,7 @@
       }
     },
     "options_sheet": {
-      "manage_my_polling_stations": "xxxxx"
+      "manage_my_polling_stations": "Upravljanje mojim biračkim mestima"
     }
   },
   "inbox": {
@@ -431,7 +433,7 @@
     "today": "Danas",
     "your_organization": "vaša organizacija",
     "menu": {
-      "manage_polling_stations": "Upravljanje mojim biračkim mestima."
+      "manage_polling_stations": "Upravljanje mojim biračkim mestima"
     }
   },
   "more": {
@@ -455,10 +457,10 @@
       }
     },
     "feedback_toast": {
-      "success": "xxxxx",
-      "offline": "xxxxx",
-      "error": "xxxxx",
-      "required": "xxxxx"
+      "success": "Povratna informacija poslata!",
+      "offline": "Potrebna vam je internet veza da biste izvršili ovu radnju.",
+      "error": "Greška pri dodavanju povratnih informacija!",
+      "required": "Polje je obavezno"
     },
     "feedback_sheet": {
       "heading": "Pošaljite nam povratne informacije",
@@ -471,7 +473,7 @@
       }
     },
     "options_sheet": {
-      "manage_my_polling_stations": "xxxxx"
+      "manage_my_polling_stations": "Upravljanje mojim biračkim mestima"
     }
   },
   "change_password": {
