@@ -44,7 +44,6 @@ import { Buffer } from 'buffer';
 import { MULTIPART_FILE_UPLOAD_SIZE } from "../../../common/constants";
 import { addAttachmentMultipartAbort, addAttachmentMultipartComplete, uploadS3Chunk } from "../../../services/api/add-attachment.api";
 import * as DocumentPicker from "expo-document-picker";
-import ReactNativeBlobUtil from "react-native-blob-util";
 
 type SearchParamType = {
   questionId: string;
