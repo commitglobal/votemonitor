@@ -1,7 +1,7 @@
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { useNavigate } from '@tanstack/react-router';
 import { useCallback } from 'react';
-import type { FunctionComponent } from '@/common/types';
+import { FollowUpStatus, type FunctionComponent } from '@/common/types';
 import { FilterBadge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -14,6 +14,8 @@ import type { FormSubmissionsSearchParams } from '../../models/search-params';
 import { Route } from '@/routes/responses';
 import { useMonitoringObserversTags } from '@/hooks/tags-queries';
 import { ResetFiltersButton } from '../ResetFiltersButton/ResetFiltersButton';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+
 
 export function FormsFiltersByObserver(): FunctionComponent {
   const navigate = useNavigate({ from: '/responses/' });
@@ -38,16 +40,44 @@ export function FormsFiltersByObserver(): FunctionComponent {
     [navigate]
   );
 
+  const onFollowUpFilterChange = useCallback((followUpStatus: string) => {
+    console.log(followUpStatus)
+    void navigate({
+      // @ts-ignore
+      search: (prev: FormSubmissionsSearchParams) => {
+        return { ...prev, followUpStatus: followUpStatus !== 'ALL' ? followUpStatus : undefined };
+      },
+    });
+  },
+    [navigate]
+  );
+
   const isFiltered = Object.keys(search).some((key) => key !== 'tab' && key !== 'viewBy');
 
   return (
     <>
+      <Select
+        onValueChange={(value) => {
+          onFollowUpFilterChange(value);
+        }}
+        value={search.followUpStatus ?? ''}>
+        <SelectTrigger>
+          <SelectValue placeholder='Follow up status' />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            <SelectItem value={'ALL'}>All</SelectItem>
+            <SelectItem value={FollowUpStatus.NeedsFollowUp}>Needs follow-up</SelectItem>
+          </SelectGroup>
+        </SelectContent>
+      </Select>
+
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button className='w-full inline-flex border-gray-200 gap-1 hover:bg-white text-black' variant='outline'>
-            <span>Observer tags</span>
+          <Button className='w-full inline-flex border-gray-200 gap-1hover:bg-white font-normal' variant='outline'>
+            <span className='text-slate-900 font-small'>Observer tags</span>
             {search.tagsFilter && (
-              <span className='bg-purple-50 text-purple-600 rounded-full inline-block px-2'>
+              <span className='bg-purple-50  rounded-full inline-block px-2'>
                 {search.tagsFilter.length}
               </span>
             )}
@@ -71,8 +101,11 @@ export function FormsFiltersByObserver(): FunctionComponent {
 
       {isFiltered && (
         <div className='col-span-full flex gap-2 flex-wrap'>
+          {search.followUpStatus &&
+            <FilterBadge label={`Follow-up status: ${search.followUpStatus}`} onClear={() => onFollowUpFilterChange('ALL')} />
+          }
           {search.tagsFilter?.map((tag) => (
-            <FilterBadge label={`Observer tags: ${tag}`} onClear={onTagsFilterChange(tag)} />
+            <FilterBadge key={tag} label={`Observer tags: ${tag}`} onClear={onTagsFilterChange(tag)} />
           ))}
         </div>
       )}

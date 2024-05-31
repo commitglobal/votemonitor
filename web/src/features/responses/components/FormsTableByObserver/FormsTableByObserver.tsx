@@ -24,6 +24,7 @@ export function FormsTableByObserver({ searchText }: FormsTableByObserverProps):
 
   const queryParams = useMemo(() => {
     const params = [
+      ['followUpStatus', debouncedSearch.followUpStatus],
       ['searchText', searchText],
       ['tagsFilter', debouncedSearch.tagsFilter],
     ].filter(([_, value]) => value);

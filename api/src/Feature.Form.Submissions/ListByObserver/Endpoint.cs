@@ -116,7 +116,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
                            WHERE 
                                FS."FollowUpStatus" = 'NeedsFollowUp'
                                AND FS."MonitoringObserverId" = MO."Id"
-                               AND FS."ElectionRoundId" = 'a0a17fa8-7f69-443f-b115-9f2afaf0ef86'
+                               AND FS."ElectionRoundId" = @electionRoundId
                            ) 
                        THEN 'NeedsFollowUp'
                        ELSE NULL
@@ -133,7 +133,8 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
                 AND (@searchText IS NULL OR @searchText = '' OR u."FirstName" ILIKE @searchText OR u."LastName" ILIKE @searchText OR u."Email" ILIKE @searchText OR u."PhoneNumber" ILIKE @searchText)
                 AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR mo."Tags" && @tagsFilter)
             ) T
-
+        WHERE
+            (@needsFollowUp IS NULL OR T."FollowUpStatus" = 'NeedsFollowUp')
         ORDER BY
             CASE WHEN @sortExpression = 'ObserverName ASC' THEN "ObserverName" END ASC,
             CASE WHEN @sortExpression = 'ObserverName DESC' THEN "ObserverName" END DESC,
@@ -169,6 +170,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
             tagsFilter = req.TagsFilter ?? [],
             searchText = $"%{req.SearchText?.Trim() ?? string.Empty}%",
             sortExpression = GetSortExpression(req.SortColumnName, req.IsAscendingSorting),
+            needsFollowUp = req.FollowUpStatus?.ToString(),
         };
 
         int totalRowCount = 0;

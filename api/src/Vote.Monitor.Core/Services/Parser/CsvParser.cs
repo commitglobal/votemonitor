@@ -12,7 +12,8 @@ public class CsvParser<T, TMapper> : ICsvParser<T> where T : class where TMapper
     private readonly CsvConfiguration _readerConfiguration = new(CultureInfo.InvariantCulture)
     {
         ExceptionMessagesContainRawData = false,
-        MissingFieldFound = null
+        MissingFieldFound = null,
+        TrimOptions = TrimOptions.Trim
     };
 
     public CsvParser(
