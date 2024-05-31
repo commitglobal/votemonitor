@@ -71,7 +71,7 @@ public class Endpoint(
 
     private async Task HandleParsingSucceedAsync(Request req, List<MonitoringObserverImportModel> observers, CancellationToken ct)
     {
-        var normalizedEmails = observers.Select(x => x.Email.ToUpperInvariant()).ToList();
+        var normalizedEmails = observers.Select(x => x.Email.ToUpperInvariant().Trim()).ToList();
 
         var existingAccounts = await userManager
             .Users
@@ -179,7 +179,9 @@ public class Endpoint(
                 if (!result.Succeeded)
                 {
                     logger.LogError("Errors when importing monitoring observer {email} {@errors}", user.Email, result.Errors);
+                    continue;
                 }
+
                 var newObserver = ObserverAggregate.Create(user);
                 var newMonitoringObserver = MonitoringObserver.Create(req.ElectionRoundId, monitoringNgo.Id, newObserver.Id, observer.Tags);
                 await context.Observers.AddAsync(newObserver, ct);

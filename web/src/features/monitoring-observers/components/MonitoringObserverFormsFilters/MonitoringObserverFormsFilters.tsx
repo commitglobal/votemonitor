@@ -58,15 +58,6 @@ export function MonitoringObserverFormsFilters(): FunctionComponent {
         </SelectContent>
       </Select>
 
-      <Input
-        defaultValue={search.pollingStationNumberFilter}
-        placeholder='Station number'
-        onChange={(e) => {
-          void navigate({ search: (prev) => ({ ...prev, pollingStationNumberFilter: e.target.value }) });
-        }}
-        value={search.pollingStationNumberFilter ?? ''}
-      />
-
       <Select
         onValueChange={(value) => {
           void navigate({ search: (prev) => ({ ...prev, hasFlaggedAnswers: value }) });
@@ -124,13 +115,6 @@ export function MonitoringObserverFormsFilters(): FunctionComponent {
 
           {search.level5Filter && (
             <FilterBadge label={`Location - L5: ${search.level5Filter}`} onClear={onClearFilter('level5Filter')} />
-          )}
-
-          {search.pollingStationNumberFilter && (
-            <FilterBadge
-              label={`Station number: ${search.pollingStationNumberFilter}`}
-              onClear={onClearFilter('pollingStationNumberFilter')}
-            />
           )}
         </div>
       )}

@@ -15,4 +15,7 @@ public class Request : BaseSortPaginatedRequest
 
     [QueryParam]
     public string? SearchText { get; set; }
+
+    [QueryParam]
+    public SubmissionFollowUpStatus? FollowUpStatus { get; set; }
 }

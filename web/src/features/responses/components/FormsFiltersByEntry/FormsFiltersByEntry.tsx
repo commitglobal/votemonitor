@@ -1,15 +1,15 @@
+import { useSetPrevSearch } from '@/common/prev-search-store';
+import { FollowUpStatus, FunctionComponent } from '@/common/types';
+import { PollingStationsFilters } from '@/components/PollingStationsFilters/PollingStationsFilters';
+import { FilterBadge } from '@/components/ui/badge';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Route } from '@/routes/responses';
 import { useNavigate } from '@tanstack/react-router';
 import { useCallback } from 'react';
-import type { FunctionComponent } from '@/common/types';
-import { FilterBadge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { FormType } from '../../models/form-submission';
 import type { FormSubmissionsSearchParams } from '../../models/search-params';
-import { PollingStationsFilters } from '@/components/PollingStationsFilters/PollingStationsFilters';
-import { Route } from '@/routes/responses';
 import { ResetFiltersButton } from '../ResetFiltersButton/ResetFiltersButton';
-import { useSetPrevSearch } from '@/common/prev-search-store';
+import { mapFollowUpStatus } from '../../utils/helpers';
 
 export function FormsFiltersByEntry(): FunctionComponent {
   const navigate = useNavigate({ from: '/responses/' });
@@ -66,15 +66,6 @@ export function FormsFiltersByEntry(): FunctionComponent {
         </SelectContent>
       </Select>
 
-      <Input
-        defaultValue={search.pollingStationNumberFilter}
-        placeholder='Station number'
-        onChange={(e) => {
-          navigateHandler({ pollingStationNumberFilter: e.target.value });
-        }}
-        value={search.pollingStationNumberFilter ?? ''}
-      />
-
       <Select
         onValueChange={(value) => {
           navigateHandler({ hasFlaggedAnswers: value });
@@ -95,6 +86,23 @@ export function FormsFiltersByEntry(): FunctionComponent {
         </SelectContent>
       </Select>
 
+      <Select
+        onValueChange={(value) => {
+          navigateHandler({ followUpStatus: value });
+        }}
+        value={search.followUpStatus ?? ''}>
+        <SelectTrigger>
+          <SelectValue placeholder='Follow up status' />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            <SelectItem value={FollowUpStatus.NotApplicable}>Not applicable</SelectItem>
+            <SelectItem value={FollowUpStatus.NeedsFollowUp}>Needs follow-up</SelectItem>
+            <SelectItem value={FollowUpStatus.Resolved}>Resolved</SelectItem>
+          </SelectGroup>
+        </SelectContent>
+      </Select>
+
       <PollingStationsFilters />
 
       <ResetFiltersButton disabled={!isFiltered} />
@@ -105,10 +113,10 @@ export function FormsFiltersByEntry(): FunctionComponent {
             <FilterBadge label={`Form type: ${search.formTypeFilter}`} onClear={onClearFilter('formTypeFilter')} />
           )}
 
-          {search.pollingStationNumberFilter && (
+          {search.followUpStatus && (
             <FilterBadge
-              label={`Station number: ${search.pollingStationNumberFilter}`}
-              onClear={onClearFilter('pollingStationNumberFilter')}
+              label={`Follow-up status: ${mapFollowUpStatus(search.followUpStatus)}`}
+              onClear={onClearFilter('followUpStatus')}
             />
           )}
 
