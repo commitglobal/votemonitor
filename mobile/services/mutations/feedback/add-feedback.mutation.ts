@@ -6,8 +6,9 @@ export const useAddFeedbackMutation = (electionRoundId: string | undefined) => {
   return useMutation({
     mutationKey: feedbackKeys.addFeedback(electionRoundId),
     mutationFn: async (payload: AddFeedbackPayload) => {
-      electionRoundId ? addFeedback(payload) : skipToken;
+      return addFeedback(payload);
     },
+
     onError: (err) => {
       console.log("🛑🛑🛑 ERROR IN ADD FEEDBACK MUTATION 🛑🛑🛑", err);
     },

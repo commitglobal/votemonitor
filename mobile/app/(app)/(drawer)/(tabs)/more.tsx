@@ -22,7 +22,6 @@ import { useNetInfoContext } from "../../../../contexts/net-info-banner/NetInfoC
 import WarningDialog from "../../../../components/WarningDialog";
 import FeedbackSheet from "../../../../components/FeedbackSheet";
 import OptionsSheet from "../../../../components/OptionsSheet";
-import Toast from "react-native-toast-message";
 
 interface MenuItemProps {
   label: string;
