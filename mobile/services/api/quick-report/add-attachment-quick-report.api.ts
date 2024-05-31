@@ -50,11 +50,8 @@ export const addAttachmentQuickReportMultipartStart = ({
   uploadUrls: Record<string, string>;
 }> => {
   return API.post(
-    `election-rounds/${electionRoundId}/quick-reports/${quickReportId}/attachments:init`,
+    `election-rounds/${electionRoundId}/quick-reports/${quickReportId}/attachments/${id}:init`,
     {
-      electionRoundId,
-      id,
-      quickReportId,
       fileName,
       contentType,
       numberOfUploadParts,
@@ -71,13 +68,13 @@ export const addAttachmentQuickReportMultipartComplete = async ({
   quickReportId,
 }: AddAttachmentQuickReportCompleteAPIPayload): Promise<string[]> => {
   return API.post(
-    `election-rounds/${electionRoundId}/quick-reports/${quickReportId}/${id}:complete`,
+    `election-rounds/${electionRoundId}/quick-reports/${quickReportId}/attachments/${id}:complete`,
     { uploadId, etags },
     {},
   ).then((res) => res.data);
 };
 
-export const addAttachmenQuickReporttMultipartAbort = async ({
+export const addAttachmentQuickReportMultipartAbort = async ({
   uploadId,
   id,
   electionRoundId,
