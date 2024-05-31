@@ -473,7 +473,7 @@
   },
   "sync": {
     "sync_data": "Se sincronizează datele offline...",
-    "warning": "Vă rugăm să NU ÎNCHIDEȚI aplicația sau conexiunea la internet sau datele se vor pierde.",
-    "files": "Vă adaugăm fișierele, s-ar putea să dureze ceva..."
+    "warning": "Te rugăm să NU ÎNCHIZI aplicația sau conexiunea la internet sau datele se vor pierde.",
+    "files": "Încărcăm fișierele tale, poate dura ceva timp..."
   }
 }

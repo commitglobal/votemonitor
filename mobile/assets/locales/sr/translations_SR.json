@@ -67,7 +67,7 @@
       },
       "errors": {
         "invalid_credentials": "Došlo je do problema sa vašim pristupnim informacijama. Molimo, pokušajte ponovno.",
-        "offline": "xxxxx"
+        "offline": "Potrebna vam je internet veza da biste se prijavili."
       }
     },
     "actions": {
@@ -233,8 +233,8 @@
     "clear_answers_modal": {
       "title": "Očisti izveštaj {{value}}",
       "description": {
-        "p1": "xxxxx",
-        "p2": "xxxxx"
+        "p1": "Ova akcija će obrisati sve dosad unete odgovore za ovaj izveštaj (uključujući beleške i medijske datoteke). Status svih pitanja biće vraćen na 'Nije odgovoreno'",
+        "p2": "Da biste izbegli nenamerni gubitak informacija, molimo vas da proverite izveštaj pre izvođenja ove akcije."
       },
       "actions": {
         "clear": "Očisti izveštaj",
@@ -376,8 +376,8 @@
     "list": {
       "heading": "Priručnik",
       "guide": {
-        "backup_title": "xxxxx",
-        "created_on": "xxxxx"
+        "backup_title": "Документ",
+        "created_on": "създадено на"
       }
     }
   },
@@ -408,20 +408,20 @@
     "logged_in": "Prijavljeni ste kao {{user}}",
     "warning_modal": {
       "logout": {
-        "title": "xxxxx",
-        "description": "xxxxx.",
-        "cancel": "xxxxx",
-        "action": "xxxxx"
+        "title": "Upozorenje: Vaši podaci nisu sinhronizovani",
+        "description": "Trenutno ste van mreže. Ako se sada odjavite, svi obrasci, prilozi ili beleške koje ste popunili ili poslali van mreže biće izgubljeni.\n\nDa biste izbegli gubitak podataka, ponovo se povežite na internet pre nego što se odjavite..",
+        "cancel": "Otkaži",
+        "action": "Odjava"
       }
     },
     "feedback_sheet": {
-      "heading": "xxxxx",
-      "p1": "xxxxx",
-      "placeholder": "xxxxx",
-      "cancel": "xxxxx",
-      "action": "xxxxx",
+      "heading": "Pošaljite nam povratne informacije",
+      "p1": "Podelite sa nama sve probleme na koje naiđete dok koristite aplikaciju ili predloge za poboljšanje Vote Monitor u budućnosti. Cenimo svako mišljenje!",
+      "placeholder": "Napišite svoje povratne informacije ovde...",
+      "cancel": "Otkaži",
+      "action": "Pošalji",
       "input": {
-        "max": "xxxxx"
+        "max": "Unos ne može preći preko {{value}} karaktera"
       }
     }
   },
@@ -462,7 +462,7 @@
     "paragraph1": "Došlo je do greške!",
     "paragraph2": "Nismo uspeli da se oporavimo nakon ove greške. Molimo vas da proverite svoju internet vezu i ponovo pokrenete aplikaciju!",
     "retry": "Pokušaj ponovo",
-    "logout": "xxxxx"
+    "logout": "Odjava"
   },
   "network_banner": {
     "online": "Povezani ste sa internetom. Svi odgovori su poslati na server.",
@@ -471,8 +471,8 @@
     "offline_warning": "Trenutno niste povezani na internet. Bez brige, vaši odgovori su sačuvani lokalno i biće sinhronizovani čim budete ponovo povezani na internet. Slobodno nastavite sa korišćenjem aplikacije."
   },
   "sync": {
-    "sync_data": "xxxxx",
-    "warning": "xxxxx",
-    "files": "xxxxx"
+    "sync_data": "Sinhronizovanje oflajn podataka...",
+    "warning": "Molimo NEMOJTE ZATVORITI aplikaciju ili internet vezu ili će podaci biti izgubljeni.",
+    "files": "Učitavamo vaše datoteke, može potrajati..."
   }
 }
