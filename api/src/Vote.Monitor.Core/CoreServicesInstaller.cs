@@ -71,7 +71,10 @@ public static class CoreServicesInstaller
 
         public void ExportQuickReportsSubmissions(Guid electionRoundId, Guid ngoId, Guid exportedDataId)
         {
+        }
 
+        public void ExportPollingStations(Guid electionRoundId, Guid exportedDataId)
+        {
         }
     }
 

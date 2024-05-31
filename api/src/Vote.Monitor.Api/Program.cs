@@ -37,13 +37,21 @@ using Feature.Feedback;
 using Feature.ImportErrors;
 using Feature.Statistics;
 using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
+using Microsoft.AspNetCore.Http.Features;
 
 var builder = WebApplication.CreateBuilder(args);
 
 
 builder.WebHost.ConfigureKestrel(o =>
 {
-    o.Limits.MaxRequestBodySize = 1073741824; //set to max allowed file size of your system
+    o.Limits.MaxRequestBodySize = Int64.MaxValue; //set to max allowed file size of your system
+});
+
+builder.Services.Configure<FormOptions>(options =>
+{
+    options.ValueLengthLimit = int.MaxValue;
+    options.MultipartBodyLengthLimit = int.MaxValue;
+    options.MultipartHeadersLengthLimit = int.MaxValue;
 });
 
 builder.AddSentry();
@@ -103,7 +111,7 @@ builder.Services.AddFileStorage(builder.Configuration.GetRequiredSection(FileSto
 
 builder.Services.AddPushNotifications(builder.Configuration.GetRequiredSection(PushNotificationsInstaller.SectionKey));
 
-builder.Services.AddApplicationDomain(builder.Configuration.GetSection(DomainInstaller.SectionKey));
+builder.Services.AddApplicationDomain(builder.Configuration.GetSection(DomainInstaller.SectionKey), builder.Environment.IsProduction());
 builder.Services.AddSeeders();
 builder.Services.AddIdentity();
 
@@ -155,7 +163,7 @@ app.UseCors("AllowAll");
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseFastEndpoints(x =>
+app.UseSentryMiddleware().UseFastEndpoints(x =>
 {
     x.Errors.UseProblemDetails();
     x.Endpoints.Configurator = ep =>
@@ -236,7 +244,6 @@ uiConfig: cfg =>
     cfg.DocExpansion = "list";
 });
 app.UseResponseCompression();
-app.UseSentryMiddleware();
 app.MapHealthChecks("/health");
 
 app.Run();

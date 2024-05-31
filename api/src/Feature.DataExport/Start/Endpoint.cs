@@ -33,7 +33,7 @@ public class Endpoint(IJobService jobService,
             return TypedResults.NotFound();
         }
 
-        var exportedData = ExportedData.Create(req.ElectionRoundId, req.NgoId, req.ExportedDataType, timeProvider.UtcNow);
+        var exportedData = ExportedData.Create(req.ElectionRoundId, req.ExportedDataType, timeProvider.UtcNow);
 
         await repository.AddAsync(exportedData, ct);
 
@@ -45,6 +45,11 @@ public class Endpoint(IJobService jobService,
         if (req.ExportedDataType == ExportedDataType.QuickReports)
         {
             jobService.ExportQuickReportsSubmissions(req.ElectionRoundId, req.NgoId, exportedData.Id);
+        }
+
+        if (req.ExportedDataType == ExportedDataType.PollingStations)
+        {
+            jobService.ExportPollingStations(req.ElectionRoundId, exportedData.Id);
         }
 
         return TypedResults.Ok(new JobDetails

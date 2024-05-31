@@ -38,7 +38,7 @@ internal class S3FileStorageService(IAmazonS3 client,
                 return new UploadFileResult.Ok(okPresignedResult!.Url, fileName, _options.PresignedUrlValidityInSeconds);
             }
         }
-        catch (AmazonS3Exception ex)
+        catch (Exception ex)
         {
             SentrySdk.CaptureException(ex);
             logger.LogError(ex, "Failed to upload file {uploadPath} {fileName}", uploadPath, fileName);
@@ -62,7 +62,7 @@ internal class S3FileStorageService(IAmazonS3 client,
 
             return new GetPresignedUrlResult.Ok(urlString, fileName, _options.PresignedUrlValidityInSeconds);
         }
-        catch (AmazonS3Exception ex)
+        catch (Exception ex)
         {
             SentrySdk.CaptureException(ex);
             logger.LogError(ex, "Failed to generate presigned Url in S3 for {uploadPath} {fileName}", uploadPath, fileName);

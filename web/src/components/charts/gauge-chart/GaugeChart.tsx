@@ -1,7 +1,7 @@
-import { ArcElement, CategoryScale, Chart as ChartJS, ChartData, ChartOptions, Legend, Plugin, Tooltip } from 'chart.js';
+import { ArcElement, CategoryScale, ChartData, Chart as ChartJS, ChartOptions, Legend, Plugin, Tooltip } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { ChartJSOrUndefined } from 'node_modules/react-chartjs-2/dist/types';
-import { forwardRef, useEffect, useState } from 'react';
+import { forwardRef } from 'react';
 import { Doughnut } from 'react-chartjs-2';
 
 ChartJS.register(ArcElement, CategoryScale, ChartDataLabels, Tooltip, Legend);
@@ -10,13 +10,20 @@ export interface GaugeProps {
     title: string;
     metricLabel: string;
     data: ChartData<"doughnut">;
+    value: number;
+    total: number;
 };
 
 const GaugeChart = forwardRef<ChartJSOrUndefined<"doughnut">, GaugeProps>((props, chartRef) => {
     function formatAsPercentage(value: number, total: number): string {
-        const percentage = value / total * 100;
-        return percentage.toFixed(2) + "%";
+        if (total) {
+            const percentage = value / total * 100;
+            return percentage.toFixed(2) + "%";
+        }
+
+        return '0 %';
     }
+
     const options: ChartOptions<"doughnut"> = {
         maintainAspectRatio: false,
         responsive: true,
@@ -49,7 +56,7 @@ const GaugeChart = forwardRef<ChartJSOrUndefined<"doughnut">, GaugeProps>((props
             ctx.font = 'bold 20px  ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"';
             ctx.fillStyle = '#7833B3';
             ctx.textAlign = 'center';
-            var percentage = formatAsPercentage(data!.datasets[0]!.data[0]!, data.datasets.reduce((t, d) => t + d.data.reduce((a, b) => a + b), 0))
+            var percentage = formatAsPercentage(props.value, props.total)
             ctx.fillText(percentage, xCoor!, yCoor!);
         }
     };
@@ -58,8 +65,7 @@ const GaugeChart = forwardRef<ChartJSOrUndefined<"doughnut">, GaugeProps>((props
         <div>
             <div>
                 <div className="text-2xl font-bold">{
-                    //@ts-ignore
-                    props.data.datasets[0]!.data[0]
+                    props.value
                 }
                 </div>
                 <span className='text-sm text-slate-500'>{props.title}</span>

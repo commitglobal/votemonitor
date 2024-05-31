@@ -1,9 +1,11 @@
 ﻿using Authorization.Policies.Requirements;
+using Dapper;
 using Microsoft.AspNetCore.Authorization;
+using Vote.Monitor.Domain.ConnectionFactory;
 
 namespace Feature.Form.Submissions.Any;
 
-public class Endpoint(IRepository<FormSubmission> repository, IAuthorizationService authorizationService) : Endpoint<Request, Results<Ok, NotFound>>
+public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnectionFactory connectionFactory) : Endpoint<Request, Results<Ok, NotFound>>
 {
     public override void Configure()
     {
@@ -24,10 +26,34 @@ public class Endpoint(IRepository<FormSubmission> repository, IAuthorizationServ
             TypedResults.NotFound();
         }
 
-        var specification = new GetFormSubmissionForObserverSpecification(req.ElectionRoundId, req.ObserverId, [req.PollingStationId]);
-        var hasSubmissionsForPollingStation = await repository.AnyAsync(
-            specification,
-            ct);
+        bool hasSubmissionsForPollingStation;
+        using (var dbConnection = await connectionFactory.GetOpenConnectionAsync(ct))
+        {
+            var sql = """
+                      SELECT
+                      EXISTS (
+                        SELECT
+                            1
+                        FROM
+                            "FormSubmissions" FS
+                            INNER JOIN "MonitoringObservers" MO ON FS."MonitoringObserverId" = MO."Id"
+                        WHERE
+                            FS."ElectionRoundId" = @electionRoundId
+                            AND MO."ObserverId" = @observerId
+                            AND FS."PollingStationId" = @pollingStationId
+                            AND JSONB_ARRAY_LENGTH(FS."Answers") > 0
+                      )
+                      """;
+
+            var queryParams = new
+            {
+                electionRoundId = req.ElectionRoundId,
+                observerId = req.ObserverId,
+                pollingStationId = req.PollingStationId,
+            };
+
+            hasSubmissionsForPollingStation = await dbConnection.QuerySingleAsync<bool>(sql, queryParams);
+        }
 
         return hasSubmissionsForPollingStation ? TypedResults.Ok() : TypedResults.NotFound();
     }
