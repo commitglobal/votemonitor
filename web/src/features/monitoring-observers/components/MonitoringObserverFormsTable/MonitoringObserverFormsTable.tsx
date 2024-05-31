@@ -29,7 +29,6 @@ export function MonitoringObserverFormsTable({
   const queryParams = useMemo(() => {
     const params = [
       ['formCodeFilter', searchText],
-      ['pollingStationNumberFilter', debouncedSearch.pollingStationNumberFilter],
       ['formTypeFilter', debouncedSearch.formTypeFilter],
       ['hasFlaggedAnswers', debouncedSearch.hasFlaggedAnswers],
       ['level1Filter', debouncedSearch.level1Filter],

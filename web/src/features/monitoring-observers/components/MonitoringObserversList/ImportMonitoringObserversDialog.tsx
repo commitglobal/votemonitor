@@ -80,12 +80,17 @@ function ImportMonitoringObserversDialog({
                         variant: 'destructive'
                     });
                 }
+            } else {
+                toast({
+                    title: 'Error importing monitoring observers',
+                    description: 'Please contact Platform admins',
+                    variant: 'destructive'
+                });
             }
 
             onOpenChange(false);
         }
     });
-
 
     const handleImport = () => {
         importObserversMutation.mutate();
