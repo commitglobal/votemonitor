@@ -149,9 +149,7 @@ const More = () => {
         <MenuItem
           label={t("logout")}
           icon="logoutNoBackground"
-          onClick={() => {
-            !isOnline ? setShowWarningModal(true) : logout();
-          }}
+          onClick={() => setShowWarningModal(true)}
           helper={currentUser ? t("logged_in", { user: currentUser }) : ""}
         ></MenuItem>
       </YStack>
@@ -178,12 +176,19 @@ const More = () => {
       <SelectAppLanguage open={isLanguageSelectSheetOpen} setOpen={setIsLanguageSelectSheetOpen} />
       {showWarningModal && (
         <WarningDialog
-          title={t("warning_modal.logout.title")}
-          description={t("warning_modal.logout.description")}
-          actionBtnText={
-            logoutLoading ? t("loading", { ns: "common" }) : t("warning_modal.logout.action")
+          title={
+            isOnline
+              ? t("warning_modal.logout_online.title")
+              : t("warning_modal.logout_offline.title")
           }
-          cancelBtnText={t("warning_modal.logout.cancel")}
+          titleProps={isOnline && { textAlign: "center" }}
+          description={isOnline ? "" : t("warning_modal.logout_offline.description")}
+          actionBtnText={
+            logoutLoading
+              ? t("loading", { ns: "common" })
+              : t("warning_modal.logout_offline.action")
+          }
+          cancelBtnText={t("warning_modal.logout_online.cancel")}
           action={logout}
           onCancel={() => setShowWarningModal(false)}
           actionBtnStyle={{ backgroundColor: "hsl(272, 56%, 45%)" }}
