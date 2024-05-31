@@ -72,7 +72,8 @@
     },
     "actions": {
       "forgot_password": "Zapomniałeś/aś hasła?"
-    }
+    },
+    "email_toast": "xxxxx"
   },
   "forgot_password": {
     "header": {
@@ -187,6 +188,9 @@
         "helper": "Wybrany formularz dostępny jest w kilku językach. Wybierz proszę język, w którym chcesz kontynnuować pracę.",
         "error": "Proszę wybrać jedną z opcji"
       }
+    },
+    "options_menu": {
+      "manage_my_polling_stations": "xxxxx"
     }
   },
   "polling_station_information_form": {
@@ -303,6 +307,36 @@
     },
     "error": "Błąd podczas ładowania danych pytania!"
   },
+  "manage_my_polling_stations": {
+    "empty": {
+      "title": "xxxxx"
+    },
+    "general_text": "xxxxx",
+    "ps_card": {
+      "header": "xxxxx",
+      "l1": "xxxxx",
+      "l2": "xxxxx",
+      "l3": "xxxxx",
+      "street": "xxxxx",
+      "ps_number": "xxxxx"
+    },
+    "warning_dialog": {
+      "title": "xxxxx",
+      "description": "xxxxx",
+      "actions": {
+        "cancel": "xxxxx",
+        "remove": "xxxxx",
+        "loading": "xxxxx"
+      }
+    },
+    "removal_unallowed_dialog": {
+      "title": "xxxxx",
+      "description": "xxxxx"
+    },
+    "delete_success": "xxxxx!",
+    "delete_error": "xxxxx",
+    "offline_error_toast_msg": "xxxxx"
+  },
   "quick_report": {
     "list": {
       "title": "Szybki raport",
@@ -313,6 +347,9 @@
       "no_files": "Brak załączonych plików",
       "attachment_one": "{{count}} plik załącznika",
       "attachment_other": "{{count}} pliki załączników"
+    },
+    "options_menu": {
+      "manage_my_polling_stations": "xxxxx"
     }
   },
   "report_new_issue": {
@@ -379,6 +416,9 @@
         "backup_title": "Dokument",
         "created_on": "Utworzono dnia"
       }
+    },
+    "options_sheet": {
+      "manage_my_polling_stations": "xxxxx"
     }
   },
   "inbox": {
@@ -414,6 +454,12 @@
         "action": "Wyloguj"
       }
     },
+    "feedback_toast": {
+      "success": "xxxxx",
+      "offline": "xxxxx",
+      "error": "xxxxx",
+      "required": "xxxxx"
+    },
     "feedback_sheet": {
       "heading": "Prześlij nam swoją opinię",
       "p1": "Podziel się z nami wszelkimi problemami, które napotkasz podczas korzystania z aplikacji lub sugestiami dotyczącymi ulepszenia Vote Monitor w przyszłości. Jesteśmy wdzięczni za każdą opinię!",
@@ -423,6 +469,9 @@
       "input": {
         "max": "Dane wejściowe nie mogą przekraczać {{value}} znaków"
       }
+    },
+    "options_sheet": {
+      "manage_my_polling_stations": "xxxxx"
     }
   },
   "change_password": {

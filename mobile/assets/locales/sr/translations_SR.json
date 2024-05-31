@@ -72,7 +72,8 @@
     },
     "actions": {
       "forgot_password": "Zaboravljena lozinka?"
-    }
+    },
+    "email_toast": "xxxxx"
   },
   "forgot_password": {
     "header": {
@@ -187,6 +188,9 @@
         "helper": "Izabrani izveštaj je dostupan na više jezika. Izaberite jedan da biste nastavili dalje.",
         "error": "Molimo vas izaberite jednu od opcija"
       }
+    },
+    "options_menu": {
+      "manage_my_polling_stations": "xxxxx"
     }
   },
   "polling_station_information_form": {
@@ -303,6 +307,36 @@
     },
     "error": "Greška pri učitavanju pitanja!"
   },
+  "manage_my_polling_stations": {
+    "empty": {
+      "title": "xxxxx"
+    },
+    "general_text": "xxxxx",
+    "ps_card": {
+      "header": "Poxxxxx",
+      "l1": "xxxxx",
+      "l2": "xxxxx",
+      "l3": "xxxxx",
+      "street": "xxxxx",
+      "ps_number": "xxxxx"
+    },
+    "warning_dialog": {
+      "title": "xxxxx",
+      "description": "xxxxx",
+      "actions": {
+        "cancel": "xxxxx",
+        "remove": "xxxxx",
+        "loading": "xxxxx"
+      }
+    },
+    "removal_unallowed_dialog": {
+      "title": "xxxxx",
+      "description": "xxxxx"
+    },
+    "delete_success": "xxxxx",
+    "delete_error": "xxxxx",
+    "offline_error_toast_msg": "xxxxx"
+  },
   "quick_report": {
     "list": {
       "title": "Incident",
@@ -313,6 +347,9 @@
       "no_files": "Nema medijskih datoteka",
       "attachment_one": "{{count}} prilog",
       "attachment_other": "{{count}} prilozi"
+    },
+    "options_menu": {
+      "manage_my_polling_stations": "xxxxx"
     }
   },
   "report_new_issue": {
@@ -379,6 +416,9 @@
         "backup_title": "Документ",
         "created_on": "създадено на"
       }
+    },
+    "options_sheet": {
+      "manage_my_polling_stations": "xxxxx"
     }
   },
   "inbox": {
@@ -414,6 +454,12 @@
         "action": "Odjava"
       }
     },
+    "feedback_toast": {
+      "success": "xxxxx",
+      "offline": "xxxxx",
+      "error": "xxxxx",
+      "required": "xxxxx"
+    },
     "feedback_sheet": {
       "heading": "Pošaljite nam povratne informacije",
       "p1": "Podelite sa nama sve probleme na koje naiđete dok koristite aplikaciju ili predloge za poboljšanje Vote Monitor u budućnosti. Cenimo svako mišljenje!",
@@ -423,6 +469,9 @@
       "input": {
         "max": "Unos ne može preći preko {{value}} karaktera"
       }
+    },
+    "options_sheet": {
+      "manage_my_polling_stations": "xxxxx"
     }
   },
   "change_password": {

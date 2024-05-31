@@ -188,6 +188,9 @@
         "helper": "Formularul selectat este disponibil în mai multe limbi. Te rugăm să alegi limba cu care dorești să continui",
         "error": "Te rugăm să selectezi una dintre opțiuni înainte de a continua."
       }
+    },
+    "options_menu": {
+      "manage_my_polling_stations": "xxxxx"
     }
   },
   "polling_station_information_form": {
@@ -304,6 +307,36 @@
     },
     "error": "Eroare la încărcarea datelor întrebării!"
   },
+  "manage_my_polling_stations": {
+    "empty": {
+      "title": "xxxxx"
+    },
+    "general_text": "xxxxx",
+    "ps_card": {
+      "header": "xxxxx",
+      "l1": "xxxxx",
+      "l2": "xxxxx",
+      "l3": "xxxxx",
+      "street": "xxxxx",
+      "ps_number": "xxxxx"
+    },
+    "warning_dialog": {
+      "title": "xxxxx",
+      "description": "xxxxx",
+      "actions": {
+        "cancel": "xxxxx",
+        "remove": "xxxxx",
+        "loading": "xxxxx"
+      }
+    },
+    "removal_unallowed_dialog": {
+      "title": "xxxxx",
+      "description": "xxxxx"
+    },
+    "delete_success": "xxxxx",
+    "delete_error": "xxxxx",
+    "offline_error_toast_msg": "xxxxx"
+  },
   "quick_report": {
     "list": {
       "title": "Raportare rapidă",
@@ -314,6 +347,9 @@
       "no_files": "Niciun fișier atașat",
       "attachment_one": "{{count}} fișiere atașate",
       "attachment_other": "{{count}} fișiere atașate"
+    },
+    "options_menu": {
+      "manage_my_polling_stations": "xxxxx"
     }
   },
   "report_new_issue": {
@@ -380,6 +416,9 @@
         "backup_title": "Document",
         "created_on": "Creat la"
       }
+    },
+    "options_sheet": {
+      "manage_my_polling_stations": "xxxxx"
     }
   },
   "inbox": {
@@ -415,6 +454,12 @@
         "action": "Deconectează-te"
       }
     },
+    "feedback_toast": {
+      "success": "xxxxx",
+      "offline": "xxxxx",
+      "error": "xxxxx",
+      "required": "xxxxx"
+    },
     "feedback_sheet": {
       "heading": "Trimite-ne feedback-ul tău",
       "p1": "Te rugăm să ne spui despre orice problemă pe care ai întâlnit-o în funcționarea aplicației sau orice sugestie pe care dorești să o împărtășești pentru a îmbunătăți Vote Monitor pe viitor. Apreciem orice feedback!",
@@ -424,6 +469,9 @@
       "input": {
         "max": "Câmpul nu poate depăși {{value}} caractere"
       }
+    },
+    "options_sheet": {
+      "manage_my_polling_stations": "xxxxx"
     }
   },
   "change_password": {
