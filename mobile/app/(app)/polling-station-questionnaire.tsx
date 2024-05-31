@@ -33,6 +33,7 @@ import { useMutatePollingStationGeneralData } from "../../services/mutations/psi
 import OptionsSheet from "../../components/OptionsSheet";
 import { Keyboard } from "react-native";
 import WarningDialog from "../../components/WarningDialog";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 const PollingStationQuestionnaire = () => {
   const { t, i18n } = useTranslation("polling_station_information_form");
@@ -225,222 +226,227 @@ const PollingStationQuestionnaire = () => {
             setOpenContextualMenu(true);
           }}
         />
-        <YStack padding="$md" gap="$lg">
-          {formStructure?.questions.map((question: ApiFormQuestion) => {
-            const _label = `${question.code}. ${question.text[currentLanguage]}`;
-            const _helper = question.helptext?.[currentLanguage] || "";
+        <KeyboardAwareScrollView
+          contentContainerStyle={{ flexGrow: 1 }}
+          keyboardShouldPersistTaps="handled"
+        >
+          <YStack padding="$md" gap="$lg" flex={1}>
+            {formStructure?.questions.map((question: ApiFormQuestion) => {
+              const _label = `${question.code}. ${question.text[currentLanguage]}`;
+              const _helper = question.helptext?.[currentLanguage] || "";
 
-            if (question.$questionType === "numberQuestion") {
-              return (
-                <Controller
-                  key={question.id}
-                  name={question.id}
-                  control={control}
-                  rules={{
-                    maxLength: {
-                      value: 10,
-                      message: t("form.max", { value: 10 }),
-                    },
-                  }}
-                  render={({ field: { onChange, value } }) => (
-                    <FormInput
-                      title={question.text[currentLanguage]}
-                      placeholder={question.helptext?.[currentLanguage] || ""}
-                      type="numeric"
-                      value={value}
-                      onChangeText={onChange}
-                      error={errors[question.id]?.message as string}
-                    />
-                  )}
-                />
-              );
-            }
-
-            if (question.$questionType === "textQuestion") {
-              return (
-                <Controller
-                  key={question.id}
-                  name={question.id}
-                  control={control}
-                  rules={{
-                    maxLength: { value: 1024, message: t("form.max", { value: 1024 }) },
-                  }}
-                  render={({ field: { onChange, value } }) => (
-                    <YStack>
-                      <FormInput
-                        type="textarea"
-                        title={question.text[currentLanguage]}
-                        placeholder={question.helptext?.[currentLanguage] || ""}
-                        onChangeText={onChange}
-                        value={value}
-                        error={errors[question.id]?.message as string}
-                      />
-                    </YStack>
-                  )}
-                />
-              );
-            }
-
-            if (question.$questionType === "dateQuestion") {
-              return (
-                <Controller
-                  key={question.id}
-                  name={question.id}
-                  control={control}
-                  render={({ field: { onChange, value } }) => (
-                    <YStack>
-                      <DateFormInput
-                        title={question.text[currentLanguage]}
-                        onChange={onChange}
-                        value={value}
-                        placeholder={question.helptext?.[currentLanguage] || ""}
-                      />
-                    </YStack>
-                  )}
-                />
-              );
-            }
-
-            if (question.$questionType === "singleSelectQuestion") {
-              return (
-                <Controller
-                  key={question.id}
-                  name={question.id}
-                  control={control}
-                  render={({
-                    field: { onChange, value = { radioValue: "", textValue: null } },
-                  }) => {
-                    return (
-                      <YStack>
-                        <RadioFormInput
-                          options={question.options.map((option) => ({
-                            id: option.id,
-                            label: option.text[currentLanguage],
-                            value: option.id,
-                          }))}
-                          title={question.text[currentLanguage]}
-                          value={value.radioValue}
-                          onValueChange={(radioValue) =>
-                            onChange({ ...value, radioValue, textValue: null })
-                          }
-                        />
-                        {/* if the selected option is "other", show textArea */}
-                        {question.options.map((option) => {
-                          if (value.radioValue === option.id && option.isFreeText) {
-                            return (
-                              <FormInput
-                                type="textarea"
-                                marginTop="$md"
-                                key={option.id}
-                                value={value.textValue}
-                                placeholder={t("form.placeholder")}
-                                onChangeText={(textValue) => onChange({ ...value, textValue })}
-                                maxLength={1024}
-                                helper={t("char_limit.max", {
-                                  value: 1024,
-                                })}
-                              />
-                            );
-                          }
-                          return undefined;
-                        })}
-                      </YStack>
-                    );
-                  }}
-                />
-              );
-            }
-
-            if (question.$questionType === "ratingQuestion") {
-              return (
-                <Controller
-                  key={question.id}
-                  name={question.id}
-                  control={control}
-                  render={({ field: { onChange, value } }) => (
-                    <YStack>
-                      <RatingFormInput
-                        id={question.id}
-                        type="single"
-                        title={question.text[currentLanguage]}
-                        value={value}
-                        scale={question.scale}
-                        onValueChange={onChange}
-                      />
-                    </YStack>
-                  )}
-                />
-              );
-            }
-
-            if (question.$questionType === "multiSelectQuestion") {
-              return (
-                <FormElement
-                  key={question.id}
-                  title={`${question.code}. ${question.text[currentLanguage]}`}
-                >
+              if (question.$questionType === "numberQuestion") {
+                return (
                   <Controller
                     key={question.id}
                     name={question.id}
                     control={control}
-                    render={({ field: { onChange, value } }) => {
-                      const selections: Record<string, { optionId: string; text: string }> =
-                        value || {};
+                    rules={{
+                      maxLength: {
+                        value: 10,
+                        message: t("form.max", { value: 10 }),
+                      },
+                    }}
+                    render={({ field: { onChange, value } }) => (
+                      <FormInput
+                        title={question.text[currentLanguage]}
+                        placeholder={question.helptext?.[currentLanguage] || ""}
+                        type="numeric"
+                        value={value}
+                        onChangeText={onChange}
+                        error={errors[question.id]?.message as string}
+                      />
+                    )}
+                  />
+                );
+              }
 
+              if (question.$questionType === "textQuestion") {
+                return (
+                  <Controller
+                    key={question.id}
+                    name={question.id}
+                    control={control}
+                    rules={{
+                      maxLength: { value: 1024, message: t("form.max", { value: 1024 }) },
+                    }}
+                    render={({ field: { onChange, value } }) => (
+                      <YStack>
+                        <FormInput
+                          type="textarea"
+                          title={question.text[currentLanguage]}
+                          placeholder={question.helptext?.[currentLanguage] || ""}
+                          onChangeText={onChange}
+                          value={value}
+                          error={errors[question.id]?.message as string}
+                        />
+                      </YStack>
+                    )}
+                  />
+                );
+              }
+
+              if (question.$questionType === "dateQuestion") {
+                return (
+                  <Controller
+                    key={question.id}
+                    name={question.id}
+                    control={control}
+                    render={({ field: { onChange, value } }) => (
+                      <YStack>
+                        <DateFormInput
+                          title={question.text[currentLanguage]}
+                          onChange={onChange}
+                          value={value}
+                          placeholder={question.helptext?.[currentLanguage] || ""}
+                        />
+                      </YStack>
+                    )}
+                  />
+                );
+              }
+
+              if (question.$questionType === "singleSelectQuestion") {
+                return (
+                  <Controller
+                    key={question.id}
+                    name={question.id}
+                    control={control}
+                    render={({
+                      field: { onChange, value = { radioValue: "", textValue: null } },
+                    }) => {
                       return (
-                        <>
-                          {question.options.map((option) => (
-                            <YStack key={option.id}>
-                              <CheckboxInput
-                                marginBottom="$md"
-                                id={option.id}
-                                label={option.text[currentLanguage]}
-                                checked={selections[option.id]?.optionId === option.id}
-                                onCheckedChange={(checked) => {
-                                  if (checked) {
-                                    return onChange({
-                                      ...selections,
-                                      [option.id]: { optionId: option.id, text: null },
-                                    });
-                                  } else {
-                                    const { [option.id]: _toRemove, ...rest } = selections;
-                                    return onChange(rest);
-                                  }
-                                }}
-                              />
-                              {selections[option.id]?.optionId === option.id &&
-                                option.isFreeText && (
-                                  <FormInput
-                                    type="textarea"
-                                    marginTop="$md"
-                                    value={selections[option.id]?.text}
-                                    placeholder={t("form.placeholder")}
-                                    maxLength={1024}
-                                    helper={t("form.max", {
-                                      value: 1024,
-                                    })}
-                                    onChangeText={(textValue) => {
-                                      selections[option.id] = {
-                                        optionId: option.id,
-                                        text: textValue,
-                                      };
-                                      onChange(selections);
-                                    }}
-                                  />
-                                )}
-                            </YStack>
-                          ))}
-                        </>
+                        <YStack>
+                          <RadioFormInput
+                            options={question.options.map((option) => ({
+                              id: option.id,
+                              label: option.text[currentLanguage],
+                              value: option.id,
+                            }))}
+                            title={question.text[currentLanguage]}
+                            value={value.radioValue}
+                            onValueChange={(radioValue) =>
+                              onChange({ ...value, radioValue, textValue: null })
+                            }
+                          />
+                          {/* if the selected option is "other", show textArea */}
+                          {question.options.map((option) => {
+                            if (value.radioValue === option.id && option.isFreeText) {
+                              return (
+                                <FormInput
+                                  type="textarea"
+                                  marginTop="$md"
+                                  key={option.id}
+                                  value={value.textValue}
+                                  placeholder={t("form.placeholder")}
+                                  onChangeText={(textValue) => onChange({ ...value, textValue })}
+                                  maxLength={1024}
+                                  helper={t("form.max", {
+                                    value: 1024,
+                                  })}
+                                />
+                              );
+                            }
+                            return undefined;
+                          })}
+                        </YStack>
                       );
                     }}
-                  ></Controller>
-                </FormElement>
-              );
-            }
+                  />
+                );
+              }
 
-            return <Typography key={question.id}></Typography>;
-          })}
-        </YStack>
+              if (question.$questionType === "ratingQuestion") {
+                return (
+                  <Controller
+                    key={question.id}
+                    name={question.id}
+                    control={control}
+                    render={({ field: { onChange, value } }) => (
+                      <YStack>
+                        <RatingFormInput
+                          id={question.id}
+                          type="single"
+                          title={question.text[currentLanguage]}
+                          value={value}
+                          scale={question.scale}
+                          onValueChange={onChange}
+                        />
+                      </YStack>
+                    )}
+                  />
+                );
+              }
+
+              if (question.$questionType === "multiSelectQuestion") {
+                return (
+                  <FormElement
+                    key={question.id}
+                    title={`${question.code}. ${question.text[currentLanguage]}`}
+                  >
+                    <Controller
+                      key={question.id}
+                      name={question.id}
+                      control={control}
+                      render={({ field: { onChange, value } }) => {
+                        const selections: Record<string, { optionId: string; text: string }> =
+                          value || {};
+
+                        return (
+                          <>
+                            {question.options.map((option) => (
+                              <YStack key={option.id}>
+                                <CheckboxInput
+                                  marginBottom="$md"
+                                  id={option.id}
+                                  label={option.text[currentLanguage]}
+                                  checked={selections[option.id]?.optionId === option.id}
+                                  onCheckedChange={(checked) => {
+                                    if (checked) {
+                                      return onChange({
+                                        ...selections,
+                                        [option.id]: { optionId: option.id, text: null },
+                                      });
+                                    } else {
+                                      const { [option.id]: _toRemove, ...rest } = selections;
+                                      return onChange(rest);
+                                    }
+                                  }}
+                                />
+                                {selections[option.id]?.optionId === option.id &&
+                                  option.isFreeText && (
+                                    <FormInput
+                                      type="textarea"
+                                      marginTop="$md"
+                                      value={selections[option.id]?.text}
+                                      placeholder={t("form.placeholder")}
+                                      maxLength={1024}
+                                      helper={t("form.max", {
+                                        value: 1024,
+                                      })}
+                                      onChangeText={(textValue) => {
+                                        selections[option.id] = {
+                                          optionId: option.id,
+                                          text: textValue,
+                                        };
+                                        onChange(selections);
+                                      }}
+                                    />
+                                  )}
+                              </YStack>
+                            ))}
+                          </>
+                        );
+                      }}
+                    ></Controller>
+                  </FormElement>
+                );
+              }
+
+              return <Typography key={question.id}></Typography>;
+            })}
+          </YStack>
+        </KeyboardAwareScrollView>
         <OptionsSheet open={openContextualMenu} setOpen={setOpenContextualMenu}>
           <OptionSheetContent
             onClear={() => {

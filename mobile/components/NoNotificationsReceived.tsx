@@ -7,10 +7,12 @@ import Header from "./Header";
 import { useNavigation } from "expo-router";
 import { DrawerActions } from "@react-navigation/native";
 import { Screen } from "./Screen";
+import { useUserData } from "../contexts/user/UserContext.provider";
 
 const NoNotificationsReceived = () => {
   const navigation = useNavigation();
   const { t } = useTranslation("inbox");
+  const { activeElectionRound } = useUserData();
 
   return (
     <Screen
@@ -23,7 +25,7 @@ const NoNotificationsReceived = () => {
       }}
     >
       <Header
-        title={t("title")}
+        title={activeElectionRound?.title}
         titleColor="white"
         barStyle="light-content"
         leftIcon={<Icon icon="menuAlt2" color="white" />}

@@ -3,7 +3,7 @@ import { Screen } from "../../../components/Screen";
 import { Icon } from "../../../components/Icon";
 import Header from "../../../components/Header";
 import { Typography } from "../../../components/Typography";
-import { XStack, YStack, ScrollView, Spinner } from "tamagui";
+import { XStack, YStack, Spinner } from "tamagui";
 import LinearProgress from "../../../components/LinearProgress";
 import { useMemo, useState } from "react";
 import { useUserData } from "../../../contexts/user/UserContext.provider";
@@ -44,6 +44,7 @@ import { Buffer } from 'buffer';
 import { MULTIPART_FILE_UPLOAD_SIZE } from "../../../common/constants";
 import { addAttachmentMultipartAbort, addAttachmentMultipartComplete, uploadS3Chunk } from "../../../services/api/add-attachment.api";
 import * as DocumentPicker from "expo-document-picker";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 type SearchParamType = {
   questionId: string;
@@ -64,6 +65,7 @@ const FormQuestionnaire = () => {
   const [isOptionsSheetOpen, setIsOptionsSheetOpen] = useState(false);
   const [addingNote, setAddingNote] = useState(false);
   const [deletingAnswer, setDeletingAnswer] = useState(false);
+  const [isPreparingFile, setIsPreparingFile] = useState(false);
 
   const {
     data: currentForm,
@@ -271,10 +273,12 @@ const FormQuestionnaire = () => {
     isPaused
   } = useUploadAttachmentMutation(`Attachment_${questionId}_${selectedPollingStation?.pollingStationId}_${formId}_${questionId}`);
 
-  const handleCameraUpload = async (type: "library" | "cameraPhoto" | "cameraVideo") => {
+  const handleCameraUpload = async (type: "library" | "cameraPhoto") => {
+    setIsPreparingFile(true);
     const cameraResult = await uploadCameraOrMedia(type);
 
     if (!cameraResult) {
+      setIsPreparingFile(false);
       return;
     }
 
@@ -308,6 +312,7 @@ const FormQuestionnaire = () => {
       );
 
       await handleChunkUpload(cameraResult.uri, data.uploadUrls, data.uploadId, attachmentId);
+      setIsPreparingFile(false);
 
       if (!onlineManager.isOnline()) {
         setIsOptionsSheetOpen(false);
@@ -410,47 +415,49 @@ const FormQuestionnaire = () => {
         leftIcon={<Icon icon="chevronLeft" color="white" />}
         onLeftPress={() => router.back()}
       />
-      <YStack gap="$xxs" padding="$md">
-        <XStack justifyContent="space-between">
-          <Typography>{t("progress_bar.label")}</Typography>
-          <Typography justifyContent="space-between">{`${activeQuestion?.indexInDisplayedQuestions + 1}/${displayedQuestions.length}`}</Typography>
-        </XStack>
-        <LinearProgress
-          current={activeQuestion?.indexInDisplayedQuestions + 1}
-          total={displayedQuestions?.length || 0}
-        />
 
-        <XStack
-          justifyContent="flex-end"
-          alignSelf="flex-end"
-          paddingLeft="$md"
-          paddingBottom="$md"
-          pressStyle={{ opacity: 0.5 }}
-          onPress={() => {
-            Keyboard.dismiss();
-            setDeletingAnswer(true);
-          }}
-        >
-          <Typography color="$red10"> {t("progress_bar.clear_answer")}</Typography>
-        </XStack>
-        {/* delete answer button */}
-        {deletingAnswer && (
-          <WarningDialog
-            title={t("warning_modal.question.title", { value: activeQuestion.question.code })}
-            description={t("warning_modal.question.description")}
-            actionBtnText={t("warning_modal.question.actions.clear")}
-            cancelBtnText={t("warning_modal.question.actions.cancel")}
-            action={onClearForm}
-            onCancel={() => setDeletingAnswer(false)}
-          />
-        )}
-      </YStack>
-      <ScrollView
-        contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
-        centerContent
+      <KeyboardAwareScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
         keyboardShouldPersistTaps="handled"
+        // aproximate size of textarea
+        extraHeight={200}
       >
-        <YStack paddingHorizontal="$md" paddingBottom="$md" justifyContent="center">
+        <YStack gap="$xxs" padding="$md">
+          <XStack justifyContent="space-between">
+            <Typography>{t("progress_bar.label")}</Typography>
+            <Typography justifyContent="space-between">{`${activeQuestion?.indexInDisplayedQuestions + 1}/${displayedQuestions.length}`}</Typography>
+          </XStack>
+          <LinearProgress
+            current={activeQuestion?.indexInDisplayedQuestions + 1}
+            total={displayedQuestions?.length || 0}
+          />
+
+          <XStack
+            justifyContent="flex-end"
+            alignSelf="flex-end"
+            paddingLeft="$md"
+            paddingBottom="$md"
+            pressStyle={{ opacity: 0.5 }}
+            onPress={() => {
+              Keyboard.dismiss();
+              setDeletingAnswer(true);
+            }}
+          >
+            <Typography color="$red10"> {t("progress_bar.clear_answer")}</Typography>
+          </XStack>
+          {/* delete answer button */}
+          {deletingAnswer && (
+            <WarningDialog
+              title={t("warning_modal.question.title", { value: activeQuestion.question.code })}
+              description={t("warning_modal.question.description")}
+              actionBtnText={t("warning_modal.question.actions.clear")}
+              cancelBtnText={t("warning_modal.question.actions.cancel")}
+              action={onClearForm}
+              onCancel={() => setDeletingAnswer(false)}
+            />
+          )}
+        </YStack>
+        <YStack paddingHorizontal="$md" paddingBottom="$md" justifyContent="center" flex={1}>
           <Controller
             key={activeQuestion?.question?.id}
             name={activeQuestion?.question?.id}
@@ -641,7 +648,7 @@ const FormQuestionnaire = () => {
             }}
           />
         </YStack>
-      </ScrollView>
+      </KeyboardAwareScrollView>
 
       <WizzardControls
         isFirstElement={activeQuestion?.indexInAllQuestions === 0}
@@ -661,12 +668,12 @@ const FormQuestionnaire = () => {
             setIsOptionsSheetOpen(open);
             addingNote && setAddingNote(false);
           }}
-          isLoading={(isLoadingAttachmentStart || isLoadingAttachment)}
+          isLoading={(isLoadingAttachment && !isPaused) || isPreparingFile}
           // seems that this behaviour is handled differently and the sheet will move with keyboard even if this props is set to false on android
           moveOnKeyboardChange={Platform.OS === "android"}
           disableDrag={addingNote}
         >
-          {(isLoadingAttachmentStart || isLoadingAttachment) ? (
+          {(isLoadingAttachment && !isPaused) || isPreparingFile ? (
             <MediaLoading />
           ) : addingNote ? (
             <AddNoteSheetContent
@@ -704,14 +711,6 @@ const FormQuestionnaire = () => {
                 pressStyle={{ color: "$purple5" }}
               >
                 {t("attachments.menu.take_picture")}
-              </Typography>
-              <Typography
-                onPress={handleCameraUpload.bind(null, "cameraVideo")}
-                preset="body1"
-                paddingVertical="$md"
-                pressStyle={{ color: "$purple5" }}
-              >
-                {t("attachments.menu.record_video")}
               </Typography>
               <Typography
                 onPress={handleUploadAudio.bind(null)}

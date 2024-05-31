@@ -2,7 +2,7 @@
   "expo": {
     "name": "VoteMonitor",
     "slug": "vote-monitor",
-    "version": "0.1.9",
+    "version": "0.2.1",
     "scheme": "mobile",
     "orientation": "portrait",
     "icon": "./assets/icons/icon.png",
@@ -12,25 +12,21 @@
       "resizeMode": "contain",
       "backgroundColor": "#FDD20C"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "org.commitglobal.votemonitor",
-      "buildNumber": "52",
+      "buildNumber": "54",
       "config": {
         "usesNonExemptEncryption": false
       },
       "infoPlist": {
-        "UIBackgroundModes": [
-          "fetch",
-          "remote-notification"
-        ]
+        "UIBackgroundModes": ["fetch", "remote-notification"]
       }
     },
     "android": {
-      "versionCode": 52,
+      "softwareKeyboardLayoutMode": "pan",
+      "versionCode": 54,
       "adaptiveIcon": {
         "foregroundImage": "./assets/icons/adaptive-icon.png",
         "backgroundColor": "#FDD20C"
@@ -45,9 +41,9 @@
       "eas": {
         "projectId": "93e17628-ddcd-4e67-849c-b356a18a6082"
       },
-      "message": "Allow throw error for attachments",
-      "updateCritical": 28,
-      "updateVersion": 28
+      "message": "Logs and persist gate improevments",
+      "updateCritical": 35,
+      "updateVersion": 35
     },
     "owner": "commit-global",
     "runtimeVersion": {
@@ -78,18 +74,14 @@
           "color": "#FDD20C"
         }
       ],
-      [
-        "@morrowdigital/watermelondb-expo-plugin"
-      ],
+      ["@morrowdigital/watermelondb-expo-plugin"],
       [
         "expo-build-properties",
         {
           "android": {
             "kotlinVersion": "1.6.10",
             "packagingOptions": {
-              "pickFirst": [
-                "**/libc++_shared.so"
-              ]
+              "pickFirst": ["**/libc++_shared.so"]
             }
           }
         }
@@ -109,7 +101,8 @@
           "organization": "code4romania",
           "project": "votemonitor-mobile"
         }
-      ]
+      ],
+      "react-native-compressor"
     ]
   }
 }

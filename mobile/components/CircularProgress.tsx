@@ -17,6 +17,8 @@ import { useTranslation } from "react-i18next";
 export interface CircularProgressProps {
   progress: number;
   size?: number;
+  progressCircleColors?: string[];
+  backgroundCircleColors?: string[];
 }
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
@@ -52,6 +54,7 @@ const CircularProgress = (props: CircularProgressProps): JSX.Element => {
           size={SIZE}
           radius={RADIUS}
           strokeWidth={STROKEWIDTH}
+          progressColors={props.backgroundCircleColors}
         ></BackgroundCircle>
         <ProgressCircle
           animatedProgress={animatedProgress}
@@ -59,6 +62,7 @@ const CircularProgress = (props: CircularProgressProps): JSX.Element => {
           radius={RADIUS}
           maxProgress={MAX_PROGRESS}
           strokeWidth={STROKEWIDTH}
+          progressColors={props.progressCircleColors}
         />
       </Svg>
     </View>
@@ -71,21 +75,21 @@ const ProgressCircle = ({
   radius,
   maxProgress,
   strokeWidth,
+  progressColors,
 }: {
   animatedProgress: SharedValue<number>;
   size: number;
   radius: number;
   maxProgress: number;
   strokeWidth: number;
+  progressColors?: string[];
 }) => {
   const CIRCLE_LENGTH = radius * 2 * Math.PI;
 
+  const colors = !progressColors ? ["#E4E4E7", "#FFD209", "#FFD209", "#10B981"] : progressColors;
+
   const strokeColor = useDerivedValue(() => {
-    return interpolateColor(
-      animatedProgress.value,
-      [0, 1, maxProgress - 1, maxProgress],
-      ["#E4E4E7", "#FFD209", "#FFD209", "#10B981"],
-    );
+    return interpolateColor(animatedProgress.value, [0, 1, maxProgress - 1, maxProgress], colors);
   });
 
   const animatedProps = useAnimatedProps(
@@ -129,20 +133,26 @@ const BackgroundCircle = ({
   size,
   radius,
   strokeWidth,
+  progressColors,
 }: {
   animatedProgress: SharedValue<number>;
   maxProgress: number;
   size: number;
   radius: number;
   strokeWidth: number;
+  progressColors?: string[];
 }) => {
+  const colors = !progressColors
+    ? ["#E4E4E7", "hsla(49, 100%, 58%, 0.25)", "hsla(49, 100%, 58%, 0.25)", "#10B981"]
+    : progressColors;
+
   const animatedProps = useAnimatedProps(
     () => {
       return {
         stroke: interpolateColor(
           animatedProgress.value,
           [0, 1, maxProgress - 1, maxProgress],
-          ["#E4E4E7", "hsla(49, 100%, 58%, 0.25)", "hsla(49, 100%, 58%, 0.25)", "#10B981"],
+          colors,
         ),
       };
     },

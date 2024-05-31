@@ -18,7 +18,8 @@
     "ro": "Romanian",
     "en": "English",
     "pl": "Polish",
-    "bg": "Bulgarian"
+    "bg": "Bulgarian",
+    "sr": "Serbian"
   },
   "onboarding": {
     "language": {
@@ -65,12 +66,14 @@
         "loading": "Log in..."
       },
       "errors": {
-        "invalid_credentials": "There was an error with your credentials. Please try again."
+        "invalid_credentials": "There was an error with your credentials. Please try again.",
+        "offline": "You need an internet connection in order to log in."
       }
     },
     "actions": {
       "forgot_password": "Forgot your password?"
-    }
+    },
+    "email_toast": "Email address was copied to clipboard"
   },
   "forgot_password": {
     "header": {
@@ -230,7 +233,10 @@
     },
     "clear_answers_modal": {
       "title": "Clear form {{value}}",
-      "description": "This action will delete all answers entered so far for this form (including notes and media files). Status of all questions will be reverted to Not Answered.\n\nTo avoid unintended information loss, please ensure you check the form before performing this action.",
+      "description": {
+        "p1": "This action will delete all answers entered so far for this form (including notes and media files). Status of all questions will be reverted to 'Not Answered'.",
+        "p2": "To avoid unintended information loss, please ensure you check the form before performing this action"
+      },
       "actions": {
         "clear": "Clear form",
         "cancel": "Cancel"
@@ -369,7 +375,11 @@
       "paragraph": "Guides and resources from your organization at your hands."
     },
     "list": {
-      "heading": "Guides"
+      "heading": "Guides",
+      "guide": {
+        "backup_title": "Document",
+        "created_on": "Created on"
+      }
     }
   },
   "inbox": {
@@ -396,7 +406,25 @@
     "support": "Call the NGO Hotline",
     "feedback": "Offer app feedback",
     "logout": "Logout",
-    "logged_in": "Logged in as {{user}}"
+    "logged_in": "Logged in as {{user}}",
+    "warning_modal": {
+      "logout": {
+        "title": "Attention: You have unsynced data",
+        "description": "You are currently offline. If you log out now, any forms, attachments, or notes you have completed or uploaded during the offline mode will be lost.\n\nTo avoid losing your data, please reconnect to the internet before logging out.",
+        "cancel": "Cancel",
+        "action": "Log out"
+      }
+    },
+    "feedback_sheet": {
+      "heading": "Send us your feedback",
+      "p1": "Please tell us about any issues you might have encountered with the functioning of the app, or any suggestions you would like to share to improve Vote Monitor for the future. We appreciate every feedback!",
+      "placeholder": "Write your feedback here...",
+      "cancel": "Cancel",
+      "action": "Send",
+      "input": {
+        "max": "Input cannot exceed {{value}} characters"
+      }
+    }
   },
   "change_password": {
     "title": "Change password",
@@ -434,7 +462,8 @@
   "generic_error_screen": {
     "paragraph1": "Oops, something went wrong!",
     "paragraph2": "We could not recover after this error. Please check your internet connection and restart the application!",
-    "retry": "Retry"
+    "retry": "Retry",
+    "logout": "Logout"
   },
   "network_banner": {
     "online": "App online. All answers sent to server.",
@@ -443,8 +472,8 @@
     "offline_warning": "It looks like you're currently offline. Don't worry, your answers are safely stored locally and will be synced with our servers once your connection is restored. Feel free to continue filling out the observation forms and submitting quick reports."
   },
   "sync": {
-    "sync_data": "Synchronizing data...",
-    "warning": "Please DO NOT CLOSE the app or the data will be lost.",
-    "pending_items": "Remaining items: "
+    "sync_data": "Synchronizing offline data...",
+    "warning": "Please DO NOT CLOSE the app or the internet connection or the data will be lost.",
+    "files": "We are uploading your files, it may take a while..."
   }
 }
