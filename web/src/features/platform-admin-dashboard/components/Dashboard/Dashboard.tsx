@@ -61,7 +61,9 @@ export default function PlatformAdminDashboard(): ReactElement {
                   title='Observers in polling stations'
                   metricLabel='With at least one question answered'
                   data={observersOnFieldDataConfig}
-                  ref={observersOnFieldChartRef} />
+                  ref={observersOnFieldChartRef}
+                  value={0}
+                  total={0}  />
               </CardContent>
             </Card>
             <Card>
@@ -78,7 +80,9 @@ export default function PlatformAdminDashboard(): ReactElement {
                   title='Stations visited by at least one observer'
                   metricLabel='coverage'
                   data={pollingStationsDataConfig}
-                  ref={pollingStationsChartRef} />
+                  ref={pollingStationsChartRef} 
+                  value={0}
+                  total={0} />
               </CardContent>
             </Card>
             <Card>
