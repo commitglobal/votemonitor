@@ -5,23 +5,25 @@ import { View, XStack } from "tamagui";
 const DOT_SIZE = 30;
 
 const Pagination = ({
-  scrollOffsetAnimatedValue,
-  positionAnimatedValue,
+  // scrollOffsetAnimatedValue,
+  // positionAnimatedValue,
   data,
+  currentPage,
 }: {
   scrollOffsetAnimatedValue: Animated.Value;
   positionAnimatedValue: Animated.Value;
   data: number[];
+  currentPage: number;
 }) => {
   // todo: send the number of children of the AnimatedViewScroll?
-  const translateX = Animated.add(scrollOffsetAnimatedValue, positionAnimatedValue).interpolate({
-    inputRange: [0, data.length],
-    outputRange: [0, data.length * DOT_SIZE],
-  });
+  // const translateX = Animated.add(scrollOffsetAnimatedValue, positionAnimatedValue).interpolate({
+  //   inputRange: [0, data.length],
+  //   outputRange: [0, data.length * DOT_SIZE],
+  // });
 
   return (
     <XStack backgroundColor="$purple6" position="relative" height={DOT_SIZE}>
-      <Animated.View
+      {/* <Animated.View
         style={[
           styles.paginationIndicator,
           {
@@ -29,15 +31,22 @@ const Pagination = ({
             transform: [{ translateX }],
           },
         ]}
-      />
+      /> */}
       {data.map((item) => (
-        <View width={DOT_SIZE} alignItems="center" justifyContent="center" key={item}>
-          <View
-            backgroundColor="white"
-            borderRadius={DOT_SIZE * 0.15}
-            height={DOT_SIZE * 0.3}
-            width={DOT_SIZE * 0.3}
-          />
+        <View
+          key={item}
+          alignItems="center"
+          justifyContent="center"
+          style={item === currentPage ? styles.paginationIndicator : {}}
+        >
+          <View width={DOT_SIZE} alignItems="center" justifyContent="center">
+            <View
+              backgroundColor="white"
+              borderRadius={DOT_SIZE * 0.15}
+              height={DOT_SIZE * 0.3}
+              width={DOT_SIZE * 0.3}
+            />
+          </View>
         </View>
       ))}
     </XStack>
