@@ -51,10 +51,16 @@ const QuickReport = () => {
           false
         )}
         <OptionsSheet open={openContextualMenu} setOpen={setOpenContextualMenu}>
-          {/* //TODO: what do we need to add here? */}
-          <View paddingVertical="$xxs" paddingHorizontal="$sm">
+          <View
+            paddingVertical="$xxs"
+            paddingHorizontal="$sm"
+            onPress={() => {
+              setOpenContextualMenu(false);
+              router.push("manage-polling-stations");
+            }}
+          >
             <Typography preset="body1" color="$gray7" lineHeight={24}>
-              Option
+              {t("options_menu.manage_my_polling_stations")}
             </Typography>
           </View>
         </OptionsSheet>

@@ -4,6 +4,7 @@ import {
   QuickReportsAPIResponse,
 } from "../api/quick-report/get-quick-reports.api";
 import { useCallback } from "react";
+import { AttachmentsKeys } from "./attachments.query";
 
 export const QuickReportKeys = {
   all: ["quick-reports"] as const,
@@ -13,7 +14,7 @@ export const QuickReportKeys = {
     electionRoundId,
   ],
   add: () => [...QuickReportKeys.all, "add"] as const,
-  addAttachment: () => [...QuickReportKeys.all, "addAttachment"],
+  addAttachment: () => [...AttachmentsKeys.all, ...QuickReportKeys.all, "addAttachment"],
 };
 
 export const useQuickReports = <TResult = QuickReportsAPIResponse[]>(

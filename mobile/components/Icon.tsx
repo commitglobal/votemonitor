@@ -49,6 +49,7 @@ import ObservationForms from "../assets/icons/onboarding/forms.svg";
 import NotesOrMedia from "../assets/icons/onboarding/notes-media.svg";
 import CommitGlobal from "../assets/icons/commit-global.svg";
 
+import Bin from "../assets/icons/Trash2.svg";
 import { styled, View, ViewProps } from "tamagui";
 import { StyleProp, ViewStyle } from "react-native";
 import { Ref } from "react";
@@ -139,6 +140,7 @@ export const defaultIcon = React.forwardRef(
       monitorPollingStations: <MonitorPollingStations width={202} height={188} />,
       observationForms: <ObservationForms width={202} height={188} />,
       notesOrMedia: <NotesOrMedia width={202} height={188} />,
+      bin: <Bin fill={color} width={size} height={size} />,
       commitGlobal: <CommitGlobal fill={color} />,
     };
 

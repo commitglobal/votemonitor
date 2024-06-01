@@ -2,7 +2,7 @@
   "expo": {
     "name": "VoteMonitor",
     "slug": "vote-monitor",
-    "version": "0.1.9",
+    "version": "0.2.1",
     "scheme": "mobile",
     "orientation": "portrait",
     "icon": "./assets/icons/icon.png",
@@ -16,7 +16,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "org.commitglobal.votemonitor",
-      "buildNumber": "52",
+      "buildNumber": "54",
       "config": {
         "usesNonExemptEncryption": false
       },
@@ -25,7 +25,8 @@
       }
     },
     "android": {
-      "versionCode": 52,
+      "softwareKeyboardLayoutMode": "pan",
+      "versionCode": 54,
       "adaptiveIcon": {
         "foregroundImage": "./assets/icons/adaptive-icon.png",
         "backgroundColor": "#FDD20C"
@@ -40,9 +41,9 @@
       "eas": {
         "projectId": "93e17628-ddcd-4e67-849c-b356a18a6082"
       },
-      "message": "Enable logs",
-      "updateCritical": 31,
-      "updateVersion": 31
+      "message": "Missing circle over onboarding dots",
+      "updateCritical": 37,
+      "updateVersion": 37
     },
     "owner": "commit-global",
     "runtimeVersion": {
@@ -101,7 +102,8 @@
           "project": "votemonitor-mobile"
         }
       ],
-      "expo-av"
+      "expo-av",
+      "react-native-compressor"
     ]
   }
 }

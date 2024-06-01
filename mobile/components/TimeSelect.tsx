@@ -55,13 +55,15 @@ const TimeSelect: React.FC<TimeSelectProps> = memo(
             value: time || new Date(),
             onChange: (event, eventTime) => {
               if (event.type === "set" && selectedTime && eventTime) {
-                // we need to set the date of the time picker, as it uses the current date as default
+                // we need to set the date of the time picker, as it uses the current date/last set date as default
                 eventTime.setDate(selectedTime.getDate());
+                eventTime.setMonth(selectedTime.getMonth());
+                eventTime.setFullYear(selectedTime.getFullYear());
 
                 // setting departure time and we have an arrival time set
                 if (type === "departure" && arrivalTime) {
-                  // setting time for the same day as the arrival date -> don't allow an earlier departure time
-                  if (eventTime.getDate() === arrivalTime.getDate() && eventTime < arrivalTime) {
+                  // don't allow an earlier departure time
+                  if (eventTime < arrivalTime) {
                     onClose();
                     return Toast.show({
                       type: "error",
@@ -70,11 +72,8 @@ const TimeSelect: React.FC<TimeSelectProps> = memo(
                     });
                   }
                 } else if (type === "arrival" && departureTime) {
-                  // if departureTime is set and we're setting the time for the same day -> don't allow a later arrival time
-                  if (
-                    eventTime.getDate() === departureTime.getDate() &&
-                    eventTime > departureTime
-                  ) {
+                  // don't allow a later arrival time
+                  if (eventTime > departureTime) {
                     onClose();
                     return Toast.show({
                       type: "error",
@@ -83,9 +82,7 @@ const TimeSelect: React.FC<TimeSelectProps> = memo(
                     });
                   }
                 }
-                selectedTime.setHours(eventTime?.getHours());
-                selectedTime.setMinutes(eventTime?.getMinutes());
-                setTime(selectedTime);
+                setTime(eventTime);
               }
             },
             is24Hour: true,

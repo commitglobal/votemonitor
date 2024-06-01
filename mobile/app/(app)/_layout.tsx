@@ -19,6 +19,7 @@ const AppLayout = () => {
           <Stack>
             <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
             <Stack.Screen name="polling-station-wizzard" options={{ headerShown: false }} />
+            <Stack.Screen name="manage-polling-stations" options={{ headerShown: false }} />
             <Stack.Screen name="form-questionnaire" options={{ headerShown: false }} />
             <Stack.Screen name="polling-station-questionnaire" options={{ headerShown: false }} />
             <Stack.Screen name="report-issue" options={{ headerShown: false }} />

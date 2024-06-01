@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import { Typography } from "./Typography";
 import { Dialog } from "./Dialog";
 import { XStack, YStack } from "tamagui";
@@ -6,7 +6,7 @@ import Button from "./Button";
 
 type WarningDialogProps = {
   title: string;
-  description: string;
+  description: string | ReactNode;
   actionBtnText: string;
   cancelBtnText: string;
   onCancel: () => void;
@@ -29,9 +29,13 @@ const WarningDialog = ({
       header={<Typography preset="heading">{title}</Typography>}
       content={
         <YStack gap="$lg">
-          <Typography preset="body1" color="$gray6">
-            {description}
-          </Typography>
+          {typeof description === "string" ? (
+            <Typography preset="body1" color="$gray6">
+              {description}
+            </Typography>
+          ) : (
+            description
+          )}
         </YStack>
       }
       footer={
@@ -40,9 +44,16 @@ const WarningDialog = ({
             {cancelBtnText}
           </Button>
 
-          <Button backgroundColor="$red10" flex={1} onPress={action} style={{ ...actionBtnStyle }}>
-            {actionBtnText}
-          </Button>
+          {actionBtnText && (
+            <Button
+              backgroundColor="$red10"
+              flex={1}
+              onPress={action}
+              style={{ ...actionBtnStyle }}
+            >
+              {actionBtnText}
+            </Button>
+          )}
         </XStack>
       }
     />

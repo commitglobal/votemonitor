@@ -3,7 +3,7 @@ import { Screen } from "../../../../components/Screen";
 import Header from "../../../../components/Header";
 import { Typography } from "../../../../components/Typography";
 import { Icon } from "../../../../components/Icon";
-import { useNavigation } from "expo-router";
+import { router, useNavigation } from "expo-router";
 import { DrawerActions } from "@react-navigation/native";
 import NoNotificationsReceived from "../../../../components/NoNotificationsReceived";
 import { ListView } from "../../../../components/ListView";
@@ -28,7 +28,9 @@ const Inbox = () => {
   const { height } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   // height for the scrollview with the notifications received
-  const scrollHeight = height - 100 - 60 - insets.top - insets.bottom;
+  // 60 = bottom navigation tabs
+  // 100 = header(60) + yellow banner (40)
+  const scrollHeight = height - insets.top - insets.bottom - 100 - 60;
 
   const { activeElectionRound } = useUserData();
   const { data, isLoading } = useNotifications(activeElectionRound?.id);
@@ -103,8 +105,7 @@ const Inbox = () => {
           paddingHorizontal="$sm"
           onPress={() => {
             setOpenContextualMenu(false);
-            // todo: router.push to manage my polling stations
-            // return router.push("change-password");
+            return router.push("manage-polling-stations");
           }}
         >
           <Typography preset="body1" color="$gray7" lineHeight={24}>
