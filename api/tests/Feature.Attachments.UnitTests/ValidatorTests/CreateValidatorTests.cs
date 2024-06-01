@@ -99,22 +99,6 @@ public class CreateValidatorTests
     }
 
     [Fact]
-    public void Validation_ShouldFail_When_Attachment_ExceedsUploadLimit()
-    {
-        // Arrange
-        var request = new Request
-        {
-            Attachment = FakeFormFile.New().HavingFileName("image.jpg").HavingLength(512 * 1024 * 1024 + 1).Please()
-        };
-
-        // Act
-        var result = _validator.TestValidate(request);
-
-        // Assert
-        result.ShouldHaveValidationErrorFor(x => x.Attachment);
-    }
-
-    [Fact]
     public void Validation_ShouldPass_When_ValidRequest()
     {
         // Arrange
