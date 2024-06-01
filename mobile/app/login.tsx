@@ -188,6 +188,7 @@ const Login = () => {
           scrollOffsetAnimatedValue={scrollOffsetAnimatedValue}
           positionAnimatedValue={positionAnimatedValue}
           data={data}
+          currentPage={currentPage + 1}
         />
         <YStack
           position="absolute"
