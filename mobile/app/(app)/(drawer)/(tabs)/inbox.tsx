@@ -19,13 +19,16 @@ import OptionsSheet from "../../../../components/OptionsSheet";
 import { useAppState } from "../../../../hooks/useAppState";
 import { useQueryClient } from "@tanstack/react-query";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Notification } from "../../../../services/api/get-notifications.api";
+
+const ESTIMATED_ITEM_SIZE = 200;
 
 const Inbox = () => {
   const queryClient = useQueryClient();
   const { t, i18n } = useTranslation("inbox");
   const navigation = useNavigation();
 
-  const { height } = useWindowDimensions();
+  const { height, width } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   // height for the scrollview with the notifications received
   // 60 = bottom navigation tabs
@@ -44,7 +47,7 @@ const Inbox = () => {
   };
 
   const displayedNotifications = useMemo(
-    () => notifications?.slice(0, sliceNumber),
+    () => notifications?.slice(0, sliceNumber) || [],
     [notifications, sliceNumber, i18n.language],
   );
 
@@ -61,43 +64,52 @@ const Inbox = () => {
   }
 
   return (
-    <Screen preset="fixed" contentContainerStyle={{ flexGrow: 1 }}>
-      <Header
-        title={activeElectionRound?.title}
-        titleColor="white"
-        barStyle="light-content"
-        leftIcon={<Icon icon="menuAlt2" color="white" />}
-        onLeftPress={() => navigation.dispatch(DrawerActions.openDrawer)}
-        rightIcon={<Icon icon="dotsVertical" color="white" />}
-        onRightPress={() => setOpenContextualMenu(true)}
-      />
-
-      {isLoading ? (
-        <YStack flex={1} justifyContent="center" alignItems="center">
-          <Spinner size="large" color="$purple5" />
-        </YStack>
-      ) : (
-        <>
+    <Screen
+      preset="scroll"
+      ScrollViewProps={{
+        showsVerticalScrollIndicator: false,
+        stickyHeaderIndices: [0],
+        bounces: false,
+      }}
+    >
+      <YStack>
+        <Header
+          title={activeElectionRound?.title}
+          titleColor="white"
+          barStyle="light-content"
+          leftIcon={<Icon icon="menuAlt2" color="white" />}
+          onLeftPress={() => navigation.dispatch(DrawerActions.openDrawer)}
+          rightIcon={<Icon icon="dotsVertical" color="white" />}
+          onRightPress={() => setOpenContextualMenu(true)}
+        />
+        {!isLoading && (
           <YStack backgroundColor="$yellow6" paddingVertical="$xxs" paddingHorizontal="$md">
             <Typography textAlign="center" color="$purple5" fontWeight="500">
               {`${t("banner", { ngoName: ngoName || t("your_organization") })}`}
             </Typography>
           </YStack>
-          <YStack padding="$md" style={{ flex: 1 }} height={scrollHeight}>
-            <ListView<any>
-              data={displayedNotifications}
-              showsVerticalScrollIndicator={false}
-              keyExtractor={(item) => item.id}
-              bounces={false}
-              renderItem={({ item }) => {
-                return <NotificationListItem notification={item} />;
-              }}
-              estimatedItemSize={500}
-              onEndReached={loadMore}
-              onEndReachedThreshold={0.5}
-            />
-          </YStack>
-        </>
+        )}
+      </YStack>
+
+      {isLoading ? (
+        <YStack justifyContent="center" alignItems="center">
+          <Spinner size="large" color="$purple5" />
+        </YStack>
+      ) : (
+        <YStack padding="$md" minHeight={scrollHeight}>
+          <ListView<Notification>
+            data={displayedNotifications}
+            showsVerticalScrollIndicator={false}
+            bounces={false}
+            renderItem={({ item }) => {
+              return <NotificationListItem notification={item} />;
+            }}
+            estimatedItemSize={200}
+            estimatedListSize={{ height: ESTIMATED_ITEM_SIZE * 5, width: width - 32 }} // for width we need to take into account the padding also
+            onEndReached={loadMore}
+            onEndReachedThreshold={0.5}
+          />
+        </YStack>
       )}
       <OptionsSheet open={openContextualMenu} setOpen={setOpenContextualMenu}>
         <YStack
