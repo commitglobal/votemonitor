@@ -30,6 +30,7 @@ import { AddAttachmentQuickReportAPIPayload } from "../../services/api/quick-rep
 import { useTranslation } from "react-i18next";
 import i18n from "../../common/config/i18n";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import MediaLoading from "../../components/MediaLoading";
 
 const mapVisitsToSelectPollingStations = (visits: PollingStationVisitVM[] = []) => {
   const pollingStationsForSelect = visits.map((visit) => {
@@ -69,6 +70,7 @@ const ReportIssue = () => {
   const { visits, activeElectionRound } = useUserData();
   const pollingStations = useMemo(() => mapVisitsToSelectPollingStations(visits), [visits]);
   const [optionsSheetOpen, setOptionsSheetOpen] = useState(false);
+  const [isPreparingFile, setIsPreparingFile] = useState(false);
   const { t } = useTranslation("report_new_issue");
 
   const [attachments, setAttachments] = useState<Array<{ fileMetadata: FileMetadata; id: string }>>(
@@ -80,7 +82,11 @@ const ReportIssue = () => {
     isPending: isPendingAddQuickReport,
     isPaused: isPausedAddQuickReport,
   } = useAddQuickReport();
-  const { mutateAsync: addAttachmentQReport } = addAttachmentQuickReportMutation();
+  const {
+    mutateAsync: addAttachmentQReport,
+    isPending: isLoadingAddAttachmentt,
+    isPaused,
+  } = addAttachmentQuickReportMutation();
 
   const addAttachmentsMutationState = useMutationState({
     filters: { mutationKey: QuickReportKeys.addAttachment() },
@@ -115,9 +121,11 @@ const ReportIssue = () => {
   const { uploadCameraOrMedia } = useCamera();
 
   const handleCameraUpload = async (type: "library" | "cameraPhoto" | "cameraVideo") => {
+    setIsPreparingFile(true);
     const cameraResult = await uploadCameraOrMedia(type);
 
     if (!cameraResult || !activeElectionRound) {
+      setIsPreparingFile(false);
       return;
     }
 
@@ -126,9 +134,11 @@ const ReportIssue = () => {
       ...attachments,
       { fileMetadata: cameraResult, id: Crypto.randomUUID() },
     ]);
+    setIsPreparingFile(false);
   };
 
   const handleUploadAudio = async () => {
+    setIsPreparingFile(true);
     const doc = await DocumentPicker.getDocumentAsync({
       type: "audio/*",
       multiple: false,
@@ -148,6 +158,8 @@ const ReportIssue = () => {
     } else {
       // Cancelled
     }
+
+    setIsPreparingFile(false);
   };
 
   const onSubmit = async (formData: ReportIssueFormType) => {
@@ -405,32 +417,36 @@ const ReportIssue = () => {
         </KeyboardAwareScrollView>
 
         <OptionsSheet open={optionsSheetOpen} setOpen={setOptionsSheetOpen}>
-          <YStack paddingHorizontal="$sm">
-            <Typography
-              onPress={handleCameraUpload.bind(null, "library")}
-              preset="body1"
-              paddingVertical="$md"
-              pressStyle={{ color: "$purple5" }}
-            >
-              {t("media.menu.load")}
-            </Typography>
-            <Typography
-              onPress={handleCameraUpload.bind(null, "cameraPhoto")}
-              preset="body1"
-              paddingVertical="$md"
-              pressStyle={{ color: "$purple5" }}
-            >
-              {t("media.menu.take_picture")}
-            </Typography>
-            <Typography
-              onPress={handleUploadAudio.bind(null)}
-              preset="body1"
-              paddingVertical="$md"
-              pressStyle={{ color: "$purple5" }}
-            >
-              {t("media.menu.upload_audio")}
-            </Typography>
-          </YStack>
+          {(isLoadingAddAttachmentt && !isPaused) || isPreparingFile ? (
+            <MediaLoading />
+          ) : (
+            <YStack paddingHorizontal="$sm">
+              <Typography
+                onPress={handleCameraUpload.bind(null, "library")}
+                preset="body1"
+                paddingVertical="$md"
+                pressStyle={{ color: "$purple5" }}
+              >
+                {t("media.menu.load")}
+              </Typography>
+              <Typography
+                onPress={handleCameraUpload.bind(null, "cameraPhoto")}
+                preset="body1"
+                paddingVertical="$md"
+                pressStyle={{ color: "$purple5" }}
+              >
+                {t("media.menu.take_picture")}
+              </Typography>
+              <Typography
+                onPress={handleUploadAudio.bind(null)}
+                preset="body1"
+                paddingVertical="$md"
+                pressStyle={{ color: "$purple5" }}
+              >
+                {t("media.menu.upload_audio")}
+              </Typography>
+            </YStack>
+          )}
         </OptionsSheet>
       </Screen>
 
