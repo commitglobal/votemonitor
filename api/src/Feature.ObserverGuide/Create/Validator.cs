@@ -11,7 +11,6 @@ public class Validator : Validator<Request>
 
         RuleFor(x => x.Attachment)
             .NotEmpty()!
-            .FileSmallerThan(50 * 1024 * 1024)
             .When(x => string.IsNullOrEmpty(x.WebsiteUrl)); // 50 MB upload limit
 
         RuleFor(x => x.WebsiteUrl)
