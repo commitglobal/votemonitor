@@ -12,6 +12,7 @@ import Card from "./Card";
 import { useMutatePollingStationGeneralData } from "../services/mutations/psi-general.mutation";
 import { ApiFormAnswer } from "../services/interfaces/answer.type";
 import { useTranslation } from "react-i18next";
+import Toast from "react-native-toast-message";
 
 interface PollingStationGeneralProps {
   electionRoundId: string;
@@ -41,10 +42,44 @@ export const PollingStationGeneral: React.FC<PollingStationGeneralProps> = ({
     scopeId: `PS_General_${electionRoundId}_${pollingStationId}_dates`,
   });
 
-  const updateArrivalDepartureTime = (
+  const _updateArrivalDepartureTime = (
     payload: Partial<Pick<PollingStationInformationVM, "arrivalTime" | "departureTime">>,
   ) => {
     mutate({ electionRoundId, pollingStationId, ...payload });
+  };
+
+  const onUpdateArrivalTime = (arrivalTime: Date) => {
+    console.log("arrivalTime", arrivalTime);
+    if (psi?.departureTime && arrivalTime.getTime() > new Date(psi.departureTime).getTime()) {
+      return Toast.show({
+        type: "error",
+        text2: t("polling_stations_information.time_select.error.earlier_arrival"),
+        visibilityTime: 5000,
+      });
+    }
+
+    if (arrivalTime)
+      mutate({ electionRoundId, pollingStationId, arrivalTime: arrivalTime.toISOString() });
+  };
+
+  const onUpdateDepartureTime = (departureTime: Date) => {
+    // if we're trying to set a departure time before having set the arrival time -> close picker and display error toast
+    if (!psi?.arrivalTime) {
+      return Toast.show({
+        type: "error",
+        text2: t("polling_stations_information.time_select.error.arrival_first"),
+        visibilityTime: 5000,
+      });
+    } else if (departureTime.getTime() < new Date(psi.arrivalTime).getTime()) {
+      return Toast.show({
+        type: "error",
+        text2: t("polling_stations_information.time_select.error.later_departure"),
+        visibilityTime: 5000,
+      });
+    }
+
+    if (departureTime)
+      mutate({ electionRoundId, pollingStationId, departureTime: departureTime.toISOString() });
   };
 
   return (
@@ -52,28 +87,18 @@ export const PollingStationGeneral: React.FC<PollingStationGeneralProps> = ({
       <XStack gap="$xxs">
         <Card flex={0.5} paddingVertical="$xs">
           <TimeSelect
-            type="arrival"
             time={psi?.arrivalTime ? new Date(psi.arrivalTime) : undefined}
-            departureTime={psi?.departureTime ? new Date(psi?.departureTime) : undefined}
-            setTime={(data: Date) =>
-              updateArrivalDepartureTime({
-                arrivalTime: data?.toISOString(),
-                ...(psi?.departureTime ? { departureTime: psi?.departureTime } : {}),
-              })
-            }
+            maximumDate={psi?.departureTime ? new Date(psi?.departureTime) : undefined}
+            textFooter={t("polling_stations_information.time_select.arrival_time")}
+            setTime={onUpdateArrivalTime}
           />
         </Card>
         <Card flex={0.5} paddingVertical="$xs">
           <TimeSelect
-            type="departure"
+            textFooter={t("polling_stations_information.time_select.departure_time")}
             time={psi?.departureTime ? new Date(psi?.departureTime) : undefined}
-            arrivalTime={psi?.arrivalTime ? new Date(psi.arrivalTime) : undefined}
-            setTime={(data: Date) =>
-              updateArrivalDepartureTime({
-                departureTime: data?.toISOString(),
-                ...(psi?.arrivalTime ? { arrivalTime: psi?.arrivalTime } : {}),
-              })
-            }
+            minimumDate={psi?.arrivalTime ? new Date(psi.arrivalTime) : undefined}
+            setTime={onUpdateDepartureTime}
           />
         </Card>
       </XStack>

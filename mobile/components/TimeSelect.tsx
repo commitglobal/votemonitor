@@ -8,19 +8,18 @@ import RNDateTimePicker, {
   DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
 import CardFooter from "../components/CardFooter";
-import Toast from "react-native-toast-message";
 import { useTranslation } from "react-i18next";
 
 interface TimeSelectProps {
-  type: "arrival" | "departure";
-  time: Date | undefined;
-  setTime: any;
-  arrivalTime?: Date | undefined;
-  departureTime?: Date | undefined;
+  time?: Date;
+  setTime: (time: Date) => void;
+  textFooter: string;
+  minimumDate?: Date;
+  maximumDate?: Date;
 }
 
 const TimeSelect: React.FC<TimeSelectProps> = memo(
-  ({ type, time, setTime, arrivalTime, departureTime }) => {
+  ({ minimumDate, maximumDate, textFooter, time, setTime }) => {
     const { t, i18n } = useTranslation("observation");
     const [open, setOpen] = useState(false);
     // on ios we use a temporary time, as the onChange function gets triggered every time the user picks a new time
@@ -34,20 +33,10 @@ const TimeSelect: React.FC<TimeSelectProps> = memo(
     const onChange = (event: DateTimePickerEvent, selectedTime: Date | undefined) => {
       // selectedTime = date picked from date picker
       // eventTime = date picked from time picker
-
       if (Platform.OS === "ios") {
         selectedTime ? setTempTime(selectedTime) : setTempTime(tempTime);
       } else {
         if (event.type === "set") {
-          // if we're trying to set a departure time before having set the arrival time -> close picker and display error toast
-          if (type === "departure" && !arrivalTime) {
-            onClose();
-            return Toast.show({
-              type: "error",
-              text2: t("polling_stations_information.time_select.error.arrival_first"),
-              visibilityTime: 5000,
-            });
-          }
           // after setting the date, close date picker and open time picker
           onClose();
           DateTimePickerAndroid.open({
@@ -61,27 +50,6 @@ const TimeSelect: React.FC<TimeSelectProps> = memo(
                 eventTime.setFullYear(selectedTime.getFullYear());
 
                 // setting departure time and we have an arrival time set
-                if (type === "departure" && arrivalTime) {
-                  // don't allow an earlier departure time
-                  if (eventTime < arrivalTime) {
-                    onClose();
-                    return Toast.show({
-                      type: "error",
-                      text2: t("polling_stations_information.time_select.error.later_departure"),
-                      visibilityTime: 5000,
-                    });
-                  }
-                } else if (type === "arrival" && departureTime) {
-                  // don't allow a later arrival time
-                  if (eventTime > departureTime) {
-                    onClose();
-                    return Toast.show({
-                      type: "error",
-                      text2: t("polling_stations_information.time_select.error.earlier_arrival"),
-                      visibilityTime: 5000,
-                    });
-                  }
-                }
                 setTime(eventTime);
               }
             },
@@ -96,26 +64,9 @@ const TimeSelect: React.FC<TimeSelectProps> = memo(
 
     const onDonePress = () => {
       // if we're trying to set a departure time before having set the arrival time -> error toast
-      if (type === "departure" && !arrivalTime) {
-        Toast.show({
-          type: "error",
-          text2: t("polling_stations_information.time_select.error.arrival_first"),
-          visibilityTime: 5000,
-        });
-        return onClose();
-      }
       setTime(tempTime);
       onClose();
     };
-
-    // const onResetTime = () => {
-    //   // setting time to undefined
-    //   setTime();
-    //   // resetting temporary time
-    //   setTempTime(new Date());
-    //   // close the picker
-    //   onClose();
-    // };
 
     const onClose = () => {
       setOpen(false);
@@ -155,14 +106,7 @@ const TimeSelect: React.FC<TimeSelectProps> = memo(
             )}
           </Stack>
 
-          <CardFooter
-            text={
-              type === "arrival"
-                ? t("polling_stations_information.time_select.arrival_time")
-                : t("polling_stations_information.time_select.departure_time")
-            }
-            marginTop="auto"
-          ></CardFooter>
+          <CardFooter text={textFooter} marginTop="auto" />
         </YStack>
 
         {Platform.OS === "ios" ? (
@@ -191,9 +135,9 @@ const TimeSelect: React.FC<TimeSelectProps> = memo(
                   value={tempTime}
                   onChange={onChange}
                   // if setting departure time and arrival time has already been set -> don't allow an earlier time
-                  minimumDate={type === "departure" && arrivalTime ? arrivalTime : undefined}
+                  minimumDate={minimumDate}
                   // if setting arrival time and departure time has already been set -> don't allow a later time
-                  maximumDate={type === "arrival" && departureTime ? departureTime : undefined}
+                  maximumDate={maximumDate}
                   locale={i18n.language}
                 />
               </XStack>
@@ -208,8 +152,8 @@ const TimeSelect: React.FC<TimeSelectProps> = memo(
             onChange,
             is24Hour: true,
             // if setting departure date and arrival date has already been set -> don't allow an earlier date
-            minimumDate: type === "departure" && arrivalTime ? arrivalTime : undefined,
-            maximumDate: type === "arrival" && departureTime ? departureTime : undefined,
+            minimumDate,
+            maximumDate,
           })
         )}
       </>
