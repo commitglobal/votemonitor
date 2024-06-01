@@ -15,7 +15,7 @@ const GuideCard = ({ guide, ...rest }: GuideCardProps) => {
   return (
     <Card gap="$xxs" {...rest}>
       <Typography preset="body1" fontWeight="700">
-        {guide.fileName || t("list.guide.backup_title")}
+        {guide.title || t("list.guide.backup_title")}
       </Typography>
       {guide.guideType && (
         <Typography preset="body1" color="$gray6">

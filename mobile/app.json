@@ -41,9 +41,9 @@
       "eas": {
         "projectId": "93e17628-ddcd-4e67-849c-b356a18a6082"
       },
-      "message": "Bugfixing, clipboard, feedback, delete PS",
-      "updateCritical": 36,
-      "updateVersion": 36
+      "message": "Missing circle over onboarding dots",
+      "updateCritical": 37,
+      "updateVersion": 37
     },
     "owner": "commit-global",
     "runtimeVersion": {
