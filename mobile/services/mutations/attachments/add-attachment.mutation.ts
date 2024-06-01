@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { QueryClient, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   AddAttachmentStartAPIPayload,
   addAttachmentMultipartAbort,
@@ -13,48 +13,146 @@ import { MULTIPART_FILE_UPLOAD_SIZE } from "../../../common/constants";
 import * as Sentry from "@sentry/react-native";
 import { Buffer } from "buffer";
 
-export const handleChunkUpload = async (
-  electionRoundId: string,
-  filePath: string,
-  uploadUrls: Record<string, string>,
-  uploadId: string,
-  attachmentId: string,
-) => {
-  try {
-    console.log("Handle chunk upload");
+// export const handleChunkUpload = async (
+//   filePath: string,
+//   uploadUrls: Record<string, string>,
+//   queryClient: QueryClient,
+// ) => {
+//   console.log("Handle chunk upload");
 
+//   let etags: Record<number, string> = {};
+//   const urls = Object.values(uploadUrls);
+//   for (const [index, url] of urls.entries()) {
+//     const chunk = await FileSystem.readAsStringAsync(filePath, {
+//       length: MULTIPART_FILE_UPLOAD_SIZE,
+//       position: index * MULTIPART_FILE_UPLOAD_SIZE,
+//       encoding: FileSystem.EncodingType.Base64,
+//     });
+//     const buffer = Buffer.from(chunk, "base64");
+//     const data = await uploadS3Chunk(url, buffer);
+
+//     const progress = Math.round(((index + 1) / urls.length) * 100 * 10) / 10;
+//     queryClient.setQueryData<UploadAttachmentProgress>(
+//       AttachmentsKeys.addAttachments(),
+//       (oldData) => {
+//         const toReturn: UploadAttachmentProgress = {
+//           ...oldData,
+//           progress,
+//           status: progress === 100 ? "completed" : "inprogress",
+//         };
+//         console.log("toReturnProgress in handleChunkUpload", toReturn);
+
+//         return toReturn;
+//       },
+//     );
+
+//     etags = { ...etags, [index + 1]: data.ETag };
+//   }
+
+//   return etags;
+// };
+
+export const uploadAttachmentMutationFn = async (
+  payload: AddAttachmentStartAPIPayload,
+  queryClient: QueryClient,
+) => {
+  queryClient.setQueryData(AttachmentsKeys.addAttachments(), () => ({
+    progress: 0,
+    status: "starting",
+  }));
+  const start = await addAttachmentMultipartStart(payload);
+  try {
     let etags: Record<number, string> = {};
-    const urls = Object.values(uploadUrls);
+    const urls = Object.values(start.uploadUrls);
+
     for (const [index, url] of urls.entries()) {
-      const chunk = await FileSystem.readAsStringAsync(filePath, {
+      const chunk = await FileSystem.readAsStringAsync(payload.filePath, {
         length: MULTIPART_FILE_UPLOAD_SIZE,
         position: index * MULTIPART_FILE_UPLOAD_SIZE,
         encoding: FileSystem.EncodingType.Base64,
       });
       const buffer = Buffer.from(chunk, "base64");
+      const progress = Math.round(((index + 1) / urls.length) * 100 * 10) / 10;
+      queryClient.setQueryData<UploadAttachmentProgress>(
+        AttachmentsKeys.addAttachments(),
+        (oldData) => {
+          const toReturn: UploadAttachmentProgress = {
+            ...oldData,
+            progress,
+            status: progress === 100 ? "completed" : "inprogress",
+          };
+          console.log("toReturnProgress in handleChunkUpload", toReturn);
+
+          return toReturn;
+        },
+      );
+
       const data = await uploadS3Chunk(url, buffer);
+
       etags = { ...etags, [index + 1]: data.ETag };
     }
-
-    await addAttachmentMultipartComplete({
-      uploadId,
+    const completed = await addAttachmentMultipartComplete({
+      uploadId: start.uploadId,
       etags,
-      electionRoundId,
-      id: attachmentId,
+      electionRoundId: payload.electionRoundId,
+      id: payload.id,
     });
+    queryClient.setQueryData<UploadAttachmentProgress>(
+      AttachmentsKeys.addAttachments(),
+      (oldData) => {
+        const toReturn: UploadAttachmentProgress = {
+          ...oldData,
+          progress: 100,
+          status: "completed",
+        };
+        console.log("toReturnCompleted", toReturn);
+        return toReturn;
+      },
+    );
+    return completed;
   } catch (err) {
-    console.log(err);
     Sentry.captureMessage("Upload failed, aborting!");
     Sentry.captureException(err);
-    await addAttachmentMultipartAbort({
-      id: attachmentId,
-      uploadId,
-      electionRoundId,
+
+    const aborted = addAttachmentMultipartAbort({
+      id: payload.id,
+      uploadId: start.uploadId,
+      electionRoundId: payload.electionRoundId,
     });
+    queryClient.setQueryData<UploadAttachmentProgress>(
+      AttachmentsKeys.addAttachments(),
+      (oldData) => {
+        const toReturn: UploadAttachmentProgress = {
+          ...oldData,
+          progress: 0,
+          status: "aborted",
+        };
+        console.log("toReturnAbort", toReturn);
+        return toReturn;
+      },
+    );
+    return aborted;
   }
 };
 
-// Multipart Upload - Start
+export type UploadAttachmentProgress = {
+  progress: number;
+  status: "idle" | "starting" | "inprogress" | "aborted" | "completed";
+};
+export const useUploadAttachmentProgressQuery = () => {
+  return useQuery({
+    queryKey: AttachmentsKeys.addAttachments(), // TODO: more specific
+    queryFn: () => {
+      console.log("QueryFn Called");
+      return { status: "idle", progress: 0 };
+    },
+    placeholderData: { status: "idle", progress: 0 },
+    initialData: { status: "idle", progress: 0 },
+    staleTime: Infinity,
+    gcTime: Infinity,
+  });
+};
+
 export const useUploadAttachmentMutation = (scopeId: string) => {
   const queryClient = useQueryClient();
   return useMutation({
@@ -62,7 +160,8 @@ export const useUploadAttachmentMutation = (scopeId: string) => {
     scope: {
       id: scopeId,
     },
-    mutationFn: (payload: AddAttachmentStartAPIPayload) => addAttachmentMultipartStart(payload),
+    mutationFn: (payload: AddAttachmentStartAPIPayload) =>
+      uploadAttachmentMutationFn(payload, queryClient),
     onMutate: async (payload: AddAttachmentStartAPIPayload) => {
       const attachmentsQK = AttachmentsKeys.attachments(
         payload.electionRoundId,
@@ -101,14 +200,27 @@ export const useUploadAttachmentMutation = (scopeId: string) => {
       );
       queryClient.setQueryData(attachmentsQK, context?.previousData);
     },
-    onSettled: (_data, _err, _variables) => {
-      // return queryClient.invalidateQueries({
-      //   queryKey: AttachmentsKeys.attachments(
-      //     variables.electionRoundId,
-      //     variables.pollingStationId,
-      //     variables.formId,
-      //   ),
-      // });
+    onSettled: (_data, _err, variables) => {
+      console.log("onSettled");
+      queryClient.setQueryData<UploadAttachmentProgress>(
+        AttachmentsKeys.addAttachments(),
+        (oldData) => {
+          const toReturn: UploadAttachmentProgress = {
+            ...oldData,
+            progress: 0,
+            status: "idle",
+          };
+          console.log("toReturnOnSettled", toReturn);
+          return toReturn;
+        },
+      );
+      return queryClient.invalidateQueries({
+        queryKey: AttachmentsKeys.attachments(
+          variables.electionRoundId,
+          variables.pollingStationId,
+          variables.formId,
+        ),
+      });
     },
   });
 };

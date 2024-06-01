@@ -106,6 +106,6 @@ export const uploadS3Chunk = async (url: string, chunk: any): Promise<{ ETag: st
       },
     })
     .then((res) => {
-      return { ETag: res.headers["etag"] };
+      return { ETag: res.headers.etag };
     });
 };
