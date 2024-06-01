@@ -92,7 +92,7 @@ const Inbox = () => {
       </YStack>
 
       {isLoading ? (
-        <YStack justifyContent="center" alignItems="center">
+        <YStack justifyContent="center" alignItems="center" minHeight={scrollHeight}>
           <Spinner size="large" color="$purple5" />
         </YStack>
       ) : (
@@ -104,7 +104,7 @@ const Inbox = () => {
             renderItem={({ item }) => {
               return <NotificationListItem notification={item} />;
             }}
-            estimatedItemSize={200}
+            estimatedItemSize={ESTIMATED_ITEM_SIZE}
             estimatedListSize={{ height: ESTIMATED_ITEM_SIZE * 5, width: width - 32 }} // for width we need to take into account the padding also
             onEndReached={loadMore}
             onEndReachedThreshold={0.5}

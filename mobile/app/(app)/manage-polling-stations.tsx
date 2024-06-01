@@ -19,6 +19,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import Toast from "react-native-toast-message";
 import NoVisitsMPS from "../../components/NoVisitsMPS";
 
+const ESTIMATED_ITEM_SIZE = 225;
+
 const ManagePollingStation = () => {
   const { t } = useTranslation("manage_my_polling_stations");
   const [selectedPS, setSelectedPS] = useState<PollingStationVisitVM | null>(null);
@@ -42,7 +44,7 @@ const ManagePollingStation = () => {
     useDeletePollingStationVisitMutation(activeElectionRound?.id);
 
   const insets = useSafeAreaInsets();
-  const { height } = useWindowDimensions();
+  const { height, width } = useWindowDimensions();
   const scrollHeight = height - insets.top - insets.bottom - 50;
 
   if (visits === undefined || visits.length === 0) {
@@ -129,7 +131,8 @@ const ManagePollingStation = () => {
               />
             );
           }}
-          estimatedItemSize={225}
+          estimatedListSize={{ height: ESTIMATED_ITEM_SIZE * 5, width: width - 32 }}
+          estimatedItemSize={ESTIMATED_ITEM_SIZE}
         />
       </YStack>
       {selectedPS && (
