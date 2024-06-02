@@ -357,6 +357,7 @@ const FormQuestionnaire = () => {
         name: file.name,
         type: file.mimeType || "audio/mpeg",
         uri: file.uri,
+        size: file.size,
       };
 
       console.log("FileMetadata", fileMetadata);
@@ -393,6 +394,9 @@ const FormQuestionnaire = () => {
           setIsOptionsSheetOpen(false);
           setIsPreparingFile(false);
         }
+      } else {
+        setIsOptionsSheetOpen(false);
+        setIsPreparingFile(false);
       }
     }
   };
