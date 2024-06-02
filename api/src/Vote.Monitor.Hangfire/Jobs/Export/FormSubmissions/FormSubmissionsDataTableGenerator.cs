@@ -80,7 +80,6 @@ public class FormSubmissionsDataTableGenerator
     {
         foreach (var submission in submissions)
         {
-
             ForSubmission(submission);
         }
 
@@ -182,12 +181,12 @@ public class FormSubmissionsDataTableGenerator
         {
             var submissionId = _submissions[i].SubmissionId;
             var row = _dataTable[i];
-            var submissionData = submissionDataMap[submissionId];
+            var submissionData = submissionDataMap.GetValueOrDefault(submissionId, []);
             var questionDataMap = submissionData.ToDictionary(x => x.QuestionId);
 
             foreach (var question in _questions)
             {
-                var questionsData = questionDataMap[question.Id];
+                var questionsData = questionDataMap.GetValueOrDefault(question.Id, AnswerData.Empty());
 
                 var values = PadListToTheRight(questionsData.Values, longestValuesHeadersMap[question.Id].Count, string.Empty);
                 var notes = PadListToTheRight(questionsData.Notes, longestNotesColumnHeadersMap[question.Id].Count, string.Empty);
@@ -228,10 +227,10 @@ public class FormSubmissionsDataTableGenerator
         public List<string> NotesColumnHeaders { get; } = [];
         public List<string> AttachmentUrlsColumnHeaders { get; } = [];
 
-        private AnswerData(Guid submissionId, BaseQuestion question)
+        private AnswerData(Guid submissionId, Guid questionId)
         {
             SubmissionId = submissionId;
-            QuestionId = question.Id;
+            QuestionId = questionId;
             Values = [];
             Notes = [];
             AttachmentUrls = [];
@@ -295,7 +294,7 @@ public class FormSubmissionsDataTableGenerator
             List<NoteModel> notes,
             List<SubmissionAttachmentModel> attachments)
         {
-            var answerData = new AnswerData(submissionId, dateQuestion);
+            var answerData = new AnswerData(submissionId, dateQuestion.Id);
             var columnHeader = dateQuestion.Code + " - " + dateQuestion.Text[defaultLanguage];
 
             answerData.WithValue(columnHeader, dateAnswer.Date);
@@ -312,7 +311,7 @@ public class FormSubmissionsDataTableGenerator
             List<NoteModel> notes,
             List<SubmissionAttachmentModel> attachments)
         {
-            var answerData = new AnswerData(submissionId, textQuestion);
+            var answerData = new AnswerData(submissionId, textQuestion.Id);
 
             var columnHeader = textQuestion.Code + " - " + textQuestion.Text[defaultLanguage];
 
@@ -330,7 +329,7 @@ public class FormSubmissionsDataTableGenerator
             List<NoteModel> notes,
             List<SubmissionAttachmentModel> attachments)
         {
-            var answerData = new AnswerData(submissionId, ratingQuestion);
+            var answerData = new AnswerData(submissionId, ratingQuestion.Id);
             var columnHeader = ratingQuestion.Code + " - " + ratingQuestion.Text[defaultLanguage];
 
             answerData.WithValue(columnHeader, ratingAnswer.Value);
@@ -346,7 +345,7 @@ public class FormSubmissionsDataTableGenerator
             List<NoteModel> notes,
             List<SubmissionAttachmentModel> attachments)
         {
-            var answerData = new AnswerData(submissionId, numberQuestion);
+            var answerData = new AnswerData(submissionId, numberQuestion.Id);
             var columnHeader = numberQuestion.Code + " - " + numberQuestion.Text[defaultLanguage];
 
             answerData.WithValue(columnHeader, numberAnswer.Value);
@@ -363,7 +362,7 @@ public class FormSubmissionsDataTableGenerator
             List<NoteModel> notes,
             List<SubmissionAttachmentModel> attachments)
         {
-            var answerData = new AnswerData(submissionId, singleSelectQuestion);
+            var answerData = new AnswerData(submissionId, singleSelectQuestion.Id);
             var columnHeader = singleSelectQuestion.Code + " - " + singleSelectQuestion.Text[defaultLanguage];
 
             answerData.WithValue(columnHeader, string.Empty);
@@ -392,7 +391,7 @@ public class FormSubmissionsDataTableGenerator
             List<NoteModel> notes,
             List<SubmissionAttachmentModel> attachments)
         {
-            var answerData = new AnswerData(submissionId, multiSelectQuestion);
+            var answerData = new AnswerData(submissionId, multiSelectQuestion.Id);
             var columnHeader = multiSelectQuestion.Code + " - " + multiSelectQuestion.Text[defaultLanguage];
 
             answerData.WithValue(columnHeader, string.Empty);
@@ -412,6 +411,11 @@ public class FormSubmissionsDataTableGenerator
             answerData.WithAttachments(attachments);
 
             return answerData;
+        }
+
+        public static AnswerData Empty()
+        {
+            return new AnswerData(Guid.Empty, Guid.Empty);
         }
     }
 }
