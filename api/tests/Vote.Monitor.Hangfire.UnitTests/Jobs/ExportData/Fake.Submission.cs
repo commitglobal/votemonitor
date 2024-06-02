@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Bogus;
+﻿using Bogus;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
 using Vote.Monitor.Domain.Entities.QuickReportAggregate;
