@@ -39,13 +39,14 @@ import { useFormAnswers } from "../../../services/queries/form-submissions.query
 import { useNotesForQuestionId } from "../../../services/queries/notes.query";
 import * as Crypto from "expo-crypto";
 import { useTranslation } from "react-i18next";
-import { onlineManager } from "@tanstack/react-query";
+import { onlineManager, useQueryClient } from "@tanstack/react-query";
 import { ApiFormQuestion } from "../../../services/interfaces/question.type";
 import FormInput from "../../../components/FormInputs/FormInput";
 import WarningDialog from "../../../components/WarningDialog";
 import { MULTIPART_FILE_UPLOAD_SIZE } from "../../../common/constants";
 import * as DocumentPicker from "expo-document-picker";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { AttachmentsKeys } from "../../../services/queries/attachments.query";
 
 type SearchParamType = {
   questionId: string;
@@ -56,6 +57,7 @@ type SearchParamType = {
 const FormQuestionnaire = () => {
   const { t } = useTranslation(["polling_station_form_wizard", "common"]);
   const { questionId, formId, language } = useLocalSearchParams<SearchParamType>();
+  const queryClient = useQueryClient();
 
   const { data: uploadAttachmentProgress } = useUploadAttachmentProgressQuery();
 
@@ -280,6 +282,10 @@ const FormQuestionnaire = () => {
   );
 
   const handleCameraUpload = async (type: "library" | "cameraPhoto") => {
+    await queryClient.setQueryData(AttachmentsKeys.addAttachments(), {
+      progress: 0,
+      status: "idle",
+    });
     setIsPreparingFile(true);
 
     const cameraResult = await uploadCameraOrMedia(type);
@@ -296,43 +302,28 @@ const FormQuestionnaire = () => {
       activeQuestion.question.id &&
       cameraResult.size
     ) {
-      // Calculate the number of parts that will be sent to the S3 Bucket. It is +1 (thus we use ceil).
-      const numberOfUploadParts: number = Math.ceil(cameraResult.size / MULTIPART_FILE_UPLOAD_SIZE);
-      const attachmentId = Crypto.randomUUID();
-      // setUploadProgress(t("attachments.upload.starting"));
-
       addAttachmentMultipart(
         {
-          id: attachmentId,
+          id: Crypto.randomUUID(),
           electionRoundId: activeElectionRound.id,
           pollingStationId: selectedPollingStation.pollingStationId,
           formId,
           questionId: activeQuestion.question.id,
           fileName: cameraResult.name,
           contentType: cameraResult.type,
-          numberOfUploadParts,
+          numberOfUploadParts: Math.ceil(cameraResult.size / MULTIPART_FILE_UPLOAD_SIZE), // Calculate the number of parts that will be sent to the S3 Bucket. It is +1 (thus we use ceil).
           filePath: cameraResult.uri,
         },
         {
-          onSuccess: async (_data) => {
-            console.log("1. On Success");
-            setTimeout(() => {
-              setIsOptionsSheetOpen(false);
-              setIsPreparingFile(false);
-            }, 1000);
-          },
           onError: () => console.log("🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴ERORR🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴"),
           onSettled: () => {
-            setIsPreparingFile(false);
             setIsOptionsSheetOpen(false);
+            setIsPreparingFile(false);
           },
         },
       );
 
-      console.log("3. Outside");
-
       if (!onlineManager.isOnline()) {
-        console.log("4. Not Online");
         setIsOptionsSheetOpen(false);
         setIsPreparingFile(false);
       }
@@ -340,11 +331,18 @@ const FormQuestionnaire = () => {
   };
 
   const handleUploadAudio = async () => {
+    await queryClient.setQueryData(AttachmentsKeys.addAttachments(), {
+      progress: 0,
+      status: "idle",
+    });
     setIsPreparingFile(true);
+
     const doc = await DocumentPicker.getDocumentAsync({
       type: "audio/*",
       multiple: false,
     });
+
+    console.log(doc);
 
     if (doc?.canceled) {
       console.log("canceling");
@@ -361,6 +359,8 @@ const FormQuestionnaire = () => {
         uri: file.uri,
       };
 
+      console.log("FileMetadata", fileMetadata);
+
       if (
         activeElectionRound &&
         selectedPollingStation?.pollingStationId &&
@@ -368,35 +368,22 @@ const FormQuestionnaire = () => {
         activeQuestion.question.id &&
         fileMetadata.size
       ) {
-        // Calculate the number of parts that will be sent to the S3 Bucket. It is +1 (thus we use ceil).
-        const numberOfUploadParts: number = Math.ceil(
-          fileMetadata.size / MULTIPART_FILE_UPLOAD_SIZE,
-        );
-        const attachmentId = Crypto.randomUUID();
-
         await addAttachmentMultipart(
           {
-            id: attachmentId,
+            id: Crypto.randomUUID(),
             electionRoundId: activeElectionRound.id,
             pollingStationId: selectedPollingStation.pollingStationId,
             formId,
             questionId: activeQuestion.question.id,
             fileName: fileMetadata.name,
             contentType: fileMetadata.type,
-            numberOfUploadParts,
+            numberOfUploadParts: Math.ceil(fileMetadata.size / MULTIPART_FILE_UPLOAD_SIZE),
             filePath: fileMetadata.uri,
           },
           {
-            // onSuccess: async (data) => {
-            //   await handleChunkUpload(
-            //     fileMetadata.uri,
-            //     data.uploadUrls,
-            //     data.uploadId,
-            //     attachmentId,
-            //   );
-            // },
             onError: () => console.log("🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴ERORR🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴"),
             onSettled: () => {
+              setIsOptionsSheetOpen(false);
               setIsPreparingFile(false);
             },
           },
@@ -762,6 +749,8 @@ const MediaLoading = ({
     switch (uploadProgress?.status) {
       case "starting":
         return t("attachments.upload.starting");
+      case "compressing":
+        return `Compressing progress ${uploadProgress.progress}%`;
       case "inprogress":
         return `${t("attachments.upload.progress")} ${uploadProgress.progress} %`;
       case "completed":
@@ -776,8 +765,8 @@ const MediaLoading = ({
   return (
     <YStack alignItems="center" gap="$lg" paddingHorizontal="$lg">
       <Spinner size="large" color="$purple5" />
-      <Typography preset="subheading" fontWeight="500" color="$purple5">
-        {message || t("attachments.loading")}
+      <Typography preset="subheading" fontWeight="500" color="$purple5" minHeight="$lg">
+        {message || ""}
       </Typography>
     </YStack>
   );

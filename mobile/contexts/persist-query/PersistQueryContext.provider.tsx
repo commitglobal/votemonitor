@@ -109,15 +109,8 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
 
   queryClient.setMutationDefaults(AttachmentsKeys.addAttachmentMutation(), {
     mutationFn: async (payload: AddAttachmentStartAPIPayload) => {
-      const data = await addAttachmentMultipartStart(payload);
-      console.log("Init ran");
-      return handleChunkUpload(
-        payload.electionRoundId,
-        payload.filePath,
-        data.uploadUrls,
-        data.uploadId,
-        payload.id,
-      );
+      console.log("Mutation Default addAttachmentMutation");
+      return uploadAttachmentMutationFn(payload, queryClient);
     },
   });
 
