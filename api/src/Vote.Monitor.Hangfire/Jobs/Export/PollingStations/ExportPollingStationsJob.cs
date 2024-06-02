@@ -1,7 +1,6 @@
 ﻿using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Vote.Monitor.Core.FileGenerators;
-using Vote.Monitor.Core.Services.FileStorage.Contracts;
 using Vote.Monitor.Core.Services.Hangfire;
 using Vote.Monitor.Core.Services.Time;
 using Vote.Monitor.Domain;

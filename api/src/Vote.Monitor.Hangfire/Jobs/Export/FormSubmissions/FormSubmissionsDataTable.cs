@@ -10,8 +10,7 @@ public class FormSubmissionsDataTable
     private readonly List<List<object>> _dataTable;
     private readonly Guid _formId;
     private readonly string _defaultLanguage;
-    private readonly Dictionary<Guid, BaseQuestion> _questionsMap = new();
-    private readonly IReadOnlyList<BaseQuestion> _questions;
+    private readonly List<AnswerWriter> _answerWriters;
 
     private FormSubmissionsDataTable(Guid formId, string defaultLanguage, IReadOnlyList<BaseQuestion> questions)
     {
@@ -19,8 +18,7 @@ public class FormSubmissionsDataTable
         _dataTable = new List<List<object>>();
         _formId = formId;
         _defaultLanguage = defaultLanguage;
-        _questionsMap = questions.ToDictionary(x => x.Id);
-        _questions = questions;
+        _answerWriters = questions.Select(x => new AnswerWriter(defaultLanguage, x)).ToList();
 
         _header.AddRange([
             "SubmissionId",
@@ -52,6 +50,6 @@ public class FormSubmissionsDataTable
 
     public FormSubmissionsDataTableGenerator WithData()
     {
-        return FormSubmissionsDataTableGenerator.For(_header, _dataTable, _formId, _defaultLanguage, _questionsMap, _questions);
+        return FormSubmissionsDataTableGenerator.For(_header, _dataTable, _formId, _answerWriters);
     }
 }
