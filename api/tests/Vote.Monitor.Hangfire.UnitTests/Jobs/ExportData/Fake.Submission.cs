@@ -1,4 +1,5 @@
-﻿using Bogus;
+﻿using System.Collections.Generic;
+using Bogus;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
 using Vote.Monitor.Domain.Entities.QuickReportAggregate;
@@ -22,7 +23,7 @@ public sealed partial class Fake
         QuickReportFollowUpStatus.Resolved
     ];
 
-    private static SubmissionModel Submission(Guid formId, BaseAnswer[] answers, NoteModel[] notes, SubmissionAttachmentModel[] attachments)
+    private static SubmissionModel GenerateSubmission(Guid formId, BaseAnswer[]? answers = null, NoteModel[]? notes = null, SubmissionAttachmentModel[]? attachments = null)
     {
         var fakeSubmission = new Faker<SubmissionModel>()
             .RuleFor(x => x.FormId, formId)
@@ -39,19 +40,23 @@ public sealed partial class Fake
             .RuleFor(x => x.Email, f => f.Internet.Email())
             .RuleFor(x => x.PhoneNumber, f => f.Phone.PhoneNumber())
             .RuleFor(x => x.MonitoringObserverId, f => f.Random.Guid())
-            .RuleFor(x => x.Answers, answers)
-            .RuleFor(x => x.Notes, notes)
+            .RuleFor(x => x.Answers, answers ?? [])
+            .RuleFor(x => x.Notes, notes ?? [])
             .RuleFor(x => x.FollowUpStatus, f => f.PickRandom(_submissionFollowUpStatuses))
-            .RuleFor(x => x.Attachments, attachments);
+            .RuleFor(x => x.Attachments, attachments ?? []);
 
         return fakeSubmission.Generate();
     }
 
     public static SubmissionModel Submission(Guid formId, BaseAnswer answer, NoteModel[] notes, SubmissionAttachmentModel[] attachments)
     {
-        return Submission(formId, [answer], notes, attachments);
+        return GenerateSubmission(formId, [answer], notes, attachments);
     }
 
+    public static SubmissionModel Submission(Guid formId)
+    {
+        return GenerateSubmission(formId);
+    }
     public static SubmissionModel Submission(Guid formId,
         TextAnswer textAnswer, NoteModel[] textAnswerNotes, SubmissionAttachmentModel[] textAnswerAttachments,
         DateAnswer dateAnswer, NoteModel[] dateAnswerNotes, SubmissionAttachmentModel[] dateAnswerAttachments,
@@ -87,7 +92,64 @@ public sealed partial class Fake
             .. multiSelectAnswerAttachments
         ];
 
-        return Submission(formId, answers, notes, attachments);
+        return GenerateSubmission(formId, answers, notes, attachments);
+    }
+
+    public static SubmissionModel PartialSubmission(Guid formId,
+        (TextAnswer answer, NoteModel[] notes, SubmissionAttachmentModel[] attachments)? textAnswer = null,
+        (DateAnswer answer, NoteModel[] notes, SubmissionAttachmentModel[] attachments)? dateAnswer = null,
+        (NumberAnswer answer, NoteModel[] notes, SubmissionAttachmentModel[] attachments)? numberAnswer = null,
+        (RatingAnswer answer, NoteModel[] notes, SubmissionAttachmentModel[] attachments)? ratingAnswer = null,
+        (SingleSelectAnswer answer, NoteModel[] notes, SubmissionAttachmentModel[] attachments)? singleSelectAnswer = null,
+        (MultiSelectAnswer answer, NoteModel[] notes, SubmissionAttachmentModel[] attachments)? multiSelectAnswer = null)
+    {
+        List<BaseAnswer> answers = [];
+        List<NoteModel> notes = [];
+        List<SubmissionAttachmentModel> attachments = [];
+
+        if (textAnswer != null)
+        {
+            answers.Add(textAnswer.Value.answer);
+            notes.AddRange(textAnswer.Value.notes);
+            attachments.AddRange(textAnswer.Value.attachments);
+        } 
+        
+        if (dateAnswer != null)
+        {
+            answers.Add(dateAnswer.Value.answer);
+            notes.AddRange(dateAnswer.Value.notes);
+            attachments.AddRange(dateAnswer.Value.attachments);
+        } 
+        
+        if (numberAnswer != null)
+        {
+            answers.Add(numberAnswer.Value.answer);
+            notes.AddRange(numberAnswer.Value.notes);
+            attachments.AddRange(numberAnswer.Value.attachments);
+        } 
+        
+        if (ratingAnswer != null)
+        {
+            answers.Add(ratingAnswer.Value.answer);
+            notes.AddRange(ratingAnswer.Value.notes);
+            attachments.AddRange(ratingAnswer.Value.attachments);
+        } 
+        
+        if (singleSelectAnswer != null)
+        {
+            answers.Add(singleSelectAnswer.Value.answer);
+            notes.AddRange(singleSelectAnswer.Value.notes);
+            attachments.AddRange(singleSelectAnswer.Value.attachments);
+        }
+
+        if (multiSelectAnswer != null)
+        {
+            answers.Add(multiSelectAnswer.Value.answer);
+            notes.AddRange(multiSelectAnswer.Value.notes);
+            attachments.AddRange(multiSelectAnswer.Value.attachments);
+        }
+
+        return GenerateSubmission(formId, answers.ToArray(), notes.ToArray(), attachments.ToArray());
     }
 
 }
