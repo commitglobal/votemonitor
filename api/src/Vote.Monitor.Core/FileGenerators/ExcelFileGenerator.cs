@@ -25,7 +25,9 @@ public class ExcelFileGenerator
 
     public ExcelFileGenerator WithSheet(string sheetName, List<string> header, List<List<object>> data)
     {
-        var sheet = _workbook.CreateSheet(sheetName);
+        var normalizedSheetName = sheetName.Length > 31 ? sheetName.Substring(0, 31 - 3) + "..." : sheetName;
+
+        var sheet = _workbook.CreateSheet(normalizedSheetName);
 
         // Create header row
         IRow headerRow = sheet.CreateRow(0);
