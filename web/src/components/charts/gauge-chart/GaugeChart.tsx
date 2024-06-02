@@ -45,19 +45,21 @@ const GaugeChart = forwardRef<ChartJSOrUndefined<"doughnut">, GaugeProps>((props
         circumference: 180,
     };
 
-    const gaugeLabel: Plugin<"doughnut"> = {
-        id: 'chartLabel',
-        beforeDatasetDraw: (chart, args, pluginOptions) => {
-            const { ctx, data } = chart;
+    const gaugeLabel = (value: number, total: number): Plugin<"doughnut"> => {
+        return {
+            id: 'chartLabel',
+            beforeDatasetDraw: (chart, args, pluginOptions) => {
+                const { ctx, data } = chart;
 
-            ctx.save();
-            const xCoor = chart.getDatasetMeta(0).data[0]?.x;
-            const yCoor = chart.getDatasetMeta(0).data[0]?.y;
-            ctx.font = 'bold 20px  ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"';
-            ctx.fillStyle = '#7833B3';
-            ctx.textAlign = 'center';
-            var percentage = formatAsPercentage(props.value, props.total)
-            ctx.fillText(percentage, xCoor!, yCoor!);
+                ctx.save();
+                const xCoor = chart.getDatasetMeta(0).data[0]?.x;
+                const yCoor = chart.getDatasetMeta(0).data[0]?.y;
+                ctx.font = 'bold 20px  ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"';
+                ctx.fillStyle = '#7833B3';
+                ctx.textAlign = 'center';
+                var percentage = formatAsPercentage(value, total)
+                ctx.fillText(percentage, xCoor!, yCoor!);
+            }
         }
     };
 
@@ -71,11 +73,12 @@ const GaugeChart = forwardRef<ChartJSOrUndefined<"doughnut">, GaugeProps>((props
                 <span className='text-sm text-slate-500'>{props.title}</span>
             </div>
             <div>
-                <Doughnut
+               <Doughnut
                     data={props.data}
                     options={options}
                     ref={chartRef}
-                    plugins={[gaugeLabel]} />
+                    plugins={[gaugeLabel(props.value, props.total)]} 
+                    redraw />
             </div>
             <div className='text-sm text-slate-500 text-center'>
                 <span >{props.metricLabel}</span>
