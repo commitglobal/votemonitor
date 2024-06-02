@@ -146,10 +146,10 @@ public class FormSubmissionsDataTableGeneratorTests
 
         List<object[]> expectedData =
         [
-            [.. GetDefaultExpectedColumns(submission1), "answer 1", string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty],
-            [.. GetDefaultExpectedColumns(submission2), "answer 2", string.Empty, string.Empty, string.Empty, string.Empty, Attachment1Url, Attachment2Url],
-            [.. GetDefaultExpectedColumns(submission3), "answer 3", string.Empty, Note1, Note2, string.Empty, string.Empty, string.Empty],
-            [.. GetDefaultExpectedColumns(submission4), "answer 4", string.Empty, Note1, Note2, string.Empty, Attachment1Url, Attachment2Url],
+            [.. GetDefaultExpectedColumns(submission1), "answer 1", 0, "", "", 0, "", ""],
+            [.. GetDefaultExpectedColumns(submission2), "answer 2", 0, "", "", 2, Attachment1Url, Attachment2Url],
+            [.. GetDefaultExpectedColumns(submission3), "answer 3", 2, Note1, Note2, 0, "", ""],
+            [.. GetDefaultExpectedColumns(submission4), "answer 4", 2, Note1, Note2, 2, Attachment1Url, Attachment2Url],
         ];
 
         // Act
@@ -200,10 +200,10 @@ public class FormSubmissionsDataTableGeneratorTests
 
         List<object[]> expectedData =
         [
-            [.. GetDefaultExpectedColumns(submission1), 42, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty],
-            [.. GetDefaultExpectedColumns(submission2), 43, string.Empty, string.Empty, string.Empty, string.Empty, Attachment1Url, Attachment2Url],
-            [.. GetDefaultExpectedColumns(submission3), 44, string.Empty, Note1, Note2, string.Empty, string.Empty, string.Empty],
-            [.. GetDefaultExpectedColumns(submission4), 45, string.Empty, Note1, Note2, string.Empty, Attachment1Url, Attachment2Url],
+            [.. GetDefaultExpectedColumns(submission1), 42, 0, "", "", 0, "", ""],
+            [.. GetDefaultExpectedColumns(submission2), 43, 0, "", "", 2, Attachment1Url, Attachment2Url],
+            [.. GetDefaultExpectedColumns(submission3), 44, 2, Note1, Note2, 0, "", ""],
+            [.. GetDefaultExpectedColumns(submission4), 45, 2, Note1, Note2, 2, Attachment1Url, Attachment2Url],
         ];
 
         // Act
@@ -254,10 +254,10 @@ public class FormSubmissionsDataTableGeneratorTests
 
         List<object[]> expectedData =
         [
-            [.. GetDefaultExpectedColumns(submission1), 4, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty],
-            [.. GetDefaultExpectedColumns(submission2), 5, string.Empty, string.Empty, string.Empty, string.Empty, Attachment1Url, Attachment2Url],
-            [.. GetDefaultExpectedColumns(submission3), 9, string.Empty, Note1, Note2, string.Empty, string.Empty, string.Empty],
-            [.. GetDefaultExpectedColumns(submission4), 10, string.Empty, Note1, Note2, string.Empty, Attachment1Url, Attachment2Url],
+            [.. GetDefaultExpectedColumns(submission1), 4, 0, "", "", 0, "", ""],
+            [.. GetDefaultExpectedColumns(submission2), 5, 0, "", "", 2, Attachment1Url, Attachment2Url],
+            [.. GetDefaultExpectedColumns(submission3), 9, 2, Note1, Note2, 0, "", ""],
+            [.. GetDefaultExpectedColumns(submission4), 10, 2, Note1, Note2, 2, Attachment1Url, Attachment2Url],
         ];
 
         // Act
@@ -313,10 +313,10 @@ public class FormSubmissionsDataTableGeneratorTests
 
         List<object[]> expectedData =
         [
-            [.. GetDefaultExpectedColumns(submission1), date1.ToString("s"), string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty],
-            [.. GetDefaultExpectedColumns(submission2), date2.ToString("s"), string.Empty, string.Empty, string.Empty, string.Empty, Attachment1Url, Attachment2Url],
-            [.. GetDefaultExpectedColumns(submission3), date3.ToString("s"), string.Empty, Note1, Note2, string.Empty, string.Empty, string.Empty],
-            [.. GetDefaultExpectedColumns(submission4), date4.ToString("s"), string.Empty, Note1, Note2, string.Empty, Attachment1Url, Attachment2Url],
+            [.. GetDefaultExpectedColumns(submission1), date1.ToString("s"), 0, "", "", 0, "", ""],
+            [.. GetDefaultExpectedColumns(submission2), date2.ToString("s"), 0, "", "", 2, Attachment1Url, Attachment2Url],
+            [.. GetDefaultExpectedColumns(submission3), date3.ToString("s"), 2, Note1, Note2, 0, "", ""],
+            [.. GetDefaultExpectedColumns(submission4), date4.ToString("s"), 2, Note1, Note2, 2, Attachment1Url, Attachment2Url],
         ];
 
         // Act
@@ -367,10 +367,10 @@ public class FormSubmissionsDataTableGeneratorTests
 
         List<object[]> expectedData =
         [
-            [.. GetDefaultExpectedColumns(submission1), string.Empty, true, false, false, false, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty],
-            [.. GetDefaultExpectedColumns(submission2), string.Empty, false, true, false, false, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, Attachment1Url, Attachment2Url],
-            [.. GetDefaultExpectedColumns(submission3), string.Empty, false, false, true, false, string.Empty, string.Empty, Note1, Note2, string.Empty, string.Empty, string.Empty],
-            [.. GetDefaultExpectedColumns(submission4), string.Empty, false, false, false, true, "some free text", string.Empty, Note1, Note2, string.Empty, Attachment1Url, Attachment2Url],
+            [.. GetDefaultExpectedColumns(submission1), "", true, false, false, false, "",0, "", "", 0, "", ""],
+            [.. GetDefaultExpectedColumns(submission2), "", false, true, false, false, "", 0, "", "", 2, Attachment1Url, Attachment2Url],
+            [.. GetDefaultExpectedColumns(submission3), "", false, false, true, false, "", 2, Note1, Note2, 0, "", ""],
+            [.. GetDefaultExpectedColumns(submission4), "", false, false, false, true, "some free text", 2, Note1, Note2, 2, Attachment1Url, Attachment2Url],
         ];
 
         // Act
@@ -418,9 +418,9 @@ public class FormSubmissionsDataTableGeneratorTests
         // No notes, no attachments
         SelectedOption[] submission1Selection = [
             SelectedOption.Create(_option4Id, "user written text"),
-            SelectedOption.Create(_option2Id, string.Empty),
-            SelectedOption.Create(_option3Id, string.Empty),
-            SelectedOption.Create(_option1Id, string.Empty),
+            SelectedOption.Create(_option2Id, ""),
+            SelectedOption.Create(_option3Id, ""),
+            SelectedOption.Create(_option1Id, ""),
         ];
         var submission1 = Fake.Submission(form.Id, MultiSelectAnswer.Create(_multiSelectQuestionId, submission1Selection), [], []);
 
@@ -429,19 +429,19 @@ public class FormSubmissionsDataTableGeneratorTests
         var submission2 = Fake.Submission(form.Id, MultiSelectAnswer.Create(_multiSelectQuestionId, submission2Selection), [], FakeAttachmentsFor(_multiSelectQuestionId));
 
         // 2 notes, no attachments
-        SelectedOption[] submission3Selection = [SelectedOption.Create(_option3Id, string.Empty), SelectedOption.Create(_option2Id, string.Empty)];
+        SelectedOption[] submission3Selection = [SelectedOption.Create(_option3Id, ""), SelectedOption.Create(_option2Id, "")];
         var submission3 = Fake.Submission(form.Id, MultiSelectAnswer.Create(_multiSelectQuestionId, submission3Selection), FakeNotesFor(_multiSelectQuestionId), []);
 
         // 2 notes, 2 attachments
-        SelectedOption[] submission4Selection = [SelectedOption.Create(_option4Id, "some free text"), SelectedOption.Create(_option1Id, string.Empty)];
+        SelectedOption[] submission4Selection = [SelectedOption.Create(_option4Id, "some free text"), SelectedOption.Create(_option1Id, "")];
         var submission4 = Fake.Submission(form.Id, MultiSelectAnswer.Create(_multiSelectQuestionId, submission4Selection), FakeNotesFor(_multiSelectQuestionId), FakeAttachmentsFor(_multiSelectQuestionId));
 
         List<object[]> expectedData =
         [
-            [.. GetDefaultExpectedColumns(submission1), string.Empty, true, true, true, true, "user written text", string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty],
-            [.. GetDefaultExpectedColumns(submission2), string.Empty, false, false, false, true, "some written text", string.Empty, string.Empty, string.Empty, string.Empty, Attachment1Url, Attachment2Url],
-            [.. GetDefaultExpectedColumns(submission3), string.Empty, false, true, true, false, string.Empty, string.Empty, Note1, Note2, string.Empty, string.Empty, string.Empty],
-            [.. GetDefaultExpectedColumns(submission4), string.Empty, true, false, false, true, "some free text", string.Empty, Note1, Note2, string.Empty, Attachment1Url, Attachment2Url],
+            [.. GetDefaultExpectedColumns(submission1), "", true, true, true, true, "user written text", 0, "", "", 0, "", ""],
+            [.. GetDefaultExpectedColumns(submission2), "", false, false, false, true, "some written text", 0, "", "", 2, Attachment1Url, Attachment2Url],
+            [.. GetDefaultExpectedColumns(submission3), "", false, true, true, false, "", 2, Note1, Note2, 0, "", ""],
+            [.. GetDefaultExpectedColumns(submission4), "", true, false, false, true, "some free text", 2, Note1, Note2, 2, Attachment1Url, Attachment2Url],
         ];
 
         // Act
@@ -524,15 +524,15 @@ public class FormSubmissionsDataTableGeneratorTests
         multiSelectAnswer: (MultiSelectAnswer.Create(_multiSelectQuestionId, selection), FakeNotesFor(_multiSelectQuestionId), FakeAttachmentsFor(_multiSelectQuestionId))
         );
 
-        object[] expectedTextAnswerColumns = ["some answer", "", Note1, Note2, "", Attachment1Url, Attachment2Url];
-        object[] expectedNumberAnswerColumns = [42, "", Note1, Note2, "", Attachment1Url, Attachment2Url];
-        object[] expectedRatingAnswerColumns = [3, "", Note1, Note2, "", Attachment1Url, Attachment2Url];
-        object[] expectedDateAnswerColumns = [_utcNow.ToString("s"), "", Note1, Note2, "", Attachment1Url, Attachment2Url];
+        object[] expectedTextAnswerColumns = ["some answer", 2, Note1, Note2, 2, Attachment1Url, Attachment2Url];
+        object[] expectedNumberAnswerColumns = [42, 2, Note1, Note2, 2, Attachment1Url, Attachment2Url];
+        object[] expectedRatingAnswerColumns = [3, 2, Note1, Note2, 2, Attachment1Url, Attachment2Url];
+        object[] expectedDateAnswerColumns = [_utcNow.ToString("s"), 2, Note1, Note2, 2, Attachment1Url, Attachment2Url];
 
         object[] expectedSingleSelectAnswerColumns =
-            [string.Empty, false, false, false, true, "user written text", "", Note1, Note2, "", Attachment1Url, Attachment2Url];
+            ["", false, false, false, true, "user written text", 2, Note1, Note2, 2, Attachment1Url, Attachment2Url];
         object[] expectedMultiSelectAnswerColumns =
-            [string.Empty, true, true, true, true, "user written text", "", Note1, Note2, "", Attachment1Url, Attachment2Url];
+            ["", true, true, true, true, "user written text", 2, Note1, Note2, 2, Attachment1Url, Attachment2Url];
 
         List<object[]> expectedData = [
 
@@ -648,92 +648,92 @@ public class FormSubmissionsDataTableGeneratorTests
         result.dataTable[2].Should().ContainInOrder(expectedData[2]);
     }
 
-    //[Fact]
-    //public void FormSubmissionsDataTableGenerator_Should_Generates_Correct_DataTable_WhenMultipleQuestions_AndEmptyResponses()
-    //{
-    //    // Arrange
-    //    var form = Fake.Form(DefaultLanguageCode, _textQuestion,
-    //        _numberQuestion,
-    //        _ratingQuestion,
-    //        _dateQuestion,
-    //        _singleSelectQuestion,
-    //        _multiSelectQuestion);
+    [Fact]
+    public void FormSubmissionsDataTableGenerator_Should_Generates_Correct_DataTable_WhenMultipleQuestions_AndEmptyResponses()
+    {
+        // Arrange
+        var form = Fake.Form(DefaultLanguageCode, _textQuestion,
+            _numberQuestion,
+            _ratingQuestion,
+            _dateQuestion,
+            _singleSelectQuestion,
+            _multiSelectQuestion);
 
-    //    var submission = Fake.Submission(form.Id);
+        var submission = Fake.Submission(form.Id);
 
-    //    object[] expectedTextAnswerColumns = [string.Empty, string.Empty, string.Empty];
-    //    object[] expectedNumberAnswerColumns = [string.Empty, string.Empty, string.Empty];
-    //    object[] expectedRatingAnswerColumns = [string.Empty, string.Empty, string.Empty];
-    //    object[] expectedDateAnswerColumns = [_utcNow.ToString("s"), string.Empty, string.Empty];
+        object[] expectedTextAnswerColumns = ["", "", ""];
+        object[] expectedNumberAnswerColumns = ["", "", ""];
+        object[] expectedRatingAnswerColumns = ["", "", ""];
+        object[] expectedDateAnswerColumns = ["", "", ""];
 
-    //    object[] expectedSingleSelectAnswerColumns =
-    //        [string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty];
-    //    object[] expectedMultiSelectAnswerColumns =
-    //        [string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty];
+        object[] expectedSingleSelectAnswerColumns =
+            ["", "", "", "", "", "", "", ""];
+        object[] expectedMultiSelectAnswerColumns =
+            ["", "", "", "", "", "", "", ""];
 
-    //    object[] expectedData =
-    //    [
-    //        .. GetDefaultExpectedColumns(submission),
-    //        .. expectedTextAnswerColumns,
-    //        .. expectedNumberAnswerColumns,
-    //        .. expectedRatingAnswerColumns,
-    //        .. expectedDateAnswerColumns,
-    //        .. expectedSingleSelectAnswerColumns,
-    //        .. expectedMultiSelectAnswerColumns
-    //    ];
+        object[] expectedData =
+        [
+            .. GetDefaultExpectedColumns(submission),
+            .. expectedTextAnswerColumns,
+            .. expectedNumberAnswerColumns,
+            .. expectedRatingAnswerColumns,
+            .. expectedDateAnswerColumns,
+            .. expectedSingleSelectAnswerColumns,
+            .. expectedMultiSelectAnswerColumns
+        ];
 
-    //    // Act
-    //    var result = FormSubmissionsDataTable
-    //        .FromForm(form)
-    //        .WithData()
-    //        .ForSubmission(submission)
-    //        .Please();
+        // Act
+        var result = FormSubmissionsDataTable
+            .FromForm(form)
+            .WithData()
+            .ForSubmission(submission)
+            .Please();
 
-    //    // Assert
-    //    string[] expectedColumns = [
-    //        .. _submissionColumns,
-    //        // text question columns
-    //        "TQ - Question text",
-    //        "Notes",
-    //        "Attachments",
-    //        // number answer columns
-    //        "NQ - Question text",
-    //        "Notes",
-    //        "Attachments",
-    //        // rating answer columns
-    //        "RQ - Question text",
-    //        "Notes",
-    //        "Attachments",
-    //        // Date question columns
-    //        "DQ - Question text",
-    //        "Notes",
-    //        "Attachments",
-    //        // Single select question columns
-    //        "SC - Question text",
-    //        Option1Text,
-    //        Option2Text,
-    //        Option3Text,
-    //        Option4Text,
-    //        Option4Text + "-UserInput",
-    //        "Notes",
-    //        "Attachments",
-    //        // Multi select question columns
-    //        "MC - Question text",
-    //        Option1Text,
-    //        Option2Text,
-    //        Option3Text,
-    //        Option4Text,
-    //        Option4Text + "-UserInput",
-    //        "Notes",
-    //        "Attachments",
-    //    ];
+        // Assert
+        string[] expectedColumns = [
+            .. _submissionColumns,
+            // text question columns
+            "TQ - Question text",
+            "Notes",
+            "Attachments",
+            // number answer columns
+            "NQ - Question text",
+            "Notes",
+            "Attachments",
+            // rating answer columns
+            "RQ - Question text",
+            "Notes",
+            "Attachments",
+            // Date question columns
+            "DQ - Question text",
+            "Notes",
+            "Attachments",
+            // Single select question columns
+            "SC - Question text",
+            Option1Text,
+            Option2Text,
+            Option3Text,
+            Option4Text,
+            Option4Text + "-UserInput",
+            "Notes",
+            "Attachments",
+            // Multi select question columns
+            "MC - Question text",
+            Option1Text,
+            Option2Text,
+            Option3Text,
+            Option4Text,
+            Option4Text + "-UserInput",
+            "Notes",
+            "Attachments",
+        ];
 
-    //    result.Should().NotBeNull();
-    //    result.header.Should().ContainInOrder(expectedColumns);
-    //    result.dataTable.Should().HaveCount(1);
+        result.Should().NotBeNull();
+        result.header.Should().ContainInOrder(expectedColumns);
+        result.dataTable.Should().HaveCount(1);
 
-    //    result.dataTable[0].Should().ContainInOrder(expectedData);
-    //}
+        result.dataTable[0].Should().ContainInOrder(expectedData);
+    }
 
     private object[] GetDefaultExpectedColumns(SubmissionModel submission)
     {

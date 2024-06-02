@@ -1,6 +1,4 @@
 ﻿using System.Text.Json;
-using Vote.Monitor.Domain.Entities.PollingStationAggregate;
-using Vote.Monitor.Domain.Entities.QuickReportAggregate;
 using Vote.Monitor.Hangfire.Jobs.Export.PollingStations;
 using Vote.Monitor.Hangfire.Jobs.Export.PollingStations.ReadModels;
 
