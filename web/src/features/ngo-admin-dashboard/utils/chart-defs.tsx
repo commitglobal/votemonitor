@@ -71,21 +71,25 @@ export const observersOnTheFieldDataConfig = (totalNumberOfObservers?: number, n
 };
 
 export const pollingStationsDataConfig = (pollingStationsStats?: PollingStationsStats): ChartData<"doughnut"> => {
+  debugger;
   const labels = [];
   const data = [];
   const colors = [];
 
   if (pollingStationsStats?.numberOfVisitedPollingStations) {
     labels.push('Visited');
-    data.push();
+    data.push(pollingStationsStats?.numberOfVisitedPollingStations);
     // active color
     colors.push('#7833B3');
   }
 
-  labels.push('Not visited');
-  data.push((pollingStationsStats?.totalNumberOfPollingStations ?? 0) - (pollingStationsStats?.numberOfVisitedPollingStations ?? 0));
-  // inactive color
-  colors.push('#DADADA');
+  const numberOfNotVisitedPollingStations = (pollingStationsStats?.totalNumberOfPollingStations ?? 0) - (pollingStationsStats?.numberOfVisitedPollingStations ?? 0);
+  if (numberOfNotVisitedPollingStations) {
+    labels.push('Not visited');
+    data.push();
+    // inactive color
+    colors.push('#DADADA');
+  }
 
   return {
     labels: labels,
