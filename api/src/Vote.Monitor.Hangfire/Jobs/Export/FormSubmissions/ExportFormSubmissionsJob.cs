@@ -84,15 +84,16 @@ public class ExportFormSubmissionsJob(VoteMonitorContext context,
                 excelFileGenerator.WithSheet("PSI", psiDataTable.header, psiDataTable.dataTable);
             }
 
-            foreach (var form in publishedForms)
+            for (var index = 0; index < publishedForms.Count; index++)
             {
+                var form = publishedForms[index];
                 var sheetData = FormSubmissionsDataTable
                     .FromForm(form)
                     .WithData()
                     .ForSubmissions(submissions)
                     .Please();
 
-                excelFileGenerator.WithSheet(form.Id + "-" + form.Code, sheetData.header, sheetData.dataTable);
+                excelFileGenerator.WithSheet((index + 1) + "-" + form.Code, sheetData.header, sheetData.dataTable);
             }
 
             var base64EncodedData = excelFileGenerator.Please();
