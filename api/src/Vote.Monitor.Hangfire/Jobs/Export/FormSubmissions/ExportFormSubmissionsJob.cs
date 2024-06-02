@@ -92,7 +92,7 @@ public class ExportFormSubmissionsJob(VoteMonitorContext context,
                     .ForSubmissions(submissions)
                     .Please();
 
-                excelFileGenerator.WithSheet(form.Id + form.Code, sheetData.header, sheetData.dataTable);
+                excelFileGenerator.WithSheet(form.Id + "-" + form.Code, sheetData.header, sheetData.dataTable);
             }
 
             var base64EncodedData = excelFileGenerator.Please();
