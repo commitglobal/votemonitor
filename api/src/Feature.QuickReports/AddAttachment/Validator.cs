@@ -1,6 +1,4 @@
-﻿using Vote.Monitor.Core.Validators;
-
-namespace Feature.QuickReports.AddAttachment;
+﻿namespace Feature.QuickReports.AddAttachment;
 
 public class Validator : Validator<Request>
 {
