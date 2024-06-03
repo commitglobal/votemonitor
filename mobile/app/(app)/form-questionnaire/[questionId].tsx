@@ -1,7 +1,7 @@
 import { router, useLocalSearchParams } from "expo-router";
 import { Screen } from "../../../components/Screen";
-import Header from "../../../components/Header";
 import { Icon } from "../../../components/Icon";
+import Header from "../../../components/Header";
 import { Typography } from "../../../components/Typography";
 import { XStack, YStack, Spinner } from "tamagui";
 import LinearProgress from "../../../components/LinearProgress";
@@ -25,23 +25,28 @@ import WizardRatingFormInput from "../../../components/WizardFormInputs/WizardRa
 import { useFormSubmissionMutation } from "../../../services/mutations/form-submission.mutation";
 import OptionsSheet from "../../../components/OptionsSheet";
 import AddAttachment from "../../../components/AddAttachment";
-
 import { FileMetadata, useCamera } from "../../../hooks/useCamera";
-import { addAttachmentMutation } from "../../../services/mutations/attachments/add-attachment.mutation";
+import {
+  UploadAttachmentProgress,
+  useUploadAttachmentMutation,
+  useUploadAttachmentProgressQuery,
+} from "../../../services/mutations/attachments/add-attachment.mutation";
 import QuestionAttachments from "../../../components/QuestionAttachments";
 import QuestionNotes from "../../../components/QuestionNotes";
-import * as DocumentPicker from "expo-document-picker";
 import AddNoteSheetContent from "../../../components/AddNoteSheetContent";
 import { useFormById } from "../../../services/queries/forms.query";
 import { useFormAnswers } from "../../../services/queries/form-submissions.query";
 import { useNotesForQuestionId } from "../../../services/queries/notes.query";
 import * as Crypto from "expo-crypto";
 import { useTranslation } from "react-i18next";
-import { onlineManager } from "@tanstack/react-query";
+import { onlineManager, useQueryClient } from "@tanstack/react-query";
 import { ApiFormQuestion } from "../../../services/interfaces/question.type";
 import FormInput from "../../../components/FormInputs/FormInput";
 import WarningDialog from "../../../components/WarningDialog";
+import { MULTIPART_FILE_UPLOAD_SIZE } from "../../../common/constants";
+import * as DocumentPicker from "expo-document-picker";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { AttachmentsKeys } from "../../../services/queries/attachments.query";
 
 type SearchParamType = {
   questionId: string;
@@ -52,6 +57,11 @@ type SearchParamType = {
 const FormQuestionnaire = () => {
   const { t } = useTranslation(["polling_station_form_wizard", "common"]);
   const { questionId, formId, language } = useLocalSearchParams<SearchParamType>();
+  const queryClient = useQueryClient();
+
+  const { data: uploadAttachmentProgress } = useUploadAttachmentProgressQuery();
+
+  console.log("❌ Upload Progress", uploadAttachmentProgress);
 
   if (!questionId || !formId || !language) {
     return <Typography>Incorrect page params</Typography>;
@@ -264,15 +274,20 @@ const FormQuestionnaire = () => {
   const { uploadCameraOrMedia } = useCamera();
 
   const {
-    mutate: addAttachment,
-    isPending: isLoadingAddAttachmentt,
+    mutate: addAttachmentMultipart,
     isPaused,
-  } = addAttachmentMutation(
+    isPending: isUploadingAttachments,
+  } = useUploadAttachmentMutation(
     `Attachment_${questionId}_${selectedPollingStation?.pollingStationId}_${formId}_${questionId}`,
   );
 
   const handleCameraUpload = async (type: "library" | "cameraPhoto") => {
+    await queryClient.setQueryData(AttachmentsKeys.addAttachments(), {
+      progress: 0,
+      status: "idle",
+    });
     setIsPreparingFile(true);
+
     const cameraResult = await uploadCameraOrMedia(type);
 
     if (!cameraResult) {
@@ -284,36 +299,56 @@ const FormQuestionnaire = () => {
       activeElectionRound &&
       selectedPollingStation?.pollingStationId &&
       formId &&
-      activeQuestion.question.id
+      activeQuestion.question.id &&
+      cameraResult.size
     ) {
-      addAttachment(
+      addAttachmentMultipart(
         {
           id: Crypto.randomUUID(),
           electionRoundId: activeElectionRound.id,
           pollingStationId: selectedPollingStation.pollingStationId,
           formId,
           questionId: activeQuestion.question.id,
-          fileMetadata: cameraResult,
+          fileName: cameraResult.name,
+          contentType: cameraResult.type,
+          numberOfUploadParts: Math.ceil(cameraResult.size / MULTIPART_FILE_UPLOAD_SIZE), // Calculate the number of parts that will be sent to the S3 Bucket. It is +1 (thus we use ceil).
+          filePath: cameraResult.uri,
         },
         {
-          onSettled: () => setIsOptionsSheetOpen(false),
           onError: () => console.log("🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴ERORR🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴"),
+          onSettled: () => {
+            setIsOptionsSheetOpen(false);
+            setIsPreparingFile(false);
+          },
         },
       );
 
-      setIsPreparingFile(false);
-
       if (!onlineManager.isOnline()) {
         setIsOptionsSheetOpen(false);
+        setIsPreparingFile(false);
       }
     }
   };
 
   const handleUploadAudio = async () => {
+    await queryClient.setQueryData(AttachmentsKeys.addAttachments(), {
+      progress: 0,
+      status: "idle",
+    });
+    setIsPreparingFile(true);
+
     const doc = await DocumentPicker.getDocumentAsync({
       type: "audio/*",
       multiple: false,
     });
+
+    console.log(doc);
+
+    if (doc?.canceled) {
+      console.log("canceling");
+      setIsPreparingFile(false);
+      return;
+    }
 
     if (doc?.assets?.[0]) {
       const file = doc?.assets?.[0];
@@ -322,35 +357,47 @@ const FormQuestionnaire = () => {
         name: file.name,
         type: file.mimeType || "audio/mpeg",
         uri: file.uri,
+        size: file.size,
       };
+
+      console.log("FileMetadata", fileMetadata);
 
       if (
         activeElectionRound &&
         selectedPollingStation?.pollingStationId &&
         formId &&
-        activeQuestion.question.id
+        activeQuestion.question.id &&
+        fileMetadata.size
       ) {
-        addAttachment(
+        await addAttachmentMultipart(
           {
             id: Crypto.randomUUID(),
             electionRoundId: activeElectionRound.id,
             pollingStationId: selectedPollingStation.pollingStationId,
             formId,
             questionId: activeQuestion.question.id,
-            fileMetadata,
+            fileName: fileMetadata.name,
+            contentType: fileMetadata.type,
+            numberOfUploadParts: Math.ceil(fileMetadata.size / MULTIPART_FILE_UPLOAD_SIZE),
+            filePath: fileMetadata.uri,
           },
           {
-            onSettled: () => setIsOptionsSheetOpen(false),
             onError: () => console.log("🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴ERORR🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴"),
+            onSettled: () => {
+              setIsOptionsSheetOpen(false);
+              setIsPreparingFile(false);
+            },
           },
         );
 
         if (!onlineManager.isOnline()) {
           setIsOptionsSheetOpen(false);
+          setIsPreparingFile(false);
         }
+      } else {
+        setIsOptionsSheetOpen(false);
+        setIsPreparingFile(false);
       }
-    } else {
-      // Cancelled
     }
   };
 
@@ -378,7 +425,7 @@ const FormQuestionnaire = () => {
         <YStack gap="$xxs" padding="$md">
           <XStack justifyContent="space-between">
             <Typography>{t("progress_bar.label")}</Typography>
-            <Typography justifyContent="space-between">{`${activeQuestion?.indexInDisplayedQuestions + 1}/${displayedQuestions.length}`}</Typography>
+            <Typography justifyContent="space-between">{`${activeQuestion?.indexInDisplayedQuestions + 1} /${displayedQuestions.length}`}</Typography>
           </XStack>
           <LinearProgress
             current={activeQuestion?.indexInDisplayedQuestions + 1}
@@ -621,13 +668,13 @@ const FormQuestionnaire = () => {
             setIsOptionsSheetOpen(open);
             addingNote && setAddingNote(false);
           }}
-          isLoading={(isLoadingAddAttachmentt && !isPaused) || isPreparingFile}
+          isLoading={(isUploadingAttachments && !isPaused) || isPreparingFile}
           // seems that this behaviour is handled differently and the sheet will move with keyboard even if this props is set to false on android
           moveOnKeyboardChange={Platform.OS === "android"}
           disableDrag={addingNote}
         >
-          {(isLoadingAddAttachmentt && !isPaused) || isPreparingFile ? (
-            <MediaLoading />
+          {(isUploadingAttachments && !isPaused) || isPreparingFile ? (
+            <MediaLoading uploadProgress={uploadAttachmentProgress as UploadAttachmentProgress} />
           ) : addingNote ? (
             <AddNoteSheetContent
               setAddingNote={setAddingNote}
@@ -692,13 +739,38 @@ const $containerStyle: ViewStyle = {
 
 export default FormQuestionnaire;
 
-const MediaLoading = () => {
+const MediaLoading = ({
+  uploadProgress,
+}: {
+  uploadProgress: UploadAttachmentProgress | undefined;
+}) => {
   const { t } = useTranslation("polling_station_form_wizard");
+
+  const message = useMemo(() => {
+    if (!uploadProgress) {
+      return "";
+    }
+    switch (uploadProgress?.status) {
+      case "starting":
+        return t("attachments.upload.starting");
+      case "compressing":
+        return `Compressing progress ${uploadProgress.progress}%`;
+      case "inprogress":
+        return `${t("attachments.upload.progress")} ${uploadProgress.progress} %`;
+      case "completed":
+        return t("attachments.upload.completed");
+      case "aborted":
+        return t("attachments.upload.aborted");
+      default:
+        return "";
+    }
+  }, [uploadProgress]);
+
   return (
     <YStack alignItems="center" gap="$lg" paddingHorizontal="$lg">
       <Spinner size="large" color="$purple5" />
-      <Typography preset="subheading" fontWeight="500" color="$purple5">
-        {t("attachments.loading")}
+      <Typography preset="subheading" fontWeight="500" color="$purple5" minHeight="$lg">
+        {message || ""}
       </Typography>
     </YStack>
   );

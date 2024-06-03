@@ -1,7 +1,11 @@
 import * as ImagePicker from "expo-image-picker";
 import Toast from "react-native-toast-message";
-import { Video, Image } from "react-native-compressor";
+import { Video, Image, getVideoMetaData, getImageMetaData } from "react-native-compressor";
 import * as Sentry from "@sentry/react-native";
+import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { AttachmentsKeys } from "../services/queries/attachments.query";
+import { UploadAttachmentProgress } from "../services/mutations/attachments/add-attachment.mutation";
 
 /**
  * 
@@ -41,9 +45,12 @@ export type FileMetadata = {
   uri: string;
   name: string;
   type: string;
+  size?: number;
 };
 
 export const useCamera = () => {
+  const queryClient = useQueryClient();
+
   const [status, requestPermission] = ImagePicker.useCameraPermissions();
 
   const uploadCameraOrMedia = async (
@@ -78,11 +85,13 @@ export const useCamera = () => {
       ...(specifiedMediaType || { mediaTypes: ImagePicker.MediaTypeOptions.All }),
       allowsEditing: true,
       aspect: [4, 3],
-      quality: 0.1,
+      quality: 0.2,
       allowsMultipleSelection: false,
       videoQuality: ImagePicker.UIImagePickerControllerQualityType.Low, // TODO: careful here, Medium might be enough
       cameraType: ImagePicker.CameraType.back,
     });
+
+    console.log("FileSize Before Compression ", result?.assets?.[0].fileSize);
 
     if (result.canceled) {
       return;
@@ -91,18 +100,34 @@ export const useCamera = () => {
     const file = result.assets[0];
     if (file) {
       let resultCompression = file.uri;
+      let fileSize = file.fileSize;
 
       try {
         if (file.type === "image") {
           resultCompression = await Image.compress(file.uri);
+          fileSize = (await getImageMetaData(resultCompression)).size;
         } else if (file.type === "video") {
-          resultCompression = await Video.compress(file.uri, {}, (progress) => {
-            console.log("Compression Progress: ", progress);
-          });
+          resultCompression = await Video.compress(
+            file.uri,
+            {
+              progressDivider: 10,
+            },
+            (progress) => {
+              console.log("Compression Progress: ", progress);
+              queryClient.setQueryData<UploadAttachmentProgress>(AttachmentsKeys.addAttachments(), {
+                status: "compressing",
+                progress: +(progress * 100).toFixed(2),
+              });
+            },
+          );
+          fileSize = (await getVideoMetaData(resultCompression)).size;
         }
       } catch (err) {
+        console.log(err);
         Sentry.captureException(err);
       }
+
+      console.log("FileSize AFTER Compression ", fileSize);
 
       const filename = resultCompression.split("/").pop() || "";
 
@@ -110,6 +135,7 @@ export const useCamera = () => {
         uri: resultCompression,
         name: filename,
         type: file.mimeType || "",
+        size: fileSize,
       };
       return toReturn;
     }

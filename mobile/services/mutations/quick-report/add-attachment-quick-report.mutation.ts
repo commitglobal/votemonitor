@@ -1,16 +1,19 @@
 import { useMutation } from "@tanstack/react-query";
 import { QuickReportKeys } from "../../queries/quick-reports.query";
 import {
-  AddAttachmentQuickReportAPIPayload,
-  addAttachmentQuickReport,
+  AddAttachmentQuickReportStartAPIPayload,
+  addAttachmentQuickReportMultipartStart,
 } from "../../api/quick-report/add-attachment-quick-report.api";
 
-export const addAttachmentQuickReportMutation = () => {
+// Multipart Upload - Start
+export const useUploadAttachmentQuickReportMutation = (scopeId: string) => {
   return useMutation({
     mutationKey: QuickReportKeys.addAttachment(),
-    mutationFn: async (payload: AddAttachmentQuickReportAPIPayload) => {
-      return addAttachmentQuickReport(payload);
+    scope: {
+      id: scopeId,
     },
+    mutationFn: (payload: AddAttachmentQuickReportStartAPIPayload) =>
+      addAttachmentQuickReportMultipartStart(payload),
     onError: (err, _variables, _context) => {
       console.log(err);
     },
