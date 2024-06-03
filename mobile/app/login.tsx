@@ -19,7 +19,6 @@ import * as Sentry from "@sentry/react-native";
 import * as SecureStore from "expo-secure-store";
 import ChooseOnboardingLanguage from "../components/ChooseOnboardingLanguage";
 import OnboardingViewPager from "../components/OnboardingViewPager";
-import Pagination from "../components/Pagination";
 import CredentialsError from "../components/CredentialsError";
 import Toast from "react-native-toast-message";
 import { useNetInfoContext } from "../contexts/net-info-banner/NetInfoContext";
@@ -184,22 +183,21 @@ const Login = () => {
       <XStack
         backgroundColor="$purple6"
         padding="$md"
-        paddingBottom={insets.bottom + 16}
+        paddingBottom={16}
         position="absolute"
-        bottom={0}
+        bottom={insets.bottom}
         justifyContent="center"
         width="100%"
       >
-        <Pagination
+        {/* <Pagination
           scrollOffsetAnimatedValue={scrollOffsetAnimatedValue}
           positionAnimatedValue={positionAnimatedValue}
           data={data}
           currentPage={currentPage + 1}
-        />
+        /> */}
         <YStack
-          position="absolute"
-          right="$md"
-          top="$md"
+          width="100%"
+          alignItems="flex-end"
           padding="$xxs"
           pressStyle={{ opacity: 0.5 }}
           onPress={onNextButtonPress}
