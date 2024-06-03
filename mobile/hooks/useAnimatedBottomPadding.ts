@@ -4,18 +4,21 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const useAnimatedBottomPadding = (initialPadding: number) => {
   const insets = useSafeAreaInsets();
+  // we consider the initial value for padding with insets, as we assume the keyboard is hidden
   const paddingBottom = useRef(new Animated.Value(initialPadding + insets.bottom)).current;
 
   useEffect(() => {
+    // when keyboard is showing, change the paddingBottom to the initialPadding value (no insets)
     const keyboardWillShow = (_event: KeyboardEvent) => {
       Animated.timing(paddingBottom, {
         duration: 0,
-        toValue: initialPadding, // Adjust this value as needed
+        toValue: initialPadding,
         easing: Easing.linear,
         useNativeDriver: false,
       }).start();
     };
 
+    // when keyboard is hiding, we add the insets.bottom to the padding
     const keyboardWillHide = (_event: KeyboardEvent) => {
       Animated.timing(paddingBottom, {
         duration: 0,
@@ -32,7 +35,7 @@ const useAnimatedBottomPadding = (initialPadding: number) => {
       keyboardWillShowSub.remove();
       keyboardWillHideSub.remove();
     };
-  }, [insets.bottom]);
+  }, [initialPadding, insets.bottom]);
 
   return paddingBottom;
 };
