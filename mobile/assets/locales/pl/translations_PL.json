@@ -449,9 +449,14 @@
     "logout": "Wyloguj",
     "logged_in": "Zalogowano jako {{user}}",
     "warning_modal": {
-      "logout": {
+      "logout_offline": {
         "title": "Ostrzeżenie: Twoje dane nie są zsynchronizowane",
         "description": "Aktualnie jesteś offline. Jeśli się teraz wylogujesz, wszystkie formularze, załączniki i notatki wypełnione lub przesłane offline zostaną utracone.\n\nAby uniknąć utraty danych, przed wylogowaniem połącz się ponownie z internetem.",
+        "cancel": "Anuluj",
+        "action": "Wyloguj"
+      },
+      "logout_online": {
+        "title": "Czy na pewno chcesz się wylogować?",
         "cancel": "Anuluj",
         "action": "Wyloguj"
       }
