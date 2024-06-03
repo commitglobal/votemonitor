@@ -260,6 +260,7 @@
     "attachments": {
       "heading": "Wybrane media",
       "loading": "Dodawanie załącznika... ",
+      "error": "xxxxx",
       "add": "Dodaj notatkę, zdjęcie lub wideo",
       "menu": {
         "add_note": "Dodaj notatkę",
@@ -359,6 +360,7 @@
     "media": {
       "heading": "Wybrane media",
       "add": "Dodaj pliki multimedialne",
+      "error": "xxxxx",
       "menu": {
         "load": "Załaduj z galerii",
         "take_picture": "Zrób zdjęcie",
@@ -397,7 +399,8 @@
       },
       "submit": "Zgłoś sprawę",
       "clear": "Wyczyść",
-      "loading": "Przetwarzanie..."
+      "loading": "Przetwarzanie...",
+      "error": "xxxxx"
     }
   },
   "report_details": {

@@ -260,6 +260,7 @@
     "attachments": {
       "heading": "Otpremljeni mediji",
       "loading": "Dodavanje priloga...",
+      "error": "xxxxx",
       "add": "Dodajte vaše medijske datoteke",
       "menu": {
         "add_note": "Dodaj belešku",
@@ -359,6 +360,7 @@
     "media": {
       "heading": "Otpremljeni mediji",
       "add": "Dodaj medijske datoteke",
+      "error": "xxxxx",
       "menu": {
         "load": "Učitaj iz galerije",
         "take_picture": "Napravite fotografiju",
@@ -397,7 +399,8 @@
       },
       "submit": "Pošaljite incident izveštaj",
       "clear": "Očisti",
-      "loading": "Učitavanje..."
+      "loading": "Učitavanje...",
+      "error": "xxxxx"
     }
   },
   "report_details": {
