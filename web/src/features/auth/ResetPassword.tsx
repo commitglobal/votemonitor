@@ -12,6 +12,9 @@ import { Route as ResetPasswordRoute } from '@/routes/reset-password/index'
 import { useMutation } from '@tanstack/react-query';
 import { noAuthApi } from '@/common/no-auth-api';
 import { toast } from '@/components/ui/use-toast';
+import { useNavigate } from '@tanstack/react-router';
+import type { FunctionComponent } from '@/common/types';
+
 interface ResetPasswordRequest{
   password: string;
   token: string;
@@ -37,7 +40,8 @@ const formSchema = z.object({
   }
 );
 
-function ResetPassword() {
+function ResetPassword(): FunctionComponent {
+  const navigate = useNavigate();
   const { token } = ResetPasswordRoute.useSearch();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -62,6 +66,7 @@ function ResetPassword() {
         title: 'Success',
         description: 'Password was reset successfully',
       });
+      navigate({ to: '/reset-password/success' });
     },
   });
 
