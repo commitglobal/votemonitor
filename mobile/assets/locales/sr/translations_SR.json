@@ -260,6 +260,7 @@
     "attachments": {
       "heading": "Otpremljeni mediji",
       "loading": "Dodavanje priloga...",
+      "error": "Greška pri slanju priloga!",
       "add": "Dodajte vaše medijske datoteke",
       "menu": {
         "add_note": "Dodaj belešku",
@@ -359,6 +360,7 @@
     "media": {
       "heading": "Otpremljeni mediji",
       "add": "Dodaj medijske datoteke",
+      "error": "Greška pri slanju priloga!",
       "menu": {
         "load": "Učitaj iz galerije",
         "take_picture": "Napravite fotografiju",
@@ -397,7 +399,8 @@
       },
       "submit": "Pošaljite incident izveštaj",
       "clear": "Očisti",
-      "loading": "Učitavanje..."
+      "loading": "Učitavanje...",
+      "error": "Greška pri učitavanju izveštaja"
     }
   },
   "report_details": {

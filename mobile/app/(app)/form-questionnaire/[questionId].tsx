@@ -43,6 +43,7 @@ import FormInput from "../../../components/FormInputs/FormInput";
 import WarningDialog from "../../../components/WarningDialog";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import MediaLoading from "../../../components/MediaLoading";
+import Toast from "react-native-toast-message";
 
 type SearchParamType = {
   questionId: string;
@@ -298,7 +299,12 @@ const FormQuestionnaire = () => {
         },
         {
           onSettled: () => setIsOptionsSheetOpen(false),
-          onError: () => console.log("🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴ERORR🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴"),
+          onError: () => {
+            Toast.show({
+              type: "error",
+              text2: t("attachments.error"),
+            })
+          }
         },
       );
 
@@ -342,7 +348,12 @@ const FormQuestionnaire = () => {
           },
           {
             onSettled: () => setIsOptionsSheetOpen(false),
-            onError: () => console.log("🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴ERORR🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴"),
+            onError: () => {
+              Toast.show({
+                type: "error",
+                text2: t("attachments.error"),
+              })
+            }
           },
         );
 

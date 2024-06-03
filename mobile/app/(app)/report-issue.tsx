@@ -31,6 +31,7 @@ import { useTranslation } from "react-i18next";
 import i18n from "../../common/config/i18n";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import MediaLoading from "../../components/MediaLoading";
+import Toast from "react-native-toast-message";
 
 const mapVisitsToSelectPollingStations = (visits: PollingStationVisitVM[] = []) => {
   const pollingStationsForSelect = visits.map((visit) => {
@@ -201,7 +202,6 @@ const ReportIssue = () => {
         },
       );
       try {
-
         Promise.all(attachmentsMutations).then(() => {
           queryClient.invalidateQueries({
             queryKey: QuickReportKeys.byElectionRound(activeElectionRound.id),
@@ -210,6 +210,16 @@ const ReportIssue = () => {
       } catch (err) {
         Sentry.captureMessage("Failed to upload some attachments");
         Sentry.captureException(err);
+
+        setIsPreparingFile(false);
+        setOptionsSheetOpen(false);
+        Toast.show({
+          type: "error",
+          text2: t("media.error"),
+        })
+
+        // Stop the flow right here.
+        return;
       }
     }
     mutate(
@@ -224,10 +234,11 @@ const ReportIssue = () => {
         attachments: optimisticAttachments,
       },
       {
-        onError: (err) => {
-          // TODO: Display toast
-          console.log("❌❌❌❌❌❌❌❌❌❌");
-          console.log(err);
+        onError: () => {
+          Toast.show({
+            type: "error",
+            text2: t("form.error"),
+          })
         },
         onSuccess: () => {
           setIsPreparingFile(false);
