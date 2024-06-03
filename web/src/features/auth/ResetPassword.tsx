@@ -28,8 +28,8 @@ const formSchema = z.object({
     message: 'Email is mandatory',
   })
   .email({ message: 'Email format is not correct' }),
-  password: z.string().min(6, { message: 'Password is mandatory and must be at least 6 characters long' }),
-  confirmPassword: z.string().min(6, { message: 'Password is mandatory and must be at least 6 characters long' }),
+  password: z.string().min(8, { message: 'Password is mandatory and must be at least 8 characters long' }),
+  confirmPassword: z.string().min(8, { message: 'Password is mandatory and must be at least 8 characters long' }),
 }).refine(
   (values) => {
     return values.password === values.confirmPassword;
