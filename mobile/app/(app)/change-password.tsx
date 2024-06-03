@@ -101,10 +101,7 @@ const ChangePassword = () => {
 
   if (successfullyChanged) {
     return (
-      <PasswordConfirmationScreen
-        icon="passwordConfirmation"
-        translationKey="change_password.confirmation"
-      />
+      <PasswordConfirmationScreen icon="passwordConfirmation" translationKey="change_password" />
     );
   }
 
