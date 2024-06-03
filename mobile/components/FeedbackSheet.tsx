@@ -14,6 +14,7 @@ import { useUserData } from "../contexts/user/UserContext.provider";
 import Constants from "expo-constants";
 import * as Device from "expo-device";
 import Toast from "react-native-toast-message";
+import { onlineManager } from "@tanstack/react-query";
 
 const FeedbackSheet = (props: OptionsSheetProps) => {
   const { t } = useTranslation("more");
@@ -22,7 +23,7 @@ const FeedbackSheet = (props: OptionsSheetProps) => {
   const [writingFeedback, setWritingFeedback] = useState(false);
   const { activeElectionRound } = useUserData();
 
-  const { mutate: addFeedback } = useAddFeedbackMutation(activeElectionRound?.id);
+  const { mutate: addFeedback, isPending } = useAddFeedbackMutation(activeElectionRound?.id);
 
   const {
     control,
@@ -56,6 +57,7 @@ const FeedbackSheet = (props: OptionsSheetProps) => {
     };
     addFeedback(feedbackPayload, {
       onSuccess: () => {
+        onSheetClose();
         Toast.show({
           type: "success",
           text2: t("feedback_toast.success"),
@@ -68,11 +70,19 @@ const FeedbackSheet = (props: OptionsSheetProps) => {
         });
       },
     });
-    onSheetClose();
+
+    if (!onlineManager.isOnline()) {
+      onSheetClose();
+    }
   };
 
   return (
-    <OptionsSheet {...props} disableDrag={writingFeedback}>
+    <OptionsSheet
+      {...props}
+      dismissOnOverlayPress={false}
+      moveOnKeyboardChange={Platform.OS === "android"}
+      disableDrag={writingFeedback}
+    >
       <YStack
         padding="$md"
         paddingTop="$0"
@@ -114,7 +124,10 @@ const FeedbackSheet = (props: OptionsSheetProps) => {
                     onChangeText={onChange}
                     // use this in order to not allow dragging of the sheet while input is focused (causes trouble on android)
                     onFocus={() => setWritingFeedback(true)}
-                    onBlur={() => setWritingFeedback(false)}
+                    onBlur={() => {
+                      Keyboard.dismiss();
+                      setWritingFeedback(false);
+                    }}
                   />
                 </YStack>
                 {errors.userFeedback && (
@@ -130,7 +143,7 @@ const FeedbackSheet = (props: OptionsSheetProps) => {
           <Button preset="chromeless" onPress={onSheetClose}>
             {t("feedback_sheet.cancel")}
           </Button>
-          <Button flex={1} onPress={handleSubmit(onSubmit)}>
+          <Button flex={1} disabled={isPending} onPress={handleSubmit(onSubmit)}>
             {t("feedback_sheet.action")}
           </Button>
         </XStack>
