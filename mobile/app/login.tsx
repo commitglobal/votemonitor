@@ -158,6 +158,7 @@ const Login = () => {
             handleSubmit(onLogin)();
           }}
           actionBtnLabel={isLoading ? t("form.submit.loading") : t("form.submit.save")}
+          isNextDisabled={isLoading}
         />
       </Screen>
     );
