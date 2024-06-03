@@ -449,9 +449,14 @@
     "logout": "Logout",
     "logged_in": "Logged in as {{user}}",
     "warning_modal": {
-      "logout": {
+      "logout_offline": {
         "title": "Attention: You have unsynced data",
         "description": "You are currently offline. If you log out now, any forms, attachments, or notes you have completed or uploaded during the offline mode will be lost.\n\nTo avoid losing your data, please reconnect to the internet before logging out.",
+        "cancel": "Cancel",
+        "action": "Logout"
+      },
+      "logout_online": {
+        "title": "Are you sure you want to logout?",
         "cancel": "Cancel",
         "action": "Logout"
       }

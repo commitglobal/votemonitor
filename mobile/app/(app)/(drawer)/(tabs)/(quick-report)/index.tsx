@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Typography } from "../../../../../components/Typography";
-import { View, YStack } from "tamagui";
+import { Spinner, View, YStack } from "tamagui";
 import { Icon } from "../../../../../components/Icon";
 import { Screen } from "../../../../../components/Screen";
 import { router, useNavigation } from "expo-router";
@@ -12,9 +12,10 @@ import { useQuickReports } from "../../../../../services/queries/quick-reports.q
 import { useUserData } from "../../../../../contexts/user/UserContext.provider";
 import { ListView } from "../../../../../components/ListView";
 import ReportCard from "../../../../../components/ReportCard";
-import { ViewStyle } from "react-native";
+import { useWindowDimensions, ViewStyle } from "react-native";
 import { QuickReportsAPIResponse } from "../../../../../services/api/quick-report/get-quick-reports.api";
 import { useTranslation } from "react-i18next";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const QuickReport = () => {
   const navigation = useNavigation();
@@ -26,7 +27,7 @@ const QuickReport = () => {
   return (
     <>
       <Screen
-        preset="scroll"
+        preset="auto"
         ScrollViewProps={{
           showsVerticalScrollIndicator: false,
           stickyHeaderIndices: [0],
@@ -88,11 +89,20 @@ interface QuickReportContentProps {
   error: Error | null;
 }
 
+const ESTIMATED_ITEM_SIZE = 200;
+
 const QuickReportContent = ({ quickReports, isLoading, error }: QuickReportContentProps) => {
   const { t } = useTranslation(["quick_report", "common"]);
+  const insets = useSafeAreaInsets();
+  const { height, width } = useWindowDimensions();
+  const scrollHeight = useMemo(() => height - insets.top - insets.bottom - 100 - 60, []);
 
   if (isLoading) {
-    return <Typography>{t("loading", { ns: "common" })}</Typography>;
+    return (
+      <YStack justifyContent="center" alignItems="center" minHeight={scrollHeight}>
+        <Spinner size="large" color="$purple5" />
+      </YStack>
+    );
   }
 
   if (error) {
@@ -100,7 +110,7 @@ const QuickReportContent = ({ quickReports, isLoading, error }: QuickReportConte
   }
 
   return (
-    <YStack padding="$md" style={{ flex: 1 }}>
+    <YStack padding="$md" minHeight={scrollHeight}>
       <ListView<any>
         data={quickReports}
         showsVerticalScrollIndicator={false}
@@ -120,7 +130,7 @@ const QuickReportContent = ({ quickReports, isLoading, error }: QuickReportConte
           )
         }
         ListEmptyComponent={
-          <YStack flex={1} alignItems="center" justifyContent="center" gap="$md" marginTop="40%">
+          <YStack alignItems="center" justifyContent="center" gap="$md" marginTop="40%">
             <Icon icon="undrawFlag" />
             <YStack gap="$md" paddingHorizontal="$xl">
               <Typography preset="body1" textAlign="center" color="$gray12" lineHeight={24}>
@@ -146,7 +156,8 @@ const QuickReportContent = ({ quickReports, isLoading, error }: QuickReportConte
             onPress={() => router.push(`/report-details/${item.id}?reportTitle=${item.title}`)}
           />
         )}
-        estimatedItemSize={100}
+        estimatedItemSize={ESTIMATED_ITEM_SIZE}
+        estimatedListSize={{ height: ESTIMATED_ITEM_SIZE * 5, width: width - 32 }}
       />
     </YStack>
   );

@@ -17,6 +17,8 @@ import * as Linking from "expo-linking";
 import { useState } from "react";
 import OptionsSheet from "../../../../components/OptionsSheet";
 
+const ESTIMATED_ITEM_SIZE = 115;
+
 const Guides = () => {
   const { activeElectionRound } = useUserData();
   const { data: guides, isLoading: isLoadingGuides } = useGuides(activeElectionRound?.id);
@@ -25,32 +27,20 @@ const Guides = () => {
   const { t } = useTranslation("guides");
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
-  const { height } = useWindowDimensions();
+  const { height, width } = useWindowDimensions();
   const scrollHeight = height - insets.top - insets.bottom - 55 - 55;
 
   if (isLoadingGuides) {
     return (
-      <Screen
-        preset="auto"
-        ScrollViewProps={{
-          bounces: false,
-        }}
-        contentContainerStyle={{
-          flexGrow: 1,
-        }}
-      >
+      <Screen preset="fixed">
         <Header
           title={activeElectionRound?.title}
           titleColor="white"
           barStyle="light-content"
           leftIcon={<Icon icon="menuAlt2" color="white" />}
           onLeftPress={() => navigation.dispatch(DrawerActions.openDrawer)}
-          rightIcon={<Icon icon="dotsVertical" color="white" />}
-          onRightPress={() => {
-            console.log("Right icon pressed");
-          }}
         />
-        <YStack backgroundColor="white" flex={1} justifyContent="center" alignItems="center">
+        <YStack minHeight={scrollHeight} justifyContent="center" alignItems="center">
           <Spinner size="large" color="$purple5" />
         </YStack>
       </Screen>
@@ -61,6 +51,8 @@ const Guides = () => {
     <Screen
       preset="auto"
       ScrollViewProps={{
+        showsVerticalScrollIndicator: false,
+        stickyHeaderIndices: [0],
         bounces: false,
       }}
       contentContainerStyle={{
@@ -77,14 +69,22 @@ const Guides = () => {
         onRightPress={() => setOptionsSheetOpen(true)}
       />
       {guides && guides.length !== 0 ? (
-        <YStack paddingHorizontal="$md" paddingTop="$xl" paddingBottom="$md" height={scrollHeight}>
-          <Typography preset="body1" fontWeight="700" marginBottom="$xs">
-            {t("list.heading")}
-          </Typography>
+        <YStack padding="$md" minHeight={scrollHeight}>
           <ListView<Guide>
             data={guides}
             showsVerticalScrollIndicator={false}
             bounces={false}
+            ListHeaderComponent={
+              guides?.length > 0 ? (
+                <Typography preset="body1" fontWeight="700" marginBottom="$xs">
+                  {t("list.heading")}
+                </Typography>
+              ) : (
+                <></>
+              )
+            }
+            estimatedItemSize={ESTIMATED_ITEM_SIZE}
+            estimatedListSize={{ height: ESTIMATED_ITEM_SIZE * 5, width: width - 32 }}
             renderItem={({ item, index }) => {
               return (
                 <GuideCard
@@ -99,7 +99,6 @@ const Guides = () => {
                 />
               );
             }}
-            estimatedItemSize={115}
           />
         </YStack>
       ) : (

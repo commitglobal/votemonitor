@@ -3,7 +3,7 @@ import { Screen } from "../../../components/Screen";
 import Header from "../../../components/Header";
 import { Icon } from "../../../components/Icon";
 import { Typography } from "../../../components/Typography";
-import { XStack, YStack, Spinner } from "tamagui";
+import { XStack, YStack } from "tamagui";
 import LinearProgress from "../../../components/LinearProgress";
 import { useMemo, useState } from "react";
 import { useUserData } from "../../../contexts/user/UserContext.provider";
@@ -42,6 +42,7 @@ import { ApiFormQuestion } from "../../../services/interfaces/question.type";
 import FormInput from "../../../components/FormInputs/FormInput";
 import WarningDialog from "../../../components/WarningDialog";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import MediaLoading from "../../../components/MediaLoading";
 
 type SearchParamType = {
   questionId: string;
@@ -691,15 +692,3 @@ const $containerStyle: ViewStyle = {
 };
 
 export default FormQuestionnaire;
-
-const MediaLoading = () => {
-  const { t } = useTranslation("polling_station_form_wizard");
-  return (
-    <YStack alignItems="center" gap="$lg" paddingHorizontal="$lg">
-      <Spinner size="large" color="$purple5" />
-      <Typography preset="subheading" fontWeight="500" color="$purple5">
-        {t("attachments.loading")}
-      </Typography>
-    </YStack>
-  );
-};

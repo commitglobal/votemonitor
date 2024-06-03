@@ -449,9 +449,14 @@
     "logout": "Odjava",
     "logged_in": "Prijavljeni ste kao {{user}}",
     "warning_modal": {
-      "logout": {
+      "logout_offline": {
         "title": "Upozorenje: Vaši podaci nisu sinhronizovani",
         "description": "Trenutno ste van mreže. Ako se sada odjavite, svi obrasci, prilozi ili beleške koje ste popunili ili poslali van mreže biće izgubljeni.\n\nDa biste izbegli gubitak podataka, ponovo se povežite na internet pre nego što se odjavite..",
+        "cancel": "Otkaži",
+        "action": "Odjava"
+      },
+      "logout_online": {
+        "title": "Jeste li sigurni da se želite odjaviti?",
         "cancel": "Otkaži",
         "action": "Odjava"
       }

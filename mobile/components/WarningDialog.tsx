@@ -3,6 +3,7 @@ import { Typography } from "./Typography";
 import { Dialog } from "./Dialog";
 import { XStack, YStack } from "tamagui";
 import Button from "./Button";
+import { StyleProp, TextStyle } from "react-native";
 
 type WarningDialogProps = {
   title: string;
@@ -12,6 +13,7 @@ type WarningDialogProps = {
   onCancel: () => void;
   action: () => void;
   actionBtnStyle?: object;
+  titleProps?: StyleProp<TextStyle>;
 };
 
 const WarningDialog = ({
@@ -22,21 +24,28 @@ const WarningDialog = ({
   action,
   onCancel,
   actionBtnStyle,
+  titleProps,
 }: WarningDialogProps) => {
   return (
     <Dialog
       open
-      header={<Typography preset="heading">{title}</Typography>}
+      header={
+        <Typography preset="heading" style={titleProps}>
+          {title}
+        </Typography>
+      }
       content={
-        <YStack gap="$lg">
-          {typeof description === "string" ? (
-            <Typography preset="body1" color="$gray6">
-              {description}
-            </Typography>
-          ) : (
-            description
-          )}
-        </YStack>
+        description && (
+          <YStack gap="$lg">
+            {typeof description === "string" ? (
+              <Typography preset="body1" color="$gray6">
+                {description}
+              </Typography>
+            ) : (
+              description
+            )}
+          </YStack>
+        )
       }
       footer={
         <XStack gap="$sm" justifyContent="center" alignItems="center">

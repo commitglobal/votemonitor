@@ -4,7 +4,7 @@ import { useAuth } from "../hooks/useAuth";
 import { ScrollView, View, XStack, YStack } from "tamagui";
 import { useTranslation } from "react-i18next";
 import { Screen } from "../components/Screen";
-import { Animated } from "react-native";
+import { Animated, Keyboard } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Icon } from "../components/Icon";
 import { Typography } from "../components/Typography";
@@ -154,7 +154,10 @@ const Login = () => {
 
         <WizzardControls
           isFirstElement
-          onActionButtonPress={handleSubmit(onLogin)}
+          onActionButtonPress={() => {
+            Keyboard.dismiss();
+            handleSubmit(onLogin)();
+          }}
           actionText={isLoading ? t("form.submit.loading") : t("form.submit.save")}
         />
       </Screen>
