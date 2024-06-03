@@ -4,7 +4,7 @@ import { useAuth } from "../hooks/useAuth";
 import { ScrollView, View, XStack, YStack } from "tamagui";
 import { useTranslation } from "react-i18next";
 import { Screen } from "../components/Screen";
-import { Animated } from "react-native";
+import { Animated, Keyboard } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Icon } from "../components/Icon";
 import { Typography } from "../components/Typography";
@@ -153,7 +153,13 @@ const Login = () => {
         </ScrollView>
 
         <Card width="100%" paddingBottom={16 + insets.bottom} marginTop="auto">
-          <Button onPress={handleSubmit(onLogin)} disabled={isLoading}>
+          <Button
+            onPress={() => {
+              Keyboard.dismiss();
+              handleSubmit(onLogin)();
+            }}
+            disabled={isLoading}
+          >
             {isLoading ? t("form.submit.loading") : t("form.submit.save")}
           </Button>
         </Card>
