@@ -1,5 +1,4 @@
 ﻿using Authorization.Policies.Requirements;
-using Feature.Form.Submissions.Services;
 using Microsoft.AspNetCore.Authorization;
 using Vote.Monitor.Answer.Module.Mappers;
 using Vote.Monitor.Domain.Entities.FormAnswerBase;
@@ -12,8 +11,7 @@ public class Endpoint(IRepository<FormSubmission> repository,
     IReadRepository<PollingStationAggregate> pollingStationRepository,
     IReadRepository<MonitoringObserver> monitoringObserverRepository,
     IReadRepository<FormAggregate> formRepository,
-    IAuthorizationService authorizationService,
-    IOrphanedDataCleanerService cleanerService) : Endpoint<Request, Results<Ok<FormSubmissionModel>, NotFound>>
+    IAuthorizationService authorizationService) : Endpoint<Request, Results<Ok<FormSubmissionModel>, NotFound>>
 {
     public override void Configure()
     {
@@ -65,21 +63,6 @@ public class Endpoint(IRepository<FormSubmission> repository,
     {
         submission = form.FillIn(submission, answers);
         await repository.UpdateAsync(submission, ct);
-
-        // delete orphaned data
-        var submittedQuestionIds = submission
-            .Answers
-            .Select(x => x.QuestionId)
-            .ToHashSet();
-       
-        var orphanedQuestionIds = form
-            .Questions
-            .Select(x => x.Id)
-            .Where(questionId => !submittedQuestionIds.Contains(questionId))
-            .ToArray();
-
-        await cleanerService.CleanupAsync(submission.ElectionRoundId, submission.MonitoringObserverId, submission.PollingStationId,
-            submission.FormId, orphanedQuestionIds, ct);
 
         return TypedResults.Ok(FormSubmissionModel.FromEntity(submission));
     }
