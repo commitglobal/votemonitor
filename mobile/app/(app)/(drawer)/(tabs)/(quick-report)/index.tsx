@@ -157,7 +157,9 @@ const QuickReportContent = ({ quickReports, isLoading, error }: QuickReportConte
           />
         )}
         estimatedItemSize={ESTIMATED_ITEM_SIZE}
-        estimatedListSize={{ height: ESTIMATED_ITEM_SIZE * 5, width: width - 32 }}
+        estimatedListSize={!quickReports.length ? undefined : {
+          height: ESTIMATED_ITEM_SIZE * 5, width: width - 32
+        }}
       />
     </YStack>
   );
