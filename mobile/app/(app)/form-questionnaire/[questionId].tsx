@@ -303,8 +303,8 @@ const FormQuestionnaire = () => {
             Toast.show({
               type: "error",
               text2: t("attachments.error"),
-            })
-          }
+            });
+          },
         },
       );
 
@@ -352,8 +352,8 @@ const FormQuestionnaire = () => {
               Toast.show({
                 type: "error",
                 text2: t("attachments.error"),
-              })
-            }
+              });
+            },
           },
         );
 
@@ -622,7 +622,7 @@ const FormQuestionnaire = () => {
           activeQuestion?.indexInAllQuestions === currentForm?.questions?.length - 1
         }
         isNextDisabled={false}
-        onNextButtonPress={handleSubmit(onSubmitAnswer)}
+        onActionButtonPress={handleSubmit(onSubmitAnswer)}
         onPreviousButtonPress={onBackButtonPress}
       />
       {/* //todo: remove this once tamagui fixes sheet issue #2585 */}

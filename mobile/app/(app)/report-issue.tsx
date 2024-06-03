@@ -217,7 +217,7 @@ const ReportIssue = () => {
         Toast.show({
           type: "error",
           text2: t("media.error"),
-        })
+        });
 
         // Stop the flow right here.
         return;
@@ -239,7 +239,7 @@ const ReportIssue = () => {
           Toast.show({
             type: "error",
             text2: t("form.error"),
-          })
+          });
         },
         onSuccess: () => {
           setIsPreparingFile(false);
@@ -248,8 +248,6 @@ const ReportIssue = () => {
         },
       },
     );
-
-
 
     if (!onlineManager.isOnline()) {
       router.back();
@@ -435,7 +433,11 @@ const ReportIssue = () => {
           </YStack>
         </KeyboardAwareScrollView>
 
-        <OptionsSheet open={optionsSheetOpen} setOpen={setOptionsSheetOpen} isLoading={(isLoadingAddAttachment && !isPaused) || isPreparingFile}>
+        <OptionsSheet
+          open={optionsSheetOpen}
+          setOpen={setOptionsSheetOpen}
+          isLoading={(isLoadingAddAttachment && !isPaused) || isPreparingFile}
+        >
           {isPreparingFile || (isLoadingAddAttachment && !isPaused) ? (
             <MediaLoading />
           ) : (
@@ -490,8 +492,7 @@ const ReportIssue = () => {
         >
           {(!isPendingAddQuickReport && !isPausedAddQuickReport) || !isUploadingAttachments
             ? t("form.submit")
-            : t("form.loading")
-          }
+            : t("form.loading")}
         </Button>
       </XStack>
     </>

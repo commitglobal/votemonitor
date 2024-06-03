@@ -1,15 +1,17 @@
-import { XStack } from "tamagui";
+import { XStack, XStackProps } from "tamagui";
 import Button from "./Button";
 import { Icon } from "./Icon";
 import { useTranslation } from "react-i18next";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Animated } from "react-native";
+import useAnimatedBottomPadding from "../hooks/useAnimatedBottomPadding";
 
-interface WizzardControlsProps {
+interface WizzardControlsProps extends XStackProps {
   isFirstElement?: boolean;
   isLastElement?: boolean;
   isNextDisabled?: boolean;
-  onPreviousButtonPress: () => void;
-  onNextButtonPress: () => void;
+  onPreviousButtonPress?: () => void;
+  onActionButtonPress?: () => void;
+  actionBtnLabel?: string;
 }
 
 const WizzardControls = ({
@@ -17,18 +19,24 @@ const WizzardControls = ({
   isLastElement,
   isNextDisabled,
   onPreviousButtonPress,
-  onNextButtonPress,
+  onActionButtonPress,
+  actionBtnLabel,
+  ...rest
 }: WizzardControlsProps) => {
   const { t } = useTranslation("add_polling_station");
-  const insets = useSafeAreaInsets();
+  const paddingBottom = useAnimatedBottomPadding(16);
+
+  const AnimatedXStack = Animated.createAnimatedComponent(XStack);
 
   return (
-    <XStack
+    <AnimatedXStack
       elevation={2}
       backgroundColor="white"
+      alignItems="center"
       gap="$sm"
       padding="$md"
-      paddingBottom={insets.bottom}
+      paddingBottom={paddingBottom}
+      {...rest}
     >
       {!isFirstElement && (
         <XStack flex={0.25}>
@@ -42,12 +50,13 @@ const WizzardControls = ({
           </Button>
         </XStack>
       )}
-      <XStack flex={isFirstElement ? 1 : 0.75} marginBottom="$md">
-        <Button disabled={isNextDisabled} width="100%" onPress={onNextButtonPress}>
-          {!isLastElement ? t("actions.next_step") : t("actions.finalize")}
+
+      <XStack flex={isFirstElement ? 1 : 0.75}>
+        <Button disabled={isNextDisabled} width="100%" onPress={onActionButtonPress}>
+          {!isLastElement ? actionBtnLabel || t("actions.next_step") : t("actions.finalize")}
         </Button>
       </XStack>
-    </XStack>
+    </AnimatedXStack>
   );
 };
 
