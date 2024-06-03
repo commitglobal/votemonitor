@@ -1,6 +1,4 @@
-﻿using Vote.Monitor.Core.Validators;
-
-namespace Vote.Monitor.Api.Feature.PollingStation.Import;
+﻿namespace Vote.Monitor.Api.Feature.PollingStation.Import;
 
 public class Validator : Validator<Request>
 {

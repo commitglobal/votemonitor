@@ -1,6 +1,4 @@
-﻿using Vote.Monitor.Core.Validators;
-
-namespace Feature.Attachments.Create;
+﻿namespace Feature.Attachments.Create;
 
 public class Validator : Validator<Request>
 {

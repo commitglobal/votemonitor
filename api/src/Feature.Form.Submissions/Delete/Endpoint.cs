@@ -1,8 +1,6 @@
-﻿using Feature.Form.Submissions.Services;
+﻿namespace Feature.Form.Submissions.Delete;
 
-namespace Feature.Form.Submissions.Delete;
-
-public class Endpoint(IRepository<FormSubmission> repository, IOrphanedDataCleanerService clearCleanerService) : Endpoint<Request, Results<NoContent, NotFound>>
+public class Endpoint(IRepository<FormSubmission> repository) : Endpoint<Request, Results<NoContent, NotFound>>
 {
     public override void Configure()
     {
@@ -26,8 +24,6 @@ public class Endpoint(IRepository<FormSubmission> repository, IOrphanedDataClean
         }
 
         await repository.DeleteAsync(submission, ct);
-        await clearCleanerService.CleanupAsync(req.ElectionRoundId, submission.MonitoringObserverId,
-            req.PollingStationId, req.FormId, ct);
 
         return TypedResults.NoContent();
     }
