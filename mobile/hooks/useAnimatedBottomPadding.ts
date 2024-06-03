@@ -7,7 +7,7 @@ const useAnimatedBottomPadding = (initialPadding: number) => {
   const paddingBottom = useRef(new Animated.Value(initialPadding + insets.bottom)).current;
 
   useEffect(() => {
-    const keyboardWillShow = (event: KeyboardEvent) => {
+    const keyboardWillShow = (_event: KeyboardEvent) => {
       Animated.timing(paddingBottom, {
         duration: 0,
         toValue: initialPadding, // Adjust this value as needed
@@ -16,7 +16,7 @@ const useAnimatedBottomPadding = (initialPadding: number) => {
       }).start();
     };
 
-    const keyboardWillHide = (event: KeyboardEvent) => {
+    const keyboardWillHide = (_event: KeyboardEvent) => {
       Animated.timing(paddingBottom, {
         duration: 0,
         toValue: initialPadding + insets.bottom,

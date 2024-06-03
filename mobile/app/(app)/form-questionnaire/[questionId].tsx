@@ -303,8 +303,8 @@ const FormQuestionnaire = () => {
             Toast.show({
               type: "error",
               text2: t("attachments.error"),
-            })
-          }
+            });
+          },
         },
       );
 
@@ -352,8 +352,8 @@ const FormQuestionnaire = () => {
               Toast.show({
                 type: "error",
                 text2: t("attachments.error"),
-              })
-            }
+              });
+            },
           },
         );
 

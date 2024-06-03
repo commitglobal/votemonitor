@@ -11,7 +11,7 @@ interface WizzardControlsProps extends XStackProps {
   isNextDisabled?: boolean;
   onPreviousButtonPress?: () => void;
   onActionButtonPress?: () => void;
-  actionText?: string;
+  actionBtnLabel?: string;
 }
 
 const WizzardControls = ({
@@ -20,7 +20,7 @@ const WizzardControls = ({
   isNextDisabled,
   onPreviousButtonPress,
   onActionButtonPress,
-  actionText,
+  actionBtnLabel,
   ...rest
 }: WizzardControlsProps) => {
   const { t } = useTranslation("add_polling_station");
@@ -31,7 +31,7 @@ const WizzardControls = ({
   return (
     <AnimatedXStack
       elevation={2}
-      backgroundColor="pink"
+      backgroundColor="white"
       alignItems="center"
       gap="$sm"
       padding="$md"
@@ -53,7 +53,7 @@ const WizzardControls = ({
 
       <XStack flex={isFirstElement ? 1 : 0.75}>
         <Button disabled={isNextDisabled} width="100%" onPress={onActionButtonPress}>
-          {!isLastElement ? actionText || t("actions.next_step") : t("actions.finalize")}
+          {!isLastElement ? actionBtnLabel || t("actions.next_step") : t("actions.finalize")}
         </Button>
       </XStack>
     </AnimatedXStack>
