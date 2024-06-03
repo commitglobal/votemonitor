@@ -4,7 +4,7 @@ import Header from "../../../../../../components/Header";
 import { Icon } from "../../../../../../components/Icon";
 import { useUserData } from "../../../../../../contexts/user/UserContext.provider";
 import { Typography } from "../../../../../../components/Typography";
-import { YStack } from "tamagui";
+import { Spinner, useWindowDimensions, YStack } from "tamagui";
 import { useMemo, useState } from "react";
 import { ListView } from "../../../../../../components/ListView";
 import { Platform } from "react-native";
@@ -24,6 +24,9 @@ import { shouldDisplayQuestion } from "../../../../../../services/form.parser";
 import WarningDialog from "../../../../../../components/WarningDialog";
 import { useAttachments } from "../../../../../../services/queries/attachments.query";
 import { useNotesForFormId } from "../../../../../../services/queries/notes.query";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+
+const ESTIMATED_ITEM_SIZE = 100;
 
 type SearchParamsType = {
   formId: string;
@@ -42,6 +45,9 @@ const FormDetails = () => {
   const [isChangeLanguageModalOpen, setIsChangeLanguageModalOpen] = useState<boolean>(false);
   const [optionSheetOpen, setOptionSheetOpen] = useState(false);
   const [clearingForm, setClearingForm] = useState(false);
+  const insets = useSafeAreaInsets();
+  const { height, width } = useWindowDimensions();
+  const scrollHeight = useMemo(() => height - insets.top - insets.bottom - 100 - 60, []);
 
   const { mutate: updateSubmission } = useFormSubmissionMutation({
     electionRoundId: activeElectionRound?.id,
@@ -138,7 +144,20 @@ const FormDetails = () => {
   };
 
   if (isLoadingCurrentForm || isLoadingAnswers) {
-    return <Typography>{t("loading", { ns: "common" })}</Typography>;
+    return (
+      <Screen preset="fixed">
+        <Header
+          title={`${formId}`}
+          titleColor="white"
+          barStyle="light-content"
+          leftIcon={<Icon icon="chevronLeft" color="white" />}
+          onLeftPress={() => router.back()}
+        />
+        <YStack justifyContent="center" alignItems="center" minHeight={scrollHeight}>
+          <Spinner size="large" color="$purple5" />
+        </YStack>
+      </Screen>
+    );
   }
 
   if (currentFormError || answersError) {
@@ -178,7 +197,7 @@ const FormDetails = () => {
           setOptionSheetOpen(true);
         }}
       />
-      <YStack paddingTop={28} gap="$xl" paddingHorizontal="$md" style={{ flex: 1 }}>
+      <YStack paddingTop={28} gap="$xl" paddingHorizontal="$md" minHeight={scrollHeight}>
         <ListView<
           Pick<FormQuestionListItemProps, "question" | "status"> & {
             id: string;
@@ -212,7 +231,8 @@ const FormDetails = () => {
               />
             );
           }}
-          estimatedItemSize={100}
+          estimatedItemSize={ESTIMATED_ITEM_SIZE}
+          estimatedListSize={{ height: ESTIMATED_ITEM_SIZE * 5, width: width - 32 }}
         />
       </YStack>
       {isChangeLanguageModalOpen && languages && (

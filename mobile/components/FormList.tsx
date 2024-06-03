@@ -9,7 +9,7 @@ import {
 } from "../common/language.preferences";
 import { router } from "expo-router";
 import { Typography } from "./Typography";
-import { XStack, YStack } from "tamagui";
+import { Spinner, useWindowDimensions, XStack, YStack } from "tamagui";
 import { ListView } from "./ListView";
 import FormCard from "./FormCard";
 import { Dialog } from "./Dialog";
@@ -20,6 +20,9 @@ import { useElectionRoundAllForms } from "../services/queries/forms.query";
 import FormListErrorScreen from "./FormListError";
 import { useQueryClient } from "@tanstack/react-query";
 import { electionRoundsKeys, pollingStationsKeys } from "../services/queries.service";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+
+const ESTIMATED_ITEM_SIZE = 100;
 
 export type FormListItem = {
   id: string;
@@ -41,6 +44,10 @@ const FormList = ({ ListHeaderComponent }: { ListHeaderComponent: ListHeaderComp
   const { activeElectionRound, selectedPollingStation } = useUserData();
   const [selectedForm, setSelectedForm] = useState<FormListItem | null>(null);
   const { t } = useTranslation(["observation", "common"]);
+  const insets = useSafeAreaInsets();
+  const { height, width } = useWindowDimensions();
+  const scrollHeight = useMemo(() => height - insets.top - insets.bottom - 100 - 60, []);
+
   const queryClient = useQueryClient();
 
   const {
@@ -90,7 +97,11 @@ const FormList = ({ ListHeaderComponent }: { ListHeaderComponent: ListHeaderComp
   };
 
   if (isLoadingAnswers || isLoadingForms) {
-    return <Typography>{t("loading", { ns: "common" })}</Typography>;
+    return (
+      <YStack justifyContent="center" alignItems="center" minHeight={scrollHeight - 50}>
+        <Spinner size="large" color="$purple5" />
+      </YStack>
+    );
   }
 
   if (formsError || answersError) {
@@ -114,7 +125,7 @@ const FormList = ({ ListHeaderComponent }: { ListHeaderComponent: ListHeaderComp
   return (
     <YStack gap="$xxs">
       {/* height = number of forms * formCard max height + ListHeaderComponent height  */}
-      <YStack style={{ flex: 1 }}>
+      <YStack minHeight={scrollHeight}>
         <ListView<FormListItem>
           data={formList}
           ListHeaderComponent={ListHeaderComponent}
@@ -133,7 +144,8 @@ const FormList = ({ ListHeaderComponent }: { ListHeaderComponent: ListHeaderComp
               </>
             );
           }}
-          estimatedItemSize={100}
+          estimatedItemSize={ESTIMATED_ITEM_SIZE}
+          estimatedListSize={{ height: ESTIMATED_ITEM_SIZE * 5, width: width - 32 }}
         />
         {selectedForm && (
           <Controller
