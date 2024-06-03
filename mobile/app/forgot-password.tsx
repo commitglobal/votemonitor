@@ -7,14 +7,13 @@ import { YStack } from "tamagui";
 import { Typography } from "../components/Typography";
 import { useForm, Controller } from "react-hook-form";
 import FormInput from "../components/FormInputs/FormInput";
-import Card from "../components/Card";
-import Button from "../components/Button";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useState } from "react";
 import PasswordConfirmationScreen from "../components/PasswordConfirmationScreen";
 import { ForgotPasswwordPayload, forgotPassword } from "../services/definitions.api";
 import * as Sentry from "@sentry/react-native";
 import CredentialsError from "../components/CredentialsError";
+import WizzardControls from "../components/WizzardControls";
 
 type FormData = {
   email: string;
@@ -61,6 +60,7 @@ const ForgotPassword = () => {
       }}
       contentContainerStyle={{
         flexGrow: 1,
+        flex: 1,
       }}
     >
       <Header
@@ -106,11 +106,12 @@ const ForgotPassword = () => {
         />
       </YStack>
 
-      <Card width="100%" paddingBottom={16 + insets.bottom} marginTop="auto">
-        <Button disabled={isLoading} onPress={handleSubmit(onSubmit)}>
-          {isLoading ? t("form.submit.loading") : t("form.submit.save")}
-        </Button>
-      </Card>
+      <WizzardControls
+        isFirstElement
+        onActionButtonPress={handleSubmit(onSubmit)}
+        actionText={isLoading ? t("form.submit.loading") : t("form.submit.save")}
+        marginTop="auto"
+      />
     </Screen>
   );
 };

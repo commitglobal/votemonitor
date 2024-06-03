@@ -610,7 +610,7 @@ const FormQuestionnaire = () => {
           activeQuestion?.indexInAllQuestions === currentForm?.questions?.length - 1
         }
         isNextDisabled={false}
-        onNextButtonPress={handleSubmit(onSubmitAnswer)}
+        onActionButtonPress={handleSubmit(onSubmitAnswer)}
         onPreviousButtonPress={onBackButtonPress}
       />
       {/* //todo: remove this once tamagui fixes sheet issue #2585 */}
