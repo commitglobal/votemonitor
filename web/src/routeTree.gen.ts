@@ -24,6 +24,7 @@ import { Route as ElectionRoundsIndexImport } from './routes/election-rounds/ind
 import { Route as ElectionEventIndexImport } from './routes/election-event/index'
 import { Route as AcceptInviteIndexImport } from './routes/accept-invite/index'
 import { Route as ResponsesSubmissionIdImport } from './routes/responses/$submissionId'
+import { Route as ResetPasswordSuccessImport } from './routes/reset-password/success'
 import { Route as ObserversObserverIdImport } from './routes/observers/$observerId'
 import { Route as NgosNgoIdImport } from './routes/ngos/$ngoId'
 import { Route as MonitoringObserversCreateNewMessageImport } from './routes/monitoring-observers/create-new-message'
@@ -110,6 +111,11 @@ const AcceptInviteIndexRoute = AcceptInviteIndexImport.update({
 
 const ResponsesSubmissionIdRoute = ResponsesSubmissionIdImport.update({
   path: '/responses/$submissionId',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ResetPasswordSuccessRoute = ResetPasswordSuccessImport.update({
+  path: '/reset-password/success',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -269,6 +275,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ObserversObserverIdImport
       parentRoute: typeof rootRoute
     }
+    '/reset-password/success': {
+      preLoaderRoute: typeof ResetPasswordSuccessImport
+      parentRoute: typeof rootRoute
+    }
     '/responses/$submissionId': {
       preLoaderRoute: typeof ResponsesSubmissionIdImport
       parentRoute: typeof rootRoute
@@ -384,6 +394,7 @@ export const routeTree = rootRoute.addChildren([
   MonitoringObserversCreateNewMessageRoute,
   NgosNgoIdRoute,
   ObserversObserverIdRoute,
+  ResetPasswordSuccessRoute,
   ResponsesSubmissionIdRoute,
   AcceptInviteIndexRoute,
   ElectionEventIndexRoute,
