@@ -1,5 +1,6 @@
 ﻿using Refit;
 using SubmissionsFaker.Clients.MonitoringObserver.Models;
+using SubmissionsFaker.Fakers;
 
 namespace SubmissionsFaker.Clients.MonitoringObserver;
 
@@ -41,5 +42,12 @@ public interface IMonitoringObserverApi
         [AliasAs("QuickReportId")] string quickReportId,
         [AliasAs("Id")] string id,
         [AliasAs("Attachment")] StreamPart attachment,
+        [Authorize] string token);
+
+    [Post("/api/election-rounds/{electionRoundId}/polling-stations/{pollingStationId}/information")]
+    Task SubmitPSIForm(
+        [AliasAs("electionRoundId")] string electionRoundId,
+        [AliasAs("pollingStationId")] string pollingStationId,
+        [Body] PSISubmissionRequest submission,
         [Authorize] string token);
 }

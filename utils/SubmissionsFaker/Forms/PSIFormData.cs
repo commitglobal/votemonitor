@@ -7,226 +7,416 @@ public class PSIFormData
 {
     public static UpsertPSIFormRequest PSIForm = new()
     {
-        DefaultLanguage = "RO",
-        Languages = new List<string> { "RO", "EN" },
-        Questions = [
-        new NumberQuestionRequest
-        {
-            Id = Guid.NewGuid(),
-            Code = "A1",
-            Text = new TranslatedString
-            {
-                { "EN", "How many PEC members have been appointed" },
-                { "RO", "Câți membri PEC au fost numiți" }
-            },
-            Helptext = new TranslatedString
-            {
-                { "EN", "Please enter a number" },
-                { "RO", "Vă rugăm să introduceți numărul dvs" }
-            },
-            InputPlaceholder = new TranslatedString
-            {
-                { "EN", "number" },
-                { "RO", "numar" }
-            }
-        },
-            new TextQuestionRequest
+        DefaultLanguage = "SR",
+        Languages = new List<string> { "SR" },
+        Questions =
+        [
+            new SingleSelectQuestionRequest()
             {
                 Id = Guid.NewGuid(),
-                Code = "A2",
-                Text = new TranslatedString
-            {
-                { "EN", "How are you today" },
-                { "RO", "Cum te simți azi" }
-            },
-                Helptext = new TranslatedString
-            {
-                { "EN", "Please enter how are you" },
-                { "RO", "Vă rugăm să introduceți cum sunteți" }
-            },
-                InputPlaceholder = new TranslatedString
-            {
-                { "EN", "mood" },
-                { "RO", "dispozitie" }
-            }
-            },
-            new DateQuestionRequest
-            {
-                Id = Guid.NewGuid(),
-                Code = "A3",
-                Text = new TranslatedString
+                Code = "1",
+                Text = new()
                 {
-                    { "EN", "Time of arrival" },
-                    { "RO", "Timpul sosirii" }
+                    { "SR", "Biračko mesto je:" }
                 },
-                Helptext = new TranslatedString
+                Options =
+                [
+                    new SelectOptionRequest()
+                    {
+                        Id = Guid.NewGuid(),
+                        Text = new()
+                        {
+                            { "SR", "Urbano" }
+                        },
+                        IsFlagged = false,
+                        IsFreeText = false
+                    },
+                    new SelectOptionRequest
+                    {
+                        Id = Guid.NewGuid(),
+                        Text = new()
+                        {
+                            { "SR", "Ruralno" }
+                        },
+                        IsFlagged = false,
+                        IsFreeText = false
+                    }
+                ],
+                Helptext = new()
                 {
-                    { "EN", "Please enter exact hour when did you arrive" },
-                    { "RO", "Vă rugăm să introduceți ora exactă când ați sosit" }
+                    { "SR", "" }
+                },
+            },
+            new SingleSelectQuestionRequest()
+            {
+                Id = Guid.NewGuid(),
+                Code = "2",
+                Text =new()
+                {
+                    { "SR", "Biračko mesto je:" }
+                },
+                Options =
+                [
+                    new()
+                    {
+                        Id = Guid.NewGuid(),
+                        Text =new()
+                        {
+                            { "SR", "Osnovna/srednja škola" }
+                        },
+                        IsFlagged = false,
+                        IsFreeText = false
+                    },
+                    new()
+                    {
+                        Id = Guid.NewGuid(),
+                        Text =new()
+                        {
+                            { "SR", "Mesna zajednica" }
+                        },
+                        IsFlagged = false,
+                        IsFreeText = false
+                    },
+                    new()
+                    {
+                        Id = Guid.NewGuid(),
+                        Text =new()
+                        {
+                            { "SR", "Gerontološki centar/zdravstvena ustanova" }
+                        },
+                        IsFlagged = false,
+                        IsFreeText = false
+                    },
+                    new()
+                    {
+                        Id = Guid.NewGuid(),
+                        Text =new()
+                        {
+                            { "SR", "Javna ustanova" }
+                        },
+                        IsFlagged = false,
+                        IsFreeText = false
+                    }
+                ],
+                Helptext = new()
+                {
+                    { "SR", "" }
                 }
             },
-            new RatingQuestionRequest
+            new SingleSelectQuestionRequest()
             {
                 Id = Guid.NewGuid(),
-                Code = "C1",
-                Text = new TranslatedString
+                Code = "3",
+                Text =new()
                 {
-                    { "EN", "Please rate this form" },
-                    { "RO", "Vă rugăm să evaluați acest formular" }
+                    { "SR", "Predsednik biračkog odbora je kog pola:" }
                 },
-                Helptext = new TranslatedString
-                {
-                    { "EN", "Please give us a rating" },
-                    { "RO", "Vă rugăm să ne dați o evaluare" }
-                },
-                Scale = "OneTo10"
-            },
-            new SingleSelectQuestionRequest
-            {
-                Id = Guid.NewGuid(),
-                Code = "B1",
-                Text = new TranslatedString
-                {
-                    { "EN", "The overall conduct of the opening of this PS was:" },
-                    { "RO", "Conducerea generală a deschiderii acestui PS a fost:" }
-                },
-                Helptext = new TranslatedString
-                {
-                    { "EN", "Please select a single option" },
-                    { "RO", "Vă rugăm să selectați o singură opțiune" }
-                },
-                Options = new List<SelectOptionRequest>
-                {
+                Options =
+                [
                     new()
                     {
                         Id = Guid.NewGuid(),
-                        Text = new TranslatedString
+                        Text =new()
                         {
-                            { "EN", "Very good" },
-                            { "RO", "Foarte bun" }
+                            { "SR", "Muški" }
                         },
-                        IsFreeText = false,
-                        IsFlagged = false
+                        IsFlagged = false,
+                        IsFreeText = false
                     },
                     new()
                     {
                         Id = Guid.NewGuid(),
-                        Text = new TranslatedString
+                        Text =new()
                         {
-                            { "EN", "Good" },
-                            { "RO", "bun" }
+                            { "SR", "Ženski" }
                         },
-                        IsFreeText = false,
-                        IsFlagged = false
-                    },
-                    new()
-                    {
-                        Id = Guid.NewGuid(),
-                        Text = new TranslatedString
-                        {
-                            { "EN", "Bad" },
-                            { "RO", "Rea" }
-                        },
-                        IsFreeText = false,
-                        IsFlagged = false
-                    },
-                    new()
-                    {
-                        Id = Guid.NewGuid(),
-                        Text = new TranslatedString
-                        {
-                            { "EN", "Very bad" },
-                            { "RO", "Foarte rea" }
-                        },
-                        IsFreeText = false,
-                        IsFlagged = true
-                    },
-                    new()
-                    {
-                        Id = Guid.NewGuid(),
-                        Text = new TranslatedString
-                        {
-                            { "EN", "Other" },
-                            { "RO", "Alta" }
-                        },
-                        IsFreeText = true,
-                        IsFlagged = true
-                    },
+                        IsFlagged = false,
+                        IsFreeText = false
                     }
+                ],
+                Helptext =new()
+                {
+                    { "SR", "" }
+                },
+            },
+            new TextQuestionRequest()
+            {
+                Id = Guid.NewGuid(),
+                Code = "4",
+                Text =new()
+                {
+                    { "SR", "Koliko je članova stalnog sastava biračkog odbora:" }
+                },
+                Helptext =new()
+                {
+                    { "SR", "" }
+                },
 
-            },
-            new MultiSelectQuestionRequest
-            {
-                Id = Guid.NewGuid(),
-                Code = "B2",
-                Text = new TranslatedString
+                InputPlaceholder =new()
                 {
-                    { "EN", "What party/bloc proxies were present at the opening of this PS" },
-                    { "RO", "Ce împuterniciri de partid/bloc au fost prezenți la deschiderea acestui PS" }
-                },
-                Helptext = new TranslatedString
-                {
-                    { "EN", "Please select as many you want" },
-                    { "RO", "Vă rugăm să selectați câte doriți" }
-                },
-                Options = new List<SelectOptionRequest>
-                {
-                    new()
                     {
-                        Id = Guid.NewGuid(),
-                        Text = new TranslatedString
-                        {
-                            { "EN", "Bloc 1" },
-                            { "RO", "Bloc 1" }
-                        },
-                        IsFreeText = false,
-                        IsFlagged = false
-                    },
-                    new()
-                    {
-                        Id = Guid.NewGuid(),
-                        Text = new TranslatedString
-                        {
-                            { "EN", "Bloc 2" },
-                            { "RO", "Bloc 2" }
-                        },
-                        IsFreeText = false,
-                        IsFlagged = false
-                    },
-                    new()
-                    {
-                        Id = Guid.NewGuid(),
-                        Text = new TranslatedString
-                        {
-                            { "EN", "Bloc 3" },
-                            { "RO", "Bloc 3" }
-                        },
-                        IsFreeText = false,
-                        IsFlagged = false
-                    },
-                    new()
-                    {
-                        Id = Guid.NewGuid(),
-                        Text = new TranslatedString
-                        {
-                            { "EN", "Party 1" },
-                            { "RO", "Party 1" }
-                        },
-                        IsFreeText = false,
-                        IsFlagged = true
-                    },
-                    new()
-                    {
-                        Id = Guid.NewGuid(),
-                        Text = new TranslatedString
-                        {
-                            { "EN", "Other" },
-                            { "RO", "Other" }
-                        },
-                        IsFreeText = true,
-                        IsFlagged = true
+                        "SR", "Unesite broj"
                     }
                 }
+            },
+            new NumberQuestionRequest()
+            {
+                Id = Guid.NewGuid(),
+                Code = "5",
+                Text =new()
+                {
+                    { "SR", "Koliko članova stalnog sastava biračkog odbora su žene:" }
+                },
+                Helptext =new()
+                {
+                    { "SR", "" }
+                },
+
+
+                InputPlaceholder =new()
+                {
+                    {
+                        "SR", "Unesite broj"
+                    }
+                }
+            },
+            new SingleSelectQuestionRequest()
+            {
+                Id = Guid.NewGuid(),
+                Code = "6",
+                Text =new()
+                {
+                    {
+                        "SR",
+                        "Da li su predstavnici svih izbornih lista bili prisutni tokom otvaranja ovog biračkog mesta?"
+                    }
+                },
+                Options =
+                [
+                    new()
+                    {
+                        Id = Guid.NewGuid(),
+                        Text =new()
+                        {
+                            { "SR", "Da" }
+                        },
+                        IsFlagged = false,
+                        IsFreeText = false
+                    },
+                    new()
+                    {
+                        Id = Guid.NewGuid(),
+                        Text =new()
+                        {
+                            { "SR", "Ne" }
+                        },
+                        IsFlagged = false,
+                        IsFreeText = false
+                    },
+                    new()
+                    {
+                        Id = Guid.NewGuid(),
+                        Text =new()
+                        {
+                            { "SR", "Ne znam" }
+                        },
+                        IsFlagged = false,
+                        IsFreeText = false
+                    }
+                ],
+                Helptext =new()
+                {
+                    { "SR", "" }
+                },
+            },
+            new SingleSelectQuestionRequest()
+            {
+                Id = Guid.NewGuid(),
+                Code = "7",
+                Text =new()
+                {
+                    { "SR", "Da li su tokom otvaranja ovog biračkog mesta bila prisutna neovlašćena lica:" }
+                },
+                Options =
+                [
+                    new()
+                    {
+                        Id = Guid.NewGuid(),
+                        Text =new()
+                        {
+                            { "SR", "Da" }
+                        },
+                        IsFlagged = false,
+                        IsFreeText = false
+                    },
+                    new()
+                    {
+                        Id = Guid.NewGuid(),
+                        Text =new()
+                        {
+                            { "SR", "Ne" }
+                        },
+                        IsFlagged = false,
+                        IsFreeText = false
+                    },
+                    new()
+                    {
+                        Id = Guid.NewGuid(),
+                        Text =new()
+                        {
+                            { "SR", "Ne znam" }
+                        },
+                        IsFlagged = false,
+                        IsFreeText = false
+                    }
+                ],
+                Helptext =new()
+                {
+                    { "SR", "" }
+                },
+            },
+            new SingleSelectQuestionRequest()
+            {
+                Id = Guid.NewGuid(),
+                Code = "8",
+                Text =new()
+                {
+                    {
+                        "SR",
+                        "Da li su ima drugih domaći nestranačkih posmatrača koji prate glasanje na ovom biračkom mestu?"
+                    }
+                },
+                Options =
+                [
+                    new()
+                    {
+                        Id = Guid.NewGuid(),
+                        Text =new()
+                        {
+                            {
+                                "SR", "Da"
+                            }
+                        },
+                        IsFlagged = false,
+                        IsFreeText = false
+                    },
+                    new()
+                    {
+                        Id = Guid.NewGuid(),
+                        Text =new()
+                        {
+                            { "SR", "Ne" }
+                        },
+                        IsFlagged = false,
+                        IsFreeText = false
+                    },
+                    new()
+                    {
+                        Id = Guid.NewGuid(),
+                        Text =new()
+                        {
+                            { "SR", "Ne znam" }
+                        },
+                        IsFlagged = false,
+                        IsFreeText = false
+                    }
+                ],
+                Helptext =new()
+                {
+                    { "SR", "" }
+                },
+            },
+            new SingleSelectQuestionRequest()
+            {
+                Id = Guid.NewGuid(),
+                Code = "9",
+                Text =new()
+                {
+                    { "SR", "Da li ste na bilo koji način sprečeni da posmatrate?" }
+                },
+                Options =
+                [
+                    new()
+                    {
+                        Id = Guid.NewGuid(),
+                        Text =new()
+                        {
+                            { "SR", "Da" }
+                        },
+                        IsFlagged = false,
+                        IsFreeText = false
+                    },
+                    new()
+                    {
+                        Id = Guid.NewGuid(),
+                        Text =new()
+                        {
+                            { "SR", "Ne" }
+                        },
+                        IsFlagged = false,
+                        IsFreeText = false
+                    }
+                ],
+                Helptext =new()
+                {
+                    { "SR", "" }
+                },
+            },
+            new SingleSelectQuestionRequest()
+            {
+                Id = Guid.NewGuid(),
+                Code = "10",
+                Text =new()
+                {
+                    { "SR", "Celokupno sprovođenje glasanja ne biračkom mestu je:" }
+                },
+                Options =
+                [
+                    new()
+                    {
+                        Id = Guid.NewGuid(),
+                        Text =new()
+                        {
+                            { "SR", "Veoma dobro" }
+                        },
+                        IsFlagged = false,
+                        IsFreeText = false
+                    },
+                    new()
+                    {
+                        Id = Guid.NewGuid(),
+                        Text =new()
+                        {
+                            { "SR", " Dobro" }
+                        },
+                        IsFlagged = false,
+                        IsFreeText = false
+                    },
+                    new()
+                    {
+                        Id = Guid.NewGuid(),
+                        Text =new()
+                        {
+                            { "SR", " Dobro" }
+                        },
+                        IsFlagged = false,
+                        IsFreeText = false
+                    },
+                    new()
+                    {
+                        Id = Guid.NewGuid(),
+                        Text =new()
+                        {
+                            { "SR", "Veoma loše" }
+                        },
+                        IsFlagged = false,
+                        IsFreeText = false
+                    }
+                ],
+                Helptext =new()
+                {
+                    { "SR", "" }
+                },
             }
         ]
     };
