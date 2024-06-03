@@ -158,7 +158,7 @@ const Login = () => {
             Keyboard.dismiss();
             handleSubmit(onLogin)();
           }}
-          actionText={isLoading ? t("form.submit.loading") : t("form.submit.save")}
+          actionBtnLabel={isLoading ? t("form.submit.loading") : t("form.submit.save")}
         />
       </Screen>
     );
