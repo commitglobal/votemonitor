@@ -164,8 +164,7 @@ const ReportIssue = () => {
   };
 
   const onSubmit = async (formData: ReportIssueFormType) => {
-    setIsPreparingFile(true);
-    setOptionsSheetOpen(true);
+
 
     if (!visits || !activeElectionRound) {
       return;
@@ -189,6 +188,8 @@ const ReportIssue = () => {
     // Use the attachments to optimistically update the UI
     const optimisticAttachments: AddAttachmentQuickReportAPIPayload[] = [];
     if (attachments.length > 0) {
+      setIsPreparingFile(true);
+      setOptionsSheetOpen(true);
       const attachmentsMutations = attachments.map(
         ({ fileMetadata, id }: { fileMetadata: FileMetadata; id: string }) => {
           const payload: AddAttachmentQuickReportAPIPayload = {
