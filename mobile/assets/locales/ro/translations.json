@@ -260,7 +260,7 @@
     "attachments": {
       "heading": "Fișiere media încărcate",
       "loading": "Se adaugă atașamentul... ",
-      "error": "Eroare la incarcarea atasamentului.",
+      "error": "Eroare la încărcarea atașamentului.",
       "add": "Adaugă notițe sau fișiere media",
       "menu": {
         "add_note": "Adaugă o notiță",
@@ -360,7 +360,7 @@
     "media": {
       "heading": "Fișiere media încărcate",
       "add": "Adaugă fișiere media",
-      "error": "Eroare la incarcarea atasamentului",
+      "error": "Eroare la încarcarea atașamentului",
       "menu": {
         "load": "Încarcă din galerie",
         "take_picture": "Fă o poză",
@@ -400,7 +400,7 @@
       "submit": "Trimite problema",
       "clear": "Șterge",
       "loading": "Se procesează...",
-      "error": "Eroare la incarcarea raportului"
+      "error": "Eroare la încărcarea raportării"
     }
   },
   "report_details": {
