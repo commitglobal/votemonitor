@@ -84,7 +84,7 @@ const ReportIssue = () => {
   } = useAddQuickReport();
   const {
     mutateAsync: addAttachmentQReport,
-    isPending: isLoadingAddAttachmentt,
+    isPending: isLoadingAddAttachment,
     isPaused,
   } = addAttachmentQuickReportMutation();
 
@@ -163,6 +163,9 @@ const ReportIssue = () => {
   };
 
   const onSubmit = async (formData: ReportIssueFormType) => {
+    setIsPreparingFile(true);
+    setOptionsSheetOpen(true);
+
     if (!visits || !activeElectionRound) {
       return;
     }
@@ -184,7 +187,6 @@ const ReportIssue = () => {
 
     // Use the attachments to optimistically update the UI
     const optimisticAttachments: AddAttachmentQuickReportAPIPayload[] = [];
-
     if (attachments.length > 0) {
       const attachmentsMutations = attachments.map(
         ({ fileMetadata, id }: { fileMetadata: FileMetadata; id: string }) => {
@@ -199,6 +201,7 @@ const ReportIssue = () => {
         },
       );
       try {
+
         Promise.all(attachmentsMutations).then(() => {
           queryClient.invalidateQueries({
             queryKey: QuickReportKeys.byElectionRound(activeElectionRound.id),
@@ -227,10 +230,14 @@ const ReportIssue = () => {
           console.log(err);
         },
         onSuccess: () => {
+          setIsPreparingFile(false);
+          setOptionsSheetOpen(false);
           router.back();
         },
       },
     );
+
+
 
     if (!onlineManager.isOnline()) {
       router.back();
@@ -416,8 +423,8 @@ const ReportIssue = () => {
           </YStack>
         </KeyboardAwareScrollView>
 
-        <OptionsSheet open={optionsSheetOpen} setOpen={setOptionsSheetOpen}>
-          {(isLoadingAddAttachmentt && !isPaused) || isPreparingFile ? (
+        <OptionsSheet open={optionsSheetOpen} setOpen={setOptionsSheetOpen} isLoading={(isLoadingAddAttachment && !isPaused) || isPreparingFile}>
+          {isPreparingFile || (isLoadingAddAttachment && !isPaused) ? (
             <MediaLoading />
           ) : (
             <YStack paddingHorizontal="$sm">
@@ -471,7 +478,8 @@ const ReportIssue = () => {
         >
           {(!isPendingAddQuickReport && !isPausedAddQuickReport) || !isUploadingAttachments
             ? t("form.submit")
-            : t("form.loading")}
+            : t("form.loading")
+          }
         </Button>
       </XStack>
     </>
