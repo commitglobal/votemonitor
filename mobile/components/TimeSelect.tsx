@@ -55,15 +55,21 @@ const TimeSelect: React.FC<TimeSelectProps> = memo(
             value: time || new Date(),
             onChange: (event, eventTime) => {
               if (event.type === "set" && selectedTime && eventTime) {
-                // we need to set the date of the time picker, as it uses the current date/last set date as default
-                eventTime.setDate(selectedTime.getDate());
-                eventTime.setMonth(selectedTime.getMonth());
-                eventTime.setFullYear(selectedTime.getFullYear());
+                // get the day, month and year from the selectedTime in the datepicker
+                const day = selectedTime.getDate();
+                const month = selectedTime.getMonth();
+                const year = selectedTime.getFullYear();
+                // keep the hours, minutes and seconds from the eventTime in the time picker
+                const hours = eventTime.getHours();
+                const minutes = eventTime.getMinutes();
+                const seconds = eventTime.getSeconds();
+
+                const finalTime = new Date(year, month, day, hours, minutes, seconds);
 
                 // setting departure time and we have an arrival time set
                 if (type === "departure" && arrivalTime) {
                   // don't allow an earlier departure time
-                  if (eventTime < arrivalTime) {
+                  if (finalTime < arrivalTime) {
                     onClose();
                     return Toast.show({
                       type: "error",
@@ -73,7 +79,7 @@ const TimeSelect: React.FC<TimeSelectProps> = memo(
                   }
                 } else if (type === "arrival" && departureTime) {
                   // don't allow a later arrival time
-                  if (eventTime > departureTime) {
+                  if (finalTime > departureTime) {
                     onClose();
                     return Toast.show({
                       type: "error",
@@ -82,7 +88,7 @@ const TimeSelect: React.FC<TimeSelectProps> = memo(
                     });
                   }
                 }
-                setTime(eventTime);
+                setTime(finalTime);
               }
             },
             is24Hour: true,
