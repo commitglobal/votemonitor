@@ -55,6 +55,7 @@ const FeedbackSheet = (props: OptionsSheetProps) => {
         systemVersion: Device.osVersion,
       },
     };
+    Keyboard.dismiss();
     addFeedback(feedbackPayload, {
       onSuccess: () => {
         onSheetClose();
@@ -143,7 +144,14 @@ const FeedbackSheet = (props: OptionsSheetProps) => {
           <Button preset="chromeless" onPress={onSheetClose}>
             {t("feedback_sheet.cancel")}
           </Button>
-          <Button flex={1} disabled={isPending} onPress={handleSubmit(onSubmit)}>
+          <Button
+            flex={1}
+            disabled={isPending}
+            onPress={() => {
+              Keyboard.dismiss();
+              handleSubmit(onSubmit)();
+            }}
+          >
             {t("feedback_sheet.action")}
           </Button>
         </XStack>
