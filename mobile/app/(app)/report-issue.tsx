@@ -164,8 +164,6 @@ const ReportIssue = () => {
   };
 
   const onSubmit = async (formData: ReportIssueFormType) => {
-
-
     if (!visits || !activeElectionRound) {
       return;
     }
@@ -203,7 +201,7 @@ const ReportIssue = () => {
         },
       );
       try {
-        Promise.all(attachmentsMutations).then(() => {
+        await Promise.all(attachmentsMutations).then(() => {
           queryClient.invalidateQueries({
             queryKey: QuickReportKeys.byElectionRound(activeElectionRound.id),
           });
