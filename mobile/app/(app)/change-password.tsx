@@ -4,9 +4,6 @@ import Header from "../../components/Header";
 import { Icon } from "../../components/Icon";
 import { router } from "expo-router";
 import { YStack } from "tamagui";
-import Card from "../../components/Card";
-import Button from "../../components/Button";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Controller, useForm } from "react-hook-form";
 import React, { useState } from "react";
 import FormInput, { FormInputProps } from "../../components/FormInputs/FormInput";
@@ -18,6 +15,7 @@ import { ChangePasswordPayload } from "../../services/definitions.api";
 import PasswordConfirmationScreen from "../../components/PasswordConfirmationScreen";
 import { useNetInfoContext } from "../../contexts/net-info-banner/NetInfoContext";
 import Toast from "react-native-toast-message";
+import WizzardControls from "../../components/WizzardControls";
 
 interface FormData {
   currentPassword: string;
@@ -42,7 +40,6 @@ const PasswordInput = (props: FormInputProps): JSX.Element => {
 };
 
 const ChangePassword = () => {
-  const insets = useSafeAreaInsets();
   const { t } = useTranslation("change_password");
   // Form validation schema
   const formSchema = z
@@ -174,9 +171,12 @@ const ChangePassword = () => {
           )}
         />
       </YStack>
-      <Card width="100%" paddingBottom={16 + insets.bottom} marginTop="auto">
-        <Button onPress={handleSubmit(onSubmit)}>{t("form.save")}</Button>
-      </Card>
+      <WizzardControls
+        isFirstElement
+        onActionButtonPress={handleSubmit(onSubmit)}
+        actionBtnLabel={t("form.save")}
+        marginTop="auto"
+      />
     </Screen>
   );
 };

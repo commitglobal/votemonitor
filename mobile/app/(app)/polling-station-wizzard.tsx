@@ -258,7 +258,7 @@ const PollingStationWizzardContent = ({
         isLastElement={isLastElement}
         onPreviousButtonPress={onBackButtonPress}
         isNextDisabled={!selectedOption}
-        onNextButtonPress={isLastElement ? onFinishButtonPress : onNextButtonPress}
+        onActionButtonPress={isLastElement ? onFinishButtonPress : onNextButtonPress}
       />
     </>
   );

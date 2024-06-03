@@ -8,10 +8,8 @@ import { Animated, Keyboard } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Icon } from "../components/Icon";
 import { Typography } from "../components/Typography";
-import Button from "../components/Button";
 import FormInput from "../components/FormInputs/FormInput";
 import { Control, Controller, FieldErrors, FieldValues, useForm } from "react-hook-form";
-import Card from "../components/Card";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ASYNC_STORAGE_KEYS, SECURE_STORAGE_KEYS } from "../common/constants";
 import Constants from "expo-constants";
@@ -24,6 +22,7 @@ import Toast from "react-native-toast-message";
 import { useNetInfoContext } from "../contexts/net-info-banner/NetInfoContext";
 import Header from "../components/Header";
 import * as Clipboard from "expo-clipboard";
+import WizzardControls from "../components/WizzardControls";
 
 interface FormData {
   email: string;
@@ -124,6 +123,7 @@ const Login = () => {
         preset="fixed"
         contentContainerStyle={{
           flexGrow: 1,
+          flex: 1,
         }}
       >
         <Header barStyle="light-content">
@@ -151,17 +151,14 @@ const Login = () => {
           </YStack>
         </ScrollView>
 
-        <Card width="100%" paddingBottom={16 + insets.bottom} marginTop="auto">
-          <Button
-            onPress={() => {
-              Keyboard.dismiss();
-              handleSubmit(onLogin)();
-            }}
-            disabled={isLoading}
-          >
-            {isLoading ? t("form.submit.loading") : t("form.submit.save")}
-          </Button>
-        </Card>
+        <WizzardControls
+          isFirstElement
+          onActionButtonPress={() => {
+            Keyboard.dismiss();
+            handleSubmit(onLogin)();
+          }}
+          actionBtnLabel={isLoading ? t("form.submit.loading") : t("form.submit.save")}
+        />
       </Screen>
     );
   }

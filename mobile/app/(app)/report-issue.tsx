@@ -164,8 +164,7 @@ const ReportIssue = () => {
   };
 
   const onSubmit = async (formData: ReportIssueFormType) => {
-    setIsPreparingFile(true);
-    setOptionsSheetOpen(true);
+
 
     if (!visits || !activeElectionRound) {
       return;
@@ -189,6 +188,8 @@ const ReportIssue = () => {
     // Use the attachments to optimistically update the UI
     const optimisticAttachments: AddAttachmentQuickReportAPIPayload[] = [];
     if (attachments.length > 0) {
+      setIsPreparingFile(true);
+      setOptionsSheetOpen(true);
       const attachmentsMutations = attachments.map(
         ({ fileMetadata, id }: { fileMetadata: FileMetadata; id: string }) => {
           const payload: AddAttachmentQuickReportAPIPayload = {
@@ -216,7 +217,7 @@ const ReportIssue = () => {
         Toast.show({
           type: "error",
           text2: t("media.error"),
-        })
+        });
 
         // Stop the flow right here.
         return;
@@ -238,7 +239,7 @@ const ReportIssue = () => {
           Toast.show({
             type: "error",
             text2: t("form.error"),
-          })
+          });
         },
         onSuccess: () => {
           setIsPreparingFile(false);
@@ -247,8 +248,6 @@ const ReportIssue = () => {
         },
       },
     );
-
-
 
     if (!onlineManager.isOnline()) {
       router.back();
@@ -434,7 +433,11 @@ const ReportIssue = () => {
           </YStack>
         </KeyboardAwareScrollView>
 
-        <OptionsSheet open={optionsSheetOpen} setOpen={setOptionsSheetOpen} isLoading={(isLoadingAddAttachment && !isPaused) || isPreparingFile}>
+        <OptionsSheet
+          open={optionsSheetOpen}
+          setOpen={setOptionsSheetOpen}
+          isLoading={(isLoadingAddAttachment && !isPaused) || isPreparingFile}
+        >
           {isPreparingFile || (isLoadingAddAttachment && !isPaused) ? (
             <MediaLoading />
           ) : (
@@ -489,8 +492,7 @@ const ReportIssue = () => {
         >
           {(!isPendingAddQuickReport && !isPausedAddQuickReport) || !isUploadingAttachments
             ? t("form.submit")
-            : t("form.loading")
-          }
+            : t("form.loading")}
         </Button>
       </XStack>
     </>
