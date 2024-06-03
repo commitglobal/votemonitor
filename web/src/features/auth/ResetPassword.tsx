@@ -93,7 +93,7 @@ function ResetPassword() {
                 name='email'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel>Email</FormLabel>
                     <FormControl>
                       <Input type='email' {...field} />
 

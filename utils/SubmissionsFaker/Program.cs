@@ -33,7 +33,6 @@ var faker = new Faker();
 const string platformAdminUsername = "john.doe@example.com";
 const string platformAdminPassword = "password123";
 
-const string ngoAdminUsername = "admin@demo.com";
 const string ngoAdminPassword = "string";
 
 string[] images =
@@ -169,10 +168,13 @@ await AnsiConsole.Progress()
 var submissionRequests = new SubmissionFaker(formIds, pollingStations, observersTokens)
     .GenerateUnique(Consts.NUMBER_OF_SUBMISSIONS);
 
-var noteRequests = new NoteFaker(submissionRequests)
+var psiRequests =
+    submissionRequests.Select(x => new PISSubmissionFaker(PSIFormData.PSIForm, x.PollingStationId, x.ObserverToken).Generate()).ToList();
+
+var noteRequests = new NoteFaker(submissionRequests.Where(x=>x.Answers.Any()).ToList())
     .Generate(Consts.NUMBER_OF_NOTES);
 
-var attachmentRequests = new AttachmentFaker(submissionRequests)
+var attachmentRequests = new AttachmentFaker(submissionRequests.Where(x => x.Answers.Any()).ToList())
     .Generate(Consts.NUMBER_OF_ATTACHMENTS);
 
 var quickReportRequests = new QuickReportFaker(pollingStations, observersTokens)
@@ -180,6 +182,23 @@ var quickReportRequests = new QuickReportFaker(pollingStations, observersTokens)
 
 var quickReportAttachmentRequests = new QuickReportAttachmentFaker(quickReportRequests)
     .GenerateUnique(Consts.NUMBER_OF_QUICK_REPORTS_ATTACHMENTS);
+
+await AnsiConsole.Progress()
+    .AutoRefresh(true)
+    .AutoClear(false)
+    .HideCompleted(false)
+    .Columns(progressColumns)
+    .StartAsync(async ctx =>
+    {
+        var progressTask = ctx.AddTask("[green]Faking PSI submissions [/]", maxValue: Consts.NUMBER_OF_SUBMISSIONS);
+        foreach (var submissionRequestChunk in psiRequests.Chunk(Consts.CHUNK_SIZE))
+        {
+            var tasks = submissionRequestChunk.Select(sr => observerApi.SubmitPSIForm(electionRound.Id, sr.PollingStationId, sr, sr.ObserverToken));
+
+            await Task.WhenAll(tasks);
+            progressTask.Increment(Consts.CHUNK_SIZE);
+        }
+    });
 
 await AnsiConsole.Progress()
     .AutoRefresh(true)
