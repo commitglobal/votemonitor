@@ -38,7 +38,7 @@ const PasswordConfirmationScreen = ({ translationKey, icon }: PasswordConfirmati
       >
         <Icon icon={icon} size={126} marginBottom="$md" color="yellow" />
         <Typography preset="heading" fontWeight="700" color="$purple5">
-          {t("confirmation.heading")}
+          {t("confirmation.title")}
         </Typography>
         <Typography preset="body1" color="black" textAlign="center">
           {t("confirmation.paragraph")}
@@ -46,7 +46,7 @@ const PasswordConfirmationScreen = ({ translationKey, icon }: PasswordConfirmati
       </YStack>
 
       <Card width="100%" paddingBottom={16 + insets.bottom} marginTop="auto">
-        <Button onPress={() => router.back()}>{t("confirmation.confirm")}</Button>
+        <Button onPress={() => router.back()}>{t("confirmation.back")}</Button>
       </Card>
     </Screen>
   );

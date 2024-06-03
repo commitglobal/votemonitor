@@ -260,6 +260,7 @@
     "attachments": {
       "heading": "Uploaded media",
       "loading": "Adding attachment... ",
+      "error": "Error while sending the attachment!",
       "add": "Add notes and media",
       "menu": {
         "add_note": "Add note",
@@ -359,6 +360,7 @@
     "media": {
       "heading": "Uploaded media",
       "add": "Add media",
+      "error": "Error while sending the attachment!",
       "menu": {
         "load": "Load from gallery",
         "take_picture": "Take a photo",
@@ -397,7 +399,8 @@
       },
       "submit": "Submit issue",
       "clear": "Clear",
-      "loading": "Processing..."
+      "loading": "Processing...",
+      "error": "Error while adding the report"
     }
   },
   "report_details": {
