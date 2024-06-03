@@ -27,7 +27,7 @@ const OptionsSheet = (props: OptionsSheetProps) => {
       modal
       open={open}
       onOpenChange={setOpen}
-      zIndex={100_000}
+      zIndex={100_001}
       snapPointsMode="fit"
       dismissOnSnapToBottom={!isLoading}
       dismissOnOverlayPress={!isLoading}
