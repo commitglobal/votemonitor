@@ -13,7 +13,7 @@ import {
   ApiFormAnswer,
   FormQuestionAnswerTypeMapping,
 } from "../../services/interfaces/answer.type";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { router } from "expo-router";
 import FormInput from "../../components/FormInputs/FormInput";
 import DateFormInput from "../../components/FormInputs/DateFormInput";
@@ -37,7 +37,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 
 const PollingStationQuestionnaire = () => {
   const { t, i18n } = useTranslation("polling_station_information_form");
-  const currentLanguage = i18n.language.toLocaleUpperCase();
+  const [currentLanguage, setCurrentLanguage] = useState(i18n.language.toLocaleUpperCase());
   const [openContextualMenu, setOpenContextualMenu] = useState(false);
   const [clearingForm, setClearingForm] = useState(false);
   const insets = useSafeAreaInsets();
@@ -58,6 +58,13 @@ const PollingStationQuestionnaire = () => {
     () => mapAPIAnswersToFormAnswers(formData?.answers),
     [formData],
   );
+
+
+  useEffect(() => {
+    if (formStructure && formStructure?.defaultLanguage && !formStructure?.languages.find(el => el === currentLanguage)) {
+      setCurrentLanguage(formStructure?.defaultLanguage);
+    }
+  }, [formStructure])
 
   const { mutate } = useMutatePollingStationGeneralData({
     electionRoundId: activeElectionRound?.id,
