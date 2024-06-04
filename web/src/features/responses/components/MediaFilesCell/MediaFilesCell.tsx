@@ -40,7 +40,7 @@ export function MediaFilesCell({ attachment }: MediaFilesCellProps): FunctionCom
           <div className='flex justify-center'>
             {attachmentType === 'image'
               ? <img alt={attachment.fileName} src={attachment.presignedUrl} />
-              : <ReactPlayer alt={attachment.fileName} url={attachment.presignedUrl} />}
+              : <ReactPlayer alt={attachment.fileName} url={attachment.presignedUrl} controls={true}/>}
           </div>
         </DialogContent>
       </Dialog>
