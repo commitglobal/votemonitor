@@ -277,7 +277,8 @@
         "form": {
           "input": {
             "placeholder": "Adaugă orice notiță relevantă pentru această întrebare...",
-            "max": "Câmpul nu poate depăși 10,000 de caractere"
+            "max": "Câmpul nu poate depăși 10,000 de caractere",
+            "required": "Acest câmp este obligatoriu"
           }
         }
       },

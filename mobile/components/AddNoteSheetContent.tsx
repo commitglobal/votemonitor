@@ -83,6 +83,7 @@ const AddNoteSheetContent = ({
         name={"noteText"}
         control={control}
         rules={{
+          required: { value: true, message: t("notes.add.form.input.required") },
           maxLength: {
             value: 10000,
             message: t("notes.add.form.input.max"),
