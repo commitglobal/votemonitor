@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { OptionsSheetProps } from "./OptionsSheet";
 import { Typography } from "./Typography";
 import { useTranslation } from "react-i18next";
@@ -73,7 +73,7 @@ const FeedbackSheet = (props: OptionsSheetProps) => {
   };
 
   const paddingBottom = useAnimatedKeyboardPadding(16);
-  const AnimatedYStack = Animated.createAnimatedComponent(YStack);
+  const AnimatedYStack = useMemo(() => Animated.createAnimatedComponent(YStack), []);
 
   return (
     <Sheet
