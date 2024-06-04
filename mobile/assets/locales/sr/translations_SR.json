@@ -509,9 +509,9 @@
       "save": "Potvrdite promenu šifre"
     },
     "confirmation": {
-      "title": "Lozinka je promenjena!",
+      "heading": "Lozinka je promenjena!",
       "paragraph": "Vaša lozinka je uspešno promenjena.",
-      "back": "Nazad u aplikaciju"
+      "confirm": "Nazad u aplikaciju"
     },
     "error": {
       "offline": "Aplikacija je van mreže i ne može izvršiti zahtev"

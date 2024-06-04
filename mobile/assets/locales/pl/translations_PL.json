@@ -509,9 +509,9 @@
       "save": "Zapisz nowe hasło"
     },
     "confirmation": {
-      "title": "Hasła zmienione!",
+      "heading": "Hasła zmienione!",
       "paragraph": "Hasło zostało skutecznie zmienione.",
-      "back": "Wróć do aplikacji"
+      "confirm": "Wróć do aplikacji"
     },
     "error": {
       "offline": "Aplikacja jest w trybie offline i nie może wykonać żądania"

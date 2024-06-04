@@ -509,9 +509,9 @@
       "save": "Salvează parola nouă"
     },
     "confirmation": {
-      "title": "Parolă schimbată!",
+      "heading": "Parolă schimbată!",
       "paragraph": "Parola ta a fost schimbată cu succes!",
-      "back": "Înapoi la aplicație"
+      "confirm": "Înapoi la aplicație"
     },
     "error": {
       "offline": "Aplicația este offline și nu poate îndeplini solicitarea"

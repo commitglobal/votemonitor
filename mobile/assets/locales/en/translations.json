@@ -509,9 +509,9 @@
       "save": "Save new password"
     },
     "confirmation": {
-      "title": "Password changed!",
+      "heading": "Password changed!",
       "paragraph": "Your password has been successfully changed.",
-      "back": "Back to app"
+      "confirm": "Back to app"
     },
     "error": {
       "offline": "App is offline and cannot do the request"
