@@ -146,6 +146,7 @@ export type PollingStationInformationFormAPIResponse = {
   lastModifiedOn: string;
   languages: string[]; // ["RO", "EN"]
   questions: ApiFormQuestion[];
+  defaultLanguage: string;
 };
 
 export const getPollingStationInformationForm = (

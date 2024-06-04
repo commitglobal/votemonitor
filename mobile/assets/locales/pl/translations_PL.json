@@ -277,7 +277,8 @@
         "form": {
           "input": {
             "placeholder": "Dodaj istotne informacje dotyczące tego pytania.",
-            "max": "Dane wejściowe nie mogą przekraczać 10,000 znaków"
+            "max": "Dane wejściowe nie mogą przekraczać 10,000 znaków",
+            "required": "To pole jest wymagane"
           }
         }
       },

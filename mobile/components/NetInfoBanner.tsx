@@ -51,9 +51,15 @@ const NetInfoBanner = () => {
 
           <Dialog
             trigger={
-              <XStack gap="$sm" justifyContent="center" pressStyle={{ opacity: 0.5 }}>
+              <XStack
+                gap="$sm"
+                justifyContent="center"
+                pressStyle={{ opacity: 0.5 }}
+                maxWidth="35%"
+              >
                 <Typography
                   fontWeight="700"
+                  textAlign="center"
                   color="white"
                   paddingVertical="$xxs"
                   paddingLeft="$lg"

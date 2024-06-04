@@ -277,7 +277,8 @@
         "form": {
           "input": {
             "placeholder": "Dodajte svoje beleške za ovo pitanje.",
-            "max": "Unos ne može preći preko 10,000 karaktera"
+            "max": "Unos ne može preći preko 10,000 karaktera",
+            "required": "Polje je obavezno"
           }
         }
       },

@@ -37,7 +37,6 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 
 const PollingStationQuestionnaire = () => {
   const { t, i18n } = useTranslation("polling_station_information_form");
-  const currentLanguage = i18n.language.toLocaleUpperCase();
   const [openContextualMenu, setOpenContextualMenu] = useState(false);
   const [clearingForm, setClearingForm] = useState(false);
   const insets = useSafeAreaInsets();
@@ -49,6 +48,14 @@ const PollingStationQuestionnaire = () => {
     activeElectionRound?.id,
     selectedPollingStation?.pollingStationId,
   );
+
+  const currentLanguage = useMemo(() => {
+    const activeLanguage = i18n.language.toLocaleUpperCase()
+    if (formStructure && formStructure?.defaultLanguage && !formStructure?.languages.find(el => el === activeLanguage)) {
+      return formStructure.defaultLanguage;
+    }
+    return activeLanguage
+  }, [formStructure])
 
   const questions: Record<string, ApiFormQuestion> = useMemo(
     () => mapAPIQuestionsToFormQuestions(formStructure?.questions),
