@@ -36,6 +36,7 @@ const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
       });
       try {
         await AsyncStorage.setItem(ASYNC_STORAGE_KEYS.ACCESS_TOKEN, token);
+        Sentry.setUser({ email });
       } catch (err) {
         console.error("Could not set Aceess Token in AsyncStorage");
         throw err;
@@ -55,6 +56,7 @@ const AuthContextProvider = ({ children }: React.PropsWithChildren) => {
     try {
       await clearAsyncStorage();
       await DB.deleteEverything();
+      Sentry.setUser(null);
     } catch (err) {
       Sentry.captureMessage(`Logout error`);
       Sentry.captureException(err);
