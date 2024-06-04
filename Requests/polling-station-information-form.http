@@ -1,4 +1,3 @@
-@electionRoundId=ea779505-6fa1-497d-9cae-cbd59431bdd7
 
 # get election round polling station info form
 GET {{$dotenv HOST }}/api/election-rounds/{{electionRoundId}}/polling-station-information-form
@@ -12,6 +11,7 @@ Content-Type: application/json
 Authorization: Bearer {{$dotenv JWT_TOKEN}}
 
 {
+  "defaultLanguage": "RO",
   "languages": [
     "RO",
     "EN"
