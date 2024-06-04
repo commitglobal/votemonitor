@@ -1,12 +1,10 @@
-import React, { useState } from "react";
-import OptionsSheet, { OptionsSheetProps } from "./OptionsSheet";
+import React from "react";
+import { OptionsSheetProps } from "./OptionsSheet";
 import { Typography } from "./Typography";
 import { useTranslation } from "react-i18next";
-import { XStack, YStack } from "tamagui";
+import { Sheet, XStack, YStack } from "tamagui";
 import Input from "./Inputs/Input";
-import { useKeyboardVisible } from "@tamagui/use-keyboard-visible";
-import { Keyboard, Platform } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Animated, Keyboard, Platform } from "react-native";
 import Button from "./Button";
 import { Controller, useForm } from "react-hook-form";
 import { useAddFeedbackMutation } from "../services/mutations/feedback/add-feedback.mutation";
@@ -15,14 +13,12 @@ import Constants from "expo-constants";
 import * as Device from "expo-device";
 import Toast from "react-native-toast-message";
 import { onlineManager } from "@tanstack/react-query";
+import useAnimatedKeyboardPadding from "../hooks/useAnimatedKeyboardPadding";
+import { Icon } from "./Icon";
 
 const FeedbackSheet = (props: OptionsSheetProps) => {
   const { t } = useTranslation("more");
-  const insets = useSafeAreaInsets();
-  const keyboardIsVisible = useKeyboardVisible();
-  const [writingFeedback, setWritingFeedback] = useState(false);
   const { activeElectionRound } = useUserData();
-
   const { mutate: addFeedback, isPending } = useAddFeedbackMutation(activeElectionRound?.id);
 
   const {
@@ -77,86 +73,83 @@ const FeedbackSheet = (props: OptionsSheetProps) => {
     }
   };
 
-  return (
-    <OptionsSheet
-      {...props}
-      dismissOnOverlayPress={false}
-      moveOnKeyboardChange={Platform.OS === "android"}
-      disableDrag={writingFeedback}
-    >
-      <YStack
-        padding="$md"
-        paddingTop="$0"
-        gap="$lg"
-        paddingBottom={
-          // add padding if keyboard is visible
-          Platform.OS === "ios" && keyboardIsVisible && Keyboard.metrics()?.height
-            ? // @ts-ignore: it will not be undefined because we're checking above
-              Keyboard.metrics()?.height - insets.bottom
-            : 0
-        }
-      >
-        <Typography preset="heading" fontWeight="400">
-          {t("feedback_sheet.heading")}
-        </Typography>
-        <Typography color="$gray6">{t("feedback_sheet.p1")}</Typography>
-        <Controller
-          name={"userFeedback"}
-          control={control}
-          rules={{
-            required: {
-              value: true,
-              message: t("feedback_toast.required"),
-            },
-            maxLength: {
-              value: 10000,
-              message: t("feedback_sheet.input.max", { value: 10000 }),
-            },
-          }}
-          render={({ field: { value, onChange } }) => {
-            return (
-              <YStack gap="$xxs">
-                <YStack height={100}>
-                  <Input
-                    type="textarea"
-                    placeholder={t("feedback_sheet.placeholder")}
-                    value={value}
-                    height={100}
-                    onChangeText={onChange}
-                    // use this in order to not allow dragging of the sheet while input is focused (causes trouble on android)
-                    onFocus={() => setWritingFeedback(true)}
-                    onBlur={() => {
-                      Keyboard.dismiss();
-                      setWritingFeedback(false);
-                    }}
-                  />
-                </YStack>
-                {errors.userFeedback && (
-                  <Typography color="$red12">{errors.userFeedback.message}</Typography>
-                )}
-              </YStack>
-            );
-          }}
-        />
+  const paddingBottom = useAnimatedKeyboardPadding(16);
+  const AnimatedYStack = Animated.createAnimatedComponent(YStack);
 
-        {/* buttons */}
-        <XStack gap="$md">
-          <Button preset="chromeless" onPress={onSheetClose}>
-            {t("feedback_sheet.cancel")}
-          </Button>
-          <Button
-            flex={1}
-            disabled={isPending}
-            onPress={() => {
-              Keyboard.dismiss();
-              handleSubmit(onSubmit)();
+  return (
+    <Sheet
+      modal
+      {...props}
+      zIndex={100_001}
+      snapPointsMode="fit"
+      dismissOnOverlayPress={false}
+      disableDrag
+    >
+      <Sheet.Overlay />
+      <Sheet.Frame
+        borderTopLeftRadius={28}
+        borderTopRightRadius={28}
+        gap="$sm"
+        paddingHorizontal="$md"
+      >
+        <Icon paddingVertical="$md" alignSelf="center" icon="dragHandle" />
+        <AnimatedYStack padding="$md" paddingTop="$0" gap="$lg" paddingBottom={paddingBottom}>
+          <Typography preset="heading" fontWeight="400">
+            {t("feedback_sheet.heading")}
+          </Typography>
+          <Typography color="$gray6">{t("feedback_sheet.p1")}</Typography>
+          <Controller
+            name={"userFeedback"}
+            control={control}
+            rules={{
+              required: {
+                value: true,
+                message: t("feedback_toast.required"),
+              },
+              maxLength: {
+                value: 10000,
+                message: t("feedback_sheet.input.max", { value: 10000 }),
+              },
             }}
-          >
-            {t("feedback_sheet.action")}
-          </Button>
-        </XStack>
-      </YStack>
-    </OptionsSheet>
+            render={({ field: { value, onChange } }) => {
+              return (
+                <YStack gap="$xxs">
+                  <YStack height={100}>
+                    <Input
+                      type="textarea"
+                      placeholder={t("feedback_sheet.placeholder")}
+                      value={value}
+                      height={100}
+                      onChangeText={onChange}
+                    />
+                  </YStack>
+                  {errors.userFeedback && (
+                    <Typography color="$red12">{errors.userFeedback.message}</Typography>
+                  )}
+                </YStack>
+              );
+            }}
+          />
+
+          {/* buttons */}
+          <XStack gap="$md">
+            <Button preset="chromeless" onPress={onSheetClose}>
+              {t("feedback_sheet.cancel")}
+            </Button>
+            <Button
+              flex={1}
+              disabled={isPending}
+              onPress={() => {
+                Keyboard.dismiss();
+                handleSubmit(onSubmit)();
+              }}
+            >
+              {t("feedback_sheet.action")}
+            </Button>
+          </XStack>
+        </AnimatedYStack>
+      </Sheet.Frame>
+    </Sheet>
   );
 };
 
