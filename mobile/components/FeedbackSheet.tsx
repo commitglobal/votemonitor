@@ -27,7 +27,7 @@ const FeedbackSheet = (props: OptionsSheetProps) => {
     reset,
     formState: { errors },
   } = useForm({
-    reValidateMode: "onSubmit",
+    // reValidateMode: "onSubmit",
     defaultValues: {
       userFeedback: "",
     },
