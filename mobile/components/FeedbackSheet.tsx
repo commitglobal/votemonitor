@@ -27,6 +27,7 @@ const FeedbackSheet = (props: OptionsSheetProps) => {
     reset,
     formState: { errors },
   } = useForm({
+    reValidateMode: "onSubmit",
     defaultValues: {
       userFeedback: "",
     },
@@ -51,7 +52,6 @@ const FeedbackSheet = (props: OptionsSheetProps) => {
         systemVersion: Device.osVersion,
       },
     };
-    Keyboard.dismiss();
     addFeedback(feedbackPayload, {
       onSuccess: () => {
         onSheetClose();
@@ -67,7 +67,6 @@ const FeedbackSheet = (props: OptionsSheetProps) => {
         });
       },
     });
-
     if (!onlineManager.isOnline()) {
       onSheetClose();
     }
@@ -99,6 +98,7 @@ const FeedbackSheet = (props: OptionsSheetProps) => {
           </Typography>
           <Typography color="$gray6">{t("feedback_sheet.p1")}</Typography>
           <Controller
+            key="userFeedback"
             name={"userFeedback"}
             control={control}
             rules={{
