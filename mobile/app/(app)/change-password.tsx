@@ -1,9 +1,9 @@
-import { ViewStyle } from "react-native";
+import { Keyboard, ViewStyle } from "react-native";
 import { Screen } from "../../components/Screen";
 import Header from "../../components/Header";
 import { Icon } from "../../components/Icon";
 import { router } from "expo-router";
-import { YStack } from "tamagui";
+import { XStack, YStack } from "tamagui";
 import { Controller, useForm } from "react-hook-form";
 import React, { useState } from "react";
 import FormInput, { FormInputProps } from "../../components/FormInputs/FormInput";
@@ -15,6 +15,7 @@ import { ChangePasswordPayload } from "../../services/definitions.api";
 import PasswordConfirmationScreen from "../../components/PasswordConfirmationScreen";
 import { useNetInfoContext } from "../../contexts/net-info-banner/NetInfoContext";
 import Toast from "react-native-toast-message";
+import CredentialsError from "../../components/CredentialsError";
 import WizzardControls from "../../components/WizzardControls";
 
 interface FormData {
@@ -40,7 +41,8 @@ const PasswordInput = (props: FormInputProps): JSX.Element => {
 };
 
 const ChangePassword = () => {
-  const { t } = useTranslation("change_password");
+  const { t } = useTranslation(["change_password", "common", "generic_error_screen"]);
+  const [reqError, setReqError] = useState<Error | null>(null);
   // Form validation schema
   const formSchema = z
     .object({
@@ -94,8 +96,9 @@ const ChangePassword = () => {
       });
     }
     updatePassword(payload, {
-      onError: (error) => {
-        console.error("error", error);
+      onError: (error: Error) => {
+        setReqError(error);
+        Keyboard.dismiss();
       },
     });
   };
@@ -175,10 +178,21 @@ const ChangePassword = () => {
           )}
         />
       </YStack>
+      {reqError && (
+        <XStack
+          width="100%"
+          justifyContent="center"
+          alignItems="center"
+          padding="$md"
+          marginTop="$md"
+        >
+          <CredentialsError error={t("paragraph1", { ns: "generic_error_screen" })} />
+        </XStack>
+      )}
       <WizzardControls
         isFirstElement
         onActionButtonPress={handleSubmit(onSubmit)}
-        actionBtnLabel={t("form.save")}
+        actionBtnLabel={isLoadingUpdatePassword ? t("loading", { ns: "common" }) : t("form.save")}
         marginTop="auto"
         isNextDisabled={isLoadingUpdatePassword}
       />
