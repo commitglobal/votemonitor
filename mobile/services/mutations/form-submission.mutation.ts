@@ -10,6 +10,7 @@ import * as Crypto from "expo-crypto";
 import { AttachmentsKeys } from "../queries/attachments.query";
 import { AttachmentApiResponse } from "../api/get-attachments.api";
 import { Note } from "../../common/models/note";
+import SuperJSON from "superjson";
 
 export const useFormSubmissionMutation = ({
   electionRoundId,
@@ -36,6 +37,17 @@ export const useFormSubmissionMutation = ({
       id: scopeId,
     },
     onMutate: async (payload: FormSubmissionAPIPayload) => {
+      // Remove paused mutations for the same resource. Send only the last one!
+      queryClient
+        .getMutationCache()
+        .getAll()
+        .filter((mutation) => mutation.state.isPaused && mutation.options.scope?.id === scopeId)
+        .sort((a, b) => b.state.submittedAt - a.state.submittedAt)
+        .slice(1)
+        .forEach((mutation) => {
+          queryClient.getMutationCache().remove(mutation);
+        });
+
       // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
       await queryClient.cancelQueries({ queryKey: formSubmissionsQK });
 
