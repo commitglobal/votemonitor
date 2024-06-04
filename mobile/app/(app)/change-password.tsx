@@ -71,7 +71,11 @@ const ChangePassword = () => {
   });
 
   // Submit handler - change password
-  const { mutate: updatePassword, isSuccess: successfullyChanged } = useChangePasswordMutation();
+  const {
+    mutate: updatePassword,
+    isSuccess: successfullyChanged,
+    isPending: isLoadingUpdatePassword,
+  } = useChangePasswordMutation();
   const { isOnline } = useNetInfoContext();
 
   const onSubmit = async (data: FormData) => {
@@ -176,6 +180,7 @@ const ChangePassword = () => {
         onActionButtonPress={handleSubmit(onSubmit)}
         actionBtnLabel={t("form.save")}
         marginTop="auto"
+        isNextDisabled={isLoadingUpdatePassword}
       />
     </Screen>
   );

@@ -109,6 +109,7 @@ const ForgotPassword = () => {
       <WizzardControls
         isFirstElement
         onActionButtonPress={handleSubmit(onSubmit)}
+        isNextDisabled={isLoading}
         actionBtnLabel={isLoading ? t("form.submit.loading") : t("form.submit.save")}
         marginTop="auto"
       />
