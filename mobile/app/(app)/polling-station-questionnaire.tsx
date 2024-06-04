@@ -13,7 +13,7 @@ import {
   ApiFormAnswer,
   FormQuestionAnswerTypeMapping,
 } from "../../services/interfaces/answer.type";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { router } from "expo-router";
 import FormInput from "../../components/FormInputs/FormInput";
 import DateFormInput from "../../components/FormInputs/DateFormInput";
@@ -37,7 +37,6 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 
 const PollingStationQuestionnaire = () => {
   const { t, i18n } = useTranslation("polling_station_information_form");
-  const [currentLanguage, setCurrentLanguage] = useState(i18n.language.toLocaleUpperCase());
   const [openContextualMenu, setOpenContextualMenu] = useState(false);
   const [clearingForm, setClearingForm] = useState(false);
   const insets = useSafeAreaInsets();
@@ -50,6 +49,14 @@ const PollingStationQuestionnaire = () => {
     selectedPollingStation?.pollingStationId,
   );
 
+  const currentLanguage = useMemo(() => {
+    const activeLanguage = i18n.language.toLocaleUpperCase()
+    if (formStructure && formStructure?.defaultLanguage && !formStructure?.languages.find(el => el === activeLanguage)) {
+      return formStructure.defaultLanguage;
+    }
+    return activeLanguage
+  }, [formStructure])
+
   const questions: Record<string, ApiFormQuestion> = useMemo(
     () => mapAPIQuestionsToFormQuestions(formStructure?.questions),
     [formStructure],
@@ -58,13 +65,6 @@ const PollingStationQuestionnaire = () => {
     () => mapAPIAnswersToFormAnswers(formData?.answers),
     [formData],
   );
-
-
-  useEffect(() => {
-    if (formStructure && formStructure?.defaultLanguage && !formStructure?.languages.find(el => el === currentLanguage)) {
-      setCurrentLanguage(formStructure?.defaultLanguage);
-    }
-  }, [formStructure])
 
   const { mutate } = useMutatePollingStationGeneralData({
     electionRoundId: activeElectionRound?.id,
