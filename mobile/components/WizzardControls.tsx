@@ -39,20 +39,28 @@ const WizzardControls = ({
       {...rest}
     >
       {!isFirstElement && (
-        <XStack flex={0.25}>
+        <XStack flex={0.35}>
           <Button
             width="100%"
+            height="100%"
             icon={() => <Icon icon="chevronLeft" color="$purple5" />}
             preset="chromeless"
             onPress={onPreviousButtonPress}
+            textStyle={{ textAlign: "center" }}
           >
             {t("actions.back")}
           </Button>
         </XStack>
       )}
 
-      <XStack flex={isFirstElement ? 1 : 0.75}>
-        <Button disabled={isNextDisabled} width="100%" onPress={onActionButtonPress}>
+      <XStack flex={isFirstElement ? 1 : 0.65}>
+        <Button
+          disabled={isNextDisabled}
+          width="100%"
+          onPress={onActionButtonPress}
+          height="100%"
+          textStyle={{ textAlign: "center" }}
+        >
           {!isLastElement ? actionBtnLabel || t("actions.next_step") : t("actions.finalize")}
         </Button>
       </XStack>
