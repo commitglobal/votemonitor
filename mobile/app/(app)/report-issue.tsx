@@ -201,11 +201,23 @@ const ReportIssue = () => {
         },
       );
       try {
-        await Promise.all(attachmentsMutations).then(() => {
-          queryClient.invalidateQueries({
-            queryKey: QuickReportKeys.byElectionRound(activeElectionRound.id),
+        if (!onlineManager.isOnline()) {
+          // No internet
+          setIsPreparingFile(false);
+          setOptionsSheetOpen(false);
+          Promise.all(attachmentsMutations).then(() => {
+            queryClient.invalidateQueries({
+              queryKey: QuickReportKeys.byElectionRound(activeElectionRound.id),
+            });
           });
-        });
+        } else {
+          // Internet
+          await Promise.all(attachmentsMutations).then(() => {
+            queryClient.invalidateQueries({
+              queryKey: QuickReportKeys.byElectionRound(activeElectionRound.id),
+            });
+          });
+        }
       } catch (err) {
         Sentry.captureMessage("Failed to upload some attachments");
         Sentry.captureException(err);
