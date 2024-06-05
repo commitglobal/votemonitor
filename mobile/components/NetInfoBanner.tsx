@@ -1,6 +1,6 @@
 import React from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { AlertDialog, XStack, YStack } from "tamagui";
+import { AlertDialog, ScrollView, XStack, YStack } from "tamagui";
 import { Typography } from "./Typography";
 import { Dialog } from "./Dialog";
 import Button from "./Button";
@@ -70,11 +70,13 @@ const NetInfoBanner = () => {
               </XStack>
             }
             content={
-              <XStack gap="$sm" justifyContent="center">
-                <Typography preset="body1" color="$gray7" lineHeight={24}>
-                  {t("offline_warning")}
-                </Typography>
-              </XStack>
+              <ScrollView bounces={false} showsVerticalScrollIndicator={false}>
+                <XStack gap="$sm" justifyContent="center">
+                  <Typography preset="body1" color="$gray7" lineHeight={24}>
+                    {t("offline_warning")}
+                  </Typography>
+                </XStack>
+              </ScrollView>
             }
             footer={
               <XStack gap="$sm" justifyContent="center">
