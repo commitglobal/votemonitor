@@ -66,6 +66,7 @@ const More = () => {
 
   const appVersion = Constants.expoConfig?.version;
   const URL = "https://www.code4.ro/ro/privacy-policy-vote-monitor";
+  const HOTLINE_URL = "https://www.commitglobal.org/en/elections-callcenters";
 
   const { data: currentUser } = useQuery({
     queryKey: [ASYNC_STORAGE_KEYS.CURRENT_USER_STORAGE_KEY],
@@ -134,7 +135,11 @@ const More = () => {
           chevronRight={true}
           onClick={() => router.push("/about-votemonitor")}
         ></MenuItem>
-        <MenuItem label={t("support")} icon="contactNGO"></MenuItem>
+        <MenuItem
+          label={t("support")}
+          icon="contactNGO"
+          onClick={() => Linking.openURL(HOTLINE_URL)}
+        ></MenuItem>
         <MenuItem
           label={t("change-password")}
           icon="changePassword"
