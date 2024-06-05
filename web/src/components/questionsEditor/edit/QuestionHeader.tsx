@@ -1,9 +1,45 @@
-import { BaseQuestion, newTranslatedString } from '@/common/types';
+import { BaseQuestion, QuestionType, newTranslatedString } from '@/common/types';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useParams } from '@tanstack/react-router';
 import { RefObject } from 'react';
 import { useTranslation } from 'react-i18next';
+
+const questionPlaceholders: Record<
+  QuestionType,
+  { code: string; text: (availableLanguages: string[], languageCode: string) => string | undefined }
+> = {
+  textQuestion: {
+    code: 'TQ',
+    text: (availableLanguages, languageCode) =>
+      newTranslatedString(availableLanguages, languageCode, 'Text question text')[languageCode],
+  },
+  dateQuestion: {
+    code: 'DQ',
+    text: (availableLanguages, languageCode) =>
+      newTranslatedString(availableLanguages, languageCode, 'Date question text')[languageCode],
+  },
+  numberQuestion: {
+    code: 'NQ',
+    text: (availableLanguages, languageCode) =>
+      newTranslatedString(availableLanguages, languageCode, 'Number question text')[languageCode],
+  },
+  ratingQuestion: {
+    code: 'RQ',
+    text: (availableLanguages, languageCode) =>
+      newTranslatedString(availableLanguages, languageCode, 'Rating question text')[languageCode],
+  },
+  singleSelectQuestion: {
+    code: 'SQ',
+    text: (availableLanguages, languageCode) =>
+      newTranslatedString(availableLanguages, languageCode, 'Single choice question text')[languageCode],
+  },
+  multiSelectQuestion: {
+    code: 'MQ',
+    text: (availableLanguages, languageCode) =>
+      newTranslatedString(availableLanguages, languageCode, 'Multi choice question text')[languageCode],
+  },
+};
 
 interface QuestionHeaderProps {
   availableLanguages: string[];
@@ -65,6 +101,7 @@ function QuestionHeader({
               onChange={(e) => updateQuestion(questionIdx, { ...question, code: e.target.value })}
               className={isInValid && question.code.trim() === '' ? 'border-red-300 focus:border-red-300' : ''}
               disabled={!!params['languageCode']}
+              placeholder={questionPlaceholders[question.$questionType].code}
             />
           </div>
         </div>
@@ -77,7 +114,10 @@ function QuestionHeader({
               id='text'
               name='text'
               value={params['languageCode'] ? question.text[params['languageCode']] : question.text[languageCode]}
-              placeholder={params['languageCode'] ? question.text[languageCode] : ''}
+              placeholder={questionPlaceholders[question.$questionType].text(
+                availableLanguages,
+                params['languageCode'] ?? languageCode
+              )}
               onChange={(e) => updateText(e.target.value)}
               className={
                 isInValid && question.text[languageCode]!.trim() === '' ? 'border-red-300 focus:border-red-300' : ''
