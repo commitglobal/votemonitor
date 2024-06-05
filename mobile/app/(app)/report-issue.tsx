@@ -205,11 +205,7 @@ const ReportIssue = () => {
           // No internet
           setIsPreparingFile(false);
           setOptionsSheetOpen(false);
-          Promise.all(attachmentsMutations).then(() => {
-            queryClient.invalidateQueries({
-              queryKey: QuickReportKeys.byElectionRound(activeElectionRound.id),
-            });
-          });
+          Promise.all(attachmentsMutations);
         } else {
           // Internet
           await Promise.all(attachmentsMutations).then(() => {
