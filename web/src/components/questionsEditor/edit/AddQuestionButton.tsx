@@ -41,10 +41,10 @@ const questionTypes: QuestionTypeConfig[] = [
       const newTextQuestion: TextQuestion = {
         id: uuidv4(),
         $questionType: QuestionType.TextQuestionType,
-        code: 'TQ',
+        code: '',
         inputPlaceholder: newTranslatedString(availableLanguages, languageCode, ''),
         helptext: newTranslatedString(availableLanguages, languageCode, ''),
-        text: newTranslatedString(availableLanguages, languageCode, 'Text question text'),
+        text: newTranslatedString(availableLanguages, languageCode, ''),
       };
 
       return newTextQuestion;
@@ -58,9 +58,9 @@ const questionTypes: QuestionTypeConfig[] = [
       const newNumberQuestion: NumberQuestion = {
         id: uuidv4(),
         $questionType: QuestionType.NumberQuestionType,
-        code: 'NQ',
+        code: '',
         helptext: newTranslatedString(availableLanguages, languageCode, ''),
-        text: newTranslatedString(availableLanguages, languageCode, 'Number question text'),
+        text: newTranslatedString(availableLanguages, languageCode, ''),
       };
 
       return newNumberQuestion;
@@ -74,9 +74,9 @@ const questionTypes: QuestionTypeConfig[] = [
       const newDateQuestion: DateQuestion = {
         id: uuidv4(),
         $questionType: QuestionType.DateQuestionType,
-        code: 'DQ',
+        code: '',
         helptext: newTranslatedString(availableLanguages, languageCode, ''),
-        text: newTranslatedString(availableLanguages, languageCode, 'Date question text'),
+        text: newTranslatedString(availableLanguages, languageCode, ''),
       };
 
       return newDateQuestion;
@@ -90,9 +90,9 @@ const questionTypes: QuestionTypeConfig[] = [
       const newRatingQuestion: RatingQuestion = {
         id: uuidv4(),
         $questionType: QuestionType.RatingQuestionType,
-        code: 'RQ',
+        code: '',
         helptext: newTranslatedString(availableLanguages, languageCode, ''),
-        text: newTranslatedString(availableLanguages, languageCode, 'Rating question text'),
+        text: newTranslatedString(availableLanguages, languageCode, ''),
         scale: RatingScaleType.OneTo5,
       };
 
@@ -107,19 +107,19 @@ const questionTypes: QuestionTypeConfig[] = [
       const newSingleSelectQuestion: SingleSelectQuestion = {
         id: uuidv4(),
         $questionType: QuestionType.SingleSelectQuestionType,
-        code: 'SC',
+        code: '',
         helptext: newTranslatedString(availableLanguages, languageCode, ''),
-        text: newTranslatedString(availableLanguages, languageCode, 'Single choice question text'),
+        text: newTranslatedString(availableLanguages, languageCode, ''),
         options: [
           {
             id: uuidv4(),
-            text: newTranslatedString(availableLanguages, languageCode, 'Option 1'),
+            text: newTranslatedString(availableLanguages, languageCode, ''),
             isFlagged: false,
             isFreeText: false,
           },
           {
             id: uuidv4(),
-            text: newTranslatedString(availableLanguages, languageCode, 'Option 2'),
+            text: newTranslatedString(availableLanguages, languageCode, ''),
             isFlagged: false,
             isFreeText: false,
           },
@@ -137,9 +137,9 @@ const questionTypes: QuestionTypeConfig[] = [
       const newMultiSelectQuestion: MultiSelectQuestion = {
         id: uuidv4(),
         $questionType: QuestionType.MultiSelectQuestionType,
-        code: 'MC',
+        code: '',
         helptext: newTranslatedString(availableLanguages, languageCode, ''),
-        text: newTranslatedString(availableLanguages, languageCode, 'Multi choice question text'),
+        text: newTranslatedString(availableLanguages, languageCode, ''),
         options: [
           {
             id: uuidv4(),
