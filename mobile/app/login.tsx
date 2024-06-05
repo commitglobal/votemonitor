@@ -90,7 +90,7 @@ const Login = () => {
       SecureStore.setItem(SECURE_STORAGE_KEYS.ONBOARDING_COMPLETE, "true");
       setOnboardingComplete(true);
     } catch (err) {
-      console.log(err);
+      console.log("err",err);
       Sentry.captureException(err);
     }
   };
