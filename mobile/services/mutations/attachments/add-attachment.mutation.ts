@@ -12,6 +12,8 @@ import * as FileSystem from "expo-file-system";
 import { MULTIPART_FILE_UPLOAD_SIZE } from "../../../common/constants";
 import * as Sentry from "@sentry/react-native";
 import { Buffer } from "buffer";
+import useStore from "../../store/store";
+import { AttachmentProgressStatusEnum } from "../../store/attachment-upload-state/attachment-upload-slice";
 
 // export const handleChunkUpload = async (
 //   filePath: string,
@@ -54,18 +56,21 @@ import { Buffer } from "buffer";
 
 export const uploadAttachmentMutationFn = async (
   payload: AddAttachmentStartAPIPayload,
-  queryClient: QueryClient,
+  setProgress: (fn: (prev: Record<string, any>) => Record<string, any>) => void,
+  state: any,
 ) => {
-  queryClient.setQueryData(AttachmentsKeys.addAttachments(), () => ({
-    progress: 0,
-    status: "starting",
+  setProgress((state) => ({
+    ...state,
+    [payload.id]: {
+      progress: 0,
+      status: AttachmentProgressStatusEnum.STARTING,
+    },
   }));
   const start = await addAttachmentMultipartStart(payload);
   try {
     let etags: Record<number, string> = {};
     const urls = Object.values(start.uploadUrls);
 
-    console.log("🚀 Started the FOR LOOP FOR CHUNKS");
     for (const [index, url] of urls.entries()) {
       const chunk = await FileSystem.readAsStringAsync(payload.filePath, {
         length: MULTIPART_FILE_UPLOAD_SIZE,
@@ -74,44 +79,36 @@ export const uploadAttachmentMutationFn = async (
       });
       const buffer = Buffer.from(chunk, "base64");
       const progress = Math.round(((index + 1) / urls.length) * 100 * 10) / 10;
-      queryClient.setQueryData(AttachmentsKeys.addAttachments(), () => {
-        const toReturn: UploadAttachmentProgress = {
-          progress,
-          status: progress === 100 ? "completed" : "inprogress",
-        };
-        console.log("toReturnProgress in handleChunkUpload", toReturn);
 
-        return toReturn;
-      });
-
-      console.log(
-        "Current progress state:",
-        queryClient.getQueryData(AttachmentsKeys.addAttachments()),
-      );
+      setProgress((state) => ({
+        ...state,
+        [payload.id]: {
+          progress: progress,
+          status:
+            progress === 100
+              ? AttachmentProgressStatusEnum.COMPLETED
+              : AttachmentProgressStatusEnum.INPROGRESS,
+        },
+      }));
 
       const data = await uploadS3Chunk(url, buffer);
 
       etags = { ...etags, [index + 1]: data.ETag };
     }
-    console.log("❌ Ended the FOR LOOP FOR CHUNKS");
     const completed = await addAttachmentMultipartComplete({
       uploadId: start.uploadId,
       etags,
       electionRoundId: payload.electionRoundId,
       id: payload.id,
     });
-    queryClient.setQueryData<UploadAttachmentProgress>(
-      AttachmentsKeys.addAttachments(),
-      (oldData) => {
-        const toReturn: UploadAttachmentProgress = {
-          ...oldData,
-          progress: 100,
-          status: "completed",
-        };
-        console.log("toReturnCompleted", toReturn);
-        return toReturn;
+
+    setProgress((state) => ({
+      ...state,
+      [payload.id]: {
+        progress: 100,
+        status: AttachmentProgressStatusEnum.COMPLETED,
       },
-    );
+    }));
 
     return completed;
   } catch (err) {
@@ -123,49 +120,32 @@ export const uploadAttachmentMutationFn = async (
       uploadId: start.uploadId,
       electionRoundId: payload.electionRoundId,
     });
-    queryClient.setQueryData<UploadAttachmentProgress>(
-      AttachmentsKeys.addAttachments(),
-      (oldData) => {
-        const toReturn: UploadAttachmentProgress = {
-          ...oldData,
-          progress: 0,
-          status: "aborted",
-        };
-        console.log("toReturnAbort", toReturn);
-        return toReturn;
+    setProgress((state) => ({
+      ...state,
+      [payload.id]: {
+        progress: 0,
+        status: AttachmentProgressStatusEnum.ABORTED,
       },
-    );
+    }));
     return aborted;
   }
 };
 
 export type UploadAttachmentProgress = {
   progress: number;
-  status: "idle" | "compressing" | "starting" | "inprogress" | "aborted" | "completed";
-};
-export const useUploadAttachmentProgressQuery = () => {
-  return useQuery({
-    queryKey: AttachmentsKeys.addAttachments(), // TODO: more specific
-    queryFn: () => {
-      console.log("QueryFn Called");
-      return { status: "idle", progress: 0 };
-    },
-    placeholderData: { status: "idle", progress: 0 },
-    initialData: { status: "idle", progress: 0 },
-    staleTime: Infinity,
-    gcTime: Infinity,
-  });
+  status: AttachmentProgressStatusEnum;
 };
 
 export const useUploadAttachmentMutation = (scopeId: string) => {
   const queryClient = useQueryClient();
+  const { progresses: state, setProgresses } = useStore();
   return useMutation({
     mutationKey: AttachmentsKeys.addAttachmentMutation(),
     scope: {
       id: scopeId,
     },
     mutationFn: (payload: AddAttachmentStartAPIPayload) =>
-      uploadAttachmentMutationFn(payload, queryClient),
+      uploadAttachmentMutationFn(payload, setProgresses, state),
     onMutate: async (payload: AddAttachmentStartAPIPayload) => {
       const attachmentsQK = AttachmentsKeys.attachments(
         payload.electionRoundId,
@@ -196,7 +176,6 @@ export const useUploadAttachmentMutation = (scopeId: string) => {
       return { previousData, attachmentsQK };
     },
     onError: (err, payload, context) => {
-      console.log(err);
       const attachmentsQK = AttachmentsKeys.attachments(
         payload.electionRoundId,
         payload.pollingStationId,
@@ -205,19 +184,12 @@ export const useUploadAttachmentMutation = (scopeId: string) => {
       queryClient.setQueryData(attachmentsQK, context?.previousData);
     },
     onSettled: (_data, _err, variables) => {
-      console.log("onSettled");
-      // queryClient.setQueryData<UploadAttachmentProgress>(
-      //   AttachmentsKeys.addAttachments(),
-      //   (oldData) => {
-      //     const toReturn: UploadAttachmentProgress = {
-      //       ...oldData,
-      //       progress: 0,
-      //       status: "idle",
-      //     };
-      //     console.log("toReturnOnSettled", toReturn);
-      //     return toReturn;
-      //   },
-      // );
+      setProgresses((state) => {
+        const { [variables.id]: toDelete, ...rest } = state;
+        return {
+          ...rest,
+        };
+      });
       return queryClient.invalidateQueries({
         queryKey: AttachmentsKeys.attachments(
           variables.electionRoundId,

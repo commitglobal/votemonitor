@@ -29,7 +29,6 @@ import { FileMetadata, useCamera } from "../../../hooks/useCamera";
 import {
   UploadAttachmentProgress,
   useUploadAttachmentMutation,
-  useUploadAttachmentProgressQuery,
 } from "../../../services/mutations/attachments/add-attachment.mutation";
 import QuestionAttachments from "../../../components/QuestionAttachments";
 import QuestionNotes from "../../../components/QuestionNotes";
@@ -47,6 +46,8 @@ import { MULTIPART_FILE_UPLOAD_SIZE } from "../../../common/constants";
 import * as DocumentPicker from "expo-document-picker";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { AttachmentsKeys } from "../../../services/queries/attachments.query";
+import { useAttachmentUploadProgressState } from "../../../services/store/attachment-upload-state/attachment-upload-selector";
+import { AttachmentProgressStatusEnum } from "../../../services/store/attachment-upload-state/attachment-upload-slice";
 
 type SearchParamType = {
   questionId: string;
@@ -59,9 +60,7 @@ const FormQuestionnaire = () => {
   const { questionId, formId, language } = useLocalSearchParams<SearchParamType>();
   const queryClient = useQueryClient();
 
-  const { data: uploadAttachmentProgress } = useUploadAttachmentProgressQuery();
 
-  console.log("❌ Upload Progress", uploadAttachmentProgress);
 
   if (!questionId || !formId || !language) {
     return <Typography>Incorrect page params</Typography>;
@@ -72,6 +71,7 @@ const FormQuestionnaire = () => {
   const [addingNote, setAddingNote] = useState(false);
   const [deletingAnswer, setDeletingAnswer] = useState(false);
   const [isPreparingFile, setIsPreparingFile] = useState(false);
+  const [currentAttachment, setCurrentAttachment] = useState<string>('');
 
   const {
     data: currentForm,
@@ -295,6 +295,8 @@ const FormQuestionnaire = () => {
       return;
     }
 
+    const attachmentId = Crypto.randomUUID();
+    setCurrentAttachment(attachmentId);
     if (
       activeElectionRound &&
       selectedPollingStation?.pollingStationId &&
@@ -304,7 +306,7 @@ const FormQuestionnaire = () => {
     ) {
       addAttachmentMultipart(
         {
-          id: Crypto.randomUUID(),
+          id: attachmentId,
           electionRoundId: activeElectionRound.id,
           pollingStationId: selectedPollingStation.pollingStationId,
           formId,
@@ -319,6 +321,7 @@ const FormQuestionnaire = () => {
           onSettled: () => {
             setIsOptionsSheetOpen(false);
             setIsPreparingFile(false);
+            setCurrentAttachment('');
           },
         },
       );
@@ -342,10 +345,8 @@ const FormQuestionnaire = () => {
       multiple: false,
     });
 
-    console.log(doc);
 
     if (doc?.canceled) {
-      console.log("canceling");
       setIsPreparingFile(false);
       return;
     }
@@ -360,7 +361,8 @@ const FormQuestionnaire = () => {
         size: file.size,
       };
 
-      console.log("FileMetadata", fileMetadata);
+      const attachmentId = Crypto.randomUUID();
+      setCurrentAttachment(attachmentId);
 
       if (
         activeElectionRound &&
@@ -371,7 +373,7 @@ const FormQuestionnaire = () => {
       ) {
         await addAttachmentMultipart(
           {
-            id: Crypto.randomUUID(),
+            id: attachmentId,
             electionRoundId: activeElectionRound.id,
             pollingStationId: selectedPollingStation.pollingStationId,
             formId,
@@ -386,6 +388,7 @@ const FormQuestionnaire = () => {
             onSettled: () => {
               setIsOptionsSheetOpen(false);
               setIsPreparingFile(false);
+              setCurrentAttachment('');
             },
           },
         );
@@ -674,7 +677,7 @@ const FormQuestionnaire = () => {
           disableDrag={addingNote}
         >
           {(isUploadingAttachments && !isPaused) || isPreparingFile ? (
-            <MediaLoading uploadProgress={uploadAttachmentProgress as UploadAttachmentProgress} />
+            <MediaLoading attachmentId={currentAttachment} />
           ) : addingNote ? (
             <AddNoteSheetContent
               setAddingNote={setAddingNote}
@@ -739,38 +742,36 @@ const $containerStyle: ViewStyle = {
 
 export default FormQuestionnaire;
 
-const MediaLoading = ({
-  uploadProgress,
-}: {
-  uploadProgress: UploadAttachmentProgress | undefined;
-}) => {
+const MediaLoading = ({ attachmentId }: { attachmentId: string }) => {
   const { t } = useTranslation("polling_station_form_wizard");
+  const { progresses } = useAttachmentUploadProgressState()
 
   const message = useMemo(() => {
-    if (!uploadProgress) {
+    if (!progresses && !progresses[attachmentId]) {
       return "";
     }
-    switch (uploadProgress?.status) {
-      case "starting":
+
+    switch (progresses[attachmentId]?.status) {
+      case AttachmentProgressStatusEnum.STARTING:
         return t("attachments.upload.starting");
       case "compressing":
-        return `Compressing progress ${uploadProgress.progress}%`;
-      case "inprogress":
-        return `${t("attachments.upload.progress")} ${uploadProgress.progress} %`;
-      case "completed":
+        return `Compressing progress ${progresses[attachmentId]?.progress}%`;
+      case AttachmentProgressStatusEnum.INPROGRESS:
+        return `${t("attachments.upload.progress")} ${progresses[attachmentId]?.progress} %`;
+      case AttachmentProgressStatusEnum.COMPLETED:
         return t("attachments.upload.completed");
-      case "aborted":
+      case AttachmentProgressStatusEnum.ABORTED:
         return t("attachments.upload.aborted");
       default:
         return "";
     }
-  }, [uploadProgress]);
+  }, [progresses]);
 
   return (
     <YStack alignItems="center" gap="$lg" paddingHorizontal="$lg">
       <Spinner size="large" color="$purple5" />
       <Typography preset="subheading" fontWeight="500" color="$purple5" minHeight="$lg">
-        {message || ""}
+        {message || "Uploading"}
       </Typography>
     </YStack>
   );
