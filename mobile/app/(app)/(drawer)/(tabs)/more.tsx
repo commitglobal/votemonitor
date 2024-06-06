@@ -158,27 +158,36 @@ const More = () => {
           helper={currentUser ? t("logged_in", { user: currentUser }) : ""}
         ></MenuItem>
       </YStack>
-      <FeedbackSheet open={feedbackSheetOpen} setOpen={setFeedbackSheetOpen} />
-      <OptionsSheet open={optionsSheetOpen} setOpen={setOptionsSheetOpen}>
-        <YStack
-          paddingVertical="$xxs"
-          paddingHorizontal="$sm"
-          onPress={() => {
-            setOptionsSheetOpen(false);
-            router.push("/manage-polling-stations");
-          }}
-        >
-          <Typography preset="body1" color="$gray7" lineHeight={24}>
-            {t("options_sheet.manage_my_polling_stations")}
-          </Typography>
-        </YStack>
-      </OptionsSheet>
+      {feedbackSheetOpen && (
+        <FeedbackSheet open={feedbackSheetOpen} setOpen={setFeedbackSheetOpen} />
+      )}
+      {optionsSheetOpen && (
+        <OptionsSheet open={optionsSheetOpen} setOpen={setOptionsSheetOpen}>
+          <YStack
+            paddingVertical="$xxs"
+            paddingHorizontal="$sm"
+            onPress={() => {
+              setOptionsSheetOpen(false);
+              router.push("/manage-polling-stations");
+            }}
+          >
+            <Typography preset="body1" color="$gray7" lineHeight={24}>
+              {t("options_sheet.manage_my_polling_stations")}
+            </Typography>
+          </YStack>
+        </OptionsSheet>
+      )}
       {/* 
           This element is controlled via the MenuItem change-language component.
           It is visible only when open===true as a bottom sheet. 
           Otherwise, no select element is rendered.
          */}
-      <SelectAppLanguage open={isLanguageSelectSheetOpen} setOpen={setIsLanguageSelectSheetOpen} />
+      {isLanguageSelectSheetOpen && (
+        <SelectAppLanguage
+          open={isLanguageSelectSheetOpen}
+          setOpen={setIsLanguageSelectSheetOpen}
+        />
+      )}
       {showWarningModal && (
         <WarningDialog
           title={
