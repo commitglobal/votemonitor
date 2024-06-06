@@ -111,13 +111,13 @@ export default function FormsDashboard(): ReactElement {
 
             {
               row.depth === 0 ?
-                <DropdownMenuItem onClick={() => navigateToEdit(row.original.id, row.original.defaultLanguage)}>Edit</DropdownMenuItem>
-                : <DropdownMenuItem onClick={() => navigateToEditTranslation(row.original.id, row.original.defaultLanguage)}>Edit</DropdownMenuItem>
+                <DropdownMenuItem disabled={row.original.status === FormStatus.Published} onClick={() => navigateToEdit(row.original.id, row.original.defaultLanguage)}>Edit</DropdownMenuItem>
+                : <DropdownMenuItem disabled={row.original.status === FormStatus.Published} onClick={() => navigateToEditTranslation(row.original.id, row.original.defaultLanguage)}>Edit</DropdownMenuItem>
             }
 
             {
               row.depth === 0 ?
-                <DropdownMenuItem onClick={() => handleEditTranslations(row.original)}>Add translations</DropdownMenuItem>
+                <DropdownMenuItem disabled={row.original.status === FormStatus.Published} onClick={() => handleEditTranslations(row.original)}>Add translations</DropdownMenuItem>
                 : null
             }
             {
@@ -131,7 +131,7 @@ export default function FormsDashboard(): ReactElement {
                 : null
             }
             {row.depth === 0 ?
-              <DropdownMenuItem className='text-red-600' onClick={() => handleDeleteForm(row.original.id)}>
+              <DropdownMenuItem disabled={row.original.status === FormStatus.Published} className='text-red-600' onClick={() => handleDeleteForm(row.original.id)}>
                 Delete form
               </DropdownMenuItem>
               :

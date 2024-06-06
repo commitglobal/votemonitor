@@ -8,6 +8,7 @@ import { queryClient } from '@/main';
 import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 import { formTemplatesKeys } from '../../queries';
+import { useRouter } from '@tanstack/react-router';
 
 
 export interface AddTranslationsDialogProps {
@@ -24,6 +25,7 @@ function AddTranslationsDialog({
     onOpenChange
 }: AddTranslationsDialogProps) {
     const [newLanguages, setLanguages] = useState(languages);
+    const router = useRouter();
 
     function handleOnChange(values: string[]): void {
         setLanguages(values);
@@ -49,6 +51,7 @@ function AddTranslationsDialog({
 
       onOpenChange(false);
       queryClient.invalidateQueries({ queryKey: formTemplatesKeys.all });
+      router.invalidate();
     },
   });
 

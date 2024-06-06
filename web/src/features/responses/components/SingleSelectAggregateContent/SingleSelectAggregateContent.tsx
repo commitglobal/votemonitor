@@ -25,10 +25,10 @@ const SingleSelectAggregateContent = forwardRef<ChartJSOrUndefined<'pie', number
             labels: aggregate.question.options.map((option) => option.text[language]),
             datasets: [
               {
-                data: Object.values(aggregate.answersHistogram).map(
-                  (value) => round((value / aggregate.answersAggregated) * 100, 2)
-                ),
-                backgroundColor: getColorsForSelectChart(aggregate.question.options),
+                data: aggregate.question.options.map((option) => aggregate.answersHistogram[option.id] ?? 0),
+                borderWidth: (ctx,o) => ctx.dataset.data[ctx.dataIndex]=== 0 ? 0 : 1,
+                backgroundColor: getColorsForSelectChart(aggregate.question.options, false),
+                hoverBackgroundColor: getColorsForSelectChart(aggregate.question.options, true)
               },
             ],
           }}
@@ -49,9 +49,7 @@ const SingleSelectAggregateContent = forwardRef<ChartJSOrUndefined<'pie', number
               },
               datalabels: {
                 color: '#fff',
-                formatter(value) {
-                  return `${value}%`;
-                },
+                formatter: (value) => (value ? `${value} (${round((value / aggregate.answersAggregated) * 100, 2) }%)` : '0'),
               },
             },
           }}

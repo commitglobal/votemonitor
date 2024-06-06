@@ -26,9 +26,6 @@ public abstract class BaseAnswerAggregate
     public BaseQuestion Question { get; }
     public int AnswersAggregated { get; private set; }
 
-    private readonly HashSet<Guid> _responders = new();
-    public IReadOnlyList<Guid> Responders => _responders.ToList().AsReadOnly();
-
     internal BaseAnswerAggregate(BaseQuestion question, int displayOrder)
     {
         QuestionId = question.Id;
@@ -38,8 +35,6 @@ public abstract class BaseAnswerAggregate
 
     public void Aggregate(FormSubmission formSubmission, BaseAnswer answer)
     {
-        _responders.Add(formSubmission.MonitoringObserverId);
-
         AnswersAggregated += 1;
         QuestionSpecificAggregate(formSubmission, answer);
     }

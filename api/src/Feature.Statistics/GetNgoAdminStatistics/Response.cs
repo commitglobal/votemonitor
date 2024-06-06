@@ -1,4 +1,6 @@
-﻿namespace Feature.Statistics.Get;
+﻿using Feature.Statistics.GetNgoAdminStatistics.Models;
+
+namespace Feature.Statistics.GetNgoAdminStatistics;
 
 public class Response
 {

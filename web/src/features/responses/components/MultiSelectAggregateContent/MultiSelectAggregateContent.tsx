@@ -21,7 +21,11 @@ const MultiSelectAggregateContent = forwardRef<ChartJSOrUndefined<'bar', number[
 
     const data: ChartData<'bar', number[]> = {
       labels: aggregate.question.options.map((option) => option.text[language]),
-      datasets: [{ data: dataset }],
+      datasets: [
+        {
+          data: dataset
+        }
+      ],
     };
 
     return (
@@ -32,7 +36,13 @@ const MultiSelectAggregateContent = forwardRef<ChartJSOrUndefined<'bar', number[
           options={{
             maintainAspectRatio: false,
             devicePixelRatio: 1.5,
-            datasets: { bar: { barThickness: 10, backgroundColor: getColorsForSelectChart(aggregate.question.options) } },
+            datasets: {
+              bar: {
+                barThickness: 10,
+                backgroundColor: getColorsForSelectChart(aggregate.question.options, false),
+                hoverBackgroundColor: getColorsForSelectChart(aggregate.question.options, true)
+              }
+            },
             indexAxis: 'y',
             plugins: {
               legend: { display: false },

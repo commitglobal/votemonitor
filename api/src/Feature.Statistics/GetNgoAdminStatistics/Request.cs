@@ -1,6 +1,6 @@
 ﻿using Vote.Monitor.Core.Security;
 
-namespace Feature.Statistics.Get;
+namespace Feature.Statistics.GetNgoAdminStatistics;
 
 public class Request
 {

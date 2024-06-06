@@ -27,24 +27,6 @@ public class BaseAnswerAggregateTests
     }
 
     [Fact]
-    public void Aggregate_ShouldAddResponderIdToResponders()
-    {
-        // Arrange
-        var aggregate = new TestAnswerAggregate(new TextQuestionFaker().Generate(), 0);
-        var submission1 = new FormSubmissionFaker().Generate();
-        var submission2 = new FormSubmissionFaker().Generate();
-
-        // Act
-        aggregate.Aggregate(submission1, new TestAnswer());
-        aggregate.Aggregate(submission2, new TestAnswer());
-
-        // Assert
-        aggregate.Responders.Should().HaveCount(2);
-        aggregate.Responders.Should().Contain(submission1.MonitoringObserverId);
-        aggregate.Responders.Should().Contain(submission2.MonitoringObserverId);
-    }
-
-    [Fact]
     public void Aggregate_ShouldInvokeQuestionSpecificAggregate()
     {
         // Arrange

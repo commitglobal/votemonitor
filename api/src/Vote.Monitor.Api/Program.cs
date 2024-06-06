@@ -140,7 +140,7 @@ builder.Services.AddFormSubmissionsFeature();
 builder.Services.AddQuickReportsFeature();
 builder.Services.AddImportErrorsFeature();
 builder.Services.AddDataExportFeature();
-builder.Services.AddStatisticsFeature();
+builder.Services.AddStatisticsFeature(builder.Configuration.GetRequiredSection(StatisticsInstaller.SectionKey));
 builder.Services.AddFeedbackFeature();
 
 builder.Services.AddAuthorization();

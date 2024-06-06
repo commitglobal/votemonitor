@@ -1,7 +1,8 @@
 ﻿using Dapper;
+using Feature.Statistics.GetNgoAdminStatistics.Models;
 using Vote.Monitor.Domain.ConnectionFactory;
 
-namespace Feature.Statistics.Get;
+namespace Feature.Statistics.GetNgoAdminStatistics;
 
 public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<Request, Response>
 {
