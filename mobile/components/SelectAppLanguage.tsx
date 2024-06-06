@@ -57,7 +57,10 @@ const SelectAppLanguage = ({ open, setOpen }: SelectLanguageProps) => {
           <Select.Group>
             {i18n.languages?.map((lang, i) => (
               <Select.Item index={i} key={lang} value={lang} gap="$3" paddingBottom="$sm">
-                <Select.ItemText color={lang === i18n.language ? "$purple5" : "$gray9"}>
+                <Select.ItemText
+                  color={lang === i18n.language ? "$purple5" : "$gray9"}
+                  maxFontSizeMultiplier={1.2}
+                >
                   {t(lang)}
                 </Select.ItemText>
                 <Select.ItemIndicator>

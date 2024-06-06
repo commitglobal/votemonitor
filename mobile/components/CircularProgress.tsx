@@ -208,10 +208,16 @@ const AnimatedText = ({
 
   return (
     <View flexDirection="column" alignItems="center" position="absolute">
-      <Animated.Text style={[animatedStyle, { fontSize: 14, fontWeight: "700" }]}>
+      <Animated.Text
+        maxFontSizeMultiplier={1.2}
+        style={[animatedStyle, { fontSize: 14, fontWeight: "700" }]}
+      >
         {Math.round(inputProgress)} %
       </Animated.Text>
-      <Animated.Text style={[animatedStyle, { fontSize: 12, fontWeight: "700" }]}>
+      <Animated.Text
+        maxFontSizeMultiplier={1.2}
+        style={[animatedStyle, { fontSize: 12, fontWeight: "700" }]}
+      >
         {t("overview.progress")}
       </Animated.Text>
     </View>

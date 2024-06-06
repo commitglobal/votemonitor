@@ -2,6 +2,7 @@ import React, { ReactNode } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Sheet, SheetProps } from "tamagui";
 import { Icon } from "./Icon";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 export interface OptionsSheetProps extends SheetProps {
   /* The current state of the sheet */
@@ -43,7 +44,7 @@ const OptionsSheet = (props: OptionsSheetProps) => {
         marginBottom={insets.bottom}
       >
         <Icon paddingVertical="$md" alignSelf="center" icon="dragHandle" />
-        {children}
+        <KeyboardAwareScrollView>{children}</KeyboardAwareScrollView>
       </Sheet.Frame>
     </Sheet>
   );

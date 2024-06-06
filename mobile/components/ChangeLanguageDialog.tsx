@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { XStack, YStack } from "tamagui";
+import { ScrollView, XStack, YStack } from "tamagui";
 import RadioFormInput from "./FormInputs/RadioFormInput";
 import { Typography } from "./Typography";
 import { Controller, useForm } from "react-hook-form";
@@ -66,21 +66,23 @@ const ChangeLanguageDialog = ({
             </Typography>
           }
           content={
-            <YStack>
-              <Typography preset="body1" marginBottom="$lg">
-                {t("forms.select_language_modal.helper", { ns: "observation" })}
-              </Typography>
-              <RadioFormInput
-                options={transformedLanguages}
-                value={value}
-                onValueChange={onChange}
-              />
-              {errors[formId] && (
-                <Typography marginTop="$sm" style={{ color: "red" }}>
-                  {`${errors[formId].message}`}
+            <ScrollView bounces={false} showsVerticalScrollIndicator={false}>
+              <YStack>
+                <Typography preset="body1" marginBottom="$lg">
+                  {t("forms.select_language_modal.helper", { ns: "observation" })}
                 </Typography>
-              )}
-            </YStack>
+                <RadioFormInput
+                  options={transformedLanguages}
+                  value={value}
+                  onValueChange={onChange}
+                />
+                {errors[formId] && (
+                  <Typography marginTop="$sm" style={{ color: "red" }}>
+                    {`${errors[formId].message}`}
+                  </Typography>
+                )}
+              </YStack>
+            </ScrollView>
           }
           footer={
             <XStack gap="$md">
