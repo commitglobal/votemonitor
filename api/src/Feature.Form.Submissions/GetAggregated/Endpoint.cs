@@ -32,6 +32,7 @@ public class Endpoint(VoteMonitorContext context,
             .Where(x => x.ElectionRoundId == req.ElectionRoundId
                         && x.MonitoringNgo.NgoId == req.NgoId
                         && x.Id == req.FormId)
+            .AsNoTracking()
             .FirstOrDefaultAsync(ct);
 
         if (form is null)

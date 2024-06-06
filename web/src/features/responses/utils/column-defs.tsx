@@ -2,7 +2,7 @@ import TableTagList from '@/components/table-tag-list/TableTagList';
 import { Badge } from '@/components/ui/badge';
 import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
 import { cn } from '@/lib/utils';
-import { ChevronRightIcon } from '@heroicons/react/24/outline';
+import { ArrowTopRightOnSquareIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import { Link } from '@tanstack/react-router';
 import { format } from 'date-fns';
 
@@ -435,8 +435,8 @@ export const answerExtraInfoColumnDefs: ColumnDef<QuestionExtraData>[] = [
     cell: ({ row }) => <div>{format(row.original.timeSubmitted, DateTimeFormat)}</div>,
   },
   {
-    header: ({ column }) => <DataTableColumnHeader title='Details' column={column} />,
-    accessorKey: 'details',
+    header: ({ column }) => <DataTableColumnHeader title='Preview' column={column} />,
+    accessorKey: 'preview',
     enableSorting: false,
     enableGlobalFilter: false,
     cell: ({ row }) => <div>{row.original.type === "Note" ? row.original.text : <MediaFilesCell attachment={row.original} />}</div>,
@@ -445,14 +445,17 @@ export const answerExtraInfoColumnDefs: ColumnDef<QuestionExtraData>[] = [
 
 export const aggregatedAnswerExtraInfoColumnDefs: ColumnDef<QuestionExtraData>[] = [
   {
-    header: ({ column }) => <DataTableColumnHeader title='EntryID' column={column} />,
+    header: ({ column }) => <DataTableColumnHeader title='SubmissionID' column={column} />,
     accessorKey: 'submissionId',
     enableSorting: true,
     enableGlobalFilter: true,
     cell: ({ row }) => <div>
       {
-        <Link to='/responses/$submissionId' params={{ submissionId: row.original.submissionId }} preload='intent'>
-          <Button type='button' variant={'link'} className='text-purple-500'> {row.original.submissionId.substring(0, 8)}</Button>
+        <Link to='/responses/$submissionId' params={{ submissionId: row.original.submissionId }} preload='intent' target='_blank' >
+          <Button type='button' variant={'link'} className='text-purple-500'>
+             {row.original.submissionId.substring(0, 8)}
+             <ArrowTopRightOnSquareIcon className='w-4' />
+             </Button>
         </Link>
       }
     </div>,
@@ -472,8 +475,8 @@ export const aggregatedAnswerExtraInfoColumnDefs: ColumnDef<QuestionExtraData>[]
     cell: ({ row }) => <div>{format(row.original.timeSubmitted, DateTimeFormat)}</div>,
   },
   {
-    header: ({ column }) => <DataTableColumnHeader title='Details' column={column} />,
-    accessorKey: 'details',
+    header: ({ column }) => <DataTableColumnHeader title='Preview' column={column} />,
+    accessorKey: 'preview',
     enableSorting: false,
     enableGlobalFilter: false,
     cell: ({ row }) => <div>{row.original.type === "Note" ? row.original.text : <MediaFilesCell attachment={row.original} />}</div>,

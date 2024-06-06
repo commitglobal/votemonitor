@@ -1,4 +1,4 @@
-﻿namespace Feature.Statistics.Get;
+﻿namespace Feature.Statistics.GetNgoAdminStatistics;
 
 public class Validator : Validator<Request>
 {

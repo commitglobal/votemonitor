@@ -29,7 +29,6 @@ export interface BaseQuestionAggregate {
   questionId: string;
   displayOrder: number;
   answersAggregated: number;
-  responders: string[];
   $questionType: QuestionTypeAggregate;
   question: BaseQuestion;
 }

@@ -71,7 +71,6 @@ export const observersOnTheFieldDataConfig = (totalNumberOfObservers?: number, n
 };
 
 export const pollingStationsDataConfig = (pollingStationsStats?: PollingStationsStats): ChartData<"doughnut"> => {
-  debugger;
   const labels = [];
   const data = [];
   const colors = [];
