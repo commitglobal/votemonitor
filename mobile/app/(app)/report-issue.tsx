@@ -493,6 +493,8 @@ const ReportIssue = () => {
         </Button>
         <Button
           flex={1}
+          height="100%"
+          textStyle={{ textAlign: "center" }}
           onPress={handleSubmit(onSubmit)}
           disabled={(isPendingAddQuickReport && !isPausedAddQuickReport) || isUploadingAttachments}
         >
