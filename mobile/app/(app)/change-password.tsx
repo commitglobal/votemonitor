@@ -95,8 +95,24 @@ const ChangePassword = () => {
       });
     }
     updatePassword(payload, {
+      onSuccess: () => {
+        return Toast.show({
+          type: "success",
+          text2: t("confirmation.heading"),
+          visibilityTime: 5000,
+          text2Style: { textAlign: "center" },
+        });
+      },
       onError: (error: Error) => {
         setReqError(error);
+        return Toast.show({
+          type: "error",
+          text2: t("paragraph1", { ns: "generic_error_screen" }),
+          visibilityTime: 5000,
+          text2Style: { textAlign: "center" },
+        });
+      },
+      onSettled: () => {
         Keyboard.dismiss();
       },
     });
