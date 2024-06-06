@@ -1,6 +1,6 @@
 import React, { useContext, useMemo } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { YStack } from "tamagui";
+import { ScrollView, YStack } from "tamagui";
 import { Icon } from "./Icon";
 import { Typography } from "./Typography";
 import Select from "./Select";
@@ -61,24 +61,33 @@ const ChooseOnboardingLanguage = ({
       justifyContent="space-between"
       alignItems="center"
     >
-      <YStack gap="$xl" alignItems="center" marginTop={100}>
-        <Icon icon="onboardingLanguage" />
+      <ScrollView bounces={false} showsVerticalScrollIndicator={false}>
+        <YStack gap="$xl" alignItems="center" marginTop={100}>
+          <Icon icon="onboardingLanguage" />
 
-        <Typography preset="heading" fontWeight="500" textAlign="center" color="white">
-          {t("language.heading")}
-        </Typography>
-        <Controller
-          control={control}
-          render={({ field: { onChange, value } }) => (
-            <Select options={mappedLanguages} value={value} onValueChange={onChange} />
-          )}
-          name="selectedLanguage"
-        />
+          <Typography preset="heading" fontWeight="500" textAlign="center" color="white">
+            {t("language.heading")}
+          </Typography>
+          <Controller
+            control={control}
+            render={({ field: { onChange, value } }) => (
+              <Select options={mappedLanguages} value={value} onValueChange={onChange} />
+            )}
+            name="selectedLanguage"
+          />
 
-        <Typography fontSize={18} lineHeight={24} textAlign="center" color="white" opacity={0.7}>
-          {t("language.description")}
-        </Typography>
-      </YStack>
+          <Typography
+            fontSize={18}
+            lineHeight={24}
+            marginBottom="$md"
+            textAlign="center"
+            color="white"
+            opacity={0.7}
+          >
+            {t("language.description")}
+          </Typography>
+        </YStack>
+      </ScrollView>
       <Button
         backgroundColor="$yellow6"
         paddingHorizontal="$xxxl"

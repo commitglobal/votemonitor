@@ -42,8 +42,8 @@
         "projectId": "93e17628-ddcd-4e67-849c-b356a18a6082"
       },
       "message": "Fix feedback sheet",
-      "updateCritical": 45,
-      "updateVersion": 45
+      "updateCritical": 46,
+      "updateVersion": 46
     },
     "owner": "commit-global",
     "runtimeVersion": {
