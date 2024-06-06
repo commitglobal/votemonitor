@@ -3,7 +3,7 @@ import { router } from "expo-router";
 import { Screen } from "../../components/Screen";
 import Header from "../../components/Header";
 import { Icon } from "../../components/Icon";
-import { ViewStyle } from "react-native";
+import { ViewStyle, Image } from "react-native";
 import { useTranslation } from "react-i18next";
 import { styled, View, XStack, YStack } from "tamagui";
 import { Typography } from "../../components/Typography";
@@ -63,9 +63,14 @@ const AboutVoteMonitor = () => {
             {t("version", { value: appVersion })} ({Constants.expoConfig?.extra?.updateVersion})
           </Typography>
         </YStack>
-        {/* logo */}
-        <XStack justifyContent="center" marginBottom="$lg">
-          <Icon icon="commitGlobal" />
+
+        {/* commit global logo */}
+        <XStack justifyContent="center" alignItems="center" minHeight={115} marginBottom="$lg">
+          <Image
+            source={require("../../assets/images/commit-global-color.png")}
+            resizeMode="contain"
+            style={{ width: "100%", height: "100%" }}
+          />
         </XStack>
       </YStack>
     </Screen>

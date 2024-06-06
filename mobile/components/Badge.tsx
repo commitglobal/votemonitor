@@ -1,6 +1,7 @@
 import React from "react";
-import { View, styled } from "tamagui";
+import { View, ViewProps, styled } from "tamagui";
 import { Typography } from "./Typography";
+import { TextStyle } from "react-native";
 
 export enum Status {
   NOT_STARTED = "not started",
@@ -16,9 +17,10 @@ enum Presets {
   WARNING = "warning",
 }
 
-export interface BadgeProps {
+export interface BadgeProps extends ViewProps {
   status: string;
   children: string;
+  textStyle?: TextStyle;
 }
 
 /**
@@ -27,7 +29,7 @@ export interface BadgeProps {
  * @returns {JSX.Element} The rendered `Badge` component.
  */
 const Badge = (props: BadgeProps): JSX.Element => {
-  const { status } = props;
+  const { status, textStyle, ...rest } = props;
 
   // TODO @madalinazanficu: memoize everything please
   // TODO @madalinazanficu: use strong typed values for props
@@ -65,8 +67,8 @@ const Badge = (props: BadgeProps): JSX.Element => {
         : "$gray10";
 
   return (
-    <StyledView presets={presetType}>
-      <Typography preset="body2" color={textColor}>
+    <StyledView presets={presetType} {...rest}>
+      <Typography preset="body2" color={textColor} style={{ ...textStyle }}>
         {props.children}
       </Typography>
     </StyledView>

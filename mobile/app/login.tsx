@@ -4,7 +4,7 @@ import { useAuth } from "../hooks/useAuth";
 import { ScrollView, View, XStack, YStack } from "tamagui";
 import { useTranslation } from "react-i18next";
 import { Screen } from "../components/Screen";
-import { Animated, Keyboard } from "react-native";
+import { Animated, Keyboard, Image } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Icon } from "../components/Icon";
 import { Typography } from "../components/Typography";
@@ -90,7 +90,7 @@ const Login = () => {
       SecureStore.setItem(SECURE_STORAGE_KEYS.ONBOARDING_COMPLETE, "true");
       setOnboardingComplete(true);
     } catch (err) {
-      console.log("err",err);
+      console.log("err", err);
       Sentry.captureException(err);
     }
   };
@@ -133,10 +133,11 @@ const Login = () => {
         <ScrollView>
           <YStack padding="$md" gap="$md">
             <LoginForm control={control} errors={errors} authError={authError} />
+
+            {/* info text */}
             <XStack marginTop="$md" justifyContent="flex-start" gap="$xxs">
               <Icon icon="infoCircle" size={18} color="white" style={{ marginTop: 2 }} />
 
-              {/* info text */}
               <YStack gap="$lg" maxWidth="90%">
                 <Typography>{t("disclaimer.paragraph1")}</Typography>
                 <Typography>
@@ -147,6 +148,15 @@ const Login = () => {
                   .
                 </Typography>
               </YStack>
+            </XStack>
+
+            {/* commit global logo */}
+            <XStack justifyContent="center" alignItems="center" minHeight={115}>
+              <Image
+                source={require("../assets/images/commit-global-color.png")}
+                resizeMode="contain"
+                style={{ width: "100%", height: "100%" }}
+              />
             </XStack>
           </YStack>
         </ScrollView>
