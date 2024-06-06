@@ -1,6 +1,6 @@
 import React, { useContext, useMemo } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { ScrollView, YStack } from "tamagui";
+import { ScrollView, XStack, YStack } from "tamagui";
 import { Icon } from "./Icon";
 import { Typography } from "./Typography";
 import Select from "./Select";
@@ -88,16 +88,22 @@ const ChooseOnboardingLanguage = ({
           </Typography>
         </YStack>
       </ScrollView>
-      <Button
-        backgroundColor="$yellow6"
-        paddingHorizontal="$xxxl"
-        textStyle={{ color: "#5F288D", fontSize: 16, fontWeight: "500" }} // TODO:@luciatugui - culoarea asta nu trebuie sa fie aici
-        justifyContent="center"
-        alignItems="center"
-        onPress={handleSubmit(onSubmit)}
-      >
-        {t("language.save")}
-      </Button>
+      <XStack justifyContent="center" alignItems="center">
+        <Button
+          height="100%"
+          backgroundColor="$yellow6"
+          paddingHorizontal="$xxxl"
+          textStyle={{
+            color: "#5F288D",
+            fontSize: 16,
+            fontWeight: "500",
+            textAlign: "center",
+          }} // TODO:@luciatugui - culoarea asta nu trebuie sa fie aici
+          onPress={handleSubmit(onSubmit)}
+        >
+          {t("language.save")}
+        </Button>
+      </XStack>
     </YStack>
   );
 };
