@@ -206,7 +206,10 @@
     "warning_modal": {
       "title": "Golește formularul cu informațiile secției de votare",
       "description": "Această acțiune va șterge toate răspunsurile introduse până acum în acest formular. Pentru a evita orice pierdere neintenționată de date, te rugăm să verifici informațiile despre secția de votare înainte de a realiza această acțiune.",
-      "actions": { "cancel": "Renunță", "clear": "Golește formular" }
+      "actions": {
+        "cancel": "Renunță",
+        "clear": "Golește formular"
+      }
     }
   },
   "form_overview": {
@@ -248,7 +251,7 @@
   },
   "polling_station_form_wizard": {
     "progress_bar": {
-      "label": "Progresul fromularului",
+      "label": "Progresul formularului",
       "clear_answer": "Șterge răspuns"
     },
     "form": {
@@ -299,12 +302,18 @@
       "question": {
         "title": "Șterge răspunsul întrebării {{value}}",
         "description": "Această acțiune presupune ștergerea inclusiv a informațiilor atașate (notițe, fișiere media sau audio). Întrebarea își va schimba statusul în 'Fără răspuns'. ",
-        "actions": { "cancel": "Renunță", "clear": "Șterge răspuns" }
+        "actions": {
+          "cancel": "Renunță",
+          "clear": "Șterge răspuns"
+        }
       },
       "attachment": {
         "title": "Șterge fișier media",
         "description": "Această acțiune este ireversibilă. Odată șters, un fișier media nu poate fi recuperat.",
-        "actions": { "cancel": "Renunță", "clear": "Șterge" }
+        "actions": {
+          "cancel": "Renunță",
+          "clear": "Șterge"
+        }
       }
     },
     "error": "Eroare la încărcarea datelor întrebării!"
