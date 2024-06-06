@@ -66,3 +66,25 @@ resource "aws_secretsmanager_secret_version" "seed_admin" {
     password  = random_password.seed_admin_password.result
   })
 }
+
+# Statistics API key 
+resource "random_password" "statistics_api_key" {
+  length  = 64
+  special = false
+
+  lifecycle {
+    ignore_changes = [
+      length,
+      special
+    ]
+  }
+}
+
+resource "aws_secretsmanager_secret" "statistics_api_key" {
+  name = "${local.namespace}-statistics_api_key-${random_string.secrets_suffix.result}"
+}
+
+resource "aws_secretsmanager_secret_version" "statistics_api_key" {
+  secret_id     = aws_secretsmanager_secret.statistics_api_key.id
+  secret_string = random_password.statistics_api_key.result
+}
