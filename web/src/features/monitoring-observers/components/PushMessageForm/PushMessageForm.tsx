@@ -11,7 +11,7 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
+import { type ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -21,7 +21,7 @@ import { useNavigate } from '@tanstack/react-router';
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
 import { Route } from '@/routes/monitoring-observers/create-new-message';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
-import { PushMessageTargetedObserversSearchParams } from '../../models/search-params';
+import type { PushMessageTargetedObserversSearchParams } from '../../models/search-params';
 import { FilterBadge } from '@/components/ui/badge';
 import { useTargetedMonitoringObservers } from '../../hooks/push-messages-queries';
 import { PollingStationsFilters } from '@/components/PollingStationsFilters/PollingStationsFilters';
@@ -31,17 +31,18 @@ import { useDebounce } from '@uidotdev/usehooks';
 import { toast } from '@/components/ui/use-toast';
 import { useMutation } from '@tanstack/react-query';
 import { authApi } from '@/common/auth-api';
-import { SendPushNotificationRequest } from '../../models/push-message';
+import type { SendPushNotificationRequest } from '../../models/push-message';
+import type { FunctionComponent } from '@/common/types';
 
 const createPushMessageSchema = z.object({
   title: z.string().min(1, { message: 'Your message must have a title before sending.' }),
   messageBody: z
     .string()
     .min(1, { message: 'Your message must have a detailed description before sending.' })
-    .max(1000)
+    .max(1000),
 });
 
-function PushMessageForm() {
+function PushMessageForm(): FunctionComponent {
   const navigate = useNavigate();
   const search = Route.useSearch();
   const [totalRowsCount, setTotalRowsCount] = useState(0);
@@ -67,20 +68,21 @@ function PushMessageForm() {
   );
 
   const onClearFilter = useCallback(
-    (filter: keyof PushMessageTargetedObserversSearchParams | (keyof PushMessageTargetedObserversSearchParams)[]) => () => {
-      const filters = Array.isArray(filter)
-        ? Object.fromEntries(filter.map((key) => [key, undefined]))
-        : { [filter]: undefined };
-      void navigate({ search: (prev) => ({ ...prev, ...filters }) });
-    },
+    (filter: keyof PushMessageTargetedObserversSearchParams | (keyof PushMessageTargetedObserversSearchParams)[]) =>
+      () => {
+        const filters = Array.isArray(filter)
+          ? Object.fromEntries(filter.map((key) => [key, undefined]))
+          : { [filter]: undefined };
+        void navigate({ search: (prev) => ({ ...prev, ...filters }) });
+      },
     [navigate]
   );
 
   useEffect(() => {
-    navigate({ search: (prev) => ({ ...prev, searchText: debouncedSearchText }) })
+    void navigate({ search: (prev) => ({ ...prev, searchText: debouncedSearchText }) });
   }, [debouncedSearchText]);
 
-  const debouncedSearch = useDebounce(search, 300,);
+  const debouncedSearch = useDebounce(search, 300);
 
   const queryParams = useMemo(() => {
     const params = [
@@ -95,7 +97,6 @@ function PushMessageForm() {
     ].filter(([_, value]) => value);
 
     return Object.fromEntries(params) as PushMessageTargetedObserversSearchParams;
-
   }, [debouncedSearchText, debouncedSearch]);
 
   const handleSearchInput = (ev: ChangeEvent<HTMLInputElement>): void => {
@@ -103,26 +104,23 @@ function PushMessageForm() {
     if (!value || value.length >= 2) setSearchText(ev.currentTarget.value);
   };
 
-  const handleDataFetchinSucceed = (pageSize: number, currentPage: number, totalCount: number) => {
+  const handleDataFetchinSucceed = (pageSize: number, currentPage: number, totalCount: number): void => {
     setTotalRowsCount(totalCount);
-  }
+  };
 
   const form = useForm<z.infer<typeof createPushMessageSchema>>({
     resolver: zodResolver(createPushMessageSchema),
     defaultValues: {
       title: '',
-      messageBody: ''
-    }
+      messageBody: '',
+    },
   });
 
   const sendNotificationMutation = useMutation({
-    mutationFn: (obj:SendPushNotificationRequest) => {
+    mutationFn: (obj: SendPushNotificationRequest) => {
       const electionRoundId: string | null = localStorage.getItem('electionRoundId');
 
-      return authApi.post<SendPushNotificationRequest>(
-        `/election-rounds/${electionRoundId}/notifications:send`,
-        obj
-      );
+      return authApi.post<SendPushNotificationRequest>(`/election-rounds/${electionRoundId}/notifications:send`, obj);
     },
 
     onSuccess: () => {
@@ -135,155 +133,185 @@ function PushMessageForm() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof createPushMessageSchema>) {
+  function onSubmit(values: z.infer<typeof createPushMessageSchema>): void {
     sendNotificationMutation.mutate({
       title: values.title,
       body: values.messageBody,
-      ...queryParams
-    })
+      ...queryParams,
+    });
   }
 
   return (
     <Layout title='Create new message'>
       <Card className='py-6'>
-        <CardContent >
+        <CardContent>
           <Form {...form}>
+            {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
             <form onSubmit={form.handleSubmit(onSubmit)}>
-              <FormField
-                control={form.control}
-                name='title'
-                render={({ field }) => (
-                  <FormItem className='w-[540px]'>
-                    <FormLabel className='text-left'>
-                      Title of message <span className='text-red-500'>*</span>
-                    </FormLabel>
-                    <FormControl>
-                      <Input {...field} maxLength={256} />
-                    </FormControl>
-                    <FormDescription>
-                      Create a short title for your message that will appear in the push notification.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <h2 className='font-medium text-xl mb-10'>1. Compose your message</h2>
 
-              <FormField
-                control={form.control}
-                name='messageBody'
-                render={({ field }) => (
-                  <FormItem className='w-[540px]'>
-                    <FormLabel className='text-left'>
-                      Message body <span className='text-red-500'>*</span>
-                    </FormLabel>
-                    <FormControl>
-                      <Textarea rows={8} className='resize-none' {...field} maxLength={1000}/>
-                    </FormControl>
-                    <FormDescription>1000 characters</FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className='flex flex-col gap-6 mb-20'>
+                <FormField
+                  control={form.control}
+                  name='title'
+                  render={({ field }) => (
+                    <FormItem className='w-[540px]'>
+                      <FormLabel className='text-left'>
+                        Title of message <span className='text-red-500'>*</span>
+                      </FormLabel>
+                      <FormControl>
+                        <Input {...field} maxLength={256} />
+                      </FormControl>
+                      <FormDescription>
+                        Create a short title for your message that will appear in the push notification.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <div className='grid grid-cols-6 gap-4 items-center mb-4'>
-                <Input onChange={handleSearchInput} placeholder='Search' />
-
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button className='border-gray-200 gap-1 hover:bg-white w-[180px]' variant='outline'>
-                      <span className='text-sm font-normal text-slate-700'>Observer tags</span>
-                      {search.tagsFilter && (
-                        <span className='bg-purple-50 text-purple-600 rounded-full inline-block px-2'>
-                          {search.tagsFilter.length}
-                        </span>
-                      )}
-                      <ChevronDownIcon className='w-[20px] ml-auto' />
-                    </Button>
-                  </DropdownMenuTrigger>
-
-                  <DropdownMenuContent>
-                    {tags?.map((tag) => (
-                      <DropdownMenuCheckboxItem
-                        checked={search.tagsFilter?.includes(tag)}
-                        onCheckedChange={onTagsFilterChange(tag)}
-                        key={tag}>
-                        {tag}
-                      </DropdownMenuCheckboxItem>
-                    ))}
-                  </DropdownMenuContent>
-                </DropdownMenu>
-
-                <Select
-                  onValueChange={(value) => {
-                    void navigate({ search: (prev) => ({ ...prev, statusFilter: value }) });
-                  }}
-                  value={search.statusFilter ?? ''}>
-                  <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder='Observer status' />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      {Object.values(MonitoringObserverStatus).map((value) => (
-                        <SelectItem value={value} key={value}>{value}</SelectItem>
-                      ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-                <PollingStationsFilters />
-
-                <Button
-                  type='button'
-                  onClick={() => {
-                    void navigate({});
-                  }}
-                  variant='ghost-primary'
-                  className="w-[180px]">
-                  Reset filters
-                </Button>
+                <FormField
+                  control={form.control}
+                  name='messageBody'
+                  render={({ field }) => (
+                    <FormItem className='w-[540px]'>
+                      <FormLabel className='text-left'>
+                        Message body <span className='text-red-500'>*</span>
+                      </FormLabel>
+                      <FormControl>
+                        <Textarea rows={8} className='resize-none' {...field} maxLength={1000} />
+                      </FormControl>
+                      <FormDescription>1000 characters</FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </div>
 
-              {Object.entries(search).length > 0 && (
-                <div className='col-span-full flex gap-2 flex-wrap'>
-                  {search.tagsFilter?.map((tag) => (
-                    <FilterBadge label={`Observer tags: ${tag}`} onClear={onTagsFilterChange(tag)} />
-                  ))}
+              <h2 className='font-medium text-xl mb-10'>
+                2. Filter the list of observers to reduce it to the desired recipients of the message
+              </h2>
 
+              <div className='flex flex-col gap-6'>
+                <div className='grid grid-cols-6 gap-4 items-center'>
+                  <Input onChange={handleSearchInput} placeholder='Search' />
 
-                  {search.level1Filter && (
-                    <FilterBadge
-                      label={`Location - L1: ${search.level1Filter}`}
-                      onClear={onClearFilter(['level1Filter', 'level2Filter', 'level3Filter', 'level4Filter', 'level5Filter'])}
-                    />
-                  )}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button className='border-gray-200 gap-1 hover:bg-white w-[180px]' variant='outline'>
+                        <span className='text-sm font-normal text-slate-700'>Observer tags</span>
+                        {search.tagsFilter && (
+                          <span className='bg-purple-50 text-purple-600 rounded-full inline-block px-2'>
+                            {search.tagsFilter.length}
+                          </span>
+                        )}
+                        <ChevronDownIcon className='w-[20px] ml-auto' />
+                      </Button>
+                    </DropdownMenuTrigger>
 
-                  {search.level2Filter && (
-                    <FilterBadge
-                      label={`Location - L2: ${search.level2Filter}`}
-                      onClear={onClearFilter(['level2Filter', 'level3Filter', 'level4Filter', 'level5Filter'])}
-                    />
-                  )}
+                    <DropdownMenuContent>
+                      {tags?.map((tag) => (
+                        <DropdownMenuCheckboxItem
+                          checked={search.tagsFilter?.includes(tag)}
+                          onCheckedChange={onTagsFilterChange(tag)}
+                          key={tag}>
+                          {tag}
+                        </DropdownMenuCheckboxItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
 
-                  {search.level3Filter && (
-                    <FilterBadge
-                      label={`Location - L3: ${search.level3Filter}`}
-                      onClear={onClearFilter(['level3Filter', 'level4Filter', 'level5Filter'])}
-                    />
-                  )}
+                  <Select
+                    onValueChange={(value) => {
+                      void navigate({ search: (prev) => ({ ...prev, statusFilter: value }) });
+                    }}
+                    value={search.statusFilter ?? ''}>
+                    <SelectTrigger className='w-[180px]'>
+                      <SelectValue placeholder='Observer status' />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        {Object.values(MonitoringObserverStatus).map((value) => (
+                          <SelectItem value={value} key={value}>
+                            {value}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                  <PollingStationsFilters />
 
-                  {search.level4Filter && (
-                    <FilterBadge
-                      label={`Location - L4: ${search.level4Filter}`}
-                      onClear={onClearFilter(['level4Filter', 'level5Filter'])}
-                    />
-                  )}
-
-                  {search.level5Filter && (
-                    <FilterBadge label={`Location - L5: ${search.level5Filter}`} onClear={onClearFilter('level5Filter')} />
-                  )}
+                  <Button
+                    type='button'
+                    onClick={() => {
+                      void navigate({});
+                    }}
+                    variant='ghost-primary'
+                    className='w-[180px]'>
+                    Reset filters
+                  </Button>
                 </div>
-              )}
 
-              <QueryParamsDataTable columns={targetedMonitoringObserverColDefs} useQuery={useTargetedMonitoringObservers} onDataFetchingSucceed={handleDataFetchinSucceed} queryParams={queryParams} />
+                {Object.entries(search).length > 0 && (
+                  <div className='col-span-full flex gap-2 flex-wrap'>
+                    {search.tagsFilter?.map((tag) => (
+                      <FilterBadge label={`Observer tags: ${tag}`} onClear={onTagsFilterChange(tag)} />
+                    ))}
+
+                    {search.statusFilter && (
+                      <FilterBadge label={`Status: ${search.statusFilter}`} onClear={onClearFilter('statusFilter')} />
+                    )}
+
+                    {search.level1Filter && (
+                      <FilterBadge
+                        label={`Location - L1: ${search.level1Filter}`}
+                        onClear={onClearFilter([
+                          'level1Filter',
+                          'level2Filter',
+                          'level3Filter',
+                          'level4Filter',
+                          'level5Filter',
+                        ])}
+                      />
+                    )}
+
+                    {search.level2Filter && (
+                      <FilterBadge
+                        label={`Location - L2: ${search.level2Filter}`}
+                        onClear={onClearFilter(['level2Filter', 'level3Filter', 'level4Filter', 'level5Filter'])}
+                      />
+                    )}
+
+                    {search.level3Filter && (
+                      <FilterBadge
+                        label={`Location - L3: ${search.level3Filter}`}
+                        onClear={onClearFilter(['level3Filter', 'level4Filter', 'level5Filter'])}
+                      />
+                    )}
+
+                    {search.level4Filter && (
+                      <FilterBadge
+                        label={`Location - L4: ${search.level4Filter}`}
+                        onClear={onClearFilter(['level4Filter', 'level5Filter'])}
+                      />
+                    )}
+
+                    {search.level5Filter && (
+                      <FilterBadge
+                        label={`Location - L5: ${search.level5Filter}`}
+                        onClear={onClearFilter('level5Filter')}
+                      />
+                    )}
+                  </div>
+                )}
+
+                <QueryParamsDataTable
+                  columns={targetedMonitoringObserverColDefs}
+                  useQuery={useTargetedMonitoringObservers}
+                  onDataFetchingSucceed={handleDataFetchinSucceed}
+                  queryParams={queryParams}
+                />
+              </div>
 
               <div className='fixed bottom-0 left-0 bg-white py-4 px-12 flex justify-end w-screen'>
                 <Button>Send message to {totalRowsCount} observers</Button>
