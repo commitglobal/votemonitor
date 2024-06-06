@@ -1,4 +1,4 @@
-﻿namespace Feature.Statistics.Get;
+﻿namespace Feature.Statistics.GetNgoAdminStatistics.Models;
 
 public class BucketView
 {

@@ -1,0 +1,1 @@
+DO NOT REMOVE logo.png it is used in emails

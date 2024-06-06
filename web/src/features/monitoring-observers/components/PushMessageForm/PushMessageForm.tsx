@@ -130,6 +130,8 @@ function PushMessageForm() {
         title: 'Success',
         description: 'Notification sent',
       });
+
+      navigate({ to: '/monitoring-observers/$tab', params: { tab: 'push-messages' } });
     },
   });
 
