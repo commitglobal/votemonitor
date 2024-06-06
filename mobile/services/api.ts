@@ -4,9 +4,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ASYNC_STORAGE_KEYS } from "../common/constants";
 import { reloadAsync } from "expo-updates";
 
-// https://vitejs.dev/guide/env-and-mode.html
 const API = axios.create({
-  baseURL: `https://votemonitor.staging.heroesof.tech/api/`,
+  // baseURL: `https://votemonitor.staging.heroesof.tech/api/`,
+  baseURL: `https://api.votemonitor.org/api/`,
   timeout: 100000,
   headers: {
     "Content-Type": "application/json",
