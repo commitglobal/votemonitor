@@ -88,7 +88,7 @@ function UploadObserversGuideDialog({
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange} modal={true}>
-            <DialogContent className='min-w-[650px] min-h-[350px]' onInteractOutside={(e) => {
+            <DialogContent className='max-w-[650px] min-h-[350px]' onInteractOutside={(e) => {
                 e.preventDefault();
             }} onEscapeKeyDown={(e) => {
                 e.preventDefault();
@@ -97,7 +97,7 @@ function UploadObserversGuideDialog({
                     <DialogTitle className='mb-3.5'>Upload observer guide</DialogTitle>
                     <Separator />
                 </DialogHeader>
-                <div className='flex flex-col gap-3'>
+                <div className='flex flex-col gap-3 max-w-[600px]'>
                     <Label htmlFor="guideTitle">{'Guide title'}</Label>
                     <Input
                         id="guideTitle"
@@ -118,8 +118,8 @@ function UploadObserversGuideDialog({
                     <Label htmlFor="guideFile">{'Guide file'}</Label>
 
                     <input type='file' id ="guideFile" ref={hiddenFileInput} onChange={handleChange} style={{ display: 'none' }} />
-                    <Button onClick={handleClick} variant='outline'>
-                        <span className='text-gray-500 font-normal'>
+                    <Button onClick={handleClick} variant='outline' className=''>
+                        <span className='text-gray-500 font-normal truncate'>
                             {fileName || (
                                 <div>
                                     Drag & drop your files or <span className='underline'>Browse</span>

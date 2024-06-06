@@ -187,6 +187,10 @@ module "ecs_api" {
       name      = "FileStorage__S3__AWSSecretKey"
       valueFrom = "${aws_secretsmanager_secret.ses_hotfix.arn}:secret_key::"
     },
+    {
+      name      = "Statistics__ApiKey"
+      valueFrom = aws_secretsmanager_secret.statistics_api_key.arn
+    },
   ]
 
   allowed_secrets = [
@@ -195,6 +199,7 @@ module "ecs_api" {
     aws_secretsmanager_secret.sentry_dsn.arn,
     aws_secretsmanager_secret.rds.arn,
     aws_secretsmanager_secret.ses_hotfix.arn,
+    aws_secretsmanager_secret.statistics_api_key.arn,
   ]
 }
 
