@@ -31,7 +31,7 @@ resource "aws_db_instance" "main" {
   skip_final_snapshot       = var.env != "production"
   final_snapshot_identifier = "${local.namespace}-final-snapshot"
 
-  maintenance_window = "Mon:04:45-Mon:06:00"
+  maintenance_window = "Thu:04:45-Thu:06:00"
 
   performance_insights_enabled          = true
   performance_insights_retention_period = 7
