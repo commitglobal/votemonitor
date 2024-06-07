@@ -13,15 +13,17 @@ public class ExcelFileGenerator
     {
         _workbook = new XSSFWorkbook();
 
-        _headerStyle = _workbook.CreateCellStyle();
         var headerFont = _workbook.CreateFont();
         headerFont.IsBold = true;
+
+        _headerStyle = _workbook.CreateCellStyle();
         _headerStyle.SetFont(headerFont);
 
         _flaggedAnswerCellStyle = _workbook.CreateCellStyle();
 
         _flaggedAnswerCellStyle.FillForegroundColor = IndexedColors.Red.Index;
         _flaggedAnswerCellStyle.FillPattern = FillPattern.SolidForeground;
+        _flaggedAnswerCellStyle.SetFont(headerFont);
     }
 
     public static ExcelFileGenerator New()
