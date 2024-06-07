@@ -7,8 +7,8 @@ module "ecs_api" {
 
   name         = "api-${var.env}"
   cluster_name = module.ecs_cluster.cluster_name
-  min_capacity = 3
-  max_capacity = 9
+  min_capacity = 6
+  max_capacity = 12
 
   image_repo = local.images.api.image
   image_tag  = local.images.api.tag
@@ -37,8 +37,8 @@ module "ecs_api" {
   task_role_arn          = aws_iam_role.ecs_task_role.arn
   enable_execute_command = var.enable_execute_command
 
-  predefined_metric_type = "ECSServiceAverageCPUUtilization"
-  target_value           = 65
+  predefined_metric_type = "ECSServiceAverageMemoryUtilization"
+  target_value           = 70
 
   ordered_placement_strategy = [
     {

@@ -21,7 +21,7 @@ locals {
 
   db = {
     name           = "votemonitor"
-    instance_class = var.env == "production" ? "db.t4g.small" : "db.t4g.micro"
+    instance_class = var.env == "production" ? "db.m7g.2xlarge" : "db.t4g.micro"
   }
 
   networking = {
