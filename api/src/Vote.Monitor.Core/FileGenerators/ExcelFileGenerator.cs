@@ -1,4 +1,5 @@
 ﻿using NPOI.SS.UserModel;
+using NPOI.SS.Util;
 using NPOI.XSSF.UserModel;
 
 namespace Vote.Monitor.Core.FileGenerators;
@@ -33,7 +34,7 @@ public class ExcelFileGenerator
 
     public ExcelFileGenerator WithSheet(string sheetName, List<string> header, List<List<object>> data)
     {
-        var normalizedSheetName = sheetName.Length > 31 ? sheetName.Substring(0, 31 - 3) + "..." : sheetName;
+        var normalizedSheetName = WorkbookUtil.CreateSafeSheetName(sheetName);
 
         var sheet = _workbook.CreateSheet(normalizedSheetName);
 

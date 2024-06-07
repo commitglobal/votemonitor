@@ -1,6 +1,6 @@
 ﻿namespace Vote.Monitor.Domain.Entities.NotificationTokenAggregate;
 
-public class NotificationToken : AuditableBaseEntity, IAggregateRoot
+public class NotificationToken : BaseEntity, IAggregateRoot
 {
     public Guid ObserverId { get; private set; }
     public string Token { get; private set; }
