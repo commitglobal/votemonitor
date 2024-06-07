@@ -12,6 +12,7 @@ import Card from "./Card";
 import { useMutatePollingStationGeneralData } from "../services/mutations/psi-general.mutation";
 import { ApiFormAnswer } from "../services/interfaces/answer.type";
 import { useTranslation } from "react-i18next";
+import Toast from "react-native-toast-message";
 
 interface PollingStationGeneralProps {
   electionRoundId: string;
@@ -44,7 +45,14 @@ export const PollingStationGeneral: React.FC<PollingStationGeneralProps> = ({
   const updateArrivalDepartureTime = (
     payload: Partial<Pick<PollingStationInformationVM, "arrivalTime" | "departureTime">>,
   ) => {
-    mutate({ electionRoundId, pollingStationId, ...payload });
+    mutate({ electionRoundId, pollingStationId, ...payload }, {
+      onError: () => {
+        Toast.show({
+          type: "error",
+          text2: t('polling_stations_information.time_select.error.server')
+        });
+      },
+    });
   };
 
   return (
