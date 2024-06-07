@@ -44,7 +44,9 @@ const OptionsSheet = (props: OptionsSheetProps) => {
         marginBottom={insets.bottom}
       >
         <Icon paddingVertical="$md" alignSelf="center" icon="dragHandle" />
-        <KeyboardAwareScrollView>{children}</KeyboardAwareScrollView>
+        <KeyboardAwareScrollView keyboardShouldPersistTaps={true}>
+          {children}
+        </KeyboardAwareScrollView>
       </Sheet.Frame>
     </Sheet>
   );
