@@ -21,7 +21,7 @@ type FormData = {
 
 const ForgotPassword = () => {
   const insets = useSafeAreaInsets();
-  const { t } = useTranslation("forgot_password");
+  const { t } = useTranslation(["forgot_password", "generic_error_screen"]);
   const [isLoading, setIsLoading] = useState(false);
   const [emailConfirmation, setEmailConfirmation] = useState(false);
   const [authError, setAuthError] = useState(false);
@@ -77,7 +77,7 @@ const ForgotPassword = () => {
         </Typography>
 
         <Typography>{t("paragraph")}</Typography>
-        {authError && <CredentialsError error={t("form.errors.invalid_email")} />}
+        {authError && <CredentialsError error={t("paragraph1", { ns: "generic_error_screen" })} />}
 
         <Controller
           key="email"
