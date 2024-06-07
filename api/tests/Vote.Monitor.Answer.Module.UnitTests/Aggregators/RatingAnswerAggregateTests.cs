@@ -59,10 +59,10 @@ public class RatingAnswerAggregateTests
         var answer4 = RatingAnswer.Create(_question.Id, 3);
 
         // Act
-        _aggregate.Aggregate(_submission, answer1);
-        _aggregate.Aggregate(_submission, answer2);
-        _aggregate.Aggregate(_submission, answer3);
-        _aggregate.Aggregate(_submission, answer4);
+        _aggregate.Aggregate(Guid.NewGuid(), Guid.NewGuid(), answer1);
+        _aggregate.Aggregate(Guid.NewGuid(), Guid.NewGuid(), answer2);
+        _aggregate.Aggregate(Guid.NewGuid(), Guid.NewGuid(), answer3);
+        _aggregate.Aggregate(Guid.NewGuid(), Guid.NewGuid(), answer4);
 
         // Assert
         _aggregate.AnswersHistogram[1].Should().Be(0);
@@ -85,8 +85,8 @@ public class RatingAnswerAggregateTests
         var answer2 = RatingAnswer.Create(_question.Id, 5);
 
         // Act
-        _aggregate.Aggregate(_submission, answer1);
-        _aggregate.Aggregate(_submission, answer2);
+        _aggregate.Aggregate(Guid.NewGuid(), Guid.NewGuid(), answer1);
+        _aggregate.Aggregate(Guid.NewGuid(), Guid.NewGuid(), answer2);
 
         // Assert
         _aggregate.Min.Should().Be(5);
@@ -100,8 +100,8 @@ public class RatingAnswerAggregateTests
         var answer2 = RatingAnswer.Create(_question.Id, 2);
 
         // Act
-        _aggregate.Aggregate(_submission, answer1);
-        _aggregate.Aggregate(_submission, answer2);
+        _aggregate.Aggregate(Guid.NewGuid(), Guid.NewGuid(), answer1);
+        _aggregate.Aggregate(Guid.NewGuid(), Guid.NewGuid(), answer2);
 
         // Assert
         _aggregate.Max.Should().Be(10);
@@ -115,8 +115,8 @@ public class RatingAnswerAggregateTests
         var answer2 = RatingAnswer.Create(_question.Id, 2);
 
         // Act
-        _aggregate.Aggregate(_submission, answer1);
-        _aggregate.Aggregate(_submission, answer2);
+        _aggregate.Aggregate(Guid.NewGuid(), Guid.NewGuid(), answer1);
+        _aggregate.Aggregate(Guid.NewGuid(), Guid.NewGuid(), answer2);
 
         // Assert
         _aggregate.Average.Should().Be(6);
@@ -129,7 +129,7 @@ public class RatingAnswerAggregateTests
         var answer = new TestAnswer(); // Not a RatingAnswer
 
         // Act & Assert
-        _aggregate.Invoking(a => a.Aggregate(_submission, answer))
+        _aggregate.Invoking(a => a.Aggregate(Guid.NewGuid(), Guid.NewGuid(), answer))
             .Should().Throw<ArgumentException>()
             .WithMessage($"Invalid answer received: {answer.Discriminator} (Parameter 'answer')");
     }

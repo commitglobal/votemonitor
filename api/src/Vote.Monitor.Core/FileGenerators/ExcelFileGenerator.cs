@@ -7,15 +7,23 @@ public class ExcelFileGenerator
 {
     private readonly IWorkbook _workbook;
     private readonly ICellStyle _headerStyle;
+    private readonly ICellStyle _flaggedAnswerCellStyle;
 
     private ExcelFileGenerator()
     {
         _workbook = new XSSFWorkbook();
 
-        _headerStyle = _workbook.CreateCellStyle();
         var headerFont = _workbook.CreateFont();
         headerFont.IsBold = true;
+
+        _headerStyle = _workbook.CreateCellStyle();
         _headerStyle.SetFont(headerFont);
+
+        _flaggedAnswerCellStyle = _workbook.CreateCellStyle();
+
+        _flaggedAnswerCellStyle.FillForegroundColor = IndexedColors.Red.Index;
+        _flaggedAnswerCellStyle.FillPattern = FillPattern.SolidForeground;
+        _flaggedAnswerCellStyle.SetFont(headerFont);
     }
 
     public static ExcelFileGenerator New()
@@ -35,8 +43,16 @@ public class ExcelFileGenerator
         for (var i = 0; i < header.Count; i++)
         {
             var cell = headerRow.CreateCell(i);
-            cell.SetCellValue(header[i]);
-            cell.CellStyle = _headerStyle;
+            if (header[i].Contains(ColorMarkers.Red))
+            {
+                cell.SetCellValue(header[i].Replace(ColorMarkers.Red, ""));
+                cell.CellStyle = _flaggedAnswerCellStyle;
+            }
+            else
+            {
+                cell.SetCellValue(header[i]);
+                cell.CellStyle = _headerStyle;
+            }
         }
 
         // Create data rows

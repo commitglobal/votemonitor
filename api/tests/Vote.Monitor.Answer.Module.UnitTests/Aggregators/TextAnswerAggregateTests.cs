@@ -27,9 +27,11 @@ public class TextAnswerAggregateTests
         var answer = TextAnswer.Create(_question.Id, "Test answer");
 
         // Act
-        _aggregate.Aggregate(_submission, answer);
+        _aggregate.Aggregate(_submission.Id, _submission.MonitoringObserverId, answer);
 
         // Assert
+        _aggregate.Answers.Should().ContainSingle()
+            .Which.SubmissionId.Should().Be(_submission.Id);
         _aggregate.Answers.Should().ContainSingle()
             .Which.ResponderId.Should().Be(_submission.MonitoringObserverId);
         _aggregate.Answers.Should().ContainSingle()
@@ -43,7 +45,7 @@ public class TextAnswerAggregateTests
         var answer = new TestAnswer(); // Not a TextAnswer
 
         // Act & Assert
-        _aggregate.Invoking(a => a.Aggregate(_submission, answer))
+        _aggregate.Invoking(a => a.Aggregate(Guid.NewGuid(), Guid.NewGuid(), answer))
             .Should().Throw<ArgumentException>()
             .WithMessage($"Invalid answer received: {answer.Discriminator} (Parameter 'answer')");
     }

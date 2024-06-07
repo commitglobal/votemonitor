@@ -2,7 +2,6 @@
 using PolyJson;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Domain.Entities.FormBase.Questions;
-using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
 
 namespace Vote.Monitor.Answer.Module.Aggregators;
 
@@ -33,11 +32,12 @@ public abstract class BaseAnswerAggregate
         DisplayOrder = displayOrder;
     }
 
-    public void Aggregate(FormSubmission formSubmission, BaseAnswer answer)
+    public void Aggregate(Guid submissionId, Guid monitoringObserverId, BaseAnswer answer)
     {
         AnswersAggregated += 1;
-        QuestionSpecificAggregate(formSubmission, answer);
+        QuestionSpecificAggregate(submissionId, monitoringObserverId, answer);
     }
 
-    protected abstract void QuestionSpecificAggregate(FormSubmission submission, BaseAnswer answer);
+
+    protected abstract void QuestionSpecificAggregate(Guid submissionId, Guid monitoringObserverId, BaseAnswer answer);
 }
