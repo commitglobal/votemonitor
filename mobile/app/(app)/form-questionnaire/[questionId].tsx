@@ -3,7 +3,7 @@ import { Screen } from "../../../components/Screen";
 import Header from "../../../components/Header";
 import { Icon } from "../../../components/Icon";
 import { Typography } from "../../../components/Typography";
-import { XStack, YStack } from "tamagui";
+import { ScrollView, XStack, YStack } from "tamagui";
 import LinearProgress from "../../../components/LinearProgress";
 import { useMemo, useState } from "react";
 import { useUserData } from "../../../contexts/user/UserContext.provider";
@@ -41,7 +41,6 @@ import { onlineManager } from "@tanstack/react-query";
 import { ApiFormQuestion } from "../../../services/interfaces/question.type";
 import FormInput from "../../../components/FormInputs/FormInput";
 import WarningDialog from "../../../components/WarningDialog";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import MediaLoading from "../../../components/MediaLoading";
 import Toast from "react-native-toast-message";
 
@@ -381,12 +380,7 @@ const FormQuestionnaire = () => {
         onLeftPress={() => router.back()}
       />
 
-      <KeyboardAwareScrollView
-        contentContainerStyle={{ flexGrow: 1 }}
-        keyboardShouldPersistTaps="handled"
-        // aproximate size of textarea
-        extraHeight={200}
-      >
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
         <YStack gap="$xxs" padding="$md">
           <XStack justifyContent="space-between">
             <Typography>{t("progress_bar.label")}</Typography>
@@ -613,7 +607,7 @@ const FormQuestionnaire = () => {
             }}
           />
         </YStack>
-      </KeyboardAwareScrollView>
+      </ScrollView>
 
       <WizzardControls
         isFirstElement={activeQuestion?.indexInAllQuestions === 0}

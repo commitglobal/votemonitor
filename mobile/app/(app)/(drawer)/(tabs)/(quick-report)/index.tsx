@@ -36,7 +36,7 @@ const QuickReport = () => {
         contentContainerStyle={$containerStyle}
       >
         <Header
-          title={activeElectionRound?.title}
+          title={"Quick report"}
           titleColor="white"
           barStyle="light-content"
           leftIcon={<Icon icon="menuAlt2" color="white" />}
@@ -51,20 +51,22 @@ const QuickReport = () => {
         ) : (
           false
         )}
-        <OptionsSheet open={openContextualMenu} setOpen={setOpenContextualMenu}>
-          <View
-            paddingVertical="$xxs"
-            paddingHorizontal="$sm"
-            onPress={() => {
-              setOpenContextualMenu(false);
-              router.push("manage-polling-stations");
-            }}
-          >
-            <Typography preset="body1" color="$gray7" lineHeight={24}>
-              {t("options_menu.manage_my_polling_stations")}
-            </Typography>
-          </View>
-        </OptionsSheet>
+        {openContextualMenu && (
+          <OptionsSheet open={openContextualMenu} setOpen={setOpenContextualMenu}>
+            <View
+              paddingVertical="$xxs"
+              paddingHorizontal="$sm"
+              onPress={() => {
+                setOpenContextualMenu(false);
+                router.push("manage-polling-stations");
+              }}
+            >
+              <Typography preset="body1" color="$gray7" lineHeight={24}>
+                {t("options_menu.manage_my_polling_stations")}
+              </Typography>
+            </View>
+          </OptionsSheet>
+        )}
       </Screen>
       {quickReports?.length ? (
         <YStack width="100%" paddingHorizontal="$md" marginVertical="$xxs">

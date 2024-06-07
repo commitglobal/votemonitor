@@ -21,16 +21,12 @@ const SelectAppLanguage = ({ open, setOpen }: SelectLanguageProps) => {
   const onChangeLanguage = (language: Language) => {
     Keyboard.dismiss();
     changeLanguage(language);
+    setOpen(false);
     SecureStore.setItem(I18N_LANGUAGE, language);
   };
 
   return (
-    <Select
-      disablePreventBodyScroll
-      open={open}
-      onOpenChange={setOpen}
-      onValueChange={onChangeLanguage}
-    >
+    <Select disablePreventBodyScroll open={open} onValueChange={onChangeLanguage}>
       <Adapt platform="touch">
         <Sheet
           modal
@@ -38,7 +34,7 @@ const SelectAppLanguage = ({ open, setOpen }: SelectLanguageProps) => {
           open={open}
           moveOnKeyboardChange={open || Keyboard.isVisible()}
         >
-          <Sheet.Overlay />
+          <Sheet.Overlay onPress={() => setOpen(false)} />
           <Sheet.Frame>
             <Sheet.ScrollView
               marginBottom={insets.bottom}
