@@ -23,6 +23,7 @@ export const DrawerContent = (props: DrawerContentProps) => {
           label={`${round.status} - ${round.title}`}
           inactiveTintColor={theme.yellow6?.val}
           onPress={() => console.log("")}
+          allowFontScaling={false}
         />
       ))}
     </DrawerContentScrollView>

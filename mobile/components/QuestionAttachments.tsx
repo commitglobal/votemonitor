@@ -49,7 +49,7 @@ const QuestionAttachments: React.FC<QuestionAttachmentsProps> = ({
                 justifyContent="space-between"
                 alignItems="center"
               >
-                <Typography preset="body1" fontWeight="700" maxWidth="85%" numberOfLines={1}>
+                <Typography preset="body1" fontWeight="700" maxWidth="80%" numberOfLines={1}>
                   {attachment.fileName}
                 </Typography>
                 <YStack

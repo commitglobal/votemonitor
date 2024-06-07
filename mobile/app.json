@@ -2,7 +2,7 @@
   "expo": {
     "name": "VoteMonitor",
     "slug": "vote-monitor",
-    "version": "1.0.2",
+    "version": "1.0.5",
     "scheme": "mobile",
     "orientation": "portrait",
     "icon": "./assets/icons/icon.png",
@@ -16,7 +16,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "org.commitglobal.votemonitor",
-      "buildNumber": "58",
+      "buildNumber": "61",
       "config": {
         "usesNonExemptEncryption": false
       },
@@ -26,7 +26,7 @@
     },
     "android": {
       "softwareKeyboardLayoutMode": "pan",
-      "versionCode": 58,
+      "versionCode": 61,
       "adaptiveIcon": {
         "foregroundImage": "./assets/icons/adaptive-icon.png",
         "backgroundColor": "#FDD20C"
@@ -41,9 +41,9 @@
       "eas": {
         "projectId": "93e17628-ddcd-4e67-849c-b356a18a6082"
       },
-      "message": "Fix feedback sheet",
-      "updateCritical": 45,
-      "updateVersion": 45
+      "message": "Remove KeyboardAware",
+      "updateCritical": 48,
+      "updateVersion": 48
     },
     "owner": "commit-global",
     "runtimeVersion": {

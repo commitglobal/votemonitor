@@ -18,9 +18,17 @@ const PollingStationInfoDefault = ({ onPress }: { onPress: () => void }) => {
       <Typography textAlign="center" fontWeight="500" color="$gray5">
         {t("polling_stations_information.polling_station_form.paragraph")}
       </Typography>
-      <Button preset="outlined" backgroundColor="white" onPress={onPress}>
-        {t("polling_stations_information.polling_station_form.answer_questions")}
-      </Button>
+      <YStack flex={1}>
+        <Button
+          preset="outlined"
+          backgroundColor="white"
+          onPress={onPress}
+          textStyle={{ textAlign: "center" }}
+          height="100%"
+        >
+          {t("polling_stations_information.polling_station_form.answer_questions")}
+        </Button>
+      </YStack>
     </YStack>
   );
 };

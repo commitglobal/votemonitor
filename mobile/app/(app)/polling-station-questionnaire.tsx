@@ -50,12 +50,16 @@ const PollingStationQuestionnaire = () => {
   );
 
   const currentLanguage = useMemo(() => {
-    const activeLanguage = i18n.language.toLocaleUpperCase()
-    if (formStructure && formStructure?.defaultLanguage && !formStructure?.languages.find(el => el === activeLanguage)) {
+    const activeLanguage = i18n.language.toLocaleUpperCase();
+    if (
+      formStructure &&
+      formStructure?.defaultLanguage &&
+      !formStructure?.languages.find((el) => el === activeLanguage)
+    ) {
       return formStructure.defaultLanguage;
     }
-    return activeLanguage
-  }, [formStructure])
+    return activeLanguage;
+  }, [formStructure]);
 
   const questions: Record<string, ApiFormQuestion> = useMemo(
     () => mapAPIQuestionsToFormQuestions(formStructure?.questions),

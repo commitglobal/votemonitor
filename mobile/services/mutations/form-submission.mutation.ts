@@ -10,7 +10,6 @@ import * as Crypto from "expo-crypto";
 import { AttachmentsKeys } from "../queries/attachments.query";
 import { AttachmentApiResponse } from "../api/get-attachments.api";
 import { Note } from "../../common/models/note";
-import SuperJSON from "superjson";
 
 export const useFormSubmissionMutation = ({
   electionRoundId,

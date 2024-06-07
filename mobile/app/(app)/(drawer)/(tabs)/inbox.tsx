@@ -111,20 +111,22 @@ const Inbox = () => {
           />
         </YStack>
       )}
-      <OptionsSheet open={openContextualMenu} setOpen={setOpenContextualMenu}>
-        <YStack
-          paddingVertical="$xxs"
-          paddingHorizontal="$sm"
-          onPress={() => {
-            setOpenContextualMenu(false);
-            return router.push("manage-polling-stations");
-          }}
-        >
-          <Typography preset="body1" color="$gray7" lineHeight={24}>
-            {t("menu.manage_polling_stations")}
-          </Typography>
-        </YStack>
-      </OptionsSheet>
+      {openContextualMenu && (
+        <OptionsSheet open={openContextualMenu} setOpen={setOpenContextualMenu} key={"InboxSheet"}>
+          <YStack
+            paddingVertical="$xxs"
+            paddingHorizontal="$sm"
+            onPress={() => {
+              setOpenContextualMenu(false);
+              return router.push("manage-polling-stations");
+            }}
+          >
+            <Typography preset="body1" color="$gray7" lineHeight={24}>
+              {t("menu.manage_polling_stations")}
+            </Typography>
+          </YStack>
+        </OptionsSheet>
+      )}
     </Screen>
   );
 };

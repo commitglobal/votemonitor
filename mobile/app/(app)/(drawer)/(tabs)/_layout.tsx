@@ -30,6 +30,7 @@ export default function TabLayout() {
           },
         ],
         tabBarLabelStyle: $tabBarLabel,
+        tabBarAllowFontScaling: false,
       }}
     >
       <Tabs.Screen
