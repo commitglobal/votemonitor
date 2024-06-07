@@ -20,7 +20,8 @@ export function TextAggregateContent({ aggregate, responders }: TextAggregateCon
               className='text-purple-500 font-bold flex gap-1'
               to='/responses/$submissionId'
               params={{ submissionId }}
-              preload={false}>
+              preload={false}
+              target='_blank'>
               {submissionId.slice(0, 8)}
               <ArrowTopRightOnSquareIcon className='w-4' />
             </Link>

@@ -1,7 +1,6 @@
 ﻿using Vote.Monitor.Answer.Module.Aggregators.Extensions;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Domain.Entities.FormBase.Questions;
-using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
 
 namespace Vote.Monitor.Answer.Module.Aggregators;
 
@@ -21,7 +20,7 @@ public class RatingAnswerAggregate : BaseAnswerAggregate
         _answersHistogram = question.Scale.ToRange().ToDictionary(x => x, _ => 0);
     }
 
-    protected override void QuestionSpecificAggregate(FormSubmission submission, BaseAnswer answer)
+    protected override void QuestionSpecificAggregate(Guid submissionId, Guid monitoringObserverId, BaseAnswer answer)
     {
         if (answer is not RatingAnswer ratingAnswer)
         {

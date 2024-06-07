@@ -24,6 +24,22 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
         var sql = """
         SELECT
             F."Id" AS "FormId",
+            'PSI' AS "FormCode",
+            'PSI' AS "FormType",
+            COUNT(DISTINCT PSI."Id") "NumberOfSubmissions",
+            0 "NumberOfFlaggedAnswers",
+            0 AS "NumberOfMediaFiles",
+            0 AS "NumberOfNotes"
+        FROM
+            "PollingStationInformationForms" F
+            INNER JOIN "PollingStationInformation" PSI ON PSI."ElectionRoundId" = F."ElectionRoundId"
+        WHERE
+            F."ElectionRoundId" = @electionRoundId
+        GROUP BY
+            F."Id"
+        UNION ALL
+        SELECT
+            F."Id" AS "FormId",
             F."Code" AS "FormCode",
             F."FormType" AS "FormType",
             COUNT(DISTINCT FS."Id") "NumberOfSubmissions",

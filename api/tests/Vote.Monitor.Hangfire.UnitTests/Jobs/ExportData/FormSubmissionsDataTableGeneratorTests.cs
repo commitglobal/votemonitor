@@ -1,4 +1,5 @@
-﻿using Vote.Monitor.Core.Models;
+﻿using Vote.Monitor.Core.FileGenerators;
+using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Domain.Entities.FormBase.Questions;
 using Vote.Monitor.Hangfire.Jobs.Export.FormSubmissions;
@@ -71,7 +72,7 @@ public class FormSubmissionsDataTableGeneratorTests
     [
         SelectOption.Create(_option1Id, _option1Text, false, false),
         SelectOption.Create(_option2Id, _option2Text, false, false),
-        SelectOption.Create(_option3Id, _option3Text, false, false),
+        SelectOption.Create(_option3Id, _option3Text, false, true),
         SelectOption.Create(_option4Id, _option4Text, true, false)
     ];
 
@@ -389,7 +390,7 @@ public class FormSubmissionsDataTableGeneratorTests
             "SC - Question text",
             Option1Text,
             Option2Text,
-            Option3Text,
+            Option3Text+ColorMarkers.Red,
             Option4Text,
             Option4Text + "-UserInput",
             "Notes",
@@ -460,7 +461,7 @@ public class FormSubmissionsDataTableGeneratorTests
             "MC - Question text",
             Option1Text,
             Option2Text,
-            Option3Text,
+            Option3Text+ColorMarkers.Red,
             Option4Text,
             Option4Text + "-UserInput",
             "Notes",
@@ -615,7 +616,7 @@ public class FormSubmissionsDataTableGeneratorTests
             "SC - Question text",
             Option1Text,
             Option2Text,
-            Option3Text,
+            Option3Text+ColorMarkers.Red,
             Option4Text,
             Option4Text + "-UserInput",
             "Notes",
@@ -628,7 +629,7 @@ public class FormSubmissionsDataTableGeneratorTests
             "MC - Question text",
             Option1Text,
             Option2Text,
-            Option3Text,
+            Option3Text+ColorMarkers.Red,
             Option4Text,
             Option4Text + "-UserInput",
             "Notes",
@@ -712,7 +713,7 @@ public class FormSubmissionsDataTableGeneratorTests
             "SC - Question text",
             Option1Text,
             Option2Text,
-            Option3Text,
+            Option3Text+ColorMarkers.Red,
             Option4Text,
             Option4Text + "-UserInput",
             "Notes",
@@ -721,7 +722,7 @@ public class FormSubmissionsDataTableGeneratorTests
             "MC - Question text",
             Option1Text,
             Option2Text,
-            Option3Text,
+            Option3Text+ColorMarkers.Red,
             Option4Text,
             Option4Text + "-UserInput",
             "Notes",

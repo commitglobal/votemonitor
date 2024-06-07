@@ -34,11 +34,11 @@ public class DateAnswerAggregateTests
         var answer5 = DateAnswer.Create(_question.Id, new DateTime(2024, 01, 02, 03, 01, 34, DateTimeKind.Utc)); // bucket 3
 
         // Act
-        _aggregate.Aggregate(submission, answer1);
-        _aggregate.Aggregate(submission, answer2);
-        _aggregate.Aggregate(submission, answer3);
-        _aggregate.Aggregate(submission, answer4);
-        _aggregate.Aggregate(submission, answer5);
+        _aggregate.Aggregate(Guid.NewGuid(), Guid.NewGuid(), answer1);
+        _aggregate.Aggregate(Guid.NewGuid(), Guid.NewGuid(), answer2);
+        _aggregate.Aggregate(Guid.NewGuid(), Guid.NewGuid(), answer3);
+        _aggregate.Aggregate(Guid.NewGuid(), Guid.NewGuid(), answer4);
+        _aggregate.Aggregate(Guid.NewGuid(), Guid.NewGuid(), answer5);
 
         // Assert
         _aggregate.AnswersHistogram["2024-01-02T01:00:00.0000000Z"].Should().Be(2);
@@ -53,7 +53,7 @@ public class DateAnswerAggregateTests
         var answer = new TestAnswer(); // Not a DateAnswer
 
         // Act & Assert
-        _aggregate.Invoking(a => a.Aggregate(new FormSubmissionFaker().Generate(), answer))
+        _aggregate.Invoking(a => a.Aggregate(Guid.NewGuid(), Guid.NewGuid(), answer))
             .Should().Throw<ArgumentException>()
             .WithMessage($"Invalid answer received: {answer.Discriminator} (Parameter 'answer')");
     }
