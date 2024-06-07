@@ -9,7 +9,6 @@ public class FormSubmissionsDataTable
     private readonly List<string> _header;
     private readonly List<List<object>> _dataTable;
     private readonly Guid _formId;
-    private readonly string _defaultLanguage;
     private readonly List<AnswerWriter> _answerWriters;
 
     private FormSubmissionsDataTable(Guid formId, string defaultLanguage, IReadOnlyList<BaseQuestion> questions)
@@ -17,8 +16,7 @@ public class FormSubmissionsDataTable
         _header = new List<string>();
         _dataTable = new List<List<object>>();
         _formId = formId;
-        _defaultLanguage = defaultLanguage;
-        _answerWriters = questions.Select(x => new AnswerWriter(defaultLanguage, x)).ToList();
+        _answerWriters = questions.Select(question => new AnswerWriter(defaultLanguage, question)).ToList();
 
         _header.AddRange([
             "SubmissionId",

@@ -1,6 +1,8 @@
 ﻿using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.Entities.FormAggregate;
 using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
+using Vote.Monitor.Domain.Entities.PollingStationInfoAggregate;
+using Vote.Monitor.Domain.Entities.PollingStationInfoFormAggregate;
 
 namespace Vote.Monitor.Answer.Module.Aggregators;
 
@@ -48,6 +50,36 @@ public class FormSubmissionsAggregate
             .AsReadOnly();
     }
 
+    public FormSubmissionsAggregate(PollingStationInformationForm form)
+    {
+        ElectionRoundId = form.ElectionRoundId;
+        MonitoringNgoId = Guid.Empty;
+        FormId = form.Id;
+        FormCode = FormType.PSI;
+        FormType = FormType.PSI;
+        Name = GetName(form.Languages, "PSI");
+        Description = GetName(form.Languages, "PSI");
+        Languages = form.Languages;
+        DefaultLanguage = form.DefaultLanguage;
+
+        Aggregates = form
+            .Questions
+            .Select(AnswerAggregateFactory.Map)
+            .ToDictionary(a => a.QuestionId, x => x)
+            .AsReadOnly();
+    }
+
+    private TranslatedString GetName(string[] languages, string value)
+    {
+        var translatedString = new TranslatedString();
+        foreach (var language in languages)
+        {
+            translatedString.Add(language, value);
+        }
+
+        return translatedString;
+    }
+
     public FormSubmissionsAggregate AggregateAnswers(FormSubmission formSubmission)
     {
         var observer = formSubmission.MonitoringObserver.Observer.ApplicationUser;
@@ -59,7 +91,22 @@ public class FormSubmissionsAggregate
 
         foreach (var answer in formSubmission.Answers)
         {
-            Aggregates[answer.QuestionId].Aggregate(formSubmission, answer);
+            Aggregates[answer.QuestionId].Aggregate(formSubmission.Id, formSubmission.MonitoringObserverId, answer);
+        }
+
+        return this;
+    }
+    public FormSubmissionsAggregate AggregateAnswers(PollingStationInformation formSubmission)
+    {
+        var observer = formSubmission.MonitoringObserver.Observer.ApplicationUser;
+        _responders.Add(new Responder(formSubmission.MonitoringObserverId, observer.FirstName, observer.LastName, observer.Email, observer.PhoneNumber));
+
+        SubmissionCount++;
+        TotalNumberOfQuestionsAnswered += formSubmission.NumberOfQuestionsAnswered;
+
+        foreach (var answer in formSubmission.Answers)
+        {
+            Aggregates[answer.QuestionId].Aggregate(formSubmission.Id, formSubmission.MonitoringObserverId, answer);
         }
 
         return this;

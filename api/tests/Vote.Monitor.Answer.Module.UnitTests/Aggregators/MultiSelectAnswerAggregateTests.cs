@@ -48,10 +48,10 @@ public class MultiSelectAnswerAggregateTests
         var answer4 = MultiSelectAnswer.Create(_question.Id, [option5.Select()]);
 
         // Act
-        _aggregate.Aggregate(_submission, answer1);
-        _aggregate.Aggregate(_submission, answer2);
-        _aggregate.Aggregate(_submission, answer3);
-        _aggregate.Aggregate(_submission, answer4);
+        _aggregate.Aggregate(Guid.NewGuid(), Guid.NewGuid(), answer1);
+        _aggregate.Aggregate(Guid.NewGuid(), Guid.NewGuid(), answer2);
+        _aggregate.Aggregate(Guid.NewGuid(), Guid.NewGuid(), answer3);
+        _aggregate.Aggregate(Guid.NewGuid(), Guid.NewGuid(), answer4);
 
         // Assert
         _aggregate.AnswersHistogram[option1.Id].Should().Be(2);
@@ -68,7 +68,7 @@ public class MultiSelectAnswerAggregateTests
         var answer = new TestAnswer(); // Not a MultiSelectAnswer
 
         // Act & Assert
-        _aggregate.Invoking(a => a.Aggregate(_submission, answer))
+        _aggregate.Invoking(a => a.Aggregate(Guid.NewGuid(), Guid.NewGuid(), answer))
             .Should().Throw<ArgumentException>()
             .WithMessage($"Invalid answer received: {answer.Discriminator} (Parameter 'answer')");
     }
