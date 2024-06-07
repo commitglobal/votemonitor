@@ -28,6 +28,7 @@ public class Endpoint(ILogger<Endpoint> logger, UserManager<ApplicationUser> use
         if (!result.Succeeded)
         {
             logger.LogWarning("Could not reset password for {email} {result}", request.Email, result);
+            return TypedResults.Problem();
         }
 
         return TypedResults.Ok();
