@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
-using Vote.Monitor.Core.Extensions;
 
 namespace Vote.Monitor.Api.Feature.Auth.ChangePassword;
 
