@@ -22,119 +22,129 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
         var statisticsQuery = """
             -- number of monitoring observers with active account
             SELECT
-              COUNT(*)
+                COUNT(*)
             FROM
-              "MonitoringObservers" MO
-              INNER JOIN "AspNetUsers" U ON U."Id" = MO."ObserverId"
+                "MonitoringObservers" MO
+                INNER JOIN "AspNetUsers" U ON U."Id" = MO."ObserverId"
             WHERE
-              "ElectionRoundId" = ANY (@electionRoundIds)
-              AND MO."Status" = 'Active'
-              AND MO."Status" = 'Active';
+                "ElectionRoundId" = ANY (@electionRoundIds)
+                AND MO."Status" = 'Active'
+                AND MO."Status" = 'Active';
             ------------------------------
             
             -- number of ngos with active account
             SELECT
-              COUNT(*)
+                COUNT(*)
             FROM
-              "MonitoringNgos"
+                "MonitoringNgos"
             WHERE
-              "ElectionRoundId" = ANY (@electionRoundIds)
-              AND "Status" = 'Active';
+                "ElectionRoundId" = ANY (@electionRoundIds)
+                AND "Status" = 'Active';
             ------------------------------
             
             -- total number of polling stations
             SELECT
-              COUNT(*)
+                COUNT(*)
             FROM
-              "PollingStations"
+                "PollingStations"
             WHERE
-              "ElectionRoundId" = ANY (@electionRoundIds);
+                "ElectionRoundId" = ANY (@electionRoundIds);
             ------------------------------
             
             -- number of visited polling stations
             SELECT
-              COUNT(DISTINCT "PollingStationId") AS "NumberOfVisitedPollingStations"
+                COUNT(DISTINCT "PollingStationId") AS "NumberOfVisitedPollingStations"
             FROM
-              (
-                  SELECT
-                      "PollingStationId"
-                  FROM
-                      "FormSubmissions"
-                  WHERE
-                      "ElectionRoundId" = ANY (@electionRoundIds)
-                      AND "NumberOfQuestionsAnswered" > 0
-                  UNION
-                  SELECT
-                      "PollingStationId"
-                  FROM
-                      "PollingStationInformation"
-                  WHERE
-                      "ElectionRoundId" = ANY (@electionRoundIds)
-                      AND "NumberOfQuestionsAnswered" > 0
-              ) AS t;
+                (
+                    SELECT
+                        FS."PollingStationId"
+                    FROM
+                        "FormSubmissions" FS
+                        INNER JOIN "Forms" F ON F."Id" = FS."FormId"
+                    WHERE
+                        FS."ElectionRoundId" = ANY (@electionRoundIds)
+                        AND F."Status" = 'Published'
+                        AND FS."NumberOfQuestionsAnswered" > 0
+                    UNION
+                    SELECT
+                        "PollingStationId"
+                    FROM
+                        "PollingStationInformation"
+                    WHERE
+                        "ElectionRoundId" = ANY (@electionRoundIds)
+                        AND "NumberOfQuestionsAnswered" > 0
+                ) AS T;
             -----------------------------
             
             -- number of form submissions
             SELECT
-            (
-                SELECT
-                    COUNT(1)
-                FROM
-                    "FormSubmissions"
-                WHERE
-                    "ElectionRoundId" = ANY (@electionRoundIds)
-                    AND "NumberOfQuestionsAnswered" > 0
-            ) + (
-                SELECT
-                    COUNT(1)
-                FROM
-                    "PollingStationInformation"
-                WHERE
-                    "ElectionRoundId" = ANY (@electionRoundIds)
-                    AND "NumberOfQuestionsAnswered" > 0
-            ) AS "NumberOfFormSubmissions";
+                (
+                    SELECT
+                        COUNT(1)
+                    FROM
+                        "FormSubmissions" FS
+                        INNER JOIN "Forms" F ON F."Id" = FS."FormId"
+                    WHERE
+                        FS."ElectionRoundId" = ANY (@electionRoundIds)
+                        AND FS."NumberOfQuestionsAnswered" > 0
+                        AND F."Status" = 'Published'
+                ) + (
+                    SELECT
+                        COUNT(1)
+                    FROM
+                        "PollingStationInformation"
+                    WHERE
+                        "ElectionRoundId" = ANY (@electionRoundIds)
+                        AND "NumberOfQuestionsAnswered" > 0
+                ) AS "NumberOfFormSubmissions";
             -----------------------------
             
             -- number of questions answered
             SELECT
-            (
-                SELECT
-                    SUM("NumberOfQuestionsAnswered")
-                FROM
-                    "FormSubmissions"
-                WHERE
-                    "ElectionRoundId" = ANY (@electionRoundIds)
-            ) + (
-                SELECT
-                    SUM("NumberOfQuestionsAnswered")
-                FROM
-                    "PollingStationInformation"
-                WHERE
-                    "ElectionRoundId" = ANY (@electionRoundIds)
-            ) AS "NumberOfFormSubmissions";
+                (
+                    SELECT
+                        SUM("NumberOfQuestionsAnswered")
+                    FROM
+                        "FormSubmissions" FS
+                        INNER JOIN "Forms" F ON F."Id" = FS."FormId"
+                    WHERE
+                        FS."ElectionRoundId" = ANY (@electionRoundIds)
+                        AND FS."NumberOfQuestionsAnswered" > 0
+                        AND F."Status" = 'Published'
+                ) + (
+                    SELECT
+                        SUM("NumberOfQuestionsAnswered")
+                    FROM
+                        "PollingStationInformation"
+                    WHERE
+                        "ElectionRoundId" = ANY (@electionRoundIds)
+                ) AS "NumberOfFormSubmissions";
             ------------------------------
             
             SELECT
-              SUM("NumberOfFlaggedAnswers")
+                SUM("NumberOfFlaggedAnswers")
             FROM
-              "FormSubmissions"
+                "FormSubmissions" FS
+                INNER JOIN "Forms" F ON F."Id" = FS."FormId"
             WHERE
-              "ElectionRoundId" = ANY (@electionRoundIds);
+                FS."ElectionRoundId" = ANY (@electionRoundIds)
+                AND "NumberOfQuestionsAnswered" > 0
+                AND F."Status" = 'Published';
             ------------------------------
             
             -- minutes monitoring
             SELECT
-              SUM(COALESCE("MinutesMonitoring", 0))
+                SUM(COALESCE("MinutesMonitoring", 0))
             FROM
-              "PollingStationInformation"
+                "PollingStationInformation"
             WHERE
-              "ElectionRoundId" = ANY (@electionRoundIds);
+                "ElectionRoundId" = ANY (@electionRoundIds);
             ------------------------------
             """;
 
         var queryArgs = new
         {
-            electionRoundIds = req.ElectionRoundIds
+           electionRoundIds = req.ElectionRoundIds
         };
 
         long numberOfMonitoringObservers;
