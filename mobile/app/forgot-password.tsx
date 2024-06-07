@@ -3,7 +3,7 @@ import { Screen } from "../components/Screen";
 import { useTranslation } from "react-i18next";
 import { Icon } from "../components/Icon";
 import { router } from "expo-router";
-import { YStack } from "tamagui";
+import { ScrollView, YStack } from "tamagui";
 import { Typography } from "../components/Typography";
 import { useForm, Controller } from "react-hook-form";
 import FormInput from "../components/FormInputs/FormInput";
@@ -54,10 +54,7 @@ const ForgotPassword = () => {
 
   return (
     <Screen
-      preset="auto"
-      ScrollViewProps={{
-        bounces: false,
-      }}
+      preset="fixed"
       contentContainerStyle={{
         flexGrow: 1,
         flex: 1,
@@ -71,40 +68,44 @@ const ForgotPassword = () => {
         onLeftPress={() => router.back()}
       />
 
-      <YStack paddingHorizontal="$md" gap="$md" paddingTop={10 + insets.top}>
-        <Typography preset="heading" fontWeight="700">
-          {t("heading")}
-        </Typography>
+      <ScrollView>
+        <YStack paddingHorizontal="$md" gap="$md" paddingTop={10 + insets.top}>
+          <Typography preset="heading" fontWeight="700">
+            {t("heading")}
+          </Typography>
 
-        <Typography>{t("paragraph")}</Typography>
-        {authError && <CredentialsError error={t("paragraph1", { ns: "generic_error_screen" })} />}
-
-        <Controller
-          key="email"
-          name="email"
-          control={control}
-          rules={{
-            required: {
-              value: true,
-              message: t("form.email.required"),
-            },
-            pattern: {
-              value: /\S+@\S+\.\S+/,
-              message: t("form.email.pattern"),
-            },
-          }}
-          render={({ field: { onChange, value } }) => (
-            <FormInput
-              type="text"
-              title={t("form.email.label")}
-              placeholder={t("form.email.placeholder")}
-              value={value}
-              onChangeText={onChange}
-              error={errors?.email?.message?.toString()}
-            />
+          <Typography>{t("paragraph")}</Typography>
+          {authError && (
+            <CredentialsError error={t("paragraph1", { ns: "generic_error_screen" })} />
           )}
-        />
-      </YStack>
+
+          <Controller
+            key="email"
+            name="email"
+            control={control}
+            rules={{
+              required: {
+                value: true,
+                message: t("form.email.required"),
+              },
+              pattern: {
+                value: /\S+@\S+\.\S+/,
+                message: t("form.email.pattern"),
+              },
+            }}
+            render={({ field: { onChange, value } }) => (
+              <FormInput
+                type="text"
+                title={t("form.email.label")}
+                placeholder={t("form.email.placeholder")}
+                value={value}
+                onChangeText={onChange}
+                error={errors?.email?.message?.toString()}
+              />
+            )}
+          />
+        </YStack>
+      </ScrollView>
 
       <WizzardControls
         isFirstElement
