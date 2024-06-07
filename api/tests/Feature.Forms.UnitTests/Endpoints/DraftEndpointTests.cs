@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Authorization;
 using NSubstitute.ReturnsExtensions;
 using Vote.Monitor.Domain.Entities.FormAggregate;
-using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
 
 namespace Feature.Forms.UnitTests.Endpoints;
@@ -10,7 +9,6 @@ public class DraftEndpointTests
 {
     private readonly IAuthorizationService _authorizationService = Substitute.For<IAuthorizationService>();
     private readonly IRepository<Form> _repository = Substitute.For<IRepository<Form>>();
-    private readonly IRepository<FormSubmission> _formSubmissionsRepository = Substitute.For<IRepository<FormSubmission>>();
     private readonly IRepository<MonitoringNgo> _monitoringNgoRepository = Substitute.For<IRepository<MonitoringNgo>>();
     private readonly Guid _initialFormVersion = Guid.NewGuid();
     private readonly MonitoringNgo _monitoringNgo;
@@ -18,7 +16,7 @@ public class DraftEndpointTests
 
     public DraftEndpointTests()
     {
-        _endpoint = Factory.Create<Draft.Endpoint>(_authorizationService, _monitoringNgoRepository, _repository, _formSubmissionsRepository);
+        _endpoint = Factory.Create<Draft.Endpoint>(_authorizationService, _monitoringNgoRepository, _repository);
         _authorizationService
             .AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object>(),
                 Arg.Any<IEnumerable<IAuthorizationRequirement>>()).Returns(AuthorizationResult.Success());
@@ -41,43 +39,9 @@ public class DraftEndpointTests
 
         // Assert
         result
-            .Should().BeOfType<Results<NoContent, Conflict, NotFound>>()
+            .Should().BeOfType<Results<NoContent, NotFound>>()
             .Which
             .Result.Should().BeOfType<NotFound>();
-    }
-
-    [Fact]
-    public async Task ShouldReturnConflict_WhenFormHasAnswers()
-    {
-        // Arrange
-        var form = new FormAggregateFaker().Generate();
-
-        _repository
-            .FirstOrDefaultAsync(Arg.Any<GetFormByIdSpecification>())
-            .Returns(form);
-
-        _monitoringNgoRepository
-            .FirstOrDefaultAsync(Arg.Any<GetMonitoringNgoSpecification>())
-            .Returns(_monitoringNgo);
-
-        _formSubmissionsRepository
-            .AnyAsync(Arg.Any<GetSubmissionsForFormSpecification>())
-            .Returns(true);
-
-        // Act
-        var request = new Draft.Request
-        {
-            NgoId = _monitoringNgo.NgoId,
-            Id = form.Id
-        };
-        var result = await _endpoint.ExecuteAsync(request, default);
-
-        // Assert
-
-        result
-            .Should().BeOfType<Results<NoContent, Conflict, NotFound>>()
-            .Which
-            .Result.Should().BeOfType<Conflict>();
     }
 
     [Fact]
@@ -107,7 +71,7 @@ public class DraftEndpointTests
             .UpdateAsync(Arg.Is<Form>(x => x.Status == FormStatus.Drafted));
 
         result
-            .Should().BeOfType<Results<NoContent, Conflict, NotFound>>()
+            .Should().BeOfType<Results<NoContent, NotFound>>()
             .Which
             .Result.Should().BeOfType<NoContent>();
     }
@@ -156,7 +120,7 @@ public class DraftEndpointTests
 
         // Assert
         result
-            .Should().BeOfType<Results<NoContent, Conflict, NotFound>>()
+            .Should().BeOfType<Results<NoContent, NotFound>>()
             .Which
             .Result.Should().BeOfType<NotFound>();
     }
