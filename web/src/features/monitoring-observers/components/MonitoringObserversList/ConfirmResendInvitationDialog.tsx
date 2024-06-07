@@ -9,7 +9,7 @@ import {
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
-export interface ConfirmDeleteDialogProps {
+export interface ConfirmResendInvitationDialogProps {
     alertTitle: string;
     alertDescription?: string;
     confirmActionButtonText: string;
@@ -20,7 +20,7 @@ export interface ConfirmDeleteDialogProps {
     onOpenChange: (open: any) => void;
 }
 
-function ConfirmDeleteDialog({
+function ConfirmResendInvitationDialog({
     alertTitle,
     alertDescription,
     confirmActionButtonText,
@@ -29,7 +29,7 @@ function ConfirmDeleteDialog({
     onConfirm,
     onCancel,
     onOpenChange
-}: ConfirmDeleteDialogProps) {
+}: ConfirmResendInvitationDialogProps) {
 
     return (
         <AlertDialog open={open} onOpenChange={onOpenChange}>
@@ -47,4 +47,4 @@ function ConfirmDeleteDialog({
     )
 }
 
-export default ConfirmDeleteDialog;
+export default ConfirmResendInvitationDialog;

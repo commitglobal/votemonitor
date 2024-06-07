@@ -42,7 +42,6 @@ export default function ObserversGuides() {
     editObserverGuideDialog.trigger();
   }
 
-
   const deleteObserverGuideMutation = useMutation({
     mutationFn: () => {
       const electionRoundId: string | null = localStorage.getItem('electionRoundId');

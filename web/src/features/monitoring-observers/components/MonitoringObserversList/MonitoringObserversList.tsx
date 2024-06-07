@@ -17,29 +17,32 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { useDialog } from '@/components/ui/use-dialog';
-import { Cog8ToothIcon, EllipsisVerticalIcon, FunnelIcon } from '@heroicons/react/24/outline';
-import { useQuery, UseQueryResult } from '@tanstack/react-query';
-import { useNavigate } from '@tanstack/react-router';
+import { Cog8ToothIcon, EllipsisVerticalIcon, FunnelIcon, PaperAirplaneIcon } from '@heroicons/react/24/outline';
+import { useMutation, useQuery, UseQueryResult } from '@tanstack/react-query';
+import { useNavigate, useRouter } from '@tanstack/react-router';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
 import { X } from 'lucide-react';
 import { useCallback, useState } from 'react';
 
-import { useMonitoringObserversTags } from '../../../../hooks/tags-queries';
-import { MonitoringObserver } from '../../models/monitoring-observer';
-import ImportMonitoringObserversDialog from '../MonitoringObserversList/ImportMonitoringObserversDialog';
-import ImportMonitoringObserversErrorsDialog from '../MonitoringObserversList/ImportMonitoringObserversErrorsDialog';
-import { format } from 'date-fns';
 import { DateTimeFormat } from '@/common/formats';
 import { TableCellProps } from '@/components/ui/DataTable/DataTable';
 import { isQueryFiltered } from '@/lib/utils';
+import { format } from 'date-fns';
+import { useMonitoringObserversTags } from '../../../../hooks/tags-queries';
+import { MonitoringObserver, MonitoringObserverStatus } from '../../models/monitoring-observer';
+import ImportMonitoringObserversDialog from '../MonitoringObserversList/ImportMonitoringObserversDialog';
+import ImportMonitoringObserversErrorsDialog from '../MonitoringObserversList/ImportMonitoringObserversErrorsDialog';
+import ConfirmResendInvitationDialog from './ConfirmResendInvitationDialog';
+import { queryClient } from '@/main';
+import { toast } from '@/components/ui/use-toast';
 
 type ListMonitoringObserverResponse = PageResponse<MonitoringObserver>;
 
 type UseMonitoringObserversResult = UseQueryResult<ListMonitoringObserverResponse, Error>;
 
-
 function MonitoringObserversList() {
   const navigate = useNavigate();
+  const router = useRouter();
 
   const monitoringObserverColDefs: ColumnDef<MonitoringObserver>[] = [
     {
@@ -108,6 +111,9 @@ function MonitoringObserversList() {
           <DropdownMenuContent>
             <DropdownMenuItem onClick={() => navigateToObserver(row.original.id)}>View</DropdownMenuItem>
             <DropdownMenuItem onClick={() => navigateToEdit(row.original.id)}>Edit</DropdownMenuItem>
+            <DropdownMenuItem
+              disabled={row.original.status !== MonitoringObserverStatus.Pending}
+              onClick={() => handleResendInviteToObserver(row.original.id)}>Resend invitation email</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       ),
@@ -119,8 +125,10 @@ function MonitoringObserversList() {
   const [searchText, setSearchText] = useState('');
   const [isFiltering, setFiltering] = useState(false);
   const [importErrorsFileId, setImportErrorsFileId] = useState<string | undefined>();
+  const [monitoringObserverId, setMonitoringObserverId] = useState<string | undefined>();
   const importMonitoringObserversDialog = useDialog();
   const importMonitoringObserverErrorsDialog = useDialog();
+  const confirmResendInvitesDialog = useDialog();
 
   const handleSearchInput = (ev: React.FormEvent<HTMLInputElement>) => {
     setSearchText(ev.currentTarget.value);
@@ -178,6 +186,36 @@ function MonitoringObserversList() {
     });
   };
 
+  const resendInvitationsMutation = useMutation({
+    mutationFn: ({ monitoringObserverId }: { monitoringObserverId: string | undefined }) => {
+      const electionRoundId: string | null = localStorage.getItem('electionRoundId');
+
+      return authApi.put<void>(`/election-rounds/${electionRoundId}/monitoring-observers:resend-invites`, {
+        ids: [monitoringObserverId].filter(id => !!id)
+      });
+    },
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['monitoring-observers'] });
+      router.invalidate();
+
+      setMonitoringObserverId(undefined);
+
+      toast({
+        title: 'Success',
+        description: 'Invitation sent',
+      });
+    },
+
+    onError: () => {
+      toast({
+        title: 'Error resending invitation',
+        description: 'Please contact Platform admins',
+        variant: 'destructive'
+      });
+    }
+  });
+
   const changeIsFiltering = () => {
     setFiltering((prev) => {
       return !prev;
@@ -192,6 +230,11 @@ function MonitoringObserversList() {
     setStatusFilter('');
     setTagsFilter([]);
   };
+
+  function handleResendInviteToObserver(id?: string): void {
+    setMonitoringObserverId(id);
+    confirmResendInvitesDialog.trigger();
+  }
 
   const toggleTagsFilter = (tag: string) => {
     setTagsFilter((prevTags: any) => {
@@ -208,23 +251,25 @@ function MonitoringObserversList() {
       navigateToObserver(monitoringObserverId);
     },
     [navigateToObserver]
-  );  const exportMonitoringObservers = async () => {
+  );
+
+  const exportMonitoringObservers = async () => {
     const electionRoundId: string | null = localStorage.getItem('electionRoundId');
 
-    const res = await authApi.get(`/election-rounds/${electionRoundId}/monitoring-observers:export`, {responseType: "blob"});
+    const res = await authApi.get(`/election-rounds/${electionRoundId}/monitoring-observers:export`, { responseType: "blob" });
     const csvData = res.data;
-  
+
     const blob = new Blob([csvData], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);
-  
+
     const a = document.createElement('a');
     a.style.display = 'none';
     a.href = url;
     a.download = 'exported-monitoring-observers vc.csv';
-  
+
     document.body.appendChild(a);
     a.click();
-  
+
     window.URL.revokeObjectURL(url);
   };
 
@@ -264,8 +309,8 @@ function MonitoringObserversList() {
               </svg>
               Import observer list
             </Button>
-            <Button 
-              className='bg-background hover:bg-purple-50 hover:text-purple-500 text-purple-900' 
+            <Button
+              className='bg-background hover:bg-purple-50 hover:text-purple-500 text-purple-900'
               onClick={exportMonitoringObservers}>
               <svg
                 className='mr-1.5'
@@ -283,6 +328,20 @@ function MonitoringObserversList() {
               </svg>
               Export monitoring observer list
             </Button>
+            <Button
+              className='bg-yellow-400 hover:bg-yellow-600'
+              onClick={() => handleResendInviteToObserver()}
+            >
+              <PaperAirplaneIcon className='h-6 w-6 text-white' />
+              Resend ivites
+            </Button>
+            <ConfirmResendInvitationDialog
+              alertTitle={'Confirm resend invitation'}
+              alertDescription={monitoringObserverId ? 'Are you sure you want to resend the invite?' : 'Are you sure you want to resend invite to all pending observers?'}
+              cancelActionButtonText='Cancel'
+              confirmActionButtonText='Resend invitation'
+              onConfirm={() => resendInvitationsMutation.mutate({ monitoringObserverId })}
+              {...confirmResendInvitesDialog.dialogProps} />
           </div>
         </div>
         <Separator />
@@ -363,7 +422,7 @@ function MonitoringObserversList() {
         <QueryParamsDataTable
           columns={monitoringObserverColDefs}
           useQuery={useMonitoringObservers}
-          onRowClick={rowClickHandler}
+          // onRowClick={rowClickHandler}
           getCellProps={getCellProps}
           emptySubtitle='Start adding a first list of observers for this election event by filling in the template and then uploading it in this section.'
           emptyTitle='No observers added yet'
