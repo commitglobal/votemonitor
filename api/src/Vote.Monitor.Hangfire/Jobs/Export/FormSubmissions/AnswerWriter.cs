@@ -75,7 +75,7 @@ public class AnswerWriter
     {
         foreach (var option in options)
         {
-            _questionHeader.Add(option.Text[_defaultLanguage]);
+            _questionHeader.Add(option.Text[_defaultLanguage]+ (option.IsFlagged ? "~$red$~" : ""));
 
             if (option.IsFreeText)
             {

@@ -2,8 +2,6 @@
 using Vote.Monitor.Answer.Module.Aggregators;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Domain.Entities.FormBase.Questions;
-using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
-using Vote.Monitor.TestUtils.Fakes.Aggregates;
 using Vote.Monitor.TestUtils.Fakes.Aggregates.Questions;
 using Xunit;
 
@@ -18,9 +16,9 @@ public class BaseAnswerAggregateTests
         var aggregate = new TestAnswerAggregate(new TextQuestionFaker().Generate(), 0);
 
         // Act
-        aggregate.Aggregate(new FormSubmissionFaker().Generate(), new TestAnswer());
-        aggregate.Aggregate(new FormSubmissionFaker().Generate(), new TestAnswer());
-        aggregate.Aggregate(new FormSubmissionFaker().Generate(), new TestAnswer());
+        aggregate.Aggregate(Guid.NewGuid(), Guid.NewGuid(), new TestAnswer());
+        aggregate.Aggregate(Guid.NewGuid(), Guid.NewGuid(), new TestAnswer());
+        aggregate.Aggregate(Guid.NewGuid(), Guid.NewGuid(), new TestAnswer());
 
         // Assert
         aggregate.AnswersAggregated.Should().Be(3);
@@ -33,7 +31,7 @@ public class BaseAnswerAggregateTests
         var aggregate = new TestAnswerAggregate(new TextQuestionFaker().Generate(), 0);
 
         // Act
-        aggregate.Aggregate(new FormSubmissionFaker().Generate(), new TestAnswer());
+        aggregate.Aggregate(Guid.NewGuid(), Guid.NewGuid(), new TestAnswer());
 
         // Assert
         aggregate.QuestionSpecificAggregateInvoked.Should().BeTrue();
@@ -48,7 +46,7 @@ public class TestAnswerAggregate : BaseAnswerAggregate
     {
     }
 
-    protected override void QuestionSpecificAggregate(FormSubmission submission, BaseAnswer answer)
+    protected override void QuestionSpecificAggregate(Guid submissionId, Guid monitoringObserverId, BaseAnswer answer)
     {
         QuestionSpecificAggregateInvoked = true;
     }
