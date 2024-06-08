@@ -51,9 +51,38 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
                 "ElectionRoundId" = ANY (@electionRoundIds);
             ------------------------------
             
-            -- number of visited polling stations
+            -- visited stations stats
             SELECT
-                COUNT(DISTINCT "PollingStationId") AS "NumberOfVisitedPollingStations"
+                COUNT(DISTINCT T."PollingStationId") AS "NumberOfVisitedPollingStations",
+                COUNT(DISTINCT PS."Level1") AS "NumberOfLevel1Covered",
+                COUNT(DISTINCT CONCAT(PS."Level1", '-', PS."Level2")) AS "NumberOfLevel2Covered",
+                COUNT(
+                    DISTINCT CONCAT(PS."Level1", '-', PS."Level2", '-', PS."Level3")
+                ) AS "NumberOfLevel3Covered",
+                COUNT(
+                    DISTINCT CONCAT(
+                        PS."Level1",
+                        '-',
+                        PS."Level2",
+                        '-',
+                        PS."Level3",
+                        '-',
+                        PS."Level4"
+                    )
+                ) AS "NumberOfLevel4Covered",
+                COUNT(
+                    DISTINCT CONCAT(
+                        PS."Level1",
+                        '-',
+                        PS."Level2",
+                        '-',
+                        PS."Level3",
+                        '-',
+                        PS."Level4",
+                        '-',
+                        PS."Level5"
+                    )
+                ) AS "NumberOfLevel5Covered"
             FROM
                 (
                     SELECT
@@ -73,7 +102,8 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
                     WHERE
                         "ElectionRoundId" = ANY (@electionRoundIds)
                         AND "NumberOfQuestionsAnswered" > 0
-                ) AS T;
+                ) AS T
+                INNER JOIN "PollingStations" PS ON T."PollingStationId" = PS."Id";
             -----------------------------
             
             -- number of form submissions
