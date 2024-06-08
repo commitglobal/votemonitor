@@ -5,26 +5,41 @@ namespace Feature.Statistics.GetElectionsOverview;
 public class Response
 {
     [JsonPropertyName("observers")]
-    public long Observers { get; set; }
+    public int Observers { get; set; }
 
     [JsonPropertyName("polling_stations")]
-    public long PollingStations { get; set; }
+    public int PollingStations { get; set; }
 
     [JsonPropertyName("visited_polling_stations")]
-    public long VisitedPollingStations { get; set; }
+    public int VisitedPollingStations { get; set; }
 
     [JsonPropertyName("started_forms")]
-    public long StartedForms { get; set; }
+    public int StartedForms { get; set; }
 
     [JsonPropertyName("questions_answered")]
-    public long QuestionsAnswered { get; set; }
+    public int QuestionsAnswered { get; set; }
 
     [JsonPropertyName("flagged_answers")]
-    public long FlaggedAnswers { get; set; }
+    public int FlaggedAnswers { get; set; }
 
     [JsonPropertyName("minutes_monitoring")]
-    public long MinutesMonitoring { get; set; }
+    public int MinutesMonitoring { get; set; }
 
     [JsonPropertyName("ngos")]
-    public long Ngos { get; set; }
+    public int Ngos { get; set; }
+
+    [JsonPropertyName("level1_visited")]
+    public int Level1Visited { get; set; }
+
+    [JsonPropertyName("level2_visited")]
+    public int Level2Visited { get; set; }
+
+    [JsonPropertyName("level3_visited")]
+    public int Level3Visited { get; set; }
+
+    [JsonPropertyName("level4_visited")]
+    public int Level4Visited { get; set; }
+
+    [JsonPropertyName("level5_visited")]
+    public int Level5Visited { get; set; }
 }
