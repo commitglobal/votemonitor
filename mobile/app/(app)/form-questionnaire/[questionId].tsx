@@ -349,7 +349,8 @@ const FormQuestionnaire = () => {
           },
           {
             onSettled: () => setIsOptionsSheetOpen(false),
-            onError: () => {
+            onError: (err) => {
+              Sentry.captureException(err);
               Toast.show({
                 type: "error",
                 text2: t("attachments.error"),
