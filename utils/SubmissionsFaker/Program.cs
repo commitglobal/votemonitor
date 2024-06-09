@@ -33,6 +33,7 @@ var faker = new Faker();
 const string platformAdminUsername = "john.doe@example.com";
 const string platformAdminPassword = "password123";
 
+const string ngoAdminUsername = "fake@admin.com";
 const string ngoAdminPassword = "string";
 
 string[] images =
