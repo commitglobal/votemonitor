@@ -333,7 +333,7 @@ function MonitoringObserversList() {
               onClick={() => handleResendInviteToObserver()}
             >
               <PaperAirplaneIcon className='h-6 w-6 text-white' />
-              Resend ivites
+              Resend invites
             </Button>
             <ConfirmResendInvitationDialog
               alertTitle={'Confirm resend invitation'}

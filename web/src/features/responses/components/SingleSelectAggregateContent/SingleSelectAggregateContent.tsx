@@ -49,7 +49,7 @@ const SingleSelectAggregateContent = forwardRef<ChartJSOrUndefined<'pie', number
               },
               datalabels: {
                 color: '#fff',
-                formatter: (value) => (value ? `${value} (${round((value / aggregate.answersAggregated) * 100, 2) }%)` : '0'),
+                formatter: (value) => (value ? `${value} (${round((value / aggregate.answersAggregated) * 100, 2) }%)` : ''),
               },
             },
           }}

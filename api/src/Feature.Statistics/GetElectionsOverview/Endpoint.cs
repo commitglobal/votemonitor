@@ -51,9 +51,38 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
                 "ElectionRoundId" = ANY (@electionRoundIds);
             ------------------------------
             
-            -- number of visited polling stations
+            -- visited stations stats
             SELECT
-                COUNT(DISTINCT "PollingStationId") AS "NumberOfVisitedPollingStations"
+                COUNT(DISTINCT T."PollingStationId") AS "NumberOfVisitedPollingStations",
+                COUNT(DISTINCT PS."Level1") AS "NumberOfLevel1Covered",
+                COUNT(DISTINCT CONCAT(PS."Level1", '-', PS."Level2")) AS "NumberOfLevel2Covered",
+                COUNT(
+                    DISTINCT CONCAT(PS."Level1", '-', PS."Level2", '-', PS."Level3")
+                ) AS "NumberOfLevel3Covered",
+                COUNT(
+                    DISTINCT CONCAT(
+                        PS."Level1",
+                        '-',
+                        PS."Level2",
+                        '-',
+                        PS."Level3",
+                        '-',
+                        PS."Level4"
+                    )
+                ) AS "NumberOfLevel4Covered",
+                COUNT(
+                    DISTINCT CONCAT(
+                        PS."Level1",
+                        '-',
+                        PS."Level2",
+                        '-',
+                        PS."Level3",
+                        '-',
+                        PS."Level4",
+                        '-',
+                        PS."Level5"
+                    )
+                ) AS "NumberOfLevel5Covered"
             FROM
                 (
                     SELECT
@@ -73,7 +102,8 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
                     WHERE
                         "ElectionRoundId" = ANY (@electionRoundIds)
                         AND "NumberOfQuestionsAnswered" > 0
-                ) AS T;
+                ) AS T
+                INNER JOIN "PollingStations" PS ON T."PollingStationId" = PS."Id";
             -----------------------------
             
             -- number of form submissions
@@ -144,30 +174,30 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
 
         var queryArgs = new
         {
-           electionRoundIds = req.ElectionRoundIds
+            electionRoundIds = req.ElectionRoundIds
         };
 
-        long numberOfMonitoringObservers;
-        long numberOfMonitoringNgos;
-        long totalNumberOfPollingStations;
-        long numberOfVisitedPollingStations;
-        long numberOfSubmittedForms;
-        long numberOfAnsweredQuestions;
-        long numberOfFlaggedAnswers;
-        long minutesMonitoring;
+        int numberOfMonitoringObservers;
+        int numberOfMonitoringNgos;
+        int totalNumberOfPollingStations;
+        PollingStationVisitsView pollingStationVisitsView = default!;
+        int numberOfSubmittedForms;
+        int numberOfAnsweredQuestions;
+        int numberOfFlaggedAnswers;
+        int minutesMonitoring;
 
         using (var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct))
         {
             using var multi = await dbConnection.QueryMultipleAsync(statisticsQuery, queryArgs);
 
-            numberOfMonitoringObservers = multi.ReadSingle<long>();
-            numberOfMonitoringNgos = multi.ReadSingle<long>();
-            totalNumberOfPollingStations = multi.ReadSingle<long>();
-            numberOfVisitedPollingStations = multi.ReadSingle<long>();
-            numberOfSubmittedForms = multi.ReadSingle<long>();
-            numberOfAnsweredQuestions = multi.ReadSingle<long>();
-            numberOfFlaggedAnswers = multi.ReadSingle<long>();
-            minutesMonitoring = multi.ReadSingle<long>();
+            numberOfMonitoringObservers = multi.ReadSingle<int>();
+            numberOfMonitoringNgos = multi.ReadSingle<int>();
+            totalNumberOfPollingStations = multi.ReadSingle<int>();
+            pollingStationVisitsView = multi.ReadSingle<PollingStationVisitsView>();
+            numberOfSubmittedForms = multi.ReadSingle<int>();
+            numberOfAnsweredQuestions = multi.ReadSingle<int>();
+            numberOfFlaggedAnswers = multi.ReadSingle<int>();
+            minutesMonitoring = multi.ReadSingle<int>();
         }
 
         return new Response()
@@ -175,7 +205,12 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
             Observers = numberOfMonitoringObservers,
             Ngos = numberOfMonitoringNgos,
             PollingStations = totalNumberOfPollingStations,
-            VisitedPollingStations = numberOfVisitedPollingStations,
+            VisitedPollingStations = pollingStationVisitsView?.NumberOfVisitedPollingStations ?? 0,
+            Level1Visited = pollingStationVisitsView?.NumberOfLevel1Covered ?? 0,
+            Level2Visited = pollingStationVisitsView?.NumberOfLevel2Covered ?? 0,
+            Level3Visited = pollingStationVisitsView?.NumberOfLevel3Covered ?? 0,
+            Level4Visited = pollingStationVisitsView?.NumberOfLevel4Covered ?? 0,
+            Level5Visited = pollingStationVisitsView?.NumberOfLevel5Covered ?? 0,
             StartedForms = numberOfSubmittedForms,
             QuestionsAnswered = numberOfAnsweredQuestions,
             FlaggedAnswers = numberOfFlaggedAnswers,
