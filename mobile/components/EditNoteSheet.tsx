@@ -10,7 +10,7 @@ import Button from "./Button";
 import { useDeleteNote } from "../services/mutations/delete-note.mutation";
 import { useUpdateNote } from "../services/mutations/edit-note.mutation";
 import { useTranslation } from "react-i18next";
-import { Keyboard, Platform } from "react-native";
+import { BackHandler, Keyboard, Platform } from "react-native";
 import { useKeyboardVisible } from "@tamagui/use-keyboard-visible";
 
 interface EditNoteSheetProps extends SheetProps {
@@ -44,6 +44,26 @@ const EditNoteSheet = (props: EditNoteSheetProps) => {
   useEffect(() => {
     setValue("noteEditedText", selectedNote?.text);
   }, [selectedNote]);
+
+  // on Android back button press, if the sheet is open, we first close the sheet
+  //  and on the 2nd press we will navigate back
+  useEffect(() => {
+    if (Platform.OS !== "android") {
+      return;
+    }
+
+    const onBackPress = () => {
+      if (!!selectedNote) {
+        setSelectedNote(null);
+        return true;
+      } else {
+        // navigate back
+        return false;
+      }
+    };
+    const subscription = BackHandler.addEventListener("hardwareBackPress", onBackPress);
+    return () => subscription.remove();
+  }, [selectedNote, setSelectedNote]);
 
   const { mutate: updateNote } = useUpdateNote(
     electionRoundId,

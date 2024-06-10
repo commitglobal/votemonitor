@@ -1,8 +1,9 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode, useEffect } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Sheet, SheetProps } from "tamagui";
 import { Icon } from "./Icon";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { BackHandler, Platform } from "react-native";
 
 export interface OptionsSheetProps extends SheetProps {
   /* The current state of the sheet */
@@ -22,6 +23,26 @@ export interface OptionsSheetProps extends SheetProps {
 const OptionsSheet = (props: OptionsSheetProps) => {
   const { open, setOpen, isLoading = false, children, ...rest } = props;
   const insets = useSafeAreaInsets();
+
+  // on Android back button press, if the sheet is open, we first close the sheet
+  //  and on the 2nd press we will navigate back
+  useEffect(() => {
+    if (Platform.OS !== "android") {
+      return;
+    }
+    const onBackPress = () => {
+      // close sheet
+      if (open) {
+        setOpen(false);
+        return true;
+      } else {
+        // navigate back
+        return false;
+      }
+    };
+    const subscription = BackHandler.addEventListener("hardwareBackPress", onBackPress);
+    return () => subscription.remove();
+  }, [open, setOpen]);
 
   return (
     <Sheet
