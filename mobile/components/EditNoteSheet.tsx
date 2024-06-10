@@ -46,14 +46,14 @@ const EditNoteSheet = (props: EditNoteSheetProps) => {
   }, [selectedNote]);
 
   // on Android back button press, if the sheet is open, we first close the sheet
-  //  and on the 2nd press we will navigate back
+  // and on the 2nd press we will navigate back
   useEffect(() => {
     if (Platform.OS !== "android") {
       return;
     }
 
     const onBackPress = () => {
-      if (!!selectedNote) {
+      if (selectedNote) {
         setSelectedNote(null);
         return true;
       } else {

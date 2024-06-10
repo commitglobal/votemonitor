@@ -41,7 +41,7 @@ const FeedbackSheet = (props: OptionsSheetProps) => {
   };
 
   // on Android back button press, if the feedbacksheet is open, we first close the sheet
-  //  and on the 2nd press we will navigate back
+  // and on the 2nd press we will navigate back
   useEffect(() => {
     if (Platform.OS !== "android") {
       return;
