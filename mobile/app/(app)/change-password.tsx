@@ -15,7 +15,6 @@ import { ChangePasswordPayload } from "../../services/definitions.api";
 import PasswordConfirmationScreen from "../../components/PasswordConfirmationScreen";
 import { useNetInfoContext } from "../../contexts/net-info-banner/NetInfoContext";
 import Toast from "react-native-toast-message";
-import CredentialsError from "../../components/CredentialsError";
 import WizzardControls from "../../components/WizzardControls";
 
 interface FormData {
@@ -96,8 +95,24 @@ const ChangePassword = () => {
       });
     }
     updatePassword(payload, {
+      onSuccess: () => {
+        return Toast.show({
+          type: "success",
+          text2: t("confirmation.heading"),
+          visibilityTime: 5000,
+          text2Style: { textAlign: "center" },
+        });
+      },
       onError: (error: Error) => {
         setReqError(error);
+        return Toast.show({
+          type: "error",
+          text2: t("paragraph1", { ns: "generic_error_screen" }),
+          visibilityTime: 5000,
+          text2Style: { textAlign: "center" },
+        });
+      },
+      onSettled: () => {
         Keyboard.dismiss();
       },
     });
@@ -133,7 +148,11 @@ const ChangePassword = () => {
           control={control}
           render={({ field: { onChange, value } }) => (
             <PasswordInput
-              error={errors.currentPassword?.message}
+              error={
+                errors.currentPassword?.message || reqError
+                  ? t("form.current_password.credentials_error")
+                  : undefined
+              }
               key="currentPassword"
               type="password"
               title={t("form.current_password.label")}
@@ -178,17 +197,6 @@ const ChangePassword = () => {
           )}
         />
       </YStack>
-      {reqError && (
-        <XStack
-          width="100%"
-          justifyContent="center"
-          alignItems="center"
-          padding="$md"
-          marginTop="$md"
-        >
-          <CredentialsError error={t("paragraph1", { ns: "generic_error_screen" })} />
-        </XStack>
-      )}
       <WizzardControls
         isFirstElement
         onActionButtonPress={handleSubmit(onSubmit)}
