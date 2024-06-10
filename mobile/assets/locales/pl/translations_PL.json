@@ -163,8 +163,7 @@
         "error": {
           "arrival_first": "Najpierw wybierz godzinę przyjazdu.",
           "later_departure": "Proszę wybrać godzinę odjazdu późniejszą niż godzina przylotu.",
-          "earlier_arrival": "Proszę wybrać godzinę przyjazdu wcześniejszą niż godzina odlotu.",
-          "server": "Nie mogliśmy wysłać informacji na serwer"
+          "earlier_arrival": "Proszę wybrać godzinę przyjazdu wcześniejszą niż godzina odlotu."
         }
       },
       "polling_station_form": {
@@ -207,10 +206,7 @@
     "warning_modal": {
       "title": "Wyczyść formularz informacyjny komisji wyborczej",
       "description": "Ta czynność usunie wszystkie odpowiedzi wprowadzone do formularza. Aby uniknąć utraty danych, upewnij się proszę, że sprawdziłeś/aś formularz zanim wykonasz tę akcję.",
-      "actions": {
-        "cancel": "Anuluj",
-        "clear": "Wyczyść formularz"
-      }
+      "actions": { "cancel": "Anuluj", "clear": "Wyczyść formularz" }
     }
   },
   "form_overview": {
@@ -303,18 +299,12 @@
       "question": {
         "title": "Wyczyść odpowiedź dla pytania{{value}}",
         "description": "Wyczyszczenie odpowiedzi usunie wprowadzone dane (jak również notatki i załączniki). Pytanie zostanie przywrócone do stanu 'Nie udzielono odpowiedzi'.",
-        "actions": {
-          "cancel": "Anuluj",
-          "clear": "Wyczyść odpowiedź"
-        }
+        "actions": { "cancel": "Anuluj", "clear": "Wyczyść odpowiedź" }
       },
       "attachment": {
         "title": "Usuń plik(i)",
         "description": "Ta akcja nie może być cofnięta. Usunięte media nie mogą zostać przywrócone.",
-        "actions": {
-          "cancel": "Anuluj",
-          "clear": "Usuń"
-        }
+        "actions": { "cancel": "Anuluj", "clear": "Usuń" }
       }
     },
     "error": "Błąd podczas ładowania danych pytania!"

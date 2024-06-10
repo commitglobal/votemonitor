@@ -163,8 +163,7 @@
         "error": {
           "arrival_first": "Te rugăm să selectezi mai întâi ora sosirii.",
           "later_departure": "Te rugăm să selectezi o oră de plecare ulterioară orei de sosire.",
-          "earlier_arrival": "Te rugăm să selectezi o oră de sosire anterioară orei de plecare.",
-          "server": "Nu am putut trimite informațiile către server"
+          "earlier_arrival": "Te rugăm să selectezi o oră de sosire anterioară orei de plecare."
         }
       },
       "polling_station_form": {
