@@ -164,7 +164,7 @@
           "arrival_first": "Please select an arrival time first.",
           "later_departure": "Please select a departure time that is at a later time than the arrival.",
           "earlier_arrival": "Please select an arrival time that is at an earlier time than the departure.",
-          "server": "We couldn't send the information to the server"
+          "server": "We couldn't send the information to the server."
         }
       },
       "polling_station_form": {

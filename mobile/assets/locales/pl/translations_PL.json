@@ -164,7 +164,7 @@
           "arrival_first": "Najpierw wybierz godzinę przyjazdu.",
           "later_departure": "Proszę wybrać godzinę odjazdu późniejszą niż godzina przylotu.",
           "earlier_arrival": "Proszę wybrać godzinę przyjazdu wcześniejszą niż godzina odlotu.",
-          "server": "Nie mogliśmy wysłać informacji na serwer"
+          "server": "Nie mogliśmy wysłać informacji na serwer."
         }
       },
       "polling_station_form": {
