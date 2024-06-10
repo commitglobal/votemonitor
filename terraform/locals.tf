@@ -1,5 +1,6 @@
 locals {
-  namespace = "votemonitor-${var.env}"
+  namespace         = "votemonitor-${var.env}"
+  availability_zone = data.aws_availability_zones.current.names[0]
 
   images = {
     api = {
@@ -21,7 +22,7 @@ locals {
 
   db = {
     name           = "votemonitor"
-    instance_class = var.env == "production" ? "db.m7g.2xlarge" : "db.t4g.micro"
+    instance_class = var.env == "production" ? "db.t4g.small" : "db.t4g.micro"
   }
 
   networking = {
