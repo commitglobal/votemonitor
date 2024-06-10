@@ -3,9 +3,10 @@ resource "aws_db_instance" "main" {
   db_name             = local.db.name
   instance_class      = local.db.instance_class
   publicly_accessible = false
-  multi_az            = true
+  multi_az            = false
   deletion_protection = true
 
+  availability_zone = local.availability_zone
 
   username = local.db.name
   password = random_password.database.result
