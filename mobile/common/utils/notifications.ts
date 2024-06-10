@@ -27,6 +27,7 @@ export async function registerForPushNotificationsAsync() {
       }
       if (finalStatus !== "granted") {
         console.error("Failed to get push token for push notification!");
+        Sentry.captureMessage("Push Notifications - Permission not granted");
         return;
       }
       token = (
