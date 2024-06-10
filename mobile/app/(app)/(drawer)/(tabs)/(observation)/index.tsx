@@ -63,20 +63,22 @@ const Index = () => {
         <SelectPollingStation />
       </YStack>
 
-      <OptionsSheet open={openContextualMenu} setOpen={setOpenContextualMenu}>
-        <YStack
-          paddingVertical="$xxs"
-          paddingHorizontal="$sm"
-          onPress={() => {
-            setOpenContextualMenu(false);
-            router.push("/manage-polling-stations");
-          }}
-        >
-          <Typography preset="body1" color="$gray7" lineHeight={24}>
-            {t("options_menu.manage_my_polling_stations")}
-          </Typography>
-        </YStack>
-      </OptionsSheet>
+      {openContextualMenu && (
+        <OptionsSheet open setOpen={setOpenContextualMenu}>
+          <YStack
+            paddingVertical="$xxs"
+            paddingHorizontal="$sm"
+            onPress={() => {
+              setOpenContextualMenu(false);
+              router.push("/manage-polling-stations");
+            }}
+          >
+            <Typography preset="body1" color="$gray7" lineHeight={24}>
+              {t("options_menu.manage_my_polling_stations")}
+            </Typography>
+          </YStack>
+        </OptionsSheet>
+      )}
 
       <YStack paddingHorizontal="$md">
         <FormList

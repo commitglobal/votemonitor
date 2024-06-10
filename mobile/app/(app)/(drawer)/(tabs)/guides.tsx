@@ -116,7 +116,7 @@ const Guides = () => {
         </YStack>
       )}
       {optionsSheetOpen && (
-        <OptionsSheet open={optionsSheetOpen} setOpen={setOptionsSheetOpen} key={"GuidesSheet"}>
+        <OptionsSheet open setOpen={setOptionsSheetOpen} key={"GuidesSheet"}>
           <YStack
             paddingVertical="$xxs"
             paddingHorizontal="$sm"

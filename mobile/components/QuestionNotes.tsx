@@ -59,7 +59,7 @@ const QuestionNotes = ({
       )}
 
       {/* this weird condition is a workaround for fixing bottomsheet jump on ios/ sheet not opening on android on back button press */}
-      {(selectedNote || Platform.OS === "ios") && (
+      {selectedNote && (
         <EditNoteSheet
           selectedNote={selectedNote}
           setSelectedNote={setSelectedNote}

@@ -181,10 +181,10 @@ const TimeSelect: React.FC<TimeSelectProps> = memo(
           ></CardFooter>
         </YStack>
 
-        {Platform.OS === "ios" ? (
+        {Platform.OS === "ios" && open ? (
           <Sheet
             modal
-            open={open}
+            open
             onOpenChange={setOpen}
             zIndex={100_000}
             snapPoints={[45]}

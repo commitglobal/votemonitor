@@ -158,11 +158,9 @@ const More = () => {
           helper={currentUser ? t("logged_in", { user: currentUser }) : ""}
         ></MenuItem>
       </YStack>
-      {feedbackSheetOpen && (
-        <FeedbackSheet open={feedbackSheetOpen} setOpen={setFeedbackSheetOpen} />
-      )}
+      {feedbackSheetOpen && <FeedbackSheet open setOpen={setFeedbackSheetOpen} />}
       {optionsSheetOpen && (
-        <OptionsSheet open={optionsSheetOpen} setOpen={setOptionsSheetOpen}>
+        <OptionsSheet open setOpen={setOptionsSheetOpen}>
           <YStack
             paddingVertical="$xxs"
             paddingHorizontal="$sm"

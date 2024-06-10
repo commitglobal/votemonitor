@@ -263,8 +263,8 @@ const FormDetails = () => {
         />
       )}
       {/* //todo: change this once tamagui fixes sheet issue #2585 */}
-      {(optionSheetOpen || Platform.OS === "ios") && (
-        <OptionsSheet open={optionSheetOpen} setOpen={setOptionSheetOpen}>
+      {optionSheetOpen && (
+        <OptionsSheet open setOpen={setOptionSheetOpen}>
           <YStack paddingHorizontal="$sm" gap="$xxs">
             <Typography preset="body1" paddingVertical="$md" onPress={onChangeLanguagePress}>
               {t("menu.change_language")}
