@@ -5,7 +5,7 @@ import { Icon } from "../../../components/Icon";
 import { Typography } from "../../../components/Typography";
 import { ScrollView, XStack, YStack } from "tamagui";
 import LinearProgress from "../../../components/LinearProgress";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useUserData } from "../../../contexts/user/UserContext.provider";
 import WizzardControls from "../../../components/WizzardControls";
 import { Keyboard, Platform, ViewStyle } from "react-native";
@@ -43,6 +43,7 @@ import FormInput from "../../../components/FormInputs/FormInput";
 import WarningDialog from "../../../components/WarningDialog";
 import MediaLoading from "../../../components/MediaLoading";
 import Toast from "react-native-toast-message";
+import { scrollToTextarea } from "../../../helpers/scrollToTextarea";
 import * as Sentry from "@sentry/react-native";
 
 type SearchParamType = {
@@ -368,6 +369,15 @@ const FormQuestionnaire = () => {
     }
   };
 
+  // scroll view ref
+  const scrollViewRef = useRef(null);
+  // textarea ref - where we're going to scroll to
+  const textareaRef = useRef(null);
+
+  const handleFocus = () => {
+    scrollToTextarea(scrollViewRef, textareaRef);
+  };
+
   return (
     <Screen
       preset="fixed"
@@ -383,7 +393,11 @@ const FormQuestionnaire = () => {
         onLeftPress={() => router.back()}
       />
 
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
+      <ScrollView
+        ref={scrollViewRef}
+        contentContainerStyle={{ flexGrow: 1 }}
+        keyboardShouldPersistTaps="handled"
+      >
         <YStack gap="$xxs" padding="$md">
           <XStack justifyContent="space-between">
             <Typography>{t("progress_bar.label")}</Typography>
@@ -449,6 +463,8 @@ const FormQuestionnaire = () => {
                   return (
                     <WizardFormInput
                       type="textarea"
+                      ref={textareaRef}
+                      onFocus={handleFocus}
                       label={`${question.code}. ${question.text[language]}`}
                       placeholder={question?.inputPlaceholder?.[language] || ""}
                       paragraph={question.helptext?.[language] || ""}
@@ -490,8 +506,10 @@ const FormQuestionnaire = () => {
                         if (option.isFreeText && option.id === value.radioValue) {
                           return (
                             <FormInput
-                              key={option.id + "free"}
                               type="textarea"
+                              ref={textareaRef}
+                              onFocus={handleFocus}
+                              key={option.id + "free"}
                               marginTop="$md"
                               value={value.textValue || ""}
                               placeholder={t("form.text_placeholder")}
@@ -542,6 +560,8 @@ const FormQuestionnaire = () => {
                             />
                             {selections[option.id]?.optionId === option.id && option.isFreeText && (
                               <FormInput
+                                ref={textareaRef}
+                                onFocus={handleFocus}
                                 type="textarea"
                                 marginTop="$md"
                                 value={selections[option.id]?.text}
