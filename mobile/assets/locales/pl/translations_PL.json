@@ -259,7 +259,8 @@
       "min": "Pole musi mieć długość co najmniej {{value}} znaków",
       "max": "Pole musi zawierać maksymalnie {{value}} znaków",
       "date_placeholder": "Proszę wprowadzić datę",
-      "text_placeholder": "Proszę wpisać tekst"
+      "text_placeholder": "Proszę wpisać tekst",
+      "required": "To pole jest wymagane"
     },
     "attachments": {
       "heading": "Wybrane media",

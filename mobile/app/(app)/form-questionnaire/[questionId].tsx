@@ -8,7 +8,7 @@ import LinearProgress from "../../../components/LinearProgress";
 import { useMemo, useRef, useState } from "react";
 import { useUserData } from "../../../contexts/user/UserContext.provider";
 import WizzardControls from "../../../components/WizzardControls";
-import { Keyboard, Platform, ViewStyle } from "react-native";
+import { Keyboard, ViewStyle } from "react-native";
 import { Controller, useForm } from "react-hook-form";
 import WizardFormInput from "../../../components/WizardFormInputs/WizardFormInput";
 import {
@@ -651,8 +651,6 @@ const FormQuestionnaire = () => {
             addingNote && setAddingNote(false);
           }}
           isLoading={(isLoadingAddAttachmentt && !isPaused) || isPreparingFile}
-          // seems that this behaviour is handled differently and the sheet will move with keyboard even if this props is set to false on android
-          moveOnKeyboardChange={Platform.OS === "android"}
           disableDrag={addingNote}
         >
           {(isLoadingAddAttachmentt && !isPaused) || isPreparingFile ? (

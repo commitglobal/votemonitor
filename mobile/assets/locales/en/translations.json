@@ -259,7 +259,8 @@
       "min": "The field must be at least {{value}} characters long",
       "max": "The field must have a maximum of {{value}} characters",
       "date_placeholder": "Please enter a date",
-      "text_placeholder": "Please enter a text"
+      "text_placeholder": "Please enter a text",
+      "required": "This field is required",
     },
     "attachments": {
       "heading": "Uploaded media",

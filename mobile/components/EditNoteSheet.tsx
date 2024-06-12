@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import React, { useEffect, useMemo, useState } from "react";
 import { Sheet, SheetProps, XStack, YStack } from "tamagui";
 import { Icon } from "./Icon";
 import { Note } from "../common/models/note";
@@ -10,8 +9,9 @@ import Button from "./Button";
 import { useDeleteNote } from "../services/mutations/delete-note.mutation";
 import { useUpdateNote } from "../services/mutations/edit-note.mutation";
 import { useTranslation } from "react-i18next";
-import { BackHandler, Keyboard, Platform } from "react-native";
-import { useKeyboardVisible } from "@tamagui/use-keyboard-visible";
+import { BackHandler, Platform } from "react-native";
+import { Animated } from "react-native";
+import useAnimatedKeyboardPadding from "../hooks/useAnimatedKeyboardPadding";
 
 interface EditNoteSheetProps extends SheetProps {
   selectedNote: Note | null;
@@ -27,8 +27,6 @@ const EditNoteSheet = (props: EditNoteSheetProps) => {
     props;
   const [deletingNote, setDeletingNote] = useState(false);
   const { t } = useTranslation(["polling_station_form_wizard", "common"]);
-  const insets = useSafeAreaInsets();
-  const keyboardIsVisible = useKeyboardVisible();
 
   const {
     control,
@@ -104,6 +102,9 @@ const EditNoteSheet = (props: EditNoteSheetProps) => {
     setDeletingNote(false);
   };
 
+  const animatedPaddingBottom = useAnimatedKeyboardPadding(16);
+  const AnimatedYStack = useMemo(() => Animated.createAnimatedComponent(YStack), []);
+
   return (
     <Sheet
       modal
@@ -116,7 +117,6 @@ const EditNoteSheet = (props: EditNoteSheetProps) => {
       }}
       snapPointsMode="fit"
       // seems that this behaviour is handled differently and the sheet will move with keyboard even if this props is set to false on android
-      moveOnKeyboardChange={Platform.OS === "android"}
       dismissOnSnapToBottom={true}
       disableDrag
     >
@@ -126,22 +126,10 @@ const EditNoteSheet = (props: EditNoteSheetProps) => {
         borderTopRightRadius={28}
         gap="$sm"
         paddingHorizontal="$md"
-        paddingBottom="$xl"
-        marginBottom={insets.bottom}
       >
         <Icon paddingVertical="$md" alignSelf="center" icon="dragHandle" />
 
-        <YStack
-          marginHorizontal={12}
-          gap="$md"
-          paddingBottom={
-            // add padding if keyboard is visible
-            Platform.OS === "ios" && keyboardIsVisible && Keyboard.metrics()?.height
-              ? // @ts-ignore: it will not be undefined because we're checking above
-                Keyboard.metrics()?.height - insets.bottom
-              : 0
-          }
-        >
+        <AnimatedYStack marginHorizontal={12} gap="$md" paddingBottom={animatedPaddingBottom}>
           {deletingNote ? (
             <>
               <YStack gap="$lg">
@@ -190,6 +178,10 @@ const EditNoteSheet = (props: EditNoteSheetProps) => {
                 name={"noteEditedText"}
                 control={control}
                 rules={{
+                  required: {
+                    value: true,
+                    message: t("form.required"),
+                  },
                   maxLength: {
                     value: 10000,
                     message: t("notes.add.form.input.max"),
@@ -223,7 +215,7 @@ const EditNoteSheet = (props: EditNoteSheetProps) => {
               </XStack>
             </>
           )}
-        </YStack>
+        </AnimatedYStack>
       </Sheet.Frame>
     </Sheet>
   );
