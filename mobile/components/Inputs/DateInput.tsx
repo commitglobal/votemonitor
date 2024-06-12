@@ -105,8 +105,8 @@ export const DateInput: React.FC<DateInputProps> = ({
       </Typography>
       <Icon icon="calendar" color="transparent" />
       {/* open bottom sheet on ios with date picker */}
-      {Platform.OS === "ios" ? (
-        <Sheet modal open={open} onOpenChange={setOpen} zIndex={100_000} snapPointsMode="fit">
+      {Platform.OS === "ios" && open ? (
+        <Sheet modal open onOpenChange={setOpen} zIndex={100_000} snapPointsMode="fit">
           <Sheet.Overlay />
           <AnimatedSheetFrame padding="$md" paddingBottom={paddingBottom}>
             <XStack gap="$sm" justifyContent="flex-end" width="100%">

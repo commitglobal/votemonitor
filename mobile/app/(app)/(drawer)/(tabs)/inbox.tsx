@@ -112,7 +112,7 @@ const Inbox = () => {
         </YStack>
       )}
       {openContextualMenu && (
-        <OptionsSheet open={openContextualMenu} setOpen={setOpenContextualMenu} key={"InboxSheet"}>
+        <OptionsSheet open setOpen={setOpenContextualMenu} key={"InboxSheet"}>
           <YStack
             paddingVertical="$xxs"
             paddingHorizontal="$sm"
