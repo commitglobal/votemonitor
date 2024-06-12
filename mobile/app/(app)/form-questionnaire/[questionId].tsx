@@ -643,9 +643,9 @@ const FormQuestionnaire = () => {
         onPreviousButtonPress={onBackButtonPress}
       />
       {/* //todo: remove this once tamagui fixes sheet issue #2585 */}
-      {(isOptionsSheetOpen || Platform.OS === "ios") && (
+      {isOptionsSheetOpen && (
         <OptionsSheet
-          open={isOptionsSheetOpen}
+          open
           setOpen={(open) => {
             setIsOptionsSheetOpen(open);
             addingNote && setAddingNote(false);

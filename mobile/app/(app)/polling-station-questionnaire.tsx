@@ -491,14 +491,17 @@ const PollingStationQuestionnaire = () => {
             })}
           </YStack>
         </ScrollView>
-        <OptionsSheet open={openContextualMenu} setOpen={setOpenContextualMenu}>
-          <OptionSheetContent
-            onClear={() => {
-              setOpenContextualMenu(false);
-              setClearingForm(true);
-            }}
-          />
-        </OptionsSheet>
+        {openContextualMenu && (
+          <OptionsSheet open setOpen={setOpenContextualMenu}>
+            <OptionSheetContent
+              onClear={() => {
+                setOpenContextualMenu(false);
+                setClearingForm(true);
+              }}
+            />
+          </OptionsSheet>
+        )}
+
         {clearingForm && (
           <WarningDialog
             title={t("warning_modal.title")}

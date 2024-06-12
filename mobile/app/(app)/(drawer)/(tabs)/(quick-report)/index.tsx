@@ -52,7 +52,7 @@ const QuickReport = () => {
           false
         )}
         {openContextualMenu && (
-          <OptionsSheet open={openContextualMenu} setOpen={setOpenContextualMenu}>
+          <OptionsSheet open setOpen={setOpenContextualMenu}>
             <View
               paddingVertical="$xxs"
               paddingHorizontal="$sm"

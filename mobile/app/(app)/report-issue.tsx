@@ -439,42 +439,44 @@ const ReportIssue = () => {
           </YStack>
         </KeyboardAwareScrollView>
 
-        <OptionsSheet
-          open={optionsSheetOpen}
-          setOpen={setOptionsSheetOpen}
-          isLoading={(isLoadingAddAttachment && !isPaused) || isPreparingFile}
-        >
-          {isPreparingFile || (isLoadingAddAttachment && !isPaused) ? (
-            <MediaLoading />
-          ) : (
-            <YStack paddingHorizontal="$sm">
-              <Typography
-                onPress={handleCameraUpload.bind(null, "library")}
-                preset="body1"
-                paddingVertical="$md"
-                pressStyle={{ color: "$purple5" }}
-              >
-                {t("media.menu.load")}
-              </Typography>
-              <Typography
-                onPress={handleCameraUpload.bind(null, "cameraPhoto")}
-                preset="body1"
-                paddingVertical="$md"
-                pressStyle={{ color: "$purple5" }}
-              >
-                {t("media.menu.take_picture")}
-              </Typography>
-              <Typography
-                onPress={handleUploadAudio.bind(null)}
-                preset="body1"
-                paddingVertical="$md"
-                pressStyle={{ color: "$purple5" }}
-              >
-                {t("media.menu.upload_audio")}
-              </Typography>
-            </YStack>
-          )}
-        </OptionsSheet>
+        {optionsSheetOpen && (
+          <OptionsSheet
+            open
+            setOpen={setOptionsSheetOpen}
+            isLoading={(isLoadingAddAttachment && !isPaused) || isPreparingFile}
+          >
+            {isPreparingFile || (isLoadingAddAttachment && !isPaused) ? (
+              <MediaLoading />
+            ) : (
+              <YStack paddingHorizontal="$sm">
+                <Typography
+                  onPress={handleCameraUpload.bind(null, "library")}
+                  preset="body1"
+                  paddingVertical="$md"
+                  pressStyle={{ color: "$purple5" }}
+                >
+                  {t("media.menu.load")}
+                </Typography>
+                <Typography
+                  onPress={handleCameraUpload.bind(null, "cameraPhoto")}
+                  preset="body1"
+                  paddingVertical="$md"
+                  pressStyle={{ color: "$purple5" }}
+                >
+                  {t("media.menu.take_picture")}
+                </Typography>
+                <Typography
+                  onPress={handleUploadAudio.bind(null)}
+                  preset="body1"
+                  paddingVertical="$md"
+                  pressStyle={{ color: "$purple5" }}
+                >
+                  {t("media.menu.upload_audio")}
+                </Typography>
+              </YStack>
+            )}
+          </OptionsSheet>
+        )}
       </Screen>
 
       <XStack
