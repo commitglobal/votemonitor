@@ -44,6 +44,7 @@ import WarningDialog from "../../../components/WarningDialog";
 import MediaLoading from "../../../components/MediaLoading";
 import Toast from "react-native-toast-message";
 import { scrollToTextarea } from "../../../helpers/scrollToTextarea";
+import * as Sentry from "@sentry/react-native";
 
 type SearchParamType = {
   questionId: string;
@@ -299,7 +300,8 @@ const FormQuestionnaire = () => {
         },
         {
           onSettled: () => setIsOptionsSheetOpen(false),
-          onError: () => {
+          onError: (err) => {
+            Sentry.captureException(err);
             Toast.show({
               type: "error",
               text2: t("attachments.error"),
@@ -348,7 +350,8 @@ const FormQuestionnaire = () => {
           },
           {
             onSettled: () => setIsOptionsSheetOpen(false),
-            onError: () => {
+            onError: (err) => {
+              Sentry.captureException(err);
               Toast.show({
                 type: "error",
                 text2: t("attachments.error"),

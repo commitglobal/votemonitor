@@ -93,7 +93,7 @@ const FeedbackSheet = (props: OptionsSheetProps) => {
         paddingHorizontal="$md"
       >
         <Icon paddingVertical="$md" alignSelf="center" icon="dragHandle" />
-        <KeyboardAwareScrollView enableOnAndroid>
+        <KeyboardAwareScrollView keyboardShouldPersistTaps="handled">
           <AnimatedYStack padding="$md" paddingTop="$0" gap="$lg" paddingBottom={paddingBottom}>
             <Typography preset="heading" fontWeight="400">
               {t("feedback_sheet.heading")}

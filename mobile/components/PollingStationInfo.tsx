@@ -18,15 +18,16 @@ const PollingStationInfo: React.FC<PollingStationInfoProps> = ({
   return (
     <>
       <XStack justifyContent="space-between">
-        <Typography preset="heading" fontWeight="500" maxWidth="60%">
+        <Typography preset="heading" fontWeight="500" maxWidth="55%">
           {t("polling_stations_information.polling_station_form.number_of_questions", {
             value: `${nrOfAnswers}/${nrOfQuestions}`,
           })}
         </Typography>
         <Badge
           status={nrOfAnswers === nrOfQuestions ? Status.COMPLETED : Status.IN_PROGRESS}
-          maxWidth="40%"
+          maxWidth="45%"
           textStyle={{ textAlign: "center" }}
+          alignSelf="baseline"
         >
           {nrOfAnswers === nrOfQuestions
             ? t("status.completed", { ns: "common" })
