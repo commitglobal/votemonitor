@@ -1,10 +1,10 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { OptionsSheetProps } from "./OptionsSheet";
 import { Typography } from "./Typography";
 import { useTranslation } from "react-i18next";
 import { Sheet, XStack, YStack } from "tamagui";
 import Input from "./Inputs/Input";
-import { Animated, Keyboard, Platform } from "react-native";
+import { Animated, BackHandler, Keyboard, Platform } from "react-native";
 import Button from "./Button";
 import { Controller, useForm } from "react-hook-form";
 import { useAddFeedbackMutation } from "../services/mutations/feedback/add-feedback.mutation";
@@ -39,6 +39,26 @@ const FeedbackSheet = (props: OptionsSheetProps) => {
     props.setOpen(false);
     reset();
   };
+
+  // on Android back button press, if the feedbacksheet is open, we first close the sheet
+  // and on the 2nd press we will navigate back
+  useEffect(() => {
+    if (Platform.OS !== "android") {
+      return;
+    }
+    const onBackPress = () => {
+      // close sheet
+      if (props.open) {
+        props.setOpen(false);
+        return true;
+      } else {
+        // navigate back
+        return false;
+      }
+    };
+    const subscription = BackHandler.addEventListener("hardwareBackPress", onBackPress);
+    return () => subscription.remove();
+  }, [props.open, props.setOpen]);
 
   const onSubmit = ({ userFeedback }: { userFeedback: string }) => {
     const feedbackPayload = {

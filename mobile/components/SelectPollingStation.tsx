@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Adapt, Select, Sheet, View, XStack, YStack } from "tamagui";
 import { Icon } from "./Icon";
 import { Typography } from "./Typography";
@@ -7,6 +7,7 @@ import Button from "../components/Button";
 import { useUserData } from "../contexts/user/UserContext.provider";
 import { router } from "expo-router";
 import { useTranslation } from "react-i18next";
+import { BackHandler, Platform } from "react-native";
 
 const SelectPollingStation = () => {
   const { visits, selectedPollingStation, setSelectedPollingStationId } = useUserData();
@@ -14,6 +15,25 @@ const SelectPollingStation = () => {
   const insets = useSafeAreaInsets();
 
   const { t } = useTranslation(["observation", "common"]);
+
+  // close sheet on android back press
+  useEffect(() => {
+    if (Platform.OS !== "android") {
+      return;
+    }
+    const onBackPress = () => {
+      // close sheet
+      if (open) {
+        setOpen(false);
+        return true;
+      } else {
+        // navigate back
+        return false;
+      }
+    };
+    const subscription = BackHandler.addEventListener("hardwareBackPress", onBackPress);
+    return () => subscription.remove();
+  }, [open, setOpen]);
 
   return (
     <YStack paddingVertical="$xs" paddingHorizontal="$md" backgroundColor="white">

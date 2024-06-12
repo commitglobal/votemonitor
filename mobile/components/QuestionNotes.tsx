@@ -6,7 +6,7 @@ import { Icon } from "./Icon";
 import { Note } from "../common/models/note";
 import { useTranslation } from "react-i18next";
 import EditNoteSheet from "./EditNoteSheet";
-import { Keyboard, Platform } from "react-native";
+import { Keyboard } from "react-native";
 
 const QuestionNotes = ({
   notes,

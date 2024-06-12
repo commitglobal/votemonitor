@@ -7,7 +7,6 @@ import { Typography } from "../../../../../../components/Typography";
 import { Spinner, useWindowDimensions, YStack } from "tamagui";
 import { useMemo, useState } from "react";
 import { ListView } from "../../../../../../components/ListView";
-import { Platform } from "react-native";
 import OptionsSheet from "../../../../../../components/OptionsSheet";
 import ChangeLanguageDialog from "../../../../../../components/ChangeLanguageDialog";
 import { setFormLanguagePreference } from "../../../../../../common/language.preferences";
