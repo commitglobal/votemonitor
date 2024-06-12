@@ -1,6 +1,6 @@
 import { Typography } from "../../components/Typography";
 import { Controller, useForm } from "react-hook-form";
-import { View, XStack, YStack } from "tamagui";
+import { ScrollView, View, XStack, YStack } from "tamagui";
 import {
   usePollingStationInformation,
   usePollingStationInformationForm,
@@ -13,7 +13,7 @@ import {
   ApiFormAnswer,
   FormQuestionAnswerTypeMapping,
 } from "../../services/interfaces/answer.type";
-import { useMemo, useState } from "react";
+import { createRef, useMemo, useRef, useState } from "react";
 import { router } from "expo-router";
 import FormInput from "../../components/FormInputs/FormInput";
 import DateFormInput from "../../components/FormInputs/DateFormInput";
@@ -33,7 +33,7 @@ import { useMutatePollingStationGeneralData } from "../../services/mutations/psi
 import OptionsSheet from "../../components/OptionsSheet";
 import { Keyboard } from "react-native";
 import WarningDialog from "../../components/WarningDialog";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { scrollToTextarea } from "../../helpers/scrollToTextarea";
 
 const PollingStationQuestionnaire = () => {
   const { t, i18n } = useTranslation("polling_station_information_form");
@@ -215,16 +215,27 @@ const PollingStationQuestionnaire = () => {
     defaultValues: setFormDefaultValues(),
   });
 
+  // ref for the scrollview
+  const scrollViewRef = useRef(null);
+
+  // create  a ref for each question we receive that has any of the types: "textQuestion", "singleSelectQuestion", "multiSelectQuestion"
+  // so basically for all of the cases where we might deal with a 'textarea' that needs scrolling to
+  const questionRefs = useRef(
+    formStructure?.questions.map((question) => {
+      if (
+        question.$questionType === "textQuestion" ||
+        question.$questionType === "singleSelectQuestion" ||
+        question.$questionType === "multiSelectQuestion"
+      ) {
+        return createRef();
+      }
+      return null;
+    }),
+  );
+
   return (
     <>
-      <Screen
-        preset="scroll"
-        backgroundColor="white"
-        ScrollViewProps={{
-          stickyHeaderIndices: [0],
-          bounces: false,
-        }}
-      >
+      <Screen preset="fixed" backgroundColor="white" contentContainerStyle={{ flex: 1 }}>
         <Header
           title={t("title")}
           titleColor="white"
@@ -237,15 +248,16 @@ const PollingStationQuestionnaire = () => {
             setOpenContextualMenu(true);
           }}
         />
-        <KeyboardAwareScrollView
+
+        <ScrollView
+          ref={scrollViewRef}
           contentContainerStyle={{ flexGrow: 1 }}
           keyboardShouldPersistTaps="handled"
         >
           <YStack padding="$md" gap="$lg" flex={1}>
-            {formStructure?.questions.map((question: ApiFormQuestion) => {
+            {formStructure?.questions.map((question: ApiFormQuestion, index: number) => {
               const _label = `${question.code}. ${question.text[currentLanguage]}`;
               const _helper = question.helptext?.[currentLanguage] || "";
-
               if (question.$questionType === "numberQuestion") {
                 return (
                   <Controller
@@ -285,6 +297,13 @@ const PollingStationQuestionnaire = () => {
                       <YStack>
                         <FormInput
                           type="textarea"
+                          ref={questionRefs.current && questionRefs.current[index]}
+                          onFocus={() =>
+                            scrollToTextarea(
+                              scrollViewRef,
+                              questionRefs.current && questionRefs.current[index],
+                            )
+                          }
                           title={question.text[currentLanguage]}
                           placeholder={question.helptext?.[currentLanguage] || ""}
                           onChangeText={onChange}
@@ -346,6 +365,13 @@ const PollingStationQuestionnaire = () => {
                               return (
                                 <FormInput
                                   type="textarea"
+                                  ref={questionRefs.current && questionRefs.current[index]}
+                                  onFocus={() =>
+                                    scrollToTextarea(
+                                      scrollViewRef,
+                                      questionRefs.current && questionRefs.current[index],
+                                    )
+                                  }
                                   marginTop="$md"
                                   key={option.id}
                                   value={value.textValue}
@@ -428,6 +454,13 @@ const PollingStationQuestionnaire = () => {
                                   option.isFreeText && (
                                     <FormInput
                                       type="textarea"
+                                      ref={questionRefs.current && questionRefs.current[index]}
+                                      onFocus={() =>
+                                        scrollToTextarea(
+                                          scrollViewRef,
+                                          questionRefs.current && questionRefs.current[index],
+                                        )
+                                      }
                                       marginTop="$md"
                                       value={selections[option.id]?.text}
                                       placeholder={t("form.placeholder")}
@@ -457,7 +490,7 @@ const PollingStationQuestionnaire = () => {
               return <Typography key={question.id}></Typography>;
             })}
           </YStack>
-        </KeyboardAwareScrollView>
+        </ScrollView>
         {openContextualMenu && (
           <OptionsSheet open setOpen={setOpenContextualMenu}>
             <OptionSheetContent
