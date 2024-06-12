@@ -259,7 +259,8 @@
       "min": "Polje mora da sadrži najmanje {{value}} karaktera",
       "max": "Polje mora da sadrži najviše {{value}} karaktera",
       "date_placeholder": "Unesite datum",
-      "text_placeholder": "Unesite text"
+      "text_placeholder": "Unesite text",
+      "required": "Polje je obavezno"
     },
     "attachments": {
       "heading": "Otpremljeni mediji",

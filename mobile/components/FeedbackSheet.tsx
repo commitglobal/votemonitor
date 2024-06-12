@@ -4,7 +4,7 @@ import { Typography } from "./Typography";
 import { useTranslation } from "react-i18next";
 import { Sheet, XStack, YStack } from "tamagui";
 import Input from "./Inputs/Input";
-import { Animated, BackHandler, Keyboard, Platform } from "react-native";
+import { Animated, BackHandler, Keyboard, Platform, ScrollView } from "react-native";
 import Button from "./Button";
 import { Controller, useForm } from "react-hook-form";
 import { useAddFeedbackMutation } from "../services/mutations/feedback/add-feedback.mutation";
@@ -15,7 +15,6 @@ import Toast from "react-native-toast-message";
 import { onlineManager } from "@tanstack/react-query";
 import useAnimatedKeyboardPadding from "../hooks/useAnimatedKeyboardPadding";
 import { Icon } from "./Icon";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 const FeedbackSheet = (props: OptionsSheetProps) => {
   const { t } = useTranslation("more");
@@ -75,7 +74,6 @@ const FeedbackSheet = (props: OptionsSheetProps) => {
     };
     addFeedback(feedbackPayload, {
       onSuccess: () => {
-        onSheetClose();
         Toast.show({
           type: "success",
           text2: t("feedback_toast.success"),
@@ -87,6 +85,7 @@ const FeedbackSheet = (props: OptionsSheetProps) => {
           text2: t("feedback_toast.error"),
         });
       },
+      onSettled: onSheetClose,
     });
     if (!onlineManager.isOnline()) {
       onSheetClose();
@@ -113,7 +112,7 @@ const FeedbackSheet = (props: OptionsSheetProps) => {
         paddingHorizontal="$md"
       >
         <Icon paddingVertical="$md" alignSelf="center" icon="dragHandle" />
-        <KeyboardAwareScrollView keyboardShouldPersistTaps="handled">
+        <ScrollView keyboardShouldPersistTaps="handled">
           <AnimatedYStack padding="$md" paddingTop="$0" gap="$lg" paddingBottom={paddingBottom}>
             <Typography preset="heading" fontWeight="400">
               {t("feedback_sheet.heading")}
@@ -158,19 +157,12 @@ const FeedbackSheet = (props: OptionsSheetProps) => {
               <Button preset="chromeless" onPress={onSheetClose}>
                 {t("feedback_sheet.cancel")}
               </Button>
-              <Button
-                flex={1}
-                disabled={isPending}
-                onPress={() => {
-                  Keyboard.dismiss();
-                  handleSubmit(onSubmit)();
-                }}
-              >
+              <Button flex={1} disabled={isPending} onPress={handleSubmit(onSubmit)}>
                 {t("feedback_sheet.action")}
               </Button>
             </XStack>
           </AnimatedYStack>
-        </KeyboardAwareScrollView>
+        </ScrollView>
       </Sheet.Frame>
     </Sheet>
   );

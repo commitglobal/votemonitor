@@ -259,7 +259,8 @@
       "min": "Câmpul trebuie să aibă cel puțin {{value}} caractere",
       "max": "Câmpul trebuie să aibă maximum {{value}} caractere",
       "date_placeholder": "Te rugăm să introduci data",
-      "text_placeholder": "Te rugăm să introduci un text"
+      "text_placeholder": "Te rugăm să introduci un text",
+      "required": "Acest câmp este obligatoriu"
     },
     "attachments": {
       "heading": "Fișiere media încărcate",
