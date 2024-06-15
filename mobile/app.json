@@ -102,6 +102,7 @@
           "project": "votemonitor-mobile"
         }
       ],
+      "expo-av",
       "react-native-compressor"
     ]
   }
