@@ -91,6 +91,11 @@ public class FormSubmissionsAggregate
 
         foreach (var answer in formSubmission.Answers)
         {
+            if (!Aggregates.ContainsKey(answer.QuestionId))
+            {
+                continue;
+            }
+
             Aggregates[answer.QuestionId].Aggregate(formSubmission.Id, formSubmission.MonitoringObserverId, answer);
         }
 
