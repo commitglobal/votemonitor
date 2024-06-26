@@ -185,29 +185,53 @@ public class Form : AuditableBaseEntity, IAggregateRoot
 
     private int CountNumberOfFlaggedAnswers(List<BaseAnswer> answers)
     {
-        var singleSelectFlaggedOptionIds =
+        var singleSelectQuestions =
             Questions
                 .OfType<SingleSelectQuestion>()
-                .SelectMany(x => x.Options)
-                .Where(x => x.IsFlagged)
-                .Select(x => x.Id)
                 .ToList();
 
-        var multiSelectFlaggedOptionIds =
+        var multiSelectQuestions =
             Questions
                 .OfType<MultiSelectQuestion>()
-                .SelectMany(x => x.Options)
-                .Where(x => x.IsFlagged)
-                .Select(x => x.Id)
                 .ToList();
 
-        return answers
-                   .OfType<SingleSelectAnswer>()
-                   .Count(x => singleSelectFlaggedOptionIds.Contains(x.Selection.OptionId))
-               + answers
-                   .OfType<MultiSelectAnswer>()
-                   .SelectMany(x => x.Selection)
-                   .Count(x => multiSelectFlaggedOptionIds.Contains(x.OptionId));
+        int flaggedAnswers = 0;
+        foreach (var singleSelectAnswer in answers.OfType<SingleSelectAnswer>())
+        {
+            var option = singleSelectQuestions
+                .FirstOrDefault(x => x.Id == singleSelectAnswer.QuestionId)
+                ?.Options
+                ?.FirstOrDefault(x => x.Id == singleSelectAnswer.Selection.OptionId);
+
+            // Just in case 
+            if (option is null)
+            {
+                continue;
+            }
+
+            if (option.IsFlagged)
+            {
+                flaggedAnswers++;
+            }
+        }
+
+        foreach (var multiSelectAnswer in answers.OfType<MultiSelectAnswer>())
+        {
+            var options = multiSelectQuestions
+                .FirstOrDefault(x => x.Id == multiSelectAnswer.QuestionId)
+                ?.Options
+                ?.Where(x => multiSelectAnswer.Selection.Select(x => x.OptionId).Contains(x.Id));
+
+            // Just in case 
+            if (options is null)
+            {
+                continue;
+            }
+
+            flaggedAnswers += options.Count(x => x.IsFlagged);
+        }
+
+        return flaggedAnswers;
     }
 
     private int CountNumberOfQuestionsAnswered(List<BaseAnswer> answers)

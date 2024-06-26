@@ -1,10 +1,12 @@
-﻿using Vote.Monitor.Core.Models;
+﻿using System.Text.Json;
+using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.Entities.FormAggregate;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Domain.Entities.FormBase.Questions;
 using Vote.Monitor.TestUtils.Fakes.Aggregates;
 using Vote.Monitor.TestUtils.Fakes.Aggregates.Answers;
 using Vote.Monitor.TestUtils.Fakes.Aggregates.Questions;
+using Xunit;
 
 namespace Vote.Monitor.Domain.UnitTests.Entities;
 
@@ -21,7 +23,6 @@ public class FormAggregateTests
 
         var flaggedOptionId1 = Guid.NewGuid();
         var flaggedOptionId2 = Guid.NewGuid();
-        var flaggedOptionId3 = Guid.NewGuid();
         var regularOptionId = Guid.NewGuid();
 
         List<SelectOption> singleSelectQuestions = [
@@ -32,10 +33,10 @@ public class FormAggregateTests
         ];
 
         List<SelectOption> multiSelectQuestions = [
-            SelectOption.Create(flaggedOptionId2, new TranslatedString(), false, true),
+            SelectOption.Create(flaggedOptionId1, new TranslatedString(), false, true),
             SelectOption.Create(Guid.NewGuid(), new TranslatedString()),
             SelectOption.Create(regularOptionId, new TranslatedString()),
-            SelectOption.Create(flaggedOptionId3, new TranslatedString(), false, true),
+            SelectOption.Create(flaggedOptionId2, new TranslatedString(), false, true),
         ];
 
         var singleSelectQuestion = new SingleSelectQuestionFaker(singleSelectQuestions).Generate();
@@ -54,8 +55,8 @@ public class FormAggregateTests
         List<BaseAnswer> answers = [
             new SingleSelectAnswer(singleSelectQuestion.Id, SelectedOption.Create(flaggedOptionId1, "")),
             new MultiSelectAnswer(multiSelectQuestion.Id, [
+                SelectedOption.Create(flaggedOptionId1, ""),
                 SelectedOption.Create(flaggedOptionId2, ""),
-                SelectedOption.Create(flaggedOptionId3, ""),
                 SelectedOption.Create(regularOptionId, ""),
             ]),
         ];
@@ -77,7 +78,6 @@ public class FormAggregateTests
 
         var flaggedOptionId1 = Guid.NewGuid();
         var flaggedOptionId2 = Guid.NewGuid();
-        var flaggedOptionId3 = Guid.NewGuid();
         var regularOptionId = Guid.NewGuid();
 
         List<SelectOption> singleSelectQuestions = [
@@ -88,10 +88,10 @@ public class FormAggregateTests
         ];
 
         List<SelectOption> multiSelectQuestions = [
-            SelectOption.Create(flaggedOptionId2, new TranslatedString(), false, true),
+            SelectOption.Create(flaggedOptionId1, new TranslatedString(), false, true),
             SelectOption.Create(Guid.NewGuid(), new TranslatedString()),
             SelectOption.Create(regularOptionId, new TranslatedString()),
-            SelectOption.Create(flaggedOptionId3, new TranslatedString(), false, true),
+            SelectOption.Create(flaggedOptionId2, new TranslatedString(), false, true),
         ];
 
         var singleSelectQuestion = new SingleSelectQuestionFaker(singleSelectQuestions).Generate();
@@ -115,8 +115,8 @@ public class FormAggregateTests
         List<BaseAnswer> updatedAnswers = [
             new SingleSelectAnswer(singleSelectQuestion.Id, SelectedOption.Create(flaggedOptionId1, "")),
             new MultiSelectAnswer(multiSelectQuestion.Id, [
+                SelectedOption.Create(flaggedOptionId1, ""),
                 SelectedOption.Create(flaggedOptionId2, ""),
-                SelectedOption.Create(flaggedOptionId3, ""),
                 SelectedOption.Create(regularOptionId, ""),
             ]),
         ];
@@ -312,5 +312,26 @@ public class FormAggregateTests
 
         // Assert
         submission.Answers.Should().HaveCount(6);
+    }
+
+    [Fact]
+    public void WhenOptionIdsAreNotUniqueInForm_ShouldComputeNumberOfFlaggedAnswers_Correctly()
+    {
+        var electionRound = new ElectionRoundAggregateFaker().Generate();
+        var monitoringNgo = new MonitoringNgoAggregateFaker().Generate();
+        var pollingStation = new PollingStationFaker().Generate();
+        var monitoringObserver = new MonitoringObserverFaker().Generate();
+
+        var questions = JsonSerializer.Deserialize<List<BaseQuestion>>(TestData.QuestionsJson);
+
+        var answers = JsonSerializer.Deserialize<List<BaseAnswer>>(TestData.AnswersJson);
+
+        var form = Form.Create(electionRound, monitoringNgo, FormType.ClosingAndCounting, "", new TranslatedString(), new TranslatedString(), "EN", ["EN"], questions!);
+
+        // Act
+        var submission = form.CreateFormSubmission(pollingStation, monitoringObserver, answers);
+
+        // Assert
+        submission.NumberOfFlaggedAnswers.Should().Be(1);
     }
 }

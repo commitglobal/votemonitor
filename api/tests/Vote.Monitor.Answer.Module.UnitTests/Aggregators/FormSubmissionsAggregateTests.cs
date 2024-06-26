@@ -237,4 +237,35 @@ public class FormSubmissionsAggregateTests
         aggregate.Aggregates[_singleSelectQuestion.Id].AnswersAggregated.Should().Be(2);
         aggregate.Aggregates[_multiSelectQuestion.Id].AnswersAggregated.Should().Be(2);
     }
+
+    [Fact]
+    public void AggregateAnswers_ShouldIgnoreInvalidAnswersInSubmissions()
+    {
+        // Arrange
+        var aggregate = new FormSubmissionsAggregate(_form);
+        var pollingStation = new PollingStationFaker(electionRound: _electionRound).Generate();
+        var monitoringObserver = new MonitoringObserverFaker().Generate();
+
+        List<BaseAnswer> submission1Answers = [
+            new SingleSelectAnswerFaker(_singleSelectQuestion.Id, _singleSelectQuestion.Options[1].Select()),
+        ];
+
+        List<BaseAnswer> submission2Answers = [
+            new SingleSelectAnswerFaker(Guid.NewGuid(), _singleSelectQuestion.Options[2].Select()),
+        ];
+
+        List<BaseAnswer> submission3Answers = [];
+
+        var formSubmission1 = FormSubmission.Create(_electionRound, pollingStation, monitoringObserver, _form, submission1Answers, 0, 0);
+        var formSubmission2 = FormSubmission.Create(_electionRound, pollingStation, monitoringObserver, _form, submission2Answers, 0, 0);
+        var formSubmission3 = FormSubmission.Create(_electionRound, pollingStation, monitoringObserver, _form, submission3Answers, 0, 0);
+
+        // Act
+        aggregate.AggregateAnswers(formSubmission1);
+        aggregate.AggregateAnswers(formSubmission2);
+        aggregate.AggregateAnswers(formSubmission3);
+
+        // Assert
+        aggregate.Aggregates[_singleSelectQuestion.Id].AnswersAggregated.Should().Be(1);
+    }
 }
