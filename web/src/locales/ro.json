@@ -11,7 +11,9 @@
       "clear": "Golește",
       "close": "Închide",
       "confirm": "Confirmă",
-      "exit": "Ieși"
+      "delete": "Șterge",
+      "exit": "Ieși",
+      "publish": "Publică"
     }
   }
 }
