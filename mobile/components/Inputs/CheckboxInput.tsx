@@ -9,6 +9,13 @@ export interface CheckboxInputProps extends CheckboxProps {
 }
 
 const CheckboxInput: React.FC<CheckboxInputProps> = ({ label, id, checked, onCheckedChange }) => {
+  // function to allow changing the pressed state from the checkbox container
+  const handlePress = () => {
+    if (onCheckedChange) {
+      onCheckedChange(!checked);
+    }
+  };
+
   return (
     <XStack
       minHeight={42}
@@ -19,6 +26,7 @@ const CheckboxInput: React.FC<CheckboxInputProps> = ({ label, id, checked, onChe
       gap="$xs"
       paddingHorizontal={14}
       borderRadius={8}
+      onPress={handlePress}
     >
       <Checkbox
         width="$md"
