@@ -1,3 +1,4 @@
+import { memo, useEffect, useMemo } from "react";
 import { Progress, styled } from "tamagui";
 
 export interface ProgressProps {
@@ -5,8 +6,7 @@ export interface ProgressProps {
   current: number;
 }
 
-const LinearProgress = (props: ProgressProps) => {
-  const { total, current } = props;
+const LinearProgress = ({ total, current }: ProgressProps) => {
   const progress = (current / total) * 100;
 
   const StyledProgress = styled(Progress, {
@@ -22,4 +22,4 @@ const LinearProgress = (props: ProgressProps) => {
   );
 };
 
-export default LinearProgress;
+export default memo(LinearProgress);
