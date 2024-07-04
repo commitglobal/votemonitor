@@ -1,4 +1,4 @@
-import { memo, useEffect, useMemo } from "react";
+import { memo } from "react";
 import { Progress, styled } from "tamagui";
 
 export interface ProgressProps {
