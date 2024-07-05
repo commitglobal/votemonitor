@@ -3,11 +3,12 @@ import { router, useLocalSearchParams } from "expo-router";
 import Header from "../../../../../../components/Header";
 import { Icon } from "../../../../../../components/Icon";
 import { Typography } from "../../../../../../components/Typography";
-import { YStack } from "tamagui";
+import { ScrollView, YStack } from "tamagui";
 import { useQuickReportById } from "../../../../../../services/queries/quick-reports.query";
 import { useUserData } from "../../../../../../contexts/user/UserContext.provider";
 import Card from "../../../../../../components/Card";
 import { useTranslation } from "react-i18next";
+import { RefreshControl } from "react-native";
 
 type SearchParamsType = {
   reportId: string;
@@ -28,6 +29,8 @@ const ReportDetails = () => {
     data: quickReport,
     isLoading: isLoadingCurrentReport,
     error: currentReportError,
+    refetch: refetchQuickReport,
+    isRefetching: isRefetchingQuickReport,
   } = useQuickReportById(activeElectionRound?.id, reportId);
 
   if (isLoadingCurrentReport) {
@@ -36,7 +39,7 @@ const ReportDetails = () => {
 
   if (currentReportError) {
     return (
-      <Screen preset="fixed">
+      <Screen preset="fixed" contentContainerStyle={{ flexGrow: 1 }}>
         <Header
           title={`${reportTitle}`}
           titleColor="white"
@@ -44,9 +47,16 @@ const ReportDetails = () => {
           leftIcon={<Icon icon="chevronLeft" color="white" />}
           onLeftPress={() => router.back()}
         />
-        <YStack paddingVertical="$xxl" alignItems="center">
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ flex: 1, alignItems: "center" }}
+          paddingVertical="$xxl"
+          refreshControl={
+            <RefreshControl refreshing={isRefetchingQuickReport} onRefresh={refetchQuickReport} />
+          }
+        >
           <Typography>{t("error")}</Typography>
-        </YStack>
+        </ScrollView>
       </Screen>
     );
   }
@@ -54,12 +64,7 @@ const ReportDetails = () => {
   const attachments = quickReport?.attachments || [];
   return (
     <Screen
-      preset="scroll"
-      ScrollViewProps={{
-        showsVerticalScrollIndicator: false,
-        stickyHeaderIndices: [0],
-        bounces: false,
-      }}
+      preset="fixed"
       contentContainerStyle={{
         flexGrow: 1,
       }}
@@ -72,7 +77,14 @@ const ReportDetails = () => {
         leftIcon={<Icon icon="chevronLeft" color="white" />}
         onLeftPress={() => router.back()}
       />
-      <YStack gap={32} paddingHorizontal={16} paddingTop={32} justifyContent="center">
+      <ScrollView
+        contentContainerStyle={{ gap: 32, justifyContent: "center" }}
+        paddingHorizontal={16}
+        paddingTop={32}
+        refreshControl={
+          <RefreshControl refreshing={isRefetchingQuickReport} onRefresh={refetchQuickReport} />
+        }
+      >
         <YStack gap={16}>
           <Typography preset="subheading" fontWeight="500">
             {quickReport?.title}
@@ -98,7 +110,7 @@ const ReportDetails = () => {
             ))}
           </YStack>
         )}
-      </YStack>
+      </ScrollView>
     </Screen>
   );
 };

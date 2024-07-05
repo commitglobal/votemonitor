@@ -4,7 +4,7 @@ import Header from "../../../../../../components/Header";
 import { Icon } from "../../../../../../components/Icon";
 import { useUserData } from "../../../../../../contexts/user/UserContext.provider";
 import { Typography } from "../../../../../../components/Typography";
-import { Spinner, useWindowDimensions, YStack } from "tamagui";
+import { ScrollView, Spinner, useWindowDimensions, YStack } from "tamagui";
 import { useMemo, useState } from "react";
 import { ListView } from "../../../../../../components/ListView";
 import OptionsSheet from "../../../../../../components/OptionsSheet";
@@ -23,7 +23,7 @@ import { shouldDisplayQuestion } from "../../../../../../services/form.parser";
 import WarningDialog from "../../../../../../components/WarningDialog";
 import { useAttachments } from "../../../../../../services/queries/attachments.query";
 import { useNotesForFormId } from "../../../../../../services/queries/notes.query";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { RefreshControl } from "react-native";
 
 const ESTIMATED_ITEM_SIZE = 100;
 
@@ -44,9 +44,8 @@ const FormDetails = () => {
   const [isChangeLanguageModalOpen, setIsChangeLanguageModalOpen] = useState<boolean>(false);
   const [optionSheetOpen, setOptionSheetOpen] = useState(false);
   const [clearingForm, setClearingForm] = useState(false);
-  const insets = useSafeAreaInsets();
-  const { height, width } = useWindowDimensions();
-  const scrollHeight = useMemo(() => height - insets.top - insets.bottom - 100 - 60, []);
+
+  const { width } = useWindowDimensions();
 
   const { mutate: updateSubmission } = useFormSubmissionMutation({
     electionRoundId: activeElectionRound?.id,
@@ -58,25 +57,45 @@ const FormDetails = () => {
     data: currentForm,
     isLoading: isLoadingCurrentForm,
     error: currentFormError,
+    refetch: refetchCurrentForm,
+    isRefetching: isRefetchingCurrentForm,
   } = useFormById(activeElectionRound?.id, formId);
 
   const {
     data: answers,
     isLoading: isLoadingAnswers,
     error: answersError,
+    refetch: refetchAnswers,
+    isRefetching: isRefetchingAnswers,
   } = useFormAnswers(activeElectionRound?.id, selectedPollingStation?.pollingStationId, formId);
 
-  const { data: attachments } = useAttachments(
-    activeElectionRound?.id,
-    selectedPollingStation?.pollingStationId,
-    formId,
+  const {
+    data: attachments,
+    refetch: refetchAttachments,
+    isRefetching: isRefetchingAttachments,
+  } = useAttachments(activeElectionRound?.id, selectedPollingStation?.pollingStationId, formId);
+
+  const {
+    data: notes,
+    refetch: refetchNotes,
+    isRefetching: isRefetchingNotes,
+  } = useNotesForFormId(activeElectionRound?.id, selectedPollingStation?.pollingStationId, formId);
+
+  const isRefetching = useMemo(
+    () =>
+      isRefetchingCurrentForm ||
+      isRefetchingAnswers ||
+      isRefetchingAttachments ||
+      isRefetchingNotes,
+    [isRefetchingCurrentForm, isRefetchingAnswers, isRefetchingAttachments, isRefetchingNotes],
   );
 
-  const { data: notes } = useNotesForFormId(
-    activeElectionRound?.id,
-    selectedPollingStation?.pollingStationId,
-    formId,
-  );
+  const handleRefetch = () => {
+    refetchCurrentForm();
+    refetchAnswers();
+    refetchAttachments();
+    refetchNotes();
+  };
 
   const questions = useMemo(() => {
     return currentForm?.questions
@@ -144,7 +163,7 @@ const FormDetails = () => {
 
   if (isLoadingCurrentForm || isLoadingAnswers) {
     return (
-      <Screen preset="fixed">
+      <Screen preset="fixed" contentContainerStyle={{ flexGrow: 1 }}>
         <Header
           title={`${formId}`}
           titleColor="white"
@@ -152,7 +171,7 @@ const FormDetails = () => {
           leftIcon={<Icon icon="chevronLeft" color="white" />}
           onLeftPress={() => router.back()}
         />
-        <YStack justifyContent="center" alignItems="center" minHeight={scrollHeight}>
+        <YStack justifyContent="center" alignItems="center" flex={1}>
           <Spinner size="large" color="$purple5" />
         </YStack>
       </Screen>
@@ -161,7 +180,7 @@ const FormDetails = () => {
 
   if (currentFormError || answersError) {
     return (
-      <Screen preset="fixed">
+      <Screen preset="fixed" contentContainerStyle={{ flexGrow: 1 }}>
         <Header
           title={`${formId}`}
           titleColor="white"
@@ -169,22 +188,20 @@ const FormDetails = () => {
           leftIcon={<Icon icon="chevronLeft" color="white" />}
           onLeftPress={() => router.back()}
         />
-        <YStack paddingVertical="$xxl" alignItems="center">
+        <ScrollView
+          contentContainerStyle={{ flex: 1, alignItems: "center" }}
+          paddingVertical="$xxl"
+          showsVerticalScrollIndicator={false}
+          refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={handleRefetch} />}
+        >
           <Typography>{t("error")}</Typography>
-        </YStack>
+        </ScrollView>
       </Screen>
     );
   }
 
   return (
-    <Screen
-      preset="scroll"
-      ScrollViewProps={{
-        stickyHeaderIndices: [0],
-        bounces: false,
-        showsVerticalScrollIndicator: false,
-      }}
-    >
+    <Screen preset="fixed" contentContainerStyle={{ flexGrow: 1 }}>
       <Header
         title={`${formTitle}`}
         titleColor="white"
@@ -196,7 +213,7 @@ const FormDetails = () => {
           setOptionSheetOpen(true);
         }}
       />
-      <YStack paddingTop={28} gap="$xl" paddingHorizontal="$md" minHeight={scrollHeight}>
+      <YStack paddingTop={28} gap="$xl" paddingHorizontal="$md" flex={1}>
         <ListView<
           Pick<FormQuestionListItemProps, "question" | "status"> & {
             id: string;
@@ -218,7 +235,7 @@ const FormDetails = () => {
             </YStack>
           }
           showsVerticalScrollIndicator={false}
-          bounces={false}
+          bounces={true}
           renderItem={({ item, index }) => {
             return (
               <FormQuestionListItem
@@ -232,6 +249,7 @@ const FormDetails = () => {
           }}
           estimatedItemSize={ESTIMATED_ITEM_SIZE}
           estimatedListSize={{ height: ESTIMATED_ITEM_SIZE * 5, width: width - 32 }}
+          refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={handleRefetch} />}
         />
       </YStack>
       {isChangeLanguageModalOpen && languages && (

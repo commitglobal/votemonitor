@@ -1,6 +1,6 @@
 import React from "react";
 import { Icon } from "./Icon";
-import { YStack } from "tamagui";
+import { ScrollView, YStack } from "tamagui";
 import { Typography } from "./Typography";
 import { useTranslation } from "react-i18next";
 import Header from "./Header";
@@ -8,18 +8,20 @@ import { useNavigation } from "expo-router";
 import { DrawerActions } from "@react-navigation/native";
 import { Screen } from "./Screen";
 import { useUserData } from "../contexts/user/UserContext.provider";
+import { useNotifications } from "../services/queries/notifications.query";
+import { RefreshControl } from "react-native";
 
 const NoNotificationsReceived = () => {
   const navigation = useNavigation();
   const { t } = useTranslation("inbox");
+
   const { activeElectionRound } = useUserData();
+  const { isRefetching: isRefetchingNotifications, refetch: refetchNotifications } =
+    useNotifications(activeElectionRound?.id);
 
   return (
     <Screen
-      preset="auto"
-      ScrollViewProps={{
-        bounces: false,
-      }}
+      preset="fixed"
       contentContainerStyle={{
         flexGrow: 1,
       }}
@@ -31,12 +33,13 @@ const NoNotificationsReceived = () => {
         leftIcon={<Icon icon="menuAlt2" color="white" />}
         onLeftPress={() => navigation.dispatch(DrawerActions.openDrawer)}
       />
-      <YStack
-        flex={1}
-        alignItems="center"
-        justifyContent="center"
-        gap="$md"
+      <ScrollView
+        contentContainerStyle={{ alignItems: "center", justifyContent: "center", gap: 16, flex: 1 }}
         backgroundColor="white"
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={isRefetchingNotifications} onRefresh={refetchNotifications} />
+        }
       >
         <Icon icon="undrawInbox" size={190} />
 
@@ -48,7 +51,7 @@ const NoNotificationsReceived = () => {
             {t("empty.paragraph")}
           </Typography>
         </YStack>
-      </YStack>
+      </ScrollView>
     </Screen>
   );
 };
