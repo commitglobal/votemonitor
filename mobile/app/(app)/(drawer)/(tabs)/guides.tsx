@@ -10,7 +10,6 @@ import { useUserData } from "../../../../contexts/user/UserContext.provider";
 import { useGuides } from "../../../../services/queries/guides.query";
 import { ListView } from "../../../../components/ListView";
 import { Guide, guideType } from "../../../../services/api/get-guides.api";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useWindowDimensions } from "react-native";
 import GuideCard from "../../../../components/GuideCard";
 import * as Linking from "expo-linking";
@@ -21,8 +20,12 @@ import { RefreshControl } from "react-native-gesture-handler";
 const ESTIMATED_ITEM_SIZE = 115;
 
 const Guides = () => {
-  const { activeElectionRound } = useUserData();
+  const { t } = useTranslation("guides");
+  const navigation = useNavigation();
 
+  const { width } = useWindowDimensions();
+
+  const { activeElectionRound } = useUserData();
   const {
     data: guides,
     isLoading: isLoadingGuides,
@@ -31,15 +34,9 @@ const Guides = () => {
   } = useGuides(activeElectionRound?.id);
   const [optionsSheetOpen, setOptionsSheetOpen] = useState(false);
 
-  const { t } = useTranslation("guides");
-  const navigation = useNavigation();
-  const insets = useSafeAreaInsets();
-  const { height, width } = useWindowDimensions();
-  const scrollHeight = height - insets.top - insets.bottom - 55 - 55;
-
   if (isLoadingGuides) {
     return (
-      <Screen preset="fixed">
+      <Screen preset="fixed" contentContainerStyle={{ flexGrow: 1 }}>
         <Header
           title={activeElectionRound?.title}
           titleColor="white"
@@ -47,7 +44,7 @@ const Guides = () => {
           leftIcon={<Icon icon="menuAlt2" color="white" />}
           onLeftPress={() => navigation.dispatch(DrawerActions.openDrawer)}
         />
-        <YStack minHeight={scrollHeight} justifyContent="center" alignItems="center">
+        <YStack flex={1} justifyContent="center" alignItems="center">
           <Spinner size="large" color="$purple5" />
         </YStack>
       </Screen>

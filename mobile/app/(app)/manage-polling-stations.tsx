@@ -9,7 +9,6 @@ import PollingStationCard from "../../components/PollingStationCard";
 import { useMemo, useState } from "react";
 import { PollingStationVisitVM } from "../../common/models/polling-station.model";
 import WarningDialog from "../../components/WarningDialog";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useWindowDimensions } from "react-native";
 import { ListView } from "../../components/ListView";
 import { useDeletePollingStationVisitMutation } from "../../services/mutations/delete-polling-station.mutation";
@@ -18,7 +17,6 @@ import { pollingStationsKeys } from "../../services/queries.service";
 import { useQueryClient } from "@tanstack/react-query";
 import Toast from "react-native-toast-message";
 import NoVisitsMPS from "../../components/NoVisitsMPS";
-import { useNetInfoContext } from "../../contexts/net-info-banner/NetInfoContext";
 
 const ESTIMATED_ITEM_SIZE = 225;
 
@@ -26,7 +24,6 @@ const ManagePollingStation = () => {
   const { t } = useTranslation("manage_my_polling_stations");
   const [selectedPS, setSelectedPS] = useState<PollingStationVisitVM | null>(null);
   const [removalAllowed, setRemovalAllowed] = useState(true);
-  const { shouldDisplayBanner } = useNetInfoContext();
 
   const queryClient = useQueryClient();
   const { visits, activeElectionRound } = useUserData();
@@ -45,12 +42,7 @@ const ManagePollingStation = () => {
   const { mutate: deletePSVisit, isPending: isPendingDeletePSVisit } =
     useDeletePollingStationVisitMutation(activeElectionRound?.id);
 
-  const insets = useSafeAreaInsets();
-  const { height, width } = useWindowDimensions();
-  const scrollHeight = useMemo(() => {
-    const netInfoHeight = shouldDisplayBanner ? 65 : 0;
-    return height - insets.top - insets.bottom - 50 - netInfoHeight;
-  }, [height, insets.top, insets.bottom, shouldDisplayBanner]);
+  const { width } = useWindowDimensions();
 
   if (visits === undefined || visits.length === 0) {
     return <NoVisitsMPS />;
@@ -105,14 +97,7 @@ const ManagePollingStation = () => {
   };
 
   return (
-    <Screen
-      preset="scroll"
-      ScrollViewProps={{
-        showsVerticalScrollIndicator: false,
-        stickyHeaderIndices: [0],
-        bounces: false,
-      }}
-    >
+    <Screen preset="fixed" contentContainerStyle={{ flexGrow: 1 }}>
       <Header
         title={t("general_text")}
         titleColor="white"
@@ -121,7 +106,7 @@ const ManagePollingStation = () => {
         onLeftPress={() => router.back()}
       />
 
-      <YStack height={scrollHeight} paddingHorizontal="$md" paddingTop="$lg" paddingBottom="$md">
+      <YStack flex={1} paddingHorizontal="$md" paddingTop="$lg" paddingBottom="$md">
         <ListView<PollingStationVisitVM>
           data={visits}
           showsVerticalScrollIndicator={false}

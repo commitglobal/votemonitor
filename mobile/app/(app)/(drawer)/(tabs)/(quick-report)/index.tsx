@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import { Typography } from "../../../../../components/Typography";
 import { Spinner, View, YStack } from "tamagui";
 import { Icon } from "../../../../../components/Icon";
