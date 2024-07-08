@@ -1,5 +1,9 @@
 import { useQuery, skipToken } from "@tanstack/react-query";
-import { ElectionRoundsAllFormsAPIResponse, getElectionRoundAllForms } from "../definitions.api";
+import {
+  ElectionRoundsAllFormsAPIResponse,
+  getElectionRoundAllForms,
+  getElectionRoundFormById,
+} from "../definitions.api";
 import { electionRoundsKeys } from "../queries.service";
 import { useCallback } from "react";
 
@@ -14,13 +18,23 @@ export const useElectionRoundAllForms = <TResult = ElectionRoundsAllFormsAPIResp
   });
 };
 
-export const useFormById = (electionRoundId: string | undefined, formId: string) =>
-  useElectionRoundAllForms(
-    electionRoundId,
-    useCallback(
-      (data: ElectionRoundsAllFormsAPIResponse) => {
-        return data.forms.find((form) => form.id === formId);
-      },
-      [electionRoundId],
-    ),
-  );
+// export const useFormById = (electionRoundId: string | undefined, formId: string) =>
+//   useElectionRoundAllForms(
+//     electionRoundId,
+//     useCallback(
+//       (data: ElectionRoundsAllFormsAPIResponse) => {
+//         return data.forms.find((form) => form.id === formId);
+//       },
+//       [electionRoundId],
+//     ),
+//   );
+
+export const useFormById = (electionRoundId: string | undefined, formId: string) => {
+  return useQuery({
+    queryKey: electionRoundsKeys.form(electionRoundId, formId),
+    queryFn:
+      electionRoundId && formId
+        ? () => getElectionRoundFormById(electionRoundId, formId)
+        : skipToken,
+  });
+};
