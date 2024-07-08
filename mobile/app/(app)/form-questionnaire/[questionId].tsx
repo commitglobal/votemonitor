@@ -474,6 +474,7 @@ const FormQuestionnaire = () => {
           activeQuestion?.indexInAllQuestions === currentForm?.questions?.length - 1
         }
         isNextDisabled={false}
+        actionBtnLabel={t("wizzard_controls.next")}
         onActionButtonPress={handleSubmit(onSubmitAnswer)}
         onPreviousButtonPress={onBackButtonPress}
       />

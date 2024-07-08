@@ -317,7 +317,10 @@
         }
       }
     },
-    "error": "Error while loading question data!"
+    "error": "Error while loading question data!",
+    "wizzard_controls": {
+      "next": "Save and next"
+    }
   },
   "manage_my_polling_stations": {
     "empty": {
