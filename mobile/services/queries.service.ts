@@ -19,6 +19,8 @@ export const electionRoundsKeys = {
   one: (id: string) => [...electionRoundsKeys.all, id] as const,
   forms: (electionRoundId: string | undefined) =>
     [...electionRoundsKeys.all, "forms", electionRoundId] as const,
+  form: (electionRoundId: string | undefined, formId: string | undefined) =>
+    [...electionRoundsKeys.all, "electionRoundId", electionRoundId, "form", formId] as const,
 };
 
 export const pollingStationsKeys = {
