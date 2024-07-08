@@ -58,7 +58,6 @@ const AddNoteSheetContent = ({
     };
 
     addNote({ electionRoundId, ...notePayload });
-    Keyboard.dismiss();
     setIsOptionsSheetOpen(false);
     setAddingNote(false);
     reset();
