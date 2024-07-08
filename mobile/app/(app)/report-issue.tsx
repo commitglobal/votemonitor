@@ -32,6 +32,7 @@ import i18n from "../../common/config/i18n";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import MediaLoading from "../../components/MediaLoading";
 import Toast from "react-native-toast-message";
+import { useNetInfoContext } from "../../contexts/net-info-banner/NetInfoContext";
 
 const mapVisitsToSelectPollingStations = (visits: PollingStationVisitVM[] = []) => {
   const pollingStationsForSelect = visits.map((visit) => {
@@ -73,6 +74,7 @@ const ReportIssue = () => {
   const [optionsSheetOpen, setOptionsSheetOpen] = useState(false);
   const [isPreparingFile, setIsPreparingFile] = useState(false);
   const { t } = useTranslation("report_new_issue");
+  const { shouldDisplayBanner } = useNetInfoContext();
 
   const [attachments, setAttachments] = useState<Array<{ fileMetadata: FileMetadata; id: string }>>(
     [],
@@ -251,6 +253,10 @@ const ReportIssue = () => {
           setIsPreparingFile(false);
           setOptionsSheetOpen(false);
           router.back();
+          Toast.show({
+            type: "success",
+            text2: t("form.success"),
+          });
         },
       },
     );
@@ -484,7 +490,7 @@ const ReportIssue = () => {
         justifyContent="space-between"
         alignItems="center"
         paddingTop="$xs"
-        paddingBottom={insets.bottom + 10}
+        paddingBottom={shouldDisplayBanner ? 10 : insets.bottom + 10}
         paddingHorizontal="$md"
         elevation={2}
         gap="$sm"
@@ -500,9 +506,9 @@ const ReportIssue = () => {
           onPress={handleSubmit(onSubmit)}
           disabled={(isPendingAddQuickReport && !isPausedAddQuickReport) || isUploadingAttachments}
         >
-          {(!isPendingAddQuickReport && !isPausedAddQuickReport) || !isUploadingAttachments
-            ? t("form.submit")
-            : t("form.loading")}
+          {(isPendingAddQuickReport && !isPausedAddQuickReport) || isUploadingAttachments
+            ? t("form.loading")
+            : t("form.submit")}
         </Button>
       </XStack>
     </>
