@@ -76,8 +76,6 @@ export const useCamera = () => {
 
     const result = await luncher({
       ...(specifiedMediaType || { mediaTypes: ImagePicker.MediaTypeOptions.All }),
-      allowsEditing: true,
-      aspect: [4, 3],
       quality: 0.1,
       allowsMultipleSelection: false,
       videoQuality: ImagePicker.UIImagePickerControllerQualityType.Low, // TODO: careful here, Medium might be enough
