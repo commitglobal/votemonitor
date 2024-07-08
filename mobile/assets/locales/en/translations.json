@@ -411,7 +411,8 @@
       "submit": "Submit issue",
       "clear": "Clear",
       "loading": "Processing...",
-      "error": "Error while adding the report"
+      "error": "Error while adding the report",
+      "success": "Report sent successfully!"
     }
   },
   "report_details": {
