@@ -1,13 +1,10 @@
 ﻿using Authorization.Policies.Requirements;
 using Feature.Forms.Specifications;
 using Microsoft.AspNetCore.Authorization;
-using Vote.Monitor.Core.Services.Security;
 
 namespace Feature.Forms.Get;
 
 public class Endpoint(
-    ICurrentUserProvider currentUserProvider,
-    ICurrentUserRoleProvider roleProvider,
     IAuthorizationService authorizationService,
     IReadRepository<FormAggregate> repository) : Endpoint<Request, Results<Ok<FormFullModel>, NotFound>>
 {
