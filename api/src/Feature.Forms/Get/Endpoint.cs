@@ -17,16 +17,18 @@ public class Endpoint(
 
     public override async Task<Results<Ok<FormFullModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var requirement = new MonitoringNgoAdminRequirement(req.ElectionRoundId);
+        var requirement = new MonitoringNgoAdminOrObserverRequirement(req.ElectionRoundId);
         var authorizationResult = await authorizationService.AuthorizeAsync(User, requirement);
         if (!authorizationResult.Succeeded)
         {
             return TypedResults.NotFound();
         }
 
-        var specification = new GetFormByIdSpecification(req.ElectionRoundId, req.NgoId, req.Id);
-        var form = await repository.FirstOrDefaultAsync(specification, ct);
+        FormAggregate? form = null;
 
+        var specification = new GetFormByIdSpecification(req.ElectionRoundId, req.Id);
+        form = await repository.FirstOrDefaultAsync(specification, ct);
+        
         if (form is null)
         {
             return TypedResults.NotFound();

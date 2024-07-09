@@ -4,8 +4,8 @@ services:
   votemonitorapi:
     image: votemonitorapi
     build:
-      context: .
-      dockerfile: api/src/Vote.Monitor.Api/Dockerfile
+      context: api
+      dockerfile: src/Vote.Monitor.Api/Dockerfile
       args:
         - BUILD_CONFIGURATION=Development
         - REVISION=LocalBuild
@@ -62,8 +62,8 @@ services:
   hangfire:
     image: votemonitorhangfire
     build:
-      context: .
-      dockerfile: api/src/Vote.Monitor.Hangfire/Dockerfile
+      context: api
+      dockerfile: src/Vote.Monitor.Hangfire/Dockerfile
       args:
         - BUILD_CONFIGURATION=Development
         - REVISION=LocalBuild
