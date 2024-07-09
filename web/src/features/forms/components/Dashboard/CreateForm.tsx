@@ -23,8 +23,8 @@ function CreateForm() {
     const navigate = useNavigate();
 
     const newFormFormSchema = z.object({
-        code: z.string().nonempty(),
-        name: z.string().nonempty(),
+        code: z.string().nonempty('Form code is required'),
+        name: z.string().nonempty('Form name is required'),
         description: z.string().optional(),
         defaultLanguage: z.string().nonempty(),
         formType: z.enum([FormType.Opening, FormType.Voting, FormType.ClosingAndCounting, FormType.Other]).catch(FormType.Opening)
@@ -81,17 +81,6 @@ function CreateForm() {
                     <FieldGroup className='!mt-0'>
                         <FormField
                             control={form.control}
-                            name='code'
-                            render={({ field, fieldState }) => (
-                                <Field>
-                                    <Label>{t('form.field.code')}</Label>
-                                    <Input placeholder={t('form.placeholder.code')} {...field}  {...fieldState} />
-                                    {fieldState.invalid && <ErrorMessage>{fieldState?.error?.message}</ErrorMessage>}
-                                </Field>
-                            )} />
-
-                        <FormField
-                            control={form.control}
                             name="formType"
                             render={({ field }) => (
                                 <Field>
@@ -112,6 +101,16 @@ function CreateForm() {
                                 </Field>
                             )}
                         />
+                        <FormField
+                            control={form.control}
+                            name='code'
+                            render={({ field, fieldState }) => (
+                                <Field>
+                                    <Label>{t('form.field.code')}</Label>
+                                    <Input placeholder={t('form.placeholder.code')} {...field}  {...fieldState} />
+                                    {fieldState.invalid && <ErrorMessage>{fieldState?.error?.message}</ErrorMessage>}
+                                </Field>
+                            )} />
                         <FormField
                             control={form.control}
                             name='name'
@@ -144,7 +143,12 @@ function CreateForm() {
                             render={({ field }) => (
                                 <Field>
                                     <Label>{t('form.field.description')}</Label>
-                                    <Textarea rows={10} cols={100} {...field} placeholder={t('form.placeholder.description')} />
+                                    <Textarea
+                                        resizable={false}
+                                        rows={100}
+                                        cols={100}
+                                        {...field}
+                                        placeholder={t('form.placeholder.description')} />
                                 </Field>
                             )}
                         />

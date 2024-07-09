@@ -109,7 +109,7 @@
     "field.name": "Form Name",
     "field.description": "Description",
     "field.defaultLanguage": "Base language",
-    "field.formType": "Form template type",
+    "field.formType": "Form type",
     "field.languages": "Available languages",
     "field.status": "Status",
     "placeholder.code": "Form code",

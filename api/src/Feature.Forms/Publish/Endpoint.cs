@@ -1,4 +1,5 @@
-﻿using Authorization.Policies.Requirements;
+﻿using Authorization.Policies;
+using Authorization.Policies.Requirements;
 using Feature.Forms.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using Vote.Monitor.Domain.Entities.FormAggregate;
@@ -17,6 +18,7 @@ public class Endpoint(
         Description(x => x.Accepts<Request>());
         DontAutoTag();
         Options(x => x.WithTags("forms"));
+        Policies(PolicyNames.NgoAdminsOnly);
     }
 
     public override async Task<Results<NoContent, NotFound, ProblemDetails>> ExecuteAsync(Request req, CancellationToken ct)
@@ -28,7 +30,7 @@ public class Endpoint(
             return TypedResults.NotFound();
         }
 
-        var specification = new GetFormByIdSpecification(req.ElectionRoundId, req.NgoId, req.Id);
+        var specification = new GetFormByIdSpecification(req.ElectionRoundId, req.Id);
         var form = await formsRepository.FirstOrDefaultAsync(specification, ct);
 
         if (form is null)
