@@ -1,4 +1,5 @@
-﻿using Authorization.Policies.Requirements;
+﻿using Authorization.Policies;
+using Authorization.Policies.Requirements;
 using Feature.Forms.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
@@ -15,6 +16,7 @@ public class Endpoint(
         Post("/api/election-rounds/{electionRoundId}/forms");
         DontAutoTag();
         Options(x => x.WithTags("forms"));
+        Policies(PolicyNames.NgoAdminsOnly);
     }
 
     public override async Task<Results<Ok<FormFullModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)

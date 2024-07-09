@@ -79,17 +79,6 @@ function CreateTemplateForm() {
                     <FieldGroup className='!mt-0'>
                         <FormField
                             control={form.control}
-                            name='code'
-                            render={({ field, fieldState }) => (
-                                <Field>
-                                    <Label>{t('form-template.field.code')}</Label>
-                                    <Input placeholder={t('form-template.placeholder.code')} {...field}  {...fieldState} />
-                                    {fieldState.invalid && <ErrorMessage>{fieldState?.error?.message}</ErrorMessage>}
-                                </Field>
-                            )} />
-
-                        <FormField
-                            control={form.control}
                             name="formTemplateType"
                             render={({ field }) => (
                                 <Field>
@@ -110,6 +99,16 @@ function CreateTemplateForm() {
                                 </Field>
                             )}
                         />
+                        <FormField
+                            control={form.control}
+                            name='code'
+                            render={({ field, fieldState }) => (
+                                <Field>
+                                    <Label>{t('form-template.field.code')}</Label>
+                                    <Input placeholder={t('form-template.placeholder.code')} {...field}  {...fieldState} />
+                                    {fieldState.invalid && <ErrorMessage>{fieldState?.error?.message}</ErrorMessage>}
+                                </Field>
+                            )} />
                         <FormField
                             control={form.control}
                             name='name'
