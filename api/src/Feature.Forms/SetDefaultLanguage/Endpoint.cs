@@ -27,7 +27,7 @@ public class Endpoint(IAuthorizationService authorizationService,
             return TypedResults.NotFound();
         }
 
-        var specification = new GetFormByIdSpecification(req.ElectionRoundId, req.NgoId, req.Id);
+        var specification = new GetFormByIdSpecification(req.ElectionRoundId, req.Id);
         var form = await formsRepository.FirstOrDefaultAsync(specification, ct);
 
         if (form is null)
