@@ -1,5 +1,5 @@
 import { router } from "expo-router";
-import { XStack } from "tamagui";
+import { XStack, YStack } from "tamagui";
 import PollingStationInfo from "./PollingStationInfo";
 import PollingStationInfoDefault from "./PollingStationInfoDefault";
 import TimeSelect from "./TimeSelect";
@@ -13,6 +13,7 @@ import { useMutatePollingStationGeneralData } from "../services/mutations/psi-ge
 import { ApiFormAnswer } from "../services/interfaces/answer.type";
 import { useTranslation } from "react-i18next";
 import Toast from "react-native-toast-message";
+import ContentLoader, { Rect, Circle } from "react-content-loader/native";
 
 interface PollingStationGeneralProps {
   electionRoundId: string;
@@ -45,14 +46,17 @@ export const PollingStationGeneral: React.FC<PollingStationGeneralProps> = ({
   const updateArrivalDepartureTime = (
     payload: Partial<Pick<PollingStationInformationVM, "arrivalTime" | "departureTime">>,
   ) => {
-    mutate({ electionRoundId, pollingStationId, ...payload }, {
-      onError: () => {
-        Toast.show({
-          type: "error",
-          text2: t('polling_stations_information.time_select.error.server')
-        });
+    mutate(
+      { electionRoundId, pollingStationId, ...payload },
+      {
+        onError: () => {
+          Toast.show({
+            type: "error",
+            text2: t("polling_stations_information.time_select.error.server"),
+          });
+        },
       },
-    });
+    );
   };
 
   return (
@@ -105,6 +109,36 @@ export const PollingStationGeneral: React.FC<PollingStationGeneralProps> = ({
           text={t("polling_stations_information.polling_station_form.form_details_button_label")}
         ></CardFooter>
       </Card>
+
+      <YStack gap="$xxs">
+        <XStack gap="$xxs">
+          <ContentLoader
+            width="50%"
+            height={100}
+            backgroundColor="white"
+            foregroundColor="hsl(265, 100%, 95%)"
+          >
+            <Rect width="100%" height={"100%"} />
+          </ContentLoader>
+
+          <ContentLoader
+            width="50%"
+            height={100}
+            backgroundColor="white"
+            foregroundColor="hsl(265, 100%, 95%)"
+          >
+            <Rect width="100%" height={"100%"} />
+          </ContentLoader>
+        </XStack>
+        <ContentLoader
+          height={150}
+          animate={true}
+          backgroundColor="white"
+          foregroundColor="hsl(265, 100%, 95%)"
+        >
+          <Rect width="100%" height={"100%"} />
+        </ContentLoader>
+      </YStack>
     </>
   );
 };
