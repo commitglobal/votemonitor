@@ -28,6 +28,8 @@ import { FormBase, FormStatus, mapFormType } from '../../models/form';
 import { formsKeys, useForms } from '../../queries';
 import AddTranslationsDialog from './AddTranslationsDialog';
 import CreateForm from './CreateForm';
+import { DateTimeFormat } from '@/common/formats';
+import { format } from 'date-fns';
 
 export default function FormsDashboard(): ReactElement {
   const addTranslationsDialog = useDialog();
@@ -90,10 +92,20 @@ export default function FormsDashboard(): ReactElement {
           className={cn({
             'text-slate-700 bg-slate-200': row.original.status === FormStatus.Drafted,
             'text-green-600 bg-green-200': row.original.status === FormStatus.Published,
-            'text-yellow-600 bg-yellow-200': row.original.status === FormStatus.Archived,
+            'text-yellow-600 bg-yellow-200': row.original.status === FormStatus.Obsolete
           })}>
           {row.original.status}
         </Badge>
+      ),
+    },
+    {
+      accessorKey: 'lastUpdatedOn',
+      enableSorting: false,
+      header: ({ column }) => <DataTableColumnHeader title='Updated on' column={column} />,
+      cell: ({ row }) => (
+        <div>
+          <p>{row.original.lastModifiedOn ? format(row.original.lastModifiedOn, DateTimeFormat) : format(row.original.createdOn, DateTimeFormat)} </p>
+        </div>
       ),
     },
     {
@@ -122,12 +134,17 @@ export default function FormsDashboard(): ReactElement {
             }
             {
               row.depth === 0 && row.original.status === FormStatus.Published ?
-                <DropdownMenuItem onClick={() => hangleDraftForm(row.original)}>Draft</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleObsoleteForm(row.original)}>Obsolete</DropdownMenuItem>
                 : null
             }
             {
               row.depth === 0 && row.original.status === FormStatus.Drafted ?
                 <DropdownMenuItem onClick={() => handlePublishForm(row.original)}>Publish</DropdownMenuItem>
+                : null
+            }
+            {
+              row.depth === 0 ?
+                <DropdownMenuItem onClick={() => handleDuplicateForm(row.original)}>Duplicate</DropdownMenuItem>
                 : null
             }
             {row.depth === 0 ?
@@ -160,12 +177,17 @@ export default function FormsDashboard(): ReactElement {
     setCurrentForm(form);
     addTranslationsDialog.trigger();
   }
-  const hangleDraftForm = (form: FormBase) => {
-    draftFormMutation.mutate(form.id);
+
+  const handleObsoleteForm = (form: FormBase) => {
+    obsoleteFormMutation.mutate(form.id);
   }
 
   const handlePublishForm = (form: FormBase) => {
     publishFormMutation.mutate(form.id);
+  }
+
+  const handleDuplicateForm = (form: FormBase) => {
+    duplicateFormMutation.mutate(form.id);
   }
 
   const handleDeleteTranslation = (formId: string, translationToDelete: string) => {
@@ -228,7 +250,7 @@ export default function FormsDashboard(): ReactElement {
           variant: 'destructive'
         });
 
-       return  
+       return
       }
       toast({
         title: 'Error publishing form',
@@ -238,35 +260,52 @@ export default function FormsDashboard(): ReactElement {
     }
   });
 
-  const draftFormMutation = useMutation({
+  const obsoleteFormMutation = useMutation({
     mutationKey: formsKeys.all,
     mutationFn: (formId: string) => {
       const electionRoundId: string | null = localStorage.getItem('electionRoundId');
 
-      return authApi.post<void>(`/election-rounds/${electionRoundId}/forms/${formId}:draft`);
+      return authApi.post<void>(`/election-rounds/${electionRoundId}/forms/${formId}:obsolete`);
     },
 
     onSuccess: () => {
       toast({
         title: 'Success',
-        description: 'Form drafted',
+        description: 'Form obsoleted',
       });
 
       queryClient.invalidateQueries({ queryKey: formsKeys.all });
     },
-    onError: (error)=>{
-      // @ts-ignore
-      if(error.response.status === 409){
-        toast({
-          title: 'Error drafting form',
-          description: 'Cannot draft a form with answers submitted',
-          variant: 'destructive'
-        });
 
-       return  
-      }
+    onError: () => {
       toast({
-        title: 'Error publishing form',
+        title: 'Error obsoleting form',
+        description: 'Please contact tech support',
+        variant: 'destructive'
+      });
+    }
+  });
+
+  const duplicateFormMutation = useMutation({
+    mutationKey: formsKeys.all,
+    mutationFn: (formId: string) => {
+      const electionRoundId: string | null = localStorage.getItem('electionRoundId');
+
+      return authApi.post<void>(`/election-rounds/${electionRoundId}/forms/${formId}:duplicate`);
+    },
+
+    onSuccess: () => {
+      toast({
+        title: 'Success',
+        description: 'Form duplicated',
+      });
+
+      queryClient.invalidateQueries({ queryKey: formsKeys.all });
+    },
+
+    onError: (error) => {
+      toast({
+        title: 'Error cloning form',
         description: 'Please contact tech support',
         variant: 'destructive'
       });
