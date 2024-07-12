@@ -79,18 +79,27 @@ public class Form : AuditableBaseEntity, IAggregateRoot
     }
 
     [JsonConstructor]
-    public Form(Guid id, Guid electionRoundId, ElectionRound electionRound, Guid monitoringNgoId, MonitoringNgo monitoringNgo, FormType formType, string code, TranslatedString name, TranslatedString description, FormStatus status, string defaultLanguage, int numberOfQuestions) : base(id)
+    public Form(Guid id,
+        Guid electionRoundId,
+        Guid monitoringNgoId, 
+        FormType formType,
+        string code,
+        TranslatedString name, 
+        TranslatedString description, 
+        FormStatus status, 
+        string defaultLanguage,
+        string[] languages,
+        int numberOfQuestions) : base(id)
     {
         ElectionRoundId = electionRoundId;
-        ElectionRound = electionRound;
         MonitoringNgoId = monitoringNgoId;
-        MonitoringNgo = monitoringNgo;
         FormType = formType;
         Code = code;
         Name = name;
         Description = description;
         Status = status;
         DefaultLanguage = defaultLanguage;
+        Languages = languages;
         NumberOfQuestions = numberOfQuestions;
     }
 
@@ -325,6 +334,8 @@ public class Form : AuditableBaseEntity, IAggregateRoot
         }
     }
 
+    public Form Duplicate() =>
+        new(ElectionRoundId, MonitoringNgoId, FormType, Code, Name, Description, DefaultLanguage, Languages, Questions);
 
 #pragma warning disable CS8618 // Required by Entity Framework
     private Form()
@@ -332,5 +343,6 @@ public class Form : AuditableBaseEntity, IAggregateRoot
 
     }
 #pragma warning restore CS8618
+
 
 }

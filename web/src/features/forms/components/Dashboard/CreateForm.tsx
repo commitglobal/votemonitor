@@ -145,7 +145,7 @@ function CreateForm() {
                                     <Label>{t('form.field.description')}</Label>
                                     <Textarea
                                         resizable={false}
-                                        rows={100}
+                                        rows={10}
                                         cols={100}
                                         {...field}
                                         placeholder={t('form.placeholder.description')} />
