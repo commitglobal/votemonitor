@@ -40,7 +40,8 @@ public class FormTemplate : AuditableBaseEntity, IAggregateRoot
         string defaultLanguage,
         TranslatedString name,
         TranslatedString description,
-        IEnumerable<string> languages) : base(Guid.NewGuid())
+        IEnumerable<string> languages,
+        IEnumerable<BaseQuestion> questions) : base(Guid.NewGuid())
     {
         FormTemplateType = formTemplateType;
         Code = code;
@@ -49,6 +50,7 @@ public class FormTemplate : AuditableBaseEntity, IAggregateRoot
         Description = description;
         Languages = languages.ToArray();
         Status = FormTemplateStatus.Drafted;
+        Questions = questions.ToList();
     }
 
     public static FormTemplate Create(FormTemplateType formTemplateType,
@@ -57,7 +59,7 @@ public class FormTemplate : AuditableBaseEntity, IAggregateRoot
         TranslatedString name,
         TranslatedString description,
         IEnumerable<string> languages) =>
-        new(formTemplateType, code, defaultLanguage, name, description, languages);
+        new(formTemplateType, code, defaultLanguage, name, description, languages, []);
 
     public PublishResult Publish()
     {
@@ -153,6 +155,9 @@ public class FormTemplate : AuditableBaseEntity, IAggregateRoot
         DefaultLanguage = languageCode;
     }
 
+    public FormTemplate Duplicate() =>
+        new(FormTemplateType, Code, DefaultLanguage, Name, Description, Languages, Questions);
+
 #pragma warning disable CS8618 // Required by Entity Framework
 
     private FormTemplate()
@@ -160,4 +165,5 @@ public class FormTemplate : AuditableBaseEntity, IAggregateRoot
 
     }
 #pragma warning restore CS8618
+
 }

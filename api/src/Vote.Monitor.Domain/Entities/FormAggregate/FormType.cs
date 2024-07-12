@@ -1,4 +1,5 @@
-﻿using Ardalis.SmartEnum;
+﻿using System.Text.Json.Serialization;
+using Ardalis.SmartEnum;
 
 namespace Vote.Monitor.Domain.Entities.FormAggregate;
 
@@ -24,6 +25,7 @@ public sealed class FormType : SmartEnum<FormType, string>
         return TryFromValue(value, out result);
     }
 
+    [JsonConstructor]
     private FormType(string name, string value) : base(name, value)
     {
     }
