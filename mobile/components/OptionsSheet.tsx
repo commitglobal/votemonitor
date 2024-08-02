@@ -1,9 +1,8 @@
-import React, { ReactNode, useEffect } from "react";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import React, { ReactNode, useEffect, useMemo } from "react";
 import { Sheet, SheetProps } from "tamagui";
 import { Icon } from "./Icon";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { BackHandler, Platform } from "react-native";
+import { Animated, BackHandler, Platform } from "react-native";
+import useAnimatedKeyboardPadding from "../hooks/useAnimatedKeyboardPadding";
 
 export interface OptionsSheetProps extends SheetProps {
   /* The current state of the sheet */
@@ -22,7 +21,6 @@ export interface OptionsSheetProps extends SheetProps {
 
 const OptionsSheet = (props: OptionsSheetProps) => {
   const { open, setOpen, isLoading = false, children, ...rest } = props;
-  const insets = useSafeAreaInsets();
 
   // on Android back button press, if the sheet is open, we first close the sheet
   // and on the 2nd press we will navigate back
@@ -44,6 +42,9 @@ const OptionsSheet = (props: OptionsSheetProps) => {
     return () => subscription.remove();
   }, [open, setOpen]);
 
+  const AnimatedSheetFrame = useMemo(() => Animated.createAnimatedComponent(Sheet.Frame), []);
+  const paddingBottom = useAnimatedKeyboardPadding(16);
+
   return (
     <Sheet
       modal
@@ -56,19 +57,17 @@ const OptionsSheet = (props: OptionsSheetProps) => {
       {...rest}
     >
       <Sheet.Overlay />
-      <Sheet.Frame
+      <AnimatedSheetFrame
         borderTopLeftRadius={28}
         borderTopRightRadius={28}
         gap="$sm"
         paddingHorizontal="$md"
-        paddingBottom="$xl"
-        marginBottom={insets.bottom}
+        // padding bottom responsive to keyboard presence
+        paddingBottom={paddingBottom}
       >
         <Icon paddingVertical="$md" alignSelf="center" icon="dragHandle" />
-        <KeyboardAwareScrollView keyboardShouldPersistTaps="handled">
-          {children}
-        </KeyboardAwareScrollView>
-      </Sheet.Frame>
+        {children}
+      </AnimatedSheetFrame>
     </Sheet>
   );
 };

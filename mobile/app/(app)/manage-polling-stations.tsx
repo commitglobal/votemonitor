@@ -17,6 +17,8 @@ import { pollingStationsKeys } from "../../services/queries.service";
 import { useQueryClient } from "@tanstack/react-query";
 import Toast from "react-native-toast-message";
 import NoVisitsMPS from "../../components/NoVisitsMPS";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useNetInfoContext } from "../../contexts/net-info-banner/NetInfoContext";
 
 const ESTIMATED_ITEM_SIZE = 225;
 
@@ -42,6 +44,8 @@ const ManagePollingStation = () => {
   const { mutate: deletePSVisit, isPending: isPendingDeletePSVisit } =
     useDeletePollingStationVisitMutation(activeElectionRound?.id);
 
+  const insets = useSafeAreaInsets();
+  const { shouldDisplayBanner } = useNetInfoContext();
   const { width } = useWindowDimensions();
 
   if (visits === undefined || visits.length === 0) {
@@ -106,7 +110,12 @@ const ManagePollingStation = () => {
         onLeftPress={() => router.back()}
       />
 
-      <YStack flex={1} paddingHorizontal="$md" paddingTop="$lg" paddingBottom="$md">
+      <YStack
+        flex={1}
+        paddingHorizontal="$md"
+        paddingTop="$lg"
+        paddingBottom={shouldDisplayBanner ? 16 : insets.bottom + 16}
+      >
         <ListView<PollingStationVisitVM>
           data={visits}
           showsVerticalScrollIndicator={false}
