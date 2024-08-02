@@ -27,14 +27,31 @@ export const pollingStationsKeys = {
   all: ["polling-stations"] as const,
   visits: (electionRoundId: string | undefined) =>
     [...pollingStationsKeys.all, "visits", electionRoundId] as const,
-  formSubmissions: (electionRoundId: string | undefined, pollingStationId: string | undefined) => [
-    ...pollingStationsKeys.all,
-    "electionRoundId",
-    electionRoundId,
-    "pollingStationId",
-    pollingStationId,
-    "form-submissions",
-  ],
+  allFormSubmissions: (electionRoundId: string | undefined, pollingStationId: string | undefined) =>
+    [
+      ...pollingStationsKeys.all,
+      "electionRoundId",
+      electionRoundId,
+      "pollingStationId",
+      pollingStationId,
+      "form-submissions",
+      "all",
+    ] as const,
+  formSubmissions: (
+    electionRoundId: string | undefined,
+    pollingStationId: string | undefined,
+    formId: string | undefined,
+  ) =>
+    [
+      ...pollingStationsKeys.all,
+      "electionRoundId",
+      electionRoundId,
+      "pollingStationId",
+      pollingStationId,
+      "formID",
+      formId,
+      "form-submissions",
+    ] as const,
   psHasFormSubmissions: (
     electionRoundId: string | undefined,
     pollingStationId: string | undefined,

@@ -151,7 +151,7 @@ const FormList = ({ ListHeaderComponent }: IFormListProps) => {
             queryKey: electionRoundsKeys.forms(activeElectionRound?.id),
           });
           queryClient.invalidateQueries({
-            queryKey: pollingStationsKeys.formSubmissions(
+            queryKey: pollingStationsKeys.allFormSubmissions(
               activeElectionRound?.id,
               selectedPollingStation?.pollingStationId,
             ),
