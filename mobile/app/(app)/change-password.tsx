@@ -3,7 +3,7 @@ import { Screen } from "../../components/Screen";
 import Header from "../../components/Header";
 import { Icon } from "../../components/Icon";
 import { router } from "expo-router";
-import { XStack, YStack } from "tamagui";
+import { YStack } from "tamagui";
 import { Controller, useForm } from "react-hook-form";
 import React, { useState } from "react";
 import FormInput, { FormInputProps } from "../../components/FormInputs/FormInput";
@@ -95,22 +95,8 @@ const ChangePassword = () => {
       });
     }
     updatePassword(payload, {
-      onSuccess: () => {
-        return Toast.show({
-          type: "success",
-          text2: t("confirmation.heading"),
-          visibilityTime: 5000,
-          text2Style: { textAlign: "center" },
-        });
-      },
       onError: (error: Error) => {
         setReqError(error);
-        return Toast.show({
-          type: "error",
-          text2: t("paragraph1", { ns: "generic_error_screen" }),
-          visibilityTime: 5000,
-          text2Style: { textAlign: "center" },
-        });
       },
       onSettled: () => {
         Keyboard.dismiss();
