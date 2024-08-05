@@ -39,15 +39,17 @@ const Badge = (props: BadgeProps): JSX.Element => {
     paddingHorizontal: "$xs",
     paddingVertical: 2,
     borderRadius: 28,
-    backgroundColor: "$gray2",
+    borderWidth: 1,
+    borderColor: "$purple5",
+    backgroundColor: "$purple2",
     alignItems: "center",
     justifyContent: "center",
     variants: {
       presets: {
         default: {},
-        success: { backgroundColor: "$green2" },
-        warning: { backgroundColor: "$yellow3" },
-        danger: { backgroundColor: "$red1" },
+        success: { backgroundColor: "$green1", borderColor: "$green6" },
+        warning: { backgroundColor: "$yellow3", borderColor: "$yellow7" },
+        danger: { backgroundColor: "$red1", borderColor: "$red12" },
       },
     } as const,
   });
@@ -61,10 +63,10 @@ const Badge = (props: BadgeProps): JSX.Element => {
 
   const textColor =
     presetType === Presets.SUCCESS
-      ? "$green9"
+      ? "$green6"
       : presetType === Presets.WARNING
         ? "$yellow7"
-        : "$gray10";
+        : "$purple5";
 
   return (
     <StyledView presets={presetType} {...rest}>
