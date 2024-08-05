@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { Adapt, Select, Sheet, View, YStack } from "tamagui";
+import { Adapt, Select, Sheet, View, XStack, YStack } from "tamagui";
 import { Icon } from "./Icon";
 import { Typography } from "./Typography";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -42,6 +42,7 @@ const SelectPollingStation = () => {
                 : t("loading", { ns: "common" })
             }
             fontWeight="500"
+            maxFontSizeMultiplier={1.2}
           ></Select.Value>
         </Select.Trigger>
 
@@ -55,11 +56,16 @@ const SelectPollingStation = () => {
                 borderBottomWidth={1}
                 borderBottomColor="$gray3"
               >
-                <Typography preset="body2" color="$gray5">
+                <Typography preset="body2" color="$gray5" maxFontSizeMultiplier={1}>
                   {t("my_polling_stations.heading")}
                 </Typography>
                 {/* //TODO: not sure how many nroflines we should leave here */}
-                <Typography numberOfLines={7} color="$gray5" marginTop="$xxs">
+                <Typography
+                  numberOfLines={7}
+                  color="$gray5"
+                  marginTop="$xxs"
+                  maxFontSizeMultiplier={1}
+                >
                   {/* //TODO: translation here */}
                   {t("my_polling_stations.paragraph")}
                 </Typography>
@@ -70,21 +76,27 @@ const SelectPollingStation = () => {
               </Sheet.ScrollView>
 
               <View
-                paddingVertical="$xl"
-                paddingHorizontal={40}
+                paddingVertical="$lg"
+                paddingHorizontal="$md"
                 borderTopWidth={1}
                 borderTopColor="$gray3"
                 marginBottom={insets.bottom}
               >
-                <Button
-                  preset="outlined"
-                  onPress={() => {
-                    setOpen(false);
-                    router.push.bind(null, "/polling-station-wizzard")();
-                  }}
-                >
-                  {t("my_polling_stations.add")}
-                </Button>
+                <XStack justifyContent="center" alignItems="center">
+                  <Button
+                    width="80%"
+                    height="100%"
+                    textAlign="center"
+                    textStyle={{ textAlign: "center" }}
+                    preset="outlined"
+                    onPress={() => {
+                      setOpen(false);
+                      router.push.bind(null, "/polling-station-wizzard")();
+                    }}
+                  >
+                    {t("my_polling_stations.add")}
+                  </Button>
+                </XStack>
               </View>
             </Sheet.Frame>
             <Sheet.Overlay />
@@ -107,6 +119,7 @@ const SelectPollingStation = () => {
                       >
                         {/* //TODO: change number of lines to 2 if that's what we want */}
                         <Select.ItemText
+                          maxFontSizeMultiplier={1.2}
                           numberOfLines={2}
                           color={
                             entry.pollingStationId === selectedPollingStation?.pollingStationId

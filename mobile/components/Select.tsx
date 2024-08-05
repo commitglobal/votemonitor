@@ -57,6 +57,7 @@ const Select = ({ placeholder, options, error, ...props }: StyledSelectProps) =>
           color="$gray5"
           placeholder={placeholder || t("select")}
           fontSize={16}
+          maxFontSizeMultiplier={1.2}
         ></TamaguiSelect.Value>
       </TamaguiSelect.Trigger>
 
@@ -81,6 +82,7 @@ const Select = ({ placeholder, options, error, ...props }: StyledSelectProps) =>
                   placeholder={t("search")}
                   value={searchTerm}
                   onChangeText={setSearchTerm}
+                  maxFontSizeMultiplier={1.2}
                 />
               </XStack>
             </YStack>
@@ -112,7 +114,11 @@ const Select = ({ placeholder, options, error, ...props }: StyledSelectProps) =>
                     gap="$3"
                     paddingBottom="$sm"
                   >
-                    <TamaguiSelect.ItemText width={"90%"} numberOfLines={1}>
+                    <TamaguiSelect.ItemText
+                      width={"90%"}
+                      numberOfLines={1}
+                      maxFontSizeMultiplier={1.2}
+                    >
                       {entry.label}
                     </TamaguiSelect.ItemText>
                     <TamaguiSelect.ItemIndicator>

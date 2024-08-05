@@ -226,7 +226,12 @@ const PollingStationWizzardContent = ({
 
         <XStack backgroundColor="$purple1" marginTop={"$sm"} borderRadius={8} alignItems="center">
           <Icon icon="search" color="transparent" size={20} marginLeft="$sm" />
-          <SearchInput flex={1} value={searchTerm} onChangeText={setSearchTerm} />
+          <SearchInput
+            flex={1}
+            value={searchTerm}
+            onChangeText={setSearchTerm}
+            maxFontSizeMultiplier={1.2}
+          />
         </XStack>
       </YStack>
       <YStack

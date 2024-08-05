@@ -115,20 +115,22 @@ const Guides = () => {
           </YStack>
         </YStack>
       )}
-      <OptionsSheet open={optionsSheetOpen} setOpen={setOptionsSheetOpen}>
-        <YStack
-          paddingVertical="$xxs"
-          paddingHorizontal="$sm"
-          onPress={() => {
-            setOptionsSheetOpen(false);
-            router.push("/manage-polling-stations");
-          }}
-        >
-          <Typography preset="body1" color="$gray7" lineHeight={24}>
-            {t("options_sheet.manage_my_polling_stations")}
-          </Typography>
-        </YStack>
-      </OptionsSheet>
+      {optionsSheetOpen && (
+        <OptionsSheet open={optionsSheetOpen} setOpen={setOptionsSheetOpen} key={"GuidesSheet"}>
+          <YStack
+            paddingVertical="$xxs"
+            paddingHorizontal="$sm"
+            onPress={() => {
+              setOptionsSheetOpen(false);
+              router.push("/manage-polling-stations");
+            }}
+          >
+            <Typography preset="body1" color="$gray7" lineHeight={24}>
+              {t("options_sheet.manage_my_polling_stations")}
+            </Typography>
+          </YStack>
+        </OptionsSheet>
+      )}
     </Screen>
   );
 };

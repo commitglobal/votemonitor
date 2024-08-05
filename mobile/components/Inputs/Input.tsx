@@ -18,6 +18,7 @@ const StyledTextArea = styled(TamaguiTextArea, {
   minHeight: 98,
   maxHeight: 150,
   paddingVertical: "$xs",
+  maxFontSizeMultiplier: 1.2,
   paddingHorizontal: 14,
   textAlignVertical: "top",
   fontSize: 16,
@@ -79,6 +80,7 @@ const SearchInput = styled(TamaguiInput, {
   padding: 0,
   paddingLeft: 14,
   borderWidth: 0,
+  maxFontSizeMultiplier: 1.2,
   borderRadius: 0,
   focusStyle: {
     borderColor: "transparent",

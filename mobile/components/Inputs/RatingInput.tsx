@@ -61,8 +61,13 @@ export const RatingInput: React.FC<RatingInputProps> = ({
           value={rating.toString()}
           flex={1}
           active={rating.toString() === value}
+          padding={0}
+          justifyContent="center"
+          alignItems="center"
         >
-          <Typography fontSize={fontSize}>{rating.toString()}</Typography>
+          <Typography fontSize={fontSize} allowFontScaling={false}>
+            {rating.toString()}
+          </Typography>
         </StyledToggleGroupItem>
       ))}
     </ToggleGroup>

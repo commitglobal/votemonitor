@@ -90,9 +90,9 @@ function RootLayout() {
   return (
     <TamaguiProvider config={tamaguiConfig}>
       <NetInfoProvider>
-        <PortalProvider>
-          <AuthContextProvider>
-            <PersistQueryContextProvider>
+        <AuthContextProvider>
+          <PersistQueryContextProvider>
+            <PortalProvider>
               <LanguageContextProvider>
                 <EasUpdateMonitorContextProvider>
                   <Slot />
@@ -100,9 +100,9 @@ function RootLayout() {
                   <NetInfoBanner />
                 </EasUpdateMonitorContextProvider>
               </LanguageContextProvider>
-            </PersistQueryContextProvider>
-          </AuthContextProvider>
-        </PortalProvider>
+            </PortalProvider>
+          </PersistQueryContextProvider>
+        </AuthContextProvider>
       </NetInfoProvider>
     </TamaguiProvider>
   );

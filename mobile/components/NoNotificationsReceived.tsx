@@ -30,10 +30,6 @@ const NoNotificationsReceived = () => {
         barStyle="light-content"
         leftIcon={<Icon icon="menuAlt2" color="white" />}
         onLeftPress={() => navigation.dispatch(DrawerActions.openDrawer)}
-        rightIcon={<Icon icon="dotsVertical" color="white" />}
-        onRightPress={() => {
-          console.log("Right icon pressed");
-        }}
       />
       <YStack
         flex={1}
