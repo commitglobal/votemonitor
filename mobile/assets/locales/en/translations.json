@@ -139,7 +139,7 @@
     "error": "Error while loading polling stations!"
   },
   "observation": {
-    "title": "",
+    "title": "Polling Station Observation",
     "no_election_round": {
       "heading": "No election event to observe yet",
       "paragraph": "You will be able to use the app once you will be assigned to an election event by your organization"
@@ -155,6 +155,7 @@
       "add": "Add new polling station"
     },
     "polling_stations_information": {
+      "heading": "Polling station information",
       "time_select": {
         "not_defined": "Not defined",
         "arrival_time": "Arrival time",
@@ -169,13 +170,13 @@
       },
       "polling_station_form": {
         "paragraph": "Answer a few quick questions about the polling station.",
-        "form_details_button_label": "Polling station information",
+        "form_details_button_label": "Polling station questions",
         "number_of_questions": "{{value}} questions",
         "answer_questions": "Answer questions"
       }
     },
     "forms": {
-      "heading": "Forms",
+      "heading": "Observation forms",
       "list": {
         "empty": "No data to display",
         "error": {

@@ -1,5 +1,5 @@
 import { router } from "expo-router";
-import { XStack } from "tamagui";
+import { XStack, YStack } from "tamagui";
 import PollingStationInfo from "./PollingStationInfo";
 import PollingStationInfoDefault from "./PollingStationInfoDefault";
 import TimeSelect from "./TimeSelect";
@@ -13,6 +13,7 @@ import { useMutatePollingStationGeneralData } from "../services/mutations/psi-ge
 import { ApiFormAnswer } from "../services/interfaces/answer.type";
 import { useTranslation } from "react-i18next";
 import Toast from "react-native-toast-message";
+import { Typography } from "./Typography";
 
 interface PollingStationGeneralProps {
   electionRoundId: string;
@@ -45,18 +46,24 @@ export const PollingStationGeneral: React.FC<PollingStationGeneralProps> = ({
   const updateArrivalDepartureTime = (
     payload: Partial<Pick<PollingStationInformationVM, "arrivalTime" | "departureTime">>,
   ) => {
-    mutate({ electionRoundId, pollingStationId, ...payload }, {
-      onError: () => {
-        Toast.show({
-          type: "error",
-          text2: t('polling_stations_information.time_select.error.server')
-        });
+    mutate(
+      { electionRoundId, pollingStationId, ...payload },
+      {
+        onError: () => {
+          Toast.show({
+            type: "error",
+            text2: t("polling_stations_information.time_select.error.server"),
+          });
+        },
       },
-    });
+    );
   };
 
   return (
-    <>
+    <YStack gap="$xxs">
+      <Typography preset="body2" fontWeight="700" color="$gray7">
+        {t("polling_stations_information.heading")}
+      </Typography>
       <XStack gap="$xxs">
         <Card flex={0.5} paddingVertical="$xs">
           <TimeSelect
@@ -86,11 +93,7 @@ export const PollingStationGeneral: React.FC<PollingStationGeneralProps> = ({
         </Card>
       </XStack>
 
-      <Card
-        gap="$md"
-        onPress={router.push.bind(null, "/polling-station-questionnaire")}
-        marginTop="$xxs"
-      >
+      <Card gap="$md" onPress={router.push.bind(null, "/polling-station-questionnaire")}>
         {!psi?.answers?.length ? (
           <PollingStationInfoDefault
             onPress={router.push.bind(null, "/polling-station-questionnaire")}
@@ -105,6 +108,6 @@ export const PollingStationGeneral: React.FC<PollingStationGeneralProps> = ({
           text={t("polling_stations_information.polling_station_form.form_details_button_label")}
         ></CardFooter>
       </Card>
-    </>
+    </YStack>
   );
 };
