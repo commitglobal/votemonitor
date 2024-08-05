@@ -194,6 +194,7 @@ export type FormAPIModel = {
   status: string; // "Published",
   defaultLanguage: string; // "RO",
   languages: string[]; // [ "RO", "EN" ],
+  numberOfQuestions: number;
   createdOn: string;
   lastModifiedOn: string; // "2024-04-12T11:45:38.589445Z"
   questions: ApiFormQuestion[];
@@ -209,6 +210,22 @@ export const getElectionRoundAllForms = (
   electionRoundId: string,
 ): Promise<ElectionRoundsAllFormsAPIResponse> => {
   return API.get(`election-rounds/${electionRoundId}/forms:fetchAll`, {}).then((res) => res.data);
+};
+
+/** ========================================================================
+    ================= GET ElectionRoundForm ====================
+    ========================================================================
+    @description Get a form by id for an election round
+    @param {string} electionRoundId 
+    @param {string} formId 
+    @returns {FormAPIModel}
+*/
+
+export const getElectionRoundFormById = (
+  electionRoundId: string,
+  formId: string,
+): Promise<FormAPIModel> => {
+  return API.get(`election-rounds/${electionRoundId}/forms/${formId}`, {}).then((res) => res.data);
 };
 
 /** ========================================================================

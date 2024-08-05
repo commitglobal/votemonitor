@@ -1,4 +1,4 @@
-import { Spinner, YStack } from "tamagui";
+import { ScrollView, Spinner, YStack } from "tamagui";
 import { Screen } from "../../../../components/Screen";
 import Header from "../../../../components/Header";
 import { Typography } from "../../../../components/Typography";
@@ -10,29 +10,33 @@ import { useUserData } from "../../../../contexts/user/UserContext.provider";
 import { useGuides } from "../../../../services/queries/guides.query";
 import { ListView } from "../../../../components/ListView";
 import { Guide, guideType } from "../../../../services/api/get-guides.api";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useWindowDimensions } from "react-native";
 import GuideCard from "../../../../components/GuideCard";
 import * as Linking from "expo-linking";
 import { useState } from "react";
 import OptionsSheet from "../../../../components/OptionsSheet";
+import { RefreshControl } from "react-native-gesture-handler";
 
 const ESTIMATED_ITEM_SIZE = 115;
 
 const Guides = () => {
-  const { activeElectionRound } = useUserData();
-  const { data: guides, isLoading: isLoadingGuides } = useGuides(activeElectionRound?.id);
-  const [optionsSheetOpen, setOptionsSheetOpen] = useState(false);
-
   const { t } = useTranslation("guides");
   const navigation = useNavigation();
-  const insets = useSafeAreaInsets();
-  const { height, width } = useWindowDimensions();
-  const scrollHeight = height - insets.top - insets.bottom - 55 - 55;
+
+  const { width } = useWindowDimensions();
+
+  const { activeElectionRound } = useUserData();
+  const {
+    data: guides,
+    isLoading: isLoadingGuides,
+    refetch: refetchGuides,
+    isRefetching: isRefetchingGuides,
+  } = useGuides(activeElectionRound?.id);
+  const [optionsSheetOpen, setOptionsSheetOpen] = useState(false);
 
   if (isLoadingGuides) {
     return (
-      <Screen preset="fixed">
+      <Screen preset="fixed" contentContainerStyle={{ flexGrow: 1 }}>
         <Header
           title={activeElectionRound?.title}
           titleColor="white"
@@ -40,7 +44,7 @@ const Guides = () => {
           leftIcon={<Icon icon="menuAlt2" color="white" />}
           onLeftPress={() => navigation.dispatch(DrawerActions.openDrawer)}
         />
-        <YStack minHeight={scrollHeight} justifyContent="center" alignItems="center">
+        <YStack flex={1} justifyContent="center" alignItems="center">
           <Spinner size="large" color="$purple5" />
         </YStack>
       </Screen>
@@ -49,12 +53,7 @@ const Guides = () => {
 
   return (
     <Screen
-      preset="auto"
-      ScrollViewProps={{
-        showsVerticalScrollIndicator: false,
-        stickyHeaderIndices: [0],
-        bounces: false,
-      }}
+      preset="fixed"
       contentContainerStyle={{
         flexGrow: 1,
       }}
@@ -69,11 +68,11 @@ const Guides = () => {
         onRightPress={() => setOptionsSheetOpen(true)}
       />
       {guides && guides.length !== 0 ? (
-        <YStack padding="$md" minHeight={scrollHeight}>
+        <YStack padding="$md" flex={1}>
           <ListView<Guide>
             data={guides}
             showsVerticalScrollIndicator={false}
-            bounces={false}
+            bounces={true}
             ListHeaderComponent={
               guides?.length > 0 ? (
                 <Typography preset="body1" fontWeight="700" marginBottom="$xs">
@@ -99,10 +98,24 @@ const Guides = () => {
                 />
               );
             }}
+            refreshControl={
+              <RefreshControl refreshing={isRefetchingGuides} onRefresh={refetchGuides} />
+            }
           />
         </YStack>
       ) : (
-        <YStack flex={1} alignItems="center" justifyContent="center" gap="$md">
+        <ScrollView
+          contentContainerStyle={{
+            flex: 1,
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 16,
+          }}
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl refreshing={isRefetchingGuides} onRefresh={refetchGuides} />
+          }
+        >
           <Icon icon="undrawReading" size={190} />
 
           <YStack gap="$xxxs" paddingHorizontal="$lg">
@@ -113,7 +126,7 @@ const Guides = () => {
               {t("empty.paragraph")}
             </Typography>
           </YStack>
-        </YStack>
+        </ScrollView>
       )}
       {optionsSheetOpen && (
         <OptionsSheet open setOpen={setOptionsSheetOpen} key={"GuidesSheet"}>

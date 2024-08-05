@@ -19,20 +19,39 @@ export const electionRoundsKeys = {
   one: (id: string) => [...electionRoundsKeys.all, id] as const,
   forms: (electionRoundId: string | undefined) =>
     [...electionRoundsKeys.all, "forms", electionRoundId] as const,
+  form: (electionRoundId: string | undefined, formId: string | undefined) =>
+    [...electionRoundsKeys.all, "electionRoundId", electionRoundId, "form", formId] as const,
 };
 
 export const pollingStationsKeys = {
   all: ["polling-stations"] as const,
   visits: (electionRoundId: string | undefined) =>
     [...pollingStationsKeys.all, "visits", electionRoundId] as const,
-  formSubmissions: (electionRoundId: string | undefined, pollingStationId: string | undefined) => [
-    ...pollingStationsKeys.all,
-    "electionRoundId",
-    electionRoundId,
-    "pollingStationId",
-    pollingStationId,
-    "form-submissions",
-  ],
+  allFormSubmissions: (electionRoundId: string | undefined, pollingStationId: string | undefined) =>
+    [
+      ...pollingStationsKeys.all,
+      "electionRoundId",
+      electionRoundId,
+      "pollingStationId",
+      pollingStationId,
+      "form-submissions",
+      "all",
+    ] as const,
+  formSubmissions: (
+    electionRoundId: string | undefined,
+    pollingStationId: string | undefined,
+    formId: string | undefined,
+  ) =>
+    [
+      ...pollingStationsKeys.all,
+      "electionRoundId",
+      electionRoundId,
+      "pollingStationId",
+      pollingStationId,
+      "formID",
+      formId,
+      "form-submissions",
+    ] as const,
   psHasFormSubmissions: (
     electionRoundId: string | undefined,
     pollingStationId: string | undefined,

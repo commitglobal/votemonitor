@@ -31,7 +31,7 @@ import Button from "../../components/Button";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useMutatePollingStationGeneralData } from "../../services/mutations/psi-general.mutation";
 import OptionsSheet from "../../components/OptionsSheet";
-import { Keyboard } from "react-native";
+import { Keyboard, RefreshControl } from "react-native";
 import WarningDialog from "../../components/WarningDialog";
 import { scrollToTextarea } from "../../helpers/scrollToTextarea";
 
@@ -43,11 +43,29 @@ const PollingStationQuestionnaire = () => {
 
   const { activeElectionRound, selectedPollingStation } = useUserData();
 
-  const { data: formStructure } = usePollingStationInformationForm(activeElectionRound?.id);
-  const { data: formData } = usePollingStationInformation(
+  const {
+    data: formStructure,
+    refetch: refetchFormStructure,
+    isRefetching: isRefetchingFormStructure,
+  } = usePollingStationInformationForm(activeElectionRound?.id);
+  const {
+    data: formData,
+    refetch: refetchFormData,
+    isRefetching: isRefetchingFormData,
+  } = usePollingStationInformation(
     activeElectionRound?.id,
     selectedPollingStation?.pollingStationId,
   );
+
+  const isRefetching = useMemo(
+    () => isRefetchingFormStructure || isRefetchingFormData,
+    [isRefetchingFormStructure, isRefetchingFormData],
+  );
+
+  const handleRefetch = () => {
+    refetchFormStructure();
+    refetchFormData();
+  };
 
   const currentLanguage = useMemo(() => {
     const activeLanguage = i18n.language.toLocaleUpperCase();
@@ -253,6 +271,7 @@ const PollingStationQuestionnaire = () => {
           ref={scrollViewRef}
           contentContainerStyle={{ flexGrow: 1 }}
           keyboardShouldPersistTaps="handled"
+          refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={handleRefetch} />}
         >
           <YStack padding="$md" gap="$lg" flex={1}>
             {formStructure?.questions.map((question: ApiFormQuestion, index: number) => {

@@ -9,7 +9,6 @@ import PollingStationCard from "../../components/PollingStationCard";
 import { useMemo, useState } from "react";
 import { PollingStationVisitVM } from "../../common/models/polling-station.model";
 import WarningDialog from "../../components/WarningDialog";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useWindowDimensions } from "react-native";
 import { ListView } from "../../components/ListView";
 import { useDeletePollingStationVisitMutation } from "../../services/mutations/delete-polling-station.mutation";
@@ -18,6 +17,7 @@ import { pollingStationsKeys } from "../../services/queries.service";
 import { useQueryClient } from "@tanstack/react-query";
 import Toast from "react-native-toast-message";
 import NoVisitsMPS from "../../components/NoVisitsMPS";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useNetInfoContext } from "../../contexts/net-info-banner/NetInfoContext";
 
 const ESTIMATED_ITEM_SIZE = 225;
@@ -26,7 +26,6 @@ const ManagePollingStation = () => {
   const { t } = useTranslation("manage_my_polling_stations");
   const [selectedPS, setSelectedPS] = useState<PollingStationVisitVM | null>(null);
   const [removalAllowed, setRemovalAllowed] = useState(true);
-  const { shouldDisplayBanner } = useNetInfoContext();
 
   const queryClient = useQueryClient();
   const { visits, activeElectionRound } = useUserData();
@@ -46,6 +45,7 @@ const ManagePollingStation = () => {
     useDeletePollingStationVisitMutation(activeElectionRound?.id);
 
   const insets = useSafeAreaInsets();
+  const { shouldDisplayBanner } = useNetInfoContext();
   const { width } = useWindowDimensions();
 
   if (visits === undefined || visits.length === 0) {

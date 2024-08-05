@@ -1,6 +1,6 @@
 import React from "react";
 import { router, useNavigation } from "expo-router";
-import { YStack } from "tamagui";
+import { ScrollView, YStack } from "tamagui";
 import { Screen } from "./Screen";
 import { Icon } from "./Icon";
 import { Typography } from "./Typography";
@@ -8,10 +8,21 @@ import Button from "./Button";
 import Header from "./Header";
 import { DrawerActions } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
+import { usePollingStationsVisits } from "../services/queries.service";
+import { ElectionRoundVM } from "../common/models/election-round.model";
+import { RefreshControl } from "react-native";
 
-const NoVisitsExist = () => {
+const NoVisitsExist = ({
+  activeElectionRound,
+}: {
+  activeElectionRound: ElectionRoundVM | undefined;
+}) => {
   const navigation = useNavigation();
   const { t } = useTranslation("observation");
+
+  const { refetch: refetchVisits, isRefetching: isRefetchingVisits } = usePollingStationsVisits(
+    activeElectionRound?.id,
+  );
 
   return (
     <Screen preset="fixed" contentContainerStyle={{ flexGrow: 1 }}>
@@ -22,15 +33,19 @@ const NoVisitsExist = () => {
         leftIcon={<Icon icon="menuAlt2" color="white" />}
         onLeftPress={() => navigation.dispatch(DrawerActions.openDrawer)}
       />
-      <YStack
-        width="100%"
-        display="flex"
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{
+          justifyContent: "center",
+          alignItems: "center",
+          flex: 1,
+          gap: 16,
+        }}
         backgroundColor="white"
-        alignItems="center"
-        justifyContent="center"
-        gap="$md"
         paddingHorizontal="$lg"
-        flex={1}
+        refreshControl={
+          <RefreshControl refreshing={isRefetchingVisits} onRefresh={refetchVisits} />
+        }
       >
         <Icon icon="missingPollingStation" />
         <YStack gap="$xxxs">
@@ -49,7 +64,7 @@ const NoVisitsExist = () => {
         >
           {t("no_visited_polling_stations.add")}
         </Button>
-      </YStack>
+      </ScrollView>
     </Screen>
   );
 };

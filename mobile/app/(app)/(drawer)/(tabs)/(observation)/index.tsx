@@ -38,18 +38,11 @@ const Index = () => {
   }
 
   if (!isLoading && visits && !visits.length) {
-    return <NoVisitsExist />;
+    return <NoVisitsExist activeElectionRound={activeElectionRound} />;
   }
 
   return (
-    <Screen
-      preset="scroll"
-      ScrollViewProps={{
-        showsVerticalScrollIndicator: false,
-        stickyHeaderIndices: [0],
-        bounces: false,
-      }}
-    >
+    <Screen preset="fixed" contentContainerStyle={{ flexGrow: 1 }}>
       <YStack marginBottom={20}>
         <Header
           title={activeElectionRound?.title}
@@ -80,7 +73,7 @@ const Index = () => {
         </OptionsSheet>
       )}
 
-      <YStack paddingHorizontal="$md">
+      <YStack paddingHorizontal="$md" flex={1}>
         <FormList
           ListHeaderComponent={
             <YStack>

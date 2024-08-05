@@ -1,4 +1,4 @@
-import { Stack, YStack } from "tamagui";
+import { ScrollView, YStack } from "tamagui";
 import { Screen } from "./Screen";
 import { Icon } from "./Icon";
 import { Typography } from "./Typography";
@@ -6,10 +6,14 @@ import Header from "./Header";
 import { useNavigation } from "expo-router";
 import { DrawerActions } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
+import { RefreshControl } from "react-native";
+import { useElectionRoundsQuery } from "../services/queries.service";
 
 const NoElectionRounds = () => {
   const navigation = useNavigation();
   const { t } = useTranslation("observation");
+
+  const { isRefetching: isRefetchingRounds, refetch: refetchRounds } = useElectionRoundsQuery();
 
   return (
     <Screen preset="fixed" contentContainerStyle={{ flexGrow: 1 }}>
@@ -18,7 +22,18 @@ const NoElectionRounds = () => {
         leftIcon={<Icon icon="menuAlt2" color="white" />}
         onLeftPress={() => navigation.dispatch(DrawerActions.openDrawer)}
       />
-      <Stack backgroundColor="white" alignItems="center" justifyContent="center" flex={1}>
+      <ScrollView
+        contentContainerStyle={{
+          flexGrow: 1,
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+        showsVerticalScrollIndicator={false}
+        backgroundColor="white"
+        refreshControl={
+          <RefreshControl refreshing={isRefetchingRounds} onRefresh={refetchRounds} />
+        }
+      >
         <YStack width={312} alignItems="center">
           <Icon icon="peopleAddingVote" marginBottom="$md" />
           <Typography preset="subheading" textAlign="center" marginBottom="$xxxs">
@@ -28,7 +43,7 @@ const NoElectionRounds = () => {
             {t("no_election_round.paragraph")}
           </Typography>
         </YStack>
-      </Stack>
+      </ScrollView>
     </Screen>
   );
 };

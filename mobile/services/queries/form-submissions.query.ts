@@ -19,7 +19,7 @@ export const useFormSubmissions = <TResult = FormSubmissionsApiResponse>(
   select?: (data: FormSubmissionsApiResponse) => TResult,
 ) => {
   return useQuery({
-    queryKey: pollingStationsKeys.formSubmissions(electionRoundId, pollingStationId),
+    queryKey: pollingStationsKeys.allFormSubmissions(electionRoundId, pollingStationId),
     queryFn:
       electionRoundId && pollingStationId
         ? () => formSubmissionsQueryFn(electionRoundId, pollingStationId)
@@ -32,18 +32,22 @@ export const useFormAnswers = (
   electionRoundId: string | undefined,
   pollingStationId: string | undefined,
   formId: string,
-) =>
-  useFormSubmissions(
-    electionRoundId,
-    pollingStationId,
-    useCallback(
+) => {
+  return useQuery({
+    queryKey: pollingStationsKeys.formSubmissions(electionRoundId, pollingStationId, formId),
+    queryFn:
+      electionRoundId && pollingStationId
+        ? () => formSubmissionsQueryFn(electionRoundId, pollingStationId)
+        : skipToken,
+    select: useCallback(
       (data: FormSubmissionsApiResponse) => {
         const formSubmission = data.submissions?.find((sub) => sub.formId === formId);
         return arrayToKeyObject(formSubmission?.answers || [], "questionId");
       },
       [electionRoundId, pollingStationId, formId],
     ),
-  );
+  });
+};
 
 export const usePSHasFormSubmissions = (electionRoundId?: string, pollingStationId?: string) => {
   return useMutation({

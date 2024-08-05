@@ -18,8 +18,8 @@ import NotificationListItem from "../../../../components/NotificationListItem";
 import OptionsSheet from "../../../../components/OptionsSheet";
 import { useAppState } from "../../../../hooks/useAppState";
 import { useQueryClient } from "@tanstack/react-query";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Notification } from "../../../../services/api/get-notifications.api";
+import { RefreshControl } from "react-native";
 
 const ESTIMATED_ITEM_SIZE = 200;
 
@@ -27,16 +27,11 @@ const Inbox = () => {
   const queryClient = useQueryClient();
   const { t, i18n } = useTranslation("inbox");
   const navigation = useNavigation();
-
-  const { height, width } = useWindowDimensions();
-  const insets = useSafeAreaInsets();
-  // height for the scrollview with the notifications received
-  // 60 = bottom navigation tabs
-  // 100 = header(60) + yellow banner (40)
-  const scrollHeight = height - insets.top - insets.bottom - 100 - 60;
+  const { width } = useWindowDimensions();
 
   const { activeElectionRound } = useUserData();
-  const { data, isLoading } = useNotifications(activeElectionRound?.id);
+  const { data, isLoading, isRefetching, refetch } = useNotifications(activeElectionRound?.id);
+
   const notifications = data?.notifications;
   const ngoName = data?.ngoName;
 
@@ -64,14 +59,7 @@ const Inbox = () => {
   }
 
   return (
-    <Screen
-      preset="scroll"
-      ScrollViewProps={{
-        showsVerticalScrollIndicator: false,
-        stickyHeaderIndices: [0],
-        bounces: false,
-      }}
-    >
+    <Screen preset="fixed" contentContainerStyle={{ flexGrow: 1 }}>
       <YStack>
         <Header
           title={activeElectionRound?.title}
@@ -92,22 +80,23 @@ const Inbox = () => {
       </YStack>
 
       {isLoading ? (
-        <YStack justifyContent="center" alignItems="center" minHeight={scrollHeight}>
+        <YStack justifyContent="center" alignItems="center" flex={1}>
           <Spinner size="large" color="$purple5" />
         </YStack>
       ) : (
-        <YStack padding="$md" minHeight={scrollHeight}>
+        <YStack padding="$md" flex={1}>
           <ListView<Notification>
             data={displayedNotifications}
             showsVerticalScrollIndicator={false}
-            bounces={false}
             renderItem={({ item }) => {
               return <NotificationListItem notification={item} />;
             }}
+            bounces={true}
             estimatedItemSize={ESTIMATED_ITEM_SIZE}
             estimatedListSize={{ height: ESTIMATED_ITEM_SIZE * 5, width: width - 32 }} // for width we need to take into account the padding also
             onEndReached={loadMore}
             onEndReachedThreshold={0.5}
+            refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={refetch} />}
           />
         </YStack>
       )}
