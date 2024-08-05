@@ -22,6 +22,7 @@ const colorTokens = {
       ...green,
       green1: "hsl(152, 81%, 96%)",
       green2: "hsl(136, 73%, 97%)",
+      green6: "hsl(161, 94%, 26%)",
       green9: "hsl(142, 71%, 27%)",
       green10: "hsl(160, 84%, 39%)",
       green12: "hsl(145, 63%, 42%)",
@@ -29,8 +30,9 @@ const colorTokens = {
     purple: {
       ...purple,
       purple1: "hsl(265, 100%, 95%)",
+      purple2: "hsl(265, 100%, 96%)",
       purple5: "hsl(272, 56%, 45%)",
-      purple6: "#5F288D",
+      purple6: "hsl(273, 56%, 35%)",
       purple7: "hsl(273, 56%, 45%)",
     },
     red: {
@@ -73,7 +75,7 @@ const colorTokens = {
       ...purple,
       purple1: "hsl(265, 100%, 95%)",
       purple5: "hsl(272, 56%, 45%)",
-      purple6: "#5F288D",
+      purple6: "hsl(273, 56%, 35%)",
     },
     red: {
       ...red,
@@ -89,10 +91,10 @@ const colorTokens = {
   },
 };
 
-const lightShadowColor = "rgba(0,0,0,0.04)";
-const lightShadowColorStrong = "rgba(0,0,0,0.085)";
-const darkShadowColor = "rgba(0,0,0,0.2)";
-const darkShadowColorStrong = "rgba(0,0,0,0.3)";
+const lightShadowColor = "hsla(0, 0%, 0%, 0.04)";
+const lightShadowColorStrong = "hsla(0, 0%, 0%, 0.085)";
+const darkShadowColor = "hsla(0, 0%, 0%, 0.2)";
+const darkShadowColorStrong = "hsla(0, 0%, 0%, 0.3)";
 
 const darkColors = {
   ...colorTokens.dark.gray,
@@ -111,16 +113,16 @@ const lightColors = {
 };
 
 const color = {
-  white0: "rgba(255,255,255,0)",
-  white075: "rgba(255,255,255,0.75)",
-  white05: "rgba(255,255,255,0.5)",
-  white025: "rgba(255,255,255,0.25)",
-  black0: "rgba(10,10,10,0)",
-  black075: "rgba(10,10,10,0.75)",
-  black05: "rgba(10,10,10,0.5)",
-  black025: "rgba(10,10,10,0.25)",
-  white1: "#fff",
-  white2: "#f8f8f8",
+  white0: "hsla(0, 0%, 100%, 0)",
+  white075: "hsla(0, 0%, 100%, 0.75)",
+  white05: "hsla(0, 0%, 100%, 0.5)",
+  white025: "hsla(0, 0%, 100%, 0.25)",
+  black0: "hsla(0, 0%, 4%, 0)",
+  black075: "hsla(0, 0%, 4%, 0.75)",
+  black05: "hsla(0, 0%, 4%, 0.5)",
+  black025: "hsla(0, 0%, 4%, 0.25)",
+  white1: "hsl(0, 0%, 100%)",
+  white2: "hsl(0, 0%, 97%)",
   white3: "hsl(0, 0%, 96.3%)",
   white4: "hsl(0, 0%, 94.1%)",
   white5: "hsl(0, 0%, 92.0%)",
@@ -131,18 +133,18 @@ const color = {
   white10: "hsl(0, 0%, 50.3%)",
   white11: "hsl(0, 0%, 42.5%)",
   white12: "hsl(0, 0%, 9.0%)",
-  black1: "#050505",
-  black2: "#151515",
-  black3: "#191919",
-  black4: "#232323",
-  black5: "#282828",
-  black6: "#323232",
-  black7: "#424242",
-  black8: "#494949",
-  black9: "#545454",
-  black10: "#626262",
-  black11: "#a5a5a5",
-  black12: "#fff",
+  black1: "hsl(0, 0%, 2%)",
+  black2: "hsl(0, 0%, 8%)",
+  black3: "hsl(0, 0%, 10%)",
+  black4: "hsl(0, 0%, 14%)",
+  black5: "hsl(0, 0%, 16%)",
+  black6: "hsl(0, 0%, 20%)",
+  black7: "hsl(0, 0%, 26%)",
+  black8: "hsl(0, 0%, 29%)",
+  black9: "hsl(0, 0%, 33%)",
+  black10: "hsl(0, 0%, 38%)",
+  black11: "hsl(0, 0%, 65%)",
+  black12: "hsl(0, 0%, 100%)",
   ...postfixObjKeys(lightColors, "Light"),
   ...postfixObjKeys(darkColors, "Dark"),
 };
@@ -417,13 +419,13 @@ const overlayThemeDefinitions = [
   {
     parent: "light",
     theme: {
-      background: "rgba(0,0,0,0.5)",
+      background: "hsla(0, 0%, 0%, 0.5)",
     },
   },
   {
     parent: "dark",
     theme: {
-      background: "rgba(0,0,0,0.9)",
+      background: "hsla(0, 0%, 0%, 0.9)",
     },
   },
 ];
