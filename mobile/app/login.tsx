@@ -4,7 +4,8 @@ import { useAuth } from "../hooks/useAuth";
 import { ScrollView, View, XStack, YStack } from "tamagui";
 import { useTranslation } from "react-i18next";
 import { Screen } from "../components/Screen";
-import { Animated, Keyboard, Image } from "react-native";
+import { Animated, Keyboard } from "react-native";
+import { Image } from "expo-image";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Icon } from "../components/Icon";
 import { Typography } from "../components/Typography";
@@ -154,8 +155,8 @@ const Login = () => {
             <XStack justifyContent="center" alignItems="center" minHeight={115}>
               <Image
                 source={require("../assets/images/commit-global-color.png")}
-                resizeMode="contain"
                 style={{ width: "100%", height: "100%" }}
+                contentFit="contain"
               />
             </XStack>
           </YStack>
