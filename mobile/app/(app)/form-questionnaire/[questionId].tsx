@@ -5,27 +5,20 @@ import { Icon } from "../../../components/Icon";
 import { Typography } from "../../../components/Typography";
 import { ScrollView, XStack, YStack } from "tamagui";
 import LinearProgress from "../../../components/LinearProgress";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useUserData } from "../../../contexts/user/UserContext.provider";
 import WizzardControls from "../../../components/WizzardControls";
-import { Keyboard, Platform, ViewStyle } from "react-native";
-import { Controller, useForm } from "react-hook-form";
-import WizardFormInput from "../../../components/WizardFormInputs/WizardFormInput";
+import { Keyboard, ViewStyle } from "react-native";
+import { useForm } from "react-hook-form";
 import {
   mapFormSubmissionDataToAPIFormSubmissionAnswer,
   setFormDefaultValues,
   shouldDisplayQuestion,
 } from "../../../services/form.parser";
 import { ApiFormAnswer } from "../../../services/interfaces/answer.type";
-import WizardDateFormInput from "../../../components/WizardFormInputs/WizardDateFormInput";
-import WizardRadioFormInput from "../../../components/WizardFormInputs/WizardRadioFormInput";
-import WizardFormElement from "../../../components/WizardFormInputs/WizardFormElement";
-import CheckboxInput from "../../../components/Inputs/CheckboxInput";
-import WizardRatingFormInput from "../../../components/WizardFormInputs/WizardRatingFormInput";
 import { useFormSubmissionMutation } from "../../../services/mutations/form-submission.mutation";
 import OptionsSheet from "../../../components/OptionsSheet";
 import AddAttachment from "../../../components/AddAttachment";
-
 import { FileMetadata, useCamera } from "../../../hooks/useCamera";
 import { addAttachmentMutation } from "../../../services/mutations/attachments/add-attachment.mutation";
 import QuestionAttachments from "../../../components/QuestionAttachments";
@@ -39,12 +32,14 @@ import * as Crypto from "expo-crypto";
 import { useTranslation } from "react-i18next";
 import { onlineManager } from "@tanstack/react-query";
 import { ApiFormQuestion } from "../../../services/interfaces/question.type";
-import FormInput from "../../../components/FormInputs/FormInput";
 import WarningDialog from "../../../components/WarningDialog";
 import MediaLoading from "../../../components/MediaLoading";
 import Toast from "react-native-toast-message";
+import { scrollToTextarea } from "../../../helpers/scrollToTextarea";
+import * as Sentry from "@sentry/react-native";
+import QuestionForm from "../../../components/QuestionForm";
 
-type SearchParamType = {
+export type SearchParamType = {
   questionId: string;
   formId: string;
   language: string;
@@ -298,7 +293,8 @@ const FormQuestionnaire = () => {
         },
         {
           onSettled: () => setIsOptionsSheetOpen(false),
-          onError: () => {
+          onError: (err) => {
+            Sentry.captureException(err);
             Toast.show({
               type: "error",
               text2: t("attachments.error"),
@@ -347,7 +343,8 @@ const FormQuestionnaire = () => {
           },
           {
             onSettled: () => setIsOptionsSheetOpen(false),
-            onError: () => {
+            onError: (err) => {
+              Sentry.captureException(err);
               Toast.show({
                 type: "error",
                 text2: t("attachments.error"),
@@ -365,6 +362,15 @@ const FormQuestionnaire = () => {
     }
   };
 
+  // scroll view ref
+  const scrollViewRef = useRef(null);
+  // textarea ref - where we're going to scroll to
+  const textareaRef = useRef(null);
+
+  const handleFocus = () => {
+    scrollToTextarea(scrollViewRef, textareaRef);
+  };
+
   return (
     <Screen
       preset="fixed"
@@ -380,7 +386,11 @@ const FormQuestionnaire = () => {
         onLeftPress={() => router.back()}
       />
 
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
+      <ScrollView
+        ref={scrollViewRef}
+        contentContainerStyle={{ flexGrow: 1 }}
+        keyboardShouldPersistTaps="handled"
+      >
         <YStack gap="$xxs" padding="$md">
           <XStack justifyContent="space-between">
             <Typography>{t("progress_bar.label")}</Typography>
@@ -416,165 +426,13 @@ const FormQuestionnaire = () => {
             />
           )}
         </YStack>
-        <YStack paddingHorizontal="$md" paddingBottom="$md" justifyContent="center" flex={1}>
-          <Controller
-            key={activeQuestion?.question?.id}
-            name={activeQuestion?.question?.id}
-            rules={{ required: false }}
-            control={control}
-            render={({ field: { value, onChange } }) => {
-              if (!activeQuestion) return <></>;
 
-              const { question } = activeQuestion;
-              switch (question.$questionType) {
-                case "numberQuestion":
-                  return (
-                    <WizardFormInput
-                      type="numeric"
-                      label={`${question.code}. ${question.text[language]}`}
-                      placeholder={question?.inputPlaceholder?.[language] || ""}
-                      paragraph={question.helptext?.[language] || ""}
-                      onChangeText={onChange}
-                      value={value}
-                      maxLength={10}
-                      helper={t("form.max", {
-                        value: 10,
-                      })}
-                    />
-                  );
-                case "textQuestion":
-                  return (
-                    <WizardFormInput
-                      type="textarea"
-                      label={`${question.code}. ${question.text[language]}`}
-                      placeholder={question?.inputPlaceholder?.[language] || ""}
-                      paragraph={question.helptext?.[language] || ""}
-                      onChangeText={onChange}
-                      maxLength={1024}
-                      helper={t("form.max", {
-                        value: 1024,
-                      })}
-                      value={value}
-                    />
-                  );
-                case "dateQuestion":
-                  return (
-                    <WizardDateFormInput
-                      label={`${question.code}. ${question.text[language]}`}
-                      placeholder={t("form.date_placeholder")}
-                      paragraph={question.helptext?.[language] || ""}
-                      onChange={onChange}
-                      value={value}
-                    />
-                  );
-                case "singleSelectQuestion":
-                  return (
-                    <>
-                      <WizardRadioFormInput
-                        label={`${question.code}. ${question.text[language]}`}
-                        paragraph={question.helptext?.[language] || ""}
-                        options={question.options.map((option) => ({
-                          id: option.id,
-                          value: option.id,
-                          label: option.text[language],
-                        }))}
-                        onValueChange={(radioValue) =>
-                          onChange({ ...value, radioValue, textValue: null })
-                        }
-                        value={value.radioValue || ""}
-                      />
-                      {question.options.map((option) => {
-                        if (option.isFreeText && option.id === value.radioValue) {
-                          return (
-                            <FormInput
-                              key={option.id + "free"}
-                              type="textarea"
-                              marginTop="$md"
-                              value={value.textValue || ""}
-                              placeholder={t("form.text_placeholder")}
-                              onChangeText={(textValue) => {
-                                onChange({ ...value, textValue });
-                              }}
-                              maxLength={1024}
-                              helper={t("form.max", {
-                                value: 1024,
-                              })}
-                            />
-                          );
-                        }
-                        return false;
-                      })}
-                    </>
-                  );
-                case "multiSelectQuestion":
-                  return (
-                    <WizardFormElement
-                      key={question.id}
-                      label={`${question.code}. ${question.text[language]}`}
-                      paragraph={question.helptext?.[language] || ""}
-                    >
-                      {question.options.map((option) => {
-                        const selections: Record<string, { optionId: string; text: string }> =
-                          value || {};
-                        return (
-                          <YStack key={option.id}>
-                            <CheckboxInput
-                              marginBottom="$md"
-                              id={option.id}
-                              label={option.text[language]}
-                              checked={selections[option.id]?.optionId === option.id}
-                              onCheckedChange={(checked) => {
-                                if (checked) {
-                                  return onChange({
-                                    ...selections,
-                                    [option.id]: { optionId: option.id, text: null },
-                                  });
-                                } else {
-                                  const { [option.id]: _toRemove, ...rest } = selections;
-                                  return onChange(
-                                    Object.values(rest).filter(Boolean).length > 0 ? rest : "",
-                                  );
-                                }
-                              }}
-                            />
-                            {selections[option.id]?.optionId === option.id && option.isFreeText && (
-                              <FormInput
-                                type="textarea"
-                                marginTop="$md"
-                                value={selections[option.id]?.text}
-                                placeholder={t("form.text_placeholder")}
-                                onChangeText={(textValue) => {
-                                  selections[option.id] = {
-                                    optionId: option.id,
-                                    text: textValue,
-                                  };
-                                  onChange(selections);
-                                }}
-                                maxLength={1024}
-                                helper={t("form.max", {
-                                  value: 1024,
-                                })}
-                              />
-                            )}
-                          </YStack>
-                        );
-                      })}
-                    </WizardFormElement>
-                  );
-                case "ratingQuestion":
-                  return (
-                    <WizardRatingFormInput
-                      type="single"
-                      id={question.id}
-                      label={`${question.code}. ${question.text[language]}`}
-                      paragraph={question.helptext?.[language] || ""}
-                      scale={question.scale}
-                      onValueChange={onChange}
-                      value={value}
-                    />
-                  );
-              }
-            }}
+        <YStack paddingHorizontal="$md" paddingBottom="$md" justifyContent="center" flex={1}>
+          <QuestionForm
+            control={control}
+            activeQuestion={activeQuestion}
+            handleFocus={handleFocus}
+            ref={textareaRef}
           />
 
           {/* notes section */}
@@ -620,16 +478,14 @@ const FormQuestionnaire = () => {
         onPreviousButtonPress={onBackButtonPress}
       />
       {/* //todo: remove this once tamagui fixes sheet issue #2585 */}
-      {(isOptionsSheetOpen || Platform.OS === "ios") && (
+      {isOptionsSheetOpen && (
         <OptionsSheet
-          open={isOptionsSheetOpen}
+          open
           setOpen={(open) => {
             setIsOptionsSheetOpen(open);
             addingNote && setAddingNote(false);
           }}
           isLoading={(isLoadingAddAttachmentt && !isPaused) || isPreparingFile}
-          // seems that this behaviour is handled differently and the sheet will move with keyboard even if this props is set to false on android
-          moveOnKeyboardChange={Platform.OS === "android"}
           disableDrag={addingNote}
         >
           {(isLoadingAddAttachmentt && !isPaused) || isPreparingFile ? (

@@ -31,6 +31,16 @@ const TimeSelect: React.FC<TimeSelectProps> = memo(
       setTempTime(time ?? new Date());
     }, [time]);
 
+    // when we have an arrivalTime set, the ios picker displays it as the minimum date and time, but the INTERNAL value of the datepicker is not changed if the onChange function wasn't triggered, so we need to do it manually
+    // this is the only time when the arrivalTime could have a bigger value than the tempTime
+    const shouldUpdateTempTime = Platform.OS === "ios" && arrivalTime && arrivalTime > tempTime;
+
+    useEffect(() => {
+      if (shouldUpdateTempTime) {
+        setTempTime(arrivalTime);
+      }
+    }, [shouldUpdateTempTime]);
+
     const onChange = (event: DateTimePickerEvent, selectedTime: Date | undefined) => {
       // selectedTime = date picked from date picker
       // eventTime = date picked from time picker
@@ -171,10 +181,10 @@ const TimeSelect: React.FC<TimeSelectProps> = memo(
           ></CardFooter>
         </YStack>
 
-        {Platform.OS === "ios" ? (
+        {Platform.OS === "ios" && open ? (
           <Sheet
             modal
-            open={open}
+            open
             onOpenChange={setOpen}
             zIndex={100_000}
             snapPoints={[45]}

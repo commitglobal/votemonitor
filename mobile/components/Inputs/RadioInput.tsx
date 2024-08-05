@@ -7,10 +7,23 @@ export interface RadioInputProps extends RadioGroupItemProps {
   value: string;
   label: string;
   selectedValue: string;
+  onValueChange: ((value: string) => void) | undefined;
 }
 
-const RadioInput: React.FC<RadioInputProps> = ({ id, value, label, selectedValue, ...rest }) => {
+const RadioInput: React.FC<RadioInputProps> = ({
+  id,
+  value,
+  label,
+  selectedValue,
+  onValueChange,
+  ...rest
+}) => {
   const isSelected = selectedValue === value;
+
+  // created a function to handle the selection of the radio input in order to allow selecting from multiple components, such as the XStack (not only the RadioGroup.Item and Label, which do this by default without the need of a specific function)
+  const handlePress = () => {
+    onValueChange && onValueChange(value);
+  };
 
   return (
     <XStack
@@ -19,9 +32,9 @@ const RadioInput: React.FC<RadioInputProps> = ({ id, value, label, selectedValue
       borderWidth={1}
       backgroundColor="white"
       borderColor={isSelected ? "$purple5" : "$gray3"}
-      gap="$xs"
-      paddingHorizontal={14}
       borderRadius={8}
+      paddingLeft={14}
+      onPress={handlePress}
       {...rest}
     >
       <RadioGroup.Item
@@ -31,13 +44,21 @@ const RadioInput: React.FC<RadioInputProps> = ({ id, value, label, selectedValue
         id={id}
         backgroundColor={isSelected ? "$purple5" : "white"}
         borderColor={isSelected ? "$purple5" : "$gray3"}
+        onPress={handlePress}
       >
         {isSelected && (
           <RadioGroup.Indicator forceMount={true} backgroundColor="white"></RadioGroup.Indicator>
         )}
       </RadioGroup.Item>
 
-      <Label htmlFor={id} flex={1} lineHeight={20} paddingVertical="$xs">
+      <Label
+        htmlFor={id}
+        flex={1}
+        lineHeight={20}
+        paddingVertical="$xs"
+        paddingLeft="$xs"
+        onPress={handlePress}
+      >
         <Typography preset="body1">{label}</Typography>
       </Label>
     </XStack>

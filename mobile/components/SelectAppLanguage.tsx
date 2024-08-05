@@ -1,7 +1,7 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { Adapt, Select, Sheet } from "tamagui";
 import { Language, LanguageContext } from "../contexts/language/LanguageContext.provider";
-import { Keyboard } from "react-native";
+import { BackHandler, Keyboard, Platform } from "react-native";
 import { Icon } from "./Icon";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTranslation } from "react-i18next";
@@ -24,6 +24,25 @@ const SelectAppLanguage = ({ open, setOpen }: SelectLanguageProps) => {
     setOpen(false);
     SecureStore.setItem(I18N_LANGUAGE, language);
   };
+
+  // close sheet on android back press
+  useEffect(() => {
+    if (Platform.OS !== "android") {
+      return;
+    }
+    const onBackPress = () => {
+      // close sheet
+      if (open) {
+        setOpen(false);
+        return true;
+      } else {
+        // navigate back
+        return false;
+      }
+    };
+    const subscription = BackHandler.addEventListener("hardwareBackPress", onBackPress);
+    return () => subscription.remove();
+  }, [open, setOpen]);
 
   return (
     <Select disablePreventBodyScroll open={open} onValueChange={onChangeLanguage}>

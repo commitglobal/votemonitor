@@ -10,12 +10,25 @@ interface RadioFormInputProps extends RadioGroupProps {
   options: { id: string; value: string; label: string }[];
 }
 
-const RadioFormInput: React.FC<RadioFormInputProps> = ({ title, options, value, ...rest }) => {
+const RadioFormInput: React.FC<RadioFormInputProps> = ({
+  title,
+  options,
+  value,
+  onValueChange,
+  ...rest
+}) => {
   return (
     <FormElement title={title}>
       <RadioGroup gap="$md" {...rest}>
         {options.map(({ id, value: optionValue, label }) => (
-          <RadioInput id={id} value={optionValue} label={label} selectedValue={value} key={id} />
+          <RadioInput
+            id={id}
+            value={optionValue}
+            onValueChange={onValueChange}
+            label={label}
+            selectedValue={value}
+            key={id}
+          />
         ))}
       </RadioGroup>
     </FormElement>

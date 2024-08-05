@@ -42,11 +42,11 @@ const FormCard = (props: FormCardProps): JSX.Element => {
   return (
     <Card width="100%" onPress={onPress} {...rest}>
       <CardHeader>
-        <Typography preset="body1" color="$gray9" fontWeight="700" maxWidth="60%" numberOfLines={2}>
+        <Typography preset="body1" color="$gray9" fontWeight="700" maxWidth="55%" numberOfLines={2}>
           {form.name}
         </Typography>
 
-        <Badge status={form.status} maxWidth="40%" textStyle={{ textAlign: "center" }}>
+        <Badge status={form.status} maxWidth="45%" textStyle={{ textAlign: "center" }}>
           {t(`${FormStateToTextMapper[form.status]}`)}
         </Badge>
       </CardHeader>

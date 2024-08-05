@@ -68,7 +68,12 @@ const Badge = (props: BadgeProps): JSX.Element => {
 
   return (
     <StyledView presets={presetType} {...rest}>
-      <Typography preset="body2" color={textColor} style={{ ...textStyle }}>
+      <Typography
+        preset="body2"
+        color={textColor}
+        style={{ ...textStyle }}
+        allowFontScaling={false}
+      >
         {props.children}
       </Typography>
     </StyledView>

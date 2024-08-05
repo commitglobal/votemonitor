@@ -20,13 +20,21 @@ const WizardRadioFormInput: React.FC<WizardRadioFormInputProps> = ({
   helper,
   options,
   value,
+  onValueChange,
   ...rest
 }) => {
   return (
     <WizardFormElement label={label} paragraph={paragraph} helper={helper}>
       <RadioGroup gap="$md" {...rest}>
         {options.map(({ id, value: optionValue, label }) => (
-          <RadioInput id={id} value={optionValue} label={label} selectedValue={value} key={id} />
+          <RadioInput
+            id={id}
+            value={optionValue}
+            onValueChange={onValueChange}
+            label={label}
+            selectedValue={value}
+            key={id}
+          />
         ))}
       </RadioGroup>
     </WizardFormElement>

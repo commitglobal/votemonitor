@@ -163,7 +163,8 @@
         "error": {
           "arrival_first": "Molimo vas najpre izaberite vreme dolaska.",
           "later_departure": "Molimo vas izaberite vreme odlaska koje je posle vremena dolaska.",
-          "earlier_arrival": "Molimo vas izaberite vreme dolaska koje je pre vremena odlaska."
+          "earlier_arrival": "Molimo vas izaberite vreme dolaska koje je pre vremena odlaska.",
+          "server": "Nismo mogli da pošaljemo informacije serveru."
         }
       },
       "polling_station_form": {
@@ -206,7 +207,10 @@
     "warning_modal": {
       "title": "Očisti informacije o biračkom mestu",
       "description": "Ova akcija će obrisati sve unete odgovore u ovom izveštaju. Da biste izbegli nenamerni gubitak informacija, molimo vas da proverite obrazac pre izvođenja ove akcije.",
-      "actions": { "cancel": "Otkaži", "clear": "Očisti obrazac" }
+      "actions": {
+        "cancel": "Otkaži",
+        "clear": "Očisti obrazac"
+      }
     }
   },
   "form_overview": {
@@ -299,12 +303,18 @@
       "question": {
         "title": "Očisti odgovor na pitanje {{value}}",
         "description": "Brisanje odgovora trajno će ukloniti sve njegove informacije (uključujući beleške i medijske datoteke). Status pitanja biće vraćen na 'Nije odgovoreno'.",
-        "actions": { "cancel": "Otkaži", "clear": "Očisti odgovor" }
+        "actions": {
+          "cancel": "Otkaži",
+          "clear": "Očisti odgovor"
+        }
       },
       "attachment": {
         "title": "Izbriši medijsku datoteku",
         "description": "Ova brisanje je trajno. Kada je medijska datoteka izbrisana ne može se povratiti.",
-        "actions": { "cancel": "Otkaži", "clear": "Izbriši" }
+        "actions": {
+          "cancel": "Otkaži",
+          "clear": "Izbriši"
+        }
       }
     },
     "error": "Greška pri učitavanju pitanja!"

@@ -46,11 +46,7 @@ const ManagePollingStation = () => {
     useDeletePollingStationVisitMutation(activeElectionRound?.id);
 
   const insets = useSafeAreaInsets();
-  const { height, width } = useWindowDimensions();
-  const scrollHeight = useMemo(() => {
-    const netInfoHeight = shouldDisplayBanner ? 65 : 0;
-    return height - insets.top - insets.bottom - 50 - netInfoHeight;
-  }, [height, insets.top, insets.bottom, shouldDisplayBanner]);
+  const { width } = useWindowDimensions();
 
   if (visits === undefined || visits.length === 0) {
     return <NoVisitsMPS />;
@@ -105,14 +101,7 @@ const ManagePollingStation = () => {
   };
 
   return (
-    <Screen
-      preset="scroll"
-      ScrollViewProps={{
-        showsVerticalScrollIndicator: false,
-        stickyHeaderIndices: [0],
-        bounces: false,
-      }}
-    >
+    <Screen preset="fixed" contentContainerStyle={{ flexGrow: 1 }}>
       <Header
         title={t("general_text")}
         titleColor="white"
@@ -121,7 +110,12 @@ const ManagePollingStation = () => {
         onLeftPress={() => router.back()}
       />
 
-      <YStack height={scrollHeight} paddingHorizontal="$md" paddingTop="$lg" paddingBottom="$md">
+      <YStack
+        flex={1}
+        paddingHorizontal="$md"
+        paddingTop="$lg"
+        paddingBottom={shouldDisplayBanner ? 16 : insets.bottom + 16}
+      >
         <ListView<PollingStationVisitVM>
           data={visits}
           showsVerticalScrollIndicator={false}

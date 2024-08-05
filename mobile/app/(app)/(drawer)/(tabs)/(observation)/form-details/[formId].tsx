@@ -7,7 +7,6 @@ import { Typography } from "../../../../../../components/Typography";
 import { Spinner, useWindowDimensions, YStack } from "tamagui";
 import { useMemo, useState } from "react";
 import { ListView } from "../../../../../../components/ListView";
-import { Platform } from "react-native";
 import OptionsSheet from "../../../../../../components/OptionsSheet";
 import ChangeLanguageDialog from "../../../../../../components/ChangeLanguageDialog";
 import { setFormLanguagePreference } from "../../../../../../common/language.preferences";
@@ -263,8 +262,8 @@ const FormDetails = () => {
         />
       )}
       {/* //todo: change this once tamagui fixes sheet issue #2585 */}
-      {(optionSheetOpen || Platform.OS === "ios") && (
-        <OptionsSheet open={optionSheetOpen} setOpen={setOptionSheetOpen}>
+      {optionSheetOpen && (
+        <OptionsSheet open setOpen={setOptionSheetOpen}>
           <YStack paddingHorizontal="$sm" gap="$xxs">
             <Typography preset="body1" paddingVertical="$md" onPress={onChangeLanguagePress}>
               {t("menu.change_language")}

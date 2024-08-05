@@ -6,7 +6,7 @@ import { Icon } from "./Icon";
 import { Note } from "../common/models/note";
 import { useTranslation } from "react-i18next";
 import EditNoteSheet from "./EditNoteSheet";
-import { Keyboard, Platform } from "react-native";
+import { Keyboard } from "react-native";
 
 const QuestionNotes = ({
   notes,
@@ -59,7 +59,7 @@ const QuestionNotes = ({
       )}
 
       {/* this weird condition is a workaround for fixing bottomsheet jump on ios/ sheet not opening on android on back button press */}
-      {(selectedNote || Platform.OS === "ios") && (
+      {selectedNote && (
         <EditNoteSheet
           selectedNote={selectedNote}
           setSelectedNote={setSelectedNote}
