@@ -54,6 +54,10 @@ import Bin from "../assets/icons/Trash2.svg";
 import { styled, View, ViewProps } from "tamagui";
 import { StyleProp, ViewStyle } from "react-native";
 import { Ref } from "react";
+import Note from "../assets/icons/questionCard/note.svg";
+import Photo from "../assets/icons/questionCard/photo.svg";
+import Video from "../assets/icons/questionCard/video.svg";
+import Audio from "../assets/icons/questionCard/audio.svg";
 
 interface IconProps extends ViewProps {
   /**
@@ -144,6 +148,10 @@ export const defaultIcon = React.forwardRef(
       bin: <Bin fill={color} width={size} height={size} />,
       commitGlobal: <CommitGlobal fill={color} />,
       pollingStationPin: <PollingStationPin fill={color} />,
+      note: <Note fill={color} />,
+      photo: <Photo fill={color} />,
+      video: <Video fill={color} />,
+      audio: <Audio fill={color} />,
     };
 
     return (
