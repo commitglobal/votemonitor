@@ -98,7 +98,7 @@ const UserContextProvider = ({ children }: React.PropsWithChildren) => {
             staleTime: 5 * 60 * 1000,
           };
           const submissions = {
-            queryKey: pollingStationsKeys.formSubmissions(
+            queryKey: pollingStationsKeys.allFormSubmissions(
               activeElectionRound?.id,
               visit.pollingStationId,
             ),

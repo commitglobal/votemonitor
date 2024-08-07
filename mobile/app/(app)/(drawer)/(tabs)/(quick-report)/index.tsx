@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import { Typography } from "../../../../../components/Typography";
 import { Spinner, View, YStack } from "tamagui";
 import { Icon } from "../../../../../components/Icon";
@@ -12,29 +12,23 @@ import { useQuickReports } from "../../../../../services/queries/quick-reports.q
 import { useUserData } from "../../../../../contexts/user/UserContext.provider";
 import { ListView } from "../../../../../components/ListView";
 import ReportCard from "../../../../../components/ReportCard";
-import { useWindowDimensions, ViewStyle } from "react-native";
+import { RefreshControl, useWindowDimensions, ViewStyle } from "react-native";
 import { QuickReportsAPIResponse } from "../../../../../services/api/quick-report/get-quick-reports.api";
 import { useTranslation } from "react-i18next";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { ElectionRoundVM } from "../../../../../common/models/election-round.model";
 
 const QuickReport = () => {
+  const { t } = useTranslation("quick_report");
   const navigation = useNavigation();
+
   const [openContextualMenu, setOpenContextualMenu] = useState(false);
+
   const { activeElectionRound } = useUserData();
   const { data: quickReports, isLoading, error } = useQuickReports(activeElectionRound?.id);
-  const { t } = useTranslation("quick_report");
 
   return (
     <>
-      <Screen
-        preset="auto"
-        ScrollViewProps={{
-          showsVerticalScrollIndicator: false,
-          stickyHeaderIndices: [0],
-          bounces: false,
-        }}
-        contentContainerStyle={$containerStyle}
-      >
+      <Screen preset="fixed" contentContainerStyle={$containerStyle}>
         <Header
           title={"Quick report"}
           titleColor="white"
@@ -47,7 +41,12 @@ const QuickReport = () => {
           }}
         />
         {quickReports ? (
-          <QuickReportContent quickReports={quickReports} isLoading={isLoading} error={error} />
+          <QuickReportContent
+            quickReports={quickReports}
+            isLoading={isLoading}
+            error={error}
+            activeElectionRound={activeElectionRound}
+          />
         ) : (
           false
         )}
@@ -89,19 +88,25 @@ interface QuickReportContentProps {
   quickReports: QuickReportsAPIResponse[];
   isLoading: boolean;
   error: Error | null;
+  activeElectionRound: ElectionRoundVM | undefined;
 }
 
 const ESTIMATED_ITEM_SIZE = 200;
 
-const QuickReportContent = ({ quickReports, isLoading, error }: QuickReportContentProps) => {
+const QuickReportContent = ({
+  quickReports,
+  isLoading,
+  error,
+  activeElectionRound,
+}: QuickReportContentProps) => {
   const { t } = useTranslation(["quick_report", "common"]);
-  const insets = useSafeAreaInsets();
-  const { height, width } = useWindowDimensions();
-  const scrollHeight = useMemo(() => height - insets.top - insets.bottom - 100 - 60, []);
+  const { width } = useWindowDimensions();
+
+  const { refetch, isRefetching } = useQuickReports(activeElectionRound?.id);
 
   if (isLoading) {
     return (
-      <YStack justifyContent="center" alignItems="center" minHeight={scrollHeight}>
+      <YStack justifyContent="center" alignItems="center" flex={1}>
         <Spinner size="large" color="$purple5" />
       </YStack>
     );
@@ -112,7 +117,7 @@ const QuickReportContent = ({ quickReports, isLoading, error }: QuickReportConte
   }
 
   return (
-    <YStack padding="$md" minHeight={scrollHeight}>
+    <YStack padding="$md" flex={1}>
       <ListView<any>
         data={quickReports}
         showsVerticalScrollIndicator={false}
@@ -148,7 +153,7 @@ const QuickReportContent = ({ quickReports, isLoading, error }: QuickReportConte
             </YStack>
           </YStack>
         }
-        bounces={false}
+        bounces={true}
         renderItem={({ item, index }) => (
           <ReportCard
             key={`${index}`}
@@ -167,6 +172,7 @@ const QuickReportContent = ({ quickReports, isLoading, error }: QuickReportConte
                 width: width - 32,
               }
         }
+        refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={refetch} />}
       />
     </YStack>
   );

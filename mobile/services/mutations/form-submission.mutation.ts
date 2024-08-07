@@ -23,7 +23,7 @@ export const useFormSubmissionMutation = ({
   const queryClient = useQueryClient();
 
   const formSubmissionsQK = useMemo(
-    () => pollingStationsKeys.formSubmissions(electionRoundId, pollingStationId),
+    () => pollingStationsKeys.allFormSubmissions(electionRoundId, pollingStationId),
     [electionRoundId, pollingStationId],
   );
 

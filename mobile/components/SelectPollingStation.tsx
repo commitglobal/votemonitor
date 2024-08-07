@@ -36,7 +36,7 @@ const SelectPollingStation = () => {
   }, [open, setOpen]);
 
   return (
-    <YStack paddingVertical="$xs" paddingHorizontal="$md" backgroundColor="white">
+    <YStack>
       <Select
         onValueChange={setSelectedPollingStationId}
         disablePreventBodyScroll
@@ -45,16 +45,19 @@ const SelectPollingStation = () => {
         value={selectedPollingStation?.pollingStationId}
       >
         <Select.Trigger
-          justifyContent="center"
           alignItems="center"
-          backgroundColor="$purple1"
-          borderRadius="$10"
+          paddingVertical={16}
+          paddingHorizontal={16}
+          backgroundColor="white"
+          borderWidth={0}
+          radiused={false}
+          icon={<Icon icon="pollingStationPin" size={24} color="$purple5" />}
           iconAfter={
             <Icon icon="chevronRight" size={24} transform="rotate(90deg)" color="$purple5" />
           }
         >
           <Select.Value
-            width={"90%"}
+            flex={1}
             color="$purple5"
             placeholder={
               selectedPollingStation

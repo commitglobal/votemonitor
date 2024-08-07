@@ -4,7 +4,7 @@
     "search": "Search",
     "loading": "Loading...",
     "status": {
-      "completed": "Completed",
+      "completed": "Done",
       "in_progress": "In progress",
       "not_started": "Not started"
     },
@@ -121,7 +121,7 @@
   },
   "tabs": {
     "observation": "Observation",
-    "quick_report": "Quick report",
+    "quick_report": "Report",
     "guides": "Guides",
     "inbox": "Inbox",
     "more": "More"
@@ -177,7 +177,7 @@
     "forms": {
       "heading": "Forms",
       "list": {
-        "empty": "No data to display",
+        "empty": "Observation forms will appear here once your organization will publish them in the system.",
         "error": {
           "paragraph1": "Something went wrong!",
           "paragraph2": "We could not fetch the data. Press the retry button to try again!",

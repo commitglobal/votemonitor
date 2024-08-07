@@ -3,7 +3,8 @@ import { router } from "expo-router";
 import { Screen } from "../../components/Screen";
 import Header from "../../components/Header";
 import { Icon } from "../../components/Icon";
-import { ViewStyle, Image } from "react-native";
+import { ViewStyle } from "react-native";
+import { Image } from "expo-image";
 import { useTranslation } from "react-i18next";
 import { styled, View, XStack, YStack } from "tamagui";
 import { Typography } from "../../components/Typography";
@@ -68,7 +69,7 @@ const AboutVoteMonitor = () => {
         <XStack justifyContent="center" alignItems="center" minHeight={115} marginBottom="$lg">
           <Image
             source={require("../../assets/images/commit-global-color.png")}
-            resizeMode="contain"
+            contentFit="contain"
             style={{ width: "100%", height: "100%" }}
           />
         </XStack>

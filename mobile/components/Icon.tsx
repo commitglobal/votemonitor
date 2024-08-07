@@ -2,11 +2,11 @@
 import * as React from "react";
 import EyeOff from "../assets/icons/Eye off.svg";
 import Eye from "../assets/icons/Eye.svg";
-import Observation from "../assets/icons/observation.svg";
-import QuickReport from "../assets/icons/quick-report.svg";
-import Learning from "../assets/icons/Learning.svg";
-import Inbox from "../assets/icons/Inbox.svg";
-import More from "../assets/icons/More.svg";
+import Observation from "../assets/icons/tabs/observation.svg";
+import QuickReport from "../assets/icons/tabs/report.svg";
+import Learning from "../assets/icons/tabs/guides.svg";
+import Inbox from "../assets/icons/tabs/inbox.svg";
+import More from "../assets/icons/tabs/more.svg";
 import ChevronRight from "../assets/icons/Chevron right.svg";
 import ChevronLeft from "../assets/icons/Chevron left.svg";
 import AddNote from "../assets/icons/add-note.svg";
@@ -48,6 +48,8 @@ import MonitorPollingStations from "../assets/icons/onboarding/monitor-p-s.svg";
 import ObservationForms from "../assets/icons/onboarding/forms.svg";
 import NotesOrMedia from "../assets/icons/onboarding/notes-media.svg";
 import CommitGlobal from "../assets/icons/commit-global.svg";
+import PollingStationPin from "../assets/icons/polling-station-pin.svg";
+import Form from "../assets/icons/form.svg";
 
 import Bin from "../assets/icons/Trash2.svg";
 import { styled, View, ViewProps } from "tamagui";
@@ -142,6 +144,8 @@ export const defaultIcon = React.forwardRef(
       notesOrMedia: <NotesOrMedia width={202} height={188} />,
       bin: <Bin fill={color} width={size} height={size} />,
       commitGlobal: <CommitGlobal fill={color} />,
+      pollingStationPin: <PollingStationPin fill={color} />,
+      form: <Form fill={color} />,
     };
 
     return (
