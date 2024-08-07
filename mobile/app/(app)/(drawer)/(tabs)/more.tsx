@@ -188,6 +188,7 @@ const More = () => {
       )}
       {showWarningModal && (
         <WarningDialog
+          theme="info"
           title={
             isOnline
               ? t("warning_modal.logout_online.title")
@@ -203,7 +204,6 @@ const More = () => {
           cancelBtnText={t("warning_modal.logout_online.cancel")}
           action={logout}
           onCancel={() => setShowWarningModal(false)}
-          actionBtnStyle={{ backgroundColor: "hsl(272, 56%, 45%)" }}
         />
       )}
     </Screen>

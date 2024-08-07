@@ -315,6 +315,14 @@
           "cancel": "Cancel",
           "clear": "Delete"
         }
+      },
+      "unsaved_answer": {
+        "title": "Save changes to question",
+        "description": "You have unsaved changes on this question. Do you want to save your changes before leaving?",
+        "actions": {
+          "cancel": "Discard",
+          "save": "Save changes"
+        }
       }
     },
     "error": "Error while loading question data!"
