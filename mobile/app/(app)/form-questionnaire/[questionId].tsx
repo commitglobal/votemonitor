@@ -59,6 +59,14 @@ const FormQuestionnaire = () => {
   const [deletingAnswer, setDeletingAnswer] = useState(false);
   const [isPreparingFile, setIsPreparingFile] = useState(false);
 
+  const [showWarningDialog, setShowWarningDialog] = useState<{
+    show: boolean;
+    onAction?: () => void;
+    onCancel?: () => void;
+  }>({
+    show: false,
+  });
+
   const {
     data: currentForm,
     isLoading: isLoadingCurrentForm,
@@ -114,6 +122,12 @@ const FormQuestionnaire = () => {
     scopeId: `Submit_Answers_${activeElectionRound?.id}_${selectedPollingStation?.pollingStationId}_${formId}`,
   });
 
+  /**
+   * Submits an answer to the current question and updates the form submission accordingly.
+   *
+   * @param {any} formValues - The form values containing the answer to be submitted.
+   * @param {"next" | "prev" | "back"} navigate - The direction of navigation after submitting the answer.
+   */
   const onSubmitAnswer = (formValues: any) => {
     const questionId = activeQuestion?.question.id as string;
 
@@ -149,15 +163,9 @@ const FormQuestionnaire = () => {
       }
 
       const nextQuestion = findNextQuestion(activeQuestion.indexInAllQuestions, updatedAnswers);
-
-      if (nextQuestion) {
-        router.replace(
-          `/form-questionnaire/${nextQuestion.id}?formId=${formId}&language=${language}`,
-        );
-      } else {
-        return router.back();
-      }
+      return nextQuestion;
     }
+    return null;
   };
 
   const findNextQuestion = (
@@ -178,6 +186,16 @@ const FormQuestionnaire = () => {
     return findNextQuestion(index + 1, updatedAnswers);
   };
 
+  const goToNextQuestion = (nextQuestion: ApiFormQuestion | null) => {
+    if (nextQuestion) {
+      router.replace(
+        `/form-questionnaire/${nextQuestion.id}?formId=${formId}&language=${language}`,
+      );
+    } else {
+      return router.back();
+    }
+  };
+
   const findPreviousQuestion = (
     index: number,
     answers: Record<string, ApiFormAnswer> | undefined,
@@ -196,16 +214,50 @@ const FormQuestionnaire = () => {
     return findPreviousQuestion(index - 1, answers);
   };
 
+  const goToPrevQuestion = () => {
+    const prevQ = findPreviousQuestion(activeQuestion.indexInAllQuestions, answers);
+    if (prevQ) {
+      router.replace(`/form-questionnaire/${prevQ.id}?formId=${formId}&language=${language}`);
+    }
+  };
+
   const onBackButtonPress = () => {
     if (currentForm?.questions && activeQuestion.indexInAllQuestions === 0) {
       return;
     }
 
-    const prevQ = findPreviousQuestion(activeQuestion.indexInAllQuestions, answers);
-
-    if (prevQ) {
-      router.replace(`/form-questionnaire/${prevQ.id}?formId=${formId}&language=${language}`);
+    // If the user changed the answer before going back -> show confirmation modal
+    if (isDirty) {
+      Keyboard.dismiss();
+      setShowWarningDialog({
+        show: true,
+        onAction: () => {
+          handleSubmit(onSubmitAnswer)();
+          goToPrevQuestion();
+        },
+        onCancel: goToPrevQuestion,
+      });
+      return;
     }
+
+    goToPrevQuestion();
+  };
+
+  const handleLeaveFormWizard = () => {
+    // If the user changed the answer before going back -> show confirmation modal
+    if (isDirty) {
+      Keyboard.dismiss();
+      setShowWarningDialog({
+        show: true,
+        onAction: () => {
+          handleSubmit(onSubmitAnswer)();
+          router.back();
+        },
+        onCancel: () => router.back(),
+      });
+      return;
+    }
+    router.back();
   };
 
   const onClearForm = () => {
@@ -383,7 +435,7 @@ const FormQuestionnaire = () => {
         titleColor="white"
         barStyle="light-content"
         leftIcon={<Icon icon="chevronLeft" color="white" />}
-        onLeftPress={() => router.back()}
+        onLeftPress={handleLeaveFormWizard}
       />
 
       <ScrollView
@@ -474,7 +526,10 @@ const FormQuestionnaire = () => {
           activeQuestion?.indexInAllQuestions === currentForm?.questions?.length - 1
         }
         isNextDisabled={false}
-        onActionButtonPress={handleSubmit(onSubmitAnswer)}
+        onActionButtonPress={handleSubmit(async (formValues) => {
+          const nextQuestion = await onSubmitAnswer(formValues);
+          goToNextQuestion(nextQuestion);
+        })}
         onPreviousButtonPress={onBackButtonPress}
       />
       {/* //todo: remove this once tamagui fixes sheet issue #2585 */}
@@ -538,6 +593,20 @@ const FormQuestionnaire = () => {
             </YStack>
           )}
         </OptionsSheet>
+      )}
+      {showWarningDialog.show && (
+        <WarningDialog
+          theme="info"
+          title={t("warning_modal.unsaved_answer.title")}
+          description={t("warning_modal.unsaved_answer.description")}
+          action={showWarningDialog.onAction}
+          onCancel={() => {
+            setShowWarningDialog({ show: false });
+            showWarningDialog.onCancel && showWarningDialog.onCancel();
+          }}
+          actionBtnText={t("warning_modal.unsaved_answer.actions.save")}
+          cancelBtnText={t("warning_modal.unsaved_answer.actions.cancel")}
+        />
       )}
     </Screen>
   );
