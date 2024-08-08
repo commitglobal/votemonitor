@@ -128,7 +128,7 @@ const FormQuestionnaire = () => {
    * @param {any} formValues - The form values containing the answer to be submitted.
    * @param {"next" | "prev" | "back"} navigate - The direction of navigation after submitting the answer.
    */
-  const onSubmitAnswer = (formValues: any, navigate: "next" | "prev" | "back") => {
+  const onSubmitAnswer = (formValues: any) => {
     const questionId = activeQuestion?.question.id as string;
 
     if (activeElectionRound?.id && selectedPollingStation?.pollingStationId && activeQuestion) {
@@ -161,14 +161,11 @@ const FormQuestionnaire = () => {
           answers: Object.values(updatedAnswers).filter(Boolean) as ApiFormAnswer[],
         });
       }
-      if (navigate === "next") {
-        goToNextQuestion(updatedAnswers);
-      } else if (navigate === "prev") {
-        goToPrevQuestion();
-      } else if (navigate === "back") {
-        router.back();
-      }
+
+      const nextQuestion = findNextQuestion(activeQuestion.indexInAllQuestions, updatedAnswers);
+      return nextQuestion;
     }
+    return null;
   };
 
   const findNextQuestion = (
@@ -189,9 +186,7 @@ const FormQuestionnaire = () => {
     return findNextQuestion(index + 1, updatedAnswers);
   };
 
-  const goToNextQuestion = (updatedAnswers: { [x: string]: ApiFormAnswer | undefined }) => {
-    const nextQuestion = findNextQuestion(activeQuestion.indexInAllQuestions, updatedAnswers);
-
+  const goToNextQuestion = (nextQuestion: ApiFormQuestion | null) => {
     if (nextQuestion) {
       router.replace(
         `/form-questionnaire/${nextQuestion.id}?formId=${formId}&language=${language}`,
@@ -236,7 +231,10 @@ const FormQuestionnaire = () => {
       Keyboard.dismiss();
       setShowWarningDialog({
         show: true,
-        onAction: () => handleSubmit((formValues) => onSubmitAnswer(formValues, "prev"))(),
+        onAction: () => {
+          handleSubmit(onSubmitAnswer)();
+          goToPrevQuestion();
+        },
         onCancel: goToPrevQuestion,
       });
       return;
@@ -251,7 +249,10 @@ const FormQuestionnaire = () => {
       Keyboard.dismiss();
       setShowWarningDialog({
         show: true,
-        onAction: () => handleSubmit((formValues) => onSubmitAnswer(formValues, "back"))(),
+        onAction: () => {
+          handleSubmit(onSubmitAnswer)();
+          router.back();
+        },
         onCancel: () => router.back(),
       });
       return;
@@ -525,7 +526,10 @@ const FormQuestionnaire = () => {
           activeQuestion?.indexInAllQuestions === currentForm?.questions?.length - 1
         }
         isNextDisabled={false}
-        onActionButtonPress={handleSubmit((formValues) => onSubmitAnswer(formValues, "next"))}
+        onActionButtonPress={handleSubmit(async (formValues) => {
+          const nextQuestion = await onSubmitAnswer(formValues);
+          goToNextQuestion(nextQuestion);
+        })}
         onPreviousButtonPress={onBackButtonPress}
       />
       {/* //todo: remove this once tamagui fixes sheet issue #2585 */}
