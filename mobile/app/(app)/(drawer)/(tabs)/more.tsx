@@ -48,21 +48,20 @@ const MenuItem = ({ label, helper, icon, chevronRight, onClick }: MenuItemProps)
 );
 
 const More = () => {
+  const { t } = useTranslation(["more", "languages", "common"]);
+
+  const { isOnline } = useNetInfoContext();
+  const { signOut } = useAuth();
+  const { activeElectionRound } = useUserData();
+
   const navigation = useNavigation();
   const queryClient = useQueryClient();
+
   const [isLanguageSelectSheetOpen, setIsLanguageSelectSheetOpen] = React.useState(false);
   const [logoutLoading, setLogoutLoading] = useState(false);
   const [feedbackSheetOpen, setFeedbackSheetOpen] = useState(false);
   const [optionsSheetOpen, setOptionsSheetOpen] = useState(false);
-  const { activeElectionRound } = useUserData();
-  const { isOnline } = useNetInfoContext();
-
   const [showWarningModal, setShowWarningModal] = useState(false);
-
-  const { unsubscribe: unsubscribePushNotifications } = useNotification();
-
-  const { t } = useTranslation(["more", "languages", "common"]);
-  const { signOut } = useAuth();
 
   const appVersion = Constants.expoConfig?.version;
   const URL = "https://www.code4.ro/ro/privacy-policy-vote-monitor";
@@ -73,6 +72,8 @@ const More = () => {
     queryFn: () => AsyncStorage.getItem(ASYNC_STORAGE_KEYS.CURRENT_USER_STORAGE_KEY),
     staleTime: 0,
   });
+
+  const { unsubscribe: unsubscribePushNotifications } = useNotification();
 
   const logout = async () => {
     setLogoutLoading(true);

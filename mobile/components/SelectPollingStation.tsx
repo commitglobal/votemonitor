@@ -82,14 +82,12 @@ const SelectPollingStation = () => {
                 <Typography preset="body2" color="$gray5" maxFontSizeMultiplier={1}>
                   {t("my_polling_stations.heading")}
                 </Typography>
-                {/* //TODO: not sure how many nroflines we should leave here */}
                 <Typography
                   numberOfLines={7}
                   color="$gray5"
                   marginTop="$xxs"
                   maxFontSizeMultiplier={1}
                 >
-                  {/* //TODO: translation here */}
                   {t("my_polling_stations.paragraph")}
                 </Typography>
               </YStack>
@@ -129,7 +127,6 @@ const SelectPollingStation = () => {
         <Select.Content>
           <Select.Viewport>
             <Select.Group>
-              {/* //TODO: texts from translation */}
               {useMemo(
                 () =>
                   visits?.map((entry, i) => {
@@ -140,7 +137,6 @@ const SelectPollingStation = () => {
                         value={entry.pollingStationId}
                         gap="$3"
                       >
-                        {/* //TODO: change number of lines to 2 if that's what we want */}
                         <Select.ItemText
                           maxFontSizeMultiplier={1.2}
                           numberOfLines={2}
