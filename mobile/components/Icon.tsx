@@ -49,6 +49,7 @@ import ObservationForms from "../assets/icons/onboarding/forms.svg";
 import NotesOrMedia from "../assets/icons/onboarding/notes-media.svg";
 import CommitGlobal from "../assets/icons/commit-global.svg";
 import PollingStationPin from "../assets/icons/polling-station-pin.svg";
+import Form from "../assets/icons/form.svg";
 
 import Bin from "../assets/icons/Trash2.svg";
 import { styled, View, ViewProps } from "tamagui";
@@ -144,6 +145,7 @@ export const defaultIcon = React.forwardRef(
       bin: <Bin fill={color} width={size} height={size} />,
       commitGlobal: <CommitGlobal fill={color} />,
       pollingStationPin: <PollingStationPin fill={color} />,
+      form: <Form fill={color} />,
     };
 
     return (

@@ -26,6 +26,7 @@ import {
   usePollingStationInformationForm,
 } from "../services/queries.service";
 import { RefreshControl } from "react-native";
+import FormListEmptyComponent from "./FormListEmptyComponent";
 
 const ESTIMATED_ITEM_SIZE = 100;
 
@@ -166,7 +167,7 @@ const FormList = ({ ListHeaderComponent }: IFormListProps) => {
       <ListView<FormListItem>
         data={formList}
         ListHeaderComponent={ListHeaderComponent}
-        ListEmptyComponent={<Typography>{t("forms.list.empty")}</Typography>}
+        ListEmptyComponent={<FormListEmptyComponent />}
         showsVerticalScrollIndicator={false}
         bounces={true}
         renderItem={({ item, index }) => {
