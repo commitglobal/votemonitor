@@ -1,7 +1,6 @@
 import React from "react";
 import { XStack } from "tamagui";
 import { Typography } from "./Typography";
-import Badge, { Status } from "./Badge";
 import { useTranslation } from "react-i18next";
 
 interface PollingStationInfoProps {
@@ -23,16 +22,6 @@ const PollingStationInfo: React.FC<PollingStationInfoProps> = ({
             value: `${nrOfAnswers}/${nrOfQuestions}`,
           })}
         </Typography>
-        <Badge
-          status={nrOfAnswers === nrOfQuestions ? Status.COMPLETED : Status.IN_PROGRESS}
-          maxWidth="45%"
-          textStyle={{ textAlign: "center" }}
-          alignSelf="baseline"
-        >
-          {nrOfAnswers === nrOfQuestions
-            ? t("status.completed", { ns: "common" })
-            : t("status.in_progress", { ns: "common" })}
-        </Badge>
       </XStack>
     </>
   );
