@@ -16,7 +16,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import SelectAppLanguage from "../../../../components/SelectAppLanguage";
 import i18n from "../../../../common/config/i18n";
 import { useNotification } from "../../../../hooks/useNotifications";
-import { useUserData } from "../../../../contexts/user/UserContext.provider";
 import { ASYNC_STORAGE_KEYS } from "../../../../common/constants";
 import { useNetInfoContext } from "../../../../contexts/net-info-banner/NetInfoContext";
 import WarningDialog from "../../../../components/WarningDialog";
@@ -52,7 +51,6 @@ const More = () => {
 
   const { isOnline } = useNetInfoContext();
   const { signOut } = useAuth();
-  const { activeElectionRound } = useUserData();
 
   const navigation = useNavigation();
   const queryClient = useQueryClient();
@@ -94,7 +92,7 @@ const More = () => {
       }}
     >
       <Header
-        title={activeElectionRound?.title}
+        title={t("title")}
         titleColor="white"
         barStyle="light-content"
         leftIcon={<Icon icon="menuAlt2" color="white" />}

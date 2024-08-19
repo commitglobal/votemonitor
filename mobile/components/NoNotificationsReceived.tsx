@@ -27,7 +27,7 @@ const NoNotificationsReceived = () => {
       }}
     >
       <Header
-        title={activeElectionRound?.title}
+        title={t("title")}
         titleColor="white"
         barStyle="light-content"
         leftIcon={<Icon icon="menuAlt2" color="white" />}
