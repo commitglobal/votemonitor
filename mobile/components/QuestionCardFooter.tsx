@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { XStack, XStackProps } from "tamagui";
 import { Icon } from "./Icon";
 import { Typography } from "./Typography";
 import { AttachmentMimeType } from "../services/api/get-attachments.api";
+import { mapMimeTypeToIcon } from "../helpers/mapMimeTypetoIcon";
 
 interface QuestionCardFooterProps extends XStackProps {
   numberOfNotes: number;
@@ -26,14 +27,7 @@ const QuestionCardFooter: React.FC<QuestionCardFooterProps> = ({
           attachmentTypes &&
           attachmentTypes.length !== 0 &&
           attachmentTypes.map((attachmentType, index) => {
-            const icon =
-              attachmentType === AttachmentMimeType.IMG
-                ? "photo"
-                : attachmentType === AttachmentMimeType.VIDEO
-                  ? "video"
-                  : attachmentType === AttachmentMimeType.AUDIO
-                    ? "audio"
-                    : "photo";
+            const icon = useMemo(() => mapMimeTypeToIcon(attachmentType), [attachmentType]);
             return <Icon key={index} icon={icon} width={20} height={20} />;
           })}
 
