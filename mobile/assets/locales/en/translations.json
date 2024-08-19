@@ -212,6 +212,14 @@
         "cancel": "Cancel",
         "clear": "Clear form"
       }
+    },
+    "unsaved_changes_dialog": {
+      "title": "Save changes to form",
+      "description": "You have unsaved changes on this form. Do you want to save your changes before leaving?",
+      "actions": {
+        "discard": "Discard",
+        "save": "Save changes"
+      }
     }
   },
   "form_overview": {
