@@ -110,6 +110,13 @@ export const useFormSubmissionMutation = ({
         queryKey: notesKeys.notes(electionRoundId, pollingStationId, variables.formId),
       });
       queryClient.invalidateQueries({ queryKey: formSubmissionsQK });
+      queryClient.invalidateQueries({
+        queryKey: pollingStationsKeys.formSubmissions(
+          electionRoundId,
+          pollingStationId,
+          variables.formId,
+        ),
+      });
     },
   });
 };
