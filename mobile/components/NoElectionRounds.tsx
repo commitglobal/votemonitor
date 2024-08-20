@@ -21,6 +21,7 @@ const NoElectionRounds = () => {
         barStyle="light-content"
         leftIcon={<Icon icon="menuAlt2" color="white" />}
         onLeftPress={() => navigation.dispatch(DrawerActions.openDrawer)}
+        title={t("title")}
       />
       <ScrollView
         contentContainerStyle={{
