@@ -100,13 +100,61 @@ const FormDetails = () => {
   const questions = useMemo(() => {
     return currentForm?.questions
       .filter((q) => shouldDisplayQuestion(q, answers))
-      .map((q) => ({
-        status: answers?.[q.id] ? QuestionStatus.ANSWERED : QuestionStatus.NOT_ANSWERED,
-        question: q.text[language],
-        numberOfNotes: notes?.[q.id]?.length || 0,
-        numberOfAttachments: attachments?.[q.id]?.length || 0,
-        id: q.id,
-      }));
+      .map((q) => {
+        let answer = answers?.[q.id];
+
+        // if answer type is singleSelect, we need to get the selected option text, based on the optionId
+        // we take it from the question options, because that's the only place we have access to the option text
+        if (
+          answer &&
+          answer.$answerType === "singleSelectAnswer" &&
+          q.$questionType === "singleSelectQuestion"
+        ) {
+          const selectedOptionId = answer?.selection.optionId;
+          const selectedOptionText = q.options.find((o) => o.id === selectedOptionId)?.text[
+            language
+          ];
+
+          answer = {
+            ...answer,
+            selection: {
+              ...answer.selection,
+              value: selectedOptionText,
+            },
+          };
+        }
+
+        // if answer type is multiSelect, we need to get the texts for all of the options, based on the optionIds
+        // we take them from the question options, because that's the only place we have access to the option text
+        if (
+          answer &&
+          answer.$answerType === "multiSelectAnswer" &&
+          q.$questionType === "multiSelectQuestion"
+        ) {
+          const answerIds = answer.selection.map((selection) => selection.optionId);
+          const selectedAnswersTexts = q.options
+            .filter((o) => answerIds.includes(o.id))
+            .map((selection) => selection.text[language]);
+          answer = { ...answer, selectionValues: selectedAnswersTexts };
+        }
+
+        return {
+          question: q.text[language],
+          status: answers?.[q.id] ? QuestionStatus.ANSWERED : QuestionStatus.NOT_ANSWERED,
+          answer,
+          numberOfNotes: notes?.[q.id]?.length || 0,
+          lastNoteText:
+            notes && notes?.[q.id]?.length > 0
+              ? notes?.[q.id][notes?.[q.id]?.length - 1].text
+              : undefined,
+          numberOfAttachments: attachments?.[q.id]?.length || 0,
+          // array with the types of attachments for this question
+          attachmentTypes: attachments?.[q.id] && [
+            ...new Set(attachments?.[q.id].map((attachment) => attachment.mimeType)),
+          ],
+          id: q.id,
+        };
+      });
   }, [currentForm, answers, attachments, notes]);
 
   const { numberOfQuestions, formTitle, languages } = useMemo(() => {

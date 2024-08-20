@@ -19,7 +19,6 @@ const OnboardingItem = ({ icon, title, helper, ...rest }: OnboardingItemProps) =
           <ScrollView bounces={false} showsVerticalScrollIndicator={false}>
             <YStack gap="$md">
               <Typography preset="heading" fontWeight="500" textAlign="center" color="white">
-                {/* //todo: translations */}
                 {title}
               </Typography>
               <Typography

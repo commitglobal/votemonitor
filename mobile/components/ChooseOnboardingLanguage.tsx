@@ -1,6 +1,6 @@
 import React, { useContext, useMemo } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { ScrollView, XStack, YStack } from "tamagui";
+import { ScrollView, useTheme, XStack, YStack } from "tamagui";
 import { Icon } from "./Icon";
 import { Typography } from "./Typography";
 import Select from "./Select";
@@ -16,6 +16,7 @@ const ChooseOnboardingLanguage = ({
   setLanguageSelectionApplied: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const insets = useSafeAreaInsets();
+  const theme = useTheme();
   const { t, i18n } = useTranslation(["onboarding", "languages"]);
   const systemLocale = Localization.getLocales()[0];
   const { changeLanguage } = useContext(LanguageContext);
@@ -94,11 +95,11 @@ const ChooseOnboardingLanguage = ({
           backgroundColor="$yellow6"
           paddingHorizontal="$xxxl"
           textStyle={{
-            color: "#5F288D",
+            color: theme.$purple6?.val,
             fontSize: 16,
             fontWeight: "500",
             textAlign: "center",
-          }} // TODO:@luciatugui - culoarea asta nu trebuie sa fie aici
+          }}
           onPress={handleSubmit(onSubmit)}
         >
           {t("language.save")}

@@ -39,6 +39,8 @@ const PollingStationQuestionnaire = () => {
   const { t, i18n } = useTranslation("polling_station_information_form");
   const [openContextualMenu, setOpenContextualMenu] = useState(false);
   const [clearingForm, setClearingForm] = useState(false);
+  const [showWarningDialog, setShowWarningDialog] = useState(false);
+
   const insets = useSafeAreaInsets();
 
   const { activeElectionRound, selectedPollingStation } = useUserData();
@@ -228,7 +230,7 @@ const PollingStationQuestionnaire = () => {
     control,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm({
     defaultValues: setFormDefaultValues(),
   });
@@ -251,6 +253,16 @@ const PollingStationQuestionnaire = () => {
     }),
   );
 
+  const onBackPress = () => {
+    // if the user changed one of the answers in the meantime -> show condirmation modal
+    if (isDirty) {
+      Keyboard.dismiss();
+      setShowWarningDialog(true);
+    } else {
+      router.back();
+    }
+  };
+
   return (
     <>
       <Screen preset="fixed" backgroundColor="white" contentContainerStyle={{ flex: 1 }}>
@@ -260,7 +272,7 @@ const PollingStationQuestionnaire = () => {
           barStyle="light-content"
           leftIcon={<Icon icon="chevronLeft" color="white" />}
           rightIcon={<Icon icon="dotsVertical" color="white" />}
-          onLeftPress={() => router.back()}
+          onLeftPress={onBackPress}
           onRightPress={() => {
             Keyboard.dismiss();
             setOpenContextualMenu(true);
@@ -529,6 +541,22 @@ const PollingStationQuestionnaire = () => {
             onCancel={() => setClearingForm(false)}
             actionBtnText={t("warning_modal.actions.clear")}
             cancelBtnText={t("warning_modal.actions.cancel")}
+          />
+        )}
+
+        {showWarningDialog && (
+          <WarningDialog
+            theme="info"
+            title={t("unsaved_changes_dialog.title")}
+            description={t("unsaved_changes_dialog.description")}
+            action={handleSubmit(onSubmit)}
+            onCancel={() => {
+              // close dialog and go back without saving changes
+              setShowWarningDialog(false);
+              router.back();
+            }}
+            actionBtnText={t("unsaved_changes_dialog.actions.save")}
+            cancelBtnText={t("unsaved_changes_dialog.actions.discard")}
           />
         )}
       </Screen>

@@ -58,6 +58,7 @@
     "expo-updates": "~0.24.11",
     "fast-deep-equal": "^3.1.3",
     "i18next": "^23.10.1",
+    "moti": "^0.29.0",
     "react": "18.2.0",
     "react-hook-form": "^7.51.2",
     "react-i18next": "^14.1.0",
@@ -75,7 +76,8 @@
     "react-native-toast-message": "^2.2.0",
     "superjson": "^2.2.1",
     "tamagui": "^1.100.0",
-    "zod": "^3.23.3"
+    "zod": "^3.23.3",
+    "expo-linear-gradient": "~12.7.2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

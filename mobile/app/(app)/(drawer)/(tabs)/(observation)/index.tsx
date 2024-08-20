@@ -18,6 +18,7 @@ import FormList from "../../../../../components/FormList";
 import OptionsSheet from "../../../../../components/OptionsSheet";
 import { useTranslation } from "react-i18next";
 import NoElectionRounds from "../../../../../components/NoElectionRounds";
+import ObservationSkeleton from "../../../../../components/SkeletonLoaders/ObservationSkeleton";
 
 const Index = () => {
   const { t } = useTranslation("observation");
@@ -26,12 +27,13 @@ const Index = () => {
 
   const { isLoading, visits, selectedPollingStation, activeElectionRound } = useUserData();
 
-  const { data: psiData } = usePollingStationInformation(
+  const { data: psiData, isLoading: isLoadingPsiData } = usePollingStationInformation(
     activeElectionRound?.id,
     selectedPollingStation?.pollingStationId,
   );
 
-  const { data: psiFormQuestions } = usePollingStationInformationForm(activeElectionRound?.id);
+  const { data: psiFormQuestions, isLoading: isLoadingPsiFormQuestions } =
+    usePollingStationInformationForm(activeElectionRound?.id);
 
   if (!isLoading && !activeElectionRound) {
     return <NoElectionRounds />;
@@ -45,7 +47,7 @@ const Index = () => {
     <Screen preset="fixed" contentContainerStyle={{ flexGrow: 1 }}>
       <YStack marginBottom={20}>
         <Header
-          title={activeElectionRound?.title}
+          title={t("title")}
           titleColor="white"
           barStyle="light-content"
           leftIcon={<Icon icon="menuAlt2" color="white" />}
@@ -74,25 +76,24 @@ const Index = () => {
       )}
 
       <YStack paddingHorizontal="$md" flex={1}>
-        <FormList
-          ListHeaderComponent={
-            <YStack>
-              {activeElectionRound &&
-                selectedPollingStation?.pollingStationId &&
-                psiFormQuestions && (
-                  <PollingStationGeneral
-                    electionRoundId={activeElectionRound.id}
-                    pollingStationId={selectedPollingStation.pollingStationId}
-                    psiData={psiData}
-                    psiFormQuestions={psiFormQuestions}
-                  />
-                )}
-              <Typography preset="body1" fontWeight="700" marginTop="$lg" marginBottom="$xxs">
-                {t("forms.heading")}
-              </Typography>
-            </YStack>
-          }
-        />
+        {(isLoading || isLoadingPsiData || isLoadingPsiFormQuestions) && <ObservationSkeleton />}
+        {activeElectionRound && selectedPollingStation?.pollingStationId && psiFormQuestions && (
+          <FormList
+            ListHeaderComponent={
+              <YStack>
+                <PollingStationGeneral
+                  electionRoundId={activeElectionRound.id}
+                  pollingStationId={selectedPollingStation.pollingStationId}
+                  psiData={psiData}
+                  psiFormQuestions={psiFormQuestions}
+                />
+                <Typography preset="body1" fontWeight="700" marginTop="$lg" marginBottom="$xxs">
+                  {t("forms.heading")}
+                </Typography>
+              </YStack>
+            }
+          />
+        )}
       </YStack>
     </Screen>
   );

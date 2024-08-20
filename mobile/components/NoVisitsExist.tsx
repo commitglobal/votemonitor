@@ -27,7 +27,7 @@ const NoVisitsExist = ({
   return (
     <Screen preset="fixed" contentContainerStyle={{ flexGrow: 1 }}>
       <Header
-        title={""}
+        title={t("title")}
         titleColor="white"
         barStyle="light-content"
         leftIcon={<Icon icon="menuAlt2" color="white" />}

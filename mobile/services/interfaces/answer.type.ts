@@ -46,6 +46,7 @@ export type SingleSelectAnswer = {
   selection: {
     optionId: string;
     text?: string;
+    value?: string;
   };
 };
 
@@ -56,6 +57,7 @@ export type MultiSelectAnswer = {
     optionId: string;
     text?: string;
   }[];
+  selectionValues?: string[];
 };
 
 export const FormQuestionAnswerTypeMapping: Record<FormQuestionType, ApiFormAnswerType> = {

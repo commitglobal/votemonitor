@@ -16,7 +16,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import SelectAppLanguage from "../../../../components/SelectAppLanguage";
 import i18n from "../../../../common/config/i18n";
 import { useNotification } from "../../../../hooks/useNotifications";
-import { useUserData } from "../../../../contexts/user/UserContext.provider";
 import { ASYNC_STORAGE_KEYS } from "../../../../common/constants";
 import { useNetInfoContext } from "../../../../contexts/net-info-banner/NetInfoContext";
 import WarningDialog from "../../../../components/WarningDialog";
@@ -48,21 +47,19 @@ const MenuItem = ({ label, helper, icon, chevronRight, onClick }: MenuItemProps)
 );
 
 const More = () => {
+  const { t } = useTranslation(["more", "languages", "common"]);
+
+  const { isOnline } = useNetInfoContext();
+  const { signOut } = useAuth();
+
   const navigation = useNavigation();
   const queryClient = useQueryClient();
+
   const [isLanguageSelectSheetOpen, setIsLanguageSelectSheetOpen] = React.useState(false);
   const [logoutLoading, setLogoutLoading] = useState(false);
   const [feedbackSheetOpen, setFeedbackSheetOpen] = useState(false);
   const [optionsSheetOpen, setOptionsSheetOpen] = useState(false);
-  const { activeElectionRound } = useUserData();
-  const { isOnline } = useNetInfoContext();
-
   const [showWarningModal, setShowWarningModal] = useState(false);
-
-  const { unsubscribe: unsubscribePushNotifications } = useNotification();
-
-  const { t } = useTranslation(["more", "languages", "common"]);
-  const { signOut } = useAuth();
 
   const appVersion = Constants.expoConfig?.version;
   const URL = "https://www.code4.ro/ro/privacy-policy-vote-monitor";
@@ -73,6 +70,8 @@ const More = () => {
     queryFn: () => AsyncStorage.getItem(ASYNC_STORAGE_KEYS.CURRENT_USER_STORAGE_KEY),
     staleTime: 0,
   });
+
+  const { unsubscribe: unsubscribePushNotifications } = useNotification();
 
   const logout = async () => {
     setLogoutLoading(true);
@@ -93,7 +92,7 @@ const More = () => {
       }}
     >
       <Header
-        title={activeElectionRound?.title}
+        title={t("title")}
         titleColor="white"
         barStyle="light-content"
         leftIcon={<Icon icon="menuAlt2" color="white" />}
@@ -188,6 +187,7 @@ const More = () => {
       )}
       {showWarningModal && (
         <WarningDialog
+          theme="info"
           title={
             isOnline
               ? t("warning_modal.logout_online.title")
@@ -203,7 +203,6 @@ const More = () => {
           cancelBtnText={t("warning_modal.logout_online.cancel")}
           action={logout}
           onCancel={() => setShowWarningModal(false)}
-          actionBtnStyle={{ backgroundColor: "hsl(272, 56%, 45%)" }}
         />
       )}
     </Screen>

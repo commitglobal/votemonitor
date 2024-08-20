@@ -1,7 +1,7 @@
 import React, { ReactNode } from "react";
 import { Typography } from "./Typography";
 import { Dialog } from "./Dialog";
-import { ScrollView, XStack, YStack } from "tamagui";
+import { ScrollView, useTheme, XStack, YStack } from "tamagui";
 import Button from "./Button";
 import { StyleProp, TextStyle } from "react-native";
 
@@ -11,9 +11,9 @@ type WarningDialogProps = {
   actionBtnText: string;
   cancelBtnText: string;
   onCancel: () => void;
-  action: () => void;
-  actionBtnStyle?: object;
+  action?: () => void;
   titleProps?: StyleProp<TextStyle>;
+  theme?: "info" | "danger";
 };
 
 const WarningDialog = ({
@@ -23,9 +23,10 @@ const WarningDialog = ({
   cancelBtnText,
   action,
   onCancel,
-  actionBtnStyle,
   titleProps,
+  theme = "danger",
 }: WarningDialogProps) => {
+  const tamaguiTheme = useTheme();
   return (
     <Dialog
       open
@@ -53,7 +54,10 @@ const WarningDialog = ({
         <XStack gap="$sm" justifyContent="center" alignItems="center">
           <Button
             preset="chromeless"
-            textStyle={{ color: "black", textAlign: "center" }}
+            textStyle={{
+              color: theme === "danger" ? "black" : tamaguiTheme.$purple5?.val,
+              textAlign: "center",
+            }}
             onPress={onCancel}
             height="100%"
           >
@@ -62,12 +66,11 @@ const WarningDialog = ({
 
           {actionBtnText && (
             <Button
-              backgroundColor="$red10"
+              preset={theme === "danger" ? "red" : "default"}
               height="100%"
               flex={1}
               onPress={action}
               textStyle={{ textAlign: "center" }}
-              style={{ ...actionBtnStyle }}
             >
               {actionBtnText}
             </Button>

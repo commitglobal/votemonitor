@@ -139,7 +139,7 @@
     "error": "Error while loading polling stations!"
   },
   "observation": {
-    "title": "",
+    "title": "Polling Station Observation",
     "no_election_round": {
       "heading": "No election event to observe yet",
       "paragraph": "You will be able to use the app once you will be assigned to an election event by your organization"
@@ -155,6 +155,7 @@
       "add": "Add new polling station"
     },
     "polling_stations_information": {
+      "heading": "Polling station information",
       "time_select": {
         "not_defined": "Not defined",
         "arrival_time": "Arrival time",
@@ -169,13 +170,13 @@
       },
       "polling_station_form": {
         "paragraph": "Answer a few quick questions about the polling station.",
-        "form_details_button_label": "Polling station information",
+        "form_details_button_label": "Polling station questions",
         "number_of_questions": "{{value}} questions",
         "answer_questions": "Answer questions"
       }
     },
     "forms": {
-      "heading": "Forms",
+      "heading": "Observation forms",
       "list": {
         "empty": "Observation forms will appear here once your organization will publish them in the system.",
         "error": {
@@ -210,6 +211,14 @@
       "actions": {
         "cancel": "Cancel",
         "clear": "Clear form"
+      }
+    },
+    "unsaved_changes_dialog": {
+      "title": "Save changes to form",
+      "description": "You have unsaved changes on this form. Do you want to save your changes before leaving?",
+      "actions": {
+        "discard": "Discard",
+        "save": "Save changes"
       }
     }
   },
@@ -314,6 +323,14 @@
         "actions": {
           "cancel": "Cancel",
           "clear": "Delete"
+        }
+      },
+      "unsaved_answer": {
+        "title": "Save changes to question",
+        "description": "You have unsaved changes on this question. Do you want to save your changes before leaving?",
+        "actions": {
+          "cancel": "Discard",
+          "save": "Save changes"
         }
       }
     },
@@ -421,7 +438,7 @@
     "error": "Error while loading the report"
   },
   "guides": {
-    "title": "",
+    "title": "Guides",
     "empty": {
       "heading": "No guides to read yet",
       "paragraph": "Guides and resources from your organization at your hands."
@@ -438,7 +455,7 @@
     }
   },
   "inbox": {
-    "title": "",
+    "title": "Inbox",
     "empty": {
       "heading": "No message received yet",
       "paragraph": "Push messages and alerts from your organization will appear here."
