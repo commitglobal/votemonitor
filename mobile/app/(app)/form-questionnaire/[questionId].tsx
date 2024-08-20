@@ -126,7 +126,6 @@ const FormQuestionnaire = () => {
    * Submits an answer to the current question and updates the form submission accordingly.
    *
    * @param {any} formValues - The form values containing the answer to be submitted.
-   * @param {"next" | "prev" | "back"} navigate - The direction of navigation after submitting the answer.
    */
   const onSubmitAnswer = (formValues: any) => {
     const questionId = activeQuestion?.question.id as string;

@@ -109,6 +109,8 @@ export const useFormSubmissionMutation = ({
       queryClient.invalidateQueries({
         queryKey: notesKeys.notes(electionRoundId, pollingStationId, variables.formId),
       });
+      // FYI: these 2 queries actually make the same call, but use different query keys, therefore both need invalidation (used different keys for Pull To Refresh feature)
+      // todo: maybe use the same call for the future if possible
       queryClient.invalidateQueries({ queryKey: formSubmissionsQK });
       queryClient.invalidateQueries({
         queryKey: pollingStationsKeys.formSubmissions(
