@@ -9,7 +9,8 @@ type GetAttachmentsApiPayload = {
 export enum AttachmentMimeType {
   IMG = "image/jpeg",
   VIDEO = "video/mp4",
-  AUDIO = "audio/mpeg",
+  AUDIO_MPEG = "audio/mpeg",
+  AUDIO_M4A = "audio/x-m4a",
 }
 
 export type AttachmentApiResponse = {
