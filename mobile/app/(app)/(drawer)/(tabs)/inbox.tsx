@@ -3,7 +3,7 @@ import { Screen } from "../../../../components/Screen";
 import Header from "../../../../components/Header";
 import { Typography } from "../../../../components/Typography";
 import { Icon } from "../../../../components/Icon";
-import { router, useNavigation } from "expo-router";
+import { useNavigation } from "expo-router";
 import { DrawerActions } from "@react-navigation/native";
 import NoNotificationsReceived from "../../../../components/NoNotificationsReceived";
 import { ListView } from "../../../../components/ListView";
@@ -15,7 +15,6 @@ import { useUserData } from "../../../../contexts/user/UserContext.provider";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import NotificationListItem from "../../../../components/NotificationListItem";
-import OptionsSheet from "../../../../components/OptionsSheet";
 import { useAppState } from "../../../../hooks/useAppState";
 import { useQueryClient } from "@tanstack/react-query";
 import { Notification } from "../../../../services/api/get-notifications.api";
@@ -36,7 +35,6 @@ const Inbox = () => {
   const ngoName = data?.ngoName;
 
   const [sliceNumber, setSliceNumber] = useState(10);
-  const [openContextualMenu, setOpenContextualMenu] = useState(false);
   const loadMore = () => {
     setSliceNumber((sliceNum) => sliceNum + 10);
   };
@@ -67,8 +65,9 @@ const Inbox = () => {
           barStyle="light-content"
           leftIcon={<Icon icon="menuAlt2" color="white" />}
           onLeftPress={() => navigation.dispatch(DrawerActions.openDrawer)}
-          rightIcon={<Icon icon="dotsVertical" color="white" />}
-          onRightPress={() => setOpenContextualMenu(true)}
+          rightIcon={<Icon icon="infoCircle" color="white" width={24} height={24} />}
+          // TODO: action on right press after it's decided
+          // onRightPress={() => console.log("TODO")}
         />
         {!isLoading && (
           <YStack backgroundColor="$yellow6" paddingVertical="$xxs" paddingHorizontal="$md">
@@ -99,22 +98,6 @@ const Inbox = () => {
             refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={refetch} />}
           />
         </YStack>
-      )}
-      {openContextualMenu && (
-        <OptionsSheet open setOpen={setOpenContextualMenu} key={"InboxSheet"}>
-          <YStack
-            paddingVertical="$xxs"
-            paddingHorizontal="$sm"
-            onPress={() => {
-              setOpenContextualMenu(false);
-              return router.push("manage-polling-stations");
-            }}
-          >
-            <Typography preset="body1" color="$gray7" lineHeight={24}>
-              {t("menu.manage_polling_stations")}
-            </Typography>
-          </YStack>
-        </OptionsSheet>
       )}
     </Screen>
   );
