@@ -5,8 +5,6 @@ namespace Vote.Monitor.Form.Module.Models;
 
 public class NumberQuestionModel : BaseQuestionModel
 {
-    public Guid Id { get; init; }
-    public string Code { get; init; }
     public TranslatedString InputPlaceholder { get; init; }
 
     public static NumberQuestionModel FromEntity(NumberQuestion question) =>

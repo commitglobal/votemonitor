@@ -16,14 +16,14 @@ const RatingItem = React.forwardRef<React.ElementRef<typeof RadioGroupPrimitive.
         value={value}
         className={cn(
           Number(value) === 1 && 'rounded-l-md',
-          'relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 focus:z-20 focus:outline-offset-0',
+          'relative inline-flex items-center px-4 py-2 text-sm text-center font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 focus:z-20 focus:outline-offset-0 w-full justify-center',
           (selectedValue ?? -1) === Number(value) &&
-            'z-10 bg-indigo-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600',
+          'z-10 bg-indigo-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600',
           Number(value) === scale && 'rounded-r-md',
           className
         )}
         {...props}>
-        <div>{value}</div>
+        {value}
       </RadioGroupPrimitive.Item>
     );
   }
@@ -33,17 +33,22 @@ RatingItem.displayName = RadioGroupPrimitive.Item.displayName;
 
 interface RatingGroupProps extends React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Root> {
   scale?: number;
+  lowerLabel?: string;
+  upperLabel?: string;
 }
 
 const RatingGroup = React.forwardRef<React.ElementRef<typeof RadioGroupPrimitive.Root>, RatingGroupProps>(
-  ({ className, scale = 5, ...props }, ref) => {
-    const [selectedValue, setSelectedValue] = React.useState<number | null>(
-      props.defaultValue ? Number(props.defaultValue) : null
-    );
+  ({ className, scale = 5, lowerLabel, upperLabel, ...props }, ref) => {
+
+    const [selectedValue, setSelectedValue] = React.useState<number | null>(null);
+
+    React.useEffect(() => {
+      setSelectedValue(props.defaultValue ? Number(props.defaultValue) : null)
+    }, [props.defaultValue])
 
     return (
       <RadioGroupPrimitive.Root
-        className={cn('isolate inline-flex -space-x-px rounded-md shadow-sm', className)}
+        className={cn('', className)}
         {...props}
         ref={ref}
         onValueChange={(value) => {
@@ -51,9 +56,19 @@ const RatingGroup = React.forwardRef<React.ElementRef<typeof RadioGroupPrimitive
           props.onValueChange && props.onValueChange(value);
         }}
         tabIndex={0}>
-        {Array.from({ length: scale }, (_, i) => i + 1).map((value) => (
-          <RatingItem key={value} value={value.toString()} selectedValue={selectedValue} scale={scale} />
-        ))}
+        <div className='w-full inline-flex'>
+          {Array.from({ length: scale }, (_, i) => i + 1).map((value) => (
+            <RatingItem key={value} value={value.toString()} selectedValue={selectedValue} scale={scale} />
+          ))}
+        </div>
+        <div className="mt-4 flex justify-between px-1.5 leading-6 break-all">
+          <p className="w-1/2 text-left" dir="auto">
+            {lowerLabel}
+          </p>
+          <p className="w-1/2 text-right" dir="auto">
+            {upperLabel}
+          </p>
+        </div>
       </RadioGroupPrimitive.Root>
     );
   }

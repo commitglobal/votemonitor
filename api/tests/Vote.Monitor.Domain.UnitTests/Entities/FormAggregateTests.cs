@@ -1,12 +1,7 @@
 ﻿using System.Text.Json;
-using Vote.Monitor.Core.Models;
-using Vote.Monitor.Domain.Entities.FormAggregate;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
-using Vote.Monitor.Domain.Entities.FormBase.Questions;
 using Vote.Monitor.TestUtils.Fakes.Aggregates;
 using Vote.Monitor.TestUtils.Fakes.Aggregates.Answers;
-using Vote.Monitor.TestUtils.Fakes.Aggregates.Questions;
-using Xunit;
 
 namespace Vote.Monitor.Domain.UnitTests.Entities;
 
@@ -24,23 +19,27 @@ public class FormAggregateTests
         var flaggedOptionId1 = Guid.NewGuid();
         var flaggedOptionId2 = Guid.NewGuid();
         var regularOptionId = Guid.NewGuid();
+        string[] languages = ["EN"];
 
-        List<SelectOption> singleSelectQuestions = [
-            SelectOption.Create(flaggedOptionId1, new TranslatedString(), false, true),
-            SelectOption.Create(Guid.NewGuid(), new TranslatedString()),
-            SelectOption.Create(Guid.NewGuid(), new TranslatedString()),
-            SelectOption.Create(Guid.NewGuid(), new TranslatedString()),
+        List<SelectOption> singleSelectOptions =
+        [
+            SelectOption.Create(flaggedOptionId1, new TranslatedStringFaker(languages).Generate(), false, true),
+            SelectOption.Create(Guid.NewGuid(), new TranslatedStringFaker(languages).Generate()),
+            SelectOption.Create(Guid.NewGuid(), new TranslatedStringFaker(languages).Generate()),
+            SelectOption.Create(Guid.NewGuid(), new TranslatedStringFaker(languages).Generate()),
         ];
 
-        List<SelectOption> multiSelectQuestions = [
-            SelectOption.Create(flaggedOptionId1, new TranslatedString(), false, true),
-            SelectOption.Create(Guid.NewGuid(), new TranslatedString()),
-            SelectOption.Create(regularOptionId, new TranslatedString()),
-            SelectOption.Create(flaggedOptionId2, new TranslatedString(), false, true),
+        List<SelectOption> multiSelectOptions =
+        [
+            SelectOption.Create(flaggedOptionId1, new TranslatedStringFaker(languages).Generate(), false, true),
+            SelectOption.Create(Guid.NewGuid(), new TranslatedStringFaker(languages).Generate()),
+            SelectOption.Create(regularOptionId, new TranslatedStringFaker(languages).Generate()),
+            SelectOption.Create(flaggedOptionId2, new TranslatedStringFaker(languages).Generate(), false, true),
         ];
 
-        var singleSelectQuestion = new SingleSelectQuestionFaker(singleSelectQuestions).Generate();
-        var multiSelectQuestion = new MultiSelectQuestionFaker(multiSelectQuestions).Generate();
+        var singleSelectQuestion =
+            new SingleSelectQuestionFaker(singleSelectOptions, languageList: languages).Generate();
+        var multiSelectQuestion = new MultiSelectQuestionFaker(multiSelectOptions, languageList: languages).Generate();
 
         var questions = new BaseQuestion[]
         {
@@ -48,11 +47,14 @@ public class FormAggregateTests
             multiSelectQuestion,
         };
 
-        var form = Form.Create(electionRound, monitoringNgo, FormType.ClosingAndCounting, "", new TranslatedString(), new TranslatedString(), "EN", ["EN"], questions);
+        var form = Form.Create(electionRound, monitoringNgo, FormType.ClosingAndCounting, "",
+            new TranslatedStringFaker(languages).Generate(), new TranslatedStringFaker(languages).Generate(), "EN",
+            languages, questions);
 
         // Act
 
-        List<BaseAnswer> answers = [
+        List<BaseAnswer> answers =
+        [
             new SingleSelectAnswer(singleSelectQuestion.Id, SelectedOption.Create(flaggedOptionId1, "")),
             new MultiSelectAnswer(multiSelectQuestion.Id, [
                 SelectedOption.Create(flaggedOptionId1, ""),
@@ -79,23 +81,27 @@ public class FormAggregateTests
         var flaggedOptionId1 = Guid.NewGuid();
         var flaggedOptionId2 = Guid.NewGuid();
         var regularOptionId = Guid.NewGuid();
+        string[] languages = ["EN"];
 
-        List<SelectOption> singleSelectQuestions = [
-            SelectOption.Create(flaggedOptionId1, new TranslatedString(), false, true),
-            SelectOption.Create(Guid.NewGuid(), new TranslatedString()),
-            SelectOption.Create(Guid.NewGuid(), new TranslatedString()),
-            SelectOption.Create(Guid.NewGuid(), new TranslatedString()),
+        List<SelectOption> singleSelectOptions =
+        [
+            SelectOption.Create(flaggedOptionId1, new TranslatedStringFaker(languages).Generate(), false, true),
+            SelectOption.Create(Guid.NewGuid(), new TranslatedStringFaker(languages).Generate()),
+            SelectOption.Create(Guid.NewGuid(), new TranslatedStringFaker(languages).Generate()),
+            SelectOption.Create(Guid.NewGuid(), new TranslatedStringFaker(languages).Generate()),
         ];
 
-        List<SelectOption> multiSelectQuestions = [
-            SelectOption.Create(flaggedOptionId1, new TranslatedString(), false, true),
-            SelectOption.Create(Guid.NewGuid(), new TranslatedString()),
-            SelectOption.Create(regularOptionId, new TranslatedString()),
-            SelectOption.Create(flaggedOptionId2, new TranslatedString(), false, true),
+        List<SelectOption> multiSelectOptions =
+        [
+            SelectOption.Create(flaggedOptionId1, new TranslatedStringFaker(languages).Generate(), false, true),
+            SelectOption.Create(Guid.NewGuid(), new TranslatedStringFaker(languages).Generate()),
+            SelectOption.Create(regularOptionId, new TranslatedStringFaker(languages).Generate()),
+            SelectOption.Create(flaggedOptionId2, new TranslatedStringFaker(languages).Generate(), false, true),
         ];
 
-        var singleSelectQuestion = new SingleSelectQuestionFaker(singleSelectQuestions).Generate();
-        var multiSelectQuestion = new MultiSelectQuestionFaker(multiSelectQuestions).Generate();
+        var singleSelectQuestion =
+            new SingleSelectQuestionFaker(singleSelectOptions, languageList: languages).Generate();
+        var multiSelectQuestion = new MultiSelectQuestionFaker(multiSelectOptions, languageList: languages).Generate();
 
         var questions = new BaseQuestion[]
         {
@@ -103,16 +109,20 @@ public class FormAggregateTests
             multiSelectQuestion,
         };
 
-        var form = Form.Create(electionRound, monitoringNgo, FormType.ClosingAndCounting, "", new TranslatedString(), new TranslatedString(), "EN", ["EN"], questions);
+        var form = Form.Create(electionRound, monitoringNgo, FormType.ClosingAndCounting, "",
+            new TranslatedStringFaker(languages).Generate(), new TranslatedStringFaker(languages).Generate(), "EN",
+            languages, questions);
 
-        List<BaseAnswer> initialAnswers = [
+        List<BaseAnswer> initialAnswers =
+        [
             new SingleSelectAnswer(singleSelectQuestion.Id, SelectedOption.Create(flaggedOptionId1, ""))
         ];
 
         var submission = form.CreateFormSubmission(pollingStation, monitoringObserver, initialAnswers);
 
         // Act
-        List<BaseAnswer> updatedAnswers = [
+        List<BaseAnswer> updatedAnswers =
+        [
             new SingleSelectAnswer(singleSelectQuestion.Id, SelectedOption.Create(flaggedOptionId1, "")),
             new MultiSelectAnswer(multiSelectQuestion.Id, [
                 SelectedOption.Create(flaggedOptionId1, ""),
@@ -135,13 +145,14 @@ public class FormAggregateTests
         var monitoringNgo = new MonitoringNgoAggregateFaker().Generate();
         var pollingStation = new PollingStationFaker().Generate();
         var monitoringObserver = new MonitoringObserverFaker().Generate();
+        string[] languages = ["EN"];
 
-        var textQuestion = new TextQuestionFaker().Generate();
-        var dateQuestion = new DateQuestionFaker().Generate();
-        var ratingQuestion = new RatingQuestionFaker().Generate();
-        var numberQuestion = new NumberQuestionFaker().Generate();
-        var singleSelectQuestion = new SingleSelectQuestionFaker().Generate();
-        var multiSelectQuestion = new MultiSelectQuestionFaker().Generate();
+        var textQuestion = new TextQuestionFaker(languageList: languages).Generate();
+        var dateQuestion = new DateQuestionFaker(languageList: languages).Generate();
+        var ratingQuestion = new RatingQuestionFaker(languageList: languages).Generate();
+        var numberQuestion = new NumberQuestionFaker(languageList: languages).Generate();
+        var singleSelectQuestion = new SingleSelectQuestionFaker(languageList: languages).Generate();
+        var multiSelectQuestion = new MultiSelectQuestionFaker(languageList: languages).Generate();
 
         var questions = new BaseQuestion[]
         {
@@ -153,9 +164,12 @@ public class FormAggregateTests
             multiSelectQuestion,
         };
 
-        var form = Form.Create(electionRound, monitoringNgo, FormType.ClosingAndCounting, "", new TranslatedString(), new TranslatedString(), "EN", ["EN"], questions);
+        var form = Form.Create(electionRound, monitoringNgo, FormType.ClosingAndCounting, "",
+            new TranslatedStringFaker(languages).Generate(), new TranslatedStringFaker(languages).Generate(), "EN",
+            languages, questions);
 
-        List<BaseAnswer> answers = [
+        List<BaseAnswer> answers =
+        [
             new SingleSelectAnswerFaker(singleSelectQuestion),
             new MultiSelectAnswerFaker(multiSelectQuestion),
             new TextAnswerFaker(textQuestion.Id),
@@ -179,13 +193,14 @@ public class FormAggregateTests
         var monitoringNgo = new MonitoringNgoAggregateFaker().Generate();
         var pollingStation = new PollingStationFaker().Generate();
         var monitoringObserver = new MonitoringObserverFaker().Generate();
+        string[] languages = ["EN"];
 
-        var textQuestion = new TextQuestionFaker().Generate();
-        var dateQuestion = new DateQuestionFaker().Generate();
-        var ratingQuestion = new RatingQuestionFaker().Generate();
-        var numberQuestion = new NumberQuestionFaker().Generate();
-        var singleSelectQuestion = new SingleSelectQuestionFaker().Generate();
-        var multiSelectQuestion = new MultiSelectQuestionFaker().Generate();
+        var textQuestion = new TextQuestionFaker(languageList: languages).Generate();
+        var dateQuestion = new DateQuestionFaker(languageList: languages).Generate();
+        var ratingQuestion = new RatingQuestionFaker(languageList: languages).Generate();
+        var numberQuestion = new NumberQuestionFaker(languageList: languages).Generate();
+        var singleSelectQuestion = new SingleSelectQuestionFaker(languageList: languages).Generate();
+        var multiSelectQuestion = new MultiSelectQuestionFaker(languageList: languages).Generate();
 
         var questions = new BaseQuestion[]
         {
@@ -197,17 +212,21 @@ public class FormAggregateTests
             multiSelectQuestion,
         };
 
-        var form = Form.Create(electionRound, monitoringNgo, FormType.ClosingAndCounting, "", new TranslatedString(), new TranslatedString(), "EN", ["EN"], questions);
+        var form = Form.Create(electionRound, monitoringNgo, FormType.ClosingAndCounting, "",
+            new TranslatedStringFaker(languages).Generate(), new TranslatedStringFaker(languages).Generate(), "EN",
+            ["EN"], questions);
 
-        List<BaseAnswer> initialAnswers = [
+        List<BaseAnswer> initialAnswers =
+        [
             new SingleSelectAnswerFaker(singleSelectQuestion)
         ];
 
         var submission = form.CreateFormSubmission(pollingStation, monitoringObserver, initialAnswers);
 
         // Act
-        List<BaseAnswer> updatedAnswers = [
-                new SingleSelectAnswerFaker(singleSelectQuestion),
+        List<BaseAnswer> updatedAnswers =
+        [
+            new SingleSelectAnswerFaker(singleSelectQuestion),
             new MultiSelectAnswerFaker(multiSelectQuestion),
             new TextAnswerFaker(textQuestion.Id),
             new NumberAnswerFaker(numberQuestion.Id),
@@ -229,13 +248,14 @@ public class FormAggregateTests
         var monitoringNgo = new MonitoringNgoAggregateFaker().Generate();
         var pollingStation = new PollingStationFaker().Generate();
         var monitoringObserver = new MonitoringObserverFaker().Generate();
+        string[] languages = ["EN"];
 
-        var textQuestion = new TextQuestionFaker().Generate();
-        var dateQuestion = new DateQuestionFaker().Generate();
-        var ratingQuestion = new RatingQuestionFaker().Generate();
-        var numberQuestion = new NumberQuestionFaker().Generate();
-        var singleSelectQuestion = new SingleSelectQuestionFaker().Generate();
-        var multiSelectQuestion = new MultiSelectQuestionFaker().Generate();
+        var textQuestion = new TextQuestionFaker(languageList: languages).Generate();
+        var dateQuestion = new DateQuestionFaker(languageList: languages).Generate();
+        var ratingQuestion = new RatingQuestionFaker(languageList: languages).Generate();
+        var numberQuestion = new NumberQuestionFaker(languageList: languages).Generate();
+        var singleSelectQuestion = new SingleSelectQuestionFaker(languageList: languages).Generate();
+        var multiSelectQuestion = new MultiSelectQuestionFaker(languageList: languages).Generate();
 
         var questions = new BaseQuestion[]
         {
@@ -247,9 +267,12 @@ public class FormAggregateTests
             multiSelectQuestion,
         };
 
-        var form = Form.Create(electionRound, monitoringNgo, FormType.ClosingAndCounting, "", new TranslatedString(), new TranslatedString(), "EN", ["EN"], questions);
+        var form = Form.Create(electionRound, monitoringNgo, FormType.ClosingAndCounting, "",
+            new TranslatedStringFaker(languages).Generate(), new TranslatedStringFaker(languages).Generate(), "EN",
+            languages, questions);
 
-        List<BaseAnswer> initialAnswers = [
+        List<BaseAnswer> initialAnswers =
+        [
             new SingleSelectAnswerFaker(singleSelectQuestion),
             new MultiSelectAnswerFaker(multiSelectQuestion),
             new TextAnswerFaker(textQuestion.Id),
@@ -278,12 +301,13 @@ public class FormAggregateTests
         var pollingStation = new PollingStationFaker().Generate();
         var monitoringObserver = new MonitoringObserverFaker().Generate();
 
-        var textQuestion = new TextQuestionFaker().Generate();
-        var dateQuestion = new DateQuestionFaker().Generate();
-        var ratingQuestion = new RatingQuestionFaker().Generate();
-        var numberQuestion = new NumberQuestionFaker().Generate();
-        var singleSelectQuestion = new SingleSelectQuestionFaker().Generate();
-        var multiSelectQuestion = new MultiSelectQuestionFaker().Generate();
+        string[] languages = ["EN"];
+        var textQuestion = new TextQuestionFaker(languages).Generate();
+        var dateQuestion = new DateQuestionFaker(languages).Generate();
+        var ratingQuestion = new RatingQuestionFaker(languageList: languages).Generate();
+        var numberQuestion = new NumberQuestionFaker(languages).Generate();
+        var singleSelectQuestion = new SingleSelectQuestionFaker(languageList: languages).Generate();
+        var multiSelectQuestion = new MultiSelectQuestionFaker(languageList: languages).Generate();
 
         var questions = new BaseQuestion[]
         {
@@ -295,8 +319,11 @@ public class FormAggregateTests
             multiSelectQuestion,
         };
 
-        var form = Form.Create(electionRound, monitoringNgo, FormType.ClosingAndCounting, "", new TranslatedString(), new TranslatedString(), "EN", ["EN"], questions);
-        List<BaseAnswer> initialAnswers = [
+        var form = Form.Create(electionRound, monitoringNgo, FormType.ClosingAndCounting, "",
+            new TranslatedStringFaker(languages).Generate(), new TranslatedStringFaker(languages).Generate(), "EN",
+            ["EN"], questions);
+        List<BaseAnswer> initialAnswers =
+        [
             new SingleSelectAnswerFaker(singleSelectQuestion),
             new MultiSelectAnswerFaker(multiSelectQuestion),
             new TextAnswerFaker(textQuestion.Id),
@@ -321,12 +348,15 @@ public class FormAggregateTests
         var monitoringNgo = new MonitoringNgoAggregateFaker().Generate();
         var pollingStation = new PollingStationFaker().Generate();
         var monitoringObserver = new MonitoringObserverFaker().Generate();
+        string[] languages = ["RO"];
 
-        var questions = JsonSerializer.Deserialize<List<BaseQuestion>>(TestData.QuestionsJson);
+        var questions = JsonSerializer.Deserialize<List<BaseQuestion>>(FormTestData.QuestionsJson);
 
-        var answers = JsonSerializer.Deserialize<List<BaseAnswer>>(TestData.AnswersJson);
+        var answers = JsonSerializer.Deserialize<List<BaseAnswer>>(FormTestData.AnswersJson);
 
-        var form = Form.Create(electionRound, monitoringNgo, FormType.ClosingAndCounting, "", new TranslatedString(), new TranslatedString(), "EN", ["EN"], questions!);
+        var form = Form.Create(electionRound, monitoringNgo, FormType.ClosingAndCounting, "",
+            new TranslatedStringFaker(languages).Generate(), new TranslatedStringFaker(languages).Generate(), "RO",
+            languages, questions!);
 
         // Act
         var submission = form.CreateFormSubmission(pollingStation, monitoringObserver, answers);

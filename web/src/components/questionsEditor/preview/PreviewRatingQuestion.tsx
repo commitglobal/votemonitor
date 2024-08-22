@@ -1,30 +1,46 @@
-import type { FunctionComponent, RatingAnswer, RatingQuestion } from '@/common/types';
-import { RatingGroup } from '../../ui/ratings';
-import { Description, Field, Label } from '@/components/ui/fieldset';
+import { AnswerType, type FunctionComponent, type RatingAnswer, type RatingScaleType } from '@/common/types';
+import { Label } from '@/components/ui/label';
+import { RatingGroup } from '@/components/ui/ratings';
 import { ratingScaleToNumber } from '@/lib/utils';
-import { useParams } from '@tanstack/react-router';
+import { useFormAnswersStore } from '../AnswersContext';
+import { useState, useEffect } from 'react';
 
 export interface PreviewRatingQuestionProps {
-  languageCode: string;
-  question: RatingQuestion;
-  answer: RatingAnswer;
-  setAnswer: (answer: RatingAnswer) => void;
+  questionId: string;
+  text?: string;
+  helptext?: string;
+  scale: RatingScaleType;
+  lowerLabel?: string;
+  upperLabel?: string;
+  code: string;
 }
 
-function PreviewRatingQuestion({ languageCode, question }: PreviewRatingQuestionProps): FunctionComponent {
-  const params: any = useParams({
-    strict: false,
-  });
+function PreviewRatingQuestion({ code, questionId, text, helptext, scale, lowerLabel, upperLabel }: PreviewRatingQuestionProps): FunctionComponent {
+  const { setAnswer, getAnswer } = useFormAnswersStore();
+  const [localAnswer, setLocalAnswer] = useState<RatingAnswer | undefined>(undefined)
+
+  useEffect(() => {
+    const ratingAnswer = getAnswer(questionId) as RatingAnswer;
+    setLocalAnswer(ratingAnswer);
+  }, [questionId]);
+
   return (
-    <Field className='flex flex-col'>
-      <Label>
-        {question.code} - {question.text[params['languageCode'] ? params['languageCode'] : languageCode]}
-      </Label>
-      {!!question.helptext && (
-        <Description>{question.helptext[params['languageCode'] ? params['languageCode'] : languageCode]}</Description>
-      )}
-      <RatingGroup className='my-2' scale={ratingScaleToNumber(question.scale)} name='value' />
-    </Field>
+    <div className="grid gap-6">
+      <div className="grid gap-2">
+        <Label htmlFor={`${questionId}-value`} className='font-semibold'>{code + ' - '}{text}</Label>
+        <Label htmlFor={`${questionId}-value`} className='text-sm italic'>{helptext}</Label>
+        <RatingGroup
+          scale={ratingScaleToNumber(scale)}
+          id={`${questionId}-value`}
+          lowerLabel={lowerLabel}
+          upperLabel={upperLabel}
+          defaultValue={localAnswer?.value?.toString()}
+          onValueChange={(value) => {
+            const ratingAnswer: RatingAnswer = { $answerType: AnswerType.RatingAnswerType, questionId, value: Number(value) };
+            setAnswer(ratingAnswer);
+          }} />
+      </div>
+    </div>
   );
 }
 

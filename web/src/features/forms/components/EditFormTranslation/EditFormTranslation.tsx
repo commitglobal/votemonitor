@@ -1,269 +1,381 @@
-import { authApi } from '@/common/auth-api';
-import { type FunctionComponent, getTranslationOrDefault, updateTranslationString } from '@/common/types';
-import Layout from '@/components/layout/Layout';
-import FormQuestionsEditor from '@/components/questionsEditor/FormQuestionsEditor';
+import {
+  QuestionType,
+  type FunctionComponent
+} from '@/common/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ErrorMessage, Field, FieldGroup, Fieldset, Label } from '@/components/ui/fieldset';
-import { Form, FormField } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+import { Form } from '@/components/ui/form';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Textarea } from '@/components/ui/textarea';
-import { useToast } from '@/components/ui/use-toast';
-import { queryClient } from '@/main';
-import { Route as EditFormRoute } from '@/routes/forms_.$formId.edit-translation.$languageCode';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
-import { useRef, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
+import { useSuspenseQuery } from '@tanstack/react-query';
+import { useForm, useWatch } from 'react-hook-form';
 import { z } from 'zod';
 
-import type { FormFull } from '../../models/form';
-import { formDetailsQueryOptions, formsKeys } from '../../queries';
-import EditFormFooter from '../EditForm/EditFormFooter';
-import LanguageBadge from '../LanguageBadge/LanguageBadge';
-import { useNavigate } from '@tanstack/react-router';
-import { isQuestionTranslated } from '@/components/questionsEditor/utils';
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { useDialog } from '@/components/ui/use-dialog';
+import { isDateQuestion, isMultiSelectQuestion, isNumberQuestion, isRatingQuestion, isSingleSelectQuestion, isTextQuestion } from '@/common/guards';
+import Layout from '@/components/layout/Layout';
 import { NavigateBack } from '@/components/NavigateBack/NavigateBack';
+import FormQuestionsTranslator from '@/components/questionsEditor/FormQuestionsTranslator';
+import { LanguageBadge } from '@/components/ui/language-badge';
+import { cn, isNilOrWhitespace, isNotNilOrWhitespace } from '@/lib/utils';
+import { Route } from '@/routes/forms_.$formId.edit-translation.$languageCode';
+import { useEffect } from 'react';
+import { FormType } from '../../models/form';
+import { formDetailsQueryOptions } from '../../queries';
+import { EditDateQuestionType, EditMultiSelectQuestionType, EditNumberQuestionType, EditRatingQuestionType, EditSingleSelectQuestionType, EditTextQuestionType, ZEditQuestionType, ZTranslatedString } from '../../types';
 import { FormDetailsBreadcrumbs } from '../FormDetailsBreadcrumbs/FormDetailsBreadcrumbs';
+import EditFormTranslationDetails from './EditFormTranslationDetails';
+import EditFormTranslationFooter from './EditFormTranslationFooter';
+
+const ZEditFormTranslationType = z.object({
+  formId: z.string().trim().min(1),
+  defaultLanguage: z.string().trim().min(1),
+  languageCode: z.string().trim().min(1),
+  code: z.string().trim().min(1),
+  name: ZTranslatedString,
+  description: ZTranslatedString,
+  languages: z.array(z.string()),
+  formType: z.enum([FormType.Opening, FormType.Voting, FormType.ClosingAndCounting, FormType.Other]).catch(FormType.Opening),
+  questions: z.array(ZEditQuestionType)
+})
+  .superRefine((data, ctx) => {
+    if (isNilOrWhitespace(data.name[data.languageCode])) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Form name is required',
+        path: ['name'],
+      });
+    }
+
+    if (isNotNilOrWhitespace(data.description?.[data.defaultLanguage]) && isNilOrWhitespace(data.description?.[data.languageCode])) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Form description is required',
+        path: ['description'],
+      });
+    }
+
+    data.questions.forEach((question, index) => {
+      if (isNilOrWhitespace(question.text[question.languageCode])) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Question text is required',
+          path: ['questions', index, 'text'],
+        });
+      }
+
+      if (isNotNilOrWhitespace(question.helptext[question.defaultLanguage]) && isNilOrWhitespace(question.helptext[question.languageCode])) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Question helptext is required',
+          path: ['questions', index, 'helptext'],
+        });
+      }
+
+      if (question.$questionType === QuestionType.NumberQuestionType || question.$questionType === QuestionType.TextQuestionType) {
+        if (isNotNilOrWhitespace(question.inputPlaceholder[question.defaultLanguage]) && isNilOrWhitespace(question.inputPlaceholder[question.languageCode])) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: 'Input placeholder is required',
+            path: ['questions', index, 'inputPlaceholder'],
+          });
+        }
+      }
+
+      if (question.$questionType === QuestionType.RatingQuestionType) {
+        if (isNotNilOrWhitespace(question.lowerLabel[question.defaultLanguage]) && isNilOrWhitespace(question.lowerLabel[question.languageCode])) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: 'Question lower label is required',
+            path: ['questions', index, 'lowerLabel'],
+          });
+        }
+
+        if (isNotNilOrWhitespace(question.upperLabel[question.defaultLanguage]) && isNilOrWhitespace(question.upperLabel[question.languageCode])) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: 'Question upper label is required',
+            path: ['questions', index, 'upperLabel'],
+          });
+        }
+      }
+
+      if (question.$questionType === QuestionType.SingleSelectQuestionType || question.$questionType === QuestionType.MultiSelectQuestionType) {
+        question.options.forEach((option, optionIndex) => {
+          if (isNilOrWhitespace(option.text[question.languageCode])) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: 'Option text is required',
+              path: ["questions", index, "options", optionIndex, 'text'],
+            });
+          }
+        });
+
+        // check uniqueness of options
+        const optionTexts = question.options.map(o => o.text[question.languageCode]);
+        const textCountMap = new Map<string | undefined, number>();
+        const duplicatedIndexesMap = new Map<string | undefined, number>();
+
+        // Step 1: Count occurrences of each option
+        optionTexts.forEach((text, optionIndex) => {
+          const numberOfOccurrences = (textCountMap.get(text) || 0) + 1;
+          if (numberOfOccurrences > 1) {
+            duplicatedIndexesMap.set(text, optionIndex)
+          }
+          textCountMap.set(text, numberOfOccurrences);
+        });
+
+        // Step 2: Mark duplicated options as invalid
+        for (const [_, optionIndex] of duplicatedIndexesMap.entries()) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: 'Option text is not unique',
+            path: ["questions", index, "options", optionIndex, 'text'],
+          });
+        }
+      }
+
+      if (question.hasDisplayLogic) {
+        if (question.condition === undefined) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: 'Question condition is required',
+            path: ["questions", index, "condition"],
+          });
+        }
+
+        if (question.parentQuestionId === undefined) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: 'Question parent question is required',
+            path: ["questions", index, "parentQuestionId"],
+          });
+        }
+
+        if (question.value === undefined) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: 'Question value is required',
+            path: ["questions", index, "value"],
+          });
+        }
+      }
+
+      return z.NEVER
+    });
+  });
+
+export type EditFormTranslationType = z.infer<typeof ZEditFormTranslationType>;
 
 export default function EditFormTranslation(): FunctionComponent {
-  const { t } = useTranslation();
-  const { languageCode, formId } = EditFormRoute.useParams();
-  const formQuery = useSuspenseQuery(formDetailsQueryOptions(formId));
-  const formData = formQuery.data;
-  const [localQuestions, setLocalQuestions] = useState(formData.questions);
-  const { toast } = useToast();
-  const formRef = useRef<HTMLFormElement>(null);
-  const navigate = useNavigate();
-  const {
-    dialogProps: { onOpenChange, open },
-  } = useDialog();
+  const { formId, languageCode } = Route.useParams();
+  const { data: formData } = useSuspenseQuery(formDetailsQueryOptions(formId));
 
-  const editFormFormSchema = z.object({
-    name: z.string().nonempty(),
-    description: z.string().optional(),
-  });
-
-  const form = useForm<z.infer<typeof editFormFormSchema>>({
-    resolver: zodResolver(editFormFormSchema),
+  const form = useForm<EditFormTranslationType>({
+    resolver: zodResolver(ZEditFormTranslationType),
     defaultValues: {
-      name: formData.name[formData.defaultLanguage],
-      description: getTranslationOrDefault(formData.description, formData.defaultLanguage),
+      formId: formData.id,
+      code: formData.code,
+      languageCode,
+      defaultLanguage: formData.defaultLanguage,
+      languages: formData.languages,
+      name: formData.name,
+      description: formData.description,
+      formType: formData.formType,
+      questions: formData
+        .questions
+        .map(question => {
+          if (isNumberQuestion(question)) {
+            const numberQuestion: EditNumberQuestionType = {
+              $questionType: QuestionType.NumberQuestionType,
+              questionId: question.id,
+              text: question.text,
+              helptext: question.helptext ?? {},
+              inputPlaceholder: question.inputPlaceholder ?? {},
+
+              hasDisplayLogic: !!question.displayLogic,
+
+              parentQuestionId: question.displayLogic?.parentQuestionId,
+              condition: question.displayLogic?.condition,
+              value: question.displayLogic?.value,
+
+              code: question.code,
+              defaultLanguage: formData.defaultLanguage,
+              languageCode: languageCode
+            }
+
+            return numberQuestion;
+          }
+
+          if (isTextQuestion(question)) {
+            const textQuestion: EditTextQuestionType = {
+              $questionType: QuestionType.TextQuestionType,
+              questionId: question.id,
+              text: question.text,
+              helptext: question.helptext ?? {},
+              inputPlaceholder: question.inputPlaceholder ?? {},
+
+              hasDisplayLogic: !!question.displayLogic,
+
+              parentQuestionId: question.displayLogic?.parentQuestionId,
+              condition: question.displayLogic?.condition,
+              value: question.displayLogic?.value,
+
+              code: question.code,
+              defaultLanguage: formData.defaultLanguage,
+              languageCode: languageCode
+            }
+
+            return textQuestion;
+          }
+
+          if (isDateQuestion(question)) {
+            const dateQuestion: EditDateQuestionType = {
+              $questionType: QuestionType.DateQuestionType,
+              questionId: question.id,
+              text: question.text,
+              helptext: question.helptext ?? {},
+
+              hasDisplayLogic: !!question.displayLogic,
+
+              parentQuestionId: question.displayLogic?.parentQuestionId,
+              condition: question.displayLogic?.condition,
+              value: question.displayLogic?.value,
+
+              code: question.code,
+              defaultLanguage: formData.defaultLanguage,
+              languageCode: languageCode
+            }
+
+            return dateQuestion;
+          }
+
+          if (isRatingQuestion(question)) {
+            const ratingQuestion: EditRatingQuestionType = {
+              $questionType: QuestionType.RatingQuestionType,
+              questionId: question.id,
+              text: question.text,
+              helptext: question.helptext ?? {},
+              scale: question.scale,
+              hasDisplayLogic: !!question.displayLogic,
+
+              parentQuestionId: question.displayLogic?.parentQuestionId,
+              condition: question.displayLogic?.condition,
+              value: question.displayLogic?.value,
+
+              code: question.code,
+              lowerLabel: question.lowerLabel ?? {},
+              upperLabel: question.upperLabel ?? {},
+              defaultLanguage: formData.defaultLanguage,
+              languageCode: languageCode
+            }
+
+            return ratingQuestion;
+          }
+
+          if (isSingleSelectQuestion(question)) {
+            const singleSelectQuestion: EditSingleSelectQuestionType = {
+              $questionType: QuestionType.SingleSelectQuestionType,
+              questionId: question.id,
+              text: question.text,
+              helptext: question.helptext ?? {},
+              options: question.options?.map(o => ({ optionId: o.id, isFlagged: o.isFlagged, isFreeText: o.isFreeText, text: o.text })) ?? [],
+
+              hasDisplayLogic: !!question.displayLogic,
+
+              parentQuestionId: question.displayLogic?.parentQuestionId,
+              condition: question.displayLogic?.condition,
+              value: question.displayLogic?.value,
+
+              code: question.code,
+              defaultLanguage: formData.defaultLanguage,
+              languageCode: languageCode
+            }
+
+            return singleSelectQuestion;
+          }
+
+          if (isMultiSelectQuestion(question)) {
+            const multiSelectQuestion: EditMultiSelectQuestionType = {
+              $questionType: QuestionType.MultiSelectQuestionType,
+              questionId: question.id,
+              text: question.text,
+              helptext: question.helptext ?? {},
+              options: question.options?.map(o => ({ optionId: o.id, isFlagged: o.isFlagged, isFreeText: o.isFreeText, text: o.text })) ?? [],
+
+              hasDisplayLogic: !!question.displayLogic,
+
+              parentQuestionId: question.displayLogic?.parentQuestionId,
+              condition: question.displayLogic?.condition,
+              value: question.displayLogic?.value,
+
+              code: question.code,
+              defaultLanguage: formData.defaultLanguage,
+              languageCode: languageCode
+            }
+
+            return multiSelectQuestion;
+          }
+
+          return undefined;
+        })
     },
+    mode: 'all'
   });
 
-  const editMutation = useMutation({
-    mutationFn: (form: FormFull) => {
-      const electionRoundId: string | null = localStorage.getItem('electionRoundId');
 
-      return authApi.put<void>(`/election-rounds/${electionRoundId}/forms/${formData.id}`, {
-        ...form,
-        questions: localQuestions,
-      });
-    },
+  useEffect(() => {
+    form.trigger();
+  }, [formData]);
 
-    onSuccess: () => {
-      toast({
-        title: 'Success',
-        description: 'Form updated successfully',
-      });
-
-      void queryClient.invalidateQueries({ queryKey: formsKeys.all });
-    },
-  });
-
-  function saveHandler(): void {
-    const values = form.getValues();
-
-    formData.name[formData.defaultLanguage] = values.name;
-    formData.description = updateTranslationString(
-      formData.description,
-      formData.languages,
-      formData.defaultLanguage,
-      values.description ?? ''
-    );
-
-    const updatedForm: FormFull = {
-      ...formData,
-    };
-
-    editMutation.mutate(updatedForm);
-  }
-
-  function onSubmit(values: z.infer<typeof editFormFormSchema>): void {
-    formData.name[formData.defaultLanguage] = values.name;
-    formData.description = updateTranslationString(
-      formData.description,
-      formData.languages,
-      formData.defaultLanguage,
-      values.description ?? ''
-    );
-
-    const updatedForm: FormFull = {
-      ...formData,
-    };
-
-    editMutation.mutate(updatedForm, {
-      onSuccess: () => {
-        void navigate({ to: '/election-event/$tab', params: { tab: 'observer-forms' } });
-      },
-    });
-  }
-
-  const untranslatedQuestions = localQuestions.filter(
-    (question) => !isQuestionTranslated(question, formData.defaultLanguage, languageCode)
-  );
-
-  const submit = (checkTranslations?: boolean): void => {
-    if (checkTranslations && untranslatedQuestions.length > 0) {
-      onOpenChange(true);
-      return;
-    }
-
-    if (formRef.current) {
-      formRef.current.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
-    }
-  };
+  const name = useWatch({ control: form.control, name: 'name', defaultValue: formData.name });
 
   return (
     <Layout
       backButton={<NavigateBack to='/election-event/$tab' params={{ tab: 'observer-forms' }} />}
-      breadcrumbs={<FormDetailsBreadcrumbs />}
-      title={`${formData.code} - ${formData.name[formData.defaultLanguage]}`}>
+      breadcrumbs={<FormDetailsBreadcrumbs formCode={formData.code} formName={name[languageCode] ?? ''} />}
+      title={`${formData.code} - ${name[languageCode]}`}>
       <Form {...form}>
-        {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
-        <form onSubmit={form.handleSubmit(onSubmit)} ref={formRef}>
-          <Tabs defaultValue='form-details'>
+        <form className='flex flex-col flex-1'>
+          <Tabs className='flex flex-col flex-1' defaultValue='form-details'>
             <TabsList className='grid grid-cols-2 bg-gray-200 w-[400px] mb-4'>
-              <TabsTrigger value='form-details'>Form details</TabsTrigger>
-              <TabsTrigger value='questions'>Questions</TabsTrigger>
+              <TabsTrigger value='form-details' className={cn({ 'border-b-4 border-red-400': form.getFieldState('name').invalid || form.getFieldState('code').invalid })}>Form details</TabsTrigger>
+              <TabsTrigger value='questions' className={cn({ 'border-b-4 border-red-400': form.getFieldState('questions').invalid })}>Questions</TabsTrigger>
             </TabsList>
             <TabsContent value='form-details'>
               <Card className='pt-0'>
                 <CardHeader className='flex flex-column gap-2'>
                   <div className='flex flex-row justify-between items-center'>
-                    <CardTitle className='flex  gap-1'>
-                      <span className='text-xl'>Form details</span>
-                      <LanguageBadge languageCode={languageCode} />
-                    </CardTitle>
+                    <CardTitle className='text-xl'>Form details</CardTitle>
                   </div>
                   <Separator />
                 </CardHeader>
                 <CardContent className='flex flex-col gap-6 items-baseline'>
-                  <Fieldset className='grid grid-cols-2 gap-12'>
-                    <FieldGroup className='!mt-0'>
-                      <FormField
-                        control={form.control}
-                        name='name'
-                        render={({ field, fieldState }) => (
-                          <Field>
-                            <Label>{t('form.field.name')}</Label>
-                            <Input placeholder={t('form.placeholder.name')} {...field} {...fieldState} />
-                            {fieldState.invalid && <ErrorMessage>{fieldState?.error?.message}</ErrorMessage>}
-                          </Field>
-                        )}
-                      />
-
-                      <FormField
-                        control={form.control}
-                        name='description'
-                        render={({ field }) => (
-                          <Field>
-                            <Label>{t('form.field.description')}</Label>
-                            <Textarea rows={10} cols={100} {...field} placeholder={t('form.placeholder.description')} />
-                          </Field>
-                        )}
-                      />
-                    </FieldGroup>
-                  </Fieldset>
+                  <EditFormTranslationDetails languageCode={languageCode} />
                 </CardContent>
               </Card>
             </TabsContent>
-            <TabsContent value='questions'>
+            <TabsContent className='flex flex-1 flex-col' value='questions'>
               <Card className='pt-0 h-[calc(100vh)] overflow-hidden'>
                 <CardHeader className='flex flex-column gap-2'>
                   <div className='flex flex-row justify-between items-center'>
-                    <CardTitle className='text-xl'>Form questions</CardTitle>
+                    <CardTitle className='text-xl'>
+                      {languageCode && (
+                        <div className='flex gap-2 items-center'>
+                          <span className='text-sm'>Form questions</span>
+                          <LanguageBadge languageCode={languageCode} />
+                        </div>
+                      )}
+                    </CardTitle>
                   </div>
                   <Separator />
                 </CardHeader>
                 <CardContent className='-mx-6 flex items-start justify-left px-6 sm:mx-0 sm:px-8 h-[100%]'>
-                  <FormQuestionsEditor
-                    availableLanguages={formData.languages}
-                    languageCode={formData.defaultLanguage}
-                    localQuestions={localQuestions}
-                    setLocalQuestions={setLocalQuestions}
-                  />
+                  <FormQuestionsTranslator />
                 </CardContent>
               </Card>
             </TabsContent>
           </Tabs>
-          <EditFormFooter
-            onSaveProgress={saveHandler}
-            onSaveAndExit={() => {
-              submit(true);
-            }}
-          />
-          <Dialog open={open} onOpenChange={onOpenChange} modal={true}>
-            <DialogContent
-              className='min-w-[650px] min-h-[350px]'
-              onInteractOutside={(e) => {
-                e.preventDefault();
-              }}
-              onEscapeKeyDown={(e) => {
-                e.preventDefault();
-              }}>
-              <DialogHeader>
-                <DialogTitle className='mb-3.5'>
-                  Missing translations for {untranslatedQuestions.length} questions
-                </DialogTitle>
-                <DialogDescription className='mt-3.5 text-base text-[#6B7280]'>
-                  Please note that before publishing this form, all the questions must be translated in selected
-                  language.
-                </DialogDescription>
-              </DialogHeader>
-
-              <div className='grow-1 text-[#6B7280]'>
-                <div>The following questions are currently missing translations:</div>
-                <div className='overflow-y-auto max-h-[300px]'>
-                  <ul className='list-disc pl-6'>
-                    {untranslatedQuestions.map((question) => (
-                      <li key={question.id}>{question.code}</li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-
-              <DialogFooter className='sm:items-end'>
-                <Button
-                  onClick={() => {
-                    submit();
-                  }}
-                  type='button'
-                  variant='secondary'>
-                  Save and exit anyway
-                </Button>
-                <DialogClose asChild>
-                  <Button type='button' variant='default'>
-                    Back to form editor
-                  </Button>
-                </DialogClose>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+          <EditFormTranslationFooter />
         </form>
       </Form>
     </Layout>

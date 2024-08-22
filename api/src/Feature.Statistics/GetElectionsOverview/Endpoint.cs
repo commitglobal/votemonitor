@@ -200,7 +200,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
             minutesMonitoring = multi.ReadSingle<int>();
         }
 
-        return new Response()
+        return new Response
         {
             Observers = numberOfMonitoringObservers,
             Ngos = numberOfMonitoringNgos,

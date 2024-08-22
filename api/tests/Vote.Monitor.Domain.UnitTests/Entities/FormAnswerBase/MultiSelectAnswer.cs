@@ -1,5 +1,4 @@
 ﻿using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
-using Vote.Monitor.Domain.Entities.FormBase.Questions;
 
 namespace Vote.Monitor.Domain.UnitTests.Entities.FormAnswerBase;
 

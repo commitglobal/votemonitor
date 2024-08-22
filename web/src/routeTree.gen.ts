@@ -18,7 +18,6 @@ import { Route as ObserversIndexImport } from './routes/observers/index'
 import { Route as NgosIndexImport } from './routes/ngos/index'
 import { Route as MonitoringObserversIndexImport } from './routes/monitoring-observers/index'
 import { Route as LoginIndexImport } from './routes/login/index'
-import { Route as FormTemplatesIndexImport } from './routes/form-templates/index'
 import { Route as ForgotPasswordIndexImport } from './routes/forgot-password/index'
 import { Route as ElectionRoundsIndexImport } from './routes/election-rounds/index'
 import { Route as ElectionEventIndexImport } from './routes/election-event/index'
@@ -40,12 +39,9 @@ import { Route as MonitoringObserversPushMessagesIdImport } from './routes/monit
 import { Route as MonitoringObserversEditMonitoringObserverIdImport } from './routes/monitoring-observers/edit.$monitoringObserverId'
 import { Route as FormsFormIdEditImport } from './routes/forms_.$formId.edit'
 import { Route as FormsFormIdLanguageCodeImport } from './routes/forms/$formId_.$languageCode'
-import { Route as FormTemplatesFormTemplateIdEditImport } from './routes/form-templates_.$formTemplateId.edit'
-import { Route as FormTemplatesFormTemplateIdLanguageCodeImport } from './routes/form-templates/$formTemplateId_.$languageCode'
 import { Route as MonitoringObserversViewMonitoringObserverIdTabImport } from './routes/monitoring-observers/view/$monitoringObserverId.$tab'
 import { Route as MonitoringObserversPushMessagesIdViewImport } from './routes/monitoring-observers/push-messages.$id_.view'
 import { Route as FormsFormIdEditTranslationLanguageCodeImport } from './routes/forms_.$formId.edit-translation.$languageCode'
-import { Route as FormTemplatesFormTemplateIdEditTranslationLanguageCodeImport } from './routes/form-templates_.$formTemplateId.edit-translation.$languageCode'
 
 // Create/Update Routes
 
@@ -81,11 +77,6 @@ const MonitoringObserversIndexRoute = MonitoringObserversIndexImport.update({
 
 const LoginIndexRoute = LoginIndexImport.update({
   path: '/login/',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const FormTemplatesIndexRoute = FormTemplatesIndexImport.update({
-  path: '/form-templates/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -199,18 +190,6 @@ const FormsFormIdLanguageCodeRoute = FormsFormIdLanguageCodeImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const FormTemplatesFormTemplateIdEditRoute =
-  FormTemplatesFormTemplateIdEditImport.update({
-    path: '/form-templates/$formTemplateId/edit',
-    getParentRoute: () => rootRoute,
-  } as any)
-
-const FormTemplatesFormTemplateIdLanguageCodeRoute =
-  FormTemplatesFormTemplateIdLanguageCodeImport.update({
-    path: '/form-templates/$formTemplateId/$languageCode',
-    getParentRoute: () => rootRoute,
-  } as any)
-
 const MonitoringObserversViewMonitoringObserverIdTabRoute =
   MonitoringObserversViewMonitoringObserverIdTabImport.update({
     path: '/monitoring-observers/view/$monitoringObserverId/$tab',
@@ -226,12 +205,6 @@ const MonitoringObserversPushMessagesIdViewRoute =
 const FormsFormIdEditTranslationLanguageCodeRoute =
   FormsFormIdEditTranslationLanguageCodeImport.update({
     path: '/forms/$formId/edit-translation/$languageCode',
-    getParentRoute: () => rootRoute,
-  } as any)
-
-const FormTemplatesFormTemplateIdEditTranslationLanguageCodeRoute =
-  FormTemplatesFormTemplateIdEditTranslationLanguageCodeImport.update({
-    path: '/form-templates/$formTemplateId/edit-translation/$languageCode',
     getParentRoute: () => rootRoute,
   } as any)
 
@@ -299,10 +272,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ForgotPasswordIndexImport
       parentRoute: typeof rootRoute
     }
-    '/form-templates/': {
-      preLoaderRoute: typeof FormTemplatesIndexImport
-      parentRoute: typeof rootRoute
-    }
     '/login/': {
       preLoaderRoute: typeof LoginIndexImport
       parentRoute: typeof rootRoute
@@ -325,14 +294,6 @@ declare module '@tanstack/react-router' {
     }
     '/responses/': {
       preLoaderRoute: typeof ResponsesIndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/form-templates/$formTemplateId/$languageCode': {
-      preLoaderRoute: typeof FormTemplatesFormTemplateIdLanguageCodeImport
-      parentRoute: typeof rootRoute
-    }
-    '/form-templates/$formTemplateId/edit': {
-      preLoaderRoute: typeof FormTemplatesFormTemplateIdEditImport
       parentRoute: typeof rootRoute
     }
     '/forms/$formId/$languageCode': {
@@ -361,10 +322,6 @@ declare module '@tanstack/react-router' {
     }
     '/responses/quick-reports/$quickReportId': {
       preLoaderRoute: typeof ResponsesQuickReportsQuickReportIdImport
-      parentRoute: typeof rootRoute
-    }
-    '/form-templates/$formTemplateId/edit-translation/$languageCode': {
-      preLoaderRoute: typeof FormTemplatesFormTemplateIdEditTranslationLanguageCodeImport
       parentRoute: typeof rootRoute
     }
     '/forms/$formId/edit-translation/$languageCode': {
@@ -400,15 +357,12 @@ export const routeTree = rootRoute.addChildren([
   ElectionEventIndexRoute,
   ElectionRoundsIndexRoute,
   ForgotPasswordIndexRoute,
-  FormTemplatesIndexRoute,
   LoginIndexRoute,
   MonitoringObserversIndexRoute,
   NgosIndexRoute,
   ObserversIndexRoute,
   ResetPasswordIndexRoute,
   ResponsesIndexRoute,
-  FormTemplatesFormTemplateIdLanguageCodeRoute,
-  FormTemplatesFormTemplateIdEditRoute,
   FormsFormIdLanguageCodeRoute,
   FormsFormIdEditRoute,
   MonitoringObserversEditMonitoringObserverIdRoute,
@@ -416,7 +370,6 @@ export const routeTree = rootRoute.addChildren([
   ObserversObserverIdEditRoute,
   ResponsesFormIdAggregatedRoute,
   ResponsesQuickReportsQuickReportIdRoute,
-  FormTemplatesFormTemplateIdEditTranslationLanguageCodeRoute,
   FormsFormIdEditTranslationLanguageCodeRoute,
   MonitoringObserversPushMessagesIdViewRoute,
   MonitoringObserversViewMonitoringObserverIdTabRoute,

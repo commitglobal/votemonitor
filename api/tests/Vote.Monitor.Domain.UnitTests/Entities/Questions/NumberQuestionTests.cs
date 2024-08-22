@@ -1,10 +1,8 @@
-﻿using Vote.Monitor.Core.Models;
-using Vote.Monitor.Domain.Entities.FormBase.Questions;
-using Vote.Monitor.TestUtils.Utils;
+﻿using Vote.Monitor.TestUtils.Utils;
 
 namespace Vote.Monitor.Domain.UnitTests.Entities.Questions;
 
-public class NumberQuestionTests
+public partial class NumberQuestionTests
 {
     [Fact]
     public void ComparingToANumberQuestion_WithSameProperties_ReturnsTrue()

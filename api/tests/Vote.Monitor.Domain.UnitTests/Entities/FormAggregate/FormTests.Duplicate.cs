@@ -1,10 +1,4 @@
-﻿using Vote.Monitor.Core.Constants;
-using Vote.Monitor.Domain.Entities.FormAggregate;
-using Vote.Monitor.Domain.Entities.FormBase.Questions;
-using Vote.Monitor.TestUtils.Fakes.Aggregates;
-using Vote.Monitor.TestUtils.Fakes.Aggregates.Questions;
-
-namespace Vote.Monitor.Domain.UnitTests.Entities.FormAggregate;
+﻿namespace Vote.Monitor.Domain.UnitTests.Entities.FormAggregate;
 
 public partial class FormTests
 {
@@ -12,28 +6,24 @@ public partial class FormTests
     public void WhenDuplicate_ThenCreatesNewDraftedFormTemplate()
     {
         // Arrange
-        string[] languages = [LanguagesList.RO.Iso1, LanguagesList.EN.Iso1, LanguagesList.UK.Iso1];
-        var name = new TranslatedStringFaker(languages).Generate();
-        var description = new TranslatedStringFaker(languages).Generate();
-
-        var form = Form.Create(Guid.NewGuid(), Guid.NewGuid(), FormType.Voting, "code", name, description,
-            LanguagesList.RO.Iso1, languages, []);
+        var form = Form.Create(Guid.NewGuid(), Guid.NewGuid(), FormType.Voting, "code", _name, _description,
+            LanguagesList.RO.Iso1, Languages, []);
 
         form.Publish();
 
         BaseQuestion[] questions =
         [
-            new TextQuestionFaker(languages).Generate(),
-            new NumberQuestionFaker(languages).Generate(),
-            new DateQuestionFaker(languages).Generate(),
-            new RatingQuestionFaker(languageList: languages).Generate(),
-            new SingleSelectQuestionFaker(languageList: languages).Generate(),
-            new MultiSelectQuestionFaker(languageList: languages).Generate(),
+            new TextQuestionFaker(Languages).Generate(),
+            new NumberQuestionFaker(Languages).Generate(),
+            new DateQuestionFaker(Languages).Generate(),
+            new RatingQuestionFaker(languageList: Languages).Generate(),
+            new SingleSelectQuestionFaker(languageList: Languages).Generate(),
+            new MultiSelectQuestionFaker(languageList: Languages).Generate(),
         ];
 
         form.UpdateDetails(form.Code, form.Name, form.Description, form.FormType, form.DefaultLanguage, form.Languages,
             questions);
-        
+
         // Act
         var newFormTemplate = form.Duplicate();
 
@@ -46,5 +36,22 @@ public partial class FormTests
         newFormTemplate.Questions.Should().BeEquivalentTo(form.Questions);
         newFormTemplate.Status.Should().Be(FormStatus.Drafted);
         newFormTemplate.FormType.Should().Be(form.FormType);
+    }
+
+    [Theory]
+    [MemberData(nameof(FormTestsTestData.PartiallyTranslatedQuestionsTestData), MemberType = typeof(FormTestsTestData))]
+    public void WhenDuplicate_ThenRecomputesLanguagesTranslationsStatus(BaseQuestion[] questions)
+    {
+        // Arrange
+        var form = Form.Create(Guid.NewGuid(), Guid.NewGuid(), FormType.Voting, "code", _name, _description,
+            LanguagesList.EN.Iso1, Languages, questions);
+        
+        // Act
+        var newForm = form.Duplicate();
+
+        // Assert
+        newForm.LanguagesTranslationStatus.Should().HaveCount(2);
+        newForm.LanguagesTranslationStatus[LanguagesList.EN.Iso1].Should().Be(TranslationStatus.Translated);
+        newForm.LanguagesTranslationStatus[LanguagesList.RO.Iso1].Should().Be(TranslationStatus.MissingTranslations);
     }
 }

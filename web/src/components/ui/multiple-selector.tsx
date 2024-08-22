@@ -1,11 +1,11 @@
+import { XMarkIcon } from '@heroicons/react/24/outline';
 import * as React from 'react';
-import { X } from 'lucide-react';
 
-import { Command, CommandGroup, CommandItem, CommandList } from '@/components/ui/command';
-import { Command as CommandPrimitive, useCommandState } from 'cmdk';
-import { useEffect, forwardRef } from 'react';
 import { Badge } from '@/components/ui/badge';
+import { Command, CommandGroup, CommandItem, CommandList } from '@/components/ui/command';
 import { cn } from '@/lib/utils';
+import { Command as CommandPrimitive, useCommandState } from 'cmdk';
+import { forwardRef, useEffect } from 'react';
 
 export interface Option {
   value: string;
@@ -358,8 +358,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
                 <Badge
                   key={option.value}
                   className={cn(
-                    'data-[disabled]:bg-muted-foreground data-[disabled]:text-muted data-[disabled]:hover:bg-muted-foreground',
-                    'data-[fixed]:bg-muted-foreground data-[fixed]:text-muted data-[fixed]:hover:bg-muted-foreground',
+                    'bg-purple-50 text-purple-600 font-medium hover:bg-purple-100 py-2 text-sm gap-2',
                     badgeClassName,
                   )}
                   data-fixed={option.fixed}
@@ -382,7 +381,8 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
                     }}
                     onClick={() => handleUnselect(option)}
                   >
-                    <X className="h-3 w-3 text-muted-foreground hover:text-foreground" />
+                    <XMarkIcon className='w-4' />
+
                   </button>
                 </Badge>
               );

@@ -23,4 +23,8 @@ public record DateQuestion : BaseQuestion
 
     protected override void AddTranslationsInternal(string languageCode) { }
     protected override void RemoveTranslationInternal(string languageCode) { }
+    protected override TranslationStatus InternalGetTranslationStatus(string baseLanguageCode, string languageCode)
+    {
+        return TranslationStatus.Translated;
+    }
 }

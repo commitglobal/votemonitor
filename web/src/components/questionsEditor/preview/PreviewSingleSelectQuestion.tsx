@@ -1,71 +1,83 @@
-import { SingleSelectAnswer, SingleSelectQuestion } from '@/common/types';
-import { RadioGroup, RadioField, Radio } from '../../ui/radio-group';
-import { useMemo, useState } from 'react';
-import { Field, Fieldset, Label, Legend } from '@/components/ui/fieldset';
-import { Text } from '@/components/ui/text';
+import { isSingleSelectAnswer } from '@/common/guards';
+import { AnswerType, SingleSelectAnswer } from '@/common/types';
+import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { useParams } from '@tanstack/react-router';
+import { useEffect, useMemo, useState } from 'react';
+import { RadioGroup, RadioGroupItem } from '../../ui/radio-group';
+import { useFormAnswersStore } from '../AnswersContext';
 
 export interface PreviewSingleSelectQuestionProps {
-  languageCode: string;
-  question: SingleSelectQuestion;
-  isFirstQuestion?: boolean;
-  isLastQuestion?: boolean;
-  answer?: SingleSelectAnswer;
-  setAnswer: (answer: SingleSelectAnswer) => void;
+  questionId: string;
+  text?: string;
+  helptext?: string;
+  options: { optionId: string, text?: string, isFreeText: boolean }[];
+  code: string;
 }
 
-function PreviewSingleSelectQuestion({ languageCode, question, answer, setAnswer }: PreviewSingleSelectQuestionProps) {
-  const [freeTextSelected, setFreeTextSelected] = useState(
-    !!answer && !question.options.find((c) => c.id === answer.selection?.optionId && c.isFreeText === true)
-  );
+function PreviewSingleSelectQuestion({ code, questionId, text, helptext, options }: PreviewSingleSelectQuestionProps) {
+  const { setAnswer, getAnswer } = useFormAnswersStore();
+  const [localAnswer, setLocalAnswer] = useState<SingleSelectAnswer | undefined>(undefined)
 
   const regularOptions = useMemo(() => {
-    if (!question.options) {
+    if (!options) {
       return [];
     }
-    const regularOptions = question.options.filter((option) => !option.isFreeText);
+    const regularOptions = options.filter((option) => !option.isFreeText);
     return regularOptions;
-  }, [question.options]);
+  }, [options]);
 
   // Currently we only support one free text option
-  const freeTextOption = useMemo(() => question.options.find((option) => option.isFreeText), [question.options]);
+  const freeTextOption = useMemo(() => options.find((option) => option.isFreeText), [options]);
 
-  const params: any = useParams({
-    strict: false,
-  });
+  useEffect(() => {
+    const singleSelectAnswer = getAnswer(questionId) as SingleSelectAnswer;
+    setLocalAnswer(singleSelectAnswer);
+  }, [questionId]);
+
+  useEffect(() => {
+    const singleSelectAnswer = getAnswer(questionId);
+    if (singleSelectAnswer && isSingleSelectAnswer(singleSelectAnswer)) {
+      setLocalAnswer(singleSelectAnswer);
+    } else {
+      const multiSelectAnswer: SingleSelectAnswer = { $answerType: AnswerType.SingleSelectAnswerType, questionId };
+      setAnswer(multiSelectAnswer);
+      setLocalAnswer(multiSelectAnswer);
+    }
+  }, [questionId]);
 
   return (
-    <Fieldset>
-      <Legend>
-        {question.code} - {question.text[params['languageCode'] ? params['languageCode'] : languageCode]}
-      </Legend>
-      {!!question.helptext && (
-        <Text>{question.helptext[params['languageCode'] ? params['languageCode'] : languageCode]}</Text>
-      )}
+    <div className="grid gap-2">
+      <Label htmlFor={`${questionId}-value`} className='font-semibold'>{code + ' - '}{text}</Label>
+      <Label htmlFor={`${questionId}-value`} className='text-sm italic'>{helptext}</Label>
       <RadioGroup
-        onChange={(value) => {
-          setFreeTextSelected(value === freeTextOption?.id);
-        }}>
+        onValueChange={(value) => {
+          const newAnswer: SingleSelectAnswer = { $answerType: AnswerType.SingleSelectAnswerType, questionId, selection: { optionId: value, text: '' } };
+          setAnswer(newAnswer);
+          setLocalAnswer(newAnswer);
+        }}
+        value={localAnswer?.selection?.optionId}>
         {regularOptions?.map((option) => (
-          <RadioField key={option.id}>
-            <Radio value={option.id} />
-            <Label>{option.text[params['languageCode'] ? params['languageCode'] : languageCode]}</Label>
-          </RadioField>
+          <div className="flex items-center space-x-2" key={option.optionId}>
+            <RadioGroupItem value={option.optionId} id={option.optionId} />
+            <Label htmlFor={option.optionId}>{option.text}</Label>
+          </div>
         ))}
         {!!freeTextOption && (
-          <RadioField>
-            <Radio value={freeTextOption.id} />
-            <Label>{freeTextOption.text[params['languageCode'] ? params['languageCode'] : languageCode]}</Label>
-          </RadioField>
+          <div className="flex items-center space-x-2" key={freeTextOption.optionId}>
+            <RadioGroupItem value={freeTextOption.optionId} id={freeTextOption.optionId} />
+            <Label htmlFor={freeTextOption.optionId}>{freeTextOption.text}</Label>
+          </div>
         )}
       </RadioGroup>
-      {freeTextSelected && (
-        <Field>
-          <Textarea />
-        </Field>
+      {(!!localAnswer?.selection?.optionId && localAnswer?.selection?.optionId === freeTextOption?.optionId) && (
+        <Textarea onChange={(e) => {
+          const newAnswer: SingleSelectAnswer = { ...localAnswer!, selection: { ...localAnswer!.selection, text: e.target.value } };
+          setAnswer(newAnswer);
+          setLocalAnswer(newAnswer);
+        }}
+          value={localAnswer?.selection?.text ?? ''} />
       )}
-    </Fieldset>
+    </div>
   );
 }
 

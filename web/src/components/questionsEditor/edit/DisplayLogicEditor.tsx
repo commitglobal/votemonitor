@@ -1,29 +1,23 @@
 import {
-  BaseQuestion,
-  DisplayLogic,
   DisplayLogicCondition,
-  MultiSelectQuestion,
-  QuestionType,
-  RatingQuestion,
-  SingleSelectQuestion,
+  QuestionType
 } from '@/common/types';
 import { Collapsible, CollapsibleContent } from '@/components/ui/collapsible';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
-import { ratingScaleToNumber } from '@/lib/utils';
-import { useMemo, useState } from 'react';
-import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { EditFormType } from '@/features/forms/components/EditForm/EditForm';
+import { EditQuestionType } from '@/features/forms/types';
+import { ratingScaleToNumber } from '@/lib/utils';
+import { InformationCircleIcon } from '@heroicons/react/24/outline';
+import { useEffect, useState } from 'react';
+import { useFormContext, useWatch } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
 interface DisplayLogicEditorProps {
-  formQuestions: BaseQuestion[];
   questionIndex: number;
-  question: BaseQuestion;
-  languageCode: string;
-  updateQuestion: (questionIndex: number, question: BaseQuestion) => void;
 }
 
 const conditions: {
@@ -35,22 +29,41 @@ const conditions: {
   ratingQuestion: ['Equals', 'NotEquals', 'LessThan', 'LessEqual', 'GreaterThan', 'GreaterEqual'],
 };
 
-export default function DisplayLogicEditor({
-  formQuestions,
-  questionIndex,
-  question,
-  languageCode,
-  updateQuestion,
-}: DisplayLogicEditorProps) {
-  const [hasDisplayLogic, setHasDisplayLogic] = useState(!!question?.displayLogic);
+export default function DisplayLogicEditor({ questionIndex }: DisplayLogicEditorProps) {
   const { t } = useTranslation();
-  const parentQuestion = useMemo(() => {
-    return formQuestions.find((q) => q.id === question?.displayLogic?.parentQuestionId);
-  }, [formQuestions, question?.displayLogic?.parentQuestionId]);
+  const [hasDisplayLogic, setHasDisplayLogic] = useState(false);
+  const [question, setQuestion] = useState<EditQuestionType | undefined>(undefined);
+  const [parentQuestion, setParentQuestion] = useState<EditQuestionType | undefined>(undefined);
+  const [availableParentQuestions, setAvailableParentQuestions] = useState<EditQuestionType[]>([]);
 
-  const availableParentQuestions = useMemo(() => {
-    return (
-      formQuestions
+  const { control, setValue, register, trigger } = useFormContext<EditFormType>();
+
+  const languageCode = useWatch({
+    control,
+    name: `languageCode`,
+  });
+
+  const questions = useWatch({
+    control,
+    name: `questions`,
+    defaultValue: []
+  });
+
+  const parentQuestionId = useWatch({
+    control,
+    name: `questions.${questionIndex}.parentQuestionId`,
+    defaultValue: undefined
+  });
+
+  register(`questions.${questionIndex}.hasDisplayLogic`);
+  register(`questions.${questionIndex}.parentQuestionId`);
+  register(`questions.${questionIndex}.value`);
+  register(`questions.${questionIndex}.condition`);
+
+
+  useEffect(() => {
+    setAvailableParentQuestions(
+      questions
         ?.slice(0, questionIndex)
         ?.filter(
           (q) =>
@@ -60,63 +73,66 @@ export default function DisplayLogicEditor({
             q.$questionType === QuestionType.NumberQuestionType
         ) ?? []
     );
-  }, [formQuestions, questionIndex]);
+
+    setQuestion(questions[questionIndex]);
+    setHasDisplayLogic(questions[questionIndex]!.hasDisplayLogic);
+  }, [questions, questionIndex]);
+
+  useEffect(() => {
+    setParentQuestion(
+      questions
+        ?.slice(0, questionIndex)
+        ?.filter(
+          (q) =>
+            q.$questionType === QuestionType.SingleSelectQuestionType ||
+            q.$questionType === QuestionType.MultiSelectQuestionType ||
+            q.$questionType === QuestionType.RatingQuestionType ||
+            q.$questionType === QuestionType.NumberQuestionType
+        )
+        ?.find(q => q.questionId === parentQuestionId)
+    );
+  }, [questions, questionIndex, parentQuestionId]);
+
 
   function handleHasDisplayLogicChanged(value: boolean) {
     setHasDisplayLogic(value);
+    setValue(`questions.${questionIndex}.hasDisplayLogic`, value, { shouldDirty: true, shouldTouch: true, shouldValidate: true });
+    handleParentQuestionSelected(availableParentQuestions[0]?.questionId!);
+    trigger(`questions.${questionIndex}`)
   }
 
   function handleParentQuestionSelected(questionId: string) {
-    const parentQuestion = availableParentQuestions.find((q) => q.id === questionId)!;
-
-    const displayLogic: DisplayLogic = {
-      parentQuestionId: questionId,
-    };
+    const parentQuestion = availableParentQuestions.find((q) => q.questionId === questionId)!;
+    setValue(`questions.${questionIndex}.parentQuestionId`, questionId, { shouldDirty: true, shouldTouch: true, shouldValidate: true });
 
     if (parentQuestion?.$questionType === QuestionType.RatingQuestionType) {
-      displayLogic.condition = 'Equals';
-      displayLogic.value = '1';
+      setValue(`questions.${questionIndex}.condition`, 'Equals', { shouldDirty: true, shouldTouch: true, shouldValidate: true });
+      setValue(`questions.${questionIndex}.value`, '1', { shouldDirty: true, shouldTouch: true, shouldValidate: true });
     }
+
     if (parentQuestion?.$questionType === QuestionType.NumberQuestionType) {
-      displayLogic.condition = 'Equals';
-      displayLogic.value = '0';
+      setValue(`questions.${questionIndex}.condition`, 'Equals', { shouldDirty: true, shouldTouch: true, shouldValidate: true });
+      setValue(`questions.${questionIndex}.value`, '0', { shouldDirty: true, shouldTouch: true, shouldValidate: true });
     }
 
     if (
       parentQuestion?.$questionType === QuestionType.SingleSelectQuestionType ||
       parentQuestion?.$questionType === QuestionType.MultiSelectQuestionType
     ) {
-      const optionId = (parentQuestion as SingleSelectQuestion | MultiSelectQuestion)!.options[0]?.id;
-      displayLogic.condition = 'Includes';
-      displayLogic.value = optionId;
+      const optionId = parentQuestion!.options[0]?.optionId;
+      setValue(`questions.${questionIndex}.condition`, 'Includes', { shouldDirty: true, shouldTouch: true, shouldValidate: true });
+      setValue(`questions.${questionIndex}.value`, optionId, { shouldDirty: true, shouldTouch: true, shouldValidate: true });
     }
-
-    updateQuestion(questionIndex, {
-      ...question,
-      displayLogic: { ...displayLogic },
-    });
   }
 
   function handleConditionChanged(condition: DisplayLogicCondition) {
     if (!!condition) {
-      updateQuestion(questionIndex, {
-        ...question,
-        displayLogic: {
-          ...question.displayLogic,
-          condition,
-        },
-      });
+      setValue(`questions.${questionIndex}.condition`, condition, { shouldDirty: true, shouldTouch: true, shouldValidate: true });
     }
   }
 
   function handleValueChanged(value: string) {
-    updateQuestion(questionIndex, {
-      ...question,
-      displayLogic: {
-        ...question.displayLogic,
-        value,
-      },
-    });
+    setValue(`questions.${questionIndex}.value`, value, { shouldDirty: true, shouldTouch: true, shouldValidate: true });
   }
 
   return (
@@ -149,14 +165,14 @@ export default function DisplayLogicEditor({
         <CollapsibleContent className='justify-left flex flex-col mt-3'>
           <div className='justify-left flex flex-col mt-3'>
             <span className='mb-2 text-sm'>{t('questionEditor.question.displayLogic.chooseQuestion')}:</span>
-            <Select name='question' onValueChange={handleParentQuestionSelected} value={parentQuestion?.id}>
+            <Select name='question' onValueChange={handleParentQuestionSelected} value={parentQuestion?.questionId}>
               <SelectTrigger className='min-w-fit flex-1'>
                 <SelectValue placeholder='Select question' className='text-xs lg:text-sm' />
               </SelectTrigger>
               <SelectContent side='top'>
                 {availableParentQuestions.map((question) => (
-                  <SelectItem key={question.id} value={question.id}>
-                    {question.code + ' - ' + question.text[languageCode]}
+                  <SelectItem key={question.questionId} value={question.questionId} >
+                    {question.text[languageCode]}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -164,7 +180,7 @@ export default function DisplayLogicEditor({
           </div>
           <div className='justify-left flex flex-col mt-3'>
             {parentQuestion && (
-              <Select value={question?.displayLogic?.condition} onValueChange={handleConditionChanged}>
+              <Select value={question?.condition} onValueChange={handleConditionChanged}>
                 <SelectTrigger className='min-w-fit flex-1'>
                   <SelectValue placeholder='Select condition' className='text-xs lg:text-sm' />
                 </SelectTrigger>
@@ -182,7 +198,7 @@ export default function DisplayLogicEditor({
             <div className='justify-left flex flex-col mt-3'>
               <Input
                 type='number'
-                value={question?.displayLogic?.value}
+                value={question?.value}
                 onChange={(e) => {
                   handleValueChanged(e.target.value);
                 }}
@@ -192,13 +208,12 @@ export default function DisplayLogicEditor({
           )}
           {parentQuestion?.$questionType === QuestionType.RatingQuestionType && (
             <div className='justify-left flex flex-col mt-3'>
-              <span>Value:</span>
-              <Select value={question?.displayLogic?.value} onValueChange={handleValueChanged}>
+              <Select value={question?.value} onValueChange={handleValueChanged}>
                 <SelectTrigger className='min-w-fit flex-1'>
                   <SelectValue placeholder='Select rating' className='text-xs lg:text-sm' />
                 </SelectTrigger>
                 <SelectContent>
-                  {[...Array(ratingScaleToNumber((parentQuestion as RatingQuestion)!.scale)).keys()]
+                  {[...Array(ratingScaleToNumber(parentQuestion!.scale)).keys()]
                     .map((value) => value + 1)
                     .map((value) => (
                       <SelectItem
@@ -215,25 +230,25 @@ export default function DisplayLogicEditor({
           )}
           {(parentQuestion?.$questionType === QuestionType.MultiSelectQuestionType ||
             parentQuestion?.$questionType === QuestionType.SingleSelectQuestionType) && (
-            <div className='justify-left flex flex-col mt-3'>
-              <Select value={question?.displayLogic?.value} onValueChange={handleValueChanged}>
-                <SelectTrigger className=' min-w-fit flex-1'>
-                  <SelectValue placeholder='Select option' className='text-xs lg:text-sm' />
-                </SelectTrigger>
-                <SelectContent>
-                  {(parentQuestion as SingleSelectQuestion | MultiSelectQuestion)!.options.map((option) => (
-                    <SelectItem
-                      key={option.id}
-                      value={option.id}
-                      title={option.text[languageCode]}
-                      className='text-xs lg:text-sm'>
-                      {option.text[languageCode]}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          )}
+              <div className='justify-left flex flex-col mt-3'>
+                <Select value={question?.value} onValueChange={handleValueChanged}>
+                  <SelectTrigger className='min-w-fit flex-1'>
+                    <SelectValue placeholder='Select option' className='text-xs lg:text-sm' />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {parentQuestion!.options.map((option) => (
+                      <SelectItem
+                        key={option.optionId}
+                        value={option.optionId}
+                        title={option.text[languageCode]}
+                        className='text-xs lg:text-sm'>
+                        {option.text[languageCode]}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
         </CollapsibleContent>
       </Collapsible>
     </div>

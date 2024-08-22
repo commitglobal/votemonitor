@@ -41,7 +41,6 @@ export function FormsFiltersByObserver(): FunctionComponent {
   );
 
   const onFollowUpFilterChange = useCallback((followUpStatus: string) => {
-    console.log(followUpStatus)
     void navigate({
       // @ts-ignore
       search: (prev: FormSubmissionsSearchParams) => {

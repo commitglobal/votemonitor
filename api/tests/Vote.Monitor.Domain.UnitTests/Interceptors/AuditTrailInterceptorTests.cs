@@ -19,7 +19,7 @@ public class AuditTrailInterceptorTests
         _fakeTimeProvider = Substitute.For<ITimeProvider>();
         _fakeCurrentUserProvider = Substitute.For<ICurrentUserProvider>();
 
-        DbContextOptionsBuilder<VoteMonitorContext> dbContextOptions = new DbContextOptionsBuilder<VoteMonitorContext>()
+        var dbContextOptions = new DbContextOptionsBuilder<VoteMonitorContext>()
             .UseInMemoryDatabase(Guid.NewGuid().ToString());
 
         _context = new TestContext(dbContextOptions.Options,

@@ -4,9 +4,6 @@ namespace Vote.Monitor.Form.Module.Models;
 
 public class DateQuestionModel : BaseQuestionModel
 {
-    public Guid Id { get; init; }
-    public string Code { get; init; }
-
     public static DateQuestionModel FromEntity(DateQuestion question) =>
         new()
         {
