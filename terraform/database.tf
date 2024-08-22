@@ -41,7 +41,9 @@ resource "aws_db_instance" "main" {
   vpc_security_group_ids = [aws_security_group.database.id]
 
   lifecycle {
-    ignore_changes = ["availability_zone"]
+    ignore_changes = [
+      availability_zone,
+    ]
   }
 }
 
