@@ -36,7 +36,6 @@
   <ItemGroup>
     <Folder Include="Entities\NgoAdminAggregate\" />
     <Folder Include="Entities\ObserverAggregate\" />
-    <Folder Include="ValueConverters\" />
   </ItemGroup>
 
 </Project>

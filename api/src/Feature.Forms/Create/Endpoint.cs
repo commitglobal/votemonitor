@@ -29,7 +29,7 @@ public class Endpoint(
         }
 
         var monitoringNgo = await monitoringNgoRepository.FirstOrDefaultAsync(new GetMonitoringNgoSpecification(req.ElectionRoundId, req.NgoId), ct);
-        monitoringNgo!.UpdatePollingStationsVersion();
+        monitoringNgo!.UpdateFormVersion();
 
         var form = FormAggregate.Create(req.ElectionRoundId, monitoringNgo.Id, req.FormType, req.Code, req.Name, req.Description, req.DefaultLanguage, req.Languages, []);
 

@@ -34,6 +34,16 @@ public record NumberQuestion : BaseQuestion
     protected override void RemoveTranslationInternal(string languageCode)
     {
         InputPlaceholder?.RemoveTranslation(languageCode);
+    }
 
+    protected override TranslationStatus InternalGetTranslationStatus(string baseLanguageCode, string languageCode)
+    {
+        if (InputPlaceholder != null && !string.IsNullOrWhiteSpace(InputPlaceholder[baseLanguageCode]) &&
+            string.IsNullOrWhiteSpace(InputPlaceholder[languageCode]))
+        {
+            return TranslationStatus.MissingTranslations;
+        }
+        
+        return TranslationStatus.Translated;
     }
 }

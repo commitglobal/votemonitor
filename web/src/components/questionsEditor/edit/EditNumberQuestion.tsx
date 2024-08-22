@@ -1,81 +1,45 @@
-import { BaseQuestion, newTranslatedString, NumberQuestion } from '@/common/types';
-import { Label } from '@/components/ui/label';
 import { useTranslation } from 'react-i18next';
 
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { useFormContext, useWatch } from 'react-hook-form';
 import { Input } from '../../ui/input';
-import QuestionHeader from './QuestionHeader';
-import { useParams } from '@tanstack/react-router';
+import { EditFormType } from '@/features/forms/components/EditForm/EditForm';
 
 export interface EditNumberQuestionProps {
-  languageCode: string;
-  availableLanguages: string[];
-  questionIdx: number;
-  isInValid: boolean;
-  question: NumberQuestion;
-  updateQuestion: (questionIndex: number, question: BaseQuestion) => void;
+  questionIndex: number;
 }
 
-function EditNumberQuestion({
-  availableLanguages,
-  languageCode,
-  questionIdx,
-  isInValid,
-  question,
-  updateQuestion,
-}: EditNumberQuestionProps) {
+function EditNumberQuestion({ questionIndex }: EditNumberQuestionProps) {
   const { t } = useTranslation();
+  const { control } = useFormContext<EditFormType>();
 
-  const params: any = useParams({
-    strict: false,
+  const languageCode = useWatch({
+    control,
+    name: `languageCode`,
   });
 
-  function updateInputPlaceholder(inputPlaceholder: string) {
-    const updatedInputPlaceholder = question.inputPlaceholder
-      ? {
-          ...question.inputPlaceholder,
-          [params.languageCode ? params.languageCode : languageCode]: inputPlaceholder,
-        }
-      : newTranslatedString(availableLanguages, languageCode);
-
-    const updatedNumberQuestion: NumberQuestion = { ...question, inputPlaceholder: updatedInputPlaceholder };
-    updateQuestion(questionIdx, updatedNumberQuestion);
-  }
-
   return (
-    <div>
-      <QuestionHeader
-        availableLanguages={availableLanguages}
-        languageCode={languageCode}
-        isInValid={isInValid}
-        question={question}
-        questionIdx={questionIdx}
-        updateQuestion={updateQuestion}
+    <>
+      <FormField
+        control={control}
+        name={`questions.${questionIndex}.inputPlaceholder` as const}
+        render={({ field }) => {
+          return (
+            <FormItem>
+              <FormLabel>{t('questionEditor.question.inputPlaceholder')}</FormLabel>
+              <FormControl>
+                <Input {...field} value={field.value[languageCode]}
+                  onChange={event => field.onChange({
+                    ...field.value,
+                    [languageCode]: event.target.value
+                  })} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          );
+        }}
       />
-
-      <div className='mt-3'>
-        <Label htmlFor='inputPlaceholder'>{t('questionEditor.question.inputPlaceholder')}</Label>
-        <div className='mt-2 flex flex-col gap-6'>
-          <div className='flex items-center space-x-2'>
-            <Input
-              id='inputPlaceholder'
-              name='inputPlaceholder'
-              value={
-                params['languageCode']
-                  ? question.inputPlaceholder?.[params['languageCode']]
-                  : question.inputPlaceholder?.[languageCode]
-              }
-              placeholder={params['languageCode'] ? question.inputPlaceholder?.[languageCode] : ''}
-              onChange={(e) => updateInputPlaceholder(e.target.value)}
-              className={
-                isInValid && !!question.inputPlaceholder && question.inputPlaceholder[languageCode]!.trim() === ''
-                  ? 'border-red-300 focus:border-red-300'
-                  : ''
-              }
-            />
-          </div>
-        </div>
-      </div>
-    </div>
+    </>
   );
 }
 

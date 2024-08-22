@@ -117,7 +117,7 @@ function UploadObserversGuideDialog({
                     />
                     <Label htmlFor="guideFile">{'Guide file'}</Label>
 
-                    <input type='file' id ="guideFile" ref={hiddenFileInput} onChange={handleChange} style={{ display: 'none' }} />
+                    <input type='file' id="guideFile" ref={hiddenFileInput} onChange={handleChange} style={{ display: 'none' }} accept='.csv' />
                     <Button onClick={handleClick} variant='outline' className=''>
                         <span className='text-gray-500 font-normal truncate'>
                             {fileName || (

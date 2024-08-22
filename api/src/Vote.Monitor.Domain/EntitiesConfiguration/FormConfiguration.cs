@@ -37,5 +37,9 @@ public class FormConfiguration : IEntityTypeConfiguration<Form>
         builder.Property(x => x.Questions)
             .HasConversion<QuestionsToJsonConverter, QuestionsValueComparer>()
             .HasColumnType("jsonb");
+        
+        builder.Property(x => x.LanguagesTranslationStatus)
+            .HasConversion<LanguagesTranslationStatusToJsonConverter, LanguagesTranslationStatusValueComparer>()
+            .HasColumnType("jsonb");
     }
 }

@@ -54,19 +54,36 @@ public class QuestionsMapperTests
         [LanguagesList.RO.Iso1] = "romanian text for option4"
     };
 
+    private readonly TranslatedString _lowerLabel = new()
+    {
+        [LanguagesList.EN.Iso1] = "english text for lower label",
+        [LanguagesList.RO.Iso1] = "romanian text for lower label"
+    };
+
+    private readonly TranslatedString _upperLabel = new()
+    {
+        [LanguagesList.EN.Iso1] = "english text for upper label",
+        [LanguagesList.RO.Iso1] = "romanian text for upper label"
+    };
+
     private readonly List<SelectOption> _options;
     private readonly List<SelectOptionRequest> _requestOptions;
 
+    private readonly DisplayLogic _displayLogic =
+        DisplayLogic.Create(Guid.NewGuid(), DisplayLogicCondition.GreaterEqual, "some value");
+
     public QuestionsMapperTests()
     {
-        _options = [
+        _options =
+        [
             new(Guid.NewGuid(), _option1Text, false, false),
             new(Guid.NewGuid(), _option2Text, false, true),
             new(Guid.NewGuid(), _option3Text, true, false),
             new(Guid.NewGuid(), _option4Text, true, true),
         ];
 
-        _requestOptions = [
+        _requestOptions =
+        [
             new()
             {
                 Id = Guid.NewGuid(),
@@ -97,13 +114,12 @@ public class QuestionsMapperTests
             },
         ];
     }
-
-
+    
     [Fact]
     public void ToModel_ShouldReturnTextQuestionModel_WhenGivenTextQuestion()
     {
         // Arrange
-        var textQuestion = TextQuestion.Create(Guid.NewGuid(), _code, _text, _helptext, _placeholder);
+        var textQuestion = TextQuestion.Create(Guid.NewGuid(), _code, _text, _helptext, _placeholder, _displayLogic);
 
         // Act
         var result = QuestionsMapper.ToModel(textQuestion);
@@ -117,7 +133,8 @@ public class QuestionsMapperTests
     public void ToModel_ShouldReturnNumberQuestionModel_WhenGivenNumberQuestion()
     {
         // Arrange
-        var numberQuestion = NumberQuestion.Create(Guid.NewGuid(), _code, _text, _helptext, _placeholder);
+        var numberQuestion =
+            NumberQuestion.Create(Guid.NewGuid(), _code, _text, _helptext, _placeholder, _displayLogic);
 
         // Act
         var result = QuestionsMapper.ToModel(numberQuestion);
@@ -131,7 +148,7 @@ public class QuestionsMapperTests
     public void ToModel_ShouldReturnNumberQuestionModel_WhenGivenDateQuestion()
     {
         // Arrange
-        var dateQuestion = DateQuestion.Create(Guid.NewGuid(), _code, _text, _helptext);
+        var dateQuestion = DateQuestion.Create(Guid.NewGuid(), _code, _text, _helptext, _displayLogic);
 
         // Act
         var result = QuestionsMapper.ToModel(dateQuestion);
@@ -145,7 +162,8 @@ public class QuestionsMapperTests
     public void ToModel_ShouldReturnNumberQuestionModel_WhenGivenSingleSelectQuestion()
     {
         // Arrange
-        var singleSelectQuestion = SingleSelectQuestion.Create(Guid.NewGuid(), _code, _text, _options, _helptext);
+        var singleSelectQuestion =
+            SingleSelectQuestion.Create(Guid.NewGuid(), _code, _text, _options, _helptext, _displayLogic);
 
         // Act
         var result = QuestionsMapper.ToModel(singleSelectQuestion);
@@ -159,7 +177,8 @@ public class QuestionsMapperTests
     public void ToModel_ShouldReturnNumberQuestionModel_WhenGivenMultiSelectQuestion()
     {
         // Arrange
-        var multiSelectQuestion = MultiSelectQuestion.Create(Guid.NewGuid(), _code, _text, _options, _helptext);
+        var multiSelectQuestion =
+            MultiSelectQuestion.Create(Guid.NewGuid(), _code, _text, _options, _helptext, _displayLogic);
 
         // Act
         var result = QuestionsMapper.ToModel(multiSelectQuestion);
@@ -173,7 +192,8 @@ public class QuestionsMapperTests
     public void ToModel_ShouldReturnNumberQuestionModel_WhenGivenRatingQuestion()
     {
         // Arrange
-        var ratingQuestion = RatingQuestion.Create(Guid.NewGuid(), _code, _text, RatingScale.OneTo10, _helptext);
+        var ratingQuestion = RatingQuestion.Create(Guid.NewGuid(), _code, _text, RatingScale.OneTo10, _helptext,
+            _lowerLabel, _upperLabel, _displayLogic);
 
         // Act
         var result = QuestionsMapper.ToModel(ratingQuestion);
@@ -183,9 +203,10 @@ public class QuestionsMapperTests
         result.Should().BeEquivalentTo(ratingQuestion);
     }
 
-    internal record UnknownQuestion : BaseQuestion
+    private record UnknownQuestion : BaseQuestion
     {
-        public UnknownQuestion(Guid id, string code, TranslatedString text, TranslatedString? helptext) : base(id, code, text, helptext, null)
+        public UnknownQuestion(Guid id, string code, TranslatedString text, TranslatedString? helptext) : base(id, code,
+            text, helptext, null)
         {
         }
 
@@ -195,6 +216,11 @@ public class QuestionsMapperTests
 
         protected override void RemoveTranslationInternal(string languageCode)
         {
+        }
+
+        protected override TranslationStatus InternalGetTranslationStatus(string baseLanguageCode, string languageCode)
+        {
+            return TranslationStatus.Translated;
         }
     }
 
@@ -336,7 +362,7 @@ public class QuestionsMapperTests
         result.Should().BeEquivalentTo(ratingQuestionRequest, opt => opt.ExcludingMissingMembers());
     }
 
-    internal class UnknownQuestionRequest : BaseQuestionRequest;
+    private class UnknownQuestionRequest : BaseQuestionRequest;
 
     [Fact]
     public void ToEntity_ShouldThrowApplicationException_WhenGivenUnknownQuestionType()

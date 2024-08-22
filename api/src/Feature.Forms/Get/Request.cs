@@ -1,6 +1,4 @@
-﻿using Vote.Monitor.Core.Security;
-
-namespace Feature.Forms.Get;
+﻿namespace Feature.Forms.Get;
 
 public class Request
 {

@@ -30,7 +30,8 @@ public class RatingQuestionRequestValidatorTests
     }
 
     [Theory]
-    [MemberData(nameof(ValidatorsTestData.InvalidPartiallyTranslatedTestCases), MemberType = typeof(ValidatorsTestData))]
+    [MemberData(nameof(ValidatorsTestData.InvalidPartiallyTranslatedTestCases),
+        MemberType = typeof(ValidatorsTestData))]
     public void Validation_ShouldFail_When_EmptyText(TranslatedString invalidText)
     {
         // Arrange
@@ -48,8 +49,9 @@ public class RatingQuestionRequestValidatorTests
     }
 
     [Theory]
-    [MemberData(nameof(ValidatorsTestData.InvalidPartiallyTranslatedTestCases), MemberType = typeof(ValidatorsTestData))]
-    public void Validation_ShouldFail_When_EmptyHelptext(TranslatedString invalidHelptext)
+    [MemberData(nameof(ValidatorsTestData.InvalidPartiallyTranslatedTestCases),
+        MemberType = typeof(ValidatorsTestData))]
+    public void Validation_ShouldFail_When_InvalidHelptext(TranslatedString invalidHelptext)
     {
         // Arrange
         var ratingQuestionRequest = new RatingQuestionRequest
@@ -63,6 +65,44 @@ public class RatingQuestionRequestValidatorTests
         // Assert
         validationResult
             .ShouldHaveValidationErrorFor(x => x.Helptext);
+    }
+
+    [Theory]
+    [MemberData(nameof(ValidatorsTestData.InvalidPartiallyTranslatedTestCases),
+        MemberType = typeof(ValidatorsTestData))]
+    public void Validation_ShouldFail_When_InvalidUpperLabel(TranslatedString invalidUpperLabel)
+    {
+        // Arrange
+        var ratingQuestionRequest = new RatingQuestionRequest
+        {
+            UpperLabel = invalidUpperLabel
+        };
+
+        // Act
+        var validationResult = _sut.TestValidate(ratingQuestionRequest);
+
+        // Assert
+        validationResult
+            .ShouldHaveValidationErrorFor(x => x.UpperLabel);
+    }
+
+    [Theory]
+    [MemberData(nameof(ValidatorsTestData.InvalidPartiallyTranslatedTestCases),
+        MemberType = typeof(ValidatorsTestData))]
+    public void Validation_ShouldFail_When_InvalidLowerLabel(TranslatedString invalidLowerLabel)
+    {
+        // Arrange
+        var ratingQuestionRequest = new RatingQuestionRequest
+        {
+            LowerLabel = invalidLowerLabel
+        };
+
+        // Act
+        var validationResult = _sut.TestValidate(ratingQuestionRequest);
+
+        // Assert
+        validationResult
+            .ShouldHaveValidationErrorFor(x => x.LowerLabel);
     }
 
     [Fact]
@@ -171,10 +211,7 @@ public class RatingQuestionRequestValidatorTests
         validationResult
             .Errors
             .Should()
-            .AllSatisfy(x =>
-            {
-                x.PropertyName.Should().NotContain(nameof(MultiSelectQuestionRequest.DisplayLogic));
-            });
+            .AllSatisfy(x => { x.PropertyName.Should().NotContain(nameof(MultiSelectQuestionRequest.DisplayLogic)); });
     }
 
     [Fact]

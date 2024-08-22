@@ -5,7 +5,6 @@ using Vote.Monitor.Core.Models;
 namespace Vote.Monitor.Domain.Entities.FormBase.Questions;
 
 [PolyJsonConverter(distriminatorPropertyName: "$questionType")]
-
 [PolyJsonConverter.SubType(typeof(TextQuestion), QuestionTypes.TextQuestionType)]
 [PolyJsonConverter.SubType(typeof(NumberQuestion), QuestionTypes.NumberQuestionType)]
 [PolyJsonConverter.SubType(typeof(DateQuestion), QuestionTypes.DateQuestionType)]
@@ -25,7 +24,8 @@ public abstract record BaseQuestion
     public DisplayLogic? DisplayLogic { get; private set; }
 
     [JsonConstructor]
-    internal BaseQuestion(Guid id, string code, TranslatedString text, TranslatedString? helptext, DisplayLogic? displayLogic)
+    internal BaseQuestion(Guid id, string code, TranslatedString text, TranslatedString? helptext,
+        DisplayLogic? displayLogic)
     {
         Id = id;
         Code = code;
@@ -53,4 +53,22 @@ public abstract record BaseQuestion
     }
 
     protected abstract void RemoveTranslationInternal(string languageCode);
+
+    public TranslationStatus GetTranslationStatus(string baseLanguageCode, string languageCode)
+    {
+        if (string.IsNullOrWhiteSpace(Text[languageCode]))
+        {
+            return TranslationStatus.MissingTranslations;
+        }
+
+        if (Helptext != null && !string.IsNullOrWhiteSpace(Helptext[baseLanguageCode]) &&
+            string.IsNullOrWhiteSpace(Helptext[languageCode]))
+        {
+            return TranslationStatus.MissingTranslations;
+        }
+
+        return InternalGetTranslationStatus(baseLanguageCode, languageCode);
+    }
+
+    protected abstract TranslationStatus InternalGetTranslationStatus(string baseLanguageCode, string languageCode);
 }

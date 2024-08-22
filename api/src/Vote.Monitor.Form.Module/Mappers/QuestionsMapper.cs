@@ -87,6 +87,8 @@ public static class QuestionsMapper
                      ratingQuestion.Text,
                      RatingScale.FromValue(ratingQuestion.Scale.Value),
                      ratingQuestion.Helptext,
+                     ratingQuestion.LowerLabel,
+                     ratingQuestion.UpperLabel,
                      ToEntity(ratingQuestion.DisplayLogic));
 
             default: throw new ApplicationException("Unknown question type received");

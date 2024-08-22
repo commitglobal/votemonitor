@@ -9,30 +9,33 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { type ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { useMonitoringObserversTags } from '../../../../hooks/tags-queries';
-import { targetedMonitoringObserverColDefs } from '../../utils/column-defs';
-import { useNavigate } from '@tanstack/react-router';
+import { authApi } from '@/common/auth-api';
+import type { FunctionComponent } from '@/common/types';
+import { PollingStationsFilters } from '@/components/PollingStationsFilters/PollingStationsFilters';
+import { FilterBadge } from '@/components/ui/badge';
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { toast } from '@/components/ui/use-toast';
 import { Route } from '@/routes/monitoring-observers/create-new-message';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
-import type { PushMessageTargetedObserversSearchParams } from '../../models/search-params';
-import { FilterBadge } from '@/components/ui/badge';
-import { useTargetedMonitoringObservers } from '../../hooks/push-messages-queries';
-import { PollingStationsFilters } from '@/components/PollingStationsFilters/PollingStationsFilters';
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { MonitoringObserverStatus } from '../../models/monitoring-observer';
-import { useDebounce } from '@uidotdev/usehooks';
-import { toast } from '@/components/ui/use-toast';
 import { useMutation } from '@tanstack/react-query';
-import { authApi } from '@/common/auth-api';
+import { useNavigate } from '@tanstack/react-router';
+import Document from '@tiptap/extension-document';
+import Paragraph from '@tiptap/extension-paragraph';
+import Text from '@tiptap/extension-text';
+import { BubbleMenu, EditorContent, FloatingMenu, useEditor } from '@tiptap/react';
+import { useDebounce } from '@uidotdev/usehooks';
+import { useMonitoringObserversTags } from '../../../../hooks/tags-queries';
+import { useTargetedMonitoringObservers } from '../../hooks/push-messages-queries';
+import { MonitoringObserverStatus } from '../../models/monitoring-observer';
 import type { SendPushNotificationRequest } from '../../models/push-message';
-import type { FunctionComponent } from '@/common/types';
+import type { PushMessageTargetedObserversSearchParams } from '../../models/search-params';
+import { targetedMonitoringObserverColDefs } from '../../utils/column-defs';
 
 const createPushMessageSchema = z.object({
   title: z.string().min(1, { message: 'Your message must have a title before sending.' }),
@@ -50,6 +53,11 @@ function PushMessageForm(): FunctionComponent {
   const debouncedSearchText = useDebounce(searchText, 300);
 
   const { data: tags } = useMonitoringObserversTags();
+
+  const editor = useEditor({
+    extensions: [Document, Paragraph, Text],
+    content: '<p> je;skedkskd </p>',
+  })
 
   const onTagsFilterChange = useCallback(
     (tag: string) => () => {
@@ -179,7 +187,7 @@ function PushMessageForm(): FunctionComponent {
                         Message body <span className='text-red-500'>*</span>
                       </FormLabel>
                       <FormControl>
-                        <Textarea rows={8} className='resize-none' {...field} maxLength={1000} />
+                        {/* <RichTextEditor {...field} /> */}
                       </FormControl>
                       <FormDescription>1000 characters</FormDescription>
                       <FormMessage />

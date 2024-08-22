@@ -1,36 +1,38 @@
-import { TextAnswer, TextQuestion } from '@/common/types';
-import { Description, Field, Label } from '@/components/ui/fieldset';
+import { Label } from '@/components/ui/label';
 import { Textarea } from '../../ui/textarea';
-import { useParams } from '@tanstack/react-router';
-import { Input } from '@/components/ui/input';
+import { AnswerType, TextAnswer } from '@/common/types';
+import { useFormAnswersStore } from '../AnswersContext';
+import { useEffect, useState } from 'react';
 
 export interface PreviewTextQuestionProps {
-  languageCode: string;
-  question: TextQuestion;
-  answer?: TextAnswer;
-  setAnswer: (answer: TextAnswer) => void;
+  questionId: string;
+  text?: string;
+  helptext?: string;
+  inputPlaceholder?: string;
+  code: string;
 }
 
-function PreviewTextQuestion({ languageCode, question, answer, setAnswer }: PreviewTextQuestionProps) {
-  const params: any = useParams({
-    strict: false,
-  });
+function PreviewTextQuestion({ code, questionId, text, helptext, inputPlaceholder }: PreviewTextQuestionProps) {
+  const { setAnswer, getAnswer } = useFormAnswersStore();
+  const [localAnswer, setLocalAnswer] = useState<TextAnswer | undefined>(undefined)
+  useEffect(() => { setLocalAnswer(getAnswer(questionId) as TextAnswer) }, [questionId]);
+
   return (
-    <Field>
-      <Label>
-        {question.code} - {question.text[params['languageCode'] ? params['languageCode'] : languageCode]}
-      </Label>
-      {!!question.helptext && (
-        <Description>{question.helptext[params['languageCode'] ? params['languageCode'] : languageCode]}</Description>
-      )}
-      <Textarea
-        placeholder={
-          question.inputPlaceholder
-            ? question.inputPlaceholder[params['languageCode'] ? params['languageCode'] : languageCode]
-            : ''
-        }
-      />
-    </Field>
+    <div className="grid gap-6">
+      <div className="grid gap-2">
+        <Label htmlFor={`${questionId}-value`} className='font-semibold'>{code + ' - '}{text}</Label>
+        <Label htmlFor={`${questionId}-value`} className='text-sm italic'>{helptext}</Label>
+        <Textarea
+          id={`${questionId}-value`}
+          placeholder={inputPlaceholder}
+          onChange={(e) => {
+            const textAnswer: TextAnswer = { $answerType: AnswerType.TextAnswerType, questionId, text: e.target.value };
+            setAnswer(textAnswer)
+          }}
+          value={localAnswer?.text}
+        />
+      </div>
+    </div>
   );
 }
 

@@ -19,6 +19,8 @@ public abstract class BaseQuestionModel
     [JsonPropertyName("$questionType")]
     public string Discriminator => DiscriminatorValue.Get(GetType());
 
+    public Guid Id { get; init; }
+    public string Code { get; init; }
     public TranslatedString Text { get; init; }
 
     public TranslatedString? Helptext { get; init; }
