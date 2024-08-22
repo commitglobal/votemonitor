@@ -38,6 +38,7 @@ import Toast from "react-native-toast-message";
 import { scrollToTextarea } from "../../../helpers/scrollToTextarea";
 import * as Sentry from "@sentry/react-native";
 import QuestionForm from "../../../components/QuestionForm";
+import NotesSkeleton from "../../../components/SkeletonLoaders/NotesSkeleton";
 
 export type SearchParamType = {
   questionId: string;
@@ -79,7 +80,7 @@ const FormQuestionnaire = () => {
     error: answersError,
   } = useFormAnswers(activeElectionRound?.id, selectedPollingStation?.pollingStationId, formId);
 
-  const { data: notes } = useNotesForQuestionId(
+  const { data: notes, isLoading: isLoadingNotes } = useNotesForQuestionId(
     activeElectionRound?.id,
     selectedPollingStation?.pollingStationId,
     formId,
@@ -487,15 +488,19 @@ const FormQuestionnaire = () => {
           />
 
           {/* notes section */}
-          {notes && activeElectionRound?.id && selectedPollingStation?.pollingStationId && (
-            <QuestionNotes // TODO: @luciatugui add loading and error state for Notes and Attachments
-              notes={notes}
-              electionRoundId={activeElectionRound.id}
-              pollingStationId={selectedPollingStation.pollingStationId}
-              formId={formId}
-              questionId={questionId}
-            />
-          )}
+          {isLoadingNotes && <NotesSkeleton />}
+          {notes &&
+            !isLoadingNotes &&
+            activeElectionRound?.id &&
+            selectedPollingStation?.pollingStationId && (
+              <QuestionNotes // TODO: @luciatugui add error state for Notes and Attachments
+                notes={notes}
+                electionRoundId={activeElectionRound.id}
+                pollingStationId={selectedPollingStation.pollingStationId}
+                formId={formId}
+                questionId={questionId}
+              />
+            )}
 
           {/* attachments */}
           {activeElectionRound?.id && selectedPollingStation?.pollingStationId && formId && (

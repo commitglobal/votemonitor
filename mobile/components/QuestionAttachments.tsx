@@ -9,6 +9,7 @@ import { Keyboard } from "react-native";
 import { useState } from "react";
 import WarningDialog from "./WarningDialog";
 import { AttachmentApiResponse } from "../services/api/get-attachments.api";
+import AttachmentsSkeleton from "./SkeletonLoaders/AttachmentsSkeleton";
 
 interface QuestionAttachmentsProps {
   electionRoundId: string;
@@ -24,7 +25,11 @@ const QuestionAttachments: React.FC<QuestionAttachmentsProps> = ({
   questionId,
 }) => {
   const { t } = useTranslation("polling_station_form_wizard");
-  const { data: attachments } = useAttachments(electionRoundId, pollingStationId, formId);
+  const { data: attachments, isLoading: isLoadingAttachments } = useAttachments(
+    electionRoundId,
+    pollingStationId,
+    formId,
+  );
   const [selectedAttachment, setSelectedAttachment] = useState<AttachmentApiResponse | null>();
 
   const { mutate: deleteAttachment } = useDeleteAttachment(
@@ -33,6 +38,10 @@ const QuestionAttachments: React.FC<QuestionAttachmentsProps> = ({
     formId,
     `Attachment_${questionId}_${pollingStationId}_${formId}_${questionId}`,
   );
+
+  if (isLoadingAttachments) {
+    return <AttachmentsSkeleton />;
+  }
 
   return (
     attachments?.[questionId]?.length && (

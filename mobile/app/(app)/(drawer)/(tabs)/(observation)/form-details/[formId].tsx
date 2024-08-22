@@ -138,14 +138,23 @@ const FormDetails = () => {
           answer = { ...answer, selectionValues: selectedAnswersTexts };
         }
 
+        // sort the notes by createdAt date in order to extract the text of the last added note
+        const sortedNotes =
+          notes && notes[q.id]
+            ? notes[q.id].slice().sort((a, b) => {
+                // added unary '+' operator to avoid ts error that the right-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type
+                return +new Date(a.createdAt) - +new Date(b.createdAt);
+              })
+            : [];
+
         return {
           question: q.text[language],
           status: answers?.[q.id] ? QuestionStatus.ANSWERED : QuestionStatus.NOT_ANSWERED,
           answer,
           numberOfNotes: notes?.[q.id]?.length || 0,
           lastNoteText:
-            notes && notes?.[q.id]?.length > 0
-              ? notes?.[q.id][notes?.[q.id]?.length - 1].text
+            sortedNotes.length > 0
+              ? sortedNotes[sortedNotes.length - 1].text // get the text of the last note
               : undefined,
           numberOfAttachments: attachments?.[q.id]?.length || 0,
           // array with the types of attachments for this question
