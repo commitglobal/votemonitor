@@ -1,8 +1,5 @@
-﻿using Vote.Monitor.Core.Constants;
-using Vote.Monitor.Domain.Entities.FormBase.Questions;
-using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
+﻿using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
 using Vote.Monitor.TestUtils.Fakes.Aggregates;
-using Vote.Monitor.TestUtils.Fakes.Aggregates.Questions;
 using Vote.Monitor.TestUtils.Utils;
 
 namespace Vote.Monitor.Domain.UnitTests.Entities.FormTemplateAggregate;
@@ -61,7 +58,7 @@ public partial class FormTemplateTests
             description, languages);
 
         // Act
-        Action act = () => formTemplate.RemoveTranslation(LanguagesList.RO.Iso1);
+        var act = () => formTemplate.RemoveTranslation(LanguagesList.RO.Iso1);
 
         // Assert
         act

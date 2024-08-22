@@ -1,8 +1,7 @@
 import { authApi } from '@/common/auth-api';
 import { TranslatedString } from '@/common/types';
 import { CreateDialogFooter } from '@/components/dialogs/CreateDialog';
-import { ErrorMessage, Field, FieldGroup, Fieldset, Label } from '@/components/ui/fieldset';
-import { Form, FormControl, FormField } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
@@ -77,83 +76,80 @@ function CreateForm() {
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
-                <Fieldset className='grid grid-cols-2 gap-12'>
-                    <FieldGroup className='!mt-0'>
-                        <FormField
-                            control={form.control}
-                            name="formType"
-                            render={({ field }) => (
-                                <Field>
-                                    <Label>{t('form.field.formType')}</Label>
-                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                        <FormControl>
-                                            <SelectTrigger>
-                                                <SelectValue placeholder="Select a form type" />
-                                            </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                            <SelectItem value={FormType.Opening}>{mapFormType(FormType.Opening)}</SelectItem>
-                                            <SelectItem value={FormType.Voting}>{mapFormType(FormType.Voting)}</SelectItem>
-                                            <SelectItem value={FormType.ClosingAndCounting}>{mapFormType(FormType.ClosingAndCounting)}</SelectItem>
-                                            <SelectItem value={FormType.Other}>{mapFormType(FormType.Other)}</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </Field>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name='code'
-                            render={({ field, fieldState }) => (
-                                <Field>
-                                    <Label>{t('form.field.code')}</Label>
-                                    <Input placeholder={t('form.placeholder.code')} {...field}  {...fieldState} />
-                                    {fieldState.invalid && <ErrorMessage>{fieldState?.error?.message}</ErrorMessage>}
-                                </Field>
-                            )} />
-                        <FormField
-                            control={form.control}
-                            name='name'
-                            render={({ field, fieldState }) => (
-                                <Field>
-                                    <Label>{t('form.field.name')}</Label>
-                                    <Input placeholder={t('form.placeholder.name')} {...field}  {...fieldState} />
-                                    {fieldState.invalid && <ErrorMessage>{fieldState?.error?.message}</ErrorMessage>}
-                                </Field>)} />
+                <FormField
+                    control={form.control}
+                    name='name'
+                    render={({ field, fieldState }) => (
+                        <FormItem>
+                            <FormLabel>{t('form.field.name')}</FormLabel>
+                            <Input placeholder={t('form.placeholder.name')} {...field}  {...fieldState} />
+                            <FormMessage />
+                        </FormItem>)} />
 
-                        <FormField
-                            control={form.control}
-                            name='defaultLanguage'
-                            render={({ field, fieldState }) => (
-                                <Field>
-                                    <Label>{t('form.field.defaultLanguage')}</Label>
-                                    <LanguageSelect
-                                        languageCode={field.value}
-                                        onSelect={field.onChange}
-                                    />
-                                    {fieldState.invalid && <ErrorMessage>{fieldState?.error?.message}</ErrorMessage>}
-                                </Field>
-                            )}
-                        />
-                    </FieldGroup>
-                    <FieldGroup className='!mt-0'>
-                        <FormField
-                            control={form.control}
-                            name='description'
-                            render={({ field }) => (
-                                <Field>
-                                    <Label>{t('form.field.description')}</Label>
-                                    <Textarea
-                                        resizable={false}
-                                        rows={10}
-                                        cols={100}
-                                        {...field}
-                                        placeholder={t('form.placeholder.description')} />
-                                </Field>
-                            )}
-                        />
-                    </FieldGroup>
-                </Fieldset>
+                <FormField
+                    control={form.control}
+                    name='code'
+                    render={({ field, fieldState }) => (
+                        <FormItem>
+                            <FormLabel>{t('form.field.code')}</FormLabel>
+                            <Input placeholder={t('form.placeholder.code')} {...field}  {...fieldState} />
+                            <FormMessage />
+                        </FormItem>
+                    )} />
+
+                <FormField
+                    control={form.control}
+                    name="formType"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>{t('form.field.formType')}</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select a form type" />
+                                    </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                    <SelectItem value={FormType.Opening}>{mapFormType(FormType.Opening)}</SelectItem>
+                                    <SelectItem value={FormType.Voting}>{mapFormType(FormType.Voting)}</SelectItem>
+                                    <SelectItem value={FormType.ClosingAndCounting}>{mapFormType(FormType.ClosingAndCounting)}</SelectItem>
+                                    <SelectItem value={FormType.Other}>{mapFormType(FormType.Other)}</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </FormItem>
+                    )}
+                />
+
+
+                <FormField
+                    control={form.control}
+                    name='defaultLanguage'
+                    render={({ field, fieldState }) => (
+                        <FormItem>
+                            <FormLabel>{t('form.field.defaultLanguage')}</FormLabel>
+                            <LanguageSelect
+                                languageCode={field.value}
+                                onLanguageSelected={field.onChange}
+                            />
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name='description'
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>{t('form.field.description')}</FormLabel>
+                            <Textarea
+                                resizable={false}
+                                rows={10}
+                                cols={100}
+                                {...field}
+                                placeholder={t('form.placeholder.description')} />
+                        </FormItem>
+                    )}
+                />
                 <CreateDialogFooter />
             </form>
         </Form>

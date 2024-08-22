@@ -249,10 +249,10 @@ export function buildURLSearchParams(data: any) {
 
   Object.entries(data).forEach(([key, value]) => {
     if (Array.isArray(value)) {
-      // @ts-ignore 
+      // @ts-ignore
       value.forEach(value => params.append(key, value.toString()))
     } else {
-      // @ts-ignore 
+      // @ts-ignore
       params.append(key, value.toString())
     }
   });
@@ -269,4 +269,20 @@ export function isQueryFiltered(queryParams: Record<string, string>): boolean {
   return Object.entries(queryParams).some(
     ([key, value]) => !['PageNumber', 'PageSize', 'SortColumnName', 'SortOrder'].includes(key) && Boolean(value)
   );
+}
+
+export const isNotNilOrWhitespace = (input?: string) => (input?.trim()?.length || 0) > 0;
+
+export const isNilOrWhitespace = (input?: string) => (input?.trim()?.length || 0) === 0;
+
+
+export function takewhile<T>(arr: T[], predicate: (value: T) => boolean): T[] {
+  const result: T[] = [];
+  for (let i = 0; i < arr.length; i++) {
+      if (!predicate(arr[i]!)) {
+          break;
+      }
+      result.push(arr[i]!);
+  }
+  return result;
 }

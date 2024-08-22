@@ -25,6 +25,7 @@ public class Form : AuditableBaseEntity, IAggregateRoot
     public string[] Languages { get; private set; } = [];
     public int NumberOfQuestions { get; private set; }
 
+    public LanguagesTranslationStatus LanguagesTranslationStatus { get; private set; }
     public IReadOnlyList<BaseQuestion> Questions { get; private set; } = new List<BaseQuestion>().AsReadOnly();
 
     private Form(
@@ -36,23 +37,13 @@ public class Form : AuditableBaseEntity, IAggregateRoot
         TranslatedString description,
         string defaultLanguage,
         IEnumerable<string> languages,
-        IEnumerable<BaseQuestion> questions) : base(Guid.NewGuid())
+        IEnumerable<BaseQuestion> questions) : this(electionRound.Id, monitoringNgo.Id, formType, code, name,
+        description, defaultLanguage, languages, questions)
     {
         ElectionRound = electionRound;
-        ElectionRoundId = electionRound.Id;
         MonitoringNgo = monitoringNgo;
-        MonitoringNgoId = monitoringNgo.Id;
-
-        FormType = formType;
-        Code = code;
-        Name = name;
-        Description = description;
-        DefaultLanguage = defaultLanguage;
-        Languages = languages.ToArray();
-        Status = FormStatus.Drafted;
-        Questions = questions.ToList().AsReadOnly();
-        NumberOfQuestions = Questions.Count;
     }
+
     private Form(
         Guid electionRoundId,
         Guid monitoringNgoId,
@@ -76,20 +67,41 @@ public class Form : AuditableBaseEntity, IAggregateRoot
         Status = FormStatus.Drafted;
         Questions = questions.ToList().AsReadOnly();
         NumberOfQuestions = Questions.Count;
+        LanguagesTranslationStatus = ComputeLanguagesTranslationStatus(Questions, defaultLanguage, Languages);
+    }
+
+    private LanguagesTranslationStatus ComputeLanguagesTranslationStatus(IReadOnlyList<BaseQuestion> questions,
+        string defaultLanguage, string[] languages)
+    {
+        var languagesTranslationStatus = new LanguagesTranslationStatus();
+
+        foreach (var languageCode in languages)
+        {
+            var status =
+                Questions.Any(x =>
+                    x.GetTranslationStatus(defaultLanguage, languageCode) == TranslationStatus.MissingTranslations)
+                    ? TranslationStatus.MissingTranslations
+                    : TranslationStatus.Translated;
+            
+            languagesTranslationStatus.AddOrUpdateTranslationStatus(languageCode, status);
+        }
+
+        return languagesTranslationStatus;
     }
 
     [JsonConstructor]
     public Form(Guid id,
         Guid electionRoundId,
-        Guid monitoringNgoId, 
+        Guid monitoringNgoId,
         FormType formType,
         string code,
-        TranslatedString name, 
-        TranslatedString description, 
-        FormStatus status, 
+        TranslatedString name,
+        TranslatedString description,
+        FormStatus status,
         string defaultLanguage,
         string[] languages,
-        int numberOfQuestions) : base(id)
+        int numberOfQuestions,
+        LanguagesTranslationStatus languagesTranslationStatus) : base(id)
     {
         ElectionRoundId = electionRoundId;
         MonitoringNgoId = monitoringNgoId;
@@ -101,6 +113,7 @@ public class Form : AuditableBaseEntity, IAggregateRoot
         DefaultLanguage = defaultLanguage;
         Languages = languages;
         NumberOfQuestions = numberOfQuestions;
+        LanguagesTranslationStatus = languagesTranslationStatus;
     }
 
     public static Form Create(
@@ -146,6 +159,7 @@ public class Form : AuditableBaseEntity, IAggregateRoot
     {
         Status = FormStatus.Drafted;
     }
+
     public void Obsolete()
     {
         Status = FormStatus.Obsolete;
@@ -167,6 +181,7 @@ public class Form : AuditableBaseEntity, IAggregateRoot
         Languages = languages.ToArray();
         Questions = questions.ToList().AsReadOnly();
         NumberOfQuestions = Questions.Count;
+        LanguagesTranslationStatus = ComputeLanguagesTranslationStatus(Questions, defaultLanguage, Languages);
     }
 
     public FormSubmission CreateFormSubmission(
@@ -189,7 +204,8 @@ public class Form : AuditableBaseEntity, IAggregateRoot
             throw new ValidationException(validationResult.Errors);
         }
 
-        return FormSubmission.Create(ElectionRound, pollingStation, monitoringObserver, this, answers, numberOfQuestionAnswered, numberOfFlaggedAnswers);
+        return FormSubmission.Create(ElectionRound, pollingStation, monitoringObserver, this, answers,
+            numberOfQuestionAnswered, numberOfFlaggedAnswers);
     }
 
     private int CountNumberOfFlaggedAnswers(List<BaseAnswer> answers)
@@ -293,6 +309,8 @@ public class Form : AuditableBaseEntity, IAggregateRoot
                 question.AddTranslation(languageCode);
             }
         }
+
+        LanguagesTranslationStatus = ComputeLanguagesTranslationStatus(Questions, DefaultLanguage, Languages);
     }
 
     public bool HasTranslation(string languageCode)
@@ -308,6 +326,8 @@ public class Form : AuditableBaseEntity, IAggregateRoot
         }
 
         DefaultLanguage = languageCode;
+
+        LanguagesTranslationStatus = ComputeLanguagesTranslationStatus(Questions, DefaultLanguage, Languages);
     }
 
     public void RemoveTranslation(string languageCode)
@@ -332,6 +352,8 @@ public class Form : AuditableBaseEntity, IAggregateRoot
         {
             question.RemoveTranslation(languageCode);
         }
+
+        LanguagesTranslationStatus = ComputeLanguagesTranslationStatus(Questions, DefaultLanguage, Languages);
     }
 
     public Form Duplicate() =>
@@ -340,9 +362,6 @@ public class Form : AuditableBaseEntity, IAggregateRoot
 #pragma warning disable CS8618 // Required by Entity Framework
     private Form()
     {
-
     }
 #pragma warning restore CS8618
-
-
 }

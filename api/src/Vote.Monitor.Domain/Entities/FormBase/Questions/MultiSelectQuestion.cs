@@ -47,6 +47,13 @@ public record MultiSelectQuestion : BaseQuestion
         }
     }
 
+    protected override TranslationStatus InternalGetTranslationStatus(string baseLanguageCode, string languageCode)
+    {
+        return Options.Any(x => string.IsNullOrWhiteSpace(x.Text[languageCode]))
+            ? TranslationStatus.MissingTranslations
+            : TranslationStatus.Translated;
+    }
+
     public override int GetHashCode()
     {
         return HashCode.Combine(base.GetHashCode(), Options);

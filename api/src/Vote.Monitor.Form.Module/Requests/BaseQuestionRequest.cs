@@ -6,7 +6,6 @@ using Vote.Monitor.Domain.Entities.FormBase.Questions;
 namespace Vote.Monitor.Form.Module.Requests;
 
 [PolyJsonConverter(distriminatorPropertyName: "$questionType")]
-
 [PolyJsonConverter.SubType(typeof(TextQuestionRequest), QuestionTypes.TextQuestionType)]
 [PolyJsonConverter.SubType(typeof(NumberQuestionRequest), QuestionTypes.NumberQuestionType)]
 [PolyJsonConverter.SubType(typeof(DateQuestionRequest), QuestionTypes.DateQuestionType)]
@@ -15,8 +14,7 @@ namespace Vote.Monitor.Form.Module.Requests;
 [PolyJsonConverter.SubType(typeof(RatingQuestionRequest), QuestionTypes.RatingQuestionType)]
 public abstract class BaseQuestionRequest
 {
-    [JsonPropertyName("$questionType")]
-    public string QuestionType => DiscriminatorValue.Get(GetType())!;
+    [JsonPropertyName("$questionType")] public string QuestionType => DiscriminatorValue.Get(GetType())!;
 
     public Guid Id { get; set; }
 
@@ -25,6 +23,5 @@ public abstract class BaseQuestionRequest
     public TranslatedString Text { get; set; }
 
     public TranslatedString? Helptext { get; set; }
-
     public DisplayLogicRequest? DisplayLogic { get; set; }
 }

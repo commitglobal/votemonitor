@@ -20,6 +20,7 @@ public class FormSlimModel
         LastModifiedOn = form.LastModifiedOn,
         NumberOfQuestions = form.NumberOfQuestions,
         Description = form.Description,
+        LanguagesTranslationStatus = form.LanguagesTranslationStatus
     };
 
     public TranslatedString Description { get; set; }
@@ -36,4 +37,7 @@ public class FormSlimModel
     public int NumberOfQuestions { get; init; }
     public required DateTime CreatedOn { get; init; }
     public required DateTime? LastModifiedOn { get; init; }
+    
+    public LanguagesTranslationStatus LanguagesTranslationStatus { get; init; }
+
 }

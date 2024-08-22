@@ -1,5 +1,4 @@
-﻿using Vote.Monitor.Core.Models;
-using Vote.Monitor.Domain.ValueComparers;
+﻿using Vote.Monitor.Domain.ValueComparers;
 
 namespace Vote.Monitor.Domain.UnitTests.ValueComparers;
 

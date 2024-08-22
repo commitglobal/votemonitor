@@ -1,58 +1,55 @@
-import { DateAnswer, DateQuestion } from '@/common/types';
-import { Popover, PopoverContent, PopoverTrigger } from '../../ui/popover';
+import { AnswerType, DateAnswer } from '@/common/types';
+import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
-import { Calendar } from '../../ui/calendar';
-import { format, parseISO, formatISO } from 'date-fns';
+import { format } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
 import { Button } from '../../ui/button';
-import { Description, Field, Label } from '@/components/ui/fieldset';
-import { useState } from 'react';
-import { useParams } from '@tanstack/react-router';
+import { Calendar } from '../../ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '../../ui/popover';
+import { useFormAnswersStore } from '../AnswersContext';
 
 export interface PreviewDateQuestionProps {
-  languageCode: string;
-  question: DateQuestion;
-  answer: DateAnswer;
-  setAnswer: (answer: DateAnswer) => void;
+  questionId: string;
+  text?: string;
+  helptext?: string;
+  code: string;
 }
 
-function PreviewDateQuestion({ languageCode, question, answer, setAnswer }: PreviewDateQuestionProps) {
-  const [date, setDate] = useState<string>('');
-
-  const params: any = useParams({
-    strict: false,
-  });
+function PreviewDateQuestion({code, questionId, text, helptext }: PreviewDateQuestionProps) {
+  const { setAnswer, getAnswer } = useFormAnswersStore();
+  const answer = getAnswer(questionId) as DateAnswer;
 
   return (
-    <Field>
-      <Label>
-        {question.code} - {question.text[params['languageCode'] ? params['languageCode'] : languageCode]}
-      </Label>
-      {!!question.helptext && (
-        <Description>{question.helptext[params['languageCode'] ? params['languageCode'] : languageCode]}</Description>
-      )}
-      <Popover>
-        <PopoverTrigger asChild>
-          <Button
-            variant={'outline'}
-            className={cn('w-full pl-3 text-left font-normal', !date && 'text-muted-foreground')}>
-            {date ? format(date, 'PPP') : <span>Pick a date</span>}
-            <CalendarIcon className='w-4 h-4 ml-auto opacity-50' />
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className='w-auto p-0' align='start'>
-          <Calendar
-            mode='single'
-            selected={date ? parseISO(date) : undefined}
-            onSelect={(day) => {
-              setDate(formatISO(day!, { representation: 'date' }));
-            }}
-            disabled={(date) => date < new Date()}
-            initialFocus
-          />
-        </PopoverContent>
-      </Popover>
-    </Field>
+    <div className="grid gap-6">
+      <div className="grid gap-2">
+        <Label htmlFor={`${questionId}-value`} className='font-semibold'>{code + ' - '}{text}</Label>
+        <Label htmlFor={`${questionId}-value`} className='text-sm italic'>{helptext}</Label>
+
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant={'outline'}
+              type='button'
+              className={cn('w-full pl-3 text-left font-normal', !answer?.date && 'text-muted-foreground')}>
+              {answer?.date ? format(answer?.date, 'PPP') : <span>Pick a date</span>}
+              <CalendarIcon className='w-4 h-4 ml-auto opacity-50' />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className='w-auto p-0' align='start'>
+            <Calendar
+              mode='single'
+              selected={answer?.date ? answer?.date : undefined}
+              onSelect={(date) => {
+                const dateAnswer: DateAnswer = { $answerType: AnswerType.DateAnswerType, date, questionId };
+                setAnswer(dateAnswer);
+              }}
+              initialFocus
+            />
+          </PopoverContent>
+        </Popover>
+      </div>
+    </div>
+
   );
 }
 

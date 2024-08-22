@@ -18,11 +18,11 @@ public class PartiallyTranslatedStringValidator : Validator<TranslatedString>
         RuleFor(x => x)
             .Must(ts => ts.Any(isValidTranslation))
             .WithMessage("Provide at least one translation")
-            .Must((ts, _, context) =>
+            .Must((translatedString, _, context) =>
             {
                 foreach (var supportedLanguage in supportedLanguages)
                 {
-                    if (ts.Keys.Contains(supportedLanguage))
+                    if (translatedString.Keys.Contains(supportedLanguage))
                     {
                         continue;
                     }

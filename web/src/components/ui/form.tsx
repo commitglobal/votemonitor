@@ -3,8 +3,12 @@ import type * as LabelPrimitive from "@radix-ui/react-label"
 import { Slot } from "@radix-ui/react-slot"
 import type {
   ControllerProps,
+  FieldError,
+  FieldErrorsImpl,
   FieldPath,
-  FieldValues} from "react-hook-form";
+  FieldValues,
+  Merge
+} from "react-hook-form";
 import {
   Controller,
   FormProvider,
@@ -43,7 +47,7 @@ const FormField = <
 const useFormField = () => {
   const fieldContext = React.useContext(FormFieldContext)
   const itemContext = React.useContext(FormItemContext)
-  const { getFieldState, formState } = useFormContext()
+  const { getFieldState, formState } = useFormContext();
 
   const fieldState = getFieldState(fieldContext.name, formState)
 
@@ -141,29 +145,55 @@ const FormDescription = React.forwardRef<
 })
 FormDescription.displayName = "FormDescription"
 
-const FormMessage = React.forwardRef<
-  HTMLParagraphElement,
+type ArrayFieldError = Merge<
+  FieldError,
+  FieldErrorsImpl<{
+    value: string;
+    id: string;
+  }>>
+
+const isFormArrayField = (
+  arg: FieldError | ArrayFieldError
+): arg is ArrayFieldError => {
+  return (arg as ArrayFieldError).value !== undefined;
+};
+
+type FormFieldError = FieldError | ArrayFieldError | undefined;
+
+const FormMessage = React.forwardRef<HTMLParagraphElement,
   React.HTMLAttributes<HTMLParagraphElement>
->(({ className, children, ...props }, ref) => {
-  const { error, formMessageId } = useFormField()
-  const body = error ? String(error?.message) : children
+>
+  (({ className, children, ...props }, ref) => {
+    const { error, formMessageId } = useFormField();
 
-  if (!body) {
-    return null
-  }
+    const extendedError = error as FormFieldError;
 
-  return (
-    <p
-      ref={ref}
-      id={formMessageId}
-      className={cn("text-sm font-medium text-destructive", className)}
-      {...props}
-    >
-      {body}
-    </p>
-  )
-})
-FormMessage.displayName = "FormMessage"
+    let body;
+    if (extendedError === undefined) {
+      body = children;
+    } else if (isFormArrayField(extendedError)) {
+      body = String(extendedError.value?.message);
+    } else {
+      body = String(extendedError.message);
+    }
+
+    if (!body) {
+      return null;
+    }
+
+    return (
+      <p
+        ref={ref}
+        id={formMessageId}
+        className={cn("text-sm text-red-400", className)}
+        {...props}
+      >
+        {body}
+      </p>
+    );
+  });
+FormMessage.displayName = "FormMessage";
+
 
 export {
   useFormField,

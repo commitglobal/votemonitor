@@ -18,7 +18,8 @@ public class FormFullModel: FormSlimModel
         NumberOfQuestions = form.NumberOfQuestions,
         CreatedOn = form.CreatedOn,
         LastModifiedOn = form.LastModifiedOn,
-        Description = form.Description
+        Description = form.Description,
+        LanguagesTranslationStatus = form.LanguagesTranslationStatus
     };
 
     public IReadOnlyList<BaseQuestionModel> Questions { get; init; } = [];

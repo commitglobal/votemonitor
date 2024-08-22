@@ -15,9 +15,8 @@ import { FollowUpStatus, FunctionComponent } from '@/common/types';
 import Layout from '@/components/layout/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
-import { FormItem } from '@/components/ui/form';
+import { FormItem, FormLabel } from '@/components/ui/form';
 import { Label } from '@/components/ui/label';
-import { Radio, RadioGroup } from '@/components/ui/radio-group';
 import { RatingGroup } from '@/components/ui/ratings';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
@@ -33,6 +32,7 @@ import { format } from 'date-fns';
 import { Fragment } from 'react';
 import { formSubmissionsByEntryKeys, formSubmissionsByObserverKeys } from '../../hooks/form-submissions-queries';
 import { ResponseExtraDataSection } from '../ReponseExtraDataSection/ResponseExtraDataSection';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 export default function FormSubmissionDetails(): FunctionComponent {
   const { submissionId } = Route.useParams();
@@ -170,8 +170,8 @@ export default function FormSubmissionDetails(): FunctionComponent {
                       {question.options.map((option) => (
                         <Fragment key={option.id}>
                           <FormItem className='flex items-center gap-2 !mt-0'>
-                            <Radio disabled value={option.id} />
-                            <Label className='font-normal' key={option.id}>
+                            <RadioGroupItem disabled value={option.id} id={option.id} />
+                            <Label className='font-normal' htmlFor={option.id}>
                               {option.text[formSubmission.defaultLanguage]}
                               {option.isFlagged && <> (Flagged)</>}
                             </Label>
@@ -196,7 +196,7 @@ export default function FormSubmissionDetails(): FunctionComponent {
                       return (
                         <FormItem key={option.id} className='flex flex-row items-start space-x-3 space-y-0'>
                           <Checkbox checked={isOptionChecked} disabled />
-                          <Label>{option.text[formSubmission.defaultLanguage]}</Label>
+                          <FormLabel>{option.text[formSubmission.defaultLanguage]}</FormLabel>
                         </FormItem>
                       );
                     })}

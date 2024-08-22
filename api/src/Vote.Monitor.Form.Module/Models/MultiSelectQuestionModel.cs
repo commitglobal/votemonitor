@@ -4,8 +4,6 @@ namespace Vote.Monitor.Form.Module.Models;
 
 public class MultiSelectQuestionModel : BaseQuestionModel
 {
-    public Guid Id { get; init; }
-    public string Code { get; init; }
     public List<SelectOptionModel> Options { get; init; }
 
     public static MultiSelectQuestionModel FromEntity(MultiSelectQuestion question) =>

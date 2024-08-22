@@ -1,10 +1,8 @@
 import { getTranslationOrDefault, type FunctionComponent } from '@/common/types';
 import Layout from '@/components/layout/Layout';
-import PreviewQuestionFactory from '@/components/questionsEditor/preview/PreviewQuestionFactory';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Fieldset } from '@/components/ui/fieldset';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Route as FormDetailsRoute } from '@/routes/forms/$formId_.$languageCode';
@@ -12,11 +10,18 @@ import { PencilIcon } from '@heroicons/react/24/outline';
 import { useNavigate } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
 
+import { isMultiSelectQuestion, isNumberQuestion, isRatingQuestion, isSingleSelectQuestion, isTextQuestion } from '@/common/guards';
+import { NavigateBack } from '@/components/NavigateBack/NavigateBack';
+import PreviewDateQuestion from '@/components/questionsEditor/preview/PreviewDateQuestion';
+import PreviewMultiSelectQuestion from '@/components/questionsEditor/preview/PreviewMultiSelectQuestion';
+import PreviewNumberQuestion from '@/components/questionsEditor/preview/PreviewNumberQuestion';
+import PreviewRatingQuestion from '@/components/questionsEditor/preview/PreviewRatingQuestion';
+import PreviewSingleSelectQuestion from '@/components/questionsEditor/preview/PreviewSingleSelectQuestion';
+import PreviewTextQuestion from '@/components/questionsEditor/preview/PreviewTextQuestion';
+import { LanguageBadge } from '@/components/ui/language-badge';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { mapFormType } from '../../models/form';
 import { formDetailsQueryOptions } from '../../queries';
-import LanguageBadge from '../LanguageBadge/LanguageBadge';
-import { NavigateBack } from '@/components/NavigateBack/NavigateBack';
 import { FormDetailsBreadcrumbs } from '../FormDetailsBreadcrumbs/FormDetailsBreadcrumbs';
 
 export default function FormDetails(): FunctionComponent {
@@ -33,8 +38,8 @@ export default function FormDetails(): FunctionComponent {
   return (
     <Layout
       backButton={<NavigateBack to='/election-event/$tab' params={{ tab: 'observer-forms' }} />}
-      breadcrumbs={<FormDetailsBreadcrumbs />}
-      title={`${form.code} - ${form.name[form.defaultLanguage]}`}>
+      breadcrumbs={<FormDetailsBreadcrumbs formCode={form.code} formName={form.name[languageCode] ?? ''} />}
+      title={`${form.code} - ${form.name[languageCode]}`}>
       <Tabs defaultValue='form-details'>
         <TabsList className='grid grid-cols-2 bg-gray-200 w-[400px] mb-4'>
           <TabsTrigger value='form-details'>Form details</TabsTrigger>
@@ -44,7 +49,7 @@ export default function FormDetails(): FunctionComponent {
           <Card className='pt-0'>
             <CardHeader className='flex flex-column gap-2'>
               <div className='flex flex-row justify-between items-center'>
-                <CardTitle className='flex  gap-1'>
+                <CardTitle className='flex gap-1'>
                   <span className='text-xl'>Form details</span>
                   <LanguageBadge languageCode={languageCode} />
                 </CardTitle>
@@ -64,7 +69,7 @@ export default function FormDetails(): FunctionComponent {
                 <div className='px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0'>
                   <dt className='text-sm font-medium leading-6 text-gray-900'>{t('form.field.name')}</dt>
                   <dd className='mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0'>
-                    {form.name[form.defaultLanguage]}
+                    {form.name[languageCode]}
                   </dd>
                 </div>
                 <div className='px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0'>
@@ -105,7 +110,10 @@ export default function FormDetails(): FunctionComponent {
           <Card className='pt-0'>
             <CardHeader className='flex flex-column gap-2'>
               <div className='flex flex-row justify-between items-center'>
-                <CardTitle className='text-xl'>Form questions</CardTitle>
+                <CardTitle className='flex gap-1'>
+                  <span className='text-xl'>Form questions</span>
+                  <LanguageBadge languageCode={languageCode} />
+                </CardTitle>
                 <Button onClick={navigateToEdit} variant='ghost-primary'>
                   <PencilIcon className='w-[18px] mr-2 text-purple-900' />
                   <span className='text-base text-purple-900'>Edit</span>
@@ -113,14 +121,73 @@ export default function FormDetails(): FunctionComponent {
               </div>
               <Separator />
             </CardHeader>
-            <CardContent className='mx-6 flex items-start justify-left px-6 sm:mx-0 sm:px-8'>
-              <Fieldset className='grid gap-4 w-[600px]'>
-                {form.questions.map((q) => (
-                  <div className='p-6 border-b-2'>
-                    <PreviewQuestionFactory languageCode={form.defaultLanguage} question={q} key={q.id} />
-                  </div>
+            <CardContent>
+              <div className='w-1/2 flex-col space-y-6'>
+                {form.questions.map((question) => (
+                  <>
+                    {
+                      isTextQuestion(question) && (
+                        <PreviewTextQuestion
+                          questionId={question.id}
+                          text={question.text[languageCode]}
+                          helptext={question.helptext?.[languageCode]}
+                          inputPlaceholder={question.inputPlaceholder?.[languageCode]}
+                          code={question.code}
+                        />)}
+
+                    {
+                      isNumberQuestion(question) && (
+                        <PreviewNumberQuestion
+                          questionId={question.id}
+                          text={question.text[languageCode]}
+                          helptext={question.helptext?.[languageCode]}
+                          inputPlaceholder={question.inputPlaceholder?.[languageCode]}
+                          code={question.code}
+                        />)
+                    }
+
+                    {
+                      isTextQuestion(question) && (
+                        <PreviewDateQuestion
+                          questionId={question.id}
+                          text={question.text[languageCode]}
+                          helptext={question.helptext?.[languageCode]}
+                          code={question.code}
+                        />)
+                    }
+
+                    {isRatingQuestion(question) && (
+                      <PreviewRatingQuestion
+                        questionId={question.id}
+                        text={question.text[languageCode]}
+                        helptext={question.helptext?.[languageCode]}
+                        scale={question.scale}
+                        upperLabel={question.upperLabel?.[languageCode]}
+                        lowerLabel={question.lowerLabel?.[languageCode]}
+                        code={question.code}
+                      />)}
+
+                    {isMultiSelectQuestion(question) && (
+                      <PreviewMultiSelectQuestion
+                        questionId={question.id}
+                        text={question.text[languageCode]}
+                        helptext={question.helptext?.[languageCode]}
+                        options={question.options?.map(o => ({ optionId: o.id, isFreeText: o.isFreeText, text: o.text[languageCode] })) ?? []}
+                        code={question.code}
+                      />)}
+
+                    {isSingleSelectQuestion(question) && (
+                      <PreviewSingleSelectQuestion
+                        questionId={question.id}
+                        text={question.text[languageCode]}
+                        helptext={question.helptext?.[languageCode]}
+                        options={question.options?.map(o => ({ optionId: o.id, isFreeText: o.isFreeText, text: o.text[languageCode] })) ?? []}
+                        code={question.code}
+                      />)}
+                  </>
                 ))}
-              </Fieldset>
+
+              </div>
             </CardContent>
           </Card>
         </TabsContent>

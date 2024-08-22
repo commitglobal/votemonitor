@@ -42,7 +42,7 @@ public class Endpoint(
         await formsRepository.UpdateAsync(form, ct);
 
         var monitoringNgo = await monitoringNgoRepository.FirstOrDefaultAsync(new GetMonitoringNgoSpecification(req.ElectionRoundId, req.NgoId), ct);
-        monitoringNgo!.UpdatePollingStationsVersion();
+        monitoringNgo!.UpdateFormVersion();
         await monitoringNgoRepository.UpdateAsync(monitoringNgo, ct);
 
         return TypedResults.NoContent();
