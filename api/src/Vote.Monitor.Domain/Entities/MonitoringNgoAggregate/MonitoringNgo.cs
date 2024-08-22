@@ -64,7 +64,7 @@ public class MonitoringNgo : AuditableBaseEntity, IAggregateRoot
     {
         Status = MonitoringNgoStatus.Suspended;
     }
-    public void UpdatePollingStationsVersion()
+    public void UpdateFormVersion()
     {
         FormsVersion = Guid.NewGuid();
     }

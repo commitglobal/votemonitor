@@ -37,7 +37,7 @@ function LanguagesMultiselect({ value, defaultLanguages, placeholder, emptyIndic
 
     function handleSearchLanguages(search: string): Promise<Option[]> {
         if (search) {
-            return Promise.resolve(languageOptions?.filter(language => language.label.toLocaleLowerCase().includes(search.toLocaleLowerCase()) ));
+            return Promise.resolve(languageOptions?.filter(language => language.label.toLocaleLowerCase().includes(search.toLocaleLowerCase())));
         }
 
         return Promise.resolve(languageOptions);

@@ -1,232 +1,297 @@
-import { authApi } from '@/common/auth-api';
 import {
+  emptyTranslatedString,
   QuestionType,
-  cloneTranslation,
-  getTranslationOrDefault,
-  updateTranslationString,
-  type BaseQuestion,
-  type FunctionComponent,
-  type MultiSelectQuestion,
-  type NumberQuestion,
-  type SingleSelectQuestion,
-  type TextQuestion,
+  type FunctionComponent
 } from '@/common/types';
 import FormQuestionsEditor from '@/components/questionsEditor/FormQuestionsEditor';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ErrorMessage, Field, FieldGroup, Fieldset, Label } from '@/components/ui/fieldset';
-import { Form, FormControl, FormField, FormMessage } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Form } from '@/components/ui/form';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Textarea } from '@/components/ui/textarea';
-import { useToast } from '@/components/ui/use-toast';
-import LanguageSelect from '@/containers/LanguageSelect';
-import { queryClient } from '@/main';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
-import { useRef, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
+import { useSuspenseQuery } from '@tanstack/react-query';
+import { useForm, useWatch } from 'react-hook-form';
 import { z } from 'zod';
 
+import { isDateQuestion, isMultiSelectQuestion, isNumberQuestion, isRatingQuestion, isSingleSelectQuestion, isTextQuestion } from '@/common/guards';
 import Layout from '@/components/layout/Layout';
-import { Route } from '@/routes/forms_.$formId.edit';
-import { type FormFull, FormType, mapFormType } from '../../models/form';
-import { formDetailsQueryOptions, formsKeys } from '../../queries';
-import EditFormFooter from './EditFormFooter';
 import { NavigateBack } from '@/components/NavigateBack/NavigateBack';
-import { useNavigate } from '@tanstack/react-router';
+import { cn, isNilOrWhitespace } from '@/lib/utils';
+import { Route } from '@/routes/forms_.$formId.edit';
+import { FormType } from '../../models/form';
+import { formDetailsQueryOptions } from '../../queries';
+import { EditDateQuestionType, EditMultiSelectQuestionType, EditNumberQuestionType, EditRatingQuestionType, EditSingleSelectQuestionType, EditTextQuestionType, ZEditQuestionType, ZTranslatedString } from '../../types';
 import { FormDetailsBreadcrumbs } from '../FormDetailsBreadcrumbs/FormDetailsBreadcrumbs';
+import EditFormDetails from './EditFormDetails';
+import { LanguageBadge } from '@/components/ui/language-badge';
+import EditFormFooter from './EditFormFooter';
 
-function updateTranslations(
-  question: BaseQuestion,
-  previousLanguageCode: string,
-  newLanguageCode: string
-): BaseQuestion {
-  question.text = cloneTranslation(question.text, previousLanguageCode, newLanguageCode)!;
-  question.helptext = cloneTranslation(question.helptext, previousLanguageCode, newLanguageCode);
+const ZEditFormType = z.object({
+  formId: z.string().trim().min(1),
+  languageCode: z.string().trim().min(1),
+  code: z.string().trim().min(1),
+  name: ZTranslatedString,
+  description: ZTranslatedString.optional(),
+  languages: z.array(z.string()),
+  formType: z.enum([FormType.Opening, FormType.Voting, FormType.ClosingAndCounting, FormType.Other]).catch(FormType.Opening),
+  questions: z.array(ZEditQuestionType)
+})
+  .superRefine((data, ctx) => {
+    if (isNilOrWhitespace(data.name[data.languageCode])) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Form name is required',
+        path: ['name'],
+      });
+    }
 
-  if (question.$questionType === QuestionType.TextQuestionType) {
-    const textQuestion: TextQuestion = question as TextQuestion;
-    textQuestion.inputPlaceholder = cloneTranslation(
-      textQuestion.inputPlaceholder,
-      previousLanguageCode,
-      newLanguageCode
-    );
+    data.questions.forEach((question, index) => {
+      if (isNilOrWhitespace(question.text[question.languageCode])) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Question text is required',
+          path: ['questions', index, 'text'],
+        });
+      }
 
-    return { ...textQuestion };
-  }
+      if (question.$questionType === QuestionType.SingleSelectQuestionType || question.$questionType === QuestionType.MultiSelectQuestionType) {
+        question.options.forEach((option, optionIndex) => {
+          if (isNilOrWhitespace(option.text[question.languageCode])) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: 'Option text is required',
+              path: ["questions", index, "options", optionIndex, 'text'],
+            });
+          }
+        });
 
-  if (question.$questionType === QuestionType.NumberQuestionType) {
-    const numberQuestion: NumberQuestion = question as NumberQuestion;
-    numberQuestion.inputPlaceholder = cloneTranslation(
-      numberQuestion.inputPlaceholder,
-      previousLanguageCode,
-      newLanguageCode
-    );
+        // check uniqueness of options
+        const optionTexts = question.options.map(o => o.text[question.languageCode]);
+        const textCountMap = new Map<string | undefined, number>();
+        const duplicatedIndexesMap = new Map<string | undefined, number>();
 
-    return { ...numberQuestion };
-  }
+        // Step 1: Count occurrences of each option
+        optionTexts.forEach((text, optionIndex) => {
+          const numberOfOccurrences = (textCountMap.get(text) || 0) + 1;
+          if (numberOfOccurrences > 1) {
+            duplicatedIndexesMap.set(text, optionIndex)
+          }
+          textCountMap.set(text, numberOfOccurrences);
+        });
 
-  if (question.$questionType === QuestionType.SingleSelectQuestionType) {
-    const singleSelectQuestion: SingleSelectQuestion = question as SingleSelectQuestion;
-    singleSelectQuestion.options = singleSelectQuestion.options.map((option) => ({
-      ...option,
-      text: cloneTranslation(option.text, previousLanguageCode, newLanguageCode)!,
-    }));
+        // Step 2: Mark duplicated options as invalid
+        for (const [_, optionIndex] of duplicatedIndexesMap.entries()) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: 'Option text is not unique',
+            path: ["questions", index, "options", optionIndex, 'text'],
+          });
+        }
+      }
 
-    return { ...singleSelectQuestion };
-  }
+      if (question.hasDisplayLogic) {
+        if (question.condition === undefined) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: 'Question condition is required',
+            path: ["questions", index, "condition"],
+          });
+        }
 
-  if (question.$questionType === QuestionType.MultiSelectQuestionType) {
-    const MultiSelectQuestion: MultiSelectQuestion = question as MultiSelectQuestion;
-    MultiSelectQuestion.options = MultiSelectQuestion.options.map((option) => ({
-      ...option,
-      text: cloneTranslation(option.text, previousLanguageCode, newLanguageCode)!,
-    }));
+        if (question.parentQuestionId === undefined) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: 'Question parent question is required',
+            path: ["questions", index, "parentQuestionId"],
+          });
+        }
 
-    return { ...MultiSelectQuestion };
-  }
+        if (question.value === undefined) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: 'Question value is required',
+            path: ["questions", index, "value"],
+          });
+        }
+      }
 
-  return { ...question };
-}
+      return z.NEVER
+    });
+  });
+
+export type EditFormType = z.infer<typeof ZEditFormType>;
 
 export default function EditForm(): FunctionComponent {
-  const { t } = useTranslation();
   const { formId } = Route.useParams();
   const formQuery = useSuspenseQuery(formDetailsQueryOptions(formId));
   const formData = formQuery.data;
-  const navigate = useNavigate();
 
-  const [localQuestions, setLocalQuestions] = useState(formData.questions);
-  const [defaultLanguage, setDefaultLanguage] = useState(formData.defaultLanguage);
-  const [languages, setLanguages] = useState(formData.languages);
-  const formRef = useRef<HTMLFormElement>(null);
-
-  const { toast } = useToast();
-
-  const editFormFormSchema = z.object({
-    code: z.string().nonempty(),
-    name: z.string().nonempty(),
-    description: z.string().optional(),
-    defaultLanguage: z.string().nonempty(),
-    formType: z
-      .enum([FormType.Opening, FormType.Voting, FormType.ClosingAndCounting, FormType.Other])
-      .catch(FormType.Opening),
-  });
-
-  const form = useForm<z.infer<typeof editFormFormSchema>>({
-    resolver: zodResolver(editFormFormSchema),
+  const form = useForm<EditFormType>({
+    resolver: zodResolver(ZEditFormType),
     defaultValues: {
+      formId: formData.id,
       code: formData.code,
-      name: formData.name[formData.defaultLanguage],
-      description: getTranslationOrDefault(formData.description, formData.defaultLanguage),
+      languageCode: formData.defaultLanguage,
+      languages: formData.languages,
+      name: formData.name,
+      description: formData.description ?? emptyTranslatedString(formData.languages),
       formType: formData.formType,
-      defaultLanguage: formData.defaultLanguage,
+      questions: formData
+        .questions
+        .map(question => {
+          if (isNumberQuestion(question)) {
+            const numberQuestion: EditNumberQuestionType = {
+              $questionType: QuestionType.NumberQuestionType,
+              questionId: question.id,
+              text: question.text,
+              helptext: question.helptext ?? emptyTranslatedString(formData.languages),
+              inputPlaceholder: question.inputPlaceholder ?? emptyTranslatedString(formData.languages),
+
+              hasDisplayLogic: !!question.displayLogic,
+
+              parentQuestionId: question.displayLogic?.parentQuestionId,
+              condition: question.displayLogic?.condition,
+              value: question.displayLogic?.value,
+
+              code: question.code,
+              languageCode: formData.defaultLanguage,
+              defaultLanguage: formData.defaultLanguage
+            }
+
+            return numberQuestion;
+          }
+          if (isTextQuestion(question)) {
+            const textQuestion: EditTextQuestionType = {
+              $questionType: QuestionType.TextQuestionType,
+              questionId: question.id,
+              text: question.text,
+              helptext: question.helptext ?? emptyTranslatedString(formData.languages),
+              inputPlaceholder: question.inputPlaceholder ?? emptyTranslatedString(formData.languages),
+
+              hasDisplayLogic: !!question.displayLogic,
+
+              parentQuestionId: question.displayLogic?.parentQuestionId,
+              condition: question.displayLogic?.condition,
+              value: question.displayLogic?.value,
+
+              code: question.code,
+              languageCode: formData.defaultLanguage,
+              defaultLanguage: formData.defaultLanguage
+            }
+
+            return textQuestion;
+          }
+
+          if (isDateQuestion(question)) {
+            const dateQuestion: EditDateQuestionType = {
+              $questionType: QuestionType.DateQuestionType,
+              questionId: question.id,
+              text: question.text,
+              helptext: question.helptext ?? emptyTranslatedString(formData.languages),
+
+              hasDisplayLogic: !!question.displayLogic,
+
+              parentQuestionId: question.displayLogic?.parentQuestionId,
+              condition: question.displayLogic?.condition,
+              value: question.displayLogic?.value,
+
+              code: question.code,
+              languageCode: formData.defaultLanguage,
+              defaultLanguage: formData.defaultLanguage
+            }
+
+            return dateQuestion;
+          }
+
+          if (isRatingQuestion(question)) {
+            const ratingQuestion: EditRatingQuestionType = {
+              $questionType: QuestionType.RatingQuestionType,
+              questionId: question.id,
+              text: question.text,
+              helptext: question.helptext ?? emptyTranslatedString(formData.languages),
+              scale: question.scale,
+              hasDisplayLogic: !!question.displayLogic,
+
+              parentQuestionId: question.displayLogic?.parentQuestionId,
+              condition: question.displayLogic?.condition,
+              value: question.displayLogic?.value,
+
+              code: question.code,
+              languageCode: formData.defaultLanguage,
+              defaultLanguage: formData.defaultLanguage,
+              lowerLabel: question.lowerLabel ?? emptyTranslatedString(formData.languages),
+              upperLabel: question.upperLabel ?? emptyTranslatedString(formData.languages),
+            }
+
+            return ratingQuestion;
+          }
+
+          if (isSingleSelectQuestion(question)) {
+            const singleSelectQuestion: EditSingleSelectQuestionType = {
+              $questionType: QuestionType.SingleSelectQuestionType,
+              questionId: question.id,
+              text: question.text,
+              helptext: question.helptext ?? {},
+              options: question.options?.map(o => ({ optionId: o.id, isFlagged: o.isFlagged, isFreeText: o.isFreeText, text: o.text })) ?? [],
+
+              hasDisplayLogic: !!question.displayLogic,
+
+              parentQuestionId: question.displayLogic?.parentQuestionId,
+              condition: question.displayLogic?.condition,
+              value: question.displayLogic?.value,
+
+              code: question.code,
+              languageCode: formData.defaultLanguage,
+              defaultLanguage: formData.defaultLanguage
+            }
+
+            return singleSelectQuestion;
+          }
+
+          if (isMultiSelectQuestion(question)) {
+            const multiSelectQuestion: EditMultiSelectQuestionType = {
+              $questionType: QuestionType.MultiSelectQuestionType,
+              questionId: question.id,
+              text: question.text,
+              helptext: question.helptext ?? {},
+              options: question.options?.map(o => ({ optionId: o.id, isFlagged: o.isFlagged, isFreeText: o.isFreeText, text: o.text })) ?? [],
+
+              hasDisplayLogic: !!question.displayLogic,
+
+              parentQuestionId: question.displayLogic?.parentQuestionId,
+              condition: question.displayLogic?.condition,
+              value: question.displayLogic?.value,
+
+              code: question.code,
+              languageCode: formData.defaultLanguage,
+              defaultLanguage: formData.defaultLanguage
+            }
+
+            return multiSelectQuestion;
+          }
+
+          return undefined;
+        })
     },
+    mode: 'all'
   });
 
-  const editMutation = useMutation({
-    mutationKey: formsKeys.all,
-    mutationFn: (form: FormFull) => {
-      const electionRoundId: string | null = localStorage.getItem('electionRoundId');
+  const code = useWatch({ control: form.control, name: 'code', defaultValue: formData.code });
+  const name = useWatch({ control: form.control, name: 'name', defaultValue: formData.name });
 
-      return authApi.put<void>(`/election-rounds/${electionRoundId}/forms/${formData.id}`, {
-        ...form,
-        questions: localQuestions,
-      });
-    },
-
-    onSuccess: () => {
-      toast({
-        title: 'Success',
-        description: 'Form updated successfully',
-      });
-
-      void queryClient.invalidateQueries({ queryKey: formsKeys.all });
-    },
-  });
-
-  function saveHandler(): void {
-    const values = form.getValues();
-
-    formData.code = values.code;
-    formData.name[defaultLanguage] = values.name;
-    formData.description = updateTranslationString(
-      formData.description,
-      formData.languages,
-      formData.defaultLanguage,
-      values.description ?? ''
-    );
-    formData.formType = values.formType;
-    formData.defaultLanguage = defaultLanguage;
-    formData.languages = languages;
-
-    const updatedForm: FormFull = {
-      ...formData,
-    };
-
-    editMutation.mutate(updatedForm);
-  }
-
-  function onSubmit(values: z.infer<typeof editFormFormSchema>): void {
-    formData.code = values.code;
-    formData.name[defaultLanguage] = values.name;
-    formData.description = updateTranslationString(
-      formData.description,
-      formData.languages,
-      formData.defaultLanguage,
-      values.description ?? ''
-    );
-    formData.formType = values.formType;
-    formData.defaultLanguage = defaultLanguage;
-    formData.languages = languages;
-
-    const updatedForm: FormFull = {
-      ...formData,
-    };
-
-    editMutation.mutate(updatedForm, {
-      onSuccess: () => {
-        void navigate({ to: '/election-event/$tab', params: { tab: 'observer-forms' } });
-      },
-    });
-  }
-
-  const handleLanguageChange = (newLanguageCode: string): void => {
-    const previousLanguageCode = defaultLanguage;
-    setDefaultLanguage(newLanguageCode);
-    setLanguages([...new Set([...languages, newLanguageCode])]);
-    setLocalQuestions(
-      localQuestions.map((question) => updateTranslations(question, previousLanguageCode, newLanguageCode))
-    );
-  };
-
-  const submit = (): void => {
-    if (formRef.current) {
-      saveHandler();
-    }
-  };
-
-  const submitAndExitEditor = (): void => {
-    if (formRef.current) {
-      formRef.current.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
-    }
-  };
+  const languageCode = useWatch({ control: form.control, name: 'languageCode', defaultValue: formData.defaultLanguage });
 
   return (
     <Layout
       backButton={<NavigateBack to='/election-event/$tab' params={{ tab: 'observer-forms' }} />}
-      breadcrumbs={<FormDetailsBreadcrumbs />}
-      title={`${formData.code} - ${formData.name[formData.defaultLanguage]}`}>
+      breadcrumbs={<FormDetailsBreadcrumbs formCode={code} formName={name[languageCode] ?? ''} />}
+      title={`${code} - ${name[languageCode]}`}>
       <Form {...form}>
-        {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
-        <form className='flex flex-col flex-1' onSubmit={form.handleSubmit(onSubmit)} ref={formRef}>
+        <form className='flex flex-col flex-1'>
           <Tabs className='flex flex-col flex-1' defaultValue='form-details'>
             <TabsList className='grid grid-cols-2 bg-gray-200 w-[400px] mb-4'>
-              <TabsTrigger value='form-details'>Form details</TabsTrigger>
-              <TabsTrigger value='questions'>Questions</TabsTrigger>
+              <TabsTrigger value='form-details' className={cn({ 'border-b-4 border-red-400': form.getFieldState('name').invalid || form.getFieldState('code').invalid })}>Form details</TabsTrigger>
+              <TabsTrigger value='questions' className={cn({ 'border-b-4 border-red-400': form.getFieldState('questions').invalid })}>Questions</TabsTrigger>
             </TabsList>
             <TabsContent value='form-details'>
               <Card className='pt-0'>
@@ -237,87 +302,7 @@ export default function EditForm(): FunctionComponent {
                   <Separator />
                 </CardHeader>
                 <CardContent className='flex flex-col gap-6 items-baseline'>
-                  <Fieldset className='grid grid-cols-2 gap-12'>
-                    <FieldGroup className='!mt-0'>
-                      <FormField
-                        control={form.control}
-                        name='code'
-                        render={({ field, fieldState }) => (
-                          <Field>
-                            <Label>{t('form.field.code')}</Label>
-                            <Input placeholder={t('form.placeholder.code')} {...field} {...fieldState} />
-                            {fieldState.invalid && <ErrorMessage>{fieldState?.error?.message}</ErrorMessage>}
-                          </Field>
-                        )}
-                      />
-
-                      <FormField
-                        control={form.control}
-                        name='formType'
-                        render={({ field }) => (
-                          <Field>
-                            <Label>{t('form.field.formType')}</Label>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue placeholder='Select form type' />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                <SelectItem value={FormType.Opening}>{mapFormType(FormType.Opening)}</SelectItem>
-                                <SelectItem value={FormType.Voting}>{mapFormType(FormType.Voting)}</SelectItem>
-                                <SelectItem value={FormType.ClosingAndCounting}>
-                                  {mapFormType(FormType.ClosingAndCounting)}
-                                </SelectItem>
-                                <SelectItem value={FormType.Other}>{mapFormType(FormType.Other)}</SelectItem>
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </Field>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name='name'
-                        render={({ field, fieldState }) => (
-                          <Field>
-                            <Label>{t('form.field.name')}</Label>
-                            <Input placeholder={t('form.placeholder.name')} {...field} {...fieldState} />
-                            {fieldState.invalid && <ErrorMessage>{fieldState?.error?.message}</ErrorMessage>}
-                          </Field>
-                        )}
-                      />
-
-                      <FormField
-                        control={form.control}
-                        name='defaultLanguage'
-                        render={({ field }) => (
-                          <Field>
-                            <Label>{t('form.field.defaultLanguage')}</Label>
-                            <LanguageSelect
-                              languageCode={field.value}
-                              onSelect={(value) => {
-                                handleLanguageChange(value);
-                                field.onChange(value);
-                              }}
-                            />
-                          </Field>
-                        )}
-                      />
-                    </FieldGroup>
-                    <FieldGroup className='!mt-0'>
-                      <FormField
-                        control={form.control}
-                        name='description'
-                        render={({ field }) => (
-                          <Field>
-                            <Label>{t('form.field.description')}</Label>
-                            <Textarea rows={10} cols={100} {...field} placeholder={t('form.placeholder.description')} />
-                          </Field>
-                        )}
-                      />
-                    </FieldGroup>
-                  </Fieldset>
+                  <EditFormDetails languageCode={languageCode} />
                 </CardContent>
               </Card>
             </TabsContent>
@@ -325,22 +310,24 @@ export default function EditForm(): FunctionComponent {
               <Card className='pt-0 h-[calc(100vh)] overflow-hidden'>
                 <CardHeader className='flex flex-column gap-2'>
                   <div className='flex flex-row justify-between items-center'>
-                    <CardTitle className='text-xl'>Form questions</CardTitle>
+                    <CardTitle className='text-xl'>
+                      {languageCode && (
+                        <div className='flex gap-2 items-center'>
+                          <span className='text-sm'>Form questions</span>
+                          <LanguageBadge languageCode={languageCode} />
+                        </div>
+                      )}
+                    </CardTitle>
                   </div>
                   <Separator />
                 </CardHeader>
                 <CardContent className='-mx-6 flex items-start justify-left px-6 sm:mx-0 sm:px-8 h-[100%]'>
-                  <FormQuestionsEditor
-                    availableLanguages={languages}
-                    languageCode={defaultLanguage}
-                    localQuestions={localQuestions}
-                    setLocalQuestions={setLocalQuestions}
-                  />
+                  <FormQuestionsEditor />
                 </CardContent>
               </Card>
             </TabsContent>
           </Tabs>
-          <EditFormFooter onSaveProgress={submit} onSaveAndExit={submitAndExitEditor} />
+          <EditFormFooter />
         </form>
       </Form>
     </Layout>

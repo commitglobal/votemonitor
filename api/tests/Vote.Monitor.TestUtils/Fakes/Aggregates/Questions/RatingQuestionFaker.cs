@@ -8,6 +8,8 @@ public sealed class RatingQuestionFaker : Faker<RatingQuestion>
     public RatingQuestionFaker(RatingScale? scale = null, string[]? languageList = null)
     {
         CustomInstantiator(f => RatingQuestion.Create(f.Random.Guid(), f.Random.AlphaNumeric(2),
-            new TranslatedStringFaker(languageList), scale ?? f.PickRandom<RatingScale>(RatingScale.List), new TranslatedStringFaker(languageList)));
+            new TranslatedStringFaker(languageList), scale ?? f.PickRandom<RatingScale>(RatingScale.List),
+            new TranslatedStringFaker(languageList), new TranslatedStringFaker(languageList),
+            new TranslatedStringFaker(languageList)));
     }
 }

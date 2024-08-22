@@ -1,8 +1,5 @@
-﻿using Vote.Monitor.Core.Constants;
-using Vote.Monitor.Domain.Entities.FormBase.Questions;
-using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
+﻿using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
 using Vote.Monitor.TestUtils.Fakes.Aggregates;
-using Vote.Monitor.TestUtils.Fakes.Aggregates.Questions;
 
 namespace Vote.Monitor.Domain.UnitTests.Entities.FormTemplateAggregate;
 public partial class FormTemplateTests

@@ -1,11 +1,8 @@
-﻿using Vote.Monitor.Core.Models;
-using Vote.Monitor.Domain.Entities.FormBase.Questions;
-using Vote.Monitor.TestUtils.Fakes.Aggregates.Questions;
-using Vote.Monitor.TestUtils.Utils;
+﻿using Vote.Monitor.TestUtils.Utils;
 
 namespace Vote.Monitor.Domain.UnitTests.Entities.Questions;
 
-public record SingleSelectQuestionTests
+public partial class SingleSelectQuestionTests
 {
     [Fact]
     public void ComparingToASingleSelectQuestion_WithSameProperties_ReturnsTrue()

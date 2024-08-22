@@ -1,50 +1,42 @@
-import { useState } from 'react';
 import {
-  PlusIcon,
-  Bars3BottomLeftIcon,
-  CalculatorIcon,
-  CalendarIcon,
-  StarIcon,
-  CheckCircleIcon,
-  ListBulletIcon,
-} from '@heroicons/react/24/solid';
-import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
-import { cn } from '@/lib/utils';
-import { v4 as uuidv4 } from 'uuid';
-import {
-  BaseQuestion,
-  DateQuestion,
-  MultiSelectQuestion,
-  NumberQuestion,
-  QuestionType,
-  RatingQuestion,
-  RatingScaleType,
-  SingleSelectQuestion,
-  TextQuestion,
   newTranslatedString,
+  QuestionType,
+  RatingScaleType
 } from '@/common/types';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { EditMultiSelectQuestionType, EditQuestionType, EditSingleSelectQuestionType } from '@/features/forms/types';
 import i18n from '@/i18n';
+import { cn } from '@/lib/utils';
+import {
+  PlusIcon
+} from '@heroicons/react/24/solid';
+import { useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
+import { questionsIconMapping } from '../utils';
 
 export type QuestionTypeConfig = {
   type: QuestionType;
   label: string;
   icon: any;
-  create: (availableLanguages: string[], languageCode: string) => BaseQuestion;
+  create: (languageCode: string, availableLanguages: string[]) => EditQuestionType;
 };
 
 const questionTypes: QuestionTypeConfig[] = [
   {
     type: QuestionType.TextQuestionType,
-    icon: Bars3BottomLeftIcon,
+    icon: questionsIconMapping[QuestionType.TextQuestionType],
     label: i18n.t('questionEditor.questionType.textQuestion'),
-    create: (availableLanguages: string[], languageCode: string) => {
-      const newTextQuestion: TextQuestion = {
-        id: uuidv4(),
+    create: (languageCode: string, availableLanguages: string[]) => {
+      const newTextQuestion: EditQuestionType = {
         $questionType: QuestionType.TextQuestionType,
-        code: '',
-        inputPlaceholder: newTranslatedString(availableLanguages, languageCode, ''),
-        helptext: newTranslatedString(availableLanguages, languageCode, ''),
+        questionId: uuidv4(),
         text: newTranslatedString(availableLanguages, languageCode, ''),
+        helptext: newTranslatedString(availableLanguages, languageCode, ''),
+        inputPlaceholder: newTranslatedString(availableLanguages, languageCode, ''),
+        hasDisplayLogic: false,
+        languageCode,
+        defaultLanguage: languageCode,
+        code: ''
       };
 
       return newTextQuestion;
@@ -52,15 +44,19 @@ const questionTypes: QuestionTypeConfig[] = [
   },
   {
     type: QuestionType.NumberQuestionType,
-    icon: CalculatorIcon,
+    icon: questionsIconMapping[QuestionType.NumberQuestionType],
     label: i18n.t('questionEditor.questionType.numberQuestion'),
-    create: (availableLanguages: string[], languageCode: string) => {
-      const newNumberQuestion: NumberQuestion = {
-        id: uuidv4(),
+    create: (languageCode: string, availableLanguages: string[]) => {
+      const newNumberQuestion: EditQuestionType = {
         $questionType: QuestionType.NumberQuestionType,
-        code: '',
-        helptext: newTranslatedString(availableLanguages, languageCode, ''),
+        questionId: uuidv4(),
         text: newTranslatedString(availableLanguages, languageCode, ''),
+        helptext: newTranslatedString(availableLanguages, languageCode, ''),
+        inputPlaceholder: newTranslatedString(availableLanguages, languageCode, ''),
+        hasDisplayLogic: false,
+        languageCode,
+        defaultLanguage: languageCode,
+        code: ''
       };
 
       return newNumberQuestion;
@@ -68,15 +64,18 @@ const questionTypes: QuestionTypeConfig[] = [
   },
   {
     type: QuestionType.DateQuestionType,
-    icon: CalendarIcon,
+    icon: questionsIconMapping[QuestionType.DateQuestionType],
     label: i18n.t('questionEditor.questionType.dateQuestion'),
-    create: (availableLanguages: string[], languageCode: string) => {
-      const newDateQuestion: DateQuestion = {
-        id: uuidv4(),
+    create: (languageCode: string, availableLanguages: string[]) => {
+      const newDateQuestion: EditQuestionType = {
         $questionType: QuestionType.DateQuestionType,
-        code: '',
-        helptext: newTranslatedString(availableLanguages, languageCode, ''),
+        questionId: uuidv4(),
         text: newTranslatedString(availableLanguages, languageCode, ''),
+        helptext: newTranslatedString(availableLanguages, languageCode, ''),
+        hasDisplayLogic: false,
+        languageCode,
+        defaultLanguage: languageCode,
+        code: ''
       };
 
       return newDateQuestion;
@@ -84,16 +83,21 @@ const questionTypes: QuestionTypeConfig[] = [
   },
   {
     type: QuestionType.RatingQuestionType,
-    icon: StarIcon,
+    icon: questionsIconMapping[QuestionType.RatingQuestionType],
     label: i18n.t('questionEditor.questionType.ratingQuestion'),
-    create: (availableLanguages: string[], languageCode: string) => {
-      const newRatingQuestion: RatingQuestion = {
-        id: uuidv4(),
+    create: (languageCode: string, availableLanguages: string[]) => {
+      const newRatingQuestion: EditQuestionType = {
         $questionType: QuestionType.RatingQuestionType,
-        code: '',
-        helptext: newTranslatedString(availableLanguages, languageCode, ''),
+        questionId: uuidv4(),
         text: newTranslatedString(availableLanguages, languageCode, ''),
-        scale: RatingScaleType.OneTo5,
+        helptext: newTranslatedString(availableLanguages, languageCode, ''),
+        scale: RatingScaleType.OneTo3,
+        hasDisplayLogic: false,
+        lowerLabel: newTranslatedString(availableLanguages, languageCode, ''),
+        upperLabel: newTranslatedString(availableLanguages, languageCode, ''),
+        languageCode,
+        defaultLanguage: languageCode,
+        code: ''
       };
 
       return newRatingQuestion;
@@ -101,29 +105,32 @@ const questionTypes: QuestionTypeConfig[] = [
   },
   {
     type: QuestionType.SingleSelectQuestionType,
-    icon: CheckCircleIcon,
+    icon: questionsIconMapping[QuestionType.SingleSelectQuestionType],
     label: i18n.t('questionEditor.questionType.singleSelectQuestion'),
-    create: (availableLanguages: string[], languageCode: string) => {
-      const newSingleSelectQuestion: SingleSelectQuestion = {
-        id: uuidv4(),
+    create: (languageCode: string, availableLanguages: string[]) => {
+      const newSingleSelectQuestion: EditSingleSelectQuestionType = {
         $questionType: QuestionType.SingleSelectQuestionType,
-        code: '',
-        helptext: newTranslatedString(availableLanguages, languageCode, ''),
+        questionId: uuidv4(),
         text: newTranslatedString(availableLanguages, languageCode, ''),
+        helptext: newTranslatedString(availableLanguages, languageCode, ''),
+        hasDisplayLogic: false,
+        languageCode,
+        defaultLanguage: languageCode,
+        code: '',
         options: [
           {
-            id: uuidv4(),
-            text: newTranslatedString(availableLanguages, languageCode, ''),
+            optionId: uuidv4(),
             isFlagged: false,
             isFreeText: false,
+            text: newTranslatedString(availableLanguages, languageCode, 'Option 1')
           },
           {
-            id: uuidv4(),
-            text: newTranslatedString(availableLanguages, languageCode, ''),
+            optionId: uuidv4(),
             isFlagged: false,
             isFreeText: false,
+            text: newTranslatedString(availableLanguages, languageCode, 'Option 2')
           },
-        ],
+        ]
       };
 
       return newSingleSelectQuestion;
@@ -131,23 +138,32 @@ const questionTypes: QuestionTypeConfig[] = [
   },
   {
     type: QuestionType.MultiSelectQuestionType,
-    icon: ListBulletIcon,
+    icon: questionsIconMapping[QuestionType.MultiSelectQuestionType],
     label: i18n.t('questionEditor.questionType.multiSelectQuestion'),
-    create: (availableLanguages: string[], languageCode: string) => {
-      const newMultiSelectQuestion: MultiSelectQuestion = {
-        id: uuidv4(),
+    create: (languageCode: string, availableLanguages: string[]) => {
+      const newMultiSelectQuestion: EditMultiSelectQuestionType = {
         $questionType: QuestionType.MultiSelectQuestionType,
-        code: '',
-        helptext: newTranslatedString(availableLanguages, languageCode, ''),
+        questionId: uuidv4(),
         text: newTranslatedString(availableLanguages, languageCode, ''),
+        helptext: newTranslatedString(availableLanguages, languageCode, ''),
+        languageCode,
+        defaultLanguage: languageCode,
+        hasDisplayLogic: false,
+        code: '',
         options: [
           {
-            id: uuidv4(),
-            text: newTranslatedString(availableLanguages, languageCode),
+            optionId: uuidv4(),
             isFlagged: false,
             isFreeText: false,
+            text: newTranslatedString(availableLanguages, languageCode, 'Option 1')
           },
-        ],
+          {
+            optionId: uuidv4(),
+            isFlagged: false,
+            isFreeText: false,
+            text: newTranslatedString(availableLanguages, languageCode, 'Option 2')
+          }
+        ]
       };
 
       return newMultiSelectQuestion;
@@ -156,12 +172,12 @@ const questionTypes: QuestionTypeConfig[] = [
 ];
 
 interface AddQuestionButtonProps {
-  availableLanguages: string[];
   languageCode: string;
-  addQuestion: (question: BaseQuestion) => void;
+  availableLanguages: string[];
+  addQuestion: (question: EditQuestionType) => void;
 }
 
-export default function AddQuestionButton({ availableLanguages, languageCode, addQuestion }: AddQuestionButtonProps) {
+export default function AddQuestionButton({ languageCode, availableLanguages, addQuestion }: AddQuestionButtonProps) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -190,7 +206,7 @@ export default function AddQuestionButton({ availableLanguages, languageCode, ad
             key={questionType.type}
             className='mx-2 inline-flex items-center rounded p-0.5 px-4 py-2 font-medium text-slate-700 last:mb-2 hover:bg-slate-100 hover:text-slate-800'
             onClick={() => {
-              addQuestion(questionType.create(availableLanguages, languageCode));
+              addQuestion(questionType.create(languageCode, availableLanguages));
               setOpen(false);
             }}>
             <questionType.icon className='text-primary -ml-0.5 mr-2 h-5 w-5' aria-hidden='true' />

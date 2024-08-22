@@ -37,9 +37,8 @@ export type PageResponse<T> = {
 export type DataTableParameters<TQueryParams = object> = PageParameters &
   SortParameters & { otherParams?: TQueryParams };
 
-export type TranslatedString = {
-  [languageCode: string]: string;
-};
+export const ZTranslatedString = z.record(z.string());
+export type TranslatedString = z.infer<typeof ZTranslatedString>;
 
 export enum QuestionType {
   TextQuestionType = 'textQuestion',
@@ -50,19 +49,22 @@ export enum QuestionType {
   RatingQuestionType = 'ratingQuestion',
 }
 
-export type DisplayLogicCondition =
-  "Equals" |
-  "NotEquals" |
-  "LessThan" |
-  "LessEqual" |
-  "GreaterThan" |
-  "GreaterEqual" |
-  "Includes";
+export const ZDisplayLogicCondition = z.enum(["Equals",
+  "NotEquals",
+  "LessThan",
+  "LessEqual",
+  "GreaterThan",
+  "GreaterEqual",
+  "Includes"]);
+
+export type DisplayLogicCondition = z.infer<typeof ZDisplayLogicCondition>
+
 export interface DisplayLogic {
-  parentQuestionId?: string;
-  condition?: DisplayLogicCondition;
-  value?: string;
+  parentQuestionId: string;
+  condition: DisplayLogicCondition;
+  value: string;
 }
+
 export interface BaseQuestion {
   id: string;
   $questionType: QuestionType;
@@ -97,6 +99,8 @@ export enum RatingScaleType {
 }
 
 export interface RatingQuestion extends BaseQuestion {
+  upperLabel?: TranslatedString;
+  lowerLabel?: TranslatedString;
   $questionType: QuestionType.RatingQuestionType;
   scale: RatingScaleType;
 }
@@ -213,8 +217,24 @@ export const newTranslatedString = (availableLanguages: string[], languageCode: 
   return translatedString;
 };
 
+/**
+ * Creates a new Translated String containing all available languages
+ * @param availableLanguages available translations list
+ * @param value value to set for required languageCode
+ * @returns new instance of @see {@link TranslatedString}
+ */
+export const emptyTranslatedString = (availableLanguages: string[], value: string = ''): TranslatedString => {
+  const translatedString: TranslatedString = {};
+  availableLanguages.forEach(language => {
+    translatedString[language] = value;
+  });
 
-export const updateTranslationString = (translatedString: TranslatedString | undefined, availableLanguages: string[], languageCode: string, value: string): TranslatedString=> {
+
+  return translatedString;
+};
+
+
+export const updateTranslationString = (translatedString: TranslatedString | undefined, availableLanguages: string[], languageCode: string, value: string): TranslatedString => {
   if (translatedString === undefined) {
     translatedString = newTranslatedString(availableLanguages, languageCode);
   }
@@ -240,10 +260,27 @@ export const cloneTranslation = (translatedString: TranslatedString | undefined,
   return translatedString;
 };
 
-export type HistogramData = {
-  [bucket: string]: number;
-};
+/**
+ * Changes language code to another in @see {@link TranslatedString} instance
+ * @param translatedString a instance of @see {@link TranslatedString}
+ * @param fromLanguageCode language code from which to borrow translation
+ * @param toLanguageCode destination
+ * @param defaultValue default value
+ * @returns new instance of @see {@link TranslatedString}
+ */
+export const changeLanguageCode = (translatedString: TranslatedString | undefined, fromLanguageCode: string, toLanguageCode: string, defaultValue: string = ''): TranslatedString => {
+  if (translatedString === undefined) {
+    return {};
+  }
 
+  const text = translatedString[fromLanguageCode];
+  delete translatedString[fromLanguageCode];
+
+  return {
+    ...translatedString,
+    [toLanguageCode]: text ?? defaultValue
+  };
+}
 
 /**
  * Gets translation from a translated string.
@@ -272,3 +309,6 @@ export enum FollowUpStatus {
   NeedsFollowUp = 'NeedsFollowUp',
   Resolved = 'Resolved',
 }
+export type HistogramData = {
+  [bucket: string]: number;
+};

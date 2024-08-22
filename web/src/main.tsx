@@ -7,6 +7,7 @@ import { routeTree } from './routeTree.gen.ts';
 import { I18nextProvider } from 'react-i18next';
 import i18n from './i18n';
 import AuthContextProvider, { AuthContext } from './context/auth.context';
+import { AlertDialogProvider } from './components/ui/alert-dialog-provider.tsx';
 
 export const queryClient = new QueryClient();
 
@@ -52,7 +53,9 @@ if (!rootElement.innerHTML) {
     <React.StrictMode>
       <QueryClientProvider client={queryClient}>
         <AuthContextProvider>
-          <App />
+          <AlertDialogProvider>
+            <App />
+          </AlertDialogProvider>
         </AuthContextProvider>
       </QueryClientProvider>
     </React.StrictMode>

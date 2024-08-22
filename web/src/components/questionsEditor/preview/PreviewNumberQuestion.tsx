@@ -1,35 +1,41 @@
-import { NumberAnswer, NumberQuestion } from '@/common/types';
+import { AnswerType, NumberAnswer } from '@/common/types';
 import { Input } from '@/components/ui/input';
-import { Description, Field, Label } from '@/components/ui/fieldset';
-import { useParams } from '@tanstack/react-router';
+import { Label } from '@/components/ui/label';
+import { useEffect, useState } from 'react';
+import { useFormAnswersStore } from '../AnswersContext';
+
 export interface PreviewNumberQuestionProps {
-  languageCode: string;
-  question: NumberQuestion;
-  answer: NumberAnswer;
-  setAnswer: (answer: NumberAnswer) => void;
+  questionId: string;
+  text?: string;
+  helptext?: string;
+  inputPlaceholder?: string;
+  code?: string;
 }
 
-function PreviewNumberQuestion({ languageCode, question, answer, setAnswer }: PreviewNumberQuestionProps) {
-  const params: any = useParams({
-    strict: false,
-  });
+function PreviewNumberQuestion({ code, questionId, text, helptext, inputPlaceholder }: PreviewNumberQuestionProps) {
+  const { setAnswer, getAnswer } = useFormAnswersStore();
+  const [localAnswer, setLocalAnswer] = useState<NumberAnswer | undefined>(undefined)
+  useEffect(() => { setLocalAnswer(getAnswer(questionId) as NumberAnswer) }, [questionId]);
+
   return (
-    <Field>
-      <Label>
-        {question.code} - {question.text[params['languageCode'] ? params['languageCode'] : languageCode]}
-      </Label>
-      {!!question.helptext && (
-        <Description>{question.helptext[params['languageCode'] ? params['languageCode'] : languageCode]}</Description>
-      )}
-      <Input
-        type='number'
-        placeholder={
-          question.inputPlaceholder
-            ? question.inputPlaceholder[params['languageCode'] ? params['languageCode'] : languageCode]
-            : ''
-        }
-      />
-    </Field>
+    <div className="grid gap-6">
+      <div className="grid gap-2">
+        <Label htmlFor={`${questionId}-value`} className='font-semibold'>{code + ' - '}{text}</Label>
+        <Label htmlFor={`${questionId}-value`} className='text-sm italic'>{helptext}</Label>
+        <Input
+          id={`${questionId}-value`}
+          placeholder={inputPlaceholder}
+          type='number'
+          value={localAnswer?.value}
+          onChange={(e) => {
+            const numberAnswer: NumberAnswer = { $answerType: AnswerType.NumberAnswerType, questionId, value: Number(e.target.value) };
+            setAnswer(numberAnswer);
+          }}
+          defaultValue="0"
+          min="0"
+        />
+      </div>
+    </div>
   );
 }
 

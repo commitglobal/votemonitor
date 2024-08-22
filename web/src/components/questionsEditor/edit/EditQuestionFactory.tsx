@@ -1,66 +1,45 @@
-import { type BaseQuestion, type FunctionComponent, QuestionType } from '@/common/types';
+import { type FunctionComponent, QuestionType } from '@/common/types';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { cn } from '@/lib/utils';
+import { cn, isNilOrWhitespace } from '@/lib/utils';
 import { Draggable } from 'react-beautiful-dnd';
 import { useTranslation } from 'react-i18next';
 
-import type { MoveDirection } from '../QuestionsEdit';
-import EditDateQuestion from './EditDateQuestion';
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { EditFormType } from '@/features/forms/components/EditForm/EditForm';
+
+import { useFormContext, useWatch } from 'react-hook-form';
+import { questionsIconMapping } from '../utils';
+import DisplayLogicEditor from './DisplayLogicEditor';
 import EditNumberQuestion from './EditNumberQuestion';
 import EditRatingQuestion from './EditRatingQuestion';
 import EditSelectQuestion from './EditSelectQuestion';
 import EditTextQuestion from './EditTextQuestion';
 import QuestionActions from './QuestionActions';
-import { useParams } from '@tanstack/react-router';
-import { LanguageIcon } from '@heroicons/react/24/outline';
-import DisplayLogicEditor from './DisplayLogicEditor';
-import { isQuestionTranslated } from '../utils';
-import {
-  isDateQuestion,
-  isMultiSelectQuestion,
-  isNumberQuestion,
-  isRatingQuestion,
-  isSingleSelectQuestion,
-  isTextQuestion,
-} from '@/common/guards';
+import type { MoveDirection } from './QuestionsEdit';
 
 interface EditQuestionFactoryProps {
-  formQuestions: BaseQuestion[];
-  availableLanguages: string[];
-  languageCode: string;
-  questionIdx: number;
+  questionIndex: number;
   activeQuestionId: string | undefined;
   isLastQuestion: boolean;
-  isInValid: boolean;
-  question: BaseQuestion;
   setActiveQuestionId: (questionId: string | undefined) => void;
   moveQuestion: (questionIndex: number, direction: MoveDirection) => void;
-  updateQuestion: (questionIndex: number, question: BaseQuestion) => void;
   duplicateQuestion: (questionIndex: number) => void;
   deleteQuestion: (questionIndex: number) => void;
 }
 
 export default function EditQuestionFactory({
-  formQuestions,
-  availableLanguages,
-  languageCode,
-  questionIdx,
+  questionIndex,
   activeQuestionId,
   isLastQuestion,
-  isInValid,
-  question,
   setActiveQuestionId,
   moveQuestion,
-  updateQuestion,
   duplicateQuestion,
   deleteQuestion,
 }: EditQuestionFactoryProps): FunctionComponent {
   const { t } = useTranslation();
-  const open = activeQuestionId === question.id;
+  const { control, getFieldState } = useFormContext<EditFormType>();
 
-  const params: { languageCode?: string } = useParams({
-    strict: false,
-  });
 
   function getQuestionTypeName(questionType: QuestionType): string {
     switch (questionType) {
@@ -88,8 +67,22 @@ export default function EditQuestionFactory({
     }
   }
 
+  const question = useWatch({
+    control,
+    name: `questions.${questionIndex}`,
+  });
+
+  const languageCode = useWatch({
+    control,
+    name: `languageCode`,
+  });
+
+  const open = activeQuestionId === question.questionId;
+
+  const IconComponent = questionsIconMapping[question.$questionType] || null;
+
   return (
-    <Draggable draggableId={question.id} index={questionIdx}>
+    <Draggable draggableId={question.questionId} index={questionIndex}>
       {(provided) => (
         <div
           className={cn(
@@ -103,15 +96,15 @@ export default function EditQuestionFactory({
             className={cn(
               open ? 'bg-slate-600' : 'bg-purple-900',
               'top-0 w-10 rounded-l-lg p-2 text-center text-sm text-white hover:bg-slate-600',
-              isInValid && 'bg-red-400  hover:bg-red-600'
+              !!getFieldState(`questions.${questionIndex}`).invalid && 'bg-red-400 hover:bg-red-600'
             )}>
-            {questionIdx + 1}
+            {questionIndex + 1}
           </div>
           <Collapsible
             open={open}
             onOpenChange={() => {
-              if (activeQuestionId !== question.id) {
-                setActiveQuestionId(question.id);
+              if (activeQuestionId !== question.questionId) {
+                setActiveQuestionId(question.questionId);
               } else {
                 setActiveQuestionId(undefined);
               }
@@ -119,104 +112,101 @@ export default function EditQuestionFactory({
             className='flex-1 rounded-r-lg border border-slate-200'>
             <CollapsibleTrigger
               asChild
-              className={cn(open ? '' : '  ', 'flex cursor-pointer justify-between p-4 hover:bg-slate-50')}>
+              className='flex cursor-pointer justify-between p-4 hover:bg-slate-50'>
               <div>
                 <div className='inline-flex'>
-                  <div>
-                    {!!params['languageCode'] &&
-                      (isQuestionTranslated(question, languageCode, params['languageCode']) ? (
-                        <div className='flex gap-2 	 items-center rounded-md text-green-700 bg-green-100 p-2 mb-2'>
-                          <LanguageIcon width={22} />
-                          This question is translated.
-                        </div>
-                      ) : (
-                        <div className='flex items-center 	 rounded-md text-yellow-700 bg-yellow-100 p-2 mb-2'>
-                          <LanguageIcon width={22} />
-                          This question is missing translations.
-                        </div>
-                      ))}
-                    <p className='text-sm font-semibold'>
-                      {question.code} -{' '}
-                      {(params['languageCode'] ? question.text[params['languageCode']] : question.text[languageCode]) ||
-                        getQuestionTypeName(question.$questionType)}
-                    </p>
-                  </div>
+                  {IconComponent && (
+                    <IconComponent className='text-primary -ml-0.5 mr-2 h-5 w-5' aria-hidden='true' />
+                  )}
+                  <p className='text-sm font-semibold break-all'>
+                    {isNilOrWhitespace(question.text[languageCode]) ? getQuestionTypeName(question.$questionType) : question.text[languageCode]}
+                  </p>
                 </div>
 
-                {!params['languageCode'] && (
-                  <div className='flex items-center space-x-2'>
-                    <QuestionActions
-                      questionIdx={questionIdx}
-                      isLastQuestion={isLastQuestion}
-                      duplicateQuestion={duplicateQuestion}
-                      deleteQuestion={deleteQuestion}
-                      moveQuestion={moveQuestion}
-                    />
-                  </div>
-                )}
+                <div className='flex items-center space-x-2'>
+                  <QuestionActions
+                    questionIndex={questionIndex}
+                    isLastQuestion={isLastQuestion}
+                    duplicateQuestion={duplicateQuestion}
+                    deleteQuestion={deleteQuestion}
+                    moveQuestion={moveQuestion}
+                  />
+                </div>
               </div>
             </CollapsibleTrigger>
-            <CollapsibleContent className='px-4 pb-4'>
-              {isTextQuestion(question) && (
-                <EditTextQuestion
-                  availableLanguages={availableLanguages}
-                  languageCode={languageCode}
-                  question={question}
-                  questionIdx={questionIdx}
-                  updateQuestion={updateQuestion}
-                  isInValid={isInValid}
-                />
-              )}
-              {isDateQuestion(question) && (
-                <EditDateQuestion
-                  availableLanguages={availableLanguages}
-                  languageCode={languageCode}
-                  question={question}
-                  questionIdx={questionIdx}
-                  updateQuestion={updateQuestion}
-                  isInValid={isInValid}
-                />
-              )}
-              {isNumberQuestion(question) && (
-                <EditNumberQuestion
-                  availableLanguages={availableLanguages}
-                  languageCode={languageCode}
-                  question={question}
-                  questionIdx={questionIdx}
-                  updateQuestion={updateQuestion}
-                  isInValid={isInValid}
-                />
-              )}
-              {(isSingleSelectQuestion(question) || isMultiSelectQuestion(question)) && (
-                <EditSelectQuestion
-                  availableLanguages={availableLanguages}
-                  languageCode={languageCode}
-                  question={question}
-                  questionIdx={questionIdx}
-                  updateQuestion={updateQuestion}
-                  isInValid={isInValid}
-                />
-              )}
-              {isRatingQuestion(question) && (
-                <EditRatingQuestion
-                  availableLanguages={availableLanguages}
-                  languageCode={languageCode}
-                  question={question}
-                  questionIdx={questionIdx}
-                  updateQuestion={updateQuestion}
-                  isInValid={isInValid}
-                />
+            <CollapsibleContent className='px-4 pb-4 space-y-4'>
+              <FormField
+                control={control}
+                name={`questions.${questionIndex}.text` as const}
+                render={({ field, fieldState }) => (
+                  <FormItem>
+                    <FormLabel>{t('questionEditor.question.text')}</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        {...fieldState}
+                        value={field.value[languageCode]}
+                        onChange={event => field.onChange({
+                          ...field.value,
+                          [languageCode]: event.target.value
+                        })} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={control}
+                name={`questions.${questionIndex}.helptext` as const}
+                render={({ field, fieldState }) => (
+                  <FormItem>
+                    <FormLabel>{t('questionEditor.question.helptext')}</FormLabel>
+                    <FormControl>
+                      <Input {...field}
+                        {...fieldState}
+                        value={field.value[languageCode]}
+                        onChange={event => field.onChange({
+                          ...field.value,
+                          [languageCode]: event.target.value
+                        })} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {question.$questionType === QuestionType.TextQuestionType && (
+                <EditTextQuestion questionIndex={questionIndex} />
               )}
 
-              {!params['languageCode'] && (
-                <DisplayLogicEditor
-                  formQuestions={formQuestions}
-                  questionIndex={questionIdx}
-                  question={question}
-                  languageCode={languageCode}
-                  updateQuestion={updateQuestion}
-                />
+              {question.$questionType === QuestionType.NumberQuestionType && (
+                <EditNumberQuestion questionIndex={questionIndex} />
               )}
+
+              {question.$questionType === QuestionType.RatingQuestionType && (
+                <EditRatingQuestion questionIndex={questionIndex} />
+              )}
+
+              {(question.$questionType === QuestionType.MultiSelectQuestionType || question.$questionType === QuestionType.SingleSelectQuestionType) && (
+                <EditSelectQuestion questionIndex={questionIndex} />
+              )}
+
+              <FormField
+                control={control}
+                name={`questions.${questionIndex}.code` as const}
+                render={({ field, fieldState }) => (
+                  <FormItem className='w-48'>
+                    <FormLabel>{t('questionEditor.question.code')}</FormLabel>
+                    <FormControl>
+                      <Input {...field} {...fieldState} maxLength={16} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <DisplayLogicEditor questionIndex={questionIndex} />
             </CollapsibleContent>
           </Collapsible>
         </div>

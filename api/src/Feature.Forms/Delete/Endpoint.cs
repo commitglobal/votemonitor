@@ -46,7 +46,7 @@ public class Endpoint(IAuthorizationService authorizationService,
         await formsRepository.DeleteAsync(form, ct);
 
         var monitoringNgo = await monitoringNgoRepository.FirstOrDefaultAsync(new GetMonitoringNgoSpecification(req.ElectionRoundId, req.NgoId), ct);
-        monitoringNgo!.UpdatePollingStationsVersion();
+        monitoringNgo!.UpdateFormVersion();
         await monitoringNgoRepository.UpdateAsync(monitoringNgo, ct);
 
         return TypedResults.NoContent();

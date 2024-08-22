@@ -20,6 +20,14 @@ public class RatingQuestionRequestValidator : Validator<RatingQuestionRequest>
             .SetValidator(new PartiallyTranslatedStringValidator(languages))
             .When(x => x.Helptext != null);
 
+        RuleFor(x => x.UpperLabel)
+            .SetValidator(new PartiallyTranslatedStringValidator(languages))
+            .When(x => x.UpperLabel != null);
+
+        RuleFor(x => x.LowerLabel)
+            .SetValidator(new PartiallyTranslatedStringValidator(languages))
+            .When(x => x.LowerLabel != null);
+
         RuleFor(x => x.Code)
             .NotEmpty()
             .MaximumLength(256);

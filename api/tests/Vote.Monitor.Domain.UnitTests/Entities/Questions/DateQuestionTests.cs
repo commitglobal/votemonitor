@@ -1,10 +1,8 @@
-﻿using Vote.Monitor.Core.Models;
-using Vote.Monitor.Domain.Entities.FormBase.Questions;
-using Vote.Monitor.TestUtils.Utils;
+﻿using Vote.Monitor.TestUtils.Utils;
 
 namespace Vote.Monitor.Domain.UnitTests.Entities.Questions;
 
-public class DateQuestionTests
+public partial class DateQuestionTests
 {
     [Fact]
     public void ComparingToADateQuestion_WithSameProperties_ReturnsTrue()
@@ -12,12 +10,12 @@ public class DateQuestionTests
         // Arrange
         var text = new TranslatedString
         {
-            {"EN", "some text"}
+            { "EN", "some text" }
         };
 
         var helptext = new TranslatedString
         {
-            {"EN", "other text"}
+            { "EN", "other text" }
         };
 
         var id = Guid.NewGuid();
@@ -38,22 +36,22 @@ public class DateQuestionTests
 
         var text1 = new TranslatedString
         {
-            {"EN", "some text"}
+            { "EN", "some text" }
         };
 
         var text2 = new TranslatedString
         {
-            {"EN", "some text"}
+            { "EN", "some text" }
         };
 
         var helptext1 = new TranslatedString
         {
-            {"EN", "other text"}
+            { "EN", "other text" }
         };
 
         var helptext2 = new TranslatedString
         {
-            {"EN", "other different "}
+            { "EN", "other different " }
         };
 
         var id = Guid.NewGuid();

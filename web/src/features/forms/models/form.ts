@@ -1,5 +1,6 @@
 import { BaseQuestion, TranslatedString } from "@/common/types";
 import i18n from "@/i18n";
+import { z } from "zod";
 
 export enum FormStatus {
     Drafted = 'Drafted',
@@ -14,6 +15,12 @@ export enum FormType {
     Other = 'Other',
 }
 
+export const ZTranslationStatus = z.enum(['Translated', 'MissingTranslations']);
+export type TranslationStatus = z.infer<typeof ZTranslationStatus>;
+
+const ZLanguagesTranslationStatus = z.record(z.string(), ZTranslationStatus);
+export type LanguagesTranslationStatus = z.infer<typeof ZLanguagesTranslationStatus>;
+
 export interface FormBase {
     id: string;
     formType: FormType;
@@ -25,9 +32,22 @@ export interface FormBase {
     languages: string[];
     createdOn: string;
     lastModifiedOn: string | null;
+    numberOfQuestions: number;
+    languagesTranslationStatus: LanguagesTranslationStatus;
 }
 
 export interface FormFull extends FormBase {
+    questions: BaseQuestion[]
+}
+
+export interface UpdateFormRequest {
+    id: string;
+    formType: FormType;
+    code: string;
+    defaultLanguage: string;
+    name: TranslatedString;
+    description?: TranslatedString;
+    languages: string[];
     questions: BaseQuestion[]
 }
 

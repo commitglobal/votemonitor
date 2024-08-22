@@ -137,7 +137,7 @@ internal class S3FileStorageService(IAmazonS3 client,
         try
         {
             var fileKey = GetFileKey(uploadPath, fileName);
-            var request = new AbortMultipartUploadRequest()
+            var request = new AbortMultipartUploadRequest
             {
                 BucketName = _options.BucketName,
                 Key = fileKey,

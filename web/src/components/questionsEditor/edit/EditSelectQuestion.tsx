@@ -1,60 +1,58 @@
 import {
-  BaseQuestion,
-  MultiSelectQuestion,
   newTranslatedString,
-  QuestionType,
-  SelectOption,
-  SingleSelectQuestion,
+  QuestionType
 } from '@/common/types';
 import { Button } from '@/components/ui/button';
+import { FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { EditFormType } from '@/features/forms/components/EditForm/EditForm';
 import { cn } from '@/lib/utils';
 import { FlagIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/solid';
 import { CheckCircle, CheckSquare, PencilLine } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useFormContext, useWatch } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { v4 as uuidv4 } from 'uuid';
 
-import QuestionHeader from './QuestionHeader';
-import { useParams } from '@tanstack/react-router';
-
 export interface EditMultiSelectQuestionProps {
-  availableLanguages: string[];
-  languageCode: string;
-  questionIdx: number;
-  isInValid: boolean;
-  question: MultiSelectQuestion | SingleSelectQuestion;
-  updateQuestion: (questionIndex: number, question: BaseQuestion) => void;
+  questionIndex: number;
 }
 
-function EditSelectQuestion({
-  availableLanguages,
-  languageCode,
-  questionIdx,
-  isInValid,
-  question,
-  updateQuestion,
-}: EditMultiSelectQuestionProps) {
-  const [invalidOptionId, setInvalidOptionId] = useState<string | null>(null);
-  const lastOptionRef = useRef<HTMLInputElement>(null);
-  const [freeTextOptionId, setFreeTextOptionId] = useState<string | null>(null);
+function EditSelectQuestion({ questionIndex }: EditMultiSelectQuestionProps) {
   const { t } = useTranslation();
+  const { control, setValue, trigger } = useFormContext<EditFormType>();
 
-  const params: any = useParams({
-    strict: false,
+  const questionType = useWatch({
+    control,
+    name: `questions.${questionIndex}.$questionType`
+  });
+
+  const options = useWatch({
+    control,
+    name: `questions.${questionIndex}.options`,
+    defaultValue: []
+  });
+
+  const languageCode = useWatch({
+    control,
+    name: `languageCode`,
+  });
+
+  const availableLanguages = useWatch({
+    control,
+    name: `languages`,
   });
 
   function addOption(optionIdx?: number) {
-    let newOptions = !question.options ? [] : question.options;
+    let newOptions = [...options];
     const freeTextOption = newOptions.find((option) => option.isFreeText);
     if (freeTextOption) {
       newOptions = newOptions.filter((option) => !option.isFreeText);
     }
 
-    const newOption: SelectOption = {
-      id: uuidv4(),
-      text: newTranslatedString(availableLanguages, languageCode),
+    const newOption = {
+      optionId: uuidv4(),
+      text: newTranslatedString(availableLanguages, languageCode, ''),
       isFlagged: false,
       isFreeText: false,
     };
@@ -67,223 +65,144 @@ function EditSelectQuestion({
       newOptions.push(freeTextOption);
     }
 
-    const updatedSelectQuestion: MultiSelectQuestion | SingleSelectQuestion = { ...question, options: newOptions };
+    setValue(`questions.${questionIndex}.options`, newOptions, {
+      shouldValidate: true,
+      shouldDirty: true,
+      shouldTouch: true
+    });
 
-    updateQuestion(questionIdx, updatedSelectQuestion);
+    trigger(`questions.${questionIndex}.options`);
   }
 
-  function changeQuestionType(
-    newQuestionType: QuestionType.MultiSelectQuestionType | QuestionType.SingleSelectQuestionType
-  ) {
-    const updatedSelectQuestion: MultiSelectQuestion | SingleSelectQuestion = {
-      ...question,
-      $questionType: newQuestionType,
-    };
-
-    updateQuestion(questionIdx, updatedSelectQuestion);
+  function changeQuestionType(newQuestionType: QuestionType) {
+    setValue(`questions.${questionIndex}.$questionType`, newQuestionType, {
+      shouldValidate: true,
+      shouldDirty: true
+    });
   }
 
   function addFreeTextOption() {
-    if (question.options.filter((option) => option.isFreeText).length === 0) {
-      const newOptions = !question.options ? [] : question.options.filter((option) => !option.isFreeText);
-      const freeTextOption: SelectOption = {
-        id: uuidv4(),
-        text: newTranslatedString(availableLanguages, languageCode),
-        isFlagged: false,
-        isFreeText: true,
-      };
-      newOptions.push(freeTextOption);
+    if (options.filter((option) => option.isFreeText).length > 0) return;
+    const newOptions = [...options];
+    const freeTextOption = {
+      optionId: uuidv4(),
+      text: newTranslatedString(availableLanguages, languageCode, ''),
+      isFlagged: false,
+      isFreeText: true,
+    };
+    newOptions.push(freeTextOption);
 
-      const updatedSelectQuestion: MultiSelectQuestion | SingleSelectQuestion = { ...question, options: newOptions };
-
-      updateQuestion(questionIdx, updatedSelectQuestion);
-      setFreeTextOptionId(freeTextOption.id);
-    }
+    setValue(`questions.${questionIndex}.options`, newOptions, {
+      shouldValidate: true,
+      shouldDirty: true,
+      shouldTouch: true
+    });
+    trigger(`questions.${questionIndex}.options`);
   }
 
   function deleteOption(optionId: string) {
-    const newOptions = !question.options ? [] : question.options.filter((option) => option.id !== optionId);
+    const newOptions = options.filter((option) => option.optionId !== optionId);
 
-    if (invalidOptionId === optionId) {
-      setInvalidOptionId(null);
-    }
-
-    const updatedSelectQuestion: MultiSelectQuestion | SingleSelectQuestion = { ...question, options: newOptions };
-    updateQuestion(questionIdx, updatedSelectQuestion);
-    setFreeTextOptionId(optionId === freeTextOptionId ? null : freeTextOptionId);
-  }
-
-  function updateOption(optionId: string, text: string) {
-    const newOptions = question.options.map((option) => {
-      if (option.id === optionId) {
-        const newText = option.text;
-
-        newText[params.languageCode ? params.languageCode : languageCode] = text;
-
-        return {
-          ...option,
-          text: newText,
-        };
-      }
-
-      return { ...option };
+    setValue(`questions.${questionIndex}.options`, newOptions, {
+      shouldValidate: true,
+      shouldDirty: true,
+      shouldTouch: true
     });
 
-    const updatedSelectQuestion: MultiSelectQuestion | SingleSelectQuestion = { ...question, options: newOptions };
-    updateQuestion(questionIdx, updatedSelectQuestion);
+    trigger(`questions.${questionIndex}.options`);
   }
-
-  function updateOptionFlag(optionId: string) {
-    const newOptions = question.options.map((option) => {
-      if (option.id === optionId) {
-        const isFlagged = option.isFlagged;
-
-        return {
-          ...option,
-          isFlagged: !isFlagged,
-        };
-      }
-
-      return { ...option };
-    });
-
-    const updatedSelectQuestion: MultiSelectQuestion | SingleSelectQuestion = { ...question, options: newOptions };
-    updateQuestion(questionIdx, updatedSelectQuestion);
-  }
-
-  function getOptionIdWithDuplicateLabel(): string | null {
-    for (let i = 0; i < question.options.length; i++) {
-      for (let j = i + 1; j < question.options.length; j++) {
-        if (question.options[i]!.text[languageCode]!.trim() === question.options[j]!.text[languageCode]!.trim()) {
-          return question.options[i]!.id;
-        }
-      }
-    }
-    return null;
-  }
-
-  function getOptionIdWithEmptyLabel(): string | null {
-    for (let i = 0; i < question.options.length; i++) {
-      if (question.options[i]!.text[languageCode]!.trim() === '') return question.options[i]!.id;
-    }
-    return null;
-  }
-
-  useEffect(() => {
-    if (lastOptionRef.current) {
-      lastOptionRef.current?.focus();
-    }
-  }, [question.options?.length]);
 
   return (
     <div>
-      <QuestionHeader
-        availableLanguages={availableLanguages}
-        languageCode={languageCode}
-        isInValid={isInValid}
-        question={question}
-        questionIdx={questionIdx}
-        updateQuestion={updateQuestion}
-      />
+      <Label htmlFor='choices'>Options</Label>
+      <div className='space-y-4' id='choices'>
+        {options &&
+          options.map((option, optionIndex) => (
+            <div key={optionIndex} className='inline-flex w-full items-center space-y-4 '>
+              <div className='inline-flex justify-between w-full'>
+                <FormField
+                  control={control}
+                  name={`questions.${questionIndex}.options.${optionIndex}.text` as const}
+                  render={({ field, fieldState }) => (
+                    <FormItem className='w-full'>
+                      <FormControl>
+                        <div className='inline-flex justify-between w-full'>
+                          <div className='mt-2 mr-2 h-4 w-4'>
+                            {option.isFreeText ? (
+                              <PencilLine className='h-full w-full text-slate-700' />
+                            ) : questionType === QuestionType.SingleSelectQuestionType ? (
+                              <CheckCircle className='h-full w-full text-slate-700' />
+                            ) : (
+                              <CheckSquare className='h-full w-full text-slate-700' />
+                            )}
+                          </div>
+                          <Input {...field} {...fieldState}
+                            value={field.value[languageCode]}
+                            onChange={event => field.onChange({
+                              ...field.value,
+                              [languageCode]: event.target.value
+                            })}
+                          />
+                          <div className='inline-flex items-center space-x-2 ml-2 w-[100px] '>
+                            <FlagIcon
+                              className={cn('h-4 w-4 cursor-pointer', {
+                                'text-slate-700 hover:text-red-600': !option.isFlagged,
+                                'text-red-600 hover:text-slate-00': option.isFlagged
+                              })}
+                              onClick={() =>
+                                setValue(`questions.${questionIndex}.options.${optionIndex}.isFlagged`, !option.isFlagged, {
+                                  shouldValidate: true,
+                                  shouldDirty: true
+                                })
+                              }
+                            />
 
-      <div className='mt-3'>
-        <Label htmlFor='choices'>Options</Label>
-        <div className='mt-2 space-y-2' id='choices'>
-          {question.options &&
-            question.options.map((option, optionIdx) => (
-              <div key={optionIdx} className='inline-flex w-full items-center'>
-                <div className='mr-2 h-4 w-4'>
-                  {option.isFreeText ? (
-                    <PencilLine className='h-full w-full text-slate-700' />
-                  ) : question.$questionType === QuestionType.SingleSelectQuestionType ? (
-                    <CheckCircle className='h-full w-full text-slate-700' />
-                  ) : (
-                    <CheckSquare className='h-full w-full text-slate-700' />
-                  )}
-                </div>
-                <Input
-                  ref={optionIdx === question.options.length - 1 ? lastOptionRef : null}
-                  id={option.id}
-                  name={option.id}
-                  // value={option.text[languageCode]}
-                  value={params['languageCode'] ? option.text?.[params['languageCode']] : option.text?.[languageCode]}
-                  placeholder={params['languageCode'] ? option.text?.[languageCode] : `Option ${optionIdx + 1}`}
-                  className={cn(
-                    option.id === freeTextOptionId && 'border-dashed',
-                    ((invalidOptionId === '' && option.text[languageCode]!.trim() === '') ||
-                      (invalidOptionId !== null && option.text[languageCode]!.trim() === invalidOptionId.trim())) &&
-                      'border-red-300 focus:border-red-300'
-                  )}
-                  onBlur={() => {
-                    const optionIdWithDuplicatedLabel = getOptionIdWithDuplicateLabel();
-                    if (optionIdWithDuplicatedLabel) {
-                      setInvalidOptionId(optionIdWithDuplicatedLabel);
-                    } else {
-                      const optionIdWithEmptyLabel = getOptionIdWithEmptyLabel();
-                      if (optionIdWithEmptyLabel) {
-                        setInvalidOptionId(optionIdWithEmptyLabel);
-                      } else {
-                        setInvalidOptionId(null);
-                      }
-                    }
-                  }}
-                  onChange={(e) => updateOption(option.id, e.target.value)}
-                />
-                {question.options && question.options.length > 2 && (
-                  <TrashIcon
-                    className={cn('ml-2 h-4 w-4 cursor-pointer text-slate-400 hover:text-slate-500', {
-                      'opacity-50 pointer-events-none': !!params['languageCode'],
-                    })}
-                    onClick={() => deleteOption(option.id)}
-                  />
-                )}
-                <FlagIcon
-                  className={cn('ml-2 h-4 w-4 cursor-pointer', {
-                    'text-slate-700 hover:text-red-600': !option.isFlagged,
-                    'text-red-600 hover:text-slate-00': option.isFlagged,
-                    'opacity-50 pointer-events-none': !!params['languageCode'],
-                  })}
-                  onClick={() => updateOptionFlag(option.id)}
-                />
+                            {options && options.length > 2 && (
+                              <TrashIcon
+                                className={'h-4 w-4 cursor-pointer text-slate-400 hover:text-slate-500'}
+                                onClick={() => deleteOption(option.optionId)}
+                              />
+                            )}
 
-                <div className='ml-2 h-4 w-4'>
-                  {option.id !== freeTextOptionId && (
-                    <PlusIcon
-                      className={cn('ml-2 h-4 w-4 cursor-pointer text-slate-400 hover:text-slate-500', {
-                        'opacity-50 pointer-events-none': !!params['languageCode'],
-                      })}
-                      onClick={() => addOption(questionIdx)}
-                    />
+                            {!option.isFreeText && (
+                              <PlusIcon
+                                className={'h-4 w-4 cursor-pointer text-slate-400 hover:text-slate-500'}
+                                onClick={() => addOption(optionIndex)}
+                              />
+                            )}
+                          </div>
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
                   )}
-                </div>
+                />
               </div>
-            ))}
-          <div className='flex items-center justify-between space-x-2'>
-            {question.options.filter((c) => c.isFreeText).length === 0 && (
-              <Button
-                disabled={!!params['languageCode']}
-                size='sm'
-                variant='outline'
-                type='button'
-                onClick={() => addFreeTextOption()}>
-                {t('questionEditor.selectQuestion.addFreeTextOption')}
-              </Button>
-            )}
+            </div>
+          ))}
+        <div className='flex items-center justify-between space-y-2'>
+          {options.filter((c) => c.isFreeText).length === 0 && (
             <Button
               size='sm'
               variant='outline'
-              disabled={!!params['languageCode']}
               type='button'
-              onClick={() => {
-                question.$questionType === QuestionType.SingleSelectQuestionType
-                  ? changeQuestionType(QuestionType.MultiSelectQuestionType)
-                  : changeQuestionType(QuestionType.SingleSelectQuestionType);
-              }}>
-              {question.$questionType === QuestionType.SingleSelectQuestionType
-                ? t('questionEditor.selectQuestion.toMultiSelectQuestion')
-                : t('questionEditor.selectQuestion.toSingleSelectQuestion')}
+              onClick={() => addFreeTextOption()}>
+              {t('questionEditor.selectQuestion.addFreeTextOption')}
             </Button>
-          </div>
+          )}
+          <Button
+            size='sm'
+            variant='outline'
+            type='button'
+            onClick={() => {
+              questionType === QuestionType.SingleSelectQuestionType
+                ? changeQuestionType(QuestionType.MultiSelectQuestionType)
+                : changeQuestionType(QuestionType.SingleSelectQuestionType);
+            }}>
+            {questionType === QuestionType.SingleSelectQuestionType
+              ? t('questionEditor.selectQuestion.toMultiSelectQuestion')
+              : t('questionEditor.selectQuestion.toSingleSelectQuestion')}
+          </Button>
         </div>
       </div>
     </div>

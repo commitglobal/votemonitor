@@ -39,7 +39,7 @@ public class Endpoint(
 
         await formsRepository.AddAsync(newForm, ct);
 
-        return TypedResults.Ok(new Response()
+        return TypedResults.Ok(new Response
         {
             Id = newForm.Id
         });

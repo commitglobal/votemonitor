@@ -132,7 +132,7 @@ function ImportMonitoringObserversDialog({
                         </div>
                         <div className='text-xs text-purple-900'>28kb</div>
                     </div>
-                    <input type='file' ref={hiddenFileInput} onChange={handleChange} style={{ display: 'none' }} />
+                    <input type='file' ref={hiddenFileInput} onChange={handleChange} style={{ display: 'none' }} accept='.csv' />
                     <Button onClick={handleClick} variant='outline'>
                         <span className='text-gray-500 font-normal'>
                             {fileName || (

@@ -113,7 +113,6 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
   const inputRef = React.useRef<HTMLInputElement>(null);
 
   if ((maxTags !== undefined && maxTags < 0) || (props.minTags !== undefined && props.minTags < 0)) {
-    console.warn('maxTags and minTags cannot be less than 0');
     toast({
       title: 'maxTags and minTags cannot be less than 0',
       description: 'Please set maxTags and minTags to a value greater than or equal to 0',
@@ -148,7 +147,6 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
       }
 
       if (minLength && newTagText.length < minLength) {
-        console.warn('Tag is too short');
         toast({
           title: 'Tag is too short',
           description: 'Please enter a tag with more characters',
@@ -164,7 +162,6 @@ const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>((props, ref) 
           description: 'Please enter a tag with less characters',
           variant: 'destructive',
         });
-        console.warn('Tag is too long');
         return;
       }
 

@@ -3097,6 +3097,10 @@ namespace Vote.Monitor.Domain.Migrations
                         .IsRequired()
                         .HasColumnType("text[]");
 
+                    b.Property<string>("LanguagesTranslationStatus")
+                        .IsRequired()
+                        .HasColumnType("jsonb");
+
                     b.Property<Guid>("LastModifiedBy")
                         .HasColumnType("uuid");
 

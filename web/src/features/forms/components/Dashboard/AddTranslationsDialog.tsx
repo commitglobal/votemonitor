@@ -8,21 +8,32 @@ import { queryClient } from '@/main';
 import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 import { formsKeys } from '../../queries';
+import { create } from 'zustand';
+import { useConfirm } from '@/components/ui/alert-dialog-provider';
+import { useLanguages } from '@/features/languages/queries';
+import { difference } from 'lodash';
 
-export interface AddTranslationsDialogProps {
+export interface AddTranslationsDialogPropsProps {
+    isOpen: boolean;
     formId: string;
     languages: string[];
-    open: boolean;
-    onOpenChange: (open: any) => void;
+    trigger: (formId: string, languages: string[]) => void;
+    dismiss: VoidFunction;
 }
 
-function AddTranslationsDialog({
-    formId,
-    languages,
-    open,
-    onOpenChange
-}: AddTranslationsDialogProps) {
-    const [newLanguages, setLanguages] = useState(languages);
+export const useAddTranslationsDialog = create<AddTranslationsDialogPropsProps>((set) => ({
+    isOpen: false,
+    formId: '',
+    languages: [],
+    trigger: (formId: string, languages: string[]) => set({ formId, languages, isOpen: true }),
+    dismiss: () => set({ isOpen: false }),
+}));
+
+function AddTranslationsDialog() {
+    const { languages, formId, isOpen, trigger, dismiss } = useAddTranslationsDialog();
+    const [newLanguages, setLanguages] = useState<string[]>(languages);
+    const { data: appLanguages } = useLanguages();
+    const confirm = useConfirm();
 
     function handleOnChange(values: string[]): void {
         setLanguages(values);
@@ -32,6 +43,20 @@ function AddTranslationsDialog({
         addTranslationsMutation.mutate({ formId, languageCodes: newLanguages });
     }
 
+    const onOpenChange = (open: boolean) => {
+        if (open) trigger(formId, languages);
+        else dismiss();
+    };
+
+    function getTitle(newLanguages: string[]): string {
+        const languagesLabels = appLanguages?.filter(l => newLanguages.includes(l.code)).map(l => `${l.name} / ${l.nativeName}`) ?? [];
+
+        if (languagesLabels.length === 0) return '';
+        if (languagesLabels.length === 1) return languagesLabels[0] + ' added';
+
+        const lastLanguage = languagesLabels.pop(); // Remove the last language from the array
+        return languagesLabels.join(', ') + ' and ' + lastLanguage + ' added';
+    }
 
     const addTranslationsMutation = useMutation({
         mutationFn: ({ formId, languageCodes }: { formId: string; languageCodes: string[]; }) => {
@@ -42,19 +67,33 @@ function AddTranslationsDialog({
             });
         },
 
-        onSuccess: () => {
+        onSuccess: async (_, { languageCodes }) => {
             toast({
                 title: 'Success',
                 description: 'Translations added',
             });
 
-            onOpenChange(false);
+            dismiss();
+            const addedLanguages = difference(languageCodes, languages);
+
+
+            await confirm({
+                title: getTitle(addedLanguages),
+                body: <div>
+                    {addedLanguages.length} translations were created to be translated into the selected languages <b>({addedLanguages.join(', ')})</b>.
+                    Please note that this is not an automatic translation as you need to manually translate each form in selected languages.
+                    <br />
+                    <b>You cannot add or delete questions on the translated forms. </b>Any changes you want to make to the questions (deletion or addition of new questions) will be made to the form in the <b>base language</b>, and they will be copied to the translated forms.
+                </div>,
+                actionButton: 'Ok'
+
+            })
             queryClient.invalidateQueries({ queryKey: formsKeys.all });
         },
     });
 
     return (
-        <Dialog open={open} onOpenChange={onOpenChange} modal={true} >
+        <Dialog open={isOpen} onOpenChange={onOpenChange} modal={true} >
             <DialogContent className='min-w-[650px] min-h-[350px]' onInteractOutside={(e) => {
                 e.preventDefault();
             }} onEscapeKeyDown={(e) => {
@@ -68,8 +107,7 @@ function AddTranslationsDialog({
                     </DialogDescription>
                 </DialogHeader>
                 <div className='flex flex-col gap-3'>
-                    <p className='text-sm text-gray-700'>
-                        Languages <span className='text-red-500'>*</span>
+                    <p className='text-sm text-gray-700'>Languages <span className='text-red-500'>*</span>
                     </p>
                     <LanguagesMultiselect
                         defaultLanguages={languages}
