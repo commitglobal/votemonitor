@@ -138,15 +138,21 @@ const FormDetails = () => {
           answer = { ...answer, selectionValues: selectedAnswersTexts };
         }
 
+        // sort the notes by createdAt date in order to extract the last added note
+        const lastNote =
+          notes && notes[q.id]
+            ? notes[q.id]
+                .slice()
+                .sort((a, b) => +new Date(a.createdAt) - +new Date(b.createdAt))
+                .pop()
+            : undefined;
+
         return {
           question: q.text[language],
           status: answers?.[q.id] ? QuestionStatus.ANSWERED : QuestionStatus.NOT_ANSWERED,
           answer,
           numberOfNotes: notes?.[q.id]?.length || 0,
-          lastNoteText:
-            notes && notes?.[q.id]?.length > 0
-              ? notes?.[q.id][notes?.[q.id]?.length - 1].text
-              : undefined,
+          lastNoteText: lastNote && lastNote.text,
           numberOfAttachments: attachments?.[q.id]?.length || 0,
           // array with the types of attachments for this question
           attachmentTypes: attachments?.[q.id] && [

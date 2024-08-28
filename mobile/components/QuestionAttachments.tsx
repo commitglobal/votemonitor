@@ -10,6 +10,7 @@ import { useState } from "react";
 import WarningDialog from "./WarningDialog";
 import { AttachmentApiResponse, AttachmentMimeType } from "../services/api/get-attachments.api";
 import { MediaDialog } from "./MediaDialog";
+import AttachmentsSkeleton from "./SkeletonLoaders/AttachmentsSkeleton";
 
 interface QuestionAttachmentsProps {
   electionRoundId: string;
@@ -25,7 +26,11 @@ const QuestionAttachments: React.FC<QuestionAttachmentsProps> = ({
   questionId,
 }) => {
   const { t } = useTranslation("polling_station_form_wizard");
-  const { data: attachments } = useAttachments(electionRoundId, pollingStationId, formId);
+  const { data: attachments, isLoading: isLoadingAttachments } = useAttachments(
+    electionRoundId,
+    pollingStationId,
+    formId,
+  );
   const [selectedAttachmentToDelete, setSelectedAttachmentToDelete] =
     useState<AttachmentApiResponse | null>();
   const [previewAttachment, setPreviewAttachment] = useState<AttachmentApiResponse | null>(null);
@@ -36,6 +41,10 @@ const QuestionAttachments: React.FC<QuestionAttachmentsProps> = ({
     formId,
     `Attachment_${questionId}_${pollingStationId}_${formId}_${questionId}`,
   );
+
+  if (isLoadingAttachments) {
+    return <AttachmentsSkeleton />;
+  }
 
   return (
     attachments?.[questionId]?.length && (

@@ -34,15 +34,15 @@ export const useAddNoteMutation = (
       // Snapshot the previous value
       const previousNotes = queryClient.getQueryData(getNotesQK);
 
-      // Optimistically update to the new value
+      // Optimistically update to the new value, adding the note at the top of the list
       queryClient.setQueryData<Note[]>(getNotesQK, (old: Note[] = []) => [
-        ...old,
         {
           ...payload,
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
           isNotSynched: true,
         },
+        ...old,
       ]);
 
       // Return a context object with the snapshotted value
