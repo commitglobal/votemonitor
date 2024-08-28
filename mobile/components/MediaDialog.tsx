@@ -12,8 +12,6 @@ interface MediaDialogProps extends AlertDialogProps {
   onClose: () => void;
 }
 
-const placeholder = "../assets/images/commit-global-color.png";
-
 export const MediaDialog: React.FC<MediaDialogProps> = ({ trigger, media, onClose, ...props }) => {
   const { t } = useTranslation("common");
 
@@ -54,13 +52,7 @@ export const MediaDialog: React.FC<MediaDialogProps> = ({ trigger, media, onClos
         >
           <YStack flex={1} backgroundColor={"white"}>
             {media && (
-              <Image
-                source={media.src}
-                contentFit="contain"
-                style={{ flex: 1 }}
-                placeholder={placeholder}
-                transition={500}
-              />
+              <Image source={media.src} contentFit="contain" style={{ flex: 1 }} transition={500} />
             )}
           </YStack>
 
