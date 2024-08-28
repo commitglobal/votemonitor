@@ -137,7 +137,7 @@ const Login = () => {
 
             {/* info text */}
             <XStack marginTop="$md" justifyContent="flex-start" gap="$xxs">
-              <Icon icon="infoCircle" size={18} color="white" style={{ marginTop: 2 }} />
+              <Icon icon="infoCircle" color="black" size={18} style={{ marginTop: 2 }} />
 
               <YStack gap="$lg" maxWidth="90%">
                 <Typography>{t("disclaimer.paragraph1")}</Typography>

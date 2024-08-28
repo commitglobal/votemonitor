@@ -20,7 +20,6 @@ import { ASYNC_STORAGE_KEYS } from "../../../../common/constants";
 import { useNetInfoContext } from "../../../../contexts/net-info-banner/NetInfoContext";
 import WarningDialog from "../../../../components/WarningDialog";
 import FeedbackSheet from "../../../../components/FeedbackSheet";
-import OptionsSheet from "../../../../components/OptionsSheet";
 
 interface MenuItemProps {
   label: string;
@@ -58,7 +57,6 @@ const More = () => {
   const [isLanguageSelectSheetOpen, setIsLanguageSelectSheetOpen] = React.useState(false);
   const [logoutLoading, setLogoutLoading] = useState(false);
   const [feedbackSheetOpen, setFeedbackSheetOpen] = useState(false);
-  const [optionsSheetOpen, setOptionsSheetOpen] = useState(false);
   const [showWarningModal, setShowWarningModal] = useState(false);
 
   const appVersion = Constants.expoConfig?.version;
@@ -97,8 +95,6 @@ const More = () => {
         barStyle="light-content"
         leftIcon={<Icon icon="menuAlt2" color="white" />}
         onLeftPress={() => navigation.dispatch(DrawerActions.openDrawer)}
-        rightIcon={<Icon icon="dotsVertical" color="white" />}
-        onRightPress={() => setOptionsSheetOpen(true)}
       />
       <YStack paddingHorizontal="$md" paddingVertical="$xl" gap="$md">
         <MenuItem
@@ -158,22 +154,6 @@ const More = () => {
         ></MenuItem>
       </YStack>
       {feedbackSheetOpen && <FeedbackSheet open setOpen={setFeedbackSheetOpen} />}
-      {optionsSheetOpen && (
-        <OptionsSheet open setOpen={setOptionsSheetOpen}>
-          <YStack
-            paddingVertical="$xxs"
-            paddingHorizontal="$sm"
-            onPress={() => {
-              setOptionsSheetOpen(false);
-              router.push("/manage-polling-stations");
-            }}
-          >
-            <Typography preset="body1" color="$gray7" lineHeight={24}>
-              {t("options_sheet.manage_my_polling_stations")}
-            </Typography>
-          </YStack>
-        </OptionsSheet>
-      )}
       {/* 
           This element is controlled via the MenuItem change-language component.
           It is visible only when open===true as a bottom sheet. 
