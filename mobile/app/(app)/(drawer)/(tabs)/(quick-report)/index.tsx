@@ -1,13 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import { Typography } from "../../../../../components/Typography";
-import { Spinner, View, YStack } from "tamagui";
+import { Spinner, YStack } from "tamagui";
 import { Icon } from "../../../../../components/Icon";
 import { Screen } from "../../../../../components/Screen";
 import { router, useNavigation } from "expo-router";
 import Header from "../../../../../components/Header";
 import { DrawerActions } from "@react-navigation/native";
 import Button from "../../../../../components/Button";
-import OptionsSheet from "../../../../../components/OptionsSheet";
 import { useQuickReports } from "../../../../../services/queries/quick-reports.query";
 import { useUserData } from "../../../../../contexts/user/UserContext.provider";
 import { ListView } from "../../../../../components/ListView";
@@ -21,8 +20,6 @@ const QuickReport = () => {
   const { t } = useTranslation("quick_report");
   const navigation = useNavigation();
 
-  const [openContextualMenu, setOpenContextualMenu] = useState(false);
-
   const { activeElectionRound } = useUserData();
   const { data: quickReports, isLoading, error } = useQuickReports(activeElectionRound?.id);
 
@@ -35,10 +32,6 @@ const QuickReport = () => {
           barStyle="light-content"
           leftIcon={<Icon icon="menuAlt2" color="white" />}
           onLeftPress={() => navigation.dispatch(DrawerActions.openDrawer)}
-          rightIcon={<Icon icon="dotsVertical" color="white" />}
-          onRightPress={() => {
-            setOpenContextualMenu(true);
-          }}
         />
         {quickReports ? (
           <QuickReportContent
@@ -49,22 +42,6 @@ const QuickReport = () => {
           />
         ) : (
           false
-        )}
-        {openContextualMenu && (
-          <OptionsSheet open setOpen={setOpenContextualMenu}>
-            <View
-              paddingVertical="$xxs"
-              paddingHorizontal="$sm"
-              onPress={() => {
-                setOpenContextualMenu(false);
-                router.push("manage-polling-stations");
-              }}
-            >
-              <Typography preset="body1" color="$gray7" lineHeight={24}>
-                {t("options_menu.manage_my_polling_stations")}
-              </Typography>
-            </View>
-          </OptionsSheet>
         )}
       </Screen>
       {quickReports?.length ? (
