@@ -5,7 +5,7 @@ namespace Vote.Monitor.Core.Specifications;
 internal class CustomSearchEvaluator : IEvaluator
 {
     private CustomSearchEvaluator() { }
-    public static CustomSearchEvaluator Instance { get; } = new CustomSearchEvaluator();
+    public static CustomSearchEvaluator Instance { get; } = new();
 
     public bool IsCriteriaEvaluator { get; } = true;
 

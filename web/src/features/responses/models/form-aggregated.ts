@@ -1,12 +1,13 @@
 import type {
   BaseQuestion,
   DateQuestion,
+  FormType,
   NumberQuestion,
   RatingQuestion,
   SingleSelectQuestion,
   TextQuestion,
 } from '@/common/types';
-import type { Attachment, FormType, Note } from './form-submission';
+import type { Attachment, Note } from './form-submission';
 
 export interface Responder {
   responderId: string;
@@ -74,10 +75,7 @@ export interface FormAggregated {
     monitoringNgoId: string;
     formId: string;
     formCode: string;
-    formType: {
-      name: string;
-      value: FormType;
-    };
+    formType: FormType;
     name: Record<string, string>;
     description: Record<string, string>;
     defaultLanguage: string;

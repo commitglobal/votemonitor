@@ -1,12 +1,11 @@
 import {
-  newTranslatedString,
   QuestionType,
   RatingScaleType
 } from '@/common/types';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { EditMultiSelectQuestionType, EditQuestionType, EditSingleSelectQuestionType } from '@/features/forms/types';
 import i18n from '@/i18n';
-import { cn } from '@/lib/utils';
+import { cn, newTranslatedString } from '@/lib/utils';
 import {
   PlusIcon
 } from '@heroicons/react/24/solid';

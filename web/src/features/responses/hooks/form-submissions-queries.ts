@@ -1,45 +1,44 @@
-import { useQuery, type UseQueryResult } from '@tanstack/react-query';
-import type { DataTableParameters, PageResponse } from '@/common/types';
-import type { FormSubmissionByEntry, FormSubmissionByForm, FormSubmissionByObserver } from '../models/form-submission';
 import { authApi } from '@/common/auth-api';
-import { buildURLSearchParams } from '@/lib/utils';
+import type { DataTableParameters, PageResponse } from '@/common/types';
 import type { RowData } from '@/components/ui/DataTable/DataTable';
+import { buildURLSearchParams } from '@/lib/utils';
+import { useQuery, type UseQueryResult } from '@tanstack/react-query';
+import type { FormSubmissionByEntry, FormSubmissionByForm, FormSubmissionByObserver } from '../models/form-submission';
 
 const STALE_TIME = 1000 * 60; // one minute
 
 export const formSubmissionsByEntryKeys = {
-  all: ['form-submissions-by-entry'] as const,
-  lists: () => [...formSubmissionsByEntryKeys.all, 'list'] as const,
-  list: (params: DataTableParameters) => [...formSubmissionsByEntryKeys.lists(), { ...params }] as const,
-  details: () => [...formSubmissionsByEntryKeys.all, 'detail'] as const,
-  detail: (id: string) => [...formSubmissionsByEntryKeys.details(), id] as const,
+  all: (electionRoundId: string) => ['form-submissions-by-entry'] as const,
+  lists: (electionRoundId: string) => [...formSubmissionsByEntryKeys.all(electionRoundId), 'list'] as const,
+  list: (electionRoundId: string, params: DataTableParameters) => [...formSubmissionsByEntryKeys.lists(electionRoundId), { ...params }] as const,
+  details: (electionRoundId: string) => [...formSubmissionsByEntryKeys.all(electionRoundId), 'detail'] as const,
+  detail: (electionRoundId: string, id: string) => [...formSubmissionsByEntryKeys.details(electionRoundId), id] as const,
 }
 
 export const formSubmissionsByObserverKeys = {
-  all: ['form-submissions-by-observer'] as const,
-  lists: () => [...formSubmissionsByObserverKeys.all, 'list'] as const,
-  list: (params: DataTableParameters) => [...formSubmissionsByObserverKeys.lists(), { ...params }] as const,
-  details: () => [...formSubmissionsByObserverKeys.all, 'detail'] as const,
-  detail: (id: string) => [...formSubmissionsByObserverKeys.details(), id] as const,
+  all: (electionRoundId: string) => ['form-submissions-by-observer', electionRoundId] as const,
+  lists: (electionRoundId: string) => [...formSubmissionsByObserverKeys.all(electionRoundId), 'list'] as const,
+  list: (electionRoundId: string, params: DataTableParameters) => [...formSubmissionsByObserverKeys.lists(electionRoundId), { ...params }] as const,
+  details: (electionRoundId: string) => [...formSubmissionsByObserverKeys.all(electionRoundId), 'detail'] as const,
+  detail: (electionRoundId: string, id: string) => [...formSubmissionsByObserverKeys.details(electionRoundId), id] as const,
 }
 
-export const formSubmissionsAggregtedKeys = {
-  all: ['aggregated-form-submissions'] as const,
-  lists: () => [...formSubmissionsAggregtedKeys.all, 'list'] as const,
-  list: (params: DataTableParameters) => [...formSubmissionsAggregtedKeys.lists(), { ...params }] as const,
-  details: () => [...formSubmissionsAggregtedKeys.all, 'detail'] as const,
-  detail: (id: string) => [...formSubmissionsAggregtedKeys.details(), id] as const,
+export const formSubmissionsAggregatedKeys = {
+  all: (electionRoundId: string) => ['aggregated-form-submissions', electionRoundId] as const,
+  lists: (electionRoundId: string) => [...formSubmissionsAggregatedKeys.all(electionRoundId), 'list'] as const,
+  list: (electionRoundId: string, params: DataTableParameters) => [...formSubmissionsAggregatedKeys.lists(electionRoundId), { ...params }] as const,
+  details: (electionRoundId: string) => [...formSubmissionsAggregatedKeys.all(electionRoundId), 'detail'] as const,
+  detail: (electionRoundId: string, id: string) => [...formSubmissionsAggregatedKeys.details(electionRoundId), id] as const,
 }
 
 type FormSubmissionsByEntryResponse = PageResponse<FormSubmissionByEntry & RowData>;
 
 type UseFormSubmissionsByEntryResult = UseQueryResult<FormSubmissionsByEntryResponse, Error>;
 
-export function useFormSubmissionsByEntry(queryParams: DataTableParameters): UseFormSubmissionsByEntryResult {
+export function useFormSubmissionsByEntry(electionRoundId: string, queryParams: DataTableParameters): UseFormSubmissionsByEntryResult {
   return useQuery({
-    queryKey: formSubmissionsByEntryKeys.list(queryParams),
+    queryKey: formSubmissionsByEntryKeys.list(electionRoundId, queryParams),
     queryFn: async () => {
-      const electionRoundId = localStorage.getItem('electionRoundId');
 
       const params = {
         ...queryParams.otherParams,
@@ -63,6 +62,7 @@ export function useFormSubmissionsByEntry(queryParams: DataTableParameters): Use
       };
     },
     staleTime: STALE_TIME,
+    enabled: !!electionRoundId
   });
 }
 
@@ -70,12 +70,10 @@ type FormSubmissionsByObserverResponse = PageResponse<FormSubmissionByObserver &
 
 type UseFormSubmissionsByObserverResult = UseQueryResult<FormSubmissionsByObserverResponse, Error>;
 
-export function useFormSubmissionsByObserver(queryParams: DataTableParameters): UseFormSubmissionsByObserverResult {
+export function useFormSubmissionsByObserver(electionRoundId: string, queryParams: DataTableParameters): UseFormSubmissionsByObserverResult {
   return useQuery({
-    queryKey: formSubmissionsByObserverKeys.list(queryParams),
+    queryKey: formSubmissionsByObserverKeys.list(electionRoundId, queryParams),
     queryFn: async () => {
-      const electionRoundId = localStorage.getItem('electionRoundId');
-
       const params = {
         ...queryParams.otherParams,
         PageNumber: String(queryParams.pageNumber),
@@ -98,6 +96,7 @@ export function useFormSubmissionsByObserver(queryParams: DataTableParameters): 
       };
     },
     staleTime: STALE_TIME,
+    enabled: !!electionRoundId
   });
 }
 
@@ -105,11 +104,10 @@ type FormSubmissionsByFormResponse = PageResponse<FormSubmissionByForm & RowData
 
 type UseFormSubmissionsByFormResult = UseQueryResult<FormSubmissionsByFormResponse, Error>;
 
-export function useFormSubmissionsByForm(queryParams: DataTableParameters): UseFormSubmissionsByFormResult {
+export function useFormSubmissionsByForm(electionRoundId: string, queryParams: DataTableParameters): UseFormSubmissionsByFormResult {
   return useQuery({
-    queryKey: formSubmissionsAggregtedKeys.all,
+    queryKey: formSubmissionsAggregatedKeys.all(electionRoundId),
     queryFn: async () => {
-      const electionRoundId = localStorage.getItem('electionRoundId');
 
       const params = {
         ...queryParams.otherParams,
@@ -138,5 +136,6 @@ export function useFormSubmissionsByForm(queryParams: DataTableParameters): UseF
       };
     },
     staleTime: STALE_TIME,
+    enabled: !!electionRoundId
   });
 }

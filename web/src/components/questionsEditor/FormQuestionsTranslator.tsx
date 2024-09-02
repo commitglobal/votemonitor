@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
-import PreviewQuestion from './preview/PreviewQuestion';
-import QuestionsTranslate from './translate/QuestionsTranslate';
-import { useFormContext, useWatch } from 'react-hook-form';
 import { EditFormTranslationType } from '@/features/forms/components/EditFormTranslation/EditFormTranslation';
 import { EditQuestionType } from '@/features/forms/types';
+import { useEffect, useState } from 'react';
+import { useFormContext, useWatch } from 'react-hook-form';
+import PreviewQuestion from './preview/PreviewQuestion';
+import QuestionsTranslate from './translate/QuestionsTranslate';
 
 function FormQuestionsTranslator() {
   const [activeQuestionId, setActiveQuestionId] = useState<string | undefined>();

@@ -3,6 +3,7 @@ import { DateQuestion, MultiSelectQuestion, NumberQuestion, QuestionType, Rating
 import { useConfirm } from '@/components/ui/alert-dialog-provider';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
+import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { queryClient } from '@/main';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
@@ -15,11 +16,11 @@ function EditFormFooter() {
   const form = useFormContext<EditFormType>();
   const navigate = useNavigate();
   const confirm = useConfirm();
+    const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
 
   const editMutation = useMutation({
     mutationKey: formsKeys.all,
-    mutationFn: ({ form }: { form: UpdateFormRequest, shouldExitEditor: boolean }) => {
-      const electionRoundId: string | null = localStorage.getItem('electionRoundId');
+    mutationFn: ({ electionRoundId, form }: { electionRoundId: string; form: UpdateFormRequest, shouldExitEditor: boolean }) => {
 
       return authApi.put<void>(`/election-rounds/${electionRoundId}/forms/${form.id}`, {
         ...form,
@@ -39,7 +40,7 @@ function EditFormFooter() {
       }
     },
 
-    onError: (_, { form }) => {
+    onError: () => {
       toast({
         title: 'Error saving the form',
         description: 'Please contact tech support',
@@ -149,7 +150,7 @@ function EditFormFooter() {
       })
     };
 
-    editMutation.mutate({ form: updatedForm, shouldExitEditor });
+    editMutation.mutate({ form: updatedForm, shouldExitEditor, electionRoundId: currentElectionRoundId });
   }
 
   return (

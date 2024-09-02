@@ -1,5 +1,6 @@
 import { authApi } from '@/common/auth-api';
 import { DateTimeFormat } from '@/common/formats';
+import { ZFormType, ZTranslationStatus } from '@/common/types';
 import CreateDialog from '@/components/dialogs/CreateDialog';
 import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
@@ -17,8 +18,9 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { toast } from '@/components/ui/use-toast';
+import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { useLanguages } from '@/features/languages/queries';
-import { cn } from '@/lib/utils';
+import { cn, mapFormType } from '@/lib/utils';
 import { queryClient } from '@/main';
 import { ChevronDownIcon, ChevronUpIcon, Cog8ToothIcon, EllipsisVerticalIcon, FunnelIcon } from '@heroicons/react/24/outline';
 import { useMutation } from '@tanstack/react-query';
@@ -27,7 +29,7 @@ import { ColumnDef, Row } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { X } from 'lucide-react';
 import { useState, type ReactElement } from 'react';
-import { FormBase, FormStatus, mapFormType, ZTranslationStatus } from '../../models/form';
+import { FormBase, FormStatus } from '../../models/form';
 import { formsKeys, useForms } from '../../queries';
 import AddTranslationsDialog, { useAddTranslationsDialog } from './AddTranslationsDialog';
 import CreateForm from './CreateForm';
@@ -36,6 +38,8 @@ export default function FormsDashboard(): ReactElement {
   const addTranslationsDialog = useAddTranslationsDialog();
   const confirm = useConfirm();
   const { data: languages } = useLanguages();
+  const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
+  const isMonitoringNgoForCitizenReporting = useCurrentElectionRoundStore(s => s.isMonitoringNgoForCitizenReporting);
 
   const formColDefs: ColumnDef<FormBase>[] = [
     {
@@ -180,7 +184,7 @@ export default function FormsDashboard(): ReactElement {
                   actionButtonClass: buttonVariants({ variant: "destructive" }),
                   cancelButton: 'Cancel',
                 })) {
-                  deleteFormMutation.mutate(row.original.id);
+                  deleteFormMutation.mutate({ electionRoundId: currentElectionRoundId, formId: row.original.id });
                 }
               }}>
                 Delete form
@@ -198,7 +202,7 @@ export default function FormsDashboard(): ReactElement {
                   actionButtonClass: buttonVariants({ variant: "destructive" }),
                   cancelButton: 'Cancel',
                 })) {
-                  deleteTranslationMutation.mutate({ formId: row.original.id, languageCode });
+                  deleteTranslationMutation.mutate({ electionRoundId: currentElectionRoundId, formId: row.original.id, languageCode });
                 }
               }}>Delete translation</DropdownMenuItem>}
           </DropdownMenuContent>
@@ -215,15 +219,15 @@ export default function FormsDashboard(): ReactElement {
   };
 
   const handleObsoleteForm = (form: FormBase) => {
-    obsoleteFormMutation.mutate(form.id);
+    obsoleteFormMutation.mutate({ electionRoundId: currentElectionRoundId, formId: form.id });
   }
 
   const handlePublishForm = (form: FormBase) => {
-    publishFormMutation.mutate(form.id);
+    publishFormMutation.mutate({ electionRoundId: currentElectionRoundId, formId: form.id });
   }
 
   const handleDuplicateForm = (form: FormBase) => {
-    duplicateFormMutation.mutate(form.id);
+    duplicateFormMutation.mutate({ electionRoundId: currentElectionRoundId, formId: form.id });
   }
 
 
@@ -241,9 +245,7 @@ export default function FormsDashboard(): ReactElement {
 
   const deleteTranslationMutation = useMutation({
     mutationKey: formsKeys.all,
-    mutationFn: ({ formId, languageCode }: { formId: string; languageCode: string; }) => {
-      const electionRoundId: string | null = localStorage.getItem('electionRoundId');
-
+    mutationFn: ({ electionRoundId, formId, languageCode }: { electionRoundId: string; formId: string; languageCode: string; }) => {
       return authApi.delete<void>(`/election-rounds/${electionRoundId}/forms/${formId}/${languageCode}`);
     },
 
@@ -259,9 +261,7 @@ export default function FormsDashboard(): ReactElement {
 
   const publishFormMutation = useMutation({
     mutationKey: formsKeys.all,
-    mutationFn: (formId: string) => {
-      const electionRoundId: string | null = localStorage.getItem('electionRoundId');
-
+    mutationFn: ({ electionRoundId, formId }: { electionRoundId: string; formId: string }) => {
       return authApi.post<void>(`/election-rounds/${electionRoundId}/forms/${formId}:publish`);
     },
 
@@ -295,9 +295,7 @@ export default function FormsDashboard(): ReactElement {
 
   const obsoleteFormMutation = useMutation({
     mutationKey: formsKeys.all,
-    mutationFn: (formId: string) => {
-      const electionRoundId: string | null = localStorage.getItem('electionRoundId');
-
+    mutationFn: ({ electionRoundId, formId }: { electionRoundId: string; formId: string }) => {
       return authApi.post<void>(`/election-rounds/${electionRoundId}/forms/${formId}:obsolete`);
     },
 
@@ -321,9 +319,7 @@ export default function FormsDashboard(): ReactElement {
 
   const duplicateFormMutation = useMutation({
     mutationKey: formsKeys.all,
-    mutationFn: (formId: string) => {
-      const electionRoundId: string | null = localStorage.getItem('electionRoundId');
-
+    mutationFn: ({ electionRoundId, formId }: { electionRoundId: string; formId: string }) => {
       return authApi.post<void>(`/election-rounds/${electionRoundId}/forms/${formId}:duplicate`);
     },
 
@@ -347,9 +343,7 @@ export default function FormsDashboard(): ReactElement {
 
   const deleteFormMutation = useMutation({
     mutationKey: formsKeys.all,
-    mutationFn: (formId: string) => {
-      const electionRoundId: string | null = localStorage.getItem('electionRoundId');
-
+    mutationFn: ({ electionRoundId, formId }: { electionRoundId: string; formId: string }) => {
       return authApi.delete<void>(
         `/election-rounds/${electionRoundId}/forms/${formId}`
       );
@@ -425,10 +419,11 @@ export default function FormsDashboard(): ReactElement {
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectItem value='Opening'>Opening</SelectItem>
-                  <SelectItem value='Voting'>Voting</SelectItem>
-                  <SelectItem value='ClosingAndCounting'>Closing And Counting</SelectItem>
-                  <SelectItem value='Other'>Other</SelectItem>
+                  <SelectItem value={ZFormType.Values.Opening}>{mapFormType(ZFormType.Values.Opening)}</SelectItem>
+                  <SelectItem value={ZFormType.Values.Voting}>{mapFormType(ZFormType.Values.Voting)}</SelectItem>
+                  <SelectItem value={ZFormType.Values.ClosingAndCounting}>{mapFormType(ZFormType.Values.ClosingAndCounting)}</SelectItem>
+                  {isMonitoringNgoForCitizenReporting && <SelectItem value={ZFormType.Values.CitizenReport}>{mapFormType(ZFormType.Values.CitizenReport)}</SelectItem>}
+                  <SelectItem value={ZFormType.Values.Other}>{mapFormType(ZFormType.Values.Other)}</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
@@ -455,7 +450,7 @@ export default function FormsDashboard(): ReactElement {
       <CardContent>
         <QueryParamsDataTable
           columns={formColDefs}
-          useQuery={useForms}
+          useQuery={(params) => useForms(currentElectionRoundId, params)}
           getSubrows={getSubrows}
           getRowClassName={getRowClassName}
         />

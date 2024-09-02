@@ -1,7 +1,7 @@
 import { Label } from '@/components/ui/label';
 import { Textarea } from '../../ui/textarea';
 import { AnswerType, TextAnswer } from '@/common/types';
-import { useFormAnswersStore } from '../AnswersContext';
+import { useFormAnswersStore } from '../answers-store';
 import { useEffect, useState } from 'react';
 
 export interface PreviewTextQuestionProps {

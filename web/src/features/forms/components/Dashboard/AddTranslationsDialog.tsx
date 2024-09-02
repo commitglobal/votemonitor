@@ -1,17 +1,18 @@
 import { authApi } from '@/common/auth-api';
+import { useConfirm } from '@/components/ui/alert-dialog-provider';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Separator } from '@/components/ui/separator';
 import { toast } from '@/components/ui/use-toast';
 import LanguagesMultiselect from '@/containers/LanguagesMultiselect';
+import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { useLanguages } from '@/features/languages/queries';
 import { queryClient } from '@/main';
 import { useMutation } from '@tanstack/react-query';
-import { useState } from 'react';
-import { formsKeys } from '../../queries';
-import { create } from 'zustand';
-import { useConfirm } from '@/components/ui/alert-dialog-provider';
-import { useLanguages } from '@/features/languages/queries';
 import { difference } from 'lodash';
+import { useState } from 'react';
+import { create } from 'zustand';
+import { formsKeys } from '../../queries';
 
 export interface AddTranslationsDialogPropsProps {
     isOpen: boolean;
@@ -33,6 +34,7 @@ function AddTranslationsDialog() {
     const { languages, formId, isOpen, trigger, dismiss } = useAddTranslationsDialog();
     const [newLanguages, setLanguages] = useState<string[]>(languages);
     const { data: appLanguages } = useLanguages();
+      const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
     const confirm = useConfirm();
 
     function handleOnChange(values: string[]): void {
@@ -40,7 +42,7 @@ function AddTranslationsDialog() {
     }
 
     function handleSubmit(): void {
-        addTranslationsMutation.mutate({ formId, languageCodes: newLanguages });
+        addTranslationsMutation.mutate({ electionRoundId: currentElectionRoundId, formId, languageCodes: newLanguages });
     }
 
     const onOpenChange = (open: boolean) => {
@@ -59,8 +61,7 @@ function AddTranslationsDialog() {
     }
 
     const addTranslationsMutation = useMutation({
-        mutationFn: ({ formId, languageCodes }: { formId: string; languageCodes: string[]; }) => {
-            const electionRoundId: string | null = localStorage.getItem('electionRoundId');
+        mutationFn: ({ electionRoundId, formId, languageCodes }: { electionRoundId: string; formId: string; languageCodes: string[]; }) => {
 
             return authApi.put<void>(`/election-rounds/${electionRoundId}/forms/${formId}:addTranslations`, {
                 languageCodes

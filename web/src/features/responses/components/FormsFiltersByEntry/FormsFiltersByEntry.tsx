@@ -1,15 +1,15 @@
 import { useSetPrevSearch } from '@/common/prev-search-store';
-import { FollowUpStatus, FunctionComponent } from '@/common/types';
+import { FollowUpStatus, FunctionComponent, ZFormType } from '@/common/types';
 import { PollingStationsFilters } from '@/components/PollingStationsFilters/PollingStationsFilters';
 import { FilterBadge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Route } from '@/routes/responses';
 import { useNavigate } from '@tanstack/react-router';
 import { useCallback } from 'react';
-import { FormType } from '../../models/form-submission';
 import type { FormSubmissionsSearchParams } from '../../models/search-params';
-import { ResetFiltersButton } from '../ResetFiltersButton/ResetFiltersButton';
 import { mapFollowUpStatus } from '../../utils/helpers';
+import { ResetFiltersButton } from '../ResetFiltersButton/ResetFiltersButton';
+import { mapFormType } from '@/lib/utils';
 
 export function FormsFiltersByEntry(): FunctionComponent {
   const navigate = useNavigate({ from: '/responses/' });
@@ -57,9 +57,9 @@ export function FormsFiltersByEntry(): FunctionComponent {
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
-            {Object.values(FormType).map((value) => (
+            {Object.values(ZFormType.Values).map((value) => (
               <SelectItem value={value} key={value}>
-                {value}
+                {mapFormType(value)}
               </SelectItem>
             ))}
           </SelectGroup>

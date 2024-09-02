@@ -2,10 +2,10 @@ import type { FunctionComponent } from '@/common/types';
 import { Button } from '@/components/ui/button';
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline';
 import { useMemo, useState } from 'react';
-import type { Attachment, Note } from '../../models/form-submission';
-import { ReponseExtraDataTable } from '../ReponseExtraDataTable/ReponseExtraDataTable';
+import { ResponseExtraDataTable } from '../ResponseExtraDataTable/ResponseExtraDataTable';
 import { QuestionExtraData } from '../../types';
 import { aggregatedAnswerExtraInfoColumnDefs, answerExtraInfoColumnDefs } from '../../utils/column-defs';
+import { Note, Attachment } from '../../models/common';
 
 type ResponseExtraDataSectionProps = {
   aggregateDisplay: boolean;
@@ -40,7 +40,7 @@ export function ResponseExtraDataSection({ attachments, notes, aggregateDisplay 
         {notes.length} notes & {attachments.length} media files{' '}
         {expanded ? <ChevronUpIcon className='w-4 ml-2' /> : <ChevronDownIcon className='w-4 ml-2' />}
       </Button>
-      {expanded && <ReponseExtraDataTable columns={columns} data={extraData} />}
+      {expanded && <ResponseExtraDataTable columns={columns} data={extraData} />}
     </>
   );
 }

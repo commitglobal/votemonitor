@@ -2,7 +2,7 @@ import { AnswerType, NumberAnswer } from '@/common/types';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useEffect, useState } from 'react';
-import { useFormAnswersStore } from '../AnswersContext';
+import { useFormAnswersStore } from '../answers-store';
 
 export interface PreviewNumberQuestionProps {
   questionId: string;

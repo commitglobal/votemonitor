@@ -2,7 +2,7 @@ import { AnswerType, type FunctionComponent, type RatingAnswer, type RatingScale
 import { Label } from '@/components/ui/label';
 import { RatingGroup } from '@/components/ui/ratings';
 import { ratingScaleToNumber } from '@/lib/utils';
-import { useFormAnswersStore } from '../AnswersContext';
+import { useFormAnswersStore } from '../answers-store';
 import { useState, useEffect } from 'react';
 
 export interface PreviewRatingQuestionProps {

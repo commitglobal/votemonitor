@@ -2,6 +2,7 @@ import { VisibilityState } from '@tanstack/react-table';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import {
+  citizenReportsDefaultColumns,
   FilterBy,
   formSubmissionsDefaultColumns,
   quickReportsDefaultColumns,
@@ -64,3 +65,31 @@ const useQuickReportsColumnVisibilityStore = create(
 
 export const useQuickReportsColumnsVisibility = () => useQuickReportsColumnVisibilityStore((state) => state.columns);
 export const useQuickReportsToggleColumn = () => useQuickReportsColumnVisibilityStore((state) => state.toggleColumn);
+
+
+
+type CitizenReportsColumnVisibilityStore = {
+  columns: VisibilityState;
+  toggleColumn: (id: string, checked: boolean) => void;
+};
+
+const useCitizenReportsColumnVisibilityStore = create(
+  persist<CitizenReportsColumnVisibilityStore>(
+    (set) => ({
+      columns: citizenReportsDefaultColumns,
+      toggleColumn: (id, checked) => {
+        set((state) => ({
+          columns: {
+            ...state.columns,
+            [id]: checked,
+          },
+        }));
+      },
+    }),
+    { name: 'citizen-reports-column-visibility' }
+  )
+);
+
+export const useCitizenReportsColumnsVisibility = () => useCitizenReportsColumnVisibilityStore((state) => state.columns);
+export const useCitizenReportsToggleColumn = () => useCitizenReportsColumnVisibilityStore((state) => state.toggleColumn);
+

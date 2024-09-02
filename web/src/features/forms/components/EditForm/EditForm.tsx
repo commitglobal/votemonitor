@@ -1,6 +1,6 @@
 import {
-  emptyTranslatedString,
   QuestionType,
+  ZFormType,
   type FunctionComponent
 } from '@/common/types';
 import FormQuestionsEditor from '@/components/questionsEditor/FormQuestionsEditor';
@@ -16,15 +16,15 @@ import { z } from 'zod';
 import { isDateQuestion, isMultiSelectQuestion, isNumberQuestion, isRatingQuestion, isSingleSelectQuestion, isTextQuestion } from '@/common/guards';
 import Layout from '@/components/layout/Layout';
 import { NavigateBack } from '@/components/NavigateBack/NavigateBack';
-import { cn, isNilOrWhitespace } from '@/lib/utils';
+import { LanguageBadge } from '@/components/ui/language-badge';
+import { cn, emptyTranslatedString, isNilOrWhitespace } from '@/lib/utils';
 import { Route } from '@/routes/forms_.$formId.edit';
-import { FormType } from '../../models/form';
 import { formDetailsQueryOptions } from '../../queries';
 import { EditDateQuestionType, EditMultiSelectQuestionType, EditNumberQuestionType, EditRatingQuestionType, EditSingleSelectQuestionType, EditTextQuestionType, ZEditQuestionType, ZTranslatedString } from '../../types';
 import { FormDetailsBreadcrumbs } from '../FormDetailsBreadcrumbs/FormDetailsBreadcrumbs';
 import EditFormDetails from './EditFormDetails';
-import { LanguageBadge } from '@/components/ui/language-badge';
 import EditFormFooter from './EditFormFooter';
+import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 
 const ZEditFormType = z.object({
   formId: z.string().trim().min(1),
@@ -33,7 +33,7 @@ const ZEditFormType = z.object({
   name: ZTranslatedString,
   description: ZTranslatedString.optional(),
   languages: z.array(z.string()),
-  formType: z.enum([FormType.Opening, FormType.Voting, FormType.ClosingAndCounting, FormType.Other]).catch(FormType.Opening),
+  formType: ZFormType.catch(ZFormType.Values.Opening),
   questions: z.array(ZEditQuestionType)
 })
   .superRefine((data, ctx) => {
@@ -123,7 +123,9 @@ export type EditFormType = z.infer<typeof ZEditFormType>;
 
 export default function EditForm(): FunctionComponent {
   const { formId } = Route.useParams();
-  const formQuery = useSuspenseQuery(formDetailsQueryOptions(formId));
+    const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
+
+  const formQuery = useSuspenseQuery(formDetailsQueryOptions(currentElectionRoundId, formId));
   const formData = formQuery.data;
 
   const form = useForm<EditFormType>({

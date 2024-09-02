@@ -162,3 +162,26 @@ export const quickReportsDefaultColumns: VisibilityState = {
   email: false,
   followUpStatus: true,
 };
+
+export const citizenReportsColumnVisibilityOptions: ColumnOption[] = [
+  { id: 'timeSubmitted', label: 'Time submitted', enableHiding: true },
+  { id: 'formCode', label: 'Form code', enableHiding: true },
+  { id: 'numberOfQuestionsAnswered', label: 'Questions answered', enableHiding: true },
+  { id: 'numberOfFlaggedAnswers', label: 'Flagged answers', enableHiding: true },
+  { id: 'notesCount', label: 'Question notes', enableHiding: true },
+  { id: 'mediaFilesCount', label: 'Media files', enableHiding: true },
+  { id: 'followUpStatus', label: 'Follow-up status', enableHiding: true },
+];
+
+
+
+export const citizenReportsDefaultColumns: VisibilityState = {
+  submissionId: false,
+  timeSubmitted: true,
+  formCode: true,
+  numberOfQuestionsAnswered: true,
+  numberOfFlaggedAnswers: true,
+  notesCount: false,
+  mediaFilesCount: false,
+  followUpStatus: true,
+};

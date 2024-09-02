@@ -1,5 +1,6 @@
 import {
   QuestionType,
+  ZFormType,
   type FunctionComponent
 } from '@/common/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -19,12 +20,12 @@ import { LanguageBadge } from '@/components/ui/language-badge';
 import { cn, isNilOrWhitespace, isNotNilOrWhitespace } from '@/lib/utils';
 import { Route } from '@/routes/forms_.$formId.edit-translation.$languageCode';
 import { useEffect } from 'react';
-import { FormType } from '../../models/form';
 import { formDetailsQueryOptions } from '../../queries';
 import { EditDateQuestionType, EditMultiSelectQuestionType, EditNumberQuestionType, EditRatingQuestionType, EditSingleSelectQuestionType, EditTextQuestionType, ZEditQuestionType, ZTranslatedString } from '../../types';
 import { FormDetailsBreadcrumbs } from '../FormDetailsBreadcrumbs/FormDetailsBreadcrumbs';
 import EditFormTranslationDetails from './EditFormTranslationDetails';
 import EditFormTranslationFooter from './EditFormTranslationFooter';
+import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 
 const ZEditFormTranslationType = z.object({
   formId: z.string().trim().min(1),
@@ -34,7 +35,7 @@ const ZEditFormTranslationType = z.object({
   name: ZTranslatedString,
   description: ZTranslatedString,
   languages: z.array(z.string()),
-  formType: z.enum([FormType.Opening, FormType.Voting, FormType.ClosingAndCounting, FormType.Other]).catch(FormType.Opening),
+  formType: ZFormType.catch(ZFormType.Values.Opening),
   questions: z.array(ZEditQuestionType)
 })
   .superRefine((data, ctx) => {
@@ -168,7 +169,8 @@ export type EditFormTranslationType = z.infer<typeof ZEditFormTranslationType>;
 
 export default function EditFormTranslation(): FunctionComponent {
   const { formId, languageCode } = Route.useParams();
-  const { data: formData } = useSuspenseQuery(formDetailsQueryOptions(formId));
+    const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
+  const { data: formData } = useSuspenseQuery(formDetailsQueryOptions(currentElectionRoundId, formId));
 
   const form = useForm<EditFormTranslationType>({
     resolver: zodResolver(ZEditFormTranslationType),

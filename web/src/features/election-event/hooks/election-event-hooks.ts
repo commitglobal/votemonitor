@@ -2,18 +2,16 @@ import { authApi } from '@/common/auth-api';
 import { PageResponse } from '@/common/types';
 import { useQuery, UseQueryResult } from '@tanstack/react-query';
 
+import { electionRoundKeys } from '@/features/election-round/queries';
 import { ElectionEvent } from '../models/election-event';
 import { ObserverGuide } from '../models/observer-guide';
-import { electionRoundKeys } from '@/features/election-round/queries';
 
-const STALE_TIME = 1000 * 60; // one minute
+const STALE_TIME = 1000 * 60 * 5; // five minutes
 
 type ElectionEventResult = UseQueryResult<ElectionEvent, Error>;
-export function useElectionRound(): ElectionEventResult {
-  const electionRoundId = localStorage.getItem('electionRoundId') ?? '';
-
+export function useElectionRoundDetails(electionRoundId: string): ElectionEventResult {
   return useQuery({
-    queryKey: electionRoundKeys.detail(electionRoundId),
+    queryKey: electionRoundKeys.detail(electionRoundId!),
     queryFn: async () => {
 
       const response = await authApi.get<ElectionEvent>(`/election-rounds/${electionRoundId}`);
@@ -23,17 +21,17 @@ export function useElectionRound(): ElectionEventResult {
       };
     },
     staleTime: STALE_TIME,
+    enabled: !!electionRoundId
   });
 }
 type ObserverGuideResult = UseQueryResult<PageResponse<ObserverGuide>, Error>;
 
-export function useObserverGuides(): ObserverGuideResult {
+export function useObserverGuides(electionRoundId: string): ObserverGuideResult {
   return useQuery({
     queryKey: ['observer-guides'],
     queryFn: async () => {
-       const electionRoundId: string | null = localStorage.getItem('electionRoundId');
 
-      const response = await authApi.get<{guides:ObserverGuide[] }>(`/election-rounds/${electionRoundId}/observer-guide`);
+      const response = await authApi.get<{ guides: ObserverGuide[] }>(`/election-rounds/${electionRoundId}/observer-guide`);
 
       const pageResponse: PageResponse<ObserverGuide> = {
         currentPage: 1,
@@ -45,5 +43,6 @@ export function useObserverGuides(): ObserverGuideResult {
       return pageResponse;
     },
     staleTime: STALE_TIME,
+    enabled: !!electionRoundId
   });
 }

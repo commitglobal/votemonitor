@@ -32,6 +32,9 @@ using Vote.Monitor.Domain.Entities.QuickReportAggregate;
 using Vote.Monitor.Module.Notifications;
 using Ardalis.SmartEnum.Dapper;
 using Dapper;
+using Feature.CitizenReports;
+using Feature.CitizenReports.Attachments;
+using Feature.CitizenReports.Notes;
 using Feature.DataExport;
 using Feature.Feedback;
 using Feature.ImportErrors;
@@ -143,6 +146,10 @@ builder.Services.AddDataExportFeature();
 builder.Services.AddStatisticsFeature(builder.Configuration.GetRequiredSection(StatisticsInstaller.SectionKey));
 builder.Services.AddFeedbackFeature();
 
+builder.Services.AddCitizenReportsFeature();
+builder.Services.AddCitizenReportsNotesFeature();
+builder.Services.AddCitizenReportsAttachmentsFeature();
+
 builder.Services.AddAuthorization();
 
 builder.Services.AddResponseCompression(opts =>
@@ -163,7 +170,8 @@ app.UseCors("AllowAll");
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseSentryMiddleware().UseFastEndpoints(x =>
+app.UseSentryMiddleware()
+    .UseFastEndpoints(x =>
 {
     x.Errors.UseProblemDetails();
     x.Endpoints.Configurator = ep =>

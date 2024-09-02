@@ -14,13 +14,13 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
+import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { Cog8ToothIcon, FunnelIcon } from '@heroicons/react/24/outline';
 import { getRouteApi } from '@tanstack/react-router';
 import { useDebounce } from '@uidotdev/usehooks';
 import { useCallback, useMemo, useState } from 'react';
 import { useQuickReports } from '../../hooks/quick-reports';
 import { ExportedDataType } from '../../models/data-export';
-import { QuickReportLocationType } from '../../models/quick-report';
 import type { QuickReportsSearchParams } from '../../models/search-params';
 import { useQuickReportsColumnsVisibility, useQuickReportsToggleColumn } from '../../store/column-visibility';
 import { quickReportsColumnDefs } from '../../utils/column-defs';
@@ -59,6 +59,7 @@ export function QuickReports(): FunctionComponent {
   }, [debouncedSearch]);
 
   const setPrevSearch = useSetPrevSearch();
+    const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
 
   const onClearFilter = useCallback(
     (filter: keyof QuickReportsSearchParams | (keyof QuickReportsSearchParams)[]) => () => {
@@ -232,7 +233,7 @@ export function QuickReports(): FunctionComponent {
         <QueryParamsDataTable
           columnVisibility={columnsVisibility}
           columns={quickReportsColumnDefs}
-          useQuery={useQuickReports}
+          useQuery={(params) => useQuickReports(currentElectionRoundId, params)}
           queryParams={queryParams}
           onRowClick={navigateToQuickReport}
         />

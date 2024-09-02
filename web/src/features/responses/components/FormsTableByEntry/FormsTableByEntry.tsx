@@ -10,6 +10,7 @@ import type { FormSubmissionsSearchParams } from '../../models/search-params';
 import { formSubmissionsByEntryColumnDefs } from '../../utils/column-defs';
 import { Route } from '@/routes/responses';
 import { useByEntryColumns } from '../../store/column-visibility';
+import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 
 type FormsTableByEntryProps = {
   searchText: string;
@@ -19,6 +20,7 @@ export function FormsTableByEntry({ searchText }: FormsTableByEntryProps): Funct
   const navigate = useNavigate();
   const search = Route.useSearch();
   const debouncedSearch = useDebounce(search, 300);
+    const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
 
   const columnsVisibility = useByEntryColumns();
 
@@ -50,7 +52,7 @@ export function FormsTableByEntry({ searchText }: FormsTableByEntryProps): Funct
       <QueryParamsDataTable
         columnVisibility={columnsVisibility}
         columns={formSubmissionsByEntryColumnDefs}
-        useQuery={useFormSubmissionsByEntry}
+        useQuery={(params) => useFormSubmissionsByEntry(currentElectionRoundId, params)}
         queryParams={queryParams}
         onRowClick={navigateToFormSubmission}
       />

@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { EditQuestionType } from '@/features/forms/types';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
-import { useFormAnswersStore } from '../AnswersContext';
+import { useFormAnswersStore } from '../answers-store';
 import PreviewDateQuestion from './PreviewDateQuestion';
 import PreviewMultiSelectQuestion from './PreviewMultiSelectQuestion';
 import PreviewNumberQuestion from './PreviewNumberQuestion';
@@ -155,7 +155,7 @@ function PreviewQuestion({ languageCode, questionIndex, question, questions, act
                   upperLabel={question.upperLabel[languageCode]}
                   lowerLabel={question.lowerLabel[languageCode]}
                   code={question.code}
-                  />)}
+                />)}
 
               {question?.$questionType === QuestionType.MultiSelectQuestionType && (
                 <PreviewMultiSelectQuestion
@@ -164,7 +164,7 @@ function PreviewQuestion({ languageCode, questionIndex, question, questions, act
                   helptext={question.helptext[languageCode]}
                   options={question.options?.map(o => ({ optionId: o.optionId, isFreeText: o.isFreeText, text: o.text[languageCode] })) ?? []}
                   code={question.code}
-                  />)}
+                />)}
 
               {question?.$questionType === QuestionType.SingleSelectQuestionType && (
                 <PreviewSingleSelectQuestion
@@ -173,7 +173,7 @@ function PreviewQuestion({ languageCode, questionIndex, question, questions, act
                   helptext={question.helptext[languageCode]}
                   options={question.options?.map(o => ({ optionId: o.optionId, isFreeText: o.isFreeText, text: o.text[languageCode] })) ?? []}
                   code={question.code}
-                  />)}
+                />)}
             </div>
             <div className='nav-buttons flex gap-4 mt-4 justify-end'>
               <Button

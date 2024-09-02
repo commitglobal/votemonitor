@@ -1,4 +1,3 @@
-import { getTranslationOrDefault, type FunctionComponent } from '@/common/types';
 import Layout from '@/components/layout/Layout';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -11,6 +10,7 @@ import { useNavigate } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
 
 import { isMultiSelectQuestion, isNumberQuestion, isRatingQuestion, isSingleSelectQuestion, isTextQuestion } from '@/common/guards';
+import { FunctionComponent } from '@/common/types';
 import { NavigateBack } from '@/components/NavigateBack/NavigateBack';
 import PreviewDateQuestion from '@/components/questionsEditor/preview/PreviewDateQuestion';
 import PreviewMultiSelectQuestion from '@/components/questionsEditor/preview/PreviewMultiSelectQuestion';
@@ -19,14 +19,17 @@ import PreviewRatingQuestion from '@/components/questionsEditor/preview/PreviewR
 import PreviewSingleSelectQuestion from '@/components/questionsEditor/preview/PreviewSingleSelectQuestion';
 import PreviewTextQuestion from '@/components/questionsEditor/preview/PreviewTextQuestion';
 import { LanguageBadge } from '@/components/ui/language-badge';
+import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { getTranslationOrDefault, mapFormType } from '@/lib/utils';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { mapFormType } from '../../models/form';
 import { formDetailsQueryOptions } from '../../queries';
 import { FormDetailsBreadcrumbs } from '../FormDetailsBreadcrumbs/FormDetailsBreadcrumbs';
 
 export default function FormDetails(): FunctionComponent {
   const { formId, languageCode } = FormDetailsRoute.useParams();
-  const formQuery = useSuspenseQuery(formDetailsQueryOptions(formId));
+    const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
+
+  const formQuery = useSuspenseQuery(formDetailsQueryOptions(currentElectionRoundId, formId));
   const form = formQuery.data;
 
   const navigate = useNavigate();

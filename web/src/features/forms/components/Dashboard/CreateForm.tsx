@@ -1,5 +1,5 @@
 import { authApi } from '@/common/auth-api';
-import { TranslatedString } from '@/common/types';
+import { TranslatedString, ZFormType } from '@/common/types';
 import { CreateDialogFooter } from '@/components/dialogs/CreateDialog';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from '@/components/ui/use-toast';
 import LanguageSelect from '@/containers/LanguageSelect';
+import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { queryClient } from '@/main';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
@@ -14,26 +15,26 @@ import { useNavigate } from '@tanstack/react-router';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
-import { FormBase, FormType, NewFormRequest, mapFormType } from '../../models/form';
+import { FormBase, NewFormRequest } from '../../models/form';
 import { formsKeys } from '../../queries';
+import { mapFormType } from '@/lib/utils';
 
 function CreateForm() {
     const { t } = useTranslation();
     const navigate = useNavigate();
+    const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
+    const isMonitoringNgoForCitizenReporting = useCurrentElectionRoundStore(s => s.isMonitoringNgoForCitizenReporting);
 
     const newFormFormSchema = z.object({
         code: z.string().nonempty('Form code is required'),
         name: z.string().nonempty('Form name is required'),
         description: z.string().optional(),
         defaultLanguage: z.string().nonempty(),
-        formType: z.enum([FormType.Opening, FormType.Voting, FormType.ClosingAndCounting, FormType.Other]).catch(FormType.Opening)
+        formType: ZFormType.catch(ZFormType.Values.Opening)
     });
 
     const form = useForm<z.infer<typeof newFormFormSchema>>({
-        resolver: zodResolver(newFormFormSchema),
-        defaultValues: {
-            formType: FormType.Opening
-        }
+        resolver: zodResolver(newFormFormSchema)
     });
 
     function onSubmit(values: z.infer<typeof newFormFormSchema>) {
@@ -52,12 +53,11 @@ function CreateForm() {
             languages: [values.defaultLanguage]
         };
 
-        newFormMutation.mutate(newForm);
+        newFormMutation.mutate({ electionRoundId: currentElectionRoundId, newForm });
     }
 
     const newFormMutation = useMutation({
-        mutationFn: (newForm: NewFormRequest) => {
-            const electionRoundId: string | null = localStorage.getItem('electionRoundId');
+        mutationFn: ({ electionRoundId, newForm }: { electionRoundId: string; newForm: NewFormRequest }) => {
 
             return authApi.post<FormBase>(`/election-rounds/${electionRoundId}/forms`, newForm);
         },
@@ -110,10 +110,11 @@ function CreateForm() {
                                     </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
-                                    <SelectItem value={FormType.Opening}>{mapFormType(FormType.Opening)}</SelectItem>
-                                    <SelectItem value={FormType.Voting}>{mapFormType(FormType.Voting)}</SelectItem>
-                                    <SelectItem value={FormType.ClosingAndCounting}>{mapFormType(FormType.ClosingAndCounting)}</SelectItem>
-                                    <SelectItem value={FormType.Other}>{mapFormType(FormType.Other)}</SelectItem>
+                                    <SelectItem value={ZFormType.Values.Opening}>{mapFormType(ZFormType.Values.Opening)}</SelectItem>
+                                    <SelectItem value={ZFormType.Values.Voting}>{mapFormType(ZFormType.Values.Voting)}</SelectItem>
+                                    <SelectItem value={ZFormType.Values.ClosingAndCounting}>{mapFormType(ZFormType.Values.ClosingAndCounting)}</SelectItem>
+                                    {isMonitoringNgoForCitizenReporting && <SelectItem value={ZFormType.Values.CitizenReport}>{mapFormType(ZFormType.Values.CitizenReport)}</SelectItem>}
+                                    <SelectItem value={ZFormType.Values.Other}>{mapFormType(ZFormType.Values.Other)}</SelectItem>
                                 </SelectContent>
                             </Select>
                         </FormItem>

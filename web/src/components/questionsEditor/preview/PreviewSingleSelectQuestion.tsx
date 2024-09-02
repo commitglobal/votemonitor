@@ -4,7 +4,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useEffect, useMemo, useState } from 'react';
 import { RadioGroup, RadioGroupItem } from '../../ui/radio-group';
-import { useFormAnswersStore } from '../AnswersContext';
+import { useFormAnswersStore } from '../answers-store';
 
 export interface PreviewSingleSelectQuestionProps {
   questionId: string;

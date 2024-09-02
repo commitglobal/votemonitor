@@ -12,7 +12,9 @@ internal class ElectionRoundConfiguration : IEntityTypeConfiguration<ElectionRou
         builder.Property(e => e.Title).HasMaxLength(256).IsRequired();
         builder.Property(e => e.EnglishTitle).HasMaxLength(256).IsRequired();
         builder.Property(e => e.Status).IsRequired();
-
+        builder.Property(e => e.AllowCitizenReporting).HasDefaultValue(false).IsRequired();
+        
+        
         builder
             .HasOne(e => e.Country)
             .WithMany()
@@ -25,5 +27,10 @@ internal class ElectionRoundConfiguration : IEntityTypeConfiguration<ElectionRou
 
         builder.Navigation(nameof(ElectionRound.MonitoringNgos))
             .UsePropertyAccessMode(PropertyAccessMode.Field);
+        
+        builder
+            .HasOne(e => e.MonitoringNgoForCitizenReporting)
+            .WithMany()
+            .HasForeignKey(e => e.MonitoringNgoForCitizenReportingId);
     }
 }

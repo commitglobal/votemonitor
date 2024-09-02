@@ -44,7 +44,7 @@ export interface DataTableProps<TData extends RowData, TValue, TQueryParams = ob
   /**
    * Tanstack query for paginated data.
    */
-  useQuery: (p: DataTableParameters<TQueryParams>) => UseQueryResult<PageResponse<TData>, Error>;
+  useQuery: (params: DataTableParameters<TQueryParams>) => UseQueryResult<PageResponse<TData>, Error>;
 
   /**
    * Externalize pagination state to the parent component.
@@ -167,6 +167,8 @@ export function DataTable<TData extends RowData, TValue, TQueryParams = object>(
     enableSorting: true,
     enableFilters: true,
     pageCount: data ? Math.ceil(data.totalCount / data.pageSize) : 0,
+    columnResizeMode: 'onChange',
+    enableColumnResizing: true,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getExpandedRowModel: getExpandedRowModel(),

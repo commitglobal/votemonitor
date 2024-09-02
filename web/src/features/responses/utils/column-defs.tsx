@@ -21,6 +21,8 @@ import { type QuickReport } from '../models/quick-report';
 import type { QuestionExtraData } from '../types';
 import { mapQuickReportLocationType } from './helpers';
 import { FollowUpStatus } from '@/common/types';
+import { useMemo } from 'react';
+import { SubmissionType } from '../models/common';
 
 export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry & RowData>[] = [
   {
@@ -451,14 +453,24 @@ export const aggregatedAnswerExtraInfoColumnDefs: ColumnDef<QuestionExtraData>[]
     enableGlobalFilter: true,
     cell: ({ row }) => <div>
       {
+        row.original.submissionType === SubmissionType.FormSubmission &&
         <Link to='/responses/$submissionId' params={{ submissionId: row.original.submissionId }} preload='intent' target='_blank' >
           <Button type='button' variant={'link'} className='text-purple-500'>
-             {row.original.submissionId.substring(0, 8)}
-             <ArrowTopRightOnSquareIcon className='w-4' />
-             </Button>
+            {row.original.submissionId.substring(0, 8)}
+            <ArrowTopRightOnSquareIcon className='w-4' />
+          </Button>
         </Link>
       }
-    </div>,
+      {
+        row.original.submissionType === SubmissionType.CitizenReport &&
+        <Link to='/responses/citizen-reports/$citizenReportId' params={{ citizenReportId: row.original.submissionId }} preload='intent' target='_blank' >
+          <Button type='button' variant={'link'} className='text-purple-500'>
+            {row.original.submissionId.substring(0, 8)}
+            <ArrowTopRightOnSquareIcon className='w-4' />
+          </Button>
+        </Link>
+      }
+    </div>
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Type' column={column} />,

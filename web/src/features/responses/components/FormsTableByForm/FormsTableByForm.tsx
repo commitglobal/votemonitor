@@ -6,12 +6,14 @@ import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataT
 import { useFormSubmissionsByForm } from '../../hooks/form-submissions-queries';
 import { useByFormColumns } from '../../store/column-visibility';
 import { formSubmissionsByFormColumnDefs } from '../../utils/column-defs';
+import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 
 const routeApi = getRouteApi('/responses/');
 
 export function FormsTableByForm(): FunctionComponent {
   const columnsVisibility = useByFormColumns();
   const navigate = routeApi.useNavigate();
+    const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
 
   const navigateToAggregatedForm = useCallback(
     (formId: string) => {
@@ -25,7 +27,7 @@ export function FormsTableByForm(): FunctionComponent {
       <QueryParamsDataTable
         columnVisibility={columnsVisibility}
         columns={formSubmissionsByFormColumnDefs}
-        useQuery={useFormSubmissionsByForm}
+        useQuery={(params) => useFormSubmissionsByForm(currentElectionRoundId, params)}
         onRowClick={navigateToAggregatedForm}
       />
     </CardContent>

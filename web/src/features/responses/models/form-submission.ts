@@ -2,26 +2,15 @@ import type {
   BaseQuestion,
   DateAnswer,
   FollowUpStatus,
+  FormType,
   MultiSelectAnswer,
   NumberAnswer,
   RatingAnswer,
   SingleSelectAnswer,
   TextAnswer,
 } from '@/common/types';
-
-export enum FormType {
-  ClosingAndCounting = 'ClosingAndCounting',
-  Opening = 'Opening',
-  Voting = 'Voting',
-  PSI = 'PSI',
-  Other = 'Other',
-}
-
-export enum FormStatus {
-  Drafted = 'Drafted',
-  Obsolete = 'Obsolete',
-  Published = 'Published',
-}
+import { Attachment } from './quick-report';
+import { Note } from './common';
 
 export interface FormSubmissionByEntry {
   email: string;
@@ -68,28 +57,6 @@ export interface FormSubmissionByForm {
   numberOfFlaggedAnswers: number;
   numberOfNotes: number;
   numberOfMediaFiles: number;
-}
-
-type AttachmentsAndNotesData = {
-  submissionId: string;
-  timeSubmitted: string;
-  questionId: string;
-}
-
-export interface Note extends AttachmentsAndNotesData {
-  type: "Note";
-  monitoringObserverId: string;
-  text: string;
-}
-
-export interface Attachment extends AttachmentsAndNotesData {
-  type: "Attachment";
-  fileName: string;
-  filePath: string;
-  mimeType: string;
-  presignedUrl: string;
-  uploadedFileName: string;
-  urlValidityInSeconds: string;
 }
 
 export interface FormSubmission

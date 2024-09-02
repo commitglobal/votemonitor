@@ -9,15 +9,16 @@ import { useFormContext } from 'react-hook-form';
 import { UpdateFormRequest } from '../../models/form';
 import { formsKeys } from '../../queries';
 import { EditFormTranslationType } from './EditFormTranslation';
+import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 
 function EditFormTranslationFooter() {
   const form = useFormContext<EditFormTranslationType>();
   const navigate = useNavigate();
+    const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
 
   const editMutation = useMutation({
     mutationKey: formsKeys.all,
-    mutationFn: ({ form }: { form: UpdateFormRequest, shouldExitEditor: boolean }) => {
-      const electionRoundId: string | null = localStorage.getItem('electionRoundId');
+    mutationFn: ({ electionRoundId, form }: { electionRoundId: string; form: UpdateFormRequest, shouldExitEditor: boolean }) => {
 
       return authApi.put<void>(`/election-rounds/${electionRoundId}/forms/${form.id}`, {
         ...form,
@@ -37,7 +38,7 @@ function EditFormTranslationFooter() {
       }
     },
 
-    onError: (_, { form }) => {
+    onError: () => {
       toast({
         title: 'Error saving the form',
         description: 'Please contact tech support',
@@ -147,7 +148,7 @@ function EditFormTranslationFooter() {
       })
     };
 
-    editMutation.mutate({ form: updatedForm, shouldExitEditor });
+    editMutation.mutate({ electionRoundId: currentElectionRoundId, form: updatedForm, shouldExitEditor });
   }
 
   return (

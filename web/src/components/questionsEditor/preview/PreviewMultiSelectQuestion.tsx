@@ -5,7 +5,7 @@ import { AnswerType, MultiSelectAnswer, SelectedOption } from '@/common/types';
 import { Checkbox, CheckboxField, CheckboxGroup } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { useFormAnswersStore } from '../AnswersContext';
+import { useFormAnswersStore } from '../answers-store';
 
 export interface PreviewMultiSelectQuestionProps {
   questionId: string;

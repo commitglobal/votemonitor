@@ -8,7 +8,6 @@ public class ElectionRound : AuditableBaseEntity, IAggregateRoot
 #pragma warning disable CS8618 // Required by Entity Framework
     internal ElectionRound()
     {
-
     }
 #pragma warning restore CS8618
 
@@ -23,6 +22,10 @@ public class ElectionRound : AuditableBaseEntity, IAggregateRoot
 
     public virtual IReadOnlyList<MonitoringNgo> MonitoringNgos => _monitoringNgos.ToList().AsReadOnly();
     public Guid PollingStationsVersion { get; private set; }
+
+    public bool AllowCitizenReporting { get; private set; }
+    public Guid? MonitoringNgoForCitizenReportingId { get; private set; }
+    public MonitoringNgo? MonitoringNgoForCitizenReporting { get; private set; }
 
     public ElectionRound(Guid countryId,
         string title,
@@ -99,5 +102,27 @@ public class ElectionRound : AuditableBaseEntity, IAggregateRoot
     public void UpdatePollingStationsVersion()
     {
         PollingStationsVersion = Guid.NewGuid();
+    }
+
+    public void EnableCitizenReporting(MonitoringNgo monitoringNgo)
+    {
+        if (AllowCitizenReporting)
+        {
+            throw new ArgumentException("Citizen reporting is already enabled");
+        }
+
+        var ngoIsMonitoringElection = _monitoringNgos.Any(x => x.Id == monitoringNgo.Id);
+        if (!ngoIsMonitoringElection)
+        {
+            throw new ArgumentException("Ngo is not monitoring current election");
+        }
+
+        AllowCitizenReporting = true;
+        MonitoringNgoForCitizenReporting = monitoringNgo;
+    }
+
+    public void DisableCitizenReporting()
+    {
+        AllowCitizenReporting = false;
     }
 }

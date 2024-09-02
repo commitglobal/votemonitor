@@ -18,6 +18,7 @@ import { AxiosError } from 'axios';
 import { useRef, useState } from 'react';
 
 import { downloadImportExample } from '../../helpers';
+import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 
 export interface ImportMonitoringObserversDialogProps {
     onImportError: (fileId: string) => void;
@@ -32,17 +33,14 @@ function ImportMonitoringObserversDialog({
 }: ImportMonitoringObserversDialogProps) {
     const [fileName, setFileName] = useState('');
     const hiddenFileInput: React.Ref<any> = useRef(null);
+      const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
 
     const handleClick = () => {
         hiddenFileInput?.current?.click();
     };
 
     const importObserversMutation = useMutation({
-        mutationFn: () => {
-            const electionRoundId: string | null = localStorage.getItem('electionRoundId');
-
-            // get the selected file from the input
-            const file = hiddenFileInput.current.files[0];
+        mutationFn: ({ electionRoundId, file }: { electionRoundId: string, file: any }) => {
             // create a new FormData object and append the file to it
             const formData = new FormData();
             formData.append("file", file);
@@ -93,7 +91,8 @@ function ImportMonitoringObserversDialog({
     });
 
     const handleImport = () => {
-        importObserversMutation.mutate();
+        const file = hiddenFileInput.current.files[0];
+        importObserversMutation.mutate({ electionRoundId: currentElectionRoundId, file });
     }
 
     const handleChange = (event: any) => {

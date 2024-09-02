@@ -9,4 +9,5 @@ public class NgoElectionRoundView
     public DateOnly StartDate { get; set; }
     public string Country { get; set; }
     public Guid CountryId { get; set; }
+    public bool IsMonitoringNgoForCitizenReporting { get; set; }
 }

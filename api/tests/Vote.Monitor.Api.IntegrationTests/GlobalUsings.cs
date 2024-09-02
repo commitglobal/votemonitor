@@ -1,6 +1,5 @@
 ﻿// Global using directives
 
-global using System.Net;
 global using Bogus;
 global using Microsoft.AspNetCore.Hosting;
 global using Microsoft.AspNetCore.TestHost;

@@ -26,6 +26,8 @@ import { FormsTableByForm } from '../FormsTableByForm/FormsTableByForm';
 import { FormsTableByObserver } from '../FormsTableByObserver/FormsTableByObserver';
 import { QuickReports } from '../QuickReports/QuickReports';
 import { useSetPrevSearch } from '@/common/prev-search-store';
+import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { CitizenReports } from '../CitizenReports/CitizenReports';
 
 const routeApi = getRouteApi('/responses/');
 
@@ -44,6 +46,7 @@ export default function ResponsesDashboard(): ReactElement {
 
   const [searchText, setSearchText] = useState<string>('');
   const debouncedSearchText = useDebounce(searchText, 300);
+  const isMonitoringNgoForCitizenReporting = useCurrentElectionRoundStore(s => s.isMonitoringNgoForCitizenReporting);
 
   const handleSearchInput = (ev: ChangeEvent<HTMLInputElement>): void => {
     const value = ev.currentTarget.value;
@@ -70,6 +73,7 @@ export default function ResponsesDashboard(): ReactElement {
         <TabsList className='grid grid-cols-2 bg-gray-200 w-[400px] mb-4'>
           <TabsTrigger value='form-answers'>Form answers</TabsTrigger>
           <TabsTrigger value='quick-reports'>Quick reports</TabsTrigger>
+          {isMonitoringNgoForCitizenReporting && <TabsTrigger value='citizen-reports'>Citizen reports</TabsTrigger>}
         </TabsList>
 
         <TabsContent value='form-answers'>
@@ -149,6 +153,10 @@ export default function ResponsesDashboard(): ReactElement {
         <TabsContent value='quick-reports'>
           <QuickReports />
         </TabsContent>
+        {isMonitoringNgoForCitizenReporting && <TabsContent value='citizen-reports'>
+          <CitizenReports />
+        </TabsContent>
+        }
       </Tabs>
     </Layout>
   );
