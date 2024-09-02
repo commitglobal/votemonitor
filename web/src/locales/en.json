@@ -124,5 +124,8 @@
     "placeholder.description": "Form description",
     "placeholder.defaultLanguage": "Select a default language",
     "placeholder.languages": "Select available languages"
+  },
+  "ngoAdminDashboard":{
+    "subtitle": "Key indicators."
   }
 }

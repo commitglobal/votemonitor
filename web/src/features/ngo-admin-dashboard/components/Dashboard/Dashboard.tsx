@@ -6,7 +6,7 @@ import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowDownTrayIcon } from '@heroicons/react/24/solid';
-import { useMemo, useRef } from 'react';
+import { useMemo, useRef, useTransition } from 'react';
 
 import type { FunctionComponent } from '@/common/types';
 import { saveChart } from '@/components/charts/utils/save-chart';
@@ -21,9 +21,11 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import { authApi } from '@/common/auth-api';
 import { format } from 'date-fns';
+import { useTranslation } from 'react-i18next';
 const STALE_TIME = 1000 * 60 * 10; // ten minutes
 
 export default function NgoAdminDashboard(): FunctionComponent {
+  const { t } = useTranslation();
   const observersAccountsChartRef = useRef(null);
   const observersOnFieldChartRef = useRef(null);
   const pollingStationsChartRef = useRef(null);
@@ -47,7 +49,7 @@ export default function NgoAdminDashboard(): FunctionComponent {
 
   function getInterval(histogram: HistogramEntry[] | undefined): string {
     if (histogram) {
-      const data  = histogram.map(x => new Date(x.bucket)).map(date => date.getTime());
+      const data = histogram.map(x => new Date(x.bucket)).map(date => date.getTime());
       const minDate = new Date(Math.min(...data));
 
       // Get the maximum date
@@ -59,11 +61,11 @@ export default function NgoAdminDashboard(): FunctionComponent {
   }
 
   function getTotal(formsHistogram: HistogramEntry[] | undefined): number {
-    return (formsHistogram?? []).map(x=>x.value).reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+    return (formsHistogram ?? []).map(x => x.value).reduce((accumulator, currentValue) => accumulator + currentValue, 0);
   }
 
   return (
-    <Layout title='Dashboard' subtitle='Key indicators.'>
+    <Layout title='Dashboard' subtitle={t('ngoAdminDashboard.subtitle')}>
       <div className="flex-col md:flex">
         <div className="flex-1 space-y-4">
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -117,8 +119,8 @@ export default function NgoAdminDashboard(): FunctionComponent {
                   title='Stations visited by at least one observer'
                   metricLabel='coverage'
                   data={pollingStationsDataConfig(statistics?.pollingStationsStats)}
-                  total={statistics?.pollingStationsStats.totalNumberOfPollingStations ?? 0 }
-                  value={statistics?.pollingStationsStats.numberOfVisitedPollingStations ?? 0 }
+                  total={statistics?.pollingStationsStats.totalNumberOfPollingStations ?? 0}
+                  value={statistics?.pollingStationsStats.numberOfVisitedPollingStations ?? 0}
                   ref={pollingStationsChartRef} />
               </CardContent>
             </Card>
@@ -155,7 +157,7 @@ export default function NgoAdminDashboard(): FunctionComponent {
                 <LineChart
                   title={`forms started between ${getInterval(statistics?.formsHistogram)}`}
                   data={histogramChartConfig(statistics?.formsHistogram)}
-                  ref={startedFormsChartRef} 
+                  ref={startedFormsChartRef}
                   total={getTotal(statistics?.formsHistogram)}
                   showTotal />
               </CardContent>
