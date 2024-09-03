@@ -6,7 +6,7 @@ import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowDownTrayIcon } from '@heroicons/react/24/solid';
-import { useMemo, useRef, useTransition } from 'react';
+import { useMemo, useRef } from 'react';
 
 import type { FunctionComponent } from '@/common/types';
 import { saveChart } from '@/components/charts/utils/save-chart';
@@ -65,14 +65,14 @@ export default function NgoAdminDashboard(): FunctionComponent {
   }
 
   return (
-    <Layout title='Dashboard' subtitle={t('ngoAdminDashboard.subtitle')}>
+    <Layout title={t('ngoAdminDashboard.title')} subtitle={t('ngoAdminDashboard.subtitle')}>
       <div className="flex-col md:flex">
         <div className="flex-1 space-y-4">
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between py-0!">
                 <CardTitle className="text-sm font-medium">
-                  Observers accounts
+                  {t('ngoAdminDashboard.observersAccountsCardTitle')}
                 </CardTitle>
                 <Button type='button' variant='ghost' onClick={() => { saveChart(observersAccountsChartRef, 'observers-accounts.png') }}>
                   <ArrowDownTrayIcon className='w-6 h-6 fill-gray-400' />
@@ -80,7 +80,7 @@ export default function NgoAdminDashboard(): FunctionComponent {
               </CardHeader>
               <CardContent>
                 <DoughnutChart
-                  title='Total accounts'
+                  title={t('ngoAdminDashboard.observersAccountsIndicatorTitle')}
                   total={statistics?.observersStats?.totalNumberOfObservers ?? 0}
                   data={observersAccountsDataConfig(statistics?.observersStats)}
                   ref={observersAccountsChartRef} />
@@ -89,7 +89,7 @@ export default function NgoAdminDashboard(): FunctionComponent {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between py-0!">
                 <CardTitle className="text-sm font-medium">
-                  Observers on field
+                  {t('ngoAdminDashboard.observersOnFieldCardTitle')}
                 </CardTitle>
                 <Button type='button' variant='ghost' onClick={() => { saveChart(observersOnFieldChartRef, 'observers-on-field.png') }}>
                   <ArrowDownTrayIcon className='w-6 h-6 fill-gray-400' />
@@ -97,8 +97,8 @@ export default function NgoAdminDashboard(): FunctionComponent {
               </CardHeader>
               <CardContent>
                 <GaugeChart
-                  title='Observers in polling stations'
-                  metricLabel='With at least one question answered'
+                  title={t('ngoAdminDashboard.observersInPollingStationsIndicatorTitle')}
+                  metricLabel={t('ngoAdminDashboard.observersInPollingStationsIndicatorMetricLabel')}
                   data={observersOnTheFieldDataConfig(statistics?.observersStats?.totalNumberOfObservers, statistics?.numberOfObserversOnTheField)}
                   value={statistics?.numberOfObserversOnTheField ?? 0}
                   total={statistics?.observersStats?.totalNumberOfObservers ?? 0}
@@ -108,7 +108,7 @@ export default function NgoAdminDashboard(): FunctionComponent {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="text-sm font-medium">
-                  Polling stations
+                  {t('ngoAdminDashboard.pollingStationCardTitle')}
                 </CardTitle>
                 <Button type='button' variant='ghost' onClick={() => { saveChart(pollingStationsChartRef, 'polling-stations-covered.png') }}>
                   <ArrowDownTrayIcon className='w-6 h-6 fill-gray-400' />
@@ -116,8 +116,8 @@ export default function NgoAdminDashboard(): FunctionComponent {
               </CardHeader>
               <CardContent>
                 <GaugeChart
-                  title='Stations visited by at least one observer'
-                  metricLabel='coverage'
+                  title={t('ngoAdminDashboard.stationsVisitedByAtLeastOneObserverIndicatorTitle')}
+                  metricLabel={t('ngoAdminDashboard.stationsVisitedByAtLeastOneObserverMetricLabel')}
                   data={pollingStationsDataConfig(statistics?.pollingStationsStats)}
                   total={statistics?.pollingStationsStats.totalNumberOfPollingStations ?? 0}
                   value={statistics?.pollingStationsStats.numberOfVisitedPollingStations ?? 0}
@@ -127,7 +127,7 @@ export default function NgoAdminDashboard(): FunctionComponent {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="text-sm font-medium">
-                  Time spent observing
+                  {t('ngoAdminDashboard.timeSpentObservingCardTitle')}
                 </CardTitle>
                 <Button type='button' variant='ghost' onClick={() => { saveChart(timeSpentObservingChartRef, 'time-spent-observing.png') }}>
                   <ArrowDownTrayIcon className='w-6 h-6 fill-gray-400' />
@@ -135,7 +135,7 @@ export default function NgoAdminDashboard(): FunctionComponent {
               </CardHeader>
               <CardContent>
                 <MetricChart
-                  title='Based on start-end times reported'
+                  title={t('ngoAdminDashboard.basedOnStartEndTimesReportedIndicatorTitle')}
                   unit='h'
                   data={timeSpentObservingDataConfig(statistics?.minutesMonitoring)}
                   ref={timeSpentObservingChartRef} />
@@ -147,7 +147,7 @@ export default function NgoAdminDashboard(): FunctionComponent {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="text-sm font-medium">
-                  Started forms
+                  {t('ngoAdminDashboard.startedFormsCardTitle')}
                 </CardTitle>
                 <Button type='button' variant='ghost' onClick={() => { saveChart(startedFormsChartRef, 'started-forms.png') }}>
                   <ArrowDownTrayIcon className='w-6 h-6 fill-gray-400' />
@@ -155,7 +155,7 @@ export default function NgoAdminDashboard(): FunctionComponent {
               </CardHeader>
               <CardContent>
                 <LineChart
-                  title={`forms started between ${getInterval(statistics?.formsHistogram)}`}
+                  title={`${t('ngoAdminDashboard.formsStartedBetweenIndicatorTitle')} ${getInterval(statistics?.formsHistogram)}`}
                   data={histogramChartConfig(statistics?.formsHistogram)}
                   ref={startedFormsChartRef}
                   total={getTotal(statistics?.formsHistogram)}
@@ -165,7 +165,7 @@ export default function NgoAdminDashboard(): FunctionComponent {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="text-sm font-medium">
-                  Questions answered
+                  {t('ngoAdminDashboard.questionsAnsweredCardTitle')}
                 </CardTitle>
                 <Button type='button' variant='ghost' onClick={() => { saveChart(questionsAnsweredChartRef, 'questions-answered.png') }}>
                   <ArrowDownTrayIcon className='w-6 h-6 fill-gray-400' />
@@ -173,7 +173,7 @@ export default function NgoAdminDashboard(): FunctionComponent {
               </CardHeader>
               <CardContent>
                 <LineChart
-                  title={`questions answered between ${getInterval(statistics?.formsHistogram)}`}
+                  title={`${t('ngoAdminDashboard.questionsAnsweredBetweenIndicatorTitle')} ${getInterval(statistics?.formsHistogram)}`}
                   data={histogramChartConfig(statistics?.questionsHistogram)}
                   ref={questionsAnsweredChartRef}
                   total={getTotal(statistics?.questionsHistogram)}
@@ -183,7 +183,7 @@ export default function NgoAdminDashboard(): FunctionComponent {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="text-sm font-medium">
-                  Flagged answers
+                  {t('ngoAdminDashboard.flaggedAnswersCardTitle')}
                 </CardTitle>
                 <Button type='button' variant='ghost' onClick={() => { saveChart(flaggedAnswersChartRef, 'flagged-answers.png') }}>
                   <ArrowDownTrayIcon className='w-6 h-6 fill-gray-400' />
@@ -191,7 +191,7 @@ export default function NgoAdminDashboard(): FunctionComponent {
               </CardHeader>
               <CardContent>
                 <LineChart
-                  title={`answers were flagged through forms between ${getInterval(statistics?.formsHistogram)}`}
+                  title={`${t('ngoAdminDashboard.answersWereFlaggedThroughFormsBetweenIndicatorTitle')} ${getInterval(statistics?.formsHistogram)}`}
                   data={histogramChartConfig(statistics?.flaggedAnswersHistogram, 'red')}
                   ref={flaggedAnswersChartRef}
                   total={getTotal(statistics?.flaggedAnswersHistogram)}
@@ -201,7 +201,7 @@ export default function NgoAdminDashboard(): FunctionComponent {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="text-sm font-medium">
-                  Quick reports
+                  {t('ngoAdminDashboard.quickReportsCardTitle')}
                 </CardTitle>
                 <Button type='button' variant='ghost' onClick={() => { saveChart(quickReportsChartRef, 'quick-reports.png') }}>
                   <ArrowDownTrayIcon className='w-6 h-6 fill-gray-400' />
@@ -209,7 +209,7 @@ export default function NgoAdminDashboard(): FunctionComponent {
               </CardHeader>
               <CardContent>
                 <LineChart
-                  title={`quick reports were signalled  between ${getInterval(statistics?.formsHistogram)}`}
+                  title={`${t('ngoAdminDashboard.quickReportsWereSignalledBetweenIndicatorTitle')} ${getInterval(statistics?.formsHistogram)}`}
                   data={histogramChartConfig(statistics?.quickReportsHistogram, 'red')}
                   ref={quickReportsChartRef}
                   total={getTotal(statistics?.quickReportsHistogram)}

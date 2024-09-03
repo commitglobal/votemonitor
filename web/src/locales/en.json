@@ -126,6 +126,25 @@
     "placeholder.languages": "Select available languages"
   },
   "ngoAdminDashboard":{
-    "subtitle": "Key indicators."
+    "title": "Dashboard",
+    "subtitle": "Key indicators.",
+    "observersAccountsCardTitle": "Observers Accounts",
+    "observersAccountsIndicatorTitle": "Total accounts",
+    "observersOnFieldCardTitle": "Observers on field",
+    "observersInPollingStationsIndicatorTitle": "Observers in polling stations",
+    "observersInPollingStationsIndicatorMetricLabel": "With at least one question answered",
+    "pollingStationCardTitle": "Polling stations",
+    "stationsVisitedByAtLeastOneObserverIndicatorTitle": "Stations visited by at least one observer",
+    "stationsVisitedByAtLeastOneObserverMetricLabel": "coverage",
+    "timeSpentObservingCardTitle": "Time spent observing",
+    "basedOnStartEndTimesReportedIndicatorTitle": "Based on start-end times reported",
+    "startedFormsCardTitle": "Started forms",
+    "formsStartedBetweenIndicatorTitle": "forms started between ",
+    "questionsAnsweredCardTitle": "Questions answered",
+    "questionsAnsweredBetweenIndicatorTitle": "questions answered between ",
+    "flaggedAnswersCardTitle": "Flagged answers",
+    "answersWereFlaggedThroughFormsBetweenIndicatorTitle": "answers were flagged through forms between",
+    "quickReportsCardTitle": "Quick reports",
+    "quickReportsWereSignalledBetweenIndicatorTitle": "quick reports were signalled  between"
   }
 }
