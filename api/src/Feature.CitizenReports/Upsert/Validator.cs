@@ -20,14 +20,5 @@ public class Validator : Validator<Request>
                 v.Add(new NumberAnswerRequestValidator());
                 v.Add(new TextAnswerRequestValidator());
             });
-
-        RuleFor(x => x.Email)
-            .EmailAddress()
-            .MaximumLength(256)
-            .When(x=>!string.IsNullOrWhiteSpace(x.Email));
-        
-        RuleFor(x => x.ContactInformation)
-            .MaximumLength(2048)
-            .When(x=>!string.IsNullOrWhiteSpace(x.ContactInformation));
     }
 }

@@ -1,7 +1,5 @@
-﻿using Authorization.Policies.Requirements;
-using Feature.CitizenReports.Models;
+﻿using Feature.CitizenReports.Models;
 using Feature.CitizenReports.Specifications;
-using Microsoft.AspNetCore.Authorization;
 using Vote.Monitor.Answer.Module.Mappers;
 using Vote.Monitor.Domain.Entities.FormAnswerBase;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
@@ -14,7 +12,7 @@ public class Endpoint(
 {
     public override void Configure()
     {
-        Post("/api/citizen-reports/{electionRoundId}/submission");
+        Post("/api/election-rounds/{electionRoundId}/citizen-reports");
         DontAutoTag();
         AllowAnonymous();
         Options(x => x.WithTags("citizen-report", "public"));
@@ -65,7 +63,7 @@ public class Endpoint(
         List<BaseAnswer>? answers,
         CancellationToken ct)
     {
-        var submission = form.CreateCitizenReport(req.CitizenReportId, answers, req.Email, req.ContactInformation);
+        var submission = form.CreateCitizenReport(req.CitizenReportId, answers);
         await repository.AddAsync(submission, ct);
 
         return TypedResults.Ok(CitizenReportModel.FromEntity(submission));

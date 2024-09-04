@@ -9,8 +9,8 @@ public sealed class FormType : SmartEnum<FormType, string>
     public static readonly FormType Voting = new(nameof(Voting), nameof(Voting));
     public static readonly FormType ClosingAndCounting = new(nameof(ClosingAndCounting), nameof(ClosingAndCounting));
     public static readonly FormType PSI = new(nameof(PSI), nameof(PSI));
+    public static readonly FormType CitizenReporting = new(nameof(CitizenReporting), nameof(CitizenReporting));
     public static readonly FormType Other = new(nameof(Other), nameof(Other));
-    public static readonly FormType CitizenReport = new(nameof(CitizenReport), nameof(CitizenReport));
 
     /// <summary>Gets an item associated with the specified value. Parses SmartEnum when used as query params</summary>
     /// <see href="https://github.com/ardalis/SmartEnum/issues/410#issuecomment-1686057067">this issue</see>

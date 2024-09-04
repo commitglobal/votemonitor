@@ -8,7 +8,4 @@ public class Request
     public Guid CitizenReportId { get; set; }
     public Guid FormId { get; set; }
     public List<BaseAnswerRequest>? Answers { get; set; }
-
-    public string? Email { get; set; }
-    public string? ContactInformation { get; set; }
 }

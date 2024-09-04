@@ -8,21 +8,20 @@ import type {
   RatingAnswer,
   SingleSelectAnswer,
   TextAnswer,
+  TranslatedString,
 } from '@/common/types';
 import { Note, Attachment } from './common';
 
 export interface CitizenReportByEntry {
-  email: string;
-  formCode: string;
-  formType: FormType;
-  defaultLanguage: string;
-  numberOfFlaggedAnswers: number;
-  numberOfQuestionsAnswered: number;
-  mediaFilesCount: number;
-  notesCount: number;
   citizenReportId: string;
-  tags: string[];
-  timeSubmitted: string;
+  formCode: string;
+  formDefaultLanguage: string;
+  formName: TranslatedString;
+  timeSubmitted: Date;
+  numberOfQuestionsAnswered: number;
+  numberOfFlaggedAnswers: number;
+  notesCount: number;
+  mediaFilesCount: number;
   followUpStatus: FollowUpStatus;
 }
 

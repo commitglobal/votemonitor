@@ -1,7 +1,6 @@
 ﻿using FastEndpoints;
 using Feature.CitizenReports.Notes.Specifications;
 using FluentAssertions;
-using Microsoft.AspNetCore.Http.HttpResults;
 using NSubstitute;
 using Vote.Monitor.Domain.Entities.CitizenReportNoteAggregate;
 using Vote.Monitor.Domain.Repository;

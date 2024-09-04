@@ -50,9 +50,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Feature.Ng
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Feature.ElectionRound.UnitTests", "tests\Vote.Monitor.Api.Feature.ElectionRound.UnitTests\Vote.Monitor.Api.Feature.ElectionRound.UnitTests.csproj", "{ABECD575-6B9F-48DE-97CA-0E962259CA10}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Feature.Monitoring", "src\Vote.Monitor.Api.Feature.Monitoring\Vote.Monitor.Api.Feature.Monitoring.csproj", "{37E75B1E-5D9D-4C8B-B87F-03E629FAE30B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feature.Monitoring", "src\Feature.Monitoring\Feature.Monitoring.csproj", "{37E75B1E-5D9D-4C8B-B87F-03E629FAE30B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Feature.Monitoring.UnitTests", "tests\Vote.Monitor.Api.Feature.Monitoring.UnitTests\Vote.Monitor.Api.Feature.Monitoring.UnitTests.csproj", "{A1CD7BD9-A7A6-44D9-838F-210D437582A8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Feature.Monitoring.UnitTests", "tests\Feature.Monitoring.UnitTests\Feature.Monitoring.UnitTests.csproj", "{A1CD7BD9-A7A6-44D9-838F-210D437582A8}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vote.Monitor.Api.Feature.UserPreferences", "src\Vote.Monitor.Api.Feature.UserPreferences\Vote.Monitor.Api.Feature.UserPreferences.csproj", "{60EA51FE-1118-485E-9500-43B5A97B763B}"
 EndProject

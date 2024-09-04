@@ -41,6 +41,8 @@ using Feature.ImportErrors;
 using Feature.Statistics;
 using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
 using Microsoft.AspNetCore.Http.Features;
+using Vote.Monitor.Core.Converters;
+using Vote.Monitor.Domain.Entities.CitizenReportAggregate;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -196,6 +198,7 @@ app.UseSentryMiddleware()
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<SubmissionFollowUpStatus, string>());
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<QuickReportFollowUpStatus, string>());
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<TranslationStatus, string>());
+    x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<CitizenReportFollowUpStatus, string>());
 
     x.Serializer.Options.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
 });
@@ -217,7 +220,8 @@ SqlMapper.AddTypeHandler(typeof(QuickReportLocationType), new SmartEnumByValueTy
 SqlMapper.AddTypeHandler(typeof(DisplayLogicCondition), new SmartEnumByValueTypeHandler<DisplayLogicCondition, string>());
 SqlMapper.AddTypeHandler(typeof(SubmissionFollowUpStatus), new SmartEnumByValueTypeHandler<SubmissionFollowUpStatus, string>());
 SqlMapper.AddTypeHandler(typeof(QuickReportFollowUpStatus), new SmartEnumByValueTypeHandler<QuickReportFollowUpStatus, string>());
-
+SqlMapper.AddTypeHandler(typeof(CitizenReportFollowUpStatus), new SmartEnumByValueTypeHandler<CitizenReportFollowUpStatus, string>());
+SqlMapper.AddTypeHandler(typeof(TranslatedString), new JsonToObjectConverter<TranslatedString>());
 #endregion
 app.UseSwaggerGen(
 cfg =>

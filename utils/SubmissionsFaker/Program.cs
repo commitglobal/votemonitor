@@ -2,6 +2,7 @@
 using Refit;
 using Spectre.Console;
 using SubmissionsFaker;
+using SubmissionsFaker.Clients.Citizen;
 using SubmissionsFaker.Clients.Models;
 using SubmissionsFaker.Clients.MonitoringObserver;
 using SubmissionsFaker.Clients.NgoAdmin;
@@ -62,6 +63,7 @@ var platformAdminApi = RestService.For<IPlatformAdminApi>(client);
 var pollingStationsApi = RestService.For<IPollingStationsApi>(client);
 var ngoAdminApi = RestService.For<INgoAdminApi>(client);
 var observerApi = RestService.For<IMonitoringObserverApi>(client);
+var citizenReportApi = RestService.For<ICitizenApi>(client);
 #endregion
 
 #region authorize platform admin
@@ -73,7 +75,8 @@ CreateResponse ngo = default!;
 CreateResponse monitoringNgo = default!;
 LoginResponse ngoAdminToken = default!;
 List<LocationNode> pollingStations = [];
-List<UpdateFormResponse> formIds = [];
+List<UpdateFormResponse> forms = [];
+List<UpdateFormResponse> citizenReportingForms = [];
 List<LoginResponse> observersTokens = [];
 
 var observers = new ApplicationUserFaker().Generate(Consts.NUMBER_OF_OBSERVERS)!;
@@ -85,7 +88,7 @@ await AnsiConsole.Progress()
     .Columns(progressColumns)
     .StartAsync(async ctx =>
     {
-        var setupTask = ctx.AddTask("[green]Setup election round and NGO [/]", maxValue: 7);
+        var setupTask = ctx.AddTask("[green]Setup election round and NGO [/]", maxValue: 8);
 
         electionRound = await platformAdminApi.CreateElectionRound(new ElectionRoundFaker().Generate(), platformAdminToken.Token);
         setupTask.Increment(1);
@@ -97,6 +100,9 @@ await AnsiConsole.Progress()
         setupTask.Increment(1);
 
         monitoringNgo = await platformAdminApi.AssignNgoToElectionRound(electionRound.Id, new AssignNgoRequest(ngo.Id), platformAdminToken.Token);
+        setupTask.Increment(1);
+        
+        await platformAdminApi.EnableCitizenReporting(electionRound.Id, new EnableCitizenReportingRequest(ngo.Id), platformAdminToken.Token);
         setupTask.Increment(1);
 
         var ngoAdmin = new ApplicationUserFaker(ngoAdminUsername, ngoAdminPassword).Generate();
@@ -117,6 +123,16 @@ await AnsiConsole.Progress()
         setupTask.Increment(1);
     });
 
+await AnsiConsole.Progress()
+    .AutoRefresh(true)
+    .AutoClear(false)
+    .HideCompleted(false)
+    .Columns(progressColumns)
+    .StartAsync(async ctx =>
+    {
+        var formsTask = ctx.AddTask("[green]Creating forms[/]", autoStart: false);
+        forms = await FormsSeeder.Seed(ngoAdminApi, ngoAdminToken, electionRound.Id, formsTask);
+    });
 
 await AnsiConsole.Progress()
     .AutoRefresh(true)
@@ -125,8 +141,8 @@ await AnsiConsole.Progress()
     .Columns(progressColumns)
     .StartAsync(async ctx =>
     {
-        var formsTask = ctx.AddTask("[green]Creating forms[/]", maxValue: 1, autoStart: false);
-        formIds = await FormsSeeder.Seed(ngoAdminApi, ngoAdminToken, electionRound.Id, formsTask);
+        var formsTask = ctx.AddTask("[green]Creating citizen reporting forms[/]", autoStart: false);
+        citizenReportingForms = await CitizenReportingFormSeeder.Seed(ngoAdminApi, ngoAdminToken, electionRound.Id, formsTask);
     });
 
 await AnsiConsole.Progress()
@@ -165,24 +181,94 @@ await AnsiConsole.Progress()
             observersLoginTask.Increment(Consts.CHUNK_SIZE);
         }
     });
+//
+// var submissionRequests = new SubmissionFaker(forms, pollingStations, observersTokens)
+//     .GenerateUnique(Consts.NUMBER_OF_SUBMISSIONS);
+//
+// var psiRequests =
+//     submissionRequests.Select(x => new PISSubmissionFaker(PSIFormData.PSIForm, x.PollingStationId, x.ObserverToken).Generate()).ToList();
+//
+// var noteRequests = new NoteFaker(submissionRequests.Where(x=>x.Answers.Any()).ToList())
+//     .Generate(Consts.NUMBER_OF_NOTES);
+//
+// var attachmentRequests = new AttachmentFaker(submissionRequests.Where(x => x.Answers.Any()).ToList())
+//     .Generate(Consts.NUMBER_OF_ATTACHMENTS);
+//
+// var quickReportRequests = new QuickReportFaker(pollingStations, observersTokens)
+//     .Generate(Consts.NUMBER_OF_QUICK_REPORTS);
+//
+// var quickReportAttachmentRequests = new QuickReportAttachmentFaker(quickReportRequests)
+//     .GenerateUnique(Consts.NUMBER_OF_QUICK_REPORTS_ATTACHMENTS);
 
-var submissionRequests = new SubmissionFaker(formIds, pollingStations, observersTokens)
-    .GenerateUnique(Consts.NUMBER_OF_SUBMISSIONS);
+var citizenReportRequests = new CitizenReportsFaker(citizenReportingForms)
+    .GenerateUnique(Consts.NUMBER_OF_CITIZEN_REPORTS);
 
-var psiRequests =
-    submissionRequests.Select(x => new PISSubmissionFaker(PSIFormData.PSIForm, x.PollingStationId, x.ObserverToken).Generate()).ToList();
+var citizenReportNoteRequests = new CitizenReportNoteFaker(citizenReportRequests.Where(x=>x.Answers.Any()).ToList())
+    .Generate(Consts.NUMBER_OF_CITIZEN_REPORTS_NOTES);
 
-var noteRequests = new NoteFaker(submissionRequests.Where(x=>x.Answers.Any()).ToList())
-    .Generate(Consts.NUMBER_OF_NOTES);
+var citizenReportAttachmentRequests = new CitizenReportAttachmentFaker(citizenReportRequests.Where(x => x.Answers.Any()).ToList())
+    .Generate(Consts.NUMBER_OF_CITIZEN_REPORTS_ATTACHMENTS);
 
-var attachmentRequests = new AttachmentFaker(submissionRequests.Where(x => x.Answers.Any()).ToList())
-    .Generate(Consts.NUMBER_OF_ATTACHMENTS);
+//
+// await AnsiConsole.Progress()
+//     .AutoRefresh(true)
+//     .AutoClear(false)
+//     .HideCompleted(false)
+//     .Columns(progressColumns)
+//     .StartAsync(async ctx =>
+//     {
+//         var progressTask = ctx.AddTask("[green]Faking submissions [/]", maxValue: Consts.NUMBER_OF_SUBMISSIONS);
+//         foreach (var submissionRequestChunk in submissionRequests.Chunk(Consts.CHUNK_SIZE))
+//         {
+//             var tasks = submissionRequestChunk.Select(sr => observerApi.SubmitForm(electionRound.Id, sr, sr.ObserverToken));
+//
+//             await Task.WhenAll(tasks);
+//             progressTask.Increment(Consts.CHUNK_SIZE);
+//         }
+//     });
+//
+// await AnsiConsole.Progress()
+//     .AutoRefresh(true)
+//     .AutoClear(false)
+//     .HideCompleted(false)
+//     .Columns(progressColumns)
+//     .StartAsync(async ctx =>
+//     {
+//         var progressTask = ctx.AddTask("[green]Faking notes[/]", maxValue: Consts.NUMBER_OF_NOTES);
+//
+//         foreach (var notesChunk in noteRequests.Chunk(Consts.CHUNK_SIZE))
+//         {
+//             var tasks = notesChunk.Select(n => observerApi.SubmitNote(electionRound.Id, n, n.ObserverToken));
+//             await Task.WhenAll(tasks);
+//             progressTask.Increment(Consts.CHUNK_SIZE);
+//         }
+//     });
+//
+// await AnsiConsole.Progress()
+//     .AutoRefresh(true)
+//     .AutoClear(false)
+//     .HideCompleted(false)
+//     .Columns(progressColumns)
+//     .StartAsync(async ctx =>
+//     {
+//         var progressTask = ctx.AddTask("[green]Faking attachments[/]", maxValue: Consts.NUMBER_OF_ATTACHMENTS);
+//
+//         foreach (var ar in attachmentRequests)
+//         {
+//             var fileName = faker.PickRandom(images);
+//             await using var fileStream = File.OpenRead(Path.Combine("Attachments", fileName));
+//             await observerApi.SubmitAttachment(electionRound.Id,
+//                 ar.PollingStationId.ToString(),
+//                 ar.Id.ToString(),
+//                 ar.FormId,
+//                 ar.QuestionId.ToString(),
+//                 new StreamPart(fileStream, fileName, "image/jpeg"),
+//                 ar.ObserverToken);
+//
+//             progressTask.Increment(1);
+//         }
+//     });
 
-var quickReportRequests = new QuickReportFaker(pollingStations, observersTokens)
-    .Generate(Consts.NUMBER_OF_QUICK_REPORTS);
-
-var quickReportAttachmentRequests = new QuickReportAttachmentFaker(quickReportRequests)
-    .GenerateUnique(Consts.NUMBER_OF_QUICK_REPORTS_ATTACHMENTS);
 
 await AnsiConsole.Progress()
     .AutoRefresh(true)
@@ -191,10 +277,10 @@ await AnsiConsole.Progress()
     .Columns(progressColumns)
     .StartAsync(async ctx =>
     {
-        var progressTask = ctx.AddTask("[green]Faking PSI submissions [/]", maxValue: Consts.NUMBER_OF_SUBMISSIONS);
-        foreach (var submissionRequestChunk in psiRequests.Chunk(Consts.CHUNK_SIZE))
+        var progressTask = ctx.AddTask("[green]Faking citizen reports [/]", maxValue: Consts.NUMBER_OF_CITIZEN_REPORTS);
+        foreach (var citizenReportBatch in citizenReportRequests.Chunk(Consts.CHUNK_SIZE))
         {
-            var tasks = submissionRequestChunk.Select(sr => observerApi.SubmitPSIForm(electionRound.Id, sr.PollingStationId, sr, sr.ObserverToken));
+            var tasks = citizenReportBatch.Select(sr => citizenReportApi.SubmitForm(electionRound.Id, sr));
 
             await Task.WhenAll(tasks);
             progressTask.Increment(Consts.CHUNK_SIZE);
@@ -208,93 +294,75 @@ await AnsiConsole.Progress()
     .Columns(progressColumns)
     .StartAsync(async ctx =>
     {
-        var progressTask = ctx.AddTask("[green]Faking submissions [/]", maxValue: Consts.NUMBER_OF_SUBMISSIONS);
-        foreach (var submissionRequestChunk in submissionRequests.Chunk(Consts.CHUNK_SIZE))
-        {
-            var tasks = submissionRequestChunk.Select(sr => observerApi.SubmitForm(electionRound.Id, sr, sr.ObserverToken));
+        var progressTask = ctx.AddTask("[green]Faking citizen reports notes[/]", maxValue: Consts.NUMBER_OF_CITIZEN_REPORTS_NOTES);
 
+        foreach (var notesChunk in citizenReportNoteRequests.Chunk(Consts.CHUNK_SIZE))
+        {
+            var tasks = notesChunk.Select(n => citizenReportApi.SubmitNote(electionRound.Id, n));
             await Task.WhenAll(tasks);
             progressTask.Increment(Consts.CHUNK_SIZE);
         }
     });
-
-await AnsiConsole.Progress()
-    .AutoRefresh(true)
-    .AutoClear(false)
-    .HideCompleted(false)
-    .Columns(progressColumns)
-    .StartAsync(async ctx =>
-    {
-        var progressTask = ctx.AddTask("[green]Faking notes[/]", maxValue: Consts.NUMBER_OF_NOTES);
-
-        foreach (var notesChunk in noteRequests.Chunk(Consts.CHUNK_SIZE))
-        {
-            var tasks = notesChunk.Select(n => observerApi.SubmitNote(electionRound.Id, n, n.ObserverToken));
-            await Task.WhenAll(tasks);
-            progressTask.Increment(Consts.CHUNK_SIZE);
-        }
-    });
-
-await AnsiConsole.Progress()
-    .AutoRefresh(true)
-    .AutoClear(false)
-    .HideCompleted(false)
-    .Columns(progressColumns)
-    .StartAsync(async ctx =>
-    {
-        var progressTask = ctx.AddTask("[green]Faking attachments[/]", maxValue: Consts.NUMBER_OF_ATTACHMENTS);
-
-        foreach (var ar in attachmentRequests)
-        {
-            var fileName = faker.PickRandom(images);
-            await using var fileStream = File.OpenRead(Path.Combine("Attachments", fileName));
-            await observerApi.SubmitAttachment(electionRound.Id,
-                ar.PollingStationId.ToString(),
-                ar.Id.ToString(),
-                ar.FormId,
-                ar.QuestionId.ToString(),
-                new StreamPart(fileStream, fileName, "image/jpeg"),
-                ar.ObserverToken);
-
-            progressTask.Increment(1);
-        }
-    });
-
-await AnsiConsole.Progress()
-    .AutoRefresh(true)
-    .AutoClear(false)
-    .HideCompleted(false)
-    .Columns(progressColumns)
-    .StartAsync(async ctx =>
-    {
-        var progressTask = ctx.AddTask("[green]Faking quick reports[/]", maxValue: Consts.NUMBER_OF_QUICK_REPORTS);
-
-        foreach (var quickReportChunk in quickReportRequests.Chunk(Consts.CHUNK_SIZE))
-        {
-            var tasks = quickReportChunk.Select(qr => observerApi.SubmitQuickReport(electionRound.Id, qr, qr.ObserverToken));
-            await Task.WhenAll(tasks);
-            progressTask.Increment(Consts.CHUNK_SIZE);
-        }
-    });
-
-await AnsiConsole.Progress()
-    .AutoRefresh(true)
-    .AutoClear(false)
-    .HideCompleted(false)
-    .Columns(progressColumns)
-    .StartAsync(async ctx =>
-    {
-        var progressTask = ctx.AddTask("[green]Faking quick report attachments[/]", maxValue: Consts.NUMBER_OF_QUICK_REPORTS_ATTACHMENTS);
-
-        foreach (var qar in quickReportAttachmentRequests)
-        {
-            var fileName = faker.PickRandom(images);
-            await using var fs = File.OpenRead(Path.Combine("Attachments", fileName));
-            await observerApi.SubmitQuickReportAttachment(electionRound.Id, qar.QuickReportId.ToString(), qar.Id.ToString(), new StreamPart(fs, fileName, "image/jpeg"), qar.ObserverToken);
-
-            progressTask.Increment(1);
-        }
-    });
+//
+// await AnsiConsole.Progress()
+//     .AutoRefresh(true)
+//     .AutoClear(false)
+//     .HideCompleted(false)
+//     .Columns(progressColumns)
+//     .StartAsync(async ctx =>
+//     {
+//         var progressTask = ctx.AddTask("[green]Faking citizen reports attachments[/]", maxValue: Consts.NUMBER_OF_CITIZEN_REPORTS_ATTACHMENTS);
+//
+//         foreach (var ar in citizenReportAttachmentRequests)
+//         {
+//             var fileName = faker.PickRandom(images);
+//             await using var fileStream = File.OpenRead(Path.Combine("Attachments", fileName));
+//             await citizenReportApi.SubmitAttachment(electionRound.Id,
+//                 ar.CitizenReportId,
+//                 ar.Id.ToString(),
+//                 ar.FormId,
+//                 ar.QuestionId.ToString(),
+//                 new StreamPart(fileStream, fileName, "image/jpeg"));
+//
+//             progressTask.Increment(1);
+//         }
+//     });
+//
+// await AnsiConsole.Progress()
+//     .AutoRefresh(true)
+//     .AutoClear(false)
+//     .HideCompleted(false)
+//     .Columns(progressColumns)
+//     .StartAsync(async ctx =>
+//     {
+//         var progressTask = ctx.AddTask("[green]Faking quick reports[/]", maxValue: Consts.NUMBER_OF_QUICK_REPORTS);
+//
+//         foreach (var quickReportChunk in quickReportRequests.Chunk(Consts.CHUNK_SIZE))
+//         {
+//             var tasks = quickReportChunk.Select(qr => observerApi.SubmitQuickReport(electionRound.Id, qr, qr.ObserverToken));
+//             await Task.WhenAll(tasks);
+//             progressTask.Increment(Consts.CHUNK_SIZE);
+//         }
+//     });
+//
+// await AnsiConsole.Progress()
+//     .AutoRefresh(true)
+//     .AutoClear(false)
+//     .HideCompleted(false)
+//     .Columns(progressColumns)
+//     .StartAsync(async ctx =>
+//     {
+//         var progressTask = ctx.AddTask("[green]Faking quick report attachments[/]", maxValue: Consts.NUMBER_OF_QUICK_REPORTS_ATTACHMENTS);
+//
+//         foreach (var qar in quickReportAttachmentRequests)
+//         {
+//             var fileName = faker.PickRandom(images);
+//             await using var fs = File.OpenRead(Path.Combine("Attachments", fileName));
+//             await observerApi.SubmitQuickReportAttachment(electionRound.Id, qar.QuickReportId.ToString(), qar.Id.ToString(), new StreamPart(fs, fileName, "image/jpeg"), qar.ObserverToken);
+//
+//             progressTask.Increment(1);
+//         }
+//     });
 
 var rule = new Rule("[red]Finished[/]");
 AnsiConsole.Write(rule);

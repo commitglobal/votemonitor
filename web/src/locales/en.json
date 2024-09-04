@@ -109,7 +109,7 @@
     "voting": "Voting",
     "closingAndCounting": "Closing And Counting",
     "other": "Other",
-    "citizenReport": "Citizen report"
+    "citizenReporting": "Citizen reporting"
   },
   "form": {
     "field.code": "Form Code",

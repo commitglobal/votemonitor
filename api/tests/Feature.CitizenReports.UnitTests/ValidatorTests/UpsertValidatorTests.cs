@@ -1,7 +1,4 @@
-﻿using Vote.Monitor.TestUtils;
-using Vote.Monitor.TestUtils.Utils;
-
-namespace Feature.CitizenReports.UnitTests.ValidatorTests;
+﻿namespace Feature.CitizenReports.UnitTests.ValidatorTests;
 
 public class UpsertValidatorTests
 {
@@ -53,13 +50,15 @@ public class UpsertValidatorTests
         // Arrange
         var request = new Upsert.Request
         {
-            Answers = [
+            Answers =
+            [
                 new MultiSelectAnswerRequest(),
                 new SingleSelectAnswerRequest(),
                 new RatingAnswerRequest(),
                 new DateAnswerRequest(),
                 new TextAnswerRequest(),
-                new NumberAnswerRequest()]
+                new NumberAnswerRequest()
+            ]
         };
 
         // Act
@@ -109,80 +108,6 @@ public class UpsertValidatorTests
 
         // Assert
         result.ShouldNotHaveAnyValidationErrors();
-    }
-
-    [Theory]
-    [MemberData(nameof(TestData.EmptyStringsTestCases), MemberType = typeof(TestData))]
-    public void Validation_ShouldPass_When_Email_Empty(string emptyString)
-    {
-        // Arrange
-        var request = new Upsert.Request
-        {
-            FormId = Guid.NewGuid(),
-            ElectionRoundId = Guid.NewGuid(),
-            CitizenReportId = Guid.NewGuid(),
-            Answers = [],
-            Email = emptyString
-        };
-
-        // Act
-        var result = _validator.TestValidate(request);
-
-        // Assert
-        result.ShouldNotHaveAnyValidationErrors();
-    }
-    
-    [Theory]
-    [MemberData(nameof(TestData.EmptyStringsTestCases), MemberType = typeof(TestData))]
-    public void Validation_ShouldPass_When_ContactInformation_Empty(string emptyString)
-    {
-        // Arrange
-        var request = new Upsert.Request
-        {
-            FormId = Guid.NewGuid(),
-            ElectionRoundId = Guid.NewGuid(),
-            CitizenReportId = Guid.NewGuid(),
-            Answers = [],
-            ContactInformation = emptyString
-        };
-
-        // Act
-        var result = _validator.TestValidate(request);
-
-        // Assert
-        result.ShouldNotHaveAnyValidationErrors();
-    }
-
-    [Fact]
-    public void Validation_ShouldFail_When_Email_Invalid()
-    {
-        // Arrange
-        var request = new Upsert.Request
-        {
-            Email = "not an email"
-        };
-
-        // Act
-        var result = _validator.TestValidate(request);
-
-        // Assert
-        result.ShouldHaveValidationErrorFor(x=>x.Email);
-    }
-    
-    [Fact]
-    public void Validation_ShouldFail_When_ContactInformation_ExceedsLimit()
-    {
-        // Arrange
-        var request = new Upsert.Request
-        {
-            ContactInformation = "a".Repeat(2049)
-        };
-
-        // Act
-        var result = _validator.TestValidate(request);
-
-        // Assert
-        result.ShouldHaveValidationErrorFor(x=>x.ContactInformation);
     }
 
     [Fact]

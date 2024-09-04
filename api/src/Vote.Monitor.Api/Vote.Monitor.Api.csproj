@@ -59,7 +59,7 @@
     <ProjectReference Include="..\Vote.Monitor.Api.Feature.Country\Vote.Monitor.Api.Feature.Country.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Api.Feature.ElectionRound\Vote.Monitor.Api.Feature.ElectionRound.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Api.Feature.Language\Vote.Monitor.Api.Feature.Language.csproj" />
-    <ProjectReference Include="..\Vote.Monitor.Api.Feature.Monitoring\Vote.Monitor.Api.Feature.Monitoring.csproj" />
+    <ProjectReference Include="..\Feature.Monitoring\Feature.Monitoring.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Api.Feature.NgoAdmin\Vote.Monitor.Api.Feature.NgoAdmin.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Api.Feature.Ngo\Vote.Monitor.Api.Feature.Ngo.csproj" />
     <ProjectReference Include="..\Feature.Notifications\Feature.Notifications.csproj" />

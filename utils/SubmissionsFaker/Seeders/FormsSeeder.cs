@@ -13,7 +13,9 @@ public class FormsSeeder
         string electionRoundId,
         ProgressTask progressTask)
     {
-        progressTask.StartTask();
+        progressTask
+            .MaxValue(2)
+            .StartTask();
 
         var form = await ngoAdminApi.CreateForm(electionRoundId, FormData.OpeningForm, ngoAdminToken.Token);
         await ngoAdminApi.UpdateForm(electionRoundId, form.Id, FormData.OpeningForm, ngoAdminToken.Token);
@@ -22,12 +24,14 @@ public class FormsSeeder
         progressTask.Increment(progressTask.MaxValue);
         progressTask.StopTask();
 
-        return [
+        return
+        [
             new UpdateFormResponse
             {
                 Id = form.Id,
                 Questions = FormData.OpeningForm.Questions
-            }
+            },
+            // ...
         ];
     }
 }

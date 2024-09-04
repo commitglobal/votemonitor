@@ -5,7 +5,6 @@ import {
   isRatingAnswer,
   isRatingQuestion, isSingleSelectAnswer, isSingleSelectQuestion, isTextAnswer
 } from '@/common/guards';
-import { usePrevSearch } from '@/common/prev-search-store';
 import { FollowUpStatus, type FunctionComponent } from '@/common/types';
 import Layout from '@/components/layout/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -19,9 +18,9 @@ import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { cn, ratingScaleToNumber } from '@/lib/utils';
 import { queryClient } from '@/main';
-import { Route, citizenReportDetailsQueryOptions } from '@/routes/responses/citizen-reports/$citizenReportId';
+import { Route } from '@/routes/responses/citizen-reports/$citizenReportId';
 import { FlagIcon } from '@heroicons/react/24/solid';
-import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { useLoaderData, useRouter } from '@tanstack/react-router';
 import { format } from 'date-fns';
 import { citizenReportKeys } from '../../hooks/citizen-reports';
@@ -35,9 +34,10 @@ export default function CitizenReportDetails(): FunctionComponent {
   const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
 
   const updateSubmissionFollowUpStatusMutation = useMutation({
+    mutationKey: citizenReportKeys.detail(currentElectionRoundId, citizenReportId),
     mutationFn: ({ electionRoundId, followUpStatus }: { electionRoundId: string; followUpStatus: FollowUpStatus }) => {
       return authApi.put<void>(
-        `/election-rounds/${electionRoundId}/citizen-report/${citizenReportId}:status`,
+        `/election-rounds/${electionRoundId}/citizen-reports/${citizenReportId}:status`,
         {
           followUpStatus
         }
@@ -50,8 +50,8 @@ export default function CitizenReportDetails(): FunctionComponent {
         description: 'Follow-up status updated',
       });
 
-      router.invalidate();
-      queryClient.invalidateQueries({ queryKey: citizenReportKeys.all(electionRoundId) });
+      void router.invalidate();
+      void queryClient.invalidateQueries();
     },
 
     onError: () => {
@@ -71,21 +71,10 @@ export default function CitizenReportDetails(): FunctionComponent {
     <Layout title={`#${citizenReport.citizenReportId}`}>
       <div className='flex flex-col gap-4'>
         <Card className='max-w-4xl'>
-          <CardContent className='pt-6 flex flex-col gap-4'>
-            <div className='flex gap-4'>
-              <div className='flex gap-2'>
-                <p>Location - L1:</p>
-                {/* {citizenReport.level1} */}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className='max-w-4xl'>
           <CardHeader>
             <CardTitle className='mb-4 flex justify-between'>
               <div>
-                {citizenReport.formCode}: {citizenReport.formType}
+                {citizenReport.formCode}: {citizenReport.formName[citizenReport.formDefaultLanguage]}
               </div>
               <Select onValueChange={handleFollowUpStatusChange} defaultValue={citizenReport.followUpStatus} value={citizenReport.followUpStatus}>
                 <SelectTrigger className="w-[180px]">
@@ -112,7 +101,7 @@ export default function CitizenReportDetails(): FunctionComponent {
               return (
                 <div key={question.id} className='flex flex-col gap-4'>
                   <p className='text-gray-700 font-medium'>
-                    {index + 1}: {question.text[citizenReport.defaultLanguage]}
+                    {index + 1}: {question.text[citizenReport.formDefaultLanguage]}
                   </p>
                   {isSingleSelectQuestion(question) && (
                     <RadioGroup
@@ -123,7 +112,7 @@ export default function CitizenReportDetails(): FunctionComponent {
                         <div key={option.id} className='flex items-center gap-2 !mt-0'>
                             <RadioGroupItem disabled value={option.id} id={option.id} />
                             <Label className='font-normal' htmlFor={option.id}>
-                              {option.text[citizenReport.defaultLanguage]}
+                              {option.text[citizenReport.formDefaultLanguage]}
                               {option.isFlagged && <> (Flagged)</>}
                             </Label>
                             {option.isFlagged && <FlagIcon className={cn('text-destructive', 'w-4')} />}
@@ -147,7 +136,7 @@ export default function CitizenReportDetails(): FunctionComponent {
                         <div key={option.id} className='flex flex-row items-start space-x-3 space-y-0'>
                           <Checkbox checked={isOptionChecked} id={option.id} disabled />
                           <Label htmlFor={option.id}>
-                            {option.text[citizenReport.defaultLanguage]}
+                            {option.text[citizenReport.formDefaultLanguage]}
                             {option.isFlagged && <> (Flagged)</>}
                             </Label>
                           {option.isFlagged && <FlagIcon className={cn('text-destructive', 'w-4')} />}

@@ -6,15 +6,18 @@ namespace Feature.CitizenReports.Models;
 
 public record CitizenReportEntryModel
 {
-    public Guid SubmissionId { get; init; }
-    public DateTime TimeSubmitted { get; init; }
-    public string FormCode { get; init; } = default!;
-    public int NumberOfQuestionsAnswered { get; init; }
-    public int NumberOfFlaggedAnswers { get; init; }
-    public int MediaFilesCount { get; init; }
-    public int NotesCount { get; init; }
+    public Guid CitizenReportId { get; set; }
+    public DateTime TimeSubmitted { get; set; }
+    public string FormCode { get; set; }
+    
+    public TranslatedString FormName { get; set; }
+    
+    public string FormDefaultLanguage { get; set; }
+    public int NumberOfQuestionsAnswered { get; set; }
+    public int NumberOfFlaggedAnswers { get; set; }
+    public int NotesCount { get; set; }
+    public int MediaFilesCount { get; set; }
 
     [JsonConverter(typeof(SmartEnumNameConverter<CitizenReportFollowUpStatus, string>))]
     public CitizenReportFollowUpStatus FollowUpStatus { get; init; }
 }
-

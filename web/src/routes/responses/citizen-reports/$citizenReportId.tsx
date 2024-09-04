@@ -15,7 +15,7 @@ export function citizenReportDetailsQueryOptions(electionRoundId: string, citize
 
       return response.data;
     },
-    enabled: !!electionRoundId
+    // enabled: !!electionRoundId
   });
 }
 

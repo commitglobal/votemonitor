@@ -3,17 +3,17 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import {
   citizenReportsDefaultColumns,
-  FilterBy,
+  FormSubmissionsViewBy,
   formSubmissionsDefaultColumns,
   quickReportsDefaultColumns,
 } from '../utils/column-visibility-options';
 
 type ColumnVisibilityStore = {
-  columns: Record<FilterBy, VisibilityState>;
-  toggleColumn: (byFilter: FilterBy, id: string, checked: boolean) => void;
+  columns: Record<FormSubmissionsViewBy, VisibilityState>;
+  toggleColumn: (byFilter: FormSubmissionsViewBy, id: string, checked: boolean) => void;
 };
 
-const useColumnVisibilityStore = create(
+const useFormSubmissionsColumnVisibilityStore = create(
   persist<ColumnVisibilityStore>(
     (set) => ({
       columns: formSubmissionsDefaultColumns,
@@ -33,13 +33,13 @@ const useColumnVisibilityStore = create(
   )
 );
 
-export const useColumnsVisibility = () => useColumnVisibilityStore((state) => state.columns);
+export const useColumnsVisibility = () => useFormSubmissionsColumnVisibilityStore((state) => state.columns);
 
-export const useByEntryColumns = () => useColumnVisibilityStore((state) => state.columns.byEntry);
-export const useByFormColumns = () => useColumnVisibilityStore((state) => state.columns.byForm);
-export const useByObserverColumns = () => useColumnVisibilityStore((state) => state.columns.byObserver);
+export const useFormSubmissionsByEntryColumns = () => useFormSubmissionsColumnVisibilityStore((state) => state.columns.byEntry);
+export const useFormSubmissionsByFormColumns = () => useFormSubmissionsColumnVisibilityStore((state) => state.columns.byForm);
+export const useFormSubmissionsByObserverColumns = () => useFormSubmissionsColumnVisibilityStore((state) => state.columns.byObserver);
 
-export const useToggleColumn = () => useColumnVisibilityStore((state) => state.toggleColumn);
+export const useToggleColumn = () => useFormSubmissionsColumnVisibilityStore((state) => state.toggleColumn);
 
 type QuickReportsColumnVisibilityStore = {
   columns: VisibilityState;

@@ -11,7 +11,7 @@ public class Endpoint(VoteMonitorContext context, IFileStorageService fileStorag
 {
     public override void Configure()
     {
-        Get("/election-rounds/{electionRoundId}/citizen-reports/forms/{formId}:aggregated-submissions");
+        Get("/api/election-rounds/{electionRoundId}/citizen-reports/forms/{formId}:aggregated-submissions");
         DontAutoTag();
         Options(x => x.WithTags("citizen-reports"));
         Policies(PolicyNames.NgoAdminsOnly);

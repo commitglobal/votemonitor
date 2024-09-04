@@ -1,6 +1,7 @@
 import type { VisibilityState } from '@tanstack/react-table';
 
-export type FilterBy = 'byEntry' | 'byObserver' | 'byForm';
+export type FormSubmissionsViewBy = 'byEntry' | 'byObserver' | 'byForm';
+export type CitizenReportsViewBy = 'byEntry' | 'byForm';
 
 export const formSubmissionsByEntryDefaultColumns: VisibilityState = {
   submissionId: false,
@@ -59,7 +60,7 @@ export const formSubmissionsByObserverColumns: VisibilityState = {
   followUpStatus: true,
 };
 
-export const formSubmissionsDefaultColumns: Record<FilterBy, VisibilityState> = {
+export const formSubmissionsDefaultColumns: Record<FormSubmissionsViewBy, VisibilityState> = {
   byEntry: formSubmissionsByEntryDefaultColumns,
   byObserver: formSubmissionsByObserverDefaultColumns,
   byForm: formSubmissionsByFormDefaultColumns
@@ -122,7 +123,7 @@ export const forObserverColumnVisibilityOptions: ColumnOption[] = [
   { id: 'mediaFilesCount', label: 'Media files', enableHiding: true },
   { id: 'followUpStatus', label: 'Follow-up status', enableHiding: true },
 ];
-export const columnVisibilityOptions: Record<FilterBy, ColumnOption[]> = {
+export const columnVisibilityOptions: Record<FormSubmissionsViewBy, ColumnOption[]> = {
   byEntry: byEntryColumnVisibilityOptions,
   byObserver: byObserverColumnVisibilityOptions,
   byForm: byFormColumnVisibilityOptions

@@ -405,10 +405,6 @@ namespace Vote.Monitor.Domain.Migrations
                         .IsRequired()
                         .HasColumnType("jsonb");
 
-                    b.Property<string>("ContactInformation")
-                        .HasMaxLength(2048)
-                        .HasColumnType("character varying(2048)");
-
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uuid");
 
@@ -417,10 +413,6 @@ namespace Vote.Monitor.Domain.Migrations
 
                     b.Property<Guid>("ElectionRoundId")
                         .HasColumnType("uuid");
-
-                    b.Property<string>("Email")
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
 
                     b.Property<string>("FollowUpStatus")
                         .IsRequired()
@@ -445,10 +437,9 @@ namespace Vote.Monitor.Domain.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FormId");
+                    b.HasIndex("ElectionRoundId");
 
-                    b.HasIndex("ElectionRoundId", "FormId")
-                        .IsUnique();
+                    b.HasIndex("FormId");
 
                     b.ToTable("CitizenReports");
                 });
@@ -3112,7 +3103,7 @@ namespace Vote.Monitor.Domain.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<bool>("AllowCitizenReporting")
+                    b.Property<bool>("CitizenReportingEnabled")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("boolean")
                         .HasDefaultValue(false);

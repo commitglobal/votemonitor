@@ -53,8 +53,7 @@ const Header = (): FunctionComponent => {
       });
 
       router.invalidate();
-      router.navigate({ to: "/" });
-
+      // router.navigate({ to: "/" });
     }
   }
 

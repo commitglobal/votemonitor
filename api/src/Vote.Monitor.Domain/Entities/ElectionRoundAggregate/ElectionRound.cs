@@ -23,7 +23,7 @@ public class ElectionRound : AuditableBaseEntity, IAggregateRoot
     public virtual IReadOnlyList<MonitoringNgo> MonitoringNgos => _monitoringNgos.ToList().AsReadOnly();
     public Guid PollingStationsVersion { get; private set; }
 
-    public bool AllowCitizenReporting { get; private set; }
+    public bool CitizenReportingEnabled { get; private set; }
     public Guid? MonitoringNgoForCitizenReportingId { get; private set; }
     public MonitoringNgo? MonitoringNgoForCitizenReporting { get; private set; }
 
@@ -106,23 +106,17 @@ public class ElectionRound : AuditableBaseEntity, IAggregateRoot
 
     public void EnableCitizenReporting(MonitoringNgo monitoringNgo)
     {
-        if (AllowCitizenReporting)
+        if (CitizenReportingEnabled)
         {
             throw new ArgumentException("Citizen reporting is already enabled");
         }
 
-        var ngoIsMonitoringElection = _monitoringNgos.Any(x => x.Id == monitoringNgo.Id);
-        if (!ngoIsMonitoringElection)
-        {
-            throw new ArgumentException("Ngo is not monitoring current election");
-        }
-
-        AllowCitizenReporting = true;
+        CitizenReportingEnabled = true;
         MonitoringNgoForCitizenReporting = monitoringNgo;
     }
 
     public void DisableCitizenReporting()
     {
-        AllowCitizenReporting = false;
+        CitizenReportingEnabled = false;
     }
 }

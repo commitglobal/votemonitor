@@ -1,6 +1,5 @@
 ﻿using Vote.Monitor.Core.Security;
 using Vote.Monitor.Domain.Entities.CitizenReportAggregate;
-using Vote.Monitor.Domain.Entities.FormAggregate;
 
 namespace Feature.CitizenReports.ListEntries;
 

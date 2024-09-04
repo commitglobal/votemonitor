@@ -9,6 +9,7 @@ import i18n from './i18n';
 import { routeTree } from './routeTree.gen.ts';
 import './styles/tailwind.css';
 import { CurrentElectionRoundContext, CurrentElectionRoundStoreProvider } from './context/election-round.store.tsx';
+import { TanStackReactQueryDevelopmentTools } from './components/utils/development-tools/TanStackReactQueryDevelopmentTools.tsx';
 
 export const queryClient = new QueryClient();
 
@@ -57,6 +58,7 @@ if (!rootElement.innerHTML) {
   root.render(
     <React.StrictMode>
       <QueryClientProvider client={queryClient}>
+        {/* <TanStackReactQueryDevelopmentTools /> */}
         <AuthContextProvider>
           <CurrentElectionRoundStoreProvider>
             <AlertDialogProvider>

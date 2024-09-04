@@ -15,8 +15,6 @@ public class CitizenReport : AuditableBaseEntity, IAggregateRoot
     public int NumberOfFlaggedAnswers { get; private set; }
     public CitizenReportFollowUpStatus FollowUpStatus { get; private set; }
     public IReadOnlyList<BaseAnswer> Answers { get; private set; } = new List<BaseAnswer>().AsReadOnly();
-    public string? Email { get; private set; }
-    public string? ContactInformation { get; private set; }
 
     private readonly List<CitizenReportNote> _notes = new();
     public virtual IReadOnlyList<CitizenReportNote> Notes => _notes.ToList().AsReadOnly();
@@ -30,9 +28,7 @@ public class CitizenReport : AuditableBaseEntity, IAggregateRoot
         Form form,
         List<BaseAnswer> answers,
         int numberOfQuestionsAnswered,
-        int numberOfFlaggedAnswers,
-        string? email,
-        string? contactInformation) : base(id)
+        int numberOfFlaggedAnswers) : base(id)
     {
         ElectionRound = electionRound;
         ElectionRoundId = electionRound.Id;
@@ -42,8 +38,6 @@ public class CitizenReport : AuditableBaseEntity, IAggregateRoot
         NumberOfQuestionsAnswered = numberOfQuestionsAnswered;
         NumberOfFlaggedAnswers = numberOfFlaggedAnswers;
         FollowUpStatus = CitizenReportFollowUpStatus.NotApplicable;
-        Email = email;
-        ContactInformation = contactInformation;
     }
 
     internal static CitizenReport Create(
@@ -52,11 +46,8 @@ public class CitizenReport : AuditableBaseEntity, IAggregateRoot
         Form form,
         List<BaseAnswer> answers,
         int numberOfQuestionAnswered,
-        int numberOfFlaggedAnswers,
-        string? email,
-        string? contactInformation) =>
-        new(id, electionRound, form, answers, numberOfQuestionAnswered, numberOfFlaggedAnswers, email,
-            contactInformation);
+        int numberOfFlaggedAnswers) =>
+        new(id, electionRound, form, answers, numberOfQuestionAnswered, numberOfFlaggedAnswers);
 
     internal void UpdateAnswers(int numberOfQuestionsAnswered, int numberOfFlaggedAnswers,
         IEnumerable<BaseAnswer> answers)

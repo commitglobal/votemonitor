@@ -1,7 +1,6 @@
 ﻿using FastEndpoints;
 using Feature.CitizenReports.Attachments.Specifications;
 using FluentAssertions;
-using Microsoft.AspNetCore.Http.HttpResults;
 using NSubstitute;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
 using Vote.Monitor.Domain.Repository;

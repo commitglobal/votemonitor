@@ -13,7 +13,7 @@ public class Endpoint(
 {
     public override void Configure()
     {
-        Get("/api/election-rounds/{electionRoundId}/citizen-reports/{reportId}");
+        Get("/api/election-rounds/{electionRoundId}/citizen-reports/{citizenReportId}");
         DontAutoTag();
         Options(x => x.WithTags("citizen-reports"));
         Policies(PolicyNames.NgoAdminsOnly);
@@ -63,18 +63,18 @@ public class Endpoint(
         var attachments = await Task.WhenAll(tasks);
         var response = new Response
         {
-            ReportId = citizenReport.Id,
+            CitizenReportId = citizenReport.Id,
+            FormId = form.Id,
+            FormCode = form.Code,
+            FormName = form.Name,
+            FormDefaultLanguage = form.DefaultLanguage,
             Answers = citizenReport.Answers.Select(AnswerMapper.ToModel).ToArray(),
             Notes = citizenReport.Notes.Select(NoteModel.FromEntity).ToArray(),
             Attachments = attachments,
-            FormId = form.Id,
             Questions = form.Questions.Select(QuestionsMapper.ToModel).ToArray(),
-
-            Email = citizenReport.Email,
-            ContactInformation = citizenReport.ContactInformation,
-
+            
             TimeSubmitted = citizenReport.LastModifiedOn ?? citizenReport.CreatedOn,
-            FollowUpStatus = citizenReport.FollowUpStatus
+            FollowUpStatus = citizenReport.FollowUpStatus,
         };
 
         return TypedResults.Ok(response);

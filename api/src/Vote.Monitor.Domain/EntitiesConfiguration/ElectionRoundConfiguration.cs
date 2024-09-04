@@ -12,7 +12,7 @@ internal class ElectionRoundConfiguration : IEntityTypeConfiguration<ElectionRou
         builder.Property(e => e.Title).HasMaxLength(256).IsRequired();
         builder.Property(e => e.EnglishTitle).HasMaxLength(256).IsRequired();
         builder.Property(e => e.Status).IsRequired();
-        builder.Property(e => e.AllowCitizenReporting).HasDefaultValue(false).IsRequired();
+        builder.Property(e => e.CitizenReportingEnabled).HasDefaultValue(false).IsRequired();
         
         
         builder

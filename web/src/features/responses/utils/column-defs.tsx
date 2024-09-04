@@ -9,9 +9,12 @@ import { format } from 'date-fns';
 import { MediaFilesCell } from '../components/MediaFilesCell/MediaFilesCell';
 
 import { DateTimeFormat } from '@/common/formats';
+import { FollowUpStatus } from '@/common/types';
 import { Button } from '@/components/ui/button';
 import type { RowData } from '@/components/ui/DataTable/DataTable';
 import type { ColumnDef } from '@tanstack/react-table';
+import { type CitizenReportByEntry } from '../models/citizen-report';
+import { SubmissionType } from '../models/common';
 import {
   type FormSubmissionByEntry,
   type FormSubmissionByForm,
@@ -20,9 +23,6 @@ import {
 import { type QuickReport } from '../models/quick-report';
 import type { QuestionExtraData } from '../types';
 import { mapQuickReportLocationType } from './helpers';
-import { FollowUpStatus } from '@/common/types';
-import { useMemo } from 'react';
-import { SubmissionType } from '../models/common';
 
 export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry & RowData>[] = [
   {
@@ -626,6 +626,83 @@ export const quickReportsColumnDefs: ColumnDef<QuickReport>[] = [
           className='hover:bg-purple-100 inline-flex h-6 w-6 rounded-full items-center justify-center'
           params={{ quickReportId: row.original.id }}
           to='/responses/quick-reports/$quickReportId'>
+          <ChevronRightIcon className='w-4 text-purple-600' />
+        </Link>
+      </div>
+    ),
+  },
+];
+
+
+export const citizenReportsByEntryColumnDefs: ColumnDef<CitizenReportByEntry & RowData>[] = [
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Time submitted' column={column} />,
+    accessorKey: 'timeSubmitted',
+    enableSorting: true,
+    enableGlobalFilter: true,
+    cell: ({ row }) => <div>{format(row.original.timeSubmitted, DateTimeFormat)}</div>,
+  },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Form code' column={column} />,
+    accessorKey: 'formCode',
+    enableSorting: true,
+    enableGlobalFilter: true,
+  },
+
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Questions answered' column={column} />,
+    accessorKey: 'numberOfQuestionsAnswered',
+    enableSorting: true,
+    enableGlobalFilter: true,
+  },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Flagged answers' column={column} />,
+    accessorKey: 'numberOfFlaggedAnswers',
+    enableSorting: true,
+    enableGlobalFilter: true,
+  },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Question notes' column={column} />,
+    accessorKey: 'notesCount',
+    enableSorting: true,
+    enableGlobalFilter: true,
+  },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Medial files' column={column} />,
+    accessorKey: 'mediaFilesCount',
+    enableSorting: true,
+    enableGlobalFilter: true,
+  },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Follow-up status' column={column} />,
+    accessorKey: 'followUpStatus',
+    enableSorting: false,
+    enableGlobalFilter: true,
+    cell: ({ row }) => (
+      <Badge
+        className={cn({
+          'text-slate-700 bg-slate-200': row.original.followUpStatus === FollowUpStatus.NotApplicable,
+          'text-red-600 bg-red-200': row.original.followUpStatus === FollowUpStatus.NeedsFollowUp,
+          'text-green-600 bg-green-200': row.original.followUpStatus === FollowUpStatus.Resolved,
+        })}>
+        {row.original.followUpStatus === FollowUpStatus.NotApplicable
+          ? 'Not Applicable'
+          : row.original.followUpStatus === FollowUpStatus.NeedsFollowUp
+            ? 'Needs follow-up'
+            : 'Resolved'}
+      </Badge>
+    ),
+  },
+  {
+    header: '',
+    accessorKey: 'action',
+    enableSorting: false,
+    cell: ({ row }) => (
+      <div className='text-right'>
+        <Link
+          className='hover:bg-purple-100 inline-flex h-6 w-6 rounded-full items-center justify-center'
+          params={{ citizenReportId: row.original.id }}
+          to='/responses/citizen-reports/$citizenReportId'>
           <ChevronRightIcon className='w-4 text-purple-600' />
         </Link>
       </div>

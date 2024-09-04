@@ -48,7 +48,7 @@ public class Endpoint(VoteMonitorContext context, IMemoryCache cache)
                 .Where(x => x.Status == FormStatus.Published)
                 .Where(x => x.ElectionRoundId == req.ElectionRoundId)
                 .Where(x => x.MonitoringNgoId == monitoringNgo.MonitoringNgoForCitizenReportingId)
-                .Where(x => x.FormType == FormType.CitizenReport)
+                .Where(x => x.FormType == FormType.CitizenReporting)
                 .OrderBy(x => x.Code)
                 .ToListAsync(cancellationToken: ct);
 

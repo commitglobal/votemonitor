@@ -7,7 +7,7 @@ import type {
   SingleSelectQuestion,
   TextQuestion,
 } from '@/common/types';
-import type { Attachment, Note } from './form-submission';
+import { Attachment, Note } from './common';
 
 export interface Responder {
   responderId: string;

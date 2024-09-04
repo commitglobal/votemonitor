@@ -9,8 +9,7 @@ import type {
   SingleSelectAnswer,
   TextAnswer,
 } from '@/common/types';
-import { Attachment } from './quick-report';
-import { Note } from './common';
+import { Attachment, Note } from './common';
 
 export interface FormSubmissionByEntry {
   email: string;

@@ -209,12 +209,11 @@ public class Form : AuditableBaseEntity, IAggregateRoot
             numberOfQuestionAnswered, numberOfFlaggedAnswers);
     }
 
-    public CitizenReport CreateCitizenReport(Guid citizenReportId, 
-        List<BaseAnswer>? answers,string? email, string? contactInformation)
+    public CitizenReport CreateCitizenReport(Guid citizenReportId, List<BaseAnswer>? answers)
     {
         if (answers == null)
         {
-            return CitizenReport.Create(citizenReportId, ElectionRound, this, [], 0, 0, email, contactInformation);
+            return CitizenReport.Create(citizenReportId, ElectionRound, this, [], 0, 0);
         }
 
         var numberOfQuestionAnswered = CountNumberOfQuestionsAnswered(answers);
@@ -227,7 +226,7 @@ public class Form : AuditableBaseEntity, IAggregateRoot
             throw new ValidationException(validationResult.Errors);
         }
 
-        return CitizenReport.Create(citizenReportId, ElectionRound, this, answers, numberOfQuestionAnswered, numberOfFlaggedAnswers, email, contactInformation);
+        return CitizenReport.Create(citizenReportId, ElectionRound, this, answers, numberOfQuestionAnswered, numberOfFlaggedAnswers);
     }
 
     private int CountNumberOfFlaggedAnswers(List<BaseAnswer> answers)

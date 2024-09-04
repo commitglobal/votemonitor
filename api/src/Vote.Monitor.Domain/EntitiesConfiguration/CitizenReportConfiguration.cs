@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Vote.Monitor.Domain.Constants;
 using Vote.Monitor.Domain.Entities.CitizenReportAggregate;
 using Vote.Monitor.Domain.ValueComparers;
 using Vote.Monitor.Domain.ValueConverters;
@@ -11,14 +10,7 @@ public class CitizenReportConfiguration : IEntityTypeConfiguration<CitizenReport
     public void Configure(EntityTypeBuilder<CitizenReport> builder)
     {
         builder.HasKey(x => x.Id);
-        builder.HasIndex(x => new
-        {
-            x.ElectionRoundId,
-            x.FormId
-        }).IsUnique();
-
-        builder.Property(x => x.Email).IsRequired(false).HasMaxLength(256);
-        builder.Property(x => x.ContactInformation).IsRequired(false).HasMaxLength(2048);
+        
         builder.Property(x => x.NumberOfFlaggedAnswers).IsRequired();
         builder.Property(x => x.NumberOfQuestionsAnswered).IsRequired();
         builder.Property(x => x.FollowUpStatus)

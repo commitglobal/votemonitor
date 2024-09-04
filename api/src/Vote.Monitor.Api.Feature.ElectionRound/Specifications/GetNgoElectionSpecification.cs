@@ -21,7 +21,7 @@ public sealed class GetNgoElectionSpecification : Specification<MonitoringNgo, N
             StartDate = x.ElectionRound.StartDate,
             Country = x.ElectionRound.Country.FullName,
             CountryId = x.ElectionRound.CountryId,
-            IsMonitoringNgoForCitizenReporting = x.ElectionRound.AllowCitizenReporting
+            IsMonitoringNgoForCitizenReporting = x.ElectionRound.CitizenReportingEnabled
                 ? x.ElectionRound.MonitoringNgoForCitizenReporting.NgoId == ngoId
                 : false
         });

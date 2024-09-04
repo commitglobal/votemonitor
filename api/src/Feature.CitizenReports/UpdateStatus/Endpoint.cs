@@ -7,7 +7,7 @@ public class Endpoint(VoteMonitorContext context) : Endpoint<Request, Results<No
 {
     public override void Configure()
     {
-        Put("/api/citizen-reports/{electionRoundId}/submission/{id}:status");
+        Put("/api/election-rounds/{electionRoundId}/citizen-reports/{id}:status");
         DontAutoTag();
         Options(x => x.WithTags("citizen-reports"));
         Summary(s =>
