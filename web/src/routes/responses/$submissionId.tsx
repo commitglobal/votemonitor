@@ -8,7 +8,7 @@ import { createFileRoute } from '@tanstack/react-router';
 
 export function formSubmissionDetailsQueryOptions(electionRoundId: string, submissionId: string) {
   return queryOptions({
-    queryKey: formSubmissionsByEntryKeys.detail(electionRoundId, submissionId),
+    queryKey: formSubmissionsByEntryKeys.detail(submissionId),
     queryFn: async () => {
       const response = await authApi.get<FormSubmission>(
         `/election-rounds/${electionRoundId}/form-submissions/${submissionId}`

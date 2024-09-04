@@ -272,9 +272,9 @@ export function isQueryFiltered(queryParams: Record<string, string>): boolean {
   );
 }
 
-export const isNotNilOrWhitespace = (input?: string) => (input?.trim()?.length || 0) > 0;
+export const isNotNilOrWhitespace = (input?: string | null) => (input?.trim()?.length || 0) > 0;
 
-export const isNilOrWhitespace = (input?: string) => (input?.trim()?.length || 0) === 0;
+export const isNilOrWhitespace = (input?: string | null) => (input?.trim()?.length || 0) === 0;
 
 
 export function takewhile<T>(arr: T[], predicate: (value: T) => boolean): T[] {

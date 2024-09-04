@@ -64,8 +64,8 @@ export interface FormSubmission
     'numberOfFlaggedAnswers' | 'numberOfQuestionAnswered' | 'mediaFilesCount' | 'notesCount'
   > {
   answers: (NumberAnswer | TextAnswer | DateAnswer | RatingAnswer | SingleSelectAnswer | MultiSelectAnswer)[];
-  attachments: Attachment[];
   needsFollowup?: boolean;
   notes: Note[];
+  attachments: Attachment[];
   questions: BaseQuestion[];
 }

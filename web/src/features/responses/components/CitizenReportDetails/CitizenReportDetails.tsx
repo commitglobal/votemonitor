@@ -1,37 +1,24 @@
 import { authApi } from '@/common/auth-api';
-import { DateTimeFormat } from '@/common/formats';
-import {
-  isDateAnswer, isMultiSelectAnswer, isMultiSelectQuestion, isNumberAnswer,
-  isRatingAnswer,
-  isRatingQuestion, isSingleSelectAnswer, isSingleSelectQuestion, isTextAnswer
-} from '@/common/guards';
 import { FollowUpStatus, type FunctionComponent } from '@/common/types';
 import Layout from '@/components/layout/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Label } from '@/components/ui/label';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { RatingGroup } from '@/components/ui/ratings';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
-import { cn, ratingScaleToNumber } from '@/lib/utils';
 import { queryClient } from '@/main';
-import { Route } from '@/routes/responses/citizen-reports/$citizenReportId';
-import { FlagIcon } from '@heroicons/react/24/solid';
-import { useMutation } from '@tanstack/react-query';
-import { useLoaderData, useRouter } from '@tanstack/react-router';
-import { format } from 'date-fns';
+import { citizenReportDetailsQueryOptions, Route } from '@/routes/responses/citizen-reports/$citizenReportId';
+import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
+import { useRouter } from '@tanstack/react-router';
 import { citizenReportKeys } from '../../hooks/citizen-reports';
-import { ResponseExtraDataSection } from '../ReponseExtraDataSection/ResponseExtraDataSection';
+import PreviewAnswer from '../PreviewAnswer/PreviewAnswer';
 
 export default function CitizenReportDetails(): FunctionComponent {
   const { citizenReportId } = Route.useParams();
-  const citizenReport = useLoaderData({ from: '/responses/citizen-reports/$citizenReportId' });
-  const router = useRouter();
-
   const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
+  const { data: citizenReport } = useSuspenseQuery(citizenReportDetailsQueryOptions(currentElectionRoundId, citizenReportId));
+
+  const router = useRouter();
 
   const updateSubmissionFollowUpStatusMutation = useMutation({
     mutationKey: citizenReportKeys.detail(currentElectionRoundId, citizenReportId),
@@ -44,14 +31,14 @@ export default function CitizenReportDetails(): FunctionComponent {
       );
     },
 
-    onSuccess: (_, { electionRoundId }) => {
+    onSuccess: async (_, { electionRoundId }) => {
       toast({
         title: 'Success',
         description: 'Follow-up status updated',
       });
 
-      void router.invalidate();
-      void queryClient.invalidateQueries();
+      await queryClient.invalidateQueries({ queryKey: citizenReportKeys.all(electionRoundId) });
+      router.invalidate();
     },
 
     onError: () => {
@@ -98,78 +85,13 @@ export default function CitizenReportDetails(): FunctionComponent {
               const notes = citizenReport.notes.filter(({ questionId }) => questionId === question.id);
               const attachments = citizenReport.attachments.filter(({ questionId }) => questionId === question.id);
 
-              return (
-                <div key={question.id} className='flex flex-col gap-4'>
-                  <p className='text-gray-700 font-medium'>
-                    {index + 1}: {question.text[citizenReport.formDefaultLanguage]}
-                  </p>
-                  {isSingleSelectQuestion(question) && (
-                    <RadioGroup
-                      defaultChecked
-                      defaultValue={answer && isSingleSelectAnswer(answer) ? answer.selection?.optionId : ''}
-                      className='flex gap-8 items-center'>
-                      {question.options.map((option) => (
-                        <div key={option.id} className='flex items-center gap-2 !mt-0'>
-                            <RadioGroupItem disabled value={option.id} id={option.id} />
-                            <Label className='font-normal' htmlFor={option.id}>
-                              {option.text[citizenReport.formDefaultLanguage]}
-                              {option.isFlagged && <> (Flagged)</>}
-                            </Label>
-                            {option.isFlagged && <FlagIcon className={cn('text-destructive', 'w-4')} />}
-                          {option.isFreeText &&
-                            answer &&
-                            isSingleSelectAnswer(answer) &&
-                            answer.selection?.optionId === option.id && <p>{answer.selection?.text ?? '-'}</p>}
-                        </div>
-                      ))}
-                    </RadioGroup>
-                  )}
-
-                  {isMultiSelectQuestion(question) &&
-                    question.options.map((option) => {
-                      const isOptionChecked =
-                        answer &&
-                        isMultiSelectAnswer(answer) &&
-                        !!answer.selection?.find((selection) => selection.optionId === option.id);
-
-                      return (
-                        <div key={option.id} className='flex flex-row items-start space-x-3 space-y-0'>
-                          <Checkbox checked={isOptionChecked} id={option.id} disabled />
-                          <Label htmlFor={option.id}>
-                            {option.text[citizenReport.formDefaultLanguage]}
-                            {option.isFlagged && <> (Flagged)</>}
-                            </Label>
-                          {option.isFlagged && <FlagIcon className={cn('text-destructive', 'w-4')} />}
-
-                        </div>
-                      );
-                    })}
-
-                  {isRatingQuestion(question) && (
-                    <RatingGroup
-                      className='max-w-fit'
-                      scale={ratingScaleToNumber(question.scale)}
-                      defaultValue={answer && isRatingAnswer(answer) ? answer.value?.toString() : undefined}
-                      disabled
-                    />
-                  )}
-
-                  {answer ? (
-                    <>
-                      {isDateAnswer(answer) && <p>{answer.date ? format(answer.date, DateTimeFormat) : '-'}</p>}
-
-                      {isNumberAnswer(answer) && <p>{answer.value ?? '-'}</p>}
-
-                      {isTextAnswer(answer) && <p>{answer.text ?? '-'}</p>}
-                    </>
-                  ) : (
-                    '-'
-                  )}
-                  {(attachments.length > 0 || notes.length > 0) && (
-                    <ResponseExtraDataSection attachments={attachments} notes={notes} aggregateDisplay={false} />
-                  )}
-                </div>
-              );
+              return <PreviewAnswer
+              key={index}
+              question={question}
+              answer={answer}
+              notes={notes}
+              attachments={attachments}
+              defaultLanguage={citizenReport.formDefaultLanguage} />
             })}
           </CardContent>
         </Card>

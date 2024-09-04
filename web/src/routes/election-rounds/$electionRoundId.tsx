@@ -1,9 +1,8 @@
 
 import { authApi } from '@/common/auth-api';
 import { ElectionRound } from '@/features/election-round/models/ElectionRound';
-import { queryOptions } from '@tanstack/react-query';
+import { queryOptions, useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
-
 
 export const electionRoundQueryOptions = (electionRoundId: string) => {
   return queryOptions({
@@ -28,10 +27,11 @@ export const Route = createFileRoute('/election-rounds/$electionRoundId')({
 });
 
 function ElectionRoundDetails() {
-  const ngo = Route.useLoaderData();
+  const { electionRoundId } = Route.useParams();
+  const { data: electionRound } = useSuspenseQuery(electionRoundQueryOptions(electionRoundId));
 
   return <div className="p-2">
     Hello from election round!
-    <pre> {JSON.stringify(ngo, null, 2)}</pre>
+    <pre> {JSON.stringify(electionRound, null, 2)}</pre>
   </div>
 }

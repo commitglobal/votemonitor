@@ -150,7 +150,7 @@ export type NumberAnswer = z.infer<typeof NumberAnswerSchema>;
 
 export const DateAnswerSchema = BaseAnswerSchema.extend({
   $answerType: z.literal(AnswerType.DateAnswerType),
-  date: z.date().optional(),
+  date: z.string().datetime({ offset: true } ).optional(),
 });
 export type DateAnswer = z.infer<typeof DateAnswerSchema>;
 

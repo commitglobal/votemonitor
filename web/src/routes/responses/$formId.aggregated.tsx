@@ -8,7 +8,7 @@ import { createFileRoute } from '@tanstack/react-router';
 
 export function formAggregatedDetailsQueryOptions(electionRoundId: string, formId: string) {
   return queryOptions({
-    queryKey: formSubmissionsAggregatedKeys.detail(electionRoundId, formId),
+    queryKey: formSubmissionsAggregatedKeys.detail(electionRoundId),
     queryFn: async () => {
 
       const response = await authApi.get<FormAggregated>(

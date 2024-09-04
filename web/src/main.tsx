@@ -10,6 +10,7 @@ import { routeTree } from './routeTree.gen.ts';
 import './styles/tailwind.css';
 import { CurrentElectionRoundContext, CurrentElectionRoundStoreProvider } from './context/election-round.store.tsx';
 import { TanStackReactQueryDevelopmentTools } from './components/utils/development-tools/TanStackReactQueryDevelopmentTools.tsx';
+import { TanStackRouterDevelopmentTools } from './components/utils/development-tools/TanStackRouterDevelopmentTools.tsx';
 
 export const queryClient = new QueryClient();
 
@@ -58,7 +59,8 @@ if (!rootElement.innerHTML) {
   root.render(
     <React.StrictMode>
       <QueryClientProvider client={queryClient}>
-        {/* <TanStackReactQueryDevelopmentTools /> */}
+        <TanStackReactQueryDevelopmentTools />
+        <TanStackRouterDevelopmentTools position='bottom-left' router={router} />
         <AuthContextProvider>
           <CurrentElectionRoundStoreProvider>
             <AlertDialogProvider>
