@@ -14,17 +14,17 @@ import { FilterBadge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { ExportDataButton } from '@/features/responses/components/ExportDataButton/ExportDataButton';
+import { ExportedDataType } from '@/features/responses/models/data-export';
 import { FunnelIcon } from '@heroicons/react/24/outline';
 import { useNavigate, useSearch } from '@tanstack/react-router';
 import { useDebounce } from '@uidotdev/usehooks';
 import { useCallback, useMemo, useState, type ReactElement } from 'react';
-import { ExportDataButton } from '@/features/responses/components/ExportDataButton/ExportDataButton';
-import { ExportedDataType } from '@/features/responses/models/data-export';
 
-
-function usePollingStations(queryParams: DataTableParameters): UseQueryResult<PageResponse<PollingStation>, Error> {
+function usePollingStations(electionRoundId: string, queryParams: DataTableParameters): UseQueryResult<PageResponse<PollingStation>, Error> {
   return useQuery({
-    queryKey: ['pollingStations', queryParams],
+    queryKey: ['pollingStations', electionRoundId, queryParams],
     queryFn: async () => {
       const params = {
         ...queryParams.otherParams,
@@ -34,8 +34,6 @@ function usePollingStations(queryParams: DataTableParameters): UseQueryResult<Pa
         SortOrder: queryParams.sortOrder,
       };
       const searchParams = buildURLSearchParams(params);
-
-      const electionRoundId: string | null = localStorage.getItem('electionRoundId');
 
       const response = await authApi.get<PageResponse<PollingStation>>(`/election-rounds/${electionRoundId}/polling-stations:list`,
         {
@@ -49,6 +47,7 @@ function usePollingStations(queryParams: DataTableParameters): UseQueryResult<Pa
 
       return response.data;
     },
+    enabled: !!electionRoundId
   });
 }
 
@@ -185,7 +184,6 @@ export default function PollingStationsDashboard(): ReactElement {
 
   const [isFiltering, setFiltering] = useState(Object.keys(search).some(k => k === 'level1Filter' || k === 'level2Filter' || k === 'level3Filter' || k === 'level4Filter' || k === 'level5Filter'));
 
-
   const changeIsFiltering = () => {
     setFiltering((prev) => {
       return !prev;
@@ -204,6 +202,7 @@ export default function PollingStationsDashboard(): ReactElement {
 
 
   const debouncedSearch = useDebounce(search, 300);
+    const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
 
   const queryParams = useMemo(() => {
     const params = [
@@ -279,7 +278,7 @@ export default function PollingStationsDashboard(): ReactElement {
 
       </CardHeader>
       <CardContent className='flex flex-col gap-6 items-baseline'>
-        <QueryParamsDataTable columns={pollingStationColDefs} useQuery={usePollingStations} queryParams={queryParams} />
+        <QueryParamsDataTable columns={pollingStationColDefs} useQuery={(params) => usePollingStations(currentElectionRoundId, params)} queryParams={queryParams} />
       </CardContent>
     </Card>
   );

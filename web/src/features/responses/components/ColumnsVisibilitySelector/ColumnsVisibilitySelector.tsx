@@ -9,10 +9,10 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useColumnsVisibility, useToggleColumn } from '../../store/column-visibility';
-import { columnVisibilityOptions, type FilterBy } from '../../utils/column-visibility-options';
+import { columnVisibilityOptions, type FormSubmissionsViewBy } from '../../utils/column-visibility-options';
 
 type ColumnVisibilitySelectorProps = {
-  byFilter: FilterBy;
+  byFilter: FormSubmissionsViewBy;
 };
 
 export function ColumnsVisibilitySelector({ byFilter }: ColumnVisibilitySelectorProps): FunctionComponent {

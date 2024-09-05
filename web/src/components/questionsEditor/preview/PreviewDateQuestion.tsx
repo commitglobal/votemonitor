@@ -1,12 +1,12 @@
 import { AnswerType, DateAnswer } from '@/common/types';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
-import { format } from 'date-fns';
+import { format, formatISO } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
 import { Button } from '../../ui/button';
 import { Calendar } from '../../ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '../../ui/popover';
-import { useFormAnswersStore } from '../AnswersContext';
+import { useFormAnswersStore } from '../answers-store';
 
 export interface PreviewDateQuestionProps {
   questionId: string;
@@ -15,15 +15,15 @@ export interface PreviewDateQuestionProps {
   code: string;
 }
 
-function PreviewDateQuestion({code, questionId, text, helptext }: PreviewDateQuestionProps) {
+function PreviewDateQuestion({ code, questionId, text, helptext }: PreviewDateQuestionProps) {
   const { setAnswer, getAnswer } = useFormAnswersStore();
   const answer = getAnswer(questionId) as DateAnswer;
 
   return (
     <div className="grid gap-6">
       <div className="grid gap-2">
-        <Label htmlFor={`${questionId}-value`} className='font-semibold'>{code + ' - '}{text}</Label>
-        <Label htmlFor={`${questionId}-value`} className='text-sm italic'>{helptext}</Label>
+        <Label htmlFor={`${questionId}-value`} className='font-semibold break-all'>{code + ' - '}{text}</Label>
+        <Label htmlFor={`${questionId}-value`} className='text-sm italic break-all'>{helptext}</Label>
 
         <Popover>
           <PopoverTrigger asChild>
@@ -38,9 +38,9 @@ function PreviewDateQuestion({code, questionId, text, helptext }: PreviewDateQue
           <PopoverContent className='w-auto p-0' align='start'>
             <Calendar
               mode='single'
-              selected={answer?.date ? answer?.date : undefined}
+              selected={answer?.date ? new Date(answer?.date) : undefined}
               onSelect={(date) => {
-                const dateAnswer: DateAnswer = { $answerType: AnswerType.DateAnswerType, date, questionId };
+                const dateAnswer: DateAnswer = { $answerType: AnswerType.DateAnswerType, date: formatISO(date!, { representation: 'complete' }), questionId };
                 setAnswer(dateAnswer);
               }}
               initialFocus

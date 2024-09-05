@@ -1,10 +1,10 @@
 import type { FunctionComponent } from '@/common/types';
+import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { FilmIcon, MusicalNoteIcon, PaperClipIcon, PhotoIcon } from '@heroicons/react/24/outline';
 import { useMemo } from 'react';
 import ReactPlayer from 'react-player';
-import { Attachment } from '../../models/form-submission';
-import { Button } from '@/components/ui/button';
+import { Attachment } from '../../models/common';
 
 export interface MediaFilesCellProps {
   attachment: Attachment;

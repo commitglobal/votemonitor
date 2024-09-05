@@ -1,48 +1,37 @@
+import { EditFormType } from '@/features/forms/components/EditForm/EditForm';
 import { useEffect, useState } from 'react';
+import { useFormContext, useWatch } from 'react-hook-form';
 import QuestionsEdit from './edit/QuestionsEdit';
 import PreviewQuestion from './preview/PreviewQuestion';
-import { EditFormType } from '@/features/forms/components/EditForm/EditForm';
-import { useFormContext, useWatch } from 'react-hook-form';
-import { EditQuestionType } from '@/features/forms/types';
 
 function FormQuestionsEditor() {
   const [activeQuestionId, setActiveQuestionId] = useState<string | undefined>();
-  const [question, setQuestion] = useState<EditQuestionType | undefined>();
   const [questionIndex, setQuestionIndex] = useState<number>(-1);
   const { control } = useFormContext<EditFormType>();
+
   const questions = useWatch({
     control,
     name: 'questions',
     defaultValue: []
-  })
-
-  const languageCode = useWatch({
-    control,
-    name: 'languageCode'
-  })
+  });
 
   useEffect(() => {
-    setQuestion(questions.find(q=>q.questionId === activeQuestionId));
-    setQuestionIndex(questions.findIndex(q=>q.questionId === activeQuestionId));
-  }, [activeQuestionId]);
-
+    setQuestionIndex(questions.findIndex(q => q.questionId === activeQuestionId));
+  }, [questions, activeQuestionId]);
 
   return (
     <div className='relative z-0 flex flex-1 gap-6 overflow-hidden h-[calc(100%-100px)]'>
-      <main className='h-full flex-1 overflow-y-auto bg-slate-50'>
+      <main className='flex-1 h-full overflow-y-auto bg-slate-50'>
         <QuestionsEdit
           activeQuestionId={activeQuestionId}
           setActiveQuestionId={setActiveQuestionId}
         />
       </main>
-      <aside className='flex-1 items-center justify-start  border-slate-100 md:flex md:flex-col rounded-lg'>
+      <aside className='items-center justify-start flex-1 rounded-lg border-slate-100 md:flex md:flex-col'>
         <PreviewQuestion
           activeQuestionId={activeQuestionId}
           setActiveQuestionId={setActiveQuestionId}
-          languageCode={languageCode}
-          question={question}
           questionIndex={questionIndex}
-          questions={questions}
         />
       </aside>
     </div>

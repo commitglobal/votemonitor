@@ -2,8 +2,8 @@ import { AnswerType, type FunctionComponent, type RatingAnswer, type RatingScale
 import { Label } from '@/components/ui/label';
 import { RatingGroup } from '@/components/ui/ratings';
 import { ratingScaleToNumber } from '@/lib/utils';
-import { useFormAnswersStore } from '../AnswersContext';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { useFormAnswersStore } from '../answers-store';
 
 export interface PreviewRatingQuestionProps {
   questionId: string;
@@ -27,8 +27,8 @@ function PreviewRatingQuestion({ code, questionId, text, helptext, scale, lowerL
   return (
     <div className="grid gap-6">
       <div className="grid gap-2">
-        <Label htmlFor={`${questionId}-value`} className='font-semibold'>{code + ' - '}{text}</Label>
-        <Label htmlFor={`${questionId}-value`} className='text-sm italic'>{helptext}</Label>
+        <Label htmlFor={`${questionId}-value`} className='font-semibold break-all'>{code + ' - '}{text}</Label>
+        <Label htmlFor={`${questionId}-value`} className='text-sm italic break-all'>{helptext}</Label>
         <RatingGroup
           scale={ratingScaleToNumber(scale)}
           id={`${questionId}-value`}

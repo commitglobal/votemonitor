@@ -17,7 +17,11 @@ public sealed class GetElectionRoundByIdSpecification : SingleResultSpecificatio
         {
             Id = electionRound.Id,
             CountryId = electionRound.CountryId,
-            Country = electionRound.Country.FullName,
+            CountryIso2 = electionRound.Country.Iso2,
+            CountryIso3 = electionRound.Country.Iso3,
+            CountryName = electionRound.Country.Name,
+            CountryFullName = electionRound.Country.FullName,
+            CountryNumericCode = electionRound.Country.NumericCode,
             Title = electionRound.Title,
             EnglishTitle = electionRound.EnglishTitle,
             Status = electionRound.Status,

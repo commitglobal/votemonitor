@@ -33,3 +33,11 @@ export const QuickReportsSearchParamsSchema = z.object({
 });
 
 export type QuickReportsSearchParams = z.infer<typeof QuickReportsSearchParamsSchema>;
+
+
+
+export const CitizenReportsSearchParamsSchema = z.object({
+  followUpStatus: z.enum([FollowUpStatus.NeedsFollowUp, FollowUpStatus.Resolved, FollowUpStatus.NotApplicable]).optional(),
+});
+
+export type CitizenReportsSearchParams = z.infer<typeof CitizenReportsSearchParamsSchema>;

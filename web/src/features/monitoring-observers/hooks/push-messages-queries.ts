@@ -5,31 +5,30 @@ import { type UseQueryResult, useQuery } from "@tanstack/react-query";
 import type { TargetedMonitoringObserver } from "../models/targeted-monitoring-observer";
 import type { PushMessageModel } from "../models/push-message";
 
-const STALE_TIME = 1000 * 5; // five minutes
+const STALE_TIME = 1000 * 60 * 5; // five minutes
 
 export const pushMessagesKeys = {
-  all: ['push-messages'] as const,
-  lists: () => [...pushMessagesKeys.all, 'list'] as const,
-  list: (params: DataTableParameters) => [...pushMessagesKeys.lists(), { ...params }] as const,
-  details: () => [...pushMessagesKeys.all, 'detail'] as const,
-  detail: (id: string) => [...pushMessagesKeys.details(), id] as const,
+  all: (electionRoundId: string) => ['push-messages', electionRoundId] as const,
+  lists: (electionRoundId: string) => [...pushMessagesKeys.all(electionRoundId), 'list'] as const,
+  list: (electionRoundId: string, params: DataTableParameters) => [...pushMessagesKeys.lists(electionRoundId), { ...params }] as const,
+  details: (electionRoundId: string) => [...pushMessagesKeys.all(electionRoundId), 'detail'] as const,
+  detail: (electionRoundId: string, id: string) => [...pushMessagesKeys.details(electionRoundId), id] as const,
 }
 
 export const targetedObserversKeys = {
-  all: ['pm-targeted-monitoring-observers'] as const,
-  lists: () => [...pushMessagesKeys.all, 'list'] as const,
-  list: (params: DataTableParameters) => [...pushMessagesKeys.lists(), { ...params }] as const,
+  all: (electionRoundId: string) => ['pm-targeted-monitoring-observers', electionRoundId] as const,
+  lists: (electionRoundId: string) => [...targetedObserversKeys.all(electionRoundId), 'list'] as const,
+  list: (electionRoundId: string, params: DataTableParameters) => [...targetedObserversKeys.lists(electionRoundId), { ...params }] as const,
 }
 
 type PushMessageResponse = PageResponse<PushMessageModel>;
 
 type UsePushMessagesResult = UseQueryResult<PushMessageResponse, Error>;
 
-export function usePushMessages(queryParams: DataTableParameters): UsePushMessagesResult {
+export function usePushMessages(electionRoundId: string, queryParams: DataTableParameters): UsePushMessagesResult {
   return useQuery({
-    queryKey: pushMessagesKeys.list(queryParams),
+    queryKey: pushMessagesKeys.list(electionRoundId, queryParams),
     queryFn: async () => {
-      const electionRoundId = localStorage.getItem('electionRoundId');
 
       const params = {
         ...queryParams.otherParams,
@@ -53,6 +52,7 @@ export function usePushMessages(queryParams: DataTableParameters): UsePushMessag
       };
     },
     staleTime: STALE_TIME,
+    enabled: !!electionRoundId
   });
 }
 
@@ -61,11 +61,10 @@ type ListTargetedMonitoringObserverResponse = PageResponse<TargetedMonitoringObs
 type UseTargetedMonitoringObserversResult = UseQueryResult<ListTargetedMonitoringObserverResponse, Error>;
 
 
-export const useTargetedMonitoringObservers = (queryParams: DataTableParameters): UseTargetedMonitoringObserversResult => {
+export const useTargetedMonitoringObservers = (electionRoundId: string, queryParams: DataTableParameters): UseTargetedMonitoringObserversResult => {
   return useQuery({
-    queryKey: [targetedObserversKeys.list(queryParams)],
+    queryKey: [targetedObserversKeys.list(electionRoundId, queryParams)],
     queryFn: async () => {
-      const electionRoundId: string | null = localStorage.getItem('electionRoundId');
 
       const params = {
         ...queryParams.otherParams,
@@ -89,5 +88,6 @@ export const useTargetedMonitoringObservers = (queryParams: DataTableParameters)
 
       return response.data;
     },
+    enabled: !!electionRoundId
   });
 };

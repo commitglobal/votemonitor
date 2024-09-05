@@ -1,15 +1,23 @@
-import { Link, useLoaderData, useRouter } from '@tanstack/react-router';
 import type { FunctionComponent } from '@/common/types';
 import Layout from '@/components/layout/Layout';
-import { AggregateCard } from '../AggregateCard/AggregateCard';
-import type { Responder } from '../../models/form-aggregated';
 import { NavigateBack } from '@/components/NavigateBack/NavigateBack';
+import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { mapFormType } from '@/lib/utils';
+import { formAggregatedDetailsQueryOptions, Route } from '@/routes/responses/$formId.aggregated';
+import { useSuspenseQuery } from '@tanstack/react-query';
+import { Link, useRouter } from '@tanstack/react-router';
+import type { Responder } from '../../models/form-aggregated';
+import { AggregateCard } from '../AggregateCard/AggregateCard';
 
 export default function FormAggregatedDetails(): FunctionComponent {
   const { state } = useRouter();
-  const formSubmission = useLoaderData({ from: '/responses/$formId/aggregated' });
+
+  const { formId } = Route.useParams()
+  const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
+  const { data: formSubmission } = useSuspenseQuery(formAggregatedDetailsQueryOptions(currentElectionRoundId, formId));
+
   const { submissionsAggregate } = formSubmission;
-  const { defaultLanguage, formCode, formType, aggregates, formId, responders } = submissionsAggregate;
+  const { defaultLanguage, formCode, formType, aggregates, responders } = submissionsAggregate;
 
   const groupedAttachments = responders.reduce<Record<string, Responder>>(
     (grouped, responder) => ({
@@ -30,7 +38,7 @@ export default function FormAggregatedDetails(): FunctionComponent {
           <Link className='crumb'>{formId}</Link>
         </div>
       }
-      title={`${formCode} - ${formType.name}`}>
+      title={`${formCode} - ${mapFormType(formType)}`}>
       <div className='flex flex-col gap-10'>
         {Object.values(aggregates).map((aggregate) => {
           return (

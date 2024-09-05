@@ -21,7 +21,6 @@ export interface QuestionsEditProps {
 function QuestionsEdit({
   activeQuestionId,
   setActiveQuestionId,
-
 }: QuestionsEditProps) {
   const { control, trigger } = useFormContext<EditFormType>();
 
@@ -71,7 +70,7 @@ function QuestionsEdit({
   return (
     <div>
       <DragDropContext onDragEnd={onDragEnd}>
-        <div className='mb-5 grid grid-cols-1 gap-5 '>
+        <div className='grid grid-cols-1 gap-5 mb-5'>
           <StrictModeDroppable droppableId='questionsList'>
             {(provided) => (
               <div className='grid gap-5' ref={provided.innerRef} {...provided.droppableProps}>

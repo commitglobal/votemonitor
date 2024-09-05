@@ -1,10 +1,11 @@
 import Layout from '@/components/layout/Layout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import FormsDashboard from '@/features/forms/components/Dashboard/Dashboard';
 import PollingStationsDashboard from '@/features/polling-stations/components/Dashboard/Dashboard';
 import { getRouteApi } from '@tanstack/react-router';
 import { ReactElement, useState } from 'react';
-import { useElectionRound } from '../../hooks/election-event-hooks';
+import { useElectionRoundDetails } from '../../hooks/election-event-hooks';
 import ElectionEventDetails from '../ElectionEventDetails/ElectionEventDetails';
 import ObserversGuides from '../ObserversGuides/ObserversGuides';
 
@@ -12,9 +13,10 @@ const routeApi = getRouteApi('/election-event/$tab');
 
 export default function ElectionEventDashboard(): ReactElement {
   const { tab } = routeApi.useParams();
-  const navigate = routeApi.useNavigate();
-
   const [currentTab, setCurrentTab] = useState(tab);
+    const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
+
+  const navigate = routeApi.useNavigate();
 
   function handleTabChange(tab: string): void {
     setCurrentTab(tab);
@@ -24,7 +26,7 @@ export default function ElectionEventDashboard(): ReactElement {
       },
     });
   }
-  const { data: electionEvent } = useElectionRound();
+  const { data: electionEvent } = useElectionRoundDetails(currentElectionRoundId);
 
   return (
     <Layout title={electionEvent?.title ?? ''} breadcrumbs={<></>} backButton={<></>}>

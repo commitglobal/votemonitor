@@ -11,12 +11,10 @@ export const formsKeys = {
     detail: (id: string) => [...formsKeys.details(), id] as const,
 }
 
-export const formDetailsQueryOptions = (formId: string) =>
-    queryOptions({
+export const formDetailsQueryOptions = (electionRoundId: string, formId: string) => {
+    return queryOptions({
         queryKey: formsKeys.detail(formId),
         queryFn: async () => {
-            const electionRoundId: string | null = localStorage.getItem('electionRoundId');
-
             const response = await authApi.get<FormFull>(`/election-rounds/${electionRoundId}/forms/${formId}`);
 
             if (response.status !== 200) {
@@ -25,25 +23,24 @@ export const formDetailsQueryOptions = (formId: string) =>
 
             return response.data;
         },
+        enabled: !!electionRoundId
     });
-
-
-export function formDetails(formId: string): UseQueryResult<FormFull, Error> {
-    return useQuery(formDetailsQueryOptions(formId));
 }
 
-export function useForms(p: DataTableParameters): UseQueryResult<PageResponse<FormBase>, Error> {
-    return useQuery({
-        queryKey: formsKeys.list(p),
-        queryFn: async () => {
-            const electionRoundId: string | null = localStorage.getItem('electionRoundId');
+export function formDetails(electionRoundId: string, formId: string): UseQueryResult<FormFull, Error> {
+    return useQuery(formDetailsQueryOptions(electionRoundId, formId));
+}
 
+export function useForms(electionRoundId: string, params: DataTableParameters): UseQueryResult<PageResponse<FormBase>, Error> {
+    return useQuery({
+        queryKey: formsKeys.list(params),
+        queryFn: async () => {
             const response = await authApi.get<PageResponse<FormBase>>(`/election-rounds/${electionRoundId}/forms`, {
                 params: {
-                    PageNumber: p.pageNumber,
-                    PageSize: p.pageSize,
-                    SortColumnName: p.sortColumnName,
-                    SortOrder: p.sortOrder,
+                    PageNumber: params.pageNumber,
+                    PageSize: params.pageSize,
+                    SortColumnName: params.sortColumnName,
+                    SortOrder: params.sortOrder,
                 },
             });
 
@@ -53,5 +50,6 @@ export function useForms(p: DataTableParameters): UseQueryResult<PageResponse<Fo
 
             return response.data;
         },
+        enabled: !!electionRoundId
     });
 }

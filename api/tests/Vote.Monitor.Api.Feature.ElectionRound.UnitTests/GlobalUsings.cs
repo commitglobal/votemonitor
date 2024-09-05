@@ -6,7 +6,6 @@ global using NSubstitute;
 global using Vote.Monitor.Api.Feature.ElectionRound.Specifications;
 global using Vote.Monitor.Core.Services.Time;
 global using Vote.Monitor.Domain.Constants;
-global using Vote.Monitor.Domain.Entities.ApplicationUserAggregate;
 global using Vote.Monitor.Domain.Entities.ElectionRoundAggregate;
 global using Vote.Monitor.Domain.Repository;
 global using Vote.Monitor.TestUtils;

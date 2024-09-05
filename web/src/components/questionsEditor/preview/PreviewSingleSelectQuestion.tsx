@@ -4,7 +4,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useEffect, useMemo, useState } from 'react';
 import { RadioGroup, RadioGroupItem } from '../../ui/radio-group';
-import { useFormAnswersStore } from '../AnswersContext';
+import { useFormAnswersStore } from '../answers-store';
 
 export interface PreviewSingleSelectQuestionProps {
   questionId: string;
@@ -47,8 +47,8 @@ function PreviewSingleSelectQuestion({ code, questionId, text, helptext, options
 
   return (
     <div className="grid gap-2">
-      <Label htmlFor={`${questionId}-value`} className='font-semibold'>{code + ' - '}{text}</Label>
-      <Label htmlFor={`${questionId}-value`} className='text-sm italic'>{helptext}</Label>
+      <Label htmlFor={`${questionId}-value`} className='font-semibold break-all'>{code + ' - '}{text}</Label>
+      <Label htmlFor={`${questionId}-value`} className='text-sm italic break-all'>{helptext}</Label>
       <RadioGroup
         onValueChange={(value) => {
           const newAnswer: SingleSelectAnswer = { $answerType: AnswerType.SingleSelectAnswerType, questionId, selection: { optionId: value, text: '' } };
@@ -59,13 +59,13 @@ function PreviewSingleSelectQuestion({ code, questionId, text, helptext, options
         {regularOptions?.map((option) => (
           <div className="flex items-center space-x-2" key={option.optionId}>
             <RadioGroupItem value={option.optionId} id={option.optionId} />
-            <Label htmlFor={option.optionId}>{option.text}</Label>
+            <Label htmlFor={option.optionId} className='break-all'>{option.text}</Label>
           </div>
         ))}
         {!!freeTextOption && (
           <div className="flex items-center space-x-2" key={freeTextOption.optionId}>
             <RadioGroupItem value={freeTextOption.optionId} id={freeTextOption.optionId} />
-            <Label htmlFor={freeTextOption.optionId}>{freeTextOption.text}</Label>
+            <Label htmlFor={freeTextOption.optionId} className='break-all'>{freeTextOption.text}</Label>
           </div>
         )}
       </RadioGroup>

@@ -1,4 +1,6 @@
-﻿using Vote.Monitor.Core.Models;
+﻿using System.Text.Json.Serialization;
+using Ardalis.SmartEnum.SystemTextJson;
+using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.Entities.FormAggregate;
 using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
 using Vote.Monitor.Domain.Entities.PollingStationInfoAggregate;
@@ -14,6 +16,8 @@ public class FormSubmissionsAggregate
     public Guid MonitoringNgoId { get; }
     public Guid FormId { get; }
     public string FormCode { get; }
+    
+    [JsonConverter(typeof(SmartEnumNameConverter<FormType, string>))]
     public FormType FormType { get; }
     public TranslatedString Name { get; }
     public TranslatedString Description { get; }

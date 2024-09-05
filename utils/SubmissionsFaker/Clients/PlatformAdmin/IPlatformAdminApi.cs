@@ -24,6 +24,9 @@ public interface IPlatformAdminApi
     
     [Post("/api/election-rounds/{electionRoundId}/monitoring-ngos")]
     Task<CreateResponse> AssignNgoToElectionRound([AliasAs("electionRoundId")] string electionRoundId, [Body] AssignNgoRequest request, [Authorize] string token);
+    
+    [Post("/api/election-rounds/{electionRoundId}:enableCitizenReporting")]
+    Task EnableCitizenReporting([AliasAs("electionRoundId")] string electionRoundId, [Body] EnableCitizenReportingRequest request, [Authorize] string token);
 
     [Post("/api/election-rounds/{electionRoundId}/monitoring-ngos/{monitoringNgoId}/monitoring-observers")]
     Task<CreateResponse> AssignObserverToMonitoring([AliasAs("electionRoundId")] string electionRoundId, [AliasAs("monitoringNgoId")] string monitoringNgoId, [Body]AssignObserverRequest request, [Authorize] string token);

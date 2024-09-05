@@ -22,6 +22,9 @@ function Details(): FunctionComponent {
 
 export const Route = createFileRoute('/forms/$formId')({
   component: Details,
-  loader: ({ context: { queryClient }, params: { formId } }) =>
-    queryClient.ensureQueryData(formDetailsQueryOptions(formId)),
+  loader: ({ context: { queryClient, currentElectionRoundContext }, params: { formId } }) => {
+    const electionRoundId = currentElectionRoundContext.getState().currentElectionRoundId;
+
+    return queryClient.ensureQueryData(formDetailsQueryOptions(electionRoundId, formId))
+  }
 });

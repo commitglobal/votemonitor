@@ -35,6 +35,7 @@ import ImportMonitoringObserversErrorsDialog from '../MonitoringObserversList/Im
 import ConfirmResendInvitationDialog from './ConfirmResendInvitationDialog';
 import { queryClient } from '@/main';
 import { toast } from '@/components/ui/use-toast';
+import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 
 type ListMonitoringObserverResponse = PageResponse<MonitoringObserver>;
 
@@ -141,33 +142,34 @@ function MonitoringObserversList() {
     navigate({ to: '/monitoring-observers/edit/$monitoringObserverId', params: { monitoringObserverId } });
   };
 
-  const { data: tags } = useMonitoringObserversTags();
+    const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
+  const { data: tags } = useMonitoringObserversTags(currentElectionRoundId);
 
-  const useMonitoringObservers = (p: DataTableParameters): UseMonitoringObserversResult => {
+  const useMonitoringObservers = (params: DataTableParameters): UseMonitoringObserversResult => {
     return useQuery({
       queryKey: [
         'monitoring-observers',
-        p.pageNumber,
-        p.pageSize,
-        p.sortColumnName,
-        p.sortOrder,
+        params.pageNumber,
+        params.pageSize,
+        params.sortColumnName,
+        params.sortOrder,
         searchText,
         statusFilter,
         tagsFilter,
       ],
       queryFn: async () => {
         const paramsObject: any = {
-          PageNumber: p.pageNumber,
-          PageSize: p.pageSize,
-          SortColumnName: p.sortColumnName,
-          SortOrder: p.sortOrder,
+          PageNumber: params.pageNumber,
+          PageSize: params.pageSize,
+          SortColumnName: params.sortColumnName,
+          SortOrder: params.sortOrder,
           searchText: searchText,
           status: statusFilter,
         };
-        const electionRoundId: string | null = localStorage.getItem('electionRoundId');
+
 
         const response = await authApi.get<PageResponse<MonitoringObserver>>(
-          `/election-rounds/${electionRoundId}/monitoring-observers?${tagsFilter
+          `/election-rounds/${currentElectionRoundId}/monitoring-observers?${tagsFilter
             .map((n) => `tags=${n}`)
             .join('&')}`,
           {
@@ -183,13 +185,12 @@ function MonitoringObserversList() {
 
         return { ...response.data, isEmpty: !isQueryFiltered(paramsObject) && response.data.items.length === 0 };
       },
+      enabled: !!currentElectionRoundId
     });
   };
 
   const resendInvitationsMutation = useMutation({
-    mutationFn: ({ monitoringObserverId }: { monitoringObserverId: string | undefined }) => {
-      const electionRoundId: string | null = localStorage.getItem('electionRoundId');
-
+    mutationFn: ({ electionRoundId, monitoringObserverId }: { electionRoundId: string; monitoringObserverId: string | undefined }) => {
       return authApi.put<void>(`/election-rounds/${electionRoundId}/monitoring-observers:resend-invites`, {
         ids: [monitoringObserverId].filter(id => !!id)
       });
@@ -254,9 +255,7 @@ function MonitoringObserversList() {
   );
 
   const exportMonitoringObservers = async () => {
-    const electionRoundId: string | null = localStorage.getItem('electionRoundId');
-
-    const res = await authApi.get(`/election-rounds/${electionRoundId}/monitoring-observers:export`, { responseType: "blob" });
+    const res = await authApi.get(`/election-rounds/${currentElectionRoundId}/monitoring-observers:export`, { responseType: "blob" });
     const csvData = res.data;
 
     const blob = new Blob([csvData], { type: 'text/csv' });
@@ -265,7 +264,7 @@ function MonitoringObserversList() {
     const a = document.createElement('a');
     a.style.display = 'none';
     a.href = url;
-    a.download = 'exported-monitoring-observers vc.csv';
+    a.download = 'exported-monitoring-observers.csv';
 
     document.body.appendChild(a);
     a.click();
@@ -340,7 +339,7 @@ function MonitoringObserversList() {
               alertDescription={monitoringObserverId ? 'Are you sure you want to resend the invite?' : 'Are you sure you want to resend invite to all pending observers?'}
               cancelActionButtonText='Cancel'
               confirmActionButtonText='Resend invitation'
-              onConfirm={() => resendInvitationsMutation.mutate({ monitoringObserverId })}
+              onConfirm={() => resendInvitationsMutation.mutate({ electionRoundId: currentElectionRoundId, monitoringObserverId })}
               {...confirmResendInvitesDialog.dialogProps} />
           </div>
         </div>

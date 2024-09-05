@@ -1,9 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Feature.Forms.Models;
+using Microsoft.EntityFrameworkCore;
 using Vote.Monitor.Domain;
 
 namespace Feature.Forms.GetFormsVersion;
 
-public class Endpoint(VoteMonitorContext context) : Endpoint<Request, Results<Ok<Response>, NotFound>>
+public class Endpoint(VoteMonitorContext context) : Endpoint<Request, Results<Ok<FormVersionResponseModel>, NotFound>>
 {
     public override void Configure()
     {
@@ -17,7 +18,7 @@ public class Endpoint(VoteMonitorContext context) : Endpoint<Request, Results<Ok
         });
     }
 
-    public override async Task<Results<Ok<Response>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<Results<Ok<FormVersionResponseModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
         var monitoringNgo = await context.MonitoringObservers
             .Include(x=>x.MonitoringNgo)
@@ -31,7 +32,7 @@ public class Endpoint(VoteMonitorContext context) : Endpoint<Request, Results<Ok
             return TypedResults.NotFound();
         }
 
-        return TypedResults.Ok(new Response
+        return TypedResults.Ok(new FormVersionResponseModel
         {
             ElectionRoundId = monitoringNgo.ElectionRoundId,
             CacheKey = monitoringNgo.FormsVersion.ToString()

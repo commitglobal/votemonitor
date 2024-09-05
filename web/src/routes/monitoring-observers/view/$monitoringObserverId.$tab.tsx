@@ -13,8 +13,11 @@ export const Route = createFileRoute('/monitoring-observers/view/$monitoringObse
 
   },
   component: Details,
-  loader: ({ context: { queryClient }, params: { monitoringObserverId } }) =>
-    queryClient.ensureQueryData(monitoringObserverDetailsQueryOptions(monitoringObserverId)),
+  loader: ({ context: { queryClient, currentElectionRoundContext }, params: { monitoringObserverId } }) => {
+    const electionRoundId = currentElectionRoundContext.getState().currentElectionRoundId;
+
+    return queryClient.ensureQueryData(monitoringObserverDetailsQueryOptions(electionRoundId, monitoringObserverId));
+  },
   validateSearch: monitoringObserverDetailsRouteSearchSchema
 });
 

@@ -1,15 +1,15 @@
 import { useSetPrevSearch } from '@/common/prev-search-store';
-import { FollowUpStatus, FunctionComponent } from '@/common/types';
+import { FollowUpStatus, FunctionComponent, ZFormType } from '@/common/types';
 import { PollingStationsFilters } from '@/components/PollingStationsFilters/PollingStationsFilters';
 import { FilterBadge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Route } from '@/routes/responses';
 import { useNavigate } from '@tanstack/react-router';
 import { useCallback } from 'react';
-import { FormType } from '../../models/form-submission';
 import type { FormSubmissionsSearchParams } from '../../models/search-params';
-import { ResetFiltersButton } from '../ResetFiltersButton/ResetFiltersButton';
 import { mapFollowUpStatus } from '../../utils/helpers';
+import { ResetFiltersButton } from '../ResetFiltersButton/ResetFiltersButton';
+import { mapFormType } from '@/lib/utils';
 
 export function FormsFiltersByEntry(): FunctionComponent {
   const navigate = useNavigate({ from: '/responses/' });
@@ -57,11 +57,18 @@ export function FormsFiltersByEntry(): FunctionComponent {
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
-            {Object.values(FormType).map((value) => (
-              <SelectItem value={value} key={value}>
-                {value}
-              </SelectItem>
-            ))}
+            <SelectItem value={ZFormType.Values.Opening} key={ZFormType.Values.Opening}>
+              {mapFormType(ZFormType.Values.Opening)}
+            </SelectItem>
+            <SelectItem value={ZFormType.Values.Voting} key={ZFormType.Values.Voting}>
+              {mapFormType(ZFormType.Values.Voting)}
+            </SelectItem>
+            <SelectItem value={ZFormType.Values.ClosingAndCounting} key={ZFormType.Values.ClosingAndCounting}>
+              {mapFormType(ZFormType.Values.ClosingAndCounting)}
+            </SelectItem>
+            <SelectItem value={ZFormType.Values.Other} key={ZFormType.Values.Other}>
+              {mapFormType(ZFormType.Values.Other)}
+            </SelectItem>
           </SelectGroup>
         </SelectContent>
       </Select>
@@ -108,7 +115,7 @@ export function FormsFiltersByEntry(): FunctionComponent {
       <ResetFiltersButton disabled={!isFiltered} />
 
       {isFiltered && (
-        <div className='col-span-full flex gap-2 flex-wrap'>
+        <div className='flex flex-wrap gap-2 col-span-full'>
           {search.formTypeFilter && (
             <FilterBadge label={`Form type: ${search.formTypeFilter}`} onClear={onClearFilter('formTypeFilter')} />
           )}

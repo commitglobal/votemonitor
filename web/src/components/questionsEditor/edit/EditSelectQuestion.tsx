@@ -1,5 +1,4 @@
 import {
-  newTranslatedString,
   QuestionType
 } from '@/common/types';
 import { Button } from '@/components/ui/button';
@@ -7,7 +6,7 @@ import { FormControl, FormField, FormItem, FormMessage } from '@/components/ui/f
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { EditFormType } from '@/features/forms/components/EditForm/EditForm';
-import { cn } from '@/lib/utils';
+import { cn, newTranslatedString } from '@/lib/utils';
 import { FlagIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/solid';
 import { CheckCircle, CheckSquare, PencilLine } from 'lucide-react';
 import { useFormContext, useWatch } from 'react-hook-form';

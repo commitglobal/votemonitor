@@ -6,7 +6,7 @@ import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowDownTrayIcon } from '@heroicons/react/24/solid';
-import { useMemo, useRef } from 'react';
+import { useRef } from 'react';
 
 import type { FunctionComponent } from '@/common/types';
 import { saveChart } from '@/components/charts/utils/save-chart';
@@ -18,10 +18,9 @@ import {
   timeSpentObservingDataConfig,
 } from '../../utils/chart-defs';
 
-import { useQuery } from '@tanstack/react-query';
-import { authApi } from '@/common/auth-api';
+import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { format } from 'date-fns';
-const STALE_TIME = 1000 * 60 * 10; // ten minutes
+import { useElectionRoundStatistics } from '../../hooks/statistics-queries';
 
 export default function NgoAdminDashboard(): FunctionComponent {
   const observersAccountsChartRef = useRef(null);
@@ -32,22 +31,16 @@ export default function NgoAdminDashboard(): FunctionComponent {
   const questionsAnsweredChartRef = useRef(null);
   const flaggedAnswersChartRef = useRef(null);
   const quickReportsChartRef = useRef(null);
+  const citizenReportsChartRef = useRef(null);
 
-  const { data: statistics } = useQuery({
-    queryKey: ['statistics'],
-    queryFn: async () => {
-      const electionRoundId: string | null = localStorage.getItem('electionRoundId');
+  const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
+  const isMonitoringNgoForCitizenReporting = useCurrentElectionRoundStore(s => s.isMonitoringNgoForCitizenReporting);
 
-      const response = await authApi.get<MonitoringStats>(`/election-rounds/${electionRoundId}/statistics`);
-
-      return response.data;
-    },
-    staleTime: STALE_TIME,
-  });
+  const { data: statistics } = useElectionRoundStatistics(currentElectionRoundId);
 
   function getInterval(histogram: HistogramEntry[] | undefined): string {
     if (histogram) {
-      const data  = histogram.map(x => new Date(x.bucket)).map(date => date.getTime());
+      const data = histogram.map(x => new Date(x.bucket)).map(date => date.getTime());
       const minDate = new Date(Math.min(...data));
 
       // Get the maximum date
@@ -59,7 +52,7 @@ export default function NgoAdminDashboard(): FunctionComponent {
   }
 
   function getTotal(formsHistogram: HistogramEntry[] | undefined): number {
-    return (formsHistogram?? []).map(x=>x.value).reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+    return (formsHistogram ?? []).map(x => x.value).reduce((accumulator, currentValue) => accumulator + currentValue, 0);
   }
 
   return (
@@ -117,8 +110,8 @@ export default function NgoAdminDashboard(): FunctionComponent {
                   title='Stations visited by at least one observer'
                   metricLabel='coverage'
                   data={pollingStationsDataConfig(statistics?.pollingStationsStats)}
-                  total={statistics?.pollingStationsStats.totalNumberOfPollingStations ?? 0 }
-                  value={statistics?.pollingStationsStats.numberOfVisitedPollingStations ?? 0 }
+                  total={statistics?.pollingStationsStats.totalNumberOfPollingStations ?? 0}
+                  value={statistics?.pollingStationsStats.numberOfVisitedPollingStations ?? 0}
                   ref={pollingStationsChartRef} />
               </CardContent>
             </Card>
@@ -155,7 +148,7 @@ export default function NgoAdminDashboard(): FunctionComponent {
                 <LineChart
                   title={`forms started between ${getInterval(statistics?.formsHistogram)}`}
                   data={histogramChartConfig(statistics?.formsHistogram)}
-                  ref={startedFormsChartRef} 
+                  ref={startedFormsChartRef}
                   total={getTotal(statistics?.formsHistogram)}
                   showTotal />
               </CardContent>
@@ -207,13 +200,32 @@ export default function NgoAdminDashboard(): FunctionComponent {
               </CardHeader>
               <CardContent>
                 <LineChart
-                  title={`quick reports were signalled  between ${getInterval(statistics?.formsHistogram)}`}
+                  title={`quick reports were signalled between ${getInterval(statistics?.quickReportsHistogram)}`}
                   data={histogramChartConfig(statistics?.quickReportsHistogram, 'red')}
                   ref={quickReportsChartRef}
                   total={getTotal(statistics?.quickReportsHistogram)}
                   showTotal />
               </CardContent>
             </Card>
+            {isMonitoringNgoForCitizenReporting &&
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between">
+                  <CardTitle className="text-sm font-medium">
+                    Citizen reports
+                  </CardTitle>
+                  <Button type='button' variant='ghost' onClick={() => { saveChart(quickReportsChartRef, 'quick-reports.png') }}>
+                    <ArrowDownTrayIcon className='w-6 h-6 fill-gray-400' />
+                  </Button>
+                </CardHeader>
+                <CardContent>
+                  <LineChart
+                    title={`citizen reports were signalled between ${getInterval(statistics?.citizenReportsHistogram)}`}
+                    data={histogramChartConfig(statistics?.citizenReportsHistogram, 'red')}
+                    ref={citizenReportsChartRef}
+                    total={getTotal(statistics?.citizenReportsHistogram)}
+                    showTotal />
+                </CardContent>
+              </Card>}
           </div>
         </div>
       </div>

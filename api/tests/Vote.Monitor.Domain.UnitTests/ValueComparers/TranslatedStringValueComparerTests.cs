@@ -4,7 +4,7 @@ namespace Vote.Monitor.Domain.UnitTests.ValueComparers;
 
 public class TranslatedStringValueComparerTests
 {
-    private readonly TranslatedStringValueComparer _valueComparer = new TranslatedStringValueComparer();
+    private readonly TranslatedStringValueComparer _valueComparer = new();
 
     [Fact]
     public void ComparingTwoTranslatedStrings_ShouldReturnTrue()

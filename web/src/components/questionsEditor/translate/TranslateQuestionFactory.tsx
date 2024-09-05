@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 
-import { EditFormTranslationType } from '@/features/forms/components/EditFormTranslation/EditFormTranslation';
+import { EditFormType } from '@/features/forms/components/EditForm/EditForm';
 import { LanguageIcon } from '@heroicons/react/24/outline';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { questionsIconMapping } from '../utils';
@@ -27,7 +27,7 @@ export default function TranslateQuestionFactory({
   setActiveQuestionId,
 }: TranslateQuestionFactoryProps): FunctionComponent {
   const { t } = useTranslation();
-  const { control, getFieldState } = useFormContext<EditFormTranslationType>();
+  const { control, getFieldState } = useFormContext<EditFormType>();
 
   function getQuestionTypeName(questionType: QuestionType): string {
     switch (questionType) {
@@ -99,29 +99,31 @@ export default function TranslateQuestionFactory({
             setActiveQuestionId(undefined);
           }
         }}
-        className='flex-1 rounded-r-lg border border-slate-200'>
+        className='flex-1 border rounded-r-lg border-slate-200'>
         <CollapsibleTrigger
           asChild
-          className='flex cursor-pointer justify-between p-4 hover:bg-slate-50'>
+          className='flex justify-between p-4 cursor-pointer hover:bg-slate-50'>
           <div>
 
             <div className='inline-flex'>
               {IconComponent && (
-                <IconComponent className='text-primary -ml-0.5 mr-2 h-5 w-5' aria-hidden='true' />
+                <div className='-ml-0.5 mr-2 min-h-5 min-w-5 text-slate-500'>
+                  <IconComponent aria-hidden='true' />
+                </div>
               )}
               <p className='text-sm font-semibold break-all'>
                 {isNilOrWhitespace(question.text[languageCode]) ? getQuestionTypeName(question.$questionType) : question.text[languageCode]}
               </p>
             </div>
             {(!questionState.invalid ? (
-              <div className='flex gap-2 items-center rounded-md text-green-700 bg-green-100 p-2 mb-2'>
-                <LanguageIcon width={22} />
-                This question is translated.
+              <div className='flex items-center gap-2 p-2 mb-2 text-green-700 bg-green-100 rounded-md max-w-48 max-h-16'>
+                <LanguageIcon width={22} height={22}/>
+                Translated.
               </div>
             ) : (
-              <div className='flex items-center rounded-md text-yellow-700 bg-yellow-100 p-2 mb-2'>
-                <LanguageIcon width={22} />
-                This question is missing translations.
+              <div className='flex items-center gap-2 p-2 mb-2 text-yellow-700 bg-yellow-100 rounded-md max-w-48 max-h-16'>
+                <LanguageIcon width={22} height={22}/>
+                Missing translations.
               </div>
             ))}
 

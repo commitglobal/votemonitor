@@ -5,15 +5,15 @@ using Vote.Monitor.Answer.Module.Models;
 
 namespace Feature.Form.Submissions;
 
-public record FormSubmissionModel
+public record FormSubmissionModel 
 {
     public required Guid Id { get; init; }
     public required Guid FormId { get; init; }
     public required Guid PollingStationId { get; init; }
 
     [JsonConverter(typeof(SmartEnumNameConverter<SubmissionFollowUpStatus, string>))]
-    public SubmissionFollowUpStatus FollowUpStatus { get; private set; }
-    public IReadOnlyList<BaseAnswerModel> Answers { get; set; }
+    public SubmissionFollowUpStatus FollowUpStatus { get; init; }
+    public IReadOnlyList<BaseAnswerModel> Answers { get; init; }
 
     public static FormSubmissionModel FromEntity(FormSubmission entity) => new()
     {

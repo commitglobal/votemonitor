@@ -12,10 +12,12 @@ import type { FunctionComponent } from '@/common/types';
 import { Route } from '@/routes/monitoring-observers/view/$monitoringObserverId.$tab';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { format } from 'date-fns';
+import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 
 export default function MonitoringObserverDetailsView(): FunctionComponent {
   const { monitoringObserverId } = Route.useParams();
-  const monitoringObserverQuery = useSuspenseQuery(monitoringObserverDetailsQueryOptions(monitoringObserverId));
+    const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
+  const monitoringObserverQuery = useSuspenseQuery(monitoringObserverDetailsQueryOptions(currentElectionRoundId, monitoringObserverId));
   const monitoringObserver = monitoringObserverQuery.data;
 
   const navigate = useNavigate();

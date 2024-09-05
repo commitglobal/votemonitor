@@ -7,7 +7,7 @@ namespace Vote.Monitor.Domain.UnitTests.ValueComparers;
 
 public class AnswersValueComparerTests
 {
-    private readonly AnswersValueComparer _valueComparer = new AnswersValueComparer();
+    private readonly AnswersValueComparer _valueComparer = new();
     [Fact]
     public void ComparingTwoEquivalentAnswersLists_ShouldReturnTrue()
     {

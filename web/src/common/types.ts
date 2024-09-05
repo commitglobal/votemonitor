@@ -150,7 +150,7 @@ export type NumberAnswer = z.infer<typeof NumberAnswerSchema>;
 
 export const DateAnswerSchema = BaseAnswerSchema.extend({
   $answerType: z.literal(AnswerType.DateAnswerType),
-  date: z.date().optional(),
+  date: z.string().datetime({ offset: true } ).optional(),
 });
 export type DateAnswer = z.infer<typeof DateAnswerSchema>;
 
@@ -186,6 +186,7 @@ export type ElectionRoundMonitoring = {
   startDate: string;
   country: string;
   countryId: string;
+  isMonitoringNgoForCitizenReporting: boolean;
 };
 
 export type LevelNode = {
@@ -199,111 +200,6 @@ export type UserPayload = {
   'user-role': string;
 };
 
-/**
- * Creates a new Translated String containing all available languages
- * @param availableLanguages available translations list
- * @param languageCode language code for which to add value
- * @param value value to set for required languageCode
- * @returns new instance of @see {@link TranslatedString}
- */
-export const newTranslatedString = (availableLanguages: string[], languageCode: string, value: string = ''): TranslatedString => {
-  const translatedString: TranslatedString = {};
-  availableLanguages.forEach(language => {
-    translatedString[language] = '';
-  });
-
-  translatedString[languageCode] = value;
-
-  return translatedString;
-};
-
-/**
- * Creates a new Translated String containing all available languages
- * @param availableLanguages available translations list
- * @param value value to set for required languageCode
- * @returns new instance of @see {@link TranslatedString}
- */
-export const emptyTranslatedString = (availableLanguages: string[], value: string = ''): TranslatedString => {
-  const translatedString: TranslatedString = {};
-  availableLanguages.forEach(language => {
-    translatedString[language] = value;
-  });
-
-
-  return translatedString;
-};
-
-
-export const updateTranslationString = (translatedString: TranslatedString | undefined, availableLanguages: string[], languageCode: string, value: string): TranslatedString => {
-  if (translatedString === undefined) {
-    translatedString = newTranslatedString(availableLanguages, languageCode);
-  }
-
-  translatedString[languageCode] = value;
-
-  return translatedString;
-};
-
-/**
- * Clones translation from a language code to a language code in @see {@link TranslatedString} instance
- * @param translatedString a instance of @see {@link TranslatedString}
- * @param fromLanguageCode language code from which to borrow translation
- * @param toLanguageCode destination
- * @param defaultValue default value
- * @returns new instance of @see {@link TranslatedString}
- */
-export const cloneTranslation = (translatedString: TranslatedString | undefined, fromLanguageCode: string, toLanguageCode: string, defaultValue: string = ''): TranslatedString | undefined => {
-  if (translatedString) {
-    translatedString[toLanguageCode] = translatedString[fromLanguageCode] ?? defaultValue;
-  }
-
-  return translatedString;
-};
-
-/**
- * Changes language code to another in @see {@link TranslatedString} instance
- * @param translatedString a instance of @see {@link TranslatedString}
- * @param fromLanguageCode language code from which to borrow translation
- * @param toLanguageCode destination
- * @param defaultValue default value
- * @returns new instance of @see {@link TranslatedString}
- */
-export const changeLanguageCode = (translatedString: TranslatedString | undefined, fromLanguageCode: string, toLanguageCode: string, defaultValue: string = ''): TranslatedString => {
-  if (translatedString === undefined) {
-    return {};
-  }
-
-  const text = translatedString[fromLanguageCode];
-  delete translatedString[fromLanguageCode];
-
-  return {
-    ...translatedString,
-    [toLanguageCode]: text ?? defaultValue
-  };
-}
-
-/**
- * Gets translation from a translated string.
- * If translation string is undefined or it does not contain translation for the requested language code then it will return a default value
- * @param translatedString a instance of @see {@link TranslatedString}
- * @param languageCode language code for which to get translation
- * @param value value to set for required languageCode
- * @returns translation or a default value
- */
-export const getTranslationOrDefault = (translatedString: TranslatedString | undefined, languageCode: string, value: string = ''): string => {
-  if (translatedString === undefined) {
-    return value;
-  }
-
-  const translation = translatedString[languageCode];
-  if (translation === undefined) {
-    return value;
-  }
-
-  return translation;
-};
-
-
 export enum FollowUpStatus {
   NotApplicable = 'NotApplicable',
   NeedsFollowUp = 'NeedsFollowUp',
@@ -312,3 +208,19 @@ export enum FollowUpStatus {
 export type HistogramData = {
   [bucket: string]: number;
 };
+
+
+export const ZFormType = z.enum(["PSI",
+  "Opening",
+  "Voting",
+  "ClosingAndCounting",
+  "CitizenReporting",
+  "Other"]);
+
+export type FormType = z.infer<typeof ZFormType>;
+
+export const ZTranslationStatus = z.enum(['Translated', 'MissingTranslations']);
+export type TranslationStatus = z.infer<typeof ZTranslationStatus>;
+
+const ZLanguagesTranslationStatus = z.record(z.string(), ZTranslationStatus);
+export type LanguagesTranslationStatus = z.infer<typeof ZLanguagesTranslationStatus>;

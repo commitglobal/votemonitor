@@ -5,7 +5,6 @@ global using Microsoft.AspNetCore.Http.HttpResults;
 global using NSubstitute;
 global using NSubstitute.ReturnsExtensions;
 global using Vote.Monitor.Answer.Module.Requests;
-global using Vote.Monitor.Core.Services.Time;
 global using Vote.Monitor.Domain.Entities.FormBase.Questions;
 global using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 global using Vote.Monitor.Domain.Entities.PollingStationInfoAggregate;

@@ -1,18 +1,10 @@
 import { FollowUpStatus } from "@/common/types";
+import { Attachment } from "./common";
 
 export enum QuickReportLocationType {
   NotRelatedToAPollingStation = 'NotRelatedToAPollingStation',
   OtherPollingStation = 'OtherPollingStation',
   VisitedPollingStation = 'VisitedPollingStation',
-}
-
-export interface Attachment {
-  id: string;
-  quickReportId: string;
-  fileName: string;
-  mimeType: string;
-  presignedUrl: string;
-  urlValidityInSeconds: number;
 }
 
 export interface QuickReport {

@@ -15,7 +15,11 @@ public sealed class GetElectionsSpecification : Specification<ElectionRoundAggre
             Status = x.Status,
             CreatedOn = x.CreatedOn,
             LastModifiedOn = x.LastModifiedOn,
-            Country = x.Country.FullName,
+            CountryIso2 = x.Country.Iso2,
+            CountryIso3 = x.Country.Iso3,
+            CountryName = x.Country.Name,
+            CountryFullName = x.Country.FullName,
+            CountryNumericCode = x.Country.NumericCode,
             CountryId = x.CountryId
         });
     }

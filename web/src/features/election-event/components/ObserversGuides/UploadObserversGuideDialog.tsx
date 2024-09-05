@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { toast } from '@/components/ui/use-toast';
+import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { queryClient } from '@/main';
 import { useMutation } from '@tanstack/react-query';
 import { useRef, useState } from 'react';
@@ -19,17 +20,17 @@ function UploadObserversGuideDialog({
     onOpenChange
 }: UploadObserversGuideDialogProps) {
     const [fileName, setFileName] = useState('');
-    const [guideTitle, setGuideTitle] = useState<string|undefined>('');
-    const [websiteUrl, setWebsiteUrl] = useState<string|undefined>('');
+    const [guideTitle, setGuideTitle] = useState<string | undefined>('');
+    const [websiteUrl, setWebsiteUrl] = useState<string | undefined>('');
     const hiddenFileInput: React.Ref<any> = useRef(null);
+    const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
 
     const handleClick = () => {
         hiddenFileInput?.current?.click();
     };
 
     const uploadObserverGuideMutation = useMutation({
-        mutationFn: () => {
-            const electionRoundId: string | null = localStorage.getItem('electionRoundId');
+        mutationFn: ({ electionRoundId }: { electionRoundId: string }) => {
 
             // get the selected file from the input
             const file = hiddenFileInput.current.files[0];
@@ -38,6 +39,7 @@ function UploadObserversGuideDialog({
             formData.append("Title", guideTitle!);
             formData.append("Attachment", file);
             formData.append("WebsiteUrl", websiteUrl ?? '');
+
 
             return authApi.post(
                 `/election-rounds/${electionRoundId}/observer-guide`,
@@ -71,7 +73,7 @@ function UploadObserversGuideDialog({
 
 
     const handleImport = () => {
-        uploadObserverGuideMutation.mutate();
+        uploadObserverGuideMutation.mutate({ electionRoundId: currentElectionRoundId });
     }
 
     const handleChange = (event: any) => {
@@ -79,11 +81,11 @@ function UploadObserversGuideDialog({
         setFileName(fileUploaded.name);
     };
 
-    const canUploadGuide =() =>{
+    const canUploadGuide = () => {
         const hasSelectedFile = !!hiddenFileInput?.current?.files?.length;
         const hasWebsiteUrl = !!websiteUrl?.trim();
         const hasTitle = !!guideTitle?.trim();
-        return !( hasTitle && (hasSelectedFile || hasWebsiteUrl));
+        return !(hasTitle && (hasSelectedFile || hasWebsiteUrl));
     }
 
     return (
@@ -117,9 +119,9 @@ function UploadObserversGuideDialog({
                     />
                     <Label htmlFor="guideFile">{'Guide file'}</Label>
 
-                    <input type='file' id="guideFile" ref={hiddenFileInput} onChange={handleChange} style={{ display: 'none' }} accept='.csv' />
+                    <input type='file' id="guideFile" ref={hiddenFileInput} onChange={handleChange} style={{ display: 'none' }} />
                     <Button onClick={handleClick} variant='outline' className=''>
-                        <span className='text-gray-500 font-normal truncate'>
+                        <span className='font-normal text-gray-500 truncate'>
                             {fileName || (
                                 <div>
                                     Drag & drop your files or <span className='underline'>Browse</span>
@@ -131,7 +133,7 @@ function UploadObserversGuideDialog({
                 </div>
                 <DialogFooter>
                     <DialogClose asChild>
-                        <Button className='border border-input border-purple-900 bg-background hover:bg-purple-50 text-purple-900 hover:text-purple-600'>
+                        <Button className='text-purple-900 border border-purple-900 border-input bg-background hover:bg-purple-50 hover:text-purple-600'>
                             Cancel
                         </Button>
                     </DialogClose>

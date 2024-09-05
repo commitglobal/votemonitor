@@ -1,6 +1,7 @@
 import type { FunctionComponent } from '@/common/types';
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
 import { CardContent } from '@/components/ui/card';
+import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { useFormSubmissionsByEntry } from '@/features/responses/hooks/form-submissions-queries';
 import { formSubmissionsForObserverColumnDefs } from '@/features/responses/utils/column-defs';
 import { getRouteApi } from '@tanstack/react-router';
@@ -8,7 +9,6 @@ import type { VisibilityState } from '@tanstack/react-table';
 import { useDebounce } from '@uidotdev/usehooks';
 import { useCallback, useMemo } from 'react';
 import type { MonitoringObserverDetailsRouteSearch } from '../../models/monitoring-observer';
-import { formSubmissionsByObserverColumns } from '@/features/responses/utils/column-visibility-options';
 
 const routeApi = getRouteApi('/monitoring-observers/view/$monitoringObserverId/$tab');
 
@@ -25,6 +25,7 @@ export function MonitoringObserverFormsTable({
   const { monitoringObserverId } = routeApi.useParams();
   const search = routeApi.useSearch();
   const debouncedSearch = useDebounce(search, 300);
+    const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
 
   const queryParams = useMemo(() => {
     const params = [
@@ -55,7 +56,7 @@ export function MonitoringObserverFormsTable({
       <QueryParamsDataTable
         columnVisibility={columnsVisibility}
         columns={formSubmissionsForObserverColumnDefs}
-        useQuery={useFormSubmissionsByEntry}
+        useQuery={(params) => useFormSubmissionsByEntry(currentElectionRoundId, params)}
         queryParams={queryParams}
         onRowClick={navigateToFormSubmission}
       />

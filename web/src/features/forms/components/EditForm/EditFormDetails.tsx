@@ -4,12 +4,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { useTranslation } from 'react-i18next';
 
-import { changeLanguageCode, QuestionType } from '@/common/types';
+import { QuestionType, ZFormType } from '@/common/types';
 import LanguageSelect from '@/containers/LanguageSelect';
+import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import { useFormContext } from 'react-hook-form';
-import { FormType, mapFormType } from '../../models/form';
 import { EditFormType } from './EditForm';
+import { changeLanguageCode, mapFormType } from '@/lib/utils';
 
 export interface EditFormDetailsProps {
   languageCode: string;
@@ -18,6 +19,7 @@ export interface EditFormDetailsProps {
 function EditFormDetails({ languageCode }: EditFormDetailsProps) {
   const { t } = useTranslation();
   const form = useFormContext<EditFormType>();
+  const isMonitoringNgoForCitizenReporting = useCurrentElectionRoundStore(s => s.isMonitoringNgoForCitizenReporting);
 
   const handleLanguageChange = (newLanguageCode: string): void => {
     const formValues = form.getValues();
@@ -69,7 +71,7 @@ function EditFormDetails({ languageCode }: EditFormDetailsProps) {
 
   return (
     <div className='md:inline-flex md:space-x-6'>
-      <div className='md:w-1/2 space-y-4'>
+      <div className='space-y-4 md:w-1/2'>
         <FormField
           control={form.control}
           name="formType"
@@ -83,10 +85,11 @@ function EditFormDetails({ languageCode }: EditFormDetailsProps) {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value={FormType.Opening}>{mapFormType(FormType.Opening)}</SelectItem>
-                  <SelectItem value={FormType.Voting}>{mapFormType(FormType.Voting)}</SelectItem>
-                  <SelectItem value={FormType.ClosingAndCounting}>{mapFormType(FormType.ClosingAndCounting)}</SelectItem>
-                  <SelectItem value={FormType.Other}>{mapFormType(FormType.Other)}</SelectItem>
+                  <SelectItem value={ZFormType.Values.Opening}>{mapFormType(ZFormType.Values.Opening)}</SelectItem>
+                  <SelectItem value={ZFormType.Values.Voting}>{mapFormType(ZFormType.Values.Voting)}</SelectItem>
+                  <SelectItem value={ZFormType.Values.ClosingAndCounting}>{mapFormType(ZFormType.Values.ClosingAndCounting)}</SelectItem>
+                  {isMonitoringNgoForCitizenReporting && <SelectItem value={ZFormType.Values.CitizenReporting}>{mapFormType(ZFormType.Values.CitizenReporting)}</SelectItem>}
+                  <SelectItem value={ZFormType.Values.Other}>{mapFormType(ZFormType.Values.Other)}</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -147,7 +150,7 @@ function EditFormDetails({ languageCode }: EditFormDetailsProps) {
 
         <div className='inline-flex text-slate-700'>
           <div><InformationCircleIcon width={24} height={24} /></div>
-          <div className='text-sm ml-2'>Base language is the language a form is initially written in. You can multiple translations after you finalize the form in base language.</div>
+          <div className='ml-2 text-sm'>Base language is the language a form is initially written in. You can multiple translations after you finalize the form in base language.</div>
         </div>
 
       </div>
