@@ -49,7 +49,7 @@ function EditFormTranslationFooter() {
 
   function saveForm(shouldExitEditor: boolean = false) {
     const values = form.getValues();
-debugger;
+
     const updatedForm: UpdateFormRequest = {
       id: values.formId,
       code: values.code,
