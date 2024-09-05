@@ -23,7 +23,7 @@ function UploadObserversGuideDialog({
     const [guideTitle, setGuideTitle] = useState<string | undefined>('');
     const [websiteUrl, setWebsiteUrl] = useState<string | undefined>('');
     const hiddenFileInput: React.Ref<any> = useRef(null);
-      const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
+    const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
 
     const handleClick = () => {
         hiddenFileInput?.current?.click();
@@ -119,9 +119,9 @@ function UploadObserversGuideDialog({
                     />
                     <Label htmlFor="guideFile">{'Guide file'}</Label>
 
-                    <input type='file' id="guideFile" ref={hiddenFileInput} onChange={handleChange} style={{ display: 'none' }} accept='.csv' />
+                    <input type='file' id="guideFile" ref={hiddenFileInput} onChange={handleChange} style={{ display: 'none' }} />
                     <Button onClick={handleClick} variant='outline' className=''>
-                        <span className='text-gray-500 font-normal truncate'>
+                        <span className='font-normal text-gray-500 truncate'>
                             {fileName || (
                                 <div>
                                     Drag & drop your files or <span className='underline'>Browse</span>
@@ -133,7 +133,7 @@ function UploadObserversGuideDialog({
                 </div>
                 <DialogFooter>
                     <DialogClose asChild>
-                        <Button className='border border-input border-purple-900 bg-background hover:bg-purple-50 text-purple-900 hover:text-purple-600'>
+                        <Button className='text-purple-900 border border-purple-900 border-input bg-background hover:bg-purple-50 hover:text-purple-600'>
                             Cancel
                         </Button>
                     </DialogClose>
