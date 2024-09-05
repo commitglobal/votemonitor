@@ -34,7 +34,7 @@ export const CurrentElectionRoundContext = createContext<CurrentElectionRoundSto
 
 export const CurrentElectionRoundStoreProvider = ({ children }: PropsWithChildren) => {
   const storeRef = useRef<CurrentElectionRoundStoreType>();
-  const id = useId();
+
   if (!storeRef.current) {
     storeRef.current = create<CurrentElectionRoundState>()(
       persist(
