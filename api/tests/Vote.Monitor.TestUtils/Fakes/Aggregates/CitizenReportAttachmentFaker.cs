@@ -13,15 +13,15 @@ public sealed class CitizenReportAttachmentFaker : PrivateFaker<CitizenReportAtt
     {
         UsePrivateConstructor();
 
-        var fakeElectionRound = new ElectionRoundAggregateFaker().Generate();
-        var fakeCitizenReport = citizenReport ?? new CitizenReportFaker(electionRound: fakeElectionRound).Generate();
+        electionRound ??= new ElectionRoundAggregateFaker().Generate();
+        citizenReport ??= new CitizenReportFaker(electionRound: electionRound).Generate();
 
         RuleFor(fake => fake.Id, fake => id ?? fake.Random.Guid());
         RuleFor(fake => fake.FileName, fileName ?? string.Empty);
         RuleFor(fake => fake.FilePath, filePath ?? string.Empty);
-        RuleFor(fake => fake.ElectionRound, electionRound ?? fakeElectionRound);
-        RuleFor(fake => fake.ElectionRoundId, electionRound?.Id ?? fakeElectionRound.Id);
-        RuleFor(fake => fake.CitizenReport, fakeCitizenReport ?? fakeCitizenReport);
-        RuleFor(fake => fake.CitizenReportId, fakeCitizenReport?.Id ?? fakeCitizenReport.Id);
+        RuleFor(fake => fake.ElectionRound, electionRound);
+        RuleFor(fake => fake.ElectionRoundId, electionRound.Id);
+        RuleFor(fake => fake.CitizenReport, citizenReport);
+        RuleFor(fake => fake.CitizenReportId, citizenReport.Id);
     }
 }

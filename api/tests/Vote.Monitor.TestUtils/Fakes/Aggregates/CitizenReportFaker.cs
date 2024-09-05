@@ -16,7 +16,7 @@ public sealed class CitizenReportFaker : PrivateFaker<CitizenReport>
         RuleFor(fake => fake.Id, faker => id ?? faker.Random.Guid());
         RuleFor(fake => fake.ElectionRound, electionRound);
         RuleFor(fake => fake.ElectionRoundId, electionRound.Id);
-        
+
         RuleFor(fake => fake.Form, form);
         RuleFor(fake => fake.FormId, form.Id);
     }
