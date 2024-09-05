@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Skeleton } from '@/components/ui/skeleton';
 import { AuthContext } from '@/context/auth.context';
+import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { electionRoundKeys } from '@/features/election-round/queries';
 import { queryClient } from '@/main';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
@@ -18,7 +19,7 @@ import { UserCircleIcon } from '@heroicons/react/24/solid';
 import { useQuery } from '@tanstack/react-query';
 import { Link, useNavigate, useRouter } from '@tanstack/react-router';
 import clsx from 'clsx';
-import { Fragment, useContext, useState } from 'react';
+import { Fragment, useContext, useEffect, useState } from 'react';
 import type { ElectionRoundMonitoring, FunctionComponent } from '../../../common/types';
 import Logo from './Logo';
 
@@ -37,44 +38,42 @@ const userNavigation: { name: string; to: string }[] = [];
 const Header = (): FunctionComponent => {
   const { userRole, signOut } = useContext(AuthContext);
   const navigate = useNavigate();
-  const [selectedElection, setSelectedElection] = useState<ElectionRoundMonitoring>();
+  const [selectedElectionRound, setSelectedElection] = useState<ElectionRoundMonitoring>();
   const router = useRouter();
+  const { setCurrentElectionRoundId, setIsMonitoringNgoForCitizenReporting, currentElectionRoundId } = useCurrentElectionRoundStore(s => s);
 
-  const handleSelectElection = (ev?: ElectionRoundMonitoring): void => {
-    setSelectedElection(ev);
-    localStorage.setItem('electionRoundId', ev?.electionRoundId ?? '');
-    localStorage.setItem('monitoringNgoId', ev?.monitoringNgoId ?? '');
+  const handleSelectElectionRound = (electionRound?: ElectionRoundMonitoring): void => {
+    if (electionRound && selectedElectionRound?.electionRoundId != electionRound.electionRoundId) {
+      setSelectedElection(electionRound);
+      setCurrentElectionRoundId(electionRound.electionRoundId);
+      setIsMonitoringNgoForCitizenReporting(electionRound.isMonitoringNgoForCitizenReporting);
 
-    void queryClient.invalidateQueries({
-      predicate: (query) => query.queryKey !== electionRoundKeys.all
-    });
+      void queryClient.invalidateQueries({
+        predicate: (query) => query.queryKey !== electionRoundKeys.all
+      });
 
-    router.invalidate();
+      router.invalidate();
+      // router.navigate({ to: "/" });
+    }
   }
 
-  const { status, data } = useQuery({
+  const { status, data: electionRounds } = useQuery({
     queryKey: electionRoundKeys.all,
     queryFn: async () => {
       const response = await authApi.get<{ electionRounds: ElectionRoundMonitoring[] }>('/election-rounds:monitoring');
-
-      if (response.status !== 200) {
-        throw new Error('Failed to fetch observers');
-      }
-
-      const electionRoundId: string | null = localStorage.getItem('electionRoundId');
-
-      const electionRound = response
-        .data
-        .electionRounds
-        .find(er => er.electionRoundId === electionRoundId) ?? response.data.electionRounds[0];
-
-      handleSelectElection(electionRound);
-
-      return response.data;
+      return response.data.electionRounds ?? [];
     },
     staleTime: 0,
     refetchOnWindowFocus: false,
   });
+
+  useEffect(() => {
+    if (!!electionRounds) {
+      const electionRound = electionRounds.find(x => x.electionRoundId === currentElectionRoundId);
+      handleSelectElectionRound(electionRound ?? electionRounds[0]);
+    }
+
+  }, [electionRounds]);
 
   return (
     <Disclosure as='nav' className='bg-white shadow-sm mb-10'>
@@ -116,18 +115,18 @@ const Header = (): FunctionComponent => {
                   <DropdownMenu>
                     <DropdownMenuTrigger>
                       <Badge className='bg-secondary-300 text-secondary-900 hover:bg-secondary-300/90'>
-                        <span className='election-text'>{selectedElection?.title}</span>
+                        <span className='election-text'>{selectedElectionRound?.title}</span>
                         <ChevronDownIcon className='w-[20px] ml-2' />
                       </Badge>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
                       <DropdownMenuRadioGroup
-                        value={selectedElection?.electionRoundId ?? ''}
+                        value={selectedElectionRound?.electionRoundId ?? ''}
                         onValueChange={(value) => {
-                          const electionRound = data?.electionRounds.find((er) => er.electionRoundId === value);
-                          handleSelectElection(electionRound);
+                          const electionRound = electionRounds?.find((er) => er.electionRoundId === value);
+                          handleSelectElectionRound(electionRound);
                         }}>
-                        {data?.electionRounds?.map((electionRound) => (
+                        {electionRounds?.map((electionRound) => (
                           <DropdownMenuRadioItem
                             key={electionRound.electionRoundId}
                             value={electionRound.electionRoundId}>

@@ -15,7 +15,7 @@ export type AuthContextType = {
 export const AuthContext = createContext<AuthContextType>({
   signIn: () => new Promise(() => false),
   signOut: () => { },
-  isAuthenticated: true,
+  isAuthenticated: false,
   isLoading: false,
   token: undefined,
   userRole: undefined

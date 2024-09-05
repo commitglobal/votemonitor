@@ -1,5 +1,6 @@
 import { authApi } from '@/common/auth-api';
 import { DateTimeFormat } from '@/common/formats';
+import { ZFormType, ZTranslationStatus } from '@/common/types';
 import CreateDialog from '@/components/dialogs/CreateDialog';
 import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
@@ -17,8 +18,9 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { toast } from '@/components/ui/use-toast';
+import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { useLanguages } from '@/features/languages/queries';
-import { cn } from '@/lib/utils';
+import { cn, mapFormType } from '@/lib/utils';
 import { queryClient } from '@/main';
 import { ChevronDownIcon, ChevronUpIcon, Cog8ToothIcon, EllipsisVerticalIcon, FunnelIcon } from '@heroicons/react/24/outline';
 import { useMutation } from '@tanstack/react-query';
@@ -27,7 +29,7 @@ import { ColumnDef, Row } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { X } from 'lucide-react';
 import { useState, type ReactElement } from 'react';
-import { FormBase, FormStatus, mapFormType, ZTranslationStatus } from '../../models/form';
+import { FormBase, FormStatus } from '../../models/form';
 import { formsKeys, useForms } from '../../queries';
 import AddTranslationsDialog, { useAddTranslationsDialog } from './AddTranslationsDialog';
 import CreateForm from './CreateForm';
@@ -36,6 +38,8 @@ export default function FormsDashboard(): ReactElement {
   const addTranslationsDialog = useAddTranslationsDialog();
   const confirm = useConfirm();
   const { data: languages } = useLanguages();
+  const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
+  const isMonitoringNgoForCitizenReporting = useCurrentElectionRoundStore(s => s.isMonitoringNgoForCitizenReporting);
 
   const formColDefs: ColumnDef<FormBase>[] = [
     {
@@ -180,7 +184,7 @@ export default function FormsDashboard(): ReactElement {
                   actionButtonClass: buttonVariants({ variant: "destructive" }),
                   cancelButton: 'Cancel',
                 })) {
-                  deleteFormMutation.mutate(row.original.id);
+                  deleteFormMutation.mutate({ electionRoundId: currentElectionRoundId, formId: row.original.id });
                 }
               }}>
                 Delete form
@@ -198,7 +202,7 @@ export default function FormsDashboard(): ReactElement {
                   actionButtonClass: buttonVariants({ variant: "destructive" }),
                   cancelButton: 'Cancel',
                 })) {
-                  deleteTranslationMutation.mutate({ formId: row.original.id, languageCode });
+                  deleteTranslationMutation.mutate({ electionRoundId: currentElectionRoundId, formId: row.original.id, languageCode });
                 }
               }}>Delete translation</DropdownMenuItem>}
           </DropdownMenuContent>
@@ -215,17 +219,16 @@ export default function FormsDashboard(): ReactElement {
   };
 
   const handleObsoleteForm = (form: FormBase) => {
-    obsoleteFormMutation.mutate(form.id);
+    obsoleteFormMutation.mutate({ electionRoundId: currentElectionRoundId, formId: form.id });
   }
 
   const handlePublishForm = (form: FormBase) => {
-    publishFormMutation.mutate(form.id);
+    publishFormMutation.mutate({ electionRoundId: currentElectionRoundId, formId: form.id });
   }
 
   const handleDuplicateForm = (form: FormBase) => {
-    duplicateFormMutation.mutate(form.id);
+    duplicateFormMutation.mutate({ electionRoundId: currentElectionRoundId, formId: form.id });
   }
-
 
   const navigateToForm = (formId: string, languageCode: string) => {
     navigate({ to: '/forms/$formId/$languageCode', params: { formId, languageCode } });
@@ -241,9 +244,7 @@ export default function FormsDashboard(): ReactElement {
 
   const deleteTranslationMutation = useMutation({
     mutationKey: formsKeys.all,
-    mutationFn: ({ formId, languageCode }: { formId: string; languageCode: string; }) => {
-      const electionRoundId: string | null = localStorage.getItem('electionRoundId');
-
+    mutationFn: ({ electionRoundId, formId, languageCode }: { electionRoundId: string; formId: string; languageCode: string; }) => {
       return authApi.delete<void>(`/election-rounds/${electionRoundId}/forms/${formId}/${languageCode}`);
     },
 
@@ -259,9 +260,7 @@ export default function FormsDashboard(): ReactElement {
 
   const publishFormMutation = useMutation({
     mutationKey: formsKeys.all,
-    mutationFn: (formId: string) => {
-      const electionRoundId: string | null = localStorage.getItem('electionRoundId');
-
+    mutationFn: ({ electionRoundId, formId }: { electionRoundId: string; formId: string }) => {
       return authApi.post<void>(`/election-rounds/${electionRoundId}/forms/${formId}:publish`);
     },
 
@@ -295,9 +294,7 @@ export default function FormsDashboard(): ReactElement {
 
   const obsoleteFormMutation = useMutation({
     mutationKey: formsKeys.all,
-    mutationFn: (formId: string) => {
-      const electionRoundId: string | null = localStorage.getItem('electionRoundId');
-
+    mutationFn: ({ electionRoundId, formId }: { electionRoundId: string; formId: string }) => {
       return authApi.post<void>(`/election-rounds/${electionRoundId}/forms/${formId}:obsolete`);
     },
 
@@ -321,9 +318,7 @@ export default function FormsDashboard(): ReactElement {
 
   const duplicateFormMutation = useMutation({
     mutationKey: formsKeys.all,
-    mutationFn: (formId: string) => {
-      const electionRoundId: string | null = localStorage.getItem('electionRoundId');
-
+    mutationFn: ({ electionRoundId, formId }: { electionRoundId: string; formId: string }) => {
       return authApi.post<void>(`/election-rounds/${electionRoundId}/forms/${formId}:duplicate`);
     },
 
@@ -347,19 +342,17 @@ export default function FormsDashboard(): ReactElement {
 
   const deleteFormMutation = useMutation({
     mutationKey: formsKeys.all,
-    mutationFn: (formId: string) => {
-      const electionRoundId: string | null = localStorage.getItem('electionRoundId');
-
+    mutationFn: ({ electionRoundId, formId }: { electionRoundId: string; formId: string }) => {
       return authApi.delete<void>(
         `/election-rounds/${electionRoundId}/forms/${formId}`
       );
     },
-    onSuccess: () => {
+    onSuccess: async () => {
       toast({
         title: 'Success',
         description: 'Form deleted',
       });
-      queryClient.invalidateQueries({ queryKey: formsKeys.all });
+      await queryClient.invalidateQueries({ queryKey: formsKeys.all });
     },
   });
 
@@ -395,8 +388,8 @@ export default function FormsDashboard(): ReactElement {
 
   return (
     <Card className='w-full pt-0'>
-      <CardHeader className='flex flex-column gap-2'>
-        <CardTitle className='flex flex-row justify-between items-center px-6'>
+      <CardHeader className='flex gap-2 flex-column'>
+        <CardTitle className='flex flex-row items-center justify-between px-6'>
           <div className='text-xl'>
             Observation forms
           </div>
@@ -407,7 +400,7 @@ export default function FormsDashboard(): ReactElement {
           </div>
         </CardTitle>
         <Separator />
-        <div className='filters px-6 flex flex-row justify-end gap-4'>
+        <div className='flex flex-row justify-end gap-4 px-6 filters'>
           <div className='w-[400px]'><Input onChange={handleSearchInput} placeholder='Search' /></div>
           <FunnelIcon
             onClick={changeIsFiltering}
@@ -418,17 +411,18 @@ export default function FormsDashboard(): ReactElement {
         </div>
         <Separator />
         {isFiltering ? (
-          <div className='table-filters flex flex-row gap-4 items-center'>
+          <div className='flex flex-row items-center gap-4 table-filters'>
             <Select value={formTypeFilter} onValueChange={handleFormTypeFilter}>
               <SelectTrigger className='w-[180px]'>
                 <SelectValue placeholder='Form type' />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectItem value='Opening'>Opening</SelectItem>
-                  <SelectItem value='Voting'>Voting</SelectItem>
-                  <SelectItem value='ClosingAndCounting'>Closing And Counting</SelectItem>
-                  <SelectItem value='Other'>Other</SelectItem>
+                  <SelectItem value={ZFormType.Values.Opening}>{mapFormType(ZFormType.Values.Opening)}</SelectItem>
+                  <SelectItem value={ZFormType.Values.Voting}>{mapFormType(ZFormType.Values.Voting)}</SelectItem>
+                  <SelectItem value={ZFormType.Values.ClosingAndCounting}>{mapFormType(ZFormType.Values.ClosingAndCounting)}</SelectItem>
+                  {isMonitoringNgoForCitizenReporting && <SelectItem value={ZFormType.Values.CitizenReporting}>{mapFormType(ZFormType.Values.CitizenReporting)}</SelectItem>}
+                  <SelectItem value={ZFormType.Values.Other}>{mapFormType(ZFormType.Values.Other)}</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
@@ -437,11 +431,11 @@ export default function FormsDashboard(): ReactElement {
                 Reset filters
               </span>
             </Button>
-            <div className='flex flex-row gap-2 flex-wrap'>
+            <div className='flex flex-row flex-wrap gap-2'>
               {formTypeFilter && (
                 <span
                   onClick={() => handleFormTypeFilter('')}
-                  className='rounded-full cursor-pointer py-1 px-4 bg-purple-100 text-sm text-purple-900 font-medium flex items-center gap-2'>
+                  className='flex items-center gap-2 px-4 py-1 text-sm font-medium text-purple-900 bg-purple-100 rounded-full cursor-pointer'>
                   Observer status: {formTypeFilter}
                   <X size={14} />
                 </span>
@@ -455,7 +449,7 @@ export default function FormsDashboard(): ReactElement {
       <CardContent>
         <QueryParamsDataTable
           columns={formColDefs}
-          useQuery={useForms}
+          useQuery={(params) => useForms(currentElectionRoundId, params)}
           getSubrows={getSubrows}
           getRowClassName={getRowClassName}
         />

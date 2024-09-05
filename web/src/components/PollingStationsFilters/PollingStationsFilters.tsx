@@ -4,6 +4,7 @@ import type { FunctionComponent } from '@/common/types';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { usePollingStationsLocationLevels } from '@/hooks/polling-stations-levels';
 import { useSetPrevSearch } from '@/common/prev-search-store';
+import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 
 export function PollingStationsFilters(): FunctionComponent {
   const navigate = useNavigate();
@@ -12,7 +13,9 @@ export function PollingStationsFilters(): FunctionComponent {
     strict: false,
   });
 
-  const { data } = usePollingStationsLocationLevels();
+  const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
+  const { data } = usePollingStationsLocationLevels(currentElectionRoundId);
+
   const selectedLevel1Node = useMemo(
     () => data?.[1]?.find((node) => node.name === search.level1Filter),
     [data, search.level1Filter]

@@ -15,6 +15,7 @@ import { useCallback } from 'react';
 import { DateTimeFormat } from '@/common/formats';
 import type { TableCellProps } from '@/components/ui/DataTable/DataTable';
 import type { FunctionComponent } from '@/common/types';
+import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 
 function PushMessages(): FunctionComponent {
   const pushMessagesColDefs: ColumnDef<PushMessageModel>[] = [
@@ -112,6 +113,7 @@ function PushMessages(): FunctionComponent {
   }
 
   const navigate = useNavigate();
+    const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
 
   const navigateToPushMessage = useCallback(
     (id: string) => {
@@ -139,7 +141,7 @@ function PushMessages(): FunctionComponent {
       <CardContent>
         <QueryParamsDataTable
           columns={pushMessagesColDefs}
-          useQuery={usePushMessages}
+          useQuery={(params) => usePushMessages(currentElectionRoundId, params)}
           onRowClick={navigateToPushMessage}
           getCellProps={getCellProps}
           emptySubtitle='Communicate instantly with observers by creating and sending push messages directly to their mobile app.'

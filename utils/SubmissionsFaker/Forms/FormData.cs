@@ -21,46 +21,47 @@ public class FormData
             { "RO", "formular de test" }
         },
         FormType = "Opening",
-        Questions = [
-        new NumberQuestionRequest
-        {
-            Id = Guid.NewGuid(),
-            Code = "A1",
-            Text = new TranslatedString
+        Questions =
+        [
+            new NumberQuestionRequest
             {
-                { "EN", "How many PEC members have been appointed" },
-                { "RO", "Câți membri PEC au fost numiți" }
+                Id = Guid.NewGuid(),
+                Code = "A1",
+                Text = new TranslatedString
+                {
+                    { "EN", "How many PEC members have been appointed" },
+                    { "RO", "Câți membri PEC au fost numiți" }
+                },
+                Helptext = new TranslatedString
+                {
+                    { "EN", "Please enter a number" },
+                    { "RO", "Vă rugăm să introduceți numărul dvs" }
+                },
+                InputPlaceholder = new TranslatedString
+                {
+                    { "EN", "number" },
+                    { "RO", "numar" }
+                }
             },
-            Helptext = new TranslatedString
-            {
-                { "EN", "Please enter a number" },
-                { "RO", "Vă rugăm să introduceți numărul dvs" }
-            },
-            InputPlaceholder = new TranslatedString
-            {
-                { "EN", "number" },
-                { "RO", "numar" }
-            }
-        },
             new TextQuestionRequest
             {
                 Id = Guid.NewGuid(),
                 Code = "A2",
                 Text = new TranslatedString
-            {
-                { "EN", "How are you today" },
-                { "RO", "Cum te simți azi" }
-            },
+                {
+                    { "EN", "How are you today" },
+                    { "RO", "Cum te simți azi" }
+                },
                 Helptext = new TranslatedString
-            {
-                { "EN", "Please enter how are you" },
-                { "RO", "Vă rugăm să introduceți cum sunteți" }
-            },
+                {
+                    { "EN", "Please enter how are you" },
+                    { "RO", "Vă rugăm să introduceți cum sunteți" }
+                },
                 InputPlaceholder = new TranslatedString
-            {
-                { "EN", "mood" },
-                { "RO", "dispozitie" }
-            }
+                {
+                    { "EN", "mood" },
+                    { "RO", "dispozitie" }
+                }
             },
             new DateQuestionRequest
             {
@@ -164,8 +165,7 @@ public class FormData
                         IsFreeText = true,
                         IsFlagged = true
                     },
-                    }
-
+                }
             },
             new MultiSelectQuestionRequest
             {
@@ -242,12 +242,12 @@ public class FormData
             }
         ]
     };
+
     public static UpdateForm VotingForm = new()
     {
-
     };
+
     public static UpdateForm ClosingForm = new()
     {
-
     };
 }

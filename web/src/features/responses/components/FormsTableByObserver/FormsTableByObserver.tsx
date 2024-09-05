@@ -6,8 +6,9 @@ import { CardContent } from '@/components/ui/card';
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
 import { useFormSubmissionsByObserver } from '../../hooks/form-submissions-queries';
 import type { FormSubmissionsSearchParams } from '../../models/search-params';
-import { useByObserverColumns } from '../../store/column-visibility';
+import { useFormSubmissionsByObserverColumns } from '../../store/column-visibility';
 import { formSubmissionsByObserverColumnDefs } from '../../utils/column-defs';
+import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 
 const routeApi = getRouteApi('/responses/');
 
@@ -19,8 +20,8 @@ export function FormsTableByObserver({ searchText }: FormsTableByObserverProps):
   const navigate = routeApi.useNavigate();
   const search = routeApi.useSearch();
   const debouncedSearch = useDebounce(search, 300);
-
-  const columnsVisibility = useByObserverColumns();
+  const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
+  const columnsVisibility = useFormSubmissionsByObserverColumns();
 
   const queryParams = useMemo(() => {
     const params = [
@@ -47,7 +48,7 @@ export function FormsTableByObserver({ searchText }: FormsTableByObserverProps):
       <QueryParamsDataTable
         columnVisibility={columnsVisibility}
         columns={formSubmissionsByObserverColumnDefs}
-        useQuery={useFormSubmissionsByObserver}
+        useQuery={(params) => useFormSubmissionsByObserver(currentElectionRoundId, params)}
         queryParams={queryParams}
         onRowClick={navigateToMonitoringObserver}
       />

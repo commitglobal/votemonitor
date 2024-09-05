@@ -17,18 +17,18 @@ import { Link, useRouter } from '@tanstack/react-router';
 import { format } from 'date-fns';
 import { quickReportKeys } from '../../hooks/quick-reports';
 import { mapQuickReportLocationType } from '../../utils/helpers';
+import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 
 export default function QuickReportDetails(): FunctionComponent {
   const { quickReportId } = Route.useParams();
-  const quickReportQuery = useSuspenseQuery(quickReportDetailsQueryOptions(quickReportId));
+    const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
+  const quickReportQuery = useSuspenseQuery(quickReportDetailsQueryOptions(currentElectionRoundId, quickReportId));
   const quickReport = quickReportQuery.data;
   const { invalidate } = useRouter();
 
   const updateQuickReportFollowUpStatusMutation = useMutation({
     mutationKey: quickReportKeys.all,
-    mutationFn: (followUpStatus: FollowUpStatus) => {
-      const electionRoundId: string | null = localStorage.getItem('electionRoundId');
-
+    mutationFn: ({electionRoundId ,followUpStatus}: {electionRoundId: string ,followUpStatus: FollowUpStatus}) => {
       return authApi.put<void>(`/election-rounds/${electionRoundId}/quick-reports/${quickReportId}:status`, {
         followUpStatus,
       });
@@ -53,8 +53,8 @@ export default function QuickReportDetails(): FunctionComponent {
     },
   });
 
-  function handleFolowUpStatusChange(followUpStatus: FollowUpStatus): void {
-    updateQuickReportFollowUpStatusMutation.mutate(followUpStatus);
+  function handleFollowUpStatusChange(followUpStatus: FollowUpStatus): void {
+    updateQuickReportFollowUpStatusMutation.mutate({ electionRoundId: currentElectionRoundId, followUpStatus });
   }
 
   const prevSearch = usePrevSearch();
@@ -76,7 +76,7 @@ export default function QuickReportDetails(): FunctionComponent {
           <CardTitle className='mb-4 flex justify-between'>
             <div>Quick report</div>
             <Select
-              onValueChange={handleFolowUpStatusChange}
+              onValueChange={handleFollowUpStatusChange}
               defaultValue={quickReport.followUpStatus}
               value={quickReport.followUpStatus}>
               <SelectTrigger className='w-[180px]'>

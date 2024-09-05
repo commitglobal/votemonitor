@@ -15,13 +15,15 @@ import { Route } from '@/routes/responses';
 import { useMonitoringObserversTags } from '@/hooks/tags-queries';
 import { ResetFiltersButton } from '../ResetFiltersButton/ResetFiltersButton';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 
 
 export function FormsFiltersByObserver(): FunctionComponent {
   const navigate = useNavigate({ from: '/responses/' });
   const search = Route.useSearch();
+    const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
 
-  const { data: tags } = useMonitoringObserversTags();
+  const { data: tags } = useMonitoringObserversTags(currentElectionRoundId);
 
   const onTagsFilterChange = useCallback(
     (tag: string) => () => {

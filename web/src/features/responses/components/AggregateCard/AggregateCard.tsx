@@ -2,7 +2,6 @@ import { saveChart } from '@/components/charts/utils/save-chart';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Square2StackIcon } from '@heroicons/react/24/solid';
-import { useLoaderData } from '@tanstack/react-router';
 import { useRef } from 'react';
 
 import {
@@ -18,12 +17,15 @@ import {
 import { DateAggregateContent } from '../DateAggregateContent/DateAggregateContent';
 import { MultiSelectAggregateContent } from '../MultiSelectAggregateContent/MultiSelectAggregateContent';
 import { NumberAggregateContent } from '../NumberAggregateContent/NumberAggregateContent';
-import { ResponseExtraDataSection } from '../ReponseExtraDataSection/ResponseExtraDataSection';
 import { RatingAggregateContent } from '../RatingAggregateContent/RatingAggregateContent';
+import { ResponseExtraDataSection } from '../ReponseExtraDataSection/ResponseExtraDataSection';
 import { SingleSelectAggregateContent } from '../SingleSelectAggregateContent/SingleSelectAggregateContent';
 import { TextAggregateContent } from '../TextAggregateContent/TextAggregateContent';
 
 import type { FunctionComponent } from '@/common/types';
+import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { formAggregatedDetailsQueryOptions, Route } from '@/routes/responses/$formId.aggregated';
+import { useSuspenseQuery } from '@tanstack/react-query';
 type AggregateCardProps = {
   aggregate: BaseQuestionAggregate;
   language: string;
@@ -31,12 +33,14 @@ type AggregateCardProps = {
 };
 
 export function AggregateCard({ aggregate, language, responders }: AggregateCardProps): FunctionComponent {
-  const chartRef = useRef(null);
-
-  const formSubmission = useLoaderData({ from: '/responses/$formId/aggregated' });
+  const { formId } = Route.useParams()
+  const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
+  const { data: formSubmission } = useSuspenseQuery(formAggregatedDetailsQueryOptions(currentElectionRoundId, formId));
 
   const notes = formSubmission.notes.filter((note) => note.questionId === aggregate.questionId);
   const attachments = formSubmission.attachments.filter((attachment) => attachment.questionId === aggregate.questionId);
+
+  const chartRef = useRef(null);
 
   return (
     <Card key={aggregate.questionId} className='max-w-4xl'>

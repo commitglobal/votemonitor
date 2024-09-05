@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
 import { useFormSubmissionsExportedDataDetails, useStartDataExport } from '../../hooks/form-export';
 import { ExportStatus, type ExportedDataType } from '../../models/data-export';
+import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 
 interface ExportDataButtonProps {
   exportedDataType: ExportedDataType;
@@ -13,8 +14,12 @@ interface ExportDataButtonProps {
 
 export function ExportDataButton({ exportedDataType }: ExportDataButtonProps): FunctionComponent {
   const [exportedDataId, setExportedDataId] = useState('');
+    const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
 
-  const { mutate: createExportData, isPending: isCreatingExportData } = useStartDataExport(exportedDataType, {
+  const { mutate: createExportData, isPending: isCreatingExportData } = useStartDataExport({
+    electionRoundId: currentElectionRoundId,
+    exportedDataType
+  }, {
     onSuccess: (data) => {
       setExportedDataId(data.exportedDataId);
     },
@@ -28,7 +33,7 @@ export function ExportDataButton({ exportedDataType }: ExportDataButtonProps): F
   }, [createExportData]);
 
   const { data: exportedDataDetails, isFetching: isFetchingExportedDataDetails } =
-    useFormSubmissionsExportedDataDetails(exportedDataId, {
+    useFormSubmissionsExportedDataDetails({ electionRoundId: currentElectionRoundId, exportedDataId }, {
       enabled: !isCreatingExportData,
     });
 
@@ -37,9 +42,7 @@ export function ExportDataButton({ exportedDataType }: ExportDataButtonProps): F
   const isLoading = isCreatingExportData || isFetchingExportedDataDetails || exportStatus === ExportStatus.Started;
 
   const downloadExportedData = useCallback(async (): Promise<void> => {
-    const electionRoundId = localStorage.getItem('electionRoundId');
-
-    const response = await authApi.get<Blob>(`/election-rounds/${electionRoundId}/exported-data/${exportedDataId}`, {
+    const response = await authApi.get<Blob>(`/election-rounds/${currentElectionRoundId}/exported-data/${exportedDataId}`, {
       responseType: 'blob',
     });
 
