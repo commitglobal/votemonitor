@@ -85,7 +85,6 @@ export const pollingStationsDataConfig = (pollingStationsStats?: PollingStations
     // active color
     colors.push('#7833B3');
   }
-  debugger;
 
   const numberOfNotVisitedPollingStations = (pollingStationsStats?.totalNumberOfPollingStations ?? 0) - (pollingStationsStats?.numberOfVisitedPollingStations ?? 0);
   if (numberOfNotVisitedPollingStations) {
