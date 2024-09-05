@@ -10,7 +10,7 @@ public sealed class ListCitizenReportAttachmentsSpecification : Specification<Ci
             .Where(x => x.ElectionRoundId == electionRoundId
                         && x.FormId == formId
                         && x.CitizenReportId == citizenReportId
-                        && x.IsDeleted == false
-                        && x.IsCompleted == true);
+                        && !x.IsDeleted
+                        && x.IsCompleted);
     }
 }

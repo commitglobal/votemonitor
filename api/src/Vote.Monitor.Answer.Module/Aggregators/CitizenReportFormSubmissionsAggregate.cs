@@ -50,12 +50,12 @@ public class CitizenReportFormSubmissionsAggregate
 
         foreach (var answer in citizenReport.Answers)
         {
-            if (!Aggregates.ContainsKey(answer.QuestionId))
+            if (!Aggregates.TryGetValue(answer.QuestionId, out var aggregate))
             {
                 continue;
             }
 
-            Aggregates[answer.QuestionId].Aggregate(citizenReport.Id, Guid.Empty, answer);
+            aggregate.Aggregate(citizenReport.Id, Guid.Empty, answer);
         }
 
         return this;
