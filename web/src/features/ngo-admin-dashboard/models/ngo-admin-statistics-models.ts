@@ -24,4 +24,5 @@ interface MonitoringStats {
     questionsHistogram: HistogramEntry[];
     flaggedAnswersHistogram: HistogramEntry[];
     quickReportsHistogram: HistogramEntry[];
+    citizenReportsHistogram: HistogramEntry[];
 }

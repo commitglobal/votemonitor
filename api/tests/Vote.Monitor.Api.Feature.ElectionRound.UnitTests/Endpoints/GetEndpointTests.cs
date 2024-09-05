@@ -13,8 +13,12 @@ public class GetEndpointTests
             StartDate = new DateOnly(2024, 01, 02),
             EnglishTitle = "An english title",
             Status = ElectionRoundStatus.NotStarted,
-            Country = CountriesList.MD.Name,
             CountryId = CountriesList.MD.Id,
+            CountryIso2 = CountriesList.MD.Iso2,
+            CountryIso3 = CountriesList.MD.Iso3,
+            CountryName = CountriesList.MD.Name,
+            CountryFullName = CountriesList.MD.FullName,
+            CountryNumericCode = CountriesList.MD.NumericCode,
             CreatedOn = DateTime.UtcNow.AddHours(-30),
             LastModifiedOn = DateTime.UtcNow.AddHours(-15)
         };

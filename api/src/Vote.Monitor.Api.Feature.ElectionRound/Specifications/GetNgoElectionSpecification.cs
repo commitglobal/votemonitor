@@ -20,7 +20,9 @@ public sealed class GetNgoElectionSpecification : Specification<MonitoringNgo, N
             EnglishTitle = x.ElectionRound.EnglishTitle,
             StartDate = x.ElectionRound.StartDate,
             Country = x.ElectionRound.Country.FullName,
-            CountryId = x.ElectionRound.CountryId
+            CountryId = x.ElectionRound.CountryId,
+            IsMonitoringNgoForCitizenReporting = x.ElectionRound.CitizenReportingEnabled &&
+                                                 x.ElectionRound.MonitoringNgoForCitizenReporting.NgoId == ngoId
         });
     }
 }

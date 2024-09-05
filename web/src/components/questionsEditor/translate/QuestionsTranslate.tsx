@@ -1,5 +1,5 @@
-import { EditFormTranslationType } from '@/features/forms/components/EditFormTranslation/EditFormTranslation';
-import { useFieldArray, useFormContext, useWatch } from 'react-hook-form';
+import { EditFormType } from '@/features/forms/components/EditForm/EditForm';
+import { useFieldArray, useFormContext } from 'react-hook-form';
 import TranslateQuestionFactory from './TranslateQuestionFactory';
 
 export interface QuestionsTranslateProps {
@@ -11,7 +11,7 @@ function QuestionsTranslate({
   activeQuestionId,
   setActiveQuestionId
 }: QuestionsTranslateProps) {
-  const { control } = useFormContext<EditFormTranslationType>();
+  const { control } = useFormContext<EditFormType>();
 
   const { fields } = useFieldArray({
     name: "questions",

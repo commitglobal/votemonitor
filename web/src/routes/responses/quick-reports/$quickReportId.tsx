@@ -6,16 +6,16 @@ import { redirectIfNotAuth } from '@/lib/utils';
 import { queryOptions } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 
-export function quickReportDetailsQueryOptions(quickReportId: string) {
+export function quickReportDetailsQueryOptions(electionRoundId: string, quickReportId: string) {
   return queryOptions({
     queryKey: quickReportKeys.detail(quickReportId),
     queryFn: async () => {
-      const electionRoundId: string | null = localStorage.getItem('electionRoundId');
 
       const response = await authApi.get<QuickReport>(`/election-rounds/${electionRoundId}/quick-reports/${quickReportId}`);
 
       return response.data;
     },
+    enabled: !!electionRoundId
   });
 }
 
@@ -24,6 +24,9 @@ export const Route = createFileRoute('/responses/quick-reports/$quickReportId')(
     redirectIfNotAuth();
   },
   component: QuickReportDetails,
-  loader: ({ context: { queryClient }, params: { quickReportId } }) =>
-    queryClient.ensureQueryData(quickReportDetailsQueryOptions(quickReportId)),
+  loader: ({ context: { queryClient, currentElectionRoundContext }, params: { quickReportId } }) => {
+    const electionRoundId = currentElectionRoundContext.getState().currentElectionRoundId;
+
+    return queryClient.ensureQueryData(quickReportDetailsQueryOptions(electionRoundId, quickReportId));
+  },
 });

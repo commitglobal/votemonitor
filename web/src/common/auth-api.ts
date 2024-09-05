@@ -1,10 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 
-import { redirectIfNotAuth } from '@/lib/utils';
 import { redirect } from '@tanstack/react-router';
 import axios from 'axios';
-import { config } from 'process';
 
 export interface ILoginResponse {
   token: string;

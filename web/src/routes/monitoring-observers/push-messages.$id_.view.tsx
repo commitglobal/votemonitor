@@ -5,14 +5,13 @@ import { queryOptions } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 
 import type { FunctionComponent } from '@/common/types';
-import type { PushMessageDetailedModel } from '@/features/monitoring-observers/models/push-message';
 import { pushMessagesKeys } from '@/features/monitoring-observers/hooks/push-messages-queries';
+import type { PushMessageDetailedModel } from '@/features/monitoring-observers/models/push-message';
 
-export const pushMessageDetailsQueryOptions = (pushMessageId: string) =>
-  queryOptions({
-    queryKey: pushMessagesKeys.detail(pushMessageId),
+export const pushMessageDetailsQueryOptions = (electionRoundId: string, pushMessageId: string) => {
+  return queryOptions({
+    queryKey: pushMessagesKeys.detail(electionRoundId, pushMessageId),
     queryFn: async () => {
-      const electionRoundId: string | null = localStorage.getItem('electionRoundId');
 
       const response = await authApi.get<PushMessageDetailedModel>(
         `/election-rounds/${electionRoundId}/notifications/${pushMessageId}`
@@ -24,7 +23,9 @@ export const pushMessageDetailsQueryOptions = (pushMessageId: string) =>
 
       return response.data;
     },
+    enabled: !!electionRoundId
   });
+}
 
 function Details(): FunctionComponent {
   return <PushMessageDetails />;
@@ -35,6 +36,9 @@ export const Route = createFileRoute('/monitoring-observers/push-messages/$id/vi
     redirectIfNotAuth();
   },
   component: Details,
-  loader: ({ context: { queryClient }, params: { id } }) =>
-    queryClient.ensureQueryData(pushMessageDetailsQueryOptions(id)),
+  loader: ({ context: { queryClient, currentElectionRoundContext }, params: { id } }) => {
+    const electionRoundId = currentElectionRoundContext.getState().currentElectionRoundId;
+
+    return queryClient.ensureQueryData(pushMessageDetailsQueryOptions(electionRoundId, id));
+  }
 });

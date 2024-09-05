@@ -39,6 +39,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Authorization.Policies\Authorization.Policies.csproj" />
+    <ProjectReference Include="..\Feature.CitizenReports.Attachments\Feature.CitizenReports.Attachments.csproj" />
+    <ProjectReference Include="..\Feature.CitizenReports.Notes\Feature.CitizenReports.Notes.csproj" />
+    <ProjectReference Include="..\Feature.CitizenReports\Feature.CitizenReports.csproj" />
     <ProjectReference Include="..\Feature.DataExport\Feature.DataExport.csproj" />
     <ProjectReference Include="..\Feature.Feedback\Feature.Feedback.csproj" />
     <ProjectReference Include="..\Feature.Form.Submissions\Feature.Form.Submissions.csproj" />
@@ -56,7 +59,7 @@
     <ProjectReference Include="..\Vote.Monitor.Api.Feature.Country\Vote.Monitor.Api.Feature.Country.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Api.Feature.ElectionRound\Vote.Monitor.Api.Feature.ElectionRound.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Api.Feature.Language\Vote.Monitor.Api.Feature.Language.csproj" />
-    <ProjectReference Include="..\Vote.Monitor.Api.Feature.Monitoring\Vote.Monitor.Api.Feature.Monitoring.csproj" />
+    <ProjectReference Include="..\Feature.Monitoring\Feature.Monitoring.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Api.Feature.NgoAdmin\Vote.Monitor.Api.Feature.NgoAdmin.csproj" />
     <ProjectReference Include="..\Vote.Monitor.Api.Feature.Ngo\Vote.Monitor.Api.Feature.Ngo.csproj" />
     <ProjectReference Include="..\Feature.Notifications\Feature.Notifications.csproj" />
@@ -79,6 +82,9 @@
     </Content>
     <Content Update="appsettings.Testing.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\.dockerignore">
+      <Link>.dockerignore</Link>
     </Content>
   </ItemGroup>
 

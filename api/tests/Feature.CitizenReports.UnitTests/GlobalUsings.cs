@@ -1,0 +1,12 @@
+﻿global using FastEndpoints;
+global using FluentAssertions;
+global using FluentValidation.TestHelper;
+global using Microsoft.AspNetCore.Http.HttpResults;
+global using NSubstitute;
+global using NSubstitute.ReturnsExtensions;
+global using Vote.Monitor.Answer.Module.Requests;
+global using Vote.Monitor.Domain.Entities.FormBase.Questions;
+global using Vote.Monitor.Domain.Repository;
+global using Vote.Monitor.TestUtils.Fakes.Aggregates;
+global using Xunit;
+global using FormAggregate = Vote.Monitor.Domain.Entities.FormAggregate.Form;

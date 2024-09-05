@@ -7,5 +7,4 @@ public class UpdateFormResponse : CreateResponse
 {
     public string Id { get; set; }
     public List<BaseQuestionRequest> Questions { get; set; } = new();
-
 }

@@ -28,6 +28,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import { ReactElement, useRef, useState } from 'react';
 
 import { Observer } from '../../models/Observer';
+import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 
 export default function ObserversDashboard(): ReactElement {
   const observerColDefs: ColumnDef<Observer>[] = [
@@ -82,6 +83,7 @@ export default function ObserversDashboard(): ReactElement {
   const [fileName, setFileName] = useState('');
   const [isFiltering, setFiltering] = useState(false);
   const [statusFilter, setStatusFilter] = useState('');
+    const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
 
   const navigate = useNavigate();
   const handleSearchInput = (ev: React.FormEvent<HTMLInputElement>) => {
@@ -107,19 +109,19 @@ export default function ObserversDashboard(): ReactElement {
     navigate({ to: '/observers/$observerId', params: { observerId } });
   };
 
-  const useObservers = (p: DataTableParameters): UseQueryResult<PageResponse<Observer>, Error> => {
+  const useObservers = (electionRoundId: string, params: DataTableParameters): UseQueryResult<PageResponse<Observer>, Error> => {
+
     return useQuery({
-      queryKey: ['observers', p.pageNumber, p.pageSize, p.sortColumnName, p.sortOrder, searchText, statusFilter],
+      queryKey: ['observers', electionRoundId, params.pageNumber, params.pageSize, params.sortColumnName, params.sortOrder, searchText, statusFilter],
       queryFn: async () => {
         const paramsObject: any = {
-          PageNumber: p.pageNumber,
-          PageSize: p.pageSize,
-          SortColumnName: p.sortColumnName,
-          SortOrder: p.sortOrder,
+          PageNumber: params.pageNumber,
+          PageSize: params.pageSize,
+          SortColumnName: params.sortColumnName,
+          SortOrder: params.sortOrder,
           searchText: searchText,
           status: statusFilter,
         };
-        const electionRoundId: string | null = localStorage.getItem('electionRoundId');
 
         const response = await authApi.get<PageResponse<Observer>>(
           `/election-rounds/${electionRoundId}/monitoring-observers`,
@@ -136,6 +138,7 @@ export default function ObserversDashboard(): ReactElement {
 
         return response.data;
       },
+      enabled: !!electionRoundId
     });
   };
 
@@ -319,7 +322,7 @@ export default function ObserversDashboard(): ReactElement {
               )}
             </CardHeader>
             <CardContent>
-              <QueryParamsDataTable columns={observerColDefs} useQuery={useObservers} onRowClick={navigateToObserver} />
+              <QueryParamsDataTable columns={observerColDefs} useQuery={(params) => useObservers(currentElectionRoundId, params)} onRowClick={navigateToObserver} />
             </CardContent>
           </Card>
         </TabsContent>
