@@ -55,9 +55,9 @@ public class CsvRowParsedHelpersTests
         // Arrange
         var rows = new List<CsvRowParsed<string>>
         {
-            new CsvRowParsed<string> {OriginalRow = "email1",  IsSuccess = true, Value = "email1" },
-            new CsvRowParsed<string> { OriginalRow = "email2",IsSuccess = true, Value = "email2" },
-            new CsvRowParsed<string> { OriginalRow = "email3", IsSuccess = true, Value = "email3" }
+            new() {OriginalRow = "email1",  IsSuccess = true, Value = "email1" },
+            new() { OriginalRow = "email2",IsSuccess = true, Value = "email2" },
+            new() { OriginalRow = "email3", IsSuccess = true, Value = "email3" }
         };
 
         // Act
@@ -78,9 +78,9 @@ public class CsvRowParsedHelpersTests
         // Arrange
         var rows = new List<CsvRowParsed<string>>
         {
-            new CsvRowParsed<string> {OriginalRow = "email",  IsSuccess = true, Value = null },
-            new CsvRowParsed<string> { OriginalRow = "email2",IsSuccess = true, Value = "email2" },
-            new CsvRowParsed<string> { OriginalRow = "email3", IsSuccess = true, Value = "email3" }
+            new() {OriginalRow = "email",  IsSuccess = true, Value = null },
+            new() { OriginalRow = "email2",IsSuccess = true, Value = "email2" },
+            new() { OriginalRow = "email3", IsSuccess = true, Value = "email3" }
         };
 
         // Act
@@ -101,10 +101,10 @@ public class CsvRowParsedHelpersTests
         // Arrange
         var rows = new List<CsvRowParsed<string>>
         {
-            new CsvRowParsed<string> { OriginalRow = "x", IsSuccess = true, Value = "email1" },
-            new CsvRowParsed<string> {  OriginalRow = "x",IsSuccess = true, Value = "email2" },
-            new CsvRowParsed<string> { OriginalRow = "x",  IsSuccess = true, Value = "email1" },
-            new CsvRowParsed<string> {OriginalRow = "email1",  IsSuccess = true, Value = "email3" }
+            new() { OriginalRow = "x", IsSuccess = true, Value = "email1" },
+            new() {  OriginalRow = "x",IsSuccess = true, Value = "email2" },
+            new() { OriginalRow = "x",  IsSuccess = true, Value = "email1" },
+            new() {OriginalRow = "email1",  IsSuccess = true, Value = "email3" }
         };
 
         // Act
@@ -134,11 +134,11 @@ public class CsvRowParsedHelpersTests
         // Arrange
         var rows = new List<CsvRowParsed<string>>
         {
-            new CsvRowParsed<string> { OriginalRow = "x", IsSuccess = true, Value = "email1" },
-            new CsvRowParsed<string> {  OriginalRow = "x",IsSuccess = true, Value = "email2" },
-            new CsvRowParsed<string> { OriginalRow = "x",  IsSuccess = true, Value = "email1" },
-            new CsvRowParsed<string> {OriginalRow = "email1",  IsSuccess = true, Value = "email3" },
-            new CsvRowParsed<string> { OriginalRow = "33x", IsSuccess = true, Value = "email1" }
+            new() { OriginalRow = "x", IsSuccess = true, Value = "email1" },
+            new() {  OriginalRow = "x",IsSuccess = true, Value = "email2" },
+            new() { OriginalRow = "x",  IsSuccess = true, Value = "email1" },
+            new() {OriginalRow = "email1",  IsSuccess = true, Value = "email3" },
+            new() { OriginalRow = "33x", IsSuccess = true, Value = "email1" }
         };
 
         // Act

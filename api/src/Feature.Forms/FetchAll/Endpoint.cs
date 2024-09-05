@@ -1,10 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Feature.Forms.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Vote.Monitor.Domain;
 using Vote.Monitor.Domain.Entities.FormAggregate;
 
 namespace Feature.Forms.FetchAll;
-public class Endpoint(VoteMonitorContext context, IMemoryCache cache) : Endpoint<Request, Results<Ok<Response>, NotFound>>
+public class Endpoint(VoteMonitorContext context, IMemoryCache cache) : Endpoint<Request, Results<Ok<NgoFormsResponseModel>, NotFound>>
 {
     public override void Configure()
     {
@@ -19,7 +20,7 @@ public class Endpoint(VoteMonitorContext context, IMemoryCache cache) : Endpoint
         });
     }
 
-    public override async Task<Results<Ok<Response>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<Results<Ok<NgoFormsResponseModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
         var monitoringNgo = await context.MonitoringObservers
             .Include(x => x.MonitoringNgo)
@@ -46,12 +47,13 @@ public class Endpoint(VoteMonitorContext context, IMemoryCache cache) : Endpoint
                 .Where(x => x.Status == FormStatus.Published)
                 .Where(x => x.ElectionRoundId == req.ElectionRoundId)
                 .Where(x => x.MonitoringNgoId == monitoringNgo.MonitoringNgoId)
+                .Where(x=>x.FormType != FormType.CitizenReporting)
                 .OrderBy(x => x.Code)
                 .ToListAsync(cancellationToken: ct);
 
             e.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30);
 
-            return new Response
+            return new NgoFormsResponseModel
             {
                 ElectionRoundId = monitoringNgo.ElectionRoundId,
                 Version = monitoringNgo.FormsVersion.ToString(),

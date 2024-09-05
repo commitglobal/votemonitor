@@ -1,6 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 using FluentValidation;
 using Vote.Monitor.Core.Models;
+using Vote.Monitor.Domain.Entities.CitizenReportAggregate;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Domain.Entities.FormAnswerBase;
 using Vote.Monitor.Domain.Entities.FormBase.Questions;
@@ -25,7 +26,7 @@ public class Form : AuditableBaseEntity, IAggregateRoot
     public string[] Languages { get; private set; } = [];
     public int NumberOfQuestions { get; private set; }
 
-    public LanguagesTranslationStatus LanguagesTranslationStatus { get; private set; }
+    public LanguagesTranslationStatus LanguagesTranslationStatus { get; private set; } = new();
     public IReadOnlyList<BaseQuestion> Questions { get; private set; } = new List<BaseQuestion>().AsReadOnly();
 
     private Form(
@@ -82,7 +83,7 @@ public class Form : AuditableBaseEntity, IAggregateRoot
                     x.GetTranslationStatus(defaultLanguage, languageCode) == TranslationStatus.MissingTranslations)
                     ? TranslationStatus.MissingTranslations
                     : TranslationStatus.Translated;
-            
+
             languagesTranslationStatus.AddOrUpdateTranslationStatus(languageCode, status);
         }
 
@@ -208,6 +209,26 @@ public class Form : AuditableBaseEntity, IAggregateRoot
             numberOfQuestionAnswered, numberOfFlaggedAnswers);
     }
 
+    public CitizenReport CreateCitizenReport(Guid citizenReportId, List<BaseAnswer>? answers)
+    {
+        if (answers == null)
+        {
+            return CitizenReport.Create(citizenReportId, ElectionRound, this, [], 0, 0);
+        }
+
+        var numberOfQuestionAnswered = CountNumberOfQuestionsAnswered(answers);
+        var numberOfFlaggedAnswers = CountNumberOfFlaggedAnswers(answers);
+
+        var validationResult = AnswersValidator.GetValidationResults(answers, Questions);
+
+        if (!validationResult.IsValid)
+        {
+            throw new ValidationException(validationResult.Errors);
+        }
+
+        return CitizenReport.Create(citizenReportId, ElectionRound, this, answers, numberOfQuestionAnswered, numberOfFlaggedAnswers);
+    }
+
     private int CountNumberOfFlaggedAnswers(List<BaseAnswer> answers)
     {
         var singleSelectQuestions =
@@ -293,6 +314,33 @@ public class Form : AuditableBaseEntity, IAggregateRoot
 
         return submission;
     }
+    public CitizenReport FillIn(CitizenReport citizenReport, List<BaseAnswer>? answers)
+    {
+        if (answers == null)
+        {
+            return citizenReport;
+        }
+
+        if (!answers.Any())
+        {
+            citizenReport.ClearAnswers();
+            return citizenReport;
+        }
+
+        var validationResult = AnswersValidator.GetValidationResults(answers, Questions);
+
+        if (!validationResult.IsValid)
+        {
+            throw new ValidationException(validationResult.Errors);
+        }
+
+        var numberOfQuestionsAnswered = CountNumberOfQuestionsAnswered(answers);
+        var numberOfFlaggedAnswers = CountNumberOfFlaggedAnswers(answers);
+
+        citizenReport.UpdateAnswers(numberOfQuestionsAnswered, numberOfFlaggedAnswers, answers);
+
+        return citizenReport;
+    }
 
     public void AddTranslations(string[] languageCodes)
     {
@@ -356,6 +404,7 @@ public class Form : AuditableBaseEntity, IAggregateRoot
         LanguagesTranslationStatus = ComputeLanguagesTranslationStatus(Questions, DefaultLanguage, Languages);
     }
 
+  
     public Form Duplicate() =>
         new(ElectionRoundId, MonitoringNgoId, FormType, Code, Name, Description, DefaultLanguage, Languages, Questions);
 

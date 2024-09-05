@@ -23,6 +23,8 @@ public class Endpoint(IRepository<ElectionRoundAggregate> repository)
         var electionRound = new ElectionRoundAggregate(req.CountryId, req.Title,req.EnglishTitle, req.StartDate);
         await repository.AddAsync(electionRound, ct);
 
+        var country = CountriesList.Get(req.CountryId)!;
+        
         return TypedResults.Ok(new ElectionRoundModel
         {
             Id = electionRound.Id,
@@ -32,8 +34,12 @@ public class Endpoint(IRepository<ElectionRoundAggregate> repository)
             Status = electionRound.Status,
             CreatedOn = electionRound.CreatedOn,
             LastModifiedOn = electionRound.LastModifiedOn,
-            Country = CountriesList.Get(req.CountryId)!.FullName,
-            CountryId = req.CountryId
+            CountryId = req.CountryId,
+            CountryIso2 = country.Iso2,
+            CountryIso3 = country.Iso3,
+            CountryName = country.Name,
+            CountryFullName = country.FullName,
+            CountryNumericCode = country.NumericCode,
         });
     }
 }

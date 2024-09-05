@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { toast } from '@/components/ui/use-toast';
+import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { queryClient } from '@/main';
 import { useMutation } from '@tanstack/react-query';
 import { useRef, useState } from 'react';
@@ -19,17 +20,17 @@ function UploadObserversGuideDialog({
     onOpenChange
 }: UploadObserversGuideDialogProps) {
     const [fileName, setFileName] = useState('');
-    const [guideTitle, setGuideTitle] = useState<string|undefined>('');
-    const [websiteUrl, setWebsiteUrl] = useState<string|undefined>('');
+    const [guideTitle, setGuideTitle] = useState<string | undefined>('');
+    const [websiteUrl, setWebsiteUrl] = useState<string | undefined>('');
     const hiddenFileInput: React.Ref<any> = useRef(null);
+      const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
 
     const handleClick = () => {
         hiddenFileInput?.current?.click();
     };
 
     const uploadObserverGuideMutation = useMutation({
-        mutationFn: () => {
-            const electionRoundId: string | null = localStorage.getItem('electionRoundId');
+        mutationFn: ({ electionRoundId }: { electionRoundId: string }) => {
 
             // get the selected file from the input
             const file = hiddenFileInput.current.files[0];
@@ -38,6 +39,7 @@ function UploadObserversGuideDialog({
             formData.append("Title", guideTitle!);
             formData.append("Attachment", file);
             formData.append("WebsiteUrl", websiteUrl ?? '');
+
 
             return authApi.post(
                 `/election-rounds/${electionRoundId}/observer-guide`,
@@ -71,7 +73,7 @@ function UploadObserversGuideDialog({
 
 
     const handleImport = () => {
-        uploadObserverGuideMutation.mutate();
+        uploadObserverGuideMutation.mutate({ electionRoundId: currentElectionRoundId });
     }
 
     const handleChange = (event: any) => {
@@ -79,11 +81,11 @@ function UploadObserversGuideDialog({
         setFileName(fileUploaded.name);
     };
 
-    const canUploadGuide =() =>{
+    const canUploadGuide = () => {
         const hasSelectedFile = !!hiddenFileInput?.current?.files?.length;
         const hasWebsiteUrl = !!websiteUrl?.trim();
         const hasTitle = !!guideTitle?.trim();
-        return !( hasTitle && (hasSelectedFile || hasWebsiteUrl));
+        return !(hasTitle && (hasSelectedFile || hasWebsiteUrl));
     }
 
     return (

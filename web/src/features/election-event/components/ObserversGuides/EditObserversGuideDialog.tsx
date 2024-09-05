@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { toast } from '@/components/ui/use-toast';
+import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { queryClient } from '@/main';
 import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
@@ -23,12 +24,10 @@ function EditObserversGuideDialog({
     onOpenChange
 }: EditObserversGuideDialogProps) {
     const [guideTitle, setGuideTitle] = useState<string | undefined>(title);
-
+      const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
 
     const updateObserverGuideMutation = useMutation({
-        mutationFn: () => {
-            const electionRoundId: string | null = localStorage.getItem('electionRoundId');
-
+        mutationFn: ({ electionRoundId }: { electionRoundId: string }) => {
             return authApi.put<void>(
                 `/election-rounds/${electionRoundId}/observer-guide/${guideId}`,
                 {
@@ -58,7 +57,7 @@ function EditObserversGuideDialog({
     });
 
     const handleUpdate = () => {
-        updateObserverGuideMutation.mutate();
+        updateObserverGuideMutation.mutate({ electionRoundId: currentElectionRoundId });
     }
 
 
