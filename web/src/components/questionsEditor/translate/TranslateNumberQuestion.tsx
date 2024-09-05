@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { EditFormTranslationType } from '@/features/forms/components/EditFormTranslation/EditFormTranslation';
+import { EditFormType } from '@/features/forms/components/EditForm/EditForm';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { Input } from '../../ui/input';
 
@@ -11,7 +11,7 @@ export interface TranslateNumberQuestionProps {
 
 function TranslateNumberQuestion({ questionIndex }: TranslateNumberQuestionProps) {
   const { t } = useTranslation();
-  const { control } = useFormContext<EditFormTranslationType>();
+  const { control } = useFormContext<EditFormType>();
 
   const languageCode = useWatch({
     control,

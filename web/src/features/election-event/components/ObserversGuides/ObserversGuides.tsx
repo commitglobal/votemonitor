@@ -21,6 +21,7 @@ import { ObserverGuide } from '../../models/observer-guide';
 import ConfirmDeleteDialog from './ConfirmDeleteDialog';
 import EditObserversGuideDialog from './EditObserversGuideDialog';
 import UploadObserversGuideDialog from './UploadObserversGuideDialog';
+import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 
 export default function ObserversGuides() {
   const uploadObserverGuideDialog = useDialog();
@@ -29,6 +30,7 @@ export default function ObserversGuides() {
 
   const [guideId, setGuideId] = useState<string | undefined>(undefined);
   const [guideTitle, setGuideTitle] = useState<string | undefined>(undefined);
+    const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
 
   function handleDeleteGuide(guideId: string): void {
     setGuideId(guideId);
@@ -43,8 +45,7 @@ export default function ObserversGuides() {
   }
 
   const deleteObserverGuideMutation = useMutation({
-    mutationFn: () => {
-      const electionRoundId: string | null = localStorage.getItem('electionRoundId');
+    mutationFn: ({ electionRoundId }: { electionRoundId: string }) => {
 
       return authApi.delete<void>(`/election-rounds/${electionRoundId}/observer-guide/${guideId}`);
     },
@@ -151,7 +152,7 @@ export default function ObserversGuides() {
               alertDescription={'Are you sure you want to delete this resource ?'}
               cancelActionButtonText='Cancel'
               confirmActionButtonText='Delete guide'
-              onConfirm={() => deleteObserverGuideMutation.mutate()}
+              onConfirm={() => deleteObserverGuideMutation.mutate({ electionRoundId: currentElectionRoundId })}
               {...confirmDeleteDialog.dialogProps} />}
             <Button className='bg-purple-900 hover:bg-purple-600' onClick={() => uploadObserverGuideDialog.trigger()}>
               <svg
@@ -178,7 +179,7 @@ export default function ObserversGuides() {
 
       </CardHeader>
       <CardContent>
-        <QueryParamsDataTable columns={observerGuideColDefs} useQuery={useObserverGuides} />
+        <QueryParamsDataTable columns={observerGuideColDefs} useQuery={() => useObserverGuides(currentElectionRoundId)} />
       </CardContent>
     </Card>
   );

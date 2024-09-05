@@ -25,10 +25,6 @@ import { Route } from '@/routes/monitoring-observers/create-new-message';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
-import Document from '@tiptap/extension-document';
-import Paragraph from '@tiptap/extension-paragraph';
-import Text from '@tiptap/extension-text';
-import { BubbleMenu, EditorContent, FloatingMenu, useEditor } from '@tiptap/react';
 import { useDebounce } from '@uidotdev/usehooks';
 import { useMonitoringObserversTags } from '../../../../hooks/tags-queries';
 import { useTargetedMonitoringObservers } from '../../hooks/push-messages-queries';
@@ -36,6 +32,8 @@ import { MonitoringObserverStatus } from '../../models/monitoring-observer';
 import type { SendPushNotificationRequest } from '../../models/push-message';
 import type { PushMessageTargetedObserversSearchParams } from '../../models/search-params';
 import { targetedMonitoringObserverColDefs } from '../../utils/column-defs';
+import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { Textarea } from '@/components/ui/textarea';
 
 const createPushMessageSchema = z.object({
   title: z.string().min(1, { message: 'Your message must have a title before sending.' }),
@@ -51,13 +49,8 @@ function PushMessageForm(): FunctionComponent {
   const [totalRowsCount, setTotalRowsCount] = useState(0);
   const [searchText, setSearchText] = useState<string>('');
   const debouncedSearchText = useDebounce(searchText, 300);
-
-  const { data: tags } = useMonitoringObserversTags();
-
-  const editor = useEditor({
-    extensions: [Document, Paragraph, Text],
-    content: '<p> je;skedkskd </p>',
-  })
+    const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
+  const { data: tags } = useMonitoringObserversTags(currentElectionRoundId);
 
   const onTagsFilterChange = useCallback(
     (tag: string) => () => {
@@ -112,7 +105,7 @@ function PushMessageForm(): FunctionComponent {
     if (!value || value.length >= 2) setSearchText(ev.currentTarget.value);
   };
 
-  const handleDataFetchinSucceed = (pageSize: number, currentPage: number, totalCount: number): void => {
+  const handleDataFetchingSucceed = (pageSize: number, currentPage: number, totalCount: number): void => {
     setTotalRowsCount(totalCount);
   };
 
@@ -125,10 +118,8 @@ function PushMessageForm(): FunctionComponent {
   });
 
   const sendNotificationMutation = useMutation({
-    mutationFn: (obj: SendPushNotificationRequest) => {
-      const electionRoundId: string | null = localStorage.getItem('electionRoundId');
-
-      return authApi.post<SendPushNotificationRequest>(`/election-rounds/${electionRoundId}/notifications:send`, obj);
+    mutationFn: ({ electionRoundId, request }: { electionRoundId: string, request: SendPushNotificationRequest }) => {
+      return authApi.post<SendPushNotificationRequest>(`/election-rounds/${electionRoundId}/notifications:send`, request);
     },
 
     onSuccess: () => {
@@ -143,9 +134,12 @@ function PushMessageForm(): FunctionComponent {
 
   function onSubmit(values: z.infer<typeof createPushMessageSchema>): void {
     sendNotificationMutation.mutate({
-      title: values.title,
-      body: values.messageBody,
-      ...queryParams,
+      electionRoundId: currentElectionRoundId,
+      request: {
+        title: values.title,
+        body: values.messageBody,
+        ...queryParams,
+      }
     });
   }
 
@@ -188,6 +182,7 @@ function PushMessageForm(): FunctionComponent {
                       </FormLabel>
                       <FormControl>
                         {/* <RichTextEditor {...field} /> */}
+                        <Textarea rows={8} className='resize-none' {...field} maxLength={1000} />
                       </FormControl>
                       <FormDescription>1000 characters</FormDescription>
                       <FormMessage />
@@ -315,8 +310,8 @@ function PushMessageForm(): FunctionComponent {
 
                 <QueryParamsDataTable
                   columns={targetedMonitoringObserverColDefs}
-                  useQuery={useTargetedMonitoringObservers}
-                  onDataFetchingSucceed={handleDataFetchinSucceed}
+                  useQuery={(params) => useTargetedMonitoringObservers(currentElectionRoundId, params)}
+                  onDataFetchingSucceed={handleDataFetchingSucceed}
                   queryParams={queryParams}
                 />
               </div>

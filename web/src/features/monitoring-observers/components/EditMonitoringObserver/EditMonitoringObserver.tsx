@@ -1,36 +1,35 @@
 import { authApi } from '@/common/auth-api';
+import { monitoringObserverDetailsQueryOptions } from '@/common/queryOptions';
 import Layout from '@/components/layout/Layout';
-import { Tag, TagInput } from '@/components/tag/tag-input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
+import TagsSelectFormField from '@/components/ui/tag-selector';
 import { useToast } from '@/components/ui/use-toast';
+import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { useMonitoringObserversTags } from '@/hooks/tags-queries';
+import { Route } from '@/routes/monitoring-observers/edit.$monitoringObserverId';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
-import { useLoaderData, useNavigate, useRouter } from '@tanstack/react-router';
-import { useState } from 'react';
+import { useNavigate, useRouter } from '@tanstack/react-router';
 import { useForm } from 'react-hook-form';
-import { v4 as uuid } from 'uuid';
 import { z } from 'zod';
 import { UpdateMonitoringObserverRequest } from '../../models/monitoring-observer';
-import { Route } from '@/routes/monitoring-observers/edit.$monitoringObserverId';
-import { monitoringObserverDetailsQueryOptions } from '@/common/queryOptions';
-import { useMonitoringObserversTags } from '@/hooks/tags-queries';
-import TagsSelectFormField from '@/components/ui/tag-selector';
 
 export default function EditObserver() {
   const navigate = useNavigate();
   const router = useRouter();
   const queryClient = useQueryClient();
+    const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
 
   const { monitoringObserverId } = Route.useParams();
-  const monitoringObserverQuery = useSuspenseQuery(monitoringObserverDetailsQueryOptions(monitoringObserverId));
+  const monitoringObserverQuery = useSuspenseQuery(monitoringObserverDetailsQueryOptions(currentElectionRoundId, monitoringObserverId));
   const monitoringObserver = monitoringObserverQuery.data;
 
-  const { data: availableTags } = useMonitoringObserversTags();
+  const { data: availableTags } = useMonitoringObserversTags(currentElectionRoundId);
 
   const { toast } = useToast();
 
@@ -54,7 +53,7 @@ export default function EditObserver() {
   });
 
   function onSubmit(values: z.infer<typeof editObserverFormSchema>) {
-    const newObj: UpdateMonitoringObserverRequest = {
+    const request: UpdateMonitoringObserverRequest = {
       tags: values.tags,
       status: values.status,
       firstName: values.firstName,
@@ -62,16 +61,14 @@ export default function EditObserver() {
       phoneNumber: values.phoneNumber,
     };
 
-    editMutation.mutate(newObj);
+    editMutation.mutate({electionRoundId: currentElectionRoundId, request});
   }
 
   const editMutation = useMutation({
-    mutationFn: (obj: UpdateMonitoringObserverRequest) => {
-      const electionRoundId: string | null = localStorage.getItem('electionRoundId');
-
+    mutationFn: ({ electionRoundId, request }: { electionRoundId: string; request: UpdateMonitoringObserverRequest }) => {
       return authApi.post<void>(
         `/election-rounds/${electionRoundId}/monitoring-observers/${monitoringObserver.id}`,
-        obj
+        request
       );
     },
     mutationKey: ['monitoring-observers'],

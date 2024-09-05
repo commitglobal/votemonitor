@@ -32,12 +32,18 @@ using Vote.Monitor.Domain.Entities.QuickReportAggregate;
 using Vote.Monitor.Module.Notifications;
 using Ardalis.SmartEnum.Dapper;
 using Dapper;
+using Feature.CitizenReports;
+using Feature.CitizenReports.Attachments;
+using Feature.CitizenReports.Notes;
 using Feature.DataExport;
 using Feature.Feedback;
 using Feature.ImportErrors;
+using Feature.Monitoring;
 using Feature.Statistics;
 using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
 using Microsoft.AspNetCore.Http.Features;
+using Vote.Monitor.Core.Converters;
+using Vote.Monitor.Domain.Entities.CitizenReportAggregate;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -143,6 +149,10 @@ builder.Services.AddDataExportFeature();
 builder.Services.AddStatisticsFeature(builder.Configuration.GetRequiredSection(StatisticsInstaller.SectionKey));
 builder.Services.AddFeedbackFeature();
 
+builder.Services.AddCitizenReportsFeature();
+builder.Services.AddCitizenReportsNotesFeature();
+builder.Services.AddCitizenReportsAttachmentsFeature();
+
 builder.Services.AddAuthorization();
 
 builder.Services.AddResponseCompression(opts =>
@@ -163,7 +173,8 @@ app.UseCors("AllowAll");
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseSentryMiddleware().UseFastEndpoints(x =>
+app.UseSentryMiddleware()
+    .UseFastEndpoints(x =>
 {
     x.Errors.UseProblemDetails();
     x.Endpoints.Configurator = ep =>
@@ -188,6 +199,7 @@ app.UseSentryMiddleware().UseFastEndpoints(x =>
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<SubmissionFollowUpStatus, string>());
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<QuickReportFollowUpStatus, string>());
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<TranslationStatus, string>());
+    x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<CitizenReportFollowUpStatus, string>());
 
     x.Serializer.Options.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
 });
@@ -209,7 +221,8 @@ SqlMapper.AddTypeHandler(typeof(QuickReportLocationType), new SmartEnumByValueTy
 SqlMapper.AddTypeHandler(typeof(DisplayLogicCondition), new SmartEnumByValueTypeHandler<DisplayLogicCondition, string>());
 SqlMapper.AddTypeHandler(typeof(SubmissionFollowUpStatus), new SmartEnumByValueTypeHandler<SubmissionFollowUpStatus, string>());
 SqlMapper.AddTypeHandler(typeof(QuickReportFollowUpStatus), new SmartEnumByValueTypeHandler<QuickReportFollowUpStatus, string>());
-
+SqlMapper.AddTypeHandler(typeof(CitizenReportFollowUpStatus), new SmartEnumByValueTypeHandler<CitizenReportFollowUpStatus, string>());
+SqlMapper.AddTypeHandler(typeof(TranslatedString), new JsonToObjectConverter<TranslatedString>());
 #endregion
 app.UseSwaggerGen(
 cfg =>

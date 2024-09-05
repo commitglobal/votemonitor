@@ -19,6 +19,9 @@ function Details(): FunctionComponent {
 
 export const Route = createFileRoute('/monitoring-observers/push-messages/$id')({
   component: Details,
-  loader: ({ context: { queryClient }, params: { id } }) =>
-    queryClient.ensureQueryData(pushMessageDetailsQueryOptions(id)),
+  loader: ({ context: { queryClient , currentElectionRoundContext}, params: { id } }) => {
+    const electionRoundId = currentElectionRoundContext.getState().currentElectionRoundId;
+
+    return queryClient.ensureQueryData(pushMessageDetailsQueryOptions(electionRoundId, id));
+  }
 });

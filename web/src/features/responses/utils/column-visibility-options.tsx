@@ -1,6 +1,7 @@
 import type { VisibilityState } from '@tanstack/react-table';
 
-export type FilterBy = 'byEntry' | 'byObserver' | 'byForm';
+export type FormSubmissionsViewBy = 'byEntry' | 'byObserver' | 'byForm';
+export type CitizenReportsViewBy = 'byEntry' | 'byForm';
 
 export const formSubmissionsByEntryDefaultColumns: VisibilityState = {
   submissionId: false,
@@ -59,7 +60,7 @@ export const formSubmissionsByObserverColumns: VisibilityState = {
   followUpStatus: true,
 };
 
-export const formSubmissionsDefaultColumns: Record<FilterBy, VisibilityState> = {
+export const formSubmissionsDefaultColumns: Record<FormSubmissionsViewBy, VisibilityState> = {
   byEntry: formSubmissionsByEntryDefaultColumns,
   byObserver: formSubmissionsByObserverDefaultColumns,
   byForm: formSubmissionsByFormDefaultColumns
@@ -122,7 +123,7 @@ export const forObserverColumnVisibilityOptions: ColumnOption[] = [
   { id: 'mediaFilesCount', label: 'Media files', enableHiding: true },
   { id: 'followUpStatus', label: 'Follow-up status', enableHiding: true },
 ];
-export const columnVisibilityOptions: Record<FilterBy, ColumnOption[]> = {
+export const columnVisibilityOptions: Record<FormSubmissionsViewBy, ColumnOption[]> = {
   byEntry: byEntryColumnVisibilityOptions,
   byObserver: byObserverColumnVisibilityOptions,
   byForm: byFormColumnVisibilityOptions
@@ -160,5 +161,28 @@ export const quickReportsDefaultColumns: VisibilityState = {
   number: false,
   pollingStationDetails: false,
   email: false,
+  followUpStatus: true,
+};
+
+export const citizenReportsColumnVisibilityOptions: ColumnOption[] = [
+  { id: 'timeSubmitted', label: 'Time submitted', enableHiding: true },
+  { id: 'formCode', label: 'Form code', enableHiding: true },
+  { id: 'numberOfQuestionsAnswered', label: 'Questions answered', enableHiding: true },
+  { id: 'numberOfFlaggedAnswers', label: 'Flagged answers', enableHiding: true },
+  { id: 'notesCount', label: 'Question notes', enableHiding: true },
+  { id: 'mediaFilesCount', label: 'Media files', enableHiding: true },
+  { id: 'followUpStatus', label: 'Follow-up status', enableHiding: true },
+];
+
+
+
+export const citizenReportsDefaultColumns: VisibilityState = {
+  submissionId: false,
+  timeSubmitted: true,
+  formCode: true,
+  numberOfQuestionsAnswered: true,
+  numberOfFlaggedAnswers: true,
+  notesCount: false,
+  mediaFilesCount: false,
   followUpStatus: true,
 };

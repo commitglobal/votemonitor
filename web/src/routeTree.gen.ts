@@ -33,6 +33,7 @@ import { Route as ElectionRoundsElectionRoundIdImport } from './routes/election-
 import { Route as ElectionEventTabImport } from './routes/election-event/$tab'
 import { Route as AcceptInviteSuccessImport } from './routes/accept-invite/success'
 import { Route as ResponsesQuickReportsQuickReportIdImport } from './routes/responses/quick-reports/$quickReportId'
+import { Route as ResponsesCitizenReportsCitizenReportIdImport } from './routes/responses/citizen-reports/$citizenReportId'
 import { Route as ResponsesFormIdAggregatedImport } from './routes/responses/$formId.aggregated'
 import { Route as ObserversObserverIdEditImport } from './routes/observers_.$observerId.edit'
 import { Route as MonitoringObserversPushMessagesIdImport } from './routes/monitoring-observers/push-messages.$id'
@@ -155,6 +156,12 @@ const AcceptInviteSuccessRoute = AcceptInviteSuccessImport.update({
 const ResponsesQuickReportsQuickReportIdRoute =
   ResponsesQuickReportsQuickReportIdImport.update({
     path: '/responses/quick-reports/$quickReportId',
+    getParentRoute: () => rootRoute,
+  } as any)
+
+const ResponsesCitizenReportsCitizenReportIdRoute =
+  ResponsesCitizenReportsCitizenReportIdImport.update({
+    path: '/responses/citizen-reports/$citizenReportId',
     getParentRoute: () => rootRoute,
   } as any)
 
@@ -320,6 +327,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResponsesFormIdAggregatedImport
       parentRoute: typeof rootRoute
     }
+    '/responses/citizen-reports/$citizenReportId': {
+      preLoaderRoute: typeof ResponsesCitizenReportsCitizenReportIdImport
+      parentRoute: typeof rootRoute
+    }
     '/responses/quick-reports/$quickReportId': {
       preLoaderRoute: typeof ResponsesQuickReportsQuickReportIdImport
       parentRoute: typeof rootRoute
@@ -369,6 +380,7 @@ export const routeTree = rootRoute.addChildren([
   MonitoringObserversPushMessagesIdRoute,
   ObserversObserverIdEditRoute,
   ResponsesFormIdAggregatedRoute,
+  ResponsesCitizenReportsCitizenReportIdRoute,
   ResponsesQuickReportsQuickReportIdRoute,
   FormsFormIdEditTranslationLanguageCodeRoute,
   MonitoringObserversPushMessagesIdViewRoute,

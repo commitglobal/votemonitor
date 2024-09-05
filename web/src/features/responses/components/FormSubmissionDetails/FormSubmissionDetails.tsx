@@ -1,50 +1,28 @@
 import { authApi } from '@/common/auth-api';
-import { DateTimeFormat } from '@/common/formats';
-import {
-  isDateAnswer,
-  isMultiSelectAnswer,
-  isMultiSelectQuestion,
-  isNumberAnswer,
-  isRatingAnswer,
-  isRatingQuestion,
-  isSingleSelectAnswer,
-  isSingleSelectQuestion,
-  isTextAnswer,
-} from '@/common/guards';
 import { FollowUpStatus, FunctionComponent } from '@/common/types';
 import Layout from '@/components/layout/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Checkbox } from '@/components/ui/checkbox';
-import { FormItem, FormLabel } from '@/components/ui/form';
-import { Label } from '@/components/ui/label';
-import { RatingGroup } from '@/components/ui/ratings';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { toast } from '@/components/ui/use-toast';
-import { cn, ratingScaleToNumber } from '@/lib/utils';
+import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { queryClient } from '@/main';
-import { Route, formSubmissionDetailsQueryOptions } from '@/routes/responses/$submissionId';
+import { formSubmissionDetailsQueryOptions, Route } from '@/routes/responses/$submissionId';
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
-import { FlagIcon } from '@heroicons/react/24/solid';
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { Link, useRouter } from '@tanstack/react-router';
-import { format } from 'date-fns';
-import { Fragment } from 'react';
 import { formSubmissionsByEntryKeys, formSubmissionsByObserverKeys } from '../../hooks/form-submissions-queries';
-import { ResponseExtraDataSection } from '../ReponseExtraDataSection/ResponseExtraDataSection';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import PreviewAnswer from '../PreviewAnswer/PreviewAnswer';
 
 export default function FormSubmissionDetails(): FunctionComponent {
   const { submissionId } = Route.useParams();
-  const submissionQuery = useSuspenseQuery(formSubmissionDetailsQueryOptions(submissionId));
-  const formSubmission = submissionQuery.data;
+  const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
+  const { data: formSubmission } = useSuspenseQuery(formSubmissionDetailsQueryOptions(currentElectionRoundId, submissionId));
+
   const router = useRouter();
 
   const updateSubmissionFollowUpStatusMutation = useMutation({
-    mutationKey: formSubmissionsByEntryKeys.detail(submissionId),
-    mutationFn: (followUpStatus: FollowUpStatus) => {
-      const electionRoundId: string | null = localStorage.getItem('electionRoundId');
-
+    mutationFn: ({ electionRoundId, followUpStatus }: { electionRoundId: string; followUpStatus: FollowUpStatus }) => {
       return authApi.put<void>(
         `/election-rounds/${electionRoundId}/form-submissions/${submissionId}:status`,
         {
@@ -53,15 +31,15 @@ export default function FormSubmissionDetails(): FunctionComponent {
       );
     },
 
-    onSuccess: () => {
+    onSuccess: async (_, { electionRoundId }) => {
       toast({
         title: 'Success',
         description: 'Follow-up status updated',
       });
 
+      await queryClient.invalidateQueries({ queryKey: formSubmissionsByEntryKeys.all });
+      await queryClient.invalidateQueries({ queryKey: formSubmissionsByObserverKeys.all });
       router.invalidate();
-      queryClient.invalidateQueries({ queryKey: formSubmissionsByEntryKeys.all });
-      queryClient.invalidateQueries({ queryKey: formSubmissionsByObserverKeys.all });
     },
 
     onError: () => {
@@ -73,8 +51,8 @@ export default function FormSubmissionDetails(): FunctionComponent {
     }
   });
 
-  function handleFolowUpStatusChange(followUpStatus: FollowUpStatus): void {
-    updateSubmissionFollowUpStatusMutation.mutate(followUpStatus);
+  function handleFollowUpStatusChange(followUpStatus: FollowUpStatus): void {
+    updateSubmissionFollowUpStatusMutation.mutate({ electionRoundId: currentElectionRoundId, followUpStatus });
   }
 
   return (
@@ -134,7 +112,7 @@ export default function FormSubmissionDetails(): FunctionComponent {
               <div>
                 {formSubmission.formCode}: {formSubmission.formType}
               </div>
-              <Select onValueChange={handleFolowUpStatusChange} defaultValue={formSubmission.followUpStatus} value={formSubmission.followUpStatus}>
+              <Select onValueChange={handleFollowUpStatusChange} defaultValue={formSubmission.followUpStatus} value={formSubmission.followUpStatus}>
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder='Follow-up status' />
                 </SelectTrigger>
@@ -156,76 +134,13 @@ export default function FormSubmissionDetails(): FunctionComponent {
               const notes = formSubmission.notes.filter(({ questionId }) => questionId === question.id);
               const attachments = formSubmission.attachments.filter(({ questionId }) => questionId === question.id);
 
-              return (
-                <div key={question.id} className='flex flex-col gap-4'>
-                  <p className='text-gray-700 font-medium'>
-                    {index + 1}: {question.text[formSubmission.defaultLanguage]}
-                  </p>
-
-                  {isSingleSelectQuestion(question) && (
-                    <RadioGroup
-                      defaultChecked
-                      defaultValue={answer && isSingleSelectAnswer(answer) ? answer.selection?.optionId : ''}
-                      className='flex gap-8 items-center'>
-                      {question.options.map((option) => (
-                        <Fragment key={option.id}>
-                          <FormItem className='flex items-center gap-2 !mt-0'>
-                            <RadioGroupItem disabled value={option.id} id={option.id} />
-                            <Label className='font-normal' htmlFor={option.id}>
-                              {option.text[formSubmission.defaultLanguage]}
-                              {option.isFlagged && <> (Flagged)</>}
-                            </Label>
-                            {option.isFlagged && <FlagIcon className={cn('text-destructive', 'w-4')} />}
-                          </FormItem>
-                          {option.isFreeText &&
-                            answer &&
-                            isSingleSelectAnswer(answer) &&
-                            answer.selection?.optionId === option.id && <p>{answer.selection?.text ?? '-'}</p>}
-                        </Fragment>
-                      ))}
-                    </RadioGroup>
-                  )}
-
-                  {isMultiSelectQuestion(question) &&
-                    question.options.map((option) => {
-                      const isOptionChecked =
-                        answer &&
-                        isMultiSelectAnswer(answer) &&
-                        !!answer.selection?.find((selection) => selection.optionId === option.id);
-
-                      return (
-                        <FormItem key={option.id} className='flex flex-row items-start space-x-3 space-y-0'>
-                          <Checkbox checked={isOptionChecked} disabled />
-                          <FormLabel>{option.text[formSubmission.defaultLanguage]}</FormLabel>
-                        </FormItem>
-                      );
-                    })}
-
-                  {isRatingQuestion(question) && (
-                    <RatingGroup
-                      className='max-w-fit'
-                      scale={ratingScaleToNumber(question.scale)}
-                      defaultValue={answer && isRatingAnswer(answer) ? answer.value?.toString() : undefined}
-                      disabled
-                    />
-                  )}
-
-                  {answer ? (
-                    <>
-                      {isDateAnswer(answer) && <p>{answer.date ? format(answer.date, DateTimeFormat) : '-'}</p>}
-
-                      {isNumberAnswer(answer) && <p>{answer.value ?? '-'}</p>}
-
-                      {isTextAnswer(answer) && <p>{answer.text ?? '-'}</p>}
-                    </>
-                  ) : (
-                    '-'
-                  )}
-                  {(attachments.length > 0 || notes.length > 0) && (
-                    <ResponseExtraDataSection attachments={attachments} notes={notes} aggregateDisplay={false} />
-                  )}
-                </div>
-              );
+              return <PreviewAnswer
+                key={index}
+                question={question}
+                answer={answer}
+                notes={notes}
+                attachments={attachments}
+                defaultLanguage={formSubmission.defaultLanguage} />
             })}
           </CardContent>
         </Card>

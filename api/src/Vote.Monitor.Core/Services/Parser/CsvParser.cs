@@ -26,7 +26,7 @@ public class CsvParser<T, TMapper> : ICsvParser<T> where T : class where TMapper
 
     public ParsingResult<T> Parse(Stream stream)
     {
-        List<CsvRowParsed<T>> rowsRead = new List<CsvRowParsed<T>>();
+        List<CsvRowParsed<T>> rowsRead = new();
 
         bool anyError = false;
 
@@ -70,7 +70,7 @@ public class CsvParser<T, TMapper> : ICsvParser<T> where T : class where TMapper
     }
 
 
-    private CsvRowParsed<T> HeaderToCsvRow(CsvReader csv) => new CsvRowParsed<T>
+    private CsvRowParsed<T> HeaderToCsvRow(CsvReader csv) => new()
     {
         IsSuccess = true,
         OriginalRow = string.Join(",", csv.HeaderRecord!),

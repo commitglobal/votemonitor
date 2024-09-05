@@ -108,7 +108,8 @@
     "opening": "Opening",
     "voting": "Voting",
     "closingAndCounting": "Closing And Counting",
-    "other": "Other"
+    "other": "Other",
+    "citizenReporting": "Citizen reporting"
   },
   "form": {
     "field.code": "Form Code",
