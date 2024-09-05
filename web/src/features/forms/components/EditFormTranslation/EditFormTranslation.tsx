@@ -34,7 +34,6 @@ export default function EditFormTranslation(): FunctionComponent {
   const formQuestions = formData
     .questions
     .map(question => {
-      formData
       if (isNumberQuestion(question)) {
         const numberQuestion: EditNumberQuestionType = {
           $questionType: QuestionType.NumberQuestionType,
