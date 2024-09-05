@@ -53,10 +53,14 @@ export const observersOnTheFieldDataConfig = (totalNumberOfObservers?: number, n
     colors.push('#7833B3');
   }
 
-  labels.push('Inactive');
-  data.push((totalNumberOfObservers ?? 0) - (numberOfObserversOnTheField ?? 0));
-  // inactive color
-  colors.push('#DADADA');
+  const numberOfInactiveObservers = (totalNumberOfObservers ?? 0) - (numberOfObserversOnTheField ?? 0);
+
+  if (!!numberOfInactiveObservers) {
+    labels.push('Inactive');
+    data.push((totalNumberOfObservers ?? 0) - (numberOfObserversOnTheField ?? 0));
+    // inactive color
+    colors.push('#DADADA');
+  }
 
   return {
     labels: labels,
@@ -85,7 +89,7 @@ export const pollingStationsDataConfig = (pollingStationsStats?: PollingStations
   const numberOfNotVisitedPollingStations = (pollingStationsStats?.totalNumberOfPollingStations ?? 0) - (pollingStationsStats?.numberOfVisitedPollingStations ?? 0);
   if (numberOfNotVisitedPollingStations) {
     labels.push('Not visited');
-    data.push();
+    data.push(numberOfNotVisitedPollingStations);
     // inactive color
     colors.push('#DADADA');
   }
