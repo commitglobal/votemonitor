@@ -113,7 +113,7 @@ function CreateForm() {
                                     <SelectItem value={ZFormType.Values.Opening}>{mapFormType(ZFormType.Values.Opening)}</SelectItem>
                                     <SelectItem value={ZFormType.Values.Voting}>{mapFormType(ZFormType.Values.Voting)}</SelectItem>
                                     <SelectItem value={ZFormType.Values.ClosingAndCounting}>{mapFormType(ZFormType.Values.ClosingAndCounting)}</SelectItem>
-                                    {isMonitoringNgoForCitizenReporting && <SelectItem value={ZFormType.Values.CitizenReport}>{mapFormType(ZFormType.Values.CitizenReport)}</SelectItem>}
+                                    {isMonitoringNgoForCitizenReporting && <SelectItem value={ZFormType.Values.CitizenReporting}>{mapFormType(ZFormType.Values.CitizenReporting)}</SelectItem>}
                                     <SelectItem value={ZFormType.Values.Other}>{mapFormType(ZFormType.Values.Other)}</SelectItem>
                                 </SelectContent>
                             </Select>

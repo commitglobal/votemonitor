@@ -55,15 +55,15 @@ export default function FormSubmissionsTab(): FunctionComponent {
   return (
     <Card>
       <CardHeader>
-        <div className='flex justify-between items-center px-6'>
+        <div className='flex items-center justify-between px-6'>
           <CardTitle>Form submissions</CardTitle>
 
-          <div className='flex gap-4 items-center'>
+          <div className='flex items-center gap-4'>
             <ExportDataButton exportedDataType={ExportedDataType.FormSubmissions} />
 
             <DropdownMenu>
               <DropdownMenuTrigger>
-                <Badge className='text-purple-900 hover:bg-purple-50 hover:text-purple-500 h-8' variant='outline'>
+                <Badge className='h-8 text-purple-900 hover:bg-purple-50 hover:text-purple-500' variant='outline'>
                   {viewBy[byFilter ?? 'byEntry']}
 
                   <ChevronDownIcon className='w-4 ml-2' />
@@ -90,7 +90,7 @@ export default function FormSubmissionsTab(): FunctionComponent {
 
         <Separator />
 
-        <div className='px-6 flex justify-end gap-4'>
+        <div className='flex justify-end gap-4 px-6'>
           {byFilter !== 'byForm' && (
             <>
               <Input className='max-w-md' onChange={handleSearchInput} placeholder='Search' />
@@ -110,7 +110,7 @@ export default function FormSubmissionsTab(): FunctionComponent {
         <Separator />
 
         {isFiltering && (
-          <div className='grid grid-cols-6 gap-4 items-center'>
+          <div className='grid items-center grid-cols-6 gap-4'>
             {byFilter === 'byEntry' && <FormsFiltersByEntry />}
 
             {byFilter === 'byObserver' && <FormsFiltersByObserver />}

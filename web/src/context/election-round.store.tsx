@@ -36,7 +36,6 @@ export const CurrentElectionRoundStoreProvider = ({ children }: PropsWithChildre
   const storeRef = useRef<CurrentElectionRoundStoreType>();
   const id = useId();
   if (!storeRef.current) {
-    console.log("init store", id);
     storeRef.current = create<CurrentElectionRoundState>()(
       persist(
         (set, get) => ({

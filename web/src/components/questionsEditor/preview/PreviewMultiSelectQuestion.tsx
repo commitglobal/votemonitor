@@ -71,8 +71,8 @@ function PreviewMultiSelectQuestion({ code, questionId, text, helptext, options 
 
   return (
     <div className="grid gap-2">
-      <Label htmlFor={`${questionId}-value`} className='font-semibold'>{code + ' - '}{text}</Label>
-      <Label htmlFor={`${questionId}-value`} className='text-sm italic'>{helptext}</Label>
+      <Label htmlFor={`${questionId}-value`} className='font-semibold break-all'>{code + ' - '}{text}</Label>
+      <Label htmlFor={`${questionId}-value`} className='text-sm italic break-all'>{helptext}</Label>
       <CheckboxGroup>
         {regularOptions.map((option) => (
           <CheckboxField key={option.optionId}>
@@ -80,7 +80,7 @@ function PreviewMultiSelectQuestion({ code, questionId, text, helptext, options 
               name={option.optionId}
               checked={localAnswer?.selection?.some(o => o.optionId === option.optionId)}
               onChange={(checked) => handleOptionSelected(checked, option.optionId)} />
-            <Label>{option.text}</Label>
+            <Label className='break-all'>{option.text}</Label>
           </CheckboxField>
         ))}
 
@@ -93,7 +93,7 @@ function PreviewMultiSelectQuestion({ code, questionId, text, helptext, options 
                 handleOptionSelected(checked, freeTextOption.optionId);
               }}
             />
-            <Label>{freeTextOption.text}</Label>
+            <Label className='break-all'>{freeTextOption.text}</Label>
           </CheckboxField>
         )}
       </CheckboxGroup>

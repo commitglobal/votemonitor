@@ -293,7 +293,7 @@ export function mapFormType(formType: FormType): string {
     case ZFormType.Values.Opening: return i18n.t('formType.opening');
     case ZFormType.Values.Voting: return i18n.t('formType.voting');
     case ZFormType.Values.ClosingAndCounting: return i18n.t('formType.closingAndCounting');
-    case ZFormType.Values.CitizenReport: return i18n.t('formType.citizenReporting');
+    case ZFormType.Values.CitizenReporting: return i18n.t('formType.citizenReporting');
     case ZFormType.Values.Other: return i18n.t('formType.other');
     default: return "Unknown";
   }

@@ -214,7 +214,7 @@ export const ZFormType = z.enum(["PSI",
   "Opening",
   "Voting",
   "ClosingAndCounting",
-  "CitizenReport",
+  "CitizenReporting",
   "Other"]);
 
 export type FormType = z.infer<typeof ZFormType>;

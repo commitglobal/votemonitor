@@ -33,6 +33,7 @@ import type { SendPushNotificationRequest } from '../../models/push-message';
 import type { PushMessageTargetedObserversSearchParams } from '../../models/search-params';
 import { targetedMonitoringObserverColDefs } from '../../utils/column-defs';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { Textarea } from '@/components/ui/textarea';
 
 const createPushMessageSchema = z.object({
   title: z.string().min(1, { message: 'Your message must have a title before sending.' }),
@@ -181,6 +182,7 @@ function PushMessageForm(): FunctionComponent {
                       </FormLabel>
                       <FormControl>
                         {/* <RichTextEditor {...field} /> */}
+                        <Textarea rows={8} className='resize-none' {...field} maxLength={1000} />
                       </FormControl>
                       <FormDescription>1000 characters</FormDescription>
                       <FormMessage />

@@ -40,7 +40,6 @@ export default function EditQuestionFactory({
   const { t } = useTranslation();
   const { control, getFieldState } = useFormContext<EditFormType>();
 
-
   function getQuestionTypeName(questionType: QuestionType): string {
     switch (questionType) {
       case QuestionType.TextQuestionType: {
@@ -109,14 +108,16 @@ export default function EditQuestionFactory({
                 setActiveQuestionId(undefined);
               }
             }}
-            className='flex-1 rounded-r-lg border border-slate-200'>
+            className='flex-1 border rounded-r-lg border-slate-200'>
             <CollapsibleTrigger
               asChild
-              className='flex cursor-pointer justify-between p-4 hover:bg-slate-50'>
+              className='flex justify-between p-4 cursor-pointer hover:bg-slate-50'>
               <div>
                 <div className='inline-flex'>
                   {IconComponent && (
-                    <IconComponent className='text-primary -ml-0.5 mr-2 h-5 w-5' aria-hidden='true' />
+                    <div className='-ml-0.5 mr-2 min-h-5 min-w-5 text-slate-500'>
+                      <IconComponent aria-hidden='true' />
+                    </div>
                   )}
                   <p className='text-sm font-semibold break-all'>
                     {isNilOrWhitespace(question.text[languageCode]) ? getQuestionTypeName(question.$questionType) : question.text[languageCode]}
@@ -163,7 +164,8 @@ export default function EditQuestionFactory({
                   <FormItem>
                     <FormLabel>{t('questionEditor.question.helptext')}</FormLabel>
                     <FormControl>
-                      <Input {...field}
+                      <Input
+                        {...field}
                         {...fieldState}
                         value={field.value[languageCode]}
                         onChange={event => field.onChange({
@@ -199,7 +201,10 @@ export default function EditQuestionFactory({
                   <FormItem className='w-48'>
                     <FormLabel>{t('questionEditor.question.code')}</FormLabel>
                     <FormControl>
-                      <Input {...field} {...fieldState} maxLength={16} />
+                      <Input
+                        {...field}
+                        {...fieldState}
+                        maxLength={16} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

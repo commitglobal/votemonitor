@@ -21,19 +21,18 @@ function EditFormFooter() {
   const editMutation = useMutation({
     mutationKey: formsKeys.all,
     mutationFn: ({ electionRoundId, form }: { electionRoundId: string; form: UpdateFormRequest, shouldExitEditor: boolean }) => {
-
       return authApi.put<void>(`/election-rounds/${electionRoundId}/forms/${form.id}`, {
         ...form,
       });
     },
 
-    onSuccess: (_, { shouldExitEditor }) => {
+    onSuccess: async (_, { shouldExitEditor }) => {
       toast({
         title: 'Success',
         description: 'Form updated successfully',
       });
 
-      void queryClient.invalidateQueries({ queryKey: formsKeys.all });
+      await queryClient.invalidateQueries({ queryKey: formsKeys.all, type: 'all' });
 
       if (shouldExitEditor) {
         void navigate({ to: '/election-event/$tab', params: { tab: 'observer-forms' } });
@@ -155,7 +154,7 @@ function EditFormFooter() {
 
   return (
     <footer className="fixed left-0 bottom-0 h-[64px] w-full bg-white">
-      <div className='flex justify-end items-center h-full container gap-4'>
+      <div className='container flex items-center justify-end h-full gap-4'>
         <Button type='button' variant='outline' onClick={() => void saveForm()} disabled={!form.formState.isValid}>Save</Button>
         <Button type='button' variant='default' onClick={async () => {
           if (await confirm({

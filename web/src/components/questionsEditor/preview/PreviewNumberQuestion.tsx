@@ -20,8 +20,8 @@ function PreviewNumberQuestion({ code, questionId, text, helptext, inputPlacehol
   return (
     <div className="grid gap-6">
       <div className="grid gap-2">
-        <Label htmlFor={`${questionId}-value`} className='font-semibold'>{code + ' - '}{text}</Label>
-        <Label htmlFor={`${questionId}-value`} className='text-sm italic'>{helptext}</Label>
+        <Label htmlFor={`${questionId}-value`} className='font-semibold break-all'>{code + ' - '}{text}</Label>
+        <Label htmlFor={`${questionId}-value`} className='text-sm italic break-all'>{helptext}</Label>
         <Input
           id={`${questionId}-value`}
           placeholder={inputPlaceholder}

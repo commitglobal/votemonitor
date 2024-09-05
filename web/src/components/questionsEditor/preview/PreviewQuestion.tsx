@@ -1,7 +1,6 @@
 import { BaseAnswer, DisplayLogicCondition, QuestionType } from '@/common/types';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { EditQuestionType } from '@/features/forms/types';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import { useFormAnswersStore } from '../answers-store';
 import PreviewDateQuestion from './PreviewDateQuestion';
@@ -13,19 +12,32 @@ import PreviewTextQuestion from './PreviewTextQuestion';
 
 import { isMultiSelectAnswer, isNumberAnswer, isRatingAnswer, isSingleSelectAnswer } from '@/common/guards';
 import { Progress } from '@/components/ui/progress';
+import { EditFormType } from '@/features/forms/components/EditForm/EditForm';
 import { isNilOrWhitespace } from '@/lib/utils';
+import { useFormContext, useWatch } from 'react-hook-form';
 
 export interface PreviewQuestionProps {
-  languageCode: string;
-  question: EditQuestionType | undefined;
-  questions: EditQuestionType[];
-  questionIndex: number;
   activeQuestionId: string | undefined;
   setActiveQuestionId: (questionId: string | undefined) => void;
+  questionIndex: number;
 }
 
-function PreviewQuestion({ languageCode, questionIndex, question, questions, activeQuestionId, setActiveQuestionId }: PreviewQuestionProps) {
+function PreviewQuestion({ questionIndex, activeQuestionId, setActiveQuestionId }: PreviewQuestionProps) {
   const { getAnswer } = useFormAnswersStore();
+
+  const { control } = useFormContext<EditFormType>();
+
+  const questions = useWatch({
+    control,
+    name: `questions`,
+  });
+
+  const languageCode = useWatch({
+    control,
+    name: 'languageCode'
+  });
+
+  const question = questions[questionIndex];
 
   function meetsDisplayLogicCondition(condition: DisplayLogicCondition | undefined, value: string | undefined, answer: BaseAnswer | undefined): boolean {
     if (condition === undefined || value === undefined) return true;
@@ -112,7 +124,7 @@ function PreviewQuestion({ languageCode, questionIndex, question, questions, act
       </CardHeader>
       <CardContent>
         {question && (
-          <div className='flex h-full w-full flex-col justify-between px-6 pb-3 pt-6 max-w-lg'>
+          <div className='flex flex-col justify-between w-full h-full max-w-lg px-6 pt-6 pb-3'>
             <Button className='mb-4' type='button' onClick={resetProgress}>
               Start from the beginning
             </Button>
@@ -175,10 +187,10 @@ function PreviewQuestion({ languageCode, questionIndex, question, questions, act
                   code={question.code}
                 />)}
             </div>
-            <div className='nav-buttons flex gap-4 mt-4 justify-end'>
+            <div className='flex justify-end gap-4 mt-4 nav-buttons'>
               <Button
                 variant='outline'
-                className='mb-4 flex justify-center items-center gap-2'
+                className='flex items-center justify-center gap-2 mb-4'
                 type='button'
                 onClick={onPreviousButtonClicked}
               >
@@ -186,7 +198,7 @@ function PreviewQuestion({ languageCode, questionIndex, question, questions, act
                 Previous
               </Button>
               <Button
-                className='mb-4 flex justify-center items-center gap-2'
+                className='flex items-center justify-center gap-2 mb-4'
                 type='button'
                 onClick={onNextButtonClicked}
               >
@@ -202,10 +214,10 @@ function PreviewQuestion({ languageCode, questionIndex, question, questions, act
           </div>
         )}
         {activeQuestionId === 'end' && (
-          <h2 className='text-2xl text-center p-4'>Finished</h2>
+          <h2 className='p-4 text-2xl text-center'>Finished</h2>
         )}
         {isNilOrWhitespace(activeQuestionId) && (
-          <h2 className='text-2xl text-center p-4'>Select a question</h2>
+          <h2 className='p-4 text-2xl text-center'>Select a question</h2>
         )}
       </CardContent>
     </Card>

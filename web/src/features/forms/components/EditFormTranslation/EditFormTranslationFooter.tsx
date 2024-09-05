@@ -2,17 +2,17 @@ import { authApi } from '@/common/auth-api';
 import { DateQuestion, MultiSelectQuestion, NumberQuestion, QuestionType, RatingQuestion, SingleSelectQuestion, TextQuestion } from '@/common/types';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
+import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { queryClient } from '@/main';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { useFormContext } from 'react-hook-form';
 import { UpdateFormRequest } from '../../models/form';
 import { formsKeys } from '../../queries';
-import { EditFormTranslationType } from './EditFormTranslation';
-import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { EditFormType } from '../EditForm/EditForm';
 
 function EditFormTranslationFooter() {
-  const form = useFormContext<EditFormTranslationType>();
+  const form = useFormContext<EditFormType>();
   const navigate = useNavigate();
     const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
 
@@ -49,7 +49,7 @@ function EditFormTranslationFooter() {
 
   function saveForm(shouldExitEditor: boolean = false) {
     const values = form.getValues();
-
+debugger;
     const updatedForm: UpdateFormRequest = {
       id: values.formId,
       code: values.code,
@@ -153,7 +153,7 @@ function EditFormTranslationFooter() {
 
   return (
     <footer className="fixed left-0 bottom-0 h-[64px] w-full bg-white">
-      <div className='flex justify-end items-center h-full container gap-4'>
+      <div className='container flex items-center justify-end h-full gap-4'>
         <Button type='button' variant='outline' onClick={() => void saveForm()} disabled={!form.formState.isValid}>Save</Button>
         <Button type='button' variant='default' onClick={async () => { saveForm(true); }} disabled={!form.formState.isValid}>Save and exit form editor</Button>
       </div>

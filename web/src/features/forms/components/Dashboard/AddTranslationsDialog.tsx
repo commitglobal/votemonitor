@@ -13,6 +13,7 @@ import { difference } from 'lodash';
 import { useState } from 'react';
 import { create } from 'zustand';
 import { formsKeys } from '../../queries';
+import { useRouter } from '@tanstack/react-router';
 
 export interface AddTranslationsDialogPropsProps {
     isOpen: boolean;
@@ -34,8 +35,9 @@ function AddTranslationsDialog() {
     const { languages, formId, isOpen, trigger, dismiss } = useAddTranslationsDialog();
     const [newLanguages, setLanguages] = useState<string[]>(languages);
     const { data: appLanguages } = useLanguages();
-      const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
+    const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
     const confirm = useConfirm();
+    const router = useRouter();
 
     function handleOnChange(values: string[]): void {
         setLanguages(values);
@@ -62,7 +64,6 @@ function AddTranslationsDialog() {
 
     const addTranslationsMutation = useMutation({
         mutationFn: ({ electionRoundId, formId, languageCodes }: { electionRoundId: string; formId: string; languageCodes: string[]; }) => {
-
             return authApi.put<void>(`/election-rounds/${electionRoundId}/forms/${formId}:addTranslations`, {
                 languageCodes
             });
@@ -89,7 +90,8 @@ function AddTranslationsDialog() {
                 actionButton: 'Ok'
 
             })
-            queryClient.invalidateQueries({ queryKey: formsKeys.all });
+            await queryClient.invalidateQueries({ queryKey: formsKeys.all });
+            router.invalidate();
         },
     });
 

@@ -27,7 +27,7 @@ import { FormDetailsBreadcrumbs } from '../FormDetailsBreadcrumbs/FormDetailsBre
 
 export default function FormDetails(): FunctionComponent {
   const { formId, languageCode } = FormDetailsRoute.useParams();
-    const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
+  const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
 
   const formQuery = useSuspenseQuery(formDetailsQueryOptions(currentElectionRoundId, formId));
   const form = formQuery.data;

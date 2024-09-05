@@ -230,7 +230,6 @@ export default function FormsDashboard(): ReactElement {
     duplicateFormMutation.mutate({ electionRoundId: currentElectionRoundId, formId: form.id });
   }
 
-
   const navigateToForm = (formId: string, languageCode: string) => {
     navigate({ to: '/forms/$formId/$languageCode', params: { formId, languageCode } });
   };
@@ -348,12 +347,12 @@ export default function FormsDashboard(): ReactElement {
         `/election-rounds/${electionRoundId}/forms/${formId}`
       );
     },
-    onSuccess: () => {
+    onSuccess: async () => {
       toast({
         title: 'Success',
         description: 'Form deleted',
       });
-      queryClient.invalidateQueries({ queryKey: formsKeys.all });
+      await queryClient.invalidateQueries({ queryKey: formsKeys.all });
     },
   });
 
@@ -389,8 +388,8 @@ export default function FormsDashboard(): ReactElement {
 
   return (
     <Card className='w-full pt-0'>
-      <CardHeader className='flex flex-column gap-2'>
-        <CardTitle className='flex flex-row justify-between items-center px-6'>
+      <CardHeader className='flex gap-2 flex-column'>
+        <CardTitle className='flex flex-row items-center justify-between px-6'>
           <div className='text-xl'>
             Observation forms
           </div>
@@ -401,7 +400,7 @@ export default function FormsDashboard(): ReactElement {
           </div>
         </CardTitle>
         <Separator />
-        <div className='filters px-6 flex flex-row justify-end gap-4'>
+        <div className='flex flex-row justify-end gap-4 px-6 filters'>
           <div className='w-[400px]'><Input onChange={handleSearchInput} placeholder='Search' /></div>
           <FunnelIcon
             onClick={changeIsFiltering}
@@ -412,7 +411,7 @@ export default function FormsDashboard(): ReactElement {
         </div>
         <Separator />
         {isFiltering ? (
-          <div className='table-filters flex flex-row gap-4 items-center'>
+          <div className='flex flex-row items-center gap-4 table-filters'>
             <Select value={formTypeFilter} onValueChange={handleFormTypeFilter}>
               <SelectTrigger className='w-[180px]'>
                 <SelectValue placeholder='Form type' />
@@ -422,7 +421,7 @@ export default function FormsDashboard(): ReactElement {
                   <SelectItem value={ZFormType.Values.Opening}>{mapFormType(ZFormType.Values.Opening)}</SelectItem>
                   <SelectItem value={ZFormType.Values.Voting}>{mapFormType(ZFormType.Values.Voting)}</SelectItem>
                   <SelectItem value={ZFormType.Values.ClosingAndCounting}>{mapFormType(ZFormType.Values.ClosingAndCounting)}</SelectItem>
-                  {isMonitoringNgoForCitizenReporting && <SelectItem value={ZFormType.Values.CitizenReport}>{mapFormType(ZFormType.Values.CitizenReport)}</SelectItem>}
+                  {isMonitoringNgoForCitizenReporting && <SelectItem value={ZFormType.Values.CitizenReporting}>{mapFormType(ZFormType.Values.CitizenReporting)}</SelectItem>}
                   <SelectItem value={ZFormType.Values.Other}>{mapFormType(ZFormType.Values.Other)}</SelectItem>
                 </SelectGroup>
               </SelectContent>
@@ -432,11 +431,11 @@ export default function FormsDashboard(): ReactElement {
                 Reset filters
               </span>
             </Button>
-            <div className='flex flex-row gap-2 flex-wrap'>
+            <div className='flex flex-row flex-wrap gap-2'>
               {formTypeFilter && (
                 <span
                   onClick={() => handleFormTypeFilter('')}
-                  className='rounded-full cursor-pointer py-1 px-4 bg-purple-100 text-sm text-purple-900 font-medium flex items-center gap-2'>
+                  className='flex items-center gap-2 px-4 py-1 text-sm font-medium text-purple-900 bg-purple-100 rounded-full cursor-pointer'>
                   Observer status: {formTypeFilter}
                   <X size={14} />
                 </span>

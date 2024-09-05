@@ -71,7 +71,7 @@ function EditFormDetails({ languageCode }: EditFormDetailsProps) {
 
   return (
     <div className='md:inline-flex md:space-x-6'>
-      <div className='md:w-1/2 space-y-4'>
+      <div className='space-y-4 md:w-1/2'>
         <FormField
           control={form.control}
           name="formType"
@@ -88,7 +88,7 @@ function EditFormDetails({ languageCode }: EditFormDetailsProps) {
                   <SelectItem value={ZFormType.Values.Opening}>{mapFormType(ZFormType.Values.Opening)}</SelectItem>
                   <SelectItem value={ZFormType.Values.Voting}>{mapFormType(ZFormType.Values.Voting)}</SelectItem>
                   <SelectItem value={ZFormType.Values.ClosingAndCounting}>{mapFormType(ZFormType.Values.ClosingAndCounting)}</SelectItem>
-                  {isMonitoringNgoForCitizenReporting && <SelectItem value={ZFormType.Values.CitizenReport}>{mapFormType(ZFormType.Values.CitizenReport)}</SelectItem>}
+                  {isMonitoringNgoForCitizenReporting && <SelectItem value={ZFormType.Values.CitizenReporting}>{mapFormType(ZFormType.Values.CitizenReporting)}</SelectItem>}
                   <SelectItem value={ZFormType.Values.Other}>{mapFormType(ZFormType.Values.Other)}</SelectItem>
                 </SelectContent>
               </Select>
@@ -150,7 +150,7 @@ function EditFormDetails({ languageCode }: EditFormDetailsProps) {
 
         <div className='inline-flex text-slate-700'>
           <div><InformationCircleIcon width={24} height={24} /></div>
-          <div className='text-sm ml-2'>Base language is the language a form is initially written in. You can multiple translations after you finalize the form in base language.</div>
+          <div className='ml-2 text-sm'>Base language is the language a form is initially written in. You can multiple translations after you finalize the form in base language.</div>
         </div>
 
       </div>

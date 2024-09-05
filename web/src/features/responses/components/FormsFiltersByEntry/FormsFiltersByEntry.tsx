@@ -57,11 +57,18 @@ export function FormsFiltersByEntry(): FunctionComponent {
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
-            {Object.values(ZFormType.Values).map((value) => (
-              <SelectItem value={value} key={value}>
-                {mapFormType(value)}
-              </SelectItem>
-            ))}
+            <SelectItem value={ZFormType.Values.Opening} key={ZFormType.Values.Opening}>
+              {mapFormType(ZFormType.Values.Opening)}
+            </SelectItem>
+            <SelectItem value={ZFormType.Values.Voting} key={ZFormType.Values.Voting}>
+              {mapFormType(ZFormType.Values.Voting)}
+            </SelectItem>
+            <SelectItem value={ZFormType.Values.ClosingAndCounting} key={ZFormType.Values.ClosingAndCounting}>
+              {mapFormType(ZFormType.Values.ClosingAndCounting)}
+            </SelectItem>
+            <SelectItem value={ZFormType.Values.Other} key={ZFormType.Values.Other}>
+              {mapFormType(ZFormType.Values.Other)}
+            </SelectItem>
           </SelectGroup>
         </SelectContent>
       </Select>
@@ -108,7 +115,7 @@ export function FormsFiltersByEntry(): FunctionComponent {
       <ResetFiltersButton disabled={!isFiltered} />
 
       {isFiltered && (
-        <div className='col-span-full flex gap-2 flex-wrap'>
+        <div className='flex flex-wrap gap-2 col-span-full'>
           {search.formTypeFilter && (
             <FilterBadge label={`Form type: ${search.formTypeFilter}`} onClear={onClearFilter('formTypeFilter')} />
           )}
