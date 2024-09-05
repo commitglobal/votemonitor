@@ -54,6 +54,10 @@ ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "Vote.Monitor.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
+ARG REVISION=UNKNOWN
 WORKDIR /app
 COPY --from=publish /app/publish .
+
+ENV COMMIT_HASH=$REVISION
+
 ENTRYPOINT ["dotnet", "Vote.Monitor.Api.dll"]
