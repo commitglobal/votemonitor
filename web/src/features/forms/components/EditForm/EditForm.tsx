@@ -10,13 +10,14 @@ import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { useFieldArray, useForm, useWatch } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { z } from 'zod';
 
 import { isDateQuestion, isMultiSelectQuestion, isNumberQuestion, isRatingQuestion, isSingleSelectQuestion, isTextQuestion } from '@/common/guards';
 import Layout from '@/components/layout/Layout';
 import { NavigateBack } from '@/components/NavigateBack/NavigateBack';
 import { LanguageBadge } from '@/components/ui/language-badge';
+import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { cn, emptyTranslatedString, isNilOrWhitespace, isNotNilOrWhitespace } from '@/lib/utils';
 import { Route } from '@/routes/forms_.$formId.edit';
 import { formDetailsQueryOptions } from '../../queries';
@@ -24,8 +25,6 @@ import { EditDateQuestionType, EditMultiSelectQuestionType, EditNumberQuestionTy
 import { FormDetailsBreadcrumbs } from '../FormDetailsBreadcrumbs/FormDetailsBreadcrumbs';
 import EditFormDetails from './EditFormDetails';
 import EditFormFooter from './EditFormFooter';
-import { useCurrentElectionRoundStore } from '@/context/election-round.store';
-import { DevTool } from '@hookform/devtools';
 
 export const ZEditFormType = z.object({
   formId: z.string().trim().min(1),
