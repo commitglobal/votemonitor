@@ -1,6 +1,6 @@
-﻿using Vote.Monitor.Api.Feature.Monitoring.List;
+﻿using Feature.Monitoring.List;
 
-namespace Vote.Monitor.Api.Feature.Monitoring.Specifications;
+namespace Feature.Monitoring.Specifications;
 
 public sealed class GetMonitoringNgoSpecification : SingleResultSpecification<MonitoringNgoAggregate, MonitoringNgoModel>
 {

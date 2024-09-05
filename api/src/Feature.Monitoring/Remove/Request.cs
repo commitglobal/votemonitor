@@ -1,4 +1,4 @@
-﻿namespace Vote.Monitor.Api.Feature.Monitoring.Remove;
+﻿namespace Feature.Monitoring.Remove;
 
 public class Request
 {

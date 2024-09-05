@@ -1,4 +1,4 @@
-﻿namespace Vote.Monitor.Api.Feature.Monitoring.Specifications;
+﻿namespace Feature.Monitoring.Specifications;
 
 public sealed class GetMonitoringNgoWithObserversSpecification : SingleResultSpecification<MonitoringNgoAggregate>
 {

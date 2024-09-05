@@ -1,10 +1,10 @@
 ﻿using Authorization.Policies;
-using Vote.Monitor.Api.Feature.Monitoring.Specifications;
+using Feature.Monitoring.Specifications;
 using Vote.Monitor.Core.Extensions;
 using Vote.Monitor.Domain.Entities.ElectionRoundAggregate;
 using Vote.Monitor.Domain.Entities.NgoAggregate;
 
-namespace Vote.Monitor.Api.Feature.Monitoring.EnableCitizenReportingNgo;
+namespace Feature.Monitoring.EnableCitizenReportingNgo;
 
 public class Endpoint(
     IRepository<ElectionRoundAggregate> repository,

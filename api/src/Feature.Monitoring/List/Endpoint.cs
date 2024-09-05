@@ -1,7 +1,7 @@
 ﻿using Authorization.Policies;
-using Vote.Monitor.Api.Feature.Monitoring.Specifications;
+using Feature.Monitoring.Specifications;
 
-namespace Vote.Monitor.Api.Feature.Monitoring.List;
+namespace Feature.Monitoring.List;
 public class Endpoint(IReadRepository<MonitoringNgoAggregate> repository) : Endpoint<Request, Results<Ok<Response>, NotFound>>
 {
     public override void Configure()

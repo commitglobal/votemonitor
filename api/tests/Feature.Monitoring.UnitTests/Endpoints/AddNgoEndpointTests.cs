@@ -1,8 +1,8 @@
-﻿using Vote.Monitor.Api.Feature.Monitoring.Add;
+﻿using Feature.Monitoring.Add;
 using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
 using Vote.Monitor.Domain.Entities.NgoAggregate;
 
-namespace Vote.Monitor.Api.Feature.Monitoring.UnitTests.Endpoints;
+namespace Feature.Monitoring.UnitTests.Endpoints;
 
 public class AddNgoEndpointTests
 {

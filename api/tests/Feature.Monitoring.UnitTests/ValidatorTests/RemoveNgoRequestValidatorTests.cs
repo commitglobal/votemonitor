@@ -1,6 +1,6 @@
-﻿using Vote.Monitor.Api.Feature.Monitoring.Remove;
+﻿using Feature.Monitoring.Remove;
 
-namespace Vote.Monitor.Api.Feature.Monitoring.UnitTests.ValidatorTests;
+namespace Feature.Monitoring.UnitTests.ValidatorTests;
 
 public class RemoveNgoRequestValidatorTests
 {

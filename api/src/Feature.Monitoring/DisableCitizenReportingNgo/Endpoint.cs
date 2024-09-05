@@ -1,6 +1,6 @@
-﻿using Vote.Monitor.Api.Feature.Monitoring.Specifications;
+﻿using Feature.Monitoring.Specifications;
 
-namespace Vote.Monitor.Api.Feature.Monitoring.DisableCitizenReportingNgo;
+namespace Feature.Monitoring.DisableCitizenReportingNgo;
 
 public class Endpoint(IRepository<ElectionRoundAggregate> repository) : Endpoint<Request, Results<NoContent, NotFound<string>>>
 {

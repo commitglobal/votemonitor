@@ -7,7 +7,6 @@
 
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
-    <RootNamespace>Vote.Monitor.Api.Feature.Monitoring.UnitTests</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

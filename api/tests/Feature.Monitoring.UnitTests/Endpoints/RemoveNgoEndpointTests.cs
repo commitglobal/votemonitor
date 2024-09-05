@@ -1,6 +1,7 @@
-﻿using Vote.Monitor.Api.Feature.Monitoring.Remove;
+﻿using Feature.Monitoring.Remove;
+using Feature.Monitoring.Specifications;
 
-namespace Vote.Monitor.Api.Feature.Monitoring.UnitTests.Endpoints;
+namespace Feature.Monitoring.UnitTests.Endpoints;
 
 public class RemoveNgoEndpointTests
 {

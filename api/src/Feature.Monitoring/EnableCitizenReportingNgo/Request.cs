@@ -1,4 +1,4 @@
-﻿namespace Vote.Monitor.Api.Feature.Monitoring.EnableCitizenReportingNgo;
+﻿namespace Feature.Monitoring.EnableCitizenReportingNgo;
 
 public class Request
 {

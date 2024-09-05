@@ -1,6 +1,6 @@
-﻿using Vote.Monitor.Api.Feature.Monitoring.Add;
+﻿using Feature.Monitoring.Add;
 
-namespace Vote.Monitor.Api.Feature.Monitoring.UnitTests.ValidatorTests;
+namespace Feature.Monitoring.UnitTests.ValidatorTests;
 
 public class AddNgoRequestValidatorTests
 {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace Vote.Monitor.Api.Feature.Monitoring;
+namespace Feature.Monitoring;
 
 public static class MonitoringFeatureInstaller
 {

@@ -38,6 +38,7 @@ using Feature.CitizenReports.Notes;
 using Feature.DataExport;
 using Feature.Feedback;
 using Feature.ImportErrors;
+using Feature.Monitoring;
 using Feature.Statistics;
 using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
 using Microsoft.AspNetCore.Http.Features;
