@@ -138,14 +138,16 @@
     "stationsVisitedByAtLeastOneObserverIndicatorTitle": "Stations visited by at least one observer",
     "stationsVisitedByAtLeastOneObserverMetricLabel": "coverage",
     "timeSpentObservingCardTitle": "Time spent observing",
-    "basedOnStartEndTimesReportedIndicatorTitle": "Based on start-end times reported",
+    "timeSpentObservingIndicatorTitle": "Based on start-end times reported",
     "startedFormsCardTitle": "Started forms",
-    "formsStartedBetweenIndicatorTitle": "forms started between ",
+    "startedFormsIndicatorTitle": "forms started between {{interval}}",
     "questionsAnsweredCardTitle": "Questions answered",
-    "questionsAnsweredBetweenIndicatorTitle": "questions answered between ",
+    "questionsAnsweredIndicatorTitle": "questions answered between {{interval}}",
     "flaggedAnswersCardTitle": "Flagged answers",
-    "answersWereFlaggedThroughFormsBetweenIndicatorTitle": "answers were flagged through forms between",
+    "flaggedAnswersIndicatorTitle": "answers were flagged through forms between {{interval}}",
     "quickReportsCardTitle": "Quick reports",
-    "quickReportsWereSignalledBetweenIndicatorTitle": "quick reports were signalled  between"
+    "quickReportsIndicatorTitle": "quick reports were signalled between {{interval}}",
+    "citizenReportsCardTitle": "Citizen reports",
+    "citizenReportsIndicatorTitle": "citizen reports were signalled between {{interval}}"
   }
 }

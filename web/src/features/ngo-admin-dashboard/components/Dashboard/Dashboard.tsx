@@ -128,7 +128,7 @@ export default function NgoAdminDashboard(): FunctionComponent {
               </CardHeader>
               <CardContent>
                 <MetricChart
-                  title={t('ngoAdminDashboard.basedOnStartEndTimesReportedIndicatorTitle')}
+                  title={t('ngoAdminDashboard.timeSpentObservingIndicatorTitle')}
                   unit='h'
                   data={timeSpentObservingDataConfig(statistics?.minutesMonitoring)}
                   ref={timeSpentObservingChartRef} />
@@ -148,7 +148,7 @@ export default function NgoAdminDashboard(): FunctionComponent {
               </CardHeader>
               <CardContent>
                 <LineChart
-                  title={`${t('ngoAdminDashboard.formsStartedBetweenIndicatorTitle')} ${getInterval(statistics?.formsHistogram)}`}
+                  title={t('ngoAdminDashboard.startedFormsIndicatorTitle', { interval: getInterval(statistics?.formsHistogram) })}
                   data={histogramChartConfig(statistics?.formsHistogram)}
                   ref={startedFormsChartRef}
                   total={getTotal(statistics?.formsHistogram)}
@@ -166,7 +166,7 @@ export default function NgoAdminDashboard(): FunctionComponent {
               </CardHeader>
               <CardContent>
                 <LineChart
-                  title={`${t('ngoAdminDashboard.questionsAnsweredBetweenIndicatorTitle')} ${getInterval(statistics?.formsHistogram)}`}
+                  title={t('ngoAdminDashboard.questionsAnsweredIndicatorTitle', { interval: getInterval(statistics?.formsHistogram) })}
                   data={histogramChartConfig(statistics?.questionsHistogram)}
                   ref={questionsAnsweredChartRef}
                   total={getTotal(statistics?.questionsHistogram)}
@@ -184,7 +184,7 @@ export default function NgoAdminDashboard(): FunctionComponent {
               </CardHeader>
               <CardContent>
                 <LineChart
-                  title={`${t('ngoAdminDashboard.answersWereFlaggedThroughFormsBetweenIndicatorTitle')} ${getInterval(statistics?.formsHistogram)}`}
+                  title={t('ngoAdminDashboard.flaggedAnswersIndicatorTitle', { interval: getInterval(statistics?.formsHistogram) })}
                   data={histogramChartConfig(statistics?.flaggedAnswersHistogram, 'red')}
                   ref={flaggedAnswersChartRef}
                   total={getTotal(statistics?.flaggedAnswersHistogram)}
@@ -202,8 +202,8 @@ export default function NgoAdminDashboard(): FunctionComponent {
               </CardHeader>
               <CardContent>
                 <LineChart
-                  title={`${t('ngoAdminDashboard.quickReportsWereSignalledBetweenIndicatorTitle')} ${getInterval(statistics?.quickReportsHistogram)}`}
-                  title={`quick reports were signalled between ${getInterval(statistics?.quickReportsHistogram)}`}
+                  title={t('ngoAdminDashboard.quickReportsIndicatorTitle', { interval: getInterval(statistics?.quickReportsHistogram) })}
+                  data={histogramChartConfig(statistics?.quickReportsHistogram, 'red')}
                   ref={quickReportsChartRef}
                   total={getTotal(statistics?.quickReportsHistogram)}
                   showTotal />
@@ -213,15 +213,15 @@ export default function NgoAdminDashboard(): FunctionComponent {
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between">
                   <CardTitle className="text-sm font-medium">
-                    Citizen reports
+                    {t('ngoAdminDashboard.citizenReportsCardTitle')}
                   </CardTitle>
-                  <Button type='button' variant='ghost' onClick={() => { saveChart(quickReportsChartRef, 'quick-reports.png') }}>
+                  <Button type='button' variant='ghost' onClick={() => { saveChart(citizenReportsChartRef, 'quick-reports.png') }}>
                     <ArrowDownTrayIcon className='w-6 h-6 fill-gray-400' />
                   </Button>
                 </CardHeader>
                 <CardContent>
                   <LineChart
-                    title={`citizen reports were signalled between ${getInterval(statistics?.citizenReportsHistogram)}`}
+                    title={t('ngoAdminDashboard.citizenReportsIndicatorTitle', { interval: getInterval(statistics?.citizenReportsHistogram) })}
                     data={histogramChartConfig(statistics?.citizenReportsHistogram, 'red')}
                     ref={citizenReportsChartRef}
                     total={getTotal(statistics?.citizenReportsHistogram)}
