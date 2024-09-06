@@ -1,4 +1,4 @@
-import { QuestionType, RatingScaleType, ZDisplayLogicCondition } from "@/common/types";
+import { DateQuestion, MultiSelectQuestion, NumberQuestion, QuestionType, RatingQuestion, RatingScaleType, SingleSelectQuestion, TextQuestion, ZDisplayLogicCondition } from "@/common/types";
 import { z } from "zod";
 
 export const ZTranslatedString = z.record(z.string());
@@ -83,3 +83,93 @@ export type EditRatingQuestionType = z.infer<typeof ZEditRatingQuestionType>;
 export type EditDateQuestionType = z.infer<typeof ZEditDateQuestionType>;
 
 export type EditQuestionType = z.infer<typeof ZEditQuestionType>;
+
+
+export const mapToQuestionRequest = (q: EditQuestionType): NumberQuestion | TextQuestion | RatingQuestion | DateQuestion | SingleSelectQuestion | MultiSelectQuestion => {
+  if (q.$questionType === QuestionType.NumberQuestionType) {
+    const numberQuestion: NumberQuestion = {
+      $questionType: QuestionType.NumberQuestionType,
+      code: q.code,
+      id: q.questionId,
+      text: q.text,
+      helptext: q.helptext,
+      inputPlaceholder: q.inputPlaceholder,
+      displayLogic: q.hasDisplayLogic ? { condition: q.condition!, parentQuestionId: q.parentQuestionId!, value: q.value! } : undefined
+    };
+
+    return numberQuestion;
+  }
+
+  if (q.$questionType === QuestionType.TextQuestionType) {
+    const textQuestion: TextQuestion = {
+      $questionType: QuestionType.TextQuestionType,
+      code: q.code,
+      id: q.questionId,
+      text: q.text,
+      helptext: q.helptext,
+      inputPlaceholder: q.inputPlaceholder,
+      displayLogic: q.hasDisplayLogic ? { condition: q.condition!, parentQuestionId: q.parentQuestionId!, value: q.value! } : undefined
+    };
+
+    return textQuestion;
+  }
+
+  if (q.$questionType === QuestionType.RatingQuestionType) {
+    const ratingQuestion: RatingQuestion = {
+      $questionType: QuestionType.RatingQuestionType,
+      code: q.code,
+      id: q.questionId,
+      text: q.text,
+      helptext: q.helptext,
+      scale: q.scale,
+      lowerLabel: q.lowerLabel,
+      upperLabel: q.upperLabel,
+      displayLogic: q.hasDisplayLogic ? { condition: q.condition!, parentQuestionId: q.parentQuestionId!, value: q.value! } : undefined
+    };
+
+    return ratingQuestion;
+  }
+
+  if (q.$questionType === QuestionType.DateQuestionType) {
+    const dateQuestion: DateQuestion = {
+      $questionType: QuestionType.DateQuestionType,
+      code: q.code,
+      id: q.questionId,
+      text: q.text,
+      helptext: q.helptext,
+      displayLogic: q.hasDisplayLogic ? { condition: q.condition!, parentQuestionId: q.parentQuestionId!, value: q.value! } : undefined
+    };
+
+    return dateQuestion;
+  }
+
+  if (q.$questionType === QuestionType.SingleSelectQuestionType) {
+    const singleSelectQuestion: SingleSelectQuestion = {
+      $questionType: QuestionType.SingleSelectQuestionType,
+      code: q.code,
+      id: q.questionId,
+      text: q.text,
+      helptext: q.helptext,
+      options: q.options.map(o => ({ id: o.optionId, isFlagged: o.isFlagged, isFreeText: o.isFreeText, text: o.text })),
+      displayLogic: q.hasDisplayLogic ? { condition: q.condition!, parentQuestionId: q.parentQuestionId!, value: q.value! } : undefined
+    };
+
+    return singleSelectQuestion;
+  }
+
+  if (q.$questionType === QuestionType.MultiSelectQuestionType) {
+    const multiSelectQuestion: MultiSelectQuestion = {
+      $questionType: QuestionType.MultiSelectQuestionType,
+      code: q.code,
+      id: q.questionId,
+      text: q.text,
+      helptext: q.helptext,
+      options: q.options.map(o => ({ id: o.optionId, isFlagged: o.isFlagged, isFreeText: o.isFreeText, text: o.text })),
+      displayLogic: q.hasDisplayLogic ? { condition: q.condition!, parentQuestionId: q.parentQuestionId!, value: q.value! } : undefined
+    };
+
+    return multiSelectQuestion;
+  }
+
+  throw new Error('unknown question type');
+};
