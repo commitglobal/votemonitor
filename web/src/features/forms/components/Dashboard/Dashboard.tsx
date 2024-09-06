@@ -33,7 +33,7 @@ import { FormBase, FormStatus } from '../../models/form';
 import { formsKeys, useForms } from '../../queries';
 import AddTranslationsDialog, { useAddTranslationsDialog } from './AddTranslationsDialog';
 import CreateForm from './CreateForm';
-import { t } from 'i18next';
+import i18n from '@/i18n';
 
 export default function FormsDashboard(): ReactElement {
   const addTranslationsDialog = useAddTranslationsDialog();
@@ -68,40 +68,40 @@ export default function FormsDashboard(): ReactElement {
     {
       accessorKey: 'code',
       enableSorting: true,
-      header: ({ column }) => <DataTableColumnHeader title={t('electionEvent.observerForms.dataTableColumnHeaderFormCode')} column={column} />,
+      header: ({ column }) => <DataTableColumnHeader title={i18n.t('electionEvent.observerForms.headers.formCode')} column={column} />,
     },
     {
       id: 'name',
       accessorFn: (row, _) => row.name[row.defaultLanguage],
       enableSorting: false,
-      header: ({ column }) => <DataTableColumnHeader title={t('electionEvent.observerForms.dataTableColumnHeaderName')} column={column} />,
+      header: ({ column }) => <DataTableColumnHeader title={i18n.t('electionEvent.observerForms.headers.name')} column={column} />,
     },
     {
       accessorKey: 'formType',
       accessorFn: (row, _) => mapFormType(row.formType),
       enableSorting: false,
       enableResizing: false,
-      header: ({ column }) => <DataTableColumnHeader title={t('electionEvent.observerForms.dataTableColumnHeaderFormType')} column={column} />,
+      header: ({ column }) => <DataTableColumnHeader title={i18n.t('electionEvent.observerForms.headers.formType')} column={column} />,
       cell: ({ row }) => (row.depth === 0 ? row.original.formType : ''),
     },
     {
       accessorKey: 'defaultLanguage',
       enableSorting: false,
       enableResizing: false,
-      header: ({ column }) => <DataTableColumnHeader title={t('electionEvent.observerForms.dataTableColumnHeaderLanguage')} column={column} />,
+      header: ({ column }) => <DataTableColumnHeader title={i18n.t('electionEvent.observerForms.headers.language')} column={column} />,
     },
     {
       accessorKey: 'numberOfQuestions',
       enableSorting: false,
       enableResizing: false,
-      header: ({ column }) => <DataTableColumnHeader title={t('electionEvent.observerForms.dataTableColumnHeaderQuestions')} column={column} />,
+      header: ({ column }) => <DataTableColumnHeader title={i18n.t('electionEvent.observerForms.headers.questions')} column={column} />,
       cell: ({ row }) => (row.depth === 0 ? row.original.numberOfQuestions : ''),
     },
     {
       accessorKey: 'status',
       enableSorting: false,
       enableResizing: false,
-      header: ({ column }) => <DataTableColumnHeader title={t('electionEvent.observerForms.dataTableColumnHeaderStatus')} column={column} />,
+      header: ({ column }) => <DataTableColumnHeader title={i18n.t('electionEvent.observerForms.headers.status')} column={column} />,
       cell: ({ row }) => {
         const form = row.original;
 
@@ -128,7 +128,7 @@ export default function FormsDashboard(): ReactElement {
       accessorKey: 'lastUpdatedOn',
       enableSorting: false,
       enableResizing: false,
-      header: ({ column }) => <DataTableColumnHeader title={t('electionEvent.observerForms.dataTableColumnHeaderUpdatedOn')} column={column} />,
+      header: ({ column }) => <DataTableColumnHeader title={i18n.t('electionEvent.observerForms.headers.updatedOn')} column={column} />,
       cell: ({ row }) => (
         row.depth === 0 ?
           <div>
@@ -392,10 +392,10 @@ export default function FormsDashboard(): ReactElement {
       <CardHeader className='flex gap-2 flex-column'>
         <CardTitle className='flex flex-row items-center justify-between px-6'>
           <div className='text-xl'>
-            {t("electionEvent.observerForms.cardTitle")}
+            {i18n.t("electionEvent.observerForms.cardTitle")}
           </div>
           <div>
-            <CreateDialog title={t('electionEvent.observerForms.createDialogTitle')}>
+            <CreateDialog title={i18n.t('electionEvent.observerForms.createDialogTitle')}>
               <CreateForm />
             </CreateDialog>
           </div>
@@ -429,7 +429,7 @@ export default function FormsDashboard(): ReactElement {
             </Select>
             <Button variant='ghost-primary'>
               <span onClick={resetFilters} className='text-base text-purple-900'>
-                {t('electionEvent.observerForms.resetFilters')}
+                {i18n.t('electionEvent.observerForms.resetFilters')}
               </span>
             </Button>
             <div className='flex flex-row flex-wrap gap-2'>

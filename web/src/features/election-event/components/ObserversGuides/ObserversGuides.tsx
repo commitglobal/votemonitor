@@ -22,7 +22,7 @@ import ConfirmDeleteDialog from './ConfirmDeleteDialog';
 import EditObserversGuideDialog from './EditObserversGuideDialog';
 import UploadObserversGuideDialog from './UploadObserversGuideDialog';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
-import { t } from 'i18next';
+import i18n from '@/i18n';
 
 export default function ObserversGuides() {
   const uploadObserverGuideDialog = useDialog();
@@ -85,7 +85,7 @@ export default function ObserversGuides() {
       }) => <div>{guideType === 'Document' ? <PaperClipIcon className='w-4 h-4 ml-auto opacity-50' /> : <LinkIcon className='w-4 h-4 ml-auto opacity-50' />}</div>,
     },
     {
-      header: ({ column }) => <DataTableColumnHeader title={t('electionEvent.observerGuides.dataTableColumnHeaderTitle')} column={column} />,
+      header: ({ column }) => <DataTableColumnHeader title={i18n.t('electionEvent.observerGuides.headers.title')} column={column} />,
       accessorKey: 'title',
       enableSorting: false,
       enableGlobalFilter: false,
@@ -100,7 +100,7 @@ export default function ObserversGuides() {
       </Button>)
     },
     {
-      header: ({ column }) => <DataTableColumnHeader title={t('electionEvent.observerGuides.dataTableColumnHeaderUploadedOn')} column={column} />,
+      header: ({ column }) => <DataTableColumnHeader title={i18n.t('electionEvent.observerGuides.headers.uploadedOn')} column={column} />,
       accessorKey: 'createdOn',
       enableSorting: false,
       enableGlobalFilter: false,
@@ -111,7 +111,7 @@ export default function ObserversGuides() {
       }) => <p>{format(createdOn, DateTimeFormat)}</p>
     },
     {
-      header: ({ column }) => <DataTableColumnHeader title={t('electionEvent.observerGuides.dataTableColumnHeaderCreatedBy')} column={column} />,
+      header: ({ column }) => <DataTableColumnHeader title={i18n.t('electionEvent.observerGuides.headers.createdBy')} column={column} />,
       accessorKey: 'createBy',
       enableSorting: false,
       enableGlobalFilter: false,
@@ -144,7 +144,7 @@ export default function ObserversGuides() {
     <Card className='w-full pt-0'>
       <CardHeader className='flex flex-column gap-2'>
         <div className='flex flex-row justify-between items-center px-6'>
-          <CardTitle className='text-xl'>{t('electionEvent.observerGuides.cardTitle')}</CardTitle>
+          <CardTitle className='text-xl'>{i18n.t('electionEvent.observerGuides.cardTitle')}</CardTitle>
           <div className='table-actions flex flex-row-reverse flex-row- gap-4'>
             {!!guideTitle && !!guideId && <EditObserversGuideDialog guideId={guideId} title={guideTitle} {...editObserverGuideDialog.dialogProps} />}
             <UploadObserversGuideDialog {...uploadObserverGuideDialog.dialogProps} />
@@ -171,7 +171,7 @@ export default function ObserversGuides() {
                   strokeLinejoin='round'
                 />
               </svg>
-              {t('electionEvent.observerGuides.buttonUploadObserverGuide')}
+              {i18n.t('electionEvent.observerGuides.buttonUploadObserverGuide')}
             </Button>
 
           </div>

@@ -160,34 +160,40 @@
     "pollingStations": {
       "tabTitle": "Polling Stations",
       "cardTitle": "Polling stations",
-      "dataTableColumnHeaderNumber": "Number",
-      "dataTableColumnHeaderAddress": "Address",
-      "dataTableColumnHeaderTags": "Polling station tags",
-      "dataTableColumnHeaderLevel1": "Level 1",
-      "dataTableColumnHeaderLevel2": "Level 2",
-      "dataTableColumnHeaderLevel3": "Level 3",
-      "dataTableColumnHeaderLevel4": "Level 4",
-      "dataTableColumnHeaderLevel5": "Level 5",
+      "headers": {
+        "number": "Number",
+        "address": "Address",
+        "tags": "Polling station tags",
+        "level1": "Level 1",
+        "level2": "Level 2",
+        "level3": "Level 3",
+        "level4": "Level 4",
+        "level5": "Level 5"
+      },
       "resetFilters": "Reset filters"
     },
     "observerGuides": {
       "tabTitle": "Observer Guides",
       "cardTitle": "Observer guides",
-      "dataTableColumnHeaderTitle": "Title",
-      "dataTableColumnHeaderUploadedOn": "Uploaded on",
-      "dataTableColumnHeaderCreatedBy": "Created by",
+      "headers": {
+        "title": "Title",
+        "uploadedOn": "Uploaded on",
+        "createdBy": "Created by"
+      },
       "buttonUploadObserverGuide": "Upload observer guide"
     },
     "observerForms": {
       "tabTitle": "Observer Forms",
       "cardTitle": "Observation forms",
-      "dataTableColumnHeaderFormCode": "Form Code",
-      "dataTableColumnHeaderName": "Name",
-      "dataTableColumnHeaderFormType": "Form type",
-      "dataTableColumnHeaderLanguage": "Language",
-      "dataTableColumnHeaderQuestions": "Questions",
-      "dataTableColumnHeaderStatus": "Status",
-      "dataTableColumnHeaderUpdatedOn": "Updated on",
+      "headers": {
+        "formCode": "Form Code",
+        "name": "Name",
+        "formType": "Form type",
+        "language": "Language",
+        "questions": "Questions",
+        "status": "Status",
+        "updatedOn": "Updated on"
+      },
       "createDialogTitle": "Create form",
       "resetFilters": "Reset filters"
     }
