@@ -69,7 +69,6 @@
   "questionEditor.question.displayLogic": "Apply display logic to this question",
   "questionEditor.question.displayLogic.chooseQuestion": "Display this question only when answer for previous question",
   "questionEditor.question.displayLogic.invalid": "You need to have a prior question of type number question/rating question/single select / multiple select to enable display logic",
-
   "questionEditor.question.ratingScale.oneTo3": "One to 3",
   "questionEditor.question.ratingScale.oneTo4": "One to 4",
   "questionEditor.question.ratingScale.oneTo5": "One to 5",
@@ -78,10 +77,8 @@
   "questionEditor.question.ratingScale.oneTo8": "One to 8",
   "questionEditor.question.ratingScale.oneTo9": "One to 9",
   "questionEditor.question.ratingScale.oneTo10": "One to 10",
-
   "questionEditor.question.scale.lowerLabel": "Lower label",
   "questionEditor.question.scale.upperLabel": "Upper label",
-
   "questionEditor.ratingQuestion.scale": "Scale",
   "questionEditor.selectQuestion.toMultiSelectQuestion": "Convert to multi select question",
   "questionEditor.selectQuestion.toSingleSelectQuestion": "Convert to single select question",
@@ -126,7 +123,7 @@
     "placeholder.defaultLanguage": "Select a default language",
     "placeholder.languages": "Select available languages"
   },
-  "ngoAdminDashboard":{
+  "ngoAdminDashboard": {
     "title": "Dashboard",
     "subtitle": "Key indicators.",
     "observersAccountsCardTitle": "Observers Accounts",
@@ -149,5 +146,60 @@
     "quickReportsIndicatorTitle": "quick reports were signalled between {{interval}}",
     "citizenReportsCardTitle": "Citizen reports",
     "citizenReportsIndicatorTitle": "citizen reports were signalled between {{interval}}"
+  },
+  "electionEvent": {
+    "eventDetails": {
+      "tabTitle": "Event Details",
+      "cardTitle": "Event details",
+      "title": "Election event title",
+      "englishTitle": "Election event English title",
+      "country": "Country",
+      "startDate": "Start date",
+      "status": "Status"
+    },
+    "pollingStations": {
+      "tabTitle": "Polling Stations",
+      "cardTitle": "Polling stations",
+      "dataTableColumnHeaderNumber": "Number",
+      "dataTableColumnHeaderAddress": "Address",
+      "dataTableColumnHeaderTags": "Polling station tags",
+      "dataTableColumnHeaderLevel1": "Level 1",
+      "dataTableColumnHeaderLevel2": "Level 2",
+      "dataTableColumnHeaderLevel3": "Level 3",
+      "dataTableColumnHeaderLevel4": "Level 4",
+      "dataTableColumnHeaderLevel5": "Level 5",
+      "resetFilters": "Reset filters"
+    },
+    "observerGuides": {
+      "tabTitle": "Observer Guides",
+      "cardTitle": "Observer guides",
+      "dataTableColumnHeaderTitle": "Title",
+      "dataTableColumnHeaderUploadedOn": "Uploaded on",
+      "dataTableColumnHeaderCreatedBy": "Created by",
+      "buttonUploadObserverGuide": "Upload observer guide"
+    },
+    "observerForms": {
+      "tabTitle": "Observer Forms",
+      "cardTitle": "Observation forms",
+      "dataTableColumnHeaderFormCode": "Form Code",
+      "dataTableColumnHeaderName": "Name",
+      "dataTableColumnHeaderFormType": "Form type",
+      "dataTableColumnHeaderLanguage": "Language",
+      "dataTableColumnHeaderQuestions": "Questions",
+      "dataTableColumnHeaderStatus": "Status",
+      "dataTableColumnHeaderUpdatedOn": "Updated on",
+      "createDialogTitle": "Create form",
+      "resetFilters": "Reset filters"
+    }
+  },
+  "pagination": {
+    "dataTable": {
+      "resultsSummary": "Showing {{start}} to {{end}} of {{total}} results",
+      "perPage": "per page",
+      "goToFirstPage": "Go to first page",
+      "goToPreviousPage": "Go to previous page",
+      "goToNextPage": "Go to next page",
+      "goToLastPage": "Go to last page"
+    }
   }
 }
