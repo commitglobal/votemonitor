@@ -1,23 +1,23 @@
+import { SortOrder, type DataTableParameters, type PageResponse } from '@/common/types';
+import { EmptyCollectionIcon } from '@/components/icons/EmptyCollectionIcon';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import type { UseQueryResult } from '@tanstack/react-query';
 import {
   flexRender,
   getCoreRowModel,
+  getExpandedRowModel,
   getSortedRowModel,
+  useReactTable,
+  type CellContext,
   type ColumnDef,
   type PaginationState,
-  type SortingState,
-  useReactTable,
-  type VisibilityState,
-  getExpandedRowModel,
   type Row,
-  type CellContext,
+  type SortingState,
+  type VisibilityState,
 } from '@tanstack/react-table';
-import { EmptyCollectionIcon } from '@/components/icons/EmptyCollectionIcon';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useEffect, useState, type ReactElement } from 'react';
-import { SortOrder, type DataTableParameters, type PageResponse } from '@/common/types';
-import { DataTablePagination } from './DataTablePagination';
-import type { UseQueryResult } from '@tanstack/react-query';
 import { Skeleton } from '../skeleton';
+import { DataTablePagination } from './DataTablePagination';
 
 export interface RowData {
   id: string;
@@ -237,6 +237,7 @@ export function DataTable<TData extends RowData, TValue, TQueryParams = object>(
                       style={{ cursor: onRowClick ? 'pointer' : undefined }}>
                       {row.getVisibleCells().map((cell) => (
                         <TableCell
+                          title={cell.getValue() as string}
                           key={cell.id}
                           style={{ maxWidth: cell.column.getSize() }}
                           {...(getCellProps ? getCellProps(cell.getContext()) : {})}>
