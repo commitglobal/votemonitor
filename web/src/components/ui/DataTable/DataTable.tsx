@@ -184,6 +184,9 @@ export function DataTable<TData extends RowData, TValue, TQueryParams = object>(
       pagination,
       columnVisibility,
     },
+    defaultColumn: {
+      size: 165,
+    },
   });
 
   return (

@@ -63,14 +63,16 @@ export const formSubmissionsByObserverColumns: VisibilityState = {
 export const formSubmissionsDefaultColumns: Record<FormSubmissionsViewBy, VisibilityState> = {
   byEntry: formSubmissionsByEntryDefaultColumns,
   byObserver: formSubmissionsByObserverDefaultColumns,
-  byForm: formSubmissionsByFormDefaultColumns
+  byForm: formSubmissionsByFormDefaultColumns,
 };
 
 export type ColumnOption = { id: string; label: string; enableHiding: boolean };
 
 const byEntryColumnVisibilityOptions: ColumnOption[] = [
+  { id: 'submissionId', label: 'Entry ID', enableHiding: true },
   { id: 'timeSubmitted', label: 'Time submitted', enableHiding: true },
   { id: 'formCode', label: 'Form code', enableHiding: true },
+  { id: 'formDefaultLanguage', label: 'Language', enableHiding: true },
   { id: 'formType', label: 'Form type', enableHiding: true },
   { id: 'level1', label: 'Location - L1', enableHiding: true },
   { id: 'level2', label: 'Location - L2', enableHiding: true },
@@ -106,7 +108,6 @@ const byFormColumnVisibilityOptions: ColumnOption[] = [
   { id: 'numberOfMediaFiles', label: 'Media files', enableHiding: true },
 ];
 
-
 export const forObserverColumnVisibilityOptions: ColumnOption[] = [
   { id: 'timeSubmitted', label: 'Time submitted', enableHiding: true },
   { id: 'formCode', label: 'Form code', enableHiding: true },
@@ -126,7 +127,7 @@ export const forObserverColumnVisibilityOptions: ColumnOption[] = [
 export const columnVisibilityOptions: Record<FormSubmissionsViewBy, ColumnOption[]> = {
   byEntry: byEntryColumnVisibilityOptions,
   byObserver: byObserverColumnVisibilityOptions,
-  byForm: byFormColumnVisibilityOptions
+  byForm: byFormColumnVisibilityOptions,
 };
 
 export const quickReportsColumnVisibilityOptions: ColumnOption[] = [
@@ -173,8 +174,6 @@ export const citizenReportsColumnVisibilityOptions: ColumnOption[] = [
   { id: 'mediaFilesCount', label: 'Media files', enableHiding: true },
   { id: 'followUpStatus', label: 'Follow-up status', enableHiding: true },
 ];
-
-
 
 export const citizenReportsDefaultColumns: VisibilityState = {
   submissionId: false,

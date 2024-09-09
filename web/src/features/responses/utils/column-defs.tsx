@@ -26,12 +26,20 @@ import { mapQuickReportLocationType } from './helpers';
 
 export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry & RowData>[] = [
   {
+    header: ({ column }) => <DataTableColumnHeader title='Entry ID' column={column} />,
+    accessorKey: 'submissionId',
+    enableSorting: true,
+    enableGlobalFilter: true,
+  },
+
+  {
     header: ({ column }) => <DataTableColumnHeader title='Time submitted' column={column} />,
     accessorKey: 'timeSubmitted',
     enableSorting: true,
     enableGlobalFilter: true,
     cell: ({ row }) => <div>{format(row.original.timeSubmitted, DateTimeFormat)}</div>,
   },
+
   {
     header: ({ column }) => <DataTableColumnHeader title='Form code' column={column} />,
     accessorKey: 'formCode',
@@ -44,6 +52,14 @@ export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry &
     enableSorting: true,
     enableGlobalFilter: true,
   },
+
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Language' column={column} />,
+    accessorKey: 'formDefaultLanguage',
+    enableSorting: true,
+    enableGlobalFilter: true,
+  },
+
   {
     header: ({ column }) => <DataTableColumnHeader title='Station number' column={column} />,
     accessorKey: 'number',
@@ -142,8 +158,8 @@ export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry &
         {row.original.followUpStatus === FollowUpStatus.NotApplicable
           ? 'Not Applicable'
           : row.original.followUpStatus === FollowUpStatus.NeedsFollowUp
-            ? 'Needs follow-up'
-            : 'Resolved'}
+          ? 'Needs follow-up'
+          : 'Resolved'}
       </Badge>
     ),
   },
@@ -264,8 +280,8 @@ export const formSubmissionsForObserverColumnDefs: ColumnDef<FormSubmissionByEnt
         {row.original.followUpStatus === FollowUpStatus.NotApplicable
           ? 'Not Applicable'
           : row.original.followUpStatus === FollowUpStatus.NeedsFollowUp
-            ? 'Needs follow-up'
-            : 'Resolved'}
+          ? 'Needs follow-up'
+          : 'Resolved'}
       </Badge>
     ),
   },
@@ -441,7 +457,9 @@ export const answerExtraInfoColumnDefs: ColumnDef<QuestionExtraData>[] = [
     accessorKey: 'preview',
     enableSorting: false,
     enableGlobalFilter: false,
-    cell: ({ row }) => <div>{row.original.type === "Note" ? row.original.text : <MediaFilesCell attachment={row.original} />}</div>,
+    cell: ({ row }) => (
+      <div>{row.original.type === 'Note' ? row.original.text : <MediaFilesCell attachment={row.original} />}</div>
+    ),
   },
 ];
 
@@ -451,26 +469,34 @@ export const aggregatedAnswerExtraInfoColumnDefs: ColumnDef<QuestionExtraData>[]
     accessorKey: 'submissionId',
     enableSorting: true,
     enableGlobalFilter: true,
-    cell: ({ row }) => <div>
-      {
-        row.original.submissionType === SubmissionType.FormSubmission &&
-        <Link to='/responses/$submissionId' params={{ submissionId: row.original.submissionId }} preload='intent' target='_blank' >
-          <Button type='button' variant={'link'} className='text-purple-500'>
-            {row.original.submissionId.substring(0, 8)}
-            <ArrowTopRightOnSquareIcon className='w-4' />
-          </Button>
-        </Link>
-      }
-      {
-        row.original.submissionType === SubmissionType.CitizenReport &&
-        <Link to='/responses/citizen-reports/$citizenReportId' params={{ citizenReportId: row.original.submissionId }} preload='intent' target='_blank' >
-          <Button type='button' variant={'link'} className='text-purple-500'>
-            {row.original.submissionId.substring(0, 8)}
-            <ArrowTopRightOnSquareIcon className='w-4' />
-          </Button>
-        </Link>
-      }
-    </div>
+    cell: ({ row }) => (
+      <div>
+        {row.original.submissionType === SubmissionType.FormSubmission && (
+          <Link
+            to='/responses/$submissionId'
+            params={{ submissionId: row.original.submissionId }}
+            preload='intent'
+            target='_blank'>
+            <Button type='button' variant={'link'} className='text-purple-500'>
+              {row.original.submissionId.substring(0, 8)}
+              <ArrowTopRightOnSquareIcon className='w-4' />
+            </Button>
+          </Link>
+        )}
+        {row.original.submissionType === SubmissionType.CitizenReport && (
+          <Link
+            to='/responses/citizen-reports/$citizenReportId'
+            params={{ citizenReportId: row.original.submissionId }}
+            preload='intent'
+            target='_blank'>
+            <Button type='button' variant={'link'} className='text-purple-500'>
+              {row.original.submissionId.substring(0, 8)}
+              <ArrowTopRightOnSquareIcon className='w-4' />
+            </Button>
+          </Link>
+        )}
+      </div>
+    ),
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Type' column={column} />,
@@ -491,7 +517,9 @@ export const aggregatedAnswerExtraInfoColumnDefs: ColumnDef<QuestionExtraData>[]
     accessorKey: 'preview',
     enableSorting: false,
     enableGlobalFilter: false,
-    cell: ({ row }) => <div>{row.original.type === "Note" ? row.original.text : <MediaFilesCell attachment={row.original} />}</div>,
+    cell: ({ row }) => (
+      <div>{row.original.type === 'Note' ? row.original.text : <MediaFilesCell attachment={row.original} />}</div>
+    ),
   },
 ];
 
@@ -519,11 +547,7 @@ export const quickReportsColumnDefs: ColumnDef<QuickReport>[] = [
     accessorKey: 'quickReportLocationType',
     enableSorting: false,
     enableGlobalFilter: true,
-    cell: ({ row }) => (
-      <div>
-        {mapQuickReportLocationType(row.original.quickReportLocationType)}
-      </div>
-    ),
+    cell: ({ row }) => <div>{mapQuickReportLocationType(row.original.quickReportLocationType)}</div>,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Issue title' column={column} />,
@@ -610,8 +634,8 @@ export const quickReportsColumnDefs: ColumnDef<QuickReport>[] = [
         {row.original.followUpStatus === FollowUpStatus.NotApplicable
           ? 'Not Applicable'
           : row.original.followUpStatus === FollowUpStatus.NeedsFollowUp
-            ? 'Needs follow-up'
-            : 'Resolved'}
+          ? 'Needs follow-up'
+          : 'Resolved'}
       </Badge>
     ),
   },
@@ -632,7 +656,6 @@ export const quickReportsColumnDefs: ColumnDef<QuickReport>[] = [
     ),
   },
 ];
-
 
 export const citizenReportsByEntryColumnDefs: ColumnDef<CitizenReportByEntry & RowData>[] = [
   {
@@ -688,8 +711,8 @@ export const citizenReportsByEntryColumnDefs: ColumnDef<CitizenReportByEntry & R
         {row.original.followUpStatus === FollowUpStatus.NotApplicable
           ? 'Not Applicable'
           : row.original.followUpStatus === FollowUpStatus.NeedsFollowUp
-            ? 'Needs follow-up'
-            : 'Resolved'}
+          ? 'Needs follow-up'
+          : 'Resolved'}
       </Badge>
     ),
   },
