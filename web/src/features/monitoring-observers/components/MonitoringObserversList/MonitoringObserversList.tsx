@@ -21,7 +21,7 @@ import { Cog8ToothIcon, EllipsisVerticalIcon, FunnelIcon, PaperAirplaneIcon } fr
 import { useMutation, useQuery, UseQueryResult } from '@tanstack/react-query';
 import { useNavigate, useRouter } from '@tanstack/react-router';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
-import { X } from 'lucide-react';
+import { Plus, X } from 'lucide-react';
 import { useCallback, useState } from 'react';
 
 import { DateTimeFormat } from '@/common/formats';
@@ -37,6 +37,8 @@ import { queryClient } from '@/main';
 import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 
+import AddObserverDialog from '../MonitoringObserversList/AddObserverDialog'; // Import the new component
+
 type ListMonitoringObserverResponse = PageResponse<MonitoringObserver>;
 
 type UseMonitoringObserversResult = UseQueryResult<ListMonitoringObserverResponse, Error>;
@@ -44,6 +46,7 @@ type UseMonitoringObserversResult = UseQueryResult<ListMonitoringObserverRespons
 function MonitoringObserversList() {
   const navigate = useNavigate();
   const router = useRouter();
+  const [isAddObserverDialogOpen, setIsAddObserverDialogOpen] = useState(false);
 
   const monitoringObserverColDefs: ColumnDef<MonitoringObserver>[] = [
     {
@@ -142,7 +145,7 @@ function MonitoringObserversList() {
     navigate({ to: '/monitoring-observers/edit/$monitoringObserverId', params: { monitoringObserverId } });
   };
 
-    const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
+  const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
   const { data: tags } = useMonitoringObserversTags(currentElectionRoundId);
 
   const useMonitoringObservers = (params: DataTableParameters): UseMonitoringObserversResult => {
@@ -309,6 +312,18 @@ function MonitoringObserversList() {
               Import observer list
             </Button>
             <Button
+              className='bg-background hover:bg-purple-50 hover:text-purple-500 text-purple-900 flex gap-2'
+              variant='outline'
+              onClick={() => setIsAddObserverDialogOpen(true)} // Open the dialog on click
+            >
+              <Plus className='mr-2' width={18} height={18} />
+              Add individual observer
+            </Button>
+            <AddObserverDialog
+              open={isAddObserverDialogOpen} // Dialog visibility state
+              onOpenChange={setIsAddObserverDialogOpen} // Function to change dialog visibility
+            />
+            <Button
               className='bg-background hover:bg-purple-50 hover:text-purple-500 text-purple-900'
               onClick={exportMonitoringObservers}>
               <svg
@@ -432,3 +447,4 @@ function MonitoringObserversList() {
 }
 
 export default MonitoringObserversList;
+
