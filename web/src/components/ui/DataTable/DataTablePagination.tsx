@@ -3,6 +3,7 @@ import type { PaginationState, Table } from '@tanstack/react-table';
 import type { ReactElement } from 'react';
 import { Button } from '../button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../select';
+import i18n from '@/i18n';
 
 interface DataTablePaginationProps<TData> {
   table: Table<TData>;
@@ -10,19 +11,17 @@ interface DataTablePaginationProps<TData> {
 }
 
 const DataTablePaginationProgress = ({ pagination, totalCount }: { pagination: PaginationState, totalCount?: number }): ReactElement => {
-  if(totalCount === 0 || totalCount === undefined){
+  if (totalCount === 0 || totalCount === undefined) {
     return <p className="text-sm text-gray-700 ps-2"></p>;
   }
 
   return (
     <p className="text-sm text-gray-700 ps-2">
-      Showing{' '}
-      <span className="font-medium">{(pagination.pageIndex * pagination.pageSize) + 1}</span>{' '}
-      to{' '}
-      <span className="font-medium">{Math.min(totalCount ?? -1, (pagination.pageIndex + 1) * pagination.pageSize)}</span>{' '}
-      of{' '}
-      <span className="font-medium">{totalCount}</span>{' '}
-      results
+      {i18n.t('pagination.dataTable.resultsSummary', {
+        start: (pagination.pageIndex * pagination.pageSize) + 1,
+        end: Math.min(totalCount ?? -1, (pagination.pageIndex + 1) * pagination.pageSize),
+        total: totalCount,
+      })}
     </p>
   );
 };
@@ -73,7 +72,7 @@ export function DataTablePagination<TData>({ table, totalCount }: DataTablePagin
               ))}
             </SelectContent>
           </Select>
-          <p className='text-sm font-medium'>per page</p>
+          <p className='text-sm font-medium'>{i18n.t('pagination.dataTable.perPage')}</p>
         </div>
 
         <div className='flex items-center gap-2'>
@@ -82,7 +81,7 @@ export function DataTablePagination<TData>({ table, totalCount }: DataTablePagin
             className='hidden w-8 h-8 p-0 lg:flex'
             onClick={() => { table.setPageIndex(0); }}
             disabled={!table.getCanPreviousPage()}>
-            <span className='sr-only'>Go to first page</span>
+            <span className='sr-only'>{i18n.t('pagination.dataTable.goToFirstPage')}</span>
             <ChevronDoubleLeftIcon className='w-4 h-4' />
           </Button>
           <Button
@@ -90,7 +89,7 @@ export function DataTablePagination<TData>({ table, totalCount }: DataTablePagin
             className='w-8 h-8 p-0'
             onClick={() => { table.previousPage(); }}
             disabled={!table.getCanPreviousPage()}>
-            <span className='sr-only'>Go to previous page</span>
+            <span className='sr-only'>{i18n.t('pagination.dataTable.goToPreviousPage')}</span>
             <ChevronLeftIcon className='w-4 h-4' />
           </Button>
           <Button
@@ -98,7 +97,7 @@ export function DataTablePagination<TData>({ table, totalCount }: DataTablePagin
             className='w-8 h-8 p-0'
             onClick={() => { table.nextPage(); }}
             disabled={!table.getCanNextPage()}>
-            <span className='sr-only'>Go to next page</span>
+            <span className='sr-only'>{i18n.t('pagination.dataTable.goToNextPage')}</span>
             <ChevronRightIcon className='w-4 h-4' />
           </Button>
           <Button
@@ -106,7 +105,7 @@ export function DataTablePagination<TData>({ table, totalCount }: DataTablePagin
             className='hidden w-8 h-8 p-0 lg:flex'
             onClick={() => { table.setPageIndex(table.getPageCount() - 1); }}
             disabled={!table.getCanNextPage()}>
-            <span className='sr-only'>Go to last page</span>
+            <span className='sr-only'>{i18n.t('pagination.dataTable.goToLastPage')}</span>
             <ChevronDoubleRightIcon className='w-4 h-4' />
           </Button>
         </div>
