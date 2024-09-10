@@ -40,6 +40,7 @@ import { Route as MonitoringObserversPushMessagesIdImport } from './routes/monit
 import { Route as MonitoringObserversEditMonitoringObserverIdImport } from './routes/monitoring-observers/edit.$monitoringObserverId'
 import { Route as FormsFormIdEditImport } from './routes/forms_.$formId.edit'
 import { Route as FormsFormIdLanguageCodeImport } from './routes/forms/$formId_.$languageCode'
+import { Route as ResponsesCitizenReportsFormIdAggregatedImport } from './routes/responses/citizen-reports/$formId.aggregated'
 import { Route as MonitoringObserversViewMonitoringObserverIdTabImport } from './routes/monitoring-observers/view/$monitoringObserverId.$tab'
 import { Route as MonitoringObserversPushMessagesIdViewImport } from './routes/monitoring-observers/push-messages.$id_.view'
 import { Route as FormsFormIdEditTranslationLanguageCodeImport } from './routes/forms_.$formId.edit-translation.$languageCode'
@@ -197,6 +198,12 @@ const FormsFormIdLanguageCodeRoute = FormsFormIdLanguageCodeImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const ResponsesCitizenReportsFormIdAggregatedRoute =
+  ResponsesCitizenReportsFormIdAggregatedImport.update({
+    path: '/responses/citizen-reports/$formId/aggregated',
+    getParentRoute: () => rootRoute,
+  } as any)
+
 const MonitoringObserversViewMonitoringObserverIdTabRoute =
   MonitoringObserversViewMonitoringObserverIdTabImport.update({
     path: '/monitoring-observers/view/$monitoringObserverId/$tab',
@@ -347,6 +354,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MonitoringObserversViewMonitoringObserverIdTabImport
       parentRoute: typeof rootRoute
     }
+    '/responses/citizen-reports/$formId/aggregated': {
+      preLoaderRoute: typeof ResponsesCitizenReportsFormIdAggregatedImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -385,6 +396,7 @@ export const routeTree = rootRoute.addChildren([
   FormsFormIdEditTranslationLanguageCodeRoute,
   MonitoringObserversPushMessagesIdViewRoute,
   MonitoringObserversViewMonitoringObserverIdTabRoute,
+  ResponsesCitizenReportsFormIdAggregatedRoute,
 ])
 
 /* prettier-ignore-end */

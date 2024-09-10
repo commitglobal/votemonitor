@@ -31,6 +31,7 @@ public class Endpoint(
                 x.ElectionRoundId == req.ElectionRoundId
                 && x.Form.MonitoringNgo.NgoId == req.NgoId
                 && x.Id == req.CitizenReportId)
+            .AsSplitQuery()
             .FirstOrDefaultAsync(ct);
 
         if (citizenReport == null)
