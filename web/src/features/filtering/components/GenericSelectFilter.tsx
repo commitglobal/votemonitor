@@ -17,7 +17,7 @@ export const GenericSelectFilter: FC<GenericSelectFilterProps> = (props) => {
   const { placeholder, value, options, onChange } = props;
 
   return (
-    <Select value={value} onValueChange={onChange}>
+    <Select value={value ?? ''} onValueChange={onChange}>
       <SelectTrigger className='w-[180px]'>
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>

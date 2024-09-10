@@ -8,13 +8,11 @@ import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumn
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { useDialog } from '@/components/ui/use-dialog';
 import { Cog8ToothIcon, EllipsisVerticalIcon, FunnelIcon, PaperAirplaneIcon } from '@heroicons/react/24/outline';
@@ -162,9 +160,13 @@ function MonitoringObserversList() {
         params.sortOrder,
         searchText,
         (queryParams as any).status,
-        tagsFilter,
+        (queryParams as any).tags,
       ],
       queryFn: async () => {
+        const tags = new URLSearchParams();
+        tags.append('tags', 'west');
+        tags.append('tags', 'ios');
+
         const paramsObject: any = {
           PageNumber: params.pageNumber,
           PageSize: params.pageSize,
@@ -172,12 +174,18 @@ function MonitoringObserversList() {
           SortOrder: params.sortOrder,
           searchText: searchText,
           status: (queryParams as any).status,
+          tags: (queryParams as any).tags,
         };
 
+        const tagString =
+          (queryParams as any).tags == undefined
+            ? ''
+            : (queryParams as any).tags?.map((n: string) => `tags=${n}`).join('&');
+
+        //const tagString = (queryParams as any)?.tags?.length===0?.
+
         const response = await authApi.get<PageResponse<MonitoringObserver>>(
-          `/election-rounds/${currentElectionRoundId}/monitoring-observers?${tagsFilter
-            .map((n) => `tags=${n}`)
-            .join('&')}`,
+          `/election-rounds/${currentElectionRoundId}/monitoring-observers?${tagString ?? ''}`,
           {
             params: Object.keys(paramsObject)
               .filter((k) => paramsObject[k] !== null && paramsObject[k] !== '')
@@ -390,40 +398,6 @@ function MonitoringObserversList() {
           <>
             <MonitoringObserversListFilters />
             <div className='table-filters flex flex-row gap-4 items-center'>
-              <Select value={statusFilter} onValueChange={handleStatusFilter}>
-                <SelectTrigger className='w-[180px]'>
-                  <SelectValue placeholder='Observer status' />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectItem value='Active'>Active</SelectItem>
-                    <SelectItem value='Pending'>Pending</SelectItem>
-                    <SelectItem value='Suspended'>Suspended</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <div className='flex h-10 w-48 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50'>
-                    Tags
-                  </div>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className='w-56'>
-                  {tags?.map((tag) => (
-                    <DropdownMenuCheckboxItem
-                      checked={tagsFilter.includes(tag)}
-                      onCheckedChange={() => toggleTagsFilter(tag)}
-                      key={tag}>
-                      {tag}
-                    </DropdownMenuCheckboxItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
-              <Button variant='ghost-primary'>
-                <span onClick={resetFilters} className='text-base text-purple-900'>
-                  Reset filters
-                </span>
-              </Button>
               <div className='flex flex-row gap-2 flex-wrap'>
                 {statusFilter && (
                   <span
