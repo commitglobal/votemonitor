@@ -1,12 +1,12 @@
+import { DateTimeHourBucketFormat } from '@/common/formats';
 import type { FunctionComponent } from '@/common/types';
 import LineChart from '@/components/charts/line-chart/LineChart';
 import { getChartBackgroundColorGradient } from '@/components/charts/utils/chart-options';
+import { format } from 'date-fns';
 import type { ChartJSOrUndefined } from 'node_modules/react-chartjs-2/dist/types';
 import { forwardRef } from 'react';
-import type { DateQuestionAggregate } from '../../models/form-aggregated';
 import { purple500 } from '../../utils/chart-colors';
-import { DateTimeHourBucketFormat } from '@/common/formats';
-import { format } from 'date-fns';
+import { DateQuestionAggregate } from '../../models/common';
 
 type DateAggregateContentProps = {
   aggregate: DateQuestionAggregate;

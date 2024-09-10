@@ -57,9 +57,9 @@ export default function CitizenReportDetails(): FunctionComponent {
   return (
     <Layout title={`#${citizenReport.citizenReportId}`}>
       <div className='flex flex-col gap-4'>
-        <Card className='max-w-4xl'>
+        <Card>
           <CardHeader>
-            <CardTitle className='mb-4 flex justify-between'>
+            <CardTitle className='flex justify-between mb-4'>
               <div>
                 {citizenReport.formCode}: {citizenReport.formName[citizenReport.formDefaultLanguage]}
               </div>

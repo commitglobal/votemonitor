@@ -16,19 +16,18 @@ import PreviewAnswer from '../PreviewAnswer/PreviewAnswer';
 
 export default function FormSubmissionDetails(): FunctionComponent {
   const { submissionId } = Route.useParams();
-  const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
-  const { data: formSubmission } = useSuspenseQuery(formSubmissionDetailsQueryOptions(currentElectionRoundId, submissionId));
+  const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
+  const { data: formSubmission } = useSuspenseQuery(
+    formSubmissionDetailsQueryOptions(currentElectionRoundId, submissionId)
+  );
 
   const router = useRouter();
 
   const updateSubmissionFollowUpStatusMutation = useMutation({
     mutationFn: ({ electionRoundId, followUpStatus }: { electionRoundId: string; followUpStatus: FollowUpStatus }) => {
-      return authApi.put<void>(
-        `/election-rounds/${electionRoundId}/form-submissions/${submissionId}:status`,
-        {
-          followUpStatus
-        }
-      );
+      return authApi.put<void>(`/election-rounds/${electionRoundId}/form-submissions/${submissionId}:status`, {
+        followUpStatus,
+      });
     },
 
     onSuccess: async (_, { electionRoundId }) => {
@@ -37,8 +36,8 @@ export default function FormSubmissionDetails(): FunctionComponent {
         description: 'Follow-up status updated',
       });
 
-      await queryClient.invalidateQueries({ queryKey: formSubmissionsByEntryKeys.all });
-      await queryClient.invalidateQueries({ queryKey: formSubmissionsByObserverKeys.all });
+      await queryClient.invalidateQueries({ queryKey: formSubmissionsByEntryKeys.all(electionRoundId) });
+      await queryClient.invalidateQueries({ queryKey: formSubmissionsByObserverKeys.all(electionRoundId) });
       router.invalidate();
     },
 
@@ -46,9 +45,9 @@ export default function FormSubmissionDetails(): FunctionComponent {
       toast({
         title: 'Error updating follow up status',
         description: 'Please contact tech support',
-        variant: 'destructive'
+        variant: 'destructive',
       });
-    }
+    },
   });
 
   function handleFollowUpStatusChange(followUpStatus: FollowUpStatus): void {
@@ -58,13 +57,13 @@ export default function FormSubmissionDetails(): FunctionComponent {
   return (
     <Layout title={`#${formSubmission.submissionId}`}>
       <div className='flex flex-col gap-4'>
-        <Card className='max-w-4xl'>
-          <CardContent className='pt-6 flex flex-col gap-4'>
+        <Card>
+          <CardContent className='flex flex-col gap-4 pt-6'>
             <div className='flex gap-2'>
               <p>Observer:</p>
               <Link
                 search
-                className='text-purple-500 font-bold flex gap-1'
+                className='flex gap-1 font-bold text-purple-500'
                 to='/monitoring-observers/view/$monitoringObserverId/$tab'
                 params={{ monitoringObserverId: formSubmission.monitoringObserverId, tab: 'details' }}
                 target='_blank'
@@ -84,36 +83,46 @@ export default function FormSubmissionDetails(): FunctionComponent {
                 <p>Location - L1:</p>
                 {formSubmission.level1}
               </div>
-              {formSubmission.level2 && <div className='flex gap-2'>
-                <p>Location - L2:</p>
-                {formSubmission.level2}
-              </div>}
-              {formSubmission.level3 && <div className='flex gap-2'>
-                <p>Location - L3:</p>
-                {formSubmission.level3}
-              </div>}
-              {formSubmission.level4 && <div className='flex gap-2'>
-                <p>Location - L4:</p>
-                {formSubmission.level4}
-              </div>}
-              {formSubmission.level5 && <div className='flex gap-2'>
-                <p>Location - L5:</p>
-                {formSubmission.level5}
-              </div>}
-              <p>Number:</p>
-              #{formSubmission.number}
+              {formSubmission.level2 && (
+                <div className='flex gap-2'>
+                  <p>Location - L2:</p>
+                  {formSubmission.level2}
+                </div>
+              )}
+              {formSubmission.level3 && (
+                <div className='flex gap-2'>
+                  <p>Location - L3:</p>
+                  {formSubmission.level3}
+                </div>
+              )}
+              {formSubmission.level4 && (
+                <div className='flex gap-2'>
+                  <p>Location - L4:</p>
+                  {formSubmission.level4}
+                </div>
+              )}
+              {formSubmission.level5 && (
+                <div className='flex gap-2'>
+                  <p>Location - L5:</p>
+                  {formSubmission.level5}
+                </div>
+              )}
+              <p>Number:</p>#{formSubmission.number}
             </div>
           </CardContent>
         </Card>
 
-        <Card className='max-w-4xl'>
+        <Card>
           <CardHeader>
-            <CardTitle className='mb-4 flex justify-between'>
+            <CardTitle className='flex justify-between mb-4'>
               <div>
                 {formSubmission.formCode}: {formSubmission.formType}
               </div>
-              <Select onValueChange={handleFollowUpStatusChange} defaultValue={formSubmission.followUpStatus} value={formSubmission.followUpStatus}>
-                <SelectTrigger className="w-[180px]">
+              <Select
+                onValueChange={handleFollowUpStatusChange}
+                defaultValue={formSubmission.followUpStatus}
+                value={formSubmission.followUpStatus}>
+                <SelectTrigger className='w-[180px]'>
                   <SelectValue placeholder='Follow-up status' />
                 </SelectTrigger>
                 <SelectContent>
@@ -134,13 +143,16 @@ export default function FormSubmissionDetails(): FunctionComponent {
               const notes = formSubmission.notes.filter(({ questionId }) => questionId === question.id);
               const attachments = formSubmission.attachments.filter(({ questionId }) => questionId === question.id);
 
-              return <PreviewAnswer
-                key={index}
-                question={question}
-                answer={answer}
-                notes={notes}
-                attachments={attachments}
-                defaultLanguage={formSubmission.defaultLanguage} />
+              return (
+                <PreviewAnswer
+                  key={index}
+                  question={question}
+                  answer={answer}
+                  notes={notes}
+                  attachments={attachments}
+                  defaultLanguage={formSubmission.defaultLanguage}
+                />
+              );
             })}
           </CardContent>
         </Card>

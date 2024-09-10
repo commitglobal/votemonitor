@@ -8,18 +8,19 @@ import { useSuspenseQuery } from '@tanstack/react-query';
 import { Link, useRouter } from '@tanstack/react-router';
 import type { Responder } from '../../models/form-aggregated';
 import { AggregateCard } from '../AggregateCard/AggregateCard';
+import { SubmissionType } from '../../models/common';
 
 export default function FormAggregatedDetails(): FunctionComponent {
   const { state } = useRouter();
 
-  const { formId } = Route.useParams()
-  const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
+  const { formId } = Route.useParams();
+  const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
   const { data: formSubmission } = useSuspenseQuery(formAggregatedDetailsQueryOptions(currentElectionRoundId, formId));
 
   const { submissionsAggregate } = formSubmission;
   const { defaultLanguage, formCode, formType, aggregates, responders } = submissionsAggregate;
 
-  const groupedAttachments = responders.reduce<Record<string, Responder>>(
+  const respondersAggregated = responders.reduce<Record<string, Responder>>(
     (grouped, responder) => ({
       ...grouped,
       [responder.responderId]: responder,
@@ -31,7 +32,7 @@ export default function FormAggregatedDetails(): FunctionComponent {
     <Layout
       backButton={<NavigateBack search={state.resolvedLocation.search} to='/responses' />}
       breadcrumbs={
-        <div className='breadcrumbs flex flex-row gap-2 mb-4'>
+        <div className='flex flex-row gap-2 mb-4 breadcrumbs'>
           <Link search={state.resolvedLocation.search as any} className='crumb' to='/responses' preload='intent'>
             responses
           </Link>
@@ -44,9 +45,12 @@ export default function FormAggregatedDetails(): FunctionComponent {
           return (
             <AggregateCard
               key={aggregate.questionId}
+              submissionType={SubmissionType.FormSubmission}
               aggregate={aggregate}
               language={defaultLanguage}
-              responders={groupedAttachments}
+              responders={respondersAggregated}
+              attachments={formSubmission.attachments}
+              notes={formSubmission.notes}
             />
           );
         })}
