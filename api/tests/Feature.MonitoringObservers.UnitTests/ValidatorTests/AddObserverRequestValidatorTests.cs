@@ -1,4 +1,5 @@
 ﻿using Feature.MonitoringObservers.Add;
+using Feature.MonitoringObservers.Parser;
 
 namespace Feature.MonitoringObservers.UnitTests.ValidatorTests;
 
@@ -20,29 +21,16 @@ public class AddObserverRequestValidatorTests
     }
 
     [Fact]
-    public void Validation_ShouldFail_When_ObserverId_Empty()
+    public void Validation_ShouldFail_When_NgoId_Empty()
     {
         // Arrange
-        var request = new Request { ObserverId = Guid.Empty };
+        var request = new Request { NgoId = Guid.Empty };
 
         // Act
         var result = _validator.TestValidate(request);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.ObserverId);
-    }
-
-    [Fact]
-    public void Validation_ShouldFail_When_MonitoringNgoId_Empty()
-    {
-        // Arrange
-        var request = new Request { MonitoringNgoId = Guid.Empty };
-
-        // Act
-        var result = _validator.TestValidate(request);
-
-        // Assert
-        result.ShouldHaveValidationErrorFor(x => x.MonitoringNgoId);
+        result.ShouldHaveValidationErrorFor(x => x.NgoId);
     }
 
     [Fact]
@@ -52,8 +40,18 @@ public class AddObserverRequestValidatorTests
         var request = new Request
         {
             ElectionRoundId = Guid.NewGuid(),
-            MonitoringNgoId = Guid.NewGuid(),
-            ObserverId = Guid.NewGuid(),
+            NgoId = Guid.NewGuid(),
+            Observers =
+            [
+                new MonitoringObserverImportModel()
+                {
+                    Email = "test@test.com",
+                    Tags = ["tag1", "tag2"],
+                    FirstName = "firstName",
+                    LastName = "lastName",
+                    PhoneNumber = "phoneNumber",
+                }
+            ],
         };
 
         // Act

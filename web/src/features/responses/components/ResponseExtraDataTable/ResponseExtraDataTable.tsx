@@ -1,10 +1,10 @@
-import { flexRender, useReactTable, getCoreRowModel, getSortedRowModel, ColumnDef } from '@tanstack/react-table';
 import type { FunctionComponent } from '@/common/types';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { ColumnDef, flexRender, getCoreRowModel, getSortedRowModel, useReactTable } from '@tanstack/react-table';
 import type { QuestionExtraData } from '../../types';
 
 type ResponseExtraDataTableProps = {
-  columns: ColumnDef<QuestionExtraData>[]
+  columns: ColumnDef<QuestionExtraData>[];
   data: QuestionExtraData[];
 };
 
