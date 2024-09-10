@@ -59,7 +59,7 @@ export function QuickReportsTab(): FunctionComponent {
   }, [debouncedSearch]);
 
   const setPrevSearch = useSetPrevSearch();
-    const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
+  const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
 
   const onClearFilter = useCallback(
     (filter: keyof QuickReportsSearchParams | (keyof QuickReportsSearchParams)[]) => () => {
@@ -89,7 +89,7 @@ export function QuickReportsTab(): FunctionComponent {
   return (
     <Card>
       <CardHeader>
-        <div className='flex justify-between items-center px-6'>
+        <div className='flex items-center justify-between px-6'>
           <CardTitle>Quick reports</CardTitle>
 
           <ExportDataButton exportedDataType={ExportedDataType.QuickReports} />
@@ -97,7 +97,7 @@ export function QuickReportsTab(): FunctionComponent {
 
         <Separator />
 
-        <div className='px-6 flex justify-end gap-4'>
+        <div className='flex justify-end gap-4 px-6'>
           <FunnelIcon
             className='w-[20px] text-purple-900 cursor-pointer'
             fill={isFiltering ? '#5F288D' : 'rgba(0,0,0,0)'}
@@ -131,7 +131,7 @@ export function QuickReportsTab(): FunctionComponent {
         <Separator />
 
         {isFiltering && (
-          <div className='grid grid-cols-6 gap-4 items-center'>
+          <div className='grid items-center grid-cols-6 gap-4'>
             <Select
               onValueChange={(value) => {
                 void navigate({ search: (prev) => ({ ...prev, quickReportLocationType: value }) });
@@ -160,7 +160,9 @@ export function QuickReportsTab(): FunctionComponent {
               <SelectContent>
                 <SelectGroup>
                   {Object.values(FollowUpStatus).map((value) => (
-                    <SelectItem value={value} key={value}>{value}</SelectItem>
+                    <SelectItem value={value} key={value}>
+                      {value}
+                    </SelectItem>
                   ))}
                 </SelectGroup>
               </SelectContent>
@@ -170,7 +172,7 @@ export function QuickReportsTab(): FunctionComponent {
             <ResetFiltersButton disabled={!isFiltered} />
 
             {isFiltered && (
-              <div className='col-span-full flex gap-2 flex-wrap'>
+              <div className='flex flex-wrap gap-2 col-span-full'>
                 {search.followUpStatus && (
                   <FilterBadge
                     label={`Follow up status: ${search.followUpStatus}`}

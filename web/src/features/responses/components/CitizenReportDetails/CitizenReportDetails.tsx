@@ -12,23 +12,23 @@ import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { useRouter } from '@tanstack/react-router';
 import { citizenReportKeys } from '../../hooks/citizen-reports';
 import PreviewAnswer from '../PreviewAnswer/PreviewAnswer';
+import { SubmissionType } from '../../models/common';
 
 export default function CitizenReportDetails(): FunctionComponent {
   const { citizenReportId } = Route.useParams();
-  const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
-  const { data: citizenReport } = useSuspenseQuery(citizenReportDetailsQueryOptions(currentElectionRoundId, citizenReportId));
+  const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
+  const { data: citizenReport } = useSuspenseQuery(
+    citizenReportDetailsQueryOptions(currentElectionRoundId, citizenReportId)
+  );
 
   const router = useRouter();
 
   const updateSubmissionFollowUpStatusMutation = useMutation({
     mutationKey: citizenReportKeys.detail(currentElectionRoundId, citizenReportId),
     mutationFn: ({ electionRoundId, followUpStatus }: { electionRoundId: string; followUpStatus: FollowUpStatus }) => {
-      return authApi.put<void>(
-        `/election-rounds/${electionRoundId}/citizen-reports/${citizenReportId}:status`,
-        {
-          followUpStatus
-        }
-      );
+      return authApi.put<void>(`/election-rounds/${electionRoundId}/citizen-reports/${citizenReportId}:status`, {
+        followUpStatus,
+      });
     },
 
     onSuccess: async (_, { electionRoundId }) => {
@@ -45,9 +45,9 @@ export default function CitizenReportDetails(): FunctionComponent {
       toast({
         title: 'Error updating follow up status',
         description: 'Please contact tech support',
-        variant: 'destructive'
+        variant: 'destructive',
       });
-    }
+    },
   });
 
   function handleFollowUpStatusChange(followUpStatus: FollowUpStatus): void {
@@ -57,14 +57,17 @@ export default function CitizenReportDetails(): FunctionComponent {
   return (
     <Layout title={`#${citizenReport.citizenReportId}`}>
       <div className='flex flex-col gap-4'>
-        <Card className='max-w-4xl'>
+        <Card>
           <CardHeader>
-            <CardTitle className='mb-4 flex justify-between'>
+            <CardTitle className='flex justify-between mb-4'>
               <div>
                 {citizenReport.formCode}: {citizenReport.formName[citizenReport.formDefaultLanguage]}
               </div>
-              <Select onValueChange={handleFollowUpStatusChange} defaultValue={citizenReport.followUpStatus} value={citizenReport.followUpStatus}>
-                <SelectTrigger className="w-[180px]">
+              <Select
+                onValueChange={handleFollowUpStatusChange}
+                defaultValue={citizenReport.followUpStatus}
+                value={citizenReport.followUpStatus}>
+                <SelectTrigger className='w-[180px]'>
                   <SelectValue placeholder='Follow-up status' />
                 </SelectTrigger>
                 <SelectContent>
@@ -85,13 +88,17 @@ export default function CitizenReportDetails(): FunctionComponent {
               const notes = citizenReport.notes.filter(({ questionId }) => questionId === question.id);
               const attachments = citizenReport.attachments.filter(({ questionId }) => questionId === question.id);
 
-              return <PreviewAnswer
-              key={index}
-              question={question}
-              answer={answer}
-              notes={notes}
-              attachments={attachments}
-              defaultLanguage={citizenReport.formDefaultLanguage} />
+              return (
+                <PreviewAnswer
+                  key={index}
+                  submissionType={SubmissionType.CitizenReport}
+                  question={question}
+                  answer={answer}
+                  notes={notes}
+                  attachments={attachments}
+                  defaultLanguage={citizenReport.formDefaultLanguage}
+                />
+              );
             })}
           </CardContent>
         </Card>

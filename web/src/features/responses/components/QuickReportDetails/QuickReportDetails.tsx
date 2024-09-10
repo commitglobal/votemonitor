@@ -63,7 +63,7 @@ export default function QuickReportDetails(): FunctionComponent {
     <Layout
       backButton={<NavigateBack to='/responses' search={prevSearch} />}
       breadcrumbs={
-        <div className='breadcrumbs flex flex-row gap-2 mb-4'>
+        <div className='flex flex-row gap-2 mb-4 breadcrumbs'>
           <Link className='crumb' to='/responses' preload='intent' search={prevSearch as any}>
             responses
           </Link>
@@ -71,9 +71,9 @@ export default function QuickReportDetails(): FunctionComponent {
         </div>
       }
       title={quickReport.id}>
-      <Card className='max-w-4xl'>
+      <Card>
         <CardHeader>
-          <CardTitle className='mb-4 flex justify-between'>
+          <CardTitle className='flex justify-between mb-4'>
             <div>Quick report</div>
             <Select
               onValueChange={handleFollowUpStatusChange}
@@ -112,7 +112,7 @@ export default function QuickReportDetails(): FunctionComponent {
 
           {quickReport.attachments.length > 0 && (
             <div>
-              <p className='font-bold pb-2'>Media files</p>
+              <p className='pb-2 font-bold'>Media files</p>
               <div className='flex flex-wrap gap-4'>
                 {quickReport.attachments.map((attachment) => (
                   <Dialog>
@@ -136,7 +136,7 @@ export default function QuickReportDetails(): FunctionComponent {
             <p className='font-bold'>Observer</p>
             <Link
               search
-              className='text-purple-500 flex gap-1'
+              className='flex gap-1 text-purple-500'
               to='/monitoring-observers/view/$monitoringObserverId/$tab'
               params={{ monitoringObserverId: quickReport.monitoringObserverId, tab: 'details' }}
               target='_blank'

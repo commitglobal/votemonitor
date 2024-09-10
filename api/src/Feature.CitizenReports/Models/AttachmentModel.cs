@@ -4,6 +4,7 @@ namespace Feature.CitizenReports.Models;
 
 public record AttachmentModel
 {
+    public Guid SubmissionId { get; init; }
     public Guid QuestionId { get; init; }
     public string FilePath { get; init; }
     public string UploadedFileName { get; init; }
@@ -20,6 +21,7 @@ public record AttachmentModel
             ? null
             : new AttachmentModel
             {
+                SubmissionId = attachment.CitizenReportId,
                 QuestionId = attachment.QuestionId,
                 FileName = attachment.FileName,
                 MimeType = attachment.MimeType,

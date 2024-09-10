@@ -7,64 +7,47 @@ import type { FormSubmissionByEntry, FormSubmissionByForm, FormSubmissionByObser
 
 const STALE_TIME = 1000 * 60; // one minute
 
-// export const formSubmissionsByEntryKeys = {
-//   all: (electionRoundId: string) => ['form-submissions-by-entry', electionRoundId] as const,
-//   lists: (electionRoundId: string) => [...formSubmissionsByEntryKeys.all(electionRoundId), 'list'] as const,
-//   list: (electionRoundId: string, params: DataTableParameters) => [...formSubmissionsByEntryKeys.lists(electionRoundId), { ...params }] as const,
-//   details: (electionRoundId: string) => [...formSubmissionsByEntryKeys.all(electionRoundId), 'detail'] as const,
-//   detail: (electionRoundId: string, id: string) => [...formSubmissionsByEntryKeys.details(electionRoundId), id] as const,
-// }
-
-// export const formSubmissionsByObserverKeys = {
-//   all: (electionRoundId: string) => ['form-submissions-by-observer', electionRoundId] as const,
-//   lists: (electionRoundId: string) => [...formSubmissionsByObserverKeys.all(electionRoundId), 'list'] as const,
-//   list: (electionRoundId: string, params: DataTableParameters) => [...formSubmissionsByObserverKeys.lists(electionRoundId), { ...params }] as const,
-//   details: (electionRoundId: string) => [...formSubmissionsByObserverKeys.all(electionRoundId), 'detail'] as const,
-//   detail: (electionRoundId: string, id: string) => [...formSubmissionsByObserverKeys.details(electionRoundId), id] as const,
-// }
-
-// export const formSubmissionsAggregatedKeys = {
-//   all: (electionRoundId: string) => ['aggregated-form-submissions', electionRoundId] as const,
-//   lists: (electionRoundId: string) => [...formSubmissionsAggregatedKeys.all(electionRoundId), 'list'] as const,
-//   list: (electionRoundId: string, params: DataTableParameters) => [...formSubmissionsAggregatedKeys.lists(electionRoundId), { ...params }] as const,
-//   details: (electionRoundId: string) => [...formSubmissionsAggregatedKeys.all(electionRoundId), 'detail'] as const,
-//   detail: (electionRoundId: string, id: string) => [...formSubmissionsAggregatedKeys.details(electionRoundId), id] as const,
-// }
-
 export const formSubmissionsByEntryKeys = {
-  all: ['form-submissions-by-entry'] as const,
-  lists: () => [...formSubmissionsByEntryKeys.all, 'list'] as const,
-  list: (params: DataTableParameters) => [...formSubmissionsByEntryKeys.lists(), { ...params }] as const,
-  details: () => [...formSubmissionsByEntryKeys.all, 'detail'] as const,
-  detail: (id: string) => [...formSubmissionsByEntryKeys.details(), id] as const,
-}
+  all: (electionRoundId: string) => ['form-submissions-by-entry', electionRoundId] as const,
+  lists: (electionRoundId: string) => [...formSubmissionsByEntryKeys.all(electionRoundId), 'list'] as const,
+  list: (electionRoundId: string, params: DataTableParameters) =>
+    [...formSubmissionsByEntryKeys.lists(electionRoundId), { ...params }] as const,
+  details: (electionRoundId: string) => [...formSubmissionsByEntryKeys.all(electionRoundId), 'detail'] as const,
+  detail: (electionRoundId: string, id: string) =>
+    [...formSubmissionsByEntryKeys.details(electionRoundId), id] as const,
+};
 
 export const formSubmissionsByObserverKeys = {
-  all: ['form-submissions-by-observer'] as const,
-  lists: () => [...formSubmissionsByObserverKeys.all, 'list'] as const,
-  list: (params: DataTableParameters) => [...formSubmissionsByObserverKeys.lists(), { ...params }] as const,
-  details: () => [...formSubmissionsByObserverKeys.all, 'detail'] as const,
-  detail: (id: string) => [...formSubmissionsByObserverKeys.details(), id] as const,
-}
+  all: (electionRoundId: string) => ['form-submissions-by-observer', electionRoundId] as const,
+  lists: (electionRoundId: string) => [...formSubmissionsByObserverKeys.all(electionRoundId), 'list'] as const,
+  list: (electionRoundId: string, params: DataTableParameters) =>
+    [...formSubmissionsByObserverKeys.lists(electionRoundId), { ...params }] as const,
+  details: (electionRoundId: string) => [...formSubmissionsByObserverKeys.all(electionRoundId), 'detail'] as const,
+  detail: (electionRoundId: string, id: string) =>
+    [...formSubmissionsByObserverKeys.details(electionRoundId), id] as const,
+};
 
 export const formSubmissionsAggregatedKeys = {
-  all: ['aggregated-form-submissions'] as const,
-  lists: () => [...formSubmissionsAggregatedKeys.all, 'list'] as const,
-  list: (params: DataTableParameters) => [...formSubmissionsAggregatedKeys.lists(), { ...params }] as const,
-  details: () => [...formSubmissionsAggregatedKeys.all, 'detail'] as const,
-  detail: (id: string) => [...formSubmissionsAggregatedKeys.details(), id] as const,
-}
-
+  all: (electionRoundId: string) => ['aggregated-form-submissions', electionRoundId] as const,
+  lists: (electionRoundId: string) => [...formSubmissionsAggregatedKeys.all(electionRoundId), 'list'] as const,
+  list: (electionRoundId: string, params: DataTableParameters) =>
+    [...formSubmissionsAggregatedKeys.lists(electionRoundId), { ...params }] as const,
+  details: (electionRoundId: string) => [...formSubmissionsAggregatedKeys.all(electionRoundId), 'detail'] as const,
+  detail: (electionRoundId: string, id: string) =>
+    [...formSubmissionsAggregatedKeys.details(electionRoundId), id] as const,
+};
 
 type FormSubmissionsByEntryResponse = PageResponse<FormSubmissionByEntry & RowData>;
 
 type UseFormSubmissionsByEntryResult = UseQueryResult<FormSubmissionsByEntryResponse, Error>;
 
-export function useFormSubmissionsByEntry(electionRoundId: string, queryParams: DataTableParameters): UseFormSubmissionsByEntryResult {
+export function useFormSubmissionsByEntry(
+  electionRoundId: string,
+  queryParams: DataTableParameters
+): UseFormSubmissionsByEntryResult {
   return useQuery({
-    queryKey: formSubmissionsByEntryKeys.list(queryParams),
+    queryKey: formSubmissionsByEntryKeys.list(electionRoundId, queryParams),
     queryFn: async () => {
-
       const params = {
         ...queryParams.otherParams,
         PageNumber: String(queryParams.pageNumber),
@@ -87,7 +70,7 @@ export function useFormSubmissionsByEntry(electionRoundId: string, queryParams: 
       };
     },
     staleTime: STALE_TIME,
-    enabled: !!electionRoundId
+    enabled: !!electionRoundId,
   });
 }
 
@@ -95,9 +78,12 @@ type FormSubmissionsByObserverResponse = PageResponse<FormSubmissionByObserver &
 
 type UseFormSubmissionsByObserverResult = UseQueryResult<FormSubmissionsByObserverResponse, Error>;
 
-export function useFormSubmissionsByObserver(electionRoundId: string, queryParams: DataTableParameters): UseFormSubmissionsByObserverResult {
+export function useFormSubmissionsByObserver(
+  electionRoundId: string,
+  queryParams: DataTableParameters
+): UseFormSubmissionsByObserverResult {
   return useQuery({
-    queryKey: formSubmissionsByObserverKeys.list(queryParams),
+    queryKey: formSubmissionsByObserverKeys.list(electionRoundId, queryParams),
     queryFn: async () => {
       const params = {
         ...queryParams.otherParams,
@@ -121,7 +107,7 @@ export function useFormSubmissionsByObserver(electionRoundId: string, queryParam
       };
     },
     staleTime: STALE_TIME,
-    enabled: !!electionRoundId
+    enabled: !!electionRoundId,
   });
 }
 
@@ -129,11 +115,13 @@ type FormSubmissionsByFormResponse = PageResponse<FormSubmissionByForm & RowData
 
 type UseFormSubmissionsByFormResult = UseQueryResult<FormSubmissionsByFormResponse, Error>;
 
-export function useFormSubmissionsByForm(electionRoundId: string, queryParams: DataTableParameters): UseFormSubmissionsByFormResult {
+export function useFormSubmissionsByForm(
+  electionRoundId: string,
+  queryParams: DataTableParameters
+): UseFormSubmissionsByFormResult {
   return useQuery({
-    queryKey: formSubmissionsAggregatedKeys.all,
+    queryKey: formSubmissionsAggregatedKeys.all(electionRoundId),
     queryFn: async () => {
-
       const params = {
         ...queryParams.otherParams,
         PageNumber: String(queryParams.pageNumber),
@@ -161,6 +149,6 @@ export function useFormSubmissionsByForm(electionRoundId: string, queryParams: D
       };
     },
     staleTime: STALE_TIME,
-    enabled: !!electionRoundId
+    enabled: !!electionRoundId,
   });
 }
