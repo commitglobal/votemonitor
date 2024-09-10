@@ -19,13 +19,13 @@ import { Cog8ToothIcon, EllipsisVerticalIcon, FunnelIcon, PaperAirplaneIcon } fr
 import { useMutation, useQuery, UseQueryResult } from '@tanstack/react-query';
 import { useNavigate, useRouter, useSearch } from '@tanstack/react-router';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
-import { X } from 'lucide-react';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 
 import { DateTimeFormat } from '@/common/formats';
 import { TableCellProps } from '@/components/ui/DataTable/DataTable';
 import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
 import { isQueryFiltered } from '@/lib/utils';
 import { queryClient } from '@/main';
 import { format } from 'date-fns';
@@ -123,15 +123,14 @@ function MonitoringObserversList() {
     },
   ];
 
-  const [tagsFilter, setTagsFilter] = useState<string[]>([]);
-  const [statusFilter, setStatusFilter] = useState('');
   const [searchText, setSearchText] = useState('');
-  const [isFiltering, setFiltering] = useState(false);
   const [importErrorsFileId, setImportErrorsFileId] = useState<string | undefined>();
   const [monitoringObserverId, setMonitoringObserverId] = useState<string | undefined>();
   const importMonitoringObserversDialog = useDialog();
   const importMonitoringObserverErrorsDialog = useDialog();
   const confirmResendInvitesDialog = useDialog();
+  const { filteringIsActive } = useFilteringContainer();
+  const [isFiltering, setIsFiltering] = useState(filteringIsActive);
 
   const handleSearchInput = (ev: React.FormEvent<HTMLInputElement>) => {
     setSearchText(ev.currentTarget.value);
@@ -238,41 +237,15 @@ function MonitoringObserversList() {
   });
 
   const changeIsFiltering = () => {
-    setFiltering((prev) => {
+    setIsFiltering((prev) => {
       return !prev;
     });
-  };
-
-  const handleStatusFilter = (status: string) => {
-    setStatusFilter(status);
-  };
-
-  const resetFilters = () => {
-    setStatusFilter('');
-    setTagsFilter([]);
   };
 
   function handleResendInviteToObserver(id?: string): void {
     setMonitoringObserverId(id);
     confirmResendInvitesDialog.trigger();
   }
-
-  const toggleTagsFilter = (tag: string) => {
-    setTagsFilter((prevTags: any) => {
-      if (!prevTags.includes(tag)) {
-        return [...prevTags, tag];
-      } else {
-        return prevTags.filter((tagText: string) => tagText !== tag);
-      }
-    });
-  };
-
-  const rowClickHandler = useCallback(
-    (monitoringObserverId: string) => {
-      navigateToObserver(monitoringObserverId);
-    },
-    [navigateToObserver]
-  );
 
   const exportMonitoringObservers = async () => {
     const res = await authApi.get(`/election-rounds/${currentElectionRoundId}/monitoring-observers:export`, {
@@ -394,35 +367,7 @@ function MonitoringObserversList() {
           </>
         </div>
         <Separator />
-        {isFiltering ? (
-          <>
-            <MonitoringObserversListFilters />
-            <div className='table-filters flex flex-row gap-4 items-center'>
-              <div className='flex flex-row gap-2 flex-wrap'>
-                {statusFilter && (
-                  <span
-                    onClick={() => handleStatusFilter('')}
-                    className='rounded-full cursor-pointer py-1 px-4 bg-purple-100 text-sm text-purple-900 font-medium flex items-center gap-2'>
-                    Observer status: {statusFilter}
-                    <X size={14} />
-                  </span>
-                )}
-
-                {tagsFilter.map((tag) => (
-                  <span
-                    key={tag}
-                    onClick={() => toggleTagsFilter(tag)}
-                    className='rounded-full cursor-pointer py-1 px-4 bg-purple-100 text-sm text-purple-900 font-medium flex items-center gap-2'>
-                    Tags: {tag}
-                    <X size={14} />
-                  </span>
-                ))}
-              </div>
-            </div>
-          </>
-        ) : (
-          ''
-        )}
+        {isFiltering && <MonitoringObserversListFilters />}
       </CardHeader>
       <CardContent>
         <QueryParamsDataTable
