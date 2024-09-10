@@ -19,23 +19,24 @@ import { Separator } from '@/components/ui/separator';
 import { useDialog } from '@/components/ui/use-dialog';
 import { Cog8ToothIcon, EllipsisVerticalIcon, FunnelIcon, PaperAirplaneIcon } from '@heroicons/react/24/outline';
 import { useMutation, useQuery, UseQueryResult } from '@tanstack/react-query';
-import { useNavigate, useRouter } from '@tanstack/react-router';
+import { useNavigate, useRouter, useSearch } from '@tanstack/react-router';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
 import { X } from 'lucide-react';
 import { useCallback, useState } from 'react';
 
 import { DateTimeFormat } from '@/common/formats';
 import { TableCellProps } from '@/components/ui/DataTable/DataTable';
+import { toast } from '@/components/ui/use-toast';
+import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { isQueryFiltered } from '@/lib/utils';
+import { queryClient } from '@/main';
 import { format } from 'date-fns';
 import { useMonitoringObserversTags } from '../../../../hooks/tags-queries';
 import { MonitoringObserver, MonitoringObserverStatus } from '../../models/monitoring-observer';
 import ImportMonitoringObserversDialog from '../MonitoringObserversList/ImportMonitoringObserversDialog';
 import ImportMonitoringObserversErrorsDialog from '../MonitoringObserversList/ImportMonitoringObserversErrorsDialog';
 import ConfirmResendInvitationDialog from './ConfirmResendInvitationDialog';
-import { queryClient } from '@/main';
-import { toast } from '@/components/ui/use-toast';
-import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { MonitoringObserversListFilters } from './MonitoringObserversListFilters';
 
 type ListMonitoringObserverResponse = PageResponse<MonitoringObserver>;
 
@@ -44,6 +45,7 @@ type UseMonitoringObserversResult = UseQueryResult<ListMonitoringObserverRespons
 function MonitoringObserversList() {
   const navigate = useNavigate();
   const router = useRouter();
+  const queryParams = useSearch({ strict: false });
 
   const monitoringObserverColDefs: ColumnDef<MonitoringObserver>[] = [
     {
@@ -114,7 +116,9 @@ function MonitoringObserversList() {
             <DropdownMenuItem onClick={() => navigateToEdit(row.original.id)}>Edit</DropdownMenuItem>
             <DropdownMenuItem
               disabled={row.original.status !== MonitoringObserverStatus.Pending}
-              onClick={() => handleResendInviteToObserver(row.original.id)}>Resend invitation email</DropdownMenuItem>
+              onClick={() => handleResendInviteToObserver(row.original.id)}>
+              Resend invitation email
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       ),
@@ -136,13 +140,16 @@ function MonitoringObserversList() {
   };
 
   const navigateToObserver = (monitoringObserverId: string) => {
-    navigate({ to: '/monitoring-observers/view/$monitoringObserverId/$tab', params: { monitoringObserverId, tab: 'details' } });
+    navigate({
+      to: '/monitoring-observers/view/$monitoringObserverId/$tab',
+      params: { monitoringObserverId, tab: 'details' },
+    });
   };
   const navigateToEdit = (monitoringObserverId: string) => {
     navigate({ to: '/monitoring-observers/edit/$monitoringObserverId', params: { monitoringObserverId } });
   };
 
-    const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
+  const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
   const { data: tags } = useMonitoringObserversTags(currentElectionRoundId);
 
   const useMonitoringObservers = (params: DataTableParameters): UseMonitoringObserversResult => {
@@ -154,7 +161,7 @@ function MonitoringObserversList() {
         params.sortColumnName,
         params.sortOrder,
         searchText,
-        statusFilter,
+        (queryParams as any).status,
         tagsFilter,
       ],
       queryFn: async () => {
@@ -164,9 +171,8 @@ function MonitoringObserversList() {
           SortColumnName: params.sortColumnName,
           SortOrder: params.sortOrder,
           searchText: searchText,
-          status: statusFilter,
+          status: (queryParams as any).status,
         };
-
 
         const response = await authApi.get<PageResponse<MonitoringObserver>>(
           `/election-rounds/${currentElectionRoundId}/monitoring-observers?${tagsFilter
@@ -185,14 +191,20 @@ function MonitoringObserversList() {
 
         return { ...response.data, isEmpty: !isQueryFiltered(paramsObject) && response.data.items.length === 0 };
       },
-      enabled: !!currentElectionRoundId
+      enabled: !!currentElectionRoundId,
     });
   };
 
   const resendInvitationsMutation = useMutation({
-    mutationFn: ({ electionRoundId, monitoringObserverId }: { electionRoundId: string; monitoringObserverId: string | undefined }) => {
+    mutationFn: ({
+      electionRoundId,
+      monitoringObserverId,
+    }: {
+      electionRoundId: string;
+      monitoringObserverId: string | undefined;
+    }) => {
       return authApi.put<void>(`/election-rounds/${electionRoundId}/monitoring-observers:resend-invites`, {
-        ids: [monitoringObserverId].filter(id => !!id)
+        ids: [monitoringObserverId].filter((id) => !!id),
       });
     },
 
@@ -212,9 +224,9 @@ function MonitoringObserversList() {
       toast({
         title: 'Error resending invitation',
         description: 'Please contact Platform admins',
-        variant: 'destructive'
+        variant: 'destructive',
       });
-    }
+    },
   });
 
   const changeIsFiltering = () => {
@@ -255,7 +267,9 @@ function MonitoringObserversList() {
   );
 
   const exportMonitoringObservers = async () => {
-    const res = await authApi.get(`/election-rounds/${currentElectionRoundId}/monitoring-observers:export`, { responseType: "blob" });
+    const res = await authApi.get(`/election-rounds/${currentElectionRoundId}/monitoring-observers:export`, {
+      responseType: 'blob',
+    });
     const csvData = res.data;
 
     const blob = new Blob([csvData], { type: 'text/csv' });
@@ -275,12 +289,11 @@ function MonitoringObserversList() {
   // Func to provide props to table cell
   const getCellProps = (context: CellContext<MonitoringObserver, unknown>): TableCellProps | void => {
     if (context.column.id === 'tags') {
-
       return {
         className: 'flex-wrap',
-      }
+      };
     }
-  }
+  };
 
   return (
     <Card className='w-full pt-0'>
@@ -288,9 +301,22 @@ function MonitoringObserversList() {
         <div className='flex flex-row justify-between items-center px-6'>
           <CardTitle className='text-xl'>Monitoring observers list</CardTitle>
           <div className='table-actions flex flex-row-reverse flex-row- gap-4'>
-            {!!importErrorsFileId && <ImportMonitoringObserversErrorsDialog fileId={importErrorsFileId} {...importMonitoringObserverErrorsDialog.dialogProps} />}
-            <ImportMonitoringObserversDialog {...importMonitoringObserversDialog.dialogProps} onImportError={(fileId) => { setImportErrorsFileId(fileId); importMonitoringObserverErrorsDialog.trigger(); }} />
-            <Button className='bg-purple-900 hover:bg-purple-600' onClick={() => importMonitoringObserversDialog.trigger()}>
+            {!!importErrorsFileId && (
+              <ImportMonitoringObserversErrorsDialog
+                fileId={importErrorsFileId}
+                {...importMonitoringObserverErrorsDialog.dialogProps}
+              />
+            )}
+            <ImportMonitoringObserversDialog
+              {...importMonitoringObserversDialog.dialogProps}
+              onImportError={(fileId) => {
+                setImportErrorsFileId(fileId);
+                importMonitoringObserverErrorsDialog.trigger();
+              }}
+            />
+            <Button
+              className='bg-purple-900 hover:bg-purple-600'
+              onClick={() => importMonitoringObserversDialog.trigger()}>
               <svg
                 className='mr-1.5'
                 xmlns='http://www.w3.org/2000/svg'
@@ -327,20 +353,24 @@ function MonitoringObserversList() {
               </svg>
               Export monitoring observer list
             </Button>
-            <Button
-              className='bg-yellow-400 hover:bg-yellow-600'
-              onClick={() => handleResendInviteToObserver()}
-            >
+            <Button className='bg-yellow-400 hover:bg-yellow-600' onClick={() => handleResendInviteToObserver()}>
               <PaperAirplaneIcon className='h-6 w-6 text-white' />
               Resend invites
             </Button>
             <ConfirmResendInvitationDialog
               alertTitle={'Confirm resend invitation'}
-              alertDescription={monitoringObserverId ? 'Are you sure you want to resend the invite?' : 'Are you sure you want to resend invite to all pending observers?'}
+              alertDescription={
+                monitoringObserverId
+                  ? 'Are you sure you want to resend the invite?'
+                  : 'Are you sure you want to resend invite to all pending observers?'
+              }
               cancelActionButtonText='Cancel'
               confirmActionButtonText='Resend invitation'
-              onConfirm={() => resendInvitationsMutation.mutate({ electionRoundId: currentElectionRoundId, monitoringObserverId })}
-              {...confirmResendInvitesDialog.dialogProps} />
+              onConfirm={() =>
+                resendInvitationsMutation.mutate({ electionRoundId: currentElectionRoundId, monitoringObserverId })
+              }
+              {...confirmResendInvitesDialog.dialogProps}
+            />
           </div>
         </div>
         <Separator />
@@ -357,62 +387,65 @@ function MonitoringObserversList() {
         </div>
         <Separator />
         {isFiltering ? (
-          <div className='table-filters flex flex-row gap-4 items-center'>
-            <Select value={statusFilter} onValueChange={handleStatusFilter}>
-              <SelectTrigger className='w-[180px]'>
-                <SelectValue placeholder='Observer status' />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectItem value='Active'>Active</SelectItem>
-                  <SelectItem value='Pending'>Pending</SelectItem>
-                  <SelectItem value='Suspended'>Suspended</SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <div className='flex h-10 w-48 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50'>
-                  Tags
-                </div>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className='w-56'>
-                {tags?.map((tag) => (
-                  <DropdownMenuCheckboxItem
-                    checked={tagsFilter.includes(tag)}
-                    onCheckedChange={() => toggleTagsFilter(tag)}
-                    key={tag}>
-                    {tag}
-                  </DropdownMenuCheckboxItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-            <Button variant='ghost-primary'>
-              <span onClick={resetFilters} className='text-base text-purple-900'>
-                Reset filters
-              </span>
-            </Button>
-            <div className='flex flex-row gap-2 flex-wrap'>
-              {statusFilter && (
-                <span
-                  onClick={() => handleStatusFilter('')}
-                  className='rounded-full cursor-pointer py-1 px-4 bg-purple-100 text-sm text-purple-900 font-medium flex items-center gap-2'>
-                  Observer status: {statusFilter}
-                  <X size={14} />
+          <>
+            <MonitoringObserversListFilters />
+            <div className='table-filters flex flex-row gap-4 items-center'>
+              <Select value={statusFilter} onValueChange={handleStatusFilter}>
+                <SelectTrigger className='w-[180px]'>
+                  <SelectValue placeholder='Observer status' />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value='Active'>Active</SelectItem>
+                    <SelectItem value='Pending'>Pending</SelectItem>
+                    <SelectItem value='Suspended'>Suspended</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <div className='flex h-10 w-48 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50'>
+                    Tags
+                  </div>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className='w-56'>
+                  {tags?.map((tag) => (
+                    <DropdownMenuCheckboxItem
+                      checked={tagsFilter.includes(tag)}
+                      onCheckedChange={() => toggleTagsFilter(tag)}
+                      key={tag}>
+                      {tag}
+                    </DropdownMenuCheckboxItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <Button variant='ghost-primary'>
+                <span onClick={resetFilters} className='text-base text-purple-900'>
+                  Reset filters
                 </span>
-              )}
+              </Button>
+              <div className='flex flex-row gap-2 flex-wrap'>
+                {statusFilter && (
+                  <span
+                    onClick={() => handleStatusFilter('')}
+                    className='rounded-full cursor-pointer py-1 px-4 bg-purple-100 text-sm text-purple-900 font-medium flex items-center gap-2'>
+                    Observer status: {statusFilter}
+                    <X size={14} />
+                  </span>
+                )}
 
-              {tagsFilter.map((tag) => (
-                <span
-                  key={tag}
-                  onClick={() => toggleTagsFilter(tag)}
-                  className='rounded-full cursor-pointer py-1 px-4 bg-purple-100 text-sm text-purple-900 font-medium flex items-center gap-2'>
-                  Tags: {tag}
-                  <X size={14} />
-                </span>
-              ))}
+                {tagsFilter.map((tag) => (
+                  <span
+                    key={tag}
+                    onClick={() => toggleTagsFilter(tag)}
+                    className='rounded-full cursor-pointer py-1 px-4 bg-purple-100 text-sm text-purple-900 font-medium flex items-center gap-2'>
+                    Tags: {tag}
+                    <X size={14} />
+                  </span>
+                ))}
+              </div>
             </div>
-          </div>
+          </>
         ) : (
           ''
         )}
