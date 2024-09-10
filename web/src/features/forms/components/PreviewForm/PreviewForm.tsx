@@ -10,6 +10,7 @@ import { useNavigate } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
 
 import {
+  isDateQuestion,
   isMultiSelectQuestion,
   isNumberQuestion,
   isRatingQuestion,
@@ -32,7 +33,7 @@ import { formDetailsQueryOptions } from '../../queries';
 import { FormDetailsBreadcrumbs } from '../FormDetailsBreadcrumbs/FormDetailsBreadcrumbs';
 import { FormStatus } from '../../models/form';
 
-export default function FormDetails(): FunctionComponent {
+export default function PreviewForm(): FunctionComponent {
   const { formId, languageCode } = FormDetailsRoute.useParams();
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
 
@@ -155,7 +156,7 @@ export default function FormDetails(): FunctionComponent {
                       />
                     )}
 
-                    {isTextQuestion(question) && (
+                    {isDateQuestion(question) && (
                       <PreviewDateQuestion
                         questionId={question.id}
                         text={question.text[languageCode]}
