@@ -1,6 +1,5 @@
 import { useSetPrevSearch } from '@/common/prev-search-store';
-import { FollowUpStatus, FunctionComponent, ZFormType } from '@/common/types';
-import { PollingStationsFilters } from '@/components/PollingStationsFilters/PollingStationsFilters';
+import { FollowUpStatus, FunctionComponent } from '@/common/types';
 import { FilterBadge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Route } from '@/routes/responses';
@@ -9,7 +8,6 @@ import { useCallback } from 'react';
 import type { FormSubmissionsSearchParams } from '../../models/search-params';
 import { mapFollowUpStatus } from '../../utils/helpers';
 import { ResetFiltersButton } from '../ResetFiltersButton/ResetFiltersButton';
-import { mapFormType } from '@/lib/utils';
 
 export function CitizenReportsFiltersByEntry(): FunctionComponent {
   const navigate = useNavigate({ from: '/responses/' });

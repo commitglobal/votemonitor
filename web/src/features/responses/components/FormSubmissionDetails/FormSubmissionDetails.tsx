@@ -13,6 +13,7 @@ import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { Link, useRouter } from '@tanstack/react-router';
 import { formSubmissionsByEntryKeys, formSubmissionsByObserverKeys } from '../../hooks/form-submissions-queries';
 import PreviewAnswer from '../PreviewAnswer/PreviewAnswer';
+import { SubmissionType } from '../../models/common';
 
 export default function FormSubmissionDetails(): FunctionComponent {
   const { submissionId } = Route.useParams();
@@ -146,6 +147,7 @@ export default function FormSubmissionDetails(): FunctionComponent {
               return (
                 <PreviewAnswer
                   key={index}
+                  submissionType={SubmissionType.FormSubmission}
                   question={question}
                   answer={answer}
                   notes={notes}

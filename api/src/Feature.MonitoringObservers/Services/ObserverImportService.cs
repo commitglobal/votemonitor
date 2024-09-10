@@ -24,7 +24,8 @@ public class ObserverImportService(
 {
     private readonly ApiConfiguration _apiConfig = apiConfig.Value;
 
-    public async Task ImportAsync(Guid electionRoundId, Guid ngoId, IEnumerable<MonitoringObserverImportModel> newObservers,
+    public async Task ImportAsync(Guid electionRoundId, Guid ngoId,
+        IEnumerable<MonitoringObserverImportModel> newObservers,
         CancellationToken ct)
     {
         var observers = newObservers.ToList();
@@ -74,8 +75,7 @@ public class ObserverImportService(
                 // Check if is observer
                 if (existingAccount.Role != UserRole.Observer)
                 {
-                    logger.LogWarning("Invited {observer} has different {role} in our system", existingAccount.Email,
-                        existingAccount.Role);
+                    logger.LogWarning("Invited observer has different role in our system");
                     continue;
                 }
 
@@ -86,8 +86,8 @@ public class ObserverImportService(
 
                 if (isMonitoringForAnotherNgo)
                 {
-                    logger.LogWarning("Invited {observer} is monitoring same {electionRound} for different ngo",
-                        existingAccount.Email, electionRoundId);
+                    logger.LogWarning("Invited observer is monitoring same {electionRound} for different ngo",
+                        electionRoundId);
                     continue;
                 }
 
@@ -144,8 +144,7 @@ public class ObserverImportService(
                 var result = await userManager.CreateAsync(user);
                 if (!result.Succeeded)
                 {
-                    logger.LogError("Errors when importing monitoring observer {email} {@errors}", user.Email,
-                        result.Errors);
+                    logger.LogError("Errors when importing monitoring observer {@errors}", result.Errors);
                     continue;
                 }
 
