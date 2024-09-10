@@ -7,6 +7,7 @@ import { type ReactElement } from 'react';
 import { CitizenReportsTab } from '../CitizenReportsTab/CitizenReportsTab';
 import FormSubmissionsTab from '../FormSubmissionsTab/FormSubmissionsTab';
 import { QuickReportsTab } from '../QuickReportsTab/QuickReportsTab';
+import { cn } from '@/lib/utils';
 
 const routeApi = getRouteApi('/responses/');
 
@@ -31,7 +32,10 @@ export default function ResponsesDashboard(): ReactElement {
             },
           });
         }}>
-        <TabsList className='grid grid-cols-3 bg-gray-200 w-[600px] mb-4'>
+        <TabsList
+          className={cn('grid bg-gray-200 mb-4 grid-cols-2 w-[400px]', {
+            'grid-cols-3 w-[600px]': isMonitoringNgoForCitizenReporting,
+          })}>
           <TabsTrigger value='form-answers'>Form answers</TabsTrigger>
           <TabsTrigger value='quick-reports'>Quick reports</TabsTrigger>
           {isMonitoringNgoForCitizenReporting && <TabsTrigger value='citizen-reports'>Citizen reports</TabsTrigger>}
