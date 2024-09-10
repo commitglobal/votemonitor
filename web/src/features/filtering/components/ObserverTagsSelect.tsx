@@ -6,30 +6,21 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { useMonitoringObserversTags } from '@/hooks/tags-queries';
-import { FC, useEffect, useState } from 'react';
+import { FC } from 'react';
 import { useFilteringContainer } from '../hooks/useFilteringContainer';
 
 export const ObserverTagsSelect: FC = () => {
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
   const { data: tags } = useMonitoringObserversTags(currentElectionRoundId);
-  const [tagsFilter, setTagsFilter] = useState<string[]>([]);
-
   const { queryParams, navigateHandler } = useFilteringContainer();
-
-  const onStatusChange = (value: string) => {};
-
-  useEffect(() => {
-    navigateHandler({ tags: tagsFilter as any });
-  }, [tagsFilter]);
+  const currentTags = (queryParams as any)?.tags ?? [];
 
   const toggleTagsFilter = (tag: string) => {
-    setTagsFilter((prevTags: any) => {
-      if (!prevTags.includes(tag)) {
-        return [...prevTags, tag];
-      } else {
-        return prevTags.filter((tagText: string) => tagText !== tag);
-      }
-    });
+    if (!currentTags.includes(tag)) return navigateHandler({ tags: [...currentTags, tag] });
+
+    const filteredTags = currentTags.filter((tagText: string) => tagText !== tag);
+
+    return navigateHandler({ tags: filteredTags });
   };
 
   return (
@@ -42,7 +33,7 @@ export const ObserverTagsSelect: FC = () => {
       <DropdownMenuContent className='w-56'>
         {tags?.map((tag) => (
           <DropdownMenuCheckboxItem
-            checked={tagsFilter.includes(tag)}
+            checked={currentTags.includes(tag)}
             onCheckedChange={() => toggleTagsFilter(tag)}
             key={tag}>
             {tag}

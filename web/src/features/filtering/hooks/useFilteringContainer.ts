@@ -9,7 +9,7 @@ export function useFilteringContainer() {
   const filteringIsActive = Object.keys(queryParams).some((key) => key !== 'tab' && key !== 'viewBy');
 
   const navigateHandler = useCallback(
-    (search: Record<string, string | undefined>) => {
+    (search: Record<string, any | undefined>) => {
       void navigate({
         // @ts-ignore
         search: (prev) => {
