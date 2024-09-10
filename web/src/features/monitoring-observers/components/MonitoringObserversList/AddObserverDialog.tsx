@@ -88,7 +88,10 @@ function AddObserverDialog({ open, onOpenChange }: AddObserverDialogProps) {
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange} modal={true}>
-            <DialogContent className='max-w-lg'>
+            <DialogContent
+                className='max-w-lg'
+                onInteractOutside={(e) => e.preventDefault()} // Prevent closing when clicking outside
+            >
                 <DialogHeader>
                     <DialogTitle>Add individual observer</DialogTitle>
                 </DialogHeader>
