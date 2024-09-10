@@ -13,7 +13,7 @@ const routeApi = getRouteApi('/responses/');
 export function FormSubmissionsAggregatedByFormTable(): FunctionComponent {
   const columnsVisibility = useFormSubmissionsByFormColumns();
   const navigate = routeApi.useNavigate();
-    const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
+  const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
 
   const navigateToAggregatedForm = useCallback(
     (formId: string) => {
