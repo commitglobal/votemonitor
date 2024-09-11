@@ -18,15 +18,18 @@ import { useNavigate, useRouter } from '@tanstack/react-router';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { UpdateMonitoringObserverRequest } from '../../models/monitoring-observer';
+import { MonitorObserverBackButton } from '../MonitoringObserverDetails/MonitoringObserverBackButton';
 
 export default function EditObserver() {
   const navigate = useNavigate();
   const router = useRouter();
   const queryClient = useQueryClient();
-    const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
+  const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
 
   const { monitoringObserverId } = Route.useParams();
-  const monitoringObserverQuery = useSuspenseQuery(monitoringObserverDetailsQueryOptions(currentElectionRoundId, monitoringObserverId));
+  const monitoringObserverQuery = useSuspenseQuery(
+    monitoringObserverDetailsQueryOptions(currentElectionRoundId, monitoringObserverId)
+  );
   const monitoringObserver = monitoringObserverQuery.data;
 
   const { data: availableTags } = useMonitoringObserversTags(currentElectionRoundId);
@@ -61,11 +64,17 @@ export default function EditObserver() {
       phoneNumber: values.phoneNumber,
     };
 
-    editMutation.mutate({electionRoundId: currentElectionRoundId, request});
+    editMutation.mutate({ electionRoundId: currentElectionRoundId, request });
   }
 
   const editMutation = useMutation({
-    mutationFn: ({ electionRoundId, request }: { electionRoundId: string; request: UpdateMonitoringObserverRequest }) => {
+    mutationFn: ({
+      electionRoundId,
+      request,
+    }: {
+      electionRoundId: string;
+      request: UpdateMonitoringObserverRequest;
+    }) => {
       return authApi.post<void>(
         `/election-rounds/${electionRoundId}/monitoring-observers/${monitoringObserver.id}`,
         request
@@ -81,12 +90,17 @@ export default function EditObserver() {
       queryClient.invalidateQueries({ queryKey: ['monitoring-observers'] });
       queryClient.invalidateQueries({ queryKey: ['tags'] });
 
-      navigate({ to: '/monitoring-observers/view/$monitoringObserverId/$tab', params: { monitoringObserverId: monitoringObserver.id, tab: 'details' } })
+      navigate({
+        to: '/monitoring-observers/view/$monitoringObserverId/$tab',
+        params: { monitoringObserverId: monitoringObserver.id, tab: 'details' },
+      });
     },
   });
 
   return (
-    <Layout title={`Edit ${monitoringObserver.firstName} ${monitoringObserver.lastName}`}>
+    <Layout
+      title={`Edit ${monitoringObserver.firstName} ${monitoringObserver.lastName}`}
+      backButton={<MonitorObserverBackButton />}>
       <Card className='w-[800px] pt-0'>
         <CardHeader className='flex flex-column gap-2'>
           <div className='flex flex-row justify-between items-center'>
@@ -148,10 +162,10 @@ export default function EditObserver() {
                     <FormLabel className='text-left'>Tags</FormLabel>
                     <FormControl>
                       <TagsSelectFormField
-                        options={availableTags?.filter(tag => !field.value.includes(tag)) ?? []}
+                        options={availableTags?.filter((tag) => !field.value.includes(tag)) ?? []}
                         defaultValue={field.value}
                         onValueChange={field.onChange}
-                        placeholder="Observer tags"
+                        placeholder='Observer tags'
                       />
                     </FormControl>
                     <FormMessage />
@@ -190,7 +204,12 @@ export default function EditObserver() {
                   <Button
                     variant='outline'
                     type='button'
-                    onClick={() => { void navigate({ to: '/monitoring-observers/view/$monitoringObserverId/$tab', params: { monitoringObserverId: monitoringObserver.id, tab: 'details' } }) }}>
+                    onClick={() => {
+                      void navigate({
+                        to: '/monitoring-observers/view/$monitoringObserverId/$tab',
+                        params: { monitoringObserverId: monitoringObserver.id, tab: 'details' },
+                      });
+                    }}>
                     Cancel
                   </Button>
                   <Button type='submit' className='px-6'>
