@@ -5,17 +5,31 @@ import { FC, useCallback } from 'react';
 interface ActiveFilterProps {
   filterId: string;
   value: string;
+  isArray?: boolean;
 }
 
-const ActiveFilter: FC<ActiveFilterProps> = ({ filterId, value }) => {
+type SearchParams = {
+  [key: string]: any;
+};
+
+
+const ActiveFilter: FC<ActiveFilterProps> = ({ filterId, value, isArray }) => {
   const navigate = useNavigate();
   const onClearFilter = useCallback(
-    (filter: keyof any) => () => {
-      void navigate({ search: (prev) => ({ ...prev, [filter]: undefined }) });
+    (filter: string, value?: string) => () => {
+      if (!isArray) {
+        return navigate({ search: (prev) => ({ ...prev, [filter]: undefined }) });
+      }
+      return navigate({
+        search: (prev: SearchParams) => ({
+          ...prev,
+          [filter]: prev[filter]?.filter((item: string) => item !== value), // Remove the value from the array
+        }),
+      });
     },
     [navigate]
   );
-  return <FilterBadge label={`${filterId}: ${value}`} onClear={onClearFilter(filterId)} />;
+  return <FilterBadge label={`${filterId}: ${value}`} onClear={onClearFilter(filterId, value)} />;
 };
 
 interface ActiveFiltersProps {
@@ -25,11 +39,20 @@ interface ActiveFiltersProps {
 export const ActiveFilters: FC<ActiveFiltersProps> = ({ queryParams }) => {
   return (
     <div className='flex flex-wrap gap-2 col-span-full'>
-      {Object.keys(queryParams).map((key) => {
-        const value = queryParams[key];
+      {Object.keys(queryParams).map((filterId) => {
+        let key = '';
+        const value = queryParams[filterId];
+        const isArray = Array.isArray(value);
 
-        if (!Array.isArray(value)) return <ActiveFilter filterId={key} value={value} />;
-        return value.map((item) => <ActiveFilter filterId={key} value={item as string} />);
+        if (!isArray) {
+          key = `active-filter-${filterId}`;
+          return <ActiveFilter key={key} filterId={filterId} value={value} />;
+        }
+        return value.map((item) => {
+          key = `active-filter-${filterId}-${item}`;
+
+          return <ActiveFilter key={key} filterId={filterId} value={item as string} isArray />;
+        });
       })}
     </div>
   );

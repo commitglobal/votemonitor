@@ -16,6 +16,8 @@ interface GenericSelectFilterProps {
 export const GenericSelectFilter: FC<GenericSelectFilterProps> = (props) => {
   const { placeholder, value, options, onChange } = props;
 
+  const selectId = crypto.randomUUID();
+
   return (
     <Select value={value ?? ''} onValueChange={onChange}>
       <SelectTrigger className='w-[180px]'>
@@ -24,7 +26,11 @@ export const GenericSelectFilter: FC<GenericSelectFilterProps> = (props) => {
       <SelectContent>
         <SelectGroup>
           {options.map((option) => {
-            return <SelectItem value={option.value}>{option.label}</SelectItem>;
+            return (
+              <SelectItem key={`select-${selectId}-${option.value}`} value={option.value}>
+                {option.label}
+              </SelectItem>
+            );
           })}
         </SelectGroup>
       </SelectContent>
