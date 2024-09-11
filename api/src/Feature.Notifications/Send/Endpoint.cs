@@ -151,9 +151,7 @@ public class Endpoint(IRepository<NotificationAggregate> repository,
             .ToList();
 
         var monitoringObservers = await monitoringObserverRepository.ListAsync(new GetMonitoringObserverSpecification(req.ElectionRoundId, req.NgoId, monitoringObserverIds), ct);
-
-        var sendResultNotification = await notificationService.SendNotificationAsync(pushNotificationTokens, req.Title, req.Body, ct);
-
+        
         var notification = NotificationAggregate.Create(req.ElectionRoundId,
             req.UserId,
             monitoringObservers,
@@ -161,6 +159,8 @@ public class Endpoint(IRepository<NotificationAggregate> repository,
             req.Body);
 
         await repository.AddAsync(notification, ct);
+        
+        var sendResultNotification = await notificationService.SendNotificationAsync(pushNotificationTokens, req.Title, req.Body, ct);
 
         if (sendResultNotification is SendNotificationResult.Ok success)
         {

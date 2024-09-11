@@ -32,6 +32,7 @@ public class VoteMonitorContext : IdentityDbContext<ApplicationUser, IdentityRol
     private readonly ISerializerService _serializerService;
     private readonly ITimeProvider _timeProvider;
     private readonly ICurrentUserProvider _currentUserProvider;
+
     public VoteMonitorContext(DbContextOptions<VoteMonitorContext> options,
         ISerializerService serializerService,
         ITimeProvider timeProvider,
@@ -70,6 +71,7 @@ public class VoteMonitorContext : IdentityDbContext<ApplicationUser, IdentityRol
     public DbSet<CitizenReport> CitizenReports { get; set; }
     public DbSet<CitizenReportNote> CitizenReportNotes { get; set; }
     public DbSet<CitizenReportAttachment> CitizenReportAttachments { get; set; }
+    public DbSet<MonitoringObserverNotification> MonitoringObserverNotification { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -137,7 +139,7 @@ public class VoteMonitorContext : IdentityDbContext<ApplicationUser, IdentityRol
         builder.ApplyConfiguration(new NotificationStubConfiguration());
         builder.ApplyConfiguration(new ExportedDataConfiguration());
         builder.ApplyConfiguration(new QuickReportConfiguration());
-        
+
         builder.ApplyConfiguration(new CitizenReportConfiguration());
         builder.ApplyConfiguration(new CitizenReportNoteConfiguration());
         builder.ApplyConfiguration(new CitizenReportAttachmentConfiguration());
@@ -151,6 +153,7 @@ public class VoteMonitorContext : IdentityDbContext<ApplicationUser, IdentityRol
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.AddInterceptors(new AuditingInterceptor(_currentUserProvider, _timeProvider));
-        optionsBuilder.AddInterceptors(new AuditTrailInterceptor(_serializerService, _currentUserProvider, _timeProvider));
+        optionsBuilder.AddInterceptors(new AuditTrailInterceptor(_serializerService, _currentUserProvider,
+            _timeProvider));
     }
 }
