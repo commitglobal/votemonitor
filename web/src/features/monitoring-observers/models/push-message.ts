@@ -7,10 +7,12 @@ export interface PushMessageModel {
     sender: string;
     sentAt: Date;
     numberOfTargetedObservers: number;
+    numberOfReadNotifications: number;
 }
 export interface PushMessageReceiverModel{
     id: string;
     name: string;
+    hasReadNotification: boolean;
 }
 
 export interface PushMessageDetailedModel {
