@@ -24,7 +24,7 @@ const BackButton = (): FunctionComponent => {
   if (links.length <= 1) return <></>;
 
   return (
-    <Link search={prevSearch} to='../' preload='intent'>
+    <Link title='Go back' search={prevSearch} to='../' preload='intent'>
       <BackButtonIcon />
     </Link>
   );

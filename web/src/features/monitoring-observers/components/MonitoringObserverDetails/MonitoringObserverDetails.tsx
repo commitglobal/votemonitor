@@ -9,7 +9,7 @@ import type { FunctionComponent } from '@/common/types';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { Route } from '@/routes/monitoring-observers/view/$monitoringObserverId.$tab';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { MonitorObserverBackButton } from './MonitoringObserverBackButton';
+import { MonitorObserverBackButton } from '../MonitoringObserverBackButton';
 
 export default function MonitoringObserverDetails(): FunctionComponent {
   const { monitoringObserverId } = Route.useParams();

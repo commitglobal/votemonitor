@@ -18,7 +18,7 @@ import { useNavigate, useRouter } from '@tanstack/react-router';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { UpdateMonitoringObserverRequest } from '../../models/monitoring-observer';
-import { MonitorObserverBackButton } from '../MonitoringObserverDetails/MonitoringObserverBackButton';
+import { MonitorObserverBackButton } from '../MonitoringObserverBackButton';
 
 export default function EditObserver() {
   const navigate = useNavigate();
