@@ -6,7 +6,8 @@ using Vote.Monitor.Domain.Specifications;
 
 namespace Feature.Notifications.ListSent;
 
-public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<Request, PagedResponse<NotificationModel>>
+public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
+    : Endpoint<Request, PagedResponse<NotificationModel>>
 {
     public override void Configure()
     {
@@ -28,30 +29,27 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
                   WHERE
                       MN."NgoId" = @ngoId
                       AND N."ElectionRoundId" = @electionRoundId;
-          
+
                   SELECT
                       N."Id",
                       N."Title",
                       N."Body",
-                      N."CreatedOn" "SentAt",
-                      U."FirstName" || ' ' || U."LastName" "Sender",
-                      (SELECT COUNT(*)
-                          FROM
-                              "MonitoringObserverNotification" MON
-                          WHERE
-                              MON."NotificationId" = N."Id"
-                      ) "NumberOfTargetedObservers"
+                      N."CreatedOn" AS "SentAt",
+                      U."FirstName" || ' ' || U."LastName" AS "Sender",
+                      COUNT(MON."NotificationId") AS "NumberOfTargetedObservers",
+                      SUM(CASE WHEN MON."IsRead" = TRUE THEN 1 ELSE 0 END) AS "NumberOfReadNotifications"
                   FROM
                       "Notifications" N
                       INNER JOIN "NgoAdmins" NA ON N."SenderId" = NA."Id"
                       INNER JOIN "MonitoringNgos" MN ON NA."NgoId" = MN."NgoId"
                       INNER JOIN "AspNetUsers" U ON U."Id" = NA."Id"
+                      LEFT JOIN "MonitoringObserverNotification" MON ON MON."NotificationId" = N."Id"
+
                   WHERE
                       MN."NgoId" = @ngoId
                       AND N."ElectionRoundId" = @electionRoundId
                   GROUP BY
-                      N."Id",
-                      U."Id"
+                    N."Id", N."Title", N."Body", N."CreatedOn", U."FirstName", U."LastName"
                   ORDER BY N."CreatedOn" DESC
                   FETCH NEXT
                       @pageSize ROWS ONLY;
@@ -73,6 +71,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
             totalRowCount = multi.Read<int>().Single();
             entries = multi.Read<NotificationModel>().ToList();
         }
+
         return new PagedResponse<NotificationModel>(entries, totalRowCount, req.PageNumber, req.PageSize);
     }
 }
