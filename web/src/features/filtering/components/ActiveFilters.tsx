@@ -12,8 +12,15 @@ type SearchParams = {
   [key: string]: any;
 };
 
+const HIDDEN_FILTERS = ['pageSize', 'pageNumber'];
+const FILTER_LABELS = new Map<string, string>([
+  ['status', 'Observer status'],
+  ['tags', 'Tags'],
+]);
 
 const ActiveFilter: FC<ActiveFilterProps> = ({ filterId, value, isArray }) => {
+  const label = FILTER_LABELS.get(filterId) ?? filterId;
+
   const navigate = useNavigate();
   const onClearFilter = useCallback(
     (filter: string, value?: string) => () => {
@@ -29,7 +36,7 @@ const ActiveFilter: FC<ActiveFilterProps> = ({ filterId, value, isArray }) => {
     },
     [navigate]
   );
-  return <FilterBadge label={`${filterId}: ${value}`} onClear={onClearFilter(filterId, value)} />;
+  return <FilterBadge label={`${label}: ${value}`} onClear={onClearFilter(filterId, value)} />;
 };
 
 interface ActiveFiltersProps {
@@ -43,6 +50,8 @@ export const ActiveFilters: FC<ActiveFiltersProps> = ({ queryParams }) => {
         let key = '';
         const value = queryParams[filterId];
         const isArray = Array.isArray(value);
+
+        if (HIDDEN_FILTERS.includes(filterId)) return;
 
         if (!isArray) {
           key = `active-filter-${filterId}`;
