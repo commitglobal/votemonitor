@@ -1,5 +1,6 @@
 ﻿using Authorization.Policies;
 using Authorization.Policies.Requirements;
+using Feature.QuickReports.Models;
 using Feature.QuickReports.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
@@ -22,31 +23,35 @@ public class Endpoint(
         Post("/api/election-rounds/{electionRoundId}/quick-reports");
         DontAutoTag();
         Options(x => x.WithTags("quick-reports", "mobile"));
-        Summary(s =>
-        {
-            s.Summary = "Upserts a quick report";
-        });
+        Summary(s => { s.Summary = "Upserts a quick report"; });
         Policies(PolicyNames.ObserversOnly);
     }
 
-    public override async Task<Results<Ok<QuickReportModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<Results<Ok<QuickReportModel>, NotFound>> ExecuteAsync(Request req,
+        CancellationToken ct)
     {
-        var authorizationResult = await authorizationService.AuthorizeAsync(User, new MonitoringObserverRequirement(req.ElectionRoundId));
+        var authorizationResult =
+            await authorizationService.AuthorizeAsync(User, new MonitoringObserverRequirement(req.ElectionRoundId));
         if (!authorizationResult.Succeeded)
         {
             return TypedResults.NotFound();
         }
 
-        var quickReport = await repository.FirstOrDefaultAsync(new GetQuickReportByIdSpecification(req.ElectionRoundId, req.Id), ct);
+        var quickReport =
+            await repository.FirstOrDefaultAsync(new GetQuickReportByIdSpecification(req.ElectionRoundId, req.Id), ct);
 
-        return quickReport is null ? await AddQuickReportAsync(req, ct) : await UpdateQuickReportAsync(req, quickReport, ct);
+        return quickReport is null
+            ? await AddQuickReportAsync(req, ct)
+            : await UpdateQuickReportAsync(req, quickReport, ct);
     }
 
     private async Task<Results<Ok<QuickReportModel>, NotFound>> AddQuickReportAsync(Request req,
         CancellationToken ct)
     {
-        var monitoringObserverSpecification = new GetMonitoringObserverSpecification(req.ElectionRoundId, req.ObserverId);
-        var monitoringObserver = await monitoringObserverRepository.FirstOrDefaultAsync(monitoringObserverSpecification, ct);
+        var monitoringObserverSpecification =
+            new GetMonitoringObserverSpecification(req.ElectionRoundId, req.ObserverId);
+        var monitoringObserver =
+            await monitoringObserverRepository.FirstOrDefaultAsync(monitoringObserverSpecification, ct);
 
         if (monitoringObserver == null)
         {
@@ -54,7 +59,9 @@ public class Endpoint(
             return TypedResults.NotFound();
         }
 
-        var quickReport = QuickReport.Create(req.Id, req.ElectionRoundId, monitoringObserver.Id, req.Title, req.Description, req.QuickReportLocationType, req.PollingStationId, req.PollingStationDetails);
+        var quickReport = QuickReport.Create(req.Id, req.ElectionRoundId, monitoringObserver.Id, req.Title,
+            req.Description, req.QuickReportLocationType, req.IssueType, req.OfficialComplaintFilingStatus,
+            req.PollingStationId, req.PollingStationDetails);
 
         await repository.AddAsync(quickReport, ct);
 
@@ -67,7 +74,8 @@ public class Endpoint(
         QuickReport quickReport,
         CancellationToken ct)
     {
-        quickReport.Update(req.Title, req.Description, req.QuickReportLocationType, req.PollingStationId, req.PollingStationDetails);
+        quickReport.Update(req.Title, req.Description, req.QuickReportLocationType, req.IssueType,
+            req.OfficialComplaintFilingStatus, req.PollingStationId, req.PollingStationDetails);
         await repository.UpdateAsync(quickReport, ct);
 
         var attachments = await GetPresignedAttachments(req.ElectionRoundId, req.Id, ct);

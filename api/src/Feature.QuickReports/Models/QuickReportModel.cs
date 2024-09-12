@@ -2,15 +2,21 @@
 using Ardalis.SmartEnum.SystemTextJson;
 using Vote.Monitor.Domain.Entities.QuickReportAggregate;
 
-namespace Feature.QuickReports;
+namespace Feature.QuickReports.Models;
 
 public record QuickReportModel
 {
     public Guid Id { get; init; }
-    public Guid ElectionRoundId { get; init; }
 
     [JsonConverter(typeof(SmartEnumNameConverter<QuickReportLocationType, string>))]
     public QuickReportLocationType QuickReportLocationType { get; init; }
+
+    [JsonConverter(typeof(SmartEnumNameConverter<QuickReportIssueType, string>))]
+    public QuickReportIssueType IssueType { get; set; }
+
+    [JsonConverter(typeof(SmartEnumNameConverter<QuickReportOfficialComplaintFilingStatus, string>))]
+    public QuickReportOfficialComplaintFilingStatus OfficialComplaintFilingStatus { get; set; }
+
     public DateTime Timestamp { get; init; }
     public string Title { get; init; }
     public string Description { get; init; }
@@ -19,12 +25,12 @@ public record QuickReportModel
     public string? PollingStationDetails { get; init; }
     public List<QuickReportAttachmentModel> Attachments { get; init; }
 
-    public static QuickReportModel FromEntity(QuickReport quickReport, IEnumerable<QuickReportAttachmentModel> attachments)
+    public static QuickReportModel FromEntity(QuickReport quickReport,
+        IEnumerable<QuickReportAttachmentModel> attachments)
     {
         return new QuickReportModel
         {
             Id = quickReport.Id,
-            ElectionRoundId = quickReport.ElectionRoundId,
             QuickReportLocationType = quickReport.QuickReportLocationType,
             Title = quickReport.Title,
             Description = quickReport.Description,
@@ -32,8 +38,9 @@ public record QuickReportModel
             PollingStationId = quickReport.PollingStationId,
             PollingStationDetails = quickReport.PollingStationDetails,
             Timestamp = quickReport.LastModifiedOn ?? quickReport.CreatedOn,
+            IssueType = quickReport.IssueType,
+            OfficialComplaintFilingStatus = quickReport.OfficialComplaintFilingStatus,
             Attachments = attachments.ToList()
         };
     }
-
 }

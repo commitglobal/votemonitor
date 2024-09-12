@@ -2,14 +2,21 @@
 using Ardalis.SmartEnum.SystemTextJson;
 using Vote.Monitor.Domain.Entities.QuickReportAggregate;
 
-namespace Feature.QuickReports.List;
+namespace Feature.QuickReports.Models;
 
-public class QuickReportOverviewModel
+public record QuickReportOverviewModel
 {
     public Guid Id { get; set; }
 
     [JsonConverter(typeof(SmartEnumNameConverter<QuickReportLocationType, string>))]
     public QuickReportLocationType QuickReportLocationType { get; set; }
+
+    [JsonConverter(typeof(SmartEnumNameConverter<QuickReportIssueType, string>))]
+    public QuickReportIssueType IssueType { get; set; }
+
+    [JsonConverter(typeof(SmartEnumNameConverter<QuickReportOfficialComplaintFilingStatus, string>))]
+    public QuickReportOfficialComplaintFilingStatus OfficialComplaintFilingStatus { get; set; }
+
     public DateTime Timestamp { get; set; }
     public string Title { get; set; }
     public string Description { get; set; }

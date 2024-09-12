@@ -1,10 +1,24 @@
-import { FollowUpStatus } from "@/common/types";
-import { Attachment } from "./common";
+import { FollowUpStatus } from '@/common/types';
+import { Attachment } from './common';
 
 export enum QuickReportLocationType {
   NotRelatedToAPollingStation = 'NotRelatedToAPollingStation',
   OtherPollingStation = 'OtherPollingStation',
   VisitedPollingStation = 'VisitedPollingStation',
+}
+
+export enum QuickReportOfficialComplaintFilingStatus {
+  Yes = 'Yes',
+  NoButPlanningToFile = 'NoButPlanningToFile',
+  NoAndNotPlanningToFile = 'NoAndNotPlanningToFile',
+  DoesNotApplyOrOther = 'DoesNotApplyOrOther',
+}
+
+export enum QuickReportIssueType {
+  A = 'A',
+  B = 'B',
+  C = 'C',
+  D = 'D',
 }
 
 export interface QuickReport {
@@ -25,6 +39,8 @@ export interface QuickReport {
   pollingStationId: string;
   pollingStationDetails: string;
   quickReportLocationType: QuickReportLocationType;
+  issueType: QuickReportIssueType;
+  officialComplaintFilingStatus: QuickReportOfficialComplaintFilingStatus;
   timestamp: string;
   title: string;
   monitoringObserverId: string;

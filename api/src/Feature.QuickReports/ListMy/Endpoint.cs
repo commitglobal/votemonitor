@@ -1,5 +1,6 @@
 ﻿using Authorization.Policies;
 using Authorization.Policies.Requirements;
+using Feature.QuickReports.Models;
 using Feature.QuickReports.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;

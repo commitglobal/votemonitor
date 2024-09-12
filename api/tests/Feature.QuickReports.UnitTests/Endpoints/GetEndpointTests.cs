@@ -1,5 +1,5 @@
 ﻿using System.Security.Claims;
-using Feature.QuickReports.Get;
+using Feature.QuickReports.Models;
 using Feature.QuickReports.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using NSubstitute.ReturnsExtensions;
@@ -62,7 +62,6 @@ public class GetEndpointTests
         var model = result.Result.As<Ok<QuickReportDetailedModel>>().Value!;
 
         model.Id.Should().Be(quickReport.Id);
-        model.ElectionRoundId.Should().Be(quickReport.ElectionRoundId);
         model.QuickReportLocationType.Should().Be(quickReport.QuickReportLocationType);
         model.Title.Should().Be(quickReport.Title);
         model.Description.Should().Be(quickReport.Description);

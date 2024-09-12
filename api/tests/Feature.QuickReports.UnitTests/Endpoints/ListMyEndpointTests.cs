@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using Feature.QuickReports.Models;
 using Feature.QuickReports.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
@@ -79,7 +80,6 @@ public class ListMyEndpointTests
         model.Should().HaveCount(2);
 
         model[0].Id.Should().Be(quickReport1.Id);
-        model[0].ElectionRoundId.Should().Be(quickReport1.ElectionRoundId);
         model[0].QuickReportLocationType.Should().Be(quickReport1.QuickReportLocationType);
         model[0].Title.Should().Be(quickReport1.Title);
         model[0].Description.Should().Be(quickReport1.Description);
@@ -89,7 +89,6 @@ public class ListMyEndpointTests
         model[0].Attachments.Should().BeEquivalentTo(quickReport1Attachments, cmp => cmp.ExcludingMissingMembers());
 
         model[1].Id.Should().Be(quickReport2.Id);
-        model[1].ElectionRoundId.Should().Be(quickReport2.ElectionRoundId);
         model[1].QuickReportLocationType.Should().Be(quickReport2.QuickReportLocationType);
         model[1].Title.Should().Be(quickReport2.Title);
         model[1].Description.Should().Be(quickReport2.Description);

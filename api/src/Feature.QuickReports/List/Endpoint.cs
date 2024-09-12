@@ -1,5 +1,6 @@
 ﻿using Authorization.Policies;
 using Dapper;
+using Feature.QuickReports.Models;
 using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.ConnectionFactory;
 using Vote.Monitor.Domain.Specifications;
@@ -36,6 +37,8 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
             AND MN."NgoId" = @ngoId
             AND (@followUpStatus IS NULL or QR."FollowUpStatus" = @followUpStatus)
             AND (@quickReportLocationType IS NULL or QR."QuickReportLocationType" = @quickReportLocationType)
+            AND (@issueType IS NULL or QR."IssueType" = @issueType)
+            AND (@officialComplaintFilingStatus IS NULL or QR."OfficialComplaintFilingStatus" = @officialComplaintFilingStatus)
             AND (
                 @level1 IS NULL
                 OR PS."Level1" = @level1
@@ -64,6 +67,8 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
             QR."Title",
             QR."Description",
             QR."FollowUpStatus",
+            QR."IssueType",
+            QR."OfficialComplaintFilingStatus",
             COUNT(QRA."Id") FILTER(WHERE QRA."IsDeleted" = FALSE AND QRA."IsCompleted" = TRUE) AS "NumberOfAttachments",
             O."FirstName",
             O."LastName",
@@ -90,6 +95,8 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
             AND MN."NgoId" = @ngoId
             AND (@followUpStatus IS NULL or QR."FollowUpStatus" = @followUpStatus)
             AND (@quickReportLocationType IS NULL or QR."QuickReportLocationType" = @quickReportLocationType)
+            AND (@issueType IS NULL or QR."IssueType" = @issueType)
+            AND (@officialComplaintFilingStatus IS NULL or QR."OfficialComplaintFilingStatus" = @officialComplaintFilingStatus)
             AND (
                 @level1 IS NULL
                 OR PS."Level1" = @level1
@@ -136,6 +143,8 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
             level4 = req.Level4Filter,
             level5 = req.Level5Filter,
             followUpStatus = req.FollowUpStatus?.ToString(),
+            issueType = req.IssueType?.ToString(),
+            officialComplaintFilingStatus = req.OfficialComplaintFilingStatus?.ToString(),
             quickReportLocationType = req.QuickReportLocationType?.ToString(),
             sortExpression = GetSortExpression(req.SortColumnName, req.IsAscendingSorting)
         };

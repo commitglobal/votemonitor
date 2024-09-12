@@ -195,6 +195,8 @@ app.UseSentryMiddleware()
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<FormType, string>());
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<ExportedDataStatus, string>());
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<QuickReportLocationType, string>());
+    x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<QuickReportIssueType, string>());
+    x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<QuickReportOfficialComplaintFilingStatus, string>());
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<DisplayLogicCondition, string>());
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<SubmissionFollowUpStatus, string>());
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<QuickReportFollowUpStatus, string>());
@@ -218,6 +220,8 @@ SqlMapper.AddTypeHandler(typeof(RatingScale), new SmartEnumByValueTypeHandler<Ra
 SqlMapper.AddTypeHandler(typeof(FormType), new SmartEnumByValueTypeHandler<FormType, string>());
 SqlMapper.AddTypeHandler(typeof(ExportedDataStatus), new SmartEnumByValueTypeHandler<ExportedDataStatus, string>());
 SqlMapper.AddTypeHandler(typeof(QuickReportLocationType), new SmartEnumByValueTypeHandler<QuickReportLocationType, string>());
+SqlMapper.AddTypeHandler(typeof(QuickReportIssueType), new SmartEnumByValueTypeHandler<QuickReportIssueType, string>());
+SqlMapper.AddTypeHandler(typeof(QuickReportOfficialComplaintFilingStatus), new SmartEnumByValueTypeHandler<QuickReportOfficialComplaintFilingStatus, string>());
 SqlMapper.AddTypeHandler(typeof(DisplayLogicCondition), new SmartEnumByValueTypeHandler<DisplayLogicCondition, string>());
 SqlMapper.AddTypeHandler(typeof(SubmissionFollowUpStatus), new SmartEnumByValueTypeHandler<SubmissionFollowUpStatus, string>());
 SqlMapper.AddTypeHandler(typeof(QuickReportFollowUpStatus), new SmartEnumByValueTypeHandler<QuickReportFollowUpStatus, string>());

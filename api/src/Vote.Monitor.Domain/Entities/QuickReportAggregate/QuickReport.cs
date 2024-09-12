@@ -15,6 +15,8 @@ public class QuickReport : AuditableBaseEntity, IAggregateRoot
     public PollingStation? PollingStation { get; private set; }
     public string? PollingStationDetails { get; private set; }
     public QuickReportFollowUpStatus FollowUpStatus { get; private set; }
+    public QuickReportIssueType IssueType { get; private set; }
+    public QuickReportOfficialComplaintFilingStatus OfficialComplaintFilingStatus { get; private set; }
 
     public static QuickReport Create(Guid id,
         Guid electionRoundId,
@@ -22,21 +24,28 @@ public class QuickReport : AuditableBaseEntity, IAggregateRoot
         string title,
         string description,
         QuickReportLocationType locationType,
+        QuickReportIssueType issueType,
+        QuickReportOfficialComplaintFilingStatus officialComplaintFilingStatus,
         Guid? pollingStationId,
         string? pollingStationDetails)
     {
-        return new QuickReport(id, electionRoundId, monitoringObserverId, locationType, title,
+        return new QuickReport(id, electionRoundId, monitoringObserverId, locationType, issueType,
+            officialComplaintFilingStatus, title,
             description, pollingStationId, pollingStationDetails);
     }
 
     public void Update(string title,
         string description,
         QuickReportLocationType locationType,
+        QuickReportIssueType issueType,
+        QuickReportOfficialComplaintFilingStatus officialComplaintFilingStatus,
         Guid? pollingStationId,
         string? pollingStationDetails)
     {
         Title = title;
         QuickReportLocationType = locationType;
+        IssueType = issueType;
+        OfficialComplaintFilingStatus = officialComplaintFilingStatus;
         Description = description;
         PollingStationId = pollingStationId;
         PollingStationDetails = pollingStationDetails;
@@ -51,6 +60,8 @@ public class QuickReport : AuditableBaseEntity, IAggregateRoot
         Guid electionRoundId,
         Guid monitoringObserverId,
         QuickReportLocationType quickReportLocationType,
+        QuickReportIssueType issueType,
+        QuickReportOfficialComplaintFilingStatus officialComplaintFilingStatus,
         string title,
         string description,
         Guid? pollingStationId,
@@ -59,6 +70,8 @@ public class QuickReport : AuditableBaseEntity, IAggregateRoot
         ElectionRoundId = electionRoundId;
         MonitoringObserverId = monitoringObserverId;
         QuickReportLocationType = quickReportLocationType;
+        IssueType = issueType;
+        OfficialComplaintFilingStatus = officialComplaintFilingStatus;
         Title = title;
         Description = description;
         PollingStationId = pollingStationId;

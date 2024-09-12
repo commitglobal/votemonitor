@@ -19,6 +19,14 @@ public class QuickReportConfiguration : IEntityTypeConfiguration<QuickReport>
             .IsRequired()
             .HasDefaultValue(QuickReportFollowUpStatus.NotApplicable);
 
+        builder.Property(x => x.IssueType)
+            .IsRequired()
+            .HasDefaultValue(QuickReportIssueType.A);
+
+        builder.Property(x => x.OfficialComplaintFilingStatus)
+            .IsRequired()
+            .HasDefaultValue(QuickReportOfficialComplaintFilingStatus.DoesNotApplyOrOther);
+
         builder
             .Property(e => e.PollingStationDetails)
             .IsRequired(false)

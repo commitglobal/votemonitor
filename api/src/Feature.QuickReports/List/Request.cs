@@ -31,4 +31,10 @@ public class Request : BaseSortPaginatedRequest
 
     [QueryParam]
     public QuickReportLocationType? QuickReportLocationType { get; set; }
+    
+    [QueryParam]
+    public QuickReportIssueType? IssueType { get; set; }
+    
+    [QueryParam]
+    public QuickReportOfficialComplaintFilingStatus? OfficialComplaintFilingStatus { get; set; }
 }
