@@ -413,6 +413,28 @@
         "required": "This field is required.",
         "max": "Input cannot exceed {{value}} characters"
       },
+      "issue_type": {
+        "label": "Type of the issue *",
+        "placeholder": "Select issue type.",
+        "required": "This field is required",
+        "options": {
+          "issue_type_a": "A",
+          "issue_type_b": "B",
+          "issue_type_c": "C",
+          "issue_type_d": "D"
+        }
+      },
+      "official_complaint_filing_status": {
+        "label": "Did you file an official complaint? *",
+        "placeholder": "Select official complaint filing status.",
+        "required": "This field is required",
+        "options": {
+          "yes": "Yes",
+          "noButPlanningToFile": "No but planning to file",
+          "noAndNotPlanningToFile": "No and not planning to file",
+          "doesNotApplyOrOther": "Does not apply/ other"
+        }
+      },
       "issue_title": {
         "label": "Title of issue *",
         "placeholder": "Write a title for the issue.",
@@ -435,7 +457,9 @@
     "title": "",
     "uploaded_media": "Uploaded media",
     "no_files": "No attached files",
-    "error": "Error while loading the report"
+    "error": "Error while loading the report",
+    "issue_type": "Issue type",
+    "official_complaint_filing_status": "Official complaint filing status"
   },
   "guides": {
     "title": "Guides",

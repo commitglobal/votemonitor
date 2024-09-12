@@ -20,7 +20,7 @@ import { useAddQuickReport } from "../../services/mutations/quick-report/add-qui
 import * as Crypto from "expo-crypto";
 import { FileMetadata, useCamera } from "../../hooks/useCamera";
 import { addAttachmentQuickReportMutation } from "../../services/mutations/quick-report/add-attachment-quick-report.mutation";
-import { QuickReportLocationType } from "../../services/api/quick-report/post-quick-report.api";
+import { QuickReportIssueType, QuickReportLocationType, QuickReportOfficialComplaintFilingStatus } from "../../services/api/quick-report/post-quick-report.api";
 import * as DocumentPicker from "expo-document-picker";
 import { onlineManager, useMutationState, useQueryClient } from "@tanstack/react-query";
 import Card from "../../components/Card";
@@ -58,11 +58,59 @@ const mapVisitsToSelectPollingStations = (visits: PollingStationVisitVM[] = []) 
   return pollingStationsForSelect;
 };
 
+const issueTypes = [
+  {
+    id: "issue_type_a",
+    value: QuickReportIssueType.A,
+    label: i18n.t("form.issue_type.options.issue_type_a", { ns: "report_new_issue" }),
+  },
+  {
+    id: "issue_type_b",
+    value: QuickReportIssueType.B,
+    label: i18n.t("form.issue_type.options.issue_type_b", { ns: "report_new_issue" }),
+  },
+  {
+    id: "issue_type_c",
+    value: QuickReportIssueType.C,
+    label: i18n.t("form.issue_type.options.issue_type_c", { ns: "report_new_issue" }),
+  },
+  {
+    id: "issue_type_d",
+    value: QuickReportIssueType.D,
+    label: i18n.t("form.issue_type.options.issue_type_d", { ns: "report_new_issue" }),
+  },
+];
+
+const officialComplaintFilingStatuses = [
+  {
+    id: "yes",
+    value: QuickReportOfficialComplaintFilingStatus.Yes,
+    label: i18n.t("form.official_complaint_filing_status.options.yes", { ns: "report_new_issue" }),
+  },
+  {
+    id: "noButPlanningToFile",
+    value: QuickReportOfficialComplaintFilingStatus.NoButPlanningToFile,
+    label: i18n.t("form.official_complaint_filing_status.options.noButPlanningToFile", { ns: "report_new_issue" }),
+  },
+  {
+    id: "noAndNotPlanningToFile",
+    value: QuickReportOfficialComplaintFilingStatus.NoAndNotPlanningToFile,
+    label: i18n.t("form.official_complaint_filing_status.options.noAndNotPlanningToFile", { ns: "report_new_issue" }),
+  },
+  {
+    id: "doesNotApplyOrOther",
+    value: QuickReportOfficialComplaintFilingStatus.DoesNotApplyOrOther,
+    label: i18n.t("form.official_complaint_filing_status.options.doesNotApplyOrOther", { ns: "report_new_issue" }),
+  }
+];
+
 type ReportIssueFormType = {
   polling_station_id: string;
   polling_station_details: string;
   issue_title: string;
   issue_description: string;
+  issue_type: QuickReportIssueType;
+  official_complaint_filing_status: QuickReportOfficialComplaintFilingStatus;
 };
 
 const ReportIssue = () => {
@@ -114,6 +162,8 @@ const ReportIssue = () => {
       polling_station_details: "",
       issue_title: "",
       issue_description: "",
+      issue_type: QuickReportIssueType.A,
+      official_complaint_filing_status: QuickReportOfficialComplaintFilingStatus.DoesNotApplyOrOther
     },
   });
 
@@ -236,6 +286,8 @@ const ReportIssue = () => {
         description: formData.issue_description,
         title: formData.issue_title,
         quickReportLocationType,
+        issueType: formData.issue_type,
+        officialComplaintFilingStatus: formData.official_complaint_filing_status,
         pollingStationDetails: formData.polling_station_details,
         ...(pollingStationId ? { pollingStationId } : {}),
         attachments: optimisticAttachments,
@@ -342,6 +394,67 @@ const ReportIssue = () => {
                   )}
                 />
               )}
+
+              {/* issue type */}
+              <Controller
+                key="issue_type"
+                name="issue_type"
+                control={control}
+                rules={{
+                  required: {
+                    value: true,
+                    message: t("form.issue_type.required"),
+                  },
+                }}
+                render={({ field: { onChange, value } }) => (
+                  <>
+                    {/* select issue type */}
+                    <FormElement
+                      title={t("form.issue_type.label")}
+                      error={errors.issue_type?.message}
+                    >
+                      <Select
+                        value={value}
+                        options={issueTypes}
+                        placeholder={t("form.issue_type.placeholder")}
+                        onValueChange={onChange}
+                        error={errors.issue_type?.message}
+                      />
+                    </FormElement>
+                  </>
+                )}
+              />
+
+
+              {/* official complaint status */}
+              <Controller
+                key="official_complaint_filing_status"
+                name="official_complaint_filing_status"
+                control={control}
+                rules={{
+                  required: {
+                    value: true,
+                    message: t("form.official_complaint_filing_status.required"),
+                  },
+                }}
+                render={({ field: { onChange, value } }) => (
+                  <>
+                    {/* select polling station */}
+                    <FormElement
+                      title={t("form.official_complaint_filing_status.label")}
+                      error={errors.official_complaint_filing_status?.message}
+                    >
+                      <Select
+                        value={value}
+                        options={officialComplaintFilingStatuses}
+                        placeholder={t("form.official_complaint_filing_status.placeholder")}
+                        onValueChange={onChange}
+                        error={errors.official_complaint_filing_status?.message}
+                      />
+                    </FormElement>
+                  </>
+                )}
+              />
 
               {/* issue title */}
               <Controller

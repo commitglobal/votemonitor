@@ -396,6 +396,28 @@
         "required": "Това поле е задължително.",
         "max": "Въведеното не може да надвишава {{value}} знака"
       },
+      "issue_type": {
+        "label": "",
+        "placeholder": "",
+        "required": "",
+        "options": {
+          "issue_type_a": "",
+          "issue_type_b": "",
+          "issue_type_c": "",
+          "issue_type_d": ""
+        }
+      },
+      "official_complaint_filing_status": {
+        "label": "",
+        "placeholder": "",
+        "required": "",
+        "options": {
+          "yes": "",
+          "noButPlanningToFile": "",
+          "noAndNotPlanningToFile": "",
+          "doesNotApplyOrOther": ""
+        }
+      },
       "issue_title": {
         "label": "Наименование на проблема *",
         "placeholder": "Напишете наименование на проблема",
@@ -418,7 +440,9 @@
     "title": "",
     "uploaded_media": "Качи файл",
     "no_files": "Няма прикачени файлове",
-    "error": "Грешка при зареждането на отчета"
+    "error": "Грешка при зареждането на отчета",
+    "issue_type": "",
+    "official_complaint_filing_status": ""
   },
   "guides": {
     "title": "",

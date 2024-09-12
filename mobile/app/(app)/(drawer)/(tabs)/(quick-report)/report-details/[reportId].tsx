@@ -9,10 +9,50 @@ import { useUserData } from "../../../../../../contexts/user/UserContext.provide
 import Card from "../../../../../../components/Card";
 import { useTranslation } from "react-i18next";
 import { RefreshControl } from "react-native";
+import i18n from "../../../../../../common/config/i18n";
+import { useMemo } from "react";
+import {
+  QuickReportIssueType,
+  QuickReportOfficialComplaintFilingStatus,
+} from "../../../../../../services/api/quick-report/post-quick-report.api";
 
 type SearchParamsType = {
   reportId: string;
   reportTitle: string;
+};
+
+const issueTypes: Record<QuickReportIssueType, string> = {
+  [QuickReportIssueType.A]: i18n.t("form.issue_type.options.issue_type_a", {
+    ns: "report_new_issue",
+  }),
+  [QuickReportIssueType.B]: i18n.t("form.issue_type.options.issue_type_b", {
+    ns: "report_new_issue",
+  }),
+  [QuickReportIssueType.C]: i18n.t("form.issue_type.options.issue_type_c", {
+    ns: "report_new_issue",
+  }),
+  [QuickReportIssueType.D]: i18n.t("form.issue_type.options.issue_type_d", {
+    ns: "report_new_issue",
+  }),
+};
+
+const officialComplaintFilingStatuses: Record<QuickReportOfficialComplaintFilingStatus, string> = {
+  [QuickReportOfficialComplaintFilingStatus.Yes]: i18n.t(
+    "form.official_complaint_filing_status.options.yes",
+    { ns: "report_new_issue" },
+  ),
+  [QuickReportOfficialComplaintFilingStatus.NoButPlanningToFile]: i18n.t(
+    "form.official_complaint_filing_status.options.noButPlanningToFile",
+    { ns: "report_new_issue" },
+  ),
+  [QuickReportOfficialComplaintFilingStatus.NoAndNotPlanningToFile]: i18n.t(
+    "form.official_complaint_filing_status.options.noAndNotPlanningToFile",
+    { ns: "report_new_issue" },
+  ),
+  [QuickReportOfficialComplaintFilingStatus.DoesNotApplyOrOther]: i18n.t(
+    "form.official_complaint_filing_status.options.doesNotApplyOrOther",
+    { ns: "report_new_issue" },
+  ),
 };
 
 const ReportDetails = () => {
@@ -86,6 +126,19 @@ const ReportDetails = () => {
         }
       >
         <YStack gap={16}>
+          <Typography preset="subheading" fontWeight="500">
+            {t("issue_type")}
+          </Typography>
+          <Typography preset="body1" fontWeight="500">
+            {quickReport?.issueType}
+          </Typography>
+          <Typography preset="subheading" fontWeight="500">
+            {t("official_complaint_filing_status")}
+          </Typography>
+          <Typography preset="body1" fontWeight="500">
+            {quickReport?.officialComplaintFilingStatus}
+          </Typography>
+
           <Typography preset="subheading" fontWeight="500">
             {quickReport?.title}
           </Typography>
