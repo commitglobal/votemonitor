@@ -1,0 +1,21 @@
+{
+  "name": "generate-translations-excel",
+  "version": "1.0.0",
+  "description": "Generates excel containing all translations from locales",
+  "type": "module",
+  "main": "index.js",
+  "author": "",
+  "license": "MIT",
+  "bin": {
+    "hello": "./index.js"
+  },
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "csv-parse": "^5.5.6",
+    "csv-stringify": "^6.5.1",
+    "exceljs": "^4.4.0",
+    "lodash-es": "^4.17.21",
+    "uuid": "^10.0.0",
+    "yargs": "^17.7.2"
+  }
+}
