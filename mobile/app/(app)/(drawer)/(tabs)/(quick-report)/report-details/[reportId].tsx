@@ -1,20 +1,19 @@
-import { Screen } from "../../../../../../components/Screen";
 import { router, useLocalSearchParams } from "expo-router";
-import Header from "../../../../../../components/Header";
-import { Icon } from "../../../../../../components/Icon";
-import { Typography } from "../../../../../../components/Typography";
-import { ScrollView, YStack } from "tamagui";
-import { useQuickReportById } from "../../../../../../services/queries/quick-reports.query";
-import { useUserData } from "../../../../../../contexts/user/UserContext.provider";
-import Card from "../../../../../../components/Card";
 import { useTranslation } from "react-i18next";
 import { RefreshControl } from "react-native";
+import { ScrollView, YStack } from "tamagui";
 import i18n from "../../../../../../common/config/i18n";
-import { useMemo } from "react";
+import Card from "../../../../../../components/Card";
+import Header from "../../../../../../components/Header";
+import { Icon } from "../../../../../../components/Icon";
+import { Screen } from "../../../../../../components/Screen";
+import { Typography } from "../../../../../../components/Typography";
+import { useUserData } from "../../../../../../contexts/user/UserContext.provider";
 import {
   QuickReportIssueType,
   QuickReportOfficialComplaintFilingStatus,
 } from "../../../../../../services/api/quick-report/post-quick-report.api";
+import { useQuickReportById } from "../../../../../../services/queries/quick-reports.query";
 
 type SearchParamsType = {
   reportId: string;
