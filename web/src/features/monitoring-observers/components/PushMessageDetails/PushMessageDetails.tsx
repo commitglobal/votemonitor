@@ -7,12 +7,13 @@ import { DateTimeFormat } from '@/common/formats';
 import type { FunctionComponent } from '@/common/types';
 import { NavigateBack } from '@/components/NavigateBack/NavigateBack';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
-import { pushMessageDetailsQueryOptions ,Route} from '@/routes/monitoring-observers/push-messages.$id_.view';
+import { pushMessageDetailsQueryOptions, Route } from '@/routes/monitoring-observers/push-messages.$id_.view';
+import { CheckIcon } from '@heroicons/react/24/outline';
 import { useSuspenseQuery } from '@tanstack/react-query';
 
 export default function PushMessageDetails(): FunctionComponent {
-  const { id } = Route.useParams()
-  const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
+  const { id } = Route.useParams();
+  const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
   const { data: pushMessage } = useSuspenseQuery(pushMessageDetailsQueryOptions(currentElectionRoundId, id));
 
   return (
@@ -47,9 +48,14 @@ export default function PushMessageDetails(): FunctionComponent {
             <div className='flex flex-col gap-1'>
               <p className='font-bold text-gray-700'>Total targeted observers {pushMessage?.receivers?.length ?? 0}</p>
               {pushMessage?.receivers?.map((receiver) => (
-                <p className='font-normal text-gray-900' key={receiver.id}>
-                  {receiver.name}
-                </p>
+                <div className='flex gap-1'>
+                  <p className='font-normal text-gray-900' key={receiver.id}>
+                    {receiver.name}
+                  </p>
+                  {receiver.hasReadNotification && (
+                    <CheckIcon title='Notification read' className='h-4 w-4 self-center' color='#147638' />
+                  )}
+                </div>
               ))}
             </div>
           </div>
