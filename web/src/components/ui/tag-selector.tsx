@@ -5,7 +5,6 @@ import { FC, useEffect, useRef, useState } from 'react';
 import { Badge } from './badge';
 import { Input } from './input';
 import { Separator } from './separator';
-import { CommandItem } from './command';
 
 interface TagsSelectFormFieldProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   asChild?: boolean;
@@ -125,7 +124,6 @@ const TagsSelectFormField: FC<TagsSelectFormFieldProps> = (props) => {
                   </Combobox.Option>
                 ))}
               </Combobox.Options>
-            
             </Popover.Panel>
           </>
         )}
