@@ -1,6 +1,7 @@
-﻿using Vote.Monitor.Api.Feature.PollingStation.Services;
+﻿using System.Text.Json;
+using Vote.Monitor.Core.Models;
 
-namespace Vote.Monitor.Api.Feature.PollingStation.Helpers;
+namespace Vote.Monitor.Core.Helpers;
 
 public static class TagHelpers
 {

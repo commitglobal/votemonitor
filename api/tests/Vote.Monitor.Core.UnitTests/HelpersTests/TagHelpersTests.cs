@@ -1,4 +1,8 @@
-﻿namespace Vote.Monitor.Api.Feature.PollingStation.UnitTests.HelpersTests;
+﻿using System.Text.Json;
+using Vote.Monitor.Core.Helpers;
+using Vote.Monitor.Core.Models;
+
+namespace Vote.Monitor.Core.UnitTests.HelpersTests;
 
 public class TagHelpersTests
 {
