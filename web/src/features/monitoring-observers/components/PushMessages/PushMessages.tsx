@@ -3,19 +3,19 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { DataTableColumnHeader } from '@/components/ui/DataTable/DataTableColumnHeader';
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
 import { Separator } from '@/components/ui/separator';
+import { ChevronRightIcon } from '@heroicons/react/24/outline';
 import { Link, useNavigate } from '@tanstack/react-router';
 import type { CellContext, ColumnDef } from '@tanstack/react-table';
 import { Plus } from 'lucide-react';
-import { ChevronRightIcon } from '@heroicons/react/24/outline';
 
-import { usePushMessages } from '../../hooks/push-messages-queries';
-import { format } from 'date-fns';
-import type { PushMessageModel } from '../../models/push-message';
-import { useCallback } from 'react';
 import { DateTimeFormat } from '@/common/formats';
-import type { TableCellProps } from '@/components/ui/DataTable/DataTable';
 import type { FunctionComponent } from '@/common/types';
+import type { TableCellProps } from '@/components/ui/DataTable/DataTable';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { format } from 'date-fns';
+import { useCallback } from 'react';
+import { usePushMessages } from '../../hooks/push-messages-queries';
+import type { PushMessageModel } from '../../models/push-message';
 
 function PushMessages(): FunctionComponent {
   const pushMessagesColDefs: ColumnDef<PushMessageModel>[] = [
@@ -24,67 +24,37 @@ function PushMessages(): FunctionComponent {
       accessorKey: 'sentAt',
       enableSorting: false,
       enableGlobalFilter: false,
-      cell: ({ row }) => <div>{format(row.original.sentAt, DateTimeFormat)}</div>
+      cell: ({ row }) => <div>{format(row.original.sentAt, DateTimeFormat)}</div>,
     },
     {
       header: ({ column }) => <DataTableColumnHeader title='Sender name' column={column} />,
       accessorKey: 'sender',
       enableSorting: false,
       enableGlobalFilter: false,
-      cell: ({
-        row: {
-          original: { sender },
-        },
-      }) => (
-        <p>
-          {sender}
-        </p>
-      ),
     },
     {
       header: ({ column }) => <DataTableColumnHeader title='Targeted Observers' column={column} />,
       accessorKey: 'numberOfTargetedObservers',
       enableSorting: false,
       enableGlobalFilter: false,
-      cell: ({
-        row: {
-          original: { numberOfTargetedObservers },
-        },
-      }) => (
-        <p>
-          {numberOfTargetedObservers}
-        </p>
-      ),
+    },
+    {
+      header: ({ column }) => <DataTableColumnHeader title='Read notifications' column={column} />,
+      accessorKey: 'numberOfReadNotifications',
+      enableSorting: false,
+      enableGlobalFilter: false,
     },
     {
       header: ({ column }) => <DataTableColumnHeader title='Title' column={column} />,
       accessorKey: 'title',
       enableSorting: false,
       enableGlobalFilter: false,
-      cell: ({
-        row: {
-          original: { title },
-        },
-      }) => (
-        <p>
-          {title}
-        </p>
-      ),
     },
     {
       header: ({ column }) => <DataTableColumnHeader title='Body' column={column} />,
       accessorKey: 'body',
       enableSorting: false,
       enableGlobalFilter: false,
-      cell: ({
-        row: {
-          original: { body },
-        },
-      }) => (
-        <p>
-          {body}
-        </p>
-      ),
     },
     {
       header: '',
@@ -105,15 +75,14 @@ function PushMessages(): FunctionComponent {
 
   const getCellProps = (context: CellContext<PushMessageModel, unknown>): TableCellProps | void => {
     if (context.column.id === 'body' || context.column.id === 'title') {
-
       return {
         className: 'truncate hover:text-clip',
-      }
+      };
     }
-  }
+  };
 
   const navigate = useNavigate();
-    const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
+  const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
 
   const navigateToPushMessage = useCallback(
     (id: string) => {

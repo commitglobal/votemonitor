@@ -8,13 +8,15 @@ import { ReactElement, useState } from 'react';
 import { useElectionRoundDetails } from '../../hooks/election-event-hooks';
 import ElectionEventDetails from '../ElectionEventDetails/ElectionEventDetails';
 import ObserversGuides from '../ObserversGuides/ObserversGuides';
+import { useTranslation } from 'react-i18next';
 
 const routeApi = getRouteApi('/election-event/$tab');
 
 export default function ElectionEventDashboard(): ReactElement {
+  const { t } = useTranslation();
   const { tab } = routeApi.useParams();
   const [currentTab, setCurrentTab] = useState(tab);
-    const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
+  const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
 
   const navigate = routeApi.useNavigate();
 
@@ -32,10 +34,10 @@ export default function ElectionEventDashboard(): ReactElement {
     <Layout title={electionEvent?.title ?? ''} breadcrumbs={<></>} backButton={<></>}>
       <Tabs defaultValue='event-details' value={currentTab} onValueChange={handleTabChange}>
         <TabsList className='grid grid-cols-4 bg-gray-200 w-[800px] mb-4'>
-          <TabsTrigger value='event-details'>Event Details</TabsTrigger>
-          <TabsTrigger value='polling-stations'>Polling Stations</TabsTrigger>
-          <TabsTrigger value='observer-guides'>Observer Guides</TabsTrigger>
-          <TabsTrigger value='observer-forms'>Observer Forms</TabsTrigger>
+          <TabsTrigger value='event-details'>{t('electionEvent.eventDetails.tabTitle')}</TabsTrigger>
+          <TabsTrigger value='polling-stations'>{t('electionEvent.pollingStations.tabTitle')}</TabsTrigger>
+          <TabsTrigger value='observer-guides'>{t('electionEvent.observerGuides.tabTitle')}</TabsTrigger>
+          <TabsTrigger value='observer-forms'>{t('electionEvent.observerForms.tabTitle')}</TabsTrigger>
         </TabsList>
 
         <TabsContent value='event-details'><ElectionEventDetails /></TabsContent>

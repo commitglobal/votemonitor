@@ -13,6 +13,6 @@ public record NotificationDetailedModel
 public record NotificationReceiver
 {
     public required Guid Id { get; init; }
-
     public required string Name { get; init; }
+    public required bool HasReadNotification { get; init; }
 }

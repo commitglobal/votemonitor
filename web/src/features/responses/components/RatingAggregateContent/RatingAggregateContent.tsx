@@ -6,7 +6,7 @@ import { Bar } from 'react-chartjs-2';
 import { purple500 } from '../../utils/chart-colors';
 
 import type { ChartJSOrUndefined } from 'node_modules/react-chartjs-2/dist/types';
-import type { RatingQuestionAggregate } from '../../models/form-aggregated';
+import { RatingQuestionAggregate } from '../../models/common';
 
 type RatingAggregateContentProps = {
   aggregate: RatingQuestionAggregate;
@@ -28,9 +28,9 @@ const RatingAggregateContent = forwardRef<ChartJSOrUndefined<'bar', number[]>, R
     return (
       <>
         <div className='flex flex-col gap-1'>
-          <div><span className='font-bold mr-1'>Min:</span><span>{aggregate.min}</span></div>
-          <div><span className='font-bold mr-1'>Max:</span><span> {aggregate.max}</span></div>
-          <div><span className='font-bold mr-1'>Average:</span><span>{round(aggregate.average, 2)}</span></div>
+          <div><span className='mr-1 font-bold'>Min:</span><span>{aggregate.min}</span></div>
+          <div><span className='mr-1 font-bold'>Max:</span><span> {aggregate.max}</span></div>
+          <div><span className='mr-1 font-bold'>Average:</span><span>{round(aggregate.average, 2)}</span></div>
         </div>
 
         <div className='h-[300px]'>

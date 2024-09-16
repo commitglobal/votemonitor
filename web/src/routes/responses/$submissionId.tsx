@@ -8,7 +8,7 @@ import { createFileRoute } from '@tanstack/react-router';
 
 export function formSubmissionDetailsQueryOptions(electionRoundId: string, submissionId: string) {
   return queryOptions({
-    queryKey: formSubmissionsByEntryKeys.detail(submissionId),
+    queryKey: formSubmissionsByEntryKeys.detail(electionRoundId, submissionId),
     queryFn: async () => {
       const response = await authApi.get<FormSubmission>(
         `/election-rounds/${electionRoundId}/form-submissions/${submissionId}`
@@ -16,7 +16,7 @@ export function formSubmissionDetailsQueryOptions(electionRoundId: string, submi
 
       return response.data;
     },
-    enabled: !!electionRoundId
+    enabled: !!electionRoundId,
   });
 }
 
@@ -27,6 +27,6 @@ export const Route = createFileRoute('/responses/$submissionId')({
   component: FormSubmissionDetails,
   loader: ({ context: { queryClient, currentElectionRoundContext }, params: { submissionId } }) => {
     const electionRoundId = currentElectionRoundContext.getState().currentElectionRoundId;
-    return queryClient.ensureQueryData(formSubmissionDetailsQueryOptions(electionRoundId, submissionId))
+    return queryClient.ensureQueryData(formSubmissionDetailsQueryOptions(electionRoundId, submissionId));
   },
 });

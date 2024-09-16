@@ -1,0 +1,548 @@
+{
+  "common": {
+    "skip": "Preskoči",
+    "search": "Pretraži",
+    "loading": "Loading...",
+    "status": {
+      "completed": "Završeno",
+      "in_progress": "U realizaciji",
+      "not_started": "Nije započeto"
+    },
+    "cancel": "Otkaži",
+    "save": "Sačuvaj",
+    "no_data": "Nema podataka.",
+    "select": "Izaberi",
+    "done": "Završeno"
+  },
+  "languages": {
+    "ro": "rumunski",
+    "en": "engleski",
+    "pl": "Poljski",
+    "bg": "bugarski",
+    "sr": "srpski"
+  },
+  "onboarding": {
+    "language": {
+      "heading": "CIzaberite vaš jezik",
+      "description": "Ovo će biti jezik na kojem će vaša aplikacija biti prikazana, koji možete promeniti u bilo koje vreme u odeljku 'Više opcija'.",
+      "save": "Primeni selekciju"
+    },
+    "polling_stations": {
+      "heading": "Posmatrajte na biračkim mestima",
+      "description": "i dokumentujte u realnom vremenu ceo izborni proces na obrascima koje je postavila vaša akreditovana organizacija."
+    },
+    "forms": {
+      "heading": "Popunjavajte izveštaje",
+      "description": "i pratite njihov napredak tokom svake faze monitoringa."
+    },
+    "media": {
+      "heading": "Dodajte vaše medijske datoteke",
+      "description": "ako primetite bilo kakve neregularnosti koji bi dodatno mogli podržati vaše tvrdnje",
+      "save": "Pređi na aplikaciju"
+    }
+  },
+  "login": {
+    "disclaimer": {
+      "paragraph1": "Imajte na umu da ako niste akreditovani kao nezavisni posmatrač od strane organizacije koja prati izborne procese u vašoj zemlji, ne možete koristiti aplikaciju Vote Monitor.",
+      "paragraph2": "Molimo vas da se obratite takvim organizacijama kako biste saznali koje korake trebate preduzeti da biste postali izborni posmatrač ili nas kontaktirajte za više informacija na",
+      "email": "info@commitglobal.org"
+    },
+    "heading": "Ulogujte se",
+    "paragraph": "Molimo vas da koristite mejl adresu sa kojom ste se registrovali kao nezavisni posmatrač:",
+    "form": {
+      "email": {
+        "label": "E-mail *",
+        "placeholder": "E-mail",
+        "required": "E-mail je obavezan",
+        "pattern": "Format e-maila nije validan"
+      },
+      "password": {
+        "label": "Lozinka *",
+        "placeholder": "Lozinka",
+        "required": "Lozinka je obavezna"
+      },
+      "submit": {
+        "save": "Ulogujte se",
+        "loading": "Ulogujte se..."
+      },
+      "errors": {
+        "invalid_credentials": "Došlo je do problema sa vašim pristupnim informacijama. Molimo, pokušajte ponovno.",
+        "offline": "Potrebna vam je internet veza da biste se prijavili."
+      }
+    },
+    "actions": {
+      "forgot_password": "Zaboravljena lozinka?"
+    },
+    "email_toast": "Adresa e-mail je kopirana u međuspremniku"
+  },
+  "forgot_password": {
+    "header": {
+      "title": "Zaboravljena lozinka"
+    },
+    "heading": "Zaboravljena lozinka?",
+    "paragraph": "Molimo unesite email adresu povezanu sa vašim nalogom i poslaćemo vam link za resetovanje lozinke.",
+    "form": {
+      "email": {
+        "label": "E-mail *",
+        "placeholder": "E-mail",
+        "required": "E-mail is mandatory",
+        "pattern": "E-mail format is not valid"
+      },
+      "submit": {
+        "loading": "Pošalji...",
+        "save": "Pošalji"
+      },
+      "errors": {
+        "invalid_email": "Trenutni e-mail nije registrovan u sistemu. Molimo pokušajte ponovo."
+      }
+    },
+    "confirmation": {
+      "heading": "E-mail poslat",
+      "paragraph": "Proverite svoj e-mail i otvorite link koji smo poslali da biste nastavili. Ako niste primili e-mail, proverite filter za neželjenu poštu.",
+      "confirm": "Vratite se na prijavu"
+    }
+  },
+  "about_app": {
+    "title": "Više o Vote Monitor",
+    "general": "Vote Monitor je posvećeni digitalni alat za nezavisne posmatrače i međunarodne organizacije koje se bave nadzorom izbora. Vote Monitor je razvijen i upravljan od strane Code for Romania/Commit Global.",
+    "purpose": "Aplikacija pomaže nezavisnim posmatračima u nadzoru biračkih mesta i dokumentovanju izbornog procesa u realnom vremenu za određeni izborni krug. Svi podaci prikupljeni putem mobilne aplikacije šalju se u realnom vremenu akreditacionim organizacijama kako bi se identifikovali potencijalni problemi koji mogu ukazivati na prevaru ili druge nepravilnosti. Naš krajnji cilj je da pružimo jasan, jednostavan i realističan pregled izbornog procesa.",
+    "app_provides": {
+      "paragraph": "Ova aplikacija pruža posmatračima:",
+      "item1": "Način da upravljaju sa više posećenih biračkih mesta",
+      "item2": "Efikasan metodposmatranja toka izbornog procesa kroz izveštaje koje postavljaju akreditovane organizacije",
+      "item3": "Način za brzo izveštavanje o drugim problematičnim pitanjima izvan standardnih obrazaca."
+    },
+    "usage": "TAplikacija Vote Monitor može se koristiti tokom bilo koje vrste izbora u bilo kojoj zemlji širom sveta. Od 2016. godine, koristila se u više izbornih krugova u Rumuniji i Poljskoj.",
+    "version": "Vote Monitor verzija {{value}}"
+  },
+  "loading_screen": {
+    "heading": "Učitavanje...",
+    "paragraph": "Pripremamo sve podatke, hvala na strpljenju!"
+  },
+  "tabs": {
+    "observation": "Posmatranje",
+    "quick_report": "Incident",
+    "guides": "Priručnik",
+    "inbox": "Poruke",
+    "more": "Još opcija"
+  },
+  "add_polling_station": {
+    "title": "Dodajte biračko mesto",
+    "progress": {
+      "location": "Dodajte biračko mesto iz {{value}}"
+    },
+    "actions": {
+      "next_step": "Sledeći korak",
+      "back": "Nazad",
+      "finalize": "Finalizuj"
+    },
+    "error": "Greška pri učitavanju biračkih mesta!"
+  },
+  "observation": {
+    "title": "",
+    "no_election_round": {
+      "heading": "Nema izbora za posmatranje.",
+      "paragraph": "Moći ćete da koristite aplikaciju kada budete dodeljeni izbornom događaju."
+    },
+    "no_visited_polling_stations": {
+      "heading": "Nema posećenih biračkih mesta",
+      "paragraph": "Najpre konfigurišite svoje prvo biračko mesto pre popunjavanja izveštaja posmatranja.",
+      "add": "Dodajte biračko mesto"
+    },
+    "my_polling_stations": {
+      "heading": "Moja biračka mesta",
+      "paragraph": "Možete se prebacivati između biračkih mesta ako želite ponovo da pregledate odgovore u izveštaju ili infomracije o biračkom mestu.",
+      "add": "Dodajte novo biračko mesto"
+    },
+    "polling_stations_information": {
+      "time_select": {
+        "not_defined": "Nije definisano",
+        "arrival_time": "Vreme dolaska",
+        "departure_time": "Vreme odlaska",
+        "save": "Završeno",
+        "error": {
+          "arrival_first": "Molimo vas najpre izaberite vreme dolaska.",
+          "later_departure": "Molimo vas izaberite vreme odlaska koje je posle vremena dolaska.",
+          "earlier_arrival": "Molimo vas izaberite vreme dolaska koje je pre vremena odlaska.",
+          "server": "Nismo mogli da pošaljemo informacije serveru."
+        }
+      },
+      "polling_station_form": {
+        "paragraph": "Odgovorite na nekoliko brzih pitanja o biračkom mestu.",
+        "form_details_button_label": "Informacije o biračkom mestu.",
+        "number_of_questions": "{{value}} pitanja",
+        "answer_questions": "Odgovorite na pitanja"
+      }
+    },
+    "forms": {
+      "heading": "Izveštaji",
+      "list": {
+        "empty": "Nema podataka za prikaz",
+        "error": {
+          "paragraph1": "Došlo je do greške!",
+          "paragraph2": "Nismo mogli da dođemo do podataka. Pritisnite dugme za ponovni pokušaj!",
+          "retry": "Pokušaj ponovo"
+        }
+      },
+      "select_language_modal": {
+        "header": "Izaberite jezik izveštaja",
+        "helper": "Izabrani izveštaj je dostupan na više jezika. Izaberite jedan da biste nastavili dalje.",
+        "error": "Molimo vas izaberite jednu od opcija"
+      }
+    },
+    "options_menu": {
+      "manage_my_polling_stations": "Upravljanje mojim biračkim mestima"
+    }
+  },
+  "polling_station_information_form": {
+    "title": "Informacije o biračkom mestu",
+    "submit": "Pošalji odgovore",
+    "form": {
+      "max": "Unos ne može preći preko {{value}} karaktera",
+      "placeholder": "Unesi tekst..."
+    },
+    "menu": {
+      "clear": "Očisti obazac (obriši sve odgovore)"
+    },
+    "warning_modal": {
+      "title": "Očisti informacije o biračkom mestu",
+      "description": "Ova akcija će obrisati sve unete odgovore u ovom izveštaju. Da biste izbegli nenamerni gubitak informacija, molimo vas da proverite obrazac pre izvođenja ove akcije.",
+      "actions": {
+        "cancel": "Otkaži",
+        "clear": "Očisti obrazac"
+      }
+    }
+  },
+  "form_overview": {
+    "overview": {
+      "heading": "Pregled izveštaja",
+      "status": "Status izveštaja",
+      "answered_questions": "Odgovorena pitanja",
+      "resume": "Nastavi sa obrascem",
+      "start_form": "Započni obrazac",
+      "progress": "napredak"
+    },
+    "questions": {
+      "title": "Pitanja",
+      "not_answered": "Nije odgovoreno",
+      "answered": "Odgovoreno",
+      "no_notes": "Nema dodatih beleški",
+      "notes": "Sadrži dodate beleške"
+    },
+    "attachments": {
+      "notes": "{{count}} Beleške",
+      "media": "{{count}} Medijske datoteke"
+    },
+    "error": "Greška pri učitavanju podataka!",
+    "menu": {
+      "clear": "COčisti izveštaj (izbriši sve odgovore)",
+      "change_language": "Promeni jezik"
+    },
+    "clear_answers_modal": {
+      "title": "Očisti izveštaj {{value}}",
+      "description": {
+        "p1": "Ova akcija će obrisati sve dosad unete odgovore za ovaj izveštaj (uključujući beleške i medijske datoteke). Status svih pitanja biće vraćen na 'Nije odgovoreno'",
+        "p2": "Da biste izbegli nenamerni gubitak informacija, molimo vas da proverite izveštaj pre izvođenja ove akcije."
+      },
+      "actions": {
+        "clear": "Očisti izveštaj",
+        "cancel": "Otkaži"
+      }
+    }
+  },
+  "polling_station_form_wizard": {
+    "progress_bar": {
+      "label": "Napredak izveštaja",
+      "clear_answer": "Očisti odgovore"
+    },
+    "form": {
+      "min": "Polje mora da sadrži najmanje {{value}} karaktera",
+      "max": "Polje mora da sadrži najviše {{value}} karaktera",
+      "date_placeholder": "Unesite datum",
+      "text_placeholder": "Unesite text"
+    },
+    "attachments": {
+      "heading": "Otpremljeni mediji",
+      "loading": "Dodavanje priloga...",
+      "error": "Greška pri slanju priloga!",
+      "add": "Dodajte vaše medijske datoteke",
+      "menu": {
+        "add_note": "Dodaj belešku",
+        "load": "Učitaj iz galerije",
+        "take_picture": "Napravite fotografiju",
+        "record_video": "Napravite video zapis",
+        "upload_audio": "Učitaj audio snimak"
+      }
+    },
+    "notes": {
+      "heading": "Beleške",
+      "add": {
+        "heading": "Dodajte belešku",
+        "form": {
+          "input": {
+            "placeholder": "Dodajte svoje beleške za ovo pitanje.",
+            "max": "Unos ne može preći preko 10,000 karaktera",
+            "required": "Polje je obavezno"
+          }
+        }
+      },
+      "edit": {
+        "heading": "Izmeni beleške",
+        "delete": "Izbriši belešku"
+      },
+      "delete": {
+        "title": "Izbriši belešku",
+        "description": "Ovo brisanje je trajno. Kada se beleška izbriše, ne postoji način da se povrati.",
+        "actions": {
+          "cancel": "Otkaži",
+          "delete": "Izbriši"
+        }
+      }
+    },
+    "warning_modal": {
+      "question": {
+        "title": "Očisti odgovor na pitanje {{value}}",
+        "description": "Brisanje odgovora trajno će ukloniti sve njegove informacije (uključujući beleške i medijske datoteke). Status pitanja biće vraćen na 'Nije odgovoreno'.",
+        "actions": {
+          "cancel": "Otkaži",
+          "clear": "Očisti odgovor"
+        }
+      },
+      "attachment": {
+        "title": "Izbriši medijsku datoteku",
+        "description": "Ova brisanje je trajno. Kada je medijska datoteka izbrisana ne može se povratiti.",
+        "actions": {
+          "cancel": "Otkaži",
+          "clear": "Izbriši"
+        }
+      }
+    },
+    "error": "Greška pri učitavanju pitanja!"
+  },
+  "manage_my_polling_stations": {
+    "empty": {
+      "title": "Nema posećenih biračkih mesta"
+    },
+    "general_text": "Upravljanje mojim biračkim mestima",
+    "ps_card": {
+      "header": "Biračko mesto #{{value}}",
+      "l1": "[Location L1]",
+      "l2": "[Location L2]",
+      "l3": "[Location L3]",
+      "l4": "[Location L4]",
+      "l5": "[Location L5]",
+      "street": "Ulica",
+      "ps_number": "Broj biračkog mesta"
+    },
+    "warning_dialog": {
+      "title": "Izbriši biračko mesto #{{value}}",
+      "description": "Ova radnja će ukloniti biračko mesto sa vaše liste posećenih biračkih mesta. Možete ga ponovo dodati kroz proces Dodaj novo biračko mesto.",
+      "actions": {
+        "cancel": "Otkaži",
+        "remove": "Izbriši",
+        "loading": "Pošalji..."
+      }
+    },
+    "removal_unallowed_dialog": {
+      "title": "Uklanjanje biračkog mesta #{{value}} nije dozvoljeno",
+      "description": "Biračko mesto ne može biti uklonjeno sa vaše liste jer sadrži podatke (informacije o biračkom mestu i/ili odgovore na obrascu) koje sistem ne može izbrisati u vaše ime. Ako želite da uklonite ovo biračko mesto, obrišite informacije o biračkom mestu i ručno formirajte odgovore, a zatim ponovite ovu radnju."
+    },
+    "delete_success": "Biračko mesto uspešno obrisano!",
+    "delete_error": "Naišli smo na problem prilikom brisanja posete biračkom mestu. Pokušajte ponovo.",
+    "offline_error_toast_msg": "Potrebna vam je internet veza da biste izvršili ovu radnju"
+  },
+  "quick_report": {
+    "list": {
+      "title": "Incident",
+      "heading": "Moji incidenti",
+      "error": "Greška pri učitavanju izveštaja!",
+      "empty": "Počnite sa slanjem izveštaja o incidentima organizaciji ako primetite nepravilnosti unutar, izvan biračkog mesta ili kad god je to potrebno.",
+      "add": "Prijavite novi incident",
+      "no_files": "Nema medijskih datoteka",
+      "attachment_one": "{{count}} prilog",
+      "attachment_other": "{{count}} prilozi"
+    },
+    "options_menu": {
+      "manage_my_polling_stations": "Upravljanje mojim biračkim mestima"
+    }
+  },
+  "report_new_issue": {
+    "title": "Prijavite novi incident",
+    "media": {
+      "heading": "Otpremljeni mediji",
+      "add": "Dodaj medijske datoteke",
+      "error": "Greška pri slanju priloga!",
+      "menu": {
+        "load": "Učitaj iz galerije",
+        "take_picture": "Napravite fotografiju",
+        "record_video": "Napravite video zapis",
+        "upload_audio": "Učitaj audio snimak"
+      }
+    },
+    "form": {
+      "polling_station_id": {
+        "label": "Biračko mesto *",
+        "placeholder": "Izaberite biračko mesto",
+        "extra": "Molimo vas da ovde napišete neke identifikacione detalje za ovo biračko mesto (kao što su adresa, ime, broj i sl.)",
+        "required": "Polje je obavezno.",
+        "options": {
+          "other": "Druga biračka mesta",
+          "not_related": "Ne odnosi se na biračko mesto"
+        }
+      },
+      "polling_station_details": {
+        "label": "Informacije o biračkom mestu *",
+        "placeholder": "Molimo vas da ovde napišete neke identifikacione detalje za ovo biračko mesto (kao što su adresa, ime, broj i sl.)",
+        "required": "Polje je obavezno.",
+        "max": "Unos ne može preći preko {{value}} karaktera"
+      },
+      "issue_title": {
+        "label": "Naziv incidenta *",
+        "placeholder": "Write a title for the issue.",
+        "required": "Naslov incidenta je obavezan",
+        "max": "Unos ne može preći preko {{value}} karaktera"
+      },
+      "issue_description": {
+        "label": "Opis *",
+        "placeholder": "Detaljno opišite incident",
+        "required": "Opis incidenta je obavezan",
+        "max": "Unos ne može preći preko {{value}} karaktera"
+      },
+      "submit": "Pošaljite incident izveštaj",
+      "clear": "Očisti",
+      "loading": "Učitavanje...",
+      "error": "Greška pri učitavanju izveštaja"
+    }
+  },
+  "report_details": {
+    "title": "",
+    "uploaded_media": "Otpremljeni mediji",
+    "no_files": "Nema medijskih datoteka",
+    "error": "Greška pri učitavanju izveštaja"
+  },
+  "guides": {
+    "title": "",
+    "empty": {
+      "heading": "Još nema dostupnih priručnika",
+      "paragraph": "Priručnici i drugi resursi od vaše organizacije pri ruci."
+    },
+    "list": {
+      "heading": "Priručnik",
+      "guide": {
+        "backup_title": "Документ",
+        "created_on": "създадено на"
+      }
+    },
+    "options_sheet": {
+      "manage_my_polling_stations": "Upravljanje mojim biračkim mestima"
+    }
+  },
+  "inbox": {
+    "title": "",
+    "empty": {
+      "heading": "Još nema primljene poruke",
+      "paragraph": "Poruke i obaveštenja od vaše organizacije će se pojaviti ovde."
+    },
+    "banner": "Poruke iz {{ngoName}}",
+    "today": "Danas",
+    "your_organization": "vaša organizacija",
+    "menu": {
+      "manage_polling_stations": "Upravljanje mojim biračkim mestima"
+    }
+  },
+  "more": {
+    "title": "Još opcija",
+    "change-language": "Promenite jezik aplikacije",
+    "change-password": "Promenite loziku",
+    "terms": "Uslovi korišćenja",
+    "privacy_policy": "Politika privatnosti",
+    "about": "Više o Vote Monitor",
+    "app_version": "Vote Monitor verzija {{value}}",
+    "support": "Stupite u kontakt sa našim kol centrom",
+    "feedback": "Ponudite povratne informacije o aplikaciji.",
+    "logout": "Odjava",
+    "logged_in": "Prijavljeni ste kao {{user}}",
+    "warning_modal": {
+      "logout_offline": {
+        "title": "Upozorenje: Vaši podaci nisu sinhronizovani",
+        "description": "Trenutno ste van mreže. Ako se sada odjavite, svi obrasci, prilozi ili beleške koje ste popunili ili poslali van mreže biće izgubljeni.\n\nDa biste izbegli gubitak podataka, ponovo se povežite na internet pre nego što se odjavite..",
+        "cancel": "Otkaži",
+        "action": "Odjava"
+      },
+      "logout_online": {
+        "title": "Jeste li sigurni da se želite odjaviti?",
+        "cancel": "Otkaži",
+        "action": "Odjava"
+      }
+    },
+    "feedback_toast": {
+      "success": "Povratna informacija poslata!",
+      "offline": "Potrebna vam je internet veza da biste izvršili ovu radnju.",
+      "error": "Greška pri dodavanju povratnih informacija!",
+      "required": "Polje je obavezno"
+    },
+    "feedback_sheet": {
+      "heading": "Pošaljite nam povratne informacije",
+      "p1": "Podelite sa nama sve probleme na koje naiđete dok koristite aplikaciju ili predloge za poboljšanje Vote Monitor u budućnosti. Cenimo svako mišljenje!",
+      "placeholder": "Napišite svoje povratne informacije ovde...",
+      "cancel": "Otkaži",
+      "action": "Pošalji",
+      "input": {
+        "max": "Unos ne može preći preko {{value}} karaktera"
+      }
+    },
+    "options_sheet": {
+      "manage_my_polling_stations": "Upravljanje mojim biračkim mestima"
+    }
+  },
+  "change_password": {
+    "title": "Promeni lozinku",
+    "form": {
+      "current_password": {
+        "label": "Trenutna lozinka *",
+        "placeholder": "Unesite aktuelnu lozinku",
+        "required": "Lozinka je obavezna",
+        "credentials_error": "Trenutna lozinka je netačna"
+      },
+      "new_password": {
+        "label": "Nova lozinka *",
+        "placeholder": "Unesite novu lozinku",
+        "helper": "Lozinka mora sadržati najmanje 8 karaktera.",
+        "required": "Lozinka je obavezna"
+      },
+      "confirm_password": {
+        "label": "Potvrdite novu lozinku *",
+        "placeholder": "Potvrdite novu lozinku",
+        "helper": "Obe lozinku moraju biti identične.",
+        "required": "Lozinka je obavezna",
+        "no_match": "Lozinke se ne poklapaju."
+      },
+      "save": "Potvrdite promenu šifre"
+    },
+    "confirmation": {
+      "heading": "Lozinka je promenjena!",
+      "paragraph": "Vaša lozinka je uspešno promenjena.",
+      "confirm": "Nazad u aplikaciju"
+    },
+    "error": {
+      "offline": "Aplikacija je van mreže i ne može izvršiti zahtev"
+    }
+  },
+  "generic_error_screen": {
+    "paragraph1": "Došlo je do greške!",
+    "paragraph2": "Nismo uspeli da se oporavimo nakon ove greške. Molimo vas da proverite svoju internet vezu i ponovo pokrenete aplikaciju!",
+    "retry": "Pokušaj ponovo",
+    "logout": "Odjava"
+  },
+  "network_banner": {
+    "online": "Povezani ste sa internetom. Svi odgovori su poslati na server.",
+    "offline": "Režim rada van mreže. Odgovori se čuvaju lokalno.",
+    "more_details": "Više detalja",
+    "offline_warning": "Trenutno niste povezani na internet. Bez brige, vaši odgovori su sačuvani lokalno i biće sinhronizovani čim budete ponovo povezani na internet. Slobodno nastavite sa korišćenjem aplikacije."
+  },
+  "sync": {
+    "sync_data": "Sinhronizovanje oflajn podataka...",
+    "warning": "Molimo NEMOJTE ZATVORITI aplikaciju ili internet vezu ili će podaci biti izgubljeni.",
+    "files": "Učitavamo vaše datoteke, može potrajati..."
+  }
+}

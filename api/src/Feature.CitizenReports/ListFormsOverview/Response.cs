@@ -13,4 +13,6 @@ public class AggregatedFormOverview
     public int NumberOfFlaggedAnswers { get; set; }
     public int NumberOfNotes { get; set; }
     public int NumberOfMediaFiles { get; set; }
+    public TranslatedString FormName { get; set; }
+    public string FormDefaultLanguage { get; set; }
 }

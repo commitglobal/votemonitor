@@ -25,16 +25,17 @@ export interface CitizenReportByEntry {
   followUpStatus: FollowUpStatus;
 }
 
-export interface CitizenReportFormAggregated {
+export interface CitizenReportsAggregatedByForm {
   formId: string;
   formCode: string;
+  formName: TranslatedString;
+  formDefaultLanguage: string;
   defaultLanguage: string;
   numberOfSubmissions: number;
   numberOfFlaggedAnswers: number;
   numberOfNotes: number;
   numberOfMediaFiles: number;
 }
-
 
 export interface CitizenReport
   extends Omit<

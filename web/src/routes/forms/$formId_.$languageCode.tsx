@@ -1,7 +1,6 @@
-import FormDetails from '@/features/forms/components/FormDetails/FormDetails';
+import PreviewForm from '@/features/forms/components/PreviewForm/PreviewForm';
 import { formDetailsQueryOptions } from '@/features/forms/queries';
 import { createFileRoute } from '@tanstack/react-router';
-
 
 export const Route = createFileRoute('/forms/$formId/$languageCode')({
   component: Details,
@@ -9,13 +8,13 @@ export const Route = createFileRoute('/forms/$formId/$languageCode')({
     const electionRoundId = currentElectionRoundContext.getState().currentElectionRoundId;
 
     return queryClient.ensureQueryData(formDetailsQueryOptions(electionRoundId, formId));
-  }
+  },
 });
 
 function Details() {
   return (
     <div className='p-2'>
-      <FormDetails />
+      <PreviewForm />
     </div>
   );
 }

@@ -1,4 +1,4 @@
-﻿namespace Feature.MonitoringObservers.Add;
+﻿namespace Feature.MonitoringObservers.Assign;
 public record Response
 {
     public Guid Id { get; init; }

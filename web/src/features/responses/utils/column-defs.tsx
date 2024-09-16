@@ -13,7 +13,7 @@ import { FollowUpStatus } from '@/common/types';
 import { Button } from '@/components/ui/button';
 import type { RowData } from '@/components/ui/DataTable/DataTable';
 import type { ColumnDef } from '@tanstack/react-table';
-import { type CitizenReportByEntry } from '../models/citizen-report';
+import { CitizenReportsAggregatedByForm, type CitizenReportByEntry } from '../models/citizen-report';
 import { SubmissionType } from '../models/common';
 import {
   type FormSubmissionByEntry,
@@ -142,8 +142,8 @@ export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry &
         {row.original.followUpStatus === FollowUpStatus.NotApplicable
           ? 'Not Applicable'
           : row.original.followUpStatus === FollowUpStatus.NeedsFollowUp
-            ? 'Needs follow-up'
-            : 'Resolved'}
+          ? 'Needs follow-up'
+          : 'Resolved'}
       </Badge>
     ),
   },
@@ -154,7 +154,7 @@ export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry &
     cell: ({ row }) => (
       <div className='text-right'>
         <Link
-          className='hover:bg-purple-100 inline-flex h-6 w-6 rounded-full items-center justify-center'
+          className='inline-flex items-center justify-center w-6 h-6 rounded-full hover:bg-purple-100'
           params={{ submissionId: row.original.submissionId }}
           to='/responses/$submissionId'>
           <ChevronRightIcon className='w-4 text-purple-600' />
@@ -264,8 +264,8 @@ export const formSubmissionsForObserverColumnDefs: ColumnDef<FormSubmissionByEnt
         {row.original.followUpStatus === FollowUpStatus.NotApplicable
           ? 'Not Applicable'
           : row.original.followUpStatus === FollowUpStatus.NeedsFollowUp
-            ? 'Needs follow-up'
-            : 'Resolved'}
+          ? 'Needs follow-up'
+          : 'Resolved'}
       </Badge>
     ),
   },
@@ -276,7 +276,7 @@ export const formSubmissionsForObserverColumnDefs: ColumnDef<FormSubmissionByEnt
     cell: ({ row }) => (
       <div className='text-right'>
         <Link
-          className='hover:bg-purple-100 inline-flex h-6 w-6 rounded-full items-center justify-center'
+          className='inline-flex items-center justify-center w-6 h-6 rounded-full hover:bg-purple-100'
           params={{ submissionId: row.original.submissionId }}
           to='/responses/$submissionId'>
           <ChevronRightIcon className='w-4 text-purple-600' />
@@ -353,7 +353,7 @@ export const formSubmissionsByObserverColumnDefs: ColumnDef<FormSubmissionByObse
     cell: ({ row }) => (
       <div className='text-right'>
         <Link
-          className='hover:bg-purple-100 inline-flex h-6 w-6 rounded-full items-center justify-center'
+          className='inline-flex items-center justify-center w-6 h-6 rounded-full hover:bg-purple-100'
           params={{ monitoringObserverId: row.original.monitoringObserverId, tab: 'details' }}
           to='/monitoring-observers/view/$monitoringObserverId/$tab'
           target='_blank'
@@ -411,7 +411,7 @@ export const formSubmissionsByFormColumnDefs: ColumnDef<FormSubmissionByForm & R
     cell: ({ row }) => (
       <div className='text-right'>
         <Link
-          className='hover:bg-purple-100 inline-flex h-6 w-6 rounded-full items-center justify-center'
+          className='inline-flex items-center justify-center w-6 h-6 rounded-full hover:bg-purple-100'
           params={{ formId: row.original.formId }}
           to='/responses/$formId/aggregated'>
           <ChevronRightIcon className='w-4 text-purple-600' />
@@ -441,57 +441,78 @@ export const answerExtraInfoColumnDefs: ColumnDef<QuestionExtraData>[] = [
     accessorKey: 'preview',
     enableSorting: false,
     enableGlobalFilter: false,
-    cell: ({ row }) => <div>{row.original.type === "Note" ? row.original.text : <MediaFilesCell attachment={row.original} />}</div>,
+    cell: ({ row }) => (
+      <div>{row.original.type === 'Note' ? row.original.text : <MediaFilesCell attachment={row.original} />}</div>
+    ),
   },
 ];
 
 export const aggregatedAnswerExtraInfoColumnDefs: ColumnDef<QuestionExtraData>[] = [
   {
-    header: ({ column }) => <DataTableColumnHeader title='SubmissionID' column={column} />,
+    header: ({ column }) => <DataTableColumnHeader title='SubmissionID' column={column} className='w-[100px]' />,
     accessorKey: 'submissionId',
     enableSorting: true,
     enableGlobalFilter: true,
-    cell: ({ row }) => <div>
-      {
-        row.original.submissionType === SubmissionType.FormSubmission &&
-        <Link to='/responses/$submissionId' params={{ submissionId: row.original.submissionId }} preload='intent' target='_blank' >
-          <Button type='button' variant={'link'} className='text-purple-500'>
-            {row.original.submissionId.substring(0, 8)}
-            <ArrowTopRightOnSquareIcon className='w-4' />
-          </Button>
-        </Link>
-      }
-      {
-        row.original.submissionType === SubmissionType.CitizenReport &&
-        <Link to='/responses/citizen-reports/$citizenReportId' params={{ citizenReportId: row.original.submissionId }} preload='intent' target='_blank' >
-          <Button type='button' variant={'link'} className='text-purple-500'>
-            {row.original.submissionId.substring(0, 8)}
-            <ArrowTopRightOnSquareIcon className='w-4' />
-          </Button>
-        </Link>
-      }
-    </div>
+    cell: ({ row }) => (
+      <div className='w-[100px]'>
+        {row.original.submissionType === SubmissionType.CitizenReport ? (
+          <Link
+            to='/responses/citizen-reports/$citizenReportId'
+            params={{ citizenReportId: row.original.submissionId }}
+            preload='intent'
+            target='_blank'>
+            <Button type='button' variant={'link'} className='text-purple-500'>
+              {row.original.submissionId.substring(0, 8)}
+              <ArrowTopRightOnSquareIcon className='w-4' />
+            </Button>
+          </Link>
+        ) : (
+          <Link
+            to='/responses/$submissionId'
+            params={{ submissionId: row.original.submissionId }}
+            preload='intent'
+            target='_blank'>
+            <Button type='button' variant={'link'} className='text-purple-500'>
+              {row.original.submissionId.substring(0, 8)}
+              <ArrowTopRightOnSquareIcon className='w-4' />
+            </Button>
+          </Link>
+        )}
+      </div>
+    ),
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Type' column={column} />,
     accessorKey: 'type',
     enableSorting: true,
     enableGlobalFilter: true,
-    cell: ({ row }) => <div>{row.original.type}</div>,
+    cell: ({ row }) => <div className='max-w-[100px]'>{row.original.type}</div>,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Time submitted' column={column} />,
     accessorKey: 'timeSubmitted',
     enableSorting: true,
     enableGlobalFilter: true,
-    cell: ({ row }) => <div>{format(row.original.timeSubmitted, DateTimeFormat)}</div>,
+    cell: ({ row }) => <div className='max-w-[100px]'>{format(row.original.timeSubmitted, DateTimeFormat)}</div>,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Preview' column={column} />,
     accessorKey: 'preview',
     enableSorting: false,
     enableGlobalFilter: false,
-    cell: ({ row }) => <div>{row.original.type === "Note" ? row.original.text : <MediaFilesCell attachment={row.original} />}</div>,
+    cell: ({ row }) => {
+      return (
+        <div>
+          {row.original.type === 'Note' ? (
+            <div className='flex space-x-2 break-words min-w-[350px]'>
+              <span>{row.original.text}</span>
+            </div>
+          ) : (
+            <MediaFilesCell attachment={row.original} />
+          )}
+        </div>
+      );
+    },
   },
 ];
 
@@ -519,11 +540,7 @@ export const quickReportsColumnDefs: ColumnDef<QuickReport>[] = [
     accessorKey: 'quickReportLocationType',
     enableSorting: false,
     enableGlobalFilter: true,
-    cell: ({ row }) => (
-      <div>
-        {mapQuickReportLocationType(row.original.quickReportLocationType)}
-      </div>
-    ),
+    cell: ({ row }) => <div>{mapQuickReportLocationType(row.original.quickReportLocationType)}</div>,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Issue title' column={column} />,
@@ -610,8 +627,8 @@ export const quickReportsColumnDefs: ColumnDef<QuickReport>[] = [
         {row.original.followUpStatus === FollowUpStatus.NotApplicable
           ? 'Not Applicable'
           : row.original.followUpStatus === FollowUpStatus.NeedsFollowUp
-            ? 'Needs follow-up'
-            : 'Resolved'}
+          ? 'Needs follow-up'
+          : 'Resolved'}
       </Badge>
     ),
   },
@@ -623,7 +640,7 @@ export const quickReportsColumnDefs: ColumnDef<QuickReport>[] = [
     cell: ({ row }) => (
       <div className='text-right'>
         <Link
-          className='hover:bg-purple-100 inline-flex h-6 w-6 rounded-full items-center justify-center'
+          className='inline-flex items-center justify-center w-6 h-6 rounded-full hover:bg-purple-100'
           params={{ quickReportId: row.original.id }}
           to='/responses/quick-reports/$quickReportId'>
           <ChevronRightIcon className='w-4 text-purple-600' />
@@ -632,7 +649,6 @@ export const quickReportsColumnDefs: ColumnDef<QuickReport>[] = [
     ),
   },
 ];
-
 
 export const citizenReportsByEntryColumnDefs: ColumnDef<CitizenReportByEntry & RowData>[] = [
   {
@@ -688,8 +704,8 @@ export const citizenReportsByEntryColumnDefs: ColumnDef<CitizenReportByEntry & R
         {row.original.followUpStatus === FollowUpStatus.NotApplicable
           ? 'Not Applicable'
           : row.original.followUpStatus === FollowUpStatus.NeedsFollowUp
-            ? 'Needs follow-up'
-            : 'Resolved'}
+          ? 'Needs follow-up'
+          : 'Resolved'}
       </Badge>
     ),
   },
@@ -700,9 +716,64 @@ export const citizenReportsByEntryColumnDefs: ColumnDef<CitizenReportByEntry & R
     cell: ({ row }) => (
       <div className='text-right'>
         <Link
-          className='hover:bg-purple-100 inline-flex h-6 w-6 rounded-full items-center justify-center'
+          className='inline-flex items-center justify-center w-6 h-6 rounded-full hover:bg-purple-100'
           params={{ citizenReportId: row.original.id }}
           to='/responses/citizen-reports/$citizenReportId'>
+          <ChevronRightIcon className='w-4 text-purple-600' />
+        </Link>
+      </div>
+    ),
+  },
+];
+
+export const citizenReportsAggregatedByFormColumnDefs: ColumnDef<CitizenReportsAggregatedByForm & RowData>[] = [
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Form code' column={column} />,
+    accessorKey: 'formCode',
+    enableSorting: true,
+    enableGlobalFilter: true,
+  },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Form type' column={column} />,
+    accessorKey: 'formName',
+    enableSorting: true,
+    enableGlobalFilter: true,
+    cell: ({ row }) => <div className='break-words'>{row.original.formName[row.original.formDefaultLanguage]}</div>,
+  },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Responses' column={column} />,
+    accessorKey: 'numberOfSubmissions',
+    enableSorting: true,
+    enableGlobalFilter: true,
+  },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Flagged answers' column={column} />,
+    accessorKey: 'numberOfFlaggedAnswers',
+    enableSorting: true,
+    enableGlobalFilter: true,
+  },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Question notes' column={column} />,
+    accessorKey: 'numberOfNotes',
+    enableSorting: true,
+    enableGlobalFilter: true,
+  },
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Media files' column={column} />,
+    accessorKey: 'numberOfMediaFiles',
+    enableSorting: true,
+    enableGlobalFilter: true,
+  },
+  {
+    header: '',
+    accessorKey: 'action',
+    enableSorting: false,
+    cell: ({ row }) => (
+      <div className='text-right'>
+        <Link
+          className='inline-flex items-center justify-center w-6 h-6 rounded-full hover:bg-purple-100'
+          params={{ formId: row.original.formId }}
+          to='/responses/citizen-reports/$formId/aggregated'>
           <ChevronRightIcon className='w-4 text-purple-600' />
         </Link>
       </div>

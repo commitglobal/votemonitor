@@ -8,4 +8,5 @@ public record NotificationModel
     public required string Sender { get; init; }
     public required DateTime SentAt { get; init; }
     public required int NumberOfTargetedObservers { get; init; }
+    public required int NumberOfReadNotifications { get; init; }
 }

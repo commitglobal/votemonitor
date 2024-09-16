@@ -7,7 +7,8 @@ import { getColorsForSelectChart } from '../../utils/chart-colors';
 
 import type { ChartJSOrUndefined } from 'node_modules/react-chartjs-2/dist/types';
 import type { FunctionComponent } from '@/common/types';
-import type { MultiSelectQuestionAggregate } from '../../models/form-aggregated';
+import { MultiSelectQuestionAggregate } from '../../models/common';
+
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 type MultiSelectAggregateContentProps = {

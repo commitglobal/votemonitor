@@ -5,34 +5,39 @@ import { useMemo, useState } from 'react';
 import { ResponseExtraDataTable } from '../ResponseExtraDataTable/ResponseExtraDataTable';
 import { QuestionExtraData } from '../../types';
 import { aggregatedAnswerExtraInfoColumnDefs, answerExtraInfoColumnDefs } from '../../utils/column-defs';
-import { Note, Attachment } from '../../models/common';
+import { Note, Attachment, SubmissionType } from '../../models/common';
 
 type ResponseExtraDataSectionProps = {
+  submissionType: SubmissionType;
   aggregateDisplay: boolean;
   attachments: Attachment[];
   notes: Note[];
 };
 
-export function ResponseExtraDataSection({ attachments, notes, aggregateDisplay = false }: ResponseExtraDataSectionProps): FunctionComponent {
+export function ResponseExtraDataSection({
+  attachments,
+  notes,
+  aggregateDisplay = false,
+}: ResponseExtraDataSectionProps): FunctionComponent {
   const [expanded, setExpanded] = useState(false);
 
   const columns = useMemo(() => {
     if (aggregateDisplay) {
-      return aggregatedAnswerExtraInfoColumnDefs
+      return aggregatedAnswerExtraInfoColumnDefs;
     }
 
     return answerExtraInfoColumnDefs;
   }, [aggregateDisplay]);
 
   const extraData: QuestionExtraData[] = [
-    ...notes.map(n => ({ ...n, type: "Note" } as QuestionExtraData)),
-    ...attachments.map(n => ({ ...n, type: "Attachment" } as QuestionExtraData))
+    ...notes.map((n) => ({ ...n, type: 'Note' }) as QuestionExtraData),
+    ...attachments.map((a) => ({ ...a, type: 'Attachment' }) as QuestionExtraData),
   ];
 
   return (
     <>
       <Button
-        className='text-purple-500 hover:no-underline max-w-fit pl-0'
+        className='pl-0 text-purple-500 hover:no-underline max-w-fit'
         onClick={() => {
           setExpanded((prev) => !prev);
         }}

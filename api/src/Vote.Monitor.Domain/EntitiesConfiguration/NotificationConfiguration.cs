@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 using Vote.Monitor.Domain.Entities.NotificationAggregate;
 
 namespace Vote.Monitor.Domain.EntitiesConfiguration;
@@ -21,6 +22,10 @@ internal class NotificationConfiguration : IEntityTypeConfiguration<Notification
 
         builder
             .HasMany(x => x.TargetedObservers)
-            .WithMany();
+            .WithMany()
+            .UsingEntity<MonitoringObserverNotification>(
+                r => r.HasOne(x => x.MonitoringObserver).WithMany().HasForeignKey(e => e.MonitoringObserverId),
+                l => l.HasOne(x => x.Notification).WithMany().HasForeignKey(e => e.NotificationId),
+                j => j.Property(e => e.IsRead));
     }
 }

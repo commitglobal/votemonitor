@@ -35,11 +35,12 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) :
             N."Title",
             N."Body",
             U."FirstName" || ' ' || U."LastName" "Sender",
-            N."CreatedOn" "SentAt"
+            N."CreatedOn" "SentAt",
+            MON."IsRead"
         FROM
             "Observers" O
             INNER JOIN "MonitoringObservers" MO ON MO."ObserverId" = O."Id"
-            INNER JOIN "MonitoringObserverNotification" MON ON MON."TargetedObserversId" = MO."Id"
+            INNER JOIN "MonitoringObserverNotification" MON ON MON."MonitoringObserverId" = MO."Id"
             INNER JOIN "Notifications" N ON MON."NotificationId" = N."Id"
             INNER JOIN "AspNetUsers" U on U."Id" =  N."SenderId"
         WHERE

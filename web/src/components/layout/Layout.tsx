@@ -6,20 +6,29 @@ import BackButton from './Breadcrumbs/BackButton';
 interface LayoutProps {
   title: string;
   subtitle?: string;
-  backButton?: ReactNode;
+  enableBreadcrumbs?: boolean;
   breadcrumbs?: ReactNode;
+  backButton?: ReactNode;
   actions?: ReactNode;
   children: ReactNode;
 }
 
-const Layout = ({ title, subtitle, actions, backButton, breadcrumbs, children }: LayoutProps): FunctionComponent => {
+const Layout = ({
+  title,
+  subtitle,
+  actions,
+  backButton,
+  breadcrumbs,
+  children,
+  enableBreadcrumbs = true,
+}: LayoutProps): FunctionComponent => {
   return (
     <>
       <header className='container py-4'>
         <div className='flex flex-col gap-1 text-gray-400'>
-          {breadcrumbs || <Breadcrumbs />}
-          <h1 className='text-3xl font-bold tracking-tight text-gray-900 flex flex-row gap-3 items-center'>
-            {backButton || <BackButton />}
+          {enableBreadcrumbs && (breadcrumbs || <Breadcrumbs />)}
+          <h1 className='flex flex-row items-center gap-3 text-3xl font-bold tracking-tight text-gray-900'>
+            {enableBreadcrumbs && (backButton || <BackButton />)}
             {title}
           </h1>
           {subtitle ?? <h3 className='text-lg font-light'>{subtitle}</h3>}

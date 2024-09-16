@@ -9,7 +9,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
     {
         Get("/api/election-rounds/{electionRoundId}/notifications/{id}");
         DontAutoTag();
-        Options(x => x.WithTags("forms"));
+        Options(x => x.WithTags("notifications"));
     }
 
     public override async Task<Results<Ok<NotificationDetailedModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
@@ -26,14 +26,16 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
                     JSONB_AGG(
                         JSONB_BUILD_OBJECT(
                             'Id',
-                            "TargetedObserversId",
+                            "MonitoringObserverId",
                             'Name',
-                            MOU."FirstName" || ' ' || MOU."LastName"
+                            MOU."FirstName" || ' ' || MOU."LastName",
+                            'HasReadNotification',
+                            MON."IsRead"
                         )
                     )
                 FROM
                     "MonitoringObserverNotification" MON
-                    INNER JOIN "MonitoringObservers" MO ON MO."Id" = MON."TargetedObserversId"
+                    INNER JOIN "MonitoringObservers" MO ON MO."Id" = MON."MonitoringObserverId"
                     INNER JOIN "AspNetUsers" MOU ON MOU."Id" = MO."ObserverId"
                 WHERE
                     MON."NotificationId" = N."Id"

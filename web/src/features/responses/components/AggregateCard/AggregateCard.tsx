@@ -4,16 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Square2StackIcon } from '@heroicons/react/24/solid';
 import { useRef } from 'react';
 
-import {
-  BaseQuestionAggregate,
-  isDateAggregate,
-  isMultiSelectAggregate,
-  isNumberAggregate,
-  isRatingAggregate,
-  isSingleSelectAggregate,
-  isTextAggregate,
-  Responder,
-} from '../../models/form-aggregated';
+import { Responder } from '../../models/form-aggregated';
 import { DateAggregateContent } from '../DateAggregateContent/DateAggregateContent';
 import { MultiSelectAggregateContent } from '../MultiSelectAggregateContent/MultiSelectAggregateContent';
 import { NumberAggregateContent } from '../NumberAggregateContent/NumberAggregateContent';
@@ -23,29 +14,45 @@ import { SingleSelectAggregateContent } from '../SingleSelectAggregateContent/Si
 import { TextAggregateContent } from '../TextAggregateContent/TextAggregateContent';
 
 import type { FunctionComponent } from '@/common/types';
-import { useCurrentElectionRoundStore } from '@/context/election-round.store';
-import { formAggregatedDetailsQueryOptions, Route } from '@/routes/responses/$formId.aggregated';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import {
+  Attachment,
+  BaseQuestionAggregate,
+  isDateAggregate,
+  isMultiSelectAggregate,
+  isNumberAggregate,
+  isRatingAggregate,
+  isSingleSelectAggregate,
+  isTextAggregate,
+  Note,
+  SubmissionType,
+} from '../../models/common';
+
 type AggregateCardProps = {
+  submissionType: SubmissionType;
   aggregate: BaseQuestionAggregate;
   language: string;
-  responders: Record<string, Responder>;
+  responders?: Record<string, Responder>;
+  attachments: Attachment[];
+  notes: Note[];
 };
 
-export function AggregateCard({ aggregate, language, responders }: AggregateCardProps): FunctionComponent {
-  const { formId } = Route.useParams()
-  const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
-  const { data: formSubmission } = useSuspenseQuery(formAggregatedDetailsQueryOptions(currentElectionRoundId, formId));
-
-  const notes = formSubmission.notes.filter((note) => note.questionId === aggregate.questionId);
-  const attachments = formSubmission.attachments.filter((attachment) => attachment.questionId === aggregate.questionId);
+export function AggregateCard({
+  submissionType,
+  aggregate,
+  language,
+  attachments,
+  notes,
+  responders,
+}: AggregateCardProps): FunctionComponent {
+  const questionNotes = notes.filter((note) => note.questionId === aggregate.questionId);
+  const questionAttachments = attachments.filter((attachment) => attachment.questionId === aggregate.questionId);
 
   const chartRef = useRef(null);
 
   return (
-    <Card key={aggregate.questionId} className='max-w-4xl'>
+    <Card key={aggregate.questionId}>
       <CardHeader>
-        <CardTitle className='text-xl flex justify-between items-center'>
+        <CardTitle className='flex items-center justify-between text-xl gap-x-4'>
           {aggregate.question.code}. {aggregate.question.text[language]}
           {!isTextAggregate(aggregate) && !isNumberAggregate(aggregate) && (
             <Button
@@ -54,7 +61,7 @@ export function AggregateCard({ aggregate, language, responders }: AggregateCard
                 saveChart(chartRef, '');
               }}
               variant='outline'>
-              <Square2StackIcon className='h-4 w-4' /> Copy chart
+              <Square2StackIcon className='w-4 h-4' /> Copy chart
             </Button>
           )}
         </CardTitle>
@@ -76,10 +83,17 @@ export function AggregateCard({ aggregate, language, responders }: AggregateCard
           <SingleSelectAggregateContent ref={chartRef} aggregate={aggregate} language={language} />
         )}
 
-        {isTextAggregate(aggregate) && <TextAggregateContent aggregate={aggregate} responders={responders} />}
+        {isTextAggregate(aggregate) && (
+          <TextAggregateContent aggregate={aggregate} responders={responders} submissionType={submissionType} />
+        )}
 
         {(notes.length > 0 || attachments.length > 0) && (
-          <ResponseExtraDataSection attachments={attachments} notes={notes} aggregateDisplay={true} />
+          <ResponseExtraDataSection
+            attachments={questionAttachments}
+            notes={questionNotes}
+            aggregateDisplay={true}
+            submissionType={submissionType}
+          />
         )}
       </CardContent>
     </Card>
