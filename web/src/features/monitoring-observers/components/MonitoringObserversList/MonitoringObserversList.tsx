@@ -30,11 +30,11 @@ import { isQueryFiltered } from '@/lib/utils';
 import { queryClient } from '@/main';
 import { format } from 'date-fns';
 import { useMonitoringObserversTags } from '../../../../hooks/tags-queries';
+import { MonitoringObserversListFilters } from '../../filtering/MonitoringObserversListFilters';
 import { MonitoringObserver, MonitoringObserverStatus } from '../../models/monitoring-observer';
 import ImportMonitoringObserversDialog from '../MonitoringObserversList/ImportMonitoringObserversDialog';
 import ImportMonitoringObserversErrorsDialog from '../MonitoringObserversList/ImportMonitoringObserversErrorsDialog';
 import ConfirmResendInvitationDialog from './ConfirmResendInvitationDialog';
-import { MonitoringObserversListFilters } from './MonitoringObserversListFilters';
 
 type ListMonitoringObserverResponse = PageResponse<MonitoringObserver>;
 

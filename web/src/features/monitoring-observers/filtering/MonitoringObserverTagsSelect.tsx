@@ -5,22 +5,23 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { FILTER_KEY } from '@/features/filtering/filtering-enums';
+import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
 import { useMonitoringObserversTags } from '@/hooks/tags-queries';
 import { FC } from 'react';
-import { useFilteringContainer } from '../hooks/useFilteringContainer';
 
-export const ObserverTagsSelect: FC = () => {
+export const MonitoringObserverTagsSelect: FC = () => {
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
   const { data: tags } = useMonitoringObserversTags(currentElectionRoundId);
   const { queryParams, navigateHandler } = useFilteringContainer();
-  const currentTags = (queryParams as any)?.tags ?? [];
+  const currentTags = (queryParams as any)?.[FILTER_KEY.Tags] ?? [];
 
   const toggleTagsFilter = (tag: string) => {
     if (!currentTags.includes(tag)) return navigateHandler({ tags: [...currentTags, tag] });
 
     const filteredTags = currentTags.filter((tagText: string) => tagText !== tag);
 
-    return navigateHandler({ tags: filteredTags });
+    return navigateHandler({ [FILTER_KEY.Tags]: filteredTags });
   };
 
   return (

@@ -1,6 +1,7 @@
 import { FilterBadge } from '@/components/ui/badge';
 import { useNavigate } from '@tanstack/react-router';
 import { FC, useCallback } from 'react';
+import { FILTER_KEY, FILTER_LABEL } from '../filtering-enums';
 
 interface ActiveFilterProps {
   filterId: string;
@@ -12,10 +13,10 @@ type SearchParams = {
   [key: string]: any;
 };
 
-const HIDDEN_FILTERS = ['pageSize', 'pageNumber'];
+const HIDDEN_FILTERS = [FILTER_KEY.PageSize, FILTER_KEY.PageNumber];
 const FILTER_LABELS = new Map<string, string>([
-  ['status', 'Observer status'],
-  ['tags', 'Tags'],
+  [FILTER_KEY.MonitoringObserverStatus, FILTER_LABEL.MonitoringObserverStatus],
+  [FILTER_KEY.Tags, FILTER_LABEL.Tags],
 ]);
 
 const ActiveFilter: FC<ActiveFilterProps> = ({ filterId, value, isArray }) => {
