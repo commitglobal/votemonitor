@@ -8,6 +8,7 @@ public class Endpoint(VoteMonitorContext context, IMemoryCache cache) : Endpoint
     {
         Get("/api/election-rounds/{electionRoundId}/locations:fetchAll");
         DontAutoTag();
+        AllowAnonymous();
         Options(x => x.WithTags("locations", "mobile"));
         Description(x => x.Accepts<Request>());
         Summary(s =>
@@ -130,7 +131,6 @@ public class Endpoint(VoteMonitorContext context, IMemoryCache cache) : Endpoint
             result.Add(new LocationNode
             {
                 Id = ++id,
-                Name = string.Join(location.Level1, location.Level2,location.Level3,location.Level4,location.Level5 ),
                 ParentId = parentNode!.Id,
                 LocationId = location.Id
             });
