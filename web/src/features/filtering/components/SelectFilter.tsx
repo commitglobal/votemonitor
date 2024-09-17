@@ -1,19 +1,19 @@
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { FC } from 'react';
 
-export type GenericSelectFilterOption = {
+export type SelectFilterOption = {
   value: string;
   label: string;
 };
 
-interface GenericSelectFilterProps {
+interface SelectFilterProps {
   placeholder: string;
   value: string;
-  options: GenericSelectFilterOption[];
+  options: SelectFilterOption[];
   onChange: (value: string) => void;
 }
 
-export const GenericSelectFilter: FC<GenericSelectFilterProps> = (props) => {
+export const SelectFilter: FC<SelectFilterProps> = (props) => {
   const { placeholder, value, options, onChange } = props;
 
   const selectId = crypto.randomUUID();

@@ -1,10 +1,10 @@
 import { FILTER_KEY } from '@/features/filtering/filtering-enums';
 import { MonitoringObserverStatus } from '@/features/monitoring-observers/models/monitoring-observer';
 import { FC } from 'react';
-import { GenericSelectFilter, GenericSelectFilterOption } from '../../filtering/components/GenericSelectFilter';
+import { SelectFilter, SelectFilterOption } from '../../filtering/components/SelectFilter';
 import { useFilteringContainer } from '../../filtering/hooks/useFilteringContainer';
 
-const monitoringObserverStausOptions: GenericSelectFilterOption[] = [
+const monitoringObserverStausOptions: SelectFilterOption[] = [
   {
     value: MonitoringObserverStatus.Active,
     label: MonitoringObserverStatus.Active,
@@ -29,7 +29,7 @@ export const MonitoringObserverStatusSelect: FC = () => {
   };
 
   return (
-    <GenericSelectFilter
+    <SelectFilter
       value={(queryParams as any)[FILTER_KEY.MonitoringObserverStatus]}
       onChange={onStatusChange}
       placeholder='Observer status'

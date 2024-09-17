@@ -25,6 +25,7 @@ import { DateTimeFormat } from '@/common/formats';
 import { TableCellProps } from '@/components/ui/DataTable/DataTable';
 import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { FILTER_KEY } from '@/features/filtering/filtering-enums';
 import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
 import { isQueryFiltered } from '@/lib/utils';
 import { queryClient } from '@/main';
@@ -162,26 +163,20 @@ function MonitoringObserversList() {
         (queryParams as any).tags,
       ],
       queryFn: async () => {
-        const tags = new URLSearchParams();
-        tags.append('tags', 'west');
-        tags.append('tags', 'ios');
-
         const paramsObject: any = {
           PageNumber: params.pageNumber,
           PageSize: params.pageSize,
           SortColumnName: params.sortColumnName,
           SortOrder: params.sortOrder,
           searchText: searchText,
-          status: (queryParams as any).status,
-          tags: (queryParams as any).tags,
+          status: (queryParams as any)[FILTER_KEY.MonitoringObserverStatus],
+          tags: (queryParams as any)[FILTER_KEY.MonitoringObserverTags],
         };
 
         const tagString =
           (queryParams as any).tags == undefined
             ? ''
             : (queryParams as any).tags?.map((n: string) => `tags=${n}`).join('&');
-
-        //const tagString = (queryParams as any)?.tags?.length===0?.
 
         const response = await authApi.get<PageResponse<MonitoringObserver>>(
           `/election-rounds/${currentElectionRoundId}/monitoring-observers?${tagString ?? ''}`,

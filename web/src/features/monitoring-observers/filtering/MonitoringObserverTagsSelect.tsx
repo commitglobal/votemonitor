@@ -14,14 +14,14 @@ export const MonitoringObserverTagsSelect: FC = () => {
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
   const { data: tags } = useMonitoringObserversTags(currentElectionRoundId);
   const { queryParams, navigateHandler } = useFilteringContainer();
-  const currentTags = (queryParams as any)?.[FILTER_KEY.Tags] ?? [];
+  const currentTags = (queryParams as any)?.[FILTER_KEY.MonitoringObserverTags] ?? [];
 
   const toggleTagsFilter = (tag: string) => {
     if (!currentTags.includes(tag)) return navigateHandler({ tags: [...currentTags, tag] });
 
     const filteredTags = currentTags.filter((tagText: string) => tagText !== tag);
 
-    return navigateHandler({ [FILTER_KEY.Tags]: filteredTags });
+    return navigateHandler({ [FILTER_KEY.MonitoringObserverTags]: filteredTags });
   };
 
   return (

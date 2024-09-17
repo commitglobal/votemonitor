@@ -16,7 +16,7 @@ type SearchParams = {
 const HIDDEN_FILTERS = [FILTER_KEY.PageSize, FILTER_KEY.PageNumber];
 const FILTER_LABELS = new Map<string, string>([
   [FILTER_KEY.MonitoringObserverStatus, FILTER_LABEL.MonitoringObserverStatus],
-  [FILTER_KEY.Tags, FILTER_LABEL.Tags],
+  [FILTER_KEY.MonitoringObserverTags, FILTER_LABEL.MonitoringObserverTags],
 ]);
 
 const ActiveFilter: FC<ActiveFilterProps> = ({ filterId, value, isArray }) => {
