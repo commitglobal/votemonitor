@@ -5,9 +5,9 @@ import { Pie } from 'react-chartjs-2';
 
 import { getColorsForSelectChart } from '../../utils/chart-colors';
 
-import type { ChartJSOrUndefined } from 'node_modules/react-chartjs-2/dist/types';
 import type { FunctionComponent } from '@/common/types';
-import type { SingleSelectQuestionAggregate } from '../../models/form-aggregated';
+import type { ChartJSOrUndefined } from 'node_modules/react-chartjs-2/dist/types';
+import { SingleSelectQuestionAggregate } from '../../models/common';
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 type SingleSelectAggregateContentProps = {
@@ -18,7 +18,7 @@ type SingleSelectAggregateContentProps = {
 const SingleSelectAggregateContent = forwardRef<ChartJSOrUndefined<'pie', number[]>, SingleSelectAggregateContentProps>(
   ({ aggregate, language }, ref): FunctionComponent => {
     return (
-      <div className='h-96 grid grid-cols-2'>
+      <div className='grid grid-cols-2 h-96'>
         <Pie
           ref={ref}
           data={{

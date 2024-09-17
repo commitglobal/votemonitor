@@ -176,21 +176,6 @@ namespace Vote.Monitor.Domain.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("MonitoringObserverNotification", b =>
-                {
-                    b.Property<Guid>("NotificationId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("TargetedObserversId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("NotificationId", "TargetedObserversId");
-
-                    b.HasIndex("TargetedObserversId");
-
-                    b.ToTable("MonitoringObserverNotification");
-                });
-
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.ApplicationUserAggregate.ApplicationUser", b =>
                 {
                     b.Property<Guid>("Id")
@@ -5167,6 +5152,24 @@ namespace Vote.Monitor.Domain.Migrations
                     b.ToTable("Notes", (string)null);
                 });
 
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.NotificationAggregate.MonitoringObserverNotification", b =>
+                {
+                    b.Property<Guid>("MonitoringObserverId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("NotificationId")
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("MonitoringObserverId", "NotificationId");
+
+                    b.HasIndex("NotificationId");
+
+                    b.ToTable("MonitoringObserverNotification");
+                });
+
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.NotificationAggregate.Notification", b =>
                 {
                     b.Property<Guid>("Id")
@@ -5698,21 +5701,6 @@ namespace Vote.Monitor.Domain.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("MonitoringObserverNotification", b =>
-                {
-                    b.HasOne("Vote.Monitor.Domain.Entities.NotificationAggregate.Notification", null)
-                        .WithMany()
-                        .HasForeignKey("NotificationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Vote.Monitor.Domain.Entities.MonitoringObserverAggregate.MonitoringObserver", null)
-                        .WithMany()
-                        .HasForeignKey("TargetedObserversId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.ApplicationUserAggregate.ApplicationUser", b =>
                 {
                     b.OwnsOne("Vote.Monitor.Domain.Entities.ApplicationUserAggregate.UserPreferences", "Preferences", b1 =>
@@ -6045,6 +6033,25 @@ namespace Vote.Monitor.Domain.Migrations
                     b.Navigation("MonitoringObserver");
 
                     b.Navigation("PollingStation");
+                });
+
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.NotificationAggregate.MonitoringObserverNotification", b =>
+                {
+                    b.HasOne("Vote.Monitor.Domain.Entities.MonitoringObserverAggregate.MonitoringObserver", "MonitoringObserver")
+                        .WithMany()
+                        .HasForeignKey("MonitoringObserverId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Vote.Monitor.Domain.Entities.NotificationAggregate.Notification", "Notification")
+                        .WithMany()
+                        .HasForeignKey("NotificationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("MonitoringObserver");
+
+                    b.Navigation("Notification");
                 });
 
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.NotificationAggregate.Notification", b =>

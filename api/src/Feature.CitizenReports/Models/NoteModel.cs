@@ -4,6 +4,7 @@ namespace Feature.CitizenReports.Models;
 
 public record NoteModel
 {
+    public Guid SubmissionId { get; init; }
     public Guid QuestionId { get; init; }
     public string Text { get; init; }
     public DateTime TimeSubmitted { get; init; }
@@ -14,6 +15,7 @@ public record NoteModel
             ? null
             : new NoteModel
             {
+                SubmissionId = note.CitizenReportId,
                 QuestionId = note.QuestionId,
                 Text = note.Text,
                 TimeSubmitted = note.LastModifiedOn ?? note.CreatedOn

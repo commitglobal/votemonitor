@@ -1,0 +1,548 @@
+{
+  "common": {
+    "skip": "Mai departe",
+    "search": "Caută",
+    "loading": "Se încarcă...",
+    "status": {
+      "completed": "Completat",
+      "in_progress": "În desfășurare",
+      "not_started": "Neînceput"
+    },
+    "cancel": "Renunță",
+    "save": "Salvează",
+    "no_data": "Nu s-au găsit date.",
+    "select": "Selectează",
+    "done": "Finalizare"
+  },
+  "languages": {
+    "ro": "Română",
+    "en": "Engleză",
+    "pl": "Poloneză",
+    "bg": "Bulgară",
+    "sr": "Sârbă"
+  },
+  "onboarding": {
+    "language": {
+      "heading": "Alege limba dorită",
+      "description": "Aceasta va fi limba de afișare a aplicației și poate fi schimbată oricând din secțiunea 'Altele'. ",
+      "save": "Aplică selecția"
+    },
+    "polling_stations": {
+      "heading": "Monitorizează secții de votare",
+      "description": "și documentează în timp real întregul proces electoral, prin formulare configurate de organizația ta"
+    },
+    "forms": {
+      "heading": "Completează formulare",
+      "description": "și urmărește-le progresul în timpul fiecărei etape de observare"
+    },
+    "media": {
+      "heading": "Adaugă notițe sau fișiere media",
+      "description": "dacă observi nereguli, pentru a-ți susține răspunsurile",
+      "save": "Mergi la aplicație"
+    }
+  },
+  "login": {
+    "disclaimer": {
+      "paragraph1": "Te rugăm să reții că dacă nu ești acreditat/ă ca observator independent de către o organizație care monitorizează procesele electorale în țara ta, nu poți utiliza aplicația Vote Monitor.",
+      "paragraph2": "Te rugăm să consulți astfel de organizații pentru a afla ce pași trebuie să urmezi pentru a deveni observator electoral sau să ne contactezi pentru informații suplimentare la adresa",
+      "email": "info@commitglobal.org"
+    },
+    "heading": "Conectează-te",
+    "paragraph": "Te rugăm să folosești adresa de email cu care te-ai înregistrat ca observator.",
+    "form": {
+      "email": {
+        "label": "Email *",
+        "placeholder": "Email",
+        "required": "Email-ul este obligatoriu",
+        "pattern": "Formatul email-ului nu este valid"
+      },
+      "password": {
+        "label": "Parolă *",
+        "placeholder": "Parolă",
+        "required": "Parola este obligatorie"
+      },
+      "submit": {
+        "save": "Conectează-te",
+        "loading": "Conectează-te..."
+      },
+      "errors": {
+        "invalid_credentials": "Credențialele nu sunt corecte. Te rugăm să încerci din nou.",
+        "offline": "Pentru conectarea la aplicație este necesară o conexiune la internet."
+      }
+    },
+    "actions": {
+      "forgot_password": "Ți-ai uitat parola?"
+    },
+    "email_toast": "Ai copiat adresa de email în clipboard"
+  },
+  "forgot_password": {
+    "header": {
+      "title": "Resetare parolă"
+    },
+    "heading": "Ți-ai uitat parola?",
+    "paragraph": "Te rugăm să introduci adresa de email asociată contului tău și îți vom trimite un link pentru resetarea parolei",
+    "form": {
+      "email": {
+        "label": "Email *",
+        "placeholder": "Email",
+        "required": "Email-ul este obligatoriu",
+        "pattern": "Formatul email-ului nu este valid"
+      },
+      "submit": {
+        "loading": "Se trimite...",
+        "save": "Trimite"
+      },
+      "errors": {
+        "invalid_email": "Adresa de email introdusă nu este înregistrată în sistem. Te rugăm să încerci din nou."
+      }
+    },
+    "confirmation": {
+      "heading": "Email trimis",
+      "paragraph": "Verifică-ți email-ul și deschide link-ul primit pentru a continua. Dacă nu ai primit email-ul, verifică și în spam.",
+      "confirm": "Înapoi la pagina de login"
+    }
+  },
+  "about_app": {
+    "title": "Despre Vote Monitor",
+    "general": "Vote Monitor este un instrument digital dedicat observatorilor independenți și organizațiilor internaționale implicate în monitorizarea alegerilor. Vote Monitor este dezvoltată și administrată de Code for Romania/Commit Global",
+    "purpose": "Aplicația asistă observatorii independenți în monitorizarea secțiilor de votare și în documentarea procesului de votare, în timp real, pentru un anumit tur de alegeri. Toate datele colectate prin intermediul aplicației mobile sunt trimise în timp real către organizații, pentru a identifica posibile semnale de alarmă care ar putea indica fraudă sau alte nereguli. În cele din urmă, obiectivul nostru este de a oferi o imagine clară, simplă și realistă a desfășurării procesului de votare.",
+    "app_provides": {
+      "paragraph": "Aplicația oferă observatorilor:",
+      "item1": "O modalitate de a gestiona mai multe secții de votare vizitate",
+      "item2": "O metodă eficientă de monitorizare a proceselor electorale prin formulare create de organizații",
+      "item3": "Un mijloc de raportare rapidă a altor situații sau incidente problematice în afara formularelor standard"
+    },
+    "usage": "Aplicația Vote Monitor poate fi utilizată în orice tip de alegeri din orice țară din întreaga lume. Din 2016, a fost utilizată în mai multe tururi de alegeri în România și Polonia.",
+    "version": "Vote Monitor versiunea {{value}}"
+  },
+  "loading_screen": {
+    "heading": "Se încarcă...",
+    "paragraph": "Pregătim toate datele, te rugăm să aștepți!"
+  },
+  "tabs": {
+    "observation": "Observare",
+    "quick_report": "Raportare",
+    "guides": "Ghiduri",
+    "inbox": "Mesaje",
+    "more": "Altele"
+  },
+  "add_polling_station": {
+    "title": "Adaugă o secție de votare",
+    "progress": {
+      "location": "Este adaugată secția de votare din {{value}}"
+    },
+    "actions": {
+      "next_step": "Pasul următor",
+      "back": "Înapoi",
+      "finalize": "Finalizare"
+    },
+    "error": "Eroare la încărcarea secțiilor de votare!"
+  },
+  "observation": {
+    "title": "",
+    "no_election_round": {
+      "heading": "Momentan nu ai niciun eveniment electoral de observat",
+      "paragraph": "Vei putea folosi aplicația după ce organizația care te-a acreditat te alocă unui eveniment electoral."
+    },
+    "no_visited_polling_stations": {
+      "heading": "Momentan nu ai nicio secție de votare vizitată",
+      "paragraph": "Înainte de a completa primul formular configurează o secție de votare.",
+      "add": "Adaugă prima secție de votare"
+    },
+    "my_polling_stations": {
+      "heading": "Secțiile de votare vizitate",
+      "paragraph": "De aici poți schimba secția de votare dacă vrei să revezi sau să modifici răspunsurile formularelor completate.",
+      "add": "Adaugă o secție nouă de votare"
+    },
+    "polling_stations_information": {
+      "time_select": {
+        "not_defined": "Nedefinită",
+        "arrival_time": "Ora sosirii",
+        "departure_time": "Ora plecării",
+        "save": "Finalizare",
+        "error": {
+          "arrival_first": "Te rugăm să selectezi mai întâi ora sosirii.",
+          "later_departure": "Te rugăm să selectezi o oră de plecare ulterioară orei de sosire.",
+          "earlier_arrival": "Te rugăm să selectezi o oră de sosire anterioară orei de plecare.",
+          "server": "Nu am putut trimite informațiile către server."
+        }
+      },
+      "polling_station_form": {
+        "paragraph": "Răspunde la câteva întrebări rapide despre secția de votare.",
+        "form_details_button_label": "Informații despre secția de votare",
+        "number_of_questions": "{{value}} întrebări",
+        "answer_questions": "Răspunde la întrebări"
+      }
+    },
+    "forms": {
+      "heading": "Formulare",
+      "list": {
+        "empty": "Nu există date de afișat",
+        "error": {
+          "paragraph1": "Ups, ceva nu a mers bine!",
+          "paragraph2": "Nu am putut obține datele. Apasă pe butonul de mai jos pentru a încerca din nou!",
+          "retry": "Încearcă din nou"
+        }
+      },
+      "select_language_modal": {
+        "header": "Selectează limba formularului",
+        "helper": "Formularul selectat este disponibil în mai multe limbi. Te rugăm să alegi limba cu care dorești să continui",
+        "error": "Te rugăm să selectezi una dintre opțiuni înainte de a continua."
+      }
+    },
+    "options_menu": {
+      "manage_my_polling_stations": "Vezi secțiile de votare vizitate"
+    }
+  },
+  "polling_station_information_form": {
+    "title": "Informații despre secția de votare",
+    "submit": "Trimite răspunsuri",
+    "form": {
+      "max": "Câmpul nu poate depăși {{value}} caractere",
+      "placeholder": "Te rugăm să introduci un text..."
+    },
+    "menu": {
+      "clear": "Golește formularul (șterge toate răspunsurile)"
+    },
+    "warning_modal": {
+      "title": "Golește formularul cu informațiile secției de votare",
+      "description": "Această acțiune va șterge toate răspunsurile introduse până acum în acest formular. Pentru a evita orice pierdere neintenționată de date, te rugăm să verifici informațiile despre secția de votare înainte de a realiza această acțiune.",
+      "actions": {
+        "cancel": "Renunță",
+        "clear": "Golește formular"
+      }
+    }
+  },
+  "form_overview": {
+    "overview": {
+      "heading": "Prezentare generală a formularului",
+      "status": "Status formular",
+      "answered_questions": "Întrebări cu răspuns",
+      "resume": "Reia formularul",
+      "start_form": "Începe formular",
+      "progress": "progres"
+    },
+    "questions": {
+      "title": "Întrebări",
+      "not_answered": "Fără răspuns",
+      "answered": "Cu răspuns",
+      "no_notes": "Fără notițe atașate",
+      "notes": "Există notițe atașate"
+    },
+    "attachments": {
+      "notes": "{{count}} Notiță",
+      "media": "{{count}} Fișier(e) media"
+    },
+    "error": "Eroare la încărcarea datelor formularului!",
+    "menu": {
+      "clear": "Golește formularul (șterge toate răspunsurile)",
+      "change_language": "Schimbă limba formularului"
+    },
+    "clear_answers_modal": {
+      "title": "Golește formularul {{value}}",
+      "description": {
+        "p1": "Această acțiune va șterge toate răspunsurile introduse până acum pentru acest formular (inclusiv notițe și fișiere media). Toate întrebările își vor schimba statusul în 'Fără răspuns'.",
+        "p2": "Pentru a evita orice pierdere neintenționată de date, te rugăm să verifici formularul înainte de a realiza această acțiune."
+      },
+      "actions": {
+        "clear": "Golește formularul",
+        "cancel": "Renunță"
+      }
+    }
+  },
+  "polling_station_form_wizard": {
+    "progress_bar": {
+      "label": "Progresul formularului",
+      "clear_answer": "Șterge răspuns"
+    },
+    "form": {
+      "min": "Câmpul trebuie să aibă cel puțin {{value}} caractere",
+      "max": "Câmpul trebuie să aibă maximum {{value}} caractere",
+      "date_placeholder": "Te rugăm să introduci data",
+      "text_placeholder": "Te rugăm să introduci un text"
+    },
+    "attachments": {
+      "heading": "Fișiere media încărcate",
+      "loading": "Se adaugă atașamentul... ",
+      "error": "Eroare la încărcarea atașamentului.",
+      "add": "Adaugă notițe sau fișiere media",
+      "menu": {
+        "add_note": "Adaugă o notiță",
+        "load": "Încarcă din galerie",
+        "take_picture": "Fă o poză",
+        "record_video": "Înregistrează un video",
+        "upload_audio": "Încarcă un fișier audio"
+      }
+    },
+    "notes": {
+      "heading": "Notițe",
+      "add": {
+        "heading": "Adaugă o notiță",
+        "form": {
+          "input": {
+            "placeholder": "Adaugă orice notiță relevantă pentru această întrebare...",
+            "max": "Câmpul nu poate depăși 10,000 de caractere",
+            "required": "Acest câmp este obligatoriu"
+          }
+        }
+      },
+      "edit": {
+        "heading": "Editează notița",
+        "delete": "Șterge notița"
+      },
+      "delete": {
+        "title": "Șterge notița",
+        "description": "Această acțiune este ireversibilă. Odată ștearsă, o notiță nu poate fi recuperată.",
+        "actions": {
+          "cancel": "Renunță",
+          "delete": "Șterge"
+        }
+      }
+    },
+    "warning_modal": {
+      "question": {
+        "title": "Șterge răspunsul întrebării {{value}}",
+        "description": "Această acțiune presupune ștergerea inclusiv a informațiilor atașate (notițe, fișiere media sau audio). Întrebarea își va schimba statusul în 'Fără răspuns'. ",
+        "actions": {
+          "cancel": "Renunță",
+          "clear": "Șterge răspuns"
+        }
+      },
+      "attachment": {
+        "title": "Șterge fișier media",
+        "description": "Această acțiune este ireversibilă. Odată șters, un fișier media nu poate fi recuperat.",
+        "actions": {
+          "cancel": "Renunță",
+          "clear": "Șterge"
+        }
+      }
+    },
+    "error": "Eroare la încărcarea datelor întrebării!"
+  },
+  "manage_my_polling_stations": {
+    "empty": {
+      "title": "Momentan nu ai nicio secție de votare vizitată"
+    },
+    "general_text": "Vezi secțiile de votare vizitate",
+    "ps_card": {
+      "header": "Secția de votare #{{value}}",
+      "l1": "[Location L1]",
+      "l2": "[Location L2]",
+      "l3": "[Location L3]",
+      "l4": "[Location L4]",
+      "l5": "[Location L5]",
+      "street": "Strada",
+      "ps_number": "Numărul secției"
+    },
+    "warning_dialog": {
+      "title": "Șterge secția de votare #{{value}}",
+      "description": "Această acțiune va șterge secția de votare din lista de secții vizitate. O poți adăuga din nou reluând pașii din procesul de 'Adaugă o secție nouă de votare'",
+      "actions": {
+        "cancel": "Renunță",
+        "remove": "Șterge",
+        "loading": "Se încarcă"
+      }
+    },
+    "removal_unallowed_dialog": {
+      "title": "Ștergerea secției de votare #{{value}} nu este permisă",
+      "description": "Secția de votare nu poate fi ștearsă din listă deoarece conține date asociate (Informații despre secția de votare și sau Răspunsuri la formulare), care nu pot fi șterse de sistem în numele tău. Dacă dorești totuși să ștergi această secție, te rugăm să ștergi întâi manual răspunsurile de la formularele deja completate, apoi să încerci din nou această acțiune."
+    },
+    "delete_success": "Secția de votare a fost ștearsă cu succes!",
+    "delete_error": "Am întâmpinat o problemă la ștergerea secției de votare. Te rugăm să încerci din nou.",
+    "offline_error_toast_msg": "Ai nevoie de conexiune la internet pentru a face acestă acțiune."
+  },
+  "quick_report": {
+    "list": {
+      "title": "Raportare rapidă",
+      "heading": "Raportările mele",
+      "error": "Eroare la încărcarea raportărilor!",
+      "empty": "Din această secțiune poți raporta mai rapid organizației tale alte probleme sau nereguli care au sau nu legătură cu secțiile de votare vizitate.",
+      "add": "Raportează o problemă",
+      "no_files": "Niciun fișier atașat",
+      "attachment_one": "{{count}} fișiere atașate",
+      "attachment_other": "{{count}} fișiere atașate"
+    },
+    "options_menu": {
+      "manage_my_polling_stations": "Vezi secțiile de votare vizitate"
+    }
+  },
+  "report_new_issue": {
+    "title": "Raportează problemă nouă",
+    "media": {
+      "heading": "Fișiere media încărcate",
+      "add": "Adaugă fișiere media",
+      "error": "Eroare la încarcarea atașamentului",
+      "menu": {
+        "load": "Încarcă din galerie",
+        "take_picture": "Fă o poză",
+        "record_video": "Înregistrează un video",
+        "upload_audio": "Încarcă un fișier audio"
+      }
+    },
+    "form": {
+      "polling_station_id": {
+        "label": "Secția de votare*",
+        "placeholder": "Selectează secția de votare",
+        "extra": "Te rugăm să ne oferi câteva detalii de identificare ale secției de votare (precum adresă, nume, număr, etc.)",
+        "required": "Acest câmp este obligatoriu.",
+        "options": {
+          "other": "Altă secție de votare",
+          "not_related": "Nu are legătură cu vreo secție de votare"
+        }
+      },
+      "polling_station_details": {
+        "label": "Detaliile secției de votare *",
+        "placeholder": "Te rugăm să ne oferi câteva detalii de identificare ale secției de votare (precum adresă, nume, număr, etc.)",
+        "required": "Acest câmp este obligatoriu.",
+        "max": "Câmpul nu poate depăși {{value}} caractere"
+      },
+      "issue_title": {
+        "label": "Titlul problemei*",
+        "placeholder": "Scrieți un titlu pentru această problemă...",
+        "required": "Titlul este obligatoriu",
+        "max": "Câmpul nu poate depăși {{value}} caractere"
+      },
+      "issue_description": {
+        "label": "Descriere *",
+        "placeholder": "Descrie aici problema sau situația mai pe larg...",
+        "required": "Descrierea este obligatorie",
+        "max": "Câmpul nu poate depăși {{value}} caractere"
+      },
+      "submit": "Trimite problema",
+      "clear": "Șterge",
+      "loading": "Se procesează...",
+      "error": "Eroare la încărcarea raportării"
+    }
+  },
+  "report_details": {
+    "title": "",
+    "uploaded_media": "Fișiere media încărcate",
+    "no_files": "Niciun fișier atașat",
+    "error": "Eroare la încărcarea raportării"
+  },
+  "guides": {
+    "title": "",
+    "empty": {
+      "heading": "Momentan nu ai niciun ghid de citit ",
+      "paragraph": "Aici vei găsi la îndemână ghiduri și resurse din partea organizației tale. "
+    },
+    "list": {
+      "heading": "Ghiduri",
+      "guide": {
+        "backup_title": "Document",
+        "created_on": "Creat la"
+      }
+    },
+    "options_sheet": {
+      "manage_my_polling_stations": "Vezi secțiile de votare vizitate"
+    }
+  },
+  "inbox": {
+    "title": "",
+    "empty": {
+      "heading": "Momentan nu ai primit niciun mesaj",
+      "paragraph": "Aici vor apărea mesaje și alerte din partea organizației tale."
+    },
+    "banner": "Mesaje de la {{ngoName}}",
+    "today": "Astăzi",
+    "your_organization": "organizația ta",
+    "menu": {
+      "manage_polling_stations": "Vezi secțiile de votare vizitate"
+    }
+  },
+  "more": {
+    "title": "Altele",
+    "change-language": "Schimbă limba aplicației",
+    "change-password": "Schimbă parola",
+    "terms": "Termeni și Condiții",
+    "privacy_policy": "Politica de Confidențialitate",
+    "about": "Despre Vote Monitor",
+    "app_version": "Vote Monitor versiunea {{value}}",
+    "support": "Sună la call center",
+    "feedback": "Trimite-ne feedback-ul tău",
+    "logout": "Deconectează-te",
+    "logged_in": "Conectat ca {{user}}",
+    "warning_modal": {
+      "logout_offline": {
+        "title": "Atenție: Ai date nesincronizate",
+        "description": "Momentan nu ai conexiune la internet. Dacă te deconectezi acum, toate formularele, atașamentele sau notițele pe care le-ai completat sau încărcat fără conexiune se vor pierde.\n\nPentru a evita pierderea datelor, te rugăm să te reconectezi la internet înainte de deconectarea din aplicație.",
+        "cancel": "Renunță",
+        "action": "Deconectează-te"
+      },
+      "logout_online": {
+        "title": "Ești sigur că vrei să părăsești aplicația?",
+        "cancel": "Renunță",
+        "action": "Deconectează-te"
+      }
+    },
+    "feedback_toast": {
+      "success": "Feedback-ul a fost trimis!",
+      "offline": "Ai nevoie de conexiune la internet pentru a face acestă acțiune.",
+      "error": "Am întâmpinat o eroare la adaugarea feedback-ului!",
+      "required": "Acest câmp este obligatoriu."
+    },
+    "feedback_sheet": {
+      "heading": "Trimite-ne feedback-ul tău",
+      "p1": "Te rugăm să ne spui despre orice problemă pe care ai întâlnit-o în funcționarea aplicației sau orice sugestie pe care dorești să o împărtășești pentru a îmbunătăți Vote Monitor pe viitor. Apreciem orice feedback!",
+      "placeholder": "Scrie feedback-ul tău aici...",
+      "cancel": "Renunță",
+      "action": "Trimite",
+      "input": {
+        "max": "Câmpul nu poate depăși {{value}} caractere"
+      }
+    },
+    "options_sheet": {
+      "manage_my_polling_stations": "Vezi secțiile de votare vizitate"
+    }
+  },
+  "change_password": {
+    "title": "Schimbă parola",
+    "form": {
+      "current_password": {
+        "label": "Parola curentă *",
+        "placeholder": "Te rugăm să introduci parola curentă",
+        "required": "Parola este obligatorie",
+        "credentials_error": "Parola curentă este incorectă"
+      },
+      "new_password": {
+        "label": "Parola nouă *",
+        "placeholder": "Te rugăm să introduci parola nouă",
+        "helper": "Parola trebuie să conțină cel puțin 8 caractere",
+        "required": "Parola este obligatorie"
+      },
+      "confirm_password": {
+        "label": "Confirmă parola nouă *",
+        "placeholder": "Confirmă parola nouă",
+        "helper": "Parolele trebuie să coincidă",
+        "required": "Parola este obligatorie",
+        "no_match": "Parolele nu coincid"
+      },
+      "save": "Salvează parola nouă"
+    },
+    "confirmation": {
+      "heading": "Parolă schimbată!",
+      "paragraph": "Parola ta a fost schimbată cu succes!",
+      "confirm": "Înapoi la aplicație"
+    },
+    "error": {
+      "offline": "Aplicația este offline și nu poate îndeplini solicitarea"
+    }
+  },
+  "generic_error_screen": {
+    "paragraph1": "Ups, ceva nu a mers bine!",
+    "paragraph2": "Nu am putut recupera după această eroare. Te rugăm să verifici conexiunea la internet și să repornești aplicația!",
+    "retry": "Încearcă din nou",
+    "logout": "Deconectează-te"
+  },
+  "network_banner": {
+    "online": "Aplicația este online. Toate răspunsurile au fost trimise către server.",
+    "offline": "Fără conexiune la internet. Răspunsurile se vor salva local.",
+    "more_details": "Mai multe detalii",
+    "offline_warning": "Se pare că nu ai conexiune la internet în acest moment. Nu îți face griji, răspunsurile tale sunt stocate în siguranță local și se vor sincroniza cu serverele noastre odată ce revine conexiunea la internet. Poți continua să completezi formulare sau să trimiți alte raportări."
+  },
+  "sync": {
+    "sync_data": "Se sincronizează datele offline...",
+    "warning": "Te rugăm să NU ÎNCHIZI aplicația sau conexiunea la internet sau datele se vor pierde.",
+    "files": "Încărcăm fișierele tale, poate dura ceva timp..."
+  }
+}
