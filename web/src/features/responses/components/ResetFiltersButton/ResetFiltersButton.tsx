@@ -1,7 +1,7 @@
-import { useNavigate } from '@tanstack/react-router';
+import { useSetPrevSearch } from '@/common/prev-search-store';
 import type { FunctionComponent } from '@/common/types';
 import { Button } from '@/components/ui/button';
-import { useSetPrevSearch } from '@/common/prev-search-store';
+import { useNavigate } from '@tanstack/react-router';
 
 type ResetFiltersButtonProps = {
   disabled: boolean;
