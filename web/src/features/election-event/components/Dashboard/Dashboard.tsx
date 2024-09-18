@@ -5,10 +5,10 @@ import FormsDashboard from '@/features/forms/components/Dashboard/Dashboard';
 import PollingStationsDashboard from '@/features/polling-stations/components/Dashboard/Dashboard';
 import { getRouteApi } from '@tanstack/react-router';
 import { ReactElement, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useElectionRoundDetails } from '../../hooks/election-event-hooks';
 import ElectionEventDetails from '../ElectionEventDetails/ElectionEventDetails';
 import ObserversGuides from '../ObserversGuides/ObserversGuides';
-import { useTranslation } from 'react-i18next';
 
 const routeApi = getRouteApi('/election-event/$tab');
 
@@ -16,7 +16,7 @@ export default function ElectionEventDashboard(): ReactElement {
   const { t } = useTranslation();
   const { tab } = routeApi.useParams();
   const [currentTab, setCurrentTab] = useState(tab);
-  const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
+  const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
 
   const navigate = routeApi.useNavigate();
 
@@ -30,6 +30,7 @@ export default function ElectionEventDashboard(): ReactElement {
   }
   const { data: electionEvent } = useElectionRoundDetails(currentElectionRoundId);
 
+
   return (
     <Layout title={electionEvent?.title ?? ''} breadcrumbs={<></>} backButton={<></>}>
       <Tabs defaultValue='event-details' value={currentTab} onValueChange={handleTabChange}>
@@ -40,10 +41,18 @@ export default function ElectionEventDashboard(): ReactElement {
           <TabsTrigger value='observer-forms'>{t('electionEvent.observerForms.tabTitle')}</TabsTrigger>
         </TabsList>
 
-        <TabsContent value='event-details'><ElectionEventDetails /></TabsContent>
-        <TabsContent value='polling-stations'><PollingStationsDashboard /></TabsContent>
-        <TabsContent value='observer-guides'><ObserversGuides /></TabsContent>
-        <TabsContent value='observer-forms'><FormsDashboard /></TabsContent>
+        <TabsContent value='event-details'>
+          <ElectionEventDetails />
+        </TabsContent>
+        <TabsContent value='polling-stations'>
+          <PollingStationsDashboard />
+        </TabsContent>
+        <TabsContent value='observer-guides'>
+          <ObserversGuides />
+        </TabsContent>
+        <TabsContent value='observer-forms'>
+          <FormsDashboard />
+        </TabsContent>
       </Tabs>
     </Layout>
   );

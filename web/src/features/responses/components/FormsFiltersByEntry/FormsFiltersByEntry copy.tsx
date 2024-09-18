@@ -3,17 +3,13 @@ import { FollowUpStatus, FunctionComponent, ZFormType } from '@/common/types';
 import { PollingStationsFilters } from '@/components/PollingStationsFilters/PollingStationsFilters';
 import { FilterBadge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { FilteringContainer } from '@/features/filtering/components/FilteringContainer';
 import { mapFormType } from '@/lib/utils';
 import { Route } from '@/routes/responses';
 import { useNavigate } from '@tanstack/react-router';
 import { useCallback } from 'react';
-import { ResponseFormFlaggedAnswersFilter } from '../../filtering/ResponseFormFlaggedAnswersFilter';
-import { ResponseFormTypeFilter } from '../../filtering/ResponseFormTypeFilter';
 import type { FormSubmissionsSearchParams } from '../../models/search-params';
 import { mapFollowUpStatus } from '../../utils/helpers';
 import { ResetFiltersButton } from '../ResetFiltersButton/ResetFiltersButton';
-import { ResponseFormLanguageFilter } from '../../filtering/ResponseFormLanguageFilter';
 
 export function FormsFiltersByEntry(): FunctionComponent {
   const navigate = useNavigate({ from: '/responses/' });
@@ -48,14 +44,6 @@ export function FormsFiltersByEntry(): FunctionComponent {
   );
 
   const isFiltered = Object.keys(search).some((key) => key !== 'tab' && key !== 'viewBy');
-
-  return (
-    <FilteringContainer>
-      <ResponseFormTypeFilter />
-      <ResponseFormFlaggedAnswersFilter />
-      <ResponseFormLanguageFilter />
-    </FilteringContainer>
-  );
 
   return (
     <>

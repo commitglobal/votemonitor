@@ -13,10 +13,11 @@ type SearchParams = {
   [key: string]: any;
 };
 
-const HIDDEN_FILTERS = [FILTER_KEY.PageSize, FILTER_KEY.PageNumber];
+const HIDDEN_FILTERS = [FILTER_KEY.PageSize, FILTER_KEY.PageNumber, FILTER_KEY.ViewBy];
 const FILTER_LABELS = new Map<string, string>([
   [FILTER_KEY.MonitoringObserverStatus, FILTER_LABEL.MonitoringObserverStatus],
   [FILTER_KEY.MonitoringObserverTags, FILTER_LABEL.MonitoringObserverTags],
+  [FILTER_KEY.FormTypeFilter, FILTER_LABEL.FormTypeFilter],
 ]);
 
 const ActiveFilter: FC<ActiveFilterProps> = ({ filterId, value, isArray }) => {

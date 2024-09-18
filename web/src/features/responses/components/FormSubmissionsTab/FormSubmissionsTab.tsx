@@ -110,11 +110,11 @@ export default function FormSubmissionsTab(): FunctionComponent {
         <Separator />
 
         {isFiltering && (
-          <div className='grid items-center grid-cols-6 gap-4'>
+          <>
             {byFilter === 'byEntry' && <FormsFiltersByEntry />}
 
             {byFilter === 'byObserver' && <FormsFiltersByObserver />}
-          </div>
+          </>
         )}
       </CardHeader>
 
