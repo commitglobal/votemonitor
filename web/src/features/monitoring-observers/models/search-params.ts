@@ -9,6 +9,7 @@ export const PushMessageTargetedObserversSearchParamsSchema = z.object({
   level3Filter: z.string().catch('').optional(),
   level4Filter: z.string().catch('').optional(),
   level5Filter: z.string().catch('').optional(),
+  pollingStationNumberFilter: z.string().catch('').optional(),
   sortColumnName: z.string().catch('observerName').optional(),
   tagsFilter: z.array(z.string()).optional().catch([]).optional(),
   pageSize: z.number().catch(25).default(25).optional(),
