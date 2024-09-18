@@ -8,6 +8,7 @@ public sealed class ExportedDataType : SmartEnum<ExportedDataType, string>
     public static readonly ExportedDataType QuickReports = new(nameof(QuickReports), nameof(QuickReports));
     public static readonly ExportedDataType PollingStations = new(nameof(PollingStations), nameof(PollingStations));
     public static readonly ExportedDataType CitizenReports = new(nameof(CitizenReports), nameof(CitizenReports));
+    public static readonly ExportedDataType Locations = new(nameof(Locations), nameof(Locations));
 
     /// <summary>Gets an item associated with the specified value. Parses SmartEnum when used as query params</summary>
     /// <see href="https://github.com/ardalis/SmartEnum/issues/410#issuecomment-1686057067">this issue</see>

@@ -117,7 +117,7 @@ public class ObserverImportService(
 
                     var email = emailFactory.GenerateEmail(EmailTemplateType.InvitationNewUser,
                         invitationNewUserEmailProps);
-                    jobService.SendEmail(observer.Email, email.Subject, email.Body);
+                    jobService.EnqueueSendEmail(observer.Email, email.Subject, email.Body);
                 }
                 else
                 {
@@ -132,7 +132,7 @@ public class ObserverImportService(
 
                     var email = emailFactory.GenerateEmail(EmailTemplateType.InvitationExistingUser,
                         invitationExistingUserEmailProps);
-                    jobService.SendEmail(observer.Email, email.Subject, email.Body);
+                    jobService.EnqueueSendEmail(observer.Email, email.Subject, email.Body);
                 }
             }
             else
@@ -162,7 +162,7 @@ public class ObserverImportService(
                     ElectionRoundDetails: electionRoundName);
                 var email = emailFactory.GenerateEmail(EmailTemplateType.InvitationNewUser,
                     invitationNewUserEmailProps);
-                jobService.SendEmail(observer.Email, email.Subject, email.Body);
+                jobService.EnqueueSendEmail(observer.Email, email.Subject, email.Body);
             }
         }
 

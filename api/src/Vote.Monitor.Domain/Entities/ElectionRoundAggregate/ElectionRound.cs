@@ -22,6 +22,7 @@ public class ElectionRound : AuditableBaseEntity, IAggregateRoot
 
     public virtual IReadOnlyList<MonitoringNgo> MonitoringNgos => _monitoringNgos.ToList().AsReadOnly();
     public Guid PollingStationsVersion { get; private set; }
+    public Guid LocationsVersion { get; private set; }
 
     public bool CitizenReportingEnabled { get; private set; }
     public Guid? MonitoringNgoForCitizenReportingId { get; private set; }
@@ -38,6 +39,7 @@ public class ElectionRound : AuditableBaseEntity, IAggregateRoot
         CountryId = countryId;
         Status = ElectionRoundStatus.NotStarted;
         PollingStationsVersion = Guid.NewGuid();
+        LocationsVersion = Guid.NewGuid();
     }
 
     internal ElectionRound(Guid id,
@@ -100,6 +102,10 @@ public class ElectionRound : AuditableBaseEntity, IAggregateRoot
     }
 
     public void UpdatePollingStationsVersion()
+    {
+        PollingStationsVersion = Guid.NewGuid();
+    }
+    public void UpdateLocationsVersion()
     {
         PollingStationsVersion = Guid.NewGuid();
     }

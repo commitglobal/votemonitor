@@ -41,10 +41,10 @@ public static class CoreServicesInstaller
                     .UseSimpleAssemblyNameTypeSerializer()
                     .UseRecommendedSerializerSettings()
                     .UsePostgreSqlStorage(c =>
-                        c.UseNpgsqlConnection(configuration.GetNpgsqlConnectionString("HangfireConnectionConfig")), new PostgreSqlStorageOptions { PrepareSchemaIfNecessary = false });
+                            c.UseNpgsqlConnection(configuration.GetNpgsqlConnectionString("HangfireConnectionConfig")),
+                        new PostgreSqlStorageOptions { PrepareSchemaIfNecessary = false });
 
                 config.UseSerilogLogProvider();
-
             });
 
             services.AddTransient<IJobService, HangfireJobService>();
@@ -61,21 +61,28 @@ public static class CoreServicesInstaller
 
     internal class NoopJobService : IJobService
     {
-        public void SendEmail(string to, string subject, string body)
+        public void EnqueueSendEmail(string to, string subject, string body)
         {
         }
 
-        public void ExportFormSubmissions(Guid electionRoundId, Guid ngoId, Guid exportedDataId)
+        public void EnqueueExportFormSubmissions(Guid electionRoundId, Guid ngoId, Guid exportedDataId)
         {
         }
 
-        public void ExportQuickReportsSubmissions(Guid electionRoundId, Guid ngoId, Guid exportedDataId)
+        public void EnqueueExportQuickReportsSubmissions(Guid electionRoundId, Guid ngoId, Guid exportedDataId)
         {
         }
 
-        public void ExportPollingStations(Guid electionRoundId, Guid exportedDataId)
+        public void EnqueueExportPollingStations(Guid electionRoundId, Guid exportedDataId)
+        {
+        }
+
+        public void EnqueueExportCitizenReports(Guid electionRoundId, Guid ngoId, Guid exportedDataId)
+        {
+        }
+
+        public void EnqueueExportLocations(Guid electionRoundId, Guid exportedDataId)
         {
         }
     }
-
 }

@@ -8,5 +8,6 @@ public class Request
 
     [FromClaim(ApplicationClaimTypes.NgoId)]
     public Guid NgoId { get; set; }
+
     public Guid CitizenReportId { get; set; }
 }

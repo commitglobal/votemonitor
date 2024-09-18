@@ -66,6 +66,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
                  AND (@pollingStationNumber IS NULL OR ps."Number" = @pollingStationNumber)
                  AND (@hasFlaggedAnswers is NULL OR (fs."NumberOfFlaggedAnswers" = 0 AND @hasFlaggedAnswers = false) OR ("NumberOfFlaggedAnswers" > 0 AND @hasFlaggedAnswers = true))
                  AND (@followUpStatus is NULL OR fs."FollowUpStatus" = @followUpStatus)
+                 AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR mo."Tags" && @tagsFilter)
         ) c;
 
         WITH submissions AS
@@ -75,7 +76,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
                     psi."PollingStationId",
                     psi."MonitoringObserverId",
                     psi."NumberOfQuestionsAnswered",
-                    0 AS "NumberOfFlaggedAnswers",
+                    psi."NumberOfFlaggedAnswers",
                     0 AS "MediaFilesCount",
                     0 AS "NotesCount",
                     COALESCE(psi."LastModifiedOn", psi."CreatedOn") "TimeSubmitted",
@@ -154,6 +155,8 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
             AND (@pollingStationNumber IS NULL OR ps."Number" = @pollingStationNumber)
             AND (@hasFlaggedAnswers is NULL OR ("NumberOfFlaggedAnswers" = 0 AND @hasFlaggedAnswers = false) OR ("NumberOfFlaggedAnswers" > 0 AND @hasFlaggedAnswers = true))
             AND (@followUpStatus is NULL OR "FollowUpStatus" = @followUpStatus)
+            AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR mo."Tags" && @tagsFilter)
+        
         ORDER BY
               CASE WHEN @sortExpression = 'TimeSubmitted ASC' THEN s."TimeSubmitted" END ASC,
               CASE WHEN @sortExpression = 'TimeSubmitted DESC' THEN s."TimeSubmitted" END DESC,
@@ -226,6 +229,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
             pollingStationNumber = req.PollingStationNumberFilter,
             hasFlaggedAnswers = req.HasFlaggedAnswers,
             followUpStatus = req.FollowUpStatus?.ToString(),
+            tagsFilter = req.TagsFilter ?? [],
             sortExpression = GetSortExpression(req.SortColumnName, req.IsAscendingSorting)
         };
 

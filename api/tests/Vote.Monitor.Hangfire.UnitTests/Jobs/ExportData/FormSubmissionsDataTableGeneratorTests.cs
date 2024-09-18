@@ -4,6 +4,8 @@ using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Domain.Entities.FormBase.Questions;
 using Vote.Monitor.Hangfire.Jobs.Export.FormSubmissions;
 using Vote.Monitor.Hangfire.Jobs.Export.FormSubmissions.ReadModels;
+using Vote.Monitor.Hangfire.Models;
+using Vote.Monitor.Hangfire.UnitTests.Jobs.ExportData.Fakes;
 
 namespace Vote.Monitor.Hangfire.UnitTests.Jobs.ExportData;
 
@@ -70,30 +72,42 @@ public class FormSubmissionsDataTableGeneratorTests
 
     private static readonly SelectOption[] _selectOptions =
     [
-        SelectOption.Create(_option1Id, _option1Text, false, false),
-        SelectOption.Create(_option2Id, _option2Text, false, false),
+        SelectOption.Create(_option1Id, _option1Text),
+        SelectOption.Create(_option2Id, _option2Text),
         SelectOption.Create(_option3Id, _option3Text, false, true),
-        SelectOption.Create(_option4Id, _option4Text, true, false)
+        SelectOption.Create(_option4Id, _option4Text, true)
     ];
 
 
     private static readonly Guid _textQuestionId = Guid.NewGuid();
-    private static readonly TextQuestion _textQuestion = TextQuestion.Create(_textQuestionId, TextQuestionCode, _questionText);
+
+    private static readonly TextQuestion _textQuestion =
+        TextQuestion.Create(_textQuestionId, TextQuestionCode, _questionText);
 
     private static readonly Guid _numberQuestionId = Guid.NewGuid();
-    private static readonly NumberQuestion _numberQuestion = NumberQuestion.Create(_numberQuestionId, NumberQuestionCode, _questionText);
+
+    private static readonly NumberQuestion _numberQuestion =
+        NumberQuestion.Create(_numberQuestionId, NumberQuestionCode, _questionText);
 
     private static readonly Guid _dateQuestionId = Guid.NewGuid();
-    private static readonly DateQuestion _dateQuestion = DateQuestion.Create(_dateQuestionId, DateQuestionCode, _questionText);
+
+    private static readonly DateQuestion _dateQuestion =
+        DateQuestion.Create(_dateQuestionId, DateQuestionCode, _questionText);
 
     private static readonly Guid _ratingQuestionId = Guid.NewGuid();
-    private static readonly RatingQuestion _ratingQuestion = RatingQuestion.Create(_ratingQuestionId, RatingQuestionCode, _questionText, RatingScale.OneTo10);
+
+    private static readonly RatingQuestion _ratingQuestion =
+        RatingQuestion.Create(_ratingQuestionId, RatingQuestionCode, _questionText, RatingScale.OneTo10);
 
     private static readonly Guid _singleSelectQuestionId = Guid.NewGuid();
-    private static readonly SingleSelectQuestion _singleSelectQuestion = SingleSelectQuestion.Create(_singleSelectQuestionId, SingleSelectQuestionCode, _questionText, _selectOptions);
+
+    private static readonly SingleSelectQuestion _singleSelectQuestion =
+        SingleSelectQuestion.Create(_singleSelectQuestionId, SingleSelectQuestionCode, _questionText, _selectOptions);
 
     private static readonly Guid _multiSelectQuestionId = Guid.NewGuid();
-    private static readonly MultiSelectQuestion _multiSelectQuestion = MultiSelectQuestion.Create(_multiSelectQuestionId, MultiSelectQuestionCode, _questionText, _selectOptions);
+
+    private static readonly MultiSelectQuestion _multiSelectQuestion =
+        MultiSelectQuestion.Create(_multiSelectQuestionId, MultiSelectQuestionCode, _questionText, _selectOptions);
 
     private static readonly string[] _submissionColumns =
     [
@@ -139,11 +153,14 @@ public class FormSubmissionsDataTableGeneratorTests
         // No notes, no attachments
         var submission1 = Fake.Submission(form.Id, TextAnswer.Create(_textQuestionId, "answer 1"), [], []);
         // No notes, 2 attachments
-        var submission2 = Fake.Submission(form.Id, TextAnswer.Create(_textQuestionId, "answer 2"), [], FakeAttachmentsFor(_textQuestionId));
+        var submission2 = Fake.Submission(form.Id, TextAnswer.Create(_textQuestionId, "answer 2"), [],
+            FakeAttachmentsFor(_textQuestionId));
         // 2 notes, no attachments
-        var submission3 = Fake.Submission(form.Id, TextAnswer.Create(_textQuestionId, "answer 3"), FakeNotesFor(_textQuestionId), []);
+        var submission3 = Fake.Submission(form.Id, TextAnswer.Create(_textQuestionId, "answer 3"),
+            FakeNotesFor(_textQuestionId), []);
         // 2 notes, 2 attachments
-        var submission4 = Fake.Submission(form.Id, TextAnswer.Create(_textQuestionId, "answer 4"), FakeNotesFor(_textQuestionId), FakeAttachmentsFor(_textQuestionId));
+        var submission4 = Fake.Submission(form.Id, TextAnswer.Create(_textQuestionId, "answer 4"),
+            FakeNotesFor(_textQuestionId), FakeAttachmentsFor(_textQuestionId));
 
         List<object[]> expectedData =
         [
@@ -164,7 +181,8 @@ public class FormSubmissionsDataTableGeneratorTests
             .Please();
 
         // Assert
-        string[] expectedColumns = [
+        string[] expectedColumns =
+        [
             .. _submissionColumns,
             "TQ - Question text",
             "Notes",
@@ -193,11 +211,14 @@ public class FormSubmissionsDataTableGeneratorTests
         // No notes, no attachments
         var submission1 = Fake.Submission(form.Id, NumberAnswer.Create(_numberQuestionId, 42), [], []);
         // No notes, 2 attachments
-        var submission2 = Fake.Submission(form.Id, NumberAnswer.Create(_numberQuestionId, 43), [], FakeAttachmentsFor(_numberQuestionId));
+        var submission2 = Fake.Submission(form.Id, NumberAnswer.Create(_numberQuestionId, 43), [],
+            FakeAttachmentsFor(_numberQuestionId));
         // 2 notes, no attachments
-        var submission3 = Fake.Submission(form.Id, NumberAnswer.Create(_numberQuestionId, 44), FakeNotesFor(_numberQuestionId), []);
+        var submission3 = Fake.Submission(form.Id, NumberAnswer.Create(_numberQuestionId, 44),
+            FakeNotesFor(_numberQuestionId), []);
         // 2 notes, 2 attachments
-        var submission4 = Fake.Submission(form.Id, NumberAnswer.Create(_numberQuestionId, 45), FakeNotesFor(_numberQuestionId), FakeAttachmentsFor(_numberQuestionId));
+        var submission4 = Fake.Submission(form.Id, NumberAnswer.Create(_numberQuestionId, 45),
+            FakeNotesFor(_numberQuestionId), FakeAttachmentsFor(_numberQuestionId));
 
         List<object[]> expectedData =
         [
@@ -218,7 +239,8 @@ public class FormSubmissionsDataTableGeneratorTests
             .Please();
 
         // Assert
-        string[] expectedColumns = [
+        string[] expectedColumns =
+        [
             .. _submissionColumns,
             "NQ - Question text",
             "Notes",
@@ -247,11 +269,14 @@ public class FormSubmissionsDataTableGeneratorTests
         // No notes, no attachments
         var submission1 = Fake.Submission(form.Id, RatingAnswer.Create(_ratingQuestionId, 4), [], []);
         // No notes, 2 attachments
-        var submission2 = Fake.Submission(form.Id, RatingAnswer.Create(_ratingQuestionId, 5), [], FakeAttachmentsFor(_ratingQuestionId));
+        var submission2 = Fake.Submission(form.Id, RatingAnswer.Create(_ratingQuestionId, 5), [],
+            FakeAttachmentsFor(_ratingQuestionId));
         // 2 notes, no attachments
-        var submission3 = Fake.Submission(form.Id, RatingAnswer.Create(_ratingQuestionId, 9), FakeNotesFor(_ratingQuestionId), []);
+        var submission3 = Fake.Submission(form.Id, RatingAnswer.Create(_ratingQuestionId, 9),
+            FakeNotesFor(_ratingQuestionId), []);
         // 2 notes, 2 attachments
-        var submission4 = Fake.Submission(form.Id, RatingAnswer.Create(_ratingQuestionId, 10), FakeNotesFor(_ratingQuestionId), FakeAttachmentsFor(_ratingQuestionId));
+        var submission4 = Fake.Submission(form.Id, RatingAnswer.Create(_ratingQuestionId, 10),
+            FakeNotesFor(_ratingQuestionId), FakeAttachmentsFor(_ratingQuestionId));
 
         List<object[]> expectedData =
         [
@@ -272,7 +297,8 @@ public class FormSubmissionsDataTableGeneratorTests
             .Please();
 
         // Assert
-        string[] expectedColumns = [
+        string[] expectedColumns =
+        [
             .. _submissionColumns,
             "RQ - Question text",
             "Notes",
@@ -306,18 +332,27 @@ public class FormSubmissionsDataTableGeneratorTests
         // No notes, no attachments
         var submission1 = Fake.Submission(form.Id, DateAnswer.Create(_dateQuestionId, date1), [], []);
         // No notes, 2 attachments
-        var submission2 = Fake.Submission(form.Id, DateAnswer.Create(_dateQuestionId, date2), [], FakeAttachmentsFor(_dateQuestionId));
+        var submission2 = Fake.Submission(form.Id, DateAnswer.Create(_dateQuestionId, date2), [],
+            FakeAttachmentsFor(_dateQuestionId));
         // 2 notes, no attachments
-        var submission3 = Fake.Submission(form.Id, DateAnswer.Create(_dateQuestionId, date3), FakeNotesFor(_dateQuestionId), []);
+        var submission3 = Fake.Submission(form.Id, DateAnswer.Create(_dateQuestionId, date3),
+            FakeNotesFor(_dateQuestionId), []);
         // 2 notes, 2 attachments
-        var submission4 = Fake.Submission(form.Id, DateAnswer.Create(_dateQuestionId, date4), FakeNotesFor(_dateQuestionId), FakeAttachmentsFor(_dateQuestionId));
+        var submission4 = Fake.Submission(form.Id, DateAnswer.Create(_dateQuestionId, date4),
+            FakeNotesFor(_dateQuestionId), FakeAttachmentsFor(_dateQuestionId));
 
         List<object[]> expectedData =
         [
             [.. GetDefaultExpectedColumns(submission1), date1.ToString("s"), 0, "", "", 0, "", ""],
-            [.. GetDefaultExpectedColumns(submission2), date2.ToString("s"), 0, "", "", 2, Attachment1Url, Attachment2Url],
+            [
+                .. GetDefaultExpectedColumns(submission2), date2.ToString("s"), 0, "", "", 2, Attachment1Url,
+                Attachment2Url
+            ],
             [.. GetDefaultExpectedColumns(submission3), date3.ToString("s"), 2, Note1, Note2, 0, "", ""],
-            [.. GetDefaultExpectedColumns(submission4), date4.ToString("s"), 2, Note1, Note2, 2, Attachment1Url, Attachment2Url],
+            [
+                .. GetDefaultExpectedColumns(submission4), date4.ToString("s"), 2, Note1, Note2, 2, Attachment1Url,
+                Attachment2Url
+            ],
         ];
 
         // Act
@@ -331,7 +366,8 @@ public class FormSubmissionsDataTableGeneratorTests
             .Please();
 
         // Assert
-        string[] expectedColumns = [
+        string[] expectedColumns =
+        [
             .. _submissionColumns,
             "DQ - Question text",
             "Notes",
@@ -358,20 +394,33 @@ public class FormSubmissionsDataTableGeneratorTests
         // Arrange
         var form = Fake.Form(DefaultLanguageCode, _singleSelectQuestion);
         // No notes, no attachments
-        var submission1 = Fake.Submission(form.Id, SingleSelectAnswer.Create(_singleSelectQuestionId, SelectedOption.Create(_option1Id, null)), [], []);
+        var submission1 = Fake.Submission(form.Id,
+            SingleSelectAnswer.Create(_singleSelectQuestionId, SelectedOption.Create(_option1Id, null)), [], []);
         // No notes, 2 attachments
-        var submission2 = Fake.Submission(form.Id, SingleSelectAnswer.Create(_singleSelectQuestionId, SelectedOption.Create(_option2Id, null)), [], FakeAttachmentsFor(_singleSelectQuestionId));
+        var submission2 = Fake.Submission(form.Id,
+            SingleSelectAnswer.Create(_singleSelectQuestionId, SelectedOption.Create(_option2Id, null)), [],
+            FakeAttachmentsFor(_singleSelectQuestionId));
         // 2 notes, no attachments
-        var submission3 = Fake.Submission(form.Id, SingleSelectAnswer.Create(_singleSelectQuestionId, SelectedOption.Create(_option3Id, null)), FakeNotesFor(_singleSelectQuestionId), []);
+        var submission3 = Fake.Submission(form.Id,
+            SingleSelectAnswer.Create(_singleSelectQuestionId, SelectedOption.Create(_option3Id, null)),
+            FakeNotesFor(_singleSelectQuestionId), []);
         // 2 notes, 2 attachments
-        var submission4 = Fake.Submission(form.Id, SingleSelectAnswer.Create(_singleSelectQuestionId, SelectedOption.Create(_option4Id, "some free text")), FakeNotesFor(_singleSelectQuestionId), FakeAttachmentsFor(_singleSelectQuestionId));
+        var submission4 = Fake.Submission(form.Id,
+            SingleSelectAnswer.Create(_singleSelectQuestionId, SelectedOption.Create(_option4Id, "some free text")),
+            FakeNotesFor(_singleSelectQuestionId), FakeAttachmentsFor(_singleSelectQuestionId));
 
         List<object[]> expectedData =
         [
-            [.. GetDefaultExpectedColumns(submission1), "", true, false, false, false, "",0, "", "", 0, "", ""],
-            [.. GetDefaultExpectedColumns(submission2), "", false, true, false, false, "", 0, "", "", 2, Attachment1Url, Attachment2Url],
+            [.. GetDefaultExpectedColumns(submission1), "", true, false, false, false, "", 0, "", "", 0, "", ""],
+            [
+                .. GetDefaultExpectedColumns(submission2), "", false, true, false, false, "", 0, "", "", 2,
+                Attachment1Url, Attachment2Url
+            ],
             [.. GetDefaultExpectedColumns(submission3), "", false, false, true, false, "", 2, Note1, Note2, 0, "", ""],
-            [.. GetDefaultExpectedColumns(submission4), "", false, false, false, true, "some free text", 2, Note1, Note2, 2, Attachment1Url, Attachment2Url],
+            [
+                .. GetDefaultExpectedColumns(submission4), "", false, false, false, true, "some free text", 2, Note1,
+                Note2, 2, Attachment1Url, Attachment2Url
+            ],
         ];
 
         // Act
@@ -385,12 +434,13 @@ public class FormSubmissionsDataTableGeneratorTests
             .Please();
 
         // Assert
-        string[] expectedColumns = [
+        string[] expectedColumns =
+        [
             .. _submissionColumns,
             "SC - Question text",
             Option1Text,
             Option2Text,
-            Option3Text+ColorMarkers.Red,
+            Option3Text + ColorMarkers.Red,
             Option4Text,
             Option4Text + "-UserInput",
             "Notes",
@@ -417,32 +467,51 @@ public class FormSubmissionsDataTableGeneratorTests
         // Arrange
         var form = Fake.Form(DefaultLanguageCode, _multiSelectQuestion);
         // No notes, no attachments
-        SelectedOption[] submission1Selection = [
+        SelectedOption[] submission1Selection =
+        [
             SelectedOption.Create(_option4Id, "user written text"),
             SelectedOption.Create(_option2Id, ""),
             SelectedOption.Create(_option3Id, ""),
             SelectedOption.Create(_option1Id, ""),
         ];
-        var submission1 = Fake.Submission(form.Id, MultiSelectAnswer.Create(_multiSelectQuestionId, submission1Selection), [], []);
+        var submission1 = Fake.Submission(form.Id,
+            MultiSelectAnswer.Create(_multiSelectQuestionId, submission1Selection), [], []);
 
         // No notes, 2 attachments
         SelectedOption[] submission2Selection = [SelectedOption.Create(_option4Id, "some written text")];
-        var submission2 = Fake.Submission(form.Id, MultiSelectAnswer.Create(_multiSelectQuestionId, submission2Selection), [], FakeAttachmentsFor(_multiSelectQuestionId));
+        var submission2 = Fake.Submission(form.Id,
+            MultiSelectAnswer.Create(_multiSelectQuestionId, submission2Selection), [],
+            FakeAttachmentsFor(_multiSelectQuestionId));
 
         // 2 notes, no attachments
-        SelectedOption[] submission3Selection = [SelectedOption.Create(_option3Id, ""), SelectedOption.Create(_option2Id, "")];
-        var submission3 = Fake.Submission(form.Id, MultiSelectAnswer.Create(_multiSelectQuestionId, submission3Selection), FakeNotesFor(_multiSelectQuestionId), []);
+        SelectedOption[] submission3Selection =
+            [SelectedOption.Create(_option3Id, ""), SelectedOption.Create(_option2Id, "")];
+        var submission3 = Fake.Submission(form.Id,
+            MultiSelectAnswer.Create(_multiSelectQuestionId, submission3Selection),
+            FakeNotesFor(_multiSelectQuestionId), []);
 
         // 2 notes, 2 attachments
-        SelectedOption[] submission4Selection = [SelectedOption.Create(_option4Id, "some free text"), SelectedOption.Create(_option1Id, "")];
-        var submission4 = Fake.Submission(form.Id, MultiSelectAnswer.Create(_multiSelectQuestionId, submission4Selection), FakeNotesFor(_multiSelectQuestionId), FakeAttachmentsFor(_multiSelectQuestionId));
+        SelectedOption[] submission4Selection =
+            [SelectedOption.Create(_option4Id, "some free text"), SelectedOption.Create(_option1Id, "")];
+        var submission4 = Fake.Submission(form.Id,
+            MultiSelectAnswer.Create(_multiSelectQuestionId, submission4Selection),
+            FakeNotesFor(_multiSelectQuestionId), FakeAttachmentsFor(_multiSelectQuestionId));
 
         List<object[]> expectedData =
         [
-            [.. GetDefaultExpectedColumns(submission1), "", true, true, true, true, "user written text", 0, "", "", 0, "", ""],
-            [.. GetDefaultExpectedColumns(submission2), "", false, false, false, true, "some written text", 0, "", "", 2, Attachment1Url, Attachment2Url],
+            [
+                .. GetDefaultExpectedColumns(submission1), "", true, true, true, true, "user written text", 0, "", "",
+                0, "", ""
+            ],
+            [
+                .. GetDefaultExpectedColumns(submission2), "", false, false, false, true, "some written text", 0, "",
+                "", 2, Attachment1Url, Attachment2Url
+            ],
             [.. GetDefaultExpectedColumns(submission3), "", false, true, true, false, "", 2, Note1, Note2, 0, "", ""],
-            [.. GetDefaultExpectedColumns(submission4), "", true, false, false, true, "some free text", 2, Note1, Note2, 2, Attachment1Url, Attachment2Url],
+            [
+                .. GetDefaultExpectedColumns(submission4), "", true, false, false, true, "some free text", 2, Note1,
+                Note2, 2, Attachment1Url, Attachment2Url
+            ],
         ];
 
         // Act
@@ -456,12 +525,13 @@ public class FormSubmissionsDataTableGeneratorTests
             .Please();
 
         // Assert
-        string[] expectedColumns = [
+        string[] expectedColumns =
+        [
             .. _submissionColumns,
             "MC - Question text",
             Option1Text,
             Option2Text,
-            Option3Text+ColorMarkers.Red,
+            Option3Text + ColorMarkers.Red,
             Option4Text,
             Option4Text + "-UserInput",
             "Notes",
@@ -494,7 +564,8 @@ public class FormSubmissionsDataTableGeneratorTests
             _singleSelectQuestion,
             _multiSelectQuestion);
 
-        SelectedOption[] selection = [
+        SelectedOption[] selection =
+        [
             SelectedOption.Create(_option4Id, "user written text"),
             SelectedOption.Create(_option2Id, ""),
             SelectedOption.Create(_option3Id, ""),
@@ -502,41 +573,61 @@ public class FormSubmissionsDataTableGeneratorTests
         ];
 
         var submission1 = Fake.PartialSubmission(form.Id,
-         dateAnswer: (DateAnswer.Create(_dateQuestionId, _utcNow), FakeNotesFor(_dateQuestionId), FakeAttachmentsFor(_dateQuestionId)),
-          numberAnswer: (NumberAnswer.Create(_numberQuestionId, 42), FakeNotesFor(_numberQuestionId), FakeAttachmentsFor(_numberQuestionId)),
-        ratingAnswer: (RatingAnswer.Create(_ratingQuestionId, 3), FakeNotesFor(_ratingQuestionId), FakeAttachmentsFor(_ratingQuestionId)),
-         singleSelectAnswer: (SingleSelectAnswer.Create(_singleSelectQuestionId, SelectedOption.Create(_option4Id, "user written text")), FakeNotesFor(_singleSelectQuestionId), FakeAttachmentsFor(_singleSelectQuestionId)),
-         multiSelectAnswer: (MultiSelectAnswer.Create(_multiSelectQuestionId, selection), FakeNotesFor(_multiSelectQuestionId), FakeAttachmentsFor(_multiSelectQuestionId))
-            );
+            dateAnswer: (DateAnswer.Create(_dateQuestionId, _utcNow), FakeNotesFor(_dateQuestionId),
+                FakeAttachmentsFor(_dateQuestionId)),
+            numberAnswer: (NumberAnswer.Create(_numberQuestionId, 42), FakeNotesFor(_numberQuestionId),
+                FakeAttachmentsFor(_numberQuestionId)),
+            ratingAnswer: (RatingAnswer.Create(_ratingQuestionId, 3), FakeNotesFor(_ratingQuestionId),
+                FakeAttachmentsFor(_ratingQuestionId)),
+            singleSelectAnswer: (
+                SingleSelectAnswer.Create(_singleSelectQuestionId,
+                    SelectedOption.Create(_option4Id, "user written text")), FakeNotesFor(_singleSelectQuestionId),
+                FakeAttachmentsFor(_singleSelectQuestionId)),
+            multiSelectAnswer: (MultiSelectAnswer.Create(_multiSelectQuestionId, selection),
+                FakeNotesFor(_multiSelectQuestionId), FakeAttachmentsFor(_multiSelectQuestionId))
+        );
 
         var submission2 = Fake.PartialSubmission(form.Id,
-        textAnswer: (TextAnswer.Create(_textQuestionId, "some answer"), FakeNotesFor(_textQuestionId), FakeAttachmentsFor(_textQuestionId)),
-       dateAnswer: (DateAnswer.Create(_dateQuestionId, _utcNow), FakeNotesFor(_dateQuestionId), FakeAttachmentsFor(_dateQuestionId)),
-       numberAnswer: (NumberAnswer.Create(_numberQuestionId, 42), FakeNotesFor(_numberQuestionId), FakeAttachmentsFor(_numberQuestionId)),
-      singleSelectAnswer: (SingleSelectAnswer.Create(_singleSelectQuestionId, SelectedOption.Create(_option4Id, "user written text")), FakeNotesFor(_singleSelectQuestionId), FakeAttachmentsFor(_singleSelectQuestionId)),
-       multiSelectAnswer: (MultiSelectAnswer.Create(_multiSelectQuestionId, selection), FakeNotesFor(_multiSelectQuestionId), FakeAttachmentsFor(_multiSelectQuestionId))
+            textAnswer: (TextAnswer.Create(_textQuestionId, "some answer"), FakeNotesFor(_textQuestionId),
+                FakeAttachmentsFor(_textQuestionId)),
+            dateAnswer: (DateAnswer.Create(_dateQuestionId, _utcNow), FakeNotesFor(_dateQuestionId),
+                FakeAttachmentsFor(_dateQuestionId)),
+            numberAnswer: (NumberAnswer.Create(_numberQuestionId, 42), FakeNotesFor(_numberQuestionId),
+                FakeAttachmentsFor(_numberQuestionId)),
+            singleSelectAnswer: (
+                SingleSelectAnswer.Create(_singleSelectQuestionId,
+                    SelectedOption.Create(_option4Id, "user written text")), FakeNotesFor(_singleSelectQuestionId),
+                FakeAttachmentsFor(_singleSelectQuestionId)),
+            multiSelectAnswer: (MultiSelectAnswer.Create(_multiSelectQuestionId, selection),
+                FakeNotesFor(_multiSelectQuestionId), FakeAttachmentsFor(_multiSelectQuestionId))
         );
 
         var submission3 = Fake.PartialSubmission(form.Id,
-       textAnswer: (TextAnswer.Create(_textQuestionId, "some answer"), FakeNotesFor(_textQuestionId), FakeAttachmentsFor(_textQuestionId)),
-      dateAnswer: (DateAnswer.Create(_dateQuestionId, _utcNow), FakeNotesFor(_dateQuestionId), FakeAttachmentsFor(_dateQuestionId)),
-      numberAnswer: (NumberAnswer.Create(_numberQuestionId, 42), FakeNotesFor(_numberQuestionId), FakeAttachmentsFor(_numberQuestionId)),
-    ratingAnswer: (RatingAnswer.Create(_ratingQuestionId, 3), FakeNotesFor(_ratingQuestionId), FakeAttachmentsFor(_ratingQuestionId)),
-        multiSelectAnswer: (MultiSelectAnswer.Create(_multiSelectQuestionId, selection), FakeNotesFor(_multiSelectQuestionId), FakeAttachmentsFor(_multiSelectQuestionId))
+            textAnswer: (TextAnswer.Create(_textQuestionId, "some answer"), FakeNotesFor(_textQuestionId),
+                FakeAttachmentsFor(_textQuestionId)),
+            dateAnswer: (DateAnswer.Create(_dateQuestionId, _utcNow), FakeNotesFor(_dateQuestionId),
+                FakeAttachmentsFor(_dateQuestionId)),
+            numberAnswer: (NumberAnswer.Create(_numberQuestionId, 42), FakeNotesFor(_numberQuestionId),
+                FakeAttachmentsFor(_numberQuestionId)),
+            ratingAnswer: (RatingAnswer.Create(_ratingQuestionId, 3), FakeNotesFor(_ratingQuestionId),
+                FakeAttachmentsFor(_ratingQuestionId)),
+            multiSelectAnswer: (MultiSelectAnswer.Create(_multiSelectQuestionId, selection),
+                FakeNotesFor(_multiSelectQuestionId), FakeAttachmentsFor(_multiSelectQuestionId))
         );
 
         object[] expectedTextAnswerColumns = ["some answer", 2, Note1, Note2, 2, Attachment1Url, Attachment2Url];
         object[] expectedNumberAnswerColumns = [42, 2, Note1, Note2, 2, Attachment1Url, Attachment2Url];
         object[] expectedRatingAnswerColumns = [3, 2, Note1, Note2, 2, Attachment1Url, Attachment2Url];
-        object[] expectedDateAnswerColumns = [_utcNow.ToString("s"), 2, Note1, Note2, 2, Attachment1Url, Attachment2Url];
+        object[] expectedDateAnswerColumns =
+            [_utcNow.ToString("s"), 2, Note1, Note2, 2, Attachment1Url, Attachment2Url];
 
         object[] expectedSingleSelectAnswerColumns =
             ["", false, false, false, true, "user written text", 2, Note1, Note2, 2, Attachment1Url, Attachment2Url];
         object[] expectedMultiSelectAnswerColumns =
             ["", true, true, true, true, "user written text", 2, Note1, Note2, 2, Attachment1Url, Attachment2Url];
 
-        List<object[]> expectedData = [
-
+        List<object[]> expectedData =
+        [
             [
                 .. GetDefaultExpectedColumns(submission1),
                 "", "", "", "", "", "", "",
@@ -578,7 +669,8 @@ public class FormSubmissionsDataTableGeneratorTests
             .Please();
 
         // Assert
-        string[] expectedColumns = [
+        string[] expectedColumns =
+        [
             .. _submissionColumns,
             // text question columns
             "TQ - Question text",
@@ -616,7 +708,7 @@ public class FormSubmissionsDataTableGeneratorTests
             "SC - Question text",
             Option1Text,
             Option2Text,
-            Option3Text+ColorMarkers.Red,
+            Option3Text + ColorMarkers.Red,
             Option4Text,
             Option4Text + "-UserInput",
             "Notes",
@@ -629,7 +721,7 @@ public class FormSubmissionsDataTableGeneratorTests
             "MC - Question text",
             Option1Text,
             Option2Text,
-            Option3Text+ColorMarkers.Red,
+            Option3Text + ColorMarkers.Red,
             Option4Text,
             Option4Text + "-UserInput",
             "Notes",
@@ -650,7 +742,8 @@ public class FormSubmissionsDataTableGeneratorTests
     }
 
     [Fact]
-    public void FormSubmissionsDataTableGenerator_Should_Generates_Correct_DataTable_WhenMultipleQuestions_AndEmptyResponses()
+    public void
+        FormSubmissionsDataTableGenerator_Should_Generates_Correct_DataTable_WhenMultipleQuestions_AndEmptyResponses()
     {
         // Arrange
         var form = Fake.Form(DefaultLanguageCode, _textQuestion,
@@ -691,7 +784,8 @@ public class FormSubmissionsDataTableGeneratorTests
             .Please();
 
         // Assert
-        string[] expectedColumns = [
+        string[] expectedColumns =
+        [
             .. _submissionColumns,
             // text question columns
             "TQ - Question text",
@@ -713,7 +807,7 @@ public class FormSubmissionsDataTableGeneratorTests
             "SC - Question text",
             Option1Text,
             Option2Text,
-            Option3Text+ColorMarkers.Red,
+            Option3Text + ColorMarkers.Red,
             Option4Text,
             Option4Text + "-UserInput",
             "Notes",
@@ -722,7 +816,7 @@ public class FormSubmissionsDataTableGeneratorTests
             "MC - Question text",
             Option1Text,
             Option2Text,
-            Option3Text+ColorMarkers.Red,
+            Option3Text + ColorMarkers.Red,
             Option4Text,
             Option4Text + "-UserInput",
             "Notes",
@@ -757,12 +851,12 @@ public class FormSubmissionsDataTableGeneratorTests
         ];
     }
 
-    private NoteModel[] FakeNotesFor(Guid questionId)
+    private SubmissionNoteModel[] FakeNotesFor(Guid questionId)
     {
         return
         [
-            new NoteModel { QuestionId = questionId, Text = Note1 },
-            new NoteModel { QuestionId = questionId, Text = Note2 },
+            new SubmissionNoteModel { QuestionId = questionId, Text = Note1 },
+            new SubmissionNoteModel { QuestionId = questionId, Text = Note2 },
         ];
     }
 

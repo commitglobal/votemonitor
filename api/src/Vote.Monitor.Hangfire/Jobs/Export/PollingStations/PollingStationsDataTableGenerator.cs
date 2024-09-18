@@ -26,15 +26,15 @@ public class PollingStationsDataTableGenerator
 
         var row = new List<object>
         {
-           pollingStation.Id.ToString(),
-           pollingStation.Level1,
-           pollingStation.Level2,
-           pollingStation.Level3,
-           pollingStation.Level4,
-           pollingStation.Level5,
-           pollingStation.Number,
-           pollingStation.Address,
-           pollingStation.DisplayOrder
+            pollingStation.Id.ToString(),
+            pollingStation.Level1,
+            pollingStation.Level2,
+            pollingStation.Level3,
+            pollingStation.Level4,
+            pollingStation.Level5,
+            pollingStation.Number,
+            pollingStation.Address,
+            pollingStation.DisplayOrder
         };
 
         _dataTable.Add(row);
@@ -51,9 +51,9 @@ public class PollingStationsDataTableGenerator
         return this;
     }
 
-    private void MapPollingStation(PollingStationModel quickReport)
+    private void MapPollingStation(PollingStationModel pollingStation)
     {
-        PollingStationData pollingStationData = PollingStationData.For(quickReport);
+        PollingStationData pollingStationData = PollingStationData.For(pollingStation);
 
         _pollingStations.Add(pollingStationData);
     }
@@ -92,9 +92,9 @@ public class PollingStationsDataTableGenerator
         public Guid Id { get; }
         public readonly Dictionary<string, string> Tags = new();
 
-        private PollingStationData(PollingStationModel quickReport)
+        private PollingStationData(PollingStationModel pollingStation)
         {
-            Id = quickReport.Id;
+            Id = pollingStation.Id;
         }
 
         public static PollingStationData For(PollingStationModel pollingStation)

@@ -10,6 +10,7 @@ using Vote.Monitor.Domain.Entities.FeedbackAggregate;
 using Vote.Monitor.Domain.Entities.FormAggregate;
 using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
 using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
+using Vote.Monitor.Domain.Entities.LocationAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 using Vote.Monitor.Domain.Entities.NgoAdminAggregate;
@@ -72,6 +73,8 @@ public class VoteMonitorContext : IdentityDbContext<ApplicationUser, IdentityRol
     public DbSet<CitizenReportNote> CitizenReportNotes { get; set; }
     public DbSet<CitizenReportAttachment> CitizenReportAttachments { get; set; }
     public DbSet<MonitoringObserverNotification> MonitoringObserverNotification { get; set; }
+    
+    public DbSet<Location> Locations { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -143,6 +146,8 @@ public class VoteMonitorContext : IdentityDbContext<ApplicationUser, IdentityRol
         builder.ApplyConfiguration(new CitizenReportConfiguration());
         builder.ApplyConfiguration(new CitizenReportNoteConfiguration());
         builder.ApplyConfiguration(new CitizenReportAttachmentConfiguration());
+        
+        builder.ApplyConfiguration(new LocationConfiguration());
     }
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
