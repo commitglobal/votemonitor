@@ -32,6 +32,19 @@ public class UpsertValidatorTests
     }
 
     [Fact]
+    public void Validation_ShouldFail_When_LocationId_Empty()
+    {
+        // Arrange
+        var request = new Upsert.Request { LocationId = Guid.Empty };
+
+        // Act
+        var result = _validator.TestValidate(request);
+
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.LocationId);
+    }
+    
+    [Fact]
     public void Validation_ShouldFail_When_FormId_Empty()
     {
         // Arrange
@@ -82,6 +95,7 @@ public class UpsertValidatorTests
             FormId = Guid.NewGuid(),
             ElectionRoundId = Guid.NewGuid(),
             CitizenReportId = Guid.NewGuid(),
+            LocationId = Guid.NewGuid(),
         };
 
         // Act
@@ -100,6 +114,7 @@ public class UpsertValidatorTests
             FormId = Guid.NewGuid(),
             ElectionRoundId = Guid.NewGuid(),
             CitizenReportId = Guid.NewGuid(),
+            LocationId = Guid.NewGuid(),
             Answers = []
         };
 
@@ -119,6 +134,7 @@ public class UpsertValidatorTests
             FormId = Guid.NewGuid(),
             ElectionRoundId = Guid.NewGuid(),
             CitizenReportId = Guid.NewGuid(),
+            LocationId = Guid.NewGuid(),
             Answers = null
         };
 

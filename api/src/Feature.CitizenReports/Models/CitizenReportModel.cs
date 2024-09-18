@@ -13,6 +13,7 @@ public class CitizenReportModel
 
     [JsonConverter(typeof(SmartEnumNameConverter<CitizenReportFollowUpStatus, string>))]
     public CitizenReportFollowUpStatus FollowUpStatus { get; init; }
+
     public IReadOnlyList<BaseAnswerModel> Answers { get; init; }
 
     public static CitizenReportModel FromEntity(CitizenReportAggregate entity) => new()
@@ -23,8 +24,5 @@ public class CitizenReportModel
             .Select(AnswerMapper.ToModel)
             .ToList(),
         FollowUpStatus = entity.FollowUpStatus,
-        
     };
-
-
 }

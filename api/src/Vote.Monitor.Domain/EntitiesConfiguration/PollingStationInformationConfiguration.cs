@@ -29,7 +29,7 @@ public class PollingStationInformationConfiguration : IEntityTypeConfiguration<P
         builder.HasOne(x => x.ElectionRound)
             .WithMany()
             .HasForeignKey(x => x.ElectionRoundId);
-        
+
         builder.HasOne(x => x.PollingStation)
             .WithMany()
             .HasForeignKey(x => x.PollingStationId);
@@ -42,6 +42,7 @@ public class PollingStationInformationConfiguration : IEntityTypeConfiguration<P
         builder.Property(x => x.DepartureTime);
         builder.Property(x => x.MinutesMonitoring);
         builder.Property(x => x.NumberOfQuestionsAnswered);
+        builder.Property(x => x.NumberOfFlaggedAnswers);
 
         builder.Property(x => x.Answers)
             .HasConversion<AnswersToJsonConverter, AnswersValueComparer>()

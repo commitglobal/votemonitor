@@ -96,7 +96,7 @@ public class Endpoint(
 
         var email = emailFactory.GenerateEmail(EmailTemplateType.InvitationExistingUser,
             invitationExistingUserEmailProps);
-        jobService.SendEmail(observer.ApplicationUser.Email!, email.Subject, email.Body);
+        jobService.EnqueueSendEmail(observer.ApplicationUser.Email!, email.Subject, email.Body);
 
         return TypedResults.Ok(new Response
         {
