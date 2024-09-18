@@ -194,6 +194,7 @@ export function QuickReportsTab(): FunctionComponent {
                       'level3Filter',
                       'level4Filter',
                       'level5Filter',
+                      'pollingStationNumberFilter',
                     ])}
                   />
                 )}
@@ -201,28 +202,46 @@ export function QuickReportsTab(): FunctionComponent {
                 {search.level2Filter && (
                   <FilterBadge
                     label={`Location - L2: ${search.level2Filter}`}
-                    onClear={onClearFilter(['level2Filter', 'level3Filter', 'level4Filter', 'level5Filter'])}
+                    onClear={onClearFilter([
+                      'level2Filter',
+                      'level3Filter',
+                      'level4Filter',
+                      'level5Filter',
+                      'pollingStationNumberFilter',
+                    ])}
                   />
                 )}
 
                 {search.level3Filter && (
                   <FilterBadge
                     label={`Location - L3: ${search.level3Filter}`}
-                    onClear={onClearFilter(['level3Filter', 'level4Filter', 'level5Filter'])}
+                    onClear={onClearFilter([
+                      'level3Filter',
+                      'level4Filter',
+                      'level5Filter',
+                      'pollingStationNumberFilter',
+                    ])}
                   />
                 )}
 
                 {search.level4Filter && (
                   <FilterBadge
                     label={`Location - L4: ${search.level4Filter}`}
-                    onClear={onClearFilter(['level4Filter', 'level5Filter'])}
+                    onClear={onClearFilter(['level4Filter', 'level5Filter', 'pollingStationNumberFilter'])}
                   />
                 )}
 
                 {search.level5Filter && (
                   <FilterBadge
                     label={`Location - L5: ${search.level5Filter}`}
-                    onClear={onClearFilter('level5Filter')}
+                    onClear={onClearFilter(['level5Filter', 'pollingStationNumberFilter'])}
+                  />
+                )}
+
+                {search.pollingStationNumberFilter && (
+                  <FilterBadge
+                    label={`PS Number: ${search.pollingStationNumberFilter}`}
+                    onClear={onClearFilter('pollingStationNumberFilter')}
                   />
                 )}
               </div>

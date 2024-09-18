@@ -12,7 +12,19 @@ public class Request : BaseSortPaginatedRequest
 
     [QueryParam] public string? SearchText { get; set; }
 
+    [QueryParam] public string? Level1Filter { get; set; }
+
+    [QueryParam] public string? Level2Filter { get; set; }
+
+    [QueryParam] public string? Level3Filter { get; set; }
+
+    [QueryParam] public string? Level4Filter { get; set; }
+
+    [QueryParam] public string? Level5Filter { get; set; }
+
+
     [QueryParam] public bool? HasFlaggedAnswers { get; set; }
+
 
     [QueryParam] public CitizenReportFollowUpStatus? FollowUpStatus { get; set; }
 }

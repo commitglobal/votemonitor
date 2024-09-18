@@ -48,6 +48,7 @@
     <ProjectReference Include="..\Feature.Forms\Feature.Forms.csproj" />
     <ProjectReference Include="..\Feature.FormTemplates\Feature.FormTemplates.csproj" />
     <ProjectReference Include="..\Feature.ImportErrors\Feature.ImportErrors.csproj" />
+    <ProjectReference Include="..\Feature.Locations\Feature.Locations.csproj" />
     <ProjectReference Include="..\Feature.MonitoringObservers\Feature.MonitoringObservers.csproj" />
     <ProjectReference Include="..\Feature.ObserverGuide\Feature.ObserverGuide.csproj" />
     <ProjectReference Include="..\Feature.PollingStation.Information.Form\Feature.PollingStation.Information.Form.csproj" />

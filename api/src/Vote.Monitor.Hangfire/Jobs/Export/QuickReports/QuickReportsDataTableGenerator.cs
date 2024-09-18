@@ -34,7 +34,6 @@ public class QuickReportsDataTableGenerator
            quickReport.Email,
            quickReport.PhoneNumber,
            quickReport.QuickReportLocationType.Value,
-           quickReport.PollingStationId?.ToString() ?? "",
            quickReport.Level1 ?? "",
            quickReport.Level2 ?? "",
            quickReport.Level3 ?? "",

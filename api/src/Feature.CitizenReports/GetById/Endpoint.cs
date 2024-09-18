@@ -27,6 +27,7 @@ public class Endpoint(
             .CitizenReports
             .Include(x => x.Attachments)
             .Include(x => x.Notes)
+            .Include(x => x.Location)
             .Where(x =>
                 x.ElectionRoundId == req.ElectionRoundId
                 && x.Form.MonitoringNgo.NgoId == req.NgoId
@@ -73,9 +74,16 @@ public class Endpoint(
             Notes = citizenReport.Notes.Select(NoteModel.FromEntity).ToArray(),
             Attachments = attachments,
             Questions = form.Questions.Select(QuestionsMapper.ToModel).ToArray(),
-            
+
             TimeSubmitted = citizenReport.LastModifiedOn ?? citizenReport.CreatedOn,
             FollowUpStatus = citizenReport.FollowUpStatus,
+
+            LocationId = citizenReport.Location.Level1,
+            LocationLevel1 = citizenReport.Location.Level1,
+            LocationLevel2 = citizenReport.Location.Level2,
+            LocationLevel3 = citizenReport.Location.Level3,
+            LocationLevel4 = citizenReport.Location.Level4,
+            LocationLevel5 = citizenReport.Location.Level5,
         };
 
         return TypedResults.Ok(response);

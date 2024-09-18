@@ -8,17 +8,18 @@ using Vote.Monitor.Domain.Entities.PollingStationInfoFormAggregate;
 
 namespace Vote.Monitor.Answer.Module.Aggregators;
 
-
 public record Responder(Guid ResponderId, string FirstName, string LastName, string Email, string PhoneNumber);
+
 public class FormSubmissionsAggregate
 {
     public Guid ElectionRoundId { get; }
     public Guid MonitoringNgoId { get; }
     public Guid FormId { get; }
     public string FormCode { get; }
-    
+
     [JsonConverter(typeof(SmartEnumNameConverter<FormType, string>))]
     public FormType FormType { get; }
+
     public TranslatedString Name { get; }
     public TranslatedString Description { get; }
     public string DefaultLanguage { get; }
@@ -30,6 +31,7 @@ public class FormSubmissionsAggregate
     public int SubmissionCount { get; private set; }
     public int TotalNumberOfQuestionsAnswered { get; private set; }
     public int TotalNumberOfFlaggedAnswers { get; private set; }
+
     /// <summary>
     /// Aggregated answers per question id
     /// </summary>
@@ -61,8 +63,8 @@ public class FormSubmissionsAggregate
         FormId = form.Id;
         FormCode = FormType.PSI;
         FormType = FormType.PSI;
-        Name = GetName(form.Languages, "PSI");
-        Description = GetName(form.Languages, "PSI");
+        Name = TranslatedString.New(form.Languages, "PSI");
+        Description = TranslatedString.New(form.Languages, "PSI");
         Languages = form.Languages;
         DefaultLanguage = form.DefaultLanguage;
 
@@ -73,21 +75,11 @@ public class FormSubmissionsAggregate
             .AsReadOnly();
     }
 
-    private TranslatedString GetName(string[] languages, string value)
-    {
-        var translatedString = new TranslatedString();
-        foreach (var language in languages)
-        {
-            translatedString.Add(language, value);
-        }
-
-        return translatedString;
-    }
-
     public FormSubmissionsAggregate AggregateAnswers(FormSubmission formSubmission)
     {
         var observer = formSubmission.MonitoringObserver.Observer.ApplicationUser;
-        _responders.Add(new Responder(formSubmission.MonitoringObserverId, observer.FirstName, observer.LastName, observer.Email, observer.PhoneNumber));
+        _responders.Add(new Responder(formSubmission.MonitoringObserverId, observer.FirstName, observer.LastName,
+            observer.Email, observer.PhoneNumber));
 
         SubmissionCount++;
         TotalNumberOfFlaggedAnswers += formSubmission.NumberOfFlaggedAnswers;
@@ -105,16 +97,24 @@ public class FormSubmissionsAggregate
 
         return this;
     }
+
     public FormSubmissionsAggregate AggregateAnswers(PollingStationInformation formSubmission)
     {
         var observer = formSubmission.MonitoringObserver.Observer.ApplicationUser;
-        _responders.Add(new Responder(formSubmission.MonitoringObserverId, observer.FirstName, observer.LastName, observer.Email, observer.PhoneNumber));
+        _responders.Add(new Responder(formSubmission.MonitoringObserverId, observer.FirstName, observer.LastName,
+            observer.Email, observer.PhoneNumber));
 
         SubmissionCount++;
+        TotalNumberOfFlaggedAnswers += formSubmission.NumberOfFlaggedAnswers;
         TotalNumberOfQuestionsAnswered += formSubmission.NumberOfQuestionsAnswered;
 
         foreach (var answer in formSubmission.Answers)
         {
+            if (!Aggregates.ContainsKey(answer.QuestionId))
+            {
+                continue;
+            }
+
             Aggregates[answer.QuestionId].Aggregate(formSubmission.Id, formSubmission.MonitoringObserverId, answer);
         }
 

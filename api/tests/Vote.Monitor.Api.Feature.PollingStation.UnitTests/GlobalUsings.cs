@@ -8,7 +8,6 @@ global using FluentValidation.TestHelper;
 global using Microsoft.Extensions.Logging.Abstractions;
 global using Microsoft.Extensions.Options;
 global using NSubstitute;
-global using Vote.Monitor.Api.Feature.PollingStation.Helpers;
 global using Vote.Monitor.Core.Services.Csv;
 global using Vote.Monitor.Api.Feature.PollingStation.Options;
 global using Vote.Monitor.Api.Feature.PollingStation.Services;
