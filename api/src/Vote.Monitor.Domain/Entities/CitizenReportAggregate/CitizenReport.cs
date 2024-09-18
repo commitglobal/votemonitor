@@ -2,6 +2,7 @@
 using Vote.Monitor.Domain.Entities.CitizenReportNoteAggregate;
 using Vote.Monitor.Domain.Entities.FormAggregate;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
+using Vote.Monitor.Domain.Entities.LocationAggregate;
 
 namespace Vote.Monitor.Domain.Entities.CitizenReportAggregate;
 
@@ -21,11 +22,14 @@ public class CitizenReport : AuditableBaseEntity, IAggregateRoot
 
     private readonly List<CitizenReportAttachment> _attachments = new();
     public virtual IReadOnlyList<CitizenReportAttachment> Attachments => _attachments.ToList().AsReadOnly();
+    public Guid LocationId { get; private set; }
+    public Location Location { get; private set; }
 
     private CitizenReport(
         Guid id,
         ElectionRound electionRound,
         Form form,
+        Location location,
         List<BaseAnswer> answers,
         int numberOfQuestionsAnswered,
         int numberOfFlaggedAnswers) : base(id)
@@ -38,16 +42,19 @@ public class CitizenReport : AuditableBaseEntity, IAggregateRoot
         NumberOfQuestionsAnswered = numberOfQuestionsAnswered;
         NumberOfFlaggedAnswers = numberOfFlaggedAnswers;
         FollowUpStatus = CitizenReportFollowUpStatus.NotApplicable;
+        Location = location;
+        LocationId = location.Id;
     }
 
     internal static CitizenReport Create(
         Guid id,
         ElectionRound electionRound,
         Form form,
+        Location location,
         List<BaseAnswer> answers,
         int numberOfQuestionAnswered,
         int numberOfFlaggedAnswers) =>
-        new(id, electionRound, form, answers, numberOfQuestionAnswered, numberOfFlaggedAnswers);
+        new(id, electionRound, form, location, answers, numberOfQuestionAnswered, numberOfFlaggedAnswers);
 
     internal void UpdateAnswers(int numberOfQuestionsAnswered, int numberOfFlaggedAnswers,
         IEnumerable<BaseAnswer> answers)

@@ -14,6 +14,7 @@ export enum ExportedDataType {
   QuickReports = "QuickReports",
   CitizenReports = "CitizenReports",
   PollingStations = "PollingStations",
+  Locations = "Locations",
 }
 
 export interface ExportedDataDetails {

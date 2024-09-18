@@ -7,7 +7,7 @@ namespace SubmissionsFaker.Fakers;
 
 public sealed class QuickReportFaker : Faker<QuickReportRequest>
 {
-    public QuickReportFaker(List<LocationNode> pollingStations, List<LoginResponse> observers)
+    public QuickReportFaker(List<PollingStationNode> pollingStations, List<LoginResponse> observers)
     {
         RuleFor(x => x.PollingStationId, f => f.PickRandom(pollingStations).PollingStationId!);
         RuleFor(x => x.Id, f => f.Random.Guid());

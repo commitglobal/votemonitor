@@ -13,7 +13,7 @@ export default function ElectionEventDetails() {
   const { data: electionEvent } = useElectionRoundDetails(currentElectionRoundId);
 
   return (
-    <Card className='w-[800px] pt-0'>
+    <Card className='pt-0'>
       <CardHeader className='flex gap-2 flex-column'>
         <div className='flex flex-row items-center justify-between'>
           <CardTitle className='text-xl'>{t('electionEvent.eventDetails.cardTitle')}</CardTitle>

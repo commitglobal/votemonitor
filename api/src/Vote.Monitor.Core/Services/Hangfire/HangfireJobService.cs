@@ -5,23 +5,38 @@ namespace Vote.Monitor.Core.Services.Hangfire;
 
 public class HangfireJobService(IBackgroundJobClient backgroundJobClient) : IJobService
 {
-    public void SendEmail(string to, string subject, string body)
+    public void EnqueueSendEmail(string to, string subject, string body)
     {
         backgroundJobClient.Enqueue<ISendEmailJob>(job => job.SendAsync(to, subject, body));
     }
 
-    public void ExportFormSubmissions(Guid electionRoundId, Guid ngoId, Guid exportedDataId)
+    public void EnqueueExportFormSubmissions(Guid electionRoundId, Guid ngoId, Guid exportedDataId)
     {
-        backgroundJobClient.Enqueue<IExportFormSubmissionsJob>(job => job.Run(electionRoundId, ngoId, exportedDataId, CancellationToken.None));
+        backgroundJobClient.Enqueue<IExportFormSubmissionsJob>(job =>
+            job.Run(electionRoundId, ngoId, exportedDataId, CancellationToken.None));
     }
 
-    public void ExportQuickReportsSubmissions(Guid electionRoundId, Guid ngoId, Guid exportedDataId)
+    public void EnqueueExportQuickReportsSubmissions(Guid electionRoundId, Guid ngoId, Guid exportedDataId)
     {
-        backgroundJobClient.Enqueue<IExportQuickReportsJob>(job => job.Run(electionRoundId, ngoId, exportedDataId, CancellationToken.None));
+        backgroundJobClient.Enqueue<IExportQuickReportsJob>(job =>
+            job.Run(electionRoundId, ngoId, exportedDataId, CancellationToken.None));
     }
 
-    public void ExportPollingStations(Guid electionRoundId, Guid exportedDataId)
+    public void EnqueueExportPollingStations(Guid electionRoundId, Guid exportedDataId)
     {
-        backgroundJobClient.Enqueue<IExportPollingStationsJob>(job => job.Run(electionRoundId, exportedDataId, CancellationToken.None));
+        backgroundJobClient.Enqueue<IExportPollingStationsJob>(job =>
+            job.Run(electionRoundId, exportedDataId, CancellationToken.None));
+    }
+
+    public void EnqueueExportCitizenReports(Guid electionRoundId, Guid ngoId, Guid exportedDataId)
+    {
+        backgroundJobClient.Enqueue<IExportCitizenReportsJob>(job =>
+            job.Run(electionRoundId, ngoId, exportedDataId, CancellationToken.None));
+    }
+
+    public void EnqueueExportLocations(Guid electionRoundId, Guid exportedDataId)
+    {
+        backgroundJobClient.Enqueue<IExportLocationsJob>(job =>
+            job.Run(electionRoundId, exportedDataId, CancellationToken.None));
     }
 }

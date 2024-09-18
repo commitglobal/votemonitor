@@ -33,21 +33,33 @@ public class Endpoint(VoteMonitorContext context, IFileStorageService fileStorag
             return TypedResults.NotFound();
         }
 
-        return await AggregateNgoFormSubmissionsAsync(form, req.ElectionRoundId, req.NgoId, req.FormId, ct);
+        return await AggregateNgoFormSubmissionsAsync(form, req, ct);
     }
 
     private async Task<Results<Ok<Response>, NotFound>> AggregateNgoFormSubmissionsAsync(FormAggregate form,
-        Guid electionRoundId,
-        Guid ngoId,
-        Guid formId,
+        Request req,
         CancellationToken ct)
     {
         var citizenReports = await context.CitizenReports
             .Include(x => x.Notes)
             .Include(x => x.Attachments)
-            .Where(x => x.ElectionRoundId == electionRoundId
-                        && x.Form.MonitoringNgo.NgoId == ngoId
-                        && x.FormId == formId)
+            .Where(x => x.ElectionRoundId == req.ElectionRoundId
+                        && x.Form.MonitoringNgo.NgoId == req.NgoId
+                        && x.FormId == req.FormId)
+            .Where(x => string.IsNullOrWhiteSpace(req.Level1Filter) ||
+                        EF.Functions.ILike(x.Location.Level1, req.Level1Filter))
+            .Where(x => string.IsNullOrWhiteSpace(req.Level2Filter) ||
+                        EF.Functions.ILike(x.Location.Level2, req.Level2Filter))
+            .Where(x => string.IsNullOrWhiteSpace(req.Level3Filter) ||
+                        EF.Functions.ILike(x.Location.Level3, req.Level3Filter))
+            .Where(x => string.IsNullOrWhiteSpace(req.Level4Filter) ||
+                        EF.Functions.ILike(x.Location.Level4, req.Level4Filter))
+            .Where(x => string.IsNullOrWhiteSpace(req.Level5Filter) ||
+                        EF.Functions.ILike(x.Location.Level5, req.Level5Filter))
+            .Where(x => req.HasFlaggedAnswers == null || req.HasFlaggedAnswers.Value
+                ? x.NumberOfFlaggedAnswers > 0
+                : x.NumberOfFlaggedAnswers == 0)
+            .Where(x => req.FollowUpStatus == null || x.FollowUpStatus == req.FollowUpStatus)
             .AsNoTracking()
             .ToListAsync(ct);
 
@@ -74,7 +86,7 @@ public class Endpoint(VoteMonitorContext context, IFileStorageService fileStorag
                 return attachment;
             });
 
-  var attachments=      await Task.WhenAll(tasks);
+        var attachments = await Task.WhenAll(tasks);
 
         return TypedResults.Ok(new Response
         {

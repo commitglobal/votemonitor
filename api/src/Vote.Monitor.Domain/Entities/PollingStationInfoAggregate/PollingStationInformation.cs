@@ -19,6 +19,7 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
     public DateTime? DepartureTime { get; private set; }
     public double? MinutesMonitoring { get; private set; }
     public int NumberOfQuestionsAnswered { get; private set; }
+    public int NumberOfFlaggedAnswers { get; private set; }
     public SubmissionFollowUpStatus FollowUpStatus { get; private set; }
 
     public IReadOnlyList<BaseAnswer> Answers { get; private set; } = new List<BaseAnswer>().AsReadOnly();
@@ -31,7 +32,8 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
         DateTime? arrivalTime,
         DateTime? departureTime,
         List<BaseAnswer> answers,
-        int numberOfQuestionsAnswered) : base(Guid.NewGuid())
+        int numberOfQuestionsAnswered,
+        int numberOfFlaggedAnswers) : base(Guid.NewGuid())
     {
         ElectionRound = electionRound;
         ElectionRoundId = electionRound.Id;
@@ -45,6 +47,7 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
         DepartureTime = departureTime;
         Answers = answers.ToList().AsReadOnly();
         NumberOfQuestionsAnswered = numberOfQuestionsAnswered;
+        NumberOfFlaggedAnswers = numberOfFlaggedAnswers;
         FollowUpStatus = SubmissionFollowUpStatus.NotApplicable;
     }
 
@@ -56,13 +59,15 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
         DateTime? arrivalTime,
         DateTime? departureTime,
         List<BaseAnswer> answers,
-        int numberOfQuestionsAnswered) =>
-        new(electionRound, pollingStation, monitoringObserver, pollingStationInformationForm, arrivalTime, departureTime, answers, numberOfQuestionsAnswered);
+        int numberOfQuestionsAnswered,
+        int numberOfFlaggedAnswers) =>
+        new(electionRound, pollingStation, monitoringObserver, pollingStationInformationForm, arrivalTime, departureTime, answers, numberOfQuestionsAnswered, numberOfFlaggedAnswers);
 
-    internal void UpdateAnswers(IEnumerable<BaseAnswer> answers, int numberOfQuestionsAnswered)
+    internal void UpdateAnswers(IEnumerable<BaseAnswer> answers, int numberOfQuestionsAnswered,int numberOfFlaggedAnswers)
     {
         Answers = answers.ToList().AsReadOnly();
         NumberOfQuestionsAnswered = numberOfQuestionsAnswered;
+        NumberOfFlaggedAnswers = numberOfFlaggedAnswers;
     }
 
     public void UpdateTimesOfStay(DateTime? arrivalTime, DateTime? departureTime)
