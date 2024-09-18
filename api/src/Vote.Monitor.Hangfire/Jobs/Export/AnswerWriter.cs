@@ -2,8 +2,9 @@
 using Vote.Monitor.Domain.Entities.FormBase.Questions;
 using Vote.Monitor.Hangfire.Extensions;
 using Vote.Monitor.Hangfire.Jobs.Export.FormSubmissions.ReadModels;
+using Vote.Monitor.Hangfire.Models;
 
-namespace Vote.Monitor.Hangfire.Jobs.Export.FormSubmissions;
+namespace Vote.Monitor.Hangfire.Jobs.Export;
 
 public class AnswerWriter
 {
@@ -84,7 +85,7 @@ public class AnswerWriter
         }
     }
 
-    public void WithSubmission(Guid submissionId, BaseAnswer answer, List<SubmissionAttachmentModel> attachments, List<NoteModel> notes)
+    public void WithSubmission(Guid submissionId, BaseAnswer answer, List<SubmissionAttachmentModel> attachments, List<SubmissionNoteModel> notes)
     {
         _maxNumberOfAttachments = Math.Max(_maxNumberOfAttachments, attachments.Count);
         _maxNumberOfNotes = Math.Max(_maxNumberOfNotes, notes.Count);

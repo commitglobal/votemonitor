@@ -1,10 +1,10 @@
 ﻿using Bogus;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
-using Vote.Monitor.Domain.Entities.QuickReportAggregate;
 using Vote.Monitor.Hangfire.Jobs.Export.FormSubmissions.ReadModels;
+using Vote.Monitor.Hangfire.Models;
 
-namespace Vote.Monitor.Hangfire.UnitTests.Jobs.ExportData;
+namespace Vote.Monitor.Hangfire.UnitTests.Jobs.ExportData.Fakes;
 
 public sealed partial class Fake
 {
@@ -15,14 +15,8 @@ public sealed partial class Fake
         SubmissionFollowUpStatus.Resolved
     ];
 
-    private static readonly QuickReportFollowUpStatus[] _quickReportsFollowUpStatuses =
-    [
-        QuickReportFollowUpStatus.NeedsFollowUp,
-        QuickReportFollowUpStatus.NotApplicable,
-        QuickReportFollowUpStatus.Resolved
-    ];
-
-    private static SubmissionModel GenerateSubmission(Guid formId, BaseAnswer[]? answers = null, NoteModel[]? notes = null, SubmissionAttachmentModel[]? attachments = null)
+    private static SubmissionModel GenerateSubmission(Guid formId, BaseAnswer[]? answers = null,
+        SubmissionNoteModel[]? notes = null, SubmissionAttachmentModel[]? attachments = null)
     {
         var fakeSubmission = new Faker<SubmissionModel>()
             .RuleFor(x => x.FormId, formId)
@@ -47,7 +41,8 @@ public sealed partial class Fake
         return fakeSubmission.Generate();
     }
 
-    public static SubmissionModel Submission(Guid formId, BaseAnswer answer, NoteModel[] notes, SubmissionAttachmentModel[] attachments)
+    public static SubmissionModel Submission(Guid formId, BaseAnswer answer, SubmissionNoteModel[] notes,
+        SubmissionAttachmentModel[] attachments)
     {
         return GenerateSubmission(formId, [answer], notes, attachments);
     }
@@ -56,15 +51,21 @@ public sealed partial class Fake
     {
         return GenerateSubmission(formId);
     }
+
     public static SubmissionModel Submission(Guid formId,
-        TextAnswer textAnswer, NoteModel[] textAnswerNotes, SubmissionAttachmentModel[] textAnswerAttachments,
-        DateAnswer dateAnswer, NoteModel[] dateAnswerNotes, SubmissionAttachmentModel[] dateAnswerAttachments,
-        NumberAnswer numberAnswer, NoteModel[] numberAnswerNotes, SubmissionAttachmentModel[] numberAnswerAttachments,
-        RatingAnswer ratingAnswer, NoteModel[] ratingAnswerNotes, SubmissionAttachmentModel[] ratingAnswerAttachments,
-        SingleSelectAnswer singleSelectAnswer, NoteModel[] singleSelectAnswerNotes, SubmissionAttachmentModel[] singleSelectAnswerAttachments,
-        MultiSelectAnswer multiSelectAnswer, NoteModel[] multiSelectAnswerNotes, SubmissionAttachmentModel[] multiSelectAnswerAttachments)
+        TextAnswer textAnswer, SubmissionNoteModel[] textAnswerNotes, SubmissionAttachmentModel[] textAnswerAttachments,
+        DateAnswer dateAnswer, SubmissionNoteModel[] dateAnswerNotes, SubmissionAttachmentModel[] dateAnswerAttachments,
+        NumberAnswer numberAnswer, SubmissionNoteModel[] numberAnswerNotes,
+        SubmissionAttachmentModel[] numberAnswerAttachments,
+        RatingAnswer ratingAnswer, SubmissionNoteModel[] ratingAnswerNotes,
+        SubmissionAttachmentModel[] ratingAnswerAttachments,
+        SingleSelectAnswer singleSelectAnswer, SubmissionNoteModel[] singleSelectAnswerNotes,
+        SubmissionAttachmentModel[] singleSelectAnswerAttachments,
+        MultiSelectAnswer multiSelectAnswer, SubmissionNoteModel[] multiSelectAnswerNotes,
+        SubmissionAttachmentModel[] multiSelectAnswerAttachments)
     {
-        BaseAnswer[] answers = [
+        BaseAnswer[] answers =
+        [
             textAnswer,
             dateAnswer,
             numberAnswer,
@@ -73,7 +74,8 @@ public sealed partial class Fake
             multiSelectAnswer
         ];
 
-        NoteModel[] notes = [
+        SubmissionNoteModel[] notes =
+        [
             .. textAnswerNotes,
             .. dateAnswerNotes,
             .. numberAnswerNotes,
@@ -82,7 +84,8 @@ public sealed partial class Fake
             .. multiSelectAnswerNotes
         ];
 
-        SubmissionAttachmentModel[] attachments = [
+        SubmissionAttachmentModel[] attachments =
+        [
             .. textAnswerAttachments,
             .. dateAnswerAttachments,
             .. numberAnswerAttachments,
@@ -95,15 +98,19 @@ public sealed partial class Fake
     }
 
     public static SubmissionModel PartialSubmission(Guid formId,
-        (TextAnswer answer, NoteModel[] notes, SubmissionAttachmentModel[] attachments)? textAnswer = null,
-        (DateAnswer answer, NoteModel[] notes, SubmissionAttachmentModel[] attachments)? dateAnswer = null,
-        (NumberAnswer answer, NoteModel[] notes, SubmissionAttachmentModel[] attachments)? numberAnswer = null,
-        (RatingAnswer answer, NoteModel[] notes, SubmissionAttachmentModel[] attachments)? ratingAnswer = null,
-        (SingleSelectAnswer answer, NoteModel[] notes, SubmissionAttachmentModel[] attachments)? singleSelectAnswer = null,
-        (MultiSelectAnswer answer, NoteModel[] notes, SubmissionAttachmentModel[] attachments)? multiSelectAnswer = null)
+        (TextAnswer answer, SubmissionNoteModel[] notes, SubmissionAttachmentModel[] attachments)? textAnswer = null,
+        (DateAnswer answer, SubmissionNoteModel[] notes, SubmissionAttachmentModel[] attachments)? dateAnswer = null,
+        (NumberAnswer answer, SubmissionNoteModel[] notes, SubmissionAttachmentModel[] attachments)? numberAnswer =
+            null,
+        (RatingAnswer answer, SubmissionNoteModel[] notes, SubmissionAttachmentModel[] attachments)? ratingAnswer =
+            null,
+        (SingleSelectAnswer answer, SubmissionNoteModel[] notes, SubmissionAttachmentModel[] attachments)?
+            singleSelectAnswer = null,
+        (MultiSelectAnswer answer, SubmissionNoteModel[] notes, SubmissionAttachmentModel[] attachments)?
+            multiSelectAnswer = null)
     {
         List<BaseAnswer> answers = [];
-        List<NoteModel> notes = [];
+        List<SubmissionNoteModel> notes = [];
         List<SubmissionAttachmentModel> attachments = [];
 
         if (textAnswer != null)
@@ -111,29 +118,29 @@ public sealed partial class Fake
             answers.Add(textAnswer.Value.answer);
             notes.AddRange(textAnswer.Value.notes);
             attachments.AddRange(textAnswer.Value.attachments);
-        } 
-        
+        }
+
         if (dateAnswer != null)
         {
             answers.Add(dateAnswer.Value.answer);
             notes.AddRange(dateAnswer.Value.notes);
             attachments.AddRange(dateAnswer.Value.attachments);
-        } 
-        
+        }
+
         if (numberAnswer != null)
         {
             answers.Add(numberAnswer.Value.answer);
             notes.AddRange(numberAnswer.Value.notes);
             attachments.AddRange(numberAnswer.Value.attachments);
-        } 
-        
+        }
+
         if (ratingAnswer != null)
         {
             answers.Add(ratingAnswer.Value.answer);
             notes.AddRange(ratingAnswer.Value.notes);
             attachments.AddRange(ratingAnswer.Value.attachments);
-        } 
-        
+        }
+
         if (singleSelectAnswer != null)
         {
             answers.Add(singleSelectAnswer.Value.answer);
@@ -150,5 +157,4 @@ public sealed partial class Fake
 
         return GenerateSubmission(formId, answers.ToArray(), notes.ToArray(), attachments.ToArray());
     }
-
 }

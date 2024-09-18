@@ -3118,6 +3118,9 @@ namespace Vote.Monitor.Domain.Migrations
                     b.Property<DateTime?>("LastModifiedOn")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<Guid>("LocationsVersion")
+                        .HasColumnType("uuid");
+
                     b.Property<Guid?>("MonitoringNgoForCitizenReportingId")
                         .HasColumnType("uuid");
 

@@ -1,6 +1,6 @@
 ﻿namespace SubmissionsFaker.Clients.PollingStations;
 
-public class LocationNode
+public class PollingStationNode
 {
     public int Id { get; set; }
     public string Name { get; set; }

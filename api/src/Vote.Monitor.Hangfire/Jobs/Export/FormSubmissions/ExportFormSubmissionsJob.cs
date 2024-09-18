@@ -12,7 +12,8 @@ using Vote.Monitor.Hangfire.Jobs.Export.FormSubmissions.ReadModels;
 
 namespace Vote.Monitor.Hangfire.Jobs.Export.FormSubmissions;
 
-public class ExportFormSubmissionsJob(VoteMonitorContext context,
+public class ExportFormSubmissionsJob(
+    VoteMonitorContext context,
     INpgsqlConnectionFactory dbConnectionFactory,
     IFileStorageService fileStorageService,
     ILogger<ExportFormSubmissionsJob> logger,
@@ -29,7 +30,8 @@ public class ExportFormSubmissionsJob(VoteMonitorContext context,
         {
             logger.LogWarning("ExportData was not found for {electionRoundId}  {exportedDataId}",
                 electionRoundId, exportedDataId);
-            throw new ExportedDataWasNotFoundException(ExportedDataType.FormSubmissions, electionRoundId, exportedDataId);
+            throw new ExportedDataWasNotFoundException(ExportedDataType.FormSubmissions, electionRoundId,
+                exportedDataId);
         }
 
         try
@@ -63,7 +65,8 @@ public class ExportFormSubmissionsJob(VoteMonitorContext context,
             {
                 foreach (var attachment in submission.Attachments)
                 {
-                    var result = await fileStorageService.GetPresignedUrlAsync(attachment.FilePath, attachment.UploadedFileName);
+                    var result =
+                        await fileStorageService.GetPresignedUrlAsync(attachment.FilePath, attachment.UploadedFileName);
 
                     if (result is GetPresignedUrlResult.Ok okResult)
                     {
@@ -114,90 +117,86 @@ public class ExportFormSubmissionsJob(VoteMonitorContext context,
 
     private async Task<List<SubmissionModel>> GetSubmissions(Guid electionRoundId, Guid ngoId, CancellationToken ct)
     {
-        var sql = @"
-            WITH submissions AS
-            (SELECT psi.""Id"" AS ""SubmissionId"",
-            (select ""Id""
-            from ""PollingStationInformationForms""
-            where ""ElectionRoundId"" = @electionRoundId) AS ""FormId"",
-            psi.""PollingStationId"",
-            psi.""MonitoringObserverId"",
-            psi.""Answers"",
-            psi.""FollowUpStatus"",
-            (select ""Questions""
-            from ""PollingStationInformationForms""
-            where ""ElectionRoundId"" = @electionRoundId) AS ""Questions"",
-            '[]'::jsonb AS ""Attachments"",
-            '[]'::jsonb AS ""Notes"",
-            COALESCE(psi.""LastModifiedOn"", psi.""CreatedOn"") ""TimeSubmitted""
-            FROM ""PollingStationInformation"" psi
-            INNER JOIN ""MonitoringObservers"" mo ON mo.""Id"" = psi.""MonitoringObserverId""
-            INNER JOIN ""MonitoringNgos"" mn ON mn.""Id"" = mo.""MonitoringNgoId""
-            WHERE mn.""ElectionRoundId"" = @electionRoundId
-               AND mn.""NgoId"" = @ngoId
-            UNION ALL
-            SELECT
-                fs.""Id"" AS ""SubmissionId"",
-                f.""Id"" AS ""FormId"",
-                fs.""PollingStationId"",
-                fs.""MonitoringObserverId"",
-                fs.""Answers"",
-                fs.""FollowUpStatus"",
-                f.""Questions"",
-
-                COALESCE((select jsonb_agg(jsonb_build_object('QuestionId', ""QuestionId"", 'FileName', ""FileName"", 'MimeType', ""MimeType"", 'FilePath', ""FilePath"", 'UploadedFileName', ""UploadedFileName"", 'TimeSubmitted', COALESCE(""LastModifiedOn"", ""CreatedOn"")))
-                FROM ""Attachments"" a
-                WHERE 
-                    a.""ElectionRoundId"" = @electionRoundId
-                   AND a.""FormId"" = fs.""FormId""
-                   AND a.""MonitoringObserverId"" = fs.""MonitoringObserverId""
-                   AND fs.""PollingStationId"" = a.""PollingStationId""),'[]'::JSONB) AS ""Attachments"",
-
-                COALESCE((select jsonb_agg(jsonb_build_object('QuestionId', ""QuestionId"", 'Text', ""Text"", 'TimeSubmitted', COALESCE(""LastModifiedOn"", ""CreatedOn"")))
-                FROM ""Notes"" n
-                WHERE 
-                    n.""ElectionRoundId"" = @electionRoundId
-                   AND n.""FormId"" = fs.""FormId""
-                   AND n.""MonitoringObserverId"" = fs.""MonitoringObserverId""
-                   AND fs.""PollingStationId"" = n.""PollingStationId""), '[]'::JSONB) AS ""Notes"",
-
-                COALESCE(fs.""LastModifiedOn"", fs.""CreatedOn"") ""TimeSubmitted""
-
-            FROM ""FormSubmissions"" fs
-            INNER JOIN ""MonitoringObservers"" mo ON fs.""MonitoringObserverId"" = mo.""Id""
-            INNER JOIN ""MonitoringNgos"" mn ON mn.""Id"" = mo.""MonitoringNgoId""
-            INNER JOIN ""Forms"" f on f.""Id"" = fs.""FormId""
-            WHERE mn.""ElectionRoundId"" = @electionRoundId
-               AND mn.""NgoId"" = @ngoId
-            order by ""TimeSubmitted"" desc)
-            SELECT s.""SubmissionId"",
-                   s.""FormId"",
-                   s.""TimeSubmitted"",
-                   ps.""Id"" AS ""PollingStationId"",
-                   ps.""Level1"",
-                   ps.""Level2"",
-                   ps.""Level3"",
-                   ps.""Level4"",
-                   ps.""Level5"",
-                   ps.""Number"",
-                   s.""MonitoringObserverId"",
-                   u.""FirstName"",
-                   u.""LastName"",
-                   u.""Email"",
-                   u.""PhoneNumber"",
-                   mo.""Tags"",
-                   s.""Attachments"",
-                   s.""Notes"",
-                   s.""Answers"",
-                   s.""Questions"",
-                   s.""FollowUpStatus""
-            FROM submissions s
-            INNER JOIN ""PollingStations"" ps on ps.""Id"" = s.""PollingStationId""
-            INNER JOIN ""MonitoringObservers"" mo on mo.""Id"" = s.""MonitoringObserverId""
-            INNER JOIN ""MonitoringNgos"" mn ON mn.""Id"" = mo.""MonitoringNgoId""
-            INNER JOIN ""Observers"" o ON o.""Id"" = mo.""ObserverId""
-            INNER JOIN ""AspNetUsers"" u ON u.""Id"" = o.""ApplicationUserId""
-            WHERE mn.""ElectionRoundId"" = @electionRoundId AND mn.""NgoId"" = @ngoId";
+        var sql = """
+                  WITH submissions AS
+                           (SELECT psi."Id" AS "SubmissionId",
+                                   (select "Id" from "PollingStationInformationForms" where "ElectionRoundId" = @electionRoundId) AS "FormId",
+                                   psi."PollingStationId",
+                                   psi."MonitoringObserverId",
+                                   psi."Answers",
+                                   psi."FollowUpStatus",
+                                   (select "Questions"
+                                    from "PollingStationInformationForms"
+                                    where "ElectionRoundId" = @electionRoundId) AS "Questions",
+                                   '[]'::jsonb AS "Attachments",
+                                   '[]'::jsonb AS "Notes",
+                                   COALESCE(psi."LastModifiedOn", psi."CreatedOn") "TimeSubmitted"
+                            FROM "PollingStationInformation" psi
+                                     INNER JOIN "MonitoringObservers" mo ON mo."Id" = psi."MonitoringObserverId"
+                                     INNER JOIN "MonitoringNgos" mn ON mn."Id" = mo."MonitoringNgoId"
+                            WHERE mn."ElectionRoundId" = @electionRoundId
+                              AND mn."NgoId" = @ngoId
+                            UNION ALL
+                            SELECT fs."Id" AS "SubmissionId",
+                                   f."Id" AS "FormId",
+                                   fs."PollingStationId",
+                                   fs."MonitoringObserverId",
+                                   fs."Answers",
+                                   fs."FollowUpStatus",
+                                   f."Questions",
+                  
+                                   COALESCE((select jsonb_agg(jsonb_build_object('QuestionId', "QuestionId", 'FilePath', "FilePath", 'UploadedFileName', "UploadedFileName"))
+                                             FROM "Attachments" a
+                                             WHERE a."ElectionRoundId" = @electionRoundId
+                                               AND a."FormId" = fs."FormId"
+                                               AND a."MonitoringObserverId" = fs."MonitoringObserverId"
+                                               AND fs."PollingStationId" = a."PollingStationId"), '[]'::JSONB) AS "Attachments",
+                  
+                                   COALESCE((select jsonb_agg(jsonb_build_object('QuestionId', "QuestionId", 'Text', "Text"))
+                                             FROM "Notes" n
+                                             WHERE n."ElectionRoundId" = @electionRoundId
+                                               AND n."FormId" = fs."FormId"
+                                               AND n."MonitoringObserverId" = fs."MonitoringObserverId"
+                                               AND fs."PollingStationId" = n."PollingStationId"), '[]'::JSONB) AS "Notes",
+                  
+                                   COALESCE(fs."LastModifiedOn", fs."CreatedOn") "TimeSubmitted"
+                  
+                            FROM "FormSubmissions" fs
+                                     INNER JOIN "MonitoringObservers" mo ON fs."MonitoringObserverId" = mo."Id"
+                                     INNER JOIN "MonitoringNgos" mn ON mn."Id" = mo."MonitoringNgoId"
+                                     INNER JOIN "Forms" f on f."Id" = fs."FormId"
+                            WHERE mn."ElectionRoundId" = @electionRoundId
+                              AND mn."NgoId" = @ngoId
+                            order by "TimeSubmitted" desc)
+                  SELECT s."SubmissionId",
+                         s."FormId",
+                         s."TimeSubmitted",
+                         ps."Level1",
+                         ps."Level2",
+                         ps."Level3",
+                         ps."Level4",
+                         ps."Level5",
+                         ps."Number",
+                         s."MonitoringObserverId",
+                         u."FirstName",
+                         u."LastName",
+                         u."Email",
+                         u."PhoneNumber",
+                         mo."Tags",
+                         s."Attachments",
+                         s."Notes",
+                         s."Answers",
+                         s."Questions",
+                         s."FollowUpStatus"
+                  FROM submissions s
+                           INNER JOIN "PollingStations" ps on ps."Id" = s."PollingStationId"
+                           INNER JOIN "MonitoringObservers" mo on mo."Id" = s."MonitoringObserverId"
+                           INNER JOIN "MonitoringNgos" mn ON mn."Id" = mo."MonitoringNgoId"
+                           INNER JOIN "Observers" o ON o."Id" = mo."ObserverId"
+                           INNER JOIN "AspNetUsers" u ON u."Id" = o."ApplicationUserId"
+                  WHERE mn."ElectionRoundId" = @electionRoundId
+                    AND mn."NgoId" = @ngoId
+                  """;
 
         var queryParams = new { electionRoundId, ngoId };
 
@@ -206,6 +205,7 @@ public class ExportFormSubmissionsJob(VoteMonitorContext context,
         {
             submissions = await dbConnection.QueryAsync<SubmissionModel>(sql, queryParams);
         }
+
         var submissionsData = submissions.ToList();
         return submissionsData;
     }

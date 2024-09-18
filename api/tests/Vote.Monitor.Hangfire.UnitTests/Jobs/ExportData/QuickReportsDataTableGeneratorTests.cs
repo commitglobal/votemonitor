@@ -1,6 +1,7 @@
 ﻿using Vote.Monitor.Domain.Entities.QuickReportAggregate;
 using Vote.Monitor.Hangfire.Jobs.Export.QuickReports;
 using Vote.Monitor.Hangfire.Jobs.Export.QuickReports.ReadModels;
+using Vote.Monitor.Hangfire.UnitTests.Jobs.ExportData.Fakes;
 
 namespace Vote.Monitor.Hangfire.UnitTests.Jobs.ExportData;
 
@@ -24,7 +25,6 @@ public class QuickReportsDataTableGeneratorTests
         "Email",
         "PhoneNumber",
         "LocationType",
-        "PollingStationId",
         "Level1",
         "Level2",
         "Level3",
@@ -65,7 +65,6 @@ public class QuickReportsDataTableGeneratorTests
         [
             [
                 .. GetDefaultExpectedColumns(quickReport1),
-                quickReport1.PollingStationId.ToString(),
                 quickReport1.Level1,
                 quickReport1.Level2,
                 quickReport1.Level3,
@@ -144,7 +143,6 @@ public class QuickReportsDataTableGeneratorTests
         [
             [
                 .. GetDefaultExpectedColumns(quickReport),
-                quickReport.PollingStationId.ToString(),
                 quickReport.Level1,
                 quickReport.Level2,
                 quickReport.Level3,

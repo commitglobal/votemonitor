@@ -80,7 +80,7 @@ public class Endpoint(IAuthorizationService authorizationService,
                 NgoName: ngoName,
                 ElectionRoundDetails: electionRoundName);
             var email = emailFactory.GenerateEmail(EmailTemplateType.InvitationNewUser, invitationNewUserEmailProps);
-            jobService.SendEmail(monitoringObserver.Email!, email.Subject, email.Body);
+            jobService.EnqueueSendEmail(monitoringObserver.Email!, email.Subject, email.Body);
         }
 
         return TypedResults.NoContent();

@@ -2,11 +2,19 @@
 using Vote.Monitor.Domain.Entities.QuickReportAggregate;
 using Vote.Monitor.Hangfire.Jobs.Export.QuickReports.ReadModels;
 
-namespace Vote.Monitor.Hangfire.UnitTests.Jobs.ExportData;
+namespace Vote.Monitor.Hangfire.UnitTests.Jobs.ExportData.Fakes;
 
 public sealed partial class Fake
 {
-    public static QuickReportModel QuickReport(Guid quickReportId, QuickReportLocationType locationType, QuickReportAttachmentModel[] attachments)
+    private static readonly QuickReportFollowUpStatus[] _quickReportsFollowUpStatuses =
+    [
+        QuickReportFollowUpStatus.NeedsFollowUp,
+        QuickReportFollowUpStatus.NotApplicable,
+        QuickReportFollowUpStatus.Resolved
+    ];
+
+    public static QuickReportModel QuickReport(Guid quickReportId, QuickReportLocationType locationType,
+        QuickReportAttachmentModel[] attachments)
     {
         var fakeQuickReport = new Faker<QuickReportModel>()
             .RuleFor(x => x.Id, quickReportId)
@@ -26,8 +34,6 @@ public sealed partial class Fake
 
                 if (locationType == QuickReportLocationType.VisitedPollingStation)
                 {
-                    x.PollingStationId = f.Random.Guid();
-
                     x.Level1 = f.Lorem.Word();
                     x.Level2 = f.Lorem.Word();
                     x.Level3 = f.Lorem.Word();

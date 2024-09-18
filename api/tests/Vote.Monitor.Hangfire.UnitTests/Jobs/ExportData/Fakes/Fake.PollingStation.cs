@@ -2,7 +2,7 @@
 using Bogus;
 using Vote.Monitor.Hangfire.Jobs.Export.PollingStations.ReadModels;
 
-namespace Vote.Monitor.Hangfire.UnitTests.Jobs.ExportData;
+namespace Vote.Monitor.Hangfire.UnitTests.Jobs.ExportData.Fakes;
 
 public sealed partial class Fake
 {

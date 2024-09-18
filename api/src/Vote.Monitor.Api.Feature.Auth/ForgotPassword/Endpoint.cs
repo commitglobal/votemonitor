@@ -42,7 +42,7 @@ public class Endpoint(
         var emailProps = new ResetPasswordEmailProps(FullName: user.FirstName + " " + user.LastName, CdnUrl: _apiConfig.WebAppUrl, ResetPasswordUrl: passwordResetUrl);
         var mail = emailFactory.GenerateEmail(EmailTemplateType.ResetPassword, emailProps);
 
-        jobService.SendEmail(request.Email, mail.Subject, mail.Body);
+        jobService.EnqueueSendEmail(request.Email, mail.Subject, mail.Body);
 
         return TypedResults.Ok();
     }
