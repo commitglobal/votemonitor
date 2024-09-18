@@ -16,7 +16,7 @@ public class CreateRequestValidatorTests
         var result = _validator.TestValidate(request);
 
         // Assert
-        result.ShouldNotHaveValidationErrorFor(x => x.Address);
+        result.ShouldHaveValidationErrorFor(x => x.ElectionRoundId);
     }
 
     [Theory]

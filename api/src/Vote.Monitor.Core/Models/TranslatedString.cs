@@ -51,4 +51,17 @@ public class TranslatedString : Dictionary<string, string>
             Remove(languageCode);
         }
     }
+
+    public static TranslatedString New(IEnumerable<string> languages, string value)
+    {
+        var languagesArray = languages.ToArray();
+
+        var translatedString = new TranslatedString();
+        foreach (var language in languagesArray)
+        {
+            translatedString.Add(language, value);
+        }
+
+        return translatedString;
+    }
 }

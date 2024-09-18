@@ -196,6 +196,19 @@
       },
       "createDialogTitle": "Create form",
       "resetFilters": "Reset filters"
+    },
+    "locations": {
+      "tabTitle": "Locations",
+      "cardTitle": "Locations",
+      "headers": {
+        "tags": "Location tags",
+        "level1": "Level 1",
+        "level2": "Level 2",
+        "level3": "Level 3",
+        "level4": "Level 4",
+        "level5": "Level 5"
+      },
+      "resetFilters": "Reset filters"
     }
   },
   "pagination": {

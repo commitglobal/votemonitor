@@ -2,8 +2,10 @@
 
 public interface IJobService
 {
-    void SendEmail(string to, string subject, string body);
-    void ExportFormSubmissions(Guid electionRoundId, Guid ngoId, Guid exportedDataId);
-    void ExportQuickReportsSubmissions(Guid electionRoundId, Guid ngoId, Guid exportedDataId);
-    void ExportPollingStations(Guid electionRoundId, Guid exportedDataId);
+    void EnqueueSendEmail(string to, string subject, string body);
+    void EnqueueExportFormSubmissions(Guid electionRoundId, Guid ngoId, Guid exportedDataId);
+    void EnqueueExportQuickReportsSubmissions(Guid electionRoundId, Guid ngoId, Guid exportedDataId);
+    void EnqueueExportPollingStations(Guid electionRoundId, Guid exportedDataId);
+    void EnqueueExportCitizenReports(Guid electionRoundId, Guid ngoId, Guid exportedDataId);
+    void EnqueueExportLocations(Guid electionRoundId, Guid exportedDataId);
 }
