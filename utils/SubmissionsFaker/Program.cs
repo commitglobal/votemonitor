@@ -144,7 +144,8 @@ await AnsiConsole.Progress()
         #region import locations
 
         using var locationsStream = File.OpenRead("locations.csv");
-        await platformAdminApi.ImportLocations(electionRound.Id, new StreamPart(locationsStream, "locations.csv", "text/csv"), platformAdminToken.Token);
+        await platformAdminApi.ImportLocations(electionRound.Id,
+            new StreamPart(locationsStream, "locations.csv", "text/csv"), platformAdminToken.Token);
 
         var locationsNodes = await locationsApi.GetAllLocations(electionRound.Id, platformAdminToken.Token);
         locations = faker
@@ -258,7 +259,8 @@ await AnsiConsole.Progress()
         var progressTask = ctx.AddTask("[green]Faking PSI submissions [/]", maxValue: Consts.NUMBER_OF_SUBMISSIONS);
         foreach (var submissionRequestChunk in psiRequests.Chunk(Consts.CHUNK_SIZE))
         {
-            var tasks = submissionRequestChunk.Select(sr => observerApi.SubmitPSIForm(electionRound.Id, sr.PollingStationId, sr, sr.ObserverToken));
+            var tasks = submissionRequestChunk.Select(sr =>
+                observerApi.SubmitPSIForm(electionRound.Id, sr.PollingStationId, sr, sr.ObserverToken));
 
             await Task.WhenAll(tasks);
             progressTask.Increment(Consts.CHUNK_SIZE);

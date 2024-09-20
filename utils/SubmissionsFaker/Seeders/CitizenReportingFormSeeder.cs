@@ -16,8 +16,10 @@ public class CitizenReportingFormSeeder
         progressTask.MaxValue(1);
 
         progressTask.StartTask();
-        var openingForm = await ngoAdminApi.CreateForm(electionRoundId, FormData.OpeningForm, ngoAdminToken.Token);
+        var openingForm = await ngoAdminApi.CreateForm(electionRoundId,
+            FormData.OpeningForm with { FormType = "CitizenReporting" }, ngoAdminToken.Token);
         await ngoAdminApi.UpdateForm(electionRoundId, openingForm.Id, FormData.OpeningForm, ngoAdminToken.Token);
+        await ngoAdminApi.PublishForm(electionRoundId, openingForm.Id, ngoAdminToken.Token);
         progressTask.Increment(1);
 
         progressTask.Increment(progressTask.MaxValue);

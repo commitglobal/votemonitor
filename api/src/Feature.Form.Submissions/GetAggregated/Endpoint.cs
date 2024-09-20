@@ -3,6 +3,7 @@ using Dapper;
 using Feature.Form.Submissions.Models;
 using Microsoft.EntityFrameworkCore;
 using Vote.Monitor.Answer.Module.Aggregators;
+using Vote.Monitor.Core.Models;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
 using Vote.Monitor.Domain;
 using Vote.Monitor.Domain.ConnectionFactory;
@@ -62,7 +63,6 @@ public class Endpoint(
             .Include(x => x.MonitoringObserver)
             .ThenInclude(x => x.Observer)
             .ThenInclude(x => x.ApplicationUser)
-            .Include(x => x.PollingStation)
             .Where(x => x.ElectionRoundId == req.ElectionRoundId
                         && x.MonitoringObserver.MonitoringNgo.NgoId == req.NgoId
                         && x.FormId == req.FormId)
@@ -83,7 +83,38 @@ public class Endpoint(
                 : x.NumberOfFlaggedAnswers == 0)
             .Where(x => req.FollowUpStatus == null || x.FollowUpStatus == req.FollowUpStatus)
             .Where(x => tags.Length == 0 || x.MonitoringObserver.Tags.Any(tag => tags.Contains(tag)))
+            .Where(x => req.MonitoringObserverStatus == null ||
+                        x.MonitoringObserver.Status == req.MonitoringObserverStatus)
+            .Where(x => req.QuestionsAnswered == null
+                        || (req.QuestionsAnswered == QuestionsAnsweredFilter.All &&
+                            x.NumberOfQuestionsAnswered == x.Form.NumberOfQuestions)
+                        || (req.QuestionsAnswered == QuestionsAnsweredFilter.Some &&
+                            x.NumberOfQuestionsAnswered < x.Form.NumberOfQuestions)
+                        || (req.QuestionsAnswered == QuestionsAnsweredFilter.None && x.NumberOfQuestionsAnswered == 0))
+            .Where(x => req.HasNotes == null || (req.HasNotes.Value
+                ? context.Notes.Count(n =>
+                    n.MonitoringObserverId == x.MonitoringObserverId
+                    && n.FormId == x.FormId
+                    && n.PollingStationId == x.PollingStationId
+                    && n.ElectionRoundId == x.ElectionRoundId) > 0
+                : context.Notes.Count(n =>
+                    n.MonitoringObserverId == x.MonitoringObserverId
+                    && n.FormId == x.FormId
+                    && n.PollingStationId == x.PollingStationId
+                    && n.ElectionRoundId == x.ElectionRoundId) == 0))
+            .Where(x => req.HasAttachments == null || (req.HasAttachments.Value
+                ? context.Attachments.Count(a =>
+                    a.MonitoringObserverId == x.MonitoringObserverId
+                    && a.FormId == x.FormId
+                    && a.PollingStationId == x.PollingStationId
+                    && a.ElectionRoundId == x.ElectionRoundId) > 0
+                : context.Attachments.Count(a =>
+                    a.MonitoringObserverId == x.MonitoringObserverId
+                    && a.FormId == x.FormId
+                    && a.PollingStationId == x.PollingStationId
+                    && a.ElectionRoundId == x.ElectionRoundId) == 0))
             .AsNoTracking()
+            .AsSplitQuery()
             .ToListAsync(ct);
 
         var formSubmissionsAggregate = new FormSubmissionsAggregate(form);
@@ -195,6 +226,7 @@ public class Endpoint(
         var tags = req.TagsFilter ?? [];
 
         var submissions = await context.PollingStationInformation
+            .Include(x => x.PollingStationInformationForm)
             .Include(x => x.MonitoringObserver)
             .ThenInclude(x => x.Observer)
             .ThenInclude(x => x.ApplicationUser)
@@ -217,7 +249,18 @@ public class Endpoint(
                 : x.NumberOfFlaggedAnswers == 0)
             .Where(x => req.FollowUpStatus == null || x.FollowUpStatus == req.FollowUpStatus)
             .Where(x => tags.Length == 0 || x.MonitoringObserver.Tags.Any(tag => tags.Contains(tag)))
+            .Where(x => req.MonitoringObserverStatus == null ||
+                        x.MonitoringObserver.Status == req.MonitoringObserverStatus)
+            .Where(x => req.QuestionsAnswered == null
+                        || (req.QuestionsAnswered == QuestionsAnsweredFilter.All &&
+                            x.NumberOfQuestionsAnswered == x.PollingStationInformationForm.NumberOfQuestions)
+                        || (req.QuestionsAnswered == QuestionsAnsweredFilter.Some &&
+                            x.NumberOfQuestionsAnswered < x.PollingStationInformationForm.NumberOfQuestions)
+                        || (req.QuestionsAnswered == QuestionsAnsweredFilter.None && x.NumberOfQuestionsAnswered == 0))
+            .Where(x => req.HasNotes == null || !req.HasNotes.Value)
+            .Where(x => req.HasAttachments == null || !req.HasAttachments.Value)
             .AsNoTracking()
+            .AsSplitQuery()
             .ToListAsync(ct);
 
         var formSubmissionsAggregate = new FormSubmissionsAggregate(form);
