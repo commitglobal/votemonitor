@@ -1,4 +1,6 @@
-﻿using Vote.Monitor.Core.Security;
+﻿using Vote.Monitor.Core.Models;
+using Vote.Monitor.Core.Security;
+using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 
 namespace Feature.Form.Submissions.GetAggregated;
 
@@ -28,4 +30,9 @@ public class Request
     [QueryParam] public SubmissionFollowUpStatus? FollowUpStatus { get; set; }
 
     [QueryParam] public string[]? TagsFilter { get; set; } = [];
+
+    [QueryParam] public MonitoringObserverStatus? MonitoringObserverStatus { get; set; }
+    [QueryParam] public bool? HasNotes { get; set; }
+    [QueryParam] public bool? HasAttachments { get; set; }
+    [QueryParam] public QuestionsAnsweredFilter? QuestionsAnswered { get; set; }
 }

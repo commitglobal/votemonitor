@@ -17,7 +17,7 @@ import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-q
 import { useNavigate, useRouter } from '@tanstack/react-router';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { UpdateMonitoringObserverRequest } from '../../models/monitoring-observer';
+import { MonitoringObserverStatus, UpdateMonitoringObserverRequest } from '../../models/monitoring-observer';
 import { MonitorObserverBackButton } from '../MonitoringObserverBackButton';
 
 export default function EditObserver() {
@@ -102,16 +102,16 @@ export default function EditObserver() {
       title={`Edit ${monitoringObserver.firstName} ${monitoringObserver.lastName}`}
       backButton={<MonitorObserverBackButton />}>
       <Card className='w-[800px] pt-0'>
-        <CardHeader className='flex flex-column gap-2'>
-          <div className='flex flex-row justify-between items-center'>
+        <CardHeader className='flex gap-2 flex-column'>
+          <div className='flex flex-row items-center justify-between'>
             <CardTitle className='text-xl'>Edit observer</CardTitle>
           </div>
           <Separator />
         </CardHeader>
-        <CardContent className='flex flex-col gap-6 items-baseline'>
+        <CardContent className='flex flex-col items-baseline gap-6'>
           <div className='flex flex-col gap-1'>
-            <p className='text-gray-700 font-bold'>Email</p>
-            <p className='text-gray-900 font-normal'>{monitoringObserver.email}</p>
+            <p className='font-bold text-gray-700'>Email</p>
+            <p className='font-normal text-gray-900'>{monitoringObserver.email}</p>
           </div>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
@@ -182,7 +182,11 @@ export default function EditObserver() {
                       Status <span className='text-red-500'>*</span>
                     </FormLabel>
                     <FormControl>
-                      <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                        value={field.value}
+                        disabled={field.value === MonitoringObserverStatus.Pending}>
                         <SelectTrigger>
                           <SelectValue placeholder='Observer status' />
                         </SelectTrigger>
@@ -190,6 +194,9 @@ export default function EditObserver() {
                           <SelectGroup>
                             <SelectItem value='Active'>Active</SelectItem>
                             <SelectItem value='Suspended'>Suspended</SelectItem>
+                            <SelectItem value='Pending' disabled={true}>
+                              Pending
+                            </SelectItem>
                           </SelectGroup>
                         </SelectContent>
                       </Select>

@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using Vote.Monitor.Domain.Entities.FormAggregate;
 using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
 
 namespace Feature.Form.Submissions.UnitTests.Endpoints;
@@ -38,7 +39,8 @@ public class UpsertEndpointTests
     {
         // Arrange
         _authorizationService
-            .AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object>(), Arg.Any<IEnumerable<IAuthorizationRequirement>>())
+            .AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object>(),
+                Arg.Any<IEnumerable<IAuthorizationRequirement>>())
             .Returns(AuthorizationResult.Failed());
 
         // Act
@@ -87,7 +89,7 @@ public class UpsertEndpointTests
     public async Task ShouldUpdateFormSubmission_WhenFormSubmissionExists()
     {
         // Arrange
-        var form = new FormAggregateFaker().Generate();
+        var form = new FormAggregateFaker(status: FormStatus.Published).Generate();
         _formRepository
             .FirstOrDefaultAsync(Arg.Any<GetFormSpecification>())
             .Returns(form);
@@ -103,7 +105,8 @@ public class UpsertEndpointTests
             ElectionRoundId = Guid.NewGuid(),
             PollingStationId = Guid.NewGuid(),
             ObserverId = Guid.NewGuid(),
-            Answers = [
+            Answers =
+            [
                 new NumberAnswerRequest
                 {
                     QuestionId = numberQuestionId,
@@ -194,6 +197,25 @@ public class UpsertEndpointTests
     }
 
     [Fact]
+    public async Task ShouldThrow_WhenFormIsDrafted()
+    {
+        // Arrange
+        var form = new FormAggregateFaker().Generate();
+        _formRepository
+            .FirstOrDefaultAsync(Arg.Any<GetFormSpecification>())
+            .Returns(form);
+
+        var request = new Upsert.Request();
+        
+        // Act
+        Func<Task> act = () => _endpoint.ExecuteAsync(request, default);
+
+        // Assert
+        var exception = await act.Should().ThrowAsync<ValidationFailureException>();
+        exception.Which.Failures.Should().HaveCount(1).And.Subject.First().ErrorMessage.Should().Be("Form is drafted");
+    }
+
+    [Fact]
     public async Task ShouldThrow_WhenInvalidAnswersReceived()
     {
         // Arrange
@@ -216,7 +238,8 @@ public class UpsertEndpointTests
             ElectionRoundId = electionRoundId,
             PollingStationId = pollingStationId,
             ObserverId = observerId,
-            Answers = [
+            Answers =
+            [
                 new NumberAnswerRequest
                 {
                     QuestionId = Guid.NewGuid(),
@@ -252,7 +275,7 @@ public class UpsertEndpointTests
 
         var electionRound = new ElectionRoundAggregateFaker(electionRoundId).Generate();
 
-        var form = new FormAggregateFaker(electionRound).Generate();
+        var form = new FormAggregateFaker(electionRound, status: FormStatus.Published).Generate();
         _formRepository
             .FirstOrDefaultAsync(Arg.Any<GetFormSpecification>())
             .Returns(form);
@@ -267,7 +290,8 @@ public class UpsertEndpointTests
             ElectionRoundId = electionRoundId,
             PollingStationId = pollingStationId,
             ObserverId = observerId,
-            Answers = [
+            Answers =
+            [
                 new NumberAnswerRequest
                 {
                     QuestionId = numberQuestionId,
@@ -292,8 +316,8 @@ public class UpsertEndpointTests
         await _repository
             .Received(1)
             .AddAsync(Arg.Is<FormSubmission>(x => x.ElectionRoundId == electionRoundId
-                                                             && x.PollingStationId == pollingStationId
-                                                             && x.MonitoringObserverId == monitoringObserver.Id));
+                                                  && x.PollingStationId == pollingStationId
+                                                  && x.MonitoringObserverId == monitoringObserver.Id));
 
         result
             .Should().BeOfType<Results<Ok<FormSubmissionModel>, NotFound>>()

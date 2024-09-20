@@ -30,7 +30,6 @@ import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringCo
 import { isQueryFiltered } from '@/lib/utils';
 import { queryClient } from '@/main';
 import { format } from 'date-fns';
-import { useMonitoringObserversTags } from '../../../../hooks/tags-queries';
 import { MonitoringObserversListFilters } from '../../filtering/MonitoringObserversListFilters';
 import { MonitoringObserver, MonitoringObserverStatus } from '../../models/monitoring-observer';
 import ImportMonitoringObserversDialog from '../MonitoringObserversList/ImportMonitoringObserversDialog';
@@ -148,9 +147,9 @@ function MonitoringObserversList() {
   };
 
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
-  const { data: tags } = useMonitoringObserversTags(currentElectionRoundId);
 
   const useMonitoringObservers = (params: DataTableParameters): UseMonitoringObserversResult => {
+    const pageParams = queryParams as any;
     return useQuery({
       queryKey: [
         'monitoring-observers',
@@ -159,8 +158,8 @@ function MonitoringObserversList() {
         params.sortColumnName,
         params.sortOrder,
         searchText,
-        (queryParams as any).status,
-        (queryParams as any).tags,
+        pageParams[FILTER_KEY.MonitoringObserverStatus],
+        pageParams[FILTER_KEY.MonitoringObserverTags],
       ],
       queryFn: async () => {
         const paramsObject: any = {
@@ -169,14 +168,14 @@ function MonitoringObserversList() {
           SortColumnName: params.sortColumnName,
           SortOrder: params.sortOrder,
           searchText: searchText,
-          status: (queryParams as any)[FILTER_KEY.MonitoringObserverStatus],
-          tags: (queryParams as any)[FILTER_KEY.MonitoringObserverTags],
+          status: pageParams[FILTER_KEY.MonitoringObserverStatus],
+          tags: pageParams[FILTER_KEY.MonitoringObserverTags],
         };
 
         const tagString =
-          (queryParams as any).tags == undefined
+          pageParams.tags == undefined
             ? ''
-            : (queryParams as any).tags?.map((n: string) => `tags=${n}`).join('&');
+            : pageParams.tags?.map((n: string) => `tags=${n}`).join('&');
 
         const response = await authApi.get<PageResponse<MonitoringObserver>>(
           `/election-rounds/${currentElectionRoundId}/monitoring-observers?${tagString ?? ''}`,
@@ -273,10 +272,10 @@ function MonitoringObserversList() {
 
   return (
     <Card className='w-full pt-0'>
-      <CardHeader className='flex flex-column gap-2'>
-        <div className='flex flex-row justify-between items-center px-6'>
+      <CardHeader className='flex gap-2 flex-column'>
+        <div className='flex flex-row items-center justify-between px-6'>
           <CardTitle className='text-xl'>Monitoring observers list</CardTitle>
-          <div className='table-actions flex flex-row-reverse flex-row- gap-4'>
+          <div className='flex flex-row-reverse gap-4 table-actions flex-row-'>
             {!!importErrorsFileId && (
               <ImportMonitoringObserversErrorsDialog
                 fileId={importErrorsFileId}
@@ -311,7 +310,7 @@ function MonitoringObserversList() {
               Import observer list
             </Button>
             <Button
-              className='bg-background hover:bg-purple-50 hover:text-purple-500 text-purple-900'
+              className='text-purple-900 bg-background hover:bg-purple-50 hover:text-purple-500'
               onClick={exportMonitoringObservers}>
               <svg
                 className='mr-1.5'
@@ -330,7 +329,7 @@ function MonitoringObserversList() {
               Export monitoring observer list
             </Button>
             <Button className='bg-yellow-400 hover:bg-yellow-600' onClick={() => handleResendInviteToObserver()}>
-              <PaperAirplaneIcon className='h-6 w-6 text-white' />
+              <PaperAirplaneIcon className='w-6 h-6 text-white' />
               Resend invites
             </Button>
             <ConfirmResendInvitationDialog
@@ -350,7 +349,7 @@ function MonitoringObserversList() {
           </div>
         </div>
         <Separator />
-        <div className='filters px-6 flex flex-row justify-end gap-4'>
+        <div className='flex flex-row justify-end gap-4 px-6 filters'>
           <>
             <Input onChange={handleSearchInput} className='max-w-md' placeholder='Search' />
             <FunnelIcon
