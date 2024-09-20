@@ -56,10 +56,25 @@ public class Endpoint(VoteMonitorContext context, IFileStorageService fileStorag
                         EF.Functions.ILike(x.Location.Level4, req.Level4Filter))
             .Where(x => string.IsNullOrWhiteSpace(req.Level5Filter) ||
                         EF.Functions.ILike(x.Location.Level5, req.Level5Filter))
-            .Where(x => req.HasFlaggedAnswers == null || req.HasFlaggedAnswers.Value
+            .Where(x => req.HasFlaggedAnswers == null || (req.HasFlaggedAnswers.Value
                 ? x.NumberOfFlaggedAnswers > 0
-                : x.NumberOfFlaggedAnswers == 0)
+                : x.NumberOfFlaggedAnswers == 0))
+            .Include(x => x.Form)
             .Where(x => req.FollowUpStatus == null || x.FollowUpStatus == req.FollowUpStatus)
+            .Where(x => req.QuestionsAnswered == null
+                        || (req.QuestionsAnswered == QuestionsAnsweredFilter.All &&
+                            x.NumberOfQuestionsAnswered == x.Form.NumberOfQuestions)
+                        || (req.QuestionsAnswered == QuestionsAnsweredFilter.Some &&
+                            x.NumberOfQuestionsAnswered < x.Form.NumberOfQuestions)
+                        || (req.QuestionsAnswered == QuestionsAnsweredFilter.None && x.NumberOfQuestionsAnswered == 0))
+            .Where(x => req.HasNotes == null || (req.HasNotes.Value
+                ? x.Notes.Any()
+                : !x.Notes.Any()))
+            .Where(x => req.HasAttachments == null || (req.HasAttachments.Value
+                ? x.Attachments.Any()
+                : !x.Attachments.Any()))
+            .Where(x => req.FollowUpStatus == null || x.FollowUpStatus == req.FollowUpStatus)
+            .AsSplitQuery()
             .AsNoTracking()
             .ToListAsync(ct);
 

@@ -1,6 +1,7 @@
 ﻿using Authorization.Policies.Requirements;
 using Microsoft.AspNetCore.Authorization;
 using Vote.Monitor.Answer.Module.Mappers;
+using Vote.Monitor.Domain.Entities.FormAggregate;
 using Vote.Monitor.Domain.Entities.FormAnswerBase;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
@@ -37,6 +38,12 @@ public class Endpoint(IRepository<FormSubmission> repository,
         if (form is null)
         {
             return TypedResults.NotFound();
+        }
+
+        if (form.Status == FormStatus.Drafted)
+        {
+            AddError(x => x.FormId, "Form is drafted");
+            ThrowIfAnyErrors();
         }
 
         var specification = new GetFormSubmissionSpecification(req.ElectionRoundId, req.PollingStationId, req.FormId, req.ObserverId);

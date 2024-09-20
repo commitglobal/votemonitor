@@ -25,4 +25,8 @@ public class Request
     [QueryParam] public bool? HasFlaggedAnswers { get; set; }
 
     [QueryParam] public CitizenReportFollowUpStatus? FollowUpStatus { get; set; }
+    
+    [QueryParam] public bool? HasNotes { get; set; }
+    [QueryParam] public bool? HasAttachments { get; set; }
+    [QueryParam] public QuestionsAnsweredFilter? QuestionsAnswered { get; set; }
 }

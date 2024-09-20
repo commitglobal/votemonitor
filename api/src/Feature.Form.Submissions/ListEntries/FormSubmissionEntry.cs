@@ -1,6 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 using Ardalis.SmartEnum.SystemTextJson;
 using Vote.Monitor.Domain.Entities.FormAggregate;
+using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 
 namespace Feature.Form.Submissions.ListEntries;
 
@@ -25,7 +26,7 @@ public record FormSubmissionEntry
     public string ObserverName { get; init; } = default!;
     public string Email { get; init; } = default!;
     public string PhoneNumber { get; init; } = default!;
-    public string[] Tags { get; init; }
+    public string[] Tags { get; init; } = [];
     public int NumberOfQuestionsAnswered { get; init; }
     public int NumberOfFlaggedAnswers { get; init; }
     public int MediaFilesCount { get; init; }
@@ -33,4 +34,7 @@ public record FormSubmissionEntry
 
     [JsonConverter(typeof(SmartEnumNameConverter<SubmissionFollowUpStatus, string>))]
     public SubmissionFollowUpStatus FollowUpStatus { get; init; }
+
+    [JsonConverter(typeof(SmartEnumNameConverter<MonitoringObserverStatus, string>))]
+    public MonitoringObserverStatus MonitoringObserverStatus { get; init; }
 }
