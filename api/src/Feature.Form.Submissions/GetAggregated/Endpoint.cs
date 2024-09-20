@@ -226,7 +226,6 @@ public class Endpoint(
         var tags = req.TagsFilter ?? [];
 
         var submissions = await context.PollingStationInformation
-            .Include(x => x.PollingStationInformationForm)
             .Include(x => x.MonitoringObserver)
             .ThenInclude(x => x.Observer)
             .ThenInclude(x => x.ApplicationUser)
