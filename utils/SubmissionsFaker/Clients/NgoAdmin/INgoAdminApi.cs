@@ -16,7 +16,7 @@ public interface INgoAdminApi
         [Body] UpdateForm form,
         [Authorize] string token);
 
-    [Put("/api/election-rounds/{electionRoundId}/forms/{id}:publish")]
+    [Post("/api/election-rounds/{electionRoundId}/forms/{id}:publish")]
     Task PublishForm([AliasAs("electionRoundId")] string electionRoundId,
         [AliasAs("id")] string id,
         [Authorize] string token);
