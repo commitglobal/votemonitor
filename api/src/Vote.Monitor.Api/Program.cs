@@ -202,6 +202,7 @@ app.UseSentryMiddleware()
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<QuickReportFollowUpStatus, string>());
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<TranslationStatus, string>());
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<CitizenReportFollowUpStatus, string>());
+    x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<QuestionsAnsweredFilter, string>());
 
     x.Serializer.Options.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
 });
