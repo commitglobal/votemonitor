@@ -76,7 +76,7 @@ public class AnswerWriter
     {
         foreach (var option in options)
         {
-            _questionHeader.Add(option.Text[_defaultLanguage]+ (option.IsFlagged ? "~$red$~" : ""));
+            _questionHeader.Add(option.Text[_defaultLanguage] + (option.IsFlagged ? "~$red$~" : ""));
 
             if (option.IsFreeText)
             {
@@ -85,7 +85,8 @@ public class AnswerWriter
         }
     }
 
-    public void WithSubmission(Guid submissionId, BaseAnswer answer, List<SubmissionAttachmentModel> attachments, List<SubmissionNoteModel> notes)
+    public void WithSubmission(Guid submissionId, BaseAnswer answer, List<SubmissionAttachmentModel> attachments,
+        List<SubmissionNoteModel> notes)
     {
         _maxNumberOfAttachments = Math.Max(_maxNumberOfAttachments, attachments.Count);
         _maxNumberOfNotes = Math.Max(_maxNumberOfNotes, notes.Count);
@@ -109,7 +110,10 @@ public class AnswerWriter
                 break;
             case SingleSelectAnswer singleSelectAnswer:
                 var singleSelectQuestion = _question as SingleSelectQuestion;
-                data.Add(string.Empty); // empty cell value in column with the question
+                var selectedOptionText = singleSelectQuestion!.Options
+                    .First(x => x.Id == singleSelectAnswer.Selection.OptionId).Text;
+
+                data.Add(selectedOptionText[_defaultLanguage]);
 
                 foreach (var option in singleSelectQuestion!.Options)
                 {
@@ -121,10 +125,15 @@ public class AnswerWriter
                         data.Add(selectedOption?.Text ?? string.Empty);
                     }
                 }
+
                 break;
             case MultiSelectAnswer multiSelectAnswer:
                 var multiSelectQuestion = _question as MultiSelectQuestion;
-                data.Add(string.Empty); // empty cell value in column with the question
+                var selectedOptionIds = multiSelectAnswer.Selection.Select(x => x.OptionId);
+                var optionTexts = multiSelectQuestion!.Options.Where(x => selectedOptionIds.Contains(x.Id))
+                    .Select(x => x.Text[_defaultLanguage]);
+
+                data.Add(string.Join(",", optionTexts));
 
                 foreach (var option in multiSelectQuestion!.Options)
                 {
@@ -136,6 +145,7 @@ public class AnswerWriter
                         data.Add(selectedOption?.Text ?? string.Empty);
                     }
                 }
+
                 break;
             default:
                 throw new ArgumentException();
