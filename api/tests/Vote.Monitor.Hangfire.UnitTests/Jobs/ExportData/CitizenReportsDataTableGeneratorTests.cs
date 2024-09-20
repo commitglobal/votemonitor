@@ -408,14 +408,21 @@ public class CitizenReportsDataTableGeneratorTests
 
         List<object[]> expectedData =
         [
-            [.. GetDefaultExpectedColumns(submission1), "", true, false, false, false, "", 0, "", "", 0, "", ""],
             [
-                .. GetDefaultExpectedColumns(submission2), "", false, true, false, false, "", 0, "", "", 2,
+                .. GetDefaultExpectedColumns(submission1), Option1Text, true, false, false, false, "", 0, "", "", 0, "",
+                ""
+            ],
+            [
+                .. GetDefaultExpectedColumns(submission2), Option2Text, false, true, false, false, "", 0, "", "", 2,
                 Attachment1Url, Attachment2Url
             ],
-            [.. GetDefaultExpectedColumns(submission3), "", false, false, true, false, "", 2, Note1, Note2, 0, "", ""],
             [
-                .. GetDefaultExpectedColumns(submission4), "", false, false, false, true, "some free text", 2, Note1,
+                .. GetDefaultExpectedColumns(submission3), Option3Text, false, false, true, false, "", 2, Note1, Note2,
+                0, "", ""
+            ],
+            [
+                .. GetDefaultExpectedColumns(submission4), Option4Text, false, false, false, true, "some free text", 2,
+                Note1,
                 Note2, 2, Attachment1Url, Attachment2Url
             ],
         ];
@@ -497,16 +504,23 @@ public class CitizenReportsDataTableGeneratorTests
         List<object[]> expectedData =
         [
             [
-                .. GetDefaultExpectedColumns(submission1), "", true, true, true, true, "user written text", 0, "", "",
+                .. GetDefaultExpectedColumns(submission1),
+                string.Join(",", Option1Text, Option2Text, Option3Text, Option4Text), true, true, true, true,
+                "user written text", 0, "", "",
                 0, "", ""
             ],
             [
-                .. GetDefaultExpectedColumns(submission2), "", false, false, false, true, "some written text", 0, "",
+                .. GetDefaultExpectedColumns(submission2), string.Join(",", Option4Text), false, false, false, true,
+                "some written text", 0, "",
                 "", 2, Attachment1Url, Attachment2Url
             ],
-            [.. GetDefaultExpectedColumns(submission3), "", false, true, true, false, "", 2, Note1, Note2, 0, "", ""],
             [
-                .. GetDefaultExpectedColumns(submission4), "", true, false, false, true, "some free text", 2, Note1,
+                .. GetDefaultExpectedColumns(submission3), string.Join(",", Option2Text, Option3Text), false, true,
+                true, false, "", 2, Note1, Note2, 0, "", ""
+            ],
+            [
+                .. GetDefaultExpectedColumns(submission4), string.Join(",", Option1Text, Option4Text), true, false,
+                false, true, "some free text", 2, Note1,
                 Note2, 2, Attachment1Url, Attachment2Url
             ],
         ];
@@ -619,9 +633,15 @@ public class CitizenReportsDataTableGeneratorTests
             [_utcNow.ToString("s"), 2, Note1, Note2, 2, Attachment1Url, Attachment2Url];
 
         object[] expectedSingleSelectAnswerColumns =
-            ["", false, false, false, true, "user written text", 2, Note1, Note2, 2, Attachment1Url, Attachment2Url];
+        [
+            Option4Text, false, false, false, true, "user written text", 2, Note1, Note2, 2, Attachment1Url,
+            Attachment2Url
+        ];
         object[] expectedMultiSelectAnswerColumns =
-            ["", true, true, true, true, "user written text", 2, Note1, Note2, 2, Attachment1Url, Attachment2Url];
+        [
+            string.Join(",", Option1Text, Option2Text, Option3Text, Option4Text), true, true, true, true,
+            "user written text", 2, Note1, Note2, 2, Attachment1Url, Attachment2Url
+        ];
 
         List<object[]> expectedData =
         [
