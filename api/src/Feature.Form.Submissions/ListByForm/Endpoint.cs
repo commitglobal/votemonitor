@@ -32,9 +32,9 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
             0 AS "NumberOfNotes"
         FROM
             "PollingStationInformationForms" F
-            INNER JOIN "PollingStationInformation" PSI ON PSI."ElectionRoundId" = F."ElectionRoundId"
-            INNER JOIN "PollingStations" PS ON PSI."PollingStationId" = PS."Id"
-            INNER JOIN "MonitoringObservers" mo ON mo."Id" = PSI."MonitoringObserverId"
+            LEFT JOIN "PollingStationInformation" PSI ON PSI."ElectionRoundId" = F."ElectionRoundId"
+            LEFT JOIN "PollingStations" PS ON PSI."PollingStationId" = PS."Id"
+            LEFT JOIN "MonitoringObservers" mo ON mo."Id" = PSI."MonitoringObserverId"
         
         WHERE
             F."ElectionRoundId" = @electionRoundId
@@ -47,7 +47,14 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
             AND (@hasFlaggedAnswers is NULL OR ("NumberOfFlaggedAnswers" = 0 AND @hasFlaggedAnswers = false) OR ("NumberOfFlaggedAnswers" > 0 AND @hasFlaggedAnswers = true))
             AND (@followUpStatus is NULL OR "FollowUpStatus" = @followUpStatus)
             AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR mo."Tags" && @tagsFilter)
-        
+            AND (@monitoringObserverStatus IS NULL OR mo."Status" = @monitoringObserverStatus)
+            AND (@formId IS NULL OR psi."PollingStationInformationFormId" = @formId)
+            AND (@questionsAnswered is null 
+                 OR (@questionsAnswered = 'All' AND F."NumberOfQuestions" = psi."NumberOfQuestionsAnswered")
+                 OR (@questionsAnswered = 'Some' AND F."NumberOfQuestions" <> psi."NumberOfQuestionsAnswered") 
+                 OR (@questionsAnswered = 'None' AND psi."NumberOfQuestionsAnswered" = 0))
+            AND (@hasNotes is NULL OR (TRUE AND @hasNotes = false) OR (FALSE AND @hasNotes = true))
+            AND (@hasAttachments is NULL OR (TRUE AND @hasAttachments = false) OR (FALSE AND @hasAttachments = true))
         GROUP BY
             F."Id"
         UNION ALL
@@ -77,13 +84,14 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
         FROM
             "Forms" F
             INNER JOIN "MonitoringNgos" MN ON MN."Id" = F."MonitoringNgoId"
-            INNER JOIN "FormSubmissions" FS ON FS."FormId" = F."Id"
-            INNER JOIN "PollingStations" ps ON ps."Id" = FS."PollingStationId"
-            INNER JOIN "MonitoringObservers" mo ON mo."Id" = FS."MonitoringObserverId"
+            LEFT JOIN "FormSubmissions" FS ON FS."FormId" = F."Id"
+            LEFT JOIN "PollingStations" ps ON ps."Id" = FS."PollingStationId"
+            LEFT JOIN "MonitoringObservers" mo ON mo."Id" = FS."MonitoringObserverId"
         
         WHERE
             F."ElectionRoundId" = @electionRoundId
             AND MN."NgoId" = @ngoId
+            AND F."Status" = 'Published'
             AND (@level1 IS NULL OR ps."Level1" = @level1)
             AND (@level2 IS NULL OR ps."Level2" = @level2)
             AND (@level3 IS NULL OR ps."Level3" = @level3)
@@ -93,7 +101,18 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
             AND (@hasFlaggedAnswers is NULL OR ("NumberOfFlaggedAnswers" = 0 AND @hasFlaggedAnswers = false) OR ("NumberOfFlaggedAnswers" > 0 AND @hasFlaggedAnswers = true))
             AND (@followUpStatus is NULL OR "FollowUpStatus" = @followUpStatus)
             AND (@tagsFilter IS NULL OR cardinality(@tagsFilter) = 0 OR mo."Tags" && @tagsFilter)
-        
+            AND (@monitoringObserverStatus IS NULL OR mo."Status" = @monitoringObserverStatus)
+            AND (@formId IS NULL OR fs."FormId" = @formId)
+            AND (@questionsAnswered is null 
+                        OR (@questionsAnswered = 'All' AND f."NumberOfQuestions" = fs."NumberOfQuestionsAnswered")
+                        OR (@questionsAnswered = 'Some' AND f."NumberOfQuestions" <> fs."NumberOfQuestionsAnswered") 
+                        OR (@questionsAnswered = 'None' AND fs."NumberOfQuestionsAnswered" = 0))
+            AND (@hasAttachments is NULL
+                 OR ((SELECT COUNT(1) FROM "Attachments" WHERE "FormId" = fs."FormId" AND "MonitoringObserverId" = fs."MonitoringObserverId" AND fs."PollingStationId" = "PollingStationId" AND "IsDeleted" = false AND "IsCompleted" = true) = 0 AND @hasAttachments = false) 
+                 OR ((SELECT COUNT(1) FROM "Attachments" WHERE "FormId" = fs."FormId" AND "MonitoringObserverId" = fs."MonitoringObserverId" AND fs."PollingStationId" = "PollingStationId" AND "IsDeleted" = false AND "IsCompleted" = true) > 0 AND @hasAttachments = true))
+            AND (@hasNotes is NULL 
+                 OR ((SELECT COUNT(1) FROM "Notes" WHERE "FormId" = fs."FormId" AND "MonitoringObserverId" = fs."MonitoringObserverId" AND  fs."PollingStationId" = "PollingStationId") = 0 AND @hasNotes = false) 
+                 OR ((SELECT COUNT(1) FROM "Notes" WHERE "FormId" = fs."FormId" AND "MonitoringObserverId" = fs."MonitoringObserverId" AND  fs."PollingStationId" = "PollingStationId") > 0 AND @hasNotes = true))
         GROUP BY
             F."Id",
             F."Code",
@@ -113,6 +132,11 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
             hasFlaggedAnswers = req.HasFlaggedAnswers,
             followUpStatus = req.FollowUpStatus?.ToString(),
             tagsFilter = req.TagsFilter ?? [],
+            monitoringObserverStatus = req.MonitoringObserverStatus?.ToString(),
+            formId = req.FormId,
+            hasNotes = req.HasNotes,
+            hasAttachments = req.HasAttachments,
+            questionsAnswered = req.QuestionsAnswered?.ToString(),
         };
 
         IEnumerable<AggregatedFormOverview> aggregatedFormOverviews = [];
