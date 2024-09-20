@@ -78,9 +78,9 @@ public class Endpoint(
                         EF.Functions.ILike(x.PollingStation.Level5, req.Level5Filter))
             .Where(x => string.IsNullOrWhiteSpace(req.PollingStationNumberFilter) ||
                         EF.Functions.ILike(x.PollingStation.Number, req.PollingStationNumberFilter))
-            .Where(x => req.HasFlaggedAnswers == null || req.HasFlaggedAnswers.Value
+            .Where(x => req.HasFlaggedAnswers == null || (req.HasFlaggedAnswers.Value
                 ? x.NumberOfFlaggedAnswers > 0
-                : x.NumberOfFlaggedAnswers == 0)
+                : x.NumberOfFlaggedAnswers == 0))
             .Where(x => req.FollowUpStatus == null || x.FollowUpStatus == req.FollowUpStatus)
             .Where(x => tags.Length == 0 || x.MonitoringObserver.Tags.Any(tag => tags.Contains(tag)))
             .Where(x => req.MonitoringObserverStatus == null ||
@@ -244,9 +244,9 @@ public class Endpoint(
                         EF.Functions.ILike(x.PollingStation.Level5, req.Level5Filter))
             .Where(x => string.IsNullOrWhiteSpace(req.PollingStationNumberFilter) ||
                         EF.Functions.ILike(x.PollingStation.Number, req.PollingStationNumberFilter))
-            .Where(x => req.HasFlaggedAnswers == null || req.HasFlaggedAnswers.Value
+            .Where(x => req.HasFlaggedAnswers == null || (req.HasFlaggedAnswers.Value
                 ? x.NumberOfFlaggedAnswers > 0
-                : x.NumberOfFlaggedAnswers == 0)
+                : x.NumberOfFlaggedAnswers == 0))
             .Where(x => req.FollowUpStatus == null || x.FollowUpStatus == req.FollowUpStatus)
             .Where(x => tags.Length == 0 || x.MonitoringObserver.Tags.Any(tag => tags.Contains(tag)))
             .Where(x => req.MonitoringObserverStatus == null ||
