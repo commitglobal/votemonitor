@@ -1,54 +1,44 @@
 ﻿using System.Net;
 using Authorization.Policies;
 using Authorization.Policies.Requirements;
-using Feature.ObserverGuide.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
-using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
-using Vote.Monitor.Domain.Entities.ObserverGuideAggregate;
+using Vote.Monitor.Domain.Entities.CitizenReportGuideAggregate;
 
-namespace Feature.ObserverGuide.Create;
+namespace Feature.CitizenReports.Guides.Create;
 
 public class Endpoint(
     IAuthorizationService authorizationService,
-    IRepository<ObserverGuideAggregate> repository,
-    IReadRepository<MonitoringNgo> monitoringNgoRepository,
+    IRepository<CitizenReportGuideAggregate> repository,
     IFileStorageService fileStorageService)
-    : Endpoint<Request, Results<Ok<ObserverGuideModel>, NotFound, StatusCodeHttpResult>>
+    : Endpoint<Request, Results<Ok<CitizenReportsGuideModel>, NotFound, StatusCodeHttpResult>>
 {
     public override void Configure()
     {
-        Post("/api/election-rounds/{electionRoundId}/observer-guide");
+        Post("/api/election-rounds/{electionRoundId}/citizen-reports-guides");
         DontAutoTag();
-        Options(x => x.WithTags("observer-guide"));
+        Options(x => x.WithTags("citizen-reports-guides"));
         AllowFileUploads();
         Policies(PolicyNames.NgoAdminsOnly);
     }
 
-    public override async Task<Results<Ok<ObserverGuideModel>, NotFound, StatusCodeHttpResult>> ExecuteAsync(
+    public override async Task<Results<Ok<CitizenReportsGuideModel>, NotFound, StatusCodeHttpResult>> ExecuteAsync(
         Request req, CancellationToken ct)
     {
-        var authorizationResult =
-            await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminRequirement(req.ElectionRoundId));
+        var requirement = new CitizenReportingNgoAdminRequirement(req.ElectionRoundId);
+        var authorizationResult = await authorizationService.AuthorizeAsync(User, requirement);
         if (!authorizationResult.Succeeded)
         {
             return TypedResults.NotFound();
         }
 
-        var specification = new GetMonitoringNgoSpecification(req.ElectionRoundId, req.NgoId);
-        var monitoringNgo = await monitoringNgoRepository.FirstOrDefaultAsync(specification, ct);
-        if (monitoringNgo == null)
+        CitizenReportGuideAggregate? observerGuide = null;
+        CitizenReportsGuideModel? observerGuideModel = null;
+        if (req.GuideType == CitizenReportGuideType.Document)
         {
-            return TypedResults.NotFound();
-        }
+            var uploadPath = $"elections/{req.ElectionRoundId}/citizen-reports-guides";
 
-        ObserverGuideAggregate? observerGuide = null;
-        ObserverGuideModel? observerGuideModel = null;
-        if (req.GuideType == ObserverGuideType.Document)
-        {
-            var uploadPath = $"elections/{req.ElectionRoundId}/ngo/{monitoringNgo.NgoId}/observer-guides";
-
-            observerGuide = ObserverGuideAggregate.NewDocumentGuide(monitoringNgo,
+            observerGuide = CitizenReportGuideAggregate.NewDocumentGuide(req.ElectionRoundId,
                 req.Title,
                 req.Attachment!.FileName,
                 uploadPath,
@@ -65,7 +55,7 @@ public class Endpoint(
             }
 
             var result = uploadResult as UploadFileResult.Ok;
-            observerGuideModel = new ObserverGuideModel
+            observerGuideModel = new CitizenReportsGuideModel
             {
                 Title = observerGuide.Title,
                 FileName = observerGuide.FileName!,
@@ -77,13 +67,13 @@ public class Endpoint(
             };
         }
 
-        if (req.GuideType == ObserverGuideType.Website)
+        if (req.GuideType == CitizenReportGuideType.Website)
         {
-            observerGuide = ObserverGuideAggregate.NewWebsiteGuide(monitoringNgo,
+            observerGuide = CitizenReportGuideAggregate.NewWebsiteGuide(req.ElectionRoundId,
                 req.Title,
                 new Uri(req.WebsiteUrl!));
 
-            observerGuideModel = new ObserverGuideModel
+            observerGuideModel = new CitizenReportsGuideModel
             {
                 Id = observerGuide.Id,
                 Title = observerGuide.Title,
@@ -92,13 +82,13 @@ public class Endpoint(
             };
         }
 
-        if (req.GuideType == ObserverGuideType.Text)
+        if (req.GuideType == CitizenReportGuideType.Text)
         {
-            observerGuide = ObserverGuideAggregate.NewTextGuide(monitoringNgo,
+            observerGuide = CitizenReportGuideAggregate.NewTextGuide(req.ElectionRoundId,
                 req.Title,
                 req.Text!);
 
-            observerGuideModel = new ObserverGuideModel
+            observerGuideModel = new CitizenReportsGuideModel
             {
                 Id = observerGuide.Id,
                 Title = observerGuide.Title,

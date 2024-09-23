@@ -4,6 +4,7 @@ using Vote.Monitor.Domain.Constants;
 using Vote.Monitor.Domain.Entities.AttachmentAggregate;
 using Vote.Monitor.Domain.Entities.CitizenReportAggregate;
 using Vote.Monitor.Domain.Entities.CitizenReportAttachmentAggregate;
+using Vote.Monitor.Domain.Entities.CitizenReportGuideAggregate;
 using Vote.Monitor.Domain.Entities.CitizenReportNoteAggregate;
 using Vote.Monitor.Domain.Entities.ExportedDataAggregate;
 using Vote.Monitor.Domain.Entities.FeedbackAggregate;
@@ -73,6 +74,7 @@ public class VoteMonitorContext : IdentityDbContext<ApplicationUser, IdentityRol
     public DbSet<CitizenReportNote> CitizenReportNotes { get; set; }
     public DbSet<CitizenReportAttachment> CitizenReportAttachments { get; set; }
     public DbSet<MonitoringObserverNotification> MonitoringObserverNotification { get; set; }
+    public DbSet<CitizenReportGuide> CitizenReportGuides { get; set; }
     
     public DbSet<Location> Locations { get; set; }
 

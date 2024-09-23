@@ -45,6 +45,8 @@ COPY ["src/Feature.Notes/Feature.Notes.csproj", "src/Feature.Notes/"]
 COPY ["src/Vote.Monitor.Api.Feature.UserPreferences/Vote.Monitor.Api.Feature.UserPreferences.csproj", "src/Vote.Monitor.Api.Feature.UserPreferences/"]
 COPY ["src/Vote.Monitor.Api.Feature.PollingStation/Vote.Monitor.Api.Feature.PollingStation.csproj", "src/Vote.Monitor.Api.Feature.PollingStation/"]
 COPY ["src/Feature.Locations/Feature.Locations.csproj", "src/Feature.Locations/"]
+COPY ["src/Feature.CitizenReports.Guides/Feature.CitizenReports.Guides.csproj", "src/Feature.CitizenReports.Guides/"]
+
 RUN dotnet restore "src/Vote.Monitor.Api/Vote.Monitor.Api.csproj"
 COPY . .
 WORKDIR "/src/src/Vote.Monitor.Api"

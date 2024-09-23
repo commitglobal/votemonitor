@@ -1,11 +1,9 @@
-﻿using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
+﻿namespace Vote.Monitor.Domain.Entities.CitizenReportGuideAggregate;
 
-namespace Vote.Monitor.Domain.Entities.ObserverGuideAggregate;
-
-public class ObserverGuide : AuditableBaseEntity, IAggregateRoot
+public class CitizenReportGuide : AuditableBaseEntity, IAggregateRoot
 {
-    public Guid MonitoringNgoId { get; private set; }
-    public MonitoringNgo MonitoringNgo { get; private set; }
+    public Guid ElectionRoundId { get; private set; }
+    public virtual ElectionRound ElectionRound { get; private set; }
     public string Title { get; private set; }
     public string? FileName { get; private set; }
     public string? UploadedFileName { get; private set; }
@@ -13,17 +11,16 @@ public class ObserverGuide : AuditableBaseEntity, IAggregateRoot
     public string? MimeType { get; private set; }
     public string? WebsiteUrl { get; private set; }
     public string? Text { get; private set; }
-    public ObserverGuideType GuideType { get; private set; }
+    public CitizenReportGuideType GuideType { get; private set; }
     public bool IsDeleted { get; private set; }
 
-    private ObserverGuide(MonitoringNgo monitoringNgo,
+    private CitizenReportGuide(Guid electionRoundId,
         string title,
         string fileName,
         string filePath,
         string mimeType) : base(Guid.NewGuid())
     {
-        MonitoringNgo = monitoringNgo;
-        MonitoringNgoId = monitoringNgo.Id;
+        ElectionRoundId = electionRoundId;
         Title = title;
         FileName = fileName;
         FilePath = filePath;
@@ -33,46 +30,44 @@ public class ObserverGuide : AuditableBaseEntity, IAggregateRoot
         var extension = FileName.Split('.').Last();
         var uploadedFileName = $"{Id}.{extension}";
         UploadedFileName = uploadedFileName;
-        GuideType = ObserverGuideType.Document;
+        GuideType = CitizenReportGuideType.Document;
     }
 
-    private ObserverGuide(MonitoringNgo monitoringNgo,
+    private CitizenReportGuide(Guid electionRoundId,
         string title,
         Uri websiteUrl) : base(Guid.NewGuid())
     {
-        MonitoringNgo = monitoringNgo;
-        MonitoringNgoId = monitoringNgo.Id;
+        ElectionRoundId = electionRoundId;
         Title = title;
         WebsiteUrl = websiteUrl.ToString();
         IsDeleted = false;
-        GuideType = ObserverGuideType.Website;
+        GuideType = CitizenReportGuideType.Website;
     }
-
-    private ObserverGuide(MonitoringNgo monitoringNgo,
+    
+    private CitizenReportGuide(Guid electionRoundId,
         string title,
         string text) : base(Guid.NewGuid())
     {
-        MonitoringNgo = monitoringNgo;
-        MonitoringNgoId = monitoringNgo.Id;
+        ElectionRoundId = electionRoundId;
         Title = title;
         Text = text;
         IsDeleted = false;
-        GuideType = ObserverGuideType.Text;
+        GuideType = CitizenReportGuideType.Text;
     }
 
-    public static ObserverGuide NewDocumentGuide(MonitoringNgo monitoringNgo,
+    public static CitizenReportGuide NewDocumentGuide(Guid electionRoundId,
         string title,
         string fileName,
         string filePath,
-        string mimeType) => new(monitoringNgo, title, fileName, filePath, mimeType);
+        string mimeType) => new(electionRoundId, title, fileName, filePath, mimeType);
 
-    public static ObserverGuide NewWebsiteGuide(MonitoringNgo monitoringNgo,
+    public static CitizenReportGuide NewWebsiteGuide(Guid electionRoundId,
         string title,
-        Uri websiteUrl) => new(monitoringNgo, title, websiteUrl);
-
-    public static ObserverGuide NewTextGuide(MonitoringNgo monitoringNgo,
+        Uri websiteUrl) => new(electionRoundId, title, websiteUrl);    
+    
+    public static CitizenReportGuide NewTextGuide(Guid electionRoundId,
         string title,
-        string text) => new(monitoringNgo, title, text);
+        string text) => new(electionRoundId, title, text);
 
     public void Delete()
     {
@@ -83,13 +78,13 @@ public class ObserverGuide : AuditableBaseEntity, IAggregateRoot
     {
         Title = title;
     }
-
+    
     public void UpdateWebsiteGuide(string title, Uri websiteUrl)
     {
         Title = title;
         WebsiteUrl = websiteUrl.ToString();
     }
-
+    
     public void UpdateTextGuide(string title, string text)
     {
         Title = title;
@@ -97,7 +92,7 @@ public class ObserverGuide : AuditableBaseEntity, IAggregateRoot
     }
 
 #pragma warning disable CS8618 // Required by Entity Framework
-    internal ObserverGuide()
+    internal CitizenReportGuide()
     {
     }
 #pragma warning restore CS8618

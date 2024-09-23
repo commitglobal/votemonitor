@@ -1,16 +1,17 @@
-﻿using Authorization.Policies.Requirements;
+using Authorization.Policies.Requirements;
 using Authorization.Policies.Specifications;
 using Vote.Monitor.Domain.Entities.ElectionRoundAggregate;
 
 namespace Authorization.Policies.RequirementHandlers;
 
-internal class MonitoringNgoAdminAuthorizationHandler(
+internal class CitizenReportingNgoAdminAuthorizationHandler(
     ICurrentUserProvider currentUserProvider,
     ICurrentUserRoleProvider currentUserRoleProvider,
-    IReadRepository<MonitoringNgo> monitoringNgoRepository)
-    : AuthorizationHandler<MonitoringNgoAdminRequirement>
+    IReadRepository<ElectionRound> electionRoundRepository)
+    : AuthorizationHandler<CitizenReportingNgoAdminRequirement>
 {
-    protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, MonitoringNgoAdminRequirement adminRequirement)
+    protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context,
+        CitizenReportingNgoAdminRequirement requirement)
     {
         if (!currentUserRoleProvider.IsNgoAdmin())
         {
@@ -24,10 +25,10 @@ internal class MonitoringNgoAdminAuthorizationHandler(
             context.Fail();
             return;
         }
-        
-        
-        var getMonitoringNgoSpecification = new GetMonitoringNgoSpecification(adminRequirement.ElectionRoundId, ngoId.Value);
-        var result = await monitoringNgoRepository.FirstOrDefaultAsync(getMonitoringNgoSpecification);
+
+        var getMonitoringNgoSpecification =
+            new GetCitizenReportingMonitoringNgoSpecification(requirement.ElectionRoundId, ngoId.Value);
+        var result = await electionRoundRepository.FirstOrDefaultAsync(getMonitoringNgoSpecification);
 
         if (result is null)
         {
@@ -43,6 +44,6 @@ internal class MonitoringNgoAdminAuthorizationHandler(
             return;
         }
 
-        context.Succeed(adminRequirement);
+        context.Succeed(requirement);
     }
 }

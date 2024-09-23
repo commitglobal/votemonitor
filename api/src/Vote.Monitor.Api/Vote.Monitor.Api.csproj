@@ -40,6 +40,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Authorization.Policies\Authorization.Policies.csproj" />
     <ProjectReference Include="..\Feature.CitizenReports.Attachments\Feature.CitizenReports.Attachments.csproj" />
+    <ProjectReference Include="..\Feature.CitizenReports.Guides\Feature.CitizenReports.Guides.csproj" />
     <ProjectReference Include="..\Feature.CitizenReports.Notes\Feature.CitizenReports.Notes.csproj" />
     <ProjectReference Include="..\Feature.CitizenReports\Feature.CitizenReports.csproj" />
     <ProjectReference Include="..\Feature.DataExport\Feature.DataExport.csproj" />
