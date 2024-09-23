@@ -15,8 +15,11 @@ export function MonitoringObserverFormsFilters(): FunctionComponent {
   const search = routeApi.useSearch();
 
   const onClearFilter = useCallback(
-    (filter: keyof MonitoringObserverDetailsRouteSearch) => () => {
-      void navigate({ search: (prev) => ({ ...prev, [filter]: undefined }) });
+    (filter: keyof MonitoringObserverDetailsRouteSearch | (keyof MonitoringObserverDetailsRouteSearch)[]) => () => {
+      const filters = Array.isArray(filter)
+        ? Object.fromEntries(filter.map((key) => [key, undefined]))
+        : { [filter]: undefined };
+      void navigate({ search: (prev) => ({ ...prev, ...filters }) });
     },
     [navigate]
   );
@@ -34,7 +37,9 @@ export function MonitoringObserverFormsFilters(): FunctionComponent {
         <SelectContent>
           <SelectGroup>
             {Object.values(FollowUpStatus).map((value) => (
-              <SelectItem value={value} key={value}>{value}</SelectItem>
+              <SelectItem value={value} key={value}>
+                {value}
+              </SelectItem>
             ))}
           </SelectGroup>
         </SelectContent>
@@ -51,7 +56,9 @@ export function MonitoringObserverFormsFilters(): FunctionComponent {
         <SelectContent>
           <SelectGroup>
             {Object.values(ZFormType.Values).map((value) => (
-              <SelectItem value={value} key={value}>{mapFormType(value)}</SelectItem>
+              <SelectItem value={value} key={value}>
+                {mapFormType(value)}
+              </SelectItem>
             ))}
           </SelectGroup>
         </SelectContent>
@@ -84,7 +91,7 @@ export function MonitoringObserverFormsFilters(): FunctionComponent {
       </Button>
 
       {Object.entries(search).length > 0 && (
-        <div className='col-span-full flex gap-2 flex-wrap'>
+        <div className='flex flex-wrap gap-2 col-span-full'>
           {search.formTypeFilter && (
             <FilterBadge label={`Form type: ${search.formTypeFilter}`} onClear={onClearFilter('formTypeFilter')} />
           )}
@@ -97,23 +104,58 @@ export function MonitoringObserverFormsFilters(): FunctionComponent {
           )}
 
           {search.level1Filter && (
-            <FilterBadge label={`Location - L1: ${search.level1Filter}`} onClear={onClearFilter('level1Filter')} />
+            <FilterBadge
+              label={`Location - L1: ${search.level1Filter}`}
+              onClear={onClearFilter([
+                'level1Filter',
+                'level2Filter',
+                'level3Filter',
+                'level4Filter',
+                'level5Filter',
+                'pollingStationNumberFilter',
+              ])}
+            />
           )}
 
           {search.level2Filter && (
-            <FilterBadge label={`Location - L2: ${search.level2Filter}`} onClear={onClearFilter('level2Filter')} />
+            <FilterBadge
+              label={`Location - L2: ${search.level2Filter}`}
+              onClear={onClearFilter([
+                'level2Filter',
+                'level3Filter',
+                'level4Filter',
+                'level5Filter',
+                'pollingStationNumberFilter',
+              ])}
+            />
           )}
 
           {search.level3Filter && (
-            <FilterBadge label={`Location - L3: ${search.level3Filter}`} onClear={onClearFilter('level3Filter')} />
+            <FilterBadge
+              label={`Location - L3: ${search.level3Filter}`}
+              onClear={onClearFilter(['level3Filter', 'level4Filter', 'level5Filter', 'pollingStationNumberFilter'])}
+            />
           )}
 
           {search.level4Filter && (
-            <FilterBadge label={`Location - L4: ${search.level4Filter}`} onClear={onClearFilter('level4Filter')} />
+            <FilterBadge
+              label={`Location - L4: ${search.level4Filter}`}
+              onClear={onClearFilter(['level4Filter', 'level5Filter', 'pollingStationNumberFilter'])}
+            />
           )}
 
           {search.level5Filter && (
-            <FilterBadge label={`Location - L5: ${search.level5Filter}`} onClear={onClearFilter('level5Filter')} />
+            <FilterBadge
+              label={`Location - L5: ${search.level5Filter}`}
+              onClear={onClearFilter(['level5Filter', 'pollingStationNumberFilter'])}
+            />
+          )}
+
+          {search.pollingStationNumberFilter && (
+            <FilterBadge
+              label={`PS Number: ${search.pollingStationNumberFilter}`}
+              onClear={onClearFilter('pollingStationNumberFilter')}
+            />
           )}
         </div>
       )}

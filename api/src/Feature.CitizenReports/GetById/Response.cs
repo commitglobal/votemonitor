@@ -9,15 +9,22 @@ namespace Feature.CitizenReports.GetById;
 
 public class Response
 {
-    public Guid CitizenReportId { get; set; }
-    public DateTime TimeSubmitted { get; set; }
-    public Guid FormId { get; set; }
-    public string FormCode { get; set; }
-    public TranslatedString FormName { get; set; }
-    public string FormDefaultLanguage { get; set; }
+    public Guid CitizenReportId { get; init; }
+    public DateTime TimeSubmitted { get; init; }
+    public Guid FormId { get; init; }
+    public string FormCode { get; init; }
+    public TranslatedString FormName { get; init; }
+    public string FormDefaultLanguage { get; init; }
 
     [JsonConverter(typeof(SmartEnumNameConverter<CitizenReportFollowUpStatus, string>))]
     public CitizenReportFollowUpStatus FollowUpStatus { get; init; }
+
+    public string LocationId { get; init; }
+    public string LocationLevel1 { get; init; }
+    public string LocationLevel2 { get; init; }
+    public string LocationLevel3 { get; init; }
+    public string LocationLevel4 { get; init; }
+    public string LocationLevel5 { get; init; }
 
     public BaseQuestionModel[] Questions { get; init; } = [];
     public BaseAnswerModel[] Answers { get; init; } = [];

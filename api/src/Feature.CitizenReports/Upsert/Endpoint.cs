@@ -3,11 +3,13 @@ using Feature.CitizenReports.Specifications;
 using Vote.Monitor.Answer.Module.Mappers;
 using Vote.Monitor.Domain.Entities.FormAnswerBase;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
+using Vote.Monitor.Domain.Entities.LocationAggregate;
 
 namespace Feature.CitizenReports.Upsert;
 
 public class Endpoint(
     IRepository<CitizenReportAggregate> repository,
+    IReadRepository<Location> locationRepository,
     IReadRepository<FormAggregate> formRepository) : Endpoint<Request, Results<Ok<CitizenReportModel>, NotFound>>
 {
     public override void Configure()
@@ -16,12 +18,19 @@ public class Endpoint(
         DontAutoTag();
         AllowAnonymous();
         Options(x => x.WithTags("citizen-report", "public"));
-        Summary(s => { s.Summary = "Upserts citizen report for a given form"; });
+        Summary(s => { s.Summary = "Upserts citizen report for a given form at a given location"; });
     }
 
     public override async Task<Results<Ok<CitizenReportModel>, NotFound>> ExecuteAsync(Request req,
         CancellationToken ct)
     {
+        var locationSpecification = new GetLocationSpecification(req.ElectionRoundId, req.LocationId);
+        var location = await locationRepository.FirstOrDefaultAsync(locationSpecification, ct);
+        if (location is null)
+        {
+            return TypedResults.NotFound();
+        }
+
         var formSpecification = new GetFormSpecification(req.ElectionRoundId, req.FormId);
         var form = await formRepository.FirstOrDefaultAsync(formSpecification, ct);
         if (form is null)
@@ -42,7 +51,7 @@ public class Endpoint(
         }
 
         return citizenReport is null
-            ? await AddFormSubmissionAsync(req, form, answers, ct)
+            ? await AddFormSubmissionAsync(req, form, location, answers, ct)
             : await UpdateFormSubmissionAsync(form, citizenReport, answers, ct);
     }
 
@@ -60,10 +69,11 @@ public class Endpoint(
 
     private async Task<Results<Ok<CitizenReportModel>, NotFound>> AddFormSubmissionAsync(Request req,
         FormAggregate form,
+        Location location,
         List<BaseAnswer>? answers,
         CancellationToken ct)
     {
-        var submission = form.CreateCitizenReport(req.CitizenReportId, answers);
+        var submission = form.CreateCitizenReport(req.CitizenReportId, location, answers);
         await repository.AddAsync(submission, ct);
 
         return TypedResults.Ok(CitizenReportModel.FromEntity(submission));

@@ -1,12 +1,32 @@
-import { cn, getTagColor } from '@/lib/utils';
-import { Combobox, Popover } from '@headlessui/react';
-import { ChevronDown, Search, XIcon } from 'lucide-react';
-import { FC, useEffect, useRef, useState } from 'react';
-import { Badge } from './badge';
-import { Input } from './input';
-import { Separator } from './separator';
+import { cva, type VariantProps } from "class-variance-authority";
+import {
+  ChevronDown,
+  XIcon
+} from "lucide-react";
+import * as React from "react";
 
-interface TagsSelectFormFieldProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandSeparator,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Separator } from "@/components/ui/separator";
+import { cn, getTagColor } from "@/lib/utils";
+
+
+interface TagsSelectFormFieldProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   asChild?: boolean;
   options: string[];
   defaultValue?: string[];
@@ -16,56 +36,79 @@ interface TagsSelectFormFieldProps extends React.ButtonHTMLAttributes<HTMLButton
   onValueChange: (value: string[]) => void;
 }
 
-const TagsSelectFormField: FC<TagsSelectFormFieldProps> = (props) => {
-  const { options, defaultValue, placeholder, onValueChange } = props;
-  const [selectedValues, setSelectedValues] = useState<string[]>(defaultValue || []);
-  const [query, setQuery] = useState('');
-  const searchRef = useRef<HTMLInputElement>(null);
-  const hasSelectedValues = selectedValues.length > 0;
+const TagsSelectFormField = React.forwardRef<
+  HTMLButtonElement,
+  TagsSelectFormFieldProps
+>(
+  (
+    {
+      className,
+      asChild = false,
+      options,
+      defaultValue,
+      onValueChange,
+      disabled,
+      placeholder,
+      ...props
+    },
+    ref
+  ) => {
+    const [selectedValues, setSelectedValues] = React.useState<string[]>(
+      defaultValue || []
+    );
+    const selectedValuesSet = React.useRef(new Set(selectedValues));
+    const [isPopoverOpen, setIsPopoverOpen] = React.useState(false);
+    const [search, setSearch] = React.useState('')
 
-  useEffect(() => {
-    const valuesSet = new Set(selectedValues);
-    onValueChange(Array.from(valuesSet));
-  }, [selectedValues]);
+    React.useEffect(() => {
+      setSelectedValues(defaultValue || []);
+      selectedValuesSet.current = new Set(defaultValue);
+    }, [defaultValue]);
 
-  const handleInputKeyDown = (event: any) => {
-    if (event.key !== 'Enter') return;
-    setQuery('');
-  };
-  const toggleOption = (value: string) => {
-    const currentTag = selectedValues.find((t) => t.toLocaleLowerCase() === value.trim().toLocaleLowerCase());
+    const handleInputKeyDown = (event: any) => {
+      if (event.key === "Enter") {
+        if(search){
+          toggleOption(search)
+        }
+      }
+    };
 
-    if (currentTag) setSelectedValues(selectedValues.filter((v) => v !== value.trim()));
-    else setSelectedValues([...selectedValues, value.trim()]);
-  };
+    const toggleOption = (value: string) => {
+      const currentTag = selectedValues.find(t => t.toLocaleLowerCase() === value.trim().toLocaleLowerCase());
 
-  const filteredOptions =
-    query === ''
-      ? options
-      : options.filter((option) => {
-          return option.toLowerCase().includes(query.toLowerCase());
-        });
+      if (currentTag) {
+        selectedValuesSet.current.delete(currentTag);
+        setSelectedValues(selectedValues.filter((v) => v !== value.trim()));
+      } else {
+        selectedValuesSet.current.add(value.trim());
+        setSelectedValues([...selectedValues, value.trim()]);
+      }
+      
+      onValueChange(Array.from(selectedValuesSet.current));
+    };
 
-  const comboboxClasses = cn(
-    "relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent hover:text-accent-foreground data-[focus]:bg-accent data-[focus]:text-accent-foreground data-[disabled='true']:pointer-events-none data-[disabled='true']:opacity-50 cursor-pointer"
-  );
-
-  return (
-    <Combobox value={selectedValues} onChange={(value) => setSelectedValues(value)} multiple>
-      <Popover className='relative w-full p-1 rounded-md border min-h-10 h-auto items-center justify-between bg-inherit hover:bg-card'>
-        {({ open }) => (
-          <>
-            <Popover.Button className='flex justify-between items-center w-full min-h-8'>
-              <div className='flex flex-wrap items-center'>
-                {!hasSelectedValues ? (
-                  <span className='text-sm text-muted-foreground mx-3'>{placeholder}</span>
-                ) : (
-                  selectedValues.map((value) => {
+    return (
+      <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
+        <PopoverTrigger asChild>
+          <Button
+            ref={ref}
+            {...props}
+            onClick={() => setIsPopoverOpen(!isPopoverOpen)}
+            className="flex w-full p-1 rounded-md border min-h-10 h-auto items-center justify-between bg-inherit hover:bg-card"
+          >
+            {selectedValues.length > 0 ? (
+              <div className="flex justify-between items-center w-full">
+                <div className="flex flex-wrap items-center">
+                  {selectedValues.map((value) => {
                     return (
-                      <Badge key={value} className='m-1 text-slate-600' style={{ backgroundColor: getTagColor(value) }}>
+                      <Badge
+                        key={value}
+                        className="m-1 text-slate-600"
+                        style={{ backgroundColor: getTagColor(value) }} 
+                      >
                         {value}
                         <XIcon
-                          className='ml-2 h-4 w-4 cursor-pointer'
+                          className="ml-2 h-4 w-4 cursor-pointer"
                           onClick={(event) => {
                             event.stopPropagation();
                             toggleOption(value);
@@ -73,63 +116,112 @@ const TagsSelectFormField: FC<TagsSelectFormFieldProps> = (props) => {
                         />
                       </Badge>
                     );
-                  })
-                )}
+                  })}
+                </div>
+                <div className="flex items-center justify-between">
+                  <XIcon
+                    className="h-4 mx-2 cursor-pointer text-muted-foreground"
+                    onClick={(event) => {
+                      setSelectedValues([]);
+                      selectedValuesSet.current.clear();
+                      onValueChange([]);
+                      event.stopPropagation();
+                    }}
+                  />
+                  <Separator
+                    orientation="vertical"
+                    className="flex min-h-6 h-full"
+                  />
+                  <ChevronDown className="h-4 mx-2 cursor-pointer text-muted-foreground" />
+                </div>
               </div>
-
-              <div className='flex items-center justify-between'>
-                {hasSelectedValues && (
-                  <>
-                    <XIcon
-                      className='h-4 mx-2 cursor-pointer text-muted-foreground'
-                      onClick={(event) => {
-                        setSelectedValues([]);
-                        onValueChange([]);
-                        event.stopPropagation();
+            ) : (
+              <div className="flex items-center justify-between w-full mx-auto">
+                <span className="text-sm text-muted-foreground mx-3">
+                  {placeholder}
+                </span>
+                <ChevronDown className="h-4 cursor-pointer text-muted-foreground mx-2" />
+              </div>
+            )}
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent
+          className="w-[200px] p-0 drop-shadow-sm"
+          align="start"
+          onEscapeKeyDown={() => setIsPopoverOpen(false)}
+        >
+          <Command>
+            <CommandInput
+              placeholder="Search..."
+              onKeyDown={handleInputKeyDown}
+              value={search}
+              onValueChange={setSearch} 
+            />
+            <CommandList className="w-full">
+              {/* <CommandEmpty>Press enter to create this tag.</CommandEmpty> */}
+              <CommandGroup>
+                {options.map((option) => {
+                  return (
+                    <CommandItem
+                      key={option}
+                      onSelect={() => toggleOption(option)}
+                      style={{
+                        pointerEvents: "auto",
+                        opacity: 1,
                       }}
-                    />
-                    <Separator orientation='vertical' className='flex min-h-6 h-full' />
-                  </>
-                )}
-                <Popover.Button>
-                  <ChevronDown className='h-4 mx-2 cursor-pointer text-muted-foreground' />
-                </Popover.Button>
-              </div>
-            </Popover.Button>
-
-            <Popover.Panel className='flex flex-col gap-4 z-50 w-72 rounded-md border bg-popover p-4 text-popover-foreground shadow-md outline-none absolute '>
-              <div className='flex items-center border-b px-2'>
-                <Search className='mr-2 h-4 w-4 shrink-0 opacity-50' />
-
-                <Combobox.Input
-                  as={Input}
-                  ref={searchRef}
-                  placeholder='Search....'
-                  value={query}
-                  onChange={(event) => setQuery(event.target.value)}
-                  onKeyDown={handleInputKeyDown}
-                />
-              </div>
-
-              <Combobox.Options className='overflow-y-auto max-h-[12rem] '>
-                {query.length > 0 && (
-                  <Combobox.Option value={query} className={comboboxClasses}>
-                    Create <span className='font-bold'>"{query}"</span>
-                  </Combobox.Option>
-                )}
-
-                {filteredOptions.map((option) => (
-                  <Combobox.Option className={comboboxClasses} key={option} value={option}>
-                    {option}
-                  </Combobox.Option>
-                ))}
-              </Combobox.Options>
-            </Popover.Panel>
-          </>
-        )}
+                      className="cursor-pointer"
+                    >
+                      <span>{option}</span>
+                    </CommandItem>
+                  );
+                })}
+              </CommandGroup>
+              <CommandSeparator />
+              <CommandGroup>
+                <div className="flex items-center justify-between">
+                  {selectedValues.length > 0 && (
+                    <>
+                      <CommandItem
+                        onSelect={() => {
+                          setSelectedValues([]);
+                          selectedValuesSet.current.clear();
+                          onValueChange([]);
+                        }}
+                        style={{
+                          pointerEvents: "auto",
+                          opacity: 1,
+                        }}
+                        className="flex-1 justify-center cursor-pointer"
+                      >
+                        Clear
+                      </CommandItem>
+                      <Separator
+                        orientation="vertical"
+                        className="flex min-h-6 h-full"
+                      />
+                    </>
+                  )}
+                  <CommandSeparator />
+                  <CommandItem
+                    onSelect={() => setIsPopoverOpen(false)}
+                    style={{
+                      pointerEvents: "auto",
+                      opacity: 1,
+                    }}
+                    className="flex-1 justify-center cursor-pointer"
+                  >
+                    Close
+                  </CommandItem>
+                </div>
+              </CommandGroup>
+            </CommandList>
+          </Command>
+        </PopoverContent>
       </Popover>
-    </Combobox>
-  );
-};
+    );
+  }
+);
+
+TagsSelectFormField.displayName = "TagsSelectFormField";
 
 export default TagsSelectFormField;

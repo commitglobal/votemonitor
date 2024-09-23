@@ -13,6 +13,7 @@ export const FormSubmissionsSearchParamsSchema = z.object({
   level3Filter: z.string().catch('').optional(),
   level4Filter: z.string().catch('').optional(),
   level5Filter: z.string().catch('').optional(),
+  pollingStationNumberFilter:  z.string().catch('').optional(),
   hasFlaggedAnswers: z.string().catch('').optional(),
   monitoringObserverId: z.string().catch('').optional(),
   tagsFilter: z.array(z.string()).optional().catch([]).optional(),
@@ -28,6 +29,7 @@ export const QuickReportsSearchParamsSchema = z.object({
   level3Filter: z.string().catch('').optional(),
   level4Filter: z.string().catch('').optional(),
   level5Filter: z.string().catch('').optional(),
+  pollingStationNumberFilter: z.string().catch('').optional(),
   followUpStatus: z.enum([FollowUpStatus.NeedsFollowUp, FollowUpStatus.Resolved, FollowUpStatus.NotApplicable]).optional(),
   quickReportLocationType: z.enum([QuickReportLocationType.NotRelatedToAPollingStation, QuickReportLocationType.OtherPollingStation, QuickReportLocationType.VisitedPollingStation]).optional(),
 });

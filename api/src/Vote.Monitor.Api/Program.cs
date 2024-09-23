@@ -38,6 +38,7 @@ using Feature.CitizenReports.Notes;
 using Feature.DataExport;
 using Feature.Feedback;
 using Feature.ImportErrors;
+using Feature.Locations;
 using Feature.Monitoring;
 using Feature.Statistics;
 using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
@@ -152,6 +153,7 @@ builder.Services.AddFeedbackFeature();
 builder.Services.AddCitizenReportsFeature();
 builder.Services.AddCitizenReportsNotesFeature();
 builder.Services.AddCitizenReportsAttachmentsFeature();
+builder.Services.AddLocationsFeature(builder.Configuration.GetSection(LocationsFeatureInstaller.SectionKey));
 
 builder.Services.AddAuthorization();
 
@@ -200,6 +202,7 @@ app.UseSentryMiddleware()
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<QuickReportFollowUpStatus, string>());
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<TranslationStatus, string>());
     x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<CitizenReportFollowUpStatus, string>());
+    x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<QuestionsAnsweredFilter, string>());
 
     x.Serializer.Options.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
 });

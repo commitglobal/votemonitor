@@ -26,13 +26,32 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
                   	"CitizenReports" CR
                   	INNER JOIN "ElectionRounds" ER ON ER."Id" = CR."ElectionRoundId"
                   	INNER JOIN "MonitoringNgos" MN ON MN."Id" = ER."MonitoringNgoForCitizenReportingId"
+                    INNER JOIN "Locations" L on L."Id" = CR."LocationId"
+                    INNER JOIN "Forms" F on F."Id" = CR."FormId"
                   WHERE
                   	MN."ElectionRoundId" = @electionRoundId
                   	AND MN."NgoId" = @ngoId
                   	AND (
                   		@followUpStatus IS NULL
                   		OR CR."FollowUpStatus" = @followUpStatus
-                  	);
+                  	)
+                    AND (@level1 IS NULL OR L."Level1" = @level1)
+                  	AND (@level2 IS NULL OR L."Level2" = @level2)
+                  	AND (@level3 IS NULL OR L."Level3" = @level3)
+                  	AND (@level4 IS NULL OR L."Level4" = @level4)
+                  	AND (@level5 IS NULL OR L."Level5" = @level5)
+                  	AND (@formId IS NULL OR CR."FormId" = @formId)
+                  	AND (@questionsAnswered IS NULL 
+                  	  OR (@questionsAnswered = 'All' AND F."NumberOfQuestions" = CR."NumberOfQuestionsAnswered")
+                  	  OR (@questionsAnswered = 'Some' AND F."NumberOfQuestions" <> CR."NumberOfQuestionsAnswered")
+                  	  OR (@questionsAnswered = 'None' AND CR."NumberOfQuestionsAnswered" = 0))
+                  	AND (@hasAttachments is NULL
+                       OR ((SELECT COUNT(1) FROM "CitizenReportAttachments" WHERE "CitizenReportId" = CR."Id" AND "IsDeleted" = false AND "IsCompleted" = true) = 0 AND @hasAttachments = false) 
+                       OR ((SELECT COUNT(1) FROM "CitizenReportAttachments" WHERE "CitizenReportId" = CR."Id" AND "IsDeleted" = false AND "IsCompleted" = true) > 0 AND @hasAttachments = true))
+                  	AND (@hasNotes is NULL 
+                       OR ((SELECT COUNT(1) FROM "CitizenReportNotes" WHERE "CitizenReportId" = CR."Id") = 0 AND @hasNotes = false) 
+                       OR ((SELECT COUNT(1) FROM "CitizenReportNotes" WHERE "CitizenReportId" = CR."Id") > 0 AND @hasNotes = true))
+                  	;
 
                   WITH
                   	CITIZENREPORTS AS (
@@ -62,12 +81,18 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
                   					AND CRA."IsCompleted" = TRUE
                   					AND CRA."IsDeleted" = FALSE
                   			) AS "MediaFilesCount",
-                  			CR."FollowUpStatus"
+                  			CR."FollowUpStatus",
+                  			L."Level1",
+                     		L."Level2",
+                     		L."Level3",
+                     		L."Level4",
+                     		L."Level5"
                   		FROM
                   			"CitizenReports" CR
                   			INNER JOIN "Forms" F ON F."Id" = CR."FormId"
                   			INNER JOIN "ElectionRounds" ER ON ER."Id" = CR."ElectionRoundId"
                   			INNER JOIN "MonitoringNgos" MN ON MN."Id" = ER."MonitoringNgoForCitizenReportingId"
+                  			INNER JOIN "Locations" L on L."Id" = CR."LocationId"
                   		WHERE
                   			CR."ElectionRoundId" = @electionRoundId
                   			AND MN."NgoId" = @ngoId
@@ -86,7 +111,24 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
                   				@followUpStatus IS NULL
                   				OR "FollowUpStatus" = @followUpStatus
                   			)
-                  	)
+                            AND (@level1 IS NULL OR L."Level1" = @level1)
+                            AND (@level2 IS NULL OR L."Level2" = @level2)
+                            AND (@level3 IS NULL OR L."Level3" = @level3)
+                            AND (@level4 IS NULL OR L."Level4" = @level4)
+                            AND (@level5 IS NULL OR L."Level5" = @level5)
+                            AND (@hasFlaggedAnswers is NULL OR @hasFlaggedAnswers = false OR 1 = 2)
+                            AND (@formId IS NULL OR CR."FormId" = @formId)
+                            AND (@questionsAnswered IS NULL 
+                              OR (@questionsAnswered = 'All' AND F."NumberOfQuestions" = CR."NumberOfQuestionsAnswered")
+                              OR (@questionsAnswered = 'Some' AND F."NumberOfQuestions" <> CR."NumberOfQuestionsAnswered")
+                              OR (@questionsAnswered = 'None' AND CR."NumberOfQuestionsAnswered" = 0))
+                            AND (@hasAttachments is NULL
+                                OR ((SELECT COUNT(1) FROM "CitizenReportAttachments" WHERE "CitizenReportId" = CR."Id" AND "IsDeleted" = false AND "IsCompleted" = true) = 0 AND @hasAttachments = false) 
+                                OR ((SELECT COUNT(1) FROM "CitizenReportAttachments" WHERE "CitizenReportId" = CR."Id" AND "IsDeleted" = false AND "IsCompleted" = true) > 0 AND @hasAttachments = true))
+                            AND (@hasNotes is NULL 
+                                OR ((SELECT COUNT(1) FROM "CitizenReportNotes" WHERE "CitizenReportId" = CR."Id") = 0 AND @hasNotes = false) 
+                                OR ((SELECT COUNT(1) FROM "CitizenReportNotes" WHERE "CitizenReportId" = CR."Id") > 0 AND @hasNotes = true))
+                            )
                   SELECT
                   	"CitizenReportId",
                   	"TimeSubmitted",
@@ -97,7 +139,12 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
                   	"NumberOfFlaggedAnswers",
                   	"NotesCount",
                   	"MediaFilesCount",
-                  	"FollowUpStatus"
+                  	"FollowUpStatus",
+                  	"Level1",
+                  	"Level2",
+                  	"Level3",
+                  	"Level4",
+                  	"Level5"
                   FROM
                   	CITIZENREPORTS
                   ORDER BY
@@ -136,7 +183,21 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
                   	END ASC,
                   	CASE
                   		WHEN @sortExpression = 'NotesCount DESC' THEN "NotesCount"
-                  	END DESC
+                  	END DESC,
+                  	CASE WHEN @sortExpression = 'Level1 ASC' THEN "Level1" END ASC,
+                  	CASE WHEN @sortExpression = 'Level1 DESC' THEN "Level1" END DESC,
+                  
+                  	CASE WHEN @sortExpression = 'Level2 ASC' THEN "Level2" END ASC,
+                  	CASE WHEN @sortExpression = 'Level2 DESC' THEN "Level2" END DESC,
+                  
+                  	CASE WHEN @sortExpression = 'Level3 ASC' THEN "Level3" END ASC,
+                  	CASE WHEN @sortExpression = 'Level3 DESC' THEN "Level3" END DESC,
+                  
+                  	CASE WHEN @sortExpression = 'Level4 ASC' THEN "Level4" END ASC,
+                  	CASE WHEN @sortExpression = 'Level4 DESC' THEN "Level4" END DESC,
+                  
+                  	CASE WHEN @sortExpression = 'Level5 ASC' THEN "Level5" END ASC,
+                  	CASE WHEN @sortExpression = 'Level5 DESC' THEN "Level5" END DESC
                   OFFSET
                   	@offset
                   	ROWS
@@ -153,7 +214,16 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
             searchText = $"%{req.SearchText?.Trim() ?? string.Empty}%",
             hasFlaggedAnswers = req.HasFlaggedAnswers,
             followUpStatus = req.FollowUpStatus?.ToString(),
-            sortExpression = GetSortExpression(req.SortColumnName, req.IsAscendingSorting)
+            level1 = req.Level1Filter,
+            level2 = req.Level2Filter,
+            level3 = req.Level3Filter,
+            level4 = req.Level4Filter,
+            level5 = req.Level5Filter,
+            formId = req.FormId,
+            hasAttachments = req.HasAttachments,
+            hasNotes = req.HasNotes,
+            questionsAnswered = req.QuestionsAnswered?.ToString(),
+            sortExpression = GetSortExpression(req.SortColumnName, req.IsAscendingSorting),
         };
 
         int totalRowCount;
@@ -212,6 +282,36 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
                 StringComparison.InvariantCultureIgnoreCase))
         {
             return $"{nameof(CitizenReportEntryModel.TimeSubmitted)} {sortOrder}";
+        }
+
+        if (string.Equals(sortColumnName, nameof(CitizenReportEntryModel.Level1),
+                StringComparison.InvariantCultureIgnoreCase))
+        {
+            return $"{nameof(CitizenReportEntryModel.Level1)} {sortOrder}";
+        }
+
+        if (string.Equals(sortColumnName, nameof(CitizenReportEntryModel.Level2),
+                StringComparison.InvariantCultureIgnoreCase))
+        {
+            return $"{nameof(CitizenReportEntryModel.Level2)} {sortOrder}";
+        }
+
+        if (string.Equals(sortColumnName, nameof(CitizenReportEntryModel.Level3),
+                StringComparison.InvariantCultureIgnoreCase))
+        {
+            return $"{nameof(CitizenReportEntryModel.Level3)} {sortOrder}";
+        }
+
+        if (string.Equals(sortColumnName, nameof(CitizenReportEntryModel.Level4),
+                StringComparison.InvariantCultureIgnoreCase))
+        {
+            return $"{nameof(CitizenReportEntryModel.Level4)} {sortOrder}";
+        }
+
+        if (string.Equals(sortColumnName, nameof(CitizenReportEntryModel.Level5),
+                StringComparison.InvariantCultureIgnoreCase))
+        {
+            return $"{nameof(CitizenReportEntryModel.Level5)} {sortOrder}";
         }
 
         return $"{nameof(CitizenReportEntryModel.TimeSubmitted)} DESC";

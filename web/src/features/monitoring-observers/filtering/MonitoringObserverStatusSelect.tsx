@@ -4,7 +4,7 @@ import { FC } from 'react';
 import { SelectFilter, SelectFilterOption } from '../../filtering/components/SelectFilter';
 import { useFilteringContainer } from '../../filtering/hooks/useFilteringContainer';
 
-const monitoringObserverStausOptions: SelectFilterOption[] = [
+const monitoringObserverStatusOptions: SelectFilterOption[] = [
   {
     value: MonitoringObserverStatus.Active,
     label: MonitoringObserverStatus.Active,
@@ -33,7 +33,7 @@ export const MonitoringObserverStatusSelect: FC = () => {
       value={(queryParams as any)[FILTER_KEY.MonitoringObserverStatus]}
       onChange={onStatusChange}
       placeholder='Observer status'
-      options={monitoringObserverStausOptions}
+      options={monitoringObserverStatusOptions}
     />
   );
 };

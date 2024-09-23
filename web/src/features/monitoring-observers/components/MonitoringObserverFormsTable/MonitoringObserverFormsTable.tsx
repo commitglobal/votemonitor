@@ -37,6 +37,7 @@ export function MonitoringObserverFormsTable({
       ['level3Filter', debouncedSearch.level3Filter],
       ['level4Filter', debouncedSearch.level4Filter],
       ['level5Filter', debouncedSearch.level5Filter],
+      ['pollingStationNumberFilter', debouncedSearch.pollingStationNumberFilter],
       ['monitoringObserverId', monitoringObserverId],
       ['followUpStatus', debouncedSearch.followUpStatus],
     ].filter(([_, value]) => value);
