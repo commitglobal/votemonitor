@@ -150,9 +150,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Feature.Locations", "src\Fe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Feature.Locations.UnitTests", "tests\Feature.Locations.UnitTests\Feature.Locations.UnitTests.csproj", "{6DC3922B-5AC8-4968-AE5C-557315576720}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Feature.CitizenReports.Guides", "src\Feature.CitizenReports.Guides\Feature.CitizenReports.Guides.csproj", "{A4842D5C-A8B6-4260-9071-A2431889EA24}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Feature.Citizen.Guides", "src\Feature.Citizen.Guides\Feature.Citizen.Guides.csproj", "{A4842D5C-A8B6-4260-9071-A2431889EA24}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Feature.CitizenReports.Guides.UnitTests", "tests\Feature.CitizenReports.Guides.UnitTests\Feature.CitizenReports.Guides.UnitTests.csproj", "{4EFDD417-A568-4F39-BE44-0D97003EC42E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Feature.Citizen.Guides.UnitTests", "tests\Feature.Citizen.Guides.UnitTests\Feature.Citizen.Guides.UnitTests.csproj", "{4EFDD417-A568-4F39-BE44-0D97003EC42E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

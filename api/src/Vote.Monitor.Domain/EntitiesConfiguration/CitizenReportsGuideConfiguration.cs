@@ -1,11 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Vote.Monitor.Domain.Entities.CitizenGuideAggregate;
 using Vote.Monitor.Domain.Entities.ObserverGuideAggregate;
 
 namespace Vote.Monitor.Domain.EntitiesConfiguration;
 
-internal class ObserverGuideConfiguration : IEntityTypeConfiguration<ObserverGuide>
+internal class CitizenReportsGuideConfiguration : IEntityTypeConfiguration<CitizenGuide>
 {
-    public void Configure(EntityTypeBuilder<ObserverGuide> builder)
+    public void Configure(EntityTypeBuilder<CitizenGuide> builder)
     {
         builder.HasKey(x => x.Id);
         builder.Property(x => x.Id).IsRequired();
@@ -35,8 +36,8 @@ internal class ObserverGuideConfiguration : IEntityTypeConfiguration<ObserverGui
         builder
             .Property(x => x.Text);
 
-        builder.HasOne(x => x.MonitoringNgo)
+        builder.HasOne(x => x.ElectionRound)
             .WithMany()
-            .HasForeignKey(x => x.MonitoringNgoId);
+            .HasForeignKey(x => x.ElectionRoundId);
     }
 }

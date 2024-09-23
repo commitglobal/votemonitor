@@ -34,7 +34,7 @@ using Ardalis.SmartEnum.Dapper;
 using Dapper;
 using Feature.CitizenReports;
 using Feature.CitizenReports.Attachments;
-using Feature.CitizenReports.Guides;
+using Feature.Citizen.Guides;
 using Feature.CitizenReports.Notes;
 using Feature.DataExport;
 using Feature.Feedback;
@@ -45,8 +45,8 @@ using Feature.Statistics;
 using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
 using Microsoft.AspNetCore.Http.Features;
 using Vote.Monitor.Core.Converters;
+using Vote.Monitor.Domain.Entities.CitizenGuideAggregate;
 using Vote.Monitor.Domain.Entities.CitizenReportAggregate;
-using Vote.Monitor.Domain.Entities.CitizenReportGuideAggregate;
 using Vote.Monitor.Domain.Entities.ObserverGuideAggregate;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -157,7 +157,7 @@ builder.Services.AddFeedbackFeature();
 builder.Services.AddCitizenReportsFeature();
 builder.Services.AddCitizenReportsNotesFeature();
 builder.Services.AddCitizenReportsAttachmentsFeature();
-builder.Services.AddCitizenReportsGuidesFeature();
+builder.Services.AddCitizenGuidesFeature();
 builder.Services.AddLocationsFeature(builder.Configuration.GetSection(LocationsFeatureInstaller.SectionKey));
 
 builder.Services.AddAuthorization();
@@ -206,7 +206,7 @@ app.UseSentryMiddleware()
         x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<CitizenReportFollowUpStatus, string>());
         x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<QuestionsAnsweredFilter, string>());
         x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<ObserverGuideType, string>());
-        x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<CitizenReportGuideType, string>());
+        x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<CitizenGuideType, string>());
 
         x.Serializer.Options.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
     });
