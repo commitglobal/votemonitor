@@ -1,19 +1,16 @@
 import { useSetPrevSearch } from '@/common/prev-search-store';
-import { FollowUpStatus, FunctionComponent, ZFormType } from '@/common/types';
+import { FollowUpStatus, FunctionComponent, QuestionsAnswered, ZFormType } from '@/common/types';
 import { PollingStationsFilters } from '@/components/PollingStationsFilters/PollingStationsFilters';
 import { FilterBadge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { FilteringContainer } from '@/features/filtering/components/FilteringContainer';
+import { MonitoringObserverTagsSelect } from '@/features/monitoring-observers/filtering/MonitoringObserverTagsSelect';
 import { mapFormType } from '@/lib/utils';
 import { Route } from '@/routes/responses';
 import { useNavigate } from '@tanstack/react-router';
 import { useCallback } from 'react';
-import { ResponseFormFlaggedAnswersFilter } from '../../filtering/ResponseFormFlaggedAnswersFilter';
-import { ResponseFormTypeFilter } from '../../filtering/ResponseFormTypeFilter';
 import type { FormSubmissionsSearchParams } from '../../models/search-params';
-import { mapFollowUpStatus } from '../../utils/helpers';
+import { mapFollowUpStatus, mapQuest8ionsAnswered } from '../../utils/helpers';
 import { ResetFiltersButton } from '../ResetFiltersButton/ResetFiltersButton';
-import { ResponseFormLanguageFilter } from '../../filtering/ResponseFormLanguageFilter';
 
 export function FormsFiltersByEntry(): FunctionComponent {
   const navigate = useNavigate({ from: '/responses/' });
@@ -48,14 +45,6 @@ export function FormsFiltersByEntry(): FunctionComponent {
   );
 
   const isFiltered = Object.keys(search).some((key) => key !== 'tab' && key !== 'viewBy');
-
-  return (
-    <FilteringContainer>
-      <ResponseFormTypeFilter />
-      <ResponseFormFlaggedAnswersFilter />
-      <ResponseFormLanguageFilter />
-    </FilteringContainer>
-  );
 
   return (
     <>
@@ -123,6 +112,25 @@ export function FormsFiltersByEntry(): FunctionComponent {
       </Select>
 
       <PollingStationsFilters />
+
+      <MonitoringObserverTagsSelect />
+
+      <Select
+        onValueChange={(value) => {
+          navigateHandler({ questionsAnswered: value });
+        }}
+        value={search.questionsAnswered ?? ''}>
+        <SelectTrigger>
+          <SelectValue placeholder='Questions answered' />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            <SelectItem value={QuestionsAnswered.None}>{QuestionsAnswered.None}</SelectItem>
+            <SelectItem value={QuestionsAnswered.Some}>{QuestionsAnswered.Some}</SelectItem>
+            <SelectItem value={QuestionsAnswered.All}>{QuestionsAnswered.All}</SelectItem>
+          </SelectGroup>
+        </SelectContent>
+      </Select>
 
       <ResetFiltersButton disabled={!isFiltered} />
 
@@ -198,6 +206,13 @@ export function FormsFiltersByEntry(): FunctionComponent {
             <FilterBadge
               label={`PS Number: ${search.pollingStationNumberFilter}`}
               onClear={onClearFilter('pollingStationNumberFilter')}
+            />
+          )}
+
+          {search.questionsAnswered && (
+            <FilterBadge
+              label={`Questions answered: ${mapQuest8ionsAnswered(search.questionsAnswered)}`}
+              onClear={onClearFilter('questionsAnswered')}
             />
           )}
         </div>
