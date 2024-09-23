@@ -9,7 +9,7 @@ import { Route } from '@/routes/responses';
 import { useNavigate } from '@tanstack/react-router';
 import { useCallback } from 'react';
 import type { FormSubmissionsSearchParams } from '../../models/search-params';
-import { mapFollowUpStatus, mapQuest8ionsAnswered } from '../../utils/helpers';
+import { mapFollowUpStatus, mapQuestionsAnswered } from '../../utils/helpers';
 import { ResetFiltersButton } from '../ResetFiltersButton/ResetFiltersButton';
 
 export function FormsFiltersByEntry(): FunctionComponent {
@@ -113,7 +113,6 @@ export function FormsFiltersByEntry(): FunctionComponent {
 
       <PollingStationsFilters />
 
-      <MonitoringObserverTagsSelect />
 
       <Select
         onValueChange={(value) => {
@@ -128,6 +127,26 @@ export function FormsFiltersByEntry(): FunctionComponent {
             <SelectItem value={QuestionsAnswered.None}>{QuestionsAnswered.None}</SelectItem>
             <SelectItem value={QuestionsAnswered.Some}>{QuestionsAnswered.Some}</SelectItem>
             <SelectItem value={QuestionsAnswered.All}>{QuestionsAnswered.All}</SelectItem>
+          </SelectGroup>
+        </SelectContent>
+      </Select>
+
+      <Select
+        onValueChange={(value) => {
+          navigateHandler({ hasNotes: value });
+        }}
+        value={search.hasNotes ?? ''}>
+        <SelectTrigger>
+          <SelectValue placeholder='Question notes' />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            <SelectItem key={'true'} value='true'>
+              Yes
+            </SelectItem>
+            <SelectItem key={'false'} value='false'>
+              No
+            </SelectItem>
           </SelectGroup>
         </SelectContent>
       </Select>
@@ -211,8 +230,15 @@ export function FormsFiltersByEntry(): FunctionComponent {
 
           {search.questionsAnswered && (
             <FilterBadge
-              label={`Questions answered: ${mapQuest8ionsAnswered(search.questionsAnswered)}`}
+              label={`Questions answered: ${mapQuestionsAnswered(search.questionsAnswered)}`}
               onClear={onClearFilter('questionsAnswered')}
+            />
+          )}
+
+          {search.hasNotes && (
+            <FilterBadge
+              label={`Question notes: ${search.hasNotes ? 'yes' : 'no'}`}
+              onClear={onClearFilter('hasNotes')}
             />
           )}
         </div>
