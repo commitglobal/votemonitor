@@ -28,6 +28,8 @@ export const FormSubmissionsSearchParamsSchema = z.object({
     ])
     .optional(),
   questionsAnswered: z.enum([QuestionsAnswered.None, QuestionsAnswered.Some, QuestionsAnswered.All]).optional(),
+  hasNotes: z.string().catch('').optional(),
+  hasAttachments: z.string().catch('').optional(),
 });
 
 export type FormSubmissionsSearchParams = z.infer<typeof FormSubmissionsSearchParamsSchema>;

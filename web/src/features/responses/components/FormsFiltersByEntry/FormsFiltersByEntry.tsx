@@ -3,7 +3,6 @@ import { FollowUpStatus, FunctionComponent, QuestionsAnswered, ZFormType } from 
 import { PollingStationsFilters } from '@/components/PollingStationsFilters/PollingStationsFilters';
 import { FilterBadge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { MonitoringObserverTagsSelect } from '@/features/monitoring-observers/filtering/MonitoringObserverTagsSelect';
 import { mapFormType } from '@/lib/utils';
 import { Route } from '@/routes/responses';
 import { useNavigate } from '@tanstack/react-router';
@@ -67,6 +66,10 @@ export function FormsFiltersByEntry(): FunctionComponent {
             <SelectItem value={ZFormType.Values.ClosingAndCounting} key={ZFormType.Values.ClosingAndCounting}>
               {mapFormType(ZFormType.Values.ClosingAndCounting)}
             </SelectItem>
+
+            <SelectItem value={ZFormType.Values.PSI} key={ZFormType.Values.PSI}>
+              {mapFormType(ZFormType.Values.PSI)}
+            </SelectItem>
             <SelectItem value={ZFormType.Values.Other} key={ZFormType.Values.Other}>
               {mapFormType(ZFormType.Values.Other)}
             </SelectItem>
@@ -113,7 +116,6 @@ export function FormsFiltersByEntry(): FunctionComponent {
 
       <PollingStationsFilters />
 
-
       <Select
         onValueChange={(value) => {
           navigateHandler({ questionsAnswered: value });
@@ -151,6 +153,26 @@ export function FormsFiltersByEntry(): FunctionComponent {
         </SelectContent>
       </Select>
 
+      <Select
+        onValueChange={(value) => {
+          navigateHandler({ hasAttachments: value });
+        }}
+        value={search.hasAttachments ?? ''}>
+        <SelectTrigger>
+          <SelectValue placeholder='Media files' />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            <SelectItem key={'true'} value='true'>
+              Yes
+            </SelectItem>
+            <SelectItem key={'false'} value='false'>
+              No
+            </SelectItem>
+          </SelectGroup>
+        </SelectContent>
+      </Select>
+
       <ResetFiltersButton disabled={!isFiltered} />
 
       {isFiltered && (
@@ -168,7 +190,7 @@ export function FormsFiltersByEntry(): FunctionComponent {
 
           {search.hasFlaggedAnswers && (
             <FilterBadge
-              label={`Flagged answers: ${search.hasFlaggedAnswers ? 'yes' : 'no'}`}
+              label={`Flagged answers: ${search.hasFlaggedAnswers === 'true' ? 'yes' : 'no'}`}
               onClear={onClearFilter('hasFlaggedAnswers')}
             />
           )}
@@ -237,7 +259,7 @@ export function FormsFiltersByEntry(): FunctionComponent {
 
           {search.hasNotes && (
             <FilterBadge
-              label={`Question notes: ${search.hasNotes ? 'yes' : 'no'}`}
+              label={`Question notes: ${search.hasNotes === 'true' ? 'yes' : 'no'}`}
               onClear={onClearFilter('hasNotes')}
             />
           )}
