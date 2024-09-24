@@ -21,12 +21,10 @@ export const MonitoringObserverTagsSelect: FC = () => {
 
   const filteredTags =
     query === ''
-      ? tags?.filter((tag) => !currentTagsSet.has(tag))
-      : tags
-          ?.filter((tag) => !currentTagsSet.has(tag))
-          .filter((option) => {
-            return option.toLowerCase().includes(query.toLowerCase());
-          });
+      ? tags
+      : tags?.filter((option) => {
+          return option.toLowerCase().includes(query.toLowerCase());
+        });
 
   const toggleTagsFilter = (tag: string) => {
     if (!currentTags.includes(tag)) return navigateHandler({ tags: [...currentTags, tag] });
