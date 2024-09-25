@@ -100,11 +100,8 @@ export default function TranslateQuestionFactory({
           }
         }}
         className='flex-1 border rounded-r-lg border-slate-200'>
-        <CollapsibleTrigger
-          asChild
-          className='flex justify-between p-4 cursor-pointer hover:bg-slate-50'>
+        <CollapsibleTrigger asChild className='flex justify-between p-4 cursor-pointer hover:bg-slate-50'>
           <div>
-
             <div className='inline-flex'>
               {IconComponent && (
                 <div className='-ml-0.5 mr-2 min-h-5 min-w-5 text-slate-500'>
@@ -112,21 +109,19 @@ export default function TranslateQuestionFactory({
                 </div>
               )}
               <p className='text-sm font-semibold break-all'>
-                {isNilOrWhitespace(question.text[languageCode]) ? getQuestionTypeName(question.$questionType) : question.text[languageCode]}
+                {isNilOrWhitespace(question.text[languageCode])
+                  ? getQuestionTypeName(question.$questionType)
+                  : question.text[languageCode]}
               </p>
             </div>
-            {(!questionState.invalid ? (
-              <div className='flex items-center gap-2 p-2 mb-2 text-green-700 bg-green-100 rounded-md max-w-48 max-h-16'>
-                <LanguageIcon width={22} height={22}/>
-                Translated.
-              </div>
-            ) : (
-              <div className='flex items-center gap-2 p-2 mb-2 text-yellow-700 bg-yellow-100 rounded-md max-w-48 max-h-16'>
-                <LanguageIcon width={22} height={22}/>
-                Missing translations.
-              </div>
-            ))}
-
+            <div
+              className={cn('flex items-center gap-2 p-2 mb-2 text-sm rounded-md max-w-48 ', {
+                'text-green-700 bg-green-100': !questionState.invalid,
+                'text-yellow-700 bg-yellow-100': questionState.invalid,
+              })}>
+              <LanguageIcon width={22} height={22} />
+              {questionState.invalid ? 'Missing translations.' : 'Translated.'}
+            </div>
           </div>
         </CollapsibleTrigger>
         <CollapsibleContent className='px-4 pb-4 space-y-4'>
@@ -142,10 +137,13 @@ export default function TranslateQuestionFactory({
                     {...fieldState}
                     value={field.value[languageCode]}
                     placeholder={field.value[defaultLanguageCode]}
-                    onChange={event => field.onChange({
-                      ...field.value,
-                      [languageCode]: event.target.value
-                    })} />
+                    onChange={(event) =>
+                      field.onChange({
+                        ...field.value,
+                        [languageCode]: event.target.value,
+                      })
+                    }
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -164,10 +162,13 @@ export default function TranslateQuestionFactory({
                     {...fieldState}
                     value={field.value[languageCode]}
                     placeholder={field.value[defaultLanguageCode]}
-                    onChange={event => field.onChange({
-                      ...field.value,
-                      [languageCode]: event.target.value
-                    })} />
+                    onChange={(event) =>
+                      field.onChange({
+                        ...field.value,
+                        [languageCode]: event.target.value,
+                      })
+                    }
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -186,7 +187,8 @@ export default function TranslateQuestionFactory({
             <TranslateRatingQuestion questionIndex={questionIndex} />
           )}
 
-          {(question.$questionType === QuestionType.MultiSelectQuestionType || question.$questionType === QuestionType.SingleSelectQuestionType) && (
+          {(question.$questionType === QuestionType.MultiSelectQuestionType ||
+            question.$questionType === QuestionType.SingleSelectQuestionType) && (
             <TranslateSelectQuestion questionIndex={questionIndex} />
           )}
 
@@ -206,6 +208,5 @@ export default function TranslateQuestionFactory({
         </CollapsibleContent>
       </Collapsible>
     </div>
-
   );
 }

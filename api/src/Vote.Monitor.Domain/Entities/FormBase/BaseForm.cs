@@ -63,8 +63,7 @@ public class BaseForm : AuditableBaseEntity, IAggregateRoot
         Status = FormStatus.Drafted;
         Questions = questions.ToList().AsReadOnly();
         NumberOfQuestions = Questions.Count;
-        LanguagesTranslationStatus =
-            AnswersHelpers.ComputeLanguagesTranslationStatus(Questions, defaultLanguage, Languages);
+        LanguagesTranslationStatus = ComputeLanguagesTranslationStatus();
     }
 
     [JsonConstructor]
@@ -133,8 +132,7 @@ public class BaseForm : AuditableBaseEntity, IAggregateRoot
         Languages = languages.ToArray();
         Questions = questions.ToList().AsReadOnly();
         NumberOfQuestions = Questions.Count;
-        LanguagesTranslationStatus =
-            AnswersHelpers.ComputeLanguagesTranslationStatus(Questions, defaultLanguage, Languages);
+        LanguagesTranslationStatus = ComputeLanguagesTranslationStatus();
     }
 
     private T BaseFillIn<T>(T submission, List<BaseAnswer> answers, Action<T> clearAnswers,
@@ -214,8 +212,7 @@ public class BaseForm : AuditableBaseEntity, IAggregateRoot
             }
         }
 
-        LanguagesTranslationStatus =
-            AnswersHelpers.ComputeLanguagesTranslationStatus(Questions, DefaultLanguage, Languages);
+        LanguagesTranslationStatus = ComputeLanguagesTranslationStatus();
     }
 
     public bool HasTranslation(string languageCode)
@@ -232,8 +229,7 @@ public class BaseForm : AuditableBaseEntity, IAggregateRoot
 
         DefaultLanguage = languageCode;
 
-        LanguagesTranslationStatus =
-            AnswersHelpers.ComputeLanguagesTranslationStatus(Questions, DefaultLanguage, Languages);
+        LanguagesTranslationStatus = ComputeLanguagesTranslationStatus();
     }
 
     public void RemoveTranslation(string languageCode)
@@ -260,7 +256,41 @@ public class BaseForm : AuditableBaseEntity, IAggregateRoot
         }
 
         LanguagesTranslationStatus =
-            AnswersHelpers.ComputeLanguagesTranslationStatus(Questions, DefaultLanguage, Languages);
+            ComputeLanguagesTranslationStatus();
+    }
+
+
+    private LanguagesTranslationStatus ComputeLanguagesTranslationStatus()
+    {
+        var languagesTranslationStatus = new LanguagesTranslationStatus();
+
+        foreach (var languageCode in Languages)
+        {
+            if (string.IsNullOrWhiteSpace(Name[languageCode]))
+            {
+                languagesTranslationStatus.AddOrUpdateTranslationStatus(languageCode,
+                    TranslationStatus.MissingTranslations);
+                continue;
+            }
+
+            if (Description != null && !string.IsNullOrWhiteSpace(Description[DefaultLanguage]) &&
+                string.IsNullOrWhiteSpace(Description[languageCode]))
+            {
+                languagesTranslationStatus.AddOrUpdateTranslationStatus(languageCode,
+                    TranslationStatus.MissingTranslations);
+                continue;
+            }
+
+            var status =
+                Questions.Any(x =>
+                    x.GetTranslationStatus(DefaultLanguage, languageCode) == TranslationStatus.MissingTranslations)
+                    ? TranslationStatus.MissingTranslations
+                    : TranslationStatus.Translated;
+
+            languagesTranslationStatus.AddOrUpdateTranslationStatus(languageCode, status);
+        }
+
+        return languagesTranslationStatus;
     }
 
     protected BaseForm()
