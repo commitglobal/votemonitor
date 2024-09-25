@@ -41,6 +41,7 @@
     <ProjectReference Include="..\Authorization.Policies\Authorization.Policies.csproj" />
     <ProjectReference Include="..\Feature.Citizen.Guides\Feature.Citizen.Guides.csproj" />
     <ProjectReference Include="..\Feature.CitizenReports.Attachments\Feature.CitizenReports.Attachments.csproj" />
+    <ProjectReference Include="..\Feature.Citizen.Guides\Feature.Citizen.Guides.csproj" />
     <ProjectReference Include="..\Feature.CitizenReports.Notes\Feature.CitizenReports.Notes.csproj" />
     <ProjectReference Include="..\Feature.CitizenReports\Feature.CitizenReports.csproj" />
     <ProjectReference Include="..\Feature.DataExport\Feature.DataExport.csproj" />
