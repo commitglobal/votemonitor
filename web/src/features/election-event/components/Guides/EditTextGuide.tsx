@@ -1,7 +1,6 @@
 import { FunctionComponent } from '@/common/types';
 import { BackButtonIcon } from '@/components/layout/Breadcrumbs/BackButton';
 import Layout from '@/components/layout/Layout';
-import { useConfirm } from '@/components/ui/alert-dialog-provider';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
