@@ -34,6 +34,7 @@ export default function ElectionEventDashboard(): ReactElement {
   }
   const { data: electionEvent } = useElectionRoundDetails(currentElectionRoundId);
 
+
   return (
     <Layout title={electionEvent?.title ?? ''} breadcrumbs={<></>} backButton={<></>}>
       <Tabs defaultValue='event-details' value={currentTab} onValueChange={handleTabChange}>
