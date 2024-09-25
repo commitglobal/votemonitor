@@ -1,4 +1,4 @@
-﻿namespace Feature.Locations.FetchLevels;
+﻿namespace Feature.Citizen.Guides.List;
 
 public class Validator : Validator<Request>
 {

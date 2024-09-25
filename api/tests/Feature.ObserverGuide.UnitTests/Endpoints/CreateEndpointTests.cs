@@ -12,6 +12,7 @@ using NSubstitute;
 using NSubstitute.ReturnsExtensions;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
 using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
+using Vote.Monitor.Domain.Entities.ObserverGuideAggregate;
 using Vote.Monitor.Domain.Repository;
 using Vote.Monitor.TestUtils.Fakes.Aggregates;
 
@@ -45,7 +46,8 @@ public class CreateEndpointTests
         var fakeElectionRound = new ElectionRoundAggregateFaker().Generate();
         var fakeMonitoringNgo = new MonitoringNgoAggregateFaker().Generate();
 
-        _authorizationService.AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object?>(), Arg.Any<IEnumerable<IAuthorizationRequirement>>())
+        _authorizationService.AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object?>(),
+                Arg.Any<IEnumerable<IAuthorizationRequirement>>())
             .Returns(AuthorizationResult.Success());
 
         _monitoringNgoRepository
@@ -57,7 +59,8 @@ public class CreateEndpointTests
         var stream = new MemoryStream(bytes);
         var url = "url";
         var urlValidityInSeconds = 60;
-        _fileStorageService.UploadFileAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<Stream>(), Arg.Any<CancellationToken>())
+        _fileStorageService.UploadFileAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<Stream>(),
+                Arg.Any<CancellationToken>())
             .Returns(new UploadFileResult.Ok(url, fileName, urlValidityInSeconds));
 
         // Act
@@ -73,7 +76,8 @@ public class CreateEndpointTests
         {
             ElectionRoundId = fakeElectionRound.Id,
             Title = observerGuideTitle,
-            Attachment = formFile
+            Attachment = formFile,
+            GuideType = ObserverGuideType.Document
         };
         var result = await _endpoint.ExecuteAsync(request, default);
 
@@ -81,7 +85,7 @@ public class CreateEndpointTests
         await _repository
             .Received(1)
             .AddAsync(Arg.Is<ObserverGuideAggregate>(x => x.Title == observerGuideTitle
-                                                                      && x.MonitoringNgoId == fakeMonitoringNgo.Id));
+                                                          && x.MonitoringNgoId == fakeMonitoringNgo.Id));
 
         var model = result.Result.As<Ok<ObserverGuideModel>>();
         model.Value!.PresignedUrl.Should().Be(url);
@@ -96,7 +100,8 @@ public class CreateEndpointTests
         var fakeElectionRound = new ElectionRoundAggregateFaker().Generate();
         var fakeMonitoringNgo = new MonitoringNgoAggregateFaker().Generate();
 
-        _authorizationService.AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object?>(), Arg.Any<IEnumerable<IAuthorizationRequirement>>())
+        _authorizationService.AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object?>(),
+                Arg.Any<IEnumerable<IAuthorizationRequirement>>())
             .Returns(AuthorizationResult.Failed());
 
         _monitoringNgoRepository
@@ -108,7 +113,8 @@ public class CreateEndpointTests
         var stream = new MemoryStream(bytes);
         var url = "url";
         var urlValidityInSeconds = 60;
-        _fileStorageService.UploadFileAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<Stream>(), Arg.Any<CancellationToken>())
+        _fileStorageService.UploadFileAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<Stream>(),
+                Arg.Any<CancellationToken>())
             .Returns(new UploadFileResult.Ok(url, fileName, urlValidityInSeconds));
 
         // Act
@@ -147,7 +153,8 @@ public class CreateEndpointTests
         var fakeElectionRound = new ElectionRoundAggregateFaker().Generate();
         var fakeMonitoringNgo = new MonitoringNgoAggregateFaker().Generate();
 
-        _authorizationService.AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object?>(), Arg.Any<IEnumerable<IAuthorizationRequirement>>())
+        _authorizationService.AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object?>(),
+                Arg.Any<IEnumerable<IAuthorizationRequirement>>())
             .Returns(AuthorizationResult.Success());
 
         _monitoringNgoRepository
@@ -159,7 +166,8 @@ public class CreateEndpointTests
         var stream = new MemoryStream(bytes);
         var url = "url";
         var urlValidityInSeconds = 60;
-        _fileStorageService.UploadFileAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<Stream>(), Arg.Any<CancellationToken>())
+        _fileStorageService.UploadFileAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<Stream>(),
+                Arg.Any<CancellationToken>())
             .Returns(new UploadFileResult.Ok(url, fileName, urlValidityInSeconds));
 
         // Act
@@ -198,7 +206,8 @@ public class CreateEndpointTests
         var fakeElectionRound = new ElectionRoundAggregateFaker().Generate();
         var fakeMonitoringNgo = new MonitoringNgoAggregateFaker().Generate();
 
-        _authorizationService.AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object?>(), Arg.Any<IEnumerable<IAuthorizationRequirement>>())
+        _authorizationService.AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object?>(),
+                Arg.Any<IEnumerable<IAuthorizationRequirement>>())
             .Returns(AuthorizationResult.Success());
 
         _monitoringNgoRepository
@@ -209,7 +218,8 @@ public class CreateEndpointTests
         var fileName = "file.txt";
         var bytes = Encoding.UTF8.GetBytes("Test content");
         var stream = new MemoryStream(bytes);
-        _fileStorageService.UploadFileAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<Stream>(), Arg.Any<CancellationToken>())
+        _fileStorageService.UploadFileAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<Stream>(),
+                Arg.Any<CancellationToken>())
             .Returns(new UploadFileResult.Failed("error message"));
 
         // Act
@@ -225,7 +235,8 @@ public class CreateEndpointTests
         {
             ElectionRoundId = fakeElectionRound.Id,
             Title = observerGuideTitle,
-            Attachment = formFile
+            Attachment = formFile,
+            GuideType = ObserverGuideType.Document
         };
         var result = await _endpoint.ExecuteAsync(request, default);
 
