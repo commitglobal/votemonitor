@@ -12,7 +12,7 @@ export function useLocationsLevels(electionRoundId: string): UseLocationsLevelsR
     queryFn: async () => {
 
       const response = await authApi.get<LocationsLevelsResponse>(
-        `/election-rounds/${electionRoundId}/locations:fetchLevels`
+        `/election-rounds/${electionRoundId}/locations:fetchAll`
       );
 
       return response.data.nodes.reduce<Record<string, LevelNode[]>>(

@@ -26,12 +26,20 @@ import { mapQuickReportLocationType } from './helpers';
 
 export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry & RowData>[] = [
   {
+    header: ({ column }) => <DataTableColumnHeader title='Entry ID' column={column} />,
+    accessorKey: 'submissionId',
+    enableSorting: true,
+    enableGlobalFilter: true,
+  },
+
+  {
     header: ({ column }) => <DataTableColumnHeader title='Time submitted' column={column} />,
     accessorKey: 'timeSubmitted',
     enableSorting: true,
     enableGlobalFilter: true,
     cell: ({ row }) => <div>{format(row.original.timeSubmitted, DateTimeFormat)}</div>,
   },
+
   {
     header: ({ column }) => <DataTableColumnHeader title='Form code' column={column} />,
     accessorKey: 'formCode',
@@ -44,6 +52,14 @@ export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry &
     enableSorting: true,
     enableGlobalFilter: true,
   },
+
+  {
+    header: ({ column }) => <DataTableColumnHeader title='Language' column={column} />,
+    accessorKey: 'formDefaultLanguage',
+    enableSorting: true,
+    enableGlobalFilter: true,
+  },
+
   {
     header: ({ column }) => <DataTableColumnHeader title='Station number' column={column} />,
     accessorKey: 'number',

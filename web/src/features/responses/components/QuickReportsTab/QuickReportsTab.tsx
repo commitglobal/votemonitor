@@ -51,6 +51,7 @@ export function QuickReportsTab(): FunctionComponent {
       ['level3Filter', debouncedSearch.level3Filter],
       ['level4Filter', debouncedSearch.level4Filter],
       ['level5Filter', debouncedSearch.level5Filter],
+      ['pollingStationNumberFilter', debouncedSearch.pollingStationNumberFilter],
       ['followUpStatus', debouncedSearch.followUpStatus],
       ['quickReportLocationType', debouncedSearch.quickReportLocationType],
     ].filter(([_, value]) => value);

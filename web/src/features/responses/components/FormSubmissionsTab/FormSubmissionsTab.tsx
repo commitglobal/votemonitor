@@ -20,11 +20,11 @@ import { ColumnsVisibilitySelector } from '../ColumnsVisibilitySelector/ColumnsV
 import { ExportDataButton } from '../ExportDataButton/ExportDataButton';
 import { FormsFiltersByEntry } from '../FormsFiltersByEntry/FormsFiltersByEntry';
 import { FormsFiltersByObserver } from '../FormsFiltersByObserver/FormsFiltersByObserver';
-import { FormSubmissionsByEntryTable } from '../FormSubmissionsByEntryTable/FormSubmissionsByEntryTable';
-import { FormSubmissionsAggregatedByFormTable } from '../FormSubmissionsAggregatedByFormTable/FormSubmissionsAggregatedByFormTable';
 import { FormsTableByObserver } from '../FormsTableByObserver/FormsTableByObserver';
+import { FormSubmissionsAggregatedByFormTable } from '../FormSubmissionsAggregatedByFormTable/FormSubmissionsAggregatedByFormTable';
+import { FormSubmissionsByEntryTable } from '../FormSubmissionsByEntryTable/FormSubmissionsByEntryTable';
 
-import { FunctionComponent } from "@/common/types";
+import { FunctionComponent } from '@/common/types';
 
 const routeApi = getRouteApi('/responses/');
 
