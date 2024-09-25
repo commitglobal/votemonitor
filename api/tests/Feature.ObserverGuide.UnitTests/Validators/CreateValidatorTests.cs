@@ -1,5 +1,4 @@
 using FluentValidation.TestHelper;
-using Vote.Monitor.Domain.Entities.CitizenGuideAggregate;
 using Vote.Monitor.Domain.Entities.ObserverGuideAggregate;
 using Vote.Monitor.TestUtils.Fakes;
 

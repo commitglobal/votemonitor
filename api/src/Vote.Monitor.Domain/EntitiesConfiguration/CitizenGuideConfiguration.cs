@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Vote.Monitor.Domain.Entities.CitizenGuideAggregate;
-using Vote.Monitor.Domain.Entities.ObserverGuideAggregate;
 
 namespace Vote.Monitor.Domain.EntitiesConfiguration;
 
