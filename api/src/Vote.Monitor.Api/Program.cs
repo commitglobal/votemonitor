@@ -34,6 +34,7 @@ using Ardalis.SmartEnum.Dapper;
 using Dapper;
 using Feature.CitizenReports;
 using Feature.CitizenReports.Attachments;
+using Feature.Citizen.Guides;
 using Feature.CitizenReports.Notes;
 using Feature.DataExport;
 using Feature.Feedback;
@@ -44,7 +45,9 @@ using Feature.Statistics;
 using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
 using Microsoft.AspNetCore.Http.Features;
 using Vote.Monitor.Core.Converters;
+using Vote.Monitor.Domain.Entities.CitizenGuideAggregate;
 using Vote.Monitor.Domain.Entities.CitizenReportAggregate;
+using Vote.Monitor.Domain.Entities.ObserverGuideAggregate;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -84,41 +87,42 @@ builder.Services.AddMemoryCache();
 builder.Services.AddOptions();
 
 builder.Services.AddLogging(logging =>
-    {
-        Serilog.Debugging.SelfLog.Enable(Console.WriteLine);
+{
+    Serilog.Debugging.SelfLog.Enable(Console.WriteLine);
 
-        var loggerConfiguration = new LoggerConfiguration()
-            .ReadFrom.Configuration(builder.Configuration)
-            .WriteTo.Console()
-            .Enrich.FromLogContext()
-            .Enrich.WithMachineName()
-            .Enrich.WithEnvironmentUserName()
-            .WriteToSentry(builder.Configuration)
-            .Destructure.ToMaximumDepth(3);
+    var loggerConfiguration = new LoggerConfiguration()
+        .ReadFrom.Configuration(builder.Configuration)
+        .WriteTo.Console()
+        .Enrich.FromLogContext()
+        .Enrich.WithMachineName()
+        .Enrich.WithEnvironmentUserName()
+        .WriteToSentry(builder.Configuration)
+        .Destructure.ToMaximumDepth(3);
 
-        var logger = Log.Logger = loggerConfiguration.CreateLogger();
+    var logger = Log.Logger = loggerConfiguration.CreateLogger();
 
-        logging.AddSerilog(logger);
-    });
+    logging.AddSerilog(logger);
+});
 
 builder.Services.AddCors(options =>
-    {
-        options.AddPolicy("AllowAll",
-            policy =>
-            {
-                policy
+{
+    options.AddPolicy("AllowAll",
+        policy =>
+        {
+            policy
                 .AllowAnyOrigin()
                 .AllowAnyHeader()
                 .AllowAnyMethod();
-            });
-    });
+        });
+});
 
 builder.Services.AddCoreServices(builder.Configuration.GetRequiredSection(CoreServicesInstaller.SectionKey));
 builder.Services.AddFileStorage(builder.Configuration.GetRequiredSection(FileStorageInstaller.SectionKey));
 
 builder.Services.AddPushNotifications(builder.Configuration.GetRequiredSection(PushNotificationsInstaller.SectionKey));
 
-builder.Services.AddApplicationDomain(builder.Configuration.GetSection(DomainInstaller.SectionKey), builder.Environment.IsProduction());
+builder.Services.AddApplicationDomain(builder.Configuration.GetSection(DomainInstaller.SectionKey),
+    builder.Environment.IsProduction());
 builder.Services.AddSeeders();
 builder.Services.AddIdentity();
 
@@ -153,6 +157,7 @@ builder.Services.AddFeedbackFeature();
 builder.Services.AddCitizenReportsFeature();
 builder.Services.AddCitizenReportsNotesFeature();
 builder.Services.AddCitizenReportsAttachmentsFeature();
+builder.Services.AddCitizenGuidesFeature();
 builder.Services.AddLocationsFeature(builder.Configuration.GetSection(LocationsFeatureInstaller.SectionKey));
 
 builder.Services.AddAuthorization();
@@ -177,37 +182,37 @@ app.UseAuthorization();
 
 app.UseSentryMiddleware()
     .UseFastEndpoints(x =>
-{
-    x.Errors.UseProblemDetails();
-    x.Endpoints.Configurator = ep =>
     {
-        ep.PreProcessor<CurrentUserInjector>(Order.Before);
-    };
+        x.Errors.UseProblemDetails();
+        x.Endpoints.Configurator = ep => { ep.PreProcessor<CurrentUserInjector>(Order.Before); };
 
-    x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<UserStatus, string>());
-    x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<UserRole, string>());
-    x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<NgoStatus, string>());
-    x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<ElectionRoundStatus, string>());
-    x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<SortOrder, string>());
-    x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<FormTemplateType, string>());
-    x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<FormTemplateStatus, string>());
-    x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<MonitoringNgoStatus, string>());
-    x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<MonitoringObserverStatus, string>());
-    x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<RatingScale, string>());
-    x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<FormType, string>());
-    x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<ExportedDataStatus, string>());
-    x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<QuickReportLocationType, string>());
-    x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<DisplayLogicCondition, string>());
-    x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<SubmissionFollowUpStatus, string>());
-    x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<QuickReportFollowUpStatus, string>());
-    x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<TranslationStatus, string>());
-    x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<CitizenReportFollowUpStatus, string>());
-    x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<QuestionsAnsweredFilter, string>());
+        x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<UserStatus, string>());
+        x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<UserRole, string>());
+        x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<NgoStatus, string>());
+        x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<ElectionRoundStatus, string>());
+        x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<SortOrder, string>());
+        x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<FormTemplateType, string>());
+        x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<FormTemplateStatus, string>());
+        x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<MonitoringNgoStatus, string>());
+        x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<MonitoringObserverStatus, string>());
+        x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<RatingScale, string>());
+        x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<FormType, string>());
+        x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<ExportedDataStatus, string>());
+        x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<QuickReportLocationType, string>());
+        x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<DisplayLogicCondition, string>());
+        x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<SubmissionFollowUpStatus, string>());
+        x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<QuickReportFollowUpStatus, string>());
+        x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<TranslationStatus, string>());
+        x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<CitizenReportFollowUpStatus, string>());
+        x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<QuestionsAnsweredFilter, string>());
+        x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<ObserverGuideType, string>());
+        x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<CitizenGuideType, string>());
 
-    x.Serializer.Options.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
-});
+        x.Serializer.Options.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+    });
 
 #region Register type handleers for Dapper
+
 SqlMapper.AddTypeHandler(typeof(UserStatus), new SmartEnumByValueTypeHandler<UserStatus, string>());
 SqlMapper.AddTypeHandler(typeof(UserRole), new SmartEnumByValueTypeHandler<UserRole, string>());
 SqlMapper.AddTypeHandler(typeof(NgoStatus), new SmartEnumByValueTypeHandler<NgoStatus, string>());
@@ -216,50 +221,56 @@ SqlMapper.AddTypeHandler(typeof(SortOrder), new SmartEnumByValueTypeHandler<Sort
 SqlMapper.AddTypeHandler(typeof(FormTemplateType), new SmartEnumByValueTypeHandler<FormTemplateType, string>());
 SqlMapper.AddTypeHandler(typeof(FormTemplateStatus), new SmartEnumByValueTypeHandler<FormTemplateStatus, string>());
 SqlMapper.AddTypeHandler(typeof(MonitoringNgoStatus), new SmartEnumByValueTypeHandler<MonitoringNgoStatus, string>());
-SqlMapper.AddTypeHandler(typeof(MonitoringObserverStatus), new SmartEnumByValueTypeHandler<MonitoringObserverStatus, string>());
+SqlMapper.AddTypeHandler(typeof(MonitoringObserverStatus),
+    new SmartEnumByValueTypeHandler<MonitoringObserverStatus, string>());
 SqlMapper.AddTypeHandler(typeof(RatingScale), new SmartEnumByValueTypeHandler<RatingScale, string>());
 SqlMapper.AddTypeHandler(typeof(FormType), new SmartEnumByValueTypeHandler<FormType, string>());
 SqlMapper.AddTypeHandler(typeof(ExportedDataStatus), new SmartEnumByValueTypeHandler<ExportedDataStatus, string>());
-SqlMapper.AddTypeHandler(typeof(QuickReportLocationType), new SmartEnumByValueTypeHandler<QuickReportLocationType, string>());
-SqlMapper.AddTypeHandler(typeof(DisplayLogicCondition), new SmartEnumByValueTypeHandler<DisplayLogicCondition, string>());
-SqlMapper.AddTypeHandler(typeof(SubmissionFollowUpStatus), new SmartEnumByValueTypeHandler<SubmissionFollowUpStatus, string>());
-SqlMapper.AddTypeHandler(typeof(QuickReportFollowUpStatus), new SmartEnumByValueTypeHandler<QuickReportFollowUpStatus, string>());
-SqlMapper.AddTypeHandler(typeof(CitizenReportFollowUpStatus), new SmartEnumByValueTypeHandler<CitizenReportFollowUpStatus, string>());
-SqlMapper.AddTypeHandler(typeof(TranslatedString), new JsonToObjectConverter<TranslatedString>());
-#endregion
-app.UseSwaggerGen(
-cfg =>
-{
-    cfg.PostProcess = (document, _) =>
-    {
-        var commitHash = Environment.GetEnvironmentVariable("COMMIT_HASH")?[..7] ?? "Unknown";
+SqlMapper.AddTypeHandler(typeof(QuickReportLocationType),
+    new SmartEnumByValueTypeHandler<QuickReportLocationType, string>());
+SqlMapper.AddTypeHandler(typeof(DisplayLogicCondition),
+    new SmartEnumByValueTypeHandler<DisplayLogicCondition, string>());
+SqlMapper.AddTypeHandler(typeof(SubmissionFollowUpStatus),
+    new SmartEnumByValueTypeHandler<SubmissionFollowUpStatus, string>());
+SqlMapper.AddTypeHandler(typeof(QuickReportFollowUpStatus),
+    new SmartEnumByValueTypeHandler<QuickReportFollowUpStatus, string>());
+SqlMapper.AddTypeHandler(typeof(CitizenReportFollowUpStatus),
+    new SmartEnumByValueTypeHandler<CitizenReportFollowUpStatus, string>());
 
-        document.Info = new OpenApiInfo
+SqlMapper.AddTypeHandler(typeof(TranslatedString), new JsonToObjectConverter<TranslatedString>());
+
+#endregion
+
+app.UseSwaggerGen(
+    cfg =>
+    {
+        cfg.PostProcess = (document, _) =>
         {
-            Version = "v2.0",
-            Title = $"Vote Monitor API({commitHash})",
-            Description = "An ASP.NET Core Web API for monitoring elections.",
-            ExtensionData = new Dictionary<string, object?>
+            var commitHash = Environment.GetEnvironmentVariable("COMMIT_HASH")?[..7] ?? "Unknown";
+
+            document.Info = new OpenApiInfo
             {
-                ["commit-hash"] = commitHash
-            },
-            Contact = new OpenApiContact
-            {
-                Name = "CommitGlobal",
-                Url = "https://www.commitglobal.org/en/contact-us"
-            },
-            License = new OpenApiLicense
-            {
-                Name = "MPL-2.0 license",
-                Url = "https://github.com/commitglobal/votemonitor/blob/main/LICENSE"
-            }
+                Version = "v2.0",
+                Title = $"Vote Monitor API({commitHash})",
+                Description = "An ASP.NET Core Web API for monitoring elections.",
+                ExtensionData = new Dictionary<string, object?>
+                {
+                    ["commit-hash"] = commitHash
+                },
+                Contact = new OpenApiContact
+                {
+                    Name = "CommitGlobal",
+                    Url = "https://www.commitglobal.org/en/contact-us"
+                },
+                License = new OpenApiLicense
+                {
+                    Name = "MPL-2.0 license",
+                    Url = "https://github.com/commitglobal/votemonitor/blob/main/LICENSE"
+                }
+            };
         };
-    };
-},
-uiConfig: cfg =>
-{
-    cfg.DocExpansion = "list";
-});
+    },
+    uiConfig: cfg => { cfg.DocExpansion = "list"; });
 app.UseResponseCompression();
 app.MapHealthChecks("/health");
 
