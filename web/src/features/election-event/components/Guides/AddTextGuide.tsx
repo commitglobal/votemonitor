@@ -18,6 +18,7 @@ export default function AddTextGuide({ guidePageType }: AddTextGuideProps): Func
   return (
     <Layout
       title={`New text guide`}
+      breadcrumbs={<></>}
       backButton={
         <Link
           title='Go back'

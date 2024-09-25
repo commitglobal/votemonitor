@@ -6,25 +6,25 @@ using Vote.Monitor.Core.Services.FileStorage.Contracts;
 using Vote.Monitor.Domain;
 using Vote.Monitor.Domain.Entities.CitizenGuideAggregate;
 
-namespace Feature.Citizen.Guides.GetById;
+namespace Feature.ObserverGuide.GetById;
 
 public class Endpoint(
     IAuthorizationService authorizationService,
     VoteMonitorContext context,
     IFileStorageService fileStorageService)
-    : Endpoint<Request, Results<Ok<CitizenGuideModel>, NotFound>>
+    : Endpoint<Request, Results<Ok<ObserverGuideModel>, NotFound>>
 {
     public override void Configure()
     {
-        Get("/api/election-rounds/{electionRoundId}/citizen-guides/{id}");
+        Get("/api/election-rounds/{electionRoundId}/observer-guide/{id}");
         DontAutoTag();
-        Options(x => x.WithTags("citizen-guides"));
+        Options(x => x.WithTags("observer-guide"));
         Policies(PolicyNames.NgoAdminsOnly);
     }
 
-    public override async Task<Results<Ok<CitizenGuideModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<Results<Ok<ObserverGuideModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var requirement = new CitizenReportingNgoAdminRequirement(req.ElectionRoundId);
+        var requirement = new MonitoringNgoAdminRequirement(req.ElectionRoundId);
         var authorizationResult = await authorizationService.AuthorizeAsync(User, requirement);
         if (!authorizationResult.Succeeded)
         {
@@ -33,8 +33,8 @@ public class Endpoint(
 
         // ReSharper disable once EntityFramework.NPlusOne.IncompleteDataQuery
         var guide = await context
-            .CitizenGuides
-            .Where(x => x.ElectionRoundId == req.ElectionRoundId && !x.IsDeleted && x.Id == req.Id)
+            .ObserversGuides
+            .Where(x => x.MonitoringNgo.ElectionRoundId == req.ElectionRoundId && !x.IsDeleted && x.Id == req.Id)
             .OrderByDescending(x => x.CreatedOn)
             .Join(context.NgoAdmins, guide => guide.LastModifiedBy == Guid.Empty ? guide.CreatedBy : guide.LastModifiedBy, user => user.Id, (guide, ngoAdmin) => new
             {
@@ -72,7 +72,7 @@ public class Endpoint(
             return TypedResults.NotFound();
         }
 
-        var citizenGuideModel = new CitizenGuideModel
+        var citizenGuideModel = new ObserverGuideModel
         {
             Id = guide.Id,
             Title = guide.Title,

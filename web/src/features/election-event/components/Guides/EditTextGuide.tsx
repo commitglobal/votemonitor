@@ -31,6 +31,7 @@ export default function EditTextGuide({ guidePageType, guideId }: EditTextGuideP
   return (
     <Layout
       title={`Edit ${guide.title}`}
+      breadcrumbs={<></>}
       backButton={
         <Link
           title='Go back'

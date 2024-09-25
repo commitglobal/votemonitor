@@ -1,4 +1,4 @@
-import EditTextGuide from '@/features/election-event/components/CitizenGuides/EditTextGuide';
+import EditTextGuide from '@/features/election-event/components/Guides/EditTextGuide';
 import { citizenGuideDetailsQueryOptions } from '@/features/election-event/hooks/citizen-guides-hooks';
 import { GuidePageType } from '@/features/election-event/models/guide';
 import { redirectIfNotAuth } from '@/lib/utils';

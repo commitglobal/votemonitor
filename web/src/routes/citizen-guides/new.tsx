@@ -1,4 +1,4 @@
-import AddTextGuide from '@/features/election-event/components/CitizenGuides/AddTextGuide';
+import AddTextGuide from '@/features/election-event/components/Guides/AddTextGuide';
 import { GuidePageType } from '@/features/election-event/models/guide';
 import { redirectIfNotAuth } from '@/lib/utils';
 import { createFileRoute } from '@tanstack/react-router';

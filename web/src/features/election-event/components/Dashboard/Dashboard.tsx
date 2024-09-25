@@ -9,7 +9,7 @@ import { getRouteApi } from '@tanstack/react-router';
 import { ReactElement, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useElectionRoundDetails } from '../../hooks/election-event-hooks';
-import GuidesDashboard from '../CitizenGuides/GuidesDashboard';
+import GuidesDashboard from '../Guides/GuidesDashboard';
 import ElectionEventDetails from '../ElectionEventDetails/ElectionEventDetails';
 import { GuidePageType } from '../../models/guide';
 

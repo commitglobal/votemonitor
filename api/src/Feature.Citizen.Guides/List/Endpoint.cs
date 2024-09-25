@@ -40,7 +40,7 @@ public class Endpoint(IAuthorizationService authorizationService,
             .CitizenGuides
             .Where(x => x.ElectionRoundId == req.ElectionRoundId && !x.IsDeleted)
             .OrderByDescending(x=>x.CreatedOn)
-            .Join(context.NgoAdmins, guide => guide.CreatedBy, user => user.Id, (guide, ngoAdmin) => new
+            .Join(context.NgoAdmins, guide => guide.LastModifiedBy == Guid.Empty ? guide.CreatedBy : guide.LastModifiedBy, user => user.Id, (guide, ngoAdmin) => new
             {
                 guide.Id,
                 guide.Title,
