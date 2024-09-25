@@ -35,6 +35,20 @@ declare module '@tanstack/react-table' {
   }
 }
 
+function isArrayResult<TData>(result: PageResponse<TData> | TData[]): result is TData[] {
+  return Array.isArray(result); // data will be an array for TData[]
+}
+
+function isEmpty<TData>(result?: PageResponse<TData> | TData[]): boolean | undefined{
+  if(result === undefined) return undefined;
+
+ if(isArrayResult(result)){
+  return result.length === 0;
+
+ }
+
+ return result.isEmpty;
+}
 export interface DataTableProps<TData extends RowData, TValue, TQueryParams = object> {
   /**
    * Tanstack table column definitions.
@@ -44,7 +58,9 @@ export interface DataTableProps<TData extends RowData, TValue, TQueryParams = ob
   /**
    * Tanstack query for paginated data.
    */
-  useQuery: (params: DataTableParameters<TQueryParams>) => UseQueryResult<PageResponse<TData>, Error>;
+  useQuery: (
+    params: DataTableParameters<TQueryParams>
+  ) => UseQueryResult<PageResponse<TData>, Error> | UseQueryResult<TData[], Error>;
 
   /**
    * Externalize pagination state to the parent component.
@@ -145,7 +161,7 @@ export function DataTable<TData extends RowData, TValue, TQueryParams = object>(
     [sorting, setSorting] = [sortingExt, setSortingExt];
   }
 
-  const { data, isFetching, isSuccess } = useQuery({
+  const { data: result, isFetching, isSuccess } = useQuery({
     pageNumber: pagination.pageIndex + 1,
     pageSize: pagination.pageSize,
     sortColumnName: sorting[0]?.id || 'id',
@@ -155,18 +171,22 @@ export function DataTable<TData extends RowData, TValue, TQueryParams = object>(
 
   useEffect(() => {
     if (isSuccess && onDataFetchingSucceed) {
-      onDataFetchingSucceed(data.pageSize, data.currentPage, data.totalCount);
+      if (isArrayResult(result)) {
+        onDataFetchingSucceed(result.length, 1, result.length);
+      } else {
+        onDataFetchingSucceed(result.pageSize, result.currentPage, result.totalCount);
+      }
     }
-  }, [isSuccess, queryParams]);
+  }, [isSuccess, queryParams, result]);
 
   const table = useReactTable({
-    data: data?.items || [],
+    data: !!result ? (isArrayResult(result) ? result : result.items ?? []) : [],
     columns,
     manualPagination: true,
     manualSorting: true,
     enableSorting: true,
     enableFilters: true,
-    pageCount: data ? Math.ceil(data.totalCount / data.pageSize) : 0,
+    pageCount: result ? (isArrayResult(result) ? result.length : Math.ceil(result.totalCount / result.pageSize)) : 0,
     columnResizeMode: 'onChange',
     enableColumnResizing: true,
     getCoreRowModel: getCoreRowModel(),
@@ -188,8 +208,8 @@ export function DataTable<TData extends RowData, TValue, TQueryParams = object>(
 
   return (
     <div className='bg-white border border-gray-300 shadow-sm filament-tables-container rounded-xl'>
-      {data?.isEmpty ? (
-        <div className='flex items-center justify-center py-52 flex-col gap-2 max-w-lg m-auto'>
+      {isEmpty(result) ? (
+        <div className='flex flex-col items-center justify-center max-w-lg gap-2 m-auto py-52'>
           <EmptyCollectionIcon />
 
           <p className='text-2xl font-bold'>{emptyTitle ?? 'No data'}</p>
@@ -256,7 +276,8 @@ export function DataTable<TData extends RowData, TValue, TQueryParams = object>(
               </TableBody>
             </Table>
           </div>
-          <DataTablePagination table={table} totalCount={data?.totalCount} />
+
+          {!!result && !isArrayResult(result) && <DataTablePagination table={table} totalCount={result?.totalCount} />}
         </>
       )}
     </div>

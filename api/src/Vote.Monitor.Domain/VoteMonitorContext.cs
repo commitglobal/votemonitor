@@ -148,6 +148,7 @@ public class VoteMonitorContext : IdentityDbContext<ApplicationUser, IdentityRol
         builder.ApplyConfiguration(new CitizenReportConfiguration());
         builder.ApplyConfiguration(new CitizenReportNoteConfiguration());
         builder.ApplyConfiguration(new CitizenReportAttachmentConfiguration());
+        builder.ApplyConfiguration(new CitizenGuideConfiguration());
         
         builder.ApplyConfiguration(new LocationConfiguration());
     }

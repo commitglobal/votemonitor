@@ -4,7 +4,7 @@ using Vote.Monitor.Domain.Entities.ObserverGuideAggregate;
 
 namespace Vote.Monitor.Domain.EntitiesConfiguration;
 
-internal class CitizenReportsGuideConfiguration : IEntityTypeConfiguration<CitizenGuide>
+internal class CitizenGuideConfiguration : IEntityTypeConfiguration<CitizenGuide>
 {
     public void Configure(EntityTypeBuilder<CitizenGuide> builder)
     {

@@ -16,6 +16,19 @@ public class UpdateValidatorTests
         // Assert
         result.ShouldHaveValidationErrorFor(x => x.ElectionRoundId);
     }
+    
+    [Fact]
+    public void Should_Have_Error_When_Id_Is_Empty()
+    {
+        // Arrange
+        var model = new Update.Request { Id = Guid.Empty };
+
+        // Act
+        var result = _validator.TestValidate(model);
+
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.Id);
+    }
 
     [Theory]
     [MemberData(nameof(TestData.EmptyStringsTestCases), MemberType = typeof(TestData))]
@@ -89,6 +102,7 @@ public class UpdateValidatorTests
         var model = new Update.Request
         {
             ElectionRoundId = Guid.NewGuid(),
+            Id = Guid.NewGuid(),
             Title = "Valid Title",
             WebsiteUrl = "https://validurl.com"
         };

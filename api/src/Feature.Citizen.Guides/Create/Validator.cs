@@ -21,7 +21,7 @@ public class Validator : Validator<Request>
             .IsValidUri()
             .When(x => x.GuideType == CitizenGuideType.Website);
         
-        RuleFor(x => x.WebsiteUrl)
+        RuleFor(x => x.Text)
             .NotEmpty()!
             .When(x => x.GuideType == CitizenGuideType.Text);
     }

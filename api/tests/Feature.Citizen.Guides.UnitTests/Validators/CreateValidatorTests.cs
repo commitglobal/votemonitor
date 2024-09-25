@@ -121,16 +121,16 @@ public class CreateValidatorTests
     }
 
     [Fact]
-    public void Should_Have_Error_When_WebsiteUrl_Is_Empty_For_Text_Type()
+    public void Should_Have_Error_When_Text_Is_Empty_For_Text_Type()
     {
         // Arrange
-        var model = new Create.Request { GuideType = CitizenGuideType.Text, WebsiteUrl = string.Empty };
+        var model = new Create.Request { GuideType = CitizenGuideType.Text, Text = string.Empty };
 
         // Act
         var result = _validator.TestValidate(model);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.WebsiteUrl);
+        result.ShouldHaveValidationErrorFor(x => x.Text);
     }
 
     [Fact]

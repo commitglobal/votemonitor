@@ -19,6 +19,7 @@ public class Endpoint(IAuthorizationService authorizationService,
         Get("/api/election-rounds/{electionRoundId}/citizen-guides");
         DontAutoTag();
         Options(x => x.WithTags("citizen-guides"));
+        AllowAnonymous();
     }
 
     public override async Task<Results<Ok<Response>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
@@ -39,7 +40,7 @@ public class Endpoint(IAuthorizationService authorizationService,
             .CitizenGuides
             .Where(x => x.ElectionRoundId == req.ElectionRoundId && !x.IsDeleted)
             .OrderByDescending(x=>x.CreatedOn)
-            .Join(context.Users, guide=>guide.CreatedBy, user => user.Id, (guide, ngoAdmin) => new
+            .Join(context.NgoAdmins, guide => guide.CreatedBy, user => user.Id, (guide, ngoAdmin) => new
             {
                 guide.Id,
                 guide.Title,
@@ -51,7 +52,21 @@ public class Endpoint(IAuthorizationService authorizationService,
                 guide.FilePath,
                 guide.Text,
                 guide.WebsiteUrl,
-                CreatedBy = isNgoAdmin ? ngoAdmin.FirstName + " " + ngoAdmin.LastName : ""
+                UserId = ngoAdmin.ApplicationUserId
+            })
+            .Join(context.Users, x => x.UserId, user => user.Id, (guide, user) => new
+            {
+                guide.Id,
+                guide.Title,
+                guide.FileName,
+                guide.UploadedFileName,
+                guide.MimeType,
+                guide.GuideType,
+                guide.CreatedOn,
+                guide.FilePath,
+                guide.Text,
+                guide.WebsiteUrl,
+                CreatedBy = isNgoAdmin ? user.FirstName + " " + user.LastName : ""
             })
             .AsNoTracking()
             .ToListAsync(ct);
