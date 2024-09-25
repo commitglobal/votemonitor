@@ -31,13 +31,13 @@ public class Location : AuditableBaseEntity, IAggregateRoot, IDisposable
         DateTime createdOn,
         Guid userId)
     {
-        var pollingStation = new Location(electionRound, level1, level2, level3, level4, level5, displayOrder,
+        var location = new Location(electionRound, level1, level2, level3, level4, level5, displayOrder,
             tags);
 
-        pollingStation.CreatedOn = createdOn;
-        pollingStation.CreatedBy = userId;
+        location.CreatedOn = createdOn;
+        location.CreatedBy = userId;
 
-        return pollingStation;
+        return location;
     }
 
     public ElectionRound ElectionRound { get; private set; }

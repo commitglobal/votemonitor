@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Vote.Monitor.Domain.Constants;
 using Vote.Monitor.Domain.Entities.AttachmentAggregate;
+using Vote.Monitor.Domain.Entities.CitizenGuideAggregate;
 using Vote.Monitor.Domain.Entities.CitizenReportAggregate;
 using Vote.Monitor.Domain.Entities.CitizenReportAttachmentAggregate;
 using Vote.Monitor.Domain.Entities.CitizenReportNoteAggregate;
@@ -73,6 +74,7 @@ public class VoteMonitorContext : IdentityDbContext<ApplicationUser, IdentityRol
     public DbSet<CitizenReportNote> CitizenReportNotes { get; set; }
     public DbSet<CitizenReportAttachment> CitizenReportAttachments { get; set; }
     public DbSet<MonitoringObserverNotification> MonitoringObserverNotification { get; set; }
+    public DbSet<CitizenGuide> CitizenGuides { get; set; }
     
     public DbSet<Location> Locations { get; set; }
 
@@ -146,6 +148,7 @@ public class VoteMonitorContext : IdentityDbContext<ApplicationUser, IdentityRol
         builder.ApplyConfiguration(new CitizenReportConfiguration());
         builder.ApplyConfiguration(new CitizenReportNoteConfiguration());
         builder.ApplyConfiguration(new CitizenReportAttachmentConfiguration());
+        builder.ApplyConfiguration(new CitizenGuideConfiguration());
         
         builder.ApplyConfiguration(new LocationConfiguration());
     }
