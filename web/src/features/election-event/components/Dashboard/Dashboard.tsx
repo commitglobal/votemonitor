@@ -34,7 +34,6 @@ export default function ElectionEventDashboard(): ReactElement {
   }
   const { data: electionEvent } = useElectionRoundDetails(currentElectionRoundId);
 
-
   return (
     <Layout title={electionEvent?.title ?? ''} breadcrumbs={<></>} backButton={<></>}>
       <Tabs defaultValue='event-details' value={currentTab} onValueChange={handleTabChange}>
@@ -44,9 +43,13 @@ export default function ElectionEventDashboard(): ReactElement {
           })}>
           <TabsTrigger value='event-details'>{t('electionEvent.eventDetails.tabTitle')}</TabsTrigger>
           <TabsTrigger value='polling-stations'>{t('electionEvent.pollingStations.tabTitle')}</TabsTrigger>
-          <TabsTrigger value='locations'>{t('electionEvent.locations.tabTitle')}</TabsTrigger>
+          {isMonitoringNgoForCitizenReporting && (
+            <TabsTrigger value='locations'>{t('electionEvent.locations.tabTitle')}</TabsTrigger>
+          )}
           <TabsTrigger value='observer-guides'>{t('electionEvent.guides.observerGuidesTabTitle')}</TabsTrigger>
-          <TabsTrigger value='citizen-guides'>{t('electionEvent.guides.citizenGuidesTabTitle')}</TabsTrigger>
+          {isMonitoringNgoForCitizenReporting && (
+            <TabsTrigger value='citizen-guides'>{t('electionEvent.guides.citizenGuidesTabTitle')}</TabsTrigger>
+          )}
           <TabsTrigger value='observer-forms'>{t('electionEvent.observerForms.tabTitle')}</TabsTrigger>
         </TabsList>
 
