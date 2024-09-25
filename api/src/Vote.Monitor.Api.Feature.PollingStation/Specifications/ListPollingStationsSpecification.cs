@@ -14,6 +14,7 @@ public sealed class ListPollingStationsSpecification : Specification<PollingStat
             .Where(x => x.Level3 == request.Level3Filter, !string.IsNullOrWhiteSpace(request.Level3Filter))
             .Where(x => x.Level4 == request.Level4Filter, !string.IsNullOrWhiteSpace(request.Level4Filter))
             .Where(x => x.Level5 == request.Level5Filter, !string.IsNullOrWhiteSpace(request.Level5Filter))
+            .Where(x => x.Number == request.PollingStationNumberFilter, !string.IsNullOrWhiteSpace(request.PollingStationNumberFilter))
             .ApplyOrdering(request)
             .Paginate(request)
             .AsNoTracking();
