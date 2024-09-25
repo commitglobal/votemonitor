@@ -247,10 +247,9 @@ function FileCard({ file, onRemove }: FileCardProps) {
 }
 
 interface FilePreviewProps {
-  file: File & { preview: string }
 }
 
-function FilePreview({ file }: FilePreviewProps) {
+function FilePreview(props: FilePreviewProps) {
   return (
     <DocumentTextIcon
       className="size-10 text-muted-foreground"
