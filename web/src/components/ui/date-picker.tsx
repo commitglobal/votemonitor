@@ -1,5 +1,3 @@
-'use client';
-
 import { addDays, format } from 'date-fns';
 import { Calendar as CalendarIcon } from 'lucide-react';
 import * as React from 'react';
@@ -24,7 +22,7 @@ export function DatePickerWithRange({ className }: React.HTMLAttributes<HTMLDivE
             id='date'
             variant={'outline'}
             className={cn('w-[300px] justify-start text-left font-normal', !date && 'text-muted-foreground')}>
-            <CalendarIcon className='mr-2 h-4 w-4' />
+            <CalendarIcon className='w-4 h-4 mr-2' />
             {date?.from ? (
               date.to ? (
                 <>

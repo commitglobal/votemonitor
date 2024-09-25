@@ -114,7 +114,6 @@ export function FormsFiltersByEntry(): FunctionComponent {
         </SelectContent>
       </Select>
 
-      <PollingStationsFilters />
 
       <Select
         onValueChange={(value) => {
@@ -172,6 +171,8 @@ export function FormsFiltersByEntry(): FunctionComponent {
           </SelectGroup>
         </SelectContent>
       </Select>
+
+      <PollingStationsFilters />
 
       <ResetFiltersButton disabled={!isFiltered} />
 

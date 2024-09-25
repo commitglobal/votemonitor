@@ -1,3 +1,4 @@
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -9,6 +10,8 @@ import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { FILTER_KEY } from '@/features/filtering/filtering-enums';
 import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
 import { useMonitoringObserversTags } from '@/hooks/tags-queries';
+import { Check, ChevronDown, ChevronUp } from 'lucide-react';
+
 import { FC, useState } from 'react';
 
 export const MonitoringObserverTagsSelect: FC = () => {
@@ -16,18 +19,11 @@ export const MonitoringObserverTagsSelect: FC = () => {
   const { data: tags } = useMonitoringObserversTags(currentElectionRoundId);
   const { queryParams, navigateHandler } = useFilteringContainer();
   const currentTags = (queryParams as any)?.[FILTER_KEY.MonitoringObserverTags] ?? [];
-  const currentTagsSet = new Set(currentTags);
   const [query, setQuery] = useState<string>('');
 
-  const filteredTags =
-    query === ''
-      ? tags
-      : tags?.filter((option) => {
-          return option.toLowerCase().includes(query.toLowerCase());
-        });
-
   const toggleTagsFilter = (tag: string) => {
-    if (!currentTags.includes(tag)) return navigateHandler({ tags: [...currentTags, tag] });
+    if (!currentTags.includes(tag))
+      return navigateHandler({ [FILTER_KEY.MonitoringObserverTags]: [...currentTags, tag] });
 
     const filteredTags = currentTags.filter((tagText: string) => tagText !== tag);
 
@@ -37,25 +33,33 @@ export const MonitoringObserverTagsSelect: FC = () => {
   return (
     <DropdownMenu onOpenChange={() => setQuery('')}>
       <DropdownMenuTrigger asChild>
-        <div className='flex h-10 w-48 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50'>
-          Observer tags
-        </div>
+        <Button className='border-gray-200 gap-1 hover:bg-white w-[180px]' variant='outline'>
+          <span className='text-sm font-normal text-slate-700'>Observer tags</span>
+          {currentTags && currentTags.length && (
+            <span className='inline-block px-2 text-purple-600 rounded-full bg-purple-50'>{currentTags.length}</span>
+          )}
+          <ChevronDown className='w-4 h-4 opacity-50' />
+        </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className='w-56'>
-        <Input
-          placeholder='Search...'
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => e.stopPropagation()}
-        />
-        {filteredTags?.map((tag) => (
-          <DropdownMenuCheckboxItem
-            checked={currentTags.includes(tag)}
-            onCheckedChange={() => toggleTagsFilter(tag)}
-            key={tag}>
-            {tag}
-          </DropdownMenuCheckboxItem>
-        ))}
+        <div className='sticky top-0 p-2 bg-background'>
+          <Input
+            placeholder='Search...'
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => e.stopPropagation()}
+          />
+        </div>
+        <ScrollArea className='h-[300px]'>
+          {tags?.map((tag) => (
+            <DropdownMenuCheckboxItem
+              checked={currentTags.includes(tag)}
+              onCheckedChange={() => toggleTagsFilter(tag)}
+              key={tag}>
+              {tag}
+            </DropdownMenuCheckboxItem>
+          ))}
+        </ScrollArea>
       </DropdownMenuContent>
     </DropdownMenu>
   );

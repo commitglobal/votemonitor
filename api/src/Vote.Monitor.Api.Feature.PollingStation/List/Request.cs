@@ -22,4 +22,7 @@ public class Request : BaseSortPaginatedRequest
 
     [QueryParam]
     public string? Level5Filter { get; set; }
+    
+    [QueryParam]
+    public string? PollingStationNumberFilter { get; set; }
 }
