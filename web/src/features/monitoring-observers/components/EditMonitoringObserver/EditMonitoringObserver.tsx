@@ -118,11 +118,11 @@ export default function EditObserver() {
               <FormField
                 control={form.control}
                 name='firstName'
-                render={({ field }) => (
+                render={({ field, fieldState }) => (
                   <FormItem>
                     <FormLabel className='text-left'>First name</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input {...field} {...fieldState} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -131,11 +131,11 @@ export default function EditObserver() {
               <FormField
                 control={form.control}
                 name='lastName'
-                render={({ field }) => (
+                render={({ field, fieldState }) => (
                   <FormItem className='w-[540px]'>
                     <FormLabel className='text-left'>Last name</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input {...field} {...fieldState} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -144,11 +144,11 @@ export default function EditObserver() {
               <FormField
                 control={form.control}
                 name='phoneNumber'
-                render={({ field }) => (
+                render={({ field, fieldState }) => (
                   <FormItem>
                     <FormLabel className='text-left'>Phone number</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input {...field} {...fieldState} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
