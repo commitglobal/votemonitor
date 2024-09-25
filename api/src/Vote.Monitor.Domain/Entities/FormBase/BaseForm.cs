@@ -266,19 +266,24 @@ public class BaseForm : AuditableBaseEntity, IAggregateRoot
 
         foreach (var languageCode in Languages)
         {
-            if (string.IsNullOrWhiteSpace(Name[languageCode]))
+            if (Name != null && (!Name.ContainsKey(languageCode) || string.IsNullOrWhiteSpace(Name[languageCode])))
             {
                 languagesTranslationStatus.AddOrUpdateTranslationStatus(languageCode,
                     TranslationStatus.MissingTranslations);
                 continue;
             }
 
-            if (Description != null && !string.IsNullOrWhiteSpace(Description[DefaultLanguage]) &&
-                string.IsNullOrWhiteSpace(Description[languageCode]))
+            if (Description != null)
             {
-                languagesTranslationStatus.AddOrUpdateTranslationStatus(languageCode,
-                    TranslationStatus.MissingTranslations);
-                continue;
+                if (Description.ContainsKey(DefaultLanguage) &&
+                    !string.IsNullOrWhiteSpace(Description[DefaultLanguage]) &&
+                    (!Description.ContainsKey(languageCode) ||
+                     string.IsNullOrWhiteSpace(Description[languageCode])))
+                {
+                    languagesTranslationStatus.AddOrUpdateTranslationStatus(languageCode,
+                        TranslationStatus.MissingTranslations);
+                    continue;
+                }
             }
 
             var status =
