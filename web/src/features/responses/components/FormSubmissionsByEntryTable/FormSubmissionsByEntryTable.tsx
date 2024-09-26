@@ -38,6 +38,7 @@ export function FormSubmissionsByEntryTable({ searchText }: FormSubmissionsByEnt
       ['questionsAnswered', debouncedSearch.questionsAnswered],
       ['hasNotes', debouncedSearch.hasNotes],
       ['hasAttachments', debouncedSearch.hasAttachments],
+      ['tagsFilter', debouncedSearch.tagsFilter],
     ].filter(([_, value]) => value);
 
     return Object.fromEntries(params) as FormSubmissionsSearchParams;
