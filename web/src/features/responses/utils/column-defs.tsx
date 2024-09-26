@@ -53,12 +53,12 @@ export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry &
     enableGlobalFilter: true,
   },
 
-  {
-    header: ({ column }) => <DataTableColumnHeader title='Language' column={column} />,
-    accessorKey: 'formDefaultLanguage',
-    enableSorting: true,
-    enableGlobalFilter: true,
-  },
+  // {
+  //   header: ({ column }) => <DataTableColumnHeader title='Language' column={column} />,
+  //   accessorKey: 'formDefaultLanguage',
+  //   enableSorting: true,
+  //   enableGlobalFilter: true,
+  // },
 
   {
     header: ({ column }) => <DataTableColumnHeader title='Station number' column={column} />,
