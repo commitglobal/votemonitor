@@ -3,7 +3,8 @@ import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { FILTER_KEY } from '@/features/filtering/filtering-enums';
 import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
 import { useMonitoringObserversTags } from '@/hooks/tags-queries';
-import { FC, useState } from 'react';
+
+import { FC, useEffect } from 'react';
 
 export const MonitoringObserverTagsSelect: FC = () => {
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
@@ -25,6 +26,8 @@ export const MonitoringObserverTagsSelect: FC = () => {
   const toggleTagsFilter = (tags: string[]) => {
     return navigateHandler({ [FILTER_KEY.MonitoringObserverTags]: tags });
   };
+
+  useEffect(() => {}, [currentTags]);
 
   return (
     <MultiSelectDropdown
