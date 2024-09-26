@@ -42,8 +42,8 @@ interface BinarySelectFilterProps extends Omit<SelectFilterProps, 'options'> {}
 
 export const BinarySelectFilter: FC<BinarySelectFilterProps> = (props) => {
   const options: SelectFilterOption[] = [
-    { value: 'Yes', label: 'Yes' },
-    { value: 'No', label: 'No' },
+    { value: 'true', label: 'Yes' },
+    { value: 'false', label: 'No' },
   ];
 
   return <SelectFilter options={options} {...props} />;
