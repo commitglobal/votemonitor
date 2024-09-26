@@ -25,6 +25,7 @@ import { FormSubmissionsAggregatedByFormTable } from '../FormSubmissionsAggregat
 import { FormSubmissionsByEntryTable } from '../FormSubmissionsByEntryTable/FormSubmissionsByEntryTable';
 
 import { FunctionComponent } from '@/common/types';
+import { FormsFiltersByForm } from '../FormsFiltersByForm/FormsFiltersByForm';
 
 const routeApi = getRouteApi('/responses/');
 
@@ -91,18 +92,16 @@ export default function FormSubmissionsTab(): FunctionComponent {
         <Separator />
 
         <div className='flex justify-end gap-4 px-6'>
-          {byFilter !== 'byForm' && (
-            <>
-              <Input className='max-w-md' onChange={handleSearchInput} placeholder='Search' />
-              <FunnelIcon
-                className='w-[20px] text-purple-900 cursor-pointer'
-                fill={isFiltering ? '#5F288D' : 'rgba(0,0,0,0)'}
-                onClick={() => {
-                  setIsFiltering((prev) => !prev);
-                }}
-              />
-            </>
-          )}
+          <>
+            <Input className='max-w-md' onChange={handleSearchInput} placeholder='Search' />
+            <FunnelIcon
+              className='w-[20px] text-purple-900 cursor-pointer'
+              fill={isFiltering ? '#5F288D' : 'rgba(0,0,0,0)'}
+              onClick={() => {
+                setIsFiltering((prev) => !prev);
+              }}
+            />
+          </>
 
           <ColumnsVisibilitySelector byFilter={byFilter ?? 'byEntry'} />
         </div>
@@ -110,11 +109,12 @@ export default function FormSubmissionsTab(): FunctionComponent {
         <Separator />
 
         {isFiltering && (
-          <div className='grid items-center grid-cols-6 gap-4'>
+          <>
             {byFilter === 'byEntry' && <FormsFiltersByEntry />}
 
             {byFilter === 'byObserver' && <FormsFiltersByObserver />}
-          </div>
+            {byFilter === 'byForm' && <FormsFiltersByForm />}
+          </>
         )}
       </CardHeader>
 
