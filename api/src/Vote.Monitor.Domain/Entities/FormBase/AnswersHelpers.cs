@@ -1,4 +1,3 @@
-using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Domain.Entities.FormBase.Questions;
 
@@ -6,29 +5,6 @@ namespace Vote.Monitor.Domain.Entities.FormBase;
 
 public class AnswersHelpers
 {
-    public static LanguagesTranslationStatus ComputeLanguagesTranslationStatus(IEnumerable<BaseQuestion> questions,
-        string defaultLanguage, IEnumerable<string> languages)
-    {
-        var questionsArray = questions.ToArray();
-        var languagesArray = languages.ToArray();
-
-        var languagesTranslationStatus = new LanguagesTranslationStatus();
-
-        foreach (var languageCode in languagesArray)
-        {
-            var status =
-                questionsArray.Any(x =>
-                    x.GetTranslationStatus(defaultLanguage, languageCode) == TranslationStatus.MissingTranslations)
-                    ? TranslationStatus.MissingTranslations
-                    : TranslationStatus.Translated;
-
-            languagesTranslationStatus.AddOrUpdateTranslationStatus(languageCode, status);
-        }
-
-        return languagesTranslationStatus;
-    }
-
-
     public static int CountNumberOfFlaggedAnswers(IEnumerable<BaseQuestion> questions, IEnumerable<BaseAnswer> answers)
     {
         var questionsArray = questions.ToArray();

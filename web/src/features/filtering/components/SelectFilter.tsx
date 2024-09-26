@@ -37,3 +37,14 @@ export const SelectFilter: FC<SelectFilterProps> = (props) => {
     </Select>
   );
 };
+
+interface BinarySelectFilterProps extends Omit<SelectFilterProps, 'options'> {}
+
+export const BinarySelectFilter: FC<BinarySelectFilterProps> = (props) => {
+  const options: SelectFilterOption[] = [
+    { value: 'Yes', label: 'Yes' },
+    { value: 'No', label: 'No' },
+  ];
+
+  return <SelectFilter options={options} {...props} />;
+};

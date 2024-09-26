@@ -1,4 +1,3 @@
-import { cva, type VariantProps } from "class-variance-authority";
 import {
   ChevronDown,
   XIcon
@@ -9,12 +8,11 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Command,
-  CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
   CommandList,
-  CommandSeparator,
+  CommandSeparator
 } from "@/components/ui/command";
 import {
   Popover,
@@ -22,7 +20,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
-import { cn, getTagColor } from "@/lib/utils";
+import { getTagColor } from "@/lib/utils";
 
 
 interface TagsSelectFormFieldProps
@@ -83,7 +81,7 @@ const TagsSelectFormField = React.forwardRef<
         selectedValuesSet.current.add(value.trim());
         setSelectedValues([...selectedValues, value.trim()]);
       }
-      
+
       onValueChange(Array.from(selectedValuesSet.current));
     };
 
@@ -94,21 +92,21 @@ const TagsSelectFormField = React.forwardRef<
             ref={ref}
             {...props}
             onClick={() => setIsPopoverOpen(!isPopoverOpen)}
-            className="flex w-full p-1 rounded-md border min-h-10 h-auto items-center justify-between bg-inherit hover:bg-card"
+            className="flex items-center justify-between w-full h-auto p-1 border rounded-md min-h-10 bg-inherit hover:bg-card"
           >
             {selectedValues.length > 0 ? (
-              <div className="flex justify-between items-center w-full">
+              <div className="flex items-center justify-between w-full">
                 <div className="flex flex-wrap items-center">
                   {selectedValues.map((value) => {
                     return (
                       <Badge
                         key={value}
                         className="m-1 text-slate-600"
-                        style={{ backgroundColor: getTagColor(value) }} 
+                        style={{ backgroundColor: getTagColor(value) }}
                       >
                         {value}
                         <XIcon
-                          className="ml-2 h-4 w-4 cursor-pointer"
+                          className="w-4 h-4 ml-2 cursor-pointer"
                           onClick={(event) => {
                             event.stopPropagation();
                             toggleOption(value);
@@ -130,17 +128,17 @@ const TagsSelectFormField = React.forwardRef<
                   />
                   <Separator
                     orientation="vertical"
-                    className="flex min-h-6 h-full"
+                    className="flex h-full min-h-6"
                   />
                   <ChevronDown className="h-4 mx-2 cursor-pointer text-muted-foreground" />
                 </div>
               </div>
             ) : (
               <div className="flex items-center justify-between w-full mx-auto">
-                <span className="text-sm text-muted-foreground mx-3">
+                <span className="mx-3 text-sm text-muted-foreground">
                   {placeholder}
                 </span>
-                <ChevronDown className="h-4 cursor-pointer text-muted-foreground mx-2" />
+                <ChevronDown className="h-4 mx-2 cursor-pointer text-muted-foreground" />
               </div>
             )}
           </Button>
@@ -155,7 +153,7 @@ const TagsSelectFormField = React.forwardRef<
               placeholder="Search..."
               onKeyDown={handleInputKeyDown}
               value={search}
-              onValueChange={setSearch} 
+              onValueChange={setSearch}
             />
             <CommandList className="w-full">
               {/* <CommandEmpty>Press enter to create this tag.</CommandEmpty> */}
@@ -191,13 +189,13 @@ const TagsSelectFormField = React.forwardRef<
                           pointerEvents: "auto",
                           opacity: 1,
                         }}
-                        className="flex-1 justify-center cursor-pointer"
+                        className="justify-center flex-1 cursor-pointer"
                       >
                         Clear
                       </CommandItem>
                       <Separator
                         orientation="vertical"
-                        className="flex min-h-6 h-full"
+                        className="flex h-full min-h-6"
                       />
                     </>
                   )}
@@ -208,7 +206,7 @@ const TagsSelectFormField = React.forwardRef<
                       pointerEvents: "auto",
                       opacity: 1,
                     }}
-                    className="flex-1 justify-center cursor-pointer"
+                    className="justify-center flex-1 cursor-pointer"
                   >
                     Close
                   </CommandItem>

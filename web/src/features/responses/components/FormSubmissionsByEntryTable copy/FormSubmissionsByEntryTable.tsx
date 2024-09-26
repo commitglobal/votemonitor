@@ -34,6 +34,7 @@ export function FormSubmissionsByEntryTable({ searchText }: FormsTableByEntryPro
       ['level3Filter', debouncedSearch.level3Filter],
       ['level4Filter', debouncedSearch.level4Filter],
       ['level5Filter', debouncedSearch.level5Filter],
+      ['pollingStationNumberFilter', debouncedSearch.pollingStationNumberFilter],
       ['followUpStatus', debouncedSearch.followUpStatus],
     ].filter(([_, value]) => value);
 

@@ -49,15 +49,17 @@ export enum QuestionType {
   RatingQuestionType = 'ratingQuestion',
 }
 
-export const ZDisplayLogicCondition = z.enum(["Equals",
-  "NotEquals",
-  "LessThan",
-  "LessEqual",
-  "GreaterThan",
-  "GreaterEqual",
-  "Includes"]);
+export const ZDisplayLogicCondition = z.enum([
+  'Equals',
+  'NotEquals',
+  'LessThan',
+  'LessEqual',
+  'GreaterThan',
+  'GreaterEqual',
+  'Includes',
+]);
 
-export type DisplayLogicCondition = z.infer<typeof ZDisplayLogicCondition>
+export type DisplayLogicCondition = z.infer<typeof ZDisplayLogicCondition>;
 
 export interface DisplayLogic {
   parentQuestionId: string;
@@ -150,7 +152,7 @@ export type NumberAnswer = z.infer<typeof NumberAnswerSchema>;
 
 export const DateAnswerSchema = BaseAnswerSchema.extend({
   $answerType: z.literal(AnswerType.DateAnswerType),
-  date: z.string().datetime({ offset: true } ).optional(),
+  date: z.string().datetime({ offset: true }).optional(),
 });
 export type DateAnswer = z.infer<typeof DateAnswerSchema>;
 
@@ -205,17 +207,17 @@ export enum FollowUpStatus {
   NeedsFollowUp = 'NeedsFollowUp',
   Resolved = 'Resolved',
 }
+
+export enum QuestionsAnswered {
+  None = 'None',
+  Some = 'Some',
+  All = 'All',
+}
 export type HistogramData = {
   [bucket: string]: number;
 };
 
-
-export const ZFormType = z.enum(["PSI",
-  "Opening",
-  "Voting",
-  "ClosingAndCounting",
-  "CitizenReporting",
-  "Other"]);
+export const ZFormType = z.enum(['PSI', 'Opening', 'Voting', 'ClosingAndCounting', 'CitizenReporting', 'Other']);
 
 export type FormType = z.infer<typeof ZFormType>;
 
