@@ -1,15 +1,15 @@
 import { useSetPrevSearch } from '@/common/prev-search-store';
-import { FollowUpStatus, FunctionComponent, ZFormType } from '@/common/types';
+import { FollowUpStatus, FunctionComponent, QuestionsAnswered, ZFormType } from '@/common/types';
 import { PollingStationsFilters } from '@/components/PollingStationsFilters/PollingStationsFilters';
 import { FilterBadge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { mapFormType } from '@/lib/utils';
 import { Route } from '@/routes/responses';
 import { useNavigate } from '@tanstack/react-router';
 import { useCallback } from 'react';
 import type { FormSubmissionsSearchParams } from '../../models/search-params';
-import { mapFollowUpStatus } from '../../utils/helpers';
+import { mapFollowUpStatus, mapQuestionsAnswered } from '../../utils/helpers';
 import { ResetFiltersButton } from '../ResetFiltersButton/ResetFiltersButton';
-import { mapFormType } from '@/lib/utils';
 
 export function FormsFiltersByEntry(): FunctionComponent {
   const navigate = useNavigate({ from: '/responses/' });
@@ -66,6 +66,10 @@ export function FormsFiltersByEntry(): FunctionComponent {
             <SelectItem value={ZFormType.Values.ClosingAndCounting} key={ZFormType.Values.ClosingAndCounting}>
               {mapFormType(ZFormType.Values.ClosingAndCounting)}
             </SelectItem>
+
+            <SelectItem value={ZFormType.Values.PSI} key={ZFormType.Values.PSI}>
+              {mapFormType(ZFormType.Values.PSI)}
+            </SelectItem>
             <SelectItem value={ZFormType.Values.Other} key={ZFormType.Values.Other}>
               {mapFormType(ZFormType.Values.Other)}
             </SelectItem>
@@ -110,6 +114,64 @@ export function FormsFiltersByEntry(): FunctionComponent {
         </SelectContent>
       </Select>
 
+
+      <Select
+        onValueChange={(value) => {
+          navigateHandler({ questionsAnswered: value });
+        }}
+        value={search.questionsAnswered ?? ''}>
+        <SelectTrigger>
+          <SelectValue placeholder='Questions answered' />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            <SelectItem value={QuestionsAnswered.None}>{QuestionsAnswered.None}</SelectItem>
+            <SelectItem value={QuestionsAnswered.Some}>{QuestionsAnswered.Some}</SelectItem>
+            <SelectItem value={QuestionsAnswered.All}>{QuestionsAnswered.All}</SelectItem>
+          </SelectGroup>
+        </SelectContent>
+      </Select>
+
+      <Select
+        onValueChange={(value) => {
+          navigateHandler({ hasNotes: value });
+        }}
+        value={search.hasNotes ?? ''}>
+        <SelectTrigger>
+          <SelectValue placeholder='Question notes' />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            <SelectItem key={'true'} value='true'>
+              Yes
+            </SelectItem>
+            <SelectItem key={'false'} value='false'>
+              No
+            </SelectItem>
+          </SelectGroup>
+        </SelectContent>
+      </Select>
+
+      <Select
+        onValueChange={(value) => {
+          navigateHandler({ hasAttachments: value });
+        }}
+        value={search.hasAttachments ?? ''}>
+        <SelectTrigger>
+          <SelectValue placeholder='Media files' />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            <SelectItem key={'true'} value='true'>
+              Yes
+            </SelectItem>
+            <SelectItem key={'false'} value='false'>
+              No
+            </SelectItem>
+          </SelectGroup>
+        </SelectContent>
+      </Select>
+
       <PollingStationsFilters />
 
       <ResetFiltersButton disabled={!isFiltered} />
@@ -129,7 +191,7 @@ export function FormsFiltersByEntry(): FunctionComponent {
 
           {search.hasFlaggedAnswers && (
             <FilterBadge
-              label={`Flagged answers: ${search.hasFlaggedAnswers ? 'yes' : 'no'}`}
+              label={`Flagged answers: ${search.hasFlaggedAnswers === 'true' ? 'yes' : 'no'}`}
               onClear={onClearFilter('hasFlaggedAnswers')}
             />
           )}
@@ -186,6 +248,20 @@ export function FormsFiltersByEntry(): FunctionComponent {
             <FilterBadge
               label={`PS Number: ${search.pollingStationNumberFilter}`}
               onClear={onClearFilter('pollingStationNumberFilter')}
+            />
+          )}
+
+          {search.questionsAnswered && (
+            <FilterBadge
+              label={`Questions answered: ${mapQuestionsAnswered(search.questionsAnswered)}`}
+              onClear={onClearFilter('questionsAnswered')}
+            />
+          )}
+
+          {search.hasNotes && (
+            <FilterBadge
+              label={`Question notes: ${search.hasNotes === 'true' ? 'yes' : 'no'}`}
+              onClear={onClearFilter('hasNotes')}
             />
           )}
         </div>

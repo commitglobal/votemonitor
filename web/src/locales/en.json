@@ -105,6 +105,7 @@
     "opening": "Opening",
     "voting": "Voting",
     "closingAndCounting": "Closing And Counting",
+    "psi": "Closing And Counting",
     "other": "Other",
     "citizenReporting": "Citizen reporting"
   },
@@ -172,15 +173,22 @@
       },
       "resetFilters": "Reset filters"
     },
-    "observerGuides": {
-      "tabTitle": "Observer Guides",
-      "cardTitle": "Observer guides",
+    "guides": {
+      "citizenGuidesTabTitle": "Citizen Guides",
+      "citizenGuidesCardTitle": "Citizen guides",
+      "observerGuidesTabTitle": "Observer Guides",
+      "observerGuidesCardTitle": "Observer guides",
       "headers": {
         "title": "Title",
         "uploadedOn": "Uploaded on",
         "createdBy": "Created by"
       },
+      "textGuide":"Text guide",
+      "urlGuide":"Url guide",
+      "documentGuide":"Attachment guide",
+      "buttonUploadCitizenGuide": "Upload citizen guide",
       "buttonUploadObserverGuide": "Upload observer guide"
+
     },
     "observerForms": {
       "tabTitle": "Observer Forms",

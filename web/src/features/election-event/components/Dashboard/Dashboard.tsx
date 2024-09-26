@@ -9,8 +9,9 @@ import { getRouteApi } from '@tanstack/react-router';
 import { ReactElement, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useElectionRoundDetails } from '../../hooks/election-event-hooks';
+import GuidesDashboard from '../Guides/GuidesDashboard';
 import ElectionEventDetails from '../ElectionEventDetails/ElectionEventDetails';
-import ObserversGuides from '../ObserversGuides/ObserversGuides';
+import { GuidePageType } from '../../models/guide';
 
 const routeApi = getRouteApi('/election-event/$tab');
 
@@ -38,32 +39,47 @@ export default function ElectionEventDashboard(): ReactElement {
       <Tabs defaultValue='event-details' value={currentTab} onValueChange={handleTabChange}>
         <TabsList
           className={cn('grid grid-cols-4 bg-gray-200 w-[800px]', {
-            'grid-cols-5 w-[1000px]': isMonitoringNgoForCitizenReporting,
+            'grid-cols-6 w-[1200px]': isMonitoringNgoForCitizenReporting,
           })}>
           <TabsTrigger value='event-details'>{t('electionEvent.eventDetails.tabTitle')}</TabsTrigger>
           <TabsTrigger value='polling-stations'>{t('electionEvent.pollingStations.tabTitle')}</TabsTrigger>
-          <TabsTrigger value='observer-guides'>{t('electionEvent.observerGuides.tabTitle')}</TabsTrigger>
+          {isMonitoringNgoForCitizenReporting && (
+            <TabsTrigger value='locations'>{t('electionEvent.locations.tabTitle')}</TabsTrigger>
+          )}
+          <TabsTrigger value='observer-guides'>{t('electionEvent.guides.observerGuidesTabTitle')}</TabsTrigger>
+          {isMonitoringNgoForCitizenReporting && (
+            <TabsTrigger value='citizen-guides'>{t('electionEvent.guides.citizenGuidesTabTitle')}</TabsTrigger>
+          )}
           <TabsTrigger value='observer-forms'>{t('electionEvent.observerForms.tabTitle')}</TabsTrigger>
-          <TabsTrigger value='locations'>{t('electionEvent.locations.tabTitle')}</TabsTrigger>
         </TabsList>
 
         <TabsContent value='event-details'>
           <ElectionEventDetails />
         </TabsContent>
+
         <TabsContent value='polling-stations'>
           <PollingStationsDashboard />
         </TabsContent>
-        <TabsContent value='observer-guides'>
-          <ObserversGuides />
-        </TabsContent>
-        <TabsContent value='observer-forms'>
-          <FormsDashboard />
-        </TabsContent>
+
         {isMonitoringNgoForCitizenReporting && (
           <TabsContent value='locations'>
             <LocationsDashboard />
           </TabsContent>
         )}
+
+        <TabsContent value='observer-guides'>
+          <GuidesDashboard guidePageType={GuidePageType.Observer} />
+        </TabsContent>
+
+        {isMonitoringNgoForCitizenReporting && (
+          <TabsContent value='citizen-guides'>
+            <GuidesDashboard guidePageType={GuidePageType.Citizen} />
+          </TabsContent>
+        )}
+
+        <TabsContent value='observer-forms'>
+          <FormsDashboard />
+        </TabsContent>
       </Tabs>
     </Layout>
   );

@@ -42,7 +42,6 @@ public class Endpoint(VoteMonitorContext context, IMemoryCache memoryCache) : En
                     x.Level3,
                     x.Level4,
                     x.Level5,
-                    x.Number
                 })
                 .Distinct()
                 .ToListAsync(cancellationToken: ct);
@@ -106,18 +105,6 @@ public class Endpoint(VoteMonitorContext context, IMemoryCache memoryCache) : En
                         Name = ps.Level5,
                         ParentId = parentNode.Id,
                         Depth = 5
-                    });
-                }
-                
-                if (!string.IsNullOrWhiteSpace(ps.Number))
-                {
-                    var numberLevelKey = BuildKey(ps.Level1, ps.Level2, ps.Level3, ps.Level4, ps.Level5, ps.Number);
-                    parentNode = cache.GetOrCreate(numberLevelKey, () => new LevelNode
-                    {
-                        Id = ++id,
-                        Name = ps.Number,
-                        ParentId = parentNode.Id,
-                        Depth = 6
                     });
                 }
             }

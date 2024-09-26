@@ -380,6 +380,63 @@ namespace Vote.Monitor.Domain.Migrations
                     b.ToTable("AuditTrails");
                 });
 
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.CitizenGuideAggregate.CitizenGuide", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("ElectionRoundId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("FileName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("FilePath")
+                        .HasColumnType("text");
+
+                    b.Property<string>("GuideType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid>("LastModifiedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("LastModifiedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("MimeType")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Text")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("UploadedFileName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("WebsiteUrl")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ElectionRoundId");
+
+                    b.ToTable("CitizenGuides");
+                });
+
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.CitizenReportAggregate.CitizenReport", b =>
                 {
                     b.Property<Guid>("Id")
@@ -5395,6 +5452,9 @@ namespace Vote.Monitor.Domain.Migrations
                     b.Property<Guid>("MonitoringNgoId")
                         .HasColumnType("uuid");
 
+                    b.Property<string>("Text")
+                        .HasColumnType("text");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(256)
@@ -5850,6 +5910,17 @@ namespace Vote.Monitor.Domain.Migrations
                     b.Navigation("MonitoringObserver");
 
                     b.Navigation("PollingStation");
+                });
+
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.CitizenGuideAggregate.CitizenGuide", b =>
+                {
+                    b.HasOne("Vote.Monitor.Domain.Entities.ElectionRoundAggregate.ElectionRound", "ElectionRound")
+                        .WithMany()
+                        .HasForeignKey("ElectionRoundId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ElectionRound");
                 });
 
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.CitizenReportAggregate.CitizenReport", b =>
