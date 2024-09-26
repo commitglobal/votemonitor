@@ -152,13 +152,13 @@ export default function FormsDashboard(): ReactElement {
 
             {
               row.depth === 0 ?
-                <DropdownMenuItem disabled={row.original.status === FormStatus.Published} onClick={() => navigateToEdit(row.original.id)}>Edit</DropdownMenuItem>
-                : <DropdownMenuItem disabled={row.original.status === FormStatus.Published} onClick={() => navigateToEditTranslation(row.original.id, row.original.defaultLanguage)}>Edit</DropdownMenuItem>
+                <DropdownMenuItem disabled={row.original.status !== FormStatus.Drafted} onClick={() => navigateToEdit(row.original.id)}>Edit</DropdownMenuItem>
+                : <DropdownMenuItem disabled={row.original.status !== FormStatus.Drafted} onClick={() => navigateToEditTranslation(row.original.id, row.original.defaultLanguage)}>Edit</DropdownMenuItem>
             }
 
             {
               row.depth === 0 ?
-                <DropdownMenuItem disabled={row.original.status === FormStatus.Published} onClick={() => addTranslationsDialog.trigger(row.original.id, row.original.languages)}>Add translations</DropdownMenuItem>
+                <DropdownMenuItem disabled={row.original.status !== FormStatus.Drafted} onClick={() => addTranslationsDialog.trigger(row.original.id, row.original.languages)}>Add translations</DropdownMenuItem>
                 : null
             }
             {
