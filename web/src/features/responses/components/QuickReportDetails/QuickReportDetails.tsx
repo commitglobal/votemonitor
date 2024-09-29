@@ -1,7 +1,7 @@
 import { authApi } from '@/common/auth-api';
 import { DateTimeFormat } from '@/common/formats';
 import { usePrevSearch } from '@/common/prev-search-store';
-import { FollowUpStatus, type FunctionComponent } from '@/common/types';
+import { QuickReportFollowUpStatus, type FunctionComponent } from '@/common/types';
 import { NavigateBack } from '@/components/NavigateBack/NavigateBack';
 import Layout from '@/components/layout/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { toast } from '@/components/ui/use-toast';
+import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { queryClient } from '@/main';
 import { Route, quickReportDetailsQueryOptions } from '@/routes/responses/quick-reports/$quickReportId';
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
@@ -16,19 +17,24 @@ import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { Link, useRouter } from '@tanstack/react-router';
 import { format } from 'date-fns';
 import { quickReportKeys } from '../../hooks/quick-reports';
-import { mapQuickReportLocationType } from '../../utils/helpers';
-import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { mapQuickReportFollowUpStatus, mapQuickReportLocationType } from '../../utils/helpers';
 
 export default function QuickReportDetails(): FunctionComponent {
   const { quickReportId } = Route.useParams();
-    const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
+  const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
   const quickReportQuery = useSuspenseQuery(quickReportDetailsQueryOptions(currentElectionRoundId, quickReportId));
   const quickReport = quickReportQuery.data;
   const { invalidate } = useRouter();
 
   const updateQuickReportFollowUpStatusMutation = useMutation({
     mutationKey: quickReportKeys.all,
-    mutationFn: ({electionRoundId ,followUpStatus}: {electionRoundId: string ,followUpStatus: FollowUpStatus}) => {
+    mutationFn: ({
+      electionRoundId,
+      followUpStatus,
+    }: {
+      electionRoundId: string;
+      followUpStatus: QuickReportFollowUpStatus;
+    }) => {
       return authApi.put<void>(`/election-rounds/${electionRoundId}/quick-reports/${quickReportId}:status`, {
         followUpStatus,
       });
@@ -53,7 +59,7 @@ export default function QuickReportDetails(): FunctionComponent {
     },
   });
 
-  function handleFollowUpStatusChange(followUpStatus: FollowUpStatus): void {
+  function handleFollowUpStatusChange(followUpStatus: QuickReportFollowUpStatus): void {
     updateQuickReportFollowUpStatusMutation.mutate({ electionRoundId: currentElectionRoundId, followUpStatus });
   }
 
@@ -84,9 +90,19 @@ export default function QuickReportDetails(): FunctionComponent {
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectItem value={FollowUpStatus.NotApplicable}>Not Applicable</SelectItem>
-                  <SelectItem value={FollowUpStatus.NeedsFollowUp}>Needs Follow-Up</SelectItem>
-                  <SelectItem value={FollowUpStatus.Resolved}>Resolved</SelectItem>
+                  <SelectItem
+                    key={QuickReportFollowUpStatus.NotApplicable}
+                    value={QuickReportFollowUpStatus.NotApplicable}>
+                    {mapQuickReportFollowUpStatus(QuickReportFollowUpStatus.NotApplicable)}
+                  </SelectItem>
+                  <SelectItem
+                    key={QuickReportFollowUpStatus.NeedsFollowUp}
+                    value={QuickReportFollowUpStatus.NeedsFollowUp}>
+                    {mapQuickReportFollowUpStatus(QuickReportFollowUpStatus.NeedsFollowUp)}
+                  </SelectItem>
+                  <SelectItem key={QuickReportFollowUpStatus.Resolved} value={QuickReportFollowUpStatus.Resolved}>
+                    {mapQuickReportFollowUpStatus(QuickReportFollowUpStatus.Resolved)}
+                  </SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
@@ -141,7 +157,7 @@ export default function QuickReportDetails(): FunctionComponent {
               params={{ monitoringObserverId: quickReport.monitoringObserverId, tab: 'details' }}
               target='_blank'
               preload={false}>
-              {quickReport.firstName} {quickReport.lastName}
+              {quickReport.observerName}
               <ArrowTopRightOnSquareIcon className='w-4' />
             </Link>
           </div>

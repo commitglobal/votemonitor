@@ -57,9 +57,10 @@ string[] images =
 
 #region setup clients
 
-var client = new HttpClient
+var client = new HttpClient(new LoggingHandler(new HttpClientHandler()))
 {
-    BaseAddress = new Uri("https://localhost:7123")
+    BaseAddress = new Uri("https://localhost:7123"),
+    
 };
 
 var tokenApi = RestService.For<ITokenApi>(client);
@@ -79,6 +80,7 @@ var platformAdminToken = await tokenApi.GetToken(new Credentials(platformAdminUs
 #endregion
 
 CreateResponse electionRound = default!;
+CreateResponse electionRound2 = default!;
 CreateResponse ngo = default!;
 CreateResponse monitoringNgo = default!;
 LoginResponse ngoAdminToken = default!;
@@ -86,6 +88,7 @@ List<PollingStationNode> pollingStations = [];
 List<LocationNode> locations = [];
 List<UpdateFormResponse> forms = [];
 List<UpdateFormResponse> citizenReportingForms = [];
+List<UpdateFormResponse> issueReportingForms = [];
 List<LoginResponse> observersTokens = [];
 
 var observers = new ApplicationUserFaker().Generate(Consts.NUMBER_OF_OBSERVERS)!;
@@ -97,9 +100,13 @@ await AnsiConsole.Progress()
     .Columns(progressColumns)
     .StartAsync(async ctx =>
     {
-        var setupTask = ctx.AddTask("[green]Setup election round and NGO [/]", maxValue: 9);
+        var setupTask = ctx.AddTask("[green]Setup election round and NGO [/]", maxValue: 11);
 
         electionRound =
+            await platformAdminApi.CreateElectionRound(new ElectionRoundFaker().Generate(), platformAdminToken.Token);
+        setupTask.Increment(1);
+        
+        electionRound2 =
             await platformAdminApi.CreateElectionRound(new ElectionRoundFaker().Generate(), platformAdminToken.Token);
         setupTask.Increment(1);
 
@@ -110,6 +117,10 @@ await AnsiConsole.Progress()
         setupTask.Increment(1);
 
         monitoringNgo = await platformAdminApi.AssignNgoToElectionRound(electionRound.Id, new AssignNgoRequest(ngo.Id),
+            platformAdminToken.Token);
+        setupTask.Increment(1);
+        
+        await platformAdminApi.AssignNgoToElectionRound(electionRound2.Id, new AssignNgoRequest(ngo.Id),
             platformAdminToken.Token);
         setupTask.Increment(1);
 
@@ -188,6 +199,18 @@ await AnsiConsole.Progress()
     .Columns(progressColumns)
     .StartAsync(async ctx =>
     {
+        var formsTask = ctx.AddTask("[green]Creating issue reporting forms[/]", autoStart: false);
+        issueReportingForms =
+            await IssueReportingFormSeeder.Seed(ngoAdminApi, ngoAdminToken, electionRound.Id, formsTask);
+    });
+
+await AnsiConsole.Progress()
+    .AutoRefresh(true)
+    .AutoClear(false)
+    .HideCompleted(false)
+    .Columns(progressColumns)
+    .StartAsync(async ctx =>
+    {
         var observersTask = ctx.AddTask("[green]Seeding observers[/]", maxValue: Consts.NUMBER_OF_OBSERVERS,
             autoStart: false);
 
@@ -241,6 +264,9 @@ var quickReportAttachmentRequests = new QuickReportAttachmentFaker(quickReportRe
 
 var citizenReportRequests = new CitizenReportsFaker(citizenReportingForms, locations)
     .GenerateUnique(Consts.NUMBER_OF_CITIZEN_REPORTS);
+
+var issueReportRequests = new IssueReportFaker(issueReportingForms, pollingStations, observersTokens)
+    .GenerateUnique(Consts.NUMBER_OF_ISSUE_REPORTS);
 
 var citizenReportNoteRequests = new CitizenReportNoteFaker(citizenReportRequests.Where(x => x.Answers.Any()).ToList())
     .Generate(Consts.NUMBER_OF_CITIZEN_REPORTS_NOTES);
@@ -339,6 +365,24 @@ await AnsiConsole.Progress()
         foreach (var citizenReportBatch in citizenReportRequests.Chunk(Consts.CHUNK_SIZE))
         {
             var tasks = citizenReportBatch.Select(sr => citizenReportApi.SubmitForm(electionRound.Id, sr));
+
+            await Task.WhenAll(tasks);
+            progressTask.Increment(Consts.CHUNK_SIZE);
+        }
+    });
+
+await AnsiConsole.Progress()
+    .AutoRefresh(true)
+    .AutoClear(false)
+    .HideCompleted(false)
+    .Columns(progressColumns)
+    .StartAsync(async ctx =>
+    {
+        var progressTask = ctx.AddTask("[green]Faking issue reports [/]", maxValue: Consts.NUMBER_OF_ISSUE_REPORTS);
+        foreach (var issueReportBatch in issueReportRequests.Chunk(Consts.CHUNK_SIZE))
+        {
+            var tasks = issueReportBatch.Select(ir =>
+                observerApi.SubmitIssueReport(electionRound.Id, ir, ir.ObserverToken));
 
             await Task.WhenAll(tasks);
             progressTask.Increment(Consts.CHUNK_SIZE);

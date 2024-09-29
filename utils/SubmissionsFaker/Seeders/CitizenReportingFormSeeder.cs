@@ -17,8 +17,9 @@ public class CitizenReportingFormSeeder
 
         progressTask.StartTask();
         var openingForm = await ngoAdminApi.CreateForm(electionRoundId,
-            FormData.OpeningForm with { FormType = "CitizenReporting" }, ngoAdminToken.Token);
-        await ngoAdminApi.UpdateForm(electionRoundId, openingForm.Id, FormData.OpeningForm, ngoAdminToken.Token);
+            CitizenReportingFormData.CitizenReporting with { FormType = "CitizenReporting" }, ngoAdminToken.Token);
+        await ngoAdminApi.UpdateForm(electionRoundId, openingForm.Id, CitizenReportingFormData.CitizenReporting,
+            ngoAdminToken.Token);
         await ngoAdminApi.PublishForm(electionRoundId, openingForm.Id, ngoAdminToken.Token);
         progressTask.Increment(1);
 
@@ -30,7 +31,7 @@ public class CitizenReportingFormSeeder
             new UpdateFormResponse
             {
                 Id = openingForm.Id,
-                Questions = FormData.OpeningForm.Questions,
+                Questions = CitizenReportingFormData.CitizenReporting.Questions,
             },
             // ...
         ];

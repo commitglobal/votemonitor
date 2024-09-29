@@ -1,9 +1,4 @@
-﻿using Authorization.Policies.Requirements;
-using Dapper;
-using Microsoft.AspNetCore.Authorization;
-using Vote.Monitor.Domain.ConnectionFactory;
-
-namespace Feature.Form.Submissions.Any;
+﻿namespace Feature.Form.Submissions.Any;
 
 public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnectionFactory connectionFactory) : Endpoint<Request, Results<Ok, NotFound>>
 {
@@ -16,14 +11,16 @@ public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnect
         {
             s.Summary = "Returns 200 if there are submissions for this polling station 404 if not";
         });
+        Policies(PolicyNames.ObserversOnly);
     }
 
     public override async Task<Results<Ok, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var authorizationResult = await authorizationService.AuthorizeAsync(User, new MonitoringObserverRequirement(req.ElectionRoundId));
+        var authorizationResult =
+            await authorizationService.AuthorizeAsync(User, new MonitoringObserverRequirement(req.ElectionRoundId));
         if (!authorizationResult.Succeeded)
         {
-            TypedResults.NotFound();
+            return TypedResults.NotFound();
         }
 
         bool hasSubmissionsForPollingStation;

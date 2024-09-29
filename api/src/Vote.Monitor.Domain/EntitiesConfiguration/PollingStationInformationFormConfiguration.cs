@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Vote.Monitor.Domain.Entities.FormAggregate;
 using Vote.Monitor.Domain.Entities.PollingStationInfoFormAggregate;
 using Vote.Monitor.Domain.ValueComparers;
 using Vote.Monitor.Domain.ValueConverters;
@@ -21,7 +22,9 @@ public class PollingStationInformationFormConfiguration : IEntityTypeConfigurati
         builder.Property(x => x.Languages).IsRequired();
         builder.Property(x => x.NumberOfQuestions).IsRequired();
         builder.Property(x => x.Code).HasMaxLength(256).IsRequired();
-        builder.Property(x => x.FormType).IsRequired();
+        
+        builder.Property(x => x.FormType).IsRequired().HasDefaultValue(FormType.PSI);
+        builder.Property(x => x.Status).IsRequired().HasDefaultValue(FormStatus.Published);
 
         builder.Property(x => x.Name)
             .HasConversion<TranslatedStringToJsonConverter, TranslatedStringValueComparer>()

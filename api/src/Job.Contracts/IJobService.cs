@@ -8,4 +8,5 @@ public interface IJobService
     void EnqueueExportPollingStations(Guid electionRoundId, Guid exportedDataId);
     void EnqueueExportCitizenReports(Guid electionRoundId, Guid ngoId, Guid exportedDataId);
     void EnqueueExportLocations(Guid electionRoundId, Guid exportedDataId);
+    void EnqueueExportIssueReports(Guid electionRoundId, Guid ngoId, Guid exportedDataId);
 }

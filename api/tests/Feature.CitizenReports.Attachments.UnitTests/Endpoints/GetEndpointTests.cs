@@ -41,7 +41,7 @@ public class GetEndpointTests
         var result = await _endpoint.ExecuteAsync(request, default);
 
         // Assert
-        var model = result.Result.As<Ok<CitizenReportsAttachmentModel>>();
+        var model = result.Result.As<Ok<CitizenReportAttachmentModel>>();
         model.Value!.FileName.Should().Be(citizenReportAttachment.FileName);
         model.Value.Id.Should().Be(citizenReportAttachment.Id);
     }
@@ -64,7 +64,7 @@ public class GetEndpointTests
 
         // Assert
         result
-            .Should().BeOfType<Results<Ok<CitizenReportsAttachmentModel>, BadRequest<ProblemDetails>, NotFound>>()
+            .Should().BeOfType<Results<Ok<CitizenReportAttachmentModel>, BadRequest<ProblemDetails>, NotFound>>()
             .Which
             .Result.Should().BeOfType<NotFound>();
     }

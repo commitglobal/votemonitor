@@ -19,4 +19,8 @@ public class Consts
     public const int NUMBER_OF_CITIZEN_REPORTS = 150;
     public const int NUMBER_OF_CITIZEN_REPORTS_NOTES = (int)(NUMBER_OF_CITIZEN_REPORTS * 0.2) + 50;
     public const int NUMBER_OF_CITIZEN_REPORTS_ATTACHMENTS = (int)(NUMBER_OF_CITIZEN_REPORTS * 0.2) + 20;
+    
+    public const int NUMBER_OF_ISSUE_REPORTS = 150;
+    public const int NUMBER_OF_ISSUE_REPORTS_NOTES = (int)(NUMBER_OF_ISSUE_REPORTS * 0.2) + 50;
 }
+

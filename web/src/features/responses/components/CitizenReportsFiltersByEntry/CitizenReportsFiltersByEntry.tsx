@@ -1,12 +1,12 @@
 import { useSetPrevSearch } from '@/common/prev-search-store';
-import { FollowUpStatus, FunctionComponent } from '@/common/types';
+import { CitizenReportFollowUpStatus, FunctionComponent } from '@/common/types';
 import { FilterBadge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Route } from '@/routes/responses';
 import { useNavigate } from '@tanstack/react-router';
 import { useCallback } from 'react';
 import type { FormSubmissionsSearchParams } from '../../models/search-params';
-import { mapFollowUpStatus } from '../../utils/helpers';
+import { mapCitizenReportFollowUpStatus } from '../../utils/helpers';
 import { ResetFiltersButton } from '../ResetFiltersButton/ResetFiltersButton';
 
 export function CitizenReportsFiltersByEntry(): FunctionComponent {
@@ -67,22 +67,22 @@ export function CitizenReportsFiltersByEntry(): FunctionComponent {
 
       <Select
         onValueChange={(value) => {
-          navigateHandler({ followUpStatus: value });
+          navigateHandler({ citizenReportFollowUpStatus: value });
         }}
-        value={search.followUpStatus ?? ''}>
+        value={search.citizenReportFollowUpStatus ?? ''}>
         <SelectTrigger>
           <SelectValue placeholder='Follow up status' />
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
-            <SelectItem value={FollowUpStatus.NotApplicable}>Not applicable</SelectItem>
-            <SelectItem value={FollowUpStatus.NeedsFollowUp}>Needs follow-up</SelectItem>
-            <SelectItem value={FollowUpStatus.Resolved}>Resolved</SelectItem>
+            <SelectItem value={CitizenReportFollowUpStatus.NotApplicable}>{mapCitizenReportFollowUpStatus(CitizenReportFollowUpStatus.NotApplicable)}</SelectItem>
+            <SelectItem value={CitizenReportFollowUpStatus.NeedsFollowUp}>{mapCitizenReportFollowUpStatus(CitizenReportFollowUpStatus.NeedsFollowUp)}</SelectItem>
+            <SelectItem value={CitizenReportFollowUpStatus.Resolved}>{mapCitizenReportFollowUpStatus(CitizenReportFollowUpStatus.Resolved)}</SelectItem>
           </SelectGroup>
         </SelectContent>
       </Select>
 
-      <ResetFiltersButton disabled={!isFiltered} />
+      <ResetFiltersButton disabled={!isFiltered} params={{tag: 'citizen-reports', viewBy: 'byEntry'}} />
 
       {isFiltered && (
         <div className='flex flex-wrap gap-2 col-span-full'>
@@ -90,10 +90,10 @@ export function CitizenReportsFiltersByEntry(): FunctionComponent {
             <FilterBadge label={`Form type: ${search.formTypeFilter}`} onClear={onClearFilter('formTypeFilter')} />
           )}
 
-          {search.followUpStatus && (
+          {search.citizenReportFollowUpStatus && (
             <FilterBadge
-              label={`Follow-up status: ${mapFollowUpStatus(search.followUpStatus)}`}
-              onClear={onClearFilter('followUpStatus')}
+              label={`Follow-up status: ${mapCitizenReportFollowUpStatus(search.citizenReportFollowUpStatus)}`}
+              onClear={onClearFilter('citizenReportFollowUpStatus')}
             />
           )}
 

@@ -15,7 +15,7 @@ public class Endpoint(VoteMonitorContext context, IFileStorageService fileStorag
         DontAutoTag();
         Options(x => x.WithTags("citizen-reports"));
         Policies(PolicyNames.NgoAdminsOnly);
-        Summary(s => { s.Summary = "Gets aggregated citizen report form with all the notes and attachments"; });
+        Summary(s => { s.Summary = "Gets aggregated citizen report form submissions aggregated with all the notes and attachments"; });
     }
 
     public override async Task<Results<Ok<Response>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
@@ -60,7 +60,6 @@ public class Endpoint(VoteMonitorContext context, IFileStorageService fileStorag
                 ? x.NumberOfFlaggedAnswers > 0
                 : x.NumberOfFlaggedAnswers == 0))
             .Include(x => x.Form)
-            .Where(x => req.FollowUpStatus == null || x.FollowUpStatus == req.FollowUpStatus)
             .Where(x => req.QuestionsAnswered == null
                         || (req.QuestionsAnswered == QuestionsAnsweredFilter.All &&
                             x.NumberOfQuestionsAnswered == x.Form.NumberOfQuestions)

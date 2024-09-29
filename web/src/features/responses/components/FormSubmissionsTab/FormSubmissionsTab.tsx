@@ -16,15 +16,15 @@ import { useDebounce } from '@uidotdev/usehooks';
 import { useState, type ChangeEvent } from 'react';
 import { ExportedDataType } from '../../models/data-export';
 import type { FormSubmissionsViewBy } from '../../utils/column-visibility-options';
-import { ColumnsVisibilitySelector } from '../ColumnsVisibilitySelector/ColumnsVisibilitySelector';
+import { FormSubmissionsColumnsVisibilitySelector } from '../FormSubmissionsColumnsVisibilitySelector/FormSubmissionsColumnsVisibilitySelector';
 import { ExportDataButton } from '../ExportDataButton/ExportDataButton';
-import { FormsFiltersByEntry } from '../FormsFiltersByEntry/FormsFiltersByEntry';
-import { FormsFiltersByObserver } from '../FormsFiltersByObserver/FormsFiltersByObserver';
-import { FormsTableByObserver } from '../FormsTableByObserver/FormsTableByObserver';
+import { FormSubmissionsFiltersByEntry } from '../FormSubmissionsFiltersByEntry/FormSubmissionsFiltersByEntry';
+import { FormSubmissionsFiltersByObserver } from '../FormSubmissionsFiltersByObserver/FormSubmissionsFiltersByObserver';
 import { FormSubmissionsAggregatedByFormTable } from '../FormSubmissionsAggregatedByFormTable/FormSubmissionsAggregatedByFormTable';
 import { FormSubmissionsByEntryTable } from '../FormSubmissionsByEntryTable/FormSubmissionsByEntryTable';
 
 import { FunctionComponent } from '@/common/types';
+import { FormSubmissionsByObserverTable } from '../FormSubmissionsByObserverTable/FormSubmissionsByObserverTable';
 
 const routeApi = getRouteApi('/responses/');
 
@@ -104,23 +104,23 @@ export default function FormSubmissionsTab(): FunctionComponent {
             </>
           )}
 
-          <ColumnsVisibilitySelector byFilter={byFilter ?? 'byEntry'} />
+          <FormSubmissionsColumnsVisibilitySelector byFilter={byFilter ?? 'byEntry'} />
         </div>
 
         <Separator />
 
         {isFiltering && (
           <div className='grid items-center grid-cols-6 gap-4'>
-            {byFilter === 'byEntry' && <FormsFiltersByEntry />}
+            {byFilter === 'byEntry' && <FormSubmissionsFiltersByEntry />}
 
-            {byFilter === 'byObserver' && <FormsFiltersByObserver />}
+            {byFilter === 'byObserver' && <FormSubmissionsFiltersByObserver />}
           </div>
         )}
       </CardHeader>
 
       {byFilter === 'byEntry' && <FormSubmissionsByEntryTable searchText={debouncedSearchText} />}
 
-      {byFilter === 'byObserver' && <FormsTableByObserver searchText={debouncedSearchText} />}
+      {byFilter === 'byObserver' && <FormSubmissionsByObserverTable searchText={debouncedSearchText} />}
 
       {byFilter === 'byForm' && <FormSubmissionsAggregatedByFormTable />}
     </Card>

@@ -202,7 +202,25 @@ export type UserPayload = {
   'user-role': string;
 };
 
-export enum FollowUpStatus {
+export enum FormSubmissionFollowUpStatus {
+  NotApplicable = 'NotApplicable',
+  NeedsFollowUp = 'NeedsFollowUp',
+  Resolved = 'Resolved',
+}
+
+export enum QuickReportFollowUpStatus {
+  NotApplicable = 'NotApplicable',
+  NeedsFollowUp = 'NeedsFollowUp',
+  Resolved = 'Resolved',
+}
+
+export enum IssueReportFollowUpStatus {
+  NotApplicable = 'NotApplicable',
+  NeedsFollowUp = 'NeedsFollowUp',
+  Resolved = 'Resolved',
+}
+
+export enum CitizenReportFollowUpStatus {
   NotApplicable = 'NotApplicable',
   NeedsFollowUp = 'NeedsFollowUp',
   Resolved = 'Resolved',
@@ -217,7 +235,7 @@ export type HistogramData = {
   [bucket: string]: number;
 };
 
-export const ZFormType = z.enum(['PSI', 'Opening', 'Voting', 'ClosingAndCounting', 'CitizenReporting', 'Other']);
+export const ZFormType = z.enum(['PSI', 'Opening', 'Voting', 'ClosingAndCounting', 'CitizenReporting', 'IssueReporting','Other']);
 
 export type FormType = z.infer<typeof ZFormType>;
 

@@ -1,5 +1,5 @@
 import { authApi } from '@/common/auth-api';
-import FormAggregatedDetails from '@/features/responses/components/FormAggregatedDetails/FormAggregatedDetails';
+import FormSubmissionsAggregatedDetails from '@/features/responses/components/FormSubmissionsAggregatedDetails/FormSubmissionsAggregatedDetails';
 import { formSubmissionsAggregatedKeys } from '@/features/responses/hooks/form-submissions-queries';
 import { SubmissionType } from '@/features/responses/models/common';
 import type { FormAggregated } from '@/features/responses/models/form-aggregated';
@@ -31,7 +31,7 @@ export const Route = createFileRoute('/responses/$formId/aggregated')({
   beforeLoad: () => {
     redirectIfNotAuth();
   },
-  component: FormAggregatedDetails,
+  component: FormSubmissionsAggregatedDetails,
   loader: ({ context: { queryClient, currentElectionRoundContext }, params: { formId } }) => {
     const electionRoundId = currentElectionRoundContext.getState().currentElectionRoundId;
 

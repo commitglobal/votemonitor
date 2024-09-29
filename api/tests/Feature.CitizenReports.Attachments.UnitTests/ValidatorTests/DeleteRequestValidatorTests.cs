@@ -19,19 +19,6 @@ public class DeleteRequestValidatorTests
     }
 
     [Fact]
-    public void Validation_ShouldFail_When_CitizenReportId_Empty()
-    {
-        // Arrange
-        var request = new Delete.Request { CitizenReportId = Guid.Empty };
-
-        // Act
-        var result = _validator.TestValidate(request);
-
-        // Assert
-        result.ShouldHaveValidationErrorFor(x => x.CitizenReportId);
-    }
-
-    [Fact]
     public void Validation_ShouldFail_When_ElectionRoundId_Empty()
     {
         // Arrange
@@ -51,7 +38,6 @@ public class DeleteRequestValidatorTests
         var request = new Delete.Request
         {
             ElectionRoundId = Guid.NewGuid(),
-            CitizenReportId = Guid.NewGuid(),
             Id = Guid.NewGuid()
         };
 
