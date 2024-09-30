@@ -2,7 +2,7 @@ import { authApi } from '@/common/auth-api';
 import FormSubmissionsAggregatedDetails from '@/features/responses/components/FormSubmissionsAggregatedDetails/FormSubmissionsAggregatedDetails';
 import { formSubmissionsAggregatedKeys } from '@/features/responses/hooks/form-submissions-queries';
 import { SubmissionType } from '@/features/responses/models/common';
-import type { FormAggregated } from '@/features/responses/models/form-aggregated';
+import { FormSubmissionsAggregated } from '@/features/responses/models/form-submissions-aggregated';
 import { redirectIfNotAuth } from '@/lib/utils';
 import { queryOptions } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
@@ -11,7 +11,7 @@ export function formAggregatedDetailsQueryOptions(electionRoundId: string, formI
   return queryOptions({
     queryKey: formSubmissionsAggregatedKeys.detail(electionRoundId, formId),
     queryFn: async () => {
-      const response = await authApi.get<FormAggregated>(
+      const response = await authApi.get<FormSubmissionsAggregated>(
         `/election-rounds/${electionRoundId}/form-submissions/${formId}:aggregated`
       );
 

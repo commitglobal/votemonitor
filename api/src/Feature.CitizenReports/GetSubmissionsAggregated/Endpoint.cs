@@ -33,10 +33,10 @@ public class Endpoint(VoteMonitorContext context, IFileStorageService fileStorag
             return TypedResults.NotFound();
         }
 
-        return await AggregateNgoFormSubmissionsAsync(form, req, ct);
+        return await AggregateCitizenReportsAsync(form, req, ct);
     }
 
-    private async Task<Results<Ok<Response>, NotFound>> AggregateNgoFormSubmissionsAsync(FormAggregate form,
+    private async Task<Results<Ok<Response>, NotFound>> AggregateCitizenReportsAsync(FormAggregate form,
         Request req,
         CancellationToken ct)
     {

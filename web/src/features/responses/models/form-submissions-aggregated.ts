@@ -18,7 +18,7 @@ export interface Responder {
   phoneNumber: string;
 }
 
-export interface FormAggregated {
+export interface FormSubmissionsAggregated {
   submissionsAggregate: {
     electionRoundId: string;
     monitoringNgoId: string;
@@ -30,7 +30,6 @@ export interface FormAggregated {
     defaultLanguage: string;
     languages: string[];
     responders: Responder[];
-    pollingStations: Record<string, string[]>;
     submissionCount: number;
     totalNumberOfQuestionsAnswered: number;
     totalNumberOfFlaggedAnswers: number;

@@ -48,16 +48,17 @@ public class Endpoint(
             return TypedResults.NotFound();
         }
 
-        return await AggregateNgoFormSubmissionsAsync(form, req, ct);
+        return await AggregateIssueReportsAsync(form, req, ct);
     }
 
-    private async Task<Results<Ok<Response>, NotFound>> AggregateNgoFormSubmissionsAsync(FormAggregate form,
+    private async Task<Results<Ok<Response>, NotFound>> AggregateIssueReportsAsync(FormAggregate form,
         Request req,
         CancellationToken ct)
     {
         var issueReports = await context.IssueReports
             .Include(x => x.Notes)
             .Include(x => x.Attachments)
+            .Include(x => x.MonitoringObserver).ThenInclude(x => x.Observer).ThenInclude(x => x.ApplicationUser)
             .Where(x => x.ElectionRoundId == req.ElectionRoundId
                         && x.Form.MonitoringNgo.NgoId == req.NgoId
                         && x.FormId == req.FormId)

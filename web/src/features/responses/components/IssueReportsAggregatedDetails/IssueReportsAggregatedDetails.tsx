@@ -3,19 +3,22 @@ import Layout from '@/components/layout/Layout';
 import { NavigateBack } from '@/components/NavigateBack/NavigateBack';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { mapFormType } from '@/lib/utils';
-import { formAggregatedDetailsQueryOptions, Route } from '@/routes/responses/$formId.aggregated';
+import {
+  issueReportsAggregatedDetailsQueryOptions,
+  Route,
+} from '@/routes/responses/issue-reports/$formId.aggregated';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { Link, useRouter } from '@tanstack/react-router';
 import type { Responder } from '../../models/form-submissions-aggregated';
 import { AggregateCard } from '../AggregateCard/AggregateCard';
 import { SubmissionType } from '../../models/common';
 
-export default function FormSubmissionsAggregatedDetails(): FunctionComponent {
+export default function IssueReportsAggregatedDetails(): FunctionComponent {
   const { state } = useRouter();
 
   const { formId } = Route.useParams();
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
-  const { data: formSubmission } = useSuspenseQuery(formAggregatedDetailsQueryOptions(currentElectionRoundId, formId));
+  const { data: formSubmission } = useSuspenseQuery(issueReportsAggregatedDetailsQueryOptions(currentElectionRoundId, formId));
 
   const { submissionsAggregate } = formSubmission;
   const { defaultLanguage, formCode, formType, aggregates, responders } = submissionsAggregate;
@@ -33,7 +36,15 @@ export default function FormSubmissionsAggregatedDetails(): FunctionComponent {
       backButton={<NavigateBack search={state.resolvedLocation.search} to='/responses' />}
       breadcrumbs={
         <div className='flex flex-row gap-2 mb-4 breadcrumbs'>
-          <Link search={state.resolvedLocation.search as any} className='crumb' to='/responses' preload='intent'>
+          <Link
+            className='crumb'
+            to='/responses'
+            search={{
+              ...(state.resolvedLocation.search as any),
+              tab: 'issue-reports',
+              viewBy: 'byForm',
+            }}
+            preload='intent'>
             responses
           </Link>
           <Link className='crumb'>{formId}</Link>
@@ -45,7 +56,7 @@ export default function FormSubmissionsAggregatedDetails(): FunctionComponent {
           return (
             <AggregateCard
               key={aggregate.questionId}
-              submissionType={SubmissionType.FormSubmission}
+              submissionType={SubmissionType.IssueReport}
               aggregate={aggregate}
               language={defaultLanguage}
               responders={respondersAggregated}
