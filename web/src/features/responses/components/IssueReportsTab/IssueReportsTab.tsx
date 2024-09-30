@@ -25,6 +25,7 @@ import { IssueReportsByObserverTable } from '../IssueReportsByObserverTable/Issu
 import { IssueReportsColumnsVisibilitySelector } from '../IssueReportsColumnsVisibilitySelector/IssueReportsColumnsVisibilitySelector';
 import { IssueReportsFiltersByEntry } from '../IssueReportsFiltersByEntry/IssueReportsFiltersByEntry';
 import { IssueReportsFiltersByObserver } from '../IssueReportsFiltersByObserver/IssueReportsFiltersByObserver';
+import { FILTER_KEY } from '@/features/filtering/filtering-enums';
 
 const routeApi = getRouteApi('/responses/');
 
@@ -41,7 +42,7 @@ export default function IssueReportsTab(): FunctionComponent {
   const { viewBy: byFilter } = search;
 
   const [isFiltering, setIsFiltering] = useState(() =>
-    Object.keys(search).some((key) => key !== 'tab' && key !== 'viewBy')
+    Object.keys(search).some((key) => key !== FILTER_KEY.Tab && key !== FILTER_KEY.ViewBy)
   );
 
   const [searchText, setSearchText] = useState<string>('');
@@ -72,8 +73,8 @@ export default function IssueReportsTab(): FunctionComponent {
               <DropdownMenuContent>
                 <DropdownMenuRadioGroup
                   onValueChange={(value) => {
-                    setPrevSearch({ viewBy: value });
-                    void navigate({ search: { viewBy: value } });
+                    setPrevSearch({ [FILTER_KEY.ViewBy]: value, [FILTER_KEY.Tab]: 'issue-reports' });
+                    void navigate({ search: { [FILTER_KEY.ViewBy]: value, [FILTER_KEY.Tab]: 'issue-reports' } });
                     setIsFiltering(false);
                   }}
                   value={byFilter}>

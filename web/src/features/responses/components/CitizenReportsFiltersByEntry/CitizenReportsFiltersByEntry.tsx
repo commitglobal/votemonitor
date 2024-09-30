@@ -8,6 +8,7 @@ import { useCallback } from 'react';
 import type { FormSubmissionsSearchParams } from '../../models/search-params';
 import { mapCitizenReportFollowUpStatus } from '../../utils/helpers';
 import { ResetFiltersButton } from '../ResetFiltersButton/ResetFiltersButton';
+import { FILTER_KEY } from '@/features/filtering/filtering-enums';
 
 export function CitizenReportsFiltersByEntry(): FunctionComponent {
   const navigate = useNavigate({ from: '/responses' });
@@ -41,7 +42,7 @@ export function CitizenReportsFiltersByEntry(): FunctionComponent {
     [navigateHandler]
   );
 
-  const isFiltered = Object.keys(search).some((key) => key !== 'tab' && key !== 'viewBy');
+  const isFiltered = Object.keys(search).some((key) => key !== FILTER_KEY.Tab && key !== FILTER_KEY.ViewBy);
 
   return (
     <>
@@ -75,14 +76,23 @@ export function CitizenReportsFiltersByEntry(): FunctionComponent {
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
-            <SelectItem value={CitizenReportFollowUpStatus.NotApplicable}>{mapCitizenReportFollowUpStatus(CitizenReportFollowUpStatus.NotApplicable)}</SelectItem>
-            <SelectItem value={CitizenReportFollowUpStatus.NeedsFollowUp}>{mapCitizenReportFollowUpStatus(CitizenReportFollowUpStatus.NeedsFollowUp)}</SelectItem>
-            <SelectItem value={CitizenReportFollowUpStatus.Resolved}>{mapCitizenReportFollowUpStatus(CitizenReportFollowUpStatus.Resolved)}</SelectItem>
+            <SelectItem value={CitizenReportFollowUpStatus.NotApplicable}>
+              {mapCitizenReportFollowUpStatus(CitizenReportFollowUpStatus.NotApplicable)}
+            </SelectItem>
+            <SelectItem value={CitizenReportFollowUpStatus.NeedsFollowUp}>
+              {mapCitizenReportFollowUpStatus(CitizenReportFollowUpStatus.NeedsFollowUp)}
+            </SelectItem>
+            <SelectItem value={CitizenReportFollowUpStatus.Resolved}>
+              {mapCitizenReportFollowUpStatus(CitizenReportFollowUpStatus.Resolved)}
+            </SelectItem>
           </SelectGroup>
         </SelectContent>
       </Select>
 
-      <ResetFiltersButton disabled={!isFiltered} params={{tag: 'citizen-reports', viewBy: 'byEntry'}} />
+      <ResetFiltersButton
+        disabled={!isFiltered}
+        params={{ [FILTER_KEY.ViewBy]: 'byEntry', [FILTER_KEY.Tab]: 'citizen-reports' }}
+      />
 
       {isFiltered && (
         <div className='flex flex-wrap gap-2 col-span-full'>

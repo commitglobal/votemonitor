@@ -4,7 +4,7 @@ import { FormSubmissionsFlaggedAnswersSelect } from '../../filtering/FormSubmiss
 import { FormSubmissionsMediaFilesSelect } from '../../filtering/FormSubmissionsMediaFilesSelect';
 import { FormSubmissionsQuestionNotesSelect } from '../../filtering/FormSubmissionsQuestionNotesSelect';
 
-export const FormsFiltersByForm: FC = () => {
+export const FormSubmissionsFiltersByForm: FC = () => {
   return (
     <FilteringContainer>
       <FormSubmissionsFlaggedAnswersSelect />

@@ -12,6 +12,7 @@ import { Link, useRouter } from '@tanstack/react-router';
 import type { Responder } from '../../models/form-submissions-aggregated';
 import { AggregateCard } from '../AggregateCard/AggregateCard';
 import { SubmissionType } from '../../models/common';
+import { FILTER_KEY } from '@/features/filtering/filtering-enums';
 
 export default function IssueReportsAggregatedDetails(): FunctionComponent {
   const { state } = useRouter();
@@ -41,8 +42,7 @@ export default function IssueReportsAggregatedDetails(): FunctionComponent {
             to='/responses'
             search={{
               ...(state.resolvedLocation.search as any),
-              tab: 'issue-reports',
-              viewBy: 'byForm',
+              [FILTER_KEY.ViewBy]: 'byForm', [FILTER_KEY.Tab]: 'issue-reports'
             }}
             preload='intent'>
             responses

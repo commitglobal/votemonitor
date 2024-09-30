@@ -28,6 +28,7 @@ import { quickReportsColumnVisibilityOptions } from '../../utils/column-visibili
 import { mapQuickReportFollowUpStatus, mapQuickReportLocationType } from '../../utils/helpers';
 import { ExportDataButton } from '../ExportDataButton/ExportDataButton';
 import { ResetFiltersButton } from '../ResetFiltersButton/ResetFiltersButton';
+import { FILTER_KEY } from '@/features/filtering/filtering-enums';
 
 const routeApi = getRouteApi('/responses/');
 
@@ -40,7 +41,7 @@ export function QuickReportsTab(): FunctionComponent {
   const toggleColumns = useQuickReportsToggleColumn();
 
   const [isFiltering, setIsFiltering] = useState(() =>
-    Object.keys(search).some((key) => key !== 'tab' && key !== 'viewBy')
+    Object.keys(search).some((key) => key !== FILTER_KEY.Tab && key !== FILTER_KEY.ViewBy)
   );
 
   const queryParams = useMemo(() => {
@@ -78,7 +79,7 @@ export function QuickReportsTab(): FunctionComponent {
     [navigate, setPrevSearch]
   );
 
-  const isFiltered = Object.keys(search).some((key) => key !== 'tab' && key !== 'viewBy');
+  const isFiltered = Object.keys(search).some((key) => key !== FILTER_KEY.Tab && key !== FILTER_KEY.ViewBy);
 
   const navigateToQuickReport = useCallback(
     (quickReportId: string) => {

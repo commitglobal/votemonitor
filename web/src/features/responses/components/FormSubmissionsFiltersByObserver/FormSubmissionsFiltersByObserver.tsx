@@ -4,7 +4,7 @@ import { MonitoringObserverTagsSelect } from '@/features/monitoring-observers/fi
 import { FormSubmissionsFlaggedAnswersSelect } from '../../filtering/FormSubmissionsFlaggedAnswersSelect';
 import { FormSubmissionsFollowUpSelect } from '../../filtering/FormSubmissionsFollowUpSelect';
 
-export function FormsFiltersByObserver(): FunctionComponent {
+export function FormSubmissionsFiltersByObserver(): FunctionComponent {
   return (
     <FilteringContainer>
       <FormSubmissionsFollowUpSelect />

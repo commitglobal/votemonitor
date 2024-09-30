@@ -10,6 +10,7 @@ import { IssueReportLocationType } from '../../models/issue-report';
 import type { FormSubmissionsSearchParams } from '../../models/search-params';
 import { mapIssueReportFollowUpStatus, mapIssueReportLocationType, mapQuestionsAnswered } from '../../utils/helpers';
 import { ResetFiltersButton } from '../ResetFiltersButton/ResetFiltersButton';
+import { FILTER_KEY } from '@/features/filtering/filtering-enums';
 
 export function IssueReportsFiltersByEntry(): FunctionComponent {
   const navigate = useNavigate({ from: '/responses' });
@@ -43,7 +44,7 @@ export function IssueReportsFiltersByEntry(): FunctionComponent {
     [navigateHandler]
   );
 
-  const isFiltered = Object.keys(search).some((key) => key !== 'tab' && key !== 'viewBy');
+  const isFiltered = Object.keys(search).some((key) => key !== FILTER_KEY.Tab && key !== FILTER_KEY.ViewBy);
 
   return (
     <>
@@ -169,7 +170,7 @@ export function IssueReportsFiltersByEntry(): FunctionComponent {
 
       <PollingStationsFilters />
 
-      <ResetFiltersButton disabled={!isFiltered} params={{tag: 'issue-reports', viewBy: 'byEntry'}} />
+      <ResetFiltersButton disabled={!isFiltered} params={{[FILTER_KEY.ViewBy]: 'byEntry', [FILTER_KEY.Tab]: 'issue-reports' }} />
 
       {isFiltered && (
         <div className='flex flex-wrap gap-2 col-span-full'>

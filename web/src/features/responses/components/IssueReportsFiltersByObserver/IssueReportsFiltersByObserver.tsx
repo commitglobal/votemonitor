@@ -17,6 +17,7 @@ import { useCallback } from 'react';
 import type { FormSubmissionsSearchParams } from '../../models/search-params';
 import { mapIssueReportFollowUpStatus } from '../../utils/helpers';
 import { ResetFiltersButton } from '../ResetFiltersButton/ResetFiltersButton';
+import { FILTER_KEY } from '@/features/filtering/filtering-enums';
 
 export function IssueReportsFiltersByObserver(): FunctionComponent {
   const navigate = useNavigate({ from: '/responses' });
@@ -54,7 +55,7 @@ export function IssueReportsFiltersByObserver(): FunctionComponent {
     [navigate]
   );
 
-  const isFiltered = Object.keys(search).some((key) => key !== 'tab' && key !== 'viewBy');
+  const isFiltered = Object.keys(search).some((key) => key !== FILTER_KEY.Tab && key !== FILTER_KEY.ViewBy);
 
   return (
     <>
@@ -99,7 +100,10 @@ export function IssueReportsFiltersByObserver(): FunctionComponent {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <ResetFiltersButton disabled={!isFiltered} params={{tag: 'issue-reports', viewBy: 'byObserver'}}/>
+      <ResetFiltersButton
+        disabled={!isFiltered}
+        params={{ [FILTER_KEY.ViewBy]: 'byObserver', [FILTER_KEY.Tab]: 'issue-reports' }}
+      />
 
       {isFiltered && (
         <div className='flex flex-wrap gap-2 col-span-full'>

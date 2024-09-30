@@ -28,8 +28,8 @@ export default function ResponsesDashboard(): ReactElement {
         defaultValue={tab ?? 'form-answers'}
         onValueChange={(tab) => {
           void navigate({
-            search(prev) {
-              const newSearch = { ...prev, tab };
+            search() {
+              const newSearch = { tab };
               setPrevSearch(newSearch);
               return newSearch;
             },

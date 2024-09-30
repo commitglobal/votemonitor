@@ -6,16 +6,16 @@ import { FormSubmissionsFlaggedAnswersSelect } from '../../filtering/FormSubmiss
 import { FormSubmissionsFollowUpSelect } from '../../filtering/FormSubmissionsFollowUpSelect';
 import { FormSubmissionsMediaFilesSelect } from '../../filtering/FormSubmissionsMediaFilesSelect';
 import { FormSubmissionsQuestionNotesSelect } from '../../filtering/FormSubmissionsQuestionNotesSelect';
-import { FormSubmissionsQuestiosAnsweredSelect } from '../../filtering/FormSubmissionsQuestionsAnsweredSelect';
+import { FormSubmissionsQuestionsAnsweredSelect } from '../../filtering/FormSubmissionsQuestionsAnsweredSelect';
 import { FormSubmissionsTypeSelect } from '../../filtering/FormSubmissionsTypeSelect';
 
-export const FormsFiltersByEntry: FC = () => {
+export const FormSubmissionsFiltersByEntry: FC = () => {
   return (
     <FilteringContainer>
       <FormSubmissionsTypeSelect />
       <FormSubmissionsFlaggedAnswersSelect />
       <FormSubmissionsFollowUpSelect />
-      <FormSubmissionsQuestiosAnsweredSelect />
+      <FormSubmissionsQuestionsAnsweredSelect />
       <FormSubmissionsQuestionNotesSelect />
       <FormSubmissionsMediaFilesSelect />
       <MonitoringObserverTagsSelect isFilteringFormSubmissions />
