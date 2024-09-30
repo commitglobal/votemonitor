@@ -72,7 +72,6 @@ const byEntryColumnVisibilityOptions: ColumnOption[] = [
   { id: 'submissionId', label: 'Entry ID', enableHiding: true },
   { id: 'timeSubmitted', label: 'Time submitted', enableHiding: true },
   { id: 'formCode', label: 'Form code', enableHiding: true },
-  //{ id: 'formDefaultLanguage', label: 'Language', enableHiding: true },
   { id: 'formType', label: 'Form type', enableHiding: true },
   { id: 'level1', label: 'Location - L1', enableHiding: true },
   { id: 'level2', label: 'Location - L2', enableHiding: true },
