@@ -85,7 +85,7 @@ public static class CoreServicesInstaller
         {
         }
 
-        public void EnqueueExportIssueReports(Guid electionRoundId, Guid ngoId, Guid exportedDataId)
+        public void EnqueueExportIncidentReports(Guid electionRoundId, Guid ngoId, Guid exportedDataId)
         {
         }
     }

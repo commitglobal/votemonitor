@@ -7,7 +7,7 @@ using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Domain.Entities.FormBase;
 using Vote.Monitor.Domain.Entities.FormBase.Questions;
 using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
-using Vote.Monitor.Domain.Entities.IssueReportAggregate;
+using Vote.Monitor.Domain.Entities.IncidentReportAggregate;
 using Vote.Monitor.Domain.Entities.LocationAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
@@ -147,17 +147,17 @@ public class Form : BaseForm
             numberOfFlaggedAnswers);
     }
 
-    public IssueReport CreateIssueReport(
-        Guid issueReportId,
+    public IncidentReport CreateIncidentReport(
+        Guid incidentReportId,
         MonitoringObserver monitoringObserver,
-        IssueReportLocationType locationType,
+        IncidentReportLocationType locationType,
         string? locationDescription,
         Guid? pollingStationId,
         List<BaseAnswer>? answers)
     {
         if (answers == null)
         {
-            return IssueReport.Create(issueReportId, ElectionRoundId, monitoringObserver, locationType,
+            return IncidentReport.Create(incidentReportId, ElectionRoundId, monitoringObserver, locationType,
                 pollingStationId,
                 locationDescription, Id, [], 0, 0);
         }
@@ -172,7 +172,7 @@ public class Form : BaseForm
             throw new ValidationException(validationResult.Errors);
         }
 
-        return IssueReport.Create(issueReportId, ElectionRoundId, monitoringObserver, locationType, pollingStationId,
+        return IncidentReport.Create(incidentReportId, ElectionRoundId, monitoringObserver, locationType, pollingStationId,
             locationDescription, Id, answers,
             numberOfQuestionAnswered, numberOfFlaggedAnswers);
     }
