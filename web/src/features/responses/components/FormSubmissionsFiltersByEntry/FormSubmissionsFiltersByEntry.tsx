@@ -12,7 +12,7 @@ import { mapFormSubmissionFollowUpStatus, mapQuestionsAnswered } from '../../uti
 import { ResetFiltersButton } from '../ResetFiltersButton/ResetFiltersButton';
 
 export function FormSubmissionsFiltersByEntry(): FunctionComponent {
-  const navigate = useNavigate({ from: '/responses/' });
+  const navigate = useNavigate({ from: '/responses' });
   const search = Route.useSearch();
   const setPrevSearch = useSetPrevSearch();
 

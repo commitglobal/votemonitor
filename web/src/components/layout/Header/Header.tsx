@@ -42,18 +42,18 @@ const Header = (): FunctionComponent => {
   const router = useRouter();
   const { setCurrentElectionRoundId, setIsMonitoringNgoForCitizenReporting, currentElectionRoundId } = useCurrentElectionRoundStore(s => s);
 
-  const handleSelectElectionRound = (electionRound?: ElectionRoundMonitoring): void => {
+  const handleSelectElectionRound = async (electionRound?: ElectionRoundMonitoring): Promise<void> => {
     if (electionRound && selectedElectionRound?.electionRoundId != electionRound.electionRoundId) {
       setSelectedElection(electionRound);
       setCurrentElectionRoundId(electionRound.electionRoundId);
       setIsMonitoringNgoForCitizenReporting(electionRound.isMonitoringNgoForCitizenReporting);
 
-      void queryClient.invalidateQueries({
+      await queryClient.invalidateQueries({
         predicate: (query) => query.queryKey !== electionRoundKeys.all
       });
 
       router.invalidate();
-      // router.navigate({ to: "/" });
+      router.navigate({ to: "/" });
     }
   }
 
@@ -76,7 +76,7 @@ const Header = (): FunctionComponent => {
   }, [electionRounds]);
 
   return (
-    <Disclosure as='nav' className='bg-white shadow-sm mb-10'>
+    <Disclosure as='nav' className='mb-10 bg-white shadow-sm'>
       {({ open }) => (
         <>
           <div className='container'>
@@ -108,7 +108,7 @@ const Header = (): FunctionComponent => {
                   ))}
               </div>
 
-              <div className='items-center gap-2 hidden md:flex'>
+              <div className='items-center hidden gap-2 md:flex'>
                 {status === 'pending' ? (
                   <Skeleton className='w-[160px] h-[26px] mr-2 rounded-lg bg-secondary-300 text-secondary-900 hover:bg-secondary-300/90' />
                 ) : (

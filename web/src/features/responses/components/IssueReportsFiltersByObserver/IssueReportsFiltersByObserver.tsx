@@ -19,7 +19,7 @@ import { mapIssueReportFollowUpStatus } from '../../utils/helpers';
 import { ResetFiltersButton } from '../ResetFiltersButton/ResetFiltersButton';
 
 export function IssueReportsFiltersByObserver(): FunctionComponent {
-  const navigate = useNavigate({ from: '/responses/' });
+  const navigate = useNavigate({ from: '/responses' });
   const search = Route.useSearch();
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
 

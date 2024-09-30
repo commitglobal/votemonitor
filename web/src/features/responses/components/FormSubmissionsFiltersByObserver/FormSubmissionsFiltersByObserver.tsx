@@ -19,7 +19,7 @@ import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 
 
 export function FormSubmissionsFiltersByObserver(): FunctionComponent {
-  const navigate = useNavigate({ from: '/responses/' });
+  const navigate = useNavigate({ from: '/responses' });
   const search = Route.useSearch();
     const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
 

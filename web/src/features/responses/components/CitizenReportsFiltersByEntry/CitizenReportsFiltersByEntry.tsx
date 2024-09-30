@@ -10,7 +10,7 @@ import { mapCitizenReportFollowUpStatus } from '../../utils/helpers';
 import { ResetFiltersButton } from '../ResetFiltersButton/ResetFiltersButton';
 
 export function CitizenReportsFiltersByEntry(): FunctionComponent {
-  const navigate = useNavigate({ from: '/responses/' });
+  const navigate = useNavigate({ from: '/responses' });
   const search = Route.useSearch();
   const setPrevSearch = useSetPrevSearch();
 

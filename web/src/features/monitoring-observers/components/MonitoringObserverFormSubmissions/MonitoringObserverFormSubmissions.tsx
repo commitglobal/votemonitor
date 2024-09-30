@@ -19,7 +19,7 @@ import { getRouteApi } from '@tanstack/react-router';
 import { useDebounce } from '@uidotdev/usehooks';
 import { useState, type ChangeEvent } from 'react';
 import { MonitoringObserverFormSubmissionsFilters } from '../MonitoringObserverFormSubmissionsFilters/MonitoringObserverFormSubmissionsFilter';
-import { MonitoringObserverFormSubmissionsTable } from '../MonitoringObserverFormSubmissionsTable/MonitoringObserverFormsTable';
+import { MonitoringObserverFormSubmissionsTable } from '../MonitoringObserverFormSubmissionsTable/MonitoringObserverFormSubmissionsTable';
 
 const routeApi = getRouteApi('/monitoring-observers/view/$monitoringObserverId/$tab');
 

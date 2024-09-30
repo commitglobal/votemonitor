@@ -12,7 +12,7 @@ import { mapIssueReportFollowUpStatus, mapIssueReportLocationType, mapQuestionsA
 import { ResetFiltersButton } from '../ResetFiltersButton/ResetFiltersButton';
 
 export function IssueReportsFiltersByEntry(): FunctionComponent {
-  const navigate = useNavigate({ from: '/responses/' });
+  const navigate = useNavigate({ from: '/responses' });
   const search = Route.useSearch();
   const setPrevSearch = useSetPrevSearch();
 
