@@ -57,15 +57,6 @@ export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry &
     enableSorting: true,
     enableGlobalFilter: true,
   },
-
-  {
-    header: ({ column }) => <DataTableColumnHeader title='Language' column={column} />,
-    accessorFn: (row)=> row.defaultLanguage,
-    id: 'formDefaultLanguage',
-    enableSorting: true,
-    enableGlobalFilter: true,
-  },
-
   {
     header: ({ column }) => <DataTableColumnHeader title='Station number' column={column} />,
     accessorFn: (row)=> row.number,

@@ -105,7 +105,7 @@
     "opening": "Opening",
     "voting": "Voting",
     "closingAndCounting": "Closing And Counting",
-    "psi": "Closing And Counting",
+    "psi": "PSI",
     "other": "Other",
     "citizenReporting": "Citizen reporting",
     "issueReporting": "Issue reporting"
@@ -184,12 +184,11 @@
         "uploadedOn": "Uploaded on",
         "createdBy": "Created by"
       },
-      "textGuide":"Text guide",
-      "urlGuide":"Url guide",
-      "documentGuide":"Attachment guide",
+      "textGuide": "Text guide",
+      "urlGuide": "Url guide",
+      "documentGuide": "Attachment guide",
       "buttonUploadCitizenGuide": "Upload citizen guide",
       "buttonUploadObserverGuide": "Upload observer guide"
-
     },
     "observerForms": {
       "tabTitle": "Observer Forms",

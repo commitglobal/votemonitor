@@ -4,19 +4,25 @@ import { FILTER_KEY } from '@/features/filtering/filtering-enums';
 import { useFilteringContainer } from '@/features/filtering/hooks/useFilteringContainer';
 import { useMonitoringObserversTags } from '@/hooks/tags-queries';
 
-import { FC, useEffect } from 'react';
+import { FC } from 'react';
 
-export const MonitoringObserverTagsSelect: FC = () => {
+interface MonitoringObserverTagsSelectProps {
+  isFilteringFormSubmissions?: boolean;
+}
+
+export const MonitoringObserverTagsSelect: FC<MonitoringObserverTagsSelectProps> = ({ isFilteringFormSubmissions }) => {
+  const COMPONENT_FILTER_KEY = isFilteringFormSubmissions
+    ? FILTER_KEY.FormSubmissionsMonitoringObserverTags
+    : FILTER_KEY.MonitoringObserverTags;
+
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
   const { data: tags } = useMonitoringObserversTags(currentElectionRoundId);
   const { queryParams, navigateHandler } = useFilteringContainer();
-  const currentTags = (queryParams as any)?.[FILTER_KEY.MonitoringObserverTags] ?? [];
+  const currentTags = (queryParams as any)?.[COMPONENT_FILTER_KEY] ?? [];
 
   const toggleTagsFilter = (tags: string[]) => {
-    return navigateHandler({ [FILTER_KEY.MonitoringObserverTags]: tags });
+    return navigateHandler({ [COMPONENT_FILTER_KEY]: tags });
   };
-
-  useEffect(() => {}, [currentTags]);
 
   return (
     <MultiSelectDropdown
