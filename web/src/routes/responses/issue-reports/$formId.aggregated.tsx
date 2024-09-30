@@ -1,5 +1,4 @@
 import { authApi } from '@/common/auth-api';
-import CitizenReportsFormAggregatedDetails from '@/features/responses/components/CitizenReportsFormAggregatedDetails/CitizenReportsFormAggregatedDetails';
 import IssueReportsAggregatedDetails from '@/features/responses/components/IssueReportsAggregatedDetails/IssueReportsAggregatedDetails';
 import { issueReportsAggregatedKeys } from '@/features/responses/hooks/issue-reports-queries';
 import { SubmissionType } from '@/features/responses/models/common';

@@ -16,16 +16,15 @@ import { useDebounce } from '@uidotdev/usehooks';
 import { useState, type ChangeEvent } from 'react';
 import { ExportedDataType } from '../../models/data-export';
 import type { IssueReportsViewBy } from '../../utils/column-visibility-options';
-import { FormSubmissionsColumnsVisibilitySelector } from '../FormSubmissionsColumnsVisibilitySelector/FormSubmissionsColumnsVisibilitySelector';
 import { ExportDataButton } from '../ExportDataButton/ExportDataButton';
 
 import { FunctionComponent } from '@/common/types';
 import { IssueReportsAggregatedByFormTable } from '../IssueReportsAggregatedByFormTable/IssueReportsAggregatedByFormTable';
 import { IssueReportsByEntryTable } from '../IssueReportsByEntryTable/IssueReportsByEntryTable';
 import { IssueReportsByObserverTable } from '../IssueReportsByObserverTable/IssueReportsByObserverTable';
+import { IssueReportsColumnsVisibilitySelector } from '../IssueReportsColumnsVisibilitySelector/IssueReportsColumnsVisibilitySelector';
 import { IssueReportsFiltersByEntry } from '../IssueReportsFiltersByEntry/IssueReportsFiltersByEntry';
 import { IssueReportsFiltersByObserver } from '../IssueReportsFiltersByObserver/IssueReportsFiltersByObserver';
-import { IssueReportsColumnsVisibilitySelector } from '../IssueReportsColumnsVisibilitySelector/IssueReportsColumnsVisibilitySelector';
 
 const routeApi = getRouteApi('/responses/');
 

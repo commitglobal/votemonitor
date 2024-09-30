@@ -3,7 +3,7 @@ import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataT
 import { CardContent } from '@/components/ui/card';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { useQuickReports } from '@/features/responses/hooks/quick-reports';
-import { observerQuickReportsColumnDefs, quickReportsColumnDefs } from '@/features/responses/utils/column-defs';
+import { observerQuickReportsColumnDefs } from '@/features/responses/utils/column-defs';
 import { getRouteApi } from '@tanstack/react-router';
 import type { VisibilityState } from '@tanstack/react-table';
 import { useDebounce } from '@uidotdev/usehooks';

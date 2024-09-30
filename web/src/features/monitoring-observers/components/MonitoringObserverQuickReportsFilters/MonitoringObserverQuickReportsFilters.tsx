@@ -1,14 +1,13 @@
-import { FormSubmissionFollowUpStatus, QuickReportFollowUpStatus, ZFormType, type FunctionComponent } from '@/common/types';
+import { QuickReportFollowUpStatus, type FunctionComponent } from '@/common/types';
 import { PollingStationsFilters } from '@/components/PollingStationsFilters/PollingStationsFilters';
 import { FilterBadge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { QuickReportLocationType } from '@/features/responses/models/quick-report';
+import { mapQuickReportFollowUpStatus, mapQuickReportLocationType } from '@/features/responses/utils/helpers';
 import { getRouteApi } from '@tanstack/react-router';
 import { useCallback } from 'react';
 import type { MonitoringObserverDetailsRouteSearch } from '../../models/monitoring-observer';
-import { mapFormType } from '@/lib/utils';
-import { mapQuickReportFollowUpStatus, mapQuickReportLocationType } from '@/features/responses/utils/helpers';
-import { QuickReportLocationType } from '@/features/responses/models/quick-report';
 
 const routeApi = getRouteApi('/monitoring-observers/view/$monitoringObserverId/$tab');
 
