@@ -1,8 +1,8 @@
 import type { FunctionComponent } from '@/common/types';
-import type { Responder } from '../../models/form-aggregated';
-import { Link } from '@tanstack/react-router';
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
+import { Link } from '@tanstack/react-router';
 import { SubmissionType, TextQuestionAggregate } from '../../models/common';
+import type { Responder } from '../../models/form-submissions-aggregated';
 
 type TextAggregateContentProps = {
   submissionType: SubmissionType;
@@ -26,13 +26,23 @@ export function TextAggregateContent({
             </h3>
           )}
           <p>
-
             {submissionType === SubmissionType.CitizenReport ? (
               <Link
                 search
                 className='flex gap-1 font-bold text-purple-500'
                 to='/responses/citizen-reports/$citizenReportId'
                 params={{ citizenReportId: submissionId }}
+                preload={false}
+                target='_blank'>
+                {submissionId.slice(0, 8)}
+                <ArrowTopRightOnSquareIcon className='w-4' />
+              </Link>
+            ) : submissionType === SubmissionType.IssueReport ? (
+              <Link
+                search
+                className='flex gap-1 font-bold text-purple-500'
+                to='/responses/issue-reports/$issueReportId'
+                params={{ issueReportId: submissionId }}
                 preload={false}
                 target='_blank'>
                 {submissionId.slice(0, 8)}

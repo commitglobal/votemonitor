@@ -1,6 +1,4 @@
-﻿using Authorization.Policies.Requirements;
-using Microsoft.AspNetCore.Authorization;
-using Vote.Monitor.Answer.Module.Mappers;
+﻿using Vote.Monitor.Answer.Module.Mappers;
 using Vote.Monitor.Domain.Entities.FormAggregate;
 using Vote.Monitor.Domain.Entities.FormAnswerBase;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
@@ -23,6 +21,8 @@ public class Endpoint(IRepository<FormSubmission> repository,
         {
             s.Summary = "Upserts form submission for a given polling station";
         });
+
+        Policies(PolicyNames.ObserversOnly);
     }
 
     public override async Task<Results<Ok<FormSubmissionModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
@@ -30,7 +30,7 @@ public class Endpoint(IRepository<FormSubmission> repository,
         var authorizationResult = await authorizationService.AuthorizeAsync(User, new MonitoringObserverRequirement(req.ElectionRoundId));
         if (!authorizationResult.Succeeded)
         {
-            TypedResults.NotFound();
+           return TypedResults.NotFound();
         }
 
         var formSpecification = new GetFormSpecification(req.ElectionRoundId, req.FormId);

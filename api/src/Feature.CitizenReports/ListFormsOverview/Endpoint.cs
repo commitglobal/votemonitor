@@ -9,10 +9,10 @@ public class Endpoint(VoteMonitorContext context) : Endpoint<Request, Response>
     {
         Get("/api/election-rounds/{electionRoundId}/citizen-reports:byForm");
         DontAutoTag();
-        Options(x => x.WithTags("form-submissions"));
+        Options(x => x.WithTags("citizen-reports"));
         Policies(PolicyNames.NgoAdminsOnly);
 
-        Summary(x => { x.Summary = "Form submissions aggregated by observer"; });
+        Summary(x => { x.Summary = "Citizen report submissions aggregated by form"; });
     }
 
     public override async Task<Response> ExecuteAsync(Request req, CancellationToken ct)
@@ -35,7 +35,6 @@ public class Endpoint(VoteMonitorContext context) : Endpoint<Request, Response>
             .Where(x => req.HasFlaggedAnswers == null || (req.HasFlaggedAnswers.Value
                 ? x.NumberOfFlaggedAnswers > 0
                 : x.NumberOfFlaggedAnswers == 0))
-            .Where(x => req.FollowUpStatus == null || x.FollowUpStatus == req.FollowUpStatus)
             .Where(x => req.QuestionsAnswered == null
                         || (req.QuestionsAnswered == QuestionsAnsweredFilter.All &&
                             x.NumberOfQuestionsAnswered == x.Form.NumberOfQuestions)

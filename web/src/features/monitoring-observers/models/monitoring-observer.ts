@@ -1,5 +1,7 @@
 /* eslint-disable unicorn/prefer-top-level-await */
-import { FollowUpStatus } from '@/common/types';
+import { FormSubmissionFollowUpStatus, IssueReportFollowUpStatus, QuickReportFollowUpStatus } from '@/common/types';
+import { IssueReportLocationType } from '@/features/responses/models/issue-report';
+import { QuickReportLocationType } from '@/features/responses/models/quick-report';
 import { z } from 'zod';
 
 export enum MonitoringObserverStatus {
@@ -37,11 +39,16 @@ export const monitoringObserverDetailsRouteSearchSchema = z.object({
   pollingStationNumberFilter: z.string().catch('').optional(),
   hasFlaggedAnswers: z.string().catch('').optional(),
   monitoringObserverId: z.string().catch('').optional(),
-  followUpStatus: z.enum([FollowUpStatus.NotApplicable, FollowUpStatus.NeedsFollowUp, FollowUpStatus.Resolved]).optional()
+  followUpStatus: z.nativeEnum(FormSubmissionFollowUpStatus).optional(),
+
+  quickReportFollowUpStatus: z.nativeEnum(QuickReportFollowUpStatus).optional(),
+  quickReportLocationType: z.nativeEnum(QuickReportLocationType).optional(),
+
+  issueReportFollowUpStatus: z.nativeEnum(IssueReportFollowUpStatus).optional(),
+  issueReportLocationType: z.nativeEnum(IssueReportLocationType).optional(),
 });
 
 export type MonitoringObserverDetailsRouteSearch = z.infer<typeof monitoringObserverDetailsRouteSearchSchema>;
-
 
 export interface UpdateMonitoringObserverRequest {
   firstName: string;

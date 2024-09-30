@@ -16,16 +16,17 @@ import { useDebounce } from '@uidotdev/usehooks';
 import { useState, type ChangeEvent } from 'react';
 import { ExportedDataType } from '../../models/data-export';
 import type { FormSubmissionsViewBy } from '../../utils/column-visibility-options';
-import { ColumnsVisibilitySelector } from '../ColumnsVisibilitySelector/ColumnsVisibilitySelector';
+import { FormSubmissionsColumnsVisibilitySelector } from '../FormSubmissionsColumnsVisibilitySelector/FormSubmissionsColumnsVisibilitySelector';
 import { ExportDataButton } from '../ExportDataButton/ExportDataButton';
-import { FormsFiltersByEntry } from '../FormsFiltersByEntry/FormsFiltersByEntry';
-import { FormsFiltersByObserver } from '../FormsFiltersByObserver/FormsFiltersByObserver';
-import { FormsTableByObserver } from '../FormsTableByObserver/FormsTableByObserver';
 import { FormSubmissionsAggregatedByFormTable } from '../FormSubmissionsAggregatedByFormTable/FormSubmissionsAggregatedByFormTable';
 import { FormSubmissionsByEntryTable } from '../FormSubmissionsByEntryTable/FormSubmissionsByEntryTable';
 
 import { FunctionComponent } from '@/common/types';
-import { FormsFiltersByForm } from '../FormsFiltersByForm/FormsFiltersByForm';
+import { FormSubmissionsByObserverTable } from '../FormSubmissionsByObserverTable/FormSubmissionsByObserverTable';
+import { FormSubmissionsFiltersByForm } from '../FormSubmissionsFiltersByForm/FormSubmissionsFiltersByForm';
+import { FormSubmissionsFiltersByEntry } from '../FormSubmissionsFiltersByEntry/FormSubmissionsFiltersByEntry';
+import { FormSubmissionsFiltersByObserver } from '../FormSubmissionsFiltersByObserver/FormSubmissionsFiltersByObserver';
+import { FILTER_KEY } from '@/features/filtering/filtering-enums';
 
 const routeApi = getRouteApi('/responses/');
 
@@ -42,7 +43,7 @@ export default function FormSubmissionsTab(): FunctionComponent {
   const { viewBy: byFilter } = search;
 
   const [isFiltering, setIsFiltering] = useState(() =>
-    Object.keys(search).some((key) => key !== 'tab' && key !== 'viewBy')
+    Object.keys(search).some((key) => key !== FILTER_KEY.Tab && key !== FILTER_KEY.ViewBy)
   );
 
   const [searchText, setSearchText] = useState<string>('');
@@ -73,8 +74,8 @@ export default function FormSubmissionsTab(): FunctionComponent {
               <DropdownMenuContent>
                 <DropdownMenuRadioGroup
                   onValueChange={(value) => {
-                    setPrevSearch({ viewBy: value });
-                    void navigate({ search: { viewBy: value } });
+                    setPrevSearch({ [FILTER_KEY.ViewBy]: value, [FILTER_KEY.Tab]: 'form-answers' });
+                    void navigate({ search: { [FILTER_KEY.ViewBy]: value, [FILTER_KEY.Tab]: 'form-answers' } });
                     setIsFiltering(false);
                   }}
                   value={byFilter}>
@@ -103,24 +104,23 @@ export default function FormSubmissionsTab(): FunctionComponent {
             />
           </>
 
-          <ColumnsVisibilitySelector byFilter={byFilter ?? 'byEntry'} />
+          <FormSubmissionsColumnsVisibilitySelector byFilter={byFilter ?? 'byEntry'} />
         </div>
 
         <Separator />
 
         {isFiltering && (
           <>
-            {byFilter === 'byEntry' && <FormsFiltersByEntry />}
-
-            {byFilter === 'byObserver' && <FormsFiltersByObserver />}
-            {byFilter === 'byForm' && <FormsFiltersByForm />}
+            {byFilter === 'byEntry' && <FormSubmissionsFiltersByEntry />}
+            {byFilter === 'byObserver' && <FormSubmissionsFiltersByObserver />}
+            {byFilter === 'byForm' && <FormSubmissionsFiltersByForm />}
           </>
         )}
       </CardHeader>
 
       {byFilter === 'byEntry' && <FormSubmissionsByEntryTable searchText={debouncedSearchText} />}
 
-      {byFilter === 'byObserver' && <FormsTableByObserver searchText={debouncedSearchText} />}
+      {byFilter === 'byObserver' && <FormSubmissionsByObserverTable searchText={debouncedSearchText} />}
 
       {byFilter === 'byForm' && <FormSubmissionsAggregatedByFormTable />}
     </Card>

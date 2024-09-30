@@ -12,6 +12,7 @@ COPY ["src/Authorization.Policies/Authorization.Policies.csproj", "src/Authoriza
 COPY ["src/Vote.Monitor.Core/Vote.Monitor.Core.csproj", "src/Vote.Monitor.Core/"]
 COPY ["src/Job.Contracts/Job.Contracts.csproj", "src/Job.Contracts/"]
 COPY ["src/Vote.Monitor.Domain/Vote.Monitor.Domain.csproj", "src/Vote.Monitor.Domain/"]
+COPY ["src/Feature.Citizen.Guides/Feature.Citizen.Guides.csproj", "src/Feature.Citizen.Guides/"]
 COPY ["src/Feature.CitizenReports.Attachments/Feature.CitizenReports.Attachments.csproj", "src/Feature.CitizenReports.Attachments/"]
 COPY ["src/Feature.CitizenReports.Notes/Feature.CitizenReports.Notes.csproj", "src/Feature.CitizenReports.Notes/"]
 COPY ["src/Feature.CitizenReports/Feature.CitizenReports.csproj", "src/Feature.CitizenReports/"]
@@ -23,6 +24,7 @@ COPY ["src/Feature.Form.Submissions/Feature.Form.Submissions.csproj", "src/Featu
 COPY ["src/Feature.Forms/Feature.Forms.csproj", "src/Feature.Forms/"]
 COPY ["src/Feature.FormTemplates/Feature.FormTemplates.csproj", "src/Feature.FormTemplates/"]
 COPY ["src/Feature.ImportErrors/Feature.ImportErrors.csproj", "src/Feature.ImportErrors/"]
+COPY ["src/Feature.Locations/Feature.Locations.csproj", "src/Feature.Locations/"]
 COPY ["src/Feature.MonitoringObservers/Feature.MonitoringObservers.csproj", "src/Feature.MonitoringObservers/"]
 COPY ["src/Feature.ObserverGuide/Feature.ObserverGuide.csproj", "src/Feature.ObserverGuide/"]
 COPY ["src/Feature.PollingStation.Information.Form/Feature.PollingStation.Information.Form.csproj", "src/Feature.PollingStation.Information.Form/"]
@@ -42,10 +44,11 @@ COPY ["src/Vote.Monitor.Module.Notifications/Vote.Monitor.Module.Notifications.c
 COPY ["src/Vote.Monitor.Api.Feature.Observer/Vote.Monitor.Api.Feature.Observer.csproj", "src/Vote.Monitor.Api.Feature.Observer/"]
 COPY ["src/Feature.Attachments/Feature.Attachments.csproj", "src/Feature.Attachments/"]
 COPY ["src/Feature.Notes/Feature.Notes.csproj", "src/Feature.Notes/"]
-COPY ["src/Vote.Monitor.Api.Feature.UserPreferences/Vote.Monitor.Api.Feature.UserPreferences.csproj", "src/Vote.Monitor.Api.Feature.UserPreferences/"]
 COPY ["src/Vote.Monitor.Api.Feature.PollingStation/Vote.Monitor.Api.Feature.PollingStation.csproj", "src/Vote.Monitor.Api.Feature.PollingStation/"]
-COPY ["src/Feature.Locations/Feature.Locations.csproj", "src/Feature.Locations/"]
-COPY ["src/Feature.Citizen.Guides/Feature.Citizen.Guides.csproj", "src/Feature.Citizen.Guides/"]
+COPY ["src/Vote.Monitor.Api.Feature.UserPreferences/Vote.Monitor.Api.Feature.UserPreferences.csproj", "src/Vote.Monitor.Api.Feature.UserPreferences/"]
+COPY ["src/Feature.IssueReports/Feature.IssueReports.csproj", "src/Feature.IssueReports/"]
+COPY ["src/Feature.IssueReports.Notes/Feature.IssueReports.Notes.csproj", "src/Feature.IssueReports.Notes/"]
+COPY ["src/Feature.IssueReports.Attachments/Feature.IssueReports.Attachments.csproj", "src/Feature.IssueReports.Attachments/"]
 
 RUN dotnet restore "src/Vote.Monitor.Api/Vote.Monitor.Api.csproj"
 COPY . .

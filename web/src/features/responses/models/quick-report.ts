@@ -1,4 +1,4 @@
-import { FollowUpStatus } from "@/common/types";
+import { QuickReportFollowUpStatus } from "@/common/types";
 import { Attachment } from "./common";
 
 export enum QuickReportLocationType {
@@ -12,8 +12,7 @@ export interface QuickReport {
   address: string;
   description: string;
   email: string;
-  firstName: string;
-  lastName: string;
+  observerName: string;
   level1: string;
   level2: string;
   level3: string;
@@ -29,5 +28,5 @@ export interface QuickReport {
   title: string;
   monitoringObserverId: string;
   attachments: Attachment[];
-  followUpStatus: FollowUpStatus;
+  followUpStatus: QuickReportFollowUpStatus;
 }

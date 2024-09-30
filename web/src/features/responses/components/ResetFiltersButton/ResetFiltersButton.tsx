@@ -5,8 +5,9 @@ import { useNavigate } from '@tanstack/react-router';
 
 type ResetFiltersButtonProps = {
   disabled: boolean;
+  params: Record<string, string>;
 };
-export function ResetFiltersButton({ disabled }: ResetFiltersButtonProps): FunctionComponent {
+export function ResetFiltersButton({ disabled, params }: ResetFiltersButtonProps): FunctionComponent {
   const navigate = useNavigate();
   const setPrevSearch = useSetPrevSearch();
 
@@ -14,7 +15,7 @@ export function ResetFiltersButton({ disabled }: ResetFiltersButtonProps): Funct
     <Button
       disabled={disabled}
       onClick={() => {
-        setPrevSearch({});
+        setPrevSearch(params);
         void navigate({});
       }}
       variant='ghost-primary'>

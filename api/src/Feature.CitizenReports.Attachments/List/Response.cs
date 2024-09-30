@@ -2,5 +2,5 @@ namespace Feature.CitizenReports.Attachments.List;
 
 public record Response
 {
-    public CitizenReportsAttachmentModel[] Attachments { get; init; } = [];
+    public CitizenReportAttachmentModel[] Attachments { get; init; } = [];
 }

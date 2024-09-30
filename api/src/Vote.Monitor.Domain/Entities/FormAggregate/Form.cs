@@ -7,6 +7,7 @@ using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Domain.Entities.FormBase;
 using Vote.Monitor.Domain.Entities.FormBase.Questions;
 using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
+using Vote.Monitor.Domain.Entities.IssueReportAggregate;
 using Vote.Monitor.Domain.Entities.LocationAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
@@ -144,6 +145,36 @@ public class Form : BaseForm
 
         return CitizenReport.Create(citizenReportId, ElectionRound, this, location, answers, numberOfQuestionAnswered,
             numberOfFlaggedAnswers);
+    }
+
+    public IssueReport CreateIssueReport(
+        Guid issueReportId,
+        MonitoringObserver monitoringObserver,
+        IssueReportLocationType locationType,
+        string? locationDescription,
+        Guid? pollingStationId,
+        List<BaseAnswer>? answers)
+    {
+        if (answers == null)
+        {
+            return IssueReport.Create(issueReportId, ElectionRoundId, monitoringObserver, locationType,
+                pollingStationId,
+                locationDescription, Id, [], 0, 0);
+        }
+
+        var numberOfQuestionAnswered = AnswersHelpers.CountNumberOfQuestionsAnswered(Questions, answers);
+        var numberOfFlaggedAnswers = AnswersHelpers.CountNumberOfFlaggedAnswers(Questions, answers);
+
+        var validationResult = AnswersValidator.GetValidationResults(answers, Questions);
+
+        if (!validationResult.IsValid)
+        {
+            throw new ValidationException(validationResult.Errors);
+        }
+
+        return IssueReport.Create(issueReportId, ElectionRoundId, monitoringObserver, locationType, pollingStationId,
+            locationDescription, Id, answers,
+            numberOfQuestionAnswered, numberOfFlaggedAnswers);
     }
 
 

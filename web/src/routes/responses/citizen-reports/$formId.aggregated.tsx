@@ -1,6 +1,6 @@
 import { authApi } from '@/common/auth-api';
 import CitizenReportsFormAggregatedDetails from '@/features/responses/components/CitizenReportsFormAggregatedDetails/CitizenReportsFormAggregatedDetails';
-import { formSubmissionsAggregatedKeys } from '@/features/responses/hooks/form-submissions-queries';
+import { citizenReportsAggregatedKeys } from '@/features/responses/hooks/citizen-reports';
 import { CitizenReportsFormAggregated } from '@/features/responses/models/citizen-reports-form-aggregated';
 import { SubmissionType } from '@/features/responses/models/common';
 import { redirectIfNotAuth } from '@/lib/utils';
@@ -9,7 +9,7 @@ import { createFileRoute } from '@tanstack/react-router';
 
 export function citizenReportsAggregatedDetailsQueryOptions(electionRoundId: string, formId: string) {
   return queryOptions({
-    queryKey: formSubmissionsAggregatedKeys.detail(electionRoundId, formId),
+    queryKey: citizenReportsAggregatedKeys.detail(electionRoundId, formId),
     queryFn: async () => {
       const response = await authApi.get<CitizenReportsFormAggregated>(
         `/election-rounds/${electionRoundId}/citizen-reports/forms/${formId}:aggregated-submissions`
