@@ -37,12 +37,12 @@ export function TextAggregateContent({
                 {submissionId.slice(0, 8)}
                 <ArrowTopRightOnSquareIcon className='w-4' />
               </Link>
-            ) : submissionType === SubmissionType.IssueReport ? (
+            ) : submissionType === SubmissionType.IncidentReport ? (
               <Link
                 search
                 className='flex gap-1 font-bold text-purple-500'
-                to='/responses/issue-reports/$issueReportId'
-                params={{ issueReportId: submissionId }}
+                to='/responses/incident-reports/$incidentReportId'
+                params={{ incidentReportId: submissionId }}
                 preload={false}
                 target='_blank'>
                 {submissionId.slice(0, 8)}

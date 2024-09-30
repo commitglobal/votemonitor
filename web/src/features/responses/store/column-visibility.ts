@@ -6,8 +6,8 @@ import {
   FormSubmissionsViewBy,
   formSubmissionsDefaultColumns,
   quickReportsDefaultColumns,
-  IssueReportsViewBy,
-  issueReportsDefaultColumns,
+  IncidentReportsViewBy,
+  incidentReportsDefaultColumns,
 } from '../utils/column-visibility-options';
 
 type FormSubmissionsColumnVisibilityStore = {
@@ -94,16 +94,15 @@ const useCitizenReportsColumnVisibilityStore = create(
 export const useCitizenReportsColumnsVisibility = () => useCitizenReportsColumnVisibilityStore((state) => state.columns);
 export const useCitizenReportsToggleColumn = () => useCitizenReportsColumnVisibilityStore((state) => state.toggleColumn);
 
-
-type IssueReportsColumnVisibilityStore = {
-  columns: Record<IssueReportsViewBy, VisibilityState>;
-  toggleColumn: (byFilter: IssueReportsViewBy, id: string, checked: boolean) => void;
+type IncidentReportsColumnVisibilityStore = {
+  columns: Record<IncidentReportsViewBy, VisibilityState>;
+  toggleColumn: (byFilter: IncidentReportsViewBy, id: string, checked: boolean) => void;
 };
 
-const useIssueReportsColumnVisibilityStore = create(
-  persist<IssueReportsColumnVisibilityStore>(
+const useIncidentReportsColumnVisibilityStore = create(
+  persist<IncidentReportsColumnVisibilityStore>(
     (set) => ({
-      columns:issueReportsDefaultColumns,
+      columns:incidentReportsDefaultColumns,
       toggleColumn: (byFilter, id, checked) => {
         set((state) => ({
           columns: {
@@ -116,14 +115,14 @@ const useIssueReportsColumnVisibilityStore = create(
         }));
       },
     }),
-    { name: 'issue-reports-column-visibility' }
+    { name: 'incident-reports-column-visibility' }
   )
 );
 
-export const useIssueReportsColumnsVisibility = () => useIssueReportsColumnVisibilityStore((state) => state.columns);
+export const useIncidentReportsColumnsVisibility = () => useIncidentReportsColumnVisibilityStore((state) => state.columns);
 
-export const useIssueReportsByEntryColumns = () => useIssueReportsColumnVisibilityStore((state) => state.columns.byEntry);
-export const useIssueReportsByFormColumns = () => useIssueReportsColumnVisibilityStore((state) => state.columns.byForm);
-export const useIssueReportsByObserverColumns = () => useIssueReportsColumnVisibilityStore((state) => state.columns.byObserver);
+export const useIncidentReportsByEntryColumns = () => useIncidentReportsColumnVisibilityStore((state) => state.columns.byEntry);
+export const useIncidentReportsByFormColumns = () => useIncidentReportsColumnVisibilityStore((state) => state.columns.byForm);
+export const useIncidentReportsByObserverColumns = () => useIncidentReportsColumnVisibilityStore((state) => state.columns.byObserver);
 
-export const useIssueReportsToggleColumn = () => useIssueReportsColumnVisibilityStore((state) => state.toggleColumn);
+export const useIncidentReportsToggleColumn = () => useIncidentReportsColumnVisibilityStore((state) => state.toggleColumn);

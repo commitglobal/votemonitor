@@ -88,7 +88,7 @@ List<PollingStationNode> pollingStations = [];
 List<LocationNode> locations = [];
 List<UpdateFormResponse> forms = [];
 List<UpdateFormResponse> citizenReportingForms = [];
-List<UpdateFormResponse> issueReportingForms = [];
+List<UpdateFormResponse> incidentReportingForms = [];
 List<LoginResponse> observersTokens = [];
 
 var observers = new ApplicationUserFaker().Generate(Consts.NUMBER_OF_OBSERVERS)!;
@@ -199,9 +199,9 @@ await AnsiConsole.Progress()
     .Columns(progressColumns)
     .StartAsync(async ctx =>
     {
-        var formsTask = ctx.AddTask("[green]Creating issue reporting forms[/]", autoStart: false);
-        issueReportingForms =
-            await IssueReportingFormSeeder.Seed(ngoAdminApi, ngoAdminToken, electionRound.Id, formsTask);
+        var formsTask = ctx.AddTask("[green]Creating incident reporting forms[/]", autoStart: false);
+        incidentReportingForms =
+            await IncidentReportingFormSeeder.Seed(ngoAdminApi, ngoAdminToken, electionRound.Id, formsTask);
     });
 
 await AnsiConsole.Progress()
@@ -265,8 +265,8 @@ var quickReportAttachmentRequests = new QuickReportAttachmentFaker(quickReportRe
 var citizenReportRequests = new CitizenReportsFaker(citizenReportingForms, locations)
     .GenerateUnique(Consts.NUMBER_OF_CITIZEN_REPORTS);
 
-var issueReportRequests = new IssueReportFaker(issueReportingForms, pollingStations, observersTokens)
-    .GenerateUnique(Consts.NUMBER_OF_ISSUE_REPORTS);
+var incidentReportRequests = new IncidentReportFaker(incidentReportingForms, pollingStations, observersTokens)
+    .GenerateUnique(Consts.NUMBER_OF_INCIDENT_REPORTS);
 
 var citizenReportNoteRequests = new CitizenReportNoteFaker(citizenReportRequests.Where(x => x.Answers.Any()).ToList())
     .Generate(Consts.NUMBER_OF_CITIZEN_REPORTS_NOTES);
@@ -378,11 +378,11 @@ await AnsiConsole.Progress()
     .Columns(progressColumns)
     .StartAsync(async ctx =>
     {
-        var progressTask = ctx.AddTask("[green]Faking issue reports [/]", maxValue: Consts.NUMBER_OF_ISSUE_REPORTS);
-        foreach (var issueReportBatch in issueReportRequests.Chunk(Consts.CHUNK_SIZE))
+        var progressTask = ctx.AddTask("[green]Faking incident reports [/]", maxValue: Consts.NUMBER_OF_INCIDENT_REPORTS);
+        foreach (var incidentReportBatch in incidentReportRequests.Chunk(Consts.CHUNK_SIZE))
         {
-            var tasks = issueReportBatch.Select(ir =>
-                observerApi.SubmitIssueReport(electionRound.Id, ir, ir.ObserverToken));
+            var tasks = incidentReportBatch.Select(ir =>
+                observerApi.SubmitIncidentReport(electionRound.Id, ir, ir.ObserverToken));
 
             await Task.WhenAll(tasks);
             progressTask.Increment(Consts.CHUNK_SIZE);

@@ -48,7 +48,7 @@ public class Endpoint(
             ThrowError(x => x.FormId, "Form is drafted");
         }
 
-        if (form.FormType == FormType.IncidentReporting)
+        if (form.FormType != FormType.IncidentReporting)
         {
             ThrowError(x => x.FormId, "Form is not of correct type");
         }

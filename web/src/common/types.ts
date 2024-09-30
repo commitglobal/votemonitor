@@ -214,7 +214,7 @@ export enum QuickReportFollowUpStatus {
   Resolved = 'Resolved',
 }
 
-export enum IssueReportFollowUpStatus {
+export enum IncidentReportFollowUpStatus {
   NotApplicable = 'NotApplicable',
   NeedsFollowUp = 'NeedsFollowUp',
   Resolved = 'Resolved',
@@ -235,7 +235,7 @@ export type HistogramData = {
   [bucket: string]: number;
 };
 
-export const ZFormType = z.enum(['PSI', 'Opening', 'Voting', 'ClosingAndCounting', 'CitizenReporting', 'IssueReporting','Other']);
+export const ZFormType = z.enum(['PSI', 'Opening', 'Voting', 'ClosingAndCounting', 'CitizenReporting', 'IncidentReporting','Other']);
 
 export type FormType = z.infer<typeof ZFormType>;
 

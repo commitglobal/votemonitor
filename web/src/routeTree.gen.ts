@@ -35,7 +35,7 @@ import { Route as ElectionEventTabImport } from './routes/election-event/$tab'
 import { Route as CitizenGuidesNewImport } from './routes/citizen-guides/new'
 import { Route as AcceptInviteSuccessImport } from './routes/accept-invite/success'
 import { Route as ResponsesQuickReportsQuickReportIdImport } from './routes/responses/quick-reports/$quickReportId'
-import { Route as ResponsesIssueReportsIssueReportIdImport } from './routes/responses/issue-reports/$issueReportId'
+import { Route as ResponsesIncidentReportsIncidentReportIdImport } from './routes/responses/incident-reports/$incidentReportId'
 import { Route as ResponsesCitizenReportsCitizenReportIdImport } from './routes/responses/citizen-reports/$citizenReportId'
 import { Route as ResponsesFormIdAggregatedImport } from './routes/responses/$formId.aggregated'
 import { Route as ObserversObserverIdEditImport } from './routes/observers_.$observerId.edit'
@@ -45,7 +45,7 @@ import { Route as MonitoringObserversEditMonitoringObserverIdImport } from './ro
 import { Route as FormsFormIdEditImport } from './routes/forms_.$formId.edit'
 import { Route as FormsFormIdLanguageCodeImport } from './routes/forms/$formId_.$languageCode'
 import { Route as CitizenGuidesEditGuideIdImport } from './routes/citizen-guides/edit.$guideId'
-import { Route as ResponsesIssueReportsFormIdAggregatedImport } from './routes/responses/issue-reports/$formId.aggregated'
+import { Route as ResponsesIncidentReportsFormIdAggregatedImport } from './routes/responses/incident-reports/$formId.aggregated'
 import { Route as ResponsesCitizenReportsFormIdAggregatedImport } from './routes/responses/citizen-reports/$formId.aggregated'
 import { Route as MonitoringObserversViewMonitoringObserverIdTabImport } from './routes/monitoring-observers/view/$monitoringObserverId.$tab'
 import { Route as MonitoringObserversPushMessagesIdViewImport } from './routes/monitoring-observers/push-messages.$id_.view'
@@ -176,9 +176,9 @@ const ResponsesQuickReportsQuickReportIdRoute =
     getParentRoute: () => rootRoute,
   } as any)
 
-const ResponsesIssueReportsIssueReportIdRoute =
-  ResponsesIssueReportsIssueReportIdImport.update({
-    path: '/responses/issue-reports/$issueReportId',
+const ResponsesIncidentReportsIncidentReportIdRoute =
+  ResponsesIncidentReportsIncidentReportIdImport.update({
+    path: '/responses/incident-reports/$incidentReportId',
     getParentRoute: () => rootRoute,
   } as any)
 
@@ -230,9 +230,9 @@ const CitizenGuidesEditGuideIdRoute = CitizenGuidesEditGuideIdImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const ResponsesIssueReportsFormIdAggregatedRoute =
-  ResponsesIssueReportsFormIdAggregatedImport.update({
-    path: '/responses/issue-reports/$formId/aggregated',
+const ResponsesIncidentReportsFormIdAggregatedRoute =
+  ResponsesIncidentReportsFormIdAggregatedImport.update({
+    path: '/responses/incident-reports/$formId/aggregated',
     getParentRoute: () => rootRoute,
   } as any)
 
@@ -392,8 +392,8 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResponsesCitizenReportsCitizenReportIdImport
       parentRoute: typeof rootRoute
     }
-    '/responses/issue-reports/$issueReportId': {
-      preLoaderRoute: typeof ResponsesIssueReportsIssueReportIdImport
+    '/responses/incident-reports/$incidentReportId': {
+      preLoaderRoute: typeof ResponsesIncidentReportsIncidentReportIdImport
       parentRoute: typeof rootRoute
     }
     '/responses/quick-reports/$quickReportId': {
@@ -416,8 +416,8 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResponsesCitizenReportsFormIdAggregatedImport
       parentRoute: typeof rootRoute
     }
-    '/responses/issue-reports/$formId/aggregated': {
-      preLoaderRoute: typeof ResponsesIssueReportsFormIdAggregatedImport
+    '/responses/incident-reports/$formId/aggregated': {
+      preLoaderRoute: typeof ResponsesIncidentReportsFormIdAggregatedImport
       parentRoute: typeof rootRoute
     }
   }
@@ -458,13 +458,13 @@ export const routeTree = rootRoute.addChildren([
   ObserversObserverIdEditRoute,
   ResponsesFormIdAggregatedRoute,
   ResponsesCitizenReportsCitizenReportIdRoute,
-  ResponsesIssueReportsIssueReportIdRoute,
+  ResponsesIncidentReportsIncidentReportIdRoute,
   ResponsesQuickReportsQuickReportIdRoute,
   FormsFormIdEditTranslationLanguageCodeRoute,
   MonitoringObserversPushMessagesIdViewRoute,
   MonitoringObserversViewMonitoringObserverIdTabRoute,
   ResponsesCitizenReportsFormIdAggregatedRoute,
-  ResponsesIssueReportsFormIdAggregatedRoute,
+  ResponsesIncidentReportsFormIdAggregatedRoute,
 ])
 
 /* prettier-ignore-end */

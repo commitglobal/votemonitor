@@ -1,12 +1,12 @@
 import { VisibilityState } from '@tanstack/react-table';
 import { CitizenReportByEntry } from '../models/citizen-report';
 import { FormSubmissionByEntry, FormSubmissionByForm, FormSubmissionByObserver } from '../models/form-submission';
-import { IssueReportByEntry, IssueReportByForm, IssueReportByObserver } from '../models/issue-report';
+import { IncidentReportByEntry, IncidentReportByForm, IncidentReportByObserver } from '../models/incident-report';
 import { QuickReport } from '../models/quick-report';
 
 export type FormSubmissionsViewBy = 'byEntry' | 'byObserver' | 'byForm';
 export type CitizenReportsViewBy = 'byEntry' | 'byForm';
-export type IssueReportsViewBy = 'byEntry' | 'byObserver' | 'byForm';
+export type IncidentReportsViewBy = 'byEntry' | 'byObserver' | 'byForm';
 
 export const formSubmissionsByEntryDefaultColumns: VisibilityState = {
   submissionId: false,
@@ -233,8 +233,8 @@ export const citizenReportsDefaultColumns: VisibilityState = {
   formDefaultLanguage: false,
 };
 
-const issueReportsByEntryColumnVisibilityOptions: ColumnOption<IssueReportByEntry>[] = [
-  { id: 'issueReportId', label: 'Entry ID', enableHiding: true },
+const incidentReportsByEntryColumnVisibilityOptions: ColumnOption<IncidentReportByEntry>[] = [
+  { id: 'incidentReportId', label: 'Entry ID', enableHiding: true },
   { id: 'timeSubmitted', label: 'Time submitted', enableHiding: true },
   { id: 'formCode', label: 'Form code', enableHiding: true },
   { id: 'formName', label: 'Form Name', enableHiding: true },
@@ -253,16 +253,16 @@ const issueReportsByEntryColumnVisibilityOptions: ColumnOption<IssueReportByEntr
   { id: 'followUpStatus', label: 'Follow-up status', enableHiding: true },
 ];
 
-const issueReportsByObserverColumnVisibilityOptions: ColumnOption<IssueReportByObserver>[] = [
+const incidentReportsByObserverColumnVisibilityOptions: ColumnOption<IncidentReportByObserver>[] = [
   { id: 'observerName', label: 'Observer name', enableHiding: false },
   { id: 'phoneNumber', label: 'Observer contact', enableHiding: true },
   { id: 'tags', label: 'Observer tags', enableHiding: true },
-  { id: 'numberOfIssuesSubmitted', label: 'Number of submissions', enableHiding: false },
+  { id: 'numberOfIncidentsSubmitted', label: 'Number of submissions', enableHiding: false },
   { id: 'numberOfFlaggedAnswers', label: 'Flagged answers', enableHiding: true },
   { id: 'followUpStatus', label: 'Follow-up status', enableHiding: true },
 ];
 
-const issueReportsByFormColumnVisibilityOptions: ColumnOption<IssueReportByForm>[] = [
+const incidentReportsByFormColumnVisibilityOptions: ColumnOption<IncidentReportByForm>[] = [
   { id: 'formCode', label: 'Form code', enableHiding: false },
   { id: 'formName', label: 'Form name', enableHiding: false },
   { id: 'numberOfSubmissions', label: 'Responses', enableHiding: true },
@@ -271,13 +271,13 @@ const issueReportsByFormColumnVisibilityOptions: ColumnOption<IssueReportByForm>
   { id: 'numberOfMediaFiles', label: 'Media files', enableHiding: true },
 ];
 
-export const issueReportsColumnVisibilityOptions: Record<
-  IssueReportsViewBy,
-  ColumnOption<IssueReportByEntry>[] | ColumnOption<IssueReportByObserver>[] | ColumnOption<IssueReportByForm>[]
+export const incidentReportsColumnVisibilityOptions: Record<
+  IncidentReportsViewBy,
+  ColumnOption<IncidentReportByEntry>[] | ColumnOption<IncidentReportByObserver>[] | ColumnOption<IncidentReportByForm>[]
 > = {
-  byEntry: issueReportsByEntryColumnVisibilityOptions,
-  byObserver: issueReportsByObserverColumnVisibilityOptions,
-  byForm: issueReportsByFormColumnVisibilityOptions,
+  byEntry: incidentReportsByEntryColumnVisibilityOptions,
+  byObserver: incidentReportsByObserverColumnVisibilityOptions,
+  byForm: incidentReportsByFormColumnVisibilityOptions,
 };
 
 export const observersFormSubmissionsColumnVisibilityOptions: ColumnOption<FormSubmissionByEntry>[] = [
@@ -297,7 +297,7 @@ export const observersFormSubmissionsColumnVisibilityOptions: ColumnOption<FormS
   { id: 'followUpStatus', label: 'Follow-up status', enableHiding: true },
 ];
 
-export const observersIssueReportsColumnVisibilityOptions: ColumnOption<IssueReportByEntry>[] = [
+export const observersIncidentReportsColumnVisibilityOptions: ColumnOption<IncidentReportByEntry>[] = [
   { id: 'timeSubmitted', label: 'Time submitted', enableHiding: true },
   { id: 'formCode', label: 'Form code', enableHiding: true },
   { id: 'locationType', label: 'Location type', enableHiding: true },
@@ -315,32 +315,32 @@ export const observersIssueReportsColumnVisibilityOptions: ColumnOption<IssueRep
   { id: 'followUpStatus', label: 'Follow-up status', enableHiding: true },
 ];
 
-export const issueReportsByObserverDefaultColumns: VisibilityState = {
+export const incidentReportsByObserverDefaultColumns: VisibilityState = {
   observerName: true,
   phoneNumber: true,
   tags: true,
   numberOfFlaggedAnswers: true,
   followUpStatus: true,
-  numberOfIssuesSubmitted: true,
-  // delete
+  numberOfIncidentsSubmitted: true,
+  // delete ?
   email: false,
   monitoringObserverId: false,
 };
 
-export const issueReportsByFormDefaultColumns: VisibilityState = {
+export const incidentReportsByFormDefaultColumns: VisibilityState = {
   formCode: true,
   formName: true,
   numberOfFlaggedAnswers: true,
   numberOfNotes: true,
   numberOfMediaFiles: true,
   numberOfSubmissions: true,
-  // delete
+  // delete ?
   formId: false,
   formDefaultLanguage: false,
 };
 
-export const observerIssueReportsColumns: VisibilityState = {
-  issueReportId: false,
+export const observerIncidentReportsColumns: VisibilityState = {
+  incidentReportId: false,
   timeSubmitted: true,
   formCode: true,
   formName: true,
@@ -367,7 +367,7 @@ export const observerIssueReportsColumns: VisibilityState = {
   tags: false,
 };
 
-export const issueReportsDefaultColumns: Record<IssueReportsViewBy, VisibilityState> = {
+export const incidentReportsDefaultColumns: Record<IncidentReportsViewBy, VisibilityState> = {
   byEntry: formSubmissionsByEntryDefaultColumns,
   byObserver: formSubmissionsByObserverDefaultColumns,
   byForm: formSubmissionsByFormDefaultColumns,

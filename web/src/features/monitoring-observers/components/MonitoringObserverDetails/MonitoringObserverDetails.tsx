@@ -13,7 +13,7 @@ import { MonitorObserverBackButton } from '../MonitoringObserverBackButton';
 import { MonitoringObserverQuickReports } from '../MonitoringObserverQuickReports/MonitoringObserverQuickReports';
 import { useState } from 'react';
 import { useNavigate } from '@tanstack/react-router';
-import { MonitoringObserverIssueReports } from '../MonitoringObserverIssueReports/MonitoringObserverIssueReports';
+import { MonitoringObserverIncidentReports } from '../MonitoringObserverIncidentReports/MonitoringObserverIncidentReports';
 
 export default function MonitoringObserverDetails(): FunctionComponent {
   const { monitoringObserverId, tab } = Route.useParams();
@@ -43,7 +43,7 @@ export default function MonitoringObserverDetails(): FunctionComponent {
           <TabsTrigger value='details'>Observer details</TabsTrigger>
           <TabsTrigger value='responses'>Form responses</TabsTrigger>
           <TabsTrigger value='quick-reports'>Quick reports</TabsTrigger>
-          <TabsTrigger value='issue-reports'>Issue reports</TabsTrigger>
+          <TabsTrigger value='incident-reports'>Incident reports</TabsTrigger>
         </TabsList>
         <TabsContent value='details'>
           <MonitoringObserverDetailsView />
@@ -54,8 +54,8 @@ export default function MonitoringObserverDetails(): FunctionComponent {
         <TabsContent value='quick-reports'>
           <MonitoringObserverQuickReports />
         </TabsContent>
-        <TabsContent value='issue-reports'>
-          <MonitoringObserverIssueReports />
+        <TabsContent value='incident-reports'>
+          <MonitoringObserverIncidentReports />
         </TabsContent>
       </Tabs>
     </Layout>

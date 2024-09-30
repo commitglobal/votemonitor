@@ -9,18 +9,18 @@ public class LoggingHandler(HttpMessageHandler innerHandler) : DelegatingHandler
 
         if (!response.IsSuccessStatusCode)
         {
-            AnsiConsole.Markup("[red]Non success status code received[/]");
+            AnsiConsole.MarkupLine("[red]Non success status code received[/]");
 
             if (request.Content != null)
             {
                 var requestBody = await request.Content.ReadAsStringAsync(cancellationToken);
-                AnsiConsole.Markup("[red]request: {0}[/]", requestBody.EscapeMarkup());
+                AnsiConsole.MarkupLine("[red]request: {0}[/]", requestBody.EscapeMarkup());
             }
 
             if (response.Content != null)
             {
                 var responseBody = await response.Content.ReadAsStringAsync(cancellationToken);
-                AnsiConsole.Markup("[red]response: {0}[/]", responseBody.EscapeMarkup());
+                AnsiConsole.MarkupLine("[red]response: {0}[/]", responseBody.EscapeMarkup());
             }
         }
 
