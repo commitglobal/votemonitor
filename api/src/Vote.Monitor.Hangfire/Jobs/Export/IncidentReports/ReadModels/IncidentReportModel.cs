@@ -1,23 +1,23 @@
 ﻿using System.Text.Json.Serialization;
 using Ardalis.SmartEnum.SystemTextJson;
-using Vote.Monitor.Domain.Entities.IssueReportAggregate;
+using Vote.Monitor.Domain.Entities.IncidentReportAggregate;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Hangfire.Models;
 
-namespace Vote.Monitor.Hangfire.Jobs.Export.IssueReports.ReadModels;
+namespace Vote.Monitor.Hangfire.Jobs.Export.IncidentReports.ReadModels;
 
-public class IssueReportModel
+public class IncidentReportModel
 {
-    public Guid IssueReportId { get; set; }
+    public Guid IncidentReportId { get; set; }
 
-    [JsonConverter(typeof(SmartEnumNameConverter<IssueReportFollowUpStatus, string>))]
-    public IssueReportFollowUpStatus FollowUpStatus { get; set; } = IssueReportFollowUpStatus.NotApplicable;
+    [JsonConverter(typeof(SmartEnumNameConverter<IncidentReportFollowUpStatus, string>))]
+    public IncidentReportFollowUpStatus FollowUpStatus { get; set; } = IncidentReportFollowUpStatus.NotApplicable;
 
     public Guid FormId { get; set; }
     public DateTime TimeSubmitted { get; set; }
 
-    [JsonConverter(typeof(SmartEnumNameConverter<IssueReportLocationType, string>))]
-    public IssueReportLocationType LocationType { get; set; } = IssueReportLocationType.OtherLocation;
+    [JsonConverter(typeof(SmartEnumNameConverter<IncidentReportLocationType, string>))]
+    public IncidentReportLocationType LocationType { get; set; } = IncidentReportLocationType.OtherLocation;
 
     public string? LocationDescription { get; set; } = string.Empty;
     public string? Level1 { get; set; } = string.Empty;

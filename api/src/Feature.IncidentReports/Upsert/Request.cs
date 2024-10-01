@@ -10,7 +10,7 @@ public class Request
     [FromClaim(ApplicationClaimTypes.UserId)]
     public Guid ObserverId { get; set; }
     public Guid FormId { get; set; }
-    public Guid IncidentReportId { get; set; }
+    public Guid Id { get; set; }
     
     public IncidentReportLocationType LocationType { get; set; }
     public Guid? PollingStationId { get; set; }

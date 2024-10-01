@@ -54,7 +54,7 @@ public class Endpoint(
         }
 
         var specification =
-            new GetIncidentReportSpecification(req.ElectionRoundId, req.ObserverId, req.FormId, req.IncidentReportId);
+            new GetIncidentReportSpecification(req.ElectionRoundId, req.ObserverId, req.FormId, req.Id);
         var incidentReport = await repository.FirstOrDefaultAsync(specification, ct);
 
         List<BaseAnswer>? answers = null;
@@ -108,7 +108,7 @@ public class Endpoint(
             return TypedResults.NotFound();
         }
 
-        var incidentReport = form.CreateIncidentReport(req.IncidentReportId, monitoringObserver, req.LocationType,
+        var incidentReport = form.CreateIncidentReport(req.Id, monitoringObserver, req.LocationType,
             req.LocationDescription, req.PollingStationId, answers);
         await repository.AddAsync(incidentReport, ct);
 

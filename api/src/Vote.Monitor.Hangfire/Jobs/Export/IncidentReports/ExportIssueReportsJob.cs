@@ -8,16 +8,16 @@ using Vote.Monitor.Domain;
 using Vote.Monitor.Domain.ConnectionFactory;
 using Vote.Monitor.Domain.Entities.ExportedDataAggregate;
 using Vote.Monitor.Domain.Entities.FormAggregate;
-using Vote.Monitor.Hangfire.Jobs.Export.IssueReports.ReadModels;
+using Vote.Monitor.Hangfire.Jobs.Export.IncidentReports.ReadModels;
 
-namespace Vote.Monitor.Hangfire.Jobs.Export.IssueReports;
+namespace Vote.Monitor.Hangfire.Jobs.Export.IncidentReports;
 
-public class ExportIssueReportsJob(
+public class ExportIncidentReportsJob(
     VoteMonitorContext context,
     INpgsqlConnectionFactory dbConnectionFactory,
     IFileStorageService fileStorageService,
-    ILogger<ExportIssueReportsJob> logger,
-    ITimeProvider timeProvider) : IExportIssueReportsJob
+    ILogger<ExportIncidentReportsJob> logger,
+    ITimeProvider timeProvider) : IExportIncidentReportsJob
 {
     public async Task Run(Guid electionRoundId, Guid ngoId, Guid exportedDataId, CancellationToken ct)
     {
@@ -30,7 +30,7 @@ public class ExportIssueReportsJob(
         {
             logger.LogWarning("ExportData was not found for {electionRoundId}  {exportedDataId}",
                 electionRoundId, exportedDataId);
-            throw new ExportedDataWasNotFoundException(ExportedDataType.IssueReports, electionRoundId,
+            throw new ExportedDataWasNotFoundException(ExportedDataType.IncidentReports, electionRoundId,
                 exportedDataId);
         }
 
@@ -45,18 +45,19 @@ public class ExportIssueReportsJob(
 
             var utcNow = timeProvider.UtcNow;
 
-            var issueReportingForm = await context
+            var incidentReportingForm = await context
                 .Forms
                 .Where(x => x.ElectionRoundId == electionRoundId
                             && x.MonitoringNgo.NgoId == ngoId
                             && x.Status == FormStatus.Published
-                            && x.FormType == FormType.IssueReporting)
+                            && x.FormType == FormType.IncidentReporting)
                 .AsNoTracking()
                 .ToListAsync(ct);
 
-            var issueReports = await GetIssueReports(electionRoundId, ngoId, ct);
+            var incidentReports = await GetIncidentReports(electionRoundId, ngoId, ct);
 
-            foreach (var attachment in issueReports.SelectMany(issueReport => issueReport.Attachments))
+            foreach (var attachment in incidentReports.SelectMany(
+                         incidentReportModel => incidentReportModel.Attachments))
             {
                 var result =
                     await fileStorageService.GetPresignedUrlAsync(attachment.FilePath, attachment.UploadedFileName);
@@ -69,20 +70,20 @@ public class ExportIssueReportsJob(
 
             var excelFileGenerator = ExcelFileGenerator.New();
 
-            for (var index = 0; index < issueReportingForm.Count; index++)
+            for (var index = 0; index < incidentReportingForm.Count; index++)
             {
-                var form = issueReportingForm[index];
-                var sheetData = IssueReportsDataTable
+                var form = incidentReportingForm[index];
+                var sheetData = IncidentReportsDataTable
                     .FromForm(form)
                     .WithData()
-                    .For(issueReports)
+                    .For(incidentReports)
                     .Please();
 
                 excelFileGenerator.WithSheet((index + 1) + "-" + form.Code, sheetData.header, sheetData.dataTable);
             }
 
             var base64EncodedData = excelFileGenerator.Please();
-            var fileName = $"issue-reports-{utcNow:yyyyMMdd_HHmmss}.xlsx";
+            var fileName = $"incident-reports-{utcNow:yyyyMMdd_HHmmss}.xlsx";
             exportedData.Complete(fileName, base64EncodedData, utcNow);
 
             await context.SaveChangesAsync(ct);
@@ -97,11 +98,11 @@ public class ExportIssueReportsJob(
         }
     }
 
-    private async Task<IssueReportModel[]> GetIssueReports(Guid electionRoundId, Guid ngoId, CancellationToken ct)
+    private async Task<IncidentReportModel[]> GetIncidentReports(Guid electionRoundId, Guid ngoId, CancellationToken ct)
     {
         var sql = """
                   SELECT
-                      CR."Id" AS "IssueReportId",
+                      CR."Id" AS "IncidentReportId",
                       CR."FormId",
                       CR."Answers",
                       CR."FollowUpStatus",
@@ -125,11 +126,11 @@ public class ExportIssueReportsJob(
                                               )
                                       )
                                   FROM
-                                      "IssueReportAttachments" A
+                                      "IncidentReportAttachments" A
                                   WHERE
                                       A."ElectionRoundId" = @electionRoundId
                                     AND A."FormId" = CR."FormId"
-                                    AND A."IssueReportId" = CR."Id"
+                                    AND A."IncidentReportId" = CR."Id"
                               ),
                               '[]'::JSONB
                       ) AS "Attachments",
@@ -140,24 +141,24 @@ public class ExportIssueReportsJob(
                                               JSONB_BUILD_OBJECT('QuestionId', "QuestionId", 'Text', "Text")
                                       )
                                   FROM
-                                      "IssueReportNotes" N
+                                      "IncidentReportNotes" N
                                   WHERE
                                       N."ElectionRoundId" = @electionRoundId
                                     AND N."FormId" = CR."FormId"
-                                    AND N."IssueReportId" = CR."Id"
+                                    AND N."IncidentReportId" = CR."Id"
                               ),
                               '[]'::JSONB
                       ) AS "Notes",
                       COALESCE(CR."LastModifiedOn", CR."CreatedOn") "TimeSubmitted"
                   FROM
-                      "IssueReports" CR
+                      "IncidentReports" CR
                           INNER JOIN "Forms" F ON F."Id" = CR."FormId"
                           INNER JOIN "Locations" L ON L."Id" = CR."LocationId"
                           INNER JOIN "ElectionRounds" E ON CR."ElectionRoundId" = E."Id"
-                          INNER JOIN "MonitoringNgos" MN ON MN."Id" = E."MonitoringNgoForIssueReportingId"
+                          INNER JOIN "MonitoringNgos" MN ON MN."Id" = E."MonitoringNgoForIncidentReportingId"
                   WHERE
                       CR."ElectionRoundId" = @electionRoundId
-                    AND E."IssueReportingEnabled" = TRUE
+                    AND E."IncidentReportingEnabled" = TRUE
                     AND MN."NgoId" = @ngoId
                   ORDER BY
                       "TimeSubmitted" DESC
@@ -165,13 +166,13 @@ public class ExportIssueReportsJob(
 
         var queryParams = new { electionRoundId, ngoId };
 
-        IEnumerable<IssueReportModel> issueReports = [];
+        IEnumerable<IncidentReportModel> incidentReports;
         using (var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct))
         {
-            issueReports = await dbConnection.QueryAsync<IssueReportModel>(sql, queryParams);
+            incidentReports = await dbConnection.QueryAsync<IncidentReportModel>(sql, queryParams);
         }
 
-        var issueReportsData = issueReports.ToArray();
-        return issueReportsData;
+        var incidentReportsData = incidentReports.ToArray();
+        return incidentReportsData;
     }
 }

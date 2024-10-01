@@ -1,43 +1,43 @@
 ﻿using Bogus;
-using Vote.Monitor.Domain.Entities.IssueReportAggregate;
+using Vote.Monitor.Domain.Entities.IncidentReportAggregate;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
-using Vote.Monitor.Hangfire.Jobs.Export.IssueReports.ReadModels;
+using Vote.Monitor.Hangfire.Jobs.Export.IncidentReports.ReadModels;
 using Vote.Monitor.Hangfire.Models;
 
 namespace Vote.Monitor.Hangfire.UnitTests.Jobs.ExportData.Fakes;
 
 public sealed partial class Fake
 {
-    private static readonly IssueReportFollowUpStatus[] _issueReportFollowUpStatuses =
+    private static readonly IncidentReportFollowUpStatus[] _incidentReportFollowUpStatuses =
     [
-        IssueReportFollowUpStatus.NeedsFollowUp,
-        IssueReportFollowUpStatus.NotApplicable,
-        IssueReportFollowUpStatus.Resolved
+        IncidentReportFollowUpStatus.NeedsFollowUp,
+        IncidentReportFollowUpStatus.NotApplicable,
+        IncidentReportFollowUpStatus.Resolved
     ];
     
-    private static readonly IssueReportLocationType[] _issueReportLocationTypes =
+    private static readonly IncidentReportLocationType[] _incidentReportLocationTypes =
     [
-        IssueReportLocationType.PollingStation,
-        IssueReportLocationType.OtherLocation,
+        IncidentReportLocationType.PollingStation,
+        IncidentReportLocationType.OtherLocation,
     ];
 
-    private static IssueReportModel GenerateIssueReport(
+    private static IncidentReportModel GenerateIncidentReport(
         Guid formId,
-        IssueReportLocationType? locationType = null,
+        IncidentReportLocationType? locationType = null,
         BaseAnswer[]? answers = null,
         SubmissionNoteModel[]? notes = null,
         SubmissionAttachmentModel[]? attachments = null)
     {
-        var fakeIssueReport = new Faker<IssueReportModel>()
+        var fakeIncidentReport = new Faker<IncidentReportModel>()
             .RuleFor(x => x.FormId, formId)
-            .RuleFor(x => x.IssueReportId, f => f.Random.Guid())
+            .RuleFor(x => x.IncidentReportId, f => f.Random.Guid())
             .RuleFor(x => x.TimeSubmitted, f => f.Date.Recent(1, DateTime.UtcNow))
        
             .Rules((f, x) =>
             {
-                x.LocationType = locationType ?? f.PickRandom(_issueReportLocationTypes);
+                x.LocationType = locationType ?? f.PickRandom(_incidentReportLocationTypes);
 
-                if (locationType == IssueReportLocationType.PollingStation)
+                if (locationType == IncidentReportLocationType.PollingStation)
                 {
                     x.Level1 = f.Lorem.Word();
                     x.Level2 = f.Lorem.Word();
@@ -47,7 +47,7 @@ public sealed partial class Fake
                     x.Number = f.Lorem.Word();
                 }
 
-                if (locationType == IssueReportLocationType.OtherLocation)
+                if (locationType == IncidentReportLocationType.OtherLocation)
                 {
                     x.LocationDescription = f.Lorem.Sentence(10);
                 }
@@ -60,28 +60,28 @@ public sealed partial class Fake
             
             .RuleFor(x => x.Answers, answers ?? [])
             .RuleFor(x => x.Notes, notes ?? [])
-            .RuleFor(x => x.FollowUpStatus, f => f.PickRandom(_issueReportFollowUpStatuses))
+            .RuleFor(x => x.FollowUpStatus, f => f.PickRandom(_incidentReportFollowUpStatuses))
             .RuleFor(x => x.Attachments, attachments ?? []);
 
-        return fakeIssueReport.Generate();
+        return fakeIncidentReport.Generate();
     }
 
-    public static IssueReportModel IssueReport(Guid formId,
-        IssueReportLocationType locationType,
+    public static IncidentReportModel IncidentReport(Guid formId,
+        IncidentReportLocationType locationType,
         BaseAnswer answer,
         SubmissionNoteModel[] notes,
         SubmissionAttachmentModel[] attachments)
     {
-        return GenerateIssueReport(formId, locationType,[answer], notes, attachments);
+        return GenerateIncidentReport(formId, locationType,[answer], notes, attachments);
     }
 
-    public static IssueReportModel IssueReport(Guid formId)
+    public static IncidentReportModel IncidentReport(Guid formId)
     {
-        return GenerateIssueReport(formId);
+        return GenerateIncidentReport(formId);
     }
 
-    public static IssueReportModel IssueReport(Guid formId,
-        IssueReportLocationType locationType,
+    public static IncidentReportModel IncidentReport(Guid formId,
+        IncidentReportLocationType locationType,
         TextAnswer textAnswer, SubmissionNoteModel[] textAnswerNotes, SubmissionAttachmentModel[] textAnswerAttachments,
         DateAnswer dateAnswer, SubmissionNoteModel[] dateAnswerNotes, SubmissionAttachmentModel[] dateAnswerAttachments,
         NumberAnswer numberAnswer, SubmissionNoteModel[] numberAnswerNotes,
@@ -123,11 +123,11 @@ public sealed partial class Fake
             .. multiSelectAnswerAttachments
         ];
 
-        return GenerateIssueReport(formId, locationType, answers, notes, attachments);
+        return GenerateIncidentReport(formId, locationType, answers, notes, attachments);
     }
 
-    public static IssueReportModel PartialIssueReport(Guid formId,
-        IssueReportLocationType locationType,
+    public static IncidentReportModel PartialIncidentReport(Guid formId,
+        IncidentReportLocationType locationType,
         (TextAnswer answer, SubmissionNoteModel[] notes, SubmissionAttachmentModel[] attachments)? textAnswer = null,
         (DateAnswer answer, SubmissionNoteModel[] notes, SubmissionAttachmentModel[] attachments)? dateAnswer = null,
         (NumberAnswer answer, SubmissionNoteModel[] notes, SubmissionAttachmentModel[] attachments)? numberAnswer =  null,
@@ -181,6 +181,6 @@ public sealed partial class Fake
             attachments.AddRange(multiSelectAnswer.Value.attachments);
         }
 
-        return GenerateIssueReport(formId, locationType, answers.ToArray(), notes.ToArray(), attachments.ToArray());
+        return GenerateIncidentReport(formId, locationType, answers.ToArray(), notes.ToArray(), attachments.ToArray());
     }
 }

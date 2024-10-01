@@ -2,16 +2,16 @@
 using Vote.Monitor.Domain.Entities.FormBase.Questions;
 using Vote.Monitor.Domain.Entities.PollingStationInfoFormAggregate;
 
-namespace Vote.Monitor.Hangfire.Jobs.Export.IssueReports;
+namespace Vote.Monitor.Hangfire.Jobs.Export.IncidentReports;
 
-public class IssueReportsDataTable
+public class IncidentReportsDataTable
 {
     private readonly List<string> _header;
     private readonly List<List<object>> _dataTable;
     private readonly Guid _formId;
     private readonly List<AnswerWriter> _answerWriters;
 
-    private IssueReportsDataTable(Guid formId, string defaultLanguage, IReadOnlyList<BaseQuestion> questions)
+    private IncidentReportsDataTable(Guid formId, string defaultLanguage, IReadOnlyList<BaseQuestion> questions)
     {
         _header = new List<string>();
         _dataTable = new List<List<object>>();
@@ -19,7 +19,7 @@ public class IssueReportsDataTable
         _answerWriters = questions.Select(question => new AnswerWriter(defaultLanguage, question)).ToList();
 
         _header.AddRange([
-            "IssueReportId",
+            "IncidentReportId",
             "TimeSubmitted",
             "FollowUpStatus",
             "LocationType",
@@ -38,18 +38,18 @@ public class IssueReportsDataTable
         ]);
     }
 
-    public static IssueReportsDataTable FromForm(PollingStationInformationForm psiForm)
+    public static IncidentReportsDataTable FromForm(PollingStationInformationForm psiForm)
     {
-        return new IssueReportsDataTable(psiForm.Id, psiForm.DefaultLanguage, psiForm.Questions);
+        return new IncidentReportsDataTable(psiForm.Id, psiForm.DefaultLanguage, psiForm.Questions);
     }
 
-    public static IssueReportsDataTable FromForm(Form form)
+    public static IncidentReportsDataTable FromForm(Form form)
     {
-        return new IssueReportsDataTable(form.Id, form.DefaultLanguage, form.Questions);
+        return new IncidentReportsDataTable(form.Id, form.DefaultLanguage, form.Questions);
     }
 
-    public IssueReportsDataTableGenerator WithData()
+    public IncidentReportsDataTableGenerator WithData()
     {
-        return IssueReportsDataTableGenerator.For(_header, _dataTable, _formId, _answerWriters);
+        return IncidentReportsDataTableGenerator.For(_header, _dataTable, _formId, _answerWriters);
     }
 }

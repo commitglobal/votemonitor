@@ -13,7 +13,13 @@ public class IncidentReportModel
 
     [JsonConverter(typeof(SmartEnumNameConverter<IncidentReportFollowUpStatus, string>))]
     public IncidentReportFollowUpStatus FollowUpStatus { get; init; }
+    
+    [JsonConverter(typeof(SmartEnumNameConverter<IncidentReportLocationType, string>))]
+    public IncidentReportLocationType LocationType { get; init; }
 
+    public Guid? PollingStationId { get; init; }
+    public string? LocationDescription { get; init; }
+    
     public IReadOnlyList<BaseAnswerModel> Answers { get; init; }
 
     public static IncidentReportModel FromEntity(IncidentReport entity) => new()
@@ -24,5 +30,8 @@ public class IncidentReportModel
             .Select(AnswerMapper.ToModel)
             .ToList(),
         FollowUpStatus = entity.FollowUpStatus,
+        PollingStationId = entity.PollingStationId,
+        LocationDescription = entity.LocationDescription,
+        LocationType = entity.LocationType,
     };
 }

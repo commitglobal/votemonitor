@@ -2,15 +2,15 @@
 using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Domain.Entities.FormBase.Questions;
-using Vote.Monitor.Domain.Entities.IssueReportAggregate;
-using Vote.Monitor.Hangfire.Jobs.Export.IssueReports;
-using Vote.Monitor.Hangfire.Jobs.Export.IssueReports.ReadModels;
+using Vote.Monitor.Domain.Entities.IncidentReportAggregate;
+using Vote.Monitor.Hangfire.Jobs.Export.IncidentReports;
+using Vote.Monitor.Hangfire.Jobs.Export.IncidentReports.ReadModels;
 using Vote.Monitor.Hangfire.Models;
 using Vote.Monitor.Hangfire.UnitTests.Jobs.ExportData.Fakes;
 
 namespace Vote.Monitor.Hangfire.UnitTests.Jobs.ExportData;
 
-public class IssueReportsDataTableGeneratorTests
+public class IncidentReportsDataTableGeneratorTests
 {
     private const string DefaultLanguageCode = "EN";
     private const string OtherLanguageCode = "RO";
@@ -112,7 +112,7 @@ public class IssueReportsDataTableGeneratorTests
 
     private static readonly string[] _submissionColumns =
     [
-        "IssueReportId",
+        "IncidentReportId",
         "TimeSubmitted",
         "FollowUpStatus",
         "LocationType",
@@ -131,10 +131,10 @@ public class IssueReportsDataTableGeneratorTests
     ];
 
     [Fact]
-    public void IssueReportsDataTableGenerator_Should_Generate_DataTable_With_Default_Columns()
+    public void IncidentReportsDataTableGenerator_Should_Generate_DataTable_With_Default_Columns()
     {
         // Arrange
-        var generator = IssueReportsDataTable
+        var generator = IncidentReportsDataTable
             .FromForm(Fake.Form(DefaultLanguageCode))
             .WithData();
 
@@ -148,46 +148,46 @@ public class IssueReportsDataTableGeneratorTests
     }
 
     [Fact]
-    public void IssueReportsDataTableGenerator_Should_Generates_Correct_DataTable_WhenTextAnswers()
+    public void IncidentReportsDataTableGenerator_Should_Generates_Correct_DataTable_WhenTextAnswers()
     {
         // Arrange
         var form = Fake.Form(DefaultLanguageCode, _textQuestion);
 
         // No notes, no attachments
-        var issueReport1 = Fake.IssueReport(form.Id, IssueReportLocationType.OtherLocation,
+        var incidentReport1 = Fake.IncidentReport(form.Id, IncidentReportLocationType.OtherLocation,
             TextAnswer.Create(_textQuestionId, "answer 1"), [], []);
         // No notes, 2 attachments
-        var issueReport2 = Fake.IssueReport(form.Id, IssueReportLocationType.OtherLocation,
+        var incidentReport2 = Fake.IncidentReport(form.Id, IncidentReportLocationType.OtherLocation,
             TextAnswer.Create(_textQuestionId, "answer 2"), [],
             FakeAttachmentsFor(_textQuestionId));
         // 2 notes, no attachments
-        var issueReport3 = Fake.IssueReport(form.Id, IssueReportLocationType.OtherLocation,
+        var incidentReport3 = Fake.IncidentReport(form.Id, IncidentReportLocationType.OtherLocation,
             TextAnswer.Create(_textQuestionId, "answer 3"),
             FakeNotesFor(_textQuestionId), []);
         // 2 notes, 2 attachments
-        var issueReport4 = Fake.IssueReport(form.Id, IssueReportLocationType.OtherLocation,
+        var incidentReport4 = Fake.IncidentReport(form.Id, IncidentReportLocationType.OtherLocation,
             TextAnswer.Create(_textQuestionId, "answer 4"),
             FakeNotesFor(_textQuestionId), FakeAttachmentsFor(_textQuestionId));
 
         List<object[]> expectedData =
         [
-            [.. GetDefaultExpectedColumns(issueReport1), "answer 1", 0, "", "", 0, "", ""],
-            [.. GetDefaultExpectedColumns(issueReport2), "answer 2", 0, "", "", 2, Attachment1Url, Attachment2Url],
-            [.. GetDefaultExpectedColumns(issueReport3), "answer 3", 2, Note1, Note2, 0, "", ""],
+            [.. GetDefaultExpectedColumns(incidentReport1), "answer 1", 0, "", "", 0, "", ""],
+            [.. GetDefaultExpectedColumns(incidentReport2), "answer 2", 0, "", "", 2, Attachment1Url, Attachment2Url],
+            [.. GetDefaultExpectedColumns(incidentReport3), "answer 3", 2, Note1, Note2, 0, "", ""],
             [
-                .. GetDefaultExpectedColumns(issueReport4), "answer 4", 2, Note1, Note2, 2, Attachment1Url,
+                .. GetDefaultExpectedColumns(incidentReport4), "answer 4", 2, Note1, Note2, 2, Attachment1Url,
                 Attachment2Url
             ],
         ];
 
         // Act
-        var result = IssueReportsDataTable
+        var result = IncidentReportsDataTable
             .FromForm(form)
             .WithData()
-            .For(issueReport1)
-            .For(issueReport2)
-            .For(issueReport3)
-            .For(issueReport4)
+            .For(incidentReport1)
+            .For(incidentReport2)
+            .For(incidentReport3)
+            .For(incidentReport4)
             .Please();
 
         // Assert
@@ -214,23 +214,23 @@ public class IssueReportsDataTableGeneratorTests
     }
 
     [Fact]
-    public void IssueReportsDataTableGenerator_Should_Generates_Correct_DataTable_WhenNumberAnswers()
+    public void IncidentReportsDataTableGenerator_Should_Generates_Correct_DataTable_WhenNumberAnswers()
     {
         // Arrange
         var form = Fake.Form(DefaultLanguageCode, _numberQuestion);
         // No notes, no attachments
-        var submission1 = Fake.IssueReport(form.Id, IssueReportLocationType.OtherLocation,
+        var submission1 = Fake.IncidentReport(form.Id, IncidentReportLocationType.OtherLocation,
             NumberAnswer.Create(_numberQuestionId, 42), [], []);
         // No notes, 2 attachments
-        var submission2 = Fake.IssueReport(form.Id, IssueReportLocationType.OtherLocation,
+        var submission2 = Fake.IncidentReport(form.Id, IncidentReportLocationType.OtherLocation,
             NumberAnswer.Create(_numberQuestionId, 43), [],
             FakeAttachmentsFor(_numberQuestionId));
         // 2 notes, no attachments
-        var submission3 = Fake.IssueReport(form.Id, IssueReportLocationType.OtherLocation,
+        var submission3 = Fake.IncidentReport(form.Id, IncidentReportLocationType.OtherLocation,
             NumberAnswer.Create(_numberQuestionId, 44),
             FakeNotesFor(_numberQuestionId), []);
         // 2 notes, 2 attachments
-        var submission4 = Fake.IssueReport(form.Id, IssueReportLocationType.OtherLocation,
+        var submission4 = Fake.IncidentReport(form.Id, IncidentReportLocationType.OtherLocation,
             NumberAnswer.Create(_numberQuestionId, 45),
             FakeNotesFor(_numberQuestionId), FakeAttachmentsFor(_numberQuestionId));
 
@@ -243,7 +243,7 @@ public class IssueReportsDataTableGeneratorTests
         ];
 
         // Act
-        var result = IssueReportsDataTable
+        var result = IncidentReportsDataTable
             .FromForm(form)
             .WithData()
             .For(submission1)
@@ -276,23 +276,23 @@ public class IssueReportsDataTableGeneratorTests
     }
 
     [Fact]
-    public void IssueReportsDataTableGenerator_Should_Generates_Correct_DataTable_WhenRatingAnswer()
+    public void IncidentReportsDataTableGenerator_Should_Generates_Correct_DataTable_WhenRatingAnswer()
     {
         // Arrange
         var form = Fake.Form(DefaultLanguageCode, _ratingQuestion);
         // No notes, no attachments
-        var submission1 = Fake.IssueReport(form.Id, IssueReportLocationType.OtherLocation,
+        var submission1 = Fake.IncidentReport(form.Id, IncidentReportLocationType.OtherLocation,
             RatingAnswer.Create(_ratingQuestionId, 4), [], []);
         // No notes, 2 attachments
-        var submission2 = Fake.IssueReport(form.Id, IssueReportLocationType.OtherLocation,
+        var submission2 = Fake.IncidentReport(form.Id, IncidentReportLocationType.OtherLocation,
             RatingAnswer.Create(_ratingQuestionId, 5), [],
             FakeAttachmentsFor(_ratingQuestionId));
         // 2 notes, no attachments
-        var submission3 = Fake.IssueReport(form.Id, IssueReportLocationType.OtherLocation,
+        var submission3 = Fake.IncidentReport(form.Id, IncidentReportLocationType.OtherLocation,
             RatingAnswer.Create(_ratingQuestionId, 9),
             FakeNotesFor(_ratingQuestionId), []);
         // 2 notes, 2 attachments
-        var submission4 = Fake.IssueReport(form.Id, IssueReportLocationType.OtherLocation,
+        var submission4 = Fake.IncidentReport(form.Id, IncidentReportLocationType.OtherLocation,
             RatingAnswer.Create(_ratingQuestionId, 10),
             FakeNotesFor(_ratingQuestionId), FakeAttachmentsFor(_ratingQuestionId));
 
@@ -305,7 +305,7 @@ public class IssueReportsDataTableGeneratorTests
         ];
 
         // Act
-        var result = IssueReportsDataTable
+        var result = IncidentReportsDataTable
             .FromForm(form)
             .WithData()
             .For(submission1)
@@ -338,7 +338,7 @@ public class IssueReportsDataTableGeneratorTests
     }
 
     [Fact]
-    public void IssueReportsDataTableGenerator_Should_Generates_Correct_DataTable_WhenDateAnswer()
+    public void IncidentReportsDataTableGenerator_Should_Generates_Correct_DataTable_WhenDateAnswer()
     {
         // Arrange
         var form = Fake.Form(DefaultLanguageCode, _dateQuestion);
@@ -348,18 +348,18 @@ public class IssueReportsDataTableGeneratorTests
         var date4 = _utcNow.AddDays(-1);
 
         // No notes, no attachments
-        var submission1 = Fake.IssueReport(form.Id, IssueReportLocationType.OtherLocation,
+        var submission1 = Fake.IncidentReport(form.Id, IncidentReportLocationType.OtherLocation,
             DateAnswer.Create(_dateQuestionId, date1), [], []);
         // No notes, 2 attachments
-        var submission2 = Fake.IssueReport(form.Id, IssueReportLocationType.OtherLocation,
+        var submission2 = Fake.IncidentReport(form.Id, IncidentReportLocationType.OtherLocation,
             DateAnswer.Create(_dateQuestionId, date2), [],
             FakeAttachmentsFor(_dateQuestionId));
         // 2 notes, no attachments
-        var submission3 = Fake.IssueReport(form.Id, IssueReportLocationType.OtherLocation,
+        var submission3 = Fake.IncidentReport(form.Id, IncidentReportLocationType.OtherLocation,
             DateAnswer.Create(_dateQuestionId, date3),
             FakeNotesFor(_dateQuestionId), []);
         // 2 notes, 2 attachments
-        var submission4 = Fake.IssueReport(form.Id, IssueReportLocationType.OtherLocation,
+        var submission4 = Fake.IncidentReport(form.Id, IncidentReportLocationType.OtherLocation,
             DateAnswer.Create(_dateQuestionId, date4),
             FakeNotesFor(_dateQuestionId), FakeAttachmentsFor(_dateQuestionId));
 
@@ -378,7 +378,7 @@ public class IssueReportsDataTableGeneratorTests
         ];
 
         // Act
-        var result = IssueReportsDataTable
+        var result = IncidentReportsDataTable
             .FromForm(form)
             .WithData()
             .For(submission1)
@@ -411,23 +411,23 @@ public class IssueReportsDataTableGeneratorTests
     }
 
     [Fact]
-    public void IssueReportsDataTableGenerator_Should_Generates_Correct_DataTable_WhenSingleSelectAnswer()
+    public void IncidentReportsDataTableGenerator_Should_Generates_Correct_DataTable_WhenSingleSelectAnswer()
     {
         // Arrange
         var form = Fake.Form(DefaultLanguageCode, _singleSelectQuestion);
         // No notes, no attachments
-        var submission1 = Fake.IssueReport(form.Id, IssueReportLocationType.OtherLocation,
+        var submission1 = Fake.IncidentReport(form.Id, IncidentReportLocationType.OtherLocation,
             SingleSelectAnswer.Create(_singleSelectQuestionId, SelectedOption.Create(_option1Id, null)), [], []);
         // No notes, 2 attachments
-        var submission2 = Fake.IssueReport(form.Id, IssueReportLocationType.OtherLocation,
+        var submission2 = Fake.IncidentReport(form.Id, IncidentReportLocationType.OtherLocation,
             SingleSelectAnswer.Create(_singleSelectQuestionId, SelectedOption.Create(_option2Id, null)), [],
             FakeAttachmentsFor(_singleSelectQuestionId));
         // 2 notes, no attachments
-        var submission3 = Fake.IssueReport(form.Id, IssueReportLocationType.OtherLocation,
+        var submission3 = Fake.IncidentReport(form.Id, IncidentReportLocationType.OtherLocation,
             SingleSelectAnswer.Create(_singleSelectQuestionId, SelectedOption.Create(_option3Id, null)),
             FakeNotesFor(_singleSelectQuestionId), []);
         // 2 notes, 2 attachments
-        var submission4 = Fake.IssueReport(form.Id, IssueReportLocationType.OtherLocation,
+        var submission4 = Fake.IncidentReport(form.Id, IncidentReportLocationType.OtherLocation,
             SingleSelectAnswer.Create(_singleSelectQuestionId, SelectedOption.Create(_option4Id, "some free text")),
             FakeNotesFor(_singleSelectQuestionId), FakeAttachmentsFor(_singleSelectQuestionId));
 
@@ -453,7 +453,7 @@ public class IssueReportsDataTableGeneratorTests
         ];
 
         // Act
-        var result = IssueReportsDataTable
+        var result = IncidentReportsDataTable
             .FromForm(form)
             .WithData()
             .For(submission1)
@@ -491,7 +491,7 @@ public class IssueReportsDataTableGeneratorTests
     }
 
     [Fact]
-    public void IssueReportsDataTableGenerator_Should_Generates_Correct_DataTable_WhenMultiSelectAnswer()
+    public void IncidentReportsDataTableGenerator_Should_Generates_Correct_DataTable_WhenMultiSelectAnswer()
     {
         // Arrange
         var form = Fake.Form(DefaultLanguageCode, _multiSelectQuestion);
@@ -503,26 +503,26 @@ public class IssueReportsDataTableGeneratorTests
             SelectedOption.Create(_option3Id, ""),
             SelectedOption.Create(_option1Id, ""),
         ];
-        var submission1 = Fake.IssueReport(form.Id, IssueReportLocationType.OtherLocation,
+        var submission1 = Fake.IncidentReport(form.Id, IncidentReportLocationType.OtherLocation,
             MultiSelectAnswer.Create(_multiSelectQuestionId, submission1Selection), [], []);
 
         // No notes, 2 attachments
         SelectedOption[] submission2Selection = [SelectedOption.Create(_option4Id, "some written text")];
-        var submission2 = Fake.IssueReport(form.Id, IssueReportLocationType.OtherLocation,
+        var submission2 = Fake.IncidentReport(form.Id, IncidentReportLocationType.OtherLocation,
             MultiSelectAnswer.Create(_multiSelectQuestionId, submission2Selection), [],
             FakeAttachmentsFor(_multiSelectQuestionId));
 
         // 2 notes, no attachments
         SelectedOption[] submission3Selection =
             [SelectedOption.Create(_option3Id, ""), SelectedOption.Create(_option2Id, "")];
-        var submission3 = Fake.IssueReport(form.Id, IssueReportLocationType.OtherLocation,
+        var submission3 = Fake.IncidentReport(form.Id, IncidentReportLocationType.OtherLocation,
             MultiSelectAnswer.Create(_multiSelectQuestionId, submission3Selection),
             FakeNotesFor(_multiSelectQuestionId), []);
 
         // 2 notes, 2 attachments
         SelectedOption[] submission4Selection =
             [SelectedOption.Create(_option4Id, "some free text"), SelectedOption.Create(_option1Id, "")];
-        var submission4 = Fake.IssueReport(form.Id, IssueReportLocationType.OtherLocation,
+        var submission4 = Fake.IncidentReport(form.Id, IncidentReportLocationType.OtherLocation,
             MultiSelectAnswer.Create(_multiSelectQuestionId, submission4Selection),
             FakeNotesFor(_multiSelectQuestionId), FakeAttachmentsFor(_multiSelectQuestionId));
 
@@ -551,7 +551,7 @@ public class IssueReportsDataTableGeneratorTests
         ];
 
         // Act
-        var result = IssueReportsDataTable
+        var result = IncidentReportsDataTable
             .FromForm(form)
             .WithData()
             .For(submission1)
@@ -590,7 +590,7 @@ public class IssueReportsDataTableGeneratorTests
 
 
     [Fact]
-    public void IssueReportsDataTableGenerator_Should_Generates_Correct_DataTable_WhenMultipleQuestions()
+    public void IncidentReportsDataTableGenerator_Should_Generates_Correct_DataTable_WhenMultipleQuestions()
     {
         // Arrange
         var form = Fake.Form(DefaultLanguageCode, _textQuestion,
@@ -608,7 +608,7 @@ public class IssueReportsDataTableGeneratorTests
             SelectedOption.Create(_option1Id, ""),
         ];
 
-        var submission1 = Fake.PartialIssueReport(form.Id, IssueReportLocationType.OtherLocation,
+        var submission1 = Fake.PartialIncidentReport(form.Id, IncidentReportLocationType.OtherLocation,
             dateAnswer: (DateAnswer.Create(_dateQuestionId, _utcNow), FakeNotesFor(_dateQuestionId),
                 FakeAttachmentsFor(_dateQuestionId)),
             numberAnswer: (NumberAnswer.Create(_numberQuestionId, 42), FakeNotesFor(_numberQuestionId),
@@ -623,7 +623,7 @@ public class IssueReportsDataTableGeneratorTests
                 FakeNotesFor(_multiSelectQuestionId), FakeAttachmentsFor(_multiSelectQuestionId))
         );
 
-        var submission2 = Fake.PartialIssueReport(form.Id, IssueReportLocationType.OtherLocation,
+        var submission2 = Fake.PartialIncidentReport(form.Id, IncidentReportLocationType.OtherLocation,
             textAnswer: (TextAnswer.Create(_textQuestionId, "some answer"), FakeNotesFor(_textQuestionId),
                 FakeAttachmentsFor(_textQuestionId)),
             dateAnswer: (DateAnswer.Create(_dateQuestionId, _utcNow), FakeNotesFor(_dateQuestionId),
@@ -638,7 +638,7 @@ public class IssueReportsDataTableGeneratorTests
                 FakeNotesFor(_multiSelectQuestionId), FakeAttachmentsFor(_multiSelectQuestionId))
         );
 
-        var submission3 = Fake.PartialIssueReport(form.Id, IssueReportLocationType.OtherLocation,
+        var submission3 = Fake.PartialIncidentReport(form.Id, IncidentReportLocationType.OtherLocation,
             textAnswer: (TextAnswer.Create(_textQuestionId, "some answer"), FakeNotesFor(_textQuestionId),
                 FakeAttachmentsFor(_textQuestionId)),
             dateAnswer: (DateAnswer.Create(_dateQuestionId, _utcNow), FakeNotesFor(_dateQuestionId),
@@ -702,7 +702,7 @@ public class IssueReportsDataTableGeneratorTests
         ];
 
         // Act
-        var result = IssueReportsDataTable
+        var result = IncidentReportsDataTable
             .FromForm(form)
             .WithData()
             .For(submission1)
@@ -785,7 +785,7 @@ public class IssueReportsDataTableGeneratorTests
 
     [Fact]
     public void
-        IssueReportsDataTableGenerator_Should_Generates_Correct_DataTable_WhenMultipleQuestions_AndEmptyResponses()
+        IncidentReportsDataTableGenerator_Should_Generates_Correct_DataTable_WhenMultipleQuestions_AndEmptyResponses()
     {
         // Arrange
         var form = Fake.Form(DefaultLanguageCode, _textQuestion,
@@ -795,7 +795,7 @@ public class IssueReportsDataTableGeneratorTests
             _singleSelectQuestion,
             _multiSelectQuestion);
 
-        var submission = Fake.IssueReport(form.Id);
+        var submission = Fake.IncidentReport(form.Id);
 
         object[] expectedTextAnswerColumns = ["", "", ""];
         object[] expectedNumberAnswerColumns = ["", "", ""];
@@ -819,7 +819,7 @@ public class IssueReportsDataTableGeneratorTests
         ];
 
         // Act
-        var result = IssueReportsDataTable
+        var result = IncidentReportsDataTable
             .FromForm(form)
             .WithData()
             .For(submission)
@@ -872,26 +872,26 @@ public class IssueReportsDataTableGeneratorTests
         result.dataTable[0].Should().ContainInOrder(expectedData);
     }
 
-    private object[] GetDefaultExpectedColumns(IssueReportModel issueReport)
+    private object[] GetDefaultExpectedColumns(IncidentReportModel incidentReport)
     {
         return
         [
-            issueReport.IssueReportId.ToString(),
-            issueReport.TimeSubmitted.ToString("s"),
-            issueReport.FollowUpStatus.Value,
-            issueReport.LocationType.ToString(),
-            issueReport.LocationDescription ?? "",
-            issueReport.Level1 ?? "",
-            issueReport.Level2 ?? "",
-            issueReport.Level3 ?? "",
-            issueReport.Level4 ?? "",
-            issueReport.Level5 ?? "",
-            issueReport.Number ?? "",
-            issueReport.MonitoringObserverId.ToString(),
-            issueReport.FirstName,
-            issueReport.LastName,
-            issueReport.Email,
-            issueReport.PhoneNumber
+            incidentReport.IncidentReportId.ToString(),
+            incidentReport.TimeSubmitted.ToString("s"),
+            incidentReport.FollowUpStatus.Value,
+            incidentReport.LocationType.ToString(),
+            incidentReport.LocationDescription ?? "",
+            incidentReport.Level1 ?? "",
+            incidentReport.Level2 ?? "",
+            incidentReport.Level3 ?? "",
+            incidentReport.Level4 ?? "",
+            incidentReport.Level5 ?? "",
+            incidentReport.Number ?? "",
+            incidentReport.MonitoringObserverId.ToString(),
+            incidentReport.FirstName,
+            incidentReport.LastName,
+            incidentReport.Email,
+            incidentReport.PhoneNumber
         ];
     }
 

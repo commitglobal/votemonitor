@@ -110,13 +110,13 @@ public class UpsertValidatorTests
     public void Validation_ShouldFail_When_IncidentReportId_Empty()
     {
         // Arrange
-        var request = new Request { IncidentReportId = Guid.Empty };
+        var request = new Request { Id = Guid.Empty };
 
         // Act
         var result = _validator.TestValidate(request);
 
         // Assert
-        result.ShouldHaveValidationErrorFor(x => x.IncidentReportId);
+        result.ShouldHaveValidationErrorFor(x => x.Id);
     }
 
     [Fact]
@@ -158,7 +158,7 @@ public class UpsertValidatorTests
             ElectionRoundId = Guid.NewGuid(),
             PollingStationId = Guid.NewGuid(),
             ObserverId = Guid.NewGuid(),
-            IncidentReportId = Guid.NewGuid(),
+            Id = Guid.NewGuid(),
         };
 
         // Act
@@ -178,7 +178,7 @@ public class UpsertValidatorTests
             ElectionRoundId = Guid.NewGuid(),
             PollingStationId = Guid.NewGuid(),
             ObserverId = Guid.NewGuid(),
-            IncidentReportId = Guid.NewGuid(),
+            Id = Guid.NewGuid(),
             LocationType = IncidentReportLocationType.PollingStation,
             Answers = []
         };
@@ -201,7 +201,7 @@ public class UpsertValidatorTests
             PollingStationId = Guid.NewGuid(),
             ObserverId = Guid.NewGuid(),
             LocationType = IncidentReportLocationType.PollingStation,
-            IncidentReportId = Guid.NewGuid(),
+            Id = Guid.NewGuid(),
             Answers = null
         };
 
