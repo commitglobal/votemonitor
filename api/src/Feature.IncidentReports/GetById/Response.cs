@@ -12,13 +12,15 @@ public class Response
     public Guid IncidentReportId { get; init; }
     public DateTime TimeSubmitted { get; init; }
     public Guid FormId { get; init; }
+    public Guid MonitoringObserverId { get; init; }
+    public string ObserverName { get; init; }
     public string FormCode { get; init; }
     public TranslatedString FormName { get; init; }
     public string FormDefaultLanguage { get; init; }
 
     [JsonConverter(typeof(SmartEnumNameConverter<IncidentReportFollowUpStatus, string>))]
     public IncidentReportFollowUpStatus FollowUpStatus { get; init; }
-    
+
     [JsonConverter(typeof(SmartEnumNameConverter<IncidentReportLocationType, string>))]
     public IncidentReportLocationType LocationType { get; init; }
 

@@ -2,7 +2,9 @@
 using Authorization.Policies.Requirements;
 using Feature.Forms.Specifications;
 using Microsoft.AspNetCore.Authorization;
+using Vote.Monitor.Domain.Entities.FormAggregate;
 using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
+using Vote.Monitor.Domain.Entities.IncidentReportAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
 
 namespace Feature.Forms.Delete;
@@ -10,7 +12,8 @@ namespace Feature.Forms.Delete;
 public class Endpoint(IAuthorizationService authorizationService,
     IRepository<MonitoringNgo> monitoringNgoRepository,
     IRepository<FormAggregate> formsRepository,
-    IRepository<FormSubmission> formSubmissionsRepository) : Endpoint<Request, Results<NoContent, NotFound, Conflict>>
+    IRepository<FormSubmission> formSubmissionsRepository,
+    IRepository<IncidentReport> incidentReportRepository) : Endpoint<Request, Results<NoContent, NotFound, Conflict>>
 {
     public override void Configure()
     {
@@ -36,9 +39,20 @@ public class Endpoint(IAuthorizationService authorizationService,
         {
             return TypedResults.NotFound();
         }
-        var hasSubmittedAnswers = await formSubmissionsRepository
-            .AnyAsync(new GetSubmissionsForFormSpecification(req.ElectionRoundId, req.NgoId, req.Id), ct);
-        if (hasSubmittedAnswers)
+
+        bool hasFormSubmissions = false;
+        if (form.FormType == FormType.IncidentReporting)
+        {
+            hasFormSubmissions = await incidentReportRepository
+                .AnyAsync(new GetIncidentReportsForFormSpecification(req.ElectionRoundId, req.NgoId, req.Id), ct);
+        }
+        else
+        {
+            hasFormSubmissions = await formSubmissionsRepository
+                .AnyAsync(new GetSubmissionsForFormSpecification(req.ElectionRoundId, req.NgoId, req.Id), ct);
+        }
+        
+        if (form.Status == FormStatus.Published && hasFormSubmissions)
         {
             return TypedResults.Conflict();
         }
