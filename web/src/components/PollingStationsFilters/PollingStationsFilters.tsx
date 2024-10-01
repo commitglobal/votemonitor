@@ -1,10 +1,11 @@
-import { useNavigate, useSearch } from '@tanstack/react-router';
-import { useCallback, useMemo } from 'react';
+import { useSetPrevSearch } from '@/common/prev-search-store';
 import type { FunctionComponent } from '@/common/types';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { usePollingStationsLocationLevels } from '@/hooks/polling-stations-levels';
-import { useSetPrevSearch } from '@/common/prev-search-store';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { usePollingStationsLocationLevels } from '@/hooks/polling-stations-levels';
+import { useNavigate, useSearch } from '@tanstack/react-router';
+import { useCallback, useMemo } from 'react';
+import { Input } from '../ui/input';
 
 export function PollingStationsFilters(): FunctionComponent {
   const navigate = useNavigate();
@@ -13,7 +14,7 @@ export function PollingStationsFilters(): FunctionComponent {
     strict: false,
   });
 
-  const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
+  const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
   const { data } = usePollingStationsLocationLevels(currentElectionRoundId);
 
   const selectedLevel1Node = useMemo(
@@ -36,6 +37,11 @@ export function PollingStationsFilters(): FunctionComponent {
     [data, search.level4Filter]
   );
 
+  const selectedLevel5Node = useMemo(
+    () => data?.[5]?.find((node) => node.name === search.level5Filter),
+    [data, search.level5Filter]
+  );
+
   const filteredLevel2Nodes = useMemo(
     () => data?.[2]?.filter((node) => node.parentId === selectedLevel1Node?.id),
     [data, selectedLevel1Node?.id]
@@ -55,6 +61,29 @@ export function PollingStationsFilters(): FunctionComponent {
     () => data?.[5]?.filter((node) => node.parentId === selectedLevel4Node?.id),
     [data, selectedLevel4Node?.id]
   );
+
+  const isFinalNode = useMemo(() => {
+    if (data === undefined) return false;
+
+    if (selectedLevel5Node) return true;
+    if (selectedLevel4Node)
+      return data[5] === undefined || !data[5].some((node) => node.parentId === selectedLevel4Node.id);
+    if (selectedLevel3Node)
+      return data[4] === undefined || !data[4].some((node) => node.parentId === selectedLevel3Node?.id);
+    if (selectedLevel2Node)
+      return data[3] === undefined || !data[3].some((node) => node.parentId === selectedLevel2Node?.id);
+    if (selectedLevel1Node)
+      return data[2] === undefined || !data[2].some((node) => node.parentId === selectedLevel1Node?.id);
+
+    return false;
+  }, [
+    data,
+    selectedLevel1Node?.id,
+    selectedLevel2Node?.id,
+    selectedLevel3Node?.id,
+    selectedLevel4Node?.id,
+    selectedLevel5Node?.id,
+  ]);
 
   const setPrevSearch = useSetPrevSearch();
 
@@ -81,10 +110,11 @@ export function PollingStationsFilters(): FunctionComponent {
             level3Filter: undefined,
             level4Filter: undefined,
             level5Filter: undefined,
+            pollingStationNumberFilter: undefined,
           });
         }}
         value={search.level1Filter ?? ''}>
-        <SelectTrigger className='w-[180px]'>
+        <SelectTrigger>
           <SelectValue placeholder='Location - L1' />
         </SelectTrigger>
         <SelectContent>
@@ -106,10 +136,11 @@ export function PollingStationsFilters(): FunctionComponent {
             level3Filter: undefined,
             level4Filter: undefined,
             level5Filter: undefined,
+            pollingStationNumberFilter: undefined,
           });
         }}
         value={search.level2Filter ?? ''}>
-        <SelectTrigger className='w-[180px]'>
+        <SelectTrigger>
           <SelectValue placeholder='Location - L2' />
         </SelectTrigger>
         <SelectContent>
@@ -126,10 +157,15 @@ export function PollingStationsFilters(): FunctionComponent {
       <Select
         disabled={!search.level2Filter || !filteredLevel3Nodes?.length}
         onValueChange={(value) => {
-          navigateHandler({ level3Filter: value, level4Filter: undefined, level5Filter: undefined });
+          navigateHandler({
+            level3Filter: value,
+            level4Filter: undefined,
+            level5Filter: undefined,
+            pollingStationNumberFilter: undefined,
+          });
         }}
         value={search.level3Filter ?? ''}>
-        <SelectTrigger className='w-[180px]'>
+        <SelectTrigger>
           <SelectValue placeholder='Location - L3' />
         </SelectTrigger>
         <SelectContent>
@@ -146,10 +182,10 @@ export function PollingStationsFilters(): FunctionComponent {
       <Select
         disabled={!search.level3Filter || !filteredLevel4Nodes?.length}
         onValueChange={(value) => {
-          navigateHandler({ level4Filter: value, level5Filter: undefined });
+          navigateHandler({ level4Filter: value, level5Filter: undefined, pollingStationNumberFilter: undefined });
         }}
         value={search.level4Filter ?? ''}>
-        <SelectTrigger className='w-[180px]'>
+        <SelectTrigger>
           <SelectValue placeholder='Location - L4' />
         </SelectTrigger>
         <SelectContent>
@@ -166,10 +202,10 @@ export function PollingStationsFilters(): FunctionComponent {
       <Select
         disabled={!search.level4Filter || !filteredLevel5Nodes?.length}
         onValueChange={(value) => {
-          navigateHandler({ level5Filter: value });
+          navigateHandler({ level5Filter: value, pollingStationNumberFilter: undefined });
         }}
         value={search.level5Filter ?? ''}>
-        <SelectTrigger className='w-[180px]'>
+        <SelectTrigger>
           <SelectValue placeholder='Location - L5' />
         </SelectTrigger>
         <SelectContent>
@@ -182,6 +218,15 @@ export function PollingStationsFilters(): FunctionComponent {
           </SelectGroup>
         </SelectContent>
       </Select>
+
+      <Input
+        placeholder='Polling station number'
+        disabled={!isFinalNode}
+        onChange={(e) => {
+          navigateHandler({ pollingStationNumberFilter: e.target.value });
+        }}
+        value={search.pollingStationNumberFilter ?? ''}
+      />
     </>
   );
 }

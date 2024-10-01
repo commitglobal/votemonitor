@@ -26,8 +26,8 @@ public class ExportPollingStationsJob(VoteMonitorContext context,
         if (exportedData == null)
         {
             logger.LogWarning("ExportData was not found for {exportDataType} {electionRoundId} {exportedDataId}",
-                ExportedDataType.QuickReports, electionRoundId, exportedDataId);
-            throw new ExportedDataWasNotFoundException(ExportedDataType.QuickReports, electionRoundId, exportedDataId);
+                ExportedDataType.PollingStations, electionRoundId, exportedDataId);
+            throw new ExportedDataWasNotFoundException(ExportedDataType.PollingStations, electionRoundId, exportedDataId);
         }
 
         try
@@ -41,21 +41,20 @@ public class ExportPollingStationsJob(VoteMonitorContext context,
 
             var utcNow = timeProvider.UtcNow;
 
-            var quickReports = await GetPollingStationsAsync(electionRoundId, ct);
-
-
+            var pollingStations = await GetPollingStationsAsync(electionRoundId, ct);
+            
             var excelFileGenerator = ExcelFileGenerator.New();
 
             var sheetData = PollingStationsDataTable
                 .New()
                 .WithData()
-                .ForPollingStations(quickReports)
+                .ForPollingStations(pollingStations)
                 .Please();
 
             excelFileGenerator.WithSheet("polling-stations", sheetData.header, sheetData.dataTable);
 
             var base64EncodedData = excelFileGenerator.Please();
-            var fileName = $"quick-reports-{utcNow:yyyyMMdd_HHmmss}.xlsx";
+            var fileName = $"polling-stations-{utcNow:yyyyMMdd_HHmmss}.xlsx";
             exportedData.Complete(fileName, base64EncodedData, utcNow);
 
             await context.SaveChangesAsync(ct);
@@ -96,12 +95,12 @@ public class ExportPollingStationsJob(VoteMonitorContext context,
             electionRoundId,
         };
 
-        IEnumerable<PollingStationModel> pollingStations = [];
+        IEnumerable<PollingStationModel> pollingStations;
         using (var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct))
         {
             pollingStations = await dbConnection.QueryAsync<PollingStationModel>(sql, queryArgs);
         }
-        var quickReportsData = pollingStations.ToList();
-        return quickReportsData;
+        var pollingStationsData = pollingStations.ToList();
+        return pollingStationsData;
     }
 }

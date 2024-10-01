@@ -2,6 +2,7 @@
 using Authorization.Policies.Requirements;
 using Feature.Forms.Specifications;
 using Microsoft.AspNetCore.Authorization;
+using Vote.Monitor.Domain.Entities.FormAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
 using Vote.Monitor.Form.Module.Mappers;
 
@@ -37,6 +38,11 @@ public class Endpoint(
             return TypedResults.NotFound();
         }
 
+        if (form.Status == FormStatus.Published)
+        {
+            ThrowError(x=>x.Id, "Cannot edit published form");
+        }
+        
         var questions = req.Questions
                  .Select(QuestionsMapper.ToEntity)
                  .ToList()

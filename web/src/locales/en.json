@@ -105,8 +105,10 @@
     "opening": "Opening",
     "voting": "Voting",
     "closingAndCounting": "Closing And Counting",
+    "psi": "PSI",
     "other": "Other",
-    "citizenReporting": "Citizen reporting"
+    "citizenReporting": "Citizen reporting",
+    "incidentReporting": "Incident reporting"
   },
   "form": {
     "field.code": "Form Code",
@@ -172,14 +174,20 @@
       },
       "resetFilters": "Reset filters"
     },
-    "observerGuides": {
-      "tabTitle": "Observer Guides",
-      "cardTitle": "Observer guides",
+    "guides": {
+      "citizenGuidesTabTitle": "Citizen Guides",
+      "citizenGuidesCardTitle": "Citizen guides",
+      "observerGuidesTabTitle": "Observer Guides",
+      "observerGuidesCardTitle": "Observer guides",
       "headers": {
         "title": "Title",
         "uploadedOn": "Uploaded on",
         "createdBy": "Created by"
       },
+      "textGuide": "Text guide",
+      "urlGuide": "Url guide",
+      "documentGuide": "Attachment guide",
+      "buttonUploadCitizenGuide": "Upload citizen guide",
       "buttonUploadObserverGuide": "Upload observer guide"
     },
     "observerForms": {
@@ -195,6 +203,19 @@
         "updatedOn": "Updated on"
       },
       "createDialogTitle": "Create form",
+      "resetFilters": "Reset filters"
+    },
+    "locations": {
+      "tabTitle": "Locations",
+      "cardTitle": "Locations",
+      "headers": {
+        "tags": "Location tags",
+        "level1": "Level 1",
+        "level2": "Level 2",
+        "level3": "Level 3",
+        "level4": "Level 4",
+        "level5": "Level 5"
+      },
       "resetFilters": "Reset filters"
     }
   },

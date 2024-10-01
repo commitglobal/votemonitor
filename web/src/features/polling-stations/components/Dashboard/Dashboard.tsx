@@ -181,6 +181,7 @@ export default function PollingStationsDashboard(): ReactElement {
     level3Filter?: string;
     level4Filter?: string;
     level5Filter?: string;
+    pollingStationNumberFilter?: string;
   };
 
   const [isFiltering, setFiltering] = useState(Object.keys(search).some(k => k === 'level1Filter' || k === 'level2Filter' || k === 'level3Filter' || k === 'level4Filter' || k === 'level5Filter'));
@@ -212,6 +213,7 @@ export default function PollingStationsDashboard(): ReactElement {
       ['level3Filter', debouncedSearch.level3Filter],
       ['level4Filter', debouncedSearch.level4Filter],
       ['level5Filter', debouncedSearch.level5Filter],
+      ['pollingStationNumberFilter', debouncedSearch.pollingStationNumberFilter],
     ].filter(([_, value]) => value);
 
     return Object.fromEntries(params);
@@ -219,17 +221,17 @@ export default function PollingStationsDashboard(): ReactElement {
 
   return (
     <Card className='pt-0'>
-      <CardHeader className='flex flex-column gap-2'>
-        <div className='flex justify-between items-center px-6'>
+      <CardHeader className='flex gap-2 flex-column'>
+        <div className='flex items-center justify-between px-6'>
           <CardTitle>{i18n.t('electionEvent.pollingStations.cardTitle')}</CardTitle>
 
-          <div className='flex gap-4 items-center'>
+          <div className='flex items-center gap-4'>
             <ExportDataButton exportedDataType={ExportedDataType.PollingStations} />
           </div>
 
         </div>
         <Separator />
-        <div className='filters px-6 flex flex-row justify-end gap-4'>
+        <div className='flex flex-row justify-end gap-4 px-6 filters'>
           <>
             <FunnelIcon
               onClick={changeIsFiltering}
@@ -239,7 +241,7 @@ export default function PollingStationsDashboard(): ReactElement {
           </>
         </div>
         <Separator />
-        {isFiltering && (<div className='grid grid-cols-6 gap-4 items-center mb-4'>
+        {isFiltering && (<div className='grid items-center grid-cols-6 gap-4 mb-4'>
 
           <PollingStationsFilters />
 
@@ -252,7 +254,7 @@ export default function PollingStationsDashboard(): ReactElement {
           </Button>
         </div>)}
         {Object.entries(search).length > 0 && (
-          <div className='col-span-full flex gap-2 flex-wrap'>
+          <div className='flex flex-wrap gap-2 col-span-full'>
 
 
             {search.level1Filter && (
@@ -278,7 +280,7 @@ export default function PollingStationsDashboard(): ReactElement {
         )}
 
       </CardHeader>
-      <CardContent className='flex flex-col gap-6 items-baseline'>
+      <CardContent className='flex flex-col items-baseline gap-6'>
         <QueryParamsDataTable columns={pollingStationColDefs} useQuery={(params) => usePollingStations(currentElectionRoundId, params)} queryParams={queryParams} />
       </CardContent>
     </Card>

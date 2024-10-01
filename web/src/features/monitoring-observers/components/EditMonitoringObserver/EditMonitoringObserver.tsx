@@ -17,16 +17,19 @@ import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-q
 import { useNavigate, useRouter } from '@tanstack/react-router';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { UpdateMonitoringObserverRequest } from '../../models/monitoring-observer';
+import { MonitoringObserverStatus, UpdateMonitoringObserverRequest } from '../../models/monitoring-observer';
+import { MonitorObserverBackButton } from '../MonitoringObserverBackButton';
 
 export default function EditObserver() {
   const navigate = useNavigate();
   const router = useRouter();
   const queryClient = useQueryClient();
-    const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
+  const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
 
   const { monitoringObserverId } = Route.useParams();
-  const monitoringObserverQuery = useSuspenseQuery(monitoringObserverDetailsQueryOptions(currentElectionRoundId, monitoringObserverId));
+  const monitoringObserverQuery = useSuspenseQuery(
+    monitoringObserverDetailsQueryOptions(currentElectionRoundId, monitoringObserverId)
+  );
   const monitoringObserver = monitoringObserverQuery.data;
 
   const { data: availableTags } = useMonitoringObserversTags(currentElectionRoundId);
@@ -61,11 +64,17 @@ export default function EditObserver() {
       phoneNumber: values.phoneNumber,
     };
 
-    editMutation.mutate({electionRoundId: currentElectionRoundId, request});
+    editMutation.mutate({ electionRoundId: currentElectionRoundId, request });
   }
 
   const editMutation = useMutation({
-    mutationFn: ({ electionRoundId, request }: { electionRoundId: string; request: UpdateMonitoringObserverRequest }) => {
+    mutationFn: ({
+      electionRoundId,
+      request,
+    }: {
+      electionRoundId: string;
+      request: UpdateMonitoringObserverRequest;
+    }) => {
       return authApi.post<void>(
         `/election-rounds/${electionRoundId}/monitoring-observers/${monitoringObserver.id}`,
         request
@@ -81,34 +90,39 @@ export default function EditObserver() {
       queryClient.invalidateQueries({ queryKey: ['monitoring-observers'] });
       queryClient.invalidateQueries({ queryKey: ['tags'] });
 
-      navigate({ to: '/monitoring-observers/view/$monitoringObserverId/$tab', params: { monitoringObserverId: monitoringObserver.id, tab: 'details' } })
+      navigate({
+        to: '/monitoring-observers/view/$monitoringObserverId/$tab',
+        params: { monitoringObserverId: monitoringObserver.id, tab: 'details' },
+      });
     },
   });
 
   return (
-    <Layout title={`Edit ${monitoringObserver.firstName} ${monitoringObserver.lastName}`}>
+    <Layout
+      title={`Edit ${monitoringObserver.firstName} ${monitoringObserver.lastName}`}
+      backButton={<MonitorObserverBackButton />}>
       <Card className='w-[800px] pt-0'>
-        <CardHeader className='flex flex-column gap-2'>
-          <div className='flex flex-row justify-between items-center'>
+        <CardHeader className='flex gap-2 flex-column'>
+          <div className='flex flex-row items-center justify-between'>
             <CardTitle className='text-xl'>Edit observer</CardTitle>
           </div>
           <Separator />
         </CardHeader>
-        <CardContent className='flex flex-col gap-6 items-baseline'>
+        <CardContent className='flex flex-col items-baseline gap-6'>
           <div className='flex flex-col gap-1'>
-            <p className='text-gray-700 font-bold'>Email</p>
-            <p className='text-gray-900 font-normal'>{monitoringObserver.email}</p>
+            <p className='font-bold text-gray-700'>Email</p>
+            <p className='font-normal text-gray-900'>{monitoringObserver.email}</p>
           </div>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
               <FormField
                 control={form.control}
                 name='firstName'
-                render={({ field }) => (
+                render={({ field, fieldState }) => (
                   <FormItem>
                     <FormLabel className='text-left'>First name</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input {...field} {...fieldState} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -117,11 +131,11 @@ export default function EditObserver() {
               <FormField
                 control={form.control}
                 name='lastName'
-                render={({ field }) => (
+                render={({ field, fieldState }) => (
                   <FormItem className='w-[540px]'>
                     <FormLabel className='text-left'>Last name</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input {...field} {...fieldState} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -130,11 +144,11 @@ export default function EditObserver() {
               <FormField
                 control={form.control}
                 name='phoneNumber'
-                render={({ field }) => (
+                render={({ field, fieldState }) => (
                   <FormItem>
                     <FormLabel className='text-left'>Phone number</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input {...field} {...fieldState} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -148,10 +162,10 @@ export default function EditObserver() {
                     <FormLabel className='text-left'>Tags</FormLabel>
                     <FormControl>
                       <TagsSelectFormField
-                        options={availableTags?.filter(tag => !field.value.includes(tag)) ?? []}
+                        options={availableTags?.filter((tag) => !field.value.includes(tag)) ?? []}
                         defaultValue={field.value}
                         onValueChange={field.onChange}
-                        placeholder="Observer tags"
+                        placeholder='Observer tags'
                       />
                     </FormControl>
                     <FormMessage />
@@ -168,7 +182,11 @@ export default function EditObserver() {
                       Status <span className='text-red-500'>*</span>
                     </FormLabel>
                     <FormControl>
-                      <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                        value={field.value}
+                        disabled={field.value === MonitoringObserverStatus.Pending}>
                         <SelectTrigger>
                           <SelectValue placeholder='Observer status' />
                         </SelectTrigger>
@@ -176,6 +194,9 @@ export default function EditObserver() {
                           <SelectGroup>
                             <SelectItem value='Active'>Active</SelectItem>
                             <SelectItem value='Suspended'>Suspended</SelectItem>
+                            <SelectItem value='Pending' disabled={true}>
+                              Pending
+                            </SelectItem>
                           </SelectGroup>
                         </SelectContent>
                       </Select>
@@ -190,7 +211,12 @@ export default function EditObserver() {
                   <Button
                     variant='outline'
                     type='button'
-                    onClick={() => { void navigate({ to: '/monitoring-observers/view/$monitoringObserverId/$tab', params: { monitoringObserverId: monitoringObserver.id, tab: 'details' } }) }}>
+                    onClick={() => {
+                      void navigate({
+                        to: '/monitoring-observers/view/$monitoringObserverId/$tab',
+                        params: { monitoringObserverId: monitoringObserver.id, tab: 'details' },
+                      });
+                    }}>
                     Cancel
                   </Button>
                   <Button type='submit' className='px-6'>

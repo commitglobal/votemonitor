@@ -7,6 +7,7 @@ public class FormData
 {
     public static UpdateForm OpeningForm = new()
     {
+        FormType = "Opening",
         Code = "A2",
         DefaultLanguage = "RO",
         Languages = new List<string> { "RO", "EN" },
@@ -20,7 +21,6 @@ public class FormData
             { "EN", "test form" },
             { "RO", "formular de test" }
         },
-        FormType = "Opening",
         Questions =
         [
             new NumberQuestionRequest

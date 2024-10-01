@@ -2,7 +2,7 @@
 
 namespace SubmissionsFaker.Clients.NgoAdmin.Models;
 
-public class NewForm
+public record NewForm
 {
     public string Code { get; set; }
     public TranslatedString Name { get; set; }

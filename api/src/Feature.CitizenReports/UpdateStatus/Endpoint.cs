@@ -10,10 +10,7 @@ public class Endpoint(VoteMonitorContext context) : Endpoint<Request, Results<No
         Put("/api/election-rounds/{electionRoundId}/citizen-reports/{id}:status");
         DontAutoTag();
         Options(x => x.WithTags("citizen-reports"));
-        Summary(s =>
-        {
-            s.Summary = "Updates follow up status for a citizen report";
-        });
+        Summary(s => { s.Summary = "Updates follow up status for a citizen report"; });
 
         Policies(PolicyNames.NgoAdminsOnly);
     }
@@ -25,7 +22,7 @@ public class Endpoint(VoteMonitorContext context) : Endpoint<Request, Results<No
                         && x.ElectionRoundId == req.ElectionRoundId
                         && x.Id == req.Id)
             .ExecuteUpdateAsync(x => x.SetProperty(p => p.FollowUpStatus, req.FollowUpStatus), cancellationToken: ct);
-        
+
         return TypedResults.NoContent();
     }
 }

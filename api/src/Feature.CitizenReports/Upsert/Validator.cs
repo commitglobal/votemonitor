@@ -9,6 +9,7 @@ public class Validator : Validator<Request>
         RuleFor(x => x.ElectionRoundId).NotEmpty();
         RuleFor(x => x.CitizenReportId).NotEmpty();
         RuleFor(x => x.FormId).NotEmpty();
+        RuleFor(x => x.LocationId).NotEmpty();
 
         RuleForEach(x => x.Answers)
             .SetInheritanceValidator(v =>

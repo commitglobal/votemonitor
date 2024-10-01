@@ -49,7 +49,7 @@ public class CreateEndpointTests
     public async Task ShouldUpdateFormVersion_WhenValidRequest()
     {
         // Arrange
-        var form = new TranslatedString { [LanguagesList.RO.Iso1] = "UniqueName" };
+        var formName = new TranslatedString { [LanguagesList.RO.Iso1] = "UniqueName" };
 
         _monitoringNgoRepository
             .FirstOrDefaultAsync(Arg.Any<GetMonitoringNgoSpecification>())
@@ -59,8 +59,9 @@ public class CreateEndpointTests
         var request = new Create.Request
         {
             NgoId = _monitoringNgo.NgoId,
-            Name = form,
+            Name = formName,
             Code = "a code",
+            DefaultLanguage = LanguagesList.RO.Iso1,
             Languages = [LanguagesList.RO.Iso1]
         };
 
@@ -77,7 +78,7 @@ public class CreateEndpointTests
     public async Task ShouldReturnOkWithFormModel_WhenNoConflict()
     {
         // Arrange
-        var form = new TranslatedString { [LanguagesList.RO.Iso1] = "UniqueName" };
+        var formName = new TranslatedString { [LanguagesList.RO.Iso1] = "UniqueName" };
         _monitoringNgoRepository
             .FirstOrDefaultAsync(Arg.Any<GetMonitoringNgoSpecification>())
             .Returns(_monitoringNgo);
@@ -86,8 +87,9 @@ public class CreateEndpointTests
         var request = new Create.Request
         {
             NgoId = _monitoringNgo.NgoId,
-            Name = form,
+            Name = formName,
             Code = "a code",
+            DefaultLanguage = LanguagesList.RO.Iso1,
             Languages = [LanguagesList.RO.Iso1]
         };
         var result = await _endpoint.ExecuteAsync(request, default);
@@ -95,12 +97,12 @@ public class CreateEndpointTests
         // Assert
         await _repository
                .Received(1)
-               .AddAsync(Arg.Is<Form>(x => x.Name == form));
+               .AddAsync(Arg.Is<Form>(x => x.Name == formName));
 
         result
             .Should().BeOfType<Results<Ok<FormFullModel>, NotFound>>()!
             .Which!
             .Result.Should().BeOfType<Ok<FormFullModel>>()!
-            .Which!.Value!.Name.Should().BeEquivalentTo(form);
+            .Which!.Value!.Name.Should().BeEquivalentTo(formName);
     }
 }

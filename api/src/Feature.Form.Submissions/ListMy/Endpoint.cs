@@ -1,6 +1,7 @@
 ﻿namespace Feature.Form.Submissions.ListMy;
 
-public class Endpoint(IReadRepository<FormSubmission> repository) : Endpoint<Request, Ok<Response>>
+public class Endpoint(IAuthorizationService authorizationService, IReadRepository<FormSubmission> repository)
+    : Endpoint<Request, Results<Ok<Response>, NotFound>>
 {
     public override void Configure()
     {
@@ -12,11 +13,21 @@ public class Endpoint(IReadRepository<FormSubmission> repository) : Endpoint<Req
             s.Summary = "Gets all form submissions by an observer";
             s.Description = "Allows filtering by polling station";
         });
+
+        Policies(PolicyNames.ObserversOnly);
     }
 
-    public override async Task<Ok<Response>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<Results<Ok<Response>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
-        var specification = new GetFormSubmissionForObserverSpecification(req.ElectionRoundId, req.ObserverId, req.PollingStationIds);
+        var authorizationResult =
+            await authorizationService.AuthorizeAsync(User, new MonitoringObserverRequirement(req.ElectionRoundId));
+        if (!authorizationResult.Succeeded)
+        {
+            return TypedResults.NotFound();
+        }
+
+        var specification =
+            new GetFormSubmissionForObserverSpecification(req.ElectionRoundId, req.ObserverId, req.PollingStationIds);
         var submissions = await repository.ListAsync(specification, ct);
 
         return TypedResults.Ok(new Response

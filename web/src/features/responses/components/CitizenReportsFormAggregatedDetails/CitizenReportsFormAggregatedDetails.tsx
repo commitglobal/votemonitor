@@ -9,8 +9,8 @@ import {
 } from '@/routes/responses/citizen-reports/$formId.aggregated';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { Link, useRouter } from '@tanstack/react-router';
-import { AggregateCard } from '../AggregateCard/AggregateCard';
 import { SubmissionType } from '../../models/common';
+import { AggregateCard } from '../AggregateCard/AggregateCard';
 
 export default function CitizenReportsFormAggregatedDetails(): FunctionComponent {
   const { state } = useRouter();

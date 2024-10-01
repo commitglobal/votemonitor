@@ -43,6 +43,7 @@ public class UpsertEndpointTests
         var request = new Upsert.Request
         {
             ElectionRoundId = Guid.NewGuid(),
+            DefaultLanguage = LanguagesList.RO.Iso1,
             Languages = languages,
             Questions = [
                 new NumberQuestionRequest
@@ -111,6 +112,7 @@ public class UpsertEndpointTests
         {
             ElectionRoundId = electionRoundId,
             Languages = languages,
+            DefaultLanguage = LanguagesList.RO.Iso1,
             Questions = [
                 new NumberQuestionRequest
                 {

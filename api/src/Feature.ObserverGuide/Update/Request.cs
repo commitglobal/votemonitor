@@ -10,4 +10,6 @@ public class Request
     public Guid NgoId { get; set; }
     public Guid Id { get; set; }
     public string Title { get; set; }
+    public string WebsiteUrl { get; set; }
+    public string Text { get; set; }
 }

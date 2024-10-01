@@ -32,7 +32,8 @@ public class PSIFormSubmissionsAggregateTests
         _singleSelectQuestion = new SingleSelectQuestionFaker(singleSelectOptions).Generate();
         _multiSelectQuestion = new MultiSelectQuestionFaker(multiSelectOptions).Generate();
 
-        List<BaseQuestion> questions = [
+        List<BaseQuestion> questions =
+        [
             _textQuestion,
             _numberQuestion,
             _dateQuestion,
@@ -103,8 +104,10 @@ public class PSIFormSubmissionsAggregateTests
 
         var pollingStation = new PollingStationFaker(electionRound: _electionRound).Generate();
         var monitoringObserver = new MonitoringObserverFaker().Generate();
-        var formSubmission1 = PollingStationInformation.Create(_electionRound, pollingStation, monitoringObserver, _form, DateTime.Now, DateTime.Now, [], 0);
-        var formSubmission2 = PollingStationInformation.Create(_electionRound, pollingStation, monitoringObserver, _form, DateTime.Now, DateTime.Now, [], 0);
+        var formSubmission1 = PollingStationInformation.Create(_electionRound, pollingStation, monitoringObserver,
+            _form, DateTime.Now, DateTime.Now, [], 0, 0);
+        var formSubmission2 = PollingStationInformation.Create(_electionRound, pollingStation, monitoringObserver,
+            _form, DateTime.Now, DateTime.Now, [], 0, 0);
 
         // Act
         aggregate.AggregateAnswers(formSubmission1);
@@ -125,9 +128,12 @@ public class PSIFormSubmissionsAggregateTests
         var monitoringObserver1 = new MonitoringObserverFaker().Generate();
         var monitoringObserver2 = new MonitoringObserverFaker().Generate();
 
-        var formSubmission1 = PollingStationInformation.Create(_electionRound, pollingStation, monitoringObserver1, _form, DateTime.Now, DateTime.Now, [], 0);
-        var formSubmission2 = PollingStationInformation.Create(_electionRound, pollingStation, monitoringObserver2, _form, DateTime.Now, DateTime.Now, [], 0);
-        var formSubmission3 = PollingStationInformation.Create(_electionRound, pollingStation, monitoringObserver1, _form, DateTime.Now, DateTime.Now, [], 0);
+        var formSubmission1 = PollingStationInformation.Create(_electionRound, pollingStation, monitoringObserver1,
+            _form, DateTime.Now, DateTime.Now, [], 0, 0);
+        var formSubmission2 = PollingStationInformation.Create(_electionRound, pollingStation, monitoringObserver2,
+            _form, DateTime.Now, DateTime.Now, [], 0, 0);
+        var formSubmission3 = PollingStationInformation.Create(_electionRound, pollingStation, monitoringObserver1,
+            _form, DateTime.Now, DateTime.Now, [], 0, 0);
 
         // Act
         aggregate.AggregateAnswers(formSubmission1);
@@ -138,8 +144,10 @@ public class PSIFormSubmissionsAggregateTests
         aggregate.Responders.Should().HaveCount(2);
         var observer1 = monitoringObserver1.Observer.ApplicationUser;
         var observer2 = monitoringObserver2.Observer.ApplicationUser;
-        var responder1 = new Responder(monitoringObserver1.Id, observer1.FirstName, observer1.LastName, observer1.Email, observer1.PhoneNumber);
-        var responder2 = new Responder(monitoringObserver2.Id, observer2.FirstName, observer2.LastName, observer2.Email, observer2.PhoneNumber);
+        var responder1 = new Responder(monitoringObserver1.Id, observer1.FirstName, observer1.LastName, observer1.Email,
+            observer1.PhoneNumber);
+        var responder2 = new Responder(monitoringObserver2.Id, observer2.FirstName, observer2.LastName, observer2.Email,
+            observer2.PhoneNumber);
         aggregate.Responders.Should().Contain([responder1, responder2]);
     }
 
@@ -154,9 +162,12 @@ public class PSIFormSubmissionsAggregateTests
 
         var monitoringObserver = new MonitoringObserverFaker().Generate();
 
-        var formSubmission1 = PollingStationInformation.Create(_electionRound, pollingStation1, monitoringObserver, _form, DateTime.Now, DateTime.Now, [], 22);
-        var formSubmission2 = PollingStationInformation.Create(_electionRound, pollingStation2, monitoringObserver, _form, DateTime.Now, DateTime.Now, [], 44);
-        var formSubmission3 = PollingStationInformation.Create(_electionRound, pollingStation1, monitoringObserver, _form, DateTime.Now, DateTime.Now, [], 55);
+        var formSubmission1 = PollingStationInformation.Create(_electionRound, pollingStation1, monitoringObserver,
+            _form, DateTime.Now, DateTime.Now, [], 22, 0);
+        var formSubmission2 = PollingStationInformation.Create(_electionRound, pollingStation2, monitoringObserver,
+            _form, DateTime.Now, DateTime.Now, [], 44, 0);
+        var formSubmission3 = PollingStationInformation.Create(_electionRound, pollingStation1, monitoringObserver,
+            _form, DateTime.Now, DateTime.Now, [], 55, 0);
 
         // Act
         aggregate.AggregateAnswers(formSubmission1);
@@ -168,6 +179,33 @@ public class PSIFormSubmissionsAggregateTests
     }
 
     [Fact]
+    public void AggregateAnswers_ShouldAddNumberOfFlaggedAnswers()
+    {
+        // Arrange
+        var aggregate = new FormSubmissionsAggregate(_form);
+
+        var pollingStation1 = new PollingStationFaker(electionRound: _electionRound).Generate();
+        var pollingStation2 = new PollingStationFaker(electionRound: _electionRound).Generate();
+
+        var monitoringObserver = new MonitoringObserverFaker().Generate();
+
+        var formSubmission1 = PollingStationInformation.Create(_electionRound, pollingStation1, monitoringObserver,
+            _form, DateTime.Now, DateTime.Now, [], 0, 12);
+        var formSubmission2 = PollingStationInformation.Create(_electionRound, pollingStation2, monitoringObserver,
+            _form, DateTime.Now, DateTime.Now, [], 0, 22);
+        var formSubmission3 = PollingStationInformation.Create(_electionRound, pollingStation1, monitoringObserver,
+            _form, DateTime.Now, DateTime.Now, [], 0, 35);
+
+        // Act
+        aggregate.AggregateAnswers(formSubmission1);
+        aggregate.AggregateAnswers(formSubmission2);
+        aggregate.AggregateAnswers(formSubmission3);
+
+        // Assert
+        aggregate.TotalNumberOfFlaggedAnswers.Should().Be(69);
+    }
+
+    [Fact]
     public void AggregateAnswers_ShouldAggregateAnswersCorrectly()
     {
         // Arrange
@@ -175,7 +213,8 @@ public class PSIFormSubmissionsAggregateTests
         var pollingStation = new PollingStationFaker(electionRound: _electionRound).Generate();
         var monitoringObserver = new MonitoringObserverFaker().Generate();
 
-        List<BaseAnswer> submission1Answers = [
+        List<BaseAnswer> submission1Answers =
+        [
             new DateAnswerFaker(_dateQuestion.Id),
             new TextAnswerFaker(_textQuestion.Id),
             new RatingAnswerFaker(_ratingQuestion.Id),
@@ -184,20 +223,25 @@ public class PSIFormSubmissionsAggregateTests
             new MultiSelectAnswerFaker(_multiSelectQuestion.Id, _multiSelectQuestion.Options.Select(o => o.Select()))
         ];
 
-        List<BaseAnswer> submission2Answers = [
+        List<BaseAnswer> submission2Answers =
+        [
             new SingleSelectAnswerFaker(_singleSelectQuestion.Id, _singleSelectQuestion.Options[2].Select()),
             new MultiSelectAnswerFaker(_multiSelectQuestion.Id, _multiSelectQuestion.Options.Select(o => o.Select()))
         ];
 
-        List<BaseAnswer> submission3Answers = [
+        List<BaseAnswer> submission3Answers =
+        [
             new DateAnswerFaker(_dateQuestion.Id),
             new TextAnswerFaker(_textQuestion.Id),
             new NumberAnswerFaker(_numberQuestion.Id),
         ];
 
-        var formSubmission1 = PollingStationInformation.Create(_electionRound, pollingStation, monitoringObserver, _form, DateTime.Now, DateTime.Now, submission1Answers, 0);
-        var formSubmission2 = PollingStationInformation.Create(_electionRound, pollingStation, monitoringObserver, _form, DateTime.Now, DateTime.Now, submission2Answers, 0);
-        var formSubmission3 = PollingStationInformation.Create(_electionRound, pollingStation, monitoringObserver, _form, DateTime.Now, DateTime.Now, submission3Answers, 0);
+        var formSubmission1 = PollingStationInformation.Create(_electionRound, pollingStation, monitoringObserver,
+            _form, DateTime.Now, DateTime.Now, submission1Answers, 0, 0);
+        var formSubmission2 = PollingStationInformation.Create(_electionRound, pollingStation, monitoringObserver,
+            _form, DateTime.Now, DateTime.Now, submission2Answers, 0, 0);
+        var formSubmission3 = PollingStationInformation.Create(_electionRound, pollingStation, monitoringObserver,
+            _form, DateTime.Now, DateTime.Now, submission3Answers, 0, 0);
 
         // Act
         aggregate.AggregateAnswers(formSubmission1);

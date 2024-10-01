@@ -15,7 +15,6 @@ import { z } from 'zod';
 
 import { authApi } from '@/common/auth-api';
 import { isDateQuestion, isMultiSelectQuestion, isNumberQuestion, isRatingQuestion, isSingleSelectQuestion, isTextQuestion } from '@/common/guards';
-import { DateQuestion, MultiSelectQuestion, NumberQuestion, RatingQuestion, SingleSelectQuestion, TextQuestion } from '@/common/types';
 import Layout from '@/components/layout/Layout';
 import { NavigateBack } from '@/components/NavigateBack/NavigateBack';
 import { useConfirm } from '@/components/ui/alert-dialog-provider';

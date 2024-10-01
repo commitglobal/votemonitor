@@ -95,6 +95,7 @@ function PushMessageForm(): FunctionComponent {
       ['level3Filter', debouncedSearch.level3Filter],
       ['level4Filter', debouncedSearch.level4Filter],
       ['level5Filter', debouncedSearch.level5Filter],
+      ['pollingStationNumberFilter', debouncedSearch.pollingStationNumberFilter],
     ].filter(([_, value]) => value);
 
     return Object.fromEntries(params) as PushMessageTargetedObserversSearchParams;
@@ -150,7 +151,7 @@ function PushMessageForm(): FunctionComponent {
           <Form {...form}>
             {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
             <form onSubmit={form.handleSubmit(onSubmit)}>
-              <h2 className='font-medium text-xl mb-10'>1. Compose your message</h2>
+              <h2 className='mb-10 text-xl font-medium'>1. Compose your message</h2>
 
               <div className='flex flex-col gap-6 mb-20'>
                 <FormField
@@ -191,12 +192,12 @@ function PushMessageForm(): FunctionComponent {
                 />
               </div>
 
-              <h2 className='font-medium text-xl mb-10'>
+              <h2 className='mb-10 text-xl font-medium'>
                 2. Filter the list of observers to reduce it to the desired recipients of the message
               </h2>
 
               <div className='flex flex-col gap-6'>
-                <div className='grid grid-cols-6 gap-4 items-center'>
+                <div className='grid items-center grid-cols-6 gap-4'>
                   <Input onChange={handleSearchInput} placeholder='Search' />
 
                   <DropdownMenu>
@@ -204,7 +205,7 @@ function PushMessageForm(): FunctionComponent {
                       <Button className='border-gray-200 gap-1 hover:bg-white w-[180px]' variant='outline'>
                         <span className='text-sm font-normal text-slate-700'>Observer tags</span>
                         {search.tagsFilter && (
-                          <span className='bg-purple-50 text-purple-600 rounded-full inline-block px-2'>
+                          <span className='inline-block px-2 text-purple-600 rounded-full bg-purple-50'>
                             {search.tagsFilter.length}
                           </span>
                         )}
@@ -256,7 +257,7 @@ function PushMessageForm(): FunctionComponent {
                 </div>
 
                 {Object.entries(search).length > 0 && (
-                  <div className='col-span-full flex gap-2 flex-wrap'>
+                  <div className='flex flex-wrap gap-2 col-span-full'>
                     {search.tagsFilter?.map((tag) => (
                       <FilterBadge label={`Observer tags: ${tag}`} onClear={onTagsFilterChange(tag)} />
                     ))}
@@ -274,6 +275,7 @@ function PushMessageForm(): FunctionComponent {
                           'level3Filter',
                           'level4Filter',
                           'level5Filter',
+                          'pollingStationNumberFilter',
                         ])}
                       />
                     )}
@@ -281,28 +283,46 @@ function PushMessageForm(): FunctionComponent {
                     {search.level2Filter && (
                       <FilterBadge
                         label={`Location - L2: ${search.level2Filter}`}
-                        onClear={onClearFilter(['level2Filter', 'level3Filter', 'level4Filter', 'level5Filter'])}
+                        onClear={onClearFilter([
+                          'level2Filter',
+                          'level3Filter',
+                          'level4Filter',
+                          'level5Filter',
+                          'pollingStationNumberFilter',
+                        ])}
                       />
                     )}
 
                     {search.level3Filter && (
                       <FilterBadge
                         label={`Location - L3: ${search.level3Filter}`}
-                        onClear={onClearFilter(['level3Filter', 'level4Filter', 'level5Filter'])}
+                        onClear={onClearFilter([
+                          'level3Filter',
+                          'level4Filter',
+                          'level5Filter',
+                          'pollingStationNumberFilter',
+                        ])}
                       />
                     )}
 
                     {search.level4Filter && (
                       <FilterBadge
                         label={`Location - L4: ${search.level4Filter}`}
-                        onClear={onClearFilter(['level4Filter', 'level5Filter'])}
+                        onClear={onClearFilter(['level4Filter', 'level5Filter', 'pollingStationNumberFilter'])}
                       />
                     )}
 
                     {search.level5Filter && (
                       <FilterBadge
                         label={`Location - L5: ${search.level5Filter}`}
-                        onClear={onClearFilter('level5Filter')}
+                        onClear={onClearFilter(['level5Filter', 'pollingStationNumberFilter'])}
+                      />
+                    )}
+
+                    {search.pollingStationNumberFilter && (
+                      <FilterBadge
+                        label={`PS Number: ${search.pollingStationNumberFilter}`}
+                        onClear={onClearFilter('pollingStationNumberFilter')}
                       />
                     )}
                   </div>
@@ -316,7 +336,7 @@ function PushMessageForm(): FunctionComponent {
                 />
               </div>
 
-              <div className='fixed bottom-0 left-0 bg-white py-4 px-12 flex justify-end w-screen'>
+              <div className='fixed bottom-0 left-0 flex justify-end w-screen px-12 py-4 bg-white'>
                 <Button>Send message to {totalRowsCount} observers</Button>
               </div>
             </form>

@@ -8,7 +8,7 @@ namespace SubmissionsFaker.Fakers;
 
 public sealed class SubmissionFaker : Faker<SubmissionRequest>
 {
-    public SubmissionFaker(List<UpdateFormResponse> forms, List<LocationNode> pollingStations,
+    public SubmissionFaker(List<UpdateFormResponse> forms, List<PollingStationNode> pollingStations,
         List<LoginResponse> observers)
     {
         RuleFor(x => x.PollingStationId, f => f.PickRandom(pollingStations).PollingStationId!);

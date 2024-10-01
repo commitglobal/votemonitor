@@ -19,6 +19,7 @@ public class FormsSeeder
 
         var form = await ngoAdminApi.CreateForm(electionRoundId, FormData.OpeningForm, ngoAdminToken.Token);
         await ngoAdminApi.UpdateForm(electionRoundId, form.Id, FormData.OpeningForm, ngoAdminToken.Token);
+        await ngoAdminApi.PublishForm(electionRoundId, form.Id, ngoAdminToken.Token);
         progressTask.Increment(1);
 
         progressTask.Increment(progressTask.MaxValue);

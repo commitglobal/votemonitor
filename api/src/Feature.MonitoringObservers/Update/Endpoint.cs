@@ -45,7 +45,7 @@ public class Endpoint(IAuthorizationService authorizationService, IRepository<Mo
             return TypedResults.NotFound();
         }
         applicationUser.UpdateDetails(req.FirstName, req.LastName, req.PhoneNumber);
-
+        
         await userStore.UpdateAsync(applicationUser, ct);
 
         return TypedResults.NoContent();

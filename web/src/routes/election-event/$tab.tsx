@@ -7,6 +7,8 @@ const coerceTabSlug = (slug: string) => {
   if (slug?.toLowerCase()?.trim() === 'polling-stations') return 'polling-stations';
   if (slug?.toLowerCase()?.trim() === 'observer-guides') return 'observer-guides';
   if (slug?.toLowerCase()?.trim() === 'observer-forms') return 'observer-forms';
+  if (slug?.toLowerCase()?.trim() === 'locations') return 'locations';
+  if (slug?.toLowerCase()?.trim() === 'citizen-guides') return 'citizen-guides';
 
   return 'event-details'
 };

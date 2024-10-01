@@ -5,6 +5,7 @@ using Feature.ObserverGuide.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
 using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
+using Vote.Monitor.Domain.Entities.ObserverGuideAggregate;
 
 namespace Feature.ObserverGuide.Create;
 
@@ -24,9 +25,11 @@ public class Endpoint(
         Policies(PolicyNames.NgoAdminsOnly);
     }
 
-    public override async Task<Results<Ok<ObserverGuideModel>, NotFound, StatusCodeHttpResult>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<Results<Ok<ObserverGuideModel>, NotFound, StatusCodeHttpResult>> ExecuteAsync(
+        Request req, CancellationToken ct)
     {
-        var authorizationResult = await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminRequirement(req.ElectionRoundId));
+        var authorizationResult =
+            await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminRequirement(req.ElectionRoundId));
         if (!authorizationResult.Succeeded)
         {
             return TypedResults.NotFound();
@@ -39,13 +42,13 @@ public class Endpoint(
             return TypedResults.NotFound();
         }
 
-        ObserverGuideAggregate observerGuide;
-        ObserverGuideModel observerGuideModel;
-        if (string.IsNullOrEmpty(req.WebsiteUrl))
+        ObserverGuideAggregate? observerGuide = null;
+        ObserverGuideModel? observerGuideModel = null;
+        if (req.GuideType == ObserverGuideType.Document)
         {
             var uploadPath = $"elections/{req.ElectionRoundId}/ngo/{monitoringNgo.NgoId}/observer-guides";
 
-            observerGuide = ObserverGuideAggregate.CreateForDocument(monitoringNgo,
+            observerGuide = ObserverGuideAggregate.NewDocumentGuide(monitoringNgo,
                 req.Title,
                 req.Attachment!.FileName,
                 uploadPath,
@@ -73,23 +76,38 @@ public class Endpoint(
                 GuideType = observerGuide.GuideType
             };
         }
-        else
+
+        if (req.GuideType == ObserverGuideType.Website)
         {
-            observerGuide = ObserverGuideAggregate.CreateForWebsite(monitoringNgo,
+            observerGuide = ObserverGuideAggregate.NewWebsiteGuide(monitoringNgo,
                 req.Title,
-                req.WebsiteUrl);
+                new Uri(req.WebsiteUrl!));
 
             observerGuideModel = new ObserverGuideModel
             {
                 Id = observerGuide.Id,
                 Title = observerGuide.Title,
-                FileName = observerGuide.FileName,
                 WebsiteUrl = observerGuide.WebsiteUrl,
-                GuideType = observerGuide.GuideType 
+                GuideType = observerGuide.GuideType
             };
         }
 
-        await repository.AddAsync(observerGuide, ct);
-        return TypedResults.Ok(observerGuideModel);
+        if (req.GuideType == ObserverGuideType.Text)
+        {
+            observerGuide = ObserverGuideAggregate.NewTextGuide(monitoringNgo,
+                req.Title,
+                req.Text!);
+
+            observerGuideModel = new ObserverGuideModel
+            {
+                Id = observerGuide.Id,
+                Title = observerGuide.Title,
+                Text = observerGuide.Text,
+                GuideType = observerGuide.GuideType
+            };
+        }
+
+        await repository.AddAsync(observerGuide!, ct);
+        return TypedResults.Ok(observerGuideModel!);
     }
 }

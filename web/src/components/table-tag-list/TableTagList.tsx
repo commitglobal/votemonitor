@@ -7,8 +7,8 @@ interface TableTagListProps {
 
 export default function TableTagList({ tags }: TableTagListProps) {
   return (
-    <div className='flex flex-row gap-2 flex-wrap'>
-      {tags.map((tag) => (
+    <div className='flex flex-row flex-wrap gap-2'>
+      {tags?.map((tag) => (
         <Badge key={tag} style={{ backgroundColor: getTagColor(tag) }} className='text-slate-600' >{tag}</Badge>
       ))}
     </div>

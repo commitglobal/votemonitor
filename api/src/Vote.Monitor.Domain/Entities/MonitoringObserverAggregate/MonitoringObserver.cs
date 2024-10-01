@@ -48,7 +48,11 @@ public class MonitoringObserver : AuditableBaseEntity, IAggregateRoot
 
     public void Update(MonitoringObserverStatus status, string[] tags)
     {
-        Status = status;
+        if (status != MonitoringObserverStatus.Pending)
+        {
+            Status = status;
+        }
+
         Tags = tags;
     }
 

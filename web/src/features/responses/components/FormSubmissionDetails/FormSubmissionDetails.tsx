@@ -1,5 +1,5 @@
 import { authApi } from '@/common/auth-api';
-import { FollowUpStatus, FunctionComponent } from '@/common/types';
+import { FormSubmissionFollowUpStatus, FunctionComponent } from '@/common/types';
 import Layout from '@/components/layout/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -14,6 +14,7 @@ import { Link, useRouter } from '@tanstack/react-router';
 import { formSubmissionsByEntryKeys, formSubmissionsByObserverKeys } from '../../hooks/form-submissions-queries';
 import PreviewAnswer from '../PreviewAnswer/PreviewAnswer';
 import { SubmissionType } from '../../models/common';
+import { mapFormSubmissionFollowUpStatus } from '../../utils/helpers';
 
 export default function FormSubmissionDetails(): FunctionComponent {
   const { submissionId } = Route.useParams();
@@ -25,7 +26,7 @@ export default function FormSubmissionDetails(): FunctionComponent {
   const router = useRouter();
 
   const updateSubmissionFollowUpStatusMutation = useMutation({
-    mutationFn: ({ electionRoundId, followUpStatus }: { electionRoundId: string; followUpStatus: FollowUpStatus }) => {
+    mutationFn: ({ electionRoundId, followUpStatus }: { electionRoundId: string; followUpStatus: FormSubmissionFollowUpStatus }) => {
       return authApi.put<void>(`/election-rounds/${electionRoundId}/form-submissions/${submissionId}:status`, {
         followUpStatus,
       });
@@ -51,7 +52,7 @@ export default function FormSubmissionDetails(): FunctionComponent {
     },
   });
 
-  function handleFollowUpStatusChange(followUpStatus: FollowUpStatus): void {
+  function handleFollowUpStatusChange(followUpStatus: FormSubmissionFollowUpStatus): void {
     updateSubmissionFollowUpStatusMutation.mutate({ electionRoundId: currentElectionRoundId, followUpStatus });
   }
 
@@ -128,9 +129,21 @@ export default function FormSubmissionDetails(): FunctionComponent {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    <SelectItem value={FollowUpStatus.NotApplicable}>Not Applicable</SelectItem>
-                    <SelectItem value={FollowUpStatus.NeedsFollowUp}>Needs Follow-Up</SelectItem>
-                    <SelectItem value={FollowUpStatus.Resolved}>Resolved</SelectItem>
+                    <SelectItem
+                      key={FormSubmissionFollowUpStatus.NotApplicable}
+                      value={FormSubmissionFollowUpStatus.NotApplicable}>
+                      {mapFormSubmissionFollowUpStatus(FormSubmissionFollowUpStatus.NotApplicable)}
+                    </SelectItem>
+                    <SelectItem
+                      key={FormSubmissionFollowUpStatus.NeedsFollowUp}
+                      value={FormSubmissionFollowUpStatus.NeedsFollowUp}>
+                      {mapFormSubmissionFollowUpStatus(FormSubmissionFollowUpStatus.NeedsFollowUp)}
+                    </SelectItem>
+                    <SelectItem
+                      key={FormSubmissionFollowUpStatus.Resolved}
+                      value={FormSubmissionFollowUpStatus.Resolved}>
+                      {mapFormSubmissionFollowUpStatus(FormSubmissionFollowUpStatus.Resolved)}
+                    </SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>

@@ -19,7 +19,14 @@ internal class MonitoringNgoAdminAuthorizationHandler(
         }
 
         var ngoId = currentUserProvider.GetNgoId();
-        var getMonitoringNgoSpecification = new GetMonitoringNgoSpecification(adminRequirement.ElectionRoundId, ngoId!.Value);
+        if (ngoId is null)
+        {
+            context.Fail();
+            return;
+        }
+        
+        
+        var getMonitoringNgoSpecification = new GetMonitoringNgoSpecification(adminRequirement.ElectionRoundId, ngoId.Value);
         var result = await monitoringNgoRepository.FirstOrDefaultAsync(getMonitoringNgoSpecification);
 
         if (result is null)

@@ -152,13 +152,13 @@ export default function FormsDashboard(): ReactElement {
 
             {
               row.depth === 0 ?
-                <DropdownMenuItem disabled={row.original.status === FormStatus.Published} onClick={() => navigateToEdit(row.original.id)}>Edit</DropdownMenuItem>
-                : <DropdownMenuItem disabled={row.original.status === FormStatus.Published} onClick={() => navigateToEditTranslation(row.original.id, row.original.defaultLanguage)}>Edit</DropdownMenuItem>
+                <DropdownMenuItem disabled={row.original.status !== FormStatus.Drafted} onClick={() => navigateToEdit(row.original.id)}>Edit</DropdownMenuItem>
+                : <DropdownMenuItem disabled={row.original.status !== FormStatus.Drafted} onClick={() => navigateToEditTranslation(row.original.id, row.original.defaultLanguage)}>Edit</DropdownMenuItem>
             }
 
             {
               row.depth === 0 ?
-                <DropdownMenuItem disabled={row.original.status === FormStatus.Published} onClick={() => addTranslationsDialog.trigger(row.original.id, row.original.languages)}>Add translations</DropdownMenuItem>
+                <DropdownMenuItem disabled={row.original.status !== FormStatus.Drafted} onClick={() => addTranslationsDialog.trigger(row.original.id, row.original.languages)}>Add translations</DropdownMenuItem>
                 : null
             }
             {
@@ -423,6 +423,7 @@ export default function FormsDashboard(): ReactElement {
                   <SelectItem value={ZFormType.Values.Voting}>{mapFormType(ZFormType.Values.Voting)}</SelectItem>
                   <SelectItem value={ZFormType.Values.ClosingAndCounting}>{mapFormType(ZFormType.Values.ClosingAndCounting)}</SelectItem>
                   {isMonitoringNgoForCitizenReporting && <SelectItem value={ZFormType.Values.CitizenReporting}>{mapFormType(ZFormType.Values.CitizenReporting)}</SelectItem>}
+                  <SelectItem value={ZFormType.Values.IncidentReporting}>{mapFormType(ZFormType.Values.IncidentReporting)}</SelectItem>
                   <SelectItem value={ZFormType.Values.Other}>{mapFormType(ZFormType.Values.Other)}</SelectItem>
                 </SelectGroup>
               </SelectContent>

@@ -15,7 +15,7 @@ public class FileSizeValidator<T> : PropertyValidator<T, IFormFile>
         if (value is null) return true;
         if (value.Length <= MaxFileSizeInBytes) return true;
         context.MessageFormatter
-            .AppendArgument("MaxFilesize", MaxFileSizeInBytes.Megabytes());
+            .AppendArgument("MaxFileSize", MaxFileSizeInBytes.Megabytes());
 
         return false;
     }
@@ -23,5 +23,5 @@ public class FileSizeValidator<T> : PropertyValidator<T, IFormFile>
     public override string Name => "FileSizeValidator";
 
     protected override string GetDefaultMessageTemplate(string errorCode)
-        => "Maximum file size is {MaxFilesize}.";
+        => "Maximum file size is {MaxFileSize}.";
 }

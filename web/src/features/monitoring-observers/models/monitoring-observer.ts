@@ -1,5 +1,7 @@
 /* eslint-disable unicorn/prefer-top-level-await */
-import { FollowUpStatus } from '@/common/types';
+import { FormSubmissionFollowUpStatus, IncidentReportFollowUpStatus, QuickReportFollowUpStatus } from '@/common/types';
+import { IncidentReportLocationType } from '@/features/responses/models/incident-report';
+import { QuickReportLocationType } from '@/features/responses/models/quick-report';
 import { z } from 'zod';
 
 export enum MonitoringObserverStatus {
@@ -34,13 +36,19 @@ export const monitoringObserverDetailsRouteSearchSchema = z.object({
   level3Filter: z.string().catch('').optional(),
   level4Filter: z.string().catch('').optional(),
   level5Filter: z.string().catch('').optional(),
+  pollingStationNumberFilter: z.string().catch('').optional(),
   hasFlaggedAnswers: z.string().catch('').optional(),
   monitoringObserverId: z.string().catch('').optional(),
-  followUpStatus: z.enum([FollowUpStatus.NotApplicable, FollowUpStatus.NeedsFollowUp, FollowUpStatus.Resolved]).optional()
+  followUpStatus: z.nativeEnum(FormSubmissionFollowUpStatus).optional(),
+
+  quickReportFollowUpStatus: z.nativeEnum(QuickReportFollowUpStatus).optional(),
+  quickReportLocationType: z.nativeEnum(QuickReportLocationType).optional(),
+
+  incidentReportFollowUpStatus: z.nativeEnum(IncidentReportFollowUpStatus).optional(),
+  incidentReportLocationType: z.nativeEnum(IncidentReportLocationType).optional(),
 });
 
 export type MonitoringObserverDetailsRouteSearch = z.infer<typeof monitoringObserverDetailsRouteSearchSchema>;
-
 
 export interface UpdateMonitoringObserverRequest {
   firstName: string;

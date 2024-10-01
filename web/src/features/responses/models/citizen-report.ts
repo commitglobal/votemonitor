@@ -1,8 +1,7 @@
 import type {
   BaseQuestion,
   DateAnswer,
-  FollowUpStatus,
-  FormType,
+  CitizenReportFollowUpStatus,
   MultiSelectAnswer,
   NumberAnswer,
   RatingAnswer,
@@ -22,7 +21,7 @@ export interface CitizenReportByEntry {
   numberOfFlaggedAnswers: number;
   notesCount: number;
   mediaFilesCount: number;
-  followUpStatus: FollowUpStatus;
+  followUpStatus: CitizenReportFollowUpStatus;
 }
 
 export interface CitizenReportsAggregatedByForm {

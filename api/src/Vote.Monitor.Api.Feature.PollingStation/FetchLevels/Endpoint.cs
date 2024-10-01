@@ -29,7 +29,7 @@ public class Endpoint(VoteMonitorContext context, IMemoryCache memoryCache) : En
             return TypedResults.NotFound();
         }
 
-        var cacheKey = $"election-rounds/{request.ElectionRoundId}/nodes/{electionRound.PollingStationsVersion}";
+        var cacheKey = $"election-rounds/{request.ElectionRoundId}/polling-station-nodes/{electionRound.PollingStationsVersion}";
 
         var cachedResponse = await memoryCache.GetOrCreateAsync(cacheKey, async (e) =>
         {

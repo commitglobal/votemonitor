@@ -33,6 +33,7 @@ export interface SendPushNotificationRequest {
     level3Filter?: string;
     level4Filter?: string;
     level5Filter?: string;
+    pollingStationNumberFilter?: string;
     statusFilter?: string;
     tagsFilter?: string[];
   }

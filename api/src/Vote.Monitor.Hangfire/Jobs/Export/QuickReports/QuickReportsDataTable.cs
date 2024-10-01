@@ -20,7 +20,6 @@ public class QuickReportsDataTable
             "Email",
             "PhoneNumber",
             "LocationType",
-            "PollingStationId",
             "Level1",
             "Level2",
             "Level3",

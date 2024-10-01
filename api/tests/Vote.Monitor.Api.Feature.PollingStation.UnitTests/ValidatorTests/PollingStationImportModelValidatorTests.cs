@@ -1,8 +1,9 @@
-﻿namespace Vote.Monitor.Api.Feature.PollingStation.UnitTests.ValidatorTests;
+﻿using Vote.Monitor.Core.Models;
+
+namespace Vote.Monitor.Api.Feature.PollingStation.UnitTests.ValidatorTests;
 
 public class PollingStationImportModelValidatorTests
 {
-
     private readonly PollingStationImportModelValidator _validator = new();
 
     [Theory]

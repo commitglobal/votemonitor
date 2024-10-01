@@ -1,5 +1,4 @@
 ﻿using Vote.Monitor.Core.Constants;
-using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.Entities.FormAggregate;
 using Vote.Monitor.Domain.Entities.FormBase.Questions;
 using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
@@ -55,7 +54,7 @@ public sealed class FormAggregateFaker : PrivateFaker<Form>
 
         CustomInstantiator(_ =>
         {
-            var form = Form.Create(electionRound, monitoringNgo, FormType.ClosingAndCounting, "C1", new TranslatedString(), new TranslatedString(),
+            var form = Form.Create(electionRound, monitoringNgo, FormType.ClosingAndCounting, "C1", translatedStringFaker.Generate(), translatedStringFaker.Generate(),
                 languages.First(), languages, questions);
 
             if (status == FormStatus.Obsolete)

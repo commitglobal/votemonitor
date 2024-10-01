@@ -33,7 +33,7 @@ public class Endpoint(
                     attachment.FilePath,
                     attachment.UploadedFileName);
 
-                return new CitizenReportsAttachmentModel
+                return new CitizenReportAttachmentModel
                 {
                     FileName = attachment.FileName,
                     PresignedUrl = (presignedUrl as GetPresignedUrlResult.Ok)?.Url ?? string.Empty,

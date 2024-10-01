@@ -1,66 +1,41 @@
-﻿using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using Vote.Monitor.TestUtils;
 
 namespace Feature.Form.Submissions.UnitTests.Endpoints;
 
 public class DeleteEndpointTests
 {
-    private readonly IRepository<FormSubmission> _repository;
     private readonly Delete.Endpoint _endpoint;
+    private readonly IAuthorizationService _authorizationService;
 
     public DeleteEndpointTests()
     {
-        _repository = Substitute.For<IRepository<FormSubmission>>();
-        _endpoint = Factory.Create<Delete.Endpoint>(_repository);
+        _authorizationService = Substitute.For<IAuthorizationService>();
+        _endpoint = Factory.Create<Delete.Endpoint>(_authorizationService, TestContext.Fake());
     }
 
     [Fact]
-    public async Task Should_DeleteFormSubmission_And_ReturnNoContent_WhenExists()
+    public async Task ShouldReturnNotFound_WhenUserIsNotAuthorized()
     {
         // Arrange
-        var formSubmission = new FormSubmissionFaker().Generate();
-
-        _repository
-            .FirstOrDefaultAsync(Arg.Any<GetFormSubmissionSpecification>())
-            .Returns(formSubmission);
-
-        // Act
-        var request = new Delete.Request
-        {
-            ElectionRoundId = formSubmission.ElectionRoundId,
-            ObserverId = Guid.NewGuid(),
-            FormId = formSubmission.FormId,
-            PollingStationId = formSubmission.PollingStationId
-        };
-        var result = await _endpoint.ExecuteAsync(request, default);
-
-        // Assert
-        await _repository.Received(1).DeleteAsync(formSubmission);
-
-        result
-            .Should().BeOfType<Results<NoContent, NotFound>>()
-            .Which
-            .Result.Should().BeOfType<NoContent>();
-    }
-
-    [Fact]
-    public async Task ShouldReturnNotFound_WhenFormSubmissionNotFound()
-    {
-        // Arrange
-        _repository
-            .FirstOrDefaultAsync(Arg.Any<GetFormSubmissionSpecification>())
-            .ReturnsNull();
+        _authorizationService
+            .AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object>(),
+                Arg.Any<IEnumerable<IAuthorizationRequirement>>())
+            .Returns(AuthorizationResult.Failed());
 
         // Act
         var request = new Delete.Request
         {
             ElectionRoundId = Guid.NewGuid(),
-            ObserverId = Guid.NewGuid()
+            PollingStationId = Guid.NewGuid(),
+            ObserverId = Guid.NewGuid(),
+            FormId = Guid.NewGuid()
         };
+
         var result = await _endpoint.ExecuteAsync(request, default);
 
         // Assert
-        await _repository.DidNotReceiveWithAnyArgs().DeleteAsync(Arg.Any<FormSubmission>());
-
         result
             .Should().BeOfType<Results<NoContent, NotFound>>()
             .Which

@@ -1,4 +1,5 @@
 ﻿using CsvHelper.Configuration;
+using Vote.Monitor.Core.Models;
 
 namespace Vote.Monitor.Api.Feature.PollingStation.Services;
 internal sealed class PollingStationImportModelMapper : ClassMap<PollingStationImportModel>

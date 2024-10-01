@@ -1,4 +1,5 @@
-﻿using Vote.Monitor.TestUtils.Utils;
+﻿using Vote.Monitor.Core.Models;
+using Vote.Monitor.TestUtils.Utils;
 
 namespace Vote.Monitor.Api.Feature.PollingStation.UnitTests.ServicesTests;
 
@@ -202,53 +203,34 @@ public class PollingStationParserTests
             });
     }
 
-    //[Theory]
-    //[MemberData(nameof(MalformedCsvTestCases))]
-    //public void Parsing_ShouldFail_When_MalformedCsv(string malformedCsvData, string expectedErrorMessage)
-    //{
-    //    // Arrange
-    //    var reader = new CsvReader<PollingStationImportModel>();
-    //    var sut = new PollingStationParser(reader, NullLogger<PollingStationParser>.Instance, _parserConfig);
-
-    //    using var stream = new MemoryStream();
-    //    using var writer = new StreamWriter(stream);
-    //    writer.Write(malformedCsvData);
-    //    writer.Flush();
-    //    stream.Position = 0;
-
-    //    // Act
-    //    var result = sut.Parse(stream);
-
-    //    // Assert
-    //    result.Should().BeOfType<PollingStationParsingResult.Fail>();
-    //    result.As<PollingStationParsingResult.Fail>().ValidationErrors[0].Errors[0].ErrorMessage.Should().Be(expectedErrorMessage);
-    //}
-
     public static IEnumerable<object[]> MalformedCsvTestCases =>
         new List<object[]>
         {
             // Extra tag name no tag values
-            new object[] {
+            new object[]
+            {
                 ",\n" +
-                           "1,Address1,TagA,TagB\n" +
-                           "2,Address2,TagC,TagD\n" +
-                           "3,Address3,TagE,TagF",
+                "1,Address1,TagA,TagB\n" +
+                "2,Address2,TagC,TagD\n" +
+                "3,Address3,TagE,TagF",
                 "Invalid header provided in import polling stations file."
             },
             // Extra tag values no tag name
-            new object[] {
+            new object[]
+            {
                 "DisplayOrder,Address,Tag1,Tag2\n" +
-                           "1,Address1,TagATagB,\n" +
-                           "2,Address2,TagC,TagD,\n" +
-                           "3,",
+                "1,Address1,TagATagB,\n" +
+                "2,Address2,TagC,TagD,\n" +
+                "3,",
                 "Malformed import polling stations file provided."
             },
             // No display order
-            new object[] {
+            new object[]
+            {
                 "DisplayOrder,Address,Tag1,Tag2\n" +
-                           ",Address1,TagATagB,\n" +
-                           ",Address2,TagC,TagD,\n" +
-                           ",",
+                ",Address1,TagATagB,\n" +
+                ",Address2,TagC,TagD,\n" +
+                ",",
                 "Malformed import polling stations file provided."
             }
         };

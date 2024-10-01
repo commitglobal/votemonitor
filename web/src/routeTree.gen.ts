@@ -25,21 +25,27 @@ import { Route as AcceptInviteIndexImport } from './routes/accept-invite/index'
 import { Route as ResponsesSubmissionIdImport } from './routes/responses/$submissionId'
 import { Route as ResetPasswordSuccessImport } from './routes/reset-password/success'
 import { Route as ObserversObserverIdImport } from './routes/observers/$observerId'
+import { Route as ObserverGuidesNewImport } from './routes/observer-guides/new'
 import { Route as NgosNgoIdImport } from './routes/ngos/$ngoId'
 import { Route as MonitoringObserversCreateNewMessageImport } from './routes/monitoring-observers/create-new-message'
 import { Route as MonitoringObserversTabImport } from './routes/monitoring-observers/$tab'
 import { Route as FormsFormIdImport } from './routes/forms/$formId'
 import { Route as ElectionRoundsElectionRoundIdImport } from './routes/election-rounds/$electionRoundId'
 import { Route as ElectionEventTabImport } from './routes/election-event/$tab'
+import { Route as CitizenGuidesNewImport } from './routes/citizen-guides/new'
 import { Route as AcceptInviteSuccessImport } from './routes/accept-invite/success'
 import { Route as ResponsesQuickReportsQuickReportIdImport } from './routes/responses/quick-reports/$quickReportId'
+import { Route as ResponsesIncidentReportsIncidentReportIdImport } from './routes/responses/incident-reports/$incidentReportId'
 import { Route as ResponsesCitizenReportsCitizenReportIdImport } from './routes/responses/citizen-reports/$citizenReportId'
 import { Route as ResponsesFormIdAggregatedImport } from './routes/responses/$formId.aggregated'
 import { Route as ObserversObserverIdEditImport } from './routes/observers_.$observerId.edit'
+import { Route as ObserverGuidesEditGuideIdImport } from './routes/observer-guides/edit.$guideId'
 import { Route as MonitoringObserversPushMessagesIdImport } from './routes/monitoring-observers/push-messages.$id'
 import { Route as MonitoringObserversEditMonitoringObserverIdImport } from './routes/monitoring-observers/edit.$monitoringObserverId'
 import { Route as FormsFormIdEditImport } from './routes/forms_.$formId.edit'
 import { Route as FormsFormIdLanguageCodeImport } from './routes/forms/$formId_.$languageCode'
+import { Route as CitizenGuidesEditGuideIdImport } from './routes/citizen-guides/edit.$guideId'
+import { Route as ResponsesIncidentReportsFormIdAggregatedImport } from './routes/responses/incident-reports/$formId.aggregated'
 import { Route as ResponsesCitizenReportsFormIdAggregatedImport } from './routes/responses/citizen-reports/$formId.aggregated'
 import { Route as MonitoringObserversViewMonitoringObserverIdTabImport } from './routes/monitoring-observers/view/$monitoringObserverId.$tab'
 import { Route as MonitoringObserversPushMessagesIdViewImport } from './routes/monitoring-observers/push-messages.$id_.view'
@@ -117,6 +123,11 @@ const ObserversObserverIdRoute = ObserversObserverIdImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const ObserverGuidesNewRoute = ObserverGuidesNewImport.update({
+  path: '/observer-guides/new',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const NgosNgoIdRoute = NgosNgoIdImport.update({
   path: '/ngos/$ngoId',
   getParentRoute: () => rootRoute,
@@ -149,6 +160,11 @@ const ElectionEventTabRoute = ElectionEventTabImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const CitizenGuidesNewRoute = CitizenGuidesNewImport.update({
+  path: '/citizen-guides/new',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const AcceptInviteSuccessRoute = AcceptInviteSuccessImport.update({
   path: '/accept-invite/success',
   getParentRoute: () => rootRoute,
@@ -157,6 +173,12 @@ const AcceptInviteSuccessRoute = AcceptInviteSuccessImport.update({
 const ResponsesQuickReportsQuickReportIdRoute =
   ResponsesQuickReportsQuickReportIdImport.update({
     path: '/responses/quick-reports/$quickReportId',
+    getParentRoute: () => rootRoute,
+  } as any)
+
+const ResponsesIncidentReportsIncidentReportIdRoute =
+  ResponsesIncidentReportsIncidentReportIdImport.update({
+    path: '/responses/incident-reports/$incidentReportId',
     getParentRoute: () => rootRoute,
   } as any)
 
@@ -173,6 +195,11 @@ const ResponsesFormIdAggregatedRoute = ResponsesFormIdAggregatedImport.update({
 
 const ObserversObserverIdEditRoute = ObserversObserverIdEditImport.update({
   path: '/observers/$observerId/edit',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ObserverGuidesEditGuideIdRoute = ObserverGuidesEditGuideIdImport.update({
+  path: '/observer-guides/edit/$guideId',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -197,6 +224,17 @@ const FormsFormIdLanguageCodeRoute = FormsFormIdLanguageCodeImport.update({
   path: '/forms/$formId/$languageCode',
   getParentRoute: () => rootRoute,
 } as any)
+
+const CitizenGuidesEditGuideIdRoute = CitizenGuidesEditGuideIdImport.update({
+  path: '/citizen-guides/edit/$guideId',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ResponsesIncidentReportsFormIdAggregatedRoute =
+  ResponsesIncidentReportsFormIdAggregatedImport.update({
+    path: '/responses/incident-reports/$formId/aggregated',
+    getParentRoute: () => rootRoute,
+  } as any)
 
 const ResponsesCitizenReportsFormIdAggregatedRoute =
   ResponsesCitizenReportsFormIdAggregatedImport.update({
@@ -234,6 +272,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AcceptInviteSuccessImport
       parentRoute: typeof rootRoute
     }
+    '/citizen-guides/new': {
+      preLoaderRoute: typeof CitizenGuidesNewImport
+      parentRoute: typeof rootRoute
+    }
     '/election-event/$tab': {
       preLoaderRoute: typeof ElectionEventTabImport
       parentRoute: typeof rootRoute
@@ -256,6 +298,10 @@ declare module '@tanstack/react-router' {
     }
     '/ngos/$ngoId': {
       preLoaderRoute: typeof NgosNgoIdImport
+      parentRoute: typeof rootRoute
+    }
+    '/observer-guides/new': {
+      preLoaderRoute: typeof ObserverGuidesNewImport
       parentRoute: typeof rootRoute
     }
     '/observers/$observerId': {
@@ -310,6 +356,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResponsesIndexImport
       parentRoute: typeof rootRoute
     }
+    '/citizen-guides/edit/$guideId': {
+      preLoaderRoute: typeof CitizenGuidesEditGuideIdImport
+      parentRoute: typeof rootRoute
+    }
     '/forms/$formId/$languageCode': {
       preLoaderRoute: typeof FormsFormIdLanguageCodeImport
       parentRoute: typeof rootRoute
@@ -326,6 +376,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MonitoringObserversPushMessagesIdImport
       parentRoute: typeof rootRoute
     }
+    '/observer-guides/edit/$guideId': {
+      preLoaderRoute: typeof ObserverGuidesEditGuideIdImport
+      parentRoute: typeof rootRoute
+    }
     '/observers/$observerId/edit': {
       preLoaderRoute: typeof ObserversObserverIdEditImport
       parentRoute: typeof rootRoute
@@ -336,6 +390,10 @@ declare module '@tanstack/react-router' {
     }
     '/responses/citizen-reports/$citizenReportId': {
       preLoaderRoute: typeof ResponsesCitizenReportsCitizenReportIdImport
+      parentRoute: typeof rootRoute
+    }
+    '/responses/incident-reports/$incidentReportId': {
+      preLoaderRoute: typeof ResponsesIncidentReportsIncidentReportIdImport
       parentRoute: typeof rootRoute
     }
     '/responses/quick-reports/$quickReportId': {
@@ -358,6 +416,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResponsesCitizenReportsFormIdAggregatedImport
       parentRoute: typeof rootRoute
     }
+    '/responses/incident-reports/$formId/aggregated': {
+      preLoaderRoute: typeof ResponsesIncidentReportsFormIdAggregatedImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -366,12 +428,14 @@ declare module '@tanstack/react-router' {
 export const routeTree = rootRoute.addChildren([
   IndexRoute,
   AcceptInviteSuccessRoute,
+  CitizenGuidesNewRoute,
   ElectionEventTabRoute,
   ElectionRoundsElectionRoundIdRoute,
   FormsFormIdRoute,
   MonitoringObserversTabRoute,
   MonitoringObserversCreateNewMessageRoute,
   NgosNgoIdRoute,
+  ObserverGuidesNewRoute,
   ObserversObserverIdRoute,
   ResetPasswordSuccessRoute,
   ResponsesSubmissionIdRoute,
@@ -385,18 +449,22 @@ export const routeTree = rootRoute.addChildren([
   ObserversIndexRoute,
   ResetPasswordIndexRoute,
   ResponsesIndexRoute,
+  CitizenGuidesEditGuideIdRoute,
   FormsFormIdLanguageCodeRoute,
   FormsFormIdEditRoute,
   MonitoringObserversEditMonitoringObserverIdRoute,
   MonitoringObserversPushMessagesIdRoute,
+  ObserverGuidesEditGuideIdRoute,
   ObserversObserverIdEditRoute,
   ResponsesFormIdAggregatedRoute,
   ResponsesCitizenReportsCitizenReportIdRoute,
+  ResponsesIncidentReportsIncidentReportIdRoute,
   ResponsesQuickReportsQuickReportIdRoute,
   FormsFormIdEditTranslationLanguageCodeRoute,
   MonitoringObserversPushMessagesIdViewRoute,
   MonitoringObserversViewMonitoringObserverIdTabRoute,
   ResponsesCitizenReportsFormIdAggregatedRoute,
+  ResponsesIncidentReportsFormIdAggregatedRoute,
 ])
 
 /* prettier-ignore-end */

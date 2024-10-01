@@ -3,8 +3,7 @@ using Vote.Monitor.Domain.Entities.CitizenReportAttachmentAggregate;
 
 namespace Vote.Monitor.Domain.EntitiesConfiguration;
 
-internal class 
-    CitizenReportAttachmentConfiguration : IEntityTypeConfiguration<CitizenReportAttachment>
+internal class CitizenReportAttachmentConfiguration : IEntityTypeConfiguration<CitizenReportAttachment>
 {
     public void Configure(EntityTypeBuilder<CitizenReportAttachment> builder)
     {

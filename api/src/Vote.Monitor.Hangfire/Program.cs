@@ -32,11 +32,15 @@ using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 using Vote.Monitor.Domain.Entities.NgoAggregate;
 using Vote.Monitor.Domain.Entities.QuickReportAggregate;
 using Ardalis.SmartEnum.Dapper;
+using Vote.Monitor.Domain.Entities.IncidentReportAggregate;
+using Vote.Monitor.Hangfire.Jobs.Export.CitizenReports;
 using Vote.Monitor.Hangfire.Jobs.Export.FormSubmissions;
-using Vote.Monitor.Hangfire.Jobs.Export.FormSubmissions.ReadModels;
+using Vote.Monitor.Hangfire.Jobs.Export.IncidentReports;
+using Vote.Monitor.Hangfire.Jobs.Export.Locations;
 using Vote.Monitor.Hangfire.Jobs.Export.PollingStations;
 using Vote.Monitor.Hangfire.Jobs.Export.QuickReports;
 using Vote.Monitor.Hangfire.Jobs.Export.QuickReports.ReadModels;
+using Vote.Monitor.Hangfire.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOptions();
@@ -61,7 +65,7 @@ builder.Services.AddLogging(logging =>
 
 SqlMapper.AddTypeHandler(typeof(BaseQuestion[]), new JsonToObjectConverter<BaseQuestion[]>());
 SqlMapper.AddTypeHandler(typeof(BaseAnswer[]), new JsonToObjectConverter<BaseAnswer[]>());
-SqlMapper.AddTypeHandler(typeof(NoteModel[]), new JsonToObjectConverter<NoteModel[]>());
+SqlMapper.AddTypeHandler(typeof(SubmissionNoteModel[]), new JsonToObjectConverter<SubmissionNoteModel[]>());
 SqlMapper.AddTypeHandler(typeof(SubmissionAttachmentModel[]), new JsonToObjectConverter<SubmissionAttachmentModel[]>());
 SqlMapper.AddTypeHandler(typeof(QuickReportAttachmentModel[]), new JsonToObjectConverter<QuickReportAttachmentModel[]>());
 SqlMapper.AddTypeHandler(typeof(JsonDocument), new JsonToObjectConverter<JsonDocument>());
@@ -82,6 +86,8 @@ SqlMapper.AddTypeHandler(typeof(QuickReportLocationType), new SmartEnumByValueTy
 SqlMapper.AddTypeHandler(typeof(DisplayLogicCondition), new SmartEnumByValueTypeHandler<DisplayLogicCondition, string>());
 SqlMapper.AddTypeHandler(typeof(SubmissionFollowUpStatus), new SmartEnumByValueTypeHandler<SubmissionFollowUpStatus, string>());
 SqlMapper.AddTypeHandler(typeof(QuickReportFollowUpStatus), new SmartEnumByValueTypeHandler<QuickReportFollowUpStatus, string>());
+SqlMapper.AddTypeHandler(typeof(IncidentReportFollowUpStatus), new SmartEnumByValueTypeHandler<IncidentReportFollowUpStatus, string>());
+SqlMapper.AddTypeHandler(typeof(IncidentReportLocationType), new SmartEnumByValueTypeHandler<IncidentReportLocationType, string>());
 
 #endregion
 
@@ -112,6 +118,9 @@ builder.Services.AddScoped<ISendEmailJob, SendEmailJob>();
 builder.Services.AddScoped<IExportFormSubmissionsJob, ExportFormSubmissionsJob>();
 builder.Services.AddScoped<IExportQuickReportsJob, ExportQuickReportsJob>();
 builder.Services.AddScoped<IExportPollingStationsJob, ExportPollingStationsJob>();
+builder.Services.AddScoped<IExportLocationsJob, ExportLocationsJob>();
+builder.Services.AddScoped<IExportCitizenReportsJob, ExportCitizenReportsJob>();
+builder.Services.AddScoped<IExportIncidentReportsJob, ExportIncidentReportsJob>();
 #endregion
 var dbConnectionString = builder.Configuration.GetNpgsqlConnectionString("Core:HangfireConnectionConfig");
 

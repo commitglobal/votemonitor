@@ -2,6 +2,7 @@
 using Ardalis.SmartEnum.SystemTextJson;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
+using Vote.Monitor.Hangfire.Models;
 
 namespace Vote.Monitor.Hangfire.Jobs.Export.FormSubmissions.ReadModels;
 
@@ -13,7 +14,6 @@ public class SubmissionModel
     public SubmissionFollowUpStatus FollowUpStatus { get; set; }
     public Guid FormId { get; set; }
     public DateTime TimeSubmitted { get; init; }
-    public Guid PollingStationId { get; init; }
     public string Level1 { get; init; } = default!;
     public string Level2 { get; init; } = default!;
     public string Level3 { get; init; } = default!;
@@ -26,6 +26,6 @@ public class SubmissionModel
     public string Email { get; init; } = default!;
     public string PhoneNumber { get; init; } = default!;
     public BaseAnswer[] Answers { get; init; }
-    public NoteModel[] Notes { get; init; }
+    public SubmissionNoteModel[] Notes { get; init; }
     public SubmissionAttachmentModel[] Attachments { get; init; }
 }

@@ -32,6 +32,9 @@ internal class ObserverGuideConfiguration : IEntityTypeConfiguration<ObserverGui
             .Property(x => x.WebsiteUrl)
             .HasMaxLength(2048);
 
+        builder
+            .Property(x => x.Text);
+
         builder.HasOne(x => x.MonitoringNgo)
             .WithMany()
             .HasForeignKey(x => x.MonitoringNgoId);

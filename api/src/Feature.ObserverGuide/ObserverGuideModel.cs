@@ -13,9 +13,11 @@ public record ObserverGuideModel
     public string? PresignedUrl { get; init; } = string.Empty;
     public int? UrlValidityInSeconds { get; init; }
     public string? WebsiteUrl { get; init; }
+    public string? Text { get; set; }
 
     [JsonConverter(typeof(SmartEnumNameConverter<ObserverGuideType, string>))]
     public ObserverGuideType GuideType { get; init; }
+
     public DateTime CreatedOn { get; init; }
-    public string CreatedBy{ get; init; }
+    public string CreatedBy { get; init; }
 }

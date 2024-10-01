@@ -19,6 +19,7 @@ import { FunctionComponent } from '@/common/types';
 import { CitizenReportsAggregatedByFormTable } from '../CitizenReportsAggregatedByFormTable/CitizenReportsAggregatedByFormTable';
 import { CitizenReportsByEntryTable } from '../CitizenReportsByEntryTable/CitizenReportsByEntryTable';
 import { CitizenReportsFiltersByEntry } from '../CitizenReportsFiltersByEntry/CitizenReportsFiltersByEntry';
+import { FILTER_KEY } from '@/features/filtering/filtering-enums';
 
 const routeApi = getRouteApi('/responses/');
 
@@ -34,14 +35,14 @@ export function CitizenReportsTab(): FunctionComponent {
   const { viewBy: byFilter } = search;
 
   const [isFiltering, setIsFiltering] = useState(() =>
-    Object.keys(search).some((key) => key !== 'tab' && key !== 'viewBy')
+    Object.keys(search).some((key) => key !== FILTER_KEY.Tab && key !== FILTER_KEY.ViewBy)
   );
 
   const setPrevSearch = useSetPrevSearch();
   useEffect(() => {
     if (byFilter === 'byObserver') {
-      setPrevSearch({ viewBy: 'byEntry' });
-      void navigate({ search: { viewBy: 'byEntry' } });
+      setPrevSearch({ [FILTER_KEY.ViewBy]: 'byEntry' });
+      void navigate({ search: { [FILTER_KEY.ViewBy]: 'byEntry' } });
     }
   }, [byFilter]);
 
@@ -64,8 +65,8 @@ export function CitizenReportsTab(): FunctionComponent {
               <DropdownMenuContent>
                 <DropdownMenuRadioGroup
                   onValueChange={(value) => {
-                    setPrevSearch({ viewBy: value });
-                    void navigate({ search: { viewBy: value } });
+                    setPrevSearch({ [FILTER_KEY.ViewBy]: value, [FILTER_KEY.Tab]: 'citizen-reports' });
+                    void navigate({ search: { [FILTER_KEY.ViewBy]: value, [FILTER_KEY.Tab]: 'citizen-reports' } });
                     setIsFiltering(false);
                   }}
                   value={byFilter}>

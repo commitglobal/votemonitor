@@ -16,7 +16,7 @@ public sealed class CitizenReportNoteFaker : Faker<CitizenReportNoteRequest>
             x.CitizenReportId = citizenReportRequest.CitizenReportId;
             x.FormId = citizenReportRequest.FormId;
             x.QuestionId = f.PickRandom(citizenReportRequest.Answers).QuestionId;
-            x.Text = f.Lorem.Sentence(1000).Substring(0, 1000);
+            x.Text = f.Lorem.Sentence(1000).OfLength(1000);
         });
     }
 }

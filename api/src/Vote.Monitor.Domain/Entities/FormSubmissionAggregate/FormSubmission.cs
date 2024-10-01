@@ -50,13 +50,15 @@ public class FormSubmission : AuditableBaseEntity, IAggregateRoot
         List<BaseAnswer> answers,
         int numberOfQuestionAnswered,
         int numberOfFlaggedAnswers) =>
-        new(electionRound, pollingStation, monitoringObserver, form, answers, numberOfQuestionAnswered, numberOfFlaggedAnswers);
+        new(electionRound, pollingStation, monitoringObserver, form, answers, numberOfQuestionAnswered,
+            numberOfFlaggedAnswers);
 
-    internal void UpdateAnswers(int numberOfQuestionsAnswered, int numberOfFlaggedAnswers, IEnumerable<BaseAnswer> answers)
+    internal void UpdateAnswers(IEnumerable<BaseAnswer> answers, int numberOfQuestionsAnswered,
+        int numberOfFlaggedAnswers)
     {
+        Answers = answers.ToList().AsReadOnly();
         NumberOfFlaggedAnswers = numberOfFlaggedAnswers;
         NumberOfQuestionsAnswered = numberOfQuestionsAnswered;
-        Answers = answers.ToList().AsReadOnly();
     }
 
     public void ClearAnswers()
@@ -74,7 +76,6 @@ public class FormSubmission : AuditableBaseEntity, IAggregateRoot
 #pragma warning disable CS8618 // Required by Entity Framework
     private FormSubmission()
     {
-
     }
 #pragma warning restore CS8618
 }

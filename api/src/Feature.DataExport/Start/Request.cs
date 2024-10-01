@@ -11,7 +11,5 @@ public class Request
 
     [FromClaim(ApplicationClaimTypes.NgoId)]
     public Guid NgoId { get; set; }
-
-    [JsonConverter(typeof(SmartEnumNameConverter<ExportedDataType, string>))]
     public ExportedDataType ExportedDataType { get; set; }
 }

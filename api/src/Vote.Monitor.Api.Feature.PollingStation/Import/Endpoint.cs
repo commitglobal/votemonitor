@@ -1,5 +1,5 @@
-﻿using Vote.Monitor.Api.Feature.PollingStation.Helpers;
-using Vote.Monitor.Api.Feature.PollingStation.Services;
+﻿using Vote.Monitor.Api.Feature.PollingStation.Services;
+using Vote.Monitor.Core.Helpers;
 using Vote.Monitor.Core.Services.Security;
 using Vote.Monitor.Core.Services.Time;
 

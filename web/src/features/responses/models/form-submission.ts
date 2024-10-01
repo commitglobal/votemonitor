@@ -1,7 +1,7 @@
 import type {
   BaseQuestion,
   DateAnswer,
-  FollowUpStatus,
+  FormSubmissionFollowUpStatus,
   FormType,
   MultiSelectAnswer,
   NumberAnswer,
@@ -33,7 +33,7 @@ export interface FormSubmissionByEntry {
   submissionId: string;
   tags: string[];
   timeSubmitted: string;
-  followUpStatus: FollowUpStatus;
+  followUpStatus: FormSubmissionFollowUpStatus;
 }
 
 export interface FormSubmissionByObserver {
@@ -45,7 +45,7 @@ export interface FormSubmissionByObserver {
   numberOfLocations: number;
   phoneNumber: string;
   tags: string[];
-  followUpStatus?: FollowUpStatus;
+  followUpStatus?: FormSubmissionFollowUpStatus;
 }
 
 export interface FormSubmissionByForm {

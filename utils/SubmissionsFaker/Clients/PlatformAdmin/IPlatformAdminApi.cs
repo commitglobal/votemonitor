@@ -17,21 +17,31 @@ public interface IPlatformAdminApi
 
     [Multipart]
     [Post("/api/election-rounds/{electionRoundId}/polling-stations:import")]
-    Task CreatePollingStations([AliasAs("electionRoundId")] string electionRoundId, [AliasAs("File")] StreamPart stream, [Authorize] string token);
+    Task ImportPollingStations([AliasAs("electionRoundId")] string electionRoundId, [AliasAs("File")] StreamPart stream,
+        [Authorize] string token);
+
+    [Multipart]
+    [Post("/api/election-rounds/{electionRoundId}/locations:import")]
+    Task ImportLocations([AliasAs("electionRoundId")] string electionRoundId, [AliasAs("File")] StreamPart stream,
+        [Authorize] string token);
 
     [Post("/api/observers")]
     Task<CreateResponse> CreateObserver([Body] ApplicationUser observer, [Authorize] string token);
-    
+
     [Post("/api/election-rounds/{electionRoundId}/monitoring-ngos")]
-    Task<CreateResponse> AssignNgoToElectionRound([AliasAs("electionRoundId")] string electionRoundId, [Body] AssignNgoRequest request, [Authorize] string token);
-    
+    Task<CreateResponse> AssignNgoToElectionRound([AliasAs("electionRoundId")] string electionRoundId,
+        [Body] AssignNgoRequest request, [Authorize] string token);
+
     [Post("/api/election-rounds/{electionRoundId}:enableCitizenReporting")]
-    Task EnableCitizenReporting([AliasAs("electionRoundId")] string electionRoundId, [Body] EnableCitizenReportingRequest request, [Authorize] string token);
+    Task EnableCitizenReporting([AliasAs("electionRoundId")] string electionRoundId,
+        [Body] EnableCitizenReportingRequest request, [Authorize] string token);
 
     [Post("/api/election-rounds/{electionRoundId}/monitoring-ngos/{monitoringNgoId}/monitoring-observers")]
-    Task<CreateResponse> AssignObserverToMonitoring([AliasAs("electionRoundId")] string electionRoundId, [AliasAs("monitoringNgoId")] string monitoringNgoId, [Body]AssignObserverRequest request, [Authorize] string token);
+    Task<CreateResponse> AssignObserverToMonitoring([AliasAs("electionRoundId")] string electionRoundId,
+        [AliasAs("monitoringNgoId")] string monitoringNgoId, [Body] AssignObserverRequest request,
+        [Authorize] string token);
 
     [Post("/api/election-rounds/{electionRoundId}/polling-station-information-form")]
-    Task CreatePSIForm([AliasAs("electionRoundId")] string electionRoundId, [Body] UpsertPSIFormRequest psiFormRequest, [Authorize] string token);
-
+    Task CreatePSIForm([AliasAs("electionRoundId")] string electionRoundId, [Body] UpsertPSIFormRequest psiFormRequest,
+        [Authorize] string token);
 }

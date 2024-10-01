@@ -11,6 +11,7 @@ export enum SubmissionType {
   FormSubmission = 'FormSubmission',
   QuickReport = 'QuickReport',
   CitizenReport = 'CitizenReport',
+  IncidentReport = 'IncidentReport',
 }
 
 type AttachmentsAndNotesData = {

@@ -5,6 +5,7 @@ public sealed class ObserverGuideType : SmartEnum<ObserverGuideType, string>
 {
     public static readonly ObserverGuideType Website = new(nameof(Website), nameof(Website));
     public static readonly ObserverGuideType Document = new(nameof(Document), nameof(Document));
+    public static readonly ObserverGuideType Text = new(nameof(Text), nameof(Text));
 
     /// <summary>Gets an item associated with the specified value. Parses SmartEnum when used as query params</summary>
     /// <see href="https://github.com/ardalis/SmartEnum/issues/410#issuecomment-1686057067">this issue</see>
