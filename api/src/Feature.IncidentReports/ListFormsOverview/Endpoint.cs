@@ -1,9 +1,4 @@
-﻿using Authorization.Policies.Requirements;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore;
-using Vote.Monitor.Domain;
-
-namespace Feature.IncidentReports.ListFormsOverview;
+﻿namespace Feature.IncidentReports.ListFormsOverview;
 
 public class Endpoint(IAuthorizationService authorizationService, VoteMonitorContext context)
     : Endpoint<Request, Results<Ok<Response>, NotFound>>
