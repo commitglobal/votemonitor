@@ -17,7 +17,7 @@ import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 import { FormBase, NewFormRequest } from '../../models/form';
 import { formsKeys } from '../../queries';
-import { mapFormType } from '@/lib/utils';
+import { mapFormType, newTranslatedString } from '@/lib/utils';
 
 function CreateForm() {
     const { t } = useTranslation();
@@ -38,13 +38,9 @@ function CreateForm() {
     });
 
     function onSubmit(values: z.infer<typeof newFormFormSchema>) {
-        const name: TranslatedString = {
-            [values.defaultLanguage]: values.name!
-        };
+        const name = newTranslatedString([values.defaultLanguage], values.defaultLanguage, values.name);
+        const description = newTranslatedString([values.defaultLanguage], values.defaultLanguage, values.description ?? '');
 
-        const description: TranslatedString = {
-            [values.defaultLanguage]: values.description ?? ''
-        };
 
         const newForm: NewFormRequest = {
             ...values,
