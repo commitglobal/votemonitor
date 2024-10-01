@@ -33,6 +33,11 @@ export const FormSubmissionsTypeSelect: FC = () => {
     },
 
     {
+      value: ZFormType.Values.IncidentReporting,
+      label: mapFormType(ZFormType.Values.IncidentReporting),
+    },
+
+    {
       value: ZFormType.Values.Other,
       label: mapFormType(ZFormType.Values.Other),
     },
