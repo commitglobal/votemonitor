@@ -1,0 +1,29 @@
+using Spectre.Console;
+
+public class LoggingHandler(HttpMessageHandler innerHandler) : DelegatingHandler(innerHandler)
+{
+    protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
+        CancellationToken cancellationToken)
+    {
+        HttpResponseMessage response = await base.SendAsync(request, cancellationToken);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            AnsiConsole.MarkupLine("[red]Non success status code received[/]");
+
+            if (request.Content != null)
+            {
+                var requestBody = await request.Content.ReadAsStringAsync(cancellationToken);
+                AnsiConsole.MarkupLine("[red]request: {0}[/]", requestBody.EscapeMarkup());
+            }
+
+            if (response.Content != null)
+            {
+                var responseBody = await response.Content.ReadAsStringAsync(cancellationToken);
+                AnsiConsole.MarkupLine("[red]response: {0}[/]", responseBody.EscapeMarkup());
+            }
+        }
+
+        return response;
+    }
+}

@@ -13,11 +13,23 @@ type SearchParams = {
   [key: string]: any;
 };
 
-const HIDDEN_FILTERS = [FILTER_KEY.PageSize, FILTER_KEY.PageNumber, FILTER_KEY.ViewBy];
+const HIDDEN_FILTERS = [FILTER_KEY.PageSize, FILTER_KEY.PageNumber, FILTER_KEY.ViewBy, FILTER_KEY.Tab];
 const FILTER_LABELS = new Map<string, string>([
   [FILTER_KEY.MonitoringObserverStatus, FILTER_LABEL.MonitoringObserverStatus],
   [FILTER_KEY.MonitoringObserverTags, FILTER_LABEL.MonitoringObserverTags],
   [FILTER_KEY.FormTypeFilter, FILTER_LABEL.FormTypeFilter],
+  [FILTER_KEY.HasFlaggedAnswers, FILTER_LABEL.HasFlaggedAnswers],
+  [FILTER_KEY.FormSubmissionFollowUpStatus, FILTER_LABEL.FollowUpStatus],
+  [FILTER_KEY.HasNotes, FILTER_LABEL.HasNotes],
+  [FILTER_KEY.MediaFiles, FILTER_LABEL.MediaFiles],
+  [FILTER_KEY.QuestionsAnswered, FILTER_LABEL.QuestionsAnswered],
+  [FILTER_KEY.LocationL1, FILTER_LABEL.LocationL1],
+  [FILTER_KEY.LocationL2, FILTER_LABEL.LocationL2],
+  [FILTER_KEY.LocationL3, FILTER_LABEL.LocationL3],
+  [FILTER_KEY.LocationL4, FILTER_LABEL.LocationL4],
+  [FILTER_KEY.LocationL5, FILTER_LABEL.LocationL5],
+  [FILTER_KEY.FormSubmissionsMonitoringObserverTags, FILTER_LABEL.FormSubmissionsMonitoringObserverTags],
+  [FILTER_KEY.PollingStationNumber, FILTER_LABEL.PollingStationNumber],
 ]);
 
 const ActiveFilter: FC<ActiveFilterProps> = ({ filterId, value, isArray }) => {

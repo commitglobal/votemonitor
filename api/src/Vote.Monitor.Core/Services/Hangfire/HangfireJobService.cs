@@ -39,4 +39,10 @@ public class HangfireJobService(IBackgroundJobClient backgroundJobClient) : IJob
         backgroundJobClient.Enqueue<IExportLocationsJob>(job =>
             job.Run(electionRoundId, exportedDataId, CancellationToken.None));
     }
+
+    public void EnqueueExportIncidentReports(Guid electionRoundId, Guid ngoId, Guid exportedDataId)
+    {
+        backgroundJobClient.Enqueue<IExportIncidentReportsJob>(job =>
+            job.Run(electionRoundId, ngoId, exportedDataId, CancellationToken.None));
+    }
 }

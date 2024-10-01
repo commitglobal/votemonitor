@@ -39,6 +39,9 @@ using Feature.CitizenReports.Notes;
 using Feature.DataExport;
 using Feature.Feedback;
 using Feature.ImportErrors;
+using Feature.IncidentReports;
+using Feature.IncidentReports.Attachments;
+using Feature.IncidentReports.Notes;
 using Feature.Locations;
 using Feature.Monitoring;
 using Feature.Statistics;
@@ -47,6 +50,7 @@ using Microsoft.AspNetCore.Http.Features;
 using Vote.Monitor.Core.Converters;
 using Vote.Monitor.Domain.Entities.CitizenGuideAggregate;
 using Vote.Monitor.Domain.Entities.CitizenReportAggregate;
+using Vote.Monitor.Domain.Entities.IncidentReportAggregate;
 using Vote.Monitor.Domain.Entities.ObserverGuideAggregate;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -159,6 +163,9 @@ builder.Services.AddCitizenReportsNotesFeature();
 builder.Services.AddCitizenReportsAttachmentsFeature();
 builder.Services.AddCitizenGuidesFeature();
 builder.Services.AddLocationsFeature(builder.Configuration.GetSection(LocationsFeatureInstaller.SectionKey));
+builder.Services.AddIncidentReportsFeature();
+builder.Services.AddIncidentReportsNotesFeature();
+builder.Services.AddIncidentReportAttachmentsFeature();
 
 builder.Services.AddAuthorization();
 
@@ -207,6 +214,9 @@ app.UseSentryMiddleware()
         x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<QuestionsAnsweredFilter, string>());
         x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<ObserverGuideType, string>());
         x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<CitizenGuideType, string>());
+        x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<ExportedDataType, string>());
+        x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<IncidentReportLocationType, string>());
+        x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<IncidentReportFollowUpStatus, string>());
 
         x.Serializer.Options.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
     });
@@ -221,21 +231,18 @@ SqlMapper.AddTypeHandler(typeof(SortOrder), new SmartEnumByValueTypeHandler<Sort
 SqlMapper.AddTypeHandler(typeof(FormTemplateType), new SmartEnumByValueTypeHandler<FormTemplateType, string>());
 SqlMapper.AddTypeHandler(typeof(FormTemplateStatus), new SmartEnumByValueTypeHandler<FormTemplateStatus, string>());
 SqlMapper.AddTypeHandler(typeof(MonitoringNgoStatus), new SmartEnumByValueTypeHandler<MonitoringNgoStatus, string>());
-SqlMapper.AddTypeHandler(typeof(MonitoringObserverStatus),
-    new SmartEnumByValueTypeHandler<MonitoringObserverStatus, string>());
+SqlMapper.AddTypeHandler(typeof(MonitoringObserverStatus), new SmartEnumByValueTypeHandler<MonitoringObserverStatus, string>());
 SqlMapper.AddTypeHandler(typeof(RatingScale), new SmartEnumByValueTypeHandler<RatingScale, string>());
 SqlMapper.AddTypeHandler(typeof(FormType), new SmartEnumByValueTypeHandler<FormType, string>());
 SqlMapper.AddTypeHandler(typeof(ExportedDataStatus), new SmartEnumByValueTypeHandler<ExportedDataStatus, string>());
-SqlMapper.AddTypeHandler(typeof(QuickReportLocationType),
-    new SmartEnumByValueTypeHandler<QuickReportLocationType, string>());
-SqlMapper.AddTypeHandler(typeof(DisplayLogicCondition),
-    new SmartEnumByValueTypeHandler<DisplayLogicCondition, string>());
-SqlMapper.AddTypeHandler(typeof(SubmissionFollowUpStatus),
-    new SmartEnumByValueTypeHandler<SubmissionFollowUpStatus, string>());
-SqlMapper.AddTypeHandler(typeof(QuickReportFollowUpStatus),
-    new SmartEnumByValueTypeHandler<QuickReportFollowUpStatus, string>());
-SqlMapper.AddTypeHandler(typeof(CitizenReportFollowUpStatus),
-    new SmartEnumByValueTypeHandler<CitizenReportFollowUpStatus, string>());
+SqlMapper.AddTypeHandler(typeof(QuickReportLocationType), new SmartEnumByValueTypeHandler<QuickReportLocationType, string>());
+SqlMapper.AddTypeHandler(typeof(DisplayLogicCondition), new SmartEnumByValueTypeHandler<DisplayLogicCondition, string>());
+SqlMapper.AddTypeHandler(typeof(SubmissionFollowUpStatus), new SmartEnumByValueTypeHandler<SubmissionFollowUpStatus, string>());
+SqlMapper.AddTypeHandler(typeof(QuickReportFollowUpStatus), new SmartEnumByValueTypeHandler<QuickReportFollowUpStatus, string>());
+SqlMapper.AddTypeHandler(typeof(CitizenReportFollowUpStatus), new SmartEnumByValueTypeHandler<CitizenReportFollowUpStatus, string>());
+SqlMapper.AddTypeHandler(typeof(IncidentReportFollowUpStatus), new SmartEnumByValueTypeHandler<IncidentReportFollowUpStatus, string>());
+SqlMapper.AddTypeHandler(typeof(IncidentReportLocationType), new SmartEnumByValueTypeHandler<IncidentReportLocationType, string>());
+
 
 SqlMapper.AddTypeHandler(typeof(TranslatedString), new JsonToObjectConverter<TranslatedString>());
 

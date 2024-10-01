@@ -40,7 +40,8 @@ public class Endpoint(VoteMonitorContext context, IMemoryCache cache)
             return TypedResults.NotFound();
         }
 
-        var cacheKey = $"/api/citizen-reports/{req.ElectionRoundId}/forms/forms/{monitoringNgo.FormsVersion}";
+        var cacheKey =
+            $"election-rounds/{req.ElectionRoundId}/monitoring-ngo/{monitoringNgo.MonitoringNgoForCitizenReportingId}/citizen-reports-forms/{monitoringNgo.FormsVersion}";
 
         var cachedResponse = await cache.GetOrCreateAsync(cacheKey, async (e) =>
         {

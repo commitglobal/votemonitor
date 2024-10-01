@@ -50,4 +50,10 @@ public interface IMonitoringObserverApi
         [AliasAs("pollingStationId")] string pollingStationId,
         [Body] PSISubmissionRequest submission,
         [Authorize] string token);
+    
+    [Post("/api/election-rounds/{electionRoundId}/incident-reports")]
+    Task SubmitIncidentReport(
+        [AliasAs("electionRoundId")] string electionRoundId,
+        [Body] IncidentReportRequest incidentReport,
+        [Authorize] string token);
 }

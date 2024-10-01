@@ -3,6 +3,7 @@ using Ardalis.SmartEnum.SystemTextJson;
 using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.Entities.FormAggregate;
 using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
+using Vote.Monitor.Domain.Entities.IncidentReportAggregate;
 using Vote.Monitor.Domain.Entities.PollingStationInfoAggregate;
 using Vote.Monitor.Domain.Entities.PollingStationInfoFormAggregate;
 
@@ -87,12 +88,35 @@ public class FormSubmissionsAggregate
 
         foreach (var answer in formSubmission.Answers)
         {
-            if (!Aggregates.ContainsKey(answer.QuestionId))
+            if (!Aggregates.TryGetValue(answer.QuestionId, out var aggregate))
             {
                 continue;
             }
 
-            Aggregates[answer.QuestionId].Aggregate(formSubmission.Id, formSubmission.MonitoringObserverId, answer);
+            aggregate.Aggregate(formSubmission.Id, formSubmission.MonitoringObserverId, answer);
+        }
+
+        return this;
+    }
+
+    public FormSubmissionsAggregate AggregateAnswers(IncidentReport incidentReport)
+    {
+        var observer = incidentReport.MonitoringObserver.Observer.ApplicationUser;
+        _responders.Add(new Responder(incidentReport.MonitoringObserverId, observer.FirstName, observer.LastName,
+            observer.Email, observer.PhoneNumber));
+
+        SubmissionCount++;
+        TotalNumberOfFlaggedAnswers += incidentReport.NumberOfFlaggedAnswers;
+        TotalNumberOfQuestionsAnswered += incidentReport.NumberOfQuestionsAnswered;
+
+        foreach (var answer in incidentReport.Answers)
+        {
+            if (!Aggregates.TryGetValue(answer.QuestionId, value: out var aggregate))
+            {
+                continue;
+            }
+
+            aggregate.Aggregate(incidentReport.Id, incidentReport.MonitoringObserverId, answer);
         }
 
         return this;

@@ -10,7 +10,6 @@
 		"plugin:react/jsx-runtime",
 		"plugin:react-hooks/recommended",
 		"plugin:unicorn/recommended",
-		"plugin:storybook/recommended",
 		"prettier"
 	],
 	"overrides": [],
