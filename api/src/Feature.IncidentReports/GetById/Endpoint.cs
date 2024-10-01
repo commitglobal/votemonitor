@@ -38,10 +38,35 @@ public class Endpoint(
             .Include(x => x.Attachments)
             .Include(x => x.Notes)
             .Include(x => x.PollingStation)
+            .Include(x => x.MonitoringObserver)
+            .ThenInclude(x => x.Observer)
+            .ThenInclude(x => x.ApplicationUser)
             .Where(x =>
                 x.ElectionRoundId == req.ElectionRoundId
                 && x.Form.MonitoringNgo.NgoId == req.NgoId
                 && x.Id == req.IncidentReportId)
+            .Select(incidentReport => new
+            {
+                Id = incidentReport.Id,
+                FormId = incidentReport.Form.Id,
+                FormCode = incidentReport.Form.Code,
+                FormName = incidentReport.Form.Name,
+                FormDefaultLanguage = incidentReport.Form.DefaultLanguage,
+                Answers = incidentReport.Answers,
+                Notes = incidentReport.Notes,
+                Attachments = incidentReport.Attachments,
+                Questions = incidentReport.Form.Questions,
+                MonitoringObserverId = incidentReport.MonitoringObserverId,
+                ObserverName = incidentReport.MonitoringObserver.Observer.ApplicationUser.LastName + " " +
+                               incidentReport.MonitoringObserver.Observer.ApplicationUser.LastName,
+                TimeSubmitted = incidentReport.LastModifiedOn ?? incidentReport.CreatedOn,
+                FollowUpStatus = incidentReport.FollowUpStatus,
+
+                LocationType = incidentReport.LocationType,
+                LocationDescription = incidentReport.LocationDescription,
+
+                PollingStation = incidentReport.PollingStation,
+            })
             .AsSplitQuery()
             .FirstOrDefaultAsync(ct);
 
@@ -85,7 +110,9 @@ public class Endpoint(
             Attachments = attachments,
             Questions = form.Questions.Select(QuestionsMapper.ToModel).ToArray(),
 
-            TimeSubmitted = incidentReport.LastModifiedOn ?? incidentReport.CreatedOn,
+            MonitoringObserverId = incidentReport.MonitoringObserverId,
+            ObserverName = incidentReport.ObserverName,
+            TimeSubmitted = incidentReport.TimeSubmitted,
             FollowUpStatus = incidentReport.FollowUpStatus,
 
             LocationType = incidentReport.LocationType,

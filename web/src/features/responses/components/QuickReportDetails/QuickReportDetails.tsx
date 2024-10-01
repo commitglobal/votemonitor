@@ -77,141 +77,151 @@ export default function QuickReportDetails(): FunctionComponent {
         </div>
       }
       title={quickReport.id}>
-      <Card>
-        <CardHeader>
-          <CardTitle className='flex justify-between mb-4'>
-            <div>Quick report</div>
-            <Select
-              onValueChange={handleFollowUpStatusChange}
-              defaultValue={quickReport.followUpStatus}
-              value={quickReport.followUpStatus}>
-              <SelectTrigger className='w-[180px]'>
-                <SelectValue placeholder='Follow-up status' />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectItem
-                    key={QuickReportFollowUpStatus.NotApplicable}
-                    value={QuickReportFollowUpStatus.NotApplicable}>
-                    {mapQuickReportFollowUpStatus(QuickReportFollowUpStatus.NotApplicable)}
-                  </SelectItem>
-                  <SelectItem
-                    key={QuickReportFollowUpStatus.NeedsFollowUp}
-                    value={QuickReportFollowUpStatus.NeedsFollowUp}>
-                    {mapQuickReportFollowUpStatus(QuickReportFollowUpStatus.NeedsFollowUp)}
-                  </SelectItem>
-                  <SelectItem key={QuickReportFollowUpStatus.Resolved} value={QuickReportFollowUpStatus.Resolved}>
-                    {mapQuickReportFollowUpStatus(QuickReportFollowUpStatus.Resolved)}
-                  </SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </CardTitle>
-          <Separator />
-        </CardHeader>
+      <div className='flex flex-col gap-4'>
+        <Card>
+          <CardContent className='flex flex-col gap-4 pt-6'>
+            <div className='flex gap-2'>
+              <p>Observer:</p>
+              <Link
+                search
+                className='flex gap-1 font-bold text-purple-500'
+                to='/monitoring-observers/view/$monitoringObserverId/$tab'
+                params={{ monitoringObserverId: quickReport.monitoringObserverId, tab: 'details' }}
+                target='_blank'
+                preload={false}>
+                {quickReport.observerName}
+                <ArrowTopRightOnSquareIcon className='w-4' />
+              </Link>
+            </div>
 
-        <CardContent className='text-[#374151] flex flex-col gap-6'>
-          <div>
-            <p className='font-bold'>Time submitted</p>
-            {quickReport.timestamp && <p>{format(quickReport.timestamp, DateTimeFormat)}</p>}
-          </div>
-
-          <div>
-            <p className='font-bold'>Issue title</p>
-            <p>{quickReport.title}</p>
-          </div>
-
-          <div>
-            <p className='font-bold'>Description</p>
-            <p>{quickReport.description}</p>
-          </div>
-
-          {quickReport.attachments.length > 0 && (
             <div>
-              <p className='pb-2 font-bold'>Media files</p>
-              <div className='flex flex-wrap gap-4'>
-                {quickReport.attachments.map((attachment) => (
-                  <Dialog>
-                    <DialogTrigger>
-                      <button type='button'>
-                        <img alt={attachment.fileName} className='rounded-lg h-44 w-44' src={attachment.presignedUrl} />
-                      </button>
-                    </DialogTrigger>
-                    <DialogContent className='max-w-5xl'>
-                      <div className='flex justify-center'>
-                        <img alt={attachment.fileName} src={attachment.presignedUrl} />
-                      </div>
-                    </DialogContent>
-                  </Dialog>
-                ))}
-              </div>
+              <p className='font-bold'>Time submitted</p>
+              {quickReport.timestamp && <p>{format(quickReport.timestamp, DateTimeFormat)}</p>}
             </div>
-          )}
 
-          <div>
-            <p className='font-bold'>Observer</p>
-            <Link
-              search
-              className='flex gap-1 text-purple-500'
-              to='/monitoring-observers/view/$monitoringObserverId/$tab'
-              params={{ monitoringObserverId: quickReport.monitoringObserverId, tab: 'details' }}
-              target='_blank'
-              preload={false}>
-              {quickReport.observerName}
-              <ArrowTopRightOnSquareIcon className='w-4' />
-            </Link>
-          </div>
-
-          <div>
-            <p className='font-bold'>Location type</p>
-            <p>{mapQuickReportLocationType(quickReport.quickReportLocationType)}</p>
-          </div>
-
-          {quickReport.pollingStationDetails && (
             <div>
-              <p className='font-bold'>Polling station details</p>
-              <p>{quickReport.pollingStationDetails}</p>
+              <p className='font-bold'>Location type</p>
+              <p>{mapQuickReportLocationType(quickReport.quickReportLocationType)}</p>
             </div>
-          )}
 
-          {quickReport.level1 && (
-            <div className='flex gap-4'>
+            {quickReport.pollingStationDetails && (
               <div>
-                <p className='font-bold'>Location - L1</p>
-                {quickReport.level1}
+                <p className='font-bold'>Polling station details</p>
+                <p>{quickReport.pollingStationDetails}</p>
               </div>
-              {quickReport.level2 && (
+            )}
+
+            {quickReport.level1 && (
+              <div className='flex gap-4'>
                 <div>
-                  <p className='font-bold'>Location - L2</p>
-                  {quickReport.level2}
+                  <p className='font-bold'>Location - L1</p>
+                  {quickReport.level1}
                 </div>
-              )}
-              {quickReport.level3 && (
+                {quickReport.level2 && (
+                  <div>
+                    <p className='font-bold'>Location - L2</p>
+                    {quickReport.level2}
+                  </div>
+                )}
+                {quickReport.level3 && (
+                  <div>
+                    <p className='font-bold'>Location - L3</p>
+                    {quickReport.level3}
+                  </div>
+                )}
+                {quickReport.level4 && (
+                  <div>
+                    <p className='font-bold'>Location - L4</p>
+                    {quickReport.level4}
+                  </div>
+                )}
+                {quickReport.level5 && (
+                  <div>
+                    <p className='font-bold'>Location - L5</p>
+                    {quickReport.level5}
+                  </div>
+                )}
                 <div>
-                  <p className='font-bold'>Location - L3</p>
-                  {quickReport.level3}
+                  <p className='font-bold'>Number</p>
+                  <p>{quickReport.number}</p>
                 </div>
-              )}
-              {quickReport.level4 && (
-                <div>
-                  <p className='font-bold'>Location - L4</p>
-                  {quickReport.level4}
-                </div>
-              )}
-              {quickReport.level5 && (
-                <div>
-                  <p className='font-bold'>Location - L5</p>
-                  {quickReport.level5}
-                </div>
-              )}
-              <div>
-                <p className='font-bold'>Station</p>
-                <p>{quickReport.number}</p>
               </div>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className='flex justify-between mb-4'>
+              <div>Quick report</div>
+              <Select
+                onValueChange={handleFollowUpStatusChange}
+                defaultValue={quickReport.followUpStatus}
+                value={quickReport.followUpStatus}>
+                <SelectTrigger className='w-[180px]'>
+                  <SelectValue placeholder='Follow-up status' />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem
+                      key={QuickReportFollowUpStatus.NotApplicable}
+                      value={QuickReportFollowUpStatus.NotApplicable}>
+                      {mapQuickReportFollowUpStatus(QuickReportFollowUpStatus.NotApplicable)}
+                    </SelectItem>
+                    <SelectItem
+                      key={QuickReportFollowUpStatus.NeedsFollowUp}
+                      value={QuickReportFollowUpStatus.NeedsFollowUp}>
+                      {mapQuickReportFollowUpStatus(QuickReportFollowUpStatus.NeedsFollowUp)}
+                    </SelectItem>
+                    <SelectItem key={QuickReportFollowUpStatus.Resolved} value={QuickReportFollowUpStatus.Resolved}>
+                      {mapQuickReportFollowUpStatus(QuickReportFollowUpStatus.Resolved)}
+                    </SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </CardTitle>
+            <Separator />
+          </CardHeader>
+
+          <CardContent className='text-[#374151] flex flex-col gap-6'>
+            <div>
+              <p className='font-bold'>Issue title</p>
+              <p>{quickReport.title}</p>
             </div>
-          )}
-        </CardContent>
-      </Card>
+
+            <div>
+              <p className='font-bold'>Description</p>
+              <p>{quickReport.description}</p>
+            </div>
+
+            {quickReport.attachments.length > 0 && (
+              <div>
+                <p className='pb-2 font-bold'>Media files</p>
+                <div className='flex flex-wrap gap-4'>
+                  {quickReport.attachments.map((attachment) => (
+                    <Dialog>
+                      <DialogTrigger>
+                        <button type='button'>
+                          <img
+                            alt={attachment.fileName}
+                            className='rounded-lg h-44 w-44'
+                            src={attachment.presignedUrl}
+                          />
+                        </button>
+                      </DialogTrigger>
+                      <DialogContent className='max-w-5xl'>
+                        <div className='flex justify-center'>
+                          <img alt={attachment.fileName} src={attachment.presignedUrl} />
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                  ))}
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
     </Layout>
   );
 }

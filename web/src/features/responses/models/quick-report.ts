@@ -20,7 +20,6 @@ export interface QuickReport {
   level5: string;
   number: string;
   numberOfAttachments: number;
-  phoneNumber: string;
   pollingStationId: string;
   pollingStationDetails: string;
   quickReportLocationType: QuickReportLocationType;
