@@ -107,7 +107,8 @@
     "closingAndCounting": "Closing And Counting",
     "psi": "PSI",
     "other": "Other",
-    "citizenReporting": "Citizen reporting"
+    "citizenReporting": "Citizen reporting",
+    "incidentReporting": "Incident reporting"
   },
   "form": {
     "field.code": "Form Code",

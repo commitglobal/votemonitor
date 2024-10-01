@@ -297,6 +297,8 @@ export function mapFormType(formType: FormType): string {
       return i18n.t('formType.closingAndCounting');
     case ZFormType.Values.CitizenReporting:
       return i18n.t('formType.citizenReporting');
+    case ZFormType.Values.IncidentReporting:
+        return i18n.t('formType.incidentReporting');
     case ZFormType.Values.PSI:
       return i18n.t('formType.psi');
     case ZFormType.Values.Other:
@@ -448,3 +450,23 @@ export function formatBytes(
     sizeType === "accurate" ? accurateSizes[i] ?? "Bytest" : sizes[i] ?? "Bytes"
   }`
 }
+
+
+
+/**
+ * Ensures translated string contains a value for every available languages
+ * @param availableLanguages available translations list
+ * @param value value to set for required languageCode
+ * @returns new instance of @see {@link TranslatedString}
+ */
+export const ensureTranslatedStringCorrectness = (translatedString:TranslatedString | null | undefined, availableLanguages: string[], value: string = ''): TranslatedString => {
+  if(translatedString === undefined || translatedString === null) return emptyTranslatedString(availableLanguages);
+
+  availableLanguages.forEach((language) => {
+    if(translatedString[language] === undefined){
+      translatedString[language] = value;
+    }
+  });
+
+  return translatedString;
+};

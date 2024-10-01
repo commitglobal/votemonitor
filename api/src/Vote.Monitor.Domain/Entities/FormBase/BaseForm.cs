@@ -7,6 +7,7 @@ using Vote.Monitor.Domain.Entities.FormAnswerBase;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Domain.Entities.FormBase.Questions;
 using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
+using Vote.Monitor.Domain.Entities.IncidentReportAggregate;
 using Vote.Monitor.Domain.Entities.PollingStationInfoAggregate;
 
 namespace Vote.Monitor.Domain.Entities.FormBase;
@@ -135,14 +136,14 @@ public class BaseForm : AuditableBaseEntity, IAggregateRoot
         LanguagesTranslationStatus = ComputeLanguagesTranslationStatus();
     }
 
-    private T BaseFillIn<T>(T submission, List<BaseAnswer> answers, Action<T> clearAnswers,
-        Action<T, int, int, List<BaseAnswer>> updateAnswers) where T : class
+    private T BaseFillIn<T>(T submission, List<BaseAnswer>? answers, Action<T> clearAnswers,
+        Action<T, List<BaseAnswer>, int, int> updateAnswers) where T : class
     {
         if (answers == null)
         {
             return submission;
         }
-
+        
         if (!answers.Any())
         {
             clearAnswers(submission);
@@ -159,23 +160,23 @@ public class BaseForm : AuditableBaseEntity, IAggregateRoot
         var numberOfQuestionsAnswered = AnswersHelpers.CountNumberOfQuestionsAnswered(Questions, answers);
         var numberOfFlaggedAnswers = AnswersHelpers.CountNumberOfFlaggedAnswers(Questions, answers);
 
-        updateAnswers(submission, numberOfQuestionsAnswered, numberOfFlaggedAnswers, answers);
+        updateAnswers(submission, answers, numberOfQuestionsAnswered, numberOfFlaggedAnswers);
 
         return submission;
     }
 
-    public FormSubmission FillIn(FormSubmission formSubmission, List<BaseAnswer> answers)
+    public FormSubmission FillIn(FormSubmission formSubmission, List<BaseAnswer>? answers)
     {
         return BaseFillIn(
             formSubmission,
             answers,
             submission => submission.ClearAnswers(),
-            (submission, numberOfQuestionsAnswered, numberOfFlaggedAnswers, formAnswers) =>
-                submission.UpdateAnswers(numberOfQuestionsAnswered, numberOfFlaggedAnswers, formAnswers)
+            (submission, ans, numberOfQuestionsAnswered, numberOfFlaggedAnswers) =>
+                submission.UpdateAnswers(ans, numberOfQuestionsAnswered, numberOfFlaggedAnswers)
         );
     }
 
-    public CitizenReport FillIn(CitizenReport citizenReport, List<BaseAnswer> answers)
+    public CitizenReport FillIn(CitizenReport citizenReport, List<BaseAnswer>? answers)
     {
         return BaseFillIn(
             citizenReport,
@@ -186,13 +187,25 @@ public class BaseForm : AuditableBaseEntity, IAggregateRoot
         );
     }
 
-    public PollingStationInformation FillIn(PollingStationInformation psiSubmission, List<BaseAnswer> answers)
+    public PollingStationInformation FillIn(PollingStationInformation psiSubmission, List<BaseAnswer>? answers)
     {
         return BaseFillIn(
             psiSubmission,
             answers,
             submission => submission.ClearAnswers(),
-            (submission, answered, flagged, ans) => submission.UpdateAnswers(ans, answered, flagged)
+            (submission, ans, numberOfQuestionsAnswered, numberOfFlaggedAnswers) =>
+                submission.UpdateAnswers(ans, numberOfQuestionsAnswered, numberOfFlaggedAnswers)
+        );
+    }
+
+    public IncidentReport FillIn(IncidentReport incidentReport, List<BaseAnswer>? answers)
+    {
+        return BaseFillIn(
+            incidentReport,
+            answers,
+            report => report.ClearAnswers(),
+            (report, ans, numberOfQuestionsAnswered, numberOfFlaggedAnswers) =>
+                report.UpdateAnswers(ans, numberOfQuestionsAnswered, numberOfFlaggedAnswers)
         );
     }
 
