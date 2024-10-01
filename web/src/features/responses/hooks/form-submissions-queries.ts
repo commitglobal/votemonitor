@@ -120,7 +120,7 @@ export function useFormSubmissionsByForm(
   queryParams: DataTableParameters
 ): UseFormSubmissionsByFormResult {
   return useQuery({
-    queryKey: formSubmissionsAggregatedKeys.all(electionRoundId),
+    queryKey: formSubmissionsAggregatedKeys.list(electionRoundId, queryParams),
     queryFn: async () => {
       const params = {
         ...queryParams.otherParams,
