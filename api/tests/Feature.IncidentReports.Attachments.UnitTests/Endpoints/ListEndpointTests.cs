@@ -1,5 +1,5 @@
-﻿using Feature.IncidentsReports.Attachments.List;
-using Feature.IncidentsReports.Attachments.Specifications;
+﻿using Feature.IncidentReports.Attachments.List;
+using Feature.IncidentReports.Attachments.Specifications;
 
 namespace Feature.IncidentReports.Attachments.UnitTests.Endpoints;
 

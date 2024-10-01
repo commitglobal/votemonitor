@@ -1,4 +1,4 @@
-﻿using Feature.IncidentsReports.Notes.Delete;
+﻿using Feature.IncidentReports.Notes.Delete;
 
 namespace Feature.IncidentReports.Notes.UnitTests.ValidatorTests;
 

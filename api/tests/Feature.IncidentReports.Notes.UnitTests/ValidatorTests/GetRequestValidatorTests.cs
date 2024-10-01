@@ -1,4 +1,4 @@
-﻿using Feature.IncidentsReports.Notes.Get;
+﻿using Feature.IncidentReports.Notes.Get;
 
 namespace Feature.IncidentReports.Notes.UnitTests.ValidatorTests;
 

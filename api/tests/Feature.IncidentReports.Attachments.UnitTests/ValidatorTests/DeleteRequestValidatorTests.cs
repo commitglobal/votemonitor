@@ -1,5 +1,5 @@
 ﻿
-using Feature.IncidentsReports.Attachments.Delete;
+using Feature.IncidentReports.Attachments.Delete;
 
 namespace Feature.IncidentReports.Attachments.UnitTests.ValidatorTests;
 

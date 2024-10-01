@@ -1,6 +1,5 @@
-﻿using Feature.IncidentsReports.Attachments;
-using Feature.IncidentsReports.Attachments.Get;
-using Feature.IncidentsReports.Attachments.Specifications;
+﻿using Feature.IncidentReports.Attachments.Get;
+using Feature.IncidentReports.Attachments.Specifications;
 using Microsoft.AspNetCore.Http.HttpResults;
 using NSubstitute.ReturnsExtensions;
 

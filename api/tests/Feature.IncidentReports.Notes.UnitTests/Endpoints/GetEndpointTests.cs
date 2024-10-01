@@ -1,6 +1,6 @@
-﻿using Feature.IncidentsReports.Notes;
-using Feature.IncidentsReports.Notes.Get;
-using Feature.IncidentsReports.Notes.Specifications;
+﻿using Feature.IncidentReports.Notes;
+using Feature.IncidentReports.Notes.Get;
+using Feature.IncidentReports.Notes.Specifications;
 using Vote.Monitor.Domain.Entities.IncidentReportNoteAggregate;
 
 namespace Feature.IncidentReports.Notes.UnitTests.Endpoints;
