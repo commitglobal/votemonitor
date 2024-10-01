@@ -35,7 +35,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\src\Authorization.Policies\Authorization.Policies.csproj"/>
-        <ProjectReference Include="..\..\src\Feature.IncidentsReports.Attachments\Feature.IncidentsReports.Attachments.csproj"/>
+        <ProjectReference Include="..\..\src\Feature.IncidentReports.Attachments\Feature.IncidentReports.Attachments.csproj" />
         <ProjectReference Include="..\Vote.Monitor.TestUtils\Vote.Monitor.TestUtils.csproj"/>
     </ItemGroup>
 

@@ -1,4 +1,4 @@
-﻿using Feature.IncidentsReports.Notes.Upsert;
+﻿using Feature.IncidentReports.Notes.Upsert;
 using Vote.Monitor.TestUtils.Utils;
 
 namespace Feature.IncidentReports.Notes.UnitTests.ValidatorTests;

@@ -156,9 +156,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Feature.Citizen.Guides.Unit
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Feature.IncidentReports", "src\Feature.IncidentReports\Feature.IncidentReports.csproj", "{DA219D5F-44A1-4718-BC45-8B1F5F7276F4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Feature.IncidentsReports.Attachments", "src\Feature.IncidentsReports.Attachments\Feature.IncidentsReports.Attachments.csproj", "{9E588052-2973-4486-B578-2D5A81AF5EE2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Feature.IncidentReports.Attachments", "src\Feature.IncidentReports.Attachments\Feature.IncidentReports.Attachments.csproj", "{9E588052-2973-4486-B578-2D5A81AF5EE2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Feature.IncidentsReports.Notes", "src\Feature.IncidentsReports.Notes\Feature.IncidentsReports.Notes.csproj", "{7A41CCBF-0CE5-4150-BC4A-2A422F4968A4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Feature.IncidentReports.Notes", "src\Feature.IncidentReports.Notes\Feature.IncidentReports.Notes.csproj", "{7A41CCBF-0CE5-4150-BC4A-2A422F4968A4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Feature.IncidentReports.UnitTests", "tests\Feature.IncidentReports.UnitTests\Feature.IncidentReports.UnitTests.csproj", "{91AB90F5-2627-4E67-A300-8FAF4F8F3019}"
 EndProject

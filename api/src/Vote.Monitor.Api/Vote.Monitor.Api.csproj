@@ -50,8 +50,8 @@
     <ProjectReference Include="..\Feature.Forms\Feature.Forms.csproj" />
     <ProjectReference Include="..\Feature.FormTemplates\Feature.FormTemplates.csproj" />
     <ProjectReference Include="..\Feature.ImportErrors\Feature.ImportErrors.csproj" />
-    <ProjectReference Include="..\Feature.IncidentsReports.Attachments\Feature.IncidentsReports.Attachments.csproj" />
-    <ProjectReference Include="..\Feature.IncidentsReports.Notes\Feature.IncidentsReports.Notes.csproj" />
+    <ProjectReference Include="..\Feature.IncidentReports.Attachments\Feature.IncidentReports.Attachments.csproj" />
+    <ProjectReference Include="..\Feature.IncidentReports.Notes\Feature.IncidentReports.Notes.csproj" />
     <ProjectReference Include="..\Feature.IncidentReports\Feature.IncidentReports.csproj" />
     <ProjectReference Include="..\Feature.Locations\Feature.Locations.csproj" />
     <ProjectReference Include="..\Feature.MonitoringObservers\Feature.MonitoringObservers.csproj" />
