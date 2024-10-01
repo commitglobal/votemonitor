@@ -1,4 +1,4 @@
-﻿using Feature.IncidentsReports.Attachments.Get;
+﻿using Feature.IncidentReports.Attachments.Get;
 
 namespace Feature.IncidentReports.Attachments.UnitTests.ValidatorTests;
 

@@ -1,6 +1,6 @@
-﻿using Feature.IncidentsReports.Notes;
-using Feature.IncidentsReports.Notes.Specifications;
-using Feature.IncidentsReports.Notes.Upsert;
+﻿using Feature.IncidentReports.Notes;
+using Feature.IncidentReports.Notes.Specifications;
+using Feature.IncidentReports.Notes.Upsert;
 using Vote.Monitor.Domain.Entities.IncidentReportNoteAggregate;
 
 namespace Feature.IncidentReports.Notes.UnitTests.Endpoints;

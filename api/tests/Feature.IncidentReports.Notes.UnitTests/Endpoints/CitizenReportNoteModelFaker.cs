@@ -1,4 +1,4 @@
-using Feature.IncidentsReports.Notes;
+using Feature.IncidentReports.Notes;
 using Vote.Monitor.TestUtils.Fakes;
 
 namespace Feature.IncidentReports.Notes.UnitTests.Endpoints;
