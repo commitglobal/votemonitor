@@ -11,7 +11,8 @@ public sealed class FormAggregateFaker : PrivateFaker<Form>
         MonitoringNgo? monitoringNgo = null,
         List<string>? languages = null,
         List<BaseQuestion>? questions = null,
-        FormStatus? status = null)
+        FormStatus? status = null,
+        FormType? formType = null)
     {
         languages ??= [LanguagesList.EN.Iso1, LanguagesList.RO.Iso1];
         electionRound ??= new ElectionRoundAggregateFaker().Generate();
@@ -52,9 +53,12 @@ public sealed class FormAggregateFaker : PrivateFaker<Form>
             MultiSelectQuestion.Create(Guid.NewGuid(), "c6", multiSelectQuestionText, multiSelectOptions)
         ];
 
-        CustomInstantiator(_ =>
+        CustomInstantiator(faker =>
         {
-            var form = Form.Create(electionRound, monitoringNgo, FormType.ClosingAndCounting, "C1", translatedStringFaker.Generate(), translatedStringFaker.Generate(),
+            formType ??= faker.PickRandom(FormType.List.ToArray());
+
+            var form = Form.Create(electionRound, monitoringNgo, formType,
+                "C1", translatedStringFaker.Generate(), translatedStringFaker.Generate(),
                 languages.First(), languages, questions);
 
             if (status == FormStatus.Obsolete)

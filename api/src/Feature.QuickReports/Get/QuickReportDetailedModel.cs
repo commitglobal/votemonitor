@@ -15,8 +15,7 @@ public record QuickReportDetailedModel
     public string Title { get; init; }
     public string Description { get; init; }
     public Guid MonitoringObserverId { get; init; }
-    public string FirstName { get; init; }
-    public string LastName { get; init; }
+    public string ObserverName { get; init; }
     public Guid? PollingStationId { get; init; }
     public string? Level1 { get; init; }
     public string? Level2 { get; init; }
@@ -41,8 +40,7 @@ public record QuickReportDetailedModel
             Title = quickReport.Title,
             Description = quickReport.Description,
             MonitoringObserverId = quickReport.MonitoringObserverId,
-            FirstName = quickReport.MonitoringObserver.Observer.ApplicationUser.FirstName,
-            LastName = quickReport.MonitoringObserver.Observer.ApplicationUser.LastName,
+            ObserverName = quickReport.MonitoringObserver.Observer.ApplicationUser.FirstName + " " + quickReport.MonitoringObserver.Observer.ApplicationUser.LastName,
             PollingStationId = quickReport.PollingStationId,
             Level1 = quickReport.PollingStation?.Level1,
             Level2 = quickReport.PollingStation?.Level2,

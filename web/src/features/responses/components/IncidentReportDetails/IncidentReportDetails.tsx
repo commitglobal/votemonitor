@@ -8,12 +8,15 @@ import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { queryClient } from '@/main';
 import { incidentReportDetailsQueryOptions, Route } from '@/routes/responses/incident-reports/$incidentReportId';
+import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
-import { useRouter } from '@tanstack/react-router';
+import { Link, useRouter } from '@tanstack/react-router';
 import { incidentReportsByEntryKeys, incidentReportsByObserverKeys } from '../../hooks/incident-reports-queries';
 import { SubmissionType } from '../../models/common';
+import { mapIncidentReportFollowUpStatus, mapIncidentReportLocationType } from '../../utils/helpers';
 import PreviewAnswer from '../PreviewAnswer/PreviewAnswer';
-import { mapIncidentReportFollowUpStatus } from '../../utils/helpers';
+import { format } from 'date-fns';
+import { DateTimeFormat } from '@/common/formats';
 
 export default function IncidentReportDetails(): FunctionComponent {
   const { incidentReportId } = Route.useParams();
@@ -67,6 +70,78 @@ export default function IncidentReportDetails(): FunctionComponent {
     <Layout title={`#${incidentReport.incidentReportId}`}>
       <div className='flex flex-col gap-4'>
         <Card>
+          <CardContent className='flex flex-col gap-4 pt-6'>
+            <div className='flex gap-2'>
+              <p>Observer:</p>
+              <Link
+                search
+                className='flex gap-1 font-bold text-purple-500'
+                to='/monitoring-observers/view/$monitoringObserverId/$tab'
+                params={{ monitoringObserverId: incidentReport.monitoringObserverId, tab: 'details' }}
+                target='_blank'
+                preload={false}>
+                {incidentReport.observerName}
+                <ArrowTopRightOnSquareIcon className='w-4' />
+              </Link>
+            </div>
+
+            <div>
+              <p className='font-bold'>Time submitted</p>
+              {incidentReport.timeSubmitted && <p>{format(incidentReport.timeSubmitted, DateTimeFormat)}</p>}
+            </div>
+
+            <div>
+              <p className='font-bold'>Location type</p>
+              <p>{mapIncidentReportLocationType(incidentReport.locationType)}</p>
+            </div>
+
+            {incidentReport.locationDescription && (
+              <div>
+                <p className='font-bold'>Location description</p>
+                <p>{incidentReport.locationDescription}</p>
+              </div>
+            )}
+
+            {incidentReport.pollingStationLevel1 && (
+              <div className='flex gap-4'>
+                <div>
+                  <p className='font-bold'>Location - L1</p>
+                  {incidentReport.pollingStationLevel1}
+                </div>
+                {incidentReport.pollingStationLevel2 && (
+                  <div>
+                    <p className='font-bold'>Location - L2</p>
+                    {incidentReport.pollingStationLevel2}
+                  </div>
+                )}
+                {incidentReport.pollingStationLevel3 && (
+                  <div>
+                    <p className='font-bold'>Location - L3</p>
+                    {incidentReport.pollingStationLevel3}
+                  </div>
+                )}
+                {incidentReport.pollingStationLevel4 && (
+                  <div>
+                    <p className='font-bold'>Location - L4</p>
+                    {incidentReport.pollingStationLevel4}
+                  </div>
+                )}
+                {incidentReport.pollingStationLevel5 && (
+                  <div>
+                    <p className='font-bold'>Location - L5</p>
+                    {incidentReport.pollingStationLevel5}
+                  </div>
+                )}
+                <div>
+                  <p className='font-bold'>Number</p>
+                  <p>{incidentReport.pollingStationNumber}</p>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card>
           <CardHeader>
             <CardTitle className='flex justify-between mb-4'>
               <div>
@@ -91,7 +166,9 @@ export default function IncidentReportDetails(): FunctionComponent {
                       value={IncidentReportFollowUpStatus.NeedsFollowUp}>
                       {mapIncidentReportFollowUpStatus(IncidentReportFollowUpStatus.NeedsFollowUp)}
                     </SelectItem>
-                    <SelectItem key={IncidentReportFollowUpStatus.Resolved} value={IncidentReportFollowUpStatus.Resolved}>
+                    <SelectItem
+                      key={IncidentReportFollowUpStatus.Resolved}
+                      value={IncidentReportFollowUpStatus.Resolved}>
                       {mapIncidentReportFollowUpStatus(IncidentReportFollowUpStatus.Resolved)}
                     </SelectItem>
                   </SelectGroup>
