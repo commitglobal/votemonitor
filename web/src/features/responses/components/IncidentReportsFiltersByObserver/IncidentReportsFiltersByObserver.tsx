@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { FILTER_KEY } from '@/features/filtering/filtering-enums';
 import { useMonitoringObserversTags } from '@/hooks/tags-queries';
 import { Route } from '@/routes/responses';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
@@ -17,7 +18,6 @@ import { useCallback } from 'react';
 import type { FormSubmissionsSearchParams } from '../../models/search-params';
 import { mapIncidentReportFollowUpStatus } from '../../utils/helpers';
 import { ResetFiltersButton } from '../ResetFiltersButton/ResetFiltersButton';
-import { FILTER_KEY } from '@/features/filtering/filtering-enums';
 
 export function IncidentReportsFiltersByObserver(): FunctionComponent {
   const navigate = useNavigate({ from: '/responses' });
