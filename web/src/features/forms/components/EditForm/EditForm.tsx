@@ -1,8 +1,4 @@
-import {
-  QuestionType,
-  ZFormType,
-  type FunctionComponent
-} from '@/common/types';
+import { QuestionType, ZFormType, type FunctionComponent } from '@/common/types';
 import FormQuestionsEditor from '@/components/questionsEditor/FormQuestionsEditor';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form } from '@/components/ui/form';
@@ -14,7 +10,14 @@ import { useForm, useWatch } from 'react-hook-form';
 import { z } from 'zod';
 
 import { authApi } from '@/common/auth-api';
-import { isDateQuestion, isMultiSelectQuestion, isNumberQuestion, isRatingQuestion, isSingleSelectQuestion, isTextQuestion } from '@/common/guards';
+import {
+  isDateQuestion,
+  isMultiSelectQuestion,
+  isNumberQuestion,
+  isRatingQuestion,
+  isSingleSelectQuestion,
+  isTextQuestion,
+} from '@/common/guards';
 import Layout from '@/components/layout/Layout';
 import { NavigateBack } from '@/components/NavigateBack/NavigateBack';
 import { useConfirm } from '@/components/ui/alert-dialog-provider';
@@ -22,7 +25,12 @@ import { Button, buttonVariants } from '@/components/ui/button';
 import { LanguageBadge } from '@/components/ui/language-badge';
 import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
-import { cn, emptyTranslatedString, isNilOrWhitespace, isNotNilOrWhitespace } from '@/lib/utils';
+import {
+  cn,
+  ensureTranslatedStringCorrectness,
+  isNilOrWhitespace,
+  isNotNilOrWhitespace
+} from '@/lib/utils';
 import { queryClient } from '@/main';
 import { Route } from '@/routes/forms_.$formId.edit';
 import { useMutation } from '@tanstack/react-query';
@@ -30,21 +38,32 @@ import { useBlocker, useNavigate } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 import { UpdateFormRequest } from '../../models/form';
 import { formDetailsQueryOptions, formsKeys } from '../../queries';
-import { EditDateQuestionType, EditMultiSelectQuestionType, EditNumberQuestionType, EditRatingQuestionType, EditSingleSelectQuestionType, EditTextQuestionType, mapToQuestionRequest, ZEditQuestionType, ZTranslatedString } from '../../types';
+import {
+  EditDateQuestionType,
+  EditMultiSelectQuestionType,
+  EditNumberQuestionType,
+  EditRatingQuestionType,
+  EditSingleSelectQuestionType,
+  EditTextQuestionType,
+  mapToQuestionRequest,
+  ZEditQuestionType,
+  ZTranslatedString,
+} from '../../types';
 import { FormDetailsBreadcrumbs } from '../FormDetailsBreadcrumbs/FormDetailsBreadcrumbs';
 import EditFormDetails from './EditFormDetails';
 
-export const ZEditFormType = z.object({
-  formId: z.string().trim().min(1),
-  languageCode: z.string().trim().min(1),
-  defaultLanguage: z.string().trim().min(1),
-  code: z.string().trim().min(1),
-  name: ZTranslatedString,
-  description: ZTranslatedString.optional(),
-  languages: z.array(z.string()),
-  formType: ZFormType.catch(ZFormType.Values.Opening),
-  questions: z.array(ZEditQuestionType)
-})
+export const ZEditFormType = z
+  .object({
+    formId: z.string().trim().min(1),
+    languageCode: z.string().trim().min(1),
+    defaultLanguage: z.string().trim().min(1),
+    code: z.string().trim().min(1),
+    name: ZTranslatedString,
+    description: ZTranslatedString.optional(),
+    languages: z.array(z.string()),
+    formType: ZFormType.catch(ZFormType.Values.Opening),
+    questions: z.array(ZEditQuestionType),
+  })
   .superRefine((data, ctx) => {
     if (isNilOrWhitespace(data.name[data.languageCode])) {
       ctx.addIssue({
@@ -54,7 +73,10 @@ export const ZEditFormType = z.object({
       });
     }
 
-    if (isNotNilOrWhitespace(data.description?.[data.defaultLanguage]) && isNilOrWhitespace(data.description?.[data.languageCode])) {
+    if (
+      isNotNilOrWhitespace(data.description?.[data.defaultLanguage]) &&
+      isNilOrWhitespace(data.description?.[data.languageCode])
+    ) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: 'Form description is required',
@@ -71,7 +93,10 @@ export const ZEditFormType = z.object({
         });
       }
 
-      if (isNotNilOrWhitespace(question.helptext[question.defaultLanguage]) && isNilOrWhitespace(question.helptext[question.languageCode])) {
+      if (
+        isNotNilOrWhitespace(question.helptext[question.defaultLanguage]) &&
+        isNilOrWhitespace(question.helptext[question.languageCode])
+      ) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: 'Question helptext is required',
@@ -79,8 +104,14 @@ export const ZEditFormType = z.object({
         });
       }
 
-      if (question.$questionType === QuestionType.NumberQuestionType || question.$questionType === QuestionType.TextQuestionType) {
-        if (isNotNilOrWhitespace(question.inputPlaceholder[question.defaultLanguage]) && isNilOrWhitespace(question.inputPlaceholder[question.languageCode])) {
+      if (
+        question.$questionType === QuestionType.NumberQuestionType ||
+        question.$questionType === QuestionType.TextQuestionType
+      ) {
+        if (
+          isNotNilOrWhitespace(question.inputPlaceholder[question.defaultLanguage]) &&
+          isNilOrWhitespace(question.inputPlaceholder[question.languageCode])
+        ) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
             message: 'Input placeholder is required',
@@ -90,7 +121,10 @@ export const ZEditFormType = z.object({
       }
 
       if (question.$questionType === QuestionType.RatingQuestionType) {
-        if (isNotNilOrWhitespace(question.lowerLabel[question.defaultLanguage]) && isNilOrWhitespace(question.lowerLabel[question.languageCode])) {
+        if (
+          isNotNilOrWhitespace(question.lowerLabel[question.defaultLanguage]) &&
+          isNilOrWhitespace(question.lowerLabel[question.languageCode])
+        ) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
             message: 'Question lower label is required',
@@ -98,7 +132,10 @@ export const ZEditFormType = z.object({
           });
         }
 
-        if (isNotNilOrWhitespace(question.upperLabel[question.defaultLanguage]) && isNilOrWhitespace(question.upperLabel[question.languageCode])) {
+        if (
+          isNotNilOrWhitespace(question.upperLabel[question.defaultLanguage]) &&
+          isNilOrWhitespace(question.upperLabel[question.languageCode])
+        ) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
             message: 'Question upper label is required',
@@ -107,19 +144,22 @@ export const ZEditFormType = z.object({
         }
       }
 
-      if (question.$questionType === QuestionType.SingleSelectQuestionType || question.$questionType === QuestionType.MultiSelectQuestionType) {
+      if (
+        question.$questionType === QuestionType.SingleSelectQuestionType ||
+        question.$questionType === QuestionType.MultiSelectQuestionType
+      ) {
         question.options.forEach((option, optionIndex) => {
           if (isNilOrWhitespace(option.text[question.languageCode])) {
             ctx.addIssue({
               code: z.ZodIssueCode.custom,
               message: 'Option text is required',
-              path: ["questions", index, "options", optionIndex, 'text'],
+              path: ['questions', index, 'options', optionIndex, 'text'],
             });
           }
         });
 
         // check uniqueness of options
-        const optionTexts = question.options.map(o => o.text[question.languageCode]);
+        const optionTexts = question.options.map((o) => o.text[question.languageCode]);
         const textCountMap = new Map<string | undefined, number>();
         const duplicatedIndexesMap = new Map<string | undefined, number>();
 
@@ -127,7 +167,7 @@ export const ZEditFormType = z.object({
         optionTexts.forEach((text, optionIndex) => {
           const numberOfOccurrences = (textCountMap.get(text) || 0) + 1;
           if (numberOfOccurrences > 1) {
-            duplicatedIndexesMap.set(text, optionIndex)
+            duplicatedIndexesMap.set(text, optionIndex);
           }
           textCountMap.set(text, numberOfOccurrences);
         });
@@ -137,7 +177,7 @@ export const ZEditFormType = z.object({
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
             message: 'Option text is not unique',
-            path: ["questions", index, "options", optionIndex, 'text'],
+            path: ['questions', index, 'options', optionIndex, 'text'],
           });
         }
       }
@@ -147,7 +187,7 @@ export const ZEditFormType = z.object({
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
             message: 'Question condition is required',
-            path: ["questions", index, "condition"],
+            path: ['questions', index, 'condition'],
           });
         }
 
@@ -155,7 +195,7 @@ export const ZEditFormType = z.object({
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
             message: 'Question parent question is required',
-            path: ["questions", index, "parentQuestionId"],
+            path: ['questions', index, 'parentQuestionId'],
           });
         }
 
@@ -163,12 +203,12 @@ export const ZEditFormType = z.object({
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
             message: 'Question value is required',
-            path: ["questions", index, "value"],
+            path: ['questions', index, 'value'],
           });
         }
       }
 
-      return z.NEVER
+      return z.NEVER;
     });
   });
 
@@ -176,148 +216,158 @@ export type EditFormType = z.infer<typeof ZEditFormType>;
 
 export default function EditForm(): FunctionComponent {
   const { formId } = Route.useParams();
-  const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
+  const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
   const { data: formData } = useSuspenseQuery(formDetailsQueryOptions(currentElectionRoundId, formId));
   const confirm = useConfirm();
   const [shouldExitEditor, setShouldExitEditor] = useState(false);
   const navigate = useNavigate();
 
-  const editQuestions = formData
-    .questions
-    .map(question => {
-      if (isNumberQuestion(question)) {
-        const numberQuestion: EditNumberQuestionType = {
-          $questionType: QuestionType.NumberQuestionType,
-          questionId: question.id,
-          text: question.text,
-          helptext: question.helptext ?? emptyTranslatedString(formData.languages),
-          inputPlaceholder: question.inputPlaceholder ?? emptyTranslatedString(formData.languages),
+  const editQuestions = formData.questions.map((question) => {
+    if (isNumberQuestion(question)) {
+      const numberQuestion: EditNumberQuestionType = {
+        $questionType: QuestionType.NumberQuestionType,
+        questionId: question.id,
+        text: ensureTranslatedStringCorrectness(question.text, formData.languages),
+        helptext: ensureTranslatedStringCorrectness(question.helptext, formData.languages),
+        inputPlaceholder: ensureTranslatedStringCorrectness(question.inputPlaceholder, formData.languages),
 
-          hasDisplayLogic: !!question.displayLogic,
+        hasDisplayLogic: !!question.displayLogic,
 
-          parentQuestionId: question.displayLogic?.parentQuestionId,
-          condition: question.displayLogic?.condition,
-          value: question.displayLogic?.value,
+        parentQuestionId: question.displayLogic?.parentQuestionId,
+        condition: question.displayLogic?.condition,
+        value: question.displayLogic?.value,
 
-          code: question.code,
-          languageCode: formData.defaultLanguage,
-          defaultLanguage: formData.defaultLanguage
-        }
+        code: question.code,
+        languageCode: formData.defaultLanguage,
+        defaultLanguage: formData.defaultLanguage,
+      };
 
-        return numberQuestion;
-      }
-      if (isTextQuestion(question)) {
-        const textQuestion: EditTextQuestionType = {
-          $questionType: QuestionType.TextQuestionType,
-          questionId: question.id,
-          text: question.text,
-          helptext: question.helptext ?? emptyTranslatedString(formData.languages),
-          inputPlaceholder: question.inputPlaceholder ?? emptyTranslatedString(formData.languages),
+      return numberQuestion;
+    }
+    if (isTextQuestion(question)) {
+      const textQuestion: EditTextQuestionType = {
+        $questionType: QuestionType.TextQuestionType,
+        questionId: question.id,
+        text: ensureTranslatedStringCorrectness(question.text, formData.languages),
+        helptext: ensureTranslatedStringCorrectness(question.helptext, formData.languages),
+        inputPlaceholder: ensureTranslatedStringCorrectness(question.inputPlaceholder, formData.languages),
 
-          hasDisplayLogic: !!question.displayLogic,
+        hasDisplayLogic: !!question.displayLogic,
 
-          parentQuestionId: question.displayLogic?.parentQuestionId,
-          condition: question.displayLogic?.condition,
-          value: question.displayLogic?.value,
+        parentQuestionId: question.displayLogic?.parentQuestionId,
+        condition: question.displayLogic?.condition,
+        value: question.displayLogic?.value,
 
-          code: question.code,
-          languageCode: formData.defaultLanguage,
-          defaultLanguage: formData.defaultLanguage
-        }
+        code: question.code,
+        languageCode: formData.defaultLanguage,
+        defaultLanguage: formData.defaultLanguage,
+      };
 
-        return textQuestion;
-      }
+      return textQuestion;
+    }
 
-      if (isDateQuestion(question)) {
-        const dateQuestion: EditDateQuestionType = {
-          $questionType: QuestionType.DateQuestionType,
-          questionId: question.id,
-          text: question.text,
-          helptext: question.helptext ?? emptyTranslatedString(formData.languages),
+    if (isDateQuestion(question)) {
+      const dateQuestion: EditDateQuestionType = {
+        $questionType: QuestionType.DateQuestionType,
+        questionId: question.id,
+        text: ensureTranslatedStringCorrectness(question.text, formData.languages),
+        helptext: ensureTranslatedStringCorrectness(question.helptext, formData.languages),
 
-          hasDisplayLogic: !!question.displayLogic,
+        hasDisplayLogic: !!question.displayLogic,
 
-          parentQuestionId: question.displayLogic?.parentQuestionId,
-          condition: question.displayLogic?.condition,
-          value: question.displayLogic?.value,
+        parentQuestionId: question.displayLogic?.parentQuestionId,
+        condition: question.displayLogic?.condition,
+        value: question.displayLogic?.value,
 
-          code: question.code,
-          languageCode: formData.defaultLanguage,
-          defaultLanguage: formData.defaultLanguage
-        }
+        code: question.code,
+        languageCode: formData.defaultLanguage,
+        defaultLanguage: formData.defaultLanguage,
+      };
 
-        return dateQuestion;
-      }
+      return dateQuestion;
+    }
 
-      if (isRatingQuestion(question)) {
-        const ratingQuestion: EditRatingQuestionType = {
-          $questionType: QuestionType.RatingQuestionType,
-          questionId: question.id,
-          text: question.text,
-          helptext: question.helptext ?? emptyTranslatedString(formData.languages),
-          scale: question.scale,
-          hasDisplayLogic: !!question.displayLogic,
+    if (isRatingQuestion(question)) {
+      const ratingQuestion: EditRatingQuestionType = {
+        $questionType: QuestionType.RatingQuestionType,
+        questionId: question.id,
+        text: ensureTranslatedStringCorrectness(question.text, formData.languages),
+        helptext: ensureTranslatedStringCorrectness(question.helptext, formData.languages),
+        scale: question.scale,
+        hasDisplayLogic: !!question.displayLogic,
 
-          parentQuestionId: question.displayLogic?.parentQuestionId,
-          condition: question.displayLogic?.condition,
-          value: question.displayLogic?.value,
+        parentQuestionId: question.displayLogic?.parentQuestionId,
+        condition: question.displayLogic?.condition,
+        value: question.displayLogic?.value,
 
-          code: question.code,
-          languageCode: formData.defaultLanguage,
-          defaultLanguage: formData.defaultLanguage,
-          lowerLabel: question.lowerLabel ?? emptyTranslatedString(formData.languages),
-          upperLabel: question.upperLabel ?? emptyTranslatedString(formData.languages),
-        }
+        code: question.code,
+        languageCode: formData.defaultLanguage,
+        defaultLanguage: formData.defaultLanguage,
+        lowerLabel: ensureTranslatedStringCorrectness(question.lowerLabel, formData.languages),
+        upperLabel: ensureTranslatedStringCorrectness(question.upperLabel, formData.languages),
+      };
 
-        return ratingQuestion;
-      }
+      return ratingQuestion;
+    }
 
-      if (isSingleSelectQuestion(question)) {
-        const singleSelectQuestion: EditSingleSelectQuestionType = {
-          $questionType: QuestionType.SingleSelectQuestionType,
-          questionId: question.id,
-          text: question.text,
-          helptext: question.helptext ?? {},
-          options: question.options?.map(o => ({ optionId: o.id, isFlagged: o.isFlagged, isFreeText: o.isFreeText, text: o.text })) ?? [],
+    if (isSingleSelectQuestion(question)) {
+      const singleSelectQuestion: EditSingleSelectQuestionType = {
+        $questionType: QuestionType.SingleSelectQuestionType,
+        questionId: question.id,
+        text: ensureTranslatedStringCorrectness(question.text, formData.languages),
+        helptext: ensureTranslatedStringCorrectness(question.helptext, formData.languages),
+        options:
+          question.options?.map((o) => ({
+            optionId: o.id,
+            isFlagged: o.isFlagged,
+            isFreeText: o.isFreeText,
+            text: ensureTranslatedStringCorrectness(o.text, formData.languages),
+          })) ?? [],
 
-          hasDisplayLogic: !!question.displayLogic,
+        hasDisplayLogic: !!question.displayLogic,
 
-          parentQuestionId: question.displayLogic?.parentQuestionId,
-          condition: question.displayLogic?.condition,
-          value: question.displayLogic?.value,
+        parentQuestionId: question.displayLogic?.parentQuestionId,
+        condition: question.displayLogic?.condition,
+        value: question.displayLogic?.value,
 
-          code: question.code,
-          languageCode: formData.defaultLanguage,
-          defaultLanguage: formData.defaultLanguage
-        }
+        code: question.code,
+        languageCode: formData.defaultLanguage,
+        defaultLanguage: formData.defaultLanguage,
+      };
 
-        return singleSelectQuestion;
-      }
+      return singleSelectQuestion;
+    }
 
-      if (isMultiSelectQuestion(question)) {
-        const multiSelectQuestion: EditMultiSelectQuestionType = {
-          $questionType: QuestionType.MultiSelectQuestionType,
-          questionId: question.id,
-          text: question.text,
-          helptext: question.helptext ?? {},
-          options: question.options?.map(o => ({ optionId: o.id, isFlagged: o.isFlagged, isFreeText: o.isFreeText, text: o.text })) ?? [],
+    if (isMultiSelectQuestion(question)) {
+      const multiSelectQuestion: EditMultiSelectQuestionType = {
+        $questionType: QuestionType.MultiSelectQuestionType,
+        questionId: question.id,
+        text: ensureTranslatedStringCorrectness(question.text, formData.languages),
+        helptext: ensureTranslatedStringCorrectness(question.helptext, formData.languages),
+        options:
+          question.options?.map((o) => ({
+            optionId: o.id,
+            isFlagged: o.isFlagged,
+            isFreeText: o.isFreeText,
+            text: ensureTranslatedStringCorrectness(o.text, formData.languages),
+          })) ?? [],
 
-          hasDisplayLogic: !!question.displayLogic,
+        hasDisplayLogic: !!question.displayLogic,
 
-          parentQuestionId: question.displayLogic?.parentQuestionId,
-          condition: question.displayLogic?.condition,
-          value: question.displayLogic?.value,
+        parentQuestionId: question.displayLogic?.parentQuestionId,
+        condition: question.displayLogic?.condition,
+        value: question.displayLogic?.value,
 
-          code: question.code,
-          languageCode: formData.defaultLanguage,
-          defaultLanguage: formData.defaultLanguage
-        }
+        code: question.code,
+        languageCode: formData.defaultLanguage,
+        defaultLanguage: formData.defaultLanguage,
+      };
 
-        return multiSelectQuestion;
-      }
+      return multiSelectQuestion;
+    }
 
-      return undefined;
-    });
+    return undefined;
+  });
 
   const form = useForm<EditFormType>({
     resolver: zodResolver(ZEditFormType),
@@ -327,30 +377,45 @@ export default function EditForm(): FunctionComponent {
       languageCode: formData.defaultLanguage,
       defaultLanguage: formData.defaultLanguage,
       languages: formData.languages,
-      name: formData.name,
-      description: formData.description ?? emptyTranslatedString(formData.languages),
+      name: ensureTranslatedStringCorrectness(formData.name, formData.languages),
+      description: ensureTranslatedStringCorrectness(formData.description, formData.languages),
       formType: formData.formType,
       questions: editQuestions,
     },
-    mode: 'all'
+    mode: 'all',
   });
 
-  useBlocker(() => confirm({
-    title: `Unsaved Changes Detected`,
-    body: 'You have unsaved changes. If you leave this page, your changes will be lost. Are you sure you want to continue?',
-    actionButton: 'Leave',
-    actionButtonClass: buttonVariants({ variant: "destructive" }),
-    cancelButton: 'Stay',
-  }), form.formState.isDirty);
+  useBlocker(
+    () =>
+      confirm({
+        title: `Unsaved Changes Detected`,
+        body: 'You have unsaved changes. If you leave this page, your changes will be lost. Are you sure you want to continue?',
+        actionButton: 'Leave',
+        actionButtonClass: buttonVariants({ variant: 'destructive' }),
+        cancelButton: 'Stay',
+      }),
+    form.formState.isDirty
+  );
 
   const code = useWatch({ control: form.control, name: 'code', defaultValue: formData.code });
   const name = useWatch({ control: form.control, name: 'name', defaultValue: formData.name });
 
-  const languageCode = useWatch({ control: form.control, name: 'languageCode', defaultValue: formData.defaultLanguage });
+  const languageCode = useWatch({
+    control: form.control,
+    name: 'languageCode',
+    defaultValue: formData.defaultLanguage,
+  });
 
   const editMutation = useMutation({
     mutationKey: formsKeys.all,
-    mutationFn: ({ electionRoundId, form }: { electionRoundId: string; form: UpdateFormRequest, shouldExitEditor: boolean }) => {
+    mutationFn: ({
+      electionRoundId,
+      form,
+    }: {
+      electionRoundId: string;
+      form: UpdateFormRequest;
+      shouldExitEditor: boolean;
+    }) => {
       return authApi.put<void>(`/election-rounds/${electionRoundId}/forms/${form.id}`, {
         ...form,
       });
@@ -365,10 +430,12 @@ export default function EditForm(): FunctionComponent {
       await queryClient.invalidateQueries({ queryKey: formsKeys.all, type: 'all' });
 
       if (shouldExitEditor) {
-        if (await confirm({
-          title: 'Changes made to form in base language',
-          body: 'Please note that changes have been made to the form in base language, which can impact the translation(s). All new questions or response options which you have added have been copied to translations but in the base language. Access each translation of the form and manually translate each of the changes.'
-        })) {
+        if (
+          await confirm({
+            title: 'Changes made to form in base language',
+            body: 'Please note that changes have been made to the form in base language, which can impact the translation(s). All new questions or response options which you have added have been copied to translations but in the base language. Access each translation of the form and manually translate each of the changes.',
+          })
+        ) {
           void navigate({ to: '/election-event/$tab', params: { tab: 'observer-forms' } });
         }
       }
@@ -378,7 +445,7 @@ export default function EditForm(): FunctionComponent {
       toast({
         title: 'Error saving the form',
         description: 'Please contact tech support',
-        variant: 'destructive'
+        variant: 'destructive',
       });
     },
   });
@@ -392,7 +459,7 @@ export default function EditForm(): FunctionComponent {
       description: values.description,
       formType: values.formType,
       languages: values.languages,
-      questions: values.questions.map(mapToQuestionRequest)
+      questions: values.questions.map(mapToQuestionRequest),
     };
     editMutation.mutate({ form: updatedForm, shouldExitEditor, electionRoundId: currentElectionRoundId });
   }
@@ -408,12 +475,22 @@ export default function EditForm(): FunctionComponent {
       backButton={<NavigateBack to='/election-event/$tab' params={{ tab: 'observer-forms' }} />}
       breadcrumbs={<FormDetailsBreadcrumbs formCode={code} formName={name[languageCode] ?? ''} />}
       title={`${code} - ${name[languageCode]}`}>
-      <Form {...form} >
+      <Form {...form}>
         <form onSubmit={form.handleSubmit(saveForm)} className='flex flex-col flex-1'>
           <Tabs className='flex flex-col flex-1' defaultValue='form-details'>
             <TabsList className='grid grid-cols-2 bg-gray-200 w-[400px] mb-4'>
-              <TabsTrigger value='form-details' className={cn({ 'border-b-4 border-red-400': form.getFieldState('name').invalid || form.getFieldState('code').invalid })}>Form details</TabsTrigger>
-              <TabsTrigger value='questions' className={cn({ 'border-b-4 border-red-400': form.getFieldState('questions').invalid })}>Questions</TabsTrigger>
+              <TabsTrigger
+                value='form-details'
+                className={cn({
+                  'border-b-4 border-red-400': form.getFieldState('name').invalid || form.getFieldState('code').invalid,
+                })}>
+                Form details
+              </TabsTrigger>
+              <TabsTrigger
+                value='questions'
+                className={cn({ 'border-b-4 border-red-400': form.getFieldState('questions').invalid })}>
+                Questions
+              </TabsTrigger>
             </TabsList>
             <TabsContent value='form-details'>
               <Card className='pt-0'>
@@ -449,10 +526,26 @@ export default function EditForm(): FunctionComponent {
               </Card>
             </TabsContent>
           </Tabs>
-          <footer className="fixed left-0 bottom-0 h-[64px] w-full bg-white">
+          <footer className='fixed left-0 bottom-0 h-[64px] w-full bg-white'>
             <div className='container flex items-center justify-end h-full gap-4'>
-              <Button type='submit' variant='outline' onClick={() => { setShouldExitEditor(false); }} disabled={!form.formState.isValid}>Save</Button>
-              <Button type='submit' variant='default' onClick={() => { setShouldExitEditor(true); }} disabled={!form.formState.isValid}>Save and exit form editor</Button>
+              <Button
+                type='submit'
+                variant='outline'
+                onClick={() => {
+                  setShouldExitEditor(false);
+                }}
+                disabled={!form.formState.isValid}>
+                Save
+              </Button>
+              <Button
+                type='submit'
+                variant='default'
+                onClick={() => {
+                  setShouldExitEditor(true);
+                }}
+                disabled={!form.formState.isValid}>
+                Save and exit form editor
+              </Button>
             </div>
           </footer>
         </form>
