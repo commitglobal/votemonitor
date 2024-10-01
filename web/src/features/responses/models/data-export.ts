@@ -13,6 +13,7 @@ export enum ExportedDataType {
   FormSubmissions = "FormSubmissions",
   QuickReports = "QuickReports",
   CitizenReports = "CitizenReports",
+  IncidentReports = "IncidentReports",
   PollingStations = "PollingStations",
   Locations = "Locations",
 }

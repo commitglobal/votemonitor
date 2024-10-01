@@ -1,5 +1,5 @@
 import { authApi } from '@/common/auth-api';
-import { FollowUpStatus, type FunctionComponent } from '@/common/types';
+import { CitizenReportFollowUpStatus, FormSubmissionFollowUpStatus, type FunctionComponent } from '@/common/types';
 import Layout from '@/components/layout/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -13,6 +13,7 @@ import { useRouter } from '@tanstack/react-router';
 import { citizenReportKeys } from '../../hooks/citizen-reports';
 import PreviewAnswer from '../PreviewAnswer/PreviewAnswer';
 import { SubmissionType } from '../../models/common';
+import { mapCitizenReportFollowUpStatus } from '../../utils/helpers';
 
 export default function CitizenReportDetails(): FunctionComponent {
   const { citizenReportId } = Route.useParams();
@@ -25,7 +26,13 @@ export default function CitizenReportDetails(): FunctionComponent {
 
   const updateSubmissionFollowUpStatusMutation = useMutation({
     mutationKey: citizenReportKeys.detail(currentElectionRoundId, citizenReportId),
-    mutationFn: ({ electionRoundId, followUpStatus }: { electionRoundId: string; followUpStatus: FollowUpStatus }) => {
+    mutationFn: ({
+      electionRoundId,
+      followUpStatus,
+    }: {
+      electionRoundId: string;
+      followUpStatus: FormSubmissionFollowUpStatus;
+    }) => {
       return authApi.put<void>(`/election-rounds/${electionRoundId}/citizen-reports/${citizenReportId}:status`, {
         followUpStatus,
       });
@@ -50,7 +57,7 @@ export default function CitizenReportDetails(): FunctionComponent {
     },
   });
 
-  function handleFollowUpStatusChange(followUpStatus: FollowUpStatus): void {
+  function handleFollowUpStatusChange(followUpStatus: FormSubmissionFollowUpStatus): void {
     updateSubmissionFollowUpStatusMutation.mutate({ electionRoundId: currentElectionRoundId, followUpStatus });
   }
 
@@ -72,9 +79,19 @@ export default function CitizenReportDetails(): FunctionComponent {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    <SelectItem value={FollowUpStatus.NotApplicable}>Not Applicable</SelectItem>
-                    <SelectItem value={FollowUpStatus.NeedsFollowUp}>Needs Follow-Up</SelectItem>
-                    <SelectItem value={FollowUpStatus.Resolved}>Resolved</SelectItem>
+                    <SelectItem
+                      key={CitizenReportFollowUpStatus.NotApplicable}
+                      value={CitizenReportFollowUpStatus.NotApplicable}>
+                      {mapCitizenReportFollowUpStatus(CitizenReportFollowUpStatus.NotApplicable)}
+                    </SelectItem>
+                    <SelectItem
+                      key={CitizenReportFollowUpStatus.NeedsFollowUp}
+                      value={CitizenReportFollowUpStatus.NeedsFollowUp}>
+                      {mapCitizenReportFollowUpStatus(CitizenReportFollowUpStatus.NeedsFollowUp)}
+                    </SelectItem>
+                    <SelectItem key={CitizenReportFollowUpStatus.Resolved} value={CitizenReportFollowUpStatus.Resolved}>
+                      {mapCitizenReportFollowUpStatus(CitizenReportFollowUpStatus.Resolved)}
+                    </SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>

@@ -1,13 +1,10 @@
-﻿using Authorization.Policies;
-using Dapper;
-using Vote.Monitor.Core.Models;
-using Vote.Monitor.Domain.ConnectionFactory;
+﻿using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.Specifications;
 
 namespace Feature.Form.Submissions.ListEntries;
 
-public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
-    : Endpoint<Request, PagedResponse<FormSubmissionEntry>>
+public class Endpoint(IAuthorizationService authorizationService, INpgsqlConnectionFactory dbConnectionFactory)
+    : Endpoint<Request, Results<Ok<PagedResponse<FormSubmissionEntry>>, NotFound>>
 {
     public override void Configure()
     {
@@ -18,8 +15,16 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
         Summary(x => { x.Summary = "Lists form submissions by entry in our system"; });
     }
 
-    public override async Task<PagedResponse<FormSubmissionEntry>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<Results<Ok<PagedResponse<FormSubmissionEntry>>, NotFound>> ExecuteAsync(Request req,
+        CancellationToken ct)
     {
+        var authorizationResult =
+            await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminRequirement(req.ElectionRoundId));
+        if (!authorizationResult.Succeeded)
+        {
+            return TypedResults.NotFound();
+        }
+
         var sql = """
                   SELECT SUM(count)
                   FROM
@@ -81,11 +86,11 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
                                        OR (@questionsAnswered = 'Some' AND f."NumberOfQuestions" <> fs."NumberOfQuestionsAnswered") 
                                        OR (@questionsAnswered = 'None' AND fs."NumberOfQuestionsAnswered" = 0))
                            AND (@hasAttachments is NULL
-                                OR ((SELECT COUNT(1) FROM "Attachments" WHERE "FormId" = fs."FormId" AND "MonitoringObserverId" = fs."MonitoringObserverId" AND fs."PollingStationId" = "PollingStationId" AND "IsDeleted" = false AND "IsCompleted" = true) = 0 AND @hasAttachments = false) 
-                                OR ((SELECT COUNT(1) FROM "Attachments" WHERE "FormId" = fs."FormId" AND "MonitoringObserverId" = fs."MonitoringObserverId" AND fs."PollingStationId" = "PollingStationId" AND "IsDeleted" = false AND "IsCompleted" = true) > 0 AND @hasAttachments = true))
+                                OR ((SELECT COUNT(1) FROM "Attachments" A WHERE A."FormId" = fs."FormId" AND A."MonitoringObserverId" = fs."MonitoringObserverId" AND fs."PollingStationId" = A."PollingStationId" AND A."IsDeleted" = false AND A."IsCompleted" = true) = 0 AND @hasAttachments = false) 
+                                OR ((SELECT COUNT(1) FROM "Attachments" A WHERE A."FormId" = fs."FormId" AND A."MonitoringObserverId" = fs."MonitoringObserverId" AND fs."PollingStationId" = A."PollingStationId" AND A."IsDeleted" = false AND A."IsCompleted" = true) > 0 AND @hasAttachments = true))
                            AND (@hasNotes is NULL 
-                                OR ((SELECT COUNT(1) FROM "Notes" WHERE "FormId" = fs."FormId" AND "MonitoringObserverId" = fs."MonitoringObserverId" AND  fs."PollingStationId" = "PollingStationId") = 0 AND @hasNotes = false) 
-                                OR ((SELECT COUNT(1) FROM "Notes" WHERE "FormId" = fs."FormId" AND "MonitoringObserverId" = fs."MonitoringObserverId" AND  fs."PollingStationId" = "PollingStationId") > 0 AND @hasNotes = true))
+                                OR ((SELECT COUNT(1) FROM "Notes" N WHERE N."FormId" = fs."FormId" AND N."MonitoringObserverId" = fs."MonitoringObserverId" AND fs."PollingStationId" = N."PollingStationId") = 0 AND @hasNotes = false) 
+                                OR ((SELECT COUNT(1) FROM "Notes" N WHERE N."FormId" = fs."FormId" AND N."MonitoringObserverId" = fs."MonitoringObserverId" AND fs."PollingStationId" = N."PollingStationId") > 0 AND @hasNotes = true))
                   ) c;
 
                   WITH polling_station_submissions AS (
@@ -124,18 +129,18 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
                              fs."NumberOfFlaggedAnswers",
                              (
                                  SELECT COUNT(1)
-                                 FROM "Attachments"
-                                 WHERE "FormId" = fs."FormId"
-                                   AND "MonitoringObserverId" = fs."MonitoringObserverId"
-                                   AND fs."PollingStationId" = "PollingStationId"
-                                   AND "IsDeleted" = false AND "IsCompleted" = true
+                                 FROM "Attachments" A
+                                 WHERE A."FormId" = fs."FormId"
+                                   AND a."MonitoringObserverId" = fs."MonitoringObserverId"
+                                   AND fs."PollingStationId" = A."PollingStationId"
+                                   AND A."IsDeleted" = false AND A."IsCompleted" = true
                              ) AS "MediaFilesCount",
                              (
                                  SELECT COUNT(1)
-                                 FROM "Notes"
-                                 WHERE "FormId" = fs."FormId"
-                                   AND "MonitoringObserverId" = fs."MonitoringObserverId"
-                                   AND fs."PollingStationId" = "PollingStationId"
+                                 FROM "Notes" N
+                                 WHERE N."FormId" = fs."FormId"
+                                   AND N."MonitoringObserverId" = fs."MonitoringObserverId"
+                                   AND fs."PollingStationId" = N."PollingStationId"
                              ) AS "NotesCount",
                              COALESCE(fs."LastModifiedOn", fs."CreatedOn") AS "TimeSubmitted",
                              fs."FollowUpStatus"
@@ -224,11 +229,17 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
                       CASE WHEN @sortExpression = 'Level2 DESC' THEN ps."Level2" END DESC,
                       CASE WHEN @sortExpression = 'Level3 ASC' THEN ps."Level3" END ASC,
                       CASE WHEN @sortExpression = 'Level3 DESC' THEN ps."Level3" END DESC,
+                      CASE WHEN @sortExpression = 'Level4 ASC' THEN ps."Level4" END ASC,
+                      CASE WHEN @sortExpression = 'Level4 DESC' THEN ps."Level4" END DESC,
+                      CASE WHEN @sortExpression = 'Level5 ASC' THEN ps."Level5" END ASC,
+                      CASE WHEN @sortExpression = 'Level5 DESC' THEN ps."Level5" END DESC,
+                      CASE WHEN @sortExpression = 'Number ASC' THEN ps."Number" END ASC,
+                      CASE WHEN @sortExpression = 'Number DESC' THEN ps."Number" END DESC,
                       CASE WHEN @sortExpression = 'ObserverName ASC' THEN u."FirstName" || ' ' || u."LastName" END ASC,
                       CASE WHEN @sortExpression = 'ObserverName DESC' THEN u."FirstName" || ' ' || u."LastName" END DESC
                   OFFSET @offset ROWS
                   FETCH NEXT @pageSize ROWS ONLY;
-                  
+
                   """;
 
         var queryArgs = new
@@ -267,7 +278,8 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
             entries = multi.Read<FormSubmissionEntry>().ToList();
         }
 
-        return new PagedResponse<FormSubmissionEntry>(entries, totalRowCount, req.PageNumber, req.PageSize);
+        return TypedResults.Ok(
+            new PagedResponse<FormSubmissionEntry>(entries, totalRowCount, req.PageNumber, req.PageSize));
     }
 
     private static string GetSortExpression(string? sortColumnName, bool isAscendingSorting)

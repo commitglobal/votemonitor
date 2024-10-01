@@ -22,7 +22,7 @@ public sealed class CitizenReportFaker : PrivateFaker<CitizenReport>
 
         RuleFor(fake => fake.Location, location);
         RuleFor(fake => fake.LocationId, location.Id);
-        
+
         RuleFor(fake => fake.Form, form);
         RuleFor(fake => fake.FormId, form.Id);
     }

@@ -18,7 +18,7 @@ public class Endpoint(VoteMonitorContext context)
         CancellationToken ct)
     {
         await context.CitizenReportAttachments
-            .Where(x => x.ElectionRoundId == req.ElectionRoundId && x.CitizenReportId == req.CitizenReportId)
+            .Where(x => x.ElectionRoundId == req.ElectionRoundId && x.CitizenReportId == req.Id)
             .ExecuteUpdateAsync(a => a.SetProperty(p => p.IsDeleted, true), ct);
 
         return TypedResults.NoContent();

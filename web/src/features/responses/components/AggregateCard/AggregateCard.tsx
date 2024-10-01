@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Square2StackIcon } from '@heroicons/react/24/solid';
 import { useRef } from 'react';
 
-import { Responder } from '../../models/form-aggregated';
+import { Responder } from '../../models/form-submissions-aggregated';
 import { DateAggregateContent } from '../DateAggregateContent/DateAggregateContent';
 import { MultiSelectAggregateContent } from '../MultiSelectAggregateContent/MultiSelectAggregateContent';
 import { NumberAggregateContent } from '../NumberAggregateContent/NumberAggregateContent';

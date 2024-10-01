@@ -8,21 +8,20 @@ export const Route = createFileRoute('/monitoring-observers/$tab')({
 
     const coercedTab = coerceTabSlug(tab);
     if (tab !== coercedTab) {
-      throw redirect({ to: `/monitoring-observers/$tab`, params: { tab: coercedTab } })
+      throw redirect({ to: `/monitoring-observers/$tab`, params: { tab: coercedTab } });
     }
   },
-  component: MonitoringObservers
+  component: MonitoringObservers,
 });
 
 const coerceTabSlug = (slug: string) => {
   if (slug?.toLowerCase()?.trim() === 'list') return 'list';
   if (slug?.toLowerCase()?.trim() === 'push-messages') return 'push-messages';
 
-  return 'list'
+  return 'list';
 };
 
 function MonitoringObservers() {
-
   return (
     <div className='p-2'>
       <MonitoringObserversDashboard />
