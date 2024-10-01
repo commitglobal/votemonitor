@@ -11,6 +11,9 @@ using Vote.Monitor.Domain.Entities.FeedbackAggregate;
 using Vote.Monitor.Domain.Entities.FormAggregate;
 using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
 using Vote.Monitor.Domain.Entities.FormTemplateAggregate;
+using Vote.Monitor.Domain.Entities.IncidentReportAggregate;
+using Vote.Monitor.Domain.Entities.IncidentReportAttachmentAggregate;
+using Vote.Monitor.Domain.Entities.IncidentReportNoteAggregate;
 using Vote.Monitor.Domain.Entities.LocationAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
 using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
@@ -75,8 +78,11 @@ public class VoteMonitorContext : IdentityDbContext<ApplicationUser, IdentityRol
     public DbSet<CitizenReportAttachment> CitizenReportAttachments { get; set; }
     public DbSet<MonitoringObserverNotification> MonitoringObserverNotification { get; set; }
     public DbSet<CitizenGuide> CitizenGuides { get; set; }
-    
     public DbSet<Location> Locations { get; set; }
+
+    public DbSet<IncidentReport> IncidentReports { get; set; }
+    public DbSet<IncidentReportNote> IncidentReportNotes { get; set; }
+    public DbSet<IncidentReportAttachment> IncidentReportAttachments { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -149,6 +155,9 @@ public class VoteMonitorContext : IdentityDbContext<ApplicationUser, IdentityRol
         builder.ApplyConfiguration(new CitizenReportNoteConfiguration());
         builder.ApplyConfiguration(new CitizenReportAttachmentConfiguration());
         builder.ApplyConfiguration(new CitizenGuideConfiguration());
+        builder.ApplyConfiguration(new IncidentReportConfiguration());
+        builder.ApplyConfiguration(new IncidentReportNoteConfiguration());
+        builder.ApplyConfiguration(new IncidentReportAttachmentConfiguration());
         
         builder.ApplyConfiguration(new LocationConfiguration());
     }

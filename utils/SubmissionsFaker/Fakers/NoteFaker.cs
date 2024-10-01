@@ -15,7 +15,7 @@ public sealed class NoteFaker : Faker<NoteRequest>
             x.PollingStationId = submission.PollingStationId;
             x.FormId = submission.FormId;
             x.QuestionId = f.PickRandom(submission.Answers).QuestionId;
-            x.Text = f.Lorem.Sentence(1000).Substring(0, 1000);
+            x.Text = f.Lorem.Sentence(100).OfLength(1000);
             x.ObserverToken = submission.ObserverToken;
         });
     }

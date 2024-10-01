@@ -5,6 +5,7 @@ import { FC } from 'react';
 
 export const MonitorObserverBackButton: FC = () => {
   const prevSearch = usePrevSearch();
+
   return (
     <Link
       title='Go back'

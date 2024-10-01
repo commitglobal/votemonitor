@@ -13,13 +13,13 @@ type SearchParams = {
   [key: string]: any;
 };
 
-const HIDDEN_FILTERS = [FILTER_KEY.PageSize, FILTER_KEY.PageNumber, FILTER_KEY.ViewBy];
+const HIDDEN_FILTERS = [FILTER_KEY.PageSize, FILTER_KEY.PageNumber, FILTER_KEY.ViewBy, FILTER_KEY.Tab];
 const FILTER_LABELS = new Map<string, string>([
   [FILTER_KEY.MonitoringObserverStatus, FILTER_LABEL.MonitoringObserverStatus],
   [FILTER_KEY.MonitoringObserverTags, FILTER_LABEL.MonitoringObserverTags],
   [FILTER_KEY.FormTypeFilter, FILTER_LABEL.FormTypeFilter],
   [FILTER_KEY.HasFlaggedAnswers, FILTER_LABEL.HasFlaggedAnswers],
-  [FILTER_KEY.FollowUpStatus, FILTER_LABEL.FollowUpStatus],
+  [FILTER_KEY.FormSubmissionFollowUpStatus, FILTER_LABEL.FollowUpStatus],
   [FILTER_KEY.HasNotes, FILTER_LABEL.HasNotes],
   [FILTER_KEY.MediaFiles, FILTER_LABEL.MediaFiles],
   [FILTER_KEY.QuestionsAnswered, FILTER_LABEL.QuestionsAnswered],

@@ -1,17 +1,15 @@
-﻿using Authorization.Policies;
-using Dapper;
-using Feature.Form.Submissions.Models;
+﻿using Feature.Form.Submissions.Models;
 using Microsoft.EntityFrameworkCore;
 using Vote.Monitor.Answer.Module.Aggregators;
 using Vote.Monitor.Core.Models;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
 using Vote.Monitor.Domain;
-using Vote.Monitor.Domain.ConnectionFactory;
 using Vote.Monitor.Domain.Entities.PollingStationInfoFormAggregate;
 
 namespace Feature.Form.Submissions.GetAggregated;
 
 public class Endpoint(
+    IAuthorizationService authorizationService,
     VoteMonitorContext context,
     INpgsqlConnectionFactory connectionFactory,
     IFileStorageService fileStorageService) : Endpoint<Request, Results<Ok<Response>, NotFound>>
@@ -21,12 +19,19 @@ public class Endpoint(
         Get("/api/election-rounds/{electionRoundId}/form-submissions/{formId}:aggregated");
         DontAutoTag();
         Options(x => x.WithTags("form-submissions", "mobile"));
-        Policies(PolicyNames.NgoAdminsOnly);
         Summary(s => { s.Summary = "Gets aggregated form with all the notes and attachments"; });
+        Policies(PolicyNames.NgoAdminsOnly);
     }
 
     public override async Task<Results<Ok<Response>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
+        var authorizationResult =
+            await authorizationService.AuthorizeAsync(User, new MonitoringNgoAdminRequirement(req.ElectionRoundId));
+        if (!authorizationResult.Succeeded)
+        {
+            return TypedResults.NotFound();
+        }
+        
         var form = await context
             .Forms
             .Where(x => x.ElectionRoundId == req.ElectionRoundId

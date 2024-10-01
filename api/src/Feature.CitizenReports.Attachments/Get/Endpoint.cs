@@ -6,7 +6,7 @@ namespace Feature.CitizenReports.Attachments.Get;
 public class Endpoint(
     IReadRepository<CitizenReportAttachmentAggregate> repository,
     IFileStorageService fileStorageService)
-    : Endpoint<Request, Results<Ok<CitizenReportsAttachmentModel>, BadRequest<ProblemDetails>, NotFound>>
+    : Endpoint<Request, Results<Ok<CitizenReportAttachmentModel>, BadRequest<ProblemDetails>, NotFound>>
 {
     public override void Configure()
     {
@@ -21,7 +21,7 @@ public class Endpoint(
         });
     }
 
-    public override async Task<Results<Ok<CitizenReportsAttachmentModel>, BadRequest<ProblemDetails>, NotFound>>
+    public override async Task<Results<Ok<CitizenReportAttachmentModel>, BadRequest<ProblemDetails>, NotFound>>
         ExecuteAsync(Request req, CancellationToken ct)
     {
         var attachment =
@@ -35,7 +35,7 @@ public class Endpoint(
         var presignedUrl =
             await fileStorageService.GetPresignedUrlAsync(attachment.FilePath, attachment.UploadedFileName);
 
-        return TypedResults.Ok(new CitizenReportsAttachmentModel
+        return TypedResults.Ok(new CitizenReportAttachmentModel
         {
             FileName = attachment.FileName,
             PresignedUrl = (presignedUrl as GetPresignedUrlResult.Ok)?.Url ?? string.Empty,

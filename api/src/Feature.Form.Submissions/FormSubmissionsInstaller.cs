@@ -1,5 +1,4 @@
-﻿using Dapper;
-using Feature.Form.Submissions.Models;
+﻿using Feature.Form.Submissions.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Vote.Monitor.Answer.Module.Models;
 using Vote.Monitor.Core.Converters;

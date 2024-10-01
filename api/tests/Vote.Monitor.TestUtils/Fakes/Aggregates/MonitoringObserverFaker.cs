@@ -4,13 +4,14 @@ namespace Vote.Monitor.TestUtils.Fakes.Aggregates;
 
 public sealed class MonitoringObserverFaker : PrivateFaker<MonitoringObserver>
 {
-    private readonly MonitoringObserverStatus[] _statuses = [MonitoringObserverStatus.Active, MonitoringObserverStatus.Suspended];
+    private readonly MonitoringObserverStatus[] _statuses =
+        [MonitoringObserverStatus.Active, MonitoringObserverStatus.Suspended];
 
-    public MonitoringObserverFaker(Guid? id = null, Guid? observerId = null)
+    public MonitoringObserverFaker(ElectionRound? electionRound = null, Guid? id = null, Guid? observerId = null)
     {
         UsePrivateConstructor();
 
-        var monitoringNgo = new MonitoringNgoAggregateFaker().Generate();
+        var monitoringNgo = new MonitoringNgoAggregateFaker(electionRound: electionRound).Generate();
         var observer = new ObserverAggregateFaker(observerId).Generate();
 
         RuleFor(fake => fake.Id, fake => id ?? fake.Random.Guid());

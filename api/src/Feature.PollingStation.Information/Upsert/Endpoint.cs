@@ -32,7 +32,7 @@ public class Endpoint(IRepository<PollingStationInformation> repository,
         var authorizationResult = await authorizationService.AuthorizeAsync(User, new MonitoringObserverRequirement(req.ElectionRoundId));
         if (!authorizationResult.Succeeded)
         {
-            TypedResults.NotFound();
+            return TypedResults.NotFound();
         }
 
         var formSpecification = new GetPollingStationInformationFormSpecification(req.ElectionRoundId);
