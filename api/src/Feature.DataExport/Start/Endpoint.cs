@@ -61,9 +61,9 @@ public class Endpoint(
             jobService.EnqueueExportLocations(req.ElectionRoundId, exportedData.Id);
         }
 
-        if (req.ExportedDataType == ExportedDataType.IssueReports)
+        if (req.ExportedDataType == ExportedDataType.IncidentReports)
         {
-            jobService.EnqueueExportIssueReports(req.ElectionRoundId, req.NgoId, exportedData.Id);
+            jobService.EnqueueExportIncidentReports(req.ElectionRoundId, req.NgoId, exportedData.Id);
         }
 
         return TypedResults.Ok(new JobDetails

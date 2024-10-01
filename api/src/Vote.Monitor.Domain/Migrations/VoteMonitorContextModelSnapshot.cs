@@ -3520,7 +3520,7 @@ namespace Vote.Monitor.Domain.Migrations
                     b.ToTable("ImportValidationErrors");
                 });
 
-            modelBuilder.Entity("Vote.Monitor.Domain.Entities.IssueReportAggregate.IssueReport", b =>
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.IncidentReportAggregate.IncidentReport", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -3584,10 +3584,10 @@ namespace Vote.Monitor.Domain.Migrations
 
                     b.HasIndex("PollingStationId");
 
-                    b.ToTable("IssueReports");
+                    b.ToTable("IncidentReports");
                 });
 
-            modelBuilder.Entity("Vote.Monitor.Domain.Entities.IssueReportAttachmentAggregate.IssueReportAttachment", b =>
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.IncidentReportAttachmentAggregate.IncidentReportAttachment", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -3615,14 +3615,14 @@ namespace Vote.Monitor.Domain.Migrations
                     b.Property<Guid>("FormId")
                         .HasColumnType("uuid");
 
+                    b.Property<Guid>("IncidentReportId")
+                        .HasColumnType("uuid");
+
                     b.Property<bool>("IsCompleted")
                         .HasColumnType("boolean");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
-
-                    b.Property<Guid>("IssueReportId")
-                        .HasColumnType("uuid");
 
                     b.Property<Guid>("LastModifiedBy")
                         .HasColumnType("uuid");
@@ -3649,12 +3649,12 @@ namespace Vote.Monitor.Domain.Migrations
 
                     b.HasIndex("FormId");
 
-                    b.HasIndex("IssueReportId");
+                    b.HasIndex("IncidentReportId");
 
-                    b.ToTable("IssueReportAttachments");
+                    b.ToTable("IncidentReportAttachments");
                 });
 
-            modelBuilder.Entity("Vote.Monitor.Domain.Entities.IssueReportNoteAggregate.IssueReportNote", b =>
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.IncidentReportNoteAggregate.IncidentReportNote", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -3672,7 +3672,7 @@ namespace Vote.Monitor.Domain.Migrations
                     b.Property<Guid>("FormId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("IssueReportId")
+                    b.Property<Guid>("IncidentReportId")
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("LastModifiedBy")
@@ -3695,9 +3695,9 @@ namespace Vote.Monitor.Domain.Migrations
 
                     b.HasIndex("FormId");
 
-                    b.HasIndex("IssueReportId");
+                    b.HasIndex("IncidentReportId");
 
-                    b.ToTable("IssueReportNotes");
+                    b.ToTable("IncidentReportNotes");
                 });
 
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.LanguageAggregate.Language", b =>
@@ -6295,7 +6295,7 @@ namespace Vote.Monitor.Domain.Migrations
                     b.Navigation("PollingStation");
                 });
 
-            modelBuilder.Entity("Vote.Monitor.Domain.Entities.IssueReportAggregate.IssueReport", b =>
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.IncidentReportAggregate.IncidentReport", b =>
                 {
                     b.HasOne("Vote.Monitor.Domain.Entities.ElectionRoundAggregate.ElectionRound", "ElectionRound")
                         .WithMany()
@@ -6328,7 +6328,7 @@ namespace Vote.Monitor.Domain.Migrations
                     b.Navigation("PollingStation");
                 });
 
-            modelBuilder.Entity("Vote.Monitor.Domain.Entities.IssueReportAttachmentAggregate.IssueReportAttachment", b =>
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.IncidentReportAttachmentAggregate.IncidentReportAttachment", b =>
                 {
                     b.HasOne("Vote.Monitor.Domain.Entities.ElectionRoundAggregate.ElectionRound", "ElectionRound")
                         .WithMany()
@@ -6342,9 +6342,9 @@ namespace Vote.Monitor.Domain.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Vote.Monitor.Domain.Entities.IssueReportAggregate.IssueReport", "IssueReport")
+                    b.HasOne("Vote.Monitor.Domain.Entities.IncidentReportAggregate.IncidentReport", "IncidentReport")
                         .WithMany("Attachments")
-                        .HasForeignKey("IssueReportId")
+                        .HasForeignKey("IncidentReportId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -6352,10 +6352,10 @@ namespace Vote.Monitor.Domain.Migrations
 
                     b.Navigation("Form");
 
-                    b.Navigation("IssueReport");
+                    b.Navigation("IncidentReport");
                 });
 
-            modelBuilder.Entity("Vote.Monitor.Domain.Entities.IssueReportNoteAggregate.IssueReportNote", b =>
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.IncidentReportNoteAggregate.IncidentReportNote", b =>
                 {
                     b.HasOne("Vote.Monitor.Domain.Entities.ElectionRoundAggregate.ElectionRound", "ElectionRound")
                         .WithMany()
@@ -6369,9 +6369,9 @@ namespace Vote.Monitor.Domain.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Vote.Monitor.Domain.Entities.IssueReportAggregate.IssueReport", "IssueReport")
+                    b.HasOne("Vote.Monitor.Domain.Entities.IncidentReportAggregate.IncidentReport", "IncidentReport")
                         .WithMany("Notes")
-                        .HasForeignKey("IssueReportId")
+                        .HasForeignKey("IncidentReportId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -6379,7 +6379,7 @@ namespace Vote.Monitor.Domain.Migrations
 
                     b.Navigation("Form");
 
-                    b.Navigation("IssueReport");
+                    b.Navigation("IncidentReport");
                 });
 
             modelBuilder.Entity("Vote.Monitor.Domain.Entities.LocationAggregate.Location", b =>
@@ -6675,7 +6675,7 @@ namespace Vote.Monitor.Domain.Migrations
                     b.Navigation("MonitoringNgos");
                 });
 
-            modelBuilder.Entity("Vote.Monitor.Domain.Entities.IssueReportAggregate.IssueReport", b =>
+            modelBuilder.Entity("Vote.Monitor.Domain.Entities.IncidentReportAggregate.IncidentReport", b =>
                 {
                     b.Navigation("Attachments");
 

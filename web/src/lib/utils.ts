@@ -297,8 +297,8 @@ export function mapFormType(formType: FormType): string {
       return i18n.t('formType.closingAndCounting');
     case ZFormType.Values.CitizenReporting:
       return i18n.t('formType.citizenReporting');
-    case ZFormType.Values.IssueReporting:
-        return i18n.t('formType.issueReporting');
+    case ZFormType.Values.IncidentReporting:
+        return i18n.t('formType.incidentReporting');
     case ZFormType.Values.PSI:
       return i18n.t('formType.psi');
     case ZFormType.Values.Other:

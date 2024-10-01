@@ -1,6 +1,6 @@
 /* eslint-disable unicorn/prefer-top-level-await */
-import { FormSubmissionFollowUpStatus, IssueReportFollowUpStatus, QuickReportFollowUpStatus } from '@/common/types';
-import { IssueReportLocationType } from '@/features/responses/models/issue-report';
+import { FormSubmissionFollowUpStatus, IncidentReportFollowUpStatus, QuickReportFollowUpStatus } from '@/common/types';
+import { IncidentReportLocationType } from '@/features/responses/models/incident-report';
 import { QuickReportLocationType } from '@/features/responses/models/quick-report';
 import { z } from 'zod';
 
@@ -44,8 +44,8 @@ export const monitoringObserverDetailsRouteSearchSchema = z.object({
   quickReportFollowUpStatus: z.nativeEnum(QuickReportFollowUpStatus).optional(),
   quickReportLocationType: z.nativeEnum(QuickReportLocationType).optional(),
 
-  issueReportFollowUpStatus: z.nativeEnum(IssueReportFollowUpStatus).optional(),
-  issueReportLocationType: z.nativeEnum(IssueReportLocationType).optional(),
+  incidentReportFollowUpStatus: z.nativeEnum(IncidentReportFollowUpStatus).optional(),
+  incidentReportLocationType: z.nativeEnum(IncidentReportLocationType).optional(),
 });
 
 export type MonitoringObserverDetailsRouteSearch = z.infer<typeof monitoringObserverDetailsRouteSearchSchema>;

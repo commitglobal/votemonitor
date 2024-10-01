@@ -1,6 +1,6 @@
-import { CitizenReportFollowUpStatus, FormSubmissionFollowUpStatus, IssueReportFollowUpStatus, QuestionsAnswered, QuickReportFollowUpStatus } from '@/common/types';
+import { CitizenReportFollowUpStatus, FormSubmissionFollowUpStatus, IncidentReportFollowUpStatus, QuestionsAnswered, QuickReportFollowUpStatus } from '@/common/types';
 import { QuickReportLocationType } from '../models/quick-report';
-import { IssueReportLocationType } from '../models/issue-report';
+import { IncidentReportLocationType } from '../models/incident-report';
 
 export function mapQuickReportLocationType(locationType: QuickReportLocationType): string {
   if (locationType === QuickReportLocationType.NotRelatedToAPollingStation) return 'Not Related To A Polling Station';
@@ -34,17 +34,17 @@ export function mapCitizenReportFollowUpStatus(followUpStatus: CitizenReportFoll
   return 'Unknown';
 }
 
-export function mapIssueReportFollowUpStatus(followUpStatus: IssueReportFollowUpStatus): string {
-  if (followUpStatus === IssueReportFollowUpStatus.NotApplicable) return 'Not Applicable';
-  if (followUpStatus === IssueReportFollowUpStatus.NeedsFollowUp) return 'Needs Follow-up';
-  if (followUpStatus === IssueReportFollowUpStatus.Resolved) return 'Resolved';
+export function mapIncidentReportFollowUpStatus(followUpStatus: IncidentReportFollowUpStatus): string {
+  if (followUpStatus === IncidentReportFollowUpStatus.NotApplicable) return 'Not Applicable';
+  if (followUpStatus === IncidentReportFollowUpStatus.NeedsFollowUp) return 'Needs Follow-up';
+  if (followUpStatus === IncidentReportFollowUpStatus.Resolved) return 'Resolved';
 
   return 'Unknown';
 }
 
-export function mapIssueReportLocationType(locationType: IssueReportLocationType): string {
-  if (locationType === IssueReportLocationType.PollingStation) return 'Polling station';
-  if (locationType === IssueReportLocationType.OtherLocation) return 'Other locations';
+export function mapIncidentReportLocationType(locationType: IncidentReportLocationType): string {
+  if (locationType === IncidentReportLocationType.PollingStation) return 'Polling station';
+  if (locationType === IncidentReportLocationType.OtherLocation) return 'Other locations';
 
   return 'Unknown';
 }

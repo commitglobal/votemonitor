@@ -46,9 +46,9 @@ COPY ["src/Feature.Attachments/Feature.Attachments.csproj", "src/Feature.Attachm
 COPY ["src/Feature.Notes/Feature.Notes.csproj", "src/Feature.Notes/"]
 COPY ["src/Vote.Monitor.Api.Feature.PollingStation/Vote.Monitor.Api.Feature.PollingStation.csproj", "src/Vote.Monitor.Api.Feature.PollingStation/"]
 COPY ["src/Vote.Monitor.Api.Feature.UserPreferences/Vote.Monitor.Api.Feature.UserPreferences.csproj", "src/Vote.Monitor.Api.Feature.UserPreferences/"]
-COPY ["src/Feature.IssueReports/Feature.IssueReports.csproj", "src/Feature.IssueReports/"]
-COPY ["src/Feature.IssueReports.Notes/Feature.IssueReports.Notes.csproj", "src/Feature.IssueReports.Notes/"]
-COPY ["src/Feature.IssueReports.Attachments/Feature.IssueReports.Attachments.csproj", "src/Feature.IssueReports.Attachments/"]
+COPY ["src/Feature.IncidentReports/Feature.IncidentReports.csproj", "src/Feature.IncidentReports/"]
+COPY ["src/Feature.IncidentReports.Notes/Feature.IncidentReports.Notes.csproj", "src/Feature.IncidentReports.Notes/"]
+COPY ["src/Feature.IncidentReports.Attachments/Feature.IncidentReports.Attachments.csproj", "src/Feature.IncidentReports.Attachments/"]
 
 RUN dotnet restore "src/Vote.Monitor.Api/Vote.Monitor.Api.csproj"
 COPY . .

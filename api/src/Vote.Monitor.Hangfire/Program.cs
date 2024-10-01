@@ -32,11 +32,10 @@ using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 using Vote.Monitor.Domain.Entities.NgoAggregate;
 using Vote.Monitor.Domain.Entities.QuickReportAggregate;
 using Ardalis.SmartEnum.Dapper;
-using Vote.Monitor.Domain.Entities.IssueReportAggregate;
+using Vote.Monitor.Domain.Entities.IncidentReportAggregate;
 using Vote.Monitor.Hangfire.Jobs.Export.CitizenReports;
 using Vote.Monitor.Hangfire.Jobs.Export.FormSubmissions;
-using Vote.Monitor.Hangfire.Jobs.Export.FormSubmissions.ReadModels;
-using Vote.Monitor.Hangfire.Jobs.Export.IssueReports;
+using Vote.Monitor.Hangfire.Jobs.Export.IncidentReports;
 using Vote.Monitor.Hangfire.Jobs.Export.Locations;
 using Vote.Monitor.Hangfire.Jobs.Export.PollingStations;
 using Vote.Monitor.Hangfire.Jobs.Export.QuickReports;
@@ -87,8 +86,8 @@ SqlMapper.AddTypeHandler(typeof(QuickReportLocationType), new SmartEnumByValueTy
 SqlMapper.AddTypeHandler(typeof(DisplayLogicCondition), new SmartEnumByValueTypeHandler<DisplayLogicCondition, string>());
 SqlMapper.AddTypeHandler(typeof(SubmissionFollowUpStatus), new SmartEnumByValueTypeHandler<SubmissionFollowUpStatus, string>());
 SqlMapper.AddTypeHandler(typeof(QuickReportFollowUpStatus), new SmartEnumByValueTypeHandler<QuickReportFollowUpStatus, string>());
-SqlMapper.AddTypeHandler(typeof(IssueReportFollowUpStatus), new SmartEnumByValueTypeHandler<IssueReportFollowUpStatus, string>());
-SqlMapper.AddTypeHandler(typeof(IssueReportLocationType), new SmartEnumByValueTypeHandler<IssueReportLocationType, string>());
+SqlMapper.AddTypeHandler(typeof(IncidentReportFollowUpStatus), new SmartEnumByValueTypeHandler<IncidentReportFollowUpStatus, string>());
+SqlMapper.AddTypeHandler(typeof(IncidentReportLocationType), new SmartEnumByValueTypeHandler<IncidentReportLocationType, string>());
 
 #endregion
 
@@ -121,7 +120,7 @@ builder.Services.AddScoped<IExportQuickReportsJob, ExportQuickReportsJob>();
 builder.Services.AddScoped<IExportPollingStationsJob, ExportPollingStationsJob>();
 builder.Services.AddScoped<IExportLocationsJob, ExportLocationsJob>();
 builder.Services.AddScoped<IExportCitizenReportsJob, ExportCitizenReportsJob>();
-builder.Services.AddScoped<IExportIssueReportsJob, ExportIssueReportsJob>();
+builder.Services.AddScoped<IExportIncidentReportsJob, ExportIncidentReportsJob>();
 #endregion
 var dbConnectionString = builder.Configuration.GetNpgsqlConnectionString("Core:HangfireConnectionConfig");
 

@@ -9,7 +9,7 @@ import { format } from 'date-fns';
 import { MediaFilesCell } from '../components/MediaFilesCell/MediaFilesCell';
 
 import { DateTimeFormat } from '@/common/formats';
-import { CitizenReportFollowUpStatus, FormSubmissionFollowUpStatus, IssueReportFollowUpStatus, QuickReportFollowUpStatus } from '@/common/types';
+import { CitizenReportFollowUpStatus, FormSubmissionFollowUpStatus, IncidentReportFollowUpStatus, QuickReportFollowUpStatus } from '@/common/types';
 import { Button } from '@/components/ui/button';
 import type { RowData } from '@/components/ui/DataTable/DataTable';
 import type { ColumnDef } from '@tanstack/react-table';
@@ -20,10 +20,10 @@ import {
   type FormSubmissionByForm,
   type FormSubmissionByObserver,
 } from '../models/form-submission';
-import { IssueReportByEntry, IssueReportByForm, IssueReportByObserver } from '../models/issue-report';
+import { IncidentReportByEntry, IncidentReportByForm, IncidentReportByObserver } from '../models/incident-report';
 import { type QuickReport } from '../models/quick-report';
 import type { QuestionExtraData } from '../types';
-import { mapIssueReportLocationType, mapQuickReportLocationType } from './helpers';
+import { mapIncidentReportLocationType, mapQuickReportLocationType } from './helpers';
 
 export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry & RowData>[] = [
   {
@@ -995,11 +995,11 @@ export const citizenReportsAggregatedByFormColumnDefs: ColumnDef<CitizenReportsA
   },
 ];
 
-export const issueReportsByEntryColumnDefs: ColumnDef<IssueReportByEntry & RowData>[] = [
+export const incidentReportsByEntryColumnDefs: ColumnDef<IncidentReportByEntry & RowData>[] = [
   {
     header: ({ column }) => <DataTableColumnHeader title='Entry ID' column={column} />,
-    accessorFn:(row)=> row.issueReportId,
-    id: 'issueReportId',
+    accessorFn:(row)=> row.incidentReportId,
+    id: 'incidentReportId',
     enableSorting: true,
     enableGlobalFilter: true,
   },
@@ -1141,13 +1141,13 @@ export const issueReportsByEntryColumnDefs: ColumnDef<IssueReportByEntry & RowDa
     cell: ({ row }) => (
       <Badge
         className={cn({
-          'text-slate-700 bg-slate-200': row.original.followUpStatus === IssueReportFollowUpStatus.NotApplicable,
-          'text-red-600 bg-red-200': row.original.followUpStatus === IssueReportFollowUpStatus.NeedsFollowUp,
-          'text-green-600 bg-green-200': row.original.followUpStatus === IssueReportFollowUpStatus.Resolved,
+          'text-slate-700 bg-slate-200': row.original.followUpStatus === IncidentReportFollowUpStatus.NotApplicable,
+          'text-red-600 bg-red-200': row.original.followUpStatus === IncidentReportFollowUpStatus.NeedsFollowUp,
+          'text-green-600 bg-green-200': row.original.followUpStatus === IncidentReportFollowUpStatus.Resolved,
         })}>
-        {row.original.followUpStatus === IssueReportFollowUpStatus.NotApplicable
+        {row.original.followUpStatus === IncidentReportFollowUpStatus.NotApplicable
           ? 'Not Applicable'
-          : row.original.followUpStatus === IssueReportFollowUpStatus.NeedsFollowUp
+          : row.original.followUpStatus === IncidentReportFollowUpStatus.NeedsFollowUp
           ? 'Needs follow-up'
           : 'Resolved'}
       </Badge>
@@ -1161,8 +1161,8 @@ export const issueReportsByEntryColumnDefs: ColumnDef<IssueReportByEntry & RowDa
       <div className='text-right'>
         <Link
           className='inline-flex items-center justify-center w-6 h-6 rounded-full hover:bg-purple-100'
-          params={{ issueReportId: row.original.issueReportId }}
-          to='/responses/issue-reports/$issueReportId'>
+          params={{ incidentReportId: row.original.incidentReportId }}
+          to='/responses/incident-reports/$incidentReportId'>
           <ChevronRightIcon className='w-4 text-purple-600' />
         </Link>
       </div>
@@ -1170,7 +1170,7 @@ export const issueReportsByEntryColumnDefs: ColumnDef<IssueReportByEntry & RowDa
   },
 ];
 
-export const observerIssueReportsColumnDefs: ColumnDef<IssueReportByEntry & RowData>[] = [
+export const observerIncidentReportsColumnDefs: ColumnDef<IncidentReportByEntry & RowData>[] = [
   {
     header: ({ column }) => <DataTableColumnHeader title='Time submitted' column={column} />,
     accessorFn:(row)=> row.timeSubmitted,
@@ -1192,7 +1192,7 @@ export const observerIssueReportsColumnDefs: ColumnDef<IssueReportByEntry & RowD
     id: 'locationType',
     enableSorting: true,
     enableGlobalFilter: true,
-    cell: ({ row }) => <div>{mapIssueReportLocationType(row.original.locationType)}</div>,
+    cell: ({ row }) => <div>{mapIncidentReportLocationType(row.original.locationType)}</div>,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Location description' column={column} />,
@@ -1287,13 +1287,13 @@ export const observerIssueReportsColumnDefs: ColumnDef<IssueReportByEntry & RowD
     cell: ({ row }) => (
       <Badge
         className={cn({
-          'text-slate-700 bg-slate-200': row.original.followUpStatus === IssueReportFollowUpStatus.NotApplicable,
-          'text-red-600 bg-red-200': row.original.followUpStatus === IssueReportFollowUpStatus.NeedsFollowUp,
-          'text-green-600 bg-green-200': row.original.followUpStatus === IssueReportFollowUpStatus.Resolved,
+          'text-slate-700 bg-slate-200': row.original.followUpStatus === IncidentReportFollowUpStatus.NotApplicable,
+          'text-red-600 bg-red-200': row.original.followUpStatus === IncidentReportFollowUpStatus.NeedsFollowUp,
+          'text-green-600 bg-green-200': row.original.followUpStatus === IncidentReportFollowUpStatus.Resolved,
         })}>
-        {row.original.followUpStatus === IssueReportFollowUpStatus.NotApplicable
+        {row.original.followUpStatus === IncidentReportFollowUpStatus.NotApplicable
           ? 'Not Applicable'
-          : row.original.followUpStatus === IssueReportFollowUpStatus.NeedsFollowUp
+          : row.original.followUpStatus === IncidentReportFollowUpStatus.NeedsFollowUp
           ? 'Needs follow-up'
           : 'Resolved'}
       </Badge>
@@ -1307,8 +1307,8 @@ export const observerIssueReportsColumnDefs: ColumnDef<IssueReportByEntry & RowD
       <div className='text-right'>
         <Link
           className='inline-flex items-center justify-center w-6 h-6 rounded-full hover:bg-purple-100'
-          params={{ issueReportId: row.original.issueReportId }}
-          to='/responses/issue-reports/$issueReportId'>
+          params={{ incidentReportId: row.original.incidentReportId }}
+          to='/responses/incident-reports/$incidentReportId'>
           <ChevronRightIcon className='w-4 text-purple-600' />
         </Link>
       </div>
@@ -1316,7 +1316,7 @@ export const observerIssueReportsColumnDefs: ColumnDef<IssueReportByEntry & RowD
   },
 ];
 
-export const issueReportsByObserverColumnDefs: ColumnDef<IssueReportByObserver & RowData>[] = [
+export const incidentReportsByObserverColumnDefs: ColumnDef<IncidentReportByObserver & RowData>[] = [
   {
     header: ({ column }) => <DataTableColumnHeader title='Observer name' column={column} />,
     accessorFn:(row)=> row.observerName,
@@ -1346,8 +1346,8 @@ export const issueReportsByObserverColumnDefs: ColumnDef<IssueReportByObserver &
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Number of submissions' column={column} />,
-    accessorFn:(row)=> row.numberOfIssuesSubmitted,
-    id: 'numberOfIssuesSubmitted',
+    accessorFn:(row)=> row.numberOfIncidentsSubmitted,
+    id: 'numberOfIncidentsSubmitted',
     enableSorting: true,
     enableGlobalFilter: true,
   },
@@ -1365,10 +1365,10 @@ export const issueReportsByObserverColumnDefs: ColumnDef<IssueReportByObserver &
     enableSorting: false,
     enableGlobalFilter: true,
     cell: ({ row }) =>
-      row.original.followUpStatus === IssueReportFollowUpStatus.NeedsFollowUp ? (
+      row.original.followUpStatus === IncidentReportFollowUpStatus.NeedsFollowUp ? (
         <Badge
           className={cn({
-            'text-red-600 bg-red-200': row.original.followUpStatus === IssueReportFollowUpStatus.NeedsFollowUp,
+            'text-red-600 bg-red-200': row.original.followUpStatus === IncidentReportFollowUpStatus.NeedsFollowUp,
           })}>
           Needs followup
         </Badge>
@@ -1397,7 +1397,7 @@ export const issueReportsByObserverColumnDefs: ColumnDef<IssueReportByObserver &
   },
 ];
 
-export const issueReportsByFormColumnDefs: ColumnDef<IssueReportByForm & RowData>[] = [
+export const incidentReportsByFormColumnDefs: ColumnDef<IncidentReportByForm & RowData>[] = [
   {
     header: ({ column }) => <DataTableColumnHeader title='Form code' column={column} />,
     accessorFn: (row) => row.formCode,

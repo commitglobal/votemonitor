@@ -39,9 +39,9 @@ using Feature.CitizenReports.Notes;
 using Feature.DataExport;
 using Feature.Feedback;
 using Feature.ImportErrors;
-using Feature.IssueReports;
-using Feature.IssueReports.Attachments;
-using Feature.IssueReports.Notes;
+using Feature.IncidentReports;
+using Feature.IncidentsReports.Attachments;
+using Feature.IncidentsReports.Notes;
 using Feature.Locations;
 using Feature.Monitoring;
 using Feature.Statistics;
@@ -50,7 +50,7 @@ using Microsoft.AspNetCore.Http.Features;
 using Vote.Monitor.Core.Converters;
 using Vote.Monitor.Domain.Entities.CitizenGuideAggregate;
 using Vote.Monitor.Domain.Entities.CitizenReportAggregate;
-using Vote.Monitor.Domain.Entities.IssueReportAggregate;
+using Vote.Monitor.Domain.Entities.IncidentReportAggregate;
 using Vote.Monitor.Domain.Entities.ObserverGuideAggregate;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -163,9 +163,9 @@ builder.Services.AddCitizenReportsNotesFeature();
 builder.Services.AddCitizenReportsAttachmentsFeature();
 builder.Services.AddCitizenGuidesFeature();
 builder.Services.AddLocationsFeature(builder.Configuration.GetSection(LocationsFeatureInstaller.SectionKey));
-builder.Services.AddIssueReportsFeature();
-builder.Services.AddIssueReportsNotesFeature();
-builder.Services.AddIssueReportsAttachmentsFeature();
+builder.Services.AddIncidentReportsFeature();
+builder.Services.AddIncidentReportsNotesFeature();
+builder.Services.AddIncidentReportAttachmentsFeature();
 
 builder.Services.AddAuthorization();
 
@@ -215,8 +215,8 @@ app.UseSentryMiddleware()
         x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<ObserverGuideType, string>());
         x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<CitizenGuideType, string>());
         x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<ExportedDataType, string>());
-        x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<IssueReportLocationType, string>());
-        x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<IssueReportFollowUpStatus, string>());
+        x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<IncidentReportLocationType, string>());
+        x.Serializer.Options.Converters.Add(new SmartEnumValueConverter<IncidentReportFollowUpStatus, string>());
 
         x.Serializer.Options.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
     });
@@ -240,8 +240,8 @@ SqlMapper.AddTypeHandler(typeof(DisplayLogicCondition), new SmartEnumByValueType
 SqlMapper.AddTypeHandler(typeof(SubmissionFollowUpStatus), new SmartEnumByValueTypeHandler<SubmissionFollowUpStatus, string>());
 SqlMapper.AddTypeHandler(typeof(QuickReportFollowUpStatus), new SmartEnumByValueTypeHandler<QuickReportFollowUpStatus, string>());
 SqlMapper.AddTypeHandler(typeof(CitizenReportFollowUpStatus), new SmartEnumByValueTypeHandler<CitizenReportFollowUpStatus, string>());
-SqlMapper.AddTypeHandler(typeof(IssueReportFollowUpStatus), new SmartEnumByValueTypeHandler<IssueReportFollowUpStatus, string>());
-SqlMapper.AddTypeHandler(typeof(IssueReportLocationType), new SmartEnumByValueTypeHandler<IssueReportLocationType, string>());
+SqlMapper.AddTypeHandler(typeof(IncidentReportFollowUpStatus), new SmartEnumByValueTypeHandler<IncidentReportFollowUpStatus, string>());
+SqlMapper.AddTypeHandler(typeof(IncidentReportLocationType), new SmartEnumByValueTypeHandler<IncidentReportLocationType, string>());
 
 
 SqlMapper.AddTypeHandler(typeof(TranslatedString), new JsonToObjectConverter<TranslatedString>());

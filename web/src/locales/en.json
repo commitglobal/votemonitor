@@ -108,7 +108,7 @@
     "psi": "PSI",
     "other": "Other",
     "citizenReporting": "Citizen reporting",
-    "issueReporting": "Issue reporting"
+    "incidentReporting": "Incident reporting"
   },
   "form": {
     "field.code": "Form Code",

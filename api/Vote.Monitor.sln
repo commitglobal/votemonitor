@@ -154,17 +154,17 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Feature.Citizen.Guides", "s
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Feature.Citizen.Guides.UnitTests", "tests\Feature.Citizen.Guides.UnitTests\Feature.Citizen.Guides.UnitTests.csproj", "{4EFDD417-A568-4F39-BE44-0D97003EC42E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Feature.IssueReports", "src\Feature.IssueReports\Feature.IssueReports.csproj", "{DA219D5F-44A1-4718-BC45-8B1F5F7276F4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Feature.IncidentReports", "src\Feature.IncidentReports\Feature.IncidentReports.csproj", "{DA219D5F-44A1-4718-BC45-8B1F5F7276F4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Feature.IssueReports.Attachments", "src\Feature.IssueReports.Attachments\Feature.IssueReports.Attachments.csproj", "{9E588052-2973-4486-B578-2D5A81AF5EE2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Feature.IncidentsReports.Attachments", "src\Feature.IncidentsReports.Attachments\Feature.IncidentsReports.Attachments.csproj", "{9E588052-2973-4486-B578-2D5A81AF5EE2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Feature.IssueReports.Notes", "src\Feature.IssueReports.Notes\Feature.IssueReports.Notes.csproj", "{7A41CCBF-0CE5-4150-BC4A-2A422F4968A4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Feature.IncidentsReports.Notes", "src\Feature.IncidentsReports.Notes\Feature.IncidentsReports.Notes.csproj", "{7A41CCBF-0CE5-4150-BC4A-2A422F4968A4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Feature.IssueReports.UnitTests", "tests\Feature.IssueReports.UnitTests\Feature.IssueReports.UnitTests.csproj", "{91AB90F5-2627-4E67-A300-8FAF4F8F3019}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Feature.IncidentReports.UnitTests", "tests\Feature.IncidentReports.UnitTests\Feature.IncidentReports.UnitTests.csproj", "{91AB90F5-2627-4E67-A300-8FAF4F8F3019}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Feature.IssueReports.Notes.UnitTests", "tests\Feature.IssueReports.Notes.UnitTests\Feature.IssueReports.Notes.UnitTests.csproj", "{0567FED6-2464-462D-BE59-3A4FA50BF438}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Feature.IncidentReports.Notes.UnitTests", "tests\Feature.IncidentReports.Notes.UnitTests\Feature.IncidentReports.Notes.UnitTests.csproj", "{0567FED6-2464-462D-BE59-3A4FA50BF438}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Feature.IssueReports.Attachments.UnitTests", "tests\Feature.IssueReports.Attachments.UnitTests\Feature.IssueReports.Attachments.UnitTests.csproj", "{DF354318-6856-4925-96A0-0C458E530091}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Feature.IncidentReports.Attachments.UnitTests", "tests\Feature.IncidentReports.Attachments.UnitTests\Feature.IncidentReports.Attachments.UnitTests.csproj", "{DF354318-6856-4925-96A0-0C458E530091}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -8,7 +8,7 @@ import { CitizenReportsTab } from '../CitizenReportsTab/CitizenReportsTab';
 import FormSubmissionsTab from '../FormSubmissionsTab/FormSubmissionsTab';
 import { QuickReportsTab } from '../QuickReportsTab/QuickReportsTab';
 import { cn } from '@/lib/utils';
-import IssueReportsTab from '../IssueReportsTab/IssueReportsTab';
+import IncidentReportsTab from '../IncidentReportsTab/IncidentReportsTab';
 import { useTranslation } from 'react-i18next';
 
 const routeApi = getRouteApi('/responses/');
@@ -23,7 +23,7 @@ export default function ResponsesDashboard(): ReactElement {
   const setPrevSearch = useSetPrevSearch();
 
   return (
-    <Layout title='Responses' subtitle='View all form answers and other issues reported by your observers.'>
+    <Layout title='Responses' subtitle='View all form answers and other reports submitted by your observers.'>
       <Tabs
         defaultValue={tab ?? 'form-answers'}
         onValueChange={(tab) => {
@@ -42,7 +42,7 @@ export default function ResponsesDashboard(): ReactElement {
           <TabsTrigger value='form-answers'>Form answers</TabsTrigger>
           <TabsTrigger value='quick-reports'>Quick reports</TabsTrigger>
           {isMonitoringNgoForCitizenReporting && <TabsTrigger value='citizen-reports'>Citizen reports</TabsTrigger>}
-          <TabsTrigger value='issue-reports'>Issue reports</TabsTrigger>
+          <TabsTrigger value='incident-reports'>Incident reports</TabsTrigger>
         </TabsList>
 
         <TabsContent value='form-answers'>
@@ -53,8 +53,8 @@ export default function ResponsesDashboard(): ReactElement {
           <QuickReportsTab />
         </TabsContent>
 
-        <TabsContent value='issue-reports'>
-          <IssueReportsTab />
+        <TabsContent value='incident-reports'>
+          <IncidentReportsTab />
         </TabsContent>
 
         {isMonitoringNgoForCitizenReporting && (

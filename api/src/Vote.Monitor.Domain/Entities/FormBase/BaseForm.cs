@@ -7,7 +7,7 @@ using Vote.Monitor.Domain.Entities.FormAnswerBase;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
 using Vote.Monitor.Domain.Entities.FormBase.Questions;
 using Vote.Monitor.Domain.Entities.FormSubmissionAggregate;
-using Vote.Monitor.Domain.Entities.IssueReportAggregate;
+using Vote.Monitor.Domain.Entities.IncidentReportAggregate;
 using Vote.Monitor.Domain.Entities.PollingStationInfoAggregate;
 
 namespace Vote.Monitor.Domain.Entities.FormBase;
@@ -198,10 +198,10 @@ public class BaseForm : AuditableBaseEntity, IAggregateRoot
         );
     }
 
-    public IssueReport FillIn(IssueReport issueReport, List<BaseAnswer>? answers)
+    public IncidentReport FillIn(IncidentReport incidentReport, List<BaseAnswer>? answers)
     {
         return BaseFillIn(
-            issueReport,
+            incidentReport,
             answers,
             report => report.ClearAnswers(),
             (report, ans, numberOfQuestionsAnswered, numberOfFlaggedAnswers) =>
