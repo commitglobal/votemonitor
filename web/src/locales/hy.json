@@ -1,0 +1,228 @@
+{
+  "app": {
+    "action": {
+      "activate": "ակտիվացնել",
+      "add": "ավելացնել",
+      "addChoice": "ավելացնել ընտրություն",
+      "apply": "կիրառել",
+      "attach": "կցել",
+      "back": "հետ",
+      "cancel": "չեղարկել",
+      "clear": "մաքրել",
+      "close": "փակել",
+      "confirm": "հաստատել",
+      "create": "ստեղծել",
+      "deactivate": "ապաակտիվացնել",
+      "delete": "ջնջել",
+      "download": "ներբեռնել",
+      "edit": "խմբագրել",
+      "exit": "դուրս գալ",
+      "export": "արտահանել",
+      "filter": "ֆիլտրել",
+      "leave": "թողնել",
+      "publish": "հրապարակել",
+      "remove": "հեռացնել",
+      "reset": "նորից սկսել",
+      "restore": "վերականգնել",
+      "save": "պահպանել",
+      "select": "ընտրել",
+      "update": "թարմացնել",
+      "upload": "վերբեռնել",
+      "view": "դիտել"
+    }
+  },
+  "app.input.pleaseSpecify": "խնդրում ենք նշել",
+  "containers": {
+    "countrySelect": {
+      "noResults": "Երկիրը չի գտնվել:",
+      "placeholder": "ընտրել երկիրը...",
+      "searchPlaceholder": "փնտրել երկիրը..."
+    },
+    "languageSelect": {
+      "noResults": "Լեզուն չի գտնվել:",
+      "placeholder": "ընտրել լեզուն...",
+      "searchPlaceholder": "փնտրել լեզուն..."
+    }
+  },
+  "election-round.action.create": "Ստեղծել նոր ընտրական իրադարձություն",
+  "election-round.field.country": "երկիր",
+  "election-round.field.englishTitle": "Անգլերեն վերնագիր",
+  "election-round.field.startDate": "Մեկնարկի ամսաթիվ",
+  "election-round.field.title": "Վերնագիր",
+  "election-round.placeholder.englishTitle": "Վերնագիրը անգլերենով",
+  "election-round.placeholder.title": "Վերնագիր",
+  "electionEvent": {
+    "eventDetails": {
+      "cardTitle": "Միջոցառման մանրամասները",
+      "country": "երկիր",
+      "englishTitle": "ընտրական միջոցառման անվանումը անգլերեն",
+      "startDate": "Մեկնարկի ամսաթիվ",
+      "status": "կարգավիճակ",
+      "tabTitle": "Միջոցառման մանրամասները",
+      "title": "ընտրական միջոցառման անվանում"
+    },
+    "guides": {
+      "buttonUploadCitizenGuide": "Վերբեռնել քաղաքացիական ուղեցույցը",
+      "buttonUploadObserverGuide": "Վերբեռնել դիտորդի ուղեցույցը",
+      "citizenGuidesCardTitle": "Ուղեցույցներ քաղաքացու համար",
+      "citizenGuidesTabTitle": "Ուղեցույցներ քաղաքացու համար",
+      "headers": {
+        "createdBy": "Ստեղծված",
+        "title": "Վերնագիր",
+        "uploadedOn": "Վերբեռնված"
+      },
+      "observerGuidesCardTitle": "Ուղեցույցներ դիտորդների համար",
+      "observerGuidesTabTitle": "Ուղեցույցներ դիտորդների համար",
+      "textGuide": "Տեքստային ուղեցույց",
+      "urlGuide": "Url-ի (վեբ հասցե) ուղեցույց"
+    },
+    "locations": {
+      "cardTitle": "Գտնվելու վայրեր",
+      "headers": {
+        "level1": "Մակարդակ 1",
+        "level2": "Մակարդակ 2",
+        "level3": "Մակարդակ 3",
+        "level4": "Մակարդակ 4",
+        "level5": "Մակարդակ 5",
+        "tags": "Գտնվելու վայրի պիտակներ"
+      },
+      "resetFilters": "վերականգնել ֆիլտրերը",
+      "tabTitle": "Գտնվելու վայրեր"
+    },
+    "observerForms": {
+      "cardTitle": "Դիտարկման ձևեր",
+      "createDialogTitle": "Ստեղծել ձև",
+      "headers": {
+        "formCode": "ձևի կոդ",
+        "formType": "Ձևաթղթի տիպ",
+        "language": "Լեզու",
+        "name": "Անուն",
+        "questions": "Հարցեր",
+        "status": "Կարգավիճակ",
+        "updatedOn": "Թարմացված"
+      },
+      "resetFilters": "վերականգնել ֆիլտրերը",
+      "tabTitle": "Դիտորդի ձևաթղթեր"
+    },
+    "pollingStations": {
+      "cardTitle": "ընտրական տեղամասեր",
+      "headers": {
+        "address": "հասցե",
+        "level1": "մաս 1",
+        "level2": "մաս 2",
+        "level3": "մաս 3",
+        "level4": "մաս 4",
+        "level5": "մաս 5",
+        "number": "համար",
+        "tags": "Ընտրատեղամասերի պիտակներ"
+      },
+      "resetFilters": "Վերականգնել ֆիլտրվածները",
+      "tabTitle": "Ընտրական տեղամասեր"
+    }
+  },
+  "form": {
+    "field.code": "Ձևի կոդ",
+    "field.defaultLanguage": "հիմնական լեզու",
+    "field.description": "նկարագրություն",
+    "field.formType": "Ձևանմուշի տեսակ",
+    "field.languageCode": "լեզու",
+    "field.languages": "հասանելի լեզուներ",
+    "field.name": "Ձևի անուն",
+    "field.status": "կարգավիճակ",
+    "placeholder.code": "Ձևի կոդ",
+    "placeholder.defaultLanguage": "Ընտրել նախնական լեզուն",
+    "placeholder.description": "Ձևի նկարագրություն",
+    "placeholder.languages": "ընտրել հասանելի լեզուները",
+    "placeholder.name": "Ձևի անուն"
+  },
+  "form-template.field.code": "Ձևի կոդ",
+  "form-template.field.defaultLanguage": "հիմնական լեզու",
+  "form-template.field.description": "նկարագրություն",
+  "form-template.field.formTemplateType": "Ձևանմուշի տեսակ",
+  "form-template.field.languages": "առկա լեզուներ",
+  "form-template.field.name": "Ձևի անուն",
+  "form-template.field.status": "կարգավիճակ",
+  "form-template.placeholder.code": "Ձևի կոդ",
+  "form-template.placeholder.defaultLanguage": "Ընտրել նախնական լեզու",
+  "form-template.placeholder.description": "Ձևի նկարագրություն",
+  "form-template.placeholder.languages": "Ընտրել հասանելի լեզուները",
+  "form-template.placeholder.name": "Ձևի անուն",
+  "formTemplateType": {
+    "closingAndCounting": "Փակում և հաշվում",
+    "opening": "բացում",
+    "other": "այլ",
+    "voting": "քվեարկություն"
+  },
+  "formType": {
+    "citizenReporting": "Քաղաքացիական հաշվետվություն",
+    "closingAndCounting": "Փակում և հաշվում",
+    "opening": "բացում",
+    "other": "այլ",
+    "voting": "քվեարկություն"
+  },
+  "navigation.button.back": "հետ",
+  "navigation.button.next": "հաջորդ",
+  "navigation.button.submit": "հաստատել, ներկայացնել",
+  "ngoAdminDashboard": {
+    "citizenReportsCardTitle": "Քաղաքացիների հաշվետվություններ",
+    "citizenReportsIndicatorTitle": "քաղաքացիական զեկույցները ստացվել են {{ինտերվալ}} - ով",
+    "flaggedAnswersCardTitle": "Պիտակավորված պատասխաններ",
+    "flaggedAnswersIndicatorTitle": "պատասխանները պիտակավորվել են ՝ օգտագործելով {{ինտերվալ}} - ը",
+    "observersAccountsCardTitle": "Դիտորդների հաշիվներ",
+    "observersAccountsIndicatorTitle": "Հաշիվների ընդհանուր քանակը",
+    "observersInPollingStationsIndicatorMetricLabel": "Առնվազն մեկ հարցի պատասխանել",
+    "observersInPollingStationsIndicatorTitle": "Դիտորդները ընտրատեղամասերում",
+    "observersOnFieldCardTitle": "Դիտորդները տեղում",
+    "pollingStationCardTitle": "Ընտրական տեղամասեր",
+    "questionsAnsweredCardTitle": "Հարցերի պատասխաններ",
+    "questionsAnsweredIndicatorTitle": "Հարցերի պատասխաններ {{ինտերվալ}}-ի մեջ",
+    "quickReportsCardTitle": "Արագ հաշվետվություններ",
+    "quickReportsIndicatorTitle": "արագ զեկույցները փոխանցվել են {{ինտերվալ}}-ով",
+    "startedFormsCardTitle": "Սկզբնական ձևեր",
+    "startedFormsIndicatorTitle": "Ձևաթղթեր, որոնք գործարկվում են {{ինտերվալնե}} - ի միջև",
+    "stationsVisitedByAtLeastOneObserverIndicatorTitle": "Առնվազն մեկ դիտորդի կողմից այցելված ընտրատեղամաս",
+    "subtitle": "Հիմնական ցուցանիշներ.",
+    "timeSpentObservingCardTitle": "Դիտարկման վրա ծախսված ժամանակը",
+    "timeSpentObservingIndicatorTitle": "Մեկնարկի և ավարտի հիման վրա հաղորդված",
+    "title": "Կառավարման վահանակ"
+  },
+  "pagination": {
+    "dataTable": {
+      "goToFirstPage": "գնալ առաջին էջ",
+      "goToLastPage": "գնալ վերջին էջ",
+      "goToNextPage": "գնալ հաջորդ էջ",
+      "goToPreviousPage": "գնալ նախորդ էջ",
+      "perPage": "մեկ էջի համար",
+      "resultsSummary": "ցուցադրում {{սկզբից}} մինչև {{վերջ}} արդյունքները {{ընդհանուր}}"
+    }
+  },
+  "questionEditor.question.code": "ID կոդ",
+  "questionEditor.question.codeDescription": "Առավելագույն սահմանը 16 նիշ է։ Կարող եք օգտագործել տառերի և թվերի համադրություններ։",
+  "questionEditor.question.displayLogic": "Կիրառել ցուցադրման տրամաբանություն այս հարցին",
+  "questionEditor.question.displayLogic.chooseQuestion": "Ցույց տալ այս հարցը միայն նախորդ հարցին պատասխանելիս",
+  "questionEditor.question.displayLogic.invalid": "Ցուցադրման տրամաբանություն գործի դնելու համար պետք է ունենալ նախորդ հարց, որը կլինի թվային հարց, գնահատման հարց, մեկ ընտրությամբ կամ բազմակի ընտրությամբ հարց",
+  "questionEditor.question.helptext": "մանրամասներ",
+  "questionEditor.question.inputPlaceholder": "բաց թողնված հատված",
+  "questionEditor.question.ratingScale.oneTo10": "1-ից 10",
+  "questionEditor.question.ratingScale.oneTo3": "1-ից 3",
+  "questionEditor.question.ratingScale.oneTo4": "1-ից 4",
+  "questionEditor.question.ratingScale.oneTo5": "1-ից 5",
+  "questionEditor.question.ratingScale.oneTo6": "1-ից 6",
+  "questionEditor.question.ratingScale.oneTo7": "1-ից 7",
+  "questionEditor.question.ratingScale.oneTo8": "1-ից 8",
+  "questionEditor.question.ratingScale.oneTo9": "1-ից 9",
+  "questionEditor.question.scale.lowerLabel": "ստորին պիտակ",
+  "questionEditor.question.scale.upperLabel": "վերին պիտակ",
+  "questionEditor.question.text": "Հարցի տեքստ",
+  "questionEditor.question.textRequired": "Պահանջվում է հարցի տեքստ",
+  "questionEditor.questionType.dateQuestion": "ամսաթվի հարց",
+  "questionEditor.questionType.multiSelectQuestion": "բազմակի ընտրությամբ հարց",
+  "questionEditor.questionType.numberQuestion": "Համարային հարց",
+  "questionEditor.questionType.ratingQuestion": "Գնահատման հարց",
+  "questionEditor.questionType.singleSelectQuestion": "մեկ ընտրությամբ հարց",
+  "questionEditor.questionType.textQuestion": "տեքստի հարց",
+  "questionEditor.ratingQuestion.scale": "սանդղակ",
+  "questionEditor.selectQuestion.addFreeTextOption": "Ավելացնել ազատ տեքստի տարբերակ",
+  "questionEditor.selectQuestion.toMultiSelectQuestion": "դարձնել բազմակի ընտրությամբ հարց",
+  "questionEditor.selectQuestion.toSingleSelectQuestion": "դարձնել մեկ ընտրությամբ հարց"
+}
