@@ -1,7 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Vote.Monitor.Domain;
-
-namespace Feature.CitizenReports.UpdateStatus;
+﻿namespace Feature.CitizenReports.UpdateStatus;
 
 public class Endpoint(VoteMonitorContext context) : Endpoint<Request, Results<NoContent, NotFound>>
 {

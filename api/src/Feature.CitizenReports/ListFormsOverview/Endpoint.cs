@@ -1,9 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Vote.Monitor.Domain;
+﻿namespace Feature.CitizenReports.ListFormsOverview;
 
-namespace Feature.CitizenReports.ListFormsOverview;
-
-public class Endpoint(VoteMonitorContext context) : Endpoint<Request, Response>
+public class Endpoint(VoteMonitorContext context, IAuthorizationService authorizationService)
+    : Endpoint<Request, Results<Ok<Response>, NotFound>>
 {
     public override void Configure()
     {
@@ -15,8 +13,16 @@ public class Endpoint(VoteMonitorContext context) : Endpoint<Request, Response>
         Summary(x => { x.Summary = "Citizen report submissions aggregated by form"; });
     }
 
-    public override async Task<Response> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<Results<Ok<Response>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
+        var authorizationResult =
+            await authorizationService.AuthorizeAsync(User,
+                new CitizenReportingNgoAdminRequirement(req.ElectionRoundId));
+        if (!authorizationResult.Succeeded)
+        {
+            return TypedResults.NotFound();
+        }
+
         var aggregatedFormOverviews = await context
             .CitizenReports
             .Where(x => x.ElectionRoundId == req.ElectionRoundId
@@ -62,6 +68,6 @@ public class Endpoint(VoteMonitorContext context) : Endpoint<Request, Response>
             })
             .ToListAsync(ct);
 
-        return new Response { AggregatedForms = aggregatedFormOverviews };
+        return TypedResults.Ok(new Response { AggregatedForms = aggregatedFormOverviews });
     }
 }

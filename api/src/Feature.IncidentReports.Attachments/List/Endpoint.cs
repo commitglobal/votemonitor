@@ -48,7 +48,7 @@ public class Endpoint(
 
         var result = await Task.WhenAll(tasks);
 
-        return new Response()
+        return new Response
         {
             Attachments = result
         };
