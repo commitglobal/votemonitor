@@ -29,11 +29,11 @@ export interface IncidentReportByEntry {
   locationType: IncidentReportLocationType;
   locationDescription?: string;
   pollingStationId?: string;
-  level1?: string;
-  level2?: string;
-  level3?: string;
-  level4?: string;
-  level5?: string;
+  pollingStationLevel1?: string;
+  pollingStationLevel2?: string;
+  pollingStationLevel3?: string;
+  pollingStationLevel4?: string;
+  pollingStationLevel5?: string;
   pollingStationNumber?: string;
   mediaFilesCount: number;
   notesCount: number;
@@ -44,7 +44,6 @@ export interface IncidentReportByEntry {
 }
 
 export interface IncidentReportByObserver {
-  email: string;
   observerName: string;
   monitoringObserverId: string;
   numberOfFlaggedAnswers: number;

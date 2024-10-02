@@ -1,6 +1,5 @@
 using System.Text.Json.Serialization;
 using Ardalis.SmartEnum.SystemTextJson;
-using Vote.Monitor.Answer.Module.Mappers;
 using Vote.Monitor.Answer.Module.Models;
 using Vote.Monitor.Domain.Entities.IncidentReportAggregate;
 
@@ -21,7 +20,10 @@ public class IncidentReportModel
     public string? LocationDescription { get; init; }
     
     public IReadOnlyList<BaseAnswerModel> Answers { get; init; }
-
+    
+    public NoteModel[] Notes { get; init; } = [];
+    public AttachmentModel[] Attachments { get; init; } = [];
+    
     public static IncidentReportModel FromEntity(IncidentReport entity) => new()
     {
         Id = entity.Id,
@@ -32,6 +34,6 @@ public class IncidentReportModel
         FollowUpStatus = entity.FollowUpStatus,
         PollingStationId = entity.PollingStationId,
         LocationDescription = entity.LocationDescription,
-        LocationType = entity.LocationType,
+        LocationType = entity.LocationType
     };
 }

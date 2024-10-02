@@ -1,9 +1,4 @@
-﻿using Authorization.Policies.Requirements;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore;
-using Vote.Monitor.Domain;
-
-namespace Feature.IncidentReports.UpdateStatus;
+﻿namespace Feature.IncidentReports.UpdateStatus;
 
 public class Endpoint(IAuthorizationService authorizationService,VoteMonitorContext context) : Endpoint<Request, Results<NoContent, NotFound>>
 {
