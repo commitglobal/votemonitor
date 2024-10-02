@@ -41,6 +41,20 @@
       "save": "Go to app"
     }
   },
+  "select_app_mode": {
+    "heading": "Select app mode",
+    "description": "You can monitor the electoral process as an accredited observer, or just as a citizen interested in supporting fair and democratic elections.",
+    "accredited_observer": {
+      "title": "Vote Monitor for Accredited Observers",
+      "description": "I am an accredited independent observer, invited by an NGO to observe the electoral process. **"
+    },
+    "citizen": {
+      "title": "Vote Monitor for Citizens",
+      "description": "I am a citizen and I want to report electoral irregularities I see during the electoral campaign or on election day."
+    },
+    "helper": "**As an accredited observer you will be able to switch to Citizen mode at any time, from the app’s menu.",
+    "continue": "Continue"
+  },
   "login": {
     "disclaimer": {
       "paragraph1": "Please note that if you are not accredited as an independent observer by an organization that monitors election processes in your country, you cannot use the Vote Monitor app.",
