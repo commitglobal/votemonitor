@@ -1,4 +1,5 @@
 import { authApi } from '@/common/auth-api';
+import { LanguageSelector } from '@/components/LanguageSelector/LanguageSelector';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -40,7 +41,8 @@ const Header = (): FunctionComponent => {
   const navigate = useNavigate();
   const [selectedElectionRound, setSelectedElection] = useState<ElectionRoundMonitoring>();
   const router = useRouter();
-  const { setCurrentElectionRoundId, setIsMonitoringNgoForCitizenReporting, currentElectionRoundId } = useCurrentElectionRoundStore(s => s);
+  const { setCurrentElectionRoundId, setIsMonitoringNgoForCitizenReporting, currentElectionRoundId } =
+    useCurrentElectionRoundStore((s) => s);
 
   const handleSelectElectionRound = async (electionRound?: ElectionRoundMonitoring): Promise<void> => {
     if (electionRound && selectedElectionRound?.electionRoundId != electionRound.electionRoundId) {
@@ -49,13 +51,13 @@ const Header = (): FunctionComponent => {
       setIsMonitoringNgoForCitizenReporting(electionRound.isMonitoringNgoForCitizenReporting);
 
       await queryClient.invalidateQueries({
-        predicate: (query) => query.queryKey !== electionRoundKeys.all
+        predicate: (query) => query.queryKey !== electionRoundKeys.all,
       });
 
       router.invalidate();
       // router.navigate({ to: "/" });
     }
-  }
+  };
 
   const { status, data: electionRounds } = useQuery({
     queryKey: electionRoundKeys.all,
@@ -69,10 +71,9 @@ const Header = (): FunctionComponent => {
 
   useEffect(() => {
     if (!!electionRounds) {
-      const electionRound = electionRounds.find(x => x.electionRoundId === currentElectionRoundId);
+      const electionRound = electionRounds.find((x) => x.electionRoundId === currentElectionRoundId);
       handleSelectElectionRound(electionRound ?? electionRounds[0]);
     }
-
   }, [electionRounds]);
 
   return (
@@ -165,6 +166,11 @@ const Header = (): FunctionComponent => {
                           </Link>
                         </Menu.Item>
                       ))}
+
+                      <Menu.Item key='language-selector'>
+                        <LanguageSelector />
+                      </Menu.Item>
+
                       <Menu.Item key='sign-out'>
                         <Button
                           type='button'
@@ -230,8 +236,7 @@ const Header = (): FunctionComponent => {
                   <UserCircleIcon className='w-10 h-10 fill-gray-400' />
                 </div>
                 <div className='ml-3'>
-                  <div className='text-base font-medium leading-none text-gray-800'>{'your name'}</div>
-                  <div className='text-sm font-medium text-gray-500'>{'your email'}</div>
+                  <div className='text-base font-medium leading-none text-gray-800'>{selectedElectionRound?.title}</div>
                 </div>
               </div>
               <div className='px-2 mt-3 space-y-1'>
@@ -246,6 +251,8 @@ const Header = (): FunctionComponent => {
                     {item.name}
                   </Disclosure.Button>
                 ))}
+
+                <LanguageSelector />
                 <Disclosure.Button
                   key='Sign Out'
                   as={Button}
