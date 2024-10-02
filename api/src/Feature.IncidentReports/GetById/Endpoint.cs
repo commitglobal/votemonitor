@@ -1,13 +1,4 @@
-﻿using Authorization.Policies.Requirements;
-using Feature.IncidentReports.Models;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore;
-using Vote.Monitor.Answer.Module.Mappers;
-using Vote.Monitor.Core.Services.FileStorage.Contracts;
-using Vote.Monitor.Domain;
-using Vote.Monitor.Form.Module.Mappers;
-
-namespace Feature.IncidentReports.GetById;
+﻿namespace Feature.IncidentReports.GetById;
 
 public class Endpoint(
     IAuthorizationService authorizationService,
@@ -35,13 +26,40 @@ public class Endpoint(
 
         var incidentReport = await context
             .IncidentReports
+            .Include(x => x.Form)
             .Include(x => x.Attachments)
             .Include(x => x.Notes)
             .Include(x => x.PollingStation)
+            .Include(x => x.MonitoringObserver)
+            .ThenInclude(x => x.Observer)
+            .ThenInclude(x => x.ApplicationUser)
             .Where(x =>
                 x.ElectionRoundId == req.ElectionRoundId
                 && x.Form.MonitoringNgo.NgoId == req.NgoId
                 && x.Id == req.IncidentReportId)
+            .Select(incidentReport => new
+            {
+                Id = incidentReport.Id,
+                FormId = incidentReport.Form.Id,
+                FormCode = incidentReport.Form.Code,
+                FormName = incidentReport.Form.Name,
+                FormDefaultLanguage = incidentReport.Form.DefaultLanguage,
+                FormQuestions = incidentReport.Form.Questions,
+                Answers = incidentReport.Answers,
+                Notes = incidentReport.Notes,
+                Attachments = incidentReport.Attachments,
+                Questions = incidentReport.Form.Questions,
+                MonitoringObserverId = incidentReport.MonitoringObserverId,
+                ObserverName = incidentReport.MonitoringObserver.Observer.ApplicationUser.LastName + " " +
+                               incidentReport.MonitoringObserver.Observer.ApplicationUser.LastName,
+                TimeSubmitted = incidentReport.LastModifiedOn ?? incidentReport.CreatedOn,
+                FollowUpStatus = incidentReport.FollowUpStatus,
+
+                LocationType = incidentReport.LocationType,
+                LocationDescription = incidentReport.LocationDescription,
+
+                PollingStation = incidentReport.PollingStation,
+            })
             .AsSplitQuery()
             .FirstOrDefaultAsync(ct);
 
@@ -49,13 +67,6 @@ public class Endpoint(
         {
             return TypedResults.NotFound();
         }
-
-        var form = await context
-            .Forms
-            .Where(x =>
-                x.ElectionRoundId == req.ElectionRoundId
-                && x.Id == incidentReport.FormId)
-            .FirstAsync(ct);
 
         var tasks = incidentReport.Attachments
             .Select(AttachmentModel.FromEntity)
@@ -76,22 +87,24 @@ public class Endpoint(
         var response = new Response
         {
             IncidentReportId = incidentReport.Id,
-            FormId = form.Id,
-            FormCode = form.Code,
-            FormName = form.Name,
-            FormDefaultLanguage = form.DefaultLanguage,
+            FormId = incidentReport.FormId,
+            FormCode = incidentReport.FormCode,
+            FormName = incidentReport.FormName,
+            FormDefaultLanguage = incidentReport.FormDefaultLanguage,
             Answers = incidentReport.Answers.Select(AnswerMapper.ToModel).ToArray(),
             Notes = incidentReport.Notes.Select(NoteModel.FromEntity).ToArray(),
             Attachments = attachments,
-            Questions = form.Questions.Select(QuestionsMapper.ToModel).ToArray(),
+            Questions = incidentReport.FormQuestions.Select(QuestionsMapper.ToModel).ToArray(),
 
-            TimeSubmitted = incidentReport.LastModifiedOn ?? incidentReport.CreatedOn,
+            MonitoringObserverId = incidentReport.MonitoringObserverId,
+            ObserverName = incidentReport.ObserverName,
+            TimeSubmitted = incidentReport.TimeSubmitted,
             FollowUpStatus = incidentReport.FollowUpStatus,
 
             LocationType = incidentReport.LocationType,
             LocationDescription = incidentReport.LocationDescription,
 
-            PollingStationId = incidentReport.PollingStation?.Level1,
+            PollingStationId = incidentReport.PollingStation?.Id,
             PollingStationLevel1 = incidentReport.PollingStation?.Level1,
             PollingStationLevel2 = incidentReport.PollingStation?.Level2,
             PollingStationLevel3 = incidentReport.PollingStation?.Level3,

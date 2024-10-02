@@ -1,9 +1,5 @@
 ﻿using System.Net;
-using Authorization.Policies.Requirements;
-using Feature.IncidentReports.Models;
 using Feature.IncidentReports.Specifications;
-using Microsoft.AspNetCore.Authorization;
-using Vote.Monitor.Answer.Module.Mappers;
 using Vote.Monitor.Domain.Entities.FormAggregate;
 using Vote.Monitor.Domain.Entities.FormAnswerBase;
 using Vote.Monitor.Domain.Entities.FormAnswerBase.Answers;
