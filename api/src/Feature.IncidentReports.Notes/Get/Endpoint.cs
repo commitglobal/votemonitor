@@ -7,9 +7,9 @@ public class Endpoint(IReadRepository<IncidentReportNoteAggregate> repository)
 {
     public override void Configure()
     {
-        Get("/api/election-rounds/{electionRoundId}/incident-report-notes/{id}");
+        Get("/api/election-rounds/{electionRoundId}/incident-reports/{incidentReportId}/notes/{id}");
         DontAutoTag();
-        Options(x => x.WithTags("incident-reports-notes"));
+        Options(x => x.WithTags("incident-report-notes"));
         Summary(s => { s.Summary = "Gets a note by id for a incident report"; });
     }
 

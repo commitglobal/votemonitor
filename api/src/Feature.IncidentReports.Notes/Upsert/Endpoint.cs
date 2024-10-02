@@ -8,9 +8,9 @@ public class Endpoint(
 {
     public override void Configure()
     {
-        Post("/api/election-rounds/{electionRoundId}/incident-report-notes");
+        Post("/api/election-rounds/{electionRoundId}/incident-reports/{incidentReportId}/notes");
         DontAutoTag();
-        Options(x => x.WithTags("incident-reports-notes"));
+        Options(x => x.WithTags("incident-report-notes"));
         Summary(s => { s.Summary = "Upserts a note for a incident report"; });
         
     }
