@@ -83,7 +83,7 @@ public class Endpoint(
 
             var attachments = await Task.WhenAll(tasks);
 
-            incidentReportsModels.Add(new IncidentReportModel()
+            incidentReportsModels.Add(new IncidentReportModel
             {
                 Id = incidentReport.Id,
                 FormId = incidentReport.FormId,

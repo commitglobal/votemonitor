@@ -1,14 +1,13 @@
 ﻿using Feature.CitizenReports.Models;
-using Microsoft.EntityFrameworkCore;
 using Vote.Monitor.Answer.Module.Mappers;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
-using Vote.Monitor.Domain;
 using Vote.Monitor.Form.Module.Mappers;
 
 namespace Feature.CitizenReports.GetById;
 
 public class Endpoint(
     VoteMonitorContext context,
+    IAuthorizationService authorizationService,
     IFileStorageService fileStorageService) : Endpoint<Request, Results<Ok<Response>, NotFound>>
 {
     public override void Configure()
@@ -23,6 +22,13 @@ public class Endpoint(
 
     public override async Task<Results<Ok<Response>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
+        var authorizationResult =
+            await authorizationService.AuthorizeAsync(User, new CitizenReportingNgoAdminRequirement(req.ElectionRoundId));
+        if (!authorizationResult.Succeeded)
+        {
+            return TypedResults.NotFound();
+        }
+        
         var citizenReport = await context
             .CitizenReports
             .Include(x => x.Attachments)
