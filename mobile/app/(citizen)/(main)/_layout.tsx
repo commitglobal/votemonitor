@@ -16,7 +16,7 @@ export default function MainLayout() {
   return (
     <Stack>
       <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
-      <Stack.Screen name="questionnaire" options={{ headerShown: false }} />
+      <Stack.Screen name="questionnaire/[questionId]" options={{ headerShown: false }} />
     </Stack>
   );
 }

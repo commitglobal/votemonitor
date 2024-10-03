@@ -1,30 +1,36 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Redirect } from "expo-router";
-import * as SecureStore from "expo-secure-store";
-import { SECURE_STORAGE_KEYS } from "../common/constants";
+import { useAppMode } from "../contexts/app-mode/AppModeContext.provider";
+import { Typography } from "../components/Typography";
+import { Screen } from "../components/Screen";
+import { YStack } from "tamagui";
+import Button from "../components/Button";
 
 function AppModeWrapper() {
   console.log("AppModeWrapper");
-  const APP_MODE = "citizen";
 
-  useEffect(() => {
-    try {
-      const onboardingComplete = SecureStore.getItem(SECURE_STORAGE_KEYS.ONBOARDING_NEW_COMPLETE);
-      if (onboardingComplete !== "true") {
-        // setOnboardingComplete(false);
-      }
-    } catch (err) {
-      // Sentry.captureException(err);
-    }
-  }, []);
+  const { appMode, setAppMode } = useAppMode();
+  console.log("appMode", appMode);
 
-  // 1. Redirect to onboarding if not already done // TODO: add another onboarding key
-  // 2. Redirect to citizen or app based on last OnBoarding step (Select AppMode)
+  // 1. Redirect to citizen or app based on last OnBoarding step (Select AppMode)
+  if (appMode === "citizen") {
+    return <Redirect href={`(citizen)`} />;
+  }
   // 2.1. The last selection will be added in a context and here will take care of redirecting so we can do it declaratively
-  return APP_MODE === "citizen" ? (
-    <Redirect href="(citizen)/" />
-  ) : (
-    <Redirect href="(observer)/(app)" />
+  if (appMode === "observer") {
+    return <Redirect href="(observer)/(app)" />;
+  }
+
+  // 3. Redirect to onboarding if not already done // TODO: add another onboarding key
+  // TODO: do we actually need an onboarding screen?
+  return (
+    <Screen>
+      <Typography>Onboarding</Typography>
+      <YStack style={{ paddingVertical: 100, gap: 25 }}>
+        <Button onPress={() => setAppMode("citizen")}>Go to Citizen</Button>
+        <Button onPress={() => setAppMode("observer")}>Go to Observer</Button>
+      </YStack>
+    </Screen>
   );
 }
 
