@@ -29,6 +29,19 @@ public class GetRequestValidatorTests
         // Assert
         result.ShouldHaveValidationErrorFor(x => x.ElectionRoundId);
     }
+    
+    [Fact]
+    public void Validation_ShouldFail_When_CitizenReportId_Empty()
+    {
+        // Arrange
+        var request = new Get.Request { CitizenReportId = Guid.Empty };
+
+        // Act
+        var result = _validator.TestValidate(request);
+
+        // Assert
+        result.ShouldHaveValidationErrorFor(x => x.CitizenReportId);
+    }
 
     [Fact]
     public void Validation_ShouldPass_When_ValidRequest()
@@ -37,6 +50,7 @@ public class GetRequestValidatorTests
         var request = new Get.Request
         {
             ElectionRoundId = Guid.NewGuid(),
+            CitizenReportId = Guid.NewGuid(),
             Id = Guid.NewGuid()
         };
 
