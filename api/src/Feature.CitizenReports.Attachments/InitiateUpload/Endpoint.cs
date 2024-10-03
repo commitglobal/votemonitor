@@ -10,7 +10,7 @@ public class Endpoint(
 {
     public override void Configure()
     {
-        Post("/api/election-rounds/{electionRoundId}/citizen-report-attachments:init");
+        Post("/api/election-rounds/{electionRoundId}/citizen-reports/{citizenReportId}/attachments:init");
         DontAutoTag();
         AllowAnonymous();
         Options(x => x.WithTags("citizen-report-attachments", "public"));
