@@ -3,11 +3,13 @@ import { Icon } from "../../../../../components/Icon";
 import { Screen } from "../../../../../components/Screen";
 import Header from "../../../../../components/Header";
 import { Text } from "react-native";
-import { useNavigation } from "expo-router";
+import { useNavigation, useRouter } from "expo-router";
 import { DrawerActions } from "@react-navigation/native";
+import Button from "../../../../../components/Button";
 
 export default function Report() {
   const navigation = useNavigation();
+  const router = useRouter();
 
   return (
     <Screen preset="fixed" contentContainerStyle={{ flexGrow: 1 }}>
@@ -22,6 +24,7 @@ export default function Report() {
       />
 
       <Text>Report Index </Text>
+      <Button onPress={() => router.push("/questionnaire/1")}>Go to Questionnaire</Button>
     </Screen>
   );
 }

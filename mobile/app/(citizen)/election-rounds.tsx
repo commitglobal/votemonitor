@@ -10,14 +10,14 @@ function CitizenElectionRoundsSelector() {
 
   return (
     <Screen preset="fixed" contentContainerStyle={{ flexGrow: 1 }}>
-      <Text>Election Rounds</Text>
+      <Text style={{ marginBottom: 125 }}>Election Rounds</Text>
       <Button
         onPress={() => {
           setSelectedElectionRound(true);
           router.push("(main)");
         }}
       >
-        Du-te-n mm
+        Continue
       </Button>
     </Screen>
   );

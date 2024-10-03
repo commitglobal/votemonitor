@@ -3,23 +3,12 @@ import { createContext, useContext, useEffect, useState } from "react";
 type CitizenUserContextType = {
   selectedElectionRound: boolean;
   setSelectedElectionRound: (electionRound: boolean) => void;
-
-  // electionRounds: ElectionRoundVM[] | undefined;
-  // visits: PollingStationVisitVM[] | undefined;
-
-  // activeElectionRound?: ElectionRoundVM;
-  // selectedPollingStation?: PollingStationNomenclatorNodeVM | null;
-
-  // isLoading: boolean;
-
-  // error: Error | null;
-  // setSelectedPollingStationId: (pollingStationId: string | null) => void;
 };
 
 export const CitizenUserContext = createContext<CitizenUserContextType | null>(null);
 
 const CitizenUserContextProvider = ({ children }: React.PropsWithChildren) => {
-  const [selectedElectionRound, setSelectedElectionRound] = useState<boolean>(false);
+  const [selectedElectionRound, setSelectedElectionRound] = useState<boolean>(true);
 
   useEffect(() => {
     console.log("👀 [Context] selectedElectionRound", selectedElectionRound);
