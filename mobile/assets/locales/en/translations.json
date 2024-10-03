@@ -55,6 +55,14 @@
     "helper": "**As an accredited observer you will be able to switch to Citizen mode at any time, from the app’s menu.",
     "continue": "Continue"
   },
+  "select_election_event": {
+    "heading": "Available election events",
+    "description": "Select the event for which you would like to submit a report for:",
+    "continue": "Continue",
+    "empty_description": "At this moment there are no active electoral events for which you can report incidents as a citizen. Once an event will be available, you will see it in this section.",
+    "error_description": "Something went wrong while retrieving the available election events. Please retry.",
+    "retry": "Retry"
+  },
   "login": {
     "disclaimer": {
       "paragraph1": "Please note that if you are not accredited as an independent observer by an organization that monitors election processes in your country, you cannot use the Vote Monitor app.",

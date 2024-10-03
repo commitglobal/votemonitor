@@ -6,7 +6,7 @@ import { Typography } from "../components/Typography";
 import { ScrollView, XStack, YStack } from "tamagui";
 import { useTranslation } from "react-i18next";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { AppModeSelector } from "../components/AppModeSelector";
+import { Selector } from "../components/Selector";
 import Button from "../components/Button";
 
 export enum AppMode {
@@ -61,13 +61,13 @@ export const SelectAppMode = () => {
           </Typography>
 
           <YStack gap="$md">
-            <AppModeSelector
+            <Selector
               title={t("accredited_observer.title")}
               description={t("accredited_observer.description")}
               selected={appMode === AppMode.ACCREDITED_OBSERVER}
               onPress={setAppModeToAccreditedObserver}
             />
-            <AppModeSelector
+            <Selector
               title={t("citizen.title")}
               description={t("citizen.description")}
               selected={appMode === AppMode.CITIZEN}

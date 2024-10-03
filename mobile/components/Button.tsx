@@ -95,7 +95,7 @@ const Button = React.forwardRef((props: ButtonProps, _): JSX.Element => {
           pressStyle: {
             backgroundColor: "$yellow5",
             opacity: 0.8,
-            borderWidth: 0,
+            borderColor: "$yellow5",
           },
         },
       },

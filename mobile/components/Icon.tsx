@@ -51,7 +51,6 @@ import CommitGlobal from "../assets/icons/commit-global.svg";
 import PollingStationPin from "../assets/icons/polling-station-pin.svg";
 import Form from "../assets/icons/form.svg";
 import CheckCircle from "../assets/icons/check-circle.svg";
-
 import Bin from "../assets/icons/Trash2.svg";
 import { styled, View, ViewProps } from "tamagui";
 import { StyleProp, ViewStyle } from "react-native";
@@ -60,6 +59,8 @@ import Note from "../assets/icons/questionCard/note.svg";
 import Photo from "../assets/icons/questionCard/photo.svg";
 import Video from "../assets/icons/questionCard/video.svg";
 import Audio from "../assets/icons/questionCard/audio.svg";
+import VMCitizenLogo from "../assets/icons/vm-citizen-logo.svg";
+import Warning from "../assets/icons/warning.svg";
 
 interface IconProps extends ViewProps {
   /**
@@ -156,6 +157,8 @@ export const defaultIcon = React.forwardRef(
       audio: <Audio fill={color} />,
       form: <Form fill={color} />,
       checkCircle: <CheckCircle fill={color} width={size} height={size} />,
+      vmCitizenLogo: <VMCitizenLogo fill={color} width={size | 295} height={size | 82} />,
+      warning: <Warning stroke={color} width={size} height={size} />,
     };
 
     return (
