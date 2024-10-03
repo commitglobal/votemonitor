@@ -16,6 +16,7 @@ import { isRunningInExpoGo } from "expo";
 import Toast from "react-native-toast-message";
 import { toastConfig } from "../toast.config";
 import * as Notifications from "expo-notifications";
+import AppModeContextProvider from "../contexts/app-mode/AppModeContext.provider";
 
 // Construct a new instrumentation instance. This is needed to communicate between the integration and React
 const routingInstrumentation = new Sentry.ReactNavigationInstrumentation();
@@ -41,7 +42,7 @@ Sentry.init({
   enableNative: true,
   environment: process.env.EXPO_PUBLIC_ENVIRONMENT,
   attachScreenshot: true,
-  enabled: !__DEV__,
+  enabled: false,
   // Set tracesSampleRate to 1.0 to capture 100%
   // of transactions for performance monitoring.
   // We recommend adjusting this value in production
@@ -59,6 +60,7 @@ Sentry.init({
 SplashScreen.preventAutoHideAsync();
 
 function RootLayout() {
+  console.log("RootLayout");
   const [loaded] = useFonts({
     Roboto: require("../assets/fonts/Roboto-Medium.ttf"),
     RobotoRegular: require("../assets/fonts/Roboto-Regular.ttf"),
@@ -95,9 +97,11 @@ function RootLayout() {
             <PortalProvider>
               <LanguageContextProvider>
                 <EasUpdateMonitorContextProvider>
-                  <Slot />
-                  <Toast config={toastConfig} position="top" />
-                  <NetInfoBanner />
+                  <AppModeContextProvider>
+                    <Slot />
+                    <Toast config={toastConfig} position="top" />
+                    <NetInfoBanner />
+                  </AppModeContextProvider>
                 </EasUpdateMonitorContextProvider>
               </LanguageContextProvider>
             </PortalProvider>
