@@ -5,8 +5,8 @@ using Vote.Monitor.Domain.Specifications;
 
 namespace Feature.CitizenReports.ListEntries;
 
-public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
-    : Endpoint<Request, PagedResponse<CitizenReportEntryModel>>
+public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory, IAuthorizationService authorizationService)
+    : Endpoint<Request, Results<Ok<PagedResponse<CitizenReportEntryModel>>, NotFound>>
 {
     public override void Configure()
     {
@@ -17,8 +17,17 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
         Summary(x => { x.Summary = "Lists citizen report submissions by entry in our system"; });
     }
 
-    public override async Task<PagedResponse<CitizenReportEntryModel>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<Results<Ok<PagedResponse<CitizenReportEntryModel>>, NotFound>> ExecuteAsync(Request req,
+        CancellationToken ct)
     {
+        var authorizationResult =
+            await authorizationService.AuthorizeAsync(User,
+                new CitizenReportingNgoAdminRequirement(req.ElectionRoundId));
+        if (!authorizationResult.Succeeded)
+        {
+            return TypedResults.NotFound();
+        }
+
         var sql = """
                   SELECT
                   	COUNT(*) AS COUNT
@@ -236,7 +245,8 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory)
             entries = multi.Read<CitizenReportEntryModel>().ToList();
         }
 
-        return new PagedResponse<CitizenReportEntryModel>(entries, totalRowCount, req.PageNumber, req.PageSize);
+        return TypedResults.Ok(
+            new PagedResponse<CitizenReportEntryModel>(entries, totalRowCount, req.PageNumber, req.PageSize));
     }
 
     private static string GetSortExpression(string? sortColumnName, bool isAscendingSorting)

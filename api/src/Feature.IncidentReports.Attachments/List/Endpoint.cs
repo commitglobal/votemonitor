@@ -10,7 +10,7 @@ public class Endpoint(
 {
     public override void Configure()
     {
-        Get("/api/election-rounds/{electionRoundId}/incident-report-attachments");
+        Get("/api/election-rounds/{electionRoundId}/incident-reports/{incidentReportId}/attachments");
         DontAutoTag();
         Options(x => x.WithTags("incident-report-attachments"));
         Summary(s =>
@@ -48,7 +48,7 @@ public class Endpoint(
 
         var result = await Task.WhenAll(tasks);
 
-        return new Response()
+        return new Response
         {
             Attachments = result
         };
