@@ -19,7 +19,11 @@
     "en": "język angielski",
     "pl": "polski",
     "bg": "bułgarski",
-    "sr": "serbski"
+    "sr": "serbski",
+    "ka": "gruziński",
+    "hy": "ormiański",
+    "ru": "rosyjski",
+    "az": "azerbejdżański"
   },
   "onboarding": {
     "language": {
