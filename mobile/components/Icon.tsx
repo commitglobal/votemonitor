@@ -62,6 +62,7 @@ import Audio from "../assets/icons/questionCard/audio.svg";
 import VMCitizenLogo from "../assets/icons/vm-citizen-logo.svg";
 import Warning from "../assets/icons/warning.svg";
 import PublicResourcesProblems from "../assets/icons/public-resources-problems.svg";
+import AppModeSwitch from "../assets/icons/app-mode-switch.svg";
 
 interface IconProps extends ViewProps {
   /**
@@ -78,6 +79,8 @@ interface IconProps extends ViewProps {
    * An optional size for the icon. If not provided, the icon will be sized to the icon's resolution.
    */
   size?: number;
+  width?: number;
+  height?: number;
 
   /**
    * Style overrides for the view container
@@ -99,7 +102,17 @@ type IconRegistry = {
 
 export const defaultIcon = React.forwardRef(
   (props: IconProps, ref?: Ref<typeof View>): JSX.Element => {
-    const { icon, color = "black", size = 24, style: $viewStyleOverride, ...tamaguiProps } = props;
+    const {
+      icon,
+      color = "black",
+      size = 24,
+      style: $viewStyleOverride,
+      width,
+      height,
+      ...tamaguiProps
+    } = props;
+
+    console.log("width", width);
 
     const iconRegistry: IconRegistry = {
       eyeOff: <EyeOff fill={color} width={size} height={size} />,
@@ -158,9 +171,10 @@ export const defaultIcon = React.forwardRef(
       audio: <Audio fill={color} />,
       form: <Form fill={color} />,
       checkCircle: <CheckCircle fill={color} width={size} height={size} />,
-      vmCitizenLogo: <VMCitizenLogo fill={color} width={size | 295} height={size | 82} />,
+      vmCitizenLogo: <VMCitizenLogo fill={color} width={width} height={height} />,
       warning: <Warning stroke={color} width={size} height={size} />,
       publicResourcesProblems: <PublicResourcesProblems fill={color} width={size} height={size} />,
+      appModeSwitch: <AppModeSwitch fill={color} width={size} height={size} />,
     };
 
     return (

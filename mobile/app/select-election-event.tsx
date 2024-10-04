@@ -70,7 +70,7 @@ export const SelectElectionEvent = () => {
   const renderHeader = useMemo(() => {
     return () => (
       <Header barStyle="light-content" backgroundColor="white">
-        <Icon icon="vmCitizenLogo" paddingTop="$xxxl" />
+        <Icon icon="vmCitizenLogo" paddingTop="$xxxl" width={295} height={82} />
         <Typography preset="heading" fontWeight="500" marginVertical="$xl">
           {t("heading")}
         </Typography>

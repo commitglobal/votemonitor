@@ -63,6 +63,11 @@
     "error_description": "Something went wrong while retrieving the available election events. Please retry.",
     "retry": "Retry"
   },
+  "drawer": {
+    "report_as": "Report as {{value}}",
+    "citizen": "citizen",
+    "accredited_observer": "accredited observer"
+  },
   "citizen_report_issue": {
     "header_title": "Report an issue",
     "description": "As a citizen, you can report an election-related issue, by filling-in a reporting form, from the list below.",
