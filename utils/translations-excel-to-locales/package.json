@@ -1,0 +1,23 @@
+{
+  "name": "locales-generator",
+  "version": "1.0.0",
+  "description": "Generates questions for selecting locations from a CSV file",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "form-parser": " node questions-generator -l ./Romania/localities.csv -s ./Romania/romanian-polling-stations.csv^Co ./ro"
+  },
+  "author": "",
+  "license": "MIT",
+  "bin": {
+    "hello": "./index.js"
+  },
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "csv-parse": "^5.5.6",
+    "csv-stringify": "^6.5.1",
+    "lodash-es": "^4.17.21",
+    "uuid": "^10.0.0",
+    "yargs": "^17.7.2"
+  }
+}
