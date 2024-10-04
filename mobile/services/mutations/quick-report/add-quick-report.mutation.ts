@@ -6,6 +6,7 @@ import {
 } from "../../api/quick-report/get-quick-reports.api";
 import { AddQuickReportAPIPayload } from "../../api/quick-report/post-quick-report.api";
 import { AddAttachmentQuickReportAPIPayload } from "../../api/quick-report/add-attachment-quick-report.api";
+import { ReportType } from "../../definitions.api";
 
 export const useAddQuickReport = () => {
   const queryClient = useQueryClient();
@@ -43,6 +44,8 @@ export const useAddQuickReport = () => {
           ...old,
           {
             ...payload,
+            type: ReportType.QuickReport,
+            timestamp: new Date().toISOString(),
             attachments: attachmentsToUpdate,
             isNotSynched: true,
           },

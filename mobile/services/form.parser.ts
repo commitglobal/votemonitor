@@ -1,6 +1,7 @@
 import i18n from "../common/config/i18n";
 import { FormListItem } from "../components/FormList";
 import { arrayToKeyObject } from "../helpers/misc";
+import { IncidentReportAPIResponse } from "./api/incident-report/get-incident-reports.api";
 import { FormAPIModel, FormSubmissionsApiResponse } from "./definitions.api";
 import {
   ApiFormAnswer,
@@ -238,6 +239,31 @@ export const mapFormToFormListItem = (
   const currentLanguage = i18n.language.toLocaleUpperCase();
 
   const submissions = arrayToKeyObject(formSubmissions?.submissions || [], "formId");
+  return forms.map((form) => {
+    const answers = arrayToKeyObject(submissions[form?.id]?.answers || [], "questionId");
+    const questions = form.questions.filter((q) => shouldDisplayQuestion(q, answers));
+
+    const numberOfAnswers = submissions[form.id]?.answers.length || 0;
+
+    return {
+      id: form.id,
+      name: `${form.code} - ${form.name[currentLanguage] || form.name[Object.keys(form?.name)[0]]}`,
+      numberOfCompletedQuestions: numberOfAnswers,
+      numberOfQuestions: questions.length,
+      options: `Available in ${Object.keys(form.name).join(", ")}`,
+      status: mapFormStateStatus(numberOfAnswers, questions.length),
+      languages: form.languages,
+    };
+  });
+};
+
+export const mapFormToIncidentReportFormListItem = (
+  forms: FormAPIModel[] = [],
+  incidentReports: IncidentReportAPIResponse | undefined,
+): FormListItem[] => {
+  const currentLanguage = i18n.language.toLocaleUpperCase();
+
+  const submissions = arrayToKeyObject(incidentReports?.incidentReports || [], "formId");
   return forms.map((form) => {
     const answers = arrayToKeyObject(submissions[form?.id]?.answers || [], "questionId");
     const questions = form.questions.filter((q) => shouldDisplayQuestion(q, answers));

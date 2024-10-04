@@ -5,7 +5,7 @@ import { QuickReportsAPIResponse } from "./get-quick-reports.api";
     ================= POST quickReport ====================
     ========================================================================
     @description Upsert a Quick Report
-    @param {AddQuickReportAPIPayload} payload 
+    @param {AddQuickReportAPIPayload} payload
 */
 export enum QuickReportLocationType {
   NotRelatedToAPollingStation = "NotRelatedToAPollingStation",
@@ -24,7 +24,7 @@ export type AddQuickReportAPIPayload = {
   pollingStationDetails?: string;
 };
 
-// TODO: add rreturn type
+// TODO: add return type
 export const addQuickReport = ({
   electionRoundId,
   ...payload

@@ -58,14 +58,14 @@ const mapVisitsToSelectPollingStations = (visits: PollingStationVisitVM[] = []) 
   return pollingStationsForSelect;
 };
 
-type ReportIssueFormType = {
+type NewQuickReportFormType = {
   polling_station_id: string;
   polling_station_details: string;
   issue_title: string;
   issue_description: string;
 };
 
-const ReportIssue = () => {
+const AddQuickReport = () => {
   const insets = useSafeAreaInsets();
   const queryClient = useQueryClient();
   const { visits, activeElectionRound } = useUserData();
@@ -83,6 +83,7 @@ const ReportIssue = () => {
     isPending: isPendingAddQuickReport,
     isPaused: isPausedAddQuickReport,
   } = useAddQuickReport();
+
   const {
     mutateAsync: addAttachmentQReport,
     isPending: isLoadingAddAttachment,
@@ -108,7 +109,7 @@ const ReportIssue = () => {
     reset,
     watch,
     formState: { errors },
-  } = useForm<ReportIssueFormType>({
+  } = useForm<NewQuickReportFormType>({
     defaultValues: {
       polling_station_id: "",
       polling_station_details: "",
@@ -163,7 +164,7 @@ const ReportIssue = () => {
     setIsPreparingFile(false);
   };
 
-  const onSubmit = async (formData: ReportIssueFormType) => {
+  const onSubmit = async (formData: NewQuickReportFormType) => {
     if (!visits || !activeElectionRound) {
       return;
     }
@@ -509,4 +510,4 @@ const ReportIssue = () => {
   );
 };
 
-export default ReportIssue;
+export default AddQuickReport;

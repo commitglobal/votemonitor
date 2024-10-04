@@ -20,7 +20,9 @@ const AppLayout = () => {
           <Stack.Screen name="manage-polling-stations" options={{ headerShown: false }} />
           <Stack.Screen name="form-questionnaire" options={{ headerShown: false }} />
           <Stack.Screen name="polling-station-questionnaire" options={{ headerShown: false }} />
-          <Stack.Screen name="report-issue" options={{ headerShown: false }} />
+          <Stack.Screen name="incident-report-forms" options={{ headerShown: false }} />
+          <Stack.Screen name="add-quick-report" options={{ headerShown: false }} />
+          <Stack.Screen name="new-report" options={{ headerShown: false }} />
           <Stack.Screen name="change-password" options={{ headerShown: false }} />
           <Stack.Screen name="about-votemonitor" options={{ headerShown: false }} />
         </Stack>

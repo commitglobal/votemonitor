@@ -9,17 +9,17 @@ import { useUserData } from "../../../../../../contexts/user/UserContext.provide
 import Card from "../../../../../../components/Card";
 import { useTranslation } from "react-i18next";
 import { RefreshControl } from "react-native";
+import React from "react";
 
 type SearchParamsType = {
-  reportId: string;
-  reportTitle: string;
+  incidentReportId: string;
 };
 
-const ReportDetails = () => {
-  const { reportTitle, reportId } = useLocalSearchParams<SearchParamsType>();
+const QuickReportDetails = () => {
+  const { incidentReportId } = useLocalSearchParams<SearchParamsType>();
   const { t } = useTranslation(["report_details", "common"]);
 
-  if (!reportId || !reportTitle) {
+  if (!incidentReportId) {
     return <Typography>Incorrect page params</Typography>;
   }
 
@@ -31,7 +31,7 @@ const ReportDetails = () => {
     error: currentReportError,
     refetch: refetchQuickReport,
     isRefetching: isRefetchingQuickReport,
-  } = useQuickReportById(activeElectionRound?.id, reportId);
+  } = useQuickReportById(activeElectionRound?.id, incidentReportId);
 
   if (isLoadingCurrentReport) {
     return <Typography>{t("loading", { ns: "common" })}</Typography>;
@@ -41,7 +41,7 @@ const ReportDetails = () => {
     return (
       <Screen preset="fixed" contentContainerStyle={{ flexGrow: 1 }}>
         <Header
-          title={`${reportTitle}`}
+          title={'kdkdkdkdk'}
           titleColor="white"
           barStyle="light-content"
           leftIcon={<Icon icon="chevronLeft" color="white" />}
@@ -71,7 +71,7 @@ const ReportDetails = () => {
       backgroundColor="white"
     >
       <Header
-        title={`${reportTitle}`}
+        title={`kdkdkdkdk`}
         titleColor="white"
         barStyle="light-content"
         leftIcon={<Icon icon="chevronLeft" color="white" />}
@@ -115,4 +115,4 @@ const ReportDetails = () => {
   );
 };
 
-export default ReportDetails;
+export default QuickReportDetails;

@@ -1,7 +1,10 @@
 import { ElectionRoundVM } from "../common/models/election-round.model";
+import { IncidentReportNote } from "../common/models/incident-report-note";
 import { Note } from "../common/models/note";
 import { PollingStationVisitVM } from "../common/models/polling-station.model";
 import API from "./api";
+import { IncidentReport } from "./api/incident-report/get-incident-reports.api";
+import { QuickReportsAPIResponse } from "./api/quick-report/get-quick-reports.api";
 import { ApiFormAnswer } from "./interfaces/answer.type";
 import { ApiFormQuestion } from "./interfaces/question.type";
 
@@ -9,7 +12,7 @@ import { ApiFormQuestion } from "./interfaces/question.type";
     ====================== GET Election Rounds ===================
     ========================================================================
     @description The election rounds where my user is asigned
-    @returns {ElectionRoundsAPIResponse} 
+    @returns {ElectionRoundsAPIResponse}
 */
 
 export type ElectionRoundsAPIResponse = {
@@ -25,9 +28,9 @@ export const getElectionRounds = (): Promise<ElectionRoundVM[]> => {
 /** ========================================================================
     ====================== GET pollingStationNomenclator ===================
     ========================================================================
-    @description All the polling stations for a given election round 
-    @param {string} electionRoundId 
-    @returns {PollingStationNomenclatorAPIResponse} 
+    @description All the polling stations for a given election round
+    @param {string} electionRoundId
+    @returns {PollingStationNomenclatorAPIResponse}
 */
 export type PollingStationNomenclatorNodeAPIResponse = {
   id: number;
@@ -52,9 +55,9 @@ export const getPollingStationNomenclator = (
 /** ========================================================================
     ====================== GET pollingStationNomenclatorVersion ============
     ========================================================================
-    @description Version of the nomenclator, to bust the cache if necessary 
-    @param {string} electionRoundId 
-    @returns {PollingStationNomenclatorVersionAPIResponse} 
+    @description Version of the nomenclator, to bust the cache if necessary
+    @param {string} electionRoundId
+    @returns {PollingStationNomenclatorVersionAPIResponse}
 */
 export type PollingStationNomenclatorVersionAPIResponse = {
   electionRoundId: string;
@@ -73,8 +76,8 @@ export const getPollingStationNomenclatorVersion = (
     ====================== GET pollingStationVisits ========================
     ========================================================================
     @description Polling Station where I completed some data is registered as visited
-    @param {string} electionRoundId 
-    @returns {PollingStationVisitsAPIResponse} 
+    @param {string} electionRoundId
+    @returns {PollingStationVisitsAPIResponse}
 */
 export type PollingStationVisitsAPIResponse = {
   visits: {
@@ -99,8 +102,8 @@ export const getPollingStationsVisits = (
     ======== The general form to be completed for each polling station =====
     ========================================================================
     @description Updates: Arrival/Departure Time and Polling Station Information Form
-    @param {PollingStationInformationAPIPayload} payload 
-    @returns {PollingStationInformationAPIResponse} updated data 
+    @param {PollingStationInformationAPIPayload} payload
+    @returns {PollingStationInformationAPIResponse} updated data
 
 */
 export type PollingStationInformationAPIPayload = {
@@ -137,8 +140,8 @@ export const upsertPollingStationGeneralInformation = ({
     ======== The form data to be completed for each polling station =====
     ========================================================================
     @description Get the general data for the Polling Station (arrival/departure time and information form)
-    @param {string} electionRoundId 
-    @returns {PollingStationInformationFormAPIResponse} 
+    @param {string} electionRoundId
+    @returns {PollingStationInformationFormAPIResponse}
 */
 export type PollingStationInformationFormAPIResponse = {
   id: string;
@@ -161,8 +164,8 @@ export const getPollingStationInformationForm = (
     ================= GET getPollingStationInformation ====================
     ========================================================================
     @description Get the available completed form data for the Polling Station (arrival/departure time and information form)
-    @param {string} electionRoundId 
-    @returns {PollingStationInformationAPIResponse} 
+    @param {string} electionRoundId
+    @returns {PollingStationInformationAPIResponse}
 */
 export const getPollingStationInformation = (
   electionRoundId: string,
@@ -182,13 +185,23 @@ export const getPollingStationInformation = (
     ================= GET ElectionRoundAllForms ====================
     ========================================================================
     @description Get all the possible forms for a given election round
-    @param {string} electionRoundId 
-    @returns {PollingStationInformationAPIResponse} 
+    @param {string} electionRoundId
+    @returns {PollingStationInformationAPIResponse}
 */
+
+export enum FormType {
+  PSI = "PSI",
+  Opening = "Opening",
+  Voting = "Voting",
+  ClosingAndCounting = "ClosingAndCounting",
+  CitizenReporting = "CitizenReporting",
+  IncidentReporting = "IncidentReporting",
+  Other = "Other",
+}
 
 export type FormAPIModel = {
   id: string;
-  formType: string; // "ClosingAndCounting",
+  formType: FormType;
   code: string; // "A1",
   name: Record<string, string>; // { "EN": "test form", "RO": "formular de test" },
   status: string; // "Published",
@@ -216,8 +229,8 @@ export const getElectionRoundAllForms = (
     ================= GET ElectionRoundForm ====================
     ========================================================================
     @description Get a form by id for an election round
-    @param {string} electionRoundId 
-    @param {string} formId 
+    @param {string} electionRoundId
+    @param {string} formId
     @returns {FormAPIModel}
 */
 
@@ -232,10 +245,10 @@ export const getElectionRoundFormById = (
     ================= GET NotesForPollingStation ====================
     ========================================================================
     @description Get all the possible notes for a given polling station
-    @param {string} electionRoundId 
+    @param {string} electionRoundId
     @param {string} pollingStationId
-    @param {string} formId 
-    @returns {Note[]} 
+    @param {string} formId
+    @returns {Note[]}
 */
 
 export const getNotesForPollingStation = (
@@ -256,12 +269,34 @@ export const getNotesForPollingStation = (
 };
 
 /** ========================================================================
+    ================= GET NotesForIncidentReport ====================
+    ========================================================================
+    @description Get all the possible notes for a given incident report
+    @param {string} electionRoundId
+    @param {string} incidentReportId
+    @param {string} formId
+    @returns {IncidentReportNote[]}
+*/
+
+export const getNotesForIncidentReport = (
+  electionRoundId: string,
+  incidentReportId: string,
+): Promise<IncidentReportNote[]> => {
+  return API.get(`election-rounds/${electionRoundId}/incident-reports/${incidentReportId}/notes`).then((res) => res.data);
+};
+
+
+
+
+
+
+/** ========================================================================
     ================= GET FORM SUBMISSIONS ====================
     ========================================================================
     @description Get form submissions for a given >polling station< in an >election round<
-    @param {string} electionRoundId 
-    @param {string} pollingStationId 
-    @returns {unknown} 
+    @param {string} electionRoundId
+    @param {string} pollingStationId
+    @returns {unknown}
 */
 
 export type FormSubmission = {
@@ -295,8 +330,8 @@ export const getFormSubmissions = (
     ======== Upsert answer for a specific form from a polling station =====
     ========================================================================
     @description Updates: Arrival/Departure Time and Polling Station Information Form
-    @param {FormSubmissionAPIPayload} payload 
-    @returns {FormSubmission} updated data 
+    @param {FormSubmissionAPIPayload} payload
+    @returns {FormSubmission} updated data
 
 */
 export type FormSubmissionAPIPayload = Omit<FormSubmission, "id"> & { electionRoundId: string };
@@ -313,9 +348,9 @@ export const upsertFormSubmission = ({
 /** ========================================================================
     ================= POST addNote ====================
     ========================================================================
-    @description Add new note into the formId 
-    @param {string} electionRoundId 
-    @returns {Note} 
+    @description Add new note into the formId
+    @param {string} electionRoundId
+    @returns {Note}
 */
 
 export type UpsertNotePayload = {
@@ -352,9 +387,9 @@ export const changePassword = (data: ChangePasswordPayload) => {
 
 /**  ================= DELETE deleteNote ====================
     ========================================================================
-    @description delete a note 
-    @param {string} electionRoundId 
-    @param {string} id 
+    @description delete a note
+    @param {string} electionRoundId
+    @param {string} id
 */
 
 export const deleteNote = ({ electionRoundId, id }: Note) => {
@@ -415,7 +450,7 @@ export const deletePollingStationVisit = (data: DeletePollingStationVisitPayload
 /** ========================================================================
     ================= POST feedback ====================
     ========================================================================
-    @param {string} electionRoundId 
+    @param {string} electionRoundId
 */
 
 type feedbackMetadata = {
@@ -438,3 +473,21 @@ export const addFeedback = ({ electionRoundId, ...feedbackPayload }: AddFeedback
     (res) => res.data,
   );
 };
+
+export enum ReportType{
+  QuickReport = 'QuickReport',
+  IncidentReport = 'IncidentReport'
+}
+
+
+export function isQuickReport(
+  report: QuickReportsAPIResponse | IncidentReport,
+): report is QuickReportsAPIResponse {
+  return report.type === ReportType.QuickReport;
+}
+
+export function isIncidentReport(
+  report: QuickReportsAPIResponse | IncidentReport,
+): report is IncidentReport {
+  return report.type === ReportType.IncidentReport;
+}

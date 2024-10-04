@@ -124,6 +124,25 @@ export const notesKeys = {
   deleteNote: () => [...notesKeys.all, "delete"] as const,
 };
 
+export const incidentReportNotesKeys = {
+  all: ["incident-report-notes"] as const,
+  notes: (
+    electionRoundId: string | undefined,
+    incidentReportId: string | undefined,
+  ) =>
+    [
+      ...pollingStationsKeys.all,
+      "electionRoundId",
+      electionRoundId,
+      "incidentReportId",
+      incidentReportId,
+      "notes",
+    ] as const,
+  addNote: () => [...notesKeys.all, "add"] as const,
+  updateNote: () => [...notesKeys.all, "update"] as const,
+  deleteNote: () => [...notesKeys.all, "delete"] as const,
+};
+
 export const feedbackKeys = {
   addFeedback: (electionRoundId: string | undefined) =>
     ["addFeedback", "electionRoundId", electionRoundId] as const,
@@ -240,6 +259,7 @@ export const pollingStationByIdQueryFn = async (pollingStationId: string) => {
   };
   return mapped;
 };
+
 export const usePollingStationById = (
   pollingStationId: string | undefined,
   hasNomenclator: string | undefined,
@@ -268,6 +288,7 @@ export const pollingStationInformationQueryFn = (
 ) => {
   return getPollingStationInformation(electionRoundId!, pollingStationId);
 };
+
 export const usePollingStationInformation = (
   electionRoundId: string | undefined,
   pollingStationId: string | undefined,

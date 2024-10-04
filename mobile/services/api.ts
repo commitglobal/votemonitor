@@ -5,8 +5,8 @@ import { ASYNC_STORAGE_KEYS } from "../common/constants";
 import { reloadAsync } from "expo-updates";
 
 const API = axios.create({
-  // baseURL: `https://votemonitor.staging.heroesof.tech/api/`,
-  baseURL: `https://api.votemonitor.org/api/`,
+  baseURL: `https://votemonitor.staging.heroesof.tech/api/`,
+  // baseURL: `https://api.votemonitor.org/api/`,
   timeout: 100000,
   headers: {
     "Content-Type": "application/json",

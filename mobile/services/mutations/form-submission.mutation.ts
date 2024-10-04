@@ -2,14 +2,20 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   FormSubmissionAPIPayload,
   FormSubmissionsApiResponse,
+  ReportType,
   upsertFormSubmission,
 } from "../definitions.api";
 import { useMemo } from "react";
-import { notesKeys, pollingStationsKeys } from "../queries.service";
+import { incidentReportNotesKeys, notesKeys, pollingStationsKeys } from "../queries.service";
 import * as Crypto from "expo-crypto";
 import { AttachmentsKeys } from "../queries/attachments.query";
 import { AttachmentApiResponse } from "../api/get-attachments.api";
 import { Note } from "../../common/models/note";
+import { IncidentReportAPIPayload, upsertIncidentReport } from "../api/incident-report/post-incident-report.api";
+import { IncidentReportAPIResponse } from "../api/incident-report/get-incident-reports.api";
+import { incidentReportAttachmentsKeys } from "../queries/incident-report-attachments.query";
+import { incidentReportKeys } from "../queries/incident-reports.query";
+import { IncidentReportAttachmentApiResponse } from "../api/get-incident-report-attachments.api";
 
 export const useFormSubmissionMutation = ({
   electionRoundId,
@@ -116,6 +122,125 @@ export const useFormSubmissionMutation = ({
         queryKey: pollingStationsKeys.formSubmissions(
           electionRoundId,
           pollingStationId,
+          variables.formId,
+        ),
+      });
+    },
+  });
+};
+
+
+
+export const useIncidentReportMutation = ({
+  electionRoundId,
+  scopeId,
+}: {
+  electionRoundId: string | undefined;
+  incidentReportId: string | undefined;
+  scopeId: string;
+}) => {
+  const queryClient = useQueryClient();
+
+  const incidentReportsQK = useMemo(
+    () => incidentReportKeys.byElectionRound(electionRoundId),
+    [electionRoundId],
+  );
+
+  return useMutation({
+    mutationKey: incidentReportKeys.upsertIncidentReport(),
+    mutationFn: async (payload: IncidentReportAPIPayload) => {
+      return upsertIncidentReport(payload);
+    },
+    scope: {
+      id: scopeId,
+    },
+    onMutate: async (payload: IncidentReportAPIPayload) => {
+      // Remove paused mutations for the same resource. Send only the last one!
+      queryClient
+        .getMutationCache()
+        .getAll()
+        .filter((mutation) => mutation.state.isPaused && mutation.options.scope?.id === scopeId)
+        .sort((a, b) => b.state.submittedAt - a.state.submittedAt)
+        .slice(1)
+        .forEach((mutation) => {
+          queryClient.getMutationCache().remove(mutation);
+        });
+
+      // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
+      await queryClient.cancelQueries({ queryKey: incidentReportsQK });
+
+      // Snapshot the previous value
+      const previousData = queryClient.getQueryData<IncidentReportAPIResponse>(incidentReportsQK);
+
+      // 1. SUBMISSIONS: Optimistically update the incident reports
+      const updatedIncidentReport = previousData?.incidentReports?.find(
+        (report) => report.formId === payload.formId && report.id === payload.id,
+      );
+
+      queryClient.setQueryData<IncidentReportAPIResponse>(incidentReportsQK, {
+        incidentReports: [
+          ...(previousData?.incidentReports?.filter((s) => s.formId !== payload.formId) || []),
+          {
+            ...payload,
+            id: updatedIncidentReport?.id || Crypto.randomUUID(),
+            type: ReportType.IncidentReport,
+            timestamp: new Date().toISOString(),
+            attachments: [],
+          },
+        ],
+      });
+
+      const questionIds = payload?.answers?.map((a) => a.questionId) || [];
+
+      // 2. ATTACHMENTS: Optimistically delete all orphaned Attachments
+      const incidentReportAttachmentsQK = incidentReportAttachmentsKeys.attachments(
+        electionRoundId,
+        payload.id,
+      );
+      const prevAttachments = queryClient.getQueryData<IncidentReportAttachmentApiResponse[]>(
+        incidentReportAttachmentsQK,
+      );
+
+      // Keep in attachments only those who exist in the current payload.answers
+      const newAttachments =
+        prevAttachments?.filter((att) => questionIds.includes(att.questionId)) || [];
+      queryClient.setQueryData(incidentReportAttachmentsQK, newAttachments);
+
+      // 3. NOTES: Optimistically delete all orphaned Notes
+      const incidentReportNotesQK = incidentReportNotesKeys.notes(electionRoundId, payload.id);
+      const previousNotes = queryClient.getQueryData<Note[]>(incidentReportNotesQK);
+      const newNotes = previousNotes?.filter((note) => questionIds.includes(note.questionId)) || [];
+      queryClient.setQueryData(incidentReportNotesQK, newNotes);
+
+      // Return a context object with the snapshotted value
+      return { previousData, prevAttachments, previousNotes };
+    },
+    onError: (err, variables, context) => {
+      console.log(err);
+      queryClient.setQueryData(incidentReportsQK, context?.previousData);
+      queryClient.setQueryData(
+        incidentReportNotesKeys.notes(electionRoundId, variables.id),
+        context?.previousNotes,
+      );
+      queryClient.setQueryData(
+        incidentReportAttachmentsKeys.attachments(electionRoundId, variables.id),
+        context?.prevAttachments,
+      );
+    },
+    onSettled: (_data, _err, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: incidentReportAttachmentsKeys.attachments(electionRoundId, variables.id),
+      });
+      queryClient.invalidateQueries({
+        queryKey: incidentReportNotesKeys.notes(electionRoundId, variables.id),
+      });
+      // FYI: these 2 queries actually make the same call, but use different query keys, therefore both need invalidation (used different keys for Pull To Refresh feature)
+      // todo: maybe use the same call for the future if possible
+      queryClient.invalidateQueries({ queryKey: incidentReportsQK });
+      queryClient.invalidateQueries({
+        queryKey: incidentReportKeys.formSubmissions(
+          electionRoundId,
+          variables.id,
           variables.formId,
         ),
       });

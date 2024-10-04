@@ -1,13 +1,13 @@
 import API from "../../api";
-import {} from "../../definitions.api";
+import { ReportType } from "../../definitions.api";
 import { QuickReportLocationType } from "./post-quick-report.api";
 
 /** ========================================================================
     ================= GET quickReports ====================
     ========================================================================
     @description Retrieves all Quick Reports for an Election Round ID
-    @param {string} electionRoundId 
-    @returns {QuickReportsAPIResponse} 
+    @param {string} electionRoundId
+    @returns {QuickReportsAPIResponse}
 */
 export type QuickReportAttachmentAPIResponse = {
   id: string;
@@ -19,6 +19,7 @@ export type QuickReportAttachmentAPIResponse = {
   urlValidityInSeconds: number;
 };
 export type QuickReportsAPIResponse = {
+  type: ReportType;
   id: string;
   electionRoundId: string;
   quickReportLocationType: QuickReportLocationType;
@@ -27,10 +28,18 @@ export type QuickReportsAPIResponse = {
   pollingStationId?: string | null;
   pollingStationDetails?: string;
   attachments: Array<QuickReportAttachmentAPIResponse>;
+  timestamp: string;
 };
 
 export const getQuickReports = (
   electionRoundId: string,
 ): Promise<Array<QuickReportsAPIResponse>> => {
-  return API.get(`election-rounds/${electionRoundId}/quick-reports:my`).then((res) => res.data);
+  return API.get<Array<QuickReportsAPIResponse>>(
+    `election-rounds/${electionRoundId}/quick-reports:my`,
+  ).then((res) =>
+    res.data.map((qr) => ({
+      ...qr,
+      type: ReportType.QuickReport,
+    })),
+  );
 };

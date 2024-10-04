@@ -121,7 +121,7 @@
   },
   "tabs": {
     "observation": "Observation",
-    "quick_report": "Report",
+    "reports": "Reports",
     "guides": "Guides",
     "inbox": "Inbox",
     "more": "More"
@@ -369,6 +369,7 @@
     "offline_error_toast_msg": "You need an internet connection in order to perform this action."
   },
   "quick_report": {
+    "title": "Quick report",
     "list": {
       "title": "Quick Report",
       "heading": "My reported issues",
@@ -561,5 +562,68 @@
     "sync_data": "Synchronizing offline data...",
     "warning": "Please DO NOT CLOSE the app or the internet connection or the data will be lost.",
     "files": "We are uploading your files, it may take a while..."
+  },
+  "reports_type_selector": {
+    "title": "Select the type of report you would like to write:",
+    "incident-report": "Incident report",
+    "incident-report-helper": "Report situations requiring legal assistance, such as voter intimidation, election fraud, or violations of polling procedures, to connect with a lawyer for guidance and support.",
+    "quick-report": "Quick report to NGO",
+    "quick-report-helper": "Submit quick reports of any issues observed during election monitoring, both inside or near polling stations that doesn't need legal assistance."
+  },
+  "incident_report":{
+    "title": "Incident report",
+    "submit": "Submit incident report",
+    "forms": {
+      "heading": "Incident report forms",
+      "list": {
+        "empty": "Incident report forms will appear here once your organization will publish them in the system.",
+        "error": {
+          "paragraph1": "Something went wrong!",
+          "paragraph2": "We could not fetch the data. Press the retry button to try again!",
+          "retry": "Retry"
+        }
+      },
+      "select_language_modal": {
+        "header": "Select form language",
+        "helper": "The selected form is available in multiple languages. Please select which one you would like to continue with.",
+        "error": "Please select one of the options"
+      }
+    },
+    "form": {
+      "max": "Input cannot exceed {{value}} characters",
+      "placeholder": "Please enter a text..",
+      "polling_station_id": {
+        "label": "Location type",
+        "placeholder": "Select location type",
+        "required": "This field is required.",
+        "options":{
+          "other":"Other location"
+        }
+      },
+      "location_description": {
+        "label": "Location description",
+        "placeholder": "Describe where incident location",
+        "required": "This field is required."
+      }
+    },
+    "menu": {
+      "clear": "Clear form (delete all answers)"
+    },
+    "warning_modal": {
+      "title": "Clear incident report form",
+      "description": "This action will delete all answers entered so far for this form. To avoid unintended information loss, please ensure you check the form before performing this action.",
+      "actions": {
+        "cancel": "Cancel",
+        "clear": "Clear form"
+      }
+    },
+    "unsaved_changes_dialog": {
+      "title": "Save changes to form",
+      "description": "You have unsaved changes on this form. Do you want to save your changes before leaving?",
+      "actions": {
+        "discard": "Discard",
+        "save": "Save changes"
+      }
+    }
   }
 }

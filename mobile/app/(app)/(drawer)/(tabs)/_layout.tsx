@@ -41,11 +41,10 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="(quick-report)"
+        name="(reports)"
         options={{
-          title: t("quick_report"),
+          title: t("reports"),
           tabBarIcon: ({ color }) => <Icon icon="quickReport" color={color} />,
-          href: activeElectionRound ? "/(quick-report)" : null,
         }}
       />
 

@@ -1,45 +1,37 @@
-import { ComponentType, JSXElementConstructor, ReactElement, useMemo, useState } from "react";
-import { FormStatus, mapFormToFormListItem } from "../services/form.parser";
-import { useUserData } from "../contexts/user/UserContext.provider";
-import { useTranslation } from "react-i18next";
+import { useQueryClient } from "@tanstack/react-query";
+import { router } from "expo-router";
+import React, {
+  ComponentType,
+  JSXElementConstructor,
+  ReactElement,
+  useMemo,
+  useState,
+} from "react";
 import { Controller, FieldError, FieldErrorsImpl, Merge, useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
+import { RefreshControl } from "react-native";
+import { Spinner, useWindowDimensions, XStack, YStack } from "tamagui";
 import {
   getFormLanguagePreference,
   setFormLanguagePreference,
 } from "../common/language.preferences";
-import { router } from "expo-router";
-import { Typography } from "./Typography";
-import { Spinner, useWindowDimensions, XStack, YStack } from "tamagui";
-import { ListView } from "./ListView";
-import FormCard from "./FormCard";
-import { Dialog } from "./Dialog";
-import RadioFormInput from "./FormInputs/RadioFormInput";
-import Button from "./Button";
-import { useFormSubmissions } from "../services/queries/form-submissions.query";
-import { useElectionRoundAllForms } from "../services/queries/forms.query";
-import FormListErrorScreen from "./FormListError";
-import { useQueryClient } from "@tanstack/react-query";
-import {
-  electionRoundsKeys,
-  pollingStationsKeys,
-  usePollingStationInformation,
-  usePollingStationInformationForm,
-} from "../services/queries.service";
-import { RefreshControl } from "react-native";
-import FormListEmptyComponent from "./FormListEmptyComponent";
+import { useUserData } from "../contexts/user/UserContext.provider";
 import { FormType } from "../services/definitions.api";
+import { mapFormToIncidentReportFormListItem } from "../services/form.parser";
+import { electionRoundsKeys } from "../services/queries.service";
+import { useElectionRoundAllForms } from "../services/queries/forms.query";
+import { incidentReportKeys, useIncidentReports } from "../services/queries/incident-reports.query";
+import Button from "./Button";
+import { Dialog } from "./Dialog";
+import FormCard from "./FormCard";
+import RadioFormInput from "./FormInputs/RadioFormInput";
+import { FormListItem } from "./FormList";
+import IncidentReportingFormListEmptyComponent from "./IncidentReportingFormListEmptyComponent";
+import IncidentReportingFormListErrorScreen from "./IncidentReportingFormListError";
+import { ListView } from "./ListView";
+import { Typography } from "./Typography";
 
 const ESTIMATED_ITEM_SIZE = 100;
-
-export type FormListItem = {
-  id: string;
-  name: string;
-  options: string;
-  numberOfQuestions: number;
-  numberOfCompletedQuestions: number;
-  languages: string[];
-  status: FormStatus;
-};
 
 type ListHeaderComponentType =
   | ComponentType<any>
@@ -47,14 +39,13 @@ type ListHeaderComponentType =
   | null
   | undefined;
 
-interface IFormListProps {
+interface IIncidentReportingFormListProps {
   ListHeaderComponent: ListHeaderComponentType;
 }
-
-const FormList = ({ ListHeaderComponent }: IFormListProps) => {
-  const { activeElectionRound, selectedPollingStation } = useUserData();
+const IncidentReportingFormList = ({ ListHeaderComponent }: IIncidentReportingFormListProps) => {
+  const { activeElectionRound } = useUserData();
   const [selectedForm, setSelectedForm] = useState<FormListItem | null>(null);
-  const { t } = useTranslation(["observation", "common"]);
+  const { t } = useTranslation(["incident_report", "common"]);
 
   const { width } = useWindowDimensions();
 
@@ -66,49 +57,36 @@ const FormList = ({ ListHeaderComponent }: IFormListProps) => {
     error: formsError,
     refetch: refetchForms,
     isRefetching: isRefetchingForms,
-  } = useElectionRoundAllForms(activeElectionRound?.id, (data) => ({
-    ...data,
-    forms: data.forms.filter((f) => f.formType !== FormType.IncidentReporting),
-  }));
+  } = useElectionRoundAllForms(activeElectionRound?.id, (data) =>
+    data.forms.filter((f) => f.formType === FormType.IncidentReporting),
+  );
+
 
   const {
-    data: formSubmissions,
+    data: incidentReports,
     isLoading: isLoadingAnswers,
     error: answersError,
-    refetch: refetchFormSubmissions,
-    isRefetching: isRefetchingFormSubmissions,
-  } = useFormSubmissions(activeElectionRound?.id, selectedPollingStation?.pollingStationId);
-
-  const { refetch: refetchPSIData, isRefetching: isRefetchingPSIData } =
-    usePollingStationInformation(activeElectionRound?.id, selectedPollingStation?.pollingStationId);
-
-  const { refetch: refetchPSIFormQuestions, isRefetching: isRefetchingPSIFormQuestions } =
-    usePollingStationInformationForm(activeElectionRound?.id);
+    refetch: refetchIncidentReports,
+    isRefetching: isRefetchingIncidentReports,
+  } = useIncidentReports(activeElectionRound?.id);
 
   const isRefetching = useMemo(() => {
     return (
-      isRefetchingPSIData ||
-      isRefetchingPSIFormQuestions ||
       isRefetchingForms ||
-      isRefetchingFormSubmissions
+      isRefetchingIncidentReports
     );
   }, [
-    isRefetchingPSIData,
-    isRefetchingPSIFormQuestions,
-    isRefetchingForms,
-    isRefetchingFormSubmissions,
+    isRefetchingForms ,
+    isRefetchingIncidentReports
   ]);
-
   const handleRefetch = () => {
-    refetchPSIData();
-    refetchPSIFormQuestions();
     refetchForms();
-    refetchFormSubmissions();
+    refetchIncidentReports();
   };
 
   const formList: FormListItem[] = useMemo(() => {
-    return mapFormToFormListItem(allForms?.forms, formSubmissions);
-  }, [allForms, formSubmissions]);
+    return mapFormToIncidentReportFormListItem(allForms,incidentReports);
+  }, [allForms, incidentReports]);
 
   const {
     control,
@@ -119,7 +97,7 @@ const FormList = ({ ListHeaderComponent }: IFormListProps) => {
   const onConfirmFormLanguage = (formItem: FormListItem, language: string) => {
     setFormLanguagePreference({ formId: formItem.id, language });
 
-    router.push(`/form-details/${formItem?.id}?language=${language}`); // TODO @birloiflorian we can pass formTitle
+    router.push(`/incident-report-form/${formItem?.id}?language=${language}?`);
     setSelectedForm(null);
   };
 
@@ -129,10 +107,10 @@ const FormList = ({ ListHeaderComponent }: IFormListProps) => {
       console.log("No language exists");
     }
 
-    const preferedLanguage = await getFormLanguagePreference({ formId: formItem.id });
+    const preferredLanguage = await getFormLanguagePreference({ formId: formItem.id });
 
-    if (preferedLanguage && formItem.languages.includes(preferedLanguage)) {
-      onConfirmFormLanguage(formItem, preferedLanguage);
+    if (preferredLanguage && formItem.languages.includes(preferredLanguage)) {
+      onConfirmFormLanguage(formItem, preferredLanguage);
     } else if (formItem?.languages?.length === 1) {
       onConfirmFormLanguage(formItem, formItem.languages[0]);
     } else {
@@ -140,7 +118,7 @@ const FormList = ({ ListHeaderComponent }: IFormListProps) => {
     }
   };
 
-  if (isLoadingAnswers || isLoadingForms) {
+  if (isLoadingForms || isLoadingAnswers) {
     return (
       <YStack justifyContent="center" alignItems="center" flex={1}>
         <Spinner size="large" color="$purple5" />
@@ -150,16 +128,13 @@ const FormList = ({ ListHeaderComponent }: IFormListProps) => {
 
   if (formsError || answersError) {
     return (
-      <FormListErrorScreen
+      <IncidentReportingFormListErrorScreen
         onPress={() => {
           queryClient.invalidateQueries({
             queryKey: electionRoundsKeys.forms(activeElectionRound?.id),
           });
           queryClient.invalidateQueries({
-            queryKey: pollingStationsKeys.allFormSubmissions(
-              activeElectionRound?.id,
-              selectedPollingStation?.pollingStationId,
-            ),
+            queryKey: incidentReportKeys.allFormSubmissions(activeElectionRound?.id),
           });
         }}
       />
@@ -171,7 +146,7 @@ const FormList = ({ ListHeaderComponent }: IFormListProps) => {
       <ListView<FormListItem>
         data={formList}
         ListHeaderComponent={ListHeaderComponent}
-        ListEmptyComponent={<FormListEmptyComponent />}
+        ListEmptyComponent={<IncidentReportingFormListEmptyComponent />}
         showsVerticalScrollIndicator={false}
         bounces={true}
         renderItem={({ item, index }) => {
@@ -275,4 +250,4 @@ const DialogContent = ({
   );
 };
 
-export default FormList;
+export default IncidentReportingFormList;
