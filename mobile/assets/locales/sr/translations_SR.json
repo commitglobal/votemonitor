@@ -17,9 +17,13 @@
   "languages": {
     "ro": "rumunski",
     "en": "engleski",
-    "pl": "Poljski",
+    "pl": "poljski",
     "bg": "bugarski",
-    "sr": "srpski"
+    "sr": "srpski",
+    "ka": "gruzijski",
+    "hy": "jermenski",
+    "ru": "ruski",
+    "az": "azerski"
   },
   "onboarding": {
     "language": {
