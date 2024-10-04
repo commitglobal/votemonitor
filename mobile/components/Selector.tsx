@@ -46,8 +46,8 @@ export const Selector = ({
       onPress={onPress}
       pressStyle={currentTheme.pressStyle}
       width="100%"
-      {...rest}
       justifyContent="space-between"
+      {...rest}
     >
       <YStack flex={0.9}>
         {title && (

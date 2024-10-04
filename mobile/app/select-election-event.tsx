@@ -40,7 +40,7 @@ const Footer = ({
         paddingLeft="$xl"
         onPress={handleGoBack}
       >
-        <Icon icon="chevronLeft" size={24} />
+        <Icon icon="chevronLeft" size={24} color="$purple5" />
       </XStack>
       <Button flex={0.8} disabled={isPrimaryButtonDisabled} onPress={primaryAction}>
         {primaryActionLabel}
@@ -59,6 +59,7 @@ export const SelectElectionEvent = () => {
     isLoading: isLoadingElectionEvents,
     isError: isErrorElectionEvents,
     refetch: refetchElectionEvents,
+    isRefetching: isRefetchingElectionEvents,
   } = useGetCitizenElectionEvents();
 
   // todo: go back
@@ -111,7 +112,7 @@ export const SelectElectionEvent = () => {
         <Footer
           primaryAction={refetchElectionEvents}
           primaryActionLabel={t("retry")}
-          isPrimaryButtonDisabled={isLoadingElectionEvents}
+          isPrimaryButtonDisabled={isRefetchingElectionEvents}
           handleGoBack={handleGoBack}
         />
       </Screen>
@@ -174,13 +175,11 @@ export const SelectElectionEvent = () => {
             flexGrow: 1,
           }}
         >
-          {isLoadingElectionEvents && (
+          {isLoadingElectionEvents ? (
             <YStack justifyContent="center" alignItems="center" flex={1}>
               <Spinner color="$purple5" />
             </YStack>
-          )}
-
-          {!isLoadingElectionEvents && (
+          ) : (
             <>
               <Typography color="$gray8">{t("description")}</Typography>
 

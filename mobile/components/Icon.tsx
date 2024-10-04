@@ -61,6 +61,7 @@ import Video from "../assets/icons/questionCard/video.svg";
 import Audio from "../assets/icons/questionCard/audio.svg";
 import VMCitizenLogo from "../assets/icons/vm-citizen-logo.svg";
 import Warning from "../assets/icons/warning.svg";
+import PublicResourcesProblems from "../assets/icons/public-resources-problems.svg";
 
 interface IconProps extends ViewProps {
   /**
@@ -159,6 +160,7 @@ export const defaultIcon = React.forwardRef(
       checkCircle: <CheckCircle fill={color} width={size} height={size} />,
       vmCitizenLogo: <VMCitizenLogo fill={color} width={size | 295} height={size | 82} />,
       warning: <Warning stroke={color} width={size} height={size} />,
+      publicResourcesProblems: <PublicResourcesProblems fill={color} width={size} height={size} />,
     };
 
     return (

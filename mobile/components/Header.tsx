@@ -76,38 +76,36 @@ const Header = ({
   });
 
   return (
-    <>
-      <StyledWrapper>
-        <XStack style={[$headerContainer, $styleOverride]}>
-          {/* manipulating status bar icons to desired color */}
-          <StatusBar barStyle={barStyle} />
-          {/* left icon */}
-          <TouchableOpacity
-            onPress={leftIcon && onLeftPress ? onLeftPress : undefined}
-            style={$leftIconContainer}
-            disabled={!onLeftPress}
-          >
-            {leftIcon || null}
-          </TouchableOpacity>
-          {/* header title */}
+    <StyledWrapper>
+      <XStack style={[$headerContainer, $styleOverride]}>
+        {/* manipulating status bar icons to desired color */}
+        <StatusBar barStyle={barStyle} />
+        {/* left icon */}
+        <TouchableOpacity
+          onPress={leftIcon && onLeftPress ? onLeftPress : undefined}
+          style={$leftIconContainer}
+          disabled={!onLeftPress}
+        >
+          {leftIcon || null}
+        </TouchableOpacity>
+        {/* header title */}
 
-          <YStack flex={6} justifyContent="center" alignItems="center">
-            <Typography preset="body2" color={titleColor} textAlign="center" numberOfLines={2}>
-              {title}
-            </Typography>
-          </YStack>
-          {/* right icon */}
-          <TouchableOpacity
-            onPress={rightIcon && onRightPress ? onRightPress : undefined}
-            style={$rightIconContainer}
-            disabled={!onRightPress}
-          >
-            {rightIcon || null}
-          </TouchableOpacity>
-        </XStack>
-        {children}
-      </StyledWrapper>
-    </>
+        <YStack flex={6} justifyContent="center" alignItems="center">
+          <Typography preset="body2" color={titleColor} textAlign="center" numberOfLines={2}>
+            {title}
+          </Typography>
+        </YStack>
+        {/* right icon */}
+        <TouchableOpacity
+          onPress={rightIcon && onRightPress ? onRightPress : undefined}
+          style={$rightIconContainer}
+          disabled={!onRightPress}
+        >
+          {rightIcon || null}
+        </TouchableOpacity>
+      </XStack>
+      {children}
+    </StyledWrapper>
   );
 };
 

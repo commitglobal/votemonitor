@@ -63,6 +63,18 @@
     "error_description": "Something went wrong while retrieving the available election events. Please retry.",
     "retry": "Retry"
   },
+  "citizen_report_issue": {
+    "header_title": "Report an issue",
+    "description": "As a citizen, you can report an election-related issue, by filling-in a reporting form, from the list below.",
+    "empty_forms": "Reporting forms will appear here once Vote Monitor team will publish them in the system.",
+    "error_message": "Something went wrong while retrieving the reporting forms. Please retry.",
+    "retry": "Retry",
+    "info_modal": {
+      "p1": "Reports submitted through Vote Monitor Citizen will be analysed by the NGOs monitoring the election event, and may be included in electoral observation reports. In certain cases, your anonymous reports may be forwarded to the institutions responsible for organising elections in order to improve future election processes.",
+      "p2": "Please note that submitting a report through this application does not constitute an official complaint filed with the institutions responsible for organising elections.",
+      "ok": "OK"
+    }
+  },
   "login": {
     "disclaimer": {
       "paragraph1": "Please note that if you are not accredited as an independent observer by an organization that monitors election processes in your country, you cannot use the Vote Monitor app.",
