@@ -1,15 +1,16 @@
-import React, { useMemo, useState } from "react";
-import { Screen } from "../components/Screen";
-import Header from "../components/Header";
-import { Icon } from "../components/Icon";
-import { Typography } from "../components/Typography";
+import React, { useMemo } from "react";
+import { Screen } from "../../components/Screen";
+import Header from "../../components/Header";
+import { Icon } from "../../components/Icon";
+import { Typography } from "../../components/Typography";
 import { useTranslation } from "react-i18next";
 import { ScrollView, Spinner, XStack, YStack } from "tamagui";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Button from "../components/Button";
-import { Selector } from "../components/Selector";
-import { useGetCitizenElectionEvents } from "../services/queries/citizen.query";
-import { IElectionRound } from "../services/api/citizen/get-citizen-election-rounds";
+import Button from "../../components/Button";
+import { Selector } from "../../components/Selector";
+import { useGetCitizenElectionEvents } from "../../services/queries/citizen.query";
+import { useCitizenUserData } from "../../contexts/citizen-user/CitizenUserContext.provider";
+import { router } from "expo-router";
 
 const Footer = ({
   primaryAction,
@@ -17,7 +18,7 @@ const Footer = ({
   isPrimaryButtonDisabled,
   handleGoBack,
 }: {
-  primaryAction: () => void;
+  primaryAction?: () => void;
   primaryActionLabel: string;
   isPrimaryButtonDisabled?: boolean;
   handleGoBack: () => void;
@@ -42,17 +43,20 @@ const Footer = ({
       >
         <Icon icon="chevronLeft" size={24} color="$purple5" />
       </XStack>
-      <Button flex={0.8} disabled={isPrimaryButtonDisabled} onPress={primaryAction}>
+      <Button
+        flex={0.8}
+        disabled={isPrimaryButtonDisabled || !primaryAction}
+        onPress={primaryAction}
+      >
         {primaryActionLabel}
       </Button>
     </XStack>
   );
 };
 
-export const SelectElectionEvent = () => {
+const SelectElectionEvent = () => {
   const { t } = useTranslation("select_election_event");
-
-  const [selectedElectionEvent, setSelectedElectionEvent] = useState<IElectionRound | null>(null);
+  const { selectedElectionRound, setSelectedElectionRound } = useCitizenUserData();
 
   const {
     data: electionEvents,
@@ -70,7 +74,9 @@ export const SelectElectionEvent = () => {
   const renderHeader = useMemo(() => {
     return () => (
       <Header barStyle="light-content" backgroundColor="white">
-        <Icon icon="vmCitizenLogo" paddingTop="$xxxl" width={295} height={82} />
+        <XStack paddingTop="$xxl" justifyContent="center" alignItems="center">
+          <Icon icon="vmCitizenLogo" width={295} height={82} />
+        </XStack>
         <Typography preset="heading" fontWeight="500" marginVertical="$xl">
           {t("heading")}
         </Typography>
@@ -161,6 +167,7 @@ export const SelectElectionEvent = () => {
       preset="fixed"
       contentContainerStyle={{
         flex: 1,
+        backgroundColor: "white",
       }}
     >
       {renderHeader()}
@@ -188,8 +195,8 @@ export const SelectElectionEvent = () => {
                   key={event.id}
                   description={event.title}
                   displayMode="light"
-                  selected={selectedElectionEvent?.id === event.id}
-                  onPress={() => setSelectedElectionEvent(event)}
+                  selected={selectedElectionRound === event.id}
+                  onPress={() => setSelectedElectionRound(event.id)}
                 />
               ))}
             </>
@@ -197,8 +204,16 @@ export const SelectElectionEvent = () => {
         </ScrollView>
       </YStack>
 
-      {/* //todo: continue */}
-      <Footer primaryActionLabel={t("continue")} handleGoBack={handleGoBack} />
+      <Footer
+        primaryActionLabel={t("continue")}
+        isPrimaryButtonDisabled={!selectedElectionRound}
+        primaryAction={() => {
+          router.push("(main)");
+        }}
+        handleGoBack={handleGoBack}
+      />
     </Screen>
   );
 };
+
+export default SelectElectionEvent;

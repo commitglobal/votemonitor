@@ -10,7 +10,7 @@ export default function MainLayout() {
   console.log("👀 selectedElectionRound", selectedElectionRound);
 
   if (!selectedElectionRound) {
-    return <Redirect href="/election-rounds" />;
+    return <Redirect href="/select-election-rounds" />;
   }
 
   return (

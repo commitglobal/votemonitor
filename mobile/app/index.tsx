@@ -1,6 +1,6 @@
 import React from "react";
 import { Redirect } from "expo-router";
-import { useAppMode } from "../contexts/app-mode/AppModeContext.provider";
+import { AppMode, useAppMode } from "../contexts/app-mode/AppModeContext.provider";
 import { Typography } from "../components/Typography";
 import { Screen } from "../components/Screen";
 import { YStack } from "tamagui";
@@ -27,8 +27,8 @@ function AppModeWrapper() {
     <Screen>
       <Typography>Onboarding</Typography>
       <YStack style={{ paddingVertical: 100, gap: 25 }}>
-        <Button onPress={() => setAppMode("citizen")}>Go to Citizen</Button>
-        <Button onPress={() => setAppMode("observer")}>Go to Observer</Button>
+        <Button onPress={() => setAppMode(AppMode.CITIZEN)}>Go to Citizen</Button>
+        <Button onPress={() => setAppMode(AppMode.OBSERVER)}>Go to Observer</Button>
       </YStack>
     </Screen>
   );

@@ -2,13 +2,16 @@ import React from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Drawer } from "expo-router/drawer";
 import { ScrollViewProps } from "react-native";
-import { DrawerContentScrollView } from "@react-navigation/drawer";
-import { useTheme, XStack, YStack } from "tamagui";
+import { ScrollView, Spinner, useTheme, XStack, YStack } from "tamagui";
 import { Icon } from "../../../../components/Icon";
 import { useGetCitizenElectionEvents } from "../../../../services/queries/citizen.query";
 import { Typography } from "../../../../components/Typography";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-
+import { AppMode } from "../../../../contexts/app-mode/AppModeContext.provider";
+import { AppModeSwitchButton } from "../../../../components/AppModeSwitchButton";
+import { useCitizenUserData } from "../../../../contexts/citizen-user/CitizenUserContext.provider";
+import { DrawerActions } from "@react-navigation/native";
+import { useNavigation } from "expo-router";
 type DrawerContentProps = ScrollViewProps & {
   children?: React.ReactNode;
   backgroundColor: string;
@@ -16,68 +19,70 @@ type DrawerContentProps = ScrollViewProps & {
 
 export const DrawerContent = (props: DrawerContentProps) => {
   const insets = useSafeAreaInsets();
+  const navigation = useNavigation();
+
+  const { setSelectedElectionRound, selectedElectionRound } = useCitizenUserData();
   const { data: electionEvents, isLoading: isLoadingElectionEvents } =
     useGetCitizenElectionEvents();
 
-  // todo: delete
-  const mockElectionEvents = {
-    electionRounds: Array(15)
-      .fill(null)
-      .map((_, index) => ({
-        id: `event-${index + 1}`,
-        countryCode: `CC${index + 1}`,
-        countryName: `Country ${index + 1}`,
-        countryFullName: `Full Country Name ${index + 1}`,
-        startDate: `2023-${(index % 12) + 1}-${(index % 28) + 1}`,
-        title: `Election Event ${index + 1}`,
-      })),
+  const handleSelectElectionRound = (electionRoundId: string) => {
+    setSelectedElectionRound(electionRoundId);
+    navigation.dispatch(DrawerActions.closeDrawer());
   };
 
-  // todo
-  const selectedElectionEvent = mockElectionEvents?.electionRounds[0];
-
   return (
-    <>
-      <YStack flex={1}>
-        <DrawerContentScrollView
+    <YStack flex={1} backgroundColor="$purple25">
+      <YStack flex={1} paddingTop={insets.top}>
+        <ScrollView
           {...props}
           contentContainerStyle={{ flexGrow: 1, paddingBottom: 16 }}
+          stickyHeaderIndices={[0]}
         >
-          <Icon icon="vmCitizenLogo" width={211} height={65} paddingLeft="$md" />
+          <XStack backgroundColor="$purple25" paddingTop={16} paddingLeft="$md">
+            <Icon icon="vmCitizenLogo" width={211} height={65} />
+          </XStack>
 
           <YStack marginTop="$lg">
-            {mockElectionEvents.electionRounds.map((electionEvent, index) => (
-              <XStack
-                key={index}
-                paddingVertical="$md"
-                paddingHorizontal="$lg"
-                pressStyle={{ opacity: 0.5 }}
-                backgroundColor={
-                  selectedElectionEvent?.id === electionEvent.id ? "$purple5" : "transparent"
-                }
-              >
-                <Typography
-                  preset="body2"
-                  color={selectedElectionEvent?.id === electionEvent.id ? "white" : "$purple5"}
-                >
-                  {electionEvent.title}
-                </Typography>
-              </XStack>
-            ))}
+            {isLoadingElectionEvents ? (
+              <Spinner size="large" color="$purple5" marginTop="$xl" />
+            ) : (
+              <>
+                {electionEvents?.electionRounds.map((electionEvent, index) => (
+                  <XStack
+                    key={index}
+                    paddingVertical="$md"
+                    paddingHorizontal="$lg"
+                    pressStyle={{ opacity: 0.5 }}
+                    onPress={() => handleSelectElectionRound(electionEvent.id)}
+                    backgroundColor={
+                      selectedElectionRound === electionEvent.id ? "$purple5" : "transparent"
+                    }
+                  >
+                    <Typography
+                      preset="body2"
+                      color={selectedElectionRound === electionEvent.id ? "white" : "$purple5"}
+                    >
+                      {electionEvent.title}
+                    </Typography>
+                  </XStack>
+                ))}
+              </>
+            )}
           </YStack>
-        </DrawerContentScrollView>
+        </ScrollView>
       </YStack>
-      <XStack borderWidth={2} paddingBottom={insets.bottom + 16}>
-        <Typography marginTop="auto">Report an issue</Typography>
-      </XStack>
-    </>
+
+      <AppModeSwitchButton
+        switchToMode={AppMode.OBSERVER}
+        paddingBottom={insets.bottom + 16}
+        color="$purple5"
+      />
+    </YStack>
   );
 };
 
 export default function DrawerLayout() {
   const theme = useTheme();
-
-  console.log("DrawerLayout");
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>

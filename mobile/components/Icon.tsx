@@ -112,8 +112,6 @@ export const defaultIcon = React.forwardRef(
       ...tamaguiProps
     } = props;
 
-    console.log("width", width);
-
     const iconRegistry: IconRegistry = {
       eyeOff: <EyeOff fill={color} width={size} height={size} />,
       eye: <Eye fill={color} width={size} height={size} />,

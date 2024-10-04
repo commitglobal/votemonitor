@@ -3,14 +3,12 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Drawer } from "expo-router/drawer";
 import { ScrollViewProps } from "react-native";
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
-import { useTheme, XStack } from "tamagui";
+import { useTheme } from "tamagui";
 import { useUserData } from "../../../../contexts/user/UserContext.provider";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Icon } from "../../../../components/Icon";
-import { Typography } from "../../../../components/Typography";
-import { useTranslation } from "react-i18next";
-import { useAppMode } from "../../../../contexts/app-mode/AppModeContext.provider";
-import { router } from "expo-router";
+import { AppMode } from "../../../../contexts/app-mode/AppModeContext.provider";
+
+import { AppModeSwitchButton } from "../../../../components/AppModeSwitchButton";
 
 type DrawerContentProps = ScrollViewProps & {
   children?: React.ReactNode;
@@ -19,16 +17,9 @@ type DrawerContentProps = ScrollViewProps & {
 
 export const DrawerContent = (props: DrawerContentProps) => {
   const { electionRounds } = useUserData();
-  const { t } = useTranslation("drawer");
-  const { setAppMode } = useAppMode();
 
   const theme = useTheme();
   const insets = useSafeAreaInsets();
-
-  const handleSwitchAppModeToCitizen = () => {
-    setAppMode("citizen");
-    router.push("(main)");
-  };
 
   return (
     <DrawerContentScrollView
@@ -46,20 +37,7 @@ export const DrawerContent = (props: DrawerContentProps) => {
       ))}
 
       {/* app mode switch */}
-      <XStack
-        marginTop="auto"
-        alignItems="center"
-        gap="$xxs"
-        paddingHorizontal="$md"
-        paddingVertical="$xxxs"
-        pressStyle={{ opacity: 0.5 }}
-        onPress={handleSwitchAppModeToCitizen}
-      >
-        <Icon icon="appModeSwitch" color="white" size={32} />
-        <Typography color="white" textDecorationLine="underline">
-          {t("report_as", { value: t("citizen") })}
-        </Typography>
-      </XStack>
+      <AppModeSwitchButton switchToMode={AppMode.CITIZEN} />
     </DrawerContentScrollView>
   );
 };
