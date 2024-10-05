@@ -1,5 +1,5 @@
 import MultipleSelector, { Option } from '@/components/ui/multiple-selector'
-import { useCountries } from '@/features/countries/queries';
+import { useCountries } from '@/hooks/countries';
 import { ReactNode, useEffect, useMemo, useState } from 'react'
 
 export interface CountriesMultiselectProps {

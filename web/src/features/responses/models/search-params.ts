@@ -37,6 +37,7 @@ export const FormSubmissionsSearchParamsSchema = ResponsesPageSearchParamsSchema
     questionsAnswered: z.nativeEnum(QuestionsAnswered).optional(),
     hasNotes: z.string().catch('').optional(),
     hasAttachments: z.string().catch('').optional(),
+    formId: z.string().optional()
   }));
 
 export type FormSubmissionsSearchParams = z.infer<typeof FormSubmissionsSearchParamsSchema>;

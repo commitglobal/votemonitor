@@ -244,3 +244,20 @@ export type TranslationStatus = z.infer<typeof ZTranslationStatus>;
 
 const ZLanguagesTranslationStatus = z.record(z.string(), ZTranslationStatus);
 export type LanguagesTranslationStatus = z.infer<typeof ZLanguagesTranslationStatus>;
+
+
+export interface Country {
+  id: string;
+  iso2: string;
+  iso3: string;
+  numericCode: string;
+  name: string;
+  fullName: string;
+}
+
+export interface Language {
+  id: string;
+  code: string;
+  name: string;
+  nativeName: string;
+}

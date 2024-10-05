@@ -4,7 +4,7 @@ import type { FunctionComponent } from '@/common/types';
 import { CsvFileIcon } from '@/components/icons/CsvFileIcon';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
-import { useFormSubmissionsExportedDataDetails, useStartDataExport } from '../../hooks/form-export';
+import { useExportedDataDetails, useStartDataExport } from '../../hooks/data-export';
 import { ExportStatus, type ExportedDataType } from '../../models/data-export';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 
@@ -14,37 +14,45 @@ interface ExportDataButtonProps {
 
 export function ExportDataButton({ exportedDataType }: ExportDataButtonProps): FunctionComponent {
   const [exportedDataId, setExportedDataId] = useState('');
-    const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
+  const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
 
-  const { mutate: createExportData, isPending: isCreatingExportData } = useStartDataExport({
-    electionRoundId: currentElectionRoundId,
-    exportedDataType
-  }, {
-    onSuccess: (data) => {
-      setExportedDataId(data.exportedDataId);
+  const { mutate: createExportData, isPending: isCreatingExportData } = useStartDataExport(
+    {
+      electionRoundId: currentElectionRoundId,
+      exportedDataType,
     },
-    onError: () => {
-      toast({ title: 'Export failed, please try again later', variant: 'default' });
-    },
-  });
+    {
+      onSuccess: (data) => {
+        setExportedDataId(data.exportedDataId);
+      },
+      onError: () => {
+        toast({ title: 'Export failed, please try again later', variant: 'default' });
+      },
+    }
+  );
 
   const downloadHandler = useCallback(() => {
     createExportData();
   }, [createExportData]);
 
-  const { data: exportedDataDetails, isFetching: isFetchingExportedDataDetails } =
-    useFormSubmissionsExportedDataDetails({ electionRoundId: currentElectionRoundId, exportedDataId }, {
+  const { data: exportedDataDetails, isFetching: isFetchingExportedDataDetails } = useExportedDataDetails(
+    { electionRoundId: currentElectionRoundId, exportedDataId },
+    {
       enabled: !isCreatingExportData,
-    });
+    }
+  );
 
   const exportStatus = exportedDataDetails?.exportStatus;
 
   const isLoading = isCreatingExportData || isFetchingExportedDataDetails || exportStatus === ExportStatus.Started;
 
   const downloadExportedData = useCallback(async (): Promise<void> => {
-    const response = await authApi.get<Blob>(`/election-rounds/${currentElectionRoundId}/exported-data/${exportedDataId}`, {
-      responseType: 'blob',
-    });
+    const response = await authApi.get<Blob>(
+      `/election-rounds/${currentElectionRoundId}/exported-data/${exportedDataId}`,
+      {
+        responseType: 'blob',
+      }
+    );
 
     const exportedData = response.data;
     const blob = new Blob([exportedData], {
@@ -77,7 +85,7 @@ export function ExportDataButton({ exportedDataType }: ExportDataButtonProps): F
   return (
     <Button
       disabled={isLoading}
-      className='bg-background hover:bg-purple-50 hover:text-purple-500 text-purple-900 flex gap-2'
+      className='flex gap-2 text-purple-900 bg-background hover:bg-purple-50 hover:text-purple-500'
       variant='outline'
       onClick={downloadHandler}>
       <CsvFileIcon />

@@ -3,7 +3,7 @@ import type { DataTableParameters, PageResponse } from '@/common/types';
 import type { RowData } from '@/components/ui/DataTable/DataTable';
 import { buildURLSearchParams } from '@/lib/utils';
 import { useQuery, type UseQueryResult } from '@tanstack/react-query';
-import type { FormSubmissionByEntry, FormSubmissionByForm, FormSubmissionByObserver } from '../models/form-submission';
+import type { FormSubmissionByEntry, FormSubmissionByForm, FormSubmissionByObserver, FormSubmissionsFilters } from '../models/form-submission';
 
 const STALE_TIME = 1000 * 60; // one minute
 
@@ -15,6 +15,8 @@ export const formSubmissionsByEntryKeys = {
   details: (electionRoundId: string) => [...formSubmissionsByEntryKeys.all(electionRoundId), 'detail'] as const,
   detail: (electionRoundId: string, id: string) =>
     [...formSubmissionsByEntryKeys.details(electionRoundId), id] as const,
+
+  filters: (electionRoundId: string) => [...formSubmissionsByEntryKeys.all(electionRoundId), 'filters'] as const,
 };
 
 export const formSubmissionsByObserverKeys = {
@@ -36,6 +38,7 @@ export const formSubmissionsAggregatedKeys = {
   detail: (electionRoundId: string, id: string) =>
     [...formSubmissionsAggregatedKeys.details(electionRoundId), id] as const,
 };
+
 
 type FormSubmissionsByEntryResponse = PageResponse<FormSubmissionByEntry & RowData>;
 
@@ -110,6 +113,23 @@ export function useFormSubmissionsByObserver(
     enabled: !!electionRoundId,
   });
 }
+
+export function useFormSubmissionsFilters(electionRoundId: string) {
+  return useQuery({
+    queryKey: formSubmissionsByEntryKeys.filters(electionRoundId),
+    queryFn: async () => {
+      const response = await authApi.get<FormSubmissionsFilters>(
+        `/election-rounds/${electionRoundId}/form-submissions:filters`
+      );
+
+      return response.data;
+    },
+    staleTime: STALE_TIME,
+    enabled: !!electionRoundId,
+  });
+}
+
+
 
 type FormSubmissionsByFormResponse = PageResponse<FormSubmissionByForm & RowData>;
 

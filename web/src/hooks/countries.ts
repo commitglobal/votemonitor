@@ -1,10 +1,11 @@
 import { authApi } from "@/common/auth-api";
+import { Country } from "@/common/types";
 import { UseQueryResult, useQuery } from "@tanstack/react-query";
-import { Country } from "./country";
+import { staticDataKeys } from "./query-keys";
 
 export function useCountries(): UseQueryResult<Country[], Error> {
     return useQuery({
-        queryKey: ['countries'],
+        queryKey: staticDataKeys.countries(),
         queryFn: async () => {
             const response = await authApi.get<Country[]>('/countries');
 
