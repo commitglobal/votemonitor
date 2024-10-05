@@ -1,5 +1,5 @@
 import MultipleSelector, { Option } from '@/components/ui/multiple-selector'
-import { useLanguages } from '@/features/languages/queries';
+import { useLanguages } from '@/hooks/languages';
 import { ReactNode, useEffect, useMemo, useState } from 'react'
 
 export interface LanguagesMultiselectProps {

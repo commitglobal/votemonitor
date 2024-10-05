@@ -19,7 +19,6 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { Separator } from '@/components/ui/separator';
 import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
-import { useLanguages } from '@/features/languages/queries';
 import { cn, mapFormType } from '@/lib/utils';
 import { queryClient } from '@/main';
 import { ChevronDownIcon, ChevronUpIcon, Cog8ToothIcon, EllipsisVerticalIcon, FunnelIcon } from '@heroicons/react/24/outline';
@@ -34,6 +33,7 @@ import { formsKeys, useForms } from '../../queries';
 import AddTranslationsDialog, { useAddTranslationsDialog } from './AddTranslationsDialog';
 import CreateForm from './CreateForm';
 import i18n from '@/i18n';
+import { useLanguages } from '@/hooks/languages';
 
 export default function FormsDashboard(): ReactElement {
   const addTranslationsDialog = useAddTranslationsDialog();

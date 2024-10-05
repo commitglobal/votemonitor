@@ -69,3 +69,19 @@ export interface FormSubmission
   attachments: Attachment[];
   questions: BaseQuestion[];
 }
+
+export interface TimestampsFilterOptions {
+  firstSubmissionTimestamp: string;
+  lastSubmissionTimestamp: string;
+}
+
+export interface FormFilterOption {
+  formId: string;
+  formCode: string;
+  formName: string;
+}
+
+export interface FormSubmissionsFilters  {
+  timestampsFilterOptions: TimestampsFilterOptions;
+  formFilterOptions: FormFilterOption[];
+}
