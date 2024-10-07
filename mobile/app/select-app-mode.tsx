@@ -14,7 +14,7 @@ export enum AppMode {
   CITIZEN = "citizen",
 }
 
-export const SelectAppMode = () => {
+export default function SelectAppMode() {
   const { t } = useTranslation("select_app_mode");
   const insets = useSafeAreaInsets();
   const [appMode, setAppMode] = useState<AppMode>(AppMode.ACCREDITED_OBSERVER);
@@ -95,4 +95,4 @@ export const SelectAppMode = () => {
       </YStack>
     </Screen>
   );
-};
+}

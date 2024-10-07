@@ -6,7 +6,7 @@ import { Text } from "react-native";
 import { useNavigation, useRouter } from "expo-router";
 import { DrawerActions } from "@react-navigation/native";
 import Button from "../../../../../components/Button";
-import { useAppMode } from "../../../../../contexts/app-mode/AppModeContext.provider";
+import { AppMode, useAppMode } from "../../../../../contexts/app-mode/AppModeContext.provider";
 
 export default function More() {
   const navigation = useNavigation();
@@ -29,7 +29,7 @@ export default function More() {
       <Text>More Index </Text>
       <Button
         onPress={() => {
-          setAppMode("onboarding");
+          setAppMode(AppMode.ONBOARDING);
           router.push("/");
         }}
       >
