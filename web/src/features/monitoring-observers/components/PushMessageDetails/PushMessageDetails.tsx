@@ -7,6 +7,7 @@ import { DateTimeFormat } from '@/common/formats';
 import type { FunctionComponent } from '@/common/types';
 import { NavigateBack } from '@/components/NavigateBack/NavigateBack';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { cn } from '@/lib/utils';
 import { pushMessageDetailsQueryOptions, Route } from '@/routes/monitoring-observers/push-messages.$id_.view';
 import { CheckIcon } from '@heroicons/react/24/outline';
 import { useSuspenseQuery } from '@tanstack/react-query';
@@ -25,16 +26,13 @@ export default function PushMessageDetails(): FunctionComponent {
           </div>
           <Separator />
         </CardHeader>
-        <CardContent className='grid grid-cols-2 h-96'>
+        <CardContent className='grid grid-cols-2'>
           <div className='flex flex-col gap-1'>
             <div className='flex flex-col gap-1'>
               <p className='font-bold text-gray-700'>Title</p>
               <p className='font-normal text-gray-900'>{pushMessage.title}</p>
             </div>
-            <div className='flex flex-col gap-1'>
-              <p className='font-bold text-gray-700'>Body</p>
-              <div dangerouslySetInnerHTML={{ __html: pushMessage.body }} className='font-normal text-gray-900'/>
-            </div>
+
             <div className='flex flex-col gap-1'>
               <p className='font-bold text-gray-700'>Sent at</p>
               <p className='font-normal text-gray-900'>{format(pushMessage.sentAt, DateTimeFormat)}</p>
@@ -45,7 +43,7 @@ export default function PushMessageDetails(): FunctionComponent {
             </div>
           </div>
           <div className='flex flex-col gap-1 overflow-y-auto'>
-            <div className='flex flex-col gap-1'>
+            <div className='flex flex-col gap-1 h-36'>
               <p className='font-bold text-gray-700'>Total targeted observers {pushMessage?.receivers?.length ?? 0}</p>
               {pushMessage?.receivers?.map((receiver) => (
                 <div className='flex gap-1'>
@@ -58,6 +56,13 @@ export default function PushMessageDetails(): FunctionComponent {
                 </div>
               ))}
             </div>
+          </div>
+          <div className='flex flex-col gap-2 col-span-2 mt-8'>
+            <p className='font-bold text-gray-700'>Body</p>
+            <div
+              dangerouslySetInnerHTML={{ __html: pushMessage.body }}
+              className={cn('p-3 border rounded-lg prose max-w-none [&_ol]:list-decimal [&_ul]:list-disc')}
+            />
           </div>
         </CardContent>
       </Card>
