@@ -25,11 +25,11 @@ import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { Route } from '@/routes/monitoring-observers/create-new-message';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { useDebounce } from '@uidotdev/usehooks';
 import { useMonitoringObserversTags } from '../../../../hooks/tags-queries';
-import { useTargetedMonitoringObservers } from '../../hooks/push-messages-queries';
+import { pushMessagesKeys, useTargetedMonitoringObservers } from '../../hooks/push-messages-queries';
 import { MonitoringObserverStatus } from '../../models/monitoring-observer';
 import type { SendPushNotificationRequest } from '../../models/push-message';
 import type { PushMessageTargetedObserversSearchParams } from '../../models/search-params';
@@ -51,6 +51,8 @@ function PushMessageForm(): FunctionComponent {
   const debouncedSearchText = useDebounce(searchText, 300);
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
   const { data: tags } = useMonitoringObserversTags(currentElectionRoundId);
+
+  const queryClient = useQueryClient();
 
   const onTagsFilterChange = useCallback(
     (tag: string) => () => {
@@ -127,6 +129,7 @@ function PushMessageForm(): FunctionComponent {
     },
 
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [pushMessagesKeys.all(currentElectionRoundId)] });
       toast({
         title: 'Success',
         description: 'Notification sent',
