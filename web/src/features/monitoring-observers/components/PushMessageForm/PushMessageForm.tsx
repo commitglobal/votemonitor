@@ -17,10 +17,12 @@ import { z } from 'zod';
 import { authApi } from '@/common/auth-api';
 import type { FunctionComponent } from '@/common/types';
 import { PollingStationsFilters } from '@/components/PollingStationsFilters/PollingStationsFilters';
+import { RichTextEditor } from '@/components/rich-text-editor';
 import { FilterBadge } from '@/components/ui/badge';
 import { QueryParamsDataTable } from '@/components/ui/DataTable/QueryParamsDataTable';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from '@/components/ui/use-toast';
+import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { Route } from '@/routes/monitoring-observers/create-new-message';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { useMutation } from '@tanstack/react-query';
@@ -32,8 +34,6 @@ import { MonitoringObserverStatus } from '../../models/monitoring-observer';
 import type { SendPushNotificationRequest } from '../../models/push-message';
 import type { PushMessageTargetedObserversSearchParams } from '../../models/search-params';
 import { targetedMonitoringObserverColDefs } from '../../utils/column-defs';
-import { useCurrentElectionRoundStore } from '@/context/election-round.store';
-import { Textarea } from '@/components/ui/textarea';
 
 const createPushMessageSchema = z.object({
   title: z.string().min(1, { message: 'Your message must have a title before sending.' }),
@@ -49,7 +49,7 @@ function PushMessageForm(): FunctionComponent {
   const [totalRowsCount, setTotalRowsCount] = useState(0);
   const [searchText, setSearchText] = useState<string>('');
   const debouncedSearchText = useDebounce(searchText, 300);
-    const currentElectionRoundId = useCurrentElectionRoundStore(s => s.currentElectionRoundId);
+  const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
   const { data: tags } = useMonitoringObserversTags(currentElectionRoundId);
 
   const onTagsFilterChange = useCallback(
@@ -119,8 +119,11 @@ function PushMessageForm(): FunctionComponent {
   });
 
   const sendNotificationMutation = useMutation({
-    mutationFn: ({ electionRoundId, request }: { electionRoundId: string, request: SendPushNotificationRequest }) => {
-      return authApi.post<SendPushNotificationRequest>(`/election-rounds/${electionRoundId}/notifications:send`, request);
+    mutationFn: ({ electionRoundId, request }: { electionRoundId: string; request: SendPushNotificationRequest }) => {
+      return authApi.post<SendPushNotificationRequest>(
+        `/election-rounds/${electionRoundId}/notifications:send`,
+        request
+      );
     },
 
     onSuccess: () => {
@@ -140,7 +143,7 @@ function PushMessageForm(): FunctionComponent {
         title: values.title,
         body: values.messageBody,
         ...queryParams,
-      }
+      },
     });
   }
 
@@ -182,8 +185,7 @@ function PushMessageForm(): FunctionComponent {
                         Message body <span className='text-red-500'>*</span>
                       </FormLabel>
                       <FormControl>
-                        {/* <RichTextEditor {...field} /> */}
-                        <Textarea rows={8} className='resize-none' {...field} maxLength={1000} />
+                        <RichTextEditor {...field} onValueChange={field.onChange} />
                       </FormControl>
                       <FormDescription>1000 characters</FormDescription>
                       <FormMessage />
