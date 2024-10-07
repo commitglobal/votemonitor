@@ -90,7 +90,7 @@ function AddTranslationsDialog() {
                 actionButton: 'Ok'
 
             })
-            await queryClient.invalidateQueries({ queryKey: formsKeys.all });
+            await queryClient.invalidateQueries({ queryKey: formsKeys.all(currentElectionRoundId) });
             router.invalidate();
         },
     });

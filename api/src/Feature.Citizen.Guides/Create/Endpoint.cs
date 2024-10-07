@@ -3,6 +3,7 @@ using Authorization.Policies;
 using Authorization.Policies.Requirements;
 using Microsoft.AspNetCore.Authorization;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
+using Vote.Monitor.Core.Services.Security;
 using Vote.Monitor.Domain.Entities.CitizenGuideAggregate;
 
 namespace Feature.Citizen.Guides.Create;
@@ -10,7 +11,8 @@ namespace Feature.Citizen.Guides.Create;
 public class Endpoint(
     IAuthorizationService authorizationService,
     IRepository<CitizenGuideAggregate> repository,
-    IFileStorageService fileStorageService)
+    IFileStorageService fileStorageService,
+    IHtmlStringSanitizer htmlStringSanitizer)
     : Endpoint<Request, Results<Ok<CitizenGuideModel>, NotFound, StatusCodeHttpResult>>
 {
     public override void Configure()
@@ -86,7 +88,7 @@ public class Endpoint(
         {
             citizenGuide = CitizenGuide.NewTextGuide(req.ElectionRoundId,
                 req.Title,
-                req.Text!);
+                htmlStringSanitizer.Sanitize(req.Text!));
 
             citizenGuideModel = new CitizenGuideModel
             {

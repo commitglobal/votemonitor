@@ -13,7 +13,6 @@ public class RatingAnswerAggregateTests
 {
     private readonly RatingQuestion _question = new RatingQuestionFaker(RatingScale.OneTo10).Generate();
     private readonly RatingAnswerAggregate _aggregate;
-    private readonly FormSubmission _submission = new FormSubmissionFaker().Generate();
 
     public RatingAnswerAggregateTests()
     {
