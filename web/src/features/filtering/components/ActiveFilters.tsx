@@ -2,6 +2,8 @@ import { FilterBadge } from '@/components/ui/badge';
 import { useNavigate } from '@tanstack/react-router';
 import { FC, useCallback } from 'react';
 import { FILTER_KEY, FILTER_LABEL } from '../filtering-enums';
+import { useFormSubmissionsFilters } from '@/features/responses/hooks/form-submissions-queries';
+import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 
 interface ActiveFilterProps {
   filterId: string;
@@ -30,6 +32,7 @@ const FILTER_LABELS = new Map<string, string>([
   [FILTER_KEY.LocationL5, FILTER_LABEL.LocationL5],
   [FILTER_KEY.FormSubmissionsMonitoringObserverTags, FILTER_LABEL.FormSubmissionsMonitoringObserverTags],
   [FILTER_KEY.PollingStationNumber, FILTER_LABEL.PollingStationNumber],
+  [FILTER_KEY.FormId, FILTER_LABEL.FormId],
 ]);
 
 const ActiveFilter: FC<ActiveFilterProps> = ({ filterId, value, isArray }) => {
@@ -58,6 +61,9 @@ interface ActiveFiltersProps {
 }
 
 export const ActiveFilters: FC<ActiveFiltersProps> = ({ queryParams }) => {
+  const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
+  const { data: formSubmissionsFilters } = useFormSubmissionsFilters(currentElectionRoundId);
+
   return (
     <div className='flex flex-wrap gap-2 col-span-full'>
       {Object.keys(queryParams).map((filterId) => {
@@ -66,6 +72,14 @@ export const ActiveFilters: FC<ActiveFiltersProps> = ({ queryParams }) => {
         const isArray = Array.isArray(value);
 
         if (HIDDEN_FILTERS.includes(filterId)) return;
+        if (filterId === FILTER_KEY.FormId) {
+          key = `active-filter-${filterId}`;
+          const form = formSubmissionsFilters?.formFilterOptions.find((f) => f.formId === value);
+
+          if (form) {
+            return <ActiveFilter key={key} filterId={filterId} value={`${form.formCode} - ${form.formName}`} />;
+          }
+        }
 
         if (!isArray) {
           key = `active-filter-${filterId}`;

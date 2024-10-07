@@ -13,6 +13,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { AuthContext } from '@/context/auth.context';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { electionRoundKeys } from '@/features/election-round/queries';
+import { staticDataKeys } from '@/hooks/query-keys';
+import { sleep } from '@/lib/utils';
 import { queryClient } from '@/main';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { Bars3Icon, ChevronDownIcon, XMarkIcon } from '@heroicons/react/24/outline';
@@ -49,13 +51,23 @@ const Header = (): FunctionComponent => {
       setSelectedElection(electionRound);
       setCurrentElectionRoundId(electionRound.electionRoundId);
       setIsMonitoringNgoForCitizenReporting(electionRound.isMonitoringNgoForCitizenReporting);
+      sleep(1);
 
       await queryClient.invalidateQueries({
-        predicate: (query) => query.queryKey !== electionRoundKeys.all,
+        predicate: (query) => {
+          if (query.queryKey === electionRoundKeys.all) {
+            return false;
+          }
+
+          if (query.queryKey[0] === staticDataKeys.all[0]) {
+            return false;
+          }
+
+          return true;
+        },
       });
 
       router.invalidate();
-      // router.navigate({ to: "/" });
     }
   };
 

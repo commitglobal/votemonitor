@@ -51,7 +51,7 @@ public class Endpoint(
                 MonitoringObserverId = incidentReport.MonitoringObserverId,
                 ObserverName = incidentReport.MonitoringObserver.Observer.ApplicationUser.LastName + " " +
                                incidentReport.MonitoringObserver.Observer.ApplicationUser.LastName,
-                TimeSubmitted = incidentReport.LastModifiedOn ?? incidentReport.CreatedOn,
+                Timestamp = incidentReport.LastModifiedOn ?? incidentReport.CreatedOn,
                 FollowUpStatus = incidentReport.FollowUpStatus,
 
                 LocationType = incidentReport.LocationType,
@@ -94,6 +94,7 @@ public class Endpoint(
                 LocationType = incidentReport.LocationType,
                 LocationDescription = incidentReport.LocationDescription,
                 PollingStationId = incidentReport.PollingStation?.Id,
+                Timestamp = incidentReport.Timestamp
             });
         }
 

@@ -470,3 +470,7 @@ export const ensureTranslatedStringCorrectness = (translatedString:TranslatedStr
 
   return translatedString;
 };
+
+export async function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}

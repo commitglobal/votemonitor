@@ -13,10 +13,10 @@ import {
 } from "@/components/ui/popover";
 import { cn } from '@/lib/utils';
 import { Check, ChevronsUpDown } from 'lucide-react';
-import { useCountries } from '@/features/countries/queries';
 import { Button } from '@/components/ui/button';
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useCountries } from "@/hooks/countries";
 
 export interface CountrySelectProps {
     countryId: string;
@@ -49,7 +49,7 @@ function CountrySelect({ countryId, onSelect }: CountrySelectProps) {
                     className="w-[350px] justify-between"
                 >
                     {placeholder}
-                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    <ChevronsUpDown className="w-4 h-4 ml-2 opacity-50 shrink-0" />
                 </Button>
             </PopoverTrigger>
             <PopoverContent className="w-[350px] p-0">

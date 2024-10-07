@@ -6,7 +6,6 @@ import { Separator } from '@/components/ui/separator';
 import { toast } from '@/components/ui/use-toast';
 import LanguagesMultiselect from '@/containers/LanguagesMultiselect';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
-import { useLanguages } from '@/features/languages/queries';
 import { queryClient } from '@/main';
 import { useMutation } from '@tanstack/react-query';
 import { difference } from 'lodash';
@@ -14,6 +13,7 @@ import { useState } from 'react';
 import { create } from 'zustand';
 import { formsKeys } from '../../queries';
 import { useRouter } from '@tanstack/react-router';
+import { useLanguages } from '@/hooks/languages';
 
 export interface AddTranslationsDialogPropsProps {
     isOpen: boolean;
