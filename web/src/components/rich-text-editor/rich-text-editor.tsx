@@ -10,6 +10,7 @@ import {
 } from '@radix-ui/react-icons';
 import type { Editor as TiptapEditor } from '@tiptap/core';
 import CharacterCount from '@tiptap/extension-character-count';
+import Heading from '@tiptap/extension-heading';
 import { Placeholder } from '@tiptap/extension-placeholder';
 import { TextStyle } from '@tiptap/extension-text-style';
 import { Typography } from '@tiptap/extension-typography';
@@ -17,6 +18,7 @@ import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import * as React from 'react';
 import { LinkBubbleMenu } from './components/bubble-menu/link-bubble-menu';
+import Headings from './components/headings';
 import { LinkEditPopover } from './components/link/link-edit-popover';
 import ToolbarButton from './components/toolbar-button';
 import { Link } from './extensions/link';
@@ -67,13 +69,14 @@ const useRichTextEditor = (props: RichTextProps) => {
       Placeholder.configure({
         placeholder: () => placeholder || '',
       }),
+      Heading.configure({ levels: [1, 2, 3] }),
       CharacterCount.configure({
         limit: characterLimit,
       }),
     ],
     editorProps: {
       attributes: {
-        class: 'focus:outline-none',
+        class: cn('prose max-w-none [&_ol]:list-decimal [&_ul]:list-disc'),
       },
     },
     onUpdate: ({ editor }) => {
@@ -93,6 +96,7 @@ const useRichTextEditor = (props: RichTextProps) => {
 const Toolbar = ({ editor }: { editor: TiptapEditor }) => (
   <div className='border-b border-border p-2'>
     <div className='flex w-full flex-wrap items-center'>
+      <Headings editor={editor} activeLevels={[1, 2, 3]} />
       <ToolbarButton
         key='Bold'
         onClick={() => editor.chain().focus().toggleBold().run()}
