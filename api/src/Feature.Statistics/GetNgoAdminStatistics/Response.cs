@@ -12,4 +12,6 @@ public class Response
     public HistogramPoint[] QuestionsHistogram { get; set; } = [];
     public HistogramPoint[] FlaggedAnswersHistogram { get; set; } = [];
     public HistogramPoint[] QuickReportsHistogram { get; set; } = [];
+    public HistogramPoint[] IncidentReportsHistogram { get; set; } = [];
+    public HistogramPoint[] CitizenReportsHistogram { get; set; } = [];
 }

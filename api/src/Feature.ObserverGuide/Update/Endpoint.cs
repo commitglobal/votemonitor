@@ -2,13 +2,15 @@
 using Authorization.Policies.Requirements;
 using Feature.ObserverGuide.Specifications;
 using Microsoft.AspNetCore.Authorization;
+using Vote.Monitor.Core.Services.Security;
 using Vote.Monitor.Domain.Entities.ObserverGuideAggregate;
 
 namespace Feature.ObserverGuide.Update;
 
 public class Endpoint(
     IAuthorizationService authorizationService,
-    IRepository<ObserverGuideAggregate> repository)
+    IRepository<ObserverGuideAggregate> repository,
+    IHtmlStringSanitizer htmlStringSanitizer)
     : Endpoint<Request, Results<Ok<ObserverGuideModel>, NotFound, NoContent>>
 {
     public override void Configure()
@@ -49,7 +51,7 @@ public class Endpoint(
                 ThrowError(x => x.Text, "Text is required.");
             }
 
-            guide.UpdateTextGuide(req.Title, req.Text);
+            guide.UpdateTextGuide(req.Title, htmlStringSanitizer.Sanitize(req.Text));
         }
 
         if (guide.GuideType == ObserverGuideType.Website)

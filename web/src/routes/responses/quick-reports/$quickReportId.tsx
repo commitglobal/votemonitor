@@ -8,7 +8,7 @@ import { createFileRoute } from '@tanstack/react-router';
 
 export function quickReportDetailsQueryOptions(electionRoundId: string, quickReportId: string) {
   return queryOptions({
-    queryKey: quickReportKeys.detail(quickReportId),
+    queryKey: quickReportKeys.detail(electionRoundId, quickReportId),
     queryFn: async () => {
 
       const response = await authApi.get<QuickReport>(`/election-rounds/${electionRoundId}/quick-reports/${quickReportId}`);

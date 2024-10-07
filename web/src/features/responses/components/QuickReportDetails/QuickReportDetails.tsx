@@ -27,7 +27,6 @@ export default function QuickReportDetails(): FunctionComponent {
   const { invalidate } = useRouter();
 
   const updateQuickReportFollowUpStatusMutation = useMutation({
-    mutationKey: quickReportKeys.all,
     mutationFn: ({
       electionRoundId,
       followUpStatus,
@@ -40,14 +39,14 @@ export default function QuickReportDetails(): FunctionComponent {
       });
     },
 
-    onSuccess: () => {
+    onSuccess: (_data, {electionRoundId}) => {
       toast({
         title: 'Success',
         description: 'Follow-up status updated',
       });
 
       invalidate();
-      void queryClient.invalidateQueries({ queryKey: quickReportKeys.all });
+      void queryClient.invalidateQueries({ queryKey: quickReportKeys.all(electionRoundId) });
     },
 
     onError: () => {
