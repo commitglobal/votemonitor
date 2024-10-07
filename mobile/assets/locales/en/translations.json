@@ -504,6 +504,11 @@
     "your_organization": "your organization",
     "menu": {
       "manage_polling_stations": "Manage my polling stations"
+    },
+    "info_modal": {
+      "p1": "In this Inbox expect to receive live updates and messages from the NGO that accredited you as an observer.",
+      "p2": "Check back periodically to see if you have received any new information, relevant to your observation activity.",
+      "ok": "OK"
     }
   },
   "more": {

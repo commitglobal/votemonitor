@@ -1,4 +1,4 @@
-import { Spinner, YStack, useWindowDimensions } from "tamagui";
+import { ScrollView, Spinner, XStack, YStack, useWindowDimensions } from "tamagui";
 import { Screen } from "../../../../../components/Screen";
 import Header from "../../../../../components/Header";
 import { Typography } from "../../../../../components/Typography";
@@ -19,6 +19,8 @@ import { useAppState } from "../../../../../hooks/useAppState";
 import { useQueryClient } from "@tanstack/react-query";
 import { Notification } from "../../../../../services/api/get-notifications.api";
 import { RefreshControl } from "react-native";
+import { Dialog } from "../../../../../components/Dialog";
+import Button from "../../../../../components/Button";
 
 const ESTIMATED_ITEM_SIZE = 200;
 
@@ -33,6 +35,8 @@ const Inbox = () => {
 
   const notifications = data?.notifications;
   const ngoName = data?.ngoName;
+
+  const [isOpenInfoModal, setIsOpenInfoModal] = useState(false);
 
   const [sliceNumber, setSliceNumber] = useState(10);
   const loadMore = () => {
@@ -56,6 +60,14 @@ const Inbox = () => {
     return <NoNotificationsReceived />;
   }
 
+  const handleOpenInfoModal = () => {
+    setIsOpenInfoModal(true);
+  };
+
+  const handleCloseInfoModal = () => {
+    setIsOpenInfoModal(false);
+  };
+
   return (
     <Screen preset="fixed" contentContainerStyle={{ flexGrow: 1 }}>
       <YStack>
@@ -66,8 +78,7 @@ const Inbox = () => {
           leftIcon={<Icon icon="menuAlt2" color="white" />}
           onLeftPress={() => navigation.dispatch(DrawerActions.openDrawer)}
           rightIcon={<Icon icon="infoCircle" color="white" width={24} height={24} />}
-          // TODO: action on right press after it's decided
-          // onRightPress={() => console.log("TODO")}
+          onRightPress={handleOpenInfoModal}
         />
         {!isLoading && (
           <YStack backgroundColor="$yellow6" paddingVertical="$xxs" paddingHorizontal="$md">
@@ -98,6 +109,31 @@ const Inbox = () => {
             refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={refetch} />}
           />
         </YStack>
+      )}
+      {isOpenInfoModal && (
+        <Dialog
+          open
+          content={
+            <YStack maxHeight="85%" gap="$md">
+              <ScrollView
+                contentContainerStyle={{ gap: 16, flexGrow: 1 }}
+                showsVerticalScrollIndicator={false}
+                bounces={false}
+              >
+                <Typography color="$gray6">{t("info_modal.p1")}</Typography>
+
+                <Typography color="$gray6">{t("info_modal.p2")}</Typography>
+              </ScrollView>
+            </YStack>
+          }
+          footer={
+            <XStack justifyContent="center">
+              <Button preset="chromeless" onPress={handleCloseInfoModal}>
+                {t("info_modal.ok")}
+              </Button>
+            </XStack>
+          }
+        />
       )}
     </Screen>
   );
