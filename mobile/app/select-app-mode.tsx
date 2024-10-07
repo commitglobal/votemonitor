@@ -8,23 +8,24 @@ import { useTranslation } from "react-i18next";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Selector } from "../components/Selector";
 import Button from "../components/Button";
-
-export enum AppMode {
-  ACCREDITED_OBSERVER = "accredited_observer",
-  CITIZEN = "citizen",
-}
+import { AppMode, useAppMode } from "../contexts/app-mode/AppModeContext.provider";
 
 export default function SelectAppMode() {
   const { t } = useTranslation("select_app_mode");
   const insets = useSafeAreaInsets();
-  const [appMode, setAppMode] = useState<AppMode>(AppMode.ACCREDITED_OBSERVER);
+  const [appMode, setAppMode] = useState<AppMode>(AppMode.CITIZEN);
+  const { setAppMode: setAppModeContext } = useAppMode();
 
   const setAppModeToCitizen = () => {
     setAppMode(AppMode.CITIZEN);
   };
 
   const setAppModeToAccreditedObserver = () => {
-    setAppMode(AppMode.ACCREDITED_OBSERVER);
+    setAppMode(AppMode.OBSERVER);
+  };
+
+  const handleSetAppModeContext = () => {
+    setAppModeContext(appMode);
   };
 
   return (
@@ -64,7 +65,7 @@ export default function SelectAppMode() {
             <Selector
               title={t("accredited_observer.title")}
               description={t("accredited_observer.description")}
-              selected={appMode === AppMode.ACCREDITED_OBSERVER}
+              selected={appMode === AppMode.OBSERVER}
               onPress={setAppModeToAccreditedObserver}
             />
             <Selector
@@ -81,14 +82,7 @@ export default function SelectAppMode() {
         </ScrollView>
 
         <XStack justifyContent="center" alignItems="center" paddingHorizontal="$xl">
-          <Button
-            flex={1}
-            preset="yellow"
-            onPress={() => {
-              // todo
-              console.log("continue");
-            }}
-          >
+          <Button flex={1} preset="yellow" onPress={handleSetAppModeContext}>
             {t("continue")}
           </Button>
         </XStack>
