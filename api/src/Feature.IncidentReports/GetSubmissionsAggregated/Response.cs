@@ -1,5 +1,4 @@
-﻿using Feature.IncidentReports.Models;
-using Vote.Monitor.Answer.Module.Aggregators;
+﻿using Vote.Monitor.Answer.Module.Aggregators;
 
 namespace Feature.IncidentReports.GetSubmissionsAggregated;
 

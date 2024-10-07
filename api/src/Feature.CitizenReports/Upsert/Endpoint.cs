@@ -17,7 +17,7 @@ public class Endpoint(
         Post("/api/election-rounds/{electionRoundId}/citizen-reports");
         DontAutoTag();
         AllowAnonymous();
-        Options(x => x.WithTags("citizen-report", "public"));
+        Options(x => x.WithTags("citizen-reports", "public"));
         Summary(s => { s.Summary = "Upserts citizen report for a given form at a given location"; });
     }
 

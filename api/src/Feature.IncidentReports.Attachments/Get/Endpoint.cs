@@ -10,7 +10,7 @@ public class Endpoint(
 {
     public override void Configure()
     {
-        Get("/api/election-rounds/{electionRoundId}/incident-report-attachments/{id}");
+        Get("/api/election-rounds/{electionRoundId}/incident-reports/{incidentReportId}/attachments/{id}");
         DontAutoTag();
         Options(x => x.WithTags("incident-report-attachments"));
         Summary(s =>

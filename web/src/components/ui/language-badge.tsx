@@ -1,7 +1,7 @@
 import type { FunctionComponent } from '@/common/types';
-import { useLanguages } from '@/features/languages/queries';
 import { useMemo } from 'react';
 import { Badge } from './badge';
+import { useLanguages } from '@/hooks/languages';
 
 
 interface LanguageBadgeProps {
@@ -18,7 +18,7 @@ function LanguageBadge({ languageCode }: LanguageBadgeProps): FunctionComponent 
   }, [languageCode, languages]);
 
   return (
-    <Badge className='bg-purple-50 text-purple-600 font-medium hover:bg-purple-100 py-2 text-sm gap-2'>
+    <Badge className='gap-2 py-2 text-sm font-medium text-purple-600 bg-purple-50 hover:bg-purple-100'>
       <span>{label}</span>
     </Badge>
   );

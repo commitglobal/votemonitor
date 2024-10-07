@@ -1,6 +1,4 @@
-﻿using Authorization.Policies.Requirements;
-using Dapper;
-using Microsoft.AspNetCore.Authorization;
+﻿using Dapper;
 using Vote.Monitor.Domain.ConnectionFactory;
 using Vote.Monitor.Domain.Specifications;
 

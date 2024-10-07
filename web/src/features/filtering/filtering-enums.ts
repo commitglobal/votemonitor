@@ -18,6 +18,7 @@ export const enum FILTER_KEY {
   FormSubmissionsMonitoringObserverTags = 'tagsFilter',
   ViewBy = 'viewBy',
   Tab = 'tab',
+  FormId = 'formId',
 }
 
 export const enum FILTER_LABEL {
@@ -36,4 +37,5 @@ export const enum FILTER_LABEL {
   PollingStationNumber = 'Polling station number',
   FormSubmissionsMonitoringObserverTags = 'Observer tags',
   MediaFiles = 'Has attachments',
+  FormId = 'Form'
 }

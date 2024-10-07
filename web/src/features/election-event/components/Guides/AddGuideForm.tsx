@@ -1,12 +1,13 @@
 import { authApi } from '@/common/auth-api';
 import { FunctionComponent } from '@/common/types';
+import { RichTextEditor } from '@/components/rich-text-editor';
 import { useConfirm } from '@/components/ui/alert-dialog-provider';
 import { FileUploader } from '@/components/ui/file-uploader';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { toast } from '@/components/ui/use-toast';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
+import { isNilOrWhitespace, isNotNilOrWhitespace } from '@/lib/utils';
 import { queryClient } from '@/main';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
@@ -15,9 +16,8 @@ import { ReactNode, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { citizenGuidesKeys } from '../../hooks/citizen-guides-hooks';
-import { GuideModel, GuidePageType, GuideType } from '../../models/guide';
-import { isNilOrWhitespace, isNotNilOrWhitespace } from '@/lib/utils';
 import { observerGuidesKeys } from '../../hooks/observer-guides-hooks';
+import { GuideModel, GuidePageType, GuideType } from '../../models/guide';
 export interface AddGuideFormProps {
   guidePageType: GuidePageType;
   guideType: GuideType;
@@ -191,7 +191,7 @@ export default function AddGuideForm({
           <FormField
             control={form.control}
             name='title'
-            render={({ field, fieldState  }) => (
+            render={({ field, fieldState }) => (
               <FormItem className='w-1/2'>
                 <FormLabel>
                   Title <span className='text-red-500'>*</span>
@@ -213,7 +213,7 @@ export default function AddGuideForm({
                     Guide url <span className='text-red-500'>*</span>
                   </FormLabel>
                   <FormControl>
-                    <Input placeholder='https://' {...field}  {...fieldState}/>
+                    <Input placeholder='https://' {...field} {...fieldState} />
                   </FormControl>
                   <FormMessage className='mt-2' />
                 </FormItem>
@@ -256,7 +256,7 @@ export default function AddGuideForm({
                     Text <span className='text-red-500'>*</span>
                   </FormLabel>
                   <FormControl>
-                    <Textarea {...field} {...fieldState} rows={10} />
+                    <RichTextEditor {...field} onValueChange={field.onChange} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

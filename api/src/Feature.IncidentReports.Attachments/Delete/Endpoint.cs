@@ -8,7 +8,7 @@ public class Endpoint(VoteMonitorContext context)
 {
     public override void Configure()
     {
-        Delete("/api/election-rounds/{electionRoundId}/incident-report-attachments/{id}");
+        Delete("/api/election-rounds/{electionRoundId}/incident-reports/{incidentReportId}/attachments/{id}");
         DontAutoTag();
         Options(x => x.WithTags("incident-report-attachments"));
         Summary(s => { s.Summary = "Deletes an attachment"; });

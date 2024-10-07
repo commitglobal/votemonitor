@@ -29,3 +29,12 @@ export interface QuickReport {
   attachments: Attachment[];
   followUpStatus: QuickReportFollowUpStatus;
 }
+
+export interface TimestampsFilterOptions {
+  firstSubmissionTimestamp: string;
+  lastSubmissionTimestamp: string;
+}
+
+export interface QuickReportsFilters  {
+  timestampsFilterOptions: TimestampsFilterOptions;
+}

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Vote.Monitor.Domain;
+using Vote.Monitor.Domain.Entities.CitizenGuideAggregate;
 
 namespace Feature.Citizen.Guides.Delete;
 
@@ -28,6 +29,13 @@ public class Endpoint(
 
         await context
             .CitizenGuides
+            .Where(x => x.ElectionRoundId == req.ElectionRoundId && x.Id == req.Id &&
+                        x.GuideType != CitizenGuideType.Document)
+            .ExecuteDeleteAsync(ct);
+
+        await context
+            .CitizenGuides
+            .Where(x => x.ElectionRoundId == req.ElectionRoundId && x.Id == req.Id)
             .ExecuteUpdateAsync(x => x.SetProperty(g => g.IsDeleted, true), ct);
 
         return TypedResults.NoContent();

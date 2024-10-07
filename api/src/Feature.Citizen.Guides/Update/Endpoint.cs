@@ -2,13 +2,15 @@
 using Authorization.Policies.Requirements;
 using Feature.Citizen.Guides.Specifications;
 using Microsoft.AspNetCore.Authorization;
+using Vote.Monitor.Core.Services.Security;
 using Vote.Monitor.Domain.Entities.CitizenGuideAggregate;
 
 namespace Feature.Citizen.Guides.Update;
 
 public class Endpoint(
     IAuthorizationService authorizationService,
-    IRepository<CitizenGuideAggregate> repository)
+    IRepository<CitizenGuideAggregate> repository,
+    IHtmlStringSanitizer htmlStringSanitizer)
     : Endpoint<Request, Results<Ok<CitizenGuideModel>, NotFound, NoContent>>
 {
     public override void Configure()
@@ -49,7 +51,7 @@ public class Endpoint(
                 ThrowError(x => x.Text, "Text is required.");
             }
 
-            guide.UpdateTextGuide(req.Title, req.Text);
+            guide.UpdateTextGuide(req.Title, htmlStringSanitizer.Sanitize(req.Text));
         }
 
         if (guide.GuideType == CitizenGuideType.Website)

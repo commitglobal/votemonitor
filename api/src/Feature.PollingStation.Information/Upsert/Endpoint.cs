@@ -10,26 +10,27 @@ using Vote.Monitor.Domain.Entities.PollingStationInfoFormAggregate;
 
 namespace Feature.PollingStation.Information.Upsert;
 
-public class Endpoint(IRepository<PollingStationInformation> repository,
+public class Endpoint(
+    IRepository<PollingStationInformation> repository,
     IReadRepository<PollingStationAggregate> pollingStationRepository,
     IReadRepository<MonitoringObserver> monitoringObserverRepository,
     IReadRepository<PollingStationInformationForm> formRepository,
-    IAuthorizationService authorizationService) : Endpoint<Request, Results<Ok<PollingStationInformationModel>, NotFound>>
+    IAuthorizationService authorizationService)
+    : Endpoint<Request, Results<Ok<PollingStationInformationModel>, NotFound>>
 {
     public override void Configure()
     {
         Post("/api/election-rounds/{electionRoundId}/polling-stations/{pollingStationId}/information");
         DontAutoTag();
         Options(x => x.WithTags("polling-station-information", "mobile"));
-        Summary(s =>
-        {
-            s.Summary = "Upserts polling station information for a polling station";
-        });
+        Summary(s => { s.Summary = "Upserts polling station information for a polling station"; });
     }
 
-    public override async Task<Results<Ok<PollingStationInformationModel>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
+    public override async Task<Results<Ok<PollingStationInformationModel>, NotFound>> ExecuteAsync(Request req,
+        CancellationToken ct)
     {
-        var authorizationResult = await authorizationService.AuthorizeAsync(User, new MonitoringObserverRequirement(req.ElectionRoundId));
+        var authorizationResult =
+            await authorizationService.AuthorizeAsync(User, new MonitoringObserverRequirement(req.ElectionRoundId));
         if (!authorizationResult.Succeeded)
         {
             return TypedResults.NotFound();
@@ -42,7 +43,8 @@ public class Endpoint(IRepository<PollingStationInformation> repository,
             return TypedResults.NotFound();
         }
 
-        var specification = new GetPollingStationInformationSpecification(req.ElectionRoundId, req.PollingStationId, req.ObserverId);
+        var specification =
+            new GetPollingStationInformationSpecification(req.ElectionRoundId, req.PollingStationId, req.ObserverId);
         var pollingStationInformation = await repository.FirstOrDefaultAsync(specification, ct);
 
         List<BaseAnswer>? answers = null;
@@ -55,27 +57,27 @@ public class Endpoint(IRepository<PollingStationInformation> repository,
 
         return pollingStationInformation is null
             ? await AddPollingStationInformationAsync(req, form, answers, ct)
-            : await UpdatePollingStationInformationAsync(form, pollingStationInformation, req.ArrivalTime, req.DepartureTime, answers, ct);
+            : await UpdatePollingStationInformationAsync(form, pollingStationInformation, req, answers, ct);
     }
 
     private async Task<Results<Ok<PollingStationInformationModel>, NotFound>> UpdatePollingStationInformationAsync(
         PollingStationInformationForm form,
         PollingStationInformation pollingStationInformation,
-        DateTime? arrivalTime,
-        DateTime? departureTime,
+        Request req,
         List<BaseAnswer>? answers,
         CancellationToken ct)
     {
-        pollingStationInformation = form.FillIn(pollingStationInformation, answers);
-
-        pollingStationInformation.UpdateTimesOfStay(arrivalTime, departureTime);
+        var observationBreaks = req.Breaks.Select(x => ObservationBreak.Create(x.Start, x.End)).ToList();
+        pollingStationInformation = form.FillIn(pollingStationInformation, answers, req.ArrivalTime, req.DepartureTime,
+            observationBreaks);
 
         await repository.UpdateAsync(pollingStationInformation, ct);
 
         return TypedResults.Ok(PollingStationInformationModel.FromEntity(pollingStationInformation));
     }
 
-    private async Task<Results<Ok<PollingStationInformationModel>, NotFound>> AddPollingStationInformationAsync(Request req,
+    private async Task<Results<Ok<PollingStationInformationModel>, NotFound>> AddPollingStationInformationAsync(
+        Request req,
         PollingStationInformationForm form,
         List<BaseAnswer>? answers,
         CancellationToken ct)
@@ -87,14 +89,19 @@ public class Endpoint(IRepository<PollingStationInformation> repository,
             return TypedResults.NotFound();
         }
 
-        var monitoringObserverSpecification = new GetMonitoringObserverSpecification(req.ElectionRoundId, req.ObserverId);
-        var monitoringObserver = await monitoringObserverRepository.FirstOrDefaultAsync(monitoringObserverSpecification, ct);
+        var monitoringObserverSpecification =
+            new GetMonitoringObserverSpecification(req.ElectionRoundId, req.ObserverId);
+        var monitoringObserver =
+            await monitoringObserverRepository.FirstOrDefaultAsync(monitoringObserverSpecification, ct);
         if (monitoringObserver is null)
         {
             return TypedResults.NotFound();
         }
 
-        var pollingStationInformation = form.CreatePollingStationInformation(pollingStation, monitoringObserver, req.ArrivalTime, req.DepartureTime, answers);
+        var observationBreaks = req.Breaks.Select(x => ObservationBreak.Create(x.Start, x.End)).ToList();
+        var pollingStationInformation = form.CreatePollingStationInformation(pollingStation, monitoringObserver,
+            req.ArrivalTime, req.DepartureTime, answers,
+            observationBreaks);
         await repository.AddAsync(pollingStationInformation, ct);
 
         return TypedResults.Ok(PollingStationInformationModel.FromEntity(pollingStationInformation));

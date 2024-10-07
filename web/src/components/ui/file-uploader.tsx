@@ -6,7 +6,7 @@ import Dropzone, {
 } from "react-dropzone"
 
 import { Button } from "@/components/ui/button"
-import { useControllableState } from "@/hooks/use-controllable-state"
+import { useControllableState } from "@/components/ui/use-controllable-state"
 import { cn, formatBytes } from "@/lib/utils"
 import { toast } from "./use-toast"
 

@@ -9,7 +9,7 @@ public class Endpoint(IRepository<CitizenReportAttachmentAggregate> repository,
 {
     public override void Configure()
     {
-        Post("/api/election-rounds/{electionRoundId}/citizen-report-attachments/{id}:abort");
+        Post("/api/election-rounds/{electionRoundId}/citizen-reports/{citizenReportId}/attachments/{id}:abort");
         DontAutoTag();
         AllowAnonymous();
         Options(x => x.WithTags("citizen-report-attachments", "public"));

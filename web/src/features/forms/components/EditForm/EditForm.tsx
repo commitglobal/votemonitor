@@ -407,7 +407,6 @@ export default function EditForm(): FunctionComponent {
   });
 
   const editMutation = useMutation({
-    mutationKey: formsKeys.all,
     mutationFn: ({
       electionRoundId,
       form,
@@ -421,13 +420,13 @@ export default function EditForm(): FunctionComponent {
       });
     },
 
-    onSuccess: async (_, { shouldExitEditor }) => {
+    onSuccess: async (_, { shouldExitEditor,electionRoundId }) => {
       toast({
         title: 'Success',
         description: 'Form updated successfully',
       });
 
-      await queryClient.invalidateQueries({ queryKey: formsKeys.all, type: 'all' });
+      await queryClient.invalidateQueries({ queryKey: formsKeys.all(electionRoundId), type: 'all' });
 
       if (shouldExitEditor) {
         if (

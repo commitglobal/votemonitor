@@ -1,5 +1,6 @@
 import { authApi } from '@/common/auth-api';
 import { FunctionComponent } from '@/common/types';
+import { RichTextEditor } from '@/components/rich-text-editor';
 import { useConfirm } from '@/components/ui/alert-dialog-provider';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
@@ -15,7 +16,6 @@ import { z } from 'zod';
 import { citizenGuideDetailsQueryOptions, citizenGuidesKeys } from '../../hooks/citizen-guides-hooks';
 import { observerGuideDetailsQueryOptions, observerGuidesKeys } from '../../hooks/observer-guides-hooks';
 import { GuidePageType, GuideType } from '../../models/guide';
-import { Textarea } from '@/components/ui/textarea';
 
 export interface EditGuideFormProps {
   guidePageType: GuidePageType;
@@ -70,7 +70,10 @@ export default function EditGuideForm({
           });
         }
 
-        if (isNotNilOrWhitespace(websiteUrl) && !/^(https?):\/\/(?=.*\.[a-z]{2,})[^\s$.?#].[^\s]*$/i.test(websiteUrl!)) {
+        if (
+          isNotNilOrWhitespace(websiteUrl) &&
+          !/^(https?):\/\/(?=.*\.[a-z]{2,})[^\s$.?#].[^\s]*$/i.test(websiteUrl!)
+        ) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
             message: `Please enter a valid URL`,
@@ -210,7 +213,7 @@ export default function EditGuideForm({
                   Text <span className='text-red-500'>*</span>
                 </FormLabel>
                 <FormControl>
-                  <Textarea placeholder='Text' {...field} {...fieldState} rows={10} />
+                  <RichTextEditor {...field} onValueChange={field.onChange} />
                 </FormControl>
                 <FormMessage className='mt-2' />
               </FormItem>

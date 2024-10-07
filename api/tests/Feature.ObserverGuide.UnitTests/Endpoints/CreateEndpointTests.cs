@@ -11,9 +11,11 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using NSubstitute;
 using NSubstitute.ReturnsExtensions;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
+using Vote.Monitor.Core.Services.Security;
 using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
 using Vote.Monitor.Domain.Entities.ObserverGuideAggregate;
 using Vote.Monitor.Domain.Repository;
+using Vote.Monitor.TestUtils.Fakes;
 using Vote.Monitor.TestUtils.Fakes.Aggregates;
 
 namespace Feature.ObserverGuide.UnitTests.Endpoints;
@@ -25,6 +27,7 @@ public class CreateEndpointTests
     private readonly IAuthorizationService _authorizationService;
     private readonly IReadRepository<MonitoringNgo> _monitoringNgoRepository;
     private readonly Create.Endpoint _endpoint;
+    private readonly IHtmlStringSanitizer _htmlStringSanitizer;
 
     public CreateEndpointTests()
     {
@@ -32,11 +35,13 @@ public class CreateEndpointTests
         _fileStorageService = Substitute.For<IFileStorageService>();
         _authorizationService = Substitute.For<IAuthorizationService>();
         _monitoringNgoRepository = Substitute.For<IReadRepository<MonitoringNgo>>();
+        _htmlStringSanitizer = Substitute.For<IHtmlStringSanitizer>();
 
         _endpoint = Factory.Create<Create.Endpoint>(_authorizationService,
             _repository,
             _monitoringNgoRepository,
-            _fileStorageService);
+            _fileStorageService,
+            _htmlStringSanitizer);
     }
 
     [Fact]
@@ -55,8 +60,6 @@ public class CreateEndpointTests
             .Returns(fakeMonitoringNgo);
 
         var fileName = "file.txt";
-        var bytes = Encoding.UTF8.GetBytes("Test content");
-        var stream = new MemoryStream(bytes);
         var url = "url";
         var urlValidityInSeconds = 60;
         _fileStorageService.UploadFileAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<Stream>(),
@@ -64,19 +67,13 @@ public class CreateEndpointTests
             .Returns(new UploadFileResult.Ok(url, fileName, urlValidityInSeconds));
 
         // Act
-        var formFile = new FormFile(stream, 0, 0, string.Empty, fileName)
-        {
-            Headers = new HeaderDictionary(),
-            ContentType = "image/jpg"
-        };
-
         var observerGuideTitle = "my observer guide";
 
         var request = new Request
         {
             ElectionRoundId = fakeElectionRound.Id,
             Title = observerGuideTitle,
-            Attachment = formFile,
+            Attachment = FakeFormFile.New().HavingFileName(fileName).Please(),
             GuideType = ObserverGuideType.Document
         };
         var result = await _endpoint.ExecuteAsync(request, default);
@@ -98,47 +95,24 @@ public class CreateEndpointTests
     {
         // Arrange
         var fakeElectionRound = new ElectionRoundAggregateFaker().Generate();
-        var fakeMonitoringNgo = new MonitoringNgoAggregateFaker().Generate();
 
         _authorizationService.AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object?>(),
                 Arg.Any<IEnumerable<IAuthorizationRequirement>>())
             .Returns(AuthorizationResult.Failed());
 
-        _monitoringNgoRepository
-            .FirstOrDefaultAsync(Arg.Any<GetMonitoringNgoSpecification>())
-            .Returns(fakeMonitoringNgo);
-
-        var fileName = "file.txt";
-        var bytes = Encoding.UTF8.GetBytes("Test content");
-        var stream = new MemoryStream(bytes);
-        var url = "url";
-        var urlValidityInSeconds = 60;
-        _fileStorageService.UploadFileAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<Stream>(),
-                Arg.Any<CancellationToken>())
-            .Returns(new UploadFileResult.Ok(url, fileName, urlValidityInSeconds));
-
         // Act
-        var formFile = new FormFile(stream, 0, 0, string.Empty, fileName)
-        {
-            Headers = new HeaderDictionary(),
-            ContentType = "image/jpg"
-        };
-
-        var observerGuideTitle = "my observer guide";
-
         var request = new Request
         {
             ElectionRoundId = fakeElectionRound.Id,
-            Title = observerGuideTitle,
-            Attachment = formFile
+            Title = "my observer guide",
+            Attachment = FakeFormFile.New().Please()
         };
         var result = await _endpoint.ExecuteAsync(request, default);
 
         // Assert
         await _repository
-            .Received(0)
-            .AddAsync(Arg.Is<ObserverGuideAggregate>(x => x.Title == observerGuideTitle
-                                                          && x.MonitoringNgoId == fakeMonitoringNgo.Id));
+            .DidNotReceive()
+            .AddAsync(Arg.Any<ObserverGuideAggregate>());
 
         result
             .Should().BeOfType<Results<Ok<ObserverGuideModel>, NotFound, StatusCodeHttpResult>>()
@@ -162,8 +136,6 @@ public class CreateEndpointTests
             .ReturnsNull();
 
         var fileName = "file.txt";
-        var bytes = Encoding.UTF8.GetBytes("Test content");
-        var stream = new MemoryStream(bytes);
         var url = "url";
         var urlValidityInSeconds = 60;
         _fileStorageService.UploadFileAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<Stream>(),
@@ -171,27 +143,20 @@ public class CreateEndpointTests
             .Returns(new UploadFileResult.Ok(url, fileName, urlValidityInSeconds));
 
         // Act
-        var formFile = new FormFile(stream, 0, 0, string.Empty, fileName)
-        {
-            Headers = new HeaderDictionary(),
-            ContentType = "image/jpg"
-        };
-
         var observerGuideTitle = "my observer guide";
 
         var request = new Request
         {
             ElectionRoundId = fakeElectionRound.Id,
             Title = observerGuideTitle,
-            Attachment = formFile
+            Attachment = FakeFormFile.New().Please()
         };
         var result = await _endpoint.ExecuteAsync(request, default);
 
         // Assert
         await _repository
-            .Received(0)
-            .AddAsync(Arg.Is<ObserverGuideAggregate>(x => x.Title == observerGuideTitle
-                                                          && x.MonitoringNgoId == fakeMonitoringNgo.Id));
+            .DidNotReceive()
+            .AddAsync(Arg.Any<ObserverGuideAggregate>());
 
         result
             .Should().BeOfType<Results<Ok<ObserverGuideModel>, NotFound, StatusCodeHttpResult>>()
@@ -214,37 +179,24 @@ public class CreateEndpointTests
             .FirstOrDefaultAsync(Arg.Any<GetMonitoringNgoSpecification>())
             .Returns(fakeMonitoringNgo);
 
-
-        var fileName = "file.txt";
-        var bytes = Encoding.UTF8.GetBytes("Test content");
-        var stream = new MemoryStream(bytes);
         _fileStorageService.UploadFileAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<Stream>(),
                 Arg.Any<CancellationToken>())
             .Returns(new UploadFileResult.Failed("error message"));
 
         // Act
-        var formFile = new FormFile(stream, 0, 0, string.Empty, fileName)
-        {
-            Headers = new HeaderDictionary(),
-            ContentType = "image/jpg"
-        };
-
-        var observerGuideTitle = "my observer guide";
-
         var request = new Request
         {
             ElectionRoundId = fakeElectionRound.Id,
-            Title = observerGuideTitle,
-            Attachment = formFile,
+            Title = "my observer guide",
+            Attachment = FakeFormFile.New().Please(),
             GuideType = ObserverGuideType.Document
         };
         var result = await _endpoint.ExecuteAsync(request, default);
 
         // Assert
         await _repository
-            .Received(0)
-            .AddAsync(Arg.Is<ObserverGuideAggregate>(x => x.Title == observerGuideTitle
-                                                          && x.MonitoringNgoId == fakeMonitoringNgo.Id));
+            .DidNotReceive()
+            .AddAsync(Arg.Any<ObserverGuideAggregate>());
 
         result
             .Should().BeOfType<Results<Ok<ObserverGuideModel>, NotFound, StatusCodeHttpResult>>()
@@ -253,5 +205,37 @@ public class CreateEndpointTests
 
         var model = result.Result.As<StatusCodeHttpResult>();
         model.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
+    }
+
+    [Fact]
+    public async Task ShouldSanitizeHtml_WhenAttachmentTypeText()
+    {
+        // Arrange
+        var fakeElectionRound = new ElectionRoundAggregateFaker().Generate();
+        var fakeMonitoringNgo = new MonitoringNgoAggregateFaker().Generate();
+
+        _authorizationService.AuthorizeAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<object?>(),
+                Arg.Any<IEnumerable<IAuthorizationRequirement>>())
+            .Returns(AuthorizationResult.Success());
+
+        _monitoringNgoRepository
+            .FirstOrDefaultAsync(Arg.Any<GetMonitoringNgoSpecification>())
+            .Returns(fakeMonitoringNgo);
+
+        // Act
+        var guideText = "<p>some html</p>";
+        var request = new Create.Request
+        {
+            ElectionRoundId = fakeElectionRound.Id,
+            Title = "my citizen guide",
+            Text = guideText,
+            GuideType = ObserverGuideType.Text
+        };
+        var result = await _endpoint.ExecuteAsync(request, default);
+
+        // Assert
+        _htmlStringSanitizer
+            .Received(1)
+            .Sanitize(guideText);
     }
 }

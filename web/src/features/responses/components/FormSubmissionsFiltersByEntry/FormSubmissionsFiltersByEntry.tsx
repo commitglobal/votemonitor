@@ -8,11 +8,13 @@ import { FormSubmissionsMediaFilesSelect } from '../../filtering/FormSubmissions
 import { FormSubmissionsQuestionNotesSelect } from '../../filtering/FormSubmissionsQuestionNotesSelect';
 import { FormSubmissionsQuestionsAnsweredSelect } from '../../filtering/FormSubmissionsQuestionsAnsweredSelect';
 import { FormSubmissionsTypeSelect } from '../../filtering/FormSubmissionsTypeSelect';
+import { FormSubmissionsFormSelect } from '../../filtering/FormSubmissionsFormSelect';
 
 export const FormSubmissionsFiltersByEntry: FC = () => {
   return (
     <FilteringContainer>
       <FormSubmissionsTypeSelect />
+      <FormSubmissionsFormSelect />
       <FormSubmissionsFlaggedAnswersSelect />
       <FormSubmissionsFollowUpSelect />
       <FormSubmissionsQuestionsAnsweredSelect />

@@ -4,7 +4,7 @@ import type { RowData } from '@/components/ui/DataTable/DataTable';
 import { buildURLSearchParams } from '@/lib/utils';
 import { useQuery, type UseQueryResult } from '@tanstack/react-query';
 
-import type { CitizenReportByEntry, CitizenReportsAggregatedByForm } from '../models/citizen-report';
+import type { CitizenReportByEntry, CitizenReportsAggregatedByForm, CitizenReportsFilters } from '../models/citizen-report';
 
 const STALE_TIME = 1000 * 60; // one minute
 
@@ -14,6 +14,7 @@ export const citizenReportKeys = {
   list: (electionRoundId: string, params: DataTableParameters) => [...citizenReportKeys.lists(electionRoundId), { ...params }] as const,
   details: (electionRoundId: string) => [...citizenReportKeys.all(electionRoundId), 'detail'] as const,
   detail: (electionRoundId: string, id: string) => [...citizenReportKeys.details(electionRoundId), id] as const,
+  filters: (electionRoundId: string) => [...citizenReportKeys.all(electionRoundId), 'filters'] as const,
 }
 
 export const citizenReportsAggregatedKeys = {
@@ -101,3 +102,18 @@ export function useCitizenReportsAggregatedByForm(electionRoundId: string, query
   });
 }
 
+
+export function useCitizenReportsFilters(electionRoundId: string) {
+  return useQuery({
+    queryKey: citizenReportKeys.filters(electionRoundId),
+    queryFn: async () => {
+      const response = await authApi.get<CitizenReportsFilters>(
+        `/election-rounds/${electionRoundId}/citizen-reports:filters`
+      );
+
+      return response.data;
+    },
+    staleTime: STALE_TIME,
+    enabled: !!electionRoundId,
+  });
+}

@@ -9,7 +9,7 @@ public class Endpoint(IRepository<IncidentReportAttachmentAggregate> repository,
 {
     public override void Configure()
     {
-        Post("/api/election-rounds/{electionRoundId}/incident-report-attachments/{id}:abort");
+        Post("/api/election-rounds/{electionRoundId}/incident-reports/{incidentReportId}/attachments/{id}:abort");
         DontAutoTag();
         Options(x => x.WithTags("incident-report-attachments"));
         Summary(s =>

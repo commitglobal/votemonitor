@@ -1,12 +1,13 @@
 ﻿using Feature.CitizenReports.Models;
-using Microsoft.EntityFrameworkCore;
 using Vote.Monitor.Answer.Module.Aggregators;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
-using Vote.Monitor.Domain;
 
 namespace Feature.CitizenReports.GetSubmissionsAggregated;
 
-public class Endpoint(VoteMonitorContext context, IFileStorageService fileStorageService)
+public class Endpoint(
+    VoteMonitorContext context,
+    IAuthorizationService authorizationService,
+    IFileStorageService fileStorageService)
     : Endpoint<Request, Results<Ok<Response>, NotFound>>
 {
     public override void Configure()
@@ -15,11 +16,22 @@ public class Endpoint(VoteMonitorContext context, IFileStorageService fileStorag
         DontAutoTag();
         Options(x => x.WithTags("citizen-reports"));
         Policies(PolicyNames.NgoAdminsOnly);
-        Summary(s => { s.Summary = "Gets aggregated citizen report form submissions aggregated with all the notes and attachments"; });
+        Summary(s =>
+        {
+            s.Summary =
+                "Gets aggregated citizen report form submissions aggregated with all the notes and attachments";
+        });
     }
 
     public override async Task<Results<Ok<Response>, NotFound>> ExecuteAsync(Request req, CancellationToken ct)
     {
+        var authorizationResult =
+            await authorizationService.AuthorizeAsync(User, new CitizenReportingNgoAdminRequirement(req.ElectionRoundId));
+        if (!authorizationResult.Succeeded)
+        {
+            return TypedResults.NotFound();
+        }
+
         var form = await context
             .Forms
             .Where(x => x.ElectionRoundId == req.ElectionRoundId

@@ -8,10 +8,10 @@ public class Endpoint(VoteMonitorContext context)
 {
     public override void Configure()
     {
-        Delete("/api/election-rounds/{electionRoundId}/citizen-report-notes/{id}");
+        Delete("/api/election-rounds/{electionRoundId}/citizen-reports/{citizenReportId}/notes/{id}");
         DontAutoTag();
         AllowAnonymous();
-        Options(x => x.WithTags("citizen-reports-notes", "public"));
+        Options(x => x.WithTags("citizen-report-notes", "public"));
         Summary(s => { s.Summary = "Deletes a note from a citizen report"; });
     }
 
@@ -19,7 +19,7 @@ public class Endpoint(VoteMonitorContext context)
         CancellationToken ct)
     {
         await context.CitizenReportNotes
-            .Where(x => x.ElectionRoundId == req.ElectionRoundId && x.Id == req.Id)
+            .Where(x => x.ElectionRoundId == req.ElectionRoundId && x.CitizenReportId == req.CitizenReportId && x.Id == req.Id)
             .ExecuteDeleteAsync(ct);
 
         return TypedResults.NoContent();

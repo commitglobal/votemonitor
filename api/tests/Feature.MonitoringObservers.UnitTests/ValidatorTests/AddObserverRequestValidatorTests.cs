@@ -43,7 +43,7 @@ public class AddObserverRequestValidatorTests
             NgoId = Guid.NewGuid(),
             Observers =
             [
-                new MonitoringObserverImportModel()
+                new MonitoringObserverImportModel
                 {
                     Email = "test@test.com",
                     Tags = ["tag1", "tag2"],

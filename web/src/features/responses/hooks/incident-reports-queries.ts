@@ -3,7 +3,7 @@ import type { DataTableParameters, PageResponse } from '@/common/types';
 import type { RowData } from '@/components/ui/DataTable/DataTable';
 import { buildURLSearchParams } from '@/lib/utils';
 import { useQuery, type UseQueryResult } from '@tanstack/react-query';
-import type { IncidentReportByEntry, IncidentReportByForm, IncidentReportByObserver } from '../models/incident-report';
+import type { IncidentReportByEntry, IncidentReportByForm, IncidentReportByObserver, IncidentReportsFilters } from '../models/incident-report';
 
 const STALE_TIME = 1000 * 60; // one minute
 
@@ -15,6 +15,7 @@ export const incidentReportsByEntryKeys = {
   details: (electionRoundId: string) => [...incidentReportsByEntryKeys.all(electionRoundId), 'detail'] as const,
   detail: (electionRoundId: string, id: string) =>
     [...incidentReportsByEntryKeys.details(electionRoundId), id] as const,
+  filters: (electionRoundId: string) => [...incidentReportsByEntryKeys.all(electionRoundId), 'filters'] as const,
 };
 
 export const incidentReportsByObserverKeys = {
@@ -147,6 +148,21 @@ export function useIncidentReportsByForm(
           id: submission.formId,
         })),
       };
+    },
+    staleTime: STALE_TIME,
+    enabled: !!electionRoundId,
+  });
+}
+
+export function useIncidentReportsFilters(electionRoundId: string) {
+  return useQuery({
+    queryKey: incidentReportsByEntryKeys.filters(electionRoundId),
+    queryFn: async () => {
+      const response = await authApi.get<IncidentReportsFilters>(
+        `/election-rounds/${electionRoundId}/incident-reports:filters`
+      );
+
+      return response.data;
     },
     staleTime: STALE_TIME,
     enabled: !!electionRoundId,

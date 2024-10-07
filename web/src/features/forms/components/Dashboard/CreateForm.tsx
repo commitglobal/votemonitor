@@ -64,7 +64,7 @@ function CreateForm() {
                 description: 'Form created',
             });
 
-            queryClient.invalidateQueries({ queryKey: formsKeys.all });
+            queryClient.invalidateQueries({ queryKey: formsKeys.all(currentElectionRoundId) });
             navigate({ to: `/forms/$formId/edit`, params: { formId: form.id } });
         },
     });

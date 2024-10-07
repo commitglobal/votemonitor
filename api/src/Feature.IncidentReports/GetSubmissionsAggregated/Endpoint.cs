@@ -1,10 +1,4 @@
-﻿using Authorization.Policies.Requirements;
-using Feature.IncidentReports.Models;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore;
-using Vote.Monitor.Answer.Module.Aggregators;
-using Vote.Monitor.Core.Services.FileStorage.Contracts;
-using Vote.Monitor.Domain;
+﻿using Vote.Monitor.Answer.Module.Aggregators;
 
 namespace Feature.IncidentReports.GetSubmissionsAggregated;
 

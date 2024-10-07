@@ -1,6 +1,5 @@
 using System.Text.Json.Serialization;
 using Ardalis.SmartEnum.SystemTextJson;
-using Feature.IncidentReports.Models;
 using Vote.Monitor.Answer.Module.Models;
 using Vote.Monitor.Domain.Entities.IncidentReportAggregate;
 using Vote.Monitor.Form.Module.Models;
@@ -24,7 +23,7 @@ public class Response
     [JsonConverter(typeof(SmartEnumNameConverter<IncidentReportLocationType, string>))]
     public IncidentReportLocationType LocationType { get; init; }
 
-    public string? PollingStationId { get; init; }
+    public Guid? PollingStationId { get; init; }
     public string? PollingStationLevel1 { get; init; }
     public string? PollingStationLevel2 { get; init; }
     public string? PollingStationLevel3 { get; init; }

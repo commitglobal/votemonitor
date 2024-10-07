@@ -58,6 +58,10 @@ export interface FormSubmissionByForm {
   numberOfMediaFiles: number;
 }
 
+export interface ObservationBreak{
+  end: string;
+  start: string;
+}
 export interface FormSubmission
   extends Omit<
     FormSubmissionByEntry,
@@ -68,4 +72,23 @@ export interface FormSubmission
   notes: Note[];
   attachments: Attachment[];
   questions: BaseQuestion[];
+  arrivalTime?: string;
+  departureTime?: string;
+  breaks: ObservationBreak[];
+}
+
+export interface TimestampsFilterOptions {
+  firstSubmissionTimestamp: string;
+  lastSubmissionTimestamp: string;
+}
+
+export interface FormFilterOption {
+  formId: string;
+  formCode: string;
+  formName: string;
+}
+
+export interface FormSubmissionsFilters  {
+  timestampsFilterOptions: TimestampsFilterOptions;
+  formFilterOptions: FormFilterOption[];
 }

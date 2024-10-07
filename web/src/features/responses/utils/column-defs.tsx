@@ -1028,13 +1028,6 @@ export const incidentReportsByEntryColumnDefs: ColumnDef<IncidentReportByEntry &
     cell: ({ row }) => <div>{row.original.formName[row.original.formDefaultLanguage] ?? '-'}</div>,
   },
   {
-    header: ({ column }) => <DataTableColumnHeader title='Station number' column={column} />,
-    id: 'pollingStationNumber',
-    accessorFn: (row) => row.pollingStationNumber,
-    enableSorting: true,
-    enableGlobalFilter: true,
-  },
-  {
     header: ({ column }) => <DataTableColumnHeader title='Location - L1' column={column} />,
     accessorFn:(row)=> row.pollingStationLevel1,
     id: 'pollingStationLevel1',
@@ -1208,14 +1201,6 @@ export const observerIncidentReportsColumnDefs: ColumnDef<IncidentReportByEntry 
     enableSorting: true,
     enableGlobalFilter: true,
     cell: ({ row }) => <div>{row.original.locationDescription ?? '-'}</div>,
-  },
-  {
-    header: ({ column }) => <DataTableColumnHeader title='Station number' column={column} />,
-    accessorFn:(row)=> row.pollingStationNumber,
-    id: 'pollingStationNumber',
-    enableSorting: true,
-    enableGlobalFilter: true,
-    cell: ({ row }) => <div>{row.original.pollingStationNumber ?? '-'}</div>,
   },
   {
     header: ({ column }) => <DataTableColumnHeader title='Location - L1' column={column} />,

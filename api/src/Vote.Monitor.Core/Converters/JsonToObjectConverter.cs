@@ -7,7 +7,8 @@ public class JsonToObjectConverter<T> : SqlMapper.TypeHandler<T> where T : class
 {
     public override T Parse(object value)
     {
-        return JsonSerializer.Deserialize<T>(value.ToString());
+        var json = value?.ToString();
+        return json == null ? default(T) : JsonSerializer.Deserialize<T>(json);
     }
 
     public override void SetValue(System.Data.IDbDataParameter parameter, T value)

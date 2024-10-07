@@ -3,14 +3,18 @@ import { FunctionComponent, IncidentReportFollowUpStatus, QuestionsAnswered } fr
 import { PollingStationsFilters } from '@/components/PollingStationsFilters/PollingStationsFilters';
 import { FilterBadge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { FILTER_KEY } from '@/features/filtering/filtering-enums';
 import { Route } from '@/routes/responses';
 import { useNavigate } from '@tanstack/react-router';
 import { useCallback } from 'react';
 import { IncidentReportLocationType } from '../../models/incident-report';
 import type { FormSubmissionsSearchParams } from '../../models/search-params';
-import { mapIncidentReportFollowUpStatus as mapIncidentReportFollowUpStatus, mapIncidentReportLocationType, mapQuestionsAnswered } from '../../utils/helpers';
+import {
+  mapIncidentReportFollowUpStatus,
+  mapIncidentReportLocationType,
+  mapQuestionsAnswered,
+} from '../../utils/helpers';
 import { ResetFiltersButton } from '../ResetFiltersButton/ResetFiltersButton';
-import { FILTER_KEY } from '@/features/filtering/filtering-enums';
 
 export function IncidentReportsFiltersByEntry(): FunctionComponent {
   const navigate = useNavigate({ from: '/responses' });
@@ -78,10 +82,14 @@ export function IncidentReportsFiltersByEntry(): FunctionComponent {
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
-            <SelectItem key={IncidentReportFollowUpStatus.NotApplicable} value={IncidentReportFollowUpStatus.NotApplicable}>
+            <SelectItem
+              key={IncidentReportFollowUpStatus.NotApplicable}
+              value={IncidentReportFollowUpStatus.NotApplicable}>
               {mapIncidentReportFollowUpStatus(IncidentReportFollowUpStatus.NotApplicable)}
             </SelectItem>
-            <SelectItem key={IncidentReportFollowUpStatus.NeedsFollowUp} value={IncidentReportFollowUpStatus.NeedsFollowUp}>
+            <SelectItem
+              key={IncidentReportFollowUpStatus.NeedsFollowUp}
+              value={IncidentReportFollowUpStatus.NeedsFollowUp}>
               {mapIncidentReportFollowUpStatus(IncidentReportFollowUpStatus.NeedsFollowUp)}
             </SelectItem>
             <SelectItem key={IncidentReportFollowUpStatus.Resolved} value={IncidentReportFollowUpStatus.Resolved}>
@@ -101,7 +109,9 @@ export function IncidentReportsFiltersByEntry(): FunctionComponent {
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
-            <SelectItem key={IncidentReportLocationType.PollingStation} value={IncidentReportLocationType.PollingStation}>
+            <SelectItem
+              key={IncidentReportLocationType.PollingStation}
+              value={IncidentReportLocationType.PollingStation}>
               {mapIncidentReportLocationType(IncidentReportLocationType.PollingStation)}
             </SelectItem>
             <SelectItem key={IncidentReportLocationType.OtherLocation} value={IncidentReportLocationType.OtherLocation}>
@@ -170,7 +180,10 @@ export function IncidentReportsFiltersByEntry(): FunctionComponent {
 
       <PollingStationsFilters />
 
-      <ResetFiltersButton disabled={!isFiltered} params={{[FILTER_KEY.ViewBy]: 'byEntry', [FILTER_KEY.Tab]: 'incident-reports' }} />
+      <ResetFiltersButton
+        disabled={!isFiltered}
+        params={{ [FILTER_KEY.ViewBy]: 'byEntry', [FILTER_KEY.Tab]: 'incident-reports' }}
+      />
 
       {isFiltered && (
         <div className='flex flex-wrap gap-2 col-span-full'>

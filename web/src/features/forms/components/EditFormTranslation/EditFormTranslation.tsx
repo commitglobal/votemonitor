@@ -217,7 +217,6 @@ export default function EditFormTranslation(): FunctionComponent {
   });
 
   const editMutation = useMutation({
-    mutationKey: formsKeys.all,
     mutationFn: ({
       electionRoundId,
       form,
@@ -231,13 +230,13 @@ export default function EditFormTranslation(): FunctionComponent {
       });
     },
 
-    onSuccess: (_, { shouldExitEditor }) => {
+    onSuccess: (_, { shouldExitEditor ,electionRoundId}) => {
       toast({
         title: 'Success',
         description: 'Form updated successfully',
       });
 
-      void queryClient.invalidateQueries({ queryKey: formsKeys.all });
+      void queryClient.invalidateQueries({ queryKey: formsKeys.all(electionRoundId) });
 
       if (shouldExitEditor) {
         void navigate({ to: '/election-event/$tab', params: { tab: 'observer-forms' } });

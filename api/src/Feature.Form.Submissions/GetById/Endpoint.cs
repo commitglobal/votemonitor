@@ -43,7 +43,10 @@ public class Endpoint(
                       psi."FollowUpStatus" as "FollowUpStatus",
                       '[]'::jsonb AS "Attachments",
                       '[]'::jsonb AS "Notes",
-                      COALESCE(psi."LastModifiedOn", psi."CreatedOn") "TimeSubmitted"
+                      COALESCE(psi."LastModifiedOn", psi."CreatedOn") "TimeSubmitted",
+                      psi."ArrivalTime",
+                      psi."DepartureTime",
+                      psi."Breaks"
                       FROM "PollingStationInformation" psi
                       INNER JOIN "MonitoringObservers" mo ON mo."Id" = psi."MonitoringObserverId"
                       INNER JOIN "MonitoringNgos" mn ON mn."Id" = mo."MonitoringNgoId"
@@ -61,7 +64,6 @@ public class Endpoint(
                           f."Questions",
                           f."DefaultLanguage",
                           fs."FollowUpStatus",
-                  
                           COALESCE((select jsonb_agg(jsonb_build_object('QuestionId', "QuestionId", 'FileName', "FileName", 'MimeType', "MimeType", 'FilePath', "FilePath", 'UploadedFileName', "UploadedFileName", 'TimeSubmitted', COALESCE("LastModifiedOn", "CreatedOn")))
                           FROM "Attachments" a
                           WHERE 
@@ -78,16 +80,18 @@ public class Endpoint(
                               AND n."FormId" = fs."FormId"
                               AND n."MonitoringObserverId" = fs."MonitoringObserverId"
                               AND fs."PollingStationId" = n."PollingStationId"), '[]'::JSONB) AS "Notes",
-                  
-                          COALESCE(fs."LastModifiedOn", fs."CreatedOn") "TimeSubmitted"
+                              
+                          COALESCE(fs."LastModifiedOn", fs."CreatedOn") "TimeSubmitted",
+                          NULL AS "ArrivalTime",
+                          NULL AS "DepartureTime",
+                          '[]'::jsonb AS "Breaks"
                   FROM "FormSubmissions" fs
                   INNER JOIN "MonitoringObservers" mo ON fs."MonitoringObserverId" = mo."Id"
                   INNER JOIN "MonitoringNgos" mn ON mn."Id" = mo."MonitoringNgoId"
                   INNER JOIN "Forms" f ON f."Id" = fs."FormId"
                   WHERE mn."ElectionRoundId" = @electionRoundId
                       AND mn."NgoId" = @ngoId
-                      AND fs."Id" = @submissionId
-                  ORDER BY "TimeSubmitted" desc)
+                      AND fs."Id" = @submissionId)
                   SELECT s."SubmissionId",
                          s."TimeSubmitted",
                          s."FormCode",
@@ -109,7 +113,10 @@ public class Endpoint(
                          s."Answers",
                          s."Questions",
                          s."DefaultLanguage",
-                         s."FollowUpStatus"
+                         s."FollowUpStatus",
+                         s."ArrivalTime",
+                         s."DepartureTime",
+                         s."Breaks"
                   FROM submissions s
                   INNER JOIN "PollingStations" ps ON ps."Id" = s."PollingStationId"
                   INNER JOIN "MonitoringObservers" mo ON mo."Id" = s."MonitoringObserverId"

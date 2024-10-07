@@ -1,6 +1,7 @@
 ﻿using Authorization.Policies;
 using Dapper;
 using Feature.Notifications.Specifications;
+using Vote.Monitor.Core.Services.Security;
 using Vote.Monitor.Domain.ConnectionFactory;
 using Vote.Monitor.Domain.Entities.MonitoringObserverAggregate;
 using Vote.Monitor.Module.Notifications.Contracts;
@@ -10,7 +11,8 @@ namespace Feature.Notifications.Send;
 public class Endpoint(IRepository<NotificationAggregate> repository,
     IReadRepository<MonitoringObserver> monitoringObserverRepository,
     INpgsqlConnectionFactory dbConnectionFactory,
-    IPushNotificationService notificationService) :
+    IPushNotificationService notificationService,
+    IHtmlStringSanitizer htmlStringSanitizer) :
         Endpoint<Request, Results<Ok<Response>, ProblemHttpResult>>
 {
     public override void Configure()
@@ -151,16 +153,18 @@ public class Endpoint(IRepository<NotificationAggregate> repository,
             .ToList();
 
         var monitoringObservers = await monitoringObserverRepository.ListAsync(new GetMonitoringObserverSpecification(req.ElectionRoundId, req.NgoId, monitoringObserverIds), ct);
+
+        var sanitizedMessage = htmlStringSanitizer.Sanitize(req.Body);
         
         var notification = NotificationAggregate.Create(req.ElectionRoundId,
             req.UserId,
             monitoringObservers,
             req.Title,
-            req.Body);
+            sanitizedMessage);
 
         await repository.AddAsync(notification, ct);
         
-        var sendResultNotification = await notificationService.SendNotificationAsync(pushNotificationTokens, req.Title, req.Body, ct);
+        var sendResultNotification = await notificationService.SendNotificationAsync(pushNotificationTokens, req.Title, sanitizedMessage, ct);
 
         if (sendResultNotification is SendNotificationResult.Ok success)
         {

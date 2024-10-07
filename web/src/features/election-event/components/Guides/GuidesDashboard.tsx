@@ -131,15 +131,27 @@ export default function GuidesDashboard({ guidePageType }: GuidesDashboardProps)
       enableGlobalFilter: false,
       cell: ({
         row: {
-          original: { title, websiteUrl, presignedUrl },
+          original: { id, guideType, title, websiteUrl, presignedUrl },
         },
-      }) => (
-        <Button type='button' variant='link'>
-          <Link to={websiteUrl || presignedUrl} target='_blank' preload={false}>
+      }) =>
+        guideType === GuideType.Website || guideType === GuideType.Document ? (
+          <Button type='button' variant='link'>
+            <Link to={websiteUrl || presignedUrl} target='_blank' preload={false}>
+              {title}
+            </Link>
+          </Button>
+        ) : (
+          <Link
+            to={
+              guidePageType === GuidePageType.Observer
+                ? '/observer-guides/view/$guideId'
+                : '/citizen-guides/view/$guideId'
+            }
+            params={{ guideId: id }}
+            preload={false}>
             {title}
           </Link>
-        </Button>
-      ),
+        ),
     },
     {
       header: ({ column }) => (
@@ -179,7 +191,10 @@ export default function GuidesDashboard({ guidePageType }: GuidesDashboardProps)
                   editGuideDialog.trigger();
                 } else {
                   navigate({
-                    to: guidePageType === GuidePageType.Observer ? '/observer-guides/edit/$guideId' : '/citizen-guides/edit/$guideId',
+                    to:
+                      guidePageType === GuidePageType.Observer
+                        ? '/observer-guides/edit/$guideId'
+                        : '/citizen-guides/edit/$guideId',
                     params: { guideId: row.original.id },
                   });
                 }

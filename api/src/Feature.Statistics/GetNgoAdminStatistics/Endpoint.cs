@@ -217,64 +217,43 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
             
             
         -- read hourly histogram
-        WITH
-            TIME_SERIES AS (
-                SELECT
-                    GENERATE_SERIES(
-                        DATE_TRUNC(
-                            'hour',
-                            TIMEZONE ('utc', NOW()) + INTERVAL '-12 hour'
-                        ),
-                        DATE_TRUNC('hour', TIMEZONE ('utc', NOW())),
-                        '1 hour'
-                    ) AS "Bucket"
-            ),
-            FS_CTE AS (
-                SELECT
-                    TS."Bucket",
-                    COUNT(FS."Id") AS "FormsSubmitted",
-                    SUM(FS."NumberOfFlaggedAnswers") AS "NumberOfQuestionsAnswered",
-                    SUM(FS."NumberOfFlaggedAnswers") AS "NumberOfFlaggedAnswers"
-                FROM
-                    "FormSubmissions" FS
-                    INNER JOIN "MonitoringObservers" MO ON MO."Id" = FS."MonitoringObserverId"
-                    INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
-                    LEFT JOIN TIME_SERIES TS ON COALESCE(FS."LastModifiedOn", FS."CreatedOn") >= TS."Bucket"
-                    AND COALESCE(FS."LastModifiedOn", FS."CreatedOn") < TS."Bucket" + INTERVAL '1 hour'
-                WHERE
-                    FS."ElectionRoundId" = @electionRoundId
-                    AND MN."NgoId" = @ngoId
-                GROUP BY
-                    TS."Bucket"
-            ),
-            QR_CTE AS (
-                SELECT
-                    TS."Bucket",
-                    COUNT(QR."Id") AS "QuickReportsSubmitted"
-                FROM
-                    "QuickReports" QR
-                    INNER JOIN "MonitoringObservers" MO ON MO."Id" = QR."MonitoringObserverId"
-                    INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
-                    LEFT JOIN TIME_SERIES TS ON COALESCE(QR."LastModifiedOn", QR."CreatedOn") >= TS."Bucket"
-                    AND COALESCE(QR."LastModifiedOn", QR."CreatedOn") < TS."Bucket" + INTERVAL '1 hour'
-                WHERE
-                    QR."ElectionRoundId" = @electionRoundId
-                    AND MN."NgoId" = @ngoId
-                GROUP BY
-                    TS."Bucket"
-            )
-        SELECT
-            TS."Bucket"::timestamptz,
-            COALESCE(FS."FormsSubmitted", 0) AS "FormsSubmitted",
-            COALESCE(FS."NumberOfQuestionsAnswered", 0) AS "NumberOfQuestionsAnswered",
-            COALESCE(FS."NumberOfFlaggedAnswers", 0) AS "NumberOfFlaggedAnswers",
-            COALESCE(QR."QuickReportsSubmitted", 0) AS "QuickReportsSubmitted"
-        FROM
-            TIME_SERIES TS
-            LEFT JOIN FS_CTE FS ON FS."Bucket" = TS."Bucket"
-            LEFT JOIN QR_CTE QR ON QR."Bucket" = TS."Bucket"
-        ORDER BY
-            TS."Bucket";
+        SELECT DATE_TRUNC('hour', TIMEZONE('utc', COALESCE(FS."LastModifiedOn", FS."CreatedOn")))::TIMESTAMPTZ AS "Bucket",
+               COUNT(1) AS "FormsSubmitted",
+               SUM("NumberOfFlaggedAnswers") AS "NumberOfQuestionsAnswered",
+               SUM("NumberOfFlaggedAnswers") AS "NumberOfFlaggedAnswers"
+        FROM "FormSubmissions" FS
+                 INNER JOIN "MonitoringObservers" MO ON MO."Id" = FS."MonitoringObserverId"
+                 INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
+        WHERE FS."ElectionRoundId" = @electionRoundId
+          AND MN."NgoId" = @ngoId
+        GROUP BY 1;
+        
+        SELECT DATE_TRUNC('hour', TIMEZONE('utc', COALESCE(QR."LastModifiedOn", QR."CreatedOn")))::TIMESTAMPTZ "Bucket",
+               COUNT(1) "Value"
+        FROM "QuickReports" QR
+                 INNER JOIN "MonitoringObservers" MO ON MO."Id" = QR."MonitoringObserverId"
+                 INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
+        WHERE QR."ElectionRoundId" = @electionRoundId
+          AND MN."NgoId" = @ngoId
+        GROUP BY 1;
+
+        SELECT DATE_TRUNC('hour', TIMEZONE('utc', COALESCE(CR."LastModifiedOn", CR."CreatedOn")))::TIMESTAMPTZ "Bucket",
+               COUNT(1) "Value"
+        FROM "CitizenReports" CR
+                 INNER JOIN PUBLIC."ElectionRounds" ER ON ER."Id" = CR."ElectionRoundId"
+                 INNER JOIN PUBLIC."MonitoringNgos" MN ON MN."Id" = ER."MonitoringNgoForCitizenReportingId"
+        WHERE CR."ElectionRoundId" = '5e55767e-6d9f-45e5-951f-1643f2153400'
+          AND MN."NgoId" = @ngoId
+        GROUP BY 1;
+        
+        SELECT DATE_TRUNC('hour', TIMEZONE('utc', COALESCE(IR."LastModifiedOn", IR."CreatedOn")))::TIMESTAMPTZ "Bucket",
+               COUNT(1) "Value"
+        FROM "IncidentReports" IR
+                 INNER JOIN "MonitoringObservers" MO ON MO."Id" = IR."MonitoringObserverId"
+                 INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
+        WHERE IR."ElectionRoundId" = @electionRoundId
+          AND MN."NgoId" = @ngoId
+        GROUP BY 1;
         """;
 
         var queryArgs = new { electionRoundId = req.ElectionRoundId, ngoId = req.NgoId };
@@ -284,7 +263,10 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
         int totalNumberOfPollingStations;
         int numberOfVisitedPollingStations;
         decimal minutesMonitoring;
-        List<BucketView> histogram = [];
+        List<FormSubmissionsHistogramPoint> formSubmissionsHistogram = [];
+        List<HistogramPoint> quickReportsHistogram = [];
+        List<HistogramPoint> incidentReportsHistogram = [];
+        List<HistogramPoint> citizenReportsHistogram = [];
 
         using (var dbConnection = await dbConnectionFactory.GetOpenConnectionAsync(ct))
         {
@@ -295,7 +277,10 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
                 totalNumberOfPollingStations = multi.ReadSingle<int>();
                 numberOfVisitedPollingStations = multi.ReadSingle<int>();
                 minutesMonitoring = multi.ReadSingle<decimal>();
-                histogram = multi.Read<BucketView>().ToList();
+                formSubmissionsHistogram = multi.Read<FormSubmissionsHistogramPoint>().ToList();
+                quickReportsHistogram = multi.Read<HistogramPoint>().ToList();
+                incidentReportsHistogram = multi.Read<HistogramPoint>().ToList();
+                citizenReportsHistogram = multi.Read<HistogramPoint>().ToList();
             }
         }
 
@@ -309,10 +294,24 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
                 NumberOfVisitedPollingStations = numberOfVisitedPollingStations
             },
             MinutesMonitoring = minutesMonitoring,
-            FormsHistogram = histogram.Select(x => new HistogramPoint(x.Bucket, x.FormsSubmitted)).ToArray(),
-            QuestionsHistogram = histogram.Select(x => new HistogramPoint(x.Bucket, x.NumberOfQuestionsAnswered)).ToArray(),
-            FlaggedAnswersHistogram = histogram.Select(x => new HistogramPoint(x.Bucket, x.NumberOfFlaggedAnswers)).ToArray(),
-            QuickReportsHistogram = histogram.Select(x => new HistogramPoint(x.Bucket, x.QuickReportsSubmitted)).ToArray(),
+            FormsHistogram = formSubmissionsHistogram.Select(x => new HistogramPoint
+            {
+                Bucket   = x.Bucket,
+                Value = x.FormsSubmitted
+            }).ToArray(),
+            QuestionsHistogram = formSubmissionsHistogram.Select(x => new HistogramPoint
+            {
+                Bucket = x.Bucket, 
+                Value = x.NumberOfQuestionsAnswered
+            }).ToArray(),
+            FlaggedAnswersHistogram = formSubmissionsHistogram.Select(x => new HistogramPoint
+            {
+               Bucket = x.Bucket, 
+               Value = x.NumberOfFlaggedAnswers
+            }).ToArray(),
+            QuickReportsHistogram = quickReportsHistogram.ToArray(),
+            IncidentReportsHistogram = incidentReportsHistogram.ToArray(),
+            CitizenReportsHistogram = citizenReportsHistogram.ToArray(),
         };
     }
 }

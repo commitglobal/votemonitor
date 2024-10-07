@@ -47,3 +47,19 @@ export interface CitizenReport
   notes: Note[];
   questions: BaseQuestion[];
 }
+
+export interface TimestampsFilterOptions {
+  firstSubmissionTimestamp: string;
+  lastSubmissionTimestamp: string;
+}
+
+export interface FormFilterOption {
+  formId: string;
+  formCode: string;
+  formName: string;
+}
+
+export interface CitizenReportsFilters  {
+  timestampsFilterOptions: TimestampsFilterOptions;
+  formFilterOptions: FormFilterOption[];
+}

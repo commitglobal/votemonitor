@@ -10,7 +10,7 @@ public class Endpoint(
 {
     public override void Configure()
     {
-        Get("/api/election-rounds/{electionRoundId}/citizen-report-attachments/{id}");
+        Get("/api/election-rounds/{electionRoundId}/citizen-reports/{citizenReportId}/attachments/{id}");
         DontAutoTag();
         AllowAnonymous();
         Options(x => x.WithTags("citizen-report-attachments", "public"));

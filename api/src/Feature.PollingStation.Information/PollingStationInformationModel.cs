@@ -11,6 +11,7 @@ public record PollingStationInformationModel
     public required DateTime? ArrivalTime { get; set; }
     public required DateTime? DepartureTime { get; set; }
     public IReadOnlyList<BaseAnswerModel> Answers { get; set; }
+    public IReadOnlyList<ObservationBreakModel> Breaks { get; set; }
 
     public static PollingStationInformationModel FromEntity(PollingStationInformation entity) => new()
     {
@@ -20,6 +21,7 @@ public record PollingStationInformationModel
             .Select(AnswerMapper.ToModel)
             .ToList(),
         ArrivalTime = entity.ArrivalTime,
-        DepartureTime = entity.DepartureTime
+        DepartureTime = entity.DepartureTime,
+        Breaks = entity.Breaks.Select(ObservationBreakModel.FromEntity).ToList()
     };
 }

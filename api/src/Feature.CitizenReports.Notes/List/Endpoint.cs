@@ -8,10 +8,10 @@ public class Endpoint(
 {
     public override void Configure()
     {
-        Get("/api/election-rounds/{electionRoundId}/citizen-report-notes");
+        Get("/api/election-rounds/{electionRoundId}/citizen-reports/{citizenReportId}/notes");
         DontAutoTag();
         AllowAnonymous();
-        Options(x => x.WithTags("citizen-reports-notes", "public"));
+        Options(x => x.WithTags("citizen-report-notes", "public"));
         Summary(s => { s.Summary = "Lists notes for a citizen report"; });
     }
 

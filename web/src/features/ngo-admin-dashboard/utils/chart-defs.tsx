@@ -1,4 +1,5 @@
 
+import { DateTimeHourBucketFormat } from '@/common/formats';
 import { round } from '@/lib/utils';
 import type { ChartData, ScriptableContext } from 'chart.js';
 import { format } from 'date-fns';
@@ -130,7 +131,7 @@ export const histogramChartConfig = (histogram: HistogramEntry[] | undefined, va
   histogram
     ?.sort((a, b) => new Date(a.bucket).getTime() - new Date(b.bucket).getTime())
     ?.forEach(b => {
-      labels.push(format(new Date(b.bucket), 'kk:00'));
+      labels.push(format(new Date(b.bucket), DateTimeHourBucketFormat));
       data.push(b.value);
     });
   return {

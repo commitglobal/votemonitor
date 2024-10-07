@@ -61,20 +61,7 @@ public class SendRequestValidatorTests
         // Assert
         result.ShouldHaveValidationErrorFor(x => x.Title);
     }
-
-    [Fact]
-    public void Validation_ShouldFail_When_Body_ExceedsLimit()
-    {
-        // Arrange
-        var request = new Request { Body = "a".Repeat(1025) };
-
-        // Act
-        var result = _validator.TestValidate(request);
-
-        // Assert
-        result.ShouldHaveValidationErrorFor(x => x.Title);
-    }
-
+    
     [Fact]
     public void Validation_ShouldPass_When_ValidRequest()
     {

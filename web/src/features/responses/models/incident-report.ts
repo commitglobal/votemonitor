@@ -75,3 +75,19 @@ export interface IncidentReport
   attachments: Attachment[];
   questions: BaseQuestion[];
 }
+
+export interface TimestampsFilterOptions {
+  firstSubmissionTimestamp: string;
+  lastSubmissionTimestamp: string;
+}
+
+export interface FormFilterOption {
+  formId: string;
+  formCode: string;
+  formName: string;
+}
+
+export interface IncidentReportsFilters  {
+  timestampsFilterOptions: TimestampsFilterOptions;
+  formFilterOptions: FormFilterOption[];
+}

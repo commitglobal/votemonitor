@@ -5,7 +5,7 @@ namespace Feature.Locations.UnitTests.ServicesTests;
 
 public class LocationParserTests
 {
-    private readonly IOptions<LocationParserConfig> _parserConfig = new LocationParserConfig()
+    private readonly IOptions<LocationParserConfig> _parserConfig = new LocationParserConfig
     {
         MaxParserErrorsReturned = 10
     }.AsIOption();

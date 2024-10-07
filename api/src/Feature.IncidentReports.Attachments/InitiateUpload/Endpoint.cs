@@ -10,7 +10,7 @@ public class Endpoint(
 {
     public override void Configure()
     {
-        Post("/api/election-rounds/{electionRoundId}/incident-report-attachments:init");
+        Post("/api/election-rounds/{electionRoundId}/incident-reports/{incidentReportId}/attachments:init");
         DontAutoTag();
         Options(x => x.WithTags("incident-report-attachments"));
         Summary(s =>

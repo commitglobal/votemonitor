@@ -1,13 +1,4 @@
-﻿using Authorization.Policies.Requirements;
-using Feature.IncidentReports.Models;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore;
-using Vote.Monitor.Answer.Module.Mappers;
-using Vote.Monitor.Core.Services.FileStorage.Contracts;
-using Vote.Monitor.Domain;
-using Vote.Monitor.Form.Module.Mappers;
-
-namespace Feature.IncidentReports.GetById;
+﻿namespace Feature.IncidentReports.GetById;
 
 public class Endpoint(
     IAuthorizationService authorizationService,
@@ -35,6 +26,7 @@ public class Endpoint(
 
         var incidentReport = await context
             .IncidentReports
+            .Include(x => x.Form)
             .Include(x => x.Attachments)
             .Include(x => x.Notes)
             .Include(x => x.PollingStation)
@@ -52,6 +44,7 @@ public class Endpoint(
                 FormCode = incidentReport.Form.Code,
                 FormName = incidentReport.Form.Name,
                 FormDefaultLanguage = incidentReport.Form.DefaultLanguage,
+                FormQuestions = incidentReport.Form.Questions,
                 Answers = incidentReport.Answers,
                 Notes = incidentReport.Notes,
                 Attachments = incidentReport.Attachments,
@@ -75,13 +68,6 @@ public class Endpoint(
             return TypedResults.NotFound();
         }
 
-        var form = await context
-            .Forms
-            .Where(x =>
-                x.ElectionRoundId == req.ElectionRoundId
-                && x.Id == incidentReport.FormId)
-            .FirstAsync(ct);
-
         var tasks = incidentReport.Attachments
             .Select(AttachmentModel.FromEntity)
             .Select(async attachment =>
@@ -101,14 +87,14 @@ public class Endpoint(
         var response = new Response
         {
             IncidentReportId = incidentReport.Id,
-            FormId = form.Id,
-            FormCode = form.Code,
-            FormName = form.Name,
-            FormDefaultLanguage = form.DefaultLanguage,
+            FormId = incidentReport.FormId,
+            FormCode = incidentReport.FormCode,
+            FormName = incidentReport.FormName,
+            FormDefaultLanguage = incidentReport.FormDefaultLanguage,
             Answers = incidentReport.Answers.Select(AnswerMapper.ToModel).ToArray(),
             Notes = incidentReport.Notes.Select(NoteModel.FromEntity).ToArray(),
             Attachments = attachments,
-            Questions = form.Questions.Select(QuestionsMapper.ToModel).ToArray(),
+            Questions = incidentReport.FormQuestions.Select(QuestionsMapper.ToModel).ToArray(),
 
             MonitoringObserverId = incidentReport.MonitoringObserverId,
             ObserverName = incidentReport.ObserverName,
@@ -118,7 +104,7 @@ public class Endpoint(
             LocationType = incidentReport.LocationType,
             LocationDescription = incidentReport.LocationDescription,
 
-            PollingStationId = incidentReport.PollingStation?.Level1,
+            PollingStationId = incidentReport.PollingStation?.Id,
             PollingStationLevel1 = incidentReport.PollingStation?.Level1,
             PollingStationLevel2 = incidentReport.PollingStation?.Level2,
             PollingStationLevel3 = incidentReport.PollingStation?.Level3,
