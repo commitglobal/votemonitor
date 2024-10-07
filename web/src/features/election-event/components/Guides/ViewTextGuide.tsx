@@ -1,6 +1,7 @@
 import { FunctionComponent } from '@/common/types';
 import { BackButtonIcon } from '@/components/layout/Breadcrumbs/BackButton';
 import Layout from '@/components/layout/Layout';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { useSuspenseQuery } from '@tanstack/react-query';
@@ -15,6 +16,7 @@ export interface ViewTextGuideProps {
 }
 
 export default function ViewTextGuide({ guidePageType, guideId }: ViewTextGuideProps): FunctionComponent {
+  const navigate = useNavigate();
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
 
   const { data: guide } =
@@ -39,7 +41,23 @@ export default function ViewTextGuide({ guidePageType, guideId }: ViewTextGuideP
         <CardContent className='flex flex-col items-baseline gap-6'>
           <div className='flex flex-col gap-1'>
             <p className='font-bold text-gray-700'>Text</p>
-            <p className='font-normal text-gray-900'>{guide.text}</p>
+            <div className='font-normal text-gray-900' dangerouslySetInnerHTML={{ __html: guide.text ?? '' }} />
+          </div>
+          <div className='flex justify-end w-full'>
+            <Button
+              type='button'
+              className='px-6'
+              onClick={() =>
+                navigate({
+                  to:
+                    guidePageType === GuidePageType.Observer
+                      ? '/observer-guides/edit/$guideId'
+                      : '/citizen-guides/edit/$guideId',
+                  params: { guideId: guideId },
+                })
+              }>
+              Edit
+            </Button>
           </div>
         </CardContent>
       </Card>

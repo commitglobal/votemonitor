@@ -94,8 +94,8 @@ const useRichTextEditor = (props: RichTextProps) => {
 };
 
 const Toolbar = ({ editor }: { editor: TiptapEditor }) => (
-  <div className='border-b border-border p-2'>
-    <div className='flex w-full flex-wrap items-center'>
+  <div className='p-2 border-b border-border'>
+    <div className='flex flex-wrap items-center w-full'>
       <Headings editor={editor} activeLevels={[1, 2, 3]} />
       <ToolbarButton
         key='Bold'
@@ -167,7 +167,7 @@ export const RichTextEditor = React.forwardRef<HTMLDivElement, RichTextProps>(
     return (
       <div
         className={cn(
-          'flex h-auto min-h-72 w-full flex-col rounded-md border border-input shadow-sm focus-within:border-primary',
+          'flex h-auto min-h-72 w-full flex-col rounded-md border border-input shadow-sm before:rounded-[calc(theme(borderRadius.lg)-1px)] focus-within:border-blue-500',
           className
         )}
         {...props}

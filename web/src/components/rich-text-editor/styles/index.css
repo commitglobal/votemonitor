@@ -45,56 +45,18 @@
   --hljs-number: rgb(61, 160, 103);
 }
 
-.dark {
-  --minimal-tiptap-code-background: rgba(255, 255, 255, 0.075);
-  --minimal-tiptap-code-color: rgb(44, 46, 51);
-  --minimal-tiptap-secondary: rgb(89, 90, 92);
-  --minimal-tiptap-pre-background: rgb(8, 8, 8);
-  --minimal-tiptap-pre-border: rgb(35, 37, 42);
-  --minimal-tiptap-pre-color: rgb(227, 228, 230);
-  --minimal-tiptap-hr: rgb(38, 40, 45);
-  --minimal-tiptap-drag-handle-hover: rgb(150, 151, 153);
-
-  --mt-accent-bold-blue: #85b8ff;
-  --mt-accent-bold-teal: #9dd9ee;
-  --mt-accent-bold-green: #7ee2b8;
-  --mt-accent-bold-orange: #fec195;
-  --mt-accent-bold-red: #fd9891;
-  --mt-accent-bold-purple: #b8acf6;
-
-  --mt-accent-gray: #738496;
-  --mt-accent-blue: #388bff;
-  --mt-accent-teal: #42b2d7;
-  --mt-accent-green: #2abb7f;
-  --mt-accent-orange: #a54800;
-  --mt-accent-red: #e2483d;
-  --mt-accent-purple: #8f7ee7;
-
-  --mt-accent-blue-subtler: #09326c;
-  --mt-accent-teal-subtler: #164555;
-  --mt-accent-green-subtler: #164b35;
-  --mt-accent-yellow-subtler: #533f04;
-  --mt-accent-red-subtler: #5d1f1a;
-  --mt-accent-purple-subtler: #352c63;
-
-  --hljs-string: rgb(218, 147, 107);
-  --hljs-title: rgb(241, 213, 157);
-  --hljs-comment: rgb(170, 170, 170);
-  --hljs-keyword: rgb(102, 153, 204);
-  --hljs-attr: rgb(144, 202, 232);
-  --hljs-literal: rgb(242, 119, 122);
-  --hljs-name: rgb(95, 192, 160);
-  --hljs-selector-tag: rgb(232, 199, 133);
-  --hljs-number: rgb(182, 231, 182);
+.minimal-tiptap-editor .ProseMirror :focus {
+  @apply z-0 outline-none;
+  @apply bg-red-700;
 }
 
 .minimal-tiptap-editor .ProseMirror {
-  @apply flex max-w-full flex-1 cursor-text flex-col;
-  @apply z-0 outline-0;
+  @apply flex flex-col flex-1 max-w-full cursor-text;
+  @apply z-0 outline-none;
 }
 
 .minimal-tiptap-editor .ProseMirror > div.editor {
-  @apply block flex-1 whitespace-pre-wrap;
+  @apply flex-1 block whitespace-pre-wrap;
 }
 
 .minimal-tiptap-editor .ProseMirror .block-node:not(:last-child),
@@ -122,7 +84,7 @@
 }
 
 .minimal-tiptap-editor .ProseMirror p {
-  @apply break-words text-base leading-7;
+  @apply text-base leading-7 break-words;
 }
 
 .minimal-tiptap-editor .ProseMirror li .text-node:has(+ .list-node),
@@ -150,7 +112,7 @@
 }
 
 .minimal-tiptap-editor .ProseMirror .ProseMirror-gapcursor {
-  @apply pointer-events-none absolute hidden;
+  @apply absolute hidden pointer-events-none;
 }
 
 .minimal-tiptap-editor .ProseMirror .ProseMirror-hideselection {
