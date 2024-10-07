@@ -35,14 +35,14 @@ export default function TabLayout() {
         name="index"
         options={{
           title: "Report",
-          tabBarIcon: ({ color }) => <Icon icon="observation" color={color} />,
+          tabBarIcon: ({ color }) => <Icon icon="quickReport" color={color} />,
         }}
       />
       <Tabs.Screen
         name="resources"
         options={{
           title: "Resources",
-          tabBarIcon: ({ color }) => <Icon icon="quickReport" color={color} />,
+          tabBarIcon: ({ color }) => <Icon icon="learning" color={color} />,
           href: "/resources",
         }}
       />

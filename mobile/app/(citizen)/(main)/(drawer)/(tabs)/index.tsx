@@ -178,6 +178,7 @@ export default function CitizenReportIssue() {
               <ScrollView
                 contentContainerStyle={{ gap: 16, flexGrow: 1 }}
                 showsVerticalScrollIndicator={false}
+                bounces={false}
               >
                 <Typography color="$gray6">{t("info_modal.p1")}</Typography>
 
