@@ -50,8 +50,15 @@ export const useReadNotifications = () => {
       // Return a context object with the snapshotted value
       return { previousNotifications };
     },
-    onError: (error) => {
+    onError: (error, variables, context) => {
       console.log("ERROR WHILE READING NOTIFICATIONS ⛔️", error);
+      // reset the query data to the previous notifications
+      if (context?.previousNotifications) {
+        queryClient.setQueryData(
+          NotificationsKeys.notifications(variables.electionRoundId),
+          context.previousNotifications,
+        );
+      }
     },
   });
 };

@@ -49,11 +49,15 @@ const Inbox = () => {
   // read the unread notifications (if any) when the screen is focused
   useFocusEffect(
     useCallback(() => {
-      if (unreadNotificationIds?.length) {
+      if (
+        unreadNotificationIds?.length &&
+        activeElectionRound?.id &&
+        unreadNotificationIds.length
+      ) {
         readNotifications(
           {
-            electionRoundId: activeElectionRound?.id || "",
-            notificationIds: unreadNotificationIds || [],
+            electionRoundId: activeElectionRound.id,
+            notificationIds: unreadNotificationIds,
           },
           {
             onSuccess: () => {
