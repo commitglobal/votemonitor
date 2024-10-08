@@ -1,12 +1,12 @@
 import React from "react";
-import { Icon } from "../../../../../components/Icon";
-import { Screen } from "../../../../../components/Screen";
-import Header from "../../../../../components/Header";
 import { Text } from "react-native";
 import { useNavigation, useRouter } from "expo-router";
 import { DrawerActions } from "@react-navigation/native";
+import { Icon } from "../../../../../components/Icon";
+import { useAppMode, AppMode } from "../../../../../contexts/app-mode/AppModeContext.provider";
+import { Screen } from "../../../../../components/Screen";
 import Button from "../../../../../components/Button";
-import { AppMode, useAppMode } from "../../../../../contexts/app-mode/AppModeContext.provider";
+import Header from "../../../../../components/Header";
 
 export default function More() {
   const navigation = useNavigation();

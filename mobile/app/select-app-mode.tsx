@@ -9,12 +9,14 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Selector } from "../components/Selector";
 import Button from "../components/Button";
 import { AppMode, useAppMode } from "../contexts/app-mode/AppModeContext.provider";
+import { useRouter } from "expo-router";
 
 export default function SelectAppMode() {
   const { t } = useTranslation("select_app_mode");
   const insets = useSafeAreaInsets();
   const [appMode, setAppMode] = useState<AppMode>(AppMode.CITIZEN);
   const { setAppMode: setAppModeContext } = useAppMode();
+  const router = useRouter();
 
   const setAppModeToCitizen = () => {
     setAppMode(AppMode.CITIZEN);
@@ -26,6 +28,7 @@ export default function SelectAppMode() {
 
   const handleSetAppModeContext = () => {
     setAppModeContext(appMode);
+    router.replace(appMode === AppMode.CITIZEN ? "citizen" : "(observer)/(app)");
   };
 
   return (

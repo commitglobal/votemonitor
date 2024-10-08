@@ -43,7 +43,6 @@ export default function TabLayout() {
         options={{
           title: "Resources",
           tabBarIcon: ({ color }) => <Icon icon="learning" color={color} />,
-          href: "/resources",
         }}
       />
       <Tabs.Screen

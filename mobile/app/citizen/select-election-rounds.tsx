@@ -66,9 +66,8 @@ const SelectElectionEvent = () => {
     isRefetching: isRefetchingElectionEvents,
   } = useGetCitizenElectionEvents();
 
-  // todo: go back
   const handleGoBack = () => {
-    console.log("go back");
+    router.push("select-app-mode");
   };
 
   const renderHeader = useMemo(() => {
@@ -208,7 +207,7 @@ const SelectElectionEvent = () => {
         primaryActionLabel={t("continue")}
         isPrimaryButtonDisabled={!selectedElectionRound}
         primaryAction={() => {
-          router.push("(main)");
+          router.push("citizen/main");
         }}
         handleGoBack={handleGoBack}
       />

@@ -2,16 +2,14 @@ import React from "react";
 import { YStack, XStack } from "tamagui";
 import { Typography } from "./Typography";
 import Card from "./Card";
-import { ICitizenReportingForm } from "../services/api/citizen/get-citizen-reporting-forms";
 import { Icon } from "./Icon";
+import { FormAPIModel } from "../services/definitions.api";
+import i18n from "../common/config/i18n";
 
-export const IssueCard = ({
-  form,
-  onClick,
-}: {
-  form: ICitizenReportingForm;
-  onClick?: () => void;
-}) => {
+export const IssueCard = ({ form, onClick }: { form: FormAPIModel; onClick?: () => void }) => {
+  const currentLanguage =
+    i18n.language.toLocaleUpperCase() || form.name[Object.keys(form?.name)[0]];
+
   return (
     <Card onPress={onClick}>
       <XStack gap="$md">
@@ -31,13 +29,13 @@ export const IssueCard = ({
         {/* text */}
         <YStack flex={1} gap="$xxs" justifyContent="space-between">
           <Typography preset="body2" color="$gray9">
-            {form.name}
+            {form.name[currentLanguage]}
           </Typography>
 
           {/* footer */}
           <XStack flex={1}>
             <Typography preset="helper" color="$gray5" fontWeight="400" flex={1} numberOfLines={2}>
-              {form.description}
+              {form.description.currentLanguage}
             </Typography>
 
             <Icon
