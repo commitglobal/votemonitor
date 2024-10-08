@@ -13,13 +13,17 @@ import { onlineManager, useMutationState, useQueryClient } from "@tanstack/react
 import { QuickReportKeys } from "../../services/queries/quick-reports.query";
 import { useTranslation } from "react-i18next";
 import i18n from "../../common/config/i18n";
-import { AddAttachmentQuickReportStartAPIPayload, addAttachmentQuickReportMultipartAbort, addAttachmentQuickReportMultipartComplete } from "../../services/api/quick-report/add-attachment-quick-report.api";
+import {
+  AddAttachmentQuickReportStartAPIPayload,
+  addAttachmentQuickReportMultipartAbort,
+  addAttachmentQuickReportMultipartComplete,
+} from "../../services/api/quick-report/add-attachment-quick-report.api";
 import { useUploadAttachmentQuickReportMutation } from "../../services/mutations/quick-report/add-attachment-quick-report.mutation";
 import { MULTIPART_FILE_UPLOAD_SIZE } from "../../common/constants";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { addAttachmentMultipartAbort, addAttachmentMultipartComplete, uploadS3Chunk } from "../../services/api/add-attachment.api";
-import * as FileSystem from 'expo-file-system';
-import { Buffer } from 'buffer';
+import { uploadS3Chunk } from "../../services/api/add-attachment.api";
+import * as FileSystem from "expo-file-system";
+import { Buffer } from "buffer";
 import { Keyboard } from "react-native";
 import { YStack, Card, XStack, Spinner } from "tamagui";
 import AddAttachment from "../../components/AddAttachment";
@@ -74,9 +78,9 @@ const ReportIssue = () => {
   const { t } = useTranslation("report_new_issue");
   const [isLoadingAttachment, setIsLoadingAttachment] = useState(false);
   const [isPreparingFile, setIsPreparingFile] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState('');
+  const [uploadProgress, setUploadProgress] = useState("");
 
-  const [attachments, setAttachments] = useState<Array<{ fileMetadata: FileMetadata; id: string, }>>(
+  const [attachments, setAttachments] = useState<Array<{ fileMetadata: FileMetadata; id: string }>>(
     [],
   );
 
@@ -86,7 +90,8 @@ const ReportIssue = () => {
     isPaused: isPausedAddQuickReport,
   } = useAddQuickReport();
 
-  const { mutateAsync: addAttachmentQReport, isPaused: isPausedStartAddAttachment, } = useUploadAttachmentQuickReportMutation(`Quick_Report_${activeElectionRound?.id}}`);
+  const { mutateAsync: addAttachmentQReport, isPaused: isPausedStartAddAttachment } =
+    useUploadAttachmentQuickReportMutation(`Quick_Report_${activeElectionRound?.id}}`);
 
   const addAttachmentsMutationState = useMutationState({
     filters: { mutationKey: QuickReportKeys.addAttachment() },
@@ -122,11 +127,12 @@ const ReportIssue = () => {
 
   const handleCameraUpload = async (type: "library" | "cameraPhoto" | "cameraVideo") => {
     setIsPreparingFile(true);
-    setUploadProgress(t("upload.preparing"))
+    setUploadProgress(t("upload.preparing"));
 
     const cameraResult = await uploadCameraOrMedia(type);
 
     if (!cameraResult || !activeElectionRound) {
+      setUploadProgress("");
       return;
     }
 
@@ -140,7 +146,7 @@ const ReportIssue = () => {
 
   const handleUploadAudio = async () => {
     setIsPreparingFile(true);
-    setUploadProgress(t("upload.preparing"))
+    setUploadProgress(t("upload.preparing"));
     const doc = await DocumentPicker.getDocumentAsync({
       type: "audio/*",
       multiple: false,
@@ -163,27 +169,46 @@ const ReportIssue = () => {
     }
   };
 
-  const handleChunkUpload = async (filePath: string, uploadUrls: Record<string, string>, uploadId: string, attachmentId: string, quickReportId: string) => {
+  const handleChunkUpload = async (
+    filePath: string,
+    uploadUrls: Record<string, string>,
+    uploadId: string,
+    attachmentId: string,
+    quickReportId: string,
+  ) => {
     try {
-
       let etags: Record<number, string> = {};
       const urls = Object.values(uploadUrls);
       for (const [index, url] of urls.entries()) {
-        const chunk = await FileSystem.readAsStringAsync(filePath, { length: MULTIPART_FILE_UPLOAD_SIZE, position: index * MULTIPART_FILE_UPLOAD_SIZE, encoding: FileSystem.EncodingType.Base64 });
-        const buffer = Buffer.from(chunk, 'base64');
-        const data = await uploadS3Chunk(url, buffer)
-        etags = { ...etags, [index + 1]: data.ETag }
-      };
-
+        const chunk = await FileSystem.readAsStringAsync(filePath, {
+          length: MULTIPART_FILE_UPLOAD_SIZE,
+          position: index * MULTIPART_FILE_UPLOAD_SIZE,
+          encoding: FileSystem.EncodingType.Base64,
+        });
+        const buffer = Buffer.from(chunk, "base64");
+        const data = await uploadS3Chunk(url, buffer);
+        etags = { ...etags, [index + 1]: data.ETag };
+      }
 
       if (activeElectionRound?.id) {
-        await addAttachmentQuickReportMultipartComplete({ uploadId, etags, electionRoundId: activeElectionRound?.id, id: attachmentId, quickReportId, })
+        await addAttachmentQuickReportMultipartComplete({
+          uploadId,
+          etags,
+          electionRoundId: activeElectionRound?.id,
+          id: attachmentId,
+          quickReportId,
+        });
       }
     } catch (err) {
       // If error try to abort the upload
       if (activeElectionRound?.id) {
         setUploadProgress(t("upload.aborted"));
-        await addAttachmentQuickReportMultipartAbort({ id: attachmentId, uploadId, electionRoundId: activeElectionRound.id, quickReportId })
+        await addAttachmentQuickReportMultipartAbort({
+          id: attachmentId,
+          uploadId,
+          electionRoundId: activeElectionRound.id,
+          quickReportId,
+        });
       }
     } finally {
       if (activeElectionRound?.id) {
@@ -192,14 +217,12 @@ const ReportIssue = () => {
         });
       }
     }
-  }
+  };
 
   const onSubmit = async (formData: ReportIssueFormType) => {
     if (!visits || !activeElectionRound) {
       return;
     }
-
-
 
     let quickReportLocationType = QuickReportLocationType.VisitedPollingStation;
     let pollingStationId: string | null = formData.polling_station_id;
@@ -224,20 +247,30 @@ const ReportIssue = () => {
       setIsLoadingAttachment(true);
       try {
         // Upload each attachment
-        setUploadProgress(`${t("upload.starting")}`)
+        setUploadProgress(`${t("upload.starting")}`);
         for (const [index, attachment] of attachments.entries()) {
           const payload: AddAttachmentQuickReportStartAPIPayload = {
             id: attachment.id,
             fileName: attachment.fileMetadata.name,
             filePath: attachment.fileMetadata.uri,
             contentType: attachment.fileMetadata.type,
-            numberOfUploadParts: Math.ceil(attachment.fileMetadata.size! / MULTIPART_FILE_UPLOAD_SIZE),
+            numberOfUploadParts: Math.ceil(
+              attachment.fileMetadata.size! / MULTIPART_FILE_UPLOAD_SIZE,
+            ),
             electionRoundId: activeElectionRound.id,
             quickReportId: uuid,
           };
           const data = await addAttachmentQReport(payload);
-          await handleChunkUpload(attachment.fileMetadata.uri, data.uploadUrls, data.uploadId, attachment.id, uuid);
-          setUploadProgress(`${t("upload.progress")} ${Math.round(((index + 1) / attachments.length) * 100 * 10) / 10} %`);
+          await handleChunkUpload(
+            attachment.fileMetadata.uri,
+            data.uploadUrls,
+            data.uploadId,
+            attachment.id,
+            uuid,
+          );
+          setUploadProgress(
+            `${t("upload.progress")} ${Math.round(((index + 1) / attachments.length) * 100 * 10) / 10} %`,
+          );
           optimisticAttachments.push(payload);
         }
         setUploadProgress(t("upload.completed"));
@@ -456,8 +489,8 @@ const ReportIssue = () => {
 
         <OptionsSheet open={optionsSheetOpen} setOpen={setOptionsSheetOpen}>
           {(isLoadingAttachment && !isPausedStartAddAttachment) || isPreparingFile ? (
-            <MediaLoading progress={uploadProgress} />) :
-
+            <MediaLoading progress={uploadProgress} />
+          ) : (
             <YStack paddingHorizontal="$sm">
               <Typography
                 onPress={handleCameraUpload.bind(null, "library")}
@@ -483,7 +516,8 @@ const ReportIssue = () => {
               >
                 {t("media.menu.upload_audio")}
               </Typography>
-            </YStack>}
+            </YStack>
+          )}
         </OptionsSheet>
       </Screen>
 
@@ -521,7 +555,7 @@ const MediaLoading = ({ progress }: { progress?: string }) => {
     <YStack alignItems="center" gap="$lg" paddingHorizontal="$lg">
       <Spinner size="large" color="$purple5" />
       <Typography preset="subheading" fontWeight="500" color="$purple5">
-        {progress ? progress : t("attachments.loading")}
+        {progress || t("attachments.loading")}
       </Typography>
     </YStack>
   );

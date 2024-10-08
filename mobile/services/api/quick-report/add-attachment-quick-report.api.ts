@@ -1,5 +1,3 @@
-import axios from "axios";
-import { FileMetadata } from "../../../hooks/useCamera";
 import API from "../../api";
 import { QuickReportAttachmentAPIResponse } from "./get-quick-reports.api";
 

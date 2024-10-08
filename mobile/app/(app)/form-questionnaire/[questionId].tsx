@@ -26,10 +26,7 @@ import { useFormSubmissionMutation } from "../../../services/mutations/form-subm
 import OptionsSheet from "../../../components/OptionsSheet";
 import AddAttachment from "../../../components/AddAttachment";
 import { FileMetadata, useCamera } from "../../../hooks/useCamera";
-import {
-  UploadAttachmentProgress,
-  useUploadAttachmentMutation,
-} from "../../../services/mutations/attachments/add-attachment.mutation";
+import { useUploadAttachmentMutation } from "../../../services/mutations/attachments/add-attachment.mutation";
 import QuestionAttachments from "../../../components/QuestionAttachments";
 import QuestionNotes from "../../../components/QuestionNotes";
 import AddNoteSheetContent from "../../../components/AddNoteSheetContent";
@@ -46,8 +43,6 @@ import { MULTIPART_FILE_UPLOAD_SIZE } from "../../../common/constants";
 import * as DocumentPicker from "expo-document-picker";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { AttachmentsKeys } from "../../../services/queries/attachments.query";
-import { useAttachmentUploadProgressState } from "../../../services/store/attachment-upload-state/attachment-upload-selector";
-import { AttachmentProgressStatusEnum } from "../../../services/store/attachment-upload-state/attachment-upload-slice";
 
 type SearchParamType = {
   questionId: string;
@@ -60,8 +55,6 @@ const FormQuestionnaire = () => {
   const { questionId, formId, language } = useLocalSearchParams<SearchParamType>();
   const queryClient = useQueryClient();
 
-
-
   if (!questionId || !formId || !language) {
     return <Typography>Incorrect page params</Typography>;
   }
@@ -71,7 +64,7 @@ const FormQuestionnaire = () => {
   const [addingNote, setAddingNote] = useState(false);
   const [deletingAnswer, setDeletingAnswer] = useState(false);
   const [isPreparingFile, setIsPreparingFile] = useState(false);
-  const [currentAttachment, setCurrentAttachment] = useState<string>('');
+  const [, setCurrentAttachment] = useState<string>("");
 
   const {
     data: currentForm,
@@ -321,7 +314,7 @@ const FormQuestionnaire = () => {
           onSettled: () => {
             setIsOptionsSheetOpen(false);
             setIsPreparingFile(false);
-            setCurrentAttachment('');
+            setCurrentAttachment("");
           },
         },
       );
@@ -344,7 +337,6 @@ const FormQuestionnaire = () => {
       type: "audio/*",
       multiple: false,
     });
-
 
     if (doc?.canceled) {
       setIsPreparingFile(false);
@@ -388,7 +380,7 @@ const FormQuestionnaire = () => {
             onSettled: () => {
               setIsOptionsSheetOpen(false);
               setIsPreparingFile(false);
-              setCurrentAttachment('');
+              setCurrentAttachment("");
             },
           },
         );
@@ -677,7 +669,7 @@ const FormQuestionnaire = () => {
           disableDrag={addingNote}
         >
           {(isUploadingAttachments && !isPaused) || isPreparingFile ? (
-            <MediaLoading attachmentId={currentAttachment} />
+            <MediaLoading />
           ) : addingNote ? (
             <AddNoteSheetContent
               setAddingNote={setAddingNote}
@@ -742,30 +734,12 @@ const $containerStyle: ViewStyle = {
 
 export default FormQuestionnaire;
 
-const MediaLoading = ({ attachmentId }: { attachmentId: string }) => {
+const MediaLoading = () => {
   const { t } = useTranslation("polling_station_form_wizard");
-  const { progresses } = useAttachmentUploadProgressState()
 
   const message = useMemo(() => {
-    if (!progresses && !progresses[attachmentId]) {
-      return "";
-    }
-
-    switch (progresses[attachmentId]?.status) {
-      case AttachmentProgressStatusEnum.STARTING:
-        return t("attachments.upload.starting");
-      case "compressing":
-        return `Compressing progress ${progresses[attachmentId]?.progress}%`;
-      case AttachmentProgressStatusEnum.INPROGRESS:
-        return `${t("attachments.upload.progress")} ${progresses[attachmentId]?.progress} %`;
-      case AttachmentProgressStatusEnum.COMPLETED:
-        return t("attachments.upload.completed");
-      case AttachmentProgressStatusEnum.ABORTED:
-        return t("attachments.upload.aborted");
-      default:
-        return "";
-    }
-  }, [progresses]);
+    return t("attachments.loading");
+  }, []);
 
   return (
     <YStack alignItems="center" gap="$lg" paddingHorizontal="$lg">

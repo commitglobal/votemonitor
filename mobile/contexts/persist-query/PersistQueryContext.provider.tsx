@@ -7,7 +7,6 @@ import * as API from "../../services/definitions.api";
 import { PersistGate } from "../../components/PersistGate";
 import {
   AddAttachmentStartAPIPayload,
-  addAttachmentMultipartStart,
 } from "../../services/api/add-attachment.api";
 import { deleteAttachment } from "../../services/api/delete-attachment.api";
 import { Note } from "../../common/models/note";

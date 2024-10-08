@@ -2,7 +2,6 @@ import * as ImagePicker from "expo-image-picker";
 import Toast from "react-native-toast-message";
 import { Video, Image, getVideoMetaData, getImageMetaData } from "react-native-compressor";
 import * as Sentry from "@sentry/react-native";
-import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { AttachmentsKeys } from "../services/queries/attachments.query";
 import { UploadAttachmentProgress } from "../services/mutations/attachments/add-attachment.mutation";
@@ -115,7 +114,7 @@ export const useCamera = () => {
             (progress) => {
               console.log("Compression Progress: ", progress);
               queryClient.setQueryData<UploadAttachmentProgress>(AttachmentsKeys.addAttachments(), {
-                status: "compressing",
+                // status: "compressing",
                 progress: +(progress * 100).toFixed(2),
               });
             },
