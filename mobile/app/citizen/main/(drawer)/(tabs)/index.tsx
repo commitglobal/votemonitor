@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useGetCitizenReportingForms } from "../../../../../services/queries/citizen.query";
+import {
+  useGetCitizenLocations,
+  useGetCitizenReportingForms,
+} from "../../../../../services/queries/citizen.query";
 import { Screen } from "../../../../../components/Screen";
 import { ScrollView, Spinner, XStack, YStack } from "tamagui";
 import { IssueCard } from "../../../../../components/IssueCard";
@@ -19,8 +22,6 @@ export default function CitizenReportIssue() {
 
   const { selectedElectionRound } = useCitizenUserData();
 
-  console.log("👀 selectedElectionRound (tabs) -> index.tsx", selectedElectionRound);
-
   const {
     data: citizenReportingForms,
     isLoading: isLoadingCitizenReportingForms,
@@ -28,6 +29,13 @@ export default function CitizenReportIssue() {
     refetch: refetchCitizenReportingForms,
     isRefetching: isRefetchingCitizenReportingForms,
   } = useGetCitizenReportingForms(selectedElectionRound);
+
+  const {
+    isLoading: isLoadingCitizenLocations,
+    isError: isErrorCitizenLocations,
+    refetch: refetchCitizenLocations,
+    isRefetching: isRefetchingCitizenLocations,
+  } = useGetCitizenLocations(selectedElectionRound);
 
   const handleOpenInfoModal = () => {
     setIsOpenInfoModal(true);
@@ -52,7 +60,7 @@ export default function CitizenReportIssue() {
   };
 
   // loading state
-  if (isLoadingCitizenReportingForms) {
+  if (isLoadingCitizenReportingForms || isLoadingCitizenLocations) {
     return (
       <Screen
         preset="fixed"
@@ -69,7 +77,7 @@ export default function CitizenReportIssue() {
   }
 
   // error state
-  if (isErrorCitizenReportingForms) {
+  if (isErrorCitizenReportingForms || isErrorCitizenLocations) {
     return (
       <Screen
         preset="fixed"
@@ -80,7 +88,7 @@ export default function CitizenReportIssue() {
         {renderHeader()}
         <YStack flex={1} paddingVertical="$lg" paddingHorizontal="$lg" gap="$lg">
           <XStack gap="$md">
-            {isRefetchingCitizenReportingForms ? (
+            {isRefetchingCitizenReportingForms || isRefetchingCitizenLocations ? (
               <Spinner color="$purple5" size="large" />
             ) : (
               <Icon icon="warning" color="$purple5" size={36} />
@@ -89,8 +97,11 @@ export default function CitizenReportIssue() {
           </XStack>
 
           <Button
-            onPress={() => refetchCitizenReportingForms()}
-            disabled={isRefetchingCitizenReportingForms}
+            onPress={() => {
+              refetchCitizenReportingForms();
+              refetchCitizenLocations();
+            }}
+            disabled={isRefetchingCitizenReportingForms || isRefetchingCitizenLocations}
             marginTop="$lg"
           >
             {t("retry")}
