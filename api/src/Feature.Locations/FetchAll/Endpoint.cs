@@ -70,7 +70,7 @@ public class Endpoint(VoteMonitorContext context, IMemoryCache cache)
     private static List<LocationNode> GetLocationNodes(List<LocationModel> locations)
     {
         // Root node to store the top-level location nodes
-        LocationNode root = new LocationNode(0, "Root", 0, -1, 0);
+        LocationNode root = new LocationNode(0, Guid.Empty, "Root", 0, -1, 0);
         Dictionary<string, LocationNode> cache = new(); // Cache to store nodes and avoid duplicates
         int id = 0;
 
@@ -85,7 +85,7 @@ public class Endpoint(VoteMonitorContext context, IMemoryCache cache)
             // Level 1
             var level1Node = cache.GetOrCreate(level1Key, () =>
             {
-                var node = new LocationNode(++id, location.Level1, 1, root.Id, location.DisplayOrder);
+                var node = new LocationNode(++id, location.Id, location.Level1, 1, root.Id, location.DisplayOrder);
                 root.AddChild(node);
                 return node;
             });
@@ -96,7 +96,8 @@ public class Endpoint(VoteMonitorContext context, IMemoryCache cache)
             {
                 level2Node = cache.GetOrCreate(level2Key, () =>
                 {
-                    var node = new LocationNode(++id, location.Level2, 2, level1Node.Id, location.DisplayOrder);
+                    var node = new LocationNode(++id, location.Id, location.Level2, 2, level1Node.Id,
+                        location.DisplayOrder);
                     level1Node.AddChild(node);
                     return node;
                 });
@@ -108,7 +109,7 @@ public class Endpoint(VoteMonitorContext context, IMemoryCache cache)
             {
                 level3Node = cache.GetOrCreate(level3Key, () =>
                 {
-                    var node = new LocationNode(++id, location.Level3, 3, (level2Node ?? level1Node).Id,
+                    var node = new LocationNode(++id, location.Id, location.Level3, 3, (level2Node ?? level1Node).Id,
                         location.DisplayOrder);
                     (level2Node ?? level1Node).AddChild(node);
                     return node;
@@ -121,7 +122,8 @@ public class Endpoint(VoteMonitorContext context, IMemoryCache cache)
             {
                 level4Node = cache.GetOrCreate(level4Key, () =>
                 {
-                    var node = new LocationNode(++id, location.Level4, 4, (level3Node ?? level2Node ?? level1Node).Id,
+                    var node = new LocationNode(++id, location.Id, location.Level4, 4,
+                        (level3Node ?? level2Node ?? level1Node).Id,
                         location.DisplayOrder);
                     (level3Node ?? level2Node ?? level1Node).AddChild(node);
                     return node;
@@ -133,7 +135,7 @@ public class Endpoint(VoteMonitorContext context, IMemoryCache cache)
             {
                 cache.GetOrCreate(level5Key, () =>
                 {
-                    var node = new LocationNode(++id, location.Level5, 5,
+                    var node = new LocationNode(++id, location.Id, location.Level5, 5,
                         (level4Node ?? level3Node ?? level2Node ?? level1Node).Id, location.DisplayOrder);
                     (level4Node ?? level3Node ?? level2Node ?? level1Node).AddChild(node);
                     return node;
