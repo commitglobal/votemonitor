@@ -60,7 +60,7 @@ Sentry.init({
 SplashScreen.preventAutoHideAsync();
 
 function RootLayout() {
-  console.log("RootLayout");
+  console.log("🔵 1. RootLayout");
   const [loaded] = useFonts({
     Roboto: require("../assets/fonts/Roboto-Medium.ttf"),
     RobotoRegular: require("../assets/fonts/Roboto-Regular.ttf"),
@@ -88,6 +88,10 @@ function RootLayout() {
   if (!loaded) {
     return null;
   }
+
+  // ! https://docs.expo.dev/develop/file-based-routing/#root-layout
+  // !: With Expo Router, any React providers defined inside app/_layout.tsx are accessible by any route in your app.
+  // !: To improve performance and cause fewer renders, try to reduce the scope of your providers to only the routes that need them.
 
   return (
     <TamaguiProvider config={tamaguiConfig}>

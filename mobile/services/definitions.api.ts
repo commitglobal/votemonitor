@@ -191,6 +191,7 @@ export type FormAPIModel = {
   formType: string; // "ClosingAndCounting",
   code: string; // "A1",
   name: Record<string, string>; // { "EN": "test form", "RO": "formular de test" },
+  description: Record<string, string>; // { "EN": "test form", "RO": "formular de test" },
   status: string; // "Published",
   defaultLanguage: string; // "RO",
   languages: string[]; // [ "RO", "EN" ],

@@ -28,7 +28,7 @@ export default function SelectAppMode() {
 
   const handleSetAppModeContext = () => {
     setAppModeContext(appMode);
-    router.push("/");
+    router.replace(appMode === AppMode.CITIZEN ? "citizen" : "(observer)/(app)");
   };
 
   return (

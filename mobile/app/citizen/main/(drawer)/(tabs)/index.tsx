@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { ICitizenReportingForm } from "../../../../../services/api/citizen/get-citizen-reporting-forms";
 import { useTranslation } from "react-i18next";
 import { useGetCitizenReportingForms } from "../../../../../services/queries/citizen.query";
 import { Screen } from "../../../../../components/Screen";
@@ -11,47 +10,24 @@ import { Typography } from "../../../../../components/Typography";
 import { Icon } from "../../../../../components/Icon";
 import Header from "../../../../../components/Header";
 import { DrawerActions, useNavigation } from "@react-navigation/native";
-
-// todo: remove mocks
-const mockCitizenReportingForms: ICitizenReportingForm[] = [
-  {
-    id: "1",
-    name: "Problems Regarding Public Resources",
-    description: "Report issues related to misuse or mismanagement of public resources.",
-  },
-  {
-    id: "2",
-    name: "Problems Regarding Voting",
-    description: "Report any irregularities or issues encountered during the voting process.",
-  },
-  {
-    id: "3",
-    name: "Problems with Personal Data Protection",
-    description: "Report concerns about the handling or protection of personal data.",
-  },
-  {
-    id: "4",
-    name: "Other Issues",
-    description: "Report any other election-related issues not covered by the above categories.",
-  },
-  {
-    id: "5",
-    name: "Problems with Personal Data Protection",
-  },
-];
+import { useCitizenUserData } from "../../../../../contexts/citizen-user/CitizenUserContext.provider";
 
 export default function CitizenReportIssue() {
   const { t } = useTranslation("citizen_report_issue");
   const navigation = useNavigation();
   const [isOpenInfoModal, setIsOpenInfoModal] = useState(false);
-  //   todo: remove this id
+
+  const { selectedElectionRound } = useCitizenUserData();
+
+  console.log("👀 selectedElectionRound (tabs) -> index.tsx", selectedElectionRound);
+
   const {
     data: citizenReportingForms,
     isLoading: isLoadingCitizenReportingForms,
     isError: isErrorCitizenReportingForms,
     refetch: refetchCitizenReportingForms,
     isRefetching: isRefetchingCitizenReportingForms,
-  } = useGetCitizenReportingForms("5bf2d5aa-5457-4f36-82f8-1a65962cece7");
+  } = useGetCitizenReportingForms(selectedElectionRound);
 
   const handleOpenInfoModal = () => {
     setIsOpenInfoModal(true);
@@ -155,8 +131,7 @@ export default function CitizenReportIssue() {
             </XStack>
           ) : (
             <>
-              {/* //todo: remove mocks */}
-              {mockCitizenReportingForms.map((form) => (
+              {citizenReportingForms.forms.map((form) => (
                 <IssueCard
                   key={form.id}
                   form={form}

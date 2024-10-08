@@ -24,11 +24,11 @@ export const AppModeSwitchButton = ({
     switch (switchToMode) {
       case AppMode.CITIZEN:
         setAppMode(AppMode.CITIZEN);
-        router.push("(main)");
+        router.replace("citizen");
         break;
       case AppMode.OBSERVER:
         setAppMode(AppMode.OBSERVER);
-        router.push("(app)");
+        router.replace("(observer)");
         break;
     }
   };

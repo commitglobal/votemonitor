@@ -3,15 +3,17 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Drawer } from "expo-router/drawer";
 import { ScrollViewProps } from "react-native";
 import { ScrollView, Spinner, useTheme, XStack, YStack } from "tamagui";
-import { Icon } from "../../../../components/Icon";
-import { useGetCitizenElectionEvents } from "../../../../services/queries/citizen.query";
-import { Typography } from "../../../../components/Typography";
+
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { AppMode } from "../../../../contexts/app-mode/AppModeContext.provider";
-import { AppModeSwitchButton } from "../../../../components/AppModeSwitchButton";
-import { useCitizenUserData } from "../../../../contexts/citizen-user/CitizenUserContext.provider";
+
 import { DrawerActions } from "@react-navigation/native";
 import { useNavigation } from "expo-router";
+import { AppModeSwitchButton } from "../../../../components/AppModeSwitchButton";
+import { Icon } from "../../../../components/Icon";
+import { Typography } from "../../../../components/Typography";
+import { AppMode } from "../../../../contexts/app-mode/AppModeContext.provider";
+import { useCitizenUserData } from "../../../../contexts/citizen-user/CitizenUserContext.provider";
+import { useGetCitizenElectionEvents } from "../../../../services/queries/citizen.query";
 type DrawerContentProps = ScrollViewProps & {
   children?: React.ReactNode;
   backgroundColor: string;
@@ -98,7 +100,7 @@ export default function DrawerLayout() {
           headerShown: false,
         }}
       >
-        <Drawer.Screen name="(tabs)" />
+        <Drawer.Screen name="(tabs)" options={{ headerShown: false }} />
       </Drawer>
     </GestureHandlerRootView>
   );
