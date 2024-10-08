@@ -1,4 +1,4 @@
-import API from "../api";
+import API from "../../api";
 
 type GetNotificationsApiPayload = {
   electionRoundId: string;
@@ -10,6 +10,7 @@ export type Notification = {
   body: string;
   sender: string;
   sentAt: Date;
+  isRead: boolean;
 };
 
 export type NotificationsApiResponse = {

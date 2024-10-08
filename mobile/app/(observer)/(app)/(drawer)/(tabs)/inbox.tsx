@@ -3,7 +3,7 @@ import { Screen } from "../../../../../components/Screen";
 import Header from "../../../../../components/Header";
 import { Typography } from "../../../../../components/Typography";
 import { Icon } from "../../../../../components/Icon";
-import { useNavigation } from "expo-router";
+import { useFocusEffect, useNavigation } from "expo-router";
 import { DrawerActions } from "@react-navigation/native";
 import NoNotificationsReceived from "../../../../../components/NoNotificationsReceived";
 import { ListView } from "../../../../../components/ListView";
@@ -12,15 +12,16 @@ import {
   useNotifications,
 } from "../../../../../services/queries/notifications.query";
 import { useUserData } from "../../../../../contexts/user/UserContext.provider";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import NotificationListItem from "../../../../../components/NotificationListItem";
 import { useAppState } from "../../../../../hooks/useAppState";
 import { useQueryClient } from "@tanstack/react-query";
-import { Notification } from "../../../../../services/api/get-notifications.api";
+import { Notification } from "../../../../../services/api/notifications/notifications-get.api";
 import { RefreshControl } from "react-native";
 import { Dialog } from "../../../../../components/Dialog";
 import Button from "../../../../../components/Button";
+import { useReadNotifications } from "../../../../../services/mutations/notifications/read-notifications.mutation";
 
 const ESTIMATED_ITEM_SIZE = 200;
 
@@ -33,8 +34,42 @@ const Inbox = () => {
   const { activeElectionRound } = useUserData();
   const { data, isLoading, isRefetching, refetch } = useNotifications(activeElectionRound?.id);
 
-  const notifications = data?.notifications;
-  const ngoName = data?.ngoName;
+  const notifications = useMemo(() => data?.notifications || [], [data]);
+  const unreadNotificationIds = useMemo(
+    () =>
+      notifications
+        .filter((notification) => !notification.isRead)
+        .map((notification) => notification.id),
+    [notifications],
+  );
+  const ngoName = useMemo(() => data?.ngoName, [data]);
+
+  const { mutate: readNotifications } = useReadNotifications();
+
+  // read the unread notifications (if any) when the screen is focused
+  useFocusEffect(
+    useCallback(() => {
+      if (
+        unreadNotificationIds?.length &&
+        activeElectionRound?.id &&
+        unreadNotificationIds.length
+      ) {
+        readNotifications(
+          {
+            electionRoundId: activeElectionRound.id,
+            notificationIds: unreadNotificationIds,
+          },
+          {
+            onSuccess: () => {
+              queryClient.invalidateQueries({
+                queryKey: NotificationsKeys.notifications(activeElectionRound?.id),
+              });
+            },
+          },
+        );
+      }
+    }, [unreadNotificationIds, activeElectionRound, readNotifications, queryClient]),
+  );
 
   const [isOpenInfoModal, setIsOpenInfoModal] = useState(false);
 
