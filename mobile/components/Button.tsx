@@ -81,6 +81,10 @@ const Button = React.forwardRef((props: ButtonProps, _): JSX.Element => {
             opacity: 0.8,
             borderColor: "transparent",
           },
+          disabledStyle: {
+            backgroundColor: "transparent",
+            opacity: 0.5,
+          },
         },
         red: {
           backgroundColor: "$red10",

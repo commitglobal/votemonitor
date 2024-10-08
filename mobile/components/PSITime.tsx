@@ -7,13 +7,23 @@ import { Icon } from "./Icon";
 import Card from "./Card";
 import { TimeNotDefined } from "./TimeNotDefined";
 import { PollingStationInformationAPIResponse } from "../services/definitions.api";
+import { router } from "expo-router";
 
 export const PSITime = ({ psiData }: { psiData?: PollingStationInformationAPIResponse | null }) => {
   const { t } = useTranslation("observation");
 
+  const handleNavigateToObservationTime = () => {
+    router.push("/observation-time");
+  };
+
   if (!psiData || !(psiData.arrivalTime || psiData.departureTime)) {
     return (
-      <Card padding="$md" backgroundColor="white" gap="$xxs">
+      <Card
+        padding="$md"
+        backgroundColor="white"
+        gap="$xxs"
+        onPress={handleNavigateToObservationTime}
+      >
         <TimeNotDefined nrOfBreaks={psiData?.breaks?.length || 0} />
         <CardFooter
           text={t("polling_stations_information.observation_time.arrival_and_departure")}
@@ -22,7 +32,12 @@ export const PSITime = ({ psiData }: { psiData?: PollingStationInformationAPIRes
     );
   }
   return (
-    <Card padding="$md" backgroundColor="white" gap="$xxs">
+    <Card
+      padding="$md"
+      backgroundColor="white"
+      gap="$xxs"
+      onPress={handleNavigateToObservationTime}
+    >
       <XStack justifyContent="space-between" alignItems="flex-end">
         <XStack flex={0.6}>
           <XStack maxWidth="100%" alignItems="flex-end" gap="$xxs">
