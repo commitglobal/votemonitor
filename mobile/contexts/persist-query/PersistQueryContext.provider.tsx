@@ -218,6 +218,9 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
             // if (query.queryKey.includes(null)) return false;
             // if (query.queryKey.includes(undefined)) return false;
 
+            // TODO: @andrewradulescu maybe we don't need to exclude this.
+            if (query.queryKey.includes("citizen-locations")) return false;
+
             // if (query.meta?.dontPersist) return false;
 
             return defaultShouldDehydrateQuery(query);
