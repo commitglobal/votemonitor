@@ -2,8 +2,11 @@ import { XStack, YStack } from "tamagui";
 import Card from "./Card";
 import { Typography } from "./Typography";
 import Badge from "./Badge";
-import CardFooter from "./CardFooter";
 import { useTranslation } from "react-i18next";
+import { ApiFormAnswer } from "../services/interfaces/answer.type";
+import QuestionCardFooter from "./QuestionCardFooter";
+import { AttachmentMimeType } from "../services/api/get-attachments.api";
+import { getAnswerDisplay } from "../common/utils/answers";
 
 export enum QuestionStatus {
   ANSWERED = "answered",
@@ -18,6 +21,9 @@ export interface FormQuestionListItemProps {
   question: string;
   numberOfNotes: number;
   numberOfAttachments: number;
+  answer?: ApiFormAnswer;
+  lastNoteText?: string;
+  attachmentTypes?: AttachmentMimeType[];
   onClick: () => void;
 }
 
@@ -26,8 +32,11 @@ const FormQuestionListItem = ({
   numberOfQuestions,
   numberOfNotes,
   numberOfAttachments,
+  attachmentTypes,
   status,
   question,
+  answer,
+  lastNoteText,
   onClick,
 }: FormQuestionListItemProps) => {
   const { t } = useTranslation("form_overview");
@@ -37,16 +46,8 @@ const FormQuestionListItem = ({
     [QuestionStatus.NOT_ANSWERED]: t("questions.not_answered"),
   };
 
-  const footerText = () => {
-    const note = numberOfNotes > 0 ? t("attachments.notes", { count: numberOfNotes }) : "";
-    const attachments =
-      numberOfAttachments > 0 ? t("attachments.media", { count: numberOfAttachments }) : "";
-
-    return [note, attachments].filter(Boolean).join(", ") || t("questions.no_notes");
-  };
-
   return (
-    <Card gap="$md" padding="$md" marginBottom="$xxs" onPress={onClick}>
+    <Card gap="$xxs" padding="$md" marginBottom="$xxs" onPress={onClick}>
       <YStack gap="$xxs">
         <XStack justifyContent="space-between">
           <Typography color="$gray5">{`${index}/${numberOfQuestions}`}</Typography>
@@ -55,7 +56,17 @@ const FormQuestionListItem = ({
         <Typography preset="body2">{question}</Typography>
       </YStack>
 
-      <CardFooter text={footerText()}></CardFooter>
+      {answer && (
+        <Typography preset="body1" color="$gray6" numberOfLines={1} width="90%">
+          {getAnswerDisplay(answer)}
+        </Typography>
+      )}
+      <QuestionCardFooter
+        numberOfAttachments={numberOfAttachments}
+        numberOfNotes={numberOfNotes}
+        lastNoteText={lastNoteText}
+        attachmentTypes={attachmentTypes}
+      ></QuestionCardFooter>
     </Card>
   );
 };

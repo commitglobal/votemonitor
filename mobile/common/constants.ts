@@ -6,6 +6,7 @@ export const ASYNC_STORAGE_KEYS = {
 
 export const SECURE_STORAGE_KEYS = {
   ONBOARDING_COMPLETE: "onboardingComplete",
+  ONBOARDING_NEW_COMPLETE: "onboardingNewComplete",
 };
 
 export const I18N_LANGUAGE = "i18n-language";

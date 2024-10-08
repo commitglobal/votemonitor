@@ -1,15 +1,13 @@
 import React, { Dispatch, SetStateAction } from "react";
-import { XStack, YStack } from "tamagui";
+import { ScrollView, XStack, YStack } from "tamagui";
 import { Typography } from "./Typography";
 import Button from "./Button";
 import { Controller, useForm } from "react-hook-form";
 import Input from "./Inputs/Input";
 import { useAddNoteMutation } from "../services/mutations/add-note.mutation";
-import { Keyboard, Platform } from "react-native";
+import { Keyboard } from "react-native";
 import * as Crypto from "expo-crypto";
 import { useTranslation } from "react-i18next";
-import { useKeyboardVisible } from "@tamagui/use-keyboard-visible";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const AddNoteSheetContent = ({
   setAddingNote,
@@ -27,8 +25,6 @@ const AddNoteSheetContent = ({
   setIsOptionsSheetOpen: Dispatch<SetStateAction<boolean>>;
 }) => {
   const { t } = useTranslation(["polling_station_form_wizard", "common"]);
-  const insets = useSafeAreaInsets();
-  const keyboardIsVisible = useKeyboardVisible();
 
   const {
     control,
@@ -65,16 +61,11 @@ const AddNoteSheetContent = ({
   };
 
   return (
-    <YStack
+    <ScrollView
       marginHorizontal={12}
-      gap="$md"
-      paddingBottom={
-        // add padding if keyboard is visible
-        Platform.OS === "ios" && keyboardIsVisible && Keyboard.metrics()?.height
-          ? // @ts-ignore: it will not be undefined because we're checking above
-            Keyboard.metrics()?.height - insets.bottom
-          : 0
-      }
+      contentContainerStyle={{ gap: 16 }}
+      keyboardShouldPersistTaps="handled"
+      bounces={false}
     >
       <Typography preset="heading">{t("notes.add.heading")}</Typography>
 
@@ -83,10 +74,13 @@ const AddNoteSheetContent = ({
         name={"noteText"}
         control={control}
         rules={{
+          required: { value: true, message: t("notes.add.form.input.required") },
           maxLength: {
             value: 10000,
             message: t("notes.add.form.input.max"),
           },
+          // check if the user actually entered something other than whitespaces
+          validate: (value) => value.trim().length > 0 || t("notes.add.form.input.required"),
         }}
         render={({ field: { value: noteValue, onChange: onNoteChange } }) => {
           return (
@@ -111,7 +105,7 @@ const AddNoteSheetContent = ({
           {t("save", { ns: "common" })}
         </Button>
       </XStack>
-    </YStack>
+    </ScrollView>
   );
 };
 

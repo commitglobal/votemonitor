@@ -2,11 +2,11 @@
 import * as React from "react";
 import EyeOff from "../assets/icons/Eye off.svg";
 import Eye from "../assets/icons/Eye.svg";
-import Observation from "../assets/icons/observation.svg";
-import QuickReport from "../assets/icons/quick-report.svg";
-import Learning from "../assets/icons/Learning.svg";
-import Inbox from "../assets/icons/Inbox.svg";
-import More from "../assets/icons/More.svg";
+import Observation from "../assets/icons/tabs/observation.svg";
+import QuickReport from "../assets/icons/tabs/report.svg";
+import Learning from "../assets/icons/tabs/guides.svg";
+import Inbox from "../assets/icons/tabs/inbox.svg";
+import More from "../assets/icons/tabs/more.svg";
 import ChevronRight from "../assets/icons/Chevron right.svg";
 import ChevronLeft from "../assets/icons/Chevron left.svg";
 import AddNote from "../assets/icons/add-note.svg";
@@ -48,10 +48,21 @@ import MonitorPollingStations from "../assets/icons/onboarding/monitor-p-s.svg";
 import ObservationForms from "../assets/icons/onboarding/forms.svg";
 import NotesOrMedia from "../assets/icons/onboarding/notes-media.svg";
 import CommitGlobal from "../assets/icons/commit-global.svg";
-
+import PollingStationPin from "../assets/icons/polling-station-pin.svg";
+import Form from "../assets/icons/form.svg";
+import CheckCircle from "../assets/icons/check-circle.svg";
+import Bin from "../assets/icons/Trash2.svg";
 import { styled, View, ViewProps } from "tamagui";
 import { StyleProp, ViewStyle } from "react-native";
 import { Ref } from "react";
+import Note from "../assets/icons/questionCard/note.svg";
+import Photo from "../assets/icons/questionCard/photo.svg";
+import Video from "../assets/icons/questionCard/video.svg";
+import Audio from "../assets/icons/questionCard/audio.svg";
+import VMCitizenLogo from "../assets/icons/vm-citizen-logo.svg";
+import Warning from "../assets/icons/warning.svg";
+import PublicResourcesProblems from "../assets/icons/public-resources-problems.svg";
+import AppModeSwitch from "../assets/icons/app-mode-switch.svg";
 
 interface IconProps extends ViewProps {
   /**
@@ -68,6 +79,8 @@ interface IconProps extends ViewProps {
    * An optional size for the icon. If not provided, the icon will be sized to the icon's resolution.
    */
   size?: number;
+  width?: number;
+  height?: number;
 
   /**
    * Style overrides for the view container
@@ -89,7 +102,15 @@ type IconRegistry = {
 
 export const defaultIcon = React.forwardRef(
   (props: IconProps, ref?: Ref<typeof View>): JSX.Element => {
-    const { icon, color = "black", size = 24, style: $viewStyleOverride, ...tamaguiProps } = props;
+    const {
+      icon,
+      color = "black",
+      size = 24,
+      style: $viewStyleOverride,
+      width,
+      height,
+      ...tamaguiProps
+    } = props;
 
     const iconRegistry: IconRegistry = {
       eyeOff: <EyeOff fill={color} width={size} height={size} />,
@@ -127,7 +148,7 @@ export const defaultIcon = React.forwardRef(
       dragHandle: <DragHandle fill={color} width={size} height={size} />,
       search: <Search fill={color} width={size} height={size} />,
       loginLogo: <LoginLogo fill={color} width={size | 294} height={size | 67} />,
-      infoCircle: <InfoCircle fill={color} width={size} height={size} />,
+      infoCircle: <InfoCircle width={size} height={size} stroke={color} />,
       emailSent: <EmailSent fill={color} width={size} height={size} />,
       undrawInbox: <UndrawInbox fill={color} width={size} height={size} />,
       undrawReading: <UndrawReading fill={color} width={size} height={size} />,
@@ -139,7 +160,19 @@ export const defaultIcon = React.forwardRef(
       monitorPollingStations: <MonitorPollingStations width={202} height={188} />,
       observationForms: <ObservationForms width={202} height={188} />,
       notesOrMedia: <NotesOrMedia width={202} height={188} />,
+      bin: <Bin fill={color} width={size} height={size} />,
       commitGlobal: <CommitGlobal fill={color} />,
+      pollingStationPin: <PollingStationPin fill={color} />,
+      note: <Note fill={color} />,
+      photo: <Photo fill={color} />,
+      video: <Video fill={color} />,
+      audio: <Audio fill={color} />,
+      form: <Form fill={color} />,
+      checkCircle: <CheckCircle fill={color} width={size} height={size} />,
+      vmCitizenLogo: <VMCitizenLogo fill={color} width={width} height={height} />,
+      warning: <Warning stroke={color} width={size} height={size} />,
+      publicResourcesProblems: <PublicResourcesProblems fill={color} width={size} height={size} />,
+      appModeSwitch: <AppModeSwitch fill={color} width={size} height={size} />,
     };
 
     return (

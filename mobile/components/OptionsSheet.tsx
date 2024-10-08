@@ -1,7 +1,8 @@
-import React, { ReactNode } from "react";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import React, { ReactNode, useEffect, useMemo } from "react";
 import { Sheet, SheetProps } from "tamagui";
 import { Icon } from "./Icon";
+import { Animated, BackHandler, Platform } from "react-native";
+import useAnimatedKeyboardPadding from "../hooks/useAnimatedKeyboardPadding";
 
 export interface OptionsSheetProps extends SheetProps {
   /* The current state of the sheet */
@@ -20,31 +21,53 @@ export interface OptionsSheetProps extends SheetProps {
 
 const OptionsSheet = (props: OptionsSheetProps) => {
   const { open, setOpen, isLoading = false, children, ...rest } = props;
-  const insets = useSafeAreaInsets();
+
+  // on Android back button press, if the sheet is open, we first close the sheet
+  // and on the 2nd press we will navigate back
+  useEffect(() => {
+    if (Platform.OS !== "android") {
+      return;
+    }
+    const onBackPress = () => {
+      // close sheet
+      if (open) {
+        setOpen(false);
+        return true;
+      } else {
+        // navigate back
+        return false;
+      }
+    };
+    const subscription = BackHandler.addEventListener("hardwareBackPress", onBackPress);
+    return () => subscription.remove();
+  }, [open, setOpen]);
+
+  const AnimatedSheetFrame = useMemo(() => Animated.createAnimatedComponent(Sheet.Frame), []);
+  const paddingBottom = useAnimatedKeyboardPadding(16);
 
   return (
     <Sheet
       modal
       open={open}
       onOpenChange={setOpen}
-      zIndex={100_000}
+      zIndex={100_001}
       snapPointsMode="fit"
       dismissOnSnapToBottom={!isLoading}
       dismissOnOverlayPress={!isLoading}
       {...rest}
     >
       <Sheet.Overlay />
-      <Sheet.Frame
+      <AnimatedSheetFrame
         borderTopLeftRadius={28}
         borderTopRightRadius={28}
         gap="$sm"
         paddingHorizontal="$md"
-        paddingBottom="$xl"
-        marginBottom={insets.bottom}
+        // padding bottom responsive to keyboard presence
+        paddingBottom={paddingBottom}
       >
         <Icon paddingVertical="$md" alignSelf="center" icon="dragHandle" />
         {children}
-      </Sheet.Frame>
+      </AnimatedSheetFrame>
     </Sheet>
   );
 };

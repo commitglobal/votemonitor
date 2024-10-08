@@ -1,5 +1,5 @@
 import { skipToken, useQuery } from "@tanstack/react-query";
-import { getNotifications } from "../api/get-notifications.api";
+import { getNotifications } from "../api/notifications/notifications-get.api";
 
 export const NotificationsKeys = {
   notifications: (electionRoundId: string | undefined) =>

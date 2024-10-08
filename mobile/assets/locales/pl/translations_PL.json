@@ -67,12 +67,13 @@
       },
       "errors": {
         "invalid_credentials": "Wystąpił błąd z Twoimi danymi logowania. Spróbuj ponownie.",
-        "offline": "xxxxx"
+        "offline": "Aby się zalogować, potrzebujesz połączenia z Internetem."
       }
     },
     "actions": {
       "forgot_password": "Zapomniałeś/aś hasła?"
-    }
+    },
+    "email_toast": "Adres e-mail został skopiowany do schowka"
   },
   "forgot_password": {
     "header": {
@@ -162,7 +163,8 @@
         "error": {
           "arrival_first": "Najpierw wybierz godzinę przyjazdu.",
           "later_departure": "Proszę wybrać godzinę odjazdu późniejszą niż godzina przylotu.",
-          "earlier_arrival": "Proszę wybrać godzinę przyjazdu wcześniejszą niż godzina odlotu."
+          "earlier_arrival": "Proszę wybrać godzinę przyjazdu wcześniejszą niż godzina odlotu.",
+          "server": "Nie mogliśmy wysłać informacji na serwer."
         }
       },
       "polling_station_form": {
@@ -187,6 +189,9 @@
         "helper": "Wybrany formularz dostępny jest w kilku językach. Wybierz proszę język, w którym chcesz kontynnuować pracę.",
         "error": "Proszę wybrać jedną z opcji"
       }
+    },
+    "options_menu": {
+      "manage_my_polling_stations": "Zarządzanie moimi komisjami wyborczymi"
     }
   },
   "polling_station_information_form": {
@@ -202,7 +207,10 @@
     "warning_modal": {
       "title": "Wyczyść formularz informacyjny komisji wyborczej",
       "description": "Ta czynność usunie wszystkie odpowiedzi wprowadzone do formularza. Aby uniknąć utraty danych, upewnij się proszę, że sprawdziłeś/aś formularz zanim wykonasz tę akcję.",
-      "actions": { "cancel": "Anuluj", "clear": "Wyczyść formularz" }
+      "actions": {
+        "cancel": "Anuluj",
+        "clear": "Wyczyść formularz"
+      }
     }
   },
   "form_overview": {
@@ -233,8 +241,8 @@
     "clear_answers_modal": {
       "title": "Clear form {{value}}",
       "description": {
-        "p1": "xxxxx",
-        "p2": "xxxxx"
+        "p1": "Ta czynność usunie wszystkie odpowiedzi wprowadzone do tego formularza. Dotyczy to wprowadzonych informacji, notatek, jak i załączonych plików. Wszystkie pytania zostaną przywrócone do stanu 'Nie udzielono odpowiedzi'.",
+        "p2": "Aby uniknąć utraty danych, upewnij się proszę, że sprawdziłeś/aś dane dotyczące komisji wyborczej zanim wykonasz tę akcję."
       },
       "actions": {
         "clear": "Wyczyść formularz",
@@ -256,6 +264,7 @@
     "attachments": {
       "heading": "Wybrane media",
       "loading": "Dodawanie załącznika... ",
+      "error": "Błąd podczas wysyłania załącznika!",
       "add": "Dodaj notatkę, zdjęcie lub wideo",
       "menu": {
         "add_note": "Dodaj notatkę",
@@ -272,7 +281,8 @@
         "form": {
           "input": {
             "placeholder": "Dodaj istotne informacje dotyczące tego pytania.",
-            "max": "Dane wejściowe nie mogą przekraczać 10,000 znaków"
+            "max": "Dane wejściowe nie mogą przekraczać 10,000 znaków",
+            "required": "To pole jest wymagane"
           }
         }
       },
@@ -293,15 +303,53 @@
       "question": {
         "title": "Wyczyść odpowiedź dla pytania{{value}}",
         "description": "Wyczyszczenie odpowiedzi usunie wprowadzone dane (jak również notatki i załączniki). Pytanie zostanie przywrócone do stanu 'Nie udzielono odpowiedzi'.",
-        "actions": { "cancel": "Anuluj", "clear": "Wyczyść odpowiedź" }
+        "actions": {
+          "cancel": "Anuluj",
+          "clear": "Wyczyść odpowiedź"
+        }
       },
       "attachment": {
         "title": "Usuń plik(i)",
         "description": "Ta akcja nie może być cofnięta. Usunięte media nie mogą zostać przywrócone.",
-        "actions": { "cancel": "Anuluj", "clear": "Usuń" }
+        "actions": {
+          "cancel": "Anuluj",
+          "clear": "Usuń"
+        }
       }
     },
     "error": "Błąd podczas ładowania danych pytania!"
+  },
+  "manage_my_polling_stations": {
+    "empty": {
+      "title": "Brak odwiedzonych komisji wyborczych"
+    },
+    "general_text": "Zarządzanie moimi komisjami wyborczymi",
+    "ps_card": {
+      "header": "Komisję wyborczą #{{value}}",
+      "l1": "[Location L1]",
+      "l2": "[Location L2]",
+      "l3": "[Location L3]",
+      "l4": "[Location L4]",
+      "l5": "[Location L5]",
+      "street": "Ulica",
+      "ps_number": "Numer komisję wyborczą"
+    },
+    "warning_dialog": {
+      "title": "Usuń komisję wyborczą #{{value}}",
+      "description": "Ta czynność spowoduje usunięcie komisji wyborczej z listy odwiedzanych lokali wyborczych. Możesz dodać go ponownie poprzez proces Dodaj nową komisję wyborczą.",
+      "actions": {
+        "cancel": "Anuluj",
+        "remove": "Usuń",
+        "loading": "Wysyłanie..."
+      }
+    },
+    "removal_unallowed_dialog": {
+      "title": "Usunięcie komisję wyborczą #{{value}} nie jest dozwolone",
+      "description": "Komisję wyborczą nie można usunąć z Twojej listy, ponieważ zawiera ona dane (informacje o komisję wyborczą i/lub odpowiedzi z formularza), których system w Twoim imieniu nie może usunąć. Jeśli chcesz usunąć tę komisję wyborczą, usuń zaznaczenie komisję wyborczą informacji i formularza odpowiedzi ręcznie, a następnie spróbuj ponownie wykonać tę czynność."
+    },
+    "delete_success": "Komisja wyborcza została pomyślnie usunięta!",
+    "delete_error": "Napotkaliśmy problem podczas usuwania wizyty komisji wyborczej. Spróbuj ponownie.",
+    "offline_error_toast_msg": "Aby wykonać tę czynność, potrzebujesz połączenia internetowego."
   },
   "quick_report": {
     "list": {
@@ -313,6 +361,9 @@
       "no_files": "Brak załączonych plików",
       "attachment_one": "{{count}} plik załącznika",
       "attachment_other": "{{count}} pliki załączników"
+    },
+    "options_menu": {
+      "manage_my_polling_stations": "Zarządzanie moimi komisjami wyborczymi"
     }
   },
   "report_new_issue": {
@@ -320,6 +371,7 @@
     "media": {
       "heading": "Wybrane media",
       "add": "Dodaj pliki multimedialne",
+      "error": "Błąd podczas wysyłania załącznika!",
       "menu": {
         "load": "Załaduj z galerii",
         "take_picture": "Zrób zdjęcie",
@@ -358,7 +410,8 @@
       },
       "submit": "Zgłoś sprawę",
       "clear": "Wyczyść",
-      "loading": "Przetwarzanie..."
+      "loading": "Przetwarzanie...",
+      "error": "Błąd podczas ładowania raportu"
     }
   },
   "report_details": {
@@ -376,9 +429,12 @@
     "list": {
       "heading": "Podręczniki",
       "guide": {
-        "backup_title": "xxxxx",
-        "created_on": "xxxxx"
+        "backup_title": "Dokument",
+        "created_on": "Utworzono dnia"
       }
+    },
+    "options_sheet": {
+      "manage_my_polling_stations": "Zarządzanie moimi komisjami wyborczymi"
     }
   },
   "inbox": {
@@ -407,22 +463,36 @@
     "logout": "Wyloguj",
     "logged_in": "Zalogowano jako {{user}}",
     "warning_modal": {
-      "logout": {
-        "title": "xxxxx",
-        "description": "xxxxx",
-        "cancel": "xxxxx",
-        "action": "xxxxx"
+      "logout_offline": {
+        "title": "Ostrzeżenie: Twoje dane nie są zsynchronizowane",
+        "description": "Aktualnie jesteś offline. Jeśli się teraz wylogujesz, wszystkie formularze, załączniki i notatki wypełnione lub przesłane offline zostaną utracone.\n\nAby uniknąć utraty danych, przed wylogowaniem połącz się ponownie z internetem.",
+        "cancel": "Anuluj",
+        "action": "Wyloguj"
+      },
+      "logout_online": {
+        "title": "Czy na pewno chcesz się wylogować?",
+        "cancel": "Anuluj",
+        "action": "Wyloguj"
       }
     },
+    "feedback_toast": {
+      "success": "Wysłano opinię!",
+      "offline": "Aby wykonać tę akcję, potrzebujesz połączenia z Internetem.",
+      "error": "Błąd podczas dodawania opinii!",
+      "required": "To pole jest wymagane"
+    },
     "feedback_sheet": {
-      "heading": "xxxxx",
-      "p1": "xxxxx",
-      "placeholder": "xxxxx.",
-      "cancel": "xxxxx",
-      "action": "xxxxx",
+      "heading": "Prześlij nam swoją opinię",
+      "p1": "Podziel się z nami wszelkimi problemami, które napotkasz podczas korzystania z aplikacji lub sugestiami dotyczącymi ulepszenia Vote Monitor w przyszłości. Jesteśmy wdzięczni za każdą opinię!",
+      "placeholder": "Napisz tutaj swoją opinię...",
+      "cancel": "Anuluj",
+      "action": "Wysłać",
       "input": {
-        "max": "xxxxx"
+        "max": "Dane wejściowe nie mogą przekraczać {{value}} znaków"
       }
+    },
+    "options_sheet": {
+      "manage_my_polling_stations": "Zarządzanie moimi komisjami wyborczymi"
     }
   },
   "change_password": {
@@ -450,9 +520,9 @@
       "save": "Zapisz nowe hasło"
     },
     "confirmation": {
-      "title": "Hasła zmienione!",
+      "heading": "Hasła zmienione!",
       "paragraph": "Hasło zostało skutecznie zmienione.",
-      "back": "Wróć do aplikacji"
+      "confirm": "Wróć do aplikacji"
     },
     "error": {
       "offline": "Aplikacja jest w trybie offline i nie może wykonać żądania"
@@ -462,7 +532,7 @@
     "paragraph1": "Coś poszło nie tak!",
     "paragraph2": "Nie mogliśmy odzyskać danych po tym błędzie. Sprawdź swoje połączenie internetowe i uruchom ponownie aplikację!",
     "retry": "Spróbować ponownie",
-    "logout": "xxxxx"
+    "logout": "Wyloguj"
   },
   "network_banner": {
     "online": "Aplikacja odzyskała połączenie z siecią. Wszystkie informacje pomyślnie zsynchronizowano.",
@@ -471,8 +541,8 @@
     "offline_warning": "Wygląda na to, że jesteś offline. Uszy do góry, odpowiedzi, których udzieliłeś/aś zostały bezpiecznie zapisane na tym urządzeniu i zostaną zsynchronizowane, gdy tylko odzyskasz połączenie z siecią. Możesz dalej uzupełniać formularz i przygotowywać szybkie raporty."
   },
   "sync": {
-    "sync_data": "xxxxx",
-    "warning": "xxxxx",
-    "files": "xxxxx"
+    "sync_data": "Synchronizowanie danych offline...",
+    "warning": "NIE ZAMKNIJ aplikacji ani połączenia internetowego, w przeciwnym razie dane zostaną utracone.",
+    "files": "Przesyłamy Twoje pliki, może to chwilę potrwać..."
   }
 }

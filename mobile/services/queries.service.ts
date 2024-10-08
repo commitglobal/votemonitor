@@ -19,19 +19,50 @@ export const electionRoundsKeys = {
   one: (id: string) => [...electionRoundsKeys.all, id] as const,
   forms: (electionRoundId: string | undefined) =>
     [...electionRoundsKeys.all, "forms", electionRoundId] as const,
+  form: (electionRoundId: string | undefined, formId: string | undefined) =>
+    [...electionRoundsKeys.all, "electionRoundId", electionRoundId, "form", formId] as const,
 };
 
 export const pollingStationsKeys = {
   all: ["polling-stations"] as const,
   visits: (electionRoundId: string | undefined) =>
     [...pollingStationsKeys.all, "visits", electionRoundId] as const,
-  formSubmissions: (electionRoundId: string | undefined, pollingStationId: string | undefined) => [
+  allFormSubmissions: (electionRoundId: string | undefined, pollingStationId: string | undefined) =>
+    [
+      ...pollingStationsKeys.all,
+      "electionRoundId",
+      electionRoundId,
+      "pollingStationId",
+      pollingStationId,
+      "form-submissions",
+      "all",
+    ] as const,
+  formSubmissions: (
+    electionRoundId: string | undefined,
+    pollingStationId: string | undefined,
+    formId: string | undefined,
+  ) =>
+    [
+      ...pollingStationsKeys.all,
+      "electionRoundId",
+      electionRoundId,
+      "pollingStationId",
+      pollingStationId,
+      "formID",
+      formId,
+      "form-submissions",
+    ] as const,
+  psHasFormSubmissions: (
+    electionRoundId: string | undefined,
+    pollingStationId: string | undefined,
+  ) => [
     ...pollingStationsKeys.all,
     "electionRoundId",
     electionRoundId,
     "pollingStationId",
     pollingStationId,
     "form-submissions",
+    "hasFormSubmissions",
   ],
   upsertFormSubmission: () => [...pollingStationsKeys.all, "upsertFormSubmission"] as const,
   nomenclatorList: (parentId: number | null = -1) =>
@@ -68,6 +99,7 @@ export const pollingStationsKeys = {
   mutatePollingStationGeneralData: () =>
     [...pollingStationsKeys.all, "mutate-general-data"] as const,
   changePassword: () => [...pollingStationsKeys.all, "changePassword"] as const,
+  deletePollingStation: () => [...pollingStationsKeys.all, "deletePollingStation"] as const,
 };
 
 export const notesKeys = {
@@ -90,6 +122,11 @@ export const notesKeys = {
   addNote: () => [...notesKeys.all, "add"] as const,
   updateNote: () => [...notesKeys.all, "update"] as const,
   deleteNote: () => [...notesKeys.all, "delete"] as const,
+};
+
+export const feedbackKeys = {
+  addFeedback: (electionRoundId: string | undefined) =>
+    ["addFeedback", "electionRoundId", electionRoundId] as const,
 };
 
 export const useElectionRoundsQuery = () => {

@@ -146,6 +146,7 @@ export type PollingStationInformationFormAPIResponse = {
   lastModifiedOn: string;
   languages: string[]; // ["RO", "EN"]
   questions: ApiFormQuestion[];
+  defaultLanguage: string;
 };
 
 export const getPollingStationInformationForm = (
@@ -190,9 +191,11 @@ export type FormAPIModel = {
   formType: string; // "ClosingAndCounting",
   code: string; // "A1",
   name: Record<string, string>; // { "EN": "test form", "RO": "formular de test" },
+  description: Record<string, string>; // { "EN": "test form", "RO": "formular de test" },
   status: string; // "Published",
   defaultLanguage: string; // "RO",
   languages: string[]; // [ "RO", "EN" ],
+  numberOfQuestions: number;
   createdOn: string;
   lastModifiedOn: string; // "2024-04-12T11:45:38.589445Z"
   questions: ApiFormQuestion[];
@@ -208,6 +211,22 @@ export const getElectionRoundAllForms = (
   electionRoundId: string,
 ): Promise<ElectionRoundsAllFormsAPIResponse> => {
   return API.get(`election-rounds/${electionRoundId}/forms:fetchAll`, {}).then((res) => res.data);
+};
+
+/** ========================================================================
+    ================= GET ElectionRoundForm ====================
+    ========================================================================
+    @description Get a form by id for an election round
+    @param {string} electionRoundId 
+    @param {string} formId 
+    @returns {FormAPIModel}
+*/
+
+export const getElectionRoundFormById = (
+  electionRoundId: string,
+  formId: string,
+): Promise<FormAPIModel> => {
+  return API.get(`election-rounds/${electionRoundId}/forms/${formId}`, {}).then((res) => res.data);
 };
 
 /** ========================================================================
@@ -355,4 +374,68 @@ export type ForgotPasswwordPayload = {
 
 export const forgotPassword = async (data: ForgotPasswwordPayload) => {
   return API.post("auth/forgot-password", data).then((res) => res.data);
+};
+
+/** ===================================================================================
+ * ================= GET does a polling station have form submissions? ================
+ * ====================================================================================
+ *  @param {string} electionRoundId
+ *  @param {string} pollingStationId
+ */
+
+export type GetPSHasFormSubmissionsPayload = {
+  electionRoundId: string;
+  pollingStationId: string;
+};
+
+export const getPSHasFormSubmissions = (electionRoundId: string, pollingStationId: string) => {
+  return API.get(`/election-rounds/${electionRoundId}/form-submissions:any`, {
+    params: {
+      pollingStationId,
+    },
+  }).then((res) => res.data);
+};
+
+/** ================= DELETE pollingStation ====================
+ * ========================================================================
+ * @description delete a polling station
+ * @param {DeletePollingStationVisitPayload} data includes electionRoundId and pollingStationId
+ */
+
+export type DeletePollingStationVisitPayload = {
+  electionRoundId: string;
+  pollingStationId: string;
+};
+
+export const deletePollingStationVisit = (data: DeletePollingStationVisitPayload) => {
+  return API.delete(
+    `election-rounds/${data.electionRoundId}/polling-station-visits/${data.pollingStationId}`,
+  ).then((res) => res.data);
+};
+
+/** ========================================================================
+    ================= POST feedback ====================
+    ========================================================================
+    @param {string} electionRoundId 
+*/
+
+type feedbackMetadata = {
+  appVersion: string | undefined;
+  sentAt: string;
+  platform: "ios" | "android" | "windows" | "macos" | "web";
+  modelName: string | null;
+  electionRoundId: string | undefined;
+  systemVersion: string | null;
+};
+
+export type AddFeedbackPayload = {
+  electionRoundId: string | undefined;
+  userFeedback: string;
+  metadata: feedbackMetadata;
+};
+
+export const addFeedback = ({ electionRoundId, ...feedbackPayload }: AddFeedbackPayload) => {
+  return API.post(`election-rounds/${electionRoundId}/feedback/`, feedbackPayload).then(
+    (res) => res.data,
+  );
 };

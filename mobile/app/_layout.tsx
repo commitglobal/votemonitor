@@ -16,6 +16,7 @@ import { isRunningInExpoGo } from "expo";
 import Toast from "react-native-toast-message";
 import { toastConfig } from "../toast.config";
 import * as Notifications from "expo-notifications";
+import AppModeContextProvider from "../contexts/app-mode/AppModeContext.provider";
 
 // Construct a new instrumentation instance. This is needed to communicate between the integration and React
 const routingInstrumentation = new Sentry.ReactNavigationInstrumentation();
@@ -41,7 +42,7 @@ Sentry.init({
   enableNative: true,
   environment: process.env.EXPO_PUBLIC_ENVIRONMENT,
   attachScreenshot: true,
-  enabled: !__DEV__,
+  enabled: false,
   // Set tracesSampleRate to 1.0 to capture 100%
   // of transactions for performance monitoring.
   // We recommend adjusting this value in production
@@ -59,6 +60,7 @@ Sentry.init({
 SplashScreen.preventAutoHideAsync();
 
 function RootLayout() {
+  console.log("🔵 1. RootLayout");
   const [loaded] = useFonts({
     Roboto: require("../assets/fonts/Roboto-Medium.ttf"),
     RobotoRegular: require("../assets/fonts/Roboto-Regular.ttf"),
@@ -87,22 +89,28 @@ function RootLayout() {
     return null;
   }
 
+  // ! https://docs.expo.dev/develop/file-based-routing/#root-layout
+  // !: With Expo Router, any React providers defined inside app/_layout.tsx are accessible by any route in your app.
+  // !: To improve performance and cause fewer renders, try to reduce the scope of your providers to only the routes that need them.
+
   return (
     <TamaguiProvider config={tamaguiConfig}>
       <NetInfoProvider>
-        <PortalProvider>
-          <AuthContextProvider>
-            <PersistQueryContextProvider>
+        <AuthContextProvider>
+          <PersistQueryContextProvider>
+            <PortalProvider>
               <LanguageContextProvider>
                 <EasUpdateMonitorContextProvider>
-                  <Slot />
-                  <Toast config={toastConfig} position="top" />
-                  <NetInfoBanner />
+                  <AppModeContextProvider>
+                    <Slot />
+                    <Toast config={toastConfig} position="top" />
+                    <NetInfoBanner />
+                  </AppModeContextProvider>
                 </EasUpdateMonitorContextProvider>
               </LanguageContextProvider>
-            </PersistQueryContextProvider>
-          </AuthContextProvider>
-        </PortalProvider>
+            </PortalProvider>
+          </PersistQueryContextProvider>
+        </AuthContextProvider>
       </NetInfoProvider>
     </TamaguiProvider>
   );

@@ -1,6 +1,7 @@
-import React from "react";
-import { View, styled } from "tamagui";
+import React, { useMemo } from "react";
+import { View, ViewProps, styled } from "tamagui";
 import { Typography } from "./Typography";
+import { TextStyle } from "react-native";
 
 export enum Status {
   NOT_STARTED = "not started",
@@ -16,9 +17,10 @@ enum Presets {
   WARNING = "warning",
 }
 
-export interface BadgeProps {
+export interface BadgeProps extends ViewProps {
   status: string;
   children: string;
+  textStyle?: TextStyle;
 }
 
 /**
@@ -27,46 +29,62 @@ export interface BadgeProps {
  * @returns {JSX.Element} The rendered `Badge` component.
  */
 const Badge = (props: BadgeProps): JSX.Element => {
-  const { status } = props;
+  const { status, textStyle, ...rest } = props;
 
-  // TODO @madalinazanficu: memoize everything please
   // TODO @madalinazanficu: use strong typed values for props
 
-  const StyledView = styled(View, {
-    name: "StyledView",
-    paddingHorizontal: "$xs",
-    paddingVertical: 2,
-    borderRadius: 28,
-    backgroundColor: "$gray2",
-    alignItems: "center",
-    justifyContent: "center",
-    variants: {
-      presets: {
-        default: {},
-        success: { backgroundColor: "$green2" },
-        warning: { backgroundColor: "$yellow3" },
-        danger: { backgroundColor: "$red1" },
-      },
-    } as const,
-  });
+  const StyledView = useMemo(
+    () =>
+      styled(View, {
+        name: "StyledView",
+        paddingHorizontal: "$xs",
+        paddingVertical: 2,
+        borderRadius: 28,
+        borderWidth: 1,
+        borderColor: "$purple5",
+        backgroundColor: "$purple2",
+        alignItems: "center",
+        justifyContent: "center",
+        variants: {
+          presets: {
+            default: {},
+            success: { backgroundColor: "$green1", borderColor: "$green6" },
+            warning: { backgroundColor: "$yellow3", borderColor: "$yellow7" },
+            danger: { backgroundColor: "$red1", borderColor: "$red12" },
+          },
+        } as const,
+      }),
+    [],
+  );
 
-  const presetType =
-    status === Status.COMPLETED || status === Status.ANSWERED
-      ? Presets.SUCCESS
-      : status === Status.IN_PROGRESS
-        ? Presets.WARNING
-        : Presets.DEFAULT;
+  const presetType = useMemo(
+    () =>
+      status === Status.COMPLETED || status === Status.ANSWERED
+        ? Presets.SUCCESS
+        : status === Status.IN_PROGRESS
+          ? Presets.WARNING
+          : Presets.DEFAULT,
+    [status],
+  );
 
-  const textColor =
-    presetType === Presets.SUCCESS
-      ? "$green9"
-      : presetType === Presets.WARNING
-        ? "$yellow7"
-        : "$gray10";
+  const textColor = useMemo(
+    () =>
+      presetType === Presets.SUCCESS
+        ? "$green6"
+        : presetType === Presets.WARNING
+          ? "$yellow7"
+          : "$purple5",
+    [presetType],
+  );
 
   return (
-    <StyledView presets={presetType}>
-      <Typography preset="body2" color={textColor}>
+    <StyledView presets={presetType} {...rest}>
+      <Typography
+        preset="body2"
+        color={textColor}
+        style={{ ...textStyle }}
+        allowFontScaling={false}
+      >
         {props.children}
       </Typography>
     </StyledView>

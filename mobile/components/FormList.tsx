@@ -9,7 +9,7 @@ import {
 } from "../common/language.preferences";
 import { router } from "expo-router";
 import { Typography } from "./Typography";
-import { XStack, YStack } from "tamagui";
+import { Spinner, useWindowDimensions, XStack, YStack } from "tamagui";
 import { ListView } from "./ListView";
 import FormCard from "./FormCard";
 import { Dialog } from "./Dialog";
@@ -19,7 +19,16 @@ import { useFormSubmissions } from "../services/queries/form-submissions.query";
 import { useElectionRoundAllForms } from "../services/queries/forms.query";
 import FormListErrorScreen from "./FormListError";
 import { useQueryClient } from "@tanstack/react-query";
-import { electionRoundsKeys, pollingStationsKeys } from "../services/queries.service";
+import {
+  electionRoundsKeys,
+  pollingStationsKeys,
+  usePollingStationInformation,
+  usePollingStationInformationForm,
+} from "../services/queries.service";
+import { RefreshControl } from "react-native";
+import FormListEmptyComponent from "./FormListEmptyComponent";
+
+const ESTIMATED_ITEM_SIZE = 100;
 
 export type FormListItem = {
   id: string;
@@ -37,23 +46,61 @@ type ListHeaderComponentType =
   | null
   | undefined;
 
-const FormList = ({ ListHeaderComponent }: { ListHeaderComponent: ListHeaderComponentType }) => {
+interface IFormListProps {
+  ListHeaderComponent: ListHeaderComponentType;
+}
+
+const FormList = ({ ListHeaderComponent }: IFormListProps) => {
   const { activeElectionRound, selectedPollingStation } = useUserData();
   const [selectedForm, setSelectedForm] = useState<FormListItem | null>(null);
   const { t } = useTranslation(["observation", "common"]);
+
+  const { width } = useWindowDimensions();
+
   const queryClient = useQueryClient();
 
   const {
     data: allForms,
     isLoading: isLoadingForms,
     error: formsError,
+    refetch: refetchForms,
+    isRefetching: isRefetchingForms,
   } = useElectionRoundAllForms(activeElectionRound?.id);
 
   const {
     data: formSubmissions,
     isLoading: isLoadingAnswers,
     error: answersError,
+    refetch: refetchFormSubmissions,
+    isRefetching: isRefetchingFormSubmissions,
   } = useFormSubmissions(activeElectionRound?.id, selectedPollingStation?.pollingStationId);
+
+  const { refetch: refetchPSIData, isRefetching: isRefetchingPSIData } =
+    usePollingStationInformation(activeElectionRound?.id, selectedPollingStation?.pollingStationId);
+
+  const { refetch: refetchPSIFormQuestions, isRefetching: isRefetchingPSIFormQuestions } =
+    usePollingStationInformationForm(activeElectionRound?.id);
+
+  const isRefetching = useMemo(() => {
+    return (
+      isRefetchingPSIData ||
+      isRefetchingPSIFormQuestions ||
+      isRefetchingForms ||
+      isRefetchingFormSubmissions
+    );
+  }, [
+    isRefetchingPSIData,
+    isRefetchingPSIFormQuestions,
+    isRefetchingForms,
+    isRefetchingFormSubmissions,
+  ]);
+
+  const handleRefetch = () => {
+    refetchPSIData();
+    refetchPSIFormQuestions();
+    refetchForms();
+    refetchFormSubmissions();
+  };
 
   const formList: FormListItem[] = useMemo(() => {
     return mapFormToFormListItem(allForms?.forms, formSubmissions);
@@ -90,7 +137,11 @@ const FormList = ({ ListHeaderComponent }: { ListHeaderComponent: ListHeaderComp
   };
 
   if (isLoadingAnswers || isLoadingForms) {
-    return <Typography>{t("loading", { ns: "common" })}</Typography>;
+    return (
+      <YStack justifyContent="center" alignItems="center" flex={1}>
+        <Spinner size="large" color="$purple5" />
+      </YStack>
+    );
   }
 
   if (formsError || answersError) {
@@ -101,7 +152,7 @@ const FormList = ({ ListHeaderComponent }: { ListHeaderComponent: ListHeaderComp
             queryKey: electionRoundsKeys.forms(activeElectionRound?.id),
           });
           queryClient.invalidateQueries({
-            queryKey: pollingStationsKeys.formSubmissions(
+            queryKey: pollingStationsKeys.allFormSubmissions(
               activeElectionRound?.id,
               selectedPollingStation?.pollingStationId,
             ),
@@ -112,71 +163,68 @@ const FormList = ({ ListHeaderComponent }: { ListHeaderComponent: ListHeaderComp
   }
 
   return (
-    <YStack gap="$xxs">
-      {/* height = number of forms * formCard max height + ListHeaderComponent height  */}
-      <YStack style={{ flex: 1 }}>
-        <ListView<FormListItem>
-          data={formList}
-          ListHeaderComponent={ListHeaderComponent}
-          ListEmptyComponent={<Typography>{t("forms.list.empty")}</Typography>}
-          showsVerticalScrollIndicator={false}
-          bounces={false}
-          renderItem={({ item, index }) => {
-            return (
-              <>
-                <FormCard
-                  key={index}
-                  form={item}
-                  onPress={openForm.bind(null, item)}
-                  marginBottom="$xxs"
-                />
-              </>
-            );
-          }}
-          estimatedItemSize={100}
-        />
-        {selectedForm && (
-          <Controller
-            key={selectedForm.id}
-            name={selectedForm.name}
-            control={control}
-            rules={{
-              required: { value: true, message: t("forms.select_language_modal.error") },
-            }}
-            render={({ field: { onChange, value } }) => (
-              <Dialog
-                open={!!selectedForm}
-                header={
-                  <Typography preset="heading">
-                    {t("forms.select_language_modal.header")}
-                  </Typography>
-                }
-                content={
-                  <DialogContent
-                    languages={selectedForm.languages}
-                    error={errors[selectedForm.name]}
-                    value={value}
-                    onChange={onChange}
-                  />
-                }
-                footer={
-                  <XStack gap="$md">
-                    <Button preset="chromeless" onPress={setSelectedForm.bind(null, null)}>
-                      {t("cancel", { ns: "common" })}
-                    </Button>
-                    <Button
-                      onPress={handleSubmit(() => onConfirmFormLanguage(selectedForm, value))}
-                      flex={1}
-                    >
-                      {t("save", { ns: "common" })}
-                    </Button>
-                  </XStack>
-                }
+    <YStack flex={1}>
+      <ListView<FormListItem>
+        data={formList}
+        ListHeaderComponent={ListHeaderComponent}
+        ListEmptyComponent={<FormListEmptyComponent />}
+        showsVerticalScrollIndicator={false}
+        bounces={true}
+        renderItem={({ item, index }) => {
+          return (
+            <>
+              <FormCard
+                key={index}
+                form={item}
+                onPress={openForm.bind(null, item)}
+                marginBottom="$xxs"
               />
-            )}
-          />
-        )}
-      </YStack>
+            </>
+          );
+        }}
+        estimatedItemSize={ESTIMATED_ITEM_SIZE}
+        estimatedListSize={{ height: ESTIMATED_ITEM_SIZE * 5, width: width - 32 }}
+        refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={handleRefetch} />}
+      />
+      {selectedForm && (
+        <Controller
+          key={selectedForm.id}
+          name={selectedForm.name}
+          control={control}
+          rules={{
+            required: { value: true, message: t("forms.select_language_modal.error") },
+          }}
+          render={({ field: { onChange, value } }) => (
+            <Dialog
+              open={!!selectedForm}
+              header={
+                <Typography preset="heading">{t("forms.select_language_modal.header")}</Typography>
+              }
+              content={
+                <DialogContent
+                  languages={selectedForm.languages}
+                  error={errors[selectedForm.name]}
+                  value={value}
+                  onChange={onChange}
+                />
+              }
+              footer={
+                <XStack gap="$md">
+                  <Button preset="chromeless" onPress={setSelectedForm.bind(null, null)}>
+                    {t("cancel", { ns: "common" })}
+                  </Button>
+                  <Button
+                    onPress={handleSubmit(() => onConfirmFormLanguage(selectedForm, value))}
+                    flex={1}
+                  >
+                    {t("save", { ns: "common" })}
+                  </Button>
+                </XStack>
+              }
+            />
+          )}
+        />
+      )}
     </YStack>
   );
 };

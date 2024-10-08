@@ -35,12 +35,12 @@ export function Typography(props: TextProps) {
     fontWeight: "400",
     lineHeight: 20,
     fontSize: 14,
-    // nr of lines?
+    maxFontSizeMultiplier: 1.2,
     variants: {
       presets: {
         default: {},
-        heading: { fontSize: 24, lineHeight: 32 },
-        subheading: { fontSize: 20, lineHeight: 26, fontWeight: "700" },
+        heading: { fontSize: 24, lineHeight: 32, maxFontSizeMultiplier: 1 },
+        subheading: { fontSize: 20, lineHeight: 26, fontWeight: "700", maxFontSizeMultiplier: 1 },
         body1: { fontSize: 16 },
         body2: { fontSize: 16, fontWeight: "500" },
         helper: { fontSize: 12, lineHeight: 14, fontWeight: "700" },

@@ -1,15 +1,16 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Sheet, XStack, XStackProps } from "tamagui";
 import RNDateTimePicker, {
   DateTimePickerAndroid,
   DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
-import { Keyboard, Platform } from "react-native";
+import { Animated, Keyboard, Platform } from "react-native";
 import { Typography } from "../Typography";
 import { Icon } from "../Icon";
 import Button from "../Button";
 import { useLocalSearchParams } from "expo-router";
 import { useTranslation } from "react-i18next";
+import useAnimatedKeyboardPadding from "../../hooks/useAnimatedKeyboardPadding";
 
 export interface DateInputProps extends XStackProps {
   value: Date;
@@ -73,6 +74,9 @@ export const DateInput: React.FC<DateInputProps> = ({
     setOpen(false);
   };
 
+  const paddingBottom = useAnimatedKeyboardPadding(16);
+  const AnimatedSheetFrame = useMemo(() => Animated.createAnimatedComponent(Sheet.Frame), []);
+
   return (
     <XStack
       onPress={handleSheetOpen}
@@ -101,21 +105,14 @@ export const DateInput: React.FC<DateInputProps> = ({
       </Typography>
       <Icon icon="calendar" color="transparent" />
       {/* open bottom sheet on ios with date picker */}
-      {Platform.OS === "ios" ? (
-        <Sheet
-          modal
-          open={open}
-          onOpenChange={setOpen}
-          zIndex={100_000}
-          snapPoints={[45]}
-          moveOnKeyboardChange
-        >
+      {Platform.OS === "ios" && open ? (
+        <Sheet modal open onOpenChange={setOpen} zIndex={100_000} snapPointsMode="fit">
           <Sheet.Overlay />
-          <Sheet.Frame padding="$md">
+          <AnimatedSheetFrame padding="$md" paddingBottom={paddingBottom}>
             <XStack gap="$sm" justifyContent="flex-end" width="100%">
               <Button onPress={onDonePress}>{t("done")}</Button>
             </XStack>
-            <XStack flex={1} justifyContent="center" alignItems="center">
+            <XStack flex={1} justifyContent="center" alignItems="center" marginVertical="$sm">
               <RNDateTimePicker
                 mode="datetime"
                 display="spinner"
@@ -126,7 +123,7 @@ export const DateInput: React.FC<DateInputProps> = ({
                 locale={localParams.language as string}
               />
             </XStack>
-          </Sheet.Frame>
+          </AnimatedSheetFrame>
         </Sheet>
       ) : (
         // open date picker modal on android

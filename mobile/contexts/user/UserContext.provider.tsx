@@ -19,7 +19,7 @@ import GenericErrorScreen from "../../components/GenericErrorScreen";
 import { getElectionRoundAllForms } from "../../services/definitions.api";
 import { formSubmissionsQueryFn } from "../../services/queries/form-submissions.query";
 import { NotificationsKeys } from "../../services/queries/notifications.query";
-import { getNotifications } from "../../services/api/get-notifications.api";
+import { getNotifications } from "../../services/api/notifications/notifications-get.api";
 import { QuickReportKeys } from "../../services/queries/quick-reports.query";
 import { getQuickReports } from "../../services/api/quick-report/get-quick-reports.api";
 
@@ -98,7 +98,7 @@ const UserContextProvider = ({ children }: React.PropsWithChildren) => {
             staleTime: 5 * 60 * 1000,
           };
           const submissions = {
-            queryKey: pollingStationsKeys.formSubmissions(
+            queryKey: pollingStationsKeys.allFormSubmissions(
               activeElectionRound?.id,
               visit.pollingStationId,
             ),

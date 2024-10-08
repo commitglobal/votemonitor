@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import React, { useEffect, useMemo, useState } from "react";
 import { Sheet, SheetProps, XStack, YStack } from "tamagui";
 import { Icon } from "./Icon";
 import { Note } from "../common/models/note";
@@ -10,8 +9,8 @@ import Button from "./Button";
 import { useDeleteNote } from "../services/mutations/delete-note.mutation";
 import { useUpdateNote } from "../services/mutations/edit-note.mutation";
 import { useTranslation } from "react-i18next";
-import { Keyboard, Platform } from "react-native";
-import { useKeyboardVisible } from "@tamagui/use-keyboard-visible";
+import { Animated, BackHandler, Platform } from "react-native";
+import useAnimatedKeyboardPadding from "../hooks/useAnimatedKeyboardPadding";
 
 interface EditNoteSheetProps extends SheetProps {
   selectedNote: Note | null;
@@ -27,8 +26,6 @@ const EditNoteSheet = (props: EditNoteSheetProps) => {
     props;
   const [deletingNote, setDeletingNote] = useState(false);
   const { t } = useTranslation(["polling_station_form_wizard", "common"]);
-  const insets = useSafeAreaInsets();
-  const keyboardIsVisible = useKeyboardVisible();
 
   const {
     control,
@@ -44,6 +41,26 @@ const EditNoteSheet = (props: EditNoteSheetProps) => {
   useEffect(() => {
     setValue("noteEditedText", selectedNote?.text);
   }, [selectedNote]);
+
+  // on Android back button press, if the sheet is open, we first close the sheet
+  // and on the 2nd press we will navigate back
+  useEffect(() => {
+    if (Platform.OS !== "android") {
+      return;
+    }
+
+    const onBackPress = () => {
+      if (selectedNote) {
+        setSelectedNote(null);
+        return true;
+      } else {
+        // navigate back
+        return false;
+      }
+    };
+    const subscription = BackHandler.addEventListener("hardwareBackPress", onBackPress);
+    return () => subscription.remove();
+  }, [selectedNote, setSelectedNote]);
 
   const { mutate: updateNote } = useUpdateNote(
     electionRoundId,
@@ -84,44 +101,34 @@ const EditNoteSheet = (props: EditNoteSheetProps) => {
     setDeletingNote(false);
   };
 
+  const AnimatedSheetFrame = useMemo(() => Animated.createAnimatedComponent(Sheet.Frame), []);
+  const paddingBottom = useAnimatedKeyboardPadding(16);
+
   return (
     <Sheet
       modal
       open={!!selectedNote}
-      zIndex={100_000}
+      zIndex={100_001}
       onOpenChange={(open: boolean) => {
         if (!open) {
           setSelectedNote(null);
         }
       }}
       snapPointsMode="fit"
-      // seems that this behaviour is handled differently and the sheet will move with keyboard even if this props is set to false on android
-      moveOnKeyboardChange={Platform.OS === "android"}
       dismissOnSnapToBottom={true}
       disableDrag
     >
       <Sheet.Overlay />
-      <Sheet.Frame
+      <AnimatedSheetFrame
         borderTopLeftRadius={28}
         borderTopRightRadius={28}
         gap="$sm"
         paddingHorizontal="$md"
-        paddingBottom="$xl"
-        marginBottom={insets.bottom}
+        paddingBottom={paddingBottom}
       >
         <Icon paddingVertical="$md" alignSelf="center" icon="dragHandle" />
 
-        <YStack
-          marginHorizontal={12}
-          gap="$md"
-          paddingBottom={
-            // add padding if keyboard is visible
-            Platform.OS === "ios" && keyboardIsVisible && Keyboard.metrics()?.height
-              ? // @ts-ignore: it will not be undefined because we're checking above
-                Keyboard.metrics()?.height - insets.bottom
-              : 0
-          }
-        >
+        <YStack marginHorizontal={12} gap="$md">
           {deletingNote ? (
             <>
               <YStack gap="$lg">
@@ -174,6 +181,9 @@ const EditNoteSheet = (props: EditNoteSheetProps) => {
                     value: 10000,
                     message: t("notes.add.form.input.max"),
                   },
+                  required: { value: true, message: t("notes.add.form.input.required") },
+                  validate: (value) =>
+                    (value && value.trim().length > 0) || t("notes.add.form.input.required"),
                 }}
                 render={({ field: { value, onChange } }) => {
                   return (
@@ -204,7 +214,7 @@ const EditNoteSheet = (props: EditNoteSheetProps) => {
             </>
           )}
         </YStack>
-      </Sheet.Frame>
+      </AnimatedSheetFrame>
     </Sheet>
   );
 };

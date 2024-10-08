@@ -6,6 +6,13 @@ type GetAttachmentsApiPayload = {
   formId: string;
 };
 
+export enum AttachmentMimeType {
+  IMG = "image/jpeg",
+  VIDEO = "video/mp4",
+  AUDIO_MPEG = "audio/mpeg",
+  AUDIO_M4A = "audio/x-m4a",
+}
+
 export type AttachmentApiResponse = {
   id: string;
   electionRoundId: string;
@@ -13,10 +20,9 @@ export type AttachmentApiResponse = {
   formId: string;
   questionId: string;
   fileName: string;
-  mimeType: string;
+  mimeType: AttachmentMimeType;
   presignedUrl: string;
   urlValidityInSeconds: number;
-
   isNotSynched?: boolean;
 };
 

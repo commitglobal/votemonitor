@@ -1,6 +1,6 @@
 {
   "common": {
-    "skip": "Sari peste",
+    "skip": "Mai departe",
     "search": "Caută",
     "loading": "Se încarcă...",
     "status": {
@@ -121,7 +121,7 @@
   },
   "tabs": {
     "observation": "Observare",
-    "quick_report": "Raportare rapidă",
+    "quick_report": "Raportare",
     "guides": "Ghiduri",
     "inbox": "Mesaje",
     "more": "Altele"
@@ -163,7 +163,8 @@
         "error": {
           "arrival_first": "Te rugăm să selectezi mai întâi ora sosirii.",
           "later_departure": "Te rugăm să selectezi o oră de plecare ulterioară orei de sosire.",
-          "earlier_arrival": "Te rugăm să selectezi o oră de sosire anterioară orei de plecare."
+          "earlier_arrival": "Te rugăm să selectezi o oră de sosire anterioară orei de plecare.",
+          "server": "Nu am putut trimite informațiile către server."
         }
       },
       "polling_station_form": {
@@ -188,6 +189,9 @@
         "helper": "Formularul selectat este disponibil în mai multe limbi. Te rugăm să alegi limba cu care dorești să continui",
         "error": "Te rugăm să selectezi una dintre opțiuni înainte de a continua."
       }
+    },
+    "options_menu": {
+      "manage_my_polling_stations": "Vezi secțiile de votare vizitate"
     }
   },
   "polling_station_information_form": {
@@ -203,7 +207,10 @@
     "warning_modal": {
       "title": "Golește formularul cu informațiile secției de votare",
       "description": "Această acțiune va șterge toate răspunsurile introduse până acum în acest formular. Pentru a evita orice pierdere neintenționată de date, te rugăm să verifici informațiile despre secția de votare înainte de a realiza această acțiune.",
-      "actions": { "cancel": "Renunță", "clear": "Golește formular" }
+      "actions": {
+        "cancel": "Renunță",
+        "clear": "Golește formular"
+      }
     }
   },
   "form_overview": {
@@ -245,7 +252,7 @@
   },
   "polling_station_form_wizard": {
     "progress_bar": {
-      "label": "Progresul fromularului",
+      "label": "Progresul formularului",
       "clear_answer": "Șterge răspuns"
     },
     "form": {
@@ -257,6 +264,7 @@
     "attachments": {
       "heading": "Fișiere media încărcate",
       "loading": "Se adaugă atașamentul... ",
+      "error": "Eroare la încărcarea atașamentului.",
       "add": "Adaugă notițe sau fișiere media",
       "menu": {
         "add_note": "Adaugă o notiță",
@@ -273,7 +281,8 @@
         "form": {
           "input": {
             "placeholder": "Adaugă orice notiță relevantă pentru această întrebare...",
-            "max": "Câmpul nu poate depăși 10,000 de caractere"
+            "max": "Câmpul nu poate depăși 10,000 de caractere",
+            "required": "Acest câmp este obligatoriu"
           }
         }
       },
@@ -294,15 +303,53 @@
       "question": {
         "title": "Șterge răspunsul întrebării {{value}}",
         "description": "Această acțiune presupune ștergerea inclusiv a informațiilor atașate (notițe, fișiere media sau audio). Întrebarea își va schimba statusul în 'Fără răspuns'. ",
-        "actions": { "cancel": "Renunță", "clear": "Șterge răspuns" }
+        "actions": {
+          "cancel": "Renunță",
+          "clear": "Șterge răspuns"
+        }
       },
       "attachment": {
         "title": "Șterge fișier media",
         "description": "Această acțiune este ireversibilă. Odată șters, un fișier media nu poate fi recuperat.",
-        "actions": { "cancel": "Renunță", "clear": "Șterge" }
+        "actions": {
+          "cancel": "Renunță",
+          "clear": "Șterge"
+        }
       }
     },
     "error": "Eroare la încărcarea datelor întrebării!"
+  },
+  "manage_my_polling_stations": {
+    "empty": {
+      "title": "Momentan nu ai nicio secție de votare vizitată"
+    },
+    "general_text": "Vezi secțiile de votare vizitate",
+    "ps_card": {
+      "header": "Secția de votare #{{value}}",
+      "l1": "[Location L1]",
+      "l2": "[Location L2]",
+      "l3": "[Location L3]",
+      "l4": "[Location L4]",
+      "l5": "[Location L5]",
+      "street": "Strada",
+      "ps_number": "Numărul secției"
+    },
+    "warning_dialog": {
+      "title": "Șterge secția de votare #{{value}}",
+      "description": "Această acțiune va șterge secția de votare din lista de secții vizitate. O poți adăuga din nou reluând pașii din procesul de 'Adaugă o secție nouă de votare'",
+      "actions": {
+        "cancel": "Renunță",
+        "remove": "Șterge",
+        "loading": "Se încarcă"
+      }
+    },
+    "removal_unallowed_dialog": {
+      "title": "Ștergerea secției de votare #{{value}} nu este permisă",
+      "description": "Secția de votare nu poate fi ștearsă din listă deoarece conține date asociate (Informații despre secția de votare și sau Răspunsuri la formulare), care nu pot fi șterse de sistem în numele tău. Dacă dorești totuși să ștergi această secție, te rugăm să ștergi întâi manual răspunsurile de la formularele deja completate, apoi să încerci din nou această acțiune."
+    },
+    "delete_success": "Secția de votare a fost ștearsă cu succes!",
+    "delete_error": "Am întâmpinat o problemă la ștergerea secției de votare. Te rugăm să încerci din nou.",
+    "offline_error_toast_msg": "Ai nevoie de conexiune la internet pentru a face acestă acțiune."
   },
   "quick_report": {
     "list": {
@@ -314,6 +361,9 @@
       "no_files": "Niciun fișier atașat",
       "attachment_one": "{{count}} fișiere atașate",
       "attachment_other": "{{count}} fișiere atașate"
+    },
+    "options_menu": {
+      "manage_my_polling_stations": "Vezi secțiile de votare vizitate"
     }
   },
   "report_new_issue": {
@@ -321,6 +371,7 @@
     "media": {
       "heading": "Fișiere media încărcate",
       "add": "Adaugă fișiere media",
+      "error": "Eroare la încarcarea atașamentului",
       "menu": {
         "load": "Încarcă din galerie",
         "take_picture": "Fă o poză",
@@ -359,7 +410,8 @@
       },
       "submit": "Trimite problema",
       "clear": "Șterge",
-      "loading": "Se procesează..."
+      "loading": "Se procesează...",
+      "error": "Eroare la încărcarea raportării"
     }
   },
   "report_details": {
@@ -380,6 +432,9 @@
         "backup_title": "Document",
         "created_on": "Creat la"
       }
+    },
+    "options_sheet": {
+      "manage_my_polling_stations": "Vezi secțiile de votare vizitate"
     }
   },
   "inbox": {
@@ -392,7 +447,7 @@
     "today": "Astăzi",
     "your_organization": "organizația ta",
     "menu": {
-      "manage_polling_stations": "Vezi secțiile vizitate "
+      "manage_polling_stations": "Vezi secțiile de votare vizitate"
     }
   },
   "more": {
@@ -408,12 +463,23 @@
     "logout": "Deconectează-te",
     "logged_in": "Conectat ca {{user}}",
     "warning_modal": {
-      "logout": {
+      "logout_offline": {
         "title": "Atenție: Ai date nesincronizate",
         "description": "Momentan nu ai conexiune la internet. Dacă te deconectezi acum, toate formularele, atașamentele sau notițele pe care le-ai completat sau încărcat fără conexiune se vor pierde.\n\nPentru a evita pierderea datelor, te rugăm să te reconectezi la internet înainte de deconectarea din aplicație.",
         "cancel": "Renunță",
         "action": "Deconectează-te"
+      },
+      "logout_online": {
+        "title": "Ești sigur că vrei să părăsești aplicația?",
+        "cancel": "Renunță",
+        "action": "Deconectează-te"
       }
+    },
+    "feedback_toast": {
+      "success": "Feedback-ul a fost trimis!",
+      "offline": "Ai nevoie de conexiune la internet pentru a face acestă acțiune.",
+      "error": "Am întâmpinat o eroare la adaugarea feedback-ului!",
+      "required": "Acest câmp este obligatoriu."
     },
     "feedback_sheet": {
       "heading": "Trimite-ne feedback-ul tău",
@@ -424,6 +490,9 @@
       "input": {
         "max": "Câmpul nu poate depăși {{value}} caractere"
       }
+    },
+    "options_sheet": {
+      "manage_my_polling_stations": "Vezi secțiile de votare vizitate"
     }
   },
   "change_password": {
@@ -451,9 +520,9 @@
       "save": "Salvează parola nouă"
     },
     "confirmation": {
-      "title": "Parolă schimbată!",
+      "heading": "Parolă schimbată!",
       "paragraph": "Parola ta a fost schimbată cu succes!",
-      "back": "Înapoi la aplicație"
+      "confirm": "Înapoi la aplicație"
     },
     "error": {
       "offline": "Aplicația este offline și nu poate îndeplini solicitarea"
@@ -473,7 +542,7 @@
   },
   "sync": {
     "sync_data": "Se sincronizează datele offline...",
-    "warning": "Vă rugăm să NU ÎNCHIDEȚI aplicația sau conexiunea la internet sau datele se vor pierde.",
-    "files": "Vă adaugăm fișierele, s-ar putea să dureze ceva..."
+    "warning": "Te rugăm să NU ÎNCHIZI aplicația sau conexiunea la internet sau datele se vor pierde.",
+    "files": "Încărcăm fișierele tale, poate dura ceva timp..."
   }
 }

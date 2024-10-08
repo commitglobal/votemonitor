@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React, { forwardRef, ReactNode } from "react";
 import {
   styled,
   Input as TamaguiInput,
@@ -11,6 +11,7 @@ export interface InputProps extends TamaguiInputProps {
   type: "text" | "numeric" | "textarea" | "password" | "email-address";
   iconRight?: ReactNode;
   onIconRightPress?: () => void;
+  ref?: any;
 }
 
 const StyledTextArea = styled(TamaguiTextArea, {
@@ -18,6 +19,7 @@ const StyledTextArea = styled(TamaguiTextArea, {
   minHeight: 98,
   maxHeight: 150,
   paddingVertical: "$xs",
+  maxFontSizeMultiplier: 1.2,
   paddingHorizontal: 14,
   textAlignVertical: "top",
   fontSize: 16,
@@ -29,34 +31,29 @@ const StyledTextArea = styled(TamaguiTextArea, {
   },
 });
 
-const Input: React.FC<InputProps> = ({
-  type,
-  value,
-  iconRight,
-  borderColor,
-  onIconRightPress,
-  ...rest
-}) => {
-  return (
-    <>
-      {type === "textarea" ? (
-        <StyledTextArea value={value} borderColor={borderColor || "$gray3"} {...rest} />
-      ) : (
-        <InputWrapper borderColor={borderColor || "$gray3"}>
-          <SearchInput
-            value={value}
-            secureTextEntry={type === "password"}
-            keyboardType={type === "numeric" || type === "email-address" ? type : "default"}
-            // fix ios keyboard flicker bug
-            textContentType={"oneTimeCode"}
-            {...rest}
-          />
-          {iconRight && <IconWrapper onPress={onIconRightPress}>{iconRight}</IconWrapper>}
-        </InputWrapper>
-      )}
-    </>
-  );
-};
+const Input: React.FC<InputProps> = forwardRef(
+  ({ type, value, iconRight, borderColor, onIconRightPress, ...rest }, ref) => {
+    return (
+      <>
+        {type === "textarea" ? (
+          <StyledTextArea ref={ref} value={value} borderColor={borderColor || "$gray3"} {...rest} />
+        ) : (
+          <InputWrapper borderColor={borderColor || "$gray3"}>
+            <SearchInput
+              value={value}
+              secureTextEntry={type === "password"}
+              keyboardType={type === "numeric" || type === "email-address" ? type : "default"}
+              // fix ios keyboard flicker bug
+              textContentType={"oneTimeCode"}
+              {...rest}
+            />
+            {iconRight && <IconWrapper onPress={onIconRightPress}>{iconRight}</IconWrapper>}
+          </InputWrapper>
+        )}
+      </>
+    );
+  },
+);
 
 const InputWrapper = styled(XStack, {
   backgroundColor: "white",
@@ -79,6 +76,7 @@ const SearchInput = styled(TamaguiInput, {
   padding: 0,
   paddingLeft: 14,
   borderWidth: 0,
+  maxFontSizeMultiplier: 1.2,
   borderRadius: 0,
   focusStyle: {
     borderColor: "transparent",

@@ -6,20 +6,22 @@ export const toastConfig = {
       {...props}
       text2Style={{
         fontSize: 16,
-        color: "hsl(142, 71%, 27%)",
+        color: "white",
         lineHeight: 24,
         fontWeight: "500",
       }}
       text2NumberOfLines={5}
+      text2Props={{ maxFontSizeMultiplier: 1.2 }}
+      text1Props={{ maxFontSizeMultiplier: 1.2 }}
       contentContainerStyle={{ padding: 24 }}
       style={{
         borderLeftColor: "hsl(142, 71%, 27%)",
         height: "auto",
-        backgroundColor: "white",
+        backgroundColor: "whsl(142, 71%, 27%)",
+        maxWidth: "90%",
       }}
     />
   ),
-
   error: (props) => (
     <ErrorToast
       {...props}
@@ -30,11 +32,14 @@ export const toastConfig = {
         fontWeight: "500",
       }}
       text2NumberOfLines={5}
+      text2Props={{ maxFontSizeMultiplier: 1.2 }}
+      text1Props={{ maxFontSizeMultiplier: 1.2 }}
       contentContainerStyle={{ padding: 24 }}
       style={{
         borderLeftWidth: 0,
         height: "auto",
         backgroundColor: "hsl(0, 74%, 42%)",
+        maxWidth: "90%",
       }}
     />
   ),

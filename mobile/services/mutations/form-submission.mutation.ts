@@ -23,7 +23,7 @@ export const useFormSubmissionMutation = ({
   const queryClient = useQueryClient();
 
   const formSubmissionsQK = useMemo(
-    () => pollingStationsKeys.formSubmissions(electionRoundId, pollingStationId),
+    () => pollingStationsKeys.allFormSubmissions(electionRoundId, pollingStationId),
     [electionRoundId, pollingStationId],
   );
 
@@ -36,6 +36,17 @@ export const useFormSubmissionMutation = ({
       id: scopeId,
     },
     onMutate: async (payload: FormSubmissionAPIPayload) => {
+      // Remove paused mutations for the same resource. Send only the last one!
+      queryClient
+        .getMutationCache()
+        .getAll()
+        .filter((mutation) => mutation.state.isPaused && mutation.options.scope?.id === scopeId)
+        .sort((a, b) => b.state.submittedAt - a.state.submittedAt)
+        .slice(1)
+        .forEach((mutation) => {
+          queryClient.getMutationCache().remove(mutation);
+        });
+
       // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
       await queryClient.cancelQueries({ queryKey: formSubmissionsQK });
 
@@ -98,7 +109,16 @@ export const useFormSubmissionMutation = ({
       queryClient.invalidateQueries({
         queryKey: notesKeys.notes(electionRoundId, pollingStationId, variables.formId),
       });
+      // FYI: these 2 queries actually make the same call, but use different query keys, therefore both need invalidation (used different keys for Pull To Refresh feature)
+      // todo: maybe use the same call for the future if possible
       queryClient.invalidateQueries({ queryKey: formSubmissionsQK });
+      queryClient.invalidateQueries({
+        queryKey: pollingStationsKeys.formSubmissions(
+          electionRoundId,
+          pollingStationId,
+          variables.formId,
+        ),
+      });
     },
   });
 };

@@ -3,6 +3,7 @@ import { registerForPushNotificationsAsync } from "../../common/utils/notificati
 import * as Notifications from "expo-notifications";
 // import { registerPushToken, unregisterPushToken } from '../../services/settings/settings.api';
 import { NotificationContext } from "./NotificationContext";
+import * as Device from "expo-device";
 
 import { useAuth } from "../../hooks/useAuth";
 import {
@@ -53,7 +54,7 @@ const NotificationContextProvider = ({ children }: { children: React.ReactNode }
   const init = useCallback(initNotifications, [initNotifications]);
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isAuthenticated && Device.isDevice) {
       init();
     }
   }, [isAuthenticated]);

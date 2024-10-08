@@ -8,7 +8,9 @@ import { useTranslation } from "react-i18next";
 import { Keyboard } from "react-native";
 import { useState } from "react";
 import WarningDialog from "./WarningDialog";
-import { AttachmentApiResponse } from "../services/api/get-attachments.api";
+import { AttachmentApiResponse, AttachmentMimeType } from "../services/api/get-attachments.api";
+import { MediaDialog } from "./MediaDialog";
+import AttachmentsSkeleton from "./SkeletonLoaders/AttachmentsSkeleton";
 
 interface QuestionAttachmentsProps {
   electionRoundId: string;
@@ -24,8 +26,14 @@ const QuestionAttachments: React.FC<QuestionAttachmentsProps> = ({
   questionId,
 }) => {
   const { t } = useTranslation("polling_station_form_wizard");
-  const { data: attachments } = useAttachments(electionRoundId, pollingStationId, formId);
-  const [selectedAttachment, setSelectedAttachment] = useState<AttachmentApiResponse | null>();
+  const { data: attachments, isLoading: isLoadingAttachments } = useAttachments(
+    electionRoundId,
+    pollingStationId,
+    formId,
+  );
+  const [selectedAttachmentToDelete, setSelectedAttachmentToDelete] =
+    useState<AttachmentApiResponse | null>();
+  const [previewAttachment, setPreviewAttachment] = useState<AttachmentApiResponse | null>(null);
 
   const { mutate: deleteAttachment } = useDeleteAttachment(
     electionRoundId,
@@ -33,6 +41,10 @@ const QuestionAttachments: React.FC<QuestionAttachmentsProps> = ({
     formId,
     `Attachment_${questionId}_${pollingStationId}_${formId}_${questionId}`,
   );
+
+  if (isLoadingAttachments) {
+    return <AttachmentsSkeleton />;
+  }
 
   return (
     attachments?.[questionId]?.length && (
@@ -48,8 +60,9 @@ const QuestionAttachments: React.FC<QuestionAttachmentsProps> = ({
                 flexDirection="row"
                 justifyContent="space-between"
                 alignItems="center"
+                onPress={() => setPreviewAttachment(attachment)}
               >
-                <Typography preset="body1" fontWeight="700" maxWidth="85%" numberOfLines={1}>
+                <Typography preset="body1" fontWeight="700" maxWidth="80%" numberOfLines={1}>
                   {attachment.fileName}
                 </Typography>
                 <YStack
@@ -57,7 +70,7 @@ const QuestionAttachments: React.FC<QuestionAttachmentsProps> = ({
                   pressStyle={{ opacity: 0.5 }}
                   onPress={() => {
                     Keyboard.dismiss();
-                    setSelectedAttachment(attachment);
+                    setSelectedAttachmentToDelete(attachment);
                   }}
                 >
                   <Icon icon="xCircle" size={24} color="$gray5" />
@@ -66,17 +79,25 @@ const QuestionAttachments: React.FC<QuestionAttachmentsProps> = ({
             );
           })}
         </YStack>
-        {selectedAttachment && (
+        {selectedAttachmentToDelete && (
           <WarningDialog
             title={t("warning_modal.attachment.title")}
             description={t("warning_modal.attachment.description")}
             actionBtnText={t("warning_modal.attachment.actions.clear")}
             cancelBtnText={t("warning_modal.attachment.actions.cancel")}
             action={() => {
-              deleteAttachment(selectedAttachment);
-              setSelectedAttachment(null);
+              deleteAttachment(selectedAttachmentToDelete);
+              setSelectedAttachmentToDelete(null);
             }}
-            onCancel={() => setSelectedAttachment(null)}
+            onCancel={() => setSelectedAttachmentToDelete(null)}
+          />
+        )}
+
+        {/* image preview dialog */}
+        {previewAttachment && previewAttachment.mimeType === AttachmentMimeType.IMG && (
+          <MediaDialog
+            media={{ type: previewAttachment.mimeType, src: previewAttachment.presignedUrl }}
+            onClose={() => setPreviewAttachment(null)}
           />
         )}
       </YStack>

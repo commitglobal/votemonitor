@@ -1,8 +1,9 @@
 import React, { ReactNode } from "react";
 import { Typography } from "./Typography";
 import { Dialog } from "./Dialog";
-import { XStack, YStack } from "tamagui";
+import { ScrollView, useTheme, XStack, YStack } from "tamagui";
 import Button from "./Button";
+import { StyleProp, TextStyle } from "react-native";
 
 type WarningDialogProps = {
   title: string;
@@ -10,8 +11,9 @@ type WarningDialogProps = {
   actionBtnText: string;
   cancelBtnText: string;
   onCancel: () => void;
-  action: () => void;
-  actionBtnStyle?: object;
+  action?: () => void;
+  titleProps?: StyleProp<TextStyle>;
+  theme?: "info" | "danger";
 };
 
 const WarningDialog = ({
@@ -21,32 +23,58 @@ const WarningDialog = ({
   cancelBtnText,
   action,
   onCancel,
-  actionBtnStyle,
+  titleProps,
+  theme = "danger",
 }: WarningDialogProps) => {
+  const tamaguiTheme = useTheme();
   return (
     <Dialog
       open
-      header={<Typography preset="heading">{title}</Typography>}
+      header={
+        <Typography preset="heading" style={titleProps}>
+          {title}
+        </Typography>
+      }
       content={
-        <YStack gap="$lg">
-          {typeof description === "string" ? (
-            <Typography preset="body1" color="$gray6">
-              {description}
-            </Typography>
-          ) : (
-            description
-          )}
-        </YStack>
+        description && (
+          <ScrollView bounces={false} showsVerticalScrollIndicator={false}>
+            <YStack gap="$lg">
+              {typeof description === "string" ? (
+                <Typography preset="body1" color="$gray6">
+                  {description}
+                </Typography>
+              ) : (
+                description
+              )}
+            </YStack>
+          </ScrollView>
+        )
       }
       footer={
         <XStack gap="$sm" justifyContent="center" alignItems="center">
-          <Button preset="chromeless" textStyle={{ color: "black" }} onPress={onCancel}>
+          <Button
+            preset="chromeless"
+            textStyle={{
+              color: theme === "danger" ? "black" : tamaguiTheme.$purple5?.val,
+              textAlign: "center",
+            }}
+            onPress={onCancel}
+            height="100%"
+          >
             {cancelBtnText}
           </Button>
 
-          <Button backgroundColor="$red10" flex={1} onPress={action} style={{ ...actionBtnStyle }}>
-            {actionBtnText}
-          </Button>
+          {actionBtnText && (
+            <Button
+              preset={theme === "danger" ? "red" : "default"}
+              height="100%"
+              flex={1}
+              onPress={action}
+              textStyle={{ textAlign: "center" }}
+            >
+              {actionBtnText}
+            </Button>
+          )}
         </XStack>
       }
     />

@@ -31,6 +31,16 @@ const TimeSelect: React.FC<TimeSelectProps> = memo(
       setTempTime(time ?? new Date());
     }, [time]);
 
+    // when we have an arrivalTime set, the ios picker displays it as the minimum date and time, but the INTERNAL value of the datepicker is not changed if the onChange function wasn't triggered, so we need to do it manually
+    // this is the only time when the arrivalTime could have a bigger value than the tempTime
+    const shouldUpdateTempTime = Platform.OS === "ios" && arrivalTime && arrivalTime > tempTime;
+
+    useEffect(() => {
+      if (shouldUpdateTempTime) {
+        setTempTime(arrivalTime);
+      }
+    }, [shouldUpdateTempTime]);
+
     const onChange = (event: DateTimePickerEvent, selectedTime: Date | undefined) => {
       // selectedTime = date picked from date picker
       // eventTime = date picked from time picker
@@ -55,13 +65,21 @@ const TimeSelect: React.FC<TimeSelectProps> = memo(
             value: time || new Date(),
             onChange: (event, eventTime) => {
               if (event.type === "set" && selectedTime && eventTime) {
-                // we need to set the date of the time picker, as it uses the current date as default
-                eventTime.setDate(selectedTime.getDate());
+                // get the day, month and year from the selectedTime in the datepicker
+                const day = selectedTime.getDate();
+                const month = selectedTime.getMonth();
+                const year = selectedTime.getFullYear();
+                // keep the hours, minutes and seconds from the eventTime in the time picker
+                const hours = eventTime.getHours();
+                const minutes = eventTime.getMinutes();
+                const seconds = eventTime.getSeconds();
+
+                const finalTime = new Date(year, month, day, hours, minutes, seconds);
 
                 // setting departure time and we have an arrival time set
                 if (type === "departure" && arrivalTime) {
-                  // setting time for the same day as the arrival date -> don't allow an earlier departure time
-                  if (eventTime.getDate() === arrivalTime.getDate() && eventTime < arrivalTime) {
+                  // don't allow an earlier departure time
+                  if (finalTime < arrivalTime) {
                     onClose();
                     return Toast.show({
                       type: "error",
@@ -70,11 +88,8 @@ const TimeSelect: React.FC<TimeSelectProps> = memo(
                     });
                   }
                 } else if (type === "arrival" && departureTime) {
-                  // if departureTime is set and we're setting the time for the same day -> don't allow a later arrival time
-                  if (
-                    eventTime.getDate() === departureTime.getDate() &&
-                    eventTime > departureTime
-                  ) {
+                  // don't allow a later arrival time
+                  if (finalTime > departureTime) {
                     onClose();
                     return Toast.show({
                       type: "error",
@@ -83,9 +98,7 @@ const TimeSelect: React.FC<TimeSelectProps> = memo(
                     });
                   }
                 }
-                selectedTime.setHours(eventTime?.getHours());
-                selectedTime.setMinutes(eventTime?.getMinutes());
-                setTime(selectedTime);
+                setTime(finalTime);
               }
             },
             is24Hour: true,
@@ -168,10 +181,10 @@ const TimeSelect: React.FC<TimeSelectProps> = memo(
           ></CardFooter>
         </YStack>
 
-        {Platform.OS === "ios" ? (
+        {Platform.OS === "ios" && open ? (
           <Sheet
             modal
-            open={open}
+            open
             onOpenChange={setOpen}
             zIndex={100_000}
             snapPoints={[45]}

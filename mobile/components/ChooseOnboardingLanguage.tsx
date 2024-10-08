@@ -1,6 +1,6 @@
 import React, { useContext, useMemo } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { YStack } from "tamagui";
+import { ScrollView, useTheme, XStack, YStack } from "tamagui";
 import { Icon } from "./Icon";
 import { Typography } from "./Typography";
 import Select from "./Select";
@@ -16,6 +16,7 @@ const ChooseOnboardingLanguage = ({
   setLanguageSelectionApplied: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const insets = useSafeAreaInsets();
+  const theme = useTheme();
   const { t, i18n } = useTranslation(["onboarding", "languages"]);
   const systemLocale = Localization.getLocales()[0];
   const { changeLanguage } = useContext(LanguageContext);
@@ -61,34 +62,49 @@ const ChooseOnboardingLanguage = ({
       justifyContent="space-between"
       alignItems="center"
     >
-      <YStack gap="$xl" alignItems="center" marginTop={100}>
-        <Icon icon="onboardingLanguage" />
+      <ScrollView bounces={false} showsVerticalScrollIndicator={false}>
+        <YStack gap="$xl" alignItems="center" marginTop={100}>
+          <Icon icon="onboardingLanguage" />
 
-        <Typography preset="heading" fontWeight="500" textAlign="center" color="white">
-          {t("language.heading")}
-        </Typography>
-        <Controller
-          control={control}
-          render={({ field: { onChange, value } }) => (
-            <Select options={mappedLanguages} value={value} onValueChange={onChange} />
-          )}
-          name="selectedLanguage"
-        />
+          <Typography preset="heading" fontWeight="500" textAlign="center" color="white">
+            {t("language.heading")}
+          </Typography>
+          <Controller
+            control={control}
+            render={({ field: { onChange, value } }) => (
+              <Select options={mappedLanguages} value={value} onValueChange={onChange} />
+            )}
+            name="selectedLanguage"
+          />
 
-        <Typography fontSize={18} lineHeight={24} textAlign="center" color="white" opacity={0.7}>
-          {t("language.description")}
-        </Typography>
-      </YStack>
-      <Button
-        backgroundColor="$yellow6"
-        paddingHorizontal="$xxxl"
-        textStyle={{ color: "#5F288D", fontSize: 16, fontWeight: "500" }} // TODO:@luciatugui - culoarea asta nu trebuie sa fie aici
-        justifyContent="center"
-        alignItems="center"
-        onPress={handleSubmit(onSubmit)}
-      >
-        {t("language.save")}
-      </Button>
+          <Typography
+            fontSize={18}
+            lineHeight={24}
+            marginBottom="$md"
+            textAlign="center"
+            color="white"
+            opacity={0.7}
+          >
+            {t("language.description")}
+          </Typography>
+        </YStack>
+      </ScrollView>
+      <XStack justifyContent="center" alignItems="center">
+        <Button
+          height="100%"
+          backgroundColor="$yellow6"
+          paddingHorizontal="$xxxl"
+          textStyle={{
+            color: theme.$purple6?.val,
+            fontSize: 16,
+            fontWeight: "500",
+            textAlign: "center",
+          }}
+          onPress={handleSubmit(onSubmit)}
+        >
+          {t("language.save")}
+        </Button>
+      </XStack>
     </YStack>
   );
 };
