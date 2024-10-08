@@ -26,7 +26,7 @@ import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { Route } from '@/routes/monitoring-observers/create-new-message';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useNavigate } from '@tanstack/react-router';
+import { useNavigate, useRouter } from '@tanstack/react-router';
 import { useDebounce } from '@uidotdev/usehooks';
 import { useMonitoringObserversTags } from '../../../../hooks/tags-queries';
 import { pushMessagesKeys, useTargetedMonitoringObservers } from '../../hooks/push-messages-queries';
@@ -51,6 +51,7 @@ function PushMessageForm(): FunctionComponent {
   const debouncedSearchText = useDebounce(searchText, 300);
   const currentElectionRoundId = useCurrentElectionRoundStore((s) => s.currentElectionRoundId);
   const { data: tags } = useMonitoringObserversTags(currentElectionRoundId);
+  const router = useRouter();
 
   const queryClient = useQueryClient();
 
@@ -129,12 +130,13 @@ function PushMessageForm(): FunctionComponent {
     },
 
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [pushMessagesKeys.all(currentElectionRoundId)] });
+      queryClient.invalidateQueries({ queryKey: pushMessagesKeys.all(currentElectionRoundId) });
       toast({
         title: 'Success',
         description: 'Notification sent',
       });
 
+      router.invalidate();
       navigate({ to: '/monitoring-observers/$tab', params: { tab: 'push-messages' } });
     },
   });
