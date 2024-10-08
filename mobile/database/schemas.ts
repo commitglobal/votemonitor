@@ -6,7 +6,7 @@ export enum DB_TABLE_NAMES {
 }
 
 export const schema = appSchema({
-  version: 18,
+  version: 19,
   tables: [
     tableSchema({
       name: DB_TABLE_NAMES.POLLING_STATIONS_NOMENCLATOR,

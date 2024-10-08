@@ -14,12 +14,14 @@ import { Icon } from "../../../../../components/Icon";
 import Header from "../../../../../components/Header";
 import { DrawerActions, useNavigation } from "@react-navigation/native";
 import { useCitizenUserData } from "../../../../../contexts/citizen-user/CitizenUserContext.provider";
+import { useRouter } from "expo-router";
 
 export default function CitizenReportIssue() {
   const { t } = useTranslation("citizen_report_issue");
   const navigation = useNavigation();
-  const [isOpenInfoModal, setIsOpenInfoModal] = useState(false);
+  const router = useRouter();
 
+  const [isOpenInfoModal, setIsOpenInfoModal] = useState(false);
   const { selectedElectionRound } = useCitizenUserData();
 
   const {
@@ -29,6 +31,8 @@ export default function CitizenReportIssue() {
     refetch: refetchCitizenReportingForms,
     isRefetching: isRefetchingCitizenReportingForms,
   } = useGetCitizenReportingForms(selectedElectionRound);
+
+  // console.log("👀 citizenReportingForms", JSON.stringify(citizenReportingForms, null, 2));
 
   const {
     isLoading: isLoadingCitizenLocations,
@@ -147,7 +151,7 @@ export default function CitizenReportIssue() {
                   key={form.id}
                   form={form}
                   onClick={() => {
-                    console.log("todo");
+                    router.push(`/citizen/main/select-location?formId=${form.id}`);
                   }}
                 />
               ))}
