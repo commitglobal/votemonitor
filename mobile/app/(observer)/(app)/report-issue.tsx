@@ -352,7 +352,6 @@ const ReportIssue = () => {
                   required: { value: true, message: t("form.issue_title.required") },
                   maxLength: {
                     value: 1024,
-                    // todo: translation
                     message: t("form.issue_title.max", { value: 1024 }),
                   },
                 }}
