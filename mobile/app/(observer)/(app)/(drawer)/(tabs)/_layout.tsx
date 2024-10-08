@@ -1,12 +1,14 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Tabs } from "expo-router";
 import { TextStyle, ViewStyle } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useTheme } from "tamagui";
+import { useTheme, XStack } from "tamagui";
 import { Icon } from "../../../../../components/Icon";
 import { useUserData } from "../../../../../contexts/user/UserContext.provider";
 import { useNetInfoContext } from "../../../../../contexts/net-info-banner/NetInfoContext";
 import { useTranslation } from "react-i18next";
+import { useNotifications } from "../../../../../services/queries/notifications.query";
+import { NotificationsBadge } from "../../../../../components/NotificationsBadge";
 
 export default function TabLayout() {
   const insets = useSafeAreaInsets();
@@ -15,6 +17,12 @@ export default function TabLayout() {
 
   const { activeElectionRound } = useUserData();
   const { shouldDisplayBanner } = useNetInfoContext();
+
+  const { data: notificationsData } = useNotifications(activeElectionRound?.id);
+  const noOfUnreadNotifications = useMemo(
+    () => notificationsData?.notifications?.filter((notification) => !notification.isRead).length,
+    [notificationsData],
+  );
 
   return (
     <Tabs
@@ -61,7 +69,14 @@ export default function TabLayout() {
         name="inbox"
         options={{
           title: t("inbox"),
-          tabBarIcon: ({ color }) => <Icon icon="inbox" color={color} />,
+          tabBarIcon: ({ color }) => (
+            <XStack position="relative">
+              <Icon icon="inbox" color={color} />
+              {noOfUnreadNotifications ? (
+                <NotificationsBadge noOfUnreadNotifications={noOfUnreadNotifications} />
+              ) : null}
+            </XStack>
+          ),
           href: activeElectionRound ? "/inbox" : null,
         }}
       />
