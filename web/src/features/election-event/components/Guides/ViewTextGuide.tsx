@@ -41,7 +41,10 @@ export default function ViewTextGuide({ guidePageType, guideId }: ViewTextGuideP
         <CardContent className='flex flex-col items-baseline gap-6'>
           <div className='flex flex-col gap-1'>
             <p className='font-bold text-gray-700'>Text</p>
-            <div className='font-normal text-gray-900' dangerouslySetInnerHTML={{ __html: guide.text ?? '' }} />
+            <div
+              dangerouslySetInnerHTML={{ __html: guide.text ?? '' }}
+              className={'p-3 border rounded-lg prose max-w-none [&_ol]:list-decimal [&_ul]:list-disc'}
+            />
           </div>
           <div className='flex justify-end w-full'>
             <Button
