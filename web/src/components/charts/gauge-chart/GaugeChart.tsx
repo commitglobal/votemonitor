@@ -30,7 +30,7 @@ const GaugeChart = forwardRef<ChartJSOrUndefined<"doughnut">, GaugeProps>((props
         devicePixelRatio: 1.5,
         plugins: {
             datalabels: {
-                color: '#DADADA',
+                color: '#FFFFFF',
                 font: {
                     weight: 'bold'
                 },
@@ -77,10 +77,10 @@ const GaugeChart = forwardRef<ChartJSOrUndefined<"doughnut">, GaugeProps>((props
                     data={props.data}
                     options={options}
                     ref={chartRef}
-                    plugins={[gaugeLabel(props.value, props.total)]} 
+                    plugins={[gaugeLabel(props.value, props.total)]}
                     redraw />
             </div>
-            <div className='text-sm text-slate-500 text-center'>
+            <div className='text-sm text-center text-slate-500'>
                 <span >{props.metricLabel}</span>
             </div>
         </div>

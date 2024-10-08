@@ -30,7 +30,7 @@ const useDashboardExpandedChartsStore = create<DashboardExpandedChartsStore>()(
     {
       name: 'dashboard-expanded-charts-storage',
       partialize: (state) => ({
-        stringSet: Array.from(state.expandedCharts), // Convert Set to array for storage
+        expandedCharts: Array.from(state.expandedCharts), // Convert Set to array for storage
       }),
       merge: (persistedState, currentState) => ({
         ...currentState,

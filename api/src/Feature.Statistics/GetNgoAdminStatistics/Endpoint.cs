@@ -163,6 +163,7 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
                 WHERE
                     QR."ElectionRoundId" = @electionRoundId
                     AND MN."NgoId" = @ngoId
+                    AND QR."PollingStationId" IS NOT NULL
                 UNION ALL
                 SELECT
                     "MonitoringObserverId",
@@ -196,6 +197,17 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
                 WHERE
                     PSI."ElectionRoundId" = @electionRoundId
                     AND MN."NgoId" = @ngoId
+                UNION ALL
+                SELECT
+                    "MonitoringObserverId",
+                    "PollingStationId"
+                FROM
+                    "IncidentReports" IR
+                    INNER JOIN "MonitoringObservers" MO ON MO."Id" = IR."MonitoringObserverId"
+                    INNER JOIN "MonitoringNgos" MN ON MN."Id" = MO."MonitoringNgoId"
+                WHERE
+                    IR."ElectionRoundId" = @electionRoundId
+                    AND MN."NgoId" = @ngoId
             )
         SELECT
             COUNT(DISTINCT PSV."PollingStationId") AS "NumberOfVisitedPollingStations"
@@ -214,7 +226,6 @@ public class Endpoint(INpgsqlConnectionFactory dbConnectionFactory) : Endpoint<R
         WHERE
             MN."ElectionRoundId" = @electionRoundId
             AND MN."NgoId" = @ngoId;
-            
             
         -- read hourly histogram
         SELECT DATE_TRUNC('hour', TIMEZONE('utc', COALESCE(FS."LastModifiedOn", FS."CreatedOn")))::TIMESTAMPTZ AS "Bucket",
