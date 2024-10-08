@@ -26,7 +26,6 @@ import { ASYNC_STORAGE_KEYS } from "../../common/constants";
 import * as Sentry from "@sentry/react-native";
 import SuperJSON from "superjson";
 import { uploadAttachmentMutationFn } from "../../services/mutations/attachments/add-attachment.mutation";
-import useStore from "../../services/store/store";
 
 const queryClient = new QueryClient({
   mutationCache: new MutationCache({
@@ -110,8 +109,7 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
 
   queryClient.setMutationDefaults(AttachmentsKeys.addAttachmentMutation(), {
     mutationFn: async (payload: AddAttachmentStartAPIPayload) => {
-      const { progresses: state, setProgresses } = useStore();
-      return uploadAttachmentMutationFn(payload, setProgresses, state);
+      return uploadAttachmentMutationFn(payload);
     },
   });
 
@@ -203,9 +201,6 @@ const PersistQueryContextProvider = ({ children }: React.PropsWithChildren) => {
     // console.log("📍📍📍📍📍📍", SuperJSON.stringify(newPausedMutations));
 
     if (pausedMutation?.length) {
-      const { setProgresses } = useStore();
-      // Reset Attachment Progress
-      setProgresses(() => ({}));
       await queryClient.resumePausedMutations(); // Looks in the inmemory cache
       queryClient.invalidateQueries(); // Avoid using await, not to wait for queries to refetch (maybe not the case here as there are no active queries)
       console.log("✅ Resume Paused Mutation & Invalidate Quries");
