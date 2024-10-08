@@ -111,12 +111,19 @@ export type PollingStationInformationAPIPayload = {
   answers?: ApiFormAnswer[];
 };
 
+type Break = {
+  start: string;
+  end: string;
+  duration: number;
+};
+
 export type PollingStationInformationAPIResponse = {
   id: string;
   pollingStationId: string;
   arrivalTime: string;
   departureTime: string;
   answers: ApiFormAnswer[];
+  breaks: Break[];
 };
 
 export const upsertPollingStationGeneralInformation = ({
