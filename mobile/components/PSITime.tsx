@@ -114,9 +114,13 @@ export const PSITime = ({ psiData }: { psiData?: PollingStationInformationAPIRes
           <Icon icon="coffeeBreak" color="$purple5" size={24} />
           <XStack justifyContent="flex-end" maxWidth="80%">
             <Typography fontWeight="500" color="$purple5" maxWidth="100%">
-              {t("polling_stations_information.observation_time.no_of_breaks", {
-                value: psiData.breaks.length || 0,
-              })}
+              {psiData?.breaks?.length === 1
+                ? t("polling_stations_information.observation_time.one_break", {
+                    value: psiData?.breaks?.length || 0,
+                  })
+                : t("polling_stations_information.observation_time.no_of_breaks", {
+                    value: psiData?.breaks?.length || 0,
+                  })}
             </Typography>
           </XStack>
         </XStack>

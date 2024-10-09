@@ -13,7 +13,7 @@ import { useTranslation } from "react-i18next";
 import useAnimatedKeyboardPadding from "../../hooks/useAnimatedKeyboardPadding";
 
 export interface DateInputProps extends XStackProps {
-  value: Date;
+  value: Date | undefined;
   onChange: (...event: any[]) => void;
   minimumDate?: Date;
   maximumDate?: Date;
@@ -26,6 +26,7 @@ export const DateInput: React.FC<DateInputProps> = ({
   minimumDate,
   maximumDate,
   placeholder,
+  disabled,
   ...rest
 }) => {
   const localParams = useLocalSearchParams();
@@ -79,8 +80,8 @@ export const DateInput: React.FC<DateInputProps> = ({
 
   return (
     <XStack
-      onPress={handleSheetOpen}
-      backgroundColor="white"
+      onPress={disabled ? undefined : handleSheetOpen}
+      backgroundColor={disabled ? "$gray1" : "white"}
       justifyContent="space-between"
       alignItems="center"
       paddingHorizontal={14}
@@ -91,7 +92,12 @@ export const DateInput: React.FC<DateInputProps> = ({
       gap="$xs"
       {...rest}
     >
-      <Typography preset="body1" color="$gray5" numberOfLines={1} width="90%">
+      <Typography
+        preset="body1"
+        color={disabled ? "$gray4" : "$gray5"}
+        numberOfLines={1}
+        width="90%"
+      >
         {value
           ? `${value.toLocaleDateString(["en-GB"], {
               month: "2-digit",
@@ -103,7 +109,7 @@ export const DateInput: React.FC<DateInputProps> = ({
             })}`
           : placeholder}
       </Typography>
-      <Icon icon="calendar" color="transparent" />
+      <Icon icon="calendar" color={disabled ? "$gray3" : "$gray4"} />
       {/* open bottom sheet on ios with date picker */}
       {Platform.OS === "ios" && open ? (
         <Sheet modal open onOpenChange={setOpen} zIndex={100_000} snapPointsMode="fit">
