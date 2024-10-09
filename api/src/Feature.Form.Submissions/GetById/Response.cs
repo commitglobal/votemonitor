@@ -3,6 +3,7 @@ using Ardalis.SmartEnum.SystemTextJson;
 using Feature.Form.Submissions.Models;
 using Vote.Monitor.Answer.Module.Models;
 using Vote.Monitor.Domain.Entities.FormAggregate;
+using Vote.Monitor.Domain.Entities.PollingStationInfoAggregate;
 using Vote.Monitor.Form.Module.Models;
 
 namespace Feature.Form.Submissions.GetById;
@@ -16,7 +17,7 @@ public class Response
 
     [JsonConverter(typeof(SmartEnumNameConverter<FormType, string>))]
     public FormType FormType { get; init; } = default!;
-    
+
     [JsonConverter(typeof(SmartEnumNameConverter<SubmissionFollowUpStatus, string>))]
     public SubmissionFollowUpStatus FollowUpStatus { get; init; } = default!;
 
@@ -33,7 +34,11 @@ public class Response
     public string PhoneNumber { get; init; } = default!;
     public string[] Tags { get; init; }
     public BaseQuestionModel[] Questions { get; init; }
-    public BaseAnswerModel[] Answers { get; init; }
-    public NoteModel[] Notes { get; init; }
-    public AttachmentModel[] Attachments { get; init; }
+    public BaseAnswerModel[] Answers { get; init; } = [];
+    public NoteModel[] Notes { get; init; } = [];
+    public AttachmentModel[] Attachments { get; init; } = [];
+
+    public DateTime? ArrivalTime { get; init; }
+    public DateTime? DepartureTime { get; init; }
+    public ObservationBreakModel[] Breaks { get; init; } = [];
 }

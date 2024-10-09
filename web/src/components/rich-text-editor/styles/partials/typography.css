@@ -1,0 +1,13 @@
+.minimal-tiptap-editor .ProseMirror h1,
+.minimal-tiptap-editor .ProseMirror h2,
+.minimal-tiptap-editor .ProseMirror h3 {
+  margin-top: 0;
+}
+
+.minimal-tiptap-editor .ProseMirror a.link {
+  @apply cursor-pointer text-primary;
+}
+
+.minimal-tiptap-editor .ProseMirror a.link:hover {
+  @apply underline;
+}

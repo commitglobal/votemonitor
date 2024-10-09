@@ -187,14 +187,16 @@ public class BaseForm : AuditableBaseEntity, IAggregateRoot
         );
     }
 
-    public PollingStationInformation FillIn(PollingStationInformation psiSubmission, List<BaseAnswer>? answers)
+    public PollingStationInformation FillIn(PollingStationInformation psiSubmission, List<BaseAnswer>? answers,
+        DateTime? arrivalTime, DateTime? departureTime, List<ObservationBreak> breaks)
     {
         return BaseFillIn(
             psiSubmission,
             answers,
             submission => submission.ClearAnswers(),
             (submission, ans, numberOfQuestionsAnswered, numberOfFlaggedAnswers) =>
-                submission.UpdateAnswers(ans, numberOfQuestionsAnswered, numberOfFlaggedAnswers)
+                submission.UpdateAnswers(ans, numberOfQuestionsAnswered, numberOfFlaggedAnswers, arrivalTime,
+                    departureTime, breaks)
         );
     }
 

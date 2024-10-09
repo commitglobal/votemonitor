@@ -147,7 +147,9 @@
     "quickReportsCardTitle": "Quick reports",
     "quickReportsIndicatorTitle": "quick reports were signalled between {{interval}}",
     "citizenReportsCardTitle": "Citizen reports",
-    "citizenReportsIndicatorTitle": "citizen reports were signalled between {{interval}}"
+    "citizenReportsIndicatorTitle": "citizen reports were signalled between {{interval}}",
+    "incidentReportsCardTitle": "Incident reports",
+    "incidentReportsIndicatorTitle": "incidents reports were signalled between {{interval}}"
   },
   "electionEvent": {
     "eventDetails": {

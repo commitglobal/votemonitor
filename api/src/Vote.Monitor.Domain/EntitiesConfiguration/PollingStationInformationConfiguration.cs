@@ -47,5 +47,10 @@ public class PollingStationInformationConfiguration : IEntityTypeConfiguration<P
         builder.Property(x => x.Answers)
             .HasConversion<AnswersToJsonConverter, AnswersValueComparer>()
             .HasColumnType("jsonb");
+
+        builder.Property(x => x.Breaks)
+            .HasConversion<ObservationBreaksToJsonConverter, ObservationBreaksValueComparer>()
+            .HasColumnType("jsonb")
+            .HasDefaultValueSql("'[]'::JSONB");
     }
 }
