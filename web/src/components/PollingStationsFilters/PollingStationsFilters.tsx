@@ -43,22 +43,34 @@ export function PollingStationsFilters(): FunctionComponent {
   );
 
   const filteredLevel2Nodes = useMemo(
-    () => data?.[2]?.filter((node) => node.parentId === selectedLevel1Node?.id),
+    () =>
+      data?.[2]
+        ?.filter((node) => node.parentId === selectedLevel1Node?.id)
+        ?.sort((a, b) => a.name.localeCompare(b.name)),
     [data, selectedLevel1Node?.id]
   );
 
   const filteredLevel3Nodes = useMemo(
-    () => data?.[3]?.filter((node) => node.parentId === selectedLevel2Node?.id),
+    () =>
+      data?.[3]
+        ?.filter((node) => node.parentId === selectedLevel2Node?.id)
+        ?.sort((a, b) => a.name.localeCompare(b.name)),
     [data, selectedLevel2Node?.id]
   );
 
   const filteredLevel4Nodes = useMemo(
-    () => data?.[4]?.filter((node) => node.parentId === selectedLevel3Node?.id),
+    () =>
+      data?.[4]
+        ?.filter((node) => node.parentId === selectedLevel3Node?.id)
+        ?.sort((a, b) => a.name.localeCompare(b.name)),
     [data, selectedLevel3Node?.id]
   );
 
   const filteredLevel5Nodes = useMemo(
-    () => data?.[5]?.filter((node) => node.parentId === selectedLevel4Node?.id),
+    () =>
+      data?.[5]
+        ?.filter((node) => node.parentId === selectedLevel4Node?.id)
+        ?.sort((a, b) => a.name.localeCompare(b.name)),
     [data, selectedLevel4Node?.id]
   );
 
@@ -119,11 +131,13 @@ export function PollingStationsFilters(): FunctionComponent {
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
-            {data?.[1]?.map((node) => (
-              <SelectItem key={node.id} value={node.name}>
-                {node.name}
-              </SelectItem>
-            ))}
+            {data?.[1]
+              ?.sort((a, b) => a.name.localeCompare(b.name))
+              .map((node) => (
+                <SelectItem key={node.id} value={node.name}>
+                  {node.name}
+                </SelectItem>
+              ))}
           </SelectGroup>
         </SelectContent>
       </Select>

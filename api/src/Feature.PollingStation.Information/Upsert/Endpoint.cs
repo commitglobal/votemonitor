@@ -68,6 +68,7 @@ public class Endpoint(
         CancellationToken ct)
     {
         var observationBreaks = req.Breaks.Select(x => ObservationBreak.Create(x.Start, x.End)).ToList();
+        
         pollingStationInformation = form.FillIn(pollingStationInformation, answers, req.ArrivalTime, req.DepartureTime,
             observationBreaks);
 

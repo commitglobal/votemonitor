@@ -127,29 +127,71 @@
   },
   "ngoAdminDashboard": {
     "title": "Dashboard",
-    "subtitle": "Key indicators.",
-    "observersAccountsCardTitle": "Observers Accounts",
-    "observersAccountsIndicatorTitle": "Total accounts",
+    "subtitle": "Key indicators",
+
+    "observersAccounts": {
+      "cardTitle": "Observers Accounts",
+      "indicatorTitle": "Total accounts"
+    },
+
     "observersOnFieldCardTitle": "Observers on field",
-    "observersInPollingStationsIndicatorTitle": "Observers in polling stations",
-    "observersInPollingStationsIndicatorMetricLabel": "With at least one question answered",
+
+    "observersInPollingStations": {
+      "indicatorTitle": "Observers in polling stations",
+      "metricLabel": "With at least one question answered"
+    },
+
     "pollingStationCardTitle": "Polling stations",
-    "stationsVisitedByAtLeastOneObserverIndicatorTitle": "Stations visited by at least one observer",
-    "stationsVisitedByAtLeastOneObserverMetricLabel": "coverage",
-    "timeSpentObservingCardTitle": "Time spent observing",
-    "timeSpentObservingIndicatorTitle": "Based on start-end times reported",
-    "startedFormsCardTitle": "Started forms",
-    "startedFormsIndicatorTitle": "forms started between {{interval}}",
-    "questionsAnsweredCardTitle": "Questions answered",
-    "questionsAnsweredIndicatorTitle": "questions answered between {{interval}}",
-    "flaggedAnswersCardTitle": "Flagged answers",
-    "flaggedAnswersIndicatorTitle": "answers were flagged through forms between {{interval}}",
-    "quickReportsCardTitle": "Quick reports",
-    "quickReportsIndicatorTitle": "quick reports were signalled between {{interval}}",
-    "citizenReportsCardTitle": "Citizen reports",
-    "citizenReportsIndicatorTitle": "citizen reports were signalled between {{interval}}",
-    "incidentReportsCardTitle": "Incident reports",
-    "incidentReportsIndicatorTitle": "incidents reports were signalled between {{interval}}"
+
+    "stationsVisitedByAtLeastOneObserver": {
+      "indicatorTitle": "Stations visited by at least one observer",
+      "metricLabel": "coverage"
+    },
+
+    "timeSpentObserving": {
+      "cardTitle": "Time spent observing",
+      "indicatorTitle": "Based on start-end times reported"
+    },
+
+    "startedForms": {
+      "cardTitle": "Started forms",
+      "indicatorTitle": "forms started between {{interval}}"
+    },
+
+    "questionsAnswered": {
+      "cardTitle": "Questions answered",
+      "indicatorTitle": "questions answered between {{interval}}"
+    },
+
+    "flaggedAnswers": {
+      "cardTitle": "Flagged answers",
+      "indicatorTitle": "answers were flagged through forms between {{interval}}"
+    },
+
+    "quickReports": {
+      "cardTitle": "Quick reports",
+      "indicatorTitle": "quick reports were signalled between {{interval}}"
+    },
+
+    "citizenReports": {
+      "cardTitle": "Citizen reports",
+      "indicatorTitle": "citizen reports were signalled between {{interval}}"
+    },
+
+    "incidentReports": {
+      "cardTitle": "Incident reports",
+      "indicatorTitle": "incidents reports were signalled between {{interval}}"
+    },
+    "pollingStationsLevelsCards": {
+      "onFieldObservers": "On field observers",
+      "questionsAnswered": "Questions answered",
+      "flaggedAnswers": "Flagged answers",
+      "visitedPollingStations": "Visited polling stations",
+      "pollingStationsCoverage": "Polling station coverage (%)",
+      "timeSpentObserving": "Time spent observing (hours)",
+      "quickReports": "Quick reports",
+      "incidentReports": "Incident reports"
+    }
   },
   "electionEvent": {
     "eventDetails": {

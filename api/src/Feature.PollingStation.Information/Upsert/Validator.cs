@@ -23,6 +23,8 @@ public class Validator : Validator<Request>
             });
 
 
-        RuleForEach(x => x.Breaks).Must(observationBreak => observationBreak.Start <= observationBreak.End);
+        RuleForEach(x => x.Breaks)
+            .Must(observationBreak =>
+                !observationBreak.End.HasValue || observationBreak.Start <= observationBreak.End);
     }
 }

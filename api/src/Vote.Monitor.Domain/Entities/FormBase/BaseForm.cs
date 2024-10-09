@@ -1,5 +1,6 @@
 using FluentValidation;
 using Newtonsoft.Json;
+using Org.BouncyCastle.Ocsp;
 using Vote.Monitor.Core.Models;
 using Vote.Monitor.Domain.Entities.CitizenReportAggregate;
 using Vote.Monitor.Domain.Entities.FormAggregate;
@@ -193,7 +194,11 @@ public class BaseForm : AuditableBaseEntity, IAggregateRoot
         return BaseFillIn(
             psiSubmission,
             answers,
-            submission => submission.ClearAnswers(),
+            submission =>
+            {
+                submission.ClearAnswers();
+                submission.UpdateTimesOfStay(submission.ArrivalTime, submission.DepartureTime, submission.Breaks);
+            },
             (submission, ans, numberOfQuestionsAnswered, numberOfFlaggedAnswers) =>
                 submission.UpdateAnswers(ans, numberOfQuestionsAnswered, numberOfFlaggedAnswers, arrivalTime,
                     departureTime, breaks)

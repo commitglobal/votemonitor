@@ -79,7 +79,7 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
         UpdateTimesOfStay(arrivalTime, departureTime, breaks);
     }
 
-    private void UpdateTimesOfStay(DateTime? arrivalTime, DateTime? departureTime, List<ObservationBreak> breaks)
+    public void UpdateTimesOfStay(DateTime? arrivalTime, DateTime? departureTime, IEnumerable<ObservationBreak> breaks)
     {
         if (arrivalTime.HasValue)
         {
