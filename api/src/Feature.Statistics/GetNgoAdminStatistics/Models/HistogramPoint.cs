@@ -1,3 +1,8 @@
 ﻿namespace Feature.Statistics.GetNgoAdminStatistics.Models;
 
-public record HistogramPoint(DateTime Bucket, int Value);
+public class HistogramPoint
+{
+    public DateTime Bucket { get; init; }
+    public int Value { get; init; }
+
+}

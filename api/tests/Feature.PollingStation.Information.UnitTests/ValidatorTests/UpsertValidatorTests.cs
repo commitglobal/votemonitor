@@ -71,6 +71,58 @@ public class UpsertValidatorTests
         result.ShouldHaveValidationErrorFor("Answers[4].QuestionId");
         result.ShouldHaveValidationErrorFor("Answers[5].QuestionId");
     }
+    
+    [Fact]
+    public void Validation_ShouldFail_When_ObservationBreaks_ContainsInvalid()
+    {
+        // Arrange
+        var request = new Request { Breaks = [
+            new Request.BreakRequest()
+            {
+                Start = DateTime.UtcNow.AddDays(-1),
+                End = DateTime.UtcNow,
+            },
+            new Request.BreakRequest()
+            {
+                Start = DateTime.UtcNow,
+                End = DateTime.UtcNow.AddDays(-1),
+            }
+        ]};
+
+        // Act
+        var result = _validator.TestValidate(request);
+
+        // Assert
+        result.ShouldHaveValidationErrorFor("Breaks[1]");
+    }
+
+    [Fact]
+    public void Validation_ShouldPass_When_BreakEndIsNull()
+    {
+        // Arrange
+        var request = new Request { 
+            ObserverId = Guid.NewGuid(),
+            ElectionRoundId = Guid.NewGuid(),
+            PollingStationId = Guid.NewGuid(),
+            Breaks = [
+            new Request.BreakRequest()
+            {
+                Start = DateTime.UtcNow.AddDays(-1),
+                End = DateTime.UtcNow,
+            },
+            new Request.BreakRequest()
+            {
+                Start = DateTime.UtcNow,
+                End = null
+            }
+        ]};
+
+        // Act
+        var result = _validator.TestValidate(request);
+
+        // Assert
+        result.ShouldNotHaveAnyValidationErrors();
+    }
 
     [Fact]
     public void Validation_ShouldPass_When_ValidRequest()

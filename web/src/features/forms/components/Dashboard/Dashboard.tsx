@@ -309,7 +309,6 @@ export default function FormsDashboard(): ReactElement {
   };
 
   const deleteTranslationMutation = useMutation({
-    mutationKey: formsKeys.all,
     mutationFn: ({
       electionRoundId,
       formId,
@@ -322,29 +321,28 @@ export default function FormsDashboard(): ReactElement {
       return authApi.delete<void>(`/election-rounds/${electionRoundId}/forms/${formId}/${languageCode}`);
     },
 
-    onSuccess: () => {
+    onSuccess: (_data, { electionRoundId }) => {
       toast({
         title: 'Success',
         description: 'Translation deleted',
       });
 
-      queryClient.invalidateQueries({ queryKey: formsKeys.all });
+      queryClient.invalidateQueries({ queryKey: formsKeys.all(electionRoundId) });
     },
   });
 
   const publishFormMutation = useMutation({
-    mutationKey: formsKeys.all,
     mutationFn: ({ electionRoundId, formId }: { electionRoundId: string; formId: string }) => {
       return authApi.post<void>(`/election-rounds/${electionRoundId}/forms/${formId}:publish`);
     },
 
-    onSuccess: () => {
+    onSuccess: (_data, { electionRoundId }) => {
       toast({
         title: 'Success',
         description: 'Form published',
       });
 
-      queryClient.invalidateQueries({ queryKey: formsKeys.all });
+      queryClient.invalidateQueries({ queryKey: formsKeys.all(electionRoundId) });
     },
 
     onError: (error) => {
@@ -367,18 +365,17 @@ export default function FormsDashboard(): ReactElement {
   });
 
   const obsoleteFormMutation = useMutation({
-    mutationKey: formsKeys.all,
     mutationFn: ({ electionRoundId, formId }: { electionRoundId: string; formId: string }) => {
       return authApi.post<void>(`/election-rounds/${electionRoundId}/forms/${formId}:obsolete`);
     },
 
-    onSuccess: () => {
+    onSuccess: (_data, {electionRoundId}) => {
       toast({
         title: 'Success',
         description: 'Form obsoleted',
       });
 
-      queryClient.invalidateQueries({ queryKey: formsKeys.all });
+      queryClient.invalidateQueries({ queryKey: formsKeys.all(electionRoundId) });
     },
 
     onError: () => {
@@ -391,18 +388,17 @@ export default function FormsDashboard(): ReactElement {
   });
 
   const duplicateFormMutation = useMutation({
-    mutationKey: formsKeys.all,
     mutationFn: ({ electionRoundId, formId }: { electionRoundId: string; formId: string }) => {
       return authApi.post<void>(`/election-rounds/${electionRoundId}/forms/${formId}:duplicate`);
     },
 
-    onSuccess: () => {
+    onSuccess: (_data, {electionRoundId}) => {
       toast({
         title: 'Success',
         description: 'Form duplicated',
       });
 
-      queryClient.invalidateQueries({ queryKey: formsKeys.all });
+      queryClient.invalidateQueries({ queryKey: formsKeys.all(electionRoundId) });
     },
 
     onError: (error) => {
@@ -415,16 +411,15 @@ export default function FormsDashboard(): ReactElement {
   });
 
   const deleteFormMutation = useMutation({
-    mutationKey: formsKeys.all,
     mutationFn: ({ electionRoundId, formId }: { electionRoundId: string; formId: string }) => {
       return authApi.delete<void>(`/election-rounds/${electionRoundId}/forms/${formId}`);
     },
-    onSuccess: async () => {
+    onSuccess: async (_data, {electionRoundId}) => {
       toast({
         title: 'Success',
         description: 'Form deleted',
       });
-      await queryClient.invalidateQueries({ queryKey: formsKeys.all });
+      await queryClient.invalidateQueries({ queryKey: formsKeys.all(electionRoundId) });
     },
   });
 

@@ -16,4 +16,13 @@ public class Request
     public DateTime? DepartureTime { get; set; }
 
     public List<BaseAnswerRequest>? Answers { get; set; }
+
+    public List<BreakRequest> Breaks { get; set; } = [];
+
+
+    public class BreakRequest
+    {
+        public DateTime Start { get; set; }
+        public DateTime? End { get; set; }
+    }
 }

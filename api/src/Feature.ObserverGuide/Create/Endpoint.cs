@@ -4,6 +4,7 @@ using Authorization.Policies.Requirements;
 using Feature.ObserverGuide.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using Vote.Monitor.Core.Services.FileStorage.Contracts;
+using Vote.Monitor.Core.Services.Security;
 using Vote.Monitor.Domain.Entities.MonitoringNgoAggregate;
 using Vote.Monitor.Domain.Entities.ObserverGuideAggregate;
 
@@ -13,7 +14,8 @@ public class Endpoint(
     IAuthorizationService authorizationService,
     IRepository<ObserverGuideAggregate> repository,
     IReadRepository<MonitoringNgo> monitoringNgoRepository,
-    IFileStorageService fileStorageService)
+    IFileStorageService fileStorageService,
+    IHtmlStringSanitizer htmlStringSanitizer)
     : Endpoint<Request, Results<Ok<ObserverGuideModel>, NotFound, StatusCodeHttpResult>>
 {
     public override void Configure()
@@ -96,7 +98,7 @@ public class Endpoint(
         {
             observerGuide = ObserverGuideAggregate.NewTextGuide(monitoringNgo,
                 req.Title,
-                req.Text!);
+                htmlStringSanitizer.Sanitize(req.Text!));
 
             observerGuideModel = new ObserverGuideModel
             {

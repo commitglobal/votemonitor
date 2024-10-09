@@ -1,8 +1,11 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
+using NPOI.SS.Formula;
 using Vote.Monitor.Core.Extensions;
 
 namespace Feature.Locations.FetchAll;
-public class Endpoint(VoteMonitorContext context, IMemoryCache cache) : Endpoint<Request, Results<Ok<Response>, NotFound>>
+
+public class Endpoint(VoteMonitorContext context, IMemoryCache cache)
+    : Endpoint<Request, Results<Ok<Response>, NotFound>>
 {
     public override void Configure()
     {
@@ -66,81 +69,80 @@ public class Endpoint(VoteMonitorContext context, IMemoryCache cache) : Endpoint
 
     private static List<LocationNode> GetLocationNodes(List<LocationModel> locations)
     {
-        Dictionary<string, LocationNode> cache = new();
-        var result = new List<LocationNode>();
+        // Root node to store the top-level location nodes
+        LocationNode root = new LocationNode(0, Guid.Empty, "Root", 0, -1, 0);
+        Dictionary<string, LocationNode> cache = new(); // Cache to store nodes and avoid duplicates
         int id = 0;
 
         foreach (var location in locations)
         {
-            var parentNode = cache.GetOrCreate(BuildKey(location.Level1), () => new LocationNode
+            // Create the hierarchy for Level1 -> Level2 -> Level3 -> Level4 -> Level5
+            var level1Key = location.Level1;
+            var level2Key = $"{location.Level1}-{location.Level2}";
+            var level3Key = $"{level2Key}-{location.Level3}";
+            var level4Key = $"{level3Key}-{location.Level4}";
+            var level5Key = $"{level4Key}-{location.Level5}";
+            // Level 1
+            var level1Node = cache.GetOrCreate(level1Key, () =>
             {
-                Id = ++id, 
-                Name = location.Level1,
-                Depth = 1
+                var node = new LocationNode(++id, location.Id, location.Level1, 1, root.Id, location.DisplayOrder);
+                root.AddChild(node);
+                return node;
             });
 
+            // Level 2 (optional)
+            LocationNode level2Node = null;
             if (!string.IsNullOrWhiteSpace(location.Level2))
             {
-                var level2Key = BuildKey(location.Level1, location.Level2);
-                parentNode = cache.GetOrCreate(level2Key, () => new LocationNode
+                level2Node = cache.GetOrCreate(level2Key, () =>
                 {
-                    Id = ++id, 
-                    Name = location.Level2, 
-                    ParentId = parentNode.Id,
-                    Depth = 2,
-                    DisplayOrder = location.DisplayOrder
+                    var node = new LocationNode(++id, location.Id, location.Level2, 2, level1Node.Id,
+                        location.DisplayOrder);
+                    level1Node.AddChild(node);
+                    return node;
                 });
             }
 
+            // Level 3 (optional)
+            LocationNode level3Node = null;
             if (!string.IsNullOrWhiteSpace(location.Level3))
             {
-                var level3Key = BuildKey(location.Level1, location.Level2, location.Level3);
-                parentNode = cache.GetOrCreate(level3Key, () => new LocationNode
+                level3Node = cache.GetOrCreate(level3Key, () =>
                 {
-                    Id = ++id, 
-                    Name = location.Level3, 
-                    ParentId = parentNode.Id,
-                    Depth = 3
+                    var node = new LocationNode(++id, location.Id, location.Level3, 3, (level2Node ?? level1Node).Id,
+                        location.DisplayOrder);
+                    (level2Node ?? level1Node).AddChild(node);
+                    return node;
                 });
             }
 
+            // Level 4 (optional)
+            LocationNode level4Node = null;
             if (!string.IsNullOrWhiteSpace(location.Level4))
             {
-                var level4Key = BuildKey(location.Level1, location.Level2, location.Level3, location.Level4);
-                parentNode = cache.GetOrCreate(level4Key, () => new LocationNode
+                level4Node = cache.GetOrCreate(level4Key, () =>
                 {
-                    Id = ++id, 
-                    Name = location.Level4, 
-                    ParentId = parentNode.Id,
-                    Depth = 4
+                    var node = new LocationNode(++id, location.Id, location.Level4, 4,
+                        (level3Node ?? level2Node ?? level1Node).Id,
+                        location.DisplayOrder);
+                    (level3Node ?? level2Node ?? level1Node).AddChild(node);
+                    return node;
                 });
             }
 
+            // Level 5 (optional)
             if (!string.IsNullOrWhiteSpace(location.Level5))
             {
-                var level5Key = BuildKey(location.Level1, location.Level2, location.Level3, location.Level4, location.Level5);
-                parentNode = cache.GetOrCreate(level5Key, () => new LocationNode
+                cache.GetOrCreate(level5Key, () =>
                 {
-                    Id = ++id,
-                    Name = location.Level5, 
-                    ParentId = parentNode.Id,
-                    Depth = 5
+                    var node = new LocationNode(++id, location.Id, location.Level5, 5,
+                        (level4Node ?? level3Node ?? level2Node ?? level1Node).Id, location.DisplayOrder);
+                    (level4Node ?? level3Node ?? level2Node ?? level1Node).AddChild(node);
+                    return node;
                 });
             }
-
-            result.Add(new LocationNode
-            {
-                Id = ++id,
-                ParentId = parentNode!.Id,
-                LocationId = location.Id
-            });
         }
 
-        return [.. cache.Values, .. result];
-    }
-
-    private static string BuildKey(params string[] keyParts)
-    {
-        return string.Join("-", keyParts);
+        return root.Traverse().Where(x => x.Id != 0).ToList();
     }
 }

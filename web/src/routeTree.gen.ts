@@ -40,11 +40,13 @@ import { Route as ResponsesIncidentReportsIncidentReportIdImport } from './route
 import { Route as ResponsesCitizenReportsCitizenReportIdImport } from './routes/responses/citizen-reports/$citizenReportId'
 import { Route as ResponsesFormIdAggregatedImport } from './routes/responses/$formId.aggregated'
 import { Route as ObserversObserverIdEditImport } from './routes/observers_.$observerId.edit'
+import { Route as ObserverGuidesViewGuideIdImport } from './routes/observer-guides/view.$guideId'
 import { Route as ObserverGuidesEditGuideIdImport } from './routes/observer-guides/edit.$guideId'
 import { Route as MonitoringObserversPushMessagesIdImport } from './routes/monitoring-observers/push-messages.$id'
 import { Route as MonitoringObserversEditMonitoringObserverIdImport } from './routes/monitoring-observers/edit.$monitoringObserverId'
 import { Route as FormsFormIdEditImport } from './routes/forms_.$formId.edit'
 import { Route as FormsFormIdLanguageCodeImport } from './routes/forms/$formId_.$languageCode'
+import { Route as CitizenGuidesViewGuideIdImport } from './routes/citizen-guides/view.$guideId'
 import { Route as CitizenGuidesEditGuideIdImport } from './routes/citizen-guides/edit.$guideId'
 import { Route as ResponsesIncidentReportsFormIdAggregatedImport } from './routes/responses/incident-reports/$formId.aggregated'
 import { Route as ResponsesCitizenReportsFormIdAggregatedImport } from './routes/responses/citizen-reports/$formId.aggregated'
@@ -204,6 +206,11 @@ const ObserversObserverIdEditRoute = ObserversObserverIdEditImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const ObserverGuidesViewGuideIdRoute = ObserverGuidesViewGuideIdImport.update({
+  path: '/observer-guides/view/$guideId',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const ObserverGuidesEditGuideIdRoute = ObserverGuidesEditGuideIdImport.update({
   path: '/observer-guides/edit/$guideId',
   getParentRoute: () => rootRoute,
@@ -228,6 +235,11 @@ const FormsFormIdEditRoute = FormsFormIdEditImport.update({
 
 const FormsFormIdLanguageCodeRoute = FormsFormIdLanguageCodeImport.update({
   path: '/forms/$formId/$languageCode',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const CitizenGuidesViewGuideIdRoute = CitizenGuidesViewGuideIdImport.update({
+  path: '/citizen-guides/view/$guideId',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -370,6 +382,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CitizenGuidesEditGuideIdImport
       parentRoute: typeof rootRoute
     }
+    '/citizen-guides/view/$guideId': {
+      preLoaderRoute: typeof CitizenGuidesViewGuideIdImport
+      parentRoute: typeof rootRoute
+    }
     '/forms/$formId/$languageCode': {
       preLoaderRoute: typeof FormsFormIdLanguageCodeImport
       parentRoute: typeof rootRoute
@@ -388,6 +404,10 @@ declare module '@tanstack/react-router' {
     }
     '/observer-guides/edit/$guideId': {
       preLoaderRoute: typeof ObserverGuidesEditGuideIdImport
+      parentRoute: typeof rootRoute
+    }
+    '/observer-guides/view/$guideId': {
+      preLoaderRoute: typeof ObserverGuidesViewGuideIdImport
       parentRoute: typeof rootRoute
     }
     '/observers/$observerId/edit': {
@@ -461,11 +481,13 @@ export const routeTree = rootRoute.addChildren([
   ResetPasswordIndexRoute,
   ResponsesIndexRoute,
   CitizenGuidesEditGuideIdRoute,
+  CitizenGuidesViewGuideIdRoute,
   FormsFormIdLanguageCodeRoute,
   FormsFormIdEditRoute,
   MonitoringObserversEditMonitoringObserverIdRoute,
   MonitoringObserversPushMessagesIdRoute,
   ObserverGuidesEditGuideIdRoute,
+  ObserverGuidesViewGuideIdRoute,
   ObserversObserverIdEditRoute,
   ResponsesFormIdAggregatedRoute,
   ResponsesCitizenReportsCitizenReportIdRoute,

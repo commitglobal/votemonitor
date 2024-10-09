@@ -51,12 +51,6 @@ function PushMessages(): FunctionComponent {
       enableGlobalFilter: false,
     },
     {
-      header: ({ column }) => <DataTableColumnHeader title='Body' column={column} />,
-      accessorKey: 'body',
-      enableSorting: false,
-      enableGlobalFilter: false,
-    },
-    {
       header: '',
       accessorKey: 'action',
       enableSorting: false,

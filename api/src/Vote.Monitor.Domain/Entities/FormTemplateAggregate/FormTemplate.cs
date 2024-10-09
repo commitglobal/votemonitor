@@ -58,8 +58,9 @@ public class FormTemplate : AuditableBaseEntity, IAggregateRoot
         string defaultLanguage,
         TranslatedString name,
         TranslatedString description,
-        IEnumerable<string> languages) =>
-        new(formTemplateType, code, defaultLanguage, name, description, languages, []);
+        IEnumerable<string> languages, 
+        IEnumerable<BaseQuestion> questions) =>
+        new(formTemplateType, code, defaultLanguage, name, description, languages, questions);
 
     public PublishResult Publish()
     {

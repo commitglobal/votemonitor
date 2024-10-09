@@ -1,4 +1,5 @@
 ﻿using Vote.Monitor.Answer.Module.Validators;
+using Vote.Monitor.Domain.Entities.PollingStationInfoAggregate;
 
 namespace Feature.PollingStation.Information.Upsert;
 
@@ -20,5 +21,10 @@ public class Validator : Validator<Request>
                 v.Add(new NumberAnswerRequestValidator());
                 v.Add(new TextAnswerRequestValidator());
             });
+
+
+        RuleForEach(x => x.Breaks)
+            .Must(observationBreak =>
+                !observationBreak.End.HasValue || observationBreak.Start <= observationBreak.End);
     }
 }
