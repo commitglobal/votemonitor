@@ -258,6 +258,7 @@
     "form": {
       "min": "Polje mora da sadrži najmanje {{value}} karaktera",
       "max": "Polje mora da sadrži najviše {{value}} karaktera",
+      "required": "Ovo polje je obavezno",
       "date_placeholder": "Unesite datum",
       "text_placeholder": "Unesite text"
     },

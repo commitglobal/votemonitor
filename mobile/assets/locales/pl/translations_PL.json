@@ -258,6 +258,7 @@
     "form": {
       "min": "Pole musi mieć długość co najmniej {{value}} znaków",
       "max": "Pole musi zawierać maksymalnie {{value}} znaków",
+      "required": "To pole jest wymagane",
       "date_placeholder": "Proszę wprowadzić datę",
       "text_placeholder": "Proszę wpisać tekst"
     },

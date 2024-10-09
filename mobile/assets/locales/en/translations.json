@@ -306,6 +306,7 @@
     "form": {
       "min": "The field must be at least {{value}} characters long",
       "max": "The field must have a maximum of {{value}} characters",
+      "required": "This field is required",
       "date_placeholder": "Please enter a date",
       "text_placeholder": "Please enter a text"
     },

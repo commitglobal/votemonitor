@@ -263,6 +263,7 @@ const CitizenForm = () => {
             handleFocus={handleFocus}
             ref={textareaRef}
             language={language}
+            required={true}
           />
 
           {/* attachments */}
