@@ -31,6 +31,7 @@ import { Route as MonitoringObserversCreateNewMessageImport } from './routes/mon
 import { Route as MonitoringObserversTabImport } from './routes/monitoring-observers/$tab'
 import { Route as FormsFormIdImport } from './routes/forms/$formId'
 import { Route as ElectionRoundsElectionRoundIdImport } from './routes/election-rounds/$electionRoundId'
+import { Route as ElectionEventNewFormImport } from './routes/election-event/new-form'
 import { Route as ElectionEventTabImport } from './routes/election-event/$tab'
 import { Route as CitizenGuidesNewImport } from './routes/citizen-guides/new'
 import { Route as AcceptInviteSuccessImport } from './routes/accept-invite/success'
@@ -155,6 +156,11 @@ const ElectionRoundsElectionRoundIdRoute =
     getParentRoute: () => rootRoute,
   } as any)
 
+const ElectionEventNewFormRoute = ElectionEventNewFormImport.update({
+  path: '/election-event/new-form',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const ElectionEventTabRoute = ElectionEventTabImport.update({
   path: '/election-event/$tab',
   getParentRoute: () => rootRoute,
@@ -278,6 +284,10 @@ declare module '@tanstack/react-router' {
     }
     '/election-event/$tab': {
       preLoaderRoute: typeof ElectionEventTabImport
+      parentRoute: typeof rootRoute
+    }
+    '/election-event/new-form': {
+      preLoaderRoute: typeof ElectionEventNewFormImport
       parentRoute: typeof rootRoute
     }
     '/election-rounds/$electionRoundId': {
@@ -430,6 +440,7 @@ export const routeTree = rootRoute.addChildren([
   AcceptInviteSuccessRoute,
   CitizenGuidesNewRoute,
   ElectionEventTabRoute,
+  ElectionEventNewFormRoute,
   ElectionRoundsElectionRoundIdRoute,
   FormsFormIdRoute,
   MonitoringObserversTabRoute,
