@@ -8,15 +8,14 @@ import WizardFormElement from "./WizardFormInputs/WizardFormElement";
 import { YStack } from "tamagui";
 import CheckboxInput from "./Inputs/CheckboxInput";
 import WizardRatingFormInput from "./WizardFormInputs/WizardRatingFormInput";
-import { useLocalSearchParams } from "expo-router";
-import { SearchParamType } from "../app/(observer)/(app)/form-questionnaire/[questionId]";
-import { Typography } from "./Typography";
+
 import { useTranslation } from "react-i18next";
 import { ApiFormQuestion } from "../services/interfaces/question.type";
 
 interface IQuestionFormProps {
   control: Control<any, any>;
   activeQuestion: IActiveQuestion;
+  language: string;
   handleFocus?: () => void;
 }
 
@@ -27,13 +26,8 @@ interface IActiveQuestion {
 }
 
 const QuestionForm = forwardRef(
-  ({ control, activeQuestion, handleFocus }: IQuestionFormProps, textareaRef) => {
-    const { questionId, language } = useLocalSearchParams<SearchParamType>();
+  ({ control, activeQuestion, handleFocus, language }: IQuestionFormProps, textareaRef) => {
     const { t } = useTranslation("polling_station_form_wizard");
-
-    if (!language || !questionId) {
-      return <Typography>Incorrect page params</Typography>;
-    }
 
     return (
       <>
@@ -103,10 +97,10 @@ const QuestionForm = forwardRef(
                       onValueChange={(radioValue) =>
                         onChange({ ...value, radioValue, textValue: null })
                       }
-                      value={value.radioValue || ""}
+                      value={value?.radioValue || ""}
                     />
                     {question.options.map((option) => {
-                      if (option.isFreeText && option.id === value.radioValue) {
+                      if (option.isFreeText && option.id === value?.radioValue) {
                         return (
                           <FormInput
                             type="textarea"

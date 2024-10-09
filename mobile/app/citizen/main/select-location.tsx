@@ -31,7 +31,12 @@ const mapCitizenLocationsToSelectValues = (
 };
 
 export default function CitizenSelectLocation() {
-  const { formId } = useLocalSearchParams<{ formId: string }>();
+  const { formId, questionId } = useLocalSearchParams<{ formId: string; questionId: string }>();
+
+  if (!formId || !questionId) {
+    return <Typography>CitizenSelectLocation - Incorrect page params</Typography>;
+  }
+
   console.log("👀 [CitizenSelectLocation] formId", formId);
 
   const { t } = useTranslation(["add_polling_station", "common"]); // TODO: change to citizen
@@ -113,7 +118,9 @@ export default function CitizenSelectLocation() {
     const selectedLocationId = citizenLocations.find(
       (location) => location.id === selectedOption?.id,
     )?.locationId;
-    router.push(`citizen/main/form/${formId}?selectedLocationId=${selectedLocationId}`);
+    router.push(
+      `citizen/main/form/?formId=${formId}&selectedLocationId=${selectedLocationId}&questionId=${questionId}`,
+    );
   };
 
   const SelectItem = useCallback(

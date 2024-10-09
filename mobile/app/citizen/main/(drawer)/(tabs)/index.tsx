@@ -151,7 +151,9 @@ export default function CitizenReportIssue() {
                   key={form.id}
                   form={form}
                   onClick={() => {
-                    router.push(`/citizen/main/select-location?formId=${form.id}`);
+                    router.push(
+                      `/citizen/main/select-location?formId=${form.id}&questionId=${form.questions[0].id}`,
+                    );
                   }}
                 />
               ))}
