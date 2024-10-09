@@ -146,7 +146,7 @@ export const formSubmissionsByEntryColumnDefs: ColumnDef<FormSubmissionByEntry &
     enableGlobalFilter: true,
   },
   {
-    header: ({ column }) => <DataTableColumnHeader title='Medial files' column={column} />,
+    header: ({ column }) => <DataTableColumnHeader title='Media files' column={column} />,
     accessorFn: (row)=> row.mediaFilesCount,
     id: 'mediaFilesCount',
     enableSorting: true,
@@ -282,7 +282,7 @@ export const observerFormSubmissionsColumnDefs: ColumnDef<FormSubmissionByEntry 
     enableGlobalFilter: true,
   },
   {
-    header: ({ column }) => <DataTableColumnHeader title='Medial files' column={column} />,
+    header: ({ column }) => <DataTableColumnHeader title='Media files' column={column} />,
     accessorFn: (row)=> row.mediaFilesCount,
     id: 'mediaFilesCount',
     enableSorting: true,
@@ -616,7 +616,7 @@ export const quickReportsColumnDefs: ColumnDef<QuickReport>[] = [
     cell: ({ row }) => <div>{row.original.description.slice(0, 100) + '...'}</div>,
   },
   {
-    header: ({ column }) => <DataTableColumnHeader title='Medial files' column={column} />,
+    header: ({ column }) => <DataTableColumnHeader title='Media files' column={column} />,
     accessorFn: (row) => row.numberOfAttachments,
     id: 'numberOfAttachments',
     enableSorting: false,
@@ -751,7 +751,7 @@ export const observerQuickReportsColumnDefs: ColumnDef<QuickReport>[] = [
     cell: ({ row }) => <div>{row.original.description.slice(0, 100) + '...'}</div>,
   },
   {
-    header: ({ column }) => <DataTableColumnHeader title='Medial files' column={column} />,
+    header: ({ column }) => <DataTableColumnHeader title='Media files' column={column} />,
     accessorFn: (row) => row.numberOfAttachments,
     id: 'numberOfAttachments',
     enableSorting: false,
@@ -890,7 +890,7 @@ export const citizenReportsByEntryColumnDefs: ColumnDef<CitizenReportByEntry & R
     enableGlobalFilter: true,
   },
   {
-    header: ({ column }) => <DataTableColumnHeader title='Medial files' column={column} />,
+    header: ({ column }) => <DataTableColumnHeader title='Media files' column={column} />,
     accessorFn:(row)=> row.mediaFilesCount,
     id: 'mediaFilesCount',
     enableSorting: true,
@@ -1028,13 +1028,6 @@ export const incidentReportsByEntryColumnDefs: ColumnDef<IncidentReportByEntry &
     cell: ({ row }) => <div>{row.original.formName[row.original.formDefaultLanguage] ?? '-'}</div>,
   },
   {
-    header: ({ column }) => <DataTableColumnHeader title='Station number' column={column} />,
-    id: 'pollingStationNumber',
-    accessorFn: (row) => row.pollingStationNumber,
-    enableSorting: true,
-    enableGlobalFilter: true,
-  },
-  {
     header: ({ column }) => <DataTableColumnHeader title='Location - L1' column={column} />,
     accessorFn:(row)=> row.pollingStationLevel1,
     id: 'pollingStationLevel1',
@@ -1133,7 +1126,7 @@ export const incidentReportsByEntryColumnDefs: ColumnDef<IncidentReportByEntry &
     enableGlobalFilter: true,
   },
   {
-    header: ({ column }) => <DataTableColumnHeader title='Medial files' column={column} />,
+    header: ({ column }) => <DataTableColumnHeader title='Media files' column={column} />,
     accessorFn:(row)=> row.mediaFilesCount,
     id: 'mediaFilesCount',
     enableSorting: true,
@@ -1210,14 +1203,6 @@ export const observerIncidentReportsColumnDefs: ColumnDef<IncidentReportByEntry 
     cell: ({ row }) => <div>{row.original.locationDescription ?? '-'}</div>,
   },
   {
-    header: ({ column }) => <DataTableColumnHeader title='Station number' column={column} />,
-    accessorFn:(row)=> row.pollingStationNumber,
-    id: 'pollingStationNumber',
-    enableSorting: true,
-    enableGlobalFilter: true,
-    cell: ({ row }) => <div>{row.original.pollingStationNumber ?? '-'}</div>,
-  },
-  {
     header: ({ column }) => <DataTableColumnHeader title='Location - L1' column={column} />,
     accessorFn:(row)=> row.pollingStationLevel1,
     id: 'pollingStationLevel1',
@@ -1287,7 +1272,7 @@ export const observerIncidentReportsColumnDefs: ColumnDef<IncidentReportByEntry 
     enableGlobalFilter: true,
   },
   {
-    header: ({ column }) => <DataTableColumnHeader title='Medial files' column={column} />,
+    header: ({ column }) => <DataTableColumnHeader title='Media files' column={column} />,
     accessorFn:(row)=> row.mediaFilesCount,
     id: 'mediaFilesCount',
     enableSorting: true,

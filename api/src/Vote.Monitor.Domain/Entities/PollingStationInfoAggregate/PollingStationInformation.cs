@@ -21,9 +21,9 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
     public int NumberOfQuestionsAnswered { get; private set; }
     public int NumberOfFlaggedAnswers { get; private set; }
     public SubmissionFollowUpStatus FollowUpStatus { get; private set; }
-
     public IReadOnlyList<BaseAnswer> Answers { get; private set; } = new List<BaseAnswer>().AsReadOnly();
-
+    public IReadOnlyList<ObservationBreak> Breaks { get; private set; } = new List<ObservationBreak>().AsReadOnly();
+    
     private PollingStationInformation(
         ElectionRound electionRound,
         PollingStation pollingStation,
@@ -33,7 +33,8 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
         DateTime? departureTime,
         List<BaseAnswer> answers,
         int numberOfQuestionsAnswered,
-        int numberOfFlaggedAnswers) : base(Guid.NewGuid())
+        int numberOfFlaggedAnswers,
+        List<ObservationBreak> breaks) : base(Guid.NewGuid())
     {
         ElectionRound = electionRound;
         ElectionRoundId = electionRound.Id;
@@ -43,12 +44,12 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
         MonitoringObserverId = monitoringObserver.Id;
         PollingStationInformationForm = pollingStationInformationForm;
         PollingStationInformationFormId = pollingStationInformationForm.Id;
-        ArrivalTime = arrivalTime;
-        DepartureTime = departureTime;
         Answers = answers.ToList().AsReadOnly();
         NumberOfQuestionsAnswered = numberOfQuestionsAnswered;
         NumberOfFlaggedAnswers = numberOfFlaggedAnswers;
         FollowUpStatus = SubmissionFollowUpStatus.NotApplicable;
+        
+        UpdateTimesOfStay(arrivalTime, departureTime, breaks);
     }
 
     internal static PollingStationInformation Create(
@@ -60,17 +61,25 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
         DateTime? departureTime,
         List<BaseAnswer> answers,
         int numberOfQuestionsAnswered,
-        int numberOfFlaggedAnswers) =>
-        new(electionRound, pollingStation, monitoringObserver, pollingStationInformationForm, arrivalTime, departureTime, answers, numberOfQuestionsAnswered, numberOfFlaggedAnswers);
+        int numberOfFlaggedAnswers,
+        List<ObservationBreak> breaks) =>
+        new(electionRound, pollingStation, monitoringObserver, pollingStationInformationForm, arrivalTime, departureTime, answers, numberOfQuestionsAnswered, numberOfFlaggedAnswers, breaks);
 
-    internal void UpdateAnswers(IEnumerable<BaseAnswer> answers, int numberOfQuestionsAnswered,int numberOfFlaggedAnswers)
+    internal void UpdateAnswers(IEnumerable<BaseAnswer> answers, 
+        int numberOfQuestionsAnswered,
+        int numberOfFlaggedAnswers,
+        DateTime? arrivalTime, 
+        DateTime? departureTime,
+        List<ObservationBreak> breaks)
     {
         Answers = answers.ToList().AsReadOnly();
         NumberOfQuestionsAnswered = numberOfQuestionsAnswered;
         NumberOfFlaggedAnswers = numberOfFlaggedAnswers;
+
+        UpdateTimesOfStay(arrivalTime, departureTime, breaks);
     }
 
-    public void UpdateTimesOfStay(DateTime? arrivalTime, DateTime? departureTime)
+    public void UpdateTimesOfStay(DateTime? arrivalTime, DateTime? departureTime, IEnumerable<ObservationBreak> breaks)
     {
         if (arrivalTime.HasValue)
         {
@@ -86,6 +95,8 @@ public class PollingStationInformation : AuditableBaseEntity, IAggregateRoot
         {
             MinutesMonitoring = (departureTime.Value - arrivalTime.Value).TotalMinutes;
         }
+
+        Breaks = breaks.ToList().AsReadOnly();
     }
 
     public void ClearAnswers()

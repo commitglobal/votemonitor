@@ -1,7 +1,9 @@
 
+import { DateTimeHourBucketFormat } from '@/common/formats';
 import { round } from '@/lib/utils';
 import type { ChartData, ScriptableContext } from 'chart.js';
 import { format } from 'date-fns';
+import { HistogramEntry, ObserversStats, VisitedPollingStationLevelStats } from '../models/ngo-admin-statistics-models';
 
 export const observersAccountsDataConfig = (stats?: ObserversStats): ChartData<"doughnut"> => {
   const labels = [];
@@ -74,7 +76,7 @@ export const observersOnTheFieldDataConfig = (totalNumberOfObservers?: number, n
   }
 };
 
-export const pollingStationsDataConfig = (pollingStationsStats?: PollingStationsStats): ChartData<"doughnut"> => {
+export const pollingStationsDataConfig = (pollingStationsStats?: VisitedPollingStationLevelStats): ChartData<"doughnut"> => {
   const labels = [];
   const data = [];
   const colors = [];
@@ -86,7 +88,7 @@ export const pollingStationsDataConfig = (pollingStationsStats?: PollingStations
     colors.push('#7833B3');
   }
 
-  const numberOfNotVisitedPollingStations = (pollingStationsStats?.totalNumberOfPollingStations ?? 0) - (pollingStationsStats?.numberOfVisitedPollingStations ?? 0);
+  const numberOfNotVisitedPollingStations = (pollingStationsStats?.numberOfPollingStations ?? 0) - (pollingStationsStats?.numberOfVisitedPollingStations ?? 0);
   if (numberOfNotVisitedPollingStations) {
     labels.push('Not visited');
     data.push(numberOfNotVisitedPollingStations);
@@ -130,7 +132,7 @@ export const histogramChartConfig = (histogram: HistogramEntry[] | undefined, va
   histogram
     ?.sort((a, b) => new Date(a.bucket).getTime() - new Date(b.bucket).getTime())
     ?.forEach(b => {
-      labels.push(format(new Date(b.bucket), 'kk:00'));
+      labels.push(format(new Date(b.bucket), DateTimeHourBucketFormat));
       data.push(b.value);
     });
   return {

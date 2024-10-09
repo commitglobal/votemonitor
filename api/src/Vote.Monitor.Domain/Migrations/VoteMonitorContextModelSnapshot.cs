@@ -5484,8 +5484,7 @@ namespace Vote.Monitor.Domain.Migrations
 
                     b.Property<string>("Body")
                         .IsRequired()
-                        .HasMaxLength(1024)
-                        .HasColumnType("character varying(1024)");
+                        .HasColumnType("text");
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uuid");
@@ -5738,6 +5737,12 @@ namespace Vote.Monitor.Domain.Migrations
 
                     b.Property<DateTime?>("ArrivalTime")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Breaks")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("jsonb")
+                        .HasDefaultValueSql("'[]'::JSONB");
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uuid");

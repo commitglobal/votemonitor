@@ -11,10 +11,6 @@ public partial class FormTemplateTests
         string[] languages = [LanguagesList.RO.Iso1, LanguagesList.EN.Iso1, LanguagesList.UK.Iso1];
         var name = new TranslatedStringFaker(languages).Generate();
         var description = new TranslatedStringFaker(languages).Generate();
-
-        var formTemplate = FormTemplate.Create(FormTemplateType.Voting, "code", LanguagesList.RO.Iso1, name, description, languages);
-        formTemplate.Publish();
-        
         BaseQuestion[] questions =
         [
             new TextQuestionFaker(languages).Generate(),
@@ -24,10 +20,10 @@ public partial class FormTemplateTests
             new SingleSelectQuestionFaker(languageList: languages).Generate(),
             new MultiSelectQuestionFaker(languageList: languages).Generate(),
         ];
-
-        formTemplate.UpdateDetails(formTemplate.Code, formTemplate.DefaultLanguage, formTemplate.Name, formTemplate.Description, formTemplate.FormTemplateType, formTemplate.Languages, questions);
-
-
+        
+        var formTemplate = FormTemplate.Create(FormTemplateType.Voting, "code", LanguagesList.RO.Iso1, name, description, languages, questions);
+        formTemplate.Publish();
+        
         // Act
         var newFormTemplate = formTemplate.Duplicate();
 

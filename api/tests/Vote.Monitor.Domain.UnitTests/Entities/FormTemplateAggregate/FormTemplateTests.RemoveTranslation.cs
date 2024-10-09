@@ -15,7 +15,7 @@ public partial class FormTemplateTests
         var description = new TranslatedStringFaker(languages).Generate();
 
         var formTemplate = FormTemplate.Create(FormTemplateType.Voting, "code", LanguagesList.RO.Iso1, name,
-            description, languages);
+            description, languages,[]);
 
         var formBefore = formTemplate.DeepClone();
 
@@ -35,7 +35,7 @@ public partial class FormTemplateTests
         var description = new TranslatedStringFaker(languages).Generate();
 
         var formTemplate = FormTemplate.Create(FormTemplateType.Voting, "code", LanguagesList.RO.Iso1, name,
-            description, languages);
+            description, languages, []);
 
         // Act
         formTemplate.RemoveTranslation(LanguagesList.UK.Iso1);
@@ -55,7 +55,7 @@ public partial class FormTemplateTests
         var description = new TranslatedStringFaker(languages).Generate();
 
         var formTemplate = FormTemplate.Create(FormTemplateType.Voting, "code", LanguagesList.RO.Iso1, name,
-            description, languages);
+            description, languages, []);
 
         // Act
         var act = () => formTemplate.RemoveTranslation(LanguagesList.RO.Iso1);
@@ -73,10 +73,6 @@ public partial class FormTemplateTests
         string[] languages = [LanguagesList.RO.Iso1, LanguagesList.EN.Iso1, LanguagesList.UK.Iso1];
         var name = new TranslatedStringFaker(languages).Generate();
         var description = new TranslatedStringFaker(languages).Generate();
-
-        var formTemplate = FormTemplate.Create(FormTemplateType.Voting, "code", LanguagesList.RO.Iso1, name,
-            description, languages);
-
         BaseQuestion[] questions =
         [
             new TextQuestionFaker(languages).Generate(),
@@ -87,8 +83,9 @@ public partial class FormTemplateTests
             new MultiSelectQuestionFaker(languageList: languages).Generate(),
         ];
 
-        formTemplate.UpdateDetails(formTemplate.Code, formTemplate.DefaultLanguage, formTemplate.Name, formTemplate.Description, formTemplate.FormTemplateType, formTemplate.Languages, questions);
-
+        var formTemplate = FormTemplate.Create(FormTemplateType.Voting, "code", LanguagesList.RO.Iso1, name,
+            description, languages,questions);
+        
         // Act
         formTemplate.RemoveTranslation(LanguagesList.UK.Iso1);
 

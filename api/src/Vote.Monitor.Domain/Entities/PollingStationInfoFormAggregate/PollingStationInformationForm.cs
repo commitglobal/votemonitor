@@ -47,12 +47,13 @@ public class PollingStationInformationForm : BaseForm
         MonitoringObserver monitoringObserver,
         DateTime? arrivalTime,
         DateTime? departureTime,
-        List<BaseAnswer>? answers)
+        List<BaseAnswer>? answers,
+        List<ObservationBreak> breaks)
     {
         if (answers == null)
         {
             return PollingStationInformation.Create(ElectionRound, pollingStation, monitoringObserver, this,
-                arrivalTime, departureTime, [], 0, 0);
+                arrivalTime, departureTime, [], 0, 0, breaks);
         }
 
         var validationResult = AnswersValidator.GetValidationResults(answers, Questions);
@@ -66,7 +67,7 @@ public class PollingStationInformationForm : BaseForm
         var numberOfFlaggedAnswers = AnswersHelpers.CountNumberOfFlaggedAnswers(Questions, answers);
 
         return PollingStationInformation.Create(ElectionRound, pollingStation, monitoringObserver, this, arrivalTime,
-            departureTime, answers, numberOfQuestionsAnswered, numberOfFlaggedAnswers);
+            departureTime, answers, numberOfQuestionsAnswered, numberOfFlaggedAnswers, breaks);
     }
     
 #pragma warning disable CS8618 // Required by Entity Framework
