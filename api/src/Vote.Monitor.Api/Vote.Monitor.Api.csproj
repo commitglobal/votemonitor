@@ -14,13 +14,13 @@
     <PackageReference Include="FastEndpoints" Version="5.24.0" />
     <PackageReference Include="FastEndpoints.Security" Version="5.24.0" />
     <PackageReference Include="FastEndpoints.Swagger" Version="5.24.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.4" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.4">
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.8">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.5" />
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.2" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.8" />
     <PackageReference Include="OpenTelemetry.Instrumentation.Process" Version="0.5.0-beta.5" />
     <PackageReference Include="Sentry" Version="4.4.0" />
     <PackageReference Include="Sentry.AspNetCore" Version="4.4.0" />

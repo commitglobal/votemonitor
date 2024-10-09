@@ -56,6 +56,7 @@ public class ExportFormSubmissionsJob(
                 .Where(x => x.ElectionRoundId == electionRoundId
                             && x.MonitoringNgo.NgoId == ngoId
                             && x.Status == FormStatus.Published)
+                .OrderBy(x => x.CreatedOn)
                 .AsNoTracking()
                 .ToListAsync(ct);
 

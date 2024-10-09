@@ -474,3 +474,13 @@ export const ensureTranslatedStringCorrectness = (translatedString:TranslatedStr
 export async function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
+
+export const toKebabCase = (str: string): string => {
+  return str
+    .replace(/([a-z])([A-Z])/g, '$1-$2')  // Handle camelCase (e.g., myString -> my-string)
+    .replace(/\s+/g, '-')                 // Replace spaces with hyphens
+    .replace(/_+/g, '-')                  // Replace underscores with hyphens
+    .replace(/[^\w\-]+/g, '')             // Remove all non-word characters except hyphens
+    .replace(/--+/g, '-')                 // Remove multiple hyphens
+    .toLowerCase();                       // Convert the string to lowercase
+};

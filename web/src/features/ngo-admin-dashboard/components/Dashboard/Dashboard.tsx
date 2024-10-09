@@ -19,15 +19,18 @@ import {
 } from '../../utils/chart-defs';
 
 import { DateTimeHourBucketFormat } from '@/common/formats';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useCurrentElectionRoundStore } from '@/context/election-round.store';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { useElectionRoundStatistics } from '../../hooks/statistics-queries';
+import { HistogramEntry } from '../../models/ngo-admin-statistics-models';
+import LevelStatistics from '../LevelStatisticsCard/LevelStatisticsCard';
 import useDashboardExpandedChartsStore from './dashboard-config.store';
 
 export default function NgoAdminDashboard(): FunctionComponent {
-  const { t } = useTranslation();
+  const { t } = useTranslation('translation', { keyPrefix: 'ngoAdminDashboard' });
   const { expandedCharts, toggleChart } = useDashboardExpandedChartsStore();
 
   const observersAccountsChartRef = useRef(null);
@@ -66,15 +69,13 @@ export default function NgoAdminDashboard(): FunctionComponent {
   }
 
   return (
-    <Layout title={t('ngoAdminDashboard.title')} subtitle={t('ngoAdminDashboard.subtitle')}>
+    <Layout title={t('title')} subtitle={t('subtitle')}>
       <div className='flex-col md:flex'>
         <div className='flex-1 space-y-4'>
           <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-4'>
             <Card>
               <CardHeader className='flex flex-row items-center justify-between py-0!'>
-                <CardTitle className='text-sm font-medium'>
-                  {t('ngoAdminDashboard.observersAccountsCardTitle')}
-                </CardTitle>
+                <CardTitle className='text-sm font-medium'>{t('observersAccounts.cardTitle')}</CardTitle>
                 <Button
                   type='button'
                   variant='ghost'
@@ -86,7 +87,7 @@ export default function NgoAdminDashboard(): FunctionComponent {
               </CardHeader>
               <CardContent>
                 <DoughnutChart
-                  title={t('ngoAdminDashboard.observersAccountsIndicatorTitle')}
+                  title={t('observersAccounts.indicatorTitle')}
                   total={statistics?.observersStats?.totalNumberOfObservers ?? 0}
                   data={observersAccountsDataConfig(statistics?.observersStats)}
                   ref={observersAccountsChartRef}
@@ -95,9 +96,7 @@ export default function NgoAdminDashboard(): FunctionComponent {
             </Card>
             <Card>
               <CardHeader className='flex flex-row items-center justify-between py-0!'>
-                <CardTitle className='text-sm font-medium'>
-                  {t('ngoAdminDashboard.observersOnFieldCardTitle')}
-                </CardTitle>
+                <CardTitle className='text-sm font-medium'>{t('observersOnFieldCardTitle')}</CardTitle>
                 <Button
                   type='button'
                   variant='ghost'
@@ -109,13 +108,13 @@ export default function NgoAdminDashboard(): FunctionComponent {
               </CardHeader>
               <CardContent>
                 <GaugeChart
-                  title={t('ngoAdminDashboard.observersInPollingStationsIndicatorTitle')}
-                  metricLabel={t('ngoAdminDashboard.observersInPollingStationsIndicatorMetricLabel')}
+                  title={t('observersInPollingStations.indicatorTitle')}
+                  metricLabel={t('observersInPollingStations.metricLabel')}
                   data={observersOnTheFieldDataConfig(
                     statistics?.observersStats?.totalNumberOfObservers,
-                    statistics?.numberOfObserversOnTheField
+                    statistics?.totalStats?.activeObservers ?? 0
                   )}
-                  value={statistics?.numberOfObserversOnTheField ?? 0}
+                  value={statistics?.totalStats?.activeObservers ?? 0}
                   total={statistics?.observersStats?.totalNumberOfObservers ?? 0}
                   ref={observersOnFieldChartRef}
                 />
@@ -123,7 +122,7 @@ export default function NgoAdminDashboard(): FunctionComponent {
             </Card>
             <Card>
               <CardHeader className='flex flex-row items-center justify-between'>
-                <CardTitle className='text-sm font-medium'>{t('ngoAdminDashboard.pollingStationCardTitle')}</CardTitle>
+                <CardTitle className='text-sm font-medium'>{t('pollingStationCardTitle')}</CardTitle>
                 <Button
                   type='button'
                   variant='ghost'
@@ -135,20 +134,18 @@ export default function NgoAdminDashboard(): FunctionComponent {
               </CardHeader>
               <CardContent>
                 <GaugeChart
-                  title={t('ngoAdminDashboard.stationsVisitedByAtLeastOneObserverIndicatorTitle')}
-                  metricLabel={t('ngoAdminDashboard.stationsVisitedByAtLeastOneObserverMetricLabel')}
-                  data={pollingStationsDataConfig(statistics?.pollingStationsStats)}
-                  total={statistics?.pollingStationsStats.totalNumberOfPollingStations ?? 0}
-                  value={statistics?.pollingStationsStats.numberOfVisitedPollingStations ?? 0}
+                  title={t('stationsVisitedByAtLeastOneObserver.indicatorTitle')}
+                  metricLabel={t('stationsVisitedByAtLeastOneObserver.metricLabel')}
+                  data={pollingStationsDataConfig(statistics?.totalStats)}
+                  total={statistics?.totalStats?.numberOfPollingStations ?? 0}
+                  value={statistics?.totalStats?.numberOfVisitedPollingStations ?? 0}
                   ref={pollingStationsChartRef}
                 />
               </CardContent>
             </Card>
             <Card>
               <CardHeader className='flex flex-row items-center justify-between'>
-                <CardTitle className='text-sm font-medium'>
-                  {t('ngoAdminDashboard.timeSpentObservingCardTitle')}
-                </CardTitle>
+                <CardTitle className='text-sm font-medium'>{t('timeSpentObserving.cardTitle')}</CardTitle>
                 <Button
                   type='button'
                   variant='ghost'
@@ -160,9 +157,9 @@ export default function NgoAdminDashboard(): FunctionComponent {
               </CardHeader>
               <CardContent>
                 <MetricChart
-                  title={t('ngoAdminDashboard.timeSpentObservingIndicatorTitle')}
+                  title={t('timeSpentObserving.indicatorTitle')}
                   unit='h'
-                  data={timeSpentObservingDataConfig(statistics?.minutesMonitoring)}
+                  data={timeSpentObservingDataConfig(statistics?.totalStats?.minutesMonitoring ?? 0)}
                   ref={timeSpentObservingChartRef}
                 />
               </CardContent>
@@ -178,7 +175,7 @@ export default function NgoAdminDashboard(): FunctionComponent {
                 'col-span-full': expandedCharts.has('startedFormsCard'),
               })}>
               <CardHeader className='flex flex-row items-center justify-between'>
-                <CardTitle className='text-sm font-medium'>{t('ngoAdminDashboard.startedFormsCardTitle')}</CardTitle>
+                <CardTitle className='text-sm font-medium'>{t('startedForms.cardTitle')}</CardTitle>
                 <div>
                   <Button
                     type='button'
@@ -199,7 +196,7 @@ export default function NgoAdminDashboard(): FunctionComponent {
               </CardHeader>
               <CardContent>
                 <TimeLineChart
-                  title={t('ngoAdminDashboard.startedFormsIndicatorTitle', {
+                  title={t('startedForms.indicatorTitle', {
                     interval: getInterval(statistics?.formsHistogram),
                   })}
                   data={histogramChartConfig(statistics?.formsHistogram)}
@@ -214,9 +211,7 @@ export default function NgoAdminDashboard(): FunctionComponent {
                 'col-span-full': expandedCharts.has('questionsAnsweredCard'),
               })}>
               <CardHeader className='flex flex-row items-center justify-between'>
-                <CardTitle className='text-sm font-medium'>
-                  {t('ngoAdminDashboard.questionsAnsweredCardTitle')}
-                </CardTitle>
+                <CardTitle className='text-sm font-medium'>{t('questionsAnswered.cardTitle')}</CardTitle>
                 <div>
                   <Button
                     type='button'
@@ -237,7 +232,7 @@ export default function NgoAdminDashboard(): FunctionComponent {
               </CardHeader>
               <CardContent>
                 <TimeLineChart
-                  title={t('ngoAdminDashboard.questionsAnsweredIndicatorTitle', {
+                  title={t('questionsAnswered.indicatorTitle', {
                     interval: getInterval(statistics?.formsHistogram),
                   })}
                   data={histogramChartConfig(statistics?.questionsHistogram)}
@@ -252,7 +247,7 @@ export default function NgoAdminDashboard(): FunctionComponent {
                 'col-span-full': expandedCharts.has('flaggedAnswersCard'),
               })}>
               <CardHeader className='flex flex-row items-center justify-between'>
-                <CardTitle className='text-sm font-medium'>{t('ngoAdminDashboard.flaggedAnswersCardTitle')}</CardTitle>
+                <CardTitle className='text-sm font-medium'>{t('flaggedAnswers.cardTitle')}</CardTitle>
                 <div>
                   <Button
                     type='button'
@@ -273,7 +268,7 @@ export default function NgoAdminDashboard(): FunctionComponent {
               </CardHeader>
               <CardContent>
                 <TimeLineChart
-                  title={t('ngoAdminDashboard.flaggedAnswersIndicatorTitle', {
+                  title={t('flaggedAnswers.indicatorTitle', {
                     interval: getInterval(statistics?.formsHistogram),
                   })}
                   data={histogramChartConfig(statistics?.flaggedAnswersHistogram, 'red')}
@@ -288,7 +283,7 @@ export default function NgoAdminDashboard(): FunctionComponent {
                 'col-span-full': expandedCharts.has('quickReportsCard'),
               })}>
               <CardHeader className='flex flex-row items-center justify-between'>
-                <CardTitle className='text-sm font-medium'>{t('ngoAdminDashboard.quickReportsCardTitle')}</CardTitle>
+                <CardTitle className='text-sm font-medium'>{t('quickReports.cardTitle')}</CardTitle>
                 <div>
                   <Button
                     type='button'
@@ -309,7 +304,7 @@ export default function NgoAdminDashboard(): FunctionComponent {
               </CardHeader>
               <CardContent>
                 <TimeLineChart
-                  title={t('ngoAdminDashboard.quickReportsIndicatorTitle', {
+                  title={t('quickReports.indicatorTitle', {
                     interval: getInterval(statistics?.quickReportsHistogram),
                   })}
                   data={histogramChartConfig(statistics?.quickReportsHistogram, 'red')}
@@ -325,9 +320,7 @@ export default function NgoAdminDashboard(): FunctionComponent {
                   'col-span-full': expandedCharts.has('citizenReportsCard'),
                 })}>
                 <CardHeader className='flex flex-row items-center justify-between'>
-                  <CardTitle className='text-sm font-medium'>
-                    {t('ngoAdminDashboard.citizenReportsCardTitle')}
-                  </CardTitle>
+                  <CardTitle className='text-sm font-medium'>{t('citizenReports.cardTitle')}</CardTitle>
                   <div>
                     <Button
                       type='button'
@@ -348,7 +341,7 @@ export default function NgoAdminDashboard(): FunctionComponent {
                 </CardHeader>
                 <CardContent>
                   <TimeLineChart
-                    title={t('ngoAdminDashboard.citizenReportsIndicatorTitle', {
+                    title={t('citizenReports.indicatorTitle', {
                       interval: getInterval(statistics?.citizenReportsHistogram),
                     })}
                     data={histogramChartConfig(statistics?.citizenReportsHistogram, 'red')}
@@ -364,7 +357,7 @@ export default function NgoAdminDashboard(): FunctionComponent {
                 'col-span-full': expandedCharts.has('incidentReportsCard'),
               })}>
               <CardHeader className='flex flex-row items-center justify-between'>
-                <CardTitle className='text-sm font-medium'>{t('ngoAdminDashboard.incidentReportsCardTitle')}</CardTitle>
+                <CardTitle className='text-sm font-medium'>{t('incidentReports.cardTitle')}</CardTitle>
                 <div>
                   <Button
                     type='button'
@@ -385,7 +378,7 @@ export default function NgoAdminDashboard(): FunctionComponent {
               </CardHeader>
               <CardContent>
                 <TimeLineChart
-                  title={t('ngoAdminDashboard.incidentReportsIndicatorTitle', {
+                  title={t('incidentReports.indicatorTitle', {
                     interval: getInterval(statistics?.incidentReportsHistogram),
                   })}
                   data={histogramChartConfig(statistics?.incidentReportsHistogram, 'red')}
@@ -395,6 +388,63 @@ export default function NgoAdminDashboard(): FunctionComponent {
                 />
               </CardContent>
             </Card>
+          </div>
+          <div>
+            <Tabs defaultValue='level-1'>
+              <TabsList
+                className={cn('grid bg-slate-200', {
+                  'grid-cols-1 w-[100px]':
+                    statistics?.level2Stats?.length === 0 &&
+                    statistics?.level3Stats?.length === 0 &&
+                    statistics?.level4Stats?.length === 0 &&
+                    statistics?.level5Stats?.length === 0,
+                  'grid-cols-2 w-[200px]':
+                    statistics?.level2Stats?.length &&
+                    statistics?.level3Stats?.length === 0 &&
+                    statistics?.level4Stats?.length === 0 &&
+                    statistics?.level5Stats?.length === 0,
+                  'grid-cols-3 w-[300px]':
+                    statistics?.level3Stats?.length &&
+                    statistics?.level4Stats?.length === 0 &&
+                    statistics?.level5Stats?.length === 0,
+                  'grid-cols-4 w-[400px]': statistics?.level4Stats?.length && statistics?.level5Stats?.length === 0,
+                  'grid-cols-5 w-[500px]': statistics?.level5Stats?.length,
+                })}>
+                <TabsTrigger value='level-1'>Level 1</TabsTrigger>
+                {statistics?.level2Stats?.length ? <TabsTrigger value='level-2'>Level 2</TabsTrigger> : null}
+                {statistics?.level3Stats?.length ? <TabsTrigger value='level-3'>Level 3</TabsTrigger> : null}
+                {statistics?.level4Stats?.length ? <TabsTrigger value='level-4'>Level 4</TabsTrigger> : null}
+                {statistics?.level5Stats?.length ? <TabsTrigger value='level-5'>Level 5</TabsTrigger> : null}
+              </TabsList>
+
+              <TabsContent value='level-1'>
+                <LevelStatistics level={1} levelStats={statistics?.level1Stats ?? []} />
+              </TabsContent>
+
+              {statistics?.level2Stats?.length ? (
+                <TabsContent value='level-2'>
+                  <LevelStatistics level={2} levelStats={statistics?.level2Stats ?? []} />
+                </TabsContent>
+              ) : null}
+
+              {statistics?.level3Stats?.length ? (
+                <TabsContent value='level-3'>
+                  <LevelStatistics level={3} levelStats={statistics?.level3Stats ?? []} />
+                </TabsContent>
+              ) : null}
+
+              {statistics?.level4Stats?.length ? (
+                <TabsContent value='level-4'>
+                  <LevelStatistics level={4} levelStats={statistics?.level4Stats ?? []} />
+                </TabsContent>
+              ) : null}
+
+              {statistics?.level5Stats?.length ? (
+                <TabsContent value='level-5'>
+                  <LevelStatistics level={5} levelStats={statistics?.level5Stats ?? []} />
+                </TabsContent>
+              ) : null}
+            </Tabs>
           </div>
         </div>
       </div>
