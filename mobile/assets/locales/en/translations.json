@@ -312,7 +312,17 @@
     "attachments": {
       "heading": "Uploaded media",
       "loading": "Adding attachment... ",
+<<<<<<< HEAD
+      "upload": {
+        "preparing": "Preparing attachment...",
+        "starting": "Starting the upload...",
+        "progress": "Upload progress:",
+        "completed": "Upload completed.",
+        "aborted": "Upload aborted."
+      },
+=======
       "error": "Error while sending the attachment!",
+>>>>>>> mobile
       "add": "Add notes and media",
       "menu": {
         "add_note": "Add note",
@@ -424,6 +434,13 @@
   },
   "report_new_issue": {
     "title": "Report new issue",
+    "upload": {
+      "preparing": "Preparing attachment...",
+      "starting": "Starting the upload...",
+      "progress": "Upload progress:",
+      "completed": "Upload completed.",
+      "aborted": "Upload aborted."
+    },
     "media": {
       "heading": "Uploaded media",
       "add": "Add media",

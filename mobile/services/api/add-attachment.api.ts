@@ -1,20 +1,36 @@
-import { FileMetadata } from "../../hooks/useCamera";
 import API from "../api";
+import axios from "axios";
 
 /** ========================================================================
     ================= POST addAttachment ====================
     ========================================================================
     @description Sends a photo/video to the backend to be saved
-    @param {AddAttachmentAPIPayload} payload 
+    @param {AddAttachmentStartAPIPayload} payload 
     @returns {AddAttachmentAPIResponse} 
 */
-export type AddAttachmentAPIPayload = {
+export type AddAttachmentStartAPIPayload = {
   id: string;
+  filePath: string;
   electionRoundId: string;
   pollingStationId: string;
   formId: string;
   questionId: string;
-  fileMetadata: FileMetadata;
+  fileName: string;
+  contentType: string;
+  numberOfUploadParts: number;
+};
+
+export type AddAttachmentCompleteAPIPayload = {
+  electionRoundId: string;
+  id: string;
+  uploadId: string;
+  etags: Record<number, string>;
+};
+
+export type AddAttachmentAbortAPIPayload = {
+  electionRoundId: string;
+  id: string;
+  uploadId: string;
 };
 
 export type AddAttachmentAPIResponse = {
@@ -25,30 +41,71 @@ export type AddAttachmentAPIResponse = {
   urlValidityInSeconds: number;
 };
 
-export const addAttachment = ({
-  id,
+// Multipart Upload - Add Attachment - Question
+export const addAttachmentMultipartStart = ({
   electionRoundId,
   pollingStationId,
-  fileMetadata: cameraResult,
+  id,
   formId,
   questionId,
-}: AddAttachmentAPIPayload): Promise<AddAttachmentAPIResponse> => {
-  const formData = new FormData();
-
-  formData.append("attachment", {
-    uri: cameraResult.uri,
-    name: cameraResult.name,
-    type: cameraResult.type,
-  } as unknown as Blob);
-
-  formData.append("id", id);
-  formData.append("pollingStationId", pollingStationId);
-  formData.append("formId", formId);
-  formData.append("questionId", questionId);
-
-  return API.postForm(`election-rounds/${electionRoundId}/attachments`, formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
+  fileName,
+  contentType,
+  numberOfUploadParts,
+}: AddAttachmentStartAPIPayload): Promise<{
+  uploadId: string;
+  uploadUrls: Record<string, string>;
+}> => {
+  return API.post(
+    `election-rounds/${electionRoundId}/attachments:init`,
+    {
+      pollingStationId,
+      electionRoundId,
+      id,
+      formId,
+      questionId,
+      fileName,
+      contentType,
+      numberOfUploadParts,
     },
-  }).then((res) => res.data);
+    {},
+  ).then((res) => res.data);
+};
+
+export const addAttachmentMultipartComplete = async ({
+  uploadId,
+  id,
+  etags,
+  electionRoundId,
+}: AddAttachmentCompleteAPIPayload): Promise<string[]> => {
+  return API.post(
+    `election-rounds/${electionRoundId}/attachments/${id}:complete`,
+    { uploadId, etags },
+    {},
+  ).then((res) => res.data);
+};
+
+export const addAttachmentMultipartAbort = async ({
+  uploadId,
+  id,
+  electionRoundId,
+}: AddAttachmentAbortAPIPayload): Promise<string[]> => {
+  return API.post(
+    `election-rounds/${electionRoundId}/attachments/${id}:abort`,
+    { uploadId },
+    {},
+  ).then((res) => res.data);
+};
+
+// Upload S3 Chunk of bytes (Buffer (array of bytes) - not Base64 - still bytes but written differently)
+export const uploadS3Chunk = async (url: string, chunk: any): Promise<{ ETag: string }> => {
+  return axios
+    .put(url, chunk, {
+      timeout: 100000,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+    .then((res) => {
+      return { ETag: res.headers.etag };
+    });
 };
