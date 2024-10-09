@@ -1,11 +1,16 @@
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import i18n from '@/i18n';
+import { useRouter } from '@tanstack/react-router';
 import { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Label } from '../ui/label';
 
 export const LanguageSelector: FC = () => {
+  const { t, i18n } = useTranslation(); // not passing any namespace will use the defaultNS (by default set to 'translation')
+  const router = useRouter();
+
   const changeLanguage = (lng: string) => {
     i18n.changeLanguage(lng);
+    router.invalidate();
   };
 
   const options = [
