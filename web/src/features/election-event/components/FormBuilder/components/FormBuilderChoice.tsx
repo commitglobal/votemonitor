@@ -31,26 +31,22 @@ interface FormBuilderChoiceProps {
   type: FormBuilderChoice;
 }
 export const FormBuilderChoice: FC<FormBuilderChoiceProps> = ({ type }) => {
-  const { t } = useTranslation();
-
-  const mapTranslatedText = (property: 'title' | 'description' | 'buttonText') => {
-    return t(`electionEvent.form.${type}.${property}`);
-  };
+  const { t } = useTranslation('translation', { keyPrefix: `electionEvent.form.${type}` });
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{mapTranslatedText('title')}</CardTitle>
+        <CardTitle>{t('title')}</CardTitle>
       </CardHeader>
       <CardContent>
         <div className='bg-gray-50 flex flex-col gap-6 justify-center items-center rounded-lg p-6'>
           <FormBuilderChoiceIcon type={type} />
-          <p className='text-center'>{mapTranslatedText('description')}</p>
+          <p className='text-center'>{t('description')}</p>
           <Button
-            title={mapTranslatedText('buttonText')}
+            title={t('buttonText')}
             className='flex gap-2 text-purple-900 bg-background hover:bg-purple-50 hover:text-purple-500'
             variant='outline'>
-            {mapTranslatedText('buttonText')}
+            {t('buttonText')}
           </Button>
         </div>
       </CardContent>
