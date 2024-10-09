@@ -147,7 +147,7 @@ export const quickReportsColumnVisibilityOptions: ColumnOption<QuickReport>[] = 
   { id: 'quickReportLocationType', label: 'Location type', enableHiding: true },
   { id: 'title', label: 'Issue title', enableHiding: true },
   { id: 'description', label: 'Description', enableHiding: true },
-  { id: 'numberOfAttachments', label: 'Medial files', enableHiding: true },
+  { id: 'numberOfAttachments', label: 'Media files', enableHiding: true },
   { id: 'level1', label: 'Location - L1', enableHiding: true },
   { id: 'level2', label: 'Location - L2', enableHiding: true },
   { id: 'level3', label: 'Location - L3', enableHiding: true },

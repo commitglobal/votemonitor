@@ -4,11 +4,12 @@ namespace Feature.PollingStation.Information;
 
 public class ObservationBreakModel
 {
-    public DateTime End { get; private init; }
 
     public DateTime Start { get; private init; }
+    
+    public DateTime? End { get; private init; }
 
-    public int Duration => End.Subtract(Start).Minutes;
+    public double? Duration => End?.Subtract(Start).TotalMinutes;
     
     public static ObservationBreakModel FromEntity(ObservationBreak observationBreak)
     {
